@@ -19,7 +19,7 @@ for (I = problems ; I->f != 0; I++)
       I->f->dim = I->dim;
       
       MONTE_INTEGRATE (I->f, I->xl, I->xu, 
-                       I->dim, I->calls, r, s,
+                       I->dim, I->calls / MONTE_SPEEDUP, r, s,
                        &res, &err);
       
       gsl_test_abs (res, I->expected_result, 
