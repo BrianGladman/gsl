@@ -13,6 +13,15 @@ echo -n "$auxbin "
 echo ""
 echo ""
 
+echo -n "gslrandom_SOURCES= switch.c "
+for i in $list $auxlist; do
+    echo -n "$i.c "
+done
+echo ""
+echo ""
+
+
+
 echo -n "test_switch_DEPENDENCIES= gsl_ran_switch.h "
 for i in $list; do
     echo -n "$i.o "
