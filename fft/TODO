@@ -2,9 +2,6 @@
 
 * A simple multidimensional fft.
 
-* Workspace should be split into separate static table and scratch
-space to avoid unnecessary recalculation of twiddle factors.
-
 * Convolutions. This will need different interfaces corresponding to
 the type of underlying FFT (radix-2, mixed-radix, radix-2 real,
 mixed-radix real). The convolution function should be fft'ed before
