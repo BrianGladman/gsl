@@ -45,17 +45,17 @@ double gsl_ran_binomial_pdf (const unsigned int k, const double p, const unsigne
 double gsl_ran_exponential (const gsl_rng * r, const double mu);
 double gsl_ran_exponential_pdf (const double x, const double mu);
 
-double gsl_ran_exppow (const gsl_rng * r, const double mu, const double a);
-double gsl_ran_exppow_pdf (const double x, const double mu, const double a);
+double gsl_ran_exppow (const gsl_rng * r, const double a, const double b);
+double gsl_ran_exppow_pdf (const double x, const double a, const double b);
 
-double gsl_ran_cauchy (const gsl_rng * r, const double mu);
-double gsl_ran_cauchy_pdf (const double x, const double mu);
+double gsl_ran_cauchy (const gsl_rng * r, const double a);
+double gsl_ran_cauchy_pdf (const double x, const double a);
 
 double gsl_ran_chisq (const gsl_rng * r, const double nu);
 double gsl_ran_chisq_pdf (const double x, const double nu);
 
-double gsl_ran_erlang (const gsl_rng * r, const double mu, const double n);
-double gsl_ran_erlang_pdf (const double x, const double mu, const double n);
+double gsl_ran_erlang (const gsl_rng * r, const double a, const double n);
+double gsl_ran_erlang_pdf (const double x, const double a, const double n);
 
 double gsl_ran_fdist (const gsl_rng * r, const double nu1, const double nu2);
 double gsl_ran_fdist_pdf (const double x, const double nu1, const double nu2);
@@ -96,8 +96,8 @@ double gsl_ran_gumbel1_pdf (const double x, const double a, const double b);
 double gsl_ran_gumbel2 (const gsl_rng * r, const double a, const double b);
 double gsl_ran_gumbel2_pdf (const double x, const double a, const double b);
 
-double gsl_ran_logistic (const gsl_rng * r, const double mu);
-double gsl_ran_logistic_pdf (const double x, const double mu);
+double gsl_ran_logistic (const gsl_rng * r, const double a);
+double gsl_ran_logistic_pdf (const double x, const double a);
 
 double gsl_ran_lognormal (const gsl_rng * r, const double zeta, const double sigma);
 double gsl_ran_lognormal_pdf (const double x, const double zeta, const double sigma);
@@ -128,14 +128,14 @@ double gsl_ran_rayleigh_tail_pdf (const double x, const double a, const double s
 double gsl_ran_tdist (const gsl_rng * r, const double nu);
 double gsl_ran_tdist_pdf (const double x, const double nu);
 
-double gsl_ran_laplace (const gsl_rng * r, const double mu);
-double gsl_ran_laplace_pdf (const double x, const double mu);
+double gsl_ran_laplace (const gsl_rng * r, const double a);
+double gsl_ran_laplace_pdf (const double x, const double a);
 
 double gsl_ran_levy (const gsl_rng * r, const double c, const double alpha);
 double gsl_ran_levy_skew (const gsl_rng * r, const double c, const double alpha, const double beta);
 
-double gsl_ran_weibull (const gsl_rng * r, const double mu, const double a);
-double gsl_ran_weibull_pdf (const double x, const double mu, const double a);
+double gsl_ran_weibull (const gsl_rng * r, const double a, const double b);
+double gsl_ran_weibull_pdf (const double x, const double a, const double b);
 
 void gsl_ran_dir_2d (const gsl_rng * r, double * x, double * y);
 void gsl_ran_dir_2d_trig_method (const gsl_rng * r, double * x, double * y);

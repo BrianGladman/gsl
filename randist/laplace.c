@@ -24,12 +24,12 @@
 
 /* The two-sided exponential probability distribution is  
 
-   p(x) dx = (1/(2 mu)) * exp(-|x/mu|) dx
+   p(x) dx = (1/(2 a)) * exp(-|x/a|) dx
 
    for -infty < x < infty. It is also known as the Laplace distribution.  */
 
 double
-gsl_ran_laplace (const gsl_rng * r, const double mu)
+gsl_ran_laplace (const gsl_rng * r, const double a)
 {
   double u;
   do
@@ -40,18 +40,18 @@ gsl_ran_laplace (const gsl_rng * r, const double mu)
 
   if (u < 0)
     {
-      return mu * log (-u);
+      return a * log (-u);
     }
   else
     {
-      return -mu * log (u);
+      return -a * log (u);
     }
 }
 
 double
-gsl_ran_laplace_pdf (const double x, const double mu)
+gsl_ran_laplace_pdf (const double x, const double a)
 {
-  double p = (1/(2*mu)) * exp (-fabs (x)/mu);
+  double p = (1/(2*a)) * exp (-fabs (x)/a);
   return p;
 }
 

@@ -249,22 +249,22 @@ given above.
 @page
 @node The Laplace Distribution
 @section The Laplace Distribution
-@deftypefn Random double gsl_ran_laplace (const gsl_rng * @var{r}, double @var{mu})
+@deftypefn Random double gsl_ran_laplace (const gsl_rng * @var{r}, double @var{a})
 @cindex two-sided exponential random numbers
 @cindex Laplace distribution random numbers
 This function returns a random number from the the Laplace distribution
-with width @var{mu}.  The distribution is,
+with width @var{a}.  The distribution is,
 
 @tex
 \beforedisplay
 $$
-p(x) dx = {1 \over 2 \mu}  \exp(-|x/\mu|) dx
+p(x) dx = {1 \over 2 a}  \exp(-|x/a|) dx
 $$
 \afterdisplay
 @end tex
 @ifinfo
 @example
-p(x) dx = @{1 \over 2 \mu@}  \exp(-|x/\mu|) dx
+p(x) dx = @{1 \over 2 a@}  \exp(-|x/a|) dx
 @end example
 @end ifinfo
 
@@ -272,9 +272,9 @@ p(x) dx = @{1 \over 2 \mu@}  \exp(-|x/\mu|) dx
 for @math{-\infty < x < \infty}.
 @end deftypefn
 
-@deftypefun double gsl_ran_laplace_pdf (double @var{x}, double @var{mu})
+@deftypefun double gsl_ran_laplace_pdf (double @var{x}, double @var{a})
 This function computes the probability density @math{p(x)} at @var{x}
-for a Laplace distribution with mean @var{mu}, using the formula
+for a Laplace distribution with mean @var{a}, using the formula
 given above.
 @end deftypefun
 
@@ -286,35 +286,35 @@ given above.
 @page
 @node The Exponential Power Distribution
 @section The Exponential Power Distribution
-@deftypefn Random double gsl_ran_exppow (const gsl_rng * @var{r}, double @var{mu}, double @var{a})
+@deftypefn Random double gsl_ran_exppow (const gsl_rng * @var{r}, double @var{a}, double @var{b})
 @cindex Exponential power distribution, random numbers
 This function returns a random number from the exponential power distribution
-with scale parameter @var{mu} and exponent @var{a}.  The distribution is,
+with scale parameter @var{a} and exponent @var{b}.  The distribution is,
 
 @tex
 \beforedisplay
 $$
-p(x) dx = {1 \over 2 \mu \Gamma(1+1/a)} \exp(-|x/\mu|^a) dx
+p(x) dx = {1 \over 2 a \Gamma(1+1/b)} \exp(-|x/a|^b) dx
 $$
 \afterdisplay
 @end tex
 @ifinfo
 @example
-p(x) dx = @{1 \over 2 \mu \Gamma(1+1/a)@} \exp(-|x/\mu|^a) dx
+p(x) dx = @{1 \over 2 a \Gamma(1+1/b)@} \exp(-|x/a|^b) dx
 @end example
 @end ifinfo
 @noindent
 for @c{$x \ge 0$}
-@math{x >= 0}.  For @math{a = 1} this reduces to the Laplace
-distribution.  For @math{a = 2} it has the same form as a gaussian
-distribution, but with @c{$\mu = \sqrt{2} \sigma$}
-@math{\mu = \sqrt@{2@} \sigma}.
+@math{x >= 0}.  For @math{b = 1} this reduces to the Laplace
+distribution.  For @math{b = 2} it has the same form as a gaussian
+distribution, but with @c{$a = \sqrt{2} \sigma$}
+@math{a = \sqrt@{2@} \sigma}.
 @end deftypefn
 
-@deftypefun double gsl_ran_exppow_pdf (double @var{x}, double @var{mu}, double @var{a})
+@deftypefun double gsl_ran_exppow_pdf (double @var{x}, double @var{a}, double @var{b})
 This function computes the probability density @math{p(x)} at @var{x}
-for an exponential power distribution with scale parameter @var{mu}
-and exponent @var{a}, using the formula given above.
+for an exponential power distribution with scale parameter @var{a}
+and exponent @var{b}, using the formula given above.
 @end deftypefun
 
 @sp 1
@@ -325,22 +325,22 @@ and exponent @var{a}, using the formula given above.
 @page
 @node The Cauchy Distribution
 @section The Cauchy Distribution
-@deftypefn Random double gsl_ran_cauchy (const gsl_rng * @var{r}, double @var{mu})
+@deftypefn Random double gsl_ran_cauchy (const gsl_rng * @var{r}, double @var{a})
 @cindex Cauchy random numbers
 This function returns a random number from the Cauchy distribution with
-scale parameter @var{mu}.  The probability distribution for Cauchy
+scale parameter @var{a}.  The probability distribution for Cauchy
 random numbers is,
 
 @tex
 \beforedisplay
 $$
-p(x) dx = {1 \over \mu\pi (1 + (x/\mu)^2) } dx
+p(x) dx = {1 \over a\pi (1 + (x/a)^2) } dx
 $$
 \afterdisplay
 @end tex
 @ifinfo
 @example
-p(x) dx = @{1 \over \mu\pi (1 + (x/\mu)^2) @} dx
+p(x) dx = @{1 \over a\pi (1 + (x/a)^2) @} dx
 @end example
 @end ifinfo
 
@@ -349,9 +349,9 @@ for @math{x} in the range @math{-\infty} to @math{+\infty}.  The Cauchy
 distribution is also known as the Lorentz distribution.
 @end deftypefn
 
-@deftypefun double gsl_ran_cauchy_pdf (double @var{x}, double @var{mu})
+@deftypefun double gsl_ran_cauchy_pdf (double @var{x}, double @var{a})
 This function computes the probability density @math{p(x)} at @var{x}
-for a Cauchy distribution with scale parameter @var{mu}, using the formula
+for a Cauchy distribution with scale parameter @var{a}, using the formula
 given above.
 @end deftypefun
 
@@ -845,7 +845,7 @@ formula given above.
 @node The Logistic Distribution
 @section The Logistic Distribution
 
-@deftypefn Random double gsl_ran_logistic (const gsl_rng * @var{r}, double @var{mu})
+@deftypefn Random double gsl_ran_logistic (const gsl_rng * @var{r}, double @var{a})
 @cindex Logistic random numbers
 This function returns a random number from the logistic
 distribution.  The distribution function is
@@ -853,22 +853,22 @@ distribution.  The distribution function is
 @tex
 \beforedisplay
 $$
-p(x) dx = { \exp(-x/\mu) \over \mu (1 + \exp(-x/\mu))^2 } dx
+p(x) dx = { \exp(-x/a) \over a (1 + \exp(-x/a))^2 } dx
 $$
 \afterdisplay
 @end tex
 @ifinfo
 @example
-p(x) dx = @{ \exp(-x/\mu) \over \mu (1 + \exp(-x/\mu))^2 @} dx
+p(x) dx = @{ \exp(-x/a) \over a (1 + \exp(-x/a))^2 @} dx
 @end example
 @end ifinfo
 @noindent
 @math{-\infty < x < +\infty}.
 @end deftypefn
 
-@deftypefun double gsl_ran_logistic_pdf (double @var{x}, double @var{mu})
+@deftypefun double gsl_ran_logistic_pdf (double @var{x}, double @var{a})
 This function computes the probability density @math{p(x)} at @var{x}
-for a logistic distribution with scale parameter @var{mu}, using the
+for a logistic distribution with scale parameter @var{a}, using the
 formula given above.
 @end deftypefun
 
@@ -982,7 +982,7 @@ Mathematics for the Engineer (1956).
 @page
 @node The Weibull Distribution
 @section The Weibull Distribution
-@deftypefn Random double gsl_ran_weibull (const gsl_rng * @var{r}, double @var{mu}, double @var{a})
+@deftypefn Random double gsl_ran_weibull (const gsl_rng * @var{r}, double @var{a}, double @var{b})
 @cindex Weibull distribution random numbers
 This function returns a random number from the Weibull distribution.  The
 distribution is,
@@ -990,13 +990,13 @@ distribution is,
 @tex
 \beforedisplay
 $$
-p(x) dx = {a \over \mu^a} x^{a-1}  \exp(-(x/\mu)^a) dx
+p(x) dx = {b \over a^b} x^{b-1}  \exp(-(x/a)^b) dx
 $$
 \afterdisplay
 @end tex
 @ifinfo
 @example
-p(x) dx = @{a \over \mu^a@} x^@{a-1@}  \exp(-(x/\mu)^a) dx
+p(x) dx = @{b \over a^b@} x^@{b-1@}  \exp(-(x/a)^b) dx
 @end example
 @end ifinfo
 
@@ -1005,9 +1005,9 @@ for @c{$x \ge 0$}
 @math{x >= 0}.
 @end deftypefn
 
-@deftypefun double gsl_ran_weibull_pdf (double @var{x}, double @var{mu}, double @var{a})
+@deftypefun double gsl_ran_weibull_pdf (double @var{x}, double @var{a}, double @var{b})
 This function computes the probability density @math{p(x)} at @var{x}
-for a Weibull distribution with scale @var{mu} and exponent @var{a},
+for a Weibull distribution with scale @var{a} and exponent @var{b},
 using the formula given above.
 @end deftypefun
 
@@ -1607,7 +1607,7 @@ If the library and header files are installed under @file{/usr/local}
 options,
 
 @example
-gcc demo.c -lgsl -lgslblas -lm
+gcc demo.c -lgsl -lgslcblas -lm
 @end example
 
 @noindent

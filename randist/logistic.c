@@ -24,12 +24,12 @@
 
 /* The logistic distribution has the form,
 
-   p(x) dx = (1/mu) exp(-x/mu) / (1 + exp(-x/mu))^2 dx
+   p(x) dx = (1/a) exp(-x/a) / (1 + exp(-x/a))^2 dx
 
    for -infty < x < infty */
 
 double
-gsl_ran_logistic (const gsl_rng * r, const double mu)
+gsl_ran_logistic (const gsl_rng * r, const double a)
 {
   double x, z;
 
@@ -41,13 +41,13 @@ gsl_ran_logistic (const gsl_rng * r, const double mu)
 
   z = log (x / (1 - x));
 
-  return mu * z;
+  return a * z;
 }
 
 double
-gsl_ran_logistic_pdf (const double x, const double mu)
+gsl_ran_logistic_pdf (const double x, const double a)
 {
-  double u = exp (-fabs(x)/mu);
-  double p = u / (fabs(mu) * (1 + u) * (1 + u));
+  double u = exp (-fabs(x)/a);
+  double p = u / (fabs(a) * (1 + u) * (1 + u));
   return p;
 }

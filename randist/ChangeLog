@@ -1,3 +1,30 @@
+Tue Apr 17 19:57:59 2001  Brian Gough  <bjg@network-theory.co.uk>
+
+	* weibull.c (gsl_ran_weibull): changed parameter mu to a, since it
+ 	is not the mean
+	(gsl_ran_weibull_pdf): changed parameter mu to a, since it
+ 	is not the mean
+
+	* logistic.c (gsl_ran_logistic): changed parameter mu to a, since it
+ 	is not the mean
+	(gsl_ran_logistic_pdf): changed parameter mu to a, since it
+ 	is not the mean
+
+	* laplace.c (gsl_ran_laplace): changed parameter mu to a, since it
+ 	is not the mean
+	(gsl_ran_laplace_pdf): changed parameter mu to a, since it
+ 	is not the mean
+
+	* exppow.c (gsl_ran_exppow): changed parameter mu to a, since it
+ 	is not the mean
+	(gsl_ran_exppow_pdf): changed parameter mu to a, since it
+ 	is not the mean
+
+	* cauchy.c (gsl_ran_cauchy): changed parameter mu to a, since it
+ 	is not the mean
+	(gsl_ran_cauchy_pdf): changed parameter mu to a, since it
+ 	is not the mean
+
 Tue Feb 20 11:14:00 2001  Brian Gough  <bjg@network-theory.co.uk>
 
 	* levy.c: added the skew symmetric routine from Keith Briggs,

@@ -58,13 +58,14 @@ splot rho=0.9, p(x,y) title "$\sigma_x=1, \sigma_y=1, \rho=0.9$"
 set xlabel "$x$"
 set ylabel "$p(x)$"
 
+set ytics 0.1
 set xrange [-5:5]
 set yrange [0:0.4]
 set output "rand-cauchy.tex"
 set title "Cauchy Distribution"
-p(x)=1/(pi*mu*(1+(x/mu)**2))
-plot mu=1.0, p(x) title "$\mu=1$", \
-	mu=2.0, p(x) title "$\mu=2$"
+p(x)=1/(pi*a*(1+(x/a)**2))
+plot a=1.0, p(x) title "$a=1$", \
+	a=2.0, p(x) title "$a=2$"
 
 set ytics 0.5
 set yrange [0:1]
@@ -138,9 +139,9 @@ set ytics 0.1
 set xtics 1
 set output "rand-logistic.tex"
 set title "Logistic Distribution"
-p(x)= exp(-x/mu)/mu/(1+exp(-x/mu))**2
-plot mu=1.0, p(x) title "$\mu=1$", \
-	mu=2.0, p(x) title "$\mu=2$"
+p(x)= exp(-x/a)/a/(1+exp(-x/a))**2
+plot a=1.0, p(x) title "$a=1$", \
+	a=2.0, p(x) title "$a=2$"
 
 set xrange [0:3]
 set yrange [0:0.7]
@@ -196,18 +197,18 @@ set yrange [0:0.55]
 set ytics 0.1
 set output "rand-laplace.tex"
 set title "Laplace Distribution (Two-sided Exponential)"
-p(x)=exp(-abs(x)/mu)/2/mu
-plot mu=1.0, p(x) title "$\mu=1$", \
-	mu=2.0, p(x) title "$\mu=2$"
+p(x)=exp(-abs(x)/a)/2/a
+plot a=1.0, p(x) title "$a=1$", \
+	a=2.0, p(x) title "$a=2$"
 
 set xrange [-5:5]
 set yrange [0:0.8]
 set ytics 0.1
 set output "rand-exppow.tex"
 set title "Exponential Power Distribution"
-p(x)=exp(-(abs(x/mu))**a)/2/mu/gamma(1.0+1.0/a)
-plot mu=1.0, a=2.5, p(x) title "$\mu=1, a=2.5$", \
-	mu=1.0, a=0.5, p(x) title "$\mu=2, a=0.5$"
+p(x)=exp(-(abs(x/a))**b)/2/a/gamma(1.0+1.0/b)
+plot a=1.0, b=2.5, p(x) title "$a=1, b=2.5$", \
+	a=1.0, b=0.5, p(x) title "$a=2, b=0.5$"
 
 set xrange [-5:5]
 set yrange [0:0.45]
@@ -225,10 +226,10 @@ set ytics 0.5
 set xtics 0.5
 set output "rand-weibull.tex"
 set title "Weibull Distribution"
-p(x)=a * x**(a-1) * exp(-x**a)
-plot a=1.0, p(x) title "$a=1$", \
-	a=2.0, p(x) title "$a=2$", \
-	 a=3.0, p(x) title "$a=3$"
+p(x)=(b/a) * (x/a)**(b-1) * exp(-(x/a)**b)
+plot a=1.0, b=1.0, p(x) title "$a=1,b=1$", \
+       a=1.0, b=2.0, p(x) title "$a=1,b=2$", \
+	 a=2.0, b=3.0, p(x) title "$a=2,b=3$"
 
 set xrange [-2:2]
 set yrange [0:0.7]
@@ -332,10 +333,12 @@ plot P=0.5,n=3, p(x+0.5) title "$p=0.5,n=3$"
 
 ######################################################################
 
-set xrange [-5:5]
-set yrange [-5:5]
+set xrange [-7:7]
+set yrange [-7:7]
 set xtics 1
 set ytics 1
+set size 0.7,1.0
+set size square
 set output "random-walk.tex"
 set title "Random walk"
 set xzeroaxis

@@ -139,9 +139,9 @@ main (int argc, char *argv[])
     }
   else if (NAME("cauchy"))
     {
-      ARGS(1, "mu = scale parameter");
-      DBL_ARG(mu)
-      OUTPUT(gsl_ran_cauchy (r, mu));
+      ARGS(1, "a = scale parameter");
+      DBL_ARG(a)
+      OUTPUT(gsl_ran_cauchy (r, a));
     }
   else if (NAME("chisq"))
     {
@@ -164,10 +164,10 @@ main (int argc, char *argv[])
     }
   else if (NAME("exppow"))
     {
-      ARGS(2, "mu = scale parameter, a = power (1=exponential, 2=gaussian)");
-      DBL_ARG(mu) ;
+      ARGS(2, "a = scale parameter, b = power (1=exponential, 2=gaussian)");
       DBL_ARG(a) ;
-      OUTPUT(gsl_ran_exppow (r, mu, a));
+      DBL_ARG(b) ;
+      OUTPUT(gsl_ran_exppow (r, a, b));
     }
   else if (NAME("fdist"))
     {
@@ -279,9 +279,9 @@ main (int argc, char *argv[])
     }
   else if (NAME("laplace"))
     {
-      ARGS(1, "mu = scale parameter");
-      DBL_ARG(mu) ;
-      OUTPUT(gsl_ran_laplace (r, mu));
+      ARGS(1, "a = scale parameter");
+      DBL_ARG(a) ;
+      OUTPUT(gsl_ran_laplace (r, a));
     }
   else if (NAME("levy"))
     {
@@ -306,9 +306,9 @@ main (int argc, char *argv[])
     }
   else if (NAME("logistic"))
     {
-      ARGS(1, "mu = scale parameter");
-      DBL_ARG(mu) ;
-      OUTPUT(gsl_ran_logistic (r, mu));
+      ARGS(1, "a = scale parameter");
+      DBL_ARG(a) ;
+      OUTPUT(gsl_ran_logistic (r, a));
     }
   else if (NAME("lognormal"))
     {
@@ -327,9 +327,9 @@ main (int argc, char *argv[])
   else if (NAME("pareto"))
     {
       ARGS(2, "a = power, b = scale parameter");
-      DBL_ARG(mu) ;
       DBL_ARG(a) ;
-      OUTPUT(gsl_ran_pareto (r, mu, a));
+      DBL_ARG(b) ;
+      OUTPUT(gsl_ran_pareto (r, a, b));
     }
   else if (NAME("pascal"))
     {
@@ -365,10 +365,10 @@ main (int argc, char *argv[])
     }
   else if (NAME("weibull"))
     {
-      ARGS(2, "mu = scale parameter, a = exponent");
-      DBL_ARG(mu) ;
+      ARGS(2, "a = scale parameter, b = exponent");
       DBL_ARG(a) ;
-      OUTPUT(gsl_ran_weibull (r, mu, a));
+      DBL_ARG(b) ;
+      OUTPUT(gsl_ran_weibull (r, a, b));
     }
   else
     {

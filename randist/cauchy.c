@@ -25,12 +25,12 @@
 
 /* The Cauchy probability distribution is 
 
-   p(x) dx = (1/(pi mu)) (1 + (x/mu)^2)^(-1) dx
+   p(x) dx = (1/(pi a)) (1 + (x/a)^2)^(-1) dx
 
    It is also known as the Lorentzian probability distribution */
 
 double
-gsl_ran_cauchy (const gsl_rng * r, const double mu)
+gsl_ran_cauchy (const gsl_rng * r, const double a)
 {
   double u;
   do
@@ -39,13 +39,13 @@ gsl_ran_cauchy (const gsl_rng * r, const double mu)
     }
   while (u == 0.5);
 
-  return mu * tan (M_PI * u);
+  return a * tan (M_PI * u);
 }
 
 double
-gsl_ran_cauchy_pdf (const double x, const double mu)
+gsl_ran_cauchy_pdf (const double x, const double a)
 {
-  double u = x / mu;
-  double p = (1 / (M_PI * mu)) / (1 + u * u);
+  double u = x / a;
+  double p = (1 / (M_PI * a)) / (1 + u * u);
   return p;
 }

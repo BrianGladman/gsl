@@ -24,22 +24,22 @@
 
 /* The Weibull distribution has the form,
 
-   p(x) dx = (a/mu) (x/mu)^(a-1) exp(-(x/mu)^a) dx
+   p(x) dx = (b/a) (x/a)^(b-1) exp(-(x/a)^b) dx
 
  */
 
 double
-gsl_ran_weibull (const gsl_rng * r, const double mu, const double a)
+gsl_ran_weibull (const gsl_rng * r, const double a, const double b)
 {
   double x = gsl_rng_uniform_pos (r);
 
-  double z = pow (-log (x), 1 / a);
+  double z = pow (-log (x), 1 / b);
 
-  return mu * z;
+  return a * z;
 }
 
 double
-gsl_ran_weibull_pdf (const double x, const double mu, const double a)
+gsl_ran_weibull_pdf (const double x, const double a, const double b)
 {
   if (x < 0)
     {
@@ -47,18 +47,18 @@ gsl_ran_weibull_pdf (const double x, const double mu, const double a)
     }
   else if (x == 0)
     {
-      if (a == 1)
-	return 1/mu ;
+      if (b == 1)
+	return 1/a ;
       else
 	return 0 ;
     }
-  else if (a == 1)
+  else if (b == 1)
     {
-      return exp(-x/mu)/mu ;
+      return exp(-x/a)/a ;
     }
   else
     {
-      double p = (a/mu) * exp (-pow (x/mu, a) + (a - 1) * log (x/mu));
+      double p = (b/a) * exp (-pow (x/a, b) + (b - 1) * log (x/a));
       return p;
     }
 }

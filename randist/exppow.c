@@ -26,16 +26,16 @@
 
 /* The exponential power probability distribution is  
 
-   p(x) dx = (1/(2 mu Gamma(1+1/a))) * exp(-|x/mu|^a) dx
+   p(x) dx = (1/(2 a Gamma(1+1/b))) * exp(-|x/a|^b) dx
 
-   for -infty < x < infty. For a = 1 it reduces to the Laplace
+   for -infty < x < infty. For b = 1 it reduces to the Laplace
    distribution. 
 
    The exponential power distribution is related to the gamma
-   distribution by E = mu * pow(G(1/a),1/a), where E is an exponential
+   distribution by E = a * pow(G(1/b),1/b), where E is an exponential
    power variate and G is a gamma variate.
 
-   We use this relation for a < 1. For a >=1 we use rejection methods
+   We use this relation for b < 1. For b >=1 we use rejection methods
    based on the laplace and gaussian distributions which should be
    faster.
 
@@ -46,13 +46,13 @@
 */
 
 double
-gsl_ran_exppow (const gsl_rng * r, const double mu, const double a)
+gsl_ran_exppow (const gsl_rng * r, const double a, const double b)
 {
-  if (a < 1) 
+  if (b < 1) 
     {
       double u = gsl_rng_uniform (r) ;
-      double v = gsl_ran_gamma (r, 1/a, 1.0) ;
-      double z = mu * pow(v, 1/a) ;
+      double v = gsl_ran_gamma (r, 1/b, 1.0) ;
+      double z = a * pow(v, 1/b) ;
 
       if (u > 0.5) 
 	{
@@ -63,25 +63,25 @@ gsl_ran_exppow (const gsl_rng * r, const double mu, const double a)
 	  return -z ;
 	}
     }
-  else if (a == 1) 
+  else if (b == 1) 
     {
       /* Laplace distribution */
-      return gsl_ran_laplace (r, mu) ;
+      return gsl_ran_laplace (r, a) ;
     }
-  else if (a < 2) 
+  else if (b < 2) 
     {
       /* Use laplace distribution for rejection method */
 
       double x, y, h, ratio, u ;
 
-      /* Scale factor chosen by upper bound on ratio at a = 2 */
+      /* Scale factor chosen by upper bound on ratio at b = 2 */
 
       double s = 1.4489 ; 
       do 
 	{
-	  x = gsl_ran_laplace (r, mu) ;
-	  y = gsl_ran_laplace_pdf (x,mu) ;
-	  h = gsl_ran_exppow_pdf (x,mu,a) ;
+	  x = gsl_ran_laplace (r, a) ;
+	  y = gsl_ran_laplace_pdf (x,a) ;
+	  h = gsl_ran_exppow_pdf (x,a,b) ;
 	  ratio = h/(s * y) ;
 	  u = gsl_rng_uniform (r) ;
 	} 
@@ -89,19 +89,19 @@ gsl_ran_exppow (const gsl_rng * r, const double mu, const double a)
       
       return x ;
     }
-  else if (a == 2)
+  else if (b == 2)
     {
       /* Gaussian distribution */
-      return gsl_ran_gaussian (r, mu/sqrt(2.0)) ;
+      return gsl_ran_gaussian (r, a/sqrt(2.0)) ;
     }
   else
     {
       /* Use gaussian for rejection method */
 
       double x, y, h, ratio, u ;
-      const double sigma = mu / sqrt(2.0) ;
+      const double sigma = a / sqrt(2.0) ;
 
-      /* Scale factor chosen by upper bound on ratio at a = infinity.
+      /* Scale factor chosen by upper bound on ratio at b = infinity.
 	 This could be improved by using a rational function
 	 approximation to the bounding curve. */
 
@@ -111,7 +111,7 @@ gsl_ran_exppow (const gsl_rng * r, const double mu, const double a)
 	{
 	  x = gsl_ran_gaussian (r, sigma) ;
 	  y = gsl_ran_gaussian_pdf (x, sigma) ;
-	  h = gsl_ran_exppow_pdf (x, mu, a) ;
+	  h = gsl_ran_exppow_pdf (x, a, b) ;
 	  ratio = h/(s * y) ;
 	  u = gsl_rng_uniform (r) ;
 	} 
@@ -122,12 +122,12 @@ gsl_ran_exppow (const gsl_rng * r, const double mu, const double a)
 }
 
 double
-gsl_ran_exppow_pdf (const double x, const double mu, const double a)
+gsl_ran_exppow_pdf (const double x, const double a, const double b)
 {
   double p ;
   gsl_sf_result lg;
-  gsl_sf_lngamma_impl (1+1/a, &lg) ;
-  p = (1/(2*mu)) * exp(-pow(fabs(x/mu),a) - lg.val);
+  gsl_sf_lngamma_impl (1+1/b, &lg) ;
+  p = (1/(2*a)) * exp(-pow(fabs(x/a),b) - lg.val);
   return p;
 }
 
