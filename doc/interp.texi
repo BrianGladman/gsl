@@ -87,7 +87,7 @@ Akima spline with periodic boundary conditions
 
 The following related functions are available,
 
-@deftypefun const char * gsl_interp_name (const gsl_interp * @var{interp})
+@deftypefun {const char *} gsl_interp_name (const gsl_interp * @var{interp})
 This function returns the name of the interpolation type used by @var{interp}.
 For example,
 
@@ -99,7 +99,7 @@ printf("interp uses '%s' interpolation\n",
 would print something like @code{interp uses 'cspline' interpolation}
 @end deftypefun
 
-@deftypefun unsigned int gsl_interp_min_size (const gsl_interp * @var{interp})
+@deftypefun {unsigned int} gsl_interp_min_size (const gsl_interp * @var{interp})
 This function returns the minimum number of points required by the
 interpolation type of @var{interp}.  For example, cubic interpolation
 requires a minimum of 3 points.
@@ -184,7 +184,7 @@ following functions are equivalent to the corresponding
 and @var{ya} as arguments on each evaluation. These functions are
 defined in the header file @file{gsl_spline.h}.
 
-@deftypefun gsl_spline * gsl_spline_alloc (const gsl_interp_type * @var{T}, size_t @var{n})
+@deftypefun {gsl_spline *} gsl_spline_alloc (const gsl_interp_type * @var{T}, size_t @var{n})
 @end deftypefun
 
 @deftypefun int gsl_spline_init (gsl_spline * @var{spline}, const double xa[], const double @var{ya}[], size_t @var{size})

@@ -108,6 +108,7 @@ a function to compute scalar values. The selection function and the
 value function both accept the ntuple row as a first argument and other
 parameters as a second argument.
 
+@cindex selection function, ntuples
 The @dfn{selection function} determines which ntuple rows are selected
 for histogramming.  It is defined by the following struct,
 @example
@@ -120,6 +121,7 @@ typedef struct @{
 The struct element @var{function} should return a non-zero value for
 each ntuple row that is to be included in the histogram.
 
+@cindex value function, ntuples
 The @dfn{value function} computes scalar values for those ntuple rows
 selected by the selection function,
 @example
@@ -132,6 +134,8 @@ typedef struct @{
 In this case the struct element @var{function} should return the value
 to be added to the histogram for the ntuple row.  
 
+@cindex histogram, from ntuple
+@cindex projection of ntuples
 @deftypefun int gsl_ntuple_project (gsl_histogram * @var{h}, gsl_ntuple * @var{ntuple}, gsl_ntuple_value_fn *@var{value_func}, gsl_ntuple_select_fn *@var{select_func})
 This function updates the histogram @var{h} from the ntuple @var{ntuple}
 using the functions @var{value_func} and @var{select_func}. For each
@@ -284,7 +288,8 @@ Note the cut-off at the lower bound.
 
 @node Ntuple References and Further Reading
 @section References and Further Reading
-
+@cindex PAW
+@cindex HBOOK
 Further information on the use of ntuples can be found in the
 documentation for the @sc{cern} packages @sc{paw} and @sc{hbook}
 (available online).

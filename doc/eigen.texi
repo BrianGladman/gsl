@@ -1,3 +1,4 @@
+@cindex eigenvalues and eigenvectors
 This chapter describes functions for computing eigenvalues and
 eigenvectors of matrices.  There are routines for real symmetric and
 complex hermitian matrices, and eigenvalues can be computed with or
@@ -23,6 +24,8 @@ These functions are declared in the header file @file{gsl_eigen.h}.
 
 @node Real Symmetric Matrices
 @section Real Symmetric Matrices
+@cindex symmetric matrix, real, eigensystem
+@cindex real symmetric matrix, eigensystem
 
 @deftypefun {gsl_eigen_symm_workspace *} gsl_eigen_symm_alloc (const size_t @var{n})
 This function allocates a workspace for computing eigenvalues of
@@ -68,6 +71,9 @@ to unit magnitude.
 
 @node Complex Hermitian Matrices
 @section Complex Hermitian Matrices
+
+@cindex hermitian matrix, complex, eigensystem
+@cindex complex hermitian matrix, eigensystem
 
 @deftypefun {gsl_eigen_herm_workspace *} gsl_eigen_herm_alloc (const size_t @var{n})
 This function allocates a workspace for computing eigenvalues of
@@ -115,6 +121,7 @@ orthogonal and normalised to unit magnitude.
 
 @node Sorting Eigenvalues and Eigenvectors
 @section Sorting Eigenvalues and Eigenvectors
+@cindex sorting eigenvalues and eigenvectors
 
 @deftypefun int gsl_eigen_symmv_sort (gsl_vector * @var{eval}, gsl_matrix * @var{evec}, gsl_eigen_sort_t @var{sort_type})
 This function simultaneously sorts the eigenvalues stored in the vector

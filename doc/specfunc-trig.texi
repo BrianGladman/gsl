@@ -11,30 +11,35 @@ functions are declared in the header file @file{gsl_sf_trig.h}.
 
 @deftypefun double gsl_sf_sin (double @var{x})
 @deftypefunx int gsl_sf_sin_e (double @var{x}, gsl_sf_result * @var{result})
+@cindex sine function, special functions
 These routines compute the sine function @math{\sin(x)}.
 @comment Exceptional Return Values:
 @end deftypefun
 
 @deftypefun double gsl_sf_cos (double @var{x})
 @deftypefunx int gsl_sf_cos_e (double @var{x}, gsl_sf_result * @var{result})
+@cindex cosine function, special functions
 These routines compute the cosine function @math{\cos(x)}.
 @comment Exceptional Return Values:
 @end deftypefun
 
 @deftypefun double gsl_sf_hypot (double @var{x}, double @var{y})
 @deftypefunx int gsl_sf_hypot_e (double @var{x}, double @var{y}, gsl_sf_result * @var{result})
+@cindex hypot function, special functions
 These routines compute the hypotenuse function @c{$\sqrt{x^2 + y^2}$}
 @math{\sqrt@{x^2 + y^2@}} avoiding overflow and underflow.
 @comment Exceptional Return Values:
 @end deftypefun
 
 @deftypefun int gsl_sf_complex_sin_e (double @var{zr}, double @var{zi}, gsl_sf_result * @var{szr}, gsl_sf_result * @var{szi})
+@cindex complex sine function, special functions
 This function computes the complex sine, @math{\sin(z_r + i z_i)} storing
 the real and imaginary parts in @var{szr}, @var{szi}.
 @comment Exceptional Return Values: GSL_EOVRFLW
 @end deftypefun
 
 @deftypefun int gsl_sf_complex_cos_e (double @var{zr}, double @var{zi}, gsl_sf_result * @var{czr}, gsl_sf_result * @var{czi})
+@cindex complex cosine function, special functions
 This function computes the complex cosine, @math{\cos(z_r + i z_i)} storing
 the real and imaginary parts in @var{szr}, @var{szi}.
 @comment Exceptional Return Values: GSL_EOVRFLW
@@ -42,6 +47,7 @@ the real and imaginary parts in @var{szr}, @var{szi}.
 
 
 @deftypefun int gsl_sf_complex_logsin_e (double @var{zr}, double @var{zi}, gsl_sf_result * @var{lszr}, gsl_sf_result * @var{lszi})
+@cindex complex log sine function, special functions
 This function computes the logarithm of the complex sine,
 @math{\log(\sin(z_r + i z_i))} storing the real and imaginary parts in
 @var{szr}, @var{szi}.
@@ -50,6 +56,7 @@ This function computes the logarithm of the complex sine,
 
 @deftypefun double gsl_sf_sinc (double @var{x})
 @deftypefunx int gsl_sf_sinc_e (double @var{x}, gsl_sf_result * @var{result})
+@cindex complex sinc function, special functions
 These routines compute @math{\sinc(x) = \sin(\pi x) / (\pi x)} for any
 value of @var{x}.
 @comment Exceptional Return Values: none
@@ -57,6 +64,7 @@ value of @var{x}.
 
 @deftypefun double gsl_sf_lnsinh (double @var{x})
 @deftypefunx int gsl_sf_lnsinh_e (double @var{x}, gsl_sf_result * @var{result})
+@cindex logarithm of sinh function, special functions
 These routines compute @math{\log(\sinh(x))} for @math{x > 0}.
 @comment Domain: x > 0 
 @comment Exceptional Return Values: GSL_EDOM
@@ -64,13 +72,15 @@ These routines compute @math{\log(\sinh(x))} for @math{x > 0}.
 
 @deftypefun double gsl_sf_lncosh (double @var{x})
 @deftypefunx int gsl_sf_lncosh_e (double @var{x}, gsl_sf_result * @var{result})
+@cindex logarithm of cosh function, special functions
 These routines compute @math{\log(\cosh(x))} for any @var{x}.
 @comment Exceptional Return Values: none
 @end deftypefun
 
 
 @subsection Conversion Functions
-
+@cindex polar to rectangular conversion
+@cindex rectangular to polar conversion
 
 @deftypefun int gsl_sf_polar_to_rect (double @var{r}, double @var{theta}, gsl_sf_result * @var{x}, gsl_sf_result * @var{y}); 
 This function converts the polar coordinates (@var{r},@var{theta}) to
@@ -87,10 +97,9 @@ lies in the range @math{[-\pi, \pi]}.
 @comment Exceptional Return Values: GSL_EDOM
 @end deftypefun
 
-
-
 @subsection Restriction Functions
-
+@cindex angular reduction
+@cindex reduction of angular variables
 
 @deftypefun double gsl_sf_angle_restrict_symm (double @var{theta})
 @deftypefunx int gsl_sf_angle_restrict_symm_e (double * @var{theta})

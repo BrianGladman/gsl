@@ -12,6 +12,8 @@ Chapters 9 and 10.  The Bessel functions are defined in the header file
 @file{gsl_sf_bessel.h}.
 
 @subsection Regular Cylindrical Bessel Functions
+@cindex Cylindrical Bessel Functions
+@cindex Regular Cylindrical Bessel Functions
 
 @deftypefun double gsl_sf_bessel_J0 (double @var{x})
 @deftypefunx int gsl_sf_bessel_J0_e (double @var{x}, gsl_sf_result * @var{result})
@@ -43,6 +45,7 @@ inclusive, storing the results in the array @var{result_array}.
 
 
 @subsection Irregular Cylindrical Bessel Functions
+@cindex Irregular Cylindrical Bessel Functions
 
 @deftypefun double gsl_sf_bessel_Y0 (double @var{x})
 @deftypefunx int gsl_sf_bessel_Y0_e (double @var{x}, gsl_sf_result * @var{result})
@@ -75,6 +78,8 @@ domain of the function is @math{x>0}.
 
 
 @subsection Regular Modified Cylindrical Bessel Functions
+@cindex Modified Cylindrical Bessel Functions
+@cindex Regular Modified Cylindrical Bessel Functions
 
 @deftypefun double gsl_sf_bessel_I0 (double @var{x})
 @deftypefunx int gsl_sf_bessel_I0_e (double @var{x}, gsl_sf_result * @var{result})
@@ -142,6 +147,7 @@ or zero.
 
 
 @subsection Irregular Modified Cylindrical Bessel Functions
+@cindex Irregular Modified Cylindrical Bessel Functions
 
 @deftypefun double gsl_sf_bessel_K0 (double @var{x})
 @deftypefunx int gsl_sf_bessel_K0_e (double @var{x}, gsl_sf_result * @var{result})
@@ -215,6 +221,8 @@ or zero.  The domain of the function is @math{x>0}.
 
 
 @subsection Regular Spherical Bessel Functions
+@cindex Spherical Bessel Functions
+@cindex Regular Spherical Bessel Functions
 
 @deftypefun double gsl_sf_bessel_j0 (double @var{x})
 @deftypefunx int gsl_sf_bessel_j0_e (double @var{x}, gsl_sf_result * @var{result})
@@ -275,6 +283,7 @@ recurrence used in the other functions but slower.
 
 
 @subsection Irregular Spherical Bessel Functions
+@cindex Irregular Spherical Bessel Functions
 
 @deftypefun double gsl_sf_bessel_y0 (double @var{x})
 @deftypefunx int gsl_sf_bessel_y0_e (double @var{x}, gsl_sf_result * @var{result})
@@ -317,6 +326,8 @@ inclusive  for @c{$lmax \geq 0$}
 
 
 @subsection Regular Modified Spherical Bessel Functions
+@cindex Modified Spherical Bessel Functions
+@cindex Regular Modified Spherical Bessel Functions
 
 The regular modified spherical bessel functions are related to the
 modified bessel functions of fractional order,
@@ -365,6 +376,7 @@ the array @var{result_array}.
 
 
 @subsection Irregular Modified Spherical Bessel Functions
+@cindex Irregular Modified Spherical Bessel Functions
 
 The irregular modified spherical bessel functions are related to the
 irregular modified bessel functions of fractional order,
@@ -416,6 +428,9 @@ the array @var{result_array}.
 
 
 @subsection Regular Bessel Function - Fractional Order
+@cindex Fractional Order Bessel Functions
+@cindex Bessel Functions, Fractional Order
+@cindex Regular Bessel Functions, Fractional Order
 
 @deftypefun double gsl_sf_bessel_Jnu (double @var{nu}, double @var{x})
 @deftypefunx int gsl_sf_bessel_Jnu_e (double @var{nu}, double @var{x}, gsl_sf_result * @var{result})
@@ -445,6 +460,8 @@ fractional order @math{nu}, @math{Y_\nu(x)}.
 
 
 @subsection Regular Modified Bessel Functions - Fractional Order
+@cindex Modified Bessel Functions, Fractional Order
+@cindex Regular Modified Bessel Functions - Fractional Order
 
 @deftypefun double gsl_sf_bessel_Inu (double @var{nu}, double @var{x})
 @deftypefunx int gsl_sf_bessel_Inu_e (double @var{nu}, double @var{x}, gsl_sf_result * @var{result})
@@ -467,6 +484,7 @@ fractional order @math{nu}, @math{\exp(-|x|)I_\nu(x)} for @math{x>0},
 
 
 @subsection Irregular Modified Bessel Functions - Fractional Order
+@cindex Irregular Modified Bessel Functions, Fractional Order
 
 @deftypefun double gsl_sf_bessel_Knu (double @var{nu}, double @var{x})
 @deftypefunx int gsl_sf_bessel_Knu_e (double @var{nu}, double @var{x}, gsl_sf_result * @var{result})
@@ -496,6 +514,8 @@ fractional order @math{nu}, @math{\exp(+|x|) K_\nu(x)} for @math{x>0},
 @end deftypefun
 
 @subsection Zeros of Regular Bessel Functions
+@cindex Zeros of Regular Bessel Functions
+@cindex Regular Bessel Functions, Zeros of 
 
 @deftypefun double gsl_sf_bessel_zero_J0 (unsigned int @var{s})
 @deftypefunx int gsl_sf_bessel_zero_J0_e (unsigned int @var{s}, gsl_sf_result * @var{result})

@@ -1,3 +1,7 @@
+@cindex differential equations, initial value problems
+@cindex initial value problems, differential equations
+@cindex ordinary differential equations, initial value problem
+@cindex ODEs, initial value problems
 This chapter describes functions for solving ordinary differential
 equation (ODE) initial value problems.  The library provides a variety
 of low-level methods, such as Runge-Kutta and Bulirsch-Stoer routines,
@@ -123,24 +127,33 @@ be stored in @var{dydt_out} if it is not null.
 The following algorithms are available,
 
 @deffn {Step Type} gsl_odeiv_step_rk2
+@cindex RK2, Runge-Kutta Method
+@cindex Runge-Kutta methods, ordinary differential equations
 Embedded 2nd order Runge-Kutta with 3rd order error estimate.
 @end deffn
 
 @deffn {Step Type} gsl_odeiv_step_rk4
+@cindex RK4, Runge-Kutta Method
 4th order (classical) Runge-Kutta.
 @end deffn
 
 @deffn {Step Type} gsl_odeiv_step_rkf45
+@cindex Fehlberg method, differential equations
+@cindex RKF45, Runge-Kutta-Fehlberg method
 Embedded 4th order Runge-Kutta-Fehlberg method with 5th order error
 estimate.  This method is a good general-purpose integrator.
 @end deffn
 
 @deffn {Step Type} gsl_odeiv_step_rkck 
+@cindex Runge-Kutta Cash-Karp method
+@cindex Cash-Karp, Runge-Kutta method
 Embedded 4th order Runge-Kutta Cash-Karp method with 5th order error
 estimate.
 @end deffn
 
 @deffn {Step Type} gsl_odeiv_step_rk8pd  
+@cindex Runge-Kutta Prince-Dormand method
+@cindex Prince-Dormand, Runge-Kutta method
 Embedded 8th order Runge-Kutta Prince-Dormand method with 9th order
 error estimate.
 @end deffn
@@ -154,10 +167,14 @@ Implicit 4th order Runge-Kutta at Gaussian points
 @end deffn
 
 @deffn {Step Type} gsl_odeiv_step_bsimp   
+@cindex Bulirsch-Stoer method
+@cindex Bader and Deuflhard, Bulirsch-Stoer method.
+@cindex Deuflhard and Bader, Bulirsch-Stoer method.
 Implicit Bulirsch-Stoer method of Bader and Deuflhard.
 @end deffn
 
 @deffn {Step Type} gsl_odeiv_step_gear1 
+@cindex Gear method, differential equations
 M=1 implicit Gear method 
 @end deffn
 
@@ -167,12 +184,13 @@ M=2 implicit Gear method
 
 @node Adaptive Step-size Control
 @section Adaptive Step-size Control
+@cindex Adaptive step-size control, differential equations
 
 The control function examines the proposed change to the solution and
 its error estimate produced by a stepping function and attempts to
 determine the optimal step-size for a user-specified level of error.
 
-@deftypefun gsl_odeiv_control * gsl_odeiv_control_standard_new (double @var{eps_abs}, double @var{eps_rel}, double @var{a_y}, double @var{a_dydt})
+@deftypefun {gsl_odeiv_control *} gsl_odeiv_control_standard_new (double @var{eps_abs}, double @var{eps_rel}, double @var{a_y}, double @var{a_dydt})
 The standard control object is a four parameter heuristic based on
 absolute and relative errors @var{eps_abs} and @var{eps_rel}, and
 scaling factors @var{a_y} and @var{a_dydt} for the system state
@@ -238,7 +256,7 @@ h_new = h_old * S * (D1/D0)^(1/(q+1))
 This encompasses all the standard error scaling methods.
 @end deftypefun
 
-@deftypefun gsl_odeiv_control * gsl_odeiv_control_y_new (double @var{eps_abs}, double @var{eps_rel})
+@deftypefun {gsl_odeiv_control *} gsl_odeiv_control_y_new (double @var{eps_abs}, double @var{eps_rel})
 This function creates a new control object which will keep the local
 error on each step within an absolute error of @var{eps_abs} and
 relative error of @var{eps_rel} with respect to the solution @math{y_i(t)}.
@@ -246,7 +264,7 @@ This is equivalent to the standard control object with @var{a_y}=1 and
 @var{a_dydt}=0.
 @end deftypefun
 
-@deftypefun gsl_odeiv_control * gsl_odeiv_control_yp_new (double @var{eps_abs}, double @var{eps_rel})
+@deftypefun {gsl_odeiv_control *} gsl_odeiv_control_yp_new (double @var{eps_abs}, double @var{eps_rel})
 This function creates a new control object which will keep the local
 error on each step within an absolute error of @var{eps_abs} and
 relative error of @var{eps_rel} with respect to the derivatives of the
@@ -254,7 +272,7 @@ solution @math{y'_i(t)} .  This is equivalent to the standard control
 object with @var{a_y}=0 and @var{a_dydt}=1.
 @end deftypefun
 
-@deftypefun gsl_odeiv_control * gsl_odeiv_control_alloc (const gsl_odeiv_control_type * @var{T})
+@deftypefun {gsl_odeiv_control *} gsl_odeiv_control_alloc (const gsl_odeiv_control_type * @var{T})
 This function returns a pointer to a newly allocated instance of a
 control function of type @var{T}.  This function is only needed for
 defining new types of control functions.  For most purposes the standard
@@ -287,7 +305,7 @@ step-size which satisfies the user-specified accuracy requirements for
 the current point.
 @end deftypefun
 
-@deftypefun const char * gsl_odeiv_control_name (const gsl_odeiv_control * @var{c})
+@deftypefun {const char *} gsl_odeiv_control_name (const gsl_odeiv_control * @var{c})
 This function returns a pointer to the name of the control function.
 For example,
 
@@ -310,7 +328,7 @@ step-size should be decreased the evolution function backs out of the
 current step and tries the proposed smaller step-size.  This is process
 is continued until an acceptable step-size is found.
 
-@deftypefun gsl_odeiv_evolve * gsl_odeiv_evolve_alloc (size_t @var{dim})
+@deftypefun {gsl_odeiv_evolve *} gsl_odeiv_evolve_alloc (size_t @var{dim})
 This function returns a pointer to a newly allocated instance of an
 evolution function for a system of @var{dim} dimensions.
 @end deftypefun
@@ -341,7 +359,7 @@ This function frees all the memory associated with the evolution function
 
 @node ODE Example programs
 @section Examples
-
+@cindex Van der Pol oscillator, example
 The following program solves the second-order nonlinear Van der Pol
 oscillator equation,
 

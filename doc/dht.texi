@@ -1,3 +1,6 @@
+@cindex discrete Hankel transforms
+@cindex Hankel transforms, discrete
+@cindex transforms, Hankel
 This chapter describes functions for performing Discrete Hankel
 Transforms (DHTs).  The functions are declared in the header file
 @file{gsl_dht.h}.

@@ -1,3 +1,5 @@
+@cindex error handling
+@cindex GSL, error handling
 This chapter describes the way that GSL functions report and handle
 errors.  By examining the status information returned by every GSL
 function you can determine whether it succeeded or failed, and if it

@@ -7,7 +7,7 @@ The functions described in this section are declared in the header file
 @file{gsl_sf_ellint.h}.
 
 @subsection Legendre Forms
-
+@cindex Legendre forms of elliptic integrals
 The Legendre forms of elliptic integrals @math{F(\phi,k)},
 @math{E(\phi,k)} and @math{P(\phi,k,n)} are defined by,
 
@@ -39,7 +39,7 @@ notation used here is based on Carlson, @cite{Numerische Mathematik} 33
 (1979) 1 and differs slightly from that used by Abramowitz & Stegun.
 
 @subsection Carlson Forms
-
+@cindex Carlson forms of Elliptic integrals
 The Carlson symmetric forms of elliptical integrals @math{RC(x,y)},
 @math{RD(x,y,z)}, @math{RF(x,y,z)} and @math{RJ(x,y,z,p)} are defined
 by,

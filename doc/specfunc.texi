@@ -158,6 +158,7 @@ Abramowitz & Stegun (eds.), @cite{Handbook of Mathematical Functions}
 @noindent
 The following papers contain information on the algorithms used 
 to compute the special functions,
+@cindex MISCFUN
 @itemize @asis
 @item
 MISCFUN: A software package to compute uncommon special functions.
