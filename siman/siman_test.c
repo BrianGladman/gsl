@@ -9,7 +9,7 @@
 #define STEP_SIZE 10		/* max step size in random walk */
 #define K 1.0			/* Boltzmann constant */
 #define T_INITIAL 0.002		/* initial temperature */
-#define MU_T 1.001		/* damping factor for temperature */
+#define MU_T 1.005		/* damping factor for temperature */
 #define T_MIN 3.0e-6
 
 gsl_siman_params_t params = {N_TRIES, ITERS_FIXED_T, STEP_SIZE,
@@ -198,7 +198,7 @@ int main(int argc, char *argv[])
 {
   Element x0;			/* initial guess for search */
 
-  double x_initial = 15.5;
+  double x_initial = 2.5;
 
   gsl_siman_solve(&x_initial, E1, S1, M1, P1, sizeof(double), params);
 

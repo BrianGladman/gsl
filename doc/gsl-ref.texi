@@ -448,6 +448,19 @@ int main(int argc, char *argv[])
 @}
 @end example
 
+@tex
+\input epsf
+\centerline{\epsfysize=5cm\epsfbox{siman-test.eps}}
+\nobreak
+%\centerline{\captfont Fig.~2.1: A 0--simplex (point), 1--simplex
+%(segment), 2--simplex (triangle),}
+%\centerline{\captfont 3--simplex (tetrahedron) and 4--simplex,
+%respectively.}
+\centerline{Example of a simulated annealing run.}
+\smallskip
+@end tex
+
+
 
 @node Contributors to GSL
 @appendix Contributors to GSL
