@@ -108,7 +108,7 @@ suite (@pxref{Random number generation}) and the FFT package
 @node Preliminaries
 @chapter Preliminaries
 
-bla
+
 
 @node Random number generation
 @chapter Random number generation

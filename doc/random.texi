@@ -146,7 +146,7 @@ random numbers in which each refers to its own (and not to a single
 common) state.  To permit these practices, a few somewhat more advanced
 functions are supplied.  These include:
 
-@deftypefn Random void *gsl_ran_getRandomState()
+@deftypefn Random {void *} gsl_ran_getRandomState ()
 @code{gsl_ran_getRandomState} returns a pointer to a @emph{copy} of the
 @code{static} random number state used by @code{gsl_ran_random()},
 @code{gsl_ran_uniform()}, etc.  Note that a @code{void *} pointer is
@@ -157,13 +157,14 @@ function can lead to a problem with memory leaking.  You can alleviate this
 problem by @code{cfree}'ing the memory after you are finished with it.
 @end deftypefn
 
-@deftypefn Random void gsl_ran_setRandomState(void *vState)
-@code{gsl_ran_setRandomState} copies the state pointed to by @code{vState}
-into the @code{static} random number state.  After doing this, you may
-want to @code{cfree((char *)vState)} to recover the memory.
+@deftypefn Random void gsl_ran_setRandomState (void *@var{vState})
+@code{gsl_ran_setRandomState} copies the state pointed to by
+@var{vState} into the @code{static} random number state.  After doing
+this, you may want to @code{cfree((char *)vState)} to recover the
+memory.
 @end deftypefn
 
-@deftypefn Random void gsl_ran_seed_wstate(void *vState,int s)
+@deftypefn Random void gsl_ran_seed_wstate (void *@var{vState}, int @var{s})
 @code{gsl_ran_seed_wstate} initializes the random number whose state
 is pointed to by @code{vState}.
 @end deftypefn
