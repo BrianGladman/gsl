@@ -8,6 +8,9 @@
 #include "gsl_sf_pow_int.h"
 #include "gsl_sf_legendre.h"
 
+/* FIXME: These are not good for |x| very near 1, due to
+ * the 1-x*x problem.
+ */
 
 /*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
 
