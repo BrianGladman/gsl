@@ -316,8 +316,10 @@ gsl_ran_landau_dislan(const double x)
 double
 gsl_ran_landau(const gsl_rng * r)
 {
-  static double F[982] =
+  static double F[983] =
     {
+      0.0000000,   /* Add empty element [0] to account for difference 
+                      between C and Fortran convention for lower bound. */
       00.000000, 00.000000, 00.000000, 00.000000, 00.000000,
       -2.244733, -2.204365, -2.168163, -2.135219, -2.104898,
       -2.076740, -2.050397, -2.025605, -2.002150, -1.979866,
@@ -521,12 +523,8 @@ gsl_ran_landau(const gsl_rng * r)
 
   X = gsl_rng_uniform_pos(r);
   U = 1000.0 * X;
-  i = U;
-  U = U - i;
-
-  /* Account for difference between C and Fortran convention for lower
-     bound. */
-  I = i - 1;
+  I = U;
+  U = U - I;
 
   if (I >= 70 && I <= 800)
     {
@@ -534,8 +532,9 @@ gsl_ran_landau(const gsl_rng * r)
     }
   else if (I >= 7 && I <= 980)
     {
-      RANLAN = F[I] + U * (F[I + 1] - F[I] -
-                           0.25 * (1 - U) * (F[I + 2] - F[I + 1] - F[I] + F[I - 1]));
+      RANLAN = F[I] 
+        + U * (F[I + 1] - F[I] 
+               - 0.25 * (1 - U) * (F[I + 2] - F[I + 1] - F[I] + F[I - 1]));
     }
   else if (I < 7)
     {
