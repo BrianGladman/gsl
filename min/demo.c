@@ -36,7 +36,7 @@ main ()
   int iterations = 0, max_iterations = 100;
   gsl_min_fminimizer *s;
   double m = 2.0, m_expected = M_PI;
-  gsl_interval x =  {0, 6.0};
+  double x_lower = 0.0, x_upper = 6.0;
   gsl_function F;
 
   F.function = &fn1;
@@ -59,7 +59,8 @@ main ()
       status = gsl_min_fminimizer_iterate (s);
 
       m = gsl_min_fminimizer_minimum (s);
-      x = gsl_min_fminimizer_interval (s);
+      x_lower = gsl_min_fminimizer_x_lower (s);
+      x_upper = gsl_min_fminimizer_x_upper (s);
 
       status = gsl_min_test_interval (x, 0.001, 0.0);
 
@@ -67,8 +68,8 @@ main ()
 	printf ("Converged:\n");
 
       printf ("%5d [%.7f, %.7f] %.7f %.7f %+.7f %.7f\n",
-	      iterations, x.lower, x.upper,
-	      m, m_expected, m - m_expected, x.upper - x.lower);
+	      iterations, x_lower, x_upper,
+	      m, m_expected, m - m_expected, x_upper - x_lower);
     }
   while (status == GSL_CONTINUE && iterations < max_iterations);
 

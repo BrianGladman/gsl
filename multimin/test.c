@@ -50,7 +50,6 @@ test_fdf(const char * desc, gsl_multimin_function_fdf *f,
   int status;
   int just_started = 1;
   double minimum,a,b;
-  gsl_interval bracket;
   
   gsl_vector *x = gsl_vector_alloc (f->n);
 
@@ -98,16 +97,15 @@ test_fdf(const char * desc, gsl_multimin_function_fdf *f,
 	      status = gsl_multimin_fdf_minimizer_iterate(s);
 	      
 	      minimum = gsl_min_fminimizer_minimum(s->line_search);
-	      bracket = gsl_min_fminimizer_interval(s->line_search);
+	      a = gsl_min_fminimizer_x_lower(s->line_search);
+	      b = gsl_min_fminimizer_x_upper(s->line_search);
 	      
-	      a = bracket.lower;
-	      b = bracket.upper;
 	      
 #ifdef DEBUG
 	      printf("%.12f %.18f %.12f %.18f %.12f %.18f\n", 
 		     a, s->line_search->f_lower, minimum,s->line_search->f_minimum, b,s->line_search->f_upper);
 #endif
-	      status = gsl_min_test_interval (bracket, EPSABS_LINE, EPSREL_LINE);
+	      status = gsl_min_test_interval (a, b, EPSABS_LINE, EPSREL_LINE);
 	    }
 	  while (status == GSL_CONTINUE && iterations_line < MAX_ITERATIONS_LINE);
 	  total_i_line += iterations_line;

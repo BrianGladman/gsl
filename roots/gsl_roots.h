@@ -39,8 +39,8 @@ typedef struct
   {
     const char *name;
     size_t size;
-    int (*set) (void *state, gsl_function * f, double * root, gsl_interval * x);
-    int (*iterate) (void *state, gsl_function * f, double * root, gsl_interval * x);
+    int (*set) (void *state, gsl_function * f, double * root, double x_lower, double x_upper);
+    int (*iterate) (void *state, gsl_function * f, double * root, double * x_lower, double * x_upper);
   }
 gsl_root_fsolver_type;
 
@@ -49,7 +49,8 @@ typedef struct
     const gsl_root_fsolver_type * type;
     gsl_function * function ;
     double root ;
-    gsl_interval interval ;
+    double x_lower;
+    double x_upper;
     void *state;
   }
 gsl_root_fsolver;
@@ -77,13 +78,15 @@ gsl_root_fsolver_alloc (const gsl_root_fsolver_type * T);
 void gsl_root_fsolver_free (gsl_root_fsolver * s);
 
 int gsl_root_fsolver_set (gsl_root_fsolver * s,
-                          gsl_function * f, gsl_interval x);
+                          gsl_function * f, 
+                          double x_lower, double x_upper);
 
 int gsl_root_fsolver_iterate (gsl_root_fsolver * s);
 
 const char * gsl_root_fsolver_name (const gsl_root_fsolver * s);
 double gsl_root_fsolver_root (const gsl_root_fsolver * s);
-gsl_interval gsl_root_fsolver_interval (const gsl_root_fsolver * s);
+double gsl_root_fsolver_x_lower (const gsl_root_fsolver * s);
+double gsl_root_fsolver_x_upper (const gsl_root_fsolver * s);
 
 
 gsl_root_fdfsolver *
@@ -103,7 +106,7 @@ const char * gsl_root_fdfsolver_name (const gsl_root_fdfsolver * s);
 double gsl_root_fdfsolver_root (const gsl_root_fdfsolver * s);
 
 int
-gsl_root_test_interval (const gsl_interval x, double epsabs, double epsrel);
+gsl_root_test_interval (double x_lower, double x_upper, double epsabs, double epsrel);
 
 int
 gsl_root_test_residual (double f, double epsabs);

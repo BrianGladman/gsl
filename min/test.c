@@ -89,14 +89,14 @@ test_f (const gsl_min_fminimizer_type * T,
   int status;
   size_t iterations = 0;
   double m, a, b;
-  gsl_interval x;
+  double x_lower, x_upper;
   gsl_min_fminimizer * s;
 
-  x.lower = lower_bound;
-  x.upper = upper_bound;
+  x_lower = lower_bound;
+  x_upper = upper_bound;
 
   s = gsl_min_fminimizer_alloc (T) ;
-  gsl_min_fminimizer_set (s, f, middle, x) ;
+  gsl_min_fminimizer_set (s, f, middle, x_lower, x_upper) ;
   
   do 
     {
@@ -105,10 +105,8 @@ test_f (const gsl_min_fminimizer_type * T,
       status = gsl_min_fminimizer_iterate (s);
 
       m = gsl_min_fminimizer_minimum(s);
-      x = gsl_min_fminimizer_interval(s);
-
-      a = x.lower;
-      b = x.upper;
+      a = gsl_min_fminimizer_x_lower(s);
+      b = gsl_min_fminimizer_x_upper(s);
 
 #ifdef DEBUG
       printf("%.12f %.18f %.12f %.18f %.12f %.18f\n", 
@@ -123,7 +121,7 @@ test_f (const gsl_min_fminimizer_type * T,
 
       if (status) break ;
 
-      status = gsl_min_test_interval (x, EPSABS, EPSREL);
+      status = gsl_min_test_interval (a, b, EPSABS, EPSREL);
     }
   while (status == GSL_CONTINUE && iterations < MAX_ITERATIONS);
 
@@ -151,14 +149,15 @@ test_f_e (const gsl_min_fminimizer_type * T,
 {
   int status;
   size_t iterations = 0;
-  gsl_interval x;
+  double x_lower, x_upper;
+  double a, b;
   gsl_min_fminimizer * s;
 
-  x.lower = lower_bound;
-  x.upper = upper_bound;
+  x_lower = lower_bound;
+  x_upper = upper_bound;
 
   s = gsl_min_fminimizer_alloc (T) ;
-  status = gsl_min_fminimizer_set (s, f, middle, x) ; 
+  status = gsl_min_fminimizer_set (s, f, middle, x_lower, x_upper) ; 
 
   if (status != GSL_SUCCESS) 
     {
@@ -171,8 +170,10 @@ test_f_e (const gsl_min_fminimizer_type * T,
     {
       iterations++ ;
       gsl_min_fminimizer_iterate (s);
-      status = gsl_min_test_interval (gsl_min_fminimizer_interval(s), 
-				      EPSABS, EPSREL);
+      a = gsl_min_fminimizer_x_lower(s);
+      b = gsl_min_fminimizer_x_upper(s);
+
+      status = gsl_min_test_interval (a, b, EPSABS, EPSREL);
     }
   while (status == GSL_CONTINUE && iterations < MAX_ITERATIONS);
 
@@ -194,17 +195,17 @@ test_bracket (const char * description,gsl_function *f,double lower_bound,
 	      double upper_bound, unsigned int max)
 {
   int status;
-  gsl_interval x;
+  double x_lower, x_upper;
   double f_upper,f_lower,f_minimum;
   double minimum;
 
-  x.lower=lower_bound;
-  x.upper=upper_bound;
-  SAFE_FUNC_CALL (f,x.lower,&f_lower);
-  SAFE_FUNC_CALL (f,x.upper,&f_upper);
-  status=gsl_min_find_bracket(f,&minimum,&f_minimum,&x,&f_lower,&f_upper,max);
+  x_lower=lower_bound;
+  x_upper=upper_bound;
+  SAFE_FUNC_CALL (f,x_lower,&f_lower);
+  SAFE_FUNC_CALL (f,x_upper,&f_upper);
+  status=gsl_min_find_bracket(f,&minimum,&f_minimum,&x_lower,&f_lower,&x_upper,&f_upper,max);
   gsl_test (status,"%s, interval: [%g,%g], values: (%g,%g), minimum at: %g, value: %g",
-	    description,x.lower,x.upper,f_lower,f_upper,minimum,f_minimum);
+	    description,x_lower,x_upper,f_lower,f_upper,minimum,f_minimum);
   return status;
 }
 

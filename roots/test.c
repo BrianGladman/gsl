@@ -140,14 +140,14 @@ test_f (const gsl_root_fsolver_type * T, const char * description, gsl_function 
   int status;
   size_t iterations = 0;
   double r, a, b;
-  gsl_interval x;
+  double x_lower, x_upper;
   gsl_root_fsolver * s;
 
-  x.lower = lower_bound;
-  x.upper = upper_bound;
+  x_lower = lower_bound;
+  x_upper = upper_bound;
 
   s = gsl_root_fsolver_alloc(T);
-  gsl_root_fsolver_set(s, f, x) ;
+  gsl_root_fsolver_set(s, f, x_lower, x_upper) ;
   
   do 
     {
@@ -156,18 +156,17 @@ test_f (const gsl_root_fsolver_type * T, const char * description, gsl_function 
       gsl_root_fsolver_iterate (s);
 
       r = gsl_root_fsolver_root(s);
-      x = gsl_root_fsolver_interval(s);
-      
-      a = x.lower;
-      b = x.upper;
 
+      a = gsl_root_fsolver_x_lower(s);
+      b = gsl_root_fsolver_x_upper(s);
+      
       if (a > b)
 	gsl_test (GSL_FAILURE, "interval is invalid (%g,%g)", a, b);
 
       if (r < a || r > b)
 	gsl_test (GSL_FAILURE, "r lies outside interval %g (%g,%g)", r, a, b);
 
-      status = gsl_root_test_interval (x, EPSABS, EPSREL);
+      status = gsl_root_test_interval (a,b, EPSABS, EPSREL);
     }
   while (status == GSL_CONTINUE && iterations < MAX_ITERATIONS);
 
@@ -198,14 +197,14 @@ test_f_e (const gsl_root_fsolver_type * T,
 {
   int status;
   size_t iterations = 0;
-  gsl_interval x;
+  double x_lower, x_upper;
   gsl_root_fsolver * s;
 
-  x.lower = lower_bound;
-  x.upper = upper_bound;
+  x_lower = lower_bound;
+  x_upper = upper_bound;
 
   s = gsl_root_fsolver_alloc(T);
-  status = gsl_root_fsolver_set(s, f, x) ;
+  status = gsl_root_fsolver_set(s, f, x_lower, x_upper) ;
 
   gsl_test (status != GSL_EINVAL, "%s (set), %s", T->name, description);
 
@@ -218,7 +217,9 @@ test_f_e (const gsl_root_fsolver_type * T,
     {
       iterations++ ;
       gsl_root_fsolver_iterate (s);
-      status = gsl_root_test_interval (gsl_root_fsolver_interval(s), 
+      x_lower = gsl_root_fsolver_x_lower(s);
+      x_upper = gsl_root_fsolver_x_lower(s);
+      status = gsl_root_test_interval (x_lower, x_upper, 
 				      EPSABS, EPSREL);
     }
   while (status == GSL_CONTINUE && iterations < MAX_ITERATIONS);

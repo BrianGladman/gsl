@@ -41,19 +41,16 @@ typedef struct
   }
 brent_state_t;
 
-static int brent_init (void * vstate, gsl_function * f, double * root, gsl_interval * x);
-static int brent_iterate (void * vstate, gsl_function * f, double * root, gsl_interval * x);
+static int brent_init (void * vstate, gsl_function * f, double * root, double x_lower, double x_upper);
+static int brent_iterate (void * vstate, gsl_function * f, double * root, double * x_lower, double * x_upper);
 
 
 static int
-brent_init (void * vstate, gsl_function * f, double * root, gsl_interval * x)
+brent_init (void * vstate, gsl_function * f, double * root, double x_lower, double x_upper)
 {
   brent_state_t * state = (brent_state_t *) vstate;
 
   double f_lower, f_upper ;
-
-  double x_lower = x->lower ;
-  double x_upper = x->upper ;
 
   *root = 0.5 * (x_lower + x_upper) ;
 
@@ -82,7 +79,7 @@ brent_init (void * vstate, gsl_function * f, double * root, gsl_interval * x)
 }
 
 static int
-brent_iterate (void * vstate, gsl_function * f, double * root, gsl_interval * x)
+brent_iterate (void * vstate, gsl_function * f, double * root, double * x_lower, double * x_upper)
 {
   brent_state_t * state = (brent_state_t *) vstate;
 
@@ -120,8 +117,8 @@ brent_iterate (void * vstate, gsl_function * f, double * root, gsl_interval * x)
   if (fb == 0)
     {
       *root = b;
-      x->lower = b;
-      x->upper = b;
+      *x_lower = b;
+      *x_upper = b;
       
       return GSL_SUCCESS;
     }
@@ -132,13 +129,13 @@ brent_iterate (void * vstate, gsl_function * f, double * root, gsl_interval * x)
 
       if (b < c) 
 	{
-	  x->lower = b;
-	  x->upper = c;
+	  *x_lower = b;
+	  *x_upper = c;
 	}
       else
 	{
-	  x->lower = c;
-	  x->upper = b;
+	  *x_lower = c;
+	  *x_upper = b;
 	}
 
       return GSL_SUCCESS;
@@ -225,13 +222,13 @@ brent_iterate (void * vstate, gsl_function * f, double * root, gsl_interval * x)
 
   if (b < c)
     {
-      x->lower = b;
-      x->upper = c;
+      *x_lower = b;
+      *x_upper = c;
     }
   else
     {
-      x->lower = c;
-      x->upper = b;
+      *x_lower = c;
+      *x_upper = b;
     }
 
   return GSL_SUCCESS ;

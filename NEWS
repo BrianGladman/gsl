@@ -1,5 +1,11 @@
 * What was new in gsl-0.9.1:
 
+** The gsl_interval type has been eliminated and replaced by two double
+arguments for simplicity.
+
+** The order of the arguments to the minimization routines is no more
+logical, with function values assocatied with x-values.
+
 ** Modified initialization of vector and matrix views to work with the
 SunPro compiler.
 

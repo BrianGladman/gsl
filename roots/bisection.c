@@ -40,16 +40,13 @@ typedef struct
   }
 bisection_state_t;
 
-static int bisection_init (void * vstate, gsl_function * f, double * root, gsl_interval * x);
-static int bisection_iterate (void * vstate, gsl_function * f, double * root, gsl_interval * x);
+static int bisection_init (void * vstate, gsl_function * f, double * root, double x_lower, double x_upper);
+static int bisection_iterate (void * vstate, gsl_function * f, double * root, double * x_lower, double * x_upper);
 
 static int
-bisection_init (void * vstate, gsl_function * f, double * root, gsl_interval * x)
+bisection_init (void * vstate, gsl_function * f, double * root, double x_lower, double x_upper)
 {
   bisection_state_t * state = (bisection_state_t *) vstate;
-
-  double x_lower = x->lower ;
-  double x_upper = x->upper ;
 
   double f_lower, f_upper ;
 
@@ -71,41 +68,41 @@ bisection_init (void * vstate, gsl_function * f, double * root, gsl_interval * x
 }
 
 static int
-bisection_iterate (void * vstate, gsl_function * f, double * root, gsl_interval * x)
+bisection_iterate (void * vstate, gsl_function * f, double * root, double * x_lower, double * x_upper)
 {
   bisection_state_t * state = (bisection_state_t *) vstate;
 
   double x_bisect, f_bisect;
 
-  const double x_lower = x->lower ;
-  const double x_upper = x->upper ;
+  const double x_left = *x_lower ;
+  const double x_right = *x_upper ;
 
   const double f_lower = state->f_lower; 
   const double f_upper = state->f_upper;
 
   if (f_lower == 0.0)
     {
-      *root = x_lower ;
-      x->upper = x_lower;
+      *root = x_left ;
+      *x_upper = x_left;
       return GSL_SUCCESS;
     }
   
   if (f_upper == 0.0)
     {
-      *root = x_upper ;
-      x->lower = x_upper;
+      *root = x_right ;
+      *x_lower = x_right;
       return GSL_SUCCESS;
     }
   
-  x_bisect = (x_lower + x_upper) / 2.0;
+  x_bisect = (x_left + x_right) / 2.0;
   
   SAFE_FUNC_CALL (f, x_bisect, &f_bisect);
       
   if (f_bisect == 0.0)
     {
       *root = x_bisect;
-      x->lower = x_bisect;
-      x->upper = x_bisect;
+      *x_lower = x_bisect;
+      *x_upper = x_bisect;
       return GSL_SUCCESS;
     }
       
@@ -113,14 +110,14 @@ bisection_iterate (void * vstate, gsl_function * f, double * root, gsl_interval 
   
   if ((f_lower > 0.0 && f_bisect < 0.0) || (f_lower < 0.0 && f_bisect > 0.0))
     {
-      *root = 0.5 * (x_lower + x_bisect) ;
-      x->upper = x_bisect;
+      *root = 0.5 * (x_left + x_bisect) ;
+      *x_upper = x_bisect;
       state->f_upper = f_bisect;
     }
   else
     {
-      *root = 0.5 * (x_bisect + x_upper) ;
-      x->lower = x_bisect;
+      *root = 0.5 * (x_bisect + x_right) ;
+      *x_lower = x_bisect;
       state->f_lower = f_bisect;
     }
 

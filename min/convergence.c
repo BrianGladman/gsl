@@ -23,10 +23,10 @@
 #include <gsl/gsl_min.h>
 
 int
-gsl_min_test_interval (const gsl_interval x, double epsabs, double epsrel)
+gsl_min_test_interval (double x_lower, double x_upper, double epsabs, double epsrel)
 {
-  const double lower = x.lower;
-  const double upper = x.upper;
+  const double lower = x_lower;
+  const double upper = x_upper;
 
   const double abs_lower = fabs(lower) ;
   const double abs_upper = fabs(upper) ;

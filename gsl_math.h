@@ -218,17 +218,6 @@ typedef struct gsl_function_vec_struct gsl_function_vec ;
 
 #define GSL_FN_VEC_EVAL(F,x,y) (*((F)->function))(x,y,(F)->params)
 
-
-/* Definition of an interval */
-
-struct gsl_interval_struct 
-{
-  double lower;
-  double upper;
-};
-
-typedef struct gsl_interval_struct gsl_interval;
-
 __END_DECLS
 
 #endif /* __GSL_MATH_H__ */

@@ -146,9 +146,10 @@ code of @code{GSL_ENOMEM}.
 @end deftypefun
 
 
-@deftypefun int gsl_root_fsolver_set (gsl_root_fsolver * @var{s}, gsl_function * @var{f}, gsl_interval @var{x})
+@deftypefun int gsl_root_fsolver_set (gsl_root_fsolver * @var{s}, gsl_function * @var{f}, double @var{x_lower}, double @var{x_upper})
 This function initializes, or reinitializes, an existing solver @var{s}
-to use the function @var{f} and the initial search interval @var{x}.
+to use the function @var{f} and the initial search interval
+[@var{x_lower}, @var{x_upper}].
 @end deftypefun
 
 @deftypefun int gsl_root_fdfsolver_set (gsl_root_fdfsolver * @var{s}, gsl_function_fdf * @var{fdf}, double @var{root})
@@ -351,22 +352,9 @@ the desired precision of a root.  It takes the form of a @code{double}.
 
 Search bounds are the endpoints of a interval which is iterated until
 the length of the interval is smaller than the requested precision.  The
-interval is defined by the following struct,
-
-@deftp {Data Type} {gsl_interval}
-This is a structure that holds an interval [@var{lower}, @var{upper}] on
-the real line.
-
-@table @code
-@item double lower
-the lower limit of the interval 
-@item double upper
-the upper limit of the interval
-@end table
-
+interval is defined by two values, the lower limit and the upper limit.
 Whether the endpoints are intended to be included in the interval or not
 depends on the context in which the interval is used.
-@end deftp
 
 @node Root Finding Iteration
 @section Iteration
@@ -404,8 +392,9 @@ following auxiliary functions,
 These functions return the current estimate of the root for the solver @var{s}.
 @end deftypefun
 
-@deftypefun gsl_interval gsl_root_fsolver_interval (const gsl_root_fsolver * @var{s})
-This function returns the current bracketing interval for the solver @var{s}.
+@deftypefun double gsl_root_fsolver_x_lower (const gsl_root_fsolver * @var{s})
+@deftypefunx double gsl_root_fsolver_x_upper (const gsl_root_fsolver * @var{s})
+These functions return the current bracketing interval for the solver @var{s}.
 @end deftypefun
 
 @node Search Stopping Parameters
@@ -431,10 +420,10 @@ In the root finding framework of GSL the handling of these conditions is
 under user control.  The functions below allow the user to test the
 precision of the current result in several standard ways.
 
-@deftypefun int gsl_root_test_interval (gsl_interval @var{x}, double @var{epsrel}, double @var{epsabs})
-This function tests for the convergence of the interval @var{x} 
-with absolute error @var{epsabs} and relative error @var{epsrel}.
-The test returns @code{GSL_SUCCESS} if the following
+@deftypefun int gsl_root_test_interval (double @var{x_lower}, double @var{x_upper}, double @var{epsrel}, double @var{epsabs})
+This function tests for the convergence of the interval [@var{x_lower},
+@var{x_upper}] with absolute error @var{epsabs} and relative error
+@var{epsrel}.  The test returns @code{GSL_SUCCESS} if the following
 condition is achieved,
 
 @tex
@@ -887,7 +876,7 @@ main ()
   int iterations = 0, max_iterations = 100;
   gsl_root_fsolver *s;
   double r = 0, r_expected = sqrt (5.0);
-  gsl_interval x = @{0.0, 5.0@};
+  double x_lower = 0.0, x_upper = 5.0;
   gsl_function F;
   struct quadratic_params params = @{1.0, 0.0, -5.0@};
 
@@ -895,7 +884,7 @@ main ()
   F.params = &params;
 
   s = gsl_root_fsolver_alloc (gsl_root_fsolver_brent);
-  gsl_root_fsolver_set (s, &F, x);
+  gsl_root_fsolver_set (s, &F, x_lower, x_upper);
 
   printf ("using %s method\n", gsl_root_fsolver_name (s));
 
@@ -907,15 +896,16 @@ main ()
       iterations++;
       status = gsl_root_fsolver_iterate (s);
       r = gsl_root_fsolver_root (s);
-      x = gsl_root_fsolver_interval (s);
-      status = gsl_root_test_interval (x, 0, 0.001);
+      x_lower = gsl_root_fsolver_x_lower (s);
+      x_upper = gsl_root_fsolver_x_upper (s);
+      status = gsl_root_test_interval (x_lower, x_upper, 0, 0.001);
 
       if (status == GSL_SUCCESS)
         printf ("Converged:\n");
 
       printf ("%5d [%.7f, %.7f] %.7f %.7f %+.7f %.7f\n",
-              iterations, x.lower, x.upper,
-              r, r_expected, r - r_expected, x.upper - x.lower);
+              iterations, x_lower, x_upper,
+              r, r_expected, r - r_expected, x_upper - x_lower);
     @}
   while (status == GSL_CONTINUE && iterations < max_iterations);
 

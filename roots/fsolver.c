@@ -51,25 +51,27 @@ gsl_root_fsolver_alloc (const gsl_root_fsolver_type * T)
 }
 
 int
-gsl_root_fsolver_set (gsl_root_fsolver * s, gsl_function * f, gsl_interval x)
+gsl_root_fsolver_set (gsl_root_fsolver * s, gsl_function * f, double x_lower, double x_upper)
 {
-  if (x.lower > x.upper)
+  if (x_lower > x_upper)
     {
       GSL_ERROR ("invalid interval (lower > upper)", GSL_EINVAL);
     }
 
   s->function = f;
-  s->root = 0.5 * (x.lower + x.upper);  /* initial estimate */
-  s->interval = x;
+  s->root = 0.5 * (x_lower + x_upper);  /* initial estimate */
+  s->x_lower = x_lower;
+  s->x_upper = x_upper;
 
-  return (s->type->set) (s->state, s->function, &(s->root), &(s->interval));
+  return (s->type->set) (s->state, s->function, &(s->root), x_lower, x_upper);
 }
 
 int
 gsl_root_fsolver_iterate (gsl_root_fsolver * s)
 {
   return (s->type->iterate) (s->state, 
-			     s->function, &(s->root), &(s->interval));
+			     s->function, &(s->root), 
+                             &(s->x_lower), &(s->x_upper));
 }
 
 void
@@ -91,9 +93,15 @@ gsl_root_fsolver_root (const gsl_root_fsolver * s)
   return s->root;
 }
 
-gsl_interval
-gsl_root_fsolver_interval (const gsl_root_fsolver * s)
+double
+gsl_root_fsolver_x_lower (const gsl_root_fsolver * s)
 {
-  return s->interval;
+  return s->x_lower;
+}
+
+double
+gsl_root_fsolver_x_upper (const gsl_root_fsolver * s)
+{
+  return s->x_upper;
 }
 

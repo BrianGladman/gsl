@@ -148,19 +148,20 @@ returns a null pointer and the error handler is invoked with an error
 code of @code{GSL_ENOMEM}.
 @end deftypefun
 
-@deftypefun int gsl_min_fminimizer_set (gsl_min_fminimizer * @var{s}, gsl_function * @var{f}, double @var{minimum}, gsl_interval @var{x})
-This function sets, or resets, an existing minimizer @var{s} to use
-the function @var{f} and the initial search interval @var{x}, with a
-guess for the location of the minimum @var{minimum}. 
+@deftypefun int gsl_min_fminimizer_set (gsl_min_fminimizer * @var{s}, gsl_function * @var{f}, double @var{minimum}, double @var{x_lower}, double @var{x_upper})
+This function sets, or resets, an existing minimizer @var{s} to use the
+function @var{f} and the initial search interval [@var{x_lower},
+@var{x_upper}], with a guess for the location of the minimum
+@var{minimum}.
 
 If the interval given does not contain a minimum, then the function
 returns an error code of @code{GSL_FAILURE}.
 @end deftypefun
 
-@deftypefun int gsl_min_fminimizer_set_with_values (gsl_min_fminimizer * @var{s}, gsl_function * @var{f}, double @var{minimum}, double @var{f_minimum}, gsl_interval @var{x}, double @var{f_lower}, double @var{f_upper})
+@deftypefun int gsl_min_fminimizer_set_with_values (gsl_min_fminimizer * @var{s}, gsl_function * @var{f}, double @var{minimum}, double @var{f_minimum}, double @var{x_lower}, double @var{f_lower}, double @var{x_upper}, double @var{f_upper})
 This function is equivalent to @code{gsl_min_fminimizer_set} but uses
 the values @var{f_minimum}, @var{f_lower} and @var{f_upper} instead of
-computing @code{f(minimum)}, @code{f(x.lower)} and @code{f(x.upper)}.
+computing @code{f(minimum)}, @code{f(x_lower)} and @code{f(x_upper)}.
 @end deftypefun
 
 
@@ -223,8 +224,10 @@ This function returns the current estimate of the minimum for the minimizer
 @var{s}.
 @end deftypefun
 
-@deftypefun gsl_interval gsl_min_fminimizer_interval (const gsl_min_fminimizer * @var{s})
-This function returns the current bounding interval for the minimizer @var{s}.
+@deftypefun double gsl_interval gsl_min_fminimizer_x_upper (const gsl_min_fminimizer * @var{s})
+@deftypefunx double gsl_interval gsl_min_fminimizer_x_lower (const gsl_min_fminimizer * @var{s})
+These functions return the current upper and lower bound of the interval
+for the minimizer @var{s}.
 @end deftypefun
 
 @node Minimization Stopping Parameters
@@ -250,10 +253,10 @@ In the minimization framework of GSL the handling of these conditions is
 under user control.  The function below allows the user to test the
 precision of the current result.
 
-@deftypefun int gsl_min_test_interval (gsl_interval @var{x}, double @var{epsrel}, double @var{epsabs})
-This function tests for the convergence of the interval @var{x} 
-with absolute error @var{epsabs} and relative error @var{epsrel}.
-The test returns @code{GSL_SUCCESS} if the following
+@deftypefun int gsl_min_test_interval (double @var{x_lower}, double @var{x_upper}, double @var{epsrel}, double @var{epsabs})
+This function tests for the convergence of the interval [@var{x_lower},
+@var{x_upper}] with absolute error @var{epsabs} and relative error
+@var{epsrel}.  The test returns @code{GSL_SUCCESS} if the following
 condition is achieved,
 
 @tex
@@ -382,14 +385,14 @@ main ()
   int iterations = 0, max_iterations = 100;
   gsl_min_fminimizer *s;
   double m = 2.0, m_expected = M_PI;
-  gsl_interval x =  @{0, 6.0@};
+  double x_lower =  0, x_upper = 6.0;
   gsl_function F;
 
   F.function = &fn1;
   F.params = 0;
 
   s = gsl_min_fminimizer_alloc (gsl_min_fminimizer_brent);
-  gsl_min_fminimizer_set (s, &F, m, x);
+  gsl_min_fminimizer_set (s, &F, m, x_lower, x_upper);
 
   printf ("using %s method\n", gsl_min_fminimizer_name (s));
 
@@ -397,8 +400,8 @@ main ()
           "iter", "lower", "upper", "min", "actual", "err", "err(est)");
 
   printf ("%5d [%.7f, %.7f] %.7f %.7f %+.7f %.7f\n",
-          iterations, x.lower, x.upper,
-          m, m_expected, m - m_expected, x.upper - x.lower);
+          iterations, x_lower, x_upper,
+          m, m_expected, m - m_expected, x_upper - x_lower);
 
   do
     @{
@@ -406,7 +409,8 @@ main ()
       status = gsl_min_fminimizer_iterate (s);
 
       m = gsl_min_fminimizer_minimum (s);
-      x = gsl_min_fminimizer_interval (s);
+      x_lower = gsl_min_fminimizer_x_lower (s);
+      x_upper = gsl_min_fminimizer_x_upper (s);
 
       status = gsl_min_test_interval (x, 0.001, 0.0);
 
@@ -414,8 +418,8 @@ main ()
         printf ("Converged:\n");
 
       printf ("%5d [%.7f, %.7f] %.7f %.7f %+.7f %.7f\n",
-              iterations, x.lower, x.upper,
-              m, m_expected, m - m_expected, x.upper - x.lower);
+              iterations, x_lower, x_upper,
+              m, m_expected, m - m_expected, x_upper - x_lower);
     @}
   while (status == GSL_CONTINUE && iterations < max_iterations);
 

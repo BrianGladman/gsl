@@ -29,7 +29,8 @@
 
 int 
 gsl_min_find_bracket(gsl_function *f,double *minimum,double * f_minimum,
-		     gsl_interval *x, double * f_lower,double * f_upper,
+		     double * x_lower, double * f_lower, 
+                     double * x_upper, double * f_upper,
 		     size_t eval_max)
 {
   /* The three following variables must be declared volatile to avoid storage
@@ -43,8 +44,8 @@ gsl_min_find_bracket(gsl_function *f,double *minimum,double * f_minimum,
   volatile double f_left = *f_lower;
   volatile double f_right = *f_upper;
   volatile double f_center;
-  double x_left = x->lower;
-  double x_right= x->upper; 
+  double x_left = *x_lower;
+  double x_right= *x_upper; 
   double x_center;
   const double golden = 0.3819660;	/* golden = (3 - sqrt(5))/2 */
   size_t nb_eval = 0;
@@ -71,8 +72,8 @@ gsl_min_find_bracket(gsl_function *f,double *minimum,double * f_minimum,
 	{
 	  if (f_center < f_right)
 	    {
-	      x->lower = x_left;
-	      x->upper = x_right;
+	      *x_lower = x_left;
+	      *x_upper = x_right;
 	      *minimum = x_center;
 	      *f_lower = f_left;
 	      *f_upper = f_right;
@@ -113,8 +114,8 @@ gsl_min_find_bracket(gsl_function *f,double *minimum,double * f_minimum,
     }
   while (nb_eval < eval_max 
 	 && (x_right - x_left) > GSL_SQRT_DBL_EPSILON * ( (x_right + x_left) * 0.5 ) + GSL_SQRT_DBL_EPSILON);
-  x->lower = x_left;
-  x->upper = x_right;
+  *x_lower = x_left;
+  *x_upper = x_right;
   *minimum = x_center;
   *f_lower = f_left;
   *f_upper = f_right;

@@ -39,8 +39,8 @@ typedef struct
   {
     const char *name;
     size_t size;
-    int (*set) (void *state, gsl_function * f, double minimum, double f_minimum, gsl_interval x, double f_lower, double f_upper);
-    int (*iterate) (void *state, gsl_function * f, double * minimum, double * f_minimum, gsl_interval * x, double * f_lower, double * f_upper);
+    int (*set) (void *state, gsl_function * f, double minimum, double f_minimum, double x_lower, double f_lower, double x_upper, double f_upper);
+    int (*iterate) (void *state, gsl_function * f, double * minimum, double * f_minimum, double * x_lower, double * f_lower, double * x_upper, double * f_upper);
   }
 gsl_min_fminimizer_type;
 
@@ -49,7 +49,8 @@ typedef struct
     const gsl_min_fminimizer_type * type;
     gsl_function * function ;
     double minimum ;
-    gsl_interval interval ;
+    double x_lower ;
+    double x_upper ;
     double f_minimum, f_lower, f_upper;
     void *state;
   }
@@ -61,22 +62,24 @@ gsl_min_fminimizer_alloc (const gsl_min_fminimizer_type * T) ;
 void gsl_min_fminimizer_free (gsl_min_fminimizer * s);
 
 int gsl_min_fminimizer_set (gsl_min_fminimizer * s, 
-			   gsl_function * f, double minimum, gsl_interval x);
+                            gsl_function * f, double minimum, 
+                            double x_lower, double x_upper);
 
 int gsl_min_fminimizer_set_with_values (gsl_min_fminimizer * s, 
                                         gsl_function * f, 
                                         double minimum, double f_minimum,
-                                        gsl_interval x,
-                                        double f_lower, double f_upper);
+                                        double x_lower, double f_lower,
+                                        double x_upper, double f_upper);
 
 int gsl_min_fminimizer_iterate (gsl_min_fminimizer * s);
 
 const char * gsl_min_fminimizer_name (const gsl_min_fminimizer * s);
 double gsl_min_fminimizer_minimum (const gsl_min_fminimizer * s);
-gsl_interval gsl_min_fminimizer_interval (const gsl_min_fminimizer * s);
+double gsl_min_fminimizer_x_lower (const gsl_min_fminimizer * s);
+double gsl_min_fminimizer_x_upper (const gsl_min_fminimizer * s);
 
 int
-gsl_min_test_interval (const gsl_interval x, double epsabs, double epsrel);
+gsl_min_test_interval (double x_lower, double x_upper, double epsabs, double epsrel);
 
 extern const gsl_min_fminimizer_type  * gsl_min_fminimizer_goldensection;
 extern const gsl_min_fminimizer_type  * gsl_min_fminimizer_brent;
@@ -84,13 +87,14 @@ extern const gsl_min_fminimizer_type  * gsl_min_fminimizer_brent;
 typedef
 int (*gsl_min_bracketing_function)(gsl_function *f,
 				   double *minimum,double * f_minimum,
-				   gsl_interval *x, double * f_lower,
-				   double * f_upper,
+				   double *x_lower, double * f_lower,
+                                   double *x_upper, double * f_upper,
 				   size_t eval_max);
 
 int 
 gsl_min_find_bracket(gsl_function *f,double *minimum,double * f_minimum,
-		     gsl_interval *x, double * f_lower,double * f_upper,
+		     double *x_lower, double * f_lower,
+                     double *x_upper, double * f_upper,
 		     size_t eval_max);
 
 __END_DECLS

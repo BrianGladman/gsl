@@ -162,7 +162,7 @@ gsl_multimin_fdf_minimizer_alloc(const gsl_multimin_fdf_minimizer_type *T,
   int status;
   gsl_vector *direction;
   gsl_multimin_to_single *w;
-  gsl_interval dummy;
+  double dummy_lower, dummy_upper;
     
   gsl_multimin_fdf_minimizer *s;
   
@@ -251,8 +251,8 @@ gsl_multimin_fdf_minimizer_alloc(const gsl_multimin_fdf_minimizer_type *T,
   s->bracketing = bracket;
   s->line_search_type = T_line;
   /* Warning, we try to bypass checks */
-  dummy.lower = 0;
-  dummy.upper = 1;
+  dummy_lower = 0;
+  dummy_upper = 1;
   s->line_search = gsl_min_fminimizer_alloc(T_line);
   
   if (s->line_search == 0)
@@ -269,7 +269,9 @@ gsl_multimin_fdf_minimizer_alloc(const gsl_multimin_fdf_minimizer_type *T,
 
   gsl_min_fminimizer_set_with_values (s->line_search, 
                                       s->f_directional, 
-                                      0.5, 0.0, dummy, 1.0, 1.0);
+                                      0.5, 0.0, 
+                                      dummy_lower, 1.0,
+                                      dummy_upper, 1.0);
 
   return s;
 }
@@ -310,25 +312,28 @@ gsl_multimin_fdf_minimizer_bracket(gsl_multimin_fdf_minimizer *s,
 				   double first_step,size_t eval_max)
 {
   int status;
-  gsl_interval bracket;
+  double bracket_lower, bracket_upper;
   double f_minimum,f_upper,f_lower;
   double minimum;
 
   
-  bracket.upper = first_step;
-  bracket.lower = 0.0;
+  bracket_upper = first_step;
+  bracket_lower = 0.0;
   f_lower = s->history->f;
   f_upper = GSL_FN_EVAL(s->f_directional,first_step);
   if (!finite(f_upper))
     GSL_ERROR("function not continuous", GSL_EBADFUNC);
   status =  (s->bracketing)(s->f_directional,&minimum,
-			    &f_minimum,&bracket,&f_lower,&f_upper,eval_max);
+			    &f_minimum,
+                            &bracket_lower, &f_lower, 
+                            &bracket_upper, &f_upper,eval_max);
   if (status == GSL_SUCCESS)
     {
       return gsl_min_fminimizer_set_with_values(s->line_search,
 						s->f_directional,
 						minimum,f_minimum,
-						bracket,f_lower,f_upper);
+						bracket_lower, f_lower,
+                                                bracket_upper, f_upper);
     }
   else
     {

@@ -51,18 +51,15 @@ typedef struct
   }
 falsepos_state_t;
 
-static int falsepos_init (void * vstate, gsl_function * f, double * root, gsl_interval * x);
-static int falsepos_iterate (void * vstate, gsl_function * f, double * root, gsl_interval * x);
+static int falsepos_init (void * vstate, gsl_function * f, double * root, double x_lower, double x_upper);
+static int falsepos_iterate (void * vstate, gsl_function * f, double * root, double * x_lower, double * x_upper);
 
 static int
-falsepos_init (void * vstate, gsl_function * f, double * root, gsl_interval * x)
+falsepos_init (void * vstate, gsl_function * f, double * root, double x_lower, double x_upper)
 {
   falsepos_state_t * state = (falsepos_state_t *) vstate;
 
   double f_lower, f_upper ;
-
-  double x_lower = x->lower ;
-  double x_upper = x->upper ;
 
   *root = 0.5 * (x_lower + x_upper);
 
@@ -82,15 +79,15 @@ falsepos_init (void * vstate, gsl_function * f, double * root, gsl_interval * x)
 }
 
 static int
-falsepos_iterate (void * vstate, gsl_function * f, double * root, gsl_interval * x)
+falsepos_iterate (void * vstate, gsl_function * f, double * root, double * x_lower, double * x_upper)
 {
   falsepos_state_t * state = (falsepos_state_t *) vstate;
 
   double x_linear, f_linear;
   double x_bisect, f_bisect;
 
-  double x_lower = x->lower ;
-  double x_upper = x->upper ;
+  double x_left = *x_lower ;
+  double x_right = *x_upper ;
 
   double f_lower = state->f_lower; 
   double f_upper = state->f_upper;
@@ -99,15 +96,15 @@ falsepos_iterate (void * vstate, gsl_function * f, double * root, gsl_interval *
 
   if (f_lower == 0.0)
     {
-      *root = x_lower ;
-      x->upper = x_lower;
+      *root = x_left ;
+      *x_upper = x_left;
       return GSL_SUCCESS;
     }
   
   if (f_upper == 0.0)
     {
-      *root = x_upper ;
-      x->lower = x_upper;
+      *root = x_right ;
+      *x_lower = x_right;
       return GSL_SUCCESS;
     }
       
@@ -115,15 +112,15 @@ falsepos_iterate (void * vstate, gsl_function * f, double * root, gsl_interval *
      note where it crosses the X axis; that's where we will
      split the interval. */
   
-  x_linear = x_upper - (f_upper * (x_lower - x_upper) / (f_lower - f_upper));
+  x_linear = x_right - (f_upper * (x_left - x_right) / (f_lower - f_upper));
 
   SAFE_FUNC_CALL (f, x_linear, &f_linear);
       
   if (f_linear == 0.0)
     {
       *root = x_linear;
-      x->lower = x_linear;
-      x->upper = x_linear;
+      *x_lower = x_linear;
+      *x_upper = x_linear;
       return GSL_SUCCESS;
     }
       
@@ -132,40 +129,40 @@ falsepos_iterate (void * vstate, gsl_function * f, double * root, gsl_interval *
   if ((f_lower > 0.0 && f_linear < 0.0) || (f_lower < 0.0 && f_linear > 0.0))
     {
       *root = x_linear ;
-      x->upper = x_linear;
+      *x_upper = x_linear;
       state->f_upper = f_linear;
-      w = x_linear - x_lower ;
+      w = x_linear - x_left ;
     }
   else
     {
       *root = x_linear ;
-      x->lower = x_linear;
+      *x_lower = x_linear;
       state->f_lower = f_linear;
-      w = x_upper - x_linear;
+      w = x_right - x_linear;
     }
 
-  if (w < 0.5 * (x_upper - x_lower)) 
+  if (w < 0.5 * (x_right - x_left)) 
     {
       return GSL_SUCCESS ;
     }
 
-  x_bisect = 0.5 * (x_lower + x_upper);
+  x_bisect = 0.5 * (x_left + x_right);
 
   SAFE_FUNC_CALL (f, x_bisect, &f_bisect);
 
   if ((f_lower > 0.0 && f_bisect < 0.0) || (f_lower < 0.0 && f_bisect > 0.0))
     {
-      x->upper = x_bisect;
+      *x_upper = x_bisect;
       state->f_upper = f_bisect;
       if (*root > x_bisect)
-	*root = 0.5 * (x_lower + x_bisect) ;
+	*root = 0.5 * (x_left + x_bisect) ;
     }
   else
     {
-      x->lower = x_bisect;
+      *x_lower = x_bisect;
       state->f_lower = f_bisect;
       if (*root < x_bisect)
-	*root = 0.5 * (x_bisect + x_upper) ;
+	*root = 0.5 * (x_bisect + x_right) ;
     }
 
   return GSL_SUCCESS;

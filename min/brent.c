@@ -40,18 +40,15 @@ typedef struct
   }
 brent_state_t;
 
-static int brent_init (void *vstate, gsl_function * f, double minimum, double f_minimum, gsl_interval x, double f_lower, double f_upper);
-static int brent_iterate (void *vstate, gsl_function * f, double *minimum, double * f_minimum, gsl_interval * x, double * f_lower, double * f_upper);
+static int brent_init (void *vstate, gsl_function * f, double minimum, double f_minimum, double x_lower, double f_lower, double x_upper, double f_upper);
+static int brent_iterate (void *vstate, gsl_function * f, double *minimum, double * f_minimum, double * x_lower, double * f_lower, double * x_upper, double * f_upper);
 
 static int
-brent_init (void *vstate, gsl_function * f, double minimum, double f_minimum, gsl_interval x, double f_lower, double f_upper)
+brent_init (void *vstate, gsl_function * f, double minimum, double f_minimum, double x_lower, double f_lower, double x_upper, double f_upper)
 {
   brent_state_t *state = (brent_state_t *) vstate;
 
   const double golden = 0.3819660;	/* golden = (3 - sqrt(5))/2 */
-
-  double x_lower = x.lower;
-  double x_upper = x.upper;
 
   double v = x_lower + golden * (x_upper - x_lower);
   double w = v;
@@ -78,12 +75,12 @@ brent_init (void *vstate, gsl_function * f, double minimum, double f_minimum, gs
 }
 
 static int
-brent_iterate (void *vstate, gsl_function * f, double *minimum, double * f_minimum, gsl_interval * x, double * f_lower, double * f_upper)
+brent_iterate (void *vstate, gsl_function * f, double *minimum, double * f_minimum, double * x_lower, double * f_lower, double * x_upper, double * f_upper)
 {
   brent_state_t *state = (brent_state_t *) vstate;
 
-  const double x_lower = x->lower;
-  const double x_upper = x->upper;
+  const double x_left = *x_lower;
+  const double x_right = *x_upper;
 
   const double z = *minimum;
   double d = state->e;
@@ -97,14 +94,14 @@ brent_iterate (void *vstate, gsl_function * f, double *minimum, double * f_minim
 
   const double golden = 0.3819660;	/* golden = (3 - sqrt(5))/2 */
 
-  const double w_lower = (z - x_lower);
-  const double w_upper = (x_upper - z);
+  const double w_lower = (z - x_left);
+  const double w_upper = (x_right - z);
 
   const double tolerance =  GSL_SQRT_DBL_EPSILON * fabs (z);
 
   double p = 0, q = 0, r = 0;
 
-  const double midpoint = 0.5 * (x_lower + x_upper);
+  const double midpoint = 0.5 * (x_left + x_right);
 
   if (fabs (e) > tolerance)
     {
@@ -135,14 +132,14 @@ brent_iterate (void *vstate, gsl_function * f, double *minimum, double * f_minim
       d = p / q;
       u = z + d;
 
-      if ((u - x_lower) < t2 || (x_upper - z) < t2)
+      if ((u - x_left) < t2 || (x_right - z) < t2)
 	{
 	  d = (z < midpoint) ? tolerance : -tolerance ;
 	}
     }
   else
     {
-      e = (z < midpoint) ? x_upper - z : -(z - x_lower) ;
+      e = (z < midpoint) ? x_right - z : -(z - x_left) ;
       d = golden * e;
     }
 
@@ -165,13 +162,13 @@ brent_iterate (void *vstate, gsl_function * f, double *minimum, double * f_minim
     {
       if (u < z)
 	{
-	  x->lower = u;
+	  *x_lower = u;
           *f_lower = f_u;
           return GSL_SUCCESS;
 	}
       else
 	{
-	  x->upper = u;
+	  *x_upper = u;
           *f_upper = f_u;
           return GSL_SUCCESS;
 	}
@@ -180,12 +177,12 @@ brent_iterate (void *vstate, gsl_function * f, double *minimum, double * f_minim
     {
       if (u < z)
 	{
-	  x->upper = z;
+	  *x_upper = z;
           *f_upper = f_z;
 	}
       else
 	{
-	  x->lower = z;
+	  *x_lower = z;
           *f_lower = f_z;
 	}
 

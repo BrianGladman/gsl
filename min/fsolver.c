@@ -27,15 +27,17 @@
 
 static int 
 compute_f_values (gsl_function * f, double minimum, double * f_minimum,
-                  gsl_interval x, double * f_lower, double * f_upper);
+                  double x_lower, double * f_lower, 
+                  double x_upper, double * f_upper);
 
 
 static int 
 compute_f_values (gsl_function * f, double minimum, double * f_minimum,
-                  gsl_interval x, double * f_lower, double * f_upper)
+                  double x_lower, double * f_lower,
+                  double x_upper, double * f_upper)
 {
-  SAFE_FUNC_CALL(f, x.lower, f_lower);
-  SAFE_FUNC_CALL(f, x.upper, f_upper);
+  SAFE_FUNC_CALL(f, x_lower, f_lower);
+  SAFE_FUNC_CALL(f, x_upper, f_upper);
   SAFE_FUNC_CALL(f, minimum, f_minimum);
 
   return GSL_SUCCESS;
@@ -43,13 +45,16 @@ compute_f_values (gsl_function * f, double minimum, double * f_minimum,
 
 int
 gsl_min_fminimizer_set (gsl_min_fminimizer * s, 
-                        gsl_function * f, double minimum, gsl_interval x)
+                        gsl_function * f, 
+                        double minimum, double x_lower, double x_upper)
 {
   int status ;
 
   double f_minimum, f_lower, f_upper;
 
-  status = compute_f_values (f, minimum, &f_minimum, x, &f_lower, &f_upper);
+  status = compute_f_values (f, minimum, &f_minimum, 
+                             x_lower, &f_lower,  
+                             x_upper, &f_upper);
 
   if (status != GSL_SUCCESS)
     {
@@ -57,7 +62,8 @@ gsl_min_fminimizer_set (gsl_min_fminimizer * s,
     }
   
   status = gsl_min_fminimizer_set_with_values (s, f, minimum, f_minimum, 
-                                               x, f_lower, f_upper);
+                                               x_lower, f_lower,
+                                               x_upper, f_upper);
   return status;
 }
 
@@ -92,19 +98,20 @@ gsl_min_fminimizer_alloc (const gsl_min_fminimizer_type * T)
 int
 gsl_min_fminimizer_set_with_values (gsl_min_fminimizer * s, gsl_function * f, 
                                     double minimum, double f_minimum, 
-                                    gsl_interval x, 
-                                    double f_lower, double f_upper)
+                                    double x_lower, double f_lower,
+                                    double x_upper, double f_upper)
 {
   s->function = f;
   s->minimum = minimum;
-  s->interval = x;
+  s->x_lower = x_lower;
+  s->x_upper = x_upper;
 
-  if (x.lower > x.upper)
+  if (x_lower > x_upper)
     {
       GSL_ERROR ("invalid interval (lower > upper)", GSL_EINVAL);
     }
 
-  if (minimum >= x.upper || minimum <= x.lower) 
+  if (minimum >= x_upper || minimum <= x_lower) 
     {
       GSL_ERROR ("minimum must lie inside interval (lower < x < upper)",
                  GSL_EINVAL);
@@ -121,7 +128,8 @@ gsl_min_fminimizer_set_with_values (gsl_min_fminimizer * s, gsl_function * f,
 
   return (s->type->set) (s->state, s->function, 
                          minimum, f_minimum, 
-                         x, f_lower, f_upper);
+                         x_lower, f_lower,
+                         x_upper, f_upper);
 }
 
 
@@ -130,7 +138,8 @@ gsl_min_fminimizer_iterate (gsl_min_fminimizer * s)
 {
   return (s->type->iterate) (s->state, s->function, 
                              &(s->minimum), &(s->f_minimum),
-                             &(s->interval), &(s->f_lower), &(s->f_upper));
+                             &(s->x_lower), &(s->f_lower), 
+                             &(s->x_upper), &(s->f_upper));
 }
 
 void
@@ -152,9 +161,15 @@ gsl_min_fminimizer_minimum (const gsl_min_fminimizer * s)
   return s->minimum;
 }
 
-gsl_interval
-gsl_min_fminimizer_interval (const gsl_min_fminimizer * s)
+double
+gsl_min_fminimizer_x_lower (const gsl_min_fminimizer * s)
 {
-  return s->interval;
+  return s->x_lower;
+}
+
+double
+gsl_min_fminimizer_x_upper (const gsl_min_fminimizer * s)
+{
+  return s->x_upper;
 }
 

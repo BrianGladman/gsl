@@ -323,7 +323,6 @@ main()
   size_t restarting_period = 2;
   int i, status, just_started = 1;
   double minimum, a, b, sqr_dist, dist;
-  gsl_interval bracket;
   gsl_multimin_fdf_minimizer *s;
 
   /* Let's put the minimum at v = (1,2). */
@@ -390,12 +389,10 @@ main()
               status = gsl_multimin_fdf_minimizer_iterate(s);
           
               minimum = gsl_min_fminimizer_minimum(s->line_search);
-              bracket = gsl_min_fminimizer_interval(s->line_search);
+              a = gsl_min_fminimizer_x_lower(s->line_search);
+              b = gsl_min_fminimizer_x_upper(s->line_search);
               
-              a = bracket.lower;
-              b = bracket.upper;
-              
-              status = gsl_min_test_interval(bracket, 
+              status = gsl_min_test_interval(a, b, 
                                              EPSABS_LINE, 
                                              EPSREL_LINE);
             @}

@@ -23,13 +23,10 @@
 #include <gsl/gsl_roots.h>
 
 int
-gsl_root_test_interval (const gsl_interval x, double epsabs, double epsrel)
+gsl_root_test_interval (double x_lower, double x_upper, double epsabs, double epsrel)
 {
-  const double lower = x.lower;
-  const double upper = x.upper;
-
-  const double abs_lower = fabs(lower) ;
-  const double abs_upper = fabs(upper) ;
+  const double abs_lower = fabs(x_lower) ;
+  const double abs_upper = fabs(x_upper) ;
 
   double min_abs, tolerance;
 
@@ -39,10 +36,10 @@ gsl_root_test_interval (const gsl_interval x, double epsabs, double epsrel)
   if (epsabs < 0.0)
     GSL_ERROR ("absolute tolerance is negative", GSL_EBADTOL);
 
-  if (lower > upper)
-    GSL_ERROR ("lower bound larger than upper_bound", GSL_EINVAL);
+  if (x_lower > x_upper)
+    GSL_ERROR ("lower bound larger than upper bound", GSL_EINVAL);
 
-  if ((lower > 0 && upper > 0) || (lower < 0 && upper < 0)) 
+  if ((x_lower > 0.0 && x_upper > 0.0) || (x_lower < 0.0 && x_upper < 0.0)) 
     {
       min_abs = GSL_MIN_DBL(abs_lower, abs_upper) ;
     }
@@ -53,7 +50,7 @@ gsl_root_test_interval (const gsl_interval x, double epsabs, double epsrel)
 
   tolerance = epsabs + epsrel * min_abs  ;
   
-  if (fabs(upper - lower) < tolerance)
+  if (fabs(x_upper - x_lower) < tolerance)
     return GSL_SUCCESS;
   
   return GSL_CONTINUE ;

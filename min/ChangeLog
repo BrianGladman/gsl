@@ -1,3 +1,8 @@
+Sun Jul 15 17:53:26 2001  Brian Gough  <bjg@network-theory.co.uk>
+
+	* eliminated interval type, changed order of arguments to set
+ 	functions
+
 Tue Apr 17 22:13:58 2001  Brian Gough  <bjg@network-theory.co.uk>
 
 	* fsolver.c (gsl_min_fminimizer_alloc): removed unnecessary status
