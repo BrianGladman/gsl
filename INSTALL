@@ -120,6 +120,12 @@ table-of-contents by setting LDFLAGS before compilation,
 
    LDFLAGS="-Wl,-bbigtoc" ./configure
 
+On older versions of AIX (e.g. 4.2) the size of the command-line is
+limited to 24kb, which causes linking to fail (due to the large number
+of files to be linked). Unfortunately this limit cannot be increased.
+To link the library you may need to use a manual approach of
+incrementally combining the object files in smaller groups.
+
 Hints for Compaq/DEC Alpha
 ==========================
 
