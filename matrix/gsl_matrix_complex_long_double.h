@@ -128,9 +128,9 @@ int gsl_matrix_complex_long_double_swap_rowcol(gsl_matrix_complex_long_double * 
 int gsl_matrix_complex_long_double_transpose (gsl_matrix_complex_long_double * m);
 int gsl_matrix_complex_long_double_transpose_memcpy (gsl_matrix_complex_long_double * dest, const gsl_matrix_complex_long_double * src);
 
-gsl_matrix_complex_long_double gsl_matrix_complex_long_double_submatrix (gsl_matrix_complex_long_double * m, size_t i, size_t j, size_t n1, size_t n2);
-gsl_vector_complex_long_double gsl_matrix_complex_long_double_row (gsl_matrix_complex_long_double * m, size_t i);
-gsl_vector_complex_long_double gsl_matrix_complex_long_double_column (gsl_matrix_complex_long_double * m, size_t j);
+gsl_matrix_complex_long_double gsl_matrix_complex_long_double_submatrix (gsl_matrix_complex_long_double * m, const size_t i, const size_t j, const size_t n1, const size_t n2);
+gsl_vector_complex_long_double gsl_matrix_complex_long_double_row (gsl_matrix_complex_long_double * m, const size_t i);
+gsl_vector_complex_long_double gsl_matrix_complex_long_double_column (gsl_matrix_complex_long_double * m, const size_t j);
 gsl_vector_complex_long_double gsl_matrix_complex_long_double_diagonal (gsl_matrix_complex_long_double * m);
 
 const gsl_matrix_complex_long_double gsl_matrix_complex_long_double_const_submatrix (const gsl_matrix_complex_long_double * m, size_t i, size_t j, size_t n1, size_t n2);

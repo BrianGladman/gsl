@@ -111,7 +111,7 @@ void gsl_matrix_long_double_set_all (gsl_matrix_long_double * m, long double x);
 
 long double * gsl_matrix_long_double_ptr(const gsl_matrix_long_double * m, const size_t i, const size_t j);
 long double   gsl_matrix_long_double_get(const gsl_matrix_long_double * m, const size_t i, const size_t j);
-void    gsl_matrix_long_double_set(gsl_matrix_long_double * m, const size_t i, const size_t j, long double x);
+void    gsl_matrix_long_double_set(gsl_matrix_long_double * m, const size_t i, const size_t j, const long double x);
 
 int gsl_matrix_long_double_fread (FILE * stream, gsl_matrix_long_double * m) ;
 int gsl_matrix_long_double_fwrite (FILE * stream, const gsl_matrix_long_double * m) ;

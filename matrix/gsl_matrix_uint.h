@@ -111,7 +111,7 @@ void gsl_matrix_uint_set_all (gsl_matrix_uint * m, unsigned int x);
 
 unsigned int * gsl_matrix_uint_ptr(const gsl_matrix_uint * m, const size_t i, const size_t j);
 unsigned int   gsl_matrix_uint_get(const gsl_matrix_uint * m, const size_t i, const size_t j);
-void    gsl_matrix_uint_set(gsl_matrix_uint * m, const size_t i, const size_t j, unsigned int x);
+void    gsl_matrix_uint_set(gsl_matrix_uint * m, const size_t i, const size_t j, const unsigned int x);
 
 int gsl_matrix_uint_fread (FILE * stream, gsl_matrix_uint * m) ;
 int gsl_matrix_uint_fwrite (FILE * stream, const gsl_matrix_uint * m) ;

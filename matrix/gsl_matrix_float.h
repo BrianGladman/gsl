@@ -111,7 +111,7 @@ void gsl_matrix_float_set_all (gsl_matrix_float * m, float x);
 
 float * gsl_matrix_float_ptr(const gsl_matrix_float * m, const size_t i, const size_t j);
 float   gsl_matrix_float_get(const gsl_matrix_float * m, const size_t i, const size_t j);
-void    gsl_matrix_float_set(gsl_matrix_float * m, const size_t i, const size_t j, float x);
+void    gsl_matrix_float_set(gsl_matrix_float * m, const size_t i, const size_t j, const float x);
 
 int gsl_matrix_float_fread (FILE * stream, gsl_matrix_float * m) ;
 int gsl_matrix_float_fwrite (FILE * stream, const gsl_matrix_float * m) ;

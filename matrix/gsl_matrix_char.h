@@ -111,7 +111,7 @@ void gsl_matrix_char_set_all (gsl_matrix_char * m, char x);
 
 char * gsl_matrix_char_ptr(const gsl_matrix_char * m, const size_t i, const size_t j);
 char   gsl_matrix_char_get(const gsl_matrix_char * m, const size_t i, const size_t j);
-void    gsl_matrix_char_set(gsl_matrix_char * m, const size_t i, const size_t j, char x);
+void    gsl_matrix_char_set(gsl_matrix_char * m, const size_t i, const size_t j, const char x);
 
 int gsl_matrix_char_fread (FILE * stream, gsl_matrix_char * m) ;
 int gsl_matrix_char_fwrite (FILE * stream, const gsl_matrix_char * m) ;

@@ -111,7 +111,7 @@ void gsl_matrix_short_set_all (gsl_matrix_short * m, short x);
 
 short * gsl_matrix_short_ptr(const gsl_matrix_short * m, const size_t i, const size_t j);
 short   gsl_matrix_short_get(const gsl_matrix_short * m, const size_t i, const size_t j);
-void    gsl_matrix_short_set(gsl_matrix_short * m, const size_t i, const size_t j, short x);
+void    gsl_matrix_short_set(gsl_matrix_short * m, const size_t i, const size_t j, const short x);
 
 int gsl_matrix_short_fread (FILE * stream, gsl_matrix_short * m) ;
 int gsl_matrix_short_fwrite (FILE * stream, const gsl_matrix_short * m) ;

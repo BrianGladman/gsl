@@ -111,7 +111,7 @@ void gsl_matrix_ulong_set_all (gsl_matrix_ulong * m, unsigned long x);
 
 unsigned long * gsl_matrix_ulong_ptr(const gsl_matrix_ulong * m, const size_t i, const size_t j);
 unsigned long   gsl_matrix_ulong_get(const gsl_matrix_ulong * m, const size_t i, const size_t j);
-void    gsl_matrix_ulong_set(gsl_matrix_ulong * m, const size_t i, const size_t j, unsigned long x);
+void    gsl_matrix_ulong_set(gsl_matrix_ulong * m, const size_t i, const size_t j, const unsigned long x);
 
 int gsl_matrix_ulong_fread (FILE * stream, gsl_matrix_ulong * m) ;
 int gsl_matrix_ulong_fwrite (FILE * stream, const gsl_matrix_ulong * m) ;
