@@ -1,5 +1,8 @@
 * What will be new in gsl-1.6:
 
+** Corrected the error estimate for gsl_cheb_eval_n_err to use
+evaluation order instead of the approximation order.
+
 ** Fixed a bug in the SYRK and HERK blas functions gsl_blas_{s,d,c,z}syrk 
 and gsl_blas_{c,z}herk which caused invalid memory access for non-square 
 matrices.

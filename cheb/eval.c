@@ -132,7 +132,7 @@ gsl_cheb_eval_n_err (const gsl_cheb_series * cs,
 
   /* Estimate cumulative numerical error */
 
-  for (i = 0; i <= cs->order; i++)
+  for (i = 0; i <= eval_order; i++)
     {
       absc += fabs(cs->c[i]);
     }

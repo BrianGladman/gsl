@@ -1,3 +1,8 @@
+2004-12-24  Brian Gough  <bjg@network-theory.co.uk>
+
+	* eval.c (gsl_cheb_eval_n_err): use eval_order instead of
+	cs->order for error estimate
+
 2004-12-23  Brian Gough  <bjg@network-theory.co.uk>
 
 	* eval.c (gsl_cheb_eval_mode): added missing function
