@@ -1,3 +1,8 @@
+Fri Aug 21 15:36:22 1998  Brian Gough  <bjg@vvv.lanl.gov>
+
+	* fp-unknown.c (gsl_ieee_set_mode): made return type int, as it
+ 	should be
+
 Mon Jun 15 22:02:00 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
 	* renamed read-mode-string.c to read.c and print-ieee.c to print.c
