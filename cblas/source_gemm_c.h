@@ -37,22 +37,22 @@
   if (Order == CblasRowMajor) {
     n1 = M;
     n2 = N;
-    F = A;
+    F = (const BASE *)A;
     ldf = lda;
     conjF = (TransA == CblasConjTrans) ? -1 : 1;
     TransF = (TransA == CblasNoTrans) ? CblasNoTrans : CblasTrans;
-    G = B;
+    G = (const BASE *)B;
     ldg = ldb;
     conjG = (TransB == CblasConjTrans) ? -1 : 1;
     TransG = (TransB == CblasNoTrans) ? CblasNoTrans : CblasTrans;
   } else {
     n1 = N;
     n2 = M;
-    F = B;
+    F = (const BASE *)B;
     ldf = ldb;
     conjF = (TransB == CblasConjTrans) ? -1 : 1;
     TransF = (TransB == CblasNoTrans) ? CblasNoTrans : CblasTrans;
-    G = A;
+    G = (const BASE *)A;
     ldg = lda;
     conjG = (TransA == CblasConjTrans) ? -1 : 1;
     TransG = (TransA == CblasNoTrans) ? CblasNoTrans : CblasTrans;

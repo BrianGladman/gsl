@@ -19,6 +19,7 @@
 
 #include <config.h>
 #include <stdlib.h>
+#include <string.h>
 #include <math.h>
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_math.h>
@@ -176,7 +177,7 @@ gsl_odeiv_control_scaled_new(double eps_abs, double eps_rel,
   {
     sc_control_state_t * s = (sc_control_state_t *) c->state;
     
-    s->scale_abs = malloc(dim * sizeof(double));
+    s->scale_abs = (double *)malloc(dim * sizeof(double));
     
     if (s->scale_abs == 0)
       {

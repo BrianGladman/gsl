@@ -32,7 +32,7 @@
 gsl_ntuple *
 gsl_ntuple_create (char *filename, void *ntuple_data, size_t size)
 {
-  gsl_ntuple *ntuple = malloc (sizeof (gsl_ntuple));
+  gsl_ntuple *ntuple = (gsl_ntuple *)malloc (sizeof (gsl_ntuple));
 
   if (ntuple == 0)
     {
@@ -62,7 +62,7 @@ gsl_ntuple_create (char *filename, void *ntuple_data, size_t size)
 gsl_ntuple *
 gsl_ntuple_open (char *filename, void *ntuple_data, size_t size)
 {
-  gsl_ntuple *ntuple = malloc (sizeof (gsl_ntuple));
+  gsl_ntuple *ntuple = (gsl_ntuple *)malloc (sizeof (gsl_ntuple));
 
   if (ntuple == 0)
     {
