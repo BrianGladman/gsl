@@ -1,3 +1,8 @@
+1999-01-01  Mark Galassi  <rosalia@cygnus.com>
+
+	* integration.c: replaced strings.h with string.h, which is the
+	ISO library way.
+
 Sat Nov 21 12:43:03 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
 	* Makefile.am (libgslintegration_a_SOURCES): eliminated local
