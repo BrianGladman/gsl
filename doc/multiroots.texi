@@ -438,10 +438,11 @@ reduce the residual when Newton's method is unreliable.
 The algorithm uses a generalised trust region to keep each step under
 control. In order to be accepted a proposed new position @math{x'} must
 satisfy the condition @math{|D (x' - x)| < \delta}, where @math{D} is a
-diagonal scaling matrix.  The components of @math{D} are computed
-internally, using the column norms of the Jacobian to estimate the
-sensitivity of the residual to each component of @math{x}.  This
-improves the behavior of the algorithm for badly scaled functions.
+diagonal scaling matrix and @math{\delta} is the size of the trust
+region.  The components of @math{D} are computed internally, using the
+column norms of the Jacobian to estimate the sensitivity of the residual
+to each component of @math{x}.  This improves the behavior of the
+algorithm for badly scaled functions.
 
 On each iteration the algorithm first determines the standard Newton
 step by solving the system @math{J dx = - f}. If this step falls inside
@@ -468,9 +469,9 @@ This combination of Newton and Gradient directions is referred to as a
 
 The proposed step is now tested by evaluating the function at the
 resulting point, @math{x'}. If the step reduces the norm of the function
-sufficiently then it is accepted and radius of the trust region is
+sufficiently then it is accepted and size of the trust region is
 increased. If the proposed step fails to improve the solution then the
-radius of the trust region is decreased and another trial step is
+size of the trust region is decreased and another trial step is
 computed.
 
 The speed of the algorithm is increased by computing the changes to the
