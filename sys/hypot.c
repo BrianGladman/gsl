@@ -20,9 +20,9 @@
 #include <config.h>
 #include <math.h>
 
-inline double gsl_hypot (const double x, const double y);
+double gsl_hypot (const double x, const double y);
 
-inline double gsl_hypot (const double x, const double y)
+double gsl_hypot (const double x, const double y)
 {
   double xabs = fabs(x) ;
   double yabs = fabs(y) ;
