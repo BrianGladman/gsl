@@ -6,7 +6,7 @@
 
 #include "err.h"
 
-int
+void
 gsl_integration_qk (const int n,
 			 const double xgk[], const double wg[], 
 			 const double wgk[],
@@ -83,5 +83,4 @@ gsl_integration_qk (const int n,
   *resasc = result_asc ;
   *abserr = rescale_error (err, result_abs, result_asc) ;
 
-  return 0 ;
 }

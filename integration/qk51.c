@@ -1,7 +1,7 @@
 #include <gsl_integration.h>
 #include "qk51.h"
 
-int
+void
 gsl_integration_qk51 (double (*f) (double x),
 		      double a, double b,
 		      double * result, double * abserr,
@@ -10,5 +10,4 @@ gsl_integration_qk51 (double (*f) (double x),
   double fv1[26], fv2[26];
   gsl_integration_qk(26,xgk,wg,wgk,fv1,fv2,
 		     f,a,b,result,abserr,resabs,resasc) ;
-  return 0 ;
 }

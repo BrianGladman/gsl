@@ -11,6 +11,7 @@ libgslintegration_a_SOURCES = integration.c \
 	qk61.c qk61.h \
 	qk.c \
 	qng.c qng.h \
+	qage.c \
 	err.c err.h
 
 include_HEADERS = gsl_integration.h
