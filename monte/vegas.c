@@ -63,15 +63,12 @@
 enum {MODE_IMPORTANCE = 1, MODE_IMPORTANCE_ONLY = 0, MODE_STRATIFIED = -1};
 
 
-static double grid_sum[GSL_V_BINS_MAX+1][GSL_V_MAX_DIM];
-static double bin_sum[GSL_V_BINS_MAX+1][GSL_V_MAX_DIM];
-static double y_bin[GSL_V_BINS_MAX+1][GSL_V_MAX_DIM];
-
 /* predeclare functions */
 
-void adjust_bins(double bin[GSL_V_BINS_MAX+1][GSL_V_MAX_DIM], 
+void adjust_bins(gsl_monte_vegas_state *state,
+		 double bin[GSL_V_BINS_MAX+1][GSL_V_MAX_DIM], 
 		 double weight[GSL_V_BINS_MAX+1], 
-		 double pts_per_bin, int j, int n1, int n2);
+		 double pts_per_bin, int j, int bins_prev, int bins);
 inline int change_box_cord(int box_cord[GSL_V_MAX_DIM], int ng, int j);
 inline void init_array(double array[GSL_V_BINS_MAX+1][GSL_V_MAX_DIM], 
 		       int n1, int n2);
@@ -87,9 +84,9 @@ int gsl_monte_vegas(gsl_monte_vegas_state *state,
 
   status = gsl_monte_vegas_validate(state, xl, xu, num_dim, calls);
 
-  init_array(y_bin, GSL_V_BINS_MAX, num_dim);
+  init_array(state->y_bin, GSL_V_BINS_MAX, num_dim);
   for (j = 0; j < num_dim; ++j)
-    y_bin[1][j] = 1.;
+    state->y_bin[1][j] = 1.;
   state->bins_prev = 1;
   state->vol = 1;
   for (j = 0; j < num_dim; ++j) {
@@ -202,7 +199,8 @@ int gsl_monte_vegas2(gsl_monte_vegas_state *state,
     for (i = 1; i <= state->bins_prev; ++i)
       weight[i] = 1;
     for (j = 0; j < num_dim; ++j)
-      adjust_bins(y_bin, weight, tot_weight, j, state->bins_prev, state->bins);
+      adjust_bins(state, state->y_bin, weight, tot_weight, j, 
+		  state->bins_prev, state->bins);
     state->bins_prev = state->bins;
   }
   if (state->verbose >= 0) {
@@ -244,8 +242,8 @@ int gsl_monte_vegas3(gsl_monte_vegas_state *state,
     int    box_cord[GSL_V_MAX_DIM];
     for (j = 0; j < num_dim; ++j)
       box_cord[j] = 0;
-    init_array(grid_sum, state->bins, num_dim);
-    init_array(bin_sum, state->bins, num_dim);
+    init_array(state->grid_sum, state->bins, num_dim);
+    init_array(state->bin_sum, state->bins, num_dim);
     intgrl = 0.;
     sig = 0.;
     do {
@@ -266,12 +264,12 @@ int gsl_monte_vegas3(gsl_monte_vegas_state *state,
 	  z = (box_cord[j] + gsl_rng_uniform(r) ) * state->bins / state->boxes; 
 	  bin_cord[j] = z;
 	  if (bin_cord[j] == 0) {
-	    binwdth = y_bin[1][j];
+	    binwdth = state->y_bin[1][j];
 	    y = z * binwdth;
 	  } 
 	  else {
-	    binwdth = y_bin[bin_cord[j] + 1][j] - y_bin[bin_cord[j]][j];
-	    y = y_bin[bin_cord[j]][j] + (z - bin_cord[j]) * binwdth;
+	    binwdth = state->y_bin[bin_cord[j] + 1][j] - state->y_bin[bin_cord[j]][j];
+	    y = state->y_bin[bin_cord[j]][j] + (z - bin_cord[j]) * binwdth;
 	  }
 	  x[j] = xl[j] + y * state->delx[j];
 	  if (j > 2) {
@@ -289,9 +287,9 @@ int gsl_monte_vegas3(gsl_monte_vegas_state *state,
 	f_sum += f;
 	f_sq_sum += f_sq;
 	for (j = 0; j < num_dim; ++j) {
-	  bin_sum[bin_cord[j] + 1][j] += f;
+	  state->bin_sum[bin_cord[j] + 1][j] += f;
 	  if (state->mode != MODE_STRATIFIED)
-	    grid_sum[bin_cord[j] + 1][j] += f_sq;
+	    state->grid_sum[bin_cord[j] + 1][j] += f_sq;
 	}
       } /* end of k loop */
 
@@ -302,7 +300,7 @@ int gsl_monte_vegas3(gsl_monte_vegas_state *state,
       sig += f_sq_sum;
       if (state->mode == MODE_STRATIFIED) {
 	for (j = 0; j < num_dim; ++j)
-	  grid_sum[bin_cord[j] + 1][j] += f_sq_sum;
+	  state->grid_sum[bin_cord[j] + 1][j] += f_sq_sum;
       }
     } while ( change_box_cord ( box_cord, state->boxes, num_dim-1) );
     /* end of box_cord loop */
@@ -325,39 +323,40 @@ int gsl_monte_vegas3(gsl_monte_vegas_state *state,
     if (state->verbose >= 0) {
       prn_res(state->it_num, intgrl, sqrt(sig), cum_int, cum_sig, chi_sq);
       if (state->it_num == state->max_it_num && state->verbose > 0)
-	prn_grid(y_bin, bin_sum, num_dim, state->bins, state->verbose);
+	prn_grid(state, num_dim);
     }
 
     /* Adjust the grid  */
     for (j = 0; j < num_dim; ++j) {
-      double oldg, newg, grid_tot_j, weight[GSL_V_BINS_MAX+1], tot_weight;
+      double oldg, newg, grid_tot_j, tot_weight;
+      double weight[GSL_V_BINS_MAX+1];
 
-      oldg = grid_sum[1][j];
-      newg = grid_sum[2][j];
-      grid_sum[1][j] = (oldg + newg) / 2;
-      grid_tot_j = grid_sum[1][j];
+      oldg = state->grid_sum[1][j];
+      newg = state->grid_sum[2][j];
+      state->grid_sum[1][j] = (oldg + newg) / 2;
+      grid_tot_j = state->grid_sum[1][j];
 
       /* This implements gs[i][j] = (gs[i-1][j]+gs[i][j]+gs[i+1][j])/3 */
       for (i = 2; i < state->bins; ++i) {
-	grid_sum[i][j] = oldg + newg;
+	state->grid_sum[i][j] = oldg + newg;
 	oldg = newg;
-	newg = grid_sum[i + 1][j];
-	grid_sum[i][j] = (grid_sum[i][j] + newg) / 3;
-	grid_tot_j += grid_sum[i][j];
+	newg = state->grid_sum[i + 1][j];
+	state->grid_sum[i][j] = (state->grid_sum[i][j] + newg) / 3;
+	grid_tot_j += state->grid_sum[i][j];
       }
-      grid_sum[state->bins][j] = (newg + oldg) / 2;
+      state->grid_sum[state->bins][j] = (newg + oldg) / 2;
 
-      grid_tot_j += grid_sum[state->bins][j];
+      grid_tot_j += state->grid_sum[state->bins][j];
       for (i = 1, tot_weight = 0; i <= state->bins; ++i) {
 	weight[i] = 0;
-	if (grid_sum[i][j] > 0) {
-	  oldg = grid_tot_j / grid_sum[i][j];
+	if (state->grid_sum[i][j] > 0) {
+	  oldg = grid_tot_j / state->grid_sum[i][j];
 	  /* damped change */
 	  weight[i] = pow(((oldg - 1) / oldg / log(oldg)), state->alpha);
 	}
 	tot_weight += weight[i];
       }
-      adjust_bins(y_bin, weight, tot_weight/state->bins, j, 
+      adjust_bins(state, state->y_bin, weight, tot_weight/state->bins, j, 
 		  state->bins, state->bins);
     }
   } /* for it_num */
@@ -381,9 +380,10 @@ int gsl_monte_vegas3(gsl_monte_vegas_state *state,
    appropriate amount.  
 */
 
-void adjust_bins(double bin[GSL_V_BINS_MAX+1][GSL_V_MAX_DIM], 
+void adjust_bins(gsl_monte_vegas_state *state,
+		 double bin[GSL_V_BINS_MAX+1][GSL_V_MAX_DIM], 
 		 double weight[GSL_V_BINS_MAX+1], 
-		 double pts_per_bin, int j, int n1, int n2)
+		 double pts_per_bin, int j, int bins_prev, int bins)
 {
   int    i, k;
   double xold, xnew, xin[GSL_V_BINS_MAX+1], dw;
@@ -391,7 +391,7 @@ void adjust_bins(double bin[GSL_V_BINS_MAX+1][GSL_V_MAX_DIM],
   xnew = 0;
   dw = 0;
   i = 1;
-  for (k = 1; k <= n1; ++k) {
+  for (k = 1; k <= bins_prev; ++k) {
     dw += weight[k];
     xold = xnew;
     xnew = bin[k][j];
@@ -400,9 +400,9 @@ void adjust_bins(double bin[GSL_V_BINS_MAX+1][GSL_V_MAX_DIM],
       xin[i] = xnew - (xnew - xold) * dw / weight[k];
     }
   }
-  for (i = 1; i < n2; ++i)
+  for (i = 1; i < bins; ++i)
     bin[i][j] = xin[i];
-  bin[n2][j] = 1;
+  bin[bins][j] = 1;
   return;
 }
 

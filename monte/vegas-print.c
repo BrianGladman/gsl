@@ -30,6 +30,7 @@ void prn_lim(double a[], double b[], int m)
   fprintf(o_file, "\n");
   fflush(o_file);
 }
+
 void prn_head(gsl_monte_vegas_state* state, 
 	      int num_dim, int calls, int it_num, int bins, int boxes)
 {
@@ -53,12 +54,10 @@ void prn_res(int a, double b, double c, double d, double e, double f)
   fflush(o_file);
 }
 
-void prn_grid(double y[GSL_V_BINS_MAX/2][GSL_V_MAX_DIM], 
-	      double s[GSL_V_BINS_MAX/2][GSL_V_MAX_DIM], 
-	      int m, int n, int p)
+void prn_grid(gsl_monte_vegas_state* state, int m)
 {
   int mod, i, j;
-
+  int p = state->verbose;
   if (p < 1 ) 
     return;
 
@@ -66,8 +65,9 @@ void prn_grid(double y[GSL_V_BINS_MAX/2][GSL_V_MAX_DIM],
     fprintf(o_file, "\n axis %d \n", j);
     fprintf(o_file, "      x          delta         x     ");
     fprintf(o_file, "    delta         x          delta\n");
-    for (i = 1 + p / 2, mod = 1; i <= n; i += p, ++mod) {
-      fprintf(o_file, "%11.2e%13.2e ", y[i][j], s[i][j]);
+    for (i = 1 + p / 2, mod = 1; i <= state->bins; i += p, ++mod) {
+      fprintf(o_file, "%11.2e%13.2e ", 
+	      state->y_bin[i][j], state->bin_sum[i][j]);
       if (mod % 3 == 0)
 	fprintf(o_file, "\n");
     }
