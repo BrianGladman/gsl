@@ -53,6 +53,7 @@ gsl_la_decomp_SV_impl(gsl_matrix * A,
                       gsl_vector * S,
                       double tolerance);
 
+
 /* LU Decomposition, Crout's method
  *
  * exceptions: 
@@ -60,7 +61,7 @@ gsl_la_decomp_SV_impl(gsl_matrix * A,
 int
 gsl_la_decomp_LU_impl(gsl_matrix * matrix,
                       gsl_vector_int * permutation,
-		      int * signum);
+                      int * signum);
 
 
 /* Linear Solve Using LU Decomposition
@@ -71,7 +72,8 @@ int
 gsl_la_solve_LU_impl(const gsl_matrix     * lu_matrix,
                      const gsl_vector_int * permutation,
                      const gsl_vector     * rhs,
-		     gsl_vector           * solution);
+                     gsl_vector           * solution);
+
 
 /* Linear Solve Using Householder Transformations
  *
@@ -80,6 +82,24 @@ gsl_la_solve_LU_impl(const gsl_matrix     * lu_matrix,
 int
 gsl_la_solve_HH_impl(gsl_matrix * matrix,
                      gsl_vector * vec);
+
+
+/* Linear solve for a symmetric tridiagonal system.
+ */
+int
+gsl_la_solve_symm_tridiag_impl(const gsl_vector * diag,
+                               const gsl_vector * offdiag,
+                               const gsl_vector * rhs,
+                               gsl_vector * solution);
+
+
+/* Linear solve for a symmetric cyclic tridiagonal system.
+ */
+int
+gsl_la_solve_symm_cyc_tridiag_impl(const gsl_vector * diag,
+                                   const gsl_vector * offdiag,
+                                   const gsl_vector * rhs,
+                                   gsl_vector * solution);
 
 
 /* Eigensolve by Jacobi Method

@@ -107,7 +107,9 @@ gsl_la_decomp_SV_impl(gsl_matrix * A,
             gsl_matrix_set(A, i, j, Aij*cosine + Aik*sine);
             gsl_matrix_set(A, i, k,  -Aij*sine + Aik*cosine);
           }
-          for(i=0; i<ncol; i++){     /* apply rotation to Q */
+
+	  /* apply rotation to Q */
+          for(i=0; i<ncol; i++){
             REAL Qij = gsl_matrix_get(Q, i, j);
             REAL Qik = gsl_matrix_get(Q, i, k);
             gsl_matrix_set(Q, i, j, Qij*cosine + Qik*sine);

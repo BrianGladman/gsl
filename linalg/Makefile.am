@@ -5,7 +5,7 @@ check_PROGRAMS = test_la
 pkginclude_HEADERS = \
 	gsl_linalg.h
 
-noinst_HEADERS = 
+noinst_HEADERS = tridiag.h
 
 
 INCLUDES = \
@@ -29,7 +29,8 @@ test_la_SOURCES = test_la.c
 libgsllinalg_a_SOURCES = 	\
 	eigen_sort.c		\
 	linalg_simple.c		\
-	multiply.c
+	multiply.c		\
+	tridiag.c
 
 
 strict:
