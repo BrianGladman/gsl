@@ -311,17 +311,17 @@ This function computes the lag-1 autocorrelation of the dataset @var{data}.
 @tex
 \beforedisplay
 $$
-a_1 = {\sum_{i = 1}^{n} (x_{i} - \hat\mu) (x_{i-1} - \hat\mu)
+a_1 = {\sum_{i = 1}^{n} (x_{i} - \Hat\mu) (x_{i-1} - \Hat\mu)
 \over
-\sum_{i = 1}^{n} (x_{i} - \hat\mu) (x_{i} - \hat\mu)}
+\sum_{i = 1}^{n} (x_{i} - \Hat\mu) (x_{i} - \Hat\mu)}
 $$
 \afterdisplay
 @end tex
 @ifinfo
 @example
-a_1 = @{\sum_@{i = 1@}^@{n@} (x_@{i@} - \hat\mu) (x_@{i-1@} - \hat\mu)
+a_1 = @{\sum_@{i = 1@}^@{n@} (x_@{i@} - \Hat\mu) (x_@{i-1@} - \Hat\mu)
        \over
-       \sum_@{i = 1@}^@{n@} (x_@{i@} - \hat\mu) (x_@{i@} - \hat\mu)@}
+       \sum_@{i = 1@}^@{n@} (x_@{i@} - \Hat\mu) (x_@{i@} - \Hat\mu)@}
 @end example
 @end ifinfo
 @noindent
@@ -342,13 +342,13 @@ This function computes the covariance of the datasets @var{data1} and
 @tex
 \beforedisplay
 $$
-covar = {1 \over (n - 1)} \sum_{i = 1}^{n} (x_{i} - \hat x) (y_{i} - \hat y)
+covar = {1 \over (n - 1)} \sum_{i = 1}^{n} (x_{i} - \Hat x) (y_{i} - \Hat y)
 $$
 \afterdisplay
 @end tex
 @ifinfo
 @example
-covar = (1/(n - 1)) \sum_@{i = 1@}^@{n@} (x_i - \hat x) (y_i - \hat y)
+covar = (1/(n - 1)) \sum_@{i = 1@}^@{n@} (x_i - \Hat x) (y_i - \Hat y)
 @end example
 @end ifinfo
 @noindent

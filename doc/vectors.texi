@@ -4,11 +4,11 @@
 
 The functions described in this chapter provide a simple vector and
 matrix interface to ordinary C arrays. The memory management of these
-arrays is simplified by use of a single type, known as a block. By
-writing your functions in terms of vectors and matrices you can pass a
-single structure containing both data and dimensions without needing
-additional function arguments.  The structures are compatible with the
-vector and matrix formats used by BLAS routines.
+arrays is implemented using a single underlying type, known as a
+block. By writing your functions in terms of vectors and matrices you
+can pass a single structure containing both data and dimensions without
+needing additional function arguments.  The structures are compatible
+with the vector and matrix formats used by BLAS routines.
 
 @menu
 * Data types::                  
@@ -98,7 +98,7 @@ Vectors and matrices are made by @dfn{slicing} an underlying block. A
 slice is a set of elements formed from an initial offset and a
 combination of indices and step-sizes. In the case of a matrix the
 step-size for the column index represents the row-length.  The step-size
-for a vector is known as a @dfn{stride}.
+for a vector is known as the @dfn{stride}.
 
 The functions for allocating and deallocating blocks are defined in
 @file{gsl_block.h}
@@ -283,12 +283,17 @@ object and will not be deallocated.
 @section Accessing vector elements
 @cindex vectors, range-checking
 @cindex range-checking for vectors
+@cindex Checkergcc
+@cindex gcc extensions, range-checking
+@cindex Fortran range checking, equivalent in gcc
 
 Unlike @sc{fortran} compilers, C compilers do not usually provide
-support for range checking of vectors and matrices.  However, the
-functions @code{gsl_vector_get} and @code{gsl_vector_set} can perform
-range checking for you and report an error if you attempt to access
-elements outside the allowed range.
+support for range checking of vectors and matrices @footnote{Range
+checking is available in the GNU C Compiler extension @code{checkergcc},
+as part of its full memory checking facility}.  However, the functions
+@code{gsl_vector_get} and @code{gsl_vector_set} can perform range
+checking for you and report an error if you attempt to access elements
+outside the allowed range.
 
 The functions for accessing the elements of a vector or matrix are
 defined in @file{gsl_vector.h} and declared @code{extern inline} to
@@ -419,7 +424,7 @@ v'(i) = v->data[(offset + i*stride)*v->stride]
 @noindent
 where the index @var{i} runs from 0 to @code{n-1}.
 @end deftypefun
-
+@noindent
 Note that subvector views give direct access to the underlying elements
 of the original vector. For example, the following code will zero the
 even elements of the vector @code{v} of length @code{n}, while leaving the
@@ -430,10 +435,10 @@ gsl_vector v_even = gsl_vector_subvector_with_stride (v, 0, n/2, 2);
 gsl_vector_set_zero (&v_even);
 @end example
 @noindent
-Any vector view can be passed to any subroutine which takes a vector
-argument, using the @code{&} operator, just as for any directly
-allocated vector.  The following code computes the norm of odd elements
-of @code{v} using the @sc{blas} routine @sc{dnrm2},
+A vector view can be passed to any subroutine which takes a vector
+argument, using the @code{&} operator, just as a directly allocated
+vector would be.  For example, the following code computes the norm of
+odd elements of @code{v} using the @sc{blas} routine @sc{dnrm2},
 
 @example
 gsl_vector v_odd = gsl_vector_subvector_with_stride (v, 1, n/2, 2);
@@ -713,7 +718,7 @@ typedef struct
 @noindent
 Matrices are stored in row-major order, meaning that each row of
 elements forms a contiguous block in memory.  This is the standard
-"C-ordering" of two-dimensional arrays. Note that @sc{Fortran} stores
+"C-ordering" of two-dimensional arrays. Note that @sc{fortran} stores
 arrays in column-major order. The number of rows is @var{size1}.  The
 range of valid row indices runs from 0 to @code{size1-1}.  Similarly
 @var{size2} is the number of columns.  The range of valid column indices
@@ -982,9 +987,9 @@ new vector is set to null if @var{j} is out of range.
 
 @deftypefun gsl_vector gsl_matrix_diagonal (gsl_matrix * @var{m})
 This function returns a @code{gsl_vector} struct which is a view of the
-diagonal of the matrix @var{m}. The matrix @var{m} must be square, and
-the @code{data} pointer of the new vector is set to null if this is not
-the case.
+diagonal of the matrix @var{m}. The matrix @var{m} is not required to be
+square. For a rectangular matrix the length of the diagonal is the same
+as the smaller dimension of the matrix.
 @end deftypefun
 
 @comment @deftypefun {gsl_vector *} gsl_vector_alloc_row_from_matrix (gsl_matrix * @var{m}, size_t @var{i})

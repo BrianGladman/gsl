@@ -1,11 +1,78 @@
-TODO  -- see also individual TODO files in each directory
+Consult the individual TODO files in each directory for more specific
+projects.
+
+* Annotate the header files with GAMS classifications
+
+* Document the use of autogen.sh in the HACKING file
+
+* Add Lattice Method and Quasi-random Method to monte carlo integration
+
+* Run tests where matrix tda != size2, note that tda is a physical
+dimension and size2 is the number of columns in the matrix. This will
+probably find a lot of bugs in the matrix logic.
+
+* Fix up ieee-utils/fp-m68klinux.c for correct behavior and actually
+test it.
+
+* More tests. We should (at least) have a test for every error
+condition.  Use GCOV to improve coverage.
+
+* Sine and Cosine Transforms from FFTPACK. A simple multidimensional
+fft.
 
 * Add a "Related Projects" section to the web page in order to link to
 GSDV
 
-* Provide an interface to LAPACK, as for BLAS.
+* Document Jacobi eigen function, in particular that it only works for
+symmetric matrices.
 
-* Annotate the header files with GAMS classifications
+
+Before Each Release
+===================
+
+* Make sure that all #defines are fully wrapped in ()'s, especially
+the outermost layer which may have been missed. Everything should be
+of the form #define foo(x) (....) so there is no possibility of bad
+parsing.
+
+* Clean up the ordering of lines in the Makefile.am's so that they are
+all consistent. At the moment the lines are in any order. Also get rid
+of make strict targets, since it's better to define a shell alias to
+do that.  Files with strict target are 
+
+    blas/Makefile.am
+    dht/Makefile.am
+    linalg/Makefile.am
+    monte/Makefile.am
+    ode-initval/Makefile.am
+    specfunc/Makefile.am
+    sum/Makefile.am
+
+* Make all internal functions static, and have all exported functions
+& variables prefixed with gsl_ or GSL_. Useful command for checking this: nm -A -g -P */*.a  | perl -a -n -e 'print if $F[1] !~ /gsl_/ && $F[2] ne "U"'
+
+* Make sure config.h is used consistently. This is especially relevant
+for HAVE_INLINE use in installed headers.  
+
+ grep config.h gsl/*.h    --- shouldn't match anything
+ grep -L config.h */*.c m| grep -v _source  --- gives files not using config.h
+
+* Make the return value EINVAL vs EDOM consistent for invalid
+parameters. EDOM means a domain error (i.e. float or mathematically
+undefined), EINVAL means invalid (i.e. zero length)
+
+* Change return 0 to return GSL_SUCCESS, and return -1 to GSL_FAILURE
+throughout, where appropriate. Similarly change any if(...) checks of
+return values to use == GSL_SUCCESS, if they are checking for zero.
+N.B. want to be careful about accidentally omitting error conditions
+if using something like == GSL_FAILURE when function returns a
+different error code.
+
+
+Wishlist or vague ideas
+=======================
+
+* Provide an interface to LAPACK, as for BLAS?
 
 * Public domain or free texts which could be distributed with GSL:
      
@@ -30,11 +97,6 @@ distributed (??), presumably it is considered "republication" and so
 requires permission.  The versions downloaded from their server
 explicitly forbid redistribution (natch).
 
-* Document the use of autogen.sh in the HACKING file
-
-* Document Jacobi eigen function, in particular that it only works for
-symmetric matrices.
-
 * Investigate complex support in GCC: Operations like sin(z) silently
 convert argument to double, losing the imaginary part. This is
 mentioned in CEPHES documentation in 1998 with a patch to generate a
@@ -42,13 +104,6 @@ warning.  What happened?
 
 * Go through the matrix and vector functions systematically and decide
 what should be provided outside of BLAS.
-
-* Make sure that all #defines are fully wrapped in ()'s, especially
-the outermost layer which may have been missed. Everything should be
-of the form #define foo(x) (....) so there is no possibility of bad
-parsing.
-
-* Add Lattice Method and Quasi-random Method to monte carlo integration
 
 * Standardize function names, in particular VERB vs NOUN (e.g. _invert
 vs _inverse). Also adopt a convection for functions which can operate
@@ -76,62 +131,14 @@ rounding.
 
 * Optimization/error for dest == src as appropriate
 
-* Clean up the ordering of lines in the Makefile.am's so that they are
-all consistent. At the moment the lines are in any order. Also get rid
-of make strict targets, since it's better to define a shell alias to
-do that.  Files with strict target are 
-
-    blas/Makefile.am
-    dht/Makefile.am
-    linalg/Makefile.am
-    monte/Makefile.am
-    ode-initval/Makefile.am
-    specfunc/Makefile.am
-    sum/Makefile.am
-
-* Run tests where matrix tda != size2, note that tda is a physical
-dimension and size2 is the number of columns in the matrix. This will
-probably find a lot of bugs in the matrix logic.
-
-* Fix up ieee-utils/fp-m68klinux.c for correct behavior and actually
-test it.
-
-* Make all internal functions static, and have all exported functions
-& variables prefixed with gsl_ or GSL_. Useful command for checking this: nm -A -g -P */*.a  | perl -a -n -e 'print if $F[1] !~ /gsl_/ && $F[2] ne "U"'
-
-* Make sure config.h is used consistently. This is especially relevant
-for HAVE_INLINE use in installed headers.  
-
- grep config.h gsl/*.h    --- shouldn't match anything
- grep -L config.h */*.c m| grep -v _source  --- gives files not using config.h
-
-* Make the return value EINVAL vs EDOM consistent for invalid
-parameters. EDOM means a domain error (i.e. float or mathematically
-undefined), EINVAL means invalid (i.e. zero length)
-
-* Change return 0 to return GSL_SUCCESS, and return -1 to GSL_FAILURE
-throughout, where appropriate. Similarly change any if(...) checks of
-return values to use == GSL_SUCCESS, if they are checking for zero.
-N.B. want to be careful about accidentally omitting error conditions
-if using something like == GSL_FAILURE when function returns a
-different error code.
-
 * Constant objects (like gsl_roots_fsolver_brent) ought to have
 constant pointers (const gsl_roots_fsolver_type * const
 gsl_roots_fsolver_brent)??
-
-* More tests. We should (at least) have a test for every error
-condition. Write a perl script to check for error conditions that
-aren't tested. Actually GCOV does a better job -- use that for
-coverage testing.
 
 * Add swig.i files and swig demos so that swig can be run more easily
 
 * Redesign the interface to iterative functions to use an init/do-while
 construct (Mostly done).
-
-* Sine and Cosine Transforms from FFTPACK. A simple multidimensional
-fft.
 
 * Switch to library interface versioning for libtool (eventually).
 

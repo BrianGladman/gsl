@@ -188,7 +188,7 @@ won't be able to compile the program until it is completely
 warning-free.
 @item -Wall 
 This turns on a set of warnings for common programming problems.  You
-need @code{-Wall}, but it is not enough on its own, as explained above.
+need @code{-Wall}, but it is not enough on its own.
 @item -O4
 Turn on optimization.  The warnings for uninitialized variables in
 @code{-Wall} rely on the optimizer to analyze the code.  If there is no
@@ -198,10 +198,8 @@ This turns on some extra warnings not included in @code{-Wall}, such as
 missing return values and comparisons between signed and unsigned
 integers.
 @item -Wmissing-prototypes -Wstrict-prototypes 
-Warn if there are any missing or inconsistent prototypes.  If your
-prototypes are missing then you will never detect problems with
-incorrect arguments.  If your prototypes are inconsistent then you
-already have a problem.
+Warn if there are any missing or inconsistent prototypes.  Without
+prototypes it is harder to detect problems with incorrect arguments. 
 @item -Wtraditional 
 This warns about certain constructs that behave differently in
 traditional and ANSI C. Whether the traditional or ANSI interpretation
