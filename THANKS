@@ -50,3 +50,5 @@ functions
   gsl-config and gsl.m4 we use.
 
 * C M Murphy <C.M.Murphy@bath.ac.uk> patch to fix up consts in header files
+
+* Bracy H. Elton for correcting a reference in the FFT Algorithms document

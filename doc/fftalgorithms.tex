@@ -1,4 +1,4 @@
-\documentclass[fleqn]{article}
+\documentclass[fleqn,12pt]{article}
 %
 \setlength{\oddsidemargin}{-0.25in}
 \setlength{\textwidth}{7.0in}
@@ -108,13 +108,13 @@ suitable as a specialized algorithm for given lengths.
   Large prime lengths cannot be handled efficiently by any of these
 algorithms. However it may still possible to compute a DFT, by using
 results from number theory. Rader showed that it is possible to
-results to convert a length-$p$ FFT (where $p$ is prime) into a
-convolution of length-($p-1$).  There is a simple identity between the
-convolution of length $N$ and the FFT of the same length, so if $p-1$
-is easily factorizable this allows the convolution to be computed
-efficiently via the FFT. The idea is presented in the original paper
-by Rader~\cite{raderprimes} (also reprinted in~\cite{mcclellan79}),
-but for more details see the theoretical books mentioned earlier.
+convert a length-$p$ FFT (where $p$ is prime) into a convolution of
+length-($p-1$).  There is a simple identity between the convolution of
+length $N$ and the FFT of the same length, so if $p-1$ is easily
+factorizable this allows the convolution to be computed efficiently
+via the FFT. The idea is presented in the original paper by
+Rader~\cite{raderprimes} (also reprinted in~\cite{mcclellan79}), but
+for more details see the theoretical books mentioned earlier.
 \end{subsection}
 
 %\subsection{In-place algorithms vs algorithms using scratch space}
@@ -1450,13 +1450,13 @@ Here is the algorithm to implement the mixed-radix FFT,
 %
 \subsection{Details of the implementation}
 %
-First the function \verb\gsl_fft_complex_wavetable_alloc\ allocates
+First the function {\tt gsl\_fft\_complex\_wavetable\_alloc} allocates
 $n$ elements of scratch space (to hold the vector $v'$ for each
 iteration) and $n$ elements for a trigonometric lookup table of
 twiddle factors.
 
 Then the length $n$ must be factorized. There is a general
-factorization function \verb\gsl_fft_factorize\ which takes a list of
+factorization function {\tt gsl\_fft\_factorize} which takes a list of
 preferred factors. It first factors out the preferred factors and then
 removes general remaining prime factors.
 
@@ -1490,19 +1490,22 @@ the FFT. In terms of the lookup table we can write this as,
 \right.
 \end{eqnarray}
 %
-The array \verb\twiddle[i]\ maintains a set of pointers into
-\verb\trig\ for the starting points for the outer loop.  The core of
-the implementation is \verb\gsl_fft_complex\. This function loops over
+\begin{sloppypar}
+\noindent 
+The array {\tt twiddle[i]} maintains a set of pointers into {\tt trig}
+for the starting points for the outer loop.  The core of the
+implementation is {\tt gsl\_fft\_complex}. This function loops over
 the chosen factors of $N$, computing the iteration $v'=T_i v$ for each
 pass. When the DFT for a factor is implemented the iteration is
-handed-off to a dedicated small-$N$ module, such as
-\verb\gsl_fft_complex_pass_3\ or \verb\gsl_fft_complex_pass_5\.
-Unimplemented factors are handled by the general-$N$ routine
-\verb\gsl_fft_complex_pass_n\. The structure of one of the small-$N$
-modules is a simple transcription of the basic algorithm given above.
-Here is an example for \verb\gsl_fft_complex_pass_3\. For a pass with
-a factor of 3 we have to calculate the following expression,
-%
+handed-off to a dedicated small-$N$ module, such as {\tt
+gsl\_fft\_complex\_pass\_3} or {\tt
+gsl\_fft\_complex\_pass\_5}.  Unimplemented factors are handled
+by the general-$N$ routine {\tt gsl\_fft\_complex\_pass\_n}. The
+structure of one of the small-$N$ modules is a simple transcription of
+the basic algorithm given above.  Here is an example for {\tt
+gsl\_fft\_complex\_pass\_3}. For a pass with a factor of 3 we have to
+calculate the following expression,
+\end{sloppypar}%
 \begin{equation}
 v'_{(a f + \lambda) p_{i-1} + b} 
 = 
@@ -1565,7 +1568,7 @@ locations in the scratch vector $v'$,
 %
 The DFT matrix multiplication is computed using the optimized
 sub-transform modules given in the next section. The twiddle factors
-$\omega^a_{q_{i-1}}$ are taken out of the \verb\trig\ array.
+$\omega^a_{q_{i-1}}$ are taken out of the {\tt trig} array.
 
 To compute the inverse transform we go back to the definition of the
 fourier transform and note that the inverse matrix is just the complex
