@@ -1,0 +1,12 @@
+#ifndef GSL_VERSION_H
+#define GSL_VERSION_H
+
+#define GSL_MAJOR_VERSION @GSL_MAJOR_VERSION@
+#define GSL_MINOR_VERSION @GSL_MINOR_VERSION@
+#define GSL_MICRO_VERSION @GSL_MICRO_VERSION@
+
+extern const unsigned int gsl_major_version;
+extern const unsigned int gsl_minor_version;
+extern const unsigned int gsl_micro_version;
+
+#endif /* GSL_VERSION_H */
