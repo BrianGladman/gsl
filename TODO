@@ -1,5 +1,9 @@
 TODO  -- see also individual TODO files in each directory
 
+* Standardize function names, in particular VERB vs NOUN (e.g. _invert
+vs _inverse). Also adopt a convection for functions which can operate
+in place vs use of workspace (e.g linalg_solve functions).
+
 * Change from gsl-ref.texi to gsl.texi since it is the main file?
 
 * Remove error stream stuff?? It is hardly used.

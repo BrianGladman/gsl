@@ -44,6 +44,7 @@ The functions described in this section are declared in
 * The Bernoulli Distribution::  
 * The Binomial Distribution::   
 * The Negative Binomial Distribution::  
+* The Pascal Distribution::     
 * The Geometric Distribution::  
 * The Hypergeometric Distribution::  
 * The Logarithmic Distribution::  
@@ -741,8 +742,8 @@ p(x) dx = @{\Gamma((\nu + 1)/2) \over \sqrt@{\pi \nu@} \Gamma(\nu/2)@}
    (1 + x^2/\nu)^@{-(\nu + 1)/2@} dx
 @end example
 @end ifinfo
-
 @noindent
+for @math{-\infty < x < +\infty}.
 @end deftypefn
 
 @deftypefun double gsl_ran_tdist_pdf (double @var{x}, double @var{nu})
@@ -776,7 +777,9 @@ $$
 p(x) dx = @{\Gamma(a+b) \over \Gamma(a) \Gamma(b)@} x^@{a-1@} (1-x)^@{b-1@} dx
 @end example
 @end ifinfo
-
+@noindent
+for @c{$0 \le x \le 1$}
+@math{0 <= x <= 1}
 @end deftypefn
 
 @deftypefun double gsl_ran_beta_pdf (double @var{x}, double @var{a}, double @var{b})
@@ -812,7 +815,7 @@ p(x) dx = @{ \exp(-x/\mu) \over \mu (1 + \exp(-x/\mu))^2 @} dx
 @end example
 @end ifinfo
 @noindent
-for @math{x > 0}
+@math{-\infty < x < +\infty}.
 @end deftypefn
 
 @deftypefun double gsl_ran_logistic_pdf (double @var{x}, double @var{mu})
@@ -980,7 +983,8 @@ p(x) dx = @{a \over \mu^a@} x^@{a-1@}  \exp(-(x/\mu)^a) dx
 @end ifinfo
 
 @noindent
-for @math{-\infty < x < \infty}.
+for @c{$x \ge 0$}
+@math{x >= 0}.
 @end deftypefn
 
 @deftypefun double gsl_ran_weibull_pdf (double @var{x}, double @var{mu}, double @var{a})
@@ -1206,9 +1210,9 @@ given above.
 @section The Bernoulli Distribution
 @deftypefn Random {unsigned int} gsl_ran_bernoulli (const gsl_rng * @var{r}, double @var{p})
 @cindex Bernoulli trial, random numbers
-This function returns the result either 0 or 1, the result of a
-Bernoulli trial with probability @var{p}. The probability distribution
-for a Bernoulli trial is,
+This function returns either 0 or 1, the result of a Bernoulli trial
+with probability @var{p}. The probability distribution for a Bernoulli
+trial is,
 
 @tex
 \beforedisplay
@@ -1301,7 +1305,7 @@ p(k) = @{\Gamma(n + k) \over \Gamma(k+1) \Gamma(n) @} p^n (1-p)^k
 @end ifinfo
 
 @noindent
-Note that @math{k} is not required to be an integer.
+Note that @math{n} is not required to be an integer.
 @end deftypefn
 
 @deftypefun double gsl_ran_nbinomial_pdf (unsigned int @var{k}, double @var{p}, double  @var{n})
@@ -1315,6 +1319,10 @@ from a negative binomial distribution with parameters @var{p} and
 \centerline{\input rand-nbinomial.tex}
 @end tex
 
+@page
+@node The Pascal Distribution
+@section The Pascal Distribution
+
 @deftypefn Random {unsigned int} gsl_ran_pascal (const gsl_rng * @var{r}, double @var{p}, unsigned int @var{k})
 This function returns a random integer from the Pascal distribution. The
 Pascal distribution is simply a negative binomial distribution with an
@@ -1323,16 +1331,18 @@ integer value of @math{n}.
 @tex
 \beforedisplay
 $$
-p(k) = {(n + k - 1)! \over k! (n -1)! } p^n (1-p)^k
+p(k) = {(n + k - 1)! \over k! (n - 1)! } p^n (1-p)^k
 $$
 \afterdisplay
 @end tex
 @ifinfo
 @example
-p(k) = @{(n + k - 1)! \over k! (n -1)! @} p^n (1-p)^k
+p(k) = @{(n + k - 1)! \over k! (n - 1)! @} p^n (1-p)^k
 @end example
 @end ifinfo
-
+@noindent
+for @c{$k \ge 0$}
+@math{k >= 0}
 @end deftypefn
 
 @deftypefun double gsl_ran_pascal_pdf (unsigned int @var{k}, double @var{p}, unsigned int @var{n})
@@ -1340,6 +1350,11 @@ This function computes the probability @math{p(k)} of obtaining @var{k}
 from a Pascal distribution with parameters @var{p} and
 @var{n}, using the formula given above.
 @end deftypefun
+
+@sp 1
+@tex
+\centerline{\input rand-pascal.tex}
+@end tex
 
 @page
 @node The Geometric Distribution
@@ -1354,13 +1369,13 @@ is,
 @tex
 \beforedisplay
 $$
-p(k) =  p (1-p)^k
+p(k) =  p (1-p)^{k-1}
 $$
 \afterdisplay
 @end tex
 @ifinfo
 @example
-p(k) =  p (1-p)^k
+p(k) =  p (1-p)^(k-1)
 @end example
 @end ifinfo
 
@@ -1459,10 +1474,21 @@ using the formula given above.
 @node Shuffling and Sampling
 @section Shuffling and Sampling
 
+The following functions allow the shuffling and sampling of a set of
+objects. The algorithms rely on a random number generator as source of
+randomness and a poor quality generator can lead to correlations in the
+output. In particular it is important to avoid generators with a short
+period. For more information see Knuth, v2, 3rd ed, Section 3.4.2,
+``Random Sampling and Shuffling''.
+
 @deftypefn Random void gsl_ran_shuffle (const gsl_rng * @var{r}, void * @var{base}, size_t @var{n}, size_t @var{size})
 
 This function randomly shuffles the order of @var{n} objects, each of
-size @var{size}, stored in the array @var{base}[0..@var{n}-1].
+size @var{size}, stored in the array @var{base}[0..@var{n}-1]. The
+output of the random number generator @var{r} is used to produce the
+permutation.  The algorithm generates all possible @math{n!}
+permutations with equal probability, assuming a perfect source of random
+numbers.
 
 The following code shows how to shuffle the numbers from 0 to 51,
 
@@ -1481,13 +1507,18 @@ gsl_ran_shuffle (r, a, 52, sizeof (int));
 
 @deftypefn Random {void *} gsl_ran_choose (const gsl_rng * @var{r}, void * @var{dest}, size_t @var{k}, void * @var{src}, size_t @var{n}, size_t @var{size})
 This function fills the array @var{dest[k]} with @var{k} objects taken
-randomly from the @var{n} elements of the array @var{src[n]}. The
-objects are each of size @var{size}. The objects are sampled without
-replacement, thus each object can only appear once in @var{dest[k]}.  It
-is required that @var{k} be less than or equal to @code{n}. The objects
-in @var{dest} will be in the same relative order as those in @var{src}.
-You will need to call @code{gsl_ran_shuffle(r, dest, n, size)} if you
-want to randomize the order.
+randomly from the @var{n} elements of the array
+@var{src}[0..@var{n}-1]. The objects are each of size @var{size}.  The
+output of the random number generator @var{r} is used to make the
+selection. The algorithm ensures all possible samples are equally
+likely, assuming a perfect source of randomness.
+
+The objects are sampled without replacement, thus each object can only
+appear once in @var{dest[k]}.  It is required that @var{k} be less than
+or equal to @code{n}. The objects in @var{dest} will be in the same
+relative order as those in @var{src}.  You will need to call
+@code{gsl_ran_shuffle(r, dest, n, size)} if you want to randomize the
+order.
 
 The following code shows how to select a random sample of three unique
 numbers from the set 0 to 99,
@@ -1528,7 +1559,6 @@ main ()
   /* create a generator chosen by the environment variable GSL_RNG_TYPE */
 
   gsl_rng_env_setup();
-  
   r = gsl_rng_alloc (gsl_rng_default);
 
   /* print n random variates chosen from the poisson distribution with
@@ -1537,7 +1567,6 @@ main ()
   for (i = 0; i < n; i++) 
     @{
       unsigned int k = gsl_ran_poisson (r, mu);
-      
       printf(" %u", k);
     @}
 

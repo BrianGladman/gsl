@@ -151,8 +151,53 @@ determine how many numbers to read. The function returns
 
 @node Permutation Examples
 @section Examples
+The example program below creates a random permutation by shuffling and
+finds its inverse.
 
-TO be written
+@example
+#include <stdio.h>
+#include <gsl/gsl_rng.h>
+#include <gsl/gsl_randist.h>
+#include <gsl/gsl_permutation.h>
+
+int 
+main (void) 
+@{
+  const size_t N = 10 ;
+  gsl_rng * r = gsl_rng_alloc (gsl_rng_env_setup()) ;
+
+  gsl_permutation * p = gsl_permutation_alloc (N) ;
+  gsl_permutation * p_inv = gsl_permutation_alloc (N) ;
+
+  printf("initial permutation:") ;  
+  gsl_permutation_init (p) ;
+  gsl_permutation_fprintf (stdout, p, " %u") ;
+  printf("\n") ;
+
+  printf(" random permutation:") ;  
+  gsl_ran_shuffle (r, p->data, p->size, sizeof(size_t));
+  gsl_permutation_fprintf (stdout, p, " %u") ;
+  printf("\n") ;
+
+  printf("inverse permutation:") ;  
+  gsl_permutation_invert (p_inv, p);
+  gsl_permutation_fprintf (stdout, p_inv, " %u") ;
+  printf("\n") ;
+@}
+@end example
+@noindent
+Here is the output from the program,
+
+@example
+bash$ ./a.out 
+initial permutation: 0 1 2 3 4 5 6 7 8 9
+ random permutation: 1 3 5 2 7 6 0 4 9 8
+inverse permutation: 6 0 3 1 7 2 5 4 9 8
+@end example
+@noindent
+The random permutation @code{p[i]} and its inverse @code{q[i]} are
+related through the identity @code{p[q[i]] = i}, which can be verified
+from the output.
 
 @node Permutation References and Further Reading
 @section References and Further Reading

@@ -3,26 +3,41 @@
 @cindex C extensions, compatible use of
 @cindex compatibility
 This chapter describes how to compile programs that use GSL, and
-introduces its conventions.  The library is written in ANSI C and is
-intended to conform to the ANSI C standard.  The library does not rely
-on any non-ANSI extensions in the interface it exports to the user.
-Extensions which can be used in a way compatible with pure ANSI C are
-supported, however.  Thus programs you write using GSL should be
-portable to any system with a working ANSI C compiler.  They will also be
-able to take advantage of compiler extensions on those platforms which
-support them.  When an ANSI C feature is known to be broken on a
-particular system the library will exclude any related functions at
-compile-time.  This should make it impossible to link a program that
-would use these functions and give incorrect results.
+introduces its conventions.  
 
 @menu
+* ANSI C Compliance::           
 * Compiling and Linking::       
+* Shared Libraries::            
 * Inline functions::            
 * Long double::                 
 * Alternative optimized functions::  
 * Support for different numeric types::  
 * Compatibility with C++::      
 @end menu
+
+@node ANSI C Compliance
+@section ANSI C Compliance
+
+The library is written in ANSI C and is intended to conform to the ANSI
+C standard.  It should be portable to any system with a working ANSI C
+compiler.
+
+The library does not rely on any non-ANSI extensions in the interface it
+exports to the user.  Programs you write using GSL can be ANSI
+compliant. Extensions which can be used in a way compatible with pure
+ANSI C are supported, however, via conditional compilation.  This allows
+the library to take advantage of compiler extensions on those platforms
+which support them.
+
+When an ANSI C feature is known to be broken on a particular system the
+library will exclude any related functions at compile-time.  This should
+make it impossible to link a program that would use these functions and
+give incorrect results.
+
+To avoid namespace conflicts all exported function names and variables
+have the prefix @code{gsl_}, while exported macros have the prefix
+@code{GSL_}.
 
 @node Compiling and Linking
 @section Compiling and Linking
@@ -60,21 +75,35 @@ gcc app.o -lgsl -lgslblasnative -lm
 @end example
 @noindent
 The following command line shows how to link the same application with
-an alternative blas library @file{libcblas},
+an alternative blas library @file{libmycblas},
 
 @example
-gcc app.o -lgsl -lgslblascblas -lcblas -lm
+gcc app.o -lgsl -lgslblascblas -lmycblas -lm
 @end example
 @noindent
 The library must conform to the @sc{cblas} standard. For more
 information see @ref{BLAS Support}.
+
+The program @code{gsl-config} provides information on the local version
+of the library. For example, the following command shows that the
+library has been installed under the directory @file{/usr/local},
+
+@example
+bash$ gsl-config --prefix
+/usr/local
+@end example
+@noindent
+Further information is available using the command @code{gsl-config --help}.
+
+@node Shared Libraries
+@section Shared Libraries
 
 To run a program linked with the shared version of the library it may be
 necessary to define the shell variable @code{LD_LIBRARY_PATH} to include
 the directory where the library is installed. For example,
 
 @example
-LD_LIBRARY_PATH=/usr/local/gsl:$LD_LIBRARY_PATH ./app
+LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH ./app
 @end example
 @noindent
 To compile a statically linked version of the program instead, use the
@@ -83,18 +112,6 @@ To compile a statically linked version of the program instead, use the
 @example
 gcc -static app.o -lgsl -lgslblasnative -lm
 @end example
-@noindent
-The installed program @code{gsl-config} provides information on the
-appropriate compiler and linker options for compiling programs using the
-library. For example, the following command shows that the library has
-been installed under the directory @file{/usr/local},
-
-@example
-$ gsl-config --prefix
-/usr/local
-@end example
-@noindent
-Further information is available using the command @code{gsl-config --help}.
 
 @node Inline functions
 @section Inline functions

@@ -22,8 +22,8 @@
 \special{!
 %!PS-Adobe-2.0 EPSF-2.0
 %%Title: random-walk.tex
-%%Creator: gnuplot 3.5 (pre 3.6) patchlevel beta 340
-%%CreationDate: Tue Jul 27 17:07:11 1999
+%%Creator: gnuplot 3.5 (pre 3.6) patchlevel beta 347
+%%CreationDate: Tue Mar 14 21:49:20 2000
 %%DocumentFonts: 
 %%BoundingBox: 0 0 360 237
 %%Orientation: Landscape
@@ -62,9 +62,9 @@ gnudict begin
 /PL { stroke userlinewidth setlinewidth } def
 /LTb { BL [] 0 0 0 DL } def
 /LTa { AL [1 dl 2 dl] 0 setdash 0 0 0 setrgbcolor } def
-/LT0 { PL [] 0 1 0 DL } def
-/LT1 { PL [4 dl 2 dl] 0 0 1 DL } def
-/LT2 { PL [2 dl 3 dl] 1 0 0 DL } def
+/LT0 { PL [] 1 0 0 DL } def
+/LT1 { PL [4 dl 2 dl] 0 1 0 DL } def
+/LT2 { PL [2 dl 3 dl] 0 0 1 DL } def
 /LT3 { PL [1 dl 1.5 dl] 1 0 1 DL } def
 /LT4 { PL [5 dl 2 dl 1 dl 2 dl] 0 1 1 DL } def
 /LT5 { PL [4 dl 3 dl 1 dl 3 dl] 1 1 0 DL } def
@@ -236,6 +236,26 @@ gnudict begin
   closepath stroke grestore } def
 /CircE { stroke [] 0 setdash 
   hpt 0 360 arc stroke } def
+/Opaque { gsave closepath 1 setgray fill grestore 0 setgray closepath } def
+/DiaW { stroke [] 0 setdash vpt add M
+  hpt neg vpt neg V hpt vpt neg V
+  hpt vpt V hpt neg vpt V Opaque stroke } def
+/BoxW { stroke [] 0 setdash exch hpt sub exch vpt add M
+  0 vpt2 neg V hpt2 0 V 0 vpt2 V
+  hpt2 neg 0 V Opaque stroke } def
+/TriUW { stroke [] 0 setdash vpt 1.12 mul add M
+  hpt neg vpt -1.62 mul V
+  hpt 2 mul 0 V
+  hpt neg vpt 1.62 mul V Opaque stroke } def
+/TriDW { stroke [] 0 setdash vpt 1.12 mul sub M
+  hpt neg vpt 1.62 mul V
+  hpt 2 mul 0 V
+  hpt neg vpt -1.62 mul V Opaque stroke } def
+/PentW { stroke [] 0 setdash gsave
+  translate 0 hpt M 4 {72 rotate 0 hpt L} repeat
+  Opaque stroke grestore } def
+/CircW { stroke [] 0 setdash 
+  hpt 0 360 arc Opaque stroke } def
 /BoxFill { gsave Rec 1 setgray fill grestore } def
 end
 %%EndProlog
@@ -248,204 +268,208 @@ gsave
 0.100 0.100 scale
 0 setgray
 newpath
+1.000 UL
 LTb
-400 400 M
-3150 0 R
-400 573 M
-3150 0 R
-400 745 M
-3150 0 R
-400 918 M
-3150 0 R
-400 1090 M
-3150 0 R
-400 1263 M
-3150 0 R
-400 1436 M
-3150 0 R
-400 1608 M
-3150 0 R
-400 1781 M
-3150 0 R
-400 1953 M
-3150 0 R
-400 2126 M
-3150 0 R
-400 400 M
-0 1726 R
-558 400 M
+300 300 M
+3200 0 R
+300 488 M
+3200 0 R
+300 675 M
+3200 0 R
+300 863 M
+3200 0 R
+300 1050 M
+3200 0 R
+300 1238 M
+3200 0 R
+300 1426 M
+3200 0 R
+300 1613 M
+3200 0 R
+300 1801 M
+3200 0 R
+300 1988 M
+3200 0 R
+300 2176 M
+3200 0 R
+300 300 M
+0 1876 R
+460 300 M
 0 63 V
-0 1663 R
+0 1813 R
 0 -63 V
-715 400 M
-0 1726 R
-873 400 M
+620 300 M
+0 1876 R
+780 300 M
 0 63 V
-0 1663 R
+0 1813 R
 0 -63 V
-1030 400 M
-0 1726 R
-1188 400 M
+940 300 M
+0 1876 R
+1100 300 M
 0 63 V
-0 1663 R
+0 1813 R
 0 -63 V
-1345 400 M
-0 1726 R
-1503 400 M
+1260 300 M
+0 1876 R
+1420 300 M
 0 63 V
-0 1663 R
+0 1813 R
 0 -63 V
-1660 400 M
-0 1726 R
-1818 400 M
+1580 300 M
+0 1876 R
+1740 300 M
 0 63 V
-0 1663 R
+0 1813 R
 0 -63 V
-1975 400 M
-0 1726 R
-2133 400 M
+1900 300 M
+0 1876 R
+2060 300 M
 0 63 V
-0 1663 R
+0 1813 R
 0 -63 V
-2290 400 M
-0 1726 R
-2448 400 M
+2220 300 M
+0 1876 R
+2380 300 M
 0 63 V
-0 1663 R
+0 1813 R
 0 -63 V
-2605 400 M
-0 1726 R
-2763 400 M
+2540 300 M
+0 1876 R
+2700 300 M
 0 63 V
-0 1663 R
+0 1813 R
 0 -63 V
-2920 400 M
-0 1726 R
-3078 400 M
+2860 300 M
+0 1876 R
+3020 300 M
 0 63 V
-0 1663 R
+0 1813 R
 0 -63 V
-3235 400 M
-0 1726 R
-3393 400 M
+3180 300 M
+0 1876 R
+3340 300 M
 0 63 V
-0 1663 R
+0 1813 R
 0 -63 V
-3550 400 M
-0 1726 R
+3500 300 M
+0 1876 R
+1.000 UL
 LTa
-400 1263 M
-3150 0 V
+300 1238 M
+3200 0 V
+1.000 UL
 LTa
-1975 400 M
-0 1726 V
+1900 300 M
+0 1876 V
+1.000 UL
 LTb
-400 400 M
-3150 0 V
-0 1726 V
--3150 0 V
-400 400 L
+300 300 M
+3200 0 V
+0 1876 V
+-3200 0 V
+300 300 L
 1.000 UP
 1.000 UL
 LT0
-1975 1263 M
--315 -10 V
--266 -91 V
--280 79 V
-865 1347 L
-154 151 V
-820 1364 L
-181 141 V
-14 -172 V
-4 -173 V
-707 1138 L
-1268 125 R
-289 68 V
-111 -161 V
-239 112 V
--278 -81 V
-1 172 V
-50 171 V
-116 160 V
--304 47 V
--301 -51 V
--83 -167 V
-160 -270 R
-63 169 V
-307 37 V
-175 -143 V
-315 7 V
-278 -82 V
-304 -44 V
-133 5 V
-0 -119 R
--14 -9 V
-3452 918 L
-98 38 V
-1975 1263 Pls
-1660 1253 Pls
-1394 1162 Pls
-1114 1241 Pls
-865 1347 Pls
-1019 1498 Pls
-820 1364 Pls
-1001 1505 Pls
-1015 1333 Pls
-1019 1160 Pls
-707 1138 Pls
-1975 1263 Pls
-2264 1331 Pls
-2375 1170 Pls
-2614 1282 Pls
-2336 1201 Pls
-2337 1373 Pls
-2387 1544 Pls
-2503 1704 Pls
-2199 1751 Pls
-1898 1700 Pls
-1815 1533 Pls
-1975 1263 Pls
-2038 1432 Pls
-2345 1469 Pls
-2520 1326 Pls
-2835 1333 Pls
-3113 1251 Pls
-3417 1207 Pls
-3536 1084 Pls
-3452 918 Pls
+1900 1238 M
+-319 -11 V
+-272 -99 V
+-284 86 V
+773 1330 L
+156 163 V
+726 1348 L
+185 154 V
+14 -188 V
+4 -187 V
+611 1102 L
+1289 136 R
+294 74 V
+112 -175 V
+243 122 V
+-282 -89 V
+1 188 V
+51 185 V
+117 175 V
+-308 51 V
+-306 -56 V
+-84 -181 V
+162 -294 R
+64 184 V
+312 40 V
+178 -156 V
+319 8 V
+283 -89 V
+309 -48 V
+135 6 V
+0 -129 R
+-14 -11 V
+3400 863 L
+100 41 V
+1900 1238 Pls
+1581 1227 Pls
+1309 1128 Pls
+1025 1214 Pls
+773 1330 Pls
+929 1493 Pls
+726 1348 Pls
+911 1502 Pls
+925 1314 Pls
+929 1127 Pls
+611 1102 Pls
+1900 1238 Pls
+2194 1312 Pls
+2306 1137 Pls
+2549 1259 Pls
+2267 1170 Pls
+2268 1358 Pls
+2319 1543 Pls
+2436 1718 Pls
+2128 1769 Pls
+1822 1713 Pls
+1738 1532 Pls
+1900 1238 Pls
+1964 1422 Pls
+2276 1462 Pls
+2454 1306 Pls
+2773 1314 Pls
+3056 1225 Pls
+3365 1177 Pls
+3486 1043 Pls
+3400 863 Pls
 stroke
 grestore
 end
 showpage
 }
-\put(1975,2276){\cjust{Random walk}}
-\put(1975,150){\cjust{$k$}}
-\put(100,1263){%
+\put(1900,2276){\cjust{Random walk}}
+\put(1900,100){\cjust{$k$}}
+\put(0,1238){%
 \special{ps: gsave currentpoint currentpoint translate
 270 rotate neg exch neg exch translate}%
 \cstack{$p(k)$}%
 \special{ps: currentpoint grestore moveto}%
 }
-\put(3550,300){\cjust{5}}
-\put(3235,300){\cjust{4}}
-\put(2920,300){\cjust{3}}
-\put(2605,300){\cjust{2}}
-\put(2290,300){\cjust{1}}
-\put(1975,300){\cjust{0}}
-\put(1660,300){\cjust{-1}}
-\put(1345,300){\cjust{-2}}
-\put(1030,300){\cjust{-3}}
-\put(715,300){\cjust{-4}}
-\put(400,300){\cjust{-5}}
-\put(350,2126){\rjust{5}}
-\put(350,1953){\rjust{4}}
-\put(350,1781){\rjust{3}}
-\put(350,1608){\rjust{2}}
-\put(350,1436){\rjust{1}}
-\put(350,1263){\rjust{0}}
-\put(350,1090){\rjust{-1}}
-\put(350,918){\rjust{-2}}
-\put(350,745){\rjust{-3}}
-\put(350,573){\rjust{-4}}
-\put(350,400){\rjust{-5}}
+\put(3500,200){\cjust{5}}
+\put(3180,200){\cjust{4}}
+\put(2860,200){\cjust{3}}
+\put(2540,200){\cjust{2}}
+\put(2220,200){\cjust{1}}
+\put(1900,200){\cjust{0}}
+\put(1580,200){\cjust{-1}}
+\put(1260,200){\cjust{-2}}
+\put(940,200){\cjust{-3}}
+\put(620,200){\cjust{-4}}
+\put(300,200){\cjust{-5}}
+\put(250,2176){\rjust{5}}
+\put(250,1988){\rjust{4}}
+\put(250,1801){\rjust{3}}
+\put(250,1613){\rjust{2}}
+\put(250,1426){\rjust{1}}
+\put(250,1238){\rjust{0}}
+\put(250,1050){\rjust{-1}}
+\put(250,863){\rjust{-2}}
+\put(250,675){\rjust{-3}}
+\put(250,488){\rjust{-4}}
+\put(250,300){\rjust{-5}}
 \endGNUPLOTpicture

@@ -22,8 +22,8 @@
 \special{!
 %!PS-Adobe-2.0 EPSF-2.0
 %%Title: rand-bernoulli.tex
-%%Creator: gnuplot 3.5 (pre 3.6) patchlevel beta 340
-%%CreationDate: Tue Jul 27 17:07:10 1999
+%%Creator: gnuplot 3.5 (pre 3.6) patchlevel beta 347
+%%CreationDate: Tue Mar 14 21:49:20 2000
 %%DocumentFonts: 
 %%BoundingBox: 0 0 360 237
 %%Orientation: Landscape
@@ -62,9 +62,9 @@ gnudict begin
 /PL { stroke userlinewidth setlinewidth } def
 /LTb { BL [] 0 0 0 DL } def
 /LTa { AL [1 dl 2 dl] 0 setdash 0 0 0 setrgbcolor } def
-/LT0 { PL [] 0 1 0 DL } def
-/LT1 { PL [4 dl 2 dl] 0 0 1 DL } def
-/LT2 { PL [2 dl 3 dl] 1 0 0 DL } def
+/LT0 { PL [] 1 0 0 DL } def
+/LT1 { PL [4 dl 2 dl] 0 1 0 DL } def
+/LT2 { PL [2 dl 3 dl] 0 0 1 DL } def
 /LT3 { PL [1 dl 1.5 dl] 1 0 1 DL } def
 /LT4 { PL [5 dl 2 dl 1 dl 2 dl] 0 1 1 DL } def
 /LT5 { PL [4 dl 3 dl 1 dl 3 dl] 1 1 0 DL } def
@@ -236,6 +236,26 @@ gnudict begin
   closepath stroke grestore } def
 /CircE { stroke [] 0 setdash 
   hpt 0 360 arc stroke } def
+/Opaque { gsave closepath 1 setgray fill grestore 0 setgray closepath } def
+/DiaW { stroke [] 0 setdash vpt add M
+  hpt neg vpt neg V hpt vpt neg V
+  hpt vpt V hpt neg vpt V Opaque stroke } def
+/BoxW { stroke [] 0 setdash exch hpt sub exch vpt add M
+  0 vpt2 neg V hpt2 0 V 0 vpt2 V
+  hpt2 neg 0 V Opaque stroke } def
+/TriUW { stroke [] 0 setdash vpt 1.12 mul add M
+  hpt neg vpt -1.62 mul V
+  hpt 2 mul 0 V
+  hpt neg vpt 1.62 mul V Opaque stroke } def
+/TriDW { stroke [] 0 setdash vpt 1.12 mul sub M
+  hpt neg vpt 1.62 mul V
+  hpt 2 mul 0 V
+  hpt neg vpt -1.62 mul V Opaque stroke } def
+/PentW { stroke [] 0 setdash gsave
+  translate 0 hpt M 4 {72 rotate 0 hpt L} repeat
+  Opaque stroke grestore } def
+/CircW { stroke [] 0 setdash 
+  hpt 0 360 arc Opaque stroke } def
 /BoxFill { gsave Rec 1 setgray fill grestore } def
 end
 %%EndProlog
@@ -248,381 +268,383 @@ gsave
 0.100 0.100 scale
 0 setgray
 newpath
+1.000 UL
 LTb
-450 400 M
-3100 0 R
-450 573 M
-3100 0 R
-450 745 M
-3100 0 R
-450 918 M
-3100 0 R
-450 1090 M
-3100 0 R
-450 1263 M
-3100 0 R
-450 1436 M
-3100 0 R
-450 1608 M
-3100 0 R
-450 1781 M
-3100 0 R
-450 1953 M
-3100 0 R
-450 2126 M
-3100 0 R
-450 400 M
+350 300 M
+3150 0 R
+350 488 M
+3150 0 R
+350 675 M
+3150 0 R
+350 863 M
+3150 0 R
+350 1050 M
+3150 0 R
+350 1238 M
+3150 0 R
+350 1426 M
+3150 0 R
+350 1613 M
+3150 0 R
+350 1801 M
+3150 0 R
+350 1988 M
+3150 0 R
+350 2176 M
+3150 0 R
+350 300 M
 0 63 V
-0 1663 R
+0 1813 R
 0 -63 V
-1225 400 M
-0 1726 R
-2000 400 M
+1138 300 M
+0 1876 R
+1925 300 M
 0 63 V
-0 1663 R
+0 1813 R
 0 -63 V
-2775 400 M
-0 1726 R
-3550 400 M
+2713 300 M
+0 1876 R
+3500 300 M
 0 63 V
-0 1663 R
+0 1813 R
 0 -63 V
+1.000 UL
 LTb
-450 400 M
-3100 0 V
-0 1726 V
--3100 0 V
-450 400 L
+350 300 M
+3150 0 V
+0 1876 V
+-3150 0 V
+350 300 L
 1.000 UL
 LT0
-3187 2013 M
+3137 2063 M
 263 0 V
-450 918 M
-10 0 V
+350 863 M
 11 0 V
 10 0 V
-10 0 V
 11 0 V
 10 0 V
 11 0 V
-10 0 V
 10 0 V
 11 0 V
 10 0 V
-10 0 V
 11 0 V
 10 0 V
 11 0 V
 10 0 V
-10 0 V
 11 0 V
-10 0 V
 10 0 V
 11 0 V
-10 0 V
-10 0 V
 11 0 V
 10 0 V
 11 0 V
-10 0 V
 10 0 V
 11 0 V
 10 0 V
-10 0 V
 11 0 V
 10 0 V
 11 0 V
 10 0 V
-10 0 V
 11 0 V
-10 0 V
 10 0 V
 11 0 V
-10 0 V
-10 0 V
 11 0 V
 10 0 V
 11 0 V
-10 0 V
 10 0 V
 11 0 V
 10 0 V
-10 0 V
 11 0 V
 10 0 V
-10 0 V
 11 0 V
 10 0 V
 11 0 V
-10 0 V
 10 0 V
 11 0 V
 10 0 V
-10 0 V
 11 0 V
-10 0 V
 11 0 V
-10 0 V
 10 0 V
 11 0 V
 10 0 V
-10 0 V
 11 0 V
-10 0 V
 10 0 V
 11 0 V
 10 0 V
 11 0 V
 10 0 V
-10 0 V
 11 0 V
-10 0 V
 10 0 V
 11 0 V
-10 0 V
 11 0 V
 10 0 V
-10 0 V
 11 0 V
-10 0 V
 10 0 V
 11 0 V
 10 0 V
-10 0 V
 11 0 V
 10 0 V
 11 0 V
 10 0 V
-10 0 V
 11 0 V
-10 0 V
 10 0 V
 11 0 V
 10 0 V
 11 0 V
-10 0 V
-10 0 V
 11 0 V
-10 0 V
 10 0 V
 11 0 V
 10 0 V
-10 0 V
 11 0 V
 10 0 V
 11 0 V
 10 0 V
-10 0 V
 11 0 V
-10 0 V
 10 0 V
 11 0 V
 10 0 V
 11 0 V
 10 0 V
-10 0 V
 11 0 V
-10 0 V
-10 0 V
 11 0 V
 10 0 V
-10 0 V
 11 0 V
 10 0 V
 11 0 V
 10 0 V
-10 0 V
 11 0 V
-10 0 V
 10 0 V
 11 0 V
 10 0 V
 11 0 V
 10 0 V
-10 0 V
 11 0 V
-10 0 V
-10 0 V
 11 0 V
 10 0 V
-10 0 V
 11 0 V
 10 0 V
-0 690 V
 11 0 V
-10 0 V
 10 0 V
 11 0 V
 10 0 V
-10 0 V
 11 0 V
-10 0 V
 10 0 V
 11 0 V
 10 0 V
 11 0 V
 10 0 V
+11 0 V
+11 0 V
 10 0 V
 11 0 V
 10 0 V
+11 0 V
 10 0 V
 11 0 V
 10 0 V
 11 0 V
 10 0 V
+11 0 V
 10 0 V
 11 0 V
 10 0 V
+11 0 V
+11 0 V
 10 0 V
 11 0 V
 10 0 V
+11 0 V
 10 0 V
 11 0 V
 10 0 V
 11 0 V
 10 0 V
+11 0 V
 10 0 V
+11 0 V
 11 0 V
 10 0 V
+11 0 V
 10 0 V
 11 0 V
 10 0 V
 11 0 V
 10 0 V
+0 750 V
+11 0 V
 10 0 V
 11 0 V
 10 0 V
+11 0 V
 10 0 V
 11 0 V
+11 0 V
 10 0 V
+11 0 V
 10 0 V
 11 0 V
 10 0 V
 11 0 V
 10 0 V
+11 0 V
 10 0 V
 11 0 V
 10 0 V
+11 0 V
+11 0 V
 10 0 V
 11 0 V
 10 0 V
 11 0 V
 10 0 V
+11 0 V
 10 0 V
 11 0 V
 10 0 V
+11 0 V
 10 0 V
 11 0 V
 10 0 V
+11 0 V
+11 0 V
 10 0 V
 11 0 V
 10 0 V
 11 0 V
 10 0 V
+11 0 V
 10 0 V
 11 0 V
 10 0 V
+11 0 V
 10 0 V
 11 0 V
 10 0 V
 11 0 V
+11 0 V
 10 0 V
+11 0 V
 10 0 V
 11 0 V
 10 0 V
+11 0 V
 10 0 V
 11 0 V
 10 0 V
+11 0 V
 10 0 V
+11 0 V
 11 0 V
 10 0 V
 11 0 V
 10 0 V
+11 0 V
 10 0 V
 11 0 V
 10 0 V
+11 0 V
 10 0 V
 11 0 V
 10 0 V
 11 0 V
 10 0 V
+11 0 V
+11 0 V
 10 0 V
 11 0 V
 10 0 V
+11 0 V
 10 0 V
 11 0 V
 10 0 V
+11 0 V
 10 0 V
 11 0 V
 10 0 V
 11 0 V
 10 0 V
+11 0 V
+11 0 V
 10 0 V
 11 0 V
 10 0 V
+11 0 V
 10 0 V
 11 0 V
 10 0 V
+11 0 V
 10 0 V
 11 0 V
 10 0 V
 11 0 V
+11 0 V
 10 0 V
+11 0 V
 10 0 V
 11 0 V
 10 0 V
+11 0 V
 10 0 V
 11 0 V
 10 0 V
 11 0 V
 10 0 V
+11 0 V
 10 0 V
+11 0 V
 11 0 V
 10 0 V
+11 0 V
 10 0 V
 11 0 V
 10 0 V
+11 0 V
 10 0 V
 11 0 V
 10 0 V
 11 0 V
 10 0 V
+11 0 V
+11 0 V
 10 0 V
 11 0 V
 10 0 V
+11 0 V
 10 0 V
 11 0 V
 10 0 V
 11 0 V
 10 0 V
+11 0 V
 10 0 V
 11 0 V
 10 0 V
+11 0 V
 stroke
 grestore
 end
 showpage
 }
-\put(3137,2013){\rjust{$p=0.7$}}
-\put(2000,2276){\cjust{Bernoulli Trial}}
-\put(2000,150){\cjust{$k$}}
-\put(100,1263){%
+\put(3087,2063){\rjust{$p=0.7$}}
+\put(1925,2276){\cjust{Bernoulli Trial}}
+\put(1925,100){\cjust{$k$}}
+\put(0,1238){%
 \special{ps: gsave currentpoint currentpoint translate
 270 rotate neg exch neg exch translate}%
 \cstack{$p(k)$}%
 \special{ps: currentpoint grestore moveto}%
 }
-\put(2775,300){\cjust{1}}
-\put(1225,300){\cjust{0}}
-\put(400,2126){\rjust{1}}
-\put(400,1953){\rjust{0.9}}
-\put(400,1781){\rjust{0.8}}
-\put(400,1608){\rjust{0.7}}
-\put(400,1436){\rjust{0.6}}
-\put(400,1263){\rjust{0.5}}
-\put(400,1090){\rjust{0.4}}
-\put(400,918){\rjust{0.3}}
-\put(400,745){\rjust{0.2}}
-\put(400,573){\rjust{0.1}}
-\put(400,400){\rjust{0}}
+\put(2713,200){\cjust{1}}
+\put(1138,200){\cjust{0}}
+\put(300,2176){\rjust{1}}
+\put(300,1988){\rjust{0.9}}
+\put(300,1801){\rjust{0.8}}
+\put(300,1613){\rjust{0.7}}
+\put(300,1426){\rjust{0.6}}
+\put(300,1238){\rjust{0.5}}
+\put(300,1050){\rjust{0.4}}
+\put(300,863){\rjust{0.3}}
+\put(300,675){\rjust{0.2}}
+\put(300,488){\rjust{0.1}}
+\put(300,300){\rjust{0}}
 \endGNUPLOTpicture
