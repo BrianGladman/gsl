@@ -1,6 +1,33 @@
-Make the algorithms work with rectangular MxN matrices where appropriate
+Make the algorithms work with rectangular MxN matrices where
+appropriate. This is very confused right now.
 
 Clean up the error handling, _impl is not necessarily the way to go
 where there are potentially fatal errors.
 
-LU solver seems a bit unstable on the Vandermonde problem.
+LU solver seems a bit unstable on the Vandermonde problem. More
+precisely there is a big difference when optimization is switched on
+(surprizingly optimization makes the accuracy much worse).
+
+  WITHOUT OPTIMIZATION            |     WITH OPTIMIZATION (-O4)
+                                  |
+ 12[0]: -3.14366197229564272e-18  |   12[0]: -2.66822535639952236e-13
+ 12[1]: -7.70076451716862649e-18  |   12[1]: 1.81545260902433614e-11
+ 12[2]: 5.92048153457652747e-16   |   12[2]: -5.44438612354179128e-10
+ 12[3]: -5.3792458564953351e-16   |   12[3]: 9.47672001543103068e-09
+ 12[4]: -3.33857096865221473e-16  |   12[4]: -1.0607961716333582e-07
+ 12[5]: 2.77580003807683497e-16   |   12[5]: 7.99037652257140137e-07
+ 12[6]: 7.73147382223194456e-16   |   12[6]: -4.11543937371223868e-06
+ 12[7]: -1.08294074021194352e-15  |   12[7]: 1.44182659189005111e-05
+ 12[8]: 8.8462083488842609e-16    |   12[8]: -3.34497439296624311e-05
+ 12[9]: -7.68742511878438236e-16  |   12[9]: 4.85121346376069841e-05
+ 12[11]: -1.03963268321917673e-16 |   12[11]:  1.304008127082465e-05   <****
+FAIL:   solve_LU vander(12)       |  FAIL:   solve_LU vander(12)
+
+
+Regarding  else if (qr->size1 == 0)
+    {
+      return GSL_SUCCESS;	/* FIXME: what to do with this idiot case ? */
+    }
+
+This should be impossible because all the matrix creation functions
+reject matrices with size == 0.

@@ -93,11 +93,14 @@ gsl_la_solve_QR_impl(const gsl_matrix     * qr_matrix,
 		     gsl_vector           * solution);
 
 int
-gsl_la_qform_QR_impl (const gsl_matrix * qr, gsl_matrix * q);
+gsl_la_unpack_QR_impl (const gsl_matrix * qr, const gsl_vector * rdiag,
+                       gsl_matrix * q, gsl_matrix * r);
 
 int
-gsl_la_rform_QR_impl (const gsl_matrix * qr, const gsl_vector * rdiag,
-                      gsl_matrix * r);
+gsl_la_qrsolve_QR_impl (const gsl_matrix * q, const gsl_matrix * r,
+                        const gsl_vector_int * permutation,
+                        const gsl_vector * rhs,
+                        gsl_vector * solution);
 
 int
 gsl_la_QTvec_impl (const gsl_matrix * qr_matrix, 
