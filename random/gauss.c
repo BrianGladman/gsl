@@ -30,9 +30,31 @@ inline double gsl_ran_gaussian_wstate(gsl_ran_gaussianRandomState *gState)
     gState->ng = 1;             /* indicate we have an extra one now */
     return y*rr;                /* return the other */
 }
-void gsl_ran_copyGaussState(gsl_ran_gaussianRandomState *t, gsl_ran_gaussianRandomState *f)
+void gsl_ran_copyGaussState(gsl_ran_gaussianRandomState *t,
+                            gsl_ran_gaussianRandomState *f)
 {
-    t->randomState = f->randomState;
+    /* the copied state is not an element-by-element copy, because
+     * we want to make a new copy of the randomState */
+    /* Note also, we should probably put in some checking whether
+     * these are valid pointers! (or at least non-null) */
+    /* It might be more efficient to use gsl_ran_copyRandomState(),
+     * but that is a 'private' function;  instead we save the static
+     * state, write the 'from' state to the static state (setState),
+     * copy the static state to the 'to' state (requires a malloc),
+     * and then reset the static state to the saved tmp state.  Finally,
+     * it is save to free the tmp state.
+     */
+    
+    void *tmpRandomState;
+    tmpRandomState = gsl_ran_getRandomState(); /* keep copy of original */
+    gsl_ran_setRandomState(f->randomState);
+    /* if its already been allocated, free it! */
+    if (t->randomState != NULL)
+        cfree((char *)t->randomState);
+    t->randomState = gsl_ran_getRandomState();
+    gsl_ran_setRandomState(tmpRandomState);    /* reset original */
+    cfree((char *)tmpRandomState);
+    
     t->ng = f->ng;
     t->g = f->g;
 }
@@ -48,15 +70,11 @@ gsl_ran_gaussianRandomState *gsl_ran_getGaussState(void)
     gsl_ran_gaussianRandomState *theState;
     theState = (gsl_ran_gaussianRandomState *)calloc(1,sizeof(gsl_ran_gaussianRandomState));
     gsl_ran_copyGaussState(theState,&gstate);
-    theState->randomState = gsl_ran_getRandomState();
-    gsl_ran_copyState(theState->randomState,gstate.randomState);
     return theState;
 }
 void gsl_ran_setGaussState(gsl_ran_gaussianRandomState *theState)
 {
     gsl_ran_copyGaussState(&gstate,theState);
-    gstate.randomState = gsl_ran_getRandomState();
-    gsl_ran_copyState(gstate.randomState,theState->randomState);
 }
 
     
