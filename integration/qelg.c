@@ -5,18 +5,7 @@
 #include <stdlib.h>
 #include <gsl_integration.h>
 
-inline static double
-max (double x, double y)
-{
-  if (x > y)
-    {
-      return x ;
-    }
-  else
-    {
-      return y ;
-    }
-}
+#include "max.h"
 
 void
 qelg (size_t * n, double epstab[], double * result, double * abserr,

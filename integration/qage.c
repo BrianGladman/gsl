@@ -4,6 +4,7 @@
 #include <gsl_integration.h>
 
 #include "qpsrt.h"
+#include "max.h"
 
 int
 gsl_integration_qage (double (*f)(double x),
@@ -82,7 +83,7 @@ gsl_integration_qage_impl (double (*f)(double x),
 {
   double q_result, q_abserr, q_defabs, q_resabs ;
   double tolerance,  maxerr_value, area, errsum ;
-  size_t maxerr_index, nrmax, i, j, k ;
+  size_t maxerr_index, nrmax, i ;
   int roundoff_type1 = 0, roundoff_type2 = 0, error_type = 0 ;
 
   alist[0] = a ;
@@ -111,19 +112,8 @@ gsl_integration_qage_impl (double (*f)(double x),
   printf("result = %.18g, abserr = %.18g, nqeval = 1\n", q_result, q_abserr);
 
   /* Test on accuracy */
-  {
-    const double absolute = epsabs ;
-    const double relative = epsrel * fabs(q_result) ;
-    
-    if (absolute > relative) 
-      {
-	tolerance = absolute ;
-      }
-    else 
-      {
-	tolerance = relative ;
-      }
-  }
+
+  tolerance = max(epsabs, epsrel * fabs(q_result)) ;
 
   if (q_abserr <= 50 * DBL_EPSILON * q_defabs && q_abserr > tolerance)
     {
@@ -210,20 +200,8 @@ gsl_integration_qage_impl (double (*f)(double x),
 	      roundoff_type2++ ;
 	    }
 	}
-      
-      {
-	const double absolute = epsabs ;
-	const double relative = epsrel * fabs(area) ;
-      
-	if (absolute > relative) 
-	  {
-	    tolerance = absolute ;
-	  }
-	else 
-	  {
-	    tolerance = relative ;
-	  }
-      }
+
+      tolerance = max (epsabs, epsrel * fabs(area)) ;
 
       if (errsum > tolerance)
 	{

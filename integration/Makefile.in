@@ -83,7 +83,7 @@ libgslintegration_a_SOURCES = integration.c \
 	qk.c \
 	qng.c qng.h \
 	qage.c qpsrt.c qpsrt.h \
-	err.c err.h
+	err.c err.h max.h
 
 include_HEADERS = gsl_integration.h
 
