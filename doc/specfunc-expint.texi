@@ -70,11 +70,6 @@ dt \exp(-t^3)} for @c{$x \ge 0$}
 
 @subsection Trigonometric Integrals
 
-We have
-
-
-
-
 @deftypefun double gsl_sf_Si (const double @var{x})
 @deftypefunx int gsl_sf_Si_e (double @var{x}, gsl_sf_result * @var{result})
 These routines compute the Sine integral
