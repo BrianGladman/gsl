@@ -31,8 +31,8 @@ int
 gsl_fft_complex_radix2_inverse (double data[], size_t stride, size_t n);
 
 int
-gsl_fft_complex_radix2 (double data[], size_t stride, size_t n,
-			gsl_fft_direction sign);
+gsl_fft_complex_radix2_transform (double data[], size_t stride, size_t n,
+				  gsl_fft_direction sign);
 
 int
 gsl_fft_complex_radix2_dif_forward (double data[], size_t stride, size_t n);
@@ -44,8 +44,8 @@ int
 gsl_fft_complex_radix2_dif_inverse (double data[], size_t stride, size_t n);
 
 int
-gsl_fft_complex_radix2_dif (double data[], size_t stride, size_t n,
-			    gsl_fft_direction sign);
+gsl_fft_complex_radix2_dif_transform (double data[], size_t stride, size_t n,
+				      gsl_fft_direction sign);
 
 int gsl_fft_binary_logn (size_t n);
 
@@ -78,13 +78,13 @@ int
 gsl_fft_complex_generate_wavetable (size_t n,
 				    gsl_fft_wavetable_complex * wavetable);
 
-gsl_fft_wavetable_complex * gsl_fft_wavetable_complex_alloc (size_t n);
+gsl_fft_wavetable_complex * gsl_fft_complex_wavetable_alloc (size_t n);
 
 void
-gsl_fft_wavetable_complex_free (gsl_fft_wavetable_complex * wavetable);
+gsl_fft_complex_wavetable_free (gsl_fft_wavetable_complex * wavetable);
 
 int
-gsl_fft_wavetable_complex_cpy (gsl_fft_wavetable_complex * dest,
-			   gsl_fft_wavetable_complex * src) ;
+gsl_fft_complex_wavetable_cpy (gsl_fft_wavetable_complex * dest,
+			       gsl_fft_wavetable_complex * src) ;
 
 #endif /* GSL_FFT_COMPLEX_H */

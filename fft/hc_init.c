@@ -10,8 +10,8 @@
 #include "factorize.h"
 
 int
-gsl_fft_halfcomplex_init (size_t n,
-			  gsl_fft_halfcomplex_wavetable * wavetable)
+FUNCTION(gsl_fft_halfcomplex,init) (size_t n,
+				    TYPE(gsl_fft_wavetable_halfcomplex) * wavetable)
 {
   int status;
   size_t n_factors;
@@ -23,7 +23,7 @@ gsl_fft_halfcomplex_init (size_t n,
 
   wavetable->n = n;
 
-  status = gsl_fft_halfcomplex_factorize (n, &n_factors, wavetable->factor);
+  status = FUNCTION(fft_halfcomplex,factorize) (n, &n_factors, wavetable->factor);
 
   if (status)
     {
@@ -32,7 +32,7 @@ gsl_fft_halfcomplex_init (size_t n,
 
   wavetable->nf = n_factors;
 
-  status = gsl_fft_halfcomplex_generate_wavetable (n, wavetable);
+  status = FUNCTION(gsl_fft_halfcomplex,generate_wavetable) (n, wavetable);
 
   if (status)
     {
@@ -43,8 +43,8 @@ gsl_fft_halfcomplex_init (size_t n,
 }
 
 int
-gsl_fft_halfcomplex_generate_wavetable (size_t n,
-				  gsl_fft_halfcomplex_wavetable * wavetable)
+FUNCTION(gsl_fft_halfcomplex,generate_wavetable) (size_t n,
+						  TYPE(gsl_fft_wavetable_halfcomplex) * wavetable)
 {
   size_t i;
   double d_theta;
@@ -99,25 +99,25 @@ gsl_fft_halfcomplex_generate_wavetable (size_t n,
   return 0;
 }
 
-gsl_fft_halfcomplex_wavetable *
-gsl_fft_halfcomplex_wavetable_alloc (size_t n)
+TYPE(gsl_fft_wavetable_halfcomplex) *
+FUNCTION(gsl_fft_halfcomplex,wavetable_alloc) (size_t n)
 {
-  gsl_fft_halfcomplex_wavetable * w ;
+  TYPE(gsl_fft_wavetable_halfcomplex) * w ;
 
   if (n == 0)
     {
       GSL_ERROR_RETURN ("length n must be positive integer", GSL_EDOM, 0);
     }
 
-  w = (gsl_fft_halfcomplex_wavetable *) 
-    malloc(sizeof(gsl_fft_halfcomplex_wavetable));
+  w = (TYPE(gsl_fft_wavetable_halfcomplex) *) 
+    malloc(sizeof(TYPE(gsl_fft_wavetable_halfcomplex)));
 
   if (w == NULL)
     {
       GSL_ERROR_RETURN ("failed to allocate struct", GSL_ENOMEM, 0);
     }
 
-  w->scratch = (double *) malloc (n * 2 * sizeof (double));
+  w->scratch = (BASE *) malloc (2 * n * sizeof (BASE));
 
   if (w->scratch == NULL)
     {
@@ -141,7 +141,7 @@ gsl_fft_halfcomplex_wavetable_alloc (size_t n)
 }
 
 void
-gsl_fft_halfcomplex_wavetable_free (gsl_fft_halfcomplex_wavetable * wavetable)
+FUNCTION(gsl_fft_halfcomplex,wavetable_free) (TYPE(gsl_fft_wavetable_halfcomplex) * wavetable)
 {
 
   /* release scratch space and trigonometric lookup tables */

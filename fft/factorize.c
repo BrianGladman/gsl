@@ -5,7 +5,7 @@
 #include "factorize.h"
 
 int
-gsl_fft_complex_factorize (const size_t n,
+fft_complex_factorize (const size_t n,
 			   size_t *nf,
 			   size_t factors[])
 {
@@ -15,37 +15,37 @@ gsl_fft_complex_factorize (const size_t n,
   /* other factors can be added here if their transform modules are
      implemented. The end of the list is marked by 0. */
 
-  int status = gsl_fft_factorize (n, complex_subtransforms, nf, factors);
+  int status = fft_factorize (n, complex_subtransforms, nf, factors);
   return status;
 }
 
 int
-gsl_fft_halfcomplex_factorize (const size_t n,
+fft_halfcomplex_factorize (const size_t n,
 			       size_t *nf,
 			       size_t factors[])
 {
   const size_t halfcomplex_subtransforms[] =
   {5, 4, 3, 2, 0};
 
-  int status = gsl_fft_factorize (n, halfcomplex_subtransforms, nf, factors);
+  int status = fft_factorize (n, halfcomplex_subtransforms, nf, factors);
   return status;
 }
 
 int
-gsl_fft_real_factorize (const size_t n,
+fft_real_factorize (const size_t n,
 			size_t *nf,
 			size_t factors[])
 {
   const size_t real_subtransforms[] =
   {5, 4, 3, 2, 0};
 
-  int status = gsl_fft_factorize (n, real_subtransforms, nf, factors);
+  int status = fft_factorize (n, real_subtransforms, nf, factors);
   return status;
 }
 
 
 int
-gsl_fft_factorize (const size_t n,
+fft_factorize (const size_t n,
 		   const size_t implemented_subtransforms[],
 		   size_t *n_factors,
 		   size_t factors[])

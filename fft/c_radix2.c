@@ -13,7 +13,7 @@ FUNCTION(gsl_fft_complex,radix2_forward) (TYPE(gsl_complex_packed_array) data,
 					  const size_t stride, const size_t n)
 {
   gsl_fft_direction sign = forward;
-  int status = FUNCTION(gsl_fft_complex,radix2) (data, stride, n, sign);
+  int status = FUNCTION(gsl_fft_complex,radix2_transform) (data, stride, n, sign);
   return status;
 }
 
@@ -22,7 +22,7 @@ FUNCTION(gsl_fft_complex,radix2_backward) (TYPE(gsl_complex_packed_array) data,
 					   const size_t stride, const size_t n)
 {
   gsl_fft_direction sign = backward;
-  int status = FUNCTION(gsl_fft_complex,radix2) (data, stride, n, sign);
+  int status = FUNCTION(gsl_fft_complex,radix2_transform) (data, stride, n, sign);
   return status;
 }
 
@@ -31,7 +31,7 @@ FUNCTION(gsl_fft_complex,radix2_inverse) (TYPE(gsl_complex_packed_array) data,
 					  const size_t stride, const size_t n)
 {
   gsl_fft_direction sign = backward;
-  int status = FUNCTION(gsl_fft_complex,radix2) (data, stride, n, sign);
+  int status = FUNCTION(gsl_fft_complex,radix2_transform) (data, stride, n, sign);
 
   if (status)
     {
@@ -170,7 +170,7 @@ FUNCTION(gsl_fft_complex,radix2_dif_forward) (TYPE(gsl_complex_packed_array) dat
 					      const size_t n)
 {
   gsl_fft_direction sign = forward;
-  int status = FUNCTION(gsl_fft_complex,radix2_dif) (data, stride, n, sign);
+  int status = FUNCTION(gsl_fft_complex,radix2_dif_transform) (data, stride, n, sign);
   return status;
 }
 
@@ -180,7 +180,7 @@ FUNCTION(gsl_fft_complex,radix2_dif_backward) (TYPE(gsl_complex_packed_array) da
 					       const size_t n)
 {
   gsl_fft_direction sign = backward;
-  int status = FUNCTION(gsl_fft_complex,radix2_dif) (data, stride, n, sign);
+  int status = FUNCTION(gsl_fft_complex,radix2_dif_transform) (data, stride, n, sign);
   return status;
 }
 
@@ -190,7 +190,7 @@ FUNCTION(gsl_fft_complex,radix2_dif_inverse) (TYPE(gsl_complex_packed_array) dat
 					      const size_t n)
 {
   gsl_fft_direction sign = backward;
-  int status = FUNCTION(gsl_fft_complex,radix2_dif) (data, stride, n, sign);
+  int status = FUNCTION(gsl_fft_complex,radix2_dif_transform) (data, stride, n, sign);
 
   if (status)
     {
@@ -213,7 +213,7 @@ FUNCTION(gsl_fft_complex,radix2_dif_inverse) (TYPE(gsl_complex_packed_array) dat
 }
 
 int
-FUNCTION(gsl_fft_complex,radix2_dif) (TYPE(gsl_complex_packed_array) data, 
+FUNCTION(gsl_fft_complex,radix2_dif_transform) (TYPE(gsl_complex_packed_array) data, 
 				      const size_t stride, 
 				      const size_t n,
 				      const gsl_fft_direction sign)

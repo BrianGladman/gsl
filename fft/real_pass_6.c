@@ -4,7 +4,7 @@
 #include <gsl_complex.h>
 #include <gsl_fft_real.h>
 
-#include "fft_real.h"
+#include "real_pass.h"
 
 /* NOT USED */
 

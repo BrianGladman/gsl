@@ -4,7 +4,7 @@
 #include <gsl_complex.h>
 #include <gsl_fft_real.h>
 
-#include "fft_real.h"
+#include "real_pass.h"
 
 int
 gsl_fft_real_pass_2 (const double in[],

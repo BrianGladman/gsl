@@ -23,7 +23,7 @@ gsl_fft_real_init (size_t n,
 
   wavetable->n = n;
 
-  status = gsl_fft_real_factorize (n, &n_factors, wavetable->factor);
+  status = fft_real_factorize (n, &n_factors, wavetable->factor);
 
   if (status)
     {

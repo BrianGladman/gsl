@@ -1,6 +1,8 @@
+#include "factorize.h"
+
 int
 FUNCTION(gsl_fft_complex,init) (size_t n, 
-				TYPE2(gsl_fft_complex,wavetable) * wavetable)
+				TYPE(gsl_fft_wavetable_complex) * wavetable)
 {
   int status;
   size_t n_factors;
@@ -12,7 +14,7 @@ FUNCTION(gsl_fft_complex,init) (size_t n,
 
   wavetable->n = n;
 
-  status = FUNCTION(gsl_fft_complex,factorize) (n, &n_factors, wavetable->factor);
+  status = fft_complex_factorize (n, &n_factors, wavetable->factor);
 
   if (status)
     {
@@ -33,7 +35,7 @@ FUNCTION(gsl_fft_complex,init) (size_t n,
 
 int
 FUNCTION(gsl_fft_complex,generate_wavetable) (size_t n,
-					      TYPE2(gsl_fft_complex,wavetable) * wavetable)
+					      TYPE(gsl_fft_wavetable_complex) * wavetable)
 {
   size_t i;
   double d_theta;
@@ -88,18 +90,18 @@ FUNCTION(gsl_fft_complex,generate_wavetable) (size_t n,
   return 0;
 }
 
-TYPE2(gsl_fft_complex,wavetable) * 
+TYPE(gsl_fft_wavetable_complex) * 
 FUNCTION(gsl_fft_complex,wavetable_alloc) (size_t n)
 {
-  TYPE2(gsl_fft_complex,wavetable) * w ;
+  TYPE(gsl_fft_wavetable_complex) * w ;
 
   if (n == 0)
     {
       GSL_ERROR_RETURN ("length n must be positive integer", GSL_EDOM, 0);
     }
 
-  w = (TYPE2(gsl_fft_complex,wavetable) *) 
-    malloc(sizeof(TYPE2(gsl_fft_complex,wavetable)));
+  w = (TYPE(gsl_fft_wavetable_complex) *) 
+    malloc(sizeof(TYPE(gsl_fft_wavetable_complex)));
 
   if (w == NULL)
     {
@@ -130,7 +132,7 @@ FUNCTION(gsl_fft_complex,wavetable_alloc) (size_t n)
 }
 
 void
-FUNCTION(gsl_fft_complex,wavetable_free) (TYPE2(gsl_fft_complex,wavetable) * wavetable)
+FUNCTION(gsl_fft_complex,wavetable_free) (TYPE(gsl_fft_wavetable_complex) * wavetable)
 {
 
   /* release scratch space and trigonometric lookup tables */
@@ -145,8 +147,8 @@ FUNCTION(gsl_fft_complex,wavetable_free) (TYPE2(gsl_fft_complex,wavetable) * wav
 }
 
 int
-FUNCTION(gsl_fft_complex,wavetable_cpy) (TYPE2(gsl_fft_complex,wavetable) * dest,
-					 TYPE2(gsl_fft_complex,wavetable) * src)
+FUNCTION(gsl_fft_complex,wavetable_cpy) (TYPE(gsl_fft_wavetable_complex) * dest,
+					 TYPE(gsl_fft_wavetable_complex) * src)
 {
   int i, n, nf ;
 

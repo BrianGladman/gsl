@@ -72,70 +72,38 @@ full_top_srcdir = @full_top_srcdir@
 
 noinst_LIBRARIES = libgslfft.a 
 
-check_PROGRAMS = test test_trap test_radix2 benchmark errs
+check_PROGRAMS = test #test_trap test_radix2 benchmark errs
 
 include_HEADERS = gsl_fft.h gsl_fft_complex.h gsl_fft_halfcomplex.h gsl_fft_real.h gsl_dft_complex.h
 
-noinst_HEADERS = fft_complex.h fft_halfcomplex.h fft_real.h \
-fft_signals.h c_main.c c_init.c c_pass_2.c c_pass_3.c c_pass_4.c c_pass_5.c \
-c_pass_6.c c_pass_7.c c_pass_n.c c_radix2.c
+noinst_HEADERS = c_pass.h hc_pass.h real_pass.h \
+signals.h c_main.c c_init.c c_pass_2.c c_pass_3.c c_pass_4.c c_pass_5.c \
+c_pass_6.c c_pass_7.c c_pass_n.c c_radix2.c bitreverse.c 
 
 INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../vector -I$(srcdir)/../err
 
-TESTS = test test_radix2 test_trap
+TESTS = test #test_radix2 test_trap
 
 test_LDADD = libgslfft.a ../err/libgslerr.a ../err/libgsltest.a
-test_trap_LDADD = libgslfft.a ../err/libgslerr.a ../err/libgsltest.a
-test_radix2_LDADD = libgslfft.a ../err/libgslerr.a ../err/libgsltest.a
-errs_LDADD = libgslfft.a ../err/libgslerr.a ../err/libgsltest.a
-benchmark_LDADD = libgslfft.a ../err/libgslerr.a ../err/libgsltest.a
+#test_trap_LDADD = libgslfft.a ../err/libgslerr.a ../err/libgsltest.a
+#test_radix2_LDADD = libgslfft.a ../err/libgslerr.a ../err/libgsltest.a
+#errs_LDADD = libgslfft.a ../err/libgslerr.a ../err/libgsltest.a
+#benchmark_LDADD = libgslfft.a ../err/libgslerr.a ../err/libgsltest.a
 
 test_DEPENDENCIES = libgslfft.a
-test_trap_DEPENDENCIES = libgslfft.a
-test_radix2_DEPENDENCIES = libgslfft.a
-benchmark_DEPENDENCIES = libgslfft.a
+#test_trap_DEPENDENCIES = libgslfft.a
+#test_radix2_DEPENDENCIES = libgslfft.a
+#benchmark_DEPENDENCIES = libgslfft.a
 
 test_SOURCES = test.c signals.c
-test_trap_SOURCES = test_trap.c signals.c
-test_radix2_SOURCES = test_radix2.c signals.c
-benchmark_SOURCES = benchmark.c 
+#test_trap_SOURCES = test_trap.c signals.c
+#test_radix2_SOURCES = test_radix2.c signals.c
+#benchmark_SOURCES = benchmark.c 
 
-libgslfft_a_SOURCES = \
-compare.c compare.h \
-dft_complex.c \
-gsl_dft_complex.h \
- \
-gsl_fft.h \
- \
-c.c \
-c_float.c \
-gsl_fft_complex.h \
-factorize.c \
-factorize.h \
-bitreverse.c \
-bitreverse.h \
- \
-hc.c \
-gsl_fft_halfcomplex.h \
-hc_init.c \
-hc_pass_2.c \
-hc_pass_3.c \
-hc_pass_4.c \
-hc_pass_5.c \
-hc_pass_n.c \
-hc_radix2.c \
-hc_unpack.c \
- \
-real.c \
+libgslfft_a_SOURCES = compare.c compare.h dft.c \
+gsl_dft_complex.h gsl_fft.h gsl_fft_complex.h gsl_fft_halfcomplex.h \
 gsl_fft_real.h \
-real_init.c \
-real_pass_2.c \
-real_pass_3.c \
-real_pass_4.c \
-real_pass_5.c \
-real_pass_n.c \
-real_radix2.c \
-real_unpack.c
+c.c c_float.c  factorize.c factorize.h bitreverse.h
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
 CONFIG_CLEAN_FILES = 
@@ -147,24 +115,10 @@ CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
 libgslfft_a_LIBADD = 
-libgslfft_a_OBJECTS =  compare.o dft_complex.o c.o c_float.o factorize.o \
-bitreverse.o hc.o hc_init.o hc_pass_2.o hc_pass_3.o hc_pass_4.o \
-hc_pass_5.o hc_pass_n.o hc_radix2.o hc_unpack.o real.o real_init.o \
-real_pass_2.o real_pass_3.o real_pass_4.o real_pass_5.o real_pass_n.o \
-real_radix2.o real_unpack.o
+libgslfft_a_OBJECTS =  compare.o dft.o c.o c_float.o factorize.o
 AR = ar
 test_OBJECTS =  test.o signals.o
 test_LDFLAGS = 
-test_trap_OBJECTS =  test_trap.o signals.o
-test_trap_LDFLAGS = 
-test_radix2_OBJECTS =  test_radix2.o signals.o
-test_radix2_LDFLAGS = 
-benchmark_OBJECTS =  benchmark.o
-benchmark_LDFLAGS = 
-errs_SOURCES = errs.c
-errs_OBJECTS =  errs.o
-errs_DEPENDENCIES =  libgslfft.a ../err/libgslerr.a ../err/libgsltest.a
-errs_LDFLAGS = 
 CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
 LINK = $(CC) $(CFLAGS) $(LDFLAGS) -o $@
@@ -177,17 +131,10 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 TAR = tar
 GZIP = --best
-DEP_FILES =  .deps/benchmark.P .deps/bitreverse.P .deps/c.P \
-.deps/c_float.P .deps/compare.P .deps/dft_complex.P .deps/errs.P \
-.deps/factorize.P .deps/hc.P .deps/hc_init.P .deps/hc_pass_2.P \
-.deps/hc_pass_3.P .deps/hc_pass_4.P .deps/hc_pass_5.P .deps/hc_pass_n.P \
-.deps/hc_radix2.P .deps/hc_unpack.P .deps/real.P .deps/real_init.P \
-.deps/real_pass_2.P .deps/real_pass_3.P .deps/real_pass_4.P \
-.deps/real_pass_5.P .deps/real_pass_n.P .deps/real_radix2.P \
-.deps/real_unpack.P .deps/signals.P .deps/test.P .deps/test_radix2.P \
-.deps/test_trap.P
-SOURCES = $(libgslfft_a_SOURCES) $(test_SOURCES) $(test_trap_SOURCES) $(test_radix2_SOURCES) $(benchmark_SOURCES) errs.c
-OBJECTS = $(libgslfft_a_OBJECTS) $(test_OBJECTS) $(test_trap_OBJECTS) $(test_radix2_OBJECTS) $(benchmark_OBJECTS) errs.o
+DEP_FILES =  .deps/c.P .deps/c_float.P .deps/compare.P .deps/dft.P \
+.deps/factorize.P .deps/signals.P .deps/test.P
+SOURCES = $(libgslfft_a_SOURCES) $(test_SOURCES)
+OBJECTS = $(libgslfft_a_OBJECTS) $(test_OBJECTS)
 
 all: Makefile $(LIBRARIES) $(HEADERS)
 
@@ -243,22 +190,6 @@ maintainer-clean-checkPROGRAMS:
 test: $(test_OBJECTS) $(test_DEPENDENCIES)
 	@rm -f test
 	$(LINK) $(test_LDFLAGS) $(test_OBJECTS) $(test_LDADD) $(LIBS)
-
-test_trap: $(test_trap_OBJECTS) $(test_trap_DEPENDENCIES)
-	@rm -f test_trap
-	$(LINK) $(test_trap_LDFLAGS) $(test_trap_OBJECTS) $(test_trap_LDADD) $(LIBS)
-
-test_radix2: $(test_radix2_OBJECTS) $(test_radix2_DEPENDENCIES)
-	@rm -f test_radix2
-	$(LINK) $(test_radix2_LDFLAGS) $(test_radix2_OBJECTS) $(test_radix2_LDADD) $(LIBS)
-
-benchmark: $(benchmark_OBJECTS) $(benchmark_DEPENDENCIES)
-	@rm -f benchmark
-	$(LINK) $(benchmark_LDFLAGS) $(benchmark_OBJECTS) $(benchmark_LDADD) $(LIBS)
-
-errs: $(errs_OBJECTS) $(errs_DEPENDENCIES)
-	@rm -f errs
-	$(LINK) $(errs_LDFLAGS) $(errs_OBJECTS) $(errs_LDADD) $(LIBS)
 
 install-includeHEADERS: $(include_HEADERS)
 	@$(NORMAL_INSTALL)
@@ -433,6 +364,12 @@ install-exec install-data install uninstall all installdirs \
 mostlyclean-generic distclean-generic clean-generic \
 maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 
+
+#hc.c hc_init.c hc_pass_2.c hc_pass_3.c
+#hc_pass_4.c hc_pass_5.c hc_pass_n.c hc_radix2.c hc_unpack.c
+
+#real.c real_init.c real_pass_2.c real_pass_3.c
+#real_pass_4.c real_pass_5.c real_pass_n.c real_radix2.c real_unpack.c
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

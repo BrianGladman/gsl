@@ -10,7 +10,7 @@
 
 #define BASE_FLOAT
 #include "templates_on.h"
-#include "fft_complex.h"
+#include "c_pass.h"
 #include "c_init.c"
 #include "c_main.c"
 #include "c_pass_2.c"
