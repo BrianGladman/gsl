@@ -102,14 +102,12 @@ by default but can be changed using the C variable
 The defined generator types are,
 
 @example
-gsl_rng_cmlib, gsl_rng_cmrg, gsl_rng_minstd,
-gsl_rng_mrg, gsl_rng_mt19937, gsl_rng_r250,
-gsl_rng_ran0, gsl_rng_ran1, gsl_rng_ran2, gsl_rng_ran3,
-gsl_rng_rand, gsl_rng_rand48, gsl_rng_randu,
-gsl_rng_ranf, gsl_rng_ranlux, gsl_rng_ranlux389,
-gsl_rng_ranmar, gsl_rng_taus, gsl_rng_tds,
-gsl_rng_tt800, gsl_rng_uni, gsl_rng_uni32, gsl_rng_vax,
-gsl_rng_zuf
+gsl_rng_cmlib, gsl_rng_cmrg, gsl_rng_minstd, gsl_rng_mrg,
+gsl_rng_mt19937, gsl_rng_r250, gsl_rng_ran0, gsl_rng_ran1, gsl_rng_ran2,
+gsl_rng_ran3, gsl_rng_rand, gsl_rng_rand48, gsl_rng_random-bsd
+@emph{several variants}, gsl_rng_randu, gsl_rng_ranf, gsl_rng_ranlux,
+gsl_rng_ranlux389, gsl_rng_ranmar, gsl_rng_taus, gsl_rng_tds,
+gsl_rng_tt800, gsl_rng_uni, gsl_rng_uni32, gsl_rng_vax, gsl_rng_zuf
 @end example
 @end deftypefn
 
@@ -231,8 +229,10 @@ variable @code{GSL_RNG_SEED} should contain the desired seed value. It
 is converted to an @code{unsigned long int} using the C library function
 @code{strtoul}.
 
-The initial default generator is @code{gsl_rng_cmrg} and the initial
-value of @code{gsl_rng_default seed} is zero.
+If you don't specify a generator for @code{GSL_RNG_TYPE} then
+@code{gsl_rng_mt19937} is used as the default. The initial value of
+@code{gsl_rng_default_seed} is zero.
+
 @end deftypefun
 @noindent
 Here is a short program which shows how to create a global
@@ -522,9 +522,17 @@ are widely available sometime they aren't all available on the same
 platform in the system libraries. This makes it more difficult to write
 portable code and so we have included them in GSL for convenience. Note
 that these generators don't produce high-quality randomness and aren't
-suitable for work requiring accurate statistics. However, if you won't
+suitable for work requiring accurate statistics.  However, if you won't
 be measuring statistical quantities and just want to introduce some
 variation into your program then these generators are quite acceptable.
+
+Note that most of these generators are based on single linear congruence
+relations, which are the least sophisticated type of generator. In
+particule, linear congruences have poor properties when used with a
+non-prime modulus, as several of these routines do. This leads to
+periodicity emerging in the least significant bits of each number, with
+only the higher bits having any randomness.  Thus if you want to produce
+a random bitstream it is best to avoid using the least significant bits.
 
 @cindex BSD random number generator, rand
 @cindex Unix random number generators, rand
@@ -544,8 +552,39 @@ generator is @math{2^@{31@}}, and it uses 1 word of storage per
 generator.
 @end deffn
 
-@deffn {Generator} gsl_rng_random
-To be written
+@deffn {Generator} gsl_rng_random_bsd
+@deffnx {Generator} gsl_rng_random_libc5
+@deffnx {Generator} gsl_rng_random_glibc2
+These generators implement the @code{random()} family of functions, a
+set of linear feedback shift register generators originally used in BSD
+Unix. There are several versions of @code{random()} in widespread use:
+the original BSD version (e.g. on SunOS4), a libc5 version (common on
+existing GNU/Linux systems) and a glibc2 version. These versions are all
+based on the same generator but use different seeding procedures, and
+thus produce different sequences.
+
+The original BSD routines accepted a variable length buffer for the
+generator state, with longer buffers providing higher-quality
+randomness. The @code{random()} function implemented algorithms for
+buffer lengths of 8, 32, 64, 128 and 256 bytes, and the algorithm with
+the largest length that would fit into the user-supplied buffer was
+used. To support these algorithms additional generators are available
+with the following names,
+@c
+@example
+gsl_rng_random8_bsd
+gsl_rng_random32_bsd
+gsl_rng_random64_bsd
+gsl_rng_random128_bsd
+gsl_rng_random256_bsd
+@end example
+@noindent
+where the numeric suffix indicates the buffer length.  The function
+@code{gsl_rng_random_bsd} is a synonym for the
+@code{gsl_rng_random128_bsd}, because the original BSD used a 128-byte
+default buffer. Corresponding versions of the @code{libc5} and
+@code{glibc2} generators are also avaliable, with the names
+@code{gsl_rng_random8_libc5}, @code{gsl_rng_random8_glibc2}, etc.
 @end deffn
 
 @deffn {Generator} gsl_rng_rand48
@@ -591,12 +630,12 @@ algorithm with a 32-element Bayes-Durham shuffle box.
 @end deffn
 
 @deffn {Generator} gsl_rng_ran2 
-Numerical recipes @code{ran2} implements  a L'Ecuyer combined recursive
+Numerical recipes @code{ran2} implements a L'Ecuyer combined recursive
 generator with a 32-element Bayes-Durham shuffle-box.
 @end deffn
 
 @deffn {Generator} gsl_rng_ran3 
-Numerical recipes @code{ran3} implements Knuths's portable
+Numerical recipes @code{ran3} implements Knuth's portable
 subtractive generator.
 @end deffn
 
@@ -638,11 +677,18 @@ bits to return the double precision number @math{x_n/m}.
 The period of this generator is @math{2^@{46@}}.
 @end deffn
 
+@deffn {Generator} gsl_rng_ranmar
+@cindex RANMAR random number generator
+This is the RANMAR lagged-fibonacci generator of Marsaglia, Zaman and
+Tsang.  It is a 24-bit generator, originally designed for
+single-precision IEEE floating point numbers. It was included in the
+CERNLIB library used in high-energy physics.
+@end deffn
 
-The following generators are included only for historical reasons, so
-that you can reproduce results from old programs which might have used
-them. These generators should not be used for real simulations since
-they have poor statistical properties by modern standards.
+@c The following generators are included only for historical reasons, so
+@c that you can reproduce results from old programs which might have used
+@c them. These generators should not be used for real simulations since
+@c they have poor statistical properties by modern standards.
 
 @deffn {Generator} gsl_rng_vax
 @cindex VAX random number generator
@@ -657,9 +703,9 @@ specifies the initial value, @math{x_1}. The period of this generator is
 @math{2^@{32@}} and it uses 1 word of storage per generator.
 @end deffn
 
-@deffn {Generator} gsl_rng_tds
-@sc{inmos} Transputer Development system.
-This is the INMOS Transputer Development System generator. The sequence is,
+@deffn {Generator} gsl_rng_transputer
+This is the random number generator from the @sc{inmos} Transputer
+Development system.  Its sequence is,
 @c
 @equation
 x_@{n+1@} = (a x_n) mod m
@@ -680,30 +726,66 @@ x_@{n+1@} = (a x_n) @mod m
 with @math{a = 65539} and @math{m = 2^@{31@}}. The seed specifies the
 initial value, @math{x_1}. The period of this generator was only 2^29.
 It has become a textbook example of a poor generator that was once in
-widespread use. The sequence obeys
+widespread use.
 @end deffn
 
 @deffn {Generator} gsl_rng_minstd
 @cindex RANMAR random number generator
-This is Park and Miller's "minimal standard" generator
-@end deffn
+This is Park and Miller's "minimal standard" generator, a simple linear
+congruence which avoids most of the worst properties of such algorithms.
+Its sequence is,
+@c
+@equation
+x_@{n+1@} = (a x_n) mod m
+@end equation
+@noindent
+with @math{a = 16807} and @math{m = 2^@{31@} - 1 = 2147483647}. The seed
+specifies the initial value, @math{x_1}. The period of this generator is
+about @math{2^@{31@}}.
 
-@deffn {Generator} gsl_rng_ranmar
-@cindex RANMAR random number generator
-This is the RANMAR lagged-fibonacci generator of Marsaglia, Zaman and
-Tsang.  It is a 24-bit generator, originally designed for
-single-precision IEEE floating point numbers. CERNLIB
+This generator is used in the IMSL Library (subroutine RNUN) and in
+MATLAB (the RAND function). It is also sometimes known by the acronym
+"GGL" (I'm not sure what that stands for).
+
+For more information see,
+@itemize @asis
+@item
+Park and Miller, "Random Number Generators: Good ones are hard to find",
+@cite{Communications of the ACM}, October 1988, Volume 31, No 10, pages
+1192-1201.
+@end itemize
 @end deffn
 
 @deffn {Generator} gsl_rng_uni
-@deffnx {Generator} gsl_rng_uni
+@deffnx {Generator} gsl_rng_uni32
+This is a reimplementation of the 16-bit SLATEC random number generator RUNIF.
+A  generalisation of the generator to 32 bits is provided by gsl_rng_uni32.
+The original source code is available from NETLIB.
 @end deffn
 
-@deffn {Generator} gsl_rng_cmlib
+@deffn {Generator} gsl_rng_slatec
+This is the SLATEC random number generator RAND. It is ancient. The
+original source code is available from NETLIB.
 @end deffn
 
 
 @deffn {Generator} gsl_rng_zuf
+This is the ZUFALL lagged Fibonacci series generator of Peterson.  Its
+sequence is,
+@c
+@equation
+t    = u_@{n-273@} + u_@{n-607@}
+@end equation
+@equation
+u_n  = t - float(int(t))
+@end equation
+The original source code is available from NETLIB.  For more information
+see,
+@itemize @asis
+@item
+W. Petersen, "Lagged Fibonacci Random Number Generators for the NEC
+SX-3", @cite{International Journal of High Speed Computing} (1994).
+@end itemize
 @end deffn
 
 @section Performance
