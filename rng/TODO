@@ -1,16 +1,17 @@
 1. Improve the seeding for routines that use the LCG seed generator.
 It can only generate 130,000 different initial states. We should
 change it to provide 2^31 different initial states (this will also
-prevent the high bits being zero). DONE
+prevent the high bits being zero). DONE - we now use a 32-bit
+generator.
 
 2. Make things work on 64 bit platforms. Sometimes we just need to use
 & 0xffffffff on 32 bit quantities that are returned to the user where
 we rely on 32 bit arithmetic, sometimes it is more complicated
 (e.g. the Tausworthe generator relies on 32 bit arithmetic at all
-stages). DONE
+stages). DONE, needs to be tested on an actual 64 bit machine though
 
 3. Add reimplementations of the Numerical Recipes generators, since
-lots of people use those.
+lots of people use those. DONE, for ran0,1,2,3
 
 4. Add functions for getting an integer in the range [0,N] or [1,N],
 like rolling dice. Be aware that division might not make a smooth
@@ -20,3 +21,6 @@ distribution, and a small modulus might be correlated for some generators.
 numerical recipes they divide by (MAX+1) which we can't handle in our
 current scheme. They also replace 1 by 1-eps where eps=1.2e-7. Yuk.
 
+6. run the DIEHARD tests on all the generators, especially the ones we
+are listing as "Simulation Quality" -- some of those are a bit old and
+might fail one or two diehard tests.

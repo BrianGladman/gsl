@@ -1,5 +1,8 @@
 Fri Jul  3 15:55:34 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
+	* rng.c (gsl_rng_uniform_gt0_lt1): added a function which returns
+ 	numbers in the range (0,1), i.e. excluding 0.0 and 1.0
+
 	* renamed bad_randu.c to randu.c
 
 	* renamed bad_rand.c to bsdrand.c

@@ -56,6 +56,7 @@ extern unsigned long int gsl_rng_default_seed;
 unsigned long int gsl_rng_get (const gsl_rng * r);
 double gsl_rng_uniform (const gsl_rng * r);
 double gsl_rng_uniform_pos (const gsl_rng * r);
+double gsl_rng_uniform_gt0_lt1 (const gsl_rng * r)
 
 gsl_rng *gsl_rng_alloc (const gsl_rng_type * T);
 gsl_rng *gsl_rng_cpy (gsl_rng * dest, const gsl_rng * src);
@@ -102,6 +103,22 @@ gsl_rng_uniform_pos (const gsl_rng * r)
   return k / ((double) max);
 }
 
+extern inline double
+gsl_rng_uniform_gt0_lt1 (const gsl_rng * r)
+{
+  unsigned long int max = r->max;
+  unsigned long int k;
+  volatile double x;
+
+  do 
+    {
+      k = (r->get) (r->state);
+      x = k / ((double) max)
+    }
+  while (x == 0 || x == 1) ;
+
+  return x;
+}
 #endif /* HAVE_INLINE */
 
 #endif /* GSL_RNG_H */

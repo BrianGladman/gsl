@@ -132,6 +132,23 @@ gsl_rng_uniform_pos (const gsl_rng * r)
   return k / ((double) max);
 }
 
+double
+gsl_rng_uniform_gt0_lt1 (const gsl_rng * r)
+{
+  unsigned long int max = r->max;
+  unsigned long int k;
+  volatile double x; /* store x in memory, we need to test exact equality */
+
+  do 
+    {
+      k = (r->get) (r->state);
+      x = k / ((double) max)
+    }
+  while (x == 0 || x == 1) ;
+
+  return x;
+}
+
 unsigned long int
 gsl_rng_max (const gsl_rng * r)
 {
