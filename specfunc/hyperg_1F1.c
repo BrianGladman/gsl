@@ -261,6 +261,7 @@ hyperg_1F1_1_int(const int b, const double x, double * result)
  *
  * checked OK: [GJ] Thu Oct  1 16:46:35 MDT 1998
  */
+static
 int
 hyperg_1F1_1(const double b, const double x, double * result)
 {
@@ -630,7 +631,7 @@ hyperg_1F1_small_a_bgt0(const double a, const double b, const double x, double *
     return gsl_sf_hyperg_1F1_series_impl(a, b, x, result, &prec);
   }
   else if(x > 0.0) {
-    if(x > 20.0 && abs_bma*abs_oma < 0.9*x) {
+    if(x > 100.0 && abs_bma*abs_oma < 0.9*x) {
       double prec;
       return hyperg_1F1_asymp_posx(a, b, x, result, &prec);
     }
@@ -684,8 +685,11 @@ hyperg_1F1_beps_bgt0(const double eps, const double b, const double x, double * 
   int stat_K = hyperg_1F1_small_a_bgt0(-eps, b, -x, &Kummer_1F1);
   if((stat_K == GSL_SUCCESS || stat_K == GSL_ELOSS) && Kummer_1F1 != 0.0) {
     double lnK = log(fabs(Kummer_1F1));
-    double sgK = ( Kummer_1F1 > 0.0 ? 1.0 : -1.0 );
-    return gsl_sf_exp_sgn_impl(lnK + x, sgK, result);
+    int stat_e = gsl_sf_exp_sgn_impl(lnK + x, Kummer_1F1, result);
+    if(stat_e == GSL_SUCCESS)
+      return stat_K;
+    else
+      return stat_e;
   }
   else {
     *result = 0.0;
@@ -969,8 +973,9 @@ hyperg_1F1_ab_posint(const int a, const int b, const double x, double * result)
        * forward on a from a0.
        */
       int a0 = ceil(0.5*(b-x));
-      double Ma0b;
-      double Ma0p1b;
+      double Ma0b;    /* M(a0,b)   */
+      double Ma0bp1;  /* M(a0,b+1) */
+      double Ma0p1b;  /* M(a0+1,b) */
       double Mnm1;
       double Mn;
       double Mnp1;
@@ -984,20 +989,11 @@ hyperg_1F1_ab_posint(const int a, const int b, const double x, double * result)
     	  Ma0np1 = Ma0n;
     	  Ma0n = Ma0nm1;
     	}
-    	Ma0b = Ma0n;
+	Ma0bp1 = Ma0np1;
+    	Ma0b   = Ma0n;
+	Ma0p1b = (b*(a0+x)*Ma0b + x*(a0-b)*Ma0bp1)/(a0*b);
       }
-      {
-    	double Ma0p1np1 = exp(x);
-    	double Ma0p1n	= exp(x) * (1.0 + x/a0);
-    	double Ma0p1nm1;
-    	for(n=a0; n>b; n--) {
-    	  Ma0p1nm1 = (-n*(1-n-x)*Ma0p1n - x*(n-a0-1)*Ma0p1np1)/(n*(n-1.0));
-    	  Ma0p1np1 = Ma0p1n;
-    	  Ma0p1n = Ma0p1nm1;
-    	}
-    	Ma0p1b = Ma0p1n;
-      }
-      
+
       Mnm1 = Ma0b;
       Mn   = Ma0p1b;
       for(n=a0+1; n<a; n++) {
@@ -1170,9 +1166,9 @@ hyperg_1F1_ab_pos(const double a, const double b, const double x, double * resul
         Mn   = Mnp1;
       }
       stat_Mt = hyperg_1F1_beps_bgt0(n-b, b, x, &Mn_true);
-      if(stat_Mt == GSL_SUCCESS) {
+      if(stat_Mt == GSL_SUCCESS || stat_Mt == GSL_ELOSS) {
         *result = Ma/Mn * Mn_true;
-        return GSL_SUCCESS;
+        return stat_Mt;
       }
       else {
         *result = 0.0;
@@ -1194,7 +1190,9 @@ hyperg_1F1_ab_pos(const double a, const double b, const double x, double * resul
       double M0, M1;
       int stat_0 = hyperg_1F1_beps_bgt0(eps-1.0, b, x, &M0);
       int stat_1 = hyperg_1F1_beps_bgt0(eps,     b, x, &M1);
-      if(stat_0 == GSL_SUCCESS && stat_1 == GSL_SUCCESS) {
+      if(   (stat_0 == GSL_SUCCESS || stat_0 == GSL_ELOSS)
+         && (stat_1 == GSL_SUCCESS || stat_1 == GSL_ELOSS)
+	) {
         double Mam1 = M0;
         double Ma   = M1;
         double Map1;
@@ -1205,7 +1203,10 @@ hyperg_1F1_ab_pos(const double a, const double b, const double x, double * resul
 	  Ma   = Map1;
         }
         *result = Ma;
-        return GSL_SUCCESS;
+	if(stat_0 == GSL_ELOSS || stat_1 == GSL_ELOSS)
+	  return GSL_ELOSS;
+	else
+          return GSL_SUCCESS;
       }
       else {
         *result = 0.0;
@@ -1256,7 +1257,9 @@ hyperg_1F1_ab_pos(const double a, const double b, const double x, double * resul
       double Manm1;
       int stat_0 = hyperg_1F1_beps_bgt0(-eps,    a+eps,     x, &Manp1);
       int stat_1 = hyperg_1F1_beps_bgt0(1.0-eps, a+eps-1.0, x, &Man);
-      if(stat_0 == GSL_SUCCESS && stat_1 == GSL_SUCCESS) {
+      if(   (stat_0 == GSL_SUCCESS || stat_0 == GSL_ELOSS)
+         && (stat_1 == GSL_SUCCESS || stat_1 == GSL_ELOSS)
+	) {
         double n;
         for(n=a+eps-1.0; n>b+0.1; n -= 1.0) {
           Manm1 = (-n*(1-n-x)*Man - x*(n-a)*Manp1)/(n*(n-1.0));
@@ -1264,7 +1267,10 @@ hyperg_1F1_ab_pos(const double a, const double b, const double x, double * resul
           Man = Manm1;
         }
         *result = Man;
-        return GSL_SUCCESS;
+	if(stat_0 == GSL_ELOSS || stat_1 == GSL_ELOSS)
+	  return GSL_ELOSS;
+	else
+          return GSL_SUCCESS;
       }
       else {
         *result = 0.0;
@@ -1282,7 +1288,9 @@ hyperg_1F1_ab_pos(const double a, const double b, const double x, double * resul
       double N    = floor(a0 - b);
       double epsb = 1.0 + N - a0 + b;
       double Ma0b;
+      double Ma0bp1;
       double Ma0p1b;
+      int stat_a0;
       double Mnm1;
       double Mn;
       double Mnp1;
@@ -1293,39 +1301,28 @@ hyperg_1F1_ab_pos(const double a, const double b, const double x, double * resul
     	double Ma0nm1;
         int stat_0 = hyperg_1F1_beps_bgt0(-epsb,    a0+epsb,     x, &Ma0np1);
         int stat_1 = hyperg_1F1_beps_bgt0(1.0-epsb, a0+epsb-1.0, x, &Ma0n);
-	if(stat_0 == GSL_SUCCESS && stat_1 == GSL_SUCCESS) {
+	if(   (stat_0 == GSL_SUCCESS || stat_0 == GSL_ELOSS)
+	   && (stat_1 == GSL_SUCCESS || stat_1 == GSL_ELOSS)
+	  ) {
     	  for(n=a0+epsb-1.0; n>b+0.1; n -= 1.0) {
     	    Ma0nm1 = (-n*(1-n-x)*Ma0n - x*(n-a0)*Ma0np1)/(n*(n-1.0));
             Ma0np1 = Ma0n;
             Ma0n = Ma0nm1;
           }
-          Ma0b = Ma0n;
+	  Ma0bp1 = Ma0np1;
+          Ma0b   = Ma0n;
+	  Ma0p1b = (b*(a0+x)*Ma0b+x*(a0-b)*Ma0bp1)/(a0*b); /* right-down hook */
+	  if(stat_0 == GSL_ELOSS || stat_1 == GSL_ELOSS)
+	    stat_a0 = GSL_ELOSS;
+	  else
+	    stat_a0 = GSL_SUCCESS;
 	}
 	else {
 	  *result = 0.0;
 	  return GSL_EFAILED;
 	}
       }
-      {
-    	double Ma0p1np1;
-    	double Ma0p1n;
-    	double Ma0p1nm1;
-	int stat_0 = hyperg_1F1_beps_bgt0(-epsb,    a0+1.0+epsb,     x, &Ma0p1np1);
-        int stat_1 = hyperg_1F1_beps_bgt0(1.0-epsb, a0+1.0+epsb-1.0, x, &Ma0p1n);
-	if(stat_0 == GSL_SUCCESS && stat_1 == GSL_SUCCESS) {
-    	  for(n=a0+epsb; n>b+0.1; n -= 1.0) {
-            Ma0p1nm1 = (-n*(1-n-x)*Ma0p1n - x*(n-a0-1.0)*Ma0p1np1)/(n*(n-1.0));
-            Ma0p1np1 = Ma0p1n;
-            Ma0p1n = Ma0p1nm1;
-          }
-          Ma0p1b = Ma0p1n;
-	}
-	else {
-	  *result = 0.0;
-	  return GSL_EFAILED;
-	}
-      }
-      
+
       Mnm1 = Ma0b;
       Mn   = Ma0p1b;
       for(n=a0+1.0; n<a-0.1; n += 1.0) {
@@ -1334,7 +1331,7 @@ hyperg_1F1_ab_pos(const double a, const double b, const double x, double * resul
     	Mn   = Mnp1;
       }
       *result = Mn;
-      return GSL_SUCCESS;
+      return stat_a0;
     }
   }
 
@@ -1393,9 +1390,9 @@ hyperg_1F1_ab_pos(const double a, const double b, const double x, double * resul
       Mn   = Mnp1;
     }
     stat_Mt = hyperg_1F1_beps_bgt0(n-b, b, x, &Mn_true);
-    if(stat_Mt == GSL_SUCCESS) {
+    if(stat_Mt == GSL_SUCCESS || stat_Mt == GSL_ELOSS) {
       *result = Ma/Mn * Mn_true;
-      return GSL_SUCCESS;
+      return stat_Mt;
     }
     else {
       *result = 0.0;
