@@ -13,6 +13,7 @@ multidimensional root finding functions and related declarations.
 
 @menu
 * Multidimensional Root Finding Overview::  
+* Multidimensional Root Finding - Initializing the Solver::  
 * Multidimensional Root Finding References and Further Reading::  
 @end menu
 
@@ -21,19 +22,19 @@ multidimensional root finding functions and related declarations.
 @cindex multidimensional root finding, overview
 
 The problem of multidimensional root finding requires the simultaneous
-solution of @math{n} equations, @math{f_i}, in @math{n} variables,
+solution of @math{n} equations, @math{F_i}, in @math{n} variables,
 @math{x_i},
 
 @tex
 \beforedisplay
 $$
-f_i (x_1, \dots, x_n) = 0 \qquad\hbox{for}~i = 1 \dots n.
+F_i (x_1, \dots, x_n) = 0 \qquad\hbox{for}~i = 1 \dots n.
 $$
 \afterdisplay
 @end tex
 @ifinfo
 @example
-f_i (x_1, ..., x_n) = 0    for i = 1 ... n.
+F_i (x_1, ..., x_n) = 0    for i = 1 ... n.
 @end example
 @end ifinfo
 @noindent
@@ -59,7 +60,7 @@ where @math{x}, @math{F} are vector quantities and @math{J} is the
 Hessian matrix @c{$J_{ij} = \partial F_i / \partial x_j$} 
 @math{J_@{ij@} = d F_i / d x_j}.
 Additional strategies are also used to enlarge the region of
-convergence. These include requiring a decrease the norm @math{|F|} on
+convergence. These include requiring a decrease in the norm @math{|F|} on
 each iteration proposed by Newton's method, or taking downwards steps in
 the direction of the negative gradient of @math{|F|}.
 
@@ -77,8 +78,71 @@ both the function and its derivatives to be supplied by the user.
 The state for solvers which do not use an analytic Hessian matrix is
 held in a @code{gsl_multiroot_fsolver} struct. The updating procedure
 uses only function evaluations (not derivatives).  The algorithms
-estimate the matrix @math{J} or @c{$J^@{-1@}$} 
+estimate the matrix @math{J} or @c{$J^{-1}$} 
 @math{J^@{-1@}} by approximate methods.
+
+@node Multidimensional Root Finding - Initializing the Solver
+@section Initializing the Solver
+
+@deftypefun {gsl_multiroot_fsolver *} gsl_multiroot_fsolver_alloc (const gsl_multiroot_fsolver_type * @var{T}, gsl_multiroot_function * @var{f}, gsl_vector * @var{x})
+This function returns a pointer to a a newly allocated instance of a
+solver of type @var{T} for the function @var{f}, with an initial bracket
+on the root of @var{x}. For example, the following code creates an
+instance of a bisection solver,
+
+@example
+gsl_multiroot_fsolver * s = 
+    gsl_multiroot_fsolver_alloc (gsl_multiroot_fsolver_broyden, f, x);
+@end example
+
+If there is insufficient memory to create the solver then the function
+returns a null pointer and the error handler is invoked with an error
+code of @code{GSL_ENOMEM}.
+@end deftypefun
+
+@deftypefun {gsl_multiroot_fdfsolver *} gsl_multiroot_fdfsolver_alloc (const gsl_multiroot_fdfsolver_type * @var{T}, gsl_multiroot_function_fdf * @var{fdf}, gsl_vector * @var{x})
+This function returns a pointer to a a newly allocated instance of a
+solver of type @var{T} for the function @var{f}, with an initial guess
+for the root of @var{x}. For example, the following code creates an
+instance of a Newton-Raphson solver,
+
+@example
+gsl_multiroot_fdfsolver * s = 
+    gsl_multiroot_fdfsolver_alloc (gsl_multiroot_fdfsolver_newton, fdf, x);
+@end example
+
+If there is insufficient memory to create the solver then the function
+returns a null pointer and the error handler is invoked with an error
+code of @code{GSL_ENOMEM}.
+@end deftypefun
+
+@deftypefun int gsl_multiroot_fsolver_set (gsl_multiroot_fsolver * @var{s}, gsl_multiroot_function * @var{f}, gsl_vector * @var{x})
+This function reinitializes an existing solver @var{s} to use the
+function @var{f} and the initial guess @var{x}.
+@end deftypefun
+
+@deftypefun int gsl_multiroot_fdfsolver_set (gsl_multiroot_fdfsolver * @var{s}, gsl_function_fdf * @var{fdf}, gsl_vector * @var{x})
+This function reinitializes an existing solver @var{s} to use the
+function and derivative @var{fdf} and the initial guess @var{x}.
+@end deftypefun
+
+@deftypefun void gsl_multiroot_fsolver_free (gsl_multiroot_fsolver * @var{s})
+@deftypefunx void gsl_multiroot_fdfsolver_free (gsl_multiroot_fdfsolver * @var{s})
+These functions free all the memory associated with the solver @var{s}.
+@end deftypefun
+
+@deftypefun {const char *} gsl_multiroot_fsolver_name (const gsl_multiroot_fsolver * @var{s})
+@deftypefunx {const char *} gsl_multiroot_fdfsolver_name (const gsl_multiroot_fdfsolver * @var{s})
+These functions return a pointer to the name of the solver. For example,
+
+@example
+printf("s is a '%s' solver\n", gsl_multiroot_fdfsolver_name (s)) ;
+@end example
+
+@noindent
+would print something like @code{s is a 'newton' solver}
+@end deftypefun
+
 
 @node Multidimensional Root Finding References and Further Reading
 @section References and Further Reading
