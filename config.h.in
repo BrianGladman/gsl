@@ -107,6 +107,28 @@
    a problem on some Compaq Tru64 unix systems when compiled with GCC. */
 #undef FIND_FP_RND_IN_USR_INCLUDE_FLOAT_H
 
+/* Define a rounding function which moves extended precision values
+   out of registers and rounds them to double-precision. This should
+   be used *sparingly*, in places where it is necessary to keep
+   double-precision rounding for critical expressions while running in
+   extended precision. For example, the following code should ensure
+   exact equality, even when extended precision registers are in use,
+
+      double q = GSL_COERCE_DBL(3.0/7.0) ;
+      if (q == GSL_COERCE_DBL(3.0/7.0)) { ... } ;
+
+   It carries a penalty even when the program is running in double
+   precision mode unless you compile a separate version of the
+   library with HAVE_EXTENDED_PRECISION_REGISTERS turned off. */
+
+#undef HAVE_EXTENDED_PRECISION_REGISTERS
+
+#ifdef HAVE_EXTENDED_PRECISION_REGISTERS
+#define GSL_COERCE_DBL(x) (gsl_coerce_double(x))
+#else
+#define GSL_COERCE_DBL(x) (x)
+#endif
+
 /* Define this if printf can handle %Lf for long double */
 #undef HAVE_PRINTF_LONGDOUBLE
 

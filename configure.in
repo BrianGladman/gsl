@@ -151,6 +151,7 @@ case "$host" in
         ;;
     *86-*-linux*) 
 	AC_DEFINE(HAVE_X86LINUX_IEEE_INTERFACE)
+	AC_DEFINE(HAVE_EXTENDED_PRECISION_REGISTERS)
 	AC_MSG_RESULT([x86linux]) 
         ;;
     *-*-sunos4*) 
