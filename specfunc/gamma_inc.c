@@ -173,89 +173,80 @@ gamma_inc_Q_asymp_unif(const double a, const double x, gsl_sf_result * result)
  *
  * Q(a,x) = D(a,x) a/x F(a,x)
  *             1   (1-a)/x  1/x  (2-a)/x   2/x  (3-a)/x
- *  F(a.x) =  ---- ------- ----- -------- ----- -------- ...
+ *  F(a,x) =  ---- ------- ----- -------- ----- -------- ...
  *            1 +   1 +     1 +   1 +      1 +   1 +
  *
- * Uses Gautschi equivalent series method for the CF evaluation.
+ * Hans E. Plesser, 2002-01-22 (hans dot plesser at itf dot nlh dot no):
  *
- * Assumes a != x + 1, so that the first term of the
- * CF recursion is not undefined. This is why we need
- * gamma_inc_Q_CF_protected() below. Based on a problem
- * report by Teemu Ikonen [Tue Oct 10 12:17:19 MDT 2000].
+ * Since the Gautschi equivalent series method for CF evaluation may lead 
+ * to singularities, I have replaced it with the modified Lentz algorithm
+ * given in
+ *
+ * I J Thompson and A R Barnett
+ * Coulomb and Bessel Functions of Complex Arguments and Order
+ * J Computational Physics 64:490-509 (1986)
+ *
+ * In consequence, gamma_inc_Q_CF_protected() is now obsolete and has been 
+ * removed. 
+ *
+ * Identification of terms between the above equation for F(a, x) and
+ * the first equation in the appendix of Thompson&Barnett is as follows:
+ *
+ *    b_0 = 0, b_n = 1 for all n > 0
+ *
+ *    a_1 = 1
+ *    a_n = (n/2-a)/x    for n even
+ *    a_n = (n-1)/(2x)   for n odd
+ *
  */
+
 static
 int
 gamma_inc_Q_CF(const double a, const double x, gsl_sf_result * result)
 {
-  const int kmax = 5000;
+  const int    nmax  =  5000;
+  const double small =  gsl_pow_3 (GSL_DBL_EPSILON);
 
   gsl_sf_result D;
   const int stat_D = gamma_inc_D(a, x, &D);
 
-  double sum  = 1.0;
-  double tk   = 1.0;
-  double rhok = 0.0;
-  int k;
+  double hn = 1.0;           /* convergent */
+  double Cn = 1.0 / small;
+  double Dn = 1.0;
+  int n;
 
-  for(k=1; k<kmax; k++) {
-    double ak;
-    if(GSL_IS_ODD(k))
-      ak = (0.5*(k+1.0)-a)/x;
+  /* n == 1 has a_1, b_1, b_0 independent of a,x, 
+     so that has been done by hand                */
+  for ( n = 2 ; n < nmax ; n++ ) {
+    double an;
+    double delta;
+
+    if(GSL_IS_ODD(n))
+      an = 0.5*(n-1)/x;
     else
-      ak = 0.5*k/x;
-    rhok  = -ak*(1.0 + rhok)/(1.0 + ak*(1.0 + rhok));
-    tk   *= rhok;
-    sum  += tk;
-    if(fabs(tk/sum) < GSL_DBL_EPSILON) break;
+      an = (0.5*n-a)/x;
+
+    Dn = 1.0 + an * Dn;
+    if ( fabs(Dn) < small )
+      Dn = small;
+    Cn = 1.0 + an/Cn;
+    if ( fabs(Cn) < small )
+      Cn = small;
+    Dn = 1.0 / Dn;
+    delta = Cn * Dn;
+    hn *= delta;
+    if(fabs(delta-1) < GSL_DBL_EPSILON) break;
   }
 
-  result->val  = D.val * (a/x) * sum;
-  result->err  = D.err * fabs((a/x) * sum);
-  result->err += GSL_DBL_EPSILON * (2.0 + 0.5*k) * fabs(result->val);
+  result->val  = D.val * (a/x) * hn;
+  result->err  = D.err * fabs((a/x) * hn);
+  result->err += GSL_DBL_EPSILON * (2.0 + 0.5*n) * fabs(result->val);
 
-  if(k == kmax)
+  if(n == nmax)
     GSL_ERROR ("error", GSL_EMAXITER);
   else
     return stat_D;
 }
-
-
-/* See note above for  gamma_inc_Q_CF(). */
-static
-int
-gamma_inc_Q_CF_protected(const double a, const double x, gsl_sf_result * result)
-{
-  if(fabs(1.0 - a + x) < 2.0*GSL_DBL_EPSILON) {
-    /*
-     * This is a problem region because when
-     * 1.0 - a + x = 0 the first term of the
-     * CF recursion is undefined.
-     *
-     * I missed this condition when I first
-     * implemented gamma_inc_Q_CF() function,
-     * so now I have to fix it by side-stepping
-     * this point, using the recursion relation
-     *   Q(a,x) = Q(a-1,x) + x^(a-1) e^(-z) / Gamma(a)
-     *          = Q(a-1,x) + D(a-1,x)
-     * to lower 'a' by one, giving an a=x point,
-     * which is fine.
-     */
-
-    gsl_sf_result D;
-    gsl_sf_result tmp_CF;
-
-    const int stat_tmp_CF = gamma_inc_Q_CF(a-1.0, x, &tmp_CF);
-    const int stat_D = gamma_inc_D(a-1.0, x, &D);
-    result->val  = tmp_CF.val + D.val;
-    result->err  = tmp_CF.err + D.err;
-    result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
-    return GSL_ERROR_SELECT_2(stat_tmp_CF, stat_D);
-  }
-  else {
-    return gamma_inc_Q_CF(a, x, result);
-  }
-}
-
 
 /* Useful for small a and x. Handles the subtraction analytically.
  */
@@ -494,7 +485,7 @@ gsl_sf_gamma_inc_P_e(const double a, const double x, gsl_sf_result * result)
        * so the subtraction is stable.
        */
       gsl_sf_result Q;
-      int stat_Q = gamma_inc_Q_CF_protected(a, x, &Q);
+      int stat_Q = gamma_inc_Q_CF(a, x, &Q);
       result->val  = 1.0 - Q.val;
       result->err  = Q.err;
       result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
