@@ -122,7 +122,28 @@ interface standards, is available online from the BLAS Technical Forum
 web-site.
 
 @itemize @asis
+@item
 @cite{BLAS Technical Forum} 
 @url{http://www.netlib.org/cgi-bin/checkout/blast/blast.pl}
+@end itemize
+@noindent
+The following papers contain the specifications for Level 1, Level 2 and
+Level 3 BLAS.
+
+@itemize @asis
+@item
+C. Lawson, R. Hanson, D. Kincaid, F. Krogh, "Basic Linear Algebra
+Subprograms for Fortran Usage", @cite{ACM Transactions on Mathematical
+Software}, Vol. 5 (1979), Pages 308-325.
+
+@item
+J.J. Dongarra, J. DuCroz, S. Hammarling, R. Hanson, "An Extended Set of
+Fortran Basic Linear Algebra Subprograms", @cite{ACM Transactions on
+Mathematical Software}, Vol. 14, No. 1 (1988), Pages 1-32.
+
+@item
+J.J. Dongarra, I. Duff, J. DuCroz, S. Hammarling, "A Set of
+Level 3 Basic Linear Algebra Subprograms", @cite{ACM Transactions on
+Mathematical Software}, Vol. 16 (1990), Pages 1-28.
 @end itemize
 
