@@ -10,9 +10,10 @@ A test suite is available for most of the libraries.  It can be
 invoked with "make check" in each directory.  All tests can be run
 together with "make check" at the top level.
 
-GNU Libtool is used to build shared libraries. Compilation of shared
+GNU Libtool is used to build shared libraries.  Compilation of shared
 libraries can be turned off by specifying the `--disable-shared'
-option to `configure'.
+option to `configure'.  This is recommended if you encounter problems
+building the library.
 
 If you run "make check" and get some failures, please see the
 KNOWN-PROBLEMS file.  This file lists failures we already know about.
