@@ -42,9 +42,10 @@ platforms, so I just used the tricks which also worked on the pentium
 
 x10. Add random/srandom DONE.
 
-11. Check out  the following paper,
+11. Check out the bug fix to mrand48 that was made in glibc2, pr757
+
+12. Check out  the following paper,
 
 On the anomaly of ran1() in Monte Carlo pricing of financial
 derivatives; Akira Tajima , Syoiti Ninomiya , and Shu Tezuka ; Winter
 simulation , 1996, Page 360, from ACM
-
