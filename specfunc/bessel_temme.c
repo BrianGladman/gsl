@@ -73,10 +73,14 @@ gsl_sf_temme_gamma(const double nu, double * g_1pnu, double * g_1mnu, double * g
 {
   const double anu = fabs(nu);    /* functions are even */
   const double x = 4.0*anu - 1.0;
-  *g1 = gsl_sf_cheb_eval(&g1_cs, x);
-  *g2 = gsl_sf_cheb_eval(&g2_cs, x);
-  *g_1mnu = 1.0/(*g2 + nu * *g1);
-  *g_1pnu = 1.0/(*g2 - nu * *g1);
+  gsl_sf_result r_g1;
+  gsl_sf_result r_g2;
+  gsl_sf_cheb_eval_impl(&g1_cs, x, &r_g1);
+  gsl_sf_cheb_eval_impl(&g2_cs, x, &r_g2);
+  *g1 = r_g1.val;
+  *g2 = r_g2.val;
+  *g_1mnu = 1.0/(r_g2.val + nu * r_g1.val);
+  *g_1pnu = 1.0/(r_g2.val - nu * r_g1.val);
   return GSL_SUCCESS;
 }
 

@@ -762,8 +762,8 @@ int gsl_sf_bessel_Jnu_asymp_Olver_impl(double nu, double x, gsl_sf_result * resu
     bsum = olver_Bsum(nu, z, abs_zeta);
 
     arg  = crnu*crnu * zeta;
-    stat_a = gsl_sf_airy_Ai_impl(arg, &ai);
-    gsl_sf_airy_Ai_deriv_impl(arg, &aip);
+    stat_a = gsl_sf_airy_Ai_impl(arg, GSL_MODE_DEFAULT, &ai);
+    gsl_sf_airy_Ai_deriv_impl(arg, GSL_MODE_DEFAULT, &aip);
 
     result->val  = pre * (ai.val*asum/crnu + aip.val*bsum/(nu*crnu*crnu));
     result->err  = GSL_DBL_EPSILON * fabs(result->val);
@@ -837,8 +837,8 @@ int gsl_sf_bessel_Ynu_asymp_Olver_impl(double nu, double x, gsl_sf_result * resu
     bsum = olver_Bsum(nu, z, abs_zeta);
 
     arg  = crnu*crnu * zeta;
-    stat_b = gsl_sf_airy_Bi_impl(arg, &bi);
-    gsl_sf_airy_Bi_deriv_impl(arg, &bip);
+    stat_b = gsl_sf_airy_Bi_impl(arg, GSL_MODE_DEFAULT, &bi);
+    gsl_sf_airy_Bi_deriv_impl(arg, GSL_MODE_DEFAULT, &bip);
 
     result->val  = -pre * (bi.val*asum/crnu + bip.val*bsum/(nu*crnu*crnu));
     result->err  = GSL_DBL_EPSILON * fabs(result->val);

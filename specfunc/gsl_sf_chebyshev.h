@@ -4,6 +4,7 @@
 #ifndef GSL_SF_CHEBYSHEV_H_
 #define GSL_SF_CHEBYSHEV_H_
 
+#include <gsl_mode.h>
 #include <gsl_sf_result.h>
 
 
@@ -16,7 +17,14 @@ struct gsl_sf_cheb_series_struct {
   double * cp;  /* coefficients of derivative  */
   double * ci;  /* coefficients of integral    */
 
-  /* the following exists for the benefit of the implementation */
+  /* The following exists (mostly) for the benefit
+   * of the implementation. It is an effective single
+   * precision order, for use in single precision
+   * evaluation. Users can use it if they like, but
+   * only they know how to calculate it, since it is
+   * specific to the approximated function. By default,
+   * order_sp = order.
+   */
   int order_sp;
 };
 typedef struct gsl_sf_cheb_series_struct gsl_sf_cheb_series;
@@ -55,6 +63,15 @@ int gsl_sf_cheb_eval_e(const gsl_sf_cheb_series * cs, double x, gsl_sf_result * 
  */
 int gsl_sf_cheb_eval_n_impl(const gsl_sf_cheb_series * cs, int order, double x, gsl_sf_result * result);
 int gsl_sf_cheb_eval_n_e(const gsl_sf_cheb_series * cs, int order, double x, gsl_sf_result * result);
+
+
+/* Evaluate a Chebyshev series at a given point, using the default
+ * order for double precision mode(s) and the single precision
+ * order for other modes.
+ * No errors can occur for a struct obtained from gsl_sf_cheb_new().
+ */
+int gsl_sf_cheb_eval_mode_impl(const gsl_sf_cheb_series * cs, double x, gsl_mode_t mode, gsl_sf_result * result);
+int gsl_sf_cheb_eval_mode_e(const gsl_sf_cheb_series * cs, double x, gsl_mode_t mode, gsl_sf_result * result);
 
 
 /* Evaluate derivative of a Chebyshev series at a given point.

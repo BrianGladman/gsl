@@ -88,7 +88,6 @@ libgslspecfunc_a_SOURCES = 	\
 	chebyshev.c		\
 	clausen.c		\
 	coupling.c		\
-	coulomb.c		\
 	coulomb_bound.c		\
 	dawson.c		\
 	debye.c			\
@@ -128,6 +127,7 @@ libgslspecfunc_a_SOURCES = 	\
 #	t-erf.c			\
 #	legendre_con.c		\
 #	legendre_poly.c		\
+#	coulomb.c		\
 
 strict:
 	$(MAKE) CFLAGS="-ansi -pedantic -W -Wall -Wtraditional -Wconversion -Wshadow -Wpointer-arith -Wcast-qual -Wcast-align -Wwrite-strings -Waggregate-return -Wstrict-prototypes -fshort-enums -fno-common -Wmissing-prototypes -Wnested-externs -g -O4 -Dinline=''"
