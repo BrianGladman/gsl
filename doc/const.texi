@@ -157,7 +157,7 @@ The Nuclear Magneton, @math{\mu_N}.
 
 @item GSL_CONST_MKS_ELECTRON_MAGNETIC_MOMENT
 The absolute value of the magnetic moment of the electron, @math{\mu_e}.
-The physical magnetic moment of the election is negative.
+The physical magnetic moment of the electron is negative.
 
 @item GSL_CONST_MKS_PROTON_MAGNETIC_MOMENT
 The magnetic moment of the proton, @math{\mu_p}.

@@ -1021,7 +1021,7 @@ main (void)
 
 @iftex
 @sp 1
-@center @image{fft-real-mixedradix}
+@center @image{fft-real-mixedradix,3.4in}
 
 @center Low-pass filtered version of a real pulse, 
 @center output from the example program.
@@ -1126,6 +1126,12 @@ achieve maximum performance.  It is available under the GNU GPL.
 @item
 FFTW Website, @url{http://www.fftw.org/}
 @end itemize
+@noindent
+The source code for @sc{fftpack} is available from Netlib,
 
+@itemize @asis
+@item
+FFTPACK, @url{http://www.netlib.org/fftpack/}
+@end itemize
 
 
