@@ -24,14 +24,13 @@ and link the program main.c in this directory.
 For the default installation you should build the
 workspace using the project configuration
 'ReleaseML' compiled with the single-threaded /ML
-option.  Only the /ML 'Release' version of GSL is
-supplied by default.
+option, or the using the 'ReleaseDLL' configuration
+compiled with the /MD option.
 
-If you want to use the 'ReleaseMT', 'ReleaseDLL',
-'DebugMT' or 'DebugDLL' configurations you will need
-to compile the corresponding versions the library
-yourself, following the instructions in main
-README.txt file.
+If you want to use other 'Release' or 'Debug'
+configurations you will need to compile the
+corresponding versions the library yourself,
+following the instructions in main README.txt file.
 
 The output from the program should be the same as
 using GSL on Unix,

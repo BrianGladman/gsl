@@ -73,16 +73,23 @@ application with GSL using Microsoft Visual C++.
 By default the GSL libraries and header files are
 installed in the following locations,
 
-  C:\Program Files\GSL\include\gsl          - header files
+  C:\Program Files\GSL\include\gsl           - header files
 
-  C:\Program Files\GSL\lib\libgsl.lib       - Main lib file
-  C:\Program Files\GSL\lib\libgslcblas.lib  - BLAS lib file
+  C:\Program Files\GSL\lib\libgslML.lib      - Main static lib file
+  C:\Program Files\GSL\lib\libgslcblasML.lib - BLAS static lib file
 
-Only the single-threaded 'Release' version of the
-library is supplied with this package.  If you need
-other versions of the library you can build them by
-recompiling the *.dsw project workspace files in the
-top-level src/ directory.
+  C:\Program Files\GSL\lib\libgsl.lib        - Main DLL lib file
+  C:\Program Files\GSL\lib\libgslcblas.lib   - BLAS DLL lib file
+
+  C:\Windows\System\libgsl.dll               - Main DLL
+  C:\Windows\System\libgslcblas.dll          - BLAS DLL
+
+The single-threaded 'Release' version of the library
+and a multi-threaded 'Release' DLL are supplied with
+this package.  If you need other versions of the
+library you can build them by recompiling the *.dsw
+project workspace files in the top-level src/
+directory.
 
 Compiling an Application
 ========================
@@ -123,8 +130,32 @@ Make sure that the Object/Library module settings are
 made for all the appropriate configurations (either
 'Release' or 'Debug').
 
-The supplied libraries are compiled with /ML, which
-generates single-threaded release libraries.
+The supplied static libraries are compiled with /ML,
+which generates single-threaded release libraries.
+
+The supplied DLLs are compiled with /MD, which
+generates multi-threaded DLL release libraries.  If
+you want to link to the DLL you will need to compile
+your code with the /MD option.  It is enabled using
+the following setting:
+
+    Project Settings
+      C/C++
+        Category: Code Generation
+          Multithreaded DLL
+
+The /MD option also defines the preprocessor variable
+_DLL, which ensures that the appropriate DLL
+functions are imported in the header files.
+
+To run a program compiled with 'ReleaseDLL' option
+you will need to make sure the DLL files libgsl.dll
+and libgslcblas.dll are available in the
+C:\Windows\System directory, or copy them into the
+same directory as the executable.
+
+See the Microsoft Visual C++ Manual for more details
+on link options.
 
 If you want to use the inline functions from GSL, you
 should also add the following preprocessor
@@ -161,10 +192,12 @@ Single-Threaded vs Multi-Threaded Libraries
 ===========================================
 
 Statically linked single-threaded libraries are
-supplied by default and are built from the source
-with the /ML option.  This is compatible with the
-default link option /ML for single-threaded
-applications in Microsoft Visual C++.
+built from the source with the /ML option.  This is
+compatible with the default link option /ML for
+single-threaded applications in Microsoft Visual
+C++.  Different versions of the library using this
+options can be built from the workspace
+GSLLIBML.dsw.
 
 Statically linked multi-threaded libraries can be
 built with the /MT option.  Different versions of the
@@ -174,28 +207,7 @@ workspace GSLLIBMT.dsw.
 Dynamically linked multi-threaded libraries can be
 built with the /MD option.  Different versions of the
 library using this options can be built from the
-workspace GSLLIBMT.dsw.  You will need to compile
-your code with /MD in order to link to the DLL.  The
-/MD option can be enabled using the following
-setting:
-
-    Project Settings
-      C/C++
-        Category: Code Generation
-          Multithreaded DLL
-
-The /MD option also defines the preprocessor variable
-_DLL, which ensures that the appropriate DLL
-functions are imported in the header files.
-
-To run the program compiled with 'ReleaseDLL' option
-you will need to make sure the DLL files libgsl.dll
-and libgslcblas.dll are available in the
-C:\Windows\System directory, or copy them into the
-same directory as the executable.
-
-See the Microsoft Visual C++ Manual for more details
-on link options.
+workspace GSLLIBMT.dsw. 
 
 Building GSL with different compilation options
 ===============================================
