@@ -25,15 +25,15 @@
 #include <gsl/gsl_sf.h>
 #include "test_sf.h"
 
+static double J[100];
+static double Y[100];
+static double I[100];
+static double K[100];
 
 int test_bessel(void)
 {
   gsl_sf_result r;
   int i;
-  double J[100];
-  double Y[100];
-  double I[100];
-  double K[100];
   int s = 0;
   int sa;
 

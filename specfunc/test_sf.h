@@ -49,79 +49,18 @@ int test_sf_check_result_relax(char * message_buff, gsl_sf_result r, double val,
 #define TEST_SF_TOLBAD  4
 #define TEST_SF_RETBAD  8
 
+int test_sf (gsl_sf_result r, double val_in, double tol, int status, int expect_return, const char * desc);
+int test_sf_rlx (gsl_sf_result r, double val_in, double tol, int status, int expect_return, const char * desc);
+int test_sf_2 (gsl_sf_result r1, double val1, double tol1, gsl_sf_result r2, double val2, double tol2, int status, int expect_return, const char * desc);
+int test_sf_sgn (gsl_sf_result r, double sgn, double val_in, double tol, double expect_sgn, int status, int expect_return, const char * desc);
 
-#define TEST_SF(stat, func, args, val_in, tol, expect_return)                     \
-do {                                                                              \
-  char message_buff[4096];                                                  	  \
-  int _tsf_local_s = 0;                                                     	  \
-  int _tsf_status = func args;                                              	  \
-  _tsf_local_s |= test_sf_check_result(message_buff, r, val_in, tol);             \
-  _tsf_local_s |= test_sf_check_return(message_buff, _tsf_status, expect_return); \
-  gsl_test(_tsf_local_s, "  " #func #args);                                        	  \
-  if(_tsf_local_s != 0) {                                                         \
-    printf("  %s %d\n", __FILE__, __LINE__);                                        \
-    printf("%s", message_buff);                                                   \
-    printf("  %22.18g  %22.18g\n", r.val, r.err);                                   \
-  }                                                                               \
-  stat += _tsf_local_s;                                                           \
-} while(0)
+#define TEST_SF(stat, func, args, val_in, tol, expect_return) { int status = func args; stat += test_sf(r, val_in, tol, status, expect_return, #func #args); }
 
+#define TEST_SF_RLX(stat, func, args, val_in, tol, expect_return) { int status = func args; stat += test_sf_rlx(r, val_in, tol, status, expect_return, #func #args); }
 
-#define TEST_SF_RLX(stat, func, args, val_in, tol, expect_return)                     \
-do {                                                                              \
-  char message_buff[4096];                                                  	  \
-  int _tsf_local_s = 0;                                                     	  \
-  int _tsf_status = func args;                                              	  \
-  _tsf_local_s |= test_sf_check_result_relax(message_buff, r, val_in, tol);             \
-  _tsf_local_s |= test_sf_check_return(message_buff, _tsf_status, expect_return); \
-  gsl_test(_tsf_local_s, "  " #func #args);                                        	  \
-  if(_tsf_local_s != 0) {                                                         \
-    printf("  %s %d\n", __FILE__, __LINE__);                                        \
-    printf("%s", message_buff);                                                   \
-    printf("  %22.18g  %22.18g\n", r.val, r.err);                                   \
-  }                                                                               \
-  stat += _tsf_local_s;                                                           \
-} while(0)
+#define TEST_SF_2(stat, func, args, val1, tol1, val2, tol2, expect_return) { int status = func args; stat += test_sf_2(r1, val1, tol1, r2, val2, tol2, status, expect_return, #func #args); }
 
-#define TEST_SF_2(stat, func, args, val1, tol1, val2, tol2, expect_return)  	  \
-do {                                                                        	  \
-  char message_buff[4096];                                                  	  \
-  int _tsf_local_s = 0;                                                     	  \
-  int _tsf_status = func args;                                              	  \
-  _tsf_local_s |= test_sf_check_result(message_buff, r1, val1, tol1);	          \
-  _tsf_local_s |= test_sf_check_result(message_buff, r2, val2, tol2);	          \
-  _tsf_local_s |= test_sf_check_return(message_buff, _tsf_status, expect_return); \
-  gsl_test(_tsf_local_s, "  " #func #args);                                        	  \
-  if(_tsf_local_s != 0) {                                                         \
-    printf("  %s %d\n", __FILE__, __LINE__);                                        \
-    printf("%s", message_buff);                                                   \
-    printf("  %22.18g  %22.18g\n", r1.val, r1.err);                                 \
-    printf("  %22.18g  %22.18g\n", r2.val, r2.err);                                 \
-  }                                                                               \
-  stat += _tsf_local_s;                                                           \
-} while(0)
-
-
-#define TEST_SF_SGN(stat, func, args, val_in, tol, expect_sgn, expect_return)     \
-do {                                                                              \
-  char message_buff[4096];                                                  	  \
-  int _tsf_local_s = 0;                                                     	  \
-  int _tsf_status = func args;                                              	  \
-  gsl_sf_result _tsf_local_r;                                             	  \
-  _tsf_local_r.val = sgn;                                                         \
-  _tsf_local_r.err = 0.0;                                             	          \
-  _tsf_local_s |= test_sf_check_result(message_buff, r, val_in, tol);             \
-  _tsf_local_s |= test_sf_check_result(message_buff, _tsf_local_r, expect_sgn, 0.0); \
-  _tsf_local_s |= test_sf_check_return(message_buff, _tsf_status, expect_return); \
-  gsl_test(_tsf_local_s, "  " #func #args);                                        	  \
-  if(_tsf_local_s != 0) {                                                         \
-    printf("  %s %d\n", __FILE__, __LINE__);                                        \
-    printf("%s", message_buff);                                                   \
-    printf("  %22.18g  %22.18g\n", r.val, r.err);                                   \
-  }                                                                               \
-  stat += _tsf_local_s;                                                           \
-} while(0)
-
+#define TEST_SF_SGN(stat, func, args, val_in, tol, expect_sgn, expect_return) { int status = func args; stat += test_sf_sgn(r, sgn, val_in, tol, expect_sgn, status, expect_return, #func #args); }
 
 int test_airy(void);
 int test_bessel(void);

@@ -136,6 +136,98 @@ test_sf_check_return(char * message_buff, int val_return, int expected_return)
 }
 
 
+int
+test_sf (gsl_sf_result r, double val_in, double tol, int status,
+         int expect_return, const char * desc)
+{
+  char message_buff[4096];
+  int local_s = 0;
+
+  message_buff[0] = '\0';
+
+  local_s |= test_sf_check_result(message_buff, r, val_in, tol);
+  local_s |= test_sf_check_return(message_buff, status, expect_return);
+
+  gsl_test(local_s, desc);
+  if(local_s != 0) {
+    /* printf("  %s %d\n", __FILE__, __LINE__); */
+    printf("%s", message_buff);
+    printf("  %22.18g  %22.18g\n", r.val, r.err);
+  }
+  return local_s;
+}
+
+int
+test_sf_rlx (gsl_sf_result r, double val_in, double tol, int status,
+             int expect_return, const char * desc)
+{
+  char message_buff[4096];
+  int local_s = 0;
+
+  message_buff[0] = '\0';
+
+  local_s |= test_sf_check_result_relax(message_buff, r, val_in, tol);
+  local_s |= test_sf_check_return(message_buff, status, expect_return);
+
+  gsl_test(local_s, desc);
+  if(local_s != 0) {
+    /* printf("  %s %d\n", __FILE__, __LINE__); */
+    printf("%s", message_buff);
+    printf("  %22.18g  %22.18g\n", r.val, r.err);
+  }
+  return local_s;
+}
+
+
+int
+test_sf_2 (gsl_sf_result r1, double val1, double tol1, 
+           gsl_sf_result r2, double val2, double tol2,
+           int status, int expect_return, const char * desc)
+{
+  char message_buff[4096];
+  int local_s = 0;
+
+  message_buff[0] = '\0';
+
+  local_s |= test_sf_check_result(message_buff, r1, val1, tol1);
+  local_s |= test_sf_check_result(message_buff, r2, val2, tol2);
+  local_s |= test_sf_check_return(message_buff, status, expect_return);
+
+  gsl_test(local_s, desc);
+  if(local_s != 0) {
+    /* printf("  %s %d\n", __FILE__, __LINE__); */
+    printf("%s", message_buff);
+    printf("  %22.18g  %22.18g\n", r1.val, r1.err);
+    printf("  %22.18g  %22.18g\n", r2.val, r2.err);
+  }
+  return local_s;
+}
+
+int
+test_sf_sgn (gsl_sf_result r, double sgn, double val_in, double tol, double expect_sgn, int status,
+             int expect_return, const char * desc)
+{
+  char message_buff[4096];
+  gsl_sf_result local_r;
+  int local_s = 0;
+
+  message_buff[0] = '\0';
+
+  local_r.val = sgn;
+  local_r.err = 0.0;
+  local_s |= test_sf_check_result(message_buff, r, val_in, tol);
+  local_s |= test_sf_check_result(message_buff, local_r, expect_sgn, 0.0);
+  local_s |= test_sf_check_return(message_buff, status, expect_return);
+
+  gsl_test(local_s, desc);
+  if(local_s != 0) {
+    /* printf("  %s %d\n", __FILE__, __LINE__); */
+    printf("%s", message_buff);
+    printf("  %22.18g  %22.18g\n", r.val, r.err);
+  }
+  return local_s;
+}
+
 int test_clausen(void)
 {
   gsl_sf_result r;

@@ -1,3 +1,10 @@
+Sun May  6 13:01:01 2001  Brian Gough  <bjg@network-theory.co.uk>
+
+	* test_sf.c: initialize message_buff to null string to prevent
+ 	random segmentation faults
+
+	* test_sf.h: simplified test macros to reduce stack usage
+
 Mon Apr 30 12:38:15 2001  Brian Gough  <bjg@network-theory.co.uk>
 
 	* airy_zero.c bessel_zero.c: zeros are now counted using an
