@@ -58,8 +58,8 @@ extern int gsl_check_range;
 
 #ifdef HAVE_INLINE
 
-extern inline
-  gsl_complex_long_double *
+extern inline 
+gsl_complex_long_double *
 gsl_vector_complex_long_double_ptr (const gsl_vector_complex_long_double * v, const size_t i)
 {
 #ifndef GSL_RANGE_CHECK_OFF

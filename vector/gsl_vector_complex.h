@@ -1,8 +1,7 @@
-
 #ifndef GSL_VECTOR_COMPLEX
 
-#define  GSL_VECTOR_COMPLEX_REAL(z, i)  ((z)->data[2*(i)*(z)->stride])
-#define  GSL_VECTOR_COMPLEX_IMAG(z, i)  ((z)->data[2*(i)*(z)->stride + 1])
+#define  GSL_VECTOR_REAL(z, i)  ((z)->data[2*(i)*(z)->stride])
+#define  GSL_VECTOR_IMAG(z, i)  ((z)->data[2*(i)*(z)->stride + 1])
 
 #ifdef GSL_RANGE_CHECK_OFF
 #define GSL_VECTOR_COMPLEX(zv, i) (GSL_COMPLEX_AT((zv),(i)))

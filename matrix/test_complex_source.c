@@ -22,8 +22,8 @@ FUNCTION (test, func) (void)
 	{
 	  BASE z;
 	  k++;
-	  GSL_COMPLEX_REAL(z) = k;
-	  GSL_COMPLEX_IMAG(z) = k + 1000;
+	  GSL_REAL(z) = k;
+	  GSL_IMAG(z) = k + 1000;
 	  FUNCTION (gsl_matrix, set) (m, i, j, z);
 	}
     }
@@ -51,7 +51,7 @@ FUNCTION (test, func) (void)
 	{
 	  BASE z = FUNCTION (gsl_matrix, get) (m, i, j);
 	  k++;
-	  if (GSL_COMPLEX_REAL(z) != k || GSL_COMPLEX_IMAG(z) != k + 1000)
+	  if (GSL_REAL(z) != k || GSL_IMAG(z) != k + 1000)
 	    status = 1;
 	}
     }
@@ -93,8 +93,8 @@ FUNCTION (test, text) (void)
 	  {
 	    BASE z;
 	    k++;
-	    GSL_COMPLEX_REAL(z) = k;
-	    GSL_COMPLEX_IMAG(z) = k + 1000;
+	    GSL_REAL(z) = k;
+	    GSL_IMAG(z) = k + 1000;
 	    FUNCTION (gsl_matrix, set) (m, i, j, z);
 	  }
       }
@@ -145,8 +145,8 @@ FUNCTION (test, binary) (void)
 	  {
 	    BASE z;
 	    k++;
-	    GSL_COMPLEX_REAL(z) = k;
-	    GSL_COMPLEX_IMAG(z) = k + 1000;
+	    GSL_REAL(z) = k;
+	    GSL_IMAG(z) = k + 1000;
 	    FUNCTION (gsl_matrix, set) (m, i, j, z);
 	  }
       }
@@ -224,54 +224,54 @@ FUNCTION (test, trap) (void)
   z1 = FUNCTION (gsl_matrix, get) (mc, i - 1, 0);
   gsl_test (!status,
 	    NAME (gsl_matrix) "_get traps 1st index below lower bound");
-  gsl_test (GSL_COMPLEX_REAL(z1) != 0,
+  gsl_test (GSL_REAL(z1) != 0,
 	    NAME (gsl_matrix) "_get, zero real for 1st index below l.b.");
-  gsl_test (GSL_COMPLEX_IMAG(z1) != 0,
+  gsl_test (GSL_IMAG(z1) != 0,
 	    NAME (gsl_matrix) "_get, zero imag for 1st index below l.b.");
 
   status = 0;
   z1 = FUNCTION (gsl_matrix, get) (mc, 0, j - 1);
   gsl_test (!status,
 	    NAME (gsl_matrix) "_get traps 2nd index below lower bound");
-  gsl_test (GSL_COMPLEX_REAL(z1) != 0,
+  gsl_test (GSL_REAL(z1) != 0,
 	    NAME (gsl_matrix) "_get, zero real for 2nd index below l.b.");
-  gsl_test (GSL_COMPLEX_IMAG(z1) != 0,
+  gsl_test (GSL_IMAG(z1) != 0,
 	    NAME (gsl_matrix) "_get, zero imag for 2nd index below l.b.");
 
   status = 0;
   z1 = FUNCTION (gsl_matrix, get) (mc, N + 1, 0);
   gsl_test (!status,
 	    NAME (gsl_matrix) "_get traps 1st index above upper bound");
-  gsl_test (GSL_COMPLEX_REAL(z1) != 0,
+  gsl_test (GSL_REAL(z1) != 0,
 	    NAME (gsl_matrix) "_get, zero real for 1st index above u.b.");
-  gsl_test (GSL_COMPLEX_IMAG(z1) != 0,
+  gsl_test (GSL_IMAG(z1) != 0,
 	    NAME (gsl_matrix) "_get, zero imag for 1st index above u.b.");
 
   status = 0;
   z1 = FUNCTION (gsl_matrix, get) (mc, 0, M + 1);
   gsl_test (!status,
 	    NAME (gsl_matrix) "_get traps 2nd index above upper bound");
-  gsl_test (GSL_COMPLEX_REAL(z1) != 0,
+  gsl_test (GSL_REAL(z1) != 0,
 	    NAME (gsl_matrix) "_get, zero real for 2nd index above u.b.");
-  gsl_test (GSL_COMPLEX_IMAG(z1) != 0,
+  gsl_test (GSL_IMAG(z1) != 0,
 	    NAME (gsl_matrix) "_get, zero imag for 2nd index above u.b.");
 
   status = 0;
   z1 = FUNCTION (gsl_matrix, get) (mc, N, 0);
   gsl_test (!status,
 	    NAME (gsl_matrix) "_get traps 1st index at upper bound");
-  gsl_test (GSL_COMPLEX_REAL(z1) != 0,
+  gsl_test (GSL_REAL(z1) != 0,
 	    NAME (gsl_matrix) "_get, zero real for 1st index at u.b.");
-  gsl_test (GSL_COMPLEX_IMAG(z1) != 0,
+  gsl_test (GSL_IMAG(z1) != 0,
 	    NAME (gsl_matrix) "_get, zero imag for 1st index at u.b.");
 
   status = 0;
   z1 = FUNCTION (gsl_matrix, get) (mc, 0, M);
   gsl_test (!status,
 	    NAME (gsl_matrix) "_get traps 2nd index at upper bound");
-  gsl_test (GSL_COMPLEX_REAL(z1) != 0,
+  gsl_test (GSL_REAL(z1) != 0,
 	    NAME (gsl_matrix) "_get, zero real for 2nd index at u.b.");
-  gsl_test (GSL_COMPLEX_IMAG(z1) != 0,
+  gsl_test (GSL_IMAG(z1) != 0,
 	    NAME (gsl_matrix) "_get, zero imag for 2nd index at u.b.");
 }
 

@@ -19,9 +19,8 @@ typedef struct
   }
 gsl_complex_float;
 
-/* #define GSL_COMPLEX(x,y) {{(x),(y)}} */
-#define GSL_COMPLEX_REAL(z)     ((z).dat[0])
-#define GSL_COMPLEX_IMAG(z)     ((z).dat[1])
+#define GSL_REAL(z)     ((z).dat[0])
+#define GSL_IMAG(z)     ((z).dat[1])
 #define GSL_COMPLEX_P_REAL(zp)  ((zp)->dat[0])
 #define GSL_COMPLEX_P_IMAG(zp)  ((zp)->dat[1])
 #define GSL_COMPLEX_EQ(z1,z2) ((z1).dat[0] == (z2).dat[0] && \

@@ -18,8 +18,8 @@ FUNCTION (test, func) (void)
   for (i = 0; i < N; i++)
     {
       BASE x;
-      GSL_COMPLEX_REAL (x) = i;
-      GSL_COMPLEX_IMAG (x) = i + 1;
+      GSL_REAL (x) = i;
+      GSL_IMAG (x) = i + 1;
       FUNCTION (gsl_vector, set) (v, i, x);
     };
 
@@ -39,8 +39,8 @@ FUNCTION (test, func) (void)
   for (i = 0; i < N; i++)
     {
       BASE x, y;
-      GSL_COMPLEX_REAL (x) = i;
-      GSL_COMPLEX_IMAG (x) = i + 1;
+      GSL_REAL (x) = i;
+      GSL_IMAG (x) = i + 1;
       y = FUNCTION (gsl_vector, get) (v, i);
       if (!GSL_COMPLEX_EQ (x, y))
 	status = 1;
@@ -78,8 +78,8 @@ FUNCTION (test, text) (void)
     for (i = 0; i < N; i++)
       {
 	BASE x;
-	GSL_COMPLEX_REAL (x) = i;
-	GSL_COMPLEX_IMAG (x) = i + 1;
+	GSL_REAL (x) = i;
+	GSL_IMAG (x) = i + 1;
 	FUNCTION (gsl_vector, set) (v, i, x);
       };
 
@@ -121,8 +121,8 @@ FUNCTION (test, binary) (void)
     for (i = 0; i < N; i++)
       {
 	BASE x;
-	GSL_COMPLEX_REAL (x) = N - i;
-	GSL_COMPLEX_IMAG (x) = N - i + 1;
+	GSL_REAL (x) = N - i;
+	GSL_IMAG (x) = N - i + 1;
 	FUNCTION (gsl_vector, set) (v, i, x);
       };
 
@@ -181,25 +181,25 @@ FUNCTION (test, trap) (void)
   gsl_test (!status,
 	    NAME (gsl_vector) "_get traps index below lower bound");
 
-  gsl_test (GSL_COMPLEX_REAL (z1) != 0,
+  gsl_test (GSL_REAL (z1) != 0,
 	    NAME (gsl_vector) "_get returns zero real below lower bound");
-  gsl_test (GSL_COMPLEX_IMAG (z1) != 0,
+  gsl_test (GSL_IMAG (z1) != 0,
 	    NAME (gsl_vector) "_get returns zero imag below lower bound");
 
   status = 0;
   z1 = FUNCTION (gsl_vector, get) (vc, N + 1);
   gsl_test (!status,
 	    NAME (gsl_vector) "_get traps index above upper bound");
-  gsl_test (GSL_COMPLEX_REAL (z1) != 0,
+  gsl_test (GSL_REAL (z1) != 0,
 	    NAME (gsl_vector) "_get returns zero real above upper bound");
-  gsl_test (GSL_COMPLEX_IMAG (z1) != 0,
+  gsl_test (GSL_IMAG (z1) != 0,
 	    NAME (gsl_vector) "_get returns zero imag above upper bound");
 
   status = 0;
   z1 = FUNCTION (gsl_vector, get) (vc, N);
   gsl_test (!status, NAME (gsl_vector) "_get traps index at upper bound");
-  gsl_test (GSL_COMPLEX_REAL (z1) != 0,
+  gsl_test (GSL_REAL (z1) != 0,
 	    NAME (gsl_vector) "_get returns zero real at upper bound");
-  gsl_test (GSL_COMPLEX_IMAG (z1) != 0,
+  gsl_test (GSL_IMAG (z1) != 0,
 	    NAME (gsl_vector) "_get returns zero imag at upper bound");
 }
