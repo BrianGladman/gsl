@@ -25,24 +25,25 @@ currently not available in @code{gsl}.
 All the FFT functions offer three types of transform: forwards, inverse
 and backwards, based on the same mathematical definitions. The
 definition of the (forward) fourier transform, @math{x}=FFT(@math{z}), is,
-@c @tex
-@c $$
-@c x_j = \sum_{k=0}^{n-1} z_k \exp(2\pi i j k / n) 
-@c $$
-@c @end tex
-@c @ifinfo
 
-@example
-@displaymath{x_j = \sum_@{k=0@}^@{n-1@} z_k \exp(2\pi i j k / n) }
-@end example
+@equation
+x_j = \sum_@{k=0@}^@{n-1@} z_k \exp(-2\pi i j k / n) 
+@end equation
 @noindent
 and the definition of the inverse transform, @math{x}=IFFT(@math{z}), is,
 
 @equation
-$$z_j = @{1 \over n@} \sum_@{k=0@}^@{n-1@} x_k \exp(- 2\pi i j k / n).$$
+z_j = @{1 \over n@} \sum_@{k=0@}^@{n-1@} x_k \exp(2\pi i j k / n).
 @end equation
-
 @noindent
+There are two possibilities for the direction of the exponential in the
+transform/inverse-transform pair. GSL follows the same convention as
+FFTPACK, using a negative exponential for the forward transform. The
+advantage of this convention is that the inverse transform recreates the
+original function with simple fourier synthesis. Numerical Recipes uses
+the opposite convention, a positive exponential in the forward
+transform.
+
 The factor of @math{1/n} makes this a true inverse. For example, a call
 to @code{gsl_fft_complex_forward} followed by a call to
 @code{gsl_fft_complex_inverse} should return the original data (within
@@ -52,7 +53,7 @@ The backwards FFT is simply our terminology for an unscaled version of
 the inverse,
 
 @equation
-$$z^@{backwards@}_j = \sum_@{k=0@}^@{n-1@} x_k \exp(- 2\pi i j k / n)$$
+z^@{backwards@}_j = \sum_@{k=0@}^@{n-1@} x_k \exp(2\pi i j k / n).
 @end equation
 @noindent
 When the overall scale of the result is unimportant it is often
@@ -201,7 +202,7 @@ Temperton. The routines here use the same indexing scheme and basic
 algorithms as FFTPACK.
 
 The mixed-radix algorithm is based on sub-transform modules -- highly
-optimised small length FFTs which are combined to create larger FFTs.
+optimized small length FFTs which are combined to create larger FFTs.
 There are efficient modules for factors of 2, 3, 4, 5, and 6. The
 modules for the composite factors of 4 and 6 are faster than combining
 the modules for @math{2*2} and @math{2*3}.
@@ -216,17 +217,17 @@ found in @math{n=2*3*99991}, and should be avoided because their
 @math{O(k^2)} scaling will dominate the run-time (consult @cite{GSL FFT
 Algorithms} for possible ways around this problem).
 
-The mixed-radix initialisation function @code{gsl_fft_complex_init}
+The mixed-radix initialization function @code{gsl_fft_complex_init}
 returns the full list of factors and can be used to check how well the
-length has been factorised, and estimate the run-time. For programs
+length has been factorized, and estimate the run-time. For programs
 under user control you may wish to warn if the length is poorly
-factorised. If you frequently encounter data lengths which cannot be
-factorised using the existing small-prime modules consult @cite{GSL FFT
+factorized. If you frequently encounter data lengths which cannot be
+factorized using the existing small-prime modules consult @cite{GSL FFT
 Algorithms} for details on adding support for other factors.
 
 @c First, the space for the trigonometric lookup tables and scratch area is
 @c allocated by a call to one of the @code{wavetable_alloc} functions. We
-@c call the combination of factorisation, scratch space and trignometric
+@c call the combination of factorization, scratch space and trigonometric
 @c lookup arrays a @dfn{wavetable}. It contains the sine and cosine
 @c waveforms for the all the frequencies that will be used in the FFT.
 
@@ -268,7 +269,7 @@ a null pointer).
 This function initializes @var{wavetable}. It selects a factorization of
 the length @var{n} into the implemented subtransforms, storing the
 details of the factorization in @var{wavetable}. Using this
-factorisation it then prepares a trigonometric lookup table in the
+factorization it then prepares a trigonometric lookup table in the
 memory previously allocated by @code{gsl_fft_complex_wavetable_alloc}.
 
 The wavetable is computed using direct calls to @code{sin} and
@@ -321,7 +322,7 @@ returned by @code{gsl_fft_complex_init}. For example, the factorization
 chosen by @code{gsl_fft_complex_init} is given and can be used to
 provide an estimate of the run-time or numerical error.
 
-Here is the wavtable structure. It is declared in the header file
+Here is the wavetable structure. It is declared in the header file
 @file{gsl_fft_complex.h}.
 
 @deftp {Data Type} {struct gsl_fft_complex_wavetable}
@@ -475,9 +476,9 @@ However, there is an important difference between forward and inverse
 transforms. The fourier transform, @math{z}, of a real data sequence,
 @math{x}, is not real. It is a complex sequence with a special symmetry:
 
-@example
-@math{z_k = z_@{n-k@}^*}
-@end example
+@equation
+z_k = z_@{n-k@}^*
+@end equation
 @noindent
 A transform sequence with this symmetry is called
 @dfn{conjugate-complex} or @dfn{half-complex}. This different structure
@@ -487,30 +488,20 @@ As a consequence the routines are divided into two sets: functions in
 @code{gsl_fft_real} which operate on real sequences and functions in
 @code{gsl_fft_halfcomplex} which operate on half-complex sequences.
 
-The natural direction for a fourier transform of a real sequence,
-@math{x}, is consider the real sequence as built up by fourier
-synthesis, from the half-complex coefficients, @math{c},
+The frequency coefficients of a real sequence, @math{x} are found by
+fourier analysis,
 
-[FIXME: this is compatible with FFTPACK but not Numerical Recipes, and
-the Complex routines are the other way round. Change the direction of
-one so we are internally consistent!]
-
-@example
-@math{x_j = \sum_@{k=0@}^@{n-1@} c_k \exp(2 \pi i j k /n)}
-@end example
+@equation
+c_k = \sum_@{j=0@}^@{n-1@} x_k \exp(-2 \pi i j k /n)
+@end equation
 @noindent
-and the coefficients are found by fourier analysis,
+and the inverse transform reconstructs the original real sequence by
+fourier synthesis from the half-complex coefficients, @math{c},
 
-@example
-@math{c_k = @{1 \over n@} \sum_@{j=0@}^@{n-1@} x_k \exp(-2 \pi i j k /n)}
-@end example
+@equation
+x_j = @{1 \over n@} \sum_@{k=0@}^@{n-1@} c_k \exp(2 \pi i j k /n)
+@end equation
 @noindent
-This means that @code{gsl_fft_real} corresponds to
-@code{gsl_fft_complex_backward}, because it is an fft in the inverse
-direction without a scaling factor.
-
-[End of FIXME: after this we are ok]
-
 The symmetry of the half-complex sequence implies that only half the
 full sequence of @var{n} complex numbers needs to be stored. The
 remaining half can be reconstructed using the symmetry condition. (This
@@ -621,7 +612,7 @@ These functions initialize @var{wavetable}.  They first select a
 factorization of the length @var{n} into the implemented subtransforms,
 storing the details of the factorization in @var{wavetable}.
 
-Using this factorisation they then prepare a trigonometric lookup table
+Using this factorization they then prepare a trigonometric lookup table
 in the memory previously allocated by
 @code{gsl_fft_real_wavetable_alloc} or
 @code{gsl_fft_halfcomplex_wavetable_alloc}. The wavetable is computed
@@ -845,6 +836,8 @@ int main ()
 @node Test Signals
 @section Test Signals
 
+[FIXME: these need to be made consistent with the new FFT definition]
+
 This section describes functions for generating simple test signals,
 such as unit pulses, constant signals, complex exponentials (sine and
 cosine waves) and pairs of complex exponentials with different
@@ -867,21 +860,20 @@ All other elements of @var{data} are set to zero. The function also
 returns the fourier transform of the pulse in the complex array
 @var{fft}, also of length @var{n}.
 
-The mathematical definition of the pulse is, writing (
-@math{z_@{real@} + i z_@{imag@}}) as @math{z},
+The mathematical definition of the pulse is, writing (@math{z_@{real@} +
+i z_@{imag@}}) as @math{z},
 
-@example
-@math{z_k =  z \delta_@{kt@}}
-@end example
+@equation
+z_k =  z \delta_@{kt@}
+@end equation
 @noindent
 where @math{\delta_@{kt@}=1} if @math{k=t}, and 0 otherwise. The fourier
 transform is,
 
-@example
-@math{x_j = \sum_@{k=0@}^@{n-1@} z \delta_@{kt@} W^@{jk@}_n 
-    = z \exp(2\pi i j t/n)}
-@end example
-
+@equation
+x_j = \sum_@{k=0@}^@{n-1@} z \delta_@{kt@} W^@{jk@}_n 
+    = z \exp(2\pi i j t/n)
+@end equation
 @end deftypefun
 
 @deftypefun int gsl_fft_test_signal_complex_constant (const unsigned int n, const double z_real, const double z_imag, complex data[], complex fft[])
@@ -893,17 +885,16 @@ in the complex array @var{fft}, also of length @var{n}.
 
 The mathematical definition of the constant signal is, 
 
-@example
-@math{z_k = z}
-@end example
+@equation
+z_k = z
+@end equation
 @noindent
 and the fourier transform is,
 
-@example
-@math{x_j = \sum_@{k=0@}^@{n-1@} z W^@{jk@}_n
-    = z n \delta_@{j0@}}
-@end example
-
+@equation
+x_j = \sum_@{k=0@}^@{n-1@} z W^@{jk@}_n
+    = z n \delta_@{j0@}
+@end equation
 @end deftypefun
 
 @deftypefun int gsl_fft_test_signal_complex_exp (const int f, const unsigned int n, const double z_real, const double z_imag, complex data[], complex fft[])
@@ -916,18 +907,17 @@ transform of the signal in the complex array @var{fft}, also of length
 
 The mathematical definition of the complex exponential signal is,
 
-@example
-@math{z_k = z \exp(2\pi i k f/n)}
-@end example
+@equation
+z_k = z \exp(2\pi i k f/n)
+@end equation
 @noindent
+
 and the fourier transform is,
 
-@example
-@math{x_j = \sum_@{k=0@}^@{n-1@} z \exp(2\pi i k f/n) W^@{jk@}_n 
+@equation
+x_j = \sum_@{k=0@}^@{n-1@} z \exp(2\pi i k f/n) W^@{jk@}_n 
     = z \delta_@{j+f,0@}
-}
-@end example
-
+@end equation
 @end deftypefun
 
 @deftypefun int gsl_fft_test_signal_complex_exppair (const int f1, const int f2, const unsigned int n, const double z1_real, const double z1_imag, const double z2_real, const double z2_imag, complex data[], complex fft[])
@@ -940,17 +930,15 @@ signal in the complex array @var{fft}, also of length @var{n}.
 
 The mathematical definition of the pair of exponential signals is,
 
-@example
-@math{z_k = z_1 \exp(2\pi i k f_1/n) + z_2 \exp(2\pi i k f_2/n)}
-@end example
+@equation
+z_k = z_1 \exp(2\pi i k f_1/n) + z_2 \exp(2\pi i k f_2/n)
+@end equation
 @noindent
 and the fourier transform is,
 
-@example
-@math{x_j =  z_1 \delta_@{j+f_1,0@}  + z_2 \delta_@{j+f_2,0@}}
-@end example
-@noindent
-
+@equation
+x_j =  z_1 \delta_@{j+f_1,0@}  + z_2 \delta_@{j+f_2,0@}
+@end equation
 @end deftypefun
 
 @deftypefun int gsl_fft_test_signal_complex_noise (const unsigned int n, complex data[], complex fft[])
@@ -961,7 +949,7 @@ array element are independent uniform distributed random values in the
 range [0,1] (computed using the system @code{rand} function). The
 function also returns the fourier transform of the signal in the complex
 array @var{fft}, also of length @var{n}. The fourier transform is
-computed using the brute-force discrete fourier transfrom
+computed using the brute-force discrete fourier transform
 @code{gsl_dft_complex_forward}. Note that the direct computation of the
 discrete fourier transform has worse numerical stability than an FFT, so
 the array @var{fft} is only useful in detecting large errors.

@@ -973,8 +973,23 @@ where each line of input produces a line of output.}
 % This isn't quite enough for @math to work properly in indices, but it
 % seems unlikely it will ever be needed there.
 %
-\let\implicitmath = $
-\def\math#1{\implicitmath #1\implicitmath}
+%\let\implicitmath = $
+%\def\math#1{\implicitmath #1\implicitmath}
+%
+\def\writtenmath{\noexpand\math}
+\def\executemath#1{\relax$#1$}
+\def\math{{\catcode`\^=7 \catcode`\_=8 \catcode`\\=0 \catcode`\@=9
+             \catcode13=9
+             \let\writtenmath=\executemath\relax
+             \expandafter}\writtenmath}
+% @math enhancements by Tanmoy Bhattacharya:
+%
+% When written out, \math{x} writes out the tokens
+%  {\catcode`\^=7 \catcode`\_=8 \let\math\relax$\relax$}\math{x}
+% and as the first part is essentially {...}, it does nothing: and we 
+% get back \math{x}.
+% When executed, it does \relax$x$ with the catcodes properly set when reading
+% x.
 
 % @bullet and @minus need the same treatment as @math, just above.
 \def\bullet{\implicitmath\ptexbullet\implicitmath}
@@ -3554,6 +3569,25 @@ width0pt\relax} \fi
 \def\example{\begingroup \def\Eexample{\nonfillfinish\endgroup}\lisp}
 \def\smallexample{\begingroup \def\Esmallexample{\nonfillfinish\endgroup}\lisp}
 \def\smalllisp{\begingroup \def\Esmalllisp{\nonfillfinish\endgroup}\lisp}
+
+\def\equation{\begingroup 
+\catcode `\\=0 \catcode `\{=1 \catcode `\}=2
+\catcode `\$=3 \catcode `\&=4 \catcode `\#=6
+\catcode `\^=7 \catcode `\_=8 \catcode `\~=13 \let~=\tie
+\catcode `\%=14
+\catcode 43=12 % plus
+\catcode`\"=12
+\catcode`\==12
+\catcode`\|=12
+\catcode`\<=12
+\catcode`\>=12
+\let\{={
+\let\}=}
+\let\lbrace=\mylbrace
+\let\rbrace=\myrbrace
+\escapechar=`\\
+\def\Eequation{$$\endgroup}
+$$}
 
 % @smallexample and @smalllisp.  This is not used unless the @smallbook
 % command is given.  Originally contributed by Pavel@xerox.
