@@ -45,12 +45,22 @@ __BEGIN_DECLS
  * Note that Im[Li_2(x)] = { 0 for x <= 1, -Pi*log(x) for x > 1 }
  */
 int     gsl_sf_dilog_e(const double x, gsl_sf_result * result);
-double     gsl_sf_dilog(const double x);
+double  gsl_sf_dilog(const double x);
 
 
 /* DiLogarithm(z), for complex argument z = r Exp[i theta].
+ * Computes the principal branch.
+ *
+ * This function is ok, but the interface is confusing since
+ * it makes it appear that the branch structure is resolved.
+ * Perhap this interface should be deprecated.
  */
 int gsl_sf_complex_dilog_e(const double r, double theta, gsl_sf_result * result_re, gsl_sf_result * result_im);
+
+/* DiLogarithm(z), for complex argument z = x + i y.
+ * Computes the principal branch.
+ */
+int gsl_sf_complex_dilog_xy_e(const double r, double theta, gsl_sf_result * result_re, gsl_sf_result * result_im);
 
 
 __END_DECLS

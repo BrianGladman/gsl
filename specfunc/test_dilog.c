@@ -52,15 +52,6 @@ int test_dilog(void)
 
 
   /* complex dilog */
-  /* FIXME: probably need more tests here... 
-   * also need to work on accuracy for r->1; need to
-   * adjust the switch-over point I suppose.
-   */
-
-  TEST_SF_2(s, gsl_sf_complex_dilog_e, (1.00001, M_PI/2.0, &r1, &r2),
-            -0.20562022409960237363, TEST_TOL1,
-             0.91597344814458309320, TEST_TOL1,
-             GSL_SUCCESS);
 
   TEST_SF_2(s, gsl_sf_complex_dilog_e, (0.99999, M_PI/2.0, &r1, &r2),
             -0.20561329262779687646, TEST_TOL0,
@@ -77,6 +68,11 @@ int test_dilog(void)
              0.90020045882981847610, TEST_TOL2,
              GSL_SUCCESS);
 
+  TEST_SF_2(s, gsl_sf_complex_dilog_e, (0.98, -M_PI/2.0, &r1, &r2),
+            -0.19871638377785918403, TEST_TOL2,
+            -0.90020045882981847610, TEST_TOL2,
+             GSL_SUCCESS);
+
   TEST_SF_2(s, gsl_sf_complex_dilog_e, (0.95, M_PI/2.0, &r1, &r2),
             -0.18848636456893572091, TEST_TOL1,
              0.87633754133420277830, TEST_TOL1,
@@ -87,10 +83,19 @@ int test_dilog(void)
              0.75310609092419884460, TEST_TOL0,
              GSL_SUCCESS);
 
+  TEST_SF_2(s, gsl_sf_complex_dilog_e, (0.8, -M_PI/2.0, &r1, &r2),
+            -0.13980800855429037810, TEST_TOL0,
+            -0.75310609092419884460, TEST_TOL0,
+             GSL_SUCCESS);
 
   TEST_SF_2(s, gsl_sf_complex_dilog_e, (0.5, M_PI/2.0, &r1, &r2),
             -0.05897507442156586346, TEST_TOL0,
              0.48722235829452235710, TEST_TOL0,
+             GSL_SUCCESS);
+
+  TEST_SF_2(s, gsl_sf_complex_dilog_e, (0.5, -M_PI/2.0, &r1, &r2),
+            -0.05897507442156586346, TEST_TOL0,
+            -0.48722235829452235710, TEST_TOL0,
              GSL_SUCCESS);
 
   TEST_SF_2(s, gsl_sf_complex_dilog_e, (0.01, M_PI/2.0, &r1, &r2),
@@ -98,15 +103,47 @@ int test_dilog(void)
              0.009999888892888684820, TEST_TOL3,
              GSL_SUCCESS);
 
-  TEST_SF_2(s, gsl_sf_complex_dilog_e, (10.0, M_PI/2.0, &r1, &r2),
-            -3.0596887943287347304, TEST_TOL0,
-             3.7167814930680685900, TEST_TOL0,
+  TEST_SF_2(s, gsl_sf_complex_dilog_e, (0.01, -M_PI/2.0, &r1, &r2),
+            -0.000024999375027776215378, TEST_TOL3,
+            -0.009999888892888684820, TEST_TOL3,
              GSL_SUCCESS);
 
-  TEST_SF_2(s, gsl_sf_complex_dilog_e, (100.0, M_PI/2.0, &r1, &r2),
-            -11.015004738293824854, TEST_TOL0,
-             7.2437843013083534970, TEST_TOL0,
+
+  TEST_SF_2(s, gsl_sf_complex_dilog_e, (0.99, M_PI/4.0, &r1, &r2),
+            0.56273366219795547757, TEST_TOL3,
+            0.97009284079274560384, TEST_TOL3,
              GSL_SUCCESS);
+
+  TEST_SF_2(s, gsl_sf_complex_dilog_e, (0.99, -M_PI/4.0, &r1, &r2),
+            0.56273366219795547757, TEST_TOL3,
+           -0.97009284079274560384, TEST_TOL3,
+             GSL_SUCCESS);
+
+  TEST_SF_2(s, gsl_sf_complex_dilog_e, (0.99, 3.0*M_PI/4.0, &r1, &r2),
+            -0.66210902664245926235, TEST_TOL1,
+             0.51995305609998319025, TEST_TOL1,
+            GSL_SUCCESS);
+
+  TEST_SF_2(s, gsl_sf_complex_dilog_e, (0.99, 5.0*M_PI/4.0, &r1, &r2),
+            -0.66210902664245926235, TEST_TOL1,
+            -0.51995305609998319025, TEST_TOL1,
+             GSL_SUCCESS);
+
+  TEST_SF_2(s, gsl_sf_complex_dilog_e, (0.99, 3.0*M_PI/2.0, &r1, &r2),
+            -0.20215874509123277909, TEST_TOL1,
+            -0.90809733095648731408, TEST_TOL1,
+             GSL_SUCCESS);
+
+  TEST_SF_2(s, gsl_sf_complex_dilog_e, (0.25, 3.0*M_PI/2.0, &r1, &r2),
+            -0.01538741178141053563, TEST_TOL1,
+            -0.24830175098230686908, TEST_TOL1,
+             GSL_SUCCESS);
+
+  TEST_SF_2(s, gsl_sf_complex_dilog_e, (0.25, 15.0/8.0*M_PI, &r1, &r2),
+            0.24266162342377302235, TEST_TOL1,
+           -0.10860883369274445067, TEST_TOL1,
+             GSL_SUCCESS);
+
 
   TEST_SF_2(s, gsl_sf_complex_dilog_e, (0.99, M_PI/8.0, &r1, &r2),
             1.0571539648820244720, TEST_TOL0,
@@ -118,10 +155,26 @@ int test_dilog(void)
             0.1825271634987756651, TEST_TOL0,
             GSL_SUCCESS);
 
-  TEST_SF_2(s, gsl_sf_complex_dilog_e, (0.9, 3.0*M_PI/4.0, &r1, &r2),
-            -0.6062840301356530985, TEST_TOL1,
-             0.4836632833122775721, TEST_TOL1,
-            GSL_SUCCESS);
+  TEST_SF_2(s, gsl_sf_complex_dilog_e, (0.99, -M_PI/8.0, &r1, &r2),
+            1.05715396488202447202, TEST_TOL1,
+           -0.74691452546108513176, TEST_TOL1,
+             GSL_SUCCESS);
+
+
+  TEST_SF_2(s, gsl_sf_complex_dilog_e, (1.00001, M_PI/2.0, &r1, &r2),
+            -0.20562022409960237363, TEST_TOL1,
+             0.91597344814458309320, TEST_TOL1,
+             GSL_SUCCESS);
+
+  TEST_SF_2(s, gsl_sf_complex_dilog_e, (10.0, M_PI/2.0, &r1, &r2),
+            -3.0596887943287347304, TEST_TOL0,
+             3.7167814930680685900, TEST_TOL0,
+             GSL_SUCCESS);
+
+  TEST_SF_2(s, gsl_sf_complex_dilog_e, (100.0, M_PI/2.0, &r1, &r2),
+            -11.015004738293824854, TEST_TOL0,
+             7.2437843013083534970, TEST_TOL0,
+             GSL_SUCCESS);
 
 
   /** Tests brought up by Jim McElwaine bug report. */
@@ -161,11 +214,6 @@ int test_dilog(void)
             -0.56225783937234862649, TEST_TOL1,
              GSL_SUCCESS);
 
-  TEST_SF_2(s, gsl_sf_complex_dilog_e, (0.99, M_PI + 0.25*M_PI, &r1, &r2),
-            -0.66210902664245926235, TEST_TOL1,
-            -0.51995305609998319025, TEST_TOL1,
-             GSL_SUCCESS);
-
   TEST_SF_2(s, gsl_sf_complex_dilog_e, (1.1, -M_PI/128.0, &r1, &r2),
             1.8881719454909716580, TEST_TOL1,
            -0.3556738764969238976, TEST_TOL1,
@@ -176,13 +224,32 @@ int test_dilog(void)
             0.3556738764969238976, TEST_TOL1,
             GSL_SUCCESS);
 
+  TEST_SF_2(s, gsl_sf_complex_dilog_e, (1.5,  M_PI/8.0, &r1, &r2),
+            1.3498525763442498343, TEST_TOL1,
+            1.4976532712229749493, TEST_TOL1,
+            GSL_SUCCESS);
 
-  /*
+  TEST_SF_2(s, gsl_sf_complex_dilog_e, (1.5, -M_PI/8.0, &r1, &r2),
+            1.3498525763442498343, TEST_TOL1,
+           -1.4976532712229749493, TEST_TOL1,
+            GSL_SUCCESS);
+
+  TEST_SF_2(s, gsl_sf_complex_dilog_e, (1.5, 2.0*M_PI + M_PI/8.0, &r1, &r2),
+            1.3498525763442498343, TEST_TOL1,
+            1.4976532712229749493, TEST_TOL1,
+            GSL_SUCCESS);
+
+  TEST_SF_2(s, gsl_sf_complex_dilog_e, (1.5, 2.0*M_PI - M_PI/8.0, &r1, &r2),
+            1.3498525763442498343, TEST_TOL1,
+           -1.4976532712229749493, TEST_TOL1,
+            GSL_SUCCESS);
+
+
   TEST_SF_2(s, gsl_sf_complex_spence_e, (0.75, M_PI*0.125, &r1, &r2),
             0.30250949083979250610, TEST_TOL1,
            -0.33724658791102608334, TEST_TOL1,
             GSL_SUCCESS);
-  */
+
 
   return s;
 }
