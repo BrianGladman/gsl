@@ -1215,7 +1215,7 @@ A much cleverer approach, attributed to von Neumann (See Knuth, v2, 3rd
 ed, p140, exercise 23), requires neither trig nor a square root.  In
 this approach, @var{u} and @var{v} are chosen at random from the
 interior of a unit circle, and then @math{x=(u^2-v^2)/(u^2+v^2)} and
-@math{y=uv/(u^2+v^2)}.
+@math{y=2uv/(u^2+v^2)}.
 @end deftypefn
 
 @deftypefn Random void gsl_ran_dir_3d (const gsl_rng * @var{r}, double *@var{x}, double *@var{y}, double * @var{z})
