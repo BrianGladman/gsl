@@ -107,3 +107,6 @@ suggestions, additional histogram code, PyGSL python interface
 * Albert Chin <china@thewrittenword.com> for bug reports and patches
 
 * Asterio Gonzalez <agonzalez@udiberica.com> for a bug report for multmin
+
+* Carlo Perassi <carlo@linux.it> for implementing the random number
+generators in Knuth's Seminumerical Algorithms, 3rd Ed.

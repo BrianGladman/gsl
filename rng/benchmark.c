@@ -32,17 +32,17 @@ double dsum;
 int
 main (void)
 {
-  benchmark(gsl_rng_ranlux);
-  benchmark(gsl_rng_ranlux389);
-  benchmark(gsl_rng_ranlxs0);
-  benchmark(gsl_rng_ranlxs1);
-  benchmark(gsl_rng_ranlxs2);
-  benchmark(gsl_rng_ranlxd1);
-  benchmark(gsl_rng_ranlxd2);
 
-  benchmark(gsl_rng_slatec);
-  benchmark(gsl_rng_gfsr4);
+  benchmark(gsl_rng_borosh13);
   benchmark(gsl_rng_cmrg);
+  benchmark(gsl_rng_coveyou);
+  benchmark(gsl_rng_fishman18);
+  benchmark(gsl_rng_fishman20);
+  benchmark(gsl_rng_fishman2x);
+  benchmark(gsl_rng_gfsr4);
+  benchmark(gsl_rng_knuthran);
+  benchmark(gsl_rng_knuthran2);
+  benchmark(gsl_rng_lecuyer21);
   benchmark(gsl_rng_minstd);
   benchmark(gsl_rng_mrg);
   benchmark(gsl_rng_mt19937);
@@ -51,11 +51,8 @@ main (void)
   benchmark(gsl_rng_ran1);
   benchmark(gsl_rng_ran2);
   benchmark(gsl_rng_ran3);
-  benchmark(gsl_rng_rand48);
   benchmark(gsl_rng_rand);
-  benchmark(gsl_rng_random8_bsd);
-  benchmark(gsl_rng_random8_glibc2);
-  benchmark(gsl_rng_random8_libc5);
+  benchmark(gsl_rng_rand48);
   benchmark(gsl_rng_random128_bsd);
   benchmark(gsl_rng_random128_glibc2);
   benchmark(gsl_rng_random128_libc5);
@@ -68,20 +65,32 @@ main (void)
   benchmark(gsl_rng_random64_bsd);
   benchmark(gsl_rng_random64_glibc2);
   benchmark(gsl_rng_random64_libc5);
+  benchmark(gsl_rng_random8_bsd);
+  benchmark(gsl_rng_random8_glibc2);
+  benchmark(gsl_rng_random8_libc5);
   benchmark(gsl_rng_random_bsd);
   benchmark(gsl_rng_random_glibc2);
   benchmark(gsl_rng_random_libc5);
   benchmark(gsl_rng_randu);
   benchmark(gsl_rng_ranf);
-
+  benchmark(gsl_rng_ranlux);
+  benchmark(gsl_rng_ranlux389);
+  benchmark(gsl_rng_ranlxd1);
+  benchmark(gsl_rng_ranlxd2);
+  benchmark(gsl_rng_ranlxs0);
+  benchmark(gsl_rng_ranlxs1);
+  benchmark(gsl_rng_ranlxs2);
   benchmark(gsl_rng_ranmar);
+  benchmark(gsl_rng_slatec);
   benchmark(gsl_rng_taus);
   benchmark(gsl_rng_transputer);
   benchmark(gsl_rng_tt800);
-  benchmark(gsl_rng_uni32);
   benchmark(gsl_rng_uni);
+  benchmark(gsl_rng_uni32);
   benchmark(gsl_rng_vax);
+  benchmark(gsl_rng_waterman14);
   benchmark(gsl_rng_zuf);
+
   return 0;
 }
 

@@ -1,5 +1,9 @@
 * What will be new in gsl-1.1:
 
+** Added new random number generators from Knuth's Seminumerical
+Algorithms, 3rd Edition: borosh13, coveyou, fishman18, fishman20,
+fishman2x, knuthran, knuthran2, lecuyer21, waterman14
+
 ** Changed divisor in random number generator gfsr4 from 2^32-1 to
 2^32 to prevent exact value of 1.0 from being returned, as specified
 in the documentation.

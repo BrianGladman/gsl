@@ -61,6 +61,19 @@ main (void)
   rng_test (gsl_rng_transputer, 1, 10000, 1244127297UL);
   rng_test (gsl_rng_vax, 1, 10000, 3051034865UL);
 
+  rng_test (gsl_rng_borosh13, 1, 10000, 2513433025UL);
+  rng_test (gsl_rng_fishman18, 1, 10000, 1626638977UL);
+  rng_test (gsl_rng_fishman2x, 1, 10000, 1158622502UL);
+  rng_test (gsl_rng_knuthran2, 1, 10000, 1182784902UL);
+  rng_test (gsl_rng_knuthran, 310952, 1009 * 2009 + 1, 461390032);
+  rng_test (gsl_rng_lecuyer21, 1, 10000, 2006618587UL);
+  rng_test (gsl_rng_waterman14, 1, 10000, 3776680385UL);
+
+  /* specific tests of known results for 10000 iterations with seed = 6 */
+
+  rng_test (gsl_rng_coveyou, 6, 10000, 1416754246UL);
+  rng_test (gsl_rng_fishman20, 6, 10000, 1811577350UL);
+
   /* FIXME: the ranlux tests below were made by running the fortran code and
      getting the expected value from that. An analytic calculation
      would be preferable. */
@@ -98,7 +111,6 @@ main (void)
 
   rng_test (gsl_rng_r250, 1, 10000, 1100653588);
   rng_test (gsl_rng_mt19937, 4357, 1000, 1030650439);
-  rng_test (gsl_rng_mt19937_1998, 4357, 1000, 1309179303);
   rng_test (gsl_rng_tt800, 0, 10000, 2856609219UL);
 
   rng_test (gsl_rng_ran0, 0, 10000, 1115320064);

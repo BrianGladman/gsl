@@ -1,5 +1,9 @@
 Sun Dec  2 15:45:24 2001  Brian Gough  <bjg@network-theory.co.uk>
 
+	* Added new generators borosh13, coveyou, fishman18, fishman20,
+ 	fishman2x, knuthran, knuthran2, lecuyer21, waterman14 from Knuth's
+ 	Seminumerical Algorithms 3rd Ed.  Implemented by Carlo Perassi.
+
 	* gfsr4.c (gfsr4_get_double): increased divisor for double to
  	2^32, avoids generating exact result of 1.0 as specified in the
  	documentation

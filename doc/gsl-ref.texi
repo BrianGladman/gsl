@@ -1,36 +1,12 @@
 \input texinfo @c -*-texinfo-*-
 @c This will be for the printing version of the manual
-@tex
-\gdef\paperbackbook{{\globaldefs = 1
-  \parskip = 2pt plus 1pt
-  \setleading{13.2pt}%
-  %
-  %\internalpagesizes{189mm}{112mm}{20mm}{20mm}{0mm}{36pt}%
-  \internalpagesizes{189mm}{112mm}{20mm}{26mm}{0mm}{36pt}%
-  %
-  \lispnarrowing = 0.3in
-  \tolerance = 700
-  \hfuzz = 1pt
-  \contentsrightmargin = 0pt
-  \deftypemargin = 0pt
-  \defbodyindent = .5cm
-  %
-  \let\smalldisplay = \smalldisplayx
-  \let\smallexample = \smalllispx
-  \let\smallformat = \smallformatx
-  \let\smalllisp = \smalllispx
-}}
-@end tex
-@c @cropmarks
-@c @afourpaper
-@c @paperbackbook
-@c @set publish
-@raggedbottom
+@c @input config-local.texi
 @c %**start of header
 @setfilename gsl-ref.info
 @settitle GNU Scientific Library -- Reference Manual
 @finalout
 @ifset publish
+@set frontcontents
 @setchapternewpage odd
 @end ifset
 @c %**end of header
@@ -225,6 +201,7 @@ Clifton,
 Bristol BS8 3AL,
 United Kingdom.
 
+ISBN 0-9541617-0-X
 @end ifset
 Copyright @copyright{} 1996, 1997, 1998, 1999, 2000, 2001 The GSL Team.
 
@@ -235,6 +212,8 @@ with no Invariant Sections, no Front-Cover Texts, and no Back-Cover Texts.
 A copy of the license is included in the section entitled ``GNU
 Free Documentation License''.
 
+The Texinfo source for this manual may be obtained from
+@code{ftp.gnu.org} in the directory @code{/gnu/gsl/}.
 @ignore
 Permission is granted to make and distribute verbatim copies of
 this manual provided the copyright notice and this permission notice
@@ -252,7 +231,7 @@ by the GSL Team.
 @end ignore
 @end titlepage
 
-@ifset publish
+@ifset frontcontents
 @contents
 @end ifset
 
@@ -524,6 +503,10 @@ Wrote the initial heapsort routines and cholesky decomposition.
 @item  Fabrice Rossi
 Multidimensional minimization.
 
+@item Carlo Perassi
+Implementation of the random number generators in Knuth's
+@cite{Seminumerical Algorithms}, 3rd Ed.
+
 @end table
 
 @node  Autoconf Macros, GSL CBLAS Library, Contributors to GSL, Top
@@ -593,7 +576,7 @@ fi
 
 @printindex cp
 
-@ifclear publish
+@ifclear frontcontents
 @comment Use @setchapternewpage odd to ensure that the contents starts 
 @comment on an odd page so that it can always be moved to the front when 
 @comment printing two-up.

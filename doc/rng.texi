@@ -28,6 +28,7 @@ These functions are declared in the header file @file{gsl_rng.h}.
 * Numerical Recipes generators::  
 * Other random number generators::  
 * Random Number Generator Performance::  
+* Random Number Generator Examples::  
 * Random Number References and Further Reading::  
 * Random Number Acknowledgements::  
 @end menu
@@ -1150,6 +1151,219 @@ W. Petersen, "Lagged Fibonacci Random Number Generators for the NEC
 SX-3", @cite{International Journal of High Speed Computing} (1994).
 @end itemize
 @end deffn
+
+@deffn {Generator} gsl_rng_borosh13
+This is the Borosh, Niederreiter random number generator. It is taken
+from Knuth's @cite{Seminumerical Algorithms}, 3rd Ed., pages
+106-108. Its sequence is,
+
+@tex
+\beforedisplay
+$$
+x_{n+1} = (a x_n) \,\hbox{mod}\, m
+$$
+\afterdisplay
+@end tex
+@ifinfo
+@example
+x_@{n+1@} = (a x_n) mod m
+@end example
+@end ifinfo
+@noindent
+with @math{a = 1812433253} and 
+@c{$m = 2^{32}$}
+@math{m = 2^32}.
+The seed specifies the initial value, 
+@c{$x_1$}
+@math{x_1}.
+@end deffn
+
+@deffn {Generator} gsl_rng_coveyou
+This is the Coveyou random number generator. It is taken from Knuth's
+@cite{Seminumerical Algorithms}, 3rd Ed., Section 3.2.2. Its sequence
+is,
+
+@tex
+\beforedisplay
+$$
+x_{n+1} = (x_n (x_n + 1)) \,\hbox{mod}\, m
+$$
+\afterdisplay
+@end tex
+@ifinfo
+@example
+x_@{n+1@} = (x_n (x_n + 1)) mod m
+@end example
+@end ifinfo
+@noindent
+with @c{$m = 2^{32}$}
+@math{m = 2^32}.
+The seed specifies the initial value, 
+@c{$x_1$}
+@math{x_1}.
+@end deffn
+
+@deffn {Generator} gsl_rng_fishman18
+This is the Fishman, Moore III random number generator. It is taken from
+Knuth's @cite{Seminumerical Algorithms}, 3rd Ed., pages 106-108. Its
+sequence is,
+
+@tex
+\beforedisplay
+$$
+x_{n+1} = (a x_n) \,\hbox{mod}\, m
+$$
+\afterdisplay
+@end tex
+@ifinfo
+@example
+x_@{n+1@} = (a x_n) mod m
+@end example
+@end ifinfo
+@noindent
+with @math{a = 62089911} and 
+@c{$m = 2^{31}-1$}
+@math{m = 2^31 - 1}.
+The seed specifies the initial value, 
+@c{$x_1$}
+@math{x_1}.
+@end deffn
+
+@deffn {Generator} gsl_rng_fishman20
+This is the Fishman random number generator. It is taken from Knuth's
+@cite{Seminumerical Algorithms}, 3rd Ed., page 108. Its sequence is,
+
+@tex
+\beforedisplay
+$$
+x_{n+1} = (a x_n) \,\hbox{mod}\, m
+$$
+\afterdisplay
+@end tex
+@ifinfo
+@example
+x_@{n+1@} = (a x_n) mod m
+@end example
+@end ifinfo
+@noindent
+with @math{a = 48271} and 
+@c{$m = 2^{31}-1$}
+@math{m = 2^31 - 1}.
+The seed specifies the initial value, 
+@c{$x_1$}
+@math{x_1}.
+@end deffn
+
+@deffn {Generator} gsl_rng_fishman2x
+This is the L'Ecuyer - Fishman random number generator. It is taken from
+Knuth's @cite{Seminumerical Algorithms}, 3rd Ed., page 108. Its sequence
+is,
+
+@tex
+\beforedisplay
+$$
+z_{n+1} = (x_n - y_n) \,\hbox{mod}\, m
+$$
+\afterdisplay
+@end tex
+@ifinfo
+@example
+z_@{n+1@} = (x_n - y_n) mod m
+@end example
+@end ifinfo
+@noindent
+with @c{$m = 2^{31}-1$}
+@math{m = 2^31 - 1}.
+@math{x_n} and @math{y_n} are given by the @code{fishman20} 
+and @code{lecuyer21} algorithms.
+The seed specifies the initial value, 
+@c{$x_1$}
+@math{x_1}.
+
+@end deffn
+
+@deffn {Generator} gsl_rng_knuthran2
+This is a second-order multiple recursive generator described by Knuth
+in @cite{Seminumerical Algorithms}, 3rd Ed., page 108.  Its sequence is,
+
+@tex
+\beforedisplay
+$$
+x_n = (a_1 x_{n-1} + a_2 x_{n-2}) \,\hbox{mod}\, m
+$$
+\afterdisplay
+@end tex
+@ifinfo
+@example
+x_n = (a_1 x_@{n-1@} + a_2 x_@{n-2@}) mod m
+@end example
+@end ifinfo
+
+@noindent
+with 
+@math{a_1 = 271828183}, 
+@math{a_2 = 314159269}, 
+and 
+@c{$m = 2^{31}-1$}
+@math{m = 2^31 - 1}.
+@end deffn
+
+@deffn {Generator} gsl_rng_knuthran
+This is a second-order multiple recursive generator described by Knuth
+in @cite{Seminumerical Algorithms}, 3rd Ed., Section 3.6.  Knuth
+provides its C code.
+@end deffn
+
+@deffn {Generator} gsl_rng_lecuyer21
+This is the L'Ecuyer random number generator. It is taken from Knuth's
+@cite{Seminumerical Algorithms}, 3rd Ed., page 106-108. Its sequence is,
+
+@tex
+\beforedisplay
+$$
+x_{n+1} = (a x_n) \,\hbox{mod}\, m
+$$
+\afterdisplay
+@end tex
+@ifinfo
+@example
+x_@{n+1@} = (a x_n) mod m
+@end example
+@end ifinfo
+@noindent
+with @math{a = 40692} and 
+@c{$m = 2^{31}-249$}
+@math{m = 2^31 - 249}.
+The seed specifies the initial value, 
+@c{$x_1$}
+@math{x_1}.
+@end deffn
+
+@deffn {Generator} gsl_rng_waterman14
+This is the Waterman random number generator. It is taken from Knuth's
+@cite{Seminumerical Algorithms}, 3rd Ed., page 106-108. Its sequence is,
+
+@tex
+\beforedisplay
+$$
+x_{n+1} = (a x_n) \,\hbox{mod}\, m
+$$
+\afterdisplay
+@end tex
+@ifinfo
+@example
+x_@{n+1@} = (a x_n) mod m
+@end example
+@end ifinfo
+@noindent
+with @math{a = 1566083941} and 
+@c{$m = 2^{32}$}
+@math{m = 2^32}.
+The seed specifies the initial value, 
+@c{$x_1$}
+@math{x_1}.
+@end deffn
+
 
 @node Random Number Generator Performance
 @section Random Number Generator Performance
