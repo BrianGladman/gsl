@@ -192,12 +192,12 @@ have the prefix @code{gsl_}, while exported macros have the prefix
 
 @cindex inline functions
 @cindex HAVE_INLINE
-The @code{inline} keyword is not part of ANSI C and the library does not
-export any inline function definitions by default. However, the library
-provides optional inline versions of performance-critical functions by
-conditional compilation.  The inline versions of these functions can be
-included by defining the macro @code{HAVE_INLINE} when compiling an
-application.
+The @code{inline} keyword is not part of the original ANSI C standard
+(C89) and the library does not export any inline function definitions by
+default. However, the library provides optional inline versions of
+performance-critical functions by conditional compilation.  The inline
+versions of these functions can be included by defining the macro
+@code{HAVE_INLINE} when compiling an application.
 
 @example
 $ gcc -Wall -c -DHAVE_INLINE example.c
