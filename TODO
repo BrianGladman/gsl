@@ -1,0 +1,57 @@
+TODO
+
+These are the public domain packages we should convert to C and put
+under the GPL:
+
+fftpack -- mostly done (sine and cosine transforms still to do, want
+           to add 2-d ffts, N-d ffts, convolutions)
+quadpack -- in progress (Brian)
+specfun -- in progress (Jerry)
+ranlib --  add the stuff we don't have
+minpack -- 
+odepack --
+blas --  
+starpac -- 
+dassl --
+eispack --
+lapack  -- 
+linpack -- 
+any others ???
+
+(At the present rate we'll be into the next century before we get to
+the end of that list).
+
+* More tests. We should (at least) have a test for every error
+condition. Write a perl script to check for error conditions that
+aren't tested.
+
+* We need support for general N-d arrays. Currently we have only
+vectors and matrices, which are two-dimensional.
+
+* BLAS, we should have something tunable like ATLAS but less
+complicated so we can run a few quick tests at configure time to find
+out how much cache there is and how many registers. Give people a way
+to do the full tuning if they want to.
+
+* Clean up 'roots' directory. 
+
+* Change return 0 to return GSL_SUCCESS, and return -1 to GSL_FAILURE
+throughout, where appropriate
+
+* Make sure GNUDL will be able to do everything that PAW can do
+(non-trivial).
+
+* We have to make SWIG wrappers work.
+
+* Write a C++ interface to replace Rogue Wave's Math.h++
+  (Brian has started this)
+
+* Some header files for physical constants (?).
+
+* Other stuff we might want: filters, wavelets, coordinate system
+transformations, grids and fields, ...
+
+
+
+
+
