@@ -1,5 +1,5 @@
-#ifndef _GSL_FFT_COMPLEX_H
-#define _GSL_FFT_COMPLEX_H
+#ifndef GSL_FFT_COMPLEX_H
+#define GSL_FFT_COMPLEX_H
 
 #include <stddef.h>
 
@@ -100,4 +100,4 @@ int
 gsl_fft_complex_wavetable_cpy (gsl_fft_complex_wavetable * dest,
 			       gsl_fft_complex_wavetable * src) ;
 
-#endif /* _GSL_FFT_COMPLEX_H */
+#endif /* GSL_FFT_COMPLEX_H */

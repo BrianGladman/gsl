@@ -1,5 +1,5 @@
-#ifndef _GSL_FFT_HALFCOMPLEX_H
-#define _GSL_FFT_HALFCOMPLEX_H
+#ifndef GSL_FFT_HALFCOMPLEX_H
+#define GSL_FFT_HALFCOMPLEX_H
 
 #include <stddef.h>
 
@@ -65,4 +65,4 @@ int
 			      gsl_complex complex_coefficient[],
 			      const size_t n);
 
-#endif /* _GSL_FFT_HALFCOMPLEX_H */
+#endif /* GSL_FFT_HALFCOMPLEX_H */

@@ -1,7 +1,7 @@
 /* $Id$ */
 
-#ifndef __GSL_ROOTS_H__
-#define __GSL_ROOTS_H__
+#ifndef GSL_ROOTS_H
+#define GSL_ROOTS_H
 
 
 /* Macro Constants */
@@ -64,4 +64,4 @@ int gsl_root_solve_quadratic(double a, double b, double c, double x[]);
 int gsl_root_solve_cubic(double a, double b, double c, double x[]);
 
 
-#endif /* __GSL_ROOTS_H__ */
+#endif /* GSL_ROOTS_H */

@@ -1,5 +1,5 @@
-#ifndef _GSL_FFT_REAL_H
-#define _GSL_FFT_REAL_H
+#ifndef GSL_FFT_REAL_H
+#define GSL_FFT_REAL_H
 
 #include <stddef.h>
 
@@ -47,4 +47,4 @@ int
 		       gsl_complex complex_coefficient[],
 		       const size_t n);
 
-#endif /* _GSL_FFT_REAL_H */
+#endif /* GSL_FFT_REAL_H */

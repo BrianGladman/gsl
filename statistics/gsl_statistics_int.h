@@ -1,5 +1,5 @@
-#ifndef _GSL_STATISTICS_INT_H
-#define _GSL_STATISTICS_INT_H
+#ifndef GSL_STATISTICS_INT_H
+#define GSL_STATISTICS_INT_H
 
 #include <stddef.h>
 
@@ -43,4 +43,4 @@ double gsl_stats_int_median_from_sorted_data (const int sorted_data[],
 double gsl_stats_int_percentile_from_sorted_data (const int sorted_data[],
 						  size_t n, const double f) ;
 
-#endif /* _GSL_STATISTICS_INT_H */
+#endif /* GSL_STATISTICS_INT_H */

@@ -1,5 +1,5 @@
-#ifndef _GSL_FFT_SIGNALS_H
-#define _GSL_FFT_SIGNALS_H
+#ifndef GSL_FFT_SIGNALS_H
+#define GSL_FFT_SIGNALS_H
 
 #include <gsl_math.h>
 
@@ -51,4 +51,4 @@ int
 				  gsl_complex data[],
 				  gsl_complex fft[]);
 
-#endif /* _GSL_FFT_SIGNALS_H */
+#endif /* GSL_FFT_SIGNALS_H */
