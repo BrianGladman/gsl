@@ -394,6 +394,36 @@ function T = test_syr2kmatmat (S, j, order, trans)
 endfunction
 
 
+function T = test_trmatmat (S, j, order, side, trans)
+  T.m = fix(j/2)+1;
+  T.n = j;
+
+  if (order == 101)
+    T.ldb = T.n;
+  else
+    T.ldb = T.m;
+  endif
+
+  if (side == 141)
+    T.k = T.m;
+  else
+    T.k = T.n;
+  endif
+
+  T.lda = T.k;
+
+  if (S.complex == 0)
+    T.B = random_matrix(T.m, T.n);
+
+    T.A = random_matrix(T.k, T.k);
+  else
+    T.B = random_matrix(T.m, T.n) + I * random_matrix(T.m, T.n);
+
+    T.A = random_matrix(T.k, T.k) + I * random_matrix(T.k, T.k);
+  endif
+endfunction
+
+
 function v = random_vector(n)
   v = fix((rand(1,n)-0.5)*2000)/1000;
 endfunction
@@ -1475,6 +1505,25 @@ function CC = blas_her2k (order, uplo, trans, N, K, alpha, \
   CC = trmatout(order, uplo, 131, C, ldc, N, c);
 endfunction
 
+
+function BB = blas_trmm (order, side, uplo, trans, diag, M, N, alpha, \
+                         A, lda, B, ldb)
+  b = matrix (order, B, ldb, M, N);
+
+  if (side == 141)
+    a = trmatrix (order, uplo, diag, A, lda, M);
+    a = op(a, trans);
+    b = alpha * a * b;
+  else
+    a = trmatrix (order, uplo, diag, A, lda, N);
+    a = op(a, trans);
+    b = alpha * b * a;
+  endif
+  
+  BB = mout(order, B, ldb, M, N, b);
+endfunction
+
+
 ######################################################################
 
                                 # testing functions
@@ -2287,6 +2336,30 @@ function test_her2k (S, fn, order, uplo, trans,  N, K, alpha, A, \
   end_block();
 endfunction
 
+function test_trmm (S, fn, order, side, uplo, trans, diag, M, N, alpha, A, \
+                    lda, B, ldb)
+  begin_block();
+  define(S, "int", "order", order);
+  define(S, "int", "side", side);
+  define(S, "int", "uplo", uplo);
+  define(S, "int", "trans", trans);
+  define(S, "int", "diag", diag);
+  define(S, "int", "M", M);
+  define(S, "int", "N", N);
+  define(S, "scalar", "alpha", alpha);
+  define(S, "matrix", "A", A);
+  define(S, "int", "lda", lda);
+  define(S, "matrix", "B", B);
+  define(S, "int", "ldb", ldb);
+
+  BB = feval(strcat("blas_", fn), order, side, uplo, trans, diag, M, N, \
+             alpha, A, lda, B, ldb);
+  define(S, "matrix", "B_expected", BB);
+  call("cblas_", S.prefix, fn, "(order, side, uplo, trans, diag, M, N, alpha, A, lda, B, ldb)");
+  test(S, "matrix", "B", "B_expected", strcat(S.prefix, fn), B);
+  end_block();
+endfunction
+
 ######################################################################
 
 s=1;d=2;c=3;z=4;
@@ -2958,21 +3031,42 @@ n=16;
 #   endfor
 # endfor
 
+# for j = 1:n
+#   for i = [c,z]
+#     S = context(i);
+#     for trans = Trans(S)
+#       if (S.complex && trans == 112)
+#         continue; # Trans not allowed for complex case, 
+#       endif
+#       for alpha = coeff(S)
+#         R = S; R.complex = 0;
+#         for beta = coeff(R)
+#           for order = [101, 102]
+#             for uplo = [121, 122]
+#               T = test_syr2kmatmat(S, j, order, trans);
+#               test_her2k (S, "her2k", order, uplo, trans, T.n, T.k, alpha, 
+#                           T.A, T.lda, T.B, T.ldb, beta, T.C, T.ldc);
+#             endfor
+#           endfor
+#         endfor
+#       endfor
+#     endfor
+#   endfor
+# endfor
+n=5;
 for j = 1:n
-  for i = [c,z]
+  for i = [s,d] #,c,z]
     S = context(i);
     for trans = Trans(S)
-      if (S.complex && trans == 112)
-        continue; # Trans not allowed for complex case, 
-      endif
       for alpha = coeff(S)
-        R = S; R.complex = 0;
-        for beta = coeff(R)
+        for side = [141, 142]
           for order = [101, 102]
             for uplo = [121, 122]
-              T = test_syr2kmatmat(S, j, order, trans);
-              test_her2k (S, "her2k", order, uplo, trans, T.n, T.k, alpha, 
-                          T.A, T.lda, T.B, T.ldb, beta, T.C, T.ldc);
+              for diag = [131, 132]
+                T = test_trmatmat(S, j, order, side, trans);
+                test_trmm (S, "trmm", order, side, uplo, trans, diag, T.m, T.n,
+                           alpha, T.A, T.lda, T.B, T.ldb);
+              endfor
             endfor
           endfor
         endfor
