@@ -37,7 +37,13 @@
 __BEGIN_DECLS
 
 void gsl_sort_int (int * data, size_t stride, size_t n);
-int gsl_sort_int_index (size_t * p, const int * data, size_t stride, size_t n);
+void gsl_sort_int_index (size_t * p, const int * data, size_t stride, size_t n);
+
+int gsl_sort_int_smallest (int * dest, size_t k, const int * src, size_t stride, size_t n);
+int gsl_sort_int_smallest_index (size_t * p, size_t k, const int * src, size_t stride, size_t n);
+
+int gsl_sort_int_largest (int * dest, size_t k, const int * src, size_t stride, size_t n);
+int gsl_sort_int_largest_index (size_t * p, size_t k, const int * src, size_t stride, size_t n);
 
 __END_DECLS
 

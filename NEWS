@@ -1,5 +1,8 @@
 * What is new in gsl-0.7+:
 
+** There are several new sorting functions for selecting the k-th
+smallest or largest elements of a dataset.
+
 ** Iterator functions are now available for permutations,
 gsl_permutation_next and gsl_permutation_prev.
 

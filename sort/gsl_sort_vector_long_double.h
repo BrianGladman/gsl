@@ -40,6 +40,12 @@ __BEGIN_DECLS
 void gsl_sort_vector_long_double (gsl_vector_long_double * v);
 int gsl_sort_vector_long_double_index (gsl_permutation * p, const gsl_vector_long_double * v);
 
+int gsl_sort_vector_long_double_smallest (long double * dest, size_t k, const gsl_vector_long_double * v);
+int gsl_sort_vector_long_double_largest (long double * dest, size_t k, const gsl_vector_long_double * v);
+
+int gsl_sort_vector_long_double_smallest_index (size_t * p, size_t k, const gsl_vector_long_double * v);
+int gsl_sort_vector_long_double_largest_index (size_t * p, size_t k, const gsl_vector_long_double * v);
+
 __END_DECLS
 
 #endif /* __GSL_SORT_VECTOR_LONG_DOUBLE_H__ */

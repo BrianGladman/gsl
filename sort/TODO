@@ -1,12 +1,5 @@
-* Routines for selecting the k largest or smallest values. This can be
-based on heapsort.
-
-  /* fills array with indexes of k smallest/largest elements of v */
-  int gsl_sort_vector_smallest (size_t * array, size_t k, const gsl_vector *v) 
-  int gsl_sort_vector_largest (size_t * array, size_t k, const gsl_vector *v) 
-  
- [ We now have some routines for this from Thomas Walter but they
-   have not been added yet. BJG ]
+* Routines for selecting the k largest or smallest values could use
+heapsort for speed O(N log k) rather than insertion O(N k).
 
 * Sorting of complex arrarys without using additional memory. We try
 to avoid allocating memory internally in GSL, so internally computing

@@ -40,6 +40,12 @@ __BEGIN_DECLS
 void gsl_sort_vector_float (gsl_vector_float * v);
 int gsl_sort_vector_float_index (gsl_permutation * p, const gsl_vector_float * v);
 
+int gsl_sort_vector_float_smallest (float * dest, size_t k, const gsl_vector_float * v);
+int gsl_sort_vector_float_largest (float * dest, size_t k, const gsl_vector_float * v);
+
+int gsl_sort_vector_float_smallest_index (size_t * p, size_t k, const gsl_vector_float * v);
+int gsl_sort_vector_float_largest_index (size_t * p, size_t k, const gsl_vector_float * v);
+
 __END_DECLS
 
 #endif /* __GSL_SORT_VECTOR_FLOAT_H__ */

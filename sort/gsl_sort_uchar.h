@@ -37,7 +37,13 @@
 __BEGIN_DECLS
 
 void gsl_sort_uchar (unsigned char * data, size_t stride, size_t n);
-int gsl_sort_uchar_index (size_t * p, const unsigned char * data, size_t stride, size_t n);
+void gsl_sort_uchar_index (size_t * p, const unsigned char * data, size_t stride, size_t n);
+
+int gsl_sort_uchar_smallest (unsigned char * dest, size_t k, const unsigned char * src, size_t stride, size_t n);
+int gsl_sort_uchar_smallest_index (size_t * p, size_t k, const unsigned char * src, size_t stride, size_t n);
+
+int gsl_sort_uchar_largest (unsigned char * dest, size_t k, const unsigned char * src, size_t stride, size_t n);
+int gsl_sort_uchar_largest_index (size_t * p, size_t k, const unsigned char * src, size_t stride, size_t n);
 
 __END_DECLS
 

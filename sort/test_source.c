@@ -22,17 +22,30 @@ void FUNCTION (my, initialize) (TYPE (gsl_vector) * v);
 void FUNCTION (my, randomize) (TYPE (gsl_vector) * v);
 int FUNCTION (my, check) (TYPE (gsl_vector) * data, TYPE (gsl_vector) * orig);
 int FUNCTION (my, pcheck) (gsl_permutation * p, TYPE (gsl_vector) * data, TYPE (gsl_vector) * orig);
+int FUNCTION (my, scheck) (BASE * x, size_t k, TYPE (gsl_vector) * data);
+int FUNCTION (my, lcheck) (BASE * x, size_t k, TYPE (gsl_vector) * data);
+int FUNCTION (my, sicheck) (size_t * p, size_t k, gsl_permutation * perm,
+                            TYPE (gsl_vector) * data);
+int FUNCTION (my, licheck) (size_t * p, size_t k, gsl_permutation * perm,
+                            TYPE (gsl_vector) * data);
 
 void
 TYPE (test_sort_vector) (size_t N, size_t stride)
 {
   int status;
+  size_t  k = N/2;
 
   TYPE (gsl_block) * b1 = FUNCTION (gsl_block, calloc) (N * stride);
   TYPE (gsl_block) * b2 = FUNCTION (gsl_block, calloc) (N * stride);
+  TYPE (gsl_block) * b3 = FUNCTION (gsl_block, calloc) (N * stride);
 
   TYPE (gsl_vector) * orig = FUNCTION (gsl_vector, alloc_from_block) (b1, 0, N, stride);
   TYPE (gsl_vector) * data = FUNCTION (gsl_vector, alloc_from_block) (b2, 0, N, stride);
+  TYPE (gsl_vector) * data2 = FUNCTION (gsl_vector, alloc_from_block) (b3, 0, N, stride);
+
+  BASE * small = malloc(k * sizeof(BASE));
+  BASE * large = malloc(k * sizeof(BASE));
+  size_t * index = malloc(k * sizeof(size_t));
 
   gsl_permutation *p = gsl_permutation_alloc (N);
 
@@ -49,6 +62,22 @@ TYPE (test_sort_vector) (size_t N, size_t stride)
   status = FUNCTION (my, check) (data, orig);
   gsl_test (status, "sorting, " NAME (gsl_vector) ", n = %u, stride = %u, ordered", N, stride);
 
+  FUNCTION (gsl_sort_vector, smallest) (small, k, data);
+  status = FUNCTION (my, scheck) (small, k, orig);
+  gsl_test (status, "smallest, " NAME (gsl_vector) ", n = %u, stride = %u, ordered", N, stride);
+
+  FUNCTION (gsl_sort_vector, largest) (large, k, data);
+  status = FUNCTION (my, lcheck) (large, k, orig);
+  gsl_test (status, "largest, " NAME (gsl_vector) ", n = %u, stride = %u, ordered", N, stride);
+
+  FUNCTION (gsl_sort_vector, smallest_index) (index, k, data);
+  status = FUNCTION (my, sicheck) (index, k, p, data);
+  gsl_test (status, "smallest index, " NAME (gsl_vector) ", n = %u, stride = %u, ordered", N, stride);
+
+  FUNCTION (gsl_sort_vector, largest_index) (index, k, data);
+  status = FUNCTION (my, licheck) (index, k, p, data);
+  gsl_test (status, "largest index, " NAME (gsl_vector) ", n = %u, stride = %u, ordered", N, stride);
+
   /* Reverse the data */
 
   FUNCTION (gsl_vector, memcpy) (data, orig);
@@ -62,10 +91,30 @@ TYPE (test_sort_vector) (size_t N, size_t stride)
   status = FUNCTION (my, check) (data, orig);
   gsl_test (status, "sorting, " NAME (gsl_vector) ", n = %u, stride = %u, reversed", N, stride);
 
+  FUNCTION (gsl_vector, memcpy) (data, orig);
+  FUNCTION (gsl_vector, reverse) (data);
+
+  FUNCTION (gsl_sort_vector, smallest) (small, k, data);
+  status = FUNCTION (my, scheck) (small, k, orig);
+  gsl_test (status, "smallest, " NAME (gsl_vector) ", n = %u, stride = %u, reversed", N, stride);
+
+  FUNCTION (gsl_sort_vector, largest) (large, k, data);
+  status = FUNCTION (my, lcheck) (large, k, orig);
+  gsl_test (status, "largest, " NAME (gsl_vector) ", n = %u, stride = %u, reversed", N, stride);
+
+  FUNCTION (gsl_sort_vector, smallest_index) (index, k, data);
+  status = FUNCTION (my, sicheck) (index, k, p, data);
+  gsl_test (status, "smallest index, " NAME (gsl_vector) ", n = %u, stride = %u, reversed", N, stride);
+
+  FUNCTION (gsl_sort_vector, largest_index) (index, k, data);
+  status = FUNCTION (my, licheck) (index, k, p, data);
+  gsl_test (status, "largest index, " NAME (gsl_vector) ", n = %u, stride = %u, reversed", N, stride);
+
   /* Perform some shuffling */
 
   FUNCTION (gsl_vector, memcpy) (data, orig);
   FUNCTION (my, randomize) (data);
+  FUNCTION (gsl_vector, memcpy) (data2, data);
 
   status = FUNCTION (gsl_sort_vector, index) (p, data);
   status |= FUNCTION (my, pcheck) (p, data, orig);
@@ -75,11 +124,33 @@ TYPE (test_sort_vector) (size_t N, size_t stride)
   status = FUNCTION (my, check) (data, orig);
   gsl_test (status, "sorting, " NAME (gsl_vector) ", n = %u, stride = %u, randomized", N, stride);
 
+  FUNCTION (gsl_vector, memcpy) (data, data2);
+
+  FUNCTION (gsl_sort_vector, smallest) (small, k, data);
+  status = FUNCTION (my, scheck) (small, k, orig);
+  gsl_test (status, "smallest, " NAME (gsl_vector) ", n = %u, stride = %u, randomized", N, stride);
+
+  FUNCTION (gsl_sort_vector, largest) (large, k, data);
+  status = FUNCTION (my, lcheck) (large, k, orig);
+  gsl_test (status, "largest, " NAME (gsl_vector) ", n = %u, stride = %u, randomized", N, stride);
+
+  FUNCTION (gsl_sort_vector, smallest_index) (index, k, data);
+  status = FUNCTION (my, sicheck) (index, k, p, data);
+  gsl_test (status, "smallest index, " NAME (gsl_vector) ", n = %u, stride = %u, randomized", N, stride);
+
+  FUNCTION (gsl_sort_vector, largest_index) (index, k, data);
+  status = FUNCTION (my, licheck) (index, k, p, data);
+  gsl_test (status, "largest index, " NAME (gsl_vector) ", n = %u, stride = %u, randomized", N, stride);
+
   FUNCTION (gsl_vector, free) (orig);
   FUNCTION (gsl_vector, free) (data);
+  FUNCTION (gsl_vector, free) (data2);
   FUNCTION (gsl_block, free) (b1);
   FUNCTION (gsl_block, free) (b2);
+  FUNCTION (gsl_block, free) (b3);
   gsl_permutation_free (p);
+  free (small);
+  free (large);
 }
 
 
@@ -144,5 +215,77 @@ FUNCTION (my, pcheck) (gsl_permutation * p, TYPE (gsl_vector) * data, TYPE (gsl_
 
   return GSL_SUCCESS;
 }
+
+int
+FUNCTION (my, scheck) (BASE * x, size_t k, TYPE (gsl_vector) * data)
+{
+  size_t i;
+
+  for (i = 0; i < k; i++)
+    {
+      if (x[i] != FUNCTION (gsl_vector, get) (data, i))
+	{
+	  return GSL_FAILURE;
+	}
+    }
+
+  return GSL_SUCCESS;
+}
+
+
+
+int
+FUNCTION (my, lcheck) (BASE * x, size_t k, TYPE (gsl_vector) * data)
+{
+  size_t i;
+
+  for (i = 0; i < k; i++)
+    {
+      if (x[i] != FUNCTION (gsl_vector, get) (data, data->size - i - 1))
+	{
+	  return GSL_FAILURE;
+	}
+    }
+
+  return GSL_SUCCESS;
+}
+
+
+int
+FUNCTION (my, sicheck) (size_t * p1, size_t k, gsl_permutation * p,
+                        TYPE (gsl_vector) * data)
+{
+  size_t i;
+
+  for (i = 0; i < k; i++)
+    {
+      if (FUNCTION(gsl_vector,get)(data,p1[i]) 
+          != FUNCTION(gsl_vector,get)(data, p->data[i]))
+	{
+	  return GSL_FAILURE;
+	}
+    }
+
+  return GSL_SUCCESS;
+}
+
+int
+FUNCTION (my, licheck) (size_t * p1, size_t k, gsl_permutation * p,
+                        TYPE (gsl_vector) * data)
+{
+  size_t i;
+
+  for (i = 0; i < k; i++)
+    {
+      if (FUNCTION(gsl_vector,get)(data,p1[i]) 
+          != FUNCTION(gsl_vector,get)(data, p->data[p->size - i - 1]))
+	{
+	  return GSL_FAILURE;
+	}
+    }
+
+  return GSL_SUCCESS;
+}
+
 
 

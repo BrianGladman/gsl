@@ -90,3 +90,4 @@ TYPE (gsl_sort_vector) (TYPE (gsl_vector) * v)
 {
   TYPE (gsl_sort) (v->data, v->stride, v->size) ;
 }
+

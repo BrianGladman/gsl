@@ -37,7 +37,13 @@
 __BEGIN_DECLS
 
 void gsl_sort_char (char * data, size_t stride, size_t n);
-int gsl_sort_char_index (size_t * p, const char * data, size_t stride, size_t n);
+void gsl_sort_char_index (size_t * p, const char * data, size_t stride, size_t n);
+
+int gsl_sort_char_smallest (char * dest, size_t k, const char * src, size_t stride, size_t n);
+int gsl_sort_char_smallest_index (size_t * p, size_t k, const char * src, size_t stride, size_t n);
+
+int gsl_sort_char_largest (char * dest, size_t k, const char * src, size_t stride, size_t n);
+int gsl_sort_char_largest_index (size_t * p, size_t k, const char * src, size_t stride, size_t n);
 
 __END_DECLS
 

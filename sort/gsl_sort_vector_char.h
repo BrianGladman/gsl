@@ -40,6 +40,12 @@ __BEGIN_DECLS
 void gsl_sort_vector_char (gsl_vector_char * v);
 int gsl_sort_vector_char_index (gsl_permutation * p, const gsl_vector_char * v);
 
+int gsl_sort_vector_char_smallest (char * dest, size_t k, const gsl_vector_char * v);
+int gsl_sort_vector_char_largest (char * dest, size_t k, const gsl_vector_char * v);
+
+int gsl_sort_vector_char_smallest_index (size_t * p, size_t k, const gsl_vector_char * v);
+int gsl_sort_vector_char_largest_index (size_t * p, size_t k, const gsl_vector_char * v);
+
 __END_DECLS
 
 #endif /* __GSL_SORT_VECTOR_CHAR_H__ */

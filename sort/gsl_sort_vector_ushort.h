@@ -40,6 +40,12 @@ __BEGIN_DECLS
 void gsl_sort_vector_ushort (gsl_vector_ushort * v);
 int gsl_sort_vector_ushort_index (gsl_permutation * p, const gsl_vector_ushort * v);
 
+int gsl_sort_vector_ushort_smallest (unsigned short * dest, size_t k, const gsl_vector_ushort * v);
+int gsl_sort_vector_ushort_largest (unsigned short * dest, size_t k, const gsl_vector_ushort * v);
+
+int gsl_sort_vector_ushort_smallest_index (size_t * p, size_t k, const gsl_vector_ushort * v);
+int gsl_sort_vector_ushort_largest_index (size_t * p, size_t k, const gsl_vector_ushort * v);
+
 __END_DECLS
 
 #endif /* __GSL_SORT_VECTOR_USHORT_H__ */
