@@ -13,6 +13,8 @@ pkginclude_HEADERS = 		\
 	gsl_blas_raw_cm.h
 
 noinst_HEADERS =  \
+	source_asum_r.h		\
+	source_asum_c.h		\
 	source_axpy_c.h		\
 	source_axpy_r.h		\
 	source_copy_c.h		\
@@ -21,6 +23,8 @@ noinst_HEADERS =  \
 	source_dot_r.h		\
 	source_gemv.h		\
 	source_ger.h		\
+	source_iamax_r.h	\
+	source_iamax_c.h	\
 	source_nrm2_c.h		\
 	source_nrm2_r.h		\
 	source_rot.h		\

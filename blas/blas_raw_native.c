@@ -153,16 +153,6 @@ float  gsl_blas_raw_sasum (size_t N, const float X[], size_t incX)
 #define BASE_TYPE float
 #include "source_asum_r.h"
 #undef BASE_TYPE
-/*
-  float r = 0.0;
-  size_t n;
-  size_t i;
-  for(n=0; n<N; n++) {
-    r += fabs(X[i]);
-    i += incX;
-  }
-  return r;
-  */
 }
 
 double gsl_blas_raw_dasum (size_t N, const double X[], size_t incX)
@@ -177,16 +167,6 @@ float  gsl_blas_raw_scasum (size_t N, const gsl_complex_packed_array_float X, si
 #define BASE_TYPE float
 #include "source_asum_c.h"
 #undef BASE_TYPE
-/*
-  float r = 0.0;
-  size_t n;
-  size_t i;
-  for(n=0; n<N; n++) {
-    r += fabs(REAL(X, incX, i)) + fabs(IMAG(X, incX, i));
-    i += incX;
-  }
-  return r;
-  */
 }
 
 double gsl_blas_raw_dzasum (size_t N, const gsl_complex_packed_array X, size_t incX)
@@ -202,20 +182,6 @@ CBLAS_INDEX gsl_blas_raw_isamax (size_t N, const float X[], size_t incX)
 #define BASE_TYPE float
 #include "source_iamax_r.h"
 #undef BASE_TYPE
-/*
-  float max = 0.0;
-  CBLAS_INDEX n;
-  CBLAS_INDEX i;
-  CBLAS_INDEX result;
-  for(n=0; n<N; n++) {
-    if(fabs(X[i]) > max) {
-      max = fabs(X[i]);
-      result = i;
-    }
-    i += incX;
-  }
-  return result;
-  */
 }
 
 CBLAS_INDEX gsl_blas_raw_idamax (size_t N, const double X[], size_t incX)
@@ -230,21 +196,6 @@ CBLAS_INDEX gsl_blas_raw_icamax (size_t N, const gsl_complex_packed_array_float 
 #define BASE_TYPE float
 #include "source_iamax_c.h"
 #undef BASE_TYPE
-/*
-  double max = 0.0;
-  CBLAS_INDEX n;
-  CBLAS_INDEX i;
-  CBLAS_INDEX result;
-  for(n=0; n<N; n++) {
-    const double a = fabs(REAL(X, incX, i)) + fabs(IMAG(X, incX, i));
-    if(a > max) {
-      max = a;
-      result = i;
-    }
-    i += incX;
-  }
-  return result;
-  */
 }
 
 CBLAS_INDEX gsl_blas_raw_izamax (size_t N, const gsl_complex_packed_array X, size_t incX)
