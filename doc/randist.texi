@@ -162,7 +162,7 @@ the formula given above.
 @end tex
 
 @deftypefun double gsl_ran_gaussian_ratio_method (const gsl_rng * @var{r}, double @var{sigma})
-This function computes a gaussian random variate using the
+This function computes a Gaussian random variate using the
 Kinderman-Monahan ratio method.
 @end deftypefun
 
