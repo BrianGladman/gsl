@@ -76,6 +76,9 @@
 /* Define this is IEEE comparisons work correctly (e.g. NaN != NaN) */
 #undef HAVE_IEEE_COMPARISONS
 
+/* Define this is IEEE denormalized numbers are available */
+#undef HAVE_IEEE_DENORMALS
+
 /* Substitute gsl functions for missing system functions */
 
 #ifndef HAVE_HYPOT

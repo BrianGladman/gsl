@@ -1,3 +1,9 @@
+Sat May 11 22:27:52 2002  Brian Gough  <bjg@network-theory.co.uk>
+
+	* configure.in (ac_cv_func_printf_longdouble): fixed ieee
+ 	comparisons test so it actually works
+	(ac_cv_c_ieee_comparisons): added a test for denormalized values
+
 Fri Apr 26 19:53:31 2002  Brian Gough  <bjg@network-theory.co.uk>
 
 	* Makefile.am (EXTRA_DIST): removed KNOWN-PROBLEMS

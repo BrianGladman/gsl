@@ -461,20 +461,50 @@ fi
 dnl Check IEEE comparisons, whether "x != x" is true for NaNs
 dnl
 AC_CACHE_CHECK([working IEEE comparisons], ac_cv_c_ieee_comparisons,
-[ac_cv_c_ieee_comparisons=no
-AC_TRY_COMPILE([#include <math.h>], 
-[  int status; double inf, nan;
+[AC_TRY_RUN([
+#include <math.h>
+int main (void) 
+{ 
+   int status; double inf, nan;
    inf = exp(1.0e10);
    nan = inf / inf ;
    status = (nan == nan);
-   exit (status); ],
-[ac_cv_c_ieee_comparisons="yes"])
+   exit (status);
+}],
+ac_cv_c_ieee_comparisons="yes",
+ac_cv_c_ieee_comparisons="no",
+ac_cv_c_ieee_comparisons="yes")
 ])
 
 if test "$ac_cv_c_ieee_comparisons" != no ; then
   AC_DEFINE(HAVE_IEEE_COMPARISONS,1)
   AC_SUBST(HAVE_IEEE_COMPARISONS)
 fi
+
+dnl Check for IEEE denormalized arithmetic
+dnl
+AC_CACHE_CHECK([for IEEE denormalized values], ac_cv_c_ieee_denormals,
+[AC_TRY_RUN([
+#include <math.h> 
+int main (void) 
+{ 
+   int i, status; 
+   volatile double z = 1e-308;
+   for (i = 0; i < 5; i++) { z = z / 10.0 ; };        
+   for (i = 0; i < 5; i++) { z = z * 10.0 ; };
+   status = (z == 0.0);
+   exit (status);
+}],
+ac_cv_c_ieee_denormals="yes",
+ac_cv_c_ieee_denormals="no",
+ac_cv_c_ieee_denormals="yes")
+])
+
+if test "$ac_cv_c_ieee_denormals" != no ; then
+  AC_DEFINE(HAVE_IEEE_DENORMALS,1)
+  AC_SUBST(HAVE_IEEE_DENORMALS)
+fi
+
 
 dnl
 AC_OUTPUT(gsl-config gsl.pc gsl_version.h gsl.spec gsl/Makefile test/Makefile err/Makefile sys/Makefile utils/Makefile const/Makefile min/Makefile multimin/Makefile ieee-utils/Makefile fft/Makefile specfunc/Makefile dht/Makefile fit/Makefile multifit/Makefile statistics/Makefile sum/Makefile roots/Makefile multiroots/Makefile ntuple/Makefile poly/Makefile qrng/Makefile rng/Makefile randist/Makefile siman/Makefile integration/Makefile interpolation/Makefile doc/Makefile block/Makefile vector/Makefile matrix/Makefile histogram/Makefile monte/Makefile ode-initval/Makefile cblas/Makefile blas/Makefile linalg/Makefile eigen/Makefile permutation/Makefile combination/Makefile sort/Makefile complex/Makefile diff/Makefile cheb/Makefile Makefile)
