@@ -4,7 +4,7 @@ pkginclude_HEADERS = gsl_rng.h
 
 INCLUDES= -I$(top_builddir)
 
-libgslrng_la_SOURCES = gsl_rng.h rng.c types.c default.c \
+libgslrng_la_SOURCES = rng.c types.c default.c \
 cmrg.c gfsr4.c slatec.c minstd.c mrg.c mt.c r250.c ran0.c \
 ran1.c ran2.c ran3.c rand.c random.c rand48.c randu.c \
 ranf.c ranlux.c ranlxs.c ranlxd.c ranmar.c \
