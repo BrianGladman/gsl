@@ -1,3 +1,6 @@
+#ifndef _GSL_ERRNO_H
+#define _GSL_ERRNO_H
+
 #include <errno.h>
 
 #define GSL_EDOM       1  /* domain error for input, e.g. asin(10),sqrt(-1) */
@@ -61,3 +64,5 @@ void gsl_message(const char * message, const char * file, int line);
        gsl_errno = errno; \
        gsl_message (message, __FILE__, __LINE__) ; \
        } while (0)
+
+#endif /* _GSL_ERRNO_H */

@@ -1,3 +1,8 @@
+#ifndef _GSL_TEST_H
+#define _GSL_TEST_H
+
+#include <config.h>
+
 #ifdef HAVE_VPRINTF
 void
   gsl_test (int status, const char *test_description, ...);
@@ -10,3 +15,4 @@ int
   gsl_test_summary (void) ;
 
 
+#endif /* _GSL_TEST_H */
