@@ -100,3 +100,30 @@ FAIL: gsl_finite(inf) (1 observed vs 0 expected)
 FAIL: gsl_finite(nan) (1 observed vs 0 expected)
 
 ----------------------------------------------------------------------
+
+BUG#7 -- STATUS: open, not yet fixed
+
+From: Filip Floegel <floegel@itp.uni-hannover.de>
+Subject: gsl_sf_coupling_3j
+Date: Wed, 2 Oct 2002 17:45:52 +0200
+
+gsl_sf_coupling_3j doesn't work properly for large
+angular mementa like j1=j2=j3=40 m1=m2=m3=0 !!!
+
+gsl_sf_coupling_3j_e(80,80,80,0,0,0,&result)
+
+which correspond to j1=j2=j3=40 m1=m2=m3=0
+
+gives me:
+
+      result.val = 0.0625
+      result.err = 0.172766
+
+mathematica gives me:
+
+      N[ThreeJSymbol[{40,0},{40,0},{40,0}]] = 0.0149685
+
+my guess is that gamma.c which is used for calculating fractional
+numbers probably diverges for large integers. 
+
+----------------------------------------------------------------------
