@@ -10,7 +10,7 @@ static double gamma_frac (const gsl_rng * r, double a);
 
 /* The Gamma distribution of order a>0 is defined by:
 
-   p(x) dx = \frac{1}{\Gamma(a)} x^{a-1} e^{-x} dx
+   p(x) dx = {1 / \Gamma(a)} x^{a-1} e^{-x} dx
 
    for x>0.  If X and Y are independent gamma-distributed random
    variables of order a and b, then X+Y has gamma distribution of

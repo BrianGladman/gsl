@@ -10,20 +10,33 @@
    */
 
 unsigned int
-gsl_ran_negative_binomial (const gsl_rng * r, double p, unsigned int t)
+gsl_ran_bernoulli (const gsl_rng * r, double p)
 {
-  double X = gsl_ran_gamma (r, t) ;
-  unsigned int n = gsl_ran_poisson (r, X*(1-p)/p) ;
-  return n ;
+  double u = gsl_rng_uniform (r) ;
+
+  if (u < p)
+    {
+      return 1 ;
+    }
+  else
+    {
+      return 0 ;
+    }
 }
 
 double
-gsl_ran_negative_binomial_pdf (const unsigned int n, const double p, 
-			       const unsigned int t)
+gsl_ran_bernoulli_pdf (const unsigned int n, double p)
 {
-  double T = t ;
-  double N = n ;
-  double P = gsl_sf_choose (T-1+N, N) * pow (p, T) * pow (1 - p, N);
-  
-  return P;
+  if (n == 0)
+    {
+      return 1 - p ;
+    }
+  else if (n == 1)
+    {
+      return p ;
+    }
+  else
+    {
+      return 0 ;
+    }
 }

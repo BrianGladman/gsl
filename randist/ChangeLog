@@ -1,5 +1,9 @@
 Tue Jul 14 12:39:30 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
+	* nbinomial.c: added Negative Binomial distribution
+
+	* bernoulli.c: added Bernoulli distribution
+
 	* poisson.c (gsl_ran_poisson): fixed a serious bug in the unrolled
  	recursion which led to an incorrect result being returned for the
  	large t case. This shows the importance of tests that cover all

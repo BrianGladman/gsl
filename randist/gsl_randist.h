@@ -2,6 +2,8 @@
 #define GSL_RANDIST_H
 #include <gsl_rng.h>
 
+unsigned int gsl_ran_bernoulli (const gsl_rng * r, double p);
+double gsl_ran_bernoulli_pdf (unsigned int n, double p);
 
 double gsl_ran_beta (const gsl_rng * r, double a, double b);
 double gsl_ran_beta_pdf (double x, double a, double b);
@@ -45,6 +47,9 @@ double gsl_ran_logistic_pdf (double x);
 
 double gsl_ran_lognormal (const gsl_rng * r);
 double gsl_ran_lognormal_pdf (double x);
+
+unsigned int gsl_ran_negative_binomial (const gsl_rng * r, double p, double t);
+double gsl_ran_negative_binomial_pdf (unsigned int n, double p, double t);
 
 double gsl_ran_pareto (const gsl_rng * r, double a);
 double gsl_ran_pareto_pdf (double x, double a);

@@ -18,6 +18,8 @@ double test_beta (void);
 double test_beta_pdf (double x);
 double test_binomial (void);
 double test_binomial_pdf (unsigned int n);
+double test_binomial_large (void);
+double test_binomial_large_pdf (unsigned int n);
 double test_cauchy (void);
 double test_cauchy_pdf (double x);
 double test_chisq (void);
@@ -32,6 +34,10 @@ double test_flat (void);
 double test_flat_pdf (double x);
 double test_gamma (void);
 double test_gamma_pdf (double x);
+double test_gamma_int (void);
+double test_gamma_int_pdf (double x);
+double test_gamma_large (void);
+double test_gamma_large_pdf (double x);
 double test_gaussian (void);
 double test_gaussian_pdf (double x);
 double test_geometric (void);
@@ -40,10 +46,14 @@ double test_logistic (void);
 double test_logistic_pdf (double x);
 double test_lognormal (void);
 double test_lognormal_pdf (double x);
+double test_negative_binomial (void);
+double test_negative_binomial_pdf (unsigned int n);
 double test_pareto (void);
 double test_pareto_pdf (double x);
 double test_poisson (void);
 double test_poisson_pdf (unsigned int x);
+double test_poisson_large (void);
+double test_poisson_large_pdf (unsigned int x);
 double test_tdist (void);
 double test_tdist_pdf (double x);
 double test_two_sided_exp (void);
@@ -74,6 +84,8 @@ main (void)
   test_pdf (FUNC2(test_fdist));
   test_pdf (FUNC2(test_flat));
   test_pdf (FUNC2(test_gamma));
+  test_pdf (FUNC2(test_gamma_int));
+  test_pdf (FUNC2(test_gamma_large));
   test_pdf (FUNC2(test_gaussian));
   test_pdf (FUNC2(test_logistic));
   test_pdf (FUNC2(test_lognormal));
@@ -83,10 +95,13 @@ main (void)
   test_pdf (FUNC2(test_weibull));
 
   test_discrete_pdf (FUNC2(test_poisson));
+  test_discrete_pdf (FUNC2(test_poisson_large));
   test_discrete_pdf (FUNC2(test_binomial));
+  test_discrete_pdf (FUNC2(test_binomial_large));
   test_discrete_pdf (FUNC2(test_geometric));
+  test_discrete_pdf (FUNC2(test_negative_binomial));
 
-  return 0;
+  return gsl_test_summary();
 }
 
 void
@@ -199,8 +214,8 @@ test_discrete_pdf (double (*f) (void), double (*pdf)(unsigned int), const char *
       double d = fabs(count[i] - N*p[i]) ;
       if (p[i] != 0)
 	{
-	  d = d / sqrt(N*p[i]) ;
-	  status_i = (d > 5) ;
+	  double s = d/sqrt(N*p[i]) ;
+	  status_i = (s > 5) && (d > 1);
 	}
       else
 	{
@@ -234,13 +249,25 @@ test_beta_pdf (double x)
 double
 test_binomial (void)
 {
-  return gsl_ran_binomial (r_global, 0.3, 20);
+  return gsl_ran_binomial (r_global, 0.3, 5);
 }
 
 double
 test_binomial_pdf (unsigned int n)
 {
-  return gsl_ran_binomial_pdf (n, 0.3, 20);
+  return gsl_ran_binomial_pdf (n, 0.3, 5);
+}
+
+double
+test_binomial_large (void)
+{
+  return gsl_ran_binomial (r_global, 0.3, 55);
+}
+
+double
+test_binomial_large_pdf (unsigned int n)
+{
+  return gsl_ran_binomial_pdf (n, 0.3, 55);
 }
 
 double
@@ -328,6 +355,32 @@ test_gamma_pdf (double x)
 }
 
 double
+test_gamma_int (void)
+{
+  return gsl_ran_gamma (r_global, 10.0);
+}
+
+double
+test_gamma_int_pdf (double x)
+{
+  return gsl_ran_gamma_pdf (x, 10.0);
+}
+
+
+double
+test_gamma_large (void)
+{
+  return gsl_ran_gamma (r_global, 20.0);
+}
+
+double
+test_gamma_large_pdf (double x)
+{
+  return gsl_ran_gamma_pdf (x, 20.0);
+}
+
+
+double
 test_gaussian (void)
 {
   return gsl_ran_gaussian (r_global);
@@ -376,6 +429,18 @@ test_lognormal_pdf (double x)
 }
 
 double
+test_negative_binomial (void)
+{
+  return gsl_ran_negative_binomial (r_global, 0.3, 20.0);
+}
+
+double
+test_negative_binomial_pdf (unsigned int n)
+{
+  return gsl_ran_negative_binomial_pdf (n, 0.3, 20.0);
+}
+
+double
 test_pareto (void)
 {
   return gsl_ran_pareto (r_global, 2.75);
@@ -390,14 +455,27 @@ test_pareto_pdf (double x)
 double
 test_poisson (void)
 {
-  return gsl_ran_poisson (r_global, 2.0);
+  return gsl_ran_poisson (r_global, 5.0);
 }
 
 double
 test_poisson_pdf (unsigned int n)
 {
-  return gsl_ran_poisson_pdf (n, 2.0);
+  return gsl_ran_poisson_pdf (n, 5.0);
 }
+
+double
+test_poisson_large (void)
+{
+  return gsl_ran_poisson (r_global, 20.0);
+}
+
+double
+test_poisson_large_pdf (unsigned int n)
+{
+  return gsl_ran_poisson_pdf (n, 20.0);
+}
+
 
 double
 test_tdist (void)

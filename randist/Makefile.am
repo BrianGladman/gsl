@@ -1,8 +1,9 @@
 lib_LIBRARIES = libgslrandist.a
 libgslrandist_a_SOURCES = \
-        beta.c binomial.c cauchy.c chisq.c erlang.c \
+        beta.c bernoulli.c binomial.c cauchy.c chisq.c erlang.c \
         exponential.c fdist.c flat.c \
 	gamma.c gauss.c geometric.c logistic.c lognormal.c \
+	nbinomial.c \
 	pareto.c poisson.c shuffle.c sphere.c tdist.c twosidedexp.c weibull.c
 
 include_HEADERS= gsl_randist.h
