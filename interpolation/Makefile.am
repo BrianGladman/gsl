@@ -1,4 +1,4 @@
-pkglib_LIBRARIES = libgslinterpolation.a 
+noinst_LTLIBRARIES = libgslinterpolation.la 
 
 check_PROGRAMS = test
 
@@ -13,18 +13,18 @@ INCLUDES= -I$(top_builddir)
 
 TESTS = test
 
-test_LDADD = libgslinterpolation.a 	\
-	../linalg/libgsllinalg.a 	\
-	../vector/libgslvector.a	\
-	../block/libgslblock.a		\
-	../err/libgslerr.a 		\
-	../err/libgsltest.a 		\
-	../utils/libutils.a
+test_LDADD = libgslinterpolation.la 	\
+	../linalg/libgsllinalg.la 	\
+	../vector/libgslvector.la	\
+	../block/libgslblock.la		\
+	../err/libgslerr.la 		\
+	../err/libgsltest.la 		\
+	../utils/libutils.la
 
-test_DEPENDENCIES = libgslinterpolation.a
+test_DEPENDENCIES = libgslinterpolation.la
 test_SOURCES = test.c
 
-libgslinterpolation_a_SOURCES = 	\
+libgslinterpolation_la_SOURCES = 	\
 	accel.c				\
 	akima.c				\
 	bsearch.c			\

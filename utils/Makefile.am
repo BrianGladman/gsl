@@ -1,8 +1,8 @@
-pkglib_LIBRARIES = libutils.a
+noinst_LTLIBRARIES = libutils.la
 
 # Don't need to list alloca.c, etc., Automake includes them.
-libutils_a_SOURCES = system.h placeholder.c
-libutils_a_LIBADD = @LIBOBJS@ 
-libutils_a_DEPENDENCIES = $(libutils_a_LIBADD)
+libutils_la_SOURCES = system.h placeholder.c
+libutils_la_LIBADD = @LIBOBJS@ 
+libutils_la_DEPENDENCIES = $(libutils_la_LIBADD)
 
 EXTRA_DIST = README

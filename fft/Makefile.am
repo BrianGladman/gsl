@@ -1,10 +1,10 @@
-pkglib_LIBRARIES = libgslfft.a 
+noinst_LTLIBRARIES = libgslfft.la 
 
 pkginclude_HEADERS = gsl_fft.h gsl_fft_complex.h gsl_fft_halfcomplex.h gsl_fft_real.h gsl_dft_complex.h gsl_dft_complex_float.h gsl_fft_complex_float.h gsl_fft_halfcomplex_float.h gsl_fft_real_float.h
 
 INCLUDES= -I$(top_builddir) -I$(top_srcdir)
 
-libgslfft_a_SOURCES =  dft.c \
+libgslfft_la_SOURCES =  dft.c \
 gsl_dft_complex.h gsl_dft_complex_float.h \
 gsl_fft.h \
 gsl_fft_complex.h gsl_fft_complex_float.h \
@@ -28,8 +28,8 @@ TESTS = test
 check_PROGRAMS = test
 
 test_SOURCES = test.c signals.c
-test_DEPENDENCIES = libgslfft.a
-test_LDADD = libgslfft.a ../err/libgslerr.a ../err/libgsltest.a ../utils/libutils.a
+test_DEPENDENCIES = libgslfft.la
+test_LDADD = libgslfft.la ../err/libgslerr.la ../err/libgsltest.la ../utils/libutils.la
 
-#errs_LDADD = libgslfft.a ../err/libgslerr.a ../err/libgsltest.a
-#benchmark_LDADD = libgslfft.a ../err/libgslerr.a ../err/libgsltest.a
+#errs_LDADD = libgslfft.la ../err/libgslerr.la ../err/libgsltest.la
+#benchmark_LDADD = libgslfft.la ../err/libgslerr.la ../err/libgsltest.la

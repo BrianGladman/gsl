@@ -1,4 +1,4 @@
-pkglib_LIBRARIES = libgslblock.a 
+noinst_LTLIBRARIES = libgslblock.la 
 
 check_PROGRAMS = test
 
@@ -24,9 +24,9 @@ INCLUDES= -I$(top_builddir) -I$(top_srcdir)
 
 TESTS = test
 
-test_LDADD = libgslblock.a ../err/libgslerr.a ../err/libgsltest.a ../utils/libutils.a
+test_LDADD = libgslblock.la ../err/libgslerr.la ../err/libgsltest.la ../utils/libutils.la
 
-test_DEPENDENCIES = libgslblock.a
+test_DEPENDENCIES = libgslblock.la
 
 test_SOURCES = test.c
 
@@ -35,4 +35,4 @@ CLEANFILES = test.txt test.dat
 noinst_HEADERS = block_source.c init_source.c fprintf_source.c fwrite_source.c \
 	test_complex_source.c test_source.c test_io.c test_complex_io.c
 
-libgslblock_a_SOURCES = init.c file.c block.c
+libgslblock_la_SOURCES = init.c file.c block.c

@@ -1,4 +1,4 @@
-pkglib_LIBRARIES = libgslsum.a 
+noinst_LTLIBRARIES = libgslsum.la 
 
 check_PROGRAMS = test
 
@@ -9,11 +9,11 @@ INCLUDES= -I$(top_builddir)
 
 TESTS = test
 
-test_LDADD = libgslsum.a ../ieee-utils/libgslieeeutils.a ../sys/libgslsys.a ../err/libgslerr.a ../err/libgsltest.a ../utils/libutils.a
-test_DEPENDENCIES = libgslsum.a
+test_LDADD = libgslsum.la ../ieee-utils/libgslieeeutils.la ../sys/libgslsys.la ../err/libgslerr.la ../err/libgsltest.la ../utils/libutils.la
+test_DEPENDENCIES = libgslsum.la
 test_SOURCES = test.c
 
-libgslsum_a_SOURCES = 	\
+libgslsum_la_SOURCES = 	\
 	levin_u.c levin_uerr.c
 
 strict:

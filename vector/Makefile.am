@@ -1,4 +1,4 @@
-pkglib_LIBRARIES = libgslvector.a 
+noinst_LTLIBRARIES = libgslvector.la 
 
 check_PROGRAMS = test test_static
 
@@ -24,11 +24,11 @@ INCLUDES= -I$(top_builddir) -I$(top_srcdir)
 
 TESTS = test test_static
 
-test_LDADD = libgslvector.a ../block/libgslblock.a ../err/libgslerr.a ../err/libgsltest.a ../utils/libutils.a
-test_static_LDADD = libgslvector.a ../block/libgslblock.a ../err/libgslerr.a ../err/libgsltest.a ../utils/libutils.a
+test_LDADD = libgslvector.la ../block/libgslblock.la ../err/libgslerr.la ../err/libgsltest.la ../utils/libutils.la
+test_static_LDADD = libgslvector.la ../block/libgslblock.la ../err/libgslerr.la ../err/libgsltest.la ../utils/libutils.la
 
-test_DEPENDENCIES = libgslvector.a
-test_static_DEPENDENCIES = libgslvector.a
+test_DEPENDENCIES = libgslvector.la
+test_static_DEPENDENCIES = libgslvector.la
 
 test_SOURCES = test.c
 test_static_SOURCES = test_static.c
@@ -39,4 +39,4 @@ noinst_HEADERS = vector_source.c init_source.c file_source.c copy_source.c \
 	swap_source.c prop_source.c \
         test_complex_source.c test_source.c test_io.c test_complex_io.c
 
-libgslvector_a_SOURCES = init.c file.c vector.c copy.c swap.c prop.c
+libgslvector_la_SOURCES = init.c file.c vector.c copy.c swap.c prop.c

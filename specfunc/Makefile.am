@@ -1,4 +1,4 @@
-pkglib_LIBRARIES = libgslspecfunc.a 
+noinst_LTLIBRARIES = libgslspecfunc.la 
 
 check_PROGRAMS = test_sf
 
@@ -49,13 +49,13 @@ INCLUDES= -I$(top_builddir)
 
 TESTS = test_sf
 
-test_sf_LDADD = libgslspecfunc.a \
-	../ieee-utils/libgslieeeutils.a \
-	../sys/libgslsys.a \
-	../err/libgslerr.a \
-	../err/libgsltest.a \
-        ../utils/libutils.a
-test_sf_DEPENDENCIES = libgslspecfunc.a
+test_sf_LDADD = libgslspecfunc.la \
+	../ieee-utils/libgslieeeutils.la \
+	../sys/libgslsys.la \
+	../err/libgslerr.la \
+	../err/libgsltest.la \
+        ../utils/libutils.la
+test_sf_DEPENDENCIES = libgslspecfunc.la
 test_sf_SOURCES = test_sf.c		\
 		  test_sf.h		\
 		  test_airy.c		\
@@ -67,7 +67,7 @@ test_sf_SOURCES = test_sf.c		\
 		  test_legendre.c
 
 
-libgslspecfunc_a_SOURCES = 	\
+libgslspecfunc_la_SOURCES = 	\
 	airy.c			\
 	airy_der.c		\
 	airy_zero.c		\

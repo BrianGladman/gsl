@@ -1,4 +1,4 @@
-pkglib_LIBRARIES = libgsleigen.a 
+noinst_LTLIBRARIES = libgsleigen.la 
 
 check_PROGRAMS = test
 
@@ -11,17 +11,17 @@ INCLUDES= -I$(top_builddir)
 
 TESTS = test
 
-test_LDADD = libgsleigen.a 		\
-	../sys/libgslsys.a		\
-	../err/libgsltest.a		\
-	../linalg/libgsllinalg.a        \
-	../matrix/libgslmatrix.a	\
-	../vector/libgslvector.a	\
-	../block/libgslblock.a	        \
- 	../err/libgslerr.a              \
-        ../utils/libutils.a
+test_LDADD = libgsleigen.la 		\
+	../sys/libgslsys.la		\
+	../err/libgsltest.la		\
+	../linalg/libgsllinalg.la        \
+	../matrix/libgslmatrix.la	\
+	../vector/libgslvector.la	\
+	../block/libgslblock.la	        \
+ 	../err/libgslerr.la              \
+        ../utils/libutils.la
 
-test_DEPENDENCIES = libgsleigen.a
+test_DEPENDENCIES = libgsleigen.la
 test_SOURCES = test.c
 
-libgsleigen_a_SOURCES = eigen_sort.c jacobi.c
+libgsleigen_la_SOURCES = eigen_sort.c jacobi.c

@@ -1,7 +1,5 @@
-pkglib_LIBRARIES = 			\
-	libgslblas.a 			\
-	libgslblasnative.a		\
-	libgslblascblas.a
+noinst_LTLIBRARIES = libgslblas.la
+lib_LTLIBRARIES = libgslblasnative.la libgslblascblas.la
 
 check_PROGRAMS = test_blas_raw
 
@@ -72,17 +70,17 @@ INCLUDES= -I$(top_builddir) -I$(top_srcdir)
 
 TESTS = test_blas_raw
 
-test_blas_raw_LDADD = libgslblasnative.a ../err/libgslerr.a ../err/libgsltest.a ../sys/libgslsys.a
+test_blas_raw_LDADD = libgslblasnative.la ../err/libgslerr.la ../err/libgsltest.la ../sys/libgslsys.la
 test_blas_raw_SOURCES = test_blas_raw.c test_cases.c test_cases.h
 
-libgslblas_a_SOURCES = 		\
+libgslblas_la_SOURCES = 		\
 	blas.c
 
-libgslblasnative_a_SOURCES = 	\
+libgslblasnative_la_SOURCES = 	\
 	blas_raw_native.c	\
 	blas_raw_native_cm.c
 
-libgslblascblas_a_SOURCES =	\
+libgslblascblas_la_SOURCES =	\
 	blas_raw_cblas.c	\
 	blas_raw_cblas_cm.c
 

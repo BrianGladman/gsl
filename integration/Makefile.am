@@ -1,8 +1,8 @@
-pkglib_LIBRARIES = libgslintegration.a
+noinst_LTLIBRARIES = libgslintegration.la
 
 INCLUDES= -I$(top_builddir)
 
-libgslintegration_a_SOURCES = \
+libgslintegration_la_SOURCES = \
 	qk15.c qk21.c qk31.c qk41.c qk51.c qk61.c \
 	qk.c \
 	qng.c qng.h \
@@ -23,4 +23,4 @@ TESTS = test
 check_PROGRAMS = test
 
 test_SOURCES = test.c tests.c tests.h
-test_LDADD = libgslintegration.a ../ieee-utils/libgslieeeutils.a ../err/libgslerr.a ../err/libgsltest.a ../sys/libgslsys.a ../utils/libutils.a
+test_LDADD = libgslintegration.la ../ieee-utils/libgslieeeutils.la ../err/libgslerr.la ../err/libgsltest.la ../sys/libgslsys.la ../utils/libutils.la

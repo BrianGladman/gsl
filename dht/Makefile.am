@@ -1,4 +1,4 @@
-pkglib_LIBRARIES = libgsldht.a 
+noinst_LTLIBRARIES = libgsldht.la 
 
 check_PROGRAMS = test_dht
 
@@ -9,17 +9,17 @@ INCLUDES= -I$(top_builddir)
 
 TESTS = test_dht
 
-test_dht_LDADD = libgsldht.a		\
-		../specfunc/libgslspecfunc.a	\
-		../sys/libgslsys.a 	\
-		../err/libgslerr.a	\
-		../err/libgsltest.a     \
-                ../utils/libutils.a
+test_dht_LDADD = libgsldht.la		\
+		../specfunc/libgslspecfunc.la	\
+		../sys/libgslsys.la 	\
+		../err/libgslerr.la	\
+		../err/libgsltest.la     \
+                ../utils/libutils.la
 
-test_dht_DEPENDENCIES = libgsldht.a
+test_dht_DEPENDENCIES = libgsldht.la
 test_dht_SOURCES = test_dht.c
 
-libgsldht_a_SOURCES = 	\
+libgsldht_la_SOURCES = 	\
 		dht_transform.c
 
 

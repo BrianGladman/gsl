@@ -1,8 +1,8 @@
 TODO  -- see also individual TODO files in each directory
 
-* Add GPL copyright notices for each file
+* Check that there are no conflicts when linking with Lapack
 
-* Should doc/mdate-sh be in CVS? Automake needs it unless you supply --missing
+* Add GPL copyright notices for each file
 
 * Make a sorted datatype for the median and quantile functions so that
 the user can be prevented from passing unsorted data, which is not
@@ -10,16 +10,10 @@ checked for.
 
 * Add a vector layer to statistics and ffts, sometime in the future.
 
-* Switch to libtool and --disable-shared (even though it is still
-slower) and build a single libgsl. Unfortunately this causes problems
-with tests and bin programs, so it may need a reorganization -- the
-whole libgsl has to be built first, but they are built on a per
-directory basis. Switch to libtool library interface versioning
-(eventually).
+* Switch to libtool library interface versioning (eventually).
 
-* Add support for C++ (Use #ifdef __cplusplus extern "C" { #pragma }
-#endif ... #ifdef __cplusplus #pragma { } #endif as in GLIB. See also
-the libtool manual).
+* Add support for C++ headers (Use __BEGIN_DECLS __END_DECLS as
+in the Libtool Manual).
 
 * Eliminate use of volatile where it has been used to force rounding
 (integration/). It is better to write the code to avoid dependence on

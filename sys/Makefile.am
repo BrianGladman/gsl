@@ -1,9 +1,9 @@
-pkglib_LIBRARIES = libgslsys.a 
+noinst_LTLIBRARIES = libgslsys.la 
 
-libgslsys_a_SOURCES = minmax.c prec.c
+libgslsys_la_SOURCES = minmax.c prec.c
 
 INCLUDES = -I$(top_builddir)
 
 #check_PROGRAMS = test_errnos
 #TESTS = test_errnos
-#test_errnos_LDADD = libgslerr.a libgsltest.a ../utils/libutils.a
+#test_errnos_LDADD = libgslerr.la libgsltest.la ../utils/libutils.la

@@ -1,6 +1,6 @@
 ## Process this file with automake to produce Makefile.in
 
-pkglib_LIBRARIES = libgslstatistics.a
+noinst_LTLIBRARIES = libgslstatistics.la
 pkginclude_HEADERS = gsl_statistics.h \
  gsl_statistics_char.h gsl_statistics_double.h gsl_statistics_float.h \
  gsl_statistics_int.h gsl_statistics_long.h gsl_statistics_long_double.h \
@@ -9,7 +9,7 @@ pkginclude_HEADERS = gsl_statistics.h \
 
 INCLUDES= -I$(top_builddir) -I$(top_srcdir)
 
-libgslstatistics_a_SOURCES =  mean.c variance.c absdev.c skew.c \
+libgslstatistics_la_SOURCES =  mean.c variance.c absdev.c skew.c \
  kurtosis.c lag1.c p_variance.c minmax.c ttest.c median.c \
  quantiles.c wmean.c wvariance.c wabsdev.c wskew.c wkurtosis.c
 
@@ -24,10 +24,10 @@ check_PROGRAMS = test test_nist
 TESTS = test test_nist
 
 test_SOURCES = test.c
-test_LDADD = libgslstatistics.a ../sort/libgslsort.a ../err/libgsltest.a ../utils/libutils.a
-test_DEPENDENCIES = libgslstatistics.a
+test_LDADD = libgslstatistics.la ../sort/libgslsort.la ../err/libgsltest.la ../utils/libutils.la
+test_DEPENDENCIES = libgslstatistics.la
 
 test_nist_SOURCES = test_nist.c
-test_nist_LDADD = libgslstatistics.a ../err/libgsltest.a ../utils/libutils.a
-test_nist_DEPENDENCIES = libgslstatistics.a
+test_nist_LDADD = libgslstatistics.la ../err/libgsltest.la ../utils/libutils.la
+test_nist_DEPENDENCIES = libgslstatistics.la
 

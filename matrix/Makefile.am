@@ -1,4 +1,4 @@
-pkglib_LIBRARIES = libgslmatrix.a 
+noinst_LTLIBRARIES = libgslmatrix.la 
 
 check_PROGRAMS = test test_static
 
@@ -23,13 +23,13 @@ INCLUDES= -I$(top_builddir) -I$(top_srcdir)
 
 TESTS = test test_static 
 
-test_LDADD = libgslmatrix.a ../vector/libgslvector.a ../block/libgslblock.a ../err/libgslerr.a ../err/libgsltest.a ../utils/libutils.a
-test_static_LDADD = libgslmatrix.a ../vector/libgslvector.a ../block/libgslblock.a ../err/libgslerr.a ../err/libgsltest.a ../utils/libutils.a
+test_LDADD = libgslmatrix.la ../vector/libgslvector.la ../block/libgslblock.la ../err/libgslerr.la ../err/libgsltest.la ../utils/libutils.la
+test_static_LDADD = libgslmatrix.la ../vector/libgslvector.la ../block/libgslblock.la ../err/libgslerr.la ../err/libgsltest.la ../utils/libutils.la
 
-test_DEPENDENCIES = libgslmatrix.a
+test_DEPENDENCIES = libgslmatrix.la
 test_SOURCES = test.c
 
-test_static_DEPENDENCIES = libgslmatrix.a
+test_static_DEPENDENCIES = libgslmatrix.la
 test_static_SOURCES = test_static.c
 
 CLEANFILES = test.txt test.dat
@@ -37,6 +37,6 @@ CLEANFILES = test.txt test.dat
 noinst_HEADERS = matrix_source.c init_source.c file_source.c rowcol_source.c \
 	swap_source.c copy_source.c test_complex_source.c test_source.c
 
-libgslmatrix_a_SOURCES = init.c matrix.c file.c rowcol.c swap.c copy.c
+libgslmatrix_la_SOURCES = init.c matrix.c file.c rowcol.c swap.c copy.c
 
 

@@ -1,4 +1,4 @@
-pkglib_LIBRARIES = libgsllinalg.a 
+noinst_LTLIBRARIES = libgsllinalg.la 
 
 check_PROGRAMS = test_la
 
@@ -10,12 +10,12 @@ INCLUDES= -I$(top_builddir)
 
 TESTS = test_la
 
-test_la_LDADD = libgsllinalg.a ../sys/libgslsys.a ../err/libgsltest.a ../matrix/libgslmatrix.a ../vector/libgslvector.a ../permutation/libgslpermutation.a ../block/libgslblock.a ../err/libgslerr.a ../utils/libutils.a
+test_la_LDADD = libgsllinalg.la ../sys/libgslsys.la ../err/libgsltest.la ../matrix/libgslmatrix.la ../vector/libgslvector.la ../permutation/libgslpermutation.la ../block/libgslblock.la ../err/libgslerr.la ../utils/libutils.la
 
-test_la_DEPENDENCIES = libgsllinalg.a
+test_la_DEPENDENCIES = libgsllinalg.la
 test_la_SOURCES = test_la.c
 
-libgsllinalg_a_SOURCES = multiply.c tridiag.c tridiag.h lu.c hh.c qr.c qrpt.c svd.c
+libgsllinalg_la_SOURCES = multiply.c tridiag.c tridiag.h lu.c hh.c qr.c qrpt.c svd.c
 
 noinst_HEADERS = norm.c permut.c givens.c
 

@@ -10,9 +10,10 @@ if ($switch eq 'on') {
     print "switching libtool on...\n" ;
     while (<>) {
         s/pkglib_pkglib/pkglib/g ;
-	s/^pkglib_LIBRARIES/pkglib_LTLIBRARIES/g ;
+	#s/^pkglib_LIBRARIES/pkglib_LTLIBRARIES/g ;
+	s/^pkglib_LIBRARIES/noinst_LTLIBRARIES/g ;
 	s/^\#?\s*libgsl_a_LIBADD/libgsl_la_LIBADD/g ;
-	s/^\#?\s*lib_LTLIBRARIES/lib_LTLIBRARIES/g ;
+	s/^\#?\s*lib_LTLIBRARIES = libgsl.la/lib_LTLIBRARIES = libgsl.la/g ;
 	s/^\#?\s*libgsl_a_SOURCES/libgsl_la_SOURCES/g ;
 	s/lib(\w+)\.a/lib$1.la/g ;
 	s/lib(\w+)_a/lib$1_la/g ;
@@ -27,8 +28,10 @@ if ($switch eq 'on') {
     print "switching libtool off...\n" ;
     while (<>) {
         s/^(pkglib_LTLIBRARIES = libgsl.la)/\# \1/;
+        s/^(lib_LTLIBRARIES = libgsl.la)/\# \1/;
 	s/^pkglib_LTLIBRARIES/pkglib_LIBRARIES/g ;
-	s/^lib_LTLIBRARIES/\# lib_LTLIBRARIES/g ;
+	s/^noinst_LTLIBRARIES/pkglib_LIBRARIES/g ;
+	s/^lib_LTLIBRARIES = libgsl.la/\# lib_LTLIBRARIES = libgsl.la/g ;
 	s/^libgsl_la_SOURCES/\# libgsl_a_SOURCES/g ;
 	s/libgsl_la_LIBADD/\# libgsl_a_LIBADD/g ;
 	s/lib(\w+)\.la/lib$1.a/g ;

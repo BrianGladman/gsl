@@ -1,8 +1,8 @@
-pkglib_LIBRARIES = libgslieeeutils.a 
+noinst_LTLIBRARIES = libgslieeeutils.la 
 
 pkginclude_HEADERS = gsl_ieee_utils.h
 
-libgslieeeutils_a_SOURCES =  print.c \
+libgslieeeutils_la_SOURCES =  print.c \
 	make_rep.c gsl_ieee_utils.h \
 	env.c fp.c read.c
 
@@ -13,5 +13,5 @@ INCLUDES= -I$(top_builddir)
 
 TESTS = test
 check_PROGRAMS = test
-test_LDADD = libgslieeeutils.a ../err/libgslerr.a ../err/libgsltest.a ../utils/libutils.a
+test_LDADD = libgslieeeutils.la ../err/libgslerr.la ../err/libgsltest.la ../utils/libutils.la
 test_SOURCES = test.c

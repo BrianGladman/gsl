@@ -1,4 +1,4 @@
-pkglib_LIBRARIES = libgslodeiv.a 
+noinst_LTLIBRARIES = libgslodeiv.la 
 
 check_PROGRAMS = test_odeiv
 
@@ -11,20 +11,20 @@ INCLUDES= -I$(top_builddir)
 
 TESTS = test_odeiv
 
-test_odeiv_LDADD = libgslodeiv.a \
-	../ieee-utils/libgslieeeutils.a \
-	../sys/libgslsys.a \
-	../err/libgslerr.a \
-	../err/libgsltest.a \
-	../linalg/libgsllinalg.a \
-	../matrix/libgslmatrix.a \
-	../vector/libgslvector.a \
-	../block/libgslblock.a \
-        ../utils/libutils.a
-test_odeiv_DEPENDENCIES = libgslodeiv.a
+test_odeiv_LDADD = libgslodeiv.la \
+	../ieee-utils/libgslieeeutils.la \
+	../sys/libgslsys.la \
+	../err/libgslerr.la \
+	../err/libgsltest.la \
+	../linalg/libgsllinalg.la \
+	../matrix/libgslmatrix.la \
+	../vector/libgslvector.la \
+	../block/libgslblock.la \
+        ../utils/libutils.la
+test_odeiv_DEPENDENCIES = libgslodeiv.la
 test_odeiv_SOURCES = test_odeiv.c
 
-libgslodeiv_a_SOURCES = \
+libgslodeiv_la_SOURCES = \
 	control.c	\
 	evolve.c	\
 	monitor.c	\
