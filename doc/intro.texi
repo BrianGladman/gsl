@@ -2,14 +2,10 @@
 @cindex GNU General Public License
 The GNU Scientific Library (GSL) is a collection of routines for
 numerical computing.  The routines have been written from scratch in C,
-and are meant to present a modern Applications Programming Interface
-(API) for C programmers, while allowing wrappers to be written for very
+and present a modern Applications Programming Interface
+(API) for C programmers, allowing wrappers to be written for very
 high level languages.  The source code is distributed under the GNU
 General Public License.
-
-@comment GSL is currently in beta-test release, for people who want to test the
-@comment library itself. When the library is complete and fully tested it will be
-@comment announced for general use.
 
 @menu
 * Routines available in GSL::   
