@@ -550,22 +550,6 @@ gsl_sf_dilog_e(const double x, gsl_sf_result * result)
 
 
 int
-gsl_sf_complex_dilog_e(
-  double r,
-  double theta,
-  gsl_sf_result * real_dl,
-  gsl_sf_result * imag_dl
-  )
-{
-  const double cos_theta = cos(theta);
-  const double sin_theta = sin(theta);
-  const double x = r * cos_theta;
-  const double y = r * sin_theta;
-  return gsl_sf_complex_dilog_xy_e(x, y, real_dl, imag_dl);
-}
-
-
-int
 gsl_sf_complex_dilog_xy_e(
   double x,
   double y,
@@ -638,58 +622,32 @@ gsl_sf_complex_dilog_xy_e(
 
 
 int
-gsl_sf_complex_spence_e(
-  const double A,
-  const double omega,
+gsl_sf_complex_dilog_e(
+  double r,
+  double theta,
+  gsl_sf_result * real_dl,
+  gsl_sf_result * imag_dl
+  )
+{
+  const double cos_theta = cos(theta);
+  const double sin_theta = sin(theta);
+  const double x = r * cos_theta;
+  const double y = r * sin_theta;
+  return gsl_sf_complex_dilog_xy_e(x, y, real_dl, imag_dl);
+}
+
+
+int
+gsl_sf_complex_spence_xy_e(
+  const double x,
+  const double y,
   gsl_sf_result * real_sp,
   gsl_sf_result * imag_sp
   )
 {
-  /* s = A exp(i omega) is the input
-   *
-   * oms = 1 - s
-   *
-   * spence(s) = Li_2(1-s)
-   */
-  const double cos_omega = cos(omega);
-  const double sin_omega = sin(omega);
-  const double s_x = A * cos_omega;
-  const double s_y = A * sin_omega;
-  const double oms_x = 1.0 - s_x;
-  const double oms_y =     - s_y;
-  const int stat_dl = gsl_sf_complex_dilog_xy_e(oms_x, oms_y, real_sp, imag_sp);
-
-/*
-  const double ntp = floor(fabs(omega)/(2.0*M_PI));
-  const double sgn = ( omega < 0.0 ? -1.0 : 1.0 );
-  imag_sp->val += sgn * 2.0*M_PI*ntp;
-  imag_sp->err *= ntp + 1.0;
-*/
-
-/*
-  first McElwaine code
-  const double ntp = floor((omega+M_PI)/(2.0*M_PI));
-  imag_sp->val -= 2.0*M_PI*ntp*log(1+A);
-  imag_sp->err *= fabs(ntp) + 1.0;
-*/
-
-
-  /* second McElwaine code   |z| < 1... ???? */
-  /*
-  const double ntp  = floor((omega+M_PI)/(2.0*M_PI));
-  imag_sp->val -= M_PI*ntp*log(oms_x*oms_x+s_y*s_y);
-  real_sp->val += 2*M_PI*ntp*atan2(oms_y,oms_x);
-  imag_sp->err *= fabs(ntp) + 1.0;
-  */
-
-  /* second McElwaine code   |z| > 1... ???? */
-  const double ntp  = floor((omega+M_PI)/(2.0*M_PI));
-  const double kk   = floor(omega/(2.0*M_PI));
-  imag_sp->val -= M_PI*ntp*log(oms_x*oms_x+s_y*s_y);
-  real_sp->val += 2*M_PI*(ntp*atan2(oms_y,oms_x) + M_PI*kk*(kk+1));
-  imag_sp->err *= fabs(ntp) + 1.0;
-
-  return stat_dl;
+  const double oms_x = 1.0 - x;
+  const double oms_y =     - y;
+  return gsl_sf_complex_dilog_xy_e(oms_x, oms_y, real_sp, imag_sp);
 }
 
 
@@ -702,4 +660,3 @@ double gsl_sf_dilog(const double x)
 {
   EVAL_RESULT(gsl_sf_dilog_e(x, &result));
 }
-

@@ -1,6 +1,6 @@
 /* specfunc/test_dilog.c
  * 
- * Copyright (C) 1996, 1997, 1998, 1999, 2000 Gerard Jungman
+ * Copyright (C) 1996, 1997, 1998, 1999, 2000, 2004 Gerard Jungman
  * 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -177,7 +177,7 @@ int test_dilog(void)
              GSL_SUCCESS);
 
 
-  /** Tests brought up by Jim McElwaine bug report. */
+  /** tests brought up by Jim McElwaine bug report */
 
   TEST_SF_2(s, gsl_sf_complex_dilog_e, (1.1, -M_PI/2.0, &r1, &r2),
             -0.24099184177382733037, TEST_TOL1,
@@ -190,16 +190,6 @@ int test_dilog(void)
              GSL_SUCCESS);
 
   TEST_SF_2(s, gsl_sf_complex_dilog_e, (1.1, -3.0*M_PI/2.0, &r1, &r2),
-            -0.24099184177382733037, TEST_TOL1,
-             0.99309132538137822631, TEST_TOL1,
-             GSL_SUCCESS);
-
-  TEST_SF_2(s, gsl_sf_complex_dilog_e, (1.1, 2.0*M_PI + 3.0*M_PI/2.0, &r1, &r2),
-            -0.24099184177382733037, TEST_TOL1,
-            -0.99309132538137822631, TEST_TOL1,
-             GSL_SUCCESS);
-
-  TEST_SF_2(s, gsl_sf_complex_dilog_e, (1.1, -2.0*M_PI - 3.0*M_PI/2.0, &r1, &r2),
             -0.24099184177382733037, TEST_TOL1,
              0.99309132538137822631, TEST_TOL1,
              GSL_SUCCESS);
@@ -245,6 +235,7 @@ int test_dilog(void)
             GSL_SUCCESS);
 
 
+  /* tests of the (x,y) function, which is now the underlying implementation */
 
   TEST_SF_2(s, gsl_sf_complex_dilog_xy_e, (0.0,  0.5, &r1, &r2),
             -0.05897507442156586346, TEST_TOL0,
@@ -264,13 +255,54 @@ int test_dilog(void)
   TEST_SF_2(s, gsl_sf_complex_dilog_xy_e, (0.91464073718617389108, -0.37885659804143889673, &r1, &r2),
             1.05715396488202447202, TEST_TOL1,
            -0.74691452546108513176, TEST_TOL1,
-             GSL_SUCCESS);
+            GSL_SUCCESS);
+
+  TEST_SF_2(s, gsl_sf_complex_dilog_xy_e, (-1.5, 0.0, &r1, &r2),
+           -1.1473806603755707541, TEST_TOL1,
+            0.0, TEST_TOL1,
+            GSL_SUCCESS);
+
+  TEST_SF_2(s, gsl_sf_complex_dilog_xy_e, (0.5, 0.0, &r1, &r2),
+            0.58224052646501250590, TEST_TOL1,
+            0.0, TEST_TOL1,
+            GSL_SUCCESS);
+
+  TEST_SF_2(s, gsl_sf_complex_dilog_xy_e, (1.5, 0.0, &r1, &r2),
+            2.3743952702724802007, TEST_TOL1,
+           -1.2738062049196005309, TEST_TOL1,
+            GSL_SUCCESS);
 
 
+  /* small set of spence tests, mostly to check the value on the cut */
 
-  TEST_SF_2(s, gsl_sf_complex_spence_e, (0.75, M_PI*0.125, &r1, &r2),
-            0.30250949083979250610, TEST_TOL1,
-           -0.33724658791102608334, TEST_TOL1,
+  TEST_SF_2(s, gsl_sf_complex_spence_xy_e, (1.5, 0.0, &r1, &r2),
+           -0.44841420692364620244, TEST_TOL1,
+            0.0, TEST_TOL1,
+            GSL_SUCCESS);
+
+  TEST_SF_2(s, gsl_sf_complex_spence_xy_e, (0.5, 0.0, &r1, &r2),
+            0.58224052646501250590, TEST_TOL1,
+            0.0, TEST_TOL1,
+            GSL_SUCCESS);
+
+  TEST_SF_2(s, gsl_sf_complex_spence_xy_e, (0.0, 0.0, &r1, &r2),
+            1.6449340668482264365, TEST_TOL1,
+            0.0, TEST_TOL1,
+            GSL_SUCCESS);
+
+  TEST_SF_2(s, gsl_sf_complex_spence_xy_e, (-0.5, 0.0, &r1, &r2),
+            2.3743952702724802007, TEST_TOL1,
+           -1.2738062049196005309, TEST_TOL1,
+            GSL_SUCCESS);
+
+  TEST_SF_2(s, gsl_sf_complex_spence_xy_e, (-0.5, 1.0/1024.0, &r1, &r2),
+            2.3723507455234125018, TEST_TOL1,
+           -1.2742581376517839070, TEST_TOL1,
+            GSL_SUCCESS);
+
+  TEST_SF_2(s, gsl_sf_complex_spence_xy_e, (-0.5, -1.0/1024.0, &r1, &r2),
+            2.3723507455234125018, TEST_TOL1,
+            1.2742581376517839070, TEST_TOL1,
             GSL_SUCCESS);
 
 
