@@ -1,5 +1,12 @@
 TODO 
 
+* Add support for C++ (Use #ifdef __cplusplus extern "C" { #pragma }
+#endif ... #ifdef __cplusplus #pragma { } #endif as in GLIB).
+
+* Eliminate use of volatile where it has been used to force rounding
+(integration/). It is better to write the code to avoid dependence on
+rounding.
+
 * Clean up the ordering of lines in the Makefile.am's so that they are
 all consistent. At the moment the lines are in any order. Also get rid
 of make strict targets, since it's better to define a shell alias to
@@ -9,16 +16,20 @@ do that.
 dimension and size2 is the number of columns in the matrix. This will
 probably find a lot of bugs in the matrix logic.
 
-* Make all internal functions static, and have all exported functions
-& variables prefixed with gsl_ or GSL_.
+* Debian Bug#52789: Write an ieee-utils/fp-m68klinux.c file to handle
+floating point on M68K linux. There is a file fp-sparclinux.c which
+shows how to define a gsl_ieee_set_mode function for a variant of
+Linux.
 
-Useful command for checking this: nm -A -g -P */*.a  | perl -a -n -e 'print if $F[1] !~ /gsl_/ && $F[2] ne "U"'
+* Make all internal functions static, and have all exported functions
+& variables prefixed with gsl_ or GSL_. Useful command for checking this: nm -A -g -P */*.a  | perl -a -n -e 'print if $F[1] !~ /gsl_/ && $F[2] ne "U"'
 
 * Make sure config.h is used consistently. This is especially relevant
 for HAVE_INLINE use in installed headers.
 
 * Allow the user to test which version they are using, so that a
-specific version can be required.
+specific version can be required. As in gtk, gsl_print_version(),
+gsl_check_version(int major, int minor, int micro)
  
 * Make the return value EINVAL vs EDOM consistent for invalid
 parameters. EDOM means a domain error (i.e. float or mathematically
@@ -36,14 +47,6 @@ constant pointers (const gsl_roots_fsolver_type * const
 gsl_roots_fsolver_brent)??
 
 * Upgrade to texinfo-4.0
-
-* There is a file ieee-utils/fp-sparclinux.c which shows how to define
-a gsl_ieee_set_mode function for a variant of Linux. If you would like
-to make and test a corresponding file for M68K Linux (fp-m68klinux.c)
-we can include the patch in GSL. (There are also corresponding
-HAVE_SPARCLINUX_IEEE_INTERFACE macros in config.h.in, configure.in and
-fp.c). Otherwise I will make a note to add a file like this for the
-next release (and to rename the current fp-linux.c to fp-i86linux.c).
 
 * More tests. We should (at least) have a test for every error
 condition. Write a perl script to check for error conditions that
