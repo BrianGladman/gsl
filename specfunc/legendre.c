@@ -180,6 +180,11 @@ int gsl_sf_legendre_sphPlm_impl(int l, int m, double x, double * result, double 
   }
 }
 
+int gsl_sf_legendre_Pnumu_recurs_impl(double nu_nup1, double mu, double x)
+{
+  
+}
+
 
 /*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
 
