@@ -50,8 +50,8 @@ TEXI2DVI = texi2dvi
 INFO_DEPS = gsl.info
 DVIS = gsl.dvi
 TEXINFOS = gsl.texi
-DIST_COMMON =  ChangeLog Makefile.am Makefile.in mdate-sh stamp-vti \
-texinfo.tex version.texi
+DIST_COMMON =  Makefile.am Makefile.in mdate-sh stamp-vti texinfo.tex \
+version.texi
 
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) \
