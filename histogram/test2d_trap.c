@@ -83,42 +83,42 @@ int main (void)
   h = gsl_histogram2d_calloc_uniform (N, M, 0.0, 1.0, 0.0, 1.0) ;
 
   status = gsl_histogram2d_accumulate (h, 1.0, 0.0, 10.0) ;
-  gsl_test(status != 1, "gsl_histogram2d_accumulate traps x at xmax") ;
+  gsl_test(status != GSL_EDOM, "gsl_histogram2d_accumulate traps x at xmax") ;
 
   status = gsl_histogram2d_accumulate (h, 2.0, 0.0, 100.0) ;
-  gsl_test(status != 1, "gsl_histogram2d_accumulate traps x above xmax") ;
+  gsl_test(status != GSL_EDOM, "gsl_histogram2d_accumulate traps x above xmax") ;
 
   status = gsl_histogram2d_accumulate (h, -1.0, 0.0, 1000.0) ;
-  gsl_test(status != -1, "gsl_histogram2d_accumulate traps x below xmin") ;
+  gsl_test(status != GSL_EDOM, "gsl_histogram2d_accumulate traps x below xmin") ;
 
   status = gsl_histogram2d_accumulate (h, 0.0, 1.0, 10.0) ;
-  gsl_test(status != 1, "gsl_histogram2d_accumulate traps y at ymax") ;
+  gsl_test(status != GSL_EDOM, "gsl_histogram2d_accumulate traps y at ymax") ;
 
   status = gsl_histogram2d_accumulate (h, 0.0, 2.0, 100.0) ;
-  gsl_test(status != 1, "gsl_histogram2d_accumulate traps y above ymax") ;
+  gsl_test(status != GSL_EDOM, "gsl_histogram2d_accumulate traps y above ymax") ;
 
   status = gsl_histogram2d_accumulate (h, 0.0, -1.0, 1000.0) ;
-  gsl_test(status != -1, "gsl_histogram2d_accumulate traps y below ymin") ;
+  gsl_test(status != GSL_EDOM, "gsl_histogram2d_accumulate traps y below ymin") ;
 
 
   status = gsl_histogram2d_increment (h, 1.0, 0.0) ;
-  gsl_test(status != 1, "gsl_histogram2d_increment traps x at xmax") ;
+  gsl_test(status != GSL_EDOM, "gsl_histogram2d_increment traps x at xmax") ;
 
   status = gsl_histogram2d_increment (h, 2.0, 0.0) ;
-  gsl_test(status != 1, "gsl_histogram2d_increment traps x above xmax") ;
+  gsl_test(status != GSL_EDOM, "gsl_histogram2d_increment traps x above xmax") ;
 
   status = gsl_histogram2d_increment (h, -1.0, 0.0) ;
-  gsl_test(status != -1, "gsl_histogram2d_increment traps x below xmin") ;
+  gsl_test(status != GSL_EDOM, "gsl_histogram2d_increment traps x below xmin") ;
 
 
   status = gsl_histogram2d_increment (h, 0.0, 1.0) ;
-  gsl_test(status != 1, "gsl_histogram2d_increment traps y at ymax") ;
+  gsl_test(status != GSL_EDOM, "gsl_histogram2d_increment traps y at ymax") ;
 
   status = gsl_histogram2d_increment (h, 0.0, 2.0) ;
-  gsl_test(status != 1, "gsl_histogram2d_increment traps y above ymax") ;
+  gsl_test(status != GSL_EDOM, "gsl_histogram2d_increment traps y above ymax") ;
 
   status = gsl_histogram2d_increment (h, 0.0, -1.0) ;
-  gsl_test(status != -1, "gsl_histogram2d_increment traps y below ymin") ;
+  gsl_test(status != GSL_EDOM, "gsl_histogram2d_increment traps y below ymin") ;
 
 
   result = gsl_histogram2d_get (h, N, 0) ;

@@ -19,7 +19,7 @@ gsl_histogram_accumulate (gsl_histogram * h, double x, double weight)
 
   if (status) 
     {
-      return status ;
+      return GSL_EDOM ;
     }
 
   if (index > n) 

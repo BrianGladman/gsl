@@ -50,22 +50,22 @@ int main (void)
   h = gsl_histogram_calloc_uniform (N, 0.0, 1.0) ;
 
   status = gsl_histogram_accumulate (h, 1.0, 10.0) ;
-  gsl_test(status != 1, "gsl_histogram_accumulate traps x at xmax") ;
+  gsl_test(status != GSL_EDOM, "gsl_histogram_accumulate traps x at xmax") ;
 
   status = gsl_histogram_accumulate (h, 2.0, 100.0) ;
-  gsl_test(status != 1, "gsl_histogram_accumulate traps x above xmax") ;
+  gsl_test(status != GSL_EDOM, "gsl_histogram_accumulate traps x above xmax") ;
 
   status = gsl_histogram_accumulate (h, -1.0, 1000.0) ;
-  gsl_test(status != -1, "gsl_histogram_accumulate traps x below xmin") ;
+  gsl_test(status != GSL_EDOM, "gsl_histogram_accumulate traps x below xmin") ;
 
   status = gsl_histogram_increment (h, 1.0) ;
-  gsl_test(status != 1, "gsl_histogram_increment traps x at xmax") ;
+  gsl_test(status != GSL_EDOM, "gsl_histogram_increment traps x at xmax") ;
 
   status = gsl_histogram_increment (h, 2.0) ;
-  gsl_test(status != 1, "gsl_histogram_increment traps x above xmax") ;
+  gsl_test(status != GSL_EDOM, "gsl_histogram_increment traps x above xmax") ;
 
   status = gsl_histogram_increment (h, -1.0) ;
-  gsl_test(status != -1, "gsl_histogram_increment traps x below xmin") ;
+  gsl_test(status != GSL_EDOM, "gsl_histogram_increment traps x below xmin") ;
 
 
   result = gsl_histogram_get (h, N) ;

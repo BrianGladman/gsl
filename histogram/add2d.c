@@ -23,7 +23,7 @@ gsl_histogram2d_accumulate (gsl_histogram2d * h,
 
   if (status) 
     {
-      return status ;
+      return GSL_EDOM ;
     }
 
   if (i >= nx) 
