@@ -1,4 +1,3 @@
-/* $Id$ */
 /* Get Poisson Deviates */
 
 #include <math.h>
