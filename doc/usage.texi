@@ -9,7 +9,7 @@ introduces its conventions.
 * ANSI C Compliance::           
 * Compiling and Linking::       
 * Shared Libraries::            
-* Automake macros::             
+* Autoconf macros::             
 * Inline functions::            
 * Long double::                 
 * Portability functions::       
@@ -129,29 +129,58 @@ To compile a statically linked version of the program instead, use the
 gcc -static app.o -lgsl -lgslcblas -lm
 @end example
 
-@node Automake macros
-@section Automake macros
+@node Autoconf macros
+@section Autoconf macros
 
-The GSL library also provides some useful automake macros to use in your
-applications. The @file{gsl.m4} file contains the definitions needed to
-detect GSL in automatic Makefile generation.
+For applications using @code{autoconf} the standard macro
+@code{AC_CHECK_LIB} can be used to link with the library automatically
+from a @code{configure} script.  The library itself depends on the
+presence of a @sc{cblas} and math library as well, so these must also be
+located before linking with the main @code{libgsl} file.  The following
+commands should be placed in the @file{configure.in} file to perform
+these tests,
 
-To use the macros simply add the following line to your @file{configure.in}
-file:
+@example
+AC_CHECK_LIB(m,main)
+AC_CHECK_LIB(gslcblas,main)
+AC_CHECK_LIB(gsl,main)
+@end example
+@noindent
+Assuming the libraries are found the output during the configure stage
+looks like this,
+
+@example
+checking for main in -lm... yes
+checking for main in -lgslcblas... yes
+checking for main in -lgsl... yes
+@end example
+@noindent
+If the library is found then the tests will define the macros
+@code{HAVE_LIBGSL}, @code{HAVE_LIBGSLCBLAS}, @code{HAVE_LIBM} and add
+the options @code{-lgsl -lgslcblas -lm} to the variable @code{LIBS}.
+
+The tests above will find any version of GSL.  They are suitable for
+general use, where the versions of the functions are not important.  The
+library also provides an alternative macro to test for a specific
+version of GSL. The @file{gsl.m4} file contains the definitions needed
+to detect GSL in automatic Makefile generation.  To use this macro
+simply add the following line to your @file{configure.in} file instead
+of the tests above:
 
 @example
 AM_PATH_GSL(GSL_VERSION,[action-if-found],[action-if-not-found])
 @end example
 @noindent
-where @code{GSL_VERSION} is the two or three digit @sc{major.minor} or
-@sc{major.minor.micro} version number of the GSL Library release you
-require. A suitable choice for @code{action-if-not-found} is
+The argument @code{GSL_VERSION} should be the two or three digit
+@sc{major.minor} or @sc{major.minor.micro} version number of the GSL
+Library release you require. A suitable choice for
+@code{action-if-not-found} is,
 
 @example
 AC_MSG_ERROR(could not find required version of GSL)
 @end example
 @noindent
-Then, you can add the variables @code{GSL_LIBS} and @code{GSL_CFLAGS} to
+Then you can add the variables @code{GSL_LIBS} and @code{GSL_CFLAGS} to
 your Makefile.am files to obtain the correct compiler flags.
 @code{GSL_LIBS} is equal to the output of the @code{gsl-config --libs}
 command and @code{GSL_CFLAGS} is equal to @code{gsl-config --cflags}
