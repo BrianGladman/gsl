@@ -1,3 +1,7 @@
+1998-11-06    <bjg@ancho.lanl.gov>
+
+	* configure.in: add -mieee on alpha platforms
+
 1998-08-31  James Theiler  <jt@lanl.gov>
 
 	* Makefile.am (SUBDIRS): added utils directory

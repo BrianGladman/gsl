@@ -1995,9 +1995,20 @@ EOF
 
 fi ;
 
+echo $ac_n "checking for desirable IEEE arithmetic flags""... $ac_c" 1>&6
+echo "configure:2000: checking for desirable IEEE arithmetic flags" >&5
+case "$host" in
+    alpha*-*-*) 
+	CFLAGS="-mieee $CFLAGS"
+	echo "$ac_t""adding -mieee" 1>&6
+        ;;
+    *)
+        echo "$ac_t""none" 1>&6
+        ;;
+esac
 
 echo $ac_n "checking for IEEE arithmetic interface type""... $ac_c" 1>&6
-echo "configure:2001: checking for IEEE arithmetic interface type" >&5
+echo "configure:2012: checking for IEEE arithmetic interface type" >&5
 case "$host" in
     *-*-linux*) 
 	cat >> confdefs.h <<\EOF
@@ -2035,12 +2046,12 @@ esac
 
 
 echo $ac_n "checking whether printf works with long double""... $ac_c" 1>&6
-echo "configure:2039: checking whether printf works with long double" >&5
+echo "configure:2050: checking whether printf works with long double" >&5
 if test "$cross_compiling" = yes; then
   ac_cv_func_longdouble_printf=no
 else
   cat > conftest.$ac_ext <<EOF
-#line 2044 "configure"
+#line 2055 "configure"
 #include "confdefs.h"
 
 #include <stdlib.h>
@@ -2050,7 +2061,7 @@ int main (void)
 long double x = 1.234 ; fprintf(stderr,"%Lg\n",x) ; exit (0) ; 
 }
 EOF
-if { (eval echo configure:2054: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest && (./conftest; exit) 2>/dev/null
+if { (eval echo configure:2065: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest && (./conftest; exit) 2>/dev/null
 then
   ac_cv_func_longdouble_printf=yes
 else

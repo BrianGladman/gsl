@@ -144,6 +144,16 @@ if test "$ac_cv_decl_exit_success_and_failure" = yes ; then
   AC_DEFINE(HAVE_EXIT_SUCCESS_AND_FAILURE)
 fi ;
 
+AC_MSG_CHECKING(for desirable IEEE arithmetic flags)
+case "$host" in
+    alpha*-*-*) 
+	CFLAGS="-mieee $CFLAGS"
+	AC_MSG_RESULT([adding -mieee])
+        ;;
+    *)
+        AC_MSG_RESULT([none])
+        ;;
+esac
 
 AC_MSG_CHECKING(for IEEE arithmetic interface type)
 case "$host" in
