@@ -391,7 +391,12 @@ that preserve constness.  A vector view has the type
 can be accessed as a @code{gsl_vector} using the @code{vector} component
 of the view object.  A pointer to a vector of type @code{gsl_vector *}
 or @code{const gsl_vector *} can be obtained by taking the address of
-this component with the @code{&} operator.
+this component with the @code{&} operator.  
+
+When using this pointer, it is important to ensure that the view itself
+remains in scope---the simplest way to do so is by always writing the
+pointer as @code{&}@var{view}@code{.vector}, and not storing this value
+in another pointer variable.  
 
 @deftypefun gsl_vector_view gsl_vector_subvector (gsl_vector *@var{v}, size_t @var{offset}, size_t @var{n})
 @deftypefunx {gsl_vector_const_view} gsl_vector_const_subvector (const gsl_vector * @var{v}, size_t @var{offset}, size_t @var{n})
