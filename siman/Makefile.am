@@ -13,5 +13,5 @@ libgsl_siman_a_SOURCES = siman.c
 
 include_HEADERS = gsl_siman.h
 
-INCLUDES = -I. -I$(srcdir)/random
-check_INCLUDES = -I. -I$(srcdir)/random
+INCLUDES = -I$(srcdir) -I$(srcdir)/../random
+check_INCLUDES = -I. -I../random
