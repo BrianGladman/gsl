@@ -1,5 +1,9 @@
 * What is new in gsl-1.3:
 
+** Modified the complex householder transforms to avoid division by
+zero, which could cause NaNs to be returned by the gsl_eigen_hermv
+eigenvalue decomposition.
+
 ** The Nelder-Mead simplex algorithm for multidimensional 
 minimisation has been added.
 

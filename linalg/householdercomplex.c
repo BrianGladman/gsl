@@ -42,13 +42,22 @@ gsl_linalg_complex_householder_transform (gsl_vector_complex * v)
       double beta_r = - (GSL_REAL(alpha) >= 0 ? +1 : -1) * absa ;
 
       gsl_complex tau;
-      GSL_REAL(tau) = (beta_r - GSL_REAL(alpha)) / beta_r ;
-      GSL_IMAG(tau) = - GSL_IMAG(alpha) / beta_r ;
 
-      {
-        gsl_complex beta = gsl_complex_rect (beta_r, 0.0);
-        gsl_vector_complex_set (v, 0, beta) ;
-      }
+      if (beta_r == 0.0)
+        {
+          GSL_REAL(tau) = 0.0;
+          GSL_IMAG(tau) = 0.0;
+        }
+      else 
+        {
+          GSL_REAL(tau) = (beta_r - GSL_REAL(alpha)) / beta_r ;
+          GSL_IMAG(tau) = - GSL_IMAG(alpha) / beta_r ;
+
+          {
+            gsl_complex beta = gsl_complex_rect (beta_r, 0.0);
+            gsl_vector_complex_set (v, 0, beta) ;
+          }
+        }
       
       return tau;
     }

@@ -353,37 +353,66 @@ int test_invert_jacobi(void)
 
 int main()
 {
-  gsl_matrix *rs10 = create_random_symm_matrix (10);
-  gsl_matrix_complex *rh10 = create_random_herm_matrix (10);
-
-  double r[] =  { 0,  0, -1,  0, 
-                  0,  1,  0,  1,
-                 -1,  0,  0,  0,
-                  0,  1,  0,  0 };
-
-  double c[] =  { 0,0,  0,0, -1,0,  0,0, 
-                  0,0,  1,0,  0,0,  1,0,
-                 -1,0,  0,0,  0,0,  0,0,
-                  0,0,  1,0,  0,0,  0,0 };
-
-  gsl_matrix_view s4 = gsl_matrix_view_array (r, 4, 4);
-  gsl_matrix_complex_view h4 = gsl_matrix_complex_view_array (c, 4, 4);
-
   gsl_ieee_env_setup ();
 
-  test_eigen_symm("symm(4)", &s4.matrix);
-  test_eigen_herm("herm(4)", &h4.matrix);
+  {
+    double r[] =  { 0,  0, -1,  0, 
+                    0,  1,  0,  1,
+                    -1,  0,  0,  0,
+                    0,  1,  0,  0 };
+    gsl_matrix_view s4 = gsl_matrix_view_array (r, 4, 4);
 
-  test_eigen_symm("symm(10)", rs10);
-  test_eigen_herm("herm(10)", rh10);
+    test_eigen_symm("symm(4)", &s4.matrix);
+  }
+  
+  {
+    double c[] =  { 0,0,  0,0, -1,0,  0,0, 
+                    0,0,  1,0,  0,0,  1,0,
+                    -1,0,  0,0,  0,0,  0,0,
+                    0,0,  1,0,  0,0,  0,0 };
+
+    gsl_matrix_complex_view h4 = gsl_matrix_complex_view_array (c, 4, 4);
+
+    test_eigen_herm("herm(4)", &h4.matrix);
+  }
+
+  {
+    double r[] =  { 1,  0,  0,  0, 
+                    0,  2,  0,  0,
+                    0,  0,  3,  0,
+                    0,  0,  0,  4 };
+    gsl_matrix_view s4 = gsl_matrix_view_array (r, 4, 4);
+
+    test_eigen_symm("symm(4) diag", &s4.matrix);
+  }
+  
+  {
+    double c[] =  { 1,0,  0,0, 0,0,  0,0, 
+                    0,0,  2,0, 0,0,  0,0,
+                    0,0,  0,0, 3,0,  0,0,
+                    0,0,  0,0, 0,0,  4,0 };
+
+    gsl_matrix_complex_view h4 = gsl_matrix_complex_view_array (c, 4, 4);
+
+    test_eigen_herm("herm(4) diag", &h4.matrix);
+  }
+
+  {
+    gsl_matrix *rs10 = create_random_symm_matrix (10);
+    test_eigen_symm("symm(10)", rs10);
+    gsl_matrix_free (rs10);
+  }
+
+  {
+    gsl_matrix_complex *rh10 = create_random_herm_matrix (10);
+    test_eigen_herm("herm(10)", rh10);
+    gsl_matrix_complex_free (rh10);
+  }
 
   /* gsl_matrix *h5 = create_hilbert_matrix (5); */
   /* test_eigen_jacobi("hilbert(5)", h5); */
   /* test_invert_jacobi(); */
   /* gsl_matrix_free (h5); */
-
-  gsl_matrix_complex_free (rh10);
-  gsl_matrix_free (rs10);
 
   exit (gsl_test_summary());
 }
