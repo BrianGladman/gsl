@@ -27,4 +27,4 @@
 #undef ATOMIC
 #undef MULTIPLICITY
 #undef IN_FORMAT
-#undef WANT_GET_PROTO
+#undef WANT_GETSET_PROTO

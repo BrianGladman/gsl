@@ -17,21 +17,19 @@ int main (void)
   gsl_test(v->size != N, "gsl_vector_complex_alloc returns valid size") ;
 
   for (i = 0 ; i < N ; i++) {
-    gsl_complex x ;
-    x.real = i ; x.imag = i+1 ;
+    gsl_complex x = {{i,i+1}};
     gsl_vector_complex_set(v,i,x) ;
   } ;
-
+  
   { 
     int status = 0 ;
 
     for (i = 0 ; i < N ; i++) {
-      gsl_complex x ;
-      x.real = i ; x.imag = i+1 ;
-      if(v->data[i].real != x.real || v->data[i].imag != x.imag) 
+      double xr = i, xi = i+1;
+      if (v->data[2*i] != xr || v->data[2*i+1] != xi)
 	status = 1 ;
     } ;
-    
+
     gsl_test(status, "gsl_vector_complex_set writes into array correctly") ;
   }
 
@@ -39,10 +37,9 @@ int main (void)
     int status = 0 ;
 
     for (i = 0 ; i < N ; i++) {
-      gsl_complex x, y ;
-      x.real = i ; x.imag = i+1 ;
-      y = gsl_vector_complex_get(v,i) ;
-      if(y.real != x.real || y.imag != x.imag) 
+      gsl_complex x = {{i,i+1}} ;
+      gsl_complex y = GSL_VECTOR_COMPLEX(v,i) ;
+      if(!GSL_COMPLEX_EQ(x,y)) 
 	status = 1 ;
     } ;
     gsl_test(status, "gsl_vector_complex_get reads from array correctly") ;
@@ -59,7 +56,7 @@ int main (void)
     int status = 0 ;
 
     for (i = 0 ; i < N ; i++) {
-      if(v->data[i].real != 0 || v->data[i].imag != 0) 
+      if(v->data[2*i] != 0 || v->data[2*i+1] != 0) 
 	status = 1 ;
     } ;
     
@@ -70,9 +67,8 @@ int main (void)
     FILE * f = fopen("test.txt","w") ;
     
     for (i = 0 ; i < N ; i++) {
-      gsl_complex x ;
-      x.real = i ; x.imag = i+1 ;
-      gsl_vector_complex_set(v,i,x) ;
+      gsl_complex x = {{i,i+1}} ;
+      GSL_VECTOR_COMPLEX(v,i) = x ;
     } ;
     
     gsl_vector_complex_fprintf(f, v, "%.4f") ;
@@ -89,7 +85,7 @@ int main (void)
     gsl_vector_complex_fscanf(f, w) ;
 
     for (i = 0 ; i < N ; i++) {
-      if (w->data[i].real != i || w->data[i].imag != i+1 )
+      if (w->data[2*i] != i || w->data[2*i+1] != i+1 )
 	status = 1 ;
     } ;
 
@@ -103,8 +99,7 @@ int main (void)
     FILE * f = fopen("test.dat", "w") ;
     
     for (i = 0 ; i < N ; i++) {
-      gsl_complex x;
-      x.real = (N-i) ; x.imag = (N-i)+1 ;
+      gsl_complex x = {{(N-i),(N-i)+1}} ;
       gsl_vector_complex_set(v,i,x) ;
     } ;
     
@@ -120,7 +115,7 @@ int main (void)
     gsl_vector_complex_fread(f, w) ;
 
     for (i = 0 ; i < N ; i++) {
-      if (w->data[i].real != (N-i) || w->data[i].imag != (N-i)+1 )
+      if (w->data[2*i] != (N-i) || w->data[2*i+1] != (N-i)+1 )
 	status = 1 ;
     } ;
 

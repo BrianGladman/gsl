@@ -20,6 +20,8 @@ gsl_vector_complex_long_double * gsl_vector_complex_long_double_calloc (size_t n
 void gsl_vector_complex_long_double_free (gsl_vector_complex_long_double * v);
 
 gsl_complex_long_double * gsl_vector_complex_long_double_ptr(const gsl_vector_complex_long_double * v, size_t i);
+gsl_complex_long_double gsl_vector_complex_long_double_get(const gsl_vector_complex_long_double * v, size_t i);
+void gsl_vector_complex_long_double_set(gsl_vector_complex_long_double * v, size_t i, gsl_complex_long_double z);
 
 int gsl_vector_complex_long_double_fread (FILE * stream, gsl_vector_complex_long_double * v) ;
 int gsl_vector_complex_long_double_fwrite (FILE * stream, const gsl_vector_complex_long_double * v) ;
@@ -36,11 +38,11 @@ int gsl_block_complex_long_double_fprintf (FILE * stream, const long double * da
 extern int gsl_check_range ;
 
 #ifndef  GSL_VECTOR_COMPLEX_REAL
-#define  GSL_VECTOR_COMPLEX_REAL(z, i)  (z->data[2*i])
-#define  GSL_VECTOR_COMPLEX_IMAG(z, i)  (z->data[2*i + 1])
+#define  GSL_VECTOR_COMPLEX_REAL(z, i)  ((z)->data[2*(i)])
+#define  GSL_VECTOR_COMPLEX_IMAG(z, i)  ((z)->data[2*(i) + 1])
 #endif
 
-#define GSL_COMPLEX_LONG_DOUBLE_AT(zv, i)  ((gsl_complex_long_double *)  &(zv->data[2*i]))
+#define GSL_COMPLEX_LONG_DOUBLE_AT(zv, i)  ((gsl_complex_long_double *)  &((zv)->data[2*(i)]))
 
 
 /* inline functions if you are using GCC or otherwise enlightened cc */

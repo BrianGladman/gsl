@@ -37,11 +37,11 @@ int gsl_block_complex_float_fprintf (FILE * stream, const float * data, size_t n
 extern int gsl_check_range ;
 
 #ifndef  GSL_VECTOR_COMPLEX_REAL
-#define  GSL_VECTOR_COMPLEX_REAL(z, i)  (z->data[2*i])
-#define  GSL_VECTOR_COMPLEX_IMAG(z, i)  (z->data[2*i + 1])
+#define  GSL_VECTOR_COMPLEX_REAL(z, i)  ((z)->data[2*(i)])
+#define  GSL_VECTOR_COMPLEX_IMAG(z, i)  ((z)->data[2*(i) + 1])
 #endif
 
-#define GSL_COMPLEX_FLOAT_AT(zv, i)  ((gsl_complex_float *)  &(zv->data[2*i]))
+#define GSL_COMPLEX_FLOAT_AT(zv, i)  ((gsl_complex_float *)  &((zv)->data[2*(i)]))
 
 
 /* inline functions if you are using GCC or otherwise enlightened cc */
