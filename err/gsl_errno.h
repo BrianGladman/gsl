@@ -41,10 +41,6 @@ void gsl_stream_printf (const char *label, const char *file,
 
 const char * gsl_strerror (int gsl_errno);
 
-
-#ifdef GSL_THREAD_SAFE
-#define GSL_ERRHANDLER_OFF
-#else /* GSL_THREAD_SAFE */
 typedef void gsl_error_handler_t (const char * reason, const char * file,
 				  int line, int gsl_errno);
 
@@ -58,55 +54,31 @@ gsl_stream_handler_t *
 gsl_set_stream_handler (gsl_stream_handler_t * new_handler);
 
 FILE * gsl_set_stream (FILE * new_stream);
-#endif /* GSL_THREAD_SAFE */
 
 /* GSL_ERROR: call the error handler, and return the error code */
 
-#ifdef GSL_ERRHANDLER_OFF
-#define GSL_ERROR(reason, gsl_errno) \
-       do { \
-       return gsl_errno ; \
-       } while (0)
-#else
 #define GSL_ERROR(reason, gsl_errno) \
        do { \
        gsl_error (reason, __FILE__, __LINE__, gsl_errno) ; \
        return gsl_errno ; \
        } while (0)
-#endif
 
 /* GSL_ERROR_RETURN: call the error handler, and return the given value */
 
-#ifdef GSL_ERRHANDLER_OFF
-#define GSL_ERROR_RETURN(reason, gsl_errno, value) \
-       do { \
-       GSL_WARNING(reason, gsl_errno) ; \
-       return value ; \
-       } while (0)
-#else
 #define GSL_ERROR_RETURN(reason, gsl_errno, value) \
        do { \
        gsl_error (reason, __FILE__, __LINE__, gsl_errno) ; \
        return value ; \
        } while (0)
-#endif
 
 /* GSL_ERROR_RETURN_NOTHING: call the error handler, and then return
    (for void functions which still need to generate an error) */
 
-#ifdef GSL_ERRHANDLER_OFF
-#define GSL_ERROR_RETURN_NOTHING(reason, gsl_errno) \
-       do { \
-       GSL_WARNING(reason, gsl_errno) ; \
-       return ; \
-       } while (0)
-#else 
 #define GSL_ERROR_RETURN_NOTHING(reason, gsl_errno) \
        do { \
        gsl_error (reason, __FILE__, __LINE__, gsl_errno) ; \
        return ; \
        } while (0)
-#endif 
 
 /* GSL library code can occasionally generate warnings, which are not
    intended to be fatal. You can compile a version of the library with

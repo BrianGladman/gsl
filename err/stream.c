@@ -6,13 +6,6 @@
 #include <gsl_errno.h>
 #include <gsl_message.h>
 
-#ifdef GSL_THREAD_SAFE
-gsl_stream_printf (const char *label, const char *file, int line, 
-		   const char *reason)
-{
-  fprintf (stderr, "gsl: %s:%d: %s: %s\n", file, line, label, reason);
-}
-#else /* GSL_THREAD_SAFE */
 FILE * gsl_stream = stderr ;
 gsl_stream_handler_t * gsl_stream_handler = NULL;
 
@@ -44,5 +37,3 @@ gsl_set_stream (FILE * new_stream)
   gsl_stream = new_stream;
   return previous_stream;
 }
-
-#endif /* GSL_THREAD_SAFE */
