@@ -274,7 +274,7 @@ int gsl_sf_erfc_e(double x, gsl_sf_result * result)
     e_err = ex2 * (c.err + 2.0*fabs(x)*GSL_DBL_EPSILON);
   }
   else if(ax < 10.0) {
-    double exterm = exp(-x*x) / x;
+    double exterm = exp(-x*x) / ax;
     double t = (2.0*x - 15.0)/5.0;
     gsl_sf_result c;
     cheb_eval_e(&erfc_x510_cs, t, &c);
