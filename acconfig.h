@@ -23,3 +23,12 @@
 #ifndef HAVE_RAND_MAX
 #define RAND_MAX HAVE_GUESSED_RAND_MAX
 #endif
+
+/* Defined if you have ansi EXIT_SUCCESS and EXIT_FAILURE in stdlib.h */
+#undef HAVE_EXIT_SUCCESS_AND_FAILURE
+
+/* Use 0 and 1 for EXIT_SUCCESS and EXIT_FAILURE if we don't have them */
+#ifndef HAVE_EXIT_SUCCESS_AND_FAILURE
+#define EXIT_SUCCESS 0
+#define EXIT_FAILURE 1
+#endif

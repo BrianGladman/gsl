@@ -1236,6 +1236,45 @@ EOF
 fi
 
 
+echo $ac_n "checking for EXIT_SUCCESS and EXIT_FAILURE""... $ac_c" 1>&6
+echo "configure:1241: checking for EXIT_SUCCESS and EXIT_FAILURE" >&5
+if eval "test \"`echo '$''{'ac_cv_decl_exit_success_and_failure'+set}'`\" = set"; then
+  echo $ac_n "(cached) $ac_c" 1>&6
+else
+  cat > conftest.$ac_ext <<EOF
+#line 1246 "configure"
+#include "confdefs.h"
+
+#include <stdlib.h>
+#ifdef EXIT_SUCCESS
+yes
+#endif
+
+EOF
+if (eval "$ac_cpp conftest.$ac_ext") 2>&5 |
+  egrep "yes" >/dev/null 2>&1; then
+  rm -rf conftest*
+  ac_cv_decl_exit_success_and_failure=yes
+else
+  rm -rf conftest*
+  ac_cv_decl_exit_success_and_failure=no
+fi
+rm -f conftest*
+
+
+fi
+
+echo "$ac_t""$ac_cv_decl_exit_success_and_failure" 1>&6
+
+if test "$ac_cv_decl_clocks_per_sec" = yes ; then
+  cat >> confdefs.h <<\EOF
+#define HAVE_EXIT_SUCCESS_AND_FAILURE 1
+EOF
+
+fi ;
+
+
+
 trap '' 1 2 15
 cat > confcache <<\EOF
 # This file is a shell script that caches the results of configure

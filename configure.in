@@ -94,4 +94,23 @@ AC_MSG_CHECKING(whether RAND_MAX is known for $host_os)
 fi
 
 
+AC_CACHE_CHECK(for EXIT_SUCCESS and EXIT_FAILURE,
+ac_cv_decl_exit_success_and_failure,
+AC_EGREP_CPP(yes,
+[
+#include <stdlib.h>
+#ifdef EXIT_SUCCESS
+yes
+#endif
+], 
+ac_cv_decl_exit_success_and_failure=yes,
+ac_cv_decl_exit_success_and_failure=no)
+)
+
+if test "$ac_cv_decl_clocks_per_sec" = yes ; then
+  AC_DEFINE(HAVE_EXIT_SUCCESS_AND_FAILURE)
+fi ;
+
+
+
 AC_OUTPUT(err/Makefile fft/Makefile statistics/Makefile roots/Makefile random/Makefile randist/Makefile siman/Makefile doc/Makefile Makefile)
