@@ -919,6 +919,9 @@ int main()
 @}
 @end smallexample
 
+@c Chapter on FFTs
+@include fft.texi
+
 @node Root finding
 @section Root finding
 @cindex root finding
