@@ -21,6 +21,7 @@ FUNCTION (test, func) (void)
 
 
   status = 0;
+
   for (i = 0; i < N; i++)
     {
       if (v->data[i] != (ATOMIC) i)
@@ -76,8 +77,8 @@ FUNCTION (test, func) (void)
 void
 FUNCTION (test, binary) (void)
 {
-  TYPE (gsl_vector) * v = FUNCTION (gsl_vector, alloc) (N);
-  TYPE (gsl_vector) * w = FUNCTION (gsl_vector, alloc) (N);
+  TYPE (gsl_vector) * v = FUNCTION (gsl_vector, calloc) (N);
+  TYPE (gsl_vector) * w = FUNCTION (gsl_vector, calloc) (N);
 
   size_t i;
 

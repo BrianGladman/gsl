@@ -20,6 +20,9 @@ gsl_matrix_long_double *
 gsl_matrix_long_double_alloc (size_t n1, size_t n2);
 
 gsl_matrix_long_double * 
+gsl_matrix_long_double_calloc (size_t n1, size_t n2);
+
+gsl_matrix_long_double * 
 gsl_matrix_long_double_alloc_from_block (gsl_block_long_double * b, size_t offset, 
                                    size_t n1, size_t n2, size_t d2);
 

@@ -1,7 +1,7 @@
 TYPE (gsl_block) *
 FUNCTION (gsl_block, alloc) (const size_t n)
 {
-  TYPE (gsl_block) * v;
+  TYPE (gsl_block) * b;
 
   if (n == 0)
     {
@@ -9,27 +9,27 @@ FUNCTION (gsl_block, alloc) (const size_t n)
 			GSL_EDOM, 0);
     }
 
-  v = (TYPE (gsl_block) *) malloc (sizeof (TYPE (gsl_block)));
+  b = (TYPE (gsl_block) *) malloc (sizeof (TYPE (gsl_block)));
 
-  if (v == 0)
+  if (b == 0)
     {
       GSL_ERROR_RETURN ("failed to allocate space for block struct",
 			GSL_ENOMEM, 0);
     }
 
-  v->data = (ATOMIC *) malloc (MULTIPLICITY * n * sizeof (ATOMIC));
+  b->data = (ATOMIC *) malloc (MULTIPLICITY * n * sizeof (ATOMIC));
 
-  if (v->data == 0)
+  if (b->data == 0)
     {
-      free (v);		/* exception in constructor, avoid memory leak */
+      free (b);		/* exception in constructor, avoid memory leak */
 
       GSL_ERROR_RETURN ("failed to allocate space for block data",
 			GSL_ENOMEM, 0);
     }
 
-  v->size = n;
+  b->size = n;
 
-  return v;
+  return b;
 }
 
 TYPE (gsl_block) *
@@ -37,24 +37,24 @@ FUNCTION (gsl_block, calloc) (const size_t n)
 {
   size_t i;
 
-  TYPE (gsl_block) * v = FUNCTION (gsl_block, alloc) (n);
+  TYPE (gsl_block) * b = FUNCTION (gsl_block, alloc) (n);
 
-  if (v == 0)
+  if (b == 0)
     return 0;
 
   /* initialize block to zero */
 
   for (i = 0; i < MULTIPLICITY * n; i++)
     {
-      v->data[i] = 0;
+      b->data[i] = 0;
     }
 
-  return v;
+  return b;
 }
 
 void
-FUNCTION (gsl_block, free) (TYPE (gsl_block) * v)
+FUNCTION (gsl_block, free) (TYPE (gsl_block) * b)
 {
-  free (v->data);
-  free (v);
+  free (b->data);
+  free (b);
 }

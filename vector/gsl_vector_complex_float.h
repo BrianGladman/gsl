@@ -18,6 +18,7 @@ struct gsl_vector_complex_float_struct
 typedef struct gsl_vector_complex_float_struct gsl_vector_complex_float;
 
 gsl_vector_complex_float *gsl_vector_complex_float_alloc (size_t n);
+gsl_vector_complex_float *gsl_vector_complex_float_calloc (size_t n);
 
 gsl_vector_complex_float 
 *gsl_vector_complex_float_alloc_from_block (gsl_block_complex_float * b, 

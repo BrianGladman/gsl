@@ -20,6 +20,9 @@ gsl_matrix *
 gsl_matrix_alloc (size_t n1, size_t n2);
 
 gsl_matrix * 
+gsl_matrix_calloc (size_t n1, size_t n2);
+
+gsl_matrix * 
 gsl_matrix_alloc_from_block (gsl_block * b, size_t offset, 
                                    size_t n1, size_t n2, size_t d2);
 

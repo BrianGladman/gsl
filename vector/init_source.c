@@ -37,6 +37,26 @@ FUNCTION (gsl_vector, alloc) (const size_t n)
 }
 
 TYPE (gsl_vector) *
+FUNCTION (gsl_vector, calloc) (const size_t n)
+{
+  size_t i;
+
+  TYPE (gsl_vector) * v = FUNCTION (gsl_vector, alloc) (n);
+
+  if (v == 0)
+    return 0;
+
+  /* initialize vector to zero */
+
+  for (i = 0; i < MULTIPLICITY * n; i++)
+    {
+      v->data[i] = 0;
+    }
+
+  return v;
+}
+
+TYPE (gsl_vector) *
 FUNCTION (gsl_vector, alloc_from_block) (TYPE(gsl_block) * block, 
                                          const size_t offset, 
                                          const size_t n, 

@@ -16,7 +16,7 @@ struct gsl_vector_long_double_struct
 typedef struct gsl_vector_long_double_struct gsl_vector_long_double;
 
 gsl_vector_long_double *gsl_vector_long_double_alloc (size_t n);
-
+gsl_vector_long_double *gsl_vector_long_double_calloc (size_t n);
 
 gsl_vector_long_double *gsl_vector_long_double_alloc_from_block (gsl_block_long_double * b,
                                                      size_t offset, 

@@ -16,7 +16,7 @@ struct gsl_vector_char_struct
 typedef struct gsl_vector_char_struct gsl_vector_char;
 
 gsl_vector_char *gsl_vector_char_alloc (size_t n);
-
+gsl_vector_char *gsl_vector_char_calloc (size_t n);
 
 gsl_vector_char *gsl_vector_char_alloc_from_block (gsl_block_char * b,
                                                      size_t offset, 

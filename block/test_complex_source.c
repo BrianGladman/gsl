@@ -52,7 +52,7 @@ FUNCTION (test, binary) (void)
   size_t i;
 
   {
-    TYPE (gsl_block) * v = FUNCTION (gsl_block, alloc) (N);
+    TYPE (gsl_block) * v = FUNCTION (gsl_block, calloc) (N);
 
     FILE *f = fopen ("test.dat", "w");
 

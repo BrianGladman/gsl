@@ -7,7 +7,7 @@ FUNCTION (test, func) (void)
 {
   size_t i;
 
-  TYPE (gsl_vector) * v = FUNCTION (gsl_vector, alloc) (N);
+  TYPE (gsl_vector) * v = FUNCTION (gsl_vector, calloc) (N);
 
   gsl_test (v->data == 0, NAME (gsl_vector) "_alloc returns valid pointer");
   gsl_test (v->size != N, NAME (gsl_vector) "_alloc returns valid size");
@@ -15,7 +15,7 @@ FUNCTION (test, func) (void)
 
   for (i = 0; i < N; i++)
     {
-      BASE x;
+      BASE x = ZERO;
       GSL_REAL (x) = i;
       GSL_IMAG (x) = i + 1234;
       FUNCTION (gsl_vector, set) (v, i, x);
@@ -86,8 +86,8 @@ FUNCTION (test, func) (void)
 void
 FUNCTION (test, binary) (void)
 {
-  TYPE (gsl_vector) * v = FUNCTION (gsl_vector, alloc) (N);
-  TYPE (gsl_vector) * w = FUNCTION (gsl_vector, alloc) (N);
+  TYPE (gsl_vector) * v = FUNCTION (gsl_vector, calloc) (N);
+  TYPE (gsl_vector) * w = FUNCTION (gsl_vector, calloc) (N);
 
   size_t i;
 
@@ -96,7 +96,7 @@ FUNCTION (test, binary) (void)
 
     for (i = 0; i < N; i++)
       {
-	BASE x;
+	BASE x = ZERO;
 	GSL_REAL (x) = N - i;
 	GSL_IMAG (x) = N - i + 1;
 	FUNCTION (gsl_vector, set) (v, i, x);

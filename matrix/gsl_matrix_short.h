@@ -20,6 +20,9 @@ gsl_matrix_short *
 gsl_matrix_short_alloc (size_t n1, size_t n2);
 
 gsl_matrix_short * 
+gsl_matrix_short_calloc (size_t n1, size_t n2);
+
+gsl_matrix_short * 
 gsl_matrix_short_alloc_from_block (gsl_block_short * b, size_t offset, 
                                    size_t n1, size_t n2, size_t d2);
 

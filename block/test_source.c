@@ -54,7 +54,7 @@ FUNCTION (test, binary) (void)
   size_t i;
 
   {
-    TYPE (gsl_block) * v = FUNCTION (gsl_block, alloc) (N);
+    TYPE (gsl_block) * v = FUNCTION (gsl_block, calloc) (N);
 
     FILE *f = fopen ("test.dat", "w");
 
@@ -78,18 +78,19 @@ FUNCTION (test, binary) (void)
     FUNCTION (gsl_block, fread) (f, w);
 
     status = 0;
+
     for (i = 0; i < N; i++)
       {
 	if (w->data[i] != (ATOMIC) (N - i))
 	  status = 1;
       };
+
     fclose (f);
 
     FUNCTION (gsl_block, free) (w);
   }
 
   gsl_test (status, NAME (gsl_block) "_write and read work correctly");
-
 }
 
 void

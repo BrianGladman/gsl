@@ -16,7 +16,7 @@ struct gsl_vector_ushort_struct
 typedef struct gsl_vector_ushort_struct gsl_vector_ushort;
 
 gsl_vector_ushort *gsl_vector_ushort_alloc (size_t n);
-
+gsl_vector_ushort *gsl_vector_ushort_calloc (size_t n);
 
 gsl_vector_ushort *gsl_vector_ushort_alloc_from_block (gsl_block_ushort * b,
                                                      size_t offset, 

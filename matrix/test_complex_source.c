@@ -21,7 +21,7 @@ FUNCTION (test, func) (void)
     {
       for (j = 0; j < M; j++)
 	{
-	  BASE z;
+	  BASE z = ZERO;
 	  k++;
 	  GSL_REAL(z) = k;
 	  GSL_IMAG(z) = k + 1000;
@@ -133,7 +133,7 @@ FUNCTION (test, binary) (void)
       {
 	for (j = 0; j < M; j++)
 	  {
-	    BASE z;
+	    BASE z = ZERO;
 	    k++;
 	    GSL_REAL(z) = k;
 	    GSL_IMAG(z) = k + 1000;

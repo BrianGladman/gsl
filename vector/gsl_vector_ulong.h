@@ -16,7 +16,7 @@ struct gsl_vector_ulong_struct
 typedef struct gsl_vector_ulong_struct gsl_vector_ulong;
 
 gsl_vector_ulong *gsl_vector_ulong_alloc (size_t n);
-
+gsl_vector_ulong *gsl_vector_ulong_calloc (size_t n);
 
 gsl_vector_ulong *gsl_vector_ulong_alloc_from_block (gsl_block_ulong * b,
                                                      size_t offset, 

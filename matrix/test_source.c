@@ -9,7 +9,7 @@ FUNCTION (test, func) (void)
 {
   TYPE (gsl_vector) * v;
   size_t i, j;
-  int k = 0;
+  size_t k = 0;
 
   TYPE (gsl_matrix) * m = FUNCTION (gsl_matrix, alloc) (N, M);
 
@@ -60,8 +60,8 @@ FUNCTION (test, func) (void)
 
   FUNCTION (gsl_matrix, free) (m);	/* free whatever is in m */
 
-  m = FUNCTION (gsl_matrix, alloc) (N, M);
-  v = FUNCTION (gsl_vector, alloc) (M);
+  m = FUNCTION (gsl_matrix, calloc) (N, M);
+  v = FUNCTION (gsl_vector, calloc) (M);
 
   k = 0;
   for (i = 0; i < N; i++)
@@ -150,10 +150,10 @@ FUNCTION (test, text) (void)
 void
 FUNCTION (test, binary) (void)
 {
-  TYPE (gsl_matrix) * m = FUNCTION (gsl_matrix, alloc) (N, M);
+  TYPE (gsl_matrix) * m = FUNCTION (gsl_matrix, calloc) (N, M);
 
   size_t i, j;
-  int k = 0;
+  size_t k = 0;
 
   {
     FILE *f = fopen ("test.dat", "w");

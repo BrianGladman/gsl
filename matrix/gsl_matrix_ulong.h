@@ -20,6 +20,9 @@ gsl_matrix_ulong *
 gsl_matrix_ulong_alloc (size_t n1, size_t n2);
 
 gsl_matrix_ulong * 
+gsl_matrix_ulong_calloc (size_t n1, size_t n2);
+
+gsl_matrix_ulong * 
 gsl_matrix_ulong_alloc_from_block (gsl_block_ulong * b, size_t offset, 
                                    size_t n1, size_t n2, size_t d2);
 

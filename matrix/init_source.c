@@ -43,6 +43,26 @@ FUNCTION (gsl_matrix, alloc) (const size_t n1, const size_t n2)
 }
 
 TYPE (gsl_matrix) *
+FUNCTION (gsl_matrix, calloc) (const size_t n1, const size_t n2)
+{
+  size_t i;
+
+  TYPE (gsl_matrix) * m = FUNCTION (gsl_matrix, alloc) (n1, n2);
+
+  if (m == 0)
+    return 0;
+
+  /* initialize matrix to zero */
+
+  for (i = 0; i < MULTIPLICITY * n1 * n2; i++)
+    {
+      m->data[i] = 0;
+    }
+
+  return m;
+}
+
+TYPE (gsl_matrix) *
 FUNCTION (gsl_matrix, alloc_from_block) (TYPE(gsl_block) * block, 
                                          const size_t offset,
                                          const size_t n1, 

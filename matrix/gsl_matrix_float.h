@@ -20,6 +20,9 @@ gsl_matrix_float *
 gsl_matrix_float_alloc (size_t n1, size_t n2);
 
 gsl_matrix_float * 
+gsl_matrix_float_calloc (size_t n1, size_t n2);
+
+gsl_matrix_float * 
 gsl_matrix_float_alloc_from_block (gsl_block_float * b, size_t offset, 
                                    size_t n1, size_t n2, size_t d2);
 
