@@ -1,4 +1,10 @@
+#define KU GSL_MAX(M,N)
+#define KL GSL_MAX(M,N)
+#include "source_gbmv_r.h"
+#undef KU
+#undef KL
 
+#if 0
   size_t i, j;
   size_t ix, iy;
   size_t lenX, lenY;
@@ -12,11 +18,15 @@
     lenY = N;
   }
 
-  iy = 0;
-  for(i=0; i<lenY; i++) {
-    Y[iy] *= beta;
-    iy += incY;
+  if(beta != 1.0) {
+    iy = 0;
+    for(i=0; i<lenY; i++) {
+      Y[iy] *= beta;
+      iy += incY;
+    }
   }
+
+  if(alpha == 0.0) return;
 
   if(TransA == CblasNoTrans) {
     iy = 0;
@@ -43,3 +53,4 @@
       ix += incX;
     }
   }
+#endif

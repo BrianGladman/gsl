@@ -23,7 +23,7 @@ noinst_HEADERS = \
 	source_dot_r.h		\
 	source_gbmv_c.h		\
 	source_gbmv_r.h		\
-	source_gemv.h		\
+	source_gemv_r.h		\
 	source_gemv_c.h		\
 	source_ger.h		\
 	source_gerc.h		\

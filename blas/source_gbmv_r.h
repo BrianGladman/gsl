@@ -39,10 +39,12 @@
   }
   else {
     /* form  y := alpha*A'*x + y */
+    ix = 0;
     for(j=0; j<lenX; j++) {
-      BASE_TYPE temp = alpha * X[incX * j];
+      BASE_TYPE temp = alpha * X[ix];
       for(i = GSL_MAX(0, j-KU); i<GSL_MIN(lenY, j+KL+1); i++) {
         Y[incY * i] += temp * A[lda*j + i];
       }
+      ix += incX;
     }
   }
