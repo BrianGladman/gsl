@@ -12,6 +12,38 @@
 * gsl-ref: (gsl-ref).                   GNU Scientific Library -- Reference
 @end direntry
 
+@tex
+% Some special kludges to make TeX formatting prettier.
+% Because makeinfo.c exists, we can't just define new commands.
+% So instead, we take over little-used existing commands.
+%
+% Redefine @cite{text} to act like $text$ in regular TeX.
+% Info will typeset this same as @samp{text}.
+\gdef\goodtex{\tex \let\rm\goodrm \let\t\ttfont \turnoffactive}
+\gdef\goodrm{\fam0\tenrm}
+\gdef\math{\goodtex$\mathxxx}
+\gdef\mathxxx#1{#1$\Etex}
+\global\let\oldxrefX=\xrefX
+\gdef\xrefX[#1]{\begingroup\let\math=\dfn\oldxrefX[#1]\endgroup}
+%
+% Redefine @i{text} to be equivalent to @cite{text}, i.e., to use math mode.
+% This looks the same in TeX but omits the surrounding ` ' in Info.
+%\global\let\i=\cite
+%\global\let\math=\cite
+%
+% Redefine @c{tex-stuff} \n @whatever{info-stuff}.
+\gdef\c{\futurelet\next\mycxxx}
+\gdef\mycxxx{%
+  \ifx\next\bgroup \goodtex\let\next\mycxxy
+  \else\ifx\next\mindex \let\next\relax
+  \else\ifx\next\kindex \let\next\relax
+  \else\ifx\next\starindex \let\next\relax \else \let\next\comment
+  \fi\fi\fi\fi \next
+}
+\gdef\mycxxy#1#2{#1\Etex\mycxxz}
+\gdef\mycxxz#1{}
+@end tex
+
 @include version-ref.texi
 @set GSL @emph{GNU Scientific Library}
 
@@ -46,36 +78,42 @@ by the Foundation.
 @title GNU Scientific Library -- Reference Manual
 @subtitle Edition @value{EDITION}, for gsl Version @value{VERSION}
 @subtitle @value{UPDATED}
-@author Mark Galassi 
-@address Cygnus Solutions and Los Alamos National Laboratory
-@address @email{rosalia@@nis.lanl.gov}
-@author
-@author Jim Davies 
-@address Space Data Systems Group, Los Alamos National Laboratory and 
-@address Department of Computer Science, Georgia Institute of Technology 
-@address @email{jimmyd@@nis.lanl.gov}
-@author
-@author James Theiler 
-@address Astrophysics and Radiation Measurements Group, Los Alamos National Laboratory
-@address @email{jt@@nis.lanl.gov}
-@author
-@author Brian Gough 
-@address Network Theory Limited, UK
-@address @email{bjg@@network-theory.co.uk}
-@author
-@author Reid Priedhorsky 
-@address Mathematical Modeling and Analysis Group, Los Alamos National Laboratory
-@address @email{rp@@lanl.gov}
-@author
-@author Gerard Jungman 
-@address Theoretical Particle Physics Group, Los Alamos National Laboratory
-@address @email{jungman@@nnn.lanl.gov}
-@author
-@author Michael Booth
-@address Department of Physics and Astronomy, The Johns Hopkins University
-@address @email{booth@@planck.pha.jhu.edu} or @email{booth@@debian.org}
-@author
 
+@author Mark Galassi 
+Cygnus Solutions and Los Alamos National Laboratory @*
+@email{rosalia@@nis.lanl.gov}
+@sp 1
+
+@author Jim Davies 
+Space Data Systems Group, Los Alamos National Laboratory and 
+Department of Computer Science, Georgia Institute of Technology @*
+@email{jimmyd@@nis.lanl.gov}
+@sp 1
+
+@author James Theiler 
+Astrophysics and Radiation Measurements Group, Los Alamos National Laboratory @*
+@email{jt@@nis.lanl.gov}
+@sp 1
+
+@author Brian Gough 
+Network Theory Limited, UK @*
+@email{bjg@@network-theory.co.uk}
+@sp 1
+
+@author Reid Priedhorsky 
+Mathematical Modeling and Analysis Group, Los Alamos National Laboratory @*
+@email{rp@@lanl.gov}
+@sp 1
+
+@author Gerard Jungman 
+Theoretical Particle Physics Group, Los Alamos National Laboratory @*
+@email{jungman@@lanl.gov}
+@sp 1
+
+@author Michael Booth
+Department of Physics and Astronomy, The Johns Hopkins University @*
+@email{booth@@planck.pha.jhu.edu} or @email{booth@@debian.org}
+@sp 1
 @page
 @vskip 0pt plus 1filll
 Copyright @copyright{} 1996, 1997, 1998, 1999 The GSL Project.
@@ -310,6 +348,6 @@ Public Licenses that accompany them.
 
 @printindex tp
 
-@c @shortcontents
+@c -@shortcontents
 @contents
 @bye

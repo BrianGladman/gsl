@@ -36,17 +36,33 @@ probability of taking a step is given by a Boltzmann distribution.
 We take random walks through the problem space, looking for points with
 low energies; in these random walks, the probability of taking a step is
 determined by the Boltzmann distribution
-@equation
+
+@tex
+$$
+p = e^{-(E_{i+1} - E_i)/(kT)}
+$$
+@end tex
+@ifinfo
+@example
 p = e^@{-(E_@{i+1@} - E_i)/(kT)@}
-@end equation
+@end example
+@end ifinfo
+
 @noindent
-if @math{E_@{i+1@} < E_i}, and @math{p = 0} when @math{E_@{i+1@} \ge
-E_i}.
+if 
+@c{$E_{i+1} < E_i$}
+@math{E_@{i+1@} < E_i}, and 
+@c{$p = 0$}
+@math{p = 0} when 
+@c{$E_{i+1} \ge E_i$}
+@math{E_@{i+1@} \ge E_i}.
 
 In other words, a step @emph{will} occur if the new energy is lower.  If
 the new energy is higher, the transition can still occur, and its
 likelyhood is proportional to the temperature @math{T} and inversely
-proportional to the energy difference @math{E_@{i+1@} - E_i}.
+proportional to the energy difference 
+@c{$E_{i+1} - E_i$}
+@math{E_@{i+1@} - E_i}.
 
 The temperature @math{T} is initially set to a high value, and a random
 walk is carried out at that temperature.  Then the temperature is

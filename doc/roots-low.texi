@@ -134,9 +134,9 @@ GSL decides that two values @math{a} and @math{b}. with relative
 tolerance @math{R} and absolute tolerance @math{A}, are close enough if
 the following relation is true:
 
-@equation
+@equation{
 |a - b| \leq R \min(|a|,|b|) + A 
-@end equation
+}
 
 You can set either @math{R} or @math{A} to zero, but be aware that GSL
 will signal an error if the search moves into an area where both
@@ -144,9 +144,9 @@ will signal an error if the search moves into an area where both
 are the endpoints of the region of interest, the following must be true
 or GSL will signal an error:
 
-@equation
+@equation{
 R \min(|a|,|b|) + A \geq 10 \max(|a|,|b|) \times @{\tt DBL\_EPSILON@} 
-@end equation
+}
 
 (We introduce a buffer of @math{10} to protect against roundoff error.)
 
@@ -204,9 +204,9 @@ and flag an error.
 
 The alarm bell will ring if the following relation in true:
 
-@equation
+@equation{
 |@{@{d@} \over @{dx@}@} f(x)| < |@{@{f(x)@} \over @{\tt max\_step\_size@}@}|
-@end equation
+}
 @noindent
 Note that while Secant Method (@pxref{Secant Method}) does not deal with
 derivatives directly, when extrapolating it approximates them
@@ -316,15 +316,15 @@ axis is where the interval is split. The part of the interval which
 contains the root is taken to be the new interval, and the process is
 repeated until one of the following is true:
 
-@equation
+@equation{
 |a - b| \leq \varepsilon
-@end equation
-@equation
+}
+@equation{
 a_n - a_@{n-1@} = 0 \;\;\;@{\rm and@}\;\;\; |b_n - b_@{n-1@}| \leq \varepsilon
-@end equation
-@equation
+}
+@equation{
 b_n - b_@{n-1@} = 0 \;\;\;@{\rm and@}\;\;\;|a_n - a_@{n-1@}| \leq \varepsilon
-@end equation
+}
 
 @c eps file "roots-false-position.eps"
 @iftex
@@ -396,9 +396,9 @@ and @math{f(g_n)}. The @math{x} position where this line crosses the
 @math{x} axis becomes @math{g_@{n + 1@}}. @math{g_@{n - 1@}} is
 discarded, @math{n} is incremented, and the process is repeated until:
 
-@equation
+@equation{
 |g_n - g_@{n-1@}| \leq \varepsilon
-@end equation
+}
 
 Note that @math{g_@{n + 1@}} may be obtained by either interpolation or
 extrapolation and that Secant Method cannot fail during interpolation.
@@ -451,9 +451,9 @@ root. Each iteration, Newton's Method draws a line tangent to @math{f}
 where this line crosses the @math{x} axis becomes the new @math{g}. The
 process is repeated until:
 
-@equation
+@equation{
 |g_n - g_@{n-1@}| \leq \varepsilon
-@end equation
+}
 
 @strong{FIXME: talk about ways to break Newton.}
 

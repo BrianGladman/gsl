@@ -29,16 +29,24 @@ This chapter describes the GSL special function library.
 The Airy functions @math{Ai(x)} and @math{Bi(x)} are defined
 by the integral representations
 
-@equation
-Ai(x) = @{1 \over \pi@} \int_0^\infty \cos( @{1\over 3@} t^3 + xt ) dt,
-@end equation
-
-@equation
-Bi(x) = @{1 \over \pi@} \int_0^\infty ( e^@{-t^3/3@} + \sin( @{1\over 3@} t^3 + xt ) dt.
-@end equation
-
+@tex
+$$
+\eqalign{
+Ai(x) & = {1\over\pi} \int_0^\infty \cos( {1\over 3} t^3 + xt ) dt, \cr
+Bi(x) & = {1\over\pi} \int_0^\infty (e^{-t^3/3} + \sin({1\over 3} t^3 + xt) dt.
+}
+$$
+@end tex
+@ifinfo
+@example
+Ai(x) = @{1 / \pi@} \int_0^\infty \cos(@{1/3@} t^3 + xt ) dt,
+Bi(x) = @{1 / \pi@} \int_0^\infty (e^@{-t^3/3@} + \sin(@{1/3@} t^3 + xt) dt.
+@end example
+@end ifinfo
 @noindent
-They are linearly independent solutions of the equation @math{f(x)'' = x f(x)}.
+They are linearly independent solutions of the equation 
+@c{$f(x)'' = x f(x)$}
+@math{f(x)'' = x f(x)}.
 
 Being functions of a single variable, they are quite easy to
 evaluate in production code, using fits to Chebyshev polynomials
@@ -66,29 +74,41 @@ a re-implementation of the Airy Chebyshev fits in the SLATEC Fortran library.
 @section Chebyshev Polynomials
 @cindex Chebyshev polynomials
 
-The Chebyshev polynomials @math{T_n(x) = \cos(n \arccos x)} provide an 
+The Chebyshev polynomials 
+@c{$T_n(x) = \cos(n \arccos x)$}
+@math{T_n(x) = \cos(n \arccos x)} provide an 
 orthogonal basis of polynomials on the interval @math{[-1,1]},
-with the weight function @math{1 \over \sqrt@{1-x^2@} }. The first few such
+with the weight function 
+@c{$1 \over \sqrt{1-x^2}$}
+@math{1 \over \sqrt@{1-x^2@}}. The first few such
 polynomials are
 
-@equation
-	T_0(x) = 1,
-@end equation
-@equation
-	T_1(x) = x,
-@end equation
-@equation
-	T_2(x) = 2 x^2 - 1.
-@end equation
+@tex
+$$
+\eqalign{
+ T_0(x) & = 1, \cr
+ T_1(x) & = x, \cr
+ T_2(x) & = 2 x^2 - 1.
+}
+$$
+@end tex
+@ifinfo
+@example
+ T_0(x) = 1,
+ T_1(x) = x,
+ T_2(x) = 2 x^2 - 1.
+@end example
+@end ifinfo
 
-By construction, @math{T_n(x)} has precisely @math{n} zeroes
-in the interval @math{[-1, 1]}, located at
-@math{x_k^@{(n)@} = \cos( @{ \pi \over n @} (k-1/2) )}. It is the
+By construction, 
+@c{$T_n(x)$}
+@math{T_n(x)} has precisely @math{n} zeroes
+in the interval @math{[-1,1]}, located at
+@c{$x_k^{(n)} = \cos({\pi \over n} (k-1/2))$}
+@math{x_k^@{(n)@} = \cos(@{\pi \over n@} (k-1/2))}. It is the
 nature of these zeroes and the behaviour of the set of polynomials at
 these special points which makes the Chebyshev polynomials
 especially useful in numerical approximation of functions.
-
-
 
 @c ---------------------------------------------------------------------------
 @node Coulomb Wave Functions
@@ -170,4 +190,3 @@ double y = gsl_sf_pow_int(3., 12)
 @cindex trigonometric functions 
 @cindex sine
 @cindex cosine
-

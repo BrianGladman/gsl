@@ -6,16 +6,17 @@
 * The Future::                  
 @end menu
 
-@c
+@c ----------------------------------------------------------------------
 @c RCS: $Id$
-@c
+@c ----------------------------------------------------------------------
 
 This chapter describes the Monte Carlo integration routines in the
-library.  At the moment the algorithms implemented are: plain non-adaptive,
- Monte Carlo, VEGAS (following Peter Lepage) and MISER (following
-Numerical recipes).  We will dispense with an introduction and simply
-describe the algorithms and interfaces.  Note that the documentation (as
-well as the code) is still evolving - the code at a faster rate.
+library.  At the moment the algorithms implemented are: plain
+non-adaptive, Monte Carlo, VEGAS (following Peter Lepage) and MISER
+(following Numerical recipes).  We will dispense with an introduction
+and simply describe the algorithms and interfaces.  Note that the
+documentation (as well as the code) is still evolving - the code at a
+faster rate.
 
 @node Algorithms
 @section Algorithms
@@ -26,27 +27,74 @@ We begin by establishing some notation.  Let @math{I(f)} denote the
 integral of the function @math{f} (for convenience, we take @math{I(1)=1})
 We will write the Monte Carlo estimate of the integral as
 @math{E(f; N)} for the
-@equation
-  E(f; N) = @{1 \over N @} \sum_i^N f(x_i).
-@end equation
-for @math{N} randomly distributed points @math{x_i} 
+
+@tex
+$$
+E(f; N) = {1 \over N} \sum_i^N f(x_i).
+$$
+@end tex
+@ifinfo
+@example
+E(f; N) = @{1 \over N @} \sum_i^N f(x_i).
+@end example
+@end ifinfo
+@noindent
+for @math{N} randomly distributed points 
+@c{$x_i$} 
+@math{x_i} 
 Similarly, we will denote the variance of @math{f} by 
-@equation
-  \sigma^2(f) = I(f^2) - I(f)^2
-@end equation
+
+@tex
+$$
+\sigma^2(f) = I(f^2) - I(f)^2
+$$
+@end tex
+@ifinfo
+@example
+\sigma^2(f) = I(f^2) - I(f)^2
+@end example
+@end ifinfo
+@noindent
 and the variance of the estimate by 
-@equation
-  Var(f; N) = E(f^2; N) - (E(f; N))^2.
-@end equation
+
+@tex
+$$
+Var(f; N) = E(f^2; N) - (E(f; N))^2.
+$$
+@end tex
+@ifinfo
+@example
+Var(f; N) = E(f^2; N) - (E(f; N))^2.
+@end example
+@end ifinfo
+
 The fundamental point of Monte Carlo integration is that for
 large @math{N}, 
-@equation
-  E(f; N) - I(f) \approx @{\sigma^2(f)\over N @}
-@end equation
+
+@tex
+$$
+E(f; N) - I(f) \approx {\sigma^2(f)\over N}
+$$
+@end tex
+@ifinfo
+@example
+E(f; N) - I(f) \approx @{\sigma^2(f)\over N @}
+@end example
+@end ifinfo
+@noindent
 and furthermore, by the same argument, 
-@equation
-   \sigma^2(f) \approx Var(f; N)
-@end equation
+
+@tex
+$$
+\sigma^2(f) \approx Var(f; N)
+$$
+@end tex
+@ifinfo
+@example
+\sigma^2(f) \approx Var(f; N)
+@end example
+@end ifinfo
+
 That's all there is to simple Monte Carlo.
 
 
@@ -58,25 +106,52 @@ Monte Carlo estimates of the integral @math{E_a(f)} and @math{E_b(f)} of the
 integral of f in those regions
 and variances @math{\sigma_a^2(f)} and @math{\sigma_b^2(f)}, 
 the variance @math{Var(f)}
-of the combined estimate @math{E(f) = @{1\over 2@} E_a(f) + @{1\over 2@} E_b(f)}
+of the combined estimate 
+@c{$E(f) = {1\over 2} E_a(f) + {1\over 2} E_b(f)$}
+@math{E(f) = @{1\over 2@} E_a(f) + @{1\over 2@} E_b(f)}
 is given by
-@equation
-  Var(f) = @{\sigma_a^2(f) \over 4 N_a@} + @{\sigma_b^2(f) \over 4 N_b@}
-@end equation
-This variance 
-is minimized (subject to the constrain that @math{N_a + N_b} is fixed) 
-by choosing (assuming one can) @math{N_a} s.t.
-@equation
-  @{N_a \over N_a+N_b @} = @{ \sigma_a \over \sigma_a + \sigma_b @}
-@end equation
+
+@tex
+$$
+Var(f) = {\sigma_a^2(f) \over 4 N_a} + {\sigma_b^2(f) \over 4 N_b}
+$$
+@end tex
+@ifinfo
+@example
+Var(f) = @{\sigma_a^2(f) \over 4 N_a@} + @{\sigma_b^2(f) \over 4 N_b@}
+@end example
+@end ifinfo
+
+This variance is minimized (subject to the constrain that @math{N_a + N_b} 
+is fixed) by choosing (assuming one can) @math{N_a} s.t.
+
+@tex
+$$
+{N_a \over N_a+N_b} = {\sigma_a \over \sigma_a + \sigma_b}
+$$
+@end tex
+@ifinfo
+@example
+@{N_a \over N_a+N_b @} = @{ \sigma_a \over \sigma_a + \sigma_b @}
+@end example
+@end ifinfo
+
 For such a choice, the variance is given by
-@equation
-  Var(f) =  @{ (\sigma_a + \sigma_b)^2 \over 4 N @}
-@end equation
-In words, 
-the variance of the estimate (and hence the error) is minimized by
-concentrating points in regions where the variance of the function
-@math{f} is large.
+
+@tex
+$$
+Var(f) = {(\sigma_a + \sigma_b)^2 \over 4 N}
+$$
+@end tex
+@ifinfo
+@example
+Var(f) =  @{ (\sigma_a + \sigma_b)^2 \over 4 N @}
+@end example
+@end ifinfo
+
+In words, the variance of the estimate (and hence the error) is
+minimized by concentrating points in regions where the variance of the
+function @math{f} is large.
 
 The most straightforward stratified sampling routine divides a
 hyper-cubic integration region into sub-cubes along the coordinate axes.
@@ -86,14 +161,14 @@ dimensions @math{d} because the number of sub-cubes grows like
 axis).  
 
 What MISER does (and other recursive stratified samplers) is to bisect
-the hypercube along one coordinate axis.  The direction is chosen
-by examining all possible bisections (@math{d} of them) and picking
-the one that gives the best combined variance.  The same procedure
-is then done for each of the two half-spaces (choosing @math{N_a} and
-@math{N_b} as described above), and so on. 
-Since by assumption one does not know the variance @math{Var_L(f)} in
-the various sub-regions, it is estimated using some fraction of
-the total number of points alloted to the estimate.  
+the hypercube along one coordinate axis.  The direction is chosen by
+examining all possible bisections (@math{d} of them) and picking the one
+that gives the best combined variance.  The same procedure is then done
+for each of the two half-spaces (choosing @math{N_a} and @math{N_b} as
+described above), and so on.  Since by assumption one does not know the
+variance @math{Var_L(f)} in the various sub-regions, it is estimated
+using some fraction of the total number of points alloted to the
+estimate.
 
 @subsection VEGAS
 Vegas takes another approach to obtaining good results, namely it
@@ -102,27 +177,58 @@ by the function @math{f}.  More precisely, suppose we estimate
 the integral of @math{f} with points distributed according to
 a probability distribution described by the function @math{g}.  If
 we call the new estimate @math{E_g(f; N)} we have
-@equation
+
+@tex
+$$
 E_g(f; N) = E(f/g; N)
-@end equation
+$$
+@end tex
+@ifinfo
+@example
+E_g(f; N) = E(f/g; N)
+@end example
+@end ifinfo
+
 and similarly
-@equation
+
+@tex
+$$
 Var_g(f; N) = Var(f/g; N)
-@end equation
+$$
+@end tex
+@ifinfo
+@example
+Var_g(f; N) = Var(f/g; N)
+@end example
+@end ifinfo
+
 It is clear from this that if @math{g = |f|/I(|f|)} then the variance 
 @math{V_g(f; N)} vanishes.
 This it was what Vegas attempts to do.  It makes several passes,
 histograming @math{f}, and each time using the histogram to define the
 sampling distribution for the next pass.  This basic idea again has the
-problem that the number of histogram bins grows like @math{K^d}.  The
+problem that the number of histogram bins grows like 
+@c{$K^d$}
+@math{K^d}.  The
 compromise that Vegas (ie, Peter Lepage) adopts is to assume that
-@math{g} factors: @math{g(x_1, x_2, \ldots) = g_1(x_1) g_2(x_2)
-\ldots} so that the number of bins required is only @math{d \cdot K}.  In
-this case, it is not hard to show that the optimal distribution is
-@equation
-g_1(x_1) = [\int dx_1 \ldots dx_n 
-        @{f^2(x_1,\dots,x_n)\over g_2(x_2)\ldots g_n(x_n) @} ]^@{(1/2)@}
-@end equation
+@math{g} factors: 
+@c{$g(x_1, x_2, \ldots) = g_1(x_1) g_2(x_2) \ldots$}
+@math{g(x_1, x_2, ...) = g_1(x_1) g_2(x_2) ...}
+so that the number of bins required is only 
+@c{$d \cdot K$}
+@math{d.K}.  In this
+case, it is not hard to show that the optimal distribution is 
+
+@tex
+$$ 
+g_1(x_1) = [\int dx_1 \ldots dx_n {f^2(x_1,\dots,x_n)\over g_2(x_2)\ldots g_n(x_n) } ]^{(1/2)}
+$$
+@end tex
+@ifinfo
+@example
+g_1(x_1) = [\int dx_1 ... dx_n @{f^2(x_1,...,x_n)\over g_2(x_2)... g_n(x_n) @} ]^@{(1/2)@}
+@end example
+@end ifinfo
 
 Lepage's Vegas is actually a bit fancier than this, combining
 stratified sampling and importance sampling.  The integration
@@ -185,10 +291,18 @@ alpha controls how the variances for the two sub-regions are combined.
 The Numerical Recipes gang argue that for recursive sampling there
 is no reason to expect that the variance should scale like @math{1/N} and
 so they allow the scaling to depend on @math{\alpha}
-@equation 
-  Var(f) = @{\sigma_a \over N_a^\alpha @} + 
-                @{\sigma_b \over N_b^\alpha @}
-@end equation
+
+@tex
+$$
+Var(f) = {\sigma_a \over N_a^\alpha} + {\sigma_b \over N_b^\alpha}
+$$
+@end tex
+@ifinfo
+@example
+Var(f) = @{\sigma_a \over N_a^\alpha@} + @{\sigma_b \over N_b^\alpha@}
+@end example
+@end ifinfo
+
 @end deftypevr
 
 @deftypevr {Control} double dither
@@ -305,16 +419,4 @@ The old interface will probably stay around for a while (though, since
 this is @math{version < 1}, the author 
 does not want to be held to such as statement).
 
-@c
-@c @display
-@c   To Be Fixed.
-@c @end display
-@c @noindent
-@c 
-@c @itemize @asis
-@c @item 
-@c @code{item 1}
-@c @item 
-@c @code{item 2}
-@c @end itemize
-@c 
+

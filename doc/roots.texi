@@ -51,15 +51,19 @@ roots this will be. @emph{In most cases, no error will be reported if
 you try to find a root in an area where there is more than one.}
 
 Care must be taken when a function may have a root of second-order or
-higher multiplicity (such as @math{f(x) = (x-x_0)^2} or @math{f(x) =
-(x-x_0)^3}).  Routines which maintain a strict bound on the root should
-not have problems with odd-multiplicity roots (e.g. cubic, quintic,
-@dots{}), since they make use only of the occurrence zero-crossings and
-not the behavior of the function. However it is impossible to use these
-routines for even-multiplicity roots because they require a bound on the
-initial root which guarantees a zero-crossing (below zero at one end of
-the bound and above zero at the other end). Roots with even-multiplicity
-do not cross zero, but only touch it instantaneously. In general these
+higher multiplicity (such as 
+@c{$f(x) = (x-x_0)^2$}
+@math{f(x) = (x-x_0)^2} or 
+@c{$f(x) = (x-x_0)^3$}
+@math{f(x) = (x-x_0)^3}).  
+Routines which maintain a strict bound on the root should not have
+problems with odd-multiplicity roots (e.g. cubic, quintic, @dots{}),
+since they make use only of the occurrence zero-crossings and not the
+behavior of the function. However it is impossible to use these routines
+for even-multiplicity roots because they require a bound on the initial
+root which guarantees a zero-crossing (below zero at one end of the
+bound and above zero at the other end). Roots with even-multiplicity do
+not cross zero, but only touch it instantaneously. In general these
 functions need to be approached on a case-by-case basis using knowledge
 of the algorithm to be used. Root polishing algorithms generally work
 with higher multiplicity roots but with a reduced rate of convergence.
@@ -154,7 +158,9 @@ separately. However, it is more complicated.
 It stores @math{f(x)} in its first argument and @math{f'(x)} in its
 second.
 
-Here's an example where @math{f(x) = 2\sin(2x)\cos(x)}:
+Here's an example where 
+@c{$f(x) = 2\sin(2x)\cos(x)$}
+@math{f(x) = 2\sin(2x)\cos(x)}:
 
 @smallexample
 @group
@@ -266,20 +272,34 @@ The stopping criterion decides that two values @math{a} and
 @math{b}. with relative tolerance @math{R} and absolute tolerance
 @math{A}, are close enough if the following relation is true:
 
-@equation
+@tex
+$$
 |a - b| \leq R \min(|a|,|b|) + A 
-@end equation
-
+$$
+@end tex
+@ifinfo
+@example
+|a - b| <= R min(|a|,|b|) + A 
+@end example
+@end ifinfo
+@noindent
 You can set either @math{R} or @math{A} to zero, but be aware that the
 library will signal an error if the search moves into an area where both
 @math{R} and @math{A} are meaningless; assuming @math{a} and @math{b}
 are the endpoints of the region of interest, the following must be true
 an error will be returned:
 
-@equation
-R \min(|a|,|b|) + A \geq 10 \max(|a|,|b|) \times @{\tt DBL\_EPSILON@} 
-@end equation
-
+@tex
+$$
+R \min(|a|,|b|) + A \geq 10 \max(|a|,|b|) \times {\tt DBL\_EPSILON} 
+$$
+@end tex
+@ifinfo
+@example
+R min(|a|,|b|) + A >= 10 max(|a|,|b|) DBL_EPSILON 
+@end example
+@end ifinfo
+@noindent
 (We introduce a buffer of @math{10} to protect against roundoff error.)
 
 For the sake of efficient resource use, do not ask for more precision
@@ -297,9 +317,11 @@ positive; see above for other restrictions, however.
 @vindex @r{root finding,} rel_epsilon @r{(low level function argument)}
 The maximum permissible relative error in root finder answers.
 
-@code{rel_epsilon} must be greater than or equal to @math{@{\tt
-DBL\_EPSILON@} \times 10} (note the buffer factor to protect against
-roundoff error). See above for additional non-static restrictions.
+@code{rel_epsilon} must be greater than or equal to 
+@c{${\tt DBL\_EPSILON} \times 10$} 
+@math{DBL_EPSILON \times 10}
+(note the buffer factor to protect against roundoff error). See above
+for additional non-static restrictions.
 @end deftypevr
 
 @deftypevr {Function Argument} {unsigned int} max_iterations
@@ -317,39 +339,6 @@ program chugging away for many cycles in error.
 In addition, the root finding functions which extrapolate (Newton's
 Method, (@ref{Newtons Method}, and Secant Method, @ref{Secant Method})
 accept an additional argument:
-
-@deftypevr {Function Argument} double max_step_size
-@vindex @r{root finding,} max_step_size @r{(function argument)}
-The maximum step size an extrapolating algorithm is allowed to take.
-This is to prevents the algorithm from landing on a place where the test
-function's derivative is very small and zooming off to infinity or into
-a different solution basin.
-
-@strong{FIXME: talk about minimum value for max_step_size.}
-
-For example, if while solving @math{\sin(x) = 0}, @math{x_n} of Newton's
-Method (@pxref{Newtons Method}) landed on @math{1.570700000}
-(@math{\pi/2 \approx 1.570796327}), then @math{x_@{n+1@}}
-would be approximately @math{-10000}, which is definitely not what we
-wanted! We want the root finder to recognize this step as ``too big''
-and flag an error.
-
-The alarm bell will ring if the following relation in true:
-
-@equation
-|@{@{d@} \over @{dx@}@} f(x)| < |@{@{f(x)@} \over @{\tt max\_step\_size@}@}|
-@end equation
-@noindent
-Note that while Secant Method (@pxref{Secant Method}) does not deal with
-derivatives directly, when extrapolating it approximates them
-numerically.
-
-Do not set @code{max_step_size} too large; that will defeat its
-purpose. In the @math{\sin(x) = 0} example, @math{\pi} would be a good
-value for @code{max_step_size}; any step larger than that would
-certainly be headed astray. A good understanding of the problem is
-especially important for @code{max_step_size}.
-@end deftypevr
 
 
 @node Bisection
@@ -495,15 +484,20 @@ axis is where the interval is split. The part of the interval which
 contains the root is taken to be the new interval, and the process is
 repeated until one of the following is true:
 
-@equation
+@tex
+$$
 |a - b| \leq \varepsilon
-@end equation
-@equation
+a_n - a_{n-1} = 0 \;\;\;{\rm and}\;\;\; |b_n - b_{n-1}| \leq \varepsilon
+b_n - b_{n-1} = 0 \;\;\;{\rm and}\;\;\;|a_n - a_{n-1}| \leq \varepsilon
+$$
+@end tex
+@ifinfo
+@example
+|a - b| \leq \varepsilon
 a_n - a_@{n-1@} = 0 \;\;\;@{\rm and@}\;\;\; |b_n - b_@{n-1@}| \leq \varepsilon
-@end equation
-@equation
 b_n - b_@{n-1@} = 0 \;\;\;@{\rm and@}\;\;\;|a_n - a_@{n-1@}| \leq \varepsilon
-@end equation
+@end example
+@end ifinfo
 
 @c eps file "roots-false-position.eps"
 @iftex
@@ -575,9 +569,16 @@ and @math{f(g_n)}. The @math{x} position where this line crosses the
 @math{x} axis becomes @math{g_@{n + 1@}}. @math{g_@{n - 1@}} is
 discarded, @math{n} is incremented, and the process is repeated until:
 
-@equation
+@tex
+$$
 |g_n - g_@{n-1@}| \leq \varepsilon
-@end equation
+$$
+@end tex
+@ifinfo
+@example
+|g_n - g_@{n-1@}| \leq \varepsilon
+@end example
+@end ifinfo
 
 Note that @math{g_@{n + 1@}} may be obtained by either interpolation or
 extrapolation and that Secant Method cannot fail during interpolation.
@@ -630,10 +631,16 @@ root. Each iteration, Newton's Method draws a line tangent to @math{f}
 where this line crosses the @math{x} axis becomes the new @math{g}. The
 process is repeated until:
 
-@equation
+@tex
+$$
 |g_n - g_@{n-1@}| \leq \varepsilon
-@end equation
-
+$$
+@end tex
+@ifinfo
+@example
+|g_n - g_@{n-1@}| \leq \varepsilon
+@end example
+@end ifinfo
 
 @c eps file "roots-newtons-method.eps"
 @iftex

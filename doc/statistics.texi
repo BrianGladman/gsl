@@ -51,52 +51,6 @@ overflow.
 * Statistics References and Further Reading::  
 @end menu
 
-@c @node Statistical Concepts
-@c @section Statistical Concepts
-
-@c A probability density function tells us the frequency with which a
-@c random variable takes a particular value or lies in a given range,
-@c @c
-@c @equation
-@c \hbox@{probability@}(a < x < b) = \int_a^b dx \, p(x)
-@c @end equation
-@c @noindent
-@c The ensemble of all possible values generated with the appropriate
-@c frequency by the probability density function is called the
-@c @dfn{population}. We can define parameters describing the probability
-@c density function, such as the population mean @math{\mu} and population
-@c variance @math{\sigma^2},
-@c @c
-@c @equation
-@c \mu = \int_@{-\infty@}^@{+\infty@} dx \, x p(x) 
-@c @end equation
-@c @equation
-@c \sigma^2 = \int_@{-\infty@}^@{+\infty@} dx \, (x-\mu)^2 p(x)
-@c @end equation
-@c @noindent
-@c The parameters cannot be observed directly. In statistical calculations
-@c we try to estimate these parameters from a finite set of observations.
-
-@c An observed datapoint drawn from a population is called a
-@c @dfn{sample}. A @dfn{statistic} is a function of a set of samples, such
-@c as their mean, median or maximum value.  An @dfn{estimator} is a
-@c statistic that we use to extract the underlying parameters of the
-@c probability density function.
-
-@c For example the arithmetic mean of an observed dataset, also known as
-@c the sample mean, can be shown to be a good estimator for the population
-@c mean @math{\mu}. We denote estimators with a "hat", so the sample mean
-@c is written @math{\hat \mu}.
-
-@c There can be many possible estimators for a parameter, but some will be
-@c better than others. Using probability theory and the probability density
-@c function we can calculate the behavior of any estimator. An estimator is
-@c called @dfn{unbiased} if its expectation value in repeated observations
-@c equals the underlying parameter of the probability density function. An
-@c unbiased estimator is desirable. There are also other measures of an
-@c estimator properties, such as @dfn{precision} and @dfn{efficiency}
-@c (consult the references for details).
-
 @node Mean and standard deviation and variance
 @section Mean, Standard Deviation and Variance
 
@@ -106,16 +60,35 @@ The function @code{gsl_stats_mean} returns the arithmetic mean of
 @var{data}, an array of length @var{n}.
 
 The sample mean is an unbiased estimator of the population mean and is
-denoted by @math{\hat \mu}.
-@c
-@equation
-@{\hat \mu@} = @{1 \over N@} \sum x_i
-@end equation
-@noindent
-where @math{x_i} are the elements of the array @var{data}.
+denoted by 
+@c{$\hat\mu$}
+@math{\hat\mu}.
 
-For a gaussian distribution the variance of @math{\hat \mu} is
-@math{\sigma^2/N}, so the one standard-deviation error on the mean is
+@tex
+$$
+{\hat\mu} = {1 \over N} \sum x_i
+$$
+@end tex
+@ifinfo
+@example
+@{\hat\mu@} = @{1 \over N@} \sum x_i
+@end example
+@end ifinfo
+
+@noindent
+where 
+@c{$x_i$} 
+@math{x_i} 
+are the elements of the array @var{data}.
+
+For a gaussian distribution the variance of 
+@c{$\hat\mu$} 
+@math{\hat\mu} 
+is
+@c{$\sigma^2/N$}
+@math{\sigma^2/N}, 
+so the one standard-deviation error on the mean is
+@c{$\sigma/\sqrt{N}$}
 @math{\sigma/\sqrt@{N@}}.
 
 If the underlying distribution has long tails then the mean may be
@@ -129,22 +102,42 @@ The function @code{gsl_stats_est_variance} returns the estimated
 variance of @var{data}, an array of length @var{n}.
 
 This is an unbiased estimator of
+@c{$\sigma^2$}
 @math{\sigma^2}, and is defined by
-@c
-@equation
-@{\hat \sigma@}^2 = @{1 \over (N-1)@} \sum (x_i - @{\hat \mu@})^2
-@end equation
+
+@tex
+$$
+{\hat\sigma}^2 = {1 \over (N-1)} \sum (x_i - {\hat\mu})^2
+$$
+@end tex
+@ifinfo
+@example
+@{\hat\sigma@}^2 = @{1 \over (N-1)@} \sum (x_i - @{\hat\mu@})^2
+@end example
+@end ifinfo
 @noindent
-where @math{x_i} are the elements of the array @var{data}. 
+where 
+@c{$x_i$} 
+@math{x_i} 
+are the elements of the array @var{data}. 
 
 Note that the normalisation factor of @math{1/(N-1)} is chosen to make
-@math{\hat \sigma^2} an unbiased estimator. (A factor of @math{1/N}
+@c{$\hat\sigma^2$} 
+@math{\hat\sigma^2} 
+an unbiased estimator. (A factor of @math{1/N}
 produces variances which, on the average, are too small since
-correlations between @math{x_i} and @math{\hat \mu} tend to reduce the
-sample variance).
+correlations between 
+@c{$x_i$}
+@math{x_i} and 
+@c{$\hat\mu$}
+@math{\hat\mu} tend to reduce the sample variance).
 
-For a gaussian distribution the variance of @math{\hat \sigma^2} is
+For a gaussian distribution the variance of 
+@c{$\hat\sigma^2$}
+@math{\hat\sigma^2} is
+@c{$2 \sigma^4/N$}
 @math{2 \sigma^4/N}. The one standard-deviation error on the variance is
+@c{$\sqrt{2} \sigma^2/\sqrt{N}$}
 @math{\sqrt@{2@} \sigma^2/\sqrt@{N@}}.
 
 If the underlying distribution has long tails then the variance may be
@@ -162,12 +155,21 @@ two functions, @code{gsl_stats_est_variance_with_mean} and
 
 The function @code{gsl_stats_est_variance_with_mean} returns the sample
 variance of @var{data} relative to the given value of @var{mean}.  The
-function is computed with @math{\hat \mu} replaced by the value of
-@var{mean} that you supply,
-@c
-@equation
-@{\hat \sigma@}^2 = @{1 \over (N-1)@} \sum (x_i - mean)^2
-@end equation
+function is computed with 
+@c{$\hat\mu$}
+@math{\hat\mu} 
+replaced by the value of @var{mean} that you supply,
+
+@tex
+$$
+{\hat\sigma}^2 = {1 \over (N-1)} \sum (x_i - mean)^2
+$$
+@end tex
+@ifinfo
+@example
+@{\hat\sigma@}^2 = @{1 \over (N-1)@} \sum (x_i - mean)^2
+@end example
+@end ifinfo
 
 @end deftypefn
 
@@ -186,12 +188,24 @@ These functions compute an unbiased estimate of the variance when the
 population mean of a distribution is known @emph{a priori}.
 
 In this case the estimator for the variance requires a factor @math{1/N}
-and the sample mean @math{\hat \mu} must be replaced by the known
-population mean @math{\mu},
-@c
-@equation
-@{\hat \sigma@}^2 = @{1 \over N@} \sum (x_i - \mu)^2
-@end equation
+and the sample mean 
+@c{$\hat\mu$}
+@math{\hat\mu} must be replaced by the known
+population mean 
+@c{$\mu$}
+@math{\mu},
+
+@tex
+$$
+{\hat\sigma}^2 = {1 \over N} \sum (x_i - \mu)^2
+$$
+@end tex
+@ifinfo
+@example
+@{\hat\sigma@}^2 = @{1 \over N@} \sum (x_i - \mu)^2
+@end example
+@end ifinfo
+
 @noindent
 @end deftypefn
 
@@ -204,7 +218,6 @@ calculate the standard deviation, which is simply the square root of the
 corresponding variance function.
 @end deftypefn
 
-
 @node Absolute deviation
 @section Absolute deviation
 
@@ -214,12 +227,23 @@ The function @code{gsl_stats_absdev} computes the absolute deviation
 from the mean of @var{data}, an array of length @var{n}.
 
 The absolute deviation from the mean is defined as
-@c
-@equation
-absdev  = @{1 \over N@} \sum |x_i - @{\hat \mu@}|
-@end equation
+
+@tex
+$$
+absdev  = {1 \over N} \sum |x_i - {\hat\mu}|
+$$
+@end tex
+@ifinfo
+@example
+absdev  = @{1 \over N@} \sum |x_i - @{\hat\mu@}|
+@end example
+@end ifinfo
+
 @noindent
-where @math{x_i} are the elements of the array @var{data}.
+where 
+@c{$x_i$} 
+@math{x_i} 
+are the elements of the array @var{data}.
 
 The absolute deviation from the mean provides a more robust measure of
 the width of a distribution than the variance.
@@ -234,10 +258,18 @@ Both these functions compute the mean of @var{data} via a call to
 The function @code{gsl_stats_absdev_with_mean} computes the absolute
 deviation of the array @var{data} relative to the given value of
 @var{mean},
-@c
-@equation
+
+@tex
+$$
+absdev  = {1 \over N} \sum |x_i - mean|
+$$
+@end tex
+@ifinfo
+@example
 absdev  = @{1 \over N@} \sum |x_i - mean|
-@end equation
+@end example
+@end ifinfo
+
 @noindent
 These functions are useful if you have already computed the mean of
 @var{data} (and want to avoid recomputing it), or wish to calculate the
@@ -254,13 +286,24 @@ The functions @code{gsl_stats_skew} and @code{gsl_stats_int_skew}
 compute the skewness of @var{data}, an array of length @var{n}.
 
 The skewness is defined as 
-@c
-@equation
+
+@tex
+$$
+skew = {1 \over N} \sum 
+ {\left( x_i - {\hat\mu} \over {\hat\sigma} \right)}^3
+$$
+@end tex
+@ifinfo
+@example
 skew = @{1 \over N@} \sum 
- @{\left( x_i - @{\hat \mu@} \over @{\hat \sigma@} \right)@}^3
-@end equation
+ @{\left( x_i - @{\hat\mu@} \over @{\hat\sigma@} \right)@}^3
+@end example
+@end ifinfo
+
 @noindent
-where @math{x_i} are the elements of the array @var{data}.
+where 
+@c{$x_i$}
+@math{x_i} are the elements of the array @var{data}.
 
 The skewness measures the asymmetry of the tails of a distribution.
 
@@ -277,10 +320,19 @@ The function @code{gsl_stats_skew_with_mean_and_sd} computes the
 skewness of the array @var{data} using the given values of the mean
 @var{mean} and standard deviation @var{sd}.
 
-@equation
+@tex
+$$
+skew = {1 \over N}
+     \sum {\left( x_i - mean \over sd \right)}^3
+$$
+@end tex
+@ifinfo
+@example
 skew = @{1 \over N@}
-     \sum @{\left( x_i - mean \over sd \right)@}^3
-@end equation
+     \sum @{( x_i - mean \over sd )@}^3
+@end example
+@end ifinfo
+
 @noindent
 
 These functions are useful if you have already computed the mean and
@@ -293,15 +345,25 @@ The function @code{gsl_stats_kurtosis} computes the kurtosis of
 @var{data}, an array of length @var{n}.
 
 The kurtosis is defined as 
-@c
-@equation
-kurtosis = \left( @{1 \over N@} \sum 
- @{\left(x_i - @{\hat \mu@} \over @{\hat \sigma@} \right)@}^4 
+
+@tex
+$$
+kurtosis = \left( {1 \over N} \sum 
+ {\left(x_i - {\hat\mu} \over {\hat\sigma} \right)}^4 
  \right) 
  - 3
-@end equation
-@noindent
+$$
+@end tex
+@ifinfo
+@example
+kurtosis = ( @{1 \over N@} \sum 
+ @{(x_i - @{\hat\mu@} \over @{\hat\sigma@} )@}^4 
+ ) 
+ - 3
+@end example
+@end ifinfo
 
+@noindent
 The kurtosis measures how sharply peaked a distribution is, relative to
 its width. The kurtosis is normalised to zero for a gaussian
 distribution by the -3 in the defintion.
@@ -314,11 +376,20 @@ The function @code{gsl_stats_kurtosis_with_mean_and_sd} computes the
 kurtosis of the array @var{data} using the given values of the mean
 @var{mean} and standard deviation @var{sd}.
 
-@equation
-kurtosis = @{1 \over N@}
-  \left( \sum @{\left(x_i - mean \over sd \right)@}^4 \right) 
+@tex
+$$
+kurtosis = {1 \over N}
+  \left( \sum {\left(x_i - mean \over sd \right)}^4 \right) 
   - 3
-@end equation
+$$
+@end tex
+@ifinfo
+@example
+kurtosis = @{1 \over N@}
+  ( \sum @{(x_i - mean \over sd )@}^4 ) - 3
+@end example
+@end ifinfo
+
 @noindent
 
 These functions are useful if you have already computed the mean and
@@ -332,7 +403,11 @@ standard deviation of @var{data} and want to avoid recomputing them.
 
 The function @code{gsl_stats_max} returns the maximum value in
 @var{data}, an array of length @var{n}. The maximum value is defined as
-the value of the element @math{x_i} which satisfies @math{x_i >= x_j}
+the value of the element 
+@c{$x_i$}
+@math{x_i} which satisfies 
+@c{$x_i \ge x_j$}
+@math{x_i >= x_j}
 for all @math{j}.
 
 If you want instead to find the element with the largest absolute
@@ -344,7 +419,11 @@ before calling this function.
 
 The function @code{gsl_stats_min} returns the minimun value in
 @var{data}, an array of length @var{n}.  The minimum value is defined as
-the value of the element @math{x_i} which satisfies @math{x_i <= x_j}
+the value of the element 
+@c{$x_i$}
+@math{x_i} which satisfies 
+@c{$x_i \le x_j$}
+@math{x_i <= x_j}
 for all @math{j}.
 
 If you want instead to find the element with the smallest absolute
@@ -356,9 +435,12 @@ before calling this function.
 
 The function @code{gsl_stats_max_index} returns the index of the maximum
 value in @var{data}, an array of length @var{n}. The maximum value is
-defined as the value of the element @math{x_i} which satisfies @math{x_i
->= x_j} for all @math{j}. When there are several equal maximum elements
-then the first one is chosen.
+defined as the value of the element 
+@c{$x_i$}
+@math{x_i} which satisfies 
+@c{$x_i \ge x_j$}
+@math{x_i >= x_j} for all @math{j}. When there are several equal maximum
+elements then the first one is chosen.
 
 @end deftypefn
 
@@ -366,8 +448,11 @@ then the first one is chosen.
 
 The function @code{gsl_stats_min_index} returns the index of the minimum
 value in @var{data}, a double-precision array of length @var{n}. The
-minimum value is defined as the value of the element @math{x_i} which
-satisfies @math{x_i >= x_j} for all @math{j}. When there are several
+minimum value is defined as the value of the element 
+@c{$x_i$}
+@math{x_i} which satisfies
+@c{$x_i \ge x_j$} 
+@math{x_i >= x_j} for all @math{j}. When there are several
 equal minimum elements then the first one is chosen.
 @end deftypefn
 
@@ -423,11 +508,24 @@ There are no checks to see whether the data are sorted, so the function
 
 The quantile is found by interpolation, using the formula
 
-@equation
+@tex
+$$
+\hbox{quantile} = (1 - \delta) \hbox{data[i]} + \delta \hbox{data[i+1]}
+$$
+@end tex
+@ifinfo
+@example
 quantile = (1 - \delta) data[i] + \delta data[i+1]
-@end equation
+@end example
+@end ifinfo
+
 @noindent
-where @math{i} is @code{floor}(@math{(n - 1)f}) and @math{\delta} is 
+where @math{i} is 
+@code{floor}(@c{$(n - 1)f$}
+@math{(n - 1)f}) and 
+@c{$\delta$}
+@math{\delta} is 
+@c{$(n-1)f - i$}.
 @math{(n-1)f - i}.
 
 Thus the minimum value of the array (@var{data[0]}) is given by @var{f}
@@ -447,12 +545,12 @@ floating-point number.
 
 FIXME, do more work on the statistical tests
 
-@c @deftypefn Statistics double gsl_stats_ttest (const double @var{data1[]}, double @var{data2[]}, size_t @var{n1}, size_t @var{n2})
-@c @deftypefnx Statistics double gsl_stats_int_ttest (const double @var{data1[]}, double @var{data2[]}, size_t @var{n1}, size_t @var{n2})
+@c -@deftypefn Statistics double gsl_stats_ttest (const double @var{data1[]}, double @var{data2[]}, size_t @var{n1}, size_t @var{n2})
+@c -@deftypefnx Statistics double gsl_stats_int_ttest (const double @var{data1[]}, double @var{data2[]}, size_t @var{n1}, size_t @var{n2})
 
 @c The function @code{gsl_stats_ttest} computes the t-test statistic for
 @c the two arrays @var{data1[]} and @var{data2[]}, of lengths @var{n1} and
-@c @var{n2} respectively.
+@c -@var{n2} respectively.
 
 @c The t-test statistic measures the difference between the means of two
 @c datasets.

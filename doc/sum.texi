@@ -41,12 +41,22 @@ terms for the extrapolation.
 @node Example of accelerating a series
 @section Example of accelerating a series
 
-The following code calculates an estimate of @math{\zeta(2) = \pi^2 / 6}
+The following code calculates an estimate of 
+@c{$\zeta(2) = \pi^2 / 6$}
+@math{\zeta(2) = \pi^2 / 6}
 using the series,
 
-@equation
+@tex
+$$
 \zeta(2) = 1 + 1/2^2 + 1/3^2 + 1/4^2 + \dots
-@end equation
+$$
+@end tex
+@ifinfo
+@example
+\zeta(2) = 1 + 1/2^2 + 1/3^2 + 1/4^2 + ...
+@end example
+@end ifinfo
+
 @noindent
 After @var{N} terms the error in the sum is @math{O(1/N)}, making direct
 summation of the series converge slowly.
@@ -94,10 +104,14 @@ main (void)
 @end example
 @noindent
 The Levin u-transform is able to obtain an estimate of the sum to 1 part
-in @math{10^@{10@}} using the first eleven terms of the series. The
+in 
+@c{$10^{10}$}
+@math{10^10} using the first eleven terms of the series. The
 error estimate returned by the function safely bounds the correct value
 and is conservatively large. By comparison a direct summation would
-require @math{10^@{10@}} terms to achieve the same precision.
+require 
+@c{$10^{10}$}
+@math{10^10} terms to achieve the same precision.
 
 @example
 bjg|vvv> ./a.out 

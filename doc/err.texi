@@ -100,7 +100,7 @@ if (status) @{
     exit (-1);
 @}
 @end example
-@c
+@c ----------------------------------------------------------------------
 @noindent
 The function @code{gsl_fft_complex_radix2} only accepts integer lengths
 which are a power of two. If the variable @code{length} is not a power
@@ -143,7 +143,7 @@ functions should be defined like this,
 void @var{handler} (const char * reason, const char * file, int line)
 @end example
 @end deftp
-@c
+@c ----------------------------------------------------------------------
 @noindent
 To request the use of your own error handler you need to call the
 function @code{gsl_set_error_handler} which is also declared in
@@ -173,7 +173,7 @@ old_handler = gsl_set_error_handler (NULL);
 @end example
 @noindent
 @end deftypefun
-@c
+@c ----------------------------------------------------------------------
 @noindent
 Here is a skeleton outline of a program which defines its own error
 handler.  Imagine that the program does interactive data analysis --
@@ -243,7 +243,7 @@ write,
 double result;
 int status = gsl_sf_bessel_J1_e (1.23, &result);
 @end example
-@c
+@c ----------------------------------------------------------------------
 @noindent
 where @code{gsl_sf_bessel_J1_e} is the appropriate function from the
 special functions (@code{sf}) module. The suffix @code{_e} appended to
@@ -258,7 +258,7 @@ an alternative interface which allows this,
 @example
 double result = gsl_sf_bessel_J1 (1.23)
 @end example
-@c
+@c ----------------------------------------------------------------------
 @noindent
 However, in this case there is no way for the calling program to test
 for an error. Instead if there are any errors (such as underflow) they
@@ -336,9 +336,9 @@ old_handler = gsl_set_stream_handler (NULL);
 @node Using GSL error reporting in your own functions
 @section Using GSL error reporting in your own functions
 @cindex error handling macros
-If you are writing numerical functions in program which also uses GSL code
-you may find it convenient to adopt the same error reporting conventions
-as in the library.
+If you are writing numerical functions in a program which also uses GSL
+code you may find it convenient to adopt the same error reporting
+conventions as in the library.
 
 To report an error you need to call the function @code{gsl_error} with a
 string describing the error and then return an appropriate error code

@@ -353,7 +353,12 @@ have extremely long periods and pass most statistical tests.
 The MT19937 generator of Makoto Matsumoto and Takuji Nishimura is a
 variant of the twisted generalized feedback shift-register algorithm,
 and is known as the "Mersenne Twister" generator. It has a Mersenne
-prime period of @math{2^@{19937@} - 1} (about @math{10^@{6000@}}) and is
+prime period of 
+@c ----------------------------------------------------------------------
+@c{$2^{19937} - 1$} 
+@math{2^@{19937@} - 1} (about 
+@c{$10^{6000}$}
+@math{10^6000}) and is
 equi-distributed in 623 dimensions. It has passed the @sc{diehard}
 statistical tests. It uses 624 words of state per generator and is
 comparable in speed to the other generators. The original generator used
@@ -376,8 +381,10 @@ Simulation}, Vol. 8, No. 1 (Jan. 1998), Pages 3-30
 The @code{ranlux} generator uses the lagged-fibonacci-with-skipping
 algorithm of Luscher to produce "luxury random numbers". It is a 24-bit
 generator, originally designed for single-precision IEEE floating point
-numbers. The period of the generator is about @math{10^@{171@}}. The
-generator is slow, but the algorithm has mathematically proven
+numbers. The period of the generator is about 
+@c{$10^{171}$}
+@math{10^171}. 
+The generator is slow, but the algorithm has mathematically proven
 properties. It can provide truly decorrelated numbers at a known level
 of randomness. The default level of decorrelation recommended by Luscher
 is provided by @code{gsl_rng_ranlux}, while @code{gsl_rng_ranlux389}
@@ -401,38 +408,60 @@ Communications}, 79 (1994) 111-114
 @cindex CMRG, combined multiple recursive random number generator
 This is a combined multiple recursive generator by L'Ecuyer. 
 Its sequence is,
-@c
-@c THIS IS HORRIBLE!
-@macro mod 
-\hbox@{ mod @}
-@end macro
-@c
-@macro and
-\&
-@end macro
-@c
-@equation
-z_n = (x_n - y_n) @mod m_1
-@end equation
+@tex
+$$
+z_n = (x_n - y_n) \,\hbox{mod}\, m_1
+$$
+@end tex
+@ifinfo
+@example
+z_n = (x_n - y_n) mod m_1
+@end example
+@end ifinfo
 @noindent
-where the two underlying generators @math{x_n} and @math{y_n} are,
-@c
-@equation
-x_n = (a_1 x_@{n-1@} + a_2 x_@{n-2@} + a_3 x_@{n-3@}) @mod m_1
-@end equation
-and
-@equation
-y_n = (b_1 y_@{n-1@} + b_2 y_@{n-2@} + b_3 y_@{n-3@}) @mod m_2
-@end equation
-@noindent
-with coefficients @math{a_1 = 0}, @math{a_2 = 63308}, @math{a_3 =
--183326}, @math{b_1 = 86098}, @math{b_2 = 0}, @math{b_3 = -539608},
-and moduli @math{m_1 = 2^@{31@} - 1 = 2147483647} and @math{m_2 =
-2145483479}.
+where the two underlying generators 
+@c{$x_n$}
+@math{x_n} and 
+@c{$y_n$}
+@math{y_n} are,
+@c ----------------------------------------------------------------------
+@tex
+$$
+\eqalign{ 
+x_n & = (a_1 x_{n-1} + a_2 x_{n-2} + a_3 x_{n-3}) \,\hbox{mod}\, m_1 \cr
+y_n & = (b_1 y_{n-1} + b_2 y_{n-2} + b_3 y_{n-3}) \,\hbox{mod}\, m_2
+}
+$$
+@end tex
+@ifinfo
+@example
+x_n = (a_1 x_@{n-1@} + a_2 x_@{n-2@} + a_3 x_@{n-3@}) mod m_1
+y_n = (b_1 y_@{n-1@} + b_2 y_@{n-2@} + b_3 y_@{n-3@}) mod m_2
+@end example
+@end ifinfo
 
-The period of this generator is @math{2^@{205@}} (about
-@math{10^@{61@}}). It uses 6 words of state per generator. For more
-information see,
+@noindent
+with coefficients 
+@math{a_1 = 0}, 
+@math{a_2 = 63308}, 
+@math{a_3 = -183326},
+@math{b_1 = 86098}, 
+@math{b_2 = 0},
+@math{b_3 = -539608},
+and moduli 
+@c{$m_1 = 2^{31} - 1 = 2147483647$} 
+@math{m_1 = 2^@{31@} - 1 = 2147483647}
+and 
+@c{$m_2 = 2145483479$}
+@math{m_2 = 2145483479}.
+
+The period of this generator is 
+@c{$2^{205}$}
+@math{2^205} 
+(about 
+@c{$10^{61}$}
+@math{10^61}). It uses
+6 words of state per generator. For more information see,
 
 @itemize @asis
 @item
@@ -445,15 +474,32 @@ Generators," @cite{Operations Research}, 44, 5 (1996), 816--822.
 @cindex MRG, multiple recursive random number generator
 This is a fifth-order multiple recursive generator by L'Ecuyer, Blouin
 and Coutre.  Its sequence is,
-@c
-@equation
-   x_n = (a_1 x_@{n-1@} + a_5 x_@{n-5@}) @mod m
-@end equation
-@noindent
-with @math{a_1 = 107374182}, @math{a_2 = a_3 = a_4 = 0}, @math{a_5 = 104480}
-and @math{m = 2^@{31@}-1}.
 
-The period of this generator is about @math{10^@{46@}}. It uses 5 words
+@tex
+$$
+x_n = (a_1 x_{n-1} + a_5 x_{n-5}) \,\hbox{mod}\, m
+$$
+@end tex
+@ifinfo
+@example
+x_n = (a_1 x_@{n-1@} + a_5 x_@{n-5@}) mod m
+@end example
+@end ifinfo
+@noindent
+with 
+@c{$a_1 = 107374182$} 
+@math{a_1 = 107374182}, 
+@c{$a_2 = a_3 = a_4 = 0$}
+@math{a_2 = a_3 = a_4 = 0}, 
+@c{$a_5 = 104480$}
+@math{a_5 = 104480}
+and 
+@c{$m = 2^{31}-1$}
+@math{m = 2^@{31@}-1}.
+
+The period of this generator is about 
+@c{$10^{46}$}
+@math{10^46}. It uses 5 words
 of state per generator. More information can be found in the following
 paper,
 @itemize @asis
@@ -468,30 +514,50 @@ Computer Simulation} 3, 87-98 (1993).
 @cindex Tausworthe random number generator
 This is a maximally equidistributed combined Tausworthe generator by
 L'Ecuyer. The sequence is,
-@c
-@equation
+
+@tex
+$$
 x_n = (s^1_n \oplus s^2_n \oplus s^3_n) 
-@end equation
+$$
+@end tex
+@ifinfo
+@example
+x_n = (s^1_n ^^ s^2_n ^^ s^3_n) 
+@end example
+@end ifinfo
 @noindent
 where,
-@c
-@equation
-s^1_@{n+1@} = (((s^1_n @and 4294967294) <<12) \oplus (((s^1_n <<13) \oplus s^1_n) >>19))
-@end equation
-@equation
-s^2_@{n+1@} = (((s^2_n @and 4294967288) << 4) \oplus (((s^2_n << 2) \oplus s^2_n) >>25))
-@end equation
-@equation
-s^3_@{n+1@} = (((s^3_n @and 4294967280) <<17) \oplus (((s^3_n << 3) \oplus s^3_n) >>11))
-@end equation
+@tex
+$$
+\eqalign{
+s^1_{n+1} &= (((s^1_n \& 4294967294) <<12) \oplus (((s^1_n <<13) \oplus s^1_n) >>19)) \cr
+s^2_{n+1} &= (((s^2_n \& 4294967288) << 4) \oplus (((s^2_n << 2) \oplus s^2_n) >>25)) \cr
+s^3_{n+1} &= (((s^3_n \& 4294967280) <<17) \oplus (((s^3_n << 3) \oplus s^3_n) >>11))
+}
+$$
+@end tex
+@ifinfo
+@example
+s^1_@{n+1@} = (((s^1_n & 4294967294) <<12) ^^ (((s^1_n <<13) ^^ s^1_n) >>19))
+s^2_@{n+1@} = (((s^2_n & 4294967288) << 4) ^^ (((s^2_n << 2) ^^ s^2_n) >>25))
+s^3_@{n+1@} = (((s^3_n & 4294967280) <<17) ^^ (((s^3_n << 3) ^^ s^3_n) >>11))
+@end example
+@end ifinfo
+
 @noindent
-computed modulo @math{2^@{32@}}. In the formulas above @math{\oplus}
+computed modulo 
+@c{$2^{32}$}
+@math{2^32}. In the formulas above 
+@c{$\oplus$}
+@math{^^}
 denotes ``exclusive-or''. Note that the algorithm relies on the properties
 of 32-bit unsigned integers and has been implemented using a bitmask
 of @code{0xFFFFFFFF} to make it work on 64 bit machines.
 
-The period of this generator is @math{2^@{88@}} (about
-@math{10^@{26@}}). It uses 3 words of state per generator. For more
+The period of this generator is @c{$2^{88}$}
+@math{2^88} (about
+@c{$10^{26}$}
+@math{10^26}). It uses 3 words of state per generator. For more
 information see,
 
 @itemize @asis
@@ -505,9 +571,17 @@ Generators", @cite{Mathematics of Computation}, 65, 213 (1996), 203--213.
 @cindex Four-tap Generalized Feedback Shift Register
 The @code{gfsr4} generator is like a lagged-fibonacci generator, and 
 produces each number as an @code{xor}'d sum of four previous values.
-@equation
- r_n = r_@{n-A@} \oplus r_@{n-B@} \oplus r_@{n-C@} \oplus r_@{n-D@}
-@end equation
+
+@tex
+$$
+r_n = r_{n-A} \oplus r_{n-B} \oplus r_{n-C} \oplus r_{n-D}
+$$
+@end tex
+@ifinfo
+@example
+r_n = r_@{n-A@} ^^ r_@{n-B@} ^^ r_@{n-C@} ^^ r_@{n-D@}
+@end example
+@end ifinfo
 
 Ziff (ref below) notes that "it is now widely known" that two-tap
 registers (such as R250, which is described below)
@@ -525,10 +599,16 @@ this implementation), then the sequence is said to be maximal.
 I'm not sure what that means, but I would guess that means all
 states are part of the same cycle, which would mean that the
 period for this generator is astronomical; it is
+@c{$(2^K)^D \approx 10^{93334}$}
 @math{(2^K)^D \approx 10^@{93334@}}
-where @math{K=32} is the number of bits in the word, and D is the longest
+where 
+@c{$K=32$}
+@math{K=32} 
+is the number of bits in the word, and D is the longest
 lag.  This would also mean that any one random number could 
-easily be zero; ie @math{0 \le r < 2^@{32@}}.
+easily be zero; ie 
+@c{$0 \le r < 2^{32}$}
+@math{0 <= r < 2^@{32@}}.
 
 Ziff doesn't say so, but it seems to me that the bits are
 completely independent here, so one could use this as an efficient
@@ -564,14 +644,31 @@ your program then these generators are quite acceptable.
 @deffn {Generator} gsl_rng_rand
 @cindex BSD random number generator
 This is the BSD @code{rand()} generator. Its sequence is
-@c
-@equation
-x_@{n+1@} = (a x_n + c) @mod m
-@end equation
+
+@tex
+$$
+x_{n+1} = (a x_n + c) \,\hbox{mod}\, m
+$$
+@end tex
+@ifinfo
+@example
+x_@{n+1@} = (a x_n + c) mod m
+@end example
+@end ifinfo
 @noindent
-with @math{a = 1103515245}, @math{c = 12345} and @math{m = 2^@{31@}}.
-The seed specifies the initial value, @math{x_1}. The period of this
-generator is @math{2^@{31@}}, and it uses 1 word of storage per
+with 
+@c{$a = 1103515245$}
+@math{a = 1103515245}, 
+@c{$c = 12345$}
+@math{c = 12345} and 
+@c{$m = 2^{31}$}
+@math{m = 2^@{31@}}.
+The seed specifies the initial value, 
+@c{$x_1$}
+@math{x_1}. The period of this
+generator is 
+@c{$2^{31}$}
+@math{2^31}, and it uses 1 word of storage per
 generator.
 @end deffn
 
@@ -592,7 +689,7 @@ buffer lengths of 8, 32, 64, 128 and 256 bytes, and the algorithm with
 the largest length that would fit into the user-supplied buffer was
 used. To support these algorithms additional generators are available
 with the following names,
-@c
+@c ----------------------------------------------------------------------
 @example
 gsl_rng_random8_bsd
 gsl_rng_random32_bsd
@@ -612,20 +709,37 @@ and @code{glibc2} generators are also avaliable, with the names
 @deffn {Generator} gsl_rng_rand48
 @cindex rand48 random number generator
 This is the Unix @code{rand48} generator. Its sequence is
-@c
-@equation
-x_@{n+1@} = (a x_n + c) @mod m
-@end equation
+
+@tex
+$$
+x_{n+1} = (a x_n + c) \,\hbox{mod}\, m
+$$
+@end tex
+@ifinfo
+@example
+x_@{n+1@} = (a x_n + c) mod m
+@end example
+@end ifinfo
 @noindent
-defined on 48-bit unsigned integers with @math{a = 25214903917}, @math{c
-= 11} and @math{m = 2^@{48@}}. The seed specifies the upper 32 bits of
-the initial value, @math{x_1}, with the lower 16 bits set to
-@code{0x330E}. The function @code{gsl_rng_get} returns the upper 32 bits
-from each term of the sequence. This does not have a direct parallel in
-the original @code{rand48} functions, but forcing the result to type
-@code{long int} reproduces the output of @code{mrand48}. The function
+defined on 48-bit unsigned integers with 
+@c{$a = 25214903917$} 
+@math{a = 25214903917}, 
+@c{$c = 11$} 
+@math{c = 11} and 
+@c{$m = 2^{48}$} 
+@math{m = 2^@{48@}}. 
+The seed specifies the upper 32 bits of the initial value, 
+@c{$x_1$}
+@math{x_1},
+with the lower 16 bits set to @code{0x330E}. The function
+@code{gsl_rng_get} returns the upper 32 bits from each term of the
+sequence. This does not have a direct parallel in the original
+@code{rand48} functions, but forcing the result to type @code{long int}
+reproduces the output of @code{mrand48}. The function
 @code{gsl_rng_uniform} uses the full 48 bits of internal state to return
-the double precision number @math{x_n/m}, which is equivalent to the
+the double precision number 
+@c{$x_n/m$}
+@math{x_n/m}, which is equivalent to the
 function @code{drand48}. Note that some versions of the GNU C Library
 contained a bug in @code{mrand48} function which caused it to produce
 different results (only the lower 16-bits of the return value were set).
@@ -635,7 +749,7 @@ different results (only the lower 16-bits of the return value were set).
 @subsection Numerical Recipes generators
 @cindex Random number generators, Numerical recipes
 @cindex Numerical recipes, random number generators
-@c
+@c ----------------------------------------------------------------------
 The following generators are provided for compatibility with
 @cite{Numerical Recipes}. Note that the original Numerical Recipes
 functions used single precision while we use double precision. This will
@@ -680,7 +794,11 @@ Note that most of the generators in this section are based on single
 linear congruence relations, which are the least sophisticated type of
 generator. In particular, linear congruences have poor properties when
 used with a non-prime modulus, as several of these routines do (e.g.
-with a power of two modulus, @math{2^@{31@}} or @math{2^@{32@}}). This
+with a power of two modulus, 
+@c{$2^{31}$}
+@math{2^31} or 
+@c{$2^{32}$}
+@math{2^32}). This
 leads to periodicity in the least significant bits of each number,
 with only the higher bits having any randomness. Thus if you want to
 produce a random bitstream it is best to avoid using the least
@@ -695,17 +813,29 @@ numbers which should be identical to those from the original RANF.
 @cindex CRAY random number generator, RANF
 This is the CRAY random number generator @code{RANF}. Its
 sequence is
-@c
-@equation
-x_@{n+1@} = (a x_n) @mod m
-@end equation
+
+@tex
+$$
+x_{n+1} = (a x_n) \,\hbox{mod}\, m
+$$
+@end tex
+@ifinfo
+@example
+x_@{n+1@} = (a x_n) mod m
+@end example
+@end ifinfo
 @noindent
 defined on 48-bit unsigned integers with @math{a = 44485709377909} and
-@math{m = 2^@{48@}}.  The seed specifies the lower 32 bits of the
-initial value, @math{x_1}, with the lowest bit set to prevent the seed
-taking an even value.  The upper 16 bits of @math{x_1} are set to 0. A
-consequence of this procedure is that the pairs of seeds 2 and 3, 4 and
-5, etc produce the same sequences.
+@c{$m = 2^{48}$}
+@math{m = 2^@{48@}}.  The seed specifies the lower
+32 bits of the initial value, 
+@c{$x_1$}
+@math{x_1}, with the lowest bit set to
+prevent the seed taking an even value.  The upper 16 bits of 
+@c{$x_1$}
+@math{x_1}
+are set to 0. A consequence of this procedure is that the pairs of seeds
+2 and 3, 4 and 5, etc produce the same sequences.
 
 There is a subtlety in the implementation of the seeding. The initial
 state is reversed through one step, by multiplying by the modular
@@ -713,15 +843,20 @@ inverse of @math{a} mod @math{m}. This is done for compatibility with
 the original CRAY implementation.
 
 Note that you can only seed the generator with integers up to
-@math{2^@{32@}}, while the original CRAY implementation uses
-non-portable wide integers which can cover all @math{2^@{48@}} states of
-the generator.
+@c{$2^{32}$}
+@math{2^32}, while the original CRAY implementation uses
+non-portable wide integers which can cover all 
+@c{$2^{48}$}
+@math{2^48} states of the generator.
 
 The function @code{gsl_rng_get} returns the upper 32 bits from each term
 of the sequence.  The function @code{gsl_rng_uniform} uses the full 48
-bits to return the double precision number @math{x_n/m}.
+bits to return the double precision number 
+@c{$x_n/m$}
+@math{x_n/m}.
 
-The period of this generator is @math{2^@{46@}}.
+The period of this generator is @c{$2^{46}$}
+@math{2^46}.
 @end deffn
 
 @deffn {Generator} gsl_rng_ranmar
@@ -737,13 +872,22 @@ CERNLIB high-energy physics library.
 @cindex R250 shift-register random number generator
 This is the shift-register generator of Kirkpatrick and Stoll. The
 sequence is
-@c
-@equation
-x_n = x_@{n-103@} \oplus x_@{n-250@}
-@end equation
+@tex
+$$ 
+x_n = x_{n-103} \oplus x_{n-250}
+$$
+@end tex
+@ifinfo
+@example
+x_n = x_@{n-103@} ^^ x_@{n-250@}
+@end example
+@end ifinfo
 @noindent
-where @math{\oplus} denote ``exclusive-or'', defined on 32-bit
-words. The period of this generator is about @math{2^@{250@}} and it
+where 
+@c{$\oplus$}
+@math{^^} denote ``exclusive-or'', defined on
+32-bit words. The period of this generator is about @c{$2^{250}$}
+@math{2^250} and it
 uses 250 words of state per generator.
 
 For more information see,
@@ -760,7 +904,9 @@ number generator", @cite{Journal of Computational Physics}, 40, 517-526
 This is an earlier version of the twisted generalized feedback
 shift-register generator, and has been superseded by the development of
 MT19937. However, it is still an acceptable generator in its own
-right. It has a period of @math{2^@{800@}} and uses 33 words of storage
+right. It has a period of 
+@c{$2^{800}$}
+@math{2^800} and uses 33 words of storage
 per generator.
 
 For more information see,
@@ -780,39 +926,77 @@ Vol. 4, No. 3, 1994, pages 254-266.
 @deffn {Generator} gsl_rng_vax
 @cindex VAX random number generator
 This is the VAX generator @code{MTH$RANDOM}. Its sequence is,
-@c
-@equation
-x_@{n+1@} = (a x_n + c) @mod m
-@end equation
+@tex
+$$
+x_{n+1} = (a x_n + c) \,\hbox{mod}\, m
+$$
+@end tex
+@ifinfo
+@example
+x_@{n+1@} = (a x_n + c) mod m
+@end example
+@end ifinfo
 @noindent
-with @math{a = 69069}, @math{c = 1} and @math{m = 2^@{32@}}. The seed
-specifies the initial value, @math{x_1}. The period of this generator is
-@math{2^@{32@}} and it uses 1 word of storage per generator.
+with 
+@math{a = 69069}, @math{c = 1} and 
+@c{$m = 2^{32}$}
+@math{m = 2^@{32@}}. The seed specifies the initial value, 
+@c{$x_1$}
+@math{x_1}. The
+period of this generator is 
+@c{$2^{32}$}
+@math{2^32} and it uses 1 word of storage per
+generator.
 @end deffn
 
 @deffn {Generator} gsl_rng_transputer
 This is the random number generator from the INMOS Transputer
 Development system.  Its sequence is,
-@c
-@equation
-x_@{n+1@} = (a x_n) @mod m
-@end equation
+
+@tex
+$$
+x_{n+1} = (a x_n) \,\hbox{mod}\, m
+$$
+@end tex
+@ifinfo
+@example
+x_@{n+1@} = (a x_n) mod m
+@end example
+@end ifinfo
 @noindent
-with @math{a = 1664525} and @math{m = 2^@{32@}}. The seed specifies the initial
-value, @math{x_1}.
+with @math{a = 1664525} and 
+@c{$m = 2^{32}$}
+@math{m = 2^@{32@}}.
+The seed specifies the initial value, 
+@c{$x_1$}
+@math{x_1}.
 @end deffn
 
 @deffn {Generator} gsl_rng_randu
 @cindex RANDU random number generator
 This is the IBM @code{RANDU} generator. Its sequence is
-@c
-@equation
-x_@{n+1@} = (a x_n) @mod m
-@end equation
+
+@tex
+$$
+x_{n+1} = (a x_n) \,\hbox{mod}\, m
+$$
+@end tex
+@ifinfo
+@example
+x_@{n+1@} = (a x_n) mod m
+@end example
+@end ifinfo
 @noindent
-with @math{a = 65539} and @math{m = 2^@{31@}}. The seed specifies the
-initial value, @math{x_1}. The period of this generator was only
-@math{2^@{29@}}. It has become a textbook example of a poor generator.
+with @math{a = 65539} and 
+@c{$m = 2^{31}$}
+@math{m = 2^@{31@}}. The
+seed specifies the initial value, 
+@c{$x_1$}
+@math{x_1}. The period of this
+generator was only 
+@c{$2^{29}$}
+@math{2^29}. It has become a textbook example of a
+poor generator.
 @end deffn
 
 @deffn {Generator} gsl_rng_minstd
@@ -820,14 +1004,27 @@ initial value, @math{x_1}. The period of this generator was only
 This is Park and Miller's "minimal standard" @sc{minstd} generator, a
 simple linear congruence which takes care to avoid the major pitfalls of
 such algorithms. Its sequence is,
-@c
-@equation
-x_@{n+1@} = (a x_n) @mod m
-@end equation
+
+@tex
+$$
+x_{n+1} = (a x_n) \,\hbox{mod}\, m
+$$
+@end tex
+@ifinfo
+@example
+x_@{n+1@} = (a x_n) mod m
+@end example
+@end ifinfo
 @noindent
-with @math{a = 16807} and @math{m = 2^@{31@} - 1 = 2147483647}. The seed
-specifies the initial value, @math{x_1}. The period of this generator is
-about @math{2^@{31@}}.
+with @math{a = 16807} and 
+@c{$m = 2^{31} - 1 = 2147483647$}
+@math{m = 2^@{31@} - 1 = 2147483647}. 
+The seed specifies the initial value, 
+@c{$x_1$}
+@math{x_1}. The period of this
+generator is about 
+@c{$2^{31}$}
+@math{2^31}.
 
 This generator is used in the IMSL Library (subroutine RNUN) and in
 MATLAB (the RAND function). It is also sometimes known by the acronym
@@ -858,13 +1055,22 @@ original source code is available from NETLIB.
 @deffn {Generator} gsl_rng_zuf
 This is the ZUFALL lagged Fibonacci series generator of Peterson.  Its
 sequence is,
-@c
-@equation
-t    = u_@{n-273@} + u_@{n-607@}
-@end equation
-@equation
+@c ----------------------------------------------------------------------
+@tex
+$$ 
+\eqalign{
+t &= u_{n-273} + u_{n-607} \cr
+u_n  &= t - \hbox{floor}(t)
+}
+$$
+@end tex
+@ifinfo
+@example
+t = u_@{n-273@} + u_@{n-607@}
 u_n  = t - floor(t)
-@end equation
+@end example
+@end ifinfo
+
 The original source code is available from NETLIB.  For more information
 see,
 @itemize @asis
@@ -876,10 +1082,10 @@ SX-3", @cite{International Journal of High Speed Computing} (1994).
 
 @section Performance
 
-@c
+@c ----------------------------------------------------------------------
 @c I made the plot like this
 @c ./benchmark > tmp ; cat tmp | perl -n -e '($n,$s) = split(" ",$_) ; printf("%17s ",$n); print "-" x ($s/1e5), "\n";'
-@c
+@c ----------------------------------------------------------------------
 
 @smallexample
  ranlux389 --
@@ -981,7 +1187,7 @@ MM&YK) available under the GNU General Public License.
 @c %2^31-1   69069, 475559465, 654291926, 1790562961, 957348638, 2091487034
 @c mrg
 @c [q([x1, x2, x3, x4, x5]) := [107374182 mod 2147483647 * x1 + 104480 mod 2147483647 * x5, x1, x2, x3, x4]]
-@c
+@c ----------------------------------------------------------------------
 @c cmrg
 @c [q1([x1,x2,x3]) := [63308 mod 2147483647 * x2 -183326 mod 2147483647 * x3, x1, x2],
 @c  q2([x1,x2,x3]) := [86098 mod 2145483479 * x1 -539608 mod 2145483479 * x3, x1, x2] ]

@@ -53,7 +53,7 @@ pointed to by @var{bin}. The bins are floating-point numbers, so you can
 increment them by non-integer values if necessary.
 @end table
 @end deftp
-@c
+@c ----------------------------------------------------------------------
 @noindent
 The range for @var{bin}[i] is given by @var{range}[i] to
 @var{range}[i+1]. For @math{n} bins there are @math{n+1} entries in the
@@ -61,9 +61,16 @@ array @var{range}. Each bin is inclusive at the lower end and exclusive
 at the upper end. Mathematically this means that the bins are defined by
 the following inequality,
 
+@tex
+$$
+\hbox{bin[i] corresponds to range[i]} \le x < \hbox{range[i+1]}
+$$
+@end tex
+@ifinfo
 @display
-bin[i] corresponds to @math{range[i] \le x < range[i+1]}
+bin[i] corresponds to range[i] <= x < range[i+1]
 @end display
+@end ifinfo
 
 @noindent
 Here is a diagram of the correspondence between ranges and bins on the
@@ -80,9 +87,11 @@ number-line for @math{x},
 @noindent
 In this picture the values of the @var{range} array are denoted by
 @math{r}. On the left-hand side of each bin the square bracket
-"@code{[}" denotes an inclusive lower bound (@math{r \le x}), and the round
+"@code{[}" denotes an inclusive lower bound 
+(@c{$r \le x$}
+@math{r <= x}), and the round
 parentheses "@code{)}" on the right-hand side denote an exclusive upper
-bound (@math{x<r}). Thus any samples which fall on the upper end of the
+bound (@math{x < r}). Thus any samples which fall on the upper end of the
 histogram are excluded. If you want to include this value for the last
 bin you will need to add an extra bin to your histogram.
 
@@ -102,7 +111,9 @@ isn't necessary to check every histogram @code{alloc}.
 @deftypefun {gsl_histogram *} gsl_histogram_calloc (size_t @var{n})
 This function allocates memory for a histogram with @var{n} bins, and
 returns a pointer to its newly initialized @code{gsl_histogram} struct.
-The bins are uniformly spaced with a total range of @math{0 \le  x < n},
+The bins are uniformly spaced with a total range of 
+@c{$0 \le  x < n$}
+@math{0 <=  x < n},
 as shown in the table below.
 
 @display
@@ -111,6 +122,7 @@ bin[1] corresponds to @math{1 \le  x < 2}
 ......
 bin[n-1] corresponds to @math{n-1 \le  x < n}
 @end display
+
 @noindent
 The bins are initialized to zero so the histogram is ready for use.
 
@@ -327,9 +339,17 @@ of each bin represents the probability of an event where the value of
 @math{x} falls in the range of that bin. The probability distribution
 function has the one-dimensional form @math{p(x)dx} where,
 
-@equation
+@tex
+$$
 p(x) = n_i/ (N w_i)
-@end equation
+$$
+@end tex
+@ifinfo
+@example
+p(x) = n_i/ (N w_i)
+@end example
+@end ifinfo
+
 @noindent
 In this equation @math{n_i} is the number of events in the bin which
 contains @math{x}, @math{w_i} is the width of the bin and @math{N} is
@@ -364,7 +384,7 @@ The cumulative probability for the bins is stored in an array of
 @var{n} elements pointed to by @var{sum}.
 @end table
 @end deftp
-@c
+@c ----------------------------------------------------------------------
 @noindent
 The following functions allow you to create a @code{gsl_histogram_pdf}
 struct which represents this probability distribution and generate
@@ -393,12 +413,25 @@ one, to compute a single random sample from the probability distribution
 @var{p}. The algorithm used to compute the sample @math{s} is given by
 the following formula,
 
-@equation
+@tex
+$$
+s = \hbox{range}[i] + \delta * (\hbox{range}[i+1] - \hbox{range}[i])
+$$
+@end tex
+@ifinfo
+@example
 s = range[i] + delta * (range[i+1] - range[i])
-@end equation
+@end example
+@end ifinfo
+
 @noindent
-where @math{i} is the index which satisfies @math{sum[i] \le  r <
-sum[i+1]} and @math{delta} is @math{(r - sum[i])/(sum[i+1] - sum[i])}.
+where @math{i} is the index which satisfies 
+@c{$sum[i] \le  r < sum[i+1]$}
+@math{sum[i] <=  r < sum[i+1]} and 
+@c{$\delta$}
+@math{delta} is 
+@c{$(r - sum[i])/(sum[i+1] - sum[i])$}
+@math{(r - sum[i])/(sum[i+1] - sum[i])}.
 @end deftypefun
 
 @node Example programs for histograms
@@ -514,7 +547,7 @@ dimensional array of bins in a single block of memory according to the
 mapping @var{bin(i,j)} = @code{bin[i * ny + j]}.
 @end table
 @end deftp
-@c
+@c ----------------------------------------------------------------------
 @noindent
 The range for @var{bin(i,j)} is given by @var{xrange[i]} to
 @var{xrange[i+1]} in the x-direction and @var{yrange[j]} to
@@ -523,8 +556,8 @@ end and exclusive at the upper end. Mathematically this means that the
 bins are defined by the following inequality,
 
 @display
-bin(i,j) corresponds to xrange[i] \le  x < xrange[i+1]
-                    and yrange[j] \le  y < yrange[j+1]
+bin(i,j) corresponds to xrange[i] <= x < xrange[i+1]
+                    and yrange[j] <= y < yrange[j+1]
 @end display
 
 Note that any samples which fall on the upper sides of the histogram are
@@ -550,8 +583,11 @@ This function allocates memory for a two-dimensional histogram with
 @var{nx} bins in the x direction and @var{ny} bins in the y
 direction. The function returns a pointer to a newly initialized
 @code{gsl_histogram2d} struct. The bins are uniformly spaced with a
-total range of @math{0 \le  x < nx} in the x-direction and @math{0 \le  y <
-ny} in the y-direction, as shown in the table below.
+total range of 
+@c{$0 \le  x < nx$}
+@math{0 <= x < nx} in the x-direction and 
+@c{$0 \le  y < ny$} 
+@math{0 <=  y < ny} in the y-direction, as shown in the table below.
 
 The bins are initialized to zero so the histogram is ready for use.
 
@@ -636,13 +672,16 @@ This function resets all the bins of the histogram @var{h} to zero.
 @section Searching 2D histogram ranges
 
 The following functions are used by the access and update routines to
-locate the bin which corresponds to a given @math{(x,y)} coordinate.
+locate the bin which corresponds to a given @math{(x\,y)} coordinate.
 
 @deftypefun int gsl_histogram2d_find_impl (const gsl_histogram2d * @var{h}, double @var{x}, double @var{y}, size_t * @var{i}, size_t * @var{j})
 This function finds and sets the indices @var{i} and @var{j} to the
 offsets in the arrays @var{xrange} and @var{yrange} which bound the
-value of @math{(x,y)}, such that @math{xrange[i] \le x <
-xrange[i+1]} and @math{yrange[j] \le y < yrange[j+1]}. The binary search
+value of @math{(x,y)}, such that 
+@c{$xrange[i] \le x < xrange[i+1]$}
+@math{xrange[i] <= x < xrange[i+1]} and 
+@c{$yrange[j] \le y < yrange[j+1]$}
+@math{yrange[j] <= y < yrange[j+1]}. The binary search
 function @code{bsearch} from the system C-library is used to locate the
 appropriate ranges. If suitable values of @var{i} and @var{j} are found
 then the function returns 0 to indicate success. If @var{x} is less than
@@ -741,17 +780,28 @@ the file.
 As in the one-dimensional case, a two-dimensional histogram made by
 counting events can be regarded as a measurement of a probability
 distribution. Allowing for statistical error, the height of each bin
-represents the probability of an event where (@math{x},@var{y}) falls in
+represents the probability of an event where (@math{x},@math{y}) falls in
 the range of that bin. For a two-dimensional histogram the probability
 distribution takes the form @math{p(x,y) dx dy} where,
 
-@equation
+@tex
+$$
+p(x,y) = n_{ij}/ (N A_{ij})
+$$
+@end tex
+@ifinfo
+@example
 p(x,y) = n_@{ij@}/ (N A_@{ij@})
-@end equation
-@noindent
+@end example
+@end ifinfo
 
-In this equation @math{n_@{ij@}} is the number of events in the bin which
-contains @math{(x,y)}, @math{A_@{ij@}} is the area of the bin and @math{N} is
+@noindent
+In this equation 
+@c{$n_{ij}$}
+@math{n_@{ij@}} is the number of events in the bin which
+contains @math{(x,y)}, 
+@c{$A_{ij}$}
+@math{A_@{ij@}} is the area of the bin and @math{N} is
 the total number of events. The distribution of events within each bin
 is assumed to be uniform.
 
@@ -771,7 +821,7 @@ The cumulative probability for the bins is stored in an array of
 @var{nx}*@var{ny} elements pointed to by @var{sum}.
 @end table
 @end deftp
-@c
+@c ----------------------------------------------------------------------
 @noindent
 The following functions allow you to create a @code{gsl_histogram2d_pdf}
 struct which represents a two dimensional probability distribution and

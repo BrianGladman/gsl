@@ -3,7 +3,7 @@
 @setfilename gsl-design.info
 @settitle GNU Scientific Library
 @finalout
-@c @setchapternewpage odd
+@c -@setchapternewpage odd
 @c %**end of header
 
 @dircategory Scientific software
@@ -548,6 +548,6 @@ Public Licenses that accompany them.
 
 @printindex tp
 
-@c @shortcontents
+@c -@shortcontents
 @contents
 @bye

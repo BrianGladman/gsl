@@ -29,38 +29,71 @@ document @cite{GSL FFT Algorithms} (@pxref{FFT References and Further Reading})
 Fast Fourier Transforms are efficient algorithms for
 calculating the discrete fourier transform (DFT),
 
-@equation
+@tex
+$$
+x_j = \sum_{k=0}^{N-1} z_k \exp(-2\pi i j k / N) 
+$$
+@end tex
+@ifinfo
+@example
 x_j = \sum_@{k=0@}^@{N-1@} z_k \exp(-2\pi i j k / N) 
-@end equation
+@end example
+@end ifinfo
 
 The DFT usually arises as an approximation to the continuous fourier
 transform when functions are sampled at discrete intervals in space or
 time. The naive evaluation of the discrete fourier transform is a
-matrix-vector multiplication @math{W\vec@{z@}}. A general matrix-vector
-multiplication takes @math{O(N^2)} operations for @math{N}
+matrix-vector multiplication 
+@c{$W\vec{z}$}
+@math{W\vec@{z@}}. A general matrix-vector
+multiplication takes 
+@c{$O(N^2)$}
+@math{O(N^2)} operations for @math{N}
 data-points. Fast fourier transform algorithms use a divide-and-conquer
 strategy to factorize the matrix @math{W} into smaller sub-matrices,
 corresponding to the integer factors of the length @math{N}.  If
-@math{N} can be factorized into a product of integers @math{f_1 f_2
-\ldots f_n} then the DFT can be computed in @math{O(N \sum f_i)}
+@math{N} can be factorized into a product of integers 
+@c{$f_1 f_2 \ldots f_n$} 
+@math{f_1 f_2 ... f_n} then the DFT can be computed in 
+@c{$O(N \sum f_i)$}
+@math{O(N \sum f_i)}
 operations. For a radix-2 FFT this gives an operation count of
+@c{$O(N\log_2 N)$}
 @math{O(N\log_2 N)}.
 
 All the FFT functions offer three types of transform: forwards, inverse
 and backwards, based on the same mathematical definitions. The
 definition of the @dfn{forward fourier transform},
-@math{x}=FFT(@math{z}), is,
+@c{$x = \hbox{FFT}(z)$}
+@math{x = FFT(z)}, is,
 
-@equation
+@tex
+$$
+x_j = \sum_{k=0}^{N-1} z_k \exp(-2\pi i j k / N) 
+$$
+@end tex
+@ifinfo
+@example
 x_j = \sum_@{k=0@}^@{N-1@} z_k \exp(-2\pi i j k / N) 
-@end equation
+@end example
+@end ifinfo
+
 @noindent
 and the definition of the @dfn{inverse fourier transform},
-@math{x}=IFFT(@math{z}), is,
+@c{$x = \hbox{IFFT}(z)$}
+@math{x = IFFT(z)}, is,
 
-@equation
+@tex
+$$
+z_j = {1 \over N} \sum_{k=0}^{N-1} x_k \exp(2\pi i j k / N).
+$$
+@end tex
+@ifinfo
+@example
 z_j = @{1 \over N@} \sum_@{k=0@}^@{N-1@} x_k \exp(2\pi i j k / N).
-@end equation
+@end example
+@end ifinfo
+
 @noindent
 The factor of @math{1/N} makes this a true inverse. For example, a call
 to @code{gsl_fft_complex_forward} followed by a call to
@@ -78,9 +111,17 @@ exponential in the forward transform.
 The @dfn{backwards FFT} is simply our terminology for an unscaled
 version of the inverse FFT,
 
-@equation
+@tex
+$$
+z^{backwards}_j = \sum_{k=0}^{N-1} x_k \exp(2\pi i j k / N).
+$$
+@end tex
+@ifinfo
+@example
 z^@{backwards@}_j = \sum_@{k=0@}^@{N-1@} x_k \exp(2\pi i j k / N).
-@end equation
+@end example
+@end ifinfo
+
 @noindent
 When the overall scale of the result is unimportant it is often
 convenient to use the backwards FFT instead of the inverse to save
@@ -124,12 +165,18 @@ the data.
 
 For physical applications it is important to remember that the index
 appearing in the DFT does not correspond directly to a physical
-frequency. If the time-step of the DFT is @math{\Delta} then the
+frequency. If the time-step of the DFT is 
+@c{$\Delta$}
+@math{\Delta} then the
 frequency-domain includes both positive and negative frequencies,
-ranging from @math{-1/(2\Delta)} through 0 to @math{+1/(2\Delta)}. The
-positive frequencies are stored from the beginning of the array up to
-the middle, and the negative frequencies are stored backwards from the
-end of the array.
+ranging from 
+@c{$-1/(2\Delta)$}
+@math{-1/(2\Delta)} through 0 to 
+@c{$+1/(2\Delta)$}
+@math{+1/(2\Delta)}. 
+The positive frequencies are stored from the beginning of the array up
+to the middle, and the negative frequencies are stored backwards from
+the end of the array.
 
 Here is a table which shows the layout of the array @var{data}, and the
 correspondence between the time-domain data @math{z}, and the
@@ -150,7 +197,11 @@ frequency-domain data @math{x}.
 @end example
 @noindent
 When @math{N} is even the location @math{N/2} contains the most positive
-and negative frequencies (@math{+1/(2 \Delta)},@math{-1/(2 \Delta)})
+and negative frequencies 
+(@c{$+1/(2 \Delta)$}
+@math{+1/(2 \Delta)},
+@c{$-1/(2 \Delta)$}
+@math{-1/(2 \Delta)})
 which are equivalent. If @math{N} is odd then general structure of the
 table above still applies, but @math{N/2} does not appear.
 
@@ -308,20 +359,30 @@ the modules for @math{2*2} and @math{2*3}.
 
 For factors which are not implemented as modules there is a fall-back to
 a general length-@math{n} module which uses Singleton's method for
-efficiently computing a DFT. This module is @math{O(n^2)}, and slower
+efficiently computing a DFT. This module is 
+@c{$O(n^2)$}
+@math{O(n^2)}, and slower
 than a dedicated module would be but works for any length @math{n}. Of
 course, lengths which use the general length-@math{n} module will still
 be factorized as much as possible. For example, a length of 143 will be
 factorized into @math{11*13}. Large prime factors are the worst case
-scenario, e.g. as found in @math{n=2*3*99991}, and should be avoided
-because their @math{O(n^2)} scaling will dominate the run-time (consult
+scenario, e.g. as found in 
+@c{$n=2*3*99991$}
+@math{n=2*3*99991}, and should be avoided
+because their 
+@c{$O(n^2)$}
+@math{O(n^2)} scaling will dominate the run-time (consult
 @cite{GSL FFT Algorithms} for possible ways around this problem).
 
 The mixed-radix initialization function @code{gsl_fft_complex_init}
 returns the list of factors chosen by the library for a given length
 @math{N}. It can be used to check how well the length has been
 factorized, and estimate the run-time. To a first approximation the
-run-time scales as @math{N \sum f_i}, where the @math{f_i} are the
+run-time scales as 
+@c{$N \sum f_i$}
+@math{N \sum f_i}, where the 
+@c{$f_i$}
+@math{f_i} are the
 factors of @math{N}. For programs under user control you may wish to
 issue a warning that the transform will be slow when the length is
 poorly factorized. If you frequently encounter data lengths which cannot
@@ -340,7 +401,7 @@ FFT Algorithms} for details on adding support for other factors.
 @c lookup table for the chosen factorization is also computed.
 
 @c An FFT is computed by a call to one of the @code{forward},
-@c @code{backward} or @code{inverse} functions, with the data, length and
+@c -@code{backward} or @code{inverse} functions, with the data, length and
 @c wavetable as arguments.
 
 All these functions are declared in the header file @file{gsl_fft_complex.h}.
@@ -480,7 +541,9 @@ wavetable can be easily prepared using the functions
 
 There is no restriction on the length @var{n}.  Efficient modules are
 provided for subtransforms of length 2, 3, 4, 5, 6 and 7. Any remaining
-factors are computed with a slow, @math{O(n^2)}, general-@math{n} module.
+factors are computed with a slow, 
+@c{$O(n^2)$}
+@math{O(n^2)}, general-@math{n} module.
 
 The functions return a value of @code{0} if no errors were detected,
 and @code{-1} in the case of error. The following @code{gsl_errno}
@@ -573,9 +636,17 @@ However, there is an important difference between forward and inverse
 transforms. The fourier transform of a real sequence is not real. It is
 a complex sequence with a special symmetry:
 
-@equation
+@tex
+$$
+z_k = z_{N-k}^*
+$$
+@end tex
+@ifinfo
+@example
 z_k = z_@{N-k@}^*
-@end equation
+@end example
+@end ifinfo
+
 @noindent
 A sequence with this symmetry is called @dfn{conjugate-complex} or
 @dfn{half-complex}. This different structure requires different
@@ -589,17 +660,33 @@ Functions in @code{gsl_fft_real} compute the frequency coefficients of a
 real sequence. The half-complex coefficients @math{c} of a real sequence
 @math{x} are given by fourier analysis,
 
-@equation
+@tex
+$$
+c_k = \sum_{j=0}^{N-1} x_k \exp(-2 \pi i j k /N)
+$$
+@end tex
+@ifinfo
+@example
 c_k = \sum_@{j=0@}^@{N-1@} x_k \exp(-2 \pi i j k /N)
-@end equation
+@end example
+@end ifinfo
+
 @noindent
 Functions in @code{gsl_fft_halfcomplex} compute inverse or backwards
 transforms. They reconstruct real sequences by fourier synthesis from
 their half-complex frequency coefficients, @math{c},
 
-@equation
+@tex
+$$
+x_j = {1 \over N} \sum_{k=0}^{N-1} c_k \exp(2 \pi i j k /N)
+$$
+@end tex
+@ifinfo
+@example
 x_j = @{1 \over N@} \sum_@{k=0@}^@{N-1@} c_k \exp(2 \pi i j k /N)
-@end equation
+@end example
+@end ifinfo
+
 @noindent
 The symmetry of the half-complex sequence implies that only half of the
 complex numbers in the output need to be stored. The remaining half can
@@ -643,8 +730,10 @@ half-complex sequence, which is stored in-place. The arrangement of the
 half-complex terms uses the following scheme: for @math{k < N/2} the
 real part of the @math{k}-th term is stored in location @math{k}, and
 the corresponding imaginary part is stored in location @math{N-k}. Terms
-with @math{k > N/2} can be reconstructed using the symmetry @math{z_k =
-z^*_@{N-k@}}. The terms for @math{k=0} and @math{k=N/2} are both purely
+with @math{k > N/2} can be reconstructed using the symmetry 
+@c{$z_k = z^*_{N-k}$}
+@math{z_k = z^*_@{N-k@}}. 
+The terms for @math{k=0} and @math{k=N/2} are both purely
 real, and count as a special case. Their real parts are stored in
 locations @math{0} and @math{N/2} respectively, while their imaginary
 parts which are zero are not stored.
@@ -711,7 +800,9 @@ stored. The imaginary part of the zero-frequency component is never
 stored. It is known to be zero (since the zero frequency component is
 simply the sum of the input data (all real)). For a sequence of even
 length the imaginary part of the frequency @math{n/2} is not stored
-either, since the symmetry @math{z_k = z_@{N-k@}^*} implies that this is
+either, since the symmetry 
+@c{$z_k = z_{N-k}^*$}
+@math{z_k = z_@{N-k@}^*} implies that this is
 purely real too.
 
 The storage scheme is best shown by some examples.  The table below
@@ -862,7 +953,9 @@ wavetable can be easily prepared using the functions
 
 There is no restriction on the length @var{n}.  Efficient modules are
 provided for subtransforms of length 2, 3, 4 and 5. Any remaining
-factors are computed with a slow, @math{O(n^2)}, general-n module.
+factors are computed with a slow, 
+@c{$O(n^2)$}
+@math{O(n^2)}, general-n module.
 
 The functions return a value of @code{0} if no errors were detected,
 and @code{-1} in the case of error. The following @code{gsl_errno}
@@ -911,8 +1004,11 @@ is zero).
 This function converts @var{halfcomplex_coefficient}, an array of
 half-complex coefficients as returned by @code{gsl_fft_real}, into an
 ordinary complex array, @var{complex_coefficient}. It fills in the
-complex array using the symmetry @math{z_k = z_@{N-k@}^*} to reconstruct
-the redundant elements. The algorithm for the conversion is,
+complex array using the symmetry 
+@c{$z_k = z_{N-k}^*$}
+@math{z_k = z_@{N-k@}^*}
+to reconstruct the redundant elements. The algorithm for the conversion
+is,
 
 @example  
 complex_coefficient[0].real = halfcomplex_coefficient[0];
@@ -1031,9 +1127,9 @@ program.}
 @end tex
 
 
-@c @node Test Signals
-@c @section Test Signals
-@c @cindex FFT test signals
+@c -@node Test Signals
+@c -@section Test Signals
+@c -@cindex FFT test signals
 
 @c This section describes functions for generating simple test signals,
 @c such as unit pulses, constant signals, complex exponentials (sine and
@@ -1049,75 +1145,75 @@ program.}
 
 @c These functions are declared in the header file @file{gsl_fft_signals.h}.
 
-@c @deftypefun int gsl_fft_signal_complex_pulse (size_t @var{t}, size_t @var{stride}, size_t @var{n}, double @var{z_real}, double @var{z_imag}, gsl_complex_packed_array @var{data[]}, complex @var{fft[]})
+@c -@deftypefun int gsl_fft_signal_complex_pulse (size_t @var{t}, size_t @var{stride}, size_t @var{n}, double @var{z_real}, double @var{z_imag}, gsl_complex_packed_array @var{data[]}, complex @var{fft[]})
 
 @c This function prepares a ``delta-function'' pulse of complex amplitude
 @c (@var{z_real},@var{z_imag}) at time @var{t} in the complex array
-@c @var{data} of length @var{n}. The pulse only occupies one array element.
+@c -@var{data} of length @var{n}. The pulse only occupies one array element.
 @c All other elements of @var{data} are set to zero. The function also
 @c returns the fourier transform of the pulse in the complex array
-@c @var{fft}, also of length @var{n}.
+@c -@var{fft}, also of length @var{n}.
 
 @c Writing @math{z} as (@math{z_@{real@} + i z_@{imag@}}), the mathematical
 @c definition of the pulse is,
-@c @equation
+@c -@equation{
 @c z_k =  z \delta_@{kt@},
-@c @end equation
-@c @noindent
+@c -}
+@c -@noindent
 @c where @math{\delta_@{kt@}=1} if @math{k=t}, and 0 otherwise. The fourier
 @c transform is,
 
-@c @equation
+@c -@equation{
 @c x_j = \sum_@{k=0@}^@{n-1@} z \delta_@{kt@} \exp(-2\pi i j k/n)
 @c     = z \exp(-2\pi i j t/n)
-@c @end equation
-@c @end deftypefun
+@c -}
+@c -@end deftypefun
 
-@c @deftypefun int gsl_fft_signal_complex_constant (size_t @var{n}, double @var{z_real}, double @var{z_imag}, gsl_complex_packed_array @var{data[]}, complex @var{fft[]})
+@c -@deftypefun int gsl_fft_signal_complex_constant (size_t @var{n}, double @var{z_real}, double @var{z_imag}, gsl_complex_packed_array @var{data[]}, complex @var{fft[]})
 
 @c This function prepares a constant complex signal of amplitude
 @c (@var{z_real},@var{z_imag}) in the complex array @var{data} of length
-@c @var{n}. The function also returns the fourier transform of the constant
+@c -@var{n}. The function also returns the fourier transform of the constant
 @c in the complex array @var{fft}, also of length @var{n}.
 
 @c The mathematical definition of the constant signal is, 
 
-@c @equation
+@c -@equation{
 @c z_k = z
-@c @end equation
-@c @noindent
+@c -}
+@c -@noindent
 @c and the fourier transform is,
 
-@c @equation
+@c -@equation{
 @c x_j = \sum_@{k=0@}^@{n-1@} z \exp(-2\pi i j k/n)
 @c     = z n \delta_@{j0@}
-@c @end equation
-@c @end deftypefun
+@c -}
+@c -@end deftypefun
 
-@c @deftypefun int gsl_fft_signal_complex_exp (int @var{f}, size_t @var{stride}, size_t @var{n}, double @var{z_real}, double @var{z_imag}, gsl_complex_packed_array @var{data[]}, gsl_complex_packed_array @var{fft[]})
+@c -@deftypefun int gsl_fft_signal_complex_exp (int @var{f}, size_t @var{stride}, size_t @var{n}, double @var{z_real}, double @var{z_imag}, gsl_complex_packed_array @var{data[]}, gsl_complex_packed_array @var{fft[]})
 
 @c This function prepares a complex exponential signal of amplitude
 @c (@var{z_real},@var{z_imag}) and frequency @var{f} in the complex array
-@c @var{data} of length @var{n}. The function also returns the fourier
+@c -@var{data} of length @var{n}. The function also returns the fourier
 @c transform of the signal in the complex array @var{fft}, also of length
-@c @var{n}.
+@c -@var{n}.
 
 @c The mathematical definition of the complex exponential signal is,
 
-@c @equation
+@c -@equation{
 @c z_k = z \exp(2\pi i k f/n)
-@c @end equation
-@c @noindent
+@c -}
+@c -@noindent
 
 @c and the fourier transform is,
 
-@c @equation
+@c -@equation{
 @c x_j = \sum_@{k=0@}^@{n-1@} z \exp(2\pi i k f/n) \exp(-2\pi i j k/n)
 @c     = z n \delta_@{j,f@}
-@c @end equation
-@c @end deftypefun
+@c -}
+@c -@end deftypefun
 
-@c @deftypefun int gsl_fft_signal_complex_exppair (int @var{f1}, int @var{f2}, size_t @var{stride}, size_t @var{n}, double @var{z1_real}, double @var{z1_imag}, double @var{z2_real}, double @var{z2_imag}, gsl_complex_packed_array @var{data[]}, gsl_complex_packed_array @var{fft[]})
+@c -@deftypefun int gsl_fft_signal_complex_exppair (int @var{f1}, int @var{f2}, size_t @var{stride}, size_t @var{n}, double @var{z1_real}, double @var{z1_imag}, double @var{z2_real}, double @var{z2_imag}, gsl_complex_packed_array @var{data[]}, gsl_complex_packed_array @var{fft[]})
 
 @c This function prepares a pair of exponential signals of amplitude
 @c (@var{z1_real},@var{z1_imag}) and (@var{z2_real},@var{z2_imag}) with
@@ -1127,49 +1223,49 @@ program.}
 
 @c The mathematical definition of the pair of exponential signals is,
 
-@c @equation
+@c -@equation{
 @c z_k = z_1 \exp(2\pi i k f_1/n) + z_2 \exp(2\pi i k f_2/n)
-@c @end equation
-@c @noindent
+@c -}
+@c -@noindent
 @c and the fourier transform is,
 
-@c @equation
+@c -@equation{
 @c x_j =  z_1 n \delta_@{j,f_1@}  + z_2 n \delta_@{j,f_2@}
-@c @end equation
-@c @end deftypefun
+@c -}
+@c -@end deftypefun
 
-@c @deftypefun int gsl_fft_signal_complex_noise (size_t @var{n}, gsl_complex_packed_array @var{data[]}, gsl_complex_packed_array @var{fft[]})
+@c -@deftypefun int gsl_fft_signal_complex_noise (size_t @var{n}, gsl_complex_packed_array @var{data[]}, gsl_complex_packed_array @var{fft[]})
 
 @c This function prepares a complex white-noise signal in the complex array
-@c @var{data} of length @var{n}. The real and imaginary components of each
+@c -@var{data} of length @var{n}. The real and imaginary components of each
 @c array element are independent uniform distributed random values in the
 @c range [0,1] (computed using the system @code{rand} function). The
 @c function also returns the fourier transform of the signal in the complex
 @c array @var{fft}, also of length @var{n}. The fourier transform is
 @c computed using the brute-force discrete fourier transform
-@c @code{gsl_dft_complex_forward}. Note that the direct computation of the
+@c -@code{gsl_dft_complex_forward}. Note that the direct computation of the
 @c discrete fourier transform has worse numerical stability than an FFT, so
 @c the array @var{fft} is only useful in detecting large errors.
 
-@c @end deftypefun
+@c -@end deftypefun
 
-@c @deftypefun int gsl_fft_signal_real_noise (size_t @var{n}, gsl_complex_packed_array @var{data[]}, gsl_complex_packed_array @var{fft[]})
+@c -@deftypefun int gsl_fft_signal_real_noise (size_t @var{n}, gsl_complex_packed_array @var{data[]}, gsl_complex_packed_array @var{fft[]})
 
 @c This function generates real white noise instead of complex white noise.
 @c It is the same as @code{gsl_fft_signal_complex_noise} but with the
 @c imaginary parts of @var{data} explicitly set to zero.
 
-@c @end deftypefun
+@c -@end deftypefun
 
 @c All these functions return a value of @code{0} if no errors were
 @c detected, and @code{-1} in the case of error. There is only one
-@c @code{gsl_errno} condition defined for these functions:
+@c -@code{gsl_errno} condition defined for these functions:
 
-@c @table @code
-@c @item GSL_EDOM
+@c -@table @code
+@c -@item GSL_EDOM
 @c The length of the data @var{n} is not a positive integer (i.e. @var{n}
 @c is zero).
-@c @end table
+@c -@end table
 
 @node FFT References and Further Reading
 @section FFT References and Further Reading
