@@ -25,7 +25,8 @@ main (void)
   double sd_actual, sd_est;
   size_t n_used;
   int n;
-  int i;
+  int i, status;
+
 
   /* fill tables with noise */
 
@@ -57,7 +58,9 @@ main (void)
     sd_est = -log10 (prec);
     sd_actual = -log10 (DBL_EPSILON + fabs (sum_accel - zeta_2) / zeta_2);
 
-    gsl_test_abs (sd_est, sd_actual, 1.0, "correct digits for zeta(2)");
+    status = (sd_est > sd_actual);
+
+    gsl_test (status, "correct digits for zeta(2)");
   }
 
   {
@@ -80,7 +83,9 @@ main (void)
     sd_est = -log10 (prec);
     sd_actual = -log10 (DBL_EPSILON + fabs (sum_accel - exp (x)) / exp (x));
 
-    gsl_test_abs (sd_est, sd_actual, 1.0, "correct digits for exp(10)");
+    status = (sd_est > sd_actual);
+
+    gsl_test (status, "correct digits for exp(10)");
   }
 
   {
@@ -103,7 +108,9 @@ main (void)
     sd_est = -log10 (prec);
     sd_actual = -log10 (DBL_EPSILON + fabs (sum_accel - exp (x)) / exp (x));
 
-    gsl_test_abs (sd_est, sd_actual, 1.5, "correct digits for exp(-10)");
+    status = (sd_est > sd_actual);
+
+    gsl_test (status, "correct digits for exp(-10)");
   }
 
 
@@ -127,7 +134,9 @@ main (void)
     sd_est = -log10 (prec);
     sd_actual = -log10 (DBL_EPSILON + fabs (sum_accel - M_LN2) / M_LN2);
 
-    gsl_test_abs (sd_est, sd_actual, 1.0, "correct digits for -log(1/2)");
+    status = (sd_est > sd_actual);
+
+    gsl_test (status, "correct digits for -log(1/2)");
   }
 
   {
@@ -150,7 +159,9 @@ main (void)
     sd_est = -log10 (prec);
     sd_actual = -log10 (DBL_EPSILON + fabs (sum_accel - (-M_LN2)) / M_LN2);
 
-    gsl_test_abs (sd_est, sd_actual, 1.0, "correct digits for -log(2)");
+    status = (sd_est > sd_actual);
+
+    gsl_test (status, "correct digits for -log(2)");
   }
 
   {
@@ -177,8 +188,9 @@ main (void)
     sd_est = -log10 (prec);
     sd_actual = -log10 (DBL_EPSILON + fabs (sum_accel - result) / result);
 
-    gsl_test_abs (sd_est, sd_actual, 1.0,
-		  "correct digits of asymptotic series");
+    status = (sd_est > sd_actual);
+
+    gsl_test (status, "correct digits of asymptotic series");
   }
 
   return gsl_test_summary ();
