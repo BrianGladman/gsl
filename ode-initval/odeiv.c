@@ -21,9 +21,11 @@ gsl_odeiv_step_impl(
   double h,
   double y[],
   double yerr[],
+  const double dydt_in[],
+  double dydt_out[],
   const gsl_odeiv_system * dydt)
 {
-  return s->_step(s->_state, s->_work, s->dimension, t, h, y, yerr, dydt);
+  return s->_step(s->_state, s->_work, s->dimension, t, h, y, yerr, dydt_in, dydt_out, dydt);
 }
 
 

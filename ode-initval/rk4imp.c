@@ -11,7 +11,7 @@
 
 
 static gsl_odeiv_step * rk4imp_create(unsigned int dimension);
-static int rk4imp_step(void * state, void * work, unsigned int dim, double t, double h, double y[], double yerr[], const gsl_odeiv_system * dydt);
+static int rk4imp_step(void * state, void * work, unsigned int dim, double t, double h, double y[], double yerr[], const double dydt_in[], double dydt_out[], const gsl_odeiv_system * dydt);
 
 
 const gsl_odeiv_step_factory gsl_odeiv_step_factory_rk4imp = 
@@ -27,13 +27,14 @@ rk4imp_create(unsigned int dimension)
 {
   gsl_odeiv_step * step = gsl_odeiv_step_new(gsl_odeiv_step_factory_rk4imp.name, dimension, 4, 0, 4*dimension * sizeof(double));
   step->_step = rk4imp_step;
+  step->can_use_dydt = 1;
   return step;
 }
 
 
 static
 int
-rk4imp_step(void * state, void * work, unsigned int dim, double t, double h, double y[], double yerr[], const gsl_odeiv_system * dydt)
+rk4imp_step(void * state, void * work, unsigned int dim, double t, double h, double y[], double yerr[], const double dydt_in[], double dydt_out[], const gsl_odeiv_system * dydt)
 {
   /* divide up the workspace */
   double * w    = (double *) work;
@@ -49,7 +50,12 @@ rk4imp_step(void * state, void * work, unsigned int dim, double t, double h, dou
   int i;
 
   /* initialization step */
-  status += ( GSL_ODEIV_FN_EVAL(dydt, t, y, k1nu) != 0 );
+  if(dydt_in != 0) {
+    memcpy(k1nu, dydt_in, dim * sizeof(double));
+  }
+  else {
+    status += ( GSL_ODEIV_FN_EVAL(dydt, t, y, k1nu) != 0 );
+  }
   memcpy(k2nu, k1nu, dim * sizeof(double));
 
   /* iterative solution */
@@ -64,9 +70,10 @@ rk4imp_step(void * state, void * work, unsigned int dim, double t, double h, dou
 
   /* assignment */
   for(i=0; i<dim; i++) {
-    const double del_i = 0.5 * h * (k1nu[i] + k2nu[i]);
-    y[i]   += del_i;
-    yerr[i] = h * del_i;
+    const double d_i = 0.5 * (k1nu[i] + k2nu[i]);
+    if(dydt_out != 0) dydt_out[i] = d_i;
+    y[i]   += h * d_i;
+    yerr[i] = h * h * d_i;
   }
 
   return  ( status == 0 ? GSL_SUCCESS : GSL_EBADFUNC );

@@ -9,7 +9,7 @@
 
 
 static gsl_odeiv_step * rkck_create(unsigned int dimension);
-static int  rkck_step(void * state, void * work, unsigned int dim, double t, double h, double y[], double yerr[], const gsl_odeiv_system * dydt);
+static int  rkck_step(void * state, void * work, unsigned int dim, double t, double h, double y[], double yerr[], const double dydt_in[], double dydt_out[], const gsl_odeiv_system * dydt);
 
 const gsl_odeiv_step_factory gsl_odeiv_step_factory_rkck = 
 {
@@ -24,13 +24,14 @@ rkck_create(unsigned int dimension)
 {
   gsl_odeiv_step * step = gsl_odeiv_step_new(gsl_odeiv_step_factory_rkck.name, dimension, 4, 0, 7 * dimension * sizeof(double));
   step->_step = rkck_step;
+  step->can_use_dydt = 1;
   return step;
 }
 
 
 static
 int
-rkck_step(void * state, void * work, unsigned int dim, double t, double h, double y[], double yerr[], const gsl_odeiv_system * dydt)
+rkck_step(void * state, void * work, unsigned int dim, double t, double h, double y[], double yerr[], const double dydt_in[], double dydt_out[], const gsl_odeiv_system * dydt)
 {
   /* Cash-Karp constants */
   const double ah[] = { 1.0/5.0, 0.3, 3.0/5.0, 1.0, 7.0/8.0 };
@@ -50,7 +51,7 @@ rkck_step(void * state, void * work, unsigned int dim, double t, double h, doubl
     };
 
   int i;
-  int status;
+  int status = 0;
 
   /* divide up the work space */
   double * w  = (double *) work;
@@ -63,7 +64,12 @@ rkck_step(void * state, void * work, unsigned int dim, double t, double h, doubl
   double * ytmp = w + 6*dim;
 
   /* k1 step */
-  status  = ( GSL_ODEIV_FN_EVAL(dydt, t, y, k1) != 0 );
+  if(dydt_in != 0) {
+    k1 = dydt_in;
+  }
+  else {
+    status += ( GSL_ODEIV_FN_EVAL(dydt, t, y, k1) != 0 );
+  }
   for(i=0;i<dim;i++)
     ytmp[i] = y[i] + b21*h*k1[i];
 
@@ -89,13 +95,15 @@ rkck_step(void * state, void * work, unsigned int dim, double t, double h, doubl
 
   /* k6 step and final sum */
   status += ( GSL_ODEIV_FN_EVAL(dydt, t + ah[4]*h, ytmp, k6) != 0 );
-  for(i=0;i<dim;i++)
-    y[i] += h*(c1*k1[i] + c3*k3[i] + c4*k4[i] + c6*k6[i]);
+  for(i=0;i<dim;i++) {
+    const double d_i = c1*k1[i] + c3*k3[i] + c4*k4[i] + c6*k6[i];
+    y[i] += h * d_i;
+    if(dydt_out != 0) dydt_out[i] = d_i;
+  }
 
   /* difference between 4th and 5th order */
   for(i=0;i<dim;i++)
     yerr[i] = h*(ec[1]*k1[i] + ec[3]*k3[i] + ec[4]*k4[i] + ec[5]*k5[i] + ec[6]*k6[i]);
-
 
   return ( status == 0 ? GSL_SUCCESS : GSL_EBADFUNC );
 }

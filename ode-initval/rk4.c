@@ -10,7 +10,7 @@
 
 
 static gsl_odeiv_step * rk4_create(unsigned int dimension);
-static int  rk4_step(void * state, void * work, unsigned int dim, double t, double h, double y[], double yerr[], const gsl_odeiv_system * dydt);
+static int rk4_step(void * state, void * work, unsigned int dim, double t, double h, double y[], double yerr[], const double dydt_in[], double dydt_out[], const gsl_odeiv_system * dydt);
 
 
 const gsl_odeiv_step_factory gsl_odeiv_step_factory_rk4 = 
@@ -26,13 +26,14 @@ rk4_create(unsigned int dimension)
 {
   gsl_odeiv_step * step = gsl_odeiv_step_new(gsl_odeiv_step_factory_rk4.name, dimension, 4, 0, 3*dimension * sizeof(double));
   step->_step = rk4_step;
+  step->can_use_dydt = 1;
   return step;
 }
 
 
 static
 int
-rk4_step(void * state, void * work, unsigned int dim, double t, double h, double y[], double yerr[], const gsl_odeiv_system * dydt)
+rk4_step(void * state, void * work, unsigned int dim, double t, double h, double y[], double yerr[], const double dydt_in[], double dydt_out[], const gsl_odeiv_system * dydt)
 {
   /* divide up the workspace */
   double * w    = (double *) work;
@@ -41,7 +42,7 @@ rk4_step(void * state, void * work, unsigned int dim, double t, double h, double
   double * ytmp = w + 2*dim;
 
   int i;
-  int status;
+  int status = 0;
 
   /* Copy the starting value. We will write over
    * the y[] vector, using it for scratch and
@@ -50,7 +51,12 @@ rk4_step(void * state, void * work, unsigned int dim, double t, double h, double
   memcpy(y0, y, dim * sizeof(double));
 
   /* k1 step */
-  status = ( GSL_ODEIV_FN_EVAL(dydt, t, y0, k) != 0 );
+  if(dydt_in != 0) {
+    memcpy(k, dydt_in, dim * sizeof(double));
+  }
+  else {
+    status += ( GSL_ODEIV_FN_EVAL(dydt, t, y0, k) != 0 );
+  }
   for(i=0; i<dim; i++) {
     y[i] = h/6.0 * k[i]; /* use y[] to store delta_y */
     ytmp[i] = y0[i] + 0.5*h * k[i];
@@ -71,6 +77,9 @@ rk4_step(void * state, void * work, unsigned int dim, double t, double h, double
   } 
 
   /* k4 step, error estimate, and final sum */
+  if(dydt_out != 0) {
+    k = dydt_out;
+  }
   status += ( GSL_ODEIV_FN_EVAL(dydt, t + h, ytmp, k) != 0 );
   for(i=0; i<dim; i++) {
     y[i]   += h/6.0 * k[i];

@@ -21,6 +21,8 @@ test_odeiv_DEPENDENCIES = libgslodeiv.a
 test_odeiv_SOURCES = test_odeiv.c
 
 libgslodeiv_a_SOURCES = \
+	control.c	\
+	evolve.c	\
 	gear1.c		\
 	gear2.c		\
 	odeiv.c		\

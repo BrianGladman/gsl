@@ -11,7 +11,8 @@
 
 
 static gsl_odeiv_step * gear1_create(unsigned int dimension);
-static int  gear1_step(void *, void *, unsigned int dim, double t, double h, double y[], double yerr[], const gsl_odeiv_system * dydt);
+static int gear1_step(void *, void *, unsigned int dim, double t, double h, double y[], double yerr[], const double dydt_in[], double dydt_out[], const gsl_odeiv_system * dydt);
+
 
 const gsl_odeiv_step_factory gsl_odeiv_step_factory_gear1 = 
 {
@@ -26,13 +27,14 @@ gear1_create(unsigned int dimension)
 {
   gsl_odeiv_step * step = gsl_odeiv_step_new(gsl_odeiv_step_factory_gear1.name, dimension, 1 /* FIXME: ?? */, 0, 2*dimension * sizeof(double));
   step->_step = gear1_step;
+  step->can_use_dydt = 0;
   return step;
 }
 
 
 static
 int
-gear1_step(void * state, void * work, unsigned int dim, double t, double h, double y[], double yerr[], const gsl_odeiv_system * dydt)
+gear1_step(void * state, void * work, unsigned int dim, double t, double h, double y[], double yerr[], const double dydt_in[], double dydt_out[], const gsl_odeiv_system * dydt)
 {
   /* divide up the workspace */
   double * w  = (double *) work;
@@ -47,6 +49,9 @@ gear1_step(void * state, void * work, unsigned int dim, double t, double h, doub
   memcpy(y0, y, dim * sizeof(double));
 
   /* iterative solution */
+  if(dydt_out != 0) {
+    k = dydt_out;
+  }
   for(nu=0; nu<iter_steps; nu++) {
     status += ( GSL_ODEIV_FN_EVAL(dydt, t + h, y, k) != 0 );
     for(i=0; i<dim; i++) {
@@ -61,3 +66,4 @@ gear1_step(void * state, void * work, unsigned int dim, double t, double h, doub
 
   return  ( status == 0 ? GSL_SUCCESS : GSL_EBADFUNC );
 }
+

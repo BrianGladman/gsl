@@ -21,7 +21,7 @@ gear2_state;
 
 
 static gsl_odeiv_step * gear2_create(unsigned int dimension);
-static int  gear2_step(void * state, void * work, unsigned int dim, double t, double h, double y[], double yerr[], const gsl_odeiv_system * dydt);
+static int  gear2_step(void * state, void * work, unsigned int dim, double t, double h, double y[], double yerr[], const double dydt_in[], double dydt_out[], const gsl_odeiv_system * dydt);
 static int  gear2_reset(void * state);
 static void gear2_free(void * state, void * work);
 
@@ -45,6 +45,7 @@ gear2_create(unsigned int dimension)
   step->_step  = gear2_step;
   step->_reset = gear2_reset;
   step->_free  = gear2_free;
+  step->can_use_dydt = 0;
 
   state = (gear2_state *) step->_state;
   state->primed = 0;
@@ -63,7 +64,7 @@ gear2_create(unsigned int dimension)
 
 static
 int
-gear2_step(void * state, void * work, unsigned int dim, double t, double h, double y[], double yerr[], const gsl_odeiv_system * dydt)
+gear2_step(void * state, void * work, unsigned int dim, double t, double h, double y[], double yerr[], const double dydt_in[], double dydt_out[], const gsl_odeiv_system * dydt)
 {
   gear2_state * s = (gear2_state *) state;
 
@@ -85,6 +86,9 @@ gear2_step(void * state, void * work, unsigned int dim, double t, double h, doub
     memcpy(y0, y, dim * sizeof(double));
 
     /* iterative solution */
+    if(dydt_out != 0) {
+      k = dydt_out;
+    }
     for(nu=0; nu<iter_steps; nu++) {
       status += ( GSL_ODEIV_FN_EVAL(dydt, t + h, y, k) != 0 );
       for(i=0; i<dim; i++) {
@@ -111,7 +115,7 @@ gear2_step(void * state, void * work, unsigned int dim, double t, double h, doub
      */
     int status;
     memcpy(s->yim1, y, dim * sizeof(double));
-    status = gsl_odeiv_step_impl(s->primer, t, h, y, yerr, dydt);
+    status = gsl_odeiv_step_impl(s->primer, t, h, y, yerr, dydt_in, dydt_out, dydt);
 
     /* Make note of step size and indicate readiness for a Gear step. */
     s->last_h = h;

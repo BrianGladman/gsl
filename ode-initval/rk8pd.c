@@ -9,7 +9,7 @@
 
 
 static gsl_odeiv_step * rk8pd_create(unsigned int dimension);
-static int  rk8pd_step(void * state, void * work, unsigned int dim, double t, double h, double y[], double yerr[], const gsl_odeiv_system * dydt);
+static int rk8pd_step(void * state, void * work, unsigned int dim, double t, double h, double y[], double yerr[], const double dydt_in[], double dydt_out[], const gsl_odeiv_system * dydt);
 
 
 const gsl_odeiv_step_factory gsl_odeiv_step_factory_rk8pd = 
@@ -25,13 +25,14 @@ rk8pd_create(unsigned int dimension)
 {
   gsl_odeiv_step * step = gsl_odeiv_step_new(gsl_odeiv_step_factory_rk8pd.name, dimension, 8, 0, 14 * dimension * sizeof(double));
   step->_step = rk8pd_step;
+  step->can_use_dydt = 1;
   return step;
 }
 
 
 static
 int
-rk8pd_step(void * state, void * work, unsigned int dim, double t, double h, double y[], double yerr[], const gsl_odeiv_system * dydt)
+rk8pd_step(void * state, void * work, unsigned int dim, double t, double h, double y[], double yerr[], const double dydt_in[], double dydt_out[], const gsl_odeiv_system * dydt)
 {
   /* Prince-Dormand constants */
   static const double Abar[] = {
@@ -159,7 +160,7 @@ rk8pd_step(void * state, void * work, unsigned int dim, double t, double h, doub
   };
 
   int i;
-  int status;
+  int status = 0;
 
   /* divide up the work space */
   double * w  = (double *) work;
@@ -179,7 +180,12 @@ rk8pd_step(void * state, void * work, unsigned int dim, double t, double h, doub
   double * ytmp = w + 13*dim;
 
   /* k1 step */
-  status  = ( GSL_ODEIV_FN_EVAL(dydt, t, y, k1) != 0 );
+  if(dydt_in != 0) {
+    k1 = dydt_in;
+  }
+  else {
+    status += ( GSL_ODEIV_FN_EVAL(dydt, t, y, k1) != 0 );
+  }
   for(i=0;i<dim;i++)
     ytmp[i] = y[i] + b21*h*k1[i];
 
@@ -239,6 +245,9 @@ rk8pd_step(void * state, void * work, unsigned int dim, double t, double h, doub
     ytmp[i] = y[i] + h*(b13[0]*k1[i] + b13[3]*k4[i] + b13[4]*k5[i] + b13[5]*k6[i] + b13[6]*k7[i] + b13[7]*k8[i] + b13[8]*k9[i] + b13[9]*k10[i] + b13[10]*k11[i] + b13[11]*k12[i]);
 
   /* k13 step */
+  if(dydt_out != 0) {
+    k13 = dydt_out;
+  }
   status += ( GSL_ODEIV_FN_EVAL(dydt, t + h, ytmp, k13) != 0 );
 
   /* final sum and error estimate */
