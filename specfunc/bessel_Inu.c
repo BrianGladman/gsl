@@ -5,6 +5,7 @@
 #include <gsl_errno.h>
 #include "bessel.h"
 #include "bessel_temme.h"
+#include "gsl_sf_exp.h"
 #include "gsl_sf_gamma.h"
 #include "gsl_sf_chebyshev.h"
 #include "gsl_sf_bessel.h"
@@ -13,42 +14,36 @@
 #define locMax(a,b)  ((a) > (b) ? (a) : (b))
 
 
-#if 0
-/* Evaluate continued fraction CF1 to obtain I'/I.
+/* Perform backward recurrence for I_nu(x) and I'_nu(x)
+ *
+ *        I_{nu-1} = nu/x I_nu + I'_nu
+ *       I'_{nu-1} = (nu-1)/x I_{nu-1} + I_nu
  */
 static
 int
-bessel_I_CF1(const double nu, const double x, double * result)
+bessel_I_recur(const double nu_min, const double x, const int kmax,
+               const double I_start, const double Ip_start,
+	       double * I_end, double * Ip_end
+	       )
 {
-  const int max_iter = 5000;
-  int i = 0;
-  double x_inv = 1.0/x;
-  double r = nu * x_inv;
-  double b = 2.0*nu*x_inv;
-  double d = 0.0;
-  double c;
-  r = locMax(r, 1.0e-100);
-  c = r;
-  while(i < max_iter) {
-    double del;
-    b  += 2.0*x_inv;
-    d   = 1.0/(b+d);
-    c   = b + 1.0/c;
-    del = c*d;
-    r  *= del;
-    if (fabs(del-1.0) < GSL_MACH_EPS) break;
-    ++i;
+  double x_inv  = 1.0/x;
+  double nu_max = nu_min + kmax;
+  double I_nu  = I_start;
+  double Ip_nu = Ip_start;
+  double nu = nu_max;
+  int k;
+
+  for(k=kmax-1; k>=0; k--) {
+    double nuox = nu*x_inv;
+    double I_nu_save = I_nu;
+    I_nu  = nuox*I_nu + Ip_nu;
+    Ip_nu = (nuox - x_inv)*I_nu + I_nu_save;
+    nu -= 1.0;
   }
-  
-  *result = r;
-  if(i == max_iter) {
-    return GSL_EMAXITER;
-  }
-  else {
-    return GSL_SUCCESS;
-  }
+  *I_end  = I_nu;
+  *Ip_end = Ip_nu;
+  return GSL_SUCCESS;
 }
-#endif /* 0 */
 
 
 /*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
@@ -86,7 +81,7 @@ gsl_sf_bessel_Inu_scaled_impl(double nu, double x, double * result)
     gsl_sf_bessel_Inu_scaled_asymp_unif_impl(mu,     x, &I_mu);
     gsl_sf_bessel_Inu_scaled_asymp_unif_impl(mu+1.0, x, &I_mup1);
     Ip_mu = mu/x * I_mu + I_mup1;
-    gsl_sf_bessel_I_recur(nu, x, M-N, I_mu, Ip_mu, &I_nu, &Ip_nu, (double*)0, (double *)0);
+    bessel_I_recur(nu, x, M-N, I_mu, Ip_mu, &I_nu, &Ip_nu);
     *result = I_nu;
     return GSL_SUCCESS;
   }
@@ -96,17 +91,10 @@ gsl_sf_bessel_Inu_scaled_impl(double nu, double x, double * result)
 int
 gsl_sf_bessel_Inu_impl(double nu, double x, double * result)
 {
-  if(x > GSL_LOG_DBL_MAX) {
-    *result = 0.0;
-    return GSL_EOVRFLW;
-  }
-  else {
-    double ex = exp(x);
-    double b = 0.0;
-    int stat_I = gsl_sf_bessel_Inu_scaled_impl(nu, x, &b);
-    *result = ex * b;
-    return stat_I;
-  }
+  double b = 0.0;
+  int stat_I = gsl_sf_bessel_Inu_scaled_impl(nu, x, &b);
+  int stat_e = gsl_sf_exp_mult_impl(x, b, result);
+  return GSL_ERROR_SELECT_2(stat_e, stat_I);
 }
 
 

@@ -1,13 +1,44 @@
 /* Author:  G. Jungman
  * RCS:     $Id$
- *
  */
 #include <gsl_math.h>
 #include <gsl_errno.h>
 #include "gsl_sf_pow_int.h"
 #include "bessel.h"
 #include "bessel_amp_phase.h"
+#include "bessel_olver.h"
 #include "gsl_sf_bessel.h"
+
+/* continued fraction [Abramowitz+Stegun, 9.1.73]
+ */
+static
+int
+bessel_Jn_CF1(const int n, const double x, double * ratio)
+{
+  int k = 60;
+  double pk  = 2 * (n + k);
+  double xk  = x * x;
+  double ans = pk;
+
+  do {
+    pk -= 2.0;
+    if(ans == 0.0) {
+      *ratio = 0.0;
+      return GSL_EZERODIV;
+    }
+    ans = pk - (xk/ans);
+  }
+  while(--k > 0);
+
+  if(ans != 0.0) {
+    *ratio = x/ans;
+    return GSL_SUCCESS;
+  }
+  else {
+    *ratio = 0.0;
+    return GSL_EZERODIV;
+  }
+}
 
 
 /*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
@@ -31,27 +62,27 @@ int gsl_sf_bessel_Jn_impl(int n, double x, double * result)
 
   if(n == 0) {
     double b0;
-    gsl_sf_bessel_J0_impl(x, &b0);
+    int stat_J0 = gsl_sf_bessel_J0_impl(x, &b0);
     *result = sign * b0;
-    return GSL_SUCCESS;
+    return stat_J0;
   }
   else if(n == 1) {
     double b1;
-    gsl_sf_bessel_J1_impl(x, &b1);
+    int stat_J1 = gsl_sf_bessel_J1_impl(x, &b1);
     *result = sign * b1;
-    return GSL_SUCCESS;
+    return stat_J1;
   }
   else {
     if(x == 0.0) {
       *result = 0.0;
       return GSL_SUCCESS;
     }
-    else if(x*x < 10.0*(n+1)*GSL_ROOT5_MACH_EPS) {
+    else if(x*x < 10.0*(n+1.0)*GSL_ROOT5_MACH_EPS) {
       int status = gsl_sf_bessel_Inu_Jnu_taylor_impl((double)n, x, -1, 4, result);
       *result *= sign;
       return status;
     }
-    else if(GSL_ROOT3_MACH_EPS * x > (n*n+1)) {
+    else if(GSL_ROOT3_MACH_EPS * x > (n*n+1.0)) {
       int status = gsl_sf_bessel_Jnu_asympx_impl((double)n, x, result);
       *result *= sign;
       return status;
@@ -62,49 +93,37 @@ int gsl_sf_bessel_Jn_impl(int n, double x, double * result)
       return status;
     }
     else {
-      double pkm2, pkm1, r;
-
-      /* continued fraction [Abramowitz+Stegun, 9.1.73] */
-      int k = 60;
-      double pk = 2 * (n + k);
-      double xk = x * x;
-      double ans = pk;
-
-      do {
-	pk -= 2.0;
-	ans = pk - (xk/ans);
-      }
-      while(--k > 0);
-
-      ans = x/ans;
+      double ans;
+      double ratio;
+      int stat_b;
+      int stat_CF1 = bessel_Jn_CF1(n, x, &ratio);
 
       /* backward recurrence */
-      pk = 1.0;
-      pkm1 = 1.0/ans;
-      k = n-1;
-      r = 2 * k;
+      double Jk   = ratio;
+      double Jkm1 = 1.0;
+      double Jkm2;
+      int k;
 
-      do {
-	pkm2 = (pkm1 * r  -  pk * x) / x;
-	pk = pkm1;
-	pkm1 = pkm2;
-	r -= 2.0;
+      for(k=n-1; k>0; k--) {
+        double r = 2.0 * k;
+	Jkm2 = (Jkm1 * r  -  Jk * x) / x;
+	Jk   = Jkm1;
+	Jkm1 = Jkm2;
       }
-      while( --k > 0 );
 
-      if(fabs(pk) > fabs(pkm1)) {
+      if(fabs(Jk) > fabs(Jkm1)) {
         double b1;
-	gsl_sf_bessel_J1_impl(x, &b1);
-	ans = b1/pk;
+	stat_b = gsl_sf_bessel_J1_impl(x, &b1);
+	ans = b1/Jk * ratio;
       }
       else {
         double b0;
-	gsl_sf_bessel_J0_impl(x, &b0);
-	ans = b0/pkm1;
+	stat_b = gsl_sf_bessel_J0_impl(x, &b0);
+	ans = b0/Jkm1 * ratio;
       }
 
       *result = sign * ans;
-      return GSL_SUCCESS;
+      return GSL_ERROR_SELECT_2(stat_CF1, stat_b);
     }
   }
 }

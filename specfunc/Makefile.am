@@ -38,6 +38,7 @@ include_HEADERS = \
 
 noinst_HEADERS = \
 	bessel_amp_phase.h	\
+	bessel_olver.h		\
 	bessel_temme.h		\
 	bessel.h		\
 	hyperg.h		\

@@ -48,7 +48,8 @@ should be finished before a 1.0 level release.
     OK: Sun Nov  8 12:27:01 MST 1998 [GJ]
 
   - bessel.c
-    
+    OK: Wed Nov 11 14:21:22 MST 1998 [GJ]
+
   - bessel_I0.c
     OK: Sun Nov  8 12:27:59 MST 1998 [GJ]
 
@@ -68,12 +69,14 @@ should be finished before a 1.0 level release.
     OK: Sun Nov  8 12:30:34 MST 1998 [GJ]
     
   - bessel_Jn.c
-    
+    OK: Wed Nov 11 14:09:10 MST 1998 [GJ]
+
   - bessel_Jnu.c
-    
+    OK: Wed Nov 11 14:25:09 MST 1998 [GJ]
+
   - bessel_K0.c
     OK: Sun Nov  8 12:39:07 MST 1998 [GJ]
-    
+
   - bessel_K1.c
     OK: Sun Nov  8 12:45:12 MST 1998 [GJ]
 
@@ -81,7 +84,8 @@ should be finished before a 1.0 level release.
     OK: Sun Nov  8 19:39:10 MST 1998 [GJ]
 
   - bessel_Knu.c
-    
+    OK: Wed Nov 11 14:20:41 MST 1998 [GJ]
+
   - bessel_Y0.c
     OK: Sun Nov  8 12:47:15 MST 1998 [GJ]
     
@@ -95,19 +99,23 @@ should be finished before a 1.0 level release.
     OK: Sun Nov  8 20:01:30 MST 1998 [GJ]
 
   - bessel_amp_phase.c
-    
+    OK: Wed Nov 11 14:08:11 MST 1998 [GJ]
+
   - bessel_i.c
     OK: Sun Nov  8 20:05:00 MST 1998 [GJ]
 
   - bessel_j.c
-    
+    OK: Wed Nov 11 14:27:52 MST 1998 [GJ]
+
   - bessel_k.c
     OK: Sun Nov  8 20:05:45 MST 1998 [GJ]
 
   - bessel_olver.c
-    
+    OK: Wed Nov 11 14:03:32 MST 1998 [GJ]
+
   - bessel_temme.c
-    
+    OK: Wed Nov 11 12:59:21 MST 1998 [GJ]
+
   - bessel_y.c
     OK: Sun Nov  8 20:06:44 MST 1998 [GJ]
 
@@ -187,7 +195,8 @@ should be finished before a 1.0 level release.
     OK: Sun Nov  8 14:38:53 MST 1998 [GJ]
 
   - legendre_Qn.c
-    
+    OK: Wed Nov 11 14:31:07 MST 1998 [GJ]
+
   - legendre_con.c
     
   - legendre_poly.c

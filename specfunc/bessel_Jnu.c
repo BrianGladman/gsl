@@ -1,13 +1,12 @@
 /* Author:  G. Jungman
  * RCS:     $Id$
  */
-#include <math.h>
 #include <gsl_math.h>
 #include <gsl_errno.h>
 #include "bessel.h"
+#include "bessel_olver.h"
 #include "bessel_temme.h"
 #include "gsl_sf_bessel.h"
-
 
 #define locMax(a,b)  ((a) > (b) ? (a) : (b))
 #define locMin(a,b)  ((a) < (b) ? (a) : (b))
@@ -72,7 +71,7 @@ bessel_J_recur_asymp(const double nu, const double x, double * Jnu, double * Jnu
   double Jnp1_save;
   
   gsl_sf_bessel_Jnu_asymp_Olver_impl(nu + steps + 1.0, x, &Jnp1);
-  gsl_sf_bessel_Jnu_asymp_Olver_impl(nu + steps      , x, &Jn);
+  gsl_sf_bessel_Jnu_asymp_Olver_impl(nu + steps,       x, &Jn);
   
   for(n=steps; n>0; n--) {
     Jnm1 = 2.0*(nu+n)/x * Jn - Jnp1;
@@ -86,6 +85,8 @@ bessel_J_recur_asymp(const double nu, const double x, double * Jnu, double * Jnu
   return GSL_SUCCESS;
 }
 
+
+/*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
 
 int
 gsl_sf_bessel_Jnu_impl(double nu, double x, double * result)
@@ -117,6 +118,8 @@ gsl_sf_bessel_Jnu_impl(double nu, double x, double * result)
 }
 
 
+/*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
+
 int
 gsl_sf_bessel_Jnu_e(double nu, double x, double * result)
 {
@@ -127,6 +130,8 @@ gsl_sf_bessel_Jnu_e(double nu, double x, double * result)
   return status;
 }
 
+
+/*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*-*/
 
 double
 gsl_sf_bessel_Jnu(double nu, double x)

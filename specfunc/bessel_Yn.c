@@ -5,6 +5,7 @@
 #include <gsl_errno.h>
 #include "bessel.h"
 #include "bessel_amp_phase.h"
+#include "bessel_olver.h"
 #include "gsl_sf_gamma.h"
 #include "gsl_sf_psi.h"
 #include "gsl_sf_bessel.h"

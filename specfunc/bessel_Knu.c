@@ -1,7 +1,6 @@
 /* Author:  G. Jungman
  * RCS:     $Id$
  */
-#include <math.h>
 #include <gsl_math.h>
 #include <gsl_errno.h>
 #include "bessel.h"
@@ -15,6 +14,38 @@
 #define locMax(a,b)  ((a) > (b) ? (a) : (b))
 
 
+
+/* Perform forward recurrence for K_nu(x) and K'_nu(x)
+ *
+ *        K_{nu+1} =  nu/x K_nu - K'_nu
+ *       K'_{nu+1} = -(nu+1)/x K_{nu+1} - K_nu
+ */
+static
+int
+bessel_K_recur(const double nu_min, const double x, const int kmax,
+               const double K_start, const double Kp_start,
+	       double * K_end, double * Kp_end)
+{
+  double x_inv = 1.0/x;
+  double nu = nu_min;
+  double K_nu  = K_start;
+  double Kp_nu = Kp_start;
+  int k;
+
+  for(k=1; k<=kmax; k++) {
+    double nuox = nu*x_inv;
+    double K_nu_save = K_nu;
+    K_nu  = -Kp_nu + nuox * K_nu;
+    Kp_nu = -K_nu_save - (nuox+x_inv) * K_nu;
+    nu += 1.0;
+  }
+  *K_end  = K_nu;
+  *Kp_end = Kp_nu;
+  return GSL_SUCCESS;
+}
+
+
+/*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
 
 int
 gsl_sf_bessel_Knu_scaled_impl(const double nu, const double x, double * result)
@@ -35,7 +66,7 @@ gsl_sf_bessel_Knu_scaled_impl(const double nu, const double x, double * result)
     else {
       gsl_sf_bessel_K_scaled_steed_temme_CF2(mu, x, &K_mu, &K_mup1, &Kp_mu);
     }
-    gsl_sf_bessel_K_recur(mu, x, N, K_mu, Kp_mu, &K_nu, &Kp_nu, (double *)0, (double *)0);
+    bessel_K_recur(mu, x, N, K_mu, Kp_mu, &K_nu, &Kp_nu);
     *result = K_nu;
     return GSL_SUCCESS;
   }
@@ -45,16 +76,10 @@ gsl_sf_bessel_Knu_scaled_impl(const double nu, const double x, double * result)
 int
 gsl_sf_bessel_Knu_impl(const double nu, const double x, double * result)
 {
-  if(-x < GSL_LOG_DBL_MIN) {
-    *result = 0.0;
-    return GSL_EUNDRFLW;
-  }
-  else {
-    double b = 0.0;
-    int stat_K = gsl_sf_bessel_Knu_scaled_impl(nu, x, &b);
-    int stat_e = gsl_sf_exp_mult_impl(-x, b, result);
-    return GSL_ERROR_SELECT_2(stat_e, stat_K);
-  }
+  double b = 0.0;
+  int stat_K = gsl_sf_bessel_Knu_scaled_impl(nu, x, &b);
+  int stat_e = gsl_sf_exp_mult_impl(-x, b, result);
+  return GSL_ERROR_SELECT_2(stat_e, stat_K);
 }
 
 

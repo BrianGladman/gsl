@@ -219,6 +219,9 @@ gsl_sf_legendre_Ql_impl(const int l, const double x, double * result)
   else if(l == 1) {
     return gsl_sf_legendre_Q1_impl(x, result);
   }
+  else if(l > 100000) {
+    return legendre_Ql_asymp_unif(l, x, result);
+  }
   else if(x < 1.0){
     /* Forward recurrence.
      */
@@ -240,36 +243,31 @@ gsl_sf_legendre_Ql_impl(const int l, const double x, double * result)
   else {
     /* x > 1.0 */
 
-    if(l > 100000) {
-      return legendre_Ql_asymp_unif(l, x, result);
+    double rat;
+    int stat_CF1  = legendreQ_CF1_xgt1(l, 0.0, 0.0, x, &rat);
+    int stat_Q;
+    double Qellp1 = rat * GSL_SQRT_DBL_MIN;
+    double Qell   = GSL_SQRT_DBL_MIN;
+    double Qellm1;
+    int ell;
+    for(ell=l; ell>0; ell--) {
+      Qellm1 = (x * (2.0*ell + 1.0) * Qell - (ell+1.0) * Qellp1) / ell;
+      Qellp1 = Qell;
+      Qell   = Qellm1;
+    }
+
+    if(fabs(Qell) > fabs(Qellp1)) {
+      double Q0;
+      stat_Q = gsl_sf_legendre_Q0_impl(x, &Q0);
+      *result = GSL_SQRT_DBL_MIN * Q0 / Qell;
     }
     else {
-      double rat;
-      int stat_CF1  = legendreQ_CF1_xgt1(l, 0.0, 0.0, x, &rat);
-      int stat_Q;
-      double Qellp1 = rat * GSL_SQRT_DBL_MIN;
-      double Qell   = GSL_SQRT_DBL_MIN;
-      double Qellm1;
-      int ell;
-      for(ell=l; ell>0; ell--) {
-        Qellm1 = (x * (2.0*ell + 1.0) * Qell - (ell+1.0) * Qellp1) / ell;
-        Qellp1 = Qell;
-        Qell   = Qellm1;
-      }
-
-      if(fabs(Qell) > fabs(Qellp1)) {
-        double Q0;
-        stat_Q = gsl_sf_legendre_Q0_impl(x, &Q0);
-        *result = GSL_SQRT_DBL_MIN * Q0 / Qell;
-      }
-      else {
-        double Q1;
-        stat_Q = gsl_sf_legendre_Q1_impl(x, &Q1);
-        *result = GSL_SQRT_DBL_MIN * Q1 / Qellp1;
-      }
-
-      return GSL_ERROR_SELECT_2(stat_Q, stat_CF1);
+      double Q1;
+      stat_Q = gsl_sf_legendre_Q1_impl(x, &Q1);
+      *result = GSL_SQRT_DBL_MIN * Q1 / Qellp1;
     }
+
+    return GSL_ERROR_SELECT_2(stat_Q, stat_CF1);
   }
 }
 

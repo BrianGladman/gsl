@@ -1,10 +1,10 @@
 /* Author:  G. Jungman
  * RCS:     $Id$
  */
-#include <math.h>
 #include <gsl_math.h>
 #include <gsl_errno.h>
 #include "bessel.h"
+#include "bessel_olver.h"
 #include "gsl_sf_pow_int.h"
 #include "gsl_sf_trig.h"
 #include "gsl_sf_bessel.h"
