@@ -1406,10 +1406,48 @@ hyperg_1F1_ab_pos(const double a, const double b, const double x, double * resul
 
 static
 int
-hyperg_1F1_ab_neg(const double a, const double b, const double x, double * result)
+hyperg_1F1_ab_neg(const double a, const double b, const double x,
+                  double * result)
 {
-  *result = 0.0;
-  return GSL_EUNIMPL;
+  if(x > 0.0) {
+    /* [Abramowitz+Stegun, 13.1.3]
+     *
+     * M(1+a-b,2-b,x) = Gamma(a)/Gamma(b) x^(b-1) *
+     *                  { Gamma(2-b)/Gamma(1+a-b) M(a,b,x) - (1-b) U(a,b,x) }
+     */
+    double bp = 2.0 - b;
+    double ap = a - b + 1.0;
+    double lnpre;
+    double lg_ap, lg_bp;
+    double lnc1;
+    double lg_2mbp, lg_1papmbp;
+    double sg_2mbp, sg_1papmbp;
+    double M, U;
+    double term_M;
+    double inner, lninner;
+
+    gsl_sf_lngamma_impl(ap, &lg_ap);
+    gsl_sf_lngamma_impl(bp, &lg_bp);
+    lnpre = lg_ap - lg_bp + (bp-1.0)*log(x);
+
+    gsl_sf_lngamma_sgn_impl(2.0-bp,    &lg_2mbp,    &sg_2mbp);
+    gsl_sf_lngamma_sgn_impl(1.0+ap-bp, &lg_1papmbp, &sg_1papmbp);
+    lnc1 = lg_2mbp - lg_1papmbp;
+
+    gsl_sf_hyperg_1F1_impl(ap, bp, x, &M);
+    gsl_sf_hyperg_U_impl(ap, bp, x, &U);
+
+    gsl_sf_exp_sgn_impl(lnc1 + log(fabs(M)), sg_2mbp*sg_1papmbp*M, &term_M);
+
+    inner = term_M - (1.0-bp) * U;
+    lninner = log(fabs(inner));
+
+    return gsl_sf_exp_sgn_impl(lninner + lnpre, inner, result);
+  }
+  else {
+    *result = 0.0;
+    return GSL_EUNIMPL;
+  }
 }
 
 
