@@ -18,6 +18,7 @@
  */
 
 #include <config.h>
+#include <stdlib.h>
 #include <stdio.h>
 #include <gsl/gsl_vector.h>
 #include <gsl/gsl_test.h>

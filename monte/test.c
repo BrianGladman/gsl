@@ -18,6 +18,7 @@
  */
 
 #include <config.h>
+#include <stdlib.h>
 #include <math.h>
 #include <stdio.h>
 

@@ -21,6 +21,7 @@
  * RCS:     $Id$
  */
 #include <config.h>
+#include <stdlib.h>
 #include <gsl/gsl_test.h>
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_ieee_utils.h>

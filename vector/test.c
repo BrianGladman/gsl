@@ -18,6 +18,7 @@
  */
 
 #include <config.h>
+#include <stdlib.h>
 #include <fcntl.h>
 #include <stdio.h>
 #include <gsl/gsl_math.h>

@@ -18,6 +18,7 @@
  */
 
 #include <config.h>
+#include <stdlib.h>
 #include <gsl/gsl_test.h>
 #include <gsl/gsl_multimin.h>
 #include <gsl/gsl_min.h>

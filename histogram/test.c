@@ -18,6 +18,7 @@
  */
 
 #include <config.h>
+#include <stdlib.h>
 #include <stdio.h>
 #include <gsl/gsl_histogram.h>
 #include <gsl/gsl_test.h>

@@ -19,6 +19,7 @@
 
 #include <config.h>
 #include <fcntl.h>
+#include <stdlib.h>
 #include <stdio.h>
 #include <gsl/gsl_block.h>
 #include <gsl/gsl_ieee_utils.h>
