@@ -111,8 +111,8 @@ my_f (double x, size_t dim, void * p) @{
 
    if (dim != 2)
       @{
-        fprintf(stderr, "error: dim != 2");
-        abort();
+        fprintf (stderr, "error: dim != 2");
+        abort ();
       @}
 
    return  fp->a * x[0] * x[0] 

@@ -177,8 +177,8 @@ This function frees all the memory associated with the minimizer
 This function returns a pointer to the name of the minimizer.  For example,
 
 @example
-printf("s is a '%s' minimizer\n",
-       gsl_min_fminimizer_name (s));
+printf ("s is a '%s' minimizer\n",
+        gsl_min_fminimizer_name (s));
 @end example
 
 @noindent

@@ -1464,7 +1464,7 @@ where @c{($n_1$, $n_2$, $\ldots$, $n_K$)}
 @math{(n_1, n_2, ..., n_K)} 
 are nonnegative integers with 
 @c{$\sum_{k=1}^{K} n_k =N$} 
-@math{sum_{k=1,K} n_k = N},
+@math{sum_@{k=1,K@} n_k = N},
 and
 @c{$(p_1, p_2, \ldots, p_K)$} 
 @math{(p_1, p_2, ..., p_K)}
@@ -1792,10 +1792,10 @@ main (void)
   for (i = 0; i < n; i++) 
     @{
       unsigned int k = gsl_ran_poisson (r, mu);
-      printf(" %u", k);
+      printf (" %u", k);
     @}
 
-  printf("\n");
+  printf ("\n");
   return 0;
 @}
 @end example
@@ -1850,13 +1850,13 @@ main (void)
   T = gsl_rng_default;
   r = gsl_rng_alloc (T);
 
-  printf("%g %g\n", x, y);
+  printf ("%g %g\n", x, y);
 
   for (i = 0; i < 10; i++)
     @{
       gsl_ran_dir_2d (r, &dx, &dy);
       x += dx; y += dy; 
-      printf("%g %g\n", x, y);
+      printf ("%g %g\n", x, y);
     @}
   return 0;
 @}

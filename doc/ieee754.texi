@@ -175,14 +175,14 @@ main (void)
 
   double fd = f; /* promote from float to double */
   
-  printf(" f="); gsl_ieee_printf_float(&f); 
-  printf("\n");
+  printf (" f="); gsl_ieee_printf_float(&f); 
+  printf ("\n");
 
-  printf("fd="); gsl_ieee_printf_double(&fd); 
-  printf("\n");
+  printf ("fd="); gsl_ieee_printf_double(&fd); 
+  printf ("\n");
 
-  printf(" d="); gsl_ieee_printf_double(&d); 
-  printf("\n");
+  printf (" d="); gsl_ieee_printf_double(&d); 
+  printf ("\n");
 
   return 0;
 @}
@@ -363,8 +363,8 @@ main (void)
       sum += x;
       x = x / i;
       
-      printf("i=%2d sum=%.18f error=%g\n",
-             i, sum, sum - M_E);
+      printf ("i=%2d sum=%.18f error=%g\n",
+              i, sum, sum - M_E);
 
       if (i > 30)
          break;

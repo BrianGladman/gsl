@@ -291,17 +291,17 @@ main (void)
                    &c0, &c1, &cov00, &cov01, &cov11, 
                    &chisq);
 
-  printf("# best fit: Y = %g + %g X\n", c0, c1);
-  printf("# covariance matrix:\n");
-  printf("# [ %g, %g\n#   %g, %g]\n", 
-         cov00, cov01, cov01, cov11);
-  printf("# chisq = %g\n", chisq);
+  printf ("# best fit: Y = %g + %g X\n", c0, c1);
+  printf ("# covariance matrix:\n");
+  printf ("# [ %g, %g\n#   %g, %g]\n", 
+          cov00, cov01, cov01, cov11);
+  printf ("# chisq = %g\n", chisq);
 
   for (i = 0; i < n; i++)
-    printf("data: %g %g %g\n", 
-                  x[i], y[i], 1/sqrt(w[i]));
+    printf ("data: %g %g %g\n", 
+                   x[i], y[i], 1/sqrt(w[i]));
 
-  printf("\n");
+  printf ("\n");
 
   for (i = -30; i < 130; i++)
     @{
@@ -313,9 +313,9 @@ main (void)
                           cov00, cov01, cov11, 
                           &yf, &yf_err);
 
-      printf("fit: %g %g\n", xf, yf);
-      printf("hi : %g %g\n", xf, yf + yf_err);
-      printf("lo : %g %g\n", xf, yf - yf_err);
+      printf ("fit: %g %g\n", xf, yf);
+      printf ("hi : %g %g\n", xf, yf + yf_err);
+      printf ("lo : %g %g\n", xf, yf - yf_err);
     @}
   return 0;
 @}
@@ -392,11 +392,11 @@ main (int argc, char **argv)
 
   if (argc != 2)
     @{
-      fprintf(stderr,"usage: fit n < data\n");
+      fprintf (stderr,"usage: fit n < data\n");
       exit (-1);
     @}
 
-  n = atoi(argv[1]);
+  n = atoi (argv[1]);
 
   X = gsl_matrix_alloc (n, 3);
   y = gsl_vector_alloc (n);
@@ -407,16 +407,16 @@ main (int argc, char **argv)
 
   for (i = 0; i < n; i++)
     @{
-      int count = fscanf(stdin, "%lg %lg %lg",
-                         &xi, &yi, &ei);
+      int count = fscanf (stdin, "%lg %lg %lg",
+                          &xi, &yi, &ei);
 
       if (count != 3)
         @{
-          fprintf(stderr, "error reading file\n");
-          exit(-1);
+          fprintf (stderr, "error reading file\n");
+          exit (-1);
         @}
 
-      printf("%g %g +/- %g\n", xi, yi, ei);
+      printf ("%g %g +/- %g\n", xi, yi, ei);
       
       gsl_matrix_set (X, i, 0, 1.0);
       gsl_matrix_set (X, i, 1, xi);
@@ -438,17 +438,17 @@ main (int argc, char **argv)
 #define COV(i,j) (gsl_matrix_get(cov,(i),(j)))
 
   @{
-    printf("# best fit: Y = %g + %g X + %g X^2\n", 
-           C(0), C(1), C(2));
+    printf ("# best fit: Y = %g + %g X + %g X^2\n", 
+            C(0), C(1), C(2));
 
-    printf("# covariance matrix:\n");
-    printf("[ %+.5e, %+.5e, %+.5e  \n",
-              COV(0,0), COV(0,1), COV(0,2));
-    printf("  %+.5e, %+.5e, %+.5e  \n", 
-              COV(1,0), COV(1,1), COV(1,2));
-    printf("  %+.5e, %+.5e, %+.5e ]\n", 
-              COV(2,0), COV(2,1), COV(2,2));
-    printf("# chisq = %g\n", chisq);
+    printf ("# covariance matrix:\n");
+    printf ("[ %+.5e, %+.5e, %+.5e  \n",
+               COV(0,0), COV(0,1), COV(0,2));
+    printf ("  %+.5e, %+.5e, %+.5e  \n", 
+               COV(1,0), COV(1,1), COV(1,2));
+    printf ("  %+.5e, %+.5e, %+.5e ]\n", 
+               COV(2,0), COV(2,1), COV(2,2));
+    printf ("# chisq = %g\n", chisq);
   @}
   return 0;
 @}
@@ -470,18 +470,18 @@ main (void)
   const gsl_rng_type * T;
   gsl_rng * r;
   
-  gsl_rng_env_setup();
+  gsl_rng_env_setup ();
   
   T = gsl_rng_default;
-  r = gsl_rng_alloc(T);
+  r = gsl_rng_alloc (T);
 
   for (x = 0.1; x < 2; x+= 0.1)
     @{
-      double y0 = exp(x);
-      double sigma = 0.1*y0;
-      double dy = gsl_ran_gaussian(r, sigma);
+      double y0 = exp (x);
+      double sigma = 0.1 * y0;
+      double dy = gsl_ran_gaussian (r, sigma);
 
-      printf("%g %g %g\n", x, y0 + dy, sigma);
+      printf ("%g %g %g\n", x, y0 + dy, sigma);
     @}
   return 0;
 @}

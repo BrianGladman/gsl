@@ -172,8 +172,8 @@ main (void)
 @{
   gsl_block * b = gsl_block_alloc (100);
   
-  printf("length of block = %u\n", b->size);
-  printf("block data address = %#x\n", b->data);
+  printf ("length of block = %u\n", b->size);
+  printf ("block data address = %#x\n", b->data);
 
   gsl_block_free (b);
   return 0;
@@ -761,7 +761,7 @@ main (void)
   
   for (i = 0; i < 100; i++)
     @{
-      printf("v_%d = %g\n", i, gsl_vector_get (v, i));
+      printf ("v_%d = %g\n", i, gsl_vector_get (v, i));
     @}
 
   return 0;
@@ -800,7 +800,7 @@ main (void)
     @}
 
   @{  
-     FILE * f = fopen("test.dat", "w");
+     FILE * f = fopen ("test.dat", "w");
      gsl_vector_fprintf (f, v, "%.5g");
      fclose (f);
   @}
@@ -825,14 +825,14 @@ main (void)
   gsl_vector * v = gsl_vector_alloc (10);
 
   @{  
-     FILE * f = fopen("test.dat", "r");
+     FILE * f = fopen ("test.dat", "r");
      gsl_vector_fscanf (f, v);
      fclose (f);
   @}
 
   for (i = 0; i < 10; i++)
     @{
-      printf("%g\n", gsl_vector_get(v, i));
+      printf ("%g\n", gsl_vector_get(v, i));
     @}
 
   return 0;
@@ -1562,8 +1562,8 @@ main (void)
   
   for (i = 0; i < 100; i++)
     for (j = 0; j < 3; j++)
-      printf("m(%d,%d) = %g\n", i, j, 
-             gsl_matrix_get (m, i, j));
+      printf ("m(%d,%d) = %g\n", i, j, 
+              gsl_matrix_get (m, i, j));
 
   return 0;
 @}
@@ -1606,13 +1606,13 @@ main (void)
       gsl_matrix_set (m, i, j, 0.23 + i + j);
 
   @{  
-     FILE * f = fopen("test.dat", "w");
+     FILE * f = fopen ("test.dat", "w");
      gsl_matrix_fwrite (f, m);
      fclose (f);
   @}
 
   @{  
-     FILE * f = fopen("test.dat", "r");
+     FILE * f = fopen ("test.dat", "r");
      gsl_matrix_fread (f, a);
      fclose (f);
   @}
@@ -1620,12 +1620,12 @@ main (void)
   for (i = 0; i < 100; i++)
     for (j = 0; j < 100; j++)
       @{
-        double mij = gsl_matrix_get(m, i, j);
-        double aij = gsl_matrix_get(a, i, j);
+        double mij = gsl_matrix_get (m, i, j);
+        double aij = gsl_matrix_get (a, i, j);
         if (mij != aij) k++;
       @}
 
-  printf("differences = %d (should be zero)\n", k);
+  printf ("differences = %d (should be zero)\n", k);
   return (k > 0);
 @}
 @end example

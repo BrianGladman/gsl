@@ -282,11 +282,11 @@ main (void)
   
   int status = gsl_sf_bessel_J0_e (x, &result);
 
-  printf("status  = %s\n", gsl_strerror(status));
-  printf("J0(5.0) = %.18f\n"
-         "      +/- % .18f\n", 
-         result.val, result.err);
-  printf("exact   = %.18f\n", expected);
+  printf ("status  = %s\n", gsl_strerror(status));
+  printf ("J0(5.0) = %.18f\n"
+          "      +/- % .18f\n", 
+          result.val, result.err);
+  printf ("exact   = %.18f\n", expected);
   return status;
 @}
 @end example
@@ -316,8 +316,8 @@ main (void)
   
   double y = gsl_sf_bessel_J0 (x);
 
-  printf("J0(5.0) = %.18f\n", y);
-  printf("exact   = %.18f\n", expected);
+  printf ("J0(5.0) = %.18f\n", y);
+  printf ("exact   = %.18f\n", expected);
   return 0;
 @}
 @end example

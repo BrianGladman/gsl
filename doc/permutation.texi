@@ -325,20 +325,20 @@ main (void)
   T = gsl_rng_default;
   r = gsl_rng_alloc (T);
 
-  printf("initial permutation:");  
+  printf ("initial permutation:");  
   gsl_permutation_init (p);
   gsl_permutation_fprintf (stdout, p, " %u");
-  printf("\n");
+  printf ("\n");
 
-  printf(" random permutation:");  
+  printf (" random permutation:");  
   gsl_ran_shuffle (r, p->data, N, sizeof(size_t));
   gsl_permutation_fprintf (stdout, p, " %u");
-  printf("\n");
+  printf ("\n");
 
-  printf("inverse permutation:");  
+  printf ("inverse permutation:");  
   gsl_permutation_inverse (q, p);
   gsl_permutation_fprintf (stdout, q, " %u");
-  printf("\n");
+  printf ("\n");
 
   return 0;
 @}
@@ -374,7 +374,7 @@ main (void)
   do 
    @{
       gsl_permutation_fprintf (stdout, p, " %u");
-      printf("\n");
+      printf ("\n");
    @}
   while (gsl_permutation_next(p) == GSL_SUCCESS);
 

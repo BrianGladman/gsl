@@ -44,7 +44,7 @@ typedef struct {
 } gsl_spline;
 
 gsl_spline *
-gsl_spline_alloc(const gsl_interp_type * T, size_t n);
+gsl_spline_alloc(const gsl_interp_type * T, size_t size);
      
 int
 gsl_spline_init(gsl_spline * spline, const double xa[], const double ya[], size_t size);

@@ -635,9 +635,9 @@ main (int argc, char **argv)
             
     gsl_histogram_set_uniform (h, a, b);
 
-    while (fscanf(stdin, "%lg", &x) == 1)
+    while (fscanf (stdin, "%lg", &x) == 1)
       @{
-        gsl_histogram_increment(h, x);
+        gsl_histogram_increment (h, x);
       @}
 
     gsl_histogram_fprintf (stdout, h, "%g", "%g");
@@ -1205,10 +1205,10 @@ main (void)
   gsl_histogram2d_accumulate (h, 0.8, 0.1, 5);
   gsl_histogram2d_accumulate (h, 0.7, 0.9, 0.5);
 
-  gsl_rng_env_setup();
+  gsl_rng_env_setup ();
   
   T = gsl_rng_default;
-  r = gsl_rng_alloc(T);
+  r = gsl_rng_alloc (T);
 
   @{
     int i;
@@ -1225,7 +1225,7 @@ main (void)
       int status 
        = gsl_histogram2d_pdf_sample (p, u, v, &x, &y);
       
-      printf("%g %g\n", x, y);
+      printf ("%g %g\n", x, y);
     @}
   @}
   

@@ -124,11 +124,11 @@ main (void)
   for (i = 0; i < 1024; i++)
     @{
       double v[2];
-      gsl_qrng_get(q, v);
-      printf("%.5f %.5f\n", v[0], v[1]);
+      gsl_qrng_get (q, v);
+      printf ("%.5f %.5f\n", v[0], v[1]);
     @}
 
-  gsl_qrng_free(q);
+  gsl_qrng_free (q);
   return 0;
 @}
 @end example

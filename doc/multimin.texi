@@ -149,8 +149,8 @@ This function frees all the memory associated with the minimizer
 This function returns a pointer to the name of the minimizer.  For example,
 
 @example
-printf("s is a '%s' minimizer\n", 
-       gsl_multimin_fdfminimizer_name (s));
+printf ("s is a '%s' minimizer\n", 
+        gsl_multimin_fdfminimizer_name (s));
 @end example
 @noindent
 would print something like @code{s is a 'conjugate_pr' minimizer}.
@@ -641,12 +641,12 @@ main(void)
       if (rval == GSL_SUCCESS)
         printf ("converged to minimum at\n");
 
-      printf("%5d ", iter);
+      printf ("%5d ", iter);
       for (i = 0; i < np; i++)
         @{
           printf ("%10.3e ", gsl_vector_get (s->x, i));
         @}
-      printf("f() = %-10.3f ssize = %.3f\n", s->fval, ssval);
+      printf ("f() = %-10.3f ssize = %.3f\n", s->fval, ssval);
     @}
   
   gsl_vector_free(x);

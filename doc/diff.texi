@@ -75,17 +75,17 @@ main (void)
   F.function = &f;
   F.params = 0;
 
-  printf("f(x) = x^(3/2)\n");
+  printf ("f(x) = x^(3/2)\n");
 
   gsl_diff_central (&F, 2.0, &result, &abserr);
-  printf("x = 2.0\n");
-  printf("f'(x) = %.10f +/- %.5f\n", result, abserr);
-  printf("exact = %.10f\n\n", 1.5 * sqrt(2.0));
+  printf ("x = 2.0\n");
+  printf ("f'(x) = %.10f +/- %.5f\n", result, abserr);
+  printf ("exact = %.10f\n\n", 1.5 * sqrt(2.0));
 
   gsl_diff_forward (&F, 0.0, &result, &abserr);
-  printf("x = 0.0\n");
-  printf("f'(x) = %.10f +/- %.5f\n", result, abserr);
-  printf("exact = %.10f\n", 0.0);
+  printf ("x = 0.0\n");
+  printf ("f'(x) = %.10f +/- %.5f\n", result, abserr);
+  printf ("exact = %.10f\n", 0.0);
 
   return 0;
 @}

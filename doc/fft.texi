@@ -570,8 +570,8 @@ main (void)
 
   for (i = 0; i < wavetable->nf; i++)
     @{
-       printf("# factor %d: %d\n", i, 
-              wavetable->factor[i]);
+       printf ("# factor %d: %d\n", i, 
+               wavetable->factor[i]);
     @}
 
   gsl_fft_complex_forward (data, 1, n, 

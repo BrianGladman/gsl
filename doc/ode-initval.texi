@@ -106,8 +106,8 @@ This function returns a pointer to the name of the stepping function.
 For example,
 
 @example
-printf("step method is '%s'\n",
-        gsl_odeiv_step_name (s));
+printf ("step method is '%s'\n",
+         gsl_odeiv_step_name (s));
 @end example
 
 @noindent
@@ -344,8 +344,8 @@ This function returns a pointer to the name of the control function.
 For example,
 
 @example
-printf("control method is '%s'\n", 
-       gsl_odeiv_control_name (c));
+printf ("control method is '%s'\n", 
+        gsl_odeiv_control_name (c));
 @end example
 
 @noindent
@@ -499,12 +499,12 @@ main (void)
       if (status != GSL_SUCCESS)
           break;
 
-      printf("%.5e %.5e %.5e\n", t, y[0], y[1]);
+      printf ("%.5e %.5e %.5e\n", t, y[0], y[1]);
     @}
 
-  gsl_odeiv_evolve_free(e);
-  gsl_odeiv_control_free(c);
-  gsl_odeiv_step_free(s);
+  gsl_odeiv_evolve_free (e);
+  gsl_odeiv_control_free (c);
+  gsl_odeiv_step_free (s);
   return 0;
 @}
 @end example
@@ -542,7 +542,7 @@ following main loop prints the solution at the fixed points @math{t = 0,
                                   y);
         @}
  
-      printf("%.5e %.5e %.5e\n", t, y[0], y[1]);
+      printf ("%.5e %.5e %.5e\n", t, y[0], y[1]);
     @}
 @end example
 @noindent
@@ -588,10 +588,10 @@ main (void)
 
       t += h;
 
-      printf("%.5e %.5e %.5e\n", t, y[0], y[1]);
+      printf ("%.5e %.5e %.5e\n", t, y[0], y[1]);
     @}
 
-  gsl_odeiv_step_free(s);
+  gsl_odeiv_step_free (s);
   return 0;
 @}
 @end example

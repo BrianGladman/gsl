@@ -282,7 +282,7 @@ void S1(const gsl_rng * r, void *xp, double step_size)
 
 void P1(void *xp)
 @{
-  printf("%12g", *((double *) xp));
+  printf ("%12g", *((double *) xp));
 @}
 
 int

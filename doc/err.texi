@@ -25,7 +25,7 @@ The library follows the thread-safe error reporting conventions of the
 indicate an error and @code{0} to indicate success.
 
 @example
-int status = gsl_function(...)
+int status = gsl_function (...)
 
 if (status) @{ /* an error occurred */
   .....       
@@ -106,7 +106,7 @@ This function returns a pointer to a string describing the error code
 @var{gsl_errno}. For example,
 
 @example
-printf("error: %s\n", gsl_strerror (status));
+printf ("error: %s\n", gsl_strerror (status));
 @end example
 @noindent
 would print an error message like @code{error: output range error} for a

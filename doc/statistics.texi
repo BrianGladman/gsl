@@ -681,13 +681,13 @@ main(void)
   largest  = gsl_stats_max(data, 1, 5);
   smallest = gsl_stats_min(data, 1, 5);
 
-  printf("The dataset is %g, %g, %g, %g, %g\n",
-        data[0], data[1], data[2], data[3], data[4]);
+  printf ("The dataset is %g, %g, %g, %g, %g\n",
+         data[0], data[1], data[2], data[3], data[4]);
 
-  printf("The sample mean is %g\n", mean);
-  printf("The estimated variance is %g\n", variance);
-  printf("The largest value is %g\n", largest);
-  printf("The smallest value is %g\n", smallest);
+  printf ("The sample mean is %g\n", mean);
+  printf ("The estimated variance is %g\n", variance);
+  printf ("The largest value is %g\n", largest);
+  printf ("The smallest value is %g\n", smallest);
   return 0;
 @}
 @end example
@@ -716,13 +716,13 @@ main(void)
   double data[5] = @{17.2, 18.1, 16.5, 18.3, 12.6@};
   double median, upperq, lowerq;
 
-  printf("Original dataset:  %g, %g, %g, %g, %g\n",
-        data[0], data[1], data[2], data[3], data[4]);
+  printf ("Original dataset:  %g, %g, %g, %g, %g\n",
+         data[0], data[1], data[2], data[3], data[4]);
 
   gsl_sort (data, 1, 5);
 
-  printf("Sorted dataset: %g, %g, %g, %g, %g\n",
-        data[0], data[1], data[2], data[3], data[4]);
+  printf ("Sorted dataset: %g, %g, %g, %g, %g\n",
+         data[0], data[1], data[2], data[3], data[4]);
 
   median 
     = gsl_stats_median_from_sorted_data (data, 
@@ -737,9 +737,9 @@ main(void)
                                            1, 5,
                                            0.25);
 
-  printf("The median is %g\n", median);
-  printf("The upper quartile is %g\n", upperq);
-  printf("The lower quartile is %g\n", lowerq);
+  printf ("The median is %g\n", median);
+  printf ("The upper quartile is %g\n", upperq);
+  printf ("The lower quartile is %g\n", lowerq);
   return 0;
 @}
 @end example

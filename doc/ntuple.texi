@@ -79,7 +79,7 @@ size @var{ntuple->size} to the corresponding file.
 @end deftypefun
 
 @deftypefun int gsl_ntuple_bookdata (gsl_ntuple * @var{ntuple})
-This function is a synonym for @code{gsl_ntuple_write}
+This function is a synonym for @code{gsl_ntuple_write}.
 @end deftypefun
 
 @node Reading ntuples 
@@ -87,7 +87,7 @@ This function is a synonym for @code{gsl_ntuple_write}
 
 @deftypefun int gsl_ntuple_read (gsl_ntuple * @var{ntuple})
 This function reads the current row of the ntuple file for @var{ntuple}
-and stores the values in @var{ntuple->data}
+and stores the values in @var{ntuple->data}.
 @end deftypefun
 
 @node Closing an ntuple file
@@ -151,13 +151,12 @@ data in the same histogram.
 @section Example programs
 
 The following example programs demonstrate the use of ntuples in
-managing a large dataset.  The first program creates a set of 100,000
+managing a large dataset.  The first program creates a set of 10,000
 simulated "events", each with 3 associated values @math{(x,y,z)}.  These
 are generated from a gaussian distribution with unit variance, for
 demonstration purposes, and written to the ntuple file @file{test.dat}.
 
 @example
-#include <config.h>
 #include <gsl/gsl_ntuple.h>
 #include <gsl/gsl_rng.h>
 #include <gsl/gsl_randist.h>
@@ -182,7 +181,7 @@ main (void)
     = gsl_ntuple_create ("test.dat", &ntuple_row, 
                          sizeof (ntuple_row));
 
-  gsl_rng_env_setup();
+  gsl_rng_env_setup ();
 
   T = gsl_rng_default; 
   r = gsl_rng_alloc (T);
@@ -196,7 +195,7 @@ main (void)
       gsl_ntuple_write (ntuple);
     @}
   
-  gsl_ntuple_close(ntuple);
+  gsl_ntuple_close (ntuple);
   return 0;
 @}
 @end example
@@ -208,7 +207,6 @@ lower limit of 1.5.  The selected events are then histogrammed using
 their @math{E^2} values.
 
 @example
-#include <config.h>
 #include <math.h>
 #include <gsl/gsl_ntuple.h>
 #include <gsl/gsl_histogram.h>
@@ -259,7 +257,7 @@ main (void)
 int
 sel_func (void *ntuple_data, void *params)
 @{
-  double x, y, z, E, scale;
+  double x, y, z, E2, scale;
   scale = *(double *) params;
 
   x = ((struct data *) ntuple_data)->x;

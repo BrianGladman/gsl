@@ -173,8 +173,8 @@ These functions free all the memory associated with the solver @var{s}.
 These functions return a pointer to the name of the solver.  For example,
 
 @example
-printf("s is a '%s' solver\n", 
-       gsl_multiroot_fdfsolver_name (s));
+printf ("s is a '%s' solver\n", 
+        gsl_multiroot_fdfsolver_name (s));
 @end example
 @noindent
 would print something like @code{s is a 'newton' solver}.

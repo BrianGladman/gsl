@@ -549,9 +549,9 @@ main (void)
   t_min = (r_mars - r_earth) / c;
   t_max = (r_mars + r_earth) / c;
 
-  printf("light travel time from Earth to Mars:\n");
-  printf("minimum = %.1f minutes\n", t_min / minutes);
-  printf("maximum = %.1f minutes\n", t_max / minutes);
+  printf ("light travel time from Earth to Mars:\n");
+  printf ("minimum = %.1f minutes\n", t_min / minutes);
+  printf ("maximum = %.1f minutes\n", t_max / minutes);
 
   return 0;
 @}

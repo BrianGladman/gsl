@@ -207,3 +207,5 @@ memory allocation
 * Wolfgang Hoermann <hormannw@boun.edu.tr> bug report for niederreiter qrng
 
 * Jerome Houdayer <houdayer@spht.saclay.cea.fr> bug report for taus seeding
+
+* Conrad Curry <cwcurry@orca.st.usm.edu> bug and documentation reports

@@ -250,8 +250,8 @@ print_rank (gsl_vector * v)
   for (i = 0; i < n; i++)
    @{
     double vi = gsl_vector_get(v, i);
-    printf("element = %d, value = %g, rank = %d\n",
-            i, vi, rank->data[i]);
+    printf ("element = %d, value = %g, rank = %d\n",
+             i, vi, rank->data[i]);
    @}
 
   gsl_permutation_free (perm);
@@ -270,8 +270,8 @@ gsl_sort_vector_index (p, v);
 
 for (i = 0; i < v->size; i++)
 @{
-    double vpi = gsl_vector_get(v, p->data[i]);
-    printf("order = %d, value = %g\n", i, vpi);
+    double vpi = gsl_vector_get (v, p->data[i]);
+    printf ("order = %d, value = %g\n", i, vpi);
 @}
 @end example
 @noindent
@@ -306,7 +306,7 @@ main (void)
 
   gsl_sort_smallest (small, k, x, 1, N);
 
-  printf("%d smallest values from %d\n", k, N);
+  printf ("%d smallest values from %d\n", k, N);
 
   for (i = 0; i < k; i++)
     @{

@@ -101,8 +101,8 @@ This function returns the name of the interpolation type used by @var{interp}.
 For example,
 
 @example
-printf("interp uses '%s' interpolation.\n", 
-       gsl_interp_name (interp));
+printf ("interp uses '%s' interpolation.\n", 
+        gsl_interp_name (interp));
 @end example
 @noindent
 would print something like,
@@ -143,46 +143,46 @@ strategies.
 This function performs a lookup action on the data array @var{x_array}
 of size @var{size}, using the given accelerator @var{a}.  This is how
 lookups are performed during evaluation of an interpolation.  The
-function returns an index @math{i} such that @code{xarray[i] <= x <
-xarray[i+1]}.
+function returns an index @math{i} such that @code{x_array[i] <= x <
+x_array[i+1]}.
 @end deftypefun
 
-@deftypefun void gsl_interp_accel_free (gsl_interp_accel* @var{a})
-This function frees the accelerator object @var{a}.
+@deftypefun void gsl_interp_accel_free (gsl_interp_accel* @var{acc})
+This function frees the accelerator object @var{acc}.
 @end deftypefun
 
 @node Evaluation of Interpolating Functions
 @section Evaluation of Interpolating Functions
 
-@deftypefun  double gsl_interp_eval (const gsl_interp * @var{interp}, const double @var{xa}[], const double @var{ya}[], double @var{x}, gsl_interp_accel * @var{a})
-@deftypefunx int gsl_interp_eval_e (const gsl_interp * @var{interp}, const double @var{xa}[], const double @var{ya}[], double @var{x}, gsl_interp_accel * @var{a}, double * @var{y})
+@deftypefun  double gsl_interp_eval (const gsl_interp * @var{interp}, const double @var{xa}[], const double @var{ya}[], double @var{x}, gsl_interp_accel * @var{acc})
+@deftypefunx int gsl_interp_eval_e (const gsl_interp * @var{interp}, const double @var{xa}[], const double @var{ya}[], double @var{x}, gsl_interp_accel * @var{acc}, double * @var{y})
 These functions return the interpolated value of @var{y} for a given
 point @var{x}, using the interpolation object @var{interp}, data arrays
-@var{xa} and @var{ya} and the accelerator @var{a}.
+@var{xa} and @var{ya} and the accelerator @var{acc}.
 @end deftypefun
 
-@deftypefun double gsl_interp_eval_deriv (const gsl_interp * @var{interp}, const double @var{xa}[], const double @var{ya}[], double @var{x}, gsl_interp_accel * @var{a})
-@deftypefunx int gsl_interp_eval_deriv_e (const gsl_interp * @var{interp}, const double @var{xa}[], const double @var{ya}[], double @var{x}, gsl_interp_accel * @var{a}, double * @var{d})
+@deftypefun double gsl_interp_eval_deriv (const gsl_interp * @var{interp}, const double @var{xa}[], const double @var{ya}[], double @var{x}, gsl_interp_accel * @var{acc})
+@deftypefunx int gsl_interp_eval_deriv_e (const gsl_interp * @var{interp}, const double @var{xa}[], const double @var{ya}[], double @var{x}, gsl_interp_accel * @var{acc}, double * @var{d})
 These functions return the derivative @var{d} of an interpolated
 function for a given point @var{x}, using the interpolation object
 @var{interp}, data arrays @var{xa} and @var{ya} and the accelerator
-@var{a}. 
+@var{acc}. 
 @end deftypefun
 
-@deftypefun double gsl_interp_eval_deriv2 (const gsl_interp * @var{interp}, const double @var{xa}[], const double @var{ya}[], double @var{x}, gsl_interp_accel * @var{a})
-@deftypefunx int gsl_interp_eval_deriv2_e (const gsl_interp * @var{interp}, const double @var{xa}[], const double @var{ya}[], double @var{x}, gsl_interp_accel * @var{a}, double * @var{d2})
+@deftypefun double gsl_interp_eval_deriv2 (const gsl_interp * @var{interp}, const double @var{xa}[], const double @var{ya}[], double @var{x}, gsl_interp_accel * @var{acc})
+@deftypefunx int gsl_interp_eval_deriv2_e (const gsl_interp * @var{interp}, const double @var{xa}[], const double @var{ya}[], double @var{x}, gsl_interp_accel * @var{acc}, double * @var{d2})
 These functions return the second derivative @var{d2} of an interpolated
 function for a given point @var{x}, using the interpolation object
 @var{interp}, data arrays @var{xa} and @var{ya} and the accelerator
-@var{a}. 
+@var{acc}. 
 @end deftypefun
 
-@deftypefun double gsl_interp_eval_integ (const gsl_interp * @var{interp}, const double @var{xa}[], const double @var{ya}[], double @var{a}, double @var{b}double @var{x}, gsl_interp_accel * @var{a})
-@deftypefunx int gsl_interp_eval_integ_e (const gsl_interp * @var{interp}, const double @var{xa}[], const double @var{ya}[], , double @var{a}, double @var{b}, gsl_interp_accel * @var{a}, double * @var{result})
+@deftypefun double gsl_interp_eval_integ (const gsl_interp * @var{interp}, const double @var{xa}[], const double @var{ya}[], double @var{a}, double @var{b}, gsl_interp_accel * @var{acc})
+@deftypefunx int gsl_interp_eval_integ_e (const gsl_interp * @var{interp}, const double @var{xa}[], const double @var{ya}[], double @var{a}, double @var{b}, gsl_interp_accel * @var{acc}, double * @var{result})
 These functions return the numerical integral @var{result} of an
 interpolated function over the range [@var{a}, @var{b}], using the
 interpolation object @var{interp}, data arrays @var{xa} and @var{ya} and
-the accelerator @var{a}.
+the accelerator @var{acc}.
 @end deftypefun
 
 @node Higher-level Interface
@@ -196,7 +196,7 @@ following functions are equivalent to the corresponding
 and @var{ya} as arguments on each evaluation. These functions are
 defined in the header file @file{gsl_spline.h}.
 
-@deftypefun {gsl_spline *} gsl_spline_alloc (const gsl_interp_type * @var{T}, size_t @var{n})
+@deftypefun {gsl_spline *} gsl_spline_alloc (const gsl_interp_type * @var{T}, size_t @var{size})
 @end deftypefun
 
 @deftypefun int gsl_spline_init (gsl_spline * @var{spline}, const double xa[], const double @var{ya}[], size_t @var{size})
@@ -205,16 +205,16 @@ defined in the header file @file{gsl_spline.h}.
 @deftypefun void gsl_spline_free (gsl_spline * @var{spline})
 @end deftypefun
 
-@deftypefun double gsl_spline_eval (const gsl_spline * @var{spline}, double @var{x}, gsl_interp_accel * @var{a})
-@deftypefunx int gsl_spline_eval_e (const gsl_spline * @var{spline}, double @var{x}, gsl_interp_accel * @var{a}, double * @var{y})
+@deftypefun double gsl_spline_eval (const gsl_spline * @var{spline}, double @var{x}, gsl_interp_accel * @var{acc})
+@deftypefunx int gsl_spline_eval_e (const gsl_spline * @var{spline}, double @var{x}, gsl_interp_accel * @var{acc}, double * @var{y})
 @end deftypefun
 
-@deftypefun double gsl_spline_eval_deriv (const gsl_spline * @var{spline}, double @var{x}, gsl_interp_accel * @var{a})
-@deftypefunx int gsl_spline_eval_deriv_e (const gsl_spline * @var{spline}, double @var{x}, gsl_interp_accel * @var{a}, double * @var{d})
+@deftypefun double gsl_spline_eval_deriv (const gsl_spline * @var{spline}, double @var{x}, gsl_interp_accel * @var{acc})
+@deftypefunx int gsl_spline_eval_deriv_e (const gsl_spline * @var{spline}, double @var{x}, gsl_interp_accel * @var{acc}, double * @var{d})
 @end deftypefun
 
-@deftypefun double gsl_spline_eval_deriv2 (const gsl_spline * @var{spline}, double @var{x}, gsl_interp_accel * @var{a})
-@deftypefunx int gsl_spline_eval_deriv2_e (const gsl_spline * @var{spline}, double @var{x}, gsl_interp_accel * @var{a}, double * @var{d2})
+@deftypefun double gsl_spline_eval_deriv2 (const gsl_spline * @var{spline}, double @var{x}, gsl_interp_accel * @var{acc})
+@deftypefunx int gsl_spline_eval_deriv2_e (const gsl_spline * @var{spline}, double @var{x}, gsl_interp_accel * @var{acc}, double * @var{d2})
 @end deftypefun
 
 @deftypefun double gsl_spline_eval_integ (const gsl_spline * @var{spline}, double @var{a}, double @var{b}, gsl_interp_accel * @var{acc})
@@ -230,7 +230,6 @@ spline functions.  It computes a cubic spline interpolation of the
 @math{y_i = i + \cos(i^2)} for @math{i = 0 \dots 9}.
 
 @example
-#include <config.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
@@ -268,7 +267,7 @@ main (void)
         printf ("%g %g\n", xi, yi);
       @}
     gsl_spline_free (spline);
-    gsl_interp_accel_free(acc);
+    gsl_interp_accel_free (acc);
   @}
   return 0;
 @}
