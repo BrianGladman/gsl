@@ -38,6 +38,18 @@ int     gsl_sf_gamma_e(double x, double * result);
 double  gsl_sf_gamma(double x);
 
 
+/* Regulated Gamma Function, x > 0
+ * Gamma^*(x) = Gamma(x)/(Sqrt[2Pi] x^(x-1/2) exp(-x))
+ *            = (1 + 1/(12x) + ...),  x->Inf
+ * A useful suggestion of Temme.
+ *
+ * exceptions: GSL_EDOM
+ */
+int     gsl_sf_gammastar_impl(double x, double * result);
+int     gsl_sf_gammastar_e(double x, double * result);
+double  gsl_sf_gammastar(double x);
+
+
 /* 1/Gamma(x)
  * Uses real Lanczos method.
  *

@@ -5,6 +5,7 @@
 #include <math.h>
 #include <gsl_errno.h>
 #include <gsl_math.h>
+#include "gsl_sf_chebyshev.h"
 #include "gsl_sf_exp.h"
 #include "gsl_sf_log.h"
 #include "gsl_sf_psi.h"
@@ -536,6 +537,94 @@ static struct {int n; double f; long i; } doub_fact_table[DOUB_FACT_TABLE_SIZE] 
   */
 };
 
+
+/* Chebyshev coefficients for Gamma*(3/4(t+1)+1/2), -1<t<1
+ */
+static double gstar_a_data[30] = {
+  2.16786447866463034423060819465,
+ -0.055332490187455842580358328025,
+  0.0180039243146071996088831974812,
+ -0.0058091926946893771448001981385,
+  0.00186523689488400339978881560307,
+ -0.00059746524113955531852595158689,
+  0.000191251699077833539254267215674,
+ -0.000061249965469446857359096968124,
+  0.0000196388963313084258644094464050,
+ -6.3067741254637180272515795142e-6,
+  2.02886984058613925268727898628e-6,
+ -6.5384896660838465981983750582e-7,
+  2.11086980589088654764807349107e-7,
+ -6.8260714912274941677892994580e-8,
+  2.21085608758805605555839785095e-8,
+ -7.1710331930255456643627187187e-9,
+  2.32908929839854067546025647451e-9,
+ -7.5740371598505586754890405359e-10,
+  2.46582672225943343985253120841e-10,
+ -8.0362243171659883803428749516e-11,
+  2.62156168263415946535213462287e-11,
+ -8.5596155025948750540420068109e-12,
+  2.79708314994879636143153154441e-12,
+ -9.1471771211886202805502562414e-13,
+  2.99347201980633970949164159269e-13,
+ -9.8026575909753445931073620469e-14,
+  3.2116773667767153777571410671e-14,
+ -1.05180353338781470296505072541e-14,
+  3.4144405720185253938994854173e-15,
+ -1.01151539430811870523226438193e-15
+};
+static struct gsl_sf_cheb_series gstar_a_cs = {
+  gstar_a_data,
+  29,
+  -1, 1,
+  (double *)0,
+  (double *)0
+};
+
+
+/* Chebyshev coefficients for
+ * x^2(Gamma*(x) - 1 - 1/(12x)), x = 4(t+1)+2, -1 < t < 1
+ */
+static double gstar_b_data[] = {
+  0.0057502277273114339831606096782,
+  0.00044966895349656850382541478072,
+ -0.000167276315318871730890504740496,
+  0.000061513701491315479477667094574,
+ -0.0000223726551711525016380862194900,
+  8.0507405356647954540694800545e-6,
+ -2.86710771075833955697667464475e-6,
+  1.01067270537427475683622541062e-6,
+ -3.5265558477595061262310873482e-7,
+  1.21792160464194011932472545908e-7,
+ -4.1619640180795366971160162267e-8,
+  1.40662835007952068924872412943e-8,
+ -4.6982570380537099016106141654e-9,
+  1.54912486646206126864231089364e-9,
+ -5.0340936319394885789686867772e-10,
+  1.60844486737360322499594750055e-10,
+ -5.0349733196835456497619787559e-11,
+  1.53571549397621369975918084605e-11,
+ -4.5233809655775649997667176224e-12,
+  1.26644291792544472810685389641e-12,
+ -3.2648287937449326771785041692e-13,
+  7.1528272726086133795579071407e-14,
+ -9.4831735252566034505739531258e-15,
+ -2.31240019914132072931209066905e-15,
+  2.84066132771703914825901294739e-15,
+ -1.72453703216188164212817709267e-15,
+  8.6507923128671112154695006592e-16,
+ -3.9506563665427555895391869919e-16,
+  1.67793421320747610787923611651e-16,
+ -6.0483153034414765129837716260e-17
+};
+static struct gsl_sf_cheb_series gstar_b_cs = {
+  gstar_b_data,
+  29,
+  -1, 1,
+  (double *)0,
+  (double *)0
+};
+
+
 /* coefficients for gamma=7, kmax=8  Lanczos method */
 static double lanczos_7_c[9] = {
   0.99999999999980993227684700473478,
@@ -616,6 +705,18 @@ lngamma_sgn_sing(int N, double eps, double * lng, double * sgn)
     *lng = 0.0;
     *sgn = 0.0;
     return GSL_EDOM;
+  }
+  else if(N == 0) {
+    /* x is near zero, which requires special treatment
+     * because of the way we handle the generic case.
+     */
+    const double c2 = (6.0*M_EULER*M_EULER + M_PI*M_PI)/12.0;
+    const double g1 = eps*(-M_EULER + c2*eps);
+    double lng1;
+    gsl_sf_log_1plusx_impl(g1, &lng1);  /* log(1 + c1 eps + c2 eps) */
+    *lng = lng1 - log(fabs(eps));
+    *sgn = GSL_SIGN(eps);
+    return GSL_SUCCESS;
   }
   else {
     double psi_N;
@@ -758,6 +859,64 @@ gsl_sf_gamma_impl(const double x, double * result)
     int stat_exp = gsl_sf_exp_impl(lng, &g);
     *result = sgn * g;
     return stat_exp;
+  }
+}
+
+
+int
+gsl_sf_gammastar_impl(const double x, double * result)
+{
+  if(x <= 0.0) {
+    *result = 0.0;
+    return GSL_EDOM;
+  }
+  else if(x < 0.5) {
+    double lg;
+    const int stat_lg = gsl_sf_lngamma_impl(x, &lg);
+    const double lnr  = lg - (x-0.5)*log(x) + x - 0.5*(M_LN2+M_LNPI);
+    const int stat_e  = gsl_sf_exp_impl(lnr, result);
+    return GSL_ERROR_SELECT_2(stat_lg, stat_e);
+  }
+  else if(x < 2.0) {
+    const double t = 4.0/3.0*(x-0.5) - 1.0;
+    *result = gsl_sf_cheb_eval(&gstar_a_cs, t);
+    return GSL_SUCCESS;
+  }
+  else if(x < 10.0) {
+    const double t = 0.25*(x-2.0) - 1.0;
+    const double y = gsl_sf_cheb_eval(&gstar_b_cs, t);
+    *result = y/(x*x) + 1.0 + 1.0/(12.0*x);
+    return GSL_SUCCESS;
+  }
+  else if(x < 1.0/GSL_ROOT4_MACH_EPS) {
+    /* Use the Stirling series for the correction to Log(Gamma(x)),
+     * which is better behaved and easier to compute than the
+     * regular Stirling series for Gamma(x). However, it does
+     * require a little extra work and a call to exp().
+     */
+    const double xi  = 1.0/x;
+    const double xi2 = xi*xi;
+    const double t0  = 3617.0/122400.0 - xi2*43867.0/244188.0;
+    const double t1  = 1.0/156.0 - xi2 * t0;
+    const double t2  = 691.0/360360.0 - xi2 * t1;
+    const double t3  = 1.0/1188.0 - xi2 * t2;
+    const double t4  = 1.0/1680.0 - xi2 * t3;
+    const double t5  = 1.0/1260.0 - xi2 * t4;
+    const double t6  = 1.0/360.0  - xi2 * t5;
+    const double ln_term = xi * (1.0/12.0 - xi2 * t6);
+    *result = exp(ln_term);
+    return GSL_SUCCESS;
+  }
+  else if(x < 1.0/GSL_MACH_EPS) {
+    /* Use Stirling formula for Gamma(x).
+     */
+    const double xi = 1.0/x;
+    *result = 1.0 + xi/12.0*(1.0 + xi/24.0*(1.0 - xi*(139.0/180.0 + 571.0/8640.0*xi)));
+    return GSL_SUCCESS;
+  }
+  else {
+    *result = 1.0;
+    return GSL_SUCCESS;
   }
 }
 
@@ -968,6 +1127,17 @@ int gsl_sf_gamma_e(const double x, double * result)
   return status;
 }
 
+
+int gsl_sf_gammastar_e(const double x, double * result)
+{
+  int status = gsl_sf_gammastar_impl(x, result);
+  if(status != GSL_SUCCESS) {
+    GSL_ERROR("gsl_sf_gammastar_e", status);
+  }
+  return status;
+}
+
+
 int gsl_sf_gammainv_e(const double x, double * result)
 {
   int status = gsl_sf_gammainv_impl(x, result);
@@ -1025,6 +1195,16 @@ double gsl_sf_gamma(const double x)
   int status = gsl_sf_gamma_impl(x, &y);
   if(status != GSL_SUCCESS) {
     GSL_WARNING("gsl_sf_gamma", status);
+  }
+  return y;
+}
+
+double gsl_sf_gammastar(const double x)
+{
+  double y;
+  int status = gsl_sf_gammastar_impl(x, &y);
+  if(status != GSL_SUCCESS) {
+    GSL_WARNING("gsl_sf_gammastar", status);
   }
   return y;
 }

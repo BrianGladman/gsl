@@ -17,7 +17,25 @@
 int
 gsl_sf_lnpoch_impl(const double a, const double x, double * result)
 {
-  if(a > 0.0 && a+x > 0.0) {
+  if(a <= 0.0 || a+x <= 0.0) {
+    *result = 0.0;
+    return GSL_EDOM;
+  }
+  else if(x == 0.0) {
+    *result = 1.0;
+    return GSL_SUCCESS;
+  }
+  else if(fabs(x) < 0.01*a) {
+    double gs_ax, gs_a;
+    double ln_1pxa, ln_1pxa_mxa;
+    gsl_sf_gammastar_impl(a+x, &gs_ax);
+    gsl_sf_gammastar_impl(a,   &gs_a);
+    gsl_sf_log_1plusx_impl(x/a, &ln_1pxa);         /* log(1 + x/a)       */
+    gsl_sf_log_1plusx_mx_impl(x/a, &ln_1pxa_mxa);  /* log(1 + x/a) - x/a */
+    *result = x*log(a)+ (x-0.5)*ln_1pxa + a*ln_1pxa_mxa + log(gs_ax/gs_a);
+    return GSL_SUCCESS;
+  }
+  else {
     double lg_apn, lg_a;
     int stat_apn = gsl_sf_lngamma_impl(a+x, &lg_apn);
     int stat_a   = gsl_sf_lngamma_impl(a,   &lg_a);
@@ -34,11 +52,8 @@ gsl_sf_lnpoch_impl(const double a, const double x, double * result)
       return GSL_FAILURE;
     }
   }
-  else {
-    *result = 0.0;
-    return GSL_EDOM;
-  }
 }
+
 
 int
 gsl_sf_lnpoch_sgn_impl(const double a, const double x,

@@ -42,6 +42,15 @@ int     gsl_sf_log_1plusx_e(double x, double * result);
 double  gsl_sf_log_1plusx(double x);
 
 
+/* Log(1 + x) - x
+ *
+ * exceptions: GSL_EDOM
+ */
+int     gsl_sf_log_1plusx_mx_impl(double x, double * result);
+int     gsl_sf_log_1plusx_mx_e(double x, double * result);
+double  gsl_sf_log_1plusx_mx(double x);
+
+
 #ifdef HAVE_INLINE
 extern inline
 int
