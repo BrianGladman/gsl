@@ -110,3 +110,44 @@ FUNCTION (gsl_matrix, diagonal) (QUALIFIED_TYPE(gsl_matrix) * m)
 
   return v;
 }
+
+QUALIFIED_TYPE(gsl_vector)
+FUNCTION (gsl_matrix, subdiagonal) (QUALIFIED_TYPE(gsl_matrix) * m,
+                                    const size_t k)
+{
+  TYPE(gsl_vector) v = {0, 0, 0, 0};
+
+  if (k >= m->size1)
+    {
+      GSL_ERROR_VAL ("subdiagonal index is out of range", GSL_EINVAL, v);
+    }
+
+  v.data = m->data + k * MULTIPLICITY * m->tda;
+  v.size = GSL_MIN(m->size1 - k, m->size2);
+  v.stride = m->tda + 1;
+  v.block = m->block;
+  v.owner = 0;
+
+  return v;
+}
+
+QUALIFIED_TYPE(gsl_vector)
+FUNCTION (gsl_matrix, superdiagonal) (QUALIFIED_TYPE(gsl_matrix) * m,
+                                      const size_t k)
+{
+  TYPE(gsl_vector) v = {0, 0, 0, 0};
+
+  if (k >= m->size2)
+    {
+      GSL_ERROR_VAL ("column index is out of range", GSL_EINVAL, v);
+    }
+
+  v.data = m->data + k * MULTIPLICITY;
+  v.size = GSL_MIN(m->size1, m->size2 - k);
+  v.stride = m->tda + 1;
+  v.block = m->block;
+  v.owner = 0;
+
+  return v;
+}
+

@@ -132,6 +132,8 @@ gsl_matrix_float gsl_matrix_float_submatrix (gsl_matrix_float * m, const size_t 
 gsl_vector_float gsl_matrix_float_row (gsl_matrix_float * m, const size_t i);
 gsl_vector_float gsl_matrix_float_column (gsl_matrix_float * m, const size_t j);
 gsl_vector_float gsl_matrix_float_diagonal (gsl_matrix_float * m);
+gsl_vector_float gsl_matrix_float_subdiagonal (gsl_matrix_float * m, const size_t k);
+gsl_vector_float gsl_matrix_float_superdiagonal (gsl_matrix_float * m, const size_t k);
 
 const gsl_matrix_float gsl_matrix_float_const_submatrix (const gsl_matrix_float * m, const size_t i, const size_t j, const size_t n1, const size_t n2);
 const gsl_vector_float gsl_matrix_float_const_row (const gsl_matrix_float * m, const size_t i);

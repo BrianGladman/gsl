@@ -53,6 +53,8 @@ typedef struct
     gsl_vector *sdiag;
     gsl_vector *rptdx;
     gsl_vector *w;
+    gsl_vector *work1;
+    gsl_vector *work2;
     gsl_permutation * perm;
   }
 lmder_state_t;
@@ -77,7 +79,7 @@ lmder_alloc (void *vstate, size_t n, size_t p)
   lmder_state_t *state = (lmder_state_t *) vstate;
   gsl_matrix *q, *r;
   gsl_vector *tau, *diag, *qtf, *newton, *gradient, *x_trial, *f_trial,
-   *df, *sdiag, *rptdx, *w;
+   *df, *sdiag, *rptdx, *w, *work1, *work2;
   gsl_permutation *perm;
 
   q = gsl_matrix_calloc (n, n);
@@ -283,10 +285,57 @@ lmder_alloc (void *vstate, size_t n, size_t p)
       gsl_vector_free (sdiag);
       gsl_vector_free (rptdx);
 
-      GSL_ERROR_VAL ("failed to allocate space for rptdx", GSL_ENOMEM, 0);
+      GSL_ERROR_VAL ("failed to allocate space for w", GSL_ENOMEM, 0);
     }
 
   state->w = w;
+
+  work1 = gsl_vector_calloc (n);
+
+  if (work1 == 0)
+    {
+      gsl_matrix_free (q);
+      gsl_matrix_free (r);
+      gsl_vector_free (tau);
+      gsl_vector_free (diag);
+      gsl_vector_free (qtf);
+      gsl_vector_free (newton);
+      gsl_vector_free (gradient);
+      gsl_vector_free (x_trial);
+      gsl_vector_free (f_trial);
+      gsl_vector_free (df);
+      gsl_vector_free (sdiag);
+      gsl_vector_free (rptdx);
+      gsl_vector_free (w);
+
+      GSL_ERROR_VAL ("failed to allocate space for work1", GSL_ENOMEM, 0);
+    }
+
+  state->work1 = work1;
+
+  work2 = gsl_vector_calloc (n);
+
+  if (work2 == 0)
+    {
+      gsl_matrix_free (q);
+      gsl_matrix_free (r);
+      gsl_vector_free (tau);
+      gsl_vector_free (diag);
+      gsl_vector_free (qtf);
+      gsl_vector_free (newton);
+      gsl_vector_free (gradient);
+      gsl_vector_free (x_trial);
+      gsl_vector_free (f_trial);
+      gsl_vector_free (df);
+      gsl_vector_free (sdiag);
+      gsl_vector_free (rptdx);
+      gsl_vector_free (w);
+      gsl_vector_free (work1);
+
+      GSL_ERROR_VAL ("failed to allocate space for work2", GSL_ENOMEM, 0);
+    }
+
+  state->work2 = work2;
 
   perm = gsl_permutation_calloc (p);
 
@@ -305,6 +354,8 @@ lmder_alloc (void *vstate, size_t n, size_t p)
       gsl_vector_free (sdiag);
       gsl_vector_free (rptdx);
       gsl_vector_free (w);
+      gsl_vector_free (work1);
+      gsl_vector_free (work2);
 
       GSL_ERROR_VAL ("failed to allocate space for perm", GSL_ENOMEM, 0);
     }
@@ -348,6 +399,8 @@ lmder_free (void *vstate)
   lmder_state_t *state = (lmder_state_t *) vstate;
 
   gsl_permutation_free (state->perm);
+  gsl_vector_free (state->work1);
+  gsl_vector_free (state->work2);
   gsl_vector_free (state->w);
   gsl_vector_free (state->rptdx);
   gsl_vector_free (state->sdiag);

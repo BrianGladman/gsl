@@ -132,6 +132,8 @@ gsl_matrix_long gsl_matrix_long_submatrix (gsl_matrix_long * m, const size_t i, 
 gsl_vector_long gsl_matrix_long_row (gsl_matrix_long * m, const size_t i);
 gsl_vector_long gsl_matrix_long_column (gsl_matrix_long * m, const size_t j);
 gsl_vector_long gsl_matrix_long_diagonal (gsl_matrix_long * m);
+gsl_vector_long gsl_matrix_long_subdiagonal (gsl_matrix_long * m, const size_t k);
+gsl_vector_long gsl_matrix_long_superdiagonal (gsl_matrix_long * m, const size_t k);
 
 const gsl_matrix_long gsl_matrix_long_const_submatrix (const gsl_matrix_long * m, const size_t i, const size_t j, const size_t n1, const size_t n2);
 const gsl_vector_long gsl_matrix_long_const_row (const gsl_matrix_long * m, const size_t i);

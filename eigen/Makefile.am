@@ -3,12 +3,12 @@ noinst_LTLIBRARIES = libgsleigen.la
 check_PROGRAMS = test
 
 pkginclude_HEADERS = gsl_eigen.h
-libgsleigen_la_SOURCES = eigen_sort.c jacobi.c
+libgsleigen_la_SOURCES =  jacobi.c symm.c symmv.c herm.c hermv.c sort.c
 INCLUDES= -I$(top_builddir)
 
 TESTS = test
 
-test_LDADD = libgsleigen.la ../sys/libgslsys.la ../test/libgsltest.la ../linalg/libgsllinalg.la ../blas/libgslblas.la ../cblas/libgslcblas.la ../matrix/libgslmatrix.la ../vector/libgslvector.la ../block/libgslblock.la ../ieee-utils/libgslieeeutils.la ../err/libgslerr.la ../utils/libutils.la
+test_LDADD = libgsleigen.la ../sys/libgslsys.la ../test/libgsltest.la ../linalg/libgsllinalg.la ../blas/libgslblas.la ../cblas/libgslcblas.la ../matrix/libgslmatrix.la ../vector/libgslvector.la ../block/libgslblock.la  ../complex/libgslcomplex.la ../ieee-utils/libgslieeeutils.la ../err/libgslerr.la ../utils/libutils.la
 
 test_DEPENDENCIES = libgsleigen.la
 test_SOURCES = test.c

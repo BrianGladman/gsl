@@ -38,6 +38,20 @@ __BEGIN_DECLS
 gsl_complex gsl_complex_rect (double x, double y);  /* r= real+i*imag */
 gsl_complex gsl_complex_polar (double r, double theta); /* r= r e^(i theta) */
 
+#ifdef HAVE_INLINE
+extern inline gsl_complex
+gsl_complex_rect (double x, double y)
+{				/* return z = x + i y */
+  gsl_complex z;
+  GSL_SET_COMPLEX (&z, x, y);
+  return z;
+}
+#endif
+
+#define GSL_COMPLEX_ONE (gsl_complex_rect(1.0,0.0))
+#define GSL_COMPLEX_ZERO (gsl_complex_rect(0.0,0.0))
+#define GSL_COMPLEX_NEGONE (gsl_complex_rect(-1.0,0.0))
+
 /* Properties of complex numbers */
 
 double gsl_complex_arg (gsl_complex z); /* return arg(z), -pi< arg(z) <=+pi */

@@ -58,13 +58,13 @@ gsl_eigen_jacobi(gsl_matrix * a,
                          unsigned int * nrot)
 {
   if(a->size1 != a->size2) {
-    return GSL_ENOTSQR;
+     GSL_ERROR ("eigenproblem requires square matrix", GSL_ENOTSQR);
   }
   else if(a->size1 != evec->size1 || a->size1 != evec->size2) {
-    return GSL_EBADLEN;
+     GSL_ERROR ("eigenvector matrix must match input matrix", GSL_EBADLEN);
   }
   else if(a->size1 != eval->size) {
-    return GSL_EBADLEN;
+    GSL_ERROR ("eigenvalue vector must match input matrix", GSL_EBADLEN);
   }
   else {
     const unsigned int n = a->size1;
@@ -76,7 +76,7 @@ gsl_eigen_jacobi(gsl_matrix * a,
     if(b == 0 || z == 0) {
       if(b != 0) free(b);
       if(z != 0) free(z);
-      return GSL_ENOMEM;
+      GSL_ERROR ("could not allocate memory for workspace", GSL_ENOMEM);
     }
 
     /* Set eigenvectors to coordinate basis. */

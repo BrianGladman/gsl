@@ -132,6 +132,8 @@ gsl_matrix_ulong gsl_matrix_ulong_submatrix (gsl_matrix_ulong * m, const size_t 
 gsl_vector_ulong gsl_matrix_ulong_row (gsl_matrix_ulong * m, const size_t i);
 gsl_vector_ulong gsl_matrix_ulong_column (gsl_matrix_ulong * m, const size_t j);
 gsl_vector_ulong gsl_matrix_ulong_diagonal (gsl_matrix_ulong * m);
+gsl_vector_ulong gsl_matrix_ulong_subdiagonal (gsl_matrix_ulong * m, const size_t k);
+gsl_vector_ulong gsl_matrix_ulong_superdiagonal (gsl_matrix_ulong * m, const size_t k);
 
 const gsl_matrix_ulong gsl_matrix_ulong_const_submatrix (const gsl_matrix_ulong * m, const size_t i, const size_t j, const size_t n1, const size_t n2);
 const gsl_vector_ulong gsl_matrix_ulong_const_row (const gsl_matrix_ulong * m, const size_t i);

@@ -67,7 +67,7 @@
  */
 
 int
-gsl_linalg_QRPT_decomp (gsl_matrix * A, gsl_vector * tau, gsl_permutation * p, int *signum)
+gsl_linalg_QRPT_decomp (gsl_matrix * A, gsl_vector * tau, gsl_permutation * p, int *signum, gsl_vector * norm, gsl_vector * work)
 {
   const size_t M = A->size1;
   const size_t N = A->size2;
@@ -78,13 +78,19 @@ gsl_linalg_QRPT_decomp (gsl_matrix * A, gsl_vector * tau, gsl_permutation * p, i
     }
   else if (p->size != N)
     {
-      GSL_ERROR ("permutation size mismatch", GSL_EBADLEN);
+      GSL_ERROR ("permutation size must be N", GSL_EBADLEN);
+    }
+  else if (norm->size != N)
+    {
+      GSL_ERROR ("norm size must be N", GSL_EBADLEN);
+    }
+  else if (work->size != N)
+    {
+      GSL_ERROR ("workspace size must be N", GSL_EBADLEN);
     }
   else
     {
       size_t i;
-      gsl_vector * work = gsl_vector_alloc (N);
-      gsl_vector * norm = gsl_vector_alloc (N);
 
       *signum = 1;
 
@@ -173,16 +179,12 @@ gsl_linalg_QRPT_decomp (gsl_matrix * A, gsl_vector * tau, gsl_permutation * p, i
             }
         }
 
-      gsl_vector_free (work);
-      gsl_vector_free (norm);
-
       return GSL_SUCCESS;
-
     }
 }
 
 int
-gsl_linalg_QRPT_decomp2 (const gsl_matrix * A, gsl_matrix * q, gsl_matrix * r, gsl_vector * tau, gsl_permutation * p, int *signum)
+gsl_linalg_QRPT_decomp2 (const gsl_matrix * A, gsl_matrix * q, gsl_matrix * r, gsl_vector * tau, gsl_permutation * p, int *signum, gsl_vector * norm, gsl_vector * work)
 {
   const size_t M = A->size1;
   const size_t N = A->size2;
@@ -201,11 +203,19 @@ gsl_linalg_QRPT_decomp2 (const gsl_matrix * A, gsl_matrix * q, gsl_matrix * r, g
     }
   else if (p->size != N)
     {
-      GSL_ERROR ("permutation size mismatch", GSL_EBADLEN);
+      GSL_ERROR ("permutation size must be N", GSL_EBADLEN);
+    }
+  else if (norm->size != N)
+    {
+      GSL_ERROR ("norm size must be N", GSL_EBADLEN);
+    }
+  else if (work->size != N)
+    {
+      GSL_ERROR ("workspace size must be N", GSL_EBADLEN);
     }
 
   gsl_matrix_memcpy (r, A);
-  gsl_linalg_QRPT_decomp (r, tau, p, signum);
+  gsl_linalg_QRPT_decomp (r, tau, p, signum, norm, work);
   gsl_linalg_QR_unpack (r, tau, q, r);
 
   return GSL_SUCCESS;

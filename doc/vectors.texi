@@ -454,6 +454,27 @@ This function is equivalent to @code{gsl_vector_subvector_with_stride}
 but can be used for vectors which are declared @code{const}.
 @end deftypefun
 
+@deftypefun gsl_vector gsl_vector_complex_real (gsl_vector_complex *@var{v})
+This function returns a @code{gsl_vector} struct which is a view of a
+real parts of the complex vector @var{v}.
+@end deftypefun
+
+@deftypefun gsl_vector gsl_vector_complex_imag (gsl_vector_complex *@var{v})
+This function returns a @code{gsl_vector} struct which is a view of a
+imaginary parts of the complex vector @var{v}.
+@end deftypefun
+
+@deftypefun {const gsl_vector} gsl_vector_complex_const_real (const gsl_vector_complex *@var{v})
+This function is equivalent to @code{gsl_vector_complex_real}
+but can be used for vectors which are declared @code{const}.
+@end deftypefun
+
+@deftypefun {const gsl_vector} gsl_vector_complex_const_imag (const gsl_vector_complex *@var{v})
+This function is equivalent to @code{gsl_vector_complex_imag}
+but can be used for vectors which are declared @code{const}.
+@end deftypefun
+
+
 @node Modifying subvector views
 @subsection Modifying subvector views
 
@@ -1080,6 +1101,30 @@ as the smaller dimension of the matrix.
 
 @deftypefun {const gsl_vector} gsl_matrix_const_diagonal (const gsl_matrix * @var{m})
 This function is equivalent to @code{gsl_matrix_diagonal} but can be
+used for matrices which are declared @code{const}.
+@end deftypefun
+
+@deftypefun gsl_vector gsl_matrix_subdiagonal (gsl_matrix * @var{m},
+size_t @var{k}) This function returns a @code{gsl_vector} struct which
+is a view of the @var{k}-th subdiagonal of the matrix @var{m}. The
+matrix @var{m} is not required to be square.  The diagonal of the matrix
+corresponds to @math{k = 0}.
+@end deftypefun
+
+@deftypefun {const gsl_vector} gsl_matrix_const_subdiagonal (const gsl_matrix * @var{m}, size_t @var{k})
+This function is equivalent to @code{gsl_matrix_subdiagonal} but can be
+used for matrices which are declared @code{const}.
+@end deftypefun
+
+@deftypefun gsl_vector gsl_matrix_superdiagonal (gsl_matrix * @var{m},
+size_t @var{k}) This function returns a @code{gsl_vector} struct which
+is a view of the @var{k}-th superdiagonal of the matrix @var{m}. The
+matrix @var{m} is not required to be square. The diagonal of the matrix
+corresponds to @math{k = 0}.
+@end deftypefun
+
+@deftypefun {const gsl_vector} gsl_matrix_const_superdiagonal (const gsl_matrix * @var{m}, size_t @var{k})
+This function is equivalent to @code{gsl_matrix_superdiagonal} but can be
 used for matrices which are declared @code{const}.
 @end deftypefun
 

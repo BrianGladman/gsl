@@ -23,6 +23,7 @@
 #include <stdlib.h>
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_complex.h>
+#include <gsl/gsl_vector_long_double.h>
 #include <gsl/gsl_vector_complex.h>
 #include <gsl/gsl_block_complex_long_double.h>
 
@@ -82,6 +83,8 @@ gsl_vector_complex_long_double gsl_vector_complex_long_double_subvector_with_str
 const gsl_vector_complex_long_double gsl_vector_complex_long_double_const_subvector (const gsl_vector_complex_long_double *v, size_t i, size_t n);
 const gsl_vector_complex_long_double gsl_vector_complex_long_double_const_subvector_with_stride (const gsl_vector_complex_long_double *v, size_t i, size_t n, size_t stride);
 
+gsl_vector_long_double gsl_vector_complex_long_double_real (gsl_vector_complex_long_double *v);
+gsl_vector_long_double gsl_vector_complex_long_double_imag (gsl_vector_complex_long_double *v);
 
 gsl_complex_long_double 
 *gsl_vector_complex_long_double_ptr (const gsl_vector_complex_long_double * v, size_t i);

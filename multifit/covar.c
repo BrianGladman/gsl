@@ -41,6 +41,8 @@ gsl_multifit_covar (const gsl_matrix * J, double epsrel, gsl_matrix * covar)
 
   gsl_matrix * r;
   gsl_vector * tau;
+  gsl_vector * norm;
+  gsl_vector * work;
   gsl_permutation * perm;
 
   size_t m = J->size1, n = J->size2 ;
@@ -58,11 +60,13 @@ gsl_multifit_covar (const gsl_matrix * J, double epsrel, gsl_matrix * covar)
   r = gsl_matrix_alloc (m, n);
   tau = gsl_vector_alloc (n);
   perm = gsl_permutation_alloc (n) ;
+  norm = gsl_vector_alloc (n) ;
+  work = gsl_vector_alloc (n) ;
   
   {
     int signum = 0;
     gsl_matrix_memcpy (r, J);
-    gsl_linalg_QRPT_decomp (r, tau, perm, &signum);
+    gsl_linalg_QRPT_decomp (r, tau, perm, &signum, norm, work);
   }
   
   
@@ -184,6 +188,8 @@ gsl_multifit_covar (const gsl_matrix * J, double epsrel, gsl_matrix * covar)
   gsl_matrix_free (r);
   gsl_permutation_free (perm);
   gsl_vector_free (tau);
+  gsl_vector_free (norm);
+  gsl_vector_free (work);
 
   return GSL_SUCCESS;
 }

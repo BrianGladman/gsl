@@ -1,3 +1,8 @@
+Wed Jun  6 13:32:22 2001  Brian Gough  <bjg@network-theory.co.uk>
+
+	* lmder.c covar.c lmiterate.c lmset.c: updated to use new QR
+ 	calling convention (now passes workspace)
+
 Sat Apr 28 11:46:59 2001  Brian Gough  <bjg@network-theory.co.uk>
 
 	* qrsolv.c (qrsolv): removed local declaration of j to avoid

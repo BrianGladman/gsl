@@ -131,6 +131,8 @@ gsl_matrix_complex gsl_matrix_complex_submatrix (gsl_matrix_complex * m, const s
 gsl_vector_complex gsl_matrix_complex_row (gsl_matrix_complex * m, const size_t i);
 gsl_vector_complex gsl_matrix_complex_column (gsl_matrix_complex * m, const size_t j);
 gsl_vector_complex gsl_matrix_complex_diagonal (gsl_matrix_complex * m);
+gsl_vector_complex gsl_matrix_complex_subdiagonal (gsl_matrix_complex * m, const size_t k);
+gsl_vector_complex gsl_matrix_complex_superdiagonal (gsl_matrix_complex * m, const size_t k);
 
 const gsl_matrix_complex gsl_matrix_complex_const_submatrix (const gsl_matrix_complex * m, const size_t i, const size_t j, const size_t n1, const size_t n2);
 const gsl_vector_complex gsl_matrix_complex_const_row (const gsl_matrix_complex * m, const size_t i);

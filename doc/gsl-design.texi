@@ -626,6 +626,12 @@ Functions which allocate memory on the heap should end in _alloc
 Be sure to free any memory allocated by your function if you have to
 return an error in a partially initialized object.
 
+Don't allocate memory 'temporarily' inside a function and then free it
+before the function returns.  This prevents the user from controlling
+memory allocation.  All memory should be allocated and freed through
+separate functions and passed around as a "workspace" argument.  This
+allows memory allocation to be factored out of tight loops.
+
 @node Memory layout
 @section Memory layout
 

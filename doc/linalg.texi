@@ -21,6 +21,8 @@ optimizations.
 * QR Decomposition with Column Pivoting::  
 * Singular Value Decomposition::  
 * Cholesky Decomposition::      
+* Tridiagonal Decomposition of Real Symmetric Matrices::  
+* Tridiagonal Decomposition of Hermitian Matrices::  
 * Householder solver for linear systems::  
 * Tridiagonal Systems::         
 * Linear Algebra References and Further Reading::  
@@ -470,6 +472,105 @@ Cholesky decomposition of @math{A} into the matrix @var{cholesky} given
 by @code{gsl_linalg_cholesky_decomp}. On input @var{x} should contain
 the right-hand side @math{b}, which is replaced by the solution on
 output.
+@end deftypefun
+
+@node Tridiagonal Decomposition of Real Symmetric Matrices
+@section Tridiagonal Decomposition of Real Symmetric Matrices
+@cindex  tridiagonal decomposition
+
+A symmetric matrix @math{A} can be factorized by similarity
+transformations into the form,
+
+@tex
+\beforedisplay
+$$
+A = Q T Q^T
+$$
+\afterdisplay
+@end tex
+@ifinfo
+@example
+A = Q T Q^T
+@end example
+@end ifinfo
+@noindent
+where @math{Q} is an orthogonal matrix and @math{T} is a symmetric
+tridiagonal matrix.
+
+@deftypefun int gsl_linalg_symmtd_decomp (gsl_matrix * @var{A}, gsl_vector * @var{tau})
+This function factorizes the symmetric square matrix @var{A} into the
+symmetric tridiagonal decomposition @math{Q T Q^T}.  On output the
+diagonal and subdiagonal part of the input matrix @var{A} contain the
+tridiagonal matrix @math{T}.  The remaining lower triangular part of the
+input matrix contains the Householder vectors which, together with the
+Householder coefficients @var{tau}, encode the orthogonal matrix
+@math{Q}. This storage scheme is the same as used by @sc{lapack}.  The
+upper triangular part of @var{A} is not referenced.
+@end deftypefun
+
+@deftypefun int gsl_linalg_symmtd_unpack (const gsl_matrix * @var{A}, const gsl_vector * @var{tau}, gsl_matrix * @var{Q}, gsl_vector * @var{d}, gsl_vector * @var{sd})
+This function unpacks the encoded symmetric tridiagonal decomposition
+(@var{A}, @var{tau}) obtained from @code{gsl_linalg_symmtd_decomp} into
+the orthogonal matrix @var{Q}, the vector of diagonal elements @var{d}
+and the vector of subdiagonal elements @var{sd}.  
+@end deftypefun
+
+@deftypefun int gsl_linalg_symmtd_unpack_dsd (const gsl_matrix * @var{A}, gsl_vector * @var{d}, gsl_vector * @var{sd})
+This function unpacks the diagonal and subdiagonal of the encoded
+symmetric tridiagonal decomposition (@var{A}, @var{tau}) obtained from
+@code{gsl_linalg_symmtd_decomp} into the vectors @var{d} and @var{sd}.
+@end deftypefun
+
+@node Tridiagonal Decomposition of Hermitian Matrices
+@section Tridiagonal Decomposition of Hermitian Matrices
+@cindex tridiagonal decomposition
+
+A hermitian matrix @math{A} can be factorized by similarity
+transformations into the form,
+
+@tex
+\beforedisplay
+$$
+A = U T U^T
+$$
+\afterdisplay
+@end tex
+@ifinfo
+@example
+A = U T U^T
+@end example
+@end ifinfo
+@noindent
+where @math{U} is an unitary matrix and @math{T} is a real symmetric
+tridiagonal matrix.
+
+
+@deftypefun int gsl_linalg_hermtd_decomp (gsl_matrix_complex * @var{A}, gsl_vector_complex * @var{tau})
+This function factorizes the hermitian matrix @var{A} into the symmetric
+tridiagonal decomposition @math{U T U^T}.  On output the real parts of
+the diagonal and subdiagonal part of the input matrix @var{A} contain
+the tridiagonal matrix @math{T}.  The remaining lower triangular part of
+the input matrix contains the Householder vectors which, together with
+the Householder coefficients @var{tau}, encode the orthogonal matrix
+@math{Q}. This storage scheme is the same as used by @sc{lapack}.  The
+upper triangular part of @var{A} and imaginary parts of the diagonal are
+not referenced.
+@end deftypefun
+
+@deftypefun int gsl_linalg_hermtd_unpack (const gsl_matrix_complex * @var{A}, const gsl_vector_complex * @var{tau}, gsl_matrix_complex * @var{Q}, gsl_vector * @var{d}, gsl_vector * @var{sd}, gsl_vector_complex * @var{work})
+This function unpacks the encoded tridiagonal decomposition (@var{A},
+@var{tau}) obtained from @code{gsl_linalg_hermtd_decomp} into the
+unitary matrix @var{U}, the real vector of diagonal elements @var{d} and
+the real vector of subdiagonal elements @var{sd}.  This routine requires
+a workspace vector @var{work} of the same length as the diagonal of
+@var{A}.
+@end deftypefun
+
+@deftypefun int gsl_linalg_hermtd_unpack_dsd (const gsl_matrix_complex * @var{A}, gsl_vector * @var{d}, gsl_vector * @var{sd})
+This function unpacks the diagonal and subdiagonal of the encoded
+tridiagonal decomposition (@var{A}, @var{tau}) obtained from
+@code{gsl_linalg_hermtd_decomp} into the real vectors @var{d} and
+@var{sd}.
 @end deftypefun
 
 

@@ -15,6 +15,8 @@ iterate (void *vstate, gsl_multifit_function_fdf * fdf, gsl_vector * x, gsl_vect
   gsl_vector *gradient = state->gradient;
   gsl_vector *sdiag = state->sdiag;
   gsl_vector *w = state->w;
+  gsl_vector *work1 = state->work1;
+  gsl_vector *work2 = state->work2;
   gsl_permutation *perm = state->perm;
 
   double prered, actred;
@@ -164,7 +166,7 @@ lm_iteration:
 
       {
         int signum;
-        gsl_linalg_QRPT_decomp2 (J, q, r, tau, perm, &signum);
+        gsl_linalg_QRPT_decomp2 (J, q, r, tau, perm, &signum, work1, work2);
       }
       
       return GSL_SUCCESS;

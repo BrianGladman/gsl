@@ -76,6 +76,7 @@ int gsl_linalg_matmult_mod (const gsl_matrix * A,
 /* Householder Transformations */
 
 double gsl_linalg_householder_transform (gsl_vector * v);
+gsl_complex gsl_linalg_complex_householder_transform (gsl_vector_complex * v);
 
 int gsl_linalg_householder_hm (double tau, 
                                const gsl_vector * v, 
@@ -134,7 +135,8 @@ int gsl_linalg_LU_sgndet (gsl_matrix * lu, int signum);
 /* QR decomposition */
 
 int gsl_linalg_QR_decomp (gsl_matrix * A,
-			  gsl_vector * tau);
+			  gsl_vector * tau,
+                          gsl_vector * work);
 
 int gsl_linalg_QR_solve (const gsl_matrix * QR,
 			 const gsl_vector * tau,
@@ -195,13 +197,17 @@ int gsl_linalg_R_svx (const gsl_matrix * R,
 int gsl_linalg_QRPT_decomp (gsl_matrix * A,
 			    gsl_vector * tau,
 			    gsl_permutation * p,
-			    int *signum);
+			    int *signum,
+                            gsl_vector * norm,
+                            gsl_vector * work);
 
 int gsl_linalg_QRPT_decomp2 (const gsl_matrix * A, 
                              gsl_matrix * q, gsl_matrix * r, 
                              gsl_vector * tau, 
                              gsl_permutation * p, 
-                             int *signum);
+                             int *signum,
+                             gsl_vector * norm,
+                             gsl_vector * work);
 
 int gsl_linalg_QRPT_solve (const gsl_matrix * QR,
 			   const gsl_vector * tau,
@@ -246,6 +252,27 @@ int gsl_linalg_cholesky_solve (const gsl_matrix * cholesky,
 
 int gsl_linalg_cholesky_svx (const gsl_matrix * cholesky,
                              gsl_vector * x);
+
+/* Symmetric to symmetric tridiagonal decomposition */
+
+int gsl_linalg_symmtd_decomp (gsl_matrix * A, gsl_vector * tau);
+int gsl_linalg_symmtd_unpack (const gsl_matrix * A, const gsl_vector * tau,
+                              gsl_matrix * Q, gsl_vector * d, gsl_vector * sd);
+int gsl_linalg_symmtd_unpack_dsd (const gsl_matrix * A,
+                                  gsl_vector * d, gsl_vector * sd);
+
+/* Hermitian to symmetric tridiagonal decomposition */
+
+int gsl_linalg_hermtd_decomp (gsl_matrix_complex * A, 
+                              gsl_vector_complex * tau);
+int gsl_linalg_hermtd_unpack (const gsl_matrix_complex * A, 
+                              const gsl_vector_complex * tau,
+                              gsl_matrix_complex * Q, 
+                              gsl_vector * d, gsl_vector * sd,
+                              gsl_vector_complex * work);
+int gsl_linalg_hermtd_unpack_dsd (const gsl_matrix_complex * A, 
+                                  gsl_vector * d, gsl_vector * sd);
+
 
 /* Linear Solve Using Householder Transformations
 

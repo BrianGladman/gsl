@@ -30,12 +30,24 @@
 #undef TYPE
 #endif
 
+#ifdef REAL_TYPE
+#undef REAL_TYPE
+#endif
+
 #ifdef QUALIFIED_TYPE
 #undef QUALIFIED_TYPE
 #endif
 
+#ifdef QUALIFIED_REAL_TYPE
+#undef QUALIFIED_REAL_TYPE
+#endif
+
 #ifdef USES_LONGDOUBLE
 #undef USES_LONGDOUBLE
+#endif
+
+#ifdef SHORT_REAL
+#undef SHORT_REAL
 #endif
 
 #undef BASE

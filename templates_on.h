@@ -7,6 +7,7 @@
 #if   defined(BASE_GSL_COMPLEX_LONG)
 #define BASE gsl_complex_long_double
 #define SHORT complex_long_double
+#define SHORT_REAL long_double
 #define ATOMIC long double
 #define USES_LONGDOUBLE 1
 #define MULTIPLICITY 2
@@ -19,6 +20,7 @@
 #elif defined(BASE_GSL_COMPLEX)
 #define BASE gsl_complex
 #define SHORT complex
+#define SHORT_REAL
 #define ATOMIC double
 #define MULTIPLICITY 2
 #define IN_FORMAT "%lg"
@@ -30,6 +32,7 @@
 #elif defined(BASE_GSL_COMPLEX_FLOAT)
 #define BASE gsl_complex_float
 #define SHORT complex_float
+#define SHORT_REAL float
 #define ATOMIC float
 #define MULTIPLICITY 2
 #define IN_FORMAT "%g"
@@ -183,6 +186,13 @@
 #define TYPE(dir) CONCAT2(dir,SHORT)
 #define QUALIFIED_TYPE(dir) QUALIFIER CONCAT2(dir,SHORT)
 #endif
+#if defined(BASE_GSL_COMPLEX)
+#define REAL_TYPE(dir) dir
+#define QUALIFIED_REAL_TYPE(dir) QUALIFIER dir
+#else
+#define REAL_TYPE(dir) CONCAT2(dir,SHORT_REAL)
+#define QUALIFIED_REAL_TYPE(dir) QUALIFIER CONCAT2(dir,SHORT_REAL)
+#endif
 #else
 #if defined(BASE_DOUBLE)
 #define FUNCTION(dir,name) CONCAT2(dir,name)
@@ -192,6 +202,13 @@
 #define FUNCTION(a,c) CONCAT3(a,SHORT,c)
 #define TYPE(dir) CONCAT2(dir,SHORT)
 #define QUALIFIED_TYPE(dir) TYPE(dir)
+#endif
+#if defined(BASE_GSL_COMPLEX)
+#define REAL_TYPE(dir) dir
+#define QUALIFIED_REAL_TYPE(dir) dir
+#else
+#define REAL_TYPE(dir) CONCAT2(dir,SHORT_REAL)
+#define QUALIFIED_REAL_TYPE(dir) CONCAT2(dir,SHORT_REAL)
 #endif
 #endif
 

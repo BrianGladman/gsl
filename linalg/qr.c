@@ -59,7 +59,7 @@
  * This storage scheme is the same as in LAPACK.  */
 
 int
-gsl_linalg_QR_decomp (gsl_matrix * A, gsl_vector * tau)
+gsl_linalg_QR_decomp (gsl_matrix * A, gsl_vector * tau, gsl_vector * work)
 {
   const size_t M = A->size1;
   const size_t N = A->size2;
@@ -68,11 +68,13 @@ gsl_linalg_QR_decomp (gsl_matrix * A, gsl_vector * tau)
     {
       GSL_ERROR ("size of tau must be MIN(M,N)", GSL_EBADLEN);
     }
+  else if (work->size != N)
+    {
+      GSL_ERROR ("size of workspace must be N", GSL_EBADLEN);
+    }
   else
     {
       size_t i;
-
-      gsl_vector * work = gsl_vector_alloc (N);
 
       for (i = 0; i < GSL_MIN (M, N); i++)
 	{
@@ -92,12 +94,9 @@ gsl_linalg_QR_decomp (gsl_matrix * A, gsl_vector * tau)
 	  if (i + 1 < N)
 	    {
 	      gsl_matrix m = gsl_matrix_submatrix (A, i, i + 1, M - i, N - (i + 1));
-
 	      gsl_linalg_householder_hm (tau_i, &c, &m, work);
 	    }
 	}
-
-      gsl_vector_free (work);
 
       return GSL_SUCCESS;
     }
@@ -404,7 +403,10 @@ gsl_linalg_QR_unpack (const gsl_matrix * QR, const gsl_vector * tau, gsl_matrix 
     {
       size_t i, j, k;
 
-      gsl_vector * work = gsl_vector_alloc (M);
+      /* use first column of R as temporary workspace of length M for
+         applying householder transformations */
+
+      gsl_vector work = gsl_matrix_column (R, 0);
 
       /* Initialize Q to the identity */
 
@@ -418,7 +420,7 @@ gsl_linalg_QR_unpack (const gsl_matrix * QR, const gsl_vector * tau, gsl_matrix 
             const gsl_vector h = gsl_vector_const_subvector (&c, i, M - i);
 	    gsl_matrix m = gsl_matrix_submatrix (Q, i, i, M - i, M - i);
 	    double ti = gsl_vector_get (tau, i);
-	    gsl_linalg_householder_hm (ti, &h, &m, work);
+	    gsl_linalg_householder_hm (ti, &h, &m, &work);
 	  }
 	}
 
@@ -432,8 +434,6 @@ gsl_linalg_QR_unpack (const gsl_matrix * QR, const gsl_vector * tau, gsl_matrix 
 	  for (j = i; j < N; j++)
 	    gsl_matrix_set (R, i, j, gsl_matrix_get (QR, i, j));
 	}
-
-      gsl_vector_free (work);
 
       return GSL_SUCCESS;
     }
