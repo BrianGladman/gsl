@@ -13,12 +13,24 @@ echo -n "$auxbin "
 echo ""
 echo ""
 
-echo -n "gslrandom_SOURCES= switch.c "
+echo -n "lib_LIBRARIES= gslrandom "
+for i in $list; do
+    echo -n "gslran$i "
+done
+echo ""
+echo ""
+for i in $list; do
+    echo "gslran${i}_SOURCES= $i.c $i-gen.c gauss.c"
+done
+echo ""
+
+echo -n "gslrandom_SOURCES= switch.c gauss.c "
 for i in $list $auxlist; do
     echo -n "$i.c "
 done
 echo ""
 echo ""
+
 
 
 

@@ -10,8 +10,6 @@ FAVORITERAN= taus
 
 include_HEADERS= gsl_ran.h gsl_ran_switch.h
 
-lib_LIBRARIES= gslrandom
-
 gauss_SOURCES= rungauss.c gauss.c
 test_gauss_SOURCES= test-gauss.c gauss.c
 bench_gauss_SOURCES= bench-gauss.c gauss.c
@@ -45,7 +43,17 @@ Makefile.am: Makefile.ami makeam
 
 bin_PROGRAMS= mrg test-mrg bench-mrg cmrg test-cmrg bench-cmrg taus test-taus bench-taus uni test-uni bench-uni uni32 test-uni32 bench-uni32 zuf test-zuf bench-zuf rand test-rand bench-rand gauss test-gauss bench-gauss test-switch 
 
-gslrandom_SOURCES= switch.c mrg.c cmrg.c taus.c uni.c uni32.c zuf.c rand.c gauss.c 
+lib_LIBRARIES= gslrandom gslranmrg gslrancmrg gslrantaus gslranuni gslranuni32 gslranzuf gslranrand 
+
+gslranmrg_SOURCES= mrg.c mrg-gen.c gauss.c
+gslrancmrg_SOURCES= cmrg.c cmrg-gen.c gauss.c
+gslrantaus_SOURCES= taus.c taus-gen.c gauss.c
+gslranuni_SOURCES= uni.c uni-gen.c gauss.c
+gslranuni32_SOURCES= uni32.c uni32-gen.c gauss.c
+gslranzuf_SOURCES= zuf.c zuf-gen.c gauss.c
+gslranrand_SOURCES= rand.c rand-gen.c gauss.c
+
+gslrandom_SOURCES= switch.c gauss.c mrg.c cmrg.c taus.c uni.c uni32.c zuf.c rand.c gauss.c 
 
 test_switch_DEPENDENCIES= gsl_ran_switch.h mrg.o cmrg.o taus.o uni.o uni32.o zuf.o rand.o 
 test_switch_LDADD= mrg.o cmrg.o taus.o uni.o uni32.o zuf.o rand.o 

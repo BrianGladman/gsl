@@ -10,8 +10,6 @@ FAVORITERAN= taus
 
 include_HEADERS= gsl_ran.h gsl_ran_switch.h
 
-lib_LIBRARIES= gslrandom
-
 gauss_SOURCES= rungauss.c gauss.c
 test_gauss_SOURCES= test-gauss.c gauss.c
 bench_gauss_SOURCES= bench-gauss.c gauss.c
