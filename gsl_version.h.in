@@ -1,6 +1,8 @@
 #ifndef __GSL_VERSION_H__
 #define __GSL_VERSION_H__
 
+#include <gsl/gsl_types.h>
+
 #undef __BEGIN_DECLS
 #undef __END_DECLS
 #ifdef __cplusplus
@@ -15,7 +17,7 @@ __BEGIN_DECLS
 
 #define GSL_VERSION "@VERSION@"
 
-extern const char * gsl_version;
+GSL_VAR const char * gsl_version;
 
 __END_DECLS
 
