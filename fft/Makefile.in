@@ -89,6 +89,7 @@ complex_pass_3.c \
 complex_pass_4.c \
 complex_pass_5.c \
 complex_pass_6.c \
+complex_pass_7.c \
 complex_pass_n.c \
 complex_radix2.c \
  \
@@ -133,13 +134,13 @@ LIBS = @LIBS@
 libfft_a_LIBADD = 
 libfft_a_OBJECTS =  autotest.o compare.o dft_complex.o benchmark.o \
 complex.o complex_init.o complex_pass_2.o complex_pass_3.o \
-complex_pass_4.o complex_pass_5.o complex_pass_6.o complex_pass_n.o \
-complex_radix2.o factorize.o bitreverse.o halfcomplex.o \
-halfcomplex_init.o halfcomplex_pass_2.o halfcomplex_pass_3.o \
-halfcomplex_pass_4.o halfcomplex_pass_5.o halfcomplex_pass_n.o \
-halfcomplex_radix2.o halfcomplex_unpack.o real.o real_init.o \
-real_pass_2.o real_pass_3.o real_pass_4.o real_pass_5.o real_pass_n.o \
-real_radix2.o real_unpack.o signals.o
+complex_pass_4.o complex_pass_5.o complex_pass_6.o complex_pass_7.o \
+complex_pass_n.o complex_radix2.o factorize.o bitreverse.o \
+halfcomplex.o halfcomplex_init.o halfcomplex_pass_2.o \
+halfcomplex_pass_3.o halfcomplex_pass_4.o halfcomplex_pass_5.o \
+halfcomplex_pass_n.o halfcomplex_radix2.o halfcomplex_unpack.o real.o \
+real_init.o real_pass_2.o real_pass_3.o real_pass_4.o real_pass_5.o \
+real_pass_n.o real_radix2.o real_unpack.o signals.o
 AR = ar
 PROGRAMS =  $(bin_PROGRAMS)
 
@@ -170,17 +171,17 @@ TAR = tar
 DEP_FILES =  .deps/autotest.P .deps/benchmark.P .deps/bitreverse.P \
 .deps/compare.P .deps/complex.P .deps/complex_init.P \
 .deps/complex_pass_2.P .deps/complex_pass_3.P .deps/complex_pass_4.P \
-.deps/complex_pass_5.P .deps/complex_pass_6.P .deps/complex_pass_n.P \
-.deps/complex_radix2.P .deps/dft_complex.P .deps/errs.P \
-.deps/factorize.P .deps/halfcomplex.P .deps/halfcomplex_init.P \
-.deps/halfcomplex_pass_2.P .deps/halfcomplex_pass_3.P \
-.deps/halfcomplex_pass_4.P .deps/halfcomplex_pass_5.P \
-.deps/halfcomplex_pass_n.P .deps/halfcomplex_radix2.P \
-.deps/halfcomplex_unpack.P .deps/real.P .deps/real_init.P \
-.deps/real_pass_2.P .deps/real_pass_3.P .deps/real_pass_4.P \
-.deps/real_pass_5.P .deps/real_pass_n.P .deps/real_radix2.P \
-.deps/real_unpack.P .deps/signals.P .deps/test.P .deps/test_radix2.P \
-.deps/test_trap.P
+.deps/complex_pass_5.P .deps/complex_pass_6.P .deps/complex_pass_7.P \
+.deps/complex_pass_n.P .deps/complex_radix2.P .deps/dft_complex.P \
+.deps/errs.P .deps/factorize.P .deps/halfcomplex.P \
+.deps/halfcomplex_init.P .deps/halfcomplex_pass_2.P \
+.deps/halfcomplex_pass_3.P .deps/halfcomplex_pass_4.P \
+.deps/halfcomplex_pass_5.P .deps/halfcomplex_pass_n.P \
+.deps/halfcomplex_radix2.P .deps/halfcomplex_unpack.P .deps/real.P \
+.deps/real_init.P .deps/real_pass_2.P .deps/real_pass_3.P \
+.deps/real_pass_4.P .deps/real_pass_5.P .deps/real_pass_n.P \
+.deps/real_radix2.P .deps/real_unpack.P .deps/signals.P .deps/test.P \
+.deps/test_radix2.P .deps/test_trap.P
 SOURCES = $(libfft_a_SOURCES) $(test_trap_SOURCES) $(test_radix2_SOURCES) $(test_SOURCES) $(benchmark_SOURCES) errs.c
 OBJECTS = $(libfft_a_OBJECTS) $(test_trap_OBJECTS) $(test_radix2_OBJECTS) $(test_OBJECTS) $(benchmark_OBJECTS) errs.o
 

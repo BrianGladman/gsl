@@ -7,7 +7,7 @@ gsl_fft_complex_factorize (const unsigned int n,
 			   unsigned int factors[])
 {
   const unsigned int complex_subtransforms[] =
-  {6, 5, 4, 3, 2, 0};
+  {7, 6, 5, 4, 3, 2, 0};
 
   /* other factors can be added here if their transform modules are
      implemented. The end of the list is marked by 0. */

@@ -43,6 +43,7 @@ complex_pass_3.c \
 complex_pass_4.c \
 complex_pass_5.c \
 complex_pass_6.c \
+complex_pass_7.c \
 complex_pass_n.c \
 complex_radix2.c \
  \

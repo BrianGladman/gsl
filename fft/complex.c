@@ -66,7 +66,7 @@ gsl_fft_complex (complex data[],
   unsigned int q, product = 1;
 
   complex *scratch = wavetable->scratch;
-  complex *twiddle1, *twiddle2, *twiddle3, *twiddle4, *twiddle5;
+  complex *twiddle1, *twiddle2, *twiddle3, *twiddle4, *twiddle5, *twiddle6;
 
   unsigned int state = 0;
   complex *from = data;
@@ -145,6 +145,17 @@ gsl_fft_complex (complex data[],
 	  twiddle5 = twiddle4 + q;
 	  gsl_fft_complex_pass_6 (from, to, sign, product, n, twiddle1,
 				  twiddle2, twiddle3, twiddle4, twiddle5);
+	}
+      else if (factor == 7)
+	{
+	  twiddle1 = wavetable->twiddle[i];
+	  twiddle2 = twiddle1 + q;
+	  twiddle3 = twiddle2 + q;
+	  twiddle4 = twiddle3 + q;
+	  twiddle5 = twiddle4 + q;
+	  twiddle6 = twiddle5 + q;
+	  gsl_fft_complex_pass_7 (from, to, sign, product, n, twiddle1,
+				  twiddle2, twiddle3, twiddle4, twiddle5, twiddle6);
 	}
       else
 	{
