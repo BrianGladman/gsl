@@ -46,15 +46,13 @@ typedef struct
 } 
 gsl_vector;
 
-typedef union
+typedef struct
 {
-  gsl_vector _internal_representation;  
   gsl_vector vector;
 } gsl_vector_view;
 
-typedef union
+typedef struct
 {
-  gsl_vector _internal_representation;
   const gsl_vector vector;
 } gsl_vector_const_view;
 
@@ -83,16 +81,16 @@ gsl_vector_view_array (double *v, size_t n);
 
 gsl_vector_view 
 gsl_vector_view_array_with_stride (double *base,
-                                         size_t n, 
-                                         size_t stride);
+                                         size_t stride,
+                                         size_t n);
 
 gsl_vector_const_view 
 gsl_vector_const_view_array (const double *v, size_t n);
 
 gsl_vector_const_view 
 gsl_vector_const_view_array_with_stride (const double *base,
-                                               size_t n, 
-                                               size_t stride);
+                                               size_t stride,
+                                               size_t n);
 
 gsl_vector_view 
 gsl_vector_subvector (gsl_vector *v, 
@@ -101,8 +99,9 @@ gsl_vector_subvector (gsl_vector *v,
 
 gsl_vector_view 
 gsl_vector_subvector_with_stride (gsl_vector *v, 
-                                        size_t i, size_t n, 
-                                        size_t stride);
+                                        size_t i,
+                                        size_t stride,
+                                        size_t n);
 
 gsl_vector_const_view 
 gsl_vector_const_subvector (const gsl_vector *v, 
@@ -112,8 +111,8 @@ gsl_vector_const_subvector (const gsl_vector *v,
 gsl_vector_const_view 
 gsl_vector_const_subvector_with_stride (const gsl_vector *v, 
                                               size_t i, 
-                                              size_t n, 
-                                              size_t stride);
+                                              size_t stride,
+                                              size_t n);
 
 /* Operations */
 

@@ -46,15 +46,13 @@ typedef struct
 } 
 gsl_vector_ulong;
 
-typedef union
+typedef struct
 {
-  gsl_vector_ulong _internal_representation;  
   gsl_vector_ulong vector;
 } gsl_vector_ulong_view;
 
-typedef union
+typedef struct
 {
-  gsl_vector_ulong _internal_representation;
   const gsl_vector_ulong vector;
 } gsl_vector_ulong_const_view;
 
@@ -83,16 +81,16 @@ gsl_vector_ulong_view_array (unsigned long *v, size_t n);
 
 gsl_vector_ulong_view 
 gsl_vector_ulong_view_array_with_stride (unsigned long *base,
-                                         size_t n, 
-                                         size_t stride);
+                                         size_t stride,
+                                         size_t n);
 
 gsl_vector_ulong_const_view 
 gsl_vector_ulong_const_view_array (const unsigned long *v, size_t n);
 
 gsl_vector_ulong_const_view 
 gsl_vector_ulong_const_view_array_with_stride (const unsigned long *base,
-                                               size_t n, 
-                                               size_t stride);
+                                               size_t stride,
+                                               size_t n);
 
 gsl_vector_ulong_view 
 gsl_vector_ulong_subvector (gsl_vector_ulong *v, 
@@ -101,8 +99,9 @@ gsl_vector_ulong_subvector (gsl_vector_ulong *v,
 
 gsl_vector_ulong_view 
 gsl_vector_ulong_subvector_with_stride (gsl_vector_ulong *v, 
-                                        size_t i, size_t n, 
-                                        size_t stride);
+                                        size_t i,
+                                        size_t stride,
+                                        size_t n);
 
 gsl_vector_ulong_const_view 
 gsl_vector_ulong_const_subvector (const gsl_vector_ulong *v, 
@@ -112,8 +111,8 @@ gsl_vector_ulong_const_subvector (const gsl_vector_ulong *v,
 gsl_vector_ulong_const_view 
 gsl_vector_ulong_const_subvector_with_stride (const gsl_vector_ulong *v, 
                                               size_t i, 
-                                              size_t n, 
-                                              size_t stride);
+                                              size_t stride,
+                                              size_t n);
 
 /* Operations */
 

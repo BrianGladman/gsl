@@ -1,5 +1,8 @@
 * What was new in gsl-0.9.1:
 
+** Modified initialization of vector and matrix views to work with the
+SunPro compiler.
+
 ** Renamed gsl_Efunc_t to gsl_siman_Efunc_t, in accordance with
 namespace conventions.
 

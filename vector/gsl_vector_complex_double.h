@@ -48,15 +48,13 @@ typedef struct
   int owner;
 } gsl_vector_complex;
 
-typedef union
+typedef struct
 {
-  gsl_vector_complex _internal_representation;  
   gsl_vector_complex vector;
 } gsl_vector_complex_view;
 
-typedef union
+typedef struct
 {
-  gsl_vector_complex _internal_representation;
   const gsl_vector_complex vector;
 } gsl_vector_complex_const_view;
 
@@ -87,8 +85,8 @@ gsl_vector_complex_view_array (double *base,
 
 gsl_vector_complex_view
 gsl_vector_complex_view_array_with_stride (double *base,
-                                                 size_t n, 
-                                                 size_t stride);
+                                                 size_t stride,
+                                                 size_t n);
 
 gsl_vector_complex_const_view
 gsl_vector_complex_const_view_array (const double *base,
@@ -97,8 +95,8 @@ gsl_vector_complex_const_view_array (const double *base,
 gsl_vector_complex_const_view
 gsl_vector_complex_const_view_array_with_stride (const double *base,
                                                        size_t offset, 
-                                                       size_t n, 
-                                                       size_t stride);
+                                                       size_t stride,
+                                                       size_t n);
 
 gsl_vector_complex_view
 gsl_vector_complex_subvector (gsl_vector_complex *base,
@@ -109,8 +107,8 @@ gsl_vector_complex_subvector (gsl_vector_complex *base,
 gsl_vector_complex_view 
 gsl_vector_complex_subvector_with_stride (gsl_vector_complex *v, 
                                                 size_t i, 
-                                                size_t n, 
-                                                size_t stride);
+                                                size_t stride, 
+                                                size_t n);
 
 gsl_vector_complex_const_view
 gsl_vector_complex_const_subvector (const gsl_vector_complex *base,
@@ -121,8 +119,8 @@ gsl_vector_complex_const_subvector (const gsl_vector_complex *base,
 gsl_vector_complex_const_view 
 gsl_vector_complex_const_subvector_with_stride (const gsl_vector_complex *v, 
                                                       size_t i, 
-                                                      size_t n, 
-                                                      size_t stride);
+                                                      size_t stride, 
+                                                      size_t n);
 
 gsl_vector_view
 gsl_vector_complex_real (gsl_vector_complex *v);

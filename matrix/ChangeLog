@@ -1,3 +1,7 @@
+Fri Jul 13 21:29:27 2001  Brian Gough  <bjg@network-theory.co.uk>
+
+	* changed views to be structs and used casts to initialize them
+
 Mon Jul  2 12:35:16 2001  Brian Gough  <bjg@network-theory.co.uk>
 
 	* view.h:  provide macros for initializing null

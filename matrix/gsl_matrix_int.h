@@ -46,15 +46,13 @@ typedef struct
   int owner;
 } gsl_matrix_int;
 
-typedef union
+typedef struct
 {
-  gsl_matrix_int _internal_representation;  
   gsl_matrix_int matrix;
 } gsl_matrix_int_view;
 
-typedef union
+typedef struct
 {
-  gsl_matrix_int _internal_representation;
   const gsl_matrix_int matrix;
 } gsl_matrix_int_const_view;
 

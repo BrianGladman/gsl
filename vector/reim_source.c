@@ -31,7 +31,7 @@ FUNCTION(gsl_vector, real) (QUALIFIED_TYPE(gsl_vector) * v)
 
   {
     QUALIFIED_REAL_VIEW(gsl_vector,view) view;
-    view._internal_representation = s;
+    ((REAL_VIEW(gsl_vector,view) *)(&view))->vector = s;
     return view;
   }
 }
@@ -49,7 +49,7 @@ FUNCTION(gsl_vector, imag) (QUALIFIED_TYPE(gsl_vector) * v)
 
   {
     QUALIFIED_REAL_VIEW(gsl_vector,view) view;
-    view._internal_representation = s;
+    ((REAL_VIEW(gsl_vector,view) *)(&view))->vector = s;
     return view;
   }
 }

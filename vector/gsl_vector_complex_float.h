@@ -48,15 +48,13 @@ typedef struct
   int owner;
 } gsl_vector_complex_float;
 
-typedef union
+typedef struct
 {
-  gsl_vector_complex_float _internal_representation;  
   gsl_vector_complex_float vector;
 } gsl_vector_complex_float_view;
 
-typedef union
+typedef struct
 {
-  gsl_vector_complex_float _internal_representation;
   const gsl_vector_complex_float vector;
 } gsl_vector_complex_float_const_view;
 

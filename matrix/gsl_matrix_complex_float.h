@@ -47,15 +47,13 @@ typedef struct
   int owner;
 } gsl_matrix_complex_float ;
 
-typedef union
+typedef struct
 {
-  gsl_matrix_complex_float _internal_representation;  
   gsl_matrix_complex_float matrix;
 } gsl_matrix_complex_float_view;
 
-typedef union
+typedef struct
 {
-  gsl_matrix_complex_float _internal_representation;
   const gsl_matrix_complex_float matrix;
 } gsl_matrix_complex_float_const_view;
 

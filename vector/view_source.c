@@ -37,7 +37,7 @@ FUNCTION(gsl_vector, view_array) (QUALIFIER ATOMIC * base, size_t n)
     v.block = 0;
     v.owner = 0;
     
-    view._internal_representation = v;
+    ((VIEW(gsl_vector,view) *)&view)->vector = v;
     return view;
   }
 }
@@ -70,7 +70,7 @@ FUNCTION(gsl_vector, view_array_with_stride) (QUALIFIER ATOMIC * base,
     v.block = 0;
     v.owner = 0;
 
-    view._internal_representation = v;
+    ((VIEW(gsl_vector,view) *)&view)->vector = v;
     return view;
   }
 }

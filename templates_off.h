@@ -38,6 +38,14 @@
 #undef QUALIFIED_TYPE
 #endif
 
+#ifdef VIEW
+#undef VIEW
+#endif
+
+#ifdef REAL_VIEW
+#undef REAL_VIEW
+#endif
+
 #ifdef QUALIFIED_VIEW
 #undef QUALIFIED_VIEW
 #endif

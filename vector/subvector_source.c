@@ -43,7 +43,7 @@ FUNCTION(gsl_vector, subvector) (QUALIFIED_TYPE(gsl_vector) * v, size_t offset, 
     s.block = v->block;
     s.owner = 0;
 
-    view._internal_representation = s;
+    ((VIEW(gsl_vector,view) *)&view)->vector = s;
     return view;
   }
 }
@@ -80,7 +80,7 @@ FUNCTION(gsl_vector, subvector_with_stride) (QUALIFIED_TYPE(gsl_vector) * v, siz
     s.block = v->block;
     s.owner = 0;
     
-    view._internal_representation = s;
+    ((VIEW(gsl_vector,view) *)&view)->vector = s;
     return view;
   }
 }

@@ -46,15 +46,13 @@ typedef struct
 } 
 gsl_vector_float;
 
-typedef union
+typedef struct
 {
-  gsl_vector_float _internal_representation;  
   gsl_vector_float vector;
 } gsl_vector_float_view;
 
-typedef union
+typedef struct
 {
-  gsl_vector_float _internal_representation;
   const gsl_vector_float vector;
 } gsl_vector_float_const_view;
 

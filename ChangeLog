@@ -1,3 +1,8 @@
+Fri Jul 13 21:31:01 2001  Brian Gough  <bjg@network-theory.co.uk>
+
+	* templates_on.h: added macros for unqualified views, needed for
+ 	initialization of views
+
 Mon Jul  9 11:22:16 2001  Brian Gough  <bjg@network-theory.co.uk>
 
 	* configure.in: made check for extended precision registers

@@ -46,15 +46,13 @@ typedef struct
   int owner;
 } gsl_matrix_ulong;
 
-typedef union
+typedef struct
 {
-  gsl_matrix_ulong _internal_representation;  
   gsl_matrix_ulong matrix;
 } gsl_matrix_ulong_view;
 
-typedef union
+typedef struct
 {
-  gsl_matrix_ulong _internal_representation;
   const gsl_matrix_ulong matrix;
 } gsl_matrix_ulong_const_view;
 
