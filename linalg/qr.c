@@ -405,25 +405,19 @@ gsl_linalg_QR_unpack (const gsl_matrix * QR, const gsl_vector * tau, gsl_matrix 
     }
   else
     {
-      size_t i, j, k;
-
-      /* use first column of R as temporary workspace of length M for
-         applying householder transformations */
+      size_t i, j;
 
       /* Initialize Q to the identity */
 
       gsl_matrix_set_identity (Q);
 
-      for (k = GSL_MIN (M, N); k > 0; k--)
+      for (i = GSL_MIN (M, N); i > 0 && i--;)
 	{
-	  i = k - 1;
-	  {
-            const gsl_vector c = gsl_matrix_const_column (QR, i);
-            const gsl_vector h = gsl_vector_const_subvector (&c, i, M - i);
-	    gsl_matrix m = gsl_matrix_submatrix (Q, i, i, M - i, M - i);
-	    double ti = gsl_vector_get (tau, i);
-	    gsl_linalg_householder_hm (ti, &h, &m, work);
-	  }
+          const gsl_vector c = gsl_matrix_const_column (QR, i);
+          const gsl_vector h = gsl_vector_const_subvector (&c, i, M - i);
+          gsl_matrix m = gsl_matrix_submatrix (Q, i, i, M - i, M - i);
+          double ti = gsl_vector_get (tau, i);
+          gsl_linalg_householder_hm (ti, &h, &m, work);
 	}
 
       /*  Form the right triangular matrix R from a packed QR matrix */
