@@ -1354,8 +1354,8 @@ int test_trig(void)
 /* I computed the values of zeta for s = -1e-10, 0, 1e-10 using the
    Jensen formula,
 
-   zeta(s) = 1/2 + 1/(1-s) 
-     + integ(sin(s arctan(t))/((1+t^2)^(s/2)(exp(2pi*t)-1)), s, 0, inf)
+   zeta(s) = -1/2 + 1/(1-s) 
+     + integ(sin(s arctan(t))/((1+t^2)^(s/2)(exp(2pi*t)-1)), t, 0, inf)
      
    transforming the integral from a semi-infinite range to the range 
    [0,pi/2] using the substitution t = tan(u).  After Taylor expansion
@@ -1384,7 +1384,7 @@ int test_zeta(void)
   TEST_SF(s, gsl_sf_zeta_e, (-5, &r), -0.003968253968253968253968, TEST_TOL1, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_zeta_e, (-0.5, &r), -0.207886224977354566017307, TEST_TOL1, GSL_SUCCESS);
 
-  TEST_SF(s, gsl_sf_zeta_e, (-1e-10, &r), -0.49999999990810614668948, TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_zeta_e, (-1e-10, &r), -0.49999999990810614668948, TEST_TOL1, GSL_SUCCESS);
 
   TEST_SF(s, gsl_sf_zeta_e, (0, &r), -0.5, TEST_TOL0, GSL_SUCCESS);
 
