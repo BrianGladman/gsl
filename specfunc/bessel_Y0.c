@@ -1,4 +1,5 @@
 #include <math.h>
+#include <gsl_math.h>
 #include <gsl_errno.h>
 #include "gsl_sf_chebyshev.h"
 #include "gsl_sf_bessel.h"
@@ -18,19 +19,19 @@
 */
 
 static double by0_data[13] = {
-  -.0112778393 92865573e0
-  -.1283452375 6042035e0
-  -.1043788479 9794249e0
-   .0236627491 83969695e0
-  -.0020903916 47700486e0
-   .0001039754 53939057e0
-  -.0000033697 47162423e0
-   .0000000772 93842676e0
-  -.0000000013 24976772e0
-   .0000000000 17648232e0
-  -.0000000000 00188105e0
-   .0000000000 00001641e0
-  -.0000000000 00000011e0
+  -.011277839392865573,
+  -.12834523756042035,
+  -.10437884799794249,
+   .023662749183969695,
+  -.002090391647700486,
+   .000103975453939057,
+  -.000003369747162423,
+   .000000077293842676,
+  -.000000001324976772,
+   .000000000017648232,
+  -.000000000000188105,
+   .000000000000001641,
+  -.000000000000000011
 };
 
 static struct gsl_sf_ChebSeries by0_cs = {
@@ -42,32 +43,31 @@ static struct gsl_sf_ChebSeries by0_cs = {
 
 double gsl_sf_bessel_Y0(double x)
 {
-  static double two_over_pi = 0.63661977236758134;
-  static double pi_over_4   = 0.78539816339744831;
-  static double ln_half     = -0.693147180559945309;
-  static double x_small     = 2. * 1.e-7;
-  static double xmax        = 1.e+14;
+  const double two_over_pi = 2./M_PI;
+  const double ln_half     = -M_LN2;
+  const double x_small     = 2. * GSL_SQRT_MACH_EPS;
+  const double xmax        = 1./GSL_MACH_EPS;
 
   if (x <= 0.) {
-    GSL_MESSAGE("gsl_sf_bessel_Y0: x <= 0");
+    GSL_ERROR_MESSAGE("gsl_sf_bessel_Y0: x <= 0", GSL_EDOM);
     return 0.;
   }
   else if(x < x_small){
     return two_over_pi*(ln_half + log(x))*gsl_sf_bessel_J0(x)
-	    + .375 + gsl_sf_cheb_eval(-1., by0_cs);
+	    + .375 + gsl_sf_cheb_eval(-1., &by0_cs);
   }
   else if(x < 4.0) {
     return two_over_pi*(ln_half + log(x))*gsl_sf_bessel_J0(x)
-	    + .375 + gsl_sf_cheb_eval(.125*x*x-1., by0_cs);
+	    + .375 + gsl_sf_cheb_eval(.125*x*x-1., &by0_cs);
   }
   else if(x < xmax) {
-    double z     = 32.0/x**2 - 1.0;
-    double ampl  = (0.75 + gsl_sf_cheb_eval(z, _bessel_amp_phase_bm0_cs)) / sqrt(x);
-    double theta = x - pi_over_4 + gsl_sf_cheb_eval(z, _bessel_amp_phase_bth0_cs) / x;
-    return ampl * sin (theta)
+    double z     = 32.0/(x*x) - 1.0;
+    double ampl  = (0.75 + gsl_sf_cheb_eval(z, &_bessel_amp_phase_bm0_cs)) / sqrt(x);
+    double theta = x - M_PI_4 + gsl_sf_cheb_eval(z, &_bessel_amp_phase_bth0_cs) / x;
+    return ampl * sin (theta);
   }
   else {
-    GSL_MESSAGE("gsl_sf_bessel_Y0: x too large");
+    GSL_ERROR_MESSAGE("gsl_sf_bessel_Y0: x too large", GSL_EUNDRFLW);
     return 0.;
   }
 };

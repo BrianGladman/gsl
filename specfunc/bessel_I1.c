@@ -127,14 +127,14 @@ double gsl_sf_bessel_I1_scaled(double x)
     return 0.5*x;
   }
   else if(y <= 3.0) {
-    return exp(-y) * x * (.875 + gsl_sf_cheb_eval(y*y/4.5-1., bi1_cs));
+    return exp(-y) * x * (.875 + gsl_sf_cheb_eval(y*y/4.5-1., &bi1_cs));
   }
   else if(y <= 8.0) {
-    double b = (.375 + gsl_sf_cheb_eval((48./y-11.)/5., ai1_cs)) / sqrt(y);
+    double b = (.375 + gsl_sf_cheb_eval((48./y-11.)/5., &ai1_cs)) / sqrt(y);
     return fortran_sign(b, x);
   }
   else {
-    double b = (.375 + gsl_sf_cheb_eval(16./y-1.0, ai12_cs)) / sqrt(y);
+    double b = (.375 + gsl_sf_cheb_eval(16./y-1.0, &ai12_cs)) / sqrt(y);
     return fortran_sign(b, x);
   }
 }
@@ -144,7 +144,7 @@ double gsl_sf_bessel_I1(double x)
 {
   static double xmin    = 2.0 * DBL_MIN;
   static double x_small = ROOT_EIGHT * GSL_SQRT_MACH_EPS;
-  static double xmax    = ; /* alog (r1mach(2)) */
+  static double xmax    = GSL_LOG_DBL_MAX; /* alog (r1mach(2)) */
 
   double y = fabs(x);
 
@@ -156,13 +156,13 @@ double gsl_sf_bessel_I1(double x)
     return 0.5*x;
   }
   else if(y <= 3.0) {
-    return  x * (.875 + gsl_sf_cheb_eval(y*y/4.5-1., bi1_cs));
+    return  x * (.875 + gsl_sf_cheb_eval(y*y/4.5-1., &bi1_cs));
   }
   else if(y < xmax) {
     return exp(y) * gsl_sf_bessel_I1_scaled(x);
   }
   else {
-    GSL_MESSAGE("gsl_sf_bessel_I1: x too large");
+    GSL_ERROR_MESSAGE("gsl_sf_bessel_I1: x too large", GSL_EOVRFLW);
     return 0.;
   }
 }

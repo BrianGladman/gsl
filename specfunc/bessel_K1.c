@@ -1,4 +1,5 @@
 #include <math.h>
+#include <gsl_math.h>
 #include <gsl_errno.h>
 #include "gsl_sf_chebyshev.h"
 #include "gsl_sf_bessel.h"
@@ -100,63 +101,69 @@ static struct gsl_sf_ChebSeries ak12_cs = {
 
 double gsl_sf_bessel_K1_scaled(double x)
 {
-  static double xmin    = ; /* exp (amax1(alog(r1mach(1)), -alog(r1mach(2))) + .01) */
-  static double x_small = 2.0*1.e-7; 
+  static double xmin    = DBL_MIN; /* exp (amax1(alog(r1mach(1)), -alog(r1mach(2))) + .01) */
+  static double x_small = 2.0*GSL_SQRT_MACH_EPS; 
 
   if(x <= 0.) {
-    GSL_MESSAGE("gsl_sf_bessel_K1_scaled: x <= 0");
+    GSL_ERROR_MESSAGE("gsl_sf_bessel_K1_scaled: x <= 0", GSL_EDOM);
     return 0.;
   }
   else if(x < xmin) {
-    return 0.; /* underflow ?? */
+    gsl_errno = GSL_EUNDRFLW;
+    return 0.;
   }
   else if(x < x_small) {
     return exp(x) * (log(0.5*x)*gsl_sf_bessel_I1(x) +
-      	      	      (0.75 + gsl_sf_cheb_eval(-1., bk1_cs))/x
+      	      	      (0.75 + gsl_sf_cheb_eval(-1., &bk1_cs))/x
       	      	    );
   }
   else if(x <= 2.) {
     double y = x*x;
     return exp(x) * (log(0.5*x)*gsl_sf_bessel_I1(x) +
-      	      	      (0.75 + gsl_sf_cheb_eval(.5*y-1., bk1_cs))/x
+      	      	      (0.75 + gsl_sf_cheb_eval(.5*y-1., &bk1_cs))/x
       	      	    );
   }
   else if(x <= 8.) {
-    return (1.25 + gsl_sf_cheb_eval((16./x-5.)/3., ak1_cs)) / sqrt(x);
+    return (1.25 + gsl_sf_cheb_eval((16./x-5.)/3., &ak1_cs)) / sqrt(x);
   }
   else {
-    return (1.25 + gsl_sf_cheb_eval(16./x-1., ak12_cs)) / sqrt(x);
+    return (1.25 + gsl_sf_cheb_eval(16./x-1., &ak12_cs)) / sqrt(x);
   }
 }
 
 
 double gsl_sf_bessel_K1(double x)
 {
-  static double xmin    = ; /* exp (amax1(alog(r1mach(1)), -alog(r1mach(2))) + .01)*/
-  static double x_small = 2.*1.e-7;
-  static double xmax    = ;
+  const double xmin    = DBL_MIN; /* exp (amax1(alog(r1mach(1)), -alog(r1mach(2))) + .01)*/
+  const double x_small = 2.*GSL_SQRT_MACH_EPS;
+  const double xmax    = -GSL_LOG_DBL_MAX - 0.5 * 6.9 /* ?? */  - 0.01;
   /*
     xmax = -alog(r1mach(1))
     xmax = xmax - 0.5*xmax*alog(xmax)/(xmax+0.5) - 0.01
   */
 
   if(x <= 0.) {
-    GSL_MESSAGE("gsl_sf_bessel_K1: x <= 0");
+    GSL_ERROR_MESSAGE("gsl_sf_bessel_K1: x <= 0", GSL_EDOM);
+    return 0.;
+  }
+  else if(x < xmin) {
+    GSL_ERROR_MESSAGE("gsl_sf_bessel_K1: x too small", GSL_EOVRFLW);
     return 0.;
   }
   else if(x < x_small) {
     return log(0.5*x)*gsl_sf_bessel_I1(x) +
-      	    (0.75 + gsl_sf_cheb_eval(-1., bk1_cs))/x; 
+      	    (0.75 + gsl_sf_cheb_eval(-1., &bk1_cs))/x; 
   }
   else if(x <= 2.) {
     double y = x*x;
     return log(0.5*x)*gsl_sf_bessel_I1(x) +
-      	    (0.75 + gsl_sf_cheb_eval(.5*y-1., bk1_cs))/x; 
+      	    (0.75 + gsl_sf_cheb_eval(.5*y-1., &bk1_cs))/x; 
   }
   else if(x < xmax) { 
     return exp(-x) * gsl_sf_bessel_K1_scaled(x);
   }
   else {
-    return 0.; /* underflow ?? */
+    gsl_errno = GSL_EUNDRFLW;
+    return 0.;
   }
 }

@@ -1,9 +1,7 @@
 #include <math.h>
+#include <gsl_math.h>
 #include <gsl_errno.h>
 #include "gsl_sf_trig.h"
-
-/* FIXME: I hate this. This should be included from elsewhere. */
-#define constPi_ 3.14159265358979323846264338328
 
 
 void gsl_sf_complex_sin(double zr, double zi, double * szr, double * szi)
@@ -48,30 +46,30 @@ void gsl_sf_rect_to_polar(double x, double y, double * r, double * theta)
 
 void gsl_sf_angle_restrict_symm(double * theta)
 {
-  if(fabs(*theta) > sgl_precision*inv_dbl_precision) {
+  if(fabs(*theta) >  1.e-6 / GSL_MACH_EPS) {
     char buff[100];
     sprintf(buff,"gsl_sf_angle_restrict_symm: loss of precision for theta= %g",
 	    *theta);
-    GSL_MESSAGE(buff);
+    GSL_ERROR_MESSAGE(buff, GSL_EDOM);
   }
   else {
-    int i_2pi = (int) floor(*theta/(2.*constPi_));
-    *theta -= 2.*constPi_*i_2pi;
-    if(*theta > constPi_) *theta -= 2.*constPi_;
+    int i_2pi = (int) floor(*theta/(2.*M_PI));
+    *theta -= 2.*M_PI*i_2pi;
+    if(*theta > M_PI) *theta -= 2.*M_PI;
   }
 }
 
 void gsl_sf_angle_restrict_pos(double * theta)
 {
-  if(fabs(*theta) > sgl_precision*inv_dbl_precision) {
+  if(fabs(*theta) > 1.e-6 / GSL_MACH_EPS) {
     char buff[100];
     sprintf(buff,"gsl_sf_angle_restrict_pos: loss of precision for theta= %g",
 	    *theta);
-    GSL_MESSAGE(buff);
+    GSL_ERROR_MESSAGE(buff, GSL_EDOM);
   }
   else {
-    int i_2pi = (int) floor(*theta/(2.*constPi_));
-    *theta -= 2.*constPi_*i_2pi;
-    if(*theta > constPi_) *theta -= 2.*constPi_;
+    int i_2pi = (int) floor(*theta/(2.*M_PI));
+    *theta -= 2.*M_PI*i_2pi;
+    if(*theta > M_PI) *theta -= 2.*M_PI;
   }
 }

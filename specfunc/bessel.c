@@ -1,4 +1,5 @@
 #include <math.h>
+#include <gsl_math.h>
 #include <gsl_errno.h>
 #include "gsl_sf_bessel.h"
 
@@ -168,102 +169,9 @@ void asymp_sphbesselj_meissel(double l, double x,
 }
 
 
-double gsl_sf_bessel_I0(double x)
-{
-  double ax = fabs(x);
-  double y, ans;
-
-  if(ax < 3.75) {
-    
-    /* Polynomial fit for small argument. */
-    y = x / 3.75;
-    y *= y;
-    ans = 1. + y * (3.5156229 
-		    + y * (3.0899424
-			   + y * (1.2067492
-				  + y * (0.2659732
-					 + y * (0.360768e-1
-						+ y * 0.45813e-2)
-					 )
-				  )
-			   )
-		    );
-  }
-  else {
-    
-    /* Prefactor with asymptotic correction. */
-    y = 3.75 / ax;
-    ans = exp(ax) / sqrt(ax);
-    ans *= 0.39894228 
-      + y * (0.1328592e-1
-	     + y * (0.225319e-2
-		    + y * (-0.157565e-2
-			   + y * (0.916281e-2
-				  + y * (-0.2057706e-1
-					 + y * (0.2635537e-1
-						+ y * (-0.1647633e-1
-						       + y * 0.392377e-2)
-						)
-					 )
-				  )
-			   )
-		    )
-	     );
-  }
-
-  return ans;
-}
-
-
-double gsl_sf_bessel_I1(double x)
-{
-  double ax = fabs(x);
-  double ans, y;
-
-  if( (ax=fabs(x)) < 3.75){
-
-    /* Polynomial approximation. */
-    y = x / 3.75;
-    y *= y;
-    ans = ax * (0.5 + y * (0.87890594
-			   + y * (0.51498869
-				  + y * (0.15084934
-					 + y * (0.2658733e-1
-						+ y * (0.301532e-2
-						       + y * 0.32411e-3)
-						)
-					 )
-				  )
-			   )
-		);
-  }
-  else {
-
-    /* Prefactor with asymptotic correction. */
-    y = 3.75 / ax;
-    ans = 0.2282967e-1 + y * (-0.2895312e-1
-			      + y * (0.1787654e-1
-				     - y * 0.420059e-2)
-			      );
-    ans = 0.39894228 + y * (-.3988024e-1
-			    + y * (-0.362018e-2
-				   + y * (0.163801e-2
-					  + y * (-0.1031555e-1
-						 + y * ans)
-					  )
-				   )
-			    );
-    ans *= (exp(ax) / sqrt(ax));
-  }
-  
-  return x < 0. ? -ans : ans;
-}
-
-
 #define ACC 40.
 #define BIGNO 1.e+10
 #define BIGNI 1.e-10
-
 double gsl_sf_bessel_I(int n, double x)
 {
   if(n < 2){
@@ -307,117 +215,10 @@ double gsl_sf_bessel_I(int n, double x)
 #undef BIGNI
 
 
-double gsl_sf_log_bessel_I0(double x)
-{
-  double ax = fabs(x);
-  double y, ans;
-  double poly;
-
-  if(x <= 0.){
-    GSL_MESSAGE("log_besselI0: log(I_0(x)) with x <= 0.\n");
-    return 0.;
-  }
-
-  if(ax < 3.75) {
-    
-    /* Polynomial fit for small argument. */
-    y = x / 3.75;
-    y *= y;
-    ans = 1. + y * (3.5156229 
-		    + y * (3.0899424
-			   + y * (1.2067492
-				  + y * (0.2659732
-					 + y * (0.360768e-1
-						+ y * 0.45813e-2)
-					 )
-				  )
-			   )
-		    );
-    ans = log(ans);
-  }
-  else {
-    
-    /* Prefactor with asymptotic correction. */
-    y = 3.75 / ax;
-    ans = ax - 0.5 * log(ax);
-    poly = 0.39894228 
-      + y * (0.1328592e-1
-	     + y * (0.225319e-2
-		    + y * (-0.157565e-2
-			   + y * (0.916281e-2
-				  + y * (-0.2057706e-1
-					 + y * (0.2635537e-1
-						+ y * (-0.1647633e-1
-						       + y * 0.392377e-2)
-						)
-					 )
-				  )
-			   )
-		    )
-	     );
-    ans += log(poly);
-  }
-  
-  return ans;
-}
-
-
-double gsl_sf_log_bessel_I1(double x)
-{
-  double ax = fabs(x);
-  double ans, y;
-  double poly1, poly2;
-
-  if( x <= 0.){
-    GSL_MESSAGE("log_besselI1: log(I_1(x)), x <= 0.\n");
-    return 0.;
-  }
-
-  if(ax < 3.75){
-
-    /* Polynomial approximation. */
-    y = x / 3.75;
-    y *= y;
-    ans = ax * (0.5 + y * (0.87890594
-			   + y * (0.51498869
-				  + y * (0.15084934
-					 + y * (0.2658733e-1
-						+ y * (0.301532e-2
-						       + y * 0.32411e-3)
-						)
-					 )
-				  )
-			   )
-		);
-    ans = log(ans);
-  }
-  else {
-
-    /* Prefactor with asymptotic correction. */
-    y = 3.75 / ax;
-    poly1 = 0.2282967e-1 + y * (-0.2895312e-1
-			      + y * (0.1787654e-1
-				     - y * 0.420059e-2)
-			      );
-    poly2 = 0.39894228 + y * (-.3988024e-1
-			    + y * (-0.362018e-2
-				   + y * (0.163801e-2
-					  + y * (-0.1031555e-1
-						 + y * poly1)
-					  )
-				   )
-			    );
-    ans = ax - 0.5 * log(ax) + log(poly2);
-  }
-  
-  return x < 0. ? -ans : ans;
-}
-
 
 #define ACC 40.
 #define BIGNO 1.e+10
 #define BIGNI 1.e-10
-
 double gsl_sf_log_bessel_I(int n, double x)
 {
  if(n < 2){
@@ -472,7 +273,7 @@ double gsl_sf_log_bessel_I(int n, double x)
 #undef BIGNI
 
 
-#define ACC 1.e-14
+#define ACC GSL_MACH_EPS
 #define RootPiOver2_  0.88622693
 #define Gamma1pt5_    RootPiOver2_
 void gsl_sf_bessel_j_steed(double x, int lmax, double * jl_x)
@@ -509,7 +310,7 @@ void gsl_sf_bessel_j_steed(double x, int lmax, double * jl_x)
       if(B > end) {
 	char buff[100];
 	sprintf(buff, "gsl_sf_bessel_j_steed: continued fraction not converging");
-	GSL_MESSAGE(buff);
+	GSL_ERROR_MESSAGE(buff, GSL_EFAILED);
       }
     }
     while(fabs(del) >= fabs(FP) * ACC);

@@ -55,3 +55,9 @@ void gsl_message(const char * message, const char * file, int line);
        do { \
        gsl_message (message, __FILE__, __LINE__) ; \
        } while (0)
+
+#define GSL_ERROR_MESSAGE(message, errno) \
+       do { \
+       gsl_errno = errno; \
+       gsl_message (message, __FILE__, __LINE__) ; \
+       } while (0)

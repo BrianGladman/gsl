@@ -62,7 +62,7 @@ double gsl_sf_laguerre_cp(int n, double a, double x)
   else {
     int i;
     double result;
-    double * c = malloc((n+1) * sizeof(double));
+    double * c = (double *)malloc((n+1) * sizeof(double));
     if(c == 0) {
       GSL_MESSAGE("gsl_sf_laguerre_cp: out of memory");
       return 0.;

@@ -1,4 +1,5 @@
 #include <math.h>
+#include <gsl_math.h>
 #include <gsl_errno.h>
 #include "gsl_sf_chebyshev.h"
 #include "gsl_sf_bessel.h"
@@ -44,30 +45,30 @@ static struct gsl_sf_ChebSeries bj1_cs = {
 #define ROOT_EIGHT 2.82842712474619
 
 double gsl_sf_bessel_J1(double x)
-{
-  static double pi_over_4 = 0.78539816339744831;
-  static double x_small = ROOT_EIGHT*1.e-7;
-  static double xmax = 1.e+14;
-  static double xmin = MIN_DBL;
+{ 
+  const double x_small = ROOT_EIGHT * GSL_SQRT_MACH_EPS;
+  const double xmax = 1./GSL_MACH_EPS;
+  const double xmin = DBL_MIN;
 
   double y = abs(x);
   if(y < xmin) {
+    gsl_errno = GSL_EUNDRFLW;
     return 0.;
   }
   else if(y < x_small) {
     return 0.5*x;
   }
   else if(y < 4.0) {
-    return x * (.25 + gsl_sf_cheb_eval(.125*y*y-1., bj1_cs));
+    return x * (.25 + gsl_sf_cheb_eval(.125*y*y-1., &bj1_cs));
   }
   else if(y < xmax) {
-    double z     = 32.0/y**2 - 1.0;
-    double ampl  = (0.75 + gsl_sf_cheb_eval(z, _bessel_amp_phase_bm1_cs)) / sqrt(y);
-    double theta = y - 3.0*pi_over_4 + gsl_sf_cheb_eval(z, _bessel_amp_phase_bth1_cs) / y;
+    double z     = 32.0/(y*y) - 1.0;
+    double ampl  = (0.75 + gsl_sf_cheb_eval(z, &_bessel_amp_phase_bm1_cs)) / sqrt(y);
+    double theta = y - 3.0*M_PI_4 + gsl_sf_cheb_eval(z, &_bessel_amp_phase_bth1_cs) / y;
     return fortran_sign(ampl, x) * cos (theta);
   }
   else {
-    GSL_MESSAGE("gsl_sf_bessel_J1: x too large");
+    GSL_ERROR_MESSAGE("gsl_sf_bessel_J1: x too large", GSL_EOVRFLW);
     return 0.;
   }
 };
