@@ -421,11 +421,7 @@ main (void)
 
   {
     double sum  = gsl_histogram2d_sum (h);
-    double sum1 = gsl_histogram2d_psum (h,   0,   M, 0, N/2);
-    double sum2 = gsl_histogram2d_psum (h,   0, M/2, N/2, N);
-    double sum3 = gsl_histogram2d_psum (h, M/2,   M, N/2, N);
     gsl_test(sum != N*M*27+((N*M-1)*N*M)/2, "gsl_histogram2d_sum sums all bin values correctly");
-    gsl_test(sum != sum1+sum2+sum3, "gsl_histogram2d_psum sums parts of bin values correctly");
   }
 
   {

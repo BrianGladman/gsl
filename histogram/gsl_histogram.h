@@ -118,8 +118,6 @@ double gsl_histogram_mean (const gsl_histogram * h);
 
 double gsl_histogram_sum (const gsl_histogram * h);
 
-double gsl_histogram_psum(const gsl_histogram * h, size_t i_begin, size_t i_end);
-
 int gsl_histogram_fwrite (FILE * stream, const gsl_histogram * h) ;
 int gsl_histogram_fread (FILE * stream, gsl_histogram * h);
 int gsl_histogram_fprintf (FILE * stream, const gsl_histogram * h, 
