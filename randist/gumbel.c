@@ -8,7 +8,7 @@
 
    and the Type II Gumbel distribution has the form,
 
-   p(x) dx = b x^-(a+1) exp(-b x^-a)) dx
+   p(x) dx = b a x^-(a+1) exp(-b x^-a)) dx
 
  */
 
@@ -17,7 +17,7 @@ gsl_ran_gumbel1 (const gsl_rng * r, const double a, const double b)
 {
   double x = gsl_rng_uniform_pos (r);
 
-  double z = (log(b) - log(-log(x))) / a
+  double z = (log(b) - log(-log(x))) / a;
 
   return z;
 }
@@ -34,7 +34,7 @@ gsl_ran_gumbel2 (const gsl_rng * r, const double a, const double b)
 {
   double x = gsl_rng_uniform_pos (r);
 
-  double z = pow(-b / log(x), 1/a)
+  double z = pow(-b / log(x), 1/a);
 
   return z;
 }
@@ -42,6 +42,7 @@ gsl_ran_gumbel2 (const gsl_rng * r, const double a, const double b)
 double
 gsl_ran_gumbel2_pdf (const double x, const double a, const double b)
 {
-  double p = a * b *  pow(x,-(a+1)) * exp (-b * pow(x, -k));
+  double p = b * a *  pow(x,-(a+1)) * exp (-b * pow(x, -a));
   return p;
 }
+

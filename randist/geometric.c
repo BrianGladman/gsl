@@ -35,6 +35,10 @@ gsl_ran_geometric_pdf (const unsigned int n, const double p)
     {
       return 0 ;
     }
+  else if (n == 1)
+    {
+      return p ;
+    }
   else
     {
       double P = p * pow (1 - p, n - 1.0);

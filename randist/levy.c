@@ -15,7 +15,7 @@
    I found this in Chapter 5 of Bratley, Fox and Schrage "A Guide to
    Simulation". The original reference was,
 
-   From: J.M. Chambers, C.L. Mallows and B. W. Stuck. "A method for
+   J.M. Chambers, C.L. Mallows and B. W. Stuck. "A method for
    simulating stable random variates". Journal of the American
    Statistical Association, JASA 71 340-344 (1976).
 

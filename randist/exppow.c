@@ -20,16 +20,16 @@ gsl_ran_exppow (const gsl_rng * r, const double mu, const double a)
     }
   else if (a == 1) 
     {
-      /* laplace distribution */
+      /* Laplace distribution */
       return gsl_ran_laplace (r, mu) ;
     }
   else if (a < 2) 
     {
-      /* use laplace distribution for rejection method */
+      /* Use laplace distribution for rejection method */
 
       double x, y, h, ratio, u ;
 
-      /* scale factor chosen by upper bound on ratio at a = 2 */
+      /* Scale factor chosen by upper bound on ratio at a = 2 */
 
       double s = 1.4489 ; 
       do 
@@ -46,19 +46,22 @@ gsl_ran_exppow (const gsl_rng * r, const double mu, const double a)
     }
   else if (a == 2)
     {
-      /* gaussian distribution */
+      /* Gaussian distribution */
       return gsl_ran_gaussian (r, mu/sqrt(2.0)) ;
     }
   else
     {
-      /* use gaussian for rejection method */
+      /* Use gaussian for rejection method */
 
       double x, y, h, ratio, u ;
       const double sigma = mu / sqrt(2.0) ;
 
-      /* scale factor chosen by upper bound on ratio at a = infinity */
+      /* Scale factor chosen by upper bound on ratio at a = infinity.
+	 This could be improved by using a rational function
+	 approximation to the bounding curve. */
 
-      double s = 4.81804 ;
+      double s = 2.4091 ;  /* this is sqrt(pi) e / 2 */
+
       do 
 	{
 	  x = gsl_ran_gaussian (r, sigma) ;
@@ -76,9 +79,9 @@ gsl_ran_exppow (const gsl_rng * r, const double mu, const double a)
 double
 gsl_ran_exppow_pdf (const double x, const double mu, const double a)
 {
-  double lg = 0 ;
-  int status = gsl_sf_lngamma_impl (1+1/a, &lg) ;
-  double p = (1/(2*mu)) * exp(-pow(fabs(x/mu),a) - lg);
+  double lg = 0, p ;
+  gsl_sf_lngamma_impl (1+1/a, &lg) ;
+  p = (1/(2*mu)) * exp(-pow(fabs(x/mu),a) - lg);
   return p;
 }
 
