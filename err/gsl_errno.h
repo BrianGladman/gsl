@@ -41,7 +41,7 @@ void gsl_message(const char * message, const char * file, int line);
        do { \
        gsl_errno = errno ; \
        gsl_error (reason, __FILE__, __LINE__) ; \
-       return -1 ; \
+       return errno ; \
        } while (0)
 
 #define GSL_ERROR_RETURN(reason, errno, value) \
