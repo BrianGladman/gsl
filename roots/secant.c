@@ -1,4 +1,16 @@
-/* secant.c -- secant method root finding algorithm */
+/* secant.c -- secant root finding algorithm 
+
+   The secant algorithm is a variant of the Newton algorithm with the
+   derivative term replaced by a numerical estimate from the last two
+   function evaluations.
+
+   x[i+1] = x[i] - f(x[i]) / f'_est
+
+   where f'_est = (f(x[i]) - f(x[i-1])) / (x[i] - x[i-1])
+
+   The exact derivative is used for the initial value of f'_est.
+
+*/
 
 #include <config.h>
 
@@ -14,77 +26,73 @@
 
 #include "roots.h"
 
+typedef struct
+  {
+    double f;
+    double df;
+  }
+secant_state_t;
+
+int secant_init (void * vstate, gsl_fdf * fdf, double * root);
+int secant_iterate (void * vstate, gsl_fdf * fdf, double * root);
+
 int
-gsl_root_secant (double *root, 
-		 const gsl_function * f, 
-		 double *guess1, double *guess2, 
-		 double rel_epsilon, double abs_epsilon,
-		 unsigned int max_iterations)
+secant_init (void * vstate, gsl_fdf * fdf, double * root)
 {
-  unsigned int iterations;
-  double new_guess, fg1, fg2, fnew;
+  secant_state_t * state = (secant_state_t *) vstate;
 
-  if (rel_epsilon < 0.0 || abs_epsilon < 0.0)
-    GSL_ERROR ("relative or absolute tolerance negative", GSL_EBADTOL);
+  const double x = *root;
 
-  if (rel_epsilon < GSL_DBL_EPSILON * GSL_ROOT_EPSILON_BUFFER)
-    GSL_ERROR ("relative tolerance too small", GSL_EBADTOL);
-
-  SAFE_FUNC_CALL (f, *guess1, fg1);
-
-  if (fg1 == 0.0)
-    {
-      *root = *guess1;
-      return GSL_SUCCESS;
-    }
-
-  SAFE_FUNC_CALL (f, *guess2, fg2);
-
-  if (fg2 == 0.0)
-    {
-      *root = *guess2;
-      return GSL_SUCCESS;
-    }
-
-  for (iterations = 0; iterations < max_iterations; iterations++)
-    {
-      /* Draw a line through f(*guess1) and f(*guess2) and note where that
-	 crosses the X axis; that's our new guess. */
-
-      if (fg1 == fg2) 
-	{
-	  GSL_ERROR("secant approximation to derivative is 0", GSL_EZERODIV);
-	}
-							       
-      new_guess = *guess2 - (fg2 * (*guess1 - *guess2) / (fg1 - fg2));
-      
-      SAFE_FUNC_CALL (f, new_guess, fnew);
-      
-      /* If the new point is the root exactly, we're done. */
-
-      if (fnew == 0.0)
-	{
-	  *root = new_guess;
-	  return GSL_SUCCESS;
-	}
-      
-      /* Rotate the guesses. */
-      *guess2 = *guess1;
-      fg2 = fg1;
-      *guess1 = new_guess;
-      fg1 = fnew;
-
-      if (WITHIN_TOL (*guess1, *guess2, rel_epsilon, abs_epsilon))
-	{
-	  *root = *guess1;
-	  return GSL_SUCCESS;
-	}
-      else
-	{
-	  CHECK_TOL (*guess1, *guess2, rel_epsilon, abs_epsilon);
-	}
-    }
+  GSL_FDF_EVAL_F_DF (fdf, x, &(state->f), &(state->df));
   
-  GSL_ERROR ("exceeded maximum number of iterations", GSL_EMAXITER);
+  return GSL_SUCCESS;
 
 }
+
+int
+secant_iterate (void * vstate, gsl_fdf * fdf, double * root)
+{
+  secant_state_t * state = (secant_state_t *) vstate;
+  
+  const double x = *root ;
+  const double f = state->f;
+  const double df = state->df;
+
+  double x_new, f_new, df_new;
+
+  if (state->df == 0.0)
+    {
+      GSL_ERROR("derivative is zero", GSL_EZERODIV);
+    }
+
+  x_new = x - (f / df);
+
+  f_new = GSL_FDF_EVAL_F(fdf, x_new) ;
+  df_new = (f_new - f) / (x_new - x) ;
+
+  *root = x_new ;
+
+  state->f = f_new ;
+  state->df = df_new ;
+
+  if (!GSL_IS_REAL (f_new))
+    {
+      GSL_ERROR ("function not continuous", GSL_EBADFUNC);
+    }
+
+  if (!GSL_IS_REAL (df_new))
+    {
+      GSL_ERROR ("function not differentiable", GSL_EBADFUNC);
+    }
+      
+  return GSL_SUCCESS;
+}
+
+
+static const gsl_root_fdf_solver_type secant_type =
+{"secant",				/* name */
+ sizeof (secant_state_t),
+ &secant_init,
+ &secant_iterate};
+
+const gsl_root_fdf_solver_type  * gsl_root_fdf_solver_secant = &secant_type;

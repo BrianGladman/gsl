@@ -1,3 +1,7 @@
+Sun Feb 28 21:11:21 1999  Brian Gough  <bjg@netsci.freeserve.co.uk>
+
+	* rewrote the root finding functions in an iterative framework
+
 Tue Nov 17 16:47:09 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
 	* secant.c, falsepos.c newton.c: added gsl_math.h to included

@@ -1,6 +1,7 @@
 #include <math.h>
 #include <stdlib.h>
 #include <gsl_math.h>
+#include <gsl_roots.h>
 
 #include "test.h"
 

@@ -1,68 +1,98 @@
-/* $Id$ */
-
 #ifndef GSL_ROOTS_H
 #define GSL_ROOTS_H
 
+#include <stdlib.h>
 #include <gsl_math.h>
-#include <gsl_complex.h>
 
-/* Requested epsilon must be this many times greater than GSL_DBL_EPSILON to
-   protect against roundoff problems. */
+typedef struct
+  {
+    const char *name;
+    size_t size;
+    int (*set) (void *state, gsl_function * f, double * root, gsl_interval * x);
+    int (*iterate) (void *state, gsl_function * f, double * root, gsl_interval * x);
+  }
+gsl_root_f_solver_type;
+
+typedef struct
+  {
+    const char *name;
+    size_t size;
+    int (*set) (void *state, gsl_function * f, double * root, gsl_interval * x);
+    int (*iterate) (void *state, gsl_function * f, double * root, gsl_interval * x);
+    gsl_function * function ;
+    double root ;
+    gsl_interval interval ;
+    void *state;
+  }
+gsl_root_f_solver;
+
+typedef struct
+  {
+    const char *name;
+    size_t size;
+    int (*set) (void *state, gsl_fdf * f, double * root);
+    int (*iterate) (void *state, gsl_fdf * f, double * root);
+  }
+gsl_root_fdf_solver_type;
+
+typedef struct
+  {
+    const char *name;
+    size_t size;
+    int (*set) (void *state, gsl_fdf * f, double * root);
+    int (*iterate) (void *state, gsl_fdf * f, double * root);
+    gsl_fdf * fdf ;
+    double root ;
+    void *state;
+  }
+gsl_root_fdf_solver;
+
+gsl_root_f_solver *
+gsl_root_f_solver_alloc (const gsl_root_f_solver_type * T, 
+			 gsl_function * f, gsl_interval x);
+
+int
+gsl_root_f_solver_set (gsl_root_f_solver * s, 
+		       gsl_function * f, gsl_interval x);
+
+int
+gsl_root_f_solver_iterate (gsl_root_f_solver * s);
+
+void
+gsl_root_f_solver_free (gsl_root_f_solver * s);
+
+
+gsl_root_fdf_solver *
+gsl_root_fdf_solver_alloc (const gsl_root_fdf_solver_type * T, 
+			   gsl_fdf * fdf, double root);
+
+int
+gsl_root_fdf_solver_set (gsl_root_fdf_solver * s, 
+			 gsl_fdf * fdf, double root);
+
+int
+gsl_root_fdf_solver_iterate (gsl_root_fdf_solver * s);
+
+void
+gsl_root_fdf_solver_free (gsl_root_fdf_solver * s);
+
+
+int
+gsl_root_test_interval (gsl_interval x, double rel_epsilon, double abs_epsilon);
+
+int
+gsl_root_test_residual (double f, double abs_epsilon);
+
+extern const gsl_root_f_solver_type  * gsl_root_f_solver_bisection;
+extern const gsl_root_f_solver_type  * gsl_root_f_solver_brent;
+extern const gsl_root_f_solver_type  * gsl_root_f_solver_falsepos;
+extern const gsl_root_fdf_solver_type  * gsl_root_fdf_solver_newton;
+extern const gsl_root_fdf_solver_type  * gsl_root_fdf_solver_secant;
+extern const gsl_root_fdf_solver_type  * gsl_root_fdf_solver_steffenson;
+
+/* Requested epsilon must be greater than GSL_DBL_EPSILON by this
+   factor to protect against roundoff problems. */
 
 #define GSL_ROOT_EPSILON_BUFFER 10.0
-
-/* Function Prototypes */
-
-int
-gsl_root_bisection (double *root, const gsl_function * f, 
-		    double *lower_bound, double *upper_bound, 
-		    double rel_epsilon, double abs_epsilon, 
-		    unsigned int max_iterations);
-
-int
-gsl_root_brent (double *root, const gsl_function * f, 
-		double *lower_bound, double *upper_bound, 
-		double rel_epsilon, double abs_epsilon, 
-		unsigned int max_iterations);
-
-int
-gsl_root_falsepos (double *root, const gsl_function * f, 
-		   double *lower_bound, double *upper_bound, 
-		   double rel_epsilon, double abs_epsilon,
-		   unsigned int max_iterations);
-
-int
-gsl_root_secant (double *root, const gsl_function * f, double *guess1,
-		 double *guess2, double rel_epsilon, double abs_epsilon,
-		 unsigned int max_iterations);
-
-int
-gsl_root_newton (double *root,
-		 const gsl_fdf * fdf,
-		 double *guess, 
-		 double rel_epsilon, double abs_epsilon,
-		 unsigned int max_iterations);
-
-/* Solve for real or complex roots of the standard quadratic equation,
- * returning the number of real roots.
- * x[] is assumed big enough.
- * Roots are returned ordered.
- */
-int gsl_root_solve_quadratic (double a, double b, double c, double x[]);
-
-int 
-gsl_root_complex_solve_quadratic (double a, double b, double c, gsl_complex z[]);
-
-
-/* Solve for real roots of the cubic equation
- * x^3 + a x^2 + b x + c = 0, returning the
- * number of real roots.
- * x[] is assumed big enough.
- * Roots are returned ordered.
- */
-int gsl_root_solve_cubic (double a, double b, double c, double x[]);
-
-int 
-gsl_root_complex_solve_cubic (double a, double b, double c, gsl_complex z[]);
 
 #endif /* GSL_ROOTS_H */

@@ -22,61 +22,23 @@ void
   test_poly (void);
 
 void
-  test_bisection (const char *description,
-		  const gsl_function * f,
-		  double lower_bound, double upper_bound,
-		  double correct_root);
+test_f (const gsl_root_f_solver_type * T, 
+	const char * description, gsl_function *f,
+	double lower_bound, double upper_bound, double correct_root);
 
 void
-  test_bisection_failure (const char *description,
-			  const gsl_function * f,
-			  double lower_bound, double upper_bound,
-			  double correct_root);
+test_f_e (const gsl_root_f_solver_type * T, const char * description, 
+	  gsl_function *f,
+	  double lower_bound, double upper_bound, double correct_root);
 
 void
-  test_brent (const char *description,
-	      const gsl_function * f,
-	      double lower_bound, double upper_bound,
-	      double correct_root);
+test_fdf (const gsl_root_fdf_solver_type * T, const char * description, 
+	  gsl_fdf *fdf, double root, double correct_root);
 
 void
-  test_brent_failure (const char *description,
-		      const gsl_function * f,
-		      double lower_bound, double upper_bound,
-		      double correct_root);
+test_fdf_e (const gsl_root_fdf_solver_type * T, const char * description, 
+	    gsl_fdf *fdf, double root, double correct_root);
 
-void
-  test_falsepos (const char *description,
-		 const gsl_function * f,
-		 double lower_bound, double upper_bound,
-		 double correct_root);
-
-void
-  test_falsepos_failure (const char *description,
-			 const gsl_function * f,
-			 double lower_bound, double upper_bound,
-			 double correct_root);
-void
-  test_secant (const char *description,
-	       const gsl_function * f,
-	       double guess1, double guess2,
-	       double correct_root);
-
-void
-  test_secant_failure (const char *description,
-		       const gsl_function * f,
-		       double guess1, double guess2,
-		       double correct_root);
-
-void
-  test_newton (const char *description,
-	       const gsl_fdf * f,
-	       double guess, double correct_root);
-
-void
-  test_newton_failure (const char *description,
-		       const gsl_fdf * f,
-		       double guess, double correct_root);
 
 void
   usage (void);

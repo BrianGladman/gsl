@@ -1,4 +1,16 @@
-/* falsepos.c -- false position root finding algorithm */
+/* falsepos.c -- falsepos root finding algorithm 
+
+   The false position algorithm uses bracketing by linear interpolation.
+
+   If a linear interpolation step would decrease the size of the
+   bracket by less than a bisection step would then the algorithm
+   takes a bisection step instead.
+   
+   The last linear interpolation estimate of the root is used. If a
+   bisection step causes it to fall outside the brackets then it is
+   replaced by the bisection estimate (x_upper + x_lower)/2.
+
+*/
 
 #include <config.h>
 
@@ -14,138 +26,139 @@
 
 #include "roots.h"
 
-/* Note that sometimes this function checks against 2 * epsilon instead of
-   epsilon. This is because if the interval is twice as wide as we want, we
-   can return the midpoint of the interval and that will be within the desired
-   accuracy. */
+typedef struct
+  {
+    double f_lower, f_upper;
+  }
+falsepos_state_t;
 
 int
-gsl_root_falsepos (double *root, const gsl_function * f, 
-		   double *lower_bound, double *upper_bound, 
-		   double rel_epsilon, double abs_epsilon,
-		   unsigned int max_iterations)
+falsepos_init (void * vstate, gsl_function * f, double * root, gsl_interval * x);
+int
+falsepos_iterate (void * vstate, gsl_function * f, double * root, gsl_interval * x);
+
+int
+falsepos_init (void * vstate, gsl_function * f, double * root, gsl_interval * x)
 {
-  unsigned int iterations;
-  enum { UPPER, LOWER } moved = 0;
-  double splitpoint, fl, fu, fs, old_lower_bound, old_upper_bound;
+  falsepos_state_t * state = (falsepos_state_t *) vstate;
+
+  double f_lower, f_upper ;
+
+  double x_lower = x->lower ;
+  double x_upper = x->upper ;
+
+  *root = 0.5 * (x_lower + x_upper);
+
+  SAFE_FUNC_CALL (f, x_lower, &f_lower);
+  SAFE_FUNC_CALL (f, x_upper, &f_upper);
   
-  if (*lower_bound >= *upper_bound)
-    GSL_ERROR ("lower bound larger than upper_bound", GSL_EINVAL);
- 
-  if (rel_epsilon < 0.0 || abs_epsilon < 0.0)
-    GSL_ERROR ("relative or absolute tolerance negative", GSL_EBADTOL);
+  state->f_lower = f_lower;
+  state->f_upper = f_upper;
 
- if (rel_epsilon < GSL_DBL_EPSILON * GSL_ROOT_EPSILON_BUFFER)
-    GSL_ERROR ("relative tolerance too small", GSL_EBADTOL);
-
-  SAFE_FUNC_CALL (f, *lower_bound, fl);
-
-  if (fl == 0.0)
-    {
-      *root = *lower_bound;
-      *upper_bound = *lower_bound;
-      return GSL_SUCCESS;
-    }
-
-  SAFE_FUNC_CALL (f, *upper_bound, fu);
-
-  if (fu == 0.0)
-    {
-      *root = *upper_bound;
-      *lower_bound = *upper_bound;
-      return GSL_SUCCESS;
-    }
-
-  if ((fl < 0 && fu < 0.0) || (fl > 0 && fu > 0))
+  if ((f_lower < 0.0 && f_upper < 0.0) || (f_lower > 0.0 && f_upper > 0.0))
     {
       GSL_ERROR ("endpoints do not straddle y=0", GSL_EINVAL);
     }
 
-  if (WITHIN_TOL (*lower_bound, *upper_bound, 2 * rel_epsilon, 2 * abs_epsilon))
+  return GSL_SUCCESS;
+
+}
+
+int
+falsepos_iterate (void * vstate, gsl_function * f, double * root, gsl_interval * x)
+{
+  falsepos_state_t * state = (falsepos_state_t *) vstate;
+
+  double x_linear, f_linear;
+  double x_bisect, f_bisect;
+
+  double x_lower = x->lower ;
+  double x_upper = x->upper ;
+
+  double f_lower = state->f_lower; 
+  double f_upper = state->f_upper;
+
+  double w ;
+
+  if (f_lower == 0.0)
     {
-      *root = (*lower_bound + *upper_bound) / 2.0;
+      *root = x_lower ;
+      x->upper = x_lower;
       return GSL_SUCCESS;
     }
   
-  for (iterations = 0; iterations < max_iterations; iterations++)
+  if (f_upper == 0.0)
     {
-
-      /* Draw a line between f(*lower_bound) and f(*upper_bound) and
-	 note where that crosses the X axis; that's where we will
-	 split the interval. */
-
-      double dx = *lower_bound - *upper_bound ;
-
-      splitpoint = *upper_bound - (fu * dx / (fl - fu));
-
-      SAFE_FUNC_CALL (f, splitpoint, fs);
-      
-      /* If the split point is the root exactly, we're done. */
-
-      if (fs == 0.0)
-	{
-	  *root = splitpoint;
-	  *lower_bound = splitpoint;
-	  *upper_bound = splitpoint;
-	  return GSL_SUCCESS;
-	}
-      
-      /* Make note of the soon-to-be-old lower and upper bounds. */
-
-      old_lower_bound = *lower_bound;
-      old_upper_bound = *upper_bound;
-      
-      /* Split the interval and discard the part which doesn't contain
-	 the root. */
-
-      if ((fl > 0.0 && fs < 0.0) || (fl < 0.0 && fs > 0.0))
-	{
-	  *upper_bound = splitpoint;
-	  fu = fs;
-	  moved = UPPER;
-	}
-      else
-	{
-	  *lower_bound = splitpoint;
-	  fl = fs;
-	  moved = LOWER;
-	}
-      
-      /* FIXME: this test needs help! */
-
-      CHECK_TOL (*lower_bound, *upper_bound, rel_epsilon, abs_epsilon);
-
-      /* If the interval has collapsed to within twice what we need,
-	 the root is its midpoint. */
-
-      if (WITHIN_TOL (*lower_bound, *upper_bound, 
-		      2 * rel_epsilon, 2 * abs_epsilon))
-	{
-	  *root = (*lower_bound + *upper_bound) / 2.0;
-	  return GSL_SUCCESS;
-	}
-
-      /* If the lower bound stayed the same and the upper bound moved less
-	 than epsilon, the root is *upper_bound. */
-
-      if (moved == UPPER && WITHIN_TOL (old_upper_bound, *upper_bound, 
-					rel_epsilon, abs_epsilon))
-	{
-	  *root = *upper_bound;
-	  return GSL_SUCCESS;
-	}
-
-      /* If the upper bound stayed the same and the lower bound moved less
-	 than epsilon, the root is *lower_bound. */
-
-      if (moved == LOWER && WITHIN_TOL (old_lower_bound, *lower_bound, 
-					rel_epsilon, abs_epsilon))
-	{
-	  *root = *lower_bound;
-	  return GSL_SUCCESS;
-	}
+      *root = x_upper ;
+      x->lower = x_upper;
+      return GSL_SUCCESS;
     }
+      
+  /* Draw a line between f(*lower_bound) and f(*upper_bound) and
+     note where it crosses the X axis; that's where we will
+     split the interval. */
   
-  GSL_ERROR ("exceeded maximum number of iterations", GSL_EMAXITER);
+  x_linear = x_upper - (f_upper * (x_lower - x_upper) / (f_lower - f_upper));
 
+  SAFE_FUNC_CALL (f, x_linear, &f_linear);
+      
+  if (f_linear == 0.0)
+    {
+      *root = x_linear;
+      x->lower = x_linear;
+      x->upper = x_linear;
+      return GSL_SUCCESS;
+    }
+      
+  /* Discard the half of the interval which doesn't contain the root. */
+  
+  if ((f_lower > 0.0 && f_linear < 0.0) || (f_lower < 0.0 && f_linear > 0.0))
+    {
+      *root = x_linear ;
+      x->upper = x_linear;
+      state->f_upper = f_linear;
+      w = x_linear - x_lower ;
+    }
+  else
+    {
+      *root = x_linear ;
+      x->lower = x_linear;
+      state->f_lower = f_linear;
+      w = x_upper - x_linear;
+    }
+
+  if (w < 0.5 * (x_upper - x_lower)) 
+    {
+      return GSL_SUCCESS ;
+    }
+
+  x_bisect = 0.5 * (x_lower + x_upper);
+
+  SAFE_FUNC_CALL (f, x_bisect, &f_bisect);
+
+  if ((f_lower > 0.0 && f_bisect < 0.0) || (f_lower < 0.0 && f_bisect > 0.0))
+    {
+      x->upper = x_bisect;
+      state->f_upper = f_bisect;
+      if (*root > x_bisect)
+	*root = 0.5 * (x_lower + x_bisect) ;
+    }
+  else
+    {
+      x->lower = x_bisect;
+      state->f_lower = f_bisect;
+      if (*root < x_bisect)
+	*root = 0.5 * (x_bisect + x_upper) ;
+    }
+
+  return GSL_SUCCESS;
 }
+
+
+static const gsl_root_f_solver_type falsepos_type =
+{"falsepos",				/* name */
+ sizeof (falsepos_state_t),
+ &falsepos_init,
+ &falsepos_iterate};
+
+const gsl_root_f_solver_type  * gsl_root_f_solver_falsepos = &falsepos_type;

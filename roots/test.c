@@ -1,5 +1,6 @@
 #include <gsl_math.h>
 #include <gsl_test.h>
+#include <gsl_roots.h>
 
 #include "test.h"
 
@@ -8,7 +9,6 @@ main (void)
 {
   test_macros();
   test_roots();
-  test_poly();
 
   /* now summarize the results */
 

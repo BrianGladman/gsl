@@ -1,4 +1,10 @@
-/* newton.c -- Newton's Method root finding algorithm */
+/* newton.c -- newton root finding algorithm 
+
+   This is the classical Newton-Raphson iteration.
+
+   x[i+1] = x[i] - f(x[i])/f'(x[i])
+
+*/
 
 #include <config.h>
 
@@ -14,84 +20,68 @@
 
 #include "roots.h"
 
+typedef struct
+  {
+    double f, df;
+  }
+newton_state_t;
+
+int newton_init (void * vstate, gsl_fdf * fdf, double * root);
+int newton_iterate (void * vstate, gsl_fdf * fdf, double * root);
+
 int
-gsl_root_newton (double *root, const gsl_fdf * fdf,
-		 double *guess, 
-		 double rel_epsilon, double abs_epsilon,
-		 unsigned int max_iterations)
+newton_init (void * vstate, gsl_fdf * fdf, double * root)
 {
-  double new_guess, fg, dfg, fnew, dfnew;
-  unsigned int iterations;
-    
-  if (rel_epsilon < 0.0 || abs_epsilon < 0.0)
-    GSL_ERROR ("relative or absolute tolerance negative", GSL_EBADTOL);
+  newton_state_t * state = (newton_state_t *) vstate;
 
-  if (rel_epsilon < GSL_DBL_EPSILON * GSL_ROOT_EPSILON_BUFFER)
-    GSL_ERROR ("relative tolerance too small", GSL_EBADTOL);
-  
-  fg = GSL_FDF_F_EVAL (fdf, *guess);
-  
-  if (!GSL_IS_REAL(fg))
-    GSL_ERROR("function not continuous", GSL_EBADFUNC);
+  const double x = *root ;
 
-  if (fg == 0.0)
-    {
-      *root = *guess;
-      return GSL_SUCCESS;
-    }
-  
-  dfg = GSL_FDF_DF_EVAL (fdf, *guess) ;
-  
-  for (iterations = 0; iterations < max_iterations; iterations++)
-    {
-      
-      /* Draw a line tangent to f at guess and note where that crosses the X
-	 axis; that's our new guess. */
+  state->f = GSL_FDF_EVAL_F (fdf, x);
+  state->df = GSL_FDF_EVAL_DF (fdf, x) ;
 
-      if (dfg == 0)
-	{
-	  GSL_ERROR("derivative is zero", GSL_EZERODIV);
-	}
+  return GSL_SUCCESS;
 
-      new_guess = *guess - (fg / dfg);
-      
-      GSL_FDF_EVAL(fdf, new_guess, &fnew, &dfnew);
-      
-      if (!GSL_IS_REAL (fnew))
-	{
-	  GSL_ERROR ("function not continuous", GSL_EBADFUNC);
-	}
-      
-      if (fnew == 0.0)
-	{
-	  *root = new_guess;
-	  return GSL_SUCCESS;
-	}
-      
-      /* Now, let's check if we're finished. FIXME.2: In certain fairly
-	 unusual cases, this test can cause the root finder to stop early. */
-
-      if (WITHIN_TOL (*guess, new_guess, rel_epsilon, abs_epsilon))
-	{
-	  *root = new_guess;
-	  return GSL_SUCCESS;
-	}
-      else
-	{
-	  CHECK_TOL (*guess, new_guess, rel_epsilon, abs_epsilon);
-	}
-
-      if (!GSL_IS_REAL (dfnew))
-	{
-	  GSL_ERROR ("function not differentiable", GSL_EBADFUNC);
-	}
-      
-      /* Rotate the guesses. */
-
-      *guess = new_guess;
-      fg = fnew;
-      dfg = dfnew;
-    }
-  
-  GSL_ERROR ("exceeded maximum number of iterations", GSL_EMAXITER);
 }
+
+int
+newton_iterate (void * vstate, gsl_fdf * fdf, double * root)
+{
+  newton_state_t * state = (newton_state_t *) vstate;
+  
+  double root_new, f_new, df_new;
+
+  if (state->df == 0.0)
+    {
+      GSL_ERROR("derivative is zero", GSL_EZERODIV);
+    }
+
+  root_new = *root - (state->f / state->df);
+
+  *root = root_new ;
+  
+  GSL_FDF_EVAL_F_DF(fdf, root_new, &f_new, &df_new);
+
+  state->f = f_new ;
+  state->df = df_new ;
+
+  if (!GSL_IS_REAL (f_new))
+    {
+      GSL_ERROR ("function not continuous", GSL_EBADFUNC);
+    }
+
+  if (!GSL_IS_REAL (df_new))
+    {
+      GSL_ERROR ("function not differentiable", GSL_EBADFUNC);
+    }
+      
+  return GSL_SUCCESS;
+}
+
+
+static const gsl_root_fdf_solver_type newton_type =
+{"newton",				/* name */
+ sizeof (newton_state_t),
+ &newton_init,
+ &newton_iterate};
+
+const gsl_root_fdf_solver_type  * gsl_root_fdf_solver_newton = &newton_type;
