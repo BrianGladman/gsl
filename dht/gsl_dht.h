@@ -31,19 +31,26 @@ int gsl_dht_transform_recalc_impl(gsl_dht_transform * t, double nu, double xmax)
 int gsl_dht_transform_recalc_e(gsl_dht_transform * t, double nu, double xmax);
 
 
-/* The n'th computed x sample point for a given transform. */
+/* The n'th computed x sample point for a given transform.
+ * 0 <= n <= size-1
+ */
 double gsl_dht_transform_x_sample(const gsl_dht_transform * t, int n);
 
 
-/* The n'th computed k sample point for a given transform. */
+/* The n'th computed k sample point for a given transform.
+ * 0 <= n <= size-1
+ */
 double gsl_dht_transform_k_sample(const gsl_dht_transform * t, int n);
 
 
-/* Free a transform object. */
+/* Free a transform object.
+ */
 void gsl_dht_transform_free(gsl_dht_transform * t);
 
 
-/* Perform a transform on a sampled array. */
+/* Perform a transform on a sampled array.
+ * f_in[0] ... f_in[size-1] and similarly for f_out[]
+ */
 int gsl_dht_transform_apply(const gsl_dht_transform * t, double * f_in, double * f_out);
 
 
