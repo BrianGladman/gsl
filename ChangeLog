@@ -4,7 +4,6 @@ Mon Nov  9 21:08:10 1998  Brian Gough  <bjg@vvv.lanl.gov>
  	everywhere. We assume that if they are defined by the system then
  	they do actually work.
 
-
 1998-11-06    <bjg@ancho.lanl.gov>
 
 	* configure.in: add -mieee on alpha platforms, also check for both
