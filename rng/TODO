@@ -66,3 +66,6 @@ simulation , 1996, Page 360, from ACM
 
 15. Check that RANLXS will work on machines with non-standard with of
 float/dbl (original has checks for DBL_MANT_DIG ..)
+
+16. Rewrite test.c to use a loop over a list of all the generators.
+Too much cut and paste!

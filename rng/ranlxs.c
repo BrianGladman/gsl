@@ -2,8 +2,13 @@
 #include <stdlib.h>
 #include <gsl_rng.h>
 
-/* This is a second generation version of the RANLUX generator
-   developed by Luscher. */
+/* This is an implementation of M. Luescher's second generation
+   version of the RANLUX generator.
+
+   Thanks to Martin Luescher for providing information on this
+   generator.
+
+ */
 
 unsigned long int ranlxs_get (void *vstate);
 inline double ranlxs_get_double (void *vstate);
@@ -22,7 +27,7 @@ static const double one_bit = 1.0 / 281474976710656.0;	/* 1/2^48 */
 
 static const double shift = 268435456.0;	/* 2^28 */
 
-#define _ranlux_step(x1,x2,i1,i2,i3)     \
+#define RANLUX_STEP(x1,x2,i1,i2,i3)      \
           x1=xdbl[i1] - xdbl[i2];        \
           if (x2 < 0)                    \
           {                              \
@@ -84,17 +89,17 @@ increment_state (ranlxs_state_t * state)
       y1 = xdbl[7] - xdbl[0];
       y1 -= carry;
 
-      _ranlux_step (y2, y1, 8, 1, 0);
-      _ranlux_step (y3, y2, 9, 2, 1);
-      _ranlux_step (y1, y3, 10, 3, 2);
-      _ranlux_step (y2, y1, 11, 4, 3);
-      _ranlux_step (y3, y2, 0, 5, 4);
-      _ranlux_step (y1, y3, 1, 6, 5);
-      _ranlux_step (y2, y1, 2, 7, 6);
-      _ranlux_step (y3, y2, 3, 8, 7);
-      _ranlux_step (y1, y3, 4, 9, 8);
-      _ranlux_step (y2, y1, 5, 10, 9);
-      _ranlux_step (y3, y2, 6, 11, 10);
+      RANLUX_STEP (y2, y1, 8, 1, 0);
+      RANLUX_STEP (y3, y2, 9, 2, 1);
+      RANLUX_STEP (y1, y3, 10, 3, 2);
+      RANLUX_STEP (y2, y1, 11, 4, 3);
+      RANLUX_STEP (y3, y2, 0, 5, 4);
+      RANLUX_STEP (y1, y3, 1, 6, 5);
+      RANLUX_STEP (y2, y1, 2, 7, 6);
+      RANLUX_STEP (y3, y2, 3, 8, 7);
+      RANLUX_STEP (y1, y3, 4, 9, 8);
+      RANLUX_STEP (y2, y1, 5, 10, 9);
+      RANLUX_STEP (y3, y2, 6, 11, 10);
 
       if (y3 < 0)
 	{

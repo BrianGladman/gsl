@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <gsl_rng.h>
 
-/* This is lagged fibonacci generator with skipping developed by Luscher.
+/* This is a lagged fibonacci generator with skipping developed by Luescher.
    The sequence is a series of 24-bit integers, x_n, 
 
    x_n = d_n + b_n
@@ -15,7 +15,7 @@
 
    The period of the generator is around 10^171. 
 
-   From: M. Luscher, "A portable high-quality random number generator
+   From: M. Luescher, "A portable high-quality random number generator
    for lattice field theory calculations", Computer Physics
    Communications, 79 (1994) 100-110.
 
