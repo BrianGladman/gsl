@@ -1,7 +1,7 @@
 This is a reimplementation of the double precision version of QUADPACK.
 
 Brian Gough
-bjg@vvv.lanl.gov
+bjg@netsci.freeserve.co.uk
 
 Testing:
 
@@ -20,7 +20,7 @@ agreement:
 
 -- If you are using an Intel chip remember that these work in extended
    precision by default. Consequently some of the tests for round-off
-   produce different results that would be obtained if you were working
+   produce different results than would be obtained if you were working
    to double-precision accuracy. This leads to different branches
    being taken in the code. You can use GSL_IEEE_MODE="double-precision"
    at runtime to restrict all rounding to pure double-precision accuracy

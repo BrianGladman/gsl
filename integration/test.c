@@ -8,8 +8,6 @@
 
 #include "tests.h"
 
-double alpha = 0 ;
-
 void my_error_handler (const char *reason, const char *file,
 		       int line, int err);
 
@@ -28,14 +26,14 @@ int main (void)
     double exp_resasc = 4.434273814139995384E-02;
 
     double alpha = 2.6 ;
-    gsl_function f = { &book1, &alpha } ;
+    gsl_function f = { &f1, &alpha } ;
 
     gsl_integration_qk15 (&f, 0.0, 1.0, 
 			  &result, &abserr, &resabs, &resasc) ;
-    gsl_test_rel(result,exp_result,1e-15,"qk15(book1) smooth result") ;
-    gsl_test_rel(abserr,exp_abserr,1e-7,"qk15(book1) smooth abserr") ;
-    gsl_test_rel(resabs,exp_resabs,1e-15,"qk15(book1) smooth resabs") ;    
-    gsl_test_rel(resasc,exp_resasc,1e-15,"qk15(book1) smooth resasc") ;
+    gsl_test_rel(result,exp_result,1e-15,"qk15(f1) smooth result") ;
+    gsl_test_rel(abserr,exp_abserr,1e-7,"qk15(f1) smooth abserr") ;
+    gsl_test_rel(resabs,exp_resabs,1e-15,"qk15(f1) smooth resabs") ;    
+    gsl_test_rel(resasc,exp_resasc,1e-15,"qk15(f1) smooth resasc") ;
   }
 
   {
@@ -46,14 +44,14 @@ int main (void)
     double exp_resasc = 4.434311425038358484E-02;
 
     double alpha = 2.6 ;
-    gsl_function f = { &book1, &alpha } ;
+    gsl_function f = { &f1, &alpha } ;
 
     gsl_integration_qk21 (&f, 0.0, 1.0, 
 			  &result, &abserr, &resabs, &resasc) ;
-    gsl_test_rel(result,exp_result,1e-15,"qk21(book1) smooth result") ;
-    gsl_test_rel(abserr,exp_abserr,1e-7,"qk21(book1) smooth abserr") ;
-    gsl_test_rel(resabs,exp_resabs,1e-15,"qk21(book1) smooth resabs") ;    
-    gsl_test_rel(resasc,exp_resasc,1e-15,"qk21(book1) smooth resasc") ;
+    gsl_test_rel(result,exp_result,1e-15,"qk21(f1) smooth result") ;
+    gsl_test_rel(abserr,exp_abserr,1e-7,"qk21(f1) smooth abserr") ;
+    gsl_test_rel(resabs,exp_resabs,1e-15,"qk21(f1) smooth resabs") ;    
+    gsl_test_rel(resasc,exp_resasc,1e-15,"qk21(f1) smooth resasc") ;
   }
 
   {
@@ -64,14 +62,14 @@ int main (void)
     double exp_resasc = 4.427995051868838933E-02;
 
     double alpha = 2.6 ;
-    gsl_function f = { &book1, &alpha } ;
+    gsl_function f = { &f1, &alpha } ;
 
     gsl_integration_qk31 (&f, 0.0, 1.0, 
 			  &result, &abserr, &resabs, &resasc) ;
-    gsl_test_rel(result,exp_result,1e-15,"qk31(book1) smooth result") ;
-    gsl_test_rel(abserr,exp_abserr,1e-7,"qk31(book1) smooth abserr") ;
-    gsl_test_rel(resabs,exp_resabs,1e-15,"qk31(book1) smooth resabs") ;    
-    gsl_test_rel(resasc,exp_resasc,1e-15,"qk31(book1) smooth resasc") ;
+    gsl_test_rel(result,exp_result,1e-15,"qk31(f1) smooth result") ;
+    gsl_test_rel(abserr,exp_abserr,1e-7,"qk31(f1) smooth abserr") ;
+    gsl_test_rel(resabs,exp_resabs,1e-15,"qk31(f1) smooth resabs") ;    
+    gsl_test_rel(resasc,exp_resasc,1e-15,"qk31(f1) smooth resasc") ;
   }
 
   {
@@ -82,14 +80,14 @@ int main (void)
     double exp_resasc = 4.421521169637691873E-02;
 
     double alpha = 2.6 ;
-    gsl_function f = { &book1, &alpha } ;
+    gsl_function f = { &f1, &alpha } ;
 
     gsl_integration_qk41 (&f, 0.0, 1.0, 
 			  &result, &abserr, &resabs, &resasc) ;
-    gsl_test_rel(result,exp_result,1e-15,"qk41(book1) smooth result") ;
-    gsl_test_rel(abserr,exp_abserr,1e-7,"qk41(book1) smooth abserr") ;
-    gsl_test_rel(resabs,exp_resabs,1e-15,"qk41(book1) smooth resabs") ;    
-    gsl_test_rel(resasc,exp_resasc,1e-15,"qk41(book1) smooth resasc") ;
+    gsl_test_rel(result,exp_result,1e-15,"qk41(f1) smooth result") ;
+    gsl_test_rel(abserr,exp_abserr,1e-7,"qk41(f1) smooth abserr") ;
+    gsl_test_rel(resabs,exp_resabs,1e-15,"qk41(f1) smooth resabs") ;    
+    gsl_test_rel(resasc,exp_resasc,1e-15,"qk41(f1) smooth resasc") ;
   }
 
   {
@@ -100,14 +98,14 @@ int main (void)
     double exp_resasc = 4.416474291216854892E-02;
 
     double alpha = 2.6 ;
-    gsl_function f = { &book1, &alpha } ;
+    gsl_function f = { &f1, &alpha } ;
 
     gsl_integration_qk51 (&f, 0.0, 1.0, 
 			  &result, &abserr, &resabs, &resasc) ;
-    gsl_test_rel(result,exp_result,1e-15,"qk51(book1) smooth result") ;
-    gsl_test_rel(abserr,exp_abserr,1e-5,"qk51(book1) smooth abserr") ;
-    gsl_test_rel(resabs,exp_resabs,1e-15,"qk51(book1) smooth resabs") ;    
-    gsl_test_rel(resasc,exp_resasc,1e-15,"qk51(book1) smooth resasc") ;
+    gsl_test_rel(result,exp_result,1e-15,"qk51(f1) smooth result") ;
+    gsl_test_rel(abserr,exp_abserr,1e-5,"qk51(f1) smooth abserr") ;
+    gsl_test_rel(resabs,exp_resabs,1e-15,"qk51(f1) smooth resabs") ;    
+    gsl_test_rel(resasc,exp_resasc,1e-15,"qk51(f1) smooth resasc") ;
   }
 
   {
@@ -118,14 +116,14 @@ int main (void)
     double exp_resasc = 4.419287685934316506E-02;
 
     double alpha = 2.6 ;
-    gsl_function f = { &book1, &alpha } ;
+    gsl_function f = { &f1, &alpha } ;
 
     gsl_integration_qk61 (&f, 0.0, 1.0, 
 			  &result, &abserr, &resabs, &resasc) ;
-    gsl_test_rel(result,exp_result,1e-15,"qk61(book1) smooth result") ;
-    gsl_test_rel(abserr,exp_abserr,1e-5,"qk61(book1) smooth abserr") ;
-    gsl_test_rel(resabs,exp_resabs,1e-15,"qk61(book1) smooth resabs") ;    
-    gsl_test_rel(resasc,exp_resasc,1e-15,"qk61(book1) smooth resasc") ;
+    gsl_test_rel(result,exp_result,1e-15,"qk61(f1) smooth result") ;
+    gsl_test_rel(abserr,exp_abserr,1e-5,"qk61(f1) smooth abserr") ;
+    gsl_test_rel(resabs,exp_resabs,1e-15,"qk61(f1) smooth resabs") ;    
+    gsl_test_rel(resasc,exp_resasc,1e-15,"qk61(f1) smooth resasc") ;
   }
 
   /* Now test the basic rules with a positive function that has a
@@ -140,14 +138,14 @@ int main (void)
     double exp_resasc = 2.350164577239293706E+01;
 
     double alpha = -0.9 ;
-    gsl_function f = { &book1, &alpha } ;
+    gsl_function f = { &f1, &alpha } ;
 
     gsl_integration_qk15 (&f, 0.0, 1.0, 
 			  &result, &abserr, &resabs, &resasc) ;
-    gsl_test_rel(result,exp_result,1e-15,"qk15(book1) singular result") ;
-    gsl_test_rel(abserr,exp_abserr,1e-7,"qk15(book1) singular abserr") ;
-    gsl_test_rel(resabs,exp_resabs,1e-15,"qk15(book1) singular resabs") ;    
-    gsl_test_rel(resasc,exp_resasc,1e-15,"qk15(book1) singular resasc") ;
+    gsl_test_rel(result,exp_result,1e-15,"qk15(f1) singular result") ;
+    gsl_test_rel(abserr,exp_abserr,1e-7,"qk15(f1) singular abserr") ;
+    gsl_test_rel(resabs,exp_resabs,1e-15,"qk15(f1) singular resabs") ;    
+    gsl_test_rel(resasc,exp_resasc,1e-15,"qk15(f1) singular resasc") ;
   }
 
   {
@@ -158,14 +156,14 @@ int main (void)
     double exp_resasc = 2.782360287710622515E+01;
 
     double alpha = -0.9 ;
-    gsl_function f = { &book1, &alpha } ;
+    gsl_function f = { &f1, &alpha } ;
 
     gsl_integration_qk21 (&f, 0.0, 1.0, 
 			  &result, &abserr, &resabs, &resasc) ;
-    gsl_test_rel(result,exp_result,1e-15,"qk21(book1) singular result") ;
-    gsl_test_rel(abserr,exp_abserr,1e-7,"qk21(book1) singular abserr") ;
-    gsl_test_rel(resabs,exp_resabs,1e-15,"qk21(book1) singular resabs") ;    
-    gsl_test_rel(resasc,exp_resasc,1e-15,"qk21(book1) singular resasc") ;
+    gsl_test_rel(result,exp_result,1e-15,"qk21(f1) singular result") ;
+    gsl_test_rel(abserr,exp_abserr,1e-7,"qk21(f1) singular abserr") ;
+    gsl_test_rel(resabs,exp_resabs,1e-15,"qk21(f1) singular resabs") ;    
+    gsl_test_rel(resasc,exp_resasc,1e-15,"qk21(f1) singular resasc") ;
   }
 
   {
@@ -176,14 +174,14 @@ int main (void)
     double exp_resasc = 3.296500137482590276E+01;
 
     double alpha = -0.9 ;
-    gsl_function f = { &book1, &alpha } ;
+    gsl_function f = { &f1, &alpha } ;
 
     gsl_integration_qk31 (&f, 0.0, 1.0, 
 			  &result, &abserr, &resabs, &resasc) ;
-    gsl_test_rel(result,exp_result,1e-15,"qk31(book1) singular result") ;
-    gsl_test_rel(abserr,exp_abserr,1e-7,"qk31(book1) singular abserr") ;
-    gsl_test_rel(resabs,exp_resabs,1e-15,"qk31(book1) singular resabs") ;    
-    gsl_test_rel(resasc,exp_resasc,1e-15,"qk31(book1) singular resasc") ;
+    gsl_test_rel(result,exp_result,1e-15,"qk31(f1) singular result") ;
+    gsl_test_rel(abserr,exp_abserr,1e-7,"qk31(f1) singular abserr") ;
+    gsl_test_rel(resabs,exp_resabs,1e-15,"qk31(f1) singular resabs") ;    
+    gsl_test_rel(resasc,exp_resasc,1e-15,"qk31(f1) singular resasc") ;
   }
 
   {
@@ -194,14 +192,14 @@ int main (void)
     double exp_resasc = 3.671538820274916048E+01;
 
     double alpha = -0.9 ;
-    gsl_function f = { &book1, &alpha } ;
+    gsl_function f = { &f1, &alpha } ;
 
     gsl_integration_qk41 (&f, 0.0, 1.0, 
 			  &result, &abserr, &resabs, &resasc) ;
-    gsl_test_rel(result,exp_result,1e-15,"qk41(book1) singular result") ;
-    gsl_test_rel(abserr,exp_abserr,1e-7,"qk41(book1) singular abserr") ;
-    gsl_test_rel(resabs,exp_resabs,1e-15,"qk41(book1) singular resabs") ;    
-    gsl_test_rel(resasc,exp_resasc,1e-15,"qk41(book1) singular resasc") ;
+    gsl_test_rel(result,exp_result,1e-15,"qk41(f1) singular result") ;
+    gsl_test_rel(abserr,exp_abserr,1e-7,"qk41(f1) singular abserr") ;
+    gsl_test_rel(resabs,exp_resabs,1e-15,"qk41(f1) singular resabs") ;    
+    gsl_test_rel(resasc,exp_resasc,1e-15,"qk41(f1) singular resasc") ;
   }
 
   {
@@ -212,14 +210,14 @@ int main (void)
     double exp_resasc = 3.967771249391228849E+01;
 
     double alpha = -0.9 ;
-    gsl_function f = { &book1, &alpha } ;
+    gsl_function f = { &f1, &alpha } ;
 
     gsl_integration_qk51 (&f, 0.0, 1.0, 
 			  &result, &abserr, &resabs, &resasc) ;
-    gsl_test_rel(result,exp_result,1e-15,"qk51(book1) singular result") ;
-    gsl_test_rel(abserr,exp_abserr,1e-7,"qk51(book1) singular abserr") ;
-    gsl_test_rel(resabs,exp_resabs,1e-15,"qk51(book1) singular resabs") ;    
-    gsl_test_rel(resasc,exp_resasc,1e-15,"qk51(book1) singular resasc") ;
+    gsl_test_rel(result,exp_result,1e-15,"qk51(f1) singular result") ;
+    gsl_test_rel(abserr,exp_abserr,1e-7,"qk51(f1) singular abserr") ;
+    gsl_test_rel(resabs,exp_resabs,1e-15,"qk51(f1) singular resabs") ;    
+    gsl_test_rel(resasc,exp_resasc,1e-15,"qk51(f1) singular resasc") ;
   }
 
   {
@@ -230,14 +228,14 @@ int main (void)
     double exp_resasc = 4.213750493076978643E+01;
 
     double alpha = -0.9 ;
-    gsl_function f = { &book1, &alpha } ;
+    gsl_function f = { &f1, &alpha } ;
 
     gsl_integration_qk61 (&f, 0.0, 1.0, 
 			  &result, &abserr, &resabs, &resasc) ;
-    gsl_test_rel(result,exp_result,1e-15,"qk61(book1) singular result") ;
-    gsl_test_rel(abserr,exp_abserr,1e-7,"qk61(book1) singular abserr") ;
-    gsl_test_rel(resabs,exp_resabs,1e-15,"qk61(book1) singular resabs") ;    
-    gsl_test_rel(resasc,exp_resasc,1e-15,"qk61(book1) singular resasc") ;
+    gsl_test_rel(result,exp_result,1e-15,"qk61(f1) singular result") ;
+    gsl_test_rel(abserr,exp_abserr,1e-7,"qk61(f1) singular abserr") ;
+    gsl_test_rel(resabs,exp_resabs,1e-15,"qk61(f1) singular resabs") ;    
+    gsl_test_rel(resasc,exp_resasc,1e-15,"qk61(f1) singular resasc") ;
   }
 
   /* Test the basic Gauss-Kronrod rules with a smooth oscillating
@@ -252,14 +250,14 @@ int main (void)
     double exp_resasc = 9.334560307787327371E-01;
 
     double alpha = 1.3 ;
-    gsl_function f = { &book3, &alpha } ;
+    gsl_function f = { &f3, &alpha } ;
 
     gsl_integration_qk15 (&f, 0.3, 2.71, 
 			  &result, &abserr, &resabs, &resasc) ;
-    gsl_test_rel(result,exp_result,1e-15,"qk15(book3) oscill result") ;
-    gsl_test_rel(abserr,exp_abserr,1e-7,"qk15(book3) oscill abserr") ;
-    gsl_test_rel(resabs,exp_resabs,1e-15,"qk15(book3) oscill resabs") ;
-    gsl_test_rel(resasc,exp_resasc,1e-15,"qk15(book3) oscill resasc") ;
+    gsl_test_rel(result,exp_result,1e-15,"qk15(f3) oscill result") ;
+    gsl_test_rel(abserr,exp_abserr,1e-7,"qk15(f3) oscill abserr") ;
+    gsl_test_rel(resabs,exp_resabs,1e-15,"qk15(f3) oscill resabs") ;
+    gsl_test_rel(resasc,exp_resasc,1e-15,"qk15(f3) oscill resasc") ;
   }
 
   {
@@ -270,14 +268,14 @@ int main (void)
     double exp_resasc = 9.297591249133687619E-01;
 
     double alpha = 1.3 ;
-    gsl_function f = { &book3, &alpha } ;
+    gsl_function f = { &f3, &alpha } ;
     
     gsl_integration_qk21 (&f, 0.3, 2.71, 
 			  &result, &abserr, &resabs, &resasc) ;
-    gsl_test_rel(result,exp_result,1e-15,"qk21(book3) oscill result") ;
-    gsl_test_rel(abserr,exp_abserr,1e-5,"qk21(book3) oscill abserr") ;
-    gsl_test_rel(resabs,exp_resabs,1e-15,"qk21(book3) oscill resabs") ;
-    gsl_test_rel(resasc,exp_resasc,1e-15,"qk21(book3) oscill resasc") ;
+    gsl_test_rel(result,exp_result,1e-15,"qk21(f3) oscill result") ;
+    gsl_test_rel(abserr,exp_abserr,1e-5,"qk21(f3) oscill abserr") ;
+    gsl_test_rel(resabs,exp_resabs,1e-15,"qk21(f3) oscill resabs") ;
+    gsl_test_rel(resasc,exp_resasc,1e-15,"qk21(f3) oscill resasc") ;
   }
 
   {
@@ -288,14 +286,14 @@ int main (void)
     double exp_resasc = 9.277828092501518853E-01;
 
     double alpha = 1.3 ;
-    gsl_function f = { &book3, &alpha } ;
+    gsl_function f = { &f3, &alpha } ;
 
     gsl_integration_qk31 (&f, 0.3, 2.71, 
 			  &result, &abserr, &resabs, &resasc) ;
-    gsl_test_rel(result,exp_result,1e-15,"qk31(book3) oscill result") ;
-    gsl_test_rel(abserr,exp_abserr,1e-7,"qk31(book3) oscill abserr") ;
-    gsl_test_rel(resabs,exp_resabs,1e-15,"qk31(book3) oscill resabs") ;
-    gsl_test_rel(resasc,exp_resasc,1e-15,"qk31(book3) oscill resasc") ;
+    gsl_test_rel(result,exp_result,1e-15,"qk31(f3) oscill result") ;
+    gsl_test_rel(abserr,exp_abserr,1e-7,"qk31(f3) oscill abserr") ;
+    gsl_test_rel(resabs,exp_resabs,1e-15,"qk31(f3) oscill resabs") ;
+    gsl_test_rel(resasc,exp_resasc,1e-15,"qk31(f3) oscill resasc") ;
   }
 
   {
@@ -306,14 +304,14 @@ int main (void)
     double exp_resasc = 9.264382258645686985E-01;
 
     double alpha = 1.3 ;
-    gsl_function f = { &book3, &alpha } ;
+    gsl_function f = { &f3, &alpha } ;
 
     gsl_integration_qk41 (&f, 0.3, 2.71, 
 			  &result, &abserr, &resabs, &resasc) ;
-    gsl_test_rel(result,exp_result,1e-15,"qk41(book3) oscill result") ;
-    gsl_test_rel(abserr,exp_abserr,1e-7,"qk41(book3) oscill abserr") ;
-    gsl_test_rel(resabs,exp_resabs,1e-15,"qk41(book3) oscill resabs") ;
-    gsl_test_rel(resasc,exp_resasc,1e-15,"qk41(book3) oscill resasc") ;
+    gsl_test_rel(result,exp_result,1e-15,"qk41(f3) oscill result") ;
+    gsl_test_rel(abserr,exp_abserr,1e-7,"qk41(f3) oscill abserr") ;
+    gsl_test_rel(resabs,exp_resabs,1e-15,"qk41(f3) oscill resabs") ;
+    gsl_test_rel(resasc,exp_resasc,1e-15,"qk41(f3) oscill resasc") ;
   }
 
   {
@@ -324,14 +322,14 @@ int main (void)
     double exp_resasc = 9.264666884071264263E-01;
 
     double alpha = 1.3 ;
-    gsl_function f = { &book3, &alpha } ;
+    gsl_function f = { &f3, &alpha } ;
 
     gsl_integration_qk51 (&f, 0.3, 2.71, 
 			  &result, &abserr, &resabs, &resasc) ;
-    gsl_test_rel(result,exp_result,1e-15,"qk51(book3) oscill result") ;
-    gsl_test_rel(abserr,exp_abserr,1e-7,"qk51(book3) oscill abserr") ;
-    gsl_test_rel(resabs,exp_resabs,1e-15,"qk51(book3) oscill resabs") ;
-    gsl_test_rel(resasc,exp_resasc,1e-15,"qk51(book3) oscill resasc") ;
+    gsl_test_rel(result,exp_result,1e-15,"qk51(f3) oscill result") ;
+    gsl_test_rel(abserr,exp_abserr,1e-7,"qk51(f3) oscill abserr") ;
+    gsl_test_rel(resabs,exp_resabs,1e-15,"qk51(f3) oscill resabs") ;
+    gsl_test_rel(resasc,exp_resasc,1e-15,"qk51(f3) oscill resasc") ;
   }
 
   {
@@ -342,14 +340,14 @@ int main (void)
     double exp_resasc = 9.270469641771273972E-01;
 
     double alpha = 1.3 ;
-    gsl_function f = { &book3, &alpha } ;
+    gsl_function f = { &f3, &alpha } ;
 
     gsl_integration_qk61 (&f, 0.3, 2.71, 
 			  &result, &abserr, &resabs, &resasc) ;
-    gsl_test_rel(result,exp_result,1e-15,"qk61(book3) oscill result") ;
-    gsl_test_rel(abserr,exp_abserr,1e-7,"qk61(book3) oscill abserr") ;
-    gsl_test_rel(resabs,exp_resabs,1e-15,"qk61(book3) oscill resabs") ;
-    gsl_test_rel(resasc,exp_resasc,1e-15,"qk61(book3) oscill resasc") ;
+    gsl_test_rel(result,exp_result,1e-15,"qk61(f3) oscill result") ;
+    gsl_test_rel(abserr,exp_abserr,1e-7,"qk61(f3) oscill abserr") ;
+    gsl_test_rel(resabs,exp_resabs,1e-15,"qk61(f3) oscill resabs") ;
+    gsl_test_rel(resasc,exp_resasc,1e-15,"qk61(f3) oscill resasc") ;
   }
 
   /* Test the non-adaptive gaussian integrator QNG */
@@ -357,20 +355,20 @@ int main (void)
   {
     int status = 0; size_t neval = 0 ;
     double result = 0, abserr = 0 ;
-    double exp_result = 7.716049379303084599E-02;
-    double exp_abserr = 9.424302194248481445E-08;
+    double exp_result = 7.716049379303083211E-02;
+    double exp_abserr = 9.424302199601294244E-08;
     int exp_neval  =  21;
     int exp_ier    =   0;
 
     double alpha = 2.6 ;
-    gsl_function f = { &book1, &alpha } ;
+    gsl_function f = { &f1, &alpha } ;
 
     status = gsl_integration_qng (&f, 0.0, 1.0, 1e-1, 0.0,
 				  &result, &abserr, &neval) ;
-    gsl_test_rel(result,exp_result,1e-15,"qng(book1) smooth result") ;
-    gsl_test_rel(abserr,exp_abserr,1e-7,"qng(book1) smooth abserr") ;
-    gsl_test_int((int)neval,exp_neval,"qng(book1) smooth neval") ;  
-    gsl_test_int(status,exp_ier,"qng(book1) smooth status") ;
+    gsl_test_rel(result,exp_result,1e-15,"qng(f1) smooth result") ;
+    gsl_test_rel(abserr,exp_abserr,1e-7,"qng(f1) smooth abserr") ;
+    gsl_test_int((int)neval,exp_neval,"qng(f1) smooth neval") ;  
+    gsl_test_int(status,exp_ier,"qng(f1) smooth status") ;
   }
 
   {
@@ -378,19 +376,19 @@ int main (void)
     double result = 0, abserr = 0 ;
 
     double exp_result = 7.716049382706505200E-02;
-    double exp_abserr = 2.666891413688592065E-12;
+    double exp_abserr = 2.666893044866214501E-12;
     int exp_neval  =  43;
     int exp_ier    =   0;
 
     double alpha = 2.6 ;
-    gsl_function f = { &book1, &alpha } ;
+    gsl_function f = { &f1, &alpha } ;
 
     status = gsl_integration_qng (&f, 0.0, 1.0, 0.0, 1e-9,
 				  &result, &abserr, &neval) ;
-    gsl_test_rel(result,exp_result,1e-15,"qng(book1) smooth 43pt result") ;
-    gsl_test_rel(abserr,exp_abserr,1e-7,"qng(book1) smooth 43pt abserr") ;
-    gsl_test_int((int)neval,exp_neval,"qng(book1) smooth 43pt neval") ;  
-    gsl_test_int(status,exp_ier,"qng(book1) smooth 43pt status") ;
+    gsl_test_rel(result,exp_result,1e-15,"qng(f1) smooth 43pt result") ;
+    gsl_test_rel(abserr,exp_abserr,1e-6,"qng(f1) smooth 43pt abserr") ;
+    gsl_test_int((int)neval,exp_neval,"qng(f1) smooth 43pt neval") ;  
+    gsl_test_int(status,exp_ier,"qng(f1) smooth 43pt status") ;
   }
 
   {
@@ -402,34 +400,34 @@ int main (void)
     int exp_ier    =   0;
 
     double alpha = 1.3 ;
-    gsl_function f = { &book3, &alpha } ;
+    gsl_function f = { &f3, &alpha } ;
 
     status = gsl_integration_qng (&f, 0.3, 2.71, 0.0, 1e-12,
 				  &result, &abserr, &neval) ;
-    gsl_test_rel(result,exp_result,1e-15,"qnq(book3) oscill result") ;
-    gsl_test_rel(abserr,exp_abserr,1e-7,"qng(book3) oscill abserr") ;
-    gsl_test_int((int)neval,exp_neval,"qng(book3) oscill neval") ;
-    gsl_test_int(status,exp_ier,"qng(book3) oscill status") ;
+    gsl_test_rel(result,exp_result,1e-15,"qnq(f3) oscill result") ;
+    gsl_test_rel(abserr,exp_abserr,1e-7,"qng(f3) oscill abserr") ;
+    gsl_test_int((int)neval,exp_neval,"qng(f3) oscill neval") ;
+    gsl_test_int(status,exp_ier,"qng(f3) oscill status") ;
   }
 
   {
     int status = 0; size_t neval = 0 ;
     double result = 0, abserr = 0 ;
 
-    double exp_result = 7.716049382716028138E-02;
-    double exp_abserr = 8.566535680046932640E-16;
+    double exp_result = 7.716049382716029525E-02;
+    double exp_abserr = 8.566535680046930668E-16;
     int exp_neval  =  87;
     int exp_ier    =   0;
 
     double alpha = 2.6 ;
-    gsl_function f = { &book1, &alpha } ;
+    gsl_function f = { &f1, &alpha } ;
 
     status = gsl_integration_qng (&f, 0.0, 1.0, 0.0, 1e-13,
 				  &result, &abserr, &neval) ;
-    gsl_test_rel(result,exp_result,1e-15,"qng(book1) 87pt smooth result") ;
-    gsl_test_rel(abserr,exp_abserr,1e-7,"qng(book1) 87pt smooth abserr") ;
-    gsl_test_int((int)neval,exp_neval,"qng(book1) 87pt smooth neval") ;  
-    gsl_test_int(status,exp_ier,"qng(book1) 87pt smooth status") ;
+    gsl_test_rel(result,exp_result,1e-15,"qng(f1) 87pt smooth result") ;
+    gsl_test_rel(abserr,exp_abserr,1e-7,"qng(f1) 87pt smooth abserr") ;
+    gsl_test_int((int)neval,exp_neval,"qng(f1) 87pt smooth neval") ;  
+    gsl_test_int(status,exp_ier,"qng(f1) 87pt smooth status") ;
   }
 
   {
@@ -437,19 +435,19 @@ int main (void)
     double result = 0, abserr = 0 ;
 
     double exp_result = 3.222948711817264211E+01;
-    double exp_abserr = 2.782360287710622515E+01;
+    double exp_abserr = 2.782360287710622870E+01;
     int exp_neval  =  87;
     int exp_ier    =  GSL_ETOL;
 
     double alpha = -0.9 ;
-    gsl_function f = { &book1, &alpha } ;
+    gsl_function f = { &f1, &alpha } ;
 
     status = gsl_integration_qng (&f, 0.0, 1.0, 0.0, 1e-3,
 				  &result, &abserr, &neval) ;
-    gsl_test_rel(result,exp_result,1e-15,"qng(book1) sing beyond 87pt result");
-    gsl_test_rel(abserr,exp_abserr,1e-7,"qng(book1) sing beyond 87pt abserr");
-    gsl_test_int((int)neval,exp_neval,"qng(book1) sing beyond 87pt neval") ;  
-    gsl_test_int(status,exp_ier,"qng(book1) sing beyond 87pt status") ;
+    gsl_test_rel(result,exp_result,1e-15,"qng(f1) sing beyond 87pt result");
+    gsl_test_rel(abserr,exp_abserr,1e-7,"qng(f1) sing beyond 87pt abserr");
+    gsl_test_int((int)neval,exp_neval,"qng(f1) sing beyond 87pt neval") ;  
+    gsl_test_int(status,exp_ier,"qng(f1) sing beyond 87pt status") ;
   }
 
   /* Test the adaptive integrator QAGE */
@@ -477,32 +475,32 @@ int main (void)
     int iord[6] = { 1, 2, 3, 4, 5, 6 } ;
 
     double alpha = 2.6 ;
-    gsl_function f = { &book1, &alpha } ;
+    gsl_function f = { &f1, &alpha } ;
 
     status = gsl_integration_qage (&f, 0.0, 1.0, 0.0, 1e-10, 
 				   GSL_INTEG_GAUSS15, w, &last, 
 				   &result, &abserr, &neval) ;
 
-    gsl_test_rel(result,exp_result,1e-15,"qage(book1) smooth result") ;
-    gsl_test_rel(abserr,exp_abserr,1e-6,"qage(book1) smooth abserr") ;
-    gsl_test_int((int)neval,exp_neval,"qage(book1) smooth neval") ;  
-    gsl_test_int((int)last,exp_last,"qage(book1) smooth last") ;  
-    gsl_test_int(status,exp_ier,"qage(book1) smooth status") ;
+    gsl_test_rel(result,exp_result,1e-15,"qage(f1) smooth result") ;
+    gsl_test_rel(abserr,exp_abserr,1e-6,"qage(f1) smooth abserr") ;
+    gsl_test_int((int)neval,exp_neval,"qage(f1) smooth neval") ;  
+    gsl_test_int((int)last,exp_last,"qage(f1) smooth last") ;  
+    gsl_test_int(status,exp_ier,"qage(f1) smooth status") ;
 
     for (i = 0; i < 6 ; i++) 
-	gsl_test_rel(w->alist[i],a[i],1e-15,"qage(book1) smooth alist") ;
+	gsl_test_rel(w->alist[i],a[i],1e-15,"qage(f1) smooth alist") ;
 
     for (i = 0; i < 6 ; i++) 
-	gsl_test_rel(w->blist[i],b[i],1e-15,"qage(book1) smooth blist") ;
+	gsl_test_rel(w->blist[i],b[i],1e-15,"qage(f1) smooth blist") ;
 
     for (i = 0; i < 6 ; i++) 
-	gsl_test_rel(w->rlist[i],r[i],1e-15,"qage(book1) smooth rlist") ;
+	gsl_test_rel(w->rlist[i],r[i],1e-15,"qage(f1) smooth rlist") ;
 
     for (i = 0; i < 6 ; i++) 
-	gsl_test_rel(w->elist[i],e[i],1e-6,"qage(book1) smooth elist") ;
+	gsl_test_rel(w->elist[i],e[i],1e-6,"qage(f1) smooth elist") ;
 
     for (i = 0; i < 6 ; i++) 
-	gsl_test_int((int)w->iord[i],iord[i]-1,"qage(book1) smooth iord") ;
+	gsl_test_int((int)w->iord[i],iord[i]-1,"qage(f1) smooth iord") ;
 
     gsl_integration_workspace_free (w) ;
 
@@ -538,32 +536,32 @@ int main (void)
     int iord[8] = { 1, 2, 3, 4, 5, 6, 7, 8 } ;
 
     double alpha = 2.6 ;
-    gsl_function f = { &book1, &alpha } ;
+    gsl_function f = { &f1, &alpha } ;
 
     status = gsl_integration_qage (&f, 0.0, 1.0, 1e-14, 0.0, 
 				   GSL_INTEG_GAUSS21, w, &last, 
 				   &result, &abserr, &neval) ;
 
-    gsl_test_rel(result,exp_result,1e-15,"qage(book1,21pt) smooth result") ;
-    gsl_test_rel(abserr,exp_abserr,1e-6,"qage(book1,21pt) smooth abserr") ;
-    gsl_test_int((int)neval,exp_neval,"qage(book1,21pt) smooth neval") ;  
-    gsl_test_int((int)last,exp_last,"qage(book1,21pt) smooth last") ;  
-    gsl_test_int(status,exp_ier,"qage(book1,21pt) smooth status") ;
+    gsl_test_rel(result,exp_result,1e-15,"qage(f1,21pt) smooth result") ;
+    gsl_test_rel(abserr,exp_abserr,1e-6,"qage(f1,21pt) smooth abserr") ;
+    gsl_test_int((int)neval,exp_neval,"qage(f1,21pt) smooth neval") ;  
+    gsl_test_int((int)last,exp_last,"qage(f1,21pt) smooth last") ;  
+    gsl_test_int(status,exp_ier,"qage(f1,21pt) smooth status") ;
 
     for (i = 0; i < 8 ; i++) 
-	gsl_test_rel(w->alist[i],a[i],1e-15,"qage(book1,21pt) smooth alist") ;
+	gsl_test_rel(w->alist[i],a[i],1e-15,"qage(f1,21pt) smooth alist") ;
 
     for (i = 0; i < 8 ; i++) 
-	gsl_test_rel(w->blist[i],b[i],1e-15,"qage(book1,21pt) smooth blist") ;
+	gsl_test_rel(w->blist[i],b[i],1e-15,"qage(f1,21pt) smooth blist") ;
 
     for (i = 0; i < 8 ; i++) 
-	gsl_test_rel(w->rlist[i],r[i],1e-15,"qage(book1,21pt) smooth rlist") ;
+	gsl_test_rel(w->rlist[i],r[i],1e-15,"qage(f1,21pt) smooth rlist") ;
 
     for (i = 0; i < 8 ; i++) 
-	gsl_test_rel(w->elist[i],e[i],1e-6,"qage(book1,21pt) smooth elist") ;
+	gsl_test_rel(w->elist[i],e[i],1e-6,"qage(f1,21pt) smooth elist") ;
 
     for (i = 0; i < 8 ; i++) 
-	gsl_test_int((int)w->iord[i],iord[i]-1,"qage(book1,21pt) smooth iord");
+	gsl_test_int((int)w->iord[i],iord[i]-1,"qage(f1,21pt) smooth iord");
 
     gsl_integration_workspace_free (w) ;
 
@@ -585,17 +583,17 @@ int main (void)
     int exp_last    =     0;
 
     double alpha = 1.3 ;
-    gsl_function f = { &book3, &alpha } ;
+    gsl_function f = { &f3, &alpha } ;
 
     status = gsl_integration_qage (&f, 0.3, 2.71, 1e-14, 0.0, 
 				   GSL_INTEG_GAUSS31, w, &last, 
 				   &result, &abserr, &neval) ;
 
-    gsl_test_rel(result,exp_result,1e-15,"qage(book3,31pt) oscill result");
-    gsl_test_rel(abserr,exp_abserr,1e-6,"qage(book3,31pt) oscill abserr");
-    gsl_test_int((int)neval,exp_neval,"qage(book3,31pt) oscill neval") ;  
-    gsl_test_int((int)last,exp_last,"qage(book3,31pt) oscill last") ;  
-    gsl_test_int(status,exp_ier,"qage(book3,31pt) oscill status") ;
+    gsl_test_rel(result,exp_result,1e-15,"qage(f3,31pt) oscill result");
+    gsl_test_rel(abserr,exp_abserr,1e-6,"qage(f3,31pt) oscill abserr");
+    gsl_test_int((int)neval,exp_neval,"qage(f3,31pt) oscill neval") ;  
+    gsl_test_int((int)last,exp_last,"qage(f3,31pt) oscill last") ;  
+    gsl_test_int(status,exp_ier,"qage(f3,31pt) oscill status") ;
 
     gsl_integration_workspace_free (w) ;
 
@@ -614,15 +612,15 @@ int main (void)
     int exp_last   =     51;
 
     double alpha = 2.0 ;
-    gsl_function f = { &book16, &alpha } ;
+    gsl_function f = { &f16, &alpha } ;
 
     status = gsl_integration_qage (&f, -1.0, 1.0, 1e-14, 0.0, 
 				   GSL_INTEG_GAUSS51, w, &last, 
 				   &result, &abserr, &neval) ;
 
-    gsl_test_int((int)neval,exp_neval,"qage(book16,51pt) sing neval") ;  
-    gsl_test_int((int)last,exp_last,"qage(book16,51pt) sing last") ;  
-    gsl_test_int(status,exp_ier,"qage(book16,51pt) sing status") ;
+    gsl_test_int((int)neval,exp_neval,"qage(f16,51pt) sing neval") ;  
+    gsl_test_int((int)last,exp_last,"qage(f16,51pt) sing last") ;  
+    gsl_test_int(status,exp_ier,"qage(f16,51pt) sing status") ;
 
     gsl_integration_workspace_free (w) ;
 
@@ -661,32 +659,32 @@ int main (void)
     int iord[3] = { 1, 2, 3 } ;
 
     double alpha = 1.0 ;
-    gsl_function f = { &book16, &alpha } ;
+    gsl_function f = { &f16, &alpha } ;
     
     status = gsl_integration_qage (&f, -1.0, 1.0, 1e-14, 0.0, 
 				   GSL_INTEG_GAUSS61, w, &last, 
 				   &result, &abserr, &neval) ;
 
-    gsl_test_rel(result,exp_result,1e-15,"qage(book16,61pt) limit result") ;
-    gsl_test_rel(abserr,exp_abserr,1e-6,"qage(book16,61pt) limit abserr") ;
-    gsl_test_int((int)neval,exp_neval,"qage(book16,61pt) limit neval") ;  
-    gsl_test_int((int)last,exp_last,"qage(book16,61pt) limit last") ;  
-    gsl_test_int(status,exp_ier,"qage(book16,61pt) limit status") ;
+    gsl_test_rel(result,exp_result,1e-15,"qage(f16,61pt) limit result") ;
+    gsl_test_rel(abserr,exp_abserr,1e-6,"qage(f16,61pt) limit abserr") ;
+    gsl_test_int((int)neval,exp_neval,"qage(f16,61pt) limit neval") ;  
+    gsl_test_int((int)last,exp_last,"qage(f16,61pt) limit last") ;  
+    gsl_test_int(status,exp_ier,"qage(f16,61pt) limit status") ;
 
     for (i = 0; i < 3 ; i++) 
-	gsl_test_rel(w->alist[i],a[i],1e-15,"qage(book16,61pt) limit alist") ;
+	gsl_test_rel(w->alist[i],a[i],1e-15,"qage(f16,61pt) limit alist") ;
 
     for (i = 0; i < 3 ; i++) 
-	gsl_test_rel(w->blist[i],b[i],1e-15,"qage(book16,61pt) limit blist") ;
+	gsl_test_rel(w->blist[i],b[i],1e-15,"qage(f16,61pt) limit blist") ;
 
     for (i = 0; i < 3 ; i++) 
-	gsl_test_rel(w->rlist[i],r[i],1e-15,"qage(book16,61pt) limit rlist") ;
+	gsl_test_rel(w->rlist[i],r[i],1e-15,"qage(f16,61pt) limit rlist") ;
 
     for (i = 0; i < 3 ; i++) 
-	gsl_test_rel(w->elist[i],e[i],1e-6,"qage(book16,61pt) limit elist") ;
+	gsl_test_rel(w->elist[i],e[i],1e-6,"qage(f16,61pt) limit elist") ;
 
     for (i = 0; i < 3 ; i++) 
-	gsl_test_int((int)w->iord[i],iord[i]-1,"qage(book16,61pt) limit iord");
+	gsl_test_int((int)w->iord[i],iord[i]-1,"qage(f16,61pt) limit iord");
 
     gsl_integration_workspace_free (w) ;
 
@@ -721,39 +719,38 @@ int main (void)
     int iord[5] = { 1, 2, 3, 4, 5 } ;
 
     double alpha = 2.6 ;
-    gsl_function f = { &book1, &alpha } ;
+    gsl_function f = { &f1, &alpha } ;
 
     status = gsl_integration_qagse (&f, 0.0, 1.0, 0.0, 1e-10, 
 				    w, &last, 
 				    &result, &abserr, &neval) ;
 
-    gsl_test_rel(result,exp_result,1e-15,"qagse(book1) smooth result") ;
-    gsl_test_rel(abserr,exp_abserr,1e-6,"qagse(book1) smooth abserr") ;
-    gsl_test_int((int)neval,exp_neval,"qagse(book1) smooth neval") ;  
-    gsl_test_int((int)last,exp_last,"qagse(book1) smooth last") ;  
-    gsl_test_int(status,exp_ier,"qagse(book1) smooth status") ;
+    gsl_test_rel(result,exp_result,1e-15,"qagse(f1) smooth result") ;
+    gsl_test_rel(abserr,exp_abserr,1e-6,"qagse(f1) smooth abserr") ;
+    gsl_test_int((int)neval,exp_neval,"qagse(f1) smooth neval") ;  
+    gsl_test_int((int)last,exp_last,"qagse(f1) smooth last") ;  
+    gsl_test_int(status,exp_ier,"qagse(f1) smooth status") ;
 
     for (i = 0; i < 5 ; i++) 
-	gsl_test_rel(w->alist[i],a[i],1e-15,"qagse(book1) smooth alist") ;
+	gsl_test_rel(w->alist[i],a[i],1e-15,"qagse(f1) smooth alist") ;
 
     for (i = 0; i < 5 ; i++) 
-	gsl_test_rel(w->blist[i],b[i],1e-15,"qagse(book1) smooth blist") ;
+	gsl_test_rel(w->blist[i],b[i],1e-15,"qagse(f1) smooth blist") ;
 
     for (i = 0; i < 5 ; i++) 
-	gsl_test_rel(w->rlist[i],r[i],1e-15,"qagse(book1) smooth rlist") ;
+	gsl_test_rel(w->rlist[i],r[i],1e-15,"qagse(f1) smooth rlist") ;
 
     for (i = 0; i < 5 ; i++) 
-	gsl_test_rel(w->elist[i],e[i],1e-6,"qagse(book1) smooth elist") ;
+	gsl_test_rel(w->elist[i],e[i],1e-6,"qagse(f1) smooth elist") ;
 
     for (i = 0; i < 5 ; i++) 
-	gsl_test_int((int)w->iord[i],iord[i]-1,"qagse(book1) smooth iord") ;
+	gsl_test_int((int)w->iord[i],iord[i]-1,"qagse(f1) smooth iord") ;
 
     gsl_integration_workspace_free (w) ;
 
   }
 
-
-  /* Test book11 using an absolute error bound */
+  /* Test f11 using an absolute error bound */
 
   {
     int status = 0, i; size_t last = 0,  neval = 0;
@@ -761,8 +758,10 @@ int main (void)
 
     gsl_integration_workspace * w = gsl_integration_workspace_alloc (1000) ;
 
+    /* All results are for GSL_IEEE_MODE=double-precision */
+
     double exp_result = -5.908755278982136588E+03 ;
-    double exp_abserr = 1.300377439823064911E-10 ;
+    double exp_abserr = 1.299646281053874554E-10 ;
     int exp_neval  =     357;
     int exp_ier    =       0;
     int exp_last   =       9;
@@ -785,18 +784,18 @@ int main (void)
 		    3.221875000000000000E+01,
 		    1.660937500000000000E+01,
 		    8.804687500000000000E+00 } ;
-    double r[9] = { -3.890977835520835537E+00,
+    double r[9] = { -3.890977835520834649E+00,
 		    -3.297343675805121620E+03,
-		    -1.475904154146372548E+03,
+		    -1.475904154146372775E+03,
 		    -6.517404019686431411E+02,
 		    -2.829354222635842007E+02,
 		    -1.201692001973227519E+02,
 		    -4.959999906099650246E+01,
 		    -1.971441499411640308E+01,
 		    -7.457032710459004399E+00 } ;
-    double e[9] = { 6.448262142748094423E-11,
+    double e[9] = { 6.448276035006137169E-11,
 		    3.660786868980994028E-11,
-		    1.638582774073218903E-11,
+		    1.638582774073219226E-11,
 		    7.235772003440423011E-12,
 		    3.141214202790722909E-12,
 		    1.334146129098576244E-12,
@@ -806,32 +805,32 @@ int main (void)
     int iord[9] = { 1, 2, 3, 4, 5, 6, 7, 8, 9 } ;
 
     double alpha = 2.0 ;
-    gsl_function f = { &book11, &alpha } ;
+    gsl_function f = { &f11, &alpha } ;
 
     status = gsl_integration_qagse (&f, 1.0, 1000.0, 1e-7, 0.0, 
 				    w, &last, 
 				    &result, &abserr, &neval) ;
 
-    gsl_test_rel(result,exp_result,1e-15,"qagse(book11) smooth result") ;
-    gsl_test_rel(abserr,exp_abserr,1e-6,"qagse(book11) smooth abserr") ;
-    gsl_test_int((int)neval,exp_neval,"qagse(book11) smooth neval") ;  
-    gsl_test_int((int)last,exp_last,"qagse(book11) smooth last") ;  
-    gsl_test_int(status,exp_ier,"qagse(book11) smooth status") ;
+    gsl_test_rel(result,exp_result,1e-15,"qagse(f11) smooth result") ;
+    gsl_test_rel(abserr,exp_abserr,1e-3,"qagse(f11) smooth abserr") ;
+    gsl_test_int((int)neval,exp_neval,"qagse(f11) smooth neval") ;  
+    gsl_test_int((int)last,exp_last,"qagse(f11) smooth last") ;  
+    gsl_test_int(status,exp_ier,"qagse(f11) smooth status") ;
 
     for (i = 0; i < 9 ; i++) 
-	gsl_test_rel(w->alist[i],a[i],1e-15,"qagse(book11) smooth alist") ;
+	gsl_test_rel(w->alist[i],a[i],1e-15,"qagse(f11) smooth alist") ;
 
     for (i = 0; i < 9 ; i++) 
-	gsl_test_rel(w->blist[i],b[i],1e-15,"qagse(book11) smooth blist") ;
+	gsl_test_rel(w->blist[i],b[i],1e-15,"qagse(f11) smooth blist") ;
 
     for (i = 0; i < 9 ; i++) 
-	gsl_test_rel(w->rlist[i],r[i],1e-15,"qagse(book11) smooth rlist") ;
+	gsl_test_rel(w->rlist[i],r[i],1e-15,"qagse(f11) smooth rlist") ;
 
     for (i = 0; i < 9 ; i++) 
-	gsl_test_rel(w->elist[i],e[i],1e-6,"qagse(book11) smooth elist") ;
+	gsl_test_rel(w->elist[i],e[i],1e-5,"qagse(f11) smooth elist") ;
 
     for (i = 0; i < 9 ; i++) 
-	gsl_test_int((int)w->iord[i],iord[i]-1,"qagse(book11) smooth iord");
+	gsl_test_int((int)w->iord[i],iord[i]-1,"qagse(f11) smooth iord");
 
     gsl_integration_workspace_free (w) ;
 

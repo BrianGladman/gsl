@@ -27,14 +27,14 @@ gsl_integration_qelg (size_t * n, double epstab[],
 
 #ifdef DEBUG
   for (i= 0; i<32; i++) {
-    printf("QELG: TAB i = %d, epstab[i] = %g\n",i,epstab[i])  ;
+    printf("QELG: TAB i = %d epstab(i) %.18e\n",i+1,epstab[i])  ;
   } ;
 #endif
 
   if ((*n) < 2) 
     {
       *result = current ;
-      *abserr = GSL_MAX (absolute,relative) ;
+      *abserr = GSL_MAX_DBL (absolute,relative) ;
       return ;
     }
   
@@ -55,10 +55,10 @@ gsl_integration_qelg (size_t * n, double epstab[],
       double e1abs = fabs(e1) ;
       double delta2 = e2 - e1 ;
       double err2 = fabs(delta2) ;
-      double tol2 = GSL_MAX(fabs(e2),e1abs)*GSL_DBL_EPSILON ;
+      double tol2 = GSL_MAX_DBL(fabs(e2),e1abs)*GSL_DBL_EPSILON ;
       double delta3 = e1 - e0 ;
       double err3 = fabs(delta3) ;
-      double tol3 = GSL_MAX(e1abs,fabs(e0))*GSL_DBL_EPSILON ;
+      double tol3 = GSL_MAX_DBL(e1abs,fabs(e0))*GSL_DBL_EPSILON ;
       
       double e3, delta1, err1, tol1, ss ;
 
@@ -76,7 +76,7 @@ gsl_integration_qelg (size_t * n, double epstab[],
           *result = res ;
           absolute = err2 + err3 ;
           relative = 5 * GSL_DBL_EPSILON * fabs(res) ;
-	  *abserr = GSL_MAX(absolute, relative) ;
+	  *abserr = GSL_MAX_DBL(absolute, relative) ;
           return ;
         }
 
@@ -84,14 +84,14 @@ gsl_integration_qelg (size_t * n, double epstab[],
       epstab[(*n) - 2*i] = e1 ;
       delta1 = e1 - e3 ;
       err1 = fabs(delta1) ;
-      tol1 = GSL_MAX(e1abs, fabs(e3)) * GSL_DBL_EPSILON ;
+      tol1 = GSL_MAX_DBL(e1abs, fabs(e3)) * GSL_DBL_EPSILON ;
       
       /* If two elements are very close to each other, omit a part of
          the table by adjusting the value of n */
 #ifdef DEBUG        
-      printf("QELG: err1 = %g tol1 = %g\n",err1,tol1) ;
-      printf("QELG: err2 = %g tol2 = %g\n",err2,tol2) ;
-      printf("QELG: err3 = %g tol3 = %g\n",err3,tol3) ;
+      printf("QELG: err1 = %.18e tol1 = %.18e\n",err1,tol1) ;
+      printf("QELG: err2 = %.18e tol2 = %.18e\n",err2,tol2) ;
+      printf("QELG: err3 = %.18e tol3 = %.18e\n",err3,tol3) ;
 #endif
       if (err1 <= tol1 || err2 <= tol2 || err3 <= tol3)
         {
@@ -105,7 +105,7 @@ gsl_integration_qelg (size_t * n, double epstab[],
       ss = (1/delta1 + 1/delta2) - 1/delta3 ;
 
 #ifdef DEBUG  
-      printf("QELG: ss = %g\n",ss) ;
+      printf("QELG: ss = %.18e\n",ss) ;
 #endif
       /* Test to detect irregular behaviour in the table, and
          eventually omit a part of the table by adjusting the value of
@@ -129,12 +129,12 @@ gsl_integration_qelg (size_t * n, double epstab[],
       {
 	const double error = err2 + fabs(res - e2) + err3 ;
 #ifdef DEBUG  
-	printf("QELG: *abserr = %g, error = %g\n", *abserr, error) ;
+	printf("QELG: *abserr = %.18e, error = %.18e\n", *abserr, error) ;
 #endif
 	if (error <= *abserr) 
 	  {
 #ifdef DEBUG	    
-	    printf("QELG: setting *abserr to %g\n",error) ;
+	    printf("QELG: setting *abserr to %.18e\n",error) ;
 #endif	    
 	    *abserr = error ;
 	    *result = res ;
@@ -193,7 +193,7 @@ gsl_integration_qelg (size_t * n, double epstab[],
   if (nres_orig < 3) 
     {
 #ifdef DEBUG  
-      printf("QELG: setting term %d to %g\n",nres_orig, *result) ;
+      printf("QELG: setting term %d to %.18e\n",nres_orig, *result) ;
 #endif
       res3la[nres_orig] = *result ;
       *abserr = GSL_DBL_MAX ;
@@ -203,18 +203,22 @@ gsl_integration_qelg (size_t * n, double epstab[],
       *abserr = (fabs(*result - res3la[2]) + fabs(*result - res3la[1])
 		+ fabs(*result - res3la[0])) ;
 #ifdef DEBUG  
-      printf("QELG: error estimate computed as %g\n",*abserr) ;
-      printf("QELG: result = %g\n", *result) ;
-      printf("QELG: term1 = %g\n", res3la[2]) ;
-      printf("QELG: term2 = %g\n", res3la[1]) ;
-      printf("QELG: term3 = %g\n", res3la[0]) ;
+      printf("QELG: error estimate computed as %.18e\n",*abserr) ;
+      printf("QELG: result = %.18e\n", *result) ;
+      printf("QELG: term1 = %.18e\n", res3la[2]) ;
+      printf("QELG: term2 = %.18e\n", res3la[1]) ;
+      printf("QELG: term3 = %.18e\n", res3la[0]) ;
 #endif
       res3la[0] = res3la[1] ;
       res3la[1] = res3la[2] ;
       res3la[2] = *result ;
     }
 
-  *abserr = GSL_MAX(*abserr, 5 * GSL_DBL_EPSILON * fabs(*result)) ;
+  *abserr = GSL_MAX_DBL(*abserr, 5 * GSL_DBL_EPSILON * fabs(*result)) ;
+
+#ifdef DEBUG  
+      printf("QELG: abserr = %.18e\n",*abserr) ;
+#endif
 
   return ;
 }

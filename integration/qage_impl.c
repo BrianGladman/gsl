@@ -56,7 +56,7 @@ gsl_integration_qage_impl (const gsl_function *f,
 
   /* Test on accuracy */
 
-  tolerance = GSL_MAX (epsabs, epsrel * fabs (q_result));
+  tolerance = GSL_MAX_DBL (epsabs, epsrel * fabs (q_result));
 
   round_off = 50 * GSL_DBL_EPSILON * q_defabs ;
 
@@ -134,7 +134,7 @@ gsl_integration_qage_impl (const gsl_function *f,
 	    }
 	}
 
-      tolerance = GSL_MAX (epsabs, epsrel * fabs (area));
+      tolerance = GSL_MAX_DBL (epsabs, epsrel * fabs (area));
 
       if (errsum > tolerance)
 	{

@@ -1,22 +1,22 @@
-double book1 (double x, void * params);
-double book2 (double x, void * params);
-double book3 (double x, void * params);
-double book4 (double x, void * params);
-double book5 (double x, void * params);
+double f1 (double x, void * params);
+double f2 (double x, void * params);
+double f3 (double x, void * params);
+double f4 (double x, void * params);
+double f5 (double x, void * params);
 
-double book6 (double x, void * params);
-double book7 (double x, void * params);
-double book8 (double x, void * params);
-double book9 (double x, void * params);
-double book10 (double x, void * params);
+double f6 (double x, void * params);
+double f7 (double x, void * params);
+double f8 (double x, void * params);
+double f9 (double x, void * params);
+double f10 (double x, void * params);
 
-double book11 (double x, void * params);
-double book12 (double x, void * params);
-double book13 (double x, void * params);
-double book14 (double x, void * params);
-double book15 (double x, void * params);
+double f11 (double x, void * params);
+double f12 (double x, void * params);
+double f13 (double x, void * params);
+double f14 (double x, void * params);
+double f15 (double x, void * params);
 
-double book16 (double x, void * params);
-double book17 (double x, void * params);
+double f16 (double x, void * params);
+double f17 (double x, void * params);
 
 
