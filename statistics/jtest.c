@@ -9,6 +9,8 @@ int main()
   
   int groupone[20];
   int grouptwo[20];
+  double groupa[14];
+  double groupb[14];
   double sd1, var1, pv, mean1, t;
   
   /* sample sets of integers */
@@ -123,7 +125,7 @@ int main()
   }
 
   var1 = 0;
-
+ 
   /* test iest_variance */
 
   var1 = iest_variance(groupone, 20);
