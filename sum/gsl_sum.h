@@ -58,7 +58,7 @@ int gsl_sum_levin_u_con_impl(const double * array, unsigned int array_size,
                              double * sum_plain,
                              double * precision);
 int gsl_sum_levin_u_con_e(const double * array, unsigned int array_size,
-                          int min_terms, int max_terms,
+                          unsigned int min_terms, unsigned int max_terms,
                           double * q_num,
                           double * q_den,
                           double * sum_accel,

@@ -80,11 +80,12 @@ gsl_sum_levin_u_con_impl(const double * array, const unsigned int array_size,
   }
   else {
     const double SMALL = 0.01;
-    const int nmax = locMAX(max_terms, array_size) - 1;
+    const unsigned int nmax = locMAX(max_terms, array_size) - 1;
+    double least_trunc_noise = 0.0;
     double noise_n  = 0.0,  noise_nm1 = 0.0;
     double trunc_n  = 0.0,  trunc_nm1 = 0.0;
     double result_n = 0.0, result_nm1 = 0.0;
-    int n;
+    unsigned int n;
     int better = 0;
     int before = 0;
     int converging = 0;
@@ -100,7 +101,7 @@ gsl_sum_levin_u_con_impl(const double * array, const unsigned int array_size,
       int status;
 
       noise_nm1  = noise_n;
-      noise_n    = 3.0*GSL_MACH_EPS*fabs(t);
+      noise_n    = 3.0 * GSL_MACH_EPS*fabs(t);
 
       result_nm1 = result_n;
       status = gsl_sum_levin_u_step_impl(t, n, q_num, q_den, &result_n, sum_plain);
@@ -124,7 +125,7 @@ gsl_sum_levin_u_con_impl(const double * array, const unsigned int array_size,
       int status;
 
       noise_nm1  = noise_n;
-      noise_n    = 3.0*GSL_MACH_EPS*fabs(t);
+      noise_n    = 3.0 * GSL_MACH_EPS*fabs(t);
 
       result_nm1 = result_n;
       status = gsl_sum_levin_u_step_impl(t, n, q_num, q_den, &result_n, sum_plain);
@@ -151,6 +152,7 @@ gsl_sum_levin_u_con_impl(const double * array, const unsigned int array_size,
 	   */
           least_trunc = trunc_n;
           result_least_trunc = result_n;
+	  least_trunc_noise = noise_n; 
         }
 
 	if(fabs(trunc_n/result_n) < 10.0*GSL_MACH_EPS) break;
@@ -162,7 +164,7 @@ gsl_sum_levin_u_con_impl(const double * array, const unsigned int array_size,
        * Return result and error estimate.
        */
       *sum_accel = result_least_trunc;
-      *precision = fabs(least_trunc / *sum_accel);
+      *precision = fabs((least_trunc + least_trunc_noise)/ *sum_accel);
       return GSL_SUCCESS;
     }
     else {
@@ -170,7 +172,7 @@ gsl_sum_levin_u_con_impl(const double * array, const unsigned int array_size,
        * Use the last calculated values.
        */
       *sum_accel = result_n;
-      *precision = fabs(result_n/trunc_n);
+      *precision = fabs((trunc_n + noise_n) / result_n);
       return GSL_SUCCESS;
     }
   }
@@ -213,7 +215,8 @@ gsl_sum_levin_u_step_e(const double t,
 int
 gsl_sum_levin_u_con_e(const double * array,
                       const unsigned int array_size,
-		      const int min_terms, const int max_terms,
+		      const unsigned int min_terms, 
+		      const unsigned int max_terms,
                       double * q_num,
                       double * q_den,
                       double * sum_accel,
