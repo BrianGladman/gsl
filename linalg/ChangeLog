@@ -1,3 +1,7 @@
+Tue Sep  4 17:22:58 2001  Brian Gough  <bjg@network-theory.co.uk>
+
+	* luc.c: added LU decomposition for complex matrices
+
 Wed Aug 29 16:34:50 2001  Brian Gough  <bjg@network-theory.co.uk>
 
 	* svd.c (gsl_linalg_SV_decomp_jacobi): make sure all singular

@@ -153,6 +153,34 @@ double gsl_linalg_LU_det (gsl_matrix * LU, int signum);
 double gsl_linalg_LU_lndet (gsl_matrix * LU);
 int gsl_linalg_LU_sgndet (gsl_matrix * lu, int signum);
 
+/* Complex LU Decomposition */
+
+int gsl_linalg_complex_LU_decomp (gsl_matrix_complex * A, 
+                                  gsl_permutation * p, 
+                                  int *signum);
+
+int gsl_linalg_complex_LU_solve (const gsl_matrix_complex * LU,
+                                 const gsl_permutation * p,
+                                 const gsl_vector_complex * b,
+                                 gsl_vector_complex * x);
+
+int gsl_linalg_complex_LU_svx (const gsl_matrix_complex * LU,
+                               const gsl_permutation * p,
+                               gsl_vector_complex * x);
+
+int gsl_linalg_complex_LU_refine (const gsl_matrix_complex * A,
+                                  const gsl_matrix_complex * LU,
+                                  const gsl_permutation * p,
+                                  const gsl_vector_complex * b,
+                                  gsl_vector_complex * x,
+                                  gsl_vector_complex * residual);
+
+int gsl_linalg_complex_LU_invert (const gsl_matrix_complex * LU,
+                                  const gsl_permutation * p,
+                                  gsl_matrix_complex * inverse);
+
+
+
 /* QR decomposition */
 
 int gsl_linalg_QR_decomp (gsl_matrix * A,
