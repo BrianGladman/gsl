@@ -3,7 +3,6 @@
  */
 #include <stdio.h>
 #include <stdlib.h>
-#include <math.h>
 #include <gsl_math.h>
 #include <gsl_errno.h>
 #include <gsl_test.h>

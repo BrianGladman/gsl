@@ -459,7 +459,7 @@ hyperg_U_small_ab(const double a, const double b, const double x, double * resul
     *result = 1.0;
     return GSL_SUCCESS;
   }
-  else if(GSL_MAX(fabs(a),1.0)*GSL_MAX(fabs(1.0+a-b),1.0) < 0.99*fabs(x)) {
+  else if(GSL_MAX_DBL(fabs(a),1.0)*GSL_MAX_DBL(fabs(1.0+a-b),1.0) < 0.99*fabs(x)) {
     double asymp;
     int stat_asymp = hyperg_zaU_asymp(a, b, x, &asymp);
     *result = asymp * pow(x, -a);
@@ -583,7 +583,7 @@ hyperg_U_int_bge1(const int a, const int b, const double x,
      */
     return gsl_sf_exp_impl(-a*log(x), result);
   }
-  else if(fabs(a)*GSL_MAX(fabs(1+a-b),1.0) < 0.99*fabs(x)) {
+  else if(fabs(a)*GSL_MAX_DBL(fabs(1+a-b),1.0) < 0.99*fabs(x)) {
     double asymp;
     int stat_asymp = hyperg_zaU_asymp(a, b, x, &asymp);
     *result = asymp;
@@ -870,7 +870,7 @@ hyperg_U_bge1(const double a, const double b, const double x,
       return stat_L;
     }
   }
-  else if(GSL_MAX(fabs(a),1.0)*GSL_MAX(fabs(1.0+a-b),1.0) < 0.99*fabs(x)) {
+  else if(GSL_MAX_DBL(fabs(a),1.0)*GSL_MAX_DBL(fabs(1.0+a-b),1.0) < 0.99*fabs(x)) {
     double asymp;
     int stat_asymp = hyperg_zaU_asymp(a, b, x, &asymp);
     *result = asymp;
