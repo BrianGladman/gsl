@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <math.h>
 
-#include <roots.h>
+#include <gsl_roots.h>
 
 int main()
 {

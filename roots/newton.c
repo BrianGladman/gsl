@@ -1,6 +1,6 @@
 #include <math.h>
 
-#include <roots.h>
+#include <gsl_roots.h>
 
 
 /* the epsilon used is in this static variable; there are get/set

@@ -11,4 +11,4 @@ rtest_DEPENDENCIES = libgsl_roots.a
 
 libgsl_roots_a_SOURCES = newton.c
 
-include_HEADERS = roots.h
+include_HEADERS = gsl_roots.h

@@ -42,16 +42,18 @@ PACKAGE = @PACKAGE@
 VERSION = @VERSION@
 CC = @CC@
 
-bin_PROGRAMS= gauss test-gauss bench-gauss poisson bench-poisson test-shuffle gamma bench-gamma
+bin_PROGRAMS= gauss test-gauss bench-gauss exponential poisson bench-poisson test-shuffle gamma bench-gamma
 
 include_HEADERS= gsl_randist.h
 
-INCLUDES= -I../ranunif
-LDADD= ../ranunif/libgslrantaus.a
+INCLUDES= -I$(srcdir)/../random
+LDADD= ../random/libgslrandom.a
 
 gauss_SOURCES= rungauss.c gauss.c
 test_gauss_SOURCES= test-gauss.c gauss.c
 bench_gauss_SOURCES= bench-gauss.c gauss.c
+
+exponential_SOURCES= runexponential.c exponential.c
 
 poisson_SOURCES= runpoisson.c poisson.c 
 poisson_LDADD= exponential.o $(LDADD)
@@ -73,33 +75,37 @@ LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
 gauss_OBJECTS =  rungauss.o gauss.o
 gauss_LDADD = $(LDADD)
-gauss_DEPENDENCIES =  ../ranunif/libgslrantaus.a
+gauss_DEPENDENCIES =  ../random/libgslrandom.a
 gauss_LDFLAGS = 
 test_gauss_OBJECTS =  test-gauss.o gauss.o
 test_gauss_LDADD = $(LDADD)
-test_gauss_DEPENDENCIES =  ../ranunif/libgslrantaus.a
+test_gauss_DEPENDENCIES =  ../random/libgslrandom.a
 test_gauss_LDFLAGS = 
 bench_gauss_OBJECTS =  bench-gauss.o gauss.o
 bench_gauss_LDADD = $(LDADD)
-bench_gauss_DEPENDENCIES =  ../ranunif/libgslrantaus.a
+bench_gauss_DEPENDENCIES =  ../random/libgslrandom.a
 bench_gauss_LDFLAGS = 
+exponential_OBJECTS =  runexponential.o exponential.o
+exponential_LDADD = $(LDADD)
+exponential_DEPENDENCIES =  ../random/libgslrandom.a
+exponential_LDFLAGS = 
 poisson_OBJECTS =  runpoisson.o poisson.o
-poisson_DEPENDENCIES =  exponential.o ../ranunif/libgslrantaus.a
+poisson_DEPENDENCIES =  exponential.o ../random/libgslrandom.a
 poisson_LDFLAGS = 
 bench_poisson_OBJECTS =  bench-poisson.o poisson.o
-bench_poisson_DEPENDENCIES =  exponential.o ../ranunif/libgslrantaus.a
+bench_poisson_DEPENDENCIES =  exponential.o ../random/libgslrandom.a
 bench_poisson_LDFLAGS = 
 test_shuffle_OBJECTS =  test-shuffle.o shuffle.o
 test_shuffle_LDADD = $(LDADD)
-test_shuffle_DEPENDENCIES =  ../ranunif/libgslrantaus.a
+test_shuffle_DEPENDENCIES =  ../random/libgslrandom.a
 test_shuffle_LDFLAGS = 
 gamma_OBJECTS =  rungamma.o gamma.o
 gamma_LDADD = $(LDADD)
-gamma_DEPENDENCIES =  ../ranunif/libgslrantaus.a
+gamma_DEPENDENCIES =  ../random/libgslrandom.a
 gamma_LDFLAGS = 
 bench_gamma_OBJECTS =  bench-gamma.o gamma.o
 bench_gamma_LDADD = $(LDADD)
-bench_gamma_DEPENDENCIES =  ../ranunif/libgslrantaus.a
+bench_gamma_DEPENDENCIES =  ../random/libgslrandom.a
 bench_gamma_LDFLAGS = 
 CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
@@ -114,11 +120,12 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) \
 
 TAR = tar
 DEP_FILES =  .deps/bench-gamma.P .deps/bench-gauss.P \
-.deps/bench-poisson.P .deps/gamma.P .deps/gauss.P .deps/poisson.P \
-.deps/rungamma.P .deps/rungauss.P .deps/runpoisson.P .deps/shuffle.P \
-.deps/test-gauss.P .deps/test-shuffle.P
-SOURCES = $(gauss_SOURCES) $(test_gauss_SOURCES) $(bench_gauss_SOURCES) $(poisson_SOURCES) $(bench_poisson_SOURCES) $(test_shuffle_SOURCES) $(gamma_SOURCES) $(bench_gamma_SOURCES)
-OBJECTS = $(gauss_OBJECTS) $(test_gauss_OBJECTS) $(bench_gauss_OBJECTS) $(poisson_OBJECTS) $(bench_poisson_OBJECTS) $(test_shuffle_OBJECTS) $(gamma_OBJECTS) $(bench_gamma_OBJECTS)
+.deps/bench-poisson.P .deps/exponential.P .deps/gamma.P .deps/gauss.P \
+.deps/poisson.P .deps/runexponential.P .deps/rungamma.P \
+.deps/rungauss.P .deps/runpoisson.P .deps/shuffle.P .deps/test-gauss.P \
+.deps/test-shuffle.P
+SOURCES = $(gauss_SOURCES) $(test_gauss_SOURCES) $(bench_gauss_SOURCES) $(exponential_SOURCES) $(poisson_SOURCES) $(bench_poisson_SOURCES) $(test_shuffle_SOURCES) $(gamma_SOURCES) $(bench_gamma_SOURCES)
+OBJECTS = $(gauss_OBJECTS) $(test_gauss_OBJECTS) $(bench_gauss_OBJECTS) $(exponential_OBJECTS) $(poisson_OBJECTS) $(bench_poisson_OBJECTS) $(test_shuffle_OBJECTS) $(gamma_OBJECTS) $(bench_gamma_OBJECTS)
 
 default: all
 
@@ -177,6 +184,9 @@ test-gauss: $(test_gauss_OBJECTS) $(test_gauss_DEPENDENCIES)
 
 bench-gauss: $(bench_gauss_OBJECTS) $(bench_gauss_DEPENDENCIES)
 	$(LINK) $(bench_gauss_LDFLAGS) $(bench_gauss_OBJECTS) $(bench_gauss_LDADD) $(LIBS)
+
+exponential: $(exponential_OBJECTS) $(exponential_DEPENDENCIES)
+	$(LINK) $(exponential_LDFLAGS) $(exponential_OBJECTS) $(exponential_LDADD) $(LIBS)
 
 poisson: $(poisson_OBJECTS) $(poisson_DEPENDENCIES)
 	$(LINK) $(poisson_LDFLAGS) $(poisson_OBJECTS) $(poisson_LDADD) $(LIBS)
@@ -329,6 +339,8 @@ install-data install uninstall all installdirs mostlyclean-generic \
 distclean-generic clean-generic maintainer-clean-generic clean \
 mostlyclean distclean maintainer-clean
 
+
+B:1,$
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

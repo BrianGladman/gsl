@@ -1,8 +1,7 @@
 #include <stdio.h>
 #include <math.h>
 
-#include "variance.h"
-#include "mean.h"
+#include "gsl_bstats.h"
 
 
 double gsl_stats_ivariance (int *array, int size)

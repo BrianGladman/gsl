@@ -1,9 +1,7 @@
 #include <stdio.h>
 #include <math.h>
 
-#include "mean.h"
-#include "test.h"
-#include "variance.h"
+#include "gsl_bstats.h"
 
 double gsl_stats_ittest (int *array1, int *array2, int size1, int size2)
 {

@@ -1,8 +1,6 @@
 #include <stdio.h>
 
-#include "mean.h"
-#include "variance.h"
-#include "test.h"
+#include "gsl_bstats.h"
 
 /* Test program for mean.c.  JimDavies 7.96 */
 

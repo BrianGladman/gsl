@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <math.h>
 
-#include "mean.h"
+#include "gsl_bstats.h"
 
 double gsl_stats_imean (int *array, int size)
 {

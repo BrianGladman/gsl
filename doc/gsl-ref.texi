@@ -96,7 +96,7 @@ suite (@pxref{Random number generation}) and the FFT package
 * Preliminaries::               
 * Error handling in GSL::       
 * Random number generation::    
-* Statistics::                  
+* Basic statistics::                  
 * FFTs::                        
 * Root finding::                
 * Simulated annealing::         
@@ -126,9 +126,9 @@ allowing wrappers to be written for very high level languages.
 @chapter Random number generation
 @include random.texi
 
-@node Statistics
-@chapter Statistics
-@cindex statistics
+@node Basic statistics
+@chapter Basic statistics
+@cindex statistics -- basic
 @cindex mean
 @cindex standard deviation
 @cindex variance
@@ -139,8 +139,8 @@ allowing wrappers to be written for very high level languages.
 @cindex min
 @cindex max
 
-The following commands were created primarily to be used for statistical
-analysis of Psychological experiment data.
+The following routines were written primarily to be used for statistical
+analysis of psychological experiment data.
 
 @deftypefn Statistics double gsl_stats_dmean (double *array, int size)
 @code{gsl_stats_dmean} returns the mean of an array of doubles.
@@ -159,43 +159,53 @@ analysis of Psychological experiment data.
 @end deftypefn
 
 @deftypefn Statistics double gsl_stats_dsd (double *array, int size)
-@code{gsl_stats_dsd} returns the standard deviation of an array of doubles.
+@code{gsl_stats_dsd} returns the standard deviation of an array of
+doubles.
 @end deftypefn
 
 @deftypefn Statistics double gsl_stats_isd (int *array, int size)
-@code{gsl_stats_isd} returns the standard deviation of an array of integers.
+@code{gsl_stats_isd} returns the standard deviation of an array of
+integers.
 @end deftypefn
 
 @deftypefn Statistics double gsl_stats_dest_variance (double *array, int size)
-@code{gsl_stats_dest_variance} returns the estimated variance for an array of doubles.
+@code{gsl_stats_dest_variance} returns the estimated variance for an
+array of doubles.
 @end deftypefn
 
 @deftypefn Statistics double gsl_stats_iest_variance (int *array, int size)
-@code{gsl_stats_iest_variance} returns the estimated variance for an array of integers.
+@code{gsl_stats_iest_variance} returns the estimated variance for an
+array of integers.
 @end deftypefn
 
 @deftypefn Statistics double gsl_stats_dest_sd (double *array, int size);
-@code{gsl_stats_dest_sd} returns the estimated standard deviation of an array of doubles.
+@code{gsl_stats_dest_sd} returns the estimated standard deviation of an
+array of doubles.
 @end deftypefn
 
 @deftypefn Statistics double gsl_stats_iest_sd (int *array, int size)
-@code{gsl_stats_iest_sd} returns the estimated standard deviation of an array of integers.
+@code{gsl_stats_iest_sd} returns the estimated standard deviation of an
+array of integers.
 @end deftypefn
 
 @deftypefn Statistics double gsl_stats_ddpvariance (double *array1, double *array2, int size1, int size2)
-@code{gsl_stats_ddpvariance} returns the pooled variance of two arrays of doubles.
+@code{gsl_stats_ddpvariance} returns the pooled variance of two arrays
+of doubles.
 @end deftypefn
 
 @deftypefn Statistics double gsl_stats_ipvariance (int *array1, int *array2, int size1, int size2)
-@code{gsl_stats_ipvariance} returns the pooled variance of two arrays of integers.
+@code{gsl_stats_ipvariance} returns the pooled variance of two arrays of
+integers.
 @end deftypefn
 
 @deftypefn Statistics double gsl_stats_dttest (double *array1, double *array2, int size1, int size2);
-@code{gsl_stats_dttest} returns the t statistic from two arrays of doubles.
+@code{gsl_stats_dttest} returns the t statistic from two arrays of
+doubles.
 @end deftypefn
 
 @deftypefn Statistics double gsl_stats_ittest (int *array1, int *array2, int size1, int size2);
-@code{gsl_stats_ittest} returns the t statistic from two arrays of integers.
+@code{gsl_stats_ittest} returns the t statistic from two arrays of
+integers.
 @end deftypefn
 
 @deftypefn Statistics double gsl_stats_dmax (double *array1, int size);
@@ -219,9 +229,7 @@ Here is a basic example of how to use these functions:
 @smallexample
 #include<stdio.h>
 
-#include "mean.h"
-#include "variance.h"
-#include "test.h"
+#include <gsl_bstats.h>
 
 /* to compile: gcc file_name.c libgsl_statistics.a -lm */
 
@@ -377,7 +385,7 @@ space is specified by providing the functions @var{Ef}, @var{distance},
 The @var{params} structure (described above) controls the run by
 providing the temperature schedule and other tunable parameters to the
 algorithm (@pxref{Simulated Annealing algorithm}).
-
+p
 The result (optimal point in the space) is placed in @code{*@var{x0_p}}.
 
 If @var{print_position} is not null, a log will be printed to the screen
