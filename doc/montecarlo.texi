@@ -17,7 +17,7 @@ Numerical recipes).  We will dispense with an introduction and simply
 describe the algorithms and interfaces.  Note that the documentation (as
 well as the code) is still evolving - the code at a faster rate.
 
-@node Algorithms, Interface
+@node Algorithms
 @section Algorithms
 
 @subsection PLAIN (or Simple) Monte Carlo
@@ -95,7 +95,7 @@ the total number of points alloted to the estimate.
 @subsection VEGAS
 
 
-@node Interface, Example, Algorithms
+@node Interface
 @section Interface
 
 All of the integration routines use the same interface.  There
@@ -105,16 +105,20 @@ the integrator itself, and of course a function to free the space
 when done.  For an integrator algorithm, call it COOL
 (substitute any of the currently existing algorithms) we then 
 have
-@deftypefun {Monte} gsl_monte_COOL_state* gsl_monte_COOL_alloc()
+@deftypefun gsl_monte_COOL_state* gsl_monte_COOL_alloc()
 @end deftypefun
-@deftypefun {Monte} int gsl_monte_COOL_init(gsl_monte_COOL_state* s, 
-        double *x_lower, double* x_upper, double*)
+@deftypefun int gsl_monte_COOL_init(gsl_monte_COOL_state* @var{s})
 @end deftypefun
-@deftypefun {Monte} int gsl_monte_COOL_free(gsl_monte_COOL_state* s), 
+@deftypefun int gsl_monte_COOL_free(gsl_monte_COOL_state* @var{s}), 
 @end deftypefun
-@deftypefun {Monte} int gsl_monte_COOL(gsl_monte_COOL_state* s, 
-        double *x_lower, double* x_upper, long int dimension,
-        long int function_calls, double* result, double* error,
+@deftypefun int gsl_monte_COOL_validate(gsl_monte_COOL_state* @var{s}, 
+        double* @var{x_lower}, double* @var{x_upper}, 
+        unsigned long @var{dimension}, unsigned long @var{function_calls})
+@end deftypefun
+@deftypefun int gsl_monte_COOL_integrate(gsl_monte_COOL_state* @var{s}, 
+        double* @var{x_lower}, double* @var{x_upper}, 
+        unsigned long @var{dimension}, unsigned long @var{function_calls}, 
+        double* @var{result}, double* @var{error},
         ...)
 @end deftypefun
 
@@ -123,29 +127,66 @@ This is because the vegas algorithm (and perhaps others in the future)
 return extra information -- in the case of vegas, it is the "chisq"
 of the result.  
 
+In addition to the common function interface, the routines also share
+the state variable 
+@deftypevr {Control} gsl_rng* ranf
+which determines which random number generator will be used.
+@end deftypevr
+
 We describe the algorithm-specific variables.  
 
 PLAIN: None
 
 MISER:
-@deftypevr double alpha
+@deftypevr {Control} double alpha
 alpha controls how the variances for the two sub-regions are combined.
-The Numberical Recipes gang argue that it is better to use some power
-alpha, so that
+The Numberical Recipes gang argue that for recursive sampling there
+is no reason to expect that the variance should scale like @math{1/N} and
+so they allow the scaling to depend on @math{\alpha}
 @equation 
-  Var(f) = @{\sigma_a^@{\alpha/2@} \over N_a^\alpha @} + 
-               @{\sigma_b^@{\alpha/2@} \over N_b^\alpha @}
+  Var(f) = @{\sigma_a \over N_a^\alpha @} + 
+               @{\sigma_b \over N_b^\alpha @}
 @end equation
 @end deftypevr
 
-@deftypevr double dither
-Rather than exactly bisection the integration region, the NR boys
-had the clever idea of introducing a "dither" parameter to introduce
-a bit of fuzz.  This helps in the case when the function to be integrated
-has some symmetry.  If needed, dither should be around 0.1. 
+@deftypevr {Control} double dither
+Rather than exactly bisection the integration region, dither allows the
+user to introduce a bit of fuzz.  This helps in the case when the
+function to be integrated has some symmetry, say if it is peaked in the
+center of the hypercube.  If needed, dither should be around 0.1.
 @end deftypevr 
 
-@node Example, The Future, Interface
+VEGAS:
+@deftypevr {Control} double alpha
+For Vegas, @code{alpha} controls the stiffness of the rebinning algorithm:
+@code{alpha = 0} means never rebin.  It is typically set between 
+one and two.
+@end deftypevr
+@deftypevr {Control} double acc
+Setting @code{acc} allows vegas to terminate when the desired accuracy
+has been achieved, rather than after a certain number of function calls.
+@end deftypevr
+@deftypevr {Control} {long int} max_it_num
+The maximum number of iterations to perform.
+@end deftypevr
+@deftypevr {Control} int verbose
+Whether to print information about the calculation.
+@end deftypevr
+@deftypevr {Control} int stage
+Setting this determines the "stage" of the calculation.  Normally,
+@code{stage = 0}.  Calling vegas @code{stage = 1} skips ... FIXME
+@end deftypevr
+@deftypevr {Control} int mode
+The possible choices are @code{GSL_VEGAS_MODE_IMPORTANCE}, 
+        @code{GSL_VEGAS_MODE_STRATIFIED}, 
+        @code{GSL_VEGAS_MODE_IMPORTANCE_ONLY}. 
+This determines whether vegas will use importance sampling or stratified
+sampling, or whether it can pick on its own.  The p
+@end deftypevr
+
+
+
+@node Example
 @section Example
 
 Here we provide s simple example of using the integration routines.  Vegas
@@ -184,7 +225,8 @@ main ()
   gsl_monte_vegas_state* s = gsl_monte_vegas_alloc();
   gsl_monte_plain_init(s);
 
-  status = gsl_monte_vegas(s, f0, xl, xu, dimension, calls, res, err, chisq);
+  status = gsl_monte_vegas_integrat(s, f0, xl, xu, dimension, calls,
+                                    &res, &err, &chisq);
   if (status)
     printf("oops!\n");
   else
@@ -194,7 +236,7 @@ main ()
 @end example
 
 
-@node The Future,  , Example
+@node The Future
 @section The Future
 
 In the future, the author of the Monte Carlo routines intends to add
