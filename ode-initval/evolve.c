@@ -19,6 +19,7 @@ gsl_odeiv_evolve_new(void)
     e->count = 0;
     e->dimension = 0;
     e->count_stutter = 0;
+    e->last_step = 0.0;
   }
   return e;
 }
