@@ -71,21 +71,25 @@ full_top_srcdir = @full_top_srcdir@
 
 lib_LIBRARIES = libgslvector.a 
 
-check_PROGRAMS = test test_trap
+check_PROGRAMS = test test_float test_int test_trap
 
 include_HEADERS = gsl_vector.h gsl_vector_float.h gsl_vector_int.h
 
 INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../err -I$(srcdir)/../utils
 
-TESTS = test test_trap
+TESTS = test test_float test_int test_trap
 
 test_LDADD = libgslvector.a ../err/libgslerr.a ../err/libgsltest.a ../utils/libutils.a
+test_float_LDADD = libgslvector.a ../err/libgslerr.a ../err/libgsltest.a ../utils/libutils.a
+test_int_LDADD = libgslvector.a ../err/libgslerr.a ../err/libgsltest.a ../utils/libutils.a
 test_trap_LDADD = libgslvector.a ../err/libgslerr.a ../err/libgsltest.a ../utils/libutils.a
 
 test_DEPENDENCIES = libgslvector.a
 test_trap_DEPENDENCIES = libgslvector.a
 
 test_SOURCES = test.c
+test_float_SOURCES = test_float.c
+test_int_SOURCES = test_int.c
 test_trap_SOURCES = test_trap.c
 
 noinst_HEADERS = vector_source.c init_source.c file_source.c
@@ -120,6 +124,14 @@ file_int.o init_float.o vector_float.o file_float.o
 AR = ar
 test_OBJECTS =  test.o
 test_LDFLAGS = 
+test_float_OBJECTS =  test_float.o
+test_float_DEPENDENCIES =  libgslvector.a ../err/libgslerr.a \
+../err/libgsltest.a ../utils/libutils.a
+test_float_LDFLAGS = 
+test_int_OBJECTS =  test_int.o
+test_int_DEPENDENCIES =  libgslvector.a ../err/libgslerr.a \
+../err/libgsltest.a ../utils/libutils.a
+test_int_LDFLAGS = 
 test_trap_OBJECTS =  test_trap.o
 test_trap_LDFLAGS = 
 CFLAGS = @CFLAGS@
@@ -136,10 +148,10 @@ TAR = tar
 GZIP = --best
 DEP_FILES =  .deps/file.P .deps/file_float.P .deps/file_int.P \
 .deps/init.P .deps/init_float.P .deps/init_int.P .deps/test.P \
-.deps/test_trap.P .deps/vector.P .deps/vector_float.P \
-.deps/vector_int.P
-SOURCES = $(libgslvector_a_SOURCES) $(test_SOURCES) $(test_trap_SOURCES)
-OBJECTS = $(libgslvector_a_OBJECTS) $(test_OBJECTS) $(test_trap_OBJECTS)
+.deps/test_float.P .deps/test_int.P .deps/test_trap.P .deps/vector.P \
+.deps/vector_float.P .deps/vector_int.P
+SOURCES = $(libgslvector_a_SOURCES) $(test_SOURCES) $(test_float_SOURCES) $(test_int_SOURCES) $(test_trap_SOURCES)
+OBJECTS = $(libgslvector_a_OBJECTS) $(test_OBJECTS) $(test_float_OBJECTS) $(test_int_OBJECTS) $(test_trap_OBJECTS)
 
 all: Makefile $(LIBRARIES) $(HEADERS)
 
@@ -218,6 +230,14 @@ maintainer-clean-checkPROGRAMS:
 test: $(test_OBJECTS) $(test_DEPENDENCIES)
 	@rm -f test
 	$(LINK) $(test_LDFLAGS) $(test_OBJECTS) $(test_LDADD) $(LIBS)
+
+test_float: $(test_float_OBJECTS) $(test_float_DEPENDENCIES)
+	@rm -f test_float
+	$(LINK) $(test_float_LDFLAGS) $(test_float_OBJECTS) $(test_float_LDADD) $(LIBS)
+
+test_int: $(test_int_OBJECTS) $(test_int_DEPENDENCIES)
+	@rm -f test_int
+	$(LINK) $(test_int_LDFLAGS) $(test_int_OBJECTS) $(test_int_LDADD) $(LIBS)
 
 test_trap: $(test_trap_OBJECTS) $(test_trap_DEPENDENCIES)
 	@rm -f test_trap

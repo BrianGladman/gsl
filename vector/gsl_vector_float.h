@@ -17,6 +17,18 @@ void gsl_vector_float_free (gsl_vector_float * v);
 float gsl_vector_float_get(const gsl_vector_float * v, const size_t i);
 void gsl_vector_float_set(gsl_vector_float * v, const size_t i, const float x);
 
+int gsl_vector_float_fread (FILE * stream, gsl_vector_float * v) ;
+int gsl_vector_float_fwrite (FILE * stream, const gsl_vector_float * v) ;
+int gsl_vector_float_fscanf (FILE * stream, gsl_vector_float * v);
+int gsl_vector_float_fprintf (FILE * stream, const gsl_vector_float * v,
+			      const char * format);
+
+int gsl_block_float_fread (FILE * stream, float * data, size_t n) ;
+int gsl_block_float_fwrite (FILE * stream, const float * data, size_t n) ;
+int gsl_block_float_fscanf (FILE * stream, float * data, size_t n);
+int gsl_block_float_fprintf (FILE * stream, const float * data, size_t n,
+			     const char * format);
+
 extern int gsl_check_range ;
 
 /* inline functions if you are using GCC */

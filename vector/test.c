@@ -91,22 +91,22 @@ int main (void)
 
 
   {
-    int f = open("test.dat",O_WRONLY|O_TRUNC) ;
+    FILE * f = fopen("test.dat", "w") ;
     
     for (i = 0 ; i < N ; i++) {
       gsl_vector_set(v,i,(double)(N-i)) ;
     } ;
     
-    gsl_vector_write(f, v) ;
+    gsl_vector_fwrite(f, v) ;
 
-    close(f) ;
+    fclose(f) ;
   }
 
   {
     int status = 0 ;
-    int  f = open("test.dat",O_RDONLY) ;
+    FILE * f = fopen("test.dat","r") ;
     
-    gsl_vector_read(f, w) ;
+    gsl_vector_fread(f, w) ;
 
     for (i = 0 ; i < N ; i++) {
       if (w->data[i] != (double)(N-i))
@@ -115,7 +115,7 @@ int main (void)
 
     gsl_test(status, "gsl_vector_write and read work correctly") ;
 
-    close(f) ;
+    fclose(f) ;
   }
 
   return gsl_test_summary ();
