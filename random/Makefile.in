@@ -37,6 +37,8 @@ INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_DATA = @INSTALL_DATA@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
 transform = @program_transform_name@
+host_triplet = @host@
+host_alias = @host_alias@
 RANLIB = @RANLIB@
 PACKAGE = @PACKAGE@
 VERSION = @VERSION@
@@ -136,11 +138,12 @@ bench_rand_LDADD=         rand.o rand-gen.o
 
 BUILT_SOURCES= taus.h taus-state.c taus-gen.c mrg.h mrg-state.c mrg-gen.c cmrg.h cmrg-state.c cmrg-gen.c uni.h uni-state.c uni-gen.c uni32.h uni32-state.c uni32-gen.c zuf.h zuf-state.c zuf-gen.c rand.h rand-state.c rand-gen.c gsl_ran_switch.h switch.c
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
+CONFIG_HEADER = ../config.h
 CONFIG_CLEAN_FILES = 
 LIBRARIES =  $(lib_LIBRARIES)
 
 
-DEFS = @DEFS@ -I. -I$(srcdir) 
+DEFS = @DEFS@ -I. -I$(srcdir) -I..
 CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
@@ -285,41 +288,49 @@ distclean-compile:
 	rm -f *.tab.c
 
 maintainer-clean-compile:
+$(libgslrandom_a_OBJECTS): ../config.h
 
 libgslrandom.a: $(libgslrandom_a_OBJECTS) $(libgslrandom_a_DEPENDENCIES)
 	rm -f libgslrandom.a
 	$(AR) cru libgslrandom.a $(libgslrandom_a_OBJECTS) $(libgslrandom_a_LIBADD)
 	$(RANLIB) libgslrandom.a
+$(libgslrantaus_a_OBJECTS): ../config.h
 
 libgslrantaus.a: $(libgslrantaus_a_OBJECTS) $(libgslrantaus_a_DEPENDENCIES)
 	rm -f libgslrantaus.a
 	$(AR) cru libgslrantaus.a $(libgslrantaus_a_OBJECTS) $(libgslrantaus_a_LIBADD)
 	$(RANLIB) libgslrantaus.a
+$(libgslranmrg_a_OBJECTS): ../config.h
 
 libgslranmrg.a: $(libgslranmrg_a_OBJECTS) $(libgslranmrg_a_DEPENDENCIES)
 	rm -f libgslranmrg.a
 	$(AR) cru libgslranmrg.a $(libgslranmrg_a_OBJECTS) $(libgslranmrg_a_LIBADD)
 	$(RANLIB) libgslranmrg.a
+$(libgslrancmrg_a_OBJECTS): ../config.h
 
 libgslrancmrg.a: $(libgslrancmrg_a_OBJECTS) $(libgslrancmrg_a_DEPENDENCIES)
 	rm -f libgslrancmrg.a
 	$(AR) cru libgslrancmrg.a $(libgslrancmrg_a_OBJECTS) $(libgslrancmrg_a_LIBADD)
 	$(RANLIB) libgslrancmrg.a
+$(libgslranuni_a_OBJECTS): ../config.h
 
 libgslranuni.a: $(libgslranuni_a_OBJECTS) $(libgslranuni_a_DEPENDENCIES)
 	rm -f libgslranuni.a
 	$(AR) cru libgslranuni.a $(libgslranuni_a_OBJECTS) $(libgslranuni_a_LIBADD)
 	$(RANLIB) libgslranuni.a
+$(libgslranuni32_a_OBJECTS): ../config.h
 
 libgslranuni32.a: $(libgslranuni32_a_OBJECTS) $(libgslranuni32_a_DEPENDENCIES)
 	rm -f libgslranuni32.a
 	$(AR) cru libgslranuni32.a $(libgslranuni32_a_OBJECTS) $(libgslranuni32_a_LIBADD)
 	$(RANLIB) libgslranuni32.a
+$(libgslranzuf_a_OBJECTS): ../config.h
 
 libgslranzuf.a: $(libgslranzuf_a_OBJECTS) $(libgslranzuf_a_DEPENDENCIES)
 	rm -f libgslranzuf.a
 	$(AR) cru libgslranzuf.a $(libgslranzuf_a_OBJECTS) $(libgslranzuf_a_LIBADD)
 	$(RANLIB) libgslranzuf.a
+$(libgslranrand_a_OBJECTS): ../config.h
 
 libgslranrand.a: $(libgslranrand_a_OBJECTS) $(libgslranrand_a_DEPENDENCIES)
 	rm -f libgslranrand.a
@@ -349,69 +360,91 @@ uninstall-binPROGRAMS:
 	list="$(bin_PROGRAMS)"; for p in $$list; do \
 	  rm -f $(bindir)/`echo $$p|sed '$(transform)'`; \
 	done
+$(taus_OBJECTS): ../config.h
 
 taus: $(taus_OBJECTS) $(taus_DEPENDENCIES)
 	$(LINK) $(taus_LDFLAGS) $(taus_OBJECTS) $(taus_LDADD) $(LIBS)
+$(test_taus_OBJECTS): ../config.h
 
 test-taus: $(test_taus_OBJECTS) $(test_taus_DEPENDENCIES)
 	$(LINK) $(test_taus_LDFLAGS) $(test_taus_OBJECTS) $(test_taus_LDADD) $(LIBS)
+$(bench_taus_OBJECTS): ../config.h
 
 bench-taus: $(bench_taus_OBJECTS) $(bench_taus_DEPENDENCIES)
 	$(LINK) $(bench_taus_LDFLAGS) $(bench_taus_OBJECTS) $(bench_taus_LDADD) $(LIBS)
+$(mrg_OBJECTS): ../config.h
 
 mrg: $(mrg_OBJECTS) $(mrg_DEPENDENCIES)
 	$(LINK) $(mrg_LDFLAGS) $(mrg_OBJECTS) $(mrg_LDADD) $(LIBS)
+$(test_mrg_OBJECTS): ../config.h
 
 test-mrg: $(test_mrg_OBJECTS) $(test_mrg_DEPENDENCIES)
 	$(LINK) $(test_mrg_LDFLAGS) $(test_mrg_OBJECTS) $(test_mrg_LDADD) $(LIBS)
+$(bench_mrg_OBJECTS): ../config.h
 
 bench-mrg: $(bench_mrg_OBJECTS) $(bench_mrg_DEPENDENCIES)
 	$(LINK) $(bench_mrg_LDFLAGS) $(bench_mrg_OBJECTS) $(bench_mrg_LDADD) $(LIBS)
+$(cmrg_OBJECTS): ../config.h
 
 cmrg: $(cmrg_OBJECTS) $(cmrg_DEPENDENCIES)
 	$(LINK) $(cmrg_LDFLAGS) $(cmrg_OBJECTS) $(cmrg_LDADD) $(LIBS)
+$(test_cmrg_OBJECTS): ../config.h
 
 test-cmrg: $(test_cmrg_OBJECTS) $(test_cmrg_DEPENDENCIES)
 	$(LINK) $(test_cmrg_LDFLAGS) $(test_cmrg_OBJECTS) $(test_cmrg_LDADD) $(LIBS)
+$(bench_cmrg_OBJECTS): ../config.h
 
 bench-cmrg: $(bench_cmrg_OBJECTS) $(bench_cmrg_DEPENDENCIES)
 	$(LINK) $(bench_cmrg_LDFLAGS) $(bench_cmrg_OBJECTS) $(bench_cmrg_LDADD) $(LIBS)
+$(uni_OBJECTS): ../config.h
 
 uni: $(uni_OBJECTS) $(uni_DEPENDENCIES)
 	$(LINK) $(uni_LDFLAGS) $(uni_OBJECTS) $(uni_LDADD) $(LIBS)
+$(test_uni_OBJECTS): ../config.h
 
 test-uni: $(test_uni_OBJECTS) $(test_uni_DEPENDENCIES)
 	$(LINK) $(test_uni_LDFLAGS) $(test_uni_OBJECTS) $(test_uni_LDADD) $(LIBS)
+$(bench_uni_OBJECTS): ../config.h
 
 bench-uni: $(bench_uni_OBJECTS) $(bench_uni_DEPENDENCIES)
 	$(LINK) $(bench_uni_LDFLAGS) $(bench_uni_OBJECTS) $(bench_uni_LDADD) $(LIBS)
+$(uni32_OBJECTS): ../config.h
 
 uni32: $(uni32_OBJECTS) $(uni32_DEPENDENCIES)
 	$(LINK) $(uni32_LDFLAGS) $(uni32_OBJECTS) $(uni32_LDADD) $(LIBS)
+$(test_uni32_OBJECTS): ../config.h
 
 test-uni32: $(test_uni32_OBJECTS) $(test_uni32_DEPENDENCIES)
 	$(LINK) $(test_uni32_LDFLAGS) $(test_uni32_OBJECTS) $(test_uni32_LDADD) $(LIBS)
+$(bench_uni32_OBJECTS): ../config.h
 
 bench-uni32: $(bench_uni32_OBJECTS) $(bench_uni32_DEPENDENCIES)
 	$(LINK) $(bench_uni32_LDFLAGS) $(bench_uni32_OBJECTS) $(bench_uni32_LDADD) $(LIBS)
+$(zuf_OBJECTS): ../config.h
 
 zuf: $(zuf_OBJECTS) $(zuf_DEPENDENCIES)
 	$(LINK) $(zuf_LDFLAGS) $(zuf_OBJECTS) $(zuf_LDADD) $(LIBS)
+$(test_zuf_OBJECTS): ../config.h
 
 test-zuf: $(test_zuf_OBJECTS) $(test_zuf_DEPENDENCIES)
 	$(LINK) $(test_zuf_LDFLAGS) $(test_zuf_OBJECTS) $(test_zuf_LDADD) $(LIBS)
+$(bench_zuf_OBJECTS): ../config.h
 
 bench-zuf: $(bench_zuf_OBJECTS) $(bench_zuf_DEPENDENCIES)
 	$(LINK) $(bench_zuf_LDFLAGS) $(bench_zuf_OBJECTS) $(bench_zuf_LDADD) $(LIBS)
+$(rand_OBJECTS): ../config.h
 
 rand: $(rand_OBJECTS) $(rand_DEPENDENCIES)
 	$(LINK) $(rand_LDFLAGS) $(rand_OBJECTS) $(rand_LDADD) $(LIBS)
+$(test_rand_OBJECTS): ../config.h
 
 test-rand: $(test_rand_OBJECTS) $(test_rand_DEPENDENCIES)
 	$(LINK) $(test_rand_LDFLAGS) $(test_rand_OBJECTS) $(test_rand_LDADD) $(LIBS)
+$(bench_rand_OBJECTS): ../config.h
 
 bench-rand: $(bench_rand_OBJECTS) $(bench_rand_DEPENDENCIES)
 	$(LINK) $(bench_rand_LDFLAGS) $(bench_rand_OBJECTS) $(bench_rand_LDADD) $(LIBS)
+$(test_switch_OBJECTS): ../config.h
 
 test-switch: $(test_switch_OBJECTS) $(test_switch_DEPENDENCIES)
 	$(LINK) $(test_switch_LDFLAGS) $(test_switch_OBJECTS) $(test_switch_LDADD) $(LIBS)

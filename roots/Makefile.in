@@ -37,6 +37,8 @@ INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_DATA = @INSTALL_DATA@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
 transform = @program_transform_name@
+host_triplet = @host@
+host_alias = @host_alias@
 RANLIB = @RANLIB@
 PACKAGE = @PACKAGE@
 VERSION = @VERSION@
@@ -55,11 +57,12 @@ libgsl_roots_a_SOURCES = newton.c
 
 include_HEADERS = gsl_roots.h
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
+CONFIG_HEADER = ../config.h
 CONFIG_CLEAN_FILES = 
 LIBRARIES =  $(lib_LIBRARIES)
 
 
-DEFS = @DEFS@ -I. -I$(srcdir) 
+DEFS = @DEFS@ -I. -I$(srcdir) -I..
 CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
@@ -138,6 +141,7 @@ distclean-compile:
 	rm -f *.tab.c
 
 maintainer-clean-compile:
+$(libgsl_roots_a_OBJECTS): ../config.h
 
 libgsl_roots.a: $(libgsl_roots_a_OBJECTS) $(libgsl_roots_a_DEPENDENCIES)
 	rm -f libgsl_roots.a
@@ -152,6 +156,7 @@ clean-checkPROGRAMS:
 distclean-checkPROGRAMS:
 
 maintainer-clean-checkPROGRAMS:
+$(rtest_OBJECTS): ../config.h
 
 rtest: $(rtest_OBJECTS) $(rtest_DEPENDENCIES)
 	$(LINK) $(rtest_LDFLAGS) $(rtest_OBJECTS) $(rtest_LDADD) $(LIBS)

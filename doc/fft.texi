@@ -860,19 +860,18 @@ All other elements of @var{data} are set to zero. The function also
 returns the fourier transform of the pulse in the complex array
 @var{fft}, also of length @var{n}.
 
-The mathematical definition of the pulse is, writing (@math{z_@{real@} +
-i z_@{imag@}}) as @math{z},
-
+Writing @math{z} as (@math{z_@{real@} + i z_@{imag@}}), the mathematical
+definition of the pulse is,
 @equation
-z_k =  z \delta_@{kt@}
+z_k =  z \delta_@{kt@},
 @end equation
 @noindent
 where @math{\delta_@{kt@}=1} if @math{k=t}, and 0 otherwise. The fourier
 transform is,
 
 @equation
-x_j = \sum_@{k=0@}^@{n-1@} z \delta_@{kt@} W^@{jk@}_n 
-    = z \exp(2\pi i j t/n)
+x_j = \sum_@{k=0@}^@{n-1@} z \delta_@{kt@} \exp(-2\pi i j k/n)
+    = z \exp(-2\pi i j t/n)
 @end equation
 @end deftypefun
 
@@ -892,7 +891,7 @@ z_k = z
 and the fourier transform is,
 
 @equation
-x_j = \sum_@{k=0@}^@{n-1@} z W^@{jk@}_n
+x_j = \sum_@{k=0@}^@{n-1@} z \exp(-2\pi i j k/n)
     = z n \delta_@{j0@}
 @end equation
 @end deftypefun
@@ -915,8 +914,8 @@ z_k = z \exp(2\pi i k f/n)
 and the fourier transform is,
 
 @equation
-x_j = \sum_@{k=0@}^@{n-1@} z \exp(2\pi i k f/n) W^@{jk@}_n 
-    = z \delta_@{j+f,0@}
+x_j = \sum_@{k=0@}^@{n-1@} z \exp(2\pi i k f/n) \exp(-2\pi i j k/n)
+    = z \delta_@{j-f,0@}
 @end equation
 @end deftypefun
 
@@ -937,7 +936,7 @@ z_k = z_1 \exp(2\pi i k f_1/n) + z_2 \exp(2\pi i k f_2/n)
 and the fourier transform is,
 
 @equation
-x_j =  z_1 \delta_@{j+f_1,0@}  + z_2 \delta_@{j+f_2,0@}
+x_j =  z_1 \delta_@{j-f_1,0@}  + z_2 \delta_@{j-f_2,0@}
 @end equation
 @end deftypefun
 

@@ -37,6 +37,8 @@ INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_DATA = @INSTALL_DATA@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
 transform = @program_transform_name@
+host_triplet = @host@
+host_alias = @host_alias@
 RANLIB = @RANLIB@
 PACKAGE = @PACKAGE@
 VERSION = @VERSION@
@@ -65,11 +67,12 @@ bench_gamma_SOURCES= bench-gamma.c gamma.c
 
 test_shuffle_SOURCES= test-shuffle.c shuffle.c
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
+CONFIG_HEADER = ../config.h
 CONFIG_CLEAN_FILES = 
 PROGRAMS =  $(bin_PROGRAMS)
 
 
-DEFS = @DEFS@ -I. -I$(srcdir) 
+DEFS = @DEFS@ -I. -I$(srcdir) -I..
 CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
@@ -175,30 +178,39 @@ distclean-compile:
 	rm -f *.tab.c
 
 maintainer-clean-compile:
+$(gauss_OBJECTS): ../config.h
 
 gauss: $(gauss_OBJECTS) $(gauss_DEPENDENCIES)
 	$(LINK) $(gauss_LDFLAGS) $(gauss_OBJECTS) $(gauss_LDADD) $(LIBS)
+$(test_gauss_OBJECTS): ../config.h
 
 test-gauss: $(test_gauss_OBJECTS) $(test_gauss_DEPENDENCIES)
 	$(LINK) $(test_gauss_LDFLAGS) $(test_gauss_OBJECTS) $(test_gauss_LDADD) $(LIBS)
+$(bench_gauss_OBJECTS): ../config.h
 
 bench-gauss: $(bench_gauss_OBJECTS) $(bench_gauss_DEPENDENCIES)
 	$(LINK) $(bench_gauss_LDFLAGS) $(bench_gauss_OBJECTS) $(bench_gauss_LDADD) $(LIBS)
+$(exponential_OBJECTS): ../config.h
 
 exponential: $(exponential_OBJECTS) $(exponential_DEPENDENCIES)
 	$(LINK) $(exponential_LDFLAGS) $(exponential_OBJECTS) $(exponential_LDADD) $(LIBS)
+$(poisson_OBJECTS): ../config.h
 
 poisson: $(poisson_OBJECTS) $(poisson_DEPENDENCIES)
 	$(LINK) $(poisson_LDFLAGS) $(poisson_OBJECTS) $(poisson_LDADD) $(LIBS)
+$(bench_poisson_OBJECTS): ../config.h
 
 bench-poisson: $(bench_poisson_OBJECTS) $(bench_poisson_DEPENDENCIES)
 	$(LINK) $(bench_poisson_LDFLAGS) $(bench_poisson_OBJECTS) $(bench_poisson_LDADD) $(LIBS)
+$(test_shuffle_OBJECTS): ../config.h
 
 test-shuffle: $(test_shuffle_OBJECTS) $(test_shuffle_DEPENDENCIES)
 	$(LINK) $(test_shuffle_LDFLAGS) $(test_shuffle_OBJECTS) $(test_shuffle_LDADD) $(LIBS)
+$(gamma_OBJECTS): ../config.h
 
 gamma: $(gamma_OBJECTS) $(gamma_DEPENDENCIES)
 	$(LINK) $(gamma_LDFLAGS) $(gamma_OBJECTS) $(gamma_LDADD) $(LIBS)
+$(bench_gamma_OBJECTS): ../config.h
 
 bench-gamma: $(bench_gamma_OBJECTS) $(bench_gamma_DEPENDENCIES)
 	$(LINK) $(bench_gamma_LDFLAGS) $(bench_gamma_OBJECTS) $(bench_gamma_LDADD) $(LIBS)

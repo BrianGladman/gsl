@@ -37,6 +37,8 @@ INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_DATA = @INSTALL_DATA@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
 transform = @program_transform_name@
+host_triplet = @host@
+host_alias = @host_alias@
 RANLIB = @RANLIB@
 PACKAGE = @PACKAGE@
 VERSION = @VERSION@
@@ -62,11 +64,12 @@ include_HEADERS = gsl_siman.h
 INCLUDES = -I$(srcdir) -I$(srcdir)/../random
 check_INCLUDES = -I. -I../random
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
+CONFIG_HEADER = ../config.h
 CONFIG_CLEAN_FILES = 
 LIBRARIES =  $(lib_LIBRARIES)
 
 
-DEFS = @DEFS@ -I. -I$(srcdir) 
+DEFS = @DEFS@ -I. -I$(srcdir) -I..
 CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
@@ -147,6 +150,7 @@ distclean-compile:
 	rm -f *.tab.c
 
 maintainer-clean-compile:
+$(libgsl_siman_a_OBJECTS): ../config.h
 
 libgsl_siman.a: $(libgsl_siman_a_OBJECTS) $(libgsl_siman_a_DEPENDENCIES)
 	rm -f libgsl_siman.a
@@ -161,9 +165,11 @@ clean-checkPROGRAMS:
 distclean-checkPROGRAMS:
 
 maintainer-clean-checkPROGRAMS:
+$(siman_test_OBJECTS): ../config.h
 
 siman_test: $(siman_test_OBJECTS) $(siman_test_DEPENDENCIES)
 	$(LINK) $(siman_test_LDFLAGS) $(siman_test_OBJECTS) $(siman_test_LDADD) $(LIBS)
+$(siman_tsp_OBJECTS): ../config.h
 
 siman_tsp: $(siman_tsp_OBJECTS) $(siman_tsp_DEPENDENCIES)
 	$(LINK) $(siman_tsp_LDFLAGS) $(siman_tsp_OBJECTS) $(siman_tsp_LDADD) $(LIBS)
