@@ -1,0 +1,7 @@
+Tue Oct 27 18:06:16 1998  Brian Gough  <bjg@vvv.lanl.gov>
+
+	* levin_u.c: added in noise but it does not seem to be giving the
+ 	right answer for the error estimate. The actual value for the
+ 	accelerated sum is correct though. Check toms/602 for the original
+ 	algorithm.
+
