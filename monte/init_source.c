@@ -1,8 +1,3 @@
-#include <stdlib.h>
-#include <gsl_errno.h>
-
-#include "source.h"
-
 BASE * 
 FUNCTION(gsl_monte_vector,alloc) (const size_t n)
 {
