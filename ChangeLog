@@ -1,3 +1,10 @@
+Wed May 10 11:30:15 2000  Brian Gough  <bjg@network-theory.co.uk>
+
+	* gsl_math.h (GSL_POSINF): make use of HUGE_VAL which is actually
+ 	+Inf when IEEE is available, and can be detected by the NAN being
+ 	defined (it is only defined on IEEE machines)
+	(GSL_NEGINF): as for GSL_POSINF
+
 Fri May  5 11:20:50 2000  Brian Gough  <bjg@network-theory.co.uk>
 
 	* split out gsl_test code from err/ directory into test/ directory
