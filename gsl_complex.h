@@ -7,10 +7,19 @@ typedef double *       gsl_complex_packed ;
 typedef float *        gsl_complex_packed_float  ;
 typedef long double *  gsl_complex_packed_long_double ;
 
+typedef const double *       gsl_const_complex_packed ;
+typedef const float *        gsl_const_complex_packed_float  ;
+typedef const long double *  gsl_const_complex_packed_long_double ;
+
+
 /* 2N consecutive built-in types as N complex numbers */
 typedef double *       gsl_complex_packed_array ;
 typedef float *        gsl_complex_packed_array_float  ;
 typedef long double *  gsl_complex_packed_array_long_double ;
+
+typedef const double *       gsl_const_complex_packed_array ;
+typedef const float *        gsl_const_complex_packed_array_float  ;
+typedef const long double *  gsl_const_complex_packed_array_long_double ;
 
 
 /* Yes... this seems weird. Trust us. The point is just that
@@ -21,6 +30,10 @@ typedef long double *  gsl_complex_packed_array_long_double ;
 typedef double *       gsl_complex_packed_ptr ;
 typedef float *        gsl_complex_packed_float_ptr  ;
 typedef long double *  gsl_complex_packed_long_double_ptr ;
+
+typedef const double *       gsl_const_complex_packed_ptr ;
+typedef const float *        gsl_const_complex_packed_float_ptr  ;
+typedef const long double *  gsl_const_complex_packed_long_double_ptr ;
 
 
 typedef struct
