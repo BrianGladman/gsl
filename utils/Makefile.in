@@ -10,6 +10,10 @@
 # even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 # PARTICULAR PURPOSE.
 
+# we don't install these, so we don't use libtool, at least that's 
+# how mjb understands it.
+#
+
 
 SHELL = /bin/sh
 

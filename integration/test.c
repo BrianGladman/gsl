@@ -355,6 +355,23 @@ int main (void)
   }
 
   {
+    int status; size_t neval = 0 ;
+    double result = 0, abserr = 0 ;
+    double exp_result =-7.238969575482961938E-01;
+    double exp_abserr = 1.277676889520056369E-14;
+    int exp_neval  =  43;
+    int exp_ier    =   0;
+
+    alpha = 1.3 ;
+    status = gsl_integration_qng (book3, 0.3, 2.71, 0.0, 1e-12,
+				  &result, &abserr, &neval) ;
+    gsl_test_rel(result,exp_result,1e-15,"qnq(book3) oscill result") ;
+    gsl_test_rel(abserr,exp_abserr,1e-15,"qng(book3) oscill abserr") ;
+    gsl_test_int((int)neval,exp_neval,"qng(book3) oscill neval") ;
+    gsl_test_int(status,exp_ier,"qng(book3) oscill status") ;
+  }
+
+  {
     int status = 0; size_t neval = 0 ;
     double result = 0, abserr = 0 ;
 
@@ -389,25 +406,6 @@ int main (void)
     gsl_test_int((int)neval,exp_neval,"qng(book1) beyond 87pt neval") ;  
     gsl_test_int(status,exp_ier,"qng(book1) beyond 87pt status") ;
   }
-
-  {
-    int status; size_t neval = 0 ;
-    double result = 0, abserr = 0 ;
-    double exp_result =-7.238969575482961938E-01;
-    double exp_abserr = 1.277676889520056369E-14;
-    int exp_neval  =  43;
-    int exp_ier    =   0;
-
-    alpha = 1.3 ;
-    status = gsl_integration_qng (book3, 0.3, 2.71, 0.0, 1e-12,
-				  &result, &abserr, &neval) ;
-    gsl_test_rel(result,exp_result,1e-15,"qnq(book3) oscill result") ;
-    gsl_test_rel(abserr,exp_abserr,1e-15,"qng(book3) oscill abserr") ;
-    gsl_test_int((int)neval,exp_neval,"qng(book3) oscill neval") ;
-    gsl_test_int(status,exp_ier,"qng(book3) oscill status") ;
-  }
-
-
 
 
 #ifdef JUNK

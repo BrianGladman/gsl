@@ -1,4 +1,4 @@
-lib_LTLIBRARIES = libgslspecfunc.la 
+lib_LIBRARIES = libgslspecfunc.a 
 
 check_PROGRAMS = test_sf
 
@@ -36,11 +36,11 @@ INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../err -I$(srcdir)/../integration
 
 TESTS = test_sf
 
-test_sf_LDADD = libgslspecfunc.la ../err/libgslerr.la ../err/libgsltest.la ../utils/libutils.a
-test_sf_DEPENDENCIES = libgslspecfunc.la
+test_sf_LDADD = libgslspecfunc.a ../err/libgslerr.a ../err/libgsltest.a ../utils/libutils.a
+test_sf_DEPENDENCIES = libgslspecfunc.a
 test_sf_SOURCES = test_sf.c
 
-libgslspecfunc_la_SOURCES = 	\
+libgslspecfunc_a_SOURCES = 	\
 	airy.c			\
 	airy_der.c		\
 	bessel.c		\

@@ -22,13 +22,12 @@ libgsl.a:
 # flaky attempt to generalize the above flaky version to work with libtool.
 # Not yet, baby. 
 
-libgsl.la: 
-	for dir in $(SUBDIRS) ;\
-	do \
-	(cd $$dir ; \
-	for lib in ./.libs/lib*.a ; \
-	do \
-	test -f $$lib && ar r ../libgsl.la `ar t $$lib|egrep -v "^__\.SYMDEF" ` || true ; \
-	done ) ;\
-	done
-
+#libgsl.a: 
+#	for dir in $(SUBDIRS) ;\
+#	do \
+#	(cd $$dir ; \
+#	for lib in ./.libs/lib*.a ; \
+#	do \
+#	test -f $$lib && ar r ../libgsl.a `ar t $$lib|egrep -v "^__\.SYMDEF" ` || true ; \
+#	done ) ;\
+#	done

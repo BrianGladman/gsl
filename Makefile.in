@@ -80,8 +80,8 @@ HEADERS =  $(include_HEADERS)
 
 DIST_COMMON =  README AUTHORS COPYING ChangeLog INSTALL Makefile.am \
 Makefile.in NEWS TODO acconfig.h aclocal.m4 config.guess config.h.in \
-config.sub configure configure.in install-sh mdate-sh missing \
-mkinstalldirs stamp-h.in texinfo.tex
+config.sub configure configure.in install-sh ltconfig ltmain.sh \
+mdate-sh missing mkinstalldirs stamp-h.in texinfo.tex
 
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
@@ -356,6 +356,19 @@ libgsl.a:
 	test -f $$lib && ar r ../libgsl.a `ar t $$lib` || true ; \
 	done ) ;\
 	done
+
+# flaky attempt to generalize the above flaky version to work with libtool.
+# Not yet, baby. 
+
+#libgsl.a: 
+#	for dir in $(SUBDIRS) ;\
+#	do \
+#	(cd $$dir ; \
+#	for lib in ./.libs/lib*.a ; \
+#	do \
+#	test -f $$lib && ar r ../libgsl.a `ar t $$lib|egrep -v "^__\.SYMDEF" ` || true ; \
+#	done ) ;\
+#	done
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
