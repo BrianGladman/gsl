@@ -1,3 +1,8 @@
+Mon Mar  1 15:38:06 1999  Brian Gough  <bjg@netsci.freeserve.co.uk>
+
+	* renamed f_solver to fsolver and fdf_solver to fdfsolver, since
+ 	these look neater
+
 Sun Feb 28 21:11:21 1999  Brian Gough  <bjg@netsci.freeserve.co.uk>
 
 	* rewrote the root finding functions in an iterative framework

@@ -33,24 +33,24 @@ typedef struct
   }
 secant_state_t;
 
-int secant_init (void * vstate, gsl_fdf * fdf, double * root);
-int secant_iterate (void * vstate, gsl_fdf * fdf, double * root);
+int secant_init (void * vstate, gsl_function_fdf * fdf, double * root);
+int secant_iterate (void * vstate, gsl_function_fdf * fdf, double * root);
 
 int
-secant_init (void * vstate, gsl_fdf * fdf, double * root)
+secant_init (void * vstate, gsl_function_fdf * fdf, double * root)
 {
   secant_state_t * state = (secant_state_t *) vstate;
 
   const double x = *root;
 
-  GSL_FDF_EVAL_F_DF (fdf, x, &(state->f), &(state->df));
+  GSL_FN_FDF_EVAL_F_DF (fdf, x, &(state->f), &(state->df));
   
   return GSL_SUCCESS;
 
 }
 
 int
-secant_iterate (void * vstate, gsl_fdf * fdf, double * root)
+secant_iterate (void * vstate, gsl_function_fdf * fdf, double * root)
 {
   secant_state_t * state = (secant_state_t *) vstate;
   
@@ -67,7 +67,7 @@ secant_iterate (void * vstate, gsl_fdf * fdf, double * root)
 
   x_new = x - (f / df);
 
-  f_new = GSL_FDF_EVAL_F(fdf, x_new) ;
+  f_new = GSL_FN_FDF_EVAL_F(fdf, x_new) ;
   df_new = (f_new - f) / (x_new - x) ;
 
   *root = x_new ;
@@ -89,10 +89,10 @@ secant_iterate (void * vstate, gsl_fdf * fdf, double * root)
 }
 
 
-static const gsl_root_fdf_solver_type secant_type =
+static const gsl_root_fdfsolver_type secant_type =
 {"secant",				/* name */
  sizeof (secant_state_t),
  &secant_init,
  &secant_iterate};
 
-const gsl_root_fdf_solver_type  * gsl_root_fdf_solver_secant = &secant_type;
+const gsl_root_fdfsolver_type  * gsl_root_fdfsolver_secant = &secant_type;

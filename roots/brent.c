@@ -214,10 +214,10 @@ brent_iterate (void * vstate, gsl_function * f, double * root, gsl_interval * x)
 }
 
   
-static const gsl_root_f_solver_type brent_type =
+static const gsl_root_fsolver_type brent_type =
 {"brent",				/* name */
  sizeof (brent_state_t),
  &brent_init,
  &brent_iterate};
 
-const gsl_root_f_solver_type  * gsl_root_f_solver_brent = &brent_type;
+const gsl_root_fsolver_type  * gsl_root_fsolver_brent = &brent_type;

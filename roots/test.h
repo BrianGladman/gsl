@@ -7,7 +7,7 @@ typedef struct { simple_function * f; simple_function * df; } function_pair ;
 gsl_function create_function (simple_function * f) ;
 double eval_function (double x, void * params) ;
 
-gsl_fdf create_fdf (simple_function * f, simple_function * df);
+gsl_function_fdf create_fdf (simple_function * f, simple_function * df);
 double eval_fdf_f (double x, void * params);
 double eval_fdf_df (double x, void * params);
 void eval_fdf (double x, void * params, double * y1, double * y2);
@@ -22,22 +22,22 @@ void
   test_poly (void);
 
 void
-test_f (const gsl_root_f_solver_type * T, 
+test_f (const gsl_root_fsolver_type * T, 
 	const char * description, gsl_function *f,
 	double lower_bound, double upper_bound, double correct_root);
 
 void
-test_f_e (const gsl_root_f_solver_type * T, const char * description, 
+test_f_e (const gsl_root_fsolver_type * T, const char * description, 
 	  gsl_function *f,
 	  double lower_bound, double upper_bound, double correct_root);
 
 void
-test_fdf (const gsl_root_fdf_solver_type * T, const char * description, 
-	  gsl_fdf *fdf, double root, double correct_root);
+test_fdf (const gsl_root_fdfsolver_type * T, const char * description, 
+	  gsl_function_fdf *fdf, double root, double correct_root);
 
 void
-test_fdf_e (const gsl_root_fdf_solver_type * T, const char * description, 
-	    gsl_fdf *fdf, double root, double correct_root);
+test_fdf_e (const gsl_root_fdfsolver_type * T, const char * description, 
+	    gsl_function_fdf *fdf, double root, double correct_root);
 
 
 void

@@ -19,9 +19,9 @@ double eval_function (double x, void * params)
   return (*f)(x) ;
 }
 
-gsl_fdf create_fdf (simple_function * f, simple_function * df) 
+gsl_function_fdf create_fdf (simple_function * f, simple_function * df) 
 {
-  gsl_fdf FDF ;
+  gsl_function_fdf FDF ;
   function_pair * fp = malloc(sizeof(function_pair));
   fp->f = f ; 
   fp->df = df ;

@@ -26,25 +26,25 @@ typedef struct
   }
 newton_state_t;
 
-int newton_init (void * vstate, gsl_fdf * fdf, double * root);
-int newton_iterate (void * vstate, gsl_fdf * fdf, double * root);
+int newton_init (void * vstate, gsl_function_fdf * fdf, double * root);
+int newton_iterate (void * vstate, gsl_function_fdf * fdf, double * root);
 
 int
-newton_init (void * vstate, gsl_fdf * fdf, double * root)
+newton_init (void * vstate, gsl_function_fdf * fdf, double * root)
 {
   newton_state_t * state = (newton_state_t *) vstate;
 
   const double x = *root ;
 
-  state->f = GSL_FDF_EVAL_F (fdf, x);
-  state->df = GSL_FDF_EVAL_DF (fdf, x) ;
+  state->f = GSL_FN_FDF_EVAL_F (fdf, x);
+  state->df = GSL_FN_FDF_EVAL_DF (fdf, x) ;
 
   return GSL_SUCCESS;
 
 }
 
 int
-newton_iterate (void * vstate, gsl_fdf * fdf, double * root)
+newton_iterate (void * vstate, gsl_function_fdf * fdf, double * root)
 {
   newton_state_t * state = (newton_state_t *) vstate;
   
@@ -59,7 +59,7 @@ newton_iterate (void * vstate, gsl_fdf * fdf, double * root)
 
   *root = root_new ;
   
-  GSL_FDF_EVAL_F_DF(fdf, root_new, &f_new, &df_new);
+  GSL_FN_FDF_EVAL_F_DF(fdf, root_new, &f_new, &df_new);
 
   state->f = f_new ;
   state->df = df_new ;
@@ -78,10 +78,10 @@ newton_iterate (void * vstate, gsl_fdf * fdf, double * root)
 }
 
 
-static const gsl_root_fdf_solver_type newton_type =
+static const gsl_root_fdfsolver_type newton_type =
 {"newton",				/* name */
  sizeof (newton_state_t),
  &newton_init,
  &newton_iterate};
 
-const gsl_root_fdf_solver_type  * gsl_root_fdf_solver_newton = &newton_type;
+const gsl_root_fdfsolver_type  * gsl_root_fdfsolver_newton = &newton_type;

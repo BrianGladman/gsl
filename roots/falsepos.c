@@ -155,10 +155,10 @@ falsepos_iterate (void * vstate, gsl_function * f, double * root, gsl_interval *
 }
 
 
-static const gsl_root_f_solver_type falsepos_type =
+static const gsl_root_fsolver_type falsepos_type =
 {"falsepos",				/* name */
  sizeof (falsepos_state_t),
  &falsepos_init,
  &falsepos_iterate};
 
-const gsl_root_f_solver_type  * gsl_root_f_solver_falsepos = &falsepos_type;
+const gsl_root_fsolver_type  * gsl_root_fsolver_falsepos = &falsepos_type;

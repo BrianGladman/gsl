@@ -4,13 +4,13 @@
 #include <gsl_errno.h>
 #include <gsl_roots.h>
 
-gsl_root_f_solver *
-gsl_root_f_solver_alloc (const gsl_root_f_solver_type * T, 
+gsl_root_fsolver *
+gsl_root_fsolver_alloc (const gsl_root_fsolver_type * T, 
 			 gsl_function * f, gsl_interval x)
 {
   int status;
 
-  gsl_root_f_solver * s = (gsl_root_f_solver *) malloc (sizeof (gsl_root_f_solver));
+  gsl_root_fsolver * s = (gsl_root_fsolver *) malloc (sizeof (gsl_root_fsolver));
 
   if (s == 0)
     {
@@ -33,7 +33,7 @@ gsl_root_f_solver_alloc (const gsl_root_f_solver_type * T,
   s->set = T->set ;
   s->iterate = T->iterate ;
 
-  status = gsl_root_f_solver_set (s, f, x); /* seed the generator */
+  status = gsl_root_fsolver_set (s, f, x); /* seed the generator */
 
   if (status != GSL_SUCCESS)
     {
@@ -47,7 +47,7 @@ gsl_root_f_solver_alloc (const gsl_root_f_solver_type * T,
 }
 
 int
-gsl_root_f_solver_set (gsl_root_f_solver * s, gsl_function * f, gsl_interval x)
+gsl_root_fsolver_set (gsl_root_fsolver * s, gsl_function * f, gsl_interval x)
 {
   s->function = f;
   s->root = 0;
@@ -62,16 +62,35 @@ gsl_root_f_solver_set (gsl_root_f_solver * s, gsl_function * f, gsl_interval x)
 }
 
 int
-gsl_root_f_solver_iterate (gsl_root_f_solver * s)
+gsl_root_fsolver_iterate (gsl_root_fsolver * s)
 {
   return (s->iterate) (s->state, 
 			      s->function, &(s->root), &(s->interval));
 }
 
 void
-gsl_root_f_solver_free (gsl_root_f_solver * s)
+gsl_root_fsolver_free (gsl_root_fsolver * s)
 {
   free (s->state);
   free (s);
 }
+
+const char *
+gsl_root_fsolver_name (const gsl_root_fsolver * s)
+{
+  return s->name;
+}
+
+double
+gsl_root_fsolver_root (const gsl_root_fsolver * s)
+{
+  return s->root;
+}
+
+gsl_interval
+gsl_root_fsolver_interval (const gsl_root_fsolver * s)
+{
+  return s->interval;
+}
+
 

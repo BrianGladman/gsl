@@ -37,18 +37,18 @@ typedef struct
   }
 steffenson_state_t;
 
-int steffenson_init (void * vstate, gsl_fdf * fdf, double * root);
-int steffenson_iterate (void * vstate, gsl_fdf * fdf, double * root);
+int steffenson_init (void * vstate, gsl_function_fdf * fdf, double * root);
+int steffenson_iterate (void * vstate, gsl_function_fdf * fdf, double * root);
 
 int
-steffenson_init (void * vstate, gsl_fdf * fdf, double * root)
+steffenson_init (void * vstate, gsl_function_fdf * fdf, double * root)
 {
   steffenson_state_t * state = (steffenson_state_t *) vstate;
 
   const double x = *root ;
 
-  state->f = GSL_FDF_EVAL_F (fdf, x);
-  state->df = GSL_FDF_EVAL_DF (fdf, x) ;
+  state->f = GSL_FN_FDF_EVAL_F (fdf, x);
+  state->df = GSL_FN_FDF_EVAL_DF (fdf, x) ;
 
   state->x = x;
   state->x_1 = 0.0;
@@ -61,7 +61,7 @@ steffenson_init (void * vstate, gsl_fdf * fdf, double * root)
 }
 
 int
-steffenson_iterate (void * vstate, gsl_fdf * fdf, double * root)
+steffenson_iterate (void * vstate, gsl_function_fdf * fdf, double * root)
 {
   steffenson_state_t * state = (steffenson_state_t *) vstate;
   
@@ -78,7 +78,7 @@ steffenson_iterate (void * vstate, gsl_fdf * fdf, double * root)
 
   x_new = x - (state->f / state->df);
   
-  GSL_FDF_EVAL_F_DF(fdf, x_new, &f_new, &df_new);
+  GSL_FN_FDF_EVAL_F_DF(fdf, x_new, &f_new, &df_new);
 
   state->x_2 = x_1 ;
   state->x_1 = x ;
@@ -112,10 +112,10 @@ steffenson_iterate (void * vstate, gsl_fdf * fdf, double * root)
 }
 
 
-static const gsl_root_fdf_solver_type steffenson_type =
+static const gsl_root_fdfsolver_type steffenson_type =
 {"steffenson",				/* name */
  sizeof (steffenson_state_t),
  &steffenson_init,
  &steffenson_iterate};
 
-const gsl_root_fdf_solver_type  * gsl_root_fdf_solver_steffenson = &steffenson_type;
+const gsl_root_fdfsolver_type  * gsl_root_fdfsolver_steffenson = &steffenson_type;

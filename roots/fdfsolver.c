@@ -4,12 +4,12 @@
 #include <gsl_errno.h>
 #include <gsl_roots.h>
 
-gsl_root_fdf_solver *
-gsl_root_fdf_solver_alloc (const gsl_root_fdf_solver_type * T, 
-			   gsl_fdf * f, double root)
+gsl_root_fdfsolver *
+gsl_root_fdfsolver_alloc (const gsl_root_fdfsolver_type * T, 
+			   gsl_function_fdf * f, double root)
 {
 
-  gsl_root_fdf_solver * s = (gsl_root_fdf_solver *) malloc (sizeof (gsl_root_fdf_solver));
+  gsl_root_fdfsolver * s = (gsl_root_fdfsolver *) malloc (sizeof (gsl_root_fdfsolver));
 
   if (s == 0)
     {
@@ -32,13 +32,13 @@ gsl_root_fdf_solver_alloc (const gsl_root_fdf_solver_type * T,
   s->set = T->set ;
   s->iterate = T->iterate ;
 
-  gsl_root_fdf_solver_set (s, f, root); /* seed the generator */
+  gsl_root_fdfsolver_set (s, f, root); /* seed the generator */
 
   return s;
 }
 
 int
-gsl_root_fdf_solver_set (gsl_root_fdf_solver * s, gsl_fdf * f, double root)
+gsl_root_fdfsolver_set (gsl_root_fdfsolver * s, gsl_function_fdf * f, double root)
 {
   s->fdf = f;
   s->root = root;
@@ -47,15 +47,28 @@ gsl_root_fdf_solver_set (gsl_root_fdf_solver * s, gsl_fdf * f, double root)
 }
 
 int
-gsl_root_fdf_solver_iterate (gsl_root_fdf_solver * s)
+gsl_root_fdfsolver_iterate (gsl_root_fdfsolver * s)
 {
   return (s->iterate) (s->state, s->fdf, &(s->root));
 }
 
 void
-gsl_root_fdf_solver_free (gsl_root_fdf_solver * s)
+gsl_root_fdfsolver_free (gsl_root_fdfsolver * s)
 {
   free (s->state);
   free (s);
 }
+
+const char *
+gsl_root_fdfsolver_name (const gsl_root_fdfsolver * s)
+{
+  return s->name;
+}
+
+double
+gsl_root_fdfsolver_root (const gsl_root_fdfsolver * s)
+{
+  return s->root;
+}
+
 

@@ -23,25 +23,25 @@ test_roots (void)
   gsl_function F_sin, F_cos, F_func1, F_func2, F_func3, F_func4,
     F_func5, F_func6;
   
-  gsl_fdf FDF_sin, FDF_cos, FDF_func1, FDF_func2, FDF_func3, FDF_func4,
+  gsl_function_fdf FDF_sin, FDF_cos, FDF_func1, FDF_func2, FDF_func3, FDF_func4,
     FDF_func5, FDF_func6;
 
-  const gsl_root_f_solver_type * f_solver[4] ;
-  const gsl_root_fdf_solver_type * fdf_solver[4] ;
+  const gsl_root_fsolver_type * fsolver[4] ;
+  const gsl_root_fdfsolver_type * fdfsolver[4] ;
 
-  const gsl_root_f_solver_type ** T;
-  const gsl_root_fdf_solver_type ** S;
+  const gsl_root_fsolver_type ** T;
+  const gsl_root_fdfsolver_type ** S;
 
 
-  f_solver[0] = gsl_root_f_solver_bisection;
-  f_solver[1] = gsl_root_f_solver_brent;
-  f_solver[2] = gsl_root_f_solver_falsepos;
-  f_solver[3] = 0;
+  fsolver[0] = gsl_root_fsolver_bisection;
+  fsolver[1] = gsl_root_fsolver_brent;
+  fsolver[2] = gsl_root_fsolver_falsepos;
+  fsolver[3] = 0;
 
-  fdf_solver[0] = gsl_root_fdf_solver_newton;
-  fdf_solver[1] = gsl_root_fdf_solver_secant;
-  fdf_solver[2] = gsl_root_fdf_solver_steffenson;
-  fdf_solver[3] = 0;
+  fdfsolver[0] = gsl_root_fdfsolver_newton;
+  fdfsolver[1] = gsl_root_fdfsolver_secant;
+  fdfsolver[2] = gsl_root_fdfsolver_steffenson;
+  fdfsolver[3] = 0;
 
   F_sin = create_function (sin) ;
   F_cos = create_function (cos) ; 
@@ -65,7 +65,7 @@ test_roots (void)
 
   test_macros ();
 
-  for (T = f_solver ; *T != 0 ; T++)
+  for (T = fsolver ; *T != 0 ; T++)
     {
       test_f (*T, "sin(x) [3, 4]", &F_sin, 3.0, 4.0, M_PI);
       test_f (*T, "sin(x) [-4, -3]", &F_sin, -4.0, -3.0, -M_PI);
@@ -83,7 +83,7 @@ test_roots (void)
       test_f_e (*T, "invalid range check [0.1, 0.2]", &F_sin, 0.1, 0.2, M_PI);
     }
 
-  for (S = fdf_solver ; *S != 0 ; S++)
+  for (S = fdfsolver ; *S != 0 ; S++)
     {
       test_fdf (*S,"sin(x) {3.4}", &FDF_sin, 3.4, M_PI);
       test_fdf (*S,"sin(x) {-3.3}", &FDF_sin, -3.3, -M_PI);
@@ -99,7 +99,7 @@ test_roots (void)
       test_fdf_e (*S,"max iterations x -> -Inf, 1/(1 + exp(-x)) {0}", &FDF_func5, 0.0, 0.0);
     }
 
-  test_fdf (gsl_root_fdf_solver_steffenson,
+  test_fdf (gsl_root_fdfsolver_steffenson,
 	    "(x - 1)^7 {0.9}", &FDF_func6, 0.9, 1.0);    
 
   
@@ -112,25 +112,25 @@ test_roots (void)
    that it was accurate enough. */
 
 void
-test_f (const gsl_root_f_solver_type * T, const char * description, gsl_function *f,
+test_f (const gsl_root_fsolver_type * T, const char * description, gsl_function *f,
 	double lower_bound, double upper_bound, double correct_root)
 {
   int status;
   int iterations = 0;
   gsl_interval x = {lower_bound, upper_bound} ;
 
-  gsl_root_f_solver * s = gsl_root_f_solver_alloc(T, f, x) ;
+  gsl_root_fsolver * s = gsl_root_fsolver_alloc(T, f, x) ;
   
   do 
     {
       iterations++ ;
-      gsl_root_f_solver_iterate (s);
+      gsl_root_fsolver_iterate (s);
       status = gsl_root_test_interval(s->interval, REL_EPSILON, ABS_EPSILON);
     }
   while (status == GSL_CONTINUE && iterations < MAX_ITERATIONS);
 
   gsl_test (status, "%s, %s (%g obs vs %g expected) ", 
-	    s->name, description, s->root, correct_root);
+	    gsl_root_fsolver_name(s), description, s->root, correct_root);
 
   /* check the validity of the returned result */
 
@@ -144,7 +144,7 @@ test_f (const gsl_root_f_solver_type * T, const char * description, gsl_function
 }
 
 void
-test_f_e (const gsl_root_f_solver_type * T, 
+test_f_e (const gsl_root_fsolver_type * T, 
 	  const char * description, gsl_function *f,
 	  double lower_bound, double upper_bound, double correct_root)
 {
@@ -152,7 +152,7 @@ test_f_e (const gsl_root_f_solver_type * T,
   int iterations = 0;
   gsl_interval x = {lower_bound, upper_bound} ;
 
-  gsl_root_f_solver * s = gsl_root_f_solver_alloc(T, f, x) ;
+  gsl_root_fsolver * s = gsl_root_fsolver_alloc(T, f, x) ;
 
   if (s == 0) 
     {
@@ -163,7 +163,7 @@ test_f_e (const gsl_root_f_solver_type * T,
   do 
     {
       iterations++ ;
-      gsl_root_f_solver_iterate (s);
+      gsl_root_fsolver_iterate (s);
       status = gsl_root_test_interval(s->interval, REL_EPSILON, ABS_EPSILON);
     }
   while (status == GSL_CONTINUE && iterations < MAX_ITERATIONS);
@@ -174,20 +174,20 @@ test_f_e (const gsl_root_f_solver_type * T,
 }
 
 void
-test_fdf (const gsl_root_fdf_solver_type * T, const char * description, 
-	gsl_fdf *fdf, double root, double correct_root)
+test_fdf (const gsl_root_fdfsolver_type * T, const char * description, 
+	gsl_function_fdf *fdf, double root, double correct_root)
 {
   int status;
   int iterations = 0;
   double prev = 0 ;
 
-  gsl_root_fdf_solver * s = gsl_root_fdf_solver_alloc(T, fdf, root) ;
+  gsl_root_fdfsolver * s = gsl_root_fdfsolver_alloc(T, fdf, root) ;
 
   do 
     {
       iterations++ ;
       prev = s->root;
-      gsl_root_fdf_solver_iterate (s);
+      gsl_root_fdfsolver_iterate (s);
       status = gsl_root_test_delta(s->root, prev, REL_EPSILON, ABS_EPSILON);
     }
   while (status == GSL_CONTINUE && iterations < MAX_ITERATIONS);
@@ -210,15 +210,15 @@ test_fdf (const gsl_root_fdf_solver_type * T, const char * description,
 }
 
 void
-test_fdf_e (const gsl_root_fdf_solver_type * T, 
-	    const char * description, gsl_fdf *fdf,
+test_fdf_e (const gsl_root_fdfsolver_type * T, 
+	    const char * description, gsl_function_fdf *fdf,
 	    double root, double correct_root)
 {
   int status;
   int iterations = 0;
   double prev = 0 ;
 
-  gsl_root_fdf_solver * s = gsl_root_fdf_solver_alloc(T, fdf, root) ;
+  gsl_root_fdfsolver * s = gsl_root_fdfsolver_alloc(T, fdf, root) ;
 
   if (s == 0) 
     {
@@ -230,7 +230,7 @@ test_fdf_e (const gsl_root_fdf_solver_type * T,
     {
       iterations++ ;
       prev = s->root;
-      gsl_root_fdf_solver_iterate (s);
+      gsl_root_fdfsolver_iterate (s);
       status = gsl_root_test_delta(s->root, prev, REL_EPSILON, ABS_EPSILON);
     }
   while (status == GSL_CONTINUE && iterations < MAX_ITERATIONS);

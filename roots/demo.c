@@ -24,7 +24,7 @@ main ()
 {
   int status;
   int iterations = 0, max_iterations = 100;
-  gsl_root_f_solver *s;
+  gsl_root_fsolver *s;
   gsl_interval x =
   {0.0, 5.0};
   gsl_function F;
@@ -34,12 +34,12 @@ main ()
   F.function = &quadratic;
   F.params = &params;
 
-  s = gsl_root_f_solver_alloc (gsl_root_f_solver_bisection, &F, x);
+  s = gsl_root_fsolver_alloc (gsl_root_fsolver_bisection, &F, x);
 
   do
     {
       iterations++;
-      gsl_root_f_solver_iterate (s);
+      gsl_root_fsolver_iterate (s);
       status = gsl_root_test_interval (s->interval, 0.001, 0.001);
       printf ("%5d  %.5f [%.5f,%.5f]\n",
 	      iterations, s->root, s->interval.lower, s->interval.upper);
