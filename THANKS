@@ -159,3 +159,9 @@ patches
 * Christian T. Steigies <cts@debian.org> for a documentation fix
 
 * Teun Burgers <a.rburgers@freeler.nl> improvements to configure script
+
+* Olivier Andrieu <andrieu@ijm.jussieu.fr> bug report for Chebyschev
+memory leak
+
+* Hiroshi Imamura <hima@cmt.is.tohoku.ac.jp> extension to psi(1+iy)
+

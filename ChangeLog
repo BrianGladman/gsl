@@ -1,3 +1,8 @@
+Sun May 19 22:24:00 2002  Brian Gough  <bjg@network-theory.co.uk>
+
+	* configure.in: changed AM_PROG_LIBTOOL to AC_PROG_LIBTOOL,
+	use AC_SEARCH_LIBS to find math library
+
 Sat May 11 22:27:52 2002  Brian Gough  <bjg@network-theory.co.uk>
 
 	* configure.in (ac_cv_func_printf_longdouble): fixed ieee
