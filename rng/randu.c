@@ -44,7 +44,7 @@ static double randu_get_double (void *vstate);
 static void randu_set (void *state, unsigned long int s);
 
 static const long int a = 65539;
-static const unsigned long int m = 2147483648UL;
+/* static const unsigned long int m = 2147483648UL; */
 
 typedef struct
   {
