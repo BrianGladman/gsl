@@ -556,7 +556,7 @@ main (void)
 
   gsl_vector_view x = gsl_vector_view_array (x_init, p);
 
-  gsl_rng_type * T;
+  const gsl_rng_type * T;
   gsl_rng * r;
 
   gsl_rng_env_setup();

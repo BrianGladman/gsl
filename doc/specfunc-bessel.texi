@@ -39,7 +39,9 @@ order @var{n}, @math{J_n(x)}.
 @deftypefun int gsl_sf_bessel_Jn_array (int @var{nmin}, int @var{nmax}, double @var{x}, double @var{result_array}[])
 This routine computes the values of the regular cylindrical Bessel
 functions @math{J_n(x)} for @math{n} from @var{nmin} to @var{nmax}
-inclusive, storing the results in the array @var{result_array}.
+inclusive, storing the results in the array @var{result_array}.  The
+values are computed using recurrence relations, for efficiency, and
+therefore may differ slightly from the exact values.
 @comment Exceptional Return Values: GSL_EDOM, GSL_EUNDRFLW
 @end deftypefun
 
@@ -72,7 +74,9 @@ order @var{n}, @math{Y_n(x)}, for @math{x>0}.
 This routine computes the values of the irregular cylindrical Bessel
 functions @math{Y_n(x)} for @math{n} from @var{nmin} to @var{nmax}
 inclusive, storing the results in the array @var{result_array}.  The
-domain of the function is @math{x>0}.
+domain of the function is @math{x>0}.  The values are computed using
+recurrence relations, for efficiency, and therefore may differ slightly
+from the exact values.
 @comment Exceptional Return Values: GSL_EDOM, GSL_EOVRFLW, GSL_EUNDRFLW
 @end deftypefun
 
@@ -107,7 +111,8 @@ This routine computes the values of the regular modified cylindrical
 Bessel functions @math{I_n(x)} for @math{n} from @var{nmin} to
 @var{nmax} inclusive, storing the results in the array
 @var{result_array}.  The start of the range @var{nmin} must be positive
-or zero.
+or zero.  The values are computed using recurrence relations, for
+efficiency, and therefore may differ slightly from the exact values.
 @comment Domain: nmin >=0, nmax >= nmin 
 @comment Conditions: n=nmin,...,nmax, nmin >=0, nmax >= nmin 
 @comment Exceptional Return Values: GSL_EDOM, GSL_EOVRFLW, GSL_EUNDRFLW
@@ -139,7 +144,8 @@ This routine computes the values of the scaled regular cylindrical
 Bessel functions @math{\exp(-|x|) I_n(x)} for @math{n} from
 @var{nmin} to @var{nmax} inclusive, storing the results in the array
 @var{result_array}. The start of the range @var{nmin} must be positive
-or zero.
+or zero.  The values are computed using recurrence relations, for
+efficiency, and therefore may differ slightly from the exact values.
 @comment Domain: nmin >=0, nmax >= nmin 
 @comment Conditions:  n=nmin,...,nmax 
 @comment Exceptional Return Values: GSL_EUNDRFLW
@@ -178,7 +184,9 @@ This routine computes the values of the irregular modified cylindrical
 Bessel functions @math{K_n(x)} for @math{n} from @var{nmin} to
 @var{nmax} inclusive, storing the results in the array
 @var{result_array}. The start of the range @var{nmin} must be positive
-or zero. The domain of the function is @math{x>0}.
+or zero. The domain of the function is @math{x>0}. The values are
+computed using recurrence relations, for efficiency, and therefore
+may differ slightly from the exact values.
 @comment Conditions: n=nmin,...,nmax 
 @comment Domain: x > 0.0, nmin>=0, nmax >= nmin
 @comment Exceptional Return Values: GSL_EDOM, GSL_EOVRFLW, GSL_EUNDRFLW
@@ -210,10 +218,12 @@ function of order @var{n}, @math{\exp(x) K_n(x)}, for @math{x>0}.
 
 @deftypefun int gsl_sf_bessel_Kn_scaled_array (int @var{nmin}, int @var{nmax}, double @var{x}, double @var{result_array}[])
 This routine computes the values of the scaled irregular cylindrical
-Bessel functions @math{\exp(x) K_n(x)} for @math{n} from
-@var{nmin} to @var{nmax} inclusive, storing the results in the array
+Bessel functions @math{\exp(x) K_n(x)} for @math{n} from @var{nmin} to
+@var{nmax} inclusive, storing the results in the array
 @var{result_array}. The start of the range @var{nmin} must be positive
-or zero.  The domain of the function is @math{x>0}.
+or zero.  The domain of the function is @math{x>0}. The values are
+computed using recurrence relations, for efficiency, and therefore
+may differ slightly from the exact values.
 @comment Domain: x > 0.0, nmin >=0, nmax >= nmin 
 @comment Conditions: n=nmin,...,nmax 
 @comment Exceptional Return Values: GSL_EDOM, GSL_EUNDRFLW
@@ -261,6 +271,8 @@ functions @math{j_l(x)} for @math{l} from 0 to @var{lmax}
 inclusive  for @c{$lmax \geq 0$}
 @math{lmax >= 0} and @c{$x \geq 0$}
 @math{x >= 0}, storing the results in the array @var{result_array}.
+The values are computed using recurrence relations, for
+efficiency, and therefore may differ slightly from the exact values.
 @comment Domain: lmax >= 0 
 @comment Conditions: l=0,1,...,lmax 
 @comment Exceptional Return Values: GSL_EDOM, GSL_EUNDRFLW
@@ -319,6 +331,8 @@ This routine computes the values of the irregular spherical Bessel
 functions @math{y_l(x)} for @math{l} from 0 to @var{lmax}
 inclusive  for @c{$lmax \geq 0$}
 @math{lmax >= 0}, storing the results in the array @var{result_array}.
+The values are computed using recurrence relations, for
+efficiency, and therefore may differ slightly from the exact values.
 @comment Domain: lmax >= 0 
 @comment Conditions: l=0,1,...,lmax 
 @comment Exceptional Return Values: GSL_EUNDRFLW
@@ -369,6 +383,8 @@ cylindrical Bessel functions @math{\exp(-|x|) i_l(x)} for @math{l} from
 0 to @var{lmax} inclusive for @c{$lmax \geq 0$}
 @math{lmax >= 0}, storing the results in
 the array @var{result_array}. 
+The values are computed using recurrence relations, for
+efficiency, and therefore may differ slightly from the exact values.
 @comment Domain: lmax >= 0 
 @comment Conditions: l=0,1,...,lmax 
 @comment Exceptional Return Values: GSL_EUNDRFLW
@@ -421,6 +437,8 @@ spherical Bessel functions @math{\exp(x) k_l(x)} for @math{l} from
 0 to @var{lmax} inclusive for @c{$lmax \geq 0$}
 @math{lmax >= 0} and @math{x>0}, storing the results in
 the array @var{result_array}. 
+The values are computed using recurrence relations, for
+efficiency, and therefore may differ slightly from the exact values.
 @comment Domain: lmax >= 0 
 @comment Conditions: l=0,1,...,lmax 
 @comment Exceptional Return Values: GSL_EDOM, GSL_EUNDRFLW

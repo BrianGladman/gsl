@@ -172,7 +172,7 @@ struct data
 int
 main (void)
 @{
-  gsl_rng_type * T;
+  const gsl_rng_type * T;
   gsl_rng * r;
 
   struct data ntuple_row;

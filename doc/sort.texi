@@ -277,7 +277,7 @@ array,
 int 
 main ()
 @{
-  gsl_rng_type * T;
+  const gsl_rng_type * T;
   gsl_rng * r;
 
   int i, k = 5, N = 100000;

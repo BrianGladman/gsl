@@ -656,7 +656,7 @@ main ()
   double xl[3] = @{ 0, 0, 0 @};
   double xu[3] = @{ M_PI, M_PI, M_PI @};
 
-  gsl_rng_type *T;
+  const gsl_rng_type *T;
   gsl_rng *r;
 
   gsl_monte_function G = @{ &g, 3, 0 @};

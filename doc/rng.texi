@@ -278,7 +278,7 @@ gsl_rng * r ;  /* global generator */
 int 
 main ()
 @{
-  gsl_rng_type * T;
+  const gsl_rng_type * T;
 
   gsl_rng_env_setup() ;
 

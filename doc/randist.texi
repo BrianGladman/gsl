@@ -1630,7 +1630,7 @@ Poisson distribution with a mean of 3.
 int
 main ()
 @{
-  gsl_rng_type * T;
+  const gsl_rng_type * T;
   gsl_rng * r ;
 
   int i, n = 10;
