@@ -107,7 +107,7 @@ FUNCTION (gsl_vector, alloc_from_block) (TYPE(gsl_block) * block,
 			GSL_ENOMEM, 0);
     }
 
-  v->data = block->data + offset ;
+  v->data = block->data + MULTIPLICITY * offset ;
   v->size = n;
   v->stride = stride;
   v->block = 0;
@@ -147,7 +147,7 @@ FUNCTION (gsl_vector, alloc_from_vector) (TYPE(gsl_vector) * w,
 			GSL_ENOMEM, 0);
     }
 
-  v->data = w->data + w->stride * offset ;
+  v->data = w->data + MULTIPLICITY * w->stride * offset ;
   v->size = n;
   v->stride = stride * w->stride;
   v->block = 0;
@@ -191,7 +191,7 @@ FUNCTION(gsl_vector, view_from_vector) (TYPE(gsl_vector) * v,
       GSL_ERROR ("vector already has memory allocated to it", GSL_ENOMEM);
     }
 
-  v->data = base->data + base->stride * offset ;
+  v->data = base->data + MULTIPLICITY * base->stride * offset ;
   v->size = n;
   v->stride = base->stride * stride;
 

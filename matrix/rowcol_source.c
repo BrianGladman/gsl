@@ -49,7 +49,7 @@ FUNCTION (gsl_matrix, submatrix) (QUALIFIED_TYPE(gsl_matrix) * matrix,
       GSL_ERROR_VAL ("second dimension overflows matrix", GSL_EINVAL, s);
     }
 
-  s.data = matrix->data + i * matrix->tda + j;
+  s.data = matrix->data + MULTIPLICITY * (i * matrix->tda + j);
   s.size1 = m;
   s.size2 = n;
   s.tda = matrix->tda;
@@ -67,7 +67,7 @@ FUNCTION (gsl_matrix, row) (QUALIFIED_TYPE(gsl_matrix) * m, const size_t i)
       GSL_ERROR_VAL ("row index is out of range", GSL_EINVAL, v);
     }
 
-  v.data = m->data + i * m->tda;
+  v.data = m->data + i * MULTIPLICITY * m->tda;
   v.size = m->size2;
   v.stride = 1;
 
@@ -84,7 +84,7 @@ FUNCTION (gsl_matrix, column) (QUALIFIED_TYPE(gsl_matrix) * m, const size_t j)
       GSL_ERROR_VAL ("column index is out of range", GSL_EINVAL, v);
     }
 
-  v.data = m->data + j;
+  v.data = m->data + j * MULTIPLICITY;
   v.size = m->size1;
   v.stride = m->tda;
 

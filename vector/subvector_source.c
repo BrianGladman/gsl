@@ -32,7 +32,7 @@ FUNCTION(gsl_vector, subvector) (QUALIFIED_TYPE(gsl_vector) * v, size_t offset, 
       GSL_ERROR_VAL ("vector would extend past end of vector", GSL_EDOM, s);
     }
 
-  s.data = v->data +  v->stride * offset ;
+  s.data = v->data +  MULTIPLICITY * v->stride * offset ;
   s.size = n;
   s.stride = v->stride;
 
@@ -59,7 +59,7 @@ FUNCTION(gsl_vector, subvector_with_stride) (QUALIFIED_TYPE(gsl_vector) * v, siz
       GSL_ERROR_VAL ("vector would extend past end of vector", GSL_EDOM, s);
     }
 
-  s.data = v->data + v->stride * offset ;
+  s.data = v->data + MULTIPLICITY * v->stride * offset ;
   s.size = n;
   s.stride = v->stride * stride;
 

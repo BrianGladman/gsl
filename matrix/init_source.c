@@ -119,7 +119,7 @@ FUNCTION (gsl_matrix, alloc_from_block) (TYPE(gsl_block) * block,
 			GSL_ENOMEM, 0);
     }
 
-  m->data = block->data + offset;
+  m->data = block->data + MULTIPLICITY * offset;
   m->size1 = n1;
   m->size2 = n2;
   m->tda = d2;

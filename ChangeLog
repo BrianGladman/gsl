@@ -1,3 +1,8 @@
+Mon Jun 12 22:18:27 2000  Brian Gough  <bjg@network-theory.co.uk>
+
+	* Makefile.am (SUBLIBS): added missing complex lib to top-level
+ 	SUBLIBS
+
 Sun Jun 11 17:39:18 2000  Brian Gough  <bjg@network-theory.co.uk>
 
 	* gsl.spec (BuildRoot): fixed directory for install, it is now

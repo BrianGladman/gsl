@@ -40,7 +40,8 @@ FUNCTION (gsl_matrix, memcpy) (TYPE (gsl_matrix) * dest,
       {
         for (j = 0; j < MULTIPLICITY * src_size2; j++)
           {
-            dest->data[dest_tda * i + j] = src->data[src_tda * i + j];
+            dest->data[MULTIPLICITY * dest_tda * i + j] 
+              = src->data[MULTIPLICITY * src_tda * i + j];
           }
       }
   }
@@ -72,9 +73,10 @@ FUNCTION (gsl_matrix, swap) (TYPE (gsl_matrix) * dest,
       {
         for (j = 0; j < MULTIPLICITY * src_size2; j++)
           {
-            ATOMIC tmp = src->data[src_tda * i + j];
-            src->data[src_tda * i + j] = dest->data[dest_tda * i + j];
-            dest->data[dest_tda * i + j] = tmp ;
+            ATOMIC tmp = src->data[MULTIPLICITY * src_tda * i + j];
+            src->data[MULTIPLICITY * src_tda * i + j] 
+              = dest->data[MULTIPLICITY * dest_tda * i + j];
+            dest->data[MULTIPLICITY * dest_tda * i + j] = tmp ;
           }
       }
   }
