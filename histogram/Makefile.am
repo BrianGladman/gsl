@@ -6,10 +6,9 @@ INCLUDES= -I$(top_builddir)
 
 
 check_PROGRAMS = test test2d test_resample test2d_resample test_trap test2d_trap
-check_SCRIPTS = test_gsl_histogram.sh
 
-TESTS = test test2d test_resample test2d_resample test_trap test2d_trap test_gsl_histogram.sh
-EXTRA_DIST = test_gsl_histogram.sh urand.c
+TESTS = test test2d test_resample test2d_resample test_trap test2d_trap
+EXTRA_DIST = urand.c
 
 noinst_HEADERS = urand.c
 

@@ -27,6 +27,8 @@ gsl_randist_LDADD = libgsl.la cblas/libgslcblas.la
 gsl_histogram_SOURCES = gsl-histogram.c
 gsl_histogram_LDADD = libgsl.la cblas/libgslcblas.la
 
+check_SCRIPTS = test_gsl_histogram.sh
+TESTS = test_gsl_histogram.sh
 
 #bin_PROGRAMS = main dummy
 #dummy_SOURCES = version.c
