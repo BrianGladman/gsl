@@ -122,7 +122,7 @@ gsl_linalg_symmtd_unpack (const gsl_matrix * A, const gsl_vector * tau,
 {
   if (A->size1 !=  A->size2)
     {
-      GSL_ERROR ("matrix A must be squre", GSL_ENOTSQR);
+      GSL_ERROR ("matrix A must be square", GSL_ENOTSQR);
     }
   else if (tau->size + 1 != A->size1)
     {
@@ -187,7 +187,7 @@ gsl_linalg_symmtd_unpack_dsd (const gsl_matrix * A,
 {
   if (A->size1 !=  A->size2)
     {
-      GSL_ERROR ("matrix A must be squre", GSL_ENOTSQR);
+      GSL_ERROR ("matrix A must be square", GSL_ENOTSQR);
     }
   else if (d->size != A->size1)
     {
