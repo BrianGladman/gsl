@@ -375,8 +375,8 @@ bsimp_alloc (size_t dim)
 static int
 bsimp_apply (void *vstate,
              size_t dim,
-             const double t,
-             const double h,
+             double t,
+             double h,
              double y[],
              double yerr[],
              const double dydt_in[],

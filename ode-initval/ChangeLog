@@ -1,3 +1,8 @@
+2004-05-28  Brian Gough  <bjg@network-theory.co.uk>
+
+	* bsimp.c (bsimp_apply): fix prototype of function to match
+	definition in typedef by removing const on double args.
+
 Sat Aug  3 19:02:37 2002  Brian Gough  <bjg@network-theory.co.uk>
 
 	* cscal.c (struct): use matlab style error control, with scalar
