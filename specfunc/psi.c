@@ -488,7 +488,7 @@ gsl_sf_psi_1piy_e(const double y, gsl_sf_result * result)
   if(ay > 1000.0) {
     /* [Abramowitz+Stegun, 6.3.19] */
     const double yi2 = 1.0/(ay*ay);
-    const double lny = log(y); /* FIXME: y < 0 ?? */
+    const double lny = log(ay);
     const double sum = yi2 * (1.0/12.0 + 1.0/120.0 * yi2 + 1.0/252.0 * yi2*yi2);
     result->val = lny + sum;
     result->err = 2.0 * GSL_DBL_EPSILON * (fabs(lny) + fabs(sum));
@@ -497,7 +497,7 @@ gsl_sf_psi_1piy_e(const double y, gsl_sf_result * result)
   else if(ay > 10.0) {
     /* [Abramowitz+Stegun, 6.3.19] */
     const double yi2 = 1.0/(ay*ay);
-    const double lny = log(y);
+    const double lny = log(ay);
     const double sum = yi2 * (1.0/12.0 +
                          yi2 * (1.0/120.0 +
 	                   yi2 * (1.0/252.0 +

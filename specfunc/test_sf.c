@@ -1184,6 +1184,12 @@ int test_psi(void)
   TEST_SF(s, gsl_sf_psi_1piy_e, (100.0, &r),  4.605178519404762003, TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_psi_1piy_e, (2000.0, &r), 7.600902480375416216, TEST_TOL0, GSL_SUCCESS);
 
+  TEST_SF(s, gsl_sf_psi_1piy_e, (-0.8, &r), -0.07088340212750589223, TEST_TOL1, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_psi_1piy_e, (-1.0, &r),  0.09465032062247697727, TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_psi_1piy_e, (-5.0, &r),  1.6127848446157465854, TEST_TOL2, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_psi_1piy_e, (-100.0, &r),  4.605178519404762003, TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_psi_1piy_e, (-2000.0, &r), 7.600902480375416216, TEST_TOL0, GSL_SUCCESS);
+
   TEST_SF(s, gsl_sf_psi_1_int_e, (5, &r), 0.22132295573711532536,    TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_psi_1_int_e, (100, &r), 0.010050166663333571395, TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_psi_1_int_e, (110, &r), 0.009132356622022545705, TEST_TOL0, GSL_SUCCESS);
