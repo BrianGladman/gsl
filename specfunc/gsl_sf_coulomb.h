@@ -81,8 +81,7 @@ gsl_sf_coulomb_wave_FG_impl(const double eta, const double x,
 			    double * exp_F, double * exp_G);
 
 
-/* F_L(eta,x)
- */
+/* F_L(eta,x) as array */
 int gsl_sf_coulomb_wave_F_array_impl(
   double lam_min, int kmax,
   double eta, double x,
@@ -96,8 +95,7 @@ int gsl_sf_coulomb_wave_F_array_e(
   double * F_exponent
   );
 
-/* F_L(eta,x), G_L(eta,x)
- */
+/* F_L(eta,x), G_L(eta,x) as arrays */
 int gsl_sf_coulomb_wave_FG_array_impl(double lam_min, int kmax,
                                 double eta, double x,
                                 double * fc_array, double * gc_array,
@@ -111,22 +109,21 @@ int gsl_sf_coulomb_wave_FG_array_e(double lam_min, int kmax,
 			     double * G_exponent
                              );
 
-/* F_L(eta,x), G_L(eta,x), F'_L(eta,x), G'_L(eta,x)
- */
-int gsl_sf_coulomb_wave_FGp_impl(double lam_min, int kmax,
-                                 double eta, double x,
-                                 gsl_sf_result * fc, gsl_sf_result * fcp,
-                                 gsl_sf_result * gc, gsl_sf_result * gcp,
-				 double * F_exponent,
-				 double * G_exponent
-	      	      	         );
-int gsl_sf_coulomb_wave_FGp_e(double lam_min, int kmax,
-                              double eta, double x,
-                              gsl_sf_result * fc, gsl_sf_result * fcp,
-                              gsl_sf_result * gc, gsl_sf_result * gcp,
-			      double * F_exponent,
-			      double * G_exponent
-	      	      	      );
+/* F_L(eta,x), G_L(eta,x), F'_L(eta,x), G'_L(eta,x) as arrays */
+int gsl_sf_coulomb_wave_FGp_array_impl(double lam_min, int kmax,
+                                double eta, double x,
+                                double * fc_array, double * fcp_array,
+				double * gc_array, double * gcp_array,
+				double * F_exponent,
+				double * G_exponent
+                                );
+int gsl_sf_coulomb_wave_FGp_array_e(double lam_min, int kmax,
+                             double eta, double x,
+                             double * fc_array, double * fcp_array,
+			     double * gc_array, double * gcp_array,
+			     double * F_exponent,
+			     double * G_exponent
+                             );
 
 /* Coulomb wave function divided by the argument,
  * F(xi, eta)/xi. This is the function which reduces to

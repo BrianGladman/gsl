@@ -191,8 +191,12 @@ gsl_sf_log_1plusx_impl(const double x, gsl_sf_result * result)
     const double c3 = -1.0/4.0;
     const double c4 =  1.0/5.0;
     const double c5 = -1.0/6.0;
-    const double c6 = -1.0/7.0;
-    result->val = x * (1.0 + x*(c1 + x*(c2 + x*(c3 + x*(c4 + x*(c5 + x*c6))))));
+    const double c6 =  1.0/7.0;
+    const double c7 = -1.0/8.0;
+    const double c8 =  1.0/9.0;
+    const double c9 = -1.0/10.0;
+    const double t  =  c5 + x*(c6 + x*(c7 + x*(c8 + x*c9)));
+    result->val = x * (1.0 + x*(c1 + x*(c2 + x*(c3 + x*(c4 + x*t)))));
     result->err = GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
   }
@@ -229,8 +233,12 @@ gsl_sf_log_1plusx_mx_impl(const double x, gsl_sf_result * result)
     const double c3 = -1.0/4.0;
     const double c4 =  1.0/5.0;
     const double c5 = -1.0/6.0;
-    const double c6 = -1.0/7.0;
-    result->val = x*x * (c1 + x*(c2 + x*(c3 + x*(c4 + x*(c5 + x*c6)))));
+    const double c6 =  1.0/7.0;
+    const double c7 = -1.0/8.0;
+    const double c8 =  1.0/9.0;
+    const double c9 = -1.0/10.0;
+    const double t  =  c5 + x*(c6 + x*(c7 + x*(c8 + x*c9)));
+    result->val = x*x * (c1 + x*(c2 + x*(c3 + x*(c4 + x*t))));
     result->err = GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
   }
