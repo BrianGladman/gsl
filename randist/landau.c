@@ -519,7 +519,7 @@ gsl_ran_landau(const gsl_rng * r)
       56.123356, 59.103894
     };
   double X, U, V, RANLAN;
-  int I, i;
+  int I;
 
   X = gsl_rng_uniform_pos(r);
   U = 1000.0 * X;
