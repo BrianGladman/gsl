@@ -3,6 +3,7 @@ iterate (void *vstate, gsl_multifit_function_fdf * fdf, gsl_vector * x, gsl_vect
 {
   lmder_state_t *state = (lmder_state_t *) vstate;
 
+  const double delta = state->delta;
   const double xnorm = state->xnorm;
   const double fnorm = state->fnorm;
 
@@ -13,16 +14,15 @@ iterate (void *vstate, gsl_multifit_function_fdf * fdf, gsl_vector * x, gsl_vect
   gsl_vector *qtf = state->qtf;
   gsl_vector *x_trial = state->x_trial;
   gsl_vector *f_trial = state->f_trial;
-  gsl_vector *df = state->df;
-  gsl_vector *qtdf = state->qtdf;
   gsl_vector *rptdx = state->rptdx;
+  gsl_vector *newton = state->newton;
   gsl_vector *gradient = state->gradient;
   gsl_permutation *perm = state->perm;
 
   double prered, actred;
   double pnorm, fnorm1, fnorm1p, gnorm;
   double ratio;
-  double dirder, delta, par;
+  double dirder;
 
   double p1 = 0.1, p25 = 0.25, p5 = 0.5, p75 = 0.75, p0001 = 0.0001;
 
@@ -32,7 +32,7 @@ iterate (void *vstate, gsl_multifit_function_fdf * fdf, gsl_vector * x, gsl_vect
 
   /* Compute norm of scaled gradient */
 
-  gradient_direction (r, qtf, diag, perm, gradient);
+  compute_gradient_direction (r, perm, qtf, diag, gradient);
 
   { 
     size_t iamax = gsl_blas_idamax (gradient);
@@ -40,11 +40,11 @@ iterate (void *vstate, gsl_multifit_function_fdf * fdf, gsl_vector * x, gsl_vect
     gnorm = fabs(gsl_vector_get (gradient, iamax) / fnorm);
   }
 
-  /* Determine the levenberg-marquardt parameter */
+  /* Determine the Levenberg-Marquardt parameter */
 
 lm_iteration:
   
-  lmpar (r, qtf, diag, state->delta, state->newton, gradient, dx);
+  lmpar (r, perm, qtf, diag, delta, &(state->par), newton, gradient, dx);
 
   /* Take a trial step */
 
@@ -54,7 +54,7 @@ lm_iteration:
 
   if (state->iter == 1)
     {
-      if (pnorm < state->delta)
+      if (pnorm < delta)
 	{
 	  state->delta = pnorm;
 	}
@@ -80,7 +80,7 @@ lm_iteration:
 
   { 
     double t1 = fnorm1p / fnorm;
-    double t2 = (sqrt(par) * pnorm) / fnorm;
+    double t2 = (sqrt(state->par) * pnorm) / fnorm;
     
     prered = t1 * t1 + t2 * t2 / p5;
     dirder = -(t1 * t1 + t2 * t2);
@@ -101,10 +101,10 @@ lm_iteration:
 
   if (ratio > p25)
     {
-      if (par == 0 || ratio >= p75)
+      if (state->par == 0 || ratio >= p75)
         {
-          delta = pnorm / p5;
-          par *= p5;
+          state->delta = pnorm / p5;
+          state->par *= p5;
         }
     }
   else
@@ -113,7 +113,7 @@ lm_iteration:
 
       if (p1 * fnorm1 >= fnorm || temp < p1 ) temp = p1;
 
-      par /= temp;
+      state->par /= temp;
     }
 
   /* test for successful iteration, termination and stringent tolerances */
@@ -136,13 +136,21 @@ lm_iteration:
         {
           update_diag (J, diag);
         }
+
+      {
+        int signum;
+        gsl_linalg_QRPT_decomp (J, tau, perm, &signum);
+        gsl_linalg_QR_unpack (J, tau, q, r);
+      }
+      
+      return GSL_SUCCESS;
     }
   else if (fabs(actred) <= GSL_DBL_EPSILON  && prered <= GSL_DBL_EPSILON 
            && p5 * ratio <= 1.0)
     {
       return GSL_ETOLF ;
     }
-  else if (delta <= GSL_DBL_EPSILON * state->xnorm)
+  else if (state->delta <= GSL_DBL_EPSILON * state->xnorm)
     {
       return GSL_ETOLX;
     }
@@ -157,5 +165,5 @@ lm_iteration:
       goto lm_iteration;
     }
 
-  return GSL_SUCCESS;
+  return GSL_CONTINUE;
 }

@@ -39,6 +39,7 @@ typedef struct
     double xnorm;
     double fnorm;
     double delta;
+    double par;
     gsl_matrix *q;
     gsl_matrix *r;
     gsl_vector *tau;

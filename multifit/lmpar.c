@@ -17,150 +17,9 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#include <gsl/gsl_permute_vector_double.h>
+
 #include "qrsolv.c"
-
-static int
-lmpar (gsl_matrix * r, const gsl_vector * qtf,
-       const gsl_vector * diag, double delta,
-       gsl_vector * newton, gsl_vector * gradient, gsl_vector * p)
-{
-  double qnorm, gnorm, sgnorm, bnorm, temp, fp, fp_old, par_lower,
-    par_upper, par_c, dxnorm, wnorm;
-
-  compute_newton_direction (r, qtf, newton);
-
-#ifdef DEBUG
-  printf ("newton = ");
-  gsl_vector_fprintf (stdout, newton, "%g");
-  printf ("\n");
-#endif
-
-  /* Evaluate the function at the origin and test for acceptance of
-     the Gauss-Newton direction. */
-
-  qnorm = scaled_enorm (diag, newton);
-
-  fp = dxnorm - delta;
-
-  if (fp <= 0.1 * delta)
-    {
-      gsl_vector_memcpy (p, newton);
-#ifdef DEBUG
-      printf ("took newton (fp = %g, delta = %g)\n", fp, delta);
-#endif
-      return GSL_SUCCESS;
-    }
-
-  par_lower = fp / (delta * phider (newton, r));
-
-  compute_scaled_gradient (r, perm, qtf, diag, sg);
-
-  gnorm = enorm (sg);
-
-  par_upper =  gnorm / delta;
-
-  if (par > par_upper)
-    {
-      par = par_upper;
-    }
-  else if (par < par_lower)
-    {
-      par = par_lower;
-    }
-
-  if (par == 0)
-    {
-      par = gnorm / dxnorm;
-    }
-
-  /* Beginning of iteration */
-
-iteration:
-
-  iter++;
-
-  /* Evaluate the function at the current value of par */
-
-  if (par == 0)
-    {
-      par = GSL_DBL_MAX (0.001 * par_upper, GSL_DBL_MIN);
-    }
-
-  /* Compute wa1 = sqrt(par) diag */
-
-  {
-    size_t n = r->size2;
-    size_t i;  
-
-    double sqrt_par = sqrt (par);
-
-    for (i = 0; i < n; i++)
-      {
-        double di = gsl_vector_get (diag, i);
-        gsl_vector_set (wa1, i, sqrt_par * di);
-      }
-  }
-
-  qrsolv (r, perm, wa1, qtf, x, sdiag, wa2);
-
-  dxnorm = scaled_enorm (diag, x);
-
-  fp_old = fp;
-
-  fp = dxnorm - delta;
-
-  /* If the function is small enough, accept the current value of par */
-
-  if (fabs (fp) <= 0.1 * delta)
-    goto line220;
-
-  if (par_lower == 0 && fp <= fp_old && fp_old < 0)
-    goto line220;
-
-  /* Check for maximum number of iterations */
-
-  if (iter == 10)
-    goto line220;
-
-  /* Compute the Newton correction */
-
-  compute_newton_correction (r, sdiag, perm, x, diag, w);
-
-  wnorm = enorm (w);
-
-  par_c = fp / (delta * wnorm * wnorm);
-
-  /* Depending on the sign of the function, update par_lower or par_upper */
-
-  if (fp > 0)
-    {
-      if (par > par_lower)
-	{
-	  par_lower = par;
-	}
-    }
-  else if (fp < 0)
-    {
-      if (par < par_upper)
-	{
-	  par_upper = par;
-	}
-    }
-
-  /* Compute an improved estimate for par */
-
-  par = GSL_MAX_DBL (par_lower, par + par_c);
-
-  goto iteration;
-
-line220:
-
-  if (iter == 0)
-    par = 0;
-
-  return GSL_SUCCESS;
-}
-
 
 static size_t
 count_nsing (const gsl_matrix * r)
@@ -226,9 +85,9 @@ compute_newton_direction (const gsl_matrix * r, const gsl_permutation * perm,
 
 static void
 compute_newton_correction (const gsl_matrix * r, const gsl_vector * sdiag,
-			   const gsl_permutation * p, const gsl_vector * x,
+			   const gsl_permutation * p, gsl_vector * x,
                            double dxnorm,
-			   const gsl_vector * diag, const gsl_vector * w)
+			   const gsl_vector * diag, gsl_vector * w)
 {
   size_t n = r->size2;
   size_t i, j;
@@ -263,8 +122,9 @@ compute_newton_correction (const gsl_matrix * r, const gsl_vector * sdiag,
 }
 
 static double
-compute_phider (gsl_matrix * r, gsl_vector * x, double dxnorm, 
-                gsl_permutation * perm, gsl_vector * diag, gsl_vector * w)
+compute_phider (const gsl_matrix * r, const gsl_vector * x, double dxnorm, 
+                const gsl_permutation * perm, const gsl_vector * diag, 
+                gsl_vector * w)
 {
   /* If the jacobian is not rank-deficient then the Newton step
      provides a lower bound for the zero of the function. Otherwise
@@ -341,3 +201,156 @@ compute_gradient_direction (const gsl_matrix * r, const gsl_permutation * p,
       }
     }
 }
+
+static int
+lmpar (gsl_matrix * r, const gsl_permutation * perm, const gsl_vector * qtf,
+       const gsl_vector * diag, double delta, double * par_inout,
+       gsl_vector * newton, gsl_vector * gradient, gsl_vector * p)
+{
+  double qnorm, gnorm, fp, fp_old, par_lower, par_upper, par_c,
+    dxnorm, wnorm, phider;
+
+  double par = *par_inout;
+
+  size_t iter = 0;
+
+  compute_newton_direction (r, perm, qtf, newton);
+
+#ifdef DEBUG
+  printf ("newton = ");
+  gsl_vector_fprintf (stdout, newton, "%g");
+  printf ("\n");
+#endif
+
+  /* Evaluate the function at the origin and test for acceptance of
+     the Gauss-Newton direction. */
+
+  qnorm = scaled_enorm (diag, newton);
+
+  fp = dxnorm - delta;
+
+  if (fp <= 0.1 * delta)
+    {
+      gsl_vector_memcpy (p, newton);
+#ifdef DEBUG
+      printf ("took newton (fp = %g, delta = %g)\n", fp, delta);
+#endif
+      return GSL_SUCCESS;
+    }
+
+  phider = compute_phider (r, newton, dxnorm, perm, diag, w);
+
+  par_lower = fp / (delta * phider);
+
+  compute_scaled_gradient (r, perm, qtf, diag, gradient);
+
+  gnorm = enorm (gradient);
+
+  par_upper =  gnorm / delta;
+
+  if (par > par_upper)
+    {
+      par = par_upper;
+    }
+  else if (par < par_lower)
+    {
+      par = par_lower;
+    }
+
+  if (par == 0)
+    {
+      par = gnorm / dxnorm;
+    }
+
+  /* Beginning of iteration */
+
+iteration:
+
+  iter++;
+
+  /* Evaluate the function at the current value of par */
+
+  if (par == 0)
+    {
+      par = GSL_DBL_MAX (0.001 * par_upper, GSL_DBL_MIN);
+    }
+
+  /* Compute wa1 = sqrt(par) diag */
+
+  {
+    size_t n = r->size2;
+    size_t i;  
+
+    double sqrt_par = sqrt (par);
+
+    for (i = 0; i < n; i++)
+      {
+        double di = gsl_vector_get (diag, i);
+        gsl_vector_set (wa1, i, sqrt_par * di);
+      }
+  }
+
+  qrsolv (r, perm, wa1, qtf, x, sdiag, wa2);
+
+  dxnorm = scaled_enorm (diag, x);
+
+  fp_old = fp;
+
+  fp = dxnorm - delta;
+
+  /* If the function is small enough, accept the current value of par */
+
+  if (fabs (fp) <= 0.1 * delta)
+    goto line220;
+
+  if (par_lower == 0 && fp <= fp_old && fp_old < 0)
+    goto line220;
+
+  /* Check for maximum number of iterations */
+
+  if (iter == 10)
+    goto line220;
+
+  /* Compute the Newton correction */
+
+  compute_newton_correction (r, sdiag, perm, x, dxnorm, diag, w);
+
+  wnorm = enorm (w);
+
+  par_c = fp / (delta * wnorm * wnorm);
+
+  /* Depending on the sign of the function, update par_lower or par_upper */
+
+  if (fp > 0)
+    {
+      if (par > par_lower)
+	{
+	  par_lower = par;
+	}
+    }
+  else if (fp < 0)
+    {
+      if (par < par_upper)
+	{
+	  par_upper = par;
+	}
+    }
+
+  /* Compute an improved estimate for par */
+
+  par = GSL_MAX_DBL (par_lower, par + par_c);
+
+  goto iteration;
+
+line220:
+
+  if (iter == 0)
+    par = 0;
+
+  *par_inout = par;
+
+  return GSL_SUCCESS;
+}
+
+
+

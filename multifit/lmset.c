@@ -13,6 +13,7 @@ set (void *vstate, gsl_multifit_function_fdf * fdf, gsl_vector * x, gsl_vector *
 
   GSL_MULTIFIT_FN_EVAL_F_DF (fdf, x, f, J);
 
+  state->par = 0;
   state->iter = 1;
   state->fnorm = enorm (f);
 
@@ -21,11 +22,15 @@ set (void *vstate, gsl_multifit_function_fdf * fdf, gsl_vector * x, gsl_vector *
   /* store column norms in diag */
 
   if (scale)
-    compute_diag (J, diag);
+    {
+      compute_diag (J, diag);
+    }
   else
-    gsl_vector_set_all (diag, 1.0);
+    {
+      gsl_vector_set_all (diag, 1.0);
+    }
 
-  /* set delta to factor |D x| or to factor if |D x| is zero */
+  /* set delta to 100 |D x| or to 100 if |D x| is zero */
 
   state->delta = compute_delta (diag, x);
 

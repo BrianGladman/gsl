@@ -29,7 +29,7 @@ static double
 compute_delta (gsl_vector * diag, gsl_vector * x)
 {
   double Dx = scaled_enorm (diag, x);
-  double factor = 100;
+  double factor = 100;  /* generally recommended value from MINPACK */
 
   return (Dx > 0) ? factor * Dx : factor;
 }
@@ -50,25 +50,6 @@ compute_actual_reduction (double fnorm, double fnorm1)
     }
 
   return actred;
-}
-
-static double
-compute_predicted_reduction (double fnorm, double fnorm1, double pnorm,
-			     double par)
-{
-  double prered;
-
-  if (fnorm1 < fnorm)
-    {
-      double u = fnorm1 / fnorm;
-      prered = 1 - u * u;
-    }
-  else
-    {
-      prered = 0;
-    }
-
-  return prered;
 }
 
 static void
@@ -165,22 +146,5 @@ compute_trial_step (gsl_vector * x, gsl_vector * dx, gsl_vector * x_trial)
       double xi = gsl_vector_get (x, i);
       gsl_vector_set (x_trial, i, xi + pi);
     }
-}
-
-static double enorm_sum (const gsl_vector * a, const gsl_vector * b);
-
-static double
-enorm_sum (const gsl_vector * a, const gsl_vector * b)
-{
-  double e2 = 0;
-  size_t i, n = a->size;
-  for (i = 0; i < n; i++)
-    {
-      double ai = gsl_vector_get (a, i);
-      double bi = gsl_vector_get (b, i);
-      double u = ai + bi;
-      e2 += u * u;
-    }
-  return sqrt (e2);
 }
 

@@ -61,7 +61,7 @@ typedef struct
   {
     const char *name;
     size_t size;
-    int (*alloc) (void *state, size_t n);
+    int (*alloc) (void *state, size_t n, size_t p);
     int (*set) (void *state, gsl_multifit_function * function, gsl_vector * x, gsl_vector * f, gsl_vector * dx);
     int (*iterate) (void *state, gsl_multifit_function * function, gsl_vector * x, gsl_vector * f, gsl_vector * dx);
     void (*free) (void *state);
@@ -118,7 +118,7 @@ typedef struct
   {
     const char *name;
     size_t size;
-    int (*alloc) (void *state, size_t n);
+    int (*alloc) (void *state, size_t n, size_t p);
     int (*set) (void *state, gsl_multifit_function_fdf * fdf, gsl_vector * x, gsl_vector * f, gsl_matrix * J, gsl_vector * dx);
     int (*iterate) (void *state, gsl_multifit_function_fdf * fdf, gsl_vector * x, gsl_vector * f, gsl_matrix * J, gsl_vector * dx);
     void (*free) (void *state);
