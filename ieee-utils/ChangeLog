@@ -1,3 +1,8 @@
+2005-02-11  Brian Gough  <bjg@network-theory.co.uk>
+
+	* fp-gnuc99.c (gsl_ieee_set_mode): added an #ifdef for the default
+	round to nearest mode
+
 2003-12-20  Brian Gough  <bjg@network-theory.co.uk>
 
 	* fp-gnuc99.c (_GNU_SOURCE): define _GNU_SOURCE when including

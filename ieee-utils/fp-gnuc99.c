@@ -78,7 +78,11 @@ gsl_ieee_set_mode (int precision, int rounding, int exception_mask)
 #endif
       break ;
     default:
+#ifdef FE_TONEAREST
       fesetround (FE_TONEAREST) ;
+#else
+      GSL_ERROR ("default round-to-nearest mode is not supported by <fenv.h>", GSL_EUNSUP) ;
+#endif
     }
 
   /* Turn on all the exceptions apart from 'inexact' */
