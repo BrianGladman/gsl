@@ -282,3 +282,5 @@ gsl_ran_hypergeometric_pdf
 * Alexei Podtelezhnikov <apodtele@mccammon.ucsd.edu> patch for sphere.c
 
 * Neil Bushong <bushong@mh-4426b.ucsd.edu> documentation typo bug report
+
+* Brad Bell <brad@apl.washington.edu> documentation bug report

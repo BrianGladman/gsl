@@ -57,14 +57,17 @@ described in Abramowitz & Stegun, Section 26.2.
 
 @deftypefun double gsl_sf_erf_Z (double @var{x})
 @deftypefunx int gsl_sf_erf_Z_e (double @var{x}, gsl_sf_result * @var{result})
-These routines compute the Gaussian probability function @math{Z(x) =
-(1/(2\pi)) \exp(-x^2/2)}.  
+These routines compute the Gaussian probability density function 
+@c{$Z(x) = (1/\sqrt{2\pi}) \exp(-x^2/2)$} 
+@math{Z(x) = (1/\sqrt@{2\pi@}) \exp(-x^2/2)}.  
 @end deftypefun
 
 @deftypefun double gsl_sf_erf_Q (double @var{x})
 @deftypefunx int gsl_sf_erf_Q_e (double @var{x}, gsl_sf_result * @var{result})
 These routines compute the upper tail of the Gaussian probability
-function @math{Q(x) = (1/(2\pi)) \int_x^\infty dt \exp(-t^2/2)}.
+function 
+@c{$Q(x) = (1/\sqrt{2\pi}) \int_x^\infty dt \exp(-t^2/2)$}
+@math{Q(x) = (1/\sqrt@{2\pi@}) \int_x^\infty dt \exp(-t^2/2)}.
 @comment Exceptional Return Values: none
 @end deftypefun
 
