@@ -26,6 +26,7 @@ int main(int argc, char * argv[])
   double nu = 100.;
   int n = 2;
 
+/*
   for(n=0; n<=1; n++) {
     double y2 = gsl_sf_hydrogenicR_2(n, 1., 1.);
     y = gsl_sf_hydrogenicR_2_old(n, 1., 1.);
@@ -35,6 +36,7 @@ int main(int argc, char * argv[])
 	    y2
 	    );
   }
+*/
 
 /*
   for(x=xmin; x<xmax; x += dx) {
@@ -57,9 +59,9 @@ int main(int argc, char * argv[])
 */
 
 /*
-  gsl_sf_conical_sph_reg_array_impl(100, lambda, 0.5, &y, y_array);
+  gsl_sf_conical_sph_reg_array_impl(60, lambda, 0.51324, &y, y_array);
   
-  for(i=0; i<=100; i++) {
+  for(i=0; i<=60; i++) {
   printf("%3d   %22.17g    %22.17g\n",
 	    i,
 	    x,
@@ -67,6 +69,16 @@ int main(int argc, char * argv[])
 	    );
   }
 */
+
+  gsl_sf_legendre_Plm_array_e(60, 10, 0.51324, y_array);
+  
+  for(i=0; i<=60-10; i++) {
+  printf("%3d   %22.17g    %22.17g\n",
+	    i,
+	    x,
+	    y_array[i]
+	    );
+  }
 
   
   exit(0);

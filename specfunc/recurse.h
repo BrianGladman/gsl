@@ -39,7 +39,7 @@ int CONCAT(recurse_forward_simple, func) (                                    \
     f[n_min]     = f_n_min;                                                   \
     f[n_min + 1] = f_n_min_p1;                                                \
     for(n=n_min+2; n<=n_max; n++) {                                           \
-      f[n] = -REC_COEFF_A(n-1,parameters) * f[n-1] -REC_COEFF_B(n-1, parameters) * f[n-2]; \
+      f[n] = -REC_COEFF_A(n-1,parameters) * f[n-1] - REC_COEFF_B(n-1, parameters) * f[n-2]; \
     }                                                                         \
     *f_n_max = f[n_max];                                                      \
   }                                                                           \

@@ -115,8 +115,8 @@ static double conical_reg_series(const int N, const double mu, const double lamb
  * p[0] = lambda^2
  * p[1] = x/Sqrt(x^2 - 1)
  */
-#define REC_COEFF_A(n,p) (-(2.*n+1.)*p[1]/((n+1)*(n+1)+p[0]))
-#define REC_COEFF_B(n,p) (1./((n+1)*(n+1)+p[0]))
+#define REC_COEFF_A(n,p) (-(2.*(n)+1.)*p[1]/(((n)+1)*((n)+1)+p[0]))
+#define REC_COEFF_B(n,p) (1./(((n)+1)*((n)+1)+p[0]))
 GEN_RECURSE_BACKWARD_MINIMAL_SIMPLE(conical_sph_reg)
 #undef REC_COEFF_A
 #undef REC_COEFF_B
@@ -126,9 +126,20 @@ GEN_RECURSE_BACKWARD_MINIMAL_SIMPLE(conical_sph_reg)
  * p[0] = lambda^2
  * p[1] = x/Sqrt(1 - x^2)
  */
-#define REC_COEFF_A(n,p) ((2.*n+1.)*p[1]/((n+1)*(n+1)+p[0]))
-#define REC_COEFF_B(n,p) (-1./((n+1)*(n+1)+p[0]))
+#define REC_COEFF_A(n,p) ((2.*(n)+1.)*p[1]/(((n)+1)*((n)+1)+p[0]))
+#define REC_COEFF_B(n,p) (-1./(((n)+1)*((n)+1)+p[0]))
 GEN_RECURSE_FORWARD_SIMPLE(conical_sph_reg)
+#undef REC_COEFF_A
+#undef REC_COEFF_B
+
+/* P_{-1/2 + I lambda}^{-1/2 - n} (x)    -1 < x < 1
+ *
+ * p[0] = lambda^2
+ * p[1] = x/Sqrt(1 - x^2)
+ */
+#define REC_COEFF_A(n,p) ((2.*(n)+1.)*p[1]/(((n)+1)*((n)+1)+p[0]))
+#define REC_COEFF_B(n,p) (-1./(((n)+1)*((n)+1)+p[0]))
+GEN_RECURSE_BACKWARD_MINIMAL_SIMPLE(conical_sph_reg_xlt1)
 #undef REC_COEFF_A
 #undef REC_COEFF_B
 
@@ -142,9 +153,11 @@ int gsl_sf_conical_sph_reg_array_impl(const int lmax, const double lambda, const
     double p[2];
     p[0] = lambda*lambda;
     p[1] = x/sqrt(1.-x*x);
-    gsl_sf_conical_sph_irr_1_impl(lambda, 1-x, 1+x, &f0);  /* l = -1  */
-    gsl_sf_conical_sph_reg_0_impl(lambda, 1-x, 1+x, &f1);  /* l =  0  */
-    recurse_forward_simple_conical_sph_reg(lmax, -1, p, f0, f1, harvest, result);
+    // gsl_sf_conical_sph_irr_1_impl(lambda, 1-x, 1+x, &f0);  /* l = -1  */
+    gsl_sf_conical_sph_reg_0_impl(lambda, 1-x, 1+x, &f1);  /* l =  0  */ 
+    // recurse_forward_simple_conical_sph_reg(lmax, -1, p, f0, f1, harvest, result);
+    recurse_backward_minimal_simple_conical_sph_reg_xlt1(lmax+30, lmax, 0, p, f1, harvest, result);
+    
   }
   else if(x > 1.) {
     double f0;
