@@ -26,6 +26,10 @@
 #undef TYPE2
 #endif
 
+#ifdef USES_LONGDOUBLE
+#undef USES_LONGDOUBLE
+#endif
+
 #undef BASE
 #undef BASE_EPSILON
 #undef SHORT

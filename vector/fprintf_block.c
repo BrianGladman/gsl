@@ -1,5 +1,8 @@
 #include <stdio.h>
 
+
+#if !(defined(USES_LONGDOUBLE) && !defined(HAVE_PRINTF_LONGDOUBLE))
+
 int
 FUNCTION (gsl_block, fprintf) (FILE * stream, const ATOMIC * data,
 			       const size_t n,
@@ -64,3 +67,5 @@ FUNCTION (gsl_block, fscanf) (FILE * stream, ATOMIC * data,
 
   return GSL_SUCCESS;
 }
+
+#endif

@@ -8,6 +8,7 @@
 #define BASE gsl_complex_long_double
 #define SHORT complex_long_double
 #define ATOMIC long double
+#define USES_LONGDOUBLE 1
 #define MULTIPLICITY 2
 #define IN_FORMAT "%Lg"
 #define OUT_FORMAT "%Lg"
@@ -35,6 +36,7 @@
 #define BASE long double
 #define SHORT long_double
 #define ATOMIC long double
+#define USES_LONGDOUBLE 1
 #define MULTIPLICITY 1
 #define IN_FORMAT "%Lg"
 #define OUT_FORMAT "%Lg"
