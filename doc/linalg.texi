@@ -116,7 +116,8 @@ computed and stored in @var{residual}.
 These functions compute the inverse of a matrix @math{A} from its
 @math{LU} decomposition (@var{LU},@var{p}), storing the result in the
 matrix @var{inverse}. The inverse is computed by solving the system
-@math{A x = b} for each column of the identity matrix.
+@math{A x = b} for each column of the identity matrix.  It is preferable
+to avoid direct computation of the inverse whenever possible.
 @end deftypefun
 
 @cindex determinant of a matrix, by LU decomposition
