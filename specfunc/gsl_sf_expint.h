@@ -33,5 +33,7 @@ int gsl_sf_Chi_impl(double x, double * result);
 
 int gsl_sf_Si_impl(const double x, double * result);
 
+int gsl_sf_expint_3_impl(double x, double * result);
+
 
 #endif /* !GSL_EXPINT_H_ */

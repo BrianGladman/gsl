@@ -7,7 +7,9 @@
 #include <gsl_sf_airy.h>
 #include <gsl_sf_bessel.h>
 #include <gsl_sf_chebyshev.h>
+#include <gsl_sf_clausen.h>
 #include <gsl_sf_coulomb.h>
+#include <gsl_sf_debye.h>
 #include <gsl_sf_dilog.h>
 #include <gsl_sf_ellint.h>
 #include <gsl_sf_erf.h>

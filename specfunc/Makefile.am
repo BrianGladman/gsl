@@ -73,6 +73,7 @@ libgslspecfunc_a_SOURCES = 	\
 	ellint.c		\
 	erfc.c			\
 	expint.c		\
+	expint3.c		\
 	fermi_dirac.c		\
 	gamma.c			\
 	hyperg_2F1.c		\
