@@ -24,6 +24,7 @@ include_HEADERS = \
 	gsl_sf_poly.h		\
 	gsl_sf_pow_int.h 	\
 	gsl_sf_psi.h		\
+	gsl_sf_synchrotron.h	\
 	gsl_sf_trig.h		\
 	gsl_sf_zeta.h
 
@@ -88,6 +89,7 @@ libgslspecfunc_a_SOURCES = 	\
 	shint.c			\
 	sig2lamp.c		\
 	sinint.c		\
+	synchrotron.c		\
 #	t-erf.c			\
 	trig.c			\
 	zeta.c

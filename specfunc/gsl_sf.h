@@ -23,6 +23,7 @@
 #include <gsl_sf_poly.h>
 #include <gsl_sf_pow_int.h>
 #include <gsl_sf_psi.h>
+#include <gsl_sf_synchrotron.h>
 #include <gsl_sf_trig.h>
 #include <gsl_sf_zeta.h>
 
