@@ -271,6 +271,25 @@ replaced with EBADFUNC.  Possibly this is also the case in
 min/multimin/roots/multiroots.
 
 ----------------------------------------------------------------------
-Last assigned bug number = 33
+BUG#34 -- gsl_sf_bessel_yl_array should handle lmax=0
 
- 
+From: Kort Travis <travis@physik.uni-leipzig.de>
+Subject:parameter check typo in specfunc/bessel_y.c
+Date: Wed, 30 Mar 2005 09:30:02 +0200
+
+GSL version: 1.6
+
+filename: specfunc/bessel_y.c
+
+description:  This is a "typo" or design inconsistency, depending on how you look at it.
+
+If lmax == 0, the following function has a "domain error".  
+
+Perhaps I'm missing something, but this behavior is inconsistent with
+the behavior of "gsl_sf_bessel_jl_array" and there seems no valid
+numerical reason for this error (i.e. y0 exists and is well defined;
+two-dimensional arrays where one of the dimensions is "1" are well
+defined and have clearly predicable, cross-platform behavior; etc...).
+
+----------------------------------------------------------------------
+Last assigned bug number = 34
