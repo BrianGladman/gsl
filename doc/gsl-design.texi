@@ -227,6 +227,7 @@ numerical experts (or their graduate students) will contribute.
 * Code Reuse::                  
 * Standards and conventions::   
 * Background and Preparation::  
+* Choice of Algorithms::        
 * Documentation::               
 * Namespace::                   
 * Header files::                
@@ -368,8 +369,8 @@ completeness and simplicity.  Completeness refers to the ability to
 perform operations on different objects so that the group is
 "closed". In mathematics objects can be combined and operated on in an
 infinite number of ways.  For example, I can take the derivative of a
-scalar field wrt a vector and the derivative of a vector field wrt a
-scalar (along a path).
+scalar field with respect to a vector and the derivative of a vector
+field wrt a scalar (along a path).
 
 There is a definite tendency to unconsciously try to reproduce all these
 possibilities in a numerical library, by adding new features one by
@@ -389,15 +390,6 @@ It is better to choose simplicity over completeness.  In designing new
 parts of the library keep modules independent where possible. If
 interdependencies between modules are introduced be sure about where you
 are going to draw the line.
-
-Whenever possible choose algorithms which scale well and always remember
-to handle asymptotic cases.  This is particularly relevant for functions
-with integer arguments.  It is tempting to implement these using the
-simple @math{O(n)} algorithms used to define the functions, such as the
-many recurrence relations found in Abramowitz and Stegun.  While such
-methods might be acceptable for @math{n=O(10-100)} they will not be
-satisfactory for a user who needs to compute the same function for
-@math{n=1000000}.
 
 @node Code Reuse, Standards and conventions, Design of  Numerical Libraries, Design
 @section Code Reuse
@@ -489,7 +481,7 @@ indent -gnu -nut *.c *.h
 @noindent
 The @code{-nut} option converts tabs into spaces.
 
-@node Background and Preparation, Documentation, Standards and conventions, Design
+@node Background and Preparation, Choice of Algorithms, Standards and conventions, Design
 @section Background and Preparation
 
 Before implementing something be sure to research the subject
@@ -535,7 +527,25 @@ algorithms.  We want to implement existing algorithms whenever
 possible. Making minor improvements is ok, but don't let it be a
 time-sink.
 
-@node Documentation, Namespace, Background and Preparation, Design
+@node Choice of Algorithms, Documentation, Background and Preparation, Design
+@section Choice of Algorithms
+
+Whenever possible choose algorithms which scale well and always remember
+to handle asymptotic cases.  This is particularly relevant for functions
+with integer arguments.  It is tempting to implement these using the
+simple @math{O(n)} algorithms used to define the functions, such as the
+many recurrence relations found in Abramowitz and Stegun.  While such
+methods might be acceptable for @math{n=O(10-100)} they will not be
+satisfactory for a user who needs to compute the same function for
+@math{n=1000000}.
+
+Similarly, do not make the implicit assumption that multivariate data
+has been scaled to have components of the same size or O(1).  Algorithms
+should take care of any necessary scaling or balancing internally, and
+use appropriate norms (e.g. |Dx| where D is a diagonal scaling matrix,
+rather than |x|).
+
+@node Documentation, Namespace, Choice of Algorithms, Design
 @section Documentation
 Documentation: the project leaders should give examples of how things
 are to be documented.  High quality documentation is absolutely
