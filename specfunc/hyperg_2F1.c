@@ -82,7 +82,7 @@ static int hyperg_2F1_luke(const double a, const double b, const double c,
                            const double xin, 
 			   double * result, double * prec)
 {
-  const int nmax = 10000;
+  const int nmax = 20000;
   int n = 3;
   const double x  = -xin;
   const double x3 = x*x*x;
@@ -124,6 +124,43 @@ static int hyperg_2F1_luke(const double a, const double b, const double c,
 
     if(*prec < locEPS || n > nmax) break;
 
+#if defined(LUKE_INSTRUMENT)
+    printf("%20.15g   %20.15g", An, Bn);
+#endif
+
+    if(fabs(An) > 1.e5 || fabs(Bn) > 1.e5) {
+      An /= 1.e5;
+      Bn /= 1.e5;
+      Anm1 /= 1.e5;
+      Bnm1 /= 1.e5;
+      Anm2 /= 1.e5;
+      Bnm2 /= 1.e5;
+      Anm3 /= 1.e5;
+      Bnm3 /= 1.e5;
+
+#if defined(LUKE_INSTRUMENT)      
+      printf("   -");
+#endif
+    }
+    else if(fabs(An) < 1.e-5 || fabs(Bn) < 1.e-5) {
+      An *= 1.e5;
+      Bn *= 1.e5;
+      Anm1 *= 1.e5;
+      Bnm1 *= 1.e5;
+      Anm2 *= 1.e5;
+      Bnm2 *= 1.e5;
+      Anm3 *= 1.e5;
+      Bnm3 *= 1.e5;
+      
+#if defined(LUKE_INSTRUMENT) 
+      printf("   +");
+#endif
+    }
+
+#if defined(LUKE_INSTRUMENT)
+    printf("  %20.15g  \n", An/Bn);
+#endif
+
     n++;
     Bnm3 = Bnm2;
     Bnm2 = Bnm1;
@@ -141,15 +178,68 @@ static int hyperg_2F1_luke(const double a, const double b, const double c,
     return GSL_SUCCESS;
 }
 
+static void do_it(double a, double b, double c, double x)
+{
+  double y;
+  double prec;
+  int stat = hyperg_2F1_luke(a, b, c, x, &y, &prec);
+  printf("%5.3g  %5.3g  %5.3g   %10.6g", a, b, c, x);
+  printf("   ");
+  printf("%24.18g  %8.4g  %s", y, prec, gsl_strerror(stat));
+  printf("\n");
+}
+
 void testy(void)
 {
-  double y, prec;
-  double a = 30.0;
-  double b = 40.0;
-  double c = 1.0;
-  double x = 0.8;
-  int stat = gsl_sf_hyperg_2F1_impl(a, b, c, x, &y);
-  printf("%24.18g   %24.18g   %6.4g  %2d\n", x, y, prec, stat);
+  do_it(1.0, 1.0, 1.0, -1.0);
+  do_it(1.0, 1.0, 1.0, -0.8);
+  do_it(1.0, 1.0, 1.0, -0.2);
+  do_it(1.0, 1.0, 1.0, -1.e-10);
+  do_it(1.0, 1.0, 1.0,  1.e-10);
+  do_it(1.0, 1.0, 1.0,  0.2);
+  do_it(1.0, 1.0, 1.0,  0.8);
+
+  do_it(10.0, 1.0, 1.0, -1.0);
+  do_it(10.0, 1.0, 1.0, -0.8);
+  do_it(10.0, 1.0, 1.0, -0.2);
+  do_it(10.0, 1.0, 1.0, -1.e-10);
+  do_it(10.0, 1.0, 1.0,  1.e-10);
+  do_it(10.0, 1.0, 1.0,  0.2);
+  do_it(10.0, 1.0, 1.0,  0.8);
+  
+  do_it(50.0, 1.0, 1.0, -1.0);
+  do_it(50.0, 1.0, 1.0, -0.8);
+  do_it(50.0, 1.0, 1.0, -0.2);
+  do_it(50.0, 1.0, 1.0, -1.e-10);
+  do_it(50.0, 1.0, 1.0,  1.e-10);
+  do_it(50.0, 1.0, 1.0,  0.2);
+  do_it(50.0, 1.0, 1.0,  0.8);
+  
+  do_it(100.0, 1.0, 1.0, -1.0);
+  do_it(100.0, 1.0, 1.0, -0.8);
+  do_it(100.0, 1.0, 1.0, -0.2);
+  do_it(100.0, 1.0, 1.0, -1.e-10);
+  do_it(100.0, 1.0, 1.0,  1.e-10);
+  do_it(100.0, 1.0, 1.0,  0.2);
+  do_it(100.0, 1.0, 1.0,  0.8);
+
+  do_it(1.0, 1.0, 50.0, -1.0);
+  do_it(1.0, 1.0, 50.0, -0.8);
+  do_it(1.0, 1.0, 50.0, -0.2);
+  do_it(1.0, 1.0, 50.0, -1.e-10);
+  do_it(1.0, 1.0, 50.0,  1.e-10);
+  do_it(1.0, 1.0, 50.0,  0.2);
+  do_it(1.0, 1.0, 50.0,  0.8);
+  
+  do_it(50.0, 50.0, 1.0, -1.0);
+  do_it(50.0, 50.0, 1.0, -0.8);
+  do_it(50.0, 50.0, 1.0, -0.2);
+  do_it(50.0, 50.0, 1.0, -1.e-10);
+  do_it(50.0, 50.0, 1.0,  1.e-10);
+  do_it(50.0, 50.0, 1.0,  0.2);
+  do_it(50.0, 50.0, 1.0,  0.8);
+  
+
   exit(0);
 }
 
@@ -244,7 +334,59 @@ static int pow_omx(const double x, const double p, double * result)
   }
 }
 
+
 int gsl_sf_hyperg_2F1_impl(double a, double b, const double c,
+                           const double x,
+                           double * result)
+{
+  int a_neg_integer;
+  int b_neg_integer;
+  int c_neg_integer;
+  
+  if(fabs(x) >= 1.0) return GSL_EDOM;
+
+
+  a_neg_integer = ( a < 0.0  &&  fabs(a - rint(a)) < locEPS );
+  b_neg_integer = ( b < 0.0  &&  fabs(b - rint(b)) < locEPS );
+  c_neg_integer = ( c < 0.0  &&  fabs(c - rint(c)) < locEPS );
+
+  if(c_neg_integer) {
+    if(! (a_neg_integer && a > c + 0.1)) return GSL_EDOM;
+    if(! (b_neg_integer && b > c + 0.1)) return GSL_EDOM;
+  }  
+  if(fabs(c-b) < locEPS || fabs(c-a) < locEPS) {
+    return pow_omx(x, c-a-b, result);  /* (1-x)^(c-a-b) */
+  }
+
+
+  if(x < 0.0) {
+    double prec;
+    return hyperg_2F1_luke(a, b, c, x, result, &prec);
+  }
+  else {
+    double xi  = x/(x-1.0);
+    double pre;
+    double prec;
+    int stat_pre = pow_omx(x, -a, &pre);
+    if(stat_pre == GSL_EUNDRFLW) {
+      *result = 0.0;
+      return stat_pre;
+    }
+    else if(stat_pre == GSL_EOVRFLW) {
+      *result = 0.0; /* FIXME: should be Inf */
+      return stat_pre;
+    }
+    else {
+      double newF;
+      int stat_hyp = hyperg_2F1_luke(a, c-b, c, xi, &newF, &prec);
+      *result = pre * newF;
+      return stat_hyp;
+    }
+  }
+}
+
+
+int gsl_sf_hyperg_2F1_impl_old(double a, double b, const double c,
                            const double x,
                            double * result
                            )
@@ -451,7 +593,7 @@ int gsl_sf_hyperg_2F1_impl(double a, double b, const double c,
       double ln_dkfact;
       double p1 = -M_EULER;
       double p2, p3, p4;
-      gsl_lnfact_impl(ad, &ln_dkfact);
+      gsl_sf_lnfact_impl(ad, &ln_dkfact);
       term = exp(-ln_dkfact);
       gsl_sf_psi_impl(1 + ad, &p2);
       gsl_sf_psi_impl(a + d1, &p3);
