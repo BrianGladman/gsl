@@ -119,15 +119,15 @@ cspline_init (void * vstate, const double xa[], const double ya[],
     }
   
   {
-    gsl_vector g_vec = gsl_vector_view(state->g, sys_size);
-    gsl_vector diag_vec = gsl_vector_view(state->diag, sys_size);
-    gsl_vector offdiag_vec = gsl_vector_view(state->offdiag, sys_size);
-    gsl_vector solution_vec = gsl_vector_view ((state->c) + 1, sys_size);
+    gsl_vector_view g_vec = gsl_vector_view_array(state->g, sys_size);
+    gsl_vector_view diag_vec = gsl_vector_view_array(state->diag, sys_size);
+    gsl_vector_view offdiag_vec = gsl_vector_view_array(state->offdiag, sys_size);
+    gsl_vector_view solution_vec = gsl_vector_view_array ((state->c) + 1, sys_size);
     
-    int status = gsl_linalg_solve_symm_tridiag(&diag_vec, 
-                                               &offdiag_vec, 
-                                               &g_vec, 
-                                               &solution_vec);
+    int status = gsl_linalg_solve_symm_tridiag(&diag_vec.vector, 
+                                               &offdiag_vec.vector, 
+                                               &g_vec.vector, 
+                                               &solution_vec.vector);
     return status;
   }
 }
@@ -182,15 +182,15 @@ cspline_init_periodic (void * vstate, const double xa[], const double ya[],
     }
     
     {
-      gsl_vector g_vec = gsl_vector_view(state->g, sys_size);
-      gsl_vector diag_vec = gsl_vector_view(state->diag, sys_size);
-      gsl_vector offdiag_vec = gsl_vector_view(state->offdiag, sys_size);
-      gsl_vector solution_vec = gsl_vector_view ((state->c) + 1, sys_size);
+      gsl_vector_view g_vec = gsl_vector_view_array(state->g, sys_size);
+      gsl_vector_view diag_vec = gsl_vector_view_array(state->diag, sys_size);
+      gsl_vector_view offdiag_vec = gsl_vector_view_array(state->offdiag, sys_size);
+      gsl_vector_view solution_vec = gsl_vector_view_array ((state->c) + 1, sys_size);
       
-      int status = gsl_linalg_solve_symm_cyc_tridiag(&diag_vec, 
-                                                     &offdiag_vec, 
-                                                     &g_vec, 
-                                                     &solution_vec);
+      int status = gsl_linalg_solve_symm_cyc_tridiag(&diag_vec.vector, 
+                                                     &offdiag_vec.vector, 
+                                                     &g_vec.vector, 
+                                                     &solution_vec.vector);
       state->c[0] = state->c[max_index];
       
       return status;
@@ -234,7 +234,7 @@ cspline_eval (const void * vstate,
               gsl_interp_accel * a,
               double *y)
 {
-  cspline_state_t *state = (cspline_state_t *) vstate;
+  const cspline_state_t *state = (const cspline_state_t *) vstate;
 
   double x_lo, x_hi;
   double dx;
@@ -280,7 +280,7 @@ cspline_eval_deriv (const void * vstate,
                     gsl_interp_accel * a,
                     double *dydx)
 {
-  cspline_state_t *state = (cspline_state_t *) vstate;
+  const cspline_state_t *state = (const cspline_state_t *) vstate;
 
   double x_lo, x_hi;
   double dx;
@@ -326,7 +326,7 @@ cspline_eval_deriv2 (const void * vstate,
                      gsl_interp_accel * a,
                      double * y_pp)
 {
-  cspline_state_t *state = (cspline_state_t *) vstate;
+  const cspline_state_t *state = (const cspline_state_t *) vstate;
 
   double x_lo, x_hi;
   double dx;
@@ -372,7 +372,7 @@ cspline_eval_integ (const void * vstate,
                     double a, double b,
                     double * result)
 {
-  cspline_state_t *state = (cspline_state_t *) vstate;
+  const cspline_state_t *state = (const cspline_state_t *) vstate;
 
   size_t i, index_a, index_b;
   
