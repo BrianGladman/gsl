@@ -13,7 +13,7 @@
 #include <gsl_fft_halfcomplex.h>
 #include <gsl_test.h>
 
-#include "fft_signals.h"
+#include "signals.h"
 
 #include "compare.h"
 
