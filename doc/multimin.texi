@@ -30,27 +30,25 @@ invert its sign.
 @node Multimin Overview
 @section Overview
 
-Minimizing a function of several variables is somewhat more involved
-than minimizing a function of one variable.  Nonetheless, the multimin
-library builds upon the foundation of the one-dimensional
-minimization routines to create a flexible framework for finding such
-minima.  The library works with @math{N} dimensional functions with
-@math{P} parameters.  The methods in the multimin library all employ
-some type of gradient search algorithm.  In these methods, the
-gradient of the function to be minimized is calculated at location of
-the current best estimate of the minimum of the function. The gradient
-is used to determine a search direction for the next iteration of the
-minimizer.  A line search is made along this direction to hunt for an
-improved minimum and the process is repeated until stopping criteria
-are satisfied.  There are other methods besides gradient searches that
-can be used for finding a minimum of an N dimensional function; 
-these additional methods may be added in future.
+The multidimensional minimization routines build on the one-dimensional
+minimization algorithms to create a flexible framework for finding local
+minima.  The library minimizes functions in @math{N} dimensions using a
+variety of gradient search algorithms.  In these algorithms, the
+gradient of the function to be minimized is first calculated at the
+current best estimate of the minimum of the function. The gradient is
+used to determine a downhill search direction for the next iteration of
+the minimizer.  A line search is made along this direction to hunt for
+an improved minimum and the best estimate is updated to that point. This
+process is repeated until the location of the minimum is determined to
+sufficient accuracy.  There are other algorithms that can be used for
+finding local minima of @math{N}-dimensional functions and these may be
+added in future.
 
-A variety of bracketing algorithms are available within the minimization
-framework.  The user provides a high-level driver for the algorithms,
-and the library provides the individual functions necessary for each of
-the steps.  There are three main phases of the iteration.  The steps
-are,
+A variety of one-dimensional algorithms are available within the
+minimization framework.  The user provides a high-level driver for the
+algorithms, and the library provides the individual functions necessary
+for each of the steps.  There are three main phases of the iteration.
+The steps are,
 
 @itemize @bullet
 @item
@@ -72,21 +70,21 @@ derivatives).
 @section Caveats
 @cindex Multimin, caveats
 
-Note that minimization functions can only search for one minimum at a
-time.  When there are several minima in the search area, the first
-minimum to be found will be returned; however it is difficult to
-predict which of the minima this will be.  In most cases, no error
-will be reported if you try to find a minimum in an area where there
-is more than one.
+Note that minimization functions can only search for one local minimum
+at a time.  When there are several local minima in the search area, the
+first minimum to be found will be returned; however it is difficult to
+predict which of the minima this will be.  In most cases, no error will
+be reported if you try to find a local minimum in an area where there is
+more than one.
 
-It is also important to note that the minimization algorithms find
-local minima; there is no way to guarantee that a minimum, once found,
-is a global minimum of the function in question.
+It is also important to note that the minimization algorithms find local
+minima; there is no way to determine whether a minimum is a global
+minimum of the function in question.
 
 @node Initializing the Multidimensional Minimizer
 @section Initializing the Multidimensional Minimizer
 
-@deftypefun {gsl_multimin_fdf_minimizer *} gsl_multimin_fdf_minimizer_alloc (const gsl_multimin_fdf_function * @var{fdf}, const gsl_vector * @var{x}, gsl_min_bracketing_function @var{bracket}, const gsl_multimin_fdf_minimizer_type * @var{T})
+@deftypefun {gsl_multimin_fdfminimizer *} gsl_multimin_fdfminimizer_alloc (const gsl_multimin_fdf_function * @var{fdf}, const gsl_vector * @var{x}, gsl_min_bracketing_function @var{bracket}, const gsl_multimin_fdfminimizer_type * @var{T})
 
 This function returns a pointer to a a newly allocated instance of a
 minimizer of type @var{T} for the function @var{fdf}.  For example,
@@ -94,8 +92,8 @@ the following code creates an instance of a steepest descent
 minimizer using a Brent minimizer for the line search.
 
 @example
-s = gsl_multimin_fdf_minimizer_alloc(
-        gsl_multimin_fdf_minimizer_steepest_descent, 
+s = gsl_multimin_fdfminimizer_alloc(
+        gsl_multimin_fdfminimizer_steepest_descent, 
         &fdf, 
         x,                         
         gsl_min_find_bracket,         
@@ -107,23 +105,23 @@ returns a null pointer and the error handler is invoked with an error
 code of @code{GSL_ENOMEM}.
 @end deftypefun
 
-@deftypefun void gsl_multimin_fdf_minimizer_free (gsl_multimin_fdf_minimizer * @var{s})
+@deftypefun void gsl_multimin_fdfminimizer_free (gsl_multimin_fdfminimizer * @var{s})
 
 This function frees all the memory associated with the minimizer
 @var{s}.
 @end deftypefun
 
-@deftypefun {const char *} gsl_multimin_fdf_minimizer_name (const gsl_multimin_fdf_minimizer * @var{s})
+@deftypefun {const char *} gsl_multimin_fdfminimizer_name (const gsl_multimin_fdfminimizer * @var{s})
 
 This function returns a pointer to the name of the minimizer.  For example,
 
 @example
 printf("s is a '%s' minimizer\n", 
-       gsl_multimin_fdf_minimizer_name (s));
+       gsl_multimin_fdfminimizer_name (s));
 @end example
 
 @noindent
-would print something like @code{s is a 'conjugate_pr' minimizer}
+would print something like @code{s is a 'conjugate_pr' minimizer}.
 @end deftypefun
 
 @node Providing a function to minimize
@@ -177,18 +175,15 @@ my_fdf (const gsl_vector *x, void *params,
 @}
 
 int
-main()
+main(void)
 @{
-  gsl_multimin_function_fdf my_func =
-  @{
-    &my_f,
-    &my_df,
-    &my_fdf,
-    /* the dimensionality of the domain of f */
-    2,
-    /* no parameters, so a null pointer. */
-    0
-  @};
+  gsl_multimin_function_fdf my_func;
+
+  my_func.f = &my_f;
+  my_func.df = &my_df;
+  my_func.fdf = &my_fdf;
+  my_func.n = 2;
+  my_func.params = NULL;
 @}
 @end example
 
@@ -207,19 +202,19 @@ minimum along that direction.
 @node Multimin Stopping Criteria
 @section Stopping Criteria
 
-The norm of the gradient of a multidimensional function goes to zero
-at a minimum, in the same way as the magnitude of the first derivative
-of a one dimensional function goes to zero at a minimum.  In symbolic
-algebra, finding the point at which the norm of the gradient goes to
-zero would be a sufficient condition for locating an extremum (or an
-inflection point).  In numerical calculations, additional criteria may
-be necessary.  If the function is particularly shallow in the
-neighborhood of the minimum, or if the round-off error in the function
-evaluation is large, it may not be possible to rely solely on the norm
-of the gradient as a stopping criterion.  An additional requirement
-which can make the stopping criteria more robust is to demand that the
-estimate of the location of the minimum on successive iterations
-differ by more than some minimum distance.
+The gradient of a multidimensional function goes to zero at a minimum,
+in the same way that the first derivative of a one dimensional function
+goes to zero at a minimum.  In exact arithmetic, finding the point at
+which the norm of the gradient is zero would be a sufficient condition
+for locating an extremum (or an inflection point).  In practical
+numerical calculations, additional criteria are often necessary.  If the
+function is particularly shallow in the neighborhood of the minimum, or
+if the round-off error in the function evaluation is large, it is not
+always possible to rely solely on the norm of the gradient as a stopping
+criterion.  An additional requirement which can make the stopping
+criteria more robust is to demand that the estimate of the location of
+the minimum on successive iterations differ by more than some minimum
+distance.
 
 @node Multimin Algorithms
 @section Algorithms
@@ -232,7 +227,7 @@ is sometimes the case that the best approach is to start out with one
 algorithm and switch to another when the estimate of the minimum
 approaches the true minimum.
 
-@deffn {Minimization Method} gsl_multimin_fdf_minimizer_steepest_descent
+@deffn {Minimization Method} gsl_multimin_fdfminimizer_steepest_descent
 The steepest descent method is the most straightforward of the
 available algorithms.  When a point is examined during the hunt for
 the minimum, the gradient is calculated at that point and the next
@@ -252,11 +247,11 @@ the neighborhood of the minimum.  During each iteration, the gradient at
 the current evaluation point and a scaled gradient from the previous
 iteration are combined to produce the new search direction.
 
-@deffn {Minimization Method} gsl_multimin_fdf_minimizer_conjugate_pr
+@deffn {Minimizer} gsl_multimin_fdfminimizer_conjugate_pr
 The Polak-Ribiere conjugate gradient algorithm.
 @end deffn
 
-@deffn {Minimization Method} gsl_multimin_fdf_minimizer_conjugate_fr
+@deffn {Minimizer} gsl_multimin_fdfminimizer_conjugate_fr
 The Fletcher-Reeves conjugate gradient algorithm.
 @end deffn
 
@@ -268,194 +263,141 @@ hypersurface.  Some references suggest starting out with the steepest
 descent algorithm and switching to one of the conjugate gradient
 methods as the estimate of the minimum improves.
 
-@deffn {Minimization Method} gsl_multimin_fdf_minimizer_vector_bfgs
+@deffn {Minimizer} gsl_multimin_fdfminimizer_vector_bfgs
 The Broyden-Fletcher-Goldfarb-Shanno conjugate gradient method.
 @end deffn
-
 
 @node Multimin Examples
 @section Examples
 
-This example attempts to find the minimum of a paraboloid.  The
-location of the minimum is offset from the origin in @code{x} and
-@code{y}, and the function value at the minimum is non-zero.  The
-example shows the typical nested iteration of a multidimensional
-minimization routine.
+This example attempts to find the minimum of a paraboloid.  The location
+of the minimum is offset from the origin in @code{x} and @code{y}, and
+the function value at the minimum is non-zero.  The example shows the
+typical nested iteration of a multidimensional minimization routine.
+The first part of the program defines the function to be minimized,
 
 @smallexample
-#include <stdio.h>
-#include <gsl/gsl_multimin.h>
-#include <gsl/gsl_min.h>
-#include <gsl/gsl_blas.h>
-
-const double EPSABS_LINE = 1e-4;
-const double EPSREL_LINE = 1e-4;
-const double EPSABS = GSL_DBL_EPSILON;
-const unsigned int MAX_ITERATIONS_LINE = 100;
-const unsigned int MAX_ITERATIONS = 10000;
-
 /* The function we want to minimize.  It has a minimum at
-   f(dp[0],dp[1]) = 30.0 */ 
+   f(dp[0],dp[1]) = 30.0 */
 static double
-my_f (const gsl_vector *v, void *params)
+my_f (const gsl_vector * v, void *params)
 @{
   double x, y;
-  double *dp = (double *)params;
-  
-  x = gsl_vector_get(v, 0);
-  y = gsl_vector_get(v, 1);
- 
-  return 10.0 * (x - *dp) * (x - *dp) 
-    + 20.0 * (y - *(dp + 1)) * (y - *(dp + 1)) 
-    + 30.0;
+  double * dp = (double *) params;
+
+  x = gsl_vector_get (v, 0);
+  y = gsl_vector_get (v, 1);
+
+  return 10.0 * (x - dp[0]) * (x - dp[0])
+    + 20.0 * (y - dp[1]) * (y - dp[1]) + 30.0;
 @}
 
 /* The gradient of f, df = (df/dx, df/dy). */
-static void 
-my_df (const gsl_vector *v, void *params, gsl_vector *df)
+static void
+my_df (const gsl_vector * v, void *params, gsl_vector * df)
 @{
   double x, y;
-  double *dp = (double *)params;
-  
-  x = gsl_vector_get(v, 0);
-  y = gsl_vector_get(v, 1);
- 
-  gsl_vector_set(df, 0, 20.0 * (x - *dp));
-  gsl_vector_set(df, 1, 40.0 * (y - *(dp+1)));
+  double *dp = (double *) params;
+
+  x = gsl_vector_get (v, 0);
+  y = gsl_vector_get (v, 1);
+
+  gsl_vector_set (df, 0, 20.0 * (x - dp[0]));
+  gsl_vector_set (df, 1, 40.0 * (y - dp[1]));
 @}
 
 /* Calculate both f and df. */
-static void 
-my_fdf (const gsl_vector *x, void *params, double *f, gsl_vector *df) 
+static void
+my_fdf (const gsl_vector * x, void *params, double *f, gsl_vector * df)
 @{
-  *f = my_f(x, params); 
-  my_df(x, params, df);
+  *f = my_f (x, params);
+  my_df (x, params, df);
 @}
+@end smallexample
+@noindent
+The main program is given below,
+@smallexample
+#include <stdio.h>
+#include <gsl/gsl_min.h>
+#include <gsl/gsl_multimin.h>
+
+const double EPSABS = 1e-4;
+const double EPSREL = 1e-4;
+const unsigned int MAX_ITER = 10000;
 
 int
-main()
+main (void)
 @{
-  size_t iterations = 0, iterations_line = 0;
-  size_t restarting_period = 2;
-  int i, status, just_started = 1;
-  double minimum, a, b, sqr_dist, dist;
-  gsl_multimin_fdf_minimizer *s;
+  size_t i = 0, j = 0;
+  int status;
+  double minimum, a, b;
+  const gsl_multimin_fdfminimizer_type *T;
+  gsl_multimin_fdfminimizer *s;
 
   /* Set position of the minimum, v = (1,2). */
-  double par[2] = @{1.0, 2.0@}; 
+  double par[2] = @{ 1.0, 2.0 @};
 
-  gsl_multimin_function_fdf my_func =
-  @{
-    &my_f,
-    &my_df,
-    &my_fdf,
-    /* the dimensionality of the domain of f, R^2. */
-    2,
-    /* pointer to array of parameters for the function. */
-    (void *)&par 
-  @};
+  gsl_vector *x;
+  gsl_multimin_function_fdf my_func;
 
-  gsl_vector *x = gsl_vector_alloc(2);
-  gsl_vector *delta = gsl_vector_alloc(2);
+  my_func.f = &my_f;
+  my_func.df = &my_df;
+  my_func.fdf = &my_fdf;
+  my_func.n = 2;
+  my_func.params = &par;
 
   /* Initial guess for the location of the minimum, x = (10,10) */
-  for (i = 0; i < 2; i++) @{
-    gsl_vector_set(x, i, 10.0);
-  @}
-  
+
+  x = gsl_vector_alloc (2);
+  gsl_vector_set (x, 0, 10.0);
+  gsl_vector_set (x, 1, 10.0);
+
   /* Allocate a multidimensional minimizer. */
-  s = 
-    gsl_multimin_fdf_minimizer_alloc(gsl_multimin_fdf_minimizer_conjugate_fr, 
-                                     &my_func, 
-                                     x,
-                                     gsl_min_find_bracket,
-                                     gsl_min_fminimizer_brent);
-  do 
+  T = gsl_multimin_fdfminimizer_conjugate_fr;
+  s = gsl_multimin_fdfminimizer_alloc (T, &my_func, x,
+                                       gsl_min_find_bracket,
+                                       gsl_min_fminimizer_brent);
+  do
     @{
-      iterations++;
-      /* At each point, determine the best direction in which to step
-         to find the minimum. Along a line in that direction, attempt
-         to bracket the minimum. */
-      gsl_multimin_fdf_minimizer_next_direction(s);
-      status = gsl_multimin_fdf_minimizer_bracket(s, 10.0, 50);
-      if (status == GSL_FAILURE) 
-        @{
-          if (just_started)
-            @{
-              GSL_ERROR ("Can't find bracketing interval after restarting", 
-                         GSL_FAILURE);
-            @}
-          else
-            @{
-              gsl_multimin_fdf_minimizer_restart(s);
-              just_started = 1;
-              status = GSL_CONTINUE;
-              continue;
-            @}
-        @}
-      else 
-        @{
-          iterations_line = 0;
-          /* Once we've bracketed the minimum along the current line
-             search direction, use the one-dimensional minimizer
-             to find a minimum in `f' along that line. */
-          do 
-            @{
-              iterations_line++;
-              status = gsl_multimin_fdf_minimizer_iterate(s);
-          
-              minimum = gsl_min_fminimizer_minimum(s->line_search);
-              a = gsl_min_fminimizer_x_lower(s->line_search);
-              b = gsl_min_fminimizer_x_upper(s->line_search);
-              
-              status = gsl_min_test_interval(a, b, 
-                                             EPSABS_LINE, 
-                                             EPSREL_LINE);
-            @}
-          while (status == GSL_CONTINUE && 
-                 iterations_line < MAX_ITERATIONS_LINE);
-          
-            gsl_multimin_fdf_minimizer_best_step(s);
-        @}
-      if (iterations%restarting_period == 0)
-        @{
-          gsl_multimin_fdf_minimizer_restart(s);
-          just_started = 1;
-        @}
-      else
-        @{
-          just_started = 0;
-        @}
+      i++;
 
-      /* Found minimum along the line search direction.  See if 
-         it satisfies our criteria for stopping the multidimensional
-         search.  Stop if either of two criteria are met: 1), that
-         the norm of the gradient is within EPSABS of zero; or 2), that
-         the current best estimate of the location of the minimum is
-         within EPSABS of the previous estimate. */
-      gsl_vector_set(delta, 0, 
-                     (gsl_vector_get(s->history->x1, 0) -
-                      gsl_vector_get(s->history->x,  0)));
-      gsl_vector_set(delta, 1, 
-                     (gsl_vector_get(s->history->x1, 1) -
-                      gsl_vector_get(s->history->x,  1)));
+      gsl_multimin_fdfminimizer_next_direction (s);
 
-      gsl_blas_ddot(delta,delta,&sqr_dist);
-      dist = sqrt(sqr_dist);
-      status = gsl_multimin_test_gradient_sqr_norm(s->history,EPSABS);
+      status = gsl_multimin_fdfminimizer_bracket (s, 10.0, 50);
+
+      if (status == GSL_FAILURE)
+	break;
+
+      j = 0;
+
+      do
+	@{
+	  j++;
+	  status = gsl_multimin_fdfminimizer_iterate (s);
+
+	  minimum = gsl_min_fminimizer_minimum (s->line_search);
+	  a = gsl_min_fminimizer_x_lower (s->line_search);
+	  b = gsl_min_fminimizer_x_upper (s->line_search);
+
+	  status = gsl_min_test_interval (a, b, EPSABS, EPSREL);
+	@}
+      while (status == GSL_CONTINUE && j < MAX_ITER);
+
+      gsl_multimin_fdfminimizer_best_step (s);
+
+      status = gsl_multimin_test_gradient_sqr_norm (s->history, EPSABS);
+
+      if (status == GSL_SUCCESS)
+        printf ("Minimum found at:\n");
+
+      printf (" f(%8.5f,%8.5f) = %8.5f\n",
+	      gsl_vector_get (s->history->x, 0),
+	      gsl_vector_get (s->history->x, 1), s->history->f);
     @}
-  while (iterations <= MAX_ITERATIONS 
-         && status == GSL_CONTINUE
-           && (dist > EPSABS));
-  
-  printf ("Minimum found at:\n");
-  printf (" f(%8.5f,%8.5f) = %8.5f\n", 
-          gsl_vector_get(s->history->x,0),
-          gsl_vector_get(s->history->x,1),
-          s->history->f);
+  while (i < MAX_ITER && status == GSL_CONTINUE);
 
-  gsl_multimin_fdf_minimizer_free(s);
-  gsl_vector_free(x);
+  gsl_multimin_fdfminimizer_free (s);
+  gsl_vector_free (x);
 
   return 0;
 @}

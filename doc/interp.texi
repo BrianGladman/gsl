@@ -96,7 +96,10 @@ printf("interp uses '%s' interpolation\n",
        gsl_interp_name (interp));
 @end example
 @noindent
-would print something like @code{interp uses 'cspline' interpolation}
+would print something like,
+@example
+interp uses 'cspline' interpolation.
+@end example
 @end deftypefun
 
 @deftypefun {unsigned int} gsl_interp_min_size (const gsl_interp * @var{interp})
@@ -213,7 +216,7 @@ defined in the header file @file{gsl_spline.h}.
 @section Examples
 
 The following program demonstrates the use of the interpolation and
-spline functions.  It computes a Cubic spline interpolation of the
+spline functions.  It computes a cubic spline interpolation of the
 10-point dataset @math{(x_i, y_i)} where @math{x_i = i + \sin(i)/2} and
 @math{y_i = i + \cos(i^2)} for @math{i = 0 \dots 9}.
 

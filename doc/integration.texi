@@ -14,10 +14,8 @@ oscillatory integrals.  The library reimplements the algorithms used in
 Doncker-Kapenga, Uberhuber and Kahaner.  Fortran code for @sc{quadpack} is
 available on Netlib.
 
-These functions are declared in the header file
+The functions described in this chapter are declared in the header file
 @file{gsl_integration.h}.
-
-
 
 @menu
 * Numerical Integration Introduction::  
@@ -57,7 +55,7 @@ I = \int_a^b f(x) w(x) dx
 @noindent
 where @math{w(x)} is a weight function (for general integrands @math{w(x)=1}).
 The user provides absolute and relative error bounds 
-@c{$(\hbox{\it epsabs}, \hbox{\it epsrel})$}
+@c{$(\hbox{\it epsabs}, \hbox{\it epsrel}\,)$}
 @math{(epsabs, epsrel)} which specify the following accuracy requirement,
 
 @tex
@@ -121,11 +119,11 @@ following letters,
 @end display
 
 @noindent
-The algorithms are built on pairs of quadrature rules, a higher order rule
-and a lower order rule.  The higher order rule is used to compute the best
-approximation to an integral over a small range.  The difference between
-the higher order and lower order results gives an estimate of the error
-in the approximation.
+The algorithms are built on pairs of quadrature rules, a higher order
+rule and a lower order rule.  The higher order rule is used to compute
+the best approximation to an integral over a small range.  The
+difference between the results of the higher order rule and the lower
+order rule gives an estimate of the error in the approximation.
 
 @cindex Gauss-Kronrod quadrature
 The algorithms for general functions (without a weight function) are
@@ -191,7 +189,7 @@ subintervals are managed by a @code{gsl_integration_workspace} struct,
 which handles the memory for the subinterval ranges, results and error
 estimates.
 
-@deftypefun {gsl_integration_workspace *} gsl_integration_workspace_alloc (const size_t @var{n}) 
+@deftypefun {gsl_integration_workspace *} gsl_integration_workspace_alloc (size_t @var{n}) 
 This function allocates a workspace sufficient to hold @var{n} double
 precision intervals, their integration results and error estimates.
 @end deftypefun
@@ -305,19 +303,18 @@ interval @math{(0,1]} using the transformation @math{x = (1-t)/t},
 \beforedisplay
 $$
 \int_{-\infty}^{+\infty} dx \, f(x) 
-  = \int_0^1 dt \, (f((1-t)/t) + f(-(1-t)/t))/t^2
+  = \int_0^1 dt \, (f((1-t)/t) + f(-(1-t)/t))/t^2.
 $$
 \afterdisplay
 @end tex
 @ifinfo
 @example
 \int_@{-\infty@}^@{+\infty@} dx f(x) = 
-     \int_0^1 dt (f((1-t)/t) + f((-1+t)/t))/t^2
+     \int_0^1 dt (f((1-t)/t) + f((-1+t)/t))/t^2.
 @end example
 @end ifinfo
-
 @noindent
-and then integrated using the QAGS algorithm.  The normal 21-point
+It is then integrated using the QAGS algorithm.  The normal 21-point
 Gauss-Kronrod rule of QAGS is replaced by a 15-point rule, because the
 transformation can generate an integrable singularity at the origin.  In
 this case a lower-order rule is more efficient.
@@ -479,7 +476,7 @@ the case of error.
 
 @deftypefun int gsl_integration_qaws_table_set (gsl_integration_qaws_table * @var{t}, double @var{alpha}, double @var{beta}, int @var{mu}, int @var{nu})
 This function modifies the parameters @math{(\alpha, \beta, \mu, \nu)} of
-an existing @code{gsl_integration_qaws_table} struct @var{r}.
+an existing @code{gsl_integration_qaws_table} struct @var{t}.
 @end deftypefun
 
 @deftypefun void gsl_integration_qaws_table_free (gsl_integration_qaws_table * @var{t})
@@ -491,24 +488,23 @@ This function frees all the memory associated with the
 
 This function computes the integral of the function @math{f(x)} over the
 interval @math{(a,b)} with the singular weight function
-@math{(x-a)^\alpha (b-x)^\beta log^\mu (x-a) log^\nu (b-x)}.  The parameters 
+@math{(x-a)^\alpha (b-x)^\beta \log^\mu (x-a) \log^\nu (b-x)}.  The parameters 
 of the weight function @math{(\alpha, \beta, \mu, \nu)} are taken from the
-table @var{t}.
+table @var{t}.  The integral is,
 
 @tex
 \beforedisplay
 $$
 I = \int_a^b dx\, f(x) (x - a)^\alpha (b - x)^\beta 
-        \log^\mu (x - a) \log^\nu (b - x)
+        \log^\mu (x - a) \log^\nu (b - x).
 $$
 \afterdisplay
 @end tex
 @ifinfo
 @example
-I = \int_a^b dx f(x) (x-a)^alpha (b-x)^beta log^mu (x-a) log^nu (b-x)
+I = \int_a^b dx f(x) (x-a)^alpha (b-x)^beta log^mu (x-a) log^nu (b-x).
 @end example
 @end ifinfo
-
 @noindent
 The adaptive bisection algorithm of QAG is used.  When a subinterval
 contains one of the endpoints then a special 25-point modified
@@ -524,7 +520,7 @@ Gauss-Kronrod integration rule is used.
 The QAWO algorithm is designed for integrands with an oscillatory
 factor, @math{\sin(\omega x)} or @math{\cos(\omega x)}.  In order to
 work efficiently the algorithm requires a table of Chebyschev moments
-which is updated as the algorithm proceeds.
+which must be pre-computed with calls to the functions below.
 
 @deftypefun {gsl_integration_qawo_table *} gsl_integration_qawo_table_alloc (double @var{omega}, double @var{L}, enum gsl_integration_qawo_enum @var{sine}, size_t @var{n})
 
@@ -752,7 +748,8 @@ or roundoff error was detected in the extrapolation table.
 a non-integrable singularity or other bad integrand behavior was found
 in the integration interval.
 @item GSL_EDIVERGE
-the integral is divergent, or too slowly convergent.
+the integral is divergent, or too slowly convergent to be integrated
+numerically.
 @end table
 
 @node Numerical integration examples
@@ -791,7 +788,7 @@ double f (double x, void * params) @{
 @}
 
 int 
-main ()
+main (void)
 @{
   gsl_integration_workspace * w 
     = gsl_integration_workspace_alloc(1000);
@@ -816,9 +813,8 @@ main ()
 @end example
 
 @noindent
-The results show that the desired accuracy is achieved after 8
-subdivisions.  In fact, the extrapolation procedure used by @code{QAGS}
-produces an accuracy of almost twice as many digits.
+The results below show that the desired accuracy is achieved after 8
+subdivisions. 
 
 @example
 bash$ ./a.out 
@@ -830,9 +826,10 @@ intervals =  8
 @end example
 
 @noindent
-The error estimate returned by the extrapolation procedure is larger
-than the actual error, giving a margin of safety of one order of
-magnitude.
+In fact, the extrapolation procedure used by @code{QAGS} produces an
+accuracy of almost twice as many digits.  The error estimate returned by
+the extrapolation procedure is larger than the actual error, giving a
+margin of safety of one order of magnitude.
 
 
 @node Numerical integration References and Further Reading

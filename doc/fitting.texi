@@ -278,7 +278,7 @@ associated one standard-deviation error bars.
 #include <gsl/gsl_fit.h>
 
 int
-main ()
+main (void)
 @{
   int i, n = 4;
   double x[4] = @{ 1970, 1980, 1990, 2000 @};
@@ -406,7 +406,8 @@ main (int argc, char **argv)
 
   for (i = 0; i < n; i++)
     @{
-      int count = fscanf(stdin, "%lg %lg %lg", &xi, &yi, &ei);
+      int count = fscanf(stdin, "%lg %lg %lg",
+                         &xi, &yi, &ei);
 
       if (count != 3)
         @{
@@ -427,7 +428,8 @@ main (int argc, char **argv)
   @{
     gsl_multifit_linear_workspace * work 
       = gsl_multifit_linear_alloc (n, 3);
-    gsl_multifit_wlinear (X, w, y, c, cov, &chisq, work);
+    gsl_multifit_wlinear (X, w, y, c, cov,
+                          &chisq, work);
     gsl_multifit_linear_free (work);
   @}
 

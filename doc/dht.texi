@@ -17,7 +17,7 @@ Transforms (DHTs).  The functions are declared in the header file
 The discrete Hankel transform acts on a vector of sampled data, where
 the samples are assumed to have been taken at points related to the
 zeroes of a Bessel function of fixed order; compare this to the case of
-the discrete Fourier transform, where samples are token at points
+the discrete Fourier transform, where samples are taken at points
 related to the zeroes of the sine or cosine function.
 
 Specifically, let @math{f(t)} be a function on the unit interval.

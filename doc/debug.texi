@@ -48,10 +48,13 @@ To debug this problem we start @code{gdb}, using the file
 
 @smallexample
 bash$ gdb test_trap
-GDB is free software and you are welcome to distribute copies of it
- under certain conditions; type "show copying" to see the conditions.
-There is absolutely no warranty for GDB; type "show warranty" for details.
-GDB 4.16 (i586-debian-linux), Copyright 1996 Free Software Foundation, Inc...
+
+GDB is free software and you are welcome to distribute copies
+of it under certain conditions; type "show copying" to see
+the conditions.  There is absolutely no warranty for GDB;
+type "show warranty" for details.  GDB 4.16 (i586-debian-linux), 
+Copyright 1996 Free Software Foundation, Inc.
+
 Breakpoint 1 at 0x8050b1e: file error.c, line 14.
 @end smallexample
 
@@ -63,8 +66,10 @@ reason for it.
 (gdb) run
 Starting program: /home/bjg/gsl/fft/test_trap 
 
-Breakpoint 1, gsl_error (reason=0x8052b0d "length n must be positive integer", 
-    file=0x8052b04 "c_init.c", line=108, gsl_errno=1) at error.c:14
+Breakpoint 1, gsl_error (reason=0x8052b0d 
+    "length n must be positive integer", 
+    file=0x8052b04 "c_init.c", line=108, gsl_errno=1) 
+    at error.c:14
 14        if (gsl_error_handler) 
 @end smallexample
 @comment 
@@ -74,11 +79,14 @@ error.  Now we can look at the backtrace to see what caused the problem,
 
 @smallexample
 (gdb) bt
-#0  gsl_error (reason=0x8052b0d "length n must be positive integer", 
-    file=0x8052b04 "c_init.c", line=108, gsl_errno=1) at error.c:14
-#1  0x8049376 in gsl_fft_complex_wavetable_alloc (n=0, wavetable=0xbffff778)
-    at c_init.c:108
-#2  0x8048a00 in main (argc=1, argv=0xbffff9bc) at test_trap.c:94
+#0  gsl_error (reason=0x8052b0d 
+    "length n must be positive integer", 
+    file=0x8052b04 "c_init.c", line=108, gsl_errno=1)
+    at error.c:14
+#1  0x8049376 in gsl_fft_complex_wavetable_alloc (n=0,
+    wavetable=0xbffff778) at c_init.c:108
+#2  0x8048a00 in main (argc=1, argv=0xbffff9bc) 
+    at test_trap.c:94
 #3  0x80488be in ___crt_dummy__ ()
 @end smallexample
 @comment 
@@ -93,12 +101,14 @@ caused the error,
 
 @smallexample
 (gdb) up
-#1  0x8049376 in gsl_fft_complex_wavetable_alloc (n=0, wavetable=0xbffff778)
-    at c_init.c:108
-108           GSL_ERROR ("length n must be positive integer", GSL_EDOM);
+#1  0x8049376 in gsl_fft_complex_wavetable_alloc (n=0,
+    wavetable=0xbffff778) at c_init.c:108
+108   GSL_ERROR ("length n must be positive integer", GSL_EDOM);
 (gdb) up
-#2  0x8048a00 in main (argc=1, argv=0xbffff9bc) at test_trap.c:94
-94        status = gsl_fft_complex_wavetable_alloc (0, &complex_wavetable);
+#2  0x8048a00 in main (argc=1, argv=0xbffff9bc) 
+    at test_trap.c:94
+94    status = gsl_fft_complex_wavetable_alloc (0,
+        &complex_wavetable);
 @end smallexample
 @comment 
 @noindent
@@ -114,21 +124,21 @@ command @code{info float} (not available on all platforms).
 
 @smallexample
 (gdb) info float
-     st0: 0xc4018b895aa17a945000  Valid Normal -7.838871203780989910922e+308
-     st1: 0x3ff9ea3f50e4d7275000  Valid Normal 0.02859464454261210347719
-     st2: 0x3fe790c64ce27dad4800  Valid Normal 6.74159315730817141355e-08
-     st3: 0x3ffaa3ef0df6607d7800  Spec  Normal 0.04002290205065094780279
-     st4: 0x3c028000000000000000  Valid Normal 4.45014771701440276618e-308
-     st5: 0x3ffef5412c22219d9000  Zero  Normal 0.9580257018402476010266
+     st0: 0xc4018b895aa17a945000  Valid Normal -7.838871e+308
+     st1: 0x3ff9ea3f50e4d7275000  Valid Normal 0.0285946
+     st2: 0x3fe790c64ce27dad4800  Valid Normal 6.7415931e-08
+     st3: 0x3ffaa3ef0df6607d7800  Spec  Normal 0.0400229
+     st4: 0x3c028000000000000000  Valid Normal 4.4501477e-308
+     st5: 0x3ffef5412c22219d9000  Zero  Normal 0.9580257
      st6: 0x3fff8000000000000000  Valid Normal 1
-     st7: 0xc4028b65a1f6d243c800  Valid Normal -1.56620646651544179506e+309
-   fctrl:     0x0272 53 bit; NEAR; mask DENOR UNDER LOS;
-   fstat:     0xb9ba flags 0001; top 7; excep DENOR OVERF UNDER LOS
-    ftag:     0x3fff
+     st7: 0xc4028b65a1f6d243c800  Valid Normal -1.566206e+309
+   fctrl: 0x0272 53 bit; NEAR; mask DENOR UNDER LOS;
+   fstat: 0xb9ba flags 0001; top 7; excep DENOR OVERF UNDER LOS
+    ftag: 0x3fff
      fip: 0x08048b5c
      fcs: 0x051a0023
   fopoff: 0x08086820
-  fopsel:     0x002b
+  fopsel: 0x002b
 @end smallexample
 @noindent
 Individual registers can be examined using the variables @var{$reg},
@@ -149,8 +159,8 @@ shown with the command @code{info signal SIGFPE}.
 
 @smallexample
 (gdb) info signal SIGFPE
-Signal        Stop      Print   Pass to program Description
-SIGFPE        Yes       Yes     Yes             Arithmetic exception
+Signal  Stop  Print  Pass to program Description
+SIGFPE  Yes   Yes    Yes             Arithmetic exception
 @end smallexample
 @noindent
 Unless the program uses a signal handler the default setting should be
@@ -159,8 +169,8 @@ it to exit.  The command @code{handle SIGFPE stop nopass} prevents this.
 
 @smallexample
 (gdb) handle SIGFPE stop nopass
-Signal        Stop      Print   Pass to program Description
-SIGFPE        Yes       Yes     No              Arithmetic exception
+Signal  Stop  Print  Pass to program Description
+SIGFPE  Yes   Yes    No              Arithmetic exception
 @end smallexample
 @noindent
 Depending on the platform it may be necessary to instruct the kernel to
@@ -237,17 +247,18 @@ programs:
 @comment set of recommended warning options for numerical programs.
 
 @example
-gcc -ansi -pedantic -Werror -Wall -W -Wmissing-prototypes
-  -Wstrict-prototypes -Wtraditional -Wconversion -Wshadow
-  -Wpointer-arith -Wcast-qual -Wcast-align -Wwrite-strings
-  -Waggregate-return -Wnested-externs -fshort-enums 
-  -fno-common -Dinline= -g -O4
+gcc -ansi -pedantic -Werror -Wall -W 
+  -Wmissing-prototypes -Wstrict-prototypes 
+  -Wtraditional -Wconversion -Wshadow
+  -Wpointer-arith -Wcast-qual -Wcast-align 
+  -Wwrite-strings -Wnested-externs 
+  -fshort-enums -fno-common -Dinline= -g -O4
 @end example
 
 @noindent
-For details of each option consult the manual @cite{Using and porting
+For details of each option consult the manual @cite{Using and Porting
 GCC}.  The following table gives a brief explanation of what types of
-errors these warnings catch.
+errors these options catch.
 
 @table @code
 @item -ansi -pedantic 
@@ -292,9 +303,6 @@ different size, causing an invalid alignment.
 @item -Wwrite-strings
 This option gives string constants a @code{const} qualifier so that it
 will be a compile-time error to attempt to overwrite them.
-@item -Waggregate-return 
-Warn if any functions that return structures or unions are defined or
-called.  Some older compilers might have problems with such a construct.
 @item -fshort-enums 
 This option makes the type of @code{enum} as short as possible.  Normally
 this makes an @code{enum} different from an @code{int}.  Consequently any

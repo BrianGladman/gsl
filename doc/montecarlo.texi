@@ -2,7 +2,7 @@
 
 This chapter describes routines for multidimensional Monte Carlo
 integration.  These include the traditional Monte Carlo method and
-adaptive algorithms such as @sc{vegas} and @sc{miser}. These use
+adaptive algorithms such as @sc{vegas} and @sc{miser} which use
 importance sampling and stratified sampling techniques. Each algorithm
 computes an estimate of a multidimensional definite integral of the
 form,
@@ -43,9 +43,9 @@ The functions are defined in separate header files for each routine,
 @node Monte Carlo Interface
 @section Interface
 All of the Monte Carlo integration routines use the same interface.
-There is an allocator to allocate memory to hold control variables and
+There is an allocator to allocate memory for control variables and
 workspace, a routine to initialize those control variables, the
-integrator itself, and a function to free the space when done.  
+integrator itself, and a function to free the space when done.
 
 Each integration function requires a random number generator to be
 supplied, and returns an estimate of the integral and its standard
@@ -111,7 +111,7 @@ my_f (double x, size_t dim, void * p) @{
 
    if (dim != 2)
       @{
-        fprintf(stderr, "error: my_f called with dim != 2");
+        fprintf(stderr, "error: dim != 2");
         abort();
       @}
 
@@ -262,7 +262,7 @@ N_a / (N_a + N_b) = \sigma_a / (\sigma_a + \sigma_b)
 @end ifinfo
 @noindent
 Hence the smallest error estimate is obtained by allocating sample
-points in proportion to standard deviation of the function in each
+points in proportion to the standard deviation of the function in each
 sub-region.
 
 The @sc{miser} algorithm proceeds by bisecting the integration region
@@ -311,7 +311,7 @@ This function frees the memory associated with the integrator state
 @var{s}.
 @end deftypefun
 
-The @sc{miser} algorithm has several configurable parameter. The
+The @sc{miser} algorithm has several configurable parameters. The
 following variables can be accessed through the
 @code{gsl_monte_miser_state} struct,
 
@@ -369,7 +369,7 @@ implementation.
 
 @deftypevar double dither
 This parameter introduces a random fractional variation of size
-@var{dither} into each bisection, which can be used to to break the
+@var{dither} into each bisection, which can be used to break the
 symmetry of integrands which are concentrated near the exact center of
 the hypercubic integration region.  The default value of dither is zero,
 so no variation is introduced. If needed, a typical value of
@@ -626,14 +626,15 @@ singularities.
 
       I = int (dx dy dz)/(2pi)^3  1/(1-cos(x)cos(y)cos(z))
 
-   over (-pi,-pi,-pi) to (+pi, +pi, +pi).  The exact answer is
-   Gamma(1/4)^4/(4 pi^3).  This example is taken from C.Itzykson,
-   J.M.Drouffe, "Statistical Field Theory - Volume 1", Section 1.1,
-   p21, which cites the original paper M.L.Glasser, I.J.Zucker,
-   Proc.Natl.Acad.Sci.USA 74 1800 (1977) */
+   over (-pi,-pi,-pi) to (+pi, +pi, +pi).  The exact answer
+   is Gamma(1/4)^4/(4 pi^3).  This example is taken from
+   C.Itzykson, J.M.Drouffe, "Statistical Field Theory -
+   Volume 1", Section 1.1, p21, which cites the original
+   paper M.L.Glasser, I.J.Zucker, Proc.Natl.Acad.Sci.USA 74
+   1800 (1977) */
 
-/* For simplicity we compute the integral over the region (0,0,0)
-   (pi,pi,pi) and multiply by 8 */
+/* For simplicity we compute the integral over the region 
+   (0,0,0) -> (pi,pi,pi) and multiply by 8 */
 
 double exact = 1.3932039296856768591842462603255;
 
@@ -656,7 +657,7 @@ display_results (char *title, double result, double error)
 @}
 
 int
-main ()
+main (void)
 @{
   double res, err;
 
@@ -677,7 +678,8 @@ main ()
 
   @{
     gsl_monte_plain_state *s = gsl_monte_plain_alloc (3);
-    gsl_monte_plain_integrate (&G, xl, xu, 3, calls, r, s, &res, &err);
+    gsl_monte_plain_integrate (&G, xl, xu, 3, calls, r, s, 
+                               &res, &err);
     gsl_monte_plain_free (s);
 
     display_results ("plain", res, err);
@@ -685,7 +687,8 @@ main ()
 
   @{
     gsl_monte_miser_state *s = gsl_monte_miser_alloc (3);
-    gsl_monte_miser_integrate (&G, xl, xu, 3, calls, r, s, &res, &err);
+    gsl_monte_miser_integrate (&G, xl, xu, 3, calls, r, s,
+                               &res, &err);
     gsl_monte_miser_free (s);
 
     display_results ("miser", res, err);
@@ -694,16 +697,18 @@ main ()
   @{
     gsl_monte_vegas_state *s = gsl_monte_vegas_alloc (3);
 
-    gsl_monte_vegas_integrate (&G, xl, xu, 3, 10000, r, s, &res, &err);
+    gsl_monte_vegas_integrate (&G, xl, xu, 3, 10000, r, s,
+                               &res, &err);
     display_results ("vegas warm-up", res, err);
 
     printf ("converging...\n");
 
     do
       @{
-        gsl_monte_vegas_integrate (&G, xl, xu, 3, calls / 5, r, s, &res, &err);
-        printf ("result = % .6f sigma = % .6f chisq/dof = %.1f\n",
-                res, err, s->chisq);
+        gsl_monte_vegas_integrate (&G, xl, xu, 3, calls/5, r, s,
+                                   &res, &err);
+        printf ("result = % .6f sigma = % .6f "
+                "chisq/dof = %.1f\n", res, err, s->chisq);
       @}
     while (fabs (s->chisq - 1.0) > 0.5);
 

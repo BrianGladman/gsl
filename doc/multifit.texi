@@ -130,7 +130,7 @@ printf("s is a '%s' solver\n",
 @end example
 
 @noindent
-would print something like @code{s is a 'lmder' solver}
+would print something like @code{s is a 'lmder' solver}.
 @end deftypefun
 
 @node Providing the Function to be Minimized
@@ -226,7 +226,7 @@ of the solver @var{s}.
 
 @node Search Stopping Parameters for Minimization Algorithms
 @section Search Stopping Parameters
-@cindex root finding, stopping parameters
+@cindex nonlinear fitting, stopping parameters
 
 A minimization procedure should stop when one of the following conditions is
 true:
@@ -243,9 +243,9 @@ An error has occurred.
 @end itemize
 
 @noindent
-The minimization framework leaves the handling of these conditions is
-under user control.  The functions below allow the user to test the
-current estimate of the best-fit parameters in several standard ways.
+The handling of these conditions is under user control.  The functions
+below allow the user to test the current estimate of the best-fit
+parameters in several standard ways.
 
 @deftypefun int gsl_multifit_test_delta (const gsl_vector * @var{dx}, const gsl_vector * @var{x}, double @var{epsabs}, double @var{epsrel})
 
@@ -298,7 +298,7 @@ enough.
 @end deftypefun
 
 
-@deftypefun int gsl_multifit_test_gradient (const gsl_matrix * @var{J}, const gsl_vector * @var{f}, gsl_vector * @var{g})
+@deftypefun int gsl_multifit_gradient (const gsl_matrix * @var{J}, const gsl_vector * @var{f}, gsl_vector * @var{g})
 This function computes the gradient @var{g} of @math{\Phi(x) = (1/2)
 ||F(x)||^2} from the Jacobian matrix @math{J} and the function values
 @var{f}, using the formula @math{g = J^T f}.
@@ -307,11 +307,11 @@ This function computes the gradient @var{g} of @math{\Phi(x) = (1/2)
 @node Minimization Algorithms using Derivatives
 @section Minimization Algorithms using Derivatives
 
-The root finding algorithms described in this section make use of both
+The minimization algorithms described in this section make use of both
 the function and its derivative.  They require an initial guess for the
 location of the minimum. There is no absolute guarantee of convergence
 -- the function must be suitable for this technique and the initial
-guess must be sufficiently close to the root for it to work. 
+guess must be sufficiently close to the minimum for it to work. 
 
 @comment ============================================================
 @cindex Levenberg-Marquardt algorithms
@@ -368,9 +368,9 @@ change the solution from its current value.
 @end deffn
 
 @deffn {Derivative Solver} gsl_multifit_fdfsolver_lmder
-This is an unscaled version of the LMDER algorithm.  The elements of the
+This is an unscaled version of the @sc{lmder} algorithm.  The elements of the
 diagonal scaling matrix @math{D} are set to 1.  This algorithm may be
-useful in circumstances where the scaled version of LMDER converges too
+useful in circumstances where the scaled version of @sc{lmder} converges too
 slowly, or the function is already scaled appropriately.
 @end deffn
 
@@ -433,7 +433,7 @@ set to zero).
 @section Examples
 
 The following example program fits a weighted exponential model with
-background @math{Y = A \exp(-\lambda t) + b} to experimental data. The
+background to experimental data, @math{Y = A \exp(-\lambda t) + b}. The
 first part of the program sets up the functions @code{expb_f} and
 @code{expb_df} to calculate the model and its Jacobian.  The appropriate
 fitting function is given by,
@@ -556,8 +556,7 @@ main (void)
 
   struct data d = @{ n, y, sigma@};
   
-  gsl_multifit_function_fdf f =
-    @{ &expb_f, &expb_df, &expb_fdf, n, p, (void *) &d @};
+  gsl_multifit_function_fdf f;
 
   double x_init[3] = @{ 0.0, 1.0, -0.0 @};
 
@@ -570,6 +569,13 @@ main (void)
 
   type = gsl_rng_default;
   r = gsl_rng_alloc (type);
+
+  f.f = &expb_f;
+  f.df = &expb_df;
+  f.fdf = &expb_fdf;
+  f.n = n;
+  f.p = p;
+  f.params = &d;
 
   /* This is the data to be fitted */
 

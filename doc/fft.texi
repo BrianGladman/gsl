@@ -270,7 +270,7 @@ array.
 #define REAL(z,i) ((z)[2*(i)])
 #define IMAG(z,i) ((z)[2*(i)+1])
 
-int main ()
+int main (void)
 @{
   int i;
   double data[2*128];
@@ -533,7 +533,7 @@ algorithm.
 #define REAL(z,i) ((z)[2*(i)])
 #define IMAG(z,i) ((z)[2*(i)+1])
 
-int main ()
+int main (void)
 @{
   int i;
   const int n = 630;
@@ -961,7 +961,7 @@ signal is also real.
 #include <gsl/gsl_fft_real.h>
 #include <gsl/gsl_fft_halfcomplex.h>
 
-int main ()
+int main (void)
 @{
   int i, n = 100;
   double data[n];

@@ -6,10 +6,10 @@
 @cindex convergence, accelerating a series
 
 The functions described in this chapter accelerate the convergence of a
-series using the Levin u-transform.  This method takes a small number of
+series using the Levin @math{u}-transform.  This method takes a small number of
 terms from the start of a series and uses a systematic approximation to
 compute an extrapolated value and an estimate of its error.  The
-u-transform works for both convergent and divergent series, including
+@math{u}-transform works for both convergent and divergent series, including
 asymptotic series.
 
 These functions are declared in the header file @file{gsl_sum.h}.
@@ -24,7 +24,7 @@ These functions are declared in the header file @file{gsl_sum.h}.
 @node Acceleration functions
 @section Acceleration functions
 
-The following functions compute the full Levin u-transform of a series
+The following functions compute the full Levin @math{u}-transform of a series
 with its error estimate.  The error estimate is computed by propagating
 rounding errors from each term through to the final extrapolation. 
 
@@ -42,7 +42,7 @@ derivatives through to @math{O(N)} must be computed and stored, but this
 does give a reliable error estimate. .
 
 @deftypefun {gsl_sum_levin_u_workspace *} gsl_sum_levin_u_alloc (size_t @var{n})
-This function allocates a workspace for a Levin u-transform of @var{n}
+This function allocates a workspace for a Levin @math{u}-transform of @var{n}
 terms.  The size of the workspace is @math{O(2n^2 + 3n)}.
 @end deftypefun
 
@@ -53,7 +53,7 @@ This function frees the memory associated with the workspace @var{w}.
 @deftypefun int gsl_sum_levin_u_accel (const double * @var{array}, size_t @var{array_size}, gsl_sum_levin_u_workspace * @var{w}, double * @var{sum_accel}, double * @var{abserr})
 This function takes the terms of a series in @var{array} of size
 @var{array_size} and computes the extrapolated limit of the series using
-a Levin u-transform.  Additional working space must be provided in
+a Levin @math{u}-transform.  Additional working space must be provided in
 @var{w}.  The extrapolated sum is stored in @var{sum_accel}, with an
 estimate of the absolute error stored in @var{abserr}.  The actual
 term-by-term sum is returned in @code{w->sum_plain}. The algorithm
@@ -66,13 +66,13 @@ terms) to choose an optimal number of terms for the extrapolation.
 @node Acceleration functions without error estimation
 @section Acceleration functions without error estimation
 
-The functions described in this section compute the Levin u-transform of
+The functions described in this section compute the Levin @math{u}-transform of
 series and attempt to estimate the error from the "truncation error" in
 the extrapolation, the difference between the final two approximations.
 Using this method avoids the need to compute an intermediate table of
 derivatives because the error is estimated from the behavior of the
 extrapolated value itself. Consequently this algorithm is an @math{O(N)}
-process and only required @math{O(N)} terms of storage.  If the series
+process and only requires @math{O(N)} terms of storage.  If the series
 converges sufficiently fast then this procedure can be acceptable.  It
 is appropriate to use this method when there is a need to compute many
 extrapolations of series with similar converge properties at high-speed.
@@ -83,7 +83,7 @@ algorithm described above in order to verify the consistency of the
 results.
 
 @deftypefun {gsl_sum_levin_utrunc_workspace *} gsl_sum_levin_utrunc_alloc (size_t @var{n})
-This function allocates a workspace for a Levin u-transform of @var{n}
+This function allocates a workspace for a Levin @math{u}-transform of @var{n}
 terms, without error estimation.  The size of the workspace is
 @math{O(3n)}.
 @end deftypefun
@@ -95,7 +95,7 @@ This function frees the memory associated with the workspace @var{w}.
 @deftypefun int gsl_sum_levin_utrunc_accel (const double * @var{array}, size_t @var{array_size}, gsl_sum_levin_utrunc_workspace * @var{w}, double * @var{sum_accel}, double * @var{abserr_trunc})
 This function takes the terms of a series in @var{array} of size
 @var{array_size} and computes the extrapolated limit of the series using
-a Levin u-transform.  Additional working space must be provided in
+a Levin @math{u}-transform.  Additional working space must be provided in
 @var{w}.  The extrapolated sum is stored in @var{sum_accel}.  The actual
 term-by-term sum is returned in @code{w->sum_plain}. The algorithm
 terminates when the difference between two successive extrapolations
@@ -145,7 +145,8 @@ main (void)
   double sum = 0;
   int n;
   
-  gsl_sum_levin_u_workspace * w = gsl_sum_levin_u_alloc (N);
+  gsl_sum_levin_u_workspace * w 
+    = gsl_sum_levin_u_alloc (N);
 
   const double zeta_2 = M_PI * M_PI / 6.0;
   
@@ -178,7 +179,7 @@ main (void)
 @}
 @end example
 @noindent
-The output below shows that the Levin u-transform is able to obtain an 
+The output below shows that the Levin @math{u}-transform is able to obtain an 
 estimate of the sum to 1 part in 
 @c{$10^{10}$}
 @math{10^10} using the first eleven terms of the series.  The
@@ -214,7 +215,7 @@ and Algorithm 602 9(3):355--357, 1983.
 @end itemize
 
 @noindent
-The theory of the u-transform was presented by Levin,
+The theory of the @math{u}-transform was presented by Levin,
 
 @itemize @asis
 @item

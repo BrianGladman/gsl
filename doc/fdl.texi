@@ -372,14 +372,15 @@ license notices just after the title page:
 
 @smallexample
 @group
-  Copyright (C)  @var{year}  @var{your name}.
-  Permission is granted to copy, distribute and/or modify this document
-  under the terms of the GNU Free Documentation License, Version 1.1
-  or any later version published by the Free Software Foundation;
-  with the Invariant Sections being @var{list their titles}, with the
-  Front-Cover Texts being @var{list}, and with the Back-Cover Texts being @var{list}.
-  A copy of the license is included in the section entitled ``GNU
-  Free Documentation License''.
+  Copyright (C) @var{year} @var{your name}.  Permission is
+  granted to copy, distribute and/or modify this document
+  under the terms of the GNU Free Documentation License,
+  Version 1.1 or any later version published by the Free
+  Software Foundation; with the Invariant Sections being
+  @var{list their titles}, with the Front-Cover Texts being
+  @var{list}, and with the Back-Cover Texts being
+  @var{list}.  A copy of the license is included in the
+  section entitled ``GNU Free Documentation License''.
 @end group
 @end smallexample
 

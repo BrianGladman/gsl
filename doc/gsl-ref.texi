@@ -313,6 +313,7 @@ More information about GSL can be found at the project homepage,
 * Debugging Numerical Programs::  
 * Contributors to GSL::         
 * Autoconf Macros::             
+* GSL CBLAS Library::           
 * GNU General Public License::  
 * GNU Free Documentation License::  
 * Concept Index::               
@@ -669,7 +670,7 @@ Analysis Group.
 @comment email: reid@reidster.net
 
 @item Gerard Jungman
-series acceleration, ODEs, BLAS, Linear Algebra, Eigensystems,
+Series acceleration, ODEs, BLAS, Linear Algebra, Eigensystems,
 Hankel Transforms.
 
 @item Mike Booth
@@ -686,20 +687,20 @@ Multidimensional minimization.
 
 @end table
 
-@node  Autoconf Macros, GNU General Public License, Contributors to GSL, Top
+@node  Autoconf Macros, GSL CBLAS Library, Contributors to GSL, Top
 @appendix Autoconf Macros
 
 @noindent
 The following autoconf test will check for extern inline,
 
 @smallexample
-dnl Check for "extern inline", using a modified version of the test
-dnl for AC_C_INLINE from acspecific.mt
+dnl Check for "extern inline", using a modified version
+dnl of the test for AC_C_INLINE from acspecific.mt
 dnl
 AC_CACHE_CHECK([for extern inline], ac_cv_c_extern_inline,
 [ac_cv_c_extern_inline=no
 AC_TRY_COMPILE([extern $ac_cv_c_inline double foo(double x);
-extern $ac_cv_c_inline double foo(double x) @{ return x + 1.0; @};
+extern $ac_cv_c_inline double foo(double x) @{ return x+1.0; @};
 double foo (double x) @{ return x + 1.0; @};], 
 [  foo(1.0)  ],
 [ac_cv_c_extern_inline="yes"])
@@ -711,7 +712,7 @@ if test "$ac_cv_c_extern_inline" != no ; then
 fi
 @end smallexample
 
-@node GSL CBLAS Library
+@node GSL CBLAS Library, GNU General Public License, Autoconf Macros, Top
 @appendix GSL CBLAS Library
 @include cblas.texi
 
@@ -719,7 +720,7 @@ fi
 @comment @unnumbered Copyright
 @comment @include science.texi
 
-@node  GNU General Public License, GNU Free Documentation License, Autoconf Macros, Top
+@node  GNU General Public License, GNU Free Documentation License, GSL CBLAS Library, Top
 @unnumbered GNU General Public License
 @include gpl.texi
 

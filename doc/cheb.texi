@@ -11,7 +11,8 @@ function @c{$1 / \sqrt{1-x^2}$}
 @math{1 / \sqrt@{1-x^2@}}.  The first few Chebyshev polynomials are,
 @math{T_0(x) = 1}, @math{T_1(x) = x}, @math{T_2(x) = 2 x^2 - 1}.
 
-These functions are declared in the header file @file{gsl_chebyshev.h}.
+The functions described in this chapter are declared in the header file
+@file{gsl_chebyshev.h}.
 
 @menu
 * The gsl_cheb_series struct::  
@@ -30,10 +31,10 @@ A Chebyshev series  is stored using the following structure,
 @example
 typedef struct
 @{
-  double * c;   /* coefficients  c[0] .. c[order]  */
-  int order;    /* order of expansion              */
-  double a;     /* lower interval point            */
-  double b;     /* upper interval point            */
+  double * c;   /* coefficients  c[0] .. c[order] */
+  int order;    /* order of expansion             */
+  double a;     /* lower interval point           */
+  double b;     /* upper interval point           */
 @} gsl_cheb_struct
 @end example
 @noindent
@@ -79,7 +80,7 @@ This function evaluates the Chebyshev series @var{cs} at a given point
 @end deftypefun
 
 @deftypefun int gsl_cheb_eval_n_err (const gsl_cheb_series * @var{cs}, const size_t @var{order}, const double @var{x}, double * @var{result}, double * @var{abserr})
-This function evaluate a Chebyshev series @var{cs} at a given point
+This function evaluates a Chebyshev series @var{cs} at a given point
 @var{x}, estimating both the series @var{result} and its absolute error
 @var{abserr}, to (at most) the given order @var{order}.  The error
 estimate is made from the first neglected term in the series.
@@ -183,6 +184,7 @@ approximation and 40-th order approximation, all sampled at intervals of
 @node Chebyshev Approximation References and Further Reading
 @section References and Further Reading
 
+@noindent
 The following paper describes the use of Chebyshev series,
 
 @itemize @asis

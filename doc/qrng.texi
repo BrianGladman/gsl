@@ -116,7 +116,7 @@ Sobol sequence.
 #include <gsl/gsl_qrng.h>
 
 int
-main ()
+main (void)
 @{
   int i;
   gsl_qrng * q = gsl_qrng_alloc (gsl_qrng_sobol, 2);
@@ -149,12 +149,13 @@ $ ./a.out
 It can be seen that successive points progressively fill-in the spaces
 between previous points. 
 @iftex
-The following plot shows the final distribution of points in the x-y
-plane,
+The following plot shows the distribution in the x-y plane of the first
+1024 points from the Sobol sequence,
 @sp 1
 @center @image{qrng}
 @sp 1
-@center Distribution of first 1024 points from quasi-random Sobol sequence
+@center Distribution of the first 1024 points 
+@center from the quasi-random Sobol sequence
 @end iftex
 
 @node Quasi-random number references

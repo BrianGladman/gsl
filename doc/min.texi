@@ -70,9 +70,9 @@ interval is reduced until it encloses the true minimum to a desired
 tolerance.  This provides a best estimate of the location of the minimum
 and a rigorous error estimate.
 
-In GSL different bracketing algorithms are available in a similar
-framework.  The user provides a high-level driver for the algorithms, and
-the library provides the individual functions necessary for each of the
+Several bracketing algorithms are available within a single framework.
+The user provides a high-level driver for the algorithm, and the
+library provides the individual functions necessary for each of the
 steps.  There are three main phases of the iteration.  The steps are,
 
 @itemize @bullet
@@ -139,8 +139,10 @@ minimizer of type @var{T}.  For example, the following code
 creates an instance of a golden section minimizer,
 
 @example
-gsl_min_fminimizer * s = 
-    gsl_min_fminimizer_alloc (gsl_min_fminimizer_goldensection);
+const gsl_min_fminimizer_type * T 
+  = gsl_min_fminimizer_goldensection;
+gsl_min_fminimizer * s 
+  = gsl_min_fminimizer_alloc (T);
 @end example
 
 If there is insufficient memory to create the minimizer then the function
@@ -174,11 +176,12 @@ This function frees all the memory associated with the minimizer
 This function returns a pointer to the name of the minimizer.  For example,
 
 @example
-printf("s is a '%s' minimizer\n", gsl_min_fminimizer_name (s));
+printf("s is a '%s' minimizer\n",
+       gsl_min_fminimizer_name (s));
 @end example
 
 @noindent
-would print something like @code{s is a 'brent' minimizer}
+would print something like @code{s is a 'brent' minimizer}.
 @end deftypefun
 
 @node Providing the function to minimize
@@ -249,9 +252,8 @@ An error has occurred.
 @end itemize
 
 @noindent
-In the minimization framework of GSL the handling of these conditions is
-under user control.  The function below allows the user to test the
-precision of the current result.
+The handling of these conditions is under user control.  The function
+below allows the user to test the precision of the current result.
 
 @deftypefun int gsl_min_test_interval (double @var{x_lower}, double @var{x_upper}, double @var{epsrel}, double @var{epsabs})
 This function tests for the convergence of the interval [@var{x_lower},
@@ -323,14 +325,14 @@ library, with linear convergence.
 
 On each iteration, the algorithm first compares the subintervals from
 the endpoints to the current minimum.  The larger subinterval is divided
-in a golden section (using the famous ratio @math{(3-\sqrt 5)/2}) and
-the value of the function at this new point is calculated.  The new value
-is used with the constraint @math{f(a') > f(x') < f(b')} to a select new
-interval containing the minimum, by discarding the least useful
-point.  This procedure can be continued indefinitely until the interval
-is sufficiently small.  Choosing the golden section as the bisection
-ratio can be shown to provide the fastest convergence for this type of
-algorithm.
+in a golden section (using the famous ratio @math{(3-\sqrt 5)/2 =
+0.3189660}@dots{}) and the value of the function at this new point is
+calculated.  The new value is used with the constraint @math{f(a') >
+f(x') < f(b')} to a select new interval containing the minimum, by
+discarding the least useful point.  This procedure can be continued
+indefinitely until the interval is sufficiently small.  Choosing the
+golden section as the bisection ratio can be shown to provide the
+fastest convergence for this type of algorithm.
 
 @end deffn
 
@@ -379,30 +381,33 @@ double fn1 (double x, void * params)
 @}
 
 int
-main ()
+main (void)
 @{
   int status;
   int iter = 0, max_iter = 100;
+  const gsl_min_fminimizer_type *T;
   gsl_min_fminimizer *s;
   double m = 2.0, m_expected = M_PI;
-  double x_lower =  0, x_upper = 6.0;
+  double a = 0.0, b = 6.0;
   gsl_function F;
 
   F.function = &fn1;
   F.params = 0;
 
-  s = gsl_min_fminimizer_alloc (gsl_min_fminimizer_brent);
-  gsl_min_fminimizer_set (s, &F, m, x_lower, x_upper);
+  T = gsl_min_fminimizer_brent;
+  s = gsl_min_fminimizer_alloc (T);
+  gsl_min_fminimizer_set (s, &F, m, a, b);
 
-  printf ("using %s method\n", gsl_min_fminimizer_name (s));
+  printf ("using %s method\n",
+          gsl_min_fminimizer_name (s));
 
-  printf ("%5s [%9s, %9s] %9s %9s %10s %9s\n",
-          "iter", "lower", "upper", "min", "actual",
+  printf ("%5s [%9s, %9s] %9s %10s %9s\n",
+          "iter", "lower", "upper", "min",
           "err", "err(est)");
 
-  printf ("%5d [%.7f, %.7f] %.7f %.7f %+.7f %.7f\n",
-          iter, x_lower, x_upper,
-          m, m_expected, m - m_expected, x_upper - x_lower);
+  printf ("%5d [%.7f, %.7f] %.7f %+.7f %.7f\n",
+          iter, a, b,
+          m, m - m_expected, b - a);
 
   do
     @{
@@ -410,17 +415,17 @@ main ()
       status = gsl_min_fminimizer_iterate (s);
 
       m = gsl_min_fminimizer_minimum (s);
-      x_lower = gsl_min_fminimizer_x_lower (s);
-      x_upper = gsl_min_fminimizer_x_upper (s);
+      a = gsl_min_fminimizer_x_lower (s);
+      b = gsl_min_fminimizer_x_upper (s);
 
-      status = gsl_min_test_interval (x_lower, x_upper, 0.001, 0.0);
+      status = gsl_min_test_interval (a, b, 0.001, 0.0);
 
       if (status == GSL_SUCCESS)
         printf ("Converged:\n");
 
       printf ("%5d [%.7f, %.7f] %.7f %.7f %+.7f %.7f\n",
-              iter, x_lower, x_upper,
-              m, m_expected, m - m_expected, x_upper - x_lower);
+              iter, a, b,
+              m, m_expected, m - m_expected, b - a);
     @}
   while (status == GSL_CONTINUE && iter < max_iter);
 
@@ -432,19 +437,19 @@ Here are the results of the minimization procedure.
 
 @smallexample
 bash$ ./a.out 
-    0 [0.0000000, 6.0000000] 2.0000000 3.1415927 -1.1415927 6.0000000
-    1 [2.0000000, 6.0000000] 3.2758640 3.1415927 +0.1342713 4.0000000
-    2 [2.0000000, 3.2831929] 3.2758640 3.1415927 +0.1342713 1.2831929
-    3 [2.8689068, 3.2831929] 3.2758640 3.1415927 +0.1342713 0.4142862
-    4 [2.8689068, 3.2831929] 3.2758640 3.1415927 +0.1342713 0.4142862
-    5 [2.8689068, 3.2758640] 3.1460585 3.1415927 +0.0044658 0.4069572
-    6 [3.1346075, 3.2758640] 3.1460585 3.1415927 +0.0044658 0.1412565
-    7 [3.1346075, 3.1874620] 3.1460585 3.1415927 +0.0044658 0.0528545
-    8 [3.1346075, 3.1460585] 3.1460585 3.1415927 +0.0044658 0.0114510
-    9 [3.1346075, 3.1460585] 3.1424060 3.1415927 +0.0008133 0.0114510
-   10 [3.1346075, 3.1424060] 3.1415885 3.1415927 -0.0000041 0.0077985
-Converged:
-   11 [3.1415885, 3.1424060] 3.1415927 3.1415927 -0.0000000 0.0008175
+    0 [0.0000000, 6.0000000] 2.0000000 -1.1415927 6.0000000
+    1 [2.0000000, 6.0000000] 3.2758640 +0.1342713 4.0000000
+    2 [2.0000000, 3.2831929] 3.2758640 +0.1342713 1.2831929
+    3 [2.8689068, 3.2831929] 3.2758640 +0.1342713 0.4142862
+    4 [2.8689068, 3.2831929] 3.2758640 +0.1342713 0.4142862
+    5 [2.8689068, 3.2758640] 3.1460585 +0.0044658 0.4069572
+    6 [3.1346075, 3.2758640] 3.1460585 +0.0044658 0.1412565
+    7 [3.1346075, 3.1874620] 3.1460585 +0.0044658 0.0528545
+    8 [3.1346075, 3.1460585] 3.1460585 +0.0044658 0.0114510
+    9 [3.1346075, 3.1460585] 3.1424060 +0.0008133 0.0114510
+   10 [3.1346075, 3.1424060] 3.1415885 -0.0000041 0.0077985
+Converged:                            
+   11 [3.1415885, 3.1424060] 3.1415927 -0.0000000 0.0008175
 @end smallexample
 
 @node Minimization References and Further Reading

@@ -218,7 +218,7 @@ The following program will find these roots.
 #include <gsl/gsl_poly.h>
 
 int
-main ()
+main (void)
 @{
   int i;
   /* coefficient of P(x) =  -1 + x^5  */

@@ -109,8 +109,8 @@ error code of @code{GSL_ENOMEM}.
 
 The generator is automatically initialized with the default seed,
 @code{gsl_rng_default_seed}.  This is zero by default but can be changed
-either directly or by using the environment variable @code{GSL_RNG_SEED},
-@pxref{Random number environment variables}.
+either directly or by using the environment variable @code{GSL_RNG_SEED}
+(@pxref{Random number environment variables}).
 
 The details of the available generator types are
 described later in this chapter.
@@ -191,10 +191,11 @@ This function returns a pointer to the name of the generator.
 For example,
 
 @example
-printf("r is a '%s' generator\n", gsl_rng_name (r));
+printf("r is a '%s' generator\n", 
+       gsl_rng_name (r));
 @end example
 @noindent
-would print something like @code{r is a 'taus' generator}
+would print something like @code{r is a 'taus' generator}.
 @end deftypefn
 
 @deftypefn Random {unsigned long int} gsl_rng_max (const gsl_rng * @var{r})
@@ -287,7 +288,7 @@ generator using the environment variables @code{GSL_RNG_TYPE} and
 gsl_rng * r;  /* global generator */
 
 int 
-main ()
+main (void)
 @{
   const gsl_rng_type * T;
 
@@ -591,9 +592,9 @@ where,
 \beforedisplay
 $$
 \eqalign{
-s^1_{n+1} &= (((s^1_n \& 4294967294) <<12) \oplus (((s^1_n <<13) \oplus s^1_n) >>19)) \cr
-s^2_{n+1} &= (((s^2_n \& 4294967288) << 4) \oplus (((s^2_n << 2) \oplus s^2_n) >>25)) \cr
-s^3_{n+1} &= (((s^3_n \& 4294967280) <<17) \oplus (((s^3_n << 3) \oplus s^3_n) >>11))
+s^1_{n+1} &= (((s^1_n \& 4294967294)\ll 12) \oplus (((s^1_n\ll 13) \oplus s^1_n)\gg 19)) \cr
+s^2_{n+1} &= (((s^2_n \& 4294967288)\ll 4) \oplus (((s^2_n\ll 2) \oplus s^2_n)\gg 25)) \cr
+s^3_{n+1} &= (((s^3_n \& 4294967280)\ll 17) \oplus (((s^3_n\ll 3) \oplus s^3_n)\gg 11))
 }
 $$
 \afterdisplay
@@ -673,7 +674,9 @@ easily be zero; ie
 
 Ziff doesn't say so, but it seems to me that the bits are
 completely independent here, so one could use this as an efficient
-bit generator; each number supplying 32 random bits.
+bit generator; each number supplying 32 random bits.  The quality of the
+generated bits depends on the underlying seeding procedure, which 
+may need to be improved in some circumstances.
 
 For more information see,
 @itemize @asis
@@ -739,8 +742,8 @@ generator.
 These generators implement the @code{random()} family of functions, a
 set of linear feedback shift register generators originally used in BSD
 Unix.  There are several versions of @code{random()} in use today: the
-original BSD version (e.g. on SunOS4), a libc5 version (common on
-existing GNU/Linux systems) and a glibc2 version.  Each version uses a
+original BSD version (e.g. on SunOS4), a libc5 version (found on
+older GNU/Linux systems) and a glibc2 version.  Each version uses a
 different seeding procedure, and thus produces different sequences.
 
 The original BSD routines accepted a variable length buffer for the

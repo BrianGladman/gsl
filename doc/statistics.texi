@@ -15,8 +15,7 @@ variance and standard deviation.  More advanced functions allow you to
 calculate absolute deviations, skewness, and kurtosis as well as the
 median and arbitrary percentiles.  The algorithms use recurrence
 relations to compute average quantities in a stable way, without large
-intermediate values that might overflow.  Statistical tests for
-comparing different datasets, such as the t-test, are also included.
+intermediate values that might overflow. 
 
 The functions are available in versions for datasets in the standard
 floating-point and integer types.  The versions for double precision
@@ -329,6 +328,9 @@ a_1 = @{\sum_@{i = 1@}^@{n@} (x_@{i@} - \Hat\mu) (x_@{i-1@} - \Hat\mu)
 
 
 @deftypefun double gsl_stats_lag1_autocorrelation_m (const double data[], const size_t @var{stride}, const size_t @var{n}, const double @var{mean})
+This function computes the lag-1 autocorrelation of the dataset
+@var{data} using the given value of the mean @var{mean}.
+
 @end deftypefun
 
 @node Covariance
@@ -355,6 +357,10 @@ covar = (1/(n - 1)) \sum_@{i = 1@}^@{n@} (x_i - \Hat x) (y_i - \Hat y)
 @end deftypefun
 
 @deftypefun double gsl_stats_covariance_m (const double @var{data1}[], const size_t @var{stride1}, const double @var{data2}[], const size_t @var{n}, const double @var{mean1}, const double @var{mean2})
+This function computes the covariance of the datasets @var{data1} and
+@var{data2} using the given values of the means, @var{mean1} and
+@var{mean2}.
+
 @end deftypefun
 
 
@@ -417,15 +423,19 @@ weights.
 @end deftypefn
 
 @deftypefn Statistics double gsl_stats_wvariance_m (const double @var{w}[], size_t @var{wstride}, const double @var{data}[], size_t @var{stride}, size_t @var{n}, double @var{wmean})
+This function returns the estimated variance of the weighted dataset
+@var{data} using the given weighted mean @var{wmean}.
 @end deftypefn
 
 @deftypefn Statistics double gsl_stats_wsd (const double @var{w}[], size_t @var{wstride}, const double @var{data}[], size_t @var{stride}, size_t @var{n})
 The standard deviation is defined as the square root of the variance.
 This function returns the square root of the corresponding variance
-function above.
+function @code{gsl_stats_wvariance} above.
 @end deftypefn
 
 @deftypefn Statistics double gsl_stats_wsd_m (const double @var{w}[], size_t @var{wstride}, const double @var{data}[], size_t @var{stride}, size_t @var{n}, double @var{wmean})
+This function returns the square root of the corresponding variance
+function @code{gsl_stats_wvariance_m} above.
 @end deftypefn
 
 @deftypefn Statistics double gsl_stats_wvariance_with_fixed_mean (const double @var{w}[], size_t @var{wstride}, const double @var{data}[], size_t @var{stride}, size_t @var{n})
@@ -456,8 +466,8 @@ function above.
 @end deftypefn
 
 @deftypefn Statistics double gsl_stats_wabsdev (const double @var{w}[], size_t @var{wstride}, const double @var{data}[], size_t @var{stride}, size_t @var{n})
-This function computes the absolute deviation from the mean of
-@var{data}.  The absolute deviation from the mean is defined as,
+This function computes the weighted absolute deviation from the weighted
+mean of @var{data}.  The absolute deviation from the mean is defined as,
 
 @tex
 \beforedisplay
@@ -474,9 +484,13 @@ absdev = (\sum w_i |x_i - \Hat\mu|) / (\sum w_i)
 @end deftypefn
 
 @deftypefn Statistics double gsl_stats_wabsdev_m (const double @var{w}[], size_t @var{wstride}, const double @var{data}[], size_t @var{stride}, size_t @var{n}, double @var{wmean})
+This function computes the absolute deviation of the weighted dataset
+@var{data} about the given weighted mean @var{wmean}.
 @end deftypefn
 
 @deftypefn Statistics double gsl_stats_wskew (const double @var{w}[], size_t @var{wstride}, const double @var{data}[], size_t @var{stride}, size_t @var{n})
+This function computes the weighted skewness of the dataset @var{data}.
+
 @tex
 \beforedisplay
 $$
@@ -492,9 +506,13 @@ skew = (\sum w_i ((x_i - xbar)/\sigma)^3) / (\sum w_i)
 @end deftypefn
 
 @deftypefn Statistics double gsl_stats_wskew_m_sd (const double @var{w}[], size_t @var{wstride}, const double @var{data}[], size_t @var{stride}, size_t @var{n}, double @var{wmean}, double @var{wsd})
+This function computes the weighted skewness of the dataset @var{data}
+using the given values of the weighted mean and weighted standard
+deviation, @var{wmean} and @var{wsd}.
 @end deftypefn
 
 @deftypefn Statistics double gsl_stats_wkurtosis (const double @var{w}[], size_t @var{wstride}, const double @var{data}[], size_t @var{stride}, size_t @var{n})
+This function computes the weighted kurtosis of the dataset @var{data}.
 @tex
 \beforedisplay
 $$
@@ -510,6 +528,9 @@ kurtosis = ((\sum w_i ((x_i - xbar)/sigma)^4) / (\sum w_i)) - 3
 @end deftypefn
 
 @deftypefn Statistics double gsl_stats_wkurtosis_m_sd (const double @var{w}[], size_t @var{wstride}, const double @var{data}[], size_t @var{stride}, size_t @var{n}, double @var{wmean}, double @var{wsd})
+This function computes the weighted kurtosis of the dataset @var{data}
+using the given values of the weighted mean and weighted standard
+deviation, @var{wmean} and @var{wsd}.
 @end deftypefn
 
 @node Maximum and Minimum values
@@ -649,7 +670,7 @@ Here is a basic example of how to use the statistical functions:
 #include <stdio.h>
 #include <gsl/gsl_statistics.h>
 
-int main()
+int main(void)
 @{
   double data[5] = @{17.2, 18.1, 16.5, 18.3, 12.6@};
   double mean, variance, largest, smallest;
@@ -687,27 +708,30 @@ Here is an example using sorted data,
 #include <gsl/gsl_sort.h>
 #include <gsl/gsl_statistics.h>
 
-int main()
+int main(void)
 @{
   double data[5] = @{17.2, 18.1, 16.5, 18.3, 12.6@};
   double median, upperq, lowerq;
 
-  printf("The original dataset is %g, %g, %g, %g, %g\n",
+  printf("Original dataset:  %g, %g, %g, %g, %g\n",
         data[0], data[1], data[2], data[3], data[4]);
 
   gsl_sort (data, 1, 5);
 
-  printf("The sorted dataset is %g, %g, %g, %g, %g\n",
+  printf("Sorted dataset: %g, %g, %g, %g, %g\n",
         data[0], data[1], data[2], data[3], data[4]);
 
   median 
-    = gsl_stats_median_from_sorted_data (data, 1, 5);
+    = gsl_stats_median_from_sorted_data (data, 
+                                         1, 5);
 
   upperq 
-    = gsl_stats_quantile_from_sorted_data (data, 1, 5,
+    = gsl_stats_quantile_from_sorted_data (data, 
+                                           1, 5,
                                            0.75);
   lowerq 
-    = gsl_stats_quantile_from_sorted_data (data, 1, 5,
+    = gsl_stats_quantile_from_sorted_data (data, 
+                                           1, 5,
                                            0.25);
 
   printf("The median is %g\n", median);
@@ -719,8 +743,8 @@ int main()
 This program should produce the following output,
 
 @example
-The original dataset is 17.2, 18.1, 16.5, 18.3, 12.6
-The sorted dataset is 12.6, 16.5, 17.2, 18.1, 18.3
+Original dataset: 17.2, 18.1, 16.5, 18.3, 12.6
+Sorted dataset: 12.6, 16.5, 17.2, 18.1, 18.3
 The median is 17.2
 The upper quartile is 18.1
 The lower quartile is 16.5

@@ -111,12 +111,12 @@ parameters as a second argument.
 @cindex selection function, ntuples
 The @dfn{selection function} determines which ntuple rows are selected
 for histogramming.  It is defined by the following struct,
-@example
+@smallexample
 typedef struct @{
   int (* function) (void * ntuple_data, void * params);
   void * params;
 @} gsl_ntuple_select_fn;
-@end example
+@end smallexample
 @noindent
 The struct component @var{function} should return a non-zero value for
 each ntuple row that is to be included in the histogram.
@@ -124,12 +124,12 @@ each ntuple row that is to be included in the histogram.
 @cindex value function, ntuples
 The @dfn{value function} computes scalar values for those ntuple rows
 selected by the selection function,
-@example
+@smallexample
 typedef struct @{
   double (* function) (void * ntuple_data, void * params);
   void * params;
 @} gsl_ntuple_value_fn;
-@end example
+@end smallexample
 @noindent
 In this case the struct component @var{function} should return the value
 to be added to the histogram for the ntuple row.  

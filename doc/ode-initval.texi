@@ -98,11 +98,12 @@ This function returns a pointer to the name of the stepping function.
 For example,
 
 @example
-printf("step method is '%s'\n", gsl_odeiv_step_name (s));
+printf("step method is '%s'\n",
+        gsl_odeiv_step_name (s));
 @end example
 
 @noindent
-would print something like @code{step method is 'rk4'}
+would print something like @code{step method is 'rk4'}.
 @end deftypefun
 
 @deftypefun {unsigned int} gsl_odeiv_step_order (const gsl_odeiv_step * @var{s})
@@ -197,59 +198,59 @@ scaling factors @var{a_y} and @var{a_dydt} for the system state
 @math{y(t)} and derivatives @math{y'(t)} respectively.
 
 The step-size adjustment procedure for this method begins by computing
-the desired error level @math{D0_i} for each component,
+the desired error level @math{D_i} for each component,
 
 @tex
 \beforedisplay
 $$
-D0_i = \epsilon_{abs} + \epsilon_{rel} * (a_{y} |y_i| + a_{dydt} h |y'_i|)
+D_i = \epsilon_{abs} + \epsilon_{rel} * (a_{y} |y_i| + a_{dydt} h |y'_i|)
 $$
 \afterdisplay
 @end tex
 @ifinfo
 @example
-D0_i = eps_abs + eps_rel * (a_y |y_i| + a_dydt h |y'_i|)
+D_i = eps_abs + eps_rel * (a_y |y_i| + a_dydt h |y'_i|)
 @end example
 @end ifinfo
 @noindent
-and comparing it with the observed error @math{D1_i = |yerr_i|}.  If the
-observed error @var{D1} exceeds the desired error level @var{D0} by more
+and comparing it with the observed error @math{E_i = |yerr_i|}.  If the
+observed error @var{E} exceeds the desired error level @var{D} by more
 than 10% for any component then the method reduces the step-size by an
 appropriate factor,
 
 @tex
 \beforedisplay
 $$
-h_{new} = h_{old} * S * (D0/D1)^{1/q}
+h_{new} = h_{old} * S * (D/E)^{1/q}
 $$
 \afterdisplay
 @end tex
 @ifinfo
 @example
-h_new = h_old * S * (D0/D1)^(1/q)
+h_new = h_old * S * (D/E)^(1/q)
 @end example
 @end ifinfo
 @noindent
 where @math{q} is the consistency order of method (e.g. @math{q=4} for
 4(5) embedded RK), and @math{S} is a safety factor of 0.9. The ratio
-@math{D0/D1} is taken to be the maximum of the ratios
-@math{D0_i/D1_i}. 
+@math{D/E} is taken to be the maximum of the ratios
+@math{D_i/E_i}. 
 
-If the observed error @math{D1} is less than 50% of the desired error
-level @var{D0} for the maximum ratio @math{D0_i/D1_i} then the algorithm
+If the observed error @math{E} is less than 50% of the desired error
+level @var{D} for the maximum ratio @math{D_i/E_i} then the algorithm
 takes the opportunity to increase the step-size to bring the error in
 line with the desired level,
 
 @tex
 \beforedisplay
 $$
-h_{new} = h_{old} * S * (D1/D0)^{1/(q+1)}
+h_{new} = h_{old} * S * (E/D)^{1/(q+1)}
 $$
 \afterdisplay
 @end tex
 @ifinfo
 @example
-h_new = h_old * S * (D1/D0)^(1/(q+1))
+h_new = h_old * S * (E/D)^(1/(q+1))
 @end example
 @end ifinfo
 @noindent
@@ -324,10 +325,11 @@ would print something like @code{control method is 'standard'}
 
 The highest level of the system is the evolution function which combines
 the results of a stepping function and control function to reliably
-advance the solution forward.  If the control function signals that the
-step-size should be decreased the evolution function backs out of the
-current step and tries the proposed smaller step-size.  This is process
-is continued until an acceptable step-size is found.
+advance the solution forward over an interval @math{(t_0, t_1)}.  If the
+control function signals that the step-size should be decreased the
+evolution function backs out of the current step and tries the proposed
+smaller step-size.  This is process is continued until an acceptable
+step-size is found.
 
 @deftypefun {gsl_odeiv_evolve *} gsl_odeiv_evolve_alloc (size_t @var{dim})
 This function returns a pointer to a newly allocated instance of an
@@ -422,7 +424,8 @@ jac (double t, const double y[], double *dfdy,
      double dfdt[], void *params)
 @{
   double mu = *(double *)params;
-  gsl_matrix_view dfdy_mat = gsl_matrix_view_array (dfdy, 2, 2);
+  gsl_matrix_view dfdy_mat 
+    = gsl_matrix_view_array (dfdy, 2, 2);
   gsl_matrix * m = &dfdy_mat.matrix; 
   gsl_matrix_set (m, 0, 0, 0.0);
   gsl_matrix_set (m, 0, 1, 1.0);
@@ -436,7 +439,8 @@ jac (double t, const double y[], double *dfdy,
 int
 main (void)
 @{
-  const gsl_odeiv_step_type * T = gsl_odeiv_step_rk8pd;
+  const gsl_odeiv_step_type * T 
+    = gsl_odeiv_step_rk8pd;
 
   gsl_odeiv_step * s 
     = gsl_odeiv_step_alloc (T, 2);
@@ -458,8 +462,8 @@ main (void)
     @{
       int status = gsl_odeiv_evolve_apply (e, c, s,
                                            &sys, 
-                                           &t, t1, &h,
-                                           y);
+                                           &t, t1,
+                                           &h, y);
 
       if (status != GSL_SUCCESS)
           break;

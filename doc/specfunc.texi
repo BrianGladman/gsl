@@ -273,7 +273,7 @@ the special functions, in this case to compute the Bessel function
 #include <gsl/gsl_sf_bessel.h>
 
 int
-main ()
+main (void)
 @{
   double x = 5.0;
   gsl_sf_result result;
@@ -308,7 +308,7 @@ status are not accessible.
 #include <gsl/gsl_sf_bessel.h>
 
 int
-main ()
+main (void)
 @{
   double x = 5.0;
   double expected = -0.17759677131433830434739701;

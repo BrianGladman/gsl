@@ -71,9 +71,9 @@ x -> x' = x - J^@{-1@} f(x)
 where @math{x}, @math{f} are vector quantities and @math{J} is the
 Jacobian matrix @c{$J_{ij} = \partial f_i / \partial x_j$} 
 @math{J_@{ij@} = d f_i / d x_j}.
-Additional strategies are also used to enlarge the region of
+Additional strategies can be used to enlarge the region of
 convergence.  These include requiring a decrease in the norm @math{|f|} on
-each step proposed by Newton's method, or taking downwards steps in
+each step proposed by Newton's method, or taking steepest-descent steps in
 the direction of the negative gradient of @math{|f|}.
 
 The evaluation of the Jacobian matrix can be problematic, either because
@@ -125,7 +125,7 @@ const gsl_multiroot_fdfsolver_type * T
     = gsl_multiroot_fdfsolver_newton;
 
 gsl_multiroot_fdfsolver * s = 
-    gsl_multiroot_fdfsolver_alloc (, 2);
+    gsl_multiroot_fdfsolver_alloc (T, 2);
 @end example
 
 If there is insufficient memory to create the solver then the function
@@ -158,7 +158,7 @@ printf("s is a '%s' solver\n",
 @end example
 
 @noindent
-would print something like @code{s is a 'newton' solver}
+would print something like @code{s is a 'newton' solver}.
 @end deftypefun
 
 @node Providing the multidimensional system of equations to solve
@@ -221,8 +221,10 @@ powell (gsl_vector * x, void * p, gsl_vector * f) @{
    double A = (params->A);
    double x0 = gsl_vector_get(x,0);
    double x1 = gsl_vector_get(x,1);
+
    gsl_vector_set (f, 0, A * x0 * x1 - 1)
-   gsl_vector_set (f, 1, exp(-x0) + exp(-x1) - (1 + 1/A))
+   gsl_vector_set (f, 1, (exp(-x0) + exp(-x1) 
+                          - (1.0 + 1.0/A)))
    return GSL_SUCCESS
 @}
 
@@ -274,7 +276,8 @@ include analytic derivatives using the following code,
 
 @example
 int
-powell_df (gsl_vector * x, void * p, gsl_matrix * J) @{
+powell_df (gsl_vector * x, void * p, gsl_matrix * J) 
+@{
    struct powell_params * params 
      = *(struct powell_params *)p;
    double A = (params->A);
@@ -347,10 +350,8 @@ continuing.
 @end table
 @end deftypefun
 
-The solver maintains a current best estimate of the root at all
-times.  The bracketing solvers also keep track of the current best
-interval bounding the root.  This information can be accessed with the
-following auxiliary functions,
+The solver maintains a current best estimate of the root at all times.
+This information can be accessed with the following auxiliary functions,
 
 @deftypefun {gsl_vector *} gsl_multiroot_fsolver_root (const gsl_multiroot_fsolver * @var{s})
 @deftypefunx {gsl_vector *} gsl_multiroot_fdfsolver_root (const gsl_multiroot_fdfsolver * @var{s})
@@ -376,10 +377,9 @@ An error has occurred.
 @end itemize
 
 @noindent
-In the multidimensional root finding framework of GSL the handling of
-these conditions is under user control.  The functions below allow the
-user to test the precision of the current result in several standard
-ways.
+The handling of these conditions is under user control.  The functions
+below allow the user to test the precision of the current result in
+several standard ways.
 
 @deftypefun int gsl_multiroot_test_delta (const gsl_vector * @var{dx}, const gsl_vector * @var{x}, double @var{epsabs}, double @var{epsrel})
 
@@ -716,7 +716,7 @@ require derivatives. The program solves the Rosenbrock system of equations
 @tex
 \beforedisplay
 $$
-f_1 (x, y) = a (1 - x),
+f_1 (x, y) = a (1 - x),~
 f_2 (x, y) = b (y - x^2)
 $$
 \afterdisplay
@@ -806,7 +806,8 @@ main (void)
       if (status)   /* check if solver is stuck */
         break;
 
-      status = gsl_multiroot_test_residual (s->f, 1e-7);
+      status = 
+        gsl_multiroot_test_residual (s->f, 1e-7);
     @}
   while (status == GSL_CONTINUE && iter < 1000);
 
@@ -831,7 +832,7 @@ values.
 int
 print_state (size_t iter, gsl_multiroot_fsolver * s)
 @{
-  printf ("iter = %3u x = % 10.3f % 10.3f "
+  printf ("iter = %3u x = % .3f % .3f "
           "f(x) = % .3e % .3e\n",
           iter,
           gsl_vector_get (s->x, 0), 
@@ -849,18 +850,18 @@ the root has been approximately located, on iteration 8, the Newton
 behavior takes over and convergence is very rapid.
 
 @smallexample
-iter =   0 x =  -10.00000000  -5.00000000  f(x) =  1.100e+01 -1.050e+03
-iter =   1 x =  -10.00000000  -5.00000000  f(x) =  1.100e+01 -1.050e+03
-iter =   2 x =   -3.97577039  24.82704463  f(x) =  4.976e+00  9.020e+01
-iter =   3 x =   -3.97577039  24.82704463  f(x) =  4.976e+00  9.020e+01
-iter =   4 x =   -3.97577039  24.82704463  f(x) =  4.976e+00  9.020e+01
-iter =   5 x =   -1.27350954  -5.67999688  f(x) =  2.274e+00 -7.302e+01
-iter =   6 x =   -1.27350954  -5.67999688  f(x) =  2.274e+00 -7.302e+01
-iter =   7 x =    0.24894860   0.29786482  f(x) =  7.511e-01  2.359e+00
-iter =   8 x =    0.24894860   0.29786482  f(x) =  7.511e-01  2.359e+00
-iter =   9 x =    1.00000000   0.87821493  f(x) =  1.268e-10 -1.218e+00
-iter =  10 x =    1.00000000   0.98919827  f(x) =  1.124e-11 -1.080e-01
-iter =  11 x =    1.00000000   1.00000000  f(x) =  0.000e+00  0.000e+00
+iter =  0 x = -10.000  -5.000  f(x) = 1.100e+01 -1.050e+03
+iter =  1 x = -10.000  -5.000  f(x) = 1.100e+01 -1.050e+03
+iter =  2 x =  -3.976  24.827  f(x) = 4.976e+00  9.020e+01
+iter =  3 x =  -3.976  24.827  f(x) = 4.976e+00  9.020e+01
+iter =  4 x =  -3.976  24.827  f(x) = 4.976e+00  9.020e+01
+iter =  5 x =  -1.274  -5.680  f(x) = 2.274e+00 -7.302e+01
+iter =  6 x =  -1.274  -5.680  f(x) = 2.274e+00 -7.302e+01
+iter =  7 x =   0.249   0.298  f(x) = 7.511e-01  2.359e+00
+iter =  8 x =   0.249   0.298  f(x) = 7.511e-01  2.359e+00
+iter =  9 x =   1.000   0.878  f(x) = 1.268e-10 -1.218e+00
+iter = 10 x =   1.000   0.989  f(x) = 1.124e-11 -1.080e-01
+iter = 11 x =   1.000   1.000  f(x) = 0.000e+00  0.000e+00
 status = success
 @end smallexample
 @noindent
@@ -974,10 +975,10 @@ that it scales back its step if the full step would lead "uphill". Here
 is the output for the @code{gnewton} algorithm,
 
 @smallexample
-iter =  0 x = -10.00000000  -5.00000000  f(x) =  1.100e+01 -1.050e+03
-iter =  1 x =  -4.23051697 -65.31732261  f(x) =  5.231e+00 -8.321e+02
-iter =  2 x =   1.00000000 -26.35830775  f(x) = -8.882e-16 -2.736e+02
-iter =  3 x =   1.00000000   1.00000000  f(x) = -2.220e-16 -4.441e-15
+iter = 0 x = -10.000  -5.000 f(x) =  1.100e+01 -1.050e+03
+iter = 1 x =  -4.231 -65.317 f(x) =  5.231e+00 -8.321e+02
+iter = 2 x =   1.000 -26.358 f(x) = -8.882e-16 -2.736e+02
+iter = 3 x =   1.000   1.000 f(x) = -2.220e-16 -4.441e-15
 status = success
 @end smallexample
 @noindent

@@ -67,7 +67,7 @@ double f (double x, void * params)
 @}
 
 int
-main ()
+main (void)
 @{
   gsl_function F;
   double result, abserr;
@@ -79,13 +79,13 @@ main ()
 
   gsl_diff_central (&F, 2.0, &result, &abserr);
   printf("x = 2.0\n");
-  printf("derivative = %.10f +/- %.5f\n", result, abserr);
-  printf("exact      = %.10f\n\n", 1.5 * sqrt(2.0));
+  printf("f'(x) = %.10f +/- %.5f\n", result, abserr);
+  printf("exact = %.10f\n\n", 1.5 * sqrt(2.0));
 
   gsl_diff_forward (&F, 0.0, &result, &abserr);
   printf("x = 0.0\n");
-  printf("derivative = %.10f +/- %.5f\n", result, abserr);
-  printf("exact      = %.10f\n", 0.0);
+  printf("f'(x) = %.10f +/- %.5f\n", result, abserr);
+  printf("exact = %.10f\n", 0.0);
 @}
 @end example
 @noindent
@@ -95,12 +95,12 @@ $ ./demo
 f(x) = x^(3/2)
 
 x = 2.0
-derivative = 2.1213203435 +/- 0.01490
-exact      = 2.1213203436
+f'(x) = 2.1213203435 +/- 0.01490
+exact = 2.1213203436
 
 x = 0.0
-derivative = 0.0012172897 +/- 0.05028
-exact      = 0.0000000000
+f'(x) = 0.0012172897 +/- 0.05028
+exact = 0.0000000000
 @end example
 
 @node Numerical Differentiation References

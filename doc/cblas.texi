@@ -10,10 +10,11 @@ available from Netlib.
 * Level 1 CBLAS Functions::     
 * Level 2 CBLAS Functions::     
 * Level 3 CBLAS Functions::     
+* GSL CBLAS Examples::          
 @end menu
 
 @node Level 1 CBLAS Functions
-@subsection Level 1 
+@section Level 1 
 
 @deftypefun float cblas_sdsdot (const int @var{N}, const float @var{alpha}, const float *@var{x}, const int @var{incx}, const float *@var{y}, const int @var{incy})
 @end deftypefun
@@ -154,7 +155,7 @@ available from Netlib.
 @end deftypefun
 
 @node Level 2 CBLAS Functions
-@subsection Level 2 
+@section Level 2 
 
 @deftypefun void cblas_sgemv (const enum CBLAS_ORDER @var{order}, const enum CBLAS_TRANSPOSE @var{TransA}, const int @var{M}, const int @var{N}, const float @var{alpha}, const float *@var{A}, const int @var{lda}, const float *@var{x}, const int @var{incx}, const float @var{beta}, float *@var{y}, const int @var{incy})
 @end deftypefun
@@ -355,7 +356,7 @@ available from Netlib.
 @end deftypefun
 
 @node Level 3 CBLAS Functions
-@subsection Level 3 
+@section Level 3 
 
 
 @deftypefun void cblas_sgemm (const enum CBLAS_ORDER @var{Order}, const enum CBLAS_TRANSPOSE @var{TransA}, const enum CBLAS_TRANSPOSE @var{TransB}, const int @var{M}, const int @var{N}, const int @var{K}, const float @var{alpha}, const float *@var{A}, const int @var{lda}, const float *@var{B}, const int @var{ldb}, const float @var{beta}, float *@var{C}, const int @var{ldc})
@@ -494,7 +495,7 @@ changed to @code{CblasColMajor}.
 #include <gsl/gsl_cblas.h>
 
 int
-main ()
+main (void)
 @{
   int lda = 3;
 
