@@ -41,6 +41,7 @@ main (void)
   CHECK(GSL_EROUND);
   CHECK(GSL_EBADLEN);
   CHECK(GSL_ESING);
+  CHECK(GSL_EUNSUP);
 
   for (i = 0 ; i < n ; i++) 
     {

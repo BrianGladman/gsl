@@ -1,5 +1,8 @@
 Mon Jun  1 11:02:04 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
+	* gsl_errno.h: added GSL_EUNSUP for errors caused by a hardware
+	feature which is not supported on a particular platform
+
 	* renamed test.c to test_results.c to avoid confusion when debugging
 	other test programs called test.c
 

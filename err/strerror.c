@@ -46,6 +46,8 @@ gsl_strerror (const int gsl_errno)
       return "matrix/vector sizes are not conformant" ;
     case GSL_ESING:
       return "singularity or extremely bad function behavior detected" ;
+    case GSL_EUNSUP:
+      return "the required feature is not supported by this hardware platform";
     default:
       return "unknown error code" ;
     }
