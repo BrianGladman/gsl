@@ -1,10 +1,11 @@
 #include <config.h>
 #include <stdlib.h>
+#include <gsl_math.h>
 #include <gsl_errno.h>
 #include <gsl_integration.h>
 
 int
-gsl_integration_qage (double (*f)(double x),
+gsl_integration_qage (const gsl_function *f,
 		      double a, double b,
 		      double epsabs, double epsrel,
 		      int key,

@@ -1,68 +1,81 @@
 
 /* $Id$ */
 
+typedef double simple_function (double x);
+typedef struct { simple_function * f; simple_function * df; } function_pair ;
+
+gsl_function create_function (simple_function * f) ;
+double eval_function (double x, void * params) ;
+
+gsl_fdf create_fdf (simple_function * f, simple_function * df);
+double eval_fdf_f (double x, void * params);
+double eval_fdf_df (double x, void * params);
+void eval_fdf (double x, void * params, double * y1, double * y2);
+
 void
   test_macros (void);
 
 void
+  test_roots (void);
+
+void
+  test_poly (void);
+
+void
   test_bisection (const char *description,
-		  double (*f) (double),
+		  const gsl_function * f,
 		  double lower_bound, double upper_bound,
 		  double correct_root);
 
 void
   test_bisection_failure (const char *description,
-			  double (*f) (double),
+			  const gsl_function * f,
 			  double lower_bound, double upper_bound,
 			  double correct_root);
 
 void
   test_brent (const char *description,
-		  double (*f) (double),
-		  double lower_bound, double upper_bound,
-		  double correct_root);
+	      const gsl_function * f,
+	      double lower_bound, double upper_bound,
+	      double correct_root);
 
 void
   test_brent_failure (const char *description,
-			  double (*f) (double),
-			  double lower_bound, double upper_bound,
-			  double correct_root);
+		      const gsl_function * f,
+		      double lower_bound, double upper_bound,
+		      double correct_root);
 
 void
   test_falsepos (const char *description,
-		 double (*f) (double),
+		 const gsl_function * f,
 		 double lower_bound, double upper_bound,
 		 double correct_root);
 
 void
   test_falsepos_failure (const char *description,
-			 double (*f) (double),
+			 const gsl_function * f,
 			 double lower_bound, double upper_bound,
 			 double correct_root);
 void
   test_secant (const char *description,
-	       double (*f) (double),
+	       const gsl_function * f,
 	       double guess1, double guess2,
 	       double correct_root);
 
 void
   test_secant_failure (const char *description,
-		       double (*f) (double),
+		       const gsl_function * f,
 		       double guess1, double guess2,
 		       double correct_root);
 
 void
   test_newton (const char *description,
-	       double (*f) (double),
-	       double (*df) (double),
-	       void (*fdf) (double, double *, double *),
+	       const gsl_fdf * f,
 	       double guess, double correct_root);
 
 void
   test_newton_failure (const char *description,
-		       double (*f) (double),
-		       double (*df) (double),
-		       void (*fdf) (double, double *, double *),
+		       const gsl_fdf * f,
 		       double guess, double correct_root);
 
 void

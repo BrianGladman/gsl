@@ -1,6 +1,7 @@
 #ifndef GSL_INTEGRATION_H
 #define GSL_INTEGRATION_H
 #include <stdlib.h>
+#include <gsl_math.h>
 
 typedef struct {
   size_t limit ;
@@ -17,37 +18,37 @@ gsl_integration_workspace_alloc (size_t n) ;
 void
 gsl_integration_workspace_free (gsl_integration_workspace * w) ;
 
-typedef void gsl_integration_rule_t (double (*f)(double x), 
+typedef void gsl_integration_rule_t (const gsl_function *f, 
 				     const double a, const double b,
 				     double * result, double * abserr,
 				     double * defabs, double * resabs) ;
        
-void gsl_integration_qk15 (double (*f) (double x),
+void gsl_integration_qk15 (const gsl_function *f,
 			  const double a, const double b,
 			  double * result, double * abserr,
 			  double * resabs, double * resasc) ;
 
-void gsl_integration_qk21 (double (*f) (double x),
+void gsl_integration_qk21 (const gsl_function *f,
 			  const double a, const double b,
 			  double * result, double * abserr,
 			  double * resabs, double * resasc);
 
-void gsl_integration_qk31 (double (*f) (double x),
+void gsl_integration_qk31 (const gsl_function *f,
 			  double a, double b,
 			  double * result, double * abserr,
 			  double * resabs, double * resasc);
 
-void gsl_integration_qk41 (double (*f) (double x),
+void gsl_integration_qk41 (const gsl_function *f,
 			  double a, double b,
 			  double * result, double * abserr,
 			  double * resabs, double * resasc);
 
-void gsl_integration_qk51 (double (*f) (double x),
+void gsl_integration_qk51 (const gsl_function *f,
 			  double a, double b,
 			  double * result, double * abserr,
 			  double * resabs, double * resasc);
 
-void gsl_integration_qk61 (double (*f) (double x),
+void gsl_integration_qk61 (const gsl_function *f,
 			  const double a, const double b,
 			  double * result, double * abserr,
 			  double * resabs, double * resasc);
@@ -55,19 +56,19 @@ void gsl_integration_qk61 (double (*f) (double x),
 void gsl_integration_qk (const int n,
 			 const double xgk[], const double wg[], const double wgk[],
 			 double fv1[], double fv2[],
-			 double (*f) (double x),
+			 const gsl_function *f,
 			 double a, double b,
 			 double * result, double * abserr,
 			 double * resabs, double * resasc) ;
 
-int gsl_integration_qng (double (*f) (double x),
+int gsl_integration_qng (const gsl_function *f,
 			 double a, double b,
 			 double epsabs, double epsrel,
 			 double * result, double * abserr,
 			 size_t * neval);
 
 int
-gsl_integration_qage (double (*f)(double x),
+gsl_integration_qage (const gsl_function *f,
 		      double a, double b,
 		      double epsabs, double epsrel,
 		      int key,
@@ -76,7 +77,7 @@ gsl_integration_qage (double (*f)(double x),
 		      double * result, double * abserr, size_t * neval) ;
 
 int
-gsl_integration_qage_impl (double (*f)(double x),
+gsl_integration_qage_impl (const gsl_function *f,
 			   const double a, const double b,
 			   const double epsabs, const double epsrel,
 			   gsl_integration_workspace * workspace,
@@ -105,14 +106,14 @@ gsl_integration_qelg (size_t * n, double epstab[],
 		      double res3la[], size_t * nres) ;
 
 int
-gsl_integration_qagse (double (*f)(double x),
+gsl_integration_qagse (const gsl_function *f,
 		      double a, double b,
 		      double epsabs, double epsrel,
 		      gsl_integration_workspace * workspace, size_t * last,
 		      double * result, double * abserr, size_t * neval) ;
 
 int
-gsl_integration_qagse_impl (double (*f)(double x), 
+gsl_integration_qagse_impl (const gsl_function *f, 
 			    double a, double b, 
 			    double epsabs, double epsrel,
 			    gsl_integration_workspace * workspace,

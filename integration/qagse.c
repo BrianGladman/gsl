@@ -4,7 +4,7 @@
 #include <gsl_integration.h>
 
 int
-gsl_integration_qagse (double (*f)(double x),
+gsl_integration_qagse (const gsl_function *f,
 		       double a, double b,
 		       double epsabs, double epsrel,
 		       gsl_integration_workspace * workspace,

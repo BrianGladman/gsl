@@ -9,7 +9,7 @@
 #include "qng.h"
 
 int
-gsl_integration_qng (double (*f) (double x),
+gsl_integration_qng (const gsl_function *f,
 		     double a, double b,
 		     double epsabs, double epsrel,
 		     double * result, double * abserr, size_t * neval)
@@ -24,7 +24,7 @@ gsl_integration_qng (double (*f) (double x),
   const double half_length =  0.5 * (b - a);
   const double abs_half_length = fabs (half_length);
   const double center = 0.5 * (b + a);
-  const double f_center = f (center);
+  const double f_center = GSL_FN_EVAL(f, center);
 
   int k ;
 
@@ -46,8 +46,8 @@ gsl_integration_qng (double (*f) (double x),
   for (k = 0; k < 5; k++)
     {
       const double abscissa = half_length * x1[k];
-      const double fval1 = f (center + abscissa);
-      const double fval2 = f (center - abscissa);
+      const double fval1 = GSL_FN_EVAL(f, center + abscissa);
+      const double fval2 = GSL_FN_EVAL(f, center - abscissa);
       const double fval = fval1 + fval2;
       res10 += w10[k] * fval;
       res21 += w21a[k] * fval;
@@ -60,8 +60,8 @@ gsl_integration_qng (double (*f) (double x),
   for (k = 0; k < 5; k++)
     {
       const double abscissa = half_length * x2[k];
-      const double fval1 = f (center + abscissa);
-      const double fval2 = f (center - abscissa);
+      const double fval1 = GSL_FN_EVAL(f, center + abscissa);
+      const double fval2 = GSL_FN_EVAL(f, center - abscissa);
       const double fval = fval1 + fval2;
       res21 += w21b[k] * fval;
       resabs += w21b[k] * (fabs (fval1) + fabs (fval2));
@@ -112,7 +112,8 @@ gsl_integration_qng (double (*f) (double x),
   for (k = 0; k < 11; k++)
     {
       const double abscissa = half_length * x3[k];
-      const double fval = f (center + abscissa) + f (center - abscissa);
+      const double fval = (GSL_FN_EVAL(f, center + abscissa) 
+			   + GSL_FN_EVAL(f, center - abscissa));
       res43 += fval * w43b[k];
       savfun[k + 10] = fval;
     }
@@ -142,7 +143,8 @@ gsl_integration_qng (double (*f) (double x),
   for (k = 0; k < 22; k++)
     {
       const double abscissa = half_length * x4[k];
-      res87 += w87b[k] * (f (center + abscissa) + f (center - abscissa));
+      res87 += w87b[k] * (GSL_FN_EVAL(f, center + abscissa) 
+			  + GSL_FN_EVAL(f, center - abscissa));
     }
 
   /*  test for convergence */

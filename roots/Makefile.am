@@ -12,7 +12,7 @@ INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../err
 
 TESTS = test
 
-test_SOURCES = test.c test.h
+test_SOURCES = test.c test_macros.c test_funcs.c test_roots.c test_poly.c test.h
 test_LDADD = libgslroots.a ../err/libgslerr.a ../err/libgsltest.a
 test_DEPENDENCIES = libgslroots.a
 

@@ -3,7 +3,7 @@
 #include "qk51.h"
 
 void
-gsl_integration_qk51 (double (*f) (double x),
+gsl_integration_qk51 (const gsl_function *f,
 		      double a, double b,
 		      double * result, double * abserr,
 		      double * resabs, double * resasc)

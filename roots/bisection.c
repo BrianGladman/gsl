@@ -20,7 +20,7 @@
    desired accuracy. */
 
 int
-gsl_root_bisection (double *root, double (*f) (double), 
+gsl_root_bisection (double *root, const gsl_function * f, 
 		    double *lower_bound, double *upper_bound, 
 		    double rel_epsilon, double abs_epsilon, 
 		    unsigned int max_iterations)

@@ -9,19 +9,19 @@
 
 void
 gsl_integration_qk (const int n,
-			 const double xgk[], const double wg[], 
-			 const double wgk[],
-			 double fv1[], double fv2[],
-			 double (*f) (double x),
-			 double a, double b,
-			 double * result, double * abserr,
-			 double * resabs, double * resasc)
+		    const double xgk[], const double wg[], 
+		    const double wgk[],
+		    double fv1[], double fv2[],
+		    const gsl_function *f,
+		    double a, double b,
+		    double * result, double * abserr,
+		    double * resabs, double * resasc)
 {
 
   const double center = 0.5 * (a + b);
   const double half_length = 0.5 * (b - a);
   const double abs_half_length = fabs (half_length);
-  const double f_center = (*f) (center);
+  const double f_center = GSL_FN_EVAL(f, center);
 
   double result_gauss = 0;
   double result_kronrod = f_center * wgk[n - 1];
@@ -41,8 +41,8 @@ gsl_integration_qk (const int n,
     {
       const int jtw = j * 2 + 1;   /* j=1,2,3 jtw=2,4,6 */
       const double abscissa = half_length * xgk[jtw];
-      const double fval1 = (*f) (center - abscissa);
-      const double fval2 = (*f) (center + abscissa);
+      const double fval1 = GSL_FN_EVAL(f, center - abscissa);
+      const double fval2 = GSL_FN_EVAL(f, center + abscissa);
       const double fsum = fval1 + fval2;
       fv1[jtw] = fval1;
       fv2[jtw] = fval2;
@@ -55,8 +55,8 @@ gsl_integration_qk (const int n,
     {
       int jtwm1 = j * 2 ;
       const double abscissa = half_length * xgk[jtwm1];
-      const double fval1 = (*f)(center - abscissa);
-      const double fval2 = (*f)(center + abscissa);
+      const double fval1 = GSL_FN_EVAL(f, center - abscissa);
+      const double fval2 = GSL_FN_EVAL(f, center + abscissa);
       fv1[jtwm1] = fval1;
       fv2[jtwm1] = fval2;
       result_kronrod += wgk[jtwm1] * (fval1 + fval2);

@@ -23,7 +23,7 @@
 #include "roots.h"
 
 int
-gsl_root_brent (double *root, double (*f) (double),
+gsl_root_brent (double *root, const gsl_function * f,
 		double *lower_bound, double *upper_bound,
 		double rel_epsilon, double abs_epsilon,
 		unsigned int max_iterations)

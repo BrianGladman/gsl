@@ -9,17 +9,13 @@
 #define isinf(x) (x == HUGE_VAL)
 #endif /* HAVE_ISINF */
 
-/* Return nonzero if x is a real number, i.e. non NaN or infinite. */
-/* FIXME: Is this correct way to check if something is real? */
-#define GSL_ISREAL(x) (0 * (x) == 0)
-
 /* Call the pointed-to function with argument x, put its result in y, and barf
    if it returned something icky. */
 
 #define SAFE_FUNC_CALL(f, x, y) \
 do { \
-  y = (*f)(x); \
-  if (!GSL_ISREAL(y)) \
+  y = GSL_FN_EVAL(f,x); \
+  if (!GSL_IS_REAL(y)) \
     GSL_ERROR("function not continuous", GSL_EBADFUNC); \
 } while (0)
 
@@ -37,3 +33,5 @@ do { \
 
 
 #endif /* __ROOTS_H__ */
+
+

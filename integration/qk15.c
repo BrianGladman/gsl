@@ -3,7 +3,7 @@
 #include "qk15.h"
 
 void
-gsl_integration_qk15 (double (*f) (double x),
+gsl_integration_qk15 (const gsl_function *f,
 		      double a, double b,
 		      double * result, double * abserr,
 		      double * resabs, double * resasc)

@@ -27,8 +27,10 @@ int main (void)
     double exp_resabs = 7.716049357767090777E-02;
     double exp_resasc = 4.434273814139995384E-02;
 
-    alpha = 2.6 ;
-    gsl_integration_qk15 (book1, 0.0, 1.0, 
+    double alpha = 2.6 ;
+    gsl_function f = { &book1, &alpha } ;
+
+    gsl_integration_qk15 (&f, 0.0, 1.0, 
 			  &result, &abserr, &resabs, &resasc) ;
     gsl_test_rel(result,exp_result,1e-15,"qk15(book1) smooth result") ;
     gsl_test_rel(abserr,exp_abserr,1e-7,"qk15(book1) smooth abserr") ;
@@ -43,8 +45,10 @@ int main (void)
     double exp_resabs = 7.716049379303084599E-02;
     double exp_resasc = 4.434311425038358484E-02;
 
-    alpha = 2.6 ;
-    gsl_integration_qk21 (book1, 0.0, 1.0, 
+    double alpha = 2.6 ;
+    gsl_function f = { &book1, &alpha } ;
+
+    gsl_integration_qk21 (&f, 0.0, 1.0, 
 			  &result, &abserr, &resabs, &resasc) ;
     gsl_test_rel(result,exp_result,1e-15,"qk21(book1) smooth result") ;
     gsl_test_rel(abserr,exp_abserr,1e-7,"qk21(book1) smooth abserr") ;
@@ -59,8 +63,10 @@ int main (void)
     double exp_resabs = 7.716049382494900855E-02;
     double exp_resasc = 4.427995051868838933E-02;
 
-    alpha = 2.6 ;
-    gsl_integration_qk31 (book1, 0.0, 1.0, 
+    double alpha = 2.6 ;
+    gsl_function f = { &book1, &alpha } ;
+
+    gsl_integration_qk31 (&f, 0.0, 1.0, 
 			  &result, &abserr, &resabs, &resasc) ;
     gsl_test_rel(result,exp_result,1e-15,"qk31(book1) smooth result") ;
     gsl_test_rel(abserr,exp_abserr,1e-7,"qk31(book1) smooth abserr") ;
@@ -74,9 +80,11 @@ int main (void)
     double exp_abserr = 9.576386660975511224E-11;
     double exp_resabs = 7.716049382681375302E-02;
     double exp_resasc = 4.421521169637691873E-02;
-    
-    alpha = 2.6 ;
-    gsl_integration_qk41 (book1, 0.0, 1.0, 
+
+    double alpha = 2.6 ;
+    gsl_function f = { &book1, &alpha } ;
+
+    gsl_integration_qk41 (&f, 0.0, 1.0, 
 			  &result, &abserr, &resabs, &resasc) ;
     gsl_test_rel(result,exp_result,1e-15,"qk41(book1) smooth result") ;
     gsl_test_rel(abserr,exp_abserr,1e-7,"qk41(book1) smooth abserr") ;
@@ -91,8 +99,10 @@ int main (void)
     double exp_resabs = 7.716049382708510540E-02;
     double exp_resasc = 4.416474291216854892E-02;
 
-    alpha = 2.6 ;
-    gsl_integration_qk51 (book1, 0.0, 1.0, 
+    double alpha = 2.6 ;
+    gsl_function f = { &book1, &alpha } ;
+
+    gsl_integration_qk51 (&f, 0.0, 1.0, 
 			  &result, &abserr, &resabs, &resasc) ;
     gsl_test_rel(result,exp_result,1e-15,"qk51(book1) smooth result") ;
     gsl_test_rel(abserr,exp_abserr,1e-5,"qk51(book1) smooth abserr") ;
@@ -106,9 +116,11 @@ int main (void)
     double exp_abserr = 1.566060362296155616E-12;
     double exp_resabs = 7.716049382713800753E-02;
     double exp_resasc = 4.419287685934316506E-02;
-    
-    alpha = 2.6 ;
-    gsl_integration_qk61 (book1, 0.0, 1.0, 
+
+    double alpha = 2.6 ;
+    gsl_function f = { &book1, &alpha } ;
+
+    gsl_integration_qk61 (&f, 0.0, 1.0, 
 			  &result, &abserr, &resabs, &resasc) ;
     gsl_test_rel(result,exp_result,1e-15,"qk61(book1) smooth result") ;
     gsl_test_rel(abserr,exp_abserr,1e-5,"qk61(book1) smooth abserr") ;
@@ -127,8 +139,10 @@ int main (void)
     double exp_resabs = 1.555688196612745777E+01;
     double exp_resasc = 2.350164577239293706E+01;
 
-    alpha = -0.9 ;
-    gsl_integration_qk15 (book1, 0.0, 1.0, 
+    double alpha = -0.9 ;
+    gsl_function f = { &book1, &alpha } ;
+
+    gsl_integration_qk15 (&f, 0.0, 1.0, 
 			  &result, &abserr, &resabs, &resasc) ;
     gsl_test_rel(result,exp_result,1e-15,"qk15(book1) singular result") ;
     gsl_test_rel(abserr,exp_abserr,1e-7,"qk15(book1) singular abserr") ;
@@ -143,8 +157,10 @@ int main (void)
     double exp_resabs = 1.799045317938126232E+01;
     double exp_resasc = 2.782360287710622515E+01;
 
-    alpha = -0.9 ;
-    gsl_integration_qk21 (book1, 0.0, 1.0, 
+    double alpha = -0.9 ;
+    gsl_function f = { &book1, &alpha } ;
+
+    gsl_integration_qk21 (&f, 0.0, 1.0, 
 			  &result, &abserr, &resabs, &resasc) ;
     gsl_test_rel(result,exp_result,1e-15,"qk21(book1) singular result") ;
     gsl_test_rel(abserr,exp_abserr,1e-7,"qk21(book1) singular abserr") ;
@@ -159,8 +175,10 @@ int main (void)
     double exp_resabs = 2.081873305159121301E+01;
     double exp_resasc = 3.296500137482590276E+01;
 
-    alpha = -0.9 ;
-    gsl_integration_qk31 (book1, 0.0, 1.0, 
+    double alpha = -0.9 ;
+    gsl_function f = { &book1, &alpha } ;
+
+    gsl_integration_qk31 (&f, 0.0, 1.0, 
 			  &result, &abserr, &resabs, &resasc) ;
     gsl_test_rel(result,exp_result,1e-15,"qk31(book1) singular result") ;
     gsl_test_rel(abserr,exp_abserr,1e-7,"qk31(book1) singular abserr") ;
@@ -174,9 +192,11 @@ int main (void)
     double exp_abserr = 3.671538820274916048E+01;
     double exp_resabs = 2.288677623903126701E+01;
     double exp_resasc = 3.671538820274916048E+01;
-    
-    alpha = -0.9 ;
-    gsl_integration_qk41 (book1, 0.0, 1.0, 
+
+    double alpha = -0.9 ;
+    gsl_function f = { &book1, &alpha } ;
+
+    gsl_integration_qk41 (&f, 0.0, 1.0, 
 			  &result, &abserr, &resabs, &resasc) ;
     gsl_test_rel(result,exp_result,1e-15,"qk41(book1) singular result") ;
     gsl_test_rel(abserr,exp_abserr,1e-7,"qk41(book1) singular abserr") ;
@@ -191,8 +211,10 @@ int main (void)
     double exp_resabs = 2.449953612016972215E+01;
     double exp_resasc = 3.967771249391228849E+01;
 
-    alpha = -0.9 ;
-    gsl_integration_qk51 (book1, 0.0, 1.0, 
+    double alpha = -0.9 ;
+    gsl_function f = { &book1, &alpha } ;
+
+    gsl_integration_qk51 (&f, 0.0, 1.0, 
 			  &result, &abserr, &resabs, &resasc) ;
     gsl_test_rel(result,exp_result,1e-15,"qk51(book1) singular result") ;
     gsl_test_rel(abserr,exp_abserr,1e-7,"qk51(book1) singular abserr") ;
@@ -207,8 +229,10 @@ int main (void)
     double exp_resabs = 2.583030240976628988E+01;
     double exp_resasc = 4.213750493076978643E+01;
 
-    alpha = -0.9 ;
-    gsl_integration_qk61 (book1, 0.0, 1.0, 
+    double alpha = -0.9 ;
+    gsl_function f = { &book1, &alpha } ;
+
+    gsl_integration_qk61 (&f, 0.0, 1.0, 
 			  &result, &abserr, &resabs, &resasc) ;
     gsl_test_rel(result,exp_result,1e-15,"qk61(book1) singular result") ;
     gsl_test_rel(abserr,exp_abserr,1e-7,"qk61(book1) singular abserr") ;
@@ -226,9 +250,11 @@ int main (void)
     double exp_abserr = 8.760080200939757174E-06;
     double exp_resabs = 1.165564172429140788E+00;
     double exp_resasc = 9.334560307787327371E-01;
-    
-    alpha = 1.3 ;
-    gsl_integration_qk15 (book3, 0.3, 2.71, 
+
+    double alpha = 1.3 ;
+    gsl_function f = { &book3, &alpha } ;
+
+    gsl_integration_qk15 (&f, 0.3, 2.71, 
 			  &result, &abserr, &resabs, &resasc) ;
     gsl_test_rel(result,exp_result,1e-15,"qk15(book3) oscill result") ;
     gsl_test_rel(abserr,exp_abserr,1e-7,"qk15(book3) oscill abserr") ;
@@ -242,9 +268,11 @@ int main (void)
     double exp_abserr = 7.999213141433641888E-11;
     double exp_resabs = 1.150829032708484023E+00;
     double exp_resasc = 9.297591249133687619E-01;
+
+    double alpha = 1.3 ;
+    gsl_function f = { &book3, &alpha } ;
     
-    alpha = 1.3 ;
-    gsl_integration_qk21 (book3, 0.3, 2.71, 
+    gsl_integration_qk21 (&f, 0.3, 2.71, 
 			  &result, &abserr, &resabs, &resasc) ;
     gsl_test_rel(result,exp_result,1e-15,"qk21(book3) oscill result") ;
     gsl_test_rel(abserr,exp_abserr,1e-5,"qk21(book3) oscill abserr") ;
@@ -258,9 +286,11 @@ int main (void)
     double exp_abserr = 1.285805464427459261E-14;
     double exp_resabs = 1.158150602093290571E+00;
     double exp_resasc = 9.277828092501518853E-01;
-    
-    alpha = 1.3 ;
-    gsl_integration_qk31 (book3, 0.3, 2.71, 
+
+    double alpha = 1.3 ;
+    gsl_function f = { &book3, &alpha } ;
+
+    gsl_integration_qk31 (&f, 0.3, 2.71, 
 			  &result, &abserr, &resabs, &resasc) ;
     gsl_test_rel(result,exp_result,1e-15,"qk31(book3) oscill result") ;
     gsl_test_rel(abserr,exp_abserr,1e-7,"qk31(book3) oscill abserr") ;
@@ -274,9 +304,11 @@ int main (void)
     double exp_abserr = 1.286535726271015626E-14;
     double exp_resabs = 1.158808363486595328E+00;
     double exp_resasc = 9.264382258645686985E-01;
-    
-    alpha = 1.3 ;
-    gsl_integration_qk41 (book3, 0.3, 2.71, 
+
+    double alpha = 1.3 ;
+    gsl_function f = { &book3, &alpha } ;
+
+    gsl_integration_qk41 (&f, 0.3, 2.71, 
 			  &result, &abserr, &resabs, &resasc) ;
     gsl_test_rel(result,exp_result,1e-15,"qk41(book3) oscill result") ;
     gsl_test_rel(abserr,exp_abserr,1e-7,"qk41(book3) oscill abserr") ;
@@ -290,9 +322,11 @@ int main (void)
     double exp_abserr = 1.285290995039385778E-14;
     double exp_resabs = 1.157687209264406381E+00;
     double exp_resasc = 9.264666884071264263E-01;
-    
-    alpha = 1.3 ;
-    gsl_integration_qk51 (book3, 0.3, 2.71, 
+
+    double alpha = 1.3 ;
+    gsl_function f = { &book3, &alpha } ;
+
+    gsl_integration_qk51 (&f, 0.3, 2.71, 
 			  &result, &abserr, &resabs, &resasc) ;
     gsl_test_rel(result,exp_result,1e-15,"qk51(book3) oscill result") ;
     gsl_test_rel(abserr,exp_abserr,1e-7,"qk51(book3) oscill abserr") ;
@@ -307,8 +341,10 @@ int main (void)
     double exp_resabs = 1.158720854723590099E+00;
     double exp_resasc = 9.270469641771273972E-01;
 
-    alpha = 1.3 ;
-    gsl_integration_qk61 (book3, 0.3, 2.71, 
+    double alpha = 1.3 ;
+    gsl_function f = { &book3, &alpha } ;
+
+    gsl_integration_qk61 (&f, 0.3, 2.71, 
 			  &result, &abserr, &resabs, &resasc) ;
     gsl_test_rel(result,exp_result,1e-15,"qk61(book3) oscill result") ;
     gsl_test_rel(abserr,exp_abserr,1e-7,"qk61(book3) oscill abserr") ;
@@ -326,8 +362,10 @@ int main (void)
     int exp_neval  =  21;
     int exp_ier    =   0;
 
-    alpha = 2.6 ;
-    status = gsl_integration_qng (book1, 0.0, 1.0, 1e-1, 0.0,
+    double alpha = 2.6 ;
+    gsl_function f = { &book1, &alpha } ;
+
+    status = gsl_integration_qng (&f, 0.0, 1.0, 1e-1, 0.0,
 				  &result, &abserr, &neval) ;
     gsl_test_rel(result,exp_result,1e-15,"qng(book1) smooth result") ;
     gsl_test_rel(abserr,exp_abserr,1e-7,"qng(book1) smooth abserr") ;
@@ -344,8 +382,10 @@ int main (void)
     int exp_neval  =  43;
     int exp_ier    =   0;
 
-    alpha = 2.6 ;
-    status = gsl_integration_qng (book1, 0.0, 1.0, 0.0, 1e-9,
+    double alpha = 2.6 ;
+    gsl_function f = { &book1, &alpha } ;
+
+    status = gsl_integration_qng (&f, 0.0, 1.0, 0.0, 1e-9,
 				  &result, &abserr, &neval) ;
     gsl_test_rel(result,exp_result,1e-15,"qng(book1) smooth 43pt result") ;
     gsl_test_rel(abserr,exp_abserr,1e-7,"qng(book1) smooth 43pt abserr") ;
@@ -361,8 +401,10 @@ int main (void)
     int exp_neval  =  43;
     int exp_ier    =   0;
 
-    alpha = 1.3 ;
-    status = gsl_integration_qng (book3, 0.3, 2.71, 0.0, 1e-12,
+    double alpha = 1.3 ;
+    gsl_function f = { &book3, &alpha } ;
+
+    status = gsl_integration_qng (&f, 0.3, 2.71, 0.0, 1e-12,
 				  &result, &abserr, &neval) ;
     gsl_test_rel(result,exp_result,1e-15,"qnq(book3) oscill result") ;
     gsl_test_rel(abserr,exp_abserr,1e-7,"qng(book3) oscill abserr") ;
@@ -379,8 +421,10 @@ int main (void)
     int exp_neval  =  87;
     int exp_ier    =   0;
 
-    alpha = 2.6 ;
-    status = gsl_integration_qng (book1, 0.0, 1.0, 0.0, 1e-13,
+    double alpha = 2.6 ;
+    gsl_function f = { &book1, &alpha } ;
+
+    status = gsl_integration_qng (&f, 0.0, 1.0, 0.0, 1e-13,
 				  &result, &abserr, &neval) ;
     gsl_test_rel(result,exp_result,1e-15,"qng(book1) 87pt smooth result") ;
     gsl_test_rel(abserr,exp_abserr,1e-7,"qng(book1) 87pt smooth abserr") ;
@@ -397,8 +441,10 @@ int main (void)
     int exp_neval  =  87;
     int exp_ier    =  GSL_ETOL;
 
-    alpha = -0.9 ;
-    status = gsl_integration_qng (book1, 0.0, 1.0, 0.0, 1e-3,
+    double alpha = -0.9 ;
+    gsl_function f = { &book1, &alpha } ;
+
+    status = gsl_integration_qng (&f, 0.0, 1.0, 0.0, 1e-3,
 				  &result, &abserr, &neval) ;
     gsl_test_rel(result,exp_result,1e-15,"qng(book1) sing beyond 87pt result");
     gsl_test_rel(abserr,exp_abserr,1e-7,"qng(book1) sing beyond 87pt abserr");
@@ -430,8 +476,10 @@ int main (void)
 		    3.642265412331439511E-18, 3.910988124757650942E-19 } ;
     int iord[6] = { 1, 2, 3, 4, 5, 6 } ;
 
-    alpha = 2.6 ;
-    status = gsl_integration_qage (book1, 0.0, 1.0, 0.0, 1e-10, 
+    double alpha = 2.6 ;
+    gsl_function f = { &book1, &alpha } ;
+
+    status = gsl_integration_qage (&f, 0.0, 1.0, 0.0, 1e-10, 
 				   GSL_INTEG_GAUSS15, w, &last, 
 				   &result, &abserr, &neval) ;
 
@@ -489,8 +537,10 @@ int main (void)
 		    3.973555800712018091E-20, 3.893990926286736620E-21 } ;
     int iord[8] = { 1, 2, 3, 4, 5, 6, 7, 8 } ;
 
-    alpha = 2.6 ;
-    status = gsl_integration_qage (book1, 0.0, 1.0, 1e-14, 0.0, 
+    double alpha = 2.6 ;
+    gsl_function f = { &book1, &alpha } ;
+
+    status = gsl_integration_qage (&f, 0.0, 1.0, 1e-14, 0.0, 
 				   GSL_INTEG_GAUSS21, w, &last, 
 				   &result, &abserr, &neval) ;
 
@@ -534,8 +584,10 @@ int main (void)
     int exp_ier     =     GSL_EROUND;
     int exp_last    =     0;
 
-    alpha = 1.3 ;
-    status = gsl_integration_qage (book3, 0.3, 2.71, 1e-14, 0.0, 
+    double alpha = 1.3 ;
+    gsl_function f = { &book3, &alpha } ;
+
+    status = gsl_integration_qage (&f, 0.3, 2.71, 1e-14, 0.0, 
 				   GSL_INTEG_GAUSS31, w, &last, 
 				   &result, &abserr, &neval) ;
 
@@ -561,8 +613,10 @@ int main (void)
     int exp_ier    =     GSL_ESING;
     int exp_last   =     51;
 
-    alpha = 2.0 ;
-    status = gsl_integration_qage (book16, -1.0, 1.0, 1e-14, 0.0, 
+    double alpha = 2.0 ;
+    gsl_function f = { &book16, &alpha } ;
+
+    status = gsl_integration_qage (&f, -1.0, 1.0, 1e-14, 0.0, 
 				   GSL_INTEG_GAUSS51, w, &last, 
 				   &result, &abserr, &neval) ;
 
@@ -605,10 +659,11 @@ int main (void)
                     1.541976423090495140E-16 } ;
     
     int iord[3] = { 1, 2, 3 } ;
+
+    double alpha = 1.0 ;
+    gsl_function f = { &book16, &alpha } ;
     
-    alpha = 1.0 ;
-    
-    status = gsl_integration_qage (book16, -1.0, 1.0, 1e-14, 0.0, 
+    status = gsl_integration_qage (&f, -1.0, 1.0, 1e-14, 0.0, 
 				   GSL_INTEG_GAUSS61, w, &last, 
 				   &result, &abserr, &neval) ;
 
@@ -665,8 +720,10 @@ int main (void)
 		    3.642265412331439511E-18 } ;
     int iord[5] = { 1, 2, 3, 4, 5 } ;
 
-    alpha = 2.6 ;
-    status = gsl_integration_qagse (book1, 0.0, 1.0, 0.0, 1e-10, 
+    double alpha = 2.6 ;
+    gsl_function f = { &book1, &alpha } ;
+
+    status = gsl_integration_qagse (&f, 0.0, 1.0, 0.0, 1e-10, 
 				    w, &last, 
 				    &result, &abserr, &neval) ;
 
@@ -748,8 +805,10 @@ int main (void)
 		    8.278969410534525339E-14 } ;
     int iord[9] = { 1, 2, 3, 4, 5, 6, 7, 8, 9 } ;
 
-    alpha = 2.0 ;
-    status = gsl_integration_qagse (book11, 1.0, 1000.0, 1e-7, 0.0, 
+    double alpha = 2.0 ;
+    gsl_function f = { &book11, &alpha } ;
+
+    status = gsl_integration_qagse (&f, 1.0, 1000.0, 1e-7, 0.0, 
 				    w, &last, 
 				    &result, &abserr, &neval) ;
 

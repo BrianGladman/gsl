@@ -16,7 +16,7 @@
 
 int
 gsl_root_secant (double *root, 
-		 double (*f) (double), 
+		 const gsl_function * f, 
 		 double *guess1, double *guess2, 
 		 double rel_epsilon, double abs_epsilon,
 		 unsigned int max_iterations)

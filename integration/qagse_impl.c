@@ -8,7 +8,7 @@
 #include "qpsrt.h"
 
 int
-gsl_integration_qagse_impl (double (*f) (double x),
+gsl_integration_qagse_impl (const gsl_function *f,
 			    const double a, const double b,
 			    const double epsabs, const double epsrel,
 			    gsl_integration_workspace * workspace,

@@ -15,10 +15,7 @@
 #include "roots.h"
 
 int
-gsl_root_newton (double *root,
-		 double (*f) (double),
-		 double (*df) (double),
-		 void (*fdf) (double, double *, double *),
+gsl_root_newton (double *root, const gsl_fdf * fdf,
 		 double *guess, 
 		 double rel_epsilon, double abs_epsilon,
 		 unsigned int max_iterations)
@@ -32,15 +29,18 @@ gsl_root_newton (double *root,
   if (rel_epsilon < GSL_DBL_EPSILON * GSL_ROOT_EPSILON_BUFFER)
     GSL_ERROR ("relative tolerance too small", GSL_EBADTOL);
   
-  SAFE_FUNC_CALL (f, *guess, fg);
+  fg = GSL_FDF_F_EVAL (fdf, *guess);
   
+  if (!GSL_IS_REAL(fg))
+    GSL_ERROR("function not continuous", GSL_EBADFUNC);
+
   if (fg == 0.0)
     {
       *root = *guess;
       return GSL_SUCCESS;
     }
   
-  SAFE_FUNC_CALL (df, *guess, dfg) ;
+  dfg = GSL_FDF_DF_EVAL (fdf, *guess) ;
   
   for (iterations = 0; iterations < max_iterations; iterations++)
     {
@@ -55,17 +55,9 @@ gsl_root_newton (double *root,
 
       new_guess = *guess - (fg / dfg);
       
-      if (fdf) 
-	{
-	  (*fdf) (new_guess, &fnew, &dfnew);
-	}
-      else
-	{
-	  fnew = (*f) (new_guess);
-	  dfnew = (*df) (new_guess) ;
-	}
+      GSL_FDF_EVAL(fdf, new_guess, &fnew, &dfnew);
       
-      if (!GSL_ISREAL (fnew))
+      if (!GSL_IS_REAL (fnew))
 	{
 	  GSL_ERROR ("function not continuous", GSL_EBADFUNC);
 	}
@@ -89,7 +81,7 @@ gsl_root_newton (double *root,
 	  CHECK_TOL (*guess, new_guess, rel_epsilon, abs_epsilon);
 	}
 
-      if (!GSL_ISREAL (dfnew))
+      if (!GSL_IS_REAL (dfnew))
 	{
 	  GSL_ERROR ("function not differentiable", GSL_EBADFUNC);
 	}

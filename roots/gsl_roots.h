@@ -3,6 +3,7 @@
 #ifndef GSL_ROOTS_H
 #define GSL_ROOTS_H
 
+#include <gsl_math.h>
 #include <gsl_complex.h>
 
 /* Requested epsilon must be this many times greater than GSL_DBL_EPSILON to
@@ -13,33 +14,31 @@
 /* Function Prototypes */
 
 int
-gsl_root_bisection (double *root, double (*f) (double), 
+gsl_root_bisection (double *root, const gsl_function * f, 
 		    double *lower_bound, double *upper_bound, 
 		    double rel_epsilon, double abs_epsilon, 
 		    unsigned int max_iterations);
 
 int
-gsl_root_brent (double *root, double (*f) (double), 
+gsl_root_brent (double *root, const gsl_function * f, 
 		double *lower_bound, double *upper_bound, 
 		double rel_epsilon, double abs_epsilon, 
 		unsigned int max_iterations);
 
 int
-gsl_root_falsepos (double *root, double (*f) (double), 
+gsl_root_falsepos (double *root, const gsl_function * f, 
 		   double *lower_bound, double *upper_bound, 
 		   double rel_epsilon, double abs_epsilon,
 		   unsigned int max_iterations);
 
 int
-gsl_root_secant (double *root, double (*f) (double), double *guess1,
+gsl_root_secant (double *root, const gsl_function * f, double *guess1,
 		 double *guess2, double rel_epsilon, double abs_epsilon,
 		 unsigned int max_iterations);
 
 int
 gsl_root_newton (double *root,
-		 double (*f) (double),
-		 double (*df) (double),
-		 void (*fdf) (double, double *, double *),
+		 const gsl_fdf * fdf,
 		 double *guess, 
 		 double rel_epsilon, double abs_epsilon,
 		 unsigned int max_iterations);
