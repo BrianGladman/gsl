@@ -2,3 +2,12 @@
 @node Polynomial Manipulation
 @section Polynomial Manipulation
 @cindex polynomial manipulation
+
+
+/* c[0] + c[1] x + c[2] x^2 + ... + c[len-1] x^(len-1)
+ *
+ * exceptions: none
+ */
+double gsl_sf_poly_eval(const double c[], const int len, const double x);
+
+

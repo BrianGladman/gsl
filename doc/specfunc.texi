@@ -3,12 +3,13 @@
 This chapter describes the GSL special function library.
 
 @menu
+* The gsl_sf_result struct::
 * Airy Functions::
 * Bessel Functions:: 
 * Chebyshev Polynomials::
 * Clausen Functions::
 * Coulomb Wave Functions::
-* Coupling Coefficients (3j 6j 9j)::
+* Coupling Coefficients::
 * Dawson Function::
 * Debye Functions::
 * Dilogarithm::
@@ -35,6 +36,7 @@ This chapter describes the GSL special function library.
 @end menu
 
 
+@include specfunc-result.texi
 @include specfunc-airy.texi
 @include specfunc-bessel.texi
 @include specfunc-chebyshev.texi

@@ -6,12 +6,25 @@
 
 A common complaint about the standard C library is its lack of
 a function for calculating (small) integer powers. GSL provides
-a simple function to fill this gap.
+a simple function to fill this gap. For reasons of efficiency,
+these functions do not check for overflow or underflow conditions.
 
+
+int     gsl_sf_pow_int_impl(double x, int n, gsl_sf_result * result);
+int     gsl_sf_pow_int_e(double x, int n, gsl_sf_result * result); 
 @deftypefun double gsl_sf_pow_int(double x, int n)
 @end deftypefun
 
+double gsl_sf_pow_2(const double x);
+double gsl_sf_pow_3(const double x);
+double gsl_sf_pow_4(const double x);
+double gsl_sf_pow_5(const double x);
+double gsl_sf_pow_6(const double x);
+double gsl_sf_pow_7(const double x);
+double gsl_sf_pow_8(const double x);
+double gsl_sf_pow_9(const double x);
+
 @example
 #include <gsl_sf_pow_int.h>
-double y = gsl_sf_pow_int(3., 12)
+double y = gsl_sf_pow_int(3.0, 12)
 @end example

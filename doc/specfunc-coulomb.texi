@@ -2,3 +2,5 @@
 @node Coulomb Wave Functions
 @section Coulomb Wave Functions
 @cindex Coulomb wave functions
+@cindex hydrogen atom
+
