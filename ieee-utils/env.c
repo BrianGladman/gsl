@@ -1,6 +1,6 @@
 #include <config.h>
-#include <stdlib.h>
 #include <string.h>
+#include <stdlib.h>
 #include <gsl_ieee_utils.h>
 #include <gsl_errno.h>
 
@@ -21,6 +21,60 @@ gsl_ieee_env_setup (void)
 
   gsl_ieee_set_mode (precision, rounding, exception_mask) ;
   
+  printf("GSL_IEEE_MODE: ") ;
+  
+  switch (precision) 
+    {
+    case GSL_IEEE_SINGLE_PRECISION:
+      printf("single-precision;") ;
+      break ;
+    case GSL_IEEE_DOUBLE_PRECISION:
+      printf("double-precision;") ;
+      break ;
+    case GSL_IEEE_EXTENDED_PRECISION:
+      printf("extended-precision") ;
+      break ;
+    default:
+      printf("default-precision") ;
+    }
+
+  switch (rounding) 
+    {
+    case GSL_IEEE_ROUND_TO_NEAREST:
+      printf(";round-to-nearest") ;
+      break ;
+    case GSL_IEEE_ROUND_DOWN:
+      printf(";round-down") ;
+      break ;
+    case GSL_IEEE_ROUND_UP:
+      printf(";round-up") ;
+      break ;
+    case GSL_IEEE_ROUND_TO_ZERO:
+      printf(";round-to-zero") ;
+      break ;
+    default:
+      printf(";default-rounding") ;
+    }
+
+  if (exception_mask & GSL_IEEE_MASK_INVALID)
+    printf(";mask-invalid") ;
+
+  if (exception_mask & GSL_IEEE_MASK_DENORMALIZED)
+    printf(";mask-denormalized") ;
+
+  if (exception_mask & GSL_IEEE_MASK_DIVISION_BY_ZERO)
+    printf(";mask-division-by-zero") ;
+
+  if (exception_mask & GSL_IEEE_MASK_OVERFLOW)
+    printf(";mask-overflow") ;
+
+  if (exception_mask & GSL_IEEE_MASK_UNDERFLOW)
+    printf(";mask-underflow") ;
+
+  if (exception_mask & GSL_IEEE_TRAP_INEXACT)
+    printf(";trap-inexact") ;
+  
+  printf("\n") ;
 }
 
 int
@@ -64,14 +118,12 @@ gsl_ieee_read_mode_string (const char * description,
 
     status = lookup_string (p, &new_precision, &new_rounding, &new_exception) ;
 
-    printf("%s: %d, %d, %d\n", p, new_precision,new_rounding,new_exception) ;
-
     if (status)
       GSL_ERROR ("unrecognized IEEE mode. Valid settings are:\n\n" 
 		 "  single-precision double-precision extended-precision\n"
 		 "  round-to-nearest round-down round-up round-to-zero\n"
 		 "  mask-invalid mask-denormalized mask-overflow "
-		 "mask-underflow catch-inexact\n"
+		 "mask-underflow trap-inexact\n"
 		 "\nseparated by semicolons. "
 		 "(default is GSL_IEEE_MODE=\"extended;round-to-nearest\")",
 		 GSL_EINVAL) ;
@@ -159,9 +211,9 @@ lookup_string (const char * p, int * precision, int * rounding,
     {
       *exception_mask = GSL_IEEE_MASK_UNDERFLOW ;
     }
-  else if (strcmp(p,"catch-inexact") == 0) 
+  else if (strcmp(p,"trap-inexact") == 0) 
     {
-      *exception_mask = GSL_IEEE_CATCH_INEXACT ;
+      *exception_mask = GSL_IEEE_TRAP_INEXACT ;
     }
   else 
     {

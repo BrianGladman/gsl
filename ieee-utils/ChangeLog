@@ -1,3 +1,8 @@
+Tue Jun  2 19:29:34 1998  Brian Gough  <bjg@vvv.lanl.gov>
+
+	* gsl_ieee_utils.h: renamed GSL_IEEE_CATCH_INEXACT to
+ 	GSL_IEEE_TRAP_INEXACT, which is a better name
+
 Mon Jun  1 15:27:08 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
 	* fp-sunos4.c: support for sunos4 IEEE interface

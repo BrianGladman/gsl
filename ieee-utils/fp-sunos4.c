@@ -56,7 +56,7 @@ gsl_ieee_set_mode (int precision, int rounding, int exception_mask)
   if (exception_mask & GSL_IEEE_MASK_UNDERFLOW)
     ieee_flags ("set", "exception", "underflow", out) ;
 
-  if (exception_mask & GSL_IEEE_CATCH_INEXACT)
+  if (exception_mask & GSL_IEEE_TRAP_INEXACT)
     {
       ieee_flags ("set", "exception", "inexact", out) ;
     }

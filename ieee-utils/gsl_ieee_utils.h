@@ -49,7 +49,7 @@ enum {
   GSL_IEEE_MASK_DIVISION_BY_ZERO = 4,
   GSL_IEEE_MASK_OVERFLOW = 8,
   GSL_IEEE_MASK_UNDERFLOW = 16,
-  GSL_IEEE_CATCH_INEXACT = 32
+  GSL_IEEE_TRAP_INEXACT = 32
 } ;
 
 void gsl_ieee_env_setup (void) ;
