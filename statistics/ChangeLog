@@ -1,5 +1,8 @@
 Mon Jun  1 23:47:23 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
+	* lag1_source.c: added a new function to compute the
+ 	lag1-autocorrelation
+
 	* test_nist.c: added some numerical accuracy tests from NIST
 
 Fri Apr 10 15:11:51 1998  Brian Gough  <bjg@vvv.lanl.gov>

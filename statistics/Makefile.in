@@ -1,6 +1,6 @@
-# Makefile.in generated automatically by automake 1.2c from Makefile.am
+# Makefile.in generated automatically by automake 1.3 from Makefile.am
 
-# Copyright (C) 1994, 1995, 1996, 1997 Free Software Foundation, Inc.
+# Copyright (C) 1994, 1995, 1996, 1997, 1998 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
 # with or without modifications, as long as this notice is preserved.
@@ -32,6 +32,8 @@ mandir = @mandir@
 includedir = @includedir@
 oldincludedir = /usr/include
 
+DISTDIR =
+
 pkgdatadir = $(datadir)/@PACKAGE@
 pkglibdir = $(libdir)/@PACKAGE@
 pkgincludedir = $(includedir)/@PACKAGE@
@@ -49,12 +51,12 @@ INSTALL_DATA = @INSTALL_DATA@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
 transform = @program_transform_name@
 
-NORMAL_INSTALL = true
-PRE_INSTALL = true
-POST_INSTALL = true
-NORMAL_UNINSTALL = true
-PRE_UNINSTALL = true
-POST_UNINSTALL = true
+NORMAL_INSTALL = :
+PRE_INSTALL = :
+POST_INSTALL = :
+NORMAL_UNINSTALL = :
+PRE_UNINSTALL = :
+POST_UNINSTALL = :
 host_alias = @host_alias@
 host_triplet = @host@
 CC = @CC@
@@ -77,6 +79,7 @@ variance_source.c  \
 absdev_source.c \
 skew_source.c \
 kurtosis_source.c \
+lag1_source.c \
 p_variance_source.c \
 minmax_source.c \
 ttest_source.c \
@@ -85,8 +88,8 @@ median_source.c \
 percentiles_source.c \
 source.h
 
-check_PROGRAMS = test test_int
-TESTS = test test_int
+check_PROGRAMS = test test_int test_nist
+TESTS = test test_int test_nist
 
 test_SOURCES = test.c test.h
 test_LDADD = libgslstatistics.a ../err/libgsltest.a
@@ -96,12 +99,17 @@ test_int_SOURCES = test_int.c test.h
 test_int_LDADD = libgslstatistics.a ../err/libgsltest.a
 test_int_DEPENDENCIES = libgslstatistics.a
 
+test_nist_SOURCES = test_nist.c test.h
+test_nist_LDADD = libgslstatistics.a ../err/libgsltest.a
+test_nist_DEPENDENCIES = libgslstatistics.a
+
 libgslstatistics_a_SOURCES = \
 mean.c \
 variance.c  \
 absdev.c \
 skew.c \
 kurtosis.c \
+lag1.c \
 p_variance.c \
 minmax.c \
 ttest.c \
@@ -113,6 +121,7 @@ variance_int.c  \
 absdev_int.c \
 skew_int.c \
 kurtosis_int.c \
+lag1_int.c \
 p_variance_int.c \
 minmax_int.c \
 ttest_int.c \
@@ -131,15 +140,17 @@ LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
 libgslstatistics_a_LIBADD = 
 libgslstatistics_a_OBJECTS =  mean.o variance.o absdev.o skew.o \
-kurtosis.o p_variance.o minmax.o ttest.o sort.o median.o percentiles.o \
-mean_int.o variance_int.o absdev_int.o skew_int.o kurtosis_int.o \
-p_variance_int.o minmax_int.o ttest_int.o sort_int.o median_int.o \
-percentiles_int.o
+kurtosis.o lag1.o p_variance.o minmax.o ttest.o sort.o median.o \
+percentiles.o mean_int.o variance_int.o absdev_int.o skew_int.o \
+kurtosis_int.o lag1_int.o p_variance_int.o minmax_int.o ttest_int.o \
+sort_int.o median_int.o percentiles_int.o
 AR = ar
 test_OBJECTS =  test.o
 test_LDFLAGS = 
 test_int_OBJECTS =  test_int.o
 test_int_LDFLAGS = 
+test_nist_OBJECTS =  test_nist.o
+test_nist_LDFLAGS = 
 CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
 LINK = $(CC) $(CFLAGS) $(LDFLAGS) -o $@
@@ -153,23 +164,24 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 TAR = tar
 GZIP = --best
 DEP_FILES =  .deps/absdev.P .deps/absdev_int.P .deps/kurtosis.P \
-.deps/kurtosis_int.P .deps/mean.P .deps/mean_int.P .deps/median.P \
-.deps/median_int.P .deps/minmax.P .deps/minmax_int.P .deps/p_variance.P \
-.deps/p_variance_int.P .deps/percentiles.P .deps/percentiles_int.P \
-.deps/skew.P .deps/skew_int.P .deps/sort.P .deps/sort_int.P \
-.deps/test.P .deps/test_int.P .deps/ttest.P .deps/ttest_int.P \
+.deps/kurtosis_int.P .deps/lag1.P .deps/lag1_int.P .deps/mean.P \
+.deps/mean_int.P .deps/median.P .deps/median_int.P .deps/minmax.P \
+.deps/minmax_int.P .deps/p_variance.P .deps/p_variance_int.P \
+.deps/percentiles.P .deps/percentiles_int.P .deps/skew.P \
+.deps/skew_int.P .deps/sort.P .deps/sort_int.P .deps/test.P \
+.deps/test_int.P .deps/test_nist.P .deps/ttest.P .deps/ttest_int.P \
 .deps/variance.P .deps/variance_int.P
-SOURCES = $(libgslstatistics_a_SOURCES) $(test_SOURCES) $(test_int_SOURCES)
-OBJECTS = $(libgslstatistics_a_OBJECTS) $(test_OBJECTS) $(test_int_OBJECTS)
+SOURCES = $(libgslstatistics_a_SOURCES) $(test_SOURCES) $(test_int_SOURCES) $(test_nist_SOURCES)
+OBJECTS = $(libgslstatistics_a_OBJECTS) $(test_OBJECTS) $(test_int_OBJECTS) $(test_nist_OBJECTS)
 
-default: all
+all: Makefile $(LIBRARIES) $(HEADERS)
 
 .SUFFIXES:
-.SUFFIXES: .c .o
-$(srcdir)/Makefile.in: Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
+.SUFFIXES: .S .c .o .s
+$(srcdir)/Makefile.in: Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4)
 	cd $(top_srcdir) && $(AUTOMAKE) --gnu statistics/Makefile
 
-Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status $(BUILT_SOURCES)
+Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status $(BUILT_SOURCES)
 	cd $(top_builddir) \
 	  && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
@@ -185,32 +197,35 @@ maintainer-clean-libLIBRARIES:
 
 install-libLIBRARIES: $(lib_LIBRARIES)
 	@$(NORMAL_INSTALL)
-	$(mkinstalldirs) $(libdir)
+	$(mkinstalldirs) $(DESTDIR)$(libdir)
 	list='$(lib_LIBRARIES)'; for p in $$list; do \
 	  if test -f $$p; then \
-	    echo " $(INSTALL_DATA) $$p $(libdir)/$$p"; \
-	    $(INSTALL_DATA) $$p $(libdir)/$$p; \
+	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(libdir)/$$p"; \
+	    $(INSTALL_DATA) $$p $(DESTDIR)$(libdir)/$$p; \
 	  else :; fi; \
 	done
 	@$(POST_INSTALL)
 	@list='$(lib_LIBRARIES)'; for p in $$list; do \
 	  if test -f $$p; then \
-	    echo " $(RANLIB) $(libdir)/$$p"; \
-	    $(RANLIB) $(libdir)/$$p; \
+	    echo " $(RANLIB) $(DESTDIR)$(libdir)/$$p"; \
+	    $(RANLIB) $(DESTDIR)$(libdir)/$$p; \
 	  else :; fi; \
 	done
 
 uninstall-libLIBRARIES:
-	$(NORMAL_UNINSTALL)
+	@$(NORMAL_UNINSTALL)
 	list='$(lib_LIBRARIES)'; for p in $$list; do \
-	  rm -f $(libdir)/$$p; \
+	  rm -f $(DESTDIR)$(libdir)/$$p; \
 	done
 
-.c.o:
+.s.o:
+	$(COMPILE) -c $<
+
+.S.o:
 	$(COMPILE) -c $<
 
 mostlyclean-compile:
-	-rm -f *.o core
+	-rm -f *.o core *.core
 
 clean-compile:
 
@@ -241,30 +256,40 @@ test_int: $(test_int_OBJECTS) $(test_int_DEPENDENCIES)
 	@rm -f test_int
 	$(LINK) $(test_int_LDFLAGS) $(test_int_OBJECTS) $(test_int_LDADD) $(LIBS)
 
+test_nist: $(test_nist_OBJECTS) $(test_nist_DEPENDENCIES)
+	@rm -f test_nist
+	$(LINK) $(test_nist_LDFLAGS) $(test_nist_OBJECTS) $(test_nist_LDADD) $(LIBS)
+
 install-includeHEADERS: $(include_HEADERS)
 	@$(NORMAL_INSTALL)
-	$(mkinstalldirs) $(includedir)
+	$(mkinstalldirs) $(DESTDIR)$(includedir)
 	@list='$(include_HEADERS)'; for p in $$list; do \
-	  echo " $(INSTALL_DATA) $(srcdir)/$$p $(includedir)/$$p"; \
-	  $(INSTALL_DATA) $(srcdir)/$$p $(includedir)/$$p; \
+	  if test -f "$$p"; then d= ; else d="$(srcdir)/"; fi; \
+	  echo " $(INSTALL_DATA) $$d$$p $(DESTDIR)$(includedir)/$$p"; \
+	  $(INSTALL_DATA) $$d$$p $(DESTDIR)$(includedir)/$$p; \
 	done
 
 uninstall-includeHEADERS:
-	$(NORMAL_UNINSTALL)
+	@$(NORMAL_UNINSTALL)
 	list='$(include_HEADERS)'; for p in $$list; do \
-	  rm -f $(includedir)/$$p; \
+	  rm -f $(DESTDIR)$(includedir)/$$p; \
 	done
 
 tags: TAGS
 
-ID: $(HEADERS) $(SOURCES)
-	here=`pwd` && cd $(srcdir) && mkid -f$$here/ID $(SOURCES) $(HEADERS)
+ID: $(HEADERS) $(SOURCES) $(LISP)
+	here=`pwd` && cd $(srcdir) \
+	  && mkid -f$$here/ID $(SOURCES) $(HEADERS) $(LISP)
 
-TAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES)
+TAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) $(LISP)
 	tags=; \
 	here=`pwd`; \
-	test -z "$(ETAGS_ARGS)$(SOURCES)$(HEADERS)$$tags" \
-	  || (cd $(srcdir) && etags $(ETAGS_ARGS) $$tags  $(SOURCES) $(HEADERS) -o $$here/TAGS)
+	list='$(SOURCES) $(HEADERS)'; \
+	unique=`for i in $$list; do echo $$i; done | \
+	  awk '    { files[$$0] = 1; } \
+	       END { for (i in files) print i; }'`; \
+	test -z "$(ETAGS_ARGS)$$unique$(LISP)$$tags" \
+	  || (cd $(srcdir) && etags $(ETAGS_ARGS) $$tags  $$unique $(LISP) -o $$here/TAGS)
 
 mostlyclean-tags:
 
@@ -292,12 +317,7 @@ distdir: $(DISTFILES)
 	  || cp -p $$d/$$file $(distdir)/$$file; \
 	done
 
-MKDEP = $(CC) -M $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
-
 DEPS_MAGIC := $(shell mkdir .deps > /dev/null 2>&1 || :)
--include .deps/.P
-.deps/.P: $(BUILT_SOURCES)
-	echo > $@
 
 -include $(DEP_FILES)
 
@@ -310,13 +330,16 @@ distclean-depend:
 maintainer-clean-depend:
 	-rm -rf .deps
 
-.deps/%.P: %.c
-	@echo "Computing dependencies for $<..."
-	@o='o'; \
-	test -n "$o" && o='$$o'; \
-	$(MKDEP) $< >$@.tmp \
-	  && sed "s,^\(.*\)\.o:,\1.$$o \1.l$$o $@:," < $@.tmp > $@ \
-	  && rm -f $@.tmp
+%.o: %.c
+	@echo '$(COMPILE) -c $<'; \
+	$(COMPILE) -Wp,-MD,.deps/$(*F).P -c $<
+
+%.lo: %.c
+	@echo '$(LTCOMPILE) -c $<'; \
+	$(LTCOMPILE) -Wp,-MD,.deps/$(*F).p -c $<
+	@-sed -e 's/^\([^:]*\)\.o:/\1.lo \1.o:/' \
+	  < .deps/$(*F).p > .deps/$(*F).P
+	@-rm -f .deps/$(*F).p
 check-TESTS: $(TESTS)
 	@failed=0; all=0; \
 	srcdir=$(srcdir); export srcdir; \
@@ -358,12 +381,10 @@ install: install-exec install-data all
 
 uninstall: uninstall-libLIBRARIES uninstall-includeHEADERS
 
-all: Makefile $(LIBRARIES) $(HEADERS)
-
 install-strip:
 	$(MAKE) INSTALL_PROGRAM='$(INSTALL_PROGRAM) -s' INSTALL_SCRIPT='$(INSTALL_PROGRAM)' install
 installdirs:
-	$(mkinstalldirs)  $(libdir) $(includedir)
+	$(mkinstalldirs)  $(DATADIR)$(libdir) $(DATADIR)$(includedir)
 
 
 mostlyclean-generic:
@@ -399,7 +420,7 @@ maintainer-clean:  maintainer-clean-libLIBRARIES \
 	@echo "This command is intended for maintainers to use;"
 	@echo "it deletes files that may require special tools to rebuild."
 
-.PHONY: default mostlyclean-libLIBRARIES distclean-libLIBRARIES \
+.PHONY: mostlyclean-libLIBRARIES distclean-libLIBRARIES \
 clean-libLIBRARIES maintainer-clean-libLIBRARIES uninstall-libLIBRARIES \
 install-libLIBRARIES mostlyclean-compile distclean-compile \
 clean-compile maintainer-clean-compile mostlyclean-checkPROGRAMS \

@@ -12,6 +12,7 @@ double gsl_stats_int_absdev (const int data[], size_t n);
 
 double gsl_stats_int_skew (const int data[], size_t n);
 double gsl_stats_int_kurtosis (const int data[], size_t n);
+double gsl_stats_int_lag1_autocorrelation (const int data[], size_t n);
 
 double gsl_stats_int_variance_with_mean (const int data[], size_t n, 
 					 double mean);
@@ -24,6 +25,8 @@ double gsl_stats_int_skew_with_mean_and_sd (const int data[], size_t n,
 					    double mean, double sd);
 double gsl_stats_int_kurtosis_with_mean_and_sd (const int data[], size_t n,
 						double mean,  double sd);
+double gsl_stats_int_lag1_autocorrelation_with_mean (const int data[], 
+						     size_t n, double mean);
 
 double gsl_stats_int_pvariance (const int data1[], const int data2[],
 				size_t n1, size_t n2);

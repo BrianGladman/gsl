@@ -87,7 +87,7 @@ compute_variance (const BASE data[], const size_t n, const double mean)
       const double delta = (data[i] - mean);
       variance += (delta * delta - variance) / ((double)(i + 1));
     }
-  
+
   return variance ;
 }
 

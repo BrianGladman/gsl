@@ -10,6 +10,7 @@ variance_source.c  \
 absdev_source.c \
 skew_source.c \
 kurtosis_source.c \
+lag1_source.c \
 p_variance_source.c \
 minmax_source.c \
 ttest_source.c \
@@ -18,8 +19,8 @@ median_source.c \
 percentiles_source.c \
 source.h
 
-check_PROGRAMS = test test_int
-TESTS = test test_int
+check_PROGRAMS = test test_int test_nist
+TESTS = test test_int test_nist
 
 test_SOURCES = test.c test.h
 test_LDADD = libgslstatistics.a ../err/libgsltest.a
@@ -29,12 +30,18 @@ test_int_SOURCES = test_int.c test.h
 test_int_LDADD = libgslstatistics.a ../err/libgsltest.a
 test_int_DEPENDENCIES = libgslstatistics.a
 
+test_nist_SOURCES = test_nist.c test.h
+test_nist_LDADD = libgslstatistics.a ../err/libgsltest.a
+test_nist_DEPENDENCIES = libgslstatistics.a
+
+
 libgslstatistics_a_SOURCES = \
 mean.c \
 variance.c  \
 absdev.c \
 skew.c \
 kurtosis.c \
+lag1.c \
 p_variance.c \
 minmax.c \
 ttest.c \
@@ -46,6 +53,7 @@ variance_int.c  \
 absdev_int.c \
 skew_int.c \
 kurtosis_int.c \
+lag1_int.c \
 p_variance_int.c \
 minmax_int.c \
 ttest_int.c \
