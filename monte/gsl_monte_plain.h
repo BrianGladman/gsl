@@ -42,35 +42,24 @@
 __BEGIN_DECLS
 
 typedef struct {
-  /* control variables */
-  double acc;
-
-  int init_done;
-  int check_done;
-  int verbose;
-
-  size_t num_dim;
-
-  FILE* ostream;
-  gsl_rng* ranf;
-
+  size_t dim;
+  double *x;
 } gsl_monte_plain_state;
 
-int gsl_monte_plain_integrate(gsl_monte_plain_state *state, 
-			      const gsl_monte_f_T fun, 
-			      const double* xl, const double* xu, 
-			      const size_t num_dim, 
-			      const size_t calls, double* res, double* err);
+int
+gsl_monte_plain_integrate (const gsl_monte_function * f,
+			   const double xl[], const double xu[],
+			   const size_t dim,
+			   const size_t calls, 
+			   gsl_rng * r,
+			   gsl_monte_plain_state * state,
+                           double *result, double *abserr);
 
-gsl_monte_plain_state* gsl_monte_plain_alloc(size_t num_dim);
-
-int gsl_monte_plain_validate(gsl_monte_plain_state* state,
-                             const double xl[], const double xu[], 
-                             unsigned long num_dim, unsigned long calls);
+gsl_monte_plain_state* gsl_monte_plain_alloc(size_t dim);
 
 int gsl_monte_plain_init(gsl_monte_plain_state* state);
 
-void gsl_monte_plain_free (gsl_monte_plain_state* s);
+void gsl_monte_plain_free (gsl_monte_plain_state* state);
 
 __END_DECLS
 

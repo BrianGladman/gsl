@@ -26,371 +26,653 @@
 #include <math.h>
 #include <stdlib.h>
 
-/* gsl headers */
 #include <gsl/gsl_math.h>
-/* #include <gsl/gsl_vector.h> */
-/* #include <gsl/gsl_vector_int.h> */
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_rng.h>
-
 #include <gsl/gsl_monte.h>
 #include <gsl/gsl_monte_miser.h>
-#include <gsl/gsl_monte_plain.h>
-#include <utils.h>
 
-#define SQR(a) ((a)*(a))
-#define myMAX(a,b) ((a) >= (b) ? (a) : (b))
-#define myMIN(a,b) ((a) <= (b) ? (a) : (b))
-
-int gsl_monte_miser_integrate(gsl_monte_miser_state* state,
-		    gsl_monte_f_T func, double xl[], double xu[], 
-		    unsigned long num_dim, unsigned long calls, 
-		    double *res, double *err)
+int
+gsl_monte_miser_integrate (gsl_monte_function * f,
+			   const double xl[], const double xu[],
+			   size_t dim, size_t calls,
+			   gsl_rng * r,
+			   gsl_monte_miser_state * state,
+			   double *result, double *abserr)
 {
   int status = 0;
 
-  double *xl_tmp, *xu_tmp;
+  size_t n, estimate_calls, calls_l, calls_r;
+  size_t i;
+  size_t i_bisect;
+  int found_best;
 
-  unsigned long n, estimate_calls, calls_l, calls_r;
-  unsigned long i;
-  int i_bisect;
-  double res_l, err_l;
-  double fraction_l;
-  double f;
+  double res_est = 0, err_est = 0;
+  double res_r = 0, err_r = 0, res_l = 0, err_l = 0;
+  double fval;
   double xbi_l, xbi_m, xbi_r, s;
 
-  double weight_l, weight_r;
-  double var, best_var;
   double vol;
+  double weight_l, weight_r;
 
-  double beta; 
+  double *xmid = state->xmid;
+  double *sigma_l = state->sigma_l, *sigma_r = state->sigma_r;
 
-  double *sigma_l, *sigma_r;
-  int *hits_l, *hits_r;
-  double *x, *x_mid;
-
-  gsl_rng *r;
-
-  status = gsl_monte_miser_validate(state, xl, xu, num_dim, calls);
-
-  r = state->ranf;
-
-  x = gsl_monte_vector_alloc(num_dim);
-
-  if (calls < state->min_calls_per_bisection) {
-    status = gsl_monte_plain_integrate(state->plain_state, 
-			     func, xl, xu, num_dim, calls, res, err);
-  }
-  else {
-    /* FIXME: This is bad when the estimate_calls come out less than
-       or near to num_dim, because then we will get subplanes.  This
-       is also an issue for min_calls. 
-    */
-    estimate_calls = myMAX(state->min_calls, 
-			   (unsigned long)(calls*(state->estimate_frac)) );
-    if (estimate_calls <= num_dim) {
-      GSL_ERROR("estimate calls is close to nun_dim!", GSL_ESANITY);
+  if (dim > state->dim)
+    {
+      GSL_ERROR ("number of dimensions exceeds allocated size", GSL_EINVAL);
     }
 
-    x_mid = gsl_monte_vector_alloc(num_dim);
+  for (i = 0; i < dim; i++)
+    {
+      if (xu[i] <= xl[i])
+	{
+	  GSL_ERROR ("xu must be greater than xl", GSL_EINVAL);
+	}
 
-    sigma_l = gsl_monte_vector_alloc(num_dim);
-    sigma_r = gsl_monte_vector_alloc(num_dim);
+      if (xu[i] - xl[i] > GSL_DBL_MAX)
+	{
+	  GSL_ERROR ("Range of integration is too large, please rescale",
+		     GSL_EINVAL);
+	}
+    }
 
-    vol = 1;
-    for (i = 0; i < num_dim; i++) {
-      /* flip a coin to bisect the integration region with some fuzz */
-      s = (0.5 - gsl_rng_uniform(r) >= 0.0 ? state->dither : -state->dither ); 
-      x_mid[i] = (0.5 + s)*xl[i] + (0.5 - s)*xu[i];
+  if (state->alpha < 0)
+    {
+      GSL_ERROR ("alpha must be non-negative", GSL_EINVAL);
+    }
+
+  if (calls < state->min_calls_per_bisection)
+    {
+      status = gsl_monte_plain_integrate (f, xl, xu, dim, calls,
+                                          r, state->plain_state,
+                                          result, abserr);
+      return status;
+    }
+
+  /* FIXME: This is bad when the estimate_calls come out less than
+     or near to dim, because then we will get subplanes.  This
+     is also an issue for min_calls.  */
+
+  estimate_calls = GSL_MAX (state->min_calls, calls * (state->estimate_frac));
+
+  if (estimate_calls <= dim)
+    {
+      GSL_ERROR ("estimate calls is close to dim!", GSL_ESANITY);
+    }
+
+  vol = 1;
+
+  for (i = 0; i < dim; i++)
+    {
+      /* Flip a coin to bisect the integration region with some fuzz */
+      s = (gsl_rng_uniform (r) - 0.5) >= 0.0 ? state->dither : -state->dither;
+      state->xmid[i] = (0.5 + s) * xl[i] + (0.5 - s) * xu[i];
+
+      /* Compute volume */
       vol *= xu[i] - xl[i];
     }
-    
-    /* 
-       The idea is to chose the direction to bisect based on which will
-       give the smallest total variance.  We could (and may do so later)
-       use MC to compute these variances.  But the NR guys simply estimate
-       the variances by finding the min and max function values 
-       for each half-region for each bisection.
-    */
-    if (state->estimate_style == ESTIMATE_STYLE_NR ) {
-      /* NR way */
-      double *fmax_l, *fmax_r, *fmin_l, *fmin_r;
-      fmax_l = gsl_monte_vector_alloc(num_dim);
-      fmax_r = gsl_monte_vector_alloc(num_dim);
-      fmin_l = gsl_monte_vector_alloc(num_dim);
-      fmin_r = gsl_monte_vector_alloc(num_dim);
 
-      for (i = 0; i < num_dim; i++) {
-	fmin_l[i] = fmin_r[i] = GSL_DBL_MAX;
-	fmax_l[i] = fmax_r[i] = -GSL_DBL_MAX;
-      }
+  /* The idea is to chose the direction to bisect based on which will
+     give the smallest total variance.  We could (and may do so later)
+     use MC to compute these variances.  But the NR guys simply estimate
+     the variances by finding the min and max function values 
+     for each half-region for each bisection. */
 
-      for (n = 1; n <= estimate_calls; n++) {
-	for (i = 0; i < num_dim; i++)
-	  x[i] = xl[i] + (xu[i] - xl[i])*gsl_rng_uniform(r);
-	f = (*func)(x);
-	for (i = 0; i < num_dim; i++) {
-	  if (x[i] <= x_mid[i]) {
-	    fmin_l[i] = myMIN(fmin_l[i], f);
-	    fmax_l[i] = myMAX(fmax_l[i], f);
-	  }
-	  else {
-	    fmin_r[i] = myMIN(fmin_r[i], f);
-	    fmax_r[i] = myMAX(fmax_r[i], f);
-	  }
-	}
-      }
-      for (i = 0; i < num_dim; i++) {
-	if (fmax_l[i] >= fmin_l[i] && 
-	    fmax_r[i] >= fmin_r[i]) {
-	  sigma_l[i] = 
-	    myMAX(GSL_MACH_EPS, fmax_l[i] - fmin_l[i]);
-	  sigma_r[i] = 
-	    myMAX(GSL_MACH_EPS, fmax_r[i] - fmin_r[i]);
-	}
-	else {
-	  /* must be that no points landed in one of the half-regions */
-	  sigma_l[i] = sigma_r[i] = -1;
-	}
-      }
-      gsl_monte_vector_free(fmin_r);
-      gsl_monte_vector_free(fmin_l);
-      gsl_monte_vector_free(fmax_r);
-      gsl_monte_vector_free(fmax_l);
-    }
-    else if (state->estimate_style == ESTIMATE_STYLE_CORRELATED_MC) {
-      /* assert estimate_style = 1 */
-      double *sum_l, *sum_r, *sum2_l, *sum2_r;
+  estimate_corrmc (f, xl, xu, dim, estimate_calls, 
+                   r, state, 
+                   &res_est, &err_est,
+                   xmid, sigma_l, sigma_r);
 
-      hits_l = gsl_monte_vector_int_alloc(num_dim);
-      hits_r = gsl_monte_vector_int_alloc(num_dim);
-      sum_l = gsl_monte_vector_alloc(num_dim);
-      sum2_l = gsl_monte_vector_alloc(num_dim);
-      sum_r = gsl_monte_vector_alloc(num_dim);
-      sum2_r = gsl_monte_vector_alloc(num_dim);
+  /* Now find direction with the smallest total "variance" */
 
-      for (i = 0; i < num_dim; i++) {
-	hits_l[i] = hits_r[i] = 0;
-	sum_l[i] = sum_r[i] = 0.0;
-	sum2_l[i] = sum2_r[i] = 0.0;
-	sigma_l[i] = sigma_r[i] = -1;
-      }
-
-      for (n = 1; n <= estimate_calls; n++) {
-	for (i = 0; i < num_dim; i++)
-	  x[i] = xl[i] + (xu[i] - xl[i])*gsl_rng_uniform(r);
-	f = (*func)(x);
-	for (i = 0; i < num_dim; i++) {
-	  if (x[i] <= x_mid[i]) {
-	    sum_l[i] += f;
-	    sum2_l[i] = f*f;
-	    hits_l[i]++;
-	  }
-	  else {
-	    sum_r[i] += f;
-	    sum_r[i] = f*f;
-	    hits_r[i]++;
-	  }
-	}
-      }
-      for (i = 0; i < num_dim; i++) {
-	fraction_l = (x_mid[i] - xl[i])/(xu[i] - xl[i]);
-	if (hits_l[i] > 0 ) {
-	  sum_l[i] /= hits_l[i];
-	  sigma_l[i] = 
-	    sqrt(sum2_l[i] - SQR(sum_l[i])/hits_l[i]);
-	  sigma_l[i] *= fraction_l*vol/hits_l[i];
-	}
-	if (hits_r[i] > 0 ) {
-	  sum_r[i] /= hits_r[i];
-	  sigma_r[i] = 
-	    sqrt(sum2_r[i] - SQR(sum_r[i])/hits_r[i]);
-	  sigma_r[i] *= (1 - fraction_l)*vol/hits_r[i];;
-	}
-      }
-
-      gsl_monte_vector_int_free(hits_l);
-      gsl_monte_vector_int_free(hits_r);
-      gsl_monte_vector_free(sum_l);
-      gsl_monte_vector_free(sum2_l);
-      gsl_monte_vector_free(sum_r);
-      gsl_monte_vector_free(sum2_r);
-    }
-    else if (state->estimate_style == ESTIMATE_STYLE_MC) {
-      /* FIXME */
-      /* Would do complete mc estimate for each half space.  Trick is
-	 how to use these results - it would be a shame to waste them.
-      */
-      GSL_ERROR("ESTIMATE_STYLE_MC not yet implemented", GSL_EUNSUP);
-    }
-    else {
-      GSL_ERROR("estimate_style has three possibilities!", GSL_ESANITY);
-    }
-
-    /* Now find direction with the smallest total "variance" */
-    var = 0;
-    best_var = GSL_DBL_MAX;
-    i_bisect = -1;
+  {
+    double best_var = GSL_DBL_MAX;
+    double beta = 2.0 / (1.0 + state->alpha);
+    found_best = 0;
+    i_bisect = 0;
     weight_l = weight_r = 1.0;
     
-    beta = 2.0/(1.0 + state->alpha);
-    for (i = 0; i < num_dim; i++) {
-      if (sigma_l[i] >= 0 && sigma_r[i] >= 0) {
-	/* estimates are okay */
-	var = pow(sigma_l[i], beta) + pow(sigma_r[i], beta);
-	if (var <= best_var) {
-	  best_var = var;
-	  i_bisect = i;
-	  weight_l = pow(sigma_l[i], beta);
-	  weight_r = pow(sigma_r[i], beta);
-	}
+    for (i = 0; i < dim; i++)
+      {
+        if (sigma_l[i] >= 0 && sigma_r[i] >= 0)
+          {
+            /* estimates are okay */
+            double var = pow (sigma_l[i], beta) + pow (sigma_r[i], beta);
+            
+            if (var <= best_var)
+              {
+                found_best = 1;
+                best_var = var;
+                i_bisect = i;
+                weight_l = pow (sigma_l[i], beta);
+                weight_r = pow (sigma_r[i], beta);
+              }
+          }
+        else
+          {
+            if ((sigma_l[i] < 0) && (state->verbose > 0))
+              {
+                /* FIXME: Get a proper error code here */
+                GSL_ERROR ("no points in left-half space!", GSL_ESANITY);
+              }
+            if ((sigma_r[i] < 0) && (state->verbose > 0))
+              {
+                /* FIXME: Get a proper error code here */
+                GSL_ERROR ("no points in right-half space!", GSL_ESANITY);
+              }
+          }
       }
-      else {
-	if ((sigma_l[i] < 0) && (state->verbose > 0) ) {
-	  /* FIXME: Get a proper error code here */
-	  GSL_ERROR("no points in left-half space!", GSL_ESANITY);
-	}
-	if ((sigma_r[i] < 0) && (state->verbose > 0) ) {
-	  /* FIXME: Get a proper error code here */
-	  GSL_ERROR("no points in right-half space!", GSL_ESANITY);
-	}
-      }
-    }
-
-    if (i_bisect < 0) {
-      /* All were same, so chose direction at random */
-      
-      i_bisect = num_dim*gsl_rng_uniform(r); 
-    }
-
-    xbi_l = xl[i_bisect];
-    xbi_m = x_mid[i_bisect];
-    xbi_r = xu[i_bisect];
-
-    /* get the actual fractional sizes of the two "halves" */
-    fraction_l = fabs((xbi_m - xbi_l)/(xbi_r - xbi_l));
-    calls_l = state->min_calls;
-    calls_l += (unsigned long)
-      (calls - estimate_calls - 2*state->min_calls)*fraction_l*weight_l
-       /(fraction_l*weight_l + (1.0 - fraction_l)*weight_r);
-    calls_r = calls - estimate_calls - calls_l;
-
-    xl_tmp = sigma_l; /* reuse vectors */
-    xu_tmp = sigma_r;
-    for (i = 0; i < num_dim; i++) {
-      xl_tmp[i] = xl[i];
-      xu_tmp[i] = xu[i];
-    }
-
-    xu_tmp[i_bisect] = x_mid[i_bisect];
-    status = gsl_monte_miser_integrate(state, func, xl_tmp, xu_tmp, 
-			     num_dim, calls_l, &res_l, &err_l);
-    xl_tmp[i_bisect] = x_mid[i_bisect];
-    xu_tmp[i_bisect] = xu[i_bisect];
-    status = gsl_monte_miser_integrate(state, func, xl_tmp, xu_tmp, 
-			     num_dim, calls_r, res, err);
-
-    *res += res_l;
-    *err = sqrt( SQR(err_l) + SQR(*err) );   
-
-    gsl_monte_vector_free(xl_tmp);
-    gsl_monte_vector_free(xu_tmp);
-    gsl_monte_vector_free(x_mid);
   }
 
-  gsl_monte_vector_free(x);
+  if (! found_best)
+    {
+      /* All were same, so chose direction at random */
 
-  return status;
+      i_bisect = gsl_rng_uniform_int (r, dim);
+    }
+
+  xbi_l = xl[i_bisect];
+  xbi_m = xmid[i_bisect];
+  xbi_r = xu[i_bisect];
+
+  /* Get the actual fractional sizes of the two "halves", and
+     distribute the remaining calls among them */
+
+  {
+    double fraction_l = fabs ((xbi_m - xbi_l) / (xbi_r - xbi_l));
+    double fraction_r = 1 - fraction_l ;
+
+    double a = fraction_l * weight_l;
+    double b = fraction_r * weight_r;
+
+    calls_l = calls * a / (a + b);
+    calls_r = calls * b / (a + b);
+  }
+
+  /* Compute the integral for the left hand side of the bisection */
+
+  /* Due to the recursive nature of the algorithm we must allocate
+     some new memory for each recursive call */
+
+  {
+    int status;
+
+    double * xu_tmp = (double *) malloc (dim * sizeof(double));
+
+    if (xu_tmp == 0)
+      {
+        GSL_ERROR_VAL ("out of memory for left workspace", GSL_ENOMEM, 0);
+      }
+
+    for (i = 0; i < dim; i++)
+      {
+        xu_tmp[i] = xu[i];
+      }
+    
+    xu_tmp[i_bisect] = xbi_m;
+    
+    status = gsl_monte_miser_integrate (f, xl, xu_tmp,
+                                        dim, calls_l, r, state, 
+                                        &res_l, &err_l);
+    free (xu_tmp);
+
+    if (status != GSL_SUCCESS)
+      {
+        return status ;
+      }
+  }
+
+  /* Compute the integral for the right hand side of the bisection */
+
+  {
+    int status;
+
+    double * xl_tmp = (double *) malloc (dim * sizeof(double));
+
+    if (xl_tmp == 0)
+      {
+        GSL_ERROR_VAL ("out of memory for right workspace", GSL_ENOMEM, 0);
+      }
+
+    for (i = 0; i < dim; i++)
+      {
+        xl_tmp[i] = xl[i];
+      }
+    
+    xl_tmp[i_bisect] = xbi_m;
+    
+    status = gsl_monte_miser_integrate (f, xl_tmp, xu,
+                                        dim, calls_r, r, state, 
+                                        &res_r, &err_r);
+    free (xl_tmp);
+
+    if (status != GSL_SUCCESS)
+      {
+        return status ;
+      }
+  }
+    
+  *result = res_l + res_r;
+  *abserr = sqrt (err_l * err_l + err_r * err_r);
+
+  return GSL_SUCCESS;
 }
 
-gsl_monte_miser_state* gsl_monte_miser_alloc(size_t num_dim)
+gsl_monte_miser_state *
+gsl_monte_miser_alloc (size_t dim)
 {
-  gsl_monte_miser_state *s =  
-    (gsl_monte_miser_state *) malloc(sizeof (gsl_monte_miser_state));
-  
-  if ( s == (gsl_monte_miser_state*) NULL) {
-    GSL_ERROR_VAL ("failed to allocate space for miser state struct",
-                        GSL_ENOMEM, 0);
-  }
+  gsl_monte_miser_state *s =
+    (gsl_monte_miser_state *) malloc (sizeof (gsl_monte_miser_state));
 
-  s->check_done = 0;
-  s->num_dim = num_dim;
+  if (s == 0)
+    {
+      GSL_ERROR_VAL ("failed to allocate space for miser state struct",
+		     GSL_ENOMEM, 0);
+    }
+
+  s->x = (double *) malloc (dim * sizeof (double));
+
+  if (s->x == 0)
+    {
+      free (s);
+      GSL_ERROR_VAL ("failed to allocate space for x", GSL_ENOMEM, 0);
+    }
+
+  s->xmid = (double *) malloc (dim * sizeof (double));
+
+  if (s->xmid == 0)
+    {
+      free (s->x);
+      free (s);
+      GSL_ERROR_VAL ("failed to allocate space for xmid", GSL_ENOMEM, 0);
+    }
+
+  s->sigma_l = (double *) malloc (dim * sizeof (double));
+
+  if (s->sigma_l == 0)
+    {
+      free (s->xmid);
+      free (s->x);
+      free (s);
+      GSL_ERROR_VAL ("failed to allocate space for sigma_l", GSL_ENOMEM, 0);
+    }
+
+  s->sigma_r = (double *) malloc (dim * sizeof (double));
+
+  if (s->sigma_r == 0)
+    {
+      free (s->sigma_l);
+      free (s->xmid);
+      free (s->x);
+      free (s);
+      GSL_ERROR_VAL ("failed to allocate space for sigma_r", GSL_ENOMEM, 0);
+    }
+
+  s->fmax_l = (double *) malloc (dim * sizeof (double));
+
+  if (s->fmax_l == 0)
+    {
+      free (s->sigma_r);
+      free (s->sigma_l);
+      free (s->xmid);
+      free (s->x);
+      free (s);
+      GSL_ERROR_VAL ("failed to allocate space for fmax_l", GSL_ENOMEM, 0);
+    }
+
+  s->fmax_r = (double *) malloc (dim * sizeof (double));
+
+  if (s->fmax_r == 0)
+    {
+      free (s->fmax_l);
+      free (s->sigma_r);
+      free (s->sigma_l);
+      free (s->xmid);
+      free (s->x);
+      free (s);
+      GSL_ERROR_VAL ("failed to allocate space for fmax_r", GSL_ENOMEM, 0);
+    }
+
+  s->fmin_l = (double *) malloc (dim * sizeof (double));
+
+  if (s->fmin_l == 0)
+    {
+      free (s->fmax_r);
+      free (s->fmax_l);
+      free (s->sigma_r);
+      free (s->sigma_l);
+      free (s->xmid);
+      free (s->x);
+      free (s);
+      GSL_ERROR_VAL ("failed to allocate space for fmin_l", GSL_ENOMEM, 0);
+    }
+
+  s->fmin_r = (double *) malloc (dim * sizeof (double));
+
+  if (s->fmin_r == 0)
+    {
+      free (s->fmin_l);
+      free (s->fmax_r);
+      free (s->fmax_l);
+      free (s->sigma_r);
+      free (s->sigma_l);
+      free (s->xmid);
+      free (s->x);
+      free (s);
+      GSL_ERROR_VAL ("failed to allocate space for fmin_r", GSL_ENOMEM, 0);
+    }
+
+  s->fsum_l = (double *) malloc (dim * sizeof (double));
+
+  if (s->fsum_l == 0)
+    {
+      free (s->fmin_r);
+      free (s->fmin_l);
+      free (s->fmax_r);
+      free (s->fmax_l);
+      free (s->sigma_r);
+      free (s->sigma_l);
+      free (s->xmid);
+      free (s->x);
+      free (s);
+      GSL_ERROR_VAL ("failed to allocate space for fsum_l", GSL_ENOMEM, 0);
+    }
+
+  s->fsum_r = (double *) malloc (dim * sizeof (double));
+
+  if (s->fsum_r == 0)
+    {
+      free (s->fsum_l);
+      free (s->fmin_r);
+      free (s->fmin_l);
+      free (s->fmax_r);
+      free (s->fmax_l);
+      free (s->sigma_r);
+      free (s->sigma_l);
+      free (s->xmid);
+      free (s->x);
+      free (s);
+      GSL_ERROR_VAL ("failed to allocate space for fsum_r", GSL_ENOMEM, 0);
+    }
+
+  s->fsum2_l = (double *) malloc (dim * sizeof (double));
+
+  if (s->fsum2_l == 0)
+    {
+      free (s->fsum_r);
+      free (s->fsum_l);
+      free (s->fmin_r);
+      free (s->fmin_l);
+      free (s->fmax_r);
+      free (s->fmax_l);
+      free (s->sigma_r);
+      free (s->sigma_l);
+      free (s->xmid);
+      free (s->x);
+      free (s);
+      GSL_ERROR_VAL ("failed to allocate space for fsum2_l", GSL_ENOMEM, 0);
+    }
+
+  s->fsum2_r = (double *) malloc (dim * sizeof (double));
+
+  if (s->fsum2_r == 0)
+    {
+      free (s->fsum2_l);
+      free (s->fsum_r);
+      free (s->fsum_l);
+      free (s->fmin_r);
+      free (s->fmin_l);
+      free (s->fmax_r);
+      free (s->fmax_l);
+      free (s->sigma_r);
+      free (s->sigma_l);
+      free (s->xmid);
+      free (s->x);
+      free (s);
+      GSL_ERROR_VAL ("failed to allocate space for fsum2_r", GSL_ENOMEM, 0);
+    }
+
+
+  s->hits_r = (size_t *) malloc (dim * sizeof (size_t));
+
+  if (s->hits_r == 0)
+    {
+      free (s->fsum2_r);
+      free (s->fsum2_l);
+      free (s->fsum_r);
+      free (s->fsum_l);
+      free (s->fmin_r);
+      free (s->fmin_l);
+      free (s->fmax_r);
+      free (s->fmax_l);
+      free (s->sigma_r);
+      free (s->sigma_l);
+      free (s->xmid);
+      free (s->x);
+      free (s);
+      GSL_ERROR_VAL ("failed to allocate space for fsum2_r", GSL_ENOMEM, 0);
+    }
+
+  s->hits_l = (size_t *) malloc (dim * sizeof (size_t));
+
+  if (s->hits_l == 0)
+    {
+      free (s->hits_r);
+      free (s->fsum2_r);
+      free (s->fsum2_l);
+      free (s->fsum_r);
+      free (s->fsum_l);
+      free (s->fmin_r);
+      free (s->fmin_l);
+      free (s->fmax_r);
+      free (s->fmax_l);
+      free (s->sigma_r);
+      free (s->sigma_l);
+      free (s->xmid);
+      free (s->x);
+      free (s);
+      GSL_ERROR_VAL ("failed to allocate space for fsum2_r", GSL_ENOMEM, 0);
+    }
+
+
+  s->plain_state = gsl_monte_plain_alloc (dim);
+
+  if (s->plain_state == 0)
+    {
+      free (s->hits_l);
+      free (s->hits_r);
+      free (s->fsum2_r);
+      free (s->fsum2_l);
+      free (s->fsum_r);
+      free (s->fsum_l);
+      free (s->fmin_r);
+      free (s->fmin_l);
+      free (s->fmax_r);
+      free (s->fmax_l);
+      free (s->sigma_r);
+      free (s->sigma_l);
+      free (s->xmid);
+      free (s->x);
+      free (s);
+      GSL_ERROR_VAL ("failed to allocate plain_state", GSL_ENOMEM, 0);
+    }
+
+  gsl_monte_plain_init (s->plain_state);
+  gsl_monte_miser_init (s);
+
+  s->dim = dim;
 
   return s;
 }
 
-int gsl_monte_miser_validate(gsl_monte_miser_state* state,
-			     double xl[], double xu[], 
-			     unsigned long num_dim, unsigned long calls)
+int
+gsl_monte_miser_init (gsl_monte_miser_state * s)
 {
-  unsigned long i;
+  s->min_calls = 15;
+  s->min_calls_per_bisection = 60;
+  s->estimate_frac = 0.1;
+  s->alpha = 2.0;
+  s->dither = 0.0;
+  s->estimate_style = ESTIMATE_STYLE_NR;
 
-  if (state == (gsl_monte_miser_state*) NULL) {
-    GSL_ERROR("Allocate state structure before calling!", GSL_EINVAL);
-
-  }
-
-  if (state->check_done) 
-    return GSL_SUCCESS;
-    
-  if (num_dim <= 0) {
-    GSL_ERROR("number of dimensions must be positive", GSL_EINVAL);
-  }
-
-  if (num_dim > state->num_dim) {
-    GSL_ERROR("number of dimensions exceeds allocated size", GSL_EINVAL);
-  }
-  
-  for (i=0; i < num_dim; i++ ) {
-    if (xu[i] - xl[i] <= 0 ) {
-      GSL_ERROR("xu must be greater than xl", GSL_EINVAL);
-    }
-    if (xu[i] - xl[i] > GSL_DBL_MAX) {
-      GSL_ERROR("Range of integration is too large, please rescale",  GSL_EINVAL);
-    }
-  }
-
-  if ( calls <= 0 ) {
-    GSL_ERROR("number of calls must be greater than zero", GSL_EINVAL);
-  }
-
-  if ( state->alpha < 0 ) {
-    GSL_ERROR("alpha is negative", GSL_EINVAL);
-  }
-
-  state->check_done = 1;
-
-  return GSL_SUCCESS;
-}  
-
-/* Set some default values and whatever */
-int gsl_monte_miser_init(gsl_monte_miser_state* state)
-{
-
-  if (state == (gsl_monte_miser_state*) NULL) {
-    GSL_ERROR("Allocate state structure before calling!", GSL_EFAULT);
-  }
-
-  state->min_calls = 15;
-  state->min_calls_per_bisection = 60;
-  state->estimate_frac =  0.1;
-  state->alpha = 2.0; 
-  state->dither = 0.0;
-  state->verbose = 0;
-  state->estimate_style = ESTIMATE_STYLE_NR;
-  state->ranf = gsl_rng_alloc(gsl_rng_env_setup());
-
-  state->plain_state = gsl_monte_plain_alloc(state->num_dim);
-  gsl_monte_plain_init(state->plain_state);
-
-  state->init_done = 1;
   return GSL_SUCCESS;
 }
 
-void gsl_monte_miser_free (gsl_monte_miser_state* s)
+void
+gsl_monte_miser_free (gsl_monte_miser_state * s)
 {
-  if (s == (gsl_monte_miser_state*) NULL )
-    GSL_ERROR_VOID("Attempt to free null pointer", GSL_EFAULT);
-
+  gsl_monte_plain_free (s->plain_state);
+  free (s->fsum2_r);
+  free (s->fsum2_l);
+  free (s->fsum_r);
+  free (s->fsum_l);
+  free (s->fmin_r);
+  free (s->fmin_l);
+  free (s->fmax_r);
+  free (s->fmax_l);
+  free (s->sigma_r);
+  free (s->sigma_l);
+  free (s->xmid);
+  free (s->x);
   free (s);
+}
+
+#ifdef JUNK
+void
+estimate_maxmin (gsl_monte_function * f,
+                 const double xl[], const double xu[],
+                 size_t dim, size_t calls,
+                 gsl_rng * r,
+                 gsl_monte_miser_state * state,
+                 double *result, double *abserr,
+                 const double xmid[],
+                 double sigma_l[], double sigma_r[])
+{
+  /* NR way */
+  
+  for (i = 0; i < dim; i++)
+    {
+      fmin_l[i] = fmin_r[i] = GSL_DBL_MAX;
+      fmax_l[i] = fmax_r[i] = -GSL_DBL_MAX;
+    }
+  
+  for (n = 0; n < calls; n++)
+    {
+      for (i = 0; i < dim; i++)
+        {
+          state->x[i] = xl[i] + gsl_rng_uniform_pos (r) * (xu[i] - xl[i]);
+        }
+      
+      fval = GSL_MONTE_FN_EVAL(f, x);
+      
+      for (i = 0; i < dim; i++)
+        {
+          if (x[i] <= xmid[i])
+            {
+              fmin_l[i] = GSL_MIN (fmin_l[i], fval);
+              fmax_l[i] = GSL_MAX (fmax_l[i], fval);
+            }
+          else
+            {
+              fmin_r[i] = GSL_MIN (fmin_r[i], fval);
+              fmax_r[i] = GSL_MAX (fmax_r[i], fval);
+            }
+        }
+    }
+  
+  for (i = 0; i < dim; i++)
+    {
+      if (fmax_l[i] >= fmin_l[i] && fmax_r[i] >= fmin_r[i])
+        {
+          sigma_l[i] = GSL_MAX (GSL_MACH_EPS, fmax_l[i] - fmin_l[i]);
+          sigma_r[i] = GSL_MAX (GSL_MACH_EPS, fmax_r[i] - fmin_r[i]);
+        }
+      else
+        {
+          /* must be that no points landed in one of the half-regions */
+          sigma_l[i] = sigma_r[i] = -1;
+        }
+    }
+}
+#endif
+
+int
+estimate_corrmc (gsl_monte_function * f,
+                 const double xl[], const double xu[],
+                 size_t dim, size_t calls,
+                 gsl_rng * r,
+                 gsl_monte_miser_state * state,
+                 double * result, double * abserr,
+                 const double xmid[],
+                 double sigma_l[], double sigma_r[])
+{
+  size_t i, n;
+
+  double *x = state->x;
+  double *fsum_l = state->fsum_l;
+  double *fsum_r = state->fsum_r;
+  double *fsum2_l = state->fsum2_l;
+  double *fsum2_r = state->fsum2_r;
+  size_t *hits_l = state->hits_l;
+  size_t *hits_r = state->hits_r;
+
+  double vol = 1;
+
+  for (i = 0; i < dim; i++)
+    {
+      vol *= xu[i] - xl[i];
+      hits_l[i] = hits_r[i] = 0;
+      fsum_l[i] = fsum_r[i] = 0.0;
+      fsum2_l[i] = fsum2_r[i] = 0.0;
+      sigma_l[i] = sigma_r[i] = -1;
+    }
+  
+  for (n = 0; n < calls; n++)
+    {
+      double fval;
+
+      for (i = 0; i < dim; i++)
+        {
+          x[i] = xl[i] + gsl_rng_uniform_pos (r) * (xu[i] - xl[i]);
+        }
+      
+      fval = GSL_MONTE_FN_EVAL(f, x);
+
+      for (i = 0; i < dim; i++)
+        {
+          if (x[i] <= xmid[i])
+            {
+              fsum_l[i] += fval;
+              fsum2_l[i] = fval * fval;
+              hits_l[i]++;
+            }
+          else
+            {
+              fsum_r[i] += fval;
+              fsum_r[i] = fval * fval;
+              hits_r[i]++;
+            }
+        }
+    }
+  
+  for (i = 0; i < dim; i++)
+    {
+      double fraction_l = (xmid[i] - xl[i]) / (xu[i] - xl[i]);
+      
+      if (hits_l[i] > 0)
+        {
+          fsum_l[i] /= hits_l[i];
+          sigma_l[i] = sqrt (fsum2_l[i] - fsum_l[i] * fsum_l[i] / hits_l[i]);
+          sigma_l[i] *= fraction_l * vol / hits_l[i];
+        }
+      
+      if (hits_r[i] > 0)
+        {
+          fsum_r[i] /= hits_r[i];
+          sigma_r[i] = sqrt (fsum2_r[i] - fsum_r[i] * fsum_r[i] / hits_r[i]);
+          sigma_r[i] *= (1 - fraction_l) * vol / hits_r[i];
+        }
+    }
+
 }

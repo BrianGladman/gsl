@@ -1,3 +1,11 @@
+Thu Nov 16 19:50:27 2000  Brian Gough  <bjg@network-theory.co.uk>
+
+	* miser.c: rewrite to fix overflows and make calling conventions
+ 	consistent 
+
+	* plain.c: rewrite to fix overflows and make calling conventions
+ 	consistent
+
 Thu Oct 26 20:06:36 2000  Brian Gough  <bjg@network-theory.co.uk>
 
 	* plain.c (gsl_monte_plain_integrate): integer factor

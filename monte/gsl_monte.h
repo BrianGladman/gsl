@@ -40,7 +40,15 @@ __BEGIN_DECLS
    integration functions, and make it easy to change things.
 */
 
-typedef double (*gsl_monte_f_T)(double *);
+struct gsl_monte_function_struct {
+  double (*f)(double * x_array, size_t dim, void * params);
+  size_t dim;
+  void * params;
+};
+
+typedef struct gsl_monte_function_struct gsl_monte_function;
+
+#define GSL_MONTE_FN_EVAL(F,x) (*((F)->f))(x,(F)->dim,(F)->params)
 
 
 __END_DECLS

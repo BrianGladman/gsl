@@ -39,8 +39,11 @@
 
 __BEGIN_DECLS
 
-enum {ESTIMATE_STYLE_NR = -1,  ESTIMATE_STYLE_CORRELATED_MC = 0,  
-      ESTIMATE_STYLE_MC = 1};
+enum {
+  ESTIMATE_STYLE_NR = -1,  
+  ESTIMATE_STYLE_CORRELATED_MC = 0,  
+  ESTIMATE_STYLE_MC = 1
+};
 
 typedef struct {
   unsigned long min_calls;
@@ -48,28 +51,35 @@ typedef struct {
   double dither;
   double estimate_frac;
   double alpha;
-  size_t num_dim;
+  size_t dim;
   int estimate_style;
   int depth;
   int verbose;
-  int init_done;
-  int check_done;
-  FILE* ostream;
-  gsl_rng *ranf;
+  double * x;
+  double * xmid;
+  double * sigma_l;
+  double * sigma_r;
+  double * fmax_l;
+  double * fmax_r;
+  double * fmin_l;
+  double * fmin_r;
+  double * fsum_l;
+  double * fsum_r;
+  double * fsum2_l;
+  double * fsum2_r;
+  size_t * hits_l;
+  size_t * hits_r;
   gsl_monte_plain_state* plain_state;
 } gsl_monte_miser_state; 
 
-int gsl_monte_miser_integrate(gsl_monte_miser_state* state,
-			      gsl_monte_f_T func, double xl[], double xh[], 
-			      unsigned long num_dim, unsigned long calls, 
-			      double *ave, double *var);
+int gsl_monte_miser_integrate(gsl_monte_function * f, 
+                              const double xl[], const double xh[], 
+			      size_t dim, size_t calls, 
+                              gsl_rng *r, 
+                              gsl_monte_miser_state* state,
+			      double *result, double *abserr);
 
-
-gsl_monte_miser_state* gsl_monte_miser_alloc(size_t num_dim);
-
-int gsl_monte_miser_validate(gsl_monte_miser_state* state,
-			     double xl[], double xu[], 
-			     unsigned long num_dim, unsigned long calls);
+gsl_monte_miser_state* gsl_monte_miser_alloc(size_t dim);
 
 int gsl_monte_miser_init(gsl_monte_miser_state* state);
 

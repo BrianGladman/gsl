@@ -25,7 +25,6 @@
 
 #include <gsl/gsl_rng.h>
 #include <gsl/gsl_monte.h>
-#include <stdio.h>
 
 #undef __BEGIN_DECLS
 #undef __END_DECLS
@@ -39,7 +38,6 @@
 
 __BEGIN_DECLS
 
-/* This will go away soon. */
 #define GSL_V_BINS_MAX 50  /* even integer because will be divided by two. */
 #define GSL_V_MAX_DIM 10
 
@@ -61,19 +59,18 @@ typedef struct {
   int bins_prev;
   int calls_per_box;
   int it_num;
-  unsigned long num_dim;
+  unsigned long dim;
   int bins;
   int boxes; /* boxes and bins are counted along the axes */
   int init_done;
   int check_done;
-  gsl_rng* ranf;
-  FILE* ostream;
 
   /* scratch variables preserved between calls to vegas1/2/3  */
   double jac;
   double wtd_int_sum; 
   double sum_wgts;
   double chi_sum;
+  double chisq;
   double vol;
 
   /* workspace */
@@ -85,20 +82,18 @@ typedef struct {
 } gsl_monte_vegas_state;
 
 
-int gsl_monte_vegas_integrate(gsl_monte_vegas_state *state,
-		    gsl_monte_f_T fxn, double xl[], double xu[], 
-		    unsigned long num_dim, unsigned long calls,
-		    double* tot_int, double* tot_sig, double* chi_sq);
+int gsl_monte_vegas_integrate(gsl_monte_function * f, 
+                              double xl[], double xu[], 
+                              size_t dim, size_t calls,
+                              gsl_rng * r,
+                              gsl_monte_vegas_state *state,
+                              double* result, double* abserr);
 
-gsl_monte_vegas_state* gsl_monte_vegas_alloc(size_t num_dim);
-
-int gsl_monte_vegas_validate(gsl_monte_vegas_state* state,
-			     double xl[], double xu[], 
-			     unsigned long num_dim, unsigned long calls);
+gsl_monte_vegas_state* gsl_monte_vegas_alloc(size_t dim);
 
 int gsl_monte_vegas_init(gsl_monte_vegas_state* state);
 
-void gsl_monte_vegas_free (gsl_monte_vegas_state* s);
+void gsl_monte_vegas_free (gsl_monte_vegas_state* state);
 
 __END_DECLS
 

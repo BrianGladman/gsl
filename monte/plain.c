@@ -22,137 +22,138 @@
 /* Author: MJB */
 /* RCS: $Id$ */
 
-#define TINY GSL_DBL_MIN
-
 #include <config.h>
 #include <math.h>
 #include <gsl/gsl_math.h>
-#include <gsl/gsl_monte_plain.h>
 #include <gsl/gsl_rng.h>
-#include <utils.h>
+#include <gsl/gsl_monte_plain.h>
 
-int gsl_monte_plain_integrate(gsl_monte_plain_state *state, 
-			      const gsl_monte_f_T fun, 
-			      const double* xl, const double* xu, 
-			      const size_t num_dim, 
-			      const size_t calls, double* res, double* err)
+int
+gsl_monte_plain_integrate (const gsl_monte_function * f,
+			   const double xl[], const double xu[],
+			   const size_t dim,
+			   const size_t calls, 
+			   gsl_rng * r,
+			   gsl_monte_plain_state * state,
+                           double *result, double *abserr)
 {
-  int status = 0;
-  double sum, sum2;
-  double fval;
-  /*  double x[GSL_MONTE_MAX_DIM]; */
-  /*   double* x = state->x; */ /* save some typing */
-  double* x; 
-  double vol;
+  double vol, sum, sum2;
+  double * x = state->x;
   size_t n, i;
 
-  x = gsl_monte_vector_alloc(num_dim);
+  if (dim > state->dim)
+    {
+      GSL_ERROR ("number of dimensions exceeds allocated size", GSL_EINVAL);
+    }
 
-  status = gsl_monte_plain_validate(state, xl, xu, num_dim, calls);
+  for (i = 0; i < dim; i++)
+    {
+      if (xu[i] <= xl[i])
+	{
+	  GSL_ERROR ("xu must be greater than xl", GSL_EINVAL);
+	}
+
+      if (xu[i] - xl[i] > GSL_DBL_MAX)
+	{
+	  GSL_ERROR ("Range of integration is too large, please rescale",
+		     GSL_EINVAL);
+	}
+    }
+
+  /* Compute the volume of the region */
 
   vol = 1;
-  for (i = 0; i < num_dim; i++) 
-    vol *= xu[i]-xl[i];
+
+  for (i = 0; i < dim; i++)
+    {
+      vol *= xu[i] - xl[i];
+    }
 
   sum = sum2 = 0.0;
-  
-  for (n = 1; n <= calls; n++) {
-    for (i = 0; i < num_dim; i++) 
-      x[i] = xl[i] + gsl_rng_uniform(state->ranf)*(xu[i] - xl[i]);
-    fval = (*fun)(x);
-    sum += fval;
-    sum2 += fval * fval;
-  }
-  *res = vol * sum/calls;
-  if ( calls > 1) {
-    *err = vol * sqrt(GSL_MAX(TINY, (sum2-sum*sum/calls)/(calls*(calls-1.0))));
-  }
-  else {
-    /* should't happen, validate should catch */
-    *err = -1;
-    status = 1;
-  }
-  gsl_monte_vector_free(x);
 
-  return status;
+  for (n = 0; n < calls; n++)
+    {
+      /* Choose a random point in the integration region */
+
+      for (i = 0; i < dim; i++)
+	{
+	  x[i] = xl[i] + gsl_rng_uniform_pos (r) * (xu[i] - xl[i]);
+	}
+
+      {
+        double fval = GSL_MONTE_FN_EVAL(f,x);
+
+        sum += fval;            /* FIXME: use a stable recurrence here */
+        sum2 += fval * fval;
+      }
+    }
+
+  *result = vol * (sum / calls);
+
+  if (calls < 2)
+    {
+      *abserr = GSL_POSINF;
+    }
+  else
+    {
+      double var = (sum2 - sum * sum / calls) / (calls * (calls - 1.0));
+
+      if (var < 0) 
+        {
+          *abserr = GSL_POSINF;
+          GSL_ERROR ("total loss of precision in error estimation", GSL_ELOSS);
+        }
+      
+      *abserr = vol * sqrt (var);
+    }
+
+  return GSL_SUCCESS;
 }
 
-
-
-gsl_monte_plain_state* gsl_monte_plain_alloc(size_t num_dim)
+gsl_monte_plain_state *
+gsl_monte_plain_alloc (size_t dim)
 {
-  gsl_monte_plain_state *s =  
-    (gsl_monte_plain_state *) malloc(sizeof (gsl_monte_plain_state));
-  
-  if ( s == (gsl_monte_plain_state*) NULL) {
-    GSL_ERROR_VAL ("failed to allocate space for state struct",
-                        GSL_ENOMEM, 0);
-  }
+  gsl_monte_plain_state *s =
+    (gsl_monte_plain_state *) malloc (sizeof (gsl_monte_plain_state));
 
-  s->check_done = 0;
-  s->num_dim = num_dim;
+  if (s == 0)
+    {
+      GSL_ERROR_VAL ("failed to allocate space for state struct",
+		     GSL_ENOMEM, 0);
+    }
+
+  s->x = (double *) malloc (dim * sizeof (double));
+
+  if (s->x == 0)
+    {
+      free (s);
+      GSL_ERROR_VAL ("failed to allocate space for working vector",
+		     GSL_ENOMEM, 0);
+    }
+
+  s->dim = dim;
+
   return s;
 }
 
-int gsl_monte_plain_validate(gsl_monte_plain_state* state,
-			     const double xl[], const double xu[], 
-			     unsigned long num_dim, unsigned long calls)
-{
-  unsigned long i;
-
-  if (state == (gsl_monte_plain_state*) NULL) {
-    GSL_ERROR("Allocate state structure before calling!", GSL_EINVAL);
-
-  }
-
-  if (state->check_done) 
-    return GSL_SUCCESS;
-    
-  if (num_dim <= 0) {
-    GSL_ERROR("number of dimensions must be positive", GSL_EINVAL);
-  }
-
-  if (num_dim > state->num_dim) {
-    GSL_ERROR("number of dimensions exceeds allocated size", GSL_EINVAL);
-  }
-  
-  for (i=0; i < num_dim; i++ ) {
-    if (xu[i] - xl[i] <= 0 ) {
-      GSL_ERROR("xu must be greater than xl", GSL_EINVAL);
-    }
-    if (xu[i] - xl[i] > GSL_DBL_MAX) {
-      GSL_ERROR("Range of integration is too large, please rescale",  GSL_EINVAL);
-    }
-  }
-
-  if ( calls <= 1 ) {
-    GSL_ERROR("number of calls must be greater than 1", GSL_EINVAL);
-  }
-  
-  state->check_done = 1;
-
-  return GSL_SUCCESS;
-}  
-
 /* Set some default values and whatever */
-int gsl_monte_plain_init(gsl_monte_plain_state* state)
+
+int
+gsl_monte_plain_init (gsl_monte_plain_state * s)
 {
+  size_t i;
 
-  if (state == (gsl_monte_plain_state*) NULL) {
-    GSL_ERROR("Allocate state structure before calling!", GSL_EFAULT);
-  }
+  for (i = 0; i < s->dim; i++)
+    {
+      s->x[i] = 0.0;
+    }
 
-  state->ranf = gsl_rng_alloc(gsl_rng_env_setup());
-
-  state->init_done = 1;
-  state->verbose = 1;
   return GSL_SUCCESS;
 }
 
-void gsl_monte_plain_free (gsl_monte_plain_state* s)
+void
+gsl_monte_plain_free (gsl_monte_plain_state * s)
 {
-  if (s == (gsl_monte_plain_state*) NULL )
-    GSL_ERROR_VOID("Attempt to free null pointer", GSL_EFAULT);
-
+  free (s->x);
   free (s);
 }
