@@ -25,30 +25,23 @@ currently not available in @code{gsl}.
 All the FFT functions offer three types of transform: forwards, inverse
 and backwards, based on the same mathematical definitions. The
 definition of the (forward) fourier transform, @math{x}=FFT(@math{z}), is,
-@tex
-$$
-x_j = \sum_{k=0}^{n-1} z_k \exp(2\pi i j k / n) 
-$$
-@end tex
-@ifinfo
+@c @tex
+@c $$
+@c x_j = \sum_{k=0}^{n-1} z_k \exp(2\pi i j k / n) 
+@c $$
+@c @end tex
+@c @ifinfo
 
 @example
-x_j = \sum_@{k=0@}^@{n-1@} z_k \exp(2\pi i j k / n) 
+@displaymath{x_j = \sum_@{k=0@}^@{n-1@} z_k \exp(2\pi i j k / n) }
 @end example
-@end ifinfo
 @noindent
 and the definition of the inverse transform, @math{x}=IFFT(@math{z}), is,
-@tex
-$$
-z_j = {1 \over n} \sum_{k=0}^{n-1} x_k \exp(- 2\pi i j k / n).
-$$
-@end tex
-@ifinfo
 
-@example
-z_j = @{1 \over n@} \sum_@{k=0@}^@{n-1@} x_k \exp(- 2\pi i j k / n).
-@end example
-@end ifinfo
+@equation
+$$z_j = @{1 \over n@} \sum_@{k=0@}^@{n-1@} x_k \exp(- 2\pi i j k / n).$$
+@end equation
+
 @noindent
 The factor of @math{1/n} makes this a true inverse. For example, a call
 to @code{gsl_fft_complex_forward} followed by a call to
@@ -57,17 +50,10 @@ numerical errors).
 
 The backwards FFT is simply our terminology for an unscaled version of
 the inverse,
-@tex
-$$
-z^{backwards}_j = \sum_{j=0}^{n-1} x_j \exp(-2 \pi i j k / n).
-$$
-@end tex
-@ifinfo
 
-@example
-z^@{backwards@}_j = \sum_@{k=0@}^@{n-1@} x_k \exp(- 2\pi i j k / n).
-@end example
-@end ifinfo
+@equation
+$$z^@{backwards@}_j = \sum_@{k=0@}^@{n-1@} x_k \exp(- 2\pi i j k / n)$$
+@end equation
 @noindent
 When the overall scale of the result is unimportant it is often
 convenient to use the backwards FFT instead of the inverse to save
@@ -218,17 +204,17 @@ The mixed-radix algorithm is based on sub-transform modules -- highly
 optimised small length FFTs which are combined to create larger FFTs.
 There are efficient modules for factors of 2, 3, 4, 5, and 6. The
 modules for the composite factors of 4 and 6 are faster than combining
-the modules for 2*2 and 2*3.
+the modules for @math{2*2} and @math{2*3}.
 
 For factors which are not implemented as modules there is a fall-back to
-a general length-k module. This module is O(k^2), and less efficient
-than a dedicated module would be. However, lengths which use the general
-length-k module will still be factorised as much as possible. For
-example, a length of 77 will be factorised into 7*11. Large prime
-factors are the worst case scenario, e.g. as found in n=2*3*99991, and
-should be avoided because their O(k^2) scaling will dominate the
-run-time (consult @cite{GSL FFT Algorithms} for possible ways around
-this problem).
+a general length-k module. This module is @math{O(k^2)}, and less
+efficient than a dedicated module would be. However, lengths which use
+the general length-k module will still be factorised as much as
+possible. For example, a length of 77 will be factorised into
+@math{7*11}. Large prime factors are the worst case scenario, e.g. as
+found in @math{n=2*3*99991}, and should be avoided because their
+@math{O(k^2)} scaling will dominate the run-time (consult @cite{GSL FFT
+Algorithms} for possible ways around this problem).
 
 The mixed-radix initialisation function @code{gsl_fft_complex_init}
 returns the full list of factors and can be used to check how well the
@@ -353,8 +339,8 @@ This is the number of factors that the length @code{n} was decomposed into.
 
 @item unsigned int factor[64]
 This is the array of factors. Only the first @code{nf} elements are
-used. (This is a fixed length array and therefore in violation of the
-GNU Coding Standards).
+used. (FIXME: This is a fixed length array and therefore probably in
+violation of the GNU Coding Standards).
 
 @item complex * scratch
 This is a pointer to a scratch area of @code{n} complex elements,
@@ -387,7 +373,7 @@ wavetable can be easily prepared using the functions
 
 There is no restriction on the length @var{n}.  Efficient modules are
 provided for subtransforms of length 2, 3, 4, 5, and 6. Any remaining
-factors are computed with a slow, O(n^2), general-n module.
+factors are computed with a slow, @math{O(n^2)}, general-n module.
 
 The functions return a value of @code{0} if no errors were detected,
 and @code{-1} in the case of error. The following @code{gsl_errno}
@@ -395,7 +381,8 @@ conditions are defined for these functions:
 
 @table @code
 @item GSL_EDOM
-The length of the data @var{n} is not a positive integer (i.e. @var{n} is zero).
+The length of the data @var{n} is not a positive integer (i.e. @var{n}
+is zero).
 
 @item GSL_EINVAL
 The length of the data @var{n} and the length used to compute the given
@@ -411,7 +398,8 @@ The length of the data @var{n} and the length used to compute the given
 @subsection Mixed-Radix Real Examples
 
 Here is an example program which computes the FFT of a short pulse in a
-sample of length 630 (=2*3*3*5*7) using the mixed-radix algorithm.
+sample of length 630 (@math{=2*3*3*5*7}) using the mixed-radix
+algorithm.
 
 @example
 #include <stdio.h>
@@ -486,11 +474,10 @@ These functions for real data are similar to those for complex data.
 However, there is an important difference between forward and inverse
 transforms. The fourier transform, @math{z}, of a real data sequence,
 @math{x}, is not real. It is a complex sequence with a special symmetry:
-@tex
-$$
-z_k = z_{n-k}^*
-$$
-@end tex
+
+@example
+@math{z_k = z_@{n-k@}^*}
+@end example
 @noindent
 A transform sequence with this symmetry is called
 @dfn{conjugate-complex} or @dfn{half-complex}. This different structure
@@ -508,18 +495,15 @@ synthesis, from the half-complex coefficients, @math{c},
 the Complex routines are the other way round. Change the direction of
 one so we are internally consistent!]
 
-@tex
-$$
-x_j = \sum_{k=0}^{n-1} c_k \exp(2 \pi i j k /n)
-$$
-@end tex
+@example
+@math{x_j = \sum_@{k=0@}^@{n-1@} c_k \exp(2 \pi i j k /n)}
+@end example
 @noindent
 and the coefficients are found by fourier analysis,
-@tex
-$$
-c_k = {1 \over n} \sum_{j=0}^{n-1} x_k \exp(-2 \pi i j k /n)
-$$
-@end tex
+
+@example
+@math{c_k = @{1 \over n@} \sum_@{j=0@}^@{n-1@} x_k \exp(-2 \pi i j k /n)}
+@end example
 @noindent
 This means that @code{gsl_fft_real} corresponds to
 @code{gsl_fft_complex_backward}, because it is an fft in the inverse
@@ -609,7 +593,7 @@ All these functions are declared in the header files
 @deftypefun int gsl_fft_real_wavetable_alloc (unsigned int @var{n}, gsl_fft_real_wavetable * @var{wavetable});
 @deftypefunx int gsl_fft_halfcomplex_wavetable_alloc (unsigned int @var{n}, gsl_fft_halfcomplex_wavetable * @var{wavetable});
 These functions allocate space for a scratch area of size @var{n} real
-elements and a trigonometric lookup table, of size @var{n/2} complex
+elements and a trigonometric lookup table, of size @math{n/2} complex
 elements. The relevant components of @var{wavetable} are modified to point
 to the newly allocated memory.
 
@@ -619,7 +603,8 @@ conditions are defined for these functions:
 
 @table @code
 @item GSL_EDOM
-The length of the data @var{n} is not a positive integer (i.e. @var{n} is zero).
+The length of the data @var{n} is not a positive integer (i.e. @var{n}
+is zero).
 
 @item GSL_ENOMEM
 The requested memory could not be allocated (@code{malloc} returned
@@ -627,7 +612,6 @@ a null pointer).
 @end table
 
 @end deftypefun
-
 
 
 @deftypefun int gsl_fft_real_init (const unsigned int @var{n}, gsl_fft_real_wavetable * @var{wavetable});
@@ -658,7 +642,8 @@ conditions are defined for these functions:
 
 @table @code
 @item GSL_EDOM
-The length of the data @var{n} is not a positive integer (i.e. @var{n} is zero).
+The length of the data @var{n} is not a positive integer (i.e. @var{n}
+is zero).
 
 @item GSL_EFACTOR
 The length @var{n} could not be factorized (this shouldn't happen).
@@ -701,7 +686,7 @@ wavetable can be easily prepared using the functions
 
 There is no restriction on the length @var{n}.  Efficient modules are
 provided for subtransforms of length 2, 3, 4 and 5. Any remaining
-factors are computed with a slow, O(n^2), general-n module.
+factors are computed with a slow, @math{O(n^2)}, general-n module.
 
 The functions return a value of @code{0} if no errors were detected,
 and @code{-1} in the case of error. The following @code{gsl_errno}
@@ -882,20 +867,20 @@ All other elements of @var{data} are set to zero. The function also
 returns the fourier transform of the pulse in the complex array
 @var{fft}, also of length @var{n}.
 
-The mathematical definition of the pulse is, writing (@math{z_real + i
-z_imag}) as @math{z},
-@tex
-$$
-z_k =  z \delta_{kt}
-$$
-@end tex
+The mathematical definition of the pulse is, writing (
+@math{z_@{real@} + i z_@{imag@}}) as @math{z},
+
+@example
+@math{z_k =  z \delta_@{kt@}}
+@end example
+@noindent
 where @math{\delta_@{kt@}=1} if @math{k=t}, and 0 otherwise. The fourier
 transform is,
-@tex
-$$
-x_j = \sum_{k=0}^{n-1} z \delta_{kt} W^{jk}_n = z \exp(2\pi i j t/n)
-$$
-@end tex
+
+@example
+@math{x_j = \sum_@{k=0@}^@{n-1@} z \delta_@{kt@} W^@{jk@}_n 
+    = z \exp(2\pi i j t/n)}
+@end example
 
 @end deftypefun
 
@@ -906,21 +891,18 @@ This function prepares a constant complex signal of amplitude
 @var{n}. The function also returns the fourier transform of the constant
 in the complex array @var{fft}, also of length @var{n}.
 
-The mathematical definition of the pulse is, 
+The mathematical definition of the constant signal is, 
 
-@tex
-$$
-z_k = z
-$$
-@end tex
-
+@example
+@math{z_k = z}
+@end example
+@noindent
 and the fourier transform is,
 
-@tex
-$$
-x_j = \sum_{k=0}^{n-1} z W^{jk}_n = z n \delta_{j0}
-$$
-@end tex
+@example
+@math{x_j = \sum_@{k=0@}^@{n-1@} z W^@{jk@}_n
+    = z n \delta_@{j0@}}
+@end example
 
 @end deftypefun
 
@@ -933,17 +915,18 @@ transform of the signal in the complex array @var{fft}, also of length
 @var{n}.
 
 The mathematical definition of the complex exponential signal is,
-@tex
-$$
-z_k = z \exp(2\pi i k f/n)
-$$
-@end tex
+
+@example
+@math{z_k = z \exp(2\pi i k f/n)}
+@end example
+@noindent
 and the fourier transform is,
-@tex
-$$
-x_j = \sum_{k=0}^{n-1} z \exp(2\pi i k f/n) W^{jk}_n = z \delta_{j+f,0}
-$$
-@end tex
+
+@example
+@math{x_j = \sum_@{k=0@}^@{n-1@} z \exp(2\pi i k f/n) W^@{jk@}_n 
+    = z \delta_@{j+f,0@}
+}
+@end example
 
 @end deftypefun
 
@@ -956,17 +939,17 @@ length @var{n}. The function also returns the fourier transform of the
 signal in the complex array @var{fft}, also of length @var{n}.
 
 The mathematical definition of the pair of exponential signals is,
-@tex
-$$
-z_k = z_1 \exp(2\pi i k f_1/n) + z_2 \exp(2\pi i k f_2/n)
-$$
-@end tex
+
+@example
+@math{z_k = z_1 \exp(2\pi i k f_1/n) + z_2 \exp(2\pi i k f_2/n)}
+@end example
+@noindent
 and the fourier transform is,
-@tex
-$$
-x_j =  z_1 \delta_{j+f_1,0}  + z_2 \delta_{j+f_2,0}
-$$
-@end tex
+
+@example
+@math{x_j =  z_1 \delta_@{j+f_1,0@}  + z_2 \delta_@{j+f_2,0@}}
+@end example
+@noindent
 
 @end deftypefun
 
@@ -1001,5 +984,3 @@ detected, and @code{-1} in the case of error. There is only one
 @item GSL_EDOM
 The length of the data @var{n} is not a positive integer (i.e. @var{n} is zero).
 @end table
-
-
