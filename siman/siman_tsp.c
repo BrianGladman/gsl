@@ -19,6 +19,7 @@
 
 #include <config.h>
 #include <math.h>
+#include <string.h>
 #include <stdio.h>
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_rng.h>
