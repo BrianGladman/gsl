@@ -22,6 +22,12 @@ int gsl_sf_cos_impl(double x, gsl_sf_result * result);
 int gsl_sf_cos_e(double x, gsl_sf_result * result);
 
 
+/* Hypot(x,y) with GSL semantics.
+ */
+int gsl_sf_hypot_impl(double x, double y, gsl_sf_result * result);
+int gsl_sf_hypot_e(double x, double y, gsl_sf_result * result);
+
+
 /* Sin(z) for complex z
  *
  * exceptions: GSL_EOVRFLW

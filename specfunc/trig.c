@@ -263,6 +263,39 @@ gsl_sf_cos_impl(double x, gsl_sf_result * result)
 
 
 int
+gsl_sf_hypot_impl(const double x, const double y, gsl_sf_result * result)
+{
+  if(result == 0) {
+    return GSL_EFAULT;
+  }
+  else if(x == 0.0 && y == 0.0) {
+    result->val = 0.0;
+    result->err = 0.0;
+    return GSL_SUCCESS;
+  }
+  else {
+    const double a = fabs(x);
+    const double b = fabs(y);
+    const double min = GSL_MIN_DBL(a,b);
+    const double max = GSL_MAX_DBL(a,b);
+    const double rat = min/max;
+    const double root_term = sqrt(1.0 + rat*rat);
+
+    if(max < DBL_MAX/root_term) {
+      result->val = max * root_term;
+      result->err = 2.0 * GSL_DBL_EPSILON * fabs(result->val);
+      return GSL_SUCCESS;
+    }
+    else {
+      result->val = 0.0; /* FIXME: should be Inf */
+      result->err = 0.0;
+      return GSL_EOVRFLW;
+    }
+  }
+}
+
+
+int
 gsl_sf_complex_sin_impl(const double zr, const double zi,
                         gsl_sf_result * szr, gsl_sf_result * szi)
 {
@@ -458,17 +491,11 @@ int
 gsl_sf_rect_to_polar_impl(const double x, const double y,
                           gsl_sf_result * r, gsl_sf_result * theta)
 {
-#ifdef HAVE_HYPOT
-  r->val = hypot(x, y);
-# else /* HAVE_HYPOT */
-  r->val = sqrt(x*x + y*y);
-#endif /* HAVE_HYPOT */
-  r->err = 2.0 * GSL_DBL_EPSILON * fabs(r->val);
-
+  int stat_h = gsl_sf_hypot_impl(x, y, r);
   if(r->val > 0.0) {
     theta->val = atan2(y, x);
     theta->err = 2.0 * GSL_DBL_EPSILON * fabs(theta->val);
-    return GSL_SUCCESS;
+    return stat_h;
   }
   else {
     theta->val = 0.0;
@@ -573,6 +600,34 @@ gsl_sf_sin_pi_x_impl(const double x, gsl_sf_result * result)
 
 
 /*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
+
+
+int gsl_sf_sin_e(const double x, gsl_sf_result * r)
+{
+  int status = gsl_sf_sin_impl(x, r);
+  if(status != GSL_SUCCESS) {
+    GSL_ERROR("gsl_sf_sin_e", status);
+  }
+  return status;
+}
+
+int gsl_sf_cos_e(const double x, gsl_sf_result * r)
+{
+  int status = gsl_sf_cos_impl(x, r);
+  if(status != GSL_SUCCESS) {
+    GSL_ERROR("gsl_sf_cos_e", status);
+  }
+  return status;
+}
+
+int gsl_sf_hypot_e(const double x, const double y, gsl_sf_result * r)
+{
+  int status = gsl_sf_hypot_impl(x, y, r);
+  if(status != GSL_SUCCESS) {
+    GSL_ERROR("gsl_sf_hypot_e", status);
+  }
+  return status;
+}
 
 int gsl_sf_complex_sin_e(const double zr, const double zi, gsl_sf_result * szr, gsl_sf_result * szi)
 {
