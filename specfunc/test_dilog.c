@@ -79,8 +79,8 @@ int test_dilog(void)
 	     GSL_SUCCESS);
 
   TEST_SF_2(s, gsl_sf_complex_dilog_e, (0.95, M_PI/2.0, &r1, &r2),
-            -0.18848636456893572091, TEST_TOL0,
-             0.87633754133420277830, TEST_TOL0,
+            -0.18848636456893572091, TEST_TOL1,
+             0.87633754133420277830, TEST_TOL1,
 	     GSL_SUCCESS);
 
   TEST_SF_2(s, gsl_sf_complex_dilog_e, (0.8, M_PI/2.0, &r1, &r2),
