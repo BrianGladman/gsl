@@ -76,7 +76,15 @@ gsl_complex_polar (double r, double theta)
 double
 gsl_complex_arg (gsl_complex z)
 {				/* return arg(z),  -pi < arg(z) <= +pi */
-  return atan2 (GSL_IMAG (z), GSL_REAL (z));
+  double x = GSL_REAL (z);
+  double y = GSL_IMAG (z);
+
+  if (x == 0.0 && y == 0.0)
+    {
+      return 0;
+    }
+
+  return atan2 (y, x);
 }
 
 double
