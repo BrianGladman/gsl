@@ -222,27 +222,27 @@ int test_LU_solve(void)
   s += f;
 
   f = test_LU_solve_dim(hilb4, hilb4_solution, 1024.0 * GSL_DBL_EPSILON);
-  gsl_test(f, "  solve_LU dim=4");
+  gsl_test(f, "  solve_LU hilbert(4)");
   s += f;
 
   f = test_LU_solve_dim(hilb12, hilb12_solution, 0.05);
-  gsl_test(f, "  solve_LU dim=12");
+  gsl_test(f, "  solve_LU hilbert(12)");
   s += f;
 
   f = test_LU_solve_dim(vander2, vander2_solution, 8.0 * GSL_DBL_EPSILON);
-  gsl_test(f, "  solve_LU dim=2");
+  gsl_test(f, "  solve_LU vander(2)");
   s += f;
 
   f = test_LU_solve_dim(vander3, vander3_solution, 64.0 * GSL_DBL_EPSILON);
-  gsl_test(f, "  solve_LU dim=3");
+  gsl_test(f, "  solve_LU vander(3)");
   s += f;
 
   f = test_LU_solve_dim(vander4, vander4_solution, 1024.0 * GSL_DBL_EPSILON);
-  gsl_test(f, "  solve_LU dim=4");
+  gsl_test(f, "  solve_LU vander(4)");
   s += f;
 
   f = test_LU_solve_dim(vander12, vander12_solution, 0.05);
-  gsl_test(f, "  solve_LU dim=12");
+  gsl_test(f, "  solve_LU vander(12)");
   s += f;
 
   return s;
@@ -288,35 +288,35 @@ int test_QR_solve(void)
   int s = 0;
 
   f = test_QR_solve_dim(hilb2, hilb2_solution, 8.0 * GSL_DBL_EPSILON);
-  gsl_test(f, "  solve_QR dim=2");
+  gsl_test(f, "  solve_QR hilbert(2)");
   s += f;
 
   f = test_QR_solve_dim(hilb3, hilb3_solution, 64.0 * GSL_DBL_EPSILON);
-  gsl_test(f, "  solve_QR dim=3");
+  gsl_test(f, "  solve_QR hilbert(3)");
   s += f;
 
   f = test_QR_solve_dim(hilb4, hilb4_solution, 1024.0 * GSL_DBL_EPSILON);
-  gsl_test(f, "  solve_QR dim=4");
+  gsl_test(f, "  solve_QR hilbert(4)");
   s += f;
 
   f = test_QR_solve_dim(hilb12, hilb12_solution, 0.05);
-  gsl_test(f, "  solve_QR dim=12");
+  gsl_test(f, "  solve_QR hilbert(12)");
   s += f;
 
   f = test_QR_solve_dim(vander2, vander2_solution, 8.0 * GSL_DBL_EPSILON);
-  gsl_test(f, "  solve_QR dim=2");
+  gsl_test(f, "  solve_QR vander(2)");
   s += f;
 
   f = test_QR_solve_dim(vander3, vander3_solution, 64.0 * GSL_DBL_EPSILON);
-  gsl_test(f, "  solve_QR dim=3");
+  gsl_test(f, "  solve_QR vander(3)");
   s += f;
 
   f = test_QR_solve_dim(vander4, vander4_solution, 1024.0 * GSL_DBL_EPSILON);
-  gsl_test(f, "  solve_QR dim=4");
+  gsl_test(f, "  solve_QR vander(4)");
   s += f;
 
   f = test_QR_solve_dim(vander12, vander12_solution, 0.05);
-  gsl_test(f, "  solve_QR dim=12");
+  gsl_test(f, "  solve_QR vander(12)");
   s += f;
 
   return s;
@@ -326,7 +326,6 @@ static int
 test_HH_solve_dim(const gsl_matrix * m, const double * actual, double eps)
 {
   int s = 0;
-  int signum;
   size_t i, dim = m->size1;
 
   gsl_vector_int * perm = gsl_vector_int_alloc(dim);
@@ -357,19 +356,19 @@ int test_HH_solve(void)
   int s = 0;
 
   f = test_HH_solve_dim(hilb2, hilb2_solution, 8.0 * GSL_DBL_EPSILON);
-  gsl_test(f, "  solve_HH dim=2");
+  gsl_test(f, "  solve_HH hilbert(2)");
   s += f;
 
   f = test_HH_solve_dim(hilb3, hilb3_solution, 64.0 * GSL_DBL_EPSILON);
-  gsl_test(f, "  solve_HH dim=3");
+  gsl_test(f, "  solve_HH hilbert(3)");
   s += f;
 
   f = test_HH_solve_dim(hilb4, hilb4_solution, 2.0 * 1024.0 * GSL_DBL_EPSILON);
-  gsl_test(f, "  solve_HH dim=4");
+  gsl_test(f, "  solve_HH hilbert(4)");
   s += f;
 
   f = test_HH_solve_dim(hilb12, hilb12_solution, 0.01);
-  gsl_test(f, "  solve_HH dim=12");
+  gsl_test(f, "  solve_HH hilbert(12)");
   s += f;
 
   f = test_HH_solve_dim(vander2, vander2_solution, 8.0 * GSL_DBL_EPSILON);
@@ -490,6 +489,10 @@ int main()
   gsl_matrix_free(hilb4);
   gsl_matrix_free(hilb12);
 
+  gsl_matrix_free(vander2);
+  gsl_matrix_free(vander3);
+  gsl_matrix_free(vander4);
+  gsl_matrix_free(vander12);
 
   return gsl_test_summary();
 }

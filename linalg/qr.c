@@ -20,6 +20,7 @@
 #define REAL double
 
 #include "norm.c"
+#include "permut.c"
 
 /* From SLATEC, qrfac */
 
@@ -192,41 +193,13 @@ gsl_la_solve_QR_impl(const gsl_matrix     * qr_matrix,
   }
   else {
     const size_t N = qr_matrix->size1;
-    size_t i,j,n;
-    int k;
+    size_t n;
+    
+    /* compute sol = Q^T b */
 
-    /* Copy rhs into solution */
+    gsl_la_QTvec_impl (qr_matrix, rhs, solution);
 
-    for(k=0; k<N; k++) {
-      gsl_vector_set(solution, k, gsl_vector_get(rhs, k));
-    }
-
-    for (j = 0; j < N; j++)
-      { 
-        /* compute Q^T b */
-
-        REAL t, sum = 0.0;
-
-        for (i = j; i < N; i++)
-          {
-            REAL qij = gsl_matrix_get(qr_matrix, i, j);
-            REAL bi = gsl_vector_get(solution, i);
-
-            sum += qij * bi ;
-          }
-
-        t = -sum / gsl_matrix_get(qr_matrix, j, j);
-
-        for (i = j; i < N; i++)
-          {
-            REAL qij = gsl_matrix_get(qr_matrix, i, j);
-            REAL bi = gsl_vector_get(solution, i);
-
-            gsl_vector_set(solution, i, bi + t * qij) ;
-          }
-      }
-
-    /* Solve R z = Q^T b */
+    /* Solve R z = sol, storing z inplace in sol */
 
     for (n = N ; n > 0; n--)
       {
@@ -247,13 +220,73 @@ gsl_la_solve_QR_impl(const gsl_matrix     * qr_matrix,
         gsl_vector_set(solution, i, (bi - sum)/di);
       }
 
-    /* Apply permutation to solution */
+    /* Apply permutation to solution in place */
+
+    invpermute(permutation, solution);
+
+    return GSL_SUCCESS;
+  }
+}
+
+int
+gsl_la_QTvec_impl (const gsl_matrix * qr_matrix, 
+                   const gsl_vector * v, 
+                   gsl_vector * result)
+{
+  if(qr_matrix == 0 || v == 0 || result == 0) {
+    return GSL_EFAULT;
+  }
+  else if(v->data == 0 || result->data == 0) {
+    return GSL_EFAULT;
+  }
+  else if(qr_matrix->size1 != qr_matrix->size2) {
+    return GSL_ENOTSQR;
+  }
+  else if(qr_matrix->size1 != v->size
+          || qr_matrix->size1 != result->size)
+    {
+      return GSL_EBADLEN;
+    }
+  else if(qr_matrix->size1 == 0) {
+    return GSL_SUCCESS; /* FIXME: dumb case */
+  }
+  else {
+    const size_t N = qr_matrix->size1;
+    size_t i,j;
+    int k;
+
+    /* Copy rhs into solution */
+
 
     for(k=0; k<N; k++) {
-      int perm_index_k = gsl_vector_int_get(permutation, k);
-      gsl_vector_set(solution, perm_index_k, gsl_vector_get(solution, k));
+      gsl_vector_set(result, k, gsl_vector_get(v, k));
     }
 
+    /* compute Q^T v */
+
+    for (j = 0; j < N; j++)
+      { 
+        
+        REAL t, sum = 0.0;
+
+        for (i = j; i < N; i++)
+          {
+            REAL qij = gsl_matrix_get(qr_matrix, i, j);
+            REAL si = gsl_vector_get(result, i);
+
+            sum += qij * si ;
+          }
+
+        t = -sum / gsl_matrix_get(qr_matrix, j, j);
+
+        for (i = j; i < N; i++)
+          {
+            REAL qij = gsl_matrix_get(qr_matrix, i, j);
+            REAL si = gsl_vector_get(result, i);
+
+            gsl_vector_set(result, i, si + t * qij) ;
+          }
+      }
     return GSL_SUCCESS;
   }
 }
@@ -444,6 +477,41 @@ gsl_la_qform_QR_impl (const gsl_matrix * qr, gsl_matrix * q)
           }
       }
     free(wa);
+    return GSL_SUCCESS;
+  }
+}
+
+int
+gsl_la_rform_QR_impl (const gsl_matrix * qr, const gsl_vector * rdiag,
+                      gsl_matrix * r)
+{
+  if(qr == 0 || r == 0 || rdiag == 0) {
+    return GSL_EFAULT;
+  }
+  else if(qr->size1 != qr->size2) {
+    return GSL_ENOTSQR;
+  }
+  else if(r->size1 != qr->size2 || rdiag->size != qr->size2) {
+    return GSL_EBADLEN;
+  }
+  else if(qr->size1 == 0) {
+    return GSL_SUCCESS; /* FIXME: what to do with this idiot case ? */
+  }
+  else {
+    const int N = qr->size1;
+    int i, j;
+    
+    for (i = 0; i < N; i++)
+      {
+        for (j = 0; j < i; j++)
+          gsl_matrix_set(r, i, j, 0.0);
+
+        gsl_matrix_set(r, i, i, gsl_vector_get (rdiag, i));
+        
+        for (j = i+1 ; j < N; j++)
+          gsl_matrix_set(r, i, j, gsl_matrix_get(qr, i, j));
+      }
+    
     return GSL_SUCCESS;
   }
 }

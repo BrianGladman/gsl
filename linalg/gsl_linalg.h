@@ -96,6 +96,15 @@ gsl_la_solve_QR_impl(const gsl_matrix     * qr_matrix,
 int
 gsl_la_qform_QR_impl (const gsl_matrix * qr, gsl_matrix * q);
 
+int
+gsl_la_rform_QR_impl (const gsl_matrix * qr, const gsl_vector * rdiag,
+                      gsl_matrix * r);
+
+
+int
+gsl_la_QTvec_impl (const gsl_matrix * qr_matrix, 
+                   const gsl_vector * v, 
+                   gsl_vector * result);
 
 /* Linear Solve Using Householder Transformations
  *
