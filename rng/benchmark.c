@@ -12,6 +12,14 @@ int sum;
 int
 main (void)
 {
+  benchmark(gsl_rng_ranlux);
+  benchmark(gsl_rng_ranlux389);
+  benchmark(gsl_rng_ranlxs0);
+  benchmark(gsl_rng_ranlxs1);
+  benchmark(gsl_rng_ranlxs2);
+  benchmark(gsl_rng_ranlxd1);
+  benchmark(gsl_rng_ranlxd2);
+
   benchmark(gsl_rng_slatec);
   benchmark(gsl_rng_gfsr4);
   benchmark(gsl_rng_cmrg);
@@ -45,8 +53,7 @@ main (void)
   benchmark(gsl_rng_random_libc5);
   benchmark(gsl_rng_randu);
   benchmark(gsl_rng_ranf);
-  benchmark(gsl_rng_ranlux389);
-  benchmark(gsl_rng_ranlux);
+
   benchmark(gsl_rng_ranmar);
   benchmark(gsl_rng_taus);
   benchmark(gsl_rng_transputer);
@@ -96,9 +103,8 @@ benchmark (const gsl_rng_type * T)
   t2 = (end - start) / (double) CLOCKS_PER_SEC;
 
 
-  printf ("%20s %.2e random ints (%.2f%% for doubles) per second\n",
-	  gsl_rng_name (r),
-	  i / t1, 100*(d/t2)/(i/t1));
+  printf ("%6.0f k ints/sec, %6.0f k doubles/sec, %s\n",
+	  i / t1 / 1000.0, d / t2 / 1000.0, gsl_rng_name (r));
 
   gsl_rng_free (r);
 }

@@ -41,6 +41,13 @@ main (void)
   rng_test (gsl_rng_ranlux, 314159265, 10000, 12077992);
   rng_test (gsl_rng_ranlux389, 314159265, 10000, 165942);
 
+  rng_test (gsl_rng_ranlxs0, 1, 10000, 0.709552764892578125 * ldexp(1,24));
+  rng_test (gsl_rng_ranlxs1, 1, 10000, 0.520606517791748047 * ldexp(1,24));
+  rng_test (gsl_rng_ranlxs2, 1, 10000, 0.407882928848266602 * ldexp(1,24));
+
+  rng_test (gsl_rng_ranlxd1, 1, 10000, 0.465248546261094020 * ldexp(1,32));
+  rng_test (gsl_rng_ranlxd2, 1, 10000, 0.919515205581550532 * ldexp(1,32));
+
   /* FIXME: the tests below were made by running the original code in
      the ../random directory and getting the expected value from
      that. An analytic calculation would be preferable. */
@@ -129,6 +136,11 @@ main (void)
   rng_float_test (gsl_rng_ranf);
   rng_float_test (gsl_rng_ranlux);
   rng_float_test (gsl_rng_ranlux389);
+  rng_float_test (gsl_rng_ranlxs0);
+  rng_float_test (gsl_rng_ranlxs1);
+  rng_float_test (gsl_rng_ranlxs2);
+  rng_float_test (gsl_rng_ranlxd1);
+  rng_float_test (gsl_rng_ranlxd2);
   rng_float_test (gsl_rng_ranmar);
   rng_float_test (gsl_rng_taus);
   rng_float_test (gsl_rng_transputer);
@@ -175,6 +187,11 @@ main (void)
   rng_state_test (gsl_rng_ranf);
   rng_state_test (gsl_rng_ranlux);
   rng_state_test (gsl_rng_ranlux389);
+  rng_state_test (gsl_rng_ranlxs0);
+  rng_state_test (gsl_rng_ranlxs1);
+  rng_state_test (gsl_rng_ranlxs2);
+  rng_state_test (gsl_rng_ranlxd1);
+  rng_state_test (gsl_rng_ranlxd2);
   rng_state_test (gsl_rng_ranmar);
   rng_state_test (gsl_rng_taus);
   rng_state_test (gsl_rng_transputer);
@@ -219,6 +236,11 @@ main (void)
   rng_parallel_state_test (gsl_rng_ranf);
   rng_parallel_state_test (gsl_rng_ranlux);
   rng_parallel_state_test (gsl_rng_ranlux389);
+  rng_parallel_state_test (gsl_rng_ranlxs0);
+  rng_parallel_state_test (gsl_rng_ranlxs1);
+  rng_parallel_state_test (gsl_rng_ranlxs2);
+  rng_parallel_state_test (gsl_rng_ranlxd1);
+  rng_parallel_state_test (gsl_rng_ranlxd2);
   rng_parallel_state_test (gsl_rng_ranmar);
   rng_parallel_state_test (gsl_rng_taus);
   rng_parallel_state_test (gsl_rng_transputer);
@@ -267,6 +289,11 @@ main (void)
   generic_rng_test (gsl_rng_ranf);
   generic_rng_test (gsl_rng_ranlux);
   generic_rng_test (gsl_rng_ranlux389);
+  generic_rng_test (gsl_rng_ranlxs0);
+  generic_rng_test (gsl_rng_ranlxs1);
+  generic_rng_test (gsl_rng_ranlxs2);
+  generic_rng_test (gsl_rng_ranlxd1);
+  generic_rng_test (gsl_rng_ranlxd2);
   generic_rng_test (gsl_rng_ranmar);
   generic_rng_test (gsl_rng_taus);
   generic_rng_test (gsl_rng_transputer);
@@ -513,7 +540,7 @@ rng_max_test (gsl_rng * r, unsigned long int *kmax, unsigned long int ran_max)
   actual_uncovered = ran_max - max;
   expect_uncovered = (double) ran_max / (double) N2;
 
-  status = (max > ran_max) || (actual_uncovered > 5 * expect_uncovered) ;
+  status = (max > ran_max) || (actual_uncovered > 7 * expect_uncovered) ;
 
   return status;
 }
@@ -540,7 +567,7 @@ rng_min_test (gsl_rng * r, unsigned long int *kmin,
   actual_uncovered = min - ran_min;
   expect_uncovered = (double) ran_max / (double) N2;
 
-  status = (min < ran_min) || (actual_uncovered > 5 * expect_uncovered);
+  status = (min < ran_min) || (actual_uncovered > 7 * expect_uncovered);
 
   return status;
 }

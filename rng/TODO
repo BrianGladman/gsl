@@ -64,3 +64,5 @@ simulation , 1996, Page 360, from ACM
 14. Look at this paper: I. Vattulainen, "Framework for testing random numbers
     in parallel calculations", Phys. Rev. E, 59, 6, June 1999, p7200
 
+15. Check that RANLXS will work on machines with non-standard with of
+float/dbl (original has checks for DBL_MANT_DIG ..)
