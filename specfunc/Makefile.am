@@ -36,23 +36,35 @@ libgslspecfunc_a_SOURCES = 	\
 	airy.c			\
 	airy_der.c		\
 	bessel.c		\
+	bessel.h                \
 	bessel_I0.c		\
+	bessel_I0_impl.h	\
 	bessel_I1.c		\
+	bessel_I1_impl.h	\
 	bessel_In.c		\
+	bessel_In_impl.h	\
 	bessel_J0.c		\
+	bessel_J0_impl.h	\
 	bessel_J1.c		\
+	bessel_J1_impl.h	\
 	bessel_Jn.c		\
+	bessel_Jn_impl.h	\
 	bessel_K0.c		\
+	bessel_K0_impl.h	\
 	bessel_K1.c		\
+	bessel_K1_impl.h	\
 	bessel_Kn.c		\
+	bessel_Kn_impl.h	\
 	bessel_Y0.c		\
+	bessel_Y0_impl.h	\
 	bessel_Y1.c		\
+	bessel_Y1_impl.h	\
 	bessel_Yn.c		\
 	bessel_amp_phase.c	\
         bessel_amp_phase.h      \
 	bessel_j.c		\
 	chebyshev.c		\
-	coulomb.c		\
+#	coulomb.c		\ doesn't work yet
 	dilog.c			\
 	erfc.c			\
 	expint.c		\
@@ -66,8 +78,11 @@ libgslspecfunc_a_SOURCES = 	\
 	psi.c			\
         recurse.h               \
 	shint.c			\
+	expint_impl.h		\
+	shint_impl.h		\
 	sig2lamp.c		\
 	sinint.c		\
+	sinint_impl.h		\
 	t-erf.c			\
 	trig.c
 
