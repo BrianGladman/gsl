@@ -97,10 +97,10 @@ Copies of this configuration are created, copied and destroyed
 internally using the standard library functions @code{malloc},
 @code{memcpy} and @code{free}.  The function pointers @var{copyfunc},
 @var{copy_constructor} and @var{destructor} should be null pointers in
-fixed-size mode.  In the variable-size mode the functions @var{copyfunc}
-, @var{copy_constructor} and @var{destructor} are used to create, copy
-and destroy configurations internally.  The variable @var{element_size}
-should be zero in the variable-size mode.
+fixed-size mode.  In the variable-size mode the functions
+@var{copyfunc}, @var{copy_constructor} and @var{destructor} are used to
+create, copy and destroy configurations internally.  The variable
+@var{element_size} should be zero in the variable-size mode.
 
 The @var{params} structure (described below) controls the run by
 providing the temperature schedule and other tunable parameters to the

@@ -21,4 +21,7 @@ A description of the bug behaviour
 A short program which exercises the bug
 @end itemize
 @noindent
+It is also useful if you can report whether the same problem occurs
+when the library is compiled without optimization.
+
 Thank you.
