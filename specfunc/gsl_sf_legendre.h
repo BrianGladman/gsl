@@ -26,6 +26,7 @@ int gsl_sf_legendre_Pl_array_e(int lmax, double x, double * result_array);
  *
  * exceptions: none
  */
+
 double gsl_sf_legendre_P1(double x);
 double gsl_sf_legendre_P2(double x);
 double gsl_sf_legendre_P3(double x);
