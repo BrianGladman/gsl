@@ -1554,7 +1554,7 @@ cblas_dtrmm (const enum CBLAS_ORDER Order, const enum CBLAS_SIDE Side,
 #undef BASE
 
 }
-#ifdef 0
+
 void
 cblas_ctrmm (const enum CBLAS_ORDER Order, const enum CBLAS_SIDE Side,
 	     const enum CBLAS_UPLO Uplo, const enum CBLAS_TRANSPOSE TransA,
@@ -1579,7 +1579,7 @@ cblas_ztrmm (const enum CBLAS_ORDER Order, const enum CBLAS_SIDE Side,
 #undef BASE
 }
 
-
+#ifdef 0
 /* TRSM */
 
 void
