@@ -1,3 +1,12 @@
+Mon Mar  1 19:38:16 1999  Brian Gough  <bjg@netsci.freeserve.co.uk>
+
+	* test_source.c: added tests for gsl_vector_ptr with and without
+ 	stride
+
+	* gsl_vector_char.h: added missing code to gsl_vector_char_ptr for
+ 	stride in char case.
+	
+
 Sun Nov  8 18:39:40 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
 	* test_io.c, test_complex_io.c: split out the printf/scanf

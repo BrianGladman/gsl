@@ -1,3 +1,7 @@
+Mon Mar  1 20:05:52 1999  Brian Gough  <bjg@netsci.freeserve.co.uk>
+
+	* rowcol_source.c: fix rowcol to use strides
+
 1998-11-09    <bjg@ancho.lanl.gov>
 
 	* test_source.c, test_complex_source.c: use macros to determine if

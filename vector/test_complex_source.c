@@ -19,33 +19,95 @@ FUNCTION (test, func) (void)
     {
       BASE x;
       GSL_REAL (x) = i;
-      GSL_IMAG (x) = i + 1;
+      GSL_IMAG (x) = i + 1234;
       FUNCTION (gsl_vector, set) (v, i, x);
     };
 
-
   status = 0;
+
   for (i = 0; i < N; i++)
     {
-      if (v->data[2 * i] != (ATOMIC) i || v->data[2 * i + 1] != (ATOMIC) (i + 1))
+      if (v->data[2 * i] != (ATOMIC) i || v->data[2 * i + 1] != (ATOMIC) (i + 1234))
 	status = 1;
     };
   
   gsl_test (status, NAME (gsl_vector) "_set writes into array correctly");
 
-  
   status = 0;
 
   for (i = 0; i < N; i++)
     {
       BASE x, y;
       GSL_REAL (x) = i;
-      GSL_IMAG (x) = i + 1;
+      GSL_IMAG (x) = i + 1234;
       y = FUNCTION (gsl_vector, get) (v, i);
       if (!GSL_COMPLEX_EQ (x, y))
 	status = 1;
     };
   gsl_test (status, NAME (gsl_vector) "_get reads from array correctly");
+
+  status = 0;
+
+  for (i = 0; i < N; i++)
+    {
+      BASE x, y;
+      GSL_REAL (x) = i;
+      GSL_IMAG (x) = i + 1234;
+      y = *FUNCTION (gsl_vector, ptr) (v, i);
+      if (!GSL_COMPLEX_EQ (x, y))
+	status = 1;
+    };
+  gsl_test (status, NAME (gsl_vector) "_ptr accesses array correctly");
+
+  /* Now set stride to 2 */
+
+  v->stride = 2 ;
+
+  status = 0;
+
+  for (i = 0; i < N / 2; i++)
+    {
+      BASE x, y;
+      GSL_REAL (x) = 2 * i;
+      GSL_IMAG (x) = 2 * i + 1234;
+      y = FUNCTION (gsl_vector, get) (v, i);
+      if (!GSL_COMPLEX_EQ (x, y))
+	status = 1;
+    };
+  gsl_test (status, NAME (gsl_vector) "_get reads from array correctly with stride");
+
+  status = 0;
+
+  for (i = 0; i < N / 2; i++)
+    {
+      BASE x, y;
+      GSL_REAL (x) = 2 * i;
+      GSL_IMAG (x) = 2 * i + 1234;
+      y = *FUNCTION (gsl_vector, ptr) (v, i);
+      if (!GSL_COMPLEX_EQ (x, y))
+	status = 1;
+    };
+  gsl_test (status, NAME (gsl_vector) "_ptr accesses array correctly with stride");
+
+
+  for (i = 0; i < N / 2; i++)
+    {
+      BASE x;
+      GSL_REAL (x) = i ;
+      GSL_IMAG (x) = i + 1234;
+      FUNCTION (gsl_vector, set) (v, i, x);
+    };
+
+  status = 0;
+
+  for (i = 0; i < N / 2; i++)
+    {
+      if (v->data[2 * 2 * i] != (ATOMIC) i || v->data[2 * 2 * i + 1] != (ATOMIC) (i + 1234))
+	status = 1;
+    };
+  
+  gsl_test (status, NAME (gsl_vector) "_set writes into array correctly with stride");
+
   
   FUNCTION (gsl_vector, free) (v);	/* free whatever is in v */
 
@@ -111,12 +173,9 @@ void
 FUNCTION (test, trap) (void)
 {
   TYPE (gsl_vector) * vc = FUNCTION (gsl_vector, alloc) (N);
-  BASE z =
-  {
-    {1.2, 3.4}};
-  BASE z1 =
-  {
-    {4.5, 6.7}};
+  BASE z = {{1.2, 3.4}};
+  BASE z1 = {{4.5, 6.7}};
+  BASE *zp ;
   size_t j = 0;
 
   status = 0;
@@ -159,4 +218,27 @@ FUNCTION (test, trap) (void)
 	    NAME (gsl_vector) "_get returns zero real at upper bound");
   gsl_test (GSL_IMAG (z1) != 0,
 	    NAME (gsl_vector) "_get returns zero imag at upper bound");
+
+  status = 0;
+  zp = FUNCTION (gsl_vector, ptr) (vc, j - 1);
+  gsl_test (!status,
+	    NAME (gsl_vector) "_ptr traps index below lower bound");
+  gsl_test (zp != 0,
+	    NAME (gsl_vector) "_ptr returns zero below lower bound");
+
+  status = 0;
+  zp = FUNCTION (gsl_vector, ptr) (vc, N + 1);
+  gsl_test (!status,
+	    NAME (gsl_vector) "_ptr traps index above upper bound");
+  gsl_test (zp != 0,
+	    NAME (gsl_vector) "_ptr returns zero above upper bound");
+
+  status = 0;
+  zp = FUNCTION (gsl_vector, ptr) (vc, N);
+  gsl_test (!status, NAME (gsl_vector) "_ptr traps index at upper bound");
+  gsl_test (zp != 0,
+	    NAME (gsl_vector) "_ptr returns zero at upper bound");
+
 }
+
+
