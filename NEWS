@@ -2,6 +2,10 @@ We need to do a better job with the NEWS file!
 
 * Will be new in gsl-0.3g:
 
+** The random number generators have a completely new thread-safe
+interface and have moved from the random directory to the rng
+directory. Any program using random numbers will have to be updated.
+
 ** The FFT allocation functions now return a pointer to a newly allocated
    wavetable struct, instead of taking the pointer to an existing struct
    as an argument. 

@@ -156,7 +156,7 @@ allowing wrappers to be written for very high level languages.
 
 @c Section on FFTs
 @node FFTs, Root finding, Statistics, Top
-@chapter FFTs
+@chapter Fast Fourier Transforms (FFTs)
 @include fft.texi
 
 @c Section on root finding

@@ -8,3 +8,15 @@ prevent the high bits being zero). DONE
 we rely on 32 bit arithmetic, sometimes it is more complicated
 (e.g. the Tausworthe generator relies on 32 bit arithmetic at all
 stages). DONE
+
+3. Add reimplementations of the Numerical Recipes generators, since
+lots of people use those.
+
+4. Add functions for getting an integer in the range [0,N] or [1,N],
+like rolling dice. Be aware that division might not make a smooth
+distribution, and a small modulus might be correlated for some generators.
+
+5. provide a RAND_SCALE precomputed scale factor for getting [0,1] In
+numerical recipes they divide by (MAX+1) which we can't handle in our
+current scheme. They also replace 1 by 1-eps where eps=1.2e-7. Yuk.
+
