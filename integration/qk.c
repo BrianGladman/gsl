@@ -3,14 +3,15 @@
 #include <math.h>
 #include <gsl_integration.h>
 #include "integration.h"
-#include "err.h"
+#include "err.c"
 
 void
-qk (const int n, const double xgk[], const double wg[], const double wgk[],
-    double fv1[], double fv2[],
-    const gsl_function * f, double a, double b,
-    double *result, double *abserr,
-    double *resabs, double *resasc)
+gsl_integration_qk (const int n, 
+                    const double xgk[], const double wg[], const double wgk[],
+                    double fv1[], double fv2[],
+                    const gsl_function * f, double a, double b,
+                    double *result, double *abserr,
+                    double *resabs, double *resasc)
 {
 
   const double center = 0.5 * (a + b);

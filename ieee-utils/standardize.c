@@ -1,7 +1,7 @@
-#include <config.h>
-#include "ieee_utils.h"
+static void make_float_bigendian (float * x);
+static void make_double_bigendian (double * x);
 
-void
+static void
 make_float_bigendian (float * x)
 {
   union { 
@@ -19,7 +19,7 @@ make_float_bigendian (float * x)
   *x=v.f ;
 }
 
-void
+static void
 make_double_bigendian (double * x)
 {
   union { 

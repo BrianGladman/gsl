@@ -55,5 +55,5 @@ gsl_integration_qk21 (const gsl_function * f, double a, double b,
 		      double *resabs, double *resasc)
 {
   double fv1[11], fv2[11];
-  qk (11, xgk, wg, wgk, fv1, fv2, f, a, b, result, abserr, resabs, resasc);
+  gsl_integration_qk (11, xgk, wg, wgk, fv1, fv2, f, a, b, result, abserr, resabs, resasc);
 }

@@ -3,8 +3,6 @@
 #include <math.h>
 #include <gsl_ieee_utils.h>
 
-#include "ieee_utils.h"
-
 /* A table of sign characters, 0=positive, 1=negative. We print a space
    instead of a unary + sign for compatibility with bc */
 

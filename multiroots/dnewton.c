@@ -26,12 +26,12 @@ typedef struct
   }
 dnewton_state_t;
 
-int dnewton_alloc (void * vstate, size_t n);
-int dnewton_set (void * vstate, gsl_multiroot_function * function, gsl_vector * x, gsl_vector * f, gsl_vector * dx);
-int dnewton_iterate (void * vstate, gsl_multiroot_function * function, gsl_vector * x, gsl_vector * f, gsl_vector * dx);
-void dnewton_free (void * vstate);
+static int dnewton_alloc (void * vstate, size_t n);
+static int dnewton_set (void * vstate, gsl_multiroot_function * function, gsl_vector * x, gsl_vector * f, gsl_vector * dx);
+static int dnewton_iterate (void * vstate, gsl_multiroot_function * function, gsl_vector * x, gsl_vector * f, gsl_vector * dx);
+static void dnewton_free (void * vstate);
 
-int
+static int
 dnewton_alloc (void * vstate, size_t n)
 {
   dnewton_state_t * state = (dnewton_state_t *) vstate;
@@ -73,7 +73,7 @@ dnewton_alloc (void * vstate, size_t n)
   return GSL_SUCCESS;
 }
 
-int
+static int
 dnewton_set (void * vstate, gsl_multiroot_function * function, gsl_vector * x, gsl_vector * f, gsl_vector * dx)
 {
   dnewton_state_t * state = (dnewton_state_t *) vstate;
@@ -91,7 +91,7 @@ dnewton_set (void * vstate, gsl_multiroot_function * function, gsl_vector * x, g
   return GSL_SUCCESS;
 }
 
-int
+static int
 dnewton_iterate (void * vstate, gsl_multiroot_function * function, gsl_vector * x, gsl_vector * f, gsl_vector * dx)
 {
   dnewton_state_t * state = (dnewton_state_t *) vstate;
@@ -124,7 +124,7 @@ dnewton_iterate (void * vstate, gsl_multiroot_function * function, gsl_vector * 
 }
 
 
-void
+static void
 dnewton_free (void * vstate)
 {
   dnewton_state_t * state = (dnewton_state_t *) vstate;

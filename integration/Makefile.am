@@ -10,7 +10,6 @@ libgslintegration_a_SOURCES = \
 	qags.c qags_impl.c \
 	qagi.c qagiu.c qagil.c \
 	qagp.c qagp_impl.c \
-	err.c err.h \
 	workspace.c \
 	qcheb.c qawc.c \
 	qmomo.c qaws.c \
@@ -18,8 +17,7 @@ libgslintegration_a_SOURCES = \
 	qawf.c 
 
 pkginclude_HEADERS = gsl_integration.h
-noinst_HEADERS = integration.h qpsrt.c qpsrt2.c qelg.c qc25c.c qc25s.c qc25f.c ptsort.c util.c 
-
+noinst_HEADERS = integration.h qpsrt.c qpsrt2.c qelg.c qc25c.c qc25s.c qc25f.c ptsort.c util.c err.c
 
 TESTS = test
 check_PROGRAMS = test

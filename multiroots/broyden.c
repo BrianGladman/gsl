@@ -37,13 +37,13 @@ typedef struct
   }
 broyden_state_t;
 
-int broyden_alloc (void *vstate, size_t n);
-int broyden_set (void *vstate, gsl_multiroot_function * function, gsl_vector * x, gsl_vector * f, gsl_vector * dx);
-int broyden_iterate (void *vstate, gsl_multiroot_function * function, gsl_vector * x, gsl_vector * f, gsl_vector * dx);
-void broyden_free (void *vstate);
+static int broyden_alloc (void *vstate, size_t n);
+static int broyden_set (void *vstate, gsl_multiroot_function * function, gsl_vector * x, gsl_vector * f, gsl_vector * dx);
+static int broyden_iterate (void *vstate, gsl_multiroot_function * function, gsl_vector * x, gsl_vector * f, gsl_vector * dx);
+static void broyden_free (void *vstate);
 
 
-int
+static int
 broyden_alloc (void *vstate, size_t n)
 {
   broyden_state_t *state = (broyden_state_t *) vstate;
@@ -179,7 +179,7 @@ broyden_alloc (void *vstate, size_t n)
   return GSL_SUCCESS;
 }
 
-int
+static int
 broyden_set (void *vstate, gsl_multiroot_function * function, gsl_vector * x, gsl_vector * f, gsl_vector * dx)
 {
   broyden_state_t *state = (broyden_state_t *) vstate;
@@ -206,7 +206,7 @@ broyden_set (void *vstate, gsl_multiroot_function * function, gsl_vector * x, gs
   return GSL_SUCCESS;
 }
 
-int
+static int
 broyden_iterate (void *vstate, gsl_multiroot_function * function, gsl_vector * x, gsl_vector * f, gsl_vector * dx)
 {
   broyden_state_t *state = (broyden_state_t *) vstate;
@@ -391,7 +391,7 @@ new_step:
 }
 
 
-void
+static void
 broyden_free (void *vstate)
 {
   broyden_state_t *state = (broyden_state_t *) vstate;

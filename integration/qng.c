@@ -5,7 +5,7 @@
 #include <gsl_errno.h>
 #include <gsl_integration.h>
 
-#include "err.h"
+#include "err.c"
 #include "qng.h"
 
 int

@@ -1,14 +1,8 @@
-void qk (int n, const double xgk[], const double wg[], const double wgk[],
+void gsl_integration_qk (int n, const double xgk[], const double wg[], const double wgk[],
 	 double fv1[], double fv2[],
 	 const gsl_function *f, double a, double b,
 	 double * result, double * abserr, 
 	 double * resabs, double * resasc);
-
-void qki (int n, const double xgk[], const double wg[], const double wgk[],
-	  double fv1[], double fv2[],
-	  const gsl_function *f, double a, double b,
-	  double * result, double * abserr, 
-	  double * resabs, double * resasc);
 
 int
 gsl_integration_qag_impl (const gsl_function *f,

@@ -1,6 +1,13 @@
 #include <config.h>
 #include <gsl_ieee_utils.h>
-#include "ieee_utils.h"
+
+#include "endian.c"
+#include "standardize.c"
+
+static void sprint_nybble(int i, char *s) ;
+static void sprint_byte(int i, char *s) ;
+static int determine_ieee_type (int non_zero, int exponent, int max_exponent);
+
 
 /* For the IEEE float format the bits are found from the following
    masks,
@@ -121,7 +128,7 @@ static char nybble[16][5]={ /* include space for the \0 */
   "1100", "1101", "1110", "1111"
 }  ;
 	  
-void
+static void
 sprint_nybble(int i, char *s)
 {
   char *c ;
@@ -129,7 +136,7 @@ sprint_nybble(int i, char *s)
   *s=c[0] ;  *(s+1)=c[1] ;  *(s+2)=c[2] ;  *(s+3)=c[3] ;
 } 
 
-void
+static void
 sprint_byte(int i, char *s)
 {
   char *c ;
@@ -139,7 +146,7 @@ sprint_byte(int i, char *s)
   *(s+4)=c[0] ;  *(s+5)=c[1] ;  *(s+6)=c[2] ;  *(s+7)=c[3] ;
 } 
 
-int 
+static int 
 determine_ieee_type (int non_zero, int exponent, int max_exponent)
 {
   if (exponent == max_exponent)

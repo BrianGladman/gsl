@@ -18,12 +18,12 @@ typedef struct
   }
 newton_state_t;
 
-int newton_alloc (void * vstate, size_t n);
-int newton_set (void * vstate, gsl_multiroot_function_fdf * fdf, gsl_vector * x, gsl_vector * f, gsl_matrix * J, gsl_vector * dx);
-int newton_iterate (void * vstate, gsl_multiroot_function_fdf * fdf, gsl_vector * x, gsl_vector * f, gsl_matrix * J, gsl_vector * dx);
-void newton_free (void * vstate);
+static int newton_alloc (void * vstate, size_t n);
+static int newton_set (void * vstate, gsl_multiroot_function_fdf * fdf, gsl_vector * x, gsl_vector * f, gsl_matrix * J, gsl_vector * dx);
+static int newton_iterate (void * vstate, gsl_multiroot_function_fdf * fdf, gsl_vector * x, gsl_vector * f, gsl_matrix * J, gsl_vector * dx);
+static void newton_free (void * vstate);
 
-int
+static int
 newton_alloc (void * vstate, size_t n)
 {
   newton_state_t * state = (newton_state_t *) vstate;
@@ -53,7 +53,7 @@ newton_alloc (void * vstate, size_t n)
   return GSL_SUCCESS;
 }
 
-int 
+static int 
 newton_set (void * vstate, gsl_multiroot_function_fdf * FDF, gsl_vector * x, gsl_vector * f, gsl_matrix * J, gsl_vector * dx)
 {
   newton_state_t * state = (newton_state_t *) vstate;
@@ -72,7 +72,7 @@ newton_set (void * vstate, gsl_multiroot_function_fdf * FDF, gsl_vector * x, gsl
   return GSL_SUCCESS;
 }
 
-int
+static int
 newton_iterate (void * vstate, gsl_multiroot_function_fdf * fdf, gsl_vector * x, gsl_vector * f, gsl_matrix * J, gsl_vector * dx)
 {
   newton_state_t * state = (newton_state_t *) vstate;
@@ -103,7 +103,7 @@ newton_iterate (void * vstate, gsl_multiroot_function_fdf * fdf, gsl_vector * x,
 }
 
 
-void
+static void
 newton_free (void * vstate)
 {
   newton_state_t * state = (newton_state_t *) vstate;
