@@ -243,7 +243,7 @@ RSC=rc.exe
 # PROP Intermediate_Dir "$release"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /Op- /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /YX /FD /c
-# ADD CPP /nologo ${release_options} /Za /W3 /GX /O2 /Op- /I "..\\msvc" /I "." /I ".." /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /YX /FD /c
+# ADD CPP /nologo ${release_options} /Za /W3 /GX /O2 /Op- /I "..\\msvc" /I "..\\gsl" /I "." /I ".." /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /YX /FD /c
 # ADD BASE RSC /l 0x809 /d "NDEBUG"
 # ADD RSC /l 0x809 /d "NDEBUG"
 BSC32=bscmake.exe
@@ -266,7 +266,7 @@ LIB32=link.exe -lib
 # PROP Intermediate_Dir "$debug"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /Z7 /Od /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /YX /FD /GZ  /c
-# ADD CPP /nologo ${debug_options} /Za /W3 /Gm /GX /Z7 /Od  /I "..\\msvc" /I "." /I ".." /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /YX /FD /GZ  /c
+# ADD CPP /nologo ${debug_options} /Za /W3 /Gm /GX /Z7 /Od  /I "..\\msvc" /I "..\\gsl" /I "." /I ".." /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /YX /FD /GZ  /c
 # ADD BASE RSC /l 0x809 /d "_DEBUG"
 # ADD RSC /l 0x809 /d "_DEBUG"
 BSC32=bscmake.exe
@@ -328,7 +328,7 @@ RSC=rc.exe
 # PROP Intermediate_Dir "$release"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo ${release_options} /W3 /GX /O2 /Op- /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "GSL_EXPORTS" /YX /FD /c
-# ADD CPP /nologo  ${release_options} /Za /W3 /GX /O2 /Op- /I "..\\msvc" /I "." /I ".." /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "GSL_EXPORTS" /YX /FD /c
+# ADD CPP /nologo  ${release_options} /Za /W3 /GX /O2 /Op- /I "..\\msvc" /I "..\\gsl" /I "." /I ".." /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "GSL_EXPORTS" /YX /FD /c
 # ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x809 /d "NDEBUG"
@@ -353,7 +353,7 @@ LINK32=link.exe
 # PROP Intermediate_Dir "$debug"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo  ${debug_options} /W3 /Gm /GX /Z7 /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "GSL_EXPORTS" /YX /FD /GZ /c
-# ADD CPP /nologo  ${debug_options} /Za /W3 /Gm /GX /Z7 /Od /I "..\\msvc" /I "." /I ".." /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "GSL_EXPORTS" /FD /LDd /GZ /c
+# ADD CPP /nologo  ${debug_options} /Za /W3 /Gm /GX /Z7 /Od /I "..\\msvc" /I "..\\gsl" /I "." /I ".." /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "GSL_EXPORTS" /FD /LDd /GZ /c
 # SUBTRACT CPP /YX
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
@@ -419,7 +419,7 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /Op- /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /c
-# ADD CPP /nologo ${release_options} /Za /W3 /GX /O2 /Op- /I "..\\msvc" /I "." /I ".." /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" ${app_options} /FD /c
+# ADD CPP /nologo ${release_options} /Za /W3 /GX /O2 /Op- /I "..\\msvc" /I "..\\gsl" /I "." /I ".." /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" ${app_options} /FD /c
 # SUBTRACT CPP /YX
 # ADD BASE RSC /l 0x809 /d "NDEBUG"
 # ADD RSC /l 0x809 /d "NDEBUG"
@@ -444,7 +444,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /Z7 /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /GZ  /c
-# ADD CPP /nologo ${debug_options} /Za /W3 /Gm /GX /Z7 /Od /I "..\\msvc" /I "." /I ".." /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" ${app_options} /FD /GZ  /c
+# ADD CPP /nologo ${debug_options} /Za /W3 /Gm /GX /Z7 /Od /I "..\\msvc" /I "..\\gsl" /I "." /I ".." /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" ${app_options} /FD /GZ  /c
 # SUBTRACT CPP /YX
 # ADD BASE RSC /l 0x809 /d "_DEBUG"
 # ADD RSC /l 0x809 /d "_DEBUG"
