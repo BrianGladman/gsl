@@ -7,15 +7,20 @@ The errors below have been automatically extracted from the output of
 If you find a bug which is not on this list please report it to the
 mailing list gsl-discuss@sourceware.cygnus.com. Thank you.
 
-p.s. If you want to send us the output of 'make check' please use gzip
-to compress it, because the resulting file is huge.
+p.s. If you want to send us the output of 'make check' please extract
+only the relevant parts, because the complete output is huge (over 10
+megabytes).
 
 -------------------------------------------------------------------------------
 *** VERSION: 0.5+
-    make  all-recursive
+
+
+===========================================================================
+Running make
+
 --------
 Making all in blas
-    gcc -DHAVE_CONFIG_H -I. -I../../blas -I.. -I../.. -g -O2 -Wall -Wp,-MD,.deps/blas_raw_native.pp -c ../../blas/blas_raw_native.c -o blas_raw_native.o
+    gcc -DHAVE_CONFIG_H -I. -I../../blas -I.. -I../.. -g -O2 -Wall -Wp,-MD,.deps/blas_raw_native.pp -c  -fPIC -DPIC ../../blas/blas_raw_native.c -o .libs/blas_raw_native.lo
 *** ../../blas/source_iamax_r.h: In function `gsl_blas_raw_isamax':
 *** ../../blas/source_iamax_r.h:28: warning: `result' might be used uninitialized in this function
 *** ../../blas/source_iamax_r.h: In function `gsl_blas_raw_idamax':
@@ -24,67 +29,67 @@ Making all in blas
 *** ../../blas/source_iamax_c.h:27: warning: `result' might be used uninitialized in this function
 *** ../../blas/source_iamax_c.h: In function `gsl_blas_raw_izamax':
 *** ../../blas/source_iamax_c.h:27: warning: `result' might be used uninitialized in this function
-    echo timestamp > blas_raw_native.lo
+    gcc -DHAVE_CONFIG_H -I. -I../../blas -I.. -I../.. -g -O2 -Wall -Wp,-MD,.deps/blas_raw_native.pp -c ../../blas/blas_raw_native.c -o blas_raw_native.o >/dev/null 2>&1
+--------
+Making all in linalg
+    gcc -DHAVE_CONFIG_H -I. -I../../linalg -I.. -I.. -g -O2 -Wall -Wp,-MD,.deps/qr.pp -c  -fPIC -DPIC ../../linalg/qr.c -o .libs/qr.lo
+*** ../../linalg/qr.c: In function `gsl_linalg_QR_QTvec':
+*** ../../linalg/qr.c:274: warning: passing arg 1 of `gsl_matrix_column' discards `const' from pointer target type
+*** ../../linalg/qr.c: In function `gsl_linalg_QR_unpack':
+*** ../../linalg/qr.c:318: warning: passing arg 1 of `gsl_matrix_column' discards `const' from pointer target type
+    gcc -DHAVE_CONFIG_H -I. -I../../linalg -I.. -I.. -g -O2 -Wall -Wp,-MD,.deps/qr.pp -c ../../linalg/qr.c -o qr.o >/dev/null 2>&1
 --------
 Making all in specfunc
-    gcc -DHAVE_CONFIG_H -I. -I../../specfunc -I.. -I.. -g -O2 -Wall -Wp,-MD,.deps/bessel_Jnu.pp -c ../../specfunc/bessel_Jnu.c -o bessel_Jnu.o
+    gcc -DHAVE_CONFIG_H -I. -I../../specfunc -I.. -I.. -g -O2 -Wall -Wp,-MD,.deps/bessel_Jnu.pp -c  -fPIC -DPIC ../../specfunc/bessel_Jnu.c -o .libs/bessel_Jnu.lo
 *** ../../specfunc/bessel_Jnu.c: In function `gsl_sf_bessel_Jnu_impl':
 *** ../../specfunc/bessel_Jnu.c:123: warning: `Ynp1' might be used uninitialized in this function
-    echo timestamp > bessel_Jnu.lo
+    gcc -DHAVE_CONFIG_H -I. -I../../specfunc -I.. -I.. -g -O2 -Wall -Wp,-MD,.deps/bessel_Jnu.pp -c ../../specfunc/bessel_Jnu.c -o bessel_Jnu.o >/dev/null 2>&1
 --------
-    gcc -DHAVE_CONFIG_H -I. -I../../specfunc -I.. -I.. -g -O2 -Wall -Wp,-MD,.deps/bessel_i.pp -c ../../specfunc/bessel_i.c -o bessel_i.o
+    gcc -DHAVE_CONFIG_H -I. -I../../specfunc -I.. -I.. -g -O2 -Wall -Wp,-MD,.deps/bessel_i.pp -c  -fPIC -DPIC ../../specfunc/bessel_i.c -o .libs/bessel_i.lo
 *** ../../specfunc/bessel_i.c: In function `gsl_sf_bessel_il_scaled_impl':
 *** ../../specfunc/bessel_i.c:250: warning: `iellm1' might be used uninitialized in this function
-    echo timestamp > bessel_i.lo
+    gcc -DHAVE_CONFIG_H -I. -I../../specfunc -I.. -I.. -g -O2 -Wall -Wp,-MD,.deps/bessel_i.pp -c ../../specfunc/bessel_i.c -o bessel_i.o >/dev/null 2>&1
 --------
-    gcc -DHAVE_CONFIG_H -I. -I../../specfunc -I.. -I.. -g -O2 -Wall -Wp,-MD,.deps/gegenbauer.pp -c ../../specfunc/gegenbauer.c -o gegenbauer.o
+    gcc -DHAVE_CONFIG_H -I. -I../../specfunc -I.. -I.. -g -O2 -Wall -Wp,-MD,.deps/gegenbauer.pp -c  -fPIC -DPIC ../../specfunc/gegenbauer.c -o .libs/gegenbauer.lo
 *** ../../specfunc/gegenbauer.c: In function `gsl_sf_gegenpoly_n_impl':
 *** ../../specfunc/gegenbauer.c:132: warning: `gk' might be used uninitialized in this function
-    echo timestamp > gegenbauer.lo
+    gcc -DHAVE_CONFIG_H -I. -I../../specfunc -I.. -I.. -g -O2 -Wall -Wp,-MD,.deps/gegenbauer.pp -c ../../specfunc/gegenbauer.c -o gegenbauer.o >/dev/null 2>&1
 --------
-    gcc -DHAVE_CONFIG_H -I. -I../../specfunc -I.. -I.. -g -O2 -Wall -Wp,-MD,.deps/legendre_poly.pp -c ../../specfunc/legendre_poly.c -o legendre_poly.o
+    gcc -DHAVE_CONFIG_H -I. -I../../specfunc -I.. -I.. -g -O2 -Wall -Wp,-MD,.deps/legendre_poly.pp -c  -fPIC -DPIC ../../specfunc/legendre_poly.c -o .libs/legendre_poly.lo
 *** ../../specfunc/legendre_poly.c: In function `gsl_sf_legendre_Plm_impl':
 *** ../../specfunc/legendre_poly.c:272: warning: `p_ell' might be used uninitialized in this function
 *** ../../specfunc/legendre_poly.c: In function `gsl_sf_legendre_sphPlm_impl':
 *** ../../specfunc/legendre_poly.c:437: warning: `y_ell' might be used uninitialized in this function
-    echo timestamp > legendre_poly.lo
+    gcc -DHAVE_CONFIG_H -I. -I../../specfunc -I.. -I.. -g -O2 -Wall -Wp,-MD,.deps/legendre_poly.pp -c ../../specfunc/legendre_poly.c -o legendre_poly.o >/dev/null 2>&1
 --------
 Making all in monte
-    gcc -DHAVE_CONFIG_H -I. -I../../monte -I.. -I.. -I../.. -g -O2 -Wall -Wp,-MD,.deps/miser.pp -c ../../monte/miser.c -o miser.o
+    gcc -DHAVE_CONFIG_H -I. -I../../monte -I.. -I.. -I../.. -g -O2 -Wall -Wp,-MD,.deps/miser.pp -c  -fPIC -DPIC ../../monte/miser.c -o .libs/miser.lo
 *** ../../monte/miser.c: In function `gsl_monte_miser_validate':
 *** ../../monte/miser.c:347: warning: long unsigned int format, size_t arg (arg 4)
-    echo timestamp > miser.lo
+    gcc -DHAVE_CONFIG_H -I. -I../../monte -I.. -I.. -I../.. -g -O2 -Wall -Wp,-MD,.deps/miser.pp -c ../../monte/miser.c -o miser.o >/dev/null 2>&1
 --------
-    gcc -DHAVE_CONFIG_H -I. -I../../monte -I.. -I.. -I../.. -g -O2 -Wall -Wp,-MD,.deps/plain.pp -c ../../monte/plain.c -o plain.o
+    gcc -DHAVE_CONFIG_H -I. -I../../monte -I.. -I.. -I../.. -g -O2 -Wall -Wp,-MD,.deps/plain.pp -c  -fPIC -DPIC ../../monte/plain.c -o .libs/plain.lo
 *** ../../monte/plain.c: In function `gsl_monte_plain_validate':
 *** ../../monte/plain.c:120: warning: long unsigned int format, size_t arg (arg 4)
-    echo timestamp > plain.lo
+    gcc -DHAVE_CONFIG_H -I. -I../../monte -I.. -I.. -I../.. -g -O2 -Wall -Wp,-MD,.deps/plain.pp -c ../../monte/plain.c -o plain.o >/dev/null 2>&1
+--------
+Making all in doc
+    make[2]: Leaving directory `/home/cvs/gsl-cvs/gsl/=gsl.build'
+*** make[1]: *** [all-recursive] Error 1
+    make[1]: Leaving directory `/home/cvs/gsl-cvs/gsl/=gsl.build'
+*** make: *** [all-recursive-am] Error 2
+*** make: Target `all' not remade because of errors.
+
+
+===========================================================================
+Running make check
+
 --------
 Making check in blas
     gcc -DHAVE_CONFIG_H -I. -I../../blas -I.. -I../..    -g -O2 -Wall -c ../../blas/test_blas_raw.c
 *** ../../blas/test_blas_raw.c: In function `test_tbsv':
 *** ../../blas/test_blas_raw.c:1403: warning: unused variable `tmp_d'
     gcc -DHAVE_CONFIG_H -I. -I../../blas -I.. -I../..    -g -O2 -Wall -c ../../blas/test_cases.c
---------
-Making check in specfunc
-    PASS:   gsl_sf_laguerre_n_impl(1, -2.0, 1.0, &r)
-*** FAIL: test
-    ===================
---------
-    ===================
-*** make[2]: *** [check-TESTS] Error 1
-    make[2]: Leaving directory `/home/bjg/gsl/=gsl.build/specfunc'
-*** make[1]: *** [check-am] Error 2
-*** make[1]: Target `check' not remade because of errors.
-    make[1]: Leaving directory `/home/bjg/gsl/=gsl.build/specfunc'
---------
-Making check in siman
-    ===================
-*** make[2]: *** [check-TESTS] Error 1
-    make[2]: Leaving directory `/home/bjg/gsl/=gsl.build/siman'
-*** make[1]: *** [check-am] Error 2
-*** make[1]: Target `check' not remade because of errors.
-    make[1]: Leaving directory `/home/bjg/gsl/=gsl.build/siman'
 --------
 Making check in monte
     gcc -DHAVE_CONFIG_H -I. -I../../monte -I.. -I.. -I../..    -g -O2 -Wall -c ../../monte/vegas_test.c
@@ -109,6 +114,36 @@ Making check in monte
 *** ../../monte/plain_test.c:208: warning: unused variable `prod'
     /bin/sh ../libtool --mode=link gcc  -g -O2 -Wall  -o plain_test  plain_test.o libgslmonte.la ../rng/libgslrng.la ../vector/libgslvector.la ../block/libgslblock.la	../ieee-utils/libgslieeeutils.la ../err/libgslerr.la ../test/libgsltest.la ../utils/libutils.la -lm 
 --------
+
+
+===========================================================================
+Running make check in double-precision
+
+Making check in specfunc
+    PASS:   gsl_sf_laguerre_n_impl(1, -2.0, 1.0, &r)
+*** FAIL: test
+    ===================
+--------
+    ===================
+*** make[2]: *** [check-TESTS] Error 1
+    make[2]: Leaving directory `/home/cvs/gsl-cvs/gsl/=gsl.build/specfunc'
+*** make[1]: *** [check-am] Error 2
+*** make[1]: Target `check' not remade because of errors.
+    make[1]: Leaving directory `/home/cvs/gsl-cvs/gsl/=gsl.build/specfunc'
+--------
+Making check in siman
+    make[2]: Entering directory `/home/cvs/gsl-cvs/gsl/=gsl.build/siman'
+*** FAIL: test
+    ===================
+--------
+    ===================
+*** make[2]: *** [check-TESTS] Error 1
+    make[2]: Leaving directory `/home/cvs/gsl-cvs/gsl/=gsl.build/siman'
+*** make[1]: *** [check-am] Error 2
+*** make[1]: Target `check' not remade because of errors.
+    make[1]: Leaving directory `/home/cvs/gsl-cvs/gsl/=gsl.build/siman'
+--------
+Making check in monte
     PASS: vegas(f2), dim=7, err=0.0097, chisq=0.7997 (1.00714 observed vs 1 expected)
 *** FAIL: vegas(f2), dim=9, err=0.0003, chisq=0.6418 (0.499681001846611295 observed vs 1 expected)
     Testing Tsuda's function
@@ -127,10 +162,10 @@ Making check in monte
 --------
     ===================
 *** make[2]: *** [check-TESTS] Error 1
-    make[2]: Leaving directory `/home/bjg/gsl/=gsl.build/monte'
+    make[2]: Leaving directory `/home/cvs/gsl-cvs/gsl/=gsl.build/monte'
 *** make[1]: *** [check-am] Error 2
 *** make[1]: Target `check' not remade because of errors.
-    make[1]: Leaving directory `/home/bjg/gsl/=gsl.build/monte'
+    make[1]: Leaving directory `/home/cvs/gsl-cvs/gsl/=gsl.build/monte'
 --------
 Making check in ode-initval
     PASS:   Evolve: stiff, rk4imp
@@ -139,10 +174,10 @@ Making check in ode-initval
 --------
     ===================
 *** make[2]: *** [check-TESTS] Error 1
-    make[2]: Leaving directory `/home/bjg/gsl/=gsl.build/ode-initval'
+    make[2]: Leaving directory `/home/cvs/gsl-cvs/gsl/=gsl.build/ode-initval'
 *** make[1]: *** [check-am] Error 2
 *** make[1]: Target `check' not remade because of errors.
-    make[1]: Leaving directory `/home/bjg/gsl/=gsl.build/ode-initval'
+    make[1]: Leaving directory `/home/cvs/gsl-cvs/gsl/=gsl.build/ode-initval'
 --------
 Making check in roots
     PASS: GSL_IS_REAL(1.0) is 1
@@ -151,12 +186,12 @@ Making check in roots
 --------
     ===================
 *** make[2]: *** [check-TESTS] Error 1
-    make[2]: Leaving directory `/home/bjg/gsl/=gsl.build/roots'
+    make[2]: Leaving directory `/home/cvs/gsl-cvs/gsl/=gsl.build/roots'
 *** make[1]: *** [check-am] Error 2
 *** make[1]: Target `check' not remade because of errors.
-    make[1]: Leaving directory `/home/bjg/gsl/=gsl.build/roots'
+    make[1]: Leaving directory `/home/cvs/gsl-cvs/gsl/=gsl.build/roots'
 --------
 Making check in doc
-    make[1]: Leaving directory `/home/bjg/gsl/=gsl.build'
+    make[1]: Leaving directory `/home/cvs/gsl-cvs/gsl/=gsl.build'
 *** make: *** [check-recursive] Error 1
 *** make: Target `check' not remade because of errors.

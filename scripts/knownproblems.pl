@@ -15,6 +15,7 @@ for ($i = 0 ; $i < @lines ; $i++) {
 	&& !/cvs server: Updating \S+$/ 
 	&& !/Entering directory/
 	&& !/Leaving directory/
+        && !/is up to date/
 	&& !/Nothing to be done/) {
 	$n[$i] = 2 ;
     }
@@ -44,6 +45,10 @@ for ($i = 0 ; $i < @lines ; $i++) {
     if ($n[$i] > 1) {
 	print "*** $_\n" ;
 	$prev = 1 ;
+    } elsif (/^Running/) {
+        print "\n\n" ;
+        print "=" x 75, "\n";
+        print $_, "\n\n";
     } elsif ($n[$i] == 1) {
         print "$dir\n" if $dir ne $prevdir ;
         $prevdir = $dir ;
@@ -66,7 +71,8 @@ The errors below have been automatically extracted from the output of
 If you find a bug which is not on this list please report it to the
 mailing list gsl-discuss@sourceware.cygnus.com. Thank you.
 
-p.s. If you want to send us the output of 'make check' please use gzip
-to compress it, because the resulting file is huge.
+p.s. If you want to send us the output of 'make check' please extract
+only the relevant parts, because the complete output is huge (over 10
+megabytes).
 
 -------------------------------------------------------------------------------
