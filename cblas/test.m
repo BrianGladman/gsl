@@ -1585,7 +1585,7 @@ endfunction
 
                                 # testing functions
 
-function begin_file(name)
+function begin_file(name,decls)
   global FILE;
   global LIST;
   printf("opening %s\n", name) ;
@@ -1599,7 +1599,11 @@ function begin_file(name)
   fprintf(FILE,"\n");
   fprintf(FILE,"void\n");
   fprintf(FILE,"test_%s () {\n", name);
-  fprintf(FILE,"const double flteps = 1e-4, dbleps = 1e-6;\n");
+  if (nargin == 1)
+    fprintf(FILE,"const double flteps = 1e-4, dbleps = 1e-6;\n");
+  else
+    # do nothing for now
+  endif
 endfunction
 
 function end_file()
@@ -2508,7 +2512,7 @@ for j = testcases
 endfor
 end_file();
 
-begin_file("amax");
+begin_file("amax", "int");
 for j = testcases
   for i = [s,d,c,z]
     S = context(i);

@@ -5,7 +5,6 @@
 
 void
 test_amax () {
-const double flteps = 1e-4, dbleps = 1e-6;
   {
    int N = 1;
    float X[] = { -0.388 };
