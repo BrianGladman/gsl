@@ -1,7 +1,7 @@
 #! /bin/sh
-## Usage: 'makesrc --all'    makes all
-##        'makesrc --switch' makes switch.c gsl_ran_switch.h
-##        'makesrc xxx'      makes xxx-state.c, xxx.h, xxx-gen.c
+## Usage: 'makesrc srcdir --all'    makes all
+##        'makesrc srcdir --switch' makes switch.c gsl_ran_switch.h
+##        'makesrc srcdir xxx'      makes xxx-state.c, xxx.h, xxx-gen.c
 ##        'makesrc'          gets this usage message
 
 if [ $# -eq 0 ]; then
