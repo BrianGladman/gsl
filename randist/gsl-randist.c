@@ -46,6 +46,7 @@ main (int argc, char *argv[])
 "  gamma\n"
 "  gaussian\n"
 "  bivariate-gaussian\n"
+"  gaussian-tail\n"
 "  dir-2d\n"
 "  dir-3d\n"
 "  dir-nd\n"
@@ -174,6 +175,12 @@ main (int argc, char *argv[])
       ARGS(1, "sigma = standard deviation");
       DBL_ARG(sigma) ;
       OUTPUT(gsl_ran_gaussian (r, sigma));
+    }
+  else if (NAME("gaussian-tail"))
+    {
+      ARGS(1, "sigma = distance to tail");
+      DBL_ARG(sigma) ;
+      OUTPUT(gsl_ran_ugaussian_tail (r, sigma));
     }
   else if (NAME("bivariate-gaussian"))
     {

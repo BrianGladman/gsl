@@ -8,10 +8,10 @@
 #include <gsl_test.h>
 
 #define N 100000
-void test_moments (double (*f) (void), const char *name,
+void testMoments (double (*f) (void), const char *name,
 		   double a, double b, double p);
-void test_pdf (double (*f) (void), double (*pdf)(double), const char *name);
-void test_discrete_pdf (double (*f) (void), double (*pdf)(unsigned int), 
+void testPDF (double (*f) (void), double (*pdf)(double), const char *name);
+void testDiscretePDF (double (*f) (void), double (*pdf)(unsigned int), 
 			const char *name);
 
 void test_shuffle (void);
@@ -28,6 +28,8 @@ double test_cauchy (void);
 double test_cauchy_pdf (double x);
 double test_chisq (void);
 double test_chisq_pdf (double x);
+double test_discrete (void);
+double test_discrete_pdf (unsigned int n);
 double test_erlang (void);
 double test_erlang_pdf (double x);
 double test_exponential (void);
@@ -56,6 +58,8 @@ double test_gamma_large (void);
 double test_gamma_large_pdf (double x);
 double test_gaussian (void);
 double test_gaussian_pdf (double x);
+double test_ugaussian_tail (void);
+double test_ugaussian_tail_pdf (double x);
 double test_bivariate_gaussian1 (void);
 double test_bivariate_gaussian1_pdf (double x);
 double test_bivariate_gaussian2 (void);
@@ -137,80 +141,85 @@ main (void)
   gsl_rng_env_setup() ;
   r_global = gsl_rng_alloc (gsl_rng_default);
 
-#define FUNC(x) x, "gsl_ran_" #x
-#define FUNC2(x) x, x ## _pdf, "gsl_ran_" #x
+#define FUNC(x)  test_ ## x,                     "test gsl_ran_" #x
+#define FUNC2(x) test_ ## x, test_ ## x ## _pdf, "test gsl_ran_" #x
 
   test_shuffle() ;
   test_choose() ;
 
-  test_moments (FUNC (test_ugaussian), 0.0, 100.0, 0.5);
-  test_moments (FUNC (test_ugaussian), -1.0, 1.0, 0.68);
-  test_moments (FUNC (test_exponential), 0.0, 1.0, 1- exp(-0.5));
-  test_moments (FUNC (test_cauchy), 0.0, 10000.0, 0.5);
+  testMoments (FUNC (ugaussian), 0.0, 100.0, 0.5);
+  testMoments (FUNC (ugaussian), -1.0, 1.0, 0.6826895);
+  testMoments (FUNC (ugaussian), 3.0, 3.5, 0.0011172689);
+  testMoments (FUNC (ugaussian_tail), 3.0, 3.5, 0.0011172689/0.0013498981);
+  testMoments (FUNC (exponential), 0.0, 1.0, 1- exp(-0.5));
+  testMoments (FUNC (cauchy), 0.0, 10000.0, 0.5);
+  testMoments (FUNC (discrete), 0.5, 1.5, 0.4 );
+  testMoments (FUNC (discrete), 1.5, 3.5, 0.01 );
 
+  testPDF (FUNC2(beta));
+  testPDF (FUNC2(cauchy));
+  testPDF (FUNC2(chisq));
+  testPDF (FUNC2(erlang));
+  testPDF (FUNC2(exponential));
 
-  test_pdf (FUNC2(test_beta));
-  test_pdf (FUNC2(test_cauchy));
-  test_pdf (FUNC2(test_chisq));
-  test_pdf (FUNC2(test_erlang));
-  test_pdf (FUNC2(test_exponential));
+  testPDF (FUNC2(exppow0));
+  testPDF (FUNC2(exppow1));
+  testPDF (FUNC2(exppow1a));
+  testPDF (FUNC2(exppow2));
+  testPDF (FUNC2(exppow2a));
 
-  test_pdf (FUNC2(test_exppow0));
-  test_pdf (FUNC2(test_exppow1));
-  test_pdf (FUNC2(test_exppow1a));
-  test_pdf (FUNC2(test_exppow2));
-  test_pdf (FUNC2(test_exppow2a));
+  testPDF (FUNC2(fdist));
+  testPDF (FUNC2(flat));
+  testPDF (FUNC2(gamma));
+  testPDF (FUNC2(gamma1));
+  testPDF (FUNC2(gamma_int));
+  testPDF (FUNC2(gamma_large));
+  testPDF (FUNC2(gaussian));
+  testPDF (FUNC2(ugaussian));
+  testPDF (FUNC2(ugaussian_tail));
+  
+  testPDF (FUNC2(bivariate_gaussian1));
+  testPDF (FUNC2(bivariate_gaussian2));
+  testPDF (FUNC2(bivariate_gaussian3));
+  testPDF (FUNC2(bivariate_gaussian4));
 
-  test_pdf (FUNC2(test_fdist));
-  test_pdf (FUNC2(test_flat));
-  test_pdf (FUNC2(test_gamma));
-  test_pdf (FUNC2(test_gamma1));
-  test_pdf (FUNC2(test_gamma_int));
-  test_pdf (FUNC2(test_gamma_large));
-  test_pdf (FUNC2(test_gaussian));
-  test_pdf (FUNC2(test_ugaussian));
+  testPDF (FUNC2(gumbel1));
+  testPDF (FUNC2(gumbel2));
+  testPDF (FUNC2(levy1));
+  testPDF (FUNC2(levy2));
+  testPDF (FUNC2(logistic));
+  testPDF (FUNC2(lognormal));
+  testPDF (FUNC2(pareto));
+  testPDF (FUNC2(rayleigh));
+  testPDF (FUNC2(rayleigh_tail));
+  testPDF (FUNC2(tdist1));
+  testPDF (FUNC2(tdist2));
+  testPDF (FUNC2(laplace));
+  testPDF (FUNC2(weibull));
+  testPDF (FUNC2(weibull1));
 
-  test_pdf (FUNC2(test_bivariate_gaussian1));
-  test_pdf (FUNC2(test_bivariate_gaussian2));
-  test_pdf (FUNC2(test_bivariate_gaussian3));
-  test_pdf (FUNC2(test_bivariate_gaussian4));
+  testPDF (FUNC2(dir2d));
+  testPDF (FUNC2(dir3dxy));
+  testPDF (FUNC2(dir3dyz));
+  testPDF (FUNC2(dir3dzx));
 
-  test_pdf (FUNC2(test_gumbel1));
-  test_pdf (FUNC2(test_gumbel2));
-  test_pdf (FUNC2(test_levy1));
-  test_pdf (FUNC2(test_levy2));
-  test_pdf (FUNC2(test_logistic));
-  test_pdf (FUNC2(test_lognormal));
-  test_pdf (FUNC2(test_pareto));
-  test_pdf (FUNC2(test_rayleigh));
-  test_pdf (FUNC2(test_rayleigh_tail));
-  test_pdf (FUNC2(test_tdist1));
-  test_pdf (FUNC2(test_tdist2));
-  test_pdf (FUNC2(test_laplace));
-  test_pdf (FUNC2(test_weibull));
-  test_pdf (FUNC2(test_weibull1));
-
-  test_pdf (FUNC2(test_dir2d));
-  test_pdf (FUNC2(test_dir3dxy));
-  test_pdf (FUNC2(test_dir3dyz));
-  test_pdf (FUNC2(test_dir3dzx));
-
-  test_discrete_pdf (FUNC2(test_poisson));
-  test_discrete_pdf (FUNC2(test_poisson_large));
-  test_discrete_pdf (FUNC2(test_bernoulli));
-  test_discrete_pdf (FUNC2(test_binomial));
-  test_discrete_pdf (FUNC2(test_binomial_large));
-  test_discrete_pdf (FUNC2(test_geometric));
-  test_discrete_pdf (FUNC2(test_geometric1));
-  test_discrete_pdf (FUNC2(test_hypergeometric1));
-  test_discrete_pdf (FUNC2(test_hypergeometric2));
-  test_discrete_pdf (FUNC2(test_hypergeometric3));
-  test_discrete_pdf (FUNC2(test_hypergeometric4));
-  test_discrete_pdf (FUNC2(test_hypergeometric5));
-  test_discrete_pdf (FUNC2(test_hypergeometric6));
-  test_discrete_pdf (FUNC2(test_logarithmic));
-  test_discrete_pdf (FUNC2(test_negative_binomial));
-  test_discrete_pdf (FUNC2(test_pascal));
+  testDiscretePDF (FUNC2(discrete));
+  testDiscretePDF (FUNC2(poisson));
+  testDiscretePDF (FUNC2(poisson_large));
+  testDiscretePDF (FUNC2(bernoulli));
+  testDiscretePDF (FUNC2(binomial));
+  testDiscretePDF (FUNC2(binomial_large));
+  testDiscretePDF (FUNC2(geometric));
+  testDiscretePDF (FUNC2(geometric1));
+  testDiscretePDF (FUNC2(hypergeometric1));
+  testDiscretePDF (FUNC2(hypergeometric2));
+  testDiscretePDF (FUNC2(hypergeometric3));
+  testDiscretePDF (FUNC2(hypergeometric4));
+  testDiscretePDF (FUNC2(hypergeometric5));
+  testDiscretePDF (FUNC2(hypergeometric6));
+  testDiscretePDF (FUNC2(logarithmic));
+  testDiscretePDF (FUNC2(negative_binomial));
+  testDiscretePDF (FUNC2(pascal));
 
   return gsl_test_summary();
 }
@@ -308,7 +317,7 @@ test_choose (void)
 
 
 void
-test_moments (double (*f) (void), const char *name,
+testMoments (double (*f) (void), const char *name,
 	      double a, double b, double p)
 {
   int i;
@@ -334,7 +343,7 @@ test_moments (double (*f) (void), const char *name,
 #define BINS 100
 
 void
-test_pdf (double (*f) (void), double (*pdf)(double), const char *name)
+testPDF (double (*f) (void), double (*pdf)(double), const char *name)
 {
   double count[BINS], p[BINS];
   double a = -5.0, b = +5.0 ;
@@ -387,8 +396,8 @@ test_pdf (double (*f) (void), double (*pdf)(double), const char *name)
 	}
       status |= status_i ;
       if (status_i) 
-	gsl_test (status_i, "%s [%g,%g) (%g observed vs %g expected)", 
-		  name, x, x+dx, count[i]/N, p[i]) ;
+	gsl_test (status_i, "%s [%g,%g) (%g/%d=%g observed vs %g expected)", 
+		  name, x, x+dx, count[i],N,count[i]/N, p[i]) ;
     }
 
   if (status == 0)
@@ -397,7 +406,7 @@ test_pdf (double (*f) (void), double (*pdf)(double), const char *name)
 }
 
 void
-test_discrete_pdf (double (*f) (void), double (*pdf)(unsigned int), const char *name)
+testDiscretePDF (double (*f) (void), double (*pdf)(unsigned int), const char *name)
 {
   double count[BINS], p[BINS];
   unsigned int i ;
@@ -603,6 +612,21 @@ test_dir3dzx_pdf (double x)
     }
 }
 
+static gsl_ran_discrete_t *g = NULL;
+double
+test_discrete (void)
+{
+    static double P[3]={0.59, 0.4, 0.01};
+    if (g==NULL) {
+        g = gsl_ran_discrete_preproc(3,P);
+    }
+    return gsl_ran_discrete(r_global,g);
+}
+double test_discrete_pdf (unsigned int n)
+{
+    return gsl_ran_discrete_pdf((int)n,g);
+}
+    
 double
 test_erlang (void)
 {
@@ -773,6 +797,19 @@ double
 test_gaussian_pdf (double x)
 {
   return gsl_ran_gaussian_pdf (x, 3.0);
+}
+double
+test_ugaussian_tail (void)
+{
+  return gsl_ran_ugaussian_tail (r_global, 3.0);
+}
+
+double
+test_ugaussian_tail_pdf (double x)
+{
+    if (x < 3.0) return 0;
+    else 
+        return gsl_ran_gaussian_pdf (x, 1.0)/0.0013498981;
 }
 
 double
@@ -1113,6 +1150,7 @@ test_rayleigh_tail_pdf (double x)
 {
   return gsl_ran_rayleigh_tail_pdf (x, 2.7, 1.9);
 }
+
 
 double
 test_poisson (void)

@@ -1,3 +1,34 @@
+1999-01-31  James Theiler <jt@lanl.gov>
+	* gauss.c added a new function gsl_ran_ugaussian_tail() which
+	provides random numbers out on the tail of a gaussian.  I also
+	added (but then #ifdef'd out) a second implementation of ordinary
+	gaussian numbers.  This second implementation passes the tests
+	okay, but it is a touch slower on my home Pentium.
+	* gsl_randist.h added prototypes
+	* test.c added tests for new gaussian tail function; also altered
+	testMoment's ugaussian range (-1,1) value from .68 to a more
+	accurate value.
+	* ../doc/random.texi further updated 
+	
+1999-01-30  James Theiler <jt@lanl.gov>
+	* discrete.c added implementation of Walker's algorithm for
+	rapidly choosing a random integer k where the k's are distributed
+	by a user-supplied array of probabilities P[k].  This includes
+	functions gsl_ran_discrete(), gsl_ran_discrete_preproc(), 
+	gsl_ran_discrete_free(), and gsl_ran_discrete_pdf().
+	* gsl_randist.h added definition of structure gsl_ran_discrete_t,
+	also prototypes of new functions defined in discrete.c
+	* test.c added tests for gsl_ran_discrete(), also
+	* test.c made some essentially cosmetic changes:
+	1/ redefined FUNC and FUNC2 macros so now output looks like 
+	"test gsl_ran_poisson" instead of "gsl_ran_test_poisson"
+	2/ changed names of toplevel tests, eg test_moments->testMoments, 
+	test_pdf->testPDF, etc, to distinguish them from all the individual 
+	functions test_poisson, test_binomial, etc.
+	hope that's ok.
+	* ../doc/random.texi updated to reflect the new discrete functions,
+	as well as the new implementations of the sphere.c routines.
+
 1999-01-28  James Theiler <jt@lanl.gov>
 	* sphere.c modified gsl_ran_dir_3d, to speed it up about 2x
 	also modified gsl_ran_dir_2d, providing alternative algorithms 

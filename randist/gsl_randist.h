@@ -42,6 +42,8 @@ double gsl_ran_gaussian_pdf (double x, double sigma);
 double gsl_ran_ugaussian (const gsl_rng * r);
 double gsl_ran_ugaussian_pdf (double x);
 
+double gsl_ran_ugaussian_tail (const gsl_rng * r, double sigma);
+
 void gsl_ran_bivariate_gaussian (const gsl_rng * r, double sigma_x, double sigma_y, double rho, double *x, double *y);
 double gsl_ran_bivariate_gaussian_pdf (double x, double y, double sigma_x, double sigma_y, double rho);
 
@@ -104,5 +106,20 @@ void gsl_ran_dir_nd (const gsl_rng * r, int n, double * x);
 void gsl_ran_shuffle (const gsl_rng * r, void * base, size_t nmembm, size_t size);
 void * gsl_ran_choose (const gsl_rng * r, void * dest, size_t k, void * src, size_t n, size_t size) ;
 void * gsl_ran_sample (const gsl_rng * r, void * dest, size_t k, void * src, size_t n, size_t size) ;
+
+
+typedef struct {                /* struct for Walker algorithm */
+    int K;
+    int *A;
+    double *F;
+} gsl_ran_discrete_t;
+
+gsl_ran_discrete_t * gsl_ran_discrete_preproc (int K, const double *P);
+void gsl_ran_discrete_free(gsl_ran_discrete_t *g);
+int gsl_ran_discrete (const gsl_rng *r, const gsl_ran_discrete_t *g);
+double gsl_ran_discrete_pdf (unsigned int k, const gsl_ran_discrete_t *g);
+
+
+
 
 #endif /* GSL_RANDIST_H */

@@ -4,6 +4,20 @@
 #include <gsl_rng.h>
 #include <gsl_randist.h>
 
+/* Of the two methods provided below, I think the Polar method is more
+ * efficient, but only when you are actually producing two random
+ * deviates.  We don't produce two, because then we'd have to save one
+ * in a static variable for the next call, and that would screws up
+ * re-entrant or threaded code, so we only produce one.  This makes
+ * the Ratio method suddenly more appealing.  There are further tests
+ * one can make if the log() is slow.  See Knuth for details */
+
+/* Both methods pass the statistical tests; but the polar method
+ * seems to be a touch faster on my home Pentium, EVEN though we
+ * are only using half of the available random deviates!
+ */
+
+#if 1 /* Polar (Box-Mueller) method; See Knuth v2, 3rd ed, p122 */
 double
 gsl_ran_gaussian (const gsl_rng * r, const double sigma)
 {
@@ -24,6 +38,27 @@ gsl_ran_gaussian (const gsl_rng * r, const double sigma)
   /* Box-Muller transform */
   return sigma * y * sqrt (-2.0 * log (r2) / r2);
 }
+#endif
+#if 0 /* Ratio method (Kinderman-Monahan); see Knuth v2, 3rd ed, p130 */
+      /* K+M, ACM Trans Math Software 3 (1977) 257-260. */
+double
+gsl_ran_gaussian (const gsl_rng * r, const double sigma)
+{
+  double u,v,x,xx;
+
+  do {
+      v = gsl_rng_uniform(r);
+      do {
+          u = gsl_rng_uniform(r);
+      } 
+      while (u==0);
+      /* Const 1.715... = sqrt(8/e) */
+      x = 1.71552776992141359295*(v-0.5)/u;
+  }
+  while (x*x > -4.0*log(u));
+  return sigma*x;
+}
+#endif
 
 double
 gsl_ran_gaussian_pdf (const double x, const double sigma)
@@ -83,6 +118,26 @@ gsl_ran_bivariate_gaussian_pdf (const double x, const double y,
   return p;
 }
 
-
-
-
+double
+gsl_ran_ugaussian_tail (const gsl_rng * r, const double s)
+{
+  /* Returns a unit-variance gaussian random variable larger than s */
+  /* Uses the "supertail" deviates from the last two steps
+   * of Marsaglia's rectangle-wedge-tail method, as described
+   * in Knuth, v2, 3rd ed, pp 123-128.  (See also exercise 11, p139,
+   * and the solution, p586.)
+   * Note: if sigma is small, then there will be a lot of rejections;
+   * in particular, s=0 will NOT provide an ordinary gaussian ... but
+   * instead an infinte loop!
+   * This implementation does one-tailed deviates.
+   */
+  double u,v,x;
+  do {
+      u = gsl_rng_uniform(r);
+      do {
+          v = gsl_rng_uniform(r);
+      } while (v==0.0);
+      x = sqrt(s*s - 2*log(v));
+  } while (x*u > s);
+  return x;
+}
