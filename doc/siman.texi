@@ -151,7 +151,8 @@ This function type should modify the configuration @var{xp} using a random step
 taken from the generator @var{r}, up to a maximium distance of
 @var{step_size}.
 @example
-void (*gsl_siman_step_t) (const gsl_rng *r, void *xp, double step_size)
+void (*gsl_siman_step_t) (const gsl_rng *r, void *xp, 
+                          double step_size)
 @end example
 @end deftp
 
