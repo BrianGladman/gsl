@@ -508,6 +508,13 @@ reference for the provided functions. The priority is to provide
 reference documentation for each function. It is not necessary to
 provide tutorial documentation.
 
+Use free software, such as GNU Plotutils, to produce the graphs in the
+manual.
+
+Some of the graphs have been made with gnuplot which is not truly free
+(or GNU) software, and some have been made with proprietary
+programs. These should be replaced with output from GNU plotutils.
+
 @node Namespace, Header files, Documentation, Design
 @section Namespace
 
