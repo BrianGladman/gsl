@@ -989,6 +989,8 @@ fd_asymp(const double j, const double x, gsl_sf_result * result)
   double add = GSL_DBL_MAX;
   double cos_term;
   double ln_x;
+  double ex_term_1;
+  double ex_term_2;
   gsl_sf_result fneg;
   gsl_sf_result ex_arg;
   gsl_sf_result ex;
@@ -1010,8 +1012,10 @@ fd_asymp(const double j, const double x, gsl_sf_result * result)
 
   stat_fneg = fd_neg(j, -x, &fneg);
   ln_x = log(x);
-  ex_arg.val = (j+1.0)*ln_x - lg.val;
-  ex_arg.err = fabs((j+1.0)*ln_x) + lg.err + GSL_DBL_EPSILON * fabs(ex_arg.val);
+  ex_term_1 = (j+1.0)*ln_x;
+  ex_term_2 = lg.val;
+  ex_arg.val = ex_term_1 - ex_term_2; /*(j+1.0)*ln_x - lg.val; */
+  ex_arg.err = GSL_DBL_EPSILON*(fabs(ex_term_1) + fabs(ex_term_2)) + lg.err;
   stat_e    = gsl_sf_exp_err_e(ex_arg.val, ex_arg.err, &ex);
   cos_term  = cos(j*M_PI);
   result->val  = cos_term * fneg.val + 2.0 * seqn_val * ex.val;
