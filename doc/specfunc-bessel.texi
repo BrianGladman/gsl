@@ -4,388 +4,323 @@
 @cindex Bessel functions
 
 
-
 @subsection Regular Cylindrical Bessel Functions
 
-/* Regular Bessel Function J_0(x)
- *
- * exceptions: none
- */
-int gsl_sf_bessel_J0_impl(double x,  gsl_sf_result * result);
-int gsl_sf_bessel_J0_e(double x, gsl_sf_result * result);
+
+@deftypefun  int gsl_sf_bessel_J0_impl(double x,  gsl_sf_result * result)
+@deftypefunx int gsl_sf_bessel_J0_e(double x, gsl_sf_result * result)
+Exceptional Return Values: none
+@end deftypefun
+
+@deftypefun  int gsl_sf_bessel_J1_impl(double x, gsl_sf_result * result)
+@deftypefunx int gsl_sf_bessel_J1_e(double x, gsl_sf_result * result)
+Exceptional Return Values: GSL_EUNDRFLW
+@end deftypefun
 
 
-/* Regular Bessel Function J_1(x)
- *
- * exceptions: GSL_EUNDRFLW
- */
-int gsl_sf_bessel_J1_impl(double x, gsl_sf_result * result);
-int gsl_sf_bessel_J1_e(double x, gsl_sf_result * result);
+@deftypefun  int gsl_sf_bessel_Jn_impl(int n, double x, gsl_sf_result * result)
+@deftypefunx int gsl_sf_bessel_Jn_e(int n, double x, gsl_sf_result * result)
+Exceptional Return Values: GSL_EUNDRFLW
+@end deftypefun
 
 
-/* Regular Bessel Function J_n(x)
- *
- * exceptions: GSL_EUNDRFLW
- */
-int gsl_sf_bessel_Jn_impl(int n, double x, gsl_sf_result * result);
-int gsl_sf_bessel_Jn_e(int n, double x, gsl_sf_result * result);
-
-
-/* Regular Bessel Function J_n(x),  nmin <= n <= nmax
- *
- * exceptions: GSL_EDOM, GSL_EUNDRFLW
- */
-int gsl_sf_bessel_Jn_array_impl(int nmin, int nmax, double x, double * result_array);
-int gsl_sf_bessel_Jn_array_e(int nmin, int nmax, double x, double * result_array);
+@deftypefun  int gsl_sf_bessel_Jn_array_impl(int nmin, int nmax, double x, double * result_array)
+@deftypefunx int gsl_sf_bessel_Jn_array_e(int nmin, int nmax, double x, double * result_array)
+Conditions: nmin <= n <= nmax
+Exceptional Return Values: GSL_EDOM, GSL_EUNDRFLW
+@end deftypefun
 
 
 
 
 @subsection Irregular Cylindrical Bessel Functions
 
-/* Irregular Bessel function Y_0(x)
- *
- * x > 0.0
- * exceptions: GSL_EDOM, GSL_EUNDRFLW
- */
-int gsl_sf_bessel_Y0_impl(double x, gsl_sf_result * result);
-int gsl_sf_bessel_Y0_e(double x, gsl_sf_result * result);
+
+@deftypefun  int gsl_sf_bessel_Y0_impl(double x, gsl_sf_result * result)
+@deftypefunx int gsl_sf_bessel_Y0_e(double x, gsl_sf_result * result)
+Domain: x > 0.0
+Exceptional Return Values: GSL_EDOM, GSL_EUNDRFLW
+@end deftypefun
 
 
-/* Irregular Bessel function Y_1(x)
- *
- * x > 0.0
- * exceptions: GSL_EDOM, GSL_EOVRFLW, GSL_EUNDRFLW
- */
-int gsl_sf_bessel_Y1_impl(double x, gsl_sf_result * result);
-int gsl_sf_bessel_Y1_e(double x, gsl_sf_result * result);
+@deftypefun  int gsl_sf_bessel_Y1_impl(double x, gsl_sf_result * result)
+@deftypefunx int gsl_sf_bessel_Y1_e(double x, gsl_sf_result * result)
+Domain: x > 0.0
+Exceptional Return Values: GSL_EDOM, GSL_EOVRFLW, GSL_EUNDRFLW
+@end deftypefun
 
 
-/* Irregular Bessel function Y_n(x)
- *
- * x > 0.0
- * exceptions: GSL_EDOM, GSL_EOVRFLW, GSL_EUNDRFLW
- */
-int gsl_sf_bessel_Yn_impl(int n,double x, gsl_sf_result * result);
-int gsl_sf_bessel_Yn_e(int n,double x, gsl_sf_result * result);
+@deftypefun  int gsl_sf_bessel_Yn_impl(int n,double x, gsl_sf_result * result)
+@deftypefunx int gsl_sf_bessel_Yn_e(int n,double x, gsl_sf_result * result)
+Domain: x > 0.0
+Exceptional Return Values: GSL_EDOM, GSL_EOVRFLW, GSL_EUNDRFLW
+@end deftypefun
 
 
-/* Irregular Bessel function Y_n(x), nmin <= n <= nmax
- *
- * x > 0.0
- * exceptions: GSL_EDOM, GSL_EOVRFLW, GSL_EUNDRFLW
- */
-int gsl_sf_bessel_Yn_array_impl(int nmin, int nmax, double x, double * result_array);
-int gsl_sf_bessel_Yn_array_e(int nmin, int nmax, double x, double * result_array);
+@deftypefun  int gsl_sf_bessel_Yn_array_impl(int nmin, int nmax, double x, double * result_array)
+@deftypefunx int gsl_sf_bessel_Yn_array_e(int nmin, int nmax, double x, double * result_array)
+Domain: x > 0.0
+Conditions: nmin <= n <= nmax
+Exceptional Return Values: GSL_EDOM, GSL_EOVRFLW, GSL_EUNDRFLW
+@end deftypefun
 
 
 
 
 @subsection Regular Modified Cylindrical Bessel Functions
 
-/* Regular modified Bessel function I_0(x)
- *
- * exceptions: GSL_EOVRFLW
- */
-int gsl_sf_bessel_I0_impl(double x, gsl_sf_result * result);
-int gsl_sf_bessel_I0_e(double x, gsl_sf_result * result);
+
+@deftypefun  int gsl_sf_bessel_I0_impl(double x, gsl_sf_result * result)
+@deftypefunx int gsl_sf_bessel_I0_e(double x, gsl_sf_result * result)
+Exceptional Return Values: GSL_EOVRFLW
+@end deftypefun
 
 
-/* Regular modified Bessel function I_1(x)
- *
- * exceptions: GSL_EOVRFLW, GSL_EUNDRFLW
- */
-int gsl_sf_bessel_I1_impl(double x, gsl_sf_result * result);
-int gsl_sf_bessel_I1_e(double x, gsl_sf_result * result);
+@deftypefun  int gsl_sf_bessel_I1_impl(double x, gsl_sf_result * result)
+@deftypefunx int gsl_sf_bessel_I1_e(double x, gsl_sf_result * result)
+Exceptional Return Values: GSL_EOVRFLW, GSL_EUNDRFLW
+@end deftypefun
 
 
-/* Regular modified Bessel function I_n(x)
- *
- * exceptions: GSL_EOVRFLW, GSL_EUNDRFLW
- */
-int gsl_sf_bessel_In_impl(int n, double x, gsl_sf_result * result);
-int gsl_sf_bessel_In_e(int n, double x, gsl_sf_result * result);
+@deftypefun  int gsl_sf_bessel_In_impl(int n, double x, gsl_sf_result * result)
+@deftypefunx int gsl_sf_bessel_In_e(int n, double x, gsl_sf_result * result)
+Exceptional Return Values: GSL_EOVRFLW, GSL_EUNDRFLW
+@end deftypefun
 
 
-/* Regular modified Bessel function  I_n(x) for n=nmin,...,nmax
- *
- * nmin >=0, nmax >= nmin
- * exceptions: GSL_EDOM, GSL_EOVRFLW, GSL_EUNDRFLW
- */
-int gsl_sf_bessel_In_array_impl(int nmin, int nmax, double x, double * result_array);
-int gsl_sf_bessel_In_array_e(int nmin, int nmax, double x, double * result_array);
+@deftypefun  int gsl_sf_bessel_In_array_impl(int nmin, int nmax, double x, double * result_array)
+@deftypefunx int gsl_sf_bessel_In_array_e(int nmin, int nmax, double x, double * result_array)
+Domain: nmin >=0, nmax >= nmin
+Conditions: n=nmin,...,nmax, nmin >=0, nmax >= nmin
+Exceptional Return Values: GSL_EDOM, GSL_EOVRFLW, GSL_EUNDRFLW
+@end deftypefun
 
 
-/* Scaled regular modified Bessel function
- *  exp(-|x|) I_0(x)
- *
- * exceptions: none
- */
-int gsl_sf_bessel_I0_scaled_impl(double x, gsl_sf_result * result);
-int gsl_sf_bessel_I0_scaled_e(double x, gsl_sf_result * result);
+@deftypefun  int gsl_sf_bessel_I0_scaled_impl(double x, gsl_sf_result * result)
+@deftypefunx int gsl_sf_bessel_I0_scaled_e(double x, gsl_sf_result * result)
+@math{ \exp(-|x|) I_0(x) }
+Exceptional Return Values: none
+@end deftypefun
 
 
-/* Scaled regular modified Bessel function
- *  exp(-|x|) I_1(x)
- *
- * exceptions: GSL_EUNDRFLW
- */
-int gsl_sf_bessel_I1_scaled_impl(double x, gsl_sf_result * result);
-int gsl_sf_bessel_I1_scaled_e(double x, gsl_sf_result * result);
+@deftypefun  int gsl_sf_bessel_I1_scaled_impl(double x, gsl_sf_result * result)
+@deftypefunx int gsl_sf_bessel_I1_scaled_e(double x, gsl_sf_result * result)
+@math{ exp(-|x|) I_1(x) }
+Exceptional Return Values: GSL_EUNDRFLW
+@end deftypefun
 
 
-/* Scaled regular modified Bessel function
- *  exp(-|x|) I_n(x)
- *
- * exceptions: GSL_EUNDRFLW
- */
-int gsl_sf_bessel_In_scaled_impl(int n, double x, gsl_sf_result * result);
-int gsl_sf_bessel_In_scaled_e(int n, double x, gsl_sf_result * result);
+@deftypefun  int gsl_sf_bessel_In_scaled_impl(int n, double x, gsl_sf_result * result)
+@deftypefunx int gsl_sf_bessel_In_scaled_e(int n, double x, gsl_sf_result * result)
+@math{ exp(-|x|) I_n(x) }
+Exceptional Return Values: GSL_EUNDRFLW
+@end deftypefun
 
 
-/* Scaled regular modified Bessel function
- *  exp(-|x|) I_n(x)  for n=nmin,...,nmax
- *
- * nmin >=0, nmax >= nmin
- * exceptions: GSL_EUNDRFLW
- */
-int gsl_sf_bessel_In_scaled_array_impl(int nmin, int nmax, double x, double * result_array);
-int gsl_sf_bessel_In_scaled_array_e(int nmin, int nmax, double x, double * result_array);
+@deftypefun  int gsl_sf_bessel_In_scaled_array_impl(int nmin, int nmax, double x, double * result_array)
+@deftypefunx int gsl_sf_bessel_In_scaled_array_e(int nmin, int nmax, double x, double * result_array)
+@math{ exp(-|x|) I_n(x) }
+Domain: nmin >=0, nmax >= nmin
+Conditions:  n=nmin,...,nmax
+Exceptional Return Values: GSL_EUNDRFLW
+@end deftypefun
 
 
 
 
 @subsection Irregular Modified Cylindrical Bessel Functions
 
-/* Irregular modified Bessel function K_0(x)
- *
- * x > 0.0
- * exceptions: GSL_EDOM, GSL_EUNDRFLW
- */
-int gsl_sf_bessel_K0_impl(double x, gsl_sf_result * result);
-int gsl_sf_bessel_K0_e(double x, gsl_sf_result * result);
+
+@deftypefun  int gsl_sf_bessel_K0_impl(double x, gsl_sf_result * result)
+@deftypefunx int gsl_sf_bessel_K0_e(double x, gsl_sf_result * result)
+Domain: x > 0.0
+Exceptional Return Values: GSL_EDOM, GSL_EUNDRFLW
+@end deftypefun
 
 
-/* Irregular modified Bessel function K_1(x)
- *
- * x > 0.0
- * exceptions: GSL_EDOM, GSL_EOVRFLW, GSL_EUNDRFLW
- */
-int gsl_sf_bessel_K1_impl(double x, gsl_sf_result * result);
-int gsl_sf_bessel_K1_e(double x, gsl_sf_result * result);
+@deftypefun  int gsl_sf_bessel_K1_impl(double x, gsl_sf_result * result)
+@deftypefunx int gsl_sf_bessel_K1_e(double x, gsl_sf_result * result)
+Domain: x > 0.0
+Exceptional Return Values: GSL_EDOM, GSL_EOVRFLW, GSL_EUNDRFLW
+@end deftypefun
 
 
-/* Irregular modified Bessel function K_n(x)
- *
- * x > 0.0
- * exceptions: GSL_EDOM, GSL_EOVRFLW, GSL_EUNDRFLW
- */
-int gsl_sf_bessel_Kn_impl(int n, double x, gsl_sf_result * result);
-int gsl_sf_bessel_Kn_e(int n, double x, gsl_sf_result * result);
+@deftypefun  int gsl_sf_bessel_Kn_impl(int n, double x, gsl_sf_result * result)
+@deftypefunx int gsl_sf_bessel_Kn_e(int n, double x, gsl_sf_result * result)
+Domain: x > 0.0
+Exceptional Return Values: GSL_EDOM, GSL_EOVRFLW, GSL_EUNDRFLW
+@end deftypefun
 
 
-/* Irregular modified Bessel function  K_n(x)  for n=nmin,...,nmax
- *
- * x > 0.0, nmin >=0, nmax >= nmin
- * exceptions: GSL_EDOM, GSL_EOVRFLW, GSL_EUNDRFLW
- */
-int gsl_sf_bessel_Kn_array_impl(int nmin, int nmax, double x, double * result_array);
-int gsl_sf_bessel_Kn_array_e(int nmin, int nmax, double x, double * result_array);
+@deftypefun  int gsl_sf_bessel_Kn_array_impl(int nmin, int nmax, double x, double * result_array)
+@deftypefunx int gsl_sf_bessel_Kn_array_e(int nmin, int nmax, double x, double * result_array)
+Conditions: n=nmin,...,nmax
+Domain: x > 0.0, nmin >=0, nmax >= nmin
+Exceptional Return Values: GSL_EDOM, GSL_EOVRFLW, GSL_EUNDRFLW
+@end deftypefun
 
 
-/* Scaled irregular modified Bessel function
- *  exp(x) K_0(x)
- *
- * x > 0.0
- * exceptions: GSL_EDOM
- */
-int gsl_sf_bessel_K0_scaled_impl(double x, gsl_sf_result * result);
-int gsl_sf_bessel_K0_scaled_e(double x, gsl_sf_result * result);
+@deftypefun  int gsl_sf_bessel_K0_scaled_impl(double x, gsl_sf_result * result)
+@deftypefunx int gsl_sf_bessel_K0_scaled_e(double x, gsl_sf_result * result)
+@math{ exp(x) K_0(x) }
+Domain: x > 0.0
+Exceptional Return Values: GSL_EDOM
+@end deftypefun
 
 
-/* Scaled irregular modified Bessel function
- *  exp(x) K_1(x)
- *
- * x > 0.0
- * exceptions: GSL_EDOM, GSL_EUNDRFLW
- */
-int gsl_sf_bessel_K1_scaled_impl(double x, gsl_sf_result * result); 
-int gsl_sf_bessel_K1_scaled_e(double x, gsl_sf_result * result);
+@deftypefun  int gsl_sf_bessel_K1_scaled_impl(double x, gsl_sf_result * result) 
+@deftypefunx int gsl_sf_bessel_K1_scaled_e(double x, gsl_sf_result * result)
+@math{ exp(x) K_1(x) }
+Domain: x > 0.0
+Exceptional Return Values: GSL_EDOM, GSL_EUNDRFLW
+@end deftypefun
 
 
-/* Scaled irregular modified Bessel function
- *  exp(x) K_n(x)
- *
- * x > 0.0
- * exceptions: GSL_EDOM, GSL_EUNDRFLW
- */
-int gsl_sf_bessel_Kn_scaled_impl(int n, double x, gsl_sf_result * result);
-int gsl_sf_bessel_Kn_scaled_e(int n, double x, gsl_sf_result * result);
+@deftypefun  int gsl_sf_bessel_Kn_scaled_impl(int n, double x, gsl_sf_result * result)
+@deftypefunx int gsl_sf_bessel_Kn_scaled_e(int n, double x, gsl_sf_result * result)
+@math{ exp(x) K_n(x) }
+Domain: x > 0.0
+Exceptional Return Values: GSL_EDOM, GSL_EUNDRFLW
+@end deftypefun
 
 
-/* Scaled irregular modified Bessel function  exp(x) K_n(x)  for n=nmin,...,nmax
- *
- * x > 0.0, nmin >=0, nmax >= nmin
- * exceptions: GSL_EDOM, GSL_EUNDRFLW
- */
-int gsl_sf_bessel_Kn_scaled_array_impl(int nmin, int nmax, double x, double * result_array);
-int gsl_sf_bessel_Kn_scaled_array_e(int nmin, int nmax, double x, double * result_array);
+@deftypefun  int gsl_sf_bessel_Kn_scaled_array_impl(int nmin, int nmax, double x, double * result_array)
+@deftypefunx int gsl_sf_bessel_Kn_scaled_array_e(int nmin, int nmax, double x, double * result_array)
+@math{ exp(x) K_n(x) }
+Domain: x > 0.0, nmin >=0, nmax >= nmin
+Conditions: n=nmin,...,nmax
+Exceptional Return Values: GSL_EDOM, GSL_EUNDRFLW
+@end deftypefun
 
 
 
 
 @subsection Regular Spherical Bessel Functions
 
-/* Regular spherical Bessel function j_0(x) = sin(x)/x
- *
- * exceptions: none
- */
-int gsl_sf_bessel_j0_impl(double x, gsl_sf_result * result);
-int gsl_sf_bessel_j0_e(double x, gsl_sf_result * result);
+
+@deftypefun  int gsl_sf_bessel_j0_impl(double x, gsl_sf_result * result)
+@deftypefunx int gsl_sf_bessel_j0_e(double x, gsl_sf_result * result)
+@math{ j_0(x) = sin(x)/x }
+Exceptional Return Values: none
+@end deftypefun
 
 
-/* Regular spherical Bessel function j_1(x) = (sin(x)/x - cos(x))/x
- *
- * exceptions: GSL_EUNDRFLW
- */
-int gsl_sf_bessel_j1_impl(double x, gsl_sf_result * result);
-int gsl_sf_bessel_j1_e(double x, gsl_sf_result * result);
+@deftypefun  int gsl_sf_bessel_j1_impl(double x, gsl_sf_result * result)
+@deftypefunx int gsl_sf_bessel_j1_e(double x, gsl_sf_result * result)
+@math{ j_1(x) = (sin(x)/x - cos(x))/x }
+Exceptional Return Values: GSL_EUNDRFLW
+@end deftypefun
 
 
-/* Regular spherical Bessel function j_2(x) = ((3/x^2 - 1)sin(x) - 3cos(x)/x)/x
- *
- * exceptions: GSL_EUNDRFLW
- */
-int gsl_sf_bessel_j2_impl(double x, gsl_sf_result * result);
-int gsl_sf_bessel_j2_e(double x, gsl_sf_result * result);
+@deftypefun  int gsl_sf_bessel_j2_impl(double x, gsl_sf_result * result)
+@deftypefunx int gsl_sf_bessel_j2_e(double x, gsl_sf_result * result)
+@math{ j_2(x) = ((3/x^2 - 1)sin(x) - 3cos(x)/x)/x }
+Exceptional Return Values: GSL_EUNDRFLW
+@end deftypefun
 
 
-/* Regular spherical Bessel function j_l(x)
- *
- * l >= 0, x >= 0.0
- * exceptions: GSL_EDOM, GSL_EUNDRFLW
- */
-int gsl_sf_bessel_jl_impl(int l, double x, gsl_sf_result * result);
-int gsl_sf_bessel_jl_e(int l, double x, gsl_sf_result * result);
+@deftypefun  int gsl_sf_bessel_jl_impl(int l, double x, gsl_sf_result * result)
+@deftypefunx int gsl_sf_bessel_jl_e(int l, double x, gsl_sf_result * result)
+Domain: l >= 0, x >= 0.0
+Exceptional Return Values: GSL_EDOM, GSL_EUNDRFLW
+@end deftypefun
 
 
-/* Regular spherical Bessel function j_l(x) for l=0,1,...,lmax
- *
- * exceptions: GSL_EDOM, GSL_EUNDRFLW
- */
-int gsl_sf_bessel_jl_array_impl(int lmax, double x, double * result_array);
-int gsl_sf_bessel_jl_array_e(int lmax, double x, double * result_array);
+@deftypefun  int gsl_sf_bessel_jl_array_impl(int lmax, double x, double * result_array)
+@deftypefunx int gsl_sf_bessel_jl_array_e(int lmax, double x, double * result_array)
+Domain: lmax >= 0
+Conditions: l=0,1,...,lmax
+Exceptional Return Values: GSL_EDOM, GSL_EUNDRFLW
+@end deftypefun
 
 
-/* Regular spherical Bessel function j_l(x) for l=0,1,...,lmax
- * Uses Steed's method.
- *
- * exceptions: GSL_EDOM, GSL_EUNDRFLW
- */
-int gsl_sf_bessel_jl_steed_array_impl(int lmax, double x, double * jl_x_array);
-
+@deftypefun  int gsl_sf_bessel_jl_steed_array_impl(int lmax, double x, double * jl_x_array)
+Uses Steed's method.
+Domain: lmax >= 0
+Conditions: l=0,1,...,lmax
+Exceptional Return Values: GSL_EDOM, GSL_EUNDRFLW
+@end deftypefun
 
 
 
 
 @subsection Irregular Spherical Bessel Functions
 
-/* Irregular spherical Bessel function y_0(x)
- *
- * exceptions: none
- */
-int gsl_sf_bessel_y0_impl(double x, gsl_sf_result * result);
-int gsl_sf_bessel_y0_e(double x, gsl_sf_result * result);
+
+@deftypefun  int gsl_sf_bessel_y0_impl(double x, gsl_sf_result * result)
+@deftypefunx int gsl_sf_bessel_y0_e(double x, gsl_sf_result * result)
+Exceptional Return Values: none
+@end deftypefun
 
 
-/* Irregular spherical Bessel function y_1(x)
- *
- * exceptions: GSL_EUNDRFLW
- */
-int gsl_sf_bessel_y1_impl(double x, gsl_sf_result * result);
-int gsl_sf_bessel_y1_e(double x, gsl_sf_result * result);
+@deftypefun  int gsl_sf_bessel_y1_impl(double x, gsl_sf_result * result)
+@deftypefunx int gsl_sf_bessel_y1_e(double x, gsl_sf_result * result)
+Exceptional Return Values: GSL_EUNDRFLW
+@end deftypefun
 
 
-/* Irregular spherical Bessel function y_2(x)
- *
- * exceptions: GSL_EUNDRFLW
- */
-int gsl_sf_bessel_y2_impl(double x, gsl_sf_result * result);
-int gsl_sf_bessel_y2_e(double x, gsl_sf_result * result);
+@deftypefun  int gsl_sf_bessel_y2_impl(double x, gsl_sf_result * result)
+@deftypefunx int gsl_sf_bessel_y2_e(double x, gsl_sf_result * result)
+Exceptional Return Values: GSL_EUNDRFLW
+@end deftypefun
 
 
-/* Irregular spherical Bessel function y_l(x)
- *
- * exceptions: GSL_EUNDRFLW
- */
-int gsl_sf_bessel_yl_impl(int l, double x, gsl_sf_result * result);
-int gsl_sf_bessel_yl_e(int l, double x, gsl_sf_result * result);
+@deftypefun  int gsl_sf_bessel_yl_impl(int l, double x, gsl_sf_result * result)
+@deftypefunx int gsl_sf_bessel_yl_e(int l, double x, gsl_sf_result * result)
+Exceptional Return Values: GSL_EUNDRFLW
+@end deftypefun
 
 
-/* Irregular spherical Bessel function y_l(x) for l=0,1,...,lmax
- *
- * exceptions: GSL_EUNDRFLW
- */
-int gsl_sf_bessel_yl_array_impl(int lmax, double x, double * result_array);
-int gsl_sf_bessel_yl_array_e(int lmax, double x, double * result_array);
+@deftypefun  int gsl_sf_bessel_yl_array_impl(int lmax, double x, double * result_array)
+@deftypefunx int gsl_sf_bessel_yl_array_e(int lmax, double x, double * result_array)
+Domain: lmax >= 0
+Conditions: l=0,1,...,lmax
+Exceptional Return Values: GSL_EUNDRFLW
+@end deftypefun
 
 
 
 
 @subsection Regular Modified Spherical Bessel Functions
 
-/* Regular scaled modified spherical Bessel function
- *
- * Exp[-|x|] i_0(x)
- *
- * exceptions: none
- */
-int gsl_sf_bessel_i0_scaled_impl(double x, gsl_sf_result * result);
-int gsl_sf_bessel_i0_scaled_e(double x, gsl_sf_result * result);
+@math{ i_l(x) = Sqrt[Pi/(2x)] BesselI[l+1/2,x] }
+
+@deftypefun  int gsl_sf_bessel_i0_scaled_impl(double x, gsl_sf_result * result)
+@deftypefunx int gsl_sf_bessel_i0_scaled_e(double x, gsl_sf_result * result)
+@math{ exp(-|x|) i_0(x) }
+Exceptional Return Values: none
+@end deftypefun
 
 
-/* Regular scaled modified spherical Bessel function
- *
- * Exp[-|x|] i_1(x)
- *
- * exceptions: GSL_EUNDRFLW
- */
-int gsl_sf_bessel_i1_scaled_impl(double x, gsl_sf_result * result);
-int gsl_sf_bessel_i1_scaled_e(double x, gsl_sf_result * result);
+@deftypefun  int gsl_sf_bessel_i1_scaled_impl(double x, gsl_sf_result * result)
+@deftypefunx int gsl_sf_bessel_i1_scaled_e(double x, gsl_sf_result * result)
+@math{ exp(-|x|) i_1(x) }
+Exceptional Return Values: GSL_EUNDRFLW
+@end deftypefun
 
 
-/* Regular scaled modified spherical Bessel function
- *
- * Exp[-|x|] i_2(x)
- *
- * exceptions: GSL_EUNDRFLW
- */
-int gsl_sf_bessel_i2_scaled_impl(double x, gsl_sf_result * result);
-int gsl_sf_bessel_i2_scaled_e(double x, gsl_sf_result * result);
+@deftypefun  int gsl_sf_bessel_i2_scaled_impl(double x, gsl_sf_result * result)
+@deftypefunx int gsl_sf_bessel_i2_scaled_e(double x, gsl_sf_result * result)
+@math{ exp(-|x|) i_2(x) }
+Exceptional Return Values: GSL_EUNDRFLW
+@end deftypefun
 
 
-/* Regular scaled modified spherical Bessel functions
- *
- * Exp[-|x|] i_l(x)
- *
- * i_l(x) = Sqrt[Pi/(2x)] BesselI[l+1/2,x]
- *
- * l >= 0
- * exceptions: GSL_EDOM, GSL_EUNDRFLW
- */
-int gsl_sf_bessel_il_scaled_impl(int l, double x, gsl_sf_result * result);
-int gsl_sf_bessel_il_scaled_e(int l, double x, gsl_sf_result * result);
+@deftypefun  int gsl_sf_bessel_il_scaled_impl(int l, double x, gsl_sf_result * result)
+@deftypefunx int gsl_sf_bessel_il_scaled_e(int l, double x, gsl_sf_result * result)
+@math{ exp(-|x|) i_l(x) }
+Domain: l >= 0
+Exceptional Return Values: GSL_EDOM, GSL_EUNDRFLW
+@end deftypefun
 
 
-/* Regular scaled modified spherical Bessel functions
- *
- * Exp[-|x|] i_l(x)
- * for l=0,1,...,lmax
- *
- * exceptions: GSL_EUNDRFLW
- */
-int gsl_sf_bessel_il_scaled_array_impl(int lmax, double x, double * result_array);
-int gsl_sf_bessel_il_scaled_array_e(int lmax, double x, double * result_array);
+@deftypefun  int gsl_sf_bessel_il_scaled_array_impl(int lmax, double x, double * result_array)
+@deftypefunx int gsl_sf_bessel_il_scaled_array_e(int lmax, double x, double * result_array)
+@math{ exp(-|x|) i_l(x) }
+Domain: lmax >= 0
+Conditions: l=0,1,...,lmax
+Exceptional Return Values: GSL_EUNDRFLW
+@end deftypefun
 
 
 
@@ -393,154 +328,127 @@ int gsl_sf_bessel_il_scaled_array_e(int lmax, double x, double * result_array);
 
 @subsection Irregular Modified Spherical Bessel Functions
 
-
-/* Irregular scaled modified spherical Bessel function
- * Exp[x] k_0(x)
- *
- * x > 0.0
- * exceptions: GSL_EDOM, GSL_EUNDRFLW
- */
-int gsl_sf_bessel_k0_scaled_impl(double x, gsl_sf_result * result);
-int gsl_sf_bessel_k0_scaled_e(double x, gsl_sf_result * result);
+@math{ k_l(x) = Sqrt[Pi/(2x)] BesselK[l+1/2,x] }
 
 
-/* Irregular modified spherical Bessel function
- * Exp[x] k_1(x)
- *
- * x > 0.0
- * exceptions: GSL_EDOM, GSL_EUNDRFLW, GSL_EOVRFLW
- */
-int gsl_sf_bessel_k1_scaled_impl(double x, gsl_sf_result * result);
-int gsl_sf_bessel_k1_scaled_e(double x, gsl_sf_result * result);
+@deftypefun  int gsl_sf_bessel_k0_scaled_impl(double x, gsl_sf_result * result)
+@deftypefunx int gsl_sf_bessel_k0_scaled_e(double x, gsl_sf_result * result)
+@math{ Exp[x] k_0(x) }
+Domain: x > 0.0
+Exceptional Return Values: GSL_EDOM, GSL_EUNDRFLW
+@end deftypefun
 
 
-/* Irregular modified spherical Bessel function
- * Exp[x] k_2(x)
- *
- * x > 0.0
- * exceptions: GSL_EDOM, GSL_EUNDRFLW, GSL_EOVRFLW
- */
-int gsl_sf_bessel_k2_scaled_impl(double x, gsl_sf_result * result);
-int gsl_sf_bessel_k2_scaled_e(double x, gsl_sf_result * result);
+@deftypefun  int gsl_sf_bessel_k1_scaled_impl(double x, gsl_sf_result * result)
+@deftypefunx int gsl_sf_bessel_k1_scaled_e(double x, gsl_sf_result * result)
+@math{ exp(x) k_1(x) }
+Domain: x > 0.0
+Exceptional Return Values: GSL_EDOM, GSL_EUNDRFLW, GSL_EOVRFLW
+@end deftypefun
 
 
-/* Irregular modified spherical Bessel function
- * Exp[x] k_l[x]
- *
- * k_l(x) = Sqrt[Pi/(2x)] BesselK[l+1/2,x]
- *
- * exceptions: GSL_EDOM, GSL_EUNDRFLW
- */
-int gsl_sf_bessel_kl_scaled_impl(int l, double x, gsl_sf_result * result);
-int gsl_sf_bessel_kl_scaled_e(int l, double x, gsl_sf_result * result);
+@deftypefun  int gsl_sf_bessel_k2_scaled_impl(double x, gsl_sf_result * result)
+@deftypefunx int gsl_sf_bessel_k2_scaled_e(double x, gsl_sf_result * result)
+@math{ exp(x) k_2(x) }
+Domain: x > 0.0
+Exceptional Return Values: GSL_EDOM, GSL_EUNDRFLW, GSL_EOVRFLW
+@end deftypefun
 
 
-/* Irregular scaled modified spherical Bessel function
- * Exp[x] k_l(x)
- *
- * for l=0,1,...,lmax
- * exceptions: GSL_EDOM, GSL_EUNDRFLW
- */
-int gsl_sf_bessel_kl_scaled_array_impl(int lmax, double x, double * result_array);
-int gsl_sf_bessel_kl_scaled_array_e(int lmax, double x, double * result_array);
+@deftypefun  int gsl_sf_bessel_kl_scaled_impl(int l, double x, gsl_sf_result * result)
+@deftypefunx int gsl_sf_bessel_kl_scaled_e(int l, double x, gsl_sf_result * result)
+@math{ exp(x) k_l(x) }
+Domain: x > 0.0
+Exceptional Return Values: GSL_EDOM, GSL_EUNDRFLW
+@end deftypefun
+
+
+@deftypefun  int gsl_sf_bessel_kl_scaled_array_impl(int lmax, double x, double * result_array)
+@deftypefunx int gsl_sf_bessel_kl_scaled_array_e(int lmax, double x, double * result_array)
+@math{ exp(x) k_l(x) }
+Domain: lmax >= 0
+Conditions: l=0,1,...,lmax
+Exceptional Return Values: GSL_EDOM, GSL_EUNDRFLW
+@end deftypefun
 
 
 
 @subsection Regular Bessel Function, Fractional Order
 
-/* Regular cylindrical Bessel function J_nu(x)
- *
- * exceptions: GSL_EDOM, GSL_EUNDRFLW
- */
-int gsl_sf_bessel_Jnu_impl(double nu, double x, gsl_sf_result * result);
-int gsl_sf_bessel_Jnu_e(double nu, double x, gsl_sf_result * result);
+
+@deftypefun  int gsl_sf_bessel_Jnu_impl(double nu, double x, gsl_sf_result * result)
+@deftypefunx int gsl_sf_bessel_Jnu_e(double nu, double x, gsl_sf_result * result)
+Exceptional Return Values: GSL_EDOM, GSL_EUNDRFLW
+@end deftypefun
 
 
-/* Regular cylindrical Bessel function J_nu(x)
- * evaluated at a series of x values. The array
- * contains the x values. They are assumed to be
- * strictly ordered and positive. The array is
- * over-written with the values of J_nu(x_i).
- *
- * exceptions: GSL_EDOM, GSL_EINVAL
- */
-int gsl_sf_bessel_sequence_Jnu_impl(double nu, gsl_mode_t mode, size_t size, double * v);
-int gsl_sf_bessel_sequence_Jnu_e(double nu, gsl_mode_t mode, size_t size, double * v);
+@deftypefun  int gsl_sf_bessel_sequence_Jnu_impl(double nu, gsl_mode_t mode, size_t size, double * v)
+@deftypefunx int gsl_sf_bessel_sequence_Jnu_e(double nu, gsl_mode_t mode, size_t size, double * v)
+Regular cylindrical Bessel function J_nu(x)
+evaluated at a series of x values. The array
+contains the x values. They are assumed to be
+strictly ordered and positive. The array is
+over-written with the values of J_nu(x_i).
+Exceptional Return Values: GSL_EDOM, GSL_EINVAL
+@end deftypefun
 
 
 
 
 @subsection Irregular Bessel Functions, Fractional Order
 
-/* Irregular cylindrical Bessel function Y_nu(x)
- *
- * exceptions:  
- */
-int gsl_sf_bessel_Ynu_impl(double nu, double x, gsl_sf_result * result);
-int gsl_sf_bessel_Ynu_e(double nu, double x, gsl_sf_result * result);
-
+@deftypefun  int gsl_sf_bessel_Ynu_impl(double nu, double x, gsl_sf_result * result)
+@deftypefunx int gsl_sf_bessel_Ynu_e(double nu, double x, gsl_sf_result * result)
+Exceptional Return Values: 
+@end deftypefun
 
 
 
 @subsection Regular Modified Bessel Functions, Fractional Order
 
-/* Scaled modified cylindrical Bessel functions
- *
- * Exp[-|x|] BesselI[nu, x]
- * x >= 0, nu >= 0
- *
- * exceptions: GSL_EDOM
- */
-int gsl_sf_bessel_Inu_scaled_impl(double nu, double x, gsl_sf_result * result);
-int gsl_sf_bessel_Inu_scaled_e(double nu, double x, gsl_sf_result * result);
+
+@deftypefun  int gsl_sf_bessel_Inu_scaled_impl(double nu, double x, gsl_sf_result * result)
+@deftypefunx int gsl_sf_bessel_Inu_scaled_e(double nu, double x, gsl_sf_result * result)
+@math{ exp(-|x|) BesselI[nu, x] }
+Domain: x >= 0, nu >= 0
+Exceptional Return Values: GSL_EDOM
+@end deftypefun
 
 
-/* Modified cylindrical Bessel functions
- *
- * BesselI[nu, x]
- * x >= 0, nu >= 0
- *
- * exceptions: GSL_EDOM, GSL_EOVRFLW
- */
-int gsl_sf_bessel_Inu_impl(double nu, double x, gsl_sf_result * result);
-int gsl_sf_bessel_Inu_e(double nu, double x, gsl_sf_result * result);
-
+@deftypefun  int gsl_sf_bessel_Inu_impl(double nu, double x, gsl_sf_result * result)
+@deftypefunx int gsl_sf_bessel_Inu_e(double nu, double x, gsl_sf_result * result)
+@math{ BesselI[nu, x] }
+Domain: x >= 0, nu >= 0
+Exceptional Return Values: GSL_EDOM, GSL_EOVRFLW
+@end deftypefun
 
 
 
 @subsection Irregular Modified Bessel Functions, Fractional Order
 
-/* Scaled modified cylindrical Bessel functions
- *
- * Exp[+|x|] BesselK[nu, x]
- * x > 0, nu >= 0
- *
- * exceptions: GSL_EDOM
- */
-int gsl_sf_bessel_Knu_scaled_impl(double nu, double x, gsl_sf_result * result);
-int gsl_sf_bessel_Knu_scaled_e(double nu, double x, gsl_sf_result * result);
+
+@deftypefun  int gsl_sf_bessel_Knu_scaled_impl(double nu, double x, gsl_sf_result * result)
+@deftypefunx int gsl_sf_bessel_Knu_scaled_e(double nu, double x, gsl_sf_result * result)
+@math{ Exp[+|x|] BesselK[nu, x] }
+Domain: x > 0, nu >= 0
+Exceptional Return Values: GSL_EDOM
+@end deftypefun
 
 
-/* Modified cylindrical Bessel functions
- *
- * BesselK[nu, x]
- * x > 0, nu >= 0
- *
- * exceptions: GSL_EDOM, GSL_EUNDRFLW
- */
-int gsl_sf_bessel_Knu_impl(double nu, double x, gsl_sf_result * result);
-int gsl_sf_bessel_Knu_e(double nu, double x, gsl_sf_result * result);
+@deftypefun  int gsl_sf_bessel_Knu_impl(double nu, double x, gsl_sf_result * result)
+@deftypefunx int gsl_sf_bessel_Knu_e(double nu, double x, gsl_sf_result * result)
+@math{ BesselK[nu, x] }
+Domain: x > 0, nu >= 0
+Exceptional Return Values: GSL_EDOM, GSL_EUNDRFLW
+@end deftypefun
 
 
-/* Logarithm of modified cylindrical Bessel functions.
- *
- * Log[BesselK[nu, x]]
- * x > 0, nu >= 0
- *
- * exceptions: GSL_EDOM
- */
-int gsl_sf_bessel_lnKnu_impl(double nu, double x, gsl_sf_result * result);
-int gsl_sf_bessel_lnKnu_e(double nu, double x, gsl_sf_result * result);
+@deftypefun  int gsl_sf_bessel_lnKnu_impl(double nu, double x, gsl_sf_result * result)
+@deftypefunx int gsl_sf_bessel_lnKnu_e(double nu, double x, gsl_sf_result * result)
+@math{ Log[BesselK[nu, x]] }
+Domain: x > 0, nu >= 0
+Exceptional Return Values: GSL_EDOM
+@end deftypefun
 
 
 
@@ -548,26 +456,24 @@ int gsl_sf_bessel_lnKnu_e(double nu, double x, gsl_sf_result * result);
 @subsection Zeros of Regular Bessel Functions
 
 
-/* s'th positive zero of the Bessel function J_0(x).
- *
- * exceptions: 
- */
-int gsl_sf_bessel_zero_J0_impl(int s, gsl_sf_result * result);
-int gsl_sf_bessel_zero_J0_e(int s, gsl_sf_result * result);
+@deftypefun  int gsl_sf_bessel_zero_J0_impl(int s, gsl_sf_result * result)
+@deftypefunx int gsl_sf_bessel_zero_J0_e(int s, gsl_sf_result * result)
+s'th positive zero of the Bessel function J_0(x).
+Exceptional Return Values: 
+@end deftypefun
 
 
-/* s'th positive zero of the Bessel function J_1(x).
- *
- * exceptions: 
- */
-int gsl_sf_bessel_zero_J1_impl(int s, gsl_sf_result * result);
-int gsl_sf_bessel_zero_J1_e(int s, gsl_sf_result * result);
+@deftypefun  int gsl_sf_bessel_zero_J1_impl(int s, gsl_sf_result * result)
+@deftypefunx int gsl_sf_bessel_zero_J1_e(int s, gsl_sf_result * result)
+s'th positive zero of the Bessel function J_1(x).
+Exceptional Return Values: 
+@end deftypefun
 
 
-/* s'th positive zero of the Bessel function J_nu(x).
- *
- * exceptions: 
- */
-int gsl_sf_bessel_zero_Jnu_impl(double nu, int s, gsl_sf_result * result);
-int gsl_sf_bessel_zero_Jnu_e(double nu, int s, gsl_sf_result * result);
+
+@deftypefun  int gsl_sf_bessel_zero_Jnu_impl(double nu, int s, gsl_sf_result * result)
+@deftypefunx int gsl_sf_bessel_zero_Jnu_e(double nu, int s, gsl_sf_result * result)
+s'th positive zero of the Bessel function J_nu(x).
+Exceptional Return Values: 
+@end deftypefun
 
