@@ -68,7 +68,7 @@ This data type defines a general function with parameters for Monte
 Carlo integration.
 
 @table @code
-@item double (* @var{function}) (double * @var{x}, size_t @var{dim}, void * @var{params})
+@item double (* @var{f}) (double * @var{x}, size_t @var{dim}, void * @var{params})
 this function should return the value
 @c{$f(x,\hbox{\it params})$}
 @math{f(x,params)} for argument @var{x} and parameters @var{params},
