@@ -343,6 +343,9 @@ int main (void)
       x = x / i;
       
       printf("i=%2d sum=%.18f error=%g\n",i, sum, sum - M_E);
+
+      if (i > 30)
+         break ;
     @}  
   while (sum != oldsum);
 

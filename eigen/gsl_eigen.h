@@ -33,9 +33,9 @@ gsl_eigen_jacobi_impl(gsl_matrix * matrix,
  * exceptions: 
  */
 int
-gsl_la_invert_jacobi_impl(const gsl_matrix * matrix,
-                          gsl_matrix * ainv,
-                          unsigned int max_rot);
+gsl_eigen_invert_jacobi_impl(const gsl_matrix * matrix,
+                             gsl_matrix * ainv,
+                             unsigned int max_rot);
 
 
 /* Sort eigensystem results based on eigenvalues.

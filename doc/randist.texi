@@ -1433,8 +1433,7 @@ generators below, such as the binomial distribution.  To use if for
 something like the Poisson Distribution, a modification would have to
 be made, since it only takes a finite set of @var{K} outcomes.
 
-@deftypefn Random {gsl_ran_discrete_t *} gsl_ran_discrete_preproc (int @var{K}, const 
-double * @var{P})
+@deftypefn Random {gsl_ran_discrete_t *} gsl_ran_discrete_preproc (size_t @var{K}, const double * @var{P})
 @cindex Discrete random numbers
 @cindex Discrete random numbers, preprocessing
 This function returns a pointer to a structure that contains the lookup
@@ -1446,13 +1445,13 @@ This return value is used
 as an argument for the @code{gsl_ran_discrete} function below.
 @end deftypefn
 
-@deftypefn Random {int} gsl_ran_discrete (const gsl_rng * @var{r}, const gsl_ran_discrete_t * @var{g})
+@deftypefn Random {size_t} gsl_ran_discrete (const gsl_rng * @var{r}, const gsl_ran_discrete_t * @var{g})
 @cindex Discrete random numbers
 After the preprocessor, above, has been called, you use this function to
 get the discrete random numbers.
 @end deftypefn
 
-@deftypefn Random {double} gsl_ran_discrete_pdf (int @var{k}, const gsl_ran_discrete_t * @var{g})
+@deftypefn Random {double} gsl_ran_discrete_pdf (size_t @var{k}, const gsl_ran_discrete_t * @var{g})
 @cindex Discrete random numbers
 Returns the probability @var{P[k]} of observing the variable @var{k}.
 Since @var{P[k]} is not stored as part of the lookup table, it must be
