@@ -88,7 +88,6 @@ Questions about the GNU GPL},
 @url{http://www.gnu.org/copyleft/gpl-faq.html}
 @end itemize
 
-
 @node Obtaining GSL
 @section Obtaining GSL
 @cindex obtaining GSL
@@ -98,18 +97,19 @@ Questions about the GNU GPL},
 The source code for the library can be obtained in different ways, by
 copying it from a friend, purchasing it on @sc{cdrom} or downloading it
 from the internet. A list of public ftp servers which carry the source
-code can be found on the development website,
+code can be found on the GNU website,
 
 @itemize @asis
 @item 
-@url{http://sources.redhat.com/gsl/}
+@url{http://www.gnu.org/software/gsl/}
 @end itemize
 @noindent
-The preferred platform for the library is a GNU system, which
-allows it to take advantage of additional features.  The library is
-portable and compiles on most Unix platforms. It is also available for
-Microsoft Windows.  Precompiled versions of the library can be purchased
-from commercial redistributors listed on the website.
+The preferred platform for the library is a GNU system, which allows it
+to take advantage of additional features in the GNU C compiler and GNU C
+library.  However, the library is fully portable and compiles on most
+Unix platforms. It is also available for Microsoft Windows.  Precompiled
+versions of the library can be purchased from commercial redistributors
+listed on the website.
 
 Announcements of new releases, updates and other relevant events are
 made on the @code{gsl-announce} mailing list.  To subscribe to this
