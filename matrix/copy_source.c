@@ -13,15 +13,15 @@ FUNCTION (gsl_matrix, memcpy) (TYPE (gsl_matrix) * dest,
     }
 
   {
-    const size_t src_dim2 = src->dim2 ;
-    const size_t dest_dim2 = dest->dim2 ;
+    const size_t src_tda = src->tda ;
+    const size_t dest_tda = dest->tda ;
     size_t i, j;
 
     for (i = 0; i < src_size1 ; i++)
       {
         for (j = 0; j < MULTIPLICITY * src_size2; j++)
           {
-            dest->data[dest_dim2 * i + j] = src->data[src_dim2 * i + j];
+            dest->data[dest_tda * i + j] = src->data[src_tda * i + j];
           }
       }
   }

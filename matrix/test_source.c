@@ -16,7 +16,7 @@ FUNCTION (test, func) (void)
   gsl_test (m->data == 0, NAME (gsl_matrix) "_alloc returns valid pointer");
   gsl_test (m->size1 != N, NAME (gsl_matrix) "_alloc returns valid size1");
   gsl_test (m->size2 != M, NAME (gsl_matrix) "_alloc returns valid size2");
-  gsl_test (m->dim2 != M, NAME (gsl_matrix) "_alloc returns valid dim2");
+  gsl_test (m->tda != M, NAME (gsl_matrix) "_alloc returns valid tda");
 
   for (i = 0; i < N; i++)
     {

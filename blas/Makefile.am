@@ -12,7 +12,7 @@ pkginclude_HEADERS = 		\
 	gsl_blas_raw_L3.h	\
 	gsl_blas_raw_cm.h
 
-noinst_HEADERS = matrix_access.h \
+noinst_HEADERS = cblas.h matrix_access.h \
 	source_asum_c.h		\
 	source_asum_r.h		\
 	source_axpy_c.h		\
@@ -66,7 +66,7 @@ noinst_HEADERS = matrix_access.h \
 	source_tpsv_r.h
 
 
-INCLUDES= -I$(top_builddir) -I$(top_srcdir)
+INCLUDES= -I$(top_srcdir)
 
 TESTS = test_blas_raw
 

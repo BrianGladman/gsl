@@ -19,6 +19,8 @@ in the Libtool Manual).
 (integration/). It is better to write the code to avoid dependence on
 rounding.
 
+* Optimization/error for dest == src as appropriate
+
 * Clean up the ordering of lines in the Makefile.am's so that they are
 all consistent. At the moment the lines are in any order. Also get rid
 of make strict targets, since it's better to define a shell alias to
@@ -32,10 +34,7 @@ do that.  Files with strict target are
     specfunc/Makefile.am
     sum/Makefile.am
 
-* In matrix struct change dim2 to tda, otherwise the distinction of
-size2 vs dim2 is totally confusing.
-
-* Run tests where matrix dim2 != size2, note that dim2 is a physical
+* Run tests where matrix tda != size2, note that tda is a physical
 dimension and size2 is the number of columns in the matrix. This will
 probably find a lot of bugs in the matrix logic.
 

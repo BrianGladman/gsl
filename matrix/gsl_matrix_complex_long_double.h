@@ -12,7 +12,7 @@ struct gsl_matrix_complex_long_double_struct
 {
   size_t size1;
   size_t size2;
-  size_t dim2;
+  size_t tda;
   long double * data;
   gsl_block_complex_long_double * block;
 } ;
@@ -94,7 +94,7 @@ gsl_matrix_complex_long_double_get(const gsl_matrix_complex_long_double * m,
       GSL_ERROR_RETURN("second index out of range", GSL_EINVAL, zero) ;
     }
 #endif
-  return *(gsl_complex_long_double *)(m->data + 2*(i * m->dim2 + j)) ;
+  return *(gsl_complex_long_double *)(m->data + 2*(i * m->tda + j)) ;
 } 
 
 extern inline 
@@ -112,7 +112,7 @@ gsl_matrix_complex_long_double_set(gsl_matrix_complex_long_double * m,
       GSL_ERROR_RETURN_NOTHING("second index out of range", GSL_EINVAL) ;
     }
 #endif
-  *(gsl_complex_long_double *)(m->data + 2*(i * m->dim2 + j)) = x ;
+  *(gsl_complex_long_double *)(m->data + 2*(i * m->tda + j)) = x ;
 }
 #endif /* HAVE_INLINE */
 

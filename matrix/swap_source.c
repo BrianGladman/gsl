@@ -17,8 +17,8 @@ FUNCTION (gsl_matrix, swap_rows) (TYPE (gsl_matrix) * m,
 
   if (i != j)
     {
-      ATOMIC *row1 = m->data + MULTIPLICITY * i * m->dim2;
-      ATOMIC *row2 = m->data + MULTIPLICITY * j * m->dim2;
+      ATOMIC *row1 = m->data + MULTIPLICITY * i * m->tda;
+      ATOMIC *row2 = m->data + MULTIPLICITY * j * m->tda;
       
       size_t k;
       
@@ -60,7 +60,7 @@ FUNCTION (gsl_matrix, swap_cols) (TYPE (gsl_matrix) * m,
       for (p = 0; p < size1; p++)
         {
           size_t k;
-          size_t n = p * MULTIPLICITY * m->dim2;
+          size_t n = p * MULTIPLICITY * m->tda;
  
           for (k = 0; k < MULTIPLICITY; k++)
             {
@@ -98,7 +98,7 @@ FUNCTION (gsl_matrix, swap_rowcol) (TYPE (gsl_matrix) * m,
     }
 
   {
-    ATOMIC *row = m->data + MULTIPLICITY * i * m->dim2;
+    ATOMIC *row = m->data + MULTIPLICITY * i * m->tda;
     ATOMIC *col = m->data + MULTIPLICITY * j;
       
     size_t p;
@@ -108,7 +108,7 @@ FUNCTION (gsl_matrix, swap_rowcol) (TYPE (gsl_matrix) * m,
         size_t k;
 
         size_t r = p * MULTIPLICITY;
-        size_t c = p * MULTIPLICITY * m->dim2;
+        size_t c = p * MULTIPLICITY * m->tda;
         
           for (k = 0; k < MULTIPLICITY; k++)
             {

@@ -160,7 +160,7 @@ FUNCTION (gsl_vector, alloc_row_from_matrix) (TYPE(gsl_matrix) * m,
 			GSL_ENOMEM, 0);
     }
 
-  v->data = m->data + i * m-> dim2 ;
+  v->data = m->data + i * m->tda ;
   v->size = m->size2;
   v->stride = 1;
   v->block = 0;
@@ -191,7 +191,7 @@ FUNCTION (gsl_vector, alloc_col_from_matrix) (TYPE(gsl_matrix) * m,
 
   v->data = m->data + j ;
   v->size = m->size1;
-  v->stride = m->dim2;
+  v->stride = m->tda;
   v->block = 0;
 
   return v;
@@ -214,7 +214,7 @@ FUNCTION (gsl_vector, view_row_from_matrix) (TYPE(gsl_vector) * v,
       GSL_ERROR ("vector already has memory allocated to it", GSL_ENOMEM);
     }
 
-  v->data = m->data + i * m-> dim2 ;
+  v->data = m->data + i * m->tda ;
   v->size = m->size2;
   v->stride = 1;
 
@@ -240,7 +240,7 @@ FUNCTION (gsl_vector, view_col_from_matrix) (TYPE(gsl_vector) * v,
 
   v->data = m->data + j ;
   v->size = m->size1;
-  v->stride = m->dim2;
+  v->stride = m->tda;
 
   return GSL_SUCCESS;
 }
@@ -280,7 +280,7 @@ FUNCTION(gsl_matrix, view_from_vector) (TYPE(gsl_matrix) * m,
   m->data = base->data + offset;
   m->size1 = n1;
   m->size2 = n2;
-  m->dim2 = d2;
+  m->tda = d2;
   
   return GSL_SUCCESS;
 }

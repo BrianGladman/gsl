@@ -460,7 +460,7 @@ int  gsl_blas_sgemv (CBLAS_TRANSPOSE_t TransA,
 {
   size_t row_dim  = A->size1;
   size_t col_dim  = A->size2;
-  size_t tda = A->dim2 ;
+  size_t tda = A->tda ;
   
   if(col_dim == X->size) {
     gsl_blas_raw_sgemv(TransA,
@@ -487,7 +487,7 @@ int  gsl_blas_dgemv (CBLAS_TRANSPOSE_t TransA,
 {
   size_t row_dim  = A->size1;
   size_t col_dim  = A->size2;
-  size_t tda = A->dim2 ;
+  size_t tda = A->tda ;
 
   if(col_dim == X->size) {
     gsl_blas_raw_dgemv(TransA,
@@ -514,7 +514,7 @@ int  gsl_blas_cgemv (CBLAS_TRANSPOSE_t TransA,
 {
   size_t row_dim  = A->size1;
   size_t col_dim  = A->size2;
-  size_t tda = A->dim2 ;
+  size_t tda = A->tda ;
   
   if(col_dim == X->size) {
     gsl_blas_raw_cgemv(TransA,
@@ -541,7 +541,7 @@ int  gsl_blas_zgemv (CBLAS_TRANSPOSE_t TransA,
 {
   size_t row_dim  = A->size1;
   size_t col_dim  = A->size2;
-  size_t tda = A->dim2 ;
+  size_t tda = A->tda ;
   
   if(col_dim == X->size) {
     gsl_blas_raw_zgemv(TransA,
@@ -571,7 +571,7 @@ int  gsl_blas_sgbmv (CBLAS_TRANSPOSE_t TransA,
 {
   size_t row_dim  = A->size1;
   size_t col_dim  = A->size2;
-  size_t tda = A->dim2 ;
+  size_t tda = A->tda ;
   
   if(col_dim == X->size) {
     gsl_blas_raw_sgbmv(TransA,
@@ -598,7 +598,7 @@ int  gsl_blas_dgbmv (CBLAS_TRANSPOSE_t TransA,
 {
   size_t row_dim  = A->size1;
   size_t col_dim  = A->size2;
-  size_t tda = A->dim2 ;
+  size_t tda = A->tda ;
 
   if(col_dim == X->size) {
     gsl_blas_raw_dgbmv(TransA,
@@ -626,7 +626,7 @@ int  gsl_blas_cgbmv (CBLAS_TRANSPOSE_t TransA,
 {
   size_t row_dim  = A->size1;
   size_t col_dim  = A->size2;
-  size_t tda = A->dim2 ;
+  size_t tda = A->tda ;
 
   if(col_dim == X->size) {
     gsl_blas_raw_cgbmv(TransA,
@@ -654,7 +654,7 @@ int  gsl_blas_zgbmv (CBLAS_TRANSPOSE_t TransA,
 {
   size_t row_dim  = A->size1;
   size_t col_dim  = A->size2;
-  size_t tda = A->dim2 ;
+  size_t tda = A->tda ;
   
   if(col_dim == X->size) {
     gsl_blas_raw_zgbmv(TransA,
@@ -681,7 +681,7 @@ int  gsl_blas_strmv (CBLAS_UPLO_t Uplo,
 {
   size_t row_dim  = A->size1;
   size_t col_dim  = A->size2;
-  size_t tda = A->dim2 ;
+  size_t tda = A->tda ;
 
   if(row_dim != col_dim) return GSL_EINVAL;
 
@@ -705,7 +705,7 @@ int  gsl_blas_dtrmv (CBLAS_UPLO_t Uplo,
 {
   size_t row_dim  = A->size1;
   size_t col_dim  = A->size2;
-  size_t tda = A->dim2 ;
+  size_t tda = A->tda ;
 
   if(row_dim != col_dim) return GSL_EINVAL;
 
@@ -729,7 +729,7 @@ int  gsl_blas_ctrmv (CBLAS_UPLO_t Uplo,
 {
   size_t row_dim  = A->size1;
   size_t col_dim  = A->size2;
-  size_t tda = A->dim2 ;
+  size_t tda = A->tda ;
 
   if(row_dim != col_dim) return GSL_EINVAL;
 
@@ -753,7 +753,7 @@ int  gsl_blas_ztrmv (CBLAS_UPLO_t Uplo,
 {
   size_t row_dim  = A->size1;
   size_t col_dim  = A->size2;
-  size_t tda = A->dim2 ;
+  size_t tda = A->tda ;
 
   if(row_dim != col_dim) return GSL_EINVAL;
 
@@ -780,7 +780,7 @@ int  gsl_blas_stbmv (CBLAS_UPLO_t Uplo,
 {
   size_t row_dim  = A->size1;
   size_t col_dim  = A->size2;
-  size_t tda = A->dim2 ;
+  size_t tda = A->tda ;
 
   if(row_dim != col_dim) return GSL_EINVAL;
 
@@ -806,7 +806,7 @@ int  gsl_blas_dtbmv (CBLAS_UPLO_t Uplo,
 {
   size_t row_dim  = A->size1;
   size_t col_dim  = A->size2;
-  size_t tda = A->dim2 ;
+  size_t tda = A->tda ;
 
   if(row_dim != col_dim) return GSL_EINVAL;
 
@@ -832,7 +832,7 @@ int  gsl_blas_ctbmv (CBLAS_UPLO_t Uplo,
 {
   size_t row_dim  = A->size1;
   size_t col_dim  = A->size2;
-  size_t tda = A->dim2 ;
+  size_t tda = A->tda ;
 
   if(row_dim != col_dim) return GSL_EINVAL;
 
@@ -858,7 +858,7 @@ int  gsl_blas_ztbmv (CBLAS_UPLO_t Uplo,
 {
   size_t row_dim  = A->size1;
   size_t col_dim  = A->size2;
-  size_t tda = A->dim2 ;
+  size_t tda = A->tda ;
 
   if(row_dim != col_dim) return GSL_EINVAL;
 
@@ -927,7 +927,7 @@ int  gsl_blas_strsv (CBLAS_UPLO_t Uplo,
 {
   size_t row_dim  = A->size1;
   size_t col_dim  = A->size2;
-  size_t tda = A->dim2 ;
+  size_t tda = A->tda ;
 
   if(row_dim != col_dim) return GSL_EINVAL;
 
@@ -951,7 +951,7 @@ int  gsl_blas_dtrsv (CBLAS_UPLO_t Uplo,
 {
   size_t row_dim  = A->size1;
   size_t col_dim  = A->size2;
-  size_t tda = A->dim2 ;
+  size_t tda = A->tda ;
 
   if(row_dim != col_dim) return GSL_EINVAL;
 
@@ -975,7 +975,7 @@ int  gsl_blas_ctrsv (CBLAS_UPLO_t Uplo,
 {
   size_t row_dim  = A->size1;
   size_t col_dim  = A->size2;
-  size_t tda = A->dim2 ;
+  size_t tda = A->tda ;
 
   if(row_dim != col_dim) return GSL_EINVAL;
 
@@ -999,7 +999,7 @@ int  gsl_blas_ztrsv (CBLAS_UPLO_t Uplo,
 {
   size_t row_dim  = A->size1;
   size_t col_dim  = A->size2;
-  size_t tda = A->dim2 ;
+  size_t tda = A->tda ;
 
   if(row_dim != col_dim) return GSL_EINVAL;
 
@@ -1026,7 +1026,7 @@ int  gsl_blas_stbsv (CBLAS_UPLO_t Uplo,
 {
   size_t row_dim  = A->size1;
   size_t col_dim  = A->size2;
-  size_t tda = A->dim2 ;
+  size_t tda = A->tda ;
 
   if(row_dim != col_dim) return GSL_EINVAL;
 
@@ -1052,7 +1052,7 @@ int  gsl_blas_dtbsv (CBLAS_UPLO_t Uplo,
 {
   size_t row_dim  = A->size1;
   size_t col_dim  = A->size2;
-  size_t tda = A->dim2 ;
+  size_t tda = A->tda ;
 
   if(row_dim != col_dim) return GSL_EINVAL;
 
@@ -1078,7 +1078,7 @@ int  gsl_blas_ctbsv (CBLAS_UPLO_t Uplo,
 {
   size_t row_dim  = A->size1;
   size_t col_dim  = A->size2;
-  size_t tda = A->dim2 ;
+  size_t tda = A->tda ;
 
   if(row_dim != col_dim) return GSL_EINVAL;
 
@@ -1104,7 +1104,7 @@ int  gsl_blas_ztbsv (CBLAS_UPLO_t Uplo,
 {
   size_t row_dim  = A->size1;
   size_t col_dim  = A->size2;
-  size_t tda = A->dim2 ;
+  size_t tda = A->tda ;
 
   if(row_dim != col_dim) return GSL_EINVAL;
 
@@ -1175,7 +1175,7 @@ int  gsl_blas_ssymv (CBLAS_UPLO_t Uplo,
 {
   size_t row_dim  = A->size1;
   size_t col_dim  = A->size2;
-  size_t tda = A->dim2 ;
+  size_t tda = A->tda ;
 
   if(row_dim != col_dim) return GSL_EINVAL;
 
@@ -1204,7 +1204,7 @@ int  gsl_blas_dsymv (CBLAS_UPLO_t Uplo,
 {
   size_t row_dim  = A->size1;
   size_t col_dim  = A->size2;
-  size_t tda = A->dim2 ;
+  size_t tda = A->tda ;
 
   if(row_dim != col_dim) return GSL_EINVAL;
 
@@ -1236,7 +1236,7 @@ int  gsl_blas_ssbmv (CBLAS_UPLO_t Uplo,
 {
   size_t row_dim  = A->size1;
   size_t col_dim  = A->size2;
-  size_t tda = A->dim2 ;
+  size_t tda = A->tda ;
 
   if(row_dim != col_dim) return GSL_EINVAL;
 
@@ -1267,7 +1267,7 @@ int  gsl_blas_dsbmv (CBLAS_UPLO_t Uplo,
 {
   size_t row_dim  = A->size1;
   size_t col_dim  = A->size2;
-  size_t tda = A->dim2 ;
+  size_t tda = A->tda ;
 
   if(row_dim != col_dim) return GSL_EINVAL;
 
@@ -1323,7 +1323,7 @@ int  gsl_blas_sger (float alpha,
 {
   size_t  row_dim = A->size1;
   size_t  col_dim = A->size2;
-  size_t tda = A->dim2 ;
+  size_t tda = A->tda ;
 
   /* FIXME: check this */
   if(X->size != row_dim) return GSL_EINVAL;
@@ -1346,7 +1346,7 @@ int  gsl_blas_dger (double alpha,
 {
   size_t  row_dim = A->size1;
   size_t  col_dim = A->size2;
-  size_t tda = A->dim2 ;
+  size_t tda = A->tda ;
 
   /* FIXME: check this */
   if(X->size != row_dim) return GSL_EINVAL;
@@ -1371,7 +1371,7 @@ int  gsl_blas_ssyr (CBLAS_UPLO_t Uplo,
 {
   size_t  row_dim = A->size1;
   size_t  col_dim = A->size2;
-  size_t tda = A->dim2 ;
+  size_t tda = A->tda ;
 
   if(row_dim != col_dim) return GSL_EINVAL;
   if(X->size != row_dim) return GSL_EINVAL;
@@ -1393,7 +1393,7 @@ int  gsl_blas_dsyr (CBLAS_UPLO_t Uplo,
 {
   size_t  row_dim = A->size1;
   size_t  col_dim = A->size2;
-  size_t tda = A->dim2 ;
+  size_t tda = A->tda ;
 
   if(row_dim != col_dim) return GSL_EINVAL;
   if(X->size != row_dim) return GSL_EINVAL;
@@ -1440,7 +1440,7 @@ int  gsl_blas_ssyr2 (CBLAS_UPLO_t Uplo,
 {
   size_t  row_dim = A->size1;
   size_t  col_dim = A->size2;
-  size_t tda = A->dim2 ;
+  size_t tda = A->tda ;
 
   if(row_dim != col_dim) return GSL_EINVAL;
   if(X->size != col_dim) return GSL_EINVAL;
@@ -1465,7 +1465,7 @@ int  gsl_blas_dsyr2 (CBLAS_UPLO_t Uplo,
 {
   size_t  row_dim = A->size1;
   size_t  col_dim = A->size2;
-  size_t tda = A->dim2 ;
+  size_t tda = A->tda ;
 
   if(row_dim != col_dim) return GSL_EINVAL;
   if(X->size != col_dim) return GSL_EINVAL;
@@ -1517,7 +1517,7 @@ int  gsl_blas_chemv (CBLAS_UPLO_t Uplo,
 {
   size_t row_dim  = A->size1;
   size_t col_dim  = A->size2;
-  size_t tda = A->dim2 ;
+  size_t tda = A->tda ;
 
   if(row_dim != col_dim) return GSL_EINVAL;
 
@@ -1546,7 +1546,7 @@ int  gsl_blas_zhemv (CBLAS_UPLO_t Uplo,
 {
   size_t row_dim  = A->size1;
   size_t col_dim  = A->size2;
-  size_t tda = A->dim2 ;
+  size_t tda = A->tda ;
 
   if(row_dim != col_dim) return GSL_EINVAL;
 
@@ -1578,7 +1578,7 @@ int  gsl_blas_chbmv (CBLAS_UPLO_t Uplo,
 {
   size_t row_dim  = A->size1;
   size_t col_dim  = A->size2;
-  size_t tda = A->dim2 ;
+  size_t tda = A->tda ;
 
   if(row_dim != col_dim) return GSL_EINVAL;
 
@@ -1609,7 +1609,7 @@ int  gsl_blas_zhbmv (CBLAS_UPLO_t Uplo,
 {
   size_t row_dim  = A->size1;
   size_t col_dim  = A->size2;
-  size_t tda = A->dim2 ;
+  size_t tda = A->tda ;
 
   if(row_dim != col_dim) return GSL_EINVAL;
 
@@ -1666,7 +1666,7 @@ int  gsl_blas_cgeru (const gsl_complex_float * alpha,
   gsl_blas_raw_cgeru (A->size1, A->size2, alpha->dat,
                       X->data, X->stride,
                       Y->data, Y->stride,
-                      A->data, A->dim2);
+                      A->data, A->tda);
   return GSL_SUCCESS;
 }
 
@@ -1679,7 +1679,7 @@ int  gsl_blas_zgeru (const gsl_complex * alpha,
   gsl_blas_raw_zgeru (A->size1, A->size2, alpha->dat,
                       X->data, X->stride,
                       Y->data, Y->stride,
-                      A->data, A->dim2);
+                      A->data, A->tda);
   return GSL_SUCCESS;
 }
 
@@ -1694,7 +1694,7 @@ int  gsl_blas_cgerc (const gsl_complex_float * alpha,
   gsl_blas_raw_cgerc (A->size1, A->size2, alpha->dat,
                       X->data, X->stride,
                       Y->data, Y->stride,
-                      A->data, A->dim2);
+                      A->data, A->tda);
   return GSL_SUCCESS;
 }
 
@@ -1707,7 +1707,7 @@ int  gsl_blas_zgerc (const gsl_complex * alpha,
   gsl_blas_raw_zgerc (A->size1, A->size2, alpha->dat,
                       X->data, X->stride,
                       Y->data, Y->stride,
-                      A->data, A->dim2);
+                      A->data, A->tda);
   return GSL_SUCCESS;
 }
 
@@ -1721,7 +1721,7 @@ int  gsl_blas_cher (CBLAS_UPLO_t Uplo,
 {
   size_t row_dim = A->size1;
   size_t col_dim = A->size2;
-  size_t tda = A->dim2 ;
+  size_t tda = A->tda ;
 
   if(row_dim != col_dim) return GSL_EINVAL;
   if(X->size != row_dim) return GSL_EINVAL;
@@ -1743,7 +1743,7 @@ int  gsl_blas_zher (CBLAS_UPLO_t Uplo,
 {
   size_t row_dim = A->size1;
   size_t col_dim = A->size2;
-  size_t tda = A->dim2 ;
+  size_t tda = A->tda ;
 
   if(row_dim != col_dim) return GSL_EINVAL;
   if(X->size != row_dim) return GSL_EINVAL;
@@ -1790,7 +1790,7 @@ int  gsl_blas_cher2 (CBLAS_UPLO_t Uplo,
 {
   size_t row_dim = A->size1;
   size_t col_dim = A->size2;
-  size_t tda = A->dim2 ;
+  size_t tda = A->tda ;
 
   if(row_dim != col_dim) return GSL_EINVAL;
   if(X->size != col_dim) return GSL_EINVAL;
@@ -1815,7 +1815,7 @@ int  gsl_blas_zher2 (CBLAS_UPLO_t Uplo,
 {
   size_t row_dim = A->size1;
   size_t col_dim = A->size2;
-  size_t tda = A->dim2 ;
+  size_t tda = A->tda ;
 
   if(row_dim != col_dim) return GSL_EINVAL;
   if(X->size != col_dim) return GSL_EINVAL;
@@ -1882,10 +1882,10 @@ int  gsl_blas_sgemm (CBLAS_TRANSPOSE_t TransA,
                      C->size1, C->size2,
 		     K,
 		     alpha,
-		     A->data, A->dim2,
-		     B->data, B->dim2,
+		     A->data, A->tda,
+		     B->data, B->tda,
 		     beta,
-		     C->data, C->dim2
+		     C->data, C->tda
 		     );
   return GSL_SUCCESS;
 }
@@ -1908,10 +1908,10 @@ int  gsl_blas_dgemm (CBLAS_TRANSPOSE_t TransA,
                      C->size1, C->size2,
 		     K,
 		     alpha,
-		     A->data, A->dim2,
-		     B->data, B->dim2,
+		     A->data, A->tda,
+		     B->data, B->tda,
 		     beta,
-		     C->data, C->dim2
+		     C->data, C->tda
 		     );
   return GSL_SUCCESS;
 }
@@ -1934,10 +1934,10 @@ int  gsl_blas_cgemm (CBLAS_TRANSPOSE_t TransA,
                      C->size1, C->size2,
 		     K,
 		     (float *)alpha->dat,
-		     A->data, A->dim2,
-		     B->data, B->dim2,
+		     A->data, A->tda,
+		     B->data, B->tda,
 		     (float *)beta->dat,
-		     C->data, C->dim2
+		     C->data, C->tda
 		     );
   return GSL_SUCCESS;
 }
@@ -1960,10 +1960,10 @@ int  gsl_blas_zgemm (CBLAS_TRANSPOSE_t TransA,
                      C->size1, C->size2,
 		     K,
 		     (double *)alpha->dat,
-		     A->data, A->dim2,
-		     B->data, B->dim2,
+		     A->data, A->tda,
+		     B->data, B->tda,
 		     (double *)beta->dat,
-		     C->data, C->dim2
+		     C->data, C->tda
 		     );
   return GSL_SUCCESS;
 }
@@ -1985,10 +1985,10 @@ int  gsl_blas_ssymm (CBLAS_SIDE_t Side, CBLAS_UPLO_t Uplo,
   gsl_blas_raw_ssymm(Side, Uplo,
                      C->size1, C->size2,
 		     alpha,
-		     A->data, A->dim2,
-		     B->data, B->dim2,
+		     A->data, A->tda,
+		     B->data, B->tda,
 		     beta,
-		     C->data, C->dim2
+		     C->data, C->tda
 		     );
   return GSL_SUCCESS;
 }
@@ -2009,10 +2009,10 @@ int  gsl_blas_dsymm (CBLAS_SIDE_t Side,
   gsl_blas_raw_dsymm(Side, Uplo,
                      C->size1, C->size2,
 		     alpha,
-		     A->data, A->dim2,
-		     B->data, B->dim2,
+		     A->data, A->tda,
+		     B->data, B->tda,
 		     beta,
-		     C->data, C->dim2
+		     C->data, C->tda
 		     );
   return GSL_SUCCESS;
 }
@@ -2033,10 +2033,10 @@ int  gsl_blas_csymm (CBLAS_SIDE_t Side,
   gsl_blas_raw_csymm(Side, Uplo,
                      C->size1, C->size2,
 		     alpha->dat,
-		     A->data, A->dim2,
-		     B->data, B->dim2,
+		     A->data, A->tda,
+		     B->data, B->tda,
 		     beta->dat,
-		     C->data, C->dim2
+		     C->data, C->tda
 		     );
   return GSL_SUCCESS;
 }
@@ -2056,10 +2056,10 @@ int  gsl_blas_zsymm (CBLAS_SIDE_t Side,
   gsl_blas_raw_zsymm(Side, Uplo,
                      C->size1, C->size2,
 		     alpha->dat,
-		     A->data, A->dim2,
-		     B->data, B->dim2,
+		     A->data, A->tda,
+		     B->data, B->tda,
 		     beta->dat,
-		     C->data, C->dim2
+		     C->data, C->tda
 		     );
   return GSL_SUCCESS;
 }

@@ -1,3 +1,8 @@
+Sat Mar 11 11:19:05 2000  Brian Gough  <bjg@network-theory.co.uk>
+
+	* gsl_matrix.h: renamed struct element dim2 to tda (trailing
+ 	dimension) following blas conventions for row-major matrices
+
 Thu Dec  2 21:17:16 1999  Brian Gough  <bjg@network-theory.co.uk>
 
 	* rowcol_source.c (FUNCTION): added gsl_matrix_view_from_vector

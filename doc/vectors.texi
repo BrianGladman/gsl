@@ -520,7 +520,7 @@ typedef struct
 @{
   size_t size1;
   size_t size2;
-  size_t dim2;
+  size_t tda;
   double * data;
   gsl_block * block;
 @} gsl_matrix ;
@@ -532,11 +532,11 @@ elements forms a contiguous block in memory.  The number of rows is
 @var{size1}. The range of valid row indices runs from 0 to
 @code{size1-1}. Similarly @var{size2} is the number of columns. The
 range of valid column indices runs from 0 to @code{size2-1}. The
-physical row dimension @var{dim2} specifies the size of a row of the
-matrix as laid out in memory.
+physical row dimension @var{tda}, or @dfn{trailing dimension}, specifies
+the size of a row of the matrix as laid out in memory.
 
 For example, in the following matrix @var{size1} is 3, @var{size2} is 4,
-and @var{dim2} is 8.  The physical memory layout of the matrix begins in
+and @var{tda} is 8.  The physical memory layout of the matrix begins in
 the top left hand-corner and proceeds from left to right along each row
 in turn.
 
@@ -580,23 +580,23 @@ This function allocates memory for a matrix of size @var{n1} rows by
 @var{n2} columns and initializes all the elements of the matrix to zero.
 @end deftypefun
 
-@deftypefun {gsl_matrix *} gsl_matrix_alloc_from_block (gsl_block * @var{b}, size_t @var{offset}, size_t @var{n1}, size_t @var{n2}, size_t @var{dim2})
+@deftypefun {gsl_matrix *} gsl_matrix_alloc_from_block (gsl_block * @var{b}, size_t @var{offset}, size_t @var{n1}, size_t @var{n2}, size_t @var{tda})
 This function creates a matrix as a slice of the block @var{b},
 returning a pointer to a newly initialized matrix struct. The start of
 the matrix is offset by @var{offset} elements from the start of the
 block. The matrix has @var{n1} rows and @var{n2} columns, with the
-physical number of columns in memory given by @var{dim2}.
+physical number of columns in memory given by @var{tda}.
 Mathematically, the (@var{i},@var{j})-th element of the matrix is given by,
 
 @example
-m(i,j) = b->data[offset + i*dim2 + j]
+m(i,j) = b->data[offset + i*tda + j]
 @end example
 @noindent
 where the index @var{i} runs from 0 to @code{n1-1} and the index @var{j}
 runs from 0 to @code{n2-1}.
 
 A null pointer is returned if the combined parameters
-(@var{offset},@var{n1},@var{n2},@var{dim2}) overrun the end of the block
+(@var{offset},@var{n1},@var{n2},@var{tda}) overrun the end of the block
 or if insufficient memory is available to store the matrix.
 
 The matrix is only a view of the block @var{b}, and the block is not
@@ -612,19 +612,19 @@ This function creates a matrix as a submatrix of the matrix @var{m},
 returning a pointer to a newly initialized matrix struct. The upper-left
 element of the submatrix is the element (@var{k1},@var{k2}) of the
 original matrix. The submatrix has @var{n1} rows and @var{n2} columns.
-The physical number of columns in memory given by @var{dim2} is
+The physical number of columns in memory given by @var{tda} is
 unchanged.  Mathematically, the (@var{i},@var{j})-th element of the
 new matrix is given by,
 
 @example
-m'(i,j) = m->data[(k1*m->dim2 + k2) + i*m->dim2 + j]
+m'(i,j) = m->data[(k1*m->tda + k2) + i*m->tda + j]
 @end example
 @noindent
 where the index @var{i} runs from 0 to @code{n1-1} and the index @var{j}
 runs from 0 to @code{n2-1}.
 
 A null pointer is returned if the combined parameters
-(@var{k1},@var{k2},@var{n1},@var{n2},@var{dim2}) overrun the end of the
+(@var{k1},@var{k2},@var{n1},@var{n2},@var{tda}) overrun the end of the
 original matrix or if insufficient memory is available to store the matrix.
 
 The new matrix is only a view of the block underlying the existing
@@ -660,11 +660,11 @@ accessed by the function @code{gsl_matrix_get(m,i,j)} and
 @code{gsl_matrix_set(m,i,j,x)} is 
 
 @example
-m->data[i * m->dim2 + j]
+m->data[i * m->tda + j]
 @end example
 @comment 
 @noindent
-where @var{dim2} is the physical row-length of the matrix.
+where @var{tda} is the physical row-length of the matrix.
 
 @deftypefun double gsl_matrix_get (const gsl_matrix * @var{m}, size_t @var{i}, size_t @var{j})
 These functions return the (@var{i},@var{j})th element of a matrix

@@ -27,7 +27,7 @@ int jac_linear(double t, const double y[], double * dfdy, double dfdt[], void * 
   gsl_matrix dfdy_mat;
   dfdy_mat.size1 = 2;
   dfdy_mat.size2 = 2;
-  dfdy_mat.dim2  = 2;
+  dfdy_mat.tda  = 2;
   dfdy_mat.data  = dfdy;
   dfdy_mat.block = 0;
   gsl_matrix_set(&dfdy_mat, 0, 0, 0.0);
@@ -62,7 +62,7 @@ int jac_sin(double t, const double y[], double * dfdy, double dfdt[], void * par
   dfdy_mat.data  = dfdy;
   dfdy_mat.size1 = 2;
   dfdy_mat.size2 = 2;
-  dfdy_mat.dim2  = 2;
+  dfdy_mat.tda  = 2;
   dfdy_mat.block = 0;
   gsl_matrix_set(&dfdy_mat, 0, 0,  0.0);
   gsl_matrix_set(&dfdy_mat, 0, 1, -1.0);
@@ -96,7 +96,7 @@ int jac_exp(double t, const double y[], double * dfdy, double dfdt[], void * par
   dfdy_mat.data = dfdy;
   dfdy_mat.size1 = 2;
   dfdy_mat.size2 = 2;
-  dfdy_mat.dim2  = 2;
+  dfdy_mat.tda  = 2;
   dfdy_mat.block = 0;
   gsl_matrix_set(&dfdy_mat, 0, 0, 0.0);
   gsl_matrix_set(&dfdy_mat, 0, 1, 1.0);
@@ -130,7 +130,7 @@ int jac_stiff(double t, const double y[], double * dfdy, double dfdt[], void * p
   dfdy_mat.data = dfdy;
   dfdy_mat.size1 = 2;
   dfdy_mat.size2 = 2;
-  dfdy_mat.dim2  = 2;
+  dfdy_mat.tda  = 2;
   dfdy_mat.block = 0;
   gsl_matrix_set(&dfdy_mat, 0, 0,   998.0);
   gsl_matrix_set(&dfdy_mat, 0, 1,  1998.0);

@@ -11,7 +11,7 @@ struct gsl_matrix_uchar_struct
 {
   size_t size1;
   size_t size2;
-  size_t dim2;
+  size_t tda;
   unsigned char * data;
   gsl_block_uchar * block;
 } ;
@@ -89,7 +89,7 @@ gsl_matrix_uchar_get(const gsl_matrix_uchar * m,
       GSL_ERROR_RETURN("second index out of range", GSL_EINVAL, 0) ;
     }
 #endif
-  return m->data[i * m->dim2 + j] ;
+  return m->data[i * m->tda + j] ;
 } 
 
 extern inline 
@@ -107,7 +107,7 @@ gsl_matrix_uchar_set(gsl_matrix_uchar * m,
       GSL_ERROR_RETURN_NOTHING("second index out of range", GSL_EINVAL) ;
     }
 #endif
-  m->data[i * m->dim2 + j] = x ;
+  m->data[i * m->tda + j] = x ;
 }
 #endif
 
