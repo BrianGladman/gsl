@@ -57,11 +57,25 @@ int main (void)
     printf("qage: result = %.18g, abserr = %.18g, neval = %d\n",
 	   result, abserr, neval) ;
   }
+
+  {
+    double alist[1000], blist[1000], rlist[1000], elist[1000];
+    size_t iord[1000] ;
+    size_t last;
+    result = 0 ; abserr=0; neval=0  ;
+    gsl_integration_qagse(f, 0.0, 1.0, 0.0, 1e-10, 6, 1000,
+			 alist, blist, rlist, elist, iord, &last,
+			 &result, &abserr, &neval) ;
+    printf("qagse: result = %.18g, abserr = %.18g, neval = %d\n",
+	   result, abserr, neval) ;
+  }
+
+
   return 0 ;
 } 
 
 double f (double x) {
-  return 1/(1e-3 + fabs(x-0.5)) ;
+  return pow(1/(1e3 + fabs(x-0.4)),2) ;
 }
 
 

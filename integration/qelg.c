@@ -8,8 +8,9 @@
 #include "max.h"
 
 void
-qelg (size_t * n, double epstab[], double * result, double * abserr,
-       double res3la[], size_t * nres)
+gsl_integration_qelg (size_t * n, double epstab[], 
+		      double * result, double * abserr,
+		      double res3la[], size_t * nres)
 {
   const double current = epstab[*n] ;
 

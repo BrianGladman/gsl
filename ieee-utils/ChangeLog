@@ -1,0 +1,5 @@
+Sat May 16 23:10:09 1998  Brian Gough  <bjg@vvv.lanl.gov>
+
+	* This directory contains some routines for examining IEEE format
+ 	numbers at the bit level
+

@@ -2,26 +2,6 @@
 #define GSL_INTEGRATION_H
 #include <stdlib.h>
 
-/* Quadrature of f() on (a,b) by Simpson rule.
-   Attempts evaluation to precision specified by eps.
- */
-double gsl_integ_simpson(double (*f)(double), double a, double b, double eps);
-
-/* Table quadrature using the Simpson rule. */
-double gsl_integ_simpson_table(const double * x, const double * y, int n);
-
-/* Integrate a function of the form
- *
- *       f(x) / ((x-x0)^2 + w^2)
- *
- * where f(x) is assumed smoothly varying over the region
- * of integration. Uses change of variable and Simpson rule.
- */
-double gsl_integ_lorenz(double (*f)(double),
-			double x0, double w,
-			double a, double b, double eps);
-
-
 typedef void gsl_integration_rule_t (double (*f)(double x), 
 				     const double a, const double b,
 				     double * result, double * abserr,
@@ -107,14 +87,28 @@ enum {
 } ;
 
 void
-qelg (size_t * n, double epstab[], double * result, double * abserr,
-       double res3la[], size_t * nres) ;
+gsl_integration_qelg (size_t * n, double epstab[], 
+		      double * result, double * abserr,
+		      double res3la[], size_t * nres) ;
 
 int
-qagse_impl (double (*f)(double x), double a, double b, 
-	    double epsabs, double epsrel, size_t limit,
-	    double * result, double * abserr, 
-	    double alist[], double blist[], double rlist[], double elist[],
-	    size_t iord[], size_t * last) ;
+gsl_integration_qagse (double (*f)(double x),
+		      double a, double b,
+		      double epsabs, double epsrel,
+		      int key,
+		      size_t limit,
+		      double alist[], double blist[], double rlist[], 
+		      double elist[], size_t iord[], size_t * last,
+		      double * result, double * abserr, size_t * neval) ;
+
+int
+gsl_integration_qagse_impl (double (*f)(double x), 
+			    double a, double b, 
+			    double epsabs, double epsrel, size_t limit,
+			    double * result, double * abserr, 
+			    double alist[], double blist[], 
+			    double rlist[], double elist[],
+			    size_t iord[], size_t * last, size_t * nqeval,
+			    gsl_integration_rule_t * q) ;
 
 #endif /* GSL_INTEGRATION_H */
