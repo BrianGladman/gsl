@@ -207,7 +207,7 @@ main (int argc, char *argv[])
       xarr = malloc(n1*sizeof(double));
       /* We only output the first coordinate */ 
       OUTPUT1(gsl_ran_dir_nd (r, n1, xarr), xarr[0]);
-      cfree((char *)xarr);
+      free(xarr);
     }  
   else if (NAME("geometric"))
     {
