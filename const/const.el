@@ -11,6 +11,10 @@
 (load-library "calc/calc-units.el")
 (calc-extensions)
 
+(add-to-list 'load-path (expand-file-name "."))
+(require 'calc-units-update)
+
+
 (setq  gsl-dimensionless-constants
        '(("fsc"           "FINE_STRUCTURE")
          ("Nav"           "AVOGADRO")
@@ -206,4 +210,3 @@
 (defun run-num ()
   (display "GSL_CONST_NUM" mks gsl-dimensionless-constants)
 )
-
