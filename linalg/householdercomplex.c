@@ -170,9 +170,7 @@ gsl_linalg_complex_householder_hm (gsl_complex tau, const gsl_vector_complex * v
 int
 gsl_linalg_complex_householder_hv (gsl_complex tau, const gsl_vector_complex * v, gsl_vector_complex *  w)
 {
-  size_t i;
   const size_t N = v->size;
-  gsl_complex z;
 
   if (GSL_REAL(tau) == 0.0 && GSL_IMAG(tau) == 0.0)
       return GSL_SUCCESS;
@@ -204,4 +202,6 @@ gsl_linalg_complex_householder_hv (gsl_complex tau, const gsl_vector_complex * v
 
     gsl_blas_zaxpy(ntz, &v1.vector, &w1.vector);
   }
+
+  return GSL_SUCCESS;
 }

@@ -492,6 +492,7 @@ test_nist (void)
     gsl_test_rel (lag1, expected_lag1, 1e-10, "acc4 autocorrelation") ;
   }
 
+  return 0;
 }
 
 

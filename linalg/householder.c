@@ -152,9 +152,7 @@ int
 gsl_linalg_householder_hv (double tau, const gsl_vector * v, gsl_vector * w)
 {
   /* applies a householder transformation v to vector w */
-  size_t i;
   const size_t N = v->size;
-  double d = 0;
  
   if (tau == 0)
     return GSL_SUCCESS ;
