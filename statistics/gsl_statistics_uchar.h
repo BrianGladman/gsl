@@ -6,22 +6,19 @@
 double gsl_stats_uchar_mean (const unsigned char data[], size_t stride, size_t n);
 double gsl_stats_uchar_variance (const unsigned char data[], size_t stride, size_t n);
 double gsl_stats_uchar_sd (const unsigned char data[], size_t stride, size_t n);
-double gsl_stats_uchar_est_variance (const unsigned char data[], size_t stride, size_t n);
-double gsl_stats_uchar_est_sd (const unsigned char data[], size_t stride, size_t n);
+double gsl_stats_uchar_variance_with_fixed_mean (const unsigned char data[], size_t stride, size_t n, double mean);
+double gsl_stats_uchar_sd_with_fixed_mean (const unsigned char data[], size_t stride, size_t n, double mean);
 double gsl_stats_uchar_absdev (const unsigned char data[], size_t stride, size_t n);
-
 double gsl_stats_uchar_skew (const unsigned char data[], size_t stride, size_t n);
 double gsl_stats_uchar_kurtosis (const unsigned char data[], size_t stride, size_t n);
 double gsl_stats_uchar_lag1_autocorrelation (const unsigned char data[], size_t stride, size_t n);
 
-double gsl_stats_uchar_variance_with_mean (const unsigned char data[], size_t stride, size_t n, double mean);
-double gsl_stats_uchar_sd_with_mean (const unsigned char data[], size_t stride, size_t n, double mean);
-double gsl_stats_uchar_est_variance_with_mean (const unsigned char data[], size_t stride, size_t n, double mean);
-double gsl_stats_uchar_est_sd_with_mean (const unsigned char data[], size_t stride, size_t n, double mean);
-double gsl_stats_uchar_absdev_with_mean (const unsigned char data[], size_t stride, size_t n, double mean);
-double gsl_stats_uchar_skew_with_mean_and_sd (const unsigned char data[], size_t stride, size_t n, double mean, double sd);
-double gsl_stats_uchar_kurtosis_with_mean_and_sd (const unsigned char data[], size_t stride, size_t n, double mean, double sd);
-double gsl_stats_uchar_lag1_autocorrelation_with_mean (const unsigned char data[], size_t stride, size_t n, double mean);
+double gsl_stats_uchar_variance_m (const unsigned char data[], size_t stride, size_t n, double mean);
+double gsl_stats_uchar_sd_m (const unsigned char data[], size_t stride, size_t n, double mean);
+double gsl_stats_uchar_absdev_m (const unsigned char data[], size_t stride, size_t n, double mean);
+double gsl_stats_uchar_skew_m_sd (const unsigned char data[], size_t stride, size_t n, double mean, double sd);
+double gsl_stats_uchar_kurtosis_m_sd (const unsigned char data[], size_t stride, size_t n, double mean, double sd);
+double gsl_stats_uchar_lag1_autocorrelation_m (const unsigned char data[], size_t stride, size_t n, double mean);
 
 
 double gsl_stats_uchar_pvariance (const unsigned char data1[], size_t stride1, size_t n1, const unsigned char data2[], const size_t stride2, size_t n2);

@@ -22,23 +22,14 @@ FUNCTION(compute,variance) (const BASE data[], const size_t stride, const size_t
 
 
 double 
-FUNCTION(gsl_stats,variance_with_mean) (const BASE data[], const size_t stride, const size_t n, const double mean)
+FUNCTION(gsl_stats,variance_with_fixed_mean) (const BASE data[], const size_t stride, const size_t n, const double mean)
 {
   const double variance = FUNCTION(compute,variance) (data, stride, n, mean);
   return variance;
 }
 
 double 
-FUNCTION(gsl_stats,est_variance_with_mean) (const BASE data[], const size_t stride, const size_t n, const double mean)
-{
-  const double variance = FUNCTION(compute,variance) (data, stride, n, mean);
-  const double est_variance = variance * ((double)n / (double)(n - 1));
-  
-  return est_variance;
-}
-
-double 
-FUNCTION(gsl_stats,sd_with_mean) (const BASE data[], const size_t stride, const size_t n, const double mean)
+FUNCTION(gsl_stats,sd_with_fixed_mean) (const BASE data[], const size_t stride, const size_t n, const double mean)
 {
   const double variance = FUNCTION(compute,variance) (data, stride, n, mean);
   const double sd = sqrt (variance);
@@ -46,43 +37,35 @@ FUNCTION(gsl_stats,sd_with_mean) (const BASE data[], const size_t stride, const 
   return sd;
 }
 
+
+
 double 
-FUNCTION(gsl_stats,est_sd_with_mean) (const BASE data[], const size_t stride, const size_t n, const double mean)
+FUNCTION(gsl_stats,variance_m) (const BASE data[], const size_t stride, const size_t n, const double mean)
 {
   const double variance = FUNCTION(compute,variance) (data, stride, n, mean);
-  const double est_sd = sqrt (variance * ((double)n / (double)(n - 1)));
+  
+  return variance * ((double)n / (double)(n - 1));
+}
 
-  return est_sd;
+double 
+FUNCTION(gsl_stats,sd_m) (const BASE data[], const size_t stride, const size_t n, const double mean)
+{
+  const double variance = FUNCTION(compute,variance) (data, stride, n, mean);
+  const double sd = sqrt (variance * ((double)n / (double)(n - 1)));
+
+  return sd;
 }
 
 double 
 FUNCTION(gsl_stats,variance) (const BASE data[], const size_t stride, const size_t n)
 {
   const double mean = FUNCTION(gsl_stats,mean) (data, stride, n);
-  return FUNCTION(gsl_stats,variance_with_mean)(data, stride, n, mean);
-}
-
-double 
-FUNCTION(gsl_stats,est_variance) (const BASE data[], const size_t stride, const size_t n)
-{
-  const double mean = FUNCTION(gsl_stats,mean) (data, stride, n);
-  return FUNCTION(gsl_stats,est_variance_with_mean)(data, stride, n, mean);
+  return FUNCTION(gsl_stats,variance_m)(data, stride, n, mean);
 }
 
 double 
 FUNCTION(gsl_stats,sd) (const BASE data[], const size_t stride, const size_t n)
 {
-  const double variance = FUNCTION(gsl_stats,variance) (data, stride, n);
-  return sqrt(variance);
+  const double mean = FUNCTION(gsl_stats,mean) (data, stride, n);
+  return FUNCTION(gsl_stats,sd_m) (data, stride, n, mean);
 }
-
-double 
-FUNCTION(gsl_stats,est_sd) (const BASE data[], const size_t stride, const size_t n)
-{
-  const double est_variance = FUNCTION(gsl_stats,est_variance) (data, stride, n);
-  return sqrt(est_variance);
-}
-
-
-
-

@@ -8,9 +8,9 @@
 int
 main (void)
 {
-  int i ;
+  size_t i ;
 
-  const int nlew = 200 ; 
+  const size_t nlew = 200 ; 
 
   const double lew[200] = { 
     -213, -564,  -35,  -15,  141,  115, -420, -360,  203, -338, -431,  194,
@@ -31,7 +31,7 @@ main (void)
       68, -535, -244,  194, -351, -463,  174, -125, -570,   15,   72, -550,
     -190,  172, -424, -385,  198, -218, -536,   96 } ;
 
-  const int nlottery = 218 ;
+  const size_t nlottery = 218 ;
 
   const double lottery[218] = { 
     162, 671, 933, 414, 788, 730, 817, 33, 536, 875, 670, 236, 473, 167,
@@ -51,7 +51,7 @@ main (void)
     694, 608, 480, 410, 729, 947, 293, 53, 930, 223, 203, 677, 227, 62,
     455, 387, 318, 562, 242, 428, 968 } ;
 
-  const int nmavro = 50 ;
+  const size_t nmavro = 50 ;
 
   const double mavro[50] = { 
     2.00180, 2.00170, 2.00180, 2.00190, 2.00180, 2.00170, 2.00150,
@@ -63,7 +63,7 @@ main (void)
     2.00270, 2.00260, 2.00260, 2.00260, 2.00270, 2.00260, 2.00250, 
     2.00240 } ;
 
-  const int nmichelson = 100 ;
+  const size_t nmichelson = 100 ;
 
   const double michelson [100] = { 
     299.85, 299.74, 299.90, 300.07, 299.93, 299.85, 299.95, 299.98,
@@ -80,7 +80,7 @@ main (void)
     299.82, 299.85, 299.87, 299.87, 299.81, 299.74, 299.81, 299.94,
     299.95, 299.80, 299.81, 299.87 } ;
 
-  const int npidigits = 5000 ;
+  const size_t npidigits = 5000 ;
   const double pidigits [5000] = { 3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5, 8,
     9, 7, 9, 3, 2, 3, 8, 4, 6, 2, 6, 4, 3, 3, 8, 3, 2, 7, 9, 5, 0, 2,
     8, 8, 4, 1, 9, 7, 1, 6, 9, 3, 9, 9, 3, 7, 5, 1, 0, 5, 8, 2, 0, 9,
@@ -311,16 +311,16 @@ main (void)
     9, 8, 8, 8, 6, 8, 7, 4, 1, 3, 2, 6, 0, 4, 7, 2 } ;
 
 
-  const int nacc1 = 3 ;
+  const size_t nacc1 = 3 ;
   const double numacc1[3] = { 10000001, 10000003, 10000002 } ;
 
-  const int nacc2 = 1001 ;
+  const size_t nacc2 = 1001 ;
   double numacc2[1001] ;
 
-  const int nacc3 = 1001 ;
+  const size_t nacc3 = 1001 ;
   double numacc3[1001] ;
 
-  const int nacc4 = 1001 ;
+  const size_t nacc4 = 1001 ;
   double numacc4[1001] ;
 
   numacc2[0] = 1.2 ;
@@ -340,158 +340,131 @@ main (void)
 
   {
     double mean = gsl_stats_mean (lew, 1, nlew);
-    double estsd = gsl_stats_est_sd (lew, 1, nlew);
+    double sd = gsl_stats_sd (lew, 1, nlew);
     double lag1 = gsl_stats_lag1_autocorrelation (lew, 1, nlew);
 
     double expected_mean = -177.435000000000;
-    double expected_estsd = 277.332168044316;
+    double expected_sd = 277.332168044316;
     double expected_lag1 = -0.307304800605679;
 
-    gsl_test_rel (mean, expected_mean, 1e-15, 
-		  "lew gsl_stats_mean") ;
-    gsl_test_rel (estsd, expected_estsd, 1e-15, 
-		  "lew gsl_stats_est_sd") ;
-    gsl_test_rel (lag1, expected_lag1, 1e-14, 
-		  "lew autocorrelation") ;
+    gsl_test_rel (mean, expected_mean, 1e-15, "lew gsl_stats_mean") ;
+    gsl_test_rel (sd, expected_sd, 1e-15, "lew gsl_stats_sd") ;
+    gsl_test_rel (lag1, expected_lag1, 1e-14, "lew autocorrelation") ;
   }
 
 
   {
     double mean = gsl_stats_mean (lottery, 1, nlottery);
-    double estsd = gsl_stats_est_sd (lottery, 1, nlottery);
+    double sd = gsl_stats_sd (lottery, 1, nlottery);
     double lag1 = gsl_stats_lag1_autocorrelation (lottery, 1, nlottery);
 
     double expected_mean = 518.958715596330;
-    double expected_estsd = 291.699727470969;
+    double expected_sd = 291.699727470969;
     double expected_lag1 = -0.120948622967393;
 
-    gsl_test_rel (mean, expected_mean, 1e-15, 
-		  "lottery gsl_stats_mean") ;
-    gsl_test_rel (estsd, expected_estsd, 1e-15, 
-		  "lottery gsl_stats_est_sd") ;
-    gsl_test_rel (lag1, expected_lag1, 1e-14, 
-		  "lottery autocorrelation") ;
+    gsl_test_rel (mean, expected_mean, 1e-15, "lottery gsl_stats_mean") ;
+    gsl_test_rel (sd, expected_sd, 1e-15, "lottery gsl_stats_sd") ;
+    gsl_test_rel (lag1, expected_lag1, 1e-14, "lottery autocorrelation") ;
   }
 
   {
     double mean = gsl_stats_mean (mavro, 1, nmavro);
-    double estsd = gsl_stats_est_sd (mavro, 1, nmavro);
+    double sd = gsl_stats_sd (mavro, 1, nmavro);
     double lag1 = gsl_stats_lag1_autocorrelation (mavro, 1, nmavro);
 
     double expected_mean = 2.00185600000000;
-    double expected_estsd = 0.000429123454003053;
+    double expected_sd = 0.000429123454003053;
     double expected_lag1 = 0.937989183438248;
 
-    gsl_test_rel (mean, expected_mean, 1e-15, 
-		  "mavro gsl_stats_mean") ;
-    gsl_test_rel (estsd, expected_estsd, 1e-13, 
-		  "mavro gsl_stats_est_sd") ;
-    gsl_test_rel (lag1, expected_lag1, 1e-13, 
-		  "mavro autocorrelation") ;
+    gsl_test_rel (mean, expected_mean, 1e-15, "mavro gsl_stats_mean") ;
+    gsl_test_rel (sd, expected_sd, 1e-13, "mavro gsl_stats_sd") ;
+    gsl_test_rel (lag1, expected_lag1, 1e-13, "mavro autocorrelation") ;
   }
 
 
   {
     double mean = gsl_stats_mean (michelson, 1, nmichelson);
-    double estsd = gsl_stats_est_sd (michelson, 1, nmichelson);
+    double sd = gsl_stats_sd (michelson, 1, nmichelson);
     double lag1 = gsl_stats_lag1_autocorrelation (michelson, 1, nmichelson);
 
     double expected_mean = 299.852400000000;
-    double expected_estsd = 0.0790105478190518;
+    double expected_sd = 0.0790105478190518;
     double expected_lag1 = 0.535199668621283;
 
-    gsl_test_rel (mean, expected_mean, 1e-15, 
-		  "michelson gsl_stats_mean") ;
-    gsl_test_rel (estsd, expected_estsd, 1e-13, 
-		  "michelson gsl_stats_est_sd") ;
-    gsl_test_rel (lag1, expected_lag1, 1e-13, 
-		  "michelson autocorrelation") ;
+    gsl_test_rel (mean, expected_mean, 1e-15, "michelson gsl_stats_mean") ;
+    gsl_test_rel (sd, expected_sd, 1e-13, "michelson gsl_stats_sd") ;
+    gsl_test_rel (lag1, expected_lag1, 1e-13, "michelson autocorrelation") ;
   }
 
   {
     double mean = gsl_stats_mean (pidigits, 1, npidigits);
-    double estsd = gsl_stats_est_sd (pidigits, 1, npidigits);
+    double sd = gsl_stats_sd (pidigits, 1, npidigits);
     double lag1 = gsl_stats_lag1_autocorrelation (pidigits, 1, npidigits);
 
     double expected_mean = 4.53480000000000;
-    double expected_estsd = 2.86733906028871;
+    double expected_sd = 2.86733906028871;
     double expected_lag1 = -0.00355099287237972;
 
-    gsl_test_rel (mean, expected_mean, 1e-14, 
-		  "pidigits gsl_stats_mean") ;
-    gsl_test_rel (estsd, expected_estsd, 1e-15, 
-		  "pidigits gsl_stats_est_sd") ;
-    gsl_test_rel (lag1, expected_lag1, 1e-14, 
-		  "pidigits autocorrelation") ;
+    gsl_test_rel (mean, expected_mean, 1e-14, "pidigits gsl_stats_mean") ;
+    gsl_test_rel (sd, expected_sd, 1e-15, "pidigits gsl_stats_sd") ;
+    gsl_test_rel (lag1, expected_lag1, 1e-14, "pidigits autocorrelation") ;
   }
     
   {
     double mean = gsl_stats_mean (numacc1, 1, nacc1);
-    double estsd = gsl_stats_est_sd (numacc1, 1, nacc1);
+    double sd = gsl_stats_sd (numacc1, 1, nacc1);
     double lag1 = gsl_stats_lag1_autocorrelation (numacc1, 1, nacc1);
 
     double expected_mean = 10000002;
-    double expected_estsd = 1;
+    double expected_sd = 1;
     double expected_lag1 = -0.5;
 
-    gsl_test_rel (mean, expected_mean, 1e-15, 
-		  "acc1 gsl_stats_mean") ;
-    gsl_test_rel (estsd, expected_estsd, 1e-15, 
-		  "acc1 gsl_stats_est_sd") ;
-    gsl_test_rel (lag1, expected_lag1, 1e-15, 
-		  "acc1 autocorrelation") ;
+    gsl_test_rel (mean, expected_mean, 1e-15, "acc1 gsl_stats_mean") ;
+    gsl_test_rel (sd, expected_sd, 1e-15, "acc1 gsl_stats_sd") ;
+    gsl_test_rel (lag1, expected_lag1, 1e-15, "acc1 autocorrelation") ;
   }
 
   {
     double mean = gsl_stats_mean (numacc2, 1, nacc2);
-    double estsd = gsl_stats_est_sd (numacc2, 1, nacc2);
+    double sd = gsl_stats_sd (numacc2, 1, nacc2);
     double lag1 = gsl_stats_lag1_autocorrelation (numacc2, 1, nacc2);
 
     double expected_mean = 1.2;
-    double expected_estsd = 0.1;
+    double expected_sd = 0.1;
     double expected_lag1 = -0.999;
 
-    gsl_test_rel (mean, expected_mean, 1e-15, 
-		  "acc2 gsl_stats_mean") ;
-    gsl_test_rel (estsd, expected_estsd, 1e-15, 
-		  "acc2 gsl_stats_est_sd") ;
-    gsl_test_rel (lag1, expected_lag1, 1e-10, 
-		  "acc2 autocorrelation") ;
+    gsl_test_rel (mean, expected_mean, 1e-15, "acc2 gsl_stats_mean") ;
+    gsl_test_rel (sd, expected_sd, 1e-15, "acc2 gsl_stats_sd") ;
+    gsl_test_rel (lag1, expected_lag1, 1e-10, "acc2 autocorrelation") ;
   }
 
   {
     double mean = gsl_stats_mean (numacc3, 1, nacc3);
-    double estsd = gsl_stats_est_sd (numacc3, 1, nacc3);
+    double sd = gsl_stats_sd (numacc3, 1, nacc3);
     double lag1 = gsl_stats_lag1_autocorrelation (numacc3, 1, nacc3);
 
     double expected_mean = 1000000.2;
-    double expected_estsd = 0.1;
+    double expected_sd = 0.1;
     double expected_lag1 = -0.999;
 
-    gsl_test_rel (mean, expected_mean, 1e-15, 
-		  "acc3 gsl_stats_mean") ;
-    gsl_test_rel (estsd, expected_estsd, 1e-9, 
-		  "acc3 gsl_stats_est_sd") ;
-    gsl_test_rel (lag1, expected_lag1, 1e-10, 
-		  "acc3 autocorrelation") ;
+    gsl_test_rel (mean, expected_mean, 1e-15, "acc3 gsl_stats_mean") ;
+    gsl_test_rel (sd, expected_sd, 1e-9, "acc3 gsl_stats_sd") ;
+    gsl_test_rel (lag1, expected_lag1, 1e-10, "acc3 autocorrelation") ;
   }
 
 
   {
     double mean = gsl_stats_mean (numacc4, 1, nacc4);
-    double estsd = gsl_stats_est_sd (numacc4, 1, nacc4);
+    double sd = gsl_stats_sd (numacc4, 1, nacc4);
     double lag1 = gsl_stats_lag1_autocorrelation (numacc4, 1, nacc4);
 
     double expected_mean = 10000000.2;
-    double expected_estsd = 0.1;
+    double expected_sd = 0.1;
     double expected_lag1 = -0.999;
 
-    gsl_test_rel (mean, expected_mean, 1e-15, 
-		  "acc4 gsl_stats_mean") ;
-    gsl_test_rel (estsd, expected_estsd, 1e-7, 
-		  "acc4 gsl_stats_est_sd") ;
-    gsl_test_rel (lag1, expected_lag1, 1e-10, 
-		  "acc4 autocorrelation") ;
+    gsl_test_rel (mean, expected_mean, 1e-15, "acc4 gsl_stats_mean") ;
+    gsl_test_rel (sd, expected_sd, 1e-7, "acc4 gsl_stats_sd") ;
+    gsl_test_rel (lag1, expected_lag1, 1e-10, "acc4 autocorrelation") ;
   }
 
 

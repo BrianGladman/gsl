@@ -1,3 +1,12 @@
+Wed Mar  8 15:29:19 2000  Brian Gough  <bjg@network-theory.co.uk>
+
+	* Function Name Reorganization: The function suffix "_with_mean"
+ 	has been changed to "_m", the function suffix "_with_mean_and_sd"
+ 	has been changed to "_m_sd". The variance function est_variance
+ 	has been changed to simply _variance, (similarly for est_sd, which
+ 	is now _sd), while the function _variance is now
+ 	_variance_with_fixed_mean (and _sd is _sd_with_fixed_mean).
+
 Wed Mar  1 11:09:21 2000  Brian Gough  <bjg@network-theory.co.uk>
 
 	* wabsdev.c wabsdev_source.c wkurtosis.c wkurtosis_source.c

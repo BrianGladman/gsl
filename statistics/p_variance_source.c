@@ -7,8 +7,8 @@ FUNCTION(gsl_stats,pvariance) (const BASE data1[],
 {
   /* Find the pooled variance of two datasets */
 
-  const double var1 = FUNCTION(gsl_stats,est_variance) (data1, stride1, n1);
-  const double var2 = FUNCTION(gsl_stats,est_variance) (data2, stride2, n2);
+  const double var1 = FUNCTION(gsl_stats,variance) (data1, stride1, n1);
+  const double var2 = FUNCTION(gsl_stats,variance) (data2, stride2, n2);
 
   /* calculate the pooled variance */
 

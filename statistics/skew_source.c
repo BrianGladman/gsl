@@ -2,14 +2,14 @@ double
 FUNCTION(gsl_stats,skew) (const BASE data[], const size_t stride, const size_t n)
 {
   const double mean = FUNCTION(gsl_stats,mean)(data, stride, n);
-  const double est_sd = FUNCTION(gsl_stats,est_sd_with_mean)(data, stride, n, mean);
-  return FUNCTION(gsl_stats,skew_with_mean_and_sd)(data, stride, n, mean, est_sd);
+  const double sd = FUNCTION(gsl_stats,sd_m)(data, stride, n, mean);
+  return FUNCTION(gsl_stats,skew_m_sd)(data, stride, n, mean, sd);
 }
     
 double 
-FUNCTION(gsl_stats,skew_with_mean_and_sd) (const BASE data[], 
-                                           const size_t stride, const size_t n,
-					   const double mean, const double sd)
+FUNCTION(gsl_stats,skew_m_sd) (const BASE data[], 
+                               const size_t stride, const size_t n,
+                               const double mean, const double sd)
 {
   /* takes a dataset and finds the skewness */
 

@@ -6,22 +6,19 @@
 double gsl_stats_char_mean (const char data[], size_t stride, size_t n);
 double gsl_stats_char_variance (const char data[], size_t stride, size_t n);
 double gsl_stats_char_sd (const char data[], size_t stride, size_t n);
-double gsl_stats_char_est_variance (const char data[], size_t stride, size_t n);
-double gsl_stats_char_est_sd (const char data[], size_t stride, size_t n);
+double gsl_stats_char_variance_with_fixed_mean (const char data[], size_t stride, size_t n, double mean);
+double gsl_stats_char_sd_with_fixed_mean (const char data[], size_t stride, size_t n, double mean);
 double gsl_stats_char_absdev (const char data[], size_t stride, size_t n);
-
 double gsl_stats_char_skew (const char data[], size_t stride, size_t n);
 double gsl_stats_char_kurtosis (const char data[], size_t stride, size_t n);
 double gsl_stats_char_lag1_autocorrelation (const char data[], size_t stride, size_t n);
 
-double gsl_stats_char_variance_with_mean (const char data[], size_t stride, size_t n, double mean);
-double gsl_stats_char_sd_with_mean (const char data[], size_t stride, size_t n, double mean);
-double gsl_stats_char_est_variance_with_mean (const char data[], size_t stride, size_t n, double mean);
-double gsl_stats_char_est_sd_with_mean (const char data[], size_t stride, size_t n, double mean);
-double gsl_stats_char_absdev_with_mean (const char data[], size_t stride, size_t n, double mean);
-double gsl_stats_char_skew_with_mean_and_sd (const char data[], size_t stride, size_t n, double mean, double sd);
-double gsl_stats_char_kurtosis_with_mean_and_sd (const char data[], size_t stride, size_t n, double mean, double sd);
-double gsl_stats_char_lag1_autocorrelation_with_mean (const char data[], size_t stride, size_t n, double mean);
+double gsl_stats_char_variance_m (const char data[], size_t stride, size_t n, double mean);
+double gsl_stats_char_sd_m (const char data[], size_t stride, size_t n, double mean);
+double gsl_stats_char_absdev_m (const char data[], size_t stride, size_t n, double mean);
+double gsl_stats_char_skew_m_sd (const char data[], size_t stride, size_t n, double mean, double sd);
+double gsl_stats_char_kurtosis_m_sd (const char data[], size_t stride, size_t n, double mean, double sd);
+double gsl_stats_char_lag1_autocorrelation_m (const char data[], size_t stride, size_t n, double mean);
 
 
 double gsl_stats_char_pvariance (const char data1[], size_t stride1, size_t n1, const char data2[], const size_t stride2, size_t n2);

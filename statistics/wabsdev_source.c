@@ -2,11 +2,11 @@ double
 FUNCTION(gsl_stats,wabsdev) (const BASE w[], const size_t wstride, const BASE data[], const size_t stride, const size_t n)
 {
   const double wmean = FUNCTION(gsl_stats,wmean)(w, wstride, data, stride, n);
-  return FUNCTION(gsl_stats,wabsdev_with_mean)(w, wstride, data, stride, n, wmean);
+  return FUNCTION(gsl_stats,wabsdev_m)(w, wstride, data, stride, n, wmean);
 }
     
 double 
-FUNCTION(gsl_stats,wabsdev_with_mean) (const BASE w[], const size_t wstride, const BASE data[], const size_t stride, const size_t n, const double wmean)
+FUNCTION(gsl_stats,wabsdev_m) (const BASE w[], const size_t wstride, const BASE data[], const size_t stride, const size_t n, const double wmean)
 {
   /* Compute the weighted absolute deviation of a dataset */
 

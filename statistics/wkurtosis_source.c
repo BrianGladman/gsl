@@ -2,17 +2,17 @@ double
 FUNCTION(gsl_stats,wkurtosis) (const BASE w[], const size_t wstride, const BASE data[], const size_t stride, const size_t n)
 {
   const double wmean = FUNCTION(gsl_stats,wmean)(w, wstride, data, stride, n);
-  const double est_wsd = FUNCTION(gsl_stats,est_wsd_with_mean)(w, wstride, data, stride, n, wmean);
-  return FUNCTION(gsl_stats,wkurtosis_with_mean_and_sd)(w, wstride, data, stride, n, wmean, est_wsd);
+  const double wsd = FUNCTION(gsl_stats,wsd_m)(w, wstride, data, stride, n, wmean);
+  return FUNCTION(gsl_stats,wkurtosis_m_sd)(w, wstride, data, stride, n, wmean, wsd);
 }
     
 double 
-FUNCTION(gsl_stats,wkurtosis_with_mean_and_sd) (const BASE w[], const size_t wstride,
-                                                const BASE data[], 
-                                                const size_t stride,
-                                                const size_t n,
-                                                const double wmean, 
-                                                const double wsd)
+FUNCTION(gsl_stats,wkurtosis_m_sd) (const BASE w[], const size_t wstride,
+                                    const BASE data[], 
+                                    const size_t stride,
+                                    const size_t n,
+                                    const double wmean, 
+                                    const double wsd)
 {
   /* takes a dataset and finds the kurtosis */
 

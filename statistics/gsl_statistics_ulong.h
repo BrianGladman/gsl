@@ -6,22 +6,19 @@
 double gsl_stats_ulong_mean (const unsigned long data[], size_t stride, size_t n);
 double gsl_stats_ulong_variance (const unsigned long data[], size_t stride, size_t n);
 double gsl_stats_ulong_sd (const unsigned long data[], size_t stride, size_t n);
-double gsl_stats_ulong_est_variance (const unsigned long data[], size_t stride, size_t n);
-double gsl_stats_ulong_est_sd (const unsigned long data[], size_t stride, size_t n);
+double gsl_stats_ulong_variance_with_fixed_mean (const unsigned long data[], size_t stride, size_t n, double mean);
+double gsl_stats_ulong_sd_with_fixed_mean (const unsigned long data[], size_t stride, size_t n, double mean);
 double gsl_stats_ulong_absdev (const unsigned long data[], size_t stride, size_t n);
-
 double gsl_stats_ulong_skew (const unsigned long data[], size_t stride, size_t n);
 double gsl_stats_ulong_kurtosis (const unsigned long data[], size_t stride, size_t n);
 double gsl_stats_ulong_lag1_autocorrelation (const unsigned long data[], size_t stride, size_t n);
 
-double gsl_stats_ulong_variance_with_mean (const unsigned long data[], size_t stride, size_t n, double mean);
-double gsl_stats_ulong_sd_with_mean (const unsigned long data[], size_t stride, size_t n, double mean);
-double gsl_stats_ulong_est_variance_with_mean (const unsigned long data[], size_t stride, size_t n, double mean);
-double gsl_stats_ulong_est_sd_with_mean (const unsigned long data[], size_t stride, size_t n, double mean);
-double gsl_stats_ulong_absdev_with_mean (const unsigned long data[], size_t stride, size_t n, double mean);
-double gsl_stats_ulong_skew_with_mean_and_sd (const unsigned long data[], size_t stride, size_t n, double mean, double sd);
-double gsl_stats_ulong_kurtosis_with_mean_and_sd (const unsigned long data[], size_t stride, size_t n, double mean, double sd);
-double gsl_stats_ulong_lag1_autocorrelation_with_mean (const unsigned long data[], size_t stride, size_t n, double mean);
+double gsl_stats_ulong_variance_m (const unsigned long data[], size_t stride, size_t n, double mean);
+double gsl_stats_ulong_sd_m (const unsigned long data[], size_t stride, size_t n, double mean);
+double gsl_stats_ulong_absdev_m (const unsigned long data[], size_t stride, size_t n, double mean);
+double gsl_stats_ulong_skew_m_sd (const unsigned long data[], size_t stride, size_t n, double mean, double sd);
+double gsl_stats_ulong_kurtosis_m_sd (const unsigned long data[], size_t stride, size_t n, double mean, double sd);
+double gsl_stats_ulong_lag1_autocorrelation_m (const unsigned long data[], size_t stride, size_t n, double mean);
 
 
 double gsl_stats_ulong_pvariance (const unsigned long data1[], size_t stride1, size_t n1, const unsigned long data2[], const size_t stride2, size_t n2);

@@ -4,8 +4,8 @@ void
 FUNCTION (test, func) (const size_t stridea, const size_t strideb)
 {
   /* sample sets of doubles */
-  int i;
-  const unsigned int na = 14, nb = 14;
+  size_t i;
+  const size_t na = 14, nb = 14;
 
   const BASE rawa[] =
   {.0421, .0941, .1064, .0242, .1331,
@@ -51,27 +51,31 @@ FUNCTION (test, func) (const size_t stridea, const size_t strideb)
   }
 
   {
-    double var = FUNCTION(gsl_stats,variance) (groupa, stridea, na);
+    double mean = FUNCTION(gsl_stats,mean) (groupa, stridea, na);
+    double var = FUNCTION(gsl_stats,variance_with_fixed_mean) (groupa, stridea, na, mean);
     double expected = 0.00113837428571429;
+    gsl_test_rel (var, expected, rel, NAME(gsl_stats) "_variance_with_fixed_mean");
+  }
+
+
+  {
+    double mean = FUNCTION(gsl_stats,mean) (groupa, stridea, na);
+    double var = FUNCTION(gsl_stats,sd_with_fixed_mean) (groupa, stridea, na, mean);
+    double expected = 0.0337398026922845;
+    gsl_test_rel (var, expected, rel, NAME(gsl_stats) "_sd_with_fixed_mean");
+  }
+
+
+  {
+    double var = FUNCTION(gsl_stats,variance) (groupb, strideb, nb);
+    double expected = 0.00124956615384615;
     gsl_test_rel (var, expected, rel, NAME(gsl_stats) "_variance");
   }
 
   {
-    double var_est = FUNCTION(gsl_stats,est_variance) (groupb, strideb, nb);
-    double expected = 0.00124956615384615;
-    gsl_test_rel (var_est, expected, rel, NAME(gsl_stats) "_est_variance");
-  }
-
-  {
     double sd = FUNCTION(gsl_stats,sd) (groupa, stridea, na);
-    double expected = 0.0337398026922845;
-    gsl_test_rel (sd, expected, rel, NAME(gsl_stats) "_sd");
-  }
-
-  {
-    double sd_est = FUNCTION(gsl_stats,est_sd) (groupa, stridea, na);
     double expected = 0.0350134479659107;
-    gsl_test_rel (sd_est, expected, rel, NAME(gsl_stats) "_est_sd");
+    gsl_test_rel (sd, expected, rel, NAME(gsl_stats) "_sd");
   }
 
   {
@@ -99,27 +103,22 @@ FUNCTION (test, func) (const size_t stridea, const size_t strideb)
   }
 
   {
-    double wvar = FUNCTION(gsl_stats,wvariance) (w, strideb, groupa, stridea, na);
+    double wmean = FUNCTION(gsl_stats,wmean) (w, strideb, groupa, stridea, na);
+    double wvar = FUNCTION(gsl_stats,wvariance_with_fixed_mean) (w, strideb, groupa, stridea, na, wmean);
     double expected = 0.000615793060878654;
-    gsl_test_rel (wvar, expected, rel, NAME(gsl_stats) "_wvariance");
+    gsl_test_rel (wvar, expected, rel, NAME(gsl_stats) "_wvariance_with_fixed_mean");
   }
 
   {
-    double est_wvar = FUNCTION(gsl_stats,est_wvariance) (w, strideb, groupa, stridea, na);
+    double est_wvar = FUNCTION(gsl_stats,wvariance) (w, strideb, groupa, stridea, na);
     double expected = 0.000769562962860317;
-    gsl_test_rel (est_wvar, expected, rel, NAME(gsl_stats) "_est_wvariance");
+    gsl_test_rel (est_wvar, expected, rel, NAME(gsl_stats) "_wvariance");
   }
 
   {
     double wsd = FUNCTION(gsl_stats,wsd) (w, strideb, groupa, stridea, na);
-    double expected = 0.0248151780343937;
-    gsl_test_rel (wsd, expected, rel, NAME(gsl_stats) "_wsd");
-  }
-
-  {
-    double wsd_est = FUNCTION(gsl_stats,est_wsd) (w, strideb, groupa, stridea, na);
     double expected = 0.0277409978706664;
-    gsl_test_rel (wsd_est, expected, rel, NAME(gsl_stats) "_est_wsd");
+    gsl_test_rel (wsd, expected, rel, NAME(gsl_stats) "_wsd");
   }
 
   {

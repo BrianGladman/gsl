@@ -4,8 +4,8 @@ void
 FUNCTION (test, func) (const size_t stridea, const size_t strideb)
 {
   /* sample sets of integers */
-  int i;
-  const unsigned int ina = 20, inb = 20;
+  size_t i;
+  const size_t ina = 20, inb = 20;
 
   const BASE raw1[] = {1, 2, 3, 4, 5, 6} ;
   
@@ -53,27 +53,29 @@ FUNCTION (test, func) (const size_t stridea, const size_t strideb)
   }
 
   {
-    double var = FUNCTION(gsl_stats,variance) (igroupa, stridea, ina);
+    double mean = FUNCTION(gsl_stats,mean) (igroupa, stridea, ina);
+    double var = FUNCTION(gsl_stats,variance_with_fixed_mean) (igroupa, stridea, ina, mean);
     double expected = 13.7;
+    gsl_test_rel (var, expected, rel, NAME(gsl_stats) "_variance_with_fixed_mean");
+  }
+
+  {
+    double mean = FUNCTION(gsl_stats,mean) (igroupa, stridea, ina);
+    double sd = FUNCTION(gsl_stats,sd_with_fixed_mean) (igroupa, stridea, ina, mean);
+    double expected = 3.70135110466435;
+    gsl_test_rel (sd, expected, rel, NAME(gsl_stats) "_sd_with_fixed_mean");
+  }
+
+  {
+    double var = FUNCTION(gsl_stats,variance) (igroupa, stridea, ina);
+    double expected = 14.4210526315789;
     gsl_test_rel (var, expected, rel, NAME(gsl_stats) "_variance");
   }
 
   {
-    double var = FUNCTION(gsl_stats,est_variance) (igroupa, stridea, ina);
-    double expected = 14.4210526315789;
-    gsl_test_rel (var, expected, rel, NAME(gsl_stats) "_est_variance");
-  }
-
-  {
-    double sd = FUNCTION(gsl_stats,sd) (igroupa, stridea, ina);
-    double expected = 3.70135110466435;
-    gsl_test_rel (sd, expected, rel, NAME(gsl_stats) "_sd");
-  }
-
-  {
-    double sd_est = FUNCTION(gsl_stats,est_sd) (igroupa, stridea, ina);
+    double sd_est = FUNCTION(gsl_stats,sd) (igroupa, stridea, ina);
     double expected = 3.79750610685209;
-    gsl_test_rel (sd_est, expected, rel, NAME(gsl_stats) "_est_sd");
+    gsl_test_rel (sd_est, expected, rel, NAME(gsl_stats) "_sd");
   }
 
   {
