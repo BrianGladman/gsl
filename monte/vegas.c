@@ -11,7 +11,7 @@
 
    The input coordinates are x[j], with upper and lower limits xu[j]
    and xl[j].  The integration length in the j-th direction is
-   delx[j].  Each coordinate x[j] is mapped linearly to a variable
+   delx[j].  Each coordinate x[j] is rescaled to a variable
    y[j] in the range 0 to 1. This range is divided into bins with
    boundaries y_bin[i][j], where i=0 corresponds to y=0 and i=bins to
    y=1.  The integral contribution from the bin preceding y_bin[i][j]
@@ -102,7 +102,6 @@ int gsl_monte_vegas_integrate(gsl_monte_vegas_state *state,
     }
     
     if (state->verbose >= 0 ) {
-      vegas_open_log(state);
       print_lim(state, xl, xu, num_dim);
     }
   } /* stage == 0 */
@@ -204,7 +203,6 @@ int gsl_monte_vegas_integrate(gsl_monte_vegas_state *state,
 	  }
 	  x[j] = xl[j] + y * state->delx[j];
 	  if (j > 2) {
-	    /* fprintf(stderr, "z=%f,x[%d]=%f\n", z,j, x[j]);*/
 	  }
 	  jacbin *= binwdth;
 	}
@@ -302,10 +300,6 @@ int gsl_monte_vegas_integrate(gsl_monte_vegas_state *state,
   }
 
   /* final stuff */
-  if (state->verbose >= 0 ) {
-    vegas_close_log(state);
-  }
-
   return status;
 }
 

@@ -6,6 +6,7 @@
 
 #include <gsl_rng.h>
 #include <gsl_monte.h>
+#include <stdio.h>
 
 /* This will go away soon. */
 #define GSL_V_BINS_MAX 50  /* even integer because will be divided by two. */
@@ -31,6 +32,7 @@ typedef struct {
   int init_done;
   int check_done;
   gsl_rng* ranf;
+  FILE* ostream;
 
   /* scratch variables preserved between calls to vegas1/2/3  */
   double jac;
