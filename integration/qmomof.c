@@ -114,8 +114,6 @@ int
 gsl_integration_qawo_table_set_length (gsl_integration_qawo_table * t,
 					   double L)
 {
-  size_t i;
-
   /* return immediately if the length is the same as the old length */
 
   if (L == t->L)

@@ -1,3 +1,11 @@
+Mon Apr 16 20:09:09 2001  Brian Gough  <bjg@network-theory.co.uk>
+
+	* qc25f.c (qc25f): removed unnecessary variables, replaced use of
+ 	abort by GSL_ERROR
+
+	* qmomof.c (gsl_integration_qawo_table_set_length): removed
+ 	unnecessary duplicate variable declaration for i
+
 Mon Jan 22 12:35:05 2001  Brian Gough  <bjg@network-theory.co.uk>
 
 	* qmomof.c: moments are now precomputed in a read-only table
