@@ -3,10 +3,10 @@
 #include <config.h>
 #include <math.h>
 #include <gsl_complex.h>
-#include <gsl_roots.h>
+#include <gsl_poly.h>
 
 int
-gsl_root_complex_solve_quadratic (double a, double b, double c,
+gsl_poly_complex_solve_quadratic (double a, double b, double c,
 				  gsl_complex z[])
 {
   double disc = b * b - 4 * a * c;

@@ -4,12 +4,12 @@
 #include <math.h>
 #include <gsl_math.h>
 #include <gsl_complex.h>
-#include <gsl_roots.h>
+#include <gsl_poly.h>
 
 #define SWAP(a,b) do { double tmp = b ; b = a ; a = tmp ; } while(0)
 
 int
-gsl_root_complex_solve_cubic (double a, double b, double c, gsl_complex z[])
+gsl_poly_complex_solve_cubic (double a, double b, double c, gsl_complex z[])
 {
   double Q = (a * a - 3 * b) / 9;
   double R = (2 * a * a * a - 9 * a * b + 27 * c) / 54;
@@ -30,8 +30,8 @@ gsl_root_complex_solve_cubic (double a, double b, double c, gsl_complex z[])
     {
 
       /* Due to finite precision some double roots may be missed, and
-         considered to be a pair of complex roots z = x +/- epsilon i
-         close to the real axis. */
+         will be considered to be a pair of complex roots z = x +/-
+         epsilon i close to the real axis. */
 
       double sqrtQ = sqrt (Q);
       if (R > 0)

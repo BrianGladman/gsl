@@ -3,12 +3,12 @@
 #include <config.h>
 #include <math.h>
 #include <gsl_math.h>
-#include <gsl_roots.h>
+#include <gsl_poly.h>
 
 #define SWAP(a,b) do { double tmp = b ; b = a ; a = tmp ; } while(0)
 
 int 
-gsl_root_solve_cubic (double a, double b, double c, double x[])
+gsl_poly_solve_cubic (double a, double b, double c, double x[])
 {
   double Q = (a * a - 3 * b) / 9;
   double R = (2 * a * a * a - 9 * a * b + 27 * c) / 54;

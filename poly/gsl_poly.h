@@ -8,10 +8,10 @@
  * x[] is assumed big enough.
  * Roots are returned ordered.
  */
-int gsl_root_solve_quadratic (double a, double b, double c, double x[]);
+int gsl_poly_solve_quadratic (double a, double b, double c, double x[]);
 
 int 
-gsl_root_complex_solve_quadratic (double a, double b, double c, gsl_complex z[]);
+gsl_poly_complex_solve_quadratic (double a, double b, double c, gsl_complex z[]);
 
 
 /* Solve for real roots of the cubic equation
@@ -20,9 +20,9 @@ gsl_root_complex_solve_quadratic (double a, double b, double c, gsl_complex z[])
  * x[] is assumed big enough.
  * Roots are returned ordered.
  */
-int gsl_root_solve_cubic (double a, double b, double c, double x[]);
+int gsl_poly_solve_cubic (double a, double b, double c, double x[]);
 
 int 
-gsl_root_complex_solve_cubic (double a, double b, double c, gsl_complex z[]);
+gsl_poly_complex_solve_cubic (double a, double b, double c, gsl_complex z[]);
 
 #endif /* GSL_POLY_H */
