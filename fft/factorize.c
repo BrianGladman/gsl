@@ -52,7 +52,6 @@ gsl_fft_factorize (const unsigned int n,
 {
   unsigned int nf = 0;
   unsigned int ntest = n;
-  unsigned int factor_sum = 0;
   unsigned int factor;
   unsigned int i = 0;
 
@@ -65,7 +64,7 @@ gsl_fft_factorize (const unsigned int n,
     {
       factors[0] = 1;
       *n_factors = 1;
-      return 1;
+      return 0;
     }
 
   /* deal with the implemented factors first */
@@ -77,7 +76,6 @@ gsl_fft_factorize (const unsigned int n,
 	{
 	  ntest = ntest / factor;
 	  factors[nf] = factor;
-	  factor_sum += factor;
 	  nf++;
 	}
       i++;
@@ -91,7 +89,6 @@ gsl_fft_factorize (const unsigned int n,
     {
       ntest = ntest / factor;
       factors[nf] = factor;
-      factor_sum += factor;
       nf++;
     }
 
@@ -107,7 +104,6 @@ gsl_fft_factorize (const unsigned int n,
 	}
       ntest = ntest / factor;
       factors[nf] = factor;
-      factor_sum += factor;
       nf++;
     }
 
@@ -128,13 +124,7 @@ gsl_fft_factorize (const unsigned int n,
 
   *n_factors = nf;
 
-  /* the sum of the factors gives the scaling of the algorithm
-
-     T ~ O(n factor_sum)
-
-     a well factorized length has a factor sum which is much less than n */
-
-  return factor_sum;
+  return 0;
 }
 
 
@@ -152,16 +142,12 @@ int gsl_fft_binary_logn (const unsigned int n)
 
   ntest = (1 << binary_logn) ;
 
-  if (n != ntest )
+  if (n != ntest )       
     {
-      /* n is not a power of 2 */
-      return -1 ; 
+      return -1 ; /* n is not a power of 2 */
     } 
-  else 
-    {
-      return binary_logn;
-    }
-      
+
+  return binary_logn;
 }
 
 

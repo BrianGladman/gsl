@@ -24,7 +24,7 @@ gsl_fft_real_init (unsigned int n,
 
   status = gsl_fft_real_factorize (n, &n_factors, wavetable->factor);
 
-  if (status == -1)
+  if (status)
     {
       GSL_ERROR ("factorization failed", GSL_EFACTOR);
     }

@@ -23,7 +23,7 @@ gsl_fft_complex_init (unsigned int n,
 
   status = gsl_fft_complex_factorize (n, &n_factors, wavetable->factor);
 
-  if (status == -1)
+  if (status)
     {
       GSL_ERROR ("factorization failed", GSL_EFACTOR);
     }
@@ -136,4 +136,28 @@ gsl_fft_complex_wavetable_free (gsl_fft_complex_wavetable * wavetable)
   wavetable->trig = NULL;
 
   return 0;
+}
+
+int
+gsl_fft_complex_wavetable_cpy (gsl_fft_complex_wavetable * dest,
+			       gsl_fft_complex_wavetable * src)
+{
+  int i, n, nf ;
+
+  if (dest->n != src->n) 
+    {
+      GSL_ERROR ("length of src and dest do not match", GSL_EINVAL);
+    } 
+  
+  n = dest->n ;
+  nf = dest->nf ;
+
+  memcpy(dest->trig, src->trig, n * sizeof (gsl_complex)) ;
+  
+  for (i = 0 ; i < nf ; i++)
+    {
+      dest->twiddle[i] = dest->trig + (src->twiddle[i] - src->trig) ;
+    }
+
+  return 0 ;
 }

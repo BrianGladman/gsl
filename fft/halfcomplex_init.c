@@ -23,7 +23,7 @@ gsl_fft_halfcomplex_init (unsigned int n,
 
   status = gsl_fft_halfcomplex_factorize (n, &n_factors, wavetable->factor);
 
-  if (status == -1)
+  if (status)
     {
       GSL_ERROR ("factorization failed", GSL_EFACTOR);
     }

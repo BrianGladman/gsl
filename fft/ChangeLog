@@ -1,3 +1,9 @@
+Sat Mar 21 17:28:26 1998  Brian Gough  <bjg@vvv.lanl.gov>
+
+	* factorize.c (gsl_fft_factorize): Stopped returning the sum of
+ 	factors in the status variable. The user can compute it if
+ 	necessary.
+
 1998-01-27  Mark Galassi  <rosalia@cygnus.com>
 
 	* Makefile.am: fixed a typo: removed trailing \ at the end of this file.
