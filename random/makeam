@@ -16,6 +16,13 @@ echo -n "$auxbin "
 echo ""
 echo ""
 
+echo -n "TESTS = "
+for i in $list $auxlist; do
+    echo -n "test-$i "
+done
+echo ""
+echo ""
+
 echo -n "lib_LIBRARIES= libgslrandom.a "
 for i in $list; do
     echo -n "libgslran$i.a "

@@ -37,6 +37,8 @@ Makefile.am: Makefile.ami makeam
 
 bin_PROGRAMS= taus test-taus bench-taus mrg test-mrg bench-mrg cmrg test-cmrg bench-cmrg uni test-uni bench-uni uni32 test-uni32 bench-uni32 zuf test-zuf bench-zuf rand test-rand bench-rand test-switch 
 
+TESTS = test-taus test-mrg test-cmrg test-uni test-uni32 test-zuf test-rand 
+
 lib_LIBRARIES= libgslrandom.a libgslrantaus.a libgslranmrg.a libgslrancmrg.a libgslranuni.a libgslranuni32.a libgslranzuf.a libgslranrand.a 
 
 libgslrantaus_a_SOURCES= taus.c taus-gen.c 

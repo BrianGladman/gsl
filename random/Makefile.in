@@ -59,6 +59,8 @@ CLEANFILES= tmp.out tmp.in
 
 bin_PROGRAMS= taus test-taus bench-taus mrg test-mrg bench-mrg cmrg test-cmrg bench-cmrg uni test-uni bench-uni uni32 test-uni32 bench-uni32 zuf test-zuf bench-zuf rand test-rand bench-rand test-switch 
 
+TESTS = test-taus test-mrg test-cmrg test-uni test-uni32 test-zuf test-rand 
+
 lib_LIBRARIES= libgslrandom.a libgslrantaus.a libgslranmrg.a libgslrancmrg.a libgslranuni.a libgslranuni32.a libgslranzuf.a libgslranrand.a 
 
 libgslrantaus_a_SOURCES= taus.c taus-gen.c 
@@ -521,10 +523,31 @@ maintainer-clean-depend:
 	@o='o';				\
 	test -n "$o" && o='$$o';	\
 	$(MKDEP) $< | sed "s/^\(.*\)\.o:/\1.$$o \1.l$$o:/" > $@
+check-TESTS: $(TESTS)
+	@failed=0; all=0; \
+	srcdir=$(srcdir); export srcdir; \
+	for tst in $(TESTS); do \
+	  all=`expr $$all + 1`; \
+	  if test -f $$tst; then dir=.; \
+	  else dir="$(srcdir)"; fi; \
+	  if $(TESTS_ENVIRONMENT) $$dir/$$tst; then \
+	    echo "PASS: $$tst"; \
+	  else \
+	    failed=`expr $$failed + 1`; \
+	    echo "FAIL: $$tst"; \
+	  fi; \
+	done; \
+	if test "$$failed" -eq 0; then \
+	  echo "========================"; \
+	  echo "All $$all tests passed"; \
+	  echo "========================"; \
+	else \
+	  echo "$$failed of $$all tests failed"; \
+	fi
 info:
 dvi:
 check: all
-	$(MAKE)
+	$(MAKE) check-TESTS
 installcheck:
 install-exec: install-libLIBRARIES install-binPROGRAMS
 	$(NORMAL_INSTALL)
@@ -586,10 +609,10 @@ distclean-binPROGRAMS clean-binPROGRAMS maintainer-clean-binPROGRAMS \
 uninstall-binPROGRAMS install-binPROGRAMS uninstall-includeHEADERS \
 install-includeHEADERS tags mostlyclean-tags distclean-tags clean-tags \
 maintainer-clean-tags distdir mostlyclean-depend distclean-depend \
-clean-depend maintainer-clean-depend info dvi installcheck install-exec \
-install-data install uninstall all installdirs mostlyclean-generic \
-distclean-generic clean-generic maintainer-clean-generic clean \
-mostlyclean distclean maintainer-clean
+clean-depend maintainer-clean-depend check-TESTS info dvi installcheck \
+install-exec install-data install uninstall all installdirs \
+mostlyclean-generic distclean-generic clean-generic \
+maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 
 
 switch.c gsl_ran_switch.h: xxx-switch.xc makeswitch
