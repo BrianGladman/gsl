@@ -978,8 +978,8 @@ using the formula given above.
 \centerline{\input rand-fdist.tex}
 @end tex
 
-@deftypefun double gsl_cdf_Fdist_P (double @var{x}, double @var{nu1}, double @var{nu2})
-@deftypefunx double gsl_cdf_Fdist_Q (double @var{x}, double @var{nu1}, double @var{nu2})
+@deftypefun double gsl_cdf_fdist_P (double @var{x}, double @var{nu1}, double @var{nu2})
+@deftypefunx double gsl_cdf_fdist_Q (double @var{x}, double @var{nu1}, double @var{nu2})
 These functions compute the cumulative distribution functions
 @math{P(x)} and @math{Q(x)} for the F-distribution with @var{nu1} and
 @var{nu2} degrees of freedom.
