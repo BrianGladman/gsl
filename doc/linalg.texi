@@ -29,6 +29,7 @@ The functions described in this chapter are declared in the header file
 * Tridiagonal Decomposition of Real Symmetric Matrices::  
 * Tridiagonal Decomposition of Hermitian Matrices::  
 * Bidiagonalization::           
+* Householder Transformations::  
 * Householder solver for linear systems::  
 * Tridiagonal Systems::         
 * Linear Algebra Examples::     
@@ -667,6 +668,65 @@ This function unpacks the diagonal and superdiagonal of the bidiagonal
 decomposition of @var{A} given by @code{gsl_linalg_bidiag_decomp}, into
 the diagonal vector @var{diag} and superdiagonal vector @var{superdiag}.
 @end deftypefun
+
+@node Householder Transformations
+@section Householder Transformations
+@cindex Householder matrix
+@cindex Householder transformation
+@cindex transformation, Householder
+
+A Householder transformation is a rank-1 modification of the identity
+matrix which can be used to zero out selected elements of a vector.  A
+Householder matrix @math{P} takes the form,
+
+@tex
+\beforedisplay
+$$
+P = I - \tau v v^T
+$$
+\afterdisplay
+@end tex
+@ifinfo
+@example
+P = I - \tau v v^T
+@end example
+@end ifinfo
+@noindent
+where @math{v} is a vector (called the @dfn{Householder vector}) and
+@math{\tau = 2/(v^T v)}.  The functions described in this section use the
+rank-1 structure of the Householder matrix to create and apply
+Householder transformations efficiently.
+
+@deftypefun double gsl_linalg_houlsehoulder_transform (gsl_vector * @var{v})
+This function prepares a Householder transformation @math{P = I - \tau v
+v^T} which can be used to zero all the elements of the input vector except
+the first.  On output the transformation is stored in the vector @var{v}
+and the scalar @math{\tau} is returned.
+@end deftypefun
+
+@deftypefun int gsl_linalg_householder_hm (double tau, const gsl_vector * v, gsl_matrix * A)
+This function applies the Householder matrix @math{P} defined by the
+scalar @var{tau} and the vector @var{v} to the left-hand side of the
+matrix @var{A}. On output the result @math{P A} is stored in @var{A}.
+@end deftypefun
+
+@deftypefun int gsl_linalg_householder_mh (double tau, const gsl_vector * v, gsl_matrix * A)
+This function applies the Householder matrix @math{P} defined by the
+scalar @var{tau} and the vector @var{v} to the right-hand side of the
+matrix @var{A}. On output the result @math{A P} is stored in @var{A}.
+@end deftypefun
+
+@deftypefun int gsl_linalg_householder_hv (double tau, const gsl_vector * v, gsl_vector * w)
+This function applies the Householder transformation @math{P} defined by
+the scalar @var{tau} and the vector @var{v} to the vector @var{w}.  On
+output the result @math{P w} is stored in @var{w}.
+@end deftypefun
+
+@comment @deftypefun int gsl_linalg_householder_hm1 (double tau, gsl_matrix * A)
+@comment This function applies the Householder transform, defined by the scalar
+@comment @var{tau} and the vector @var{v}, to a matrix being build up from the
+@comment identity matrix, using the first column of @var{A} as a householder vector.
+@comment @end deftypefun
 
 @node Householder solver for linear systems
 @section Householder solver for linear systems
