@@ -5,7 +5,6 @@
 @setfilename gsl-ref.info
 @settitle GNU Scientific Library -- Reference Manual
 @finalout
-@set frontcontents
 @ifset publish
 @set frontcontents
 @setchapternewpage odd
