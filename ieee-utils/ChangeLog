@@ -1,3 +1,8 @@
+2003-07-21  Brian Gough  <bjg@network-theory.co.uk>
+
+	* read.c (gsl_ieee_read_mode_string): added missing
+	mask-division-by-zero to error message
+
 2003-06-14  Brian Gough  <bjg@network-theory.co.uk>
 
 	* fp-m68klinux.c fp-ppclinux.c fp-sparclinux.c fp-x86linux.c:

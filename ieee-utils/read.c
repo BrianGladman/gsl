@@ -82,9 +82,9 @@ gsl_ieee_read_mode_string (const char * description,
       GSL_ERROR ("unrecognized GSL_IEEE_MODE string.\nValid settings are:\n\n" 
 		 "  single-precision double-precision extended-precision\n"
 		 "  round-to-nearest round-down round-up round-to-zero\n"
-		 "  mask-invalid mask-denormalized mask-overflow "
-		 "mask-underflow\n"
-		 "  mask-all trap-common trap-inexact\n"
+		 "  mask-invalid mask-denormalized mask-division-by-zero\n"
+                 "  mask-overflow mask-underflow mask-all\n"
+                 "  trap-common trap-inexact\n"
 		 "\n"
 		 "separated by commas. "
 		 "(e.g. GSL_IEEE_MODE=\"round-down,mask-underflow\")",
