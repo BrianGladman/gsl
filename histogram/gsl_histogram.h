@@ -67,6 +67,13 @@ void gsl_histogram_reset (gsl_histogram * h);
 
 gsl_histogram * gsl_histogram_calloc_range(size_t n, double * range);
 
+int 
+gsl_histogram_set_ranges (gsl_histogram * h, const double range[], size_t size);
+int 
+gsl_histogram_set_ranges_uniform (gsl_histogram * h, double xmin, double xmax);
+
+
+
 int
 gsl_histogram_memcpy(gsl_histogram * dest, const gsl_histogram * source);
 

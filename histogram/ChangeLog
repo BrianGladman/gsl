@@ -1,3 +1,11 @@
+Mon Jun 25 17:41:42 2001  Brian Gough  <bjg@network-theory.co.uk>
+
+	* init2d.c (gsl_histogram2d_set_ranges_uniform): added range
+ 	initialization functions suggested by Achim Gaedke
+
+	* init.c (gsl_histogram_set_ranges_uniform): added range
+ 	initialization functions suggested by Achim Gaedke
+
 Tue Apr 17 22:13:05 2001  Brian Gough  <bjg@network-theory.co.uk>
 
 	* get2d.c: include "find.c"

@@ -155,3 +155,86 @@ gsl_histogram2d_free (gsl_histogram2d * h)
   free (h->bin);
   free (h);
 }
+
+
+int 
+gsl_histogram2d_set_ranges_uniform (gsl_histogram2d * h, 
+                                    double xmin, double xmax,
+                                    double ymin, double ymax)
+{
+  size_t i;
+  const size_t nx = h->nx, ny = h->ny;
+
+  if (xmin >= xmax)
+    {
+      GSL_ERROR_VAL ("xmin must be less than xmax", GSL_EINVAL, 0);
+    }
+
+  if (ymin >= ymax)
+    {
+      GSL_ERROR_VAL ("ymin must be less than ymax", GSL_EINVAL, 0);
+    }
+
+  /* initialize ranges */
+
+  for (i = 0; i <= nx; i++)
+    {
+      h->xrange[i] = xmin + ((double) i / (double) nx) * (xmax - xmin);
+    }
+
+  for (i = 0; i <= ny; i++)
+    {
+      h->yrange[i] = ymin + ((double) i / (double) ny) * (ymax - ymin);
+    }
+
+  /* clear contents */
+
+  for (i = 0; i < nx * ny; i++)
+    {
+      h->bin[i] = 0;
+    }
+
+  return GSL_SUCCESS;
+}
+
+int 
+gsl_histogram2d_set_ranges (gsl_histogram2d * h, 
+                            const double xrange[], size_t xsize,
+                            const double yrange[], size_t ysize)
+{
+  size_t i;
+  const size_t nx = h->nx, ny = h->ny;
+
+  if (xsize != (nx + 1))
+    {
+      GSL_ERROR_VAL ("size of xrange must match size of histogram", 
+                     GSL_EINVAL, 0);
+    }
+
+  if (ysize != (ny + 1))
+    {
+      GSL_ERROR_VAL ("size of yrange must match size of histogram", 
+                     GSL_EINVAL, 0);
+    }
+
+  /* initialize ranges */
+
+  for (i = 0; i <= nx; i++)
+    {
+      h->xrange[i] = xrange[i];
+    }
+
+  for (i = 0; i <= ny; i++)
+    {
+      h->yrange[i] = yrange[i];
+    }
+
+  /* clear contents */
+
+  for (i = 0; i < nx * ny; i++)
+    {
+      h->bin[i] = 0;
+    }
+
+  return GSL_SUCCESS;
+}

@@ -187,6 +187,18 @@ This function allocates a histogram of size @var{n} using the @math{n+1}
 bin ranges specified by the array @var{range}.
 @end deftypefun
 
+@deftypefun int gsl_histogram_set_ranges (gsl_histogram * @var{h}, const double @var{range}[], size_t @var{size})
+This function sets the ranges of the existing histogram @var{h} using
+the array @var{range} of size @var{size}.  The values of the histogram
+bins are reset to zero.
+@end deftypefun
+
+@deftypefun int gsl_histogram_set_ranges_uniform (gsl_histogram * @var{h}, double @var{xmin}, double @var{xmax})
+This function sets the ranges of the existing histogram @var{h} to cover
+the range @var{xmin} to @var{xmax} uniformly.  The values of the
+histogram bins are reset to zero.
+@end deftypefun
+
 @deftypefun void gsl_histogram_free (gsl_histogram * h)
 This function frees the histogram @var{h} and all of the memory
 associated with it.
@@ -698,6 +710,9 @@ error handler is invoked with an error code of @code{GSL_ENOMEM}.
 @end deftypefun
 
 @deftypefun {gsl_histogram2d *} gsl_histogram2d_calloc_uniform (size_t @var{nx}, size_t @var{ny}, double @var{xmin}, double @var{xmax}, double @var{ymin}, double @var{ymax})
+This function allocates a histogram of size @var{nx}-by-@var{ny} which
+uniformly covers the ranges @var{xmin} to @var{xmax} and @var{ymin} to
+@var{ymax} in the @math{x} and @math{y} directions respectively.
 @end deftypefun
 
 @deftypefun {gsl_histogram2d *} gsl_histogram2d_calloc_range (size_t @var{nx}, size_t @var{ny}, double * @var{xrange}, double * @var{yrange})
@@ -705,6 +720,20 @@ This function allocates a histogram of size @var{nx}-by-@var{ny} using
 the @math{nx+1} and @math{ny+1} bin ranges specified by the arrays
 @var{xrange} and @var{xyrange}.
 @end deftypefun
+
+@deftypefun int gsl_histogram2d_set_ranges (gsl_histogram2d * @var{h},  const double @var{xrange}[], size_t @var{xsize}, const double @var{yrange}[], size_t @var{ysize})
+This function sets the ranges of the existing histogram @var{h} using
+the arrays @var{xrange} and @var{yrange} of size @var{xsize} and
+@var{ysize} respectively.  The values of the histogram bins are reset to
+zero.
+@end deftypefun
+
+@deftypefun int gsl_histogram2d_set_ranges_uniform (gsl_histogram2d * @var{h}, double @var{xmin}, double @var{xmax}, double @var{ymin}, double @var{ymax})
+This function sets the ranges of the existing histogram @var{h} to cover
+the ranges @var{xmin} to @var{xmax} and @var{ymin} to @var{ymax}
+uniformly.  The values of the histogram bins are reset to zero.
+@end deftypefun
+
 
 @deftypefun void gsl_histogram2d_free (gsl_histogram2d * @var{h})
 This function frees the 2D histogram @var{h} and all of the memory

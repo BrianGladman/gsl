@@ -119,3 +119,62 @@ gsl_histogram_free (gsl_histogram * h)
   free (h->bin);
   free (h);
 }
+
+/* These initialization functions suggested by Achim Gaedke */
+
+int 
+gsl_histogram_set_ranges_uniform (gsl_histogram * h, double xmin, double xmax)
+{
+  size_t i;
+  const size_t n = h->n;
+
+  if (xmin >= xmax)
+    {
+      GSL_ERROR_VAL ("xmin must be less than xmax", GSL_EINVAL, 0);
+    }
+
+  /* initialize ranges */
+
+  for (i = 0; i <= n; i++)
+    {
+      h->range[i] = xmin + ((double) i / (double) n) * (xmax - xmin);
+    }
+
+  /* clear contents */
+
+  for (i = 0; i < n; i++)
+    {
+      h->bin[i] = 0;
+    }
+
+  return GSL_SUCCESS;
+}
+
+int 
+gsl_histogram_set_ranges (gsl_histogram * h, const double range[], size_t size)
+{
+  size_t i;
+  const size_t n = h->n;
+
+  if (size != (n+1))
+    {
+      GSL_ERROR_VAL ("size of range must match size of histogram", 
+                     GSL_EINVAL, 0);
+    }
+
+  /* initialize ranges */
+
+  for (i = 0; i <= n; i++)
+    {
+      h->range[i] = range[i];
+    }
+
+  /* clear contents */
+
+  for (i = 0; i < n; i++)
+    {
+      h->bin[i] = 0;
+    }
+
+  return GSL_SUCCESS;
+}

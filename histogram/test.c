@@ -56,7 +56,7 @@ main (void)
     int status = 0;
     for (i = 0; i <= NR; i++)
       {
-	if (h->range[i] != xr[i])
+	if (hr->range[i] != xr[i])
 	  {
 	    status = 1;
 	  }
@@ -65,6 +65,25 @@ main (void)
     gsl_test (status, "gsl_histogram_calloc_range creates range correctly");
   }
 
+  for (i = 0; i <= NR; i++)
+    {
+      hr->range[i] = 0.0;
+    }
+
+  {
+    int status = gsl_histogram_set_ranges (hr, xr, NR+1);
+
+    for (i = 0; i <= NR; i++)
+      {
+	if (hr->range[i] != xr[i])
+	  {
+	    status = 1;
+	  }
+      };
+
+    gsl_test (status, "gsl_histogram_set_range sets range correctly");
+  }
+    
 
   for (i = 0; i < N; i++)
     {

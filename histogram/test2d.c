@@ -96,6 +96,44 @@ main (void)
     gsl_test (status, "gsl_histogram2d_calloc_range creates yrange correctly");
   }
 
+  for (i = 0; i <= MR; i++)
+    {
+      hr->xrange[i] = 0.0;
+    }
+
+  for (i = 0; i <= NR; i++)
+    {
+      hr->yrange[i] = 0.0;
+    }
+
+  {
+    int status = gsl_histogram2d_set_ranges (hr, xr, MR+1, yr, NR+1);
+    
+    for (i = 0; i <= MR; i++)
+      {
+	if (hr->xrange[i] != xr[i])
+	  {
+	    status = 1;
+	  }
+      };
+
+    gsl_test (status, "gsl_histogram2d_set_ranges sets xrange correctly");
+  }
+
+  {
+    int status = 0;
+    for (i = 0; i <= NR; i++)
+      {
+	if (hr->yrange[i] != yr[i])
+	  {
+	    status = 1;
+	  }
+      };
+
+    gsl_test (status, "gsl_histogram2d_set_ranges sets yrange correctly");
+  }
+
+
   k = 0;
   for (i = 0; i < M; i++)
     {
