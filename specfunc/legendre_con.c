@@ -1285,11 +1285,12 @@ int gsl_sf_conicalP_sph_reg_impl(const int l, const double lambda,
   }
   else {
     /* x > 1.0 */
-    const double xi = x/(sqrt(x-1.0)*sqrt(x+1.0));
+
+    const double xi = x/sqrt((x-1.0)*(x+1.0));
     double rat;
     double Phf;
     int stat_CF1 = conicalP_negmu_xgt1_CF1(0.5, l, lambda, x, &rat);
-    int stat_Phf = gsl_sf_conicalP_half_impl(lambda, x, &Phf);
+    int stat_P;
     double Pellp1 = rat * GSL_SQRT_DBL_MIN;
     double Pell   = GSL_SQRT_DBL_MIN;
     double Pellm1;
@@ -1302,8 +1303,18 @@ int gsl_sf_conicalP_sph_reg_impl(const int l, const double lambda,
       Pell   = Pellm1;
     }
 
-    *result = GSL_SQRT_DBL_MIN * Phf / Pell;
-    return GSL_ERROR_SELECT_2(stat_Phf, stat_CF1);
+    if(fabs(Pell) > fabs(Pellp1)){
+      double Phf;
+      stat_P = gsl_sf_conicalP_half_impl(lambda, x, &Phf);
+      *result = GSL_SQRT_DBL_MIN * Phf / Pell;
+    }
+    else {
+      double Pmhf;
+      stat_P = gsl_sf_conicalP_mhalf_impl(lambda, x, &Pmhf);
+      *result = GSL_SQRT_DBL_MIN * Pmhf / Pellp1;
+    }
+
+    return GSL_ERROR_SELECT_2(stat_P, stat_CF1);
   }
 }
 

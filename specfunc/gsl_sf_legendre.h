@@ -60,6 +60,15 @@ int     gsl_sf_legendre_Q2_e(double x, double * result);
 double  gsl_sf_legendre_Q2(double x);
 
 
+/* Q_l(x), x > -1, x != 1, l >= 0
+ *
+ * exceptions: GSL_EDOM
+ */
+int     gsl_sf_legendre_Ql_impl(int l, double x, double * result);
+int     gsl_sf_legendre_Ql_e(int l, double x, double * result);
+double  gsl_sf_legendre_Ql(int l, double x);
+
+
 /* P_l^m(x)  m >= 0; l >= m; |x| <= 1.0
  *
  * Note that this function grows combinatorially with l.
@@ -244,10 +253,6 @@ int     gsl_sf_legendre_H3d_impl(int l, double lambda, double eta, double * resu
 int     gsl_sf_legendre_H3d_e(int l, double lambda, double eta, double * result);
 double  gsl_sf_legendre_H3d(int l, double lambda, double eta);
 
-
-/*
-int gsl_sf_conical_xlt1_large_mu_impl(double mu, double tau, double x, double * result);
-*/
 
 
 #ifdef HAVE_INLINE

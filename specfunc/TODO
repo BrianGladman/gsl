@@ -31,8 +31,8 @@ should be finished before a 1.0 level release.
 
 * Go over the tests and make sure nothing is left out.
 
-* Fill out our scorecard, working from the "Needs in
-  Special Functions" paper.
+* Fill out our scorecard, working from Lozier's
+  "Software Needs in Special Functions" paper.
 
 
 ----------------------------------------------------------------------
@@ -56,3 +56,4 @@ for a version 1.0 release.
 * Mathieu functions.
 
 * Weierstrass elliptic functions.
+

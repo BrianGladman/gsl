@@ -4800,6 +4800,27 @@ int check_legendre(void)
   gsl_test(s, "  gsl_sf_legendre_Q2");
   status += s;
 
+  s = 0;
+  s += ( frac_diff(gsl_sf_legendre_Ql(10, -0.5), -0.29165813966586752393 ) > 1.0e-14 );
+  s += ( frac_diff(gsl_sf_legendre_Ql(10,  0.5),  0.29165813966586752393 ) > 1.0e-14 );
+  s += ( frac_diff(gsl_sf_legendre_Ql(10,  1.5),  0.000014714232718207477406 ) > 1.0e-14 );
+  gsl_test(s, "  gsl_sf_legendre_Ql(10)");
+  status += s;
+
+  s = 0;
+  s += ( frac_diff(gsl_sf_legendre_Ql(100, -0.5), -0.09492507395207282096 ) > 1.0e-14 );
+  s += ( frac_diff(gsl_sf_legendre_Ql(100,  0.5),  0.09492507395207282096 ) > 1.0e-14 );
+  s += ( frac_diff(gsl_sf_legendre_Ql(100,  1.5),  1.1628163435044121988e-43 ) > 1.0e-14 );
+  gsl_test(s, "  gsl_sf_legendre_Ql(100)");
+  status += s;
+
+  s = 0;
+  s += ( frac_diff(gsl_sf_legendre_Ql(1000, -0.5), -0.030105074974005303500 ) > 1.0e-14 );
+  s += ( frac_diff(gsl_sf_legendre_Ql(1000,  0.5),  0.030105074974005303500 ) > 1.0e-14 );
+  s += ( frac_diff(gsl_sf_legendre_Ql(1000,  1.1),  1.0757258447825356443e-194 ) > 1.0e-12 );
+  gsl_test(s, "  gsl_sf_legendre_Ql(1000)");
+  status += s;
+
   return status;
 }
 
