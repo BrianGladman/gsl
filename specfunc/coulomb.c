@@ -351,11 +351,11 @@ coulomb_G_recur(const double lam_min, const int kmax,
  */
 static
 int
-my_coulomb_CF1(double lambda,
-               double eta, double x,
-               double * fcl_sign,
-	       double * result
-               )
+coulomb_CF1(double lambda,
+            double eta, double x,
+            double * fcl_sign,
+	    double * result
+            )
 {
   const double CF1_small = 1.e-30;
   const double CF1_abort = 1.0e+05;
@@ -403,13 +403,14 @@ my_coulomb_CF1(double lambda,
 }
 
 
+#if 0
 static
 int
-coulomb_CF1(const double lambda,
-            double eta, double x,
-            double * fcl_sign,
-	    double * result
-            )
+old_coulomb_CF1(const double lambda,
+                double eta, double x,
+                double * fcl_sign,
+	        double * result
+                )
 {
   const double CF1_abort = 1.e5;
   const double CF1_acc   = 10.0*GSL_MACH_EPS;
@@ -478,6 +479,7 @@ coulomb_CF1(const double lambda,
   *result = F;
   return GSL_SUCCESS;
 }
+#endif /* 0 */
 
 
 /* Evaluate the second continued fraction to 
@@ -552,6 +554,7 @@ coulomb_CF2(const double lambda, const double eta, const double x,
 }
 
 
+#if 0
 /* WKB evaluation of F, G. Assumes  0 < x < turning point.
  * Overflows are trapped, GSL_EOVRFLW is signalled,
  * and an exponent is returned such that:
@@ -563,9 +566,9 @@ coulomb_CF2(const double lambda, const double eta, const double x,
  */
 static
 int
-coulomb_jwkb(double lam, double eta, double x,
-             double * fjwkb, double * gjwkb,
-	     double * exponent)
+old_coulomb_jwkb(double lam, double eta, double x,
+                 double * fjwkb, double * gjwkb,
+	         double * exponent)
 {
   double gh2  = x*(2.0*eta - x);
   double llp1 = lam*(lam + 1.0);
@@ -592,11 +595,12 @@ coulomb_jwkb(double lam, double eta, double x,
     return GSL_EOVRFLW;
   }
 }
+#endif /* 0 */
 
 
 static
 int
-new_jwkb(const double lam, const double eta, const double x,
+coulomb_jwkb(const double lam, const double eta, const double x,
          double * fjwkb, double * gjwkb,
 	 double * exponent)
 {
@@ -802,7 +806,7 @@ gsl_sf_coulomb_wave_FG_impl(const double eta, const double x,
     double gamma;
     double F_scale;
 
-    my_coulomb_CF1(lam_F, eta, x, &F_sign_lam_F, &Fp_over_F_lam_F);
+    coulomb_CF1(lam_F, eta, x, &F_sign_lam_F, &Fp_over_F_lam_F);
 
     F_lam_F  = SMALL;
     Fp_lam_F = Fp_over_F_lam_F * F_lam_F;
@@ -817,10 +821,10 @@ gsl_sf_coulomb_wave_FG_impl(const double eta, const double x,
 
     alpha = Fp_over_F_lam_min - P_lam_min;
     gamma = alpha/Q_lam_min;
-    F_lam_min  = F_sign_lam_F * sqrt(alpha*alpha/Q_lam_min + Q_lam_min);
+    F_lam_min  = F_sign_lam_F / sqrt(alpha*alpha/Q_lam_min + Q_lam_min);
     Fp_lam_min = Fp_over_F_lam_min * F_lam_min;
     G_lam_min  = gamma * F_lam_min;
-    Gp_lam_min = P_lam_min * G_lam_min - Q_lam_min * F_lam_min;
+    Gp_lam_min = (P_lam_min * gamma - Q_lam_min) * F_lam_min;
 
     F_scale = F_lam_min / F_lam_min_unnorm;    
     F_lam_F  *= F_scale;
