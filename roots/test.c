@@ -71,7 +71,6 @@ main(int argc, char ** argv)
 
   gsl_set_error_handler(error_handler);
 
-
   /* Test macros if so instructed. */
   if (strchr(argv[1], 'm')) {
     printf("Testing root finding macros:\n");
@@ -372,7 +371,7 @@ gsl_test_root_falsepos(double (* f)(double), double lower_bound,
   }
   /* if the test passed */
   else {
-    printf("ok\n");
+    printf("ok, %e vs exact %e\n", root, cor_root);
     (void)(*num_passed)++;
   }
 }

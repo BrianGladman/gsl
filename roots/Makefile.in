@@ -62,7 +62,7 @@ PACKAGE = @PACKAGE@
 RANLIB = @RANLIB@
 VERSION = @VERSION@
 
-noinst_LIBRARIES = libroots.a 
+lib_LIBRARIES = libgslroots.a 
 
 noinst_PROGRAMS = test
 
@@ -74,25 +74,26 @@ INCLUDES = -I$(srcdir)/../err
 
 TESTS = test-macros test-bisection test-falsepos test-secant test-newton
 
-test_LDADD = libroots.a ../err/liberr.a
+test_LDADD = libgslroots.a ../err/libgslerr.a
 
-test_DEPENDENCIES = libroots.a
+test_DEPENDENCIES = libgslroots.a
 
 test_SOURCES = test.c test.h
 
-libroots_a_SOURCES = utility.c bisection.c falsepos.c secant.c newton.c
+libgslroots_a_SOURCES = utility.c bisection.c falsepos.c secant.c newton.c
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
 CONFIG_CLEAN_FILES = 
-LIBRARIES =  $(noinst_LIBRARIES)
+LIBRARIES =  $(lib_LIBRARIES)
 
 
 DEFS = @DEFS@ -I. -I$(srcdir) -I..
 CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
-libroots_a_LIBADD = 
-libroots_a_OBJECTS =  utility.o bisection.o falsepos.o secant.o newton.o
+libgslroots_a_LIBADD = 
+libgslroots_a_OBJECTS =  utility.o bisection.o falsepos.o secant.o \
+newton.o
 AR = ar
 PROGRAMS =  $(noinst_PROGRAMS)
 
@@ -103,7 +104,7 @@ COMPILE = $(CC) $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
 LINK = $(CC) $(CFLAGS) $(LDFLAGS) -o $@
 HEADERS =  $(include_HEADERS) $(noinst_HEADERS)
 
-DIST_COMMON =  Makefile.am Makefile.in
+DIST_COMMON =  Makefile.am Makefile.in TODO
 
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
@@ -112,8 +113,8 @@ TAR = tar
 GZIP = --best
 DEP_FILES =  .deps/bisection.P .deps/falsepos.P .deps/newton.P \
 .deps/secant.P .deps/test.P .deps/utility.P
-SOURCES = $(libroots_a_SOURCES) $(test_SOURCES)
-OBJECTS = $(libroots_a_OBJECTS) $(test_OBJECTS)
+SOURCES = $(libgslroots_a_SOURCES) $(test_SOURCES)
+OBJECTS = $(libgslroots_a_OBJECTS) $(test_OBJECTS)
 
 default: all
 
@@ -127,14 +128,37 @@ Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status $(BUILT_SOURCES)
 	  && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
 
-mostlyclean-noinstLIBRARIES:
+mostlyclean-libLIBRARIES:
 
-clean-noinstLIBRARIES:
-	test -z "$(noinst_LIBRARIES)" || rm -f $(noinst_LIBRARIES)
+clean-libLIBRARIES:
+	test -z "$(lib_LIBRARIES)" || rm -f $(lib_LIBRARIES)
 
-distclean-noinstLIBRARIES:
+distclean-libLIBRARIES:
 
-maintainer-clean-noinstLIBRARIES:
+maintainer-clean-libLIBRARIES:
+
+install-libLIBRARIES: $(lib_LIBRARIES)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(libdir)
+	list='$(lib_LIBRARIES)'; for p in $$list; do \
+	  if test -f $$p; then \
+	    echo " $(INSTALL_DATA) $$p $(libdir)/$$p"; \
+	    $(INSTALL_DATA) $$p $(libdir)/$$p; \
+	  else :; fi; \
+	done
+	@$(POST_INSTALL)
+	@list='$(lib_LIBRARIES)'; for p in $$list; do \
+	  if test -f $$p; then \
+	    echo " $(RANLIB) $(libdir)/$$p"; \
+	    $(RANLIB) $(libdir)/$$p; \
+	  else :; fi; \
+	done
+
+uninstall-libLIBRARIES:
+	$(NORMAL_UNINSTALL)
+	list='$(lib_LIBRARIES)'; for p in $$list; do \
+	  rm -f $(libdir)/$$p; \
+	done
 
 .c.o:
 	$(COMPILE) -c $<
@@ -149,10 +173,10 @@ distclean-compile:
 
 maintainer-clean-compile:
 
-libroots.a: $(libroots_a_OBJECTS) $(libroots_a_DEPENDENCIES)
-	rm -f libroots.a
-	$(AR) cru libroots.a $(libroots_a_OBJECTS) $(libroots_a_LIBADD)
-	$(RANLIB) libroots.a
+libgslroots.a: $(libgslroots_a_OBJECTS) $(libgslroots_a_DEPENDENCIES)
+	rm -f libgslroots.a
+	$(AR) cru libgslroots.a $(libgslroots_a_OBJECTS) $(libgslroots_a_LIBADD)
+	$(RANLIB) libgslroots.a
 
 mostlyclean-noinstPROGRAMS:
 
@@ -272,7 +296,7 @@ dvi:
 check: all
 	$(MAKE) check-TESTS
 installcheck:
-install-exec: 
+install-exec: install-libLIBRARIES
 	@$(NORMAL_INSTALL)
 
 install-data: install-includeHEADERS
@@ -281,14 +305,14 @@ install-data: install-includeHEADERS
 install: install-exec install-data all
 	@:
 
-uninstall: uninstall-includeHEADERS
+uninstall: uninstall-libLIBRARIES uninstall-includeHEADERS
 
 all: Makefile $(LIBRARIES) $(PROGRAMS) $(HEADERS)
 
 install-strip:
 	$(MAKE) INSTALL_PROGRAM='$(INSTALL_PROGRAM) -s' INSTALL_SCRIPT='$(INSTALL_PROGRAM)' install
 installdirs:
-	$(mkinstalldirs)  $(includedir)
+	$(mkinstalldirs)  $(libdir) $(includedir)
 
 
 mostlyclean-generic:
@@ -305,19 +329,19 @@ distclean-generic:
 maintainer-clean-generic:
 	test -z "$(MAINTAINERCLEANFILES)" || rm -f $(MAINTAINERCLEANFILES)
 	test -z "$(BUILT_SOURCES)" || rm -f $(BUILT_SOURCES)
-mostlyclean:  mostlyclean-noinstLIBRARIES mostlyclean-compile \
+mostlyclean:  mostlyclean-libLIBRARIES mostlyclean-compile \
 		mostlyclean-noinstPROGRAMS mostlyclean-tags \
 		mostlyclean-depend mostlyclean-generic
 
-clean:  clean-noinstLIBRARIES clean-compile clean-noinstPROGRAMS \
-		clean-tags clean-depend clean-generic mostlyclean
+clean:  clean-libLIBRARIES clean-compile clean-noinstPROGRAMS clean-tags \
+		clean-depend clean-generic mostlyclean
 
-distclean:  distclean-noinstLIBRARIES distclean-compile \
+distclean:  distclean-libLIBRARIES distclean-compile \
 		distclean-noinstPROGRAMS distclean-tags \
 		distclean-depend distclean-generic clean
 	rm -f config.status
 
-maintainer-clean:  maintainer-clean-noinstLIBRARIES \
+maintainer-clean:  maintainer-clean-libLIBRARIES \
 		maintainer-clean-compile \
 		maintainer-clean-noinstPROGRAMS maintainer-clean-tags \
 		maintainer-clean-depend maintainer-clean-generic \
@@ -325,10 +349,10 @@ maintainer-clean:  maintainer-clean-noinstLIBRARIES \
 	@echo "This command is intended for maintainers to use;"
 	@echo "it deletes files that may require special tools to rebuild."
 
-.PHONY: default mostlyclean-noinstLIBRARIES distclean-noinstLIBRARIES \
-clean-noinstLIBRARIES maintainer-clean-noinstLIBRARIES \
-mostlyclean-compile distclean-compile clean-compile \
-maintainer-clean-compile mostlyclean-noinstPROGRAMS \
+.PHONY: default mostlyclean-libLIBRARIES distclean-libLIBRARIES \
+clean-libLIBRARIES maintainer-clean-libLIBRARIES uninstall-libLIBRARIES \
+install-libLIBRARIES mostlyclean-compile distclean-compile \
+clean-compile maintainer-clean-compile mostlyclean-noinstPROGRAMS \
 distclean-noinstPROGRAMS clean-noinstPROGRAMS \
 maintainer-clean-noinstPROGRAMS uninstall-includeHEADERS \
 install-includeHEADERS tags mostlyclean-tags distclean-tags clean-tags \
