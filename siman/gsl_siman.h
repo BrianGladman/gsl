@@ -1,10 +1,18 @@
 #ifndef __SIMAN_H_
 #define __SIMAN_H_
 
-/* this structure contains all the information needed to structure
- * the search, beyond the energy function, the step function and
- * the initial guess.
- */
+#include <stdlib.h>
+
+/* types for the function pointers passed to gsl_siman_solve */
+typedef double (*gsl_Efunc_t) (void *xp);
+typedef void (*gsl_siman_step_t) (void *xp, double step_size);
+typedef double (*gsl_siman_metric_t) (void *xp, void *yp);
+typedef void (*gsl_siman_print_t) (void *xp);
+
+
+/* this structure contains all the information needed to structure the
+   search, beyond the energy function, the step function and the
+   initial guess. */
 struct s_siman_params {
   int n_tries;		/* how many points to try for each step */
   int iters_fixed_T;	/* how many iterations at each temperature? */
@@ -13,8 +21,7 @@ struct s_siman_params {
   double k, t_initial, mu_t, t_min;
 };
 
-typedef struct s_siman_params Ssiman_params;
-
+typedef struct s_siman_params gsl_siman_params_t;
 
 
 struct CA_rule {
@@ -32,35 +39,16 @@ union u_Element {
 typedef union u_Element Element;
 
 /* prototype for the workhorse function */
-void gsl_siman_solve(Element *x0_p, double (*Efunc)(Element x),
-		     void (*take_step)(Element *x_p, double step_size),
-		     double distance(Element x, Element y),
-		     void print_position(Element x),
-		     Ssiman_params params);
-
-
-/* 1-dimensional energy and stepping functions */
-double test_E_1D(Element x);
-void test_step_1D(Element *x_p, double step_size);
-double distance_1D(Element x, Element y);
-void print_pos_1D(Element x);
-
-/* 2-dimensional energy and stepping functions */
-double test_E_2D(Element x);
-void test_step_2D(Element *x_p, double step_size);
-double distance_2D(Element x, Element y);
-void print_pos_2D(Element x);
-
-/* 3-dimensional energy and stepping functions */
-double test_E_3D(Element x);
-void test_step_3D(Element *x_p, double step_size);
-double distance_3D(Element x, Element y);
-void print_pos_3D(Element x);
-
-void siman_solve(Element *x0_p, double (*Efunc)(Element x),
-		 void (*take_step)(Element *x_p, double step_size),
-		 double distance(Element x, Element y),
-		 void print_position(Element x),
-		 Ssiman_params params);
+void gsl_siman_Usolve(Element *x0_p, double (*Efunc)(Element x),
+		      void (*take_step)(Element *x_p, double step_size),
+		      double distance(Element x, Element y),
+		      void print_position(Element x),
+		      gsl_siman_params_t params);
+void gsl_siman_solve(void *x0_p, gsl_Efunc_t Ef,
+		     gsl_siman_step_t take_step,
+		     gsl_siman_metric_t distance,
+		     gsl_siman_print_t print_position,
+		     size_t element_size,
+		     gsl_siman_params_t params);
 
 #endif /* __SIMAN_H */

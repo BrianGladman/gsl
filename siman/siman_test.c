@@ -4,7 +4,7 @@
 #include <gsl_siman.h>
 #include <stdio.h>
 
-#define N_TRIES 8		/* how many points do we try before stepping */
+#define N_TRIES 800		/* how many points do we try before stepping */
 #define ITERS_FIXED_T 10	/* how many iterations for each T? */
 #define STEP_SIZE 10		/* max step size in random walk */
 #define K 1.0			/* Boltzmann constant */
@@ -12,8 +12,8 @@
 #define MU_T 1.001		/* damping factor for temperature */
 #define T_MIN 3.0e-6
 
-Ssiman_params params = {N_TRIES, ITERS_FIXED_T, STEP_SIZE,
-			K, T_INITIAL, MU_T, T_MIN};
+gsl_siman_params_t params = {N_TRIES, ITERS_FIXED_T, STEP_SIZE,
+			     K, T_INITIAL, MU_T, T_MIN};
 
 double square(double x);
 
@@ -159,9 +159,50 @@ double distance_3D(Element x, Element y)
 	      + square(y.D3[2]-x.D3[2]));
 }
 
+/* now some functions to try out the non-union interface */
+double E1(void *xp)
+{
+  double x = * ((double *) xp);
+
+  return exp(-square(x-1))*sin(8*x);
+}
+
+double M1(void *xp, void *yp)
+{
+  double x = *((double *) xp);
+  double y = *((double *) yp);
+
+  return fabs(x - y);
+}
+
+void S1(void *xp, double step_size)
+{
+  double r;
+  double old_x = *((double *) xp);
+  double new_x;
+
+  r = gsl_ran_uniform();
+  new_x = r;
+  new_x = new_x*2*params.step_size;
+  new_x = new_x - params.step_size + old_x;
+
+  memcpy(xp, &new_x, sizeof(new_x));
+}
+
+void P1(void *xp)
+{
+  printf("%12g", *((double *) xp));
+}
+
 int main(int argc, char *argv[])
 {
   Element x0;			/* initial pguess for search */
+
+  double x_initial = 5.5;
+
+  gsl_siman_solve(&x_initial, E1, S1, M1, P1, sizeof(double), params);
+
+  return 0;
 
   if (argc != 2) {
     fprintf(stderr, "usage: %s [D1, D2, D3, CA]\n", argv[0]);
@@ -172,8 +213,8 @@ int main(int argc, char *argv[])
   if (strcmp(argv[1], "D1") == 0) {
     x0.D1 = 12.0;
     printf("#one dimensional problem, x0 = %f\n", x0.D1);
-    siman_solve(&x0, test_E_1D, test_step_1D, distance_1D,
-		print_pos_1D, params);
+    gsl_siman_Usolve(&x0, test_E_1D, test_step_1D, distance_1D,
+		    print_pos_1D, params);
     return 0;
   }
 
@@ -182,8 +223,8 @@ int main(int argc, char *argv[])
     x0.D2[1] = 5.5;
     printf("#two dimensional problem, (x0,y0) = (%f,%f)\n",
 	   x0.D2[0], x0.D2[1]);
-    siman_solve(&x0, test_E_2D, test_step_2D, distance_2D,
-		print_pos_2D, params);
+    gsl_siman_Usolve(&x0, test_E_2D, test_step_2D, distance_2D,
+		    print_pos_2D, params);
     return 0;
   }
 
@@ -193,21 +234,21 @@ int main(int argc, char *argv[])
     x0.D3[2] = -15.5;
     printf("#three dimensional problem, (x0,y0,z0) = (%f,%f,%f)\n",
 	   x0.D3[0], x0.D3[1], x0.D3[2]);
-    siman_solve(&x0, test_E_3D, test_step_3D, distance_3D,
-		print_pos_3D, params);
+    gsl_siman_Usolve(&x0, test_E_3D, test_step_3D, distance_3D,
+		    print_pos_3D, params);
   }
 /*
   x0.D2[0] = 12.2;
   x0.D2[1] = 5.5;
 
-  siman_solve(&x0, test_E_2D, test_step_2D, distance_2D, print_pos_2D, params);
+  gsl_siman_solve(&x0, test_E_2D, test_step_2D, distance_2D, print_pos_2D, params);
 */
 /*
   x0.D3[0] = 12.2;
   x0.D3[1] = 5.5;
   x0.D3[2] = -15.5;
 
-  siman_solve(&x0, test_E_3D, test_step_3D, distance_3D, print_pos_3D, params);
+  gsl_siman_solve(&x0, test_E_3D, test_step_3D, distance_3D, print_pos_3D, params);
   */
 
   return 0;

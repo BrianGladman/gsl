@@ -138,8 +138,6 @@ allowing wrappers to be written for very high level languages.
 @cindex min
 @cindex max
 
-[contributed by Jim Davies]
-
 The following commands were created primarily to be used for statistical
 analysis of Psychological experiment data.
 
@@ -284,35 +282,111 @@ Example: @code{gsl_newton1D(sin, cos, 2.3)}
 @cindex simulated annealing
 @cindex combinatorial searches
 
-[just a stub for kicks; still have to contribute this to the library and
-right it up well.]
+Stochastic search techniques are used when the structure of a space is
+not well understood or is not smooth, so that techniques like Newton's
+method (which requires calculating Jacobian derivative matrices) cannot
+be used.
 
-@deftp {Simulated annealing} Union Element
-Element is a union.  Each field in the union describes one of the
-possible spaces through which the simulated annealing package can
-search.
+Simulated annealing is a stochastic search technique based on the idea
+of a @emph{cooling schedule} for the random steps which are taken.
+@cindex cooling schedule
+@cindex schedule - cooling
 
-Users should add more types to the union Element; here's the definition
-of @var{Element} I ship (allows @math{R^1}, @math{R^2}, @math{R^3}
-and cellular automata spaces):
+An initial guess is supplied.  At each step, a point is chosen at a
+random distance from the current one, where the random distance @emph{r}
+is distributed according to a Boltzmann distribution
+@tex
+$r = \exp^{-E/kT}$.
+@end tex
+@ifinfo
+r = e^(-E/kT).
+@end ifinfo
+After a few search steps using this distribution, the temperature
+@emph{T} is lowered according to some scheme, for example
+@tex
+$T \rightarrow T/\mu_T$
+@end tex
+@ifinfo
+T -> T/mu_T
+@end ifinfo
+where mu_T is slightly greater than 1.
+
+
+
+@menu
+* Simulated Annealing algorithm::  
+* The Simulated Annealing functions::  
+@end menu
+
+@node Simulated Annealing algorithm
+@section Simulated Annealing algorithm
+
+@node The Simulated Annealing functions
+@section The Simulated Annealing functions
+
+@deftp {Simulated annealing} gsl_Efunc_t
 @smallexample
-union u_Element @{
-  double D1;
-  double D2[2];
-  double D3[3];
-  struct CA_rule rule;
+typedef double (*gsl_Efunc_t) (void *xp);
+@end smallexample
+@end deftp
+
+@deftp {Simulated annealing} gsl_siman_step_t
+@smallexample
+typedef void (*gsl_siman_step_t) (void *xp, double step_size);
+@end smallexample
+@end deftp
+
+@deftp {Simulated annealing} gsl_siman_metric_t
+@smallexample
+typedef double (*gsl_siman_metric_t) (void *xp, void *yp);
+@end smallexample
+@end deftp
+
+@deftp {Simulated annealing} gsl_siman_print_t
+@smallexample
+typedef void (*gsl_siman_print_t) (void *xp);
+@end smallexample
+@end deftp
+
+@deftp {Simulated annealing} gsl_siman_params_t
+These are the parameters that control a run of @code{gsl_siman_solve}.
+
+@smallexample
+/* this structure contains all the information needed to structure
+   the search, beyond the energy function, the step function and the
+   initial guess. */
+struct s_siman_params @{
+  int n_tries;          /* how many points to try for each step */
+  int iters_fixed_T;	/* how many iterations at each temperature? */
+  double step_size;	/* max step size in the random walk */
+  /* the following parameters are for the Boltzmann distribution */
+  double k, t_initial, mu_t, t_min;
 @};
 
-typedef union u_Element Element;
+typedef struct s_siman_params gsl_siman_params_t;
 @end smallexample
-
 @end deftp
 
 
-@deftypefn {Simulated annealing} void siman_solve (Element *x0_p, double (*Efunc)(Element x), void (*take_step)(Element *x_p, double step_size), double distance(Element x, Element y), void print_position(Element x), Ssiman_params params)
+@deftypefn {Simulated annealing} void gsl_siman_solve (void *@var{x0_p}, gsl_Efunc_t @var{Ef}, gsl_siman_metric_t @var{distance}, gsl_siman_print_t @var{print_position}, size_t @var{element_size}, gsl_siman_params_t params)
+Does a @emph{simulated annealing} search through a given space.  The
+space is specified by providing the functions @var{Ef}, @var{distance},
+@var{print_position}, @var{element_size}.
 
-Does a @emph{simulated annealing} search through a given space (defined
-by the type @code{Element}).
+The @var{params} structure (described above) controls the run by
+providing the temperature schedule and other tunable parameters to the
+algorithm (@pxref{Simulated Annealing algorithm}).
+
+The result (optimal point in the space) is placed in @code{*@var{x0_p}}.
+
+If @var{print_position} is not null, a log will be printed to the screen
+with the following columns:
+@example
+number_of_iterations temperature x x-(*x0_p) Ef(x)
+@end example
+
+If @var{print_position} is null, no information is printed to the
+screen.
 @end deftypefn
 
 @node Contributors to GSL
@@ -320,8 +394,8 @@ by the type @code{Element}).
 
 @table @strong
 @item Mark Galassi
-Conceived GSL (with James Theiler) and wrote the design document.  Has
-not yet contributed any real code @code{:-)}.
+Conceived GSL (with James Theiler) and wrote the design document.  Wrote
+the simulated annealing package and the relevant chapter in the manual.
 
 @item James Theiler
 Conceived GSL (with Mark Galassi).  Wrote the random number generators
