@@ -40,7 +40,7 @@ gsl_histogram2d_fwrite (FILE * stream, const gsl_histogram2d * h)
 
 int
 gsl_histogram2d_fprintf (FILE * stream, const gsl_histogram2d * h,
-			 const char * format)
+			 const char * range_format, const char * bin_format)
 {
   size_t i, j ;
   const size_t nx = h->nx ;
@@ -51,7 +51,7 @@ gsl_histogram2d_fprintf (FILE * stream, const gsl_histogram2d * h,
     {
       for (j = 0; j < ny ; j++)
 	{
-	  status = fprintf(stream, format, h->xrange[i]) ;
+	  status = fprintf(stream, range_format, h->xrange[i]) ;
 	  
 	  if (status < 0) 
 	    {
@@ -65,7 +65,7 @@ gsl_histogram2d_fprintf (FILE * stream, const gsl_histogram2d * h,
 	      GSL_ERROR ("putc failed", GSL_EFAILED) ;
 	    }
   
-	  status = fprintf(stream, format, h->xrange[i + 1]) ;
+	  status = fprintf(stream, range_format, h->xrange[i + 1]) ;
 	  
 	  if (status < 0) 
 	    {
@@ -79,7 +79,7 @@ gsl_histogram2d_fprintf (FILE * stream, const gsl_histogram2d * h,
 	      GSL_ERROR ("putc failed", GSL_EFAILED) ;
 	    }
 
-	  status = fprintf(stream, format, h->yrange[j]) ;
+	  status = fprintf(stream, range_format, h->yrange[j]) ;
 	  
 	  if (status < 0) 
 	    {
@@ -93,7 +93,7 @@ gsl_histogram2d_fprintf (FILE * stream, const gsl_histogram2d * h,
 	      GSL_ERROR ("putc failed", GSL_EFAILED) ;
 	    }
 	  
-	  status = fprintf(stream, format, h->yrange[j + 1]) ;
+	  status = fprintf(stream, range_format, h->yrange[j + 1]) ;
 	  
 	  if (status < 0) 
 	    {
@@ -107,7 +107,7 @@ gsl_histogram2d_fprintf (FILE * stream, const gsl_histogram2d * h,
 	      GSL_ERROR ("putc failed", GSL_EFAILED) ;
 	    }
 	  
-	  status = fprintf(stream, format, h->bin[i * ny + j]) ;
+	  status = fprintf(stream, bin_format, h->bin[i * ny + j]) ;
 	  
 	  if (status < 0) 
 	    {

@@ -167,7 +167,7 @@ int main (void)
 
   {
     FILE * f = fopen("test.txt","w") ;
-    gsl_histogram_fprintf(f, h, "%.19g") ;
+    gsl_histogram_fprintf(f, h, "%.19g", "%.19g") ;
     fclose(f) ;
   }
 

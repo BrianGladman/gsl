@@ -31,7 +31,7 @@ main (int argc, char **argv)
 
     } while (status == 1) ;
 
-    gsl_histogram_fprintf (stdout, h, "%g") ;
+    gsl_histogram_fprintf (stdout, h, "%g", "%g") ;
   }
   
   return 0 ;

@@ -29,14 +29,14 @@ gsl_histogram_fwrite (FILE * stream, const gsl_histogram * h)
 
 int
 gsl_histogram_fprintf (FILE * stream, const gsl_histogram * h, 
-		       const char * format)
+		       const char * range_format, const char * bin_format)
 {
   size_t i ;
   const size_t n = h->nbins ;
 
   for (i = 0 ; i < n ; i++) 
     {
-      int status = fprintf(stream, format, h->range[i]) ;
+      int status = fprintf(stream, range_format, h->range[i]) ;
       
       if (status < 0) 
 	{
@@ -50,7 +50,7 @@ gsl_histogram_fprintf (FILE * stream, const gsl_histogram * h,
 	  GSL_ERROR ("putc failed", GSL_EFAILED) ;
 	}
 
-      status = fprintf(stream, format, h->range[i + 1]) ;
+      status = fprintf(stream, range_format, h->range[i + 1]) ;
       
       if (status < 0) 
 	{
@@ -64,7 +64,7 @@ gsl_histogram_fprintf (FILE * stream, const gsl_histogram * h,
 	  GSL_ERROR ("putc failed", GSL_EFAILED) ;
 	}
       
-      status = fprintf(stream, format, h->bin[i]) ;
+      status = fprintf(stream, bin_format, h->bin[i]) ;
 
       if (status < 0) 
 	{
