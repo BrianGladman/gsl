@@ -1,5 +1,13 @@
+/* Basic complex arithmetic functions 
+ *
+ * Original version by Jorma Olavi T{htinen <jotahtin@cc.hut.fi> 
+ *
+ * Modified for GSL by Brian Gough, 3/2000 
+ */
+
 #include <config.h>
 #include <math.h>
+#include <gsl_math.h>
 #include <gsl_complex.h>
 #include <gsl_complex_math.h>
 
@@ -47,6 +55,31 @@ gsl_complex_abs2 (gsl_complex z)
 
   return (x * x + y * y);
 }
+
+/* The behavior of these functions can be improved by handling
+   underflows more gracefully, as shown here: */
+
+double
+gsl_complex_logabs (gsl_complex z)
+{				/* return log|z| */
+  double xabs = fabs(GSL_REAL (z));
+  double yabs = fabs(GSL_IMAG (z));
+  double max, r;
+
+  if (xabs >= yabs)
+    {
+      max = xabs;
+      r = yabs/xabs;
+    }
+  else
+    {
+      max = yabs;
+      r = xabs/yabs;
+    }
+
+  return log (max) + 0.5 * log1p(r*r) ;   /* FIXME: non-ansi log1p */
+}
+
 
 /***********************************************************************
  * Complex arithmetic operators 
@@ -133,6 +166,14 @@ gsl_complex_conjugate (gsl_complex a)
 {				/* z=conj(a) */
   gsl_complex z;
   GSL_SET_COMPLEX (&z, GSL_REAL (a), -GSL_IMAG (a));
+  return z;
+}
+
+gsl_complex
+gsl_complex_negative (gsl_complex a)
+{				/* z=-a */
+  gsl_complex z;
+  GSL_SET_COMPLEX (&z, -GSL_REAL (a), -GSL_IMAG (a));
   return z;
 }
 
@@ -224,20 +265,19 @@ gsl_complex_pow (gsl_complex a, gsl_complex b)
 {				/* z=a^b */
   gsl_complex z;
 
-  double r = gsl_complex_abs (a);
-  double theta = gsl_complex_arg (a);
-
-  if (r == 0.0)
+  if (GSL_REAL(a) == 0 && GSL_IMAG(a) == 0.0)
     {
       GSL_SET_COMPLEX (&z, 0.0, 0.0);
     }
   else
     {
-      double ar = GSL_REAL (a), ai = GSL_IMAG (a);
+      double logr = gsl_complex_logabs (a);
+      double theta = gsl_complex_arg (a);
+
       double br = GSL_REAL (b), bi = GSL_IMAG (b);
 
-      double rho = pow (r, br) * exp (-bi * theta);
-      double beta = theta * br + bi * log (r);
+      double rho = exp (logr * br - bi * theta);
+      double beta = theta * br + bi * logr;
 
       GSL_SET_COMPLEX (&z, rho * cos (beta), rho * sin (beta));
     }
@@ -250,16 +290,15 @@ gsl_complex_pow_real (gsl_complex a, double b)
 {				/* z=a^b */
   gsl_complex z;
 
-  double r = gsl_complex_abs (a);
-  double theta = gsl_complex_arg (a);
-
-  if (r == 0)
+  if (GSL_REAL(a) == 0 && GSL_IMAG(a) == 0)
     {
       GSL_SET_COMPLEX (&z, 0, 0);
     } 
   else 
     {
-      double rho = pow (r, b);
+      double logr = gsl_complex_logabs (a);
+      double theta = gsl_complex_arg (a);
+      double rho = exp (logr *  b);
       double beta = theta * b;
       GSL_SET_COMPLEX (&z, rho * cos (beta), rho * sin (beta));
     }
@@ -270,17 +309,17 @@ gsl_complex_pow_real (gsl_complex a, double b)
 gsl_complex
 gsl_complex_log (gsl_complex a)
 {				/* z=log(a) */
-  double r = gsl_complex_abs (a);
+  double logr = gsl_complex_logabs (a);
   double theta = gsl_complex_arg (a);
 
   gsl_complex z;
-  GSL_SET_COMPLEX (&z, log(r), theta);
+  GSL_SET_COMPLEX (&z, logr, theta);
   return z;
 }
 
 gsl_complex
 gsl_complex_log10 (gsl_complex a)
-{				/* r=log10(a) */
+{				/* z = log10(a) */
   return gsl_complex_mul_real(gsl_complex_log (a), 1/log(10.));
 }
 
@@ -296,7 +335,7 @@ gsl_complex_log_b (gsl_complex a, gsl_complex b)
 
 gsl_complex
 gsl_complex_sin (gsl_complex a)
-{				/* r=sin(a) */
+{				/* z = sin(a) */
   double R = GSL_REAL (a), I = GSL_IMAG (a);
   
   gsl_complex z;
@@ -306,7 +345,7 @@ gsl_complex_sin (gsl_complex a)
 
 gsl_complex
 gsl_complex_cos (gsl_complex a)
-{				/* r=cos(a) */
+{				/* z = cos(a) */
   double R = GSL_REAL (a), I = GSL_IMAG (a);
   
   gsl_complex z;
@@ -315,39 +354,52 @@ gsl_complex_cos (gsl_complex a)
 }
 
 gsl_complex
+gsl_complex_tan (gsl_complex a)
+{				/* z = tan(a) */
+  double R = GSL_REAL (a), I = GSL_IMAG (a);
+  double D = pow (cos (R), 2.0) + pow (sinh (I), 2.0);
+
+  gsl_complex z;
+  GSL_SET_COMPLEX (&z, 0.5 * sin (2 * R) / D, 0.5 * sinh (2 * I) / D);
+  return z;
+}
+
+gsl_complex
 gsl_complex_sec (gsl_complex a)
-{				/* r=sec(a) */
-  double R, I, D;
-  R = GSL_REAL (a), I = GSL_IMAG (a);
-  D = 1 - pow (sin (R), 2.0) + pow (sinh (I), 2.0);
-  GSL_SET_COMPLEX (r, cos (R) * cosh (I) / D, sin (R) * sinh (I) / D);
+{				/* z = sec(a) */
+  double R = GSL_REAL (a), I = GSL_IMAG (a);
+
+  /* Changed the following expression to be purely positive, was
+     previously 1 - sin^2 + sinh^2. BJG 22/MAR/00 */
+
+  double D = pow (cos (R), 2.0) + pow (sinh (I), 2.0);  
+
+  gsl_complex z;
+  GSL_SET_COMPLEX (&z, cos (R) * cosh (I) / D, sin (R) * sinh (I) / D);
+  return z;
 }
 
 gsl_complex
 gsl_complex_csc (gsl_complex a)
-{				/* r=csc(a) */
-  double R, I, D;
-  R = GSL_REAL (a), I = GSL_IMAG (a);
-  D = pow (sin (R), 2.0) + pow (sinh (I), 2.0);
-  GSL_SET_COMPLEX (r, sin (R) * cosh (I) / D, -cos (R) * sinh (I) / D);
+{				/* z = csc(a) */
+  double R = GSL_REAL (a), I = GSL_IMAG (a);
+  double D = pow (sin (R), 2.0) + pow (sinh (I), 2.0);
+  
+  gsl_complex z;
+  GSL_SET_COMPLEX (&z, sin (R) * cosh (I) / D, -cos (R) * sinh (I) / D);
+  return z;
 }
 
-gsl_complex
-gsl_complex_tan (gsl_complex a)
-{				/* r=tan(a) */
-  double R, I, D;
-  R = GSL_REAL (a), I = GSL_IMAG (a);
-  D = pow (cos (R), 2.0) + pow (sinh (I), 2.0);
-  GSL_SET_COMPLEX (r, 0.5 * sin (2 * R) / D, 0.5 * sinh (2 * I) / D);
-}
 
 gsl_complex
 gsl_complex_cot (gsl_complex a)
-{				/* r=cot(a) */
-  double R, I, D;
-  R = GSL_REAL (a), I = GSL_IMAG (a);
-  D = pow (sin (R), 2.0) + pow (sinh (I), 2.0);
-  GSL_SET_COMPLEX (r, 0.5 * sin (2 * R) / D, -0.5 * sinh (2 * I) / D);
+{				/* z = cot(a) */
+  double R = GSL_REAL (a), I = GSL_IMAG (a);
+  double D = pow (sin (R), 2.0) + pow (sinh (I), 2.0);
+  
+  gsl_complex z ;
+  GSL_SET_COMPLEX (&z, 0.5 * sin (2 * R) / D, -0.5 * sinh (2 * I) / D);
+  return z;
 }
 
 /**********************************************************************
@@ -356,156 +408,182 @@ gsl_complex_cot (gsl_complex a)
 
 gsl_complex
 gsl_complex_arcsin (gsl_complex a)
-{				/* r=arcsin(a) */
-  double R, I, D, Phi;
-  R = GSL_REAL (a), I = GSL_IMAG (a);
-  D = gsl_complex_abs2 (a);
-  Phi = sqrt (0.5 * (1 + D + sqrt (4 * pow (I, 2.0) + pow (D - 1, 2.0))));
-  gsl_complex_arccosh_d (r, Phi);
-  D = GSL_REAL (r);
-  gsl_complex_arcsin_d (r, R / Phi);
-  GSL_SET_IMAG (r, (I < 0) ? -D : D);
+{				/* z = arcsin(a) */
+  double R = GSL_REAL (a), I = GSL_IMAG (a);
+  double D = gsl_complex_abs2 (a);
+  double Phi = sqrt (0.5 * (1 + D + sqrt (4 * pow (I, 2.0) + pow (D - 1, 2.0))));
+  gsl_complex z = gsl_complex_arccosh_real (Phi);
+  D = GSL_REAL (z);
+  z = gsl_complex_arcsin_real (R / Phi);
+  GSL_SET_IMAG (&z, (I < 0) ? -D : D);
+  return z;
 }
 
 gsl_complex
-gsl_complex_arcsin_d (double a)
-{				/* r=arcsin(a) */
+gsl_complex_arcsin_real (double a)
+{				/* z = arcsin(a) */
+  gsl_complex z;
+
   if (fabs (a) <= 1.0)
     {
-      GSL_SET_COMPLEX (r, asin (a), 0.0);
+      GSL_SET_COMPLEX (&z, asin (a), 0.0);
     }
   else
     {
       if (a < 0.0)
 	{
-	  GSL_SET_COMPLEX (r, -M_PI_2, acosh (-a));
+	  GSL_SET_COMPLEX (&z, -M_PI_2, acosh (-a));
 	}
       else
 	{
-	  GSL_SET_COMPLEX (r, M_PI_2, -acosh (a));
+	  GSL_SET_COMPLEX (&z, M_PI_2, -acosh (a));
 	}
     }
+
+  return z;
 }
 
 gsl_complex
 gsl_complex_arccos (gsl_complex a)
-{				/* r=arccos(a) */
-  double R, I, D, Phi;
-  R = GSL_REAL (a), I = GSL_IMAG (a);
-  D = gsl_complex_abs2 (a);
-  Phi = sqrt (0.5 * (1 + D + sqrt (4 * pow (I, 2.0) + pow (D - 1, 2.0))));
-  gsl_complex_arccosh_d (r, Phi);
-  D = GSL_REAL (r);
-  gsl_complex_arccos_d (r, R / Phi);
-  GSL_SET_IMAG (r, (I < 0) ? D : -D);
+{				/* z = arccos(a) */
+  double R = GSL_REAL (a), I = GSL_IMAG (a);
+  double D = gsl_complex_abs2 (a);
+  double Phi = sqrt (0.5 * (1 + D + sqrt (4 * pow (I, 2.0) + pow (D - 1, 2.0))));
+  gsl_complex z = gsl_complex_arccosh_real (Phi);
+  D = GSL_REAL (z);
+  z = gsl_complex_arccos_real (R / Phi);
+  GSL_SET_IMAG (&z, (I < 0) ? D : -D);
+  return z;
 }
 
 gsl_complex
-gsl_complex_arccos_d (double a)
-{				/* r=arccos(a) */
+gsl_complex_arccos_real (double a)
+{				/* z = arccos(a) */
+  gsl_complex z;
+
   if (fabs (a) <= 1.0)
     {
-      GSL_SET_COMPLEX (r, acos (a), 0);
+      GSL_SET_COMPLEX (&z, acos (a), 0);
     }
   else
     {
       if (a < 0.0)
 	{
-	  GSL_SET_COMPLEX (r, M_PI, -acosh (-a));
+	  GSL_SET_COMPLEX (&z, M_PI, -acosh (-a));
 	}
       else
 	{
-	  GSL_SET_COMPLEX (r, 0, acosh (a));
+	  GSL_SET_COMPLEX (&z, 0, acosh (a));
 	}
     }
-}
 
-gsl_complex
-gsl_complex_arcsec (gsl_complex a)
-{				/* r=arcsec(a) */
-  double R, I, D, Phi, P;
-  R = GSL_REAL (a), I = GSL_IMAG (a);
-  D = pow (R, 2.0) + pow (I, 2.0);
-  Phi = sqrt (pow (pow (R, 2.0) - 1, 2.0) + pow (I, 2.0) * (2 * (1 + pow (R, 2.0)) + pow (I, 2.0)));
-  Phi = sqrt ((1 + D + Phi) / (2 * D));
-  P = R / D;
-  GSL_SET_COMPLEX (r, acos (P / Phi), (I >= 0.0) ? acosh (Phi) : -acosh (Phi));
-}
-gsl_complex
-gsl_complex_arcsec_d (double a)
-{				/* r=arcsec(a) */
-  if (a <= -1.0 || a >= 1.0)
-    {
-      GSL_SET_COMPLEX (r, asec (a), 0.0);
-    }
-  else
-    {
-      if (a >= 0.0)
-	{
-	  GSL_SET_COMPLEX (r, 0, acosh (1 / a));
-	}
-      else
-	{
-	  GSL_SET_COMPLEX (r, M_PI, -acosh (-1 / a));
-	}
-    }
-}
-
-gsl_complex
-gsl_complex_arccsc (gsl_complex a)
-{				/* r=arccsc(a) */
-  double R, I, D, Phi, P;
-  R = GSL_REAL (a), I = GSL_IMAG (a);
-  D = pow (R, 2.0) + pow (I, 2.0);
-  Phi = sqrt (pow (pow (R, 2.0) - 1, 2.0) + pow (I, 2.0) * (2 * (1 + pow (R, 2.0)) + pow (I, 2.0)));
-  Phi = sqrt ((1 + D + Phi) / (2 * D));
-  P = R / D;
-  GSL_SET_COMPLEX (r, asin (P / Phi), (I >= 0.0) ? -acosh (Phi) : acosh (Phi));
-}
-
-gsl_complex
-gsl_complex_arccsc_d (double a)
-{				/* r=arccsc(a) */
-  if (a <= -1.0 || a >= 1.0)
-    {
-      GSL_SET_COMPLEX (r, acsc (a), 0.0);
-    }
-  else
-    {
-      if (a >= 0.0)
-	{
-	  GSL_SET_COMPLEX (r, M_PI_2, -acosh (1 / a));
-	}
-      else
-	{
-	  GSL_SET_COMPLEX (r, -M_PI_2, -acosh (-1 / a));
-	}
-    }
+  return z;
 }
 
 gsl_complex
 gsl_complex_arctan (gsl_complex a)
-{				/* r=arctan(a) */
+{				/* z = arctan(a) */
   double x, R = GSL_REAL (a), I = GSL_IMAG (a);
-  GSL_SET_COMPLEX (r, -I, R);	/* *=I */
-  gsl_complex_arctanh (r, r);
-  x = GSL_REAL (r);
-  R = GSL_IMAG (r);
-  GSL_SET_COMPLEX (r, R, -x);	/* /=I */
+  gsl_complex z;
+  GSL_SET_COMPLEX (&z, -I, R);	/* *=I */
+  z = gsl_complex_arctanh (z);
+  x = GSL_REAL (z);
+  R = GSL_IMAG (z);
+  GSL_SET_COMPLEX (&z, R, -x);	/* /=I */
+  return z;
 }
 
 gsl_complex
-gsl_complex_arccot (gsl_complex a)
-{				/* r=arccot(a) */
-  if (GSL_REAL (a) == 0.0 && GSL_IMAG (a) == 0.0)
+gsl_complex_arcsec (gsl_complex a)
+{				/* z = arcsec(a) */
+  double R = GSL_REAL (a), I = GSL_IMAG (a);
+  double D = pow (R, 2.0) + pow (I, 2.0);
+  double t = sqrt (pow (pow (R, 2.0) - 1, 2.0) 
+                     + pow (I, 2.0) * (2 * (1 + pow (R, 2.0)) + pow (I, 2.0)));
+  double Phi = sqrt ((1 + D + t) / (2 * D));
+  double P = R / D;
+  gsl_complex z;
+  GSL_SET_COMPLEX (&z, acos (P / Phi), (I >= 0.0) ? acosh (Phi) : -acosh (Phi));
+  return z;
+}
+gsl_complex
+gsl_complex_arcsec_real (double a)
+{				/* z = arcsec(a) */
+  gsl_complex z;
+
+  if (a <= -1.0 || a >= 1.0)
     {
-      GSL_SET_COMPLEX (r, M_PI_2, 0);
+      GSL_SET_COMPLEX (&z, acos (1/a), 0.0);
     }
   else
     {
-      gsl_complex_inverse (r, a);
-      gsl_complex_arctan (r, r);
+      if (a >= 0.0)
+	{
+	  GSL_SET_COMPLEX (&z, 0, acosh (1 / a));
+	}
+      else
+	{
+	  GSL_SET_COMPLEX (&z, M_PI, -acosh (-1 / a));
+	}
     }
+
+  return z;
+}
+
+gsl_complex
+gsl_complex_arccsc (gsl_complex a)
+{				/* z = arccsc(a) */
+  double R = GSL_REAL (a), I = GSL_IMAG (a);
+  double D = pow (R, 2.0) + pow (I, 2.0);
+  double t = sqrt (pow (pow (R, 2.0) - 1, 2.0) + pow (I, 2.0) * (2 * (1 + pow (R, 2.0)) + pow (I, 2.0)));
+  double Phi = sqrt ((1 + D + t) / (2 * D));
+  double P = R / D;
+  gsl_complex z;
+  GSL_SET_COMPLEX (&z, asin (P / Phi), (I >= 0.0) ? -acosh (Phi) : acosh (Phi));
+  return z;
+}
+
+gsl_complex
+gsl_complex_arccsc_real (double a)
+{				/* z = arccsc(a) */
+  gsl_complex z;
+
+  if (a <= -1.0 || a >= 1.0)
+    {
+      GSL_SET_COMPLEX (&z, asin (1/a), 0.0);
+    }
+  else
+    {
+      if (a >= 0.0)
+	{
+	  GSL_SET_COMPLEX (&z, M_PI_2, -acosh (1 / a));
+	}
+      else
+	{
+	  GSL_SET_COMPLEX (&z, -M_PI_2, -acosh (-1 / a));
+	}
+    }
+
+  return z;
+}
+
+
+gsl_complex
+gsl_complex_arccot (gsl_complex a)
+{				/* z = arccot(a) */
+  gsl_complex z;
+
+  if (GSL_REAL (a) == 0.0 && GSL_IMAG (a) == 0.0)
+    {
+      GSL_SET_COMPLEX (&z, M_PI_2, 0);
+    }
+  else
+    {
+      z = gsl_complex_inverse (a);
+      z = gsl_complex_arctan (z);
+    }
+
+  return z;
 }
 
 /**********************************************************************
@@ -514,54 +592,66 @@ gsl_complex_arccot (gsl_complex a)
 
 gsl_complex
 gsl_complex_sinh (gsl_complex a)
-{				/* r=sinh(a) */
-  double R, I;
-  R = GSL_REAL (a), I = GSL_IMAG (a);
-  GSL_SET_COMPLEX (r, sinh (R) * cos (I), cosh (R) * sin (I));
+{				/* z = sinh(a) */
+  double R = GSL_REAL (a), I = GSL_IMAG (a);
+
+  gsl_complex z;
+  GSL_SET_COMPLEX (&z, sinh (R) * cos (I), cosh (R) * sin (I));
+  return z;
 }
 
 gsl_complex
 gsl_complex_cosh (gsl_complex a)
-{				/* r=cosh(a) */
-  double R, I;
-  R = GSL_REAL (a), I = GSL_IMAG (a);
-  GSL_SET_COMPLEX (r, cosh (R) * cos (I), sinh (R) * sin (I));
+{				/* z = cosh(a) */
+  double R = GSL_REAL (a), I = GSL_IMAG (a);
+
+  gsl_complex z;
+  GSL_SET_COMPLEX (&z, cosh (R) * cos (I), sinh (R) * sin (I));
+  return z;
 }
 
 gsl_complex
 gsl_complex_sech (gsl_complex a)
-{				/* r=sech(a) */
-  double R, I, D;
-  R = GSL_REAL (a), I = GSL_IMAG (a);
-  D = pow (cos (I), 2.0) + pow (sinh (R), 2.0);
-  GSL_SET_COMPLEX (r, cosh (R) * cos (I) / D, -sinh (R) * sin (I) / D);
+{				/* z = sech(a) */
+  double R = GSL_REAL (a), I = GSL_IMAG (a);
+  double D = pow (cos (I), 2.0) + pow (sinh (R), 2.0);
+
+  gsl_complex z;
+  GSL_SET_COMPLEX (&z, cosh (R) * cos (I) / D, -sinh (R) * sin (I) / D);
+  return z;
 }
 
 gsl_complex
 gsl_complex_csch (gsl_complex a)
-{				/* r=csch(a) */
-  double R, I, D;
-  R = GSL_REAL (a), I = GSL_IMAG (a);
-  D = pow (sinh (R), 2.0) + pow (sin (I), 2.0);
-  GSL_SET_COMPLEX (r, sinh (R) * cos (I) / D, -cosh (R) * sin (I) / D);
+{				/* z = csch(a) */
+  double R = GSL_REAL (a), I = GSL_IMAG (a);
+  double D = pow (sinh (R), 2.0) + pow (sin (I), 2.0);
+
+  gsl_complex z;
+  GSL_SET_COMPLEX (&z, sinh (R) * cos (I) / D, -cosh (R) * sin (I) / D);
+  return z;
 }
 
 gsl_complex
 gsl_complex_tanh (gsl_complex a)
-{				/* r=tanh(a) */
-  double R, I, D;
-  R = GSL_REAL (a), I = GSL_IMAG (a);
-  D = pow (cos (I), 2.0) + pow (sinh (R), 2.0);
-  GSL_SET_COMPLEX (r, sinh (R) * cosh (R) / D, 0.5 * sin (2 * I) / D);
+{				/* z = tanh(a) */
+  double R = GSL_REAL (a), I = GSL_IMAG (a);
+  double D = pow (cos (I), 2.0) + pow (sinh (R), 2.0);
+
+  gsl_complex z;
+  GSL_SET_COMPLEX (&z, sinh (R) * cosh (R) / D, 0.5 * sin (2 * I) / D);
+  return z;
 }
 
 gsl_complex
 gsl_complex_coth (gsl_complex a)
-{				/* r=coth(a) */
-  double R, I, D;
-  R = GSL_REAL (a), I = GSL_IMAG (a);
-  D = pow (sin (I), 2.0) + pow (sinh (R), 2.0);
-  GSL_SET_COMPLEX (r, sinh (R) * cosh (R) / D, -0.5 * sin (2 * I) / D);
+{				/* z = coth(a) */
+  double R = GSL_REAL (a), I = GSL_IMAG (a);
+  double D = pow (sin (I), 2.0) + pow (sinh (R), 2.0);
+
+  gsl_complex z;
+  GSL_SET_COMPLEX (&z, sinh (R) * cosh (R) / D, -0.5 * sin (2 * I) / D);
+  return z;
 }
 
 /**********************************************************************
@@ -570,215 +660,103 @@ gsl_complex_coth (gsl_complex a)
 
 gsl_complex
 gsl_complex_arcsinh (gsl_complex a)
-{				/* r=arcsinh(a) */
-  double R, I, T;
-  R = GSL_REAL (a), I = GSL_IMAG (a);
-  if (R == 0)
-    {
-      if (I == 0)
-	{
-	  GSL_SET_COMPLEX (r, 0.0, 0.0);
-	}
-      else
-	{
-	  T = 1 - pow (I, 2.0);
-	  if (T >= 0)
-	    {
-	      GSL_SET_COMPLEX (r, 0, atan2 (I, sqrt (T)));
-	    }
-	  else
-	    {
-	      T = sqrt (-T);
-	      if (I >= 0)
-		T += I;
-	      else
-		T -= I;
-	      if (I >= 0)
-		{
-		  GSL_SET_COMPLEX (r, log (T), M_PI_2);
-		}
-	      else
-		{
-		  GSL_SET_COMPLEX (r, -log (T), -M_PI_2);
-		}
-	    }
-	}
-    }
-  else
-    {
-      if (I == 0)
-	{
-	  T = sqrt (1 + pow (R, 2.0));
-	  if (fabs (R) < 0.5)
-	    {
-	      GSL_SET_COMPLEX (r, atanh (R / T), 0);
-	    }
-	  else
-	    {
-	      if (R >= 0.5)
-		GSL_SET_COMPLEX (r, log (T + R), 0);
-	      else
-		GSL_SET_COMPLEX (r, -log (T - R), 0);
-	    }
-	}
-      else
-	{
-	  gsl_complex z;
-	  gsl_complex_mul (&z, a, a);	/* z=a^2 */
-	  gsl_complex_add_d (&z, &z, 1.0);
-	  gsl_complex_sqrt (&z, &z);	/* z=sqrt(a^2+1) */
-	  gsl_complex_add_d (&z, &z, 1.0);
-	  gsl_complex_div (&z, a, &z);	/* z=a/(1+sqrt(a^2+1) */
-	  gsl_complex_arctanh (r, &z);
-	  gsl_complex_mul_d (r, r, 2.0);
-	}
-    }
+{				/* z = arcsinh(a) */
+  double R = GSL_REAL (a), I = GSL_IMAG (a);
+
+  gsl_complex z;
+  GSL_SET_COMPLEX(&z, (R-I)*(R+I) + 1.0, 2 * R * I);
+  z = gsl_complex_sqrt(z) ;
+  z = gsl_complex_add (z, a);
+  return gsl_complex_log(z);
 }
 
 gsl_complex
 gsl_complex_arccosh (gsl_complex a)
-{				/* r=arccosh(a) */
-  double R, I;
+{				/* z = arccosh(a) */
+  double R = GSL_REAL (a), I = GSL_IMAG (a);
+
   gsl_complex z;
-  R = GSL_REAL (a), I = GSL_IMAG (a);
-  if (I == 0)
-    {
-      if (R == 0)
-	{
-	  GSL_SET_COMPLEX (r, 0, M_PI_2);
-	  return;
-	}
-      if (R == 1)
-	{
-	  GSL_SET_COMPLEX (r, 0.0, 0.0);
-	  return;
-	}
-      if (R == -1)
-	{
-	  GSL_SET_COMPLEX (r, 0, M_PI);
-	  return;
-	}
-      if (R < -1)
-	{
-	  GSL_SET_COMPLEX (r, log (sqrt (pow (R, 2.0) - 1) - R), M_PI);
-	  return;
-	}
-    }
-  gsl_complex_add_d (&z, a, 1.0);	/* z=1+a */
-  gsl_complex_sub_d (r, a, 1.0);	/* r=a-1 */
-  gsl_complex_mul_d (r, r, 0.5);
-  gsl_complex_sqrt (r, r);	/* r=sqrt(0.5*(1+a)); */
-  gsl_complex_mul_d (&z, &z, 0.5);
-  gsl_complex_sqrt (&z, &z);
-  gsl_complex_add_d (&z, &z, 1.0);	/* z=1+sqrt(0.5*(1+a)) */
-  gsl_complex_div (r, r, &z);	/* r=sqrt(0.5*(1+a))/(1+sqrt(0.5*(1+a))) */
-  gsl_complex_arctanh (r, r);
-  gsl_complex_mul_d (r, r, 4.0);
+  GSL_SET_COMPLEX(&z, (R-I)*(R+I) - 1.0, 2 * R * I);
+  z = gsl_complex_sqrt(z) ;
+  z = gsl_complex_add (z, a);
+  return gsl_complex_log(z);
 }
 
 gsl_complex
-gsl_complex_arccosh_d (double a)
-{				/* r=arccosh(a) */
+gsl_complex_arccosh_real (double a)
+{				/* z = arccosh(a) */
+  gsl_complex z;
+
   if (a >= 1)
     {
-      GSL_SET_COMPLEX (r, acosh (a), 0);
+      GSL_SET_COMPLEX (&z, acosh (a), 0);
     }
   else
     {
       if (a >= -1.0)
 	{
-	  GSL_SET_COMPLEX (r, 0, acos (a));
+	  GSL_SET_COMPLEX (&z, 0, acos (a));
 	}
       else
 	{
-	  GSL_SET_COMPLEX (r, acosh (-a), M_PI);
+	  GSL_SET_COMPLEX (&z, acosh (-a), M_PI);
 	}
     }
+  
+  return z;
 }
 
 gsl_complex
 gsl_complex_arcsech (gsl_complex a)
-{				/* r=arcsech(a); */
-  gsl_complex_inverse (r, a);
-  gsl_complex_arccosh (r, r);
+{				/* z = arcsech(a); */
+  gsl_complex t = gsl_complex_inverse (a);
+  return gsl_complex_arccosh (t);
 }
 
 gsl_complex
 gsl_complex_arccsch (gsl_complex a)
-{				/* r=arccsch(a) */
-  gsl_complex_inverse (r, a);
-  gsl_complex_arcsinh (r, r);
+{				/* z = arccsch(a) */
+  gsl_complex t = gsl_complex_inverse (a);
+  return gsl_complex_arcsinh (t);
 }
 
 gsl_complex
 gsl_complex_arctanh (gsl_complex a)
-{				/* r=arctanh(a) */
-  double R, I, A, B, X, Y, T1, T2, D;
-  R = GSL_REAL (a), I = GSL_IMAG (a);
-  if (R == 0.0)
+{				/* z = arctanh(a) */
+  if (GSL_IMAG(a) == 0.0)
     {
-      GSL_SET_COMPLEX (r, 0, atan (I));
+      return gsl_complex_arctanh_real (GSL_REAL(a));
     }
-  else
+  else 
     {
-      if (I == 0.0)
-	{
-	  if (fabs (R) < 0.5)
-	    {
-	      GSL_SET_COMPLEX (r, atanh (R), 0.0);
-	    }
-	  else
-	    {
-	      A = 1 - R;
-	      B = (1 + R) / A;
-	      if (B >= 0)
-		{
-		  GSL_SET_IMAG (r, 0.0);
-		}
-	      else
-		{
-		  B = -B;
-		  GSL_SET_IMAG (r, (A < 0) ? -M_PI_2 : M_PI_2);
-		}
-	      GSL_SET_REAL (r, 0.5 * log (B));
-	    }
-	}
-      else
-	{
-	  D = gsl_complex_abs2 (a);
-	  A = 1 + R, B = 1 - R;
-	  T1 = fabs (4 * R), T2 = 1 + D;
-	  if (T1 < T2)
-	    {
-	      GSL_SET_REAL (r, 0.5 * atanh (2 * R / T2));
-	    }
-	  else
-	    {
-	      GSL_SET_REAL (r, 0.25 * log ((pow (A, 2.0) + pow (I, 2.0)) / (pow (B, 2.0) + pow (I, 2.0))));
-	    }
-	  X = A * B - pow (I, 2.0);
-	  Y = 2 * I;
-	  GSL_SET_IMAG (r, 0.5 * atan2 (Y, X));
-	}
+      gsl_complex p = gsl_complex_add_real(a, 1.0);
+      gsl_complex m = gsl_complex_add_real(gsl_complex_negative(a), 1.0);
+      gsl_complex r = gsl_complex_div (p, m);
+      return gsl_complex_mul_real(gsl_complex_log(r), 0.5);
     }
 }
 
 gsl_complex
-gsl_complex_arctanh_d (double a)
-{				/* r=arctanh(a) */
+gsl_complex_arctanh_real (double a)
+{				/* z = arctanh(a) */
+  gsl_complex z;
+
   if (a > -1.0 && a < 1.0)
     {
-      GSL_SET_COMPLEX (r, atanh (a), 0);
+      GSL_SET_COMPLEX (&z, atanh (a), 0);
     }
   else
     {
-      GSL_SET_COMPLEX (r, atanh (1 / a), (a < 0) ? M_PI_2 : -M_PI_2);
+      GSL_SET_COMPLEX (&z, atanh (1 / a), (a < 0) ? M_PI_2 : -M_PI_2);
     }
+
+  return z;
 }
 
 gsl_complex
 gsl_complex_arccoth (gsl_complex a)
-{				/* r=arccoth(a) */
-  gsl_complex_inverse (r, a);
-  gsl_complex_arctanh (r, r);
+{				/* z = arccoth(a) */
+  gsl_complex t = gsl_complex_inverse (a);
+  return gsl_complex_arctanh (t);
 }
+

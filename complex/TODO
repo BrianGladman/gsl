@@ -7,6 +7,9 @@ overflow because it involves expressions like cosh(x) / D , where D =
 cosh^2 which is computed prior to the division. This should be made
 uniform somehow.
 
+* Similarly, need to take care of underflow and cross-talk, when one
+component is large and one is small. See logabs for an example.
+
 * Need to specify the branch cuts for all the functions that have
 them.  If there is a choice follow the Common Lisp
 Standard/HP-calculators as described in the GNU Calc Manual.

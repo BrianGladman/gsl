@@ -1,0 +1,316 @@
+@cindex complex numbers
+
+The functions described in this chapter provide support for complex
+numbers.
+
+@menu
+* Complex numbers::             
+* Properties of complex numbers::  
+* Complex arithmetic operators::  
+* Elementary Complex Functions::  
+* Complex Trigonometric Functions::  
+* Inverse Complex Trigonometric Functions::  
+* Complex Hyperbolic Functions::  
+* Inverse Complex Hyperbolic Functions::  
+@end menu
+
+@node Complex numbers
+@section Complex numbers
+@cindex representations of complex numbers
+@cindex polar form of complex numbers
+
+Complex numbers are represented using the type @code{gsl_complex}. The
+internal representation of this type may vary across platforms and
+should not be accessed directly. The functions and macros described
+below allow complex numbers to be manipulated in a portable way
+
+For reference, the default form of the @code{gsl_complex} type is a
+struct, shown here,
+
+@example
+typedef struct
+@{
+  double dat[2];
+@} gsl_complex ;
+@end example
+@noindent
+The real and imaginary part are stored in contiguous elements of a two
+element array. This eliminates padding between the real and imaginary
+parts, @code{dat[0]} and @code{dat[1]}, allowing the struct to be mapped
+correctly onto packed complex arrays.
+
+
+@deftypefun gsl_complex gsl_complex_xy (double @var{real}, double @var{imag})
+r= real+i*imag
+@end deftypefun
+
+@deftypefun gsl_complex gsl_complex_polar (double @var{r}, double @var{theta})
+r= r e^(i theta)
+@end deftypefun
+
+@defmac GSL_REAL (@var{z})
+@defmacx GSL_IMAG (@var{z})
+@end defmac
+
+@defmac GSL_SET_COMPLEX(@var{zp}, @var{x}, @var{y})
+
+@end defmac
+
+@defmac GSL_SET_REAL(@var{zp},@var{x})
+@defmacx GSL_SET_IMAG(@var{zp},@var{y})
+@end defmac
+
+@node Properties of complex numbers
+@section Properties of complex numbers
+
+@deftypefun double gsl_complex_arg (gsl_complex @var{z})
+@cindex argument of complex number 
+return arg(z), -pi< arg(z) <=+pi
+@end deftypefun
+
+@deftypefun double gsl_complex_abs (gsl_complex @var{z})
+@cindex magnitude of complex number 
+return |z|
+@end deftypefun
+
+@deftypefun double gsl_complex_abs2 (gsl_complex @var{z})
+return |z|^2
+@end deftypefun
+
+@deftypefun double gsl_complex_logabs (gsl_complex @var{z})
+return log|z|
+@end deftypefun
+
+
+@node Complex arithmetic operators
+@section Complex arithmetic operators
+@cindex complex arithmetic
+
+@deftypefun gsl_complex gsl_complex_add (gsl_complex @var{a}, gsl_complex @var{b})
+r=a+b
+@end deftypefun
+
+@deftypefun gsl_complex gsl_complex_sub (gsl_complex @var{a}, gsl_complex @var{b})
+r=a-b
+@end deftypefun
+
+@deftypefun gsl_complex gsl_complex_mul (gsl_complex @var{a}, gsl_complex @var{b})
+r=a*b
+@end deftypefun
+
+@deftypefun gsl_complex gsl_complex_div (gsl_complex @var{a}, gsl_complex @var{b})
+r=a/b
+@end deftypefun
+
+
+@deftypefun gsl_complex gsl_complex_add_real (gsl_complex @var{a}, double @var{b})
+r=a+b
+@end deftypefun
+
+@deftypefun gsl_complex gsl_complex_sub_real (gsl_complex @var{a}, double @var{b})
+r=a-b
+@end deftypefun
+
+@deftypefun gsl_complex gsl_complex_mul_real (gsl_complex @var{a}, double @var{b})
+r=a*b
+@end deftypefun
+
+@deftypefun gsl_complex gsl_complex_div_real (gsl_complex @var{a}, double @var{b})
+r=a/b
+@end deftypefun
+
+
+@deftypefun gsl_complex gsl_complex_conjugate (gsl_complex @var{z})
+@cindex conjugate of complex number
+r=conj(z)
+@end deftypefun
+
+@deftypefun gsl_complex gsl_complex_inverse (gsl_complex @var{a})
+r=1/a
+@end deftypefun
+
+
+@node Elementary Complex Functions
+@section Elementary Complex Functions
+
+@deftypefun gsl_complex gsl_complex_sqrt (gsl_complex @var{z})
+@cindex square root of complex number
+r=sqrt(z)
+@end deftypefun
+
+@deftypefun gsl_complex gsl_complex_sqrt_real (double x)
+r=sqrt(x) (x<0 ok)
+@end deftypefun
+
+
+@deftypefun gsl_complex gsl_complex_pow (gsl_complex @var{a}, gsl_complex @var{b})
+@cindex power of complex number
+@cindex exponentiation of complex number
+r=a^b
+@end deftypefun
+
+@deftypefun gsl_complex gsl_complex_pow_real (gsl_complex @var{a}, double @var{b})
+r=a^b
+@end deftypefun
+
+
+@deftypefun gsl_complex gsl_complex_exp (gsl_complex @var{a})
+r=exp(a)
+@end deftypefun
+
+@deftypefun gsl_complex gsl_complex_log (gsl_complex @var{a})
+@cindex logarithm of complex number
+r=log(a) (base e)
+@end deftypefun
+
+@deftypefun gsl_complex gsl_complex_log10 (gsl_complex @var{a})
+r=log10(a) (base 10)
+@end deftypefun
+
+@deftypefun gsl_complex gsl_complex_log_b (gsl_complex @var{a}, gsl_complex @var{b})
+r=log_b(a) (base=b)
+@end deftypefun
+
+
+@node Complex Trigonometric Functions
+@section Complex Trigonometric Functions
+@cindex trigonometric functions of complex numbers
+
+@deftypefun gsl_complex gsl_complex_sin (gsl_complex @var{a})
+@cindex sin of complex number
+r=sin(a)
+@end deftypefun
+
+@deftypefun gsl_complex gsl_complex_cos (gsl_complex @var{a})
+@cindex cosine of complex number
+r=cos(a)
+@end deftypefun
+
+@deftypefun gsl_complex gsl_complex_sec (gsl_complex @var{a})
+r=sec(a)
+@end deftypefun
+
+@deftypefun gsl_complex gsl_complex_csc (gsl_complex @var{a})
+r=csc(a)
+@end deftypefun
+
+@deftypefun gsl_complex gsl_complex_tan (gsl_complex @var{a})
+@cindex tangent of complex number
+r=tan(a)
+@end deftypefun
+
+@deftypefun gsl_complex gsl_complex_cot (gsl_complex @var{a})
+r=cot(a)
+@end deftypefun
+
+
+@node Inverse Complex Trigonometric Functions
+@section Inverse Complex Trigonometric Functions
+@cindex inverse complex trigonometric functions
+
+@deftypefun gsl_complex gsl_complex_arcsin (gsl_complex @var{a})
+r=arcsin(a)
+@end deftypefun
+
+@deftypefun gsl_complex gsl_complex_arcsin_real (double @var{a})
+r=arcsin(a)
+@end deftypefun
+
+@deftypefun gsl_complex gsl_complex_arccos (gsl_complex @var{a})
+r=arccos(a)
+@end deftypefun
+
+@deftypefun gsl_complex gsl_complex_arccos_real (double @var{a})
+r=arccos(a)
+@end deftypefun
+
+@deftypefun gsl_complex gsl_complex_arcsec (gsl_complex @var{a})
+r=arcsec(a)
+@end deftypefun
+
+@deftypefun gsl_complex gsl_complex_arcsec_real (double @var{a})
+r=arcsec(a)
+@end deftypefun
+
+@deftypefun gsl_complex gsl_complex_arccsc (gsl_complex @var{a})
+r=arccsc(a)
+@end deftypefun
+
+@deftypefun gsl_complex gsl_complex_arccsc_real (double @var{a})
+r=arccsc(a)
+@end deftypefun
+
+@deftypefun gsl_complex gsl_complex_arctan (gsl_complex @var{a})
+r=arctan(a)
+@end deftypefun
+
+@deftypefun gsl_complex gsl_complex_arccot (gsl_complex @var{a})
+r=arccot(a)
+@end deftypefun
+
+
+@node Complex Hyperbolic Functions
+@section Complex Hyperbolic Functions
+@cindex hyperbolic functions, complex numbers
+
+@deftypefun gsl_complex gsl_complex_sinh (gsl_complex @var{a})
+r=sinh(a)
+@end deftypefun
+
+@deftypefun gsl_complex gsl_complex_cosh (gsl_complex @var{a})
+r=coshh(a)
+@end deftypefun
+
+@deftypefun gsl_complex gsl_complex_sech (gsl_complex @var{a})
+r=sech(a)
+@end deftypefun
+
+@deftypefun gsl_complex gsl_complex_csch (gsl_complex @var{a})
+r=csch(a)
+@end deftypefun
+
+@deftypefun gsl_complex gsl_complex_tanh (gsl_complex @var{a})
+r=tanh(a)
+@end deftypefun
+
+@deftypefun gsl_complex gsl_complex_coth (gsl_complex @var{a})
+r=coth(a)
+@end deftypefun
+
+
+@node Inverse Complex Hyperbolic Functions
+@section Inverse Complex Hyperbolic Functions
+@cindex inverse hyperbolic functions, complex numbers
+
+@deftypefun gsl_complex gsl_complex_arcsinh (gsl_complex @var{a})
+r=arcsinh(a)
+@end deftypefun
+
+@deftypefun gsl_complex gsl_complex_arccosh (gsl_complex @var{a})
+r=arccosh(a)
+@end deftypefun
+
+@deftypefun gsl_complex gsl_complex_arccosh_real (double @var{a})
+r=arccosh(a)
+@end deftypefun
+
+@deftypefun gsl_complex gsl_complex_arcsech (gsl_complex @var{a})
+r=arcsech(a)
+@end deftypefun
+
+@deftypefun gsl_complex gsl_complex_arccsch (gsl_complex @var{a})
+r=arccsch(a)
+@end deftypefun
+
+@deftypefun gsl_complex gsl_complex_arctanh (gsl_complex @var{a})
+r=arctanh(a)
+@end deftypefun
+
+@deftypefun gsl_complex gsl_complex_arctanh_real (double @var{a})
+r=arctanh(a)
+@end deftypefun
+
+@deftypefun gsl_complex gsl_complex_arccoth (gsl_complex @var{a})
+r=arccoth(a)
+@end deftypefun
+

@@ -1,5 +1,6 @@
 #ifndef __GSL_COMPLEX_MATH_H__
 #define __GSL_COMPLEX_MATH_H__
+#include <gsl/gsl_complex.h>
 
 #undef __BEGIN_DECLS
 #undef __END_DECLS
@@ -23,6 +24,7 @@ gsl_complex gsl_complex_polar (double r, double theta); /* r= r e^(i theta) */
 double gsl_complex_arg (gsl_complex z); /* return arg(z), -pi< arg(z) <=+pi */
 double gsl_complex_abs (gsl_complex z);   /* return |z|   */
 double gsl_complex_abs2 (gsl_complex z);  /* return |z|^2 */
+double gsl_complex_logabs (gsl_complex z); /* return log|z| */
 
 /* Complex arithmetic operators */
 
@@ -38,6 +40,7 @@ gsl_complex gsl_complex_div_real (gsl_complex a, double b);  /* r=a/b */
 
 gsl_complex gsl_complex_conjugate (gsl_complex z);  /* r=conj(z) */
 gsl_complex gsl_complex_inverse (gsl_complex a);    /* r=1/a */
+gsl_complex gsl_complex_negative (gsl_complex a);    /* r=-a */
 
 /* Elementary Complex Functions */
 
