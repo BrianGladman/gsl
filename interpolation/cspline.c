@@ -23,7 +23,7 @@ gsl_interp_cspline;
 
 
 gsl_interp_obj *
-gsl_interp_cspline_create(const double xa[], const double ya[], int size);
+gsl_interp_cspline_free_create(const double xa[], const double ya[], int size);
 
 gsl_interp_obj *
 gsl_interp_cspline_fixed_create(const double xa[], const double ya[], int size);
@@ -39,9 +39,9 @@ gsl_interp_cspline_eval_d_impl(const gsl_interp_obj *, const double xa[], const 
 
 
 /* global cubic spline factory objects */
-const gsl_interp_obj_factory gsl_interp_cspline_factory = {
-  "cspline",
-  gsl_interp_cspline_create
+const gsl_interp_obj_factory gsl_interp_cspline__free_factory = {
+  "cspline_free",
+  gsl_interp_cspline_free_create
 };
 const gsl_interp_obj_factory gsl_interp_cspline_fixed_factory = {
   "cspline_fixed",
@@ -67,7 +67,7 @@ gsl_interp_cspline * cspline_new(const double xa[], int size)
 
 /* factory method */
 gsl_interp_obj *
-gsl_interp_cspline_create(const double x_array[], const double y_array[], int size)
+gsl_interp_cspline_free_create(const double x_array[], const double y_array[], int size)
 {
   if(size <= 1)
     return 0;

@@ -46,7 +46,7 @@ gsl_interp_obj_factory;
 
 /* available factories */
 extern const gsl_interp_obj_factory   gsl_interp_linear_factory;
-extern const gsl_interp_obj_factory   gsl_interp_cspline_factory;
+extern const gsl_interp_obj_factory   gsl_interp_cspline_free_factory;
 extern const gsl_interp_obj_factory   gsl_interp_cspline_fixed_factory;
 
 
