@@ -1,3 +1,8 @@
+Mon Oct  8 21:41:51 2001  Brian Gough  <bjg@network-theory.co.uk>
+
+	* diff.c (gsl_multimin_diff): pass params argument using
+ 	GSL_MULTIMIN_FN_EVAL (3 occurrences)
+
 Sun Jul 15 17:54:15 2001  Brian Gough  <bjg@network-theory.co.uk>
 
 	* fdfminimizer.c (gsl_multimin_fdf_minimizer_alloc): eliminated

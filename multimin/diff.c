@@ -48,7 +48,7 @@ gsl_multimin_diff (const gsl_multimin_function * f,
 	{
 	  a[i] = (i - 2.0) * h;
 	  gsl_multimin_compute_ep (w, a[i]);
-	  d[i] = f->f (w->evaluation_point, 0);
+	  d[i] = GSL_MULTIMIN_FN_EVAL(f, w->evaluation_point);
 	  /*      d[i] = gsl_multimin_to_single_eval(a[i], w); */
 	}
 
@@ -78,9 +78,9 @@ gsl_multimin_diff (const gsl_multimin_function * f,
 	}
 
       gsl_multimin_compute_ep (w, h);
-      fh = f->f (w->evaluation_point, 0);
+      fh = GSL_MULTIMIN_FN_EVAL(f, w->evaluation_point);
       gsl_multimin_compute_ep (w, -h);
-      fl = f->f (w->evaluation_point, 0);
+      fl = GSL_MULTIMIN_FN_EVAL(f, w->evaluation_point);
       gsl_vector_set (g, n, (fh - fl) / (2.0 * h));
     }
 

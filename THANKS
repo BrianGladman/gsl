@@ -105,3 +105,5 @@ suggestions, additional histogram code, PyGSL python interface
 * M Joonas Pihlaja <jpihlaja@cc.helsinki.fi> for bug reports
 
 * Albert Chin <china@thewrittenword.com> for bug reports and patches
+
+* Asterio Gonzalez <agonzalez@udiberica.com> for a bug report for multmin
