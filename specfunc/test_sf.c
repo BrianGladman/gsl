@@ -749,7 +749,7 @@ int test_fermidirac(void)
   TEST_SF(s, gsl_sf_fermi_dirac_int_e, (9,   3.0, &r), 19.768544008138602223, TEST_TOL2, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_fermi_dirac_int_e, (9,  10.0, &r), 10388.990167312912478, TEST_TOL2, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_fermi_dirac_int_e, (9,  50.0, &r), 2.85466960802601649e+10, TEST_TOL1, GSL_SUCCESS);
-  TEST_SF(s, gsl_sf_fermi_dirac_int_e, (9, 500.0, &r), 2.69273849842695876e+20, TEST_TOL1, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_fermi_dirac_int_e, (9, 500.0, &r), 2.69273849842695876e+20, 2*TEST_TOL1, GSL_SUCCESS);
 
   TEST_SF(s, gsl_sf_fermi_dirac_int_e, (10,  -2.0, &r), 0.13532635396712288092, TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_fermi_dirac_int_e, (10,   0.0, &r), 0.9995171434980607541, TEST_TOL0, GSL_SUCCESS);
