@@ -10,7 +10,7 @@ function and gives an overview of the algorithms involved.
 
 @menu
 * Root Finding Overview::
-* Stopping Criteria::
+* Calling GSL Root Finding Functions::
 * Hybrid Algorithms::
 * Bisection::
 * Newtons Method::
@@ -25,16 +25,153 @@ function and gives an overview of the algorithms involved.
 
 FIXME: Insert discussion of numerical root finding here.
 
-Declarations for these functions and associated crud is in
-@file{gsl_roots.h}; you should include it in your programs which make
-use of @sc{gsl} root finding services.
+Note that GSL root finding functions can only search for one root at a
+time.
 
 
-@node Stopping Criteria
-@section Stopping Criteria
-@cindex root finding, stopping criteria
+@node Calling GSL Root Finding Functions
+@section Calling GSL Root Finding Functions
+@cindex root finding, function arguments
+@cindex root finding, calling functions
 
-@sc{gsl} root finding functions (and numerical root finding functions in
+All GSL root finding functions follow the same general template:
+
+@deftypefun int gsl_root_template (@var{root}, @var{f}, [@var{df},]
+[@w{@var{lower_bound}}, @w{@var{upper_bound}}, | @var{guess},
+[@var{guess2},]], @var{epsilon}, @w{@var{max_iterations}}[,
+@w{@var{max_step_size}}])
+@end deftypefun
+
+The following subsections explain how to use GSL root finding
+functions in your code, the specific meaning of each argument, and which
+error codes are possible.
+
+@menu
+* Providing the Function to Search::   @code{f}, @code{df}
+* How the Root Location Is Returned::  @code{root}
+* Search Bounds and Guesses::          @code{lower_bound}, @code{upper_bound}, @code{guess},
+                                         @code{guess2}
+* Search Stopping Parameters::         @code{epsilon}, @code{max_iterations},
+                                         @code{max_step_size}
+* Using the Root Finding Functions::   Proper @code{#include}ing and linking
+* Root Finder Error Codes::            Error codes root finding functions
+                                         can return
+@end menu
+
+
+@node Providing the Function to Search
+@subsection Providing the Function to Search
+@vindex @r{root finding,} f @r{(function argument)}
+@vindex @r{root finding,} df @r{(function argument)}
+
+You must provide a continous function of one variable for the GSL root
+finder(s) to operate on, and, occasionally, its first derivative.
+
+@deftypevr {Function Argument} double {@t{(*} f@t{)(double)}}
+A pointer to the function whose root you are searching for. It is called
+by the root finding function many times during its search. It must be
+continous within the search region (@pxref{Search Bounds and Guesses}).
+
+While it is not absolutely required that @code{f} have a root within the
+search region, GSL root finding functions should not be used haphazardly
+to check for the @emph{existence} of a root.
+
+Here is an example function which you could pass to a GSL root finder:
+
+@smallexample
+@group
+double
+my_function (double x) @{
+   double y;
+   
+   y = sin (2 * x) + 2 * cos (x);
+   return (y);
+@}
+@end group
+@end smallexample
+
+Recall that when passing pointers to functions, you give the name of the
+function you are passing. For example:
+
+@smallexample
+function_which_takes_a_function_pointer (my_function);
+@end smallexample
+
+@end deftypevr
+
+@deftypevr {Function Argument} double {@t{(*} df@t{)(double)}}
+A pointer to the first derivative of the function whose root you are
+searching for.
+
+If we were looking for a root of the function in the previous example,
+this is what we would use for @code{dfn}:
+
+@smallexample
+@group
+double
+my_functions_first_derivative (double x) @{
+   double yprime;
+
+   yprime = 2 * cos (2 * x) - 2 * sin (x);
+   return (yprime);
+@} 
+@end group
+@end smallexample
+
+This argument is only required for functions which use Newton's Method
+(@pxref{Newtons Method}).
+@end deftypevr
+
+
+@node How the Root Location Is Returned
+@subsection How the Root Location Is Returned
+
+Because the return value of GSL root finding functions is reserved for
+the error status, you must provide a pointer to a @code{double} to store
+the root location in.
+
+@deftypevr {Function Argument} {double *} root
+@vindex @r{root finding,} root @r{(function argument)}
+A pointer to a @code{double} where GSL root finding functions will store
+the root location. This must be a valid pointer; GSL root finders will
+not allocate any memory for you. We recommend that you use the @code{&}
+operator on a declared variable because it is much less messy than using
+@code{malloc}.
+@end deftypevr
+
+
+@node Search Bounds and Guesses
+@subsection Search Bounds and Guesses
+@vindex @r{root finding,} guess @r{(function argument)}
+@vindex @r{root finding,} guess2 @r{(function argument)}
+
+Search bounds and guesses are not equivalent. If a function requires
+bounds for a search (with @w{@code{lower_bound}} and
+@w{@code{upper_bound}}, all iterations of the search will remain within
+the interval @math{[lower\_bound, upper\_bound]}; if it requires a
+guess, the search is not guaranteed to stay anywhere in particular,
+which is usually a rather large region) Essentially bounds are like
+saying ``I know there is a root between here and here; find it,'' and a
+guess are liky saying, ``Here is a value which is somewhat near the
+root; find the root.'' (Double guesses are essentially the same as single
+guesses.)
+
+No GSL root finding functions take both bounds and guesses.
+
+@deftypevr {Function Argument} double lower_bound
+@deftypevrx {Function Argument} double upper_bound
+@vindex @r{root finding,} lower_bound @r{(function argument)}
+@vindex @r{root finding,} upper_bound @r{(function argument)}
+The upper and lower bounds of the interval in which to search for a
+root. @w{@code{lower_bound}} must be less than @w{@code{upper_bound}}.
+@end deftypevr
+
+
+@node Search Stopping Parameters
+@subsection Search Stopping Parameters
+@cindex root finding, stopping parameters
+
+GSL root finding functions (and numerical root finding functions in
 general) stop when one of the following conditions is true:
 
 @itemize @bullet
@@ -46,16 +183,17 @@ A root has been found to within the user-specified precision (the
 A user-specified maximum number of iterations has executed.
 
 @item
-An error has occured (for example, Newton's Method has landed on an
-extrema).
+An error has occured (for example, Newton's Method has landed too close
+to an extremum).
 @end itemize
 
-Whenever you call a @sc{gsl} root finding function, you must specify the
-epsilon and the maximum allowed iterations. Every @sc{gsl} root
+Whenever you call a GSL root finding function, you must specify the
+epsilon and the maximum allowed iterations. Every GSL root
 finding function accepts the following arguments:
 
-@deftypevar double epsilon
-The maximum permissible error in @sc{gsl} root finder answers. This must
+@deftypevr {Function Argument} double epsilon
+@vindex @r{root finding,} epsilon @r{(function argument)}
+The maximum permissible error in GSL root finder answers. This must
 be greater than (FIXME: or equal to?) @w{@code{DBL_EPSILON}}, specified in the
 file @w{@file{float.h}} of the @sc{ansi} C Library, which is the
 smallest positive @math{x} such that the relation @math{1 + x \neq 1}
@@ -64,18 +202,124 @@ holds true. With a 64-bit @code{double}, this is around @math{10^@{-16@}}
 
 It is a good idea to not ask for more precision than you need,
 especially if your function is costly to evaluate.
-@end deftypevar
+@end deftypevr
 
-@deftypevar int max_iterations
+@deftypevr {Function Argument} int max_iterations
+@vindex @r{root finding,} max_iterations @r{(function argument)}
 The maximum number of iterations a root finder is allowed to perform.
 This must be greater than or equal to 1, as performing a negative number
-is extremely difficult and not doing any iterations is rather useless.
+of iterations is extremely difficult and not doing any iterations is
+rather useless.
 
 FIXME: There must be a good rule of thumb for setting the number of
-iterations. Do not set @w{@var{max_iterations}} ``way high''; if there
-is a problem, you don't want your program chug away on something you'll
+iterations. Do not set @w{@code{max_iterations}} too large; if there
+is a problem, you don't want your program chugging away on something you'll
 never get an answer for.
-@end deftypevar
+@end deftypevr
+
+In addition, GSL root finding functions which make use of stepping
+algorithms (i.e. Newton's Method, @pxref{Newtons Method}) rather than
+bracketing algorithms (i.e. bisection, @pxref{Bisection}) accept an
+additional argument:
+
+@deftypevr {Function Argument} double max_step_size
+@vindex @r{root finding,} max_step_size @r{(function argument)}
+The maximum step size a stepping algorithm is allowed to take. This is
+to prevent a stepping function from landing on a place where the test
+function's derivative is very small and zooming off to infinity or into
+a different solution basin.
+
+For example, if while solving @math{sin(x) = 0}, @math{x_n} of Newton's
+Method (@pxref{Newtons Method}) landed on @math{1.570700000}
+(@math{@{\pi \over 2@} = 1.570796327}), then @math{x_@{n+1@}} would be
+approximately @math{-10000}, which is definitely not what we wanted! We
+want the root finder to recognize this step as ``too big'' and flag an
+error.
+
+The alarm bell will ring if the following relation in true:
+
+@equation
+|@{@{d@} \over @{dx@}@} f(x)| < |@{@{f(x)@} \over max\_step\_size@}|
+@end equation
+@noindent
+Note that while Secant Method (@pxref{Secant Method}) does not deal with
+derivatives directly, it approximates them numerically.
+
+Do not set @w{@code{max_step_size}} too large; that will defeat its
+purpose. In the @math{sin(x) = 0} example, @math{\pi} would be a good
+value for @w{@code{max_step_size}}; any step larger than that would
+certainly be headed astray. While a good understanding of the problem is
+important for setting any of these arguments to a useful value, it is
+especially important for @w{@code{max_step_size}}.
+@end deftypevr
+
+
+@node Using the Root Finding Functions
+@subsection Using the Root Finding Functions
+@cindex root finding, include files
+@cindex root finding, linking
+@cindex linking root finding functions
+@cindex include files for root finding functions
+
+Declarations of GSL root finding functions and associated crud is in
+@file{gsl_roots.h}; you should include it in your programs which make
+use of GSL root finding services.
+
+
+@node Root Finder Error Codes
+@subsection Root Finder Error Codes
+@cindex root finding, error codes
+
+When successful, GSL root finding functions return @code{0}; on
+error, they return @code{-1} and set the variable @w{@code{gsl_errno}}
+to a diagnostic value. (This is how most GSL functions behave.
+@xref{Error handling in GSL}.)
+
+Unless otherwise specified, an error of any kind indicates that the
+returned root location is garbage and should not be used.
+
+GSL root finders may set @w{@code{gsl_errno}} to the following values:
+
+@table @code
+@item GSL_EINVAL
+One or more of the input arguments is invalid because at least one of
+these conditions is true:
+
+@itemize @bullet
+@item 
+@code{epsilon} is too small or @w{@code{max_iterations}} is less than 1.
+@xref{Search Stopping Parameters}.
+
+@item
+The lower bound of the search interval is not less than the upper bound.
+
+@item
+The function under search (or its derivative) is not behaving as GSL
+expects it to. (For example, it returned @code{NAN}.)
+
+@item
+@code{root} is a null pointer. @xref{How the Root Location Is Returned}.
+@end itemize
+
+@item GSL_ERUNAWAY
+A stepping root finder tried to take a step larger than
+@w{@code{max_step_size}} (@pxref{Search Stopping Parameters}). This
+happens when a stepping algorithm lands on a place where the derivative
+is too small.
+
+@item GSL_ETIMEOUT
+The number of iterations executed exceeded @w{@code{max_iterations}}
+(@pxref{Search Stopping Parameters}). In certain situations which depend
+on the function under search and the initial parameters, the returned
+root location might be correct but not to the requested precision.
+However, @emph{this is unlikely!} Do not treat the root location as
+valid unless you are @emph{sure} that it is.
+
+@item GSL_EZERODIV
+GSL caught itself before dividing by zero. This most often happens when
+Newton's Method (@pxref{Newtons Method}) or Secant Method (@pxref{Secant
+Method}) lands on an extremum.
+@end table
 
 
 @node Hybrid Algorithms
@@ -87,71 +331,12 @@ different methods. The @value{GSL} provides two hybrids: one for use
 when the function's first derivative is available, and one for when it
 is not.
 
-@deftypefun int gsl_root_have_1der( @w{double * @var{root}}, @w{double (* @var{fn})(double)}, @w{double (* @var{dfn})(double)}, @w{double @var{lower_bound}}, @w{double @var{upper_bound}}, double @w{@var{epsilon}}, int @w{@var{max_iterations}}, double @w{@var{max_step_size}})
+@deftypefun int gsl_root_have_1der (@w{double * @var{root}}, @w{double (* @var{f})(double)}, @w{double (* @var{df})(double)}, @w{double @var{lower_bound}}, @w{double @var{upper_bound}}, double @w{@var{epsilon}}, int @w{@var{max_iterations}}, double @w{@var{max_step_size}})
 
-Search for a zero using a combination of bisection and Newton's Method.
+Search for a zero using a combination of bisection (@pxref{Bisection})
+and Newton's Method (@pxref{Newtons Method}).
 
-Arguments:
-
-@table @var
-@item root
-A place to put the answer.
-
-@item fn
-The function on which to search.
-
-@item dfn
-@var{fn}'s first derivative.
-
-@item lower_bound
-The lower end of the search interval.
-
-@item upper_bound
-The upper end of the search interval. 
-
-@item max_step_size
-This is the largest step Newton's Method is allowed to take.
-@xref{Newtons Method}.
-@end table
-
-For an explanation of @var{epsilon} and @w{@var{max_iterations}}, see
-@ref{Stopping Criteria}.
-
-On error, @w{@code{gsl_root_have_1der}} can set @w{@code{gsl_error}} to
-the following values:
-
-@table @code
-@item GSL_EINVAL
-One or more of the input arguments is invalid because at least one of
-these conditions is true:
-
-@itemize @bullet
-@item 
-@var{epsilon} is too small or @w{@var{max_iterations}} is less than 1.
-@xref{Stopping Criteria}.
-
-@item
-@w{@var{lower_bound}} is not less than @w{@var{upper_bound}}.
-
-@item
-@var{fn} or @var{dfn} is not working as @w{@code{gsl_root_have_1der}}
-expects it to.
-@end itemize
-
-@w{@var{*root}} is totally wrong in this case.
-
-@item GSL_ETIMEOUT
-The number of iterations executed exceeded @w{@var{max_iterations}}. In
-this case, @w{@var{*root}} is of questionable value. It might hold the
-location of a root, just not to the requested precision, or it might
-hold the number of hairs on Bill Clinton's left butt cheek on the
-morning of his twenty-third birthday. You should treat @w{@var{*root}}
-as garbage unless you have a very good reason not to.
-
-@item GSL_ERUNAWAY
-Newton's Method tried to take a step larger than @w{@var{max_step_size}}. This means that the great mathematician landed on a place where the @var{fn}'s derivative was very small (@math{|dfn(x)| < fn(x) \over max\_step\_size}) and would have been on his was to Never-Never Land.
-
-@end table
+@xref{Calling GSL Root Finding Functions}, for an explanation of the arguments.
 
 @end deftypefun
 
@@ -167,7 +352,7 @@ status = gsl_root_have_1der(sin, cos, (
 
 @node Bisection
 @section Bisection
-@cindex bisection
+@cindex bisection algorithm for finding roots
 @cindex root finding, bisection algorithm
 
 ha ha ha
@@ -175,7 +360,7 @@ ha ha ha
 
 @node Newtons Method
 @section Newtons Method
-@cindex Newton's Method
+@cindex Newton's Method algorithm for finding roots
 @cindex root finding, Newton's Method algorithm
 
 ha ha ha
@@ -183,7 +368,7 @@ ha ha ha
 
 @node Secant Method
 @section Secant Method
-@cindex Secant Method
+@cindex Secant Method algorithm for finding roots
 @cindex root finding, Secant Method algorithm
 
 ha h aha
@@ -191,7 +376,7 @@ ha h aha
 
 @node False Position
 @section False Position
-@cindex false position
+@cindex false position algorithm for finding roots
 @cindex root finding, false position algorithm
 
 ha ha ha
