@@ -119,9 +119,9 @@ gnewton_iterate (void * vstate, gsl_multiroot_function_fdf * fdf, gsl_vector * x
 
   gsl_matrix_memcpy (state->lu, J);
 
-  gsl_la_decomp_LU_impl (state->lu, state->permutation, &signum);
+  gsl_linalg_LU_decomp (state->lu, state->permutation, &signum);
 
-  gsl_la_solve_LU_impl (state->lu, state->permutation, f, state->d);
+  gsl_linalg_LU_solve (state->lu, state->permutation, f, state->d);
 
   t = 1;
 

@@ -365,8 +365,8 @@ set (void *vstate, gsl_multiroot_function * func, gsl_vector * x, gsl_vector * f
 
   /* Factorize J into QR decomposition */
 
-  gsl_la_decomp_QR_impl (J, rdiag);
-  gsl_la_unpack_QR_impl (J, rdiag, q, r);
+  gsl_linalg_QR_decomp (J, rdiag);
+  gsl_linalg_QR_unpack (J, rdiag, q, r);
 
   return GSL_SUCCESS;
 }
@@ -526,8 +526,8 @@ iterate (void *vstate, gsl_multiroot_function * func, gsl_vector * x, gsl_vector
 
       /* Factorize J into QR decomposition */
 
-      gsl_la_decomp_QR_impl (J, rdiag);
-      gsl_la_unpack_QR_impl (J, rdiag, q, r);
+      gsl_linalg_QR_decomp (J, rdiag);
+      gsl_linalg_QR_unpack (J, rdiag, q, r);
 
       return GSL_SUCCESS;
     }
@@ -540,7 +540,7 @@ iterate (void *vstate, gsl_multiroot_function * func, gsl_vector * x, gsl_vector
 
   /* rank-1 update of the jacobian Q'R' = Q(R + w v^T) */
 
-  gsl_la_update_QR_impl (q, r, w, v);
+  gsl_linalg_QR_update (q, r, w, v);
 
   /* No progress as measured by jacobian evaluations */
 

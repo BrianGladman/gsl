@@ -189,8 +189,8 @@ broyden_set (void *vstate, gsl_multiroot_function * function, gsl_vector * x, gs
   GSL_MULTIROOT_FN_EVAL (function, x, f);
 
   gsl_multiroot_fdjacobian (function, x, f, GSL_SQRT_DBL_EPSILON, state->lu);
-  gsl_la_decomp_LU_impl (state->lu, state->permutation, &signum);
-  gsl_la_invert_LU_impl (state->lu, state->permutation, state->H);
+  gsl_linalg_LU_decomp (state->lu, state->permutation, &signum);
+  gsl_linalg_LU_invert (state->lu, state->permutation, state->H);
 
   for (i = 0; i < n; i++)
     for (j = 0; j < n; j++)
@@ -280,10 +280,10 @@ new_step:
         for (j = 0; j < n; j++)
           gsl_matrix_set(lu,i,j,-gsl_matrix_get(lu,i,j));
       
-      gsl_la_decomp_LU_impl (lu, perm, &signum);
-      gsl_la_invert_LU_impl (lu, perm, H);
+      gsl_linalg_LU_decomp (lu, perm, &signum);
+      gsl_linalg_LU_invert (lu, perm, H);
       
-      gsl_la_solve_LU_impl (lu, perm, f, p);          
+      gsl_linalg_LU_solve (lu, perm, f, p);          
 
       t = 1;
 

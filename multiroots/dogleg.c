@@ -207,9 +207,7 @@ newton_direction (const gsl_matrix * r, const gsl_vector * qtf, gsl_vector * p)
   size_t i;
   int status;
 
-  gsl_vector_memcpy (p, qtf);
-
-  status = gsl_la_Rsolve_impl (r, p);
+  status = gsl_linalg_R_solve (r, qtf, p);
 
 #ifdef DEBUG
   printf("rsolve status = %d\n", status);

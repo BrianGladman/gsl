@@ -104,9 +104,9 @@ dnewton_iterate (void * vstate, gsl_multiroot_function * function, gsl_vector * 
 
   gsl_matrix_memcpy (state->lu, state->J);
 
-  gsl_la_decomp_LU_impl (state->lu, state->permutation, &signum);
-
-  gsl_la_solve_LU_impl (state->lu, state->permutation, f, dx);
+  gsl_linalg_LU_decomp (state->lu, state->permutation, &signum);
+  
+  gsl_linalg_LU_solve (state->lu, state->permutation, f, dx);
 
   for (i = 0; i < n; i++)
     {
