@@ -1,12 +1,17 @@
-@cindex polynomials, roots of
+@cindex polynomials, roots of 
+
 This chapter describes functions for solving polynomial equations. There
 are routines for finding real and complex roots of quadratic and cubic
-equations using analytic methods. The functions are defined in the
-header file @code{gsl_poly.h}.
+equations using analytic methods. An iterative polynomial solver is also
+available for finding the roots of general real polynomials (of any
+order). The functions are defined in the header file @code{gsl_poly.h}.
 
 @menu
 * Quadratic equations::         
 * Cubic equations::             
+* General polynomial equations::  
+* Roots of Polynomials Examples::  
+* Roots of Polynomials References and Further Reading::  
 @end menu
 
 @node  Quadratic equations
@@ -130,3 +135,126 @@ are returned in ascending order, sorted first by their real components
 and then by their imaginary components.
 
 @end deftypefun
+
+
+@node General polynomial equations
+@section General polynomial equations
+@cindex general polynomial equations, solving
+
+The roots of polynomial equations cannot be found analytically beyond
+the special cases of the quadratic, cubic and quartic equation. The
+algorithm described in this section uses an iterative method to find the
+approximate locations of roots of higher order polynomials.
+
+@deftypefun gsl_poly_complex_workspace * gsl_poly_complex_workspace_alloc (size_t @var{n})
+This function allocates space for a @code{gsl_poly_complex_workspace}
+struct and a scratch area suitable for solving a polynomial with @var{n}
+coefficients using the routine @code{gsl_poly_complex_solve}.
+
+The function returns a pointer to the newly allocated
+@code{gsl_poly_complex_workspace} if no errors were detected, and 0 in
+the case of error.
+@end deftypefun
+
+@deftypefun void gsl_poly_complex_workspace_free (gsl_poly_complex_workspace * @var{w})
+This function frees all the memory associated with the workspace
+@var{w}.
+@end deftypefun
+
+@deftypefun int gsl_poly_complex_solve (const double * @var{a}, size_t @var{n}, gsl_poly_complex_workspace * @var{w}, gsl_complex_packed_ptr @var{z})
+This function computes the roots of the general polynomial 
+@c{$P(x) = a_0 + a_1 x + a_2 x^2 + ... + a_{n-1} x^{n-1}$} 
+@math{P(x) = a_0 + a_1 x + a_2 x^2 + ... + a_@{n-1@} x^@{n-1@}} using 
+balanced-QR reduction of the companion matrix.  The parameter @var{n}
+specifies the length of the coefficient array. The coefficient of the
+highest order term must be non-zero. The function requires a workspace
+@var{w} of the appropriate size. The @math{n-1} roots are returned in
+the packed complex array @var{z} of length @math{2(n-1)}, alternating
+real and imaginary parts.
+
+The functions returns @code{GSL_SUCCESS} if all the roots are found and
+@code{GSL_EFAILED} if the QR reduction does not converge.
+@end deftypefun
+
+@node Roots of Polynomials Examples
+@section Roots of Polynomials Examples
+
+To demonstrate the use of the general polynomial solver we will take the
+polynomial @math{P(x) = x^5 - 1} which has the following roots,
+
+@tex
+\beforedisplay
+$$
+1, e^{2\pi i /5}, e^{4\pi i /5}, e^{6\pi i /5}, e^{8\pi i /5}
+$$
+\afterdisplay
+@end tex
+@ifinfo
+@example
+1, e^@{2\pi i /5@}, e^@{4\pi i /5@}, e^@{6\pi i /5@}, e^@{8\pi i /5@}
+@end example
+@end ifinfo
+
+@noindent
+The following program will find these roots.
+
+@example
+#include <stdio.h>
+#include <gsl_poly.h>
+
+int
+main ()
+@{
+  int i;
+  double a[6] = @{ -1, 0, 0, 0, 0, 1 @};  /*  P(x) =  x^5 - 1  */
+  double z[10];
+
+  gsl_poly_complex_workspace * w = gsl_poly_complex_workspace_alloc (6) ;
+  
+  gsl_poly_complex_solve (a, 6, w, z) ;
+
+  gsl_poly_complex_workspace_free (w) ;
+
+  for (i = 0; i < 5 ; i++)
+    @{
+      printf("z%d = %+.18f %+.18f\n", i, z[2*i], z[2*i+1]) ;
+    @}
+@}
+@end example
+
+@noindent
+The results of running the program are,
+
+@example
+bjg|debian> ./a.out 
+z0 = -0.809016994374947451 +0.587785252292473137
+z1 = -0.809016994374947451 -0.587785252292473137
+z2 = +0.309016994374947451 +0.951056516295153642
+z3 = +0.309016994374947451 -0.951056516295153642
+z4 = +1.000000000000000000 +0.000000000000000000
+@end example
+
+@noindent
+
+
+@node Roots of Polynomials References and Further Reading
+@section Roots of Polynomials References and Further Reading
+
+The balanced-QR method and its error analysis is described in the
+following papers.
+
+@itemize @asis
+@item
+R.S. Martin, G. Peters and J.H. Wilkinson, ``The QR Algorithm for Real
+Hessenberg Matrices'', @cite{Numerische Mathematik}, 14 (1970), 219--231.
+
+@item
+B.N. Parlett and C. Reinsch, ``Balancing a Matrix for Calculation of
+Eigenvalues and Eigenvectors'', @cite{Numerische Mathematik}, 13 (1969),
+293--304.
+
+@item
+A. Edelman and H. Murakami, ``Polynomial roots from companion matrix
+eigenvalues'', @cite{Mathematics of Computation}, Vol. 64 No. 210
+(1995), 763--776.
+@end itemize

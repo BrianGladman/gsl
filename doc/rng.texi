@@ -417,19 +417,23 @@ Communications}, 79 (1994) 111-114
 @deffn {Generator} gsl_rng_ranlxs0
 @deffnx {Generator} gsl_rng_ranlxs1
 @deffnx {Generator} gsl_rng_ranlxs2
-@deffnx {Generator} gsl_rng_ranlxd1
-@deffnx {Generator} gsl_rng_ranlxd2
 @cindex RANLXS random number generator
-@cindex RANLXD random number generator
 
 The generator @code{ranlxs0} is a second-generation version of
 @code{ranlux}. It uses double-precision floating point arithmetic
 internally and can be significantly faster on 64-bit architectures than
 the integer version of @code{ranlux}. This generator is available with
 single precision output (24 bits) at three luxury levels @code{ranlxs0},
-@code{ranlxs1} and @code{ranlxs2}, with with double precision output (48
-bits) at two luxury levels @code{ranlxd1} and @code{ranlxd2}.
+@code{ranlxs1} and @code{ranlxs2}.
 @end deffn
+
+@deffnx {Generator} gsl_rng_ranlxd1
+@deffnx {Generator} gsl_rng_ranlxd2
+@cindex RANLXD random number generator
+
+These generators produce double precision output (48 bits) from the
+RANLXS generator. The library provides two luxury levels @code{ranlxd1}
+and @code{ranlxd2}.
 
 @deffn {Generator} gsl_rng_cmrg
 @cindex CMRG, combined multiple recursive random number generator
