@@ -112,7 +112,7 @@ Here is an example of some code which checks the return value of a
 function where an error might be reported,
 
 @example
-int status = gsl_fft_complex_radix2_forward (data, length)
+int status = gsl_fft_complex_radix2_forward (data, length);
 
 if (status) @{
     if (gsl_errno == GSL_EINVAL) @{

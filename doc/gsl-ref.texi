@@ -18,7 +18,7 @@
 @ifinfo
 This file documents the @value{GSL}.
 
-Copyright (C) 1996 The GSL Project.
+Copyright (C) 1996, 1997 The GSL Project.
 
 Permission is granted to make and distribute verbatim copies of
 this manual provided the copyright notice and this permission notice
@@ -46,7 +46,7 @@ by the Foundation.
 @title GNU Scientific Library -- Reference Manual
 @subtitle Edition @value{EDITION}, for gsl Version @value{VERSION}
 @subtitle @value{UPDATED}
-@author Mark Galassi @footnote{Space Data Systems group, Los Alamos National Laboratory}
+@author Mark Galassi @footnote{Cygnus Solutions and Los Alamos National Laboratory}
 @author @email{rosalia@@nis.lanl.gov}
 @author
 @author Jim Davies @footnote{Space Data Systems Group, Los Alamos National Laboratory and Department of Computer Science, Georgia Institute of Technology}
