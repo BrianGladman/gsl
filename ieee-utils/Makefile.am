@@ -3,8 +3,11 @@ lib_LIBRARIES = libgslieeeutils.a
 include_HEADERS = gsl_ieee_utils.h
 
 libgslieeeutils_a_SOURCES = endian.c print-ieee.c standardize.c \
-	gsl_ieee_utils.h ieee_utils.h
+	make_rep.c gsl_ieee_utils.h ieee_utils.h
 
+INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../err
+
+TESTS = test
 check_PROGRAMS = test
-test_LDADD = libgslieeeutils.a
+test_LDADD = libgslieeeutils.a ../err/libgsltest.a
 test_SOURCES = test.c

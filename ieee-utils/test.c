@@ -1,60 +1,52 @@
 #include <config.h>
-#include <stdio.h>
+#include <string.h>
 #include <gsl_ieee_utils.h>
+#include <gsl_test.h>
 
 int 
 main (void)
 {
-  float x = 1.000 ;
-  double y = -8.000 ;
-  float d = 0.5 ;
-  int i, w ;
-
-  y = 2.1 ; printf("%g ",y) ;    gsl_ieee_printf_double(&y) ; printf("\n") ;
-
-  for (i = 1; i<30; i++) {
-    printf("%g ",x) ;    gsl_ieee_printf_float(&x) ; printf("\n") ;
-    x += d ;
-    d = d / 2 ;
-  }
-
-  y = 1 ;
-  d = 0.5 ;
- 
-  for (i = 1; i<400; i++) {
-    printf("%g ",y) ;    gsl_ieee_printf_double(&y) ; printf("\n") ;
-    y *= 2 ;
-  }
-
-
   {
-    union
-    {
-      double d ;
-      char c[sizeof(double)];
-    } u;
-    
-    /* this corresponds to 0x0706050403020100 in big endian format */
-    u.d=7.9499288951273625e-275 ;
-    
-    w=u.c[7]+1 ;
-    for(i=6 ; i>=0 ; i--)
-      {
-	w=10*w+u.c[i]+1 ;
-      } ;
-    
-    printf("%d\n",w);
+    double d = 2.1 ; 
+    const char mantissa[] 
+      = "0000110011001100110011001100110011001100110011001101" ;
+    gsl_ieee_double_rep r ;
+    gsl_ieee_double_to_rep(&d, &r) ;
+
+    gsl_test_int (r.sign,0,"x = 2.1, sign is +") ;
+    gsl_test_int (r.exponent,1, "x = 2.1, exponent is 1") ;
+    gsl_test_str (r.mantissa, mantissa,"x = 2.1, mantissa") ;
+    gsl_test_int (r.type,GSL_IEEE_TYPE_NORMAL, "x = 2.1, type is NORMAL") ;
   }
 
   {
-    union
-    {
-      long l;
-      char c[sizeof (long)];
-    } u;
-    u.l = 0x04030201;
-    printf("%d\n",u.c[0]+10*(u.c[1]+10*(u.c[2]+10*u.c[3]))) ;
+    double d = -1.3303577090924210146738460025517269968986511230468750 ; 
+    const char mantissa[] 
+      = "0101010010010010010100101010010010001000100011101110" ;
+    gsl_ieee_double_rep r ;
+    gsl_ieee_double_to_rep(&d, &r) ;
+
+    gsl_test_int (r.sign, 1,"x = -1.3304..., sign is -") ;
+    gsl_test_int (r.exponent,0, "x = -1.3304..., exponent is 0") ;
+    gsl_test_str (r.mantissa, mantissa,"x = -1.3304..., mantissa") ;
+    gsl_test_int (r.type,GSL_IEEE_TYPE_NORMAL, 
+		  "x = -1.3304..., type is NORMAL") ;
   }
-  return 0 ;
+
+  {
+    double d = 3.37e297 ;
+    const char mantissa[] 
+      = "0100100111001001100101111001100000100110011101000100" ;
+    gsl_ieee_double_rep r ;
+    gsl_ieee_double_to_rep(&d, &r) ;
+
+    gsl_test_int (r.sign, 0,"x = 3.37e297..., sign is +") ;
+    gsl_test_int (r.exponent, 988, "x = 3.37e297..., exponent is 998") ;
+    gsl_test_str (r.mantissa, mantissa,"x = 3.37e297..., mantissa") ;
+    gsl_test_int (r.type,GSL_IEEE_TYPE_NORMAL, 
+		  "x = 3.37e297..., type is NORMAL") ;
+  }
+
+  return gsl_test_summary() ;
 }
 

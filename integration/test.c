@@ -411,12 +411,6 @@ int main (void)
 
 
 #ifdef JUNK
- gsl_integration_qng(f,0.0,1.0,0.0,1e-5,&result,&abserr,&neval) ;
-  
-  printf("qng: result = %.18g, abserr = %.18g, neval = %d\n",
-	 result, abserr, neval) ;
-
-
   {
     double alist[1000], blist[1000], rlist[1000], elist[1000];
     size_t iord[1000] ;
