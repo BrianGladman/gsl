@@ -1,0 +1,120 @@
+IEEE Interface Notes
+--------------------
+
+The IEEE standard defines different types of rounding modes and
+exception handling but it does not specify a standard API for setting
+these features. Each platform has its own way of accessing them. The
+functions in this directory present a uniform interface for each
+platform. In order to do this only the "lowest-common-denominator"
+features are supported.
+
+This directory offers support for 
+
+   setting the rounding precision
+   setting the rounding direction
+   setting exception handling flags
+
+Even among this basic set there are some features which are not
+supported on all platforms.
+
+All the platform-dependent functionality is provided through the
+single function
+
+  int gsl_ieee_set_mode (int precision, int rounding, int exception_mask)
+
+where precision, rounding and exception mask are enums defined in
+gsl_ieee_utils.h,
+
+  GSL_IEEE_SINGLE_PRECISION
+  GSL_IEEE_DOUBLE_PRECISION
+  GSL_IEEE_EXTENDED_PRECISION
+
+  GSL_IEEE_ROUND_TO_NEAREST
+  GSL_IEEE_ROUND_DOWN
+  GSL_IEEE_ROUND_UP
+  GSL_IEEE_ROUND_TO_ZERO
+
+  GSL_IEEE_MASK_INVALID
+  GSL_IEEE_MASK_DENORMALIZED
+  GSL_IEEE_MASK_DIVISION_BY_ZERO
+  GSL_IEEE_MASK_OVERFLOW
+  GSL_IEEE_MASK_UNDERFLOW
+  GSL_IEEE_TRAP_INEXACT
+
+For the mask/traps you can 'or' the numbers together for the desired
+combination.
+
+How to add IEEE support for other platforms
+-------------------------------------------
+
+The platform support is in the files fp-linux.c, fp-hpux.c,
+fp-solaris.c, fp-sunos4.c. This is the file that sets the IEEE mode
+based on the arguments above. Look at these files to determine which
+is closest to want you want. Write the corresponding source file (e.g.
+fp-mysystem.c for the examples below).
+
+The file is chosen from the preprocessor definitions in fp.c. Add an
+#elif defined(HAVE_MYSYSTEM_IEEE_INTERFACE) ... section which includes
+your file.
+
+    #include <config.h>
+
+    #if defined(HAVE_LINUX_IEEE_INTERFACE)
+    #include "fp-linux.c"
+    #elif defined(HAVE_HPUX_IEEE_INTERFACE)
+    #include "fp-hpux.c"
+    #elif defined(HAVE_SUNOS4_IEEE_INTERFACE)
+    #include "fp-sunos4.c"
+    #elif defined(HAVE_SOLARIS_IEEE_INTERFACE)
+    #include "fp-solaris.c"
+    #elif defined(HAVE_MYSYSTEM_IEEE_INTERFACE)
+    #include "fp-mysystem.c"
+    #else
+    #include "fp-unknown.c" 
+    #endif
+
+Add corresponding definitions in the top-level acconfig.h,
+
+    /* Define one of these if you have a known IEEE arithmetic interface */
+    #undef HAVE_LINUX_IEEE_INTERFACE
+    #undef HAVE_SUNOS4_IEEE_INTERFACE
+    #undef HAVE_SOLARIS_IEEE_INTERFACE
+    #undef HAVE_HPUX_IEEE_INTERFACE
+    #undef HAVE_MYSYSTEM_IEEE_INTERFACE
+
+Finally edit configure.in to add a test for your system based on the
+host-identifier,
+
+    AC_MSG_CHECKING(for IEEE arithmetic interface type)
+    case "$host" in
+	*-*-linux*) 
+	    AC_DEFINE(HAVE_LINUX_IEEE_INTERFACE)
+	    AC_MSG_RESULT([linux]) 
+	    ;;
+	*-*-sunos4*) 
+	    AC_DEFINE(HAVE_SUNOS4_IEEE_INTERFACE)
+	    AC_MSG_RESULT([sunos4]) 
+	    ;;
+	*-*-solaris*) 
+	    AC_DEFINE(HAVE_SOLARIS_IEEE_INTERFACE)
+	    AC_MSG_RESULT([solaris]) 
+	    ;;
+	*-*-hpux*) 
+	    AC_DEFINE(HAVE_HPUX_IEEE_INTERFACE)
+	    AC_MSG_RESULT([hpux]) 
+            ;;
+	*-*-mysystem*) 
+	    AC_DEFINE(HAVE_MYSYSTEM_IEEE_INTERFACE)
+	    AC_MSG_RESULT([mysystem]) 
+	    ;;
+	*)
+	    AC_MSG_RESULT([unknown])
+	    ;;
+      esac
+	
+This should be all that's needed. If your system doesn't support one
+of the basic features you can use the error macro GSL_ERROR with and
+error number of GSL_EUNSUP.
+
+    GSL_ERROR ("MYSYS only supports single precision rounding", GSL_EUNSUP);
+ 
