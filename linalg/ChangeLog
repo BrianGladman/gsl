@@ -1,3 +1,8 @@
+Thu Aug  2 18:19:08 2001  Brian Gough  <bjg@network-theory.co.uk>
+
+	* svdstep.c (trailing_eigenvalue): chose better value of mu when
+ 	dt=0.
+
 Sun Jul  8 18:03:05 2001  Brian Gough  <bjg@network-theory.co.uk>
 
 	* qrpt.c (gsl_linalg_QRPT_decomp): fix bug where null column

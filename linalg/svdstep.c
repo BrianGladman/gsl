@@ -69,18 +69,13 @@ trailing_eigenvalue (const gsl_vector * d, const gsl_vector * f)
 
   double mu;
 
-  if (dt > 0)
+  if (dt >= 0)
     {
       mu = tb - (tab * tab) / (dt + hypot (dt, tab));
     }
-  else if (dt < 0)
-    {
-      mu = tb + (tab * tab) / ((-dt) + hypot (dt, tab));
-    }
   else
     {
-      /* FIXME: what is the best choice of mu for dt == 0 ? */
-      mu = tb;
+      mu = tb + (tab * tab) / ((-dt) + hypot (dt, tab));
     }
 
   return mu;
