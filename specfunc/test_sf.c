@@ -1884,7 +1884,6 @@ int check_hyperg(void)
   y = gsl_sf_hyperg_1F1(1, 1.5, 10);
   s += ( frac_diff(y, 6172.859561078406855 ) > 1.e-12 );
   gsl_test(s, "  gsl_sf_hyperg_1F1(1, 1.5, 10)");
-  printf("%22.18g\n", y);
   status += s;
 
   s = 0;
@@ -1897,6 +1896,17 @@ int check_hyperg(void)
   y = gsl_sf_hyperg_1F1(1, 1.5, 500);
   s += ( frac_diff(y, 5.562895351723513581e+215 ) > 1.e-12 );
   gsl_test(s, "  gsl_sf_hyperg_1F1(1, 1.5, 500)");
+  status += s;
+
+  s = 0;
+  s += ( frac_diff(gsl_sf_hyperg_1F1(1.5, 2.5, 1), 1.8834451238277954398 ) > 1.e-12 );
+  gsl_test(s, "  gsl_sf_hyperg_1F1(1.5, 2.5, 1)");
+  status += s;
+
+  s = 0;
+  y = gsl_sf_hyperg_1F1(1.5, 2.5, 10);
+  s += ( frac_diff(y, 3128.7352996840916381 ) > 1.e-12 );
+  gsl_test(s, "  gsl_sf_hyperg_1F1(1.5, 2.5, 10)");
   status += s;
 
   s = 0;
@@ -1934,7 +1944,6 @@ int check_hyperg(void)
   y = gsl_sf_hyperg_1F1(10, 50.1, 10);
   s += ( frac_diff(y, 8.713385849265044908 ) > 1.e-10 );
   gsl_test(s, "  gsl_sf_hyperg_1F1(10, 50.1, 10)");
-  printf("%22.18g\n", y);
   status += s;
 
   s = 0;
@@ -2004,6 +2013,7 @@ int check_hyperg(void)
   y = gsl_sf_hyperg_1F1(100, -10.1, 100);
   s += ( frac_diff(y, -1.2413466759089171904e+129 ) > 1.e-12 );
   gsl_test(s, "  gsl_sf_hyperg_1F1(100, -10.1, 100)");
+  printf("%22.18g\n", y);
   status += s;
 
 
@@ -2708,7 +2718,6 @@ int check_hyperg(void)
   s = 0;
   s += ( frac_diff(gsl_sf_hyperg_2F1(25, 25, 1, -0.5), -2.9995530823639545027e-06 ) > 1.e-10 );
   gsl_test(s, "  gsl_sf_hyperg_2F1(25, 25, 1, -0.5)");
-  printf("%22.18g\n", gsl_sf_hyperg_2F1(25, 25, 1, -0.5));
   status += s;
 
 
@@ -2742,7 +2751,6 @@ int check_hyperg(void)
   s = 0;
   s += ( frac_diff(gsl_sf_hyperg_2F1_conj(25, 25, 1, -0.5), 5.169694409566320627e-06 ) > 1.e-10 );
   gsl_test(s, "  gsl_sf_hyperg_2F1_conj(25, 25, 1, -0.5)");
-  printf("%22.18g\n", gsl_sf_hyperg_2F1_conj(25, 25, 1, -0.5));
   status += s;
 
 
@@ -3236,9 +3244,6 @@ int check_zeta(void)
 
 int main(int argc, char * argv[])
 {
-/* test_coulomb(); */
-/* test_recurse(); */
-
   gsl_test(check_airy(),       "Airy Functions");
   gsl_test(check_bessel(),     "Bessel Functions");
   gsl_test(check_cheb(),       "Chebyshev Evaluation");

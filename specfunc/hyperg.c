@@ -186,6 +186,7 @@ gsl_sf_hyperg_2F0_series_impl(const double a, const double b, const double x,
                               double * result, double * prec
                               )
 {
+  const int maxiter = 2000;
   double an = a;
   double bn = b;  
   double n   = 1.0;
@@ -196,7 +197,7 @@ gsl_sf_hyperg_2F0_series_impl(const double a, const double b, const double x,
   double last_abs_del = 1.0;
   double err;
   
-  while(abs_del/fabs(sum) > GSL_MACH_EPS && n < 200.0) {
+  while(abs_del/fabs(sum) > GSL_MACH_EPS && n < maxiter) {
 
     double u = an * (bn/n * x);
     double abs_u = fabs(u);
@@ -229,7 +230,9 @@ gsl_sf_hyperg_2F0_series_impl(const double a, const double b, const double x,
   err     = GSL_MACH_EPS * n + abs_del;
   *prec   = err/(err + fabs(sum));
   *result = sum;
-  if(*prec > locEPS)
+  if(n >= maxiter)
+    return GSL_EMAXITER;
+  else if(*prec > locEPS)
     return GSL_ELOSS;
   else
     return GSL_SUCCESS;
