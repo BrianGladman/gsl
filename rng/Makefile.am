@@ -14,5 +14,6 @@ test_LDADD = libgslrng.a ../err/libgslerr.a ../err/libgsltest.a
 TESTS = test
 check_PROGRAMS = test
 
-benchmark_SOURCES = benchmark.c 
-benchmark_LDADD = libgslrng.a ../err/libgslerr.a
+#benchmark_PROGRAMS = benchmark
+#benchmark_SOURCES = benchmark.c 
+#benchmark_LDADD = libgslrng.a ../err/libgslerr.a
