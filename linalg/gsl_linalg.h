@@ -326,7 +326,7 @@ int gsl_linalg_hermtd_unpack (const gsl_matrix_complex * A,
                               gsl_vector * sudiag);
 
 int gsl_linalg_hermtd_unpack_T (const gsl_matrix_complex * A, 
-                                gsl_vector * d, 
+                                gsl_vector * diag, 
                                 gsl_vector * subdiag);
 
 /* Linear Solve Using Householder Transformations
