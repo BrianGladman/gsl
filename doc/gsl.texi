@@ -446,6 +446,26 @@ analysis of Psychological experiment data.
 @code{gsl_stats_imin} returns the lowest number in an array of integers.
 @end deftypefn
 
+Here is a basic example of how to use these functions:
+
+@smallexample
+/* to compile: gcc file_name.c libgsl_statistics.a -lm */
+
+int main()
+@{
+  double data[5];
+  double data_variance;
+
+  data[0] = 17.2 ;
+  data[1] = 18.1 ;
+  data[2] = 16.5 ;
+  data[3] = 18.3 ;
+  data[4] = 12.6 ;
+
+  data_variance = gsl_stats_dmean(data, 5);
+@}
+@end smallexample
+
 @node Root finding, Simulated annealing, Statistics, Reference manual
 @section Root finding
 @cindex root finding
