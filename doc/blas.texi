@@ -988,4 +988,6 @@ J.J. Dongarra, I. Duff, J. DuCroz, S. Hammarling, "A Set of
 Level 3 Basic Linear Algebra Subprograms", @cite{ACM Transactions on
 Mathematical Software}, Vol. 16 (1990), Pages 1-28.
 @end itemize
-
+@noindent
+Postscript versions of the latter two papers are available from
+@url{http://www.netlib.org/blas/}
