@@ -78,7 +78,6 @@ gsl_vector_float_set(gsl_vector_float * v, const size_t i, float x)
   v->data[i] = x;
 } 
 
-
 #endif /* HAVE_INLINE */
 
 #endif /* !GSL_VECTOR_FLOAT_H */

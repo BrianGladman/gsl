@@ -52,9 +52,10 @@ extern int gsl_check_range ;
 #endif
 #endif /* GSL_VECTOR_COMPLEX */
 
-/* inline functions if you are using GCC or otherwise enlightened cc */
+
 
 #ifdef HAVE_INLINE
+
 extern inline 
 gsl_complex *
 gsl_vector_complex_ptr(const gsl_vector_complex * v, const size_t i)

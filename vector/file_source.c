@@ -2,7 +2,6 @@
 #include <unistd.h>
 #include <gsl_errno.h>
 
-#include "source.h"
 
 int
 FUNCTION(gsl_vector,fread)(FILE * stream, TYPE(gsl_vector) * v)

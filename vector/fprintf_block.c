@@ -1,3 +1,5 @@
+#include <stdio.h>
+
 int
 FUNCTION(gsl_block,fprintf)(FILE * stream, const ATOMIC * data, const size_t n,
 			    const char * format)
