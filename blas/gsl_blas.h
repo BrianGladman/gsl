@@ -38,13 +38,13 @@ int gsl_blas_ddot (const gsl_vector * X,
 /*
  * Functions having prefixes Z and C only
  */
-int  gsl_blas_cdotu (const gsl_vector_complex * X,
-                     const gsl_vector_complex * Y,
-                     gsl_complex * dotu);
+int  gsl_blas_cdotu (const gsl_vector_complex_float * X,
+                     const gsl_vector_complex_float * Y,
+                     gsl_complex_float * dotu);
 
-int  gsl_blas_cdotc (const gsl_vector_complex * X,
-                     const gsl_vector_complex * Y,
-                     gsl_complex * dotc);
+int  gsl_blas_cdotc (const gsl_vector_complex_float * X,
+                     const gsl_vector_complex_float * Y,
+                     gsl_complex_float * dotc);
 
 int  gsl_blas_zdotu (const gsl_vector_complex * X,
                      const gsl_vector_complex * Y,
@@ -61,8 +61,8 @@ float  gsl_blas_snrm2  (const gsl_vector_float * X);
 float  gsl_blas_sasum  (const gsl_vector_float * X);
 double gsl_blas_dnrm2  (const gsl_vector * X);
 double gsl_blas_dasum  (const gsl_vector * X);
-float  gsl_blas_scnrm2 (const gsl_vector_complex * X);
-float  gsl_blas_scasum (const gsl_vector_complex * X);
+float  gsl_blas_scnrm2 (const gsl_vector_complex_float * X);
+float  gsl_blas_scasum (const gsl_vector_complex_float * X);
 double gsl_blas_dznrm2 (const gsl_vector_complex * X);
 double gsl_blas_dzasum (const gsl_vector_complex * X);
 
@@ -71,7 +71,7 @@ double gsl_blas_dzasum (const gsl_vector_complex * X);
  */
 CBLAS_INDEX gsl_blas_isamax (const gsl_vector_float * X);
 CBLAS_INDEX gsl_blas_idamax (const gsl_vector * X);
-CBLAS_INDEX gsl_blas_icamax (const gsl_vector_complex * X);
+CBLAS_INDEX gsl_blas_icamax (const gsl_vector_complex_float * X);
 CBLAS_INDEX gsl_blas_izamax (const gsl_vector_complex * X);
 
 
@@ -98,15 +98,15 @@ int  gsl_blas_daxpy (double alpha,
                      const gsl_vector * X,
                      gsl_vector * Y);
 
-int  gsl_blas_cswap (gsl_vector_complex * X,
-                     gsl_vector_complex * Y);
+int  gsl_blas_cswap (gsl_vector_complex_float * X,
+                     gsl_vector_complex_float * Y);
 
-int  gsl_blas_ccopy (const gsl_vector_complex * X,
-                     gsl_vector_complex * Y);
+int  gsl_blas_ccopy (const gsl_vector_complex_float * X,
+                     gsl_vector_complex_float * Y);
 
-int  gsl_blas_caxpy (const gsl_complex * alpha,
-                     const gsl_vector_complex * X,
-                     gsl_vector_complex * Y);
+int  gsl_blas_caxpy (const gsl_complex_float * alpha,
+                     const gsl_vector_complex_float * X,
+                     gsl_vector_complex_float * Y);
 
 int  gsl_blas_zswap (gsl_vector_complex * X,
                      gsl_vector_complex * Y);
@@ -149,11 +149,11 @@ int  gsl_blas_drotm (gsl_vector * X,
 /*
  * Routines with S D C Z CS and ZD prefixes
  */
-void gsl_blas_sscal  (float  alpha, gsl_vector_float  * X);
+void gsl_blas_sscal  (float  alpha, gsl_vector_float * X);
 void gsl_blas_dscal  (double alpha, gsl_vector * X);
-void gsl_blas_cscal  (const gsl_complex * alpha, gsl_vector_complex * X);
+void gsl_blas_cscal  (const gsl_complex_float * alpha, gsl_vector_complex_float * X);
 void gsl_blas_zscal  (const gsl_complex * alpha, gsl_vector_complex * X);
-void gsl_blas_csscal (float  alpha, gsl_vector_complex * X);
+void gsl_blas_csscal (float  alpha, gsl_vector_complex_float * X);
 void gsl_blas_zdscal (double alpha, gsl_vector_complex * X);
 
 
@@ -261,51 +261,51 @@ int  gsl_blas_dtpsv (CBLAS_UPLO Uplo,
                      gsl_vector * X);
 
 int  gsl_blas_cgemv (CBLAS_TRANSPOSE TransA,
-                     const gsl_complex * alpha,
-                     const gsl_matrix_complex * A,
-                     const gsl_vector_complex * X,
-                     const gsl_complex * beta,
-                     gsl_vector_complex * Y);
+                     const gsl_complex_float * alpha,
+                     const gsl_matrix_complex_float * A,
+                     const gsl_vector_complex_float * X,
+                     const gsl_complex_float * beta,
+                     gsl_vector_complex_float * Y);
 
 int  gsl_blas_cgbmv (CBLAS_TRANSPOSE TransA,
                      int KL, int KU,
-                     const gsl_complex * alpha,
-                     const gsl_matrix_complex * A,
-                     const gsl_vector_complex * X,
-                     const gsl_complex * beta,
-                     gsl_vector_complex * Y);
+                     const gsl_complex_float * alpha,
+                     const gsl_matrix_complex_float * A,
+                     const gsl_vector_complex_float * X,
+                     const gsl_complex_float * beta,
+                     gsl_vector_complex_float * Y);
 
 int  gsl_blas_ctrmv (CBLAS_UPLO Uplo,
                      CBLAS_TRANSPOSE TransA, CBLAS_DIAG Diag,
-                     const gsl_matrix * A,
-                     gsl_vector_complex * X);
+                     const gsl_matrix_complex_float * A,
+                     gsl_vector_complex_float * X);
 
 int  gsl_blas_ctbmv (CBLAS_UPLO Uplo,
                      CBLAS_TRANSPOSE TransA, CBLAS_DIAG Diag,
                      int K,
-                     const gsl_matrix * A,
-                     gsl_vector_complex * X);
+                     const gsl_matrix_complex_float * A,
+                     gsl_vector_complex_float * X);
 
 int  gsl_blas_ctpmv (CBLAS_UPLO Uplo,
                      CBLAS_TRANSPOSE TransA, CBLAS_DIAG Diag,
                      const void * Ap,
-                     gsl_vector_complex * X);
+                     gsl_vector_complex_float * X);
 
 int  gsl_blas_ctrsv (CBLAS_UPLO Uplo,
                      CBLAS_TRANSPOSE TransA, CBLAS_DIAG Diag,
-                     const gsl_matrix_complex * A,
-                     gsl_vector_complex * X);
+                     const gsl_matrix_complex_float * A,
+                     gsl_vector_complex_float * X);
 
 int  gsl_blas_ctbsv (CBLAS_UPLO Uplo,
                      CBLAS_TRANSPOSE TransA, CBLAS_DIAG Diag,
                      int K,
-                     const gsl_matrix_complex * A,
-                     gsl_vector_complex * X);
+                     const gsl_matrix_complex_float * A,
+                     gsl_vector_complex_float * X);
 
 int  gsl_blas_ctpsv (CBLAS_UPLO Uplo,
                      CBLAS_TRANSPOSE TransA, CBLAS_DIAG Diag,
                      const void * Ap,
-                     gsl_vector_complex * X);
+                     gsl_vector_complex_float * X);
 
 int  gsl_blas_zgemv (CBLAS_TRANSPOSE TransA,
                      const gsl_complex * alpha,
@@ -459,57 +459,57 @@ int  gsl_blas_dspr2 (CBLAS_UPLO Uplo,
  * Routines with C and Z prefixes only
  */
 int  gsl_blas_chemv (CBLAS_UPLO Uplo,
-                     const gsl_complex * alpha,
-                     const gsl_matrix_complex * A,
-                     const gsl_vector_complex * X,
-                     const gsl_complex * beta,
-                     gsl_vector_complex * Y);
+                     const gsl_complex_float * alpha,
+                     const gsl_matrix_complex_float * A,
+                     const gsl_vector_complex_float * X,
+                     const gsl_complex_float * beta,
+                     gsl_vector_complex_float * Y);
 
 int  gsl_blas_chbmv (CBLAS_UPLO Uplo,
                      int K,
-                     const gsl_complex * alpha,
-                     const gsl_matrix_complex * A,
-                     const gsl_vector_complex * X,
-                     const gsl_complex * beta,
-                     gsl_vector_complex * Y);
+                     const gsl_complex_float * alpha,
+                     const gsl_matrix_complex_float * A,
+                     const gsl_vector_complex_float * X,
+                     const gsl_complex_float * beta,
+                     gsl_vector_complex_float * Y);
 
 int  gsl_blas_chpmv (CBLAS_UPLO Uplo,
-                     const gsl_complex * alpha,
+                     const gsl_complex_float * alpha,
 		     const void * Ap,
-                     const gsl_vector_complex * X,
-                     const gsl_complex * beta,
-                     gsl_vector_complex * Y);
+                     const gsl_vector_complex_float * X,
+                     const gsl_complex_float * beta,
+                     gsl_vector_complex_float * Y);
 
-int  gsl_blas_cgeru (const gsl_complex * alpha,
-                     const gsl_vector_complex * X,
-                     const gsl_vector_complex * Y,
-                     gsl_matrix_complex * A);
+int  gsl_blas_cgeru (const gsl_complex_float * alpha,
+                     const gsl_vector_complex_float * X,
+                     const gsl_vector_complex_float * Y,
+                     gsl_matrix_complex_float * A);
 
-int  gsl_blas_cgerc (const gsl_complex * alpha,
-                     const gsl_vector_complex * X,
-                     const gsl_vector_complex * Y,
-                     gsl_matrix_complex * A);
+int  gsl_blas_cgerc (const gsl_complex_float * alpha,
+                     const gsl_vector_complex_float * X,
+                     const gsl_vector_complex_float * Y,
+                     gsl_matrix_complex_float * A);
 
 int  gsl_blas_cher (CBLAS_UPLO Uplo,
                     float alpha,
-                    const gsl_vector_complex * X,
-                    gsl_matrix_complex * A);
+                    const gsl_vector_complex_float * X,
+                    gsl_matrix_complex_float * A);
 
 int  gsl_blas_chpr (CBLAS_UPLO Uplo,
                     float alpha,
-                    const gsl_vector_complex * X,
+                    const gsl_vector_complex_float * X,
                     void * Ap);
 
 int  gsl_blas_cher2 (CBLAS_UPLO Uplo,
-                     const gsl_complex * alpha,
-                     const gsl_vector_complex * X,
-                     const gsl_vector_complex * Y,
-                     gsl_matrix_complex * A);
+                     const gsl_complex_float * alpha,
+                     const gsl_vector_complex_float * X,
+                     const gsl_vector_complex_float * Y,
+                     gsl_matrix_complex_float * A);
 
 int  gsl_blas_chpr2 (CBLAS_UPLO Uplo,
-                     const gsl_complex * alpha,
-                     const gsl_vector_complex * X,
-                     const gsl_vector_complex * Y,
+                     const gsl_complex_float * alpha,
+                     const gsl_vector_complex_float * X,
+                     const gsl_vector_complex_float * Y,
                      void * Ap);
 
 int  gsl_blas_zhemv (CBLAS_UPLO Uplo,
@@ -671,50 +671,50 @@ int  gsl_blas_dtrsm (CBLAS_SIDE Side,
 int  gsl_blas_cgemm (CBLAS_TRANSPOSE TransA,
                      CBLAS_TRANSPOSE TransB,
                      int K,
-                     const gsl_complex * alpha,
-                     const gsl_matrix_complex * A,
-                     const gsl_matrix_complex * B,
-                     const gsl_complex * beta,
-                     gsl_matrix_complex * C);
+                     const gsl_complex_float * alpha,
+                     const gsl_matrix_complex_float * A,
+                     const gsl_matrix_complex_float * B,
+                     const gsl_complex_float * beta,
+                     gsl_matrix_complex_float * C);
 
 int  gsl_blas_csymm (CBLAS_SIDE Side,
                      CBLAS_UPLO Uplo,
-                     const gsl_complex * alpha,
-                     const gsl_matrix_complex * A,
-                     const gsl_matrix_complex * B,
-                     const gsl_complex * beta,
-                     gsl_matrix_complex * C);
+                     const gsl_complex_float * alpha,
+                     const gsl_matrix_complex_float * A,
+                     const gsl_matrix_complex_float * B,
+                     const gsl_complex_float * beta,
+                     gsl_matrix_complex_float * C);
 
 int  gsl_blas_csyrk (CBLAS_UPLO Uplo,
                      CBLAS_TRANSPOSE Trans,
                      int K,
-                     const gsl_complex * alpha,
-                     const gsl_matrix_complex * A,
-                     const gsl_complex * beta,
-                     gsl_matrix_complex * C);
+                     const gsl_complex_float * alpha,
+                     const gsl_matrix_complex_float * A,
+                     const gsl_complex_float * beta,
+                     gsl_matrix_complex_float * C);
 
 int  gsl_blas_csyr2k (CBLAS_UPLO Uplo,
                       CBLAS_TRANSPOSE Trans,
                       int K,
-                      const gsl_complex * alpha,
-                      const gsl_matrix_complex * A,
-                      const gsl_matrix_complex * B,
-                      const gsl_complex * beta,
-                      gsl_matrix_complex * C);
+                      const gsl_complex_float * alpha,
+                      const gsl_matrix_complex_float * A,
+                      const gsl_matrix_complex_float * B,
+                      const gsl_complex_float * beta,
+                      gsl_matrix_complex_float * C);
 
 int  gsl_blas_ctrmm (CBLAS_SIDE Side,
                      CBLAS_UPLO Uplo, CBLAS_TRANSPOSE TransA,
                      CBLAS_DIAG Diag,
-                     const gsl_complex * alpha,
-                     const gsl_matrix_complex * A,
-                     gsl_matrix_complex * B);
+                     const gsl_complex_float * alpha,
+                     const gsl_matrix_complex_float * A,
+                     gsl_matrix_complex_float * B);
 
 int  gsl_blas_ctrsm (CBLAS_SIDE Side,
                      CBLAS_UPLO Uplo, CBLAS_TRANSPOSE TransA,
                      CBLAS_DIAG Diag,
-                     const gsl_complex * alpha,
-                     const gsl_matrix_complex * A,
-                     gsl_matrix_complex * B);
+                     const gsl_complex_float * alpha,
+                     const gsl_matrix_complex_float * A,
+                     gsl_matrix_complex_float * B);
 
 int  gsl_blas_zgemm (CBLAS_TRANSPOSE TransA,
                      CBLAS_TRANSPOSE TransB,
@@ -769,28 +769,28 @@ int  gsl_blas_ztrsm (CBLAS_SIDE Side,
  */
 int  gsl_blas_chemm (CBLAS_SIDE Side,
                      CBLAS_UPLO Uplo,
-                     const gsl_complex * alpha,
-                     const gsl_matrix_complex * A,
-                     const gsl_matrix_complex * B,
-                     const gsl_complex * beta,
-                     gsl_matrix_complex * C);
+                     const gsl_complex_float * alpha,
+                     const gsl_matrix_complex_float * A,
+                     const gsl_matrix_complex_float * B,
+                     const gsl_complex_float * beta,
+                     gsl_matrix_complex_float * C);
 
 int  gsl_blas_cherk (CBLAS_UPLO Uplo,
                      CBLAS_TRANSPOSE Trans,
                      int K,
                      float alpha,
-                     const gsl_matrix_complex * A,
+                     const gsl_matrix_complex_float * A,
                      float beta,
-                     gsl_matrix_complex * C);
+                     gsl_matrix_complex_float * C);
 
 int  gsl_blas_cher2k (CBLAS_UPLO Uplo,
                       CBLAS_TRANSPOSE Trans,
                       int K,
-                      const gsl_complex * alpha,
-                      const gsl_matrix_complex * A,
-                      const gsl_matrix_complex * B,
+                      const gsl_complex_float * alpha,
+                      const gsl_matrix_complex_float * A,
+                      const gsl_matrix_complex_float * B,
                       float beta,
-                      gsl_matrix_complex * C);
+                      gsl_matrix_complex_float * C);
 
 int  gsl_blas_zhemm (CBLAS_SIDE Side,
                      CBLAS_UPLO Uplo,
