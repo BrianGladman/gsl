@@ -24,7 +24,8 @@ void check_complex (unsigned int n) ;
 void
 usage (void)
 {
-  printf("Usage: test [OPTION]\n"
+  printf(
+"Usage: test [OPTION]\n"
 "Exercise the fft routines for length n. By default n runs from 1 to 100.\n"
 "\n"
 "  -n, --number=NUM       tests on length n\n"

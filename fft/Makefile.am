@@ -2,7 +2,7 @@ lib_LIBRARIES = libgslfft.a
 
 noinst_PROGRAMS = test_trap test_radix2 test benchmark errs
 
-include_HEADERS = gsl_fft.h gsl_fft_complex.h gsl_fft_halfcomplex.h gsl_fft_real.h gsl_fft_signals.h gsl_dft_complex.h gsl_complex.h gsl_math.h
+include_HEADERS = gsl_fft.h gsl_fft_complex.h gsl_fft_halfcomplex.h gsl_fft_real.h gsl_fft_signals.h gsl_dft_complex.h
 
 noinst_HEADERS = fft_complex.h fft_halfcomplex.h fft_real.h
 
@@ -29,7 +29,6 @@ benchmark_SOURCES = benchmark.c
 
 libgslfft_a_SOURCES = \
 compare.c compare.h \
-gsl_complex.h \
 dft_complex.c \
 gsl_dft_complex.h \
  \
@@ -74,5 +73,3 @@ real_radix2.c \
 real_unpack.c \
  \
 signals.c \
- \
-gsl_math.h
