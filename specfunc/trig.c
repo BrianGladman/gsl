@@ -105,6 +105,7 @@ int gsl_sf_rect_to_polar_impl(const double x, const double y, double * r, double
 
 int gsl_sf_angle_restrict_symm_impl(double * theta, const double precision)
 {
+/*
   int status;
   double x;
   
@@ -119,6 +120,17 @@ int gsl_sf_angle_restrict_symm_impl(double * theta, const double precision)
   *theta = (x - floor(x)) * 2.*M_PI;
   if(*theta > M_PI) *theta -= 2.*M_PI;
   return status;
+*/
+  const double P1 = 4.0 * 7.85398125648498535156e-1;
+  const double P2 = 4.0 * 3.77489470793079817668e-8;
+  const double P3 = 4.0 * 2.69515142907905952645e-15;
+  double t = *theta;
+  double y = floor(t/M_PI);
+  *theta = ((t - y*P1) - y*P2) - y*P3;
+  if(t > 1.0/GSL_SQRT_MACH_EPS)
+    return GSL_ELOSS;
+  else
+    return GSL_SUCCESS;
 }
 
 int gsl_sf_angle_restrict_pos_impl(double * theta, const double precision)
