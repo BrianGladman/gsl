@@ -198,6 +198,11 @@ brent_iterate (void * vstate, gsl_function * f, double * root, gsl_interval * x)
      iteration */
   
   *root = b;
+  
+  if ((fb < 0 && fc < 0) || (fb > 0 && fc > 0)) 
+    {
+      c = a;
+    }
 
   if (b < c)
     {
