@@ -3,6 +3,8 @@ all:
 	#perl -i -p -e 's/\012/\015\012/' *.dsp *.dsw *.bat
 	mv *.dsw ..
 	mv *.bat ..
+	perl gensetup.pl setup.iss.in > setup.iss
+        
 
 clean:
 	rm -f *.dsp *.dsw *.bat *.plg *.opt *.ncb

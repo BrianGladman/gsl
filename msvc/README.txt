@@ -1,70 +1,54 @@
-Compiling GSL with Microsoft Visual C++ 6.0
-===========================================
+Using GSL with Microsoft Visual C++ 6.0
+=======================================
 
-1.  Build the workspace GSL.dsw.  This should produce the following
-libraries,
+By default the GSL libraries and header files are installed in the
+following locations,
 
-        msvc/Debug/libgsl.lib
-        msvc/Debug/libgslcblas.lib
-or
-        msvc/Release/libgsl.lib
-        msvc/Release/libgslcblas.lib
+    C:\Program Files\GSL-VERSION\include\gsl  - header files
+    C:\Program Files\GSL-VERSION\lib          - lib files
 
-depending on whether the Debug or Release build option is chosen.
+where VERSION is the version number, e.g. 1.0
 
-[The header file msvc/config.h contains the appropriate configuration
-for Microsoft Visual C++ and overrides the normal config.h.]
+The "Release" and "Debug" versions of the libraries are installed in
+the lib directory as follows,
 
-2.  Build the test workspace GSLTESTS.dsw
+    libgsl.lib,  libgslcblas.lib   - release version
+    libgsld.lib, libgslcblasd.lib  - debug version
 
-This should create the test programs in msvc/bin/*.exe.  To run the
-tests use the batch file,
+The debug version has a 'd' at the end of the library name.
 
-        MAKE_CHECK.bat
+To compile an application which uses GSL the following project
+settings are required,
 
-This produces an output log file "results.dat".  Any lines which don't
-begin with PASS: indicate a problem.
+    Project Settings
+      C/C++
+        Category: Preprocessor  
+          Additional Include Directories: 
+             "C:\Program Files\GSL-VERSION\include"
 
-3.  If the tests are successful install the files libgsl.lib,
-libgslcblas.lib and gsl/gsl*.h.  You will need to add these to the
-project settings for programs that you compile with GSL.
+    Project Settings
+      Link
+        Category: Input
+          Object/Library Modules: 
+             libgsl.lib libgslcblas.lib ...   for the release configuration
+          or libgsld.lib libgslcblasd.lib ... for the debug configuration
+         and
+          Additional Library Path: 
+             "C:\Program Files\GSL-VERSION\lib"
 
-For example, if the files are installed in the following locations,
-
-       C:\gsl\include\gsl  - header files
-       C:\gsl\lib          - lib files
-
-the corresponding project settings should be,
-
-       Project Settings
-         C/C++
-           Category: Preprocessor  
-             Additional Include Directories: c:\gsl\include
-
-       Project Settings
-         Link
-           Category: Input
-             Object/Library Modules: libgsl.lib libgslcblas.lib ...
-            and
-             Additional Library Path: C:\gsl\lib
-
-Make sure that the settings are applied to the appropriate
-configuration (either 'Release' or 'Debug', depending on which version
-you have built).
+Make sure that the Object/Library module settings are made for the
+appropriate configuration (either 'Release' or 'Debug').
 
 You can test your installation using the demonstration workspace
-available at,
+available in the directory 'demo'.
 
-       http://www.network-theory.co.uk/gsl/demo.zip
+Depending on which header files you use some programs may need to be
+compiled with the following option selected,
 
-Programs may need to be compiled with the following option selected,
-
-       Project Settings
-         C/C++
-           Category: Customize
-             Disable Language Extensions
-
-depending on which header files you use.
+    Project Settings
+      C/C++
+        Category: Customize
+          Disable Language Extensions
 
 The library is built with the /LD or /LDd option.  This is compatible
 with the default link option /ML for single-threaded applications.
