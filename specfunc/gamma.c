@@ -989,7 +989,7 @@ static double gamma_5_10_data[24] = {
   1.3858639703888078291599886143e-18,
  -2.2574398807738626571560124396e-19
 };
-const gsl_sf_cheb_series gamma_5_10_cs = {
+static const gsl_sf_cheb_series gamma_5_10_cs = {
   gamma_5_10_data,
   23,
   -1, 1,

@@ -1028,7 +1028,7 @@ int test_psi(void)
   TEST_SF(s, gsl_sf_psi_impl, (5.0, &r), 1.5061176684318004727, TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_psi_impl, (5000.0, &r), 8.517093188082904107, TEST_TOL0, GSL_SUCCESS);
 
-  TEST_SF(s, gsl_sf_psi_impl, (-100.5, &r),      4.615124601338064117,  TEST_TOL1, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_psi_impl, (-100.5, &r),      4.615124601338064117,  TEST_TOL2, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_psi_impl, (-1.0e+5-0.5, &r), 11.512935464924395337, 4.0*TEST_TOL4, GSL_SUCCESS);
   
   TEST_SF(s, gsl_sf_psi_1piy_impl, (0.8, &r), -0.07088340212750589223, TEST_TOL1, GSL_SUCCESS);

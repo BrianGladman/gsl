@@ -81,8 +81,8 @@ int gsl_sf_bessel_Y0_impl(const double x, gsl_sf_result * result)
     gsl_sf_result c1;
     gsl_sf_result c2;
     gsl_sf_result sp;
-    const int stat_c1 = gsl_sf_cheb_eval_impl(&_bessel_amp_phase_bm0_cs,  z, &c1);
-    const int stat_c2 = gsl_sf_cheb_eval_impl(&_bessel_amp_phase_bth0_cs, z, &c2);
+    const int stat_c1 = gsl_sf_cheb_eval_impl(&_gsl_sf_bessel_amp_phase_bm0_cs,  z, &c1);
+    const int stat_c2 = gsl_sf_cheb_eval_impl(&_gsl_sf_bessel_amp_phase_bth0_cs, z, &c2);
     const int stat_sp = gsl_sf_bessel_sin_pi4_impl(x, c2.val/x, &sp);
     const double sqrtx = sqrt(x);
     const double ampl  = (0.75 + c1.val) / sqrtx;
