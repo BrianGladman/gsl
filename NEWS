@@ -1,95 +1,102 @@
+* What is new is gsl-1.0:
+
+** First general release.
+
+** Increased the maximum number of iterations in gsl_poly_complex_solve()
+from 30 to 60.
+
 * What was new in gsl-0.9.4:
 
-* Reorganized the multmin functions to use the same interface as the
+** Reorganized the multmin functions to use the same interface as the
 other iterative solvers.
 
-* Added histogram _alloc functions for consistency, in addition to the
+** Added histogram _alloc functions for consistency, in addition to the
 existing _calloc functions.
 
-* Renamed all the gsl_multimin functions to be consistent with the
+** Renamed all the gsl_multimin functions to be consistent with the
 rest of the library.  An underscore has been removed from _minimizer
 in all the function names.
 
-* Renamed the function gsl_sf_coulomb_CL_list to gsl_sf_coulomb_CL_array
+** Renamed the function gsl_sf_coulomb_CL_list to gsl_sf_coulomb_CL_array
 
-* A bug in the multimin functions where the function parameters
+** A bug in the multimin functions where the function parameters
 (params) were omitted has been fixed.
 
-* A bug in the nonlinear minimization routines has been fixed, which
+** A bug in the nonlinear minimization routines has been fixed, which
 could prevent the algorithms from converging.  Additional tests from
 the NIST reference datasets have been added and these now agree with
 MINPACK.
 
-* All the physical constants and conversion factors are now defined as
+** All the physical constants and conversion factors are now defined as
 real numbers to avoid potential problems with integer arithmetic.
 
-* The ODE evolution routines now allow for negative step sizes, and
+** The ODE evolution routines now allow for negative step sizes, and
 integrating backwards as well as forwards.
 
-* The implicit Burlisch-Stoer ODE algorithm 'bsimp' now detects
+** The implicit Burlisch-Stoer ODE algorithm 'bsimp' now detects
 singularities and forces a reduction in step size, preventing runaway
 instabilities.
 
-* Fixed a bug in the ODE evolution function gsl_odeiv_evolve_apply
+** Fixed a bug in the ODE evolution function gsl_odeiv_evolve_apply
 which could cause an erroneous value to be returned if the step size
 is reduced on the last step.
 
 * What was new in gsl-0.9.3:
 
-* Routines for complex LU decomposition are now available, allowing
+** Routines for complex LU decomposition are now available, allowing
 the solution of systems of equations with complex coefficients.
 
-* Matrix views of vectors now correctly require a unit stride for the
+** Matrix views of vectors now correctly require a unit stride for the
 original vector.
 
-* Permutations can now be applied to complex arrays and vectors.
+** Permutations can now be applied to complex arrays and vectors.
 
-* gsl_sf_pow_int now handles the case x = 0, n < 0
+** gsl_sf_pow_int now handles the case x = 0, n < 0
 
-* The static versions of inline functions can now be hidden by
+** The static versions of inline functions can now be hidden by
 defining the preprocessor macro HIDE_INLINE_STATIC.  This is needed
 for some compilers.
 
-* The original seeding procedure of mt19937 is available through the
+** The original seeding procedure of mt19937 is available through the
 generator gsl_rng_mt19937_1998.  The seeding procedure was flawed, but
 is available for compatibility.
 
-* Added missing functions gsl_complex_div_real and
+** Added missing functions gsl_complex_div_real and
 gsl_complex_div_imag.
 
-* Missing functions for constant vector and matrix views have now been
+** Missing functions for constant vector and matrix views have now been
 added.
 
-* Statistical calculations for histograms are now available, and the
+** Statistical calculations for histograms are now available, and the
 gsl-histogram command also displays the histogram mean and standard
 deviation.
 
-* The behavior of GSL_IEEE_MODE for denormalized exceptions has been
+** The behavior of GSL_IEEE_MODE for denormalized exceptions has been
 fixed on Openbsd and Netbsd.
 
-* A pkg-config file gsl.pc is included in the distribution
+** A pkg-config file gsl.pc is included in the distribution
 
-* The reference manual can now be printed in @smallbook format without
+** The reference manual can now be printed in @smallbook format without
 overflow.
 
 * What was new in gsl-0.9.2:
 
-* Vector and matrix views are now compliant with the ANSI standard.
+** Vector and matrix views are now compliant with the ANSI standard.
 
-* Added Lambert functions gsl_sf_lambert_W0, gsl_sf_lambert_Wm1.
+** Added Lambert functions gsl_sf_lambert_W0, gsl_sf_lambert_Wm1.
 
-* The reference manual now uses the GNU Free Documentation License.
+** The reference manual now uses the GNU Free Documentation License.
 
-* Fixed a couple of bugs in the SVD routines.
+** Fixed a couple of bugs in the SVD routines.
 
-* Macros for Infinity and Nan now work correctly with Microsoft Visual
+** Macros for Infinity and Nan now work correctly with Microsoft Visual
 C++, and a bug in the config.h file for the finite() function has been
 fixed.
 
-* Redundant entries in the test suite for the complex math functions
+** Redundant entries in the test suite for the complex math functions
 have been removed, making the distribution size smaller.
 
-* Installed programs gsl-randist and gsl-histogram now use shared
+** Installed programs gsl-randist and gsl-histogram now use shared
 libraries.
 
 * What was new in gsl-0.9.1:

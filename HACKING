@@ -105,7 +105,7 @@ The SUBDIRS and SUBLIBS variables have to be updated manually.
 
 * Edit the version number in configure.in. 
 
-* Update the NEWS file and gsl.spec file.
+* Update the NEWS file.
 
 * Regenerate everything. make dist, unpack somewhere and then
 configure, make, make check.

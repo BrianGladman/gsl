@@ -36,19 +36,25 @@ You can then build the library by typing,
 
   make
 
-By default GNU Libtool is used to create both shared and static
-libraries.  Compilation of shared libraries can be turned off by
+By default both static and shared versions of the libraries are
+compiled.  Compilation of shared libraries can be turned off by
 specifying the `--disable-shared' option to `configure', e.g.
   
   ./configure --disable-shared
 
-This is recommended if you encounter problems building the library.
+This is recommended if you encounter problems building the library,
+because some platforms do not support shared libraries.
 
 For compilation problems on specific platforms see the MACHINES file.
 
 An extensive test suite is available.  It can be invoked with "make
 check" in each directory.  All tests can be run together with "make
-check" at the top level.
+check" at the top level.  The test output should be directed to a file
+rather than a terminal, with the command,
+
+   make check > log 2>&1
+
+since it is several megabytes in size.
 
 If you run "make check" and get some failures, please see the
 KNOWN-PROBLEMS file.  This file lists failures we already know about.
