@@ -1434,13 +1434,13 @@ matrix @var{a}, @math{a'(i,j) = a(i,j) - b(i,j)}. The two matrices must have the
 same dimensions.
 @end deftypefun
 
-@deftypefun int gsl_matrix_mul (gsl_matrix * @var{a}, const gsl_matrix * @var{b})
+@deftypefun int gsl_matrix_mul_elements (gsl_matrix * @var{a}, const gsl_matrix * @var{b})
 This function multiplies the elements of matrix @var{a} by the elements of
 matrix @var{b}, @math{a'(i,j) = a(i,j) * b(i,j)}. The two matrices must have the
 same dimensions.
 @end deftypefun
 
-@deftypefun int gsl_matrix_div (gsl_matrix * @var{a}, const gsl_matrix * @var{b})
+@deftypefun int gsl_matrix_div_elements (gsl_matrix * @var{a}, const gsl_matrix * @var{b})
 This function divides the elements of matrix @var{a} by the elements of
 matrix @var{b}, @math{a'(i,j) = a(i,j) / b(i,j)}. The two matrices must have the
 same dimensions.
