@@ -8,7 +8,7 @@ pkginclude_HEADERS = \
 noinst_HEADERS = odeiv_util.h
 
 
-INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../ieee-utils -I$(srcdir)/../err -I$(srcdir)/../linalg -I$(srcdir)/../matrix -I$(srcdir)/../vector -I$(srcdir)/../block 
+INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../ieee-utils -I$(srcdir)/../err -I$(srcdir)/../linalg -I$(srcdir)/../permutation -I$(srcdir)/../matrix -I$(srcdir)/../vector -I$(srcdir)/../block 
 
 TESTS = test_odeiv
 

@@ -13,6 +13,7 @@ INCLUDES = \
 	-I$(full_top_srcdir)		\
 	-I$(full_top_srcdir)/err 	\
 	-I$(full_top_srcdir)/linalg	\
+	-I$(srcdir)/../permutation      \
 	-I$(full_top_srcdir)/vector	\
 	-I$(full_top_srcdir)/block	\
 	-I$(full_top_srcdir)/matrix
