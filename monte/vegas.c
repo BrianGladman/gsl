@@ -767,11 +767,11 @@ static void
 print_lim (gsl_monte_vegas_state * state,
 	   double xl[], double xu[], unsigned long dim)
 {
-  size_t j;
+  unsigned long j;
 
   fprintf (state->ostream, "The limits of integration are:\n");
   for (j = 0; j < dim; ++j)
-    fprintf (state->ostream, "\nxl[%ld]=%f    xu[%ld]=%f", j, xl[j], j, xu[j]);
+    fprintf (state->ostream, "\nxl[%lu]=%f    xu[%lu]=%f", j, xl[j], j, xu[j]);
   fprintf (state->ostream, "\n");
   fflush (state->ostream);
 }
@@ -814,14 +814,14 @@ print_res (gsl_monte_vegas_state * state,
 static void
 print_dist (gsl_monte_vegas_state * state, unsigned long dim)
 {
-  size_t i, j;
+  unsigned long i, j;
   int p = state->verbose;
   if (p < 1)
     return;
 
   for (j = 0; j < dim; ++j)
     {
-      fprintf (state->ostream, "\n axis %ld \n", j);
+      fprintf (state->ostream, "\n axis %lu \n", j);
       fprintf (state->ostream, "      x   g\n");
       for (i = 0; i < state->bins; i++)
 	{
@@ -840,14 +840,14 @@ print_dist (gsl_monte_vegas_state * state, unsigned long dim)
 static void
 print_grid (gsl_monte_vegas_state * state, unsigned long dim)
 {
-  size_t i, j;
+  unsigned long i, j;
   int p = state->verbose;
   if (p < 1)
     return;
 
   for (j = 0; j < dim; ++j)
     {
-      fprintf (state->ostream, "\n axis %ld \n", j);
+      fprintf (state->ostream, "\n axis %lu \n", j);
       fprintf (state->ostream, "      x   \n");
       for (i = 0; i <= state->bins; i++)
 	{
