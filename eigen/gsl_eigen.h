@@ -28,6 +28,16 @@ gsl_eigen_jacobi_impl(gsl_matrix * matrix,
                       unsigned int * nrot);
 
 
+/* Invert by Jacobi Method
+ *
+ * exceptions: 
+ */
+int
+gsl_la_invert_jacobi_impl(const gsl_matrix * matrix,
+                          gsl_matrix * ainv,
+                          unsigned int max_rot);
+
+
 /* Sort eigensystem results based on eigenvalues.
  * Sorts in order of increasing value or increasing
  * absolute value.
