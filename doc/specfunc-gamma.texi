@@ -226,7 +226,7 @@ function (section 6.5).
 @end deftypefun
 
 @deftypefun double gsl_sf_gamma_inc (double @var{a}, double @var{x})
-@deftypefunx int gsl_sf_gamma_inc_Q (double @var{a}, double @var{x}, gsl_sf_result * @var{result})
+@deftypefunx int gsl_sf_gamma_inc_e (double @var{a}, double @var{x}, gsl_sf_result * @var{result})
 @cindex non-normalized incomplete Gamma function
 These functions compute the incomplete Gamma Function
 @c{$\Gamma(a,x)$} @math{\Gamma(a,x)}, without
