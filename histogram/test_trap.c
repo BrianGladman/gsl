@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <gsl_histogram.h>
 #include <gsl_test.h>
+#include <gsl_errno.h>
 
 #define N 397
 
@@ -14,7 +15,7 @@ int main (void)
 {
   gsl_histogram * h;
   double result ;
-  size_t i, j;
+  size_t i;
 
   gsl_set_error_handler (&my_error_handler);
 
