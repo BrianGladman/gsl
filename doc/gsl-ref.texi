@@ -304,12 +304,12 @@ r = e^(-E/kT).
 After a few search steps using this distribution, the temperature
 @emph{T} is lowered according to some scheme, for example
 @tex
-$T \rightarrow T/\mu_T$
+$T \rightarrow T/\mu_T$.
 @end tex
 @ifinfo
-T -> T/mu_T
+T -> T/mu_T.
 @end ifinfo
-where mu_T is slightly greater than 1.
+
 
 
 
