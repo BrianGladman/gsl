@@ -33,17 +33,16 @@
  *
  * Converges rapidly for |x| < 1/2.
  */
-#if 0
 static
 int
-dilog_series(const double x, gsl_sf_result * result)
+dilog_series_1(const double x, gsl_sf_result * result)
 {
   const int kmax = 1000;
   double sum  = x;
   double term = x;
   int k;
   for(k=2; k<kmax; k++) {
-    double rk = (k-1.0)/k;
+    const double rk = (k-1.0)/k;
     term *= x;
     term *= rk*rk;
     sum += term;
@@ -59,7 +58,6 @@ dilog_series(const double x, gsl_sf_result * result)
   else
     return GSL_SUCCESS;
 }
-#endif
 
 
 /* Compute the associated series
@@ -71,19 +69,26 @@ dilog_series(const double x, gsl_sf_result * result)
  * full definition of Li_2(x). See below.
  */
 static int
-dilog_series_3(double r, gsl_sf_result * result)
+series_2(double r, gsl_sf_result * result)
 {
+  static const int kmax = 100;
   double rk = r;
   double sum = 0.5 * r;
-  int kmax = 100;
   int k;
-  for(k=2; k<kmax; k++)
+  for(k=2; k<10; k++)
   {
     double ds;
     rk *= r;
     ds = rk/(k*k*(k+1.0));
     sum += ds;
-    if(k > 10 && fabs(ds/sum) < GSL_DBL_EPSILON) break;
+  }
+  for(; k<kmax; k++)
+  {
+    double ds;
+    rk *= r;
+    ds = rk/(k*k*(k+1.0));
+    sum += ds;
+    if(fabs(ds/sum) < 0.5*GSL_DBL_EPSILON) break;
   }
 
   result->val = sum;
@@ -95,14 +100,14 @@ dilog_series_3(double r, gsl_sf_result * result)
 
 /* Compute Li_2(x) using the accelerated series representation.
  *
- * Li_2(x) = 1 + (1-x)ln(1-x)/x + dilog_series_3(x)
+ * Li_2(x) = 1 + (1-x)ln(1-x)/x + series_2(x)
  *
  * assumes: -1 < x < 1
  */
 static int
-dilog_use_series_3(double x, gsl_sf_result * result)
+dilog_series_2(double x, gsl_sf_result * result)
 {
-  const int stat_s3 = dilog_series_3(x, result);
+  const int stat_s3 = series_2(x, result);
   double t;
   if(x > 0.01)
     t = (1.0 - x) * log(1.0-x) / x;
@@ -124,7 +129,7 @@ dilog_use_series_3(double x, gsl_sf_result * result)
 }
 
 
-/* Assumes x >= 0.0
+/* Calculates Li_2(x) for real x. Assumes x >= 0.0.
  */
 static
 int
@@ -132,8 +137,8 @@ dilog_xge0(const double x, gsl_sf_result * result)
 {
   if(x > 2.0) {
     gsl_sf_result ser;
+    const int stat_ser = dilog_series_2(1.0/x, &ser);
     const double log_x = log(x);
-    const int stat_ser = dilog_use_series_3(1.0/x, &ser);
     const double t1 = M_PI*M_PI/3.0;
     const double t2 = ser.val;
     const double t3 = 0.5*log_x*log_x;
@@ -144,13 +149,13 @@ dilog_xge0(const double x, gsl_sf_result * result)
     return stat_ser;
   }
   else if(x > 1.01) {
+    gsl_sf_result ser;
+    const int stat_ser = dilog_series_2(1.0 - 1.0/x, &ser);
     const double log_x    = log(x);
     const double log_term = log_x * (log(1.0-1.0/x) + 0.5*log_x);
-    gsl_sf_result ser;
-    int stat_ser = dilog_use_series_3(1.0 - 1.0/x, &ser);
-    double t1 = M_PI*M_PI/6.0;
-    double t2 = ser.val;
-    double t3 = log_term;
+    const double t1 = M_PI*M_PI/6.0;
+    const double t2 = ser.val;
+    const double t3 = log_term;
     result->val  = t1 + t2 - t3;
     result->err  = GSL_DBL_EPSILON * fabs(log_x) + ser.err;
     result->err += GSL_DBL_EPSILON * (fabs(t1) + fabs(t2) + fabs(t3));
@@ -180,20 +185,23 @@ dilog_xge0(const double x, gsl_sf_result * result)
     return GSL_SUCCESS;
   }
   else if(x > 0.5) {
-    const double log_x = log(x);
     gsl_sf_result ser;
-    int stat_ser = dilog_use_series_3(1.0-x, &ser);
-    double t1 = M_PI*M_PI/6.0;
-    double t2 = ser.val;
-    double t3 = log_x*log(1.0-x);
+    const int stat_ser = dilog_series_2(1.0-x, &ser);
+    const double log_x = log(x);
+    const double t1 = M_PI*M_PI/6.0;
+    const double t2 = ser.val;
+    const double t3 = log_x*log(1.0-x);
     result->val  = t1 - t2 - t3;
     result->err  = GSL_DBL_EPSILON * fabs(log_x) + ser.err;
     result->err += GSL_DBL_EPSILON * (fabs(t1) + fabs(t2) + fabs(t3));
     result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
     return stat_ser;
   }
+  else if(x > 0.25) {
+    return dilog_series_2(x, result);
+  }
   else if(x > 0.0) {
-    return dilog_use_series_3(x, result);
+    return dilog_series_1(x, result);
   }
   else {
     /* x == 0.0 */
@@ -210,29 +218,41 @@ dilog_xge0(const double x, gsl_sf_result * result)
  *   |z|    = r
  *   arg(z) = theta
  *   
- * Assumes 0 < r < 1. 
+ * Assumes 0 < r < 1.
+ * It is used only for small r.
  */
 static
 int
-dilogc_series_1(double r, double cos_theta, double sin_theta,
-                gsl_sf_result * real_result, gsl_sf_result * imag_result)
+dilogc_series_1(
+  const double r,
+  const double x,
+  const double y,
+  gsl_sf_result * real_result,
+  gsl_sf_result * imag_result
+  )
 {
-  double alpha = 1.0 - cos_theta;
-  double beta  = sin_theta;
+  const double cos_theta = x/r;
+  const double sin_theta = y/r;
+  const double alpha = 1.0 - cos_theta;
+  const double beta  = sin_theta;
   double ck = cos_theta;
   double sk = sin_theta;
   double rk = r;
   double real_sum = r*ck;
   double imag_sum = r*sk;
-  int kmax = 50 + (int)(22.0/(-log(r))); /* tuned for double-precision */
+  const int kmax = 50 + (int)(22.0/(-log(r))); /* tuned for double-precision */
   int k;
   for(k=2; k<kmax; k++) {
+    double dr, di;
     double ck_tmp = ck;
     ck = ck - (alpha*ck + beta*sk);
     sk = sk - (alpha*sk - beta*ck_tmp);
     rk *= r;
-    real_sum += rk/((double)k*k) * ck;
-    imag_sum += rk/((double)k*k) * sk;
+    dr = rk/((double)k*k) * ck;
+    di = rk/((double)k*k) * sk;
+    real_sum += dr;
+    imag_sum += di;
+    if(fabs((dr*dr + di*di)/(real_sum*real_sum + imag_sum*imag_sum)) < GSL_DBL_EPSILON*GSL_DBL_EPSILON) break;
   }
 
   real_result->val = real_sum;
@@ -241,6 +261,109 @@ dilogc_series_1(double r, double cos_theta, double sin_theta,
   imag_result->err = 2.0 * kmax * GSL_DBL_EPSILON * fabs(imag_sum);
 
   return GSL_SUCCESS;
+}
+
+
+/* Compute
+ *
+ *   sum_{k=1}{infty} z^k / (k^2 (k+1))
+ *
+ * This is a series which appears in the one-step accelerated
+ * method, which splits out one elementary function from the
+ * full definition of Li_2.
+ */
+static int
+series_2_c(
+  double r,
+  double x,
+  double y,
+  gsl_sf_result * sum_re,
+  gsl_sf_result * sum_im
+  )
+{
+  const double cos_theta = x/r;
+  const double sin_theta = y/r;
+  const double alpha = 1.0 - cos_theta;
+  const double beta  = sin_theta;
+  double ck = cos_theta;
+  double sk = sin_theta;
+  double rk = r;
+  double real_sum = 0.5 * r*ck;
+  double imag_sum = 0.5 * r*sk;
+  const int kmax = 30 + (int)(18.0/(-log(r))); /* tuned for double-precision */
+  int k;
+  for(k=2; k<kmax; k++)
+  {
+    double dr, di;
+    const double ck_tmp = ck;
+    ck = ck - (alpha*ck + beta*sk);
+    sk = sk - (alpha*sk - beta*ck_tmp);
+    rk *= r;
+    dr = rk/((double)k*k*(k+1.0)) * ck;
+    di = rk/((double)k*k*(k+1.0)) * sk;
+    real_sum += dr;
+    imag_sum += di;
+    if(fabs((dr*dr + di*di)/(real_sum*real_sum + imag_sum*imag_sum)) < GSL_DBL_EPSILON*GSL_DBL_EPSILON) break;
+  }
+
+  sum_re->val = real_sum;
+  sum_re->err = 2.0 * kmax * GSL_DBL_EPSILON * fabs(real_sum);
+  sum_im->val = imag_sum;
+  sum_im->err = 2.0 * kmax * GSL_DBL_EPSILON * fabs(imag_sum);
+
+  return GSL_SUCCESS;
+}
+
+
+/* Compute Li_2(z) using the one-step accelerated series.
+ *
+ * Li_2(z) = 1 + (1-z)ln(1-z)/z + series_2_c(z)
+ *
+ * z = r exp(i theta)
+ * assumes: r < 1
+ * assumes: r > epsilon, so that we take no special care with log(1-z)
+ */
+static
+int
+dilogc_series_2(
+  const double r,
+  const double x,
+  const double y,
+  gsl_sf_result * real_dl,
+  gsl_sf_result * imag_dl
+  )
+{
+  if(r == 0.0)
+  {
+    real_dl->val = 0.0;
+    imag_dl->val = 0.0;
+    real_dl->err = 0.0;
+    imag_dl->err = 0.0;
+    return GSL_SUCCESS;
+  }
+  else
+  {
+    gsl_sf_result sum_re;
+    gsl_sf_result sum_im;
+    const int stat_s3 = series_2_c(r, x, y, &sum_re, &sum_im);
+
+    /* t = ln(1-z)/z */
+    gsl_sf_result ln_omz_r;
+    gsl_sf_result ln_omz_theta;
+    const int stat_log = gsl_sf_complex_log_e(1.0-x, -y, &ln_omz_r, &ln_omz_theta);
+    const double t_x = ( ln_omz_r.val * x + ln_omz_theta.val * y)/(r*r);
+    const double t_y = (-ln_omz_r.val * y + ln_omz_theta.val * x)/(r*r);
+
+    /* r = (1-z) ln(1-z)/z */
+    const double r_x = (1.0 - x) * t_x + y * t_y;
+    const double r_y = (1.0 - x) * t_y - y * t_x;
+
+    real_dl->val = sum_re.val + r_x + 1.0;
+    imag_dl->val = sum_im.val + r_y;
+    real_dl->err = sum_re.err + 2.0*GSL_DBL_EPSILON*(fabs(real_dl->val) + fabs(r_x));
+    imag_dl->err = sum_im.err + 2.0*GSL_DBL_EPSILON*(fabs(imag_dl->val) + fabs(r_y));
+    return GSL_ERROR_SELECT_2(stat_s3, stat_log);
+  }
 }
 
 
@@ -260,16 +383,23 @@ dilogc_series_1(double r, double cos_theta, double sin_theta,
  *  H_4(t) = -I/2 s/(1-c)^2
  *  H_5(t) = 1/2 (2 + c)/(1-c)^2
  *  H_6(t) = I/2 s/(1-c)^5 (8(1-c) - s^2 (3 + c))
- *
- *  assumes: 0 <= theta <= 2Pi
  */
 static
 int
-dilogc_series_2(double r, double theta, double cos_theta, double sin_theta,
-                gsl_sf_result * real_result, gsl_sf_result * imag_result)
+dilogc_series_3(
+  const double r,
+  const double x,
+  const double y,
+  gsl_sf_result * real_result,
+  gsl_sf_result * imag_result
+  )
 {
-  double a = log(r);
-  double omc = 1.0 - cos_theta;
+  const double theta = atan2(y, x);
+  const double cos_theta = x/r;
+  const double sin_theta = y/r;
+  const double a = log(r);
+  const double omc = 1.0 - cos_theta;
+  const double omc2 = omc*omc;
   double H_re[7];
   double H_im[7];
   double an, nfact;
@@ -291,14 +421,13 @@ dilogc_series_2(double r, double theta, double cos_theta, double sin_theta,
   H_im[3] = 0.0;
 
   H_re[4] = 0.0;
-  H_im[4] = -0.5*sin_theta/(omc*omc);
+  H_im[4] = -0.5*sin_theta/omc2;
 
-  H_re[5] = 0.5 * (2.0 + cos_theta)/(omc*omc);
+  H_re[5] = 0.5 * (2.0 + cos_theta)/omc2;
   H_im[5] = 0.0;
 
   H_re[6] = 0.0;
-  H_im[6] = 0.5 * sin_theta/(omc*omc*omc*omc*omc)
-            * (8*omc - sin_theta*sin_theta*(3 + cos_theta));
+  H_im[6] = 0.5 * sin_theta/(omc2*omc2*omc) * (8.0*omc - sin_theta*sin_theta*(3.0 + cos_theta));
 
   sum_re = H_re[0];
   sum_im = H_im[0];
@@ -322,8 +451,36 @@ dilogc_series_2(double r, double theta, double cos_theta, double sin_theta,
 }
 
 
-/* complex dilogarithm Li_2(z) in the unit disk
- * assumes r < 1 and computes the principal branch
+/* Calculate complex dilogarithm Li_2(z) in the fundamental region,
+ * which we take to be the intersection of the unit disk with the
+ * half-space x < MAGIC_SPLIT_VALUE. It turns out that 0.732 is a
+ * nice choice for MAGIC_SPLIT_VALUE since then points mapped out
+ * of the x > MAGIC_SPLIT_VALUE region and into another part of the
+ * unit disk are bounded in radius by MAGIC_SPLIT_VALUE itself.
+ *
+ * If |z| < 0.98 we use a direct series summation. Otherwise z is very
+ * near the unit circle, and the series_2 expansion is used; see above.
+ * Because the fundamental region is bounded away from z = 1, this
+ * works well.
+ */
+static
+int
+dilogc_fundamental(double r, double x, double y, gsl_sf_result * real_dl, gsl_sf_result * imag_dl)
+{
+  if(r > 0.98)  
+    return dilogc_series_3(r, x, y, real_dl, imag_dl);
+  else if(r > 0.25)
+    return dilogc_series_2(r, x, y, real_dl, imag_dl);
+  else
+    return dilogc_series_1(r, x, y, real_dl, imag_dl);
+}
+
+
+/* Compute Li_2(z) for z in the unit disk, |z| < 1. If z is outside
+ * the fundamental region, which means that it is too close to z = 1,
+ * then it is reflected into the fundamental region using the identity
+ *
+ *   Li2(z) = -Li2(1-z) + zeta(2) - ln(z) ln(1-z).
  */
 static
 int
@@ -348,20 +505,8 @@ dilogc_unitdisk(double x, double y, gsl_sf_result * real_dl, gsl_sf_result * ima
     gsl_sf_result result_re_tmp;
     gsl_sf_result result_im_tmp;
 
-    /* Calculate dilog of the transformed variable.
-     * By construction we have r_tmp < 0.732, even
-     * for the transformed variable. So the series
-     * is good.
-     */
-    const int stat_dilog =
-      dilogc_series_1(r_tmp, cos_theta_tmp, sin_theta_tmp,
-                      &result_re_tmp, &result_im_tmp
-                      );
+    const int stat_dilog = dilogc_fundamental(r_tmp, x_tmp, y_tmp, &result_re_tmp, &result_im_tmp);
 
-    /* Unwind reflection using the relation
-     *
-     * Li2(z) = -Li2(1-z) + zeta(2) - ln(z) ln(1-z)
-     */
     const double lnz    =  log(r);               /*  log(|z|)   */
     const double lnomz  =  log(r_tmp);           /*  log(|1-z|) */
     const double argz   =  atan2(y, x);          /*  arg(z) assuming principal branch */
@@ -372,115 +517,15 @@ dilogc_unitdisk(double x, double y, gsl_sf_result * real_dl, gsl_sf_result * ima
     imag_dl->val  = -result_im_tmp.val - argz*lnomz - argomz*lnz;
     imag_dl->err  =  result_im_tmp.err;
     imag_dl->err +=  2.0 * GSL_DBL_EPSILON * (fabs(argz*lnomz) + fabs(argomz*lnz));
+
     return stat_dilog;
   }
   else
   {
-    return dilogc_series_1(r, x/r, y/r, real_dl, imag_dl);
+    return dilogc_fundamental(r, x, y, real_dl, imag_dl);
   }
 }
 
-
-/* Compute
- *
- *   sum_{k=1}{infty} z^k / (k^2 (k+1))
- *
- * This is a series which appears in the one-step accelerated
- * method, which splits out one elementary function from the
- * full definition of Li_2.
- */
-static int
-dilogc_series_3(
-  double r,
-  double cos_theta,
-  double sin_theta,
-  gsl_sf_result * sum_re,
-  gsl_sf_result * sum_im
-  )
-{  
-  double alpha = 1.0 - cos_theta;
-  double beta  = sin_theta;
-  double ck = cos_theta;
-  double sk = sin_theta;
-  double rk = r;
-  double real_sum = 0.5 * r*ck;
-  double imag_sum = 0.5 * r*sk;
-  int kmax = 75; /* tuned for double-precision with r < 0.732 */
-  int k;
-  for(k=2; k<kmax; k++) {
-    double ck_tmp = ck;
-    ck = ck - (alpha*ck + beta*sk);
-    sk = sk - (alpha*sk - beta*ck_tmp);
-    rk *= r;
-    real_sum += rk/(k*k*(k+1.0)) * ck;
-    imag_sum += rk/(k*k*(k+1.0)) * sk;
-    /* FIXME: how about a termination condition? careful... */
-  }
-
-  sum_re->val = real_sum;
-  sum_re->err = 2.0 * kmax * GSL_DBL_EPSILON * fabs(real_sum);
-  sum_im->val = imag_sum;
-  sum_im->err = 2.0 * kmax * GSL_DBL_EPSILON * fabs(imag_sum);
-
-  return GSL_SUCCESS;
-}
-
-
-/* Compute the Spence function using the accelerated
- * series. This is good for small r, say |r| < 1/2,
- * which is consistent with the tuning of the series
- * evaluation function.
- *
- * computes spence(s)
- *
- * s = A exp(i omega)
- * r = |1-s|
- */
-static
-int
-spence_use_series_3(
-  double A,
-  double omega,
-  double r,
-  gsl_sf_result * real_sp,
-  gsl_sf_result * imag_sp
-  )
-{
-  const double cos_omega = cos(omega);
-  const double sin_omega = sin(omega);
-  const double s_x = A * cos_omega;
-  const double s_y = A * sin_omega;
-  const double oms_x = 1.0 - s_x;
-  const double oms_y =     - s_y;
-
-  if(r == 0.0)
-  {
-    real_sp->val = 0.0;
-    imag_sp->val = 0.0;
-    real_sp->err = 0.0;
-    imag_sp->err = 0.0;
-    return GSL_SUCCESS;
-  }
-  else
-  {
-    const double cos_theta = oms_x/r;
-    const double sin_theta = oms_y/r;
-    gsl_sf_result sum_re;
-    gsl_sf_result sum_im;
-    const int stat_s3 = dilogc_series_3(r, cos_theta, sin_theta, &sum_re, &sum_im);
-    const double lns_re = log(A);
-    const double lns_im = omega;
-    const double tmp0_re =  (s_x - A*A)/(r*r);
-    const double tmp0_im =  s_y/(r*r);
-    const double tmp1_re = tmp0_re * lns_re - tmp0_im * lns_im;
-    const double tmp1_im = tmp0_re * lns_im + tmp0_im * lns_re;
-    real_sp->val = tmp1_re + sum_re.val + 1.0;
-    imag_sp->val = tmp1_im + sum_im.val;
-    real_sp->err = sum_re.err + 2.0*GSL_DBL_EPSILON*fabs(real_sp->val);
-    imag_sp->err = sum_im.err + 2.0*GSL_DBL_EPSILON*fabs(imag_sp->val);
-    return stat_s3;
-  }
-}
 
 
 /*-*-*-*-*-*-*-*-*-*-*-* Functions with Error Codes *-*-*-*-*-*-*-*-*-*-*-*/
@@ -562,7 +607,7 @@ gsl_sf_complex_dilog_xy_e(
   }
   else
   {
-    /* Reduce argument to unit disk. */    
+    /* Reduce argument to unit disk. */
     const double r = sqrt(r2);
     const double x_tmp =  x/r2;
     const double y_tmp = -y/r2;
@@ -577,10 +622,10 @@ gsl_sf_complex_dilog_xy_e(
      *  Li_2(z) + Li_2(1/z) = -zeta(2) - 1/2 ln(-z)^2
      */
     const double theta = atan2(y, x);
-    double theta_restricted = theta;
-    const int stat_reduct = gsl_sf_angle_restrict_pos_e(&theta_restricted);
+    const double theta_abs = fabs(theta);
+    const double theta_sgn = ( theta < 0.0 ? -1.0 : 1.0 );
     const double ln_minusz_re = log(r);
-    const double ln_minusz_im = theta_restricted - M_PI; /* FIXME: hmmmm......... */
+    const double ln_minusz_im = theta_sgn * (theta_abs - M_PI);
     const double lmz2_re = ln_minusz_re*ln_minusz_re - ln_minusz_im*ln_minusz_im;
     const double lmz2_im = 2.0*ln_minusz_re*ln_minusz_im;
     real_dl->val = -result_re_tmp.val - 0.5 * lmz2_re - zeta2;
@@ -590,8 +635,6 @@ gsl_sf_complex_dilog_xy_e(
     return stat_dilog;
   }
 }
-
-
 
 
 int
@@ -605,10 +648,8 @@ gsl_sf_complex_spence_e(
   /* s = A exp(i omega) is the input
    *
    * oms = 1 - s
-   * theta = arg(oms)   -pi <= theta <= pi
-   * r = |oms|
    *
-   * so spence(s) = Li_2(1-s) = Li_2(r exp(i theta))
+   * spence(s) = Li_2(1-s)
    */
   const double cos_omega = cos(omega);
   const double sin_omega = sin(omega);
@@ -616,43 +657,14 @@ gsl_sf_complex_spence_e(
   const double s_y = A * sin_omega;
   const double oms_x = 1.0 - s_x;
   const double oms_y =     - s_y;
-  const double r = sqrt(oms_x*oms_x + oms_y*oms_y);
+  const int stat_dl = gsl_sf_complex_dilog_xy_e(oms_x, oms_y, real_sp, imag_sp);
 
-  if(A == 0.0)
-  {
-    real_sp->val = M_PI*M_PI/6.0;
-    real_sp->err = GSL_DBL_EPSILON*(M_PI*M_PI/6.0);
-    imag_sp->val = 0.0;
-    imag_sp->err = 0.0;
-    return GSL_SUCCESS;
-  }
-  else if(r < 1.0)
-  {
-  }
+  const double ntp = floor(fabs(omega)/(2.0*M_PI));
+  const double sgn = ( omega < 0.0 ? -1.0 : 1.0 );
+  imag_sp->val += sgn * 2.0*M_PI*ntp;
+  imag_sp->err *= ntp + 1.0;
 
-  if(r < 0.5)
-  {
-    /* direct evaluation */
-    const double cos_theta = oms_x/r;
-    const double sin_theta = oms_y/r;
-    const double theta = atan2(oms_y, oms_x);
-printf("DIRECT %18.14g  %18.14g  %18.14g  %18.14g\n", A, omega, r, theta);
-    return spence_use_series_3(A, omega, r, real_sp, imag_sp);
-  }
-  else
-  {
-printf("INDIRECT %g\n", r);
-    /* so_oms = s/(1-s) = A_inv exp(i omega_inv) */
-    const double so_oms_x = (s_x * oms_x - s_y * s_y) / (r*r);
-    const double so_oms_y = (s_y * oms_x + s_y * s_x) / (r*r);
-    const double r_inv = 1.0/r;
-    const double A_inv = sqrt(so_oms_x*so_oms_x + so_oms_y*so_oms_y);
-    const double omega_inv = atan2(so_oms_y, so_oms_x);
-    gsl_sf_result real_sp_tmp, imag_sp_tmp;
-    const int stat_s3 = spence_use_series_3(A_inv, omega_inv, r_inv, &real_sp_tmp, &imag_sp_tmp);
-  }
-
-  return 0; /* GSL_ERROR_SELECT_(stat_g); */
+  return stat_dl;
 }
 
 

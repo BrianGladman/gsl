@@ -1,6 +1,6 @@
 /* specfunc/gsl_sf_dilog.h
  * 
- * Copyright (C) 1996, 1997, 1998, 1999, 2000 Gerard Jungman
+ * Copyright (C) 1996, 1997, 1998, 1999, 2000, 2004 Gerard Jungman
  * 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -55,12 +55,43 @@ double  gsl_sf_dilog(const double x);
  * it makes it appear that the branch structure is resolved.
  * Perhap this interface should be deprecated.
  */
-int gsl_sf_complex_dilog_e(const double r, double theta, gsl_sf_result * result_re, gsl_sf_result * result_im);
+int
+gsl_sf_complex_dilog_e(
+  const double r,
+  double theta,
+  gsl_sf_result * result_re,
+  gsl_sf_result * result_im
+  );
+
 
 /* DiLogarithm(z), for complex argument z = x + i y.
  * Computes the principal branch.
  */
-int gsl_sf_complex_dilog_xy_e(const double r, double theta, gsl_sf_result * result_re, gsl_sf_result * result_im);
+int
+gsl_sf_complex_dilog_xy_e(
+  const double x,
+  const double y,
+  gsl_sf_result * result_re,
+  gsl_sf_result * result_im
+  );
+
+
+/* Spence integral; spence(s) := Li_2(1-s)
+ *
+ * This function has a brnach point at 0; we place the
+ * cut on (-infty,0). The branch cut is resolved by
+ * specifying s = A exp(i omega). In this way, the
+ * implementation computes spence(s) on its full
+ * Riemann surface, which is topologically
+ * equivalent to the ln(z) Riemann surface.
+ */
+int
+gsl_sf_complex_spence_e(
+  const double A,
+  const double omega,
+  gsl_sf_result * real_sp,
+  gsl_sf_result * imag_sp
+  );
 
 
 __END_DECLS
