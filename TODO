@@ -11,8 +11,6 @@ requirements.
 files (these will also make a nice 'quick check' of programs
 that can be compiled against the installed library)
 
-* Improve accuracy of coupling constant functions for large J (BUG#7)
-
 * PyGSL -- python bindings for GSL, see http://pygsl.sf.net/
 
 * 1st-line support on the mailing lists (e.g. checking that bugs are
