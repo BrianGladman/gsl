@@ -458,7 +458,11 @@ int
 gsl_sf_rect_to_polar_impl(const double x, const double y,
                           gsl_sf_result * r, gsl_sf_result * theta)
 {
+#ifdef HAVE_HYPOT
   r->val = hypot(x, y);
+# else /* HAVE_HYPOT */
+  r->val = sqrt(x*x + y*y);
+#endif /* HAVE_HYPOT */
   r->err = 2.0 * GSL_DBL_EPSILON * fabs(r->val);
 
   if(r->val > 0.0) {
