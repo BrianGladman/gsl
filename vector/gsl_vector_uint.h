@@ -28,10 +28,10 @@ int gsl_vector_uint_fscanf (FILE * stream, gsl_vector_uint * v);
 int gsl_vector_uint_fprintf (FILE * stream, const gsl_vector_uint * v,
 			    const char * format);
 
-int gsl_block_uint_fread (FILE * stream, unsigned int * data, size_t n) ;
-int gsl_block_uint_fwrite (FILE * stream, const unsigned int * data, size_t n) ;
-int gsl_block_uint_fscanf (FILE * stream, unsigned int * data, size_t n);
-int gsl_block_uint_fprintf (FILE * stream, const unsigned int * data, size_t n,
+int gsl_block_uint_fread (FILE * stream, unsigned int * data, size_t n, size_t stride) ;
+int gsl_block_uint_fwrite (FILE * stream, const unsigned int * data, size_t n, size_t stride) ;
+int gsl_block_uint_fscanf (FILE * stream, unsigned int * data, size_t n, size_t stride);
+int gsl_block_uint_fprintf (FILE * stream, const unsigned int * data, size_t n, size_t stride,
 			   const char * format);
 
 extern int gsl_check_range ;

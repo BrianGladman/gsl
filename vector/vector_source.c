@@ -12,7 +12,7 @@ FUNCTION(gsl_vector,ptr)(const TYPE(gsl_vector) * v, const size_t i)
 	}
     }
 
-  return (BASE *) (v->data + i) ;
+  return (BASE *) (v->data + MULTIPLICITY * i * v->stride) ;
 }
 
 
@@ -29,7 +29,7 @@ FUNCTION(gsl_vector,get)(const TYPE(gsl_vector) * v, const size_t i)
     }
 
   return /* v->data[i]; */
-  *(BASE *)(v->data + MULTIPLICITY*i);
+  *(BASE *)(v->data + MULTIPLICITY * i * v->stride);
 }
 
 
@@ -45,5 +45,5 @@ FUNCTION(gsl_vector,set)(TYPE(gsl_vector) * v, const size_t i, BASE x)
     }
 
   /* v->data[i] = x; */
-  *(BASE *)(v->data + MULTIPLICITY*i) = x;
+  *(BASE *)(v->data + MULTIPLICITY * i * v->stride) = x;
 }

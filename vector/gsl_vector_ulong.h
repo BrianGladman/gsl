@@ -28,10 +28,10 @@ int gsl_vector_ulong_fscanf (FILE * stream, gsl_vector_ulong * v);
 int gsl_vector_ulong_fprintf (FILE * stream, const gsl_vector_ulong * v,
 			    const char * format);
 
-int gsl_block_ulong_fread (FILE * stream, unsigned long * data, size_t n) ;
-int gsl_block_ulong_fwrite (FILE * stream, const unsigned long * data, size_t n) ;
-int gsl_block_ulong_fscanf (FILE * stream, unsigned long * data, size_t n);
-int gsl_block_ulong_fprintf (FILE * stream, const unsigned long * data, size_t n,
+int gsl_block_ulong_fread (FILE * stream, unsigned long * data, size_t n, size_t stride) ;
+int gsl_block_ulong_fwrite (FILE * stream, const unsigned long * data, size_t n, size_t stride) ;
+int gsl_block_ulong_fscanf (FILE * stream, unsigned long * data, size_t n, size_t stride);
+int gsl_block_ulong_fprintf (FILE * stream, const unsigned long * data, size_t n, size_t stride,
 			   const char * format);
 
 extern int gsl_check_range ;

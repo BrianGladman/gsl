@@ -28,10 +28,10 @@ int gsl_vector_long_fscanf (FILE * stream, gsl_vector_long * v);
 int gsl_vector_long_fprintf (FILE * stream, const gsl_vector_long * v,
 			    const char * format);
 
-int gsl_block_long_fread (FILE * stream, long * data, size_t n) ;
-int gsl_block_long_fwrite (FILE * stream, const long * data, size_t n) ;
-int gsl_block_long_fscanf (FILE * stream, long * data, size_t n);
-int gsl_block_long_fprintf (FILE * stream, const long * data, size_t n,
+int gsl_block_long_fread (FILE * stream, long * data, size_t n, size_t stride) ;
+int gsl_block_long_fwrite (FILE * stream, const long * data, size_t n, size_t stride) ;
+int gsl_block_long_fscanf (FILE * stream, long * data, size_t n, size_t stride);
+int gsl_block_long_fprintf (FILE * stream, const long * data, size_t n, size_t stride,
 			   const char * format);
 
 extern int gsl_check_range ;

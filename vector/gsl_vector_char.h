@@ -27,10 +27,10 @@ int gsl_vector_char_fscanf (FILE * stream, gsl_vector_char * v);
 int gsl_vector_char_fprintf (FILE * stream, const gsl_vector_char * v,
 			    const char * format);
 
-int gsl_block_char_fread (FILE * stream, char * data, size_t n) ;
-int gsl_block_char_fwrite (FILE * stream, const char * data, size_t n) ;
-int gsl_block_char_fscanf (FILE * stream, char * data, size_t n);
-int gsl_block_char_fprintf (FILE * stream, const char * data, size_t n,
+int gsl_block_char_fread (FILE * stream, char * data, size_t n, size_t stride) ;
+int gsl_block_char_fwrite (FILE * stream, const char * data, size_t n, size_t stride) ;
+int gsl_block_char_fscanf (FILE * stream, char * data, size_t n, size_t stride);
+int gsl_block_char_fprintf (FILE * stream, const char * data, size_t n, size_t stride,
 			    const char * format);
 
 extern int gsl_check_range ;

@@ -5,6 +5,7 @@
 #include <gsl_errno.h>
 #include <gsl_config.h>
 #include <gsl_complex.h>
+#include <gsl_vector_complex.h>
 
 typedef struct
 {
@@ -29,29 +30,13 @@ int gsl_vector_complex_long_double_fscanf (FILE * stream, gsl_vector_complex_lon
 int gsl_vector_complex_long_double_fprintf (FILE * stream, const gsl_vector_complex_long_double * v,
 			              const char * format);
 
-int gsl_block_complex_long_double_fread (FILE * stream, long double * data, size_t n) ;
-int gsl_block_complex_long_double_fwrite (FILE * stream, const long double * data, size_t n) ;
-int gsl_block_complex_long_double_fscanf (FILE * stream, long double * data, size_t n);
-int gsl_block_complex_long_double_fprintf (FILE * stream, const long double * data, size_t n,
+int gsl_block_complex_long_double_fread (FILE * stream, long double * data, size_t n, size_t stride) ;
+int gsl_block_complex_long_double_fwrite (FILE * stream, const long double * data, size_t n, size_t stride) ;
+int gsl_block_complex_long_double_fscanf (FILE * stream, long double * data, size_t n, size_t stride);
+int gsl_block_complex_long_double_fprintf (FILE * stream, const long double * data, size_t n, size_t stride,
 			             const char * format);
 
 extern int gsl_check_range ;
-
-#ifndef  GSL_VECTOR_COMPLEX_REAL
-#define  GSL_VECTOR_COMPLEX_REAL(z, i)  ((z)->data[2*(i)])
-#define  GSL_VECTOR_COMPLEX_IMAG(z, i)  ((z)->data[2*(i) + 1])
-#endif
-
-#ifndef GSL_VECTOR_COMPLEX
-#ifdef GSL_RANGE_CHECK_OFF
-#define GSL_VECTOR_COMPLEX(zv, i) (GSL_COMPLEX_AT((zv),(i)))
-#else
-#define GSL_VECTOR_COMPLEX(zv, i) (((i) >= (zv)->size ? (gsl_error ("index out of range", __FILE__, __LINE__, GSL_EINVAL), 0):0 , *GSL_COMPLEX_AT((zv),(i))))
-#endif
-#endif /* GSL_VECTOR_COMPLEX */
-
-#define GSL_COMPLEX_LONG_DOUBLE_AT(zv, i)  ((gsl_complex_long_double *)  &((zv)->data[2*(i)]))
-
 
 
 #ifdef HAVE_INLINE

@@ -1,7 +1,6 @@
 #include <stdlib.h>
 #include <gsl_vector.h>
 
-
 TYPE(gsl_vector) * 
 FUNCTION(gsl_vector,alloc) (const size_t n)
 {
@@ -32,6 +31,7 @@ FUNCTION(gsl_vector,alloc) (const size_t n)
     }
   
   v->size = n ;
+  v->stride = 1 ;
 
   return v ;
 }
