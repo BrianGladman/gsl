@@ -98,7 +98,7 @@ gsl_permutation_reverse (gsl_permutation * p)
 }
 
 int 
-gsl_permutation_invert (gsl_permutation * inv, const gsl_permutation * p)
+gsl_permutation_inverse (gsl_permutation * inv, const gsl_permutation * p)
 {
   const size_t size = p->size ;
 
