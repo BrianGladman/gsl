@@ -247,7 +247,7 @@ int gsl_sf_synchrotron_2_impl(const double x, gsl_sf_result * result)
   }
   else if(x < 2.0*M_SQRT2*GSL_SQRT_DBL_EPSILON) {
     result->val = 1.07476412076723931836 * pow(x, 1.0/3.0);
-    result->err = GSL_DBL_EPSILON * result->val;
+    result->err = 2.0 * GSL_DBL_EPSILON * result->val;
     return GSL_SUCCESS;
   }
   else if(x <= 4.0) {
