@@ -265,7 +265,7 @@ static double psi_table[PSI_TABLE_NMAX+1] = {
 #define PSI_1_TABLE_NMAX 100
 static double psi_1_table[PSI_1_TABLE_NMAX+1] = {
   0.0,  /* Infinity */              /* psi(1,0) */
- -M_PI*M_PI/6.0,                    /* psi(1,1) */
+  M_PI*M_PI/6.0,                    /* psi(1,1) */
   0.644934066848226436472415,       /* ...      */
   0.394934066848226436472415,
   0.2838229557371153253613041,

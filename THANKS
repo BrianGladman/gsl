@@ -241,5 +241,9 @@ for random number generators
 * Peter Verveer <verveer@embl-heidelberg.de> improvement to memory
 usage of MINPACK routines
 
-* Mario Pernici <Mario.Pernici@mi.infn.it> bug fix for gsl_combination_valid
-and new function gsl_permutation_memcpy, doc fix for bessel functions.
+* Mario Pernici <Mario.Pernici@mi.infn.it> bug fix for
+gsl_combination_valid and new function gsl_permutation_memcpy,
+doc fix for bessel functions, bug fix for gsl_sf_psi_1_int
+
+
+
