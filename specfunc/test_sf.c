@@ -117,6 +117,18 @@ int check_bessel(void)
   int status = 0;
   int s;
 
+  s = 0;
+  s += ( frac_diff(gsl_sf_bessel_Jnu(0.0001,10.0),  -0.2459270166445205       ) > 1.e-12 );
+  s += ( frac_diff(gsl_sf_bessel_Jnu( 1.0, 0.001),  0.0004999999375000026     ) > 1.e-14 );
+  s += ( frac_diff(gsl_sf_bessel_Jnu( 1.0,   1.0),  0.4400505857449335160     ) > 1.e-14 );
+  s += ( frac_diff(gsl_sf_bessel_Jnu(30.0,   1.0),  3.482869794251482902e-42  ) > 1.e-13 );
+  s += ( frac_diff(gsl_sf_bessel_Jnu(30.0, 100.0),  0.08146012958117222297    ) > 1.e-13 );
+  s += ( frac_diff(gsl_sf_bessel_Jnu(10.0,   1.0),  2.6306151236874532070e-10 ) > 1.e-13 );
+  s += ( frac_diff(gsl_sf_bessel_Jnu(10.0, 100.0),  -0.05473217693547201474   ) > 1.e-13 );
+  gsl_test(s, "gsl_sf_bessel_Jnu");
+  status += s;
+
+
   return status;
 }
 

@@ -80,7 +80,7 @@ hyperg_1F1_series(const double a, const double b, const double x,
  *
  *     (a+n+1-b)Y(n+1) + (b-2a-2n-x)Y(n) + (a+n-1)Y(n-1) = 0
  *
- * Note that this will bomb if a-b is a negative integer and
+ * Note that this will bomb if a-b+1 is a negative integer and
  * the recursion passes through that integer.
  */
 static
@@ -114,8 +114,12 @@ hyperg_1F1_Y_recurse_a(double a, double b, double x,
   return GSL_SUCCESS;
 }
 
-/* Manage the upward recursion on the parameter 'a'.
- * Assumes a > 0.
+/* Manage the upward recursion on the parameter 'a',
+ * Evaluating 1F1(a+n_stop,b,x) by recursing up
+ * from 1F1(a+n_start,b,x) and 1F1(a+n_start+1,b,x).
+ *
+ * Assumes n_stop > n_start.
+ *
  * Uses the series representation to evaluate at the 
  * reduced values of 'a'. This can be very inefficient
  * if x is large. So it is better not to use this for
@@ -123,33 +127,28 @@ hyperg_1F1_Y_recurse_a(double a, double b, double x,
  */
 static
 int
-hyperg_1F1_recurse_a(double a, double b, double x, double * result)
+hyperg_1F1_recurse_a(double a, double b, double x,
+                     int n_start,
+                     int n_stop,
+                     double * result)
 {
-  /* a = frac_a + N, N=integer */
-  double N      = floor(a);
-  double frac_a = a - N;
-  
-  double lg_fraca;   /* log(Gamma(frac_a))     */
-  double lg_ofracab; /* log(Gamma(1+frac_a-b)) */
-  int stat_lg_fraca;
-  int stat_lg_ofracab;
-
-  double Y0;
-  double Y1;
   double prec;
+  double Y0, Y1;
+  double F0, F1;
 
-  if(frac_a < GSL_MACH_EPS) {
-    frac_a += 1.0;
-    N      -= 1.0;
-  }
+  int stat_0 = hyperg_1F1_series(a+n_start,     b, x, &F0, &prec);
+  int stat_1 = hyperg_1F1_series(a+n_start+1.0, b, x, &F1, &prec);
+  
+  double lg_a0;       /* log(Gamma(a+n_start))     */
+  double lg_ab0;      /* log(Gamma(1+a+n_start-b)) */
+  int stat_lg_a0  = gsl_sf_lngamma_impl(a+n_start,     &lg_a0);
+  int stat_lg_ab0 = gsl_sf_lngamma_impl(1+a+n_start-b, &lg_ab0);
 
-  stat_lg_fraca   = gsl_sf_lngamma_impl(frac_a, &lg_fraca);
-  stat_lg_ofracab = gsl_sf_lngamma_impl(1.0+frac_a-b, &lg_ofracab);
+  
 
 
   
-  hyperg_1F1_series(frac_a,       b, x, &Y0, &prec);
-  hyperg_1F1_series(frac_a + 1.0, b, x, &Y1, &prec);
+  
 }
 
 

@@ -55,15 +55,18 @@ libgslspecfunc_a_SOURCES = 	\
 	bessel_I0.c		\
 	bessel_I1.c		\
 	bessel_In.c		\
+	bessel_Inu.c		\
 	bessel_J0.c		\
 	bessel_J1.c		\
 	bessel_Jn.c		\
+	bessel_Jnu.c		\
 	bessel_K0.c		\
 	bessel_K1.c		\
 	bessel_Kn.c		\
 	bessel_Y0.c		\
 	bessel_Y1.c		\
 	bessel_Yn.c		\
+	bessel_Ynu.c		\
 	bessel_amp_phase.c	\
         bessel_amp_phase.h      \
 	bessel_i.c		\
@@ -86,6 +89,7 @@ libgslspecfunc_a_SOURCES = 	\
 	fermi_dirac.c		\
 	gegenbauer.c		\
 	gamma.c			\
+	hyperg_0F1.c		\
 	hyperg_2F0.c		\
 	hyperg_1F1.c		\
 	hyperg_2F1.c		\

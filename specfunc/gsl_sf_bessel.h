@@ -166,6 +166,23 @@ int gsl_sf_bessel_kl_scaled_array_e(int lmax, double x, double * result_array);
 double gsl_sf_bessel_kl_scaled(int l, double x);
 
 
+/* Regular cylindrical Bessel functions J_nu(x) */
+int     gsl_sf_bessel_Jnu_e(double nu, double x, double * result);
+double  gsl_sf_bessel_Jnu(double nu, double x);
+
+
+/* Irregular cylindrical Bessel functions Y_nu(x) */
+int     gsl_sf_bessel_Ynu_e(double nu, double x, double * result);
+double  gsl_sf_bessel_Ynu(double nu, double x);
+
+
+/* Scaled modified cylindrical Bessel functions
+ *   Exp[-|x|] BesselI[nu, x]
+ */
+int     gsl_sf_bessel_Inu_scaled_e(double nu, double x, double * result);
+double  gsl_sf_bessel_Inu_scaled(double nu, double x);
+
+
 
 /* Regular cylindrical Bessel functions J_nu(x) calculated
    with the Meissel uniform approximation. Assumes x >= 0.
@@ -275,6 +292,11 @@ int gsl_sf_bessel_k2_scaled_impl(double x, double * result);
 int gsl_sf_bessel_kl_scaled_impl(int l, double x, double * result);
 
 int gsl_sf_bessel_kl_scaled_array_impl(int lmax, double x, double * result_array);
+
+
+int gsl_sf_bessel_Jnu_impl(double nu, double x, double *result);
+int gsl_sf_bessel_Inu_scaled_impl(double nu, double x, double *result);
+int gsl_sf_bessel_Ynu_impl(double nu, double x, double *result);
 
 
 #endif /* !GSL_BESSEL_H_ */

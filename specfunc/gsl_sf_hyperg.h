@@ -25,12 +25,18 @@ double gsl_sf_hyperg_2F1(double a, double b, double c, double x);
 double gsl_sf_hyperg_2F1_conj(double aR, double aI, double c, double x);
 
 
+/* Hypergeometric function related to Bessel functions */
+
+int     gsl_sf_hyperg_0F1_impl(double c, double x, double * result);
+int     gsl_sf_hyperg_0F1_e(double c, double x, double * result);
+double  gsl_sf_hyperg_0F1(double c, double x);
+
+
 /* Mysterious hypergeometric function */
 
-int gsl_sf_hyperg_2F0_impl(double a, double b, double x, double * result);
-int gsl_sf_hyperg_2F0_e(double a, double b, double x, double * result);
-
-double gsl_sf_hyperg_2F0(double a, double b, double x);
+int     gsl_sf_hyperg_2F0_impl(double a, double b, double x, double * result);
+int     gsl_sf_hyperg_2F0_e(double a, double b, double x, double * result);
+double  gsl_sf_hyperg_2F0(double a, double b, double x);
 
 
 #endif  /* !GSL_SF_HYPERG_H_ */
