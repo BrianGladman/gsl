@@ -1123,16 +1123,16 @@ Processing Committee, editors.
 @cite{Programs for Digital Signal Processing}.
 IEEE Press, 1979.
 @end itemize
-@noindent
-There is also an annotated bibliography of papers on the FFT and related
-topics by Burrus,
+@comment  @noindent
+@comment  There is also an annotated bibliography of papers on the FFT and related
+@comment  topics by Burrus,
 
-@itemize @asis 
-@item C. S. Burrus.  Notes on the FFT.
-@end itemize
+@comment  @itemize @asis 
+@comment  @item C. S. Burrus.  Notes on the FFT.
+@comment  @end itemize
+@comment  @noindent
+@comment The notes are available from @url{http://www-dsp.rice.edu/res/fft/fftnote.asc}.
 @noindent
-The notes are available from @url{http://www-dsp.rice.edu/res/fft/fftnote.asc}.
-
 For serious FFT work we recommend the use of the dedicated FFTW library
 by Frigo and Johnson.  The FFTW library is self-optimizing --- it
 automatically tunes itself for each hardware platform in order to
