@@ -1,5 +1,8 @@
 Wed Aug  5 12:34:58 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
+	* mkheaders.pl: script to generate all the headers from
+ 	gsl_statistics_int.h
+
 	* test.h: removed test.h, not needed
 
 	* test.c: added tests for all types
