@@ -17,87 +17,78 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include <float.h>
-#include <mach/ppc/exception.h>
-/* #include <architecture/ppc/fp_regs.h> */
+#include <architecture/ppc/fp_regs.h> 
 #include <gsl/gsl_ieee_utils.h>
 #include <gsl/gsl_errno.h>
 
 int
 gsl_ieee_set_mode (int precision, int rounding, int exception_mask)
 {
-  int prec = 0 ;
-  int mode = 0 ;
-  int rnd  = 0 ;
+  ppc_fp_scr_t fp_scr = get_fp_scr() ;
 
   switch (precision)
     {
     case GSL_IEEE_SINGLE_PRECISION:
-      prec = FLT_DIG;
-      fpsetprec(prec);      
+      GSL_ERROR ("powerpc only supports default precision rounding", GSL_EUNSUP);
       break ;
     case GSL_IEEE_DOUBLE_PRECISION:
-      prec = DBL_DIG;
-      fpsetprec(prec);
+      GSL_ERROR ("powerpc only supports default precision rounding", GSL_EUNSUP);
       break ;
     case GSL_IEEE_EXTENDED_PRECISION:
-      prec = LDBL_DIG;
-      fpsetprec(prec);
+      GSL_ERROR ("powerpc only supports default precision rounding", GSL_EUNSUP);
       break ;
     }
 
   switch (rounding)
     {
     case GSL_IEEE_ROUND_TO_NEAREST:
-      rnd = 0; /* RN_NEAREST */;
-      fpsetround (rnd) ;
+      fp_scr.rn = RN_NEAREST ;
       break ;
     case GSL_IEEE_ROUND_DOWN:
-      rnd = 3; /* RN_TOWARD_MINUS */ ;
-      fpsetround (rnd) ;
+      fp_scr.rn = RN_TOWARD_MINUS ;
       break ;
     case GSL_IEEE_ROUND_UP:
-      rnd = 2; /* RN_TOWARD_PLUS */;
-      fpsetround (rnd) ;
+      fp_scr.rn = RN_TOWARD_PLUS ;
       break ;
     case GSL_IEEE_ROUND_TO_ZERO:
-      rnd = 1; /* RN_TOWARD_ZERO */;
-      fpsetround (rnd) ;
+      fp_scr.rn = RN_TOWARD_ZERO ;
       break ;
     default:
-      rnd = 0; /* RN_NEAREST */;
-      fpsetround (rnd) ;
+      fp_scr.rn = RN_NEAREST ;
     }
 
-  /* Turn on all the exceptions apart from 'inexact' */
 
-  mode = EXC_PPC_FLT_ZERO_DIVIDE | EXC_PPC_FLT_UNDERFLOW | EXC_PPC_FLT_OVERFLOW | EXC_PPC_FLT_NOT_A_NUMBER;
+  /* Turn on all the exceptions apart from 'inexact' */
+  /* I'm not sure what 'Turn on' means.              */
+  /* I'm assuming that enable = 1 and disable = 0    */
+  /* and that disable is what is wanted.             */
 
   if (exception_mask & GSL_IEEE_MASK_INVALID)
-    mode &= ~ EXC_PPC_FLT_NOT_A_NUMBER ;
+    fp_scr.ve = 0 ;				//ve bit:  invalid op exception enable
 
-  /* if (exception_mask & GSL_IEEE_MASK_DENORMALIZED)
-     mode &= ~ FP_X_DNML ; */
+  if (exception_mask & GSL_IEEE_MASK_DENORMALIZED)
+    GSL_ERROR ("powerpc does not support the denormalized operand exception. "
+               "Use 'mask-denormalized' to work around this.", GSL_EUNSUP) ;
 
   if (exception_mask & GSL_IEEE_MASK_DIVISION_BY_ZERO)
-    mode &= ~ EXC_PPC_FLT_ZERO_DIVIDE ;
+    fp_scr.ze = 0 ;                          	//ze bit:  zero divide exception enable
 
   if (exception_mask & GSL_IEEE_MASK_OVERFLOW)
-    mode &= ~ EXC_PPC_FLT_OVERFLOW ;
+    fp_scr.oe = 0 ;                         	//oe bit:  overflow exception enable
 
   if (exception_mask & GSL_IEEE_MASK_UNDERFLOW)
-    mode &=  ~ EXC_PPC_FLT_UNDERFLOW ;
+    fp_scr.ue  = 0 ;                        	//ue bit:  underflow exception enable
 
   if (exception_mask & GSL_IEEE_TRAP_INEXACT)
     {
-      mode |= EXC_PPC_FLT_INEXACT ;
+      fp_scr.xe = 1 ;                    	//xe bit:  inexact exception enable
     }
   else
     {
-      mode &= ~ EXC_PPC_FLT_INEXACT ;
+      fp_scr.xe = 1 ;                  
     }
 
-  fpsetmask (mode) ;
+  set_fp_scr(fp_scr);
 
   return GSL_SUCCESS ;
 
