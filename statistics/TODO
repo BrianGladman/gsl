@@ -1,6 +1,11 @@
 Look at STARPAC ftp://ftp.ucar.edu/starpac/ and Statlib
 http://lib.stat.cmu.edu/ for more ideas
 
+0. Clean up the documentation to reduce the proliferation of
+prototypes for all the different types (float double etc). e.g. Just
+document the double versions and explain how to call the others by
+analogy.
+
 1. Try using the Kahan summation formula to improve accuracy for the
 NIST tests (see Brian for details, below is a sketch of the algorithm).
 
@@ -29,5 +34,4 @@ quantities (area under the curve). Interpolation of noisy data/fitting
 missing data and gaps?
 
 6. Statistical tests (equal means, equal variance, etc).
-
 
