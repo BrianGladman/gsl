@@ -1,3 +1,9 @@
+Fri May 29 14:41:19 1998  Brian Gough  <bjg@vvv.lanl.gov>
+
+	* gsl_errno.h: added GSL_EBADLEN to signify bad lengths of
+ 	matrices or vectors (e.g. non-conformant sizes in a matrix or
+ 	vector multiplication)
+
 Wed May 27 18:15:34 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
 	* test.c (gsl_test_str): changed things so that the strings aren't

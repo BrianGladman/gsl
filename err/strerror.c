@@ -42,6 +42,8 @@ gsl_strerror (const int gsl_errno)
       return "loss of accuracy" ;
     case GSL_EROUND:
       return "roundoff error" ;
+    case GSL_EBADLEN:
+      return "matrix/vector sizes are not conformant" ;
     default:
       return "unknown error code" ;
     }

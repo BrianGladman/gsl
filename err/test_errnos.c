@@ -39,6 +39,7 @@ main (void)
   CHECK(GSL_EOVRFLW);
   CHECK(GSL_ELOSS);
   CHECK(GSL_EROUND);
+  CHECK(GSL_EBADLEN);
 
   for (i = 0 ; i < n ; i++) 
     {
