@@ -118,7 +118,7 @@ gsl_dht_transform_recalc_impl(gsl_dht_transform * t, double nu, double xmax)
     jN = t->j[t->size+1];
 
     t->xmax = xmax;
-    t->kmax = jN / t->xmax;
+    t->kmax = jN / xmax;
 
     t->J2[0] = 0.0;
     for(m=1; m<t->size+1; m++) {
