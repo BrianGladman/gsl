@@ -1,0 +1,4 @@
+Fri Aug  6 14:42:23 1999  Brian Gough  <bjg@network-theory.co.uk>
+
+	* linalg_simple.c: include <string.h> to declare memcpy
+

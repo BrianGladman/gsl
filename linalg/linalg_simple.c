@@ -11,6 +11,7 @@
  */
 #include <config.h>
 #include <stdlib.h>
+#include <string.h>
 #include <gsl_math.h>
 #include <gsl_vector.h>
 #include <gsl_matrix.h>
