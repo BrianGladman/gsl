@@ -56,7 +56,7 @@ AC_ARG_ENABLE(gsltest, [  --disable-gsltest       Do not try to compile and run 
       ac_save_CFLAGS="$CFLAGS"
       ac_save_LIBS="$LIBS"
       CFLAGS="$CFLAGS $GSL_CFLAGS"
-      LIBS="$LIBS $GSL_LIBS -lgslblas"
+      LIBS="$LIBS $GSL_LIBS"
 
       rm -f conf.gsltest
       AC_TRY_RUN([
@@ -118,7 +118,7 @@ int main ()
 
 ],, no_gsl=yes,[echo $ac_n "cross compiling; assumed OK... $ac_c"])
        CFLAGS="$ac_save_CFLAGS"
-       LIBS="$ac_save_LIBS -lgslblas"
+       LIBS="$ac_save_LIBS"
      fi
   fi
   if test "x$no_gsl" = x ; then
@@ -137,7 +137,7 @@ int main ()
        else
           echo "*** Could not run GSL test program, checking why..."
           CFLAGS="$CFLAGS $GSL_CFLAGS"
-          LIBS="$LIBS $GSL_LIBS -lgslblas"
+          LIBS="$LIBS $GSL_LIBS"
           AC_TRY_LINK([
 #include <stdio.h>
 ],      [ return 0; ],
@@ -155,7 +155,7 @@ int main ()
           echo "*** or that you have moved GSL since it was installed. In the latter case, you"
           echo "*** may want to edit the gsl-config script: $GSL_CONFIG" ])
           CFLAGS="$ac_save_CFLAGS"
-          LIBS="$ac_save_LIBS -lgslblas"
+          LIBS="$ac_save_LIBS"
        fi
      fi
 #     GSL_CFLAGS=""

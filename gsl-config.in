@@ -12,11 +12,14 @@ Usage: gsl-config [OPTION]
 Known values for OPTION are:
 
   --prefix		show GSL installation prefix 
-  --libs		print library linking information
+  --libs		print library linking information, with cblas
+  --libs-without-cblas	print library linking information, without cblas
   --cflags		print pre-processor and compiler flags
   --help		display this help and exit
   --version		output version information
 
+An external CBLAS library can be specified using the GSL_CBLAS_LIB
+environment variable. The GSL CBLAS library is used by default.
 
 EOF
 
@@ -59,6 +62,11 @@ while test $# -gt 0; do
        	;;
 
     --libs)
+        : ${GSL_CBLAS_LIB=-lgslcblas}
+       	echo @GSL_LIBS@ $GSL_CBLAS_LIB -lm
+       	;;
+
+    --libs-without-cblas)
        	echo @GSL_LIBS@ -lm
        	;;
     *)
