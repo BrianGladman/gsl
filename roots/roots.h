@@ -22,14 +22,14 @@
 #ifndef __ROOTS_H__
 #define __ROOTS_H__
 
-/* Call the pointed-to function with argument x, put its result in y, and barf
-   if it returned something icky. */
+/* Call the pointed-to function with argument x, put its result in y, and 
+   return an error if the function value is Inf/Nan. */
 
 #define SAFE_FUNC_CALL(f, x, yp) \
 do { \
   *yp = GSL_FN_EVAL(f,x); \
   if (!finite(*yp)) \
-    GSL_ERROR("function not continuous", GSL_EBADFUNC); \
+    GSL_ERROR("function returned invalid value", GSL_EBADFUNC); \
 } while (0)
 
 #endif /* __ROOTS_H__ */
