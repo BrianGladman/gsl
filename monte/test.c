@@ -35,10 +35,13 @@
 #include <gsl/gsl_monte_miser.h>
 #include <gsl/gsl_monte_vegas.h>
 
+#define CONSTANT
 #define PRODUCT
 #define GAUSSIAN
 #define DBLGAUSSIAN
 #define TSUDA
+
+#define PLAIN
 #define MISER
 
 double xl[11]  = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
@@ -66,9 +69,12 @@ struct problem {
   char * description;
 } ;
  
+#define TRIALS 10
+
 int
 main ()
 {
+  double result[TRIALS], error[TRIALS];
   double a = 0.1;
   double c = (1.0 + sqrt (10.0)) / 9.0;
 
@@ -89,6 +95,7 @@ main ()
 
   struct problem problems[] = {
 
+#ifdef CONSTANT
     /* variance(Fc) = 0 */
 
     { &Fc, xl, xu,  1, 1000, 1.0, 0.0, "constant, 1d"},
@@ -101,18 +108,19 @@ main ()
     { &Fc, xl, xu,  8, 1000, 1.0, 0.0, "constant, 8d"},
     { &Fc, xl, xu,  9, 1000, 1.0, 0.0, "constant, 9d"},
     { &Fc, xl, xu, 10, 1000, 1.0, 0.0, "constant, 10d"},
+#endif
 
 #ifdef PRODUCT
     /* variance(F0) = (4/3)^d - 1 */
 
-    { &F0, xl, xu,  1, 3333, 1.0, 0.01, "product, 1d" },
-    { &F0, xl, xu,  2, 7777, 1.0, 0.01, "product, 2d" },
-    { &F0, xl, xu,  3, 13703, 1.0, 0.01, "product, 3d" },
-    { &F0, xl, xu,  4, 21604, 1.0, 0.01, "product, 4d" },
-    { &F0, xl, xu,  5, 32139, 1.0, 0.01, "product, 5d" },
-    { &F0, xl, xu,  6, 46186, 1.0, 0.01, "product, 6d" },
-    { &F0, xl, xu,  7, 64915, 1.0, 0.01, "product, 7d" },
-    { &F0, xl, xu,  8, 89887, 1.0, 0.01, "product, 8d" },
+    { &F0, xl, xu,  1, 3333,   1.0, 0.01, "product, 1d" },
+    { &F0, xl, xu,  2, 7777,   1.0, 0.01, "product, 2d" },
+    { &F0, xl, xu,  3, 13703,  1.0, 0.01, "product, 3d" },
+    { &F0, xl, xu,  4, 21604,  1.0, 0.01, "product, 4d" },
+    { &F0, xl, xu,  5, 32139,  1.0, 0.01, "product, 5d" },
+    { &F0, xl, xu,  6, 46186,  1.0, 0.01, "product, 6d" },
+    { &F0, xl, xu,  7, 64915,  1.0, 0.01, "product, 7d" },
+    { &F0, xl, xu,  8, 89887,  1.0, 0.01, "product, 8d" },
     { &F0, xl, xu,  9, 123182, 1.0, 0.01, "product, 9d" },
     { &F0, xl, xu, 10, 167577, 1.0, 0.01, "product, 10d" },
 #endif
@@ -120,41 +128,41 @@ main ()
 #ifdef GAUSSIAN
     /* variance(F1) = (1/(a sqrt(2 pi)))^d - 1 */
 
-    { &F1, xl, xu,  1, 29894, 1.0, 0.01, "gaussian, 1d" },
-    { &F1, xl, xu,  2, 149154, 1.0, 0.01, "gaussian, 2d" },
-    { &F1, xl, xu,  3, 624936, 1.0, 0.01, "gaussian, 3d" },
-    { &F1, xl, xu,  4, 25230, 1.0, 0.1, "gaussian, 4d" },
-    { &F1, xl, xu,  5, 100953, 1.0, 0.1, "gaussian, 5d" },
-    { &F1, xl, xu,  6, 403044, 1.0, 0.1, "gaussian, 6d" },
-    { &F1, xl, xu,  7, 1608212, 1.0, 0.1, "gaussian, 7d" },
-    { &F1, xl, xu,  8, 6416138, 1.0, 0.1, "gaussian, 8d" },
-    { &F1, xl, xu,  9, 2844109, 1.0, 0.3, "gaussian, 9d" },
+    { &F1, xl, xu,  1, 298,      1.0, 0.1, "gaussian, 1d" },
+    { &F1, xl, xu,  2, 1492,     1.0, 0.1, "gaussian, 2d" },
+    { &F1, xl, xu,  3, 6249,     1.0, 0.1, "gaussian, 3d" },
+    { &F1, xl, xu,  4, 25230,    1.0, 0.1, "gaussian, 4d" },
+    { &F1, xl, xu,  5, 100953,   1.0, 0.1, "gaussian, 5d" },
+    { &F1, xl, xu,  6, 44782,    1.0, 0.3, "gaussian, 6d" },
+    { &F1, xl, xu,  7, 178690,   1.0, 0.3, "gaussian, 7d" },
+    { &F1, xl, xu,  8, 712904,   1.0, 0.3, "gaussian, 8d" },
+    { &F1, xl, xu,  9, 2844109,  1.0, 0.3, "gaussian, 9d" },
     { &F1, xl, xu, 10, 11346390, 1.0, 0.3, "gaussian, 10d" },
 #endif
 
 #ifdef DBLGAUSSIAN
     /* variance(F2) = 0.5 * (1/(a sqrt(2 pi)))^d - 1 */
 
-    { &F2, xl, xu,  1, 9947, 1.0, 0.01, "double gaussian, 1d" },
-    { &F2, xl, xu,  2, 69577, 1.0, 0.01, "double gaussian, 2d" },
-    { &F2, xl, xu,  3, 307468, 1.0, 0.01, "double gaussian, 3d" },
-    { &F2, xl, xu,  4, 12565, 1.0, 0.1, "double gaussian, 4d" },
-    { &F2, xl, xu,  5, 50426, 1.0, 0.1, "double gaussian, 5d" },
-    { &F2, xl, xu,  6, 201472, 1.0, 0.1, "double gaussian, 6d" },
-    { &F2, xl, xu,  7, 804056, 1.0, 0.1, "double gaussian, 7d" },
-    { &F2, xl, xu,  8, 3208019, 1.0, 0.1, "double gaussian, 8d" },
+    { &F2, xl, xu,  1, 9947,    1.0, 0.01, "double gaussian, 1d" },
+    { &F2, xl, xu,  2, 69577,   1.0, 0.01, "double gaussian, 2d" },
+    { &F2, xl, xu,  3, 307468,  1.0, 0.01, "double gaussian, 3d" },
+    { &F2, xl, xu,  4, 12565,   1.0, 0.1, "double gaussian, 4d" },
+    { &F2, xl, xu,  5, 50426,   1.0, 0.1, "double gaussian, 5d" },
+    { &F2, xl, xu,  6, 201472,  1.0, 0.1, "double gaussian, 6d" },
+    { &F2, xl, xu,  7, 804056,  1.0, 0.1, "double gaussian, 7d" },
+    { &F2, xl, xu,  8, 356446,  1.0, 0.3, "double gaussian, 8d" },
     { &F2, xl, xu,  9, 1422049, 1.0, 0.3, "double gaussian, 9d" },
-    { &F2, xl, xu, 10, 5673190, 1.0, 0.3, "double gaussian, 10d" },
+    { &F2, xl, xu, 10, 5673189, 1.0, 0.3, "double gaussian, 10d" },
 #endif
 
 #ifdef TSUDA
     /* variance(F3) = ((c^2 + c + 1/3)/(c(c+1)))^d - 1 */
 
-    { &F3, xl, xu,  1, 4928, 1.0, 0.01, "tsuda function, 1d" },
-    { &F3, xl, xu,  2, 12285, 1.0, 0.01, "tsuda function, 2d" },
-    { &F3, xl, xu,  3, 23268, 1.0, 0.01, "tsuda function, 3d" },
-    { &F3, xl, xu,  4, 39664, 1.0, 0.01, "tsuda function, 4d" },
-    { &F3, xl, xu,  5, 64141, 1.0, 0.01, "tsuda function, 5d" },
+    { &F3, xl, xu,  1, 4928,   1.0, 0.01, "tsuda function, 1d" },
+    { &F3, xl, xu,  2, 12285,  1.0, 0.01, "tsuda function, 2d" },
+    { &F3, xl, xu,  3, 23268,  1.0, 0.01, "tsuda function, 3d" },
+    { &F3, xl, xu,  4, 39664,  1.0, 0.01, "tsuda function, 4d" },
+    { &F3, xl, xu,  5, 64141,  1.0, 0.01, "tsuda function, 5d" },
     { &F3, xl, xu,  6, 100680, 1.0, 0.01, "tsuda function, 6d" },
     { &F3, xl, xu,  7, 155227, 1.0, 0.01, "tsuda function, 7d" },
     { &F3, xl, xu,  8, 236657, 1.0, 0.01, "tsuda function, 8d" },
@@ -167,8 +175,9 @@ main ()
 
   struct problem * I;
 
-  // gsl_set_error_handler (&my_error_handler);
+  /* gsl_set_error_handler (&my_error_handler); */
   gsl_ieee_env_setup ();
+  gsl_rng_env_setup ();
 
 #ifdef A
   printf ("testing allocation/input checks\n");
@@ -184,53 +193,34 @@ main ()
 #endif
 
 #ifdef PLAIN
-  for (I = problems ; I->f != 0; I++) 
-    {
-      int status;
-      double res, err; 
-
-      gsl_rng * r = gsl_rng_alloc (gsl_rng_default);
-      gsl_monte_plain_state *s = gsl_monte_plain_alloc (10);
-      
-      I->f->dim = I->dim;
-      
-      status = gsl_monte_plain_integrate (I->f, I->xl, I->xu, 
-                                          I->dim, I->calls, r, s,
-                                          &res, &err);
-      
-      gsl_test_abs (res, I->expected_result, 3 * I->expected_error, 
-                    "%s result", I->description);
-      gsl_test_rel (err, I->expected_error, 0.9, 
-                    "%s error estimate", I->description);
-      
-      gsl_monte_plain_free (s);
-      gsl_rng_free (r);
-    }
+#define NAME "plain"
+#define MONTE_STATE gsl_monte_plain_state
+#define MONTE_ALLOC gsl_monte_plain_alloc
+#define MONTE_INTEGRATE gsl_monte_plain_integrate
+#define MONTE_FREE gsl_monte_plain_free
+#define MONTE_ERROR_TEST(err,expected) gsl_test_factor(err,expected, 3.0, NAME ", %s, abserr[%d]", I->description, i)
+#include "test_main.c"
+#undef NAME
+#undef MONTE_STATE
+#undef MONTE_ALLOC
+#undef MONTE_INTEGRATE
+#undef MONTE_FREE
+#undef MONTE_ERROR_TEST
 #endif
 
 #ifdef MISER
-  for (I = problems ; I->f != 0; I++) 
-    {
-      int status;
-      double res, err; 
-
-      gsl_rng * r = gsl_rng_alloc (gsl_rng_default);
-      gsl_monte_miser_state *s = gsl_monte_miser_alloc (10);
-
-      I->f->dim = I->dim;
-      
-      status = gsl_monte_miser_integrate (I->f, I->xl, I->xu, 
-                                          I->dim, I->calls, r, s,
-                                          &res, &err);
-      
-      gsl_test_abs (res, I->expected_result, 3 * I->expected_error, 
-                    "%s result", I->description);
-      gsl_test_rel (err, I->expected_error, 0.9, 
-                    "%s error estimate", I->description);
-      
-      gsl_monte_miser_free (s);
-      gsl_rng_free (r);
-    }
+#define NAME "miser"
+#define MONTE_STATE gsl_monte_miser_state
+#define MONTE_ALLOC gsl_monte_miser_alloc
+#define MONTE_INTEGRATE gsl_monte_miser_integrate
+#define MONTE_FREE gsl_monte_miser_free
+#define MONTE_ERROR_TEST(err,expected) gsl_test(err > 3.0 * expected, NAME ", %s, abserr[%d] (obs %g vs plain %g)", I->description, i, err, expected)
+#include "test_main.c"
+#undef NAME
+#undef MONTE_STATE
+#undef MONTE_ALLOC
+#undef MONTE_INTEGRATE
+#undef MONTE_FREE
 #endif
       
   return gsl_test_summary ();
@@ -269,10 +259,11 @@ f1 (double x[], size_t num_dim, void *params)
   int i;
   for (i = 0; i < num_dim; i++)
     {
-      sum += pow (x[i] - 0.5, 2.0);
+      double dx = x[i] - 0.5;
+      sum += dx * dx;
     }
   return (pow (M_2_SQRTPI / (2. * a), (double) num_dim) *
-	  exp (-sum / pow(a, 2.0)));
+	  exp (-sum / (a * a)));
 }
 
 /* double gaussian */
@@ -286,11 +277,13 @@ f2 (double x[], size_t num_dim, void *params)
   int i;
   for (i = 0; i < num_dim; i++)
     {
-      sum1 += pow (x[i] - 1. / 3., 2.0);
-      sum2 += pow (x[i] - 2. / 3., 2.0);
+      double dx1 = x[i] - 1. / 3.;
+      double dx2 = x[i] - 2. / 3.;
+      sum1 += dx1 * dx1;
+      sum2 += dx2 * dx2;
     }
   return 0.5 * pow (M_2_SQRTPI / (2. * a), num_dim) 
-    * (exp (-sum1 / pow(a, 2.0)) + exp (-sum2 / pow (a, 2.0)));
+    * (exp (-sum1 / (a * a)) + exp (-sum2 / (a * a)));
 }
 
 /* Tsuda's example */

@@ -1,3 +1,7 @@
+Sat Dec  9 14:19:53 2000  Brian Gough  <bjg@network-theory.co.uk>
+
+	* reorganization and clean up
+
 Thu Nov 16 19:50:27 2000  Brian Gough  <bjg@network-theory.co.uk>
 
 	* miser.c: rewrite to fix overflows and make calling conventions

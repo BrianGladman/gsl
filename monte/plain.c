@@ -32,13 +32,13 @@ int
 gsl_monte_plain_integrate (const gsl_monte_function * f,
 			   const double xl[], const double xu[],
 			   const size_t dim,
-			   const size_t calls, 
+			   const size_t calls,
 			   gsl_rng * r,
 			   gsl_monte_plain_state * state,
-                           double *result, double *abserr)
+			   double *result, double *abserr)
 {
-  double vol, sum, sum2;
-  double * x = state->x;
+  double vol, m = 0, q = 0;
+  double *x = state->x;
   size_t n, i;
 
   if (dim > state->dim)
@@ -69,8 +69,6 @@ gsl_monte_plain_integrate (const gsl_monte_function * f,
       vol *= xu[i] - xl[i];
     }
 
-  sum = sum2 = 0.0;
-
   for (n = 0; n < calls; n++)
     {
       /* Choose a random point in the integration region */
@@ -81,14 +79,17 @@ gsl_monte_plain_integrate (const gsl_monte_function * f,
 	}
 
       {
-        double fval = GSL_MONTE_FN_EVAL(f,x);
+	double fval = GSL_MONTE_FN_EVAL (f, x);
 
-        sum += fval;            /* FIXME: use a stable recurrence here */
-        sum2 += fval * fval;
+	/* recurrence for mean and variance */
+
+	double d = fval - m;
+	m += d / (n + 1.0);
+	q += d * d * (n / (n + 1.0));
       }
     }
 
-  *result = vol * (sum / calls);
+  *result = vol * m;
 
   if (calls < 2)
     {
@@ -96,15 +97,7 @@ gsl_monte_plain_integrate (const gsl_monte_function * f,
     }
   else
     {
-      double var = (sum2 - sum * sum / calls) / (calls * (calls - 1.0));
-
-      if (var < 0) 
-        {
-          *abserr = GSL_POSINF;
-          GSL_ERROR ("total loss of precision in error estimation", GSL_ELOSS);
-        }
-      
-      *abserr = vol * sqrt (var);
+      *abserr = vol * sqrt (q / (calls * (calls - 1.0)));
     }
 
   return GSL_SUCCESS;
