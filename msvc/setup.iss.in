@@ -15,6 +15,8 @@ UsePreviousAppDir=no
 UsePreviousGroup=no
 AlwaysCreateUninstallIcon=yes
 LicenseFile="..\Copying"
+UninstallFilesDir={app}\uninstall
+;CompressLevel=9
 ;InfoBeforeFile=Readme
 ;InfoAfterFile=msvc\README.txt
 ; uncomment the following line if you want your installation to run on NT 3.51 too.
@@ -27,15 +29,20 @@ Source: "..\NEWS"; DestDir: "{app}"; DestName: "NEWS.txt";
 Source: "..\THANKS"; DestDir: "{app}"; DestName: "THANKS.txt";
 Source: "..\AUTHORS"; DestDir: "{app}"; DestName: "AUTHORS.txt";
 ;
+Source: "..\*.dsp"; DestDir: "{app}\src"; Flags: recursesubdirs;
+Source: "..\*.dsw"; DestDir: "{app}\src"; Flags: recursesubdirs;
+Source: "..\*.h"; DestDir: "{app}\src"; Flags: recursesubdirs;
+Source: "..\*.c"; DestDir: "{app}\src"; Flags: recursesubdirs;
+;
 Source: "..\gsl\*.*"; DestDir: "{app}\include\gsl";
 ;
 Source: "Release\libgsl.lib"; DestDir: "{app}\lib";
 Source: "Release\libgslcblas.lib"; DestDir: "{app}\lib"; 
 Source: "Debug\libgsl.lib"; DestDir: "{app}\lib";  DestName: "libgsld.lib"
-Source: "Debug\libgslcblas.lib"; DestDir: "{app}\lib"; DestName: "libgslcblasd.lib"
-;
+Source: "Debug\libgslcblas.lib"; DestDir: "{app}\lib"; DestName: "libgslcblasd.lib";
+
 Source: "..\doc\html\*.chm"; DestDir: "{app}\doc"; 
-;
+
 Source: "demo\*.*"; DestDir: "{userdesktop}\GSL @VERSION@ demo";
 
 [Icons]
@@ -59,3 +66,8 @@ FinishedLabel=Setup has finished installing the [name] on your computer. The app
 ConfirmUninstall=Are you sure you want to completely remove the %1 and all of its components?
 UninstallStatusLabel=Please wait while the %1 is removed from your computer.
 UninstalledAll=The %1 was successfully removed from your computer.
+
+[Registry]
+Root: HKCU; Subkey: "Software\Microsoft\DevStudio\6.0\Build System\Components\Platforms\Win32 (x86)\Directories"; ValueType: string; ValueName: "Include Dirs"; ValueData: "{olddata};{app}\include"; Flags: dontcreatekey
+Root: HKCU; Subkey: "Software\Microsoft\DevStudio\6.0\Build System\Components\Platforms\Win32 (x86)\Directories"; ValueType: string; ValueName: "Library Dirs"; ValueData: "{olddata};{app}\lib"; Flags: dontcreatekey
+Root: HKCU; Subkey: "Software\Microsoft\DevStudio\6.0\Build System\Components\Platforms\Win32 (x86)\Directories"; ValueType: string; ValueName: "Source Dirs"; ValueData: "{olddata};{app}\src;{app}\include\gsl"; Flags: dontcreatekey
