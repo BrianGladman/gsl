@@ -268,3 +268,5 @@ minimisers.
 * Jussi Piitulainen <jpiitula@ling.helsinki.fi> documentation bug report
 
 * Aaron Schweiger <aschweig@bu.edu> bug report for SVD/column balancing
+
+* Carlo Ferrigno <ferrigno@pa.iasf.cnr.it> bug report about const problems

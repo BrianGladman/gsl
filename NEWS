@@ -1,5 +1,9 @@
 * What is new in gsl-1.4:
 
+** Restored missing header files gsl_const_mks.h and gsl_const_cgs.h.
+The incorrect values of the electrical units for gsl_const_cgs
+(VACUUM_PERMEABILITY and VACUUM_PERMITTIVITY) have been removed.
+
 ** Fixed gsl_linalg_SV_decomp() to avoid an infinite loop when
 computing the SVD of matrices containing Inf and Nan.
 

@@ -32,6 +32,22 @@ main (void)
   /* Basic check to make sure the header files are functioning */
 
   {
+    double c = GSL_CONST_MKS_SPEED_OF_LIGHT;
+    double eps = GSL_CONST_MKS_VACUUM_PERMITTIVITY;
+    double mu = GSL_CONST_MKS_VACUUM_PERMEABILITY;
+
+    gsl_test_rel (c, 1.0/sqrt(eps*mu), 1e-6, "speed of light (mks)");
+  }
+
+  {
+    double ly = GSL_CONST_CGS_LIGHT_YEAR;
+    double c = GSL_CONST_CGS_SPEED_OF_LIGHT;
+    double y = 365.2425 * GSL_CONST_CGS_DAY;
+    
+    gsl_test_rel (ly, c * y, 1e-6, "light year (cgs)");
+  }
+
+  {
     double c = GSL_CONST_MKSA_SPEED_OF_LIGHT;
     double eps = GSL_CONST_MKSA_VACUUM_PERMITTIVITY;
     double mu = GSL_CONST_MKSA_VACUUM_PERMEABILITY;

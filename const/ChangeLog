@@ -1,3 +1,8 @@
+2004-03-05  Brian Gough  <bjg@network-theory.co.uk>
+
+	* const.el: added CGS and MKS systems back in, with CGSM electrical
+	units excluded from CGS, for backwards compatibility
+	
 2003-11-27  Brian Gough  <bjg@network-theory.co.uk>
 
 	* const.el (gsl-constants): added stefan-boltzmann constant and

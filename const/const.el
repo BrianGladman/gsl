@@ -219,6 +219,15 @@
   (display "GSL_CONST_MKSA" mksa (append gsl-constants gsl-electrical-constants))
 )
 
+(defun run-cgs ()
+  (display "GSL_CONST_CGS" cgs gsl-constants)
+)
+
+(defun run-mks ()
+  (display "GSL_CONST_MKS" mks (append gsl-constants gsl-electrical-constants))
+)
+
+
 (defun run-num ()
   (display "GSL_CONST_NUM" mks gsl-dimensionless-constants)
 )
