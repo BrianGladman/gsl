@@ -1,3 +1,7 @@
+Wed Aug  7 22:34:36 2002  Brian Gough  <bjg@network-theory.co.uk>
+
+	* config.h.in: fixed RANGE_CHECK_ON to GSL_RANGE_CHECK_ON
+
 Sun Jul 14 12:48:50 2002  Brian Gough  <bjg@network-theory.co.uk>
 
 	* INSTALL: merged the MACHINES file into the installation notes.
