@@ -6,21 +6,20 @@ include_HEADERS = gsl_fft.h gsl_fft_complex.h gsl_fft_halfcomplex.h gsl_fft_real
 
 noinst_HEADERS = fft_complex.h fft_halfcomplex.h fft_real.h
 
-INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../err -I$(srcdir)/../utils
+INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../err
 
 TESTS = test_trap test_radix2 test
 
-test_LDADD = libgslfft.a ../err/libgslerr.a ../err/libgsltest.a ../utils/libutils.a
-test_trap_LDADD = libgslfft.a ../err/libgslerr.a ../err/libgsltest.a ../utils/libutils.a
-test_radix2_LDADD = libgslfft.a ../err/libgslerr.a ../err/libgsltest.a ../utils/libutils.a
-errs_LDADD = libgslfft.a ../err/libgslerr.a ../err/libgsltest.a ../utils/libutils.a
-benchmark_LDADD = libgslfft.a ../err/libgslerr.a ../err/libgsltest.a ../utils/libutils.a
+test_LDADD = libgslfft.a ../err/libgslerr.a ../err/libgsltest.a
+test_trap_LDADD = libgslfft.a ../err/libgslerr.a ../err/libgsltest.a
+test_radix2_LDADD = libgslfft.a ../err/libgslerr.a ../err/libgsltest.a
+errs_LDADD = libgslfft.a ../err/libgslerr.a ../err/libgsltest.a
+benchmark_LDADD = libgslfft.a ../err/libgslerr.a ../err/libgsltest.a
 
 test_DEPENDENCIES = libgslfft.a
 test_trap_DEPENDENCIES = libgslfft.a
 test_radix2_DEPENDENCIES = libgslfft.a
 benchmark_DEPENDENCIES = libgslfft.a
-
 
 test_SOURCES = test.c
 test_trap_SOURCES = test_trap.c

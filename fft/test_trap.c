@@ -27,7 +27,7 @@ void my_error_handler (const char *reason, const char *file,
    The exit status indicates success or failure. */
 
 int
-main (int argc, char * argv[])
+main (void)
 {
   int status ;
 

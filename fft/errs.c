@@ -45,10 +45,8 @@ main (int argc, char *argv[])
   for (n = start; n < end; n++)
     {
 
-      complex_data = malloc (n * sizeof (gsl_complex));
-      complex_tmp = malloc (n * sizeof (gsl_complex));
-      /*    fft_complex_data = malloc (n * sizeof (gsl_complex));
-         fft_complex_tmp = malloc (n * sizeof (gsl_complex)); */
+      complex_data = (gsl_complex *) malloc (n * sizeof (gsl_complex));
+      complex_tmp = (gsl_complex *) malloc (n * sizeof (gsl_complex));
 
       cw = gsl_fft_complex_wavetable_alloc (n);
       status = gsl_fft_complex_init (n, cw);

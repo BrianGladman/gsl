@@ -116,7 +116,7 @@ gsl_fft_complex_wavetable_alloc (size_t n)
       GSL_ERROR_RETURN ("failed to allocate struct", GSL_ENOMEM, 0);
     }
 
-  w->scratch = malloc (n * sizeof (gsl_complex));
+  w->scratch = (gsl_complex *) malloc (n * sizeof (gsl_complex));
 
   if (w->scratch == NULL)
     {
@@ -125,7 +125,7 @@ gsl_fft_complex_wavetable_alloc (size_t n)
       GSL_ERROR_RETURN ("failed to allocate scratch space", GSL_ENOMEM, 0);
     }
 
-  w->trig = malloc (n * sizeof (gsl_complex));
+  w->trig = (gsl_complex *) malloc (n * sizeof (gsl_complex));
 
   if (w->trig == NULL)
     {

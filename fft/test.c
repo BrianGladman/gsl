@@ -62,11 +62,11 @@ void check_complex (size_t n)
   gsl_fft_real_wavetable * rw ;
   gsl_fft_halfcomplex_wavetable * hcw ;
 
-  real_data = malloc (n * sizeof (double));
-  complex_data = malloc (n * sizeof (gsl_complex));
-  complex_tmp = malloc (n * sizeof (gsl_complex));
-  fft_complex_data = malloc (n * sizeof (gsl_complex));
-  fft_complex_tmp = malloc (n * sizeof (gsl_complex));
+  real_data = (double *) malloc (n * sizeof (double));
+  complex_data = (gsl_complex *) malloc (n * sizeof (gsl_complex));
+  complex_tmp = (gsl_complex *) malloc (n * sizeof (gsl_complex));
+  fft_complex_data = (gsl_complex *) malloc (n * sizeof (gsl_complex));
+  fft_complex_tmp = (gsl_complex *) malloc (n * sizeof (gsl_complex));
 
   gsl_set_error_handler (NULL);	/* abort on any errors */
 
@@ -82,12 +82,12 @@ void check_complex (size_t n)
   status = gsl_fft_complex_generate_wavetable (n, cw);
   gsl_test (status, "gsl_fft_complex_generate_wavetable, n = %d", n);
   
-  complex_data = malloc (n * sizeof (gsl_complex));
-  complex_tmp = malloc (n * sizeof (gsl_complex));
-  fft_complex_data = malloc (n * sizeof (gsl_complex));
-  fft_complex_tmp = malloc (n * sizeof (gsl_complex));
+  complex_data = (gsl_complex *) malloc (n * sizeof (gsl_complex));
+  complex_tmp = (gsl_complex *) malloc (n * sizeof (gsl_complex));
+  fft_complex_data = (gsl_complex *) malloc (n * sizeof (gsl_complex));
+  fft_complex_tmp = (gsl_complex *) malloc (n * sizeof (gsl_complex));
   
-  real_data = malloc (n * sizeof (double));
+  real_data = (double *) malloc (n * sizeof (double));
   
   /* mixed radix fft */
   gsl_fft_signal_complex_noise (n, complex_data, fft_complex_data);
@@ -131,10 +131,10 @@ void check_complex (size_t n)
   status = gsl_fft_real_generate_wavetable (n, rw);
   gsl_test (status, "gsl_fft_real_generate_wavetable, n = %d", n);
   
-  real_data = malloc (n * sizeof (double));
-  real_tmp = malloc (n * sizeof (double));
-  fft_real_data = malloc (n * sizeof (double));
-  fft_real_tmp = malloc (n * sizeof (double));
+  real_data = (double *) malloc (n * sizeof (double));
+  real_tmp = (double *) malloc (n * sizeof (double));
+  fft_real_data = (double *) malloc (n * sizeof (double));
+  fft_real_tmp = (double *) malloc (n * sizeof (double));
   
   gsl_fft_signal_real_noise (n, complex_data, fft_complex_data);
   memcpy (complex_tmp, complex_data, n * sizeof (gsl_complex));
