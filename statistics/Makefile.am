@@ -1,6 +1,6 @@
 ## Process this file with automake to produce Makefile.in
 
-lib_LIBRARIES = libgslstatistics.a
+lib_LTLIBRARIES = libgslstatistics.la
 include_HEADERS = gsl_statistics.h gsl_statistics_int.h
 
 INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../err
@@ -22,14 +22,14 @@ check_PROGRAMS = test test_int
 TESTS = test test_int
 
 test_SOURCES = test.c test.h
-test_LDADD = libgslstatistics.a ../err/libgsltest.a
-test_DEPENDENCIES = libgslstatistics.a
+test_LDADD = libgslstatistics.la ../err/libgsltest.la
+test_DEPENDENCIES = libgslstatistics.la
 
 test_int_SOURCES = test_int.c test.h
-test_int_LDADD = libgslstatistics.a ../err/libgsltest.a
-test_int_DEPENDENCIES = libgslstatistics.a
+test_int_LDADD = libgslstatistics.la ../err/libgsltest.la
+test_int_DEPENDENCIES = libgslstatistics.la
 
-libgslstatistics_a_SOURCES = \
+libgslstatistics_la_SOURCES = \
 mean.c \
 variance.c  \
 absdev.c \

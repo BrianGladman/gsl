@@ -1,4 +1,4 @@
-lib_LIBRARIES = libgslmatrix.a 
+lib_LTLIBRARIES = libgslmatrix.la 
 
 check_PROGRAMS = test test_int test_float test_complex test_trap
 
@@ -8,14 +8,14 @@ INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../vector -I$(srcdir)/../err -I$(srcdir)/.
 
 TESTS = test test_float test_int test_complex test_trap
 
-test_LDADD = libgslmatrix.a ../vector/libgslvector.a ../err/libgslerr.a ../err/libgsltest.a ../utils/libutils.a
-test_int_LDADD = libgslmatrix.a ../vector/libgslvector.a ../err/libgslerr.a ../err/libgsltest.a ../utils/libutils.a
-test_float_LDADD = libgslmatrix.a ../vector/libgslvector.a ../err/libgslerr.a ../err/libgsltest.a ../utils/libutils.a
-test_complex_LDADD = libgslmatrix.a ../vector/libgslvector.a ../err/libgslerr.a ../err/libgsltest.a ../utils/libutils.a
-test_trap_LDADD = libgslmatrix.a ../vector/libgslvector.a ../err/libgslerr.a ../err/libgsltest.a ../utils/libutils.a
+test_LDADD = libgslmatrix.la ../vector/libgslvector.la ../err/libgslerr.la ../err/libgsltest.la ../utils/libutils.a
+test_int_LDADD = libgslmatrix.la ../vector/libgslvector.la ../err/libgslerr.la ../err/libgsltest.la ../utils/libutils.a
+test_float_LDADD = libgslmatrix.la ../vector/libgslvector.la ../err/libgslerr.la ../err/libgsltest.la ../utils/libutils.a
+test_complex_LDADD = libgslmatrix.la ../vector/libgslvector.la ../err/libgslerr.la ../err/libgsltest.la ../utils/libutils.a
+test_trap_LDADD = libgslmatrix.la ../vector/libgslvector.la ../err/libgslerr.la ../err/libgsltest.la ../utils/libutils.a
 
-test_DEPENDENCIES = libgslmatrix.a
-test_trap_DEPENDENCIES = libgslmatrix.a
+test_DEPENDENCIES = libgslmatrix.la
+test_trap_DEPENDENCIES = libgslmatrix.la
 
 test_SOURCES = test.c
 test_int_SOURCES = test_int.c
@@ -27,7 +27,7 @@ CLEANFILES = test.txt test.dat
 
 noinst_HEADERS = matrix_source.c init_source.c file_source.c
 
-libgslmatrix_a_SOURCES = \
+libgslmatrix_la_SOURCES = \
 	source.h init.c matrix.c file.c gsl_matrix.h \
 	init_int.c matrix_int.c file_int.c gsl_matrix_int.h \
 	init_float.c matrix_float.c file_float.c gsl_matrix_float.h \

@@ -1,3 +1,6 @@
+# we don't install these, so we don't use libtool, at least that's 
+# how mjb understands it.
+#
 noinst_LIBRARIES = libutils.a
 
 # Don't need to list alloca.c, etc., Automake includes them.

@@ -1,4 +1,4 @@
-lib_LIBRARIES = libgslhistogram.a 
+lib_LTLIBRARIES = libgslhistogram.la 
 
 include_HEADERS = gsl_histogram.h gsl_histogram2d.h
 
@@ -10,21 +10,21 @@ check_PROGRAMS = test test2d test_resample test2d_resample test_trap test2d_trap
 TESTS = test test2d test_resample test2d_resample test_trap test2d_trap
 
 gsl_histogram_SOURCES = gsl-histogram.c
-gsl_histogram_LDADD = libgslhistogram.a ../vector/libgslvector.a  ../err/libgslerr.a ../err/libgsltest.a ../utils/libutils.a
+gsl_histogram_LDADD = libgslhistogram.la ../vector/libgslvector.la  ../err/libgslerr.la ../err/libgsltest.la ../utils/libutils.a
 
-test_LDADD = libgslhistogram.a ../vector/libgslvector.a  ../err/libgslerr.a ../err/libgsltest.a ../utils/libutils.a
-test2d_LDADD = libgslhistogram.a ../vector/libgslvector.a  ../err/libgslerr.a ../err/libgsltest.a ../utils/libutils.a
-test_resample_LDADD = libgslhistogram.a ../vector/libgslvector.a ../err/libgslerr.a ../err/libgsltest.a ../utils/libutils.a
-test2d_resample_LDADD = libgslhistogram.a ../vector/libgslvector.a  ../err/libgslerr.a ../err/libgsltest.a ../utils/libutils.a
-test_trap_LDADD = libgslhistogram.a ../vector/libgslvector.a ../err/libgslerr.a ../err/libgsltest.a ../utils/libutils.a
-test2d_trap_LDADD = libgslhistogram.a ../vector/libgslvector.a  ../err/libgslerr.a ../err/libgsltest.a ../utils/libutils.a
+test_LDADD = libgslhistogram.la ../vector/libgslvector.la  ../err/libgslerr.la ../err/libgsltest.la ../utils/libutils.a
+test2d_LDADD = libgslhistogram.la ../vector/libgslvector.la  ../err/libgslerr.la ../err/libgsltest.la ../utils/libutils.a
+test_resample_LDADD = libgslhistogram.la ../vector/libgslvector.la ../err/libgslerr.la ../err/libgsltest.la ../utils/libutils.a
+test2d_resample_LDADD = libgslhistogram.la ../vector/libgslvector.la  ../err/libgslerr.la ../err/libgsltest.la ../utils/libutils.a
+test_trap_LDADD = libgslhistogram.la ../vector/libgslvector.la ../err/libgslerr.la ../err/libgsltest.la ../utils/libutils.a
+test2d_trap_LDADD = libgslhistogram.la ../vector/libgslvector.la  ../err/libgslerr.la ../err/libgsltest.la ../utils/libutils.a
 
-test_DEPENDENCIES = libgslhistogram.a
-test2d_DEPENDENCIES = libgslhistogram.a
-test_resample_DEPENDENCIES = libgslhistogram.a
-test2d_resample_DEPENDENCIES = libgslhistogram.a
-test_trap_DEPENDENCIES = libgslhistogram.a
-test2d_trap_DEPENDENCIES = libgslhistogram.a
+test_DEPENDENCIES = libgslhistogram.la
+test2d_DEPENDENCIES = libgslhistogram.la
+test_resample_DEPENDENCIES = libgslhistogram.la
+test2d_resample_DEPENDENCIES = libgslhistogram.la
+test_trap_DEPENDENCIES = libgslhistogram.la
+test2d_trap_DEPENDENCIES = libgslhistogram.la
 
 test_SOURCES = test.c
 test2d_SOURCES = test2d.c
@@ -35,7 +35,7 @@ test2d_trap_SOURCES = test2d_trap.c
 
 CLEANFILES = test.txt test.dat
 
-libgslhistogram_a_SOURCES = \
+libgslhistogram_la_SOURCES = \
 	add.c find.c get.c init.c params.c reset.c file.c pdf.c \
 	gsl_histogram.h \
 	add2d.c find2d.c get2d.c init2d.c params2d.c reset2d.c \

@@ -1,23 +1,23 @@
 
 #####################################################################
 
-## I have removed the "automagic" making of Makefile.am from
-## Makefile.ami  --- It was just too finicky.  
+## I have removed the "automagic" making of Makefile.lam from
+## Makefile.lami  --- It was just too finicky.  
 
 ## If you consider yourself a casual user, then you shouldn't need to
-## edit the Makefile.am, but if you do, nobody will mind.
+## edit the Makefile.lam, but if you do, nobody will mind.
 
 ## If instead you think of yourself as a developer/contributor [eg if
 ## you are working from a distribution you got from the CVS master
 ## source instead of a numbered release], and if you want to edit the
-## Makefile.am file, you should instead edit the Makefile.ami template
+## Makefile.lam file, you should instead edit the Makefile.lami template
 ## file, and/or modify the 'makeam' shell script.  Then you can remake
-## the Makefile.am file using the 'makeam' script:
+## the Makefile.lam file using the 'makeam' script:
 
-##      ./makeam Makefile.ami > Makefile.am
+##      ./makeam Makefile.lami > Makefile.lam
 
-## After you are done, be sure the 'cvs commit' the Makefile.am file,
-## as well as your changes to 'Makefile.ami' and 'makeam'
+## After you are done, be sure the 'cvs commit' the Makefile.lam file,
+## as well as your changes to 'Makefile.lami' and 'makeam'
 
 ## A similar warning applies to the sources *-state.c, *-gen.c, and
 ## some of the *.h files; if you want to edit them, you should instead
@@ -37,7 +37,7 @@ ALLRAN= taus mrg cmrg uni uni32 zuf rand
 include_HEADERS= gsl_ran.h gsl_ran_switch.h
 
 test_switch_SOURCES= test-switch.c switch.c 
-test_switch_LDADD=../err/libgsltest.a ../utils/libutils.a
+test_switch_LDADD=../err/libgsltest.la ../utils/libutils.a
 
 switch.c gsl_ran_switch.h:
 	$(srcdir)/makesrc --switch
@@ -49,9 +49,9 @@ switch.c gsl_ran_switch.h:
 ## permits the user to contribute to the project!!
 ##
 EXTRA_DIST= xxx-switch.xc xxx-gen.xc xxx-state.xc \
-	makeam makesrc Makefile.ami 
+	makeam makesrc Makefile.lami 
 
-CLEANFILES= tmp.out tmp.in
+CLEANFILES= tmp.lout tmp.in
 
 
 
@@ -65,97 +65,97 @@ bin_PROGRAMS= taus mrg cmrg uni uni32 zuf rand test-switch
 check_PROGRAMS= test-taus bench-taus test-mrg bench-mrg test-cmrg bench-cmrg test-uni bench-uni test-uni32 bench-uni32 test-zuf bench-zuf test-rand bench-rand
 
 
-lib_LIBRARIES= libgslrandom.a  libgslrantaus.a libgslranmrg.a libgslrancmrg.a libgslranuni.a libgslranuni32.a libgslranzuf.a libgslranrand.a
+lib_LTLIBRARIES= libgslrandom.la  libgslrantaus.la libgslranmrg.la libgslrancmrg.la libgslranuni.la libgslranuni32.la libgslranzuf.la libgslranrand.la
 
 
-libgslrantaus_a_SOURCES= taus.c taus-gen.c 
-libgslranmrg_a_SOURCES= mrg.c mrg-gen.c 
-libgslrancmrg_a_SOURCES= cmrg.c cmrg-gen.c 
-libgslranuni_a_SOURCES= uni.c uni-gen.c 
-libgslranuni32_a_SOURCES= uni32.c uni32-gen.c 
-libgslranzuf_a_SOURCES= zuf.c zuf-gen.c 
-libgslranrand_a_SOURCES= rand.c rand-gen.c 
+libgslrantaus_la_SOURCES= taus.c taus-gen.c 
+libgslranmrg_la_SOURCES= mrg.c mrg-gen.c 
+libgslrancmrg_la_SOURCES= cmrg.c cmrg-gen.c 
+libgslranuni_la_SOURCES= uni.c uni-gen.c 
+libgslranuni32_la_SOURCES= uni32.c uni32-gen.c 
+libgslranzuf_la_SOURCES= zuf.c zuf-gen.c 
+libgslranrand_la_SOURCES= rand.c rand-gen.c 
 
-libgslrandom_a_SOURCES=switch.c  taus.c mrg.c cmrg.c uni.c uni32.c zuf.c rand.c
+libgslrandom_la_SOURCES=switch.c  taus.c mrg.c cmrg.c uni.c uni32.c zuf.c rand.c
 
 
 TESTS= test-taus test-mrg test-cmrg test-uni test-uni32 test-zuf test-rand
 
 
-test_switch_DEPENDENCIES=gsl_ran_switch.h taus.h taus.o mrg.h mrg.o cmrg.h cmrg.o uni.h uni.o uni32.h uni32.o zuf.h zuf.o rand.h rand.o
+test_switch_DEPENDENCIES=gsl_ran_switch.h taus.h taus.lo mrg.h mrg.lo cmrg.h cmrg.lo uni.h uni.lo uni32.h uni32.lo zuf.h zuf.lo rand.h rand.lo
 
-test_switch_LDADD= taus.o mrg.o cmrg.o uni.o uni32.o zuf.o rand.o ../utils/libutils.a 
+test_switch_LDADD= taus.lo mrg.lo cmrg.lo uni.lo uni32.lo zuf.lo rand.lo ../utils/libutils.a 
 
 taus_SOURCES=             ran.c taus.c taus.h
 EXTRA_taus_SOURCES=       taus-state.c
-taus_DEPENDENCIES=        taus-state.c taus-gen.o
-taus_LDADD=               taus-gen.o
+taus_DEPENDENCIES=        taus-state.c taus-gen.lo
+taus_LDADD=               taus-gen.lo
 test_taus_SOURCES=        testran.c
-test_taus_DEPENDENCIES=   taus.o taus-gen.o taus.h
-test_taus_LDADD=          taus.o taus-gen.o ../err/libgsltest.a ../utils/libutils.a
+test_taus_DEPENDENCIES=   taus.lo taus-gen.lo taus.h
+test_taus_LDADD=          taus.lo taus-gen.lo ../err/libgsltest.la ../utils/libutils.a
 bench_taus_SOURCES=       benchran.c
-bench_taus_DEPENDENCIES=  taus.o taus-gen.o taus.h
-bench_taus_LDADD=         taus.o taus-gen.o
+bench_taus_DEPENDENCIES=  taus.lo taus-gen.lo taus.h
+bench_taus_LDADD=         taus.lo taus-gen.lo
 mrg_SOURCES=             ran.c mrg.c mrg.h
 EXTRA_mrg_SOURCES=       mrg-state.c
-mrg_DEPENDENCIES=        mrg-state.c mrg-gen.o
-mrg_LDADD=               mrg-gen.o
+mrg_DEPENDENCIES=        mrg-state.c mrg-gen.lo
+mrg_LDADD=               mrg-gen.lo
 test_mrg_SOURCES=        testran.c
-test_mrg_DEPENDENCIES=   mrg.o mrg-gen.o mrg.h
-test_mrg_LDADD=          mrg.o mrg-gen.o ../err/libgsltest.a ../utils/libutils.a
+test_mrg_DEPENDENCIES=   mrg.lo mrg-gen.lo mrg.h
+test_mrg_LDADD=          mrg.lo mrg-gen.lo ../err/libgsltest.la ../utils/libutils.a
 bench_mrg_SOURCES=       benchran.c
-bench_mrg_DEPENDENCIES=  mrg.o mrg-gen.o mrg.h
-bench_mrg_LDADD=         mrg.o mrg-gen.o
+bench_mrg_DEPENDENCIES=  mrg.lo mrg-gen.lo mrg.h
+bench_mrg_LDADD=         mrg.lo mrg-gen.lo
 cmrg_SOURCES=             ran.c cmrg.c cmrg.h
 EXTRA_cmrg_SOURCES=       cmrg-state.c
-cmrg_DEPENDENCIES=        cmrg-state.c cmrg-gen.o
-cmrg_LDADD=               cmrg-gen.o
+cmrg_DEPENDENCIES=        cmrg-state.c cmrg-gen.lo
+cmrg_LDADD=               cmrg-gen.lo
 test_cmrg_SOURCES=        testran.c
-test_cmrg_DEPENDENCIES=   cmrg.o cmrg-gen.o cmrg.h
-test_cmrg_LDADD=          cmrg.o cmrg-gen.o ../err/libgsltest.a ../utils/libutils.a
+test_cmrg_DEPENDENCIES=   cmrg.lo cmrg-gen.lo cmrg.h
+test_cmrg_LDADD=          cmrg.lo cmrg-gen.lo ../err/libgsltest.la ../utils/libutils.a
 bench_cmrg_SOURCES=       benchran.c
-bench_cmrg_DEPENDENCIES=  cmrg.o cmrg-gen.o cmrg.h
-bench_cmrg_LDADD=         cmrg.o cmrg-gen.o
+bench_cmrg_DEPENDENCIES=  cmrg.lo cmrg-gen.lo cmrg.h
+bench_cmrg_LDADD=         cmrg.lo cmrg-gen.lo
 uni_SOURCES=             ran.c uni.c uni.h
 EXTRA_uni_SOURCES=       uni-state.c
-uni_DEPENDENCIES=        uni-state.c uni-gen.o
-uni_LDADD=               uni-gen.o
+uni_DEPENDENCIES=        uni-state.c uni-gen.lo
+uni_LDADD=               uni-gen.lo
 test_uni_SOURCES=        testran.c
-test_uni_DEPENDENCIES=   uni.o uni-gen.o uni.h
-test_uni_LDADD=          uni.o uni-gen.o ../err/libgsltest.a ../utils/libutils.a
+test_uni_DEPENDENCIES=   uni.lo uni-gen.lo uni.h
+test_uni_LDADD=          uni.lo uni-gen.lo ../err/libgsltest.la ../utils/libutils.a
 bench_uni_SOURCES=       benchran.c
-bench_uni_DEPENDENCIES=  uni.o uni-gen.o uni.h
-bench_uni_LDADD=         uni.o uni-gen.o
+bench_uni_DEPENDENCIES=  uni.lo uni-gen.lo uni.h
+bench_uni_LDADD=         uni.lo uni-gen.lo
 uni32_SOURCES=             ran.c uni32.c uni32.h
 EXTRA_uni32_SOURCES=       uni32-state.c
-uni32_DEPENDENCIES=        uni32-state.c uni32-gen.o
-uni32_LDADD=               uni32-gen.o
+uni32_DEPENDENCIES=        uni32-state.c uni32-gen.lo
+uni32_LDADD=               uni32-gen.lo
 test_uni32_SOURCES=        testran.c
-test_uni32_DEPENDENCIES=   uni32.o uni32-gen.o uni32.h
-test_uni32_LDADD=          uni32.o uni32-gen.o ../err/libgsltest.a ../utils/libutils.a
+test_uni32_DEPENDENCIES=   uni32.lo uni32-gen.lo uni32.h
+test_uni32_LDADD=          uni32.lo uni32-gen.lo ../err/libgsltest.la ../utils/libutils.a
 bench_uni32_SOURCES=       benchran.c
-bench_uni32_DEPENDENCIES=  uni32.o uni32-gen.o uni32.h
-bench_uni32_LDADD=         uni32.o uni32-gen.o
+bench_uni32_DEPENDENCIES=  uni32.lo uni32-gen.lo uni32.h
+bench_uni32_LDADD=         uni32.lo uni32-gen.lo
 zuf_SOURCES=             ran.c zuf.c zuf.h
 EXTRA_zuf_SOURCES=       zuf-state.c
-zuf_DEPENDENCIES=        zuf-state.c zuf-gen.o
-zuf_LDADD=               zuf-gen.o
+zuf_DEPENDENCIES=        zuf-state.c zuf-gen.lo
+zuf_LDADD=               zuf-gen.lo
 test_zuf_SOURCES=        testran.c
-test_zuf_DEPENDENCIES=   zuf.o zuf-gen.o zuf.h
-test_zuf_LDADD=          zuf.o zuf-gen.o ../err/libgsltest.a ../utils/libutils.a
+test_zuf_DEPENDENCIES=   zuf.lo zuf-gen.lo zuf.h
+test_zuf_LDADD=          zuf.lo zuf-gen.lo ../err/libgsltest.la ../utils/libutils.a
 bench_zuf_SOURCES=       benchran.c
-bench_zuf_DEPENDENCIES=  zuf.o zuf-gen.o zuf.h
-bench_zuf_LDADD=         zuf.o zuf-gen.o
+bench_zuf_DEPENDENCIES=  zuf.lo zuf-gen.lo zuf.h
+bench_zuf_LDADD=         zuf.lo zuf-gen.lo
 rand_SOURCES=             ran.c rand.c rand.h
 EXTRA_rand_SOURCES=       rand-state.c
-rand_DEPENDENCIES=        rand-state.c rand-gen.o
-rand_LDADD=               rand-gen.o
+rand_DEPENDENCIES=        rand-state.c rand-gen.lo
+rand_LDADD=               rand-gen.lo
 test_rand_SOURCES=        testran.c
-test_rand_DEPENDENCIES=   rand.o rand-gen.o rand.h
-test_rand_LDADD=          rand.o rand-gen.o ../err/libgsltest.a ../utils/libutils.a
+test_rand_DEPENDENCIES=   rand.lo rand-gen.lo rand.h
+test_rand_LDADD=          rand.lo rand-gen.lo ../err/libgsltest.la ../utils/libutils.a
 bench_rand_SOURCES=       benchran.c
-bench_rand_DEPENDENCIES=  rand.o rand-gen.o rand.h
-bench_rand_LDADD=         rand.o rand-gen.o
+bench_rand_DEPENDENCIES=  rand.lo rand-gen.lo rand.h
+bench_rand_LDADD=         rand.lo rand-gen.lo
 
 ## Note, BUILT_SOURCES has special meaning to automake
 ## I'm deliberately trying to avoid having the casual user

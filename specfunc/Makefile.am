@@ -1,4 +1,4 @@
-lib_LIBRARIES = libgslspecfunc.a 
+lib_LTLIBRARIES = libgslspecfunc.la 
 
 check_PROGRAMS = test_sf
 
@@ -28,17 +28,17 @@ include_HEADERS = \
 noinst_HEADERS = \
 	bessel_amp_phase.h	\
 	bessel.h
-	
+
 
 INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../err -I$(srcdir)/../integration 
 
 TESTS = test_sf
 
-test_sf_LDADD = libgslspecfunc.a ../err/libgslerr.a ../err/libgsltest.a ../utils/libutils.a
-test_sf_DEPENDENCIES = libgslspecfunc.a
+test_sf_LDADD = libgslspecfunc.la ../err/libgslerr.la ../err/libgsltest.la ../utils/libutils.a
+test_sf_DEPENDENCIES = libgslspecfunc.la
 test_sf_SOURCES = test_sf.c
 
-libgslspecfunc_a_SOURCES = 	\
+libgslspecfunc_la_SOURCES = 	\
 	airy.c			\
 	airy_der.c		\
 	bessel.c		\
@@ -81,7 +81,7 @@ libgslspecfunc_a_SOURCES = 	\
 	shint.c			\
 	sig2lamp.c		\
 	sinint.c		\
-	t-erf.c			\
+#	t-erf.c			\
 	trig.c			\
 	zeta.c
 
