@@ -1,83 +1,242 @@
 #include <complex>
-#include <iostream>
 #include <vector>
 
 extern "C" {
 #include <gsl_fft_complex.h>
-#include "bitreverse.h"
+} ;
+
+class FFTServer {
+
+private:
+  gsl_fft_complex_wavetable _wavetable;
+  _construct(unsigned int n) ;
+  _destruct() ;
+
+public:
+  FFTServer();                 // default constructor, no FFT length assigned
+  FFTServer(unsigned int n);   // constructor for FFT of length n
+  FFTServer(FFTServer &w);     // copy constructor, explicit mem management
+  operator= (FFTServer &w);    // assignment, explicit mem management
+  ~FFTServer() ;               // explicit memory management
+
+  void set_order(unsigned int n) ;
+
+  vector<complex<double> > forward_fft (vector<complex<double> > & v) ;
+  vector<complex<double> > backward_fft (vector<complex<double> > & v) ;
+  vector<complex<double> > inverse_fft (vector<complex<double> > & v) ;
+
+  forward_fft_in_place (vector<complex<double> > & v) ;
+  backward_fft_in_place (vector<complex<double> > & v) ;
+  inverse_fft_in_place (vector<complex<double> > & v) ;
+
+} ;
+
+extern "C" {
+#include <gsl_errno.h>
+} ;
+
+#include <stdexcept>
+
+class gsl_exception: public exception { } ;
+class gsl_logic_error: public gsl_exception { } ;
+
+class gsl_bad_alloc: public bad_alloc, public gsl_exception { } ;
+
+class gsl_out_of_range: public out_of_range, public gsl_logic_error {
+public:
+  gsl_out_of_range (const string& what_arg): out_of_range (what_arg) { }
+} ;
+
+class gsl_length_error: public length_error, public gsl_logic_error {
+public:
+  gsl_length_error (const string& what_arg): length_error (what_arg) { }
+} ;
+
+  
+void gsl_check_exceptions(int status)
+{
+  switch(status) 
+    {
+    case 0:
+      return ;
+      break ;
+
+    case GSL_ENOMEM:
+      throw gsl_bad_alloc() ;
+      break ;
+
+    case GSL_ERANGE:
+      throw gsl_out_of_range("") ;
+      break ;
+      
+    default:
+      throw gsl_exception() ;
+    }
+} ;
+
+FFTServer::_construct(unsigned int n)
+
+{  
+  int status = gsl_fft_complex_wavetable_alloc (n, &_wavetable);
+
+  gsl_check_exceptions(status) ;
+
+  status = gsl_fft_complex_init (n, &_wavetable);
+
+  gsl_check_exceptions(status) ;
+
+  status = gsl_fft_complex_generate_wavetable (n, &_wavetable);
+
+  gsl_check_exceptions(status) ;
+
 } ;
 
 
-main() {
-  double a[] = { 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15 } ;
-  double b[] = { 0,0,0,0,0,0,0,0,0,0, 0, 0, 0, 0, 0, 0 } ;
-  vector<complex<double> > x(16) ;
+FFTServer::_destruct()
+{
+  int status = gsl_fft_complex_wavetable_free (&_wavetable);
 
-  for (int i = 0 ; i != x.size() ; i++) {
-    *(x.begin() + i) = complex<double>(a[i],b[i]) ; 
-    cout << *(x.begin() + i) << endl ;
-  }
+  gsl_check_exceptions(status) ;
+} ;
 
-  gsl_fft_complex_bitreverse_order((gsl_complex *)x.begin(), 16, 4) ;
 
-  for (int i = 0 ; i != x.size() ; i++) {
-    cout << *(x.begin() + i) << endl ;
-  }
+FFTServer::FFTServer()
+{
+  _wavetable.n = 0 ; // do nothing, I guess
+} ;
+
+
+FFTServer::FFTServer(unsigned int n)
+{
+  _construct(n) ;
+} ;
+
+FFTServer::FFTServer(FFTServer &rhs)
+{
+  if (this == &rhs) 
+    return ;
+
+  int n = rhs._wavetable.n ;
+  _wavetable = rhs._wavetable ;
+
+  int status = gsl_fft_complex_wavetable_alloc (n, &_wavetable);
+
+  gsl_check_exceptions(status) ;
+
+  status = gsl_fft_complex_wavetable_cpy (&_wavetable, &rhs._wavetable) ;
+
+  gsl_check_exceptions(status) ;
 }
 
-class FFT {
-private:
-  gsl_fft_complex_wavetable _w;
-public:
-  FFT()                  // default constructor
-  FFT(unsigned int n);   // constructor for length n
-  FFT(FFT &w);           // copy constructor, explicit mem management
-  operator= (FFT &w);    // assignment, explicit mem management
-  ~FFT() ;               // explicit memory management
-  forward() ;
-  inverse() ;
+FFTServer::~FFTServer()
+{
+  _destruct() ;
+}
+
+void FFTServer::set_order(unsigned int n)
+{
+  if (_wavetable.n == n) 
+    return ;  // size is ok
+
+  _destruct() ;
+  _construct(n) ;
+}
+
+vector<complex<double> > 
+FFTServer::forward_fft(vector<complex<double> > & v)
+{
+  vector<complex<double> > w = v ;
+    
+  if (_wavetable.n != v.size())  // resize, or create, if necessary
+    {
+      set_order(v.size()) ; 
+    } ;
   
+  int status = gsl_fft_complex_forward ((gsl_complex *) w.begin(), 
+					v.size(), 
+					&_wavetable) ;
+
+  gsl_check_exceptions(status) ;
+
+  return w ;
 }
+
+vector<complex<double> > 
+FFTServer::backward_fft(vector<complex<double> > & v)
+{
+  vector<complex<double> > w = v ;
+
+  if (_wavetable.n != v.size())  // resize, or create, if necessary
+    {
+      set_order(v.size()) ; 
+    } ;
   
-FFT::FFT()
-{
-  // do nothing, I guess
+  int status = gsl_fft_complex_backward((gsl_complex *) w.begin(), 
+					v.size(), 
+					&_wavetable);
+
+  gsl_check_exceptions(status) ;
+
+  return w ;
 }
 
-FFT::FFT(unsigned int n)
+vector<complex<double> > 
+FFTServer::inverse_fft(vector<complex<double> > & v)
 {
-  status = gsl_fft_complex_wavetable_alloc (n, &_w);
-  status = gsl_fft_complex_init (n, &_w);
-  status = gsl_fft_complex_generate_wavetable (n, &_w);
-}
+  vector<complex<double> > w = v ;
 
-FFT::FFT(FFT &rhs)
-{
-  if (this == rhs) 
-    return *this ;
-
-  int n = rhs._w.n ;
-
-  // no easy optimisation here, since the twiddle array is a set of
-  // pointers into trig. Doing a memcpy on the members won't work --
-  // it would require some manipulation to fix it up.
-
-  status = gsl_fft_complex_wavetable_alloc (n, &_w); 
-  status = gsl_fft_complex_init (n, &_w);
-  status = gsl_fft_complex_generate_wavetable (n, &_w);  
-}
-
-FFT::~FFT()
-{
-  status = gsl_fft_complex_wavetable_free (n, &_w);
-}
-
-FFTComplex(vector<complex> v, FFT w, const gsl_fft_direction sign)
-{
-  int status = gsl_fft_complex(v.begin(), v.size(), w, sign) ;
+  if (_wavetable.n != v.size())  // resize, or create, if necessary
+    {
+      set_order(v.size()) ; 
+    } ;
   
-  if (status) {
-    cout << "wahhh" << status << endl ;
-  }
+  int status = gsl_fft_complex_inverse((gsl_complex *) w.begin(), 
+				       v.size(), 
+				       &_wavetable) ;
+  gsl_check_exceptions(status) ;
+  
+  return w ;
 }
 
+
+FFTServer::forward_fft_in_place(vector<complex<double> > & v)
+{
+  if (_wavetable.n != v.size())  // resize, or create, if necessary
+    {
+      set_order(v.size()) ; 
+    } ;
+  
+  int status = gsl_fft_complex_forward ((gsl_complex *) v.begin(), 
+					v.size(), 
+					&_wavetable) ;
+  
+  gsl_check_exceptions(status) ;
+}
+
+FFTServer::backward_fft_in_place(vector<complex<double> > & v)
+{
+  if (_wavetable.n != v.size())  // resize, or create, if necessary
+    {
+      set_order(v.size()) ; 
+    } ;
+  
+  int status = gsl_fft_complex_backward ((gsl_complex *) v.begin(), 
+					v.size(), 
+					&_wavetable) ;
+  
+  gsl_check_exceptions(status) ;
+}
+
+FFTServer::inverse_fft_in_place(vector<complex<double> > & v)
+{
+  if (_wavetable.n != v.size())  // resize, or create, if necessary
+    {
+      set_order(v.size()) ; 
+    } ;
+  
+  int status = gsl_fft_complex_inverse ((gsl_complex *) v.begin(), 
+					v.size(), 
+					&_wavetable) ;
+  
+  gsl_check_exceptions(status) ;
+}
