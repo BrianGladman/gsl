@@ -9,7 +9,7 @@
    for -infty < x < infty  */
 
 double
-gsl_ran_laplace (const gsl_rng * r, double mu)
+gsl_ran_two_sided_exponential (const gsl_rng * r, double mu)
 {
   double u;
   do
