@@ -93,7 +93,7 @@ extern inline int GSL_MIN_LDBL(long double a, long double b) { return GSL_MIN(a,
 #define GSL_MIN_DBL(a,b)   GSL_MIN(a,b)
 #define GSL_MAX_LDBL(a,b)  GSL_MAX(a,b)
 #define GSL_MIN_LDBL(a,b)  GSL_MIN(a,b)
-#endif * HAVE_INLINE */
+#endif /* HAVE_INLINE */
 
 
 #endif /* _GSL_MATH_H */
