@@ -224,7 +224,7 @@ endfunction
 
 
 function v = random_vector(n)
-  v = fix((rand(1,n)-0.5)*2000)/10;
+  v = fix((rand(1,n)-0.5)*2000)/1000;
 endfunction
 
 function a = random_matrix(m,n)
@@ -825,6 +825,26 @@ function XX = blas_trsv (order, uplo, trans, diag, N, A, lda, X, incX)
   XX = vout(X, incX, N, y);
 endfunction
 
+function XX = blas_tbsv (order, uplo, trans, diag, N, K, A, lda, X, incX)
+  a = tbmatrix (order, uplo, diag, A, lda, N, K);
+  a = op(a, trans);
+  x = vector (X, incX, N);
+
+  y =  a \ x ;
+  
+  XX = vout(X, incX, N, y);
+endfunction
+
+function XX = blas_tpsv (order, uplo, trans, diag, N, A, X, incX)
+  a = tpmatrix (order, uplo, diag, A, N);
+  a = op(a, trans);
+  x = vector (X, incX, N);
+
+  y =  a \ x ;
+  
+  XX = vout(X, incX, N, y);
+endfunction
+
 
 ######################################################################
 
@@ -866,10 +886,15 @@ function define(S, type, name,x)
       if (i > 1)
         printf(", ");
       endif
-      if (S.complex == 0)
-        printf("%.12g", x(i));
+      if (abs(x(i)) > 1e3 || abs(x(i)) < 1e-3)
+        format = "%.12e";
       else
-        printf("%.12g, %.12g", real(x(i)), imag(x(i)));
+        format = "%.12g";
+      endif
+      if (S.complex == 0)
+        printf(format, x(i));
+      else
+        printf(strcat(format, ", ", format), real(x(i)), imag(x(i)));
       endif
     endfor
     printf(" };\n");
@@ -1701,15 +1726,46 @@ n=16;
 #   endfor
 # endfor
 
+# for j = 1:n
+#   for i = [s,d,c,z]
+#     S = context(i);
+#     T = test_trmatvector(S, j);
+#     for order = [101, 102]
+#       for uplo = [121, 122]
+#         for diag = [131, 132]
+#           test_trmv (S, "trsv", order, uplo, T.trans, diag, T.n,
+#                      T.A, T.lda, T.v, T.s);
+#         endfor
+#       endfor
+#     endfor
+#   endfor
+# endfor
+
+
+# for j = 1:n
+#   for i = [s,d,c,z]
+#     S = context(i);
+#     T = test_tbmatvector(S, j);
+#     for order = [101, 102]
+#       for uplo = [121, 122]
+#         for diag = [131, 132]
+#            test_tbmv (S, "tbsv", order, uplo, T.trans, diag, T.n, T.k,
+#                       T.A, T.lda, T.v, T.s);
+#         endfor
+#       endfor
+#     endfor
+#   endfor
+# endfor
+
 for j = 1:n
   for i = [s,d,c,z]
     S = context(i);
-    T = test_trmatvector(S, j);
+    T = test_tpmatvector(S, j);
     for order = [101, 102]
       for uplo = [121, 122]
         for diag = [131, 132]
-          test_trmv (S, "trsv", order, uplo, T.trans, diag, T.n,
-                     T.A, T.lda, T.v, T.s);
+          test_tpmv (S, "tpsv", order, uplo, T.trans, diag, T.n, 
+                     T.A, T.v, T.s);
         endfor
       endfor
     endfor

@@ -26,7 +26,6 @@
     const int nonunit = (Diag == CblasNonUnit);
     size_t ix, jx;
     size_t i, j;
-    size_t id;
 
     if (N == 0)
 	return;

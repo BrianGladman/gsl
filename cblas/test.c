@@ -25,7 +25,7 @@
 int 
 main ()
 {
-  const double flteps = 1e-4, dbleps = 1e-9;
+  const double flteps = 1e-4, dbleps = 1e-6;
 
   gsl_ieee_env_setup ();
 

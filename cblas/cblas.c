@@ -909,7 +909,7 @@ cblas_ztrsv (const enum CBLAS_ORDER order, const enum CBLAS_UPLO Uplo,
 #undef BASE
 }
 
-#ifdef 0
+
 
 /* TBSV */
 
@@ -1001,7 +1001,7 @@ cblas_ztpsv (const enum CBLAS_ORDER order, const enum CBLAS_UPLO Uplo,
 }
 
 
-
+#ifdef 0
 /* GER */
 
 void
