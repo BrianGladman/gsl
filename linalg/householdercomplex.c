@@ -187,11 +187,11 @@ gsl_linalg_complex_householder_hv (gsl_complex tau, const gsl_vector_complex * v
     gsl_vector_complex_const_view v1 = gsl_vector_complex_const_subvector(v, 1, N-1);
     gsl_vector_complex_view w1 = gsl_vector_complex_subvector(w, 1, N-1);
 
-    gsl_blas_zdotc(v, w, &z1);
+    gsl_blas_zdotc(&v1.vector, &w1.vector, &z1);
     
     z = gsl_complex_add (z0, z1);
 
-    tz = gsl_complex_mul(z, tau);
+    tz = gsl_complex_mul(tau, z);
     ntz = gsl_complex_negative (tz);
 
     /* compute w = w - tau * (v'w) * v   */

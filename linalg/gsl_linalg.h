@@ -109,6 +109,10 @@ int gsl_linalg_complex_householder_hm (gsl_complex tau,
                                        const gsl_vector_complex * v, 
                                        gsl_matrix_complex * A);
 
+int gsl_linalg_complex_householder_hv (gsl_complex tau, 
+                                       const gsl_vector_complex * v, 
+                                       gsl_vector_complex * w);
+
 /* Singular Value Decomposition
 
  * exceptions: 
