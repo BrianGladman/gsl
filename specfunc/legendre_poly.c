@@ -34,7 +34,7 @@ gsl_sf_legendre_P2_impl(double x, gsl_sf_result * result)
   }
   else {
     result->val = 0.5*(3.0*x*x - 1.0);
-    result->err = GSL_DBL_EPSILON * 0.5 * (fabs(3.0*x*x) + 1.0);
+    result->err = GSL_DBL_EPSILON * (fabs(3.0*x*x) + 1.0);
     return GSL_SUCCESS;
   }
 }
@@ -139,7 +139,7 @@ gsl_sf_legendre_Pl_impl(const int l, const double x, gsl_sf_result * result)
 
     result->val  = pre * (J0.val + c1 * Jm1.val);
     result->err  = pre * (J0.err + fabs(c1) * Jm1.err);
-    result->err += GSL_DBL_EPSILON * fabs(result->val);
+    result->err += GSL_SQRT_DBL_EPSILON * fabs(result->val);
 
     return GSL_ERROR_SELECT_2(stat_J0, stat_Jm1);
   }
@@ -256,7 +256,7 @@ gsl_sf_legendre_Plm_impl(const int l, const int m, const double x, gsl_sf_result
       }
 
       result->val = p_ell;
-      result->err = (0.5*l + 1.0) * GSL_DBL_EPSILON * fabs(p_ell);
+      result->err = (0.5*(l-m) + 1.0) * GSL_DBL_EPSILON * fabs(p_ell);
 
       return GSL_SUCCESS;
     }
@@ -359,8 +359,9 @@ gsl_sf_legendre_sphPlm_impl(const int l, int m, const double x, gsl_sf_result * 
     gsl_sf_result P;
     int stat_P = gsl_sf_legendre_Pl_impl(l, x, &P);
     double pre = sqrt((2.0*l + 1.0)/(4.0*M_PI));
-    result->val = pre * P.val;
-    result->err = pre * P.err + GSL_DBL_EPSILON * fabs(result->val);
+    result->val  = pre * P.val;
+    result->err  = pre * P.err;
+    result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
     return stat_P;
   }
   else if(x == 1.0 || x == -1.0) {
@@ -379,22 +380,26 @@ gsl_sf_legendre_sphPlm_impl(const int l, int m, const double x, gsl_sf_result * 
     gsl_sf_result lnpoch;
     double lnpre;
     double sgn = ( GSL_IS_ODD(m) ? -1.0 : 1.0);
-    double ymm;
+    double ymm, ymmerr;
+    double ymmp1_factor = x * sqrt(2.0*m + 3.0);
     double ymmp1;
     gsl_sf_log_1plusx_impl(-x*x, &lncirc);
     gsl_sf_lnpoch_impl(m, 0.5, &lnpoch);  /* Gamma(m+1/2)/Gamma(m) */
     lnpre = -0.25*M_LNPI + 0.5 * (lnpoch.val + m*lncirc.val);
     ymm   = sqrt((2.0+1.0/m)/(4.0*M_PI)) * sgn * exp(lnpre);
-    ymmp1 = x * sqrt(2.0*m + 3.0) * ymm;
+    ymmp1 = ymmp1_factor * ymm;
+    ymmerr = (lnpoch.err + fabs(m*lncirc.err)) * GSL_DBL_EPSILON * fabs(ymm);
 
     if(l == m){
-      result->val = ymm;
-      result->err = 2.0 * GSL_DBL_EPSILON * fabs(ymm);
+      result->val  = ymm;
+      result->err  = ymmerr;
+      result->err += 2.0 * GSL_DBL_EPSILON * fabs(ymm);
       return GSL_SUCCESS;
     }
     else if(l == m + 1) {
-      result->val = ymmp1;
-      result->err = 2.0 * GSL_DBL_EPSILON * fabs(ymmp1);
+      result->val  = ymmp1;
+      result->err  = fabs(ymmp1_factor) * ymmerr;
+      result->err += 2.0 * GSL_DBL_EPSILON * fabs(ymmp1);
       return GSL_SUCCESS;
     }
     else{
@@ -412,8 +417,9 @@ gsl_sf_legendre_sphPlm_impl(const int l, int m, const double x, gsl_sf_result * 
         ymmp1 = y_ell;
       }
 
-      result->val = y_ell;
-      result->err = (0.5*(l-m) + 1.0) * GSL_DBL_EPSILON * fabs(y_ell);
+      result->val  = y_ell;
+      result->err  = (0.5*(l-m) + 1.0) * GSL_DBL_EPSILON * fabs(y_ell);
+      result->err += fabs(ymmerr/ymm) * fabs(y_ell);
 
       return GSL_SUCCESS;
     }

@@ -187,7 +187,7 @@ int gsl_sf_bessel_il_scaled_impl(const int l, double x, gsl_sf_result * result)
     double b = 0.0;
     int status = gsl_sf_bessel_Inu_Jnu_taylor_impl(l+0.5, x, 1, 50, GSL_DBL_EPSILON, &b);
     result->val = sgn * exp(-ax) * sqrt((0.5*M_PI)/x) * b;
-    result->err = GSL_DBL_EPSILON * fabs(result->val);
+    result->err = 2.0 * GSL_DBL_EPSILON * fabs(result->val);
     return status;
   }
   else if(l < 150) {
@@ -204,8 +204,9 @@ int gsl_sf_bessel_il_scaled_impl(const int l, double x, gsl_sf_result * result)
       iellp1 = iell;
       iell   = iellm1;
     }
-    result->val = sgn * i0_scaled.val * (GSL_SQRT_DBL_MIN / iell);
-    result->err = i0_scaled.err * (GSL_SQRT_DBL_MIN / iell);
+    result->val  = sgn * i0_scaled.val * (GSL_SQRT_DBL_MIN / iell);
+    result->err  = i0_scaled.err * (GSL_SQRT_DBL_MIN / iell);
+    result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
     return GSL_ERROR_SELECT_2(stat_i0, stat_CF1);
   }
   else if(GSL_MIN(0.29/(l*l+1.0), 0.5/(l*l+1.0+x*x)) < 0.5*GSL_ROOT3_DBL_EPSILON) {
@@ -234,8 +235,9 @@ int gsl_sf_bessel_il_scaled_impl(const int l, double x, gsl_sf_result * result)
       iellp1 = iell;
       iell   = iellm1;
     }
-    result->val = sgn * iellm1;
-    result->err = fabs(result->val)*(GSL_DBL_EPSILON + fabs(r_iellp1.err/r_iellp1.val) + fabs(r_iell.err/r_iell.val));
+    result->val  = sgn * iellm1;
+    result->err  = fabs(result->val)*(GSL_DBL_EPSILON + fabs(r_iellp1.err/r_iellp1.val) + fabs(r_iell.err/r_iell.val));
+    result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
 
     return GSL_ERROR_SELECT_2(stat_a1, stat_a2);
   }

@@ -704,7 +704,6 @@ static double olver_Bsum(double nu, double z, double abs_zeta)
  *    nu = 10: uniformly good to > 10D
  *    nu = 20: uniformly good to > 13D
  *
- * checked OK [GJ] Sun May  3 22:36:29 EDT 1998 
  */
 int gsl_sf_bessel_Jnu_asymp_Olver_impl(double nu, double x, gsl_sf_result * result)
 {
@@ -766,8 +765,8 @@ int gsl_sf_bessel_Jnu_asymp_Olver_impl(double nu, double x, gsl_sf_result * resu
     gsl_sf_airy_Ai_deriv_impl(arg, GSL_MODE_DEFAULT, &aip);
 
     result->val  = pre * (ai.val*asum/crnu + aip.val*bsum/(nu*crnu*crnu));
-    result->err  = GSL_DBL_EPSILON * fabs(result->val);
-    result->err += pre / (crnu*nu11);
+    result->err  = pre / (crnu*nu11);
+    result->err += 10.0 * 2.0 * GSL_DBL_EPSILON * fabs(result->val);
 
     return stat_a;
   }
@@ -841,8 +840,8 @@ int gsl_sf_bessel_Ynu_asymp_Olver_impl(double nu, double x, gsl_sf_result * resu
     gsl_sf_airy_Bi_deriv_impl(arg, GSL_MODE_DEFAULT, &bip);
 
     result->val  = -pre * (bi.val*asum/crnu + bip.val*bsum/(nu*crnu*crnu));
-    result->err  = GSL_DBL_EPSILON * fabs(result->val);
-    result->err += pre / (crnu*nu11);
+    result->err  = pre / (crnu*nu11);
+    result->err += 10.0 * 2.0 * GSL_DBL_EPSILON * fabs(result->val);
 
     return stat_b;
   }

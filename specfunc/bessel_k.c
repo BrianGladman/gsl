@@ -75,7 +75,7 @@ int gsl_sf_bessel_k0_scaled_impl(const double x, gsl_sf_result * result)
   }
   else {
     result->val = M_PI/(2.0*x);
-    result->err = 2.0 * GSL_DBL_EPSILON * result->val;
+    result->err = 2.0 * GSL_DBL_EPSILON * fabs(result->val);
     if(result->val == 0.0)
       return GSL_EUNDRFLW;
     else 
@@ -101,7 +101,7 @@ int gsl_sf_bessel_k1_scaled_impl(const double x, gsl_sf_result * result)
   }
   else {
     result->val = M_PI/(2.0*x) * (1.0 + 1.0/x);
-    result->err = 2.0 * GSL_DBL_EPSILON * result->val;
+    result->err = 2.0 * GSL_DBL_EPSILON * fabs(result->val);
     if(result->val == 0.0)
       return GSL_EUNDRFLW;
     else 
@@ -127,7 +127,7 @@ int gsl_sf_bessel_k2_scaled_impl(const double x, gsl_sf_result * result)
   }
   else {
     result->val = M_PI/(2.0*x) * (1.0 + 3.0/x * (1.0 + 1.0/x));
-    result->err = 2.0 * GSL_DBL_EPSILON * result->val;
+    result->err = 2.0 * GSL_DBL_EPSILON * fabs(result->val);
     if(result->val == 0.0)
       return GSL_EUNDRFLW;
     else 

@@ -38,7 +38,7 @@ bessel_J_CF1(const double nu, const double x, double * result, double * sign)
     del = c*d;
     r *= del;
     if(d < 0.0) isign = -isign;
-    if(fabs(del-1.0) < 0.5*GSL_DBL_EPSILON) break;
+    if(fabs(del-1.0) < GSL_DBL_EPSILON) break;
   }
   
   *result = r;
@@ -129,7 +129,7 @@ gsl_sf_bessel_Jnu_impl(const double nu, const double x, gsl_sf_result * result)
     double Jnu, Jnup1;
     int status = bessel_J_recur_asymp(nu, x, &Jnu, &Jnup1);
     result->val = Jnu;
-    result->err = 2.0 * GSL_DBL_EPSILON * fabs(0.5 * GSL_MAX_DBL(nu,1.0) * Jnu);
+    result->err = 2.0 * GSL_DBL_EPSILON * fabs(GSL_MAX_DBL(nu,1.0) * Jnu);
     return status;
   }
 }

@@ -270,8 +270,9 @@ gsl_sf_legendre_H3d_1_impl(const double lambda, const double eta, gsl_sf_result 
     double term2 = -(2.0*etasq*etasq + 5.0*etasq*xisq + 3.0*xisq*xisq)/90.0;
     double sinh_term = 1.0 - eta*eta/6.0 * (1.0 - 7.0/60.0*eta*eta);
     double pre = sinh_term/sqrt(lsqp1) / eta;
-    result->val = pre * (term1 + term2);
-    result->err = pre * 2.0 * GSL_DBL_EPSILON * (fabs(term1) + fabs(term2));
+    result->val  = pre * (term1 + term2);
+    result->err  = pre * GSL_DBL_EPSILON * (fabs(term1) + fabs(term2));
+    result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
   }
   else {
@@ -369,8 +370,9 @@ gsl_sf_legendre_H3d_impl(const int ell, const double lambda, const double eta,
       int stat_e;
       gsl_sf_lnsinh_impl(eta, &lnsh);
       legendre_H3d_lnnorm(ell, lambda, &lnN);
-      lnpre_val = 0.5*(M_LNPI + lnN - M_LN2 - lnsh.val) - log(abs_lam);
-      lnpre_err = lnsh.err + 2.0 * GSL_DBL_EPSILON * fabs(lnpre_val);
+      lnpre_val  = 0.5*(M_LNPI + lnN - M_LN2 - lnsh.val) - log(abs_lam);
+      lnpre_err  = lnsh.err;
+      lnpre_err += 2.0 * GSL_DBL_EPSILON * fabs(lnpre_val);
       stat_e = gsl_sf_exp_mult_err_impl(lnpre_val + lm, lnpre_err, P.val, 0.0, result);
       return GSL_ERROR_SELECT_2(stat_e, stat_P);
     }
@@ -396,8 +398,9 @@ gsl_sf_legendre_H3d_impl(const int ell, const double lambda, const double eta,
       int stat_e;
       gsl_sf_lnsinh_impl(eta, &lnsh);
       legendre_H3d_lnnorm(ell, lambda, &lnN);
-      lnpre_val = 0.5*(M_LNPI + lnN - M_LN2 - lnsh.val) - log(abs_lam);
-      lnpre_err = lnsh.err + 2.0 * GSL_DBL_EPSILON * fabs(lnpre_val);
+      lnpre_val  = 0.5*(M_LNPI + lnN - M_LN2 - lnsh.val) - log(abs_lam);
+      lnpre_err  = lnsh.err;
+      lnpre_err += 2.0 * GSL_DBL_EPSILON * fabs(lnpre_val);
       stat_e = gsl_sf_exp_mult_err_impl(lnpre_val + lm, lnpre_err, P.val, 0.0, result);
       return GSL_ERROR_SELECT_2(stat_e, stat_P);
     }
@@ -423,8 +426,9 @@ gsl_sf_legendre_H3d_impl(const int ell, const double lambda, const double eta,
     if(fabs(Hl) > fabs(Hlp1)) {
       gsl_sf_result H0;
       int stat_H0 = gsl_sf_legendre_H3d_0_impl(lambda, eta, &H0);
-      result->val = GSL_SQRT_DBL_MIN/Hl * H0.val;
-      result->err = GSL_SQRT_DBL_MIN/Hl * H0.err;
+      result->val  = GSL_SQRT_DBL_MIN/Hl * H0.val;
+      result->err  = GSL_SQRT_DBL_MIN/Hl * H0.err;
+      result->err += GSL_DBL_EPSILON * ell * fabs(result->val);
       return GSL_ERROR_SELECT_2(stat_H0, stat_CF1);
     }
     else {
@@ -432,6 +436,7 @@ gsl_sf_legendre_H3d_impl(const int ell, const double lambda, const double eta,
       int stat_H1 = gsl_sf_legendre_H3d_1_impl(lambda, eta, &H1);
       result->val = GSL_SQRT_DBL_MIN/Hlp1 * H1.val;
       result->err = GSL_SQRT_DBL_MIN/Hlp1 * H1.err;
+      result->err += GSL_DBL_EPSILON * ell * fabs(result->val);
       return GSL_ERROR_SELECT_2(stat_H1, stat_CF1);
     }
   }

@@ -70,7 +70,7 @@ int gsl_sf_bessel_Y0_impl(const double x, gsl_sf_result * result)
     int stat_J0 = gsl_sf_bessel_J0_impl(x, &J0);
     gsl_sf_cheb_eval_impl(&by0_cs, 0.125*x*x-1.0, &c);
     result->val = two_over_pi*(-M_LN2 + log(x))*J0.val + 0.375 + c.val;
-    result->err = GSL_DBL_EPSILON * fabs(result->val) + c.err;
+    result->err = 2.0 * GSL_DBL_EPSILON * fabs(result->val) + c.err;
     return stat_J0;
   }
   else if(x < xmax) {
@@ -88,7 +88,7 @@ int gsl_sf_bessel_Y0_impl(const double x, gsl_sf_result * result)
     const double ampl  = (0.75 + c1.val) / sqrtx;
     result->val  = ampl * sp.val;
     result->err  = fabs(sp.val) * c1.err/sqrtx + fabs(ampl) * sp.err;
-    result->err += GSL_DBL_EPSILON * fabs(result->val);
+    result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
     return GSL_ERROR_SELECT_3(stat_sp, stat_c1, stat_c2);
   }
   else {

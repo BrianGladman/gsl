@@ -104,8 +104,9 @@ gsl_sf_bessel_lnKnu_impl(const double nu, const double x, gsl_sf_result * result
      * since that is already checked.
      */
     gsl_sf_bessel_K0_scaled_impl(x, &K_scaled);
-    result->val = -x + log(fabs(K_scaled.val));
-    result->err = GSL_DBL_EPSILON * fabs(result->val) + fabs(K_scaled.err/K_scaled.val);
+    result->val  = -x + log(fabs(K_scaled.val));
+    result->err  = GSL_DBL_EPSILON * fabs(x) + fabs(K_scaled.err/K_scaled.val);
+    result->err += GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
   }
   else if(x < 2.0 && nu > 1.0) {
@@ -126,8 +127,9 @@ gsl_sf_bessel_lnKnu_impl(const double nu, const double x, gsl_sf_result * result
       double xi  = 0.25*x*x;
       double sum = 1.0 - xi/(nu-1.0);
       if(nu > 2.0) sum +=  (xi/(nu-1.0)) * (xi/(nu-2.0));
-      result->val = ln_bound + log(sum);
-      result->err = GSL_DBL_EPSILON * fabs(result->val) + lg_nu.err;
+      result->val  = ln_bound + log(sum);
+      result->err  = lg_nu.err;
+      result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
       return GSL_SUCCESS;
     }
     /* can drop-through here */
@@ -141,8 +143,9 @@ gsl_sf_bessel_lnKnu_impl(const double nu, const double x, gsl_sf_result * result
      */
     gsl_sf_result K_scaled;
     gsl_sf_bessel_Knu_scaled_impl(nu, x, &K_scaled);
-    result->val = -x + log(fabs(K_scaled.val));
-    result->err = GSL_DBL_EPSILON * fabs(result->val) + fabs(K_scaled.err/K_scaled.val);
+    result->val  = -x + log(fabs(K_scaled.val));
+    result->err  = GSL_DBL_EPSILON * fabs(x) + fabs(K_scaled.err/K_scaled.val);
+    result->err += GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
   }
 }

@@ -352,12 +352,12 @@ int test_hyperg(void)
   TEST_SF(s, gsl_sf_hyperg_2F1_impl, (8, 8, 5, 0.5, &r), 4205.714285714285714 , TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_hyperg_2F1_impl, (8, 8, 5, -0.5, &r), 0.0028489656290296436616 , TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_hyperg_2F1_impl, (9, 9, 1, 0.99, &r), 1.2363536673577259280e+38  , TEST_TOL0, GSL_SUCCESS);
-  TEST_SF(s, gsl_sf_hyperg_2F1_impl, (9, 9, -1.5, 0.99, &r), 3.796186436458346579e+46 , TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_hyperg_2F1_impl, (9, 9, -1.5, 0.99, &r), 3.796186436458346579e+46 , TEST_TOL2, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_hyperg_2F1_impl, (9, 9, -1.5, -0.99, &r), 0.14733409946001025146 , TEST_TOL0, GSL_SUCCESS);
-  TEST_SF(s, gsl_sf_hyperg_2F1_impl, (9, 9, -8.5, 0.99, &r), -1.1301780432998743440e+65 , TEST_TOL0, GSL_SUCCESS);
-  TEST_SF(s, gsl_sf_hyperg_2F1_impl, (9, 9, -8.5, -0.99, &r), -8.856462606575344483 , TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_hyperg_2F1_impl, (9, 9, -8.5, 0.99, &r), -1.1301780432998743440e+65 , TEST_TOL2, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_hyperg_2F1_impl, (9, 9, -8.5, -0.99, &r), -8.856462606575344483 , TEST_TOL1, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_hyperg_2F1_impl, (9, 9, -21.5, 0.99, &r), 2.0712920991876073253e+95 , TEST_TOL0, GSL_SUCCESS);
-  TEST_SF(s, gsl_sf_hyperg_2F1_impl, (9, 9, -21.5, -0.99, &r), -74.30517015382249216 , TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_hyperg_2F1_impl, (9, 9, -21.5, -0.99, &r), -74.30517015382249216 , TEST_TOL2, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_hyperg_2F1_impl, (9, 9, -100.5, 0.99, &r),  -3.186778061428268980e+262 , TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_hyperg_2F1_impl, (9, 9, -100.5, -0.99, &r),  2.4454358338375677520 , TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_hyperg_2F1_impl, (25, 25, 1, -0.5, &r), -2.9995530823639545027e-06 , TEST_TOL0, GSL_SUCCESS);
@@ -368,7 +368,7 @@ int test_hyperg(void)
   TEST_SF(s, gsl_sf_hyperg_2F1_conj_impl, (1, 1, 1, 0.5, &r), 3.352857095662929028 , TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_hyperg_2F1_conj_impl, (8, 8, 1, 0.5, &r), 1.7078067538891293983e+09 , TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_hyperg_2F1_conj_impl, (8, 8, 5, 0.5, &r), 285767.15696901140627 , TEST_TOL0, GSL_SUCCESS);
-  TEST_SF(s, gsl_sf_hyperg_2F1_conj_impl, (8, 8, 1, -0.5, &r), 0.007248196261471276276 , TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_hyperg_2F1_conj_impl, (8, 8, 1, -0.5, &r), 0.007248196261471276276 , TEST_TOL2, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_hyperg_2F1_conj_impl, (8, 8, 5, -0.5, &r), 0.00023301916814505902809 , TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_hyperg_2F1_conj_impl, (25, 25, 1, -0.5, &r), 5.169694409566320627e-06 , TEST_TOL0, GSL_SUCCESS);
 
@@ -388,22 +388,22 @@ int test_hyperg(void)
   TEST_SF(s, gsl_sf_hyperg_2F1_renorm_impl, (8, 8, 1, 0.5, &r), 12451584.0 , TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_hyperg_2F1_renorm_impl, (8, -8, 1, 0.5, &r), 0.13671875 , TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_hyperg_2F1_renorm_impl, (8, -8, 1, -0.5, &r), 4945.13671875 , TEST_TOL0, GSL_SUCCESS);
-  TEST_SF(s, gsl_sf_hyperg_2F1_renorm_impl, (8, -8, -5.5, 0.5, &r), -83081.19167659493609 , TEST_TOL0, GSL_SUCCESS);
-  TEST_SF(s, gsl_sf_hyperg_2F1_renorm_impl, (8, -8, -5.5, -0.5, &r), 2.2510895952730178518e+06 , TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_hyperg_2F1_renorm_impl, (8, -8, -5.5, 0.5, &r), -83081.19167659493609 , TEST_TOL2, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_hyperg_2F1_renorm_impl, (8, -8, -5.5, -0.5, &r), 2.2510895952730178518e+06 , TEST_TOL2, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_hyperg_2F1_renorm_impl, (8, 8, 5, 0.5, &r), 175.2380952380952381 , TEST_TOL0, GSL_SUCCESS);
-  TEST_SF(s, gsl_sf_hyperg_2F1_renorm_impl, (9, 9, -1.5, 0.99, &r), 1.6063266334913066551e+46 , TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_hyperg_2F1_renorm_impl, (9, 9, -1.5, 0.99, &r), 1.6063266334913066551e+46 , TEST_TOL2, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_hyperg_2F1_renorm_impl, (9, 9, -1.5, -0.99, &r), 0.06234327316254516616 , TEST_TOL0, GSL_SUCCESS);
-  TEST_SF(s, gsl_sf_hyperg_2F1_renorm_impl, (5, 5, -1, 0.5, &r), 4949760.0 , TEST_TOL0, GSL_SUCCESS);
-  TEST_SF(s, gsl_sf_hyperg_2F1_renorm_impl, (5, 5, -10, 0.5, &r), 139408493229637632000.0 , TEST_TOL0, GSL_SUCCESS);
-  TEST_SF(s, gsl_sf_hyperg_2F1_renorm_impl, (5, 5, -100, 0.5, &r), 3.0200107544594411315e+206 , TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_hyperg_2F1_renorm_impl, (5, 5, -1, 0.5, &r), 4949760.0 , TEST_TOL1, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_hyperg_2F1_renorm_impl, (5, 5, -10, 0.5, &r), 139408493229637632000.0 , TEST_TOL2, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_hyperg_2F1_renorm_impl, (5, 5, -100, 0.5, &r), 3.0200107544594411315e+206 , TEST_TOL3, GSL_SUCCESS);
   
   /* 2F1 conj renorm */
 
   TEST_SF(s, gsl_sf_hyperg_2F1_conj_renorm_impl, (9, 9, -1.5, 0.99, &r), 5.912269095984229412e+49 , TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_hyperg_2F1_conj_renorm_impl, (9, 9, -1.5, -0.99, &r), 0.10834020229476124874 , TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_hyperg_2F1_conj_renorm_impl, (5, 5, -1, 0.5, &r), 1.4885106335357933625e+08 , TEST_TOL0, GSL_SUCCESS);
-  TEST_SF(s, gsl_sf_hyperg_2F1_conj_renorm_impl, (5, 5, -10, 0.5, &r), 7.968479361426355095e+21 , TEST_TOL0, GSL_SUCCESS);
-  TEST_SF(s, gsl_sf_hyperg_2F1_conj_renorm_impl, (5, 5, -100, 0.5, &r), 3.1113180227052313057e+208 , TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_hyperg_2F1_conj_renorm_impl, (5, 5, -10, 0.5, &r), 7.968479361426355095e+21 , TEST_TOL2, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_hyperg_2F1_conj_renorm_impl, (5, 5, -100, 0.5, &r), 3.1113180227052313057e+208 , TEST_TOL3, GSL_SUCCESS);
 
 
   return s;

@@ -66,9 +66,9 @@ static int bessel_Yn_small_x(const int n, const double x, gsl_sf_result * result
     term2 = 0.0;
   }
 
-  result->val = term1 + term2;
-  result->err = GSL_DBL_EPSILON * (fabs(ln_pre1)*fabs(term1) + fabs(term2));
-  result->err += GSL_DBL_EPSILON * fabs(result->val);
+  result->val  = term1 + term2;
+  result->err  = GSL_DBL_EPSILON * (fabs(ln_pre1)*fabs(term1) + fabs(term2));
+  result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
 
   return GSL_SUCCESS;
 }
@@ -138,8 +138,9 @@ gsl_sf_bessel_Yn_impl(int n, const double x, gsl_sf_result * result)
 	bym = by;
 	by  = byp;
       }
-      result->val = sign * by;
-      result->err = fabs(result->val) * (fabs(r_by.err/r_by.val) + fabs(r_bym.err/r_bym.val));
+      result->val  = sign * by;
+      result->err  = fabs(result->val) * (fabs(r_by.err/r_by.val) + fabs(r_bym.err/r_bym.val));
+      result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
 
       return GSL_ERROR_SELECT_2(stat_1, stat_0);
     }

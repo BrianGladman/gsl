@@ -29,7 +29,7 @@ int gsl_sf_bessel_j0_impl(const double x, gsl_sf_result * result)
     const double c5 = -1.0/39916800.0;
     const double c6 =  1.0/6227020800.0;
     result->val = 1.0 + y*(c1 + y*(c2 + y*(c3 + y*(c4 + y*(c5 + y*c6)))));
-    result->err = GSL_DBL_EPSILON * result->val;
+    result->err = 2.0 * GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
   }
   else {
@@ -69,7 +69,7 @@ int gsl_sf_bessel_j1_impl(const double x, gsl_sf_result * result)
     const double c5 = -1.0/172972800.0;
     const double sum = 1.0 + y*(c1 + y*(c2 + y*(c3 + y*(c4 + y*c5))));
     result->val = x/3.0 * sum;
-    result->err = GSL_DBL_EPSILON * fabs(result->val);
+    result->err = 2.0 * GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
   }
   else {
@@ -171,7 +171,7 @@ int gsl_sf_bessel_jl_impl(const int l, const double x, gsl_sf_result * result)
     int status = gsl_sf_bessel_Jnu_asympx_impl(l + 0.5, x, &b);
     double pre = sqrt((0.5*M_PI)/x);
     result->val = pre * b.val;
-    result->err = GSL_DBL_EPSILON * fabs(result->val) + pre * b.err;
+    result->err = 2.0 * GSL_DBL_EPSILON * fabs(result->val) + pre * b.err;
     return status;
   }
   else if(l > 1.0/GSL_ROOT6_DBL_EPSILON) {
@@ -179,13 +179,13 @@ int gsl_sf_bessel_jl_impl(const int l, const double x, gsl_sf_result * result)
     int status = gsl_sf_bessel_Jnu_asymp_Olver_impl(l + 0.5, x, &b);
     double pre = sqrt((0.5*M_PI)/x);
     result->val = pre * b.val;
-    result->err = GSL_DBL_EPSILON * fabs(result->val) + pre * b.err;
+    result->err = 2.0 * GSL_DBL_EPSILON * fabs(result->val) + pre * b.err;
     return status;
   }
   else {
     /* recurse down from safe values */
     double rt_term = sqrt((0.5*M_PI)/x);
-    const int LMAX = 2 + (int)(1.0/GSL_ROOT6_DBL_EPSILON);
+    const int LMAX = 8 + (int)(1.0/GSL_ROOT6_DBL_EPSILON);
 
     gsl_sf_result r_jellp1;
     gsl_sf_result r_jell;

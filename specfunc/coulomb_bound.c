@@ -34,8 +34,8 @@ gsl_sf_hydrogenicR_1_impl(const double Z, const double r, gsl_sf_result * result
     double norm = A*sqrt(Z);
     double ea = exp(-Z*r);
     result->val = norm*ea;
-    result->err = GSL_DBL_EPSILON * fabs(result->val) * fabs(Z*r);
-    return ( result->val > 0.0 ? GSL_SUCCESS : GSL_EUNDRFLW );
+    result->err = 2.0 * GSL_DBL_EPSILON * fabs(result->val) * fabs(Z*r);
+    return ( result->val == 0.0 ? GSL_EUNDRFLW : GSL_SUCCESS );
   }
   else {
     result->val = 0.0;
@@ -65,9 +65,10 @@ gsl_sf_hydrogenicR_impl(const int n, const int l,
     int stat_lag = gsl_sf_laguerre_n_impl(n-l-1, 2*l+1, rho, &lag);
     int stat_uf;
     double W = norm * ea * pp;
-    result->val = W * lag.val;
-    result->err = GSL_DBL_EPSILON * fabs(result->val * 0.5*rho) + fabs(W)*lag.err;
-    stat_uf = ( result->val > 0.0 ? GSL_SUCCESS : GSL_EUNDRFLW );
+    result->val  = W * lag.val;
+    result->err  = fabs(W)*lag.err;
+    result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val * 0.5*rho);
+    stat_uf = ( result->val == 0.0 ? GSL_EUNDRFLW : GSL_SUCCESS );
     return GSL_ERROR_SELECT_2(stat_lag, stat_uf);
   }
 }
