@@ -1,3 +1,7 @@
+Mon Apr 30 13:46:39 2001  Brian Gough  <bjg@network-theory.co.uk>
+
+	* gsl_math.h: split out gsl_pow_int.h and gsl_nan.h
+
 Wed Mar 21 14:16:29 2001  Brian Gough  <bjg@network-theory.co.uk>
 
 	* gsl-config.in (Usage): allow user to specify an external blas

@@ -8,7 +8,7 @@ SUBLIBS = block/libgslblock.la blas/libgslblas.la complex/libgslcomplex.la cheb/
 
 bin_SCRIPTS = gsl-config
 
-pkginclude_HEADERS = gsl_math.h gsl_machine.h gsl_mode.h gsl_precision.h
+pkginclude_HEADERS = gsl_math.h gsl_pow_int.h gsl_nan.h gsl_machine.h gsl_mode.h gsl_precision.h
 EXTRA_DIST = autogen.sh gsl-config.in configure.in THANKS KNOWN-PROBLEMS gsl.spec gsl.m4 MACHINES
 
 lib_LTLIBRARIES = libgsl.la
