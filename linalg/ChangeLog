@@ -1,3 +1,9 @@
+Wed Apr 17 20:04:11 2002  Brian Gough  <bjg@network-theory.co.uk>
+
+	* tridiag.c (gsl_linalg_solve_tridiag):
+	(gsl_linalg_solve_cyc_tridiag): added tridiagonal solvers for
+ 	non-symmetric case (David Necas <yeti@physics.muni.cz>)
+
 Mon Apr 15 19:55:40 2002  Brian Gough  <bjg@network-theory.co.uk>
 
 	* tridiag.c (solve_cyc_tridiag): corrected typographical error in

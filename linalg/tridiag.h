@@ -1,6 +1,7 @@
 /* linalg/tridiag.h
  * 
- * Copyright (C) 1996, 1997, 1998, 1999, 2000 Gerard Jungman, Brian Gough
+ * Copyright (C) 1996, 1997, 1998, 1999, 2000, 2002 Gerard Jungman,
+ * Brian Gough, David Necas
  * 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,13 +29,22 @@
 #include <stdlib.h>
 
 static
+int solve_tridiag_nonsym(
+  const double diag[], size_t d_stride,
+  const double abovediag[], size_t a_stride,
+  const double belowdiag[], size_t b_stride,
+  const double rhs[], size_t r_stride,
+  double x[], size_t x_stride,
+  size_t N
+  );
+
+static
 int solve_tridiag(
   const double diag[], size_t d_stride,
   const double offdiag[], size_t o_stride,
   const double b[], size_t b_stride,
   double x[], size_t x_stride,
-  size_t N
-  );
+  size_t N);
 
 static
 int solve_cyc_tridiag(
@@ -45,5 +55,13 @@ int solve_cyc_tridiag(
   size_t N
   );
 
+static
+int solve_cyc_tridiag_nonsym(
+  const double diag[], size_t d_stride,
+  const double abovediag[], size_t a_stride,
+  const double belowdiag[], size_t b_stride,
+  const double rhs[], size_t r_stride,
+  double x[], size_t x_stride,
+  size_t N);
 
 #endif /* __GSL_TRIDIAG_H__ */

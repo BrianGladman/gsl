@@ -1,5 +1,8 @@
 * What is new in gsl-1.2:
 
+** Added nonsymmetric tridiagonal solvers gsl_linalg_solve_tridiag and
+gsl_linalg_solve_cyc_tridiag.
+
 ** Added missing declaration for the generator gsl_rng_mt_19937_1998.
 
 ** Fixed a bug in gsl_linalg_solv_symm_cyc_tridiag which caused it to
