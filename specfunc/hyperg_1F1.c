@@ -88,7 +88,7 @@ hyperg_1F1_CF1(const double a, const double b, const int N, const double x, doub
     Anm1 = An;
     Bnm1 = Bn;
     an = 2.0*(a + N + n) - b + x;
-    bn = (a + N + n - 1.0) * (b - a- N - n);
+    bn = (a + N + n - 1.0) * (b - a - N - n);
     An = bn*Anm1 + an*Anm2;
     Bn = bn*Bnm1 + an*Bnm2;
 
@@ -976,7 +976,7 @@ hyperg_1F1_ab_posint(const int a, const int b, const double x, double * result)
 
     if(s == 0) {
       int n;
-      for(n=b/2+1; n<a; n++) {
+      for(n=(b+1)/2; n<a; n++) {
         Mnp1 = ((b-n)*Mnm1 + (2*n-b+x)*Mn)/n;
 	Mnm1 = Mn;
 	Mn   = Mnp1;
@@ -987,6 +987,64 @@ hyperg_1F1_ab_posint(const int a, const int b, const double x, double * result)
     else {
       *result = 0.0;
       return GSL_EFAILED;
+    }
+  }
+  else if(x > 0.0 && 2*a + x > b) {
+    const double a0 = (b-x)/2.0;
+    const int ia0   = (int)floor(locMAX(a0,0.0));
+    double r;
+    int stat_CF1 = hyperg_1F1_CF1(0.0, b, ia0, x, &r);
+    double M0 = GSL_SQRT_DBL_MIN;
+    double Mnm1  = M0;        /* 1F1(ia0,b,x)   */
+    double Mn    = r * M0;    /* 1F1(ia0+1,b,x) */
+    double Mnp1;
+    int n;
+    for(n=ia0+1; n<a; n++) {
+      Mnp1 = ((b-n)*Mnm1 + (2*n-b+x)*Mn)/n;
+      Mnm1 = Mn;
+      Mn   = Mnp1;
+    }
+    
+    /* FIXME ??? */
+    
+    *result = Mn;
+    return GSL_SUCCESS;
+  }
+  else if(x > 0.0 && 2*a + x <= b) {
+    /*
+    double Mnm1 = 1.0;
+    double Mn;
+    double Mnp1;
+    int n;
+    gsl_sf_exprel_n_impl(b-1, x, &Mn);
+    for(n=1; n<a; n++) {
+      Mnp1 = ((b-n)*Mnm1 + (2*n-b+x)*Mn)/n;
+      Mnm1 = Mn;
+      Mn   = Mnp1;
+    }
+    *result = Mn;
+    return GSL_SUCCESS;
+    */
+    double r;
+    int stat_CF1 = hyperg_1F1_CF1(0.0, b, a, x, &r);
+    /* r = 1.1096587924011110925; */
+    if(stat_CF1 == GSL_SUCCESS) {
+      double Mnp1 = GSL_SQRT_DBL_MIN;
+      double Mn   = Mnp1 / r;
+      double Ma   = Mn;
+      double Mnm1;
+      int n;
+      for(n=a; n>0; n--) {
+        Mnm1 = (n * Mnp1 - (2*n-b+x) * Mn) / (b-n);
+        Mnp1 = Mn;
+        Mn   = Mnm1;
+      }
+      *result = Ma/Mn;
+      return GSL_SUCCESS;
+    }
+    else {
+      *result = 0.0;
+      return stat_CF1;
     }
   }
   else if(2*a < b && GSL_IS_EVEN(b)){
@@ -1060,10 +1118,40 @@ hyperg_1F1_ab_posint(const int a, const int b, const double x, double * result)
   }
   else {
     /* NOT REACHED */
+    *result = 0.0;
+    return GSL_ESANITY;
   }
 }
 
 
+
+static
+int
+hyperg_1F1_ab_negint(const double a, const double b, const double x, double * result)
+{
+  /* Safe to recurse backward with Z function.
+   * Z(ap,N,b,x) := 1/Gamma(1+ap-N-b) 1F1(ap-N,b,x)
+   * Z[n+1] + (b-2a-x+2n) Z[n] + (a-n)(1+a-n-b) Z[n-1] = 0
+   */
+  double Znm1 = 1.0;	     /* Z(0,0,b,x) */
+  double Zn   = 1.0 - x/b;   /* Z(0,1,b,x) */
+  double Znp1;
+  int n;
+  for(n=2; n<a; n++) {
+    Znp1 = -(b-x-2*n) * Zn + n*(1-n-b) * Znm1;
+    Znm1 = Zn;
+    Zn   = Znp1;
+  }
+  if(Zn == 0.0) {
+    *result = 0.0;
+    return GSL_SUCCESS;
+  }
+  else {
+    double lg_ab;
+    gsl_sf_lngamma_impl(1.0+a-b, &lg_ab);  /* 1+a-b > 0  here */
+    return gsl_sf_exp_sgn_impl(lg_ab + log(fabs(Zn)), Zn, result);
+  }
+}
 
 
 /* Handle a = positive integer cases.
@@ -1222,30 +1310,10 @@ gsl_sf_hyperg_1F1_int_impl(const int a, const int b, const double x, double * re
   }
   else if(a == -2) {
     *result = 1.0 + (double)a/b*x * (1.0 + 0.5*(a+1.0)/(b+1.0)*x);
+    return GSL_SUCCESS;
   }
   else if(a < 0 && b < 0) {
-    /* Safe to recurse backward with Z function.
-     * Z(ap,N,b,x) := 1/Gamma(1+ap-N-b) 1F1(ap-N,b,x)
-     * Z[n+1] + (b-2a-x+2n) Z[n] + (a-n)(1+a-n-b) Z[n-1] = 0
-     */
-    double Znm1 = 1.0;         /* Z(0,0,b,x) */
-    double Zn   = 1.0 - x/b;   /* Z(0,1,b,x) */
-    double Znp1;
-    int n;
-    for(n=2; n<a; n++) {
-      Znp1 = -(b-x-2*n) * Zn + n*(1-n-b) * Znm1;
-      Znm1 = Zn;
-      Zn   = Znp1;
-    }
-    if(Zn == 0.0) {
-      *result = 0.0;
-      return GSL_SUCCESS;
-    }
-    else {
-      double lg_ab;
-      gsl_sf_lngamma_impl(1.0+a-b, &lg_ab);  /* 1+a-b > 0  here */
-      return gsl_sf_exp_sgn_impl(lg_ab + log(fabs(Zn)), Zn, result);
-    }
+    return hyperg_1F1_ab_negint(a, b, x, result);
   }
   else if(a < 0 && b > 0) {
     /* Use Kummer to reduce it to the positive integer case.
