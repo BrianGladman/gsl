@@ -23,7 +23,6 @@ structure constant, which are pure numbers are defined in
 * Nautical Units::              
 * Printers Units::              
 * Volume::                      
-* Cookery::                     
 * Mass and Weight ::            
 * Thermal Energy and Power::    
 * Pressure::                    
@@ -246,23 +245,23 @@ The volume of 1 pint.
 @end table
 
 
-@node Cookery
-@section Cookery
-@cindex cookery units
+@comment @node Cookery
+@comment @section Cookery
+@comment @commentindex cookery units
 
-@table @code
-@item GSL_CONST_MKS_CUP
-The volume of 1 cup.
+@comment @table @commentode
+@comment @item GSL_CONST_MKS_CUP
+@comment The volume of 1 cup.
 
-@item GSL_CONST_MKS_FLUID_OUNCE
-The volume of 1 fluid ounce.
+@comment @item GSL_CONST_MKS_FLUID_OUNCE
+@comment The volume of 1 fluid ounce.
 
-@item GSL_CONST_MKS_TABLESPOON
-The volume of 1 tablespoon.
+@comment @item GSL_CONST_MKS_TABLESPOON
+@comment The volume of 1 tablespoon.
 
-@item GSL_CONST_MKS_TEASPOON
-The volume of 1 teaspoon.
-@end table
+@comment @item GSL_CONST_MKS_TEASPOON
+@comment The volume of 1 teaspoon.
+@comment @end table
 
 
 @node Mass and Weight 

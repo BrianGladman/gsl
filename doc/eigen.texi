@@ -229,7 +229,7 @@ found in the following book,
 G. H. Golub, C. F. Van Loan, @cite{Matrix Computations} (3rd Ed, 1996),
 Johns Hopkins University Press, ISBN 0-8018-5414-8.
 @end itemize
-
+@noindent
 The @sc{lapack} library is described in,
 
 @itemize @asis

@@ -242,9 +242,10 @@ about the best-fit.  The sum of squares of the residuals from the
 best-fit, @math{\chi^2}, is returned in @var{chisq}. 
 
 The best-fit is found by singular value decomposition of the matrix
-@var{X} using the preallocated workspace provided in @var{work}. Any
-components which have zero singular value (to machine precision) are
-discarded from the fit.
+@var{X} using the preallocated workspace provided in @var{work}. The
+modified Golub-Reinsch SVD algorithm is used, with column scaling to
+improve the accuracy of the singular values. Any components which have
+zero singular value (to machine precision) are discarded from the fit.
 @end deftypefun
 
 @deftypefun int gsl_multifit_wlinear (const gsl_matrix * @var{X}, const gsl_vector * @var{w}, const gsl_vector * @var{y}, gsl_vector * @var{c}, gsl_matrix * @var{cov}, double * @var{chisq}, gsl_multifit_linear_workspace * @var{work})

@@ -23,6 +23,7 @@ optimizations.
 * Cholesky Decomposition::      
 * Tridiagonal Decomposition of Real Symmetric Matrices::  
 * Tridiagonal Decomposition of Hermitian Matrices::  
+* Bidiagonalization::           
 * Householder solver for linear systems::  
 * Tridiagonal Systems::         
 * Linear Algebra References and Further Reading::  
@@ -159,7 +160,7 @@ compute an orthonormal basis for a set of vectors. The first @math{N}
 columns of @math{Q} form an orthonormal basis for the range of @math{A},
 @math{ran(A)}, when @math{A} has full column rank.
 
-@deftypefun int gsl_linalg_QR_decomp (gsl_matrix * @var{A}, gsl_vector * @var{tau}, gsl_vector * @var{work})
+@deftypefun int gsl_linalg_QR_decomp (gsl_matrix * @var{A}, gsl_vector * @var{tau})
 This function factorizes the @math{M}-by-@math{N} matrix @var{A} into
 the @math{QR} decomposition @math{A = Q R}.  On output the diagonal and
 upper triangular part of the input matrix contain the matrix
@@ -171,8 +172,7 @@ vector @var{tau} must be of length @math{k=\min(M,N)}. The matrix
 where @math{Q_i = I - \tau_i v_i v_i^T} and @math{v_i} is the
 Householder vector @math{v_i =
 (0,...,1,A(i+1,i),A(i+2,i),...,A(m,i))}. This is the same storage scheme
-as used by @sc{lapack}.  The routine requires a workspace of size
-@math{N} which should be provided by the vector @var{work}.
+as used by @sc{lapack}.
 
 The algorithm used to perform the decomposition is Householder QR (Golub
 & Van Loan, @cite{Matrix Computations}, Algorithm 5.2.1).
@@ -231,11 +231,10 @@ the product @math{b' = Q^T b} has already been computed using
 @code{gsl_linalg_QR_QTvec}.
 @end deftypefun
 
-@deftypefun int gsl_linalg_QR_unpack (const gsl_matrix * @var{QR}, const gsl_vector * @var{tau}, gsl_matrix * @var{Q}, gsl_matrix * @var{R}, gsl_vector * @var{work})
+@deftypefun int gsl_linalg_QR_unpack (const gsl_matrix * @var{QR}, const gsl_vector * @var{tau}, gsl_matrix * @var{Q}, gsl_matrix * @var{R})
 This function unpacks the encoded @math{QR} decomposition
 (@var{QR},@var{tau}) into the matrices @var{Q} and @var{R}, where
-@var{Q} is @math{M}-by-@math{M} and @var{R} is @math{M}-by-@math{N}.  A
-workspace of size @math{M} should be provided in the vector @var{work}.
+@var{Q} is @math{M}-by-@math{M} and @var{R} is @math{M}-by-@math{N}. 
 @end deftypefun
 
 @deftypefun int gsl_linalg_QR_QRsolve (gsl_matrix * @var{Q}, gsl_matrix * @var{R}, const gsl_vector * @var{b}, gsl_vector * @var{x})
@@ -291,7 +290,7 @@ solved by back-substitution and permutation.  We denote the @math{QR}
 decomposition with column pivoting by @math{QRP^T} since @math{A = Q R
 P^T}.
 
-@deftypefun int gsl_linalg_QRPT_decomp (gsl_matrix * @var{A}, gsl_vector * @var{tau}, gsl_permutation * @var{p}, int *@var{signum}, gsl_vector * @var{norm}, gsl_vector * @var{work})
+@deftypefun int gsl_linalg_QRPT_decomp (gsl_matrix * @var{A}, gsl_vector * @var{tau}, gsl_permutation * @var{p}, int *@var{signum}, gsl_vector * @var{norm})
 This function factorizes the @math{M}-by-@math{N} matrix @var{A} into
 the @math{QRP^T} decomposition @math{A = Q R P^T}.  On output the
 diagonal and upper triangular part of the input matrix contain the
@@ -307,13 +306,16 @@ Q_1} where @math{Q_i = I - \tau_i v_i v_i^T} and @math{v_i} is the
 Householder vector @math{v_i =
 (0,...,1,A(i+1,i),A(i+2,i),...,A(m,i))}. This is the same storage scheme
 as used by @sc{lapack}.  On output the norms of each column of @var{R}
-are stored in the vector @var{norm}.  The routine also requires a
-workspace of size @math{N} which should be provided in the vector
-@var{work}.
+are stored in the vector @var{norm}.
 
 The algorithm used to perform the decomposition is Householder QR with
 column pivoting (Golub & Van Loan, @cite{Matrix Computations}, Algorithm
 5.4.1).
+@end deftypefun
+
+@deftypefun int gsl_linalg_QRPT_decomp2 (const gsl_matrix * @var{A}, gsl_matrix * @var{q}, gsl_matrix * @var{r}, gsl_vector * @var{tau}, gsl_permutation * @var{p}, int *@var{signum}, gsl_vector * @var{norm})
+This function factorizes the matrix @var{A} into the decomposition
+@math{A = Q R P^T}.
 @end deftypefun
 
 @deftypefun int gsl_linalg_QRPT_solve (const gsl_matrix * @var{QR}, const gsl_vector * @var{tau}, const gsl_permutation * @var{p}, const gsl_vector * @var{b}, gsl_vector * @var{x})
@@ -396,18 +398,30 @@ exact zeroes for singular values, due to finite numerical
 precision. Small singular values should be edited by choosing a suitable
 tolerance.
 
-@deftypefun int gsl_linalg_SV_decomp (gsl_matrix * @var{A}, gsl_matrix * @var{Q}, gsl_vector * @var{S})
+@deftypefun int gsl_linalg_SV_decomp (gsl_matrix * @var{A}, gsl_matrix * @var{Q}, gsl_vector * @var{S}, gsl_vector * @var{work})
 This function factorizes the @math{M}-by-@math{N} matrix @var{A} into
-the singular value decomposition @math{A = U S Q^T}. On output the
+the singular value decomposition (SVD) @math{A = U S Q^T}. On output the
 matrix @var{A} is replaced by @math{U}. The diagonal elements of the
 singular value matrix @math{S} are stored in the vector @var{S}. The
 singular values are non-negative and form a non-increasing sequence from
 @math{S_1} to @math{S_N}. The matrix @var{Q} contains the elements of
 @math{Q} in untransposed form. To form the product @math{U S Q^T} it is
-necessary to take the transpose of @var{Q}.
+necessary to take the transpose of @var{Q}.  A workspace of length
+@var{N} is required in @var{work}.
 
-The algorithm used in the decomposition is One-Sided Jacobi
-orthogonalization (see references for details).
+This routine uses the Golub-Reinsch SVD algorithm.
+@end deftypefun
+
+@deftypefun int gsl_linalg_SV_decomp_mod (gsl_matrix * @var{A}, gsl_matrix * @var{X}, gsl_matrix * @var{V}, gsl_vector * @var{S}, gsl_vector * @var{work})
+This function computes the SVD using the modified Golub-Reinsch
+algorithm, which is faster for @math{M>>N}.  It requires the
+@math{N}-by-@math{N} matrix @var{X} as additional working space.
+@end deftypefun
+
+@deftypefun int gsl_linalg_SV_decomp_jacobi (gsl_matrix * @var{A}, gsl_matrix * @var{Q}, gsl_vector * @var{S})
+This function computes the SVD using One-Sided Jacobi orthogonalization
+(see references for details).  The Jacobi method can compute singular
+values to higher relative accuracy than Golub-Reinsch algorithms.
 @end deftypefun
 
 @deftypefun int gsl_linalg_SV_solve (gsl_matrix * @var{U}, gsl_matrix * @var{Q}, gsl_vector * @var{S}, const gsl_vector * @var{b}, gsl_vector * @var{x})
@@ -562,13 +576,11 @@ upper triangular part of @var{A} and imaginary parts of the diagonal are
 not referenced.
 @end deftypefun
 
-@deftypefun int gsl_linalg_hermtd_unpack (const gsl_matrix_complex * @var{A}, const gsl_vector_complex * @var{tau}, gsl_matrix_complex * @var{Q}, gsl_vector * @var{d}, gsl_vector * @var{sd}, gsl_vector_complex * @var{work})
+@deftypefun int gsl_linalg_hermtd_unpack (const gsl_matrix_complex * @var{A}, const gsl_vector_complex * @var{tau}, gsl_matrix_complex * @var{Q}, gsl_vector * @var{d}, gsl_vector * @var{sd})
 This function unpacks the encoded tridiagonal decomposition (@var{A},
 @var{tau}) obtained from @code{gsl_linalg_hermtd_decomp} into the
 unitary matrix @var{U}, the real vector of diagonal elements @var{d} and
-the real vector of subdiagonal elements @var{sd}.  This routine requires
-a workspace vector @var{work} of the same length as the diagonal of
-@var{A}.
+the real vector of subdiagonal elements @var{sd}. 
 @end deftypefun
 
 @deftypefun int gsl_linalg_hermtd_unpack_dsd (const gsl_matrix_complex * @var{A}, gsl_vector * @var{d}, gsl_vector * @var{sd})
@@ -578,6 +590,63 @@ tridiagonal decomposition (@var{A}, @var{tau}) obtained from
 @var{sd}.
 @end deftypefun
 
+@node Bidiagonalization
+@section Bidiagonalization 
+@cindex bidiagonalization of real matrices
+
+A general matrix @math{A} can be factorized by similarity
+transformations into the form,
+
+@tex
+\beforedisplay
+$$
+A = U B V^T
+$$
+\afterdisplay
+@end tex
+@ifinfo
+@example
+A = U B V^T
+@end example
+@end ifinfo
+@noindent
+where @math{U} and @math{V} are orthogonal matrices and @math{B} is a
+@math{N}-by-@math{N} bidiagonal matrix with non-zero entries only on the
+diagonal and superdiagonal.  The size of @var{U} is @math{M}-by-@math{N}
+and the size of @var{V} is @math{N}-by-@math{N}.
+
+@deftypefun int gsl_linalg_bidiag_decomp (gsl_matrix * @var{A}, gsl_vector * @var{tau_U}, gsl_vector * @var{tau_V})
+This function factorizes the @math{M}-by-@math{N} matrix @var{A} into
+bidiagonal form @math{U B V^T}.  The diagonal and superdiagonal of the
+matrix @math{B} are stored in the diagonal and superdiagonal of @var{A}.
+The orthogonal matrices @math{U} and @var{V} are stored as compressed
+Householder vectors in the remaining elements of @var{A}.  The
+Householder coefficients are stored in the vectors @var{tau_U} and
+@var{tau_V}.  The length of @var{tau_U} must equal the number of
+elements in the diagonal of @var{A} and the length of @var{tau_V} should
+be one element shorter.
+@end deftypefun
+
+@deftypefun int gsl_linalg_bidiag_unpack (const gsl_matrix * @var{A}, const gsl_vector * @var{tau_U}, gsl_matrix * @var{U}, const gsl_vector * @var{tau_V}, gsl_matrix * @var{V}, gsl_vector * @var{diag}, gsl_vector * @var{superdiag})
+This function unpacks the bidiagonal decomposition of @var{A} given by
+@code{gsl_linalg_bidiag_decomp}, (@var{A}, @var{tau_U}, @var{tau_V})
+into the separate orthogonal matrices @var{U}, @var{V} and the diagonal
+vector @var{diag} and superdiagonal @var{superdiag}.
+@end deftypefun
+
+@deftypefun int gsl_linalg_bidiag_unpack2 (gsl_matrix * @var{A}, gsl_vector * @var{tau_U}, gsl_vector * @var{tau_V}, gsl_matrix * @var{V})
+This function unpacks the bidiagonal decomposition of @var{A} given by
+@code{gsl_linalg_bidiag_decomp}, (@var{A}, @var{tau_U}, @var{tau_V})
+into the separate orthogonal matrices @var{U}, @var{V} and the diagonal
+vector @var{diag} and superdiagonal @var{superdiag}.  The matrix @var{U}
+is stored in-place in @var{A}.
+@end deftypefun
+
+@deftypefun int gsl_linalg_bidiag_unpack_B (const gsl_matrix * @var{A}, gsl_vector * @var{diag}, gsl_vector * @var{superdiag})
+This function unpacks the diagonal and superdiagonal of the bidiagonal
+decomposition of @var{A} given by @code{gsl_linalg_bidiag_decomp}, into
+the diagonal vector @var{diag} and superdiagonal vector @var{superdiag}.
+@end deftypefun
 
 @node Householder solver for linear systems
 @section Householder solver for linear systems
@@ -604,6 +673,7 @@ matrix @var{A} is destroyed by the Householder transformations.
 @deftypefun int gsl_linalg_solve_symm_tridiag (const gsl_vector * @var{diag}, const gsl_vector * @var{offdiag}, const gsl_vector * @var{b}, gsl_vector * @var{x})
 This function solves the system @math{A x = b} where @var{A} is
 symmetric tridiagonal.  The form of @var{A} is shown below,
+
 @tex
 \beforedisplay
 $$
@@ -628,6 +698,7 @@ A = ( d0 o0       )
 @deftypefun int gsl_linalg_solve_symm_cyc_tridiag (const gsl_vector * @var{diag}, const gsl_vector * @var{offdiag}, const gsl_vector * @var{b}, gsl_vector * @var{x})
 This function solves the system @math{A x = b} where @var{A} is
 symmetric cyclic tridiagonal.  The form of @var{A} is shown below,
+
 @tex
 \beforedisplay
 $$
@@ -674,6 +745,15 @@ The @sc{lapack} source code can be found at
 @url{http://www.netlib.org/lapack} along with an online copy of the
 users guide.
 
+The Modified Golub-Reinsch algorithm is described in the following paper,
+
+@itemize @asis
+@item
+T.F. Chan, "An Improved Algorithm for Computing the Singular Value
+Decomposition", @cite{ACM Transactions on Mathematical Software}, 8
+(1982), pp 72--83.
+@end itemize
+@noindent
 The Jacobi algorithm for singular value decomposition is described in
 the following papers,
 
