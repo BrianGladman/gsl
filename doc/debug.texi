@@ -272,7 +272,7 @@ warning-free.
 @item -Wall 
 This turns on a set of warnings for common programming problems.  You
 need @code{-Wall}, but it is not enough on its own.
-@item -O4
+@item -O2
 Turn on optimization.  The warnings for uninitialized variables in
 @code{-Wall} rely on the optimizer to analyze the code.  If there is no
 optimization then these warnings aren't generated.

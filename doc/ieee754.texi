@@ -393,7 +393,7 @@ The reference for the IEEE standard is,
 
 @itemize @asis
 @item
-ANSI/IEEE Std 754-1985, IEEE Standard for Binary Floating-Point Arithmetic
+ANSI/IEEE Std 754-1985, IEEE Standard for Binary Floating-Point Arithmetic.
 @end itemize
 @noindent
 A more pedagogical introduction to the standard can be found in the
@@ -404,7 +404,7 @@ Arithmetic''.
 @item
 David Goldberg: What Every Computer Scientist Should Know About
 Floating-Point Arithmetic. @cite{ACM Computing Surveys}, Vol. 23, No. 1
-(March 1991), pages 5-48
+(March 1991), pages 5-48.
 
 Corrigendum: @cite{ACM Computing Surveys}, Vol. 23, No. 3 (September
 1991), page 413.
@@ -413,7 +413,7 @@ Corrigendum: @cite{ACM Computing Surveys}, Vol. 23, No. 3 (September
 See also the sections by B. A. Wichmann and Charles B. Dunham in
 Surveyor's Forum: ``What Every Computer Scientist Should Know About
 Floating-Point Arithmetic''. @cite{ACM Computing Surveys}, Vol. 24,
-No. 3 (September 1992), page 319
+No. 3 (September 1992), page 319.
 @end itemize
 @noindent
 

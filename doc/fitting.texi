@@ -10,7 +10,7 @@ unweighted data the covariance matrix is estimated from the scatter of
 the points, giving a variance-covariance matrix. The functions are
 divided into separate versions for simple one- or two-parameter
 regression and multiple-parameter fits.  The functions are declared in
-the header file @file{gsl_fit.h}
+the header file @file{gsl_fit.h}.
 
 @menu
 * Linear regression::           
@@ -396,11 +396,11 @@ of freedom is 1.4, indicating a reasonable fit to the data.
 
 A summary of formulas and techniques for least squares fitting can be
 found in the "Statistics" chapter of the Annual Review of Particle
-Physics prepared by the Particle Data Group.
+Physics prepared by the Particle Data Group,
 
 @itemize @asis
 @item
-@cite{Review of Particle Properties}
+@cite{Review of Particle Properties},
 R.M. Barnett et al., Physical Review D54, 1 (1996)
 @uref{http://pdg.lbl.gov/}
 @end itemize

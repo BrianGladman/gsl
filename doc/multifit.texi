@@ -151,14 +151,14 @@ returning an appropriate error code if the function cannot be computed.
 
 @item size_t n
 the number of functions, i.e. the number of components of the
-vector @var{f}
+vector @var{f}.
 
 @item size_t p
 the number of independent variables, i.e. the number of components of
-the vectors @var{x}
+the vectors @var{x}.
 
 @item void * params
-a pointer to the parameters of the function
+a pointer to the parameters of the function.
 @end table
 @end deftp
 
@@ -189,14 +189,14 @@ derivative at the same time.
 
 @item size_t n
 the number of functions, i.e. the number of components of the
-vector @var{f}
+vector @var{f}.
 
 @item size_t p
 the number of independent variables, i.e. the number of components of
-the vectors @var{x}
+the vectors @var{x}.
 
 @item void * params
-a pointer to the parameters of the function
+a pointer to the parameters of the function.
 @end table
 @end deftp
 
@@ -722,6 +722,6 @@ section,
 @item 
 J.J. Mor@'e, B.S. Garbow, K.E. Hillstrom, "Testing Unconstrained
 Optimization Software", ACM Transactions on Mathematical Software, Vol
-7, No 1 (1981), p 17-41
+7, No 1 (1981), p 17-41.
 @end itemize
 

@@ -368,7 +368,7 @@ otherwise @code{GSL_CONTINUE} is returned.
 @section Algorithms
 
 There are several minimization methods available. The best choice of
-algorithm depends on the problem.  All of the algorithms uses the value
+algorithm depends on the problem.  All of the algorithms use the value
 of the function and most of its gradient at each evaluation point, too.
 
 @deffn {Minimizer} gsl_multimin_fdfminimizer_conjugate_fr
@@ -579,7 +579,7 @@ The conjugate gradient algorithm finds the minimum on its second
 direction because the function is purely quadratic. Additional
 iterations would be needed for a more complicated function.
 
-Here is another example using the Nelder Mead Simplex algorithm to
+Here is another example using the Nelder-Mead Simplex algorithm to
 minimize the same example object function, as above.
 
 @smallexample
