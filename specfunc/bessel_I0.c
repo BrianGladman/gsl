@@ -1,0 +1,155 @@
+#include <math.h>
+#include <gsl_errno.h>
+#include "gsl_sf_chebyshev.h"
+#include "gsl_bessel.h"
+
+
+/* based on SLATEC besi0 */
+
+/* chebyshev expansions
+
+ series for bi0        on the interval  0.	    to  9.00000d+00
+					with weighted error   2.46e-18
+					 log weighted error  17.61
+			       significant figures required  17.90
+				    decimal places required  18.15
+
+ series for ai0        on the interval  1.25000d-01 to  3.33333d-01
+					with weighted error   7.87e-17
+					 log weighted error  16.10
+			       significant figures required  14.69
+				    decimal places required  16.76
+
+
+ series for ai02       on the interval  0.	    to  1.25000d-01
+					with weighted error   3.79e-17
+					 log weighted error  16.42
+			       significant figures required  14.86
+				    decimal places required  17.09
+*/
+
+static double bi0_data[12] = {
+  -.07660547252839144951,
+  1.927337953993808270,
+   .2282644586920301339, 
+   .01304891466707290428,
+   .00043442709008164874,
+   .00000942265768600193,
+   .00000014340062895106,
+   .00000000161384906966,
+   .00000000001396650044,
+   .00000000000009579451,
+   .00000000000000053339,
+   .00000000000000000245
+};
+
+static struct gsl_sf_ChebSeries bi0_cs = {
+  bi0_data,
+  11,
+  -1, 1
+};
+
+static double ai0_data[21] = {
+   .07575994494023796, 
+   .00759138081082334,
+   .00041531313389237,
+   .00001070076463439,
+  -.00000790117997921,
+  -.00000078261435014,
+   .00000027838499429,
+   .00000000825247260,
+  -.00000001204463945,
+   .00000000155964859,
+   .00000000022925563,
+  -.00000000011916228,
+   .00000000001757854,
+   .00000000000112822,
+  -.00000000000114684,
+   .00000000000027155,
+  -.00000000000002415,
+  -.00000000000000608,
+   .00000000000000314,
+  -.00000000000000071,
+   .00000000000000007
+};
+
+static struct gsl_sf_ChebSeries ai0_cs = {
+  ai0_data,
+  20,
+  -1, 1
+};
+
+static double a102_data[22] = {
+   .05449041101410882,
+   .00336911647825569,
+   .00006889758346918,
+   .00000289137052082,
+   .00000020489185893,
+   .00000002266668991,
+   .00000000339623203,
+   .00000000049406022,
+   .00000000001188914,
+  -.00000000003149915,
+  -.00000000001321580,
+  -.00000000000179419,
+   .00000000000071801,
+   .00000000000038529,
+   .00000000000001539,
+  -.00000000000004151,
+  -.00000000000000954,
+   .00000000000000382,
+   .00000000000000176,
+  -.00000000000000034,
+  -.00000000000000027,
+   .00000000000000003
+};
+
+static struct gsl_sf_ChebSeries ai02_cs = {
+  ai02_data,
+  21,
+  -1, 1
+};
+
+
+double gsl_sf_bessel_I0_scaled(double x)
+{
+  static double x_small = 2.0 * 1.e-7; 
+
+  double y = fabs(x);
+
+  if(y < x_small) {
+    return 1.;
+  }
+  else if(y <= 3.0) {
+    return exp(-y) * (2.75 + gsl_sf_cheb_eval(y*y/4.5-1., bi0_cs));
+  }
+  else if(y <= 8.0) {
+    return (.375 + gsl_sf_cheb_eval((48./y-11.)/5., ai0_cs)) / sqrt(y);
+  }
+  else {
+    return (.375 + gsl_sf_cheb_eval(16./y-1., ai02_cs)) / sqrt(y);
+  }
+}
+
+
+double gsl_sf_bessel_I0(double x)
+{
+  static double x_small = 2. * 1.e-7;
+  static double xmax    = ; /* alog (r1mach(2)) */
+
+  double y = fabs(x);
+
+  if(y < x_small) {
+    return 1.;
+  }
+  else if(y <= 3.0) {
+    return  2.75 + gsl_sf_cheb_eval(y*y/4.5-1.0, bi0_cs);
+  }
+  else if(y < xmax) {
+    return exp(y) * gsl_sf_bessel_I0_scaled(x);
+  }
+  else {
+    GSL_MESSAGE("gsl_sf_bessel_I0: x too large");
+    return 0.;
+  }
+}

@@ -9,6 +9,13 @@ double gsl_sf_bessel_J1(double x);
 double gsl_sf_bessel_I0(double x);
 double gsl_sf_bessel_I1(double x);
 
+/* Evaluate scaled regular modified cylindrical Bessel funcions
+   exp(-|x|) I_0(x)
+   exp(-|x|) I_1(x).
+   */
+double gsl_sf_bessel_I0_scaled(double x);
+double gsl_sf_bessel_I1_scaled(double x);
+
 /* Evaluate regular modified cylindrical Bessel function I_n(x). */
 double gsl_sf_bessel_I(int n, double x);
 

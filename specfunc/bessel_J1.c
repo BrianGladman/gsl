@@ -40,11 +40,13 @@ static struct gsl_sf_ChebSeries bj1_cs = {
   -1, 1
 };
 
+  
+#define ROOT_EIGHT 2.82842712474619
 
 double gsl_sf_bessel_J1(double x)
 {
   static double pi_over_4 = 0.78539816339744831;
-  static double x_small = 3.*1.e-7;
+  static double x_small = ROOT_EIGHT*1.e-7;
   static double xmax = 1.e+14;
   static double xmin = MIN_DBL;
 
