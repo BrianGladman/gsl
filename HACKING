@@ -22,7 +22,7 @@ working from your own machine.  To do the initial checkout of the
 repository try (bash syntax):
 
 export CVS_RSH=ssh
-cvs -d your-login@sarastro.lanl.gov:/n/projects/cvs/gsl checkout gsl
+cvs -d your-login@sarastro.lanl.gov:/n/projects/cvs/ checkout gsl
 
 at this point you can "cd gsl" and start mucking around with
 "./configure --prefix=whatever; make install".  Once you are in the
