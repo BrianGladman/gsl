@@ -17,42 +17,34 @@
 
 typedef struct
   {
-    double f_lower, f_upper, f_minimum;
+    double dummy;
   }
 goldensection_state_t;
 
-int goldensection_init (void * vstate, gsl_function * f, double * minimum, gsl_interval * x);
-int goldensection_iterate (void * vstate, gsl_function * f, double * minimum, gsl_interval * x);
+int goldensection_init (void * vstate, gsl_function * f, double minimum, double f_minimum, gsl_interval x, double f_lower, double f_upper);
+int goldensection_iterate (void * vstate, gsl_function * f, double * minimum, double * f_minimum, gsl_interval * x, double * f_lower, double * f_upper);
 
 int
-goldensection_init (void * vstate, gsl_function * f, double * minimum, gsl_interval * x)
+goldensection_init (void * vstate, gsl_function * f, double minimum, double f_minimum, gsl_interval x, double f_lower, double f_upper)
 {
   goldensection_state_t * state = (goldensection_state_t *) vstate;
 
-  double x_lower = x->lower ;
-  double x_upper = x->upper ;
+  /* no initialization require, prevent warnings about unused variables */
 
-  double f_lower, f_upper, f_minimum ;
-
-  SAFE_FUNC_CALL (f, x_lower, &f_lower);
-  SAFE_FUNC_CALL (f, x_upper, &f_upper);
-  SAFE_FUNC_CALL (f, *minimum, &f_minimum);
-  
-  state->f_lower = f_lower;
-  state->f_upper = f_upper;
-  state->f_minimum = f_minimum;
-
-  if (f_minimum >= f_lower || f_minimum >= f_upper)
-    {
-      GSL_ERROR ("endpoints do not enclose a minimum", GSL_EINVAL);
-    }
+  state = 0;
+  f = 0;
+  minimum = 0;
+  f_minimum = 0;
+  x.lower = 0;
+  f_lower = 0;
+  x.upper = 0;
+  f_upper = 0;
 
   return GSL_SUCCESS;
-
 }
 
 int
-goldensection_iterate (void * vstate, gsl_function * f, double * minimum, gsl_interval * x)
+goldensection_iterate (void * vstate, gsl_function * f, double * minimum, double * f_minimum, gsl_interval * x, double * f_lower, double * f_upper)
 {
   goldensection_state_t * state = (goldensection_state_t *) vstate;
 
@@ -60,7 +52,7 @@ goldensection_iterate (void * vstate, gsl_function * f, double * minimum, gsl_in
   const double x_lower = x->lower ;
   const double x_upper = x->upper ;
 
-  const double f_minimum = state->f_minimum;
+  const double f_min = *f_minimum;
 
   const double golden = 0.318966 ; /* golden = (3 - sqrt(5))/2 */
   
@@ -68,27 +60,29 @@ goldensection_iterate (void * vstate, gsl_function * f, double * minimum, gsl_in
   const double w_upper = (x_upper - x_minimum);
 
   double x_new, f_new;
+
+  state = 0 ; /* avoid warning about unused parameters */
   
   x_new = x_minimum + golden * ((w_upper > w_lower) ? w_upper : -w_lower) ;
 
   SAFE_FUNC_CALL (f, x_new, &f_new);
 
-  if (f_new < f_minimum)
+  if (f_new < f_min)
     {
       *minimum = x_new ;
-      state->f_minimum = f_new ;
+      *f_minimum = f_new ;
       return GSL_SUCCESS;
     }
-  else if (x_new < x_minimum && f_new > f_minimum)
+  else if (x_new < x_minimum && f_new > f_min)
     {
       x->lower = x_new ;
-      state->f_lower = f_new ;
+      *f_lower = f_new ;
       return GSL_SUCCESS;
     }
-  else if (x_new > x_minimum && f_new > f_minimum)
+  else if (x_new > x_minimum && f_new > f_min)
     {
       x->upper = x_new ;
-      state->f_upper = f_new ;
+      *f_upper = f_new ;
       return GSL_SUCCESS;
     }
   else

@@ -8,8 +8,8 @@ typedef struct
   {
     const char *name;
     size_t size;
-    int (*set) (void *state, gsl_function * f, double * minimum, gsl_interval * x);
-    int (*iterate) (void *state, gsl_function * f, double * minimum, gsl_interval * x);
+    int (*set) (void *state, gsl_function * f, double minimum, double f_minimum, gsl_interval x, double f_lower, double f_upper);
+    int (*iterate) (void *state, gsl_function * f, double * minimum, double * f_minimum, gsl_interval * x, double * f_lower, double * f_upper);
   }
 gsl_min_fminimizer_type;
 
@@ -19,6 +19,7 @@ typedef struct
     gsl_function * function ;
     double minimum ;
     gsl_interval interval ;
+    double f_minimum, f_lower, f_upper;
     void *state;
   }
 gsl_min_fminimizer;
@@ -26,10 +27,24 @@ gsl_min_fminimizer;
 gsl_min_fminimizer *
 gsl_min_fminimizer_alloc (const gsl_min_fminimizer_type * T, 
 			 gsl_function * f, double minimum, gsl_interval x);
+
+gsl_min_fminimizer *
+gsl_min_fminimizer_alloc_with_values (const gsl_min_fminimizer_type * T, 
+                                      gsl_function * f, 
+                                      double minimum, double f_minimum,
+                                      gsl_interval x, 
+                                      double f_lower, double f_upper);
+
 void gsl_min_fminimizer_free (gsl_min_fminimizer * s);
 
 int gsl_min_fminimizer_set (gsl_min_fminimizer * s, 
 			   gsl_function * f, double minimum, gsl_interval x);
+
+int gsl_min_fminimizer_set_with_values (gsl_min_fminimizer * s, 
+                                        gsl_function * f, 
+                                        double minimum, double f_minimum,
+                                        gsl_interval x,
+                                        double f_lower, double f_upper);
 
 int gsl_min_fminimizer_iterate (gsl_min_fminimizer * s);
 

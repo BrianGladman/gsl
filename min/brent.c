@@ -18,27 +18,31 @@ typedef struct
   {
     double d, e, v, w;
     double f_v, f_w;
-    double f_lower, f_upper, f_minimum;
   }
 brent_state_t;
 
-int brent_init (void *vstate, gsl_function * f, double *minimum, gsl_interval * x);
-int brent_iterate (void *vstate, gsl_function * f, double *minimum, gsl_interval * x);
+int brent_init (void *vstate, gsl_function * f, double minimum, double f_minimum, gsl_interval x, double f_lower, double f_upper);
+int brent_iterate (void *vstate, gsl_function * f, double *minimum, double * f_minimum, gsl_interval * x, double * f_lower, double * f_upper);
 
 int
-brent_init (void *vstate, gsl_function * f, double *minimum, gsl_interval * x)
+brent_init (void *vstate, gsl_function * f, double minimum, double f_minimum, gsl_interval x, double f_lower, double f_upper)
 {
   brent_state_t *state = (brent_state_t *) vstate;
 
   const double golden = 0.318966;	/* golden = (3 - sqrt(5))/2 */
 
-  double x_lower = x->lower;
-  double x_upper = x->upper;
+  double x_lower = x.lower;
+  double x_upper = x.upper;
 
   double v = x_lower + golden * (x_upper - x_lower);
   double w = v;
 
-  double f_lower, f_upper, f_minimum, f_vw;
+  double f_vw;
+
+  minimum = 0 ;  /* avoid warnings about unused varibles */
+  f_minimum = 0 ;
+  f_lower = 0 ;
+  f_upper = 0 ;
 
   state->v = v;
   state->w = w;
@@ -46,28 +50,16 @@ brent_init (void *vstate, gsl_function * f, double *minimum, gsl_interval * x)
   state->d = 0;
   state->e = 0;
 
-  SAFE_FUNC_CALL (f, x_lower, &f_lower);
-  SAFE_FUNC_CALL (f, x_upper, &f_upper);
-  SAFE_FUNC_CALL (f, *minimum, &f_minimum);
   SAFE_FUNC_CALL (f, v, &f_vw);
 
-  state->f_lower = f_lower;
-  state->f_upper = f_upper;
-  state->f_minimum = f_minimum;
   state->f_v = f_vw;
   state->f_w = f_vw;
 
-  if (f_minimum >= f_lower || f_minimum >= f_upper)
-    {
-      GSL_ERROR ("endpoints do not enclose a minimum", GSL_EINVAL);
-    }
-
   return GSL_SUCCESS;
-
 }
 
 int
-brent_iterate (void *vstate, gsl_function * f, double *minimum, gsl_interval * x)
+brent_iterate (void *vstate, gsl_function * f, double *minimum, double * f_minimum, gsl_interval * x, double * f_lower, double * f_upper)
 {
   brent_state_t *state = (brent_state_t *) vstate;
 
@@ -82,7 +74,7 @@ brent_iterate (void *vstate, gsl_function * f, double *minimum, gsl_interval * x
   const double w = state->w;
   const double f_v = state->f_v;
   const double f_w = state->f_w;
-  const double f_z = state->f_minimum;
+  const double f_z = *f_minimum;
 
   const double golden = 0.318966;	/* golden = (3 - sqrt(5))/2 */
 
@@ -155,13 +147,13 @@ brent_iterate (void *vstate, gsl_function * f, double *minimum, gsl_interval * x
       if (u < z)
 	{
 	  x->lower = u;
-          state->f_lower = f_u;
+          *f_lower = f_u;
           return GSL_SUCCESS;
 	}
       else
 	{
 	  x->upper = u;
-          state->f_upper = f_u;
+          *f_upper = f_u;
           return GSL_SUCCESS;
 	}
     }
@@ -170,12 +162,12 @@ brent_iterate (void *vstate, gsl_function * f, double *minimum, gsl_interval * x
       if (u < z)
 	{
 	  x->upper = z;
-          state->f_upper = f_z;
+          *f_upper = f_z;
 	}
       else
 	{
 	  x->lower = z;
-          state->f_lower = f_z;
+          *f_lower = f_z;
 	}
 
       state->v = w;
@@ -183,7 +175,7 @@ brent_iterate (void *vstate, gsl_function * f, double *minimum, gsl_interval * x
       state->w = z;
       state->f_w = f_z;
       *minimum = u;
-      state->f_minimum = f_u;
+      *f_minimum = f_u;
       return GSL_SUCCESS;
     }
   else if (f_u <= f_w || w == z)

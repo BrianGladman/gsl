@@ -1,0 +1,4 @@
+Wed Oct 13 16:08:03 1999  Brian Gough  <bjg@network-theory.co.uk>
+
+	* rewritten to allow initial values to be specified
+
