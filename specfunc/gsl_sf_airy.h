@@ -92,5 +92,17 @@ int gsl_sf_airy_Bi_zero_impl(int s, gsl_sf_result * result);
 int gsl_sf_airy_Bi_zero_e(int s, gsl_sf_result * result);
 
 
+/* Zeros of Ai'(x)
+ */
+int gsl_sf_airy_Ai_deriv_zero_impl(int s, gsl_sf_result * result);
+int gsl_sf_airy_Ai_deriv_zero_e(int s, gsl_sf_result * result);
+
+
+/* Zeros of Bi'(x)
+ */
+int gsl_sf_airy_Bi_deriv_zero_impl(int s, gsl_sf_result * result);
+int gsl_sf_airy_Bi_deriv_zero_e(int s, gsl_sf_result * result);
+
+
 
 #endif /* GSL_SF_AIRY_H_ */
