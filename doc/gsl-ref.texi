@@ -191,6 +191,7 @@ not recommended for general use.
 * Interpolation::               
 * Series Acceleration::         
 * Random Number Generation::    
+* Quasi-Random Sequences::      
 * Random Number Distributions::  
 * Permutations::                
 * Sorting::                     
@@ -286,11 +287,15 @@ will be announced for general use.
 @chapter Series Acceleration
 @include sum.texi
 
-@node Random Number Generation, Random Number Distributions, Series Acceleration, Top
+@node Random Number Generation, Quasi-Random Sequences, Series Acceleration, Top
 @chapter Random Number Generation
 @include rng.texi
 
-@node  Random Number Distributions, Permutations, Random Number Generation, Top
+@node Quasi-Random Sequences, Random Number Distributions, Random Number Generation, Top
+@chapter Quasi-Random Sequences
+@include qrng.texi
+
+@node  Random Number Distributions, Permutations, Quasi-Random Sequences, Top
 @chapter Random Number Distributions
 @include randist.texi
 
