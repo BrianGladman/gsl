@@ -393,13 +393,13 @@ bsimp_step_local(
 
 
 /* Perform the basic semi-implicit extrapolation
- * step at a Deuflhard determined order.
+ * step, of size h, at a Deuflhard determined order.
  */
 static int
 bsimp_step(
   void * self,
-  double t,
-  double h,
+  const double t,
+  const double h,
   double y[],
   double yerr[],
   const double dydt_in[],
@@ -451,7 +451,7 @@ bsimp_step(
   GSL_ODEIV_JA_EVAL(sys, t_local, y, my->dfdy->data, my->dfdt);
 
   /* Make a series of refined extrapolations,
-   * up the specified maximum order, which
+   * up to the specified maximum order, which
    * was calculated based on the Deuflhard
    * criterion upon state initialization.
    */
@@ -473,6 +473,11 @@ bsimp_step(
 
     my->x[k] = x_k;
     poly_extrap(my->d, my->x, k, x_k, my->y_extrap_sequence, y, yerr, my->extrap_work, my->parent.dimension);
+  }
+
+  /* Evaluate dydt_out[]. */
+  if(dydt_out != 0) {
+    GSL_ODEIV_FN_EVAL(sys, t+h, y, dydt_out);
   }
 
   return GSL_SUCCESS;
