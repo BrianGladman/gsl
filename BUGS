@@ -2,6 +2,8 @@ This file is the GSL bug tracking system.  The CVS version of this
 file should be kept up-to-date.
 
 ----------------------------------------------------------------------
+BUG#1 -- STATUS: reproducible, not yet fixed
+
 From: keith.briggs@bt.com
 To: gsl-discuss@sources.redhat.com
 Subject: gsl_sf_hyperg_2F1 bug report
@@ -34,7 +36,44 @@ differently.  There is a special formula given for it in Abramowitz &
 Stegun 15.3.10
 
 ----------------------------------------------------------------------
+BUG#2 -- STATUS: reproducible, not yet fixed
 
 In QAWO the expressions center-half_length and center+half_length should
 be replaced by a and b to avoid cancellation errors which occur for 
 ranges like [1e-30, 1]
+
+----------------------------------------------------------------------
+BUG#3 -- STATUS: reproducible, not yet fixed
+
+From: Rodolphe Conan <rconan@eso.org>
+To: gsl list <gsl-discuss@sources.redhat.com>
+Subject: Re: Bessel function bug or limitation?
+Date: Tue, 09 Apr 2002 09:52:19 +0100
+
+Rodolphe Conan writes:
+ >   cout << "besselj(2,15000)="  << gsl_sf_bessel_Jn(2,15000) << endl;
+ > and obtained:
+ > gsl: bessel.c:531: ERROR: error
+ > Abort (core dumped)
+
+One of the continued fraction computations is breaking down
+
+----------------------------------------------------------------------
+BUG#4 -- STATUS: reproducible, not yet fixed
+
+From: David Necas (Yeti) <yeti@physics.muni.cz>
+To: Brian Gough <bjg@network-theory.co.uk>
+Subject: Re: gsl_linalg_solve_symm_cyc_tridiag problem
+Date: Sun, 14 Apr 2002 18:02:21 +0200
+
+The function gsl_linalg_solve_symm_cyc_tridiag() crashes when run with
+N = 1 (and doesn't make sense even with N = 2) -- it should return
+some error code instead (the same applies to its non-cyclic
+counterpair).
+
+Both cyclic and non-cyclic solvers return zero error code when feed
+with singular matrices, or fail for another reason (so the results are
+only bunches of NaN's). They should return some error code instead.
+
+----------------------------------------------------------------------
+
