@@ -1,3 +1,8 @@
+Sat Jul 20 21:25:56 2002  Brian Gough  <bjg@network-theory.co.uk>
+
+	* calc-units-update.el (math-additional-units): changed setvar to
+ 	setq, otherwise the new values do not override the original values
+
 Wed May 29 22:41:31 2002  Brian Gough  <bjg@network-theory.co.uk>
 
 	* calc-units-update.el (math-additional-units): updated unit

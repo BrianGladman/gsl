@@ -20,8 +20,8 @@
 #ifndef __GSL_CONST_NUM__
 #define __GSL_CONST_NUM__
 
-#define GSL_CONST_NUM_FINE_STRUCTURE (7.29735307964e-3) /* 1 */
-#define GSL_CONST_NUM_AVOGADRO (6.0221367e23) /* 1 / mol */
+#define GSL_CONST_NUM_FINE_STRUCTURE (7.297352533e-3) /* 1 */
+#define GSL_CONST_NUM_AVOGADRO (6.02214199e23) /* 1 / mol */
 #define GSL_CONST_NUM_YOTTA (1e24) /* 1 */
 #define GSL_CONST_NUM_ZETTA (1e21) /* 1 */
 #define GSL_CONST_NUM_EXA (1e18) /* 1 */

@@ -24,7 +24,7 @@
 
 (require 'calc)
 
-(defvar math-additional-units
+(setq math-additional-units
   '(;; length
     ( au      "149597870691. m"        "Astronomical Unit" ) ;; NASA JPL 
     ;; mass
