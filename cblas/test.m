@@ -1523,6 +1523,22 @@ function BB = blas_trmm (order, side, uplo, trans, diag, M, N, alpha, \
   BB = mout(order, B, ldb, M, N, b);
 endfunction
 
+function BB = blas_trsm (order, side, uplo, trans, diag, M, N, alpha, \
+                         A, lda, B, ldb)
+  b = matrix (order, B, ldb, M, N);
+
+  if (side == 141)
+    a = trmatrix (order, uplo, diag, A, lda, M);
+    a = op(inv(a), trans);
+    b = alpha * a * b;
+  else
+    a = trmatrix (order, uplo, diag, A, lda, N);
+    a = op(inv(a), trans);
+    b = alpha * b * a;
+  endif
+  
+  BB = mout(order, B, ldb, M, N, b);
+endfunction
 
 ######################################################################
 
@@ -3054,8 +3070,29 @@ n=16;
 #   endfor
 # endfor
 
-for j = 1:n
-  for i = [c] #[s,d] #,c,z]
+# for j = 1:n
+#   for i = [c] #[s,d] #,c,z]
+#     S = context(i);
+#     for trans = Trans(S)
+#       for alpha = coeff(S)
+#         for side = [141, 142]
+#           for order = [101, 102]
+#             for uplo = [121, 122]
+#               for diag = [131, 132]
+#                 T = test_trmatmat(S, j, order, side, trans);
+#                 test_trmm (S, "trmm", order, side, uplo, trans, diag, T.m, T.n,
+#                            alpha, T.A, T.lda, T.B, T.ldb);
+#               endfor
+#             endfor
+#           endfor
+#         endfor
+#       endfor
+#     endfor
+#   endfor
+# endfor
+
+for j = 1:5
+  for i = [s,d] #,c,z]
     S = context(i);
     for trans = Trans(S)
       for alpha = coeff(S)
@@ -3064,7 +3101,7 @@ for j = 1:n
             for uplo = [121, 122]
               for diag = [131, 132]
                 T = test_trmatmat(S, j, order, side, trans);
-                test_trmm (S, "trmm", order, side, uplo, trans, diag, T.m, T.n,
+                test_trmm (S, "trsm", order, side, uplo, trans, diag, T.m, T.n,
                            alpha, T.A, T.lda, T.B, T.ldb);
               endfor
             endfor
@@ -3074,3 +3111,4 @@ for j = 1:n
     endfor
   endfor
 endfor
+
