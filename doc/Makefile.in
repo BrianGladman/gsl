@@ -1,0 +1,202 @@
+# Makefile.in generated automatically by automake 1.0 from Makefile.am
+
+# Copyright (C) 1994, 1995, 1996 Free Software Foundation, Inc.
+# This Makefile.in is free software; the Free Software Foundation
+# gives unlimited permission to copy, distribute and modify it.
+
+
+SHELL = /bin/sh
+
+srcdir = @srcdir@
+top_srcdir = @top_srcdir@
+VPATH = @srcdir@
+prefix = @prefix@
+exec_prefix = @exec_prefix@
+
+bindir = @bindir@
+sbindir = @sbindir@
+libexecdir = @libexecdir@
+datadir = @datadir@
+sysconfdir = @sysconfdir@
+sharedstatedir = @sharedstatedir@
+localstatedir = @localstatedir@
+libdir = @libdir@
+infodir = @infodir@
+mandir = @mandir@
+includedir = @includedir@
+oldincludedir = /usr/include
+
+pkgdatadir = $(datadir)/@PACKAGE@
+pkglibdir = $(libdir)/@PACKAGE@
+pkgincludedir = $(includedir)/@PACKAGE@
+
+top_builddir = ..
+
+INSTALL = @INSTALL@
+INSTALL_PROGRAM = @INSTALL_PROGRAM@
+INSTALL_DATA = @INSTALL_DATA@
+INSTALL_SCRIPT = @INSTALL_SCRIPT@
+transform = @program_transform_name@
+
+info_TEXINFOS = gsl.texi
+mkinstalldirs = $(top_srcdir)/mkinstalldirs
+
+MAKEINFO = makeinfo
+TEXI2DVI = texi2dvi
+INFOS = gsl.info*
+INFO_DEPS = gsl.info
+DVIS = gsl.dvi
+TEXINFOS = gsl.texi
+
+DIST_COMMON = Makefile.am Makefile.in mdate-sh stamp-vti version.texi
+
+
+PACKAGE = @PACKAGE@
+VERSION = @VERSION@
+
+DISTFILES = $(DIST_COMMON) $(SOURCES) $(BUILT_SOURCES) $(HEADERS) \
+	$(TEXINFOS) $(INFOS) $(MANS) $(EXTRA_DIST) $(DATA)
+DEP_DISTFILES = $(DIST_COMMON) $(SOURCES) $(BUILT_SOURCES) $(HEADERS) \
+	$(TEXINFOS) $(INFO_DEPS) $(MANS) $(EXTRA_DIST) $(DATA)
+
+TAR = tar
+default: all
+
+
+$(srcdir)/Makefile.in: Makefile.am $(top_srcdir)/configure.in
+	cd $(top_srcdir) && automake $(subdir)/Makefile
+
+Makefile: $(top_builddir)/config.status Makefile.in
+	cd $(top_builddir) && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= ./config.status
+
+version.texi: stamp-vti
+
+stamp-vti: gsl.texi $(top_srcdir)/configure.in
+	echo "@set UPDATED `cd $(srcdir) \
+	  && $(SHELL) ./mdate-sh gsl.texi`" > vti.tmp
+	echo "@set EDITION $(VERSION)" >> vti.tmp
+	echo "@set VERSION $(VERSION)" >> vti.tmp
+	if cmp -s vti.tmp $(srcdir)/version.texi; then \
+	  rm vti.tmp;			\
+	else					\
+	  mv vti.tmp $(srcdir)/version.texi; \
+	fi
+	echo timestamp > $(srcdir)/stamp-vti
+
+mostlyclean-vti:
+	rm -f vti.tmp
+
+clean-vti:
+
+distclean-vti:
+
+maintainer-clean-vti:
+	rm -f stamp-vti version.texi
+
+gsl.info: gsl.texi version.texi
+
+
+.texi.info:
+	$(MAKEINFO) -I$(srcdir) $< -o $(srcdir)/$@
+
+.texi.dvi:
+	TEXINPUTS=$(srcdir):$$TEXINPUTS $(TEXI2DVI) $<
+
+install-info: $(INFO_DEPS)
+	$(mkinstalldirs) $(infodir)
+	for file in $(INFO_DEPS); do		\
+	  for ifile in `cd $(srcdir) && echo $$file*`; do \
+	    $(INSTALL_DATA) $(srcdir)/$$ifile $(infodir)/$$ifile; \
+	  done;					\
+	done
+
+uninstall-info:
+	cd $(srcdir) && for file in *.info*; do	\
+	  rm -f $(infodir)/$$file; \
+	done
+
+mostlyclean-info:
+	rm -f gsl.aux gsl.cp gsl.cps gsl.dvi gsl.fn gsl.fns gsl.ky gsl.log \
+	  gsl.pg gsl.toc gsl.tp gsl.vr gsl.op
+
+clean-info:
+
+distclean-info:
+
+maintainer-clean-info:
+	rm -f $(INFOS)
+tags: TAGS
+TAGS:
+
+
+subdir = doc
+distdir = $(top_builddir)/$(PACKAGE)-$(VERSION)/$(subdir)
+distdir: $(DEP_DISTFILES)
+	@for file in `cd $(srcdir) && echo $(DISTFILES)`; do \
+	  test -f $(distdir)/$$file \
+	  || ln $(srcdir)/$$file $(distdir)/$$file 2> /dev/null \
+	  || cp -p $(srcdir)/$$file $(distdir)/$$file; \
+	done
+info: $(INFO_DEPS)
+
+dvi: $(DVIS)
+
+check: all
+
+installcheck:
+
+install-exec: 
+
+install-data: install-info
+
+install: install-exec install-data all
+	@:
+
+uninstall: uninstall-info
+
+all: $(INFO_DEPS) Makefile
+
+install-strip:
+	$(MAKE) INSTALL_PROGRAM='$(INSTALL_PROGRAM) -s' install
+installdirs:
+	$(mkinstalldirs)  $(infodir)
+
+
+mostlyclean-generic:
+	test -z "$(MOSTLYCLEANFILES)" || rm -f $(MOSTLYCLEANFILES)
+
+clean-generic:
+	test -z "$(CLEANFILES)" || rm -f $(CLEANFILES)
+
+distclean-generic:
+	rm -f Makefile $(DISTCLEANFILES)
+	rm -f config.cache config.log $(CONFIG_HEADER) stamp-h
+
+maintainer-clean-generic:
+	test -z "$(MAINTAINERCLEANFILES)" || rm -f $(MAINTAINERCLEANFILES)
+	test -z "$(BUILT_SOURCES)" || rm -f $(BUILT_SOURCES)
+mostlyclean:  mostlyclean-vti mostlyclean-info mostlyclean-generic
+
+clean:  clean-vti clean-info clean-generic mostlyclean 
+
+distclean:  distclean-vti distclean-info distclean-generic clean 
+	rm -f config.status
+
+maintainer-clean:  maintainer-clean-vti maintainer-clean-info \
+		maintainer-clean-generic distclean 
+	@echo "This command is intended for maintainers to use;"
+	@echo "it deletes files that may require special tools to rebuild."
+
+.PHONY: default mostlyclean-vti distclean-vti clean-vti \
+maintainer-clean-vti install-info uninstall-info mostlyclean-info \
+distclean-info clean-info maintainer-clean-info tags distdir info dvi \
+check installcheck install-exec install-data install uninstall all \
+installdirs mostlyclean-generic distclean-generic clean-generic \
+maintainer-clean-generic clean mostlyclean distclean maintainer-clean
+
+.SUFFIXES:
+.SUFFIXES: .texi .info .dvi
+
+# Tell versions [3.59,3.63) of GNU make to not export all variables.
+# Otherwise a system limit (for SysV at least) may be exceeded.
+.NOEXPORT:

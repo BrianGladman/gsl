@@ -1,0 +1,294 @@
+# Makefile.in generated automatically by automake 1.1c from Makefile.am
+
+# Copyright (C) 1994, 1995, 1996 Free Software Foundation, Inc.
+# This Makefile.in is free software; the Free Software Foundation
+# gives unlimited permission to copy, distribute and modify it.
+
+#AUTOMAKE_OPTIONS=no-dependencies
+
+
+SHELL = /bin/sh
+
+srcdir = @srcdir@
+top_srcdir = @top_srcdir@
+VPATH = @srcdir@
+prefix = @prefix@
+exec_prefix = @exec_prefix@
+
+bindir = @bindir@
+sbindir = @sbindir@
+libexecdir = @libexecdir@
+datadir = @datadir@
+sysconfdir = @sysconfdir@
+sharedstatedir = @sharedstatedir@
+localstatedir = @localstatedir@
+libdir = @libdir@
+infodir = @infodir@
+mandir = @mandir@
+includedir = @includedir@
+oldincludedir = /usr/include
+
+pkgdatadir = $(datadir)/@PACKAGE@
+pkglibdir = $(libdir)/@PACKAGE@
+pkgincludedir = $(includedir)/@PACKAGE@
+
+top_builddir = ..
+
+INSTALL = @INSTALL@
+INSTALL_PROGRAM = @INSTALL_PROGRAM@
+INSTALL_DATA = @INSTALL_DATA@
+INSTALL_SCRIPT = @INSTALL_SCRIPT@
+transform = @program_transform_name@
+
+CFLAGS=-g -Wall
+
+noinst_PROGRAMS = jtest
+lib_LIBRARIES = gsl_statistics
+
+jtest_SOURCES = jtest.c
+jtest_LDADD = libgsl_statistics.a
+jtest_DEPENDENCIES = libgsl_statistics.a
+
+gsl_statistics_SOURCES = mean.c variance.c test.c
+
+include_HEADERS = mean.h test.h variance.h
+mkinstalldirs = $(top_srcdir)/mkinstalldirs
+CONFIG_CLEAN_FILES = 
+LIBRARIES = $(lib_LIBRARIES)
+
+lib_LIBFILES = libgsl_statistics.a
+
+DEFS = @DEFS@ -I. -I$(srcdir) 
+CPPFLAGS = @CPPFLAGS@
+LDFLAGS = @LDFLAGS@
+LIBS = @LIBS@
+gsl_statistics_LIBADD =
+gsl_statistics_OBJECTS = mean.o variance.o test.o
+EXTRA_gsl_statistics_SOURCES =
+LIBFILES =  libgsl_statistics.a
+AR = ar
+RANLIB = @RANLIB@
+PROGRAMS = $(noinst_PROGRAMS)
+
+jtest_OBJECTS = jtest.o
+EXTRA_jtest_SOURCES =
+CC = @CC@
+CFLAGS = @CFLAGS@
+COMPILE = $(CC) $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
+LINK = $(CC) $(LDFLAGS) -o $@
+HEADERS = $(include_HEADERS)
+
+DIST_COMMON = Makefile.am Makefile.in
+
+
+PACKAGE = @PACKAGE@
+VERSION = @VERSION@
+
+DISTFILES = $(DIST_COMMON) $(SOURCES) $(BUILT_SOURCES) $(HEADERS) \
+	$(TEXINFOS) $(INFOS) $(MANS) $(EXTRA_DIST) $(DATA)
+DEP_DISTFILES = $(DIST_COMMON) $(SOURCES) $(BUILT_SOURCES) $(HEADERS) \
+	$(TEXINFOS) $(INFO_DEPS) $(MANS) $(EXTRA_DIST) $(DATA)
+
+TAR = tar
+DEP_FILES = $(srcdir)/.deps/jtest.P $(srcdir)/.deps/mean.P \
+$(srcdir)/.deps/test.P $(srcdir)/.deps/variance.P
+SOURCES = $(gsl_statistics_SOURCES) $(jtest_SOURCES)
+OBJECTS = $(gsl_statistics_OBJECTS) $(jtest_OBJECTS)
+
+default: all
+
+
+$(srcdir)/Makefile.in: Makefile.am $(top_srcdir)/configure.in
+	cd $(top_srcdir) && automake $(subdir)/Makefile
+
+Makefile: $(top_builddir)/config.status Makefile.in
+	cd $(top_builddir) && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= ./config.status
+
+mostlyclean-libLIBRARIES:
+
+clean-libLIBRARIES:
+	test -z "$(lib_LIBFILES)" || rm -f $(lib_LIBFILES)
+
+distclean-libLIBRARIES:
+
+maintainer-clean-libLIBRARIES:
+
+install-libLIBRARIES: $(lib_LIBFILES)
+	$(mkinstalldirs) $(libdir)
+	list="$(lib_LIBFILES)"; for p in $$list; do \
+	  if test -f $$p; then \
+	    $(INSTALL_DATA) $$p $(libdir)/$$p; \
+	    $(RANLIB) $(libdir)/$$p; \
+	  else :; fi; \
+	done
+
+uninstall-libLIBRARIES:
+	list="$(lib_LIBFILES)"; for p in $$list; do \
+	  rm -f $(libdir)/$$p; \
+	done
+
+.c.o:
+	$(COMPILE) -c $<
+
+mostlyclean-compile:
+	rm -f *.o core
+
+clean-compile:
+
+distclean-compile:
+	rm -f *.tab.c
+
+maintainer-clean-compile:
+
+libgsl_statistics.a: $(gsl_statistics_OBJECTS) $(gsl_statistics_DEPENDENCIES)
+	rm -f libgsl_statistics.a
+	$(AR) cru libgsl_statistics.a $(gsl_statistics_OBJECTS) $(gsl_statistics_LIBADD)
+	$(RANLIB) libgsl_statistics.a
+
+mostlyclean-noinstPROGRAMS:
+
+clean-noinstPROGRAMS:
+	test -z "$(noinst_PROGRAMS)" || rm -f $(noinst_PROGRAMS)
+
+distclean-noinstPROGRAMS:
+
+maintainer-clean-noinstPROGRAMS:
+
+jtest: $(jtest_OBJECTS) $(jtest_DEPENDENCIES)
+	$(LINK) $(jtest_OBJECTS) $(jtest_LDADD) $(LIBS)
+
+install-includeHEADERS: $(include_HEADERS)
+	$(mkinstalldirs) $(includedir)
+	list="$(include_HEADERS)"; for p in $$list; do \
+	  $(INSTALL_DATA) $(srcdir)/$$p $(includedir)/$$p; \
+	done
+
+uninstall-includeHEADERS:
+	list="$(include_HEADERS)"; for p in $$list; do \
+	  rm -f $(includedir)/$$p; \
+	done
+
+ID: $(HEADERS) $(SOURCES)
+	here=`pwd` && cd $(srcdir) && mkid -f$$here/ID $(SOURCES) $(HEADERS)
+
+tags: TAGS
+
+TAGS: $(HEADERS) $(SOURCES) $(TAGS_DEPENDENCIES)
+	here=`pwd` && cd $(srcdir) && etags $(ETAGS_ARGS) $(SOURCES) $(HEADERS) -o $$here/TAGS
+
+mostlyclean-tags:
+
+clean-tags:
+
+distclean-tags:
+
+maintainer-clean-tags:
+	rm -f TAGS ID
+
+distdir = $(top_builddir)/$(PACKAGE)-$(VERSION)/$(subdir)
+
+subdir = statistics
+distdir: $(DEP_DISTFILES)
+	@for file in `cd $(srcdir) && echo $(DISTFILES)`; do \
+	  test -f $(distdir)/$$file \
+	  || ln $(srcdir)/$$file $(distdir)/$$file 2> /dev/null \
+	  || cp -p $(srcdir)/$$file $(distdir)/$$file; \
+	done
+
+MKDEP = gcc -MM $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
+
+-include $(srcdir)/.deps/.P
+$(srcdir)/.deps/.P: $(BUILT_SOURCES)
+	cd $(srcdir) && test -d .deps || mkdir .deps
+	echo > $@
+
+-include $(DEP_FILES)
+$(DEP_FILES): $(srcdir)/.deps/.P
+
+$(srcdir)/.deps/%.P: $(srcdir)/%.c
+	@echo "mkdeps $< > $@"
+	@top=`echo $(srcdir) | sed 's,^$(top_srcdir),,;s,[^/],,g;s,/,../,g'` ; \
+	re=`echo "s,^$(srcdir)//*,,g;s, $(srcdir)//*, ,g;s,$(top_srcdir)//*,$$top,g" | sed 's,\.,\\\\.,g'`; \
+	  $(MKDEP) $< | sed "$$re" > $@-tmp
+	@if test -n "$o"; then			\
+	  sed 's/\.o:/$$o:/' $@-tmp > $@;	\
+	  rm $@-tmp;				\
+	else					\
+	  mv $@-tmp $@;				\
+	fi
+info:
+
+dvi:
+
+check: all
+
+installcheck:
+
+install-exec: install-libLIBRARIES
+
+install-data: install-includeHEADERS
+
+install: install-exec install-data all
+	@:
+
+uninstall: uninstall-libLIBRARIES uninstall-includeHEADERS
+
+all: $(LIBFILES) $(PROGRAMS) $(HEADERS) Makefile
+
+install-strip:
+	$(MAKE) INSTALL_PROGRAM='$(INSTALL_PROGRAM) -s' install
+installdirs:
+	$(mkinstalldirs)  $(libdir) $(includedir)
+
+
+mostlyclean-generic:
+	test -z "$(MOSTLYCLEANFILES)" || rm -f $(MOSTLYCLEANFILES)
+
+clean-generic:
+	test -z "$(CLEANFILES)" || rm -f $(CLEANFILES)
+	test -z "$(CONFIG_CLEAN_FILES)" || rm -f $(CONFIG_CLEAN_FILES)
+
+distclean-generic:
+	rm -f Makefile $(DISTCLEANFILES)
+	rm -f config.cache config.log $(CONFIG_HEADER) stamp-h
+
+maintainer-clean-generic:
+	test -z "$(MAINTAINERCLEANFILES)" || rm -f $(MAINTAINERCLEANFILES)
+	test -z "$(BUILT_SOURCES)" || rm -f $(BUILT_SOURCES)
+mostlyclean:  mostlyclean-libLIBRARIES mostlyclean-compile \
+		mostlyclean-noinstPROGRAMS mostlyclean-tags \
+		mostlyclean-generic
+
+clean:  clean-libLIBRARIES clean-compile clean-noinstPROGRAMS clean-tags \
+		clean-generic mostlyclean 
+
+distclean:  distclean-libLIBRARIES distclean-compile \
+		distclean-noinstPROGRAMS distclean-tags \
+		distclean-generic clean 
+	rm -f config.status
+
+maintainer-clean:  maintainer-clean-libLIBRARIES \
+		maintainer-clean-compile \
+		maintainer-clean-noinstPROGRAMS maintainer-clean-tags \
+		maintainer-clean-generic distclean 
+	@echo "This command is intended for maintainers to use;"
+	@echo "it deletes files that may require special tools to rebuild."
+
+.PHONY: default mostlyclean-libLIBRARIES distclean-libLIBRARIES \
+clean-libLIBRARIES maintainer-clean-libLIBRARIES uninstall-libLIBRARIES \
+install-libLIBRARIES mostlyclean-compile distclean-compile \
+clean-compile maintainer-clean-compile mostlyclean-noinstPROGRAMS \
+distclean-noinstPROGRAMS clean-noinstPROGRAMS \
+maintainer-clean-noinstPROGRAMS uninstall-includeHEADERS \
+install-includeHEADERS tags mostlyclean-tags distclean-tags clean-tags \
+maintainer-clean-tags distdir info dvi check installcheck install-exec \
+install-data install uninstall all installdirs mostlyclean-generic \
+distclean-generic clean-generic maintainer-clean-generic clean \
+mostlyclean distclean maintainer-clean
+
+.SUFFIXES:
+.SUFFIXES: .c .o
+
+# Tell versions [3.59,3.63) of GNU make to not export all variables.
+# Otherwise a system limit (for SysV at least) may be exceeded.
+.NOEXPORT:
