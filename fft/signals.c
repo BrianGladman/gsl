@@ -11,7 +11,7 @@
 #include "fft_signals.h"
 
 int
-gsl_fft_signal_complex_pulse (const size_t k,
+fft_signal_complex_pulse (const size_t k,
 			      const size_t n,
 			      const double z_real,
 			      const double z_imag,
@@ -53,7 +53,7 @@ gsl_fft_signal_complex_pulse (const size_t k,
 
 
 int
-gsl_fft_signal_complex_constant (const size_t n,
+fft_signal_complex_constant (const size_t n,
 				 const double z_real,
 				 const double z_imag,
 				 double data[],
@@ -91,7 +91,7 @@ gsl_fft_signal_complex_constant (const size_t n,
 
 
 int
-gsl_fft_signal_complex_exp (const int k,
+fft_signal_complex_exp (const int k,
 			    const size_t n,
 			    const double z_real,
 			    const double z_imag,
@@ -146,7 +146,7 @@ gsl_fft_signal_complex_exp (const int k,
 
 
 int
-gsl_fft_signal_complex_exppair (const int k1,
+fft_signal_complex_exppair (const int k1,
 				     const int k2,
 				     const size_t n,
 				     const double z1_real,
@@ -221,7 +221,7 @@ gsl_fft_signal_complex_exppair (const int k1,
 
 
 int
-gsl_fft_signal_complex_noise (const size_t n,
+fft_signal_complex_noise (const size_t n,
 			      double data[],
 			      double fft[])
 {
@@ -247,7 +247,7 @@ gsl_fft_signal_complex_noise (const size_t n,
 
 
 int
-gsl_fft_signal_real_noise (const size_t n,
+fft_signal_real_noise (const size_t n,
 			   double data[],
 			   double fft[])
 {

@@ -85,7 +85,7 @@ void check_complex (size_t n)
   gsl_test (status, "gsl_fft_complex_generate_wavetable, n = %d", n);
   
   /* mixed radix fft */
-  gsl_fft_signal_complex_noise (n, complex_data, fft_complex_data);
+  fft_signal_complex_noise (n, complex_data, fft_complex_data);
   memcpy (complex_tmp, complex_data, 2 * n * sizeof (double));
   gsl_fft_complex_forward (complex_data, 1, n, cw);
   memcpy (fft_complex_tmp, complex_data, 2 * n * sizeof (double));
@@ -132,7 +132,7 @@ void check_complex (size_t n)
   fft_real_data = (double *) malloc (n * sizeof (double));
   fft_real_tmp = (double *) malloc (n * sizeof (double));
   
-  gsl_fft_signal_real_noise (n, complex_data, fft_complex_data);
+  fft_signal_real_noise (n, complex_data, fft_complex_data);
   memcpy (complex_tmp, complex_data, n * sizeof (gsl_complex));
 
   for (i = 0; i < n; i++)
@@ -176,14 +176,14 @@ void check_complex (size_t n)
   gsl_test (status, "gsl_fft_halfcomplex with data from signal_noise, n = %d", n);
   
   /* pulse */
-  gsl_fft_signal_complex_pulse (1, n, 1.0, 0.0, complex_data,
+  fft_signal_complex_pulse (1, n, 1.0, 0.0, complex_data,
 				     fft_complex_data);
   gsl_fft_complex_forward (complex_data, 1, n, cw);
   status = compare_complex_results ("analytic", fft_complex_data,
 				    "fft of pulse", complex_data, n, 1e6);
   gsl_test (status, "gsl_fft_complex_forward with signal_pulse, n = %d", n);
   
-  gsl_fft_signal_complex_constant (n, 1.0, 0.0, complex_data,
+  fft_signal_complex_constant (n, 1.0, 0.0, complex_data,
 					fft_complex_data);
   gsl_fft_complex_forward (complex_data, 1, n, cw);
   status = compare_complex_results ("analytic", fft_complex_data,
@@ -194,7 +194,7 @@ void check_complex (size_t n)
   status = 0;
   for (i = 0; i < n; i++)
     {
-      gsl_fft_signal_complex_exp ((int)i, n, 1.0, 0.0, complex_data,
+      fft_signal_complex_exp ((int)i, n, 1.0, 0.0, complex_data,
 				       fft_complex_data);
       gsl_fft_complex_forward (complex_data, 1, n, cw);
       status |= compare_complex_results ("analytic", fft_complex_data,

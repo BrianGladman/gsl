@@ -130,7 +130,7 @@ void check_complex_radix2 (size_t n)
   fft_complex_data = (double *) malloc (2 * n * sizeof (double));
   fft_complex_tmp = (double *) malloc (2 * n * sizeof (double));
   
-  gsl_fft_signal_complex_noise (n, complex_data, fft_complex_data);
+  fft_signal_complex_noise (n, complex_data, fft_complex_data);
   memcpy (complex_tmp, complex_data, 2 * n * sizeof (double));
   gsl_fft_complex_radix2_dif_forward (complex_data, 1, n);
 
@@ -140,7 +140,7 @@ void check_complex_radix2 (size_t n)
   gsl_test (status, "gsl_fft_complex_radix2_dif with signal_noise, n = %d", n);
 
 
-  gsl_fft_signal_complex_noise (n, complex_data, fft_complex_data);
+  fft_signal_complex_noise (n, complex_data, fft_complex_data);
   memcpy (complex_tmp, complex_data, 2 * n * sizeof (double));
   gsl_fft_complex_radix2_forward (complex_data, 1, n);
   status = compare_complex_results ("dft", fft_complex_data,
@@ -190,7 +190,7 @@ void check_real_radix2 (size_t n)
   
   sprintf (length, "n = %d", n);
   
-  gsl_fft_signal_real_noise (n, complex_data, fft_complex_data);
+  fft_signal_real_noise (n, complex_data, fft_complex_data);
   memcpy (complex_tmp, complex_data, 2 * n * sizeof (double));
 
   for (i = 0; i < n; i++)
