@@ -11,6 +11,13 @@ int    gsl_sf_legendre_Pl_array_e(int lmax, double x, double * result_array); /*
 
 double gsl_sf_legendre_Pl(int l, double x);  /* domain */
 
+double gsl_sf_legendre_P1(double x);
+double gsl_sf_legendre_P2(double x);
+double gsl_sf_legendre_P3(double x);
+double gsl_sf_legendre_P4(double x);
+double gsl_sf_legendre_P5(double x);
+
+#ifdef HAVE_INLINE
 extern inline double gsl_sf_legendre_P1(double x) { return x; }
 extern inline double gsl_sf_legendre_P2(double x) { return 0.5*(3.*x*x - 1.); }
 extern inline double gsl_sf_legendre_P3(double x) { return 0.5*x*(5.*x*x - 3.); }
@@ -18,7 +25,7 @@ extern inline double gsl_sf_legendre_P4(double x)
 { double x2 = x*x; return (35.*x2*x2 - 30.*x2 + 3.)/8.; }
 extern inline double gsl_sf_legendre_P5(double x)
 { double x2 = x*x; return x*(63.*x2*x2 - 70.*x2 + 15.)/8.; }
-
+#endif /* HAVE_INLINE */
 
 /* P_l^m(x)  m >= 0; l >= m; x >= 0
  *
@@ -60,8 +67,10 @@ double gsl_sf_legendre_sphPlm(int l, int m, double x);  /* domain */
 
 /* size of result_array[] needed for the array versions (lmax - m + 1) */
 
+int gsl_sf_legendre_array_size(const int lmax, const int m);
+#ifdef HAVE_INLINE
 extern inline int gsl_sf_legendre_array_size(const int lmax, const int m) { return lmax-m+1; }
-
+#endif /* HAVE_INLINE */
 
 /* P_{-1/2 + I lambda}^{1/2}(x)  Irregular (Spherical) Conical Function */
 
