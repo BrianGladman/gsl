@@ -52,16 +52,18 @@ gsl_sf_coulomb_wave_FG_impl(const double eta, const double x,
 
 /* F_L(eta,x)
  */
-int gsl_sf_coulomb_wave_F_array_impl(double lam_min, int kmax,
-                                     double eta, double x,
-                                     double * fc_array,
-			             double * F_exponent
-                                     );
-int gsl_sf_coulomb_wave_F_e(double lam_min, int kmax,
-                            double eta, double x,
-                            double * fc_array,
-			    double * F_exponent
-                            );
+int gsl_sf_coulomb_wave_F_array_impl(
+  double lam_min, int kmax,
+  double eta, double x,
+  double * fc_array,
+  double * F_exponent
+  );
+int gsl_sf_coulomb_wave_F_array_e(
+  double lam_min, int kmax,
+  double eta, double x,
+  double * fc_array,
+  double * F_exponent
+  );
 
 /* F_L(eta,x), G_L(eta,x)
  */
