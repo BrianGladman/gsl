@@ -44,8 +44,14 @@ struct gsl_odeiv_step_bsimp_struct
   int kopt;
   int nvold;
 
-  double epsold;
   double xnew;
+
+  double hdid;
+  double hnext;
+
+  const double * yscal;
+  double eps;
+  double epsold;
 
   double * ysav;
   double * yseq;
@@ -64,7 +70,7 @@ static void bsimp_free(void * self);
 
 
 gsl_odeiv_step *
-gsl_odeiv_step_bsimp_new()
+gsl_odeiv_step_bsimp_new(const double * yscal, double eps)
 {
   
   gsl_odeiv_step_bsimp * s = (gsl_odeiv_step_bsimp *) malloc(sizeof(gsl_odeiv_step_bsimp));
@@ -87,6 +93,8 @@ gsl_odeiv_step_bsimp_new()
       s->yseq = 0;
       s->dfdx = 0;
       s->dfdy = 0;
+      s->yscal = yscal;
+      s->eps = eps;
   }
   return (gsl_odeiv_step *) s;
 }
@@ -350,6 +358,7 @@ stifbs (double y[], double dydx[], int nv, double *xx, double htry,
 
   double eps1, errmax, fact, red, scale, work, wrkmin, xest;
 
+  const double * yscal = ( my->yscal != 0 ? my->yscal : y );
 
   int reduct;
 
@@ -357,6 +366,7 @@ stifbs (double y[], double dydx[], int nv, double *xx, double htry,
 
   double h = htry;
 
+  double xx = t;
 
   if(sys->dimension <= 0) {
     return GSL_EINVAL;
@@ -382,12 +392,12 @@ stifbs (double y[], double dydx[], int nv, double *xx, double htry,
   yseq = vector (1, nv);
 */
 
-  if (eps != my->epsold || dim != my->nvold)
+  if (my->eps != my->epsold || dim != my->nvold)
     {
       /* Reinitialize also if nv has changed. */
 
-      *hnext = my->xnew = -1.0e29;
-      eps1 = SAFE1 * eps;
+      my->hnext = my->xnew = -1.0e29;
+      eps1 = SAFE1 * my->eps;
       my->ab[1] = nseq[1] + 1;
 
       for (k = 1; k <= KMAXX; k++)
@@ -399,7 +409,7 @@ stifbs (double y[], double dydx[], int nv, double *xx, double htry,
 	    my->alf[k][iq] = pow (eps1, ((my->ab[k + 1] - my->ab[iq + 1]) /
 				 ((my->ab[iq + 1] - my->ab[1] + 1.0) * (2 * k + 1))));
 	}
-      my->epsold = eps;
+      my->epsold = my->eps;
       my->nvold = dim;  /* Save nv. */
       my->ab[1] += dim; /* Add cost of Jacobian evaluations to work coefficients. */
       for (k = 1; k <= KMAXX; k++)
@@ -419,7 +429,7 @@ stifbs (double y[], double dydx[], int nv, double *xx, double htry,
 /*
   jacobn (*xx, y, dfdx, dfdy, dim);
 */
-  if (*xx != my->xnew || h != (*hnext))
+  if (xx != my->xnew || h != my->hnext)
     {
       my->first = 1;
       my->kopt = my->kmax;
@@ -433,9 +443,9 @@ stifbs (double y[], double dydx[], int nv, double *xx, double htry,
 
     for (k = 1; k <= my->kmax; k++)
       {
-        my->xnew = (*xx) + h;
+        my->xnew = xx + h;
 
-        if (my->xnew == (*xx))
+        if (my->xnew == xx)
           nrerror ("step size underflow in stifbs");
 
 /*
@@ -444,8 +454,7 @@ stifbs (double y[], double dydx[], int nv, double *xx, double htry,
         xest = SQR (h / nseq[k]);
 
 
-        /* The rest of the routine is identical to
-           bsstep. */
+        /* The rest of the routine is identical to bsstep. */
 
         pzextr (k, xest, my->yseq, y, yerr, dim);
 
@@ -454,9 +463,9 @@ stifbs (double y[], double dydx[], int nv, double *xx, double htry,
           {
             errmax = TINY;
             for(i=0; i<dim; i++) {
-              errmax = FMAX (errmax, fabs (yerr[i] / yscal[i]));
+              errmax = FMAX (errmax, fabs(yerr[i])/(fabs(yscal[i]) + GSL_SQRT_DBL_EPSILON));
             }
-            errmax /= eps;
+            errmax /= my->eps;
             km = k - 1;
             my->err[km] = pow (errmax / SAFE1, 1.0 / (2 * km + 1));
           }
@@ -499,8 +508,8 @@ stifbs (double y[], double dydx[], int nv, double *xx, double htry,
     reduct = 1;
   }
 
-  *xx = my->xnew;
-  *hdid = h;
+  xx = my->xnew;
+  my->hdid = h;
   my->first = 0;
   wrkmin = 1.0e35;
   for (kk = 1; kk <= km; kk++)
@@ -515,14 +524,14 @@ stifbs (double y[], double dydx[], int nv, double *xx, double htry,
 	}
     }
 
-  *hnext = h / scale;
+  my->hnext = h / scale;
 
   if (my->kopt >= k && my->kopt != my->kmax && !reduct)
     {
       fact = FMAX (scale / my->alf[my->kopt - 1][my->kopt], SCALMX);
       if (my->ab[my->kopt + 1] * fact <= wrkmin)
 	{
-	  *hnext = h / fact;
+	  my->hnext = h / fact;
 	  my->kopt++;
 	}
     }

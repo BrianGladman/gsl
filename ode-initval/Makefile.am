@@ -8,7 +8,7 @@ pkginclude_HEADERS = \
 noinst_HEADERS = 
 
 
-INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../ieee-utils -I$(srcdir)/../err 
+INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../ieee-utils -I$(srcdir)/../err -I$(srcdir)/../linalg -I$(srcdir)/../vector -I$(srcdir)/../matrix
 
 TESTS = test_odeiv
 
