@@ -5,7 +5,7 @@ void cpy (double *dest, double *src, size_t N);
 void randomize (double *data, size_t n);
 void reverse (double *data, size_t N);
 int check (double *data, double *orig, size_t N);
-int pcheck (gsl_permutation * p, double *data, double *orig, size_t N);
+int pcheck (size_t * p, double *data, double *orig, size_t N);
 
 void
 test_heapsort (size_t N)
@@ -14,7 +14,7 @@ test_heapsort (size_t N)
 
   double *orig = (double *) malloc (N * sizeof (double));
   double *data = (double *) malloc (N * sizeof (double));
-  gsl_permutation *p = gsl_permutation_alloc (N);
+  size_t  *p = (size_t *) malloc (N * sizeof(size_t));
 
   initialize (orig, N);
 
@@ -60,7 +60,7 @@ test_heapsort (size_t N)
 
   free (orig);
   free (data);
-  gsl_permutation_free (p);
+  free (p);
 }
 
 void
@@ -133,13 +133,13 @@ check (double *data, double *orig, size_t N)
 }
 
 int
-pcheck (gsl_permutation * p, double *data, double *orig, size_t N)
+pcheck (size_t * p, double *data, double *orig, size_t N)
 {
   size_t i;
 
   for (i = 0; i < N; i++)
     {
-      if (data[p->data[i]] != orig[i])
+      if (data[p[i]] != orig[i])
 	{
 	  return GSL_FAILURE;
 	}

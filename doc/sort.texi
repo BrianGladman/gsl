@@ -74,17 +74,17 @@ the data which destroys its initial ordering.
 @end deftypefun
 
 @cindex indirect sorting
-@deftypefun int gsl_heapsort_index (gsl_permutation * p, const void * @var{array}, size_t @var{count}, size_t @var{size}, gsl_comparison_fn_t @var{compare})
+@deftypefun int gsl_heapsort_index (size_t * p, const void * @var{array}, size_t @var{count}, size_t @var{size}, gsl_comparison_fn_t @var{compare})
 
 This function indirectly sorts the @var{count} members of the array
 @var{array}, each of size @var{size}, into ascending order using the
 comparision function @var{compare}. The resulting permutation is stored
-in @var{p}. The elements of @var{p} give the index of the array element
-which would have been stored in that position if the array had been
-sorted in place. The first element of @var{p} gives the index of the
-least element in @var{array}, and the last element of @var{p} gives the
-index of the greatest element in @var{array}. The array itself is not
-changed.
+in @var{p}, an array of length @var{n}. The elements of @var{p} give the
+index of the array element which would have been stored in that position
+if the array had been sorted in place. The first element of @var{p}
+gives the index of the least element in @var{array}, and the last
+element of @var{p} gives the index of the greatest element in
+@var{array}. The array itself is not changed.
 @end deftypefun
 
 @node Sorting vectors

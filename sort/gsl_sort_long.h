@@ -1,5 +1,5 @@
-#ifndef GSL_SORT_LONG_H
-#define GSL_SORT_LONG_H
+#ifndef __GSL_SORT_LONG_H__
+#define __GSL_SORT_LONG_H__
 
 #include <stdlib.h>
 #include <gsl/gsl_errno.h>
@@ -8,4 +8,4 @@
 void gsl_sort_long (long * data, size_t stride, size_t n);
 int gsl_sort_long_index (size_t * p, const long * data, size_t stride, size_t n);
 
-#endif /* GSL_SORT_LONG_H */
+#endif /* __GSL_SORT_LONG_H__ */

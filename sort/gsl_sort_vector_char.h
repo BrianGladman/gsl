@@ -1,5 +1,5 @@
-#ifndef GSL_SORT_VECTOR_CHAR_H
-#define GSL_SORT_VECTOR_CHAR_H
+#ifndef __GSL_SORT_VECTOR_CHAR_H__
+#define __GSL_SORT_VECTOR_CHAR_H__
 
 #include <stdlib.h>
 #include <gsl/gsl_errno.h>
@@ -9,4 +9,4 @@
 void gsl_sort_vector_char (gsl_vector_char * v);
 int gsl_sort_vector_char_index (gsl_permutation * p, const gsl_vector_char * v);
 
-#endif /* GSL_SORT_VECTOR_CHAR_H */
+#endif /* __GSL_SORT_VECTOR_CHAR_H__ */

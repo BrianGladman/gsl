@@ -1,3 +1,8 @@
+Mon Mar 13 13:57:33 2000  Brian Gough  <bjg@network-theory.co.uk>
+
+	* sortind.c (gsl_heapsort_index): changed to use an array of
+ 	size_t's directly instead of gsl_permutation
+
 Mon Feb 28 20:30:06 2000  Brian Gough  <bjg@network-theory.co.uk>
 
 	* renamed gsl_sort to gsl_heapsort, since this is more meaningful

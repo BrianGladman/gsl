@@ -1,5 +1,5 @@
-#ifndef GSL_SORT_CHAR_H
-#define GSL_SORT_CHAR_H
+#ifndef __GSL_SORT_CHAR_H__
+#define __GSL_SORT_CHAR_H__
 
 #include <stdlib.h>
 #include <gsl/gsl_errno.h>
@@ -8,4 +8,4 @@
 void gsl_sort_char (char * data, size_t stride, size_t n);
 int gsl_sort_char_index (size_t * p, const char * data, size_t stride, size_t n);
 
-#endif /* GSL_SORT_CHAR_H */
+#endif /* __GSL_SORT_CHAR_H__ */

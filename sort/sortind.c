@@ -54,28 +54,23 @@ downheap (size_t * p, const void *data, const size_t size, const size_t N, size_
 }
 
 int
-gsl_heapsort_index (gsl_permutation * permutation, const void *data, size_t count, size_t size, gsl_comparison_fn_t compare)
+gsl_heapsort_index (size_t * p, const void *data, size_t count, size_t size, gsl_comparison_fn_t compare)
 {
   /* Sort the array in ascending order. This is a true inplace
      algorithm with N log N operations. Worst case (an already sorted
      array) is something like 20% slower */
 
-  size_t *p = permutation->data;
-
-  size_t N;
-  size_t k;
-
-  if (permutation->size != count)
-    {
-      GSL_ERROR ("permutation length and data count are not equal", GSL_EBADLEN);
-    }
+  size_t i, k, N;
 
   if (count == 0)
     {
       return GSL_SUCCESS;	/* No data to sort */
     }
 
-  gsl_permutation_init (permutation);	/* set permutation to identity */
+  for (i = 0; i < count; i++)
+    {
+      p[i] = i ;                /* set permutation to identity */
+    }
 
   /* We have n_data elements, last element is at 'n_data-1', first at
      '0' Set N to the last element number. */

@@ -1,5 +1,5 @@
-#ifndef GSL_SORT_VECTOR_LONG_H
-#define GSL_SORT_VECTOR_LONG_H
+#ifndef __GSL_SORT_VECTOR_LONG_H__
+#define __GSL_SORT_VECTOR_LONG_H__
 
 #include <stdlib.h>
 #include <gsl/gsl_errno.h>
@@ -9,4 +9,4 @@
 void gsl_sort_vector_long (gsl_vector_long * v);
 int gsl_sort_vector_long_index (gsl_permutation * p, const gsl_vector_long * v);
 
-#endif /* GSL_SORT_VECTOR_LONG_H */
+#endif /* __GSL_SORT_VECTOR_LONG_H__ */
