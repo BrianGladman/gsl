@@ -188,10 +188,7 @@ Subject: subscribe
 @end example
 @noindent
 This mailing list can be used to ask questions not covered by this
-manual.
-
-The developers of the library can be reached via the development
-mailing list @code{gsl-discuss@@sources.redhat.com}.
+manual, and to contact the developers of the library.
 
 @node Conventions used in this manual
 @section Conventions used in this manual
