@@ -20,7 +20,7 @@ static size_t sobol_state_size(unsigned int dimension);
 static int sobol_init(void * state, unsigned int dimension);
 static int sobol_get(void * state, unsigned int dimension, double * v);
 
-/* Initialize global Sobol generator type object. */
+/* global Sobol generator type object */
 static const gsl_qrng_type sobol_type = 
 {
   "sobol",
@@ -35,84 +35,79 @@ const gsl_qrng_type * gsl_qrng_sobol = &sobol_type;
 /* primitive polynomials in binary encoding,
  * starting with first non-constant polynomial
  */
-static const int primitive_polynomials[] = 
+static const int primitive_polynomials[SOBOL_MAX_DIMENSION] = 
 {
-  3,     7,  11,  13,  19,  25,  37,  59,  47,
+  1,     3,   7,  11,  13,  19,  25,  37,  59,  47,
   61,   55,  41,  67,  97,  91, 109, 103, 115, 131,
   193, 137, 145, 143, 241, 157, 185, 167, 229, 171,
   213, 191, 253, 203, 211, 239, 247, 285, 369, 299
 };
 
+/* degrees of the primitive polynomials */
+static const int degree_table[SOBOL_MAX_DIMENSION] = 
+{
+  0, 1, 2, 3, 3, 4, 4, 5, 5, 5,
+  5, 5, 5, 6, 6, 6, 6, 6, 6, 7,
+  7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 
+  7, 7, 7, 7, 7, 7, 7, 8, 8, 8
+};
+
+
+/* initial values for direction tables, following
+ * Bratley+Fox, taken from [Sobol+Levitan, preprint 1976]
+ */
 static const int v_init[8][SOBOL_MAX_DIMENSION] =
 {
-  { 0, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+  {
+    0, 1, 1, 1, 1, 1, 1, 1, 1, 1,
     1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
     1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
     1, 1, 1, 1, 1, 1, 1, 1, 1, 1
   },
-  { 0, 0, 1, 3, 1, 3, 1, 3, 3, 1,
-    3, 1, 3, 1, 3, 1, 1, 3, 1, 3, 
-    1, 3, 1, 3, 3, 1, 3, 1, 3, 1, 
+  {
+    0, 0, 1, 3, 1, 3, 1, 3, 3, 1,
+    3, 1, 3, 1, 3, 1, 1, 3, 1, 3,
+    1, 3, 1, 3, 3, 1, 3, 1, 3, 1,
     3, 1, 1, 3, 1, 3, 1, 3, 1, 3
   }, 
-  { 0, 0, 0, 7, 5, 1, 3, 3, 7, 5, 
-    5, 7, 7, 1, 3, 3, 7, 5, 1, 1, 
-    5, 3, 3, 1, 7, 5, 1, 3, 3, 7, 
+  {
+    0, 0, 0, 7, 5, 1, 3, 3, 7, 5,
+    5, 7, 7, 1, 3, 3, 7, 5, 1, 1,
+    5, 3, 3, 1, 7, 5, 1, 3, 3, 7,
     5, 1, 1, 5, 7, 7, 5, 1, 3, 3
   }, 
-  { 0,  0,  0,  0,  0,  1,  7,  9, 13, 11, 
-    1,  3,  7,  9,  5, 13, 13, 11,  3, 15, 
-    5,  3, 15,  7,  9, 13,  9,  1, 11,  7, 
+  {
+    0,  0,  0,  0,  0,  1,  7,  9, 13, 11,
+    1,  3,  7,  9,  5, 13, 13, 11,  3, 15,
+    5,  3, 15,  7,  9, 13,  9,  1, 11,  7,
     5, 15,  1, 15, 11,  5,  3,  1,  7,  9
   }, 
-  {  0,  0,  0,  0,  0,  0,  0,  9,  3, 27, 
-    15, 29, 21, 23, 19, 11, 25,  7, 13, 17, 
-     1, 25, 29,  3, 31, 11,  5, 23, 27, 19, 
-    21,  5,  1, 17, 13,  7, 15,  9, 31, 9
+  {
+     0,  0,  0,  0,  0,  0,  0,  9,  3, 27,
+    15, 29, 21, 23, 19, 11, 25,  7, 13, 17,
+     1, 25, 29,  3, 31, 11,  5, 23, 27, 19,
+    21,  5,  1, 17, 13,  7, 15,  9, 31,  9
   }, 
-  {  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0, 37, 33,  7,  5, 11, 39, 63, 
-    27, 17, 15, 23, 29,  3, 21, 13, 31, 25, 
+  {
+     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+     0,  0,  0, 37, 33,  7,  5, 11, 39, 63,
+    27, 17, 15, 23, 29,  3, 21, 13, 31, 25,
      9, 49, 33, 19, 29, 11, 19, 27, 15, 25
   }, 
-  {  0,   0,  0,  0,  0,  0,    0,  0,  0,   0,
+  {
+     0,   0,  0,  0,  0,  0,    0,  0,  0,   0,
      0,   0,  0,  0,  0,  0,    0,  0,  0,  13,
-    33, 115, 41, 79, 17,  29, 119, 75, 73, 105, 
-    7,   59, 65, 21,  3, 113,  61, 89, 45, 107
+    33, 115, 41, 79, 17,  29, 119, 75, 73, 105,
+     7,  59, 65, 21,  3, 113,  61, 89, 45, 107
   }, 
-  { 0, 0, 0, 0, 0, 0, 0, 0,  0,  0,
+  {
+    0, 0, 0, 0, 0, 0, 0, 0,  0,  0,
     0, 0, 0, 0, 0, 0, 0, 0,  0,  0,
     0, 0, 0, 0, 0, 0, 0, 0,  0,  0,
     0, 0, 0, 0, 0, 0, 0, 7, 23, 39
   }
 };
 
-/*
-      DATA (VINIT(I,1),I=2,40)  /39*1/
-      DATA (VINIT(I,2),I=3,40)  /1,3,1,3,1,3,3,1,
-     +                           3,1,3,1,3,1,1,3,1,3,
-     +                           1,3,1,3,3,1,3,1,3,1,
-     +                           3,1,1,3,1,3,1,3,1,3/
-      DATA (VINIT(I,3),I=4,40)  /7,5,1,3,3,7,5,
-     +                           5,7,7,1,3,3,7,5,1,1,
-     +                           5,3,3,1,7,5,1,3,3,7,
-     +                           5,1,1,5,7,7,5,1,3,3/
-      DATA (VINIT(I,4),I=6,40)  /1,7,9,13,11,
-     +                           1,3,7,9,5,13,13,11,3,15,
-     +                           5,3,15,7,9,13,9,1,11,7,
-     +                           5,15,1,15,11,5,3,1,7,9/
-      DATA (VINIT(I,5),I=8,40)  /9,3,27,
-     +                           15,29,21,23,19,11,25,7,13,17,
-     +                           1,25,29,3,31,11,5,23,27,19,
-     +                           21,5,1,17,13,7,15,9,31,9/
-      DATA (VINIT(I,6),I=14,40) /37,33,7,5,11,39,63,
-     +                           27,17,15,23,29,3,21,13,31,25,
-     +                           9,49,33,19,29,11,19,27,15,25/
-      DATA (VINIT(I,7),I=20,40) /13,
-     +                           33,115,41,79,17,29,119,75,73,105,
-     +                           7,59,65,21,3,113,61,89,45,107/
-      DATA (VINIT(I,8),I=38,40) /7,23,39/
-*/
 
 /* Sobol generator state.
  *   sequence_count       = number of calls with this generator
@@ -128,6 +123,9 @@ typedef struct
   int           v_direction[SOBOL_BIT_COUNT][SOBOL_MAX_DIMENSION];
 } sobol_state_t;
 
+/* NOTE: I fixed the size for the preliminary implementation.
+   This could/should be relaxed, as an optimization.
+ */
 
 static size_t sobol_state_size(unsigned int dimension)
 {
@@ -138,70 +136,64 @@ static size_t sobol_state_size(unsigned int dimension)
 static int sobol_init(void * state, unsigned int dimension)
 {
   sobol_state_t * s_state = (sobol_state_t *) state;
-  int includ[8];
-  int i, j, k;
+  int i_dim;
+  int j, k;
   int ell;
 
   if(dimension < 1 || dimension > SOBOL_MAX_DIMENSION) {
     return GSL_EINVAL;
   }
 
-  /* Initialize set of direction numbers in dimension 0. */
+  /* Initialize direction table in dimension 0. */
   for(k=0; k<SOBOL_BIT_COUNT; k++) s_state->v_direction[k][0] = 1;
 
   /* Initialize in remaining dimensions. */
-  for(i=1; i<dimension; i++) {
+  for(i_dim=1; i_dim<dimension; i_dim++) {
 
-    /* Get degree of polynomial[i]. */
-    int poly = primitive_polynomials[i];
-    int degree_i = 0;
-    while(1) {
-      poly /= 2;
-      if(poly > 0) ++degree_i;
-      else break;
-    }
+    const int degree_i = degree_table[i_dim];
+    int includ[8];
 
     /* Expand the polynomial bit pattern to separate
      * components of the logical array includ[].
      */
-    poly = primitive_polynomials[i];
-    for(k = degree_i; k > 0; k--) {
-      includ[k] = ((poly % 2) == 1);
-      poly /= 2;
+    int p_i = primitive_polynomials[i_dim];
+    for(k = degree_i-1; k >= 0; k--) {
+      includ[k] = ((p_i % 2) == 1);
+      p_i /= 2;
     }
 
-    /* Leading elements for dimension i come from vinit[][]. */
-    for(j=0; j<degree_i; j++) s_state->v_direction[j][i] = v_init[j][i];
+    /* Leading elements for dimension i come from v_init[][]. */
+    for(j=0; j<degree_i; j++) s_state->v_direction[j][i_dim] = v_init[j][i_dim];
 
     /* Calculate remaining elements for dimension i,
      * as explained in Bratley+Fox, section 2.
      */
     for(j=degree_i; j<SOBOL_BIT_COUNT; j++) {
-      int newv = s_state->v_direction[j-degree_i][i];
+      int newv = s_state->v_direction[j-degree_i][i_dim];
       ell = 1;
       for(k=0; k<degree_i; k++) {
         ell *= 2;
-    	if(includ[k]) newv ^= (ell * s_state->v_direction[j-k][i]);
+    	if(includ[k]) newv ^= (ell * s_state->v_direction[j-k][i_dim]);
       }
-      s_state->v_direction[j][i] = newv;
+      s_state->v_direction[j][i_dim] = newv;
     }
   }
 
   /* Multiply columns of v by appropriate power of 2. */
   ell = 1;
-  for(j=SOBOL_BIT_COUNT-1; j>0; j--) {
+  for(j=SOBOL_BIT_COUNT-1-1; j>=0; j--) {
     ell *= 2;
-    for(i=0; i<dimension; i++) {
-      s_state->v_direction[j][i] *= ell;
+    for(i_dim=0; i_dim<dimension; i_dim++) {
+      s_state->v_direction[j][i_dim] *= ell;
     }
   }
 
-  /* 1/(common denominator of the elements in v) */
-  s_state->last_denominator_inv = 1.0 /(2 * ell);
+  /* 1/(common denominator of the elements in v_direction) */
+  s_state->last_denominator_inv = 1.0 /(2.0 * ell);
 
   /* final setup */
   s_state->sequence_count = 0;
-  for(i=0; i<dimension; i++) s_state->last_numerator_vec[i] = 0;
+  for(i_dim=0; i_dim<dimension; i_dim++) s_state->last_numerator_vec[i_dim] = 0;
 
   return GSL_SUCCESS;
 }
@@ -213,7 +205,7 @@ static int sobol_get(void * state, unsigned int dimension, double * v)
 
   int i_dimension;
 
-  /* Find the position of the right-hand zero in count. */
+  /* Find the position of the least-significant zero in count. */
   int ell = 0;
   int c = s_state->sequence_count;
   while(1) {
@@ -223,10 +215,10 @@ static int sobol_get(void * state, unsigned int dimension, double * v)
   }
 
   /* Check for exhaustion. */
-  if(ell > 30) return GSL_EFAILED; /* FIXME: good return code here */
+  if(ell > SOBOL_BIT_COUNT) return GSL_EFAILED; /* FIXME: good return code here */
 
   for(i_dimension=0; i_dimension<dimension; i_dimension++) {
-    const int direction_i     = s_state->v_direction[ell][i_dimension];
+    const int direction_i     = s_state->v_direction[ell-1][i_dimension];
     const int old_numerator_i = s_state->last_numerator_vec[i_dimension];
     const int new_numerator_i = old_numerator_i ^ direction_i;
     s_state->last_numerator_vec[i_dimension] = new_numerator_i;
