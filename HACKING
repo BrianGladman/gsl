@@ -8,9 +8,6 @@ ftp://sourceware.cygnus.com/pub/automake/
 * you must have the latest autoconf from
 ftp://sourceware.cygnus.com/pub/automake/
 
-* you must have the texinfo 3.11 with Brian's mathematical hacks; it
-is in ftp://sourceware.cygnus.com/pub/gsl/
-
 * you must have a recent CVS (at least 1.9) from
 ftp://prep.ai.mit.edu/u2/emacs/
 
