@@ -349,7 +349,7 @@ double  gsl_sf_bessel_k0_scaled(double x);
  */
 int     gsl_sf_bessel_k1_scaled_impl(double x, double * result);
 int     gsl_sf_bessel_k1_scaled_e(double x, double * result);
-double  gsl_sf_bessel_k1_scaled(double x);   /* underflow */
+double  gsl_sf_bessel_k1_scaled(double x);
 
 
 /* Irregular modified spherical Bessel function k_2(x)

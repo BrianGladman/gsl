@@ -8,8 +8,6 @@
 #include "gsl_sf_airy.h"
 #include "gsl_sf_chebyshev.h"
 
-#define CubeRoot2_ 1.25992104989487316476721060728
-
 
 /* Chebyshev fit for f(x) = z(x)^6 A_3(z(x)),  z(x) = 22/(10(x+1)) */
 static double A3_gt1_data[31] = {

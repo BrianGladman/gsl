@@ -1,14 +1,14 @@
 /* Author:  G. Jungman
  * RCS:     $Id$
  */
+/* Miscellaneous support functions for Bessel function evaluations.
+ */
 #include <math.h>
 #include <gsl_math.h>
 #include <gsl_errno.h>
 #include "bessel.h"
 #include "gsl_sf_airy.h"
 #include "gsl_sf_gamma.h"
-#include "gsl_sf_pow_int.h"
-#include "gsl_sf_bessel.h"
 
 #define CubeRoot2_  1.25992104989487316476721060728
 
