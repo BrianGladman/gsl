@@ -11,6 +11,10 @@ this causes the strip program to overwrite these archive entries.  If
 you need to produce a compact version of the library compile without
 -g instead of using strip.
 
+make install-strip does not work, due to a minor problem with autoconf
+which is fixed in the 2.5 development version of autoconf.  In the
+meantime use make install and then strip /usr/local/bin/gsl-*
+
 IRIX
 ----
 
@@ -61,3 +65,11 @@ As of July 2001 the OpenBSD log1p() function on i386 causes failures
 in the gsl complex tests.  The configure script has been hardcoded to
 substitute gsl_log1p instead on OpenBSD.  The log1p() bug has been
 reported and so may be fixed in future versions of OpenBSD.
+
+MacOS X
+-------
+
+There are problems with dynamic linker, so the library should be
+compiled with
+
+  ./configure --disable-shared
