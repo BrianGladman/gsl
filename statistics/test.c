@@ -7,7 +7,6 @@
 
 double gsl_stats_iittest (int *array1, int *array2, int size1, int size2)
 {
-
   /* runs a t-test between two arrays of integers representing 
       independent samples. Tests to see if the difference between
       means of the samples is different from zero */
@@ -33,7 +32,6 @@ double gsl_stats_iittest (int *array1, int *array2, int size1, int size2)
 
 double gsl_stats_ddttest (double *array1, double *array2, int size1, int size2)
 {
-
   /* runs a t-test between two arrays of doubles representing 
       independent samples. Tests to see if the difference between
       means of the samples is different from zero */

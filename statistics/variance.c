@@ -19,8 +19,6 @@ double gsl_stats_ivariance (int *array, int size)
   /* find the mean */
   the_mean = gsl_stats_imean(array, size);
 
-  /*  printf("ivariance: mean=%f\n", the_mean);*/
-  
   /* find sum of the squares */
   for (i=0; i<size; i++){
     difference = array[i] - the_mean;
@@ -56,7 +54,6 @@ double gsl_stats_dvariance (double *array, int size)
 
 double gsl_stats_iest_variance (int *array, int size)
 {
-  
   /* takes an array of integers and finds the variance */
 
   double sum, the_mean;
@@ -81,7 +78,6 @@ double gsl_stats_iest_variance (int *array, int size)
 
 double gsl_stats_dest_variance (double *array, int size)
 {
-  
   /* takes an array of doubles and finds the variance */
 
   double sum, the_mean;
@@ -103,7 +99,6 @@ double gsl_stats_dest_variance (double *array, int size)
 
 double gsl_stats_isd (int *array, int size)
 {
-
   /* finds the standard deviation of an array of integers */
 
   double variance, sd;
@@ -117,7 +112,6 @@ double gsl_stats_isd (int *array, int size)
 
 double gsl_stats_dsd (double *array, int size)
 {
-
   /* finds the standard deviation of an array of doubles */
 
   double variance, sd;
@@ -131,7 +125,6 @@ double gsl_stats_dsd (double *array, int size)
 
 double gsl_stats_iest_sd (int *array, int size)
 {
-
   /* finds the standard deviation of an array of integers */
 
   double variance, sd;
@@ -145,7 +138,6 @@ double gsl_stats_iest_sd (int *array, int size)
 
 double gsl_stats_dest_sd (double *array, int size)
 {
-
   /* finds the standard deviation of an array of doubles */
 
   double variance, sd;
@@ -198,7 +190,6 @@ double gsl_stats_ddpvariance(double *array1, double *array2, int size1, int size
 
 int gsl_stats_imax (int *array, int size)
 {
-  
   /* finds the highest member of an integer array */
   int max, i;
   
@@ -213,7 +204,6 @@ int gsl_stats_imax (int *array, int size)
 
 double gsl_stats_dmax (double *array, int size)
 {
-  
   /* finds the highest member of an integer array */
   double max;
   int i;
