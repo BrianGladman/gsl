@@ -26,12 +26,12 @@ static const double one_bit = 1.0 / 281474976710656.0;	/* 1/2^48 */
 
 typedef struct
   {
+    double xdbl[12]; 
+    double carry;
     unsigned int ir;
     unsigned int jr;
     unsigned int ir_old;
     unsigned int pr;
-    double carry;
-    double xdbl[12];
   }
 ranlxd_state_t;
 
@@ -158,7 +158,7 @@ ranlxd_set_impl (void *vstate, unsigned long int s, unsigned int luxury)
 
   seed = s;
 
-  i = seed & 0xFFFFFFFF;
+  i = seed & 0xFFFFFFFFUL;
 
   for (k = 0; k < 31; ++k)
     {

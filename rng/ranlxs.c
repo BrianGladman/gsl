@@ -5,22 +5,22 @@
 /* This is a second generation version of the RANLUX generator
    developed by Luscher. */
 
-inline unsigned long int ranlxs_get (void *vstate);
-double ranlxs_get_double (void *vstate);
+unsigned long int ranlxs_get (void *vstate);
+inline double ranlxs_get_double (void *vstate);
 void ranlxs_set_impl (void *state, unsigned long int s, unsigned int luxury);
 void ranlxs0_set (void *state, unsigned long int s);
 void ranlxs1_set (void *state, unsigned long int s);
 void ranlxs2_set (void *state, unsigned long int s);
 
 static const int next[12] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 0};
-static const int snext[24] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12,
-                              13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 0};
+static const int snext[24] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
+                              14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 0};
 
-static const double sbase = 16777216.0 ;	/* 2^24 */
+static const double sbase = 16777216.0;		/* 2^24 */
 static const double sone_bit = 1.0 / 16777216.0;	/* 1/2^24 */
 static const double one_bit = 1.0 / 281474976710656.0;	/* 1/2^48 */
 
-static const double shift = 268435456.0 ;	/* 2^28 */
+static const double shift = 268435456.0;	/* 2^28 */
 
 #define _ranlux_step(x1,x2,i1,i2,i3)     \
           x1=xdbl[i1] - xdbl[i2];        \
@@ -33,20 +33,20 @@ static const double shift = 268435456.0 ;	/* 2^28 */
 
 typedef struct
   {
+    double xdbl[12], ydbl[12];  /* doubles first so they are 8-byte aligned */
+    double carry;
+    float xflt[24];
     unsigned int ir;
     unsigned int jr;
     unsigned int is;
     unsigned int is_old;
     unsigned int pr;
-    float xflt[24];
-    double carry;
-    double xdbl[12], ydbl[12];
   }
 ranlxs_state_t;
 
-static inline void increment_state (ranlxs_state_t * state);
+static void increment_state (ranlxs_state_t * state);
 
-static inline void
+static void
 increment_state (ranlxs_state_t * state)
 {
   int k, kmax, m;
@@ -129,52 +129,53 @@ increment_state (ranlxs_state_t * state)
       jr = next[jr];
     }
 
-  ydbl[ir]=xdbl[ir]+shift;
+  ydbl[ir] = xdbl[ir] + shift;
 
-  for (k=next[ir];k>0;)
+  for (k = next[ir]; k > 0;)
     {
-      ydbl[k]=xdbl[k]+shift;
-      k=next[k];
+      ydbl[k] = xdbl[k] + shift;
+      k = next[k];
     }
-  
-  for (k=0,m=0;k<12;++k) 
+
+  for (k = 0, m = 0; k < 12; ++k)
     {
-      x=xdbl[k];
-      y2=ydbl[k]-shift;
-      if (y2>x)
-        y2-=sone_bit;
-      y1=(x-y2)*sbase;
-      
-      xflt[m++]=(float)y1;
-      xflt[m++]=(float)y2;
+      x = xdbl[k];
+      y2 = ydbl[k] - shift;
+      if (y2 > x)
+	y2 -= sone_bit;
+      y1 = (x - y2) * sbase;
+
+      xflt[m++] = (float) y1;
+      xflt[m++] = (float) y2;
     }
-  
+
   state->ir = ir;
-  state->is =  2 * ir;
+  state->is = 2 * ir;
   state->is_old = 2 * ir;
   state->jr = jr;
   state->carry = carry;
 }
 
-inline unsigned long int
-ranlxs_get (void *vstate)
-{
-  return ranlxs_get_double (vstate) * 16777216.0;	/* 2^24 */
-}
 
-double
+inline double
 ranlxs_get_double (void *vstate)
 {
   ranlxs_state_t *state = (ranlxs_state_t *) vstate;
 
-  int is = state->is;
+  const unsigned int is = snext[state->is];
 
-  state->is = snext[is];
+  state->is = is;
 
-  if (state->is == state->is_old)
+  if (is == state->is_old)
     increment_state (state);
 
   return state->xflt[state->is];
+}
+
+unsigned long int
+ranlxs_get (void *vstate)
+{
+  return ranlxs_get_double (vstate) * 16777216.0;	/* 2^24 */
 }
 
 void
@@ -182,7 +183,7 @@ ranlxs_set_impl (void *vstate, unsigned long int s, unsigned int luxury)
 {
   ranlxs_state_t *state = (ranlxs_state_t *) vstate;
 
-  int ibit, jbit, i, k, l, xbit[31];
+  int ibit, jbit, i, k, m, xbit[31];
   double x, y;
 
   long int seed;
@@ -192,7 +193,7 @@ ranlxs_set_impl (void *vstate, unsigned long int s, unsigned int luxury)
 
   seed = s;
 
-  i = seed & 0xFFFFFFFF;
+  i = seed & 0xFFFFFFFFUL;
 
   for (k = 0; k < 31; ++k)
     {
@@ -207,7 +208,7 @@ ranlxs_set_impl (void *vstate, unsigned long int s, unsigned int luxury)
     {
       x = 0;
 
-      for (l = 1; l <= 48; ++l)
+      for (m = 1; m <= 48; ++m)
 	{
 	  y = (double) xbit[ibit];
 	  x += x + y;
