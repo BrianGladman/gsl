@@ -201,7 +201,10 @@ gsl_la_solve_symm_tridiag_impl(
   if(diag == 0 || offdiag == 0 || rhs == 0 || solution == 0) {
     return GSL_EFAULT;
   }
-  else if(diag->size != rhs->size || diag->size != offdiag->size+1 || diag->size != solution->size) {
+  else if(diag->size != rhs->size ||
+          (offdiag->size != rhs->size && offdiag->size != rhs->size-1) ||
+	  (solution->size != rhs->size)
+          ) {
     return GSL_EBADLEN;
   }
   else {
@@ -224,7 +227,10 @@ gsl_la_solve_symm_cyc_tridiag_impl(
   if(diag == 0 || offdiag == 0 || rhs == 0 || solution == 0) {
     return GSL_EFAULT;
   }
-  else if(diag->size != rhs->size || diag->size != offdiag->size+1 || diag->size != solution->size) {
+  else if(diag->size != rhs->size ||
+          offdiag->size != rhs->size ||
+          solution->size != rhs->size
+          ) {
     return GSL_EBADLEN;
   }
   else {

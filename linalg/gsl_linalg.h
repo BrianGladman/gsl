@@ -27,7 +27,7 @@ gsl_la_matmult_impl(const gsl_matrix * A, const gsl_matrix * B, gsl_matrix * C);
 
 /* Simple implementation of matrix multiply.
  * Allows transposition of either matrix, so it
- * can compute Trans(A).B or A.Trans(B) or Trans(A).Trans(B)
+ * can compute A.B or Trans(A).B or A.Trans(B) or Trans(A).Trans(B)
  *
  * exceptions: GSL_EFAULT, GSL_EBADLEN
  */
@@ -157,6 +157,14 @@ gsl_la_solve_HH_impl(gsl_matrix * matrix,
 
 
 /* Linear solve for a symmetric tridiagonal system.
+ *
+ * The input vectors represent the NxN matrix as follows:
+ *
+ *     diag[0]  offdiag[0]             0    ...
+ *  offdiag[0]     diag[1]    offdiag[1]    ...
+ *           0  offdiag[1]       diag[2]    ...
+ *           0           0    offdiag[2]    ...
+ *         ...         ...           ...    ...
  */
 int
 gsl_la_solve_symm_tridiag_impl(const gsl_vector * diag,
@@ -166,6 +174,15 @@ gsl_la_solve_symm_tridiag_impl(const gsl_vector * diag,
 
 
 /* Linear solve for a symmetric cyclic tridiagonal system.
+ *
+ * The input vectors represent the NxN matrix as follows:
+ *
+ *      diag[0]  offdiag[0]             0   .....  offdiag[N-1]
+ *   offdiag[0]     diag[1]    offdiag[1]   .....
+ *            0  offdiag[1]       diag[2]   .....
+ *            0           0    offdiag[2]   .....
+ *          ...         ...
+ * offdiag[N-1]         ...
  */
 int
 gsl_la_solve_symm_cyc_tridiag_impl(const gsl_vector * diag,
