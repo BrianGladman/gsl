@@ -1,3 +1,8 @@
+Sun Jul 11 21:48:25 1999  Brian Gough  <bjg@network-theory.co.uk>
+
+	* test_errnos.c (main): added GSL_ECACHE to handle internal cache
+ 	structures which grow and can hit a limit
+
 Sun Mar  7 17:00:08 1999  Brian Gough  <bjg@netsci.freeserve.co.uk>
 
 	* gsl_errno.h, test_errnos.c, strerror.c: added GSL_EDIVERGE for
