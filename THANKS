@@ -73,3 +73,5 @@ functions
 * Bill Brower <wbrower@ll.mit.edu> for bug report on gsl.m4
 
 * Vladimir Kushnir <vkushnir@Alfacom.net> for ieee support for FreeBSD
+
+* F J Franklin <MEP95JFF@sheffield.ac.uk> for test reports and debugging

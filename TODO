@@ -8,13 +8,10 @@ requirements.
 
 * Finish BLAS, by implementing Level-3 operations
 
-* Sort out GSL_NAN, GSL_POSINF, GSL_NEGINF macros (these are from
-GNU R), and use them.
+* use  GSL_NAN, GSL_POSINF, GSL_NEGINF macros 
 
 * Complex polynomial solvers (Got Newton-Mueller from
 jotahtin@cc.hut.fi, still to add (BJG)).
-
-* Add least squares regression directory (use SVD from linalg for linear).
 
 * Reorganize siman and monte interfaces to allow iterative use.
 
@@ -55,11 +52,6 @@ all consistent. At the moment the lines are in any order. Also get rid
 of make strict targets, since it's better to define a shell alias to
 do that.  Files with strict target are 
 
-    blas/Makefile.am
-    dht/Makefile.am
-    linalg/Makefile.am
-    monte/Makefile.am
-    ode-initval/Makefile.am
     specfunc/Makefile.am
     sum/Makefile.am
 
