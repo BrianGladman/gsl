@@ -1,5 +1,7 @@
 *.lo
-Makefile
-Makefile.in
 .deps
 .libs
+Makefile
+Makefile.in
+gsl-randist
+test

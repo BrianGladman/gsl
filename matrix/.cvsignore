@@ -1,5 +1,9 @@
 *.lo
-Makefile
-Makefile.in
 .deps
 .libs
+Makefile
+Makefile.in
+test
+test.dat
+test.txt
+test_static

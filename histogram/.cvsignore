@@ -1,5 +1,12 @@
 *.lo
-Makefile
-Makefile.in
 .deps
 .libs
+Makefile
+Makefile.in
+gsl-histogram
+test
+test2d
+test2d_resample
+test2d_trap
+test_resample
+test_trap

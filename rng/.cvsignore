@@ -1,5 +1,8 @@
 *.lo
-Makefile
-Makefile.in
 .deps
 .libs
+Makefile
+Makefile.in
+benchmark
+rng-dump
+test

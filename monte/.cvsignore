@@ -1,5 +1,8 @@
 *.lo
-Makefile
-Makefile.in
 .deps
 .libs
+Makefile
+Makefile.in
+miser_test
+plain_test
+vegas_test
