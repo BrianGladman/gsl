@@ -14,7 +14,7 @@ different platforms when using these functions.
 @menu
 * Sorting objects::             
 * Sorting vectors::             
-* Selecting the k-th smallest or largest elements::  
+* Selecting the k smallest or largest elements::  
 * Computing the rank::          
 * Sorting Examples::            
 * Sorting References and Further Reading::  
@@ -148,10 +148,10 @@ in @var{v}, and the last element of @var{p} gives the index of the
 greatest element in @var{v}.  The vector @var{v} is not changed.
 @end deftypefun
 
-@node Selecting the k-th smallest or largest elements
-@section Selecting the k-th smallest or largest elements
+@node Selecting the k smallest or largest elements
+@section Selecting the k smallest or largest elements
 
-The functions described in this section select the @math{k}-th smallest
+The functions described in this section select the @math{k} smallest
 or largest elements of a data set of size @math{N}.  The routines use an
 @math{O(kN)} direct insertion algorithm which is suited to subsets that
 are small compared with the total size of the dataset. For example, the
@@ -162,54 +162,53 @@ to sort all the elements of the dataset directly with an @math{O(N \log
 N)} algorithm and obtain the smallest or largest values that way.
 
 @deftypefun void gsl_sort_smallest (double * @var{dest}, size_t @var{k}, const double * @var{src}, size_t @var{stride}, size_t @var{n})
-This function copies the @var{k}-th smallest elements of the array
+This function copies the @var{k} smallest elements of the array
 @var{src}, of size @var{n} and stride @var{stride}, in ascending
-numerical order in @var{dest}.  The size of the subset @var{k} must be
+numerical order in @var{dest}.  The size @var{k} of the subset must be
 less than or equal to @var{n}.  The data @var{src} is not modified by
 this operation.
 @end deftypefun
 
 @deftypefun void gsl_sort_largest (double * @var{dest}, size_t @var{k}, const double * @var{src}, size_t @var{stride}, size_t @var{n})
-This function copies the @var{k}-th largest elements of the array
+This function copies the @var{k} largest elements of the array
 @var{src}, of size @var{n} and stride @var{stride}, in descending
-numerical order in @var{dest}. The size of the subset @var{k} must be
+numerical order in @var{dest}. @var{k} must be
 less than or equal to @var{n}. The data @var{src} is not modified by
 this operation.
 @end deftypefun
 
 @deftypefun void gsl_sort_vector_smallest (double * @var{dest}, size_t @var{k}, const gsl_vector * @var{v})
 @deftypefunx void gsl_sort_vector_largest (double * @var{dest}, size_t @var{k}, const gsl_vector * @var{v})
-These functions copy the @var{k}-th smallest or largest elements of the
-vector @var{v} into the array @var{dest}. The size of the subset @var{k}
+These functions copy the @var{k} smallest or largest elements of the
+vector @var{v} into the array @var{dest}. @var{k}
 must be less than or equal to the length of the vector @var{v}.
 @end deftypefun
 
-The following functions find the indices of the @math{k}-th smallest or
+The following functions find the indices of the @math{k} smallest or
 largest elements of a dataset,
 
 @deftypefun void gsl_sort_smallest_index (size_t * @var{p}, size_t @var{k}, const double * @var{src}, size_t @var{stride}, size_t @var{n})
-This function stores the indices of the @var{k}-th smallest elements of
+This function stores the indices of the @var{k} smallest elements of
 the array @var{src}, of size @var{n} and stride @var{stride}, in the
 array @var{p}.  The indices are chosen so that the corresponding data is
-in ascending numerical order.  The size of the subset @var{k} must be
+in ascending numerical order.  @var{k} must be
 less than or equal to @var{n}. The data @var{src} is not modified by
 this operation.
 @end deftypefun
 
 @deftypefun void gsl_sort_largest_index (size_t * @var{p}, size_t @var{k}, const double * @var{src}, size_t @var{stride}, size_t @var{n})
-This function stores the indices of the @var{k}-th largest elements of
+This function stores the indices of the @var{k} largest elements of
 the array @var{src}, of size @var{n} and stride @var{stride}, in the
 array @var{p}.  The indices are chosen so that the corresponding data is
-in descending numerical order.  The size of the subset @var{k} must be
+in descending numerical order.  @var{k} must be
 less than or equal to @var{n}. The data @var{src} is not modified by
 this operation.
 @end deftypefun
 
 @deftypefun void gsl_sort_vector_smallest_index (size_t * @var{p}, size_t @var{k}, const gsl_vector * @var{v})
 @deftypefunx void gsl_sort_vector_largest_index (size_t * @var{p}, size_t @var{k}, const gsl_vector * @var{v})
-These functions store the indices of @var{k}-th smallest or largest
-elements of the vector @var{v} in the array @var{p}. The size of the
-subset @var{k} must be less than or equal to the length of the vector
+These functions store the indices of the @var{k} smallest or largest
+elements of the vector @var{v} in the array @var{p}. @var{k} must be less than or equal to the length of the vector
 @var{v}.
 @end deftypefun
 
@@ -289,7 +288,7 @@ main (void)
   const gsl_rng_type * T;
   gsl_rng * r;
 
-  int i, k = 5, N = 100000;
+  size_t i, k = 5, N = 100000;
 
   double * x = malloc (N * sizeof(double));
   double * small = malloc (k * sizeof(double));
