@@ -112,6 +112,9 @@ FUNCTION (test, func) (void)
 
     gsl_test (status, NAME (gsl_matrix) "_copy_row extracts row correctly");
   }
+
+ FUNCTION (gsl_matrix, free) (m);
+ FUNCTION (gsl_vector, free) (v);
 }
 
 #if !(defined(USES_LONGDOUBLE) && !defined(HAVE_PRINTF_LONGDOUBLE))

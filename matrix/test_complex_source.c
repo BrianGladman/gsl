@@ -73,7 +73,11 @@ FUNCTION (test, func) (void)
       if (m->data[i] != 0.0)
 	    status = 1;
     }
-  gsl_test (status, NAME (gsl_matrix) "_calloc initializes array to zero");
+
+ FUNCTION (gsl_matrix, free) (m);
+
+ gsl_test (status, NAME (gsl_matrix) "_calloc initializes array to zero");
+
 
 }
 
@@ -275,6 +279,8 @@ FUNCTION (test, trap) (void)
 	    NAME (gsl_matrix) "_get, zero real for 2nd index at u.b.");
   gsl_test (GSL_IMAG(z1) != 0,
 	    NAME (gsl_matrix) "_get, zero imag for 2nd index at u.b.");
+
+ FUNCTION (gsl_matrix, free) (mc);
 }
 
 

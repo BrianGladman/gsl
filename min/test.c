@@ -109,6 +109,9 @@ test_f (const gsl_min_fminimizer_type * T,
       gsl_test (GSL_FAILURE, "incorrect precision (%g obs vs %g expected)", 
 		m, correct_minimum);
     }
+
+  gsl_min_fminimizer_free (s;)
+
 }
 
 void
@@ -145,6 +148,7 @@ test_f_e (const gsl_min_fminimizer_type * T,
   gsl_test (!status, "%s, %s", gsl_min_fminimizer_name(s), description, 
 	    gsl_min_fminimizer_minimum(s) - correct_minimum);
 
+  gsl_min_fminimizer_free (s);
 }
 
 void
@@ -153,3 +157,6 @@ my_error_handler (const char *reason, const char *file, int line, int err)
   if (0)
     printf ("(caught [%s:%d: %s (%d)])\n", file, line, reason, err);
 }
+
+
+
