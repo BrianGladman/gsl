@@ -75,7 +75,7 @@ include_HEADERS = gsl_ieee_utils.h
 
 libgslieeeutils_a_SOURCES = endian.c print-ieee.c standardize.c \
 	make_rep.c gsl_ieee_utils.h ieee_utils.h \
-	env.c fp.c 
+	env.c fp.c read-mode-string.c
 
 noinst_HEADERS = fp-hpux.c fp-linux.c fp-sunos4.c fp-solaris.c fp-unknown.c
 
@@ -97,7 +97,7 @@ LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
 libgslieeeutils_a_LIBADD = 
 libgslieeeutils_a_OBJECTS =  endian.o print-ieee.o standardize.o \
-make_rep.o env.o fp.o
+make_rep.o env.o fp.o read-mode-string.o
 AR = ar
 test_OBJECTS =  test.o
 test_DEPENDENCIES =  libgslieeeutils.a ../err/libgsltest.a
@@ -115,7 +115,8 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 TAR = tar
 GZIP = --best
 DEP_FILES =  .deps/endian.P .deps/env.P .deps/fp.P .deps/make_rep.P \
-.deps/print-ieee.P .deps/standardize.P .deps/test.P
+.deps/print-ieee.P .deps/read-mode-string.P .deps/standardize.P \
+.deps/test.P
 SOURCES = $(libgslieeeutils_a_SOURCES) $(test_SOURCES)
 OBJECTS = $(libgslieeeutils_a_OBJECTS) $(test_OBJECTS)
 

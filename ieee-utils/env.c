@@ -16,7 +16,7 @@ gsl_ieee_env_setup (void)
 
   gsl_ieee_set_mode (precision, rounding, exception_mask) ;
   
-  printf("GSL_IEEE_MODE: ") ;
+  printf("GSL_IEEE_MODE=\"") ;
   
   switch (precision) 
     {
@@ -69,7 +69,7 @@ gsl_ieee_env_setup (void)
   if (exception_mask & GSL_IEEE_TRAP_INEXACT)
     printf(";trap-inexact") ;
   
-  printf("\n") ;
+  printf("\"\n") ;
 }
 
 

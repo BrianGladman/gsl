@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <fpu_control.h>
+#include <gsl_errno.h>
 #include <gsl_ieee_utils.h>
 
 int

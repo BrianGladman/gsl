@@ -19,7 +19,9 @@ main ()
   
   for (i=0;i<10;i++) {
     x = 0.5 *(x + 2.0/x) ;
-    printf("%.18g\n",x) ;
+    printf("%.18g ",x) ;
+    gsl_ieee_printf_double(&x) ; 
+    printf("\n") ;
   }
 
 
