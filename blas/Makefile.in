@@ -72,7 +72,8 @@ full_top_srcdir = @full_top_srcdir@
 
 lib_LIBRARIES = 			\
 	libgslblas.a 			\
-	libgslblas_native_generic.a
+	libgslblasnative.a		\
+	libgslblascblas.a
 
 # check_PROGRAMS = test_blas
 
@@ -80,7 +81,9 @@ include_HEADERS = 		\
 	gsl_blas.h		\
 	gsl_blas_native.h	\
 	gsl_blas_types.h	\
-	gsl_blas_raw.h
+	gsl_blas_raw.h		\
+	gsl_blas_raw_L1.h	\
+	gsl_blas_raw_cm.h
 
 # noinst_HEADERS = 
 
@@ -93,11 +96,15 @@ INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../err -I$(srcdir)/../vector -I$(srcdir)/.
 #test_blas_SOURCES = test_blas.c
 
 libgslblas_a_SOURCES = 		\
-	blas.c			\
-	blas_raw_generic.c
+	blas.c
 
-libgslblas_native_generic_a_SOURCES = 	\
-	blas_native_generic.c
+libgslblasnative_a_SOURCES = 	\
+	blas_raw_native.c	\
+	blas_raw_native_cm.c
+
+libgslblascblas_a_SOURCES =	\
+	blas_raw_cblas.c	\
+	blas_raw_cblas_cm.c
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
 CONFIG_CLEAN_FILES = 
@@ -109,9 +116,11 @@ CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
 libgslblas_a_LIBADD = 
-libgslblas_a_OBJECTS =  blas.o blas_raw_generic.o
-libgslblas_native_generic_a_LIBADD = 
-libgslblas_native_generic_a_OBJECTS =  blas_native_generic.o
+libgslblas_a_OBJECTS =  blas.o
+libgslblasnative_a_LIBADD = 
+libgslblasnative_a_OBJECTS =  blas_raw_native.o blas_raw_native_cm.o
+libgslblascblas_a_LIBADD = 
+libgslblascblas_a_OBJECTS =  blas_raw_cblas.o blas_raw_cblas_cm.o
 AR = ar
 CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
@@ -125,10 +134,11 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 TAR = tar
 GZIP = --best
-DEP_FILES =  .deps/blas.P .deps/blas_native_generic.P \
-.deps/blas_raw_generic.P
-SOURCES = $(libgslblas_a_SOURCES) $(libgslblas_native_generic_a_SOURCES)
-OBJECTS = $(libgslblas_a_OBJECTS) $(libgslblas_native_generic_a_OBJECTS)
+DEP_FILES =  .deps/blas.P .deps/blas_raw_cblas.P \
+.deps/blas_raw_cblas_cm.P .deps/blas_raw_native.P \
+.deps/blas_raw_native_cm.P
+SOURCES = $(libgslblas_a_SOURCES) $(libgslblasnative_a_SOURCES) $(libgslblascblas_a_SOURCES)
+OBJECTS = $(libgslblas_a_OBJECTS) $(libgslblasnative_a_OBJECTS) $(libgslblascblas_a_OBJECTS)
 
 all: Makefile $(LIBRARIES) $(HEADERS)
 
@@ -195,10 +205,15 @@ libgslblas.a: $(libgslblas_a_OBJECTS) $(libgslblas_a_DEPENDENCIES)
 	$(AR) cru libgslblas.a $(libgslblas_a_OBJECTS) $(libgslblas_a_LIBADD)
 	$(RANLIB) libgslblas.a
 
-libgslblas_native_generic.a: $(libgslblas_native_generic_a_OBJECTS) $(libgslblas_native_generic_a_DEPENDENCIES)
-	-rm -f libgslblas_native_generic.a
-	$(AR) cru libgslblas_native_generic.a $(libgslblas_native_generic_a_OBJECTS) $(libgslblas_native_generic_a_LIBADD)
-	$(RANLIB) libgslblas_native_generic.a
+libgslblasnative.a: $(libgslblasnative_a_OBJECTS) $(libgslblasnative_a_DEPENDENCIES)
+	-rm -f libgslblasnative.a
+	$(AR) cru libgslblasnative.a $(libgslblasnative_a_OBJECTS) $(libgslblasnative_a_LIBADD)
+	$(RANLIB) libgslblasnative.a
+
+libgslblascblas.a: $(libgslblascblas_a_OBJECTS) $(libgslblascblas_a_DEPENDENCIES)
+	-rm -f libgslblascblas.a
+	$(AR) cru libgslblascblas.a $(libgslblascblas_a_OBJECTS) $(libgslblascblas_a_LIBADD)
+	$(RANLIB) libgslblascblas.a
 
 install-includeHEADERS: $(include_HEADERS)
 	@$(NORMAL_INSTALL)

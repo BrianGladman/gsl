@@ -1,567 +1,13 @@
 /*
- * Author:  G. Jungman  and  B. Gough
+ * Author:  G. Jungman
  * RCS:     $Id$
  */
-#include <math.h>
-#include "gsl_blas_native.h"
-
-/* This should be ok...  */
-
-/* #define MAKE_S_COMPLEX_PTR(zp)  ((gsl_complex_float *) zp) FIXME: when ready */
-#define MAKE_S_COMPLEX_PTR(zp)  ((gsl_complex *) zp)
-#define S_REAL(zp, i)  ((MAKE_S_COMPLEX_PTR(zp) + i)->real)
-#define S_IMAG(zp, i)  ((MAKE_S_COMPLEX_PTR(zp) + i)->imag)
-#define S_REAL1(zp)    ((MAKE_S_COMPLEX_PTR(zp))->real)
-#define S_IMAG1(zp)    ((MAKE_S_COMPLEX_PTR(zp))->imag)
-
-#define MAKE_D_COMPLEX_PTR(zp)  ((gsl_complex *) zp)
-#define D_REAL(zp, i)  ((MAKE_D_COMPLEX_PTR(zp) + i)->real)
-#define D_IMAG(zp, i)  ((MAKE_D_COMPLEX_PTR(zp) + i)->imag)
-#define D_REAL1(zp)    ((MAKE_D_COMPLEX_PTR(zp))->real)
-#define D_IMAG1(zp)    ((MAKE_D_COMPLEX_PTR(zp))->imag)
-
-
-
-/*
- * ===========================================================================
- * level 1 BLAS functions
- * ===========================================================================
+/* Implementation of gsl_blas_raw_cm interface which
+ * defers to a CBLAS conformant interface. This includes
+ * only the level 2 and level 3 functions, since the level 1
+ * functions are insensitive to the storage scheme.
  */
-
-float  gsl_blas_native_sdsdot (size_t N,
-                               float alpha,
-                               const float X[], int incX,
-                               const float Y[], int incY)
-{
-  float r = 0.0;
-  return r;
-}
-
-double gsl_blas_native_dsdot (size_t N,
-                              const float X[], int incX,
-                              const float Y[], int incY)
-{
-  double r = 0.0;
-  size_t n;
-  size_t i = 0;
-  size_t j = 0;
-  for(n=0; n<N; n++) {
-    r += X[i]*Y[j];
-    i += incX;
-    j += incY;
-  }
-  return r;
-}
-
-float  gsl_blas_native_sdot (size_t N,
-                             const float X[], int incX,
-                             const float Y[], int incY)
-{
-  float r = 0.0;
-  size_t n;
-  size_t i = 0;
-  size_t j = 0;
-  for(n=0; n<N; n++) {
-    r += X[i]*Y[j];
-    i += incX;
-    j += incY;
-  }
-  return r;
-}
-                          
-double gsl_blas_native_ddot (size_t N,
-                             const double X[], int incX,
-                             const double Y[], int incY)
-{
-  double r = 0.0;
-  size_t n;
-  size_t i = 0;
-  size_t j = 0;
-  for(n=0; n<N; n++) {
-    r += X[i]*Y[j];
-    i += incX;
-    j += incY;
-  }
-  return r;
-}
-
-
-void gsl_blas_native_cdotu (size_t N,
-                            const void * X, int incX,
-                            const void * Y, int incY,
-                            void * dotu)
-{
-  float rr = 0.0;
-  float ri = 0.0;
-  size_t n;
-  size_t i;
-  size_t j;
-  for(n=0; n<N; n++) {
-    rr += S_REAL(X, i)*S_REAL(Y, j) - S_IMAG(X, i)*S_IMAG(Y, j);
-    ri += S_REAL(X, i)*S_IMAG(Y, j) + S_IMAG(X, i)*S_REAL(Y, j);
-    i += incX;
-    j += incY;
-  }
-  S_REAL1(dotu) = rr;
-  S_IMAG1(dotu) = ri;
-}
-
-void gsl_blas_native_cdotc (size_t N,
-                            const void * X, int incX,
-                            const void * Y, int incY,
-                            void * dotc)
-{
-  float rr = 0.0;
-  size_t n;
-  size_t i;
-  size_t j;
-  for(n=0; n<N; n++) {
-    rr += S_REAL(X, i)*S_REAL(Y, j) + S_IMAG(X, i)*S_IMAG(Y, j);
-    i += incX;
-    j += incY;
-  }
-  S_REAL1(dotc) = rr;
-  S_IMAG1(dotc) = 0.0;
-}
-
-void gsl_blas_native_zdotu (size_t N,
-                            const void * X, int incX,
-                            const void * Y, int incY,
-                            void * dotu)
-{
-  float rr = 0.0;
-  float ri = 0.0;
-  size_t n;
-  size_t i;
-  size_t j;
-  for(n=0; n<N; n++) {
-    rr += D_REAL(X, i)*D_REAL(Y, j) - D_IMAG(X, i)*D_IMAG(Y, j);
-    ri += D_REAL(X, i)*D_IMAG(Y, j) + D_IMAG(X, i)*D_REAL(Y, j);
-    i += incX;
-    j += incY;
-  }
-  D_REAL1(dotu) = rr;
-  D_IMAG1(dotu) = ri; 
-}
-
-void gsl_blas_native_zdotc (size_t N,
-                            const void * X, int incX,
-                            const void * Y, int incY,
-                            void * dotc)
-{
-  double rr = 0.0;
-  size_t n;
-  size_t i;
-  size_t j;
-  for(n=0; n<N; n++) {
-    rr += D_REAL(X, i)*D_REAL(Y, j) + D_IMAG(X, i)*D_IMAG(Y, j);
-    i += incX;
-    j += incY;
-  }
-  D_REAL1(dotc) = rr;
-  D_IMAG1(dotc) = 0.0;
-}
-
-
-float  gsl_blas_native_snrm2  (size_t N, const float  X[], int incX)
-{
-  float r = 0.0;
-  size_t n;
-  size_t i;
-  for(n=0; n<N; n++) {
-    r += X[i]*X[i];
-    i += incX;
-  }
-  return sqrt(r);
-}
-
-double gsl_blas_native_dnrm2  (size_t N, const double X[], int incX)
-{
-  double r = 0.0;
-  size_t n;
-  size_t i;
-  for(n=0; n<N; n++) {
-    r += X[i]*X[i];
-    i += incX;
-  }
-  return sqrt(r);
-}
-
-float  gsl_blas_native_scnrm2 (size_t N, const void * X, int incX)
-{
-  float r = 0.0;
-  size_t n;
-  size_t i;
-  for(n=0; n<N; n++) {
-    r += S_REAL(X, i)*S_REAL(X, i) + S_IMAG(X, i)*S_IMAG(X, i);
-    i += incX;
-  }
-  return sqrt(r);
-}
-
-double gsl_blas_native_dznrm2 (size_t N, const void * X, int incX)
-{
-  double r = 0.0;
-  size_t n;
-  size_t i;
-  for(n=0; n<N; n++) {
-    r += D_REAL(X, i)*D_REAL(X, i) + D_IMAG(X, i)*D_IMAG(X, i);
-    i += incX;
-  }
-  return sqrt(r);
-}
-
-float  gsl_blas_native_sasum  (size_t N, const float X[], int incX)
-{
-  float r = 0.0;
-  size_t n;
-  size_t i;
-  for(n=0; n<N; n++) {
-    r += fabs(X[i]);
-    i += incX;
-  }
-  return r;
-}
-
-double gsl_blas_native_dasum  (size_t N, const double X[], int incX)
-{
-  double r = 0.0;
-  size_t n;
-  size_t i;
-  for(n=0; n<N; n++) {
-    r += fabs(X[i]);
-    i += incX;
-  }
-  return r;
-}
-
-float  gsl_blas_native_scasum (size_t N, const void * X, int incX)
-{
-  float r = 0.0;
-  size_t n;
-  size_t i;
-  for(n=0; n<N; n++) {
-    r += fabs(S_REAL(X, i)) + fabs(S_IMAG(X, i));
-    i += incX;
-  }
-  return r;
-}
-
-double gsl_blas_native_dzasum (size_t N, const void * X, int incX)
-{
- double r = 0.0;
- size_t n;
-  size_t i;
-  for(n=0; n<N; n++) {
-    r += fabs(D_REAL(X, i)) + fabs(D_IMAG(X, i));
-    i += incX;
-  }
- return r;
-}
-
-
-CBLAS_INDEX gsl_blas_native_isamax (size_t N, const float X[], int incX)
-{
-  float max = 0.0;
-  CBLAS_INDEX n;
-  CBLAS_INDEX i;
-  CBLAS_INDEX result;
-  for(n=0; n<N; n++) {
-    if(fabs(X[i]) > max) {
-      max = fabs(X[i]);
-      result = i;
-    }
-    i += incX;
-  }
-  return result;
-}
-
-CBLAS_INDEX gsl_blas_native_idamax (size_t N, const double X[], int incX)
-{
-  double max = 0.0;
-  CBLAS_INDEX n;
-  CBLAS_INDEX i;
-  CBLAS_INDEX result;
-  for(n=0; n<N; n++) {
-    if(fabs(X[i]) > max) {
-      max = fabs(X[i]);
-      result = i;
-    }
-    i += incX;
-  }
-  return result;
-}
-
-CBLAS_INDEX gsl_blas_native_icamax (size_t N, const void * X, int incX)
-{
-  double max = 0.0;
-  CBLAS_INDEX n;
-  CBLAS_INDEX i;
-  CBLAS_INDEX result;
-  for(n=0; n<N; n++) {
-    double a = fabs(S_REAL(X, i)) + fabs(S_IMAG(X, i));
-    if(a > max) {
-      max = a;
-      result = i;
-    }
-    i += incX;
-  }
-  return result;
-}
-
-CBLAS_INDEX gsl_blas_native_izamax (size_t N, const void * X, int incX)
-{
-  double max = 0.0;
-  CBLAS_INDEX n;
-  CBLAS_INDEX i;
-  CBLAS_INDEX result;
-  for(n=0; n<N; n++) {
-    double a = fabs(D_REAL(X, i)) + fabs(D_IMAG(X, i));
-    if(a > max) {
-      max = a;
-      result = i;
-    }
-    i += incX;
-  }
-  return result;
-}
-
-
-/*
- * ===========================================================================
- * level 1 BLAS routines
- * ===========================================================================
- */
-
-/*
- * Routines with standard 4 prefixes (s, d, c, z)
- */
-void gsl_blas_native_sswap (size_t N,
-                            float X[], int incX,
-                            float Y[], int incY)
-{
-  size_t n;
-  size_t i;
-  size_t j;
-  for(n=0; n<N; n++) {
-    double tmp = X[i];
-    X[i] = Y[j];
-    Y[j] = tmp;
-    i += incX;
-    j += incY;
-  }
-}
-
-void gsl_blas_native_dswap (size_t N,
-                            double X[], int incX,
-                            double Y[], int incY)
-{
-  size_t n;
-  size_t i;
-  size_t j;
-  for(n=0; n<N; n++) {
-    double tmp = X[i];
-    X[i] = Y[j];
-    Y[j] = tmp;
-    i += incX;
-    j += incY;
-  }
-}
-
-void gsl_blas_native_cswap (size_t N,
-                            void * X, int incX,
-                            void * Y, int incY)
-{
-  size_t n;
-  size_t i;
-  size_t j;
-  for(n=0; n<N; n++) {
-    float tmpr = S_REAL(X, i);
-    float tmpi = S_IMAG(X, i);
-    S_REAL(X, i) = S_REAL(Y, j);
-    S_IMAG(X, i) = S_IMAG(Y, j);
-    S_REAL(Y, j) = tmpr;
-    S_IMAG(Y, j) = tmpi;
-    i += incX;
-    j += incY;
-  }
-}
-
-void gsl_blas_native_zswap (size_t N,
-                            void * X, int incX,
-                            void * Y, int incY)
-{
-  size_t n;
-  size_t i;
-  size_t j;
-  for(n=0; n<N; n++) {
-    float tmpr = D_REAL(X, i);
-    float tmpi = D_IMAG(X, i);
-    D_REAL(X, i) = D_REAL(Y, j);
-    D_IMAG(X, i) = D_IMAG(Y, j);
-    D_REAL(Y, j) = tmpr;
-    D_IMAG(Y, j) = tmpi;
-    i += incX;
-    j += incY;
-  }
-}
-
-void gsl_blas_native_scopy (size_t N,
-                            const float X[], int incX,
-                            float Y[], int incY)
-{
-  size_t n;
-  size_t i;
-  size_t j;
-  for(n=0; n<N; n++) {
-    Y[j] = X[i];
-    i += incX;
-    j += incY;
-  }
-}
-
-void gsl_blas_native_dcopy (size_t N,
-                            const double X[], int incX,
-                            double Y[], int incY)
-{
-  size_t n;
-  size_t i;
-  size_t j;
-  for(n=0; n<N; n++) {
-    Y[j] = X[i];
-    i += incX;
-    j += incY;
-  }
-}
-
-void gsl_blas_native_ccopy (size_t N,
-                            const void * X, int incX,
-                            void * Y, int incY)
-{
-  size_t n;
-  size_t i;
-  size_t j;
-  for(n=0; n<N; n++) {
-    S_REAL(Y, j) = S_REAL(X, i);
-    S_IMAG(Y, j) = S_IMAG(X, i);
-    i += incX;
-    j += incY;
-  }
-}
-
-void gsl_blas_native_zcopy (size_t N,
-                            const void * X, int incX,
-                            void * Y, int incY)
-{
-  size_t n;
-  size_t i;
-  size_t j;
-  for(n=0; n<N; n++) {
-    D_REAL(Y, j) = D_REAL(X, i);
-    D_IMAG(Y, j) = D_IMAG(X, i);
-    i += incX;
-    j += incY;
-  }
-}
-
-void gsl_blas_native_saxpy (size_t N,
-                            float alpha,
-                            const float X[], int incX,
-                            float Y[], int incY)
-{
-}
-
-
-void gsl_blas_native_daxpy (size_t N,
-                            double alpha,
-                            const double X[], int incX, 
-                            double Y[], int incY)
-{
-}
-
-
-void gsl_blas_native_caxpy (size_t N,
-                            const void * alpha,
-                            const void * X, int incX,
-                            void * Y, int incY)
-{
-}
-
-void gsl_blas_native_zaxpy (size_t N,
-                            const void * alpha,
-                            const void * X, int incX,
-                            void * Y, int incY)
-{
-}
-
-/*
- * Routines with S and D prefix only
- */
-void gsl_blas_native_srotg (float a[], float b[], float c[], float s[])
-{
-}
-void gsl_blas_native_drotg (double a[], double b[], double c[], double s[])
-{
-}
-
-void gsl_blas_native_srotmg (float d1[], float d2[], float b1[], float b2, float P[])
-{
-}
-void gsl_blas_native_drotmg (double d1[], double d2[], double b1[],
-                             double b2, double P[])
-{
-}
-
-
-void gsl_blas_native_srot (size_t N,
-                           float X[], int incX,
-                           float Y[], int incY,
-                           float c, float s)
-{
-}
-
-void gsl_blas_native_drot (size_t N,
-                           double X[], int incX,
-                           double Y[], int incY,
-                           const double c, const double s)
-{
-}
-
-void gsl_blas_native_srotm (size_t N,
-                            float X[], int incX,
-                            float Y[], int incY,
-                            const float P[])
-{
-}
-
-void gsl_blas_native_drotm (size_t N,
-                            double X[], int incX,
-                            double Y[], int incY,
-                            const double P[])
-{
-}
-
-/*
- * Routines with S D C Z CS and ZD prefixes
- */
-void gsl_blas_native_sscal  (size_t N, float  alpha, float  X[], int incX)
-{
-}
-void gsl_blas_native_dscal  (size_t N, double alpha, double X[], int incX)
-{
-}
-void gsl_blas_native_cscal  (size_t N, const void * alpha, void * X, int incX)
-{
-}
-void gsl_blas_native_zscal  (size_t N, const void * alpha, void * X, int incX)
-{
-}
-void gsl_blas_native_csscal (size_t N, float  alpha, void * X, int incX)
-{
-}
-void gsl_blas_native_zdscal (size_t N, double alpha, void * X, int incX)
-{
-}
+#include "gsl_blas_raw_cm.h"
 
 
 /*
@@ -573,7 +19,7 @@ void gsl_blas_native_zdscal (size_t N, double alpha, void * X, int incX)
  
 /* GEMV */
 
-void gsl_blas_native_sgemv (CBLAS_TRANSPOSE TransA,
+void gsl_blas_raw_sgemv_cm (CBLAS_TRANSPOSE TransA,
                             size_t M, size_t N,
                             float alpha,
                             const float A[], int lda,
@@ -581,9 +27,11 @@ void gsl_blas_native_sgemv (CBLAS_TRANSPOSE TransA,
                             float beta,
                             float Y[], int incY)
 {
+  cblas_sgemv(CblasColMajor, TransA, M, N, alpha, A, lda, X, incX, beta, Y, incY);
 }
 
-void gsl_blas_native_dgemv (CBLAS_TRANSPOSE TransA,
+
+void gsl_blas_raw_dgemv_cm (CBLAS_TRANSPOSE TransA,
                             size_t M, size_t N,
                             double alpha,
                             const double A[], int lda,
@@ -591,9 +39,11 @@ void gsl_blas_native_dgemv (CBLAS_TRANSPOSE TransA,
                             double beta,
                             double Y[], int incY)
 {
+  cblas_dgemv(CblasColMajor, TransA, M, N, alpha, A, lda, X, incX, beta, Y, incY);
 }
 
-void gsl_blas_native_cgemv (CBLAS_TRANSPOSE TransA,
+
+void gsl_blas_raw_cgemv_cm (CBLAS_TRANSPOSE TransA,
                             size_t M, size_t N,
                             const void * alpha,
                             const void * A, int lda,
@@ -601,9 +51,11 @@ void gsl_blas_native_cgemv (CBLAS_TRANSPOSE TransA,
                             const void * beta,
                             void * Y, int incY)
 {
+  cblas_cgemv(CblasColMajor, TransA, M, N, alpha, A, lda, X, incX, beta, Y, incY);
 }
 
-void gsl_blas_native_zgemv (CBLAS_TRANSPOSE TransA,
+
+void gsl_blas_raw_zgemv_cm (CBLAS_TRANSPOSE TransA,
                             size_t M, size_t N,
                             const void * alpha,
                             const void * A, int lda,
@@ -611,11 +63,13 @@ void gsl_blas_native_zgemv (CBLAS_TRANSPOSE TransA,
                             const void * beta,
                             void * Y, int incY)
 {
+  cblas_zgemv(CblasColMajor, TransA, M, N, alpha, A, lda, X, incX, beta, Y, incY);
 }
+
 
 /* GBMV */
 
-void gsl_blas_native_sgbmv (CBLAS_TRANSPOSE TransA,
+void gsl_blas_raw_sgbmv_cm (CBLAS_TRANSPOSE TransA,
                             size_t M, size_t N, size_t KL, size_t KU,
                             float alpha,
                             const float A[], int lda,
@@ -623,9 +77,11 @@ void gsl_blas_native_sgbmv (CBLAS_TRANSPOSE TransA,
                             float beta,
                             float Y[], int incY)
 {
+  cblas_sgbmv(CblasColMajor, TransA, M, N, KL, KU, alpha, A, lda, X, incX, beta, Y, incY);
 }
 
-void gsl_blas_native_dgbmv (CBLAS_TRANSPOSE TransA,
+
+void gsl_blas_raw_dgbmv_cm (CBLAS_TRANSPOSE TransA,
                             size_t M, size_t N, size_t KL, size_t KU,
                             double alpha,
                             const double A[], int lda,
@@ -633,9 +89,11 @@ void gsl_blas_native_dgbmv (CBLAS_TRANSPOSE TransA,
                             double beta,
                             double Y[], int incY)
 {
+  cblas_dgbmv(CblasColMajor, TransA, M, N, KL, KU, alpha, A, lda, X, incX, beta, Y, incY);
 }
 
-void gsl_blas_native_cgbmv (CBLAS_TRANSPOSE TransA,
+
+void gsl_blas_raw_cgbmv_cm (CBLAS_TRANSPOSE TransA,
                             size_t M, size_t N, size_t KL, size_t KU,
                             const void * alpha,
                             const void * A, int lda,
@@ -643,9 +101,11 @@ void gsl_blas_native_cgbmv (CBLAS_TRANSPOSE TransA,
                             const void * beta,
                             void * Y, int incY)
 {
+  cblas_cgbmv(CblasColMajor, TransA, M, N, KL, KU, alpha, A, lda, X, incX, beta, Y, incY);
 }
 
-void gsl_blas_native_zgbmv (CBLAS_TRANSPOSE TransA,
+
+void gsl_blas_raw_zgbmv_cm (CBLAS_TRANSPOSE TransA,
                             size_t M, size_t N, size_t KL, size_t KU,
                             const void * alpha,
                             const void * A, int lda,
@@ -653,231 +113,277 @@ void gsl_blas_native_zgbmv (CBLAS_TRANSPOSE TransA,
                             const void * beta,
                             void * Y, int incY)
 {
+  cblas_zgbmv(CblasColMajor, TransA, M, N, KL, KU, alpha, A, lda, X, incX, beta, Y, incY);
 }
 
 
 /* TRMV */
 
-void gsl_blas_native_strmv (CBLAS_UPLO Uplo,
+void gsl_blas_raw_strmv_cm (CBLAS_UPLO Uplo,
                             CBLAS_TRANSPOSE TransA, CBLAS_DIAG Diag,
                             size_t N,
                             const float A[], int lda,
                             float X[], int incX)
 {
+  cblas_strmv(CblasColMajor, Uplo, TransA, Diag, N, A, lda, X, incX);
 }
 
-void gsl_blas_native_dtrmv (CBLAS_UPLO Uplo,
+
+void gsl_blas_raw_dtrmv_cm (CBLAS_UPLO Uplo,
                             CBLAS_TRANSPOSE TransA, CBLAS_DIAG Diag,
                             size_t N,
                             const double A[], int lda,
                             double X[], int incX)
 {
+  cblas_dtrmv(CblasColMajor, Uplo, TransA, Diag, N, A, lda, X, incX);
 }
 
-void gsl_blas_native_ctrmv (CBLAS_UPLO Uplo,
+
+void gsl_blas_raw_ctrmv_cm (CBLAS_UPLO Uplo,
                             CBLAS_TRANSPOSE TransA, CBLAS_DIAG Diag,
                             size_t N,
                             const void * A, int lda,
                             void * X, int incX)
 {
+  cblas_ctrmv(CblasColMajor, Uplo, TransA, Diag, N, A, lda, X, incX);
 }
 
-void gsl_blas_native_ztrmv (CBLAS_UPLO Uplo,
+
+void gsl_blas_raw_ztrmv_cm (CBLAS_UPLO Uplo,
                             CBLAS_TRANSPOSE TransA, CBLAS_DIAG Diag,
                             size_t N,
                             const void * A, int lda,
                             void * X, int incX)
 {
+  cblas_ztrmv(CblasColMajor, Uplo, TransA, Diag, N, A, lda, X, incX);
 }
 
 
 /* TBMV */
 
-void gsl_blas_native_stbmv (CBLAS_UPLO Uplo,
+void gsl_blas_raw_stbmv_cm (CBLAS_UPLO Uplo,
                             CBLAS_TRANSPOSE TransA, CBLAS_DIAG Diag,
                             size_t N, size_t K,
                             const float A[], int lda,
                             float X[], int incX)
 {
+  cblas_stbmv(CblasColMajor, Uplo, TransA, Diag, N, K, A, lda, X, incX);
 }
 
-void gsl_blas_native_dtbmv (CBLAS_UPLO Uplo,
+
+void gsl_blas_raw_dtbmv_cm (CBLAS_UPLO Uplo,
                             CBLAS_TRANSPOSE TransA, CBLAS_DIAG Diag,
                             size_t N, size_t K,
                             const double A[], int lda,
                             double X[], int incX)
 {
+  cblas_dtbmv(CblasColMajor, Uplo, TransA, Diag, N, K, A, lda, X, incX);
 }
 
-void gsl_blas_native_ctbmv (CBLAS_UPLO Uplo,
+
+void gsl_blas_raw_ctbmv_cm (CBLAS_UPLO Uplo,
                             CBLAS_TRANSPOSE TransA, CBLAS_DIAG Diag,
                             size_t N, size_t K,
                             const void * A, int lda,
                             void * X, int incX)
 {
+  cblas_ctbmv(CblasColMajor, Uplo, TransA, Diag, N, K, A, lda, X, incX);
 }
 
-void gsl_blas_native_ztbmv (CBLAS_UPLO Uplo,
+
+void gsl_blas_raw_ztbmv_cm (CBLAS_UPLO Uplo,
                             CBLAS_TRANSPOSE TransA, CBLAS_DIAG Diag,
                             size_t N, size_t K,
                             const void * A, int lda,
                             void * X, int incX)
 {
+  cblas_ztbmv(CblasColMajor, Uplo, TransA, Diag, N, K, A, lda, X, incX);
 }
 
 
 /* TPMV */
 
-void gsl_blas_native_stpmv (CBLAS_UPLO Uplo,
+void gsl_blas_raw_stpmv_cm (CBLAS_UPLO Uplo,
                             CBLAS_TRANSPOSE TransA, CBLAS_DIAG Diag,
                             size_t N,
                             const float Ap[],
                             float X[], int incX)
 {
+  cblas_stpmv(CblasColMajor, Uplo, TransA, Diag, N, Ap, X, incX);
 }
 
-void gsl_blas_native_dtpmv (CBLAS_UPLO Uplo,
+
+void gsl_blas_raw_dtpmv_cm (CBLAS_UPLO Uplo,
                             CBLAS_TRANSPOSE TransA, CBLAS_DIAG Diag,
                             size_t N,
                             const double Ap[],
                             double X[], int incX)
 {
+  cblas_dtpmv(CblasColMajor, Uplo, TransA, Diag, N, Ap, X, incX);
 }
 
-void gsl_blas_native_ctpmv (CBLAS_UPLO Uplo,
+
+void gsl_blas_raw_ctpmv_cm (CBLAS_UPLO Uplo,
                             CBLAS_TRANSPOSE TransA, CBLAS_DIAG Diag,
                             size_t N,
                             const void * Ap,
                             void * X, int incX)
 {
+  cblas_ctpmv(CblasColMajor, Uplo, TransA, Diag, N, Ap, X, incX);
 }
 
-void gsl_blas_native_ztpmv (CBLAS_UPLO Uplo,
+
+void gsl_blas_raw_ztpmv_cm (CBLAS_UPLO Uplo,
                             CBLAS_TRANSPOSE TransA, CBLAS_DIAG Diag,
                             size_t N,
                             const void * Ap,
                             void * X, int incX)
 {
+  cblas_ztpmv(CblasColMajor, Uplo, TransA, Diag, N, Ap, X, incX);
 }
+
 
 /* TRSV */
 
-void gsl_blas_native_strsv (CBLAS_UPLO Uplo,
+void gsl_blas_raw_strsv_cm (CBLAS_UPLO Uplo,
                             CBLAS_TRANSPOSE TransA, CBLAS_DIAG Diag,
                             size_t N,
                             const float A[], int lda,
                             float X[], int incX)
 {
+  cblas_strsv(CblasColMajor, Uplo, TransA, Diag, N, A, lda, X, incX);
 }
 
-void gsl_blas_native_dtrsv (CBLAS_UPLO Uplo,
+
+void gsl_blas_raw_dtrsv_cm (CBLAS_UPLO Uplo,
                             CBLAS_TRANSPOSE TransA, CBLAS_DIAG Diag,
                             size_t N,
                             const double A[], int lda,
                             double X[], int incX)
 {
+  cblas_dtrsv(CblasColMajor, Uplo, TransA, Diag, N, A, lda, X, incX);
 }
 
-void gsl_blas_native_ctrsv (CBLAS_UPLO Uplo,
+
+void gsl_blas_raw_ctrsv_cm (CBLAS_UPLO Uplo,
                             CBLAS_TRANSPOSE TransA, CBLAS_DIAG Diag,
                             size_t N,
                             const void * A, int lda,
                             void * X, int incX)
 {
+  cblas_ctrsv(CblasColMajor, Uplo, TransA, Diag, N, A, lda, X, incX);
 }
 
-void gsl_blas_native_ztrsv (CBLAS_UPLO Uplo,
+
+void gsl_blas_raw_ztrsv_cm (CBLAS_UPLO Uplo,
                             CBLAS_TRANSPOSE TransA, CBLAS_DIAG Diag,
                             size_t N,
                             const void * A, int lda,
                             void * X, int incX)
 {
+  cblas_ztrsv(CblasColMajor, Uplo, TransA, Diag, N, A, lda, X, incX);
 }
 
 
 /* TBSV */
 
-void gsl_blas_native_stbsv (CBLAS_UPLO Uplo,
+void gsl_blas_raw_stbsv_cm (CBLAS_UPLO Uplo,
                             CBLAS_TRANSPOSE TransA, CBLAS_DIAG Diag,
                             size_t N, size_t K,
                             const float A[], int lda,
                             float X[], int incX)
 {
+  cblas_stbsv(CblasColMajor, Uplo, TransA, Diag, N, K, A, lda, X, incX);
 }
 
-void gsl_blas_native_dtbsv (CBLAS_UPLO Uplo,
+
+void gsl_blas_raw_dtbsv_cm (CBLAS_UPLO Uplo,
                             CBLAS_TRANSPOSE TransA, CBLAS_DIAG Diag,
                             size_t N, size_t K,
                             const double A[], int lda,
                             double X[], int incX)
 {
+  cblas_dtbsv(CblasColMajor, Uplo, TransA, Diag, N, K, A, lda, X, incX);
 }
 
-void gsl_blas_native_ctbsv (CBLAS_UPLO Uplo,
+
+void gsl_blas_raw_ctbsv_cm (CBLAS_UPLO Uplo,
                             CBLAS_TRANSPOSE TransA, CBLAS_DIAG Diag,
                             size_t N, size_t K,
                             const void * A, int lda,
                             void * X, int incX)
 {
+  cblas_ctbsv(CblasColMajor, Uplo, TransA, Diag, N, K, A, lda, X, incX);
 }
 
-void gsl_blas_native_ztbsv (CBLAS_UPLO Uplo,
+
+void gsl_blas_raw_ztbsv_cm (CBLAS_UPLO Uplo,
                             CBLAS_TRANSPOSE TransA, CBLAS_DIAG Diag,
                             size_t N, size_t K,
                             const void * A, int lda,
                             void * X, int incX)
 {
+  cblas_ztbsv(CblasColMajor, Uplo, TransA, Diag, N, K, A, lda, X, incX);
 }
 
 
 /* TPSV */
 
-void gsl_blas_native_stpsv (CBLAS_UPLO Uplo,
+void gsl_blas_raw_stpsv_cm (CBLAS_UPLO Uplo,
                             CBLAS_TRANSPOSE TransA, CBLAS_DIAG Diag,
                             size_t N,
                             const float Ap[],
                             float X[], int incX)
 {
+  cblas_stpsv(CblasColMajor, Uplo, TransA, Diag, N, Ap, X, incX);
 }
 
-void gsl_blas_native_dtpsv (CBLAS_UPLO Uplo,
+
+void gsl_blas_raw_dtpsv_cm (CBLAS_UPLO Uplo,
                             CBLAS_TRANSPOSE TransA, CBLAS_DIAG Diag,
                             size_t N,
                             const double Ap[],
                             double X[], int incX)
 {
+  cblas_dtpsv(CblasColMajor, Uplo, TransA, Diag, N, Ap, X, incX);
 }
 
-void gsl_blas_native_ctpsv (CBLAS_UPLO Uplo,
+
+void gsl_blas_raw_ctpsv_cm (CBLAS_UPLO Uplo,
                             CBLAS_TRANSPOSE TransA, CBLAS_DIAG Diag,
                             size_t N,
                             const void * Ap,
                             void * X, int incX)
 {
+  cblas_ctpsv(CblasColMajor, Uplo, TransA, Diag, N, Ap, X, incX);
 }
 
-void gsl_blas_native_ztpsv (CBLAS_UPLO Uplo,
+
+void gsl_blas_raw_ztpsv_cm (CBLAS_UPLO Uplo,
                             CBLAS_TRANSPOSE TransA, CBLAS_DIAG Diag,
                             size_t N,
                             const void * Ap,
                             void * X, int incX)
 {
+  cblas_ztpsv(CblasColMajor, Uplo, TransA, Diag, N, Ap, X, incX);
 }
 
 
 /* SYMV */
 
-void gsl_blas_native_ssymv (CBLAS_UPLO Uplo,
+void gsl_blas_raw_ssymv_cm (CBLAS_UPLO Uplo,
                             size_t N,
                             float alpha,
-                               const float A[], int lda,
+                            const float A[], int lda,
                             const float X[], int incX,
                             float beta,
                             float Y[], int incY)
 {
+  cblas_ssymv(CblasColMajor, Uplo, N, alpha, A, lda, X, incX, beta, Y, incY);
 }
 
-void gsl_blas_native_dsymv (CBLAS_UPLO Uplo,
+
+void gsl_blas_raw_dsymv_cm (CBLAS_UPLO Uplo,
                             size_t N,
                             double alpha,
                             const double A[], int lda,
@@ -885,12 +391,13 @@ void gsl_blas_native_dsymv (CBLAS_UPLO Uplo,
                             double beta,
                             double Y[], int incY)
 {
+  cblas_dsymv(CblasColMajor, Uplo, N, alpha, A, lda, X, incX, beta, Y, incY);
 }
 
 
 /* SBMV */
 
-void gsl_blas_native_ssbmv (CBLAS_UPLO Uplo,
+void gsl_blas_raw_ssbmv_cm (CBLAS_UPLO Uplo,
                             size_t N, size_t K,
                             float alpha,
                             const float A[], int lda, 
@@ -898,9 +405,11 @@ void gsl_blas_native_ssbmv (CBLAS_UPLO Uplo,
                             float beta,
                             float Y[], int incY)
 {
+  cblas_ssbmv(CblasColMajor, Uplo, N, K, alpha, A, lda, X, incX, beta, Y, incY);
 }
 
-void gsl_blas_native_dsbmv (CBLAS_UPLO Uplo,
+
+void gsl_blas_raw_dsbmv_cm (CBLAS_UPLO Uplo,
                             size_t N, size_t K,
                             double alpha,
                             const double A[], int lda,
@@ -908,11 +417,13 @@ void gsl_blas_native_dsbmv (CBLAS_UPLO Uplo,
                             double beta,
                             double Y[], int incY)
 {
+  cblas_dsbmv(CblasColMajor, Uplo, N, K, alpha, A, lda, X, incX, beta, Y, incY);
 }
+
 
 /* SPMV */
 
-void gsl_blas_native_sspmv (CBLAS_UPLO Uplo,
+void gsl_blas_raw_sspmv_cm (CBLAS_UPLO Uplo,
                             size_t N,
                             float alpha,
                             const float Ap[],
@@ -920,9 +431,11 @@ void gsl_blas_native_sspmv (CBLAS_UPLO Uplo,
                             float beta,
                             float Y[], int incY)
 {
+  cblas_sspmv(CblasColMajor, Uplo, N, alpha, Ap, X, incX, beta, Y, incY);
 }
 
-void gsl_blas_native_dspmv (CBLAS_UPLO Uplo,
+
+void gsl_blas_raw_dspmv_cm (CBLAS_UPLO Uplo,
                             size_t N,
                             double alpha,
                             const double Ap[],
@@ -930,112 +443,127 @@ void gsl_blas_native_dspmv (CBLAS_UPLO Uplo,
                             double beta,
                             double Y[], int incY)
 {
+  cblas_dspmv(CblasColMajor, Uplo, N, alpha, Ap, X, incX, beta, Y, incY);
 }
+
 
 /* GER */
 
-void gsl_blas_native_sger (CBLAS_ORDER order,
-                           size_t M, size_t N,
+void gsl_blas_raw_sger_cm (size_t M, size_t N,
                            float alpha,
                            const float X[], int incX,
                            const float Y[], int incY,
                            float A[], int lda)
 {
+  cblas_sger(CblasColMajor, M, N, alpha, X, incX, Y, incY, A, lda);
 }
 
-void gsl_blas_native_dger (CBLAS_ORDER order,
-                           size_t M, size_t N,
+
+void gsl_blas_raw_dger_cm (size_t M, size_t N,
                            double alpha,
                            const double X[], int incX,
                            const double Y[], int incY,
                            double A[], int lda)
 {
+  cblas_dger(CblasColMajor, M, N, alpha, X, incX, Y, incY, A, lda);
 }
 
 
 /* SYR */
 
-void gsl_blas_native_ssyr (CBLAS_UPLO Uplo,
+void gsl_blas_raw_ssyr_cm (CBLAS_UPLO Uplo,
                            size_t N,
                            float alpha,
                            const float X[], int incX,
                            float A[], int lda)
 {
+  cblas_ssyr(CblasColMajor, Uplo, N,alpha, X, incX, A, lda);
 }
 
-void gsl_blas_native_dsyr (CBLAS_UPLO Uplo,
+
+void gsl_blas_raw_dsyr_cm (CBLAS_UPLO Uplo,
                            size_t N,
                            double alpha,
                            const double X[], int incX,
                            double A[], int lda)
 {
+  cblas_dsyr(CblasColMajor, Uplo, N, alpha, X, incX, A, lda);
 }
 
 
 /* SPR */
 
-void gsl_blas_native_sspr (CBLAS_UPLO Uplo,
+void gsl_blas_raw_sspr_cm (CBLAS_UPLO Uplo,
                            size_t N,
                            float alpha,
                            const float X[], int incX,
                            float Ap[])
 {
+  cblas_sspr(CblasColMajor, Uplo, N, alpha, X, incX, Ap);
 }
 
-void gsl_blas_native_dspr (CBLAS_UPLO Uplo,
+
+void gsl_blas_raw_dspr_cm (CBLAS_UPLO Uplo,
                            size_t N,
                            double alpha,
                            const double X[], int incX,
                            double Ap[])
 {
+  cblas_dspr(CblasColMajor, Uplo, N, alpha, X, incX, Ap);
 }
 
 
 /* SYR2 */
 
-void gsl_blas_native_ssyr2 (CBLAS_UPLO Uplo,
+void gsl_blas_raw_ssyr2_cm (CBLAS_UPLO Uplo,
                             size_t N,
                             float alpha,
                             const float X[], int incX, 
                             const float Y[], int incY,
                             float A[], int lda)
 {
+  cblas_ssyr2(CblasColMajor, Uplo, N, alpha, X, incX, Y, incY, A, lda);
 }
 
-void gsl_blas_native_dsyr2 (CBLAS_UPLO Uplo,
+
+void gsl_blas_raw_dsyr2_cm (CBLAS_UPLO Uplo,
                             size_t N,
                             double alpha,
                             const double X[], int incX,
                             const double Y[], int incY,
                             double A[], int lda)
 {
+  cblas_dsyr2(CblasColMajor, Uplo, N, alpha, X, incX, Y, incY, A, lda);
 }
 
 
 /* SPR2 */
 
-void gsl_blas_native_sspr2 (CBLAS_UPLO Uplo,
+void gsl_blas_raw_sspr2_cm (CBLAS_UPLO Uplo,
                             size_t N,
                             float alpha,
                             const float X[], int incX,
                             const float Y[], int incY,
                             float A[])
 {
+  cblas_sspr2(CblasColMajor, Uplo, N, alpha, X, incX, Y, incY, A);
 }
 
-void gsl_blas_native_dspr2 (CBLAS_UPLO Uplo,
+
+void gsl_blas_raw_dspr2_cm (CBLAS_UPLO Uplo,
                             size_t N,
                             double alpha,
                             const double X[], int incX,
                             const double Y[], int incY,
                             double A[])
 {
+  cblas_sspr2(CblasColMajor, Uplo, N, alpha, X, incX, Y, incY, A);
 }
 
 
 /* HEMV */
 
-void gsl_blas_native_chemv (CBLAS_UPLO Uplo,
+void gsl_blas_raw_chemv_cm (CBLAS_UPLO Uplo,
                             size_t N,
                             const void * alpha,
                             const void * A, int lda,
@@ -1043,9 +571,11 @@ void gsl_blas_native_chemv (CBLAS_UPLO Uplo,
                             const void * beta,
                             void * Y, int incY)
 {
+  cblas_chemv(CblasColMajor, Uplo, N, alpha, A, lda, X, incX, beta, Y, incY);
 }
 
-void gsl_blas_native_zhemv (CBLAS_UPLO Uplo,
+
+void gsl_blas_raw_zhemv_cm (CBLAS_UPLO Uplo,
                             size_t N,
                             const void * alpha,
                             const void * A, int lda,
@@ -1053,12 +583,13 @@ void gsl_blas_native_zhemv (CBLAS_UPLO Uplo,
                             const void * beta,
                             void * Y, int incY)
 {
+  cblas_zhemv(CblasColMajor, Uplo, N, alpha, A, lda, X, incX, beta, Y, incY);
 }
 
 
 /* HBMV */
 
-void gsl_blas_native_chbmv (CBLAS_UPLO Uplo,
+void gsl_blas_raw_chbmv_cm (CBLAS_UPLO Uplo,
                             size_t N, size_t K,
                             const void * alpha,
                             const void * A, int lda,
@@ -1066,9 +597,11 @@ void gsl_blas_native_chbmv (CBLAS_UPLO Uplo,
                             const void * beta,
                             void * Y, int incY)
 {
+  cblas_chbmv(CblasColMajor, Uplo, N, K, alpha, A, lda, X, incX, beta, Y, incY);
 }
 
-void gsl_blas_native_zhbmv (CBLAS_UPLO Uplo,
+
+void gsl_blas_raw_zhbmv_cm (CBLAS_UPLO Uplo,
                             size_t N, size_t K,
                             const void * alpha,
                             const void * A, int lda,
@@ -1076,21 +609,24 @@ void gsl_blas_native_zhbmv (CBLAS_UPLO Uplo,
                             const void * beta,
                             void * Y, int incY)
 {
+  cblas_zhbmv(CblasColMajor, Uplo, N, K, alpha, A, lda, X, incX, beta, Y, incY);
 }
 
 
 /* HPMV */
 
-void gsl_blas_native_chpmv (CBLAS_UPLO Uplo,
+void gsl_blas_raw_chpmv_cm (CBLAS_UPLO Uplo,
                             size_t N,
                             const void * alpha, const void * Ap,
                             const void * X, int incX,
                             const void * beta,
                             void * Y, int incY)
 {
+  cblas_chpmv(CblasColMajor, Uplo, N, alpha, Ap, X, incX, beta, Y, incY);
 }
 
-void gsl_blas_native_zhpmv (CBLAS_UPLO Uplo,
+
+void gsl_blas_raw_zhpmv_cm (CBLAS_UPLO Uplo,
                             size_t N,
                             const void * alpha,
                             const void * Ap,
@@ -1098,128 +634,145 @@ void gsl_blas_native_zhpmv (CBLAS_UPLO Uplo,
                             const void * beta,
                             void * Y, int incY)
 {
+  cblas_zhpmv(CblasColMajor, Uplo, N, alpha, Ap, X, incX, beta, Y, incY);
 }
 
 
 /* GERU */
 
-void gsl_blas_native_cgeru (CBLAS_ORDER order,
-                            size_t M, size_t N,
+void gsl_blas_raw_cgeru_cm (size_t M, size_t N,
                             const void * alpha,
                             const void * X, int incX,
                             const void * Y, int incY,
                             void * A, int lda)
 {
+  cblas_cgeru(CblasColMajor, M, N, alpha, X, incX, Y, incY, A, lda);
 }
 
-void gsl_blas_native_zgeru (CBLAS_ORDER order,
-                            size_t M, size_t N,
+
+void gsl_blas_raw_zgeru_cm (size_t M, size_t N,
                             const void * alpha,
                             const void * X, int incX,
                             const void * Y, int incY,
                             void * A, int lda)
 {
+  cblas_zgeru(CblasColMajor, M, N, alpha, X, incX, Y, incY, A, lda);
 }
 
 
 /* GERC */
 
-void gsl_blas_native_cgerc (CBLAS_ORDER order,
-                            size_t M, size_t N,
+void gsl_blas_raw_cgerc_cm (size_t M, size_t N,
                             const void * alpha,
                             const void * X, int incX,
                             const void * Y, int incY,
                             void * A, int lda)
 {
+  cblas_cgerc(CblasColMajor, M, N, alpha, X, incX, Y, incY, A, lda);
 }
 
-void gsl_blas_native_zgerc (CBLAS_ORDER order,
-                            size_t M, size_t N,
+
+void gsl_blas_raw_zgerc_cm (size_t M, size_t N,
                             const void * alpha,
                             const void * X, int incX,
                             const void * Y, int incY,
                             void * A, int lda)
 {
+  cblas_zgerc(CblasColMajor, M, N, alpha, X, incX, Y, incY, A, lda);
 }
+
 
 /* HER */
 
-void gsl_blas_native_cher (CBLAS_UPLO Uplo,
+void gsl_blas_raw_cher_cm (CBLAS_UPLO Uplo,
                            size_t N,
                            float alpha,
                            const void * X, int incX,
                            void * A, int lda)
 {
+  cblas_cher(CblasColMajor, Uplo, N, X, incX, A, lda);
 }
 
-void gsl_blas_native_zher (CBLAS_UPLO Uplo,
+
+void gsl_blas_raw_zher_cm (CBLAS_UPLO Uplo,
                            size_t N,
                            double alpha,
                            const void * X, int incX,
                            void * A, int lda)
 {
+  cblas_zher(CblasColMajor, Uplo, N, X, incX, A, lda);
 }
 
 
 /* HPR */
 
-void gsl_blas_native_chpr (CBLAS_UPLO Uplo,
+void gsl_blas_raw_chpr_cm (CBLAS_UPLO Uplo,
                            size_t N,
                            float alpha,
                            const void * X, int incX,
                            void * A)
 {
+  cblas_chpr(CblasColMajor, Uplo, N, alpha, X, incX, A);
 }
 
-void gsl_blas_native_zhpr (CBLAS_UPLO Uplo,
+
+void gsl_blas_raw_zhpr_cm (CBLAS_UPLO Uplo,
                            size_t N,
                            double alpha,
                            const void * X, int incX,
                            void * A)
 {
+  cblas_zhpr(CblasColMajor, Uplo, N, alpha, X, incX, A);
 }
 
 
 /* HER2 */
 
-void gsl_blas_native_cher2 (CBLAS_UPLO Uplo,
+void gsl_blas_raw_cher2_cm (CBLAS_UPLO Uplo,
                             size_t N,
                             const void * alpha,
                             const void * X, int incX,
                             const void * Y, int incY,
                             void * A, int lda)
 {
+  cblas_cher2(CblasColMajor, Uplo, N, alpha, X, incX, Y, incY, A, lda);
 }
 
-void gsl_blas_native_zher2 (CBLAS_UPLO Uplo,
+
+void gsl_blas_raw_zher2_cm (CBLAS_UPLO Uplo,
                             size_t N,
                             const void * alpha,
                             const void * X, int incX,
                             const void * Y, int incY,
                             void * A, int lda)
 {
+  cblas_zher2(CblasColMajor, Uplo, N, alpha, X, incX, Y, incY, A, lda);
 }
 
 
 /* HPR2 */
 
-void gsl_blas_native_chpr2 (CBLAS_UPLO Uplo,
+void gsl_blas_raw_chpr2_cm (CBLAS_UPLO Uplo,
                             size_t N,
                             const void * alpha,
                             const void * X, int incX,
                             const void * Y, int incY,
                             void * Ap)
 {
+  cblas_chpr2(CblasColMajor, Uplo, N, alpha, X, incX, Y, incY, Ap);
 }
 
-void gsl_blas_native_zhpr2 (CBLAS_UPLO Uplo,
+
+void gsl_blas_raw_zhpr2_cm (CBLAS_UPLO Uplo,
                             size_t N,
                             const void * alpha,
                             const void * X, int incX,
                             const void * Y, int incY,
                             void * Ap)
 {
+  cblas_zhpr2(CblasColMajor, Uplo, N, alpha, X, incX, Y, incY, Ap);
 }
+
 
 
 /*
@@ -1228,9 +781,10 @@ void gsl_blas_native_zhpr2 (CBLAS_UPLO Uplo,
  * ===========================================================================
  */
 
+
 /* GEMM */
 
-void gsl_blas_native_sgemm (CBLAS_TRANSPOSE TransA,
+void gsl_blas_raw_sgemm_cm (CBLAS_TRANSPOSE TransA,
                             CBLAS_TRANSPOSE TransB,
                             size_t M, size_t N, size_t K,
                             float alpha,
@@ -1239,9 +793,11 @@ void gsl_blas_native_sgemm (CBLAS_TRANSPOSE TransA,
                             float beta,
                             float C[], int ldc)
 {
+  cblas_sgemm(CblasColMajor, TransA, TransB, M, N, K, alpha, A, lda, B, ldb, beta, C, ldc);
 }
 
-void gsl_blas_native_dgemm (CBLAS_TRANSPOSE TransA,
+
+void gsl_blas_raw_dgemm_cm (CBLAS_TRANSPOSE TransA,
                             CBLAS_TRANSPOSE TransB,
                             size_t M, size_t N, size_t K,
                             double alpha,
@@ -1250,9 +806,11 @@ void gsl_blas_native_dgemm (CBLAS_TRANSPOSE TransA,
                             double beta,
                             double C[], int ldc)
 {
+  cblas_dgemm(CblasColMajor, TransA, TransB, M, N, K, alpha, A, lda, B, ldb, beta, C, ldc);
 }
 
-void gsl_blas_native_cgemm (CBLAS_TRANSPOSE TransA,
+
+void gsl_blas_raw_cgemm_cm (CBLAS_TRANSPOSE TransA,
                             CBLAS_TRANSPOSE TransB,
                             size_t M, size_t N, size_t K,
                             const void * alpha,
@@ -1261,9 +819,11 @@ void gsl_blas_native_cgemm (CBLAS_TRANSPOSE TransA,
                             const void * beta,
                             void * C, int ldc)
 {
+  cblas_cgemm(CblasColMajor, TransA, TransB, M, N, K, alpha, A, lda, B, ldb, beta, C, ldc);
 }
 
-void gsl_blas_native_zgemm (CBLAS_TRANSPOSE TransA,
+
+void gsl_blas_raw_zgemm_cm (CBLAS_TRANSPOSE TransA,
                             CBLAS_TRANSPOSE TransB,
                             size_t M, size_t N, size_t K,
                             const void * alpha,
@@ -1272,12 +832,13 @@ void gsl_blas_native_zgemm (CBLAS_TRANSPOSE TransA,
                             const void * beta,
                             void * C, int ldc)
 {
+  cblas_zgemm(CblasColMajor, TransA, TransB, M, N, K, alpha, A, lda, B, ldb, beta, C, ldc);
 }
 
 
 /* SYMM */
 
-void gsl_blas_native_ssymm (CBLAS_SIDE Side, CBLAS_UPLO Uplo,
+void gsl_blas_raw_ssymm_cm (CBLAS_SIDE Side, CBLAS_UPLO Uplo,
                             size_t M, size_t N,
                             float alpha,
                             const float A[], int lda,
@@ -1285,9 +846,11 @@ void gsl_blas_native_ssymm (CBLAS_SIDE Side, CBLAS_UPLO Uplo,
                             float beta,
                             float C[], int ldc)
 {
+  cblas_ssymm(CblasColMajor, Side, Uplo, M, N, alpha, A, lda, B, ldb, beta, C, ldc);
 }
 
-void gsl_blas_native_dsymm (CBLAS_SIDE Side,
+
+void gsl_blas_raw_dsymm_cm (CBLAS_SIDE Side,
                             CBLAS_UPLO Uplo,
                             size_t M, size_t N,
                             double alpha,
@@ -1296,9 +859,12 @@ void gsl_blas_native_dsymm (CBLAS_SIDE Side,
                             double beta,
                             double C[], int ldc)
 {
+  cblas_dsymm(CblasColMajor, Side, Uplo, M, N, alpha, A, lda, B, ldb, beta, C, ldc);
+
 }
 
-void gsl_blas_native_csymm (CBLAS_SIDE Side,
+
+void gsl_blas_raw_csymm_cm (CBLAS_SIDE Side,
                             CBLAS_UPLO Uplo,
                             size_t M, size_t N,
                             const void * alpha,
@@ -1307,9 +873,11 @@ void gsl_blas_native_csymm (CBLAS_SIDE Side,
                             const void * beta,
                             void * C, int ldc)
 {
+  cblas_csymm(CblasColMajor, Side, Uplo, M, N, alpha, A, lda, B, ldb, beta, C, ldc);
 }
 
-void gsl_blas_native_zsymm (CBLAS_SIDE Side,
+
+void gsl_blas_raw_zsymm_cm (CBLAS_SIDE Side,
                             CBLAS_UPLO Uplo,
                             size_t M, size_t N,
                             const void * alpha,
@@ -1318,21 +886,24 @@ void gsl_blas_native_zsymm (CBLAS_SIDE Side,
                             const void * beta,
                             void * C, int ldc)
 {
+  cblas_zsymm(CblasColMajor, Side, Uplo, M, N, alpha, A, lda, B, ldb, beta, C, ldc);
 }
 
 
 /* SYRK */
 
-void gsl_blas_native_ssyrk (CBLAS_UPLO Uplo, CBLAS_TRANSPOSE Trans,
+void gsl_blas_raw_ssyrk_cm (CBLAS_UPLO Uplo, CBLAS_TRANSPOSE Trans,
                             size_t N, size_t K,
                             float alpha,
                             const float A[], int lda,
                             float beta,
                             float C[], int ldc)
 {
+  cblas_ssyrk(CblasColMajor, Uplo, Trans, N, K, alpha, A, lda, beta, C, ldc);
 }
 
-void gsl_blas_native_dsyrk (CBLAS_UPLO Uplo,
+
+void gsl_blas_raw_dsyrk_cm (CBLAS_UPLO Uplo,
                             CBLAS_TRANSPOSE Trans,
                             size_t N, size_t K,
                             double alpha,
@@ -1340,9 +911,11 @@ void gsl_blas_native_dsyrk (CBLAS_UPLO Uplo,
                             double beta,
                             double C[], int ldc)
 {
+  cblas_dsyrk(CblasColMajor, Uplo, Trans, N, K, alpha, A, lda, beta, C, ldc);
 }
 
-void gsl_blas_native_csyrk (CBLAS_UPLO Uplo,
+
+void gsl_blas_raw_csyrk_cm (CBLAS_UPLO Uplo,
                             CBLAS_TRANSPOSE Trans,
                             size_t N, size_t K,
                             const void * alpha,
@@ -1350,9 +923,11 @@ void gsl_blas_native_csyrk (CBLAS_UPLO Uplo,
                             const void * beta,
                             void * C, int ldc)
 {
+  cblas_csyrk(CblasColMajor, Uplo, Trans, N, K, alpha, A, lda, beta, C, ldc);
 }
 
-void gsl_blas_native_zsyrk (CBLAS_UPLO Uplo,
+
+void gsl_blas_raw_zsyrk_cm (CBLAS_UPLO Uplo,
                             CBLAS_TRANSPOSE Trans,
                             size_t N, size_t K,
                             const void * alpha,
@@ -1360,12 +935,13 @@ void gsl_blas_native_zsyrk (CBLAS_UPLO Uplo,
                             const void * beta,
                             void * C, int ldc)
 {
+  cblas_zsyrk(CblasColMajor, Uplo, Trans, N, K, alpha, A, lda, beta, C, ldc);
 }
 
 
 /* SYR2K */
 
-void gsl_blas_native_ssyr2k (CBLAS_UPLO Uplo, CBLAS_TRANSPOSE Trans,
+void gsl_blas_raw_ssyr2k_cm (CBLAS_UPLO Uplo, CBLAS_TRANSPOSE Trans,
                              size_t N, size_t K,
                              float alpha,
                              const float A[], int lda,
@@ -1373,9 +949,11 @@ void gsl_blas_native_ssyr2k (CBLAS_UPLO Uplo, CBLAS_TRANSPOSE Trans,
                              float beta,
                              float C[], int ldc)
 {
+  cblas_ssyr2k(CblasColMajor, Uplo, Trans, N, K, alpha, A, lda, B, ldb, beta, C, ldc);
 }
 
-void gsl_blas_native_dsyr2k (CBLAS_UPLO Uplo,
+
+void gsl_blas_raw_dsyr2k_cm (CBLAS_UPLO Uplo,
                              CBLAS_TRANSPOSE Trans,
                              size_t N, size_t K,
                              double alpha,
@@ -1384,9 +962,11 @@ void gsl_blas_native_dsyr2k (CBLAS_UPLO Uplo,
                              double beta,
                              double C[], int ldc)
 {
+  cblas_dsyr2k(CblasColMajor, Uplo, Trans, N, K, alpha, A, lda, B, ldb, beta, C, ldc);
 }
 
-void gsl_blas_native_csyr2k (CBLAS_UPLO Uplo,
+
+void gsl_blas_raw_csyr2k_cm (CBLAS_UPLO Uplo,
                              CBLAS_TRANSPOSE Trans,
                              size_t N, size_t K,
                              const void * alpha,
@@ -1395,9 +975,11 @@ void gsl_blas_native_csyr2k (CBLAS_UPLO Uplo,
                              const void * beta,
                              void * C, int ldc)
 {
+  cblas_csyr2k(CblasColMajor, Uplo, Trans, N, K, alpha, A, lda, B, ldb, beta, C, ldc);
 }
 
-void gsl_blas_native_zsyr2k (CBLAS_UPLO Uplo,
+
+void gsl_blas_raw_zsyr2k_cm (CBLAS_UPLO Uplo,
                              CBLAS_TRANSPOSE Trans,
                              size_t N, size_t K,
                              const void * alpha,
@@ -1406,12 +988,13 @@ void gsl_blas_native_zsyr2k (CBLAS_UPLO Uplo,
                              const void * beta,
                              void * C, int ldc)
 {
+  cblas_zsyr2k(CblasColMajor, Uplo, Trans, N, K, alpha, A, lda, B, ldb, beta, C, ldc);
 }
 
 
 /* TRMM */
 
-void gsl_blas_native_strmm (CBLAS_SIDE Side,
+void gsl_blas_raw_strmm_cm (CBLAS_SIDE Side,
                             CBLAS_UPLO Uplo, CBLAS_TRANSPOSE TransA,
                             CBLAS_DIAG Diag,
                             size_t M, size_t N,
@@ -1419,9 +1002,11 @@ void gsl_blas_native_strmm (CBLAS_SIDE Side,
                             const float A[], int lda,
                             float B[], int ldb)
 {
+  cblas_strmm(CblasColMajor, Side, Uplo, TransA, Diag, M, N, alpha, A, lda, B, ldb);
 }
 
-void gsl_blas_native_dtrmm (CBLAS_SIDE Side,
+
+void gsl_blas_raw_dtrmm_cm (CBLAS_SIDE Side,
                             CBLAS_UPLO Uplo, CBLAS_TRANSPOSE TransA,
                             CBLAS_DIAG Diag,
                             size_t M, size_t N,
@@ -1429,9 +1014,11 @@ void gsl_blas_native_dtrmm (CBLAS_SIDE Side,
                             const double A[], int lda,
                             double B[], int ldb)
 {
+  cblas_dtrmm(CblasColMajor, Side, Uplo, TransA, Diag, M, N, alpha, A, lda, B, ldb);
 }
 
-void gsl_blas_native_ctrmm (CBLAS_SIDE Side,
+
+void gsl_blas_raw_ctrmm_cm (CBLAS_SIDE Side,
                             CBLAS_UPLO Uplo, CBLAS_TRANSPOSE TransA,
                             CBLAS_DIAG Diag,
                             size_t M, size_t N,
@@ -1439,9 +1026,11 @@ void gsl_blas_native_ctrmm (CBLAS_SIDE Side,
                             const void * A, int lda,
                             void * B, int ldb)
 {
+  cblas_ctrmm(CblasColMajor, Side, Uplo, TransA, Diag, M, N, alpha, A, lda, B, ldb);
 }
 
-void gsl_blas_native_ztrmm (CBLAS_SIDE Side,
+
+void gsl_blas_raw_ztrmm_cm (CBLAS_SIDE Side,
                             CBLAS_UPLO Uplo, CBLAS_TRANSPOSE TransA,
                             CBLAS_DIAG Diag,
                             size_t M, size_t N,
@@ -1449,12 +1038,13 @@ void gsl_blas_native_ztrmm (CBLAS_SIDE Side,
                             const void * A, int lda,
                             void * B, int ldb)
 {
+  cblas_ztrmm(CblasColMajor, Side, Uplo, TransA, Diag, M, N, alpha, A, lda, B, ldb);
 }
 
 
 /* TRSM */
 
-void gsl_blas_native_strsm (CBLAS_SIDE Side,
+void gsl_blas_raw_strsm_cm (CBLAS_SIDE Side,
                             CBLAS_UPLO Uplo, CBLAS_TRANSPOSE TransA,
                             CBLAS_DIAG Diag,
                             size_t M, size_t N,
@@ -1462,9 +1052,11 @@ void gsl_blas_native_strsm (CBLAS_SIDE Side,
                             const float A[], int lda,
                             float B[], int ldb)
 {
+  cblas_strsm(CblasColMajor, Side, Uplo, TransA, Diag, M, N, alpha, A, lda, B, ldb);
 }
 
-void gsl_blas_native_dtrsm (CBLAS_SIDE Side,
+
+void gsl_blas_raw_dtrsm_cm (CBLAS_SIDE Side,
                             CBLAS_UPLO Uplo, CBLAS_TRANSPOSE TransA,
                             CBLAS_DIAG Diag,
                             size_t M, size_t N,
@@ -1472,9 +1064,11 @@ void gsl_blas_native_dtrsm (CBLAS_SIDE Side,
                             const double A[], int lda,
                             double B[], int ldb)
 {
+  cblas_dtrsm(CblasColMajor, Side, Uplo, TransA, Diag, M, N, alpha, A, lda, B, ldb);
 }
 
-void gsl_blas_native_ctrsm (CBLAS_SIDE Side,
+
+void gsl_blas_raw_ctrsm_cm (CBLAS_SIDE Side,
                             CBLAS_UPLO Uplo, CBLAS_TRANSPOSE TransA,
                             CBLAS_DIAG Diag,
                             size_t M, size_t N,
@@ -1482,9 +1076,11 @@ void gsl_blas_native_ctrsm (CBLAS_SIDE Side,
                             const void * A, int lda,
                             void * B, int ldb)
 {
+  cblas_ctrsm(CblasColMajor, Side, Uplo, TransA, Diag, M, N, alpha, A, lda, B, ldb);
 }
 
-void gsl_blas_native_ztrsm (CBLAS_SIDE Side,
+
+void gsl_blas_raw_ztrsm_cm (CBLAS_SIDE Side,
                             CBLAS_UPLO Uplo, CBLAS_TRANSPOSE TransA,
                             CBLAS_DIAG Diag,
                             size_t M, size_t N,
@@ -1492,12 +1088,13 @@ void gsl_blas_native_ztrsm (CBLAS_SIDE Side,
                             const void * A, int lda,
                             void * B, int ldb)
 {
+  cblas_ztrsm(CblasColMajor, Side, Uplo, TransA, Diag, M, N, alpha, A, lda, B, ldb);
 }
 
 
 /* HEMM */
 
-void gsl_blas_native_chemm (CBLAS_SIDE Side,
+void gsl_blas_raw_chemm_cm (CBLAS_SIDE Side,
                             CBLAS_UPLO Uplo,
                             size_t M, size_t N,
                             const void * alpha,
@@ -1506,9 +1103,11 @@ void gsl_blas_native_chemm (CBLAS_SIDE Side,
                             const void * beta,
                             void * C, int ldc)
 {
+  cblas_chemm(CblasColMajor, Side, Uplo, M, N, alpha, A, lda, B, ldb, beta, C, ldc);
 }
 
-void gsl_blas_native_zhemm (CBLAS_SIDE Side,
+
+void gsl_blas_raw_zhemm_cm (CBLAS_SIDE Side,
                             CBLAS_UPLO Uplo,
                             size_t M, size_t N,
                             const void * alpha,
@@ -1517,12 +1116,13 @@ void gsl_blas_native_zhemm (CBLAS_SIDE Side,
                             const void * beta,
                             void * C, int ldc)
 {
+  cblas_zhemm(CblasColMajor, Side, Uplo, M, N, alpha, A, lda, B, ldb, beta, C, ldc);
 }
 
 
 /* HERK */
 
-void gsl_blas_native_cherk (CBLAS_UPLO Uplo,
+void gsl_blas_raw_cherk_cm (CBLAS_UPLO Uplo,
                             CBLAS_TRANSPOSE Trans,
                             size_t N, size_t K,
                             float alpha,
@@ -1530,9 +1130,11 @@ void gsl_blas_native_cherk (CBLAS_UPLO Uplo,
                             float beta,
                             void * C, int ldc)
 {
+  cblas_cherk(CblasColMajor, Uplo, Trans, N, K, alpha, A, lda, beta, C, ldc);
 }
 
-void gsl_blas_native_zherk (CBLAS_UPLO Uplo,
+
+void gsl_blas_raw_zherk_cm (CBLAS_UPLO Uplo,
                             CBLAS_TRANSPOSE Trans,
                             size_t N, size_t K,
                             double alpha,
@@ -1540,12 +1142,13 @@ void gsl_blas_native_zherk (CBLAS_UPLO Uplo,
                             double beta,
                             void * C, int ldc)
 {
+  cblas_zherk(CblasColMajor, Uplo, Trans, N, K, alpha, A, lda, beta, C, ldc);
 }
 
 
 /* HER2K */
 
-void gsl_blas_native_cher2k (CBLAS_UPLO Uplo,
+void gsl_blas_raw_cher2k_cm (CBLAS_UPLO Uplo,
                              CBLAS_TRANSPOSE Trans,
                              size_t N, size_t K,
                              const void * alpha,
@@ -1554,10 +1157,11 @@ void gsl_blas_native_cher2k (CBLAS_UPLO Uplo,
                              float beta,
                              void * C, int ldc)
 {
+  cblas_cher2k(CblasColMajor, Uplo, Trans, N, K, alpha, A, lda, B, ldb, beta, C, ldc);
 }
 
 
-void gsl_blas_native_zher2k (CBLAS_UPLO Uplo,
+void gsl_blas_raw_zher2k_cm (CBLAS_UPLO Uplo,
                              CBLAS_TRANSPOSE Trans,
                              size_t N, size_t K,
                              const void * alpha,
@@ -1566,5 +1170,5 @@ void gsl_blas_native_zher2k (CBLAS_UPLO Uplo,
                              double beta,
                              void * C, int ldc)
 {
+  cblas_zher2k(CblasColMajor, Uplo, Trans, N, K, alpha, A, lda, B, ldb, beta, C, ldc);
 }
-
