@@ -4,13 +4,13 @@
 @cindex Clausen functions
 
 
-/* Calculate the Clausen integral:
- *   Cl_2(x) := Integrate[-Log[2 Sin[t/2]], (t,0,x)]
- *
- * Relation to dilogarithm:
- *   Cl_2(theta) = Im[ Li_2(e^(i theta)) ]
- */
+The Clausen integral is defined to be
+@math{ Cl_2(x) = - \int_0^x dt \log(2 \sin(t/2)) }.
 
-int gsl_sf_clausen_impl(double x, gsl_sf_result * result);
-int gsl_sf_clausen_e(double x, gsl_sf_result * result);
+It is related to the dilogarithm by
+@math{ Cl_2(theta) = Im  Li_2(\exp(i theta)) }.
 
+
+@deftypefun  int gsl_sf_clausen_impl(double x, gsl_sf_result * result)
+@deftypefunx int gsl_sf_clausen_e(double x, gsl_sf_result * result)
+@end deftypefun

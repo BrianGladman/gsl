@@ -4,19 +4,26 @@
 @cindex dilogarithm
 
 
-/* Real part of DiLogarithm(x), for real argument.
- * In Lewin's notation, this is Li_2(x).
- *
- *   Li_2(x) = - Re[ Integrate[ Log[1-s] / s, (s, 0, x)] ]
- *
- * Note that Im[Li_2(x)] = ( 0 for x <= 1, -Pi*log(x) for x > 1 )
- */
-int     gsl_sf_dilog_impl(double x, gsl_sf_result * result);
-int     gsl_sf_dilog_e(double x, gsl_sf_result * result);
+@subsection Real Argument
+
+In Lewin's notation this is @math{ Li_2(x) },
+the real part of the dilogarithm of a real x.
+It is defined by the integral representation
+@math{ Li_2(x) = - Re \int_0^x ds \log(1-s) / s }.
+Note that
+@math{ Im Li_2(x) = ( 0 for x <= 1, -Pi*log(x) for x > 1 ) }.
+
+@deftypefun  int gsl_sf_dilog_impl(double x, gsl_sf_result * result)
+@deftypefunx int gsl_sf_dilog_e(double x, gsl_sf_result * result)
+@end deftypefun
 
 
-/* DiLogarithm(z), for complex argument z = r Exp[i theta].
- */
-int gsl_sf_complex_dilog_impl(double r, double theta, gsl_sf_result * result_re, gsl_sf_result * result_im);
-int gsl_sf_complex_dilog_e(double r, double theta, gsl_sf_result * result_re, gsl_sf_result * result_im);
 
+@subsection Complex Argument
+
+This is the full complex-valued dilogarithm for complex argument.
+The argument is @math{ z = r \exp(i theta) }.
+
+@deftypefun  int gsl_sf_complex_dilog_impl(double r, double theta, gsl_sf_result * result_re, gsl_sf_result * result_im)
+@deftypefunx int gsl_sf_complex_dilog_e(double r, double theta, gsl_sf_result * result_re, gsl_sf_result * result_im)
+@end deftypefun

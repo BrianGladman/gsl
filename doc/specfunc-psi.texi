@@ -1,57 +1,55 @@
 @comment
-@node Psi (DiGamma) Function
-@section Psi (DiGamma) Function
+@node Psi (Digamma) Function
+@section Psi (Digamma) Function
 @cindex psi function
 @cindex digamma function
+@cindex polygamma functions
 
 
-
-/* Poly-Gamma Functions
- *
- * psi(m,x) := (d/dx)^m psi(0,x) = (d/dx)^(m+1) log(gamma(x))
- */
+The poly-gamma functions are defined by
+@math{ psi(m,x) = (d/dx)^m psi(0,x) = (d/dx)^(m+1) log(gamma(x)) },
+where @math{ \psi(0,x) } is called the di-gamma function.
 
 
-/* Di-Gamma Function  psi(n)
- *
- * n > 0
- * exceptions: GSL_EDOM
- */
-int     gsl_sf_psi_int_impl(int n, gsl_sf_result * result);
-int     gsl_sf_psi_int_e(int n, gsl_sf_result * result);
+@subsection Digamma Function
+
+@deftypefun  int gsl_sf_psi_int_impl(int n, gsl_sf_result * result)
+@deftypefunx int gsl_sf_psi_int_e(int n, gsl_sf_result * result)
+Domain: n integer, n > 0
+Exceptional Return Values: GSL_EDOM
+@end deftypefun
 
 
-/* Di-Gamma Function psi(x)
- *
- * x != 0.0
- * exceptions: GSL_EDOM, GSL_ELOSS
- */
-int     gsl_sf_psi_impl(double x, gsl_sf_result * result);
-int     gsl_sf_psi_e(double x, gsl_sf_result * result);
-
+@deftypefun  int gsl_sf_psi_impl(double x, gsl_sf_result * result)
+@deftypefunx int gsl_sf_psi_e(double x, gsl_sf_result * result)
+Domain: x != 0.0
+Exceptional Return Values: GSL_EDOM, GSL_ELOSS
+@end deftypefun
 
 /* Di-Gamma Function Re[psi(1 + I y)]
  *
  * exceptions: none
  */
-int     gsl_sf_psi_1piy_impl(double y, gsl_sf_result * result);
-int     gsl_sf_psi_1piy_e(double y, gsl_sf_result * result);
+@deftypefun  int gsl_sf_psi_1piy_impl(double y, gsl_sf_result * result)
+@deftypefunx int gsl_sf_psi_1piy_e(double y, gsl_sf_result * result)
+Computes @math{ Re psi(1 + I y) }.
+Exceptional Return Values: none
+@end deftypefun
 
 
-/* Tri-Gamma Function psi^(1)(n)
- *
- * n > 0
- * exceptions: GSL_EDOM
- */
-int     gsl_sf_psi_1_int_impl(int n, gsl_sf_result * result);
-int     gsl_sf_psi_1_int_e(int n, gsl_sf_result * result);
+@subsection Trigamma Function
+
+@deftypefun  int gsl_sf_psi_1_int_impl(int n, gsl_sf_result * result)
+@deftypefunx int gsl_sf_psi_1_int_e(int n, gsl_sf_result * result)
+Domain: n integer, n > 0
+Exceptional Return Values: GSL_EDOM
+@end deftypefun
 
 
-/* Poly-Gamma Function psi^(n)(x)
- *
- * n >= 0, x > 0.0
- * exceptions: GSL_EDOM
- */
-int     gsl_sf_psi_n_impl(int n, double x, gsl_sf_result * result);
-int     gsl_sf_psi_n_e(int n, double x, gsl_sf_result * result);
+@subsection Polygamma Function
 
+@deftypefun  int gsl_sf_psi_n_impl(int m, double x, gsl_sf_result * result)
+@deftypefunx int gsl_sf_psi_n_e(int m, double x, gsl_sf_result * result)
+Domain: m >= 0, x > 0.0
+Exceptional Return Values: GSL_EDOM
+@end deftypefun

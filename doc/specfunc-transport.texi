@@ -4,39 +4,33 @@
 @cindex Transport functions
 
 
-
-/* Transport function:
- *   J(n,x) := Integral[ t^n e^t /(e^t - 1)^2, (t,0,x)]
- */
-
-/* J(2,x)
- *
- * exceptions: GSL_EDOM
- */
-int     gsl_sf_transport_2_impl(double x, gsl_sf_result * result);
-int     gsl_sf_transport_2_e(double x, gsl_sf_result * result);
+The transport functions are defined by the integral representations
+@math{ J(n,x) := \int_0^x dt t^n e^t /(e^t - 1)^2 }.
 
 
-/* J(3,x)
- *
- * exceptions: GSL_EDOM, GSL_EUNDRFLW
- */
-int     gsl_sf_transport_3_impl(double x, gsl_sf_result * result);
-int     gsl_sf_transport_3_e(double x, gsl_sf_result * result);
+@deftypefun  int gsl_sf_transport_2_impl(double x, gsl_sf_result * result)
+@deftypefunx int gsl_sf_transport_2_e(double x, gsl_sf_result * result)
+Calculates J(2,x).
+Exceptional Return Values: GSL_EDOM
+@end deftypefun
 
 
-/* J(4,x)
- *
- * exceptions: GSL_EDOM, GSL_EUNDRFLW
- */
-int     gsl_sf_transport_4_impl(double x, gsl_sf_result * result);
-int     gsl_sf_transport_4_e(double x, gsl_sf_result * result);
+@deftypefun  int gsl_sf_transport_3_impl(double x, gsl_sf_result * result)
+@deftypefunx int gsl_sf_transport_3_e(double x, gsl_sf_result * result)
+Calculates J(3,x).
+Exceptional Return Values: GSL_EDOM, GSL_EUNDRFLW
+@end deftypefun
 
 
-/* J(5,x)
- *
- * exceptions: GSL_EDOM, GSL_EUNDRFLW
- */
-int     gsl_sf_transport_5_impl(double x, gsl_sf_result * result);
-int     gsl_sf_transport_5_e(double x, gsl_sf_result * result);
+@deftypefun  int gsl_sf_transport_4_impl(double x, gsl_sf_result * result)
+@deftypefunx int gsl_sf_transport_4_e(double x, gsl_sf_result * result)
+Calculates J(4,x).
+Exceptional Return Values: GSL_EDOM, GSL_EUNDRFLW
+@end deftypefun
 
+
+@deftypefun  int gsl_sf_transport_5_impl(double x, gsl_sf_result * result)
+@deftypefunx int gsl_sf_transport_5_e(double x, gsl_sf_result * result)
+Calculates J(5,x).
+Exceptional Return Values: GSL_EDOM, GSL_EUNDRFLW
+@end deftypefun

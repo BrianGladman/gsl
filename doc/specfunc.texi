@@ -28,7 +28,7 @@ This chapter describes the GSL special function library.
 * Logarithm and Related Functions::
 * Polynomial Manipulation::
 * Power Function::
-* Psi (DiGamma) Function::
+* Psi (Digamma) Function::
 * Synchrotron Functions::
 * Transport Functions::
 * Trigonometric Functions::

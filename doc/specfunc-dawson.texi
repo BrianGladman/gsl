@@ -3,12 +3,10 @@
 @section Dawson Function
 @cindex Dawson function
 
-/* Dawson's integral:
- *
- *   Exp[-x^2] Integral[ Exp[t^2], (t,0,x)]
- *
- * exceptions: GSL_EUNDRFLW;
- */
-int     gsl_sf_dawson_impl(double x, gsl_sf_result * result);
-int     gsl_sf_dawson_e(double x, gsl_sf_result * result);
+The Dawson integral is defined by
+@math{ \exp(-x^2) \int_0^x dt \exp(t^2) }.
 
+@deftypefun  int gsl_sf_dawson_impl(double x, gsl_sf_result * result)
+@deftypefunx int gsl_sf_dawson_e(double x, gsl_sf_result * result)
+Exceptional Return Values: GSL_EUNDRFLW
+@end deftypefun
