@@ -1394,7 +1394,7 @@ distribution with parameters @var{a} and @var{b}.
 @page
 @node The Dirichlet Distribution
 @section The Dirichlet Distribution
-@deftypefn Random void gsl_ran_dirichlet (const gsl_rng * @var{r}, const size_t @var{K}, const double @var{alpha}[], double @var{theta}[])
+@deftypefn Random void gsl_ran_dirichlet (const gsl_rng * @var{r}, size_t @var{K}, const double @var{alpha}[], double @var{theta}[])
 @cindex Dirichlet distribution 
 This function returns an array of @var{K} random variates from a Dirichlet
 distribution of order @var{K}-1. The distribution function is
@@ -1442,7 +1442,7 @@ and renormalizing.
 See A.M. Law, W.D. Kelton, @cite{Simulation Modeling and Analysis} (1991).
 @end deftypefn
 
-@deftypefun double gsl_ran_dirichlet_pdf (const size_t @var{K}, const double @var{alpha}[], const double @var{theta}[]) 
+@deftypefun double gsl_ran_dirichlet_pdf (size_t @var{K}, const double @var{alpha}[], const double @var{theta}[]) 
 This function computes the probability density 
 @c{$p(\theta_1, \ldots , \theta_K)$}
 @math{p(\theta_1, ... , \theta_K)}
@@ -1450,7 +1450,7 @@ at @var{theta}[@var{K}] for a Dirichlet distribution with parameters
 @var{alpha}[@var{K}], using the formula given above.
 @end deftypefun
 
-@deftypefun double gsl_ran_dirichlet_lnpdf (const size_t @var{K}, const double @var{alpha}[], const double @var{theta}[]) 
+@deftypefun double gsl_ran_dirichlet_lnpdf (size_t @var{K}, const double @var{alpha}[], const double @var{theta}[]) 
 This function computes the logarithm of the probability density 
 @c{$p(\theta_1, \ldots , \theta_K)$}
 @math{p(\theta_1, ... , \theta_K)}
@@ -1673,7 +1673,7 @@ the formula given above.
 @page
 @node The Multinomial Distribution
 @section The Multinomial Distribution
-@deftypefn Random void gsl_ran_multinomial (const gsl_rng * @var{r}, const size_t @var{K}, const unsigned int @var{N}, const double @var{p}[], unsigned int @var{n}[])
+@deftypefn Random void gsl_ran_multinomial (const gsl_rng * @var{r}, size_t @var{K}, unsigned int @var{N}, const double @var{p}[], unsigned int @var{n}[])
 @cindex Multinomial distribution 
 
 This function returns an array of @var{K} random variates from a 
@@ -1711,7 +1711,7 @@ C.S. David, @cite{The computer generation of multinomial random
 variates}, Comp. Stat. Data Anal. 16 (1993) 205-217 for details).
 @end deftypefn
 
-@deftypefun double gsl_ran_multinomial_pdf (const size_t @var{K}, const double @var{p}[], const unsigned int @var{n}[]) 
+@deftypefun double gsl_ran_multinomial_pdf (size_t @var{K}, const double @var{p}[], const unsigned int @var{n}[]) 
 This function computes the probability 
 @c{$P(n_1, n_2, \ldots, n_K)$}
 @math{P(n_1, n_2, ..., n_K)}
@@ -1719,7 +1719,7 @@ of sampling @var{n}[@var{K}] from a multinomial distribution
 with parameters @var{p}[@var{K}], using the formula given above.
 @end deftypefun
 
-@deftypefun double gsl_ran_multinomial_lnpdf (const size_t @var{K}, const double @var{p}[], const unsigned int @var{n}[]) 
+@deftypefun double gsl_ran_multinomial_lnpdf (size_t @var{K}, const double @var{p}[], const unsigned int @var{n}[]) 
 This function returns the logarithm of the probability for the
 multinomial distribution @c{$P(n_1, n_2, \ldots, n_K)$}
 @math{P(n_1, n_2, ..., n_K)} with parameters @var{p}[@var{K}].
