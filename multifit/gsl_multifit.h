@@ -73,10 +73,6 @@ gsl_multifit_wlinear (const gsl_matrix * X,
                       double * chisq,
                       gsl_multifit_linear_workspace * work);
 
-
-int
-gsl_multifit_nonlinear ();
-
 __END_DECLS
 
 #endif /* __GSL_MULTIFIT_H__ */

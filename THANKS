@@ -68,7 +68,8 @@ functions
 
 * Pablo Bianucci <pbian@pccp.com.ar> for patches to complex matrix/vectors
 
-* Toby White <tow@theor.ch.cam.ac.uk> for several patches
+* Toby White <tow@theor.ch.cam.ac.uk> for several patches and
+improvements to the design
 
 * Bill Brower <wbrower@ll.mit.edu> for bug report on gsl.m4
 

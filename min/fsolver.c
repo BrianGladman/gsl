@@ -41,29 +41,6 @@ compute_f_values (gsl_function * f, double minimum, double * f_minimum,
   return GSL_SUCCESS;
 }
 
-gsl_min_fminimizer *
-gsl_min_fminimizer_alloc (const gsl_min_fminimizer_type * T, 
-			 gsl_function * f, double minimum, gsl_interval x)
-{
-  int status ;
-
-  gsl_min_fminimizer * s;
-
-  double f_minimum, f_lower, f_upper;
-
-  status = compute_f_values (f, minimum, &f_minimum, x, &f_lower, &f_upper);
-
-  if (status != GSL_SUCCESS)
-    {
-      GSL_ERROR_VAL ("bad function value", GSL_EBADFUNC, 0);
-    }
-  
-  s = gsl_min_fminimizer_alloc_with_values (T, f, minimum, f_minimum, 
-                                            x, f_lower, f_upper);
-
-  return s;
-}
-
 int
 gsl_min_fminimizer_set (gsl_min_fminimizer * s, 
                         gsl_function * f, double minimum, gsl_interval x)
@@ -84,13 +61,8 @@ gsl_min_fminimizer_set (gsl_min_fminimizer * s,
   return status;
 }
 
-
 gsl_min_fminimizer *
-gsl_min_fminimizer_alloc_with_values (const gsl_min_fminimizer_type * T, 
-                                      gsl_function * f, 
-                                      double minimum, double f_minimum,
-                                      gsl_interval x, 
-                                      double f_lower, double f_upper)
+gsl_min_fminimizer_alloc (const gsl_min_fminimizer_type * T) 
 {
   int status;
 
@@ -114,17 +86,7 @@ gsl_min_fminimizer_alloc_with_values (const gsl_min_fminimizer_type * T,
     };
 
   s->type = T ;
-
-  status = gsl_min_fminimizer_set_with_values (s, f, minimum, f_minimum,
-                                               x, f_lower, f_upper); 
-
-  if (status != GSL_SUCCESS)
-    {
-      free (s->state);
-      free (s);		/* exception in constructor, avoid memory leak */
-
-      GSL_ERROR_VAL ("failed to set minimizer", status, 0);
-    };
+  s->function = NULL;
 
   return s;
 }

@@ -40,7 +40,8 @@ main ()
   FDF.fdf = &quadratic_fdf;
   FDF.params = &params;
 
-  s = gsl_root_fdfsolver_alloc (gsl_root_fdfsolver_newton, &FDF, x);
+  s = gsl_root_fdfsolver_alloc (gsl_root_fdfsolver_newton);
+  gsl_root_fdfsolver_set (s, &FDF, x);
 
   printf ("using %s method\n", gsl_root_fdfsolver_name (s));
 

@@ -133,11 +133,9 @@ function values, rather than the location of the minimum itself.
 @node Initializing the Minimizer
 @section Initializing the Minimizer
 
-@deftypefun {gsl_min_fminimizer *} gsl_min_fminimizer_alloc (const gsl_min_fminimizer_type * @var{T}, gsl_function * @var{f}, double @var{minimum}, gsl_interval @var{x})
+@deftypefun {gsl_min_fminimizer *} gsl_min_fminimizer_alloc (const gsl_min_fminimizer_type * @var{T})
 This function returns a pointer to a a newly allocated instance of a
-minimizer of type @var{T} for the function @var{f}, with an
-initial bracket on the minimum of @var{x} containing a guess for the
-location of the minimum @var{minimum}.  For example, the following code
+minimizer of type @var{T}.  For example, the following code
 creates an instance of a golden section minimizer,
 
 @example
@@ -150,16 +148,13 @@ returns a null pointer and the error handler is invoked with an error
 code of @code{GSL_ENOMEM}.
 @end deftypefun
 
-@deftypefun {gsl_min_fminimizer *} gsl_min_fminimizer_alloc_with_values (const gsl_min_fminimizer_type * @var{T}, gsl_function * @var{f}, double @var{minimum}, double @var{f_minimum}, gsl_interval @var{x}, double @var{f_lower}, double @var{f_upper})
-This function is equivalent to @code{gsl_min_fminimizer_alloc} but uses
-the values @var{f_minimum}, @var{f_lower} and @var{f_upper} instead of
-computing @code{f(minimum)}, @code{f(x.lower)} and @code{f(x.upper)}.
-@end deftypefun
-
 @deftypefun int gsl_min_fminimizer_set (gsl_min_fminimizer * @var{s}, gsl_function * @var{f}, double @var{minimum}, gsl_interval @var{x})
-This function reinitializes an existing minimizer @var{s} to use
+This function sets, or resets, an existing minimizer @var{s} to use
 the function @var{f} and the initial search interval @var{x}, with a
-guess for the location of the minimum @var{minimum}.
+guess for the location of the minimum @var{minimum}. 
+
+If the interval given does not contain a minimum, then the function
+returns an error code of @code{GSL_FAILURE}.
 @end deftypefun
 
 @deftypefun int gsl_min_fminimizer_set_with_values (gsl_min_fminimizer * @var{s}, gsl_function * @var{f}, double @var{minimum}, double @var{f_minimum}, gsl_interval @var{x}, double @var{f_lower}, double @var{f_upper})
@@ -393,7 +388,8 @@ main ()
   F.function = &fn1;
   F.params = 0;
 
-  s = gsl_min_fminimizer_alloc (gsl_min_fminimizer_brent, &F, m, x);
+  s = gsl_min_fminimizer_alloc (gsl_min_fminimizer_brent);
+  gsl_min_fminimizer_set (s, &F, m, x);
 
   printf ("using %s method\n", gsl_min_fminimizer_name (s));
 

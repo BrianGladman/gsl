@@ -130,7 +130,8 @@ test_lmder (void)
   gsl_vector x = gsl_vector_view (x_init, p);
 
   T = gsl_multifit_fdfsolver_lmsder;
-  s = gsl_multifit_fdfsolver_alloc (T, &f, &x);
+  s = gsl_multifit_fdfsolver_alloc (T, n, p);
+  gsl_multifit_fdfsolver_set (s, &f, &x);
 
   do
     {

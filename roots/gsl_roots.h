@@ -73,12 +73,11 @@ typedef struct
 gsl_root_fdfsolver;
 
 gsl_root_fsolver *
-gsl_root_fsolver_alloc (const gsl_root_fsolver_type * T, 
-			 gsl_function * f, gsl_interval x);
+gsl_root_fsolver_alloc (const gsl_root_fsolver_type * T);
 void gsl_root_fsolver_free (gsl_root_fsolver * s);
 
-int gsl_root_fsolver_set (gsl_root_fsolver * s, 
-			   gsl_function * f, gsl_interval x);
+int gsl_root_fsolver_set (gsl_root_fsolver * s,
+                          gsl_function * f, gsl_interval x);
 
 int gsl_root_fsolver_iterate (gsl_root_fsolver * s);
 
@@ -88,8 +87,7 @@ gsl_interval gsl_root_fsolver_interval (const gsl_root_fsolver * s);
 
 
 gsl_root_fdfsolver *
-gsl_root_fdfsolver_alloc (const gsl_root_fdfsolver_type * T, 
-			   gsl_function_fdf * fdf, double root);
+gsl_root_fdfsolver_alloc (const gsl_root_fdfsolver_type * T);
 
 int
 gsl_root_fdfsolver_set (gsl_root_fdfsolver * s, 

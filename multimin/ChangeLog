@@ -1,3 +1,9 @@
+Sun Feb 18 16:35:21 2001  Brian Gough  <bjg@network-theory.co.uk>
+
+	* fdfminimizer.c (gsl_multimin_fdf_minimizer_alloc): modified to
+ 	account for change in calling convection of
+ 	gsl_min_fminimizer_alloc
+
 Fri May  5 16:08:34 2000  Brian Gough  <bjg@network-theory.co.uk>
 
 	* test.c (test_fdf): fixed warning about "control reaches end of

@@ -1,3 +1,8 @@
+Sun Feb 18 11:43:04 2001  Brian Gough  <bjg@network-theory.co.uk>
+
+	* fsolver.c: changed so that the solver _alloc function no longer
+ 	calls _set, the user must do that separately.
+
 Fri May  5 16:09:11 2000  Brian Gough  <bjg@network-theory.co.uk>
 
 	* test.c (test_bracket): fixed warning about "control reaches end

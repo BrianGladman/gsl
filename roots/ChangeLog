@@ -1,3 +1,8 @@
+Sun Feb 18 15:35:25 2001  Brian Gough  <bjg@network-theory.co.uk>
+
+	* fdfsolver.c fsolver.c: changed so that the solver _alloc
+ 	function no longer calls _set, the user must do that separately.
+
 Wed May 17 11:37:15 2000  Brian Gough  <bjg@network-theory.co.uk>
 
 	* test_macros.c (test_macros): use GSL_POSINF and GSL_NAN macros

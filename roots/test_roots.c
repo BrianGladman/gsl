@@ -143,7 +143,8 @@ test_f (const gsl_root_fsolver_type * T, const char * description, gsl_function 
   x.lower = lower_bound;
   x.upper = upper_bound;
 
-  s = gsl_root_fsolver_alloc(T, f, x) ;
+  s = gsl_root_fsolver_alloc(T);
+  gsl_root_fsolver_set(s, f, x) ;
   
   do 
     {
@@ -200,11 +201,13 @@ test_f_e (const gsl_root_fsolver_type * T,
   x.lower = lower_bound;
   x.upper = upper_bound;
 
-  s = gsl_root_fsolver_alloc(T, f, x) ;
+  s = gsl_root_fsolver_alloc(T);
+  status = gsl_root_fsolver_set(s, f, x) ;
 
-  if (s == 0) 
+  gsl_test (status != GSL_EINVAL, "%s (set), %s", T->name, description);
+
+  if (status == GSL_EINVAL) 
     {
-      gsl_test (s != 0, "%s, %s", T->name, description);
       return ;
     }
 
@@ -230,7 +233,8 @@ test_fdf (const gsl_root_fdfsolver_type * T, const char * description,
   size_t iterations = 0;
   double prev = 0 ;
 
-  gsl_root_fdfsolver * s = gsl_root_fdfsolver_alloc(T, fdf, root) ;
+  gsl_root_fdfsolver * s = gsl_root_fdfsolver_alloc(T);
+  gsl_root_fdfsolver_set (s, fdf, root) ;
 
   do 
     {
@@ -271,13 +275,10 @@ test_fdf_e (const gsl_root_fdfsolver_type * T,
   size_t iterations = 0;
   double prev = 0 ;
 
-  gsl_root_fdfsolver * s = gsl_root_fdfsolver_alloc(T, fdf, root) ;
+  gsl_root_fdfsolver * s = gsl_root_fdfsolver_alloc(T);
+  status = gsl_root_fdfsolver_set (s, fdf, root) ;
 
-  if (s == 0) 
-    {
-      gsl_test (s != 0, "%s, %s", T->name, description);
-      return ;
-    }
+  gsl_test (status, "%s (set), %s", T->name, description);
 
   do 
     {

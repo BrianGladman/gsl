@@ -41,7 +41,8 @@ main ()
   F.function = &quadratic;
   F.params = &params;
 
-  s = gsl_root_fsolver_alloc (gsl_root_fsolver_bisection, &F, x);
+  s = gsl_root_fsolver_alloc (gsl_root_fsolver_bisection);
+  gsl_root_fsolver_set (s, &F, x);
 
   printf ("using %s method\n", gsl_root_fsolver_name (s));
 

@@ -115,15 +115,14 @@ the function visually by plotting before searching for a root.
 @node Initializing the Solver
 @section Initializing the Solver
 
-@deftypefun {gsl_root_fsolver *} gsl_root_fsolver_alloc (const gsl_root_fsolver_type * @var{T}, gsl_function * @var{f}, gsl_interval @var{x})
+@deftypefun {gsl_root_fsolver *} gsl_root_fsolver_alloc (const gsl_root_fsolver_type * @var{T})
 This function returns a pointer to a a newly allocated instance of a
-solver of type @var{T} for the function @var{f}, with an initial bracket
-on the root of @var{x}.  For example, the following code creates an
+solver of type @var{T}.  For example, the following code creates an
 instance of a bisection solver,
 
 @example
 gsl_root_fsolver * s = 
-    gsl_root_fsolver_alloc (gsl_root_fsolver_bisection, f, x);
+    gsl_root_fsolver_alloc (gsl_root_fsolver_bisection);
 @end example
 
 If there is insufficient memory to create the solver then the function
@@ -131,15 +130,14 @@ returns a null pointer and the error handler is invoked with an error
 code of @code{GSL_ENOMEM}.
 @end deftypefun
 
-@deftypefun {gsl_root_fdfsolver *} gsl_root_fdfsolver_alloc (const gsl_root_fdfsolver_type * @var{T}, gsl_function_fdf * @var{fdf}, double @var{root})
+@deftypefun {gsl_root_fdfsolver *} gsl_root_fdfsolver_alloc (const gsl_root_fdfsolver_type * @var{T})
 This function returns a pointer to a a newly allocated instance of a
-solver of type @var{T} for the function @var{f}, with an initial guess
-for the root of @var{root}.  For example, the following code creates an
-instance of a Newton-Raphson solver,
+derivative-based solver of type @var{T}.  For example, the following
+code creates an instance of a Newton-Raphson solver,
 
 @example
 gsl_root_fdfsolver * s = 
-    gsl_root_fdfsolver_alloc (gsl_root_fdfsolver_newton, fdf, r);
+    gsl_root_fdfsolver_alloc (gsl_root_fdfsolver_newton);
 @end example
 
 If there is insufficient memory to create the solver then the function
@@ -149,13 +147,14 @@ code of @code{GSL_ENOMEM}.
 
 
 @deftypefun int gsl_root_fsolver_set (gsl_root_fsolver * @var{s}, gsl_function * @var{f}, gsl_interval @var{x})
-This function reinitializes an existing solver @var{s} to use the
-function @var{f} and the initial search interval @var{x}.
+This function initializes, or reinitializes, an existing solver @var{s}
+to use the function @var{f} and the initial search interval @var{x}.
 @end deftypefun
 
 @deftypefun int gsl_root_fdfsolver_set (gsl_root_fdfsolver * @var{s}, gsl_function_fdf * @var{fdf}, double @var{root})
-This function reinitializes an existing solver @var{s} to use the
-function and derivative @var{fdf} and the initial guess @var{root}.
+This function initializes, or reinitializes, an existing solver @var{s}
+to use the function and derivative @var{fdf} and the initial guess
+@var{root}.
 @end deftypefun
 
 @deftypefun void gsl_root_fsolver_free (gsl_root_fsolver * @var{s})
@@ -895,7 +894,8 @@ main ()
   F.function = &quadratic;
   F.params = &params;
 
-  s = gsl_root_fsolver_alloc (gsl_root_fsolver_brent, &F, x);
+  s = gsl_root_fsolver_alloc (gsl_root_fsolver_brent);
+  gsl_root_fsolver_set (s, &F, x);
 
   printf ("using %s method\n", gsl_root_fsolver_name (s));
 
@@ -990,7 +990,8 @@ main ()
   FDF.fdf = &quadratic_fdf;
   FDF.params = &params;
 
-  s = gsl_root_fdfsolver_alloc (gsl_root_fdfsolver_newton, &FDF, x);
+  s = gsl_root_fdfsolver_alloc (gsl_root_fdfsolver_newton);
+  gsl_root_fdfsolver_set (s, &FDF, x);
 
   printf ("using %s method\n", gsl_root_fdfsolver_name (s));
 

@@ -25,20 +25,11 @@
 
 gsl_multifit_fsolver *
 gsl_multifit_fsolver_alloc (const gsl_multifit_fsolver_type * T, 
-                            gsl_multifit_function * f, gsl_vector * x)
+                            size_t n, size_t p) 
 {
   int status;
 
   gsl_multifit_fsolver * s;
-
-  const size_t n = f->n ;
-  const size_t p = f->p ;
-
-  if (x->size != p) 
-    {
-      GSL_ERROR_VAL ("vector length not compatible with function", 
-                        GSL_EBADLEN, 0);
-    }
 
   s = (gsl_multifit_fsolver *) malloc (sizeof (gsl_multifit_fsolver));
 
@@ -104,18 +95,7 @@ gsl_multifit_fsolver_alloc (const gsl_multifit_fsolver_type * T,
       GSL_ERROR_VAL ("failed to set solver", status, 0);
     }
   
-  status = gsl_multifit_fsolver_set (s, f, x); /* seed the generator */
-  
-  if (status != GSL_SUCCESS)
-    {
-      free (s->state);
-      gsl_vector_free (s->dx);
-      gsl_vector_free (s->x);
-      gsl_vector_free (s->f);
-      free (s);		/* exception in constructor, avoid memory leak */
-      
-      GSL_ERROR_VAL ("failed to set solver", status, 0);
-    }
+  s->function = NULL;
 
   return s;
 }
@@ -125,6 +105,16 @@ gsl_multifit_fsolver_set (gsl_multifit_fsolver * s,
                           gsl_multifit_function * f, 
                           gsl_vector * x)
 {
+  if (s->f->size != f->n)
+    {
+      GSL_ERROR ("function size does not match solver", GSL_EBADLEN);
+    }
+
+  if (s->x->size != x->size)
+    {
+      GSL_ERROR ("vector length does not match solver", GSL_EBADLEN);
+    }  
+  
   s->function = f;
   gsl_vector_memcpy(s->x,x);
   

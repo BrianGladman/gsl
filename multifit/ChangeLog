@@ -1,3 +1,9 @@
+Sun Feb 18 16:39:46 2001  Brian Gough  <bjg@network-theory.co.uk>
+
+	* fdfsolver.c (gsl_multifit_fdfsolver_alloc): changed so that the
+ 	solver _alloc function no longer calls _set, the user must do that
+ 	separately.
+
 Fri Sep 29 19:19:24 2000  Brian Gough  <bjg@network-theory.co.uk>
 
 	* Makefile.am multifit/demo.c: removed demo from Makefile since it

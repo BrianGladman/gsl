@@ -94,7 +94,8 @@ test_f (const gsl_min_fminimizer_type * T,
   x.lower = lower_bound;
   x.upper = upper_bound;
 
-  s = gsl_min_fminimizer_alloc(T, f, middle, x) ;
+  s = gsl_min_fminimizer_alloc (T) ;
+  gsl_min_fminimizer_set (s, f, middle, x) ;
   
   do 
     {
@@ -155,11 +156,13 @@ test_f_e (const gsl_min_fminimizer_type * T,
   x.lower = lower_bound;
   x.upper = upper_bound;
 
-  s = gsl_min_fminimizer_alloc(T, f, middle, x) ;
+  s = gsl_min_fminimizer_alloc (T) ;
+  status = gsl_min_fminimizer_set (s, f, middle, x) ; 
 
-  if (s == 0) 
+  if (status != GSL_SUCCESS) 
     {
-      gsl_test (s != 0, "%s, %s", T->name, description);
+      gsl_min_fminimizer_free (s) ;
+      gsl_test (status == GSL_SUCCESS, "%s, %s", T->name, description);
       return ;
     }
 

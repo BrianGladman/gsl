@@ -1,3 +1,8 @@
+Sun Feb 18 11:26:45 2001  Brian Gough  <bjg@network-theory.co.uk>
+
+	* fdfsolver.c fsolver.c: changed so that the solver _alloc
+ 	function no longer calls _set, the user must do that separately.
+	
 Thu Nov 30 21:48:39 2000  Brian Gough  <bjg@network-theory.co.uk>
 
 	* newton.c (newton_iterate): return GSL_EBADFUNC if error in

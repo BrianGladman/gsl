@@ -134,7 +134,8 @@ test_fdf (const char * desc, gsl_multiroot_function_fdf * function,
 
   if (factor != 1.0) scale(x, factor);
 
-  s = gsl_multiroot_fdfsolver_alloc (T, function, x);
+  s = gsl_multiroot_fdfsolver_alloc (T, n);
+  gsl_multiroot_fdfsolver_set (s, function, x);
  
   do
     {
@@ -220,7 +221,8 @@ test_f (const char * desc, gsl_multiroot_function_fdf * fdf,
 
   if (factor != 1.0) scale(x, factor);
 
-  s = gsl_multiroot_fsolver_alloc (T, &function, x);
+  s = gsl_multiroot_fsolver_alloc (T, n);
+  gsl_multiroot_fsolver_set (s, &function, x);
 
 /*   printf("x "); gsl_vector_fprintf (stdout, s->x, "%g"); printf("\n"); */
 /*   printf("f "); gsl_vector_fprintf (stdout, s->f, "%g"); printf("\n"); */

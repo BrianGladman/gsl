@@ -77,24 +77,24 @@ regime.
 @node Initializing the Nonlinear Solver
 @section Initializing the Solver
 
-@deftypefun {gsl_multifit_fsolver *} gsl_multifit_fsolver_alloc (const gsl_multifit_fsolver_type * @var{T}, gsl_multifit_function * @var{f}, gsl_vector * @var{x})
+@deftypefun {gsl_multifit_fsolver *} gsl_multifit_fsolver_alloc (const gsl_multifit_fsolver_type * @var{T}, size_t * @var{n}, size_t * @var{p})
 This function returns a pointer to a a newly allocated instance of a
-solver of type @var{T} for the function @var{f}.
+solver of type @var{T} for @var{n} observations and @var{p} parameters.
 
 If there is insufficient memory to create the solver then the function
 returns a null pointer and the error handler is invoked with an error
 code of @code{GSL_ENOMEM}.
 @end deftypefun
 
-@deftypefun {gsl_multifit_fdfsolver *} gsl_multifit_fdfsolver_alloc (const gsl_multifit_fdfsolver_type * @var{T}, gsl_multifit_function_fdf * @var{fdf}, gsl_vector * @var{x})
+@deftypefun {gsl_multifit_fdfsolver *} gsl_multifit_fdfsolver_alloc (const gsl_multifit_fdfsolver_type * @var{T})
 This function returns a pointer to a a newly allocated instance of a
-derivative solver of type @var{T} for the function @var{fdf}, with an
-initial guess for the root of @var{x}.  For example, the following code
-creates an instance of a Levenberg-Marquardt solver,
+derivative solver of type @var{T} for @var{n} observations and @var{p}
+parameters. For example, the following code creates an instance of a
+Levenberg-Marquardt solver for 100 data points and 3 parameters,
 
 @example
 gsl_multifit_fdfsolver * s = 
-    gsl_multifit_fdfsolver_alloc (gsl_multifit_fdfsolver_lmder, fdf, x);
+    gsl_multifit_fdfsolver_alloc (gsl_multifit_fdfsolver_lmder, 100, 3);
 @end example
 
 If there is insufficient memory to create the solver then the function
@@ -103,13 +103,14 @@ code of @code{GSL_ENOMEM}.
 @end deftypefun
 
 @deftypefun int gsl_multifit_fsolver_set (gsl_multifit_fsolver * @var{s}, gsl_multifit_function * @var{f}, gsl_vector * @var{x})
-This function reinitializes an existing solver @var{s} to use the
-function @var{f} and the initial guess @var{x}.
+This function initializes, or reinitializes, an existing solver @var{s}
+to use the function @var{f} and the initial guess @var{x}.
 @end deftypefun
 
 @deftypefun int gsl_multifit_fdfsolver_set (gsl_multifit_fdfsolver * @var{s}, gsl_function_fdf * @var{fdf}, gsl_vector * @var{x})
-This function reinitializes an existing solver @var{s} to use the
-function and derivative @var{fdf} and the initial guess @var{x}.
+This function initializes, or reinitializes, an existing solver @var{s}
+to use the function and derivative @var{fdf} and the initial guess
+@var{x}.
 @end deftypefun
 
 @deftypefun void gsl_multifit_fsolver_free (gsl_multifit_fsolver * @var{s})
@@ -564,7 +565,8 @@ main (void)
 
 
   T = gsl_multifit_fdfsolver_lmsder;
-  s = gsl_multifit_fdfsolver_alloc (T, &f, &x);
+  s = gsl_multifit_fdfsolver_alloc (T, n, p);
+  gsl_multifit_fdfsolver (s, &f, &x);
 
   print_state (iter, s);
 

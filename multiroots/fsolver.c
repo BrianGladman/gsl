@@ -23,21 +23,13 @@
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_multiroots.h>
 
-gsl_multiroot_fsolver *
-gsl_multiroot_fsolver_alloc (const gsl_multiroot_fsolver_type * T, 
-                             gsl_multiroot_function * f, gsl_vector * x)
+gsl_multiroot_fsolver * 
+gsl_multiroot_fsolver_alloc (const gsl_multiroot_fsolver_type * T,
+                                     size_t n)
 {
   int status;
 
   gsl_multiroot_fsolver * s;
-
-  const size_t n = f->n ;
-
-  if (x->size != n) 
-    {
-      GSL_ERROR_VAL ("vector length not compatible with function", 
-                        GSL_EBADLEN, 0);
-    }
 
   s = (gsl_multiroot_fsolver *) malloc (sizeof (gsl_multiroot_fsolver));
 
@@ -102,20 +94,9 @@ gsl_multiroot_fsolver_alloc (const gsl_multiroot_fsolver_type * T,
       
       GSL_ERROR_VAL ("failed to set solver", status, 0);
     }
-  
-  status = gsl_multiroot_fsolver_set (s, f, x); /* seed the generator */
-  
-  if (status != GSL_SUCCESS)
-    {
-      free (s->state);
-      gsl_vector_free (s->dx);
-      gsl_vector_free (s->x);
-      gsl_vector_free (s->f);
-      free (s);		/* exception in constructor, avoid memory leak */
-      
-      GSL_ERROR_VAL ("failed to set solver", status, 0);
-    }
 
+  s->function = NULL;
+  
   return s;
 }
 
@@ -124,6 +105,16 @@ gsl_multiroot_fsolver_set (gsl_multiroot_fsolver * s,
                            gsl_multiroot_function * f, 
                            gsl_vector * x)
 {
+  if (s->x->size != f->n)
+    {
+      GSL_ERROR ("function incompatible with solver size", GSL_EBADLEN);
+    }
+  
+  if (x->size != f->n)
+    {
+      GSL_ERROR ("vector length not compatible with function", GSL_EBADLEN);
+    }  
+  
   s->function = f;
   gsl_vector_memcpy(s->x,x);
   

@@ -252,9 +252,7 @@ gsl_multimin_fdf_minimizer_alloc(const gsl_multimin_fdf_minimizer_type *T,
   /* Warning, we try to bypass checks */
   dummy.lower = 0;
   dummy.upper = 1;
-  s->line_search = 
-    gsl_min_fminimizer_alloc_with_values(T_line,s->f_directional,0.5,
-					 0.0,dummy,1.0,1.0);
+  s->line_search = gsl_min_fminimizer_alloc(T_line);
   
   if (s->line_search == 0)
     {
@@ -267,7 +265,10 @@ gsl_multimin_fdf_minimizer_alloc(const gsl_multimin_fdf_minimizer_type *T,
       GSL_ERROR_VAL ("failed to allocate one dimensional minimization algorithm",
 			GSL_ENOMEM, 0);     
     }
-  
+
+  gsl_min_fminimizer_set_with_values (s->line_search, 
+                                      s->f_directional, 
+                                      0.5, 0.0, dummy, 1.0, 1.0);
 
   return s;
 }

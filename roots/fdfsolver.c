@@ -24,8 +24,7 @@
 #include <gsl/gsl_roots.h>
 
 gsl_root_fdfsolver *
-gsl_root_fdfsolver_alloc (const gsl_root_fdfsolver_type * T, 
-			   gsl_function_fdf * f, double root)
+gsl_root_fdfsolver_alloc (const gsl_root_fdfsolver_type * T)
 {
 
   gsl_root_fdfsolver * s = (gsl_root_fdfsolver *) malloc (sizeof (gsl_root_fdfsolver));
@@ -47,8 +46,7 @@ gsl_root_fdfsolver_alloc (const gsl_root_fdfsolver_type * T,
     };
 
   s->type = T ;
-
-  gsl_root_fdfsolver_set (s, f, root); /* seed the generator */
+  s->fdf = NULL;
 
   return s;
 }

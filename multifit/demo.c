@@ -109,9 +109,9 @@ main (void)
       printf("data: %d %g %g\n", i, y[i], sigma[i]);
     };
 
-
   T = gsl_multifit_fdfsolver_lmsder;
-  s = gsl_multifit_fdfsolver_alloc (T, &f, &x);
+  s = gsl_multifit_fdfsolver_alloc (T, n, p);
+  gsl_multifit_fdfsolver (s, &f, &x);
 
   print_state (iter, s);
 

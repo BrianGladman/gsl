@@ -24,8 +24,7 @@
 #include <gsl/gsl_roots.h>
 
 gsl_root_fsolver *
-gsl_root_fsolver_alloc (const gsl_root_fsolver_type * T, 
-			 gsl_function * f, gsl_interval x)
+gsl_root_fsolver_alloc (const gsl_root_fsolver_type * T)
 {
   int status;
 
@@ -48,16 +47,7 @@ gsl_root_fsolver_alloc (const gsl_root_fsolver_type * T,
     };
 
   s->type = T ;
-
-  status = gsl_root_fsolver_set (s, f, x); /* seed the generator */
-
-  if (status != GSL_SUCCESS)
-    {
-      free (s->state);
-      free (s);		/* exception in constructor, avoid memory leak */
-
-      GSL_ERROR_VAL ("failed to set solver", status, 0);
-    };
+  s->function = NULL ;
 
   return s;
 }
@@ -65,14 +55,14 @@ gsl_root_fsolver_alloc (const gsl_root_fsolver_type * T,
 int
 gsl_root_fsolver_set (gsl_root_fsolver * s, gsl_function * f, gsl_interval x)
 {
-  s->function = f;
-  s->root = 0;
-  s->interval = x;
-
   if (x.lower > x.upper)
     {
       GSL_ERROR ("invalid interval (lower > upper)", GSL_EINVAL);
     }
+
+  s->function = f;
+  s->root = 0.5 * (x.lower + x.upper);  /* initial estimate */
+  s->interval = x;
 
   return (s->type->set) (s->state, s->function, &(s->root), &(s->interval));
 }
