@@ -335,3 +335,5 @@ histogram range calculations
 maintaining the Debian package for GSL.
 
 * Jari Häkkinen <jari@chiralcomp.com> for svd bug reports
+
+* Marco Canini <marco.canini@fastwebnet.it> patch for IXP2400 Xscale
