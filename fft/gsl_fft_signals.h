@@ -1,5 +1,5 @@
-#ifndef _GSL_FFT_TEST_H
-#define _GSL_FFT_TEST_H
+#ifndef _GSL_FFT_SIGNALS_H
+#define _GSL_FFT_SIGNALS_H
 
 #include <gsl_math.h>
 
@@ -7,7 +7,7 @@
 #include <gsl_fft.h>
 
 int
-  gsl_fft_test_signal_complex_pulse (const unsigned int k,
+  gsl_fft_signal_complex_pulse (const unsigned int k,
 				     const unsigned int n,
 				     const double z_real,
 				     const double z_imag,
@@ -15,14 +15,14 @@ int
 				     complex fft[]);
 
 int
-  gsl_fft_test_signal_complex_constant (const unsigned int n,
+  gsl_fft_signal_complex_constant (const unsigned int n,
 					const double z_real,
 					const double z_imag,
 					complex data[],
 					complex fft[]);
 
 int
-  gsl_fft_test_signal_complex_exp (const int k,
+  gsl_fft_signal_complex_exp (const int k,
 				   const unsigned int n,
 				   const double z_real,
 				   const double z_imag,
@@ -31,7 +31,7 @@ int
 
 
 int
-  gsl_fft_test_signal_complex_exppair (const int k1,
+  gsl_fft_signal_complex_exppair (const int k1,
 				       const int k2,
 				       const unsigned int n,
 				       const double z1_real,
@@ -42,13 +42,13 @@ int
 				       complex fft[]);
 
 int
-  gsl_fft_test_signal_complex_noise (const unsigned int n,
+  gsl_fft_signal_complex_noise (const unsigned int n,
 				     complex data[],
 				     complex fft[]);
 
 int
-  gsl_fft_test_signal_real_noise (const unsigned int n,
+  gsl_fft_signal_real_noise (const unsigned int n,
 				  complex data[],
 				  complex fft[]);
 
-#endif /* _GSL_FFT_TEST_H */
+#endif /* _GSL_FFT_SIGNALS_H */

@@ -2,7 +2,7 @@ noinst_LIBRARIES = libfft.a
 
 bin_PROGRAMS = test_trap test_radix2 test benchmark errs
 
-include_HEADERS = gsl_fft.h gsl_fft_complex.h gsl_fft_halfcomplex.h gsl_fft_real.h gsl_fft_test.h gsl_dft_complex.h gsl_complex.h gsl_math.h
+include_HEADERS = gsl_fft.h gsl_fft_complex.h gsl_fft_halfcomplex.h gsl_fft_real.h gsl_fft_signals.h gsl_dft_complex.h gsl_complex.h gsl_math.h
 
 INCLUDES = -I$(srcdir)/../err
 
@@ -71,7 +71,6 @@ real_pass_n.c \
 real_radix2.c \
 real_unpack.c \
  \
-test_signals.c \
+signals.c \
  \
 gsl_math.h
-

@@ -10,7 +10,7 @@
 #include <gsl_fft_complex.h>
 #include <gsl_fft_real.h>
 #include <gsl_fft_halfcomplex.h>
-#include <gsl_fft_test.h>
+#include <gsl_fft_signals.h>
 
 #include <autotest.h>
 #include <compare.h>

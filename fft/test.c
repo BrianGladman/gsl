@@ -12,7 +12,7 @@
 #include <gsl_fft_complex.h>
 #include <gsl_fft_real.h>
 #include <gsl_fft_halfcomplex.h>
-#include <gsl_fft_test.h>
+#include <gsl_fft_signals.h>
 
 #include <autotest.h>
 #include <compare.h>
@@ -98,8 +98,8 @@ void check_complex (unsigned int n)
   
   /* mixed radix fft */
   msg_checking_params (length, 
-		       "gsl_fft_complex_forward with test_signal_noise");
-  gsl_fft_test_signal_complex_noise (n, complex_data, fft_complex_data);
+		       "gsl_fft_complex_forward with signal_noise");
+  gsl_fft_signal_complex_noise (n, complex_data, fft_complex_data);
   memcpy (complex_tmp, complex_data, n * sizeof (complex));
   gsl_fft_complex_forward (complex_data, n, &complex_wavetable);
   memcpy (fft_complex_tmp, complex_data, n * sizeof (complex));
@@ -110,7 +110,7 @@ void check_complex (unsigned int n)
   
   /* compute the inverse fft */
   msg_checking_params (length, 
-		       "gsl_fft_complex_inverse with test_signal_noise");
+		       "gsl_fft_complex_inverse with signal_noise");
   status = gsl_fft_complex_inverse (complex_data, n, &complex_wavetable);
   status = compare_complex_results ("orig", complex_tmp,
 				    "fft inverse", complex_data,
@@ -119,7 +119,7 @@ void check_complex (unsigned int n)
   
   /* compute the backward fft */
   msg_checking_params (length, 
-		       "gsl_fft_complex_backward with test_signal_noise");
+		       "gsl_fft_complex_backward with signal_noise");
   status = gsl_fft_complex_backward (fft_complex_tmp, n, &complex_wavetable);
 
   for (i = 0; i < n; i++)
@@ -152,8 +152,8 @@ void check_complex (unsigned int n)
   fft_real_data = malloc (n * sizeof (double));
   fft_real_tmp = malloc (n * sizeof (double));
   
-  msg_checking_params (length, "gsl_fft_real with test_signal_real_noise");
-  gsl_fft_test_signal_real_noise (n, complex_data, fft_complex_data);
+  msg_checking_params (length, "gsl_fft_real with signal_real_noise");
+  gsl_fft_signal_real_noise (n, complex_data, fft_complex_data);
   memcpy (complex_tmp, complex_data, n * sizeof (complex));
 
   for (i = 0; i < n; i++)
@@ -184,7 +184,7 @@ void check_complex (unsigned int n)
 						   &halfcomplex_wavetable);
   msg_result_status (status);
   
-  msg_checking_params (length, "gsl_fft_halfcomplex with data from test_signal_noise");
+  msg_checking_params (length, "gsl_fft_halfcomplex with data from signal_noise");
   status = gsl_fft_halfcomplex (real_data, n, &halfcomplex_wavetable);
   
   for (i = 0; i < n; i++)
@@ -200,16 +200,16 @@ void check_complex (unsigned int n)
   msg_result_status (status);
   
   /* pulse */
-  msg_checking_params (length, "gsl_fft_complex_forward with test_signal_pulse");
-  gsl_fft_test_signal_complex_pulse (1, n, 1.0, 0.0, complex_data,
+  msg_checking_params (length, "gsl_fft_complex_forward with signal_pulse");
+  gsl_fft_signal_complex_pulse (1, n, 1.0, 0.0, complex_data,
 				     fft_complex_data);
   gsl_fft_complex_forward (complex_data, n, &complex_wavetable);
   status = compare_complex_results ("analytic", fft_complex_data,
 				    "fft of pulse", complex_data, n, 1e6);
   msg_result_status (status);
   
-  msg_checking_params (length, "gsl_fft_complex_forward with test_signal_constant");
-  gsl_fft_test_signal_complex_constant (n, 1.0, 0.0, complex_data,
+  msg_checking_params (length, "gsl_fft_complex_forward with signal_constant");
+  gsl_fft_signal_complex_constant (n, 1.0, 0.0, complex_data,
 					fft_complex_data);
   gsl_fft_complex_forward (complex_data, n, &complex_wavetable);
   status = compare_complex_results ("analytic", fft_complex_data,
@@ -217,11 +217,11 @@ void check_complex (unsigned int n)
 				    n, 1e6);
   msg_result_status (status);
   
-  msg_checking_params (length, "gsl_fft_complex_forward with test_signal_exp");
+  msg_checking_params (length, "gsl_fft_complex_forward with signal_exp");
   status = 0;
   for (i = 0; i < n; i++)
     {
-      gsl_fft_test_signal_complex_exp ((int)i, n, 1.0, 0.0, complex_data,
+      gsl_fft_signal_complex_exp ((int)i, n, 1.0, 0.0, complex_data,
 				       fft_complex_data);
       gsl_fft_complex_forward (complex_data, n, &complex_wavetable);
       status |= compare_complex_results ("analytic", fft_complex_data,

@@ -20,7 +20,8 @@ main (int argc, char *argv[])
 {
   complex *data, *fft_data;
   gsl_fft_complex_wavetable complex_wavetable;
-  unsigned int i;
+  unsigned int i, logn;
+  int result;
   int status;
   clock_t start, end;
   int resolution = CLOCKS_PER_SEC;
@@ -53,6 +54,54 @@ main (int argc, char *argv[])
 
   /* compute the fft with radix2 */
   memcpy (fft_data, data, n * sizeof (complex));
+
+  result = gsl_fft_binary_logn(n) ;
+
+  if (result == -1) {
+    GSL_ERROR ("n is not a power of 2", GSL_EINVAL);
+  } else {
+    logn = result ;
+  }
+
+  start = clock ();
+  i = 0;
+  do
+    {
+      status = gsl_fft_complex_bitreverse_order (fft_data, n, logn);
+      i++;
+      end = clock ();
+    }
+  while (end < start + resolution && status == 0);
+
+  printf ("gsl_fft_complex_bitreverse_order %d %f seconds\n", n, (end - start) / ((double) i) / ((double) CLOCKS_PER_SEC));
+
+  start = clock ();
+  i = 0;
+  do
+    {
+      status = gsl_fft_complex_goldrader_bitreverse_order (fft_data, n);
+      i++;
+      end = clock ();
+    }
+  while (end < start + resolution && status == 0);
+
+  printf ("gsl_fft_complex_goldrader_bitreverse_order %d %f seconds\n", n, (end - start) / ((double) i) / ((double) CLOCKS_PER_SEC));
+
+
+  start = clock ();
+  i = 0;
+  do
+    {
+      status = gsl_fft_complex_rodriguez_bitreverse_order (fft_data, n, logn);
+      i++;
+      end = clock ();
+    }
+  while (end < start + resolution && status == 0);
+
+  printf ("gsl_fft_complex_rodriguez_bitreverse_order %d %f seconds\n", n, (end - start) / ((double) i) / ((double) CLOCKS_PER_SEC));
+
+
+  
 
   start = clock ();
   i = 0;
