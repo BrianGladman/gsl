@@ -202,6 +202,7 @@ should be finished before a 1.0 level release.
     OK: Wed Nov 11 14:31:07 MST 1998 [GJ]  *
 
   - legendre_con.c
+    OK: Fri Nov 13 12:55:21 MST 1998 [GJ]  *
 
   - legendre_poly.c
     OK: Thu Nov 12 21:07:18 MST 1998 [GJ]  *

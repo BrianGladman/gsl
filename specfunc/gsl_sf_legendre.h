@@ -199,17 +199,6 @@ int     gsl_sf_conicalP_cyl_reg_e(int m, double lambda, double x, double * resul
 double  gsl_sf_conicalP_cyl_reg(int m, double lambda, double x);
 
 
-/* Regular Spherical Conical Function
- * P^{-1/2-l}_{-1/2 + I lambda}(x)
- * l=0,...,lmax
- *
- * x > -1.0, lmax >= 0
- * exceptions: GSL_EDOM
- */
-int gsl_sf_conicalP_sph_reg_array_impl(int lmax, double lambda, double x, double * result_array);
-int gsl_sf_conicalP_sph_reg_array_e(int lmax, double lambda, double x, double * result_array);
-
-
 /* The following spherical functions are specializations
  * of Legendre functions which give the regular eigenfunctions
  * of the Laplacian on a 3-dimensional hyperbolic space.
@@ -263,6 +252,12 @@ double  gsl_sf_legendre_H3d_1(double lambda, double eta);
 int     gsl_sf_legendre_H3d_impl(int l, double lambda, double eta, double * result);
 int     gsl_sf_legendre_H3d_e(int l, double lambda, double eta, double * result);
 double  gsl_sf_legendre_H3d(int l, double lambda, double eta);
+
+
+/* Array of H3d(ell),  0 <= ell <= lmax
+ */
+int     gsl_sf_legendre_H3d_array_impl(int lmax, double lambda, double eta, double * result_array);
+int     gsl_sf_legendre_H3d_array_e(int lmax, double lambda, double eta, double * result_array);
 
 
 

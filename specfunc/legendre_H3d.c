@@ -402,6 +402,54 @@ gsl_sf_legendre_H3d_impl(const int ell, const double lambda, const double eta, d
 }
 
 
+int
+gsl_sf_legendre_H3d_array_impl(const int lmax, const double lambda, const double eta, double * result_array)
+{
+  if(eta < 0.0 || lmax < 0) {
+    int ell;
+    for(ell=0; ell<=lmax; ell++) result_array[ell] = 0.0;
+    return GSL_EDOM;
+  }
+  else if(eta > GSL_LOG_DBL_MAX) {
+    /* cosh(eta) is too big. */
+    int ell;
+    for(ell=0; ell<=lmax; ell++) result_array[ell] = 0.0;
+    return GSL_EOVRFLW;
+  }
+  else if(lmax == 0) {
+    return gsl_sf_legendre_H3d_impl(0, lambda, eta, &(result_array[0]));
+  }
+  else {
+    /* Not the most efficient method. But what the hell... it's simple.
+     */
+    double Hlp1;
+    double Hl;
+    double Hlm1;
+    int stat_lmax   = gsl_sf_legendre_H3d_impl(lmax,   lambda, eta, &Hlp1);
+    int stat_lmaxm1 = gsl_sf_legendre_H3d_impl(lmax-1, lambda, eta, &Hl);
+    int stat_max = GSL_ERROR_SELECT_2(stat_lmax, stat_lmaxm1);
+
+    const double coth_eta = 1.0/tanh(eta);
+    int stat_recursion = GSL_SUCCESS;
+    int ell;
+
+    result_array[lmax]   = Hlp1;
+    result_array[lmax-1] = Hl;
+
+    for(ell=lmax-1; ell>0; ell--) {
+      double root_term_0 = sqrt(lambda*lambda + (double)ell*ell);
+      double root_term_1 = sqrt(lambda*lambda + (ell+1.0)*(ell+1.0));
+      Hlm1 = ((2.0*ell + 1.0)*coth_eta*Hl - root_term_1 * Hlp1)/root_term_0;
+      result_array[ell-1] = Hlm1;
+      if(!(Hlm1 < DBL_MAX)) stat_recursion = GSL_EOVRFLW;
+      Hlp1 = Hl;
+      Hl   = Hlm1;
+    }
+
+    return GSL_ERROR_SELECT_2(stat_recursion, stat_max);
+  }
+}
+  
 
 /*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
 
@@ -431,6 +479,16 @@ gsl_sf_legendre_H3d_e(const int l, const double lambda, const double eta, double
   int status = gsl_sf_legendre_H3d_impl(l, lambda, eta, result);
   if(status != GSL_SUCCESS) {
     GSL_ERROR("gsl_sf_legendre_H3d_e", status);
+  }
+  return status;
+}
+
+int
+gsl_sf_legendre_H3d_array_e(const int lmax, const double lambda, const double eta, double * result_array)
+{
+  int status = gsl_sf_legendre_H3d_array_impl(lmax, lambda, eta, result_array);
+  if(status != GSL_SUCCESS) {
+    GSL_ERROR("gsl_sf_legendre_H3d_array_e", status);
   }
   return status;
 }

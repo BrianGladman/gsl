@@ -5057,6 +5057,16 @@ int check_legendre(void)
   status += s;
 
   s = 0;
+  gsl_sf_legendre_H3d_array_impl(100, 1.0, 3.0, L);
+  s += ( frac_diff(L[  0], gsl_sf_legendre_H3d(  0, 1.0, 3.0)) > 1.0e-12 );
+  s += ( frac_diff(L[  1], gsl_sf_legendre_H3d(  1, 1.0, 3.0)) > 1.0e-12 );
+  s += ( frac_diff(L[ 10], gsl_sf_legendre_H3d( 10, 1.0, 3.0)) > 1.0e-12 );
+  s += ( frac_diff(L[100], gsl_sf_legendre_H3d(100, 1.0, 3.0)) > 1.0e-12 );
+  gsl_test(s, "  gsl_sf_legendre_H3d_array_impl(100, 1.0, 3.0)");
+  status += s;
+
+
+  s = 0;
   s += ( frac_diff(gsl_sf_legendre_Q0(-0.5), -0.5493061443340548457 ) > 1.0e-14 );
   s += ( frac_diff(gsl_sf_legendre_Q0( 1.5),  0.8047189562170501873 ) > 1.0e-14 );
   gsl_test(s, "  gsl_sf_legendre_Q0");
