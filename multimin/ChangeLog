@@ -1,0 +1,9 @@
+Tue May  2 19:20:46 2000  Brian Gough  <bjg@network-theory.co.uk>
+
+	* test.c (main): added return gsl_test_summary() to main, so that
+ 	test results are returned through the exit status.
+
+Mon Feb 14 13:12:16 2000  Brian Gough  <bjg@network-theory.co.uk>
+
+	* made all internal functions static
+

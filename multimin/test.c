@@ -142,5 +142,6 @@ main (void)
       test_fdf("Rosenbrock", &rosenbrock, rosenbrock_initpt,*T,5*rosenbrock.n);
       T++;
     }
-  
+
+  return gsl_test_summary();
 }
