@@ -282,8 +282,8 @@ int main ()
 
   for (i = 0; i < 128; i++)
     @{
-       REAL(z,i) = 0.0;
-       IMAG(z,i) = 0.0;
+       REAL(data,i) = 0.0;
+       IMAG(data,i) = 0.0;
     @}
 
   REAL(data,0) = 1.0;

@@ -122,12 +122,12 @@ end of the range @var{a}.
 @node Chebyshev Approximation examples
 @section Examples
 
-The following example program computes the Chebyshev approximation to a
-step function, using 10-term and 40-term polynomials.  This is an
-extremely difficult approximation to make, due to the discontinuity, and
-was chosen as an example where approximation error is visible.  For
-smooth functions the Chebyshev approximation converges extremely
-rapidly and errors would not be visible.
+The following example program computes Chebyshev approximations to a
+step function.  This is an extremely difficult approximation to make,
+due to the discontinuity, and was chosen as an example where
+approximation error is visible.  For smooth functions the Chebyshev
+approximation converges extremely rapidly and errors would not be
+visible.
 
 @example
 #include <stdio.h>
@@ -147,7 +147,7 @@ f (double x, void *p)
 int
 main (void)
 @{
-  double x;
+  int i, n = 10000; 
 
   gsl_cheb_series *cs = gsl_cheb_alloc (40);
 
@@ -158,8 +158,9 @@ main (void)
 
   gsl_cheb_init (cs, &F, 0.0, 1.0);
 
-  for (x = 0; x < 1; x += 0.001)
+  for (i = 0; i < n; i++)
     @{
+      double x = i / (double)n;
       double r10 = gsl_cheb_eval_n (cs, 10, x);
       double r40 = gsl_cheb_eval (cs, x);
       printf ("%g %g %g %g\n", x, GSL_FN_EVAL (&F, x), r10, r40);
@@ -170,8 +171,9 @@ main (void)
 @end example
 
 @noindent
-The output from the program gives the original function and the 10-term and
-40-term approximations, sampled at intervals of 0.001 in @math{x}.
+The output from the program gives the original function, 10-th order
+approximation and 40-th order approximation, all sampled at intervals of
+0.001 in @math{x}.
 
 @iftex
 @sp 1
