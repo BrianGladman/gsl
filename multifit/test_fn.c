@@ -112,6 +112,32 @@ brown_fdf (const gsl_vector * x, void *params,
   return GSL_SUCCESS;
 }
 
+gsl_multifit_function_fdf
+make_fdf (int (* f) (const gsl_vector *, void *, gsl_vector *),
+          int (* df) (const gsl_vector *, void *, gsl_matrix *),
+          int (* fdf) (const gsl_vector *, void *, gsl_vector *, gsl_matrix *),
+          size_t n,
+          size_t p,
+          void * params);
+
+gsl_multifit_function_fdf
+make_fdf (int (* f) (const gsl_vector *, void *, gsl_vector *),
+          int (* df) (const gsl_vector *, void *, gsl_matrix *),
+          int (* fdf) (const gsl_vector *, void *, gsl_vector *, gsl_matrix *),
+          size_t n,
+          size_t p,
+          void * params)
+{
+  gsl_multifit_function_fdf F_new;
+  F_new.f = f;
+  F_new.df = df;
+  F_new.fdf = fdf;
+  F_new.n = n;
+  F_new.p = p;
+  F_new.params = params;
+  return F_new;
+}
+
 void
 test_lmder (void)
 {
@@ -124,7 +150,8 @@ test_lmder (void)
   const size_t n = 20;
   const size_t p = 4;
 
-  gsl_multifit_function_fdf f = { &brown_f, &brown_df, &brown_fdf, n, p, 0 };
+  gsl_multifit_function_fdf f = make_fdf (&brown_f, &brown_df, &brown_fdf,
+                                          n, p, 0);
 
   double x_init[4] = { 25, 5, -5, -1 };
   gsl_vector x = gsl_vector_view (x_init, p);

@@ -42,8 +42,8 @@ FUNCTION (test, func) (void)
 	{
 	  BASE z = ZERO;
 	  k++;
-	  GSL_REAL(z) = k;
-	  GSL_IMAG(z) = k + 1000;
+	  GSL_REAL(z) = (ATOMIC)k;
+	  GSL_IMAG(z) = (ATOMIC)(k + 1000);
 	  FUNCTION (gsl_matrix, set) (m, i, j, z);
 	}
     }
@@ -99,8 +99,8 @@ FUNCTION (test, text) (void)
 	  {
 	    BASE z;
 	    k++;
-	    GSL_REAL(z) = k;
-	    GSL_IMAG(z) = k + 1000;
+	    GSL_REAL(z) = (ATOMIC)k;
+	    GSL_IMAG(z) = (ATOMIC)(k + 1000);
 	    FUNCTION (gsl_matrix, set) (m, i, j, z);
 	  }
       }
@@ -154,8 +154,8 @@ FUNCTION (test, binary) (void)
 	  {
 	    BASE z = ZERO;
 	    k++;
-	    GSL_REAL(z) = k;
-	    GSL_IMAG(z) = k + 1000;
+	    GSL_REAL(z) = (ATOMIC)k;
+	    GSL_IMAG(z) = (ATOMIC)(k + 1000);
 	    FUNCTION (gsl_matrix, set) (m, i, j, z);
 	  }
       }
@@ -197,7 +197,7 @@ FUNCTION (test, trap) (void)
   TYPE (gsl_matrix) * mc = FUNCTION (gsl_matrix, alloc) (M, N);
   size_t i = 0, j = 0;
 
-  BASE z = {{1.2, 3.4}};
+  BASE z = {{(ATOMIC)1.2, (ATOMIC)3.4}};
   BASE z1;
 
   status = 0;

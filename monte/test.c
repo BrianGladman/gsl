@@ -85,6 +85,29 @@ make_function (double (*f)(double *, size_t, void *), size_t d, void * p)
   return f_new;
 }
 
+
+void 
+add (struct problem * problems, int * n, 
+     gsl_monte_function * f, double xl[], double xu[], size_t dim, size_t calls,
+     double result, double err, char * description);
+
+void 
+add (struct problem * problems, int * n, 
+     gsl_monte_function * f, double xl[], double xu[], size_t dim, size_t calls,
+     double result, double err, char * description)
+{
+  int i = *n;
+  problems[i].f = f;
+  problems[i].xl = xl;
+  problems[i].xu = xu;
+  problems[i].dim = dim;
+  problems[i].calls = calls;
+  problems[i].expected_result = result;
+  problems[i].expected_error = err;
+  problems[i].description = description;
+  (*n)++;
+}
+
 #define TRIALS 10
 
 int
@@ -109,87 +132,87 @@ main (void)
      volume average (integral over the integration region divided by
      the volume) */
 
-  struct problem problems[] = {
+  int n = 0;
+  struct problem * I;
+  struct problem problems[256];
 
 #ifdef CONSTANT
     /* variance(Fc) = 0 */
 
-    { &Fc, xl, xu,  1, 1000, 1.0, 0.0, "constant, 1d"},
-    { &Fc, xl, xu,  2, 1000, 1.0, 0.0, "constant, 2d"},
-    { &Fc, xl, xu,  3, 1000, 1.0, 0.0, "constant, 3d"},
-    { &Fc, xl, xu,  4, 1000, 1.0, 0.0, "constant, 4d"},
-    { &Fc, xl, xu,  5, 1000, 1.0, 0.0, "constant, 5d"},
-    { &Fc, xl, xu,  6, 1000, 1.0, 0.0, "constant, 6d"},
-    { &Fc, xl, xu,  7, 1000, 1.0, 0.0, "constant, 7d"},
-    { &Fc, xl, xu,  8, 1000, 1.0, 0.0, "constant, 8d"},
-    { &Fc, xl, xu,  9, 1000, 1.0, 0.0, "constant, 9d"},
-    { &Fc, xl, xu, 10, 1000, 1.0, 0.0, "constant, 10d"},
+    add(problems,&n, &Fc, xl, xu,  1, 1000, 1.0, 0.0, "constant, 1d");
+    add(problems,&n, &Fc, xl, xu,  2, 1000, 1.0, 0.0, "constant, 2d");
+    add(problems,&n, &Fc, xl, xu,  3, 1000, 1.0, 0.0, "constant, 3d");
+    add(problems,&n, &Fc, xl, xu,  4, 1000, 1.0, 0.0, "constant, 4d");
+    add(problems,&n, &Fc, xl, xu,  5, 1000, 1.0, 0.0, "constant, 5d");
+    add(problems,&n, &Fc, xl, xu,  6, 1000, 1.0, 0.0, "constant, 6d");
+    add(problems,&n, &Fc, xl, xu,  7, 1000, 1.0, 0.0, "constant, 7d");
+    add(problems,&n, &Fc, xl, xu,  8, 1000, 1.0, 0.0, "constant, 8d");
+    add(problems,&n, &Fc, xl, xu,  9, 1000, 1.0, 0.0, "constant, 9d");
+    add(problems,&n, &Fc, xl, xu, 10, 1000, 1.0, 0.0, "constant, 10d");
 #endif
 
 #ifdef PRODUCT
     /* variance(F0) = (4/3)^d - 1 */
 
-    { &F0, xl, xu,  1, 3333,   1.0, 0.01, "product, 1d" },
-    { &F0, xl, xu,  2, 7777,   1.0, 0.01, "product, 2d" },
-    { &F0, xl, xu,  3, 13703,  1.0, 0.01, "product, 3d" },
-    { &F0, xl, xu,  4, 21604,  1.0, 0.01, "product, 4d" },
-    { &F0, xl, xu,  5, 32139,  1.0, 0.01, "product, 5d" },
-    { &F0, xl, xu,  6, 46186,  1.0, 0.01, "product, 6d" },
-    { &F0, xl, xu,  7, 64915,  1.0, 0.01, "product, 7d" },
-    { &F0, xl, xu,  8, 89887,  1.0, 0.01, "product, 8d" },
-    { &F0, xl, xu,  9, 123182, 1.0, 0.01, "product, 9d" },
-    { &F0, xl, xu, 10, 167577, 1.0, 0.01, "product, 10d" },
+    add(problems,&n, &F0, xl, xu,  1, 3333,   1.0, 0.01, "product, 1d" );
+    add(problems,&n, &F0, xl, xu,  2, 7777,   1.0, 0.01, "product, 2d" );
+    add(problems,&n, &F0, xl, xu,  3, 13703,  1.0, 0.01, "product, 3d" );
+    add(problems,&n, &F0, xl, xu,  4, 21604,  1.0, 0.01, "product, 4d" );
+    add(problems,&n, &F0, xl, xu,  5, 32139,  1.0, 0.01, "product, 5d" );
+    add(problems,&n, &F0, xl, xu,  6, 46186,  1.0, 0.01, "product, 6d" );
+    add(problems,&n, &F0, xl, xu,  7, 64915,  1.0, 0.01, "product, 7d" );
+    add(problems,&n, &F0, xl, xu,  8, 89887,  1.0, 0.01, "product, 8d" );
+    add(problems,&n, &F0, xl, xu,  9, 123182, 1.0, 0.01, "product, 9d" );
+    add(problems,&n, &F0, xl, xu, 10, 167577, 1.0, 0.01, "product, 10d" );
 #endif
 
 #ifdef GAUSSIAN
     /* variance(F1) = (1/(a sqrt(2 pi)))^d - 1 */
 
-    { &F1, xl, xu,  1, 298,      1.0, 0.1, "gaussian, 1d" },
-    { &F1, xl, xu,  2, 1492,     1.0, 0.1, "gaussian, 2d" },
-    { &F1, xl, xu,  3, 6249,     1.0, 0.1, "gaussian, 3d" },
-    { &F1, xl, xu,  4, 25230,    1.0, 0.1, "gaussian, 4d" },
-    { &F1, xl, xu,  5, 100953,   1.0, 0.1, "gaussian, 5d" },
-    { &F1, xl, xu,  6, 44782,    1.0, 0.3, "gaussian, 6d" },
-    { &F1, xl, xu,  7, 178690,   1.0, 0.3, "gaussian, 7d" },
-    { &F1, xl, xu,  8, 712904,   1.0, 0.3, "gaussian, 8d" },
-    { &F1, xl, xu,  9, 2844109,  1.0, 0.3, "gaussian, 9d" },
-    { &F1, xl, xu, 10, 11346390, 1.0, 0.3, "gaussian, 10d" },
+    add(problems,&n, &F1, xl, xu,  1, 298,      1.0, 0.1, "gaussian, 1d" );
+    add(problems,&n, &F1, xl, xu,  2, 1492,     1.0, 0.1, "gaussian, 2d" );
+    add(problems,&n, &F1, xl, xu,  3, 6249,     1.0, 0.1, "gaussian, 3d" );
+    add(problems,&n, &F1, xl, xu,  4, 25230,    1.0, 0.1, "gaussian, 4d" );
+    add(problems,&n, &F1, xl, xu,  5, 100953,   1.0, 0.1, "gaussian, 5d" );
+    add(problems,&n, &F1, xl, xu,  6, 44782,    1.0, 0.3, "gaussian, 6d" );
+    add(problems,&n, &F1, xl, xu,  7, 178690,   1.0, 0.3, "gaussian, 7d" );
+    add(problems,&n, &F1, xl, xu,  8, 712904,   1.0, 0.3, "gaussian, 8d" );
+    add(problems,&n, &F1, xl, xu,  9, 2844109,  1.0, 0.3, "gaussian, 9d" );
+    add(problems,&n, &F1, xl, xu, 10, 11346390, 1.0, 0.3, "gaussian, 10d" );
 #endif
 
 #ifdef DBLGAUSSIAN
     /* variance(F2) = 0.5 * (1/(a sqrt(2 pi)))^d - 1 */
 
-    { &F2, xl, xu,  1, 9947,    1.0, 0.01, "double gaussian, 1d" },
-    { &F2, xl, xu,  2, 69577,   1.0, 0.01, "double gaussian, 2d" },
-    { &F2, xl, xu,  3, 307468,  1.0, 0.01, "double gaussian, 3d" },
-    { &F2, xl, xu,  4, 12565,   1.0, 0.1, "double gaussian, 4d" },
-    { &F2, xl, xu,  5, 50426,   1.0, 0.1, "double gaussian, 5d" },
-    { &F2, xl, xu,  6, 201472,  1.0, 0.1, "double gaussian, 6d" },
-    { &F2, xl, xu,  7, 804056,  1.0, 0.1, "double gaussian, 7d" },
-    { &F2, xl, xu,  8, 356446,  1.0, 0.3, "double gaussian, 8d" },
-    { &F2, xl, xu,  9, 1422049, 1.0, 0.3, "double gaussian, 9d" },
-    { &F2, xl, xu, 10, 5673189, 1.0, 0.3, "double gaussian, 10d" },
+    add(problems,&n, &F2, xl, xu,  1, 9947,    1.0, 0.01, "double gaussian, 1d" );
+    add(problems,&n, &F2, xl, xu,  2, 69577,   1.0, 0.01, "double gaussian, 2d" );
+    add(problems,&n, &F2, xl, xu,  3, 307468,  1.0, 0.01, "double gaussian, 3d" );
+    add(problems,&n, &F2, xl, xu,  4, 12565,   1.0, 0.1, "double gaussian, 4d" );
+    add(problems,&n, &F2, xl, xu,  5, 50426,   1.0, 0.1, "double gaussian, 5d" );
+    add(problems,&n, &F2, xl, xu,  6, 201472,  1.0, 0.1, "double gaussian, 6d" );
+    add(problems,&n, &F2, xl, xu,  7, 804056,  1.0, 0.1, "double gaussian, 7d" );
+    add(problems,&n, &F2, xl, xu,  8, 356446,  1.0, 0.3, "double gaussian, 8d" );
+    add(problems,&n, &F2, xl, xu,  9, 1422049, 1.0, 0.3, "double gaussian, 9d" );
+    add(problems,&n, &F2, xl, xu, 10, 5673189, 1.0, 0.3, "double gaussian, 10d" );
 #endif
 
 #ifdef TSUDA
     /* variance(F3) = ((c^2 + c + 1/3)/(c(c+1)))^d - 1 */
 
-    { &F3, xl, xu,  1, 4928,   1.0, 0.01, "tsuda function, 1d" },
-    { &F3, xl, xu,  2, 12285,  1.0, 0.01, "tsuda function, 2d" },
-    { &F3, xl, xu,  3, 23268,  1.0, 0.01, "tsuda function, 3d" },
-    { &F3, xl, xu,  4, 39664,  1.0, 0.01, "tsuda function, 4d" },
-    { &F3, xl, xu,  5, 64141,  1.0, 0.01, "tsuda function, 5d" },
-    { &F3, xl, xu,  6, 100680, 1.0, 0.01, "tsuda function, 6d" },
-    { &F3, xl, xu,  7, 155227, 1.0, 0.01, "tsuda function, 7d" },
-    { &F3, xl, xu,  8, 236657, 1.0, 0.01, "tsuda function, 8d" },
-    { &F3, xl, xu,  9, 358219, 1.0, 0.01, "tsuda function, 9d" },
-    { &F3, xl, xu, 10, 539690, 1.0, 0.01, "tsuda function, 10d" },
+    add(problems,&n, &F3, xl, xu,  1, 4928,   1.0, 0.01, "tsuda function, 1d" );
+    add(problems,&n, &F3, xl, xu,  2, 12285,  1.0, 0.01, "tsuda function, 2d" );
+    add(problems,&n, &F3, xl, xu,  3, 23268,  1.0, 0.01, "tsuda function, 3d" );
+    add(problems,&n, &F3, xl, xu,  4, 39664,  1.0, 0.01, "tsuda function, 4d" );
+    add(problems,&n, &F3, xl, xu,  5, 64141,  1.0, 0.01, "tsuda function, 5d" );
+    add(problems,&n, &F3, xl, xu,  6, 100680, 1.0, 0.01, "tsuda function, 6d" );
+    add(problems,&n, &F3, xl, xu,  7, 155227, 1.0, 0.01, "tsuda function, 7d" );
+    add(problems,&n, &F3, xl, xu,  8, 236657, 1.0, 0.01, "tsuda function, 8d" );
+    add(problems,&n, &F3, xl, xu,  9, 358219, 1.0, 0.01, "tsuda function, 9d" );
+    add(problems,&n, &F3, xl, xu, 10, 539690, 1.0, 0.01, "tsuda function, 10d" );
 #endif
 
-    {   0,  0,  0, 0,    0,   0,   0, 0  }
-  };
+    add(problems,&n,   0,  0,  0, 0,    0,   0,   0, 0  );
 
-  struct problem * I;
 
   /* gsl_set_error_handler (&my_error_handler); */
   gsl_ieee_env_setup ();
@@ -271,7 +294,7 @@ double
 f0 (double x[], size_t num_dim, void *params)
 {
   double prod = 1.0;
-  int i;
+  unsigned int i;
 
   for (i = 0; i < num_dim; ++i)
     {
@@ -289,7 +312,7 @@ f1 (double x[], size_t num_dim, void *params)
   double a = *(double *)params;
   double sum = 0.;
 
-  int i;
+  unsigned int i;
   for (i = 0; i < num_dim; i++)
     {
       double dx = x[i] - 0.5;
@@ -307,7 +330,7 @@ f2 (double x[], size_t num_dim, void *params)
   double sum1 = 0.;
   double sum2 = 0.;
 
-  int i;
+  unsigned int i;
   for (i = 0; i < num_dim; i++)
     {
       double dx1 = x[i] - 1. / 3.;
@@ -327,7 +350,7 @@ f3 (double x[], size_t num_dim, void *params)
 
   double prod = 1.;
 
-  int i;
+  unsigned int i;
 
   for (i = 0; i < num_dim; i++)
     {

@@ -55,7 +55,7 @@ main (void)
         if (xi * scale < 0.1)
           {
             double v = xi + yi + zi;
-            int k = 100*v*scale;
+            int k = (int)(100.0*v*scale);
             f[k]++;
           }
 

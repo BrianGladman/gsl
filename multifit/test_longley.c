@@ -1,5 +1,5 @@
-int longley_n = 16;
-int longley_p = 7;
+size_t longley_n = 16;
+size_t longley_p = 7;
 
 double longley_x [] = {
   1,  83.0,   234289,   2356,     1590,    107608,  1947,

@@ -421,7 +421,7 @@ testPDF (double (*f) (void), double (*pdf)(double), const char *name)
       double r = f ();
       if (r < b && r > a)
 	{ 
-	  j =  (r - a)/dx ;
+	  j =  (int)((r - a)/dx) ;
 	  count[j]++;
 	}
     }
@@ -480,7 +480,7 @@ testDiscretePDF (double (*f) (void), double (*pdf)(unsigned int), const char *na
 
   for (i = 0; i < N; i++)
     {
-      int r = f ();
+      int r = (int)(f ());
       if (r>= 0 && r < BINS)
 	count[r]++;
     }
