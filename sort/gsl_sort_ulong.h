@@ -36,14 +36,14 @@
 
 __BEGIN_DECLS
 
-void gsl_sort_ulong (unsigned long * data, size_t stride, size_t n);
-void gsl_sort_ulong_index (size_t * p, const unsigned long * data, size_t stride, size_t n);
+void gsl_sort_ulong (unsigned long * data, const size_t stride, const size_t n);
+void gsl_sort_ulong_index (size_t * p, const unsigned long * data, const size_t stride, const size_t n);
 
-int gsl_sort_ulong_smallest (unsigned long * dest, size_t k, const unsigned long * src, size_t stride, size_t n);
-int gsl_sort_ulong_smallest_index (size_t * p, size_t k, const unsigned long * src, size_t stride, size_t n);
+int gsl_sort_ulong_smallest (unsigned long * dest, const size_t k, const unsigned long * src, const size_t stride, const size_t n);
+int gsl_sort_ulong_smallest_index (size_t * p, const size_t k, const unsigned long * src, const size_t stride, const size_t n);
 
-int gsl_sort_ulong_largest (unsigned long * dest, size_t k, const unsigned long * src, size_t stride, size_t n);
-int gsl_sort_ulong_largest_index (size_t * p, size_t k, const unsigned long * src, size_t stride, size_t n);
+int gsl_sort_ulong_largest (unsigned long * dest, const size_t k, const unsigned long * src, const size_t stride, const size_t n);
+int gsl_sort_ulong_largest_index (size_t * p, const size_t k, const unsigned long * src, const size_t stride, const size_t n);
 
 __END_DECLS
 

@@ -36,14 +36,14 @@
 
 __BEGIN_DECLS
 
-void gsl_sort_ushort (unsigned short * data, size_t stride, size_t n);
-void gsl_sort_ushort_index (size_t * p, const unsigned short * data, size_t stride, size_t n);
+void gsl_sort_ushort (unsigned short * data, const size_t stride, const size_t n);
+void gsl_sort_ushort_index (size_t * p, const unsigned short * data, const size_t stride, const size_t n);
 
-int gsl_sort_ushort_smallest (unsigned short * dest, size_t k, const unsigned short * src, size_t stride, size_t n);
-int gsl_sort_ushort_smallest_index (size_t * p, size_t k, const unsigned short * src, size_t stride, size_t n);
+int gsl_sort_ushort_smallest (unsigned short * dest, const size_t k, const unsigned short * src, const size_t stride, const size_t n);
+int gsl_sort_ushort_smallest_index (size_t * p, const size_t k, const unsigned short * src, const size_t stride, const size_t n);
 
-int gsl_sort_ushort_largest (unsigned short * dest, size_t k, const unsigned short * src, size_t stride, size_t n);
-int gsl_sort_ushort_largest_index (size_t * p, size_t k, const unsigned short * src, size_t stride, size_t n);
+int gsl_sort_ushort_largest (unsigned short * dest, const size_t k, const unsigned short * src, const size_t stride, const size_t n);
+int gsl_sort_ushort_largest_index (size_t * p, const size_t k, const unsigned short * src, const size_t stride, const size_t n);
 
 __END_DECLS
 
