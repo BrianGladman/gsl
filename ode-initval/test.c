@@ -927,7 +927,7 @@ test_evolve_xsin (const gsl_odeiv_step_type * T, double h, double err)
   yfin[0] = cos (2.0);
   yfin[1] = sin (2.0);
   test_evolve_system (T, &rhs_func_xsin, 0.0, 2.0, h, y, yfin, err,
-		      "sine[0,2] w/failures");
+		      "sine[0,2] w/errors");
 }
 
 
