@@ -2,11 +2,11 @@
 #include <gsl_rng.h>
 #include <gsl_randist.h>
 
-/* The Laplace probability distribution is  
+/* The two-sided exponential probability distribution is  
 
-   p(x) = (1/(2 mu)) * exp( -|x/mu|)
+   p(x) dx = (1/(2 mu)) * exp(-|x/mu|) dx
 
-   for -infty < x < infty  */
+   for -infty < x < infty. It is also known as the Laplace distribution.  */
 
 double
 gsl_ran_two_sided_exponential (const gsl_rng * r, const double mu)

@@ -5,7 +5,7 @@
 
 /* The Cauchy probability distribution is 
 
-   p(x) = (1/(pi mu)) (1 + (x/mu)^2)^(-1)
+   p(x) dx = (1/(pi mu)) (1 + (x/mu)^2)^(-1) dx
 
    It is also known as the Lorentzian probability distribution */
 

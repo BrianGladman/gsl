@@ -6,7 +6,7 @@
 /* The sum of N samples from an exponential distribution gives an
    Erlang distribution
 
-   p(x) = x^(n-1) exp (-x/a) / ((n-1)!a^n)
+   p(x) dx = x^(n-1) exp (-x/a) / ((n-1)!a^n) dx
 
    for x = 0 ... +infty */
 

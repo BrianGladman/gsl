@@ -4,7 +4,7 @@
 
 /* The Weibull distribution has the form,
 
-   p(x) = a x^(a-1) exp(-x^a)
+   p(x) dx = a x^(a-1) exp(-x^a) dx
 
  */
 
