@@ -22,7 +22,7 @@ gsl_la_matrix_mod_t;
  * exceptions: GSL_EFAULT, GSL_EBADLEN
  */
 int
-gsl_la_matmult_impl(const gsl_matrix * A, const gsl_matrix * B, gsl_matrix * C);
+gsl_la_matmult(const gsl_matrix * A, const gsl_matrix * B, gsl_matrix * C);
 
 
 /* Simple implementation of matrix multiply.
@@ -32,9 +32,9 @@ gsl_la_matmult_impl(const gsl_matrix * A, const gsl_matrix * B, gsl_matrix * C);
  * exceptions: GSL_EFAULT, GSL_EBADLEN
  */
 int
-gsl_la_matmult_mod_impl(const gsl_matrix * A, gsl_la_matrix_mod_t modA,
-                        const gsl_matrix * B, gsl_la_matrix_mod_t modB,
-                        gsl_matrix * C);
+gsl_la_matmult_mod(const gsl_matrix * A, gsl_la_matrix_mod_t modA,
+                   const gsl_matrix * B, gsl_la_matrix_mod_t modB,
+                   gsl_matrix * C);
 
 
 /* Singular Value Decomposition

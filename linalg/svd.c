@@ -25,10 +25,7 @@ gsl_la_decomp_SV_impl(gsl_matrix * A,
                          gsl_vector * S,
                          double tolerance)
 {
-  if(A == 0 || Q == 0 || S == 0) {
-    return GSL_EFAULT;
-  }
-  else if(Q->size1 != A->size2 || Q->size1 != Q->size2 || S->size != A->size2) {
+  if(Q->size1 != A->size2 || Q->size1 != Q->size2 || S->size != A->size2) {
     return GSL_EBADLEN;
   }
   else {
@@ -45,12 +42,7 @@ gsl_la_decomp_SV_impl(gsl_matrix * A,
     sweepmax = GSL_MAX(sweepmax, 12);
 
     /* Set Q to the identity matrix. */
-    for(i=0; i<ncol; i++){
-      for(j=0; j<ncol; j++){
-        gsl_matrix_set(Q, i, j, 0.0);
-      }
-      gsl_matrix_set(Q, i, i, 1.0);
-    }
+    gsl_matrix_set_identity (Q);
 
     /* Orthogonalize A by plane rotations. */
     while(count > 0 && sweep <= sweepmax){

@@ -11,7 +11,6 @@
  */
 #include <config.h>
 #include <stdlib.h>
-#include <string.h>
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_vector.h>
 #include <gsl/gsl_matrix.h>
@@ -25,23 +24,15 @@ int
 gsl_la_solve_HH_impl (gsl_matrix * matrix,
 		      gsl_vector * vec)
 {
-  if (matrix == 0 || vec == 0)
+  if (matrix->size1 > matrix->size2)
     {
-      return GSL_EFAULT;
-    }
-  else if (matrix->size1 > matrix->size2)
-    {
-      /* System is underdetermined.
-       */
-      return GSL_EINVAL;
+      /* System is underdetermined. */
+
+      GSL_ERROR ("System is underdetermined", GSL_EINVAL);
     }
   else if (matrix->size2 != vec->size)
     {
-      return GSL_EBADLEN;
-    }
-  else if (matrix->size1 == 0 || matrix->size2 == 0)
-    {
-      return GSL_SUCCESS;	/* FIXME: dumb case */
+      GSL_ERROR ("matrix and vector sizes must be equal", GSL_EBADLEN);
     }
   else
     {
@@ -55,8 +46,8 @@ gsl_la_solve_HH_impl (gsl_matrix * matrix,
 	  return GSL_ENOMEM;
 	}
 
-      /* Perform Householder transformation.
-       */
+      /* Perform Householder transformation. */
+
       for (i = 0; i < N; i++)
 	{
 	  const REAL elem_ii = gsl_matrix_get (matrix, i, i);
@@ -74,9 +65,7 @@ gsl_la_solve_HH_impl (gsl_matrix * matrix,
 
 	  if (r == 0.0)
 	    {
-	      /* Rank of matrix is
-	       * less than size1.
-	       */
+	      /* Rank of matrix is less than size1. */
 	      free (d);
 	      return GSL_ESING;
 	    }
@@ -113,14 +102,13 @@ gsl_la_solve_HH_impl (gsl_matrix * matrix,
 
 	  if (fabs (alpha) < 2.0 * GSL_DBL_EPSILON * sqrt (max_norm))
 	    {
-	      /* Apparent singularity.
-	       */
+	      /* Apparent singularity. */
 	      free (d);
 	      return GSL_ESING;
 	    }
 
-	  /* Perform update of RHS.
-	   */
+	  /* Perform update of RHS. */
+
 	  f = 0.0;
 	  for (j = i; j < M; j++)
 	    {
@@ -130,12 +118,13 @@ gsl_la_solve_HH_impl (gsl_matrix * matrix,
 	  for (j = i; j < M; j++)
 	    {
 	      REAL vec_j = gsl_vector_get (vec, j);
-	      gsl_vector_set (vec, j, vec_j - f * gsl_matrix_get (matrix, j, i));
+              REAL mat_ji = gsl_matrix_get (matrix, j, i);
+	      gsl_vector_set (vec, j, vec_j - f * mat_ji);
 	    }
 	}
 
-      /* Perform back-substitution.
-       */
+      /* Perform back-substitution. */
+
       for (i = N - 1; i >= 0; i--)
 	{
 	  REAL vec_i = gsl_vector_get (vec, i);
@@ -152,3 +141,4 @@ gsl_la_solve_HH_impl (gsl_matrix * matrix,
       return GSL_SUCCESS;
     }
 }
+

@@ -1,3 +1,8 @@
+Sat Mar 11 17:36:33 2000  Brian Gough  <bjg@network-theory.co.uk>
+
+	* multiply.c: removed _impl from these functions since all the
+ 	errors they can return are fatal.
+
 Wed Feb 16 12:03:00 2000  Brian Gough  <bjg@network-theory.co.uk>
 
 	* multiply.c (gsl_la_matmult_mod_impl): fixed error in transposed

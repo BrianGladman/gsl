@@ -46,11 +46,7 @@ gsl_la_decomp_QRPT_impl (gsl_matrix * matrix,
                          gsl_permutation * permutation,
                          int *signum)
 {
-  if (matrix == 0 || permutation == 0 || signum == 0)
-    {
-      return GSL_EFAULT;
-    }
-  else if (matrix->size1 != matrix->size2)
+  if (matrix->size1 != matrix->size2)
     {
       return GSL_ENOTSQR;
     }
@@ -61,10 +57,6 @@ gsl_la_decomp_QRPT_impl (gsl_matrix * matrix,
   else if (rdiag->size != matrix->size2)
     {
       return GSL_EBADLEN;
-    }
-  else if (matrix->size1 == 0)
-    {
-      return GSL_SUCCESS;	/* FIXME: what to do with this idiot case ? */
     }
   else
     {
@@ -205,15 +197,7 @@ gsl_la_solve_QRPT_impl (const gsl_matrix * qr_matrix,
                         const gsl_vector * rhs,
                         gsl_vector * solution)
 {
-  if (qr_matrix == 0 || permutation == 0 || rhs == 0 || solution == 0)
-    {
-      return GSL_EFAULT;
-    }
-  else if (solution->data == 0 || rhs->data == 0)
-    {
-      return GSL_EFAULT;
-    }
-  else if (qr_matrix->size1 != qr_matrix->size2)
+  if (qr_matrix->size1 != qr_matrix->size2)
     {
       return GSL_ENOTSQR;
     }
@@ -222,10 +206,6 @@ gsl_la_solve_QRPT_impl (const gsl_matrix * qr_matrix,
 	   || qr_matrix->size1 != solution->size)
     {
       return GSL_EBADLEN;
-    }
-  else if (qr_matrix->size1 == 0)
-    {
-      return GSL_SUCCESS;	/* FIXME: dumb case */
     }
   else
     {
@@ -247,15 +227,7 @@ gsl_la_qrsolve_QRPT_impl (const gsl_matrix * q, const gsl_matrix * r,
                           const gsl_vector * rhs,
                           gsl_vector * solution)
 {
-  if (q == 0 || r == 0 || permutation == 0 || rhs == 0 || solution == 0)
-    {
-      return GSL_EFAULT;
-    }
-  else if (solution->data == 0 || rhs->data == 0)
-    {
-      return GSL_EFAULT;
-    }
-  else if (q->size1 != q->size2 || r->size1 != r-> size2)
+  if (q->size1 != q->size2 || r->size1 != r-> size2)
     {
       return GSL_ENOTSQR;
     }
@@ -264,10 +236,6 @@ gsl_la_qrsolve_QRPT_impl (const gsl_matrix * q, const gsl_matrix * r,
 	   || q->size1 != solution->size)
     {
       return GSL_EBADLEN;
-    }
-  else if (q->size1 == 0)
-    {
-      return GSL_SUCCESS;	/* FIXME: dumb case */
     }
   else
     {
@@ -322,15 +290,7 @@ gsl_la_Rsolve_QRPT_impl (const gsl_matrix * qr_matrix,
                          const gsl_permutation * permutation,
                          gsl_vector * solution)
 {
-  if (qr_matrix == 0 || permutation == 0 || solution == 0)
-    {
-      return GSL_EFAULT;
-    }
-  else if (solution->data == 0)
-    {
-      return GSL_EFAULT;
-    }
-  else if (qr_matrix->size1 != qr_matrix->size2)
+  if (qr_matrix->size1 != qr_matrix->size2)
     {
       return GSL_ENOTSQR;
     }
@@ -338,10 +298,6 @@ gsl_la_Rsolve_QRPT_impl (const gsl_matrix * qr_matrix,
 	   || qr_matrix->size1 != solution->size)
     {
       return GSL_EBADLEN;
-    }
-  else if (qr_matrix->size1 == 0)
-    {
-      return GSL_SUCCESS;	/* FIXME: dumb case */
     }
   else
     {
@@ -401,10 +357,6 @@ gsl_la_update_QRPT_impl (gsl_matrix * q, gsl_matrix * r,
   else if (r->size1 != q->size2 || v->size != q->size2 || w->size != q->size2 )
     {
       return GSL_EBADLEN;
-    }
-  else if (q->size1 == 0)
-    {
-      return GSL_SUCCESS;	/* FIXME: what to do with this idiot case ? */
     }
   else
     {

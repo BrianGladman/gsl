@@ -45,7 +45,7 @@ apply_givens_qr (size_t M, size_t N, gsl_matrix * q, gsl_matrix * r,
   /* Apply rotation to matrix R, R' = G^T R (note: upper triangular so
      zero for column < row) */
 
-  for (k = GSL_MIN(i,j); k < N; k++)
+  for (k = GSL_MIN (i, j); k < N; k++)
     {
       double rik = gsl_matrix_get (r, i, k);
       double rjk = gsl_matrix_get (r, j, k);
@@ -64,5 +64,3 @@ apply_givens_vec (gsl_vector * v, size_t i, size_t j, double c, double s)
   gsl_vector_set (v, i, c * vi - s * vj);
   gsl_vector_set (v, j, s * vi + c * vj);
 }
-
-

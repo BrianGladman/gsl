@@ -39,21 +39,13 @@
 int
 gsl_la_decomp_QR_impl (gsl_matrix * matrix, gsl_vector * rdiag)
 {
-  if (matrix == 0)
-    {
-      return GSL_EFAULT;
-    }
-  else if (matrix->size1 != matrix->size2)
+  if (matrix->size1 != matrix->size2)
     {
       return GSL_ENOTSQR;
     }
   else if (rdiag->size != matrix->size2)
     {
       return GSL_EBADLEN;
-    }
-  else if (matrix->size1 == 0)
-    {
-      return GSL_SUCCESS;	/* FIXME: what to do with this idiot case ? */
     }
   else
     {
@@ -128,15 +120,7 @@ gsl_la_solve_QR_impl (const gsl_matrix * qr_matrix,
 		      const gsl_vector * rhs,
 		      gsl_vector * solution)
 {
-  if (qr_matrix == 0 || rhs == 0 || solution == 0)
-    {
-      return GSL_EFAULT;
-    }
-  else if (solution->data == 0 || rhs->data == 0)
-    {
-      return GSL_EFAULT;
-    }
-  else if (qr_matrix->size1 != qr_matrix->size2)
+  if (qr_matrix->size1 != qr_matrix->size2)
     {
       return GSL_ENOTSQR;
     }
@@ -144,10 +128,6 @@ gsl_la_solve_QR_impl (const gsl_matrix * qr_matrix,
 	   || qr_matrix->size1 != solution->size)
     {
       return GSL_EBADLEN;
-    }
-  else if (qr_matrix->size1 == 0)
-    {
-      return GSL_SUCCESS;	/* FIXME: dumb case */
     }
   else
     {
@@ -168,15 +148,7 @@ gsl_la_qrsolve_QR_impl (const gsl_matrix * q, const gsl_matrix * r,
                         const gsl_vector * rhs,
                         gsl_vector * solution)
 {
-  if (q == 0 || r == 0 || rhs == 0 || solution == 0)
-    {
-      return GSL_EFAULT;
-    }
-  else if (solution->data == 0 || rhs->data == 0)
-    {
-      return GSL_EFAULT;
-    }
-  else if (q->size1 != q->size2 || r->size1 != r-> size2)
+  if (q->size1 != q->size2 || r->size1 != r-> size2)
     {
       return GSL_ENOTSQR;
     }
@@ -185,10 +157,6 @@ gsl_la_qrsolve_QR_impl (const gsl_matrix * q, const gsl_matrix * r,
 	   || q->size1 != solution->size)
     {
       return GSL_EBADLEN;
-    }
-  else if (q->size1 == 0)
-    {
-      return GSL_SUCCESS;	/* FIXME: dumb case */
     }
   else
     {
@@ -238,21 +206,9 @@ gsl_la_Rsolve_QR_impl (const gsl_matrix * qr_matrix,
 		       const gsl_vector * rdiag,
 		       gsl_vector * solution)
 {
-  if (qr_matrix == 0 || solution == 0)
-    {
-      return GSL_EFAULT;
-    }
-  else if (solution->data == 0)
-    {
-      return GSL_EFAULT;
-    }
-  else if (qr_matrix->size1 != qr_matrix->size2)
+  if (qr_matrix->size1 != qr_matrix->size2)
     {
       return GSL_ENOTSQR;
-    }
-  else if (qr_matrix->size1 == 0)
-    {
-      return GSL_SUCCESS;	/* FIXME: dumb case */
     }
   else
     {
@@ -287,21 +243,9 @@ gsl_la_Rsolve_QR_impl (const gsl_matrix * qr_matrix,
 int
 gsl_la_Rsolve_impl (const gsl_matrix * r, gsl_vector * solution)
 {
-  if (r == 0 || solution == 0)
-    {
-      return GSL_EFAULT;
-    }
-  else if (solution->data == 0)
-    {
-      return GSL_EFAULT;
-    }
-  else if (r->size1 != r->size2)
+  if (r->size1 != r->size2)
     {
       return GSL_ENOTSQR;
-    }
-  else if (r->size1 == 0)
-    {
-      return GSL_SUCCESS;	/* FIXME: dumb case */
     }
   else
     {
@@ -340,15 +284,7 @@ gsl_la_QTvec_QR_impl (const gsl_matrix * qr_matrix,
                       const gsl_vector * v,
                       gsl_vector * result)
 {
-  if (qr_matrix == 0 || v == 0 || result == 0)
-    {
-      return GSL_EFAULT;
-    }
-  else if (v->data == 0 || result->data == 0)
-    {
-      return GSL_EFAULT;
-    }
-  else if (qr_matrix->size1 != qr_matrix->size2)
+  if (qr_matrix->size1 != qr_matrix->size2)
     {
       return GSL_ENOTSQR;
     }
@@ -356,10 +292,6 @@ gsl_la_QTvec_QR_impl (const gsl_matrix * qr_matrix,
 	   || qr_matrix->size1 != result->size)
     {
       return GSL_EBADLEN;
-    }
-  else if (qr_matrix->size1 == 0)
-    {
-      return GSL_SUCCESS;	/* FIXME: dumb case */
     }
   else
     {
@@ -418,10 +350,6 @@ gsl_la_unpack_QR_impl (const gsl_matrix * qr, const gsl_vector * rdiag,
            || q->size1 != rdiag->size)
     {
       return GSL_EBADLEN;
-    }
-  else if (qr->size1 == 0)
-    {
-      return GSL_SUCCESS;	/* FIXME: what to do with this idiot case ? */
     }
   else
     {
@@ -512,10 +440,6 @@ gsl_la_update_QR_impl (gsl_matrix * q, gsl_matrix * r,
   else if (r->size1 != q->size2  || v->size != q->size2 || w->size != q->size2 )
     {
       return GSL_EBADLEN;
-    }
-  else if (q->size1 == 0)
-    {
-      return GSL_SUCCESS;	/* FIXME: what to do with this idiot case ? */
     }
   else
     {
