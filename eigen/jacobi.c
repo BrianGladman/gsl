@@ -40,14 +40,14 @@ symschur2 (gsl_matrix * A, size_t p, size_t q, double *c, double *s)
 
       if (tau >= 0.0)
         {
-          t = 1.0 / (tau + hypot (1, tau));
+          t = 1.0 / (tau + hypot (1.0, tau));
         }
       else
         {
-          t = -1.0 / (-tau + hypot (1, tau));
+          t = -1.0 / (-tau + hypot (1.0, tau));
         }
 
-      c1 = 1.0 / hypot (1, t);
+      c1 = 1.0 / hypot (1.0, t);
 
       *c = c1;
       *s = t * c1;
@@ -159,9 +159,9 @@ gsl_eigen_jacobi (gsl_matrix * a,
 
   for (i = 0; i < max_rot; i++)
     {
-      double s = norm (a);
+      double nrm = norm (a);
 
-      if (s == 0.0)
+      if (nrm == 0.0)
         break;
 
       for (p = 0; p < N; p++)
