@@ -44,33 +44,40 @@ gsl_sf_gegenpoly_3(double lambda, double x)
 
 
 int
-gsl_sf_gegenpoly_n_impl(int n, double lambda, double x, double * result)
+gsl_sf_gegenpoly_n_impl(int n, double lambda, double x, gsl_sf_result * result)
 {
   if(lambda <= -0.5 || n < 0) {
-    *result = 0.0;
+    result->val = 0.0;
+    result->err = 0.0;
     return GSL_EDOM;
   }
 
   if(n == 0) {
-    *result = 1.0;
+    result->val = 1.0;
+    result->err = 0.0;
     return GSL_SUCCESS;
   }
   else if(n == 1) {
-    *result = gsl_sf_gegenpoly_1(lambda, x);
+    result->val = gsl_sf_gegenpoly_1(lambda, x);
+    result->err = GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
   }
   else if(n == 2) {
-    *result = gsl_sf_gegenpoly_2(lambda, x);
+    result->val = gsl_sf_gegenpoly_2(lambda, x);
+    result->err = GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
   }
   else if(n == 3) {
-    *result = gsl_sf_gegenpoly_3(lambda, x);
+    result->val = gsl_sf_gegenpoly_3(lambda, x);
+    result->err = GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
   }
   else {
     if(lambda == 0.0 && (x >= -1.0 || x <= 1.0)) {
       /* 2 T_n(x)/n */
-      *result = 2.0 * cos(n * acos(x)) / n;
+      const double z = n * acos(x);
+      result->val = 2.0 * cos(z) / n;
+      result->err = GSL_DBL_EPSILON * fabs(z * result->val);
       return GSL_SUCCESS;
     }
     else {
@@ -83,7 +90,8 @@ gsl_sf_gegenpoly_n_impl(int n, double lambda, double x, double * result)
 	gkm2 = gkm1;
 	gkm1 = gk;
       }
-      *result = gk;
+      result->val = gk;
+      result->err = GSL_DBL_EPSILON * gk;
       return GSL_SUCCESS;
     }
   }
@@ -123,7 +131,7 @@ gsl_sf_gegenpoly_array_impl(int nmax, double lambda, double x, double * result_a
 /*-*-*-*-*-*-*-*-*-*-*-* Error Handling Versions *-*-*-*-*-*-*-*-*-*-*-*/
 
 int
-gsl_sf_gegenpoly_n_e(int n, double lambda, double x, double * result)
+gsl_sf_gegenpoly_n_e(int n, double lambda, double x, gsl_sf_result * result)
 {
   int status = gsl_sf_gegenpoly_n_impl(n, lambda, x, result);
   if(status != GSL_SUCCESS) {
@@ -135,23 +143,9 @@ gsl_sf_gegenpoly_n_e(int n, double lambda, double x, double * result)
 int
 gsl_sf_gegenpoly_array_e(int nmax, double lambda, double x, double * result_array)
 {
-  int status = gsl_sf_gegenpoly_n_impl(nmax, lambda, x, result_array);
+  int status = gsl_sf_gegenpoly_array_impl(nmax, lambda, x, result_array);
   if(status != GSL_SUCCESS) {
     GSL_ERROR("gsl_sf_gegenpoly_array_e", status);
   }
   return status;
-}
-
-
-/*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*-*/
-
-double
-gsl_sf_gegenpoly_n(int n, double lambda, double x)
-{
-  double y;
-  int status = gsl_sf_gegenpoly_n_impl(n, lambda, x, &y);
-  if(status != GSL_SUCCESS) {
-    GSL_WARNING("gsl_sf_gegenpoly_n", status);
-  }
-  return y;
 }

@@ -80,32 +80,43 @@ static gsl_sf_cheb_series expint3a_cs = {
 
 /*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
 
-int gsl_sf_expint_3_impl(const double x, double * result)
+int gsl_sf_expint_3_impl(const double x, gsl_sf_result * result)
 {
   const double val_infinity = 0.892979511569249211;
 
-  if(x < 0.0) {
-    *result = 0.0;
+  if(result == 0) {
+    return GSL_EFAULT;
+  }
+  else if(x < 0.0) {
+    result->val = 0.0;
+    result->err = 0.0;
     return GSL_EDOM;
   }
   else if(x < 1.6*GSL_ROOT3_DBL_EPSILON) {
-    *result = x;
+    result->val = x;
+    result->err = 0.0;
     return GSL_SUCCESS;
   }
   else if(x <= 2.0) {
     const double t = x*x*x/4.0 - 1.0;
-    const double c = gsl_sf_cheb_eval(&expint3_cs, t);
-    *result = x * c;
+    gsl_sf_result result_c;
+    gsl_sf_cheb_eval_impl(&expint3_cs, t, &result_c);
+    result->val = x * result_c.val;
+    result->err = x * result_c.err;
     return GSL_SUCCESS;
   }
   else if(x < pow(-GSL_LOG_DBL_EPSILON, 1.0/3.0)) {
     const double t = 16.0/(x*x*x) - 1.0;
-    const double c = gsl_sf_cheb_eval(&expint3a_cs, t);
-    *result = val_infinity - c * exp(-x*x*x)/(3.0*x*x);
+    const double s = exp(-x*x*x)/(3.0*x*x);
+    gsl_sf_result result_c;
+    gsl_sf_cheb_eval_impl(&expint3a_cs, t, &result_c);
+    result->val = val_infinity - result_c.val * s;
+    result->err = val_infinity * GSL_DBL_EPSILON + s * result_c.err;
     return GSL_SUCCESS;
   }
   else {
-    *result = val_infinity;
+    result->val = val_infinity;
+    result->err = val_infinity * GSL_DBL_EPSILON;
     return GSL_SUCCESS;
   }
 }
@@ -113,24 +124,11 @@ int gsl_sf_expint_3_impl(const double x, double * result)
 
 /*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
 
-int gsl_sf_expint_3_e(double x, double * result)
+int gsl_sf_expint_3_e(double x, gsl_sf_result * result)
 {
   int status = gsl_sf_expint_3_impl(x, result);
   if(status != GSL_SUCCESS) {
     GSL_ERROR("gsl_sf_expint_3_e", status);
   }
   return status;
-}
-
-
-/*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*/
-
-double gsl_sf_expint_3(double x)
-{
-  double y;
-  int status = gsl_sf_expint_3_impl(x, &y);
-  if(status != GSL_SUCCESS) {
-    GSL_WARNING("gsl_sf_expint_3", status);
-  }
-  return y;
 }

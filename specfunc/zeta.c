@@ -99,11 +99,15 @@ static
 double riemann_zeta_sgt0(double s)
 {
   if(s < 1.0) {
-    return gsl_sf_cheb_eval(&zeta_xlt1_cs, 2.0*s - 1.0) / (s - 1.0);
+    gsl_sf_result c;
+    gsl_sf_cheb_eval_impl(&zeta_xlt1_cs, 2.0*s - 1.0, &c);
+    return c.val / (s - 1.0);
   }
   else if(s <= 20.0) {
     double x = (2.0*s - 21.0)/19.0;
-    return gsl_sf_cheb_eval(&zeta_xgt1_cs, x) / (s - 1.0);
+    gsl_sf_result c;
+    gsl_sf_cheb_eval_impl(&zeta_xgt1_cs, x, &c);
+    return  c.val / (s - 1.0);
   }
   else {
     double f2 = 1.0 - pow(2.0,-s);
@@ -462,10 +466,14 @@ static double eta_neg_int_table[ETA_NEG_TABLE_SIZE] = {
 /*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
 
 
-int gsl_sf_hzeta_impl(const double s, const double q, double * result)
+int gsl_sf_hzeta_impl(const double s, const double q, gsl_sf_result * result)
 {
-  if(s <= 1.0 || q <= 0.0) {
-    *result = 0.0;
+  if(result == 0) {
+    return GSL_EFAULT;
+  }
+  else if(s <= 1.0 || q <= 0.0) {
+    result->val = 0.0;
+    result->err = 0.0;
     return GSL_EDOM;
   }
   else {
@@ -473,27 +481,31 @@ int gsl_sf_hzeta_impl(const double s, const double q, double * result)
     const double ln_term0 = -s * log(q);  
 
     if(ln_term0 < GSL_LOG_DBL_MIN + 1.0) {
-      *result = 0.0;
+      result->val = 0.0;
+      result->err = 0.0;
       return GSL_EUNDRFLW;
     }
     else if(ln_term0 > GSL_LOG_DBL_MAX - 1.0) {
-      *result = 0.0; /* FIXME: should be Inf */
+      result->val = 0.0; /* FIXME: should be Inf */
+      result->err = 0.0;
       return GSL_EOVRFLW;
     }
     else if((s > max_bits && q < 1.0) || (s > 0.5*max_bits && q < 0.25)) {
-      *result = pow(q, -s) /* exp(ln_term0) */;
+      result->val = pow(q, -s);
+      result->err = GSL_DBL_EPSILON * result->val;
       return GSL_SUCCESS;
     }
     else if(s > 0.5*max_bits && q < 1.0) {
-      const double p1 = pow(q, -s) /* exp(ln_term0) */;
+      const double p1 = pow(q, -s);
       const double p2 = pow(q/(1.0+q), s);
       const double p3 = pow(q/(2.0+q), s);
-      *result = p1 * (1.0 + p2 + p3);
+      result->val = p1 * (1.0 + p2 + p3);
+      result->err = GSL_DBL_EPSILON * result->val;
       return GSL_SUCCESS;
     }
     else {
       /* Euler-Maclaurin summation formula 
-         [Moshier, p. 400, with several typo corrections]
+       * [Moshier, p. 400, with several typo corrections]
        */
       const int jmax = 12;
       const int kmax = 10;
@@ -515,21 +527,27 @@ int gsl_sf_hzeta_impl(const double s, const double q, double * result)
         pcp /= (kmax + q)*(kmax + q);
       }
 
-      *result = ans;
+      result->val = ans;
+      result->err = GSL_DBL_EPSILON * ans;
       return GSL_SUCCESS;
     }
   }
 }
 
 
-int gsl_sf_zeta_impl(const double s, double * result)
+int gsl_sf_zeta_impl(const double s, gsl_sf_result * result)
 {
-  if(s == 1.0) {
-    *result = 0.0;
+  if(result == 0) {
+    return GSL_EFAULT;
+  }
+  else if(s == 1.0) {
+    result->val = 0.0;
+    result->err = 0.0;
     return GSL_EDOM;
   }
   else if(s >= 0.0) {
-    *result = riemann_zeta_sgt0(s);
+    result->val = riemann_zeta_sgt0(s);
+    result->err = GSL_DBL_EPSILON * result->val;
     return GSL_SUCCESS;
   }
   else {
@@ -539,7 +557,8 @@ int gsl_sf_zeta_impl(const double s, double * result)
     const double sin_term = sin(0.5*M_PI*s)/M_PI;
 
     if(sin_term == 0.0) {
-      *result = 0.0;
+      result->val = 0.0;
+      result->err = 0.0;
       return GSL_SUCCESS;
     }
     else if(s > -170) {
@@ -568,13 +587,14 @@ int gsl_sf_zeta_impl(const double s, double * result)
 				     5.114214477385391780e+127,
 				     4.904306689854036836e+135
                                     };
-      int n = floor((-s)/10.0);
-      double fs = s + 10.0*n;
-      double p = pow(2.0*M_PI, fs) / twopi_pow[n];
+      const int n = floor((-s)/10.0);
+      const double fs = s + 10.0*n;
+      const double p = pow(2.0*M_PI, fs) / twopi_pow[n];
 
-      double g;
+      gsl_sf_result g;
       int stat_g = gsl_sf_gamma_impl(1.0-s, &g);
-      *result = p * g * sin_term * zeta_one_minus_s;
+      result->val = p * g.val * sin_term * zeta_one_minus_s;
+      result->err = 4.0 * GSL_DBL_EPSILON * result->val;
       return stat_g;
     }
     else {
@@ -588,22 +608,28 @@ int gsl_sf_zeta_impl(const double s, double * result)
        * we can implement something here. Until
        * then just give up.
        */
-      *result = 0.0;
+      result->val = 0.0;
+      result->err = 0.0;
       return GSL_EOVRFLW;
     }
   }
 }
 
 
-int gsl_sf_zeta_int_impl(const int n, double * result)
+int gsl_sf_zeta_int_impl(const int n, gsl_sf_result * result)
 {
-  if(n < 0) {
+  if(result == 0) {
+    return GSL_EFAULT;
+  }
+  else if(n < 0) {
     if(!GSL_IS_ODD(abs(n))) {
-      *result = 0.0; /* exactly zero at even negative integers */
+      result->val = 0.0; /* exactly zero at even negative integers */
+      result->err = 0.0;
       return GSL_SUCCESS;
     }
     else if(n > -ZETA_NEG_TABLE_NMAX) {
-      *result = zeta_neg_int_table[-(n+1)/2];
+      result->val = zeta_neg_int_table[-(n+1)/2];
+      result->err = GSL_DBL_EPSILON * result->val;
       return GSL_SUCCESS;
     }
     else {
@@ -611,27 +637,33 @@ int gsl_sf_zeta_int_impl(const int n, double * result)
     }
   }
   else if(n == 1){
+    result->val = 0.0;
+    result->err = 0.0;
     return GSL_EDOM;
   }
   else if(n <= ZETA_POS_TABLE_NMAX){
-    *result = zeta_pos_int_table[n];
+    result->val = zeta_pos_int_table[n];
+    result->err = GSL_DBL_EPSILON * result->val;
     return GSL_SUCCESS;
   }
   else {
-    *result = 1.0;
+    result->val = 1.0;
+    result->err = GSL_DBL_EPSILON;
     return GSL_SUCCESS;
   }
 }
 
 
-int gsl_sf_eta_int_impl(int n, double * result)
+int gsl_sf_eta_int_impl(int n, gsl_sf_result * result)
 {
   if(n > ETA_POS_TABLE_NMAX) {
-    *result = 1.0;
+    result->val = 1.0;
+    result->err = GSL_DBL_EPSILON;
     return GSL_SUCCESS;
   }
   else if(n >= 0) {
-    *result = eta_pos_int_table[n];
+    result->val = eta_pos_int_table[n];
+    result->err = GSL_DBL_EPSILON * result->val;
     return GSL_SUCCESS;
   }
   else {
@@ -639,29 +671,36 @@ int gsl_sf_eta_int_impl(int n, double * result)
 
     if(!GSL_IS_ODD(n)) {
       /* exactly zero at even negative integers */
-      *result = 0.0;
+      result->val = 0.0;
+      result->err = 0.0;
       return GSL_SUCCESS;
     }
     else if(n > -ETA_NEG_TABLE_NMAX) {
-      *result = eta_neg_int_table[-(n+1)/2];
+      result->val = eta_neg_int_table[-(n+1)/2];
+      result->err = GSL_DBL_EPSILON * result->val;
       return GSL_SUCCESS;
     }
     else {
-      double z;
-      double p;
+      gsl_sf_result z;
+      gsl_sf_result p;
       int stat_z = gsl_sf_zeta_int_impl(n, &z);
       int stat_p = gsl_sf_exp_impl((1.0-n)*M_LN2, &p);
-      int stat_m = gsl_sf_multiply_impl(-p, z, result);
+      int stat_m = gsl_sf_multiply_impl(-p.val, z.val, result);
+      result->err = fabs(p.err * (M_LN2*(1.0-n)) * z.val) + z.err * fabs(p.val);
       return GSL_ERROR_SELECT_3(stat_m, stat_p, stat_z);
     }
   }
 }
 
 
-int gsl_sf_eta_impl(const double s, double * result)
+int gsl_sf_eta_impl(const double s, gsl_sf_result * result)
 {
-  if(s > 100.0) {
-    *result = 1.0;
+  if(result == 0) {
+    return GSL_EFAULT;
+  }
+  else if(s > 100.0) {
+    result->val = 1.0;
+    result->err = GSL_DBL_EPSILON;
     return GSL_SUCCESS;
   }
   else if(fabs(s-1.0) < 10.0*GSL_ROOT5_DBL_EPSILON) {
@@ -671,15 +710,17 @@ int gsl_sf_eta_impl(const double s, double * result)
     double c2  = -0.0326862962794492996;
     double c3  =  0.0015689917054155150;
     double c4  =  0.00074987242112047532;
-    *result = c0 + del * (c1 + del * (c2 + del * (c3 + del * c4)));
+    result->val = c0 + del * (c1 + del * (c2 + del * (c3 + del * c4)));
+    result->err = GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
   }
   else {
-    double z;
-    double p;
+    gsl_sf_result z;
+    gsl_sf_result p;
     int stat_z = gsl_sf_zeta_impl(s, &z);
     int stat_p = gsl_sf_exp_impl((1.0-s)*M_LN2, &p);
-    int stat_m = gsl_sf_multiply_impl(1.0-p, z, result);
+    int stat_m = gsl_sf_multiply_impl(1.0-p.val, z.val, result);
+    result->err = fabs(p.err * (M_LN2*(1.0-s)) * z.val) + z.err * fabs(p.val);
     return GSL_ERROR_SELECT_3(stat_m, stat_p, stat_z);
   }
 }
@@ -687,7 +728,7 @@ int gsl_sf_eta_impl(const double s, double * result)
 
 /*-*-*-*-*-*-*-*-*-*-*-* Error Handling Versions *-*-*-*-*-*-*-*-*-*-*-*/
 
-int gsl_sf_zeta_e(const double s, double * result)
+int gsl_sf_zeta_e(const double s, gsl_sf_result * result)
 {
   int status = gsl_sf_zeta_impl(s, result);
   if(status != GSL_SUCCESS) {
@@ -696,7 +737,7 @@ int gsl_sf_zeta_e(const double s, double * result)
   return status;
 }
 
-int gsl_sf_hzeta_e(const double s, const double a, double * result)
+int gsl_sf_hzeta_e(const double s, const double a, gsl_sf_result * result)
 {
   int status = gsl_sf_hzeta_impl(s, a, result);
   if(status != GSL_SUCCESS) {
@@ -705,7 +746,7 @@ int gsl_sf_hzeta_e(const double s, const double a, double * result)
   return status;
 }
 
-int gsl_sf_zeta_int_e(const int s, double * result)
+int gsl_sf_zeta_int_e(const int s, gsl_sf_result * result)
 {
   int status = gsl_sf_zeta_int_impl(s, result);
   if(status != GSL_SUCCESS) {
@@ -714,7 +755,7 @@ int gsl_sf_zeta_int_e(const int s, double * result)
   return status;
 }
 
-int gsl_sf_eta_int_e(const int s, double * result)
+int gsl_sf_eta_int_e(const int s, gsl_sf_result * result)
 {
   int status = gsl_sf_eta_int_impl(s, result);
   if(status != GSL_SUCCESS) {
@@ -724,64 +765,11 @@ int gsl_sf_eta_int_e(const int s, double * result)
 }
 
 
-int gsl_sf_eta_e(const double s, double * result)
+int gsl_sf_eta_e(const double s, gsl_sf_result * result)
 {
   int status = gsl_sf_eta_impl(s, result);
   if(status != GSL_SUCCESS) {
     GSL_ERROR("gsl_sf_eta_e", status);
   }
   return status;
-}
-
-
-/*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*-*-*/
-
-double gsl_sf_zeta(const double s)
-{
-  double y;
-  int status = gsl_sf_zeta_impl(s, &y);
-  if(status != GSL_SUCCESS) {
-    GSL_WARNING("gsl_sf_zeta", status);
-  }
-  return y;
-}
-
-double gsl_sf_hzeta(const double s, const double a)
-{
-  double y;
-  int status = gsl_sf_hzeta_impl(s, a, &y);
-  if(status != GSL_SUCCESS) {
-    GSL_WARNING("gsl_sf_hzeta_e", status);
-  }
-  return y;
-}
-
-double gsl_sf_zeta_int(const int n)
-{
-  double y;
-  int status = gsl_sf_zeta_int_impl(n, &y);
-  if(status != GSL_SUCCESS) {
-    GSL_WARNING("gsl_sf_zeta_int", status);
-  }
-  return y;
-}
-
-double gsl_sf_eta_int(const int n)
-{
-  double y;
-  int status = gsl_sf_eta_int_impl(n, &y);
-  if(status != GSL_SUCCESS) {
-    GSL_WARNING("gsl_sf_eta_int", status);
-  }
-  return y;
-}
-
-double gsl_sf_eta(const double s)
-{
-  double y;
-  int status = gsl_sf_eta_impl(s, &y);
-  if(status != GSL_SUCCESS) {
-    GSL_WARNING("gsl_sf_eta", status);
-  }
-  return y;
 }

@@ -4,6 +4,8 @@
 #ifndef GSL_SF_GEGENBAUER_H_
 #define GSL_SF_GEGENBAUER_H_
 
+#include <gsl_sf_result.h>
+
 
 /* Evaluate Gegenbauer polynomials
  * using explicit representations.
@@ -20,9 +22,8 @@ double gsl_sf_gegenpoly_3(double lambda, double x);
  * lambda > -1/2, n >= 0
  * exceptions: GSL_EDOM
  */
-int    gsl_sf_gegenpoly_n_impl(int n, double lambda, double x, double * result);
-int    gsl_sf_gegenpoly_n_e(int n, double lambda, double x, double * result);
-double gsl_sf_gegenpoly_n(int n, double lambda, double x);
+int gsl_sf_gegenpoly_n_impl(int n, double lambda, double x, gsl_sf_result * result);
+int gsl_sf_gegenpoly_n_e(int n, double lambda, double x, gsl_sf_result * result);
 
 
 /* Calculate array of Gegenbauer polynomials

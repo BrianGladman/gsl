@@ -17,7 +17,7 @@
  */
 static
 int
-dilog_series(const double x, double * result)
+dilog_series(const double x, gsl_sf_result * result)
 {
   const int kmax = 1000;
   double sum  = x;
@@ -31,7 +31,9 @@ dilog_series(const double x, double * result)
     if(fabs(term/sum) < GSL_DBL_EPSILON) break;
   }
 
-  *result = sum;
+  result->val = sum;
+  result->err = fabs(term);
+
   if(k == kmax)
     return GSL_EMAXITER;
   else
@@ -43,21 +45,23 @@ dilog_series(const double x, double * result)
  */
 static
 int
-dilog_xge0(const double x, double * result)
+dilog_xge0(const double x, gsl_sf_result * result)
 {
   if(x > 2.0) {
     const double log_x = log(x);
-    double ser;
+    gsl_sf_result ser;
     int stat_ser = dilog_series(1.0/x, &ser);
-    *result = M_PI*M_PI/3.0 - ser - 0.5*log_x*log_x;
+    result->val = M_PI*M_PI/3.0 - ser.val - 0.5*log_x*log_x;
+    result->err = GSL_DBL_EPSILON*fabs(log_x) + ser.err;
     return stat_ser;
   }
   else if(x > 1.01) {
     const double log_x    = log(x);
     const double log_term = log_x * (log(1.0-1.0/x) + 0.5*log_x);
-    double ser;
+    gsl_sf_result ser;
     int stat_ser = dilog_series(1.0 - 1.0/x, &ser);
-    *result = M_PI*M_PI/6.0 + ser - log_term;
+    result->val = M_PI*M_PI/6.0 + ser.val - log_term;
+    result->err = GSL_DBL_EPSILON*fabs(log_x) + ser.err;
     return stat_ser;
   }
   else if(x > 1.0) {
@@ -73,17 +77,21 @@ dilog_xge0(const double x, double * result)
     const double c6 = -(1.0 - 6.0*lne)/36.0;
     const double c7 =  (1.0 - 7.0*lne)/49.0;
     const double c8 = -(1.0 - 8.0*lne)/64.0;
-    *result = c0+eps*(c1+eps*(c2+eps*(c3+eps*(c4+eps*(c5+eps*(c6+eps*(c7+eps*c8)))))));
+    result->val = c0+eps*(c1+eps*(c2+eps*(c3+eps*(c4+eps*(c5+eps*(c6+eps*(c7+eps*c8)))))));
+    result->err = GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
   }
   else if(x == 1.0) {
-    *result = M_PI*M_PI/6.0;
+    result->val = M_PI*M_PI/6.0;
+    result->err = 0.0;
     return GSL_SUCCESS;
   }
   else if(x > 0.5) {
-    double ser;
+    const double log_x = log(x);
+    gsl_sf_result ser;
     int stat_ser = dilog_series(1.0-x, &ser);
-    *result = M_PI*M_PI/6.0 - ser - log(x)*log(1.0-x);
+    result->val = M_PI*M_PI/6.0 - ser.val - log_x*log(1.0-x);
+    result->err = GSL_DBL_EPSILON * fabs(log_x) + ser.err;
     return stat_ser;
   }
   else if(x > 0.0) {
@@ -91,7 +99,8 @@ dilog_xge0(const double x, double * result)
   }
   else {
     /* x == 0.0 */
-    *result = 0.0;
+    result->val = 0.0;
+    result->err = 0.0;
     return GSL_SUCCESS;
   }
 }
@@ -164,10 +173,12 @@ dilogc_series_2(double r, double theta, double cos_theta, double sin_theta,
   double H_im[7];
   double an, nfact;
   double sum_re, sum_im;
+  gsl_sf_result Him0;
   int n;
 
   H_re[0] = M_PI*M_PI/6.0 + 0.25*(theta*theta - 2.0*M_PI*fabs(theta));
-  gsl_sf_clausen_impl(theta, &(H_im[0]));
+  gsl_sf_clausen_impl(theta, &Him0);
+  H_im[0] = Him0.val;
   
   H_re[1] = 0.5*log(2.0*omc);
   H_im[1] = atan2(-sin_theta, omc);
@@ -281,16 +292,17 @@ dilogc_unitdisk(double r, double theta, double * real_dl, double * imag_dl)
 
 
 int
-gsl_sf_dilog_impl(const double x, double * result)
+gsl_sf_dilog_impl(const double x, gsl_sf_result * result)
 {
   if(x >= 0.0) {
     return dilog_xge0(x, result);
   }
   else {
-    double d1, d2;
+    gsl_sf_result d1, d2;
     int stat_d1 = dilog_xge0( -x, &d1);
     int stat_d2 = dilog_xge0(x*x, &d2);
-    *result = -d1 + 0.5 * d2;
+    result->val = -d1.val + 0.5 * d2.val;
+    result->err =  d1.err + 0.5 * d2.err;
     return GSL_ERROR_SELECT_2(stat_d1, stat_d2);
   }
 }
@@ -298,33 +310,38 @@ gsl_sf_dilog_impl(const double x, double * result)
 
 int
 gsl_sf_complex_dilog_impl(const double r, double theta,
-                          double * real_dl, double * imag_dl)
+                          gsl_sf_result * real_dl, gsl_sf_result * imag_dl)
 {
   if(theta < 0.0 || theta > 2.0*M_PI) {
     gsl_sf_angle_restrict_pos_impl(&theta);
   }
 
   if(r == 0.0) {
-    *real_dl = 0.0;
-    *imag_dl = 0.0;
+    real_dl->val = 0.0;
+    real_dl->err = 0.0;
+    imag_dl->val = 0.0;
+    imag_dl->err = 0.0;
     return GSL_SUCCESS;
   }
 
   /* Trap cases of real-valued argument.
    */
   if(theta == 0.0) {
-    *imag_dl = ( r > 1.0 ? -M_PI * log(r) : 0.0 );
+    imag_dl->val = ( r > 1.0 ? -M_PI * log(r) : 0.0 );
+    imag_dl->err = GSL_DBL_EPSILON * fabs(imag_dl->val);
     return gsl_sf_dilog_impl(r, real_dl);
   }
   if(theta == M_PI) {
-    *imag_dl = 0.0;
+    imag_dl->val = 0.0;
+    imag_dl->err = 0.0;
     return gsl_sf_dilog_impl(-r, real_dl);
   }
 
   /* Trap unit circle case.
    */
   if(r == 1.0) {
-    *real_dl = M_PI*M_PI/6.0 + 0.25*(theta*theta - 2.0*M_PI*fabs(theta));
+    real_dl->val = M_PI*M_PI/6.0 + 0.25*(theta*theta - 2.0*M_PI*fabs(theta));
+    real_dl->err = GSL_DBL_EPSILON * fabs(real_dl->val);
     return gsl_sf_clausen_impl(theta, imag_dl);
   }
 
@@ -364,19 +381,23 @@ gsl_sf_complex_dilog_impl(const double r, double theta,
       double y = r * sin(theta);
       double omega = atan2(y, 1.0-x);
       double lnr = log(r);
-      double Cl_a, Cl_b, Cl_c;
       double pmt = M_PI - theta;
+      gsl_sf_result Cl_a, Cl_b, Cl_c;
       gsl_sf_clausen_impl(2.0*omega, &Cl_a);
       gsl_sf_clausen_impl(2.0*theta, &Cl_b);
       gsl_sf_clausen_impl(2.0*(omega+theta), &Cl_c);
-      *real_dl = -result_re_tmp - 0.5*lnr*lnr + 0.5*pmt*pmt - zeta2;
-      *imag_dl = omega*log(r) + 0.5*(Cl_a + Cl_b - Cl_c);
+      real_dl->val = -result_re_tmp - 0.5*lnr*lnr + 0.5*pmt*pmt - zeta2;
+      real_dl->err = GSL_DBL_EPSILON * fabs(real_dl->val);
+      imag_dl->val = omega*log(r) + 0.5*(Cl_a.val + Cl_b.val - Cl_c.val);
+      imag_dl->err = GSL_DBL_EPSILON * fabs(imag_dl->val) + 0.5*(Cl_a.err + Cl_b.err + Cl_c.err);
     }
     else {
-      *real_dl = result_re_tmp;
-      *imag_dl = result_im_tmp;
+      real_dl->val = result_re_tmp;
+      real_dl->err = GSL_DBL_EPSILON * fabs(real_dl->val);
+      imag_dl->val = result_im_tmp;
+      imag_dl->err = GSL_DBL_EPSILON * fabs(imag_dl->val);
     }
-    
+
     return stat_dilog;
   }
 }
@@ -385,7 +406,7 @@ gsl_sf_complex_dilog_impl(const double r, double theta,
 /*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
 
 int
-gsl_sf_dilog_e(const double x, double * result)
+gsl_sf_dilog_e(const double x, gsl_sf_result * result)
 {
   int status = gsl_sf_dilog_impl(x, result);
   if(status != GSL_SUCCESS) {
@@ -396,25 +417,13 @@ gsl_sf_dilog_e(const double x, double * result)
 
 
 int
-gsl_sf_complex_dilog_e(const double x, const double y, double * result_re, double * result_im)
+gsl_sf_complex_dilog_e(const double x, const double y,
+                       gsl_sf_result * result_re,
+                       gsl_sf_result * result_im)
 {
   int status = gsl_sf_complex_dilog_impl(x, y, result_re, result_im);
   if(status != GSL_SUCCESS) {
     GSL_ERROR("gsl_sf_complex_dilog_e", status);
   }
   return status;
-}
-
-
-/*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*/
-
-double
-gsl_sf_dilog(const double x)
-{
-  double y;
-  int status = gsl_sf_dilog_impl(x, &y);
-  if(status != GSL_SUCCESS) {
-    GSL_WARNING("gsl_sf_dilog", status);
-  }
-  return y;
 }

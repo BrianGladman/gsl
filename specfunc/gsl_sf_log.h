@@ -4,23 +4,23 @@
 #ifndef GSL_SF_LOG_H_
 #define GSL_SF_LOG_H_
 
+#include <gsl_sf_result.h>
+
 
 /* Provide a logarithm function with GSL semantics.
  *
  * exceptions: GSL_EDOM
  */
-int     gsl_sf_log_impl(double x, double * result);
-int     gsl_sf_log_e(double x, double * result);
-double  gsl_sf_log(double x);
+int gsl_sf_log_impl(double x, gsl_sf_result * result);
+int gsl_sf_log_e(double x, gsl_sf_result * result);
 
 
 /* Log(|x|)
  *
  * exceptions: GSL_EDOM
  */
-int     gsl_sf_log_abs_impl(double x, double * result);
-int     gsl_sf_log_abs_e(double x, double * result);
-double  gsl_sf_log_abs(double x);
+int gsl_sf_log_abs_impl(double x, gsl_sf_result * result);
+int gsl_sf_log_abs_e(double x, gsl_sf_result * result);
 
 
 /* Complex Logarithm
@@ -37,44 +37,52 @@ int gsl_sf_complex_log_e(double zr, double zi, double * lnr, double * theta);
  *
  * exceptions: GSL_EDOM
  */
-int     gsl_sf_log_1plusx_impl(double x, double * result);
-int     gsl_sf_log_1plusx_e(double x, double * result);
-double  gsl_sf_log_1plusx(double x);
+int gsl_sf_log_1plusx_impl(double x, gsl_sf_result * result);
+int gsl_sf_log_1plusx_e(double x, gsl_sf_result * result);
 
 
 /* Log(1 + x) - x
  *
  * exceptions: GSL_EDOM
  */
-int     gsl_sf_log_1plusx_mx_impl(double x, double * result);
-int     gsl_sf_log_1plusx_mx_e(double x, double * result);
-double  gsl_sf_log_1plusx_mx(double x);
+int gsl_sf_log_1plusx_mx_impl(double x, gsl_sf_result * result);
+int gsl_sf_log_1plusx_mx_e(double x, gsl_sf_result * result);
 
 
 #ifdef HAVE_INLINE
 extern inline
 int
-gsl_sf_log_impl(const double x, double * result)
+gsl_sf_log_impl(const double x, gsl_sf_result * result)
 {
-  if(x <= 0.0) {
-    *result = 0.0;
+  if(result == 0) {
+    return GSL_EFAULT;
+  }
+  else if(x <= 0.0) {
+    result->val = 0.0;
+    result->err = 0.0;
     return GSL_EDOM;
   }
   else {
-    *result = log(x);
+    result->val = log(x);
+    result->err = GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
   }
 }
 extern inline
 int
-gsl_sf_log_abs_impl(const double x, double * result)
+gsl_sf_log_abs_impl(const double x, gsl_sf_result * result)
 {
-  if(x == 0.0) {
-    *result = 0.0;
+  if(result == 0) {
+    return GSL_EFAULT;
+  }
+  else if(x == 0.0) {
+    result->val = 0.0;
+    result->err = 0.0;
     return GSL_EDOM;
   }
   else {
-    *result = log(fabs(x));
+    result->val = log(fabs(x));
+    result->err = GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
   }
 }

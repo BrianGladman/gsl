@@ -4,23 +4,22 @@
 #ifndef GSL_COULOMB_H_
 #define GSL_COULOMB_H_
 
+#include <gsl_sf_result.h>
+
 
 /* Normalized hydrogenic bound states, radial dependence. */
 
 /* R_1 := 2Z sqrt(Z) exp(-Z r)
  */
-int    gsl_sf_hydrogenicR_1_impl(double Z, double r, double * result);
-int    gsl_sf_hydrogenicR_1_e(double Z, double r, double * result);
-double gsl_sf_hydrogenicR_1(double Z, double r);
+int    gsl_sf_hydrogenicR_1_impl(double Z, double r, gsl_sf_result * result);
+int    gsl_sf_hydrogenicR_1_e(double Z, double r, gsl_sf_result * result);
 
 /* R_n := norm exp(-Z r/n) (2Z/n)^l Laguerre[n-l-1, 2l+1, 2Z/n r]
  *
  * normalization such that psi(n,l,r) = R_n Y_{lm}
  */
-int    gsl_sf_hydrogenicR_impl(int n, int l, double Z, double r, double * result);
-int    gsl_sf_hydrogenicR_e(int n, int l, double Z, double r, double * result);
-double gsl_sf_hydrogenicR(int n, int l, double Z, double r);
-
+int    gsl_sf_hydrogenicR_impl(int n, int l, double Z, double r, gsl_sf_result * result);
+int    gsl_sf_hydrogenicR_e(int n, int l, double Z, double r, gsl_sf_result * result);
 
 
 /* Coulomb wave functions F_{lam_F}(eta,x), G_{lam_G}(eta,x)

@@ -118,19 +118,19 @@ gsl_sf_hyperg_U_large_b_impl(const double a, const double b, const double x,
     double lnpre;
     double M;
     if(b > 1.0) {
-      double lg_bm1;
-      double lg_a;
+      gsl_sf_result lg_bm1;
+      gsl_sf_result lg_a;
       gsl_sf_lngamma_impl(b-1.0, &lg_bm1);
       gsl_sf_lngamma_impl(a, &lg_a);
-      lnpre = (1.0-b)*log(x) + x + lg_bm1 - lg_a;
+      lnpre = (1.0-b)*log(x) + x + lg_bm1.val - lg_a.val;
       gsl_sf_hyperg_1F1_large_b_impl(1.0-a, 2.0-b, -x, &M);
     }
     else {
-      double lg_1mb;
-      double lg_1pamb;
+      gsl_sf_result lg_1mb;
+      gsl_sf_result lg_1pamb;
       gsl_sf_lngamma_impl(1.0-b, &lg_1mb);
       gsl_sf_lngamma_impl(1.0+a-b, &lg_1pamb);
-      lnpre = lg_1mb - lg_1pamb;
+      lnpre = lg_1mb.val - lg_1pamb.val;
       gsl_sf_hyperg_1F1_large_b_impl(a, b, x, &M);
     }
     if(lnpre > GSL_LOG_DBL_MAX-10.0) {
@@ -145,10 +145,10 @@ gsl_sf_hyperg_U_large_b_impl(const double a, const double b, const double x,
     }
   }
   else {
-    double lg_1mb,   sgn_1mb;
-    double lg_1pamb, sgn_1pamb;
-    double lg_bm1,   sgn_bm1;
-    double lg_a,     sgn_a;
+    gsl_sf_result lg_1mb;    double sgn_1mb;
+    gsl_sf_result lg_1pamb;  double sgn_1pamb;
+    gsl_sf_result lg_bm1;    double sgn_bm1;
+    gsl_sf_result lg_a;      double sgn_a;
     double M1, M2;
     double lnpre1, lnpre2;
     double sgpre1, sgpre2;
@@ -161,8 +161,8 @@ gsl_sf_hyperg_U_large_b_impl(const double a, const double b, const double x,
     gsl_sf_lngamma_sgn_impl(b-1.0, &lg_bm1, &sgn_bm1);
     gsl_sf_lngamma_sgn_impl(a,     &lg_a,   &sgn_a);
 
-    lnpre1 = lg_1mb - lg_1pamb;
-    lnpre2 = lg_bm1 - lg_a - (1.0-b)*log(x) - x;
+    lnpre1 = lg_1mb.val - lg_1pamb.val;
+    lnpre2 = lg_bm1.val - lg_a.val - (1.0-b)*log(x) - x;
     sgpre1 = sgn_1mb * sgn_1pamb;
     sgpre2 = sgn_bm1 * sgn_a;
 

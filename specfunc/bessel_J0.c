@@ -52,52 +52,49 @@ static gsl_sf_cheb_series bj0_cs = {
 
 /*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
 
-int gsl_sf_bessel_J0_impl(const double x, double * result)
+int gsl_sf_bessel_J0_impl(const double x, gsl_sf_result * result)
 {
   double y = fabs(x);
 
-  if(y < 2.0*GSL_SQRT_DBL_EPSILON) {
-    *result = 1.0;
+  if(result == 0) {
+    return GSL_EFAULT;
+  }
+  else if(y < 2.0*GSL_SQRT_DBL_EPSILON) {
+    result->val = 1.0;
+    result->err = y*y;
     return GSL_SUCCESS;
   }
   else if(y <= 4.0) {
-    *result = gsl_sf_cheb_eval(&bj0_cs, 0.125*y*y - 1.0);
-    return GSL_SUCCESS;
+    return gsl_sf_cheb_eval_impl(&bj0_cs, 0.125*y*y - 1.0, result);
   }
   else {
-    double z     = 32.0/(y*y) - 1.0;
-    double ca = gsl_sf_cheb_eval(&_bessel_amp_phase_bm0_cs, z);
-    double ct = gsl_sf_cheb_eval(&_bessel_amp_phase_bth0_cs, z);
-    double ampl  = (0.75 + ca) / sqrt(y);
-    double alpha = y;
-    int stat_red = gsl_sf_angle_restrict_pos_impl(&alpha);
-    double theta = alpha - M_PI_4 +  ct/y;
-    *result = ampl * cos(theta);
-    return stat_red;
+    /* The leading term in the cos() is y, which we assume
+     * is exact. Therefore, the error in the cos() evaluation
+     * is bounded.
+     */
+    double z = 32.0/(y*y) - 1.0;
+    double ampl;
+    double theta;
+    gsl_sf_result ca;
+    gsl_sf_result ct;
+    gsl_sf_cheb_eval_impl(&_bessel_amp_phase_bm0_cs,  z, &ca);
+    gsl_sf_cheb_eval_impl(&_bessel_amp_phase_bth0_cs, z, &ct);
+    ampl  = (0.75 + ca.val) / sqrt(y);
+    theta = y - M_PI_4 +  ct.val/y;
+    result->val = ampl * cos(theta);
+    result->err = 2.0 * GSL_DBL_EPSILON * fabs(result->val);
+    return GSL_SUCCESS;
   }
 }
 
 
 /*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
 
-int gsl_sf_bessel_J0_e(const double x, double * result)
+int gsl_sf_bessel_J0_e(const double x, gsl_sf_result * result)
 {
   int status = gsl_sf_bessel_J0_impl(x, result);
   if(status != GSL_SUCCESS) {
     GSL_ERROR("gsl_sf_bessel_J0_e", status);
   }
   return status;
-}
-
-
-/*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*-*-*/
-
-double gsl_sf_bessel_J0(const double x)
-{
-  double y;
-  int status = gsl_sf_bessel_J0_impl(x, &y);
-  if(status != GSL_SUCCESS) {
-    GSL_WARNING("gsl_sf_bessel_J0", status);
-  }
-  return y;
 }

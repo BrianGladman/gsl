@@ -11,9 +11,8 @@
  *
  * exceptions: GSL_EUNDRFLW;
  */
-int     gsl_sf_dawson_impl(double x, double * result);
-int     gsl_sf_dawson_e(double x, double * result);
-double  gsl_sf_dawson(double x);
+int     gsl_sf_dawson_impl(double x, gsl_sf_result * result);
+int     gsl_sf_dawson_e(double x, gsl_sf_result * result);
 
 
 #endif  /* !GSL_SF_DAWSON_H_ */

@@ -37,13 +37,12 @@ static gsl_sf_cheb_series aclaus_cs = {
 
 /*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
 
-int gsl_sf_clausen_impl(double x, double *result)
+int gsl_sf_clausen_impl(double x, gsl_sf_result *result)
 {
   const double x_cut = M_PI * GSL_SQRT_DBL_EPSILON;
 
   double sgn = 1.0;
   int status_red;
-  int status = GSL_SUCCESS;
 
   if(x < 0.0) {
     x   = -x;
@@ -52,7 +51,6 @@ int gsl_sf_clausen_impl(double x, double *result)
 
   /* Argument reduction to [0, 2pi) */
   status_red = gsl_sf_angle_restrict_pos_impl(&x);
-  status = status_red;
 
   /* Further reduction to [0,pi) */
   if(x > M_PI) {
@@ -64,43 +62,34 @@ int gsl_sf_clausen_impl(double x, double *result)
   }
 
   if(x == 0.0) {
-    *result = 0.0;
-    return status;
+    result->val = 0.0;
+    result->err = 0.0;
   }
   else if(x < x_cut) {
-    *result = x * (1.0 - log(x));
+    result->val = x * (1.0 - log(x));
+    result->err = x * GSL_DBL_EPSILON;
   }
   else {
     const double t = 2.0*(x*x / (M_PI*M_PI) - 0.5);
-    const double c = gsl_sf_cheb_eval(&aclaus_cs, t);
-    *result = x * (c - log(x));
+    gsl_sf_result result_c;
+    gsl_sf_cheb_eval_impl(&aclaus_cs, t, &result_c);
+    result->val = x * (result_c.val - log(x));
+    result->err = x * (result_c.err + GSL_DBL_EPSILON);
   }
 
-  *result *= sgn;
-  return status;
+  result->val *= sgn;
+
+  return status_red;
 }
 
 
 /*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
 
-int gsl_sf_clausen_e(const double x, double * result)
+int gsl_sf_clausen_e(const double x, gsl_sf_result * result)
 {
   int status = gsl_sf_clausen_impl(x, result);
   if(status != GSL_SUCCESS) {
     GSL_ERROR("gsl_sf_clausen_e", status);
   }
   return status;
-}
-
-
-/*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*/
-
-double gsl_sf_clausen(const double x)
-{
-  double y;
-  int status = gsl_sf_clausen_impl(x, &y);
-  if(status != GSL_SUCCESS) {
-    GSL_WARNING("gsl_sf_clausen", status);
-  }
-  return y;
 }

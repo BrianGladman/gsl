@@ -4,6 +4,8 @@
 #ifndef GSL_SF_CHEBYSHEV_H_
 #define GSL_SF_CHEBYSHEV_H_
 
+#include <gsl_sf_result.h>
+
 
 /* data for a Chebyshev series over a given interval */
 struct gsl_sf_cheb_series_struct {
@@ -44,23 +46,30 @@ int gsl_sf_cheb_calc_e(gsl_sf_cheb_series * cs, double (*func)(double));
 /* Evaluate a Chebyshev series at a given point.
  * No errors can occur for a struct obtained from gsl_sf_cheb_new().
  */
-double gsl_sf_cheb_eval(const gsl_sf_cheb_series * cs, double x);
+int gsl_sf_cheb_eval_impl(const gsl_sf_cheb_series * cs, double x, gsl_sf_result * result);
+int gsl_sf_cheb_eval_e(const gsl_sf_cheb_series * cs, double x, gsl_sf_result * result);
+
 
 /* Evaluate a Chebyshev series at a given point, to (at most) the given order.
  * No errors can occur for a struct obtained from gsl_sf_cheb_new().
  */
-double gsl_sf_cheb_eval_n(const gsl_sf_cheb_series * cs, int order, double x);
+int gsl_sf_cheb_eval_n_impl(const gsl_sf_cheb_series * cs, int order, double x, gsl_sf_result * result);
+int gsl_sf_cheb_eval_n_e(const gsl_sf_cheb_series * cs, int order, double x, gsl_sf_result * result);
+
 
 /* Evaluate derivative of a Chebyshev series at a given point.
  */
-double gsl_sf_cheb_eval_deriv(gsl_sf_cheb_series * cs, double x);
+int gsl_sf_cheb_eval_deriv_impl(gsl_sf_cheb_series * cs, double x, gsl_sf_result * result);
+int gsl_sf_cheb_eval_deriv_e(gsl_sf_cheb_series * cs, double x, gsl_sf_result * result);
+
 
 /* Evaluate integal of a Chebyshev series at a given point. The
  * integral is fixed by the condition that it equals zero at
  * the left end-point, ie it is precisely
  *       Integrate[cs(t; a,b), {t, a, x}]
  */
-double gsl_sf_cheb_eval_integ(gsl_sf_cheb_series * cs, double x);
+int gsl_sf_cheb_eval_integ_impl(gsl_sf_cheb_series * cs, double x, gsl_sf_result * result);
+int gsl_sf_cheb_eval_integ_e(gsl_sf_cheb_series * cs, double x, gsl_sf_result * result);
 
 
 /* Free a Chebyshev series previously calculated with gsl_sf_cheb_new().

@@ -239,16 +239,21 @@ double gsl_sf_erfc(double x)
 
   if(ax <= 1.0) {
     double t = 2.0*ax - 1.0;
-    e = gsl_sf_cheb_eval(&erfc_xlt1_cs, t);
+    gsl_sf_result c;
+    gsl_sf_cheb_eval_impl(&erfc_xlt1_cs, t, &c);
+    e = c.val;
   }
   else if(ax <= 5.0) {
     double t = 0.5*(ax-3.0);
-    e = gsl_sf_cheb_eval(&erfc_x15_cs, t) * exp(-x*x);
+    gsl_sf_result c;
+    gsl_sf_cheb_eval_impl(&erfc_x15_cs, t, &c);
+    e = c.val * exp(-x*x);
   }
   else if(ax < 10.0) {
     double t = (2.0*x - 15.0)/5.0;
-    double c = gsl_sf_cheb_eval(&erfc_x510_cs, t);
-    e = c * exp(-x*x) / x;
+    gsl_sf_result c;
+    gsl_sf_cheb_eval_impl(&erfc_x510_cs, t, &c);
+    e = c.val * exp(-x*x) / x;
   }
   else {
     e = erfc8(ax);

@@ -115,19 +115,21 @@ int gsl_sf_exp_sgn_impl(const double x, const double sgn, double * result)
   }
 }
 
-int gsl_sf_exp_mult_impl(const double x, const double y, double * result)
+int gsl_sf_exp_mult_impl(const double x, const double y, gsl_sf_result * result)
 {
   const double ay  = fabs(y);
 
   if(y == 0.0) {
-    *result = 0.0;
+    result->val = 0.0;
+    result->err = 0.0;
     return GSL_SUCCESS;
   }
   else if(   ( x < 0.5*GSL_LOG_DBL_MAX   &&   x > 0.5*GSL_LOG_DBL_MIN)
           && (ay < 0.8*GSL_SQRT_DBL_MAX  &&  ay > 1.2*GSL_SQRT_DBL_MIN)
     ) {
     double ex = exp(x);
-    *result = y * ex;
+    result->val = y * ex;
+    result->err = fabs(result->val * GSL_DBL_EPSILON);
     return GSL_SUCCESS;
   }
   else {
@@ -148,7 +150,8 @@ int gsl_sf_exp_mult_impl(const double x, const double y, double * result)
       const double N   = floor(ly);
       const double a   = x  - M;
       const double b   = ly - N;
-      *result = sy * exp(M+N) * exp(a+b);
+      result->val = sy * exp(M+N) * exp(a+b);
+      result->err = fabs(result->val * GSL_DBL_EPSILON);
       return GSL_SUCCESS;
     }
   }
@@ -328,6 +331,34 @@ gsl_sf_exprel_n_impl(const int N, const double x, double * result)
       *result = -N/x * sum;
       return GSL_SUCCESS;
     }
+  }
+}
+
+
+int
+gsl_sf_exp_err_impl(const double x, const double dx, gsl_sf_result * result)
+{
+  const double adx = fabs(dx);
+
+  if(result == 0) {
+    return GSL_EFAULT;
+  }
+  else if(x + adx > GSL_LOG_DBL_MAX) {
+    result->val = 0.0;
+    result->err = 0.0;
+    return GSL_EOVRFLW;
+  }
+  else if(x - adx < GSL_LOG_DBL_MIN) {
+    result->val = 0.0;
+    result->err = 0.0;
+    return GSL_EUNDRFLW;
+  }
+  else {
+    const double ex  = exp(x);
+    const double edx = exp(adx);
+    result->val = ex;
+    result->err = ex * GSL_MAX_DBL(GSL_DBL_EPSILON, edx - 1.0/edx);
+    return GSL_SUCCESS;
   }
 }
 

@@ -194,7 +194,7 @@ static gsl_sf_cheb_series g2_cs = {
 
 
 /* x >= 4.0 */
-static void fg_asymp(const double x, double * f, double * g)
+static void fg_asymp(const double x, gsl_sf_result * f, gsl_sf_result * g)
 {
   /*
       xbig = sqrt (1.0/r1mach(3))
@@ -210,17 +210,32 @@ static void fg_asymp(const double x, double * f, double * g)
   const double x2 = x*x;
 
   if(x <= xbnd) {
-    *f = (1.0 + gsl_sf_cheb_eval(&f1_cs, (1.0/x2-0.04125)/0.02125))/x;
-    *g = (1.0 + gsl_sf_cheb_eval(&g1_cs, (1.0/x2-0.04125)/0.02125))/x2;
+    gsl_sf_result result_c1;
+    gsl_sf_result result_c2;
+    gsl_sf_cheb_eval_impl(&f1_cs, (1.0/x2-0.04125)/0.02125, &result_c1);
+    gsl_sf_cheb_eval_impl(&g1_cs, (1.0/x2-0.04125)/0.02125, &result_c2);
+    f->val = (1.0 + result_c1.val)/x;
+    g->val = (1.0 + result_c2.val)/x2;
+    f->err = result_c1.err/x;
+    g->err = result_c2.err/x2;
   }
   else if(x <= xbig) {
-    *f = (1.0 + gsl_sf_cheb_eval(&f2_cs, 100.0/x2-1.0))/x;
-    *g = (1.0 + gsl_sf_cheb_eval(&g2_cs, 100.0/x2-1.0))/x2;
+    gsl_sf_result result_c1;
+    gsl_sf_result result_c2;
+    gsl_sf_cheb_eval_impl(&f2_cs, 100.0/x2-1.0, &result_c1);
+    gsl_sf_cheb_eval_impl(&g2_cs, 100.0/x2-1.0, &result_c2);
+    f->val = (1.0 + result_c1.val)/x;
+    g->val = (1.0 + result_c2.val)/x2;
+    f->err = result_c1.err/x;
+    g->err = result_c2.err/x2;
   }
   else {
-    *f = (x < xmaxf ? 1.0/x  : 0.0);
-    *g = (x < xmaxg ? 1.0/x2 : 0.0);
+    f->val = (x < xmaxf ? 1.0/x  : 0.0);
+    g->val = (x < xmaxg ? 1.0/x2 : 0.0);
+    f->err = GSL_DBL_EPSILON * f->val;
+    g->err = GSL_DBL_EPSILON * g->val;
   }
+
   return;
 }
 
@@ -292,62 +307,81 @@ static gsl_sf_cheb_series ci_cs = {
 
 /*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
 
-int gsl_sf_Si_impl(const double x, double * result)
+int gsl_sf_Si_impl(const double x, gsl_sf_result * result)
 {
   double ax   = fabs(x);
   
-  if(ax < GSL_SQRT_DBL_EPSILON) {
-    *result = x;
+  if(result == 0) {
+    return GSL_EFAULT;
+  }
+  else if(ax < GSL_SQRT_DBL_EPSILON) {
+    result->val = x;
+    result->err = 0.0;
     return GSL_SUCCESS;
   }
   else if(ax <= 4.0) {
-    *result = x * (0.75 + gsl_sf_cheb_eval(&si_cs, (x*x-8.0)*0.125));
+    gsl_sf_result result_c;
+    gsl_sf_cheb_eval_impl(&si_cs, (x*x-8.0)*0.125, &result_c);
+    result->val = x * (0.75 + result_c.val);
+    result->err = x * result_c.err;
     return GSL_SUCCESS;
   }
   else {
     /* Note there is no loss pf precision
      * here bcause of the leading constant.
      */
-    double f, g;
+    gsl_sf_result f;
+    gsl_sf_result g;
     fg_asymp(ax, &f, &g);
-    *result = 0.5 * M_PI - f*cos(ax) - g*sin(ax);
-    if(x < 0.) *result = - *result;
+    result->val = 0.5 * M_PI - f.val*cos(ax) - g.val*sin(ax);
+    result->err = GSL_DBL_EPSILON * 0.5 * M_PI + f.err + g.err;
+    if(x < 0.0) result->val = -result->val;
     return GSL_SUCCESS;
   }
 }
 
 
-int gsl_sf_Ci_impl(const double x, double * result)
+int gsl_sf_Ci_impl(const double x, gsl_sf_result * result)
 {
-  const double xsml = GSL_SQRT_DBL_MIN;
-  
-  if(x <= 0.0) {
+  if(result == 0) {
+    return GSL_EFAULT;
+  }
+  else if(x <= 0.0) {
+    result->val = 0.0;
+    result->err = 0.0;
     return GSL_EDOM;
   }
   else if(x <= 4.0) {
-    double y = -1.0;
-    if (x > xsml) y = (x*x-8.0)*0.125;
-    *result = log(x) - 0.5 + gsl_sf_cheb_eval(&ci_cs, y);
+    const double lx = log(x);
+    const double y  = (x*x-8.0)*0.125;
+    gsl_sf_result result_c;
+    gsl_sf_cheb_eval_impl(&ci_cs, y, &result_c);
+    result->val = lx - 0.5 + result_c.val;
+    result->err = GSL_DBL_EPSILON * lx + result_c.err;
     return GSL_SUCCESS;
   }
   else {
-    /* There is a possible loss of precision
-     * here in the trigonometric evaluation,
-     * so we check the argument restriction.
+    /* In principle there is a possible loss of precision
+     * here in the trigonometric evaluation, due to the
+     * argument restriction. However, the argument is the
+     * given function argument, which is exact by assumption,
+     * so we do not account for it.
      */
-    double f, g;
-    double arg = x;
-    int status = gsl_sf_angle_restrict_pos_impl(&arg);
+    const double s = sin(x);
+    const double c = cos(x);
+    gsl_sf_result f;
+    gsl_sf_result g;
     fg_asymp(x, &f, &g);
-    *result = f*sin(arg) - g*cos(arg);
-    return status;
+    result->val = f.val*s - g.val*c;
+    result->err = fabs(f.err*s) + fabs(g.err*c) + GSL_DBL_EPSILON*fabs(result->val);
+    return GSL_SUCCESS;
   }
 }
 
 
 /*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
 
-int gsl_sf_Si_e(const double x, double * result)
+int gsl_sf_Si_e(const double x, gsl_sf_result * result)
 {
   int status = gsl_sf_Si_impl(x, result);
   if(status != GSL_SUCCESS) {
@@ -356,34 +390,11 @@ int gsl_sf_Si_e(const double x, double * result)
   return status;
 }
 
-int gsl_sf_Ci_e(const double x, double * result)
+int gsl_sf_Ci_e(const double x, gsl_sf_result * result)
 {
   int status = gsl_sf_Ci_impl(x, result);
   if(status != GSL_SUCCESS) {
     GSL_ERROR("gsl_sf_Ci_e", status);
   }
   return status;
-}
-
-
-/*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*-*-*/
-
-double gsl_sf_Si(const double x)
-{
-  double y;
-  int status = gsl_sf_Si_impl(x, &y);
-  if(status != GSL_SUCCESS) {
-    GSL_WARNING("gsl_sf_Si", status);
-  }
-  return y;
-}
-
-double gsl_sf_Ci(const double x)
-{
-  double y;
-  int status = gsl_sf_Ci_impl(x, &y);
-  if(status != GSL_SUCCESS) {
-    GSL_WARNING("gsl_sf_Ci", status);
-  }
-  return y;
 }

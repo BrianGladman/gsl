@@ -61,7 +61,7 @@ C
 */
 static
 int
-pochrel_smallx(const double a, const double x, double * result)
+pochrel_smallx(const double a, const double x, gsl_sf_result * result)
 {
   /*
    SQTBIG = 1.0D0/SQRT(24.0D0*D1MACH(1))
@@ -103,7 +103,8 @@ pochrel_smallx(const double a, const double x, double * result)
       if(nterms > 20) {
         /* NTERMS IS TOO BIG, MAYBE D1MACH(3) IS BAD */
         /* nterms = 20; */
-	*result = 0.0;
+	result->val = 0.0;
+	result->err = 0.0;
 	return GSL_ESANITY;
       }
 
@@ -121,7 +122,8 @@ pochrel_smallx(const double a, const double x, double * result)
 
     stat_dexprl = gsl_sf_expm1_impl(q, &dexprl);
     if(stat_dexprl != GSL_SUCCESS) {
-      *result = 0.0;
+      result->val = 0.0;
+      result->err = 0.0;
       return stat_dexprl;
     }
     dexprl = dexprl/q;
@@ -138,7 +140,8 @@ pochrel_smallx(const double a, const double x, double * result)
     }
 
     if(bp == a) {
-      *result = dpoch1;
+      result->val = dpoch1;
+      result->err = 2.0 * GSL_DBL_EPSILON * fabs(result->val);
       return GSL_SUCCESS;
     }
     else {
@@ -149,7 +152,8 @@ pochrel_smallx(const double a, const double x, double * result)
       double sinpxx = sin(M_PI*x)/x;
       double sinpx2 = sin(0.5*M_PI*x);
       double trig   = sinpxx/tan(M_PI*b) - 2.0*sinpx2*(sinpx2/x);
-      *result = dpoch1 * (1.0 + x*trig) + trig;
+      result->val  = dpoch1 * (1.0 + x*trig) + trig;
+      result->err  = 2.0 * GSL_DBL_EPSILON * fabs(result->val);
       return GSL_SUCCESS;
     }    
   }
@@ -158,15 +162,20 @@ pochrel_smallx(const double a, const double x, double * result)
 
 static
 int
-lnpoch_pos(const double a, const double x, double * result)
+lnpoch_pos(const double a, const double x, gsl_sf_result * result)
 {
   double absx = fabs(x);
 
-  if(absx > 0.1*a || absx*log(GSL_MAX(a,2.0)) > 0.1) {
-    double g1, g2;
+  if(result == 0) {
+    return GSL_EFAULT;
+  }
+  else if(absx > 0.1*a || absx*log(GSL_MAX(a,2.0)) > 0.1) {
+    gsl_sf_result g1;
+    gsl_sf_result g2;
     gsl_sf_gammainv_impl(a,   &g1);
     gsl_sf_gammainv_impl(a+x, &g2);
-    *result = -log(g2/g1);
+    result->val = -log(g2.val/g1.val);
+    result->err = GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
   }
   else if(absx < 0.1*a && a > 15.0) {
@@ -203,18 +212,20 @@ lnpoch_pos(const double a, const double x, double * result)
 
     double term1 = x * log(a/M_E);
     double term2;
-    double ln_1peps;
+    gsl_sf_result ln_1peps;
     gsl_sf_log_1plusx_impl(eps, &ln_1peps);  /* log(1 + x/a) */
-    term2 = (x + a - 0.5) * ln_1peps;
+    term2 = (x + a - 0.5) * ln_1peps.val;
 
-    *result = term1 + term2 + ser;
+    result->val = term1 + term2 + ser;
+    result->err = fabs(GSL_DBL_EPSILON*term1) + fabs((x + a - 0.5)*ln_1peps.err);
     return GSL_SUCCESS;
   }
   else {
-    double poch_rel;
+    gsl_sf_result poch_rel;
     int stat_p = pochrel_smallx(a, x, &poch_rel);
-    double eps = x*poch_rel;
+    double eps = x*poch_rel.val;
     int stat_e = gsl_sf_log_1plusx_impl(eps, result);
+    result->err = fabs(x * poch_rel.err / (1.0 + eps));
     return GSL_ERROR_SELECT_2(stat_e, stat_p);
   }
 }
@@ -223,14 +234,19 @@ lnpoch_pos(const double a, const double x, double * result)
 /*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
 
 int
-gsl_sf_lnpoch_impl(const double a, const double x, double * result)
+gsl_sf_lnpoch_impl(const double a, const double x, gsl_sf_result * result)
 {
-  if(a <= 0.0 || a+x <= 0.0) {
-    *result = 0.0;
+  if(result == 0) {
+    return GSL_EFAULT;
+  }
+  else if(a <= 0.0 || a+x <= 0.0) {
+    result->val = 0.0;
+    result->err = 0.0;
     return GSL_EDOM;
   }
   else if(x == 0.0) {
-    *result = 1.0;
+    result->val = 1.0;
+    result->err = 0.0;
     return GSL_SUCCESS;
   }
   else {
@@ -241,16 +257,18 @@ gsl_sf_lnpoch_impl(const double a, const double x, double * result)
 
 int
 gsl_sf_lnpoch_sgn_impl(const double a, const double x,
-                       double * result, double * sgn)
+                       gsl_sf_result * result, double * sgn)
 {
   if(a == 0.0 || a+x == 0.0) {
     *sgn = 0.0;
-    *result = 0.0;
+    result->val = 0.0;
+    result->err = 0.0;
     return GSL_EDOM;
   }
   else if(x == 0.0) {
     *sgn = 1.0;
-    *result = 1.0;
+    result->val = 1.0;
+    result->err = 0.0;
     return GSL_SUCCESS;
   }
   else if(a > 0.0 && a+x > 0.0) {
@@ -263,14 +281,17 @@ gsl_sf_lnpoch_sgn_impl(const double a, const double x,
     double sin_1 = sin(M_PI * (1.0 - a));
     double sin_2 = sin(M_PI * (1.0 - a - x));
     if(sin_1 == 0.0 || sin_2 == 0.0) {
-      *result = 0.0;
+      result->val = 0.0;
+      result->err = 0.0;
       *sgn = 0.0;
       return GSL_EDOM;
     }
     else {
-      double lnp_pos;
-      int stat_pp = lnpoch_pos(1.0-a, -x, &lnp_pos);
-      *result = log(fabs(sin_1/sin_2)) - lnp_pos;
+      gsl_sf_result lnp_pos;
+      int stat_pp   = lnpoch_pos(1.0-a, -x, &lnp_pos);
+      double lnterm = log(fabs(sin_1/sin_2));
+      result->val = log(fabs(sin_1/sin_2)) - lnp_pos.val;
+      result->err = GSL_DBL_EPSILON * fabs(lnterm) + lnp_pos.err;
       *sgn = GSL_SIGN(sin_1*sin_2);
       return stat_pp;
     }
@@ -278,22 +299,26 @@ gsl_sf_lnpoch_sgn_impl(const double a, const double x,
   else {
     /* Evaluate gamma ratio directly.
      */
-    double lg_apn, lg_a;
+    gsl_sf_result lg_apn;
+    gsl_sf_result lg_a;
     double s_apn, s_a;
     int stat_apn = gsl_sf_lngamma_sgn_impl(a+x, &lg_apn, &s_apn);
     int stat_a   = gsl_sf_lngamma_sgn_impl(a,   &lg_a,   &s_a);
     if(stat_apn == GSL_SUCCESS && stat_a == GSL_SUCCESS) {
-      *result = lg_apn - lg_a;
+      result->val = lg_apn.val - lg_a.val;
+      result->err = lg_apn.err + lg_a.err;
       *sgn = s_a * s_apn;
       return GSL_SUCCESS;
     }
     else if(stat_apn == GSL_EDOM || stat_a == GSL_EDOM){
-      *result = 0.0;
+      result->val = 0.0;
+      result->err = 0.0;
       *sgn = 0.0;
       return GSL_EDOM;
     }
     else {
-      *result = 0.0;
+      result->val = 0.0;
+      result->err = 0.0;
       *sgn = 0.0;
       return GSL_FAILURE;
     }
@@ -302,38 +327,50 @@ gsl_sf_lnpoch_sgn_impl(const double a, const double x,
 
 
 int
-gsl_sf_poch_impl(const double a, const double x, double * result)
+gsl_sf_poch_impl(const double a, const double x, gsl_sf_result * result)
 {
-  if(x == 0.0) {
-    *result = 1.0;
+  if(result == 0) {
+    return GSL_EFAULT;
+  }
+  else if(x == 0.0) {
+    result->val = 1.0;
+    result->err = 1.0;
     return GSL_SUCCESS;
   }
   else {
-    double lnpoch;
+    gsl_sf_result lnpoch;
     double sgn;
     int stat_lnpoch = gsl_sf_lnpoch_sgn_impl(a, x, &lnpoch, &sgn);
-    int stat_exp    = gsl_sf_exp_impl(lnpoch, result);
-    *result *= sgn;
+    int stat_exp    = gsl_sf_exp_impl(lnpoch.val, result);
+    result->val *= sgn;
+    result->err  = fabs(lnpoch.err * result->val);
     return GSL_ERROR_SELECT_2(stat_exp, stat_lnpoch);
   }
 }
 
 
 int
-gsl_sf_pochrel_impl(const double a, const double x, double * result)
+gsl_sf_pochrel_impl(const double a, const double x, gsl_sf_result * result)
 {
   const double absx = fabs(x);
   const double absa = fabs(a);
 
-  if(absx > 0.1*absa || absx*log(GSL_MAX(absa,2.0)) > 0.1) {
-    double lnpoch, sgn;
+  if(result == 0) {
+    return GSL_EFAULT;
+  }
+  else if(absx > 0.1*absa || absx*log(GSL_MAX(absa,2.0)) > 0.1) {
+    gsl_sf_result lnpoch;
+    double sgn;
     int stat_poch = gsl_sf_lnpoch_sgn_impl(a, x, &lnpoch, &sgn);
-    if(lnpoch > GSL_LOG_DBL_MAX) {
-      *result = 0.0;
+    if(lnpoch.val > GSL_LOG_DBL_MAX) {
+      result->val = 0.0;
+      result->err = 0.0;
       return GSL_EOVRFLW;
     }
     else {
-      *result = (sgn*exp(lnpoch) - 1.0)/x;
+      const double el = exp(lnpoch.val);
+      result->val = (sgn*el - 1.0)/x;
+      result->err = fabs(result->val) * (lnpoch.err + GSL_DBL_EPSILON);
       return stat_poch;
     }
   }
@@ -346,7 +383,7 @@ gsl_sf_pochrel_impl(const double a, const double x, double * result)
 /*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
 
 int
-gsl_sf_lnpoch_e(const double a, const double x, double * result)
+gsl_sf_lnpoch_e(const double a, const double x, gsl_sf_result * result)
 {
   int status = gsl_sf_lnpoch_impl(a, x, result);
   if(status != GSL_SUCCESS) {
@@ -357,7 +394,7 @@ gsl_sf_lnpoch_e(const double a, const double x, double * result)
 
 
 int
-gsl_sf_lnpoch_sgn_e(const double a, const double x, double * result, double * sgn)
+gsl_sf_lnpoch_sgn_e(const double a, const double x, gsl_sf_result * result, double * sgn)
 {
   int status = gsl_sf_lnpoch_sgn_impl(a, x, result, sgn);
   if(status != GSL_SUCCESS) {
@@ -368,7 +405,7 @@ gsl_sf_lnpoch_sgn_e(const double a, const double x, double * result, double * sg
 
 
 int
-gsl_sf_poch_e(const double a, const double x, double * result)
+gsl_sf_poch_e(const double a, const double x, gsl_sf_result * result)
 {
   int status = gsl_sf_poch_impl(a, x, result);
   if(status != GSL_SUCCESS) {
@@ -378,45 +415,11 @@ gsl_sf_poch_e(const double a, const double x, double * result)
 }
 
 
-int gsl_sf_pochrel_e(const double a, const double x, double * result)
+int gsl_sf_pochrel_e(const double a, const double x, gsl_sf_result * result)
 {
   int status = gsl_sf_pochrel_impl(a, x, result);
   if(status != GSL_SUCCESS) {
     GSL_ERROR("gsl_sf_pochrel_e", status);
   }
   return status;
-}
-
-
-/*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*/
-
-double gsl_sf_lnpoch(const double a, const double x)
-{
-  double y;
-  int status = gsl_sf_lnpoch_impl(a, x, &y);
-  if(status != GSL_SUCCESS) {
-    GSL_WARNING("gsl_sf_lnpoch", status);
-  }
-  return y;
-}
-
-
-double gsl_sf_poch(const double a, const double x)
-{
-  double y;
-  int status = gsl_sf_poch_impl(a, x, &y);
-  if(status != GSL_SUCCESS) {
-    GSL_WARNING("gsl_sf_poch", status);
-  }
-  return y;
-}
-
-double gsl_sf_pochrel(const double a, const double x)
-{
-  double y;
-  int status = gsl_sf_pochrel_impl(a, x, &y);
-  if(status != GSL_SUCCESS) {
-    GSL_WARNING("gsl_sf_pochrel", status);
-  }
-  return y;
 }

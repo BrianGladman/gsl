@@ -51,49 +51,64 @@ static gsl_sf_cheb_series by1_cs = {
 
 /*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
 
-int gsl_sf_bessel_Y1_impl(const double x, double * result)
+int gsl_sf_bessel_Y1_impl(const double x, gsl_sf_result * result)
 {
   const double two_over_pi = 2.0/M_PI;
   const double xmin = 1.571*DBL_MIN; /*exp ( amax1(alog(r1mach(1)), -alog(r1mach(2)))+.01) */
   const double x_small = 2.0 * GSL_SQRT_DBL_EPSILON;
   const double xmax    = 1.0/GSL_DBL_EPSILON;
-  
-  if(x <= 0.0) {
-    *result = 0.0;
+
+  if(result == 0) {
+    return GSL_EFAULT;
+  }  
+  else if(x <= 0.0) {
+    result->val = 0.0;
+    result->err = 0.0;
     return GSL_EDOM;
   }
   else if(x < xmin) {
-    *result = 0.0; /* FIXME: should be Inf */
+    result->val = 0.0; /* FIXME: should be Inf */
+    result->err = 0.0;
     return GSL_EOVRFLW;
   }
   else if(x < x_small) {
-    double J1 = 0.0;
+    const double lnterm = log(0.5*x);
+    gsl_sf_result J1;
+    gsl_sf_result c;
     int status = gsl_sf_bessel_J1_impl(x, &J1);
-    *result = two_over_pi * log(0.5*x) * J1 + (0.5 + gsl_sf_cheb_eval(&by1_cs, -1.0))/x;
+    gsl_sf_cheb_eval_impl(&by1_cs, -1.0, &c);
+    result->val = two_over_pi * lnterm * J1.val + (0.5 + c.val)/x;
+    result->err = fabs(lnterm) * (fabs(GSL_DBL_EPSILON * J1.val) + J1.err) + c.err/x;
     return status;
   }
   else if(x < 4.0) {
-    double J1 = 0.0;
-    int status = gsl_sf_bessel_J1_impl(x, &J1);
-    *result = two_over_pi * log(0.5*x) * J1 + (0.5 + gsl_sf_cheb_eval(&by1_cs, 0.125*x*x-1.0))/x;
-    if(status == GSL_EUNDRFLW)
-      return GSL_ELOSS;
-    else
-      return status;
+    const double lnterm = log(0.5*x);
+    int status;
+    gsl_sf_result J1;
+    gsl_sf_result c;
+    gsl_sf_cheb_eval_impl(&by1_cs, 0.125*x*x-1.0, &c);
+    status = gsl_sf_bessel_J1_impl(x, &J1);
+    result->val = two_over_pi * lnterm * J1.val + (0.5 + c.val)/x;
+    result->err = fabs(lnterm) * (fabs(GSL_DBL_EPSILON * J1.val) + J1.err) + c.err/x;
+    return status;
   }
   else if(x < xmax) {
     double z  = 32.0/(x*x) - 1.0;
-    double ca = gsl_sf_cheb_eval(&_bessel_amp_phase_bm1_cs, z);
-    double ct = gsl_sf_cheb_eval(&_bessel_amp_phase_bth1_cs, z);
-    double ampl  = (0.75 + ca) / sqrt(x);
-    double alpha = x;
-    int stat_red = gsl_sf_angle_restrict_pos_impl(&alpha);
-    double theta = alpha - 3.0*M_PI_4 +  ct/x;
-    *result = ampl * sin (theta);
-    return stat_red;
+    double ampl;
+    double theta;
+    gsl_sf_result ca;
+    gsl_sf_result ct;
+    gsl_sf_cheb_eval_impl(&_bessel_amp_phase_bm1_cs,  z, &ca);
+    gsl_sf_cheb_eval_impl(&_bessel_amp_phase_bth1_cs, z, &ct);
+    ampl  = (0.75 + ca.val) / sqrt(x);
+    theta = x - 3.0*M_PI_4 +  ct.val/x;
+    result->val = ampl * sin (theta);
+    result->err = 2.0 * GSL_DBL_EPSILON * fabs(result->val);
+    return GSL_SUCCESS;
   }
   else {
-    *result = 0.0;
+    result->val = 0.0;
+    result->err = 0.0;
     return GSL_EUNDRFLW;
   }
 }
@@ -101,24 +116,11 @@ int gsl_sf_bessel_Y1_impl(const double x, double * result)
 
 /*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
 
-int gsl_sf_bessel_Y1_e(const double x, double * result)
+int gsl_sf_bessel_Y1_e(const double x, gsl_sf_result * result)
 {
   int status = gsl_sf_bessel_Y1_impl(x, result);
   if(status != GSL_SUCCESS) {
     GSL_ERROR("gsl_sf_bessel_Y1_e", status);
   }
   return status;
-}
-
-
-/*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*-*-*/
-
-double gsl_sf_bessel_Y1(const double x)
-{
-  double y;
-  int status = gsl_sf_bessel_Y1_impl(x, &y);
-  if(status != GSL_SUCCESS) {
-    GSL_WARNING("gsl_sf_bessel_Y1", status);
-  }
-  return y;
 }

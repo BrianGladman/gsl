@@ -44,32 +44,40 @@ static gsl_sf_cheb_series atanint_cs = {
 /*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*/
 
 int
-gsl_sf_atanint_impl(const double x, double * result)
+gsl_sf_atanint_impl(const double x, gsl_sf_result * result)
 {
   const double ax  = fabs(x);
   const double sgn = GSL_SIGN(x);
 
   if(ax == 0.0) {
-    *result = 0.0;
+    result->val = 0.0;
+    result->err = 0.0;
     return GSL_SUCCESS;
   }
   else if(ax < 0.5*GSL_SQRT_DBL_EPSILON) {
-    *result = x;
+    result->val = x;
+    result->err = 0.0;
     return GSL_SUCCESS;
   }
   else if(ax <= 1.0) {
     const double t = 2.0 * (x*x - 0.5);
-    *result = x * gsl_sf_cheb_eval(&atanint_cs, t);
+    gsl_sf_result result_c;
+    gsl_sf_cheb_eval_impl(&atanint_cs, t, &result_c);
+    result->val = x * result_c.val;
+    result->err = x * result_c.err;
     return GSL_SUCCESS;
   }
   else if(ax < 1.0/GSL_SQRT_DBL_EPSILON) {
     const double t = 2.0 * (1.0/(x*x) - 0.5);
-    const double c = gsl_sf_cheb_eval(&atanint_cs, t);
-    *result = sgn * (0.5*M_PI*log(ax) + c/ax);
+    gsl_sf_result result_c;
+    gsl_sf_cheb_eval_impl(&atanint_cs, t, &result_c);
+    result->val = sgn * (0.5*M_PI*log(ax) + result_c.val/ax);
+    result->err = result_c.err/ax + fabs(result->val*GSL_DBL_EPSILON);
     return GSL_SUCCESS;
   }
   else {
-    *result = sgn * 0.5*M_PI*log(ax);
+    result->val = sgn * 0.5*M_PI*log(ax);
+    result->err = fabs(result->val * GSL_DBL_EPSILON);
     return GSL_SUCCESS;
   }
 }
@@ -78,26 +86,11 @@ gsl_sf_atanint_impl(const double x, double * result)
 /*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
 
 int
-gsl_sf_atanint_e(const double x, double * result)
+gsl_sf_atanint_e(const double x, gsl_sf_result * result)
 {
   int status = gsl_sf_atanint_impl(x, result);
   if(status != GSL_SUCCESS) {
     GSL_ERROR("gsl_sf_atanint_e", status);
   }
   return status;
-}
-
-
-/*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*/
-
-
-double
-gsl_sf_atanint(const double x)
-{
-  double y;
-  int status = gsl_sf_atanint_impl(x, &y);
-  if(status != GSL_SUCCESS) {
-    GSL_WARNING("gsl_sf_atanint", status);
-  }
-  return y;
 }

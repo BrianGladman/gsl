@@ -126,45 +126,75 @@ static gsl_sf_cheb_series ai02_cs = {
 
 /*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
 
-int gsl_sf_bessel_I0_scaled_impl(const double x, double * result)
+int gsl_sf_bessel_I0_scaled_impl(const double x, gsl_sf_result * result)
 {
   double y = fabs(x);
 
-  if(y < 2.0 * GSL_SQRT_DBL_EPSILON) {
-    *result = 1.0;
+  if(result == 0) {
+    return GSL_EFAULT;
   }
-  else if(y <= 3.0) {
-    *result = exp(-y) * (2.75 + gsl_sf_cheb_eval(&bi0_cs, y*y/4.5-1.0));
-  }
-  else if(y <= 8.0) {
-    *result = (0.375 + gsl_sf_cheb_eval(&ai0_cs, (48.0/y-11.0)/5.0)) / sqrt(y);
-  }
-  else {
-    *result = (0.375 + gsl_sf_cheb_eval(&ai02_cs, 16.0/y-1.0)) / sqrt(y);
-  }
-  return GSL_SUCCESS;
-}
-
-int gsl_sf_bessel_I0_impl(const double x, double * result)
-{
-  double y = fabs(x);
-
-  if(y < 2.0 * GSL_SQRT_DBL_EPSILON) {
-    *result = 1.0;
+  else if(y < 2.0 * GSL_SQRT_DBL_EPSILON) {
+    result->val = 1.0;
+    result->err = 0.5*y*y;
     return GSL_SUCCESS;
   }
   else if(y <= 3.0) {
-    *result = 2.75 + gsl_sf_cheb_eval(&bi0_cs, y*y/4.5-1.0);
+    const double ey = exp(-y);
+    gsl_sf_result c;
+    gsl_sf_cheb_eval_impl(&bi0_cs, y*y/4.5-1.0, &c);
+    result->val = ey * (2.75 + c.val);
+    result->err = ey * c.err;
+    return GSL_SUCCESS;
+  }
+  else if(y <= 8.0) {
+    const double sy = sqrt(y);
+    gsl_sf_result c;
+    gsl_sf_cheb_eval_impl(&ai0_cs, (48.0/y-11.0)/5.0, &c);
+    result->val = (0.375 + c.val) / sy;
+    result->err = c.err / sy;
+    return GSL_SUCCESS;
+  }
+  else {
+    const double sy = sqrt(y);
+    gsl_sf_result c;
+    gsl_sf_cheb_eval_impl(&ai02_cs, 16.0/y-1.0, &c);
+    result->val = (0.375 + c.val) / sy;
+    result->err = c.err / sy;
+    return GSL_SUCCESS;
+  }
+}
+
+
+int gsl_sf_bessel_I0_impl(const double x, gsl_sf_result * result)
+{
+  double y = fabs(x);
+
+  if(result == 0) {
+    return GSL_EFAULT;
+  }
+  else if(y < 2.0 * GSL_SQRT_DBL_EPSILON) {
+    result->val = 1.0;
+    result->err = 0.5*y*y;
+    return GSL_SUCCESS;
+  }
+  else if(y <= 3.0) {
+    gsl_sf_result c;
+    gsl_sf_cheb_eval_impl(&bi0_cs, y*y/4.5-1.0, &c);
+    result->val = 2.75 + c.val;
+    result->err = c.err;
     return GSL_SUCCESS;
   }
   else if(y < GSL_LOG_DBL_MAX - 1.0) {
-    double b_scaled;
+    const double ey = exp(y);
+    gsl_sf_result b_scaled;
     gsl_sf_bessel_I0_scaled_impl(x, &b_scaled);
-    *result = exp(y) * b_scaled;
+    result->val = ey * b_scaled.val;
+    result->err = ey * b_scaled.err;
     return GSL_SUCCESS;
   }
   else {
-    *result = 0.0; /* FIXME: should be Inf */
+    result->val = 0.0; /* FIXME: should be Inf */
+    result->err = 0.0;
     return GSL_EOVRFLW;
   }
 }
@@ -172,44 +202,20 @@ int gsl_sf_bessel_I0_impl(const double x, double * result)
 
 /*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
 
-int gsl_sf_bessel_I0_scaled_e(const double x, double * result)
+int gsl_sf_bessel_I0_scaled_e(const double x, gsl_sf_result * result)
 {
   int status = gsl_sf_bessel_I0_scaled_impl(x, result);  
   if(status != GSL_SUCCESS) {
-    GSL_ERROR("gsl_sf_bessel_I0_e", status);
+    GSL_ERROR("gsl_sf_bessel_I0_scaled_e", status);
   }
   return status;
 }
 
-int gsl_sf_bessel_I0_e(const double x, double * result)
+int gsl_sf_bessel_I0_e(const double x, gsl_sf_result * result)
 {
   int status = gsl_sf_bessel_I0_impl(x, result);  
   if(status != GSL_SUCCESS) {
     GSL_ERROR("gsl_sf_bessel_I0_e", status);
   }
   return status;
-}
-
-
-/*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*-*-*/
-
-double gsl_sf_bessel_I0_scaled(const double x)
-{
-  double y;
-  int status = gsl_sf_bessel_I0_scaled_impl(x, &y);
-  if(status != GSL_SUCCESS) {
-    GSL_WARNING("gsl_sf_bessel_I0_scaled", status);
-  }
-  return y;
-}
-
-
-double gsl_sf_bessel_I0(const double x)
-{
-  double y;
-  int status = gsl_sf_bessel_I0_impl(x, &y);
-  if(status != GSL_SUCCESS) {
-    GSL_WARNING("gsl_sf_bessel_I0", status);
-  }
-  return y;
 }

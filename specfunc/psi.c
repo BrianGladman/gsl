@@ -355,14 +355,19 @@ static double psi_1_table[PSI_1_TABLE_NMAX+1] = {
 
 /*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
 
-int gsl_sf_psi_int_impl(const int n, double * result)
+int gsl_sf_psi_int_impl(const int n, gsl_sf_result * result)
 {
-  if(n <= 0) {
-    *result = 0.0;
+  if(result == 0) {
+    return GSL_EFAULT;
+  }
+  else if(n <= 0) {
+    result->val = 0.0;
+    result->err = 0.0;
     return GSL_EDOM;
   }
   else if(n <= PSI_TABLE_NMAX) {
-    *result = psi_table[n];
+    result->val = psi_table[n];
+    result->err = GSL_DBL_EPSILON * result->val;
     return GSL_SUCCESS;
   }
   else {
@@ -373,102 +378,132 @@ int gsl_sf_psi_int_impl(const int n, double * result)
     const double c5 =  1.0/240.0;
     const double ni2 = (1.0/n)*(1.0/n);
     const double ser = ni2 * (c2 + ni2 * (c3 + ni2 * (c4 + ni2*c5)));
-    *result   = log(n) - 0.5/n + ser;
+    result->val = log(n) - 0.5/n + ser;
+    result->err = GSL_DBL_EPSILON * result->val;
     return GSL_SUCCESS;
   }
 }
 
 
-int gsl_sf_psi_impl(const double x, double * result)
+int gsl_sf_psi_impl(const double x, gsl_sf_result * result)
 {
-  double y = fabs(x);
-  double xbig  = 1.0  / GSL_SQRT_DBL_EPSILON;
-  double dxrel = 10.0 * GSL_SQRT_DBL_EPSILON;
+  const double y = fabs(x);
 
-  if(y >= 2.0) {
-    double aux = 0.0;
-    if(y < xbig) aux = gsl_sf_cheb_eval(&apsi_cs, 8.0/(y*y)-1.0);
-    if(x < 0.0) {
-      *result = log(y) - 0.5/x + aux - M_PI * cos(M_PI*x)/sin(M_PI*x);
-    }
-    else {
-      *result = log(y) - 0.5/x + aux;
-    }
-    return GSL_SUCCESS;
+  if(result == 0) {
+    return GSL_EFAULT;
   }
-  else { /* y < 2.0 */
-    if(x == 0.0) {
-      *result = 0.0; /* FIXME: should be Inf */
-      return GSL_EDOM;
-    }
-    else {
-      double ans;
-      int n = x;
-      if(x < 0.0) --n;
-      y = x - n;
-      --n;
-      ans = gsl_sf_cheb_eval(&psi_cs, 2.0*y-1.0);
-      if(n == 0) {
-	*result = ans;
-	return GSL_SUCCESS;
-      }
-
-      n = -n;
-
-      if(x < 0.0 && x+n-2 == 0.0) {
-      	/* x is a negative integer */
-	*result = 0.0; /* FIXME: should be Inf */
+  else if(x == 0.0 || x == -1.0 || x == -2.0) {
+    result->val = 0.0;
+    result->err = 0.0;
+    return GSL_EDOM;
+  }
+  else if(y >= 2.0) {
+    const double t = 8.0/(y*y)-1.0;
+    gsl_sf_result result_c;
+    gsl_sf_cheb_eval_impl(&apsi_cs, t, &result_c);
+    if(x < 0.0) {
+      const double s = sin(M_PI*x);
+      const double c = cos(M_PI*x);
+      if(fabs(s) < 2.0*GSL_SQRT_DBL_MIN) {
+        result->val = 0.0;
+	result->err = 0.0;
 	return GSL_EDOM;
       }
       else {
-	int i;
-	for(i=0; i<n; i++) {
-          ans -= 1.0/(x + i);
-      	}
-	*result = ans;
-	if(x < -0.5 && fabs((x-(int)(x-0.5))/x) < dxrel) {
-      	  /* loss of precision: x near a negative integer */
-	  return GSL_ELOSS;
-      	}
-	else {
-	  return GSL_SUCCESS;
-	}
+        result->val  = log(y) - 0.5/x + result_c.val - M_PI * c/s;
+        result->err  = GSL_DBL_EPSILON * fabs(result->val);
+	result->err += result_c.err;
+	result->err += M_PI*x*GSL_DBL_EPSILON/(s*s);
+	return GSL_SUCCESS;
       }
+    }
+    else {
+      result->val = log(y) - 0.5/x + result_c.val;
+      result->err = GSL_DBL_EPSILON * result->val + result_c.err;
+      return GSL_SUCCESS;
+    }
+  }
+  else { /* -2 < x < 2 */
+    gsl_sf_result result_c;
+
+    if(x < -1.0) { /* x = -2 + v */
+      const double v  = x + 2.0;
+      const double t1 = 1.0/x;
+      const double t2 = 1.0/(x+1.0);
+      const double t3 = 1.0/v;
+      gsl_sf_cheb_eval_impl(&psi_cs, 2.0*v-1.0, &result_c);
+      
+      result->val  = -(t1 + t2 + t3) + result_c.val;
+      result->err  = GSL_DBL_EPSILON * (fabs(t1) + fabs(x/(t2*t2)) + fabs(x/(t3*t3)));
+      result->err += result_c.err;
+      return GSL_SUCCESS;
+    }
+    else if(x < 0.0) { /* x = -1 + v */
+      const double v  = x + 1.0;
+      const double t1 = 1.0/x;
+      const double t2 = 1.0/v;
+      gsl_sf_cheb_eval_impl(&psi_cs, 2.0*v-1.0, &result_c);
+      
+      result->val  = -(t1 + t2) + result_c.val;
+      result->err  = GSL_DBL_EPSILON * (fabs(t1) + fabs(x/(t2*t2)));
+      result->err += result_c.err;
+      return GSL_SUCCESS;
+    }
+    else if(x < 1.0) { /* x = v */
+      const double t1 = 1.0/x;
+      gsl_sf_cheb_eval_impl(&psi_cs, 2.0*x-1.0, &result_c);
+      
+      result->val  = -t1 + result_c.val;
+      result->err  = GSL_DBL_EPSILON * t1;
+      result->err += result_c.err;
+      return GSL_SUCCESS;
+    }
+    else { /* x = 1 + v */
+      const double v = x - 1.0;
+      return gsl_sf_cheb_eval_impl(&psi_cs, 2.0*v-1.0, result);
     }
   }
 }
 
 
 int
-gsl_sf_psi_1piy_impl(const double y, double * result)
+gsl_sf_psi_1piy_impl(const double y, gsl_sf_result * result)
 {
-  double ay = fabs(y);
+  const double ay = fabs(y);
 
-  if(ay > 1000.0) {
+  if(result == 0) {
+    return GSL_EFAULT;
+  }
+  else if(ay > 1000.0) {
     /* [Abramowitz+Stegun, 6.3.19] */
-    double yi2 = 1.0/(ay*ay);
-    double ln  = log(y);
-    double sum = yi2 * (1.0/12.0 + 1.0/120.0 * yi2 + 1.0/252.0 * yi2*yi2);
-    *result = ln + sum;
+    const double yi2 = 1.0/(ay*ay);
+    const double lny = log(y);
+    const double sum = yi2 * (1.0/12.0 + 1.0/120.0 * yi2 + 1.0/252.0 * yi2*yi2);
+    result->val = lny + sum;
+    result->err = GSL_DBL_EPSILON * lny;
     return GSL_SUCCESS;
   }
   else if(ay > 10.0) {
     /* [Abramowitz+Stegun, 6.3.19] */
-    double yi2 = 1.0/(ay*ay);
-    double ln  = log(y);
-    double sum = yi2 * (1.0/12.0 +
-                   yi2 * (1.0/120.0 +
-		     yi2 * (1.0/252.0 +
-                       yi2 * (1.0/240.0 +
-		         yi2 * (1.0/132.0 + 691.0/32760.0 * yi2)))));
-    *result = ln + sum;
+    const double yi2 = 1.0/(ay*ay);
+    const double lny = log(y);
+    const double sum = yi2 * (1.0/12.0 +
+                         yi2 * (1.0/120.0 +
+	                   yi2 * (1.0/252.0 +
+                             yi2 * (1.0/240.0 +
+                               yi2 * (1.0/132.0 + 691.0/32760.0 * yi2)))));
+    result->val = lny + sum;
+    result->err = GSL_DBL_EPSILON * result->val;
     return GSL_SUCCESS;
   }
   else if(ay > 1.0){
-    double y2 = ay*ay;
-    double x = (2.0*ay - 11.0)/9.0;
-    double c = gsl_sf_cheb_eval(&r1py_cs, x);
-    *result = c - M_EULER + y2*(1.0/(1.0+y2) + 0.5/(4.0+y2));
+    const double y2 = ay*ay;
+    const double x  = (2.0*ay - 11.0)/9.0;
+    const double v  = y2*(1.0/(1.0+y2) + 0.5/(4.0+y2));
+    gsl_sf_result result_c;
+    gsl_sf_cheb_eval_impl(&r1py_cs, x, &result_c);
+    result->val = result_c.val - M_EULER + v;
+    result->err = result_c.err + GSL_DBL_EPSILON * v;
     return GSL_SUCCESS;
   }
   else {
@@ -491,26 +526,34 @@ gsl_sf_psi_1piy_impl(const double y, double * result)
     const double c6 = 2.9516743763500191289e-15;
     const double p  = c0 + y2 *(-c2 + y2*(c4 - y2*c6));
     double sum = 0.0;
+    double v;
     
     int n;
     for(n=1; n<=M; n++) {
       sum += 1.0/(n * (n*n + y*y));
     }
-    
-    *result = -M_EULER + y2 * (sum + p);
+
+    v = y2 * (sum + p);
+    result->val = -M_EULER + v;
+    result->err = GSL_DBL_EPSILON * (M_EULER + v);
     return GSL_SUCCESS;
   }
 }
 
 
-int gsl_sf_psi_1_int_impl(const int n, double * result)
+int gsl_sf_psi_1_int_impl(const int n, gsl_sf_result * result)
 {
-  if(n <= 0) {
-    *result = 0.0;
+  if(result == 0) {
+    return GSL_EFAULT;
+  }
+  else if(n <= 0) {
+    result->val = 0.0;
+    result->err = 0.0;
     return GSL_EDOM;
   }
   else if(n <= PSI_1_TABLE_NMAX) {
-    *result = psi_1_table[n];
+    result->val = psi_1_table[n];
+    result->err = GSL_DBL_EPSILON * result->val;
     return GSL_SUCCESS;
   }
   else {
@@ -522,28 +565,33 @@ int gsl_sf_psi_1_int_impl(const int n, double * result)
     const double c2 = -1.0/30.0;
     const double ni2 = (1.0/n)*(1.0/n);
     const double ser =  ni2*ni2 * (c0 + ni2*(c1 + c2*ni2));
-    *result = (1.0 + 0.5/n + 1.0/(6.0*n*n) + ser) / n;
+    result->val = (1.0 + 0.5/n + 1.0/(6.0*n*n) + ser) / n;
+    result->err = GSL_DBL_EPSILON * result->val;
     return GSL_SUCCESS;
   }
 }
 
 
-int gsl_sf_psi_n_impl(const int n, const double x, double * result)
+int gsl_sf_psi_n_impl(const int n, const double x, gsl_sf_result * result)
 {
+  if(result == 0) {
+    return GSL_EFAULT;
+  }
   if(n < 0 || x <= 0.0) {
-    *result = 0.0;
+    result->val = 0.0;
+    result->err = 0.0;
     return GSL_EDOM;
   }
   else if(n == 0) {
     return gsl_sf_psi_impl(x, result);
   }
   else {
-    double ln_nf;
-    double hzeta;
+    gsl_sf_result ln_nf;
+    gsl_sf_result hzeta;
     int stat_hz = gsl_sf_hzeta_impl(n+1.0, x, &hzeta);
     int stat_nf = gsl_sf_lnfact_impl((unsigned int) n, &ln_nf);
-    int stat_e  = gsl_sf_exp_mult_impl(ln_nf, hzeta, result);
-    if(GSL_IS_EVEN(n)) *result = - *result;
+    int stat_e  = gsl_sf_exp_mult_impl(ln_nf.val, hzeta.val, result);
+    if(GSL_IS_EVEN(n)) result->val = -result->val;
     return GSL_ERROR_SELECT_3(stat_e, stat_nf, stat_hz);
   }
 }
@@ -551,7 +599,7 @@ int gsl_sf_psi_n_impl(const int n, const double x, double * result)
 
 /*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
 
-int gsl_sf_psi_int_e(const int n, double * result)
+int gsl_sf_psi_int_e(const int n, gsl_sf_result * result)
 {
   int status = gsl_sf_psi_int_impl(n, result);
   if(status != GSL_SUCCESS){
@@ -560,7 +608,7 @@ int gsl_sf_psi_int_e(const int n, double * result)
   return status;
 }
 
-int gsl_sf_psi_e(const double x, double * result)
+int gsl_sf_psi_e(const double x, gsl_sf_result * result)
 {
   int status = gsl_sf_psi_impl(x, result);
   if(status != GSL_SUCCESS){
@@ -569,7 +617,7 @@ int gsl_sf_psi_e(const double x, double * result)
   return status;
 }
 
-int gsl_sf_psi_1piy_e(const double x, double * result)
+int gsl_sf_psi_1piy_e(const double x, gsl_sf_result * result)
 {
   int status = gsl_sf_psi_1piy_impl(x, result);
   if(status != GSL_SUCCESS){
@@ -578,7 +626,7 @@ int gsl_sf_psi_1piy_e(const double x, double * result)
   return status;
 }
 
-int gsl_sf_psi_1_int_e(const int n, double * result)
+int gsl_sf_psi_1_int_e(const int n, gsl_sf_result * result)
 {
   int status = gsl_sf_psi_1_int_impl(n, result);
   if(status != GSL_SUCCESS){
@@ -587,64 +635,11 @@ int gsl_sf_psi_1_int_e(const int n, double * result)
   return status;
 }
 
-int gsl_sf_psi_n_e(const int n, const double x, double * result)
+int gsl_sf_psi_n_e(const int n, const double x, gsl_sf_result * result)
 {
   int status = gsl_sf_psi_n_impl(n, x, result);
   if(status != GSL_SUCCESS){
     GSL_ERROR("gsl_sf_psi_n_e", status);
   }
   return status;
-}
-
-
-/*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*-*-*/
-
-double gsl_sf_psi_int(const int n)
-{
-  double y;
-  int status = gsl_sf_psi_int_impl(n, &y);
-  if(status != GSL_SUCCESS){
-    GSL_WARNING("gsl_sf_psi_int", status);
-  }
-  return y;
-}
-
-double gsl_sf_psi(const double x)
-{
-  double y;
-  int status = gsl_sf_psi_impl(x, &y);
-  if(status != GSL_SUCCESS){
-    GSL_WARNING("gsl_sf_psi", status);
-  }
-  return y;
-}
-
-double gsl_sf_psi_1piy(const double x)
-{
-  double y;
-  int status = gsl_sf_psi_1piy_impl(x, &y);
-  if(status != GSL_SUCCESS){
-    GSL_WARNING("gsl_sf_psi_1piy", status);
-  }
-  return y;
-}
-
-double gsl_sf_psi_1_int(const int n)
-{
-  double y;
-  int status = gsl_sf_psi_1_int_impl(n, &y);
-  if(status != GSL_SUCCESS){
-    GSL_WARNING("gsl_sf_psi_1_int", status);
-  }
-  return y;
-}
-
-double gsl_sf_psi_n(const int n, const double x)
-{
-  double y;
-  int status = gsl_sf_psi_n_impl(n, x, &y);
-  if(status != GSL_SUCCESS){
-    GSL_WARNING("gsl_sf_psi_n", status);
-  }
-  return y;
 }

@@ -4,6 +4,8 @@
 #ifndef GSL_SF_ZETA_H_
 #define GSL_SF_ZETA_H_
 
+#include <gsl_sf_result.h>
+
 
 /* Riemann Zeta Function
  * zeta(n) = Sum[ k^(-n), {k,1,Infinity} ]
@@ -11,9 +13,8 @@
  * n=integer, n != 1
  * exceptions: GSL_EDOM, GSL_EOVRFLW
  */
-int     gsl_sf_zeta_int_impl(int n, double * result);
-int     gsl_sf_zeta_int_e(int n, double * result);
-double  gsl_sf_zeta_int(int n);
+int gsl_sf_zeta_int_impl(int n, gsl_sf_result * result);
+int gsl_sf_zeta_int_e(int n, gsl_sf_result * result);
 
 
 /* Riemann Zeta Function
@@ -22,9 +23,8 @@ double  gsl_sf_zeta_int(int n);
  * s != 1.0
  * exceptions: GSL_EDOM, GSL_EOVRFLW
  */
-int     gsl_sf_zeta_impl(double s, double * result);
-int     gsl_sf_zeta_e(double s, double * result);
-double  gsl_sf_zeta(double s);
+int gsl_sf_zeta_impl(double s, gsl_sf_result * result);
+int gsl_sf_zeta_e(double s, gsl_sf_result * result);
 
 
 /* Hurwicz Zeta Function
@@ -33,9 +33,8 @@ double  gsl_sf_zeta(double s);
  * s > 1.0, q > 0.0
  * exceptions: GSL_EDOM, GSL_EUNDRFLW, GSL_EOVRFLW
  */
-int     gsl_sf_hzeta_impl(double s, double q, double * result);
-int     gsl_sf_hzeta_e(double s, double q, double * result);
-double  gsl_sf_hzeta(double s, double q);
+int gsl_sf_hzeta_impl(double s, double q, gsl_sf_result * result);
+int gsl_sf_hzeta_e(double s, double q, gsl_sf_result * result);
 
 
 /* Eta Function
@@ -43,9 +42,8 @@ double  gsl_sf_hzeta(double s, double q);
  *
  * exceptions: GSL_EUNDRFLW, GSL_EOVRFLW
  */
-int     gsl_sf_eta_int_impl(int n, double * result);
-int     gsl_sf_eta_int_e(int n, double * result);
-double  gsl_sf_eta_int(int n);
+int gsl_sf_eta_int_impl(int n, gsl_sf_result * result);
+int gsl_sf_eta_int_e(int n, gsl_sf_result * result);
 
 
 /* Eta Function
@@ -53,9 +51,8 @@ double  gsl_sf_eta_int(int n);
  *
  * exceptions: GSL_EUNDRFLW, GSL_EOVRFLW
  */
-int     gsl_sf_eta_impl(double s, double * result);
-int     gsl_sf_eta_e(double s, double * result);
-double  gsl_sf_eta(double s);
+int gsl_sf_eta_impl(double s, gsl_sf_result * result);
+int gsl_sf_eta_e(double s, gsl_sf_result * result);
 
 
 #endif  /* !GSL_SF_ZETA_H_ */

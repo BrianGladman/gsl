@@ -7,8 +7,6 @@
 #include <gsl_errno.h>
 #include "gsl_sf_chebyshev.h"
 
-int gsl_sf_cheb_calc_impl(gsl_sf_cheb_series *, double (*)(double));
-
 
 /*-*-*-*-*-*-*-*-*-*-*-* Allocators *-*-*-*-*-*-*-*-*-*-*-*/
 
@@ -24,10 +22,12 @@ gsl_sf_cheb_series * gsl_sf_cheb_new(double (*func)(double),
   else if(a >= b) {
     GSL_ERROR_RETURN("gsl_sf_cheb_new: null interval, a>=b", GSL_EDOM, 0);
   }
+#if 0
   else if(fabs(b-a) < 1.0e+6 * GSL_MACH_EPS) {
     /* FIXME: arbitrary nonsense */
     GSL_ERROR_RETURN("gsl_sf_cheb_new: interval close to null", GSL_EFAILED, 0);
   }
+#endif
   else {
     gsl_sf_cheb_series * cs = (gsl_sf_cheb_series *)
       malloc(sizeof(gsl_sf_cheb_series));
@@ -43,11 +43,11 @@ gsl_sf_cheb_series * gsl_sf_cheb_new(double (*func)(double),
     cs->order_sp = order;
     cs->a = a;
     cs->b = b;
-    cs->c = malloc((order+1) * sizeof(double));
+    cs->c = (double *) malloc((order+1) * sizeof(double));
     if(cs->c == 0) {
       GSL_ERROR_RETURN("gsl_sf_cheb_new: out of memory", GSL_ENOMEM, 0);
     }
-  
+
     status = gsl_sf_cheb_calc_impl(cs, func);
     if(status != GSL_SUCCESS) {
       free(cs);
@@ -72,7 +72,7 @@ int gsl_sf_cheb_calc_impl(gsl_sf_cheb_series * cs, double (*func)(double))
     double bma = 0.5 * (cs->b - cs->a);
     double bpa = 0.5 * (cs->b + cs->a);
     double fac = 2.0/(cs->order +1.0);
-    double * f = malloc((cs->order+1) * sizeof(double));
+    double * f = (double *) malloc((cs->order+1) * sizeof(double));
 
     if(f == 0) {
       return GSL_ENOMEM;
@@ -101,7 +101,7 @@ int gsl_sf_cheb_calc_deriv_impl(gsl_sf_cheb_series * cs)
   int j;
   
   if(cs->cp != 0) free(cs->cp);
-  cs->cp = (double *)malloc(n * sizeof(double));
+  cs->cp = (double *) malloc(n * sizeof(double));
   if(cs->cp == 0) return GSL_ENOMEM;
 
   cs->cp[n-1] = 0.0;
@@ -120,7 +120,7 @@ int gsl_sf_cheb_calc_integ_impl(gsl_sf_cheb_series * cs)
   const double con = 0.25 * (cs->b - cs->a);
   
   if(cs->ci != 0) free(cs->ci);
-  cs->ci = (double *)malloc(n * sizeof(double));
+  cs->ci = (double *) malloc(n * sizeof(double));
   if(cs->ci == 0) return GSL_ENOMEM;
 
   if(n == 1) {
@@ -147,42 +147,42 @@ int gsl_sf_cheb_calc_integ_impl(gsl_sf_cheb_series * cs)
 }
 
 
-/*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
 
-int gsl_sf_cheb_calc_e(gsl_sf_cheb_series * cs, double (*func)(double))
-{
-  int status = gsl_sf_cheb_calc_impl(cs, func);
-  if(status != GSL_SUCCESS) {
-    GSL_ERROR("gsl_sf_cheb_calc_e", status);
-  }
-  return status;
-}
-
-
-/*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*-*-*/
-
-
-double gsl_sf_cheb_eval_n(const gsl_sf_cheb_series * cs, const int n, const double x)
+int
+gsl_sf_cheb_eval_n_impl(const gsl_sf_cheb_series * cs,
+                        const int n, const double x,
+                        gsl_sf_result * result)
 {
   int j;
-  double d  = 0.;
-  double dd = 0.;
+  double d  = 0.0;
+  double dd = 0.0;
 
   double y  = (2.*x - cs->a - cs->b) / (cs->b - cs->a);
   double y2 = 2.0 * y;
 
-  int eval_order = GSL_MIN(n, cs->order);
-  eval_order     = GSL_MAX(eval_order, 0);
-  
+  int eval_order = GSL_MAX_INT(0, GSL_MIN_INT(n, cs->order));
+
   for(j = eval_order; j>=1; j--) {
     double temp = d;
     d = y2*d - dd + cs->c[j];
     dd = temp;
   }
-  return y*d - dd + 0.5 * cs->c[0];
+
+  if(result == 0) {
+    return GSL_EFAULT;
+  }
+  else {
+    result->val = y*d - dd + 0.5 * cs->c[0];
+    result->err = fabs(cs->c[eval_order]);
+    return GSL_SUCCESS;
+  }
 }
 
-double gsl_sf_cheb_eval(const gsl_sf_cheb_series * cs, const double x)
+
+int
+gsl_sf_cheb_eval_impl(const gsl_sf_cheb_series * cs,
+                      const double x,
+                      gsl_sf_result * result)
 {
   int j;
   double d  = 0.0;
@@ -196,10 +196,21 @@ double gsl_sf_cheb_eval(const gsl_sf_cheb_series * cs, const double x)
     d = y2*d - dd + cs->c[j];
     dd = temp;
   }
-  return y*d - dd + 0.5 * cs->c[0];
+
+  if(result == 0) {
+    return GSL_EFAULT;
+  }
+  else {
+    result->val = y*d - dd + 0.5 * cs->c[0];
+    result->err = fabs(cs->c[cs->order]);
+    return GSL_SUCCESS;
+  }
 }
 
-double gsl_sf_cheb_eval_deriv(gsl_sf_cheb_series * cs, const double x)
+
+int
+gsl_sf_cheb_eval_deriv_impl(gsl_sf_cheb_series * cs, const double x,
+                            gsl_sf_result * result)
 {
   int j;
   double d  = 0.0;
@@ -207,7 +218,7 @@ double gsl_sf_cheb_eval_deriv(gsl_sf_cheb_series * cs, const double x)
 
   double y  = (2.0*x - cs->a - cs->b) / (cs->b - cs->a);
   double y2 = 2.0 * y;
-  
+
   if(cs->cp == (double *)0) gsl_sf_cheb_calc_deriv_impl(cs);
 
   for(j = cs->order; j>=1; j--) {
@@ -215,10 +226,21 @@ double gsl_sf_cheb_eval_deriv(gsl_sf_cheb_series * cs, const double x)
     d = y2*d - dd + cs->cp[j];
     dd = temp;
   }
-  return y*d - dd + 0.5 * cs->cp[0];
+
+  if(result == 0) {
+    return GSL_EFAULT;
+  }
+  else {
+    result->val = y*d - dd + 0.5 * cs->cp[0];
+    result->err = fabs(cs->cp[cs->order]);
+    return GSL_SUCCESS;
+  }
 }
 
-double gsl_sf_cheb_eval_integ(gsl_sf_cheb_series * cs, const double x)
+
+int
+gsl_sf_cheb_eval_integ_impl(gsl_sf_cheb_series * cs, const double x,
+                            gsl_sf_result * result)
 {
   int j;
   double d  = 0.0;
@@ -234,8 +256,66 @@ double gsl_sf_cheb_eval_integ(gsl_sf_cheb_series * cs, const double x)
     d = y2*d - dd + cs->ci[j];
     dd = temp;
   }
-  return y*d - dd + 0.5 * cs->ci[0];
+
+  if(result == 0) {
+    return GSL_EFAULT;
+  }
+  else {
+    result->val = y*d - dd + 0.5 * cs->ci[0];
+    result->err = fabs(cs->ci[cs->order]);
+    return GSL_SUCCESS;
+  }
 }
+
+
+/*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*/
+
+int gsl_sf_cheb_calc_e(gsl_sf_cheb_series * cs, double (*func)(double))
+{
+  int status = gsl_sf_cheb_calc_impl(cs, func);
+  if(status != GSL_SUCCESS) {
+    GSL_ERROR("gsl_sf_cheb_calc_e", status);
+  }
+  return status;
+}
+
+int gsl_sf_cheb_eval_e(const gsl_sf_cheb_series * cs, double x, gsl_sf_result * r)
+{
+  int status = gsl_sf_cheb_eval_impl(cs, x, r);
+  if(status != GSL_SUCCESS) {
+    GSL_ERROR("gsl_sf_cheb_eval_e", status);
+  }
+  return status;
+}
+
+int gsl_sf_cheb_eval_n_e(const gsl_sf_cheb_series * cs, int order, double x, gsl_sf_result * r)
+{
+  int status = gsl_sf_cheb_eval_n_impl(cs, order, x, r);
+  if(status != GSL_SUCCESS) {
+    GSL_ERROR("gsl_sf_cheb_eval_n_e", status);
+  }
+  return status;
+}
+
+int gsl_sf_cheb_eval_deriv_e(gsl_sf_cheb_series * cs, double x, gsl_sf_result * r)
+{
+  int status = gsl_sf_cheb_eval_deriv_impl(cs, x, r);
+  if(status != GSL_SUCCESS) {
+    GSL_ERROR("gsl_sf_cheb_eval_deriv_e", status);
+  }
+  return status;
+}
+
+int gsl_sf_cheb_eval_integ_e(gsl_sf_cheb_series * cs, double x, gsl_sf_result * r)
+{
+  int status = gsl_sf_cheb_eval_integ_impl(cs, x, r);
+  if(status != GSL_SUCCESS) {
+    GSL_ERROR("gsl_sf_cheb_eval_integ_e", status);
+  }
+  return status;
+}
+
+/*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*/
 
 void gsl_sf_cheb_free(gsl_sf_cheb_series * cs)
 {

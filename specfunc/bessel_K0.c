@@ -112,46 +112,71 @@ static gsl_sf_cheb_series ak02_cs = {
 
 /*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
 
-int gsl_sf_bessel_K0_scaled_impl(const double x, double * result)
+int gsl_sf_bessel_K0_scaled_impl(const double x, gsl_sf_result * result)
 {
-  if(x <= 0.0) {
-    *result = 0.0;
+  if(result == 0) {
+    return GSL_EFAULT;
+  }
+  else if(x <= 0.0) {
+    result->val = 0.0;
+    result->err = 0.0;
     return GSL_EDOM;
   }
   else if(x <= 2.0) {
-    double c = gsl_sf_cheb_eval(&bk0_cs, 0.5*x*x-1.0);
-    double I0;
-    int stat_I0 = gsl_sf_bessel_I0_impl(x, &I0);
-    *result = exp(x) * ((-log(x)+M_LN2)*I0 - 0.25 + c);
+    const double ex = exp(x);
+    int stat_I0;
+    gsl_sf_result I0;
+    gsl_sf_result c;
+    gsl_sf_cheb_eval_impl(&bk0_cs, 0.5*x*x-1.0, &c);
+    stat_I0 = gsl_sf_bessel_I0_impl(x, &I0);
+    result->val = ex * ((-log(x)+M_LN2)*I0.val - 0.25 + c.val);
+    result->err = ex * (I0.err + c.err);
     return stat_I0;
   }
   else if(x <= 8.0) {
-    *result = (1.25 + gsl_sf_cheb_eval(&ak0_cs, (16.0/x-5.0)/3.0)) / sqrt(x);
+    const double sx = sqrt(x);
+    gsl_sf_result c;
+    gsl_sf_cheb_eval_impl(&ak0_cs, (16.0/x-5.0)/3.0, &c);
+    result->val = (1.25 + c.val) / sx;
+    result->err = c.err / sx;
     return GSL_SUCCESS;
   }
   else {
-    *result = (1.25 + gsl_sf_cheb_eval(&ak02_cs, 16.0/x-1.0)) / sqrt(x);
+    const double sx = sqrt(x);
+    gsl_sf_result c;
+    gsl_sf_cheb_eval_impl(&ak02_cs, 16.0/x-1.0, &c);
+    result->val = (1.25 + c.val) / sx;
+    result->err = c.err / sx;
     return GSL_SUCCESS;
   } 
 }
 
 
-int gsl_sf_bessel_K0_impl(const double x, double * result)
+int gsl_sf_bessel_K0_impl(const double x, gsl_sf_result * result)
 {
-  if(x <= 0.0) {
+  if(result == 0) {
+    return GSL_EFAULT;
+  }
+  else if(x <= 0.0) {
+    result->val = 0.0;
+    result->err = 0.0;
     return GSL_EDOM;
   }
   else if(x <= 2.0) {
-    double c = gsl_sf_cheb_eval(&bk0_cs, 0.5*x*x-1.0);
-    double I0;
-    int stat_I0 = gsl_sf_bessel_I0_impl(x, &I0);
-    *result = (-log(x)+M_LN2)*I0 - 0.25 + c;
+    int stat_I0;
+    gsl_sf_result I0;
+    gsl_sf_result c;
+    gsl_sf_cheb_eval_impl(&bk0_cs, 0.5*x*x-1.0, &c);
+    stat_I0 = gsl_sf_bessel_I0_impl(x, &I0);
+    result->val = (-log(x)+M_LN2)*I0.val - 0.25 + c.val;
+    result->err = GSL_DBL_EPSILON * fabs(result->val) + c.err;
     return stat_I0;
   }
   else {
-    double K0_scaled;
+    gsl_sf_result K0_scaled;
     int stat_K0 = gsl_sf_bessel_K0_scaled_impl(x, &K0_scaled);
-    int stat_e  = gsl_sf_exp_mult_impl(-x, K0_scaled, result);
+    int stat_e  = gsl_sf_exp_mult_impl(-x, K0_scaled.val, result);
+    result->err = fabs(result->val) * (GSL_DBL_EPSILON*fabs(x) + K0_scaled.err/K0_scaled.val);
     return GSL_ERROR_SELECT_2(stat_e, stat_K0);
   }
 }
@@ -159,7 +184,7 @@ int gsl_sf_bessel_K0_impl(const double x, double * result)
 
 /*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
 
-int gsl_sf_bessel_K0_scaled_e(const double x, double * result)
+int gsl_sf_bessel_K0_scaled_e(const double x, gsl_sf_result * result)
 {
   int status = gsl_sf_bessel_K0_scaled_impl(x, result);
   if(status != GSL_SUCCESS) {
@@ -169,35 +194,11 @@ int gsl_sf_bessel_K0_scaled_e(const double x, double * result)
 }
 
 
-int gsl_sf_bessel_K0_e(const double x, double * result)
+int gsl_sf_bessel_K0_e(const double x, gsl_sf_result * result)
 {
   int status = gsl_sf_bessel_K0_impl(x, result);
   if(status != GSL_SUCCESS) {
     GSL_ERROR("gsl_sf_bessel_K0_e", status);
   }
   return status;
-}
-
-
-/*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*-*-*/
-
-double gsl_sf_bessel_K0_scaled(const double x)
-{
-  double y;
-  int status = gsl_sf_bessel_K0_scaled_impl(x, &y);
-  if(status != GSL_SUCCESS) {
-    GSL_WARNING("gsl_sf_bessel_K0_scaled", status);
-  }
-  return y;
-}
-
-
-double gsl_sf_bessel_K0(const double x)
-{
-  double y;
-  int status = gsl_sf_bessel_K0_impl(x, &y);
-  if(status != GSL_SUCCESS) {
-    GSL_WARNING("gsl_sf_bessel_K0", status);
-  }
-  return y;
 }

@@ -49,10 +49,10 @@ legendre_H3d_lnnorm(const int ell, const double lambda, double * result)
   else {
     double lg_r;
     double lg_theta;
-    double ln_sinh;
+    gsl_sf_result ln_sinh;
     gsl_sf_lngamma_complex_impl(ell+1.0, lambda, &lg_r, &lg_theta);
     gsl_sf_lnsinh_impl(M_PI * abs_lam, &ln_sinh);
-    *result = log(abs_lam) + ln_sinh + 2.0*lg_r - M_LNPI;
+    *result = log(abs_lam) + ln_sinh.val + 2.0*lg_r - M_LNPI;
     return GSL_SUCCESS;
   }
 }
@@ -81,10 +81,10 @@ legendre_H3d_series(const int ell, const double lambda, const double eta, double
   const double ln_zp1 = M_LN2 + log(1.0 + shheta*shheta);
   const double ln_zm1 = M_LN2 + 2.0*log(shheta);
   const double zeta = -shheta*shheta;
-  double lg_lp32;
+  gsl_sf_result lg_lp32;
   double term = 1.0;
   double sum  = 1.0;
-  double lnsheta;
+  gsl_sf_result lnsheta;
   double lnN;
   double lnpre, lnprepow;
   int stat_e;
@@ -94,7 +94,7 @@ legendre_H3d_series(const int ell, const double lambda, const double eta, double
   gsl_sf_lnsinh_impl(eta, &lnsheta);
   legendre_H3d_lnnorm(ell, lambda, &lnN);
   lnprepow = 0.5*(ell + 0.5) * (ln_zm1 - ln_zp1);
-  lnpre = lnprepow + 0.5*(lnN + M_LNPI - M_LN2 - lnsheta) - lg_lp32 - log(fabs(lambda));
+  lnpre = lnprepow + 0.5*(lnN + M_LNPI - M_LN2 - lnsheta.val) - lg_lp32.val - log(fabs(lambda));
 
   for(n=1; n<nmax; n++) {
     double aR = n - 0.5;
@@ -335,12 +335,13 @@ gsl_sf_legendre_H3d_impl(const int ell, const double lambda, const double eta, d
       return stat_P;
     }
     else {
-      double lnN, lnsh;
+      double lnN;
+      gsl_sf_result lnsh;
       double lnpre;
       int stat_e;
       gsl_sf_lnsinh_impl(eta, &lnsh);
       legendre_H3d_lnnorm(ell, lambda, &lnN);
-      lnpre = 0.5*(M_LNPI + lnN - M_LN2 - lnsh) - log(abs_lam);
+      lnpre = 0.5*(M_LNPI + lnN - M_LN2 - lnsh.val) - log(abs_lam);
       stat_e = gsl_sf_exp_mult_impl(lnpre + lm, P, result);
       return GSL_ERROR_SELECT_2(stat_e, stat_P);
     }
@@ -359,12 +360,13 @@ gsl_sf_legendre_H3d_impl(const int ell, const double lambda, const double eta, d
       return stat_P;
     }
     else {
-      double lnN, lnsh;
+      double lnN;
+      gsl_sf_result lnsh;
       double lnpre;
       int stat_e;
       gsl_sf_lnsinh_impl(eta, &lnsh);
       legendre_H3d_lnnorm(ell, lambda, &lnN);
-      lnpre = 0.5*(M_LNPI + lnN - M_LN2 - lnsh) - log(abs_lam);
+      lnpre = 0.5*(M_LNPI + lnN - M_LN2 - lnsh.val) - log(abs_lam);
       stat_e = gsl_sf_exp_mult_impl(lnpre + lm, P, result);
       return GSL_ERROR_SELECT_2(stat_e, stat_P);
     }

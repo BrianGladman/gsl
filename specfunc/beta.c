@@ -11,10 +11,14 @@
 
 
 int
-gsl_sf_lnbeta_impl(const double x, const double y, double * result)
+gsl_sf_lnbeta_impl(const double x, const double y, gsl_sf_result * result)
 {
-  if(x <= 0.0 || y <= 0.0) {
-    *result = 0.0;
+  if(result == 0) {
+    return GSL_EFAULT;
+  }
+  else if(x <= 0.0 || y <= 0.0) {
+    result->val = 0.0;
+    result->err = 0.0;
     return GSL_EDOM;
   }
   else {
@@ -26,24 +30,26 @@ gsl_sf_lnbeta_impl(const double x, const double y, double * result)
       /* min << max, so be careful
        * with the subtraction
        */
-      double lnopr;
       double lnpow;
       double lnpre;
-      double gsx, gsy, gsxy;
+      gsl_sf_result lnopr;
+      gsl_sf_result gsx, gsy, gsxy;
       gsl_sf_gammastar_impl(x, &gsx);
       gsl_sf_gammastar_impl(y, &gsy);
       gsl_sf_gammastar_impl(x+y, &gsxy);
       gsl_sf_log_1plusx_impl(rat, &lnopr);
-      lnpre = log(gsx*gsy/gsxy * M_SQRT2*M_SQRTPI);
-      lnpow = min*log(rat) - 0.5*log(min) - (x+y-0.5)*lnopr;
-      *result = lnpre + lnpow;
+      lnpre = log(gsx.val*gsy.val/gsxy.val * M_SQRT2*M_SQRTPI);
+      lnpow = min*log(rat) - 0.5*log(min) - (x+y-0.5)*lnopr.val;
+      result->val = lnpre + lnpow;
+      result->err = GSL_DBL_EPSILON * (fabs(lnpre) + fabs(lnpow));
     }
     else {
-      double lgx, lgy, lgxy;
+      gsl_sf_result lgx, lgy, lgxy;
       gsl_sf_lngamma_impl(x, &lgx);
       gsl_sf_lngamma_impl(y, &lgy);
       gsl_sf_lngamma_impl(x+y, &lgxy);
-      *result = lgx + lgy - lgxy;
+      result->val = lgx.val + lgy.val - lgxy.val;
+      result->err = lgx.err + lgy.err + lgxy.err;
     }
 
     return GSL_SUCCESS;
@@ -52,24 +58,28 @@ gsl_sf_lnbeta_impl(const double x, const double y, double * result)
 
 
 int
-gsl_sf_beta_impl(const double x, const double y, double * result)
+gsl_sf_beta_impl(const double x, const double y, gsl_sf_result * result)
 {
   if(x < 50.0 && y < 50.0) {
-    double gx, gy, gxy;
+    gsl_sf_result gx, gy, gxy;
     gsl_sf_gamma_impl(x, &gx);
     gsl_sf_gamma_impl(y, &gy);
     gsl_sf_gamma_impl(x+y, &gxy);
-    *result = (gx*gy)/gxy;
+    result->val  = (gx.val*gy.val)/gxy.val;
+    result->err  = gx.err * gy.val/gxy.val;
+    result->err += gy.err * gx.val/gxy.val;
+    result->err += (gx.val*gy.val)/(gxy.val*gxy.val) * gxy.err;
     return GSL_SUCCESS;
   }
   else {
-    double lb;
+    gsl_sf_result lb;
     int stat_lb = gsl_sf_lnbeta_impl(x, y, &lb);
     if(stat_lb == GSL_SUCCESS) {
-      return gsl_sf_exp_impl(lb, result);
+      return gsl_sf_exp_err_impl(lb.val, lb.err, result);
     }
     else {
-      *result = 0.0;
+      result->val = 0.0;
+      result->err = 0.0;
       return stat_lb;
     }
   }
@@ -79,7 +89,7 @@ gsl_sf_beta_impl(const double x, const double y, double * result)
 /*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
 
 int
-gsl_sf_lnbeta_e(const double x, const double y, double * result)
+gsl_sf_lnbeta_e(const double x, const double y, gsl_sf_result * result)
 {
   int status = gsl_sf_lnbeta_impl(x, y, result);
   if(status != GSL_SUCCESS) {
@@ -89,36 +99,11 @@ gsl_sf_lnbeta_e(const double x, const double y, double * result)
 }
 
 int
-gsl_sf_beta_e(const double x, const double y, double * result)
+gsl_sf_beta_e(const double x, const double y, gsl_sf_result * result)
 {
   int status = gsl_sf_beta_impl(x, y, result);
   if(status != GSL_SUCCESS) {
     GSL_ERROR("gsl_sf_beta_e", status);
   }
   return status;
-}
-
-
-/*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*-*/
-
-double
-gsl_sf_lnbeta(const double x, const double y)
-{
-  double r;
-  int status = gsl_sf_lnbeta_impl(x, y, &r);
-  if(status != GSL_SUCCESS) {
-    GSL_WARNING("gsl_sf_lnbeta", status);
-  }
-  return r;
-}
-
-double
-gsl_sf_beta(const double x, const double y)
-{
-  double r;
-  int status = gsl_sf_beta_impl(x, y, &r);
-  if(status != GSL_SUCCESS) {
-    GSL_WARNING("gsl_sf_beta", status);
-  }
-  return r;
 }

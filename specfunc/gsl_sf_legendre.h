@@ -37,27 +37,24 @@ double gsl_sf_legendre_P5(double x);
  *
  * exceptions: GSL_EDOM
  */
-int     gsl_sf_legendre_Q0_impl(double x, double * result);
-int     gsl_sf_legendre_Q0_e(double x, double * result);
-double  gsl_sf_legendre_Q0(double x);
+int gsl_sf_legendre_Q0_impl(double x, gsl_sf_result * result);
+int gsl_sf_legendre_Q0_e(double x, gsl_sf_result * result);
 
 
 /* Q_1(x), x > -1, x != 1
  *
  * exceptions: GSL_EDOM
  */
-int     gsl_sf_legendre_Q1_impl(double x, double * result);
-int     gsl_sf_legendre_Q1_e(double x, double * result);
-double  gsl_sf_legendre_Q1(double x);
+int gsl_sf_legendre_Q1_impl(double x, gsl_sf_result * result);
+int gsl_sf_legendre_Q1_e(double x, gsl_sf_result * result);
 
 
 /* Q_l(x), x > -1, x != 1, l >= 0
  *
  * exceptions: GSL_EDOM
  */
-int     gsl_sf_legendre_Ql_impl(int l, double x, double * result);
-int     gsl_sf_legendre_Ql_e(int l, double x, double * result);
-double  gsl_sf_legendre_Ql(int l, double x);
+int gsl_sf_legendre_Ql_impl(int l, double x, gsl_sf_result * result);
+int gsl_sf_legendre_Ql_e(int l, double x, gsl_sf_result * result);
 
 
 /* P_l^m(x)  m >= 0; l >= m; |x| <= 1.0

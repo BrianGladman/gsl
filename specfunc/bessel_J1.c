@@ -52,60 +52,63 @@ static gsl_sf_cheb_series bj1_cs = {
 
 /*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
 
-int gsl_sf_bessel_J1_impl(const double x, double * result)
+int gsl_sf_bessel_J1_impl(const double x, gsl_sf_result * result)
 {
   double y = fabs(x);
-  
-  if(y == 0.0) {
-    *result = 0.0;
+
+  if(result == 0) {
+    return GSL_EFAULT;
+  }
+  else if(y == 0.0) {
+    result->val = 0.0;
+    result->err = 0.0;
     return GSL_SUCCESS;
   }
   else if(y < 2.0*DBL_MIN) {
-    *result = 0.0;
+    result->val = 0.0;
+    result->err = 0.0;
     return GSL_EUNDRFLW;
   }
   else if(y < ROOT_EIGHT * GSL_SQRT_DBL_EPSILON) {
-    *result = 0.5*x;
+    result->val = 0.5*x;
+    result->err = 0.0;
     return GSL_SUCCESS;
   }
   else if(y < 4.0) {
-    *result = x * (0.25 + gsl_sf_cheb_eval(&bj1_cs, 0.125*y*y-1.0));
+    gsl_sf_result c;
+    gsl_sf_cheb_eval_impl(&bj1_cs, 0.125*y*y-1.0, &c);
+    result->val = x * (0.25 + c.val);
+    result->err = fabs(x * c.err);
     return GSL_SUCCESS;
   }
   else {
+    /* Because the leading term in the phase is y,
+     * which we assume is exactly known, the error
+     * in the cos() evaluation is bounded.
+     */
     double z  = 32.0/(y*y) - 1.0;
-    double ca = gsl_sf_cheb_eval(&_bessel_amp_phase_bm1_cs, z);
-    double ct = gsl_sf_cheb_eval(&_bessel_amp_phase_bth1_cs, z);
-    double ampl  = (0.75 + ca) / sqrt(y);
-    double alpha = y;
-    int stat_red = gsl_sf_angle_restrict_pos_impl(&alpha);
-    double theta = alpha - 3.0*M_PI_4 + ct/y;
-    *result = (x < 0.0 ? -ampl : ampl) * cos (theta);
-    return stat_red;
+    gsl_sf_result ca;
+    gsl_sf_result ct;
+    double ampl;
+    double theta;
+    gsl_sf_cheb_eval_impl(&_bessel_amp_phase_bm1_cs,  z, &ca);
+    gsl_sf_cheb_eval_impl(&_bessel_amp_phase_bth1_cs, z, &ct);
+    ampl  = (0.75 + ca.val) / sqrt(y);
+    theta = y - 3.0*M_PI_4 + ct.val/y;
+    result->val = (x < 0.0 ? -ampl : ampl) * cos (theta);
+    result->err = 2.0 * GSL_DBL_EPSILON * fabs(result->val);
+    return GSL_SUCCESS;
   }
 }
 
 
 /*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
 
-int gsl_sf_bessel_J1_e(const double x, double * result)
+int gsl_sf_bessel_J1_e(const double x, gsl_sf_result * result)
 {
   int status = gsl_sf_bessel_J1_impl(x, result);
   if(status != GSL_SUCCESS) {
     GSL_ERROR("gsl_sf_bessel_J1_e", status);
   }
   return status;
-}
-
-
-/*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*-*-*/
-
-double gsl_sf_bessel_J1(const double x)
-{
-  double y;
-  int status = gsl_sf_bessel_J1_impl(x, &y);
-  if(status != GSL_SUCCESS) {
-    GSL_WARNING("gsl_sf_bessel_J1", status);
-  }
-  return y;
 }

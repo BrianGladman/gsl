@@ -79,12 +79,12 @@ legendreQ_CF1_xgt1(int ell, double a, double b, double x, double * result)
  */
 static
 int
-legendre_Ql_asymp_unif(const double ell, const double x, double * result)
+legendre_Ql_asymp_unif(const double ell, const double x, gsl_sf_result * result)
 {
   if(x < 1.0) {
     double u   = ell + 0.5;
     double th  = acos(x);
-    double Y0, Y1;
+    gsl_sf_result Y0, Y1;
     int stat_Y0, stat_Y1;
     int stat_m;
     double pre;
@@ -108,16 +108,17 @@ legendre_Ql_asymp_unif(const double ell, const double x, double * result)
     stat_Y0 = gsl_sf_bessel_Y0_impl(u*th, &Y0);
     stat_Y1 = gsl_sf_bessel_Y1_impl(u*th, &Y1);
 
-    sum = -0.5*M_PI * (Y0 + th/u * Y1 * B00);
+    sum = -0.5*M_PI * (Y0.val + th/u * Y1.val * B00);
 
     stat_m = gsl_sf_multiply_impl(pre, sum, result);
+    result->err = GSL_DBL_EPSILON * fabs(result->val);
 
     return GSL_ERROR_SELECT_3(stat_m, stat_Y0, stat_Y1);
   }
   else {
     double u   = ell + 0.5;
     double xi  = acosh(x);
-    double K0_scaled, K1_scaled;
+    gsl_sf_result K0_scaled, K1_scaled;
     int stat_K0, stat_K1;
     int stat_e;
     double pre;
@@ -141,9 +142,10 @@ legendre_Ql_asymp_unif(const double ell, const double x, double * result)
     stat_K0 = gsl_sf_bessel_K0_scaled_impl(u*xi, &K0_scaled);
     stat_K1 = gsl_sf_bessel_K1_scaled_impl(u*xi, &K1_scaled);
 
-    sum = K0_scaled - xi/u * K1_scaled * B00;
+    sum = K0_scaled.val - xi/u * K1_scaled.val * B00;
 
     stat_e = gsl_sf_exp_mult_impl(-u*xi, pre * sum, result);
+    result->err = GSL_DBL_EPSILON * fabs(result->val) * fabs(u*xi);
 
     return GSL_ERROR_SELECT_3(stat_e, stat_K0, stat_K1);
   }
@@ -154,18 +156,24 @@ legendre_Ql_asymp_unif(const double ell, const double x, double * result)
 /*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
 
 int
-gsl_sf_legendre_Q0_impl(const double x, double * result)
+gsl_sf_legendre_Q0_impl(const double x, gsl_sf_result * result)
 {
-  if(x <= -1.0 || x == 1.0) {
-    *result = 0.0;
+  if(result == 0) {
+    return GSL_EFAULT;
+  }
+  else if(x <= -1.0 || x == 1.0) {
+    result->val = 0.0;
+    result->err = 0.0;
     return GSL_EDOM;
   }
   else if(x < 1.0){
-    *result = 0.5 * log((1.0+x)/(1.0-x));
+    result->val = 0.5 * log((1.0+x)/(1.0-x));
+    result->err = GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
   }
   else if(x < 10.0) {
-    *result = 0.5 * log((x+1.0)/(x-1.0));
+    result->val = 0.5 * log((x+1.0)/(x-1.0));
+    result->err = GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
   }
   else if(x*GSL_DBL_MIN < 2.0) {
@@ -177,29 +185,37 @@ gsl_sf_legendre_Q0_impl(const double x, double * result)
     const double c5 = 1.0/11.0;
     const double c6 = 1.0/13.0;
     const double c7 = 1.0/15.0;
-    *result = 2.0/x * (1.0 + y*(c1 + y*(c2 + y*(c3 + y*(c4 + y*(c5 + y*(c6 + y*c7)))))));
+    result->val = 2.0/x * (1.0 + y*(c1 + y*(c2 + y*(c3 + y*(c4 + y*(c5 + y*(c6 + y*c7)))))));
+    result->err = GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
   }
   else {
-    *result = 0.0;
+    result->val = 0.0;
+    result->err = 0.0;
     return GSL_EUNDRFLW;
   }
 }
 
 
 int
-gsl_sf_legendre_Q1_impl(const double x, double * result)
+gsl_sf_legendre_Q1_impl(const double x, gsl_sf_result * result)
 {
-  if(x <= -1.0 || x == 1.0) {
-    *result = 0.0;
+  if(result == 0) {
+    return GSL_EFAULT;
+  }
+  else if(x <= -1.0 || x == 1.0) {
+    result->val = 0.0;
+    result->err = 0.0;
     return GSL_EDOM;
   }
   else if(x < 1.0){
-    *result = 0.5 * x * log((1.0+x)/(1.0-x)) - 1.0;
+    result->val = 0.5 * x * log((1.0+x)/(1.0-x)) - 1.0;
+    result->err = GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
   }
   else if(x < 6.0) {
-    *result = 0.5 * x * log((x+1.0)/(x-1.0)) - 1.0;
+    result->val = 0.5 * x * log((x+1.0)/(x-1.0)) - 1.0;
+    result->err = GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
   }
   else if(x*GSL_SQRT_DBL_MIN < 0.99/M_SQRT3) {
@@ -213,41 +229,27 @@ gsl_sf_legendre_Q1_impl(const double x, double * result)
     const double c7 = 3.0/17.0;
     const double c8 = 3.0/19.0;
     const double sum = 1.0 + y*(c1 + y*(c2 + y*(c3 + y*(c4 + y*(c5 + y*(c6 + y*(c7 + y*c8)))))));
-    *result = sum / (3.0*x*x);
+    result->val = sum / (3.0*x*x);
+    result->err = GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
   }
   else {
-    *result = 0.0;
+    result->val = 0.0;
+    result->err = 0.0;
     return GSL_EUNDRFLW;
   }
 }
 
 
-#if 0
 int
-gsl_sf_legendre_Q2_impl(const double x, double * result)
+gsl_sf_legendre_Ql_impl(const int l, const double x, gsl_sf_result * result)
 {
-  if(x <= -1.0 || x == 1.0) {
-    *result = 0.0;
-    return GSL_EDOM;
+  if(result == 0) {
+    return GSL_EFAULT;
   }
-  else if(x < 1.0){
-    *result = 0.25 * (3.0*x*x-1.0) * log((1.0+x)/(1.0-x)) - 1.5*x;
-    return GSL_SUCCESS;
-  }
-  else {
-    *result = 0.25 * (3.0*x*x-1.0) * log((x+1.0)/(x-1.0)) - 1.5*x;
-    return GSL_SUCCESS;
-  }
-}
-#endif
-
-
-int
-gsl_sf_legendre_Ql_impl(const int l, const double x, double * result)
-{
-  if(x <= -1.0 || x == 1.0 || l < 0) {
-    *result = 0.0;
+  else if(x <= -1.0 || x == 1.0 || l < 0) {
+    result->val = 0.0;
+    result->err = 0.0;
     return GSL_EDOM;
   }
   else if(l == 0) {
@@ -262,11 +264,11 @@ gsl_sf_legendre_Ql_impl(const int l, const double x, double * result)
   else if(x < 1.0){
     /* Forward recurrence.
      */
-    double Q0, Q1;
+    gsl_sf_result Q0, Q1;
     int stat_Q0 = gsl_sf_legendre_Q0_impl(x, &Q0);
     int stat_Q1 = gsl_sf_legendre_Q1_impl(x, &Q1);
-    double Qellm1 = Q0;
-    double Qell   = Q1;
+    double Qellm1 = Q0.val;
+    double Qell   = Q1.val;
     double Qellp1;
     int ell;
     for(ell=1; ell<l; ell++) {
@@ -274,7 +276,8 @@ gsl_sf_legendre_Ql_impl(const int l, const double x, double * result)
       Qellm1 = Qell;
       Qell   = Qellp1;
     }
-    *result = Qell;
+    result->val = Qell;
+    result->err = GSL_DBL_EPSILON * fabs(result->val);
     return GSL_ERROR_SELECT_2(stat_Q0, stat_Q1);
   }
   else {
@@ -294,14 +297,16 @@ gsl_sf_legendre_Ql_impl(const int l, const double x, double * result)
     }
 
     if(fabs(Qell) > fabs(Qellp1)) {
-      double Q0;
+      gsl_sf_result Q0;
       stat_Q = gsl_sf_legendre_Q0_impl(x, &Q0);
-      *result = GSL_SQRT_DBL_MIN * Q0 / Qell;
+      result->val = GSL_SQRT_DBL_MIN * Q0.val / Qell;
+      result->err = 0.5 * ell * GSL_DBL_EPSILON * fabs(result->val);
     }
     else {
-      double Q1;
+      gsl_sf_result Q1;
       stat_Q = gsl_sf_legendre_Q1_impl(x, &Q1);
-      *result = GSL_SQRT_DBL_MIN * Q1 / Qellp1;
+      result->val = GSL_SQRT_DBL_MIN * Q1.val / Qellp1;
+      result->err = 0.5 * ell * GSL_DBL_EPSILON * fabs(result->val);
     }
 
     return GSL_ERROR_SELECT_2(stat_Q, stat_CF1);
@@ -312,7 +317,7 @@ gsl_sf_legendre_Ql_impl(const int l, const double x, double * result)
 /*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
 
 int
-gsl_sf_legendre_Q0_e(const double x, double * result)
+gsl_sf_legendre_Q0_e(const double x, gsl_sf_result * result)
 {
   int status = gsl_sf_legendre_Q0_impl(x, result);
   if(status != GSL_SUCCESS) {
@@ -323,7 +328,7 @@ gsl_sf_legendre_Q0_e(const double x, double * result)
 
 
 int
-gsl_sf_legendre_Q1_e(const double x, double * result)
+gsl_sf_legendre_Q1_e(const double x, gsl_sf_result * result)
 {
   int status = gsl_sf_legendre_Q1_impl(x, result);
   if(status != GSL_SUCCESS) {
@@ -333,77 +338,12 @@ gsl_sf_legendre_Q1_e(const double x, double * result)
 }
 
 
-#if 0
 int
-gsl_sf_legendre_Q2_e(const double x, double * result)
-{
-  int status = gsl_sf_legendre_Q2_impl(x, result);
-  if(status != GSL_SUCCESS) {
-    GSL_ERROR("gsl_sf_legendre_Q2_e", status);
-  }
-  return status;
-}
-#endif
-
-
-int
-gsl_sf_legendre_Ql_e(const int l, const double x, double * result)
+gsl_sf_legendre_Ql_e(const int l, const double x, gsl_sf_result * result)
 {
   int status = gsl_sf_legendre_Ql_impl(l, x, result);
   if(status != GSL_SUCCESS) {
     GSL_ERROR("gsl_sf_legendre_Ql_e", status);
   }
   return status;
-}
-
-
-/*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*-*/
-
-double
-gsl_sf_legendre_Q0(const double x)
-{
-  double y;
-  int status = gsl_sf_legendre_Q0_impl(x, &y);
-  if(status != GSL_SUCCESS) {
-    GSL_WARNING("gsl_sf_legendre_Q0", status);
-  }
-  return y;
-}
-
-
-double
-gsl_sf_legendre_Q1(const double x)
-{
-  double y;
-  int status = gsl_sf_legendre_Q1_impl(x, &y);
-  if(status != GSL_SUCCESS) {
-    GSL_WARNING("gsl_sf_legendre_Q1", status);
-  }
-  return y;
-}
-
-
-#if 0
-double
-gsl_sf_legendre_Q2(const double x)
-{
-  double y;
-  int status = gsl_sf_legendre_Q2_impl(x, &y);
-  if(status != GSL_SUCCESS) {
-    GSL_WARNING("gsl_sf_legendre_Q2", status);
-  }
-  return y;
-}
-#endif
-
-
-double
-gsl_sf_legendre_Ql(const int l, const double x)
-{
-  double y;
-  int status = gsl_sf_legendre_Ql_impl(l, x, &y);
-  if(status != GSL_SUCCESS) {
-    GSL_WARNING("gsl_sf_legendre_Ql", status);
-  }
-  return y;
 }

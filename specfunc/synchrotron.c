@@ -170,14 +170,19 @@ static gsl_sf_cheb_series synchrotron2a_cs = {
 
 /*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
 
-int gsl_sf_synchrotron_1_impl(const double x, double * result)
+int gsl_sf_synchrotron_1_impl(const double x, gsl_sf_result * result)
 {
-  if(x < 0.0) {
-    *result = 0.0;
+  if(result == 0) {
+    return GSL_EFAULT;
+  }
+  else if(x < 0.0) {
+    result->val = 0.0;
+    result->err = 0.0;
     return GSL_EDOM;
   }
   else if(x < 2.0*M_SQRT2 * GSL_SQRT_DBL_EPSILON) {
-    *result = 2.14952824153447863671 * pow(x, 1.0/3.0);
+    result->val = 2.14952824153447863671 * pow(x, 1.0/3.0);
+    result->err = GSL_DBL_EPSILON/3.0 * result->val;
     return GSL_SUCCESS;
   }
   else if(x <= 4.0) {
@@ -185,54 +190,70 @@ int gsl_sf_synchrotron_1_impl(const double x, double * result)
     const double px   = pow(x,1.0/3.0);
     const double px11 = gsl_sf_pow_int(px,11);
     const double t = x*x/8.0 - 1.0;
-    const double cheb1 = gsl_sf_cheb_eval(&synchrotron1_cs, t);
-    const double cheb2 = gsl_sf_cheb_eval(&synchrotron2_cs, t);
-    *result = px * cheb1 - px11 * cheb2 - c0 * x;
+    gsl_sf_result result_c1;
+    gsl_sf_result result_c2;
+    gsl_sf_cheb_eval_impl(&synchrotron1_cs, t, &result_c1);
+    gsl_sf_cheb_eval_impl(&synchrotron2_cs, t, &result_c2);
+    result->val = px * result_c1.val - px11 * result_c2.val - c0 * x;
+    result->err = px * result_c1.err + px11 * result_c2.err + c0 * x * GSL_DBL_EPSILON;
     return GSL_SUCCESS;
   }
   else if(x < -8.0*GSL_LOG_DBL_MIN/7.0) {
     const double c0 = 0.2257913526447274323630976; /* log(sqrt(pi/2)) */
     const double t = (12.0 - x) / (x + 4.0);
-    const double cheb1 = gsl_sf_cheb_eval(&synchrotron1a_cs, t);
-    const double y = c0 - x + log(sqrt(x) * cheb1);
-    return gsl_sf_exp_impl(y, result);
+    gsl_sf_result result_c1;
+    gsl_sf_cheb_eval_impl(&synchrotron1a_cs, t, &result_c1);
+    result->val = sqrt(x) * result_c1.val * exp(c0 - x);
+    result->err = GSL_DBL_EPSILON * result->val * fabs(c0-x);
+    return GSL_SUCCESS;
   }
   else {
-    *result = 0.0;
+    result->val = 0.0;
+    result->err = 0.0;
     return GSL_EUNDRFLW;
   }
 }
 
 
-int gsl_sf_synchrotron_2_impl(const double x, double * result)
+int gsl_sf_synchrotron_2_impl(const double x, gsl_sf_result * result)
 {
-  if(x < 0.0) {
-    *result = 0.0;
+  if(result == 0) {
+    return GSL_EFAULT;
+  }
+  else if(x < 0.0) {
+    result->val = 0.0;
+    result->err = 0.0;
     return GSL_EDOM;
   }
   else if(x < 2.0*M_SQRT2*GSL_SQRT_DBL_EPSILON) {
-    *result = 1.07476412076723931836 * pow(x, 1.0/3.0);
+    result->val = 1.07476412076723931836 * pow(x, 1.0/3.0);
+    result->err = GSL_DBL_EPSILON/3.0 * result->val;
     return GSL_SUCCESS;
   }
   else if(x <= 4.0) {
     const double px  = pow(x, 1.0/3.0);
     const double px5 = gsl_sf_pow_int(px,5);
     const double t = x*x/8.0 - 1.0;
-    const double cheb1 = gsl_sf_cheb_eval(&synchrotron21_cs, t);
-    const double cheb2 = gsl_sf_cheb_eval(&synchrotron22_cs, t);
-    *result = px * cheb1 - px5 * cheb2;
+    gsl_sf_result cheb1;
+    gsl_sf_result cheb2;
+    gsl_sf_cheb_eval_impl(&synchrotron21_cs, t, &cheb1);
+    gsl_sf_cheb_eval_impl(&synchrotron22_cs, t, &cheb2);
+    result->val = px * cheb1.val - px5 * cheb2.val;
+    result->err = px * cheb1.err + px5 * cheb2.err;
     return GSL_SUCCESS;
   }
   else if(x < -8.0*GSL_LOG_DBL_MIN/7.0) {
     const double c0 = 0.22579135264472743236;   /* log(sqrt(pi/2)) */
-    double t = (10.0 - x) / (x + 2.0);
-    double cheb1 = gsl_sf_cheb_eval(&synchrotron2a_cs, t);
-    int stat_e = gsl_sf_exp_impl(c0 - x, result);
-    *result *= sqrt(x) * cheb1;
-    return stat_e;
+    const double t  = (10.0 - x) / (x + 2.0);
+    gsl_sf_result cheb1;
+    gsl_sf_cheb_eval_impl(&synchrotron2a_cs, t, &cheb1);
+    result->val = sqrt(x) * exp(c0-x) * cheb1.val;
+    result->err = GSL_DBL_EPSILON * result->val * fabs(c0-x);
+    return GSL_SUCCESS;
   }
   else {
-    *result = 0.0;
+    result->val = 0.0;
+    result->err = 0.0;
     return GSL_EUNDRFLW;
   }
 }
@@ -240,7 +261,7 @@ int gsl_sf_synchrotron_2_impl(const double x, double * result)
 
 /*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
 
-int gsl_sf_synchrotron_1_e(const double x, double * result)
+int gsl_sf_synchrotron_1_e(const double x, gsl_sf_result * result)
 {
   int status = gsl_sf_synchrotron_1_impl(x, result);
   if(status != GSL_SUCCESS) {
@@ -249,34 +270,11 @@ int gsl_sf_synchrotron_1_e(const double x, double * result)
   return status;
 }
 
-int gsl_sf_synchrotron_2_e(const double x, double * result)
+int gsl_sf_synchrotron_2_e(const double x, gsl_sf_result * result)
 {
   int status = gsl_sf_synchrotron_2_impl(x, result);
   if(status != GSL_SUCCESS) {
     GSL_ERROR("gsl_sf_synchrotron_2_e", status);
   }
   return status;
-}
-
-
-/*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*-*/
-
-double gsl_sf_synchrotron_1(const double x)
-{
-  double y;
-  int status = gsl_sf_synchrotron_1_impl(x, &y);
-  if(status != GSL_SUCCESS) {
-    GSL_WARNING("gsl_sf_synchrotron_1", status);
-  }
-  return y;
-}
-
-double gsl_sf_synchrotron_2(const double x)
-{
-  double y;
-  int status = gsl_sf_synchrotron_2_impl(x, &y);
-  if(status != GSL_SUCCESS) {
-    GSL_WARNING("gsl_sf_synchrotron_2", status);
-  }
-  return y;
 }

@@ -12,15 +12,14 @@
  *
  * Note that Im[Li_2(x)] = { 0 for x <= 1, -Pi*log(x) for x > 1 }
  */
-int     gsl_sf_dilog_impl(double x, double * result);
-int     gsl_sf_dilog_e(double x, double * result);
-double  gsl_sf_dilog(double);
+int     gsl_sf_dilog_impl(double x, gsl_sf_result * result);
+int     gsl_sf_dilog_e(double x, gsl_sf_result * result);
 
 
 /* DiLogarithm(z), for complex argument z = r Exp[i theta].
  */
-int gsl_sf_complex_dilog_impl(double r, double theta, double * result_re, double * result_im);
-int gsl_sf_complex_dilog_e(double r, double theta, double * result_re, double * result_im);
+int gsl_sf_complex_dilog_impl(double r, double theta, gsl_sf_result * result_re, gsl_sf_result * result_im);
+int gsl_sf_complex_dilog_e(double r, double theta, gsl_sf_result * result_re, gsl_sf_result * result_im);
 
 
-#endif /* GSL_SF_DILOG_H_ */
+#endif /* !GSL_SF_DILOG_H_ */

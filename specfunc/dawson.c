@@ -209,7 +209,7 @@ static gsl_sf_cheb_series dawa_cs = {
 /*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
 
 int
-gsl_sf_dawson_impl(double x, double * result)
+gsl_sf_dawson_impl(double x, gsl_sf_result * result)
 {
   const double xsml = 1.225 * GSL_SQRT_DBL_EPSILON;
   const double xbig = 1.0/(M_SQRT2*GSL_SQRT_DBL_EPSILON);
@@ -218,27 +218,39 @@ gsl_sf_dawson_impl(double x, double * result)
   const double y = fabs(x);
 
   if(y < xsml) {
-    *result = x;
+    result->val = x;
+    result->err = 0.0;
     return GSL_SUCCESS;
   }
   else if(y < 1.0) {
-    *result = x * (0.75 + gsl_sf_cheb_eval(&daw_cs, 2.0*y*y - 1.0));
+    gsl_sf_result result_c;
+    gsl_sf_cheb_eval_impl(&daw_cs, 2.0*y*y - 1.0, &result_c);
+    result->val = x * (0.75 + result_c.val);
+    result->err = y * result_c.err;
     return GSL_SUCCESS;
   }
   else if(y < 4.0) {
-    *result = x * (0.25 + gsl_sf_cheb_eval(&daw2_cs, 0.125*y*y - 1.0));
+    gsl_sf_result result_c;
+    gsl_sf_cheb_eval_impl(&daw2_cs, 0.125*y*y - 1.0, &result_c);
+    result->val = x * (0.25 + result_c.val);
+    result->err = y * result_c.err;
     return GSL_SUCCESS;
   }
   else if(y < xbig) {
-    *result = (0.5 + gsl_sf_cheb_eval(&dawa_cs, 32.0/(y*y) - 1.0)) / x;
+    gsl_sf_result result_c;
+    gsl_sf_cheb_eval_impl(&dawa_cs, 32.0/(y*y) - 1.0, &result_c);
+    result->val = (0.5 + result_c.val) / x;
+    result->err = result_c.err / y;
     return GSL_SUCCESS;
   }
   else if(y < xmax) {
-    *result = 0.5/x;
+    result->val = 0.5/x;
+    result->err = result->val * GSL_DBL_EPSILON;
     return GSL_SUCCESS;
   }
   else {
-    *result = 0.0;
+    result->val = 0.0;
+    result->err = 0.0;
     return GSL_EUNDRFLW;
   }
 }
@@ -247,25 +259,11 @@ gsl_sf_dawson_impl(double x, double * result)
 /*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
 
 int
-gsl_sf_dawson_e(double x, double * result)
+gsl_sf_dawson_e(double x, gsl_sf_result * result)
 {
   int status = gsl_sf_dawson_impl(x, result);
   if(status != GSL_SUCCESS) {
     GSL_ERROR("gsl_sf_dawson_e", status);
   }
   return status;
-}
-
-
-/*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*/
-
-double
-gsl_sf_dawson(double x)
-{
-  double y;
-  int status = gsl_sf_dawson_impl(x, &y);
-  if(status != GSL_SUCCESS) {
-    GSL_WARNING("gsl_sf_dawson", status);
-  }
-  return y;
 }

@@ -124,28 +124,35 @@ static gsl_sf_cheb_series adeb4_cs = {
 
 /*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
 
-int gsl_sf_debye_1_impl(const double x, double * result)
+int gsl_sf_debye_1_impl(const double x, gsl_sf_result * result)
 {
   const double val_infinity = 1.64493406684822644;
   const double xcut = -GSL_LOG_DBL_MIN;
 
-  if(x < 0.0) {
-    *result = 0.0;
+  if(result == 0) {
+    return GSL_EFAULT;
+  }
+  else if(x < 0.0) {
+    result->val = 0.0;
+    result->err = 0.0;
     return GSL_EDOM;
   }
   else if(x < 2.0*GSL_SQRT_DBL_EPSILON) {
-    *result = 1.0 - 0.25*x + x*x/36.0;
+    result->val = 1.0 - 0.25*x + x*x/36.0;
+    result->err = GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
   }
   else if(x <= 4.0) {
     const double t = x*x/8.0 - 1.0;
-    const double c = gsl_sf_cheb_eval(&adeb1_cs, t);
-    *result = c - 0.25 * x;
+    gsl_sf_result c;
+    gsl_sf_cheb_eval_impl(&adeb1_cs, t, &c);
+    result->val = c.val - 0.25 * x;
+    result->err = c.err + 0.25 * x * GSL_DBL_EPSILON;
     return GSL_SUCCESS;
   }
   else if(x < -(M_LN2 + GSL_LOG_DBL_EPSILON)) {
-    int nexp = floor(xcut/x);
-    double ex  = exp(-x);
+    const int nexp = floor(xcut/x);
+    const double ex  = exp(-x);
     double sum = 0.0;
     double xk  = nexp * x;
     double rk  = nexp;
@@ -156,42 +163,52 @@ int gsl_sf_debye_1_impl(const double x, double * result)
       rk -= 1.0;
       xk -= x;
     }
-    *result = val_infinity/x - sum*ex;
+    result->val = val_infinity/x - sum*ex;
+    result->err = GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
   }
   else if(x < xcut) {
-    *result = (val_infinity - exp(-x)*(x+1.0)) / x;
+    result->val = (val_infinity - exp(-x)*(x+1.0)) / x;
+    result->err = GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
   }
   else {
-    *result = val_infinity/x;
+    result->val = val_infinity/x;
+    result->err = GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
   }
 }
 
     
-int gsl_sf_debye_2_impl(const double x, double * result)
+int gsl_sf_debye_2_impl(const double x, gsl_sf_result * result)
 {
   const double val_infinity = 4.80822761263837714;
   const double xcut = -GSL_LOG_DBL_MIN;
 
-  if(x < 0.0) {
-    *result = 0.0;
+  if(result == 0) {
+    return GSL_EFAULT;
+  }
+  else if(x < 0.0) {
+    result->val = 0.0;
+    result->err = 0.0;
     return GSL_EDOM;
   }
   else if(x < 2.0*M_SQRT2*GSL_SQRT_DBL_EPSILON) {
-    *result = 1.0 - x/3.0 + x*x/24.0;
+    result->val = 1.0 - x/3.0 + x*x/24.0;
+    result->err = GSL_DBL_EPSILON * result->val;
     return GSL_SUCCESS;
   }
   else if(x <= 4.0) {
     const double t = x*x/8.0 - 1.0;
-    const double c = gsl_sf_cheb_eval(&adeb2_cs, t);
-    *result = c - x/3.0;
+    gsl_sf_result c;
+    gsl_sf_cheb_eval_impl(&adeb2_cs, t, &c);
+    result->val = c.val - x/3.0;
+    result->err = c.err + GSL_DBL_EPSILON * x/3.0;
     return GSL_SUCCESS;
   }
   else if(x < -(M_LN2 + GSL_LOG_DBL_EPSILON)) {
-    int nexp = floor(xcut/x);
-    double ex  = exp(-x);
+    const int nexp = floor(xcut/x);
+    const double ex  = exp(-x);
     double xk  = nexp * x;
     double rk  = nexp;
     double sum = 0.0;
@@ -202,18 +219,21 @@ int gsl_sf_debye_2_impl(const double x, double * result)
       rk -= 1.0;
       xk -= x;
     }
-    *result = val_infinity/(x*x) - 2.0 * sum * ex;
+    result->val = val_infinity/(x*x) - 2.0 * sum * ex;
+    result->err = GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
   }
   else if(x < xcut) {
     const double x2  = x*x;
     const double sum = 2.0 + 2.0*x + x2;
-    *result = (val_infinity - 2.0 * sum * exp(-x)) / x2;
+    result->val = (val_infinity - 2.0 * sum * exp(-x)) / x2;
+    result->err = GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
   }
   else {
-    *result = (val_infinity/x)/x;
-    if(*result == 0.0)
+    result->val = (val_infinity/x)/x;
+    result->err = GSL_DBL_EPSILON * result->val;
+    if(result->val == 0.0)
       return GSL_EUNDRFLW;
     else
       return GSL_SUCCESS;
@@ -221,28 +241,35 @@ int gsl_sf_debye_2_impl(const double x, double * result)
 }
 
 
-int gsl_sf_debye_3_impl(const double x, double * result)
+int gsl_sf_debye_3_impl(const double x, gsl_sf_result * result)
 {
   const double val_infinity = 19.4818182068004875;
   const double xcut = -GSL_LOG_DBL_MIN;
 
-  if(x < 0.0) {
-    *result = 0.0;
+  if(result == 0) {
+    return GSL_EFAULT;
+  }
+  else if(x < 0.0) {
+    result->val = 0.0;
+    result->err = 0.0;
     return GSL_EDOM;
   }
   else if(x < 2.0*M_SQRT2*GSL_SQRT_DBL_EPSILON) {
-    *result = 1.0 - 3.0*x/8.0 + x*x/20.0;
+    result->val = 1.0 - 3.0*x/8.0 + x*x/20.0;
+    result->err = GSL_DBL_EPSILON * result->val;
     return GSL_SUCCESS;
   }
   else if(x <= 4.0) {
     const double t = x*x/8.0 - 1.0;
-    const double c = gsl_sf_cheb_eval(&adeb3_cs, t);
-    *result = c - 0.375*x;
+    gsl_sf_result c;
+    gsl_sf_cheb_eval_impl(&adeb3_cs, t, &c);
+    result->val = c.val - 0.375*x;
+    result->err = c.err + GSL_DBL_EPSILON * 0.375*x;
     return GSL_SUCCESS;
   }
   else if(x < -(M_LN2 + GSL_LOG_DBL_EPSILON)) {
-    int nexp = floor(xcut/x);
-    double ex  = exp(-x);
+    const int nexp = floor(xcut/x);
+    const double ex  = exp(-x);
     double xk  = nexp * x;
     double rk  = nexp;
     double sum = 0.0;
@@ -254,18 +281,21 @@ int gsl_sf_debye_3_impl(const double x, double * result)
       rk -= 1.0;
       xk -= x;
     }
-    *result = val_infinity/(x*x*x) - 3.0 * sum * ex;
+    result->val = val_infinity/(x*x*x) - 3.0 * sum * ex;
+    result->err = GSL_DBL_EPSILON * result->val;
     return GSL_SUCCESS;
   }
   else if(x < xcut) {
     const double x3 = x*x*x;
     const double sum = 6.0 + 6.0*x + 3.0*x*x + x3;
-    *result = (val_infinity - 3.0 * sum * exp(-x)) / x3;
+    result->val = (val_infinity - 3.0 * sum * exp(-x)) / x3;
+    result->err = GSL_DBL_EPSILON * result->val;
     return GSL_SUCCESS;
   }
   else {
-    *result = ((val_infinity/x)/x)/x;
-    if(*result == 0.0)
+    result->val = ((val_infinity/x)/x)/x;
+    result->err = GSL_DBL_EPSILON * result->val;
+    if(result->val == 0.0)
       return GSL_EUNDRFLW;
     else
       return GSL_SUCCESS;
@@ -273,28 +303,35 @@ int gsl_sf_debye_3_impl(const double x, double * result)
 }
 
 
-int gsl_sf_debye_4_impl(const double x, double * result)
+int gsl_sf_debye_4_impl(const double x, gsl_sf_result * result)
 {
   const double val_infinity = 99.5450644937635129;
   const double xcut = -GSL_LOG_DBL_MIN;
 
-  if(x < 0.0) {
-    *result = 0.0;
+  if(result == 0) {
+    return GSL_EFAULT;
+  }
+  else if(x < 0.0) {
+    result->val = 0.0;
+    result->err = 0.0;
     return GSL_EDOM;
   }
   else if(x < 2.0*M_SQRT2*GSL_SQRT_DBL_EPSILON) {
-    *result = 1.0 - 2.0*x/5.0 + x*x/18.0;
+    result->val = 1.0 - 2.0*x/5.0 + x*x/18.0;
+    result->err = GSL_DBL_EPSILON * result->val;
     return GSL_SUCCESS;
   }
   else if(x <= 4.0) {
     const double t = x*x/8.0 - 1.0;
-    const double c = gsl_sf_cheb_eval(&adeb4_cs, t);
-    *result = c - 2.0*x/5.0;
+    gsl_sf_result c;
+    gsl_sf_cheb_eval_impl(&adeb4_cs, t, &c);
+    result->val = c.val - 2.0*x/5.0;
+    result->err = c.err + GSL_DBL_EPSILON * 2.0*x/5.0;
     return GSL_SUCCESS;
   }
   else if(x < -(M_LN2 + GSL_LOG_DBL_EPSILON)) {
-    int nexp = floor(xcut/x);
-    double ex  = exp(-x);
+    const int nexp = floor(xcut/x);
+    const double ex  = exp(-x);
     double xk  = nexp * x;
     double rk  = nexp;
     double sum = 0.0;
@@ -306,19 +343,22 @@ int gsl_sf_debye_4_impl(const double x, double * result)
       rk -= 1.0;
       xk -= x;
     }
-    *result = val_infinity/(x*x*x*x) - 4.0 * sum * ex;
+    result->val = val_infinity/(x*x*x*x) - 4.0 * sum * ex;
+    result->err = GSL_DBL_EPSILON * result->val;
     return GSL_SUCCESS;
   }
   else if(x < xcut) {
     const double x2 = x*x;
     const double x4 = x2*x2;
     const double sum = 24.0 + 24.0*x + 12.0*x2 + 4.0*x2*x + x4;
-    *result = (val_infinity - 4.0 * sum * exp(-x)) / x4;
+    result->val = (val_infinity - 4.0 * sum * exp(-x)) / x4;
+    result->err = GSL_DBL_EPSILON * result->val;
     return GSL_SUCCESS;
   }
   else {
-    *result = (((val_infinity/x)/x)/x)/x;
-    if(*result == 0.0)
+    result->val = (((val_infinity/x)/x)/x)/x;
+    result->err = GSL_DBL_EPSILON * result->val;
+    if(result->val == 0.0)
       return GSL_EUNDRFLW;
     else
       return GSL_SUCCESS;
@@ -329,7 +369,7 @@ int gsl_sf_debye_4_impl(const double x, double * result)
 /*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
 
 int
-gsl_sf_debye_1_e(const double x, double * result)
+gsl_sf_debye_1_e(const double x, gsl_sf_result * result)
 {
   int status = gsl_sf_debye_1_impl(x, result);
   if(status != GSL_SUCCESS) {
@@ -339,7 +379,7 @@ gsl_sf_debye_1_e(const double x, double * result)
 }
 
 int
-gsl_sf_debye_2_e(const double x, double * result)
+gsl_sf_debye_2_e(const double x, gsl_sf_result * result)
 {
   int status = gsl_sf_debye_2_impl(x, result);
   if(status != GSL_SUCCESS) {
@@ -349,7 +389,7 @@ gsl_sf_debye_2_e(const double x, double * result)
 }
 
 int
-gsl_sf_debye_3_e(const double x, double * result)
+gsl_sf_debye_3_e(const double x, gsl_sf_result * result)
 {
   int status = gsl_sf_debye_3_impl(x, result);
   if(status != GSL_SUCCESS) {
@@ -359,58 +399,11 @@ gsl_sf_debye_3_e(const double x, double * result)
 }
 
 int
-gsl_sf_debye_4_e(const double x, double * result)
+gsl_sf_debye_4_e(const double x, gsl_sf_result * result)
 {
   int status = gsl_sf_debye_4_impl(x, result);
   if(status != GSL_SUCCESS) {
     GSL_ERROR("gsl_sf_debye_4_e", status);
   }
   return status;
-}
-
-
-/*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*/
-
-double
-gsl_sf_debye_1(const double x)
-{
-  double y;
-  int status = gsl_sf_debye_1_impl(x, &y);
-  if(status != GSL_SUCCESS) {
-    GSL_WARNING("gsl_sf_debye_1", status);
-  }
-  return y;
-}
-
-double
-gsl_sf_debye_2(const double x)
-{
-  double y;
-  int status = gsl_sf_debye_2_impl(x, &y);
-  if(status != GSL_SUCCESS) {
-    GSL_WARNING("gsl_sf_debye_2", status);
-  }
-  return y;
-}
-
-double
-gsl_sf_debye_3(const double x)
-{
-  double y;
-  int status = gsl_sf_debye_3_impl(x, &y);
-  if(status != GSL_SUCCESS) {
-    GSL_WARNING("gsl_sf_debye_3", status);
-  }
-  return y;
-}
-
-double
-gsl_sf_debye_4(const double x)
-{
-  double y;
-  int status = gsl_sf_debye_4_impl(x, &y);
-  if(status != GSL_SUCCESS) {
-    GSL_WARNING("gsl_sf_debye_4", status);
-  }
-  return y;
 }

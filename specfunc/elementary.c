@@ -8,7 +8,7 @@
 
 
 int
-gsl_sf_multiply_impl(const double x, const double y, double * result)
+gsl_sf_multiply_impl(const double x, const double y, gsl_sf_result * result)
 {
   const double ax = fabs(x);
   const double ay = fabs(y);
@@ -16,13 +16,15 @@ gsl_sf_multiply_impl(const double x, const double y, double * result)
   if(x == 0.0 || y == 0.0) {
     /* It is necessary to eliminate this immediately.
      */
-    *result = 0.0;
+    result->val = 0.0;
+    result->err = 0.0;
     return GSL_SUCCESS;
   }
   else if((ax <= 1.0 && ay >= 1.0) || (ay <= 1.0 && ax >= 1.0)) {
     /* Straddling 1.0 is always safe.
      */
-    *result = x*y;
+    result->val = x*y;
+    result->err = GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
   }
   else if(   (ax < 0.8*GSL_SQRT_DBL_MAX && ay < 0.8*GSL_SQRT_DBL_MAX)
@@ -30,24 +32,28 @@ gsl_sf_multiply_impl(const double x, const double y, double * result)
     ) {
     /* Not too big or too small. But just right...
      */
-    *result = x*y;
+    result->val = x*y;
+    result->err = GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
   }
   else {
     const double lx = log(ax);
     const double ly = log(ay);
     if(lx+ly < GSL_LOG_DBL_MIN) {
-      *result = 0.0;
+      result->val = 0.0;
+      result->err = 0.0;
       return GSL_EUNDRFLW;
     }
     else if(lx+ly > GSL_LOG_DBL_MAX) {
-      *result = 0.0; /* FIXME: should be Inf */
+      result->val = 0.0; /* FIXME: should be Inf */
+      result->err = 0.0;
       return GSL_EOVRFLW;
     }
     else {
       /* Well... ok then.
        */
-      *result = x*y;
+      result->val = x*y;
+      result->err = GSL_DBL_EPSILON * fabs(result->val);
       return GSL_SUCCESS;
     }
   }
@@ -57,25 +63,11 @@ gsl_sf_multiply_impl(const double x, const double y, double * result)
 /*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
 
 int
-gsl_sf_multiply_e(const double x, const double y, double * result)
+gsl_sf_multiply_e(const double x, const double y, gsl_sf_result * result)
 {
   int status = gsl_sf_multiply_impl(x, y, result);
   if(status != GSL_SUCCESS) {
     GSL_ERROR("gsl_sf_multiply_e", status);
   }
   return status;
-}
-
-
-/*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*/
-
-double
-gsl_sf_multiply(const double x, const double y)
-{
-  double r;
-  int status = gsl_sf_multiply_impl(x, y, &r);
-  if(status != GSL_SUCCESS) {
-    GSL_WARNING("gsl_sf_multiply", status);
-  }
-  return r;
 }

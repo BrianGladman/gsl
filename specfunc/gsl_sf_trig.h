@@ -4,6 +4,8 @@
 #ifndef GSL_SF_TRIG_H_
 #define GSL_SF_TRIG_H_
 
+#include <gsl_sf_result.h>
+
 
 /* sin(z) for complex z
  *
@@ -33,18 +35,16 @@ int gsl_sf_complex_logsin_e(double zr, double zi, double * lszr, double * lszi);
  *
  * exceptions: GSL_EDOM
  */
-int     gsl_sf_lnsinh_impl(double x, double * result);
-int     gsl_sf_lnsinh_e(double x, double * result);
-double  gsl_sf_lnsinh(double x);
+int     gsl_sf_lnsinh_impl(double x, gsl_sf_result * result);
+int     gsl_sf_lnsinh_e(double x, gsl_sf_result * result);
 
 
 /* log(cosh(x))
  *
  * exceptions: none
  */
-int     gsl_sf_lncosh_impl(double x, double * result);
-int     gsl_sf_lncosh_e(double x, double * result);
-double  gsl_sf_lncosh(double x);
+int     gsl_sf_lncosh_impl(double x, gsl_sf_result * result);
+int     gsl_sf_lncosh_e(double x, gsl_sf_result * result);
 
 
 /* Convert polar to rectlinear coordinates.

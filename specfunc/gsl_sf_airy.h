@@ -5,25 +5,22 @@
 #define GSL_SF_AIRY_H_
 
 #include <gsl_sf_result.h>
-#include <gsl_precision.h>
 
 
 /* Airy function Ai(x)
  *
  * exceptions: GSL_EUNDRFLW
  */
-int     gsl_sf_airy_Ai_impl(double x, double * result, gsl_prec_t goal, unsigned int err_bits);
-int     gsl_sf_airy_Ai_e(double x, double * result, gsl_prec_t goal, unsigned int err_bits);
-double  gsl_sf_airy_Ai(double x, gsl_prec_t goal, unsigned int err_bits);
+int gsl_sf_airy_Ai_impl(double x, gsl_sf_result * result);
+int gsl_sf_airy_Ai_e(double x, gsl_sf_result * result);
 
 
 /* Airy function Bi(x)
  *
  * exceptions: GSL_EOVRFLW
  */
-int     gsl_sf_airy_Bi_impl(double x, double * result, gsl_prec_t goal, unsigned int err_bits);
-int     gsl_sf_airy_Bi_e(double x, double * result, gsl_prec_t goal, unsigned int err_bits);
-double  gsl_sf_airy_Bi(double x, gsl_prec_t goal, unsigned int err_bits);
+int gsl_sf_airy_Bi_impl(double x, gsl_sf_result * result);
+int gsl_sf_airy_Bi_e(double x, gsl_sf_result * result);
 
 
 /* scaled Ai(x):
@@ -32,9 +29,8 @@ double  gsl_sf_airy_Bi(double x, gsl_prec_t goal, unsigned int err_bits);
  *
  * exceptions: none
  */
-int     gsl_sf_airy_Ai_scaled_impl(double x, double * result, gsl_prec_t goal, unsigned int err_bits);
-int     gsl_sf_airy_Ai_scaled_e(double x, double * result, gsl_prec_t goal, unsigned int err_bits);
-double  gsl_sf_airy_Ai_scaled(double x, gsl_prec_t goal, unsigned int err_bits);
+int gsl_sf_airy_Ai_scaled_impl(double x, gsl_sf_result * result);
+int gsl_sf_airy_Ai_scaled_e(double x, gsl_sf_result * result);
 
 
 /* scaled Bi(x):
@@ -43,27 +39,24 @@ double  gsl_sf_airy_Ai_scaled(double x, gsl_prec_t goal, unsigned int err_bits);
  *
  * exceptions: none
  */
-int gsl_sf_airy_Bi_scaled_impl(double x, double * result, gsl_prec_t goal, unsigned int err_bits);
-int gsl_sf_airy_Bi_scaled_e(double x, double * result, gsl_prec_t goal, unsigned int err_bits);
-double gsl_sf_airy_Bi_scaled(double x, gsl_prec_t goal, unsigned int err_bits);
+int gsl_sf_airy_Bi_scaled_impl(double x, gsl_sf_result * result);
+int gsl_sf_airy_Bi_scaled_e(double x, gsl_sf_result * result);
 
 
 /* derivative Ai'(x)
  *
  * exceptions: GSL_EUNDRFLW
  */
-int     gsl_sf_airy_Ai_deriv_impl(double x, double * result, gsl_prec_t goal, unsigned int err_bits);
-int     gsl_sf_airy_Ai_deriv_e(double x, double * result, gsl_prec_t goal, unsigned int err_bits);
-double  gsl_sf_airy_Ai_deriv(double x, gsl_prec_t goal, unsigned int err_bits);
+int gsl_sf_airy_Ai_deriv_impl(double x, gsl_sf_result * result);
+int gsl_sf_airy_Ai_deriv_e(double x, gsl_sf_result * result);
 
 
 /* derivative Bi'(x)
  *
  * exceptions: GSL_EOVRFLW
  */
-int     gsl_sf_airy_Bi_deriv_impl(double x, double * result, gsl_prec_t goal, unsigned int err_bits);
-int     gsl_sf_airy_Bi_deriv_e(double x, double * result, gsl_prec_t goal, unsigned int err_bits);
-double  gsl_sf_airy_Bi_deriv(double x, gsl_prec_t goal, unsigned int err_bits);
+int     gsl_sf_airy_Bi_deriv_impl(double x, gsl_sf_result * result);
+int     gsl_sf_airy_Bi_deriv_e(double x, gsl_sf_result * result);
 
 
 /* scaled derivative Ai'(x):
@@ -72,9 +65,8 @@ double  gsl_sf_airy_Bi_deriv(double x, gsl_prec_t goal, unsigned int err_bits);
  *
  * exceptions: none
  */
-int     gsl_sf_airy_Ai_deriv_scaled_impl(double x, double * result, gsl_prec_t goal, unsigned int err_bits);
-int     gsl_sf_airy_Ai_deriv_scaled_e(double x, double * result, gsl_prec_t goal, unsigned int err_bits);
-double  gsl_sf_airy_Ai_deriv_scaled(double x, gsl_prec_t goal, unsigned int err_bits);
+int gsl_sf_airy_Ai_deriv_scaled_impl(double x, gsl_sf_result * result);
+int gsl_sf_airy_Ai_deriv_scaled_e(double x, gsl_sf_result * result);
 
 
 /* scaled derivative:
@@ -83,9 +75,8 @@ double  gsl_sf_airy_Ai_deriv_scaled(double x, gsl_prec_t goal, unsigned int err_
  *
  * exceptions: none
  */
-int gsl_sf_airy_Bi_deriv_scaled_impl(double x, double * result, gsl_prec_t goal, unsigned int err_bits);
-int gsl_sf_airy_Bi_deriv_scaled_e(double x, double * result, gsl_prec_t goal, unsigned int err_bits);
-double gsl_sf_airy_Bi_deriv_scaled(double x, gsl_prec_t goal, unsigned int err_bits);
+int gsl_sf_airy_Bi_deriv_scaled_impl(double x, gsl_sf_result * result);
+int gsl_sf_airy_Bi_deriv_scaled_e(double x, gsl_sf_result * result);
 
 
 #endif /* GSL_SF_AIRY_H_ */

@@ -50,35 +50,48 @@ static gsl_sf_cheb_series by0_cs = {
 
 /*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
 
-int gsl_sf_bessel_Y0_impl(const double x, double * result)
+int gsl_sf_bessel_Y0_impl(const double x, gsl_sf_result * result)
 {
   const double two_over_pi = 2.0/M_PI;
   const double xmax        = 1.0/GSL_DBL_EPSILON;
 
-  if (x <= 0.0) {
-    *result = 0.0;
+  if(result == 0) {
+    return GSL_EFAULT;
+  }
+  else if (x <= 0.0) {
+    result->val = 0.0;
+    result->err = 0.0;
     return GSL_EDOM;
   }
   else if(x < 4.0) {
-    double J0;
+    gsl_sf_result J0;
+    gsl_sf_result c;
     int stat_J0 = gsl_sf_bessel_J0_impl(x, &J0);
-    double c = gsl_sf_cheb_eval(&by0_cs, 0.125*x*x-1.0);
-    *result  = two_over_pi*(-M_LN2 + log(x))*J0 + 0.375 + c;
+    gsl_sf_cheb_eval_impl(&by0_cs, 0.125*x*x-1.0, &c);
+    result->val = two_over_pi*(-M_LN2 + log(x))*J0.val + 0.375 + c.val;
+    result->err = GSL_DBL_EPSILON * fabs(result->val) + c.err;
     return stat_J0;
   }
   else if(x < xmax) {
+    /* Leading behaviour of phase is x, which is exact,
+     * so the error is bounded.
+     */
     double z  = 32.0/(x*x) - 1.0;
-    double c1 = gsl_sf_cheb_eval(&_bessel_amp_phase_bm0_cs, z);
-    double c2 = gsl_sf_cheb_eval(&_bessel_amp_phase_bth0_cs, z);
-    double ampl  = (0.75 + c1) / sqrt(x);
-    double alpha = x;
-    int stat_red = gsl_sf_angle_restrict_pos_impl(&alpha);
-    double theta = alpha - M_PI_4 +  c2/x;
-    *result = ampl * sin(theta);
-    return stat_red;
+    double ampl;
+    double theta;
+    gsl_sf_result c1;
+    gsl_sf_result c2;
+    gsl_sf_cheb_eval_impl(&_bessel_amp_phase_bm0_cs,  z, &c1);
+    gsl_sf_cheb_eval_impl(&_bessel_amp_phase_bth0_cs, z, &c2);
+    ampl  = (0.75 + c1.val) / sqrt(x);
+    theta = x - M_PI_4 +  c2.val/x;
+    result->val = ampl * sin(theta);
+    result->err = 2.0 * GSL_DBL_EPSILON * fabs(result->val);
+    return GSL_SUCCESS;
   }
   else {
-    *result = 0.0;
+    result->val = 0.0;
+    result->err = 0.0;
     return GSL_EUNDRFLW;
   }
 }
@@ -86,24 +99,11 @@ int gsl_sf_bessel_Y0_impl(const double x, double * result)
 
 /*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
 
-int gsl_sf_bessel_Y0_e(const double x, double * result)
+int gsl_sf_bessel_Y0_e(const double x, gsl_sf_result * result)
 {
   int status = gsl_sf_bessel_Y0_impl(x, result);
   if(status != GSL_SUCCESS) {
     GSL_ERROR("gsl_sf_bessel_Y0_e", status);
   }
   return status;
-}
-
-
-/*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*-*-*/
-
-double gsl_sf_bessel_Y0(const double x)
-{
-  double y;
-  int status = gsl_sf_bessel_Y0_impl(x, &y);
-  if(status != GSL_SUCCESS) {
-    GSL_WARNING("gsl_sf_bessel_Y0", status);
-  }
-  return y;
 }
