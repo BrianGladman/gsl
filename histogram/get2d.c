@@ -21,6 +21,8 @@
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_histogram2d.h>
 
+#include "find.c"
+
 double
 gsl_histogram2d_get (const gsl_histogram2d * h, const size_t i, const size_t j)
 {
