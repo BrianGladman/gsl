@@ -118,5 +118,25 @@ FILE * gsl_set_stream (FILE * new_stream);
 
 extern int gsl_warnings_off ;
 
-#endif /* GSL_ERRNO_H */
 
+/* Sometimes you have several status results returned from
+ * function calls and you want to combine them in some sensible
+ * way. You cannot produce a "total" status condition, but you can
+ * pick one from a set of conditions based on an implied hierarchy.
+ *
+ * In other words:
+ *    you have: status_a, status_b, ...
+ *    you want: status = (status_a if it is bad, or status_b if it is bad,...)
+ *
+ * In this example you consider status_a to be more important and
+ * it is checked first, followed by the others in the order specified.
+ *
+ * Here are some dumb macros to do this.
+ */
+#define GSL_ERROR_SELECT_2(a,b)       ((a) != GSL_SUCCESS ? (a) : ((b) != GSL_SUCCESS ? (b) : GSL_SUCCESS))
+#define GSL_ERROR_SELECT_3(a,b,c)     ((a) != GSL_SUCCESS ? (a) : GSL_ERROR_SELECT_2(b,c))
+#define GSL_ERROR_SELECT_4(a,b,c,d)   ((a) != GSL_SUCCESS ? (a) : GSL_ERROR_SELECT_3(b,c,d))
+#define GSL_ERROR_SELECT_4(a,b,c,d,e) ((a) != GSL_SUCCESS ? (a) : GSL_ERROR_SELECT_4(b,c,d,e))
+
+
+#endif /* GSL_ERRNO_H */
