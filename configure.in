@@ -30,8 +30,11 @@ dnl for AC_C_INLINE from acspecific.mt
 dnl
 AC_CACHE_CHECK([for extern inline], ac_cv_c_extern_inline,
 [ac_cv_c_extern_inline=no
-AC_TRY_COMPILE(, [} extern $ac_cv_c_inline foo() {], 
-	       [ac_cv_c_extern_inline="yes"])
+AC_TRY_COMPILE([extern $ac_cv_c_inline double foo(double x);
+extern $ac_cv_c_inline double foo(double x) { return x + 1.0 ; } ;
+double foo (double x) { return x + 1.0 ; };], 
+[  foo(1.0)  ],
+[ac_cv_c_extern_inline="yes"])
 ])
 
 if test "$ac_cv_c_extern_inline" != no ; then

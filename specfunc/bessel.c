@@ -21,48 +21,41 @@
 
 /* Debye functions [Abramowitz+Stegun, 9.3.9-10] */
 
-#ifdef HAVE_INLINE
-inline
-#endif
-static double debye_u1(const double * tpow)
+inline static double 
+debye_u1(const double * tpow)
 {
   return (3.0*tpow[1] - 5.0*tpow[3])/24.0;
 }
-#ifdef HAVE_INLINE
-inline
-#endif
-static double debye_u2(const double * tpow)
+
+inline static double 
+debye_u2(const double * tpow)
 {
   return (81.0*tpow[2] - 462.0*tpow[4] + 385.0*tpow[6])/1152.0;
 }
-#ifdef HAVE_INLINE
+
 inline
-#endif
 static double debye_u3(const double * tpow)
 {
   return (30375.0*tpow[3] - 369603.0*tpow[5] + 765765.0*tpow[7] - 425425.0*tpow[9])/414720.0;
 }
-#ifdef HAVE_INLINE
+
 inline
-#endif
 static double debye_u4(const double * tpow)
 {
   return (4465125.0*tpow[4] - 94121676.0*tpow[6] + 349922430.0*tpow[8] - 
           446185740.0*tpow[10] + 185910725.0*tpow[12])/39813120.0;
 }
-#ifdef HAVE_INLINE
+
 inline
-#endif
 static double debye_u5(const double * tpow)
 {
   return (1519035525.0*tpow[5]     - 49286948607.0*tpow[7] + 
           284499769554.0*tpow[9]   - 614135872350.0*tpow[11] + 
           566098157625.0*tpow[13]  - 188699385875.0*tpow[15])/6688604160.0;
 }
+
 #if 0
-#ifdef HAVE_INLINE
 inline
-#endif
 static double debye_u6(const double * tpow)
 {
   return (2757049477875.0*tpow[6] - 127577298354750.0*tpow[8] + 

@@ -10,18 +10,14 @@
 
 /*-*-*-*-*-*-*-*-*-*-*-* Private Section *-*-*-*-*-*-*-*-*-*-*-*/
 
-#ifdef HAVE_INLINE
 inline
-#endif
 static double locMAX3(double x, double y, double z)
 {
   double xy = GSL_MAX(x, y);
   return GSL_MAX(xy, z);
 }
 
-#ifdef HAVE_INLINE
 inline
-#endif
 static double locMAX4(double x, double y, double z, double w)
 {
   double xy  = GSL_MAX(x,  y);

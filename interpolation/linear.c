@@ -4,7 +4,6 @@
 #include <config.h>
 #include <stdlib.h>
 #include <gsl_errno.h>
-#include "bsearch.h"
 #include "gsl_interp.h"
 
 
@@ -115,7 +114,7 @@ linear_eval_impl (const gsl_interp_obj * linear_interp,
 	}
       else
 	{
-	  index = interp_bsearch (x_array, x, 0, interp->size - 1);
+	  index = gsl_interp_bsearch (x_array, x, 0, interp->size - 1);
 	}
 
       /* evaluate */
@@ -173,7 +172,7 @@ linear_eval_d_impl (const gsl_interp_obj * linear_interp,
 	}
       else
 	{
-	  index = interp_bsearch (x_array, x, 0, interp->size - 1);
+	  index = gsl_interp_bsearch (x_array, x, 0, interp->size - 1);
 	}
 
       /* evaluate */

@@ -12,9 +12,7 @@
 /* sinh(x) series
  * double-precision for |x| < 1.0
  */
-#ifdef HAVE_INLINE
 inline
-#endif
 static
 int
 sinh_series(const double x, double * result)
@@ -36,9 +34,7 @@ sinh_series(const double x, double * result)
 /* cosh(x)-1 series
  * double-precision for |x| < 1.0
  */
-#ifdef HAVE_INLINE
 inline
-#endif
 static
 int
 cosh_m1_series(const double x, double * result)

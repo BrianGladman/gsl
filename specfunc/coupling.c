@@ -8,9 +8,7 @@
 #include "gsl_sf_coupling.h"
 
 
-#ifdef HAVE_INLINE
 inline
-#endif
 static
 int locMax3(const int a, const int b, const int c)
 {
@@ -18,9 +16,7 @@ int locMax3(const int a, const int b, const int c)
   return GSL_MAX(d, c);
 }
 
-#ifdef HAVE_INLINE
 inline
-#endif
 static
 int locMin3(const int a, const int b, const int c)
 {
@@ -28,9 +24,7 @@ int locMin3(const int a, const int b, const int c)
   return GSL_MIN(d, c);
 }
 
-#ifdef HAVE_INLINE
 inline
-#endif
 static
 int locMin5(const int a, const int b, const int c, const int d, const int e)
 {

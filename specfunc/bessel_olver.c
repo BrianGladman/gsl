@@ -805,9 +805,7 @@ static double olver_A4(double z, double abs_zeta)
   }
 }
 
-#ifdef HAVE_INLINE
 inline
-#endif
 static double olver_Asum(double nu, double z, double abs_zeta, double * err)
 {
   double nu2 = nu*nu;
@@ -820,9 +818,7 @@ static double olver_Asum(double nu, double z, double abs_zeta, double * err)
   return 1.0 + A1/nu2 + A2/(nu2*nu2) + A3/(nu2*nu2*nu2) + A4/(nu2*nu2*nu2*nu2);
 }
 
-#ifdef HAVE_INLINE
 inline
-#endif
 static double olver_Bsum(double nu, double z, double abs_zeta)
 {
   double nu2 = nu*nu;

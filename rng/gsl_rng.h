@@ -78,11 +78,6 @@ extern const gsl_rng_type *gsl_rng_zuf;
 extern const gsl_rng_type *gsl_rng_default;
 extern unsigned long int gsl_rng_default_seed;
 
-unsigned long int gsl_rng_get (const gsl_rng * r);
-double gsl_rng_uniform (const gsl_rng * r);
-double gsl_rng_uniform_pos (const gsl_rng * r);
-unsigned long int gsl_rng_uniform_int (const gsl_rng * r, unsigned long int n);
-
 gsl_rng *gsl_rng_alloc (const gsl_rng_type * T);
 gsl_rng *gsl_rng_cpy (gsl_rng * dest, const gsl_rng * src);
 gsl_rng *gsl_rng_clone (const gsl_rng * r);
@@ -100,18 +95,30 @@ void gsl_rng_print_state (const gsl_rng * r);
 
 const gsl_rng_type * gsl_rng_env_setup (void);
 
+unsigned long int gsl_rng_get (const gsl_rng * r);
+double gsl_rng_uniform (const gsl_rng * r);
+double gsl_rng_uniform_pos (const gsl_rng * r);
+unsigned long int gsl_rng_uniform_int (const gsl_rng * r, unsigned long int n);
+
+
 #ifdef HAVE_INLINE
+extern inline unsigned long int gsl_rng_get (const gsl_rng * r);
+
 extern inline unsigned long int
 gsl_rng_get (const gsl_rng * r)
 {
   return (r->type->get) (r->state);
 }
 
+extern inline double gsl_rng_uniform (const gsl_rng * r);
+
 extern inline double
 gsl_rng_uniform (const gsl_rng * r)
 {
   return (r->type->get_double) (r->state);
 }
+
+extern inline double gsl_rng_uniform_pos (const gsl_rng * r);
 
 extern inline double
 gsl_rng_uniform_pos (const gsl_rng * r)
@@ -125,6 +132,8 @@ gsl_rng_uniform_pos (const gsl_rng * r)
 
   return x ;
 }
+
+extern inline unsigned long int gsl_rng_uniform_int (const gsl_rng * r, unsigned long int n);
 
 extern inline unsigned long int
 gsl_rng_uniform_int (const gsl_rng * r, unsigned long int n)
@@ -148,7 +157,6 @@ gsl_rng_uniform_int (const gsl_rng * r, unsigned long int n)
 
   return k;
 }
-
 #endif /* HAVE_INLINE */
 
 #endif /* GSL_RNG_H */

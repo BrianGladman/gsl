@@ -3,7 +3,7 @@
  */
 #ifndef GSL_INTERP_H_
 #define GSL_INTERP_H_
-
+#include <stdlib.h>
 
 /* evaluation accelerator */
 typedef struct {
@@ -93,23 +93,48 @@ gsl_interp_eval_deriv(const gsl_interp_obj * obj,
 void
 gsl_interp_obj_free(gsl_interp_obj * interp_obj);
 
+size_t gsl_interp_bsearch(const double x_array[], double x,
+                          size_t index_lo, size_t index_hi );
 
 #ifdef HAVE_INLINE
-#include "bsearch.h"
-extern
-inline
+extern inline size_t
+gsl_interp_bsearch(const double x_array[], double x,
+               size_t index_lo, size_t index_hi );
+
+extern inline size_t
+gsl_interp_bsearch(const double x_array[], double x,
+               size_t index_lo, size_t index_hi )
+{
+  size_t ilo = index_lo;
+  size_t ihi = index_hi;
+  while(ihi > ilo + 1) {
+    size_t i = (ihi + ilo)/2;
+    if(x_array[i] > x)
+      ihi = i;
+    else
+      ilo = i;
+  }
+  
+  return ilo;
+}
+#endif
+
 size_t
+gsl_interp_accel_find(gsl_interp_accel * a, const double xa[], size_t len, double x);
+
+#ifdef HAVE_INLINE
+extern inline size_t
 gsl_interp_accel_find(gsl_interp_accel * a, const double xa[], size_t len, double x)
 {
   size_t x_index = a->cache;
  
   if(x < xa[x_index]) {
     a->miss_count++;
-    a->cache = interp_bsearch(xa, x, 0, x_index);
+    a->cache = gsl_interp_bsearch(xa, x, 0, x_index);
   }
   else if(x > xa[x_index + 1]) {
     a->miss_count++;
-    a->cache = interp_bsearch(xa, x, x_index, len-1);
+    a->cache = gsl_interp_bsearch(xa, x, x_index, len-1);
   }
   else {
     a->hit_count++;

@@ -5,7 +5,6 @@
 #include <stdlib.h>
 #include <math.h>
 #include <gsl_errno.h>
-#include "bsearch.h"
 #include "gsl_interp.h"
 
 /* akima interpolation object */
@@ -261,7 +260,7 @@ gsl_interp_akima_eval_impl (const gsl_interp_obj * akima_interp,
 	}
       else
 	{
-	  index = interp_bsearch (x_array, x, 0, interp->size - 1);
+	  index = gsl_interp_bsearch (x_array, x, 0, interp->size - 1);
 	}
 
       /* evaluate */
@@ -309,7 +308,7 @@ gsl_interp_akima_eval_d_impl (const gsl_interp_obj * akima_interp,
 	}
       else
 	{
-	  index = interp_bsearch (x_array, x, 0, interp->size - 1);
+	  index = gsl_interp_bsearch (x_array, x, 0, interp->size - 1);
 	}
 
       /* evaluate */

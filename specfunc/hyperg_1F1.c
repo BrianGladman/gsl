@@ -819,9 +819,7 @@ hyperg_1F1_beq2a_pos(const double a, const double x, gsl_sf_result * result)
  * get:    M(a+1,b+1)  and  M(a,b+1)
  */
 #if 0
-#ifdef HAVE_INLINE
 inline
-#endif
 static
 int
 hyperg_1F1_diag_step(const double a, const double b, const double x,
@@ -847,9 +845,7 @@ hyperg_1F1_diag_step(const double a, const double b, const double x,
  * get:    M(a+1,b)  and  M(a+1,b+1)
  */
 #if 0
-#ifdef HAVE_INLINE
 inline
-#endif
 static
 int
 hyperg_1F1_diag_end_step(const double a, const double b, const double x,

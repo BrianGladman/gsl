@@ -36,7 +36,6 @@ extern int gsl_check_range ;
 
 
 #ifdef HAVE_INLINE
-
 extern inline 
 char
 gsl_matrix_char_get(const gsl_matrix_char * m, const size_t i, const size_t j)

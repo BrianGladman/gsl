@@ -472,10 +472,7 @@ gsl_la_solve_HH_impl(gsl_matrix * matrix,
 
 
 
-#ifdef HAVE_INLINE
-inline
-#endif
-static void
+inline static void
 jac_rotate(gsl_matrix * a,
            int i, int j, int k, int l,
            double * g, double * h,

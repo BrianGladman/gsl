@@ -92,9 +92,7 @@ static gsl_sf_cheb_series zeta_xgt1_cs = {
 
 
 /* assumes s >= 0 and s != 1.0 */
-#ifdef HAVE_INLINE
 inline
-#endif
 static int
 riemann_zeta_sgt0(double s, gsl_sf_result * result)
 {

@@ -5,7 +5,7 @@
 #define GSL_INTERP_BSEARCH_H_
 
 size_t
-interp_bsearch(const double x_array[], double x,
+gsl_interp_bsearch(const double x_array[], double x,
                size_t index_lo,
                size_t index_hi
                );
@@ -14,7 +14,7 @@ interp_bsearch(const double x_array[], double x,
 extern
 inline
 size_t
-interp_bsearch(const double x_array[], double x,
+gsl_interp_bsearch(const double x_array[], double x,
                size_t index_lo,
                size_t index_hi
                )

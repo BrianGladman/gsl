@@ -990,9 +990,7 @@ olver_b0(double z, double minus_zeta)
 }
 
 
-#ifdef HAVE_INLINE
 inline
-#endif
 static double
 olver_f1(double z, double minus_zeta)
 {

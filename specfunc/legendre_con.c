@@ -133,17 +133,13 @@ conicalP_negmu_xgt1_CF1(const double mu, const int ell, const double tau,
  * [Dunster, Proc. Roy. Soc. Edinburgh 119A, 311 (1991), p. 326]
  */
 
-#ifdef HAVE_INLINE
 inline
-#endif
 static double olver_U1(double beta2, double p)
 {
   return (p-1.0)/(24.0*(1.0+beta2)) * (3.0 + beta2*(2.0 + 5.0*p*(1.0+p)));
 }
 
-#ifdef HAVE_INLINE
 inline
-#endif
 static double olver_U2(double beta2, double p)
 {
   double beta4 = beta2*beta2;
@@ -236,9 +232,7 @@ gsl_sf_conicalP_xlt1_large_neg_mu_impl(double mu, double tau, double x,
  * A_n^{-mu}, B_n^{-mu}  [Olver, p.465, 469]
  */
 
-#ifdef HAVE_INLINE
 inline
-#endif
 static double olver_B0_xi(double mu, double xi)
 {
   return (1.0 - 4.0*mu*mu)/(8.0*xi) * (1.0/tanh(xi) - 1.0/xi);
@@ -259,9 +253,7 @@ static double olver_A1_xi(double mu, double xi, double x)
   return 0.5*xi*xi*B*B + (mu+0.5)*B - psi + mu/6.0*(0.25 - mu*mu);
 }
 
-#ifdef HAVE_INLINE
 inline
-#endif
 static double olver_B0_th(double mu, double theta)
 {
   return -(1.0 - 4.0*mu*mu)/(8.0*theta) * (1.0/tan(theta) - 1.0/theta);

@@ -54,9 +54,7 @@ static double erfc8_sum(double x)
   return num/den;
 }
 
-#ifdef HAVE_INLINE
 inline
-#endif
 static double erfc8(double x)
 {
   double e;
@@ -64,9 +62,8 @@ static double erfc8(double x)
   e *= exp(-x*x);
   return e;
 }
-#ifdef HAVE_INLINE
+
 inline
-#endif
 static double log_erfc8(double x)
 {
   double e;
@@ -222,17 +219,13 @@ static gsl_sf_cheb_series erfc_x510_cs = {
 };
 
 #if 0
-#ifdef HAVE_INLINE
 inline
-#endif
 static double
 erfc_asymptotic(double x)
 {
   return exp(-x*x)/x * erfcasympsum(x) / M_SQRTPI;
 }
-#ifdef HAVE_INLINE
 inline
-#endif
 static double
 log_erfc_asymptotic(double x)
 {

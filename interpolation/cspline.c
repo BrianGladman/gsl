@@ -4,7 +4,6 @@
 #include <config.h>
 #include <stdlib.h>
 #include <gsl_errno.h>
-#include "bsearch.h"
 #include "tridiag.h"
 #include "gsl_interp.h"
 
@@ -288,7 +287,7 @@ cspline_eval_impl (const gsl_interp_obj * cspline_interp,
 	}
       else
 	{
-	  index = interp_bsearch (x_array, x, 0, interp->size - 1);
+	  index = gsl_interp_bsearch (x_array, x, 0, interp->size - 1);
 	}
 
       /* evaluate */
@@ -350,7 +349,7 @@ cspline_eval_d_impl (const gsl_interp_obj * cspline_interp,
 	}
       else
 	{
-	  index = interp_bsearch (x_array, x, 0, interp->size - 1);
+	  index = gsl_interp_bsearch (x_array, x, 0, interp->size - 1);
 	}
 
       /* evaluate */

@@ -615,10 +615,8 @@ static gsl_sf_cheb_series bip2_cs = {
 
 
 /* assumes x >= 1.0 */
-#ifdef HAVE_INLINE
-inline
-#endif
-static int airy_aie(const double x, gsl_mode_t mode, gsl_sf_result * result)
+inline static int 
+airy_aie(const double x, gsl_mode_t mode, gsl_sf_result * result)
 {
   double sqx = sqrt(x);
   double z   = 2.0/(x*sqx) - 1.0;

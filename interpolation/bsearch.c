@@ -4,10 +4,10 @@
 #include <config.h>
 #include <stdlib.h>
 
-#include "bsearch.h"
+#include <gsl_interp.h>
 
 size_t
-interp_bsearch (const double x_array[], double x,
+gsl_interp_bsearch (const double x_array[], double x,
 		size_t index_lo,
 		size_t index_hi
 )

@@ -872,9 +872,7 @@ lngamma_complex_stirling(const double zr, const double zi, double * lg_r, double
 #endif /* 0 */
 
 
-#ifdef HAVE_INLINE
 inline
-#endif
 static
 int
 lngamma_1_pade(const double eps, gsl_sf_result * result)
@@ -901,9 +899,7 @@ lngamma_1_pade(const double eps, gsl_sf_result * result)
   return GSL_SUCCESS;
 }
 
-#ifdef HAVE_INLINE
 inline
-#endif
 static
 int
 lngamma_2_pade(const double eps, gsl_sf_result * result)
