@@ -31,6 +31,15 @@ main (void)
   rng_test (gsl_rng_ranlux,314159265,10000,12077992); 
   rng_test (gsl_rng_ranlux389,314159265,10000,165942); 
 
+  /* FIXME: the tests below were made by running the original code in
+     the ../random directory and getting the expected value from
+     that. An analytic calculation would be preferable. */
+
+  rng_test (gsl_rng_rand,1,10000,45776); 
+  rng_test (gsl_rng_uni,1,10000,9214); 
+  rng_test (gsl_rng_uni32,1,10000,1155229825); 
+  rng_test (gsl_rng_zuf,1,10000,3970); 
+
   /* Test save/restore functions */
 
   rng_state_test (gsl_rng_cmrg);
@@ -110,22 +119,35 @@ generic_rng_test (const gsl_rng_type * T)
   };
 
   {
-    double sum = 0, sigma;
+    double sum = 0, dev = 0, sigma;
     int i, status;
 
     for (i = 0; i < n; ++i)
-      sum += gsl_rng_get_uni (r);
-
+      {
+	double x = gsl_rng_get_uni (r) - 0.5;
+	sum += x ;
+        dev += fabs(x) ;
+      }
+	
     sum /= n;
+    dev /= n;
 
-    /* expect sum to have variance == n*(1/12), so average should have
-       variance == 1/(12*n) */
+    /* expect the average to have a variance of 1/(12 n) */
 
-    sigma = (sum - 0.5) * sqrt (12.0 * n);
-
+    sigma = sum * sqrt (12.0 * n);
     status = (fabs (sigma) > 3);	/* more than 3 sigma is an error */
+
     gsl_test (status,
 	      "%s, sum test within acceptable sigma (observed %g sigma)",
+	      name, sigma);
+
+    /* expect the average deviation to have a variance of 1/(48 n) */
+
+    sigma = (dev - 0.25) * sqrt (48.0 * n);
+    status = (fabs (sigma) > 3);	/* more than 3 sigma is an error */
+
+    gsl_test (status,
+	      "%s, abs test within acceptable sigma (observed %g sigma)",
 	      name, sigma);
   }
 

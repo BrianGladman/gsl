@@ -101,7 +101,7 @@ unsigned long uni32_get (void * vstate)
     const long int j = state->j ;
 
     /* important k not be unsigned */
-    long k = state->m[i] - state->m[j];
+    long int k = state->m[i] - state->m[j];
 
     if (k < 0) k += m1;
     state->m[j] = k;
@@ -129,7 +129,7 @@ unsigned long uni32_get (void * vstate)
 
 void uni32_set(void * vstate, unsigned long int s)
 {
-  unsigned long int seed, k0, k1, j0, j1 ;
+  long int seed, k0, k1, j0, j1 ;
   int i;
   
   uni32_state_t * state = (uni32_state_t *) vstate;
@@ -138,15 +138,16 @@ void uni32_set(void * vstate, unsigned long int s)
   /* A flaw in this approach is that seeds 1,2 give exactly the
      same random number sequence!  */
   
-  s = 2*s+1;                    /* enforce seed be odd */
+  /*s = 2*s+1; */                  /* enforce seed be odd */
   seed = (s < m1 ? s : m1);    /* seed should be less than m1 */
-  
+  seed -= (seed % 2 == 0 ? 1 : 0);
+
   k0 = 9069%m2;
   k1 = 9069/m2;
   j0 = seed%m2;
   j1 = seed/m2;
   
-  for (i=0; i<17; ++i) {
+  for (i=0; i<17; i++) {
     seed = j0*k0;
     j1 = (seed/m2 + j0*k1 + j1*k0) % (m2/2);
     j0 = seed%m2;
