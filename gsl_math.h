@@ -35,6 +35,10 @@
 #define M_LN2 	      	0.69314718055994530941723212146	    /* ln(2) */
 #endif
 
+#ifndef M_LNPI
+#define M_LNPI 	      	1.14472988584940017414342735135	    /* ln(pi) */
+#endif
+
 #ifndef M_EULER
 #define M_EULER         0.57721566490153286060651209008     /* Euler constant */
 #endif
