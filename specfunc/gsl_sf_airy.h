@@ -113,26 +113,26 @@ double gsl_sf_airy_Bi_deriv_scaled(const double x, gsl_mode_t mode);
 
 /* Zeros of Ai(x)
  */
-int gsl_sf_airy_zero_Ai_e(int s, gsl_sf_result * result);
-double gsl_sf_airy_zero_Ai(int s);
+int gsl_sf_airy_zero_Ai_e(unsigned int s, gsl_sf_result * result);
+double gsl_sf_airy_zero_Ai(unsigned int s);
 
 
 /* Zeros of Bi(x)
  */
-int gsl_sf_airy_zero_Bi_e(int s, gsl_sf_result * result);
-double gsl_sf_airy_zero_Bi(int s);
+int gsl_sf_airy_zero_Bi_e(unsigned int s, gsl_sf_result * result);
+double gsl_sf_airy_zero_Bi(unsigned int s);
 
 
 /* Zeros of Ai'(x)
  */
-int gsl_sf_airy_zero_Ai_deriv_e(int s, gsl_sf_result * result);
-double gsl_sf_airy_zero_Ai_deriv(int s);
+int gsl_sf_airy_zero_Ai_deriv_e(unsigned int s, gsl_sf_result * result);
+double gsl_sf_airy_zero_Ai_deriv(unsigned int s);
 
 
 /* Zeros of Bi'(x)
  */
-int gsl_sf_airy_zero_Bi_deriv_e(int s, gsl_sf_result * result);
-double gsl_sf_airy_zero_Bi_deriv(int s);
+int gsl_sf_airy_zero_Bi_deriv_e(unsigned int s, gsl_sf_result * result);
+double gsl_sf_airy_zero_Bi_deriv(unsigned int s);
 
 
 __END_DECLS

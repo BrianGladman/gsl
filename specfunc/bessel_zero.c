@@ -1020,7 +1020,7 @@ olver_f1(double z, double minus_zeta)
 
 
 int
-gsl_sf_bessel_zero_J0_e(int s, gsl_sf_result * result)
+gsl_sf_bessel_zero_J0_e(unsigned int s, gsl_sf_result * result)
 {
   /* CHECK_POINTER(result) */
 
@@ -1056,7 +1056,7 @@ gsl_sf_bessel_zero_J0_e(int s, gsl_sf_result * result)
 
 
 int
-gsl_sf_bessel_zero_J1_e(int s, gsl_sf_result * result)
+gsl_sf_bessel_zero_J1_e(unsigned int s, gsl_sf_result * result)
 {
   /* CHECK_POINTER(result) */
 
@@ -1092,11 +1092,11 @@ gsl_sf_bessel_zero_J1_e(int s, gsl_sf_result * result)
 
 
 int
-gsl_sf_bessel_zero_Jnu_e(double nu, int s, gsl_sf_result * result)
+gsl_sf_bessel_zero_Jnu_e(double nu, unsigned int s, gsl_sf_result * result)
 {
   /* CHECK_POINTER(result) */
 
-  if(nu <= -1.0 || s < 0) {
+  if(nu <= -1.0) {
     result->val = 0.0;
     result->err = 0.0;
     GSL_ERROR ("error", GSL_EDOM);
@@ -1201,17 +1201,17 @@ gsl_sf_bessel_zero_Jnu_e(double nu, int s, gsl_sf_result * result)
 
 #include "eval.h"
 
-double gsl_sf_bessel_zero_J0(int s)
+double gsl_sf_bessel_zero_J0(unsigned int s)
 {
   EVAL_RESULT(gsl_sf_bessel_zero_J0_e(s, &result));
 }
 
-double gsl_sf_bessel_zero_J1(int s)
+double gsl_sf_bessel_zero_J1(unsigned int s)
 {
   EVAL_RESULT(gsl_sf_bessel_zero_J1_e(s, &result));
 }
 
-double gsl_sf_bessel_zero_Jnu(double nu, int s)
+double gsl_sf_bessel_zero_Jnu(double nu, unsigned int s)
 {
   EVAL_RESULT(gsl_sf_bessel_zero_Jnu_e(nu, s, &result));
 }

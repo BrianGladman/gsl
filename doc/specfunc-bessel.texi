@@ -497,22 +497,22 @@ fractional order @math{nu}, @math{\exp(+|x|) K_\nu(x)} for @math{x>0},
 
 @subsection Zeros of Regular Bessel Functions
 
-@deftypefun double gsl_sf_bessel_zero_J0 (int @var{s})
-@deftypefunx int gsl_sf_bessel_zero_J0_e (int @var{s}, gsl_sf_result * @var{result})
+@deftypefun double gsl_sf_bessel_zero_J0 (unsigned int @var{s})
+@deftypefunx int gsl_sf_bessel_zero_J0_e (unsigned int @var{s}, gsl_sf_result * @var{result})
 These routines compute the location of the @var{s}-th positive zero of
 the Bessel function @math{J_0(x)}.
 @comment Exceptional Return Values: 
 @end deftypefun
 
-@deftypefun double gsl_sf_bessel_zero_J1 (int @var{s})
-@deftypefunx int gsl_sf_bessel_zero_J1_e (int @var{s}, gsl_sf_result * @var{result})
+@deftypefun double gsl_sf_bessel_zero_J1 (unsigned int @var{s})
+@deftypefunx int gsl_sf_bessel_zero_J1_e (unsigned int @var{s}, gsl_sf_result * @var{result})
 These routines compute the location of the @var{s}-th positive zero of
 the Bessel function @math{J_1(x)}.
 @comment Exceptional Return Values: 
 @end deftypefun
 
-@deftypefun double gsl_sf_bessel_zero_Jnu (double @var{nu}, int @var{s})
-@deftypefunx int gsl_sf_bessel_zero_Jnu_e (double @var{nu}, int @var{s}, gsl_sf_result * @var{result})
+@deftypefun double gsl_sf_bessel_zero_Jnu (double @var{nu}, unsigned int @var{s})
+@deftypefunx int gsl_sf_bessel_zero_Jnu_e (double @var{nu}, unsigned int @var{s}, gsl_sf_result * @var{result})
 These routines compute the location of the @var{s}-th positive zero of
 the Bessel function @math{J_nu(x)}.
 @comment Exceptional Return Values: 

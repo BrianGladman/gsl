@@ -1,5 +1,8 @@
 Mon Apr 30 12:38:15 2001  Brian Gough  <bjg@network-theory.co.uk>
 
+	* airy_zero.c bessel_zero.c: zeros are now counted using an
+ 	unsigned int
+
 	* poly.c: moved poly_eval function into poly/ directory
 
 Wed Apr 25 17:28:48 2001  Brian Gough  <bjg@network-theory.co.uk>

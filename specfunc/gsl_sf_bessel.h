@@ -524,24 +524,24 @@ double gsl_sf_bessel_lnKnu(const double nu, const double x);
  *
  * exceptions: 
  */
-int gsl_sf_bessel_zero_J0_e(int s, gsl_sf_result * result);
-double gsl_sf_bessel_zero_J0(int s);
+int gsl_sf_bessel_zero_J0_e(unsigned int s, gsl_sf_result * result);
+double gsl_sf_bessel_zero_J0(unsigned int s);
 
 
 /* s'th positive zero of the Bessel function J_1(x).
  *
  * exceptions: 
  */
-int gsl_sf_bessel_zero_J1_e(int s, gsl_sf_result * result);
-double gsl_sf_bessel_zero_J1(int s);
+int gsl_sf_bessel_zero_J1_e(unsigned int s, gsl_sf_result * result);
+double gsl_sf_bessel_zero_J1(unsigned int s);
 
 
 /* s'th positive zero of the Bessel function J_nu(x).
  *
  * exceptions: 
  */
-int gsl_sf_bessel_zero_Jnu_e(double nu, int s, gsl_sf_result * result);
-double gsl_sf_bessel_zero_Jnu(double nu, int s);
+int gsl_sf_bessel_zero_Jnu_e(double nu, unsigned int s, gsl_sf_result * result);
+double gsl_sf_bessel_zero_Jnu(double nu, unsigned int s);
 
 
 __END_DECLS

@@ -431,7 +431,7 @@ zero_g(double z)
 
 
 int
-gsl_sf_airy_zero_Ai_e(int s, gsl_sf_result * result)
+gsl_sf_airy_zero_Ai_e(unsigned int s, gsl_sf_result * result)
 {
   /* CHECK_POINTER(result) */
 
@@ -456,7 +456,7 @@ gsl_sf_airy_zero_Ai_e(int s, gsl_sf_result * result)
 
 
 int
-gsl_sf_airy_zero_Bi_e(int s, gsl_sf_result * result)
+gsl_sf_airy_zero_Bi_e(unsigned int s, gsl_sf_result * result)
 {
   /* CHECK_POINTER(result) */
 
@@ -481,7 +481,7 @@ gsl_sf_airy_zero_Bi_e(int s, gsl_sf_result * result)
 
 
 int
-gsl_sf_airy_zero_Ai_deriv_e(int s, gsl_sf_result * result)
+gsl_sf_airy_zero_Ai_deriv_e(unsigned int s, gsl_sf_result * result)
 {
   /* CHECK_POINTER(result) */
 
@@ -506,7 +506,7 @@ gsl_sf_airy_zero_Ai_deriv_e(int s, gsl_sf_result * result)
 
 
 int
-gsl_sf_airy_zero_Bi_deriv_e(int s, gsl_sf_result * result)
+gsl_sf_airy_zero_Bi_deriv_e(unsigned int s, gsl_sf_result * result)
 {
   /* CHECK_POINTER(result) */
 
@@ -533,22 +533,22 @@ gsl_sf_airy_zero_Bi_deriv_e(int s, gsl_sf_result * result)
 
 #include "eval.h"
 
-double gsl_sf_airy_zero_Ai(int s)
+double gsl_sf_airy_zero_Ai(unsigned int s)
 {
   EVAL_RESULT(gsl_sf_airy_zero_Ai_e(s, &result));
 }
 
-double gsl_sf_airy_zero_Bi(int s)
+double gsl_sf_airy_zero_Bi(unsigned int s)
 {
   EVAL_RESULT(gsl_sf_airy_zero_Bi_e(s, &result));
 }
 
-double gsl_sf_airy_zero_Ai_deriv(int s)
+double gsl_sf_airy_zero_Ai_deriv(unsigned int s)
 {
   EVAL_RESULT(gsl_sf_airy_zero_Ai_deriv_e(s, &result));
 }
 
-double gsl_sf_airy_zero_Bi_deriv(int s)
+double gsl_sf_airy_zero_Bi_deriv(unsigned int s)
 {
   EVAL_RESULT(gsl_sf_airy_zero_Bi_deriv_e(s, &result));
 }
