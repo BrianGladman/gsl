@@ -1,4 +1,6 @@
-What is new in gsl-0.6+:
+* What is new in gsl-0.7:
+
+** Linux/PowerPC should now be well supported.
 
 ** Header files for common physical constants have been added.
 
