@@ -185,6 +185,7 @@ not recommended for general use.
 * BLAS Support::                
 * Linear Algebra::              
 * Eigensystems::                
+* Chebyshev Approximations::    
 * Special Functions::           
 * Roots of Polynomials::        
 * Numerical Differentiation::   
@@ -263,11 +264,15 @@ will be announced for general use.
 @chapter Linear Algebra
 @include linalg.texi
 
-@node Eigensystems, Special Functions, Linear Algebra, Top
+@node Eigensystems, Chebyshev Approximations, Linear Algebra, Top
 @chapter Eigensystems
 @include eigen.texi
 
-@node Special Functions, Roots of Polynomials, Eigensystems, Top
+@node  Chebyshev Approximations, Special Functions, Eigensystems, Top
+@chapter Chebyshev Approximations
+@include cheb.texi
+
+@node Special Functions, Roots of Polynomials, Chebyshev Approximations, Top
 @chapter Special Functions
 @include specfunc.texi
 

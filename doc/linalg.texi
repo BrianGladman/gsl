@@ -448,9 +448,10 @@ decomposition of @math{A} into the matrix @var{cholesky} given by
 
 @deftypefun int gsl_linalg_cholesky_svx (const gsl_matrix * @var{cholesky}, gsl_vector * @var{x})
 This function solves the system @math{A x = b} in-place using the
-Cholesky decomposition of @math{A} into the matrix @var{cholesky}. On
-input @var{x} should contain the right-hand side @math{b}, which is
-replaced by the solution on output.
+Cholesky decomposition of @math{A} into the matrix @var{cholesky} given
+by @code{gsl_linalg_cholesky_decomp}. On input @var{x} should contain
+the right-hand side @math{b}, which is replaced by the solution on
+output.
 @end deftypefun
 
 
