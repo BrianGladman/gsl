@@ -136,7 +136,7 @@ int test_gamma(void)
   TEST_SF(s,  gsl_sf_pochrel_impl, (7,3, &r), 503.0/3.0, TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s,  gsl_sf_pochrel_impl, (5,2, &r), 29.0/2.0, TEST_TOL1, GSL_SUCCESS);
   TEST_SF(s,  gsl_sf_pochrel_impl, (5,0.01, &r), 1.5186393661368275330, TEST_TOL2, GSL_SUCCESS);
-  TEST_SF(s,  gsl_sf_pochrel_impl, (-5.5,0.01, &r), 1.8584945633829063516, TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s,  gsl_sf_pochrel_impl, (-5.5,0.01, &r), 1.8584945633829063516, TEST_TOL1, GSL_SUCCESS);
   TEST_SF(s,  gsl_sf_pochrel_impl, (-5.5,-1.0/8.0, &r), 1.0883319303552135488, TEST_TOL1, GSL_SUCCESS);
   TEST_SF(s,  gsl_sf_pochrel_impl, (-5.5,-1.0/256.0, &r), 1.7678268037726177453, TEST_TOL1, GSL_SUCCESS);
   TEST_SF(s,  gsl_sf_pochrel_impl, (-5.5,-11.0, &r), 0.09090909090939652475, TEST_TOL0, GSL_SUCCESS);

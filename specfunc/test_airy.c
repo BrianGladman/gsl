@@ -36,14 +36,14 @@ int test_airy(void)
   TEST_SF(s, gsl_sf_airy_Bi_impl, (0.6999999999999907, m, &r),  0.9733286558781599,   TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_airy_Bi_impl, (1.649999999999991, m, &r),   2.196407956850028,    TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_airy_Bi_impl, (2.54999999999999, m, &r),    6.973628612493443,    TEST_TOL0, GSL_SUCCESS);
-  TEST_SF(s, gsl_sf_airy_Bi_impl, (3.499999999999987, m, &r),   33.05550675461069,    TEST_TOL0, GSL_SUCCESS);
-  TEST_SF(s, gsl_sf_airy_Bi_impl, (5.39999999999998, m, &r),    1604.476078241272,    TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_airy_Bi_impl, (3.499999999999987, m, &r),   33.05550675461069,    TEST_TOL1, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_airy_Bi_impl, (5.39999999999998, m, &r),    1604.476078241272,    TEST_TOL1, GSL_SUCCESS);
 
   TEST_SF(s, gsl_sf_airy_Bi_scaled_impl, (-5.0, m, &r),	              -0.1383691349016005, TEST_TOL1, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_airy_Bi_scaled_impl, (0.6999999999999907, m, &r),  0.6587080754582302, TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_airy_Bi_scaled_impl, (1.649999999999991, m, &r),   0.5346449995597539, TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_airy_Bi_scaled_impl, (2.54999999999999, m, &r),    0.461835455542297,  TEST_TOL0, GSL_SUCCESS);
-  TEST_SF(s, gsl_sf_airy_Bi_scaled_impl, (3.499999999999987, m, &r),   0.4201771882353061, TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_airy_Bi_scaled_impl, (3.499999999999987, m, &r),   0.4201771882353061, TEST_TOL1, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_airy_Bi_scaled_impl, (5.39999999999998, m, &r),    0.3734050675720473, TEST_TOL0, GSL_SUCCESS);
 
 

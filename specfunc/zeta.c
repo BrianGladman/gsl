@@ -629,7 +629,7 @@ int gsl_sf_zeta_int_impl(const int n, gsl_sf_result * result)
     return GSL_EFAULT;
   }
   else if(n < 0) {
-    if(!GSL_IS_ODD(abs(n))) {
+    if(!GSL_IS_ODD(n)) {
       result->val = 0.0; /* exactly zero at even negative integers */
       result->err = 0.0;
       return GSL_SUCCESS;

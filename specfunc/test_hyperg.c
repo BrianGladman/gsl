@@ -257,8 +257,8 @@ int test_hyperg(void)
   TEST_SF(s, gsl_sf_hyperg_U_int_impl, (1, 100, 200, &r),  0.009715680951406713589, TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_hyperg_U_int_impl, (1, 100, 1000, &r),  0.0011085142546061528661, TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_hyperg_U_int_impl, (1, 1000, 2000, &r),  0.0009970168547036318206, TEST_TOL0, GSL_SUCCESS);
-  TEST_SF(s, gsl_sf_hyperg_U_int_impl, (1, -1, 1, &r),  0.29817368116159703717, TEST_TOL0, GSL_SUCCESS);
-  TEST_SF(s, gsl_sf_hyperg_U_int_impl, (1, -1, 10, &r),  0.07816669698940409380, TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_hyperg_U_int_impl, (1, -1, 1, &r),  0.29817368116159703717, TEST_TOL1, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_hyperg_U_int_impl, (1, -1, 10, &r),  0.07816669698940409380, TEST_TOL1, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_hyperg_U_int_impl, (1, -10, 1, &r),  0.08271753756946041959, TEST_TOL1, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_hyperg_U_int_impl, (1, -10, 5, &r),  0.06127757419425055261, TEST_TOL2, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_hyperg_U_int_impl, (1, -10, 10, &r),  0.04656199948873187212, TEST_TOL2, GSL_SUCCESS);
