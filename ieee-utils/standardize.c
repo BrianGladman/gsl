@@ -1,7 +1,6 @@
 #include <config.h>
 #include "ieee_utils.h"
 
-
 void
 make_float_bigendian (float * x)
 {

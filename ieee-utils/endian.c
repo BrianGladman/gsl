@@ -1,3 +1,4 @@
+#include <config.h>
 #include <stdlib.h>
 #include <gsl_ieee_utils.h>
 
