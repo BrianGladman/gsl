@@ -19,7 +19,7 @@
 
 #include <config.h>
 #include <gsl/gsl_errno.h>
-#include <gsl/gsl_fit.h>
+#include <gsl/gsl_multifit.h>
 #include <gsl/gsl_blas.h>
 #include <gsl/gsl_linalg.h>
 
@@ -33,10 +33,10 @@
 
 #ifdef JUNK  
 int
-gsl_fit_linear (gsl_matrix * X,
-                gsl_vector * y,
-                gsl_vector * c,
-                gsl_matrix * cov)
+gsl_multifit_linear (gsl_matrix * X,
+                     gsl_vector * y,
+                     gsl_vector * c,
+                     gsl_matrix * cov)
 {
 
   /* Decompose X into U S Q^T */
@@ -53,12 +53,12 @@ gsl_fit_linear (gsl_matrix * X,
 #endif
 
 int
-gsl_fit_wmultilinear (gsl_matrix * X,
-                 const gsl_vector * w,
-                 const gsl_vector * y,
-                 gsl_vector * c,
-                 gsl_matrix * cov,
-                 double * chisq)
+gsl_multifit_wlinear (gsl_matrix * X,
+                      const gsl_vector * w,
+                      const gsl_vector * y,
+                      gsl_vector * c,
+                      gsl_matrix * cov,
+                      double * chisq)
 {
   if (X->size1 != y->size) 
     {

@@ -22,8 +22,6 @@
 
 #include <stdlib.h>
 #include <gsl/gsl_math.h>
-#include <gsl/gsl_vector.h>
-#include <gsl/gsl_matrix.h>
 
 #undef __BEGIN_DECLS
 #undef __END_DECLS
@@ -81,15 +79,6 @@ gsl_fit_mul_est (double x,
                  double c1, 
                  double c11,
                  double *y, double *y_err);
-
-
-int
-gsl_fit_wmultilinear (gsl_matrix * X,
-                      const gsl_vector * w,
-                      const gsl_vector * y,
-                      gsl_vector * c,
-                      gsl_matrix * cov,
-                      double * chisq);
 
 
 /* choose better names!! */
