@@ -117,6 +117,7 @@ test_f (const gsl_root_fsolver_type * T, const char * description, gsl_function 
 {
   int status;
   size_t iterations = 0;
+  double r;
   gsl_interval x;
   gsl_root_fsolver * s;
 
@@ -140,13 +141,28 @@ test_f (const gsl_root_fsolver_type * T, const char * description, gsl_function 
 
   /* check the validity of the returned result */
 
-  if (!WITHIN_TOL (gsl_root_fsolver_root(s), correct_root, 
-		   REL_EPSILON, ABS_EPSILON))
+  r = gsl_root_fsolver_root(s);
+  x = gsl_root_fsolver_interval(s);
+
+  if (!WITHIN_TOL (r, correct_root, REL_EPSILON, ABS_EPSILON))
     {
       status = 1; /* failed */ ;
       gsl_test (status, "incorrect precision (%g obs vs %g expected)", 
-		gsl_root_fsolver_root(s), correct_root);
+		r, correct_root);
 
+    }
+
+  if (x.lower > x.upper)
+    {
+      status = 1; /* failed */ ;
+      gsl_test (status, "interval is invalid (%g,%g)", x.lower, x.upper);
+    }
+
+  if (r < x.lower || r > x.upper)
+    {
+      status = 1; /* failed */ ;
+      gsl_test (status, "r lies outside interval %g (%g,%g)", 
+		r, x.lower, x.upper);
     }
 }
 
