@@ -72,4 +72,14 @@ func3 (double x, void * p)
     return - exp(-x) ;
 }
 
+/* f(x) = x - 30/(1+1e5*(x-0.8)**2) */
+/* minimum near x = 0.8 */
+
+double
+func4 (double x, void * p)
+{
+  p = 0;  /* avoid warning about unused parameter */
+
+  return x - 30.0 / (1.0 + 1e5 * pow(x-0.8, 2.0));
+}
 

@@ -43,7 +43,7 @@ void my_error_handler (const char *reason, const char *file,
 int
 main (void)
 {
-  gsl_function F_cos, F_func1, F_func2, F_func3;
+  gsl_function F_cos, F_func1, F_func2, F_func3, F_func4;
   
   const gsl_min_fminimizer_type * fminimizer[4] ;
   const gsl_min_fminimizer_type ** T;
@@ -58,6 +58,7 @@ main (void)
   F_func1 = create_function (func1) ;
   F_func2 = create_function (func2) ;
   F_func3 = create_function (func3) ;
+  F_func4 = create_function (func4) ;
 
   gsl_set_error_handler (&my_error_handler);
 
@@ -67,6 +68,7 @@ main (void)
       test_f (*T, "x^4 - 1 [-3 (-1) 17]", &F_func1, -3.0, -1.0, 17.0, 0.0);
       test_f (*T, "sqrt(|x|) [-2 (-1) 1.5]", &F_func2, -2.0, -1.0, 1.5, 0.0);
       test_f (*T, "func3(x) [-2 (3) 4]", &F_func3, -2.0, 3.0, 4.0, 1.0);
+      test_f (*T, "func4(x) [0 (0.782) 1]", &F_func4, 0, 0.782, 1.0, 0.8);
 
       test_f_e (*T, "invalid range check [4, 0]", &F_cos, 4.0, 3.0, 0.0, M_PI);
       test_f_e (*T, "invalid range check [1, 1]", &F_cos, 1.0, 1.0, 1.0, M_PI);

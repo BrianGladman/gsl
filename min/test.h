@@ -39,3 +39,4 @@ double f_cos (double x, void * p);
 double func1 (double x, void * p);
 double func2 (double x, void * p);
 double func3 (double x, void * p);
+double func4 (double x, void * p);
