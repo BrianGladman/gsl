@@ -24,7 +24,7 @@ FUNCTION(test,func) (void)
   }
 
   { 
-    int status = 0 ;
+    status = 0 ;
     k = 0 ;
     for (i = 0 ; i < N ; i++) {
       for (j = 0 ; j < M ; j++) {
@@ -38,7 +38,7 @@ FUNCTION(test,func) (void)
   }
 
   {
-    int status = 0 ;
+    status = 0 ;
     k = 0 ;
     for (i = 0 ; i < N ; i++) {
       for (j = 0 ; j < M ; j++) {
@@ -59,7 +59,7 @@ FUNCTION(test,func) (void)
   gsl_test(m->size2 != M, NAME(gsl_matrix) "_calloc returns valid size2") ;
 
   { 
-    int status = 0 ;
+    status = 0 ;
 
     for (i = 0 ; i < N ; i++) {
       for (j = 0 ; j < M ; j++) {
@@ -93,9 +93,9 @@ FUNCTION(test,text) (void)
   }
 
   {
-    int status = 0 ;
     FILE * f = fopen("test.txt","r") ;
     TYPE(gsl_matrix) * mm = FUNCTION(gsl_matrix,calloc)(N,M) ;
+    status = 0 ;
 
     FUNCTION(gsl_matrix,fscanf)(f, mm) ;
     k = 0 ;
@@ -136,9 +136,9 @@ FUNCTION(test,binary) (void)
   }
 
   {
-    int status = 0 ;
     FILE * f = fopen("test.dat","r") ;
-    TYPE(gsl_matrix) * mm = FUNCTION(gsl_matrix,calloc)(N,M) ;
+    TYPE(gsl_matrix) * mm = FUNCTION(gsl_matrix,calloc)(N,M);
+    status = 0 ;
 
     FUNCTION(gsl_matrix,fread)(f, mm) ;
     k = 0 ;
@@ -171,22 +171,22 @@ FUNCTION(test,trap) (void)
   double x; 
 
   status = 0 ;
-  FUNCTION(gsl_matrix,set)(m, N+1, 0, 1.2) ;
+  FUNCTION(gsl_matrix,set)(m, N+1, 0, (BASE)1.2) ;
   gsl_test(!status, 
 	   NAME(gsl_matrix) "_set traps 1st index above upper bound") ;
 
   status = 0 ;
-  FUNCTION(gsl_matrix,set)(m, 0, M+1, 1.2) ;
+  FUNCTION(gsl_matrix,set)(m, 0, M+1, (BASE)1.2) ;
   gsl_test(!status, 
 	   NAME(gsl_matrix) "_set traps 2nd index above upper bound") ;
 
   status = 0 ;
-  FUNCTION(gsl_matrix,set)(m, N, 0, 1.2) ;
+  FUNCTION(gsl_matrix,set)(m, N, 0, (BASE)1.2) ;
   gsl_test(!status, 
 	   NAME(gsl_matrix) "_set traps 1st index at upper bound") ;
 
   status = 0 ;
-  FUNCTION(gsl_matrix,set)(m, 0, M, 1.2) ;
+  FUNCTION(gsl_matrix,set)(m, 0, M, (BASE)1.2) ;
   gsl_test(!status, 
 	   NAME(gsl_matrix) "_set traps 2nd index at upper bound") ;
 

@@ -1,5 +1,6 @@
 #include <config.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <gsl_matrix.h>
 #include <gsl_test.h>
 
