@@ -81,14 +81,18 @@ an accuracy specified by @var{mode}.
 
 @deftypefun double gsl_sf_airy_Ai_deriv_scaled (double @var{x}, gsl_mode_t @var{mode})
 @deftypefunx int gsl_sf_airy_Ai_deriv_scaled_e (double @var{x}, gsl_mode_t @var{mode}, gsl_sf_result * @var{result})
-These routines compute the derivative of the scaled Airy
-function @math{S_A(x) Ai(x)}.
+These routines compute the scaled Airy function derivative 
+@math{S_A(x) Ai'(x)}.  
+For @math{x>0} the scaling factor @math{S_A(x)} is @c{$\exp(+(2/3) x^{3/2})$}
+@math{\exp(+(2/3) x^(3/2))}, and is 1 for @math{x<0}.
 @end deftypefun
 
 @deftypefun double gsl_sf_airy_Bi_deriv_scaled (double @var{x}, gsl_mode_t @var{mode})
 @deftypefunx int gsl_sf_airy_Bi_deriv_scaled_e (double @var{x}, gsl_mode_t @var{mode}, gsl_sf_result * @var{result})
-These routines compute the derivative of the scaled Airy function
-@math{S_B(x) Bi(x)}.
+These routines compute the scaled Airy function derivative 
+@math{S_B(x) Bi'(x)}.
+For @math{x>0} the scaling factor @math{S_B(x)} is @c{$\exp(-(2/3) x^{3/2})$}
+@math{exp(-(2/3) x^(3/2))}, and is 1 for @math{x<0}.
 @end deftypefun
 
 
