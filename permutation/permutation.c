@@ -52,3 +52,53 @@ gsl_permutation_swap (gsl_permutation * p, const size_t i, const size_t j)
   
   return GSL_SUCCESS;
 }
+
+
+int
+gsl_permutation_valid (gsl_permutation * p)
+{
+  const size_t size = p->size ;
+
+  size_t i, j ;
+
+  for (i = 0; i < size; i++) 
+    {
+      if (p->data[i] >= size)
+        {
+          GSL_ERROR("permutation index outside range", GSL_FAILURE) ;
+        }
+
+      for (j = 0; j < i; j++)
+        {
+          if (p->data[i] == p->data[j])
+            {
+              GSL_ERROR("duplicate permutation index", GSL_FAILURE) ;
+            }
+        }
+    }
+  
+  return GSL_SUCCESS;
+}
+
+
+
+int
+gsl_permutation_reverse (gsl_permutation * p)
+{
+  const size_t size = p->size ;
+
+  size_t i ;
+  
+  for (i = 0; i < size; i++) 
+    {
+      size_t tmp ;
+      size_t j = size - i - 1;
+
+      if (i == j)
+        continue ;
+      
+      tmp = p->data[i] ;
+      p->data[i] = p->data[j] ;
+      p->data[j] = tmp ;
+    }
+}
