@@ -98,7 +98,7 @@
 #define GSL_ROOT4_MACH_EPS      0.000178
 #define GSL_ROOT5_MACH_EPS      0.00100
 #define GSL_ROOT6_MACH_EPS      0.00316
-#define GSL_LOG_MACH_EPS       -34.54
+#define GSL_LOG_MACH_EPS       (-34.54)
 
 
 #endif /* __GSL_MACHINE_H__ */

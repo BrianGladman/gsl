@@ -19,7 +19,7 @@ main (void)
   printf ("#define GSL_ROOT4_DBL_EPSILON % .16e\n", rt4 (DBL_EPSILON));
   printf ("#define GSL_ROOT5_DBL_EPSILON % .16e\n", rt5 (DBL_EPSILON));
   printf ("#define GSL_ROOT6_DBL_EPSILON % .16e\n", rt6 (DBL_EPSILON));
-  printf ("#define GSL_LOG_DBL_EPSILON   % .16e\n", log (DBL_EPSILON));
+  printf ("#define GSL_LOG_DBL_EPSILON  (% .16e)\n", log (DBL_EPSILON));
   printf ("\n");
 
   printf ("#define GSL_DBL_MIN       % .16e\n", DBL_MIN);
@@ -28,7 +28,7 @@ main (void)
   printf ("#define GSL_ROOT4_DBL_MIN % .16e\n", rt4 (DBL_MIN));
   printf ("#define GSL_ROOT5_DBL_MIN % .16e\n", rt5 (DBL_MIN));
   printf ("#define GSL_ROOT6_DBL_MIN % .16e\n", rt6 (DBL_MIN));
-  printf ("#define GSL_LOG_DBL_MIN   % .16e\n", log (DBL_MIN));
+  printf ("#define GSL_LOG_DBL_MIN  (% .16e)\n", log (DBL_MIN));
   printf ("\n");
 
   printf ("#define GSL_DBL_MAX       % .16e\n", DBL_MAX);
@@ -46,7 +46,7 @@ main (void)
   printf ("#define GSL_ROOT4_FLT_EPSILON % .16e\n", rt4 (FLT_EPSILON));
   printf ("#define GSL_ROOT5_FLT_EPSILON % .16e\n", rt5 (FLT_EPSILON));
   printf ("#define GSL_ROOT6_FLT_EPSILON % .16e\n", rt6 (FLT_EPSILON));
-  printf ("#define GSL_LOG_FLT_EPSILON   % .16e\n", log (FLT_EPSILON));
+  printf ("#define GSL_LOG_FLT_EPSILON  (% .16e)\n", log (FLT_EPSILON));
   printf ("\n");
 
   printf ("#define GSL_FLT_MIN       % .16e\n", FLT_MIN);
@@ -55,7 +55,7 @@ main (void)
   printf ("#define GSL_ROOT4_FLT_MIN % .16e\n", rt4 (FLT_MIN));
   printf ("#define GSL_ROOT5_FLT_MIN % .16e\n", rt5 (FLT_MIN));
   printf ("#define GSL_ROOT6_FLT_MIN % .16e\n", rt6 (FLT_MIN));
-  printf ("#define GSL_LOG_FLT_MIN   % .16e\n", log (FLT_MIN));
+  printf ("#define GSL_LOG_FLT_MIN  (% .16e)\n", log (FLT_MIN));
   printf ("\n");
 
   printf ("#define GSL_FLT_MAX       % .16e\n", FLT_MAX);
@@ -73,7 +73,7 @@ main (void)
   printf ("#define GSL_ROOT4_SFLT_EPSILON % .16e\n", rt4 (SFLT_EPSILON));
   printf ("#define GSL_ROOT5_SFLT_EPSILON % .16e\n", rt5 (SFLT_EPSILON));
   printf ("#define GSL_ROOT6_SFLT_EPSILON % .16e\n", rt6 (SFLT_EPSILON));
-  printf ("#define GSL_LOG_SFLT_EPSILON   % .16e\n", log (SFLT_EPSILON));
+  printf ("#define GSL_LOG_SFLT_EPSILON  (% .16e)\n", log (SFLT_EPSILON));
   printf ("\n");
 
   return 0;
