@@ -507,7 +507,8 @@ coulomb_jwkb(double lam, double eta, double x,
 	     double * exponent)
 {
   double gh2  = x*(2.0*eta - x);
-  double xll1 = locMax(lam*(lam + 1.0), 0.0);
+  double llp1 = lam*(lam + 1.0);
+  double xll1 = locMax(llp1, 0.0);
   double hll  = xll1 + 6.0/35.0;
   double hl   = sqrt(hll);
   double sl   = eta/hl + hl/x;
