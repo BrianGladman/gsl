@@ -234,7 +234,7 @@ main (int argc, char *argv[])
       double *xarr;  
       ARGS(1, "n1 = number of dimensions of hypersphere"); 
       INT_ARG(n1) ;
-      xarr = malloc(n1*sizeof(double));
+      xarr = (double *)malloc(n1*sizeof(double));
 
       for(i = 0; i < n; i++) { 
         gsl_ran_dir_nd (r, n1, xarr) ; 
