@@ -28,8 +28,8 @@ main (void)
     float f = 0.0;
     const char mantissa[] = "00000000000000000000000";
     gsl_ieee_float_rep r;
+    float x = -1.0 * f;
 
-    float x = f * -1.0;
     gsl_ieee_float_to_rep (&x, &r);
 
     gsl_test_int (r.sign, 1, "x = -1*0, sign is -");
