@@ -5,14 +5,27 @@
 @cindex erf(x)
 @cindex erfc(x)
 
+The error function is described in Abramowitz & Stegun, Chapter 7.
+
+@subsection Error Function
+
+@deftypefun double gsl_sf_erf (double @var{x})
+@deftypefunx int gsl_sf_erf_e (double @var{x}, gsl_sf_result * @var{result})
+These routines compute the error function
+@c{$erf(x) = 2/\sqrt{\pi} \int_0^x dt \exp(-t^2)$}
+@math{erf(x) = 2/\sqrt(\pi) \int_0^x dt \exp(-t^2)}.
+
+@comment Exceptional Return Values: none
+@end deftypefun
 
 @subsection Complementary Error Function
 
-We have
-@math{ erfc(x) = 2/\sqrt(Pi) \int_x^\infty \exp(-t^2) }.
-
 @deftypefun double gsl_sf_erfc (double @var{x})
 @deftypefunx int gsl_sf_erfc_e (double @var{x}, gsl_sf_result * @var{result})
+These routines compute the complementary error function
+@c{$erfc(x) = 1 - erf(x) = 2/\sqrt{\pi}) \int_x^\infty \exp(-t^2)$}
+@math{erfc(x) = 1 - erf(x) = 2/\sqrt(\pi) \int_x^\infty \exp(-t^2)}.
+
 @comment Exceptional Return Values: none
 @end deftypefun
 
@@ -21,28 +34,26 @@ We have
 
 @deftypefun double gsl_sf_log_erfc (double @var{x})
 @deftypefunx int gsl_sf_log_erfc_e (double @var{x}, gsl_sf_result * @var{result})
-@comment Exceptional Return Values: none
-@end deftypefun
-
-
-@subsection Error Function
-We have
-@math{ erf(x) = 2/\sqrt(Pi) \int_0^x dt \exp(-t^2) }.
-
-@deftypefun double gsl_sf_erf (double @var{x})
-@deftypefunx int gsl_sf_erf_e (double @var{x}, gsl_sf_result * @var{result})
+These routines compute the logarithm of the complementary error function
+@math{\log(erfc(x))}.
 @comment Exceptional Return Values: none
 @end deftypefun
 
 
 @subsection Probability functions
 
-Z(x) :  Abramowitz+Stegun 26.2.1
-Q(x) :  Abramowitz+Stegun 26.2.3
+The probability functions for the Normal or Gaussian distribution are
+described in Abramowitz & Stegun, Section 26.2.
 
 @deftypefun double gsl_sf_erf_Z (double @var{x})
-@deftypefunx double gsl_sf_erf_Q (double @var{x})
 @deftypefunx int gsl_sf_erf_Z_e (double @var{x}, gsl_sf_result * @var{result})
+These routines compute the Gaussian probability function @math{Z(x) =
+(1/(2\pi)) \exp(-x^2/2)}.  
+@end deftypefun
+
+@deftypefun double gsl_sf_erf_Q (double @var{x})
 @deftypefunx int gsl_sf_erf_Q_e (double @var{x}, gsl_sf_result * @var{result})
+These routines compute the upper tail of the Gaussian probability
+function @math{Q(x) = (1/(2\pi)) \int_x^\infty dt \exp(-t^2/2)}.
 @comment Exceptional Return Values: none
 @end deftypefun

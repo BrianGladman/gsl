@@ -11,7 +11,9 @@ F_j(x)   := 1/Gamma[j+1] Integral[ t^j /(Exp[t-x] + 1), (t,0,Infinity)]
 
 @deftypefun double gsl_sf_fermi_dirac_m1 (double @var{x})
 @deftypefunx int gsl_sf_fermi_dirac_m1_e (double @var{x}, gsl_sf_result * @var{result})
-Complete integral F_(-1)(x) = e^x / (1 + e^x)
+These routines compute the Fermi-Dirac integral with an index of @math{-1}, 
+@c{$F_{-1}(x) = e^x / (1 + e^x)$}
+@math{F_@{-1@}(x) = e^x / (1 + e^x)}.
 @comment Exceptional Return Values: GSL_EUNDRFLW
 @end deftypefun
 
