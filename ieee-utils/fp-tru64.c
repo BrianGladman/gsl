@@ -17,7 +17,16 @@
  * to add support for `inexact' the relevant flag for Compaq's
  * compiler is `-ieee_with_inexact', and the flag for gcc is
  * `-mieee-with-inexact'.
-
+ *
+ * Problem have been reported with the "fixed" float.h installed with
+ * gcc-2.95 lacking some of the definitions in the system float.h (the
+ * symptoms are errors like: `FP_RND_RN' undeclared). To work around
+ * this it may be necessary to include the system float.h before the
+ * gcc version, e.g. 
+ *
+ *  #include "/usr/include/float.h"
+ *  #include <float.h>
+ * 
  */
 
 #include <float.h>
@@ -86,6 +95,8 @@ gsl_ieee_set_mode (int precision, int rounding, int exception_mask)
    * IEEE_TRAP_ENABLE_UNF	->	Underflow
    * IEEE_TRAP_ENABLE_INE	->	Inexact (requires special option to C compiler)
    * IEEE_TRAP_ENABLE_DNO	->	denormal operand
+   * Note: IEEE_TRAP_ENABLE_DNO is not supported on OSF 3.x or Digital Unix
+   * 4.0 - 4.0d(?).
    * IEEE_TRAP_ENABLE_MASK	->	mask of all the trap enables
    * IEEE_MAP_DMZ			->	map denormal inputs to zero
    * IEEE_MAP_UMZ			->	map underflow results to zero
@@ -98,7 +109,13 @@ gsl_ieee_set_mode (int precision, int rounding, int exception_mask)
     mode &= ~ IEEE_TRAP_ENABLE_INV ;
 
   if (exception_mask & GSL_IEEE_MASK_DENORMALIZED)
-    mode &= ~ IEEE_TRAP_ENABLE_DNO ;
+    {
+#ifdef IEEE_TRAP_ENABLE_DNO
+     mode &= ~ IEEE_TRAP_ENABLE_DNO ;
+#else
+     GSL_ERROR ("Sorry, this version of Digital Unix does not support denormalized operands", GSL_EUNSUP) ;
+#endif
+    }
 
   if (exception_mask & GSL_IEEE_MASK_DIVISION_BY_ZERO)
     mode &= ~ IEEE_TRAP_ENABLE_DZE ;

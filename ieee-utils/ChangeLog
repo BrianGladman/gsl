@@ -1,3 +1,9 @@
+Thu Feb 24 19:20:50 2000  Brian Gough  <bjg@network-theory.co.uk>
+
+	* fp-tru64.c (gsl_ieee_set_mode): added an #ifdef for
+ 	IEEE_TRAP_ENABLE_DNO, which may or may not be defined depending on
+ 	the version of Digital Unix.
+
 Mon Feb 14 14:03:22 2000  Brian Gough  <bjg@network-theory.co.uk>
 
 	* made internal functions static and removed redundant functions
