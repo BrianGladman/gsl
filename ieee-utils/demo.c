@@ -32,5 +32,13 @@ main ()
   x = x / 0 ; ;
 
   printf("%.18g ",x) ; gsl_ieee_printf_double(&x) ; printf("\n") ;
+  
+  f = -1.0/3.0 ;
+
+  while (f < 0) {
+    f = f / 10 ;
+    printf("%.18g ",f) ; gsl_ieee_printf_float(&f) ; printf("\n") ;
+  }
+
 }
 

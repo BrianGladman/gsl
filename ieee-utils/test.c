@@ -1,5 +1,6 @@
 #include <config.h>
 #include <math.h>
+#include <float.h>
 #include <string.h>
 #include <gsl_ieee_utils.h>
 #include <gsl_test.h>
@@ -7,8 +8,8 @@
 int
 main (void)
 {
-  float zerof = 0.0 ;
-  double zero = 0.0 ;
+  float zerof = 0.0, minus_onef = -1.0 ;
+  double zero = 0.0, minus_one = -1.0 ;
 
   /* Check for +ZERO (float) */
 
@@ -18,26 +19,29 @@ main (void)
     gsl_ieee_float_rep r;
     gsl_ieee_float_to_rep (&f, &r);
 
-    gsl_test_int (r.sign, 0, "x = 0, sign is +");
-    gsl_test_int (r.exponent, -127, "x = 0, exponent is -127");
-    gsl_test_str (r.mantissa, mantissa, "x = 0, mantissa");
-    gsl_test_int (r.type, GSL_IEEE_TYPE_ZERO, "x = 0, type is ZERO");
+    gsl_test_int (r.sign, 0, "float x = 0, sign is +");
+    gsl_test_int (r.exponent, -127, "float x = 0, exponent is -127");
+    gsl_test_str (r.mantissa, mantissa, "float x = 0, mantissa");
+    gsl_test_int (r.type, GSL_IEEE_TYPE_ZERO, "float x = 0, type is ZERO");
   }
 
   /* Check for -ZERO (float) */
 
   {
-    float f = 0.0;
+    float f = minus_onef;
     const char mantissa[] = "00000000000000000000000";
     gsl_ieee_float_rep r;
-    float x = -1.0 * f;
+    
+    while (f < 0) {
+      f *= 0.1;
+    }
 
-    gsl_ieee_float_to_rep (&x, &r);
+    gsl_ieee_float_to_rep (&f, &r);
 
-    gsl_test_int (r.sign, 1, "x = -1*0, sign is -");
-    gsl_test_int (r.exponent, -127, "x = -1*0, exponent is -127");
-    gsl_test_str (r.mantissa, mantissa, "x = -1*0, mantissa");
-    gsl_test_int (r.type, GSL_IEEE_TYPE_ZERO, "x = -1*0, type is ZERO");
+    gsl_test_int (r.sign, 1, "float x = -1*0, sign is -");
+    gsl_test_int (r.exponent, -127, "float x = -1*0, exponent is -127");
+    gsl_test_str (r.mantissa, mantissa, "float x = -1*0, mantissa");
+    gsl_test_int (r.type, GSL_IEEE_TYPE_ZERO, "float x = -1*0, type is ZERO");
   }
 
   /* Check for a positive NORMAL number (e.g. 2.1) (float) */
@@ -49,10 +53,10 @@ main (void)
     gsl_ieee_float_rep r;
     gsl_ieee_float_to_rep (&f, &r);
 
-    gsl_test_int (r.sign, 0, "x = 2.1, sign is +");
-    gsl_test_int (r.exponent, 1, "x = 2.1, exponent is 1");
-    gsl_test_str (r.mantissa, mantissa, "x = 2.1, mantissa");
-    gsl_test_int (r.type, GSL_IEEE_TYPE_NORMAL, "x = 2.1, type is NORMAL");
+    gsl_test_int (r.sign, 0, "float x = 2.1, sign is +");
+    gsl_test_int (r.exponent, 1, "float x = 2.1, exponent is 1");
+    gsl_test_str (r.mantissa, mantissa, "float x = 2.1, mantissa");
+    gsl_test_int (r.type, GSL_IEEE_TYPE_NORMAL, "float x = 2.1, type is NORMAL");
   }
 
 
@@ -65,11 +69,11 @@ main (void)
     gsl_ieee_float_rep r;
     gsl_ieee_float_to_rep (&f, &r);
 
-    gsl_test_int (r.sign, 1, "x = -1.3304..., sign is -");
-    gsl_test_int (r.exponent, 0, "x = -1.3304..., exponent is 0");
-    gsl_test_str (r.mantissa, mantissa, "x = -1.3304..., mantissa");
+    gsl_test_int (r.sign, 1, "float x = -1.3304..., sign is -");
+    gsl_test_int (r.exponent, 0, "float x = -1.3304..., exponent is 0");
+    gsl_test_str (r.mantissa, mantissa, "float x = -1.3304..., mantissa");
     gsl_test_int (r.type, GSL_IEEE_TYPE_NORMAL,
-		  "x = -1.3304..., type is NORMAL");
+		  "float x = -1.3304..., type is NORMAL");
   }
 
   /* Check for a large positive NORMAL number (e.g. 3.37e31) (float) */
@@ -80,10 +84,10 @@ main (void)
     gsl_ieee_float_rep r;
     gsl_ieee_float_to_rep (&f, &r);
 
-    gsl_test_int (r.sign, 0, "x = 3.37e31, sign is +");
-    gsl_test_int (r.exponent, 104, "x = 3.37e31, exponent is 104");
-    gsl_test_str (r.mantissa, mantissa, "x = 3.37e31, mantissa");
-    gsl_test_int (r.type, GSL_IEEE_TYPE_NORMAL, "x = 3.37e31, type is NORMAL");
+    gsl_test_int (r.sign, 0, "float x = 3.37e31, sign is +");
+    gsl_test_int (r.exponent, 104, "float x = 3.37e31, exponent is 104");
+    gsl_test_str (r.mantissa, mantissa, "float x = 3.37e31, mantissa");
+    gsl_test_int (r.type, GSL_IEEE_TYPE_NORMAL, "float x = 3.37e31, type is NORMAL");
   }
 
   /* Check for a small positive NORMAL number (e.g. 3.37e-31) (float) */
@@ -95,11 +99,11 @@ main (void)
     gsl_ieee_float_rep r;
     gsl_ieee_float_to_rep (&f, &r);
 
-    gsl_test_int (r.sign, 0, "x = 3.37e-31, sign is +");
-    gsl_test_int (r.exponent, -102, "x = 3.37e-31, exponent is -102");
-    gsl_test_str (r.mantissa, mantissa, "x = 3.37e-31, mantissa");
+    gsl_test_int (r.sign, 0, "float x = 3.37e-31, sign is +");
+    gsl_test_int (r.exponent, -102, "float x = 3.37e-31, exponent is -102");
+    gsl_test_str (r.mantissa, mantissa, "float x = 3.37e-31, mantissa");
     gsl_test_int (r.type, GSL_IEEE_TYPE_NORMAL,
-		  "x = 3.37e-31, type is NORMAL");
+		  "float x = 3.37e-31, type is NORMAL");
   }
 
   /* Check for FLT_MIN (smallest possible number that is not denormal) */
@@ -110,10 +114,10 @@ main (void)
     gsl_ieee_float_rep r;
     gsl_ieee_float_to_rep (&f, &r);
 
-    gsl_test_int (r.sign, 0, "x = FLT_MIN, sign is +");
-    gsl_test_int (r.exponent, -126, "x = FLT_MIN, exponent is -126");
-    gsl_test_str (r.mantissa, mantissa, "x = FLT_MIN, mantissa");
-    gsl_test_int (r.type, GSL_IEEE_TYPE_NORMAL, "x = FLT_MIN, type is NORMAL");
+    gsl_test_int (r.sign, 0, "float x = FLT_MIN, sign is +");
+    gsl_test_int (r.exponent, -126, "float x = FLT_MIN, exponent is -126");
+    gsl_test_str (r.mantissa, mantissa, "float x = FLT_MIN, mantissa");
+    gsl_test_int (r.type, GSL_IEEE_TYPE_NORMAL, "float x = FLT_MIN, type is NORMAL");
   }
 
   /* Check for FLT_MAX (largest possible number that is not Inf) */
@@ -125,10 +129,10 @@ main (void)
     gsl_ieee_float_rep r;
     gsl_ieee_float_to_rep (&f, &r);
 
-    gsl_test_int (r.sign, 0, "x = FLT_MAX, sign is +");
-    gsl_test_int (r.exponent, 127, "x = FLT_MAX, exponent is 127");
-    gsl_test_str (r.mantissa, mantissa, "x = FLT_MAX, mantissa");
-    gsl_test_int (r.type, GSL_IEEE_TYPE_NORMAL, "x = FLT_MAX, type is NORMAL");
+    gsl_test_int (r.sign, 0, "float x = FLT_MAX, sign is +");
+    gsl_test_int (r.exponent, 127, "float x = FLT_MAX, exponent is 127");
+    gsl_test_str (r.mantissa, mantissa, "float x = FLT_MAX, mantissa");
+    gsl_test_int (r.type, GSL_IEEE_TYPE_NORMAL, "float x = FLT_MAX, type is NORMAL");
   }
 
   /* Check for DENORMAL numbers (e.g. FLT_MIN/2^n) */
@@ -146,13 +150,13 @@ main (void)
 	mantissa[i] = '1';
 	gsl_ieee_float_to_rep (&x, &r);
 
-	gsl_test_int (r.sign, 0, "x = FLT_MIN/2^%d, sign is +", i + 1);
+	gsl_test_int (r.sign, 0, "float x = FLT_MIN/2^%d, sign is +", i + 1);
 	gsl_test_int (r.exponent, -127,
-		      "x = FLT_MIN/2^%d, exponent is -127", i + 1);
+		      "float x = FLT_MIN/2^%d, exponent is -127", i + 1);
 	gsl_test_str (r.mantissa, mantissa,
-		      "x = FLT_MIN/2^%d, mantissa", i + 1);
+		      "float x = FLT_MIN/2^%d, mantissa", i + 1);
 	gsl_test_int (r.type, GSL_IEEE_TYPE_DENORMAL,
-		      "x = FLT_MIN/2^%d, type is DENORMAL", i + 1);
+		      "float x = FLT_MIN/2^%d, type is DENORMAL", i + 1);
 	mantissa[i] = '0';
       }
   }
@@ -168,10 +172,10 @@ main (void)
     float x = 2 * f;
     gsl_ieee_float_to_rep (&x, &r);
 
-    gsl_test_int (r.sign, 0, "x = 2*FLT_MAX, sign is +");
-    gsl_test_int (r.exponent, 128, "x = 2*FLT_MAX, exponent is 128");
-    gsl_test_str (r.mantissa, mantissa, "x = 2*FLT_MAX, mantissa");
-    gsl_test_int (r.type, GSL_IEEE_TYPE_INF, "x = -2*FLT_MAX, type is INF");
+    gsl_test_int (r.sign, 0, "float x = 2*FLT_MAX, sign is +");
+    gsl_test_int (r.exponent, 128, "float x = 2*FLT_MAX, exponent is 128");
+    gsl_test_str (r.mantissa, mantissa, "float x = 2*FLT_MAX, mantissa");
+    gsl_test_int (r.type, GSL_IEEE_TYPE_INF, "float x = -2*FLT_MAX, type is INF");
   }
 
   /* Check for negative INFINITY (e.g. -2*FLT_MAX) */
@@ -185,10 +189,10 @@ main (void)
     float x = -2 * f;
     gsl_ieee_float_to_rep (&x, &r);
 
-    gsl_test_int (r.sign, 1, "x = -2*FLT_MAX, sign is -");
-    gsl_test_int (r.exponent, 128, "x = -2*FLT_MAX, exponent is 128");
-    gsl_test_str (r.mantissa, mantissa, "x = -2*FLT_MAX, mantissa");
-    gsl_test_int (r.type, GSL_IEEE_TYPE_INF, "x = -2*FLT_MAX, type is INF");
+    gsl_test_int (r.sign, 1, "float x = -2*FLT_MAX, sign is -");
+    gsl_test_int (r.exponent, 128, "float x = -2*FLT_MAX, exponent is 128");
+    gsl_test_str (r.mantissa, mantissa, "float x = -2*FLT_MAX, mantissa");
+    gsl_test_int (r.type, GSL_IEEE_TYPE_INF, "float x = -2*FLT_MAX, type is INF");
   }
 
   /* Check for NAN (e.g. Inf - Inf) (float) */
@@ -206,8 +210,8 @@ main (void)
     /* We don't check the sign and we don't check the mantissa because
        they could be anything for a NaN */
 
-    gsl_test_int (r.exponent, 128, "x = NaN, exponent is 128");
-    gsl_test_int (r.type, GSL_IEEE_TYPE_NAN, "x = NaN, type is NAN");
+    gsl_test_int (r.exponent, 128, "float x = NaN, exponent is 128");
+    gsl_test_int (r.type, GSL_IEEE_TYPE_NAN, "float x = NaN, type is NAN");
   }
 
 
@@ -220,27 +224,26 @@ main (void)
     gsl_ieee_double_rep r;
     gsl_ieee_double_to_rep (&d, &r);
 
-    gsl_test_int (r.sign, 0, "x = 0, sign is +");
-    gsl_test_int (r.exponent, -1023, "x = 0, exponent is -1023");
-    gsl_test_str (r.mantissa, mantissa, "x = 0, mantissa");
-    gsl_test_int (r.type, GSL_IEEE_TYPE_ZERO, "x = 0, type is ZERO");
+    gsl_test_int (r.sign, 0, "double x = 0, sign is +");
+    gsl_test_int (r.exponent, -1023, "double x = 0, exponent is -1023");
+    gsl_test_str (r.mantissa, mantissa, "double x = 0, mantissa");
+    gsl_test_int (r.type, GSL_IEEE_TYPE_ZERO, "double x = 0, type is ZERO");
   }
 
   /* Check for -ZERO */
 
   {
-    double d = 0.0;
+    double d = zero * minus_one;
     const char mantissa[]
       = "0000000000000000000000000000000000000000000000000000";
     gsl_ieee_double_rep r;
 
-    double x = d * -1.0;
-    gsl_ieee_double_to_rep (&x, &r);
+    gsl_ieee_double_to_rep (&d, &r);
 
-    gsl_test_int (r.sign, 1, "x = -1*0, sign is -");
-    gsl_test_int (r.exponent, -1023, "x = -1*0, exponent is -1023");
-    gsl_test_str (r.mantissa, mantissa, "x = -1*0, mantissa");
-    gsl_test_int (r.type, GSL_IEEE_TYPE_ZERO, "x = -1*0, type is ZERO");
+    gsl_test_int (r.sign, 1, "double x = -1*0, sign is -");
+    gsl_test_int (r.exponent, -1023, "double x = -1*0, exponent is -1023");
+    gsl_test_str (r.mantissa, mantissa, "double x = -1*0, mantissa");
+    gsl_test_int (r.type, GSL_IEEE_TYPE_ZERO, "double x = -1*0, type is ZERO");
   }
 
   /* Check for a positive NORMAL number (e.g. 2.1) */
@@ -252,10 +255,10 @@ main (void)
     gsl_ieee_double_rep r;
     gsl_ieee_double_to_rep (&d, &r);
 
-    gsl_test_int (r.sign, 0, "x = 2.1, sign is +");
-    gsl_test_int (r.exponent, 1, "x = 2.1, exponent is 1");
-    gsl_test_str (r.mantissa, mantissa, "x = 2.1, mantissa");
-    gsl_test_int (r.type, GSL_IEEE_TYPE_NORMAL, "x = 2.1, type is NORMAL");
+    gsl_test_int (r.sign, 0, "double x = 2.1, sign is +");
+    gsl_test_int (r.exponent, 1, "double x = 2.1, exponent is 1");
+    gsl_test_str (r.mantissa, mantissa, "double x = 2.1, mantissa");
+    gsl_test_int (r.type, GSL_IEEE_TYPE_NORMAL, "double x = 2.1, type is NORMAL");
   }
 
 
@@ -268,11 +271,11 @@ main (void)
     gsl_ieee_double_rep r;
     gsl_ieee_double_to_rep (&d, &r);
 
-    gsl_test_int (r.sign, 1, "x = -1.3304..., sign is -");
-    gsl_test_int (r.exponent, 0, "x = -1.3304..., exponent is 0");
-    gsl_test_str (r.mantissa, mantissa, "x = -1.3304..., mantissa");
+    gsl_test_int (r.sign, 1, "double x = -1.3304..., sign is -");
+    gsl_test_int (r.exponent, 0, "double x = -1.3304..., exponent is 0");
+    gsl_test_str (r.mantissa, mantissa, "double x = -1.3304..., mantissa");
     gsl_test_int (r.type, GSL_IEEE_TYPE_NORMAL,
-		  "x = -1.3304..., type is NORMAL");
+		  "double x = -1.3304..., type is NORMAL");
   }
 
   /* Check for a large positive NORMAL number (e.g. 3.37e297) */
@@ -284,11 +287,11 @@ main (void)
     gsl_ieee_double_rep r;
     gsl_ieee_double_to_rep (&d, &r);
 
-    gsl_test_int (r.sign, 0, "x = 3.37e297, sign is +");
-    gsl_test_int (r.exponent, 988, "x = 3.37e297, exponent is 998");
-    gsl_test_str (r.mantissa, mantissa, "x = 3.37e297, mantissa");
+    gsl_test_int (r.sign, 0, "double x = 3.37e297, sign is +");
+    gsl_test_int (r.exponent, 988, "double x = 3.37e297, exponent is 998");
+    gsl_test_str (r.mantissa, mantissa, "double x = 3.37e297, mantissa");
     gsl_test_int (r.type, GSL_IEEE_TYPE_NORMAL,
-		  "x = 3.37e297, type is NORMAL");
+		  "double x = 3.37e297, type is NORMAL");
   }
 
   /* Check for a small positive NORMAL number (e.g. 3.37e-297) */
@@ -300,11 +303,11 @@ main (void)
     gsl_ieee_double_rep r;
     gsl_ieee_double_to_rep (&d, &r);
 
-    gsl_test_int (r.sign, 0, "x = 3.37e-297, sign is +");
-    gsl_test_int (r.exponent, -985, "x = 3.37e-297, exponent is -985");
-    gsl_test_str (r.mantissa, mantissa, "x = 3.37e-297, mantissa");
+    gsl_test_int (r.sign, 0, "double x = 3.37e-297, sign is +");
+    gsl_test_int (r.exponent, -985, "double x = 3.37e-297, exponent is -985");
+    gsl_test_str (r.mantissa, mantissa, "double x = 3.37e-297, mantissa");
     gsl_test_int (r.type, GSL_IEEE_TYPE_NORMAL,
-		  "x = 3.37e-297, type is NORMAL");
+		  "double x = 3.37e-297, type is NORMAL");
   }
 
   /* Check for DBL_MIN (smallest possible number that is not denormal) */
@@ -316,11 +319,11 @@ main (void)
     gsl_ieee_double_rep r;
     gsl_ieee_double_to_rep (&d, &r);
 
-    gsl_test_int (r.sign, 0, "x = DBL_MIN, sign is +");
-    gsl_test_int (r.exponent, -1022, "x = DBL_MIN, exponent is -1022");
-    gsl_test_str (r.mantissa, mantissa, "x = DBL_MIN, mantissa");
+    gsl_test_int (r.sign, 0, "double x = DBL_MIN, sign is +");
+    gsl_test_int (r.exponent, -1022, "double x = DBL_MIN, exponent is -1022");
+    gsl_test_str (r.mantissa, mantissa, "double x = DBL_MIN, mantissa");
     gsl_test_int (r.type, GSL_IEEE_TYPE_NORMAL,
-		  "x = DBL_MIN, type is NORMAL");
+		  "double x = DBL_MIN, type is NORMAL");
   }
 
   /* Check for DBL_MAX (largest possible number that is not Inf) */
@@ -332,11 +335,11 @@ main (void)
     gsl_ieee_double_rep r;
     gsl_ieee_double_to_rep (&d, &r);
 
-    gsl_test_int (r.sign, 0, "x = DBL_MAX, sign is +");
-    gsl_test_int (r.exponent, 1023, "x = DBL_MAX, exponent is 1023");
-    gsl_test_str (r.mantissa, mantissa, "x = DBL_MAX, mantissa");
+    gsl_test_int (r.sign, 0, "double x = DBL_MAX, sign is +");
+    gsl_test_int (r.exponent, 1023, "double x = DBL_MAX, exponent is 1023");
+    gsl_test_str (r.mantissa, mantissa, "double x = DBL_MAX, mantissa");
     gsl_test_int (r.type, GSL_IEEE_TYPE_NORMAL,
-		  "x = DBL_MAX, type is NORMAL");
+		  "double x = DBL_MAX, type is NORMAL");
   }
 
   /* Check for DENORMAL numbers (e.g. DBL_MIN/2^n) */
@@ -354,13 +357,13 @@ main (void)
 	mantissa[i] = '1';
 	gsl_ieee_double_to_rep (&x, &r);
 
-	gsl_test_int (r.sign, 0, "x = DBL_MIN/2^%d, sign is +", i + 1);
+	gsl_test_int (r.sign, 0, "double x = DBL_MIN/2^%d, sign is +", i + 1);
 	gsl_test_int (r.exponent, -1023,
-		      "x = DBL_MIN/2^%d, exponent is -1022", i + 1);
+		      "double x = DBL_MIN/2^%d, exponent is -1022", i + 1);
 	gsl_test_str (r.mantissa, mantissa,
-		      "x = DBL_MIN/2^%d, mantissa", i + 1);
+		      "double x = DBL_MIN/2^%d, mantissa", i + 1);
 	gsl_test_int (r.type, GSL_IEEE_TYPE_DENORMAL,
-		      "x = DBL_MIN/2^%d, type is DENORMAL", i + 1);
+		      "double x = DBL_MIN/2^%d, type is DENORMAL", i + 1);
 	mantissa[i] = '0';
       }
   }
@@ -376,10 +379,10 @@ main (void)
     double x = 2 * d;
     gsl_ieee_double_to_rep (&x, &r);
 
-    gsl_test_int (r.sign, 0, "x = 2*DBL_MAX, sign is +");
-    gsl_test_int (r.exponent, 1024, "x = 2*DBL_MAX, exponent is 1024");
-    gsl_test_str (r.mantissa, mantissa, "x = 2*DBL_MAX, mantissa");
-    gsl_test_int (r.type, GSL_IEEE_TYPE_INF, "x = 2*DBL_MAX, type is INF");
+    gsl_test_int (r.sign, 0, "double x = 2*DBL_MAX, sign is +");
+    gsl_test_int (r.exponent, 1024, "double x = 2*DBL_MAX, exponent is 1024");
+    gsl_test_str (r.mantissa, mantissa, "double x = 2*DBL_MAX, mantissa");
+    gsl_test_int (r.type, GSL_IEEE_TYPE_INF, "double x = 2*DBL_MAX, type is INF");
   }
 
   /* Check for negative INFINITY (e.g. -2*DBL_MAX) */
@@ -393,10 +396,10 @@ main (void)
     double x = -2 * d;
     gsl_ieee_double_to_rep (&x, &r);
 
-    gsl_test_int (r.sign, 1, "x = -2*DBL_MAX, sign is -");
-    gsl_test_int (r.exponent, 1024, "x = -2*DBL_MAX, exponent is 1024");
-    gsl_test_str (r.mantissa, mantissa, "x = -2*DBL_MAX, mantissa");
-    gsl_test_int (r.type, GSL_IEEE_TYPE_INF,"x = -2*DBL_MAX, type is INF");
+    gsl_test_int (r.sign, 1, "double x = -2*DBL_MAX, sign is -");
+    gsl_test_int (r.exponent, 1024, "double x = -2*DBL_MAX, exponent is 1024");
+    gsl_test_str (r.mantissa, mantissa, "double x = -2*DBL_MAX, mantissa");
+    gsl_test_int (r.type, GSL_IEEE_TYPE_INF,"double x = -2*DBL_MAX, type is INF");
   }
 
   /* Check for NAN (e.g. Inf - Inf) */
@@ -414,8 +417,8 @@ main (void)
     /* We don't check the sign and we don't check the mantissa because
        they could be anything for a NaN */
 
-    gsl_test_int (r.exponent, 1024, "x = NaN, exponent is 1024");
-    gsl_test_int (r.type, GSL_IEEE_TYPE_NAN, "x = NaN, type is NAN");
+    gsl_test_int (r.exponent, 1024, "double x = NaN, exponent is 1024");
+    gsl_test_int (r.type, GSL_IEEE_TYPE_NAN, "double x = NaN, type is NAN");
   }
 
   return gsl_test_summary ();
