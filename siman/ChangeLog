@@ -1,0 +1,4 @@
+1998-01-30  Mark Galassi  <rosalia@cygnus.com>
+
+	* siman_test_driver.sh, Makefile.am (TESTS): added a test driver
+	so that now "make check" does something interesting.
