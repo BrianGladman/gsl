@@ -122,11 +122,6 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) \
 	$(TEXINFOS) $(MANS) $(EXTRA_DIST)
 
 TAR = tar
-DEP_FILES =  .deps/bench-gamma.P .deps/bench-gauss.P \
-.deps/bench-poisson.P .deps/exponential.P .deps/gamma.P .deps/gauss.P \
-.deps/poisson.P .deps/runexponential.P .deps/rungamma.P \
-.deps/rungauss.P .deps/runpoisson.P .deps/shuffle.P .deps/test-gauss.P \
-.deps/test-shuffle.P
 SOURCES = $(gauss_SOURCES) $(test_gauss_SOURCES) $(bench_gauss_SOURCES) $(exponential_SOURCES) $(poisson_SOURCES) $(bench_poisson_SOURCES) $(test_shuffle_SOURCES) $(gamma_SOURCES) $(bench_gamma_SOURCES)
 OBJECTS = $(gauss_OBJECTS) $(test_gauss_OBJECTS) $(bench_gauss_OBJECTS) $(exponential_OBJECTS) $(poisson_OBJECTS) $(bench_poisson_OBJECTS) $(test_shuffle_OBJECTS) $(gamma_OBJECTS) $(bench_gamma_OBJECTS)
 
@@ -261,31 +256,6 @@ distdir: $(DISTFILES)
 	  || ln $$d/$$file $(distdir)/$$file 2> /dev/null \
 	  || cp -p $$d/$$file $(distdir)/$$file; \
 	done
-
-MKDEP = gcc -M $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
-
--include .deps/.P
-.deps/.P:
-	test -d .deps || mkdir .deps
-	echo > $@
-
--include $(DEP_FILES)
-$(DEP_FILES): .deps/.P
-
-mostlyclean-depend:
-
-clean-depend:
-
-distclean-depend:
-
-maintainer-clean-depend:
-	rm -rf .deps
-
-.deps/%.P: $(srcdir)/%.c
-	@echo "Computing dependencies for $<..."
-	@o='o';				\
-	test -n "$o" && o='$$o';	\
-	$(MKDEP) $< | sed "s/^\(.*\)\.o:/\1.$$o \1.l$$o:/" > $@
 info:
 dvi:
 check: all
@@ -325,18 +295,18 @@ maintainer-clean-generic:
 	test -z "$(MAINTAINERCLEANFILES)" || rm -f $(MAINTAINERCLEANFILES)
 	test -z "$(BUILT_SOURCES)" || rm -f $(BUILT_SOURCES)
 mostlyclean:  mostlyclean-binPROGRAMS mostlyclean-compile \
-		mostlyclean-tags mostlyclean-depend mostlyclean-generic
+		mostlyclean-tags mostlyclean-generic
 
-clean:  clean-binPROGRAMS clean-compile clean-tags clean-depend \
-		clean-generic mostlyclean
+clean:  clean-binPROGRAMS clean-compile clean-tags clean-generic \
+		mostlyclean
 
 distclean:  distclean-binPROGRAMS distclean-compile distclean-tags \
-		distclean-depend distclean-generic clean
+		distclean-generic clean
 	rm -f config.status
 
 maintainer-clean:  maintainer-clean-binPROGRAMS maintainer-clean-compile \
-		maintainer-clean-tags maintainer-clean-depend \
-		maintainer-clean-generic distclean
+		maintainer-clean-tags maintainer-clean-generic \
+		distclean
 	@echo "This command is intended for maintainers to use;"
 	@echo "it deletes files that may require special tools to rebuild."
 
@@ -345,8 +315,7 @@ clean-binPROGRAMS maintainer-clean-binPROGRAMS uninstall-binPROGRAMS \
 install-binPROGRAMS mostlyclean-compile distclean-compile clean-compile \
 maintainer-clean-compile uninstall-includeHEADERS \
 install-includeHEADERS tags mostlyclean-tags distclean-tags clean-tags \
-maintainer-clean-tags distdir mostlyclean-depend distclean-depend \
-clean-depend maintainer-clean-depend info dvi installcheck install-exec \
+maintainer-clean-tags distdir info dvi installcheck install-exec \
 install-data install uninstall all installdirs mostlyclean-generic \
 distclean-generic clean-generic maintainer-clean-generic clean \
 mostlyclean distclean maintainer-clean

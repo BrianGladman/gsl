@@ -223,13 +223,6 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) \
 	$(TEXINFOS) $(MANS) $(EXTRA_DIST)
 
 TAR = tar
-DEP_FILES =  .deps/benchran.P .deps/cmrg-gen.P .deps/cmrg-state.P \
-.deps/cmrg.P .deps/mrg-gen.P .deps/mrg-state.P .deps/mrg.P .deps/ran.P \
-.deps/rand-gen.P .deps/rand-state.P .deps/rand.P .deps/switch.P \
-.deps/taus-gen.P .deps/taus-state.P .deps/taus.P .deps/test-switch.P \
-.deps/testran.P .deps/uni-gen.P .deps/uni-state.P .deps/uni.P \
-.deps/uni32-gen.P .deps/uni32-state.P .deps/uni32.P .deps/zuf-gen.P \
-.deps/zuf-state.P .deps/zuf.P
 SOURCES = $(libgslrandom_a_SOURCES) $(libgslrantaus_a_SOURCES) $(libgslranmrg_a_SOURCES) $(libgslrancmrg_a_SOURCES) $(libgslranuni_a_SOURCES) $(libgslranuni32_a_SOURCES) $(libgslranzuf_a_SOURCES) $(libgslranrand_a_SOURCES) $(taus_SOURCES) $(test_taus_SOURCES) $(bench_taus_SOURCES) $(mrg_SOURCES) $(test_mrg_SOURCES) $(bench_mrg_SOURCES) $(cmrg_SOURCES) $(test_cmrg_SOURCES) $(bench_cmrg_SOURCES) $(uni_SOURCES) $(test_uni_SOURCES) $(bench_uni_SOURCES) $(uni32_SOURCES) $(test_uni32_SOURCES) $(bench_uni32_SOURCES) $(zuf_SOURCES) $(test_zuf_SOURCES) $(bench_zuf_SOURCES) $(rand_SOURCES) $(test_rand_SOURCES) $(bench_rand_SOURCES) $(test_switch_SOURCES)
 OBJECTS = $(libgslrandom_a_OBJECTS) $(libgslrantaus_a_OBJECTS) $(libgslranmrg_a_OBJECTS) $(libgslrancmrg_a_OBJECTS) $(libgslranuni_a_OBJECTS) $(libgslranuni32_a_OBJECTS) $(libgslranzuf_a_OBJECTS) $(libgslranrand_a_OBJECTS) $(taus_OBJECTS) $(test_taus_OBJECTS) $(bench_taus_OBJECTS) $(mrg_OBJECTS) $(test_mrg_OBJECTS) $(bench_mrg_OBJECTS) $(cmrg_OBJECTS) $(test_cmrg_OBJECTS) $(bench_cmrg_OBJECTS) $(uni_OBJECTS) $(test_uni_OBJECTS) $(bench_uni_OBJECTS) $(uni32_OBJECTS) $(test_uni32_OBJECTS) $(bench_uni32_OBJECTS) $(zuf_OBJECTS) $(test_zuf_OBJECTS) $(bench_zuf_OBJECTS) $(rand_OBJECTS) $(test_rand_OBJECTS) $(bench_rand_OBJECTS) $(test_switch_OBJECTS)
 
@@ -495,31 +488,6 @@ distdir: $(DISTFILES)
 	  || ln $$d/$$file $(distdir)/$$file 2> /dev/null \
 	  || cp -p $$d/$$file $(distdir)/$$file; \
 	done
-
-MKDEP = gcc -M $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
-
--include .deps/.P
-.deps/.P:
-	test -d .deps || mkdir .deps
-	echo > $@
-
--include $(DEP_FILES)
-$(DEP_FILES): .deps/.P
-
-mostlyclean-depend:
-
-clean-depend:
-
-distclean-depend:
-
-maintainer-clean-depend:
-	rm -rf .deps
-
-.deps/%.P: $(srcdir)/%.c
-	@echo "Computing dependencies for $<..."
-	@o='o';				\
-	test -n "$o" && o='$$o';	\
-	$(MKDEP) $< | sed "s/^\(.*\)\.o:/\1.$$o \1.l$$o:/" > $@
 info:
 dvi:
 check: all
@@ -560,20 +528,20 @@ maintainer-clean-generic:
 	test -z "$(BUILT_SOURCES)" || rm -f $(BUILT_SOURCES)
 mostlyclean:  mostlyclean-libLIBRARIES mostlyclean-compile \
 		mostlyclean-binPROGRAMS mostlyclean-tags \
-		mostlyclean-depend mostlyclean-generic
+		mostlyclean-generic
 
 clean:  clean-libLIBRARIES clean-compile clean-binPROGRAMS clean-tags \
-		clean-depend clean-generic mostlyclean
+		clean-generic mostlyclean
 
 distclean:  distclean-libLIBRARIES distclean-compile \
-		distclean-binPROGRAMS distclean-tags distclean-depend \
-		distclean-generic clean
+		distclean-binPROGRAMS distclean-tags distclean-generic \
+		clean
 	rm -f config.status
 
 maintainer-clean:  maintainer-clean-libLIBRARIES \
 		maintainer-clean-compile maintainer-clean-binPROGRAMS \
-		maintainer-clean-tags maintainer-clean-depend \
-		maintainer-clean-generic distclean
+		maintainer-clean-tags maintainer-clean-generic \
+		distclean
 	@echo "This command is intended for maintainers to use;"
 	@echo "it deletes files that may require special tools to rebuild."
 
@@ -584,8 +552,7 @@ clean-compile maintainer-clean-compile mostlyclean-binPROGRAMS \
 distclean-binPROGRAMS clean-binPROGRAMS maintainer-clean-binPROGRAMS \
 uninstall-binPROGRAMS install-binPROGRAMS uninstall-includeHEADERS \
 install-includeHEADERS tags mostlyclean-tags distclean-tags clean-tags \
-maintainer-clean-tags distdir mostlyclean-depend distclean-depend \
-clean-depend maintainer-clean-depend info dvi installcheck install-exec \
+maintainer-clean-tags distdir info dvi installcheck install-exec \
 install-data install uninstall all installdirs mostlyclean-generic \
 distclean-generic clean-generic maintainer-clean-generic clean \
 mostlyclean distclean maintainer-clean
