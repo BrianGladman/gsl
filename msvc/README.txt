@@ -1,3 +1,6 @@
+This file contains instructions for compiling applications with GSL --
+you may want to print it out for reference.
+
 The GNU Scientific Library (Windows Version)
 ============================================
 
@@ -13,9 +16,6 @@ redistributed in proprietary programs.
 This library is distributed in the hope that it will be useful, but
 WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-
-This file contains instructions for compiling applications with GSL --
-you may want to print it out for reference.
 
 More information about GSL
 ==========================
@@ -41,10 +41,13 @@ following locations,
 The "Release" and "Debug" versions of the libraries are installed in
 the lib directory as follows,
 
-    libgsl.lib,  libgslcblas.lib   - release version
-    libgsld.lib, libgslcblasd.lib  - debug version
+    libgsl.lib,    libgslcblas.lib    - Release (single-threaded)
+    libgsld.lib,   libgslcblasd.lib   - Debug   (single-threaded)
+    libgslMT.lib,  libgslcblasMT.lib  - Release (multi-threaded)
+    libgslMTd.lib, libgslcblasMTd.lib - Debug   (multi-threaded)
 
-The debug version has a 'd' at the end of the library name.
+The debug versions have 'd' at the end of the library name, and the
+multi-threaded versions have 'MT' in the library name.
 
 To compile an application you will need to specify locations of the
 GSL include files and libraries.  The installation program will add
@@ -74,8 +77,10 @@ libraries for each project,
     Project Settings -- Link
         Category: Input
           Object/Library Modules: 
-             libgsl.lib libgslcblas.lib ...   for the release configuration
+             libgsl.lib libgslcblas.lib ... for the release configuration
           or libgsld.lib libgslcblasd.lib ... for the debug configuration
+          or libgslMT.lib libgslcblasMT.lib ... (as above, multi-threaded)
+          or libgslMTd.lib libgslcblasMTd.lib ... 
 
 Make sure that the Object/Library module settings are made for all the
 appropriate configurations (either 'Release' or 'Debug').
@@ -87,26 +92,29 @@ functions are faster, but increase the code size.
 You can test your installation using the demonstration workspace
 available in the directory 'demo'.
 
-Depending on which header files your application uses some programs
-may need to be compiled with the following option selected,
+Your programs will also need to be compiled with the following option
+selected,
 
     Project Settings
       C/C++
         Category: Customize
           Disable Language Extensions
 
-If you do this you should apply the optimization option /Op- to
-prevent your code from being slowed down by a feature of 'Disable
-Language extensions'.  By default the 'Disable Language Extensions'
-option turns on the strictest IEEE arithmetic behavior, which slows
-down the program significantly.  For most programs this is not
-required and can be turned off with /Op-.
+Sometimes this is not necessary, it depends on which header files your
+application includes.  If you do apply this option you should use the
+optimization option /Op- to prevent your code from being slowed down
+by 'Disable Language extensions'.  By default the 'Disable Language
+Extensions' option turns on the strictest IEEE arithmetic behavior,
+which slows down the program significantly.  For most programs this is
+not required and can be turned off with /Op-.
 
-The library is built with the /LD or /LDd option.  This is compatible
-with the default link option /ML for single-threaded applications.  To
-use GSL in a multi-threaded application you may need to recompile the
-library with another option, such as /MT or /MTd (for debugging).  See
-the Microsoft Visual C++ Manual for details on link options.
+The single-threaded libraries are built with the /ML or /MLd option.
+This is compatible with the default link option /ML for
+single-threaded applications.  To use GSL in a multi-threaded
+application you will need to use the multi-threaded versions of the
+library and compile your code with either /MT or /MTd (for debugging).
+See the Microsoft Visual C++ Manual for details on link options.
 
-The initial scripts were provided by José Miguel Buenaposada
-(jmbuena@dia.fi.upm.es) and subsequently modified by Brian Gough
+The initial scripts to generate the Visual Studio project files for
+GSL were provided by José Miguel Buenaposada (jmbuena@dia.fi.upm.es)
+and subsequently modified by Brian Gough
