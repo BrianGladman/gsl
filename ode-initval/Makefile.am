@@ -22,7 +22,9 @@ test_odeiv_SOURCES = test_odeiv.c
 
 libgslodeiv_a_SOURCES = \
 	odeiv.c		\
-	rk4.c
+	rk4.c		\
+	rk4imp.c	\
+	rkck.c
 
 strict:
 	$(MAKE) CFLAGS="-ansi -pedantic -W -Wall -Wtraditional -Wconversion -Wshadow -Wpointer-arith -Wcast-qual -Wcast-align -Wwrite-strings -Waggregate-return -Wstrict-prototypes -fshort-enums -fno-common -Wmissing-prototypes -Wnested-externs -g -O4 -Dinline=''"

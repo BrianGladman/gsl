@@ -10,16 +10,14 @@
 
 /* rk4 state object */
 typedef struct {
-  double * y0;    /* last value */
-  double * k;     /* workspace  */
-  double * ytmp;  /* workspace */
+  double * work;   /* workspace  */
 }
 gsl_odeiv_step_rk4_state;
 
 
 /* rk4 stepper object */
 typedef struct {
-  int  (*_step)  (void * state, unsigned int dim, double t, double h, double y[], gsl_odeiv_function * dydt);
+  int  (*_step)  (void * state, unsigned int dim, double t, double h, double y[], double yerr[], gsl_odeiv_function * dydt);
   int  (*_reset) (void * state);
   void (*_free)  (void * state);
   void * _state;
@@ -29,7 +27,7 @@ gsl_odeiv_step_rk4;
 
 
 static gsl_odeiv_step * rk4_create(unsigned int dimension);
-static int  rk4_step(void * state, unsigned int dim, double t, double h, double y[], gsl_odeiv_function * dydt);
+static int  rk4_step(void * state, unsigned int dim, double t, double h, double y[], double yerr[], gsl_odeiv_function * dydt);
 static int  rk4_reset(void *);
 static void rk4_free(void *);
 
@@ -54,23 +52,8 @@ rk4_create(unsigned int dimension)
     rk4->_state = (gsl_odeiv_step_rk4_state *) malloc(sizeof(gsl_odeiv_step_rk4_state));
     if(rk4->_state != 0) {
       gsl_odeiv_step_rk4_state * s = (gsl_odeiv_step_rk4_state *) rk4->_state;
-      s->k = (double *) malloc(dimension * sizeof(double));
-      if(s->k == 0) {
-        free(rk4->_state);
-	free(rk4);
-	return 0;
-      }
-      s->y0 = (double *) malloc(dimension * sizeof(double));
-      if(s->y0 == 0) {
-        free(s->k);
-        free(rk4->_state);
-	free(rk4);
-	return 0;
-      }
-      s->ytmp = (double *) malloc(dimension * sizeof(double));
-      if(s->ytmp == 0) {
-        free(s->y0);
-        free(s->k);
+      s->work = (double *) malloc(3*dimension * sizeof(double));
+      if(s->work == 0) {
         free(rk4->_state);
 	free(rk4);
 	return 0;
@@ -87,39 +70,50 @@ rk4_create(unsigned int dimension)
 
 static
 int
-rk4_step(void * state, unsigned int dim, double t, double h, double y[], gsl_odeiv_function * dydt)
+rk4_step(void * state, unsigned int dim, double t, double h, double y[], double yerr[], gsl_odeiv_function * dydt)
 {
   int i;
   int status;
   gsl_odeiv_step_rk4_state * s = (gsl_odeiv_step_rk4_state *) state;
 
-  memcpy(s->y0, y, dim * sizeof(double));
+  /* divide up the workspace */
+  double * k    = s->work;
+  double * y0   = s->work + dim;
+  double * ytmp = s->work + 2*dim;
+
+  /* Copy the starting value. We will write over
+   * the y[] vector, using it for scratch and
+   * then filling it with the final result.
+   */
+  memcpy(y0, y, dim * sizeof(double));
 
   /* k1 step */
-  status = ( GSL_ODEIV_FN_EVAL(dydt, t, s->y0, s->k) != 0 );
+  status = ( GSL_ODEIV_FN_EVAL(dydt, t, y0, k) != 0 );
   for(i=0; i<dim; i++) {
-    y[i] += h/6.0 * s->k[i];
-    s->ytmp[i] = s->y0[i] + 0.5*h * s->k[i];
+    y[i] = h/6.0 * k[i]; /* use y[] to store delta_y */
+    ytmp[i] = y0[i] + 0.5*h * k[i];
   }
 
   /* k2 step */
-  status += ( GSL_ODEIV_FN_EVAL(dydt, t + 0.5*h, s->ytmp, s->k) != 0 );
+  status += ( GSL_ODEIV_FN_EVAL(dydt, t + 0.5*h, ytmp, k) != 0 );
   for(i=0; i<dim; i++) {
-    y[i] += h/3.0 * s->k[i];
-    s->ytmp[i] = s->y0[i] + 0.5*h * s->k[i];
+    y[i] += h/3.0 * k[i];
+    ytmp[i] = y0[i] + 0.5*h * k[i];
   }  
 
   /* k3 step */
-  status += ( GSL_ODEIV_FN_EVAL(dydt, t + 0.5*h, s->ytmp, s->k) != 0 );
+  status += ( GSL_ODEIV_FN_EVAL(dydt, t + 0.5*h, ytmp, k) != 0 );
   for(i=0; i<dim; i++) {
-    y[i] += h/3.0 * s->k[i];
-    s->ytmp[i] = s->y0[i] + h * s->k[i];
+    y[i] += h/3.0 * k[i];
+    ytmp[i] = y0[i] + h * k[i];
   } 
 
-  /* k4 step */
-  status += ( GSL_ODEIV_FN_EVAL(dydt, t + h, s->ytmp, s->k) != 0 );
+  /* k4 step, error estimate, and final sum */
+  status += ( GSL_ODEIV_FN_EVAL(dydt, t + h, ytmp, k) != 0 );
   for(i=0; i<dim; i++) {
-    y[i] += h/6.0 * s->k[i];
+    y[i]   += h/6.0 * k[i];
+    yerr[i] = h * y[i];
+    y[i]   += y0[i];
   } 
 
   return  ( status == 0 ? GSL_SUCCESS : GSL_EBADFUNC );
@@ -141,6 +135,6 @@ void
 rk4_free(void * state)
 {
   gsl_odeiv_step_rk4_state * s = (gsl_odeiv_step_rk4_state *) state;
-  if(s->k != 0) free(s->k);
+  if(s->work != 0) free(s->work);
   free(s);
 }

@@ -15,7 +15,7 @@ typedef struct gsl_odeiv_function_struct gsl_odeiv_function;
 
 /* general stepper object */
 struct _gsl_odeiv_step_struct {
-  int  (*_step)  (void *, unsigned int dim, double t, double h, double y[], gsl_odeiv_function * dydt);
+  int  (*_step)  (void *, unsigned int dim, double t, double h, double y[], double yerr[], gsl_odeiv_function * dydt);
   int  (*_reset) (void *);
   void (*_free)  (void *);
   void * _state;
@@ -36,11 +36,13 @@ gsl_odeiv_step_factory;
 
 /* available stepper factories */
 extern const gsl_odeiv_step_factory  gsl_odeiv_step_factory_rk4;
+extern const gsl_odeiv_step_factory  gsl_odeiv_step_factory_rkck;
+extern const gsl_odeiv_step_factory  gsl_odeiv_step_factory_rk4imp;
 
 
 /* stepper methods */
 
-int  gsl_odeiv_step_impl(gsl_odeiv_step * s, double t, double h, double y[], gsl_odeiv_function * dydt);
+int  gsl_odeiv_step_impl(gsl_odeiv_step * s, double t, double h, double y[], double yerr[], gsl_odeiv_function * dydt);
 int  gsl_odeiv_step_reset(gsl_odeiv_step * s);
 void gsl_odeiv_step_free(gsl_odeiv_step * s);
 

@@ -8,9 +8,9 @@
 
 
 int
-gsl_odeiv_step_impl(gsl_odeiv_step * s, double t, double h, double y[], gsl_odeiv_function * dydt)
+gsl_odeiv_step_impl(gsl_odeiv_step * s, double t, double h, double y[], double yerr[], gsl_odeiv_function * dydt)
 {
-  return s->_step(s->_state, s->dimension, t, h, y, dydt);
+  return s->_step(s->_state, s->dimension, t, h, y, yerr, dydt);
 }
 
 

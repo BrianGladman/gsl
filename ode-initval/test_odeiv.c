@@ -41,48 +41,88 @@ gsl_odeiv_function rhs_func_sin = {
 };
 
 
-int test_rk4(void)
+/* RHS for a exp(t)+ b exp(-t) */
+
+int rhs_exp(double t, const double y[], double f[], void * params)
+{
+  f[0] = y[1];
+  f[1] = y[0];
+  return GSL_SUCCESS;
+}
+
+gsl_odeiv_function rhs_func_exp = {
+  rhs_exp,
+  0
+};
+
+
+/* RHS for stiff example */
+
+int rhs_stiff(double t, const double y[], double f[], void * params)
+{
+  f[0] =  998.0*y[0] + 1998.0*y[1];
+  f[1] = -999.0*y[0] - 1999.0*y[1];
+  return GSL_SUCCESS;
+}
+
+gsl_odeiv_function rhs_func_stiff = {
+  rhs_stiff,
+  0
+};
+
+
+int test_stepper_linear(gsl_odeiv_step * stepper)
 {
   int s = 0;
   double y[2];
+  double yerr[2];
   double h = 1.0e-04;
   double t;
   double del;
   double delmax = 0.0;
-  int count;
-
-  gsl_odeiv_step * stepper = gsl_odeiv_step_factory_rk4.create(2);
+  int count = 0;
 
   y[0] = 1.0;
   y[1] = 0.0;
 
-  count = 0;
   for(t=0.0; t<4.0; t += h) {
-    gsl_odeiv_step_impl(stepper, t, h, y, &rhs_func_lin);
+    gsl_odeiv_step_impl(stepper, t, h, y, yerr, &rhs_func_lin);
     if(count % 100 == 0) {
       del = fabs((y[1] - (t+h))/y[1]);
       delmax = GSL_MAX_DBL(del, delmax);
-      if( del > (count+1.0) * 2.0e-16 ) {
-        printf("LINEAR(%22.18g)  %22.18g  %22.18g  %10.6g\n", t+h, y[1], t+h, del);
+      if(del > (count+1.0) * 2.0e-16) {
+        printf("LINEAR(%20.17g)  %20.17g  %20.17g  %8.4g\n", t+h, y[1], t+h, del);
 	s++;
       }
     }
     count++;
   }
 
-  gsl_odeiv_step_reset(stepper);
+  return s;
+}
+
+
+int test_stepper_sin(gsl_odeiv_step * stepper)
+{
+  int s = 0;
+  double y[2];
+  double yerr[2];
+  double h = 2.0e-04;
+  double t;
+  double del;
+  double delmax = 0.0;
+  int count = 0;
 
   y[0] = 1.0;
   y[1] = 0.0;
-  delmax = 0.0;
 
-  count = 0;
   for(t=0.0; t<M_PI; t += h) {
     int stat;
-    gsl_odeiv_step_impl(stepper, t, h, y, &rhs_func_sin);
-    del = fabs((y[1] - sin(t+h))/y[1]);
+    double sin_th = sin(t+h);
+    gsl_odeiv_step_impl(stepper, t, h, y, yerr, &rhs_func_sin);
+    del = fabs((y[1] - sin_th)/y[1]);
     delmax = GSL_MAX_DBL(del, delmax);
-    if(count % 100 == 0) {
+    {
       if(t < 0.5*M_PI) {
         stat = ( del > (count + 1.0) * 2.0e-16 );
       }
@@ -90,33 +130,36 @@ int test_rk4(void)
         stat = ( del > 1.0e-12 );
       }
       else if(t < 0.9 * M_PI) {
-        stat = t < ( del > 1.0e-10 );
+        stat = ( del > 1.0e-10 );
       }
       else {
-        stat = t < ( del > 1.0e-08 );
+        stat = ( del > 1.0e-07 );
       }
       if(stat != 0) {
-        printf("SIN(%22.18g)  %22.18g  %22.18g  %10.6g\n", t+h, y[1], sin(t+h), del);
+        printf("SIN(%22.18g)  %22.18g  %22.18g  %10.6g\n", t+h, y[1], sin_th, del);
       }
       s += stat;
     }
     count++;
   }
-  if(delmax > 1.0e-06) {
+  if(delmax > 1.0e-07) {
+    s++;
     printf("SIN(0 .. M_PI)  delmax = %g\n", delmax);
   }
 
 
   for(; t< 100.5 * M_PI; t += h) {
-    gsl_odeiv_step_impl(stepper, t, h, y, &rhs_func_sin);
+    gsl_odeiv_step_impl(stepper, t, h, y, yerr, &rhs_func_sin);
+    count++;
   }
   del = fabs((y[1] - sin(t+h))/y[1]);
   delmax = GSL_MAX_DBL(del, delmax);
-  if(del > 1.0e-8) {
+  if(del > count * 4.0e-14) {
     s++;
     printf("SIN(%22.18g)  %22.18g  %22.18g  %10.6g\n", t+h, y[1], sin(t+h), del);
   }
-  if(delmax > 1.0e-06) {
+  if(delmax > 1.0e-07) {
+    s++;
     printf("SIN(0 .. 100.5 M_PI)  delmax = %g\n", delmax);
   }
 
@@ -124,11 +167,143 @@ int test_rk4(void)
 }
 
 
+int test_stepper_exp(gsl_odeiv_step * stepper)
+{
+  int s = 0;
+  double y[2];
+  double yerr[2];
+  double h = 2.0e-04;
+  double t;
+  double del;
+  double delmax = 0.0;
+  int count = 0;
+
+  y[0] = 1.0;
+  y[1] = 1.0;
+
+  for(t=0.0; t<20.0; t += h) {
+    gsl_odeiv_step_impl(stepper, t, h, y, yerr, &rhs_func_exp);
+    if(count % 100 == 0) {
+      del = fabs((y[1] - exp(t+h))/y[1]);
+      delmax = GSL_MAX_DBL(del, delmax);
+      if(del > (count+1.0) * 4.0e-16) {
+        printf("EXP(%20.17g)  %20.17g  %20.17g  %8.4g\n", t+h, y[1], exp(t+h), del);
+	s++;
+      }
+    }
+    count++;
+  }
+
+  return s;
+}
+
+
+int test_stepper_stiff(gsl_odeiv_step * stepper)
+{
+  int s = 0;
+  double y[2];
+  double yerr[2];
+  double h = 1.0e-03;
+  double t;
+  double del;
+  double delmax = 0.0;
+  int count = 0;
+
+  y[0] = 1.0;
+  y[1] = 0.0;
+
+  for(t=0.0; t<20.0; t += h) {
+    double frac;
+    gsl_odeiv_step_impl(stepper, t, h, y, yerr, &rhs_func_stiff);
+    if(t < 0.003) {
+      frac = 6.0e-03;
+    }
+    else if(t < 0.008) {
+      frac = 1.0e-03;
+    }
+    else if(t < 0.015) {
+      frac = 1.0e-05;
+    }
+    else if(t < 0.04) {
+      frac = 1.0e-07;
+    }
+    else {
+      frac = 1.0e-14;
+    }
+    {
+      double arg = t + h;
+      double e1 = exp(-arg);
+      double e2 = exp(-1000.0*arg);
+      double u = 2.0*e1 - e2;
+      /* double v = -e1 + e2; */
+      del = fabs((y[0] - u)/y[0]);
+      delmax = GSL_MAX_DBL(del, delmax);
+      if(del > (count+1.0) * frac) {
+        printf("STIFF(%20.17g)  %20.17g  %20.17g  %8.4g\n", arg, y[0], u, del);
+	s++;
+      }
+    }
+    count++;
+  }
+
+  return s;
+}
+
+
+int test_rk4(void)
+{
+  gsl_odeiv_step * stepper = gsl_odeiv_step_factory_rk4.create(2);
+  int stat = 0;
+
+  stat += test_stepper_linear(stepper);
+  gsl_odeiv_step_reset(stepper);
+  stat += test_stepper_sin(stepper);
+
+  gsl_odeiv_step_free(stepper);
+  return stat;
+}
+
+
+int test_rkck(void)
+{
+  gsl_odeiv_step * stepper = gsl_odeiv_step_factory_rkck.create(2);
+  int stat = 0;
+
+  stat += test_stepper_linear(stepper);
+  gsl_odeiv_step_reset(stepper);
+  stat += test_stepper_sin(stepper);
+  gsl_odeiv_step_reset(stepper);
+  stat += test_stepper_exp(stepper);
+
+  gsl_odeiv_step_free(stepper);
+  return stat;
+}
+
+
+int test_rk4imp(void)
+{
+  gsl_odeiv_step * stepper = gsl_odeiv_step_factory_rk4imp.create(2);
+  int stat = 0;
+
+  stat += test_stepper_linear(stepper);
+  gsl_odeiv_step_reset(stepper);
+  stat += test_stepper_sin(stepper);
+  gsl_odeiv_step_reset(stepper);
+  stat += test_stepper_exp(stepper);
+  gsl_odeiv_step_reset(stepper);
+  stat += test_stepper_stiff(stepper);
+  
+  gsl_odeiv_step_free(stepper);
+  return stat;
+}
+
 int main()
 {
-  gsl_ieee_env_setup ();
+  gsl_ieee_env_setup();
 
-  gsl_test(test_rk4(), "Runge-Kutta 4");
+  gsl_test(test_rk4(),     "Runge-Kutta 4");
+  gsl_test(test_rkck(),    "Runge-Kutta 5, Cash-Karp");
+  gsl_test(test_rk4imp(),  "Runge-Kutta 4, Gaussian implicit");
 
   return gsl_test_summary();
 }
