@@ -1,7 +1,8 @@
 ** The library is now installed as a single shared or static libgsl
 file using libtool.
 
-** The gsl-config script now works.
+** The gsl-config script now works.  There is also a gsl.m4 file which
+people can use in their configure scripts.
 
 ** All header files are now in installed as pkginclude headers in a
 gsl/ subdirectory.
