@@ -1,3 +1,13 @@
+What is new in gsl-0.6+:
+
+** Header files for common physical constants have been added.
+
+** Functions linear and nonlinear regression in one or more dimensions
+are now available.
+
+** Vector and matrix views now have access to the address of the
+underlying block for compatibility with VSIPL (www.vsipl.org).
+
 ** The seeding procedure of the MT19937 random number generator has
 been updated to match the 10/99 release of the original code. This
 fixes a weakness which occurred for seeds which were powers of 2.

@@ -227,6 +227,11 @@ lmpar (gsl_matrix * r, const gsl_permutation * perm, const gsl_vector * qtf,
 
   size_t iter = 0;
 
+#ifdef DEBUG
+  printf("ENTERING lmpar\n");
+#endif
+
+
   compute_newton_direction (r, perm, qtf, newton);
 
 #ifdef DEBUG
@@ -449,6 +454,10 @@ iteration:
   goto iteration;
 
 line220:
+
+#ifdef DEBUG
+  printf("LEAVING lmpar, par = %g\n", par);
+#endif
 
   *par_inout = par;
 

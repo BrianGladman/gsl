@@ -40,6 +40,8 @@ GSDV
 * Use pkg-config from GNOME, preferably the C version when that is
 working.
 
+* Provide g-wrap wrappers for guile
+
 Before Each Release
 ===================
 
@@ -162,6 +164,6 @@ construct (Mostly done).
 
 * Add a vector layer to statistics and ffts, sometime in the future.
 
-* Look at www.vispl.org
+* Look at www.vsipl.org
 
 

@@ -3,9 +3,6 @@ iterate (void *vstate, gsl_multifit_function_fdf * fdf, gsl_vector * x, gsl_vect
 {
   lmder_state_t *state = (lmder_state_t *) vstate;
 
-  const double delta = state->delta;
-  const double fnorm = state->fnorm;
-
   gsl_matrix *q = state->q;
   gsl_matrix *r = state->r;
   gsl_vector *tau = state->tau;
@@ -38,14 +35,14 @@ iterate (void *vstate, gsl_multifit_function_fdf * fdf, gsl_vector * x, gsl_vect
   { 
     size_t iamax = gsl_blas_idamax (gradient);
 
-    gnorm = fabs(gsl_vector_get (gradient, iamax) / fnorm);
+    gnorm = fabs(gsl_vector_get (gradient, iamax) / state->fnorm);
   }
 
   /* Determine the Levenberg-Marquardt parameter */
 
 lm_iteration:
   
-  lmpar (r, perm, qtf, diag, delta, &(state->par), newton, gradient, sdiag, dx, w);
+  lmpar (r, perm, qtf, diag, state->delta, &(state->par), newton, gradient, sdiag, dx, w);
 
   /* Take a trial step */
 
@@ -57,8 +54,9 @@ lm_iteration:
 
   if (state->iter == 1)
     {
-      if (pnorm < delta)
+      if (pnorm < state->delta)
 	{
+          printf("set delta = pnorm = %g\n" , pnorm);
 	  state->delta = pnorm;
 	}
     }
@@ -71,10 +69,10 @@ lm_iteration:
 
   /* Compute the scaled actual reduction */
 
-  actred = compute_actual_reduction (fnorm, fnorm1);
+  actred = compute_actual_reduction (state->fnorm, fnorm1);
 
 #ifdef DEBUG
-  printf("lmiterate: fnorm = %g fnorm1 = %g  actred = %g\n", fnorm, fnorm1, actred);
+  printf("lmiterate: fnorm = %g fnorm1 = %g  actred = %g\n", state->fnorm, fnorm1, actred);
 #endif
 
   /* Compute rptdx = R P^T dx, noting that |J dx| = |R P^T dx| */
@@ -86,8 +84,8 @@ lm_iteration:
   /* Compute the scaled predicted reduction = |J dx|^2 + 2 par |D dx|^2 */
 
   { 
-    double t1 = fnorm1p / fnorm;
-    double t2 = (sqrt(state->par) * pnorm) / fnorm;
+    double t1 = fnorm1p / state->fnorm;
+    double t2 = (sqrt(state->par) * pnorm) / state->fnorm;
     
     prered = t1 * t1 + t2 * t2 / p5;
     dirder = -(t1 * t1 + t2 * t2);
@@ -125,7 +123,7 @@ lm_iteration:
     {
       double temp = (actred >= 0) ? p5 : p5*dirder / (dirder + p5 * actred);
 
-      if (p1 * fnorm1 >= fnorm || temp < p1 ) temp = p1;
+      if (p1 * fnorm1 >= state->fnorm || temp < p1 ) temp = p1;
 
       state->delta = temp * GSL_MIN_DBL (state->delta, pnorm/p1);
 
@@ -181,8 +179,7 @@ lm_iteration:
   else 
     {
       /* Repeat inner loop if unsuccessful */
-      
-      return GSL_CONTINUE;
+      printf("repeat\n");
       goto lm_iteration;
     }
 
