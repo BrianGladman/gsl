@@ -112,6 +112,11 @@ You may get warnings about " /usr/bin/ld: arg list too long" when
 building shared libraries.  If so, try increasing the ncargs kernel
 parameter with the systune(1m) command.
 
+For 64-bit compilation use the following options,
+
+  CC=cc CFLAGS="-64" LDFLAGS="-64" ./configure
+
+
 * MacOS X
 ---------
 
