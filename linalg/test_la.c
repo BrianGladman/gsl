@@ -29,6 +29,19 @@ create_hilbert_matrix(int size)
 }
 
 gsl_matrix *
+create_general_matrix(int size1, int size2)
+{
+  int i, j;
+  gsl_matrix * m = gsl_matrix_alloc(size1, size2);
+  for(i=0; i<size1; i++) {
+    for(j=0; j<size2; j++) {
+      gsl_matrix_set(m, i, j, 1.0/(i+j+1.0));
+    }
+  }
+  return m;
+}
+
+gsl_matrix *
 create_vandermonde_matrix(int size)
 {
   int i, j;
@@ -40,6 +53,9 @@ create_vandermonde_matrix(int size)
   }
   return m;
 }
+
+gsl_matrix * m35;
+gsl_matrix * m53;
 
 gsl_matrix * hilb2;
 gsl_matrix * hilb3;
@@ -380,6 +396,92 @@ int test_QR_solve(void)
   return s;
 }
 
+static int
+test_QR_decomp_dim(const gsl_matrix * m, const double * actual, double eps)
+{
+  int s = 0;
+  size_t i,j, M = m->size1, N = m->size2;
+
+  gsl_matrix * qr = gsl_matrix_alloc(M,N);
+  gsl_matrix * a  = gsl_matrix_alloc(M,N);
+  gsl_matrix * q  = gsl_matrix_alloc(M,M);
+  gsl_matrix * r  = gsl_matrix_alloc(M,N);
+  gsl_vector * d = gsl_vector_alloc(GSL_MIN(M,N));
+
+  gsl_matrix_memcpy(qr,m);
+
+  s += gsl_linalg_QR_decomp(qr, d);
+  s += gsl_linalg_QR_unpack(qr, d, q, r);
+  
+  gsl_linalg_matmult (q, r, a);
+
+  for(i=0; i<M; i++) {
+    for(j=0; j<N; j++) {
+      double aij = gsl_matrix_get(a, i, j);
+      double mij = gsl_matrix_get(m, i, j);
+      int foo = check(aij, mij, eps);
+      if(foo) {
+        printf("(%3d,%3d)[%d,%d]: %22.18g   %22.18g\n", M, N, i,j, aij, mij);
+      }
+      s += foo;
+    }
+  }
+  gsl_vector_free(d);
+  gsl_matrix_free(qr);
+  gsl_matrix_free(a);
+  gsl_matrix_free(q);
+  gsl_matrix_free(r);
+
+  return s;
+}
+
+int test_QR_decomp(void)
+{
+  int f;
+  int s = 0;
+
+  f = test_QR_decomp_dim(m35, hilb2_solution, 2 * 8.0 * GSL_DBL_EPSILON);
+  gsl_test(f, "  QR_decomp m(3,5)");
+  s += f;
+
+  f = test_QR_decomp_dim(m53, hilb3_solution, 2 * 64.0 * GSL_DBL_EPSILON);
+  gsl_test(f, "  QR_decomp m(5,3)");
+  s += f;
+
+  f = test_QR_decomp_dim(hilb2, hilb2_solution, 2 * 8.0 * GSL_DBL_EPSILON);
+  gsl_test(f, "  QR_decomp hilbert(2)");
+  s += f;
+
+  f = test_QR_decomp_dim(hilb3, hilb3_solution, 2 * 64.0 * GSL_DBL_EPSILON);
+  gsl_test(f, "  QR_decomp hilbert(3)");
+  s += f;
+
+  f = test_QR_decomp_dim(hilb4, hilb4_solution, 2 * 1024.0 * GSL_DBL_EPSILON);
+  gsl_test(f, "  QR_decomp hilbert(4)");
+  s += f;
+
+  f = test_QR_decomp_dim(hilb12, hilb12_solution, 0.5);
+  gsl_test(f, "  QR_decomp hilbert(12)");
+  s += f;
+
+  f = test_QR_decomp_dim(vander2, vander2_solution, 8.0 * GSL_DBL_EPSILON);
+  gsl_test(f, "  QR_decomp vander(2)");
+  s += f;
+
+  f = test_QR_decomp_dim(vander3, vander3_solution, 64.0 * GSL_DBL_EPSILON);
+  gsl_test(f, "  QR_decomp vander(3)");
+  s += f;
+
+  f = test_QR_decomp_dim(vander4, vander4_solution, 1024.0 * GSL_DBL_EPSILON);
+  gsl_test(f, "  QR_decomp vander(4)");
+  s += f;
+
+  f = test_QR_decomp_dim(vander12, vander12_solution, 0.05);
+  gsl_test(f, "  QR_decomp vander(12)");
+  s += f;
+
+  return s;
+}
 
 static int
 test_QRPT_solve_dim(const gsl_matrix * m, const double * actual, double eps)
@@ -740,6 +842,9 @@ int main()
 {
   gsl_ieee_env_setup ();
 
+  m35 = create_general_matrix(3,5);
+  m53 = create_general_matrix(5,3);
+
   hilb2 = create_hilbert_matrix(2);
   hilb3 = create_hilbert_matrix(3);
   hilb4 = create_hilbert_matrix(4);
@@ -753,6 +858,7 @@ int main()
   gsl_test(test_matmult(),        "Matrix Multiply");
   gsl_test(test_matmult_mod(),    "Matrix Multiply with Modification");
   gsl_test(test_LU_solve(),       "LU Decomposition and Solve");
+  gsl_test(test_QR_decomp(),      "QR Decomposition");
   gsl_test(test_QR_solve(),       "QR Decomposition and Solve");
   gsl_test(test_QR_update(),      "QR Rank-1 Update");
   gsl_test(test_QRPT_solve(),     "QRPT Decomposition and Solve");
