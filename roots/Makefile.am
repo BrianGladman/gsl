@@ -17,5 +17,5 @@ check_PROGRAMS = test
 TESTS = test
 
 test_SOURCES = test.c test_roots.c test_funcs.c test_macros.c test.h
-test_LDADD = libgslroots.la ../ieee-utils/libgslieeeutils.la ../err/libgslerr.la ../err/libgsltest.la ../utils/libutils.la
+test_LDADD = libgslroots.la ../ieee-utils/libgslieeeutils.la ../sys/libgslsys.la ../err/libgslerr.la ../err/libgsltest.la ../utils/libutils.la
 test_DEPENDENCIES = libgslroots.la
