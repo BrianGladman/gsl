@@ -1,4 +1,16 @@
-Thu Jul  9 17:53:12 1998  booth  <booth@planck.pha.jhu.edu>
+Tue Jul 14 19:27:09 1998  booth  <booth@planck.pha.jhu.edu>
+
+	* miser.c, miser_test.c, gsl_miser.h:
+	gsl_monte_miser now uses the state structure to keep track of itself.
+	Added new tests to test_monte to check input validation.
+
+	* gsl_miser.h, miser.c:
+	Added code to keep state information in a structure and allocate and initialize
+	that data.  Also added input validation code.  Next up, actually use it...
+
+Thu Jul  9 18:43:39 1998  booth  <booth@planck.pha.jhu.edu>
+
+	* ChangeLog: *** empty log message ***
 
 	* miser_test.c, plain_test.c:
 	fixed cut-n-paste-o that made tests take a LONG time.
@@ -26,7 +38,7 @@ Mon Jul  6 21:18:58 1998  booth  <booth@planck.pha.jhu.edu>
 	Fix monte to work correctly with gsl_monte_plain.  Also make plain_test.c
 	print the right function name.
 
-Sat Jul  4 19:45:00 1998  bjg  <bjg@planck.pha.jhu.edu>
+Sat Jul  4 19:45:00 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
 	* ChangeLog, Makefile.in:
 	changelog file, required by gnu coding standards
@@ -39,11 +51,11 @@ Thu Jul  2 21:03:42 1998  booth  <booth@planck.pha.jhu.edu>
 	gsl_monte_plain.  This is currently broken - I need to sort out factors
 	and powers.
 
-Thu Jul  2 16:46:48 1998  bjg  <bjg@planck.pha.jhu.edu>
+Thu Jul  2 16:46:48 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
 	* Makefile.am, Makefile.in: added gsl_vegas_print.h to Makefile.am
 
-Sun Jun 28 20:59:56 1998  bjg  <bjg@planck.pha.jhu.edu>
+Sun Jun 28 20:59:56 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
 	* miser.c, miser_test.c, vegas.c, vegas_test.c, Makefile.am, Makefile.in, gsl_miser.h, gsl_vegas.h:
 	converted everything from random to rng directory
