@@ -12,9 +12,11 @@
 
 
 
-static int hyperg_1F1_series(const double a, const double b, const double x,
-                             double * result, double * prec
-			     )
+static
+int
+hyperg_1F1_series(const double a, const double b, const double x,
+                  double * result, double * prec
+                  )
 {
   double an  = a;
   double bn  = b;
@@ -72,9 +74,90 @@ static int hyperg_1F1_series(const double a, const double b, const double x,
 }
 
 
-static int hyperg_1F1_asymp(const double a, const double b, const double x,
-                            double * result, double * prec
-			    )
+/* Do the (stable) upward recursion on the parameter 'a'.
+ * Work in terms of the function
+ *     Y(n) := Gamma(a+n)/Gamma(1+a+n-b) 1F1(a+n;b;x)
+ *
+ *     (a+n+1-b)Y(n+1) + (b-2a-2n-x)Y(n) + (a+n-1)Y(n-1) = 0
+ *
+ * Note that this will bomb if a-b is a negative integer and
+ * the recursion passes through that integer.
+ */
+static
+int
+hyperg_1F1_Y_recurse_a(double a, double b, double x,
+                       double n, double Ynm1, double Yn,
+		       double N,
+		       double * YN)
+{
+  int k;
+  double Ykm1 = Ynm1;
+  double Yk   = Yn;
+  double Ykp1;
+
+  for(k=n; k<N; k++) {
+    double ckp1 = (a + k + 1 - b);
+    double ck   = b - 2*a - 2*k - x;
+    double ckm1 = a + k - 1;
+    
+    if(fabs(ckp1) < GSL_MACH_EPS) {
+      *YN = 0.0;
+      return GSL_EDOM;
+    }
+    Ykp1 = (-ck*Yk - ckm1*Ykm1)/ckp1;
+    
+    Ykm1 = Yk;
+    Yk   = Ykp1;
+  }
+  
+  *YN = Ykp1;
+  return GSL_SUCCESS;
+}
+
+/* Manage the upward recursion on the parameter 'a'.
+ * Assumes a > 0.
+ * Uses the series representation to evaluate at the 
+ * reduced values of 'a'. This can be very inefficient
+ * if x is large. So it is better not to use this for
+ * large x.
+ */
+static
+int
+hyperg_1F1_recurse_a(double a, double b, double x, double * result)
+{
+  /* a = frac_a + N, N=integer */
+  double N      = floor(a);
+  double frac_a = a - N;
+  
+  double lg_fraca;   /* log(Gamma(frac_a))     */
+  double lg_ofracab; /* log(Gamma(1+frac_a-b)) */
+  int stat_lg_fraca;
+  int stat_lg_ofracab;
+
+  double Y0;
+  double Y1;
+  double prec;
+
+  if(frac_a < GSL_MACH_EPS) {
+    frac_a += 1.0;
+    N      -= 1.0;
+  }
+
+  stat_lg_fraca   = gsl_sf_lngamma_impl(frac_a, &lg_fraca);
+  stat_lg_ofracab = gsl_sf_lngamma_impl(1.0+frac_a-b, &lg_ofracab);
+
+
+  
+  hyperg_1F1_series(frac_a,       b, x, &Y0, &prec);
+  hyperg_1F1_series(frac_a + 1.0, b, x, &Y1, &prec);
+}
+
+
+static
+int
+hyperg_1F1_asymp(const double a, const double b, const double x,
+                 double * result, double * prec
+                 )
 {
   double pre, ln_pre, F;
 
@@ -94,21 +177,24 @@ static int hyperg_1F1_asymp(const double a, const double b, const double x,
 }
 
 
-int gsl_sf_hyperg_1F1_impl(const double a, const double b, const double x,
-                           double * result
-                           )
+int
+gsl_sf_hyperg_1F1_impl(const double a, const double b, const double x,
+                       double * result
+                       )
 {
   int a_neg_integer;    /*  a   negative integer  */
   int b_neg_integer;    /*  b   negative integer  */
   int bma_neg_integer;  /*  b-a negative integer  */
+  int amb_neg_integer;  /*  a-b negative integer  */
 
   double bma = b - a;
-  double prec;
+  double amb = a - b;
 
   a_neg_integer = ( a < 0.0  &&  fabs(a - rint(a)) < locEPS );
   b_neg_integer = ( b < 0.0  &&  fabs(b - rint(b)) < locEPS );
   bma_neg_integer = ( bma < 0.0  &&  fabs(bma - rint(bma)) < locEPS );
-
+  amb_neg_integer = ( amb < 0.0  &&  fabs(amb - rint(amb)) < locEPS );
+  
   /* case: a==b,  exp(x) */
   if(fabs(b-a) < locEPS) {
     return gsl_sf_exp_impl(x, result);
@@ -119,8 +205,10 @@ int gsl_sf_hyperg_1F1_impl(const double a, const double b, const double x,
     return GSL_EDOM;
   }
 
-  /* If a is a negative integer, then the
+  /* If 'a' is a negative integer, then the
    * series truncates to a polynomial.
+   * We do not have to worry about negative integer 'b',
+   * since that error condition is trapped above.
    */
   if(a_neg_integer) {
     double prec;
@@ -137,9 +225,11 @@ int gsl_sf_hyperg_1F1_impl(const double a, const double b, const double x,
    * handled the situation.
    */
   if(bma_neg_integer) {
+    double prec;
     double Ex, Kummer_1F1;
+    double int_bma = floor(bma + 0.1);
     int stat_E = gsl_sf_exp_impl(x, &Ex);
-    int stat_K = hyperg_1F1_series(bma, b, -x, &Kummer_1F1, &prec);
+    int stat_K = hyperg_1F1_series(int_bma, b, -x, &Kummer_1F1, &prec);
     int stat;
     if(stat_E != GSL_SUCCESS) {
       *result = 0.0;
@@ -157,6 +247,7 @@ int gsl_sf_hyperg_1F1_impl(const double a, const double b, const double x,
       *result = Ex * Kummer_1F1;
       stat = GSL_SUCCESS;
     }
+    return stat;
   }
 
   
@@ -164,14 +255,24 @@ int gsl_sf_hyperg_1F1_impl(const double a, const double b, const double x,
    * including the error cases, so we are left with a well-behaved
    * series evaluation, though the arguments may be large.
    */
-   
+
   if(fabs(x) < 30.0) {
     if((fabs(a) < 30.0*fabs(b))  ||  (fabs(a) < 30.0 && fabs(b) < 30.0)) {
       double prec;
       return hyperg_1F1_series(a, b, x, result, &prec); 
     }
+    else {
+      /* |a| >> |b|  && (|a| > 30 || |b| > 30) */
+      
+      if(a < 0.0) {
+        /* apply Kummer transformation to */
+      }
+      else {
+      }
+    }
   }
-
+  else {
+  }
 
 }
 
