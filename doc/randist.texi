@@ -1861,10 +1861,12 @@ p(k) =  C(n_1, k) C(n_2, t - k) / C(n_1 + n_2, t)
 @end example
 @end ifinfo
 @noindent
-where @math{C(a,b) = a!/(b!(a-b)!)} and @math{t < n_1 + n_2}.  The
+where @math{C(a,b) = a!/(b!(a-b)!)} and 
+@c{$t \leq n_1 + n_2$}
+@math{t <= n_1 + n_2}.  The
 domain of @math{k} is 
-@c{$0, \ldots, \hbox{min}(t,n_1)$} 
-@math{0, ..., min(t,n_1)}.
+@c{$\hbox{max}(0,t-n_2), \ldots, \hbox{min}(t,n_1)$} 
+@math{max(0,t-n_2), ..., min(t,n_1)}.
 @end deftypefn
 
 @deftypefun double gsl_ran_hypergeometric_pdf (unsigned int @var{k}, unsigned int @var{n1}, unsigned int @var{n2}, unsigned int @var{t})
