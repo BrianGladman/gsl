@@ -164,7 +164,7 @@ int gsl_sf_choose_impl(unsigned int n, unsigned int m, gsl_sf_result * result);
 int gsl_sf_choose_e(unsigned int n, unsigned int m, gsl_sf_result * result);
 
 
-/* Logarithm of Pochammer (Apell) symbol
+/* Logarithm of Pochhammer (Apell) symbol
  *   log( (a)_x )
  *   where (a)_x := Gamma[a + x]/Gamma[a]
  *
@@ -176,7 +176,7 @@ int gsl_sf_lnpoch_impl(const double a, const double x, gsl_sf_result * result);
 int gsl_sf_lnpoch_e(const double a, const double x, gsl_sf_result * result);
 
 
-/* Logarithm of Pochammer (Apell) symbol, with sign information.
+/* Logarithm of Pochhammer (Apell) symbol, with sign information.
  *   result = log( |(a)_x| )
  *   sgn    = sgn( (a)_x )
  *   where (a)_x := Gamma[a + x]/Gamma[a]
@@ -189,7 +189,7 @@ int gsl_sf_lnpoch_sgn_impl(const double a, const double x, gsl_sf_result * resul
 int gsl_sf_lnpoch_sgn_e(const double a, const double x, gsl_sf_result * result, double * sgn);
 
 
-/* Pochammer (Apell) symbol
+/* Pochhammer (Apell) symbol
  *   (a)_x := Gamma[a + x]/Gamma[x]
  *
  * a != neg integer, a+x != neg integer
@@ -200,7 +200,7 @@ int gsl_sf_poch_impl(const double a, const double x, gsl_sf_result * result);
 int gsl_sf_poch_e(const double a, const double x, gsl_sf_result * result);
 
 
-/* Relative Pochammer (Apell) symbol
+/* Relative Pochhammer (Apell) symbol
  *   ((a,x) - 1)/x
  *   where (a,x) = (a)_x := Gamma[a + x]/Gamma[a]
  *
