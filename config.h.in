@@ -1,4 +1,4 @@
-/* config.h.in.  Generated automatically from configure.in by autoheader.  */
+/* config.h.in.  Generated automatically from configure.in by autoheader 2.13.  */
 
 /* Define to empty if the keyword does not work.  */
 #undef const
@@ -17,45 +17,6 @@
 
 /* Define if you have the ANSI C header files.  */
 #undef STDC_HEADERS
-
-/* Define if you have the acosh function.  */
-#undef HAVE_ACOSH
-
-/* Define if you have the asinh function.  */
-#undef HAVE_ASINH
-
-/* Define if you have the atanh function.  */
-#undef HAVE_ATANH
-
-/* Define if you have the clock function.  */
-#undef HAVE_CLOCK
-
-/* Define if you have the expm1 function.  */
-#undef HAVE_EXPM1
-
-/* Define if you have the finite function.  */
-#undef HAVE_FINITE
-
-/* Define if you have the frexp function.  */
-#undef HAVE_FREXP
-
-/* Define if you have the hypot function.  */
-#undef HAVE_HYPOT
-
-/* Define if you have the isfinite function.  */
-#undef HAVE_ISFINITE
-
-/* Define if you have the isinf function.  */
-#undef HAVE_ISINF
-
-/* Define if you have the isnan function.  */
-#undef HAVE_ISNAN
-
-/* Define if you have the ldexp function.  */
-#undef HAVE_LDEXP
-
-/* Define if you have the log1p function.  */
-#undef HAVE_LOG1P
 
 /* Define if you have the memcpy function.  */
 #undef HAVE_MEMCPY
@@ -81,22 +42,27 @@
 /* Version number of package */
 #undef VERSION
 
+/* Define if you have these functions */
+#undef HAVE_FEENABLEEXCEPT
+#undef HAVE_FESETTRAPENABLE
+#undef HAVE_HYPOT
+#undef HAVE_EXPM1
+#undef HAVE_ACOSH
+#undef HAVE_ASINH
+#undef HAVE_ATANH
+#undef HAVE_LDEXP
+#undef HAVE_FREXP
+#undef HAVE_ISINF
+#undef HAVE_FINITE
+#undef HAVE_ISFINITE
+#undef HAVE_ISNAN
+#undef HAVE_LOG1P
+
 /* Define if you have inline */
 #undef HAVE_INLINE
 
 /* Define if you need to hide the static definitions of inline functions */
 #undef HIDE_INLINE_STATIC
-
-/* Define if you have the ansi CLOCKS_PER_SEC clock rate */
-#undef HAVE_CLOCKS_PER_SEC
-
-/* Defined if configure has guessed a missing ansi CLOCKS_PER_SEC clock rate */
-#undef HAVE_GUESSED_CLOCKS_PER_SEC
-
-/* Use configure's best guess for CLOCKS_PER_SEC if it is unknown */
-#ifndef HAVE_CLOCKS_PER_SEC
-#define CLOCKS_PER_SEC HAVE_GUESSED_CLOCKS_PER_SEC
-#endif
 
 /* Defined if you have ansi EXIT_SUCCESS and EXIT_FAILURE in stdlib.h */
 #undef HAVE_EXIT_SUCCESS_AND_FAILURE
@@ -108,10 +74,10 @@
 #endif
 
 /* Define one of these if you have a known IEEE arithmetic interface */
-#undef HAVE_SPARCLINUX_IEEE_INTERFACE
-#undef HAVE_M68KLINUX_IEEE_INTERFACE
-#undef HAVE_PPCLINUX_IEEE_INTERFACE
-#undef HAVE_X86LINUX_IEEE_INTERFACE
+#undef HAVE_GNUSPARC_IEEE_INTERFACE
+#undef HAVE_GNUM68K_IEEE_INTERFACE
+#undef HAVE_GNUPPC_IEEE_INTERFACE
+#undef HAVE_GNUX86_IEEE_INTERFACE
 #undef HAVE_SUNOS4_IEEE_INTERFACE
 #undef HAVE_SOLARIS_IEEE_INTERFACE
 #undef HAVE_HPUX11_IEEE_INTERFACE

@@ -1,20 +1,25 @@
 @BOTTOM@
+/* Define if you have these functions */
+#undef HAVE_FEENABLEEXCEPT
+#undef HAVE_FESETTRAPENABLE
+#undef HAVE_HYPOT
+#undef HAVE_EXPM1
+#undef HAVE_ACOSH
+#undef HAVE_ASINH
+#undef HAVE_ATANH
+#undef HAVE_LDEXP
+#undef HAVE_FREXP
+#undef HAVE_ISINF
+#undef HAVE_FINITE
+#undef HAVE_ISFINITE
+#undef HAVE_ISNAN
+#undef HAVE_LOG1P
+
 /* Define if you have inline */
 #undef HAVE_INLINE
 
 /* Define if you need to hide the static definitions of inline functions */
 #undef HIDE_INLINE_STATIC
-
-/* Define if you have the ansi CLOCKS_PER_SEC clock rate */
-#undef HAVE_CLOCKS_PER_SEC
-
-/* Defined if configure has guessed a missing ansi CLOCKS_PER_SEC clock rate */
-#undef HAVE_GUESSED_CLOCKS_PER_SEC
-
-/* Use configure's best guess for CLOCKS_PER_SEC if it is unknown */
-#ifndef HAVE_CLOCKS_PER_SEC
-#define CLOCKS_PER_SEC HAVE_GUESSED_CLOCKS_PER_SEC
-#endif
 
 /* Defined if you have ansi EXIT_SUCCESS and EXIT_FAILURE in stdlib.h */
 #undef HAVE_EXIT_SUCCESS_AND_FAILURE
@@ -26,10 +31,10 @@
 #endif
 
 /* Define one of these if you have a known IEEE arithmetic interface */
-#undef HAVE_SPARCLINUX_IEEE_INTERFACE
-#undef HAVE_M68KLINUX_IEEE_INTERFACE
-#undef HAVE_PPCLINUX_IEEE_INTERFACE
-#undef HAVE_X86LINUX_IEEE_INTERFACE
+#undef HAVE_GNUSPARC_IEEE_INTERFACE
+#undef HAVE_GNUM68K_IEEE_INTERFACE
+#undef HAVE_GNUPPC_IEEE_INTERFACE
+#undef HAVE_GNUX86_IEEE_INTERFACE
 #undef HAVE_SUNOS4_IEEE_INTERFACE
 #undef HAVE_SOLARIS_IEEE_INTERFACE
 #undef HAVE_HPUX11_IEEE_INTERFACE

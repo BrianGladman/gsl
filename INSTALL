@@ -226,7 +226,9 @@ in addition to the normal compilation options.
 Hints for Microsoft Windows
 ===========================
 
-With Microsoft Visual C++, see the directory msvc/ in the CVS repository.
+A separate version of the library is available for Microsoft Visual
+C++. See the website http://sources.redhat.com/gsl/ or the directory
+msvc/ in the CVS repository.
 
 Hints for OpenBSD
 =================
@@ -253,8 +255,7 @@ mailing list that some early versions of GCC-2.95 have a problem with
 long argument lists on PPC architecture, and this prevents GSL from
 compiling correctly (e.g. the test program in the blas directory gives
 a segmentation fault when run).  This problem is fixed in recent
-versions of GCC.  GSL now includes an autoconf test which detects the
-problem.
+versions of GCC. 
 
 Hints for Solaris
 =================

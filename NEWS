@@ -1,5 +1,8 @@
 * What is new in gsl-1.3+:
 
+** IEEE modes now use the C99 fenv.h functions when platform spectific
+functions are not available.
+
 ** Corrected values of electrical constants in CGS units.  To take
 account of different electrical systems of units the values are now
 prefixed by GSL_CONST_MKSA (for the SI Metre, Kilogram, Second, Ampere

@@ -1,3 +1,9 @@
+2003-06-12  Brian Gough  <bjg@network-theory.co.uk>
+
+	* configure.in: Tidying up, removed old test for bug in gcc 2.95
+	on PPC, removed OS/2 warning, removed references to clock function
+	since benchmark programs are not shipped
+
 2003-03-06  Brian Gough  <bjg@network-theory.co.uk>
 
 	* gsl_types.h: changed from internal macro _DLL to GSL_DLL
