@@ -845,7 +845,7 @@ generator. More complicated distributions are created by the
 from the generator.
 
 @subsection Continuous distributions
-
+@page
 @deftypefn Random double gsl_ran_gaussian (const gsl_rng * @var{r})
 @cindex Gaussian random numbers
 This function returns a gaussian random number, with mean zero and
@@ -858,7 +858,11 @@ p(x) dx = @{1 \over \sqrt@{2 \pi@}@} \exp (-x^2 / 2) dx
 @noindent
 for @math{x} in the range @math{-\infty} to @math{+\infty}.
 @end deftypefn
+@tex
+\centerline{\input rand-gaussian.tex}
+@end tex
 
+@page
 @deftypefn Random double gsl_ran_cauchy (const gsl_rng * @var{r}, double @var{mu})
 @cindex Cauchy random numbers
 This function returns a random number from the Cauchy distribution with
@@ -866,14 +870,18 @@ width parameter @var{mu}. The probability distribution for Cauchy
 random numbers is,
 @c
 @equation
-p(x) dx = @{1 \over \pi (1 + (x/\mu)^2) @} dx
+p(x) dx = @{1 \over \mu\pi (1 + (x/\mu)^2) @} dx
 @end equation
 @noindent
 for @math{x} in the range @math{-\infty} to @math{+\infty}.  The Cauchy
 distribution is sometimes also known as the Lorentz distribution or
 Breit-Wigner distribution.
 @end deftypefn
+@tex
+\centerline{\input rand-cauchy.tex}
+@end tex
 
+@page
 @deftypefn Random double gsl_ran_exponential (const gsl_rng * @var{r}, double @var{mu})
 @cindex Exponential random numbers
 This function returns a random number from the exponential distribution
@@ -885,7 +893,11 @@ p(x) dx = @{1 \over \mu@} \exp(-x/\mu) dx
 @noindent
 for @math{x \ge 0}. 
 @end deftypefn
+@tex
+\centerline{\input rand-exponential.tex}
+@end tex
 
+@page
 @deftypefn Random double gsl_ran_chisq (const gsl_rng * @var{r}, double @var{nu})
 @cindex Chi-squared random numbers
 This function returns a random number from the chi-squared distribution
@@ -897,7 +909,11 @@ p(x) dx = @{1 \over \Gamma(\nu/2) @} x^@{\nu/2 - 1@} \exp(-x) dx
 @noindent
 for @math{x \ge 0}. 
 @end deftypefn
+@tex
+\centerline{\input rand-chisq.tex}
+@end tex
 
+@page
 @deftypefn Random double gsl_ran_erlang (const gsl_rng * @var{r}, double @var{a}, double @var{n})
 @cindex Erlang random numbers
 This function returns a random number from the Erlang distribution.
@@ -908,7 +924,11 @@ p(x) dx = @{x^@{n-1@} \over (n-1)! a^n @} \exp (-x/a)  dx
 @noindent
 for @math{x \ge 0}. 
 @end deftypefn
+@tex
+\centerline{\input rand-erlang.tex}
+@end tex
 
+@page
 @deftypefn Random double gsl_ran_fdist (const gsl_rng * @var{r}, double @var{nu1}, double @var{nu2})
 @cindex F-distribution random numbers
 This function returns a random number from the F-distribution with degrees of freedom @var{nu1} and @var{nu2}.
@@ -923,20 +943,27 @@ p(x) dx =
 @noindent
 for @math{x \ge 0}. 
 @end deftypefn
+@tex
+\centerline{\input rand-fdist.tex}
+@end tex
 
+@page
 @deftypefn Random double gsl_ran_flat (const gsl_rng * @var{r}, double @var{a}, double @var{b})
 @cindex flat distribution random numbers
 This function returns a random number from the flat (uniform)
 distribution from @var{a} to @var{b}.
 @c
 @equation
-p(x) dx = 1/(b-a) dx
+p(x) dx = @{1 \over (b-a)@} dx
 @end equation
 @noindent
 if @math{a \le x < b} and 0 otherwise.
 @end deftypefn
+@tex
+\centerline{\input rand-flat.tex}
+@end tex
 
-
+@page
 @deftypefn Random double gsl_ran_gamma (const gsl_rng * @var{r}, double @var{a})
 @cindex Gamma distribution random numbers
 This function returns a random number from the gamma
@@ -949,7 +976,11 @@ If @math{X} and @math{Y} are independent gamma-distributed random
 variables of order @math{a} and @math{b}, then @math{X+Y} has a gamma
 distribution of order @math{a+b}.
 @end deftypefn
+@tex
+\centerline{\input rand-gamma.tex}
+@end tex
 
+@page
 @deftypefn Random double gsl_ran_beta (const gsl_rng * @var{r}, double @var{a}, double @var{b})
 @cindex Beta distribution random numbers
 This function returns a random number from the beta
@@ -959,7 +990,11 @@ distribution.  The distribution function is
 p(x) dx = @{\Gamma(a+b) \over \Gamma(a) \Gamma(b)@} x^@{a-1@} (1-x)^@{b-1@} dx
 @end equation
 @end deftypefn
+@tex
+\centerline{\input rand-beta.tex}
+@end tex
 
+@page
 @deftypefn Random double gsl_ran_logistic (const gsl_rng * @var{r})
 @cindex Logistic random numbers
 This function returns a random number from the logistic
@@ -970,18 +1005,26 @@ p(x) dx = @{ \exp(-x) \over (1 + \exp(-x))^2 @} dx
 @end equation
 for @math{x > 0}
 @end deftypefn
+@tex
+\centerline{\input rand-logistic.tex}
+@end tex
 
+@page
 @deftypefn Random double gsl_ran_lognormal (const gsl_rng * @var{r})
 @cindex Lognormal random numbers
 This function returns a random number from the lognormal
 distribution.  The distribution function is
 @c
 @equation
-p(x) dx = @{1 \over x \sqrt(2 \pi) @} \exp(-\ln(x)^2/2) dx
+p(x) dx = @{1 \over x \sqrt@{2 \pi@} @} \exp(-\ln(x)^2/2) dx
 @end equation
 for @math{x > 0}
 @end deftypefn
+@tex
+\centerline{\input rand-lognormal.tex}
+@end tex
 
+@page
 @deftypefn Random double gsl_ran_pareto (const gsl_rng * @var{r}, double @var{a})
 @cindex Lognormal random numbers
 This function returns a random number from the pareto
@@ -992,6 +1035,9 @@ p(x) dx = a / x^@{a+1@} dx
 @end equation
 for @math{x \ge 1}
 @end deftypefn
+@tex
+\centerline{\input rand-pareto.tex}
+@end tex
 
 @deftypefn Random double gsl_ran_dir_2d (const gsl_rng * @var{r}, double *@var{x}, double *@var{y})
 @cindex 2D random direction vector
@@ -1011,17 +1057,22 @@ This function returns a random direction vector @math{v} =
 normalized such that @math{|v|^2 = x^2 + y^2 + z^2 = 1}.
 @end deftypefn
 
+@page
 @deftypefn Random double gsl_ran_tdist (const gsl_rng * @var{r}, double @var{nu})
 @cindex t-distribution random numbers
 This function returns a random number from the t-distribution. The
 distribution is,
 @equation
-p(x) dx = @{\Gamma((\nu + 1)/2) \over (\sqrt@{pi \nu@} \Gamma(\nu/2))@}
-   (1 + (x^2)/\nu)^@{-(\nu + 1)/2@} dx
+p(x) dx = @{\Gamma((\nu + 1)/2) \over \sqrt@{\pi \nu@} \Gamma(\nu/2)@}
+   (1 + x^2/\nu)^@{-(\nu + 1)/2@} dx
 @end equation
 @noindent
 @end deftypefn
+@tex
+\centerline{\input rand-tdist.tex}
+@end tex
 
+@page
 @deftypefn Random double gsl_ran_two_sided_exponential (const gsl_rng * @var{r}, double @var{mu})
 @cindex two-sided exponential random numbers
 @cindex Laplace distribution random numbers
@@ -1034,7 +1085,11 @@ p(x) dx = @{1 \over 2 \mu@}  \exp(-|x/\mu|) dx
 @noindent
 for @math{-\infty < x < \infty}.
 @end deftypefn
+@tex
+\centerline{\input rand-laplace.tex}
+@end tex
 
+@page
 @deftypefn Random double gsl_ran_weibull (const gsl_rng * @var{r}, double @var{a})
 @cindex Weibull distribution random numbers
 This function returns a random number from the Weibull
@@ -1045,7 +1100,11 @@ p(x) dx = a x^@{a-1@} \exp(-x^a) dx
 @noindent
 for @math{-\infty < x < \infty}.
 @end deftypefn
+@tex
+\centerline{\input rand-weibull.tex}
+@end tex
 
+@page
 @subsection Discrete distributions
 
 @deftypefn Random {unsigned int} gsl_ran_poisson (const gsl_rng * @var{r}, double @var{mu})
@@ -1060,9 +1119,13 @@ p(n) = @{\mu^n \over n!@} \exp(-\mu)
 @noindent
 for @math{n \ge 0}.
 @end deftypefn
+@tex
+\centerline{\input rand-poisson.tex}
+@end tex
 
+@page
 @deftypefn Random {unsigned int} gsl_ran_binomial (const gsl_rng * @var{r}, double @var{p}, unsigned int @var{t})
-@cindex Poisson random numbers
+@cindex Binomial random numbers
 This function returns a random integer from the binomial distribution,
 the number of successes in @var{t} independent trials with probability
 @var{p}. The probability distribution for binomial random numbers is,
@@ -1073,7 +1136,11 @@ p(n) = @{t! \over n! (t-n)! @} p^n (1-p)^@{t-n@}
 @noindent
 for @math{0 \le n \le t}.
 @end deftypefn
+@tex
+\centerline{\input rand-binomial.tex}
+@end tex
 
+@page
 @deftypefn Random {unsigned int} gsl_ran_geometric (const gsl_rng * @var{r}, double @var{p})
 @cindex Geometric random numbers
 This function returns a random integer from the geometric distribution,
@@ -1082,13 +1149,14 @@ first success. The probability distribution for geometric random numbers
 is,
 @c
 @equation
-p(n) =  p (1-p)^@{n-n1@}
+p(n) =  p (1-p)^n
 @end equation
 @noindent
 for @math{n \ge 1}.
 @end deftypefn
-
-
+@tex
+\centerline{\input rand-geometric.tex}
+@end tex
 
 @deftypefn Random void gsl_ran_poisson_array (const gsl_rng * @var{r}, double @var{mu}, int @var{N}, int *@var{p})
 @code{gsl_ran_poisson_array} places an array of @var{N}

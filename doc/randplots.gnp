@@ -1,0 +1,164 @@
+#set term postscript eps enhanced
+set term pstex monochrome
+set samples 300
+set size 1,1.1
+set xrange [-5:5]
+set yrange [0:0.5]
+set ytics 0.1
+
+set output "rand-gaussian.tex"
+set title "Gaussian Distribution"
+p(x)=1/sqrt(2*pi*sigma**2)*exp(-x**2/(2*sigma**2))
+plot sigma=1.0, p(x) title "$\sigma=1$", \
+	sigma=2.0, p(x) title "$\sigma=2$"
+
+set yrange [0:0.4]
+set output "rand-cauchy.tex"
+set title "Cauchy Distribution"
+p(x)=1/(pi*mu*(1+(x/mu)**2))
+plot mu=1.0, p(x) title "$\mu=1$", \
+	mu=2.0, p(x) title "$\mu=2$"
+
+set ytics 0.5
+set yrange [0:1]
+set xrange [0:5]
+set output "rand-exponential.tex"
+set title "Exponential Distribution"
+p(x)=exp(-x/mu)/mu
+plot mu=1.0, p(x) title "$\mu=1$", \
+	mu=2.0, p(x) title "$\mu=2$"
+
+set output "rand-chisq.tex"
+set title "Chi-squared Distribution"
+p(x)=x**(nu/2.0-1.0) *exp(-x)/ gamma(nu/2.0)
+plot nu=1.0, p(x) title "$\nu=1$", \
+      nu=2.0, p(x) title "$\nu=2$", \
+	nu=3.0, p(x) title "$\nu=3$"
+
+set output "rand-erlang.tex"
+set title "Erlang Distribution"
+p(x)=x**(n-1) *exp(-x/a)/ (gamma(n)*a**n)
+plot n=1.0, a=1, p(x) title "$n=1$", \
+      n=2.0, a=1.0, p(x) title "$n=2$", \
+	n=3.0, a=1.0, p(x) title "$n=3$"
+
+set xrange [0:2]
+set xtics 1
+set output "rand-fdist.tex"
+set title "F-Distribution"
+p(x)=gamma((v1+v2)/2.0)*v1**(v1/2.0)*v2**(v2/2.0)\
+	/gamma(v1/2.0)/gamma(v2/2.0) * \
+	x**(v1/2.0-1)*(v2+v1*x)**-(v1/2.0+v2/2.0)
+plot v1=1.0, v2=1.0, p(x) title "$\nu_1=1, \nu_2=1$", \
+      v1=3.0, v2=1.0, p(x) title "$\nu_1=1, \nu_2=2$"
+
+set xrange [0:5]
+set output "rand-flat.tex"
+set title "Flat Distribution"
+p(x)= (x<b && x>a) ? 1/(b-a) : 0
+plot a=0.5, b=2.5, p(x) title "$a=1.5,b=3.5$" with step, \
+      a=1.2, b=4.8, p(x) title "$a=1.2,b=4.8$" with step
+
+set xrange [0:5]
+set yrange [0:1]
+set ytics 0.5
+set output "rand-gamma.tex"
+set title "Gamma Distribution"
+p(x)= x**(a-1)* exp(-x) / gamma(a)
+plot a=1.0, p(x) title "$a=1$", \
+      a=2.0, p(x) title "$a=2$", \
+      a=3.0, p(x) title "$a=3$"
+
+set xrange [0:1]
+set yrange [0:3]
+set output "rand-beta.tex"
+set title "Beta Distribution"
+p(x)= gamma(a+b)/(gamma(a)*gamma(b))*x**(a-1)*(1-x)**(b-1)
+plot a=2.0, b=2.0, p(x) title "$a=2,b=2$", \
+      a=2.0, b=1.0, p(x) title "$a=2,b=1$", \
+      a=1.0, b=3.0, p(x) title "$a=1,b=3$"
+
+
+set xrange [-5:5]
+set yrange [0:0.3]
+set ytics 0.1
+set xtics 1
+set output "rand-logistic.tex"
+set title "Logistic Distribution"
+p(x)= exp(-x)/(1+exp(-x))**2
+plot  p(x) title ""
+
+set xrange [0:3]
+set yrange [0:0.7]
+set xtics 1
+set ytics 0.1
+set output "rand-lognormal.tex"
+set title "Lognormal Distribution"
+p(x)= exp(-log(x)**2/2)/sqrt(2*pi)/x
+plot p(x) title ""
+
+set xrange [1:5]
+set yrange [0:1]
+set ytics 0.5
+set xtics 1
+set output "rand-pareto.tex"
+set title "Pareto Distribution"
+p(x)= a/x**(a+1)
+plot a=1.0, p(x) title "$a=1$", \
+	a=5.0, p(x) title "$a=5$"
+
+set xrange [0:4]
+set yrange [0:0.5]
+set ytics 0.1
+set output "rand-tdist.tex"
+set title "Student's t distribution"
+p(x)=gamma((v+1.0)/2)/sqrt(pi*v)/gamma(v/2)*(1+(x**2)/v)**-((v+1.0)/2)
+plot v=1.0, p(x) title "$\nu_1=1$", \
+      v=5.0, p(x) title "$\nu_1=5$"
+
+set xrange [-5:5]
+set yrange [0:0.6]
+set ytics 0.1
+set output "rand-laplace.tex"
+set title "Two-sided Exponential (Laplace) Distribution"
+p(x)=exp(-abs(x)/mu)/2/mu
+plot mu=1.0, p(x) title "$\mu=1$", \
+	mu=2.0, p(x) title "$\mu=2$"
+
+set xrange [0:2]
+set yrange [0:1.5]
+set ytics 0.5
+set output "rand-weibull.tex"
+set title "Weibull Distribution"
+p(x)=a * x**(a-1) * exp(-x**a)
+plot a=1.0, p(x) title "$a=1$", \
+	a=2.0, p(x) title "$a=2$", \
+	 a=3.0, p(x) title "$a=3$"
+
+set xrange [0:10]
+set yrange [0:0.3]
+set ytics 0.1
+set function style step
+set output "rand-poisson.tex"
+set title "Poisson Distribution"
+p(x)=mu**int(x)/(int(x)!) * exp(-mu)
+plot mu=2.5, p(x) title "$\mu=2.5$"
+
+set xrange [0:32]
+set yrange [0:0.2]
+set xtics 5
+set ytics 0.1
+set output "rand-binomial.tex"
+set title "Binomial Distribution"
+p(x)= P**int(x)*(1-P)**(n-int(x))*gamma(n+1.0)/gamma(int(x)+1.0)/gamma(n-int(x)+1.0) + 1e-5
+plot P=0.5,n=24.99999999, p(x) title "$p=0.5,n=25$"
+
+set xrange [0:5]
+set yrange [0:0.7]
+set ytics 0.1
+set output "rand-geometric.tex"
+set title "Geometric Distribution"
+p(x)=P*(1-P)**int(x)
+plot P=0.5, p(x) title "$p=0.5$"
+
+

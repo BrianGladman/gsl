@@ -20,4 +20,10 @@ EXTRA_DIST = siman-test.eps siman-energy.eps 12-cities.eps \
 	fft-complex-radix2.eps fft-real-mixedradix.eps \
 	roots-bisection.eps roots-false-position.eps \
 	roots-newtons-method.eps roots-secant-method.eps \
-	histogram.eps histogram2d.eps
+	histogram.eps histogram2d.eps \
+	rand-beta.tex rand-binomial.tex rand-cauchy.tex rand-chisq.tex \
+	rand-erlang.tex rand-exponential.tex rand-fdist.tex rand-flat.tex \
+	rand-gamma.tex rand-gaussian.tex rand-geometric.tex rand-laplace.tex \
+	rand-logistic.tex rand-lognormal.tex rand-pareto.tex rand-poisson.tex \
+	rand-tdist.tex rand-weibull.tex randplots.gnp
+
