@@ -21,6 +21,8 @@
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_permutation.h>
 
+extern int gsl_check_range ; /* defined in vector/vector.c */
+
 size_t
 gsl_permutation_size (const gsl_permutation * p)
 {
