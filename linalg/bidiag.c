@@ -351,7 +351,7 @@ gsl_linalg_bidiag_unpack_B (const gsl_matrix * A,
 
       for (i = 0; i < K - 1; i++)
         {
-          double Aij = gsl_matrix_get (A, i+1, i);
+          double Aij = gsl_matrix_get (A, i, i+1);
           gsl_vector_set (superdiag, i, Aij);
         }
 

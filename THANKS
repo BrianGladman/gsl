@@ -178,3 +178,6 @@ SVD d_n = 0, bug fix to mt19937 generator
 simulated annealing
 
 * Gene Carter <ecarter@mindspring.com> build shared libraries on MacOS X
+
+* "Fabian Jakobs" <fabian.jakobs@web.de> fixed a bug in
+gsl_linalg_bidiag_unpack_B
