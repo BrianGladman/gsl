@@ -56,6 +56,8 @@ transformations, grids and fields, ...
   relevant for HAVE_INLINE use in installed headers.
 
 * Public domain mapping tools http://www.soest.hawaii.edu/gmt/
+  Actually some discussion on debian-devel says they may not be so 
+  public domain as they claim. Look into it.
 
 * Allow the user to test which version they are using, so that a specific
 version can be required.
@@ -65,3 +67,7 @@ version can be required.
 * Change the use of function pointers to allow parameters, needed for
 multi-threaded programs and also to allow the use of scripting
 language objects instead of compiled C functions.
+
+* Redesign the interface to iterative function to use an init/do-while
+construct
+ 
