@@ -1,11 +1,11 @@
-2004-03-14  Brian Gough  <bjg@network-theory.co.uk>
+2004-03-15  Brian Gough  <bjg@network-theory.co.uk>
 
 	* tridiag.c: (gsl_linalg_solve_symm_tridiag):
 	(gsl_linalg_solve_tridiag):
 	(gsl_linalg_solve_symm_cyc_tridiag):
 	(gsl_linalg_solve_cyc_tridiag): use GSL_ERROR macro to report
-	errors
-
+	errors, make size restrictions tighter (no unused elements allowed
+	to be passed in).
 
 2004-03-06  Brian Gough  <bjg@network-theory.co.uk>
 

@@ -220,6 +220,12 @@ solve_cyc_tridiag(
 
       /* factor */
 
+      if (N == 1) 
+        {
+          x[0] = b[0] / diag[0];
+          return GSL_SUCCESS;
+        }
+
       alpha[0] = diag[0];
       gamma[0] = offdiag[0] / alpha[0];
       delta[0] = offdiag[o_stride * (N-1)] / alpha[0];
@@ -230,12 +236,16 @@ solve_cyc_tridiag(
           gamma[i] = offdiag[o_stride * i] / alpha[i];
           delta[i] = -delta[i - 1] * offdiag[o_stride * (i-1)] / alpha[i];
         }
+
       for (i = 0; i < N - 2; i++)
         {
           sum += alpha[i] * delta[i] * delta[i];
         }
+
       alpha[N - 2] = diag[d_stride * (N - 2)] - offdiag[o_stride * (N - 3)] * gamma[N - 3];
+
       gamma[N - 2] = (offdiag[o_stride * (N - 2)] - offdiag[o_stride * (N - 3)] * delta[N - 3]) / alpha[N - 2];
+
       alpha[N - 1] = diag[d_stride * (N - 1)] - sum - alpha[(N - 2)] * gamma[N - 2] * gamma[N - 2];
 
       /* update */
@@ -421,9 +431,9 @@ gsl_linalg_solve_symm_tridiag(
     {
       GSL_ERROR ("size of diag must match rhs", GSL_EBADLEN);
     }
-  else if (offdiag->size != rhs->size && offdiag->size != rhs->size-1)
+  else if (offdiag->size != rhs->size-1)
     {
-      GSL_ERROR ("size of offdiag must match rhs or rhs-1", GSL_EBADLEN);
+      GSL_ERROR ("size of offdiag must match rhs-1", GSL_EBADLEN);
     }
   else if (solution->size != rhs->size)
     {
@@ -451,13 +461,13 @@ gsl_linalg_solve_tridiag(
     {
       GSL_ERROR ("size of diag must match rhs", GSL_EBADLEN);
     }
-  else if (abovediag->size != rhs->size && abovediag->size != rhs->size-1)
+  else if (abovediag->size != rhs->size-1)
     {
-      GSL_ERROR ("size of abovediag must match rhs or rhs-1", GSL_EBADLEN);
+      GSL_ERROR ("size of abovediag must match rhs-1", GSL_EBADLEN);
     }
-  else if (belowdiag->size != rhs->size && belowdiag->size != rhs->size-1)
+  else if (belowdiag->size != rhs->size-1)
     {
-      GSL_ERROR ("size of belowdiag must match rhs or rhs-1", GSL_EBADLEN);
+      GSL_ERROR ("size of belowdiag must match rhs-1", GSL_EBADLEN);
     }
   else if (solution->size != rhs->size)
     {
@@ -494,6 +504,10 @@ gsl_linalg_solve_symm_cyc_tridiag(
     {
       GSL_ERROR ("size of solution must match rhs", GSL_EBADLEN);
     }
+  else if (diag->size < 3)
+    {
+      GSL_ERROR ("size of cyclic system must be 3 or more", GSL_EBADLEN);
+    }
   else 
     {
       return solve_cyc_tridiag(diag->data, diag->stride,
@@ -527,6 +541,10 @@ gsl_linalg_solve_cyc_tridiag(
   else if (solution->size != rhs->size)
     {
       GSL_ERROR ("size of solution must match rhs", GSL_EBADLEN);
+    }
+  else if (diag->size < 3)
+    {
+      GSL_ERROR ("size of cyclic system must be 3 or more", GSL_EBADLEN);
     }
   else 
     {

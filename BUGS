@@ -51,23 +51,6 @@ int main (void)
 The correct value is -2.
 
 ----------------------------------------------------------------------
-BUG#4 -- gsl_linalg_solve_symm_cyc_tridiag() crashes 
-
-From: David Necas (Yeti) <yeti@physics.muni.cz>
-To: Brian Gough <bjg@network-theory.co.uk>
-Subject: Re: gsl_linalg_solve_symm_cyc_tridiag problem
-Date: Sun, 14 Apr 2002 18:02:21 +0200
-
-The function gsl_linalg_solve_symm_cyc_tridiag() crashes when run with
-N = 1 (and doesn't make sense even with N = 2) -- it should return
-some error code instead (the same applies to its non-cyclic
-counterpair).
-
-Both cyclic and non-cyclic solvers return zero error code when feed
-with singular matrices, or fail for another reason (so the results are
-only bunches of NaN's). They should return some error code instead.
-
-----------------------------------------------------------------------
 
 BUG#5 -- broken error terms for implicit odes 
 

@@ -3,7 +3,10 @@
 ** The tridiagonal matrix solvers gsl_linalg_solve_symm_tridiag,
 gsl_linalg_solve_tridiag, gsl_linalg_solve_symm_cyc_tridiag,
 gsl_linalg_solve_cyc_tridiag now use the GSL_ERROR macro to report
-errors, instead of simply returning an error code.
+errors, instead of simply returning an error code.  The arguments to
+these functions must now use exact lengths with no additional
+elements.  For cyclic systems all vectors must be of length N, for
+tridiagonal systems the offdiagonal elements must be of length N-1.
 
 ** The singular value decomposition routines gsl_linalg_SV_decomp and
 gsl_linalg_SV_decomp_mod now handle the SVD of a column vector (N=1,

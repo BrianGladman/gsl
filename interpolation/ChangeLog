@@ -1,3 +1,7 @@
+2004-03-15  Brian Gough  <bjg@network-theory.co.uk>
+
+	* cspline.c (cspline_init): handle the case N=1 specially
+
 2003-07-24  Brian Gough  <bjg@network-theory.co.uk>
 
 	* gsl_interp.h: removed duplicate declaration of

@@ -117,18 +117,24 @@ cspline_init (void * vstate, const double xa[], const double ya[],
       state->g[i] = 3.0 * (ydiff_ip1 / h_ip1  -  ydiff_i / h_i);
     }
 
-  {
-    gsl_vector_view g_vec = gsl_vector_view_array(state->g, sys_size);
-    gsl_vector_view diag_vec = gsl_vector_view_array(state->diag, sys_size);
-    gsl_vector_view offdiag_vec = gsl_vector_view_array(state->offdiag, sys_size);
-    gsl_vector_view solution_vec = gsl_vector_view_array ((state->c) + 1, sys_size);
-
-    int status = gsl_linalg_solve_symm_tridiag(&diag_vec.vector, 
-                                               &offdiag_vec.vector, 
-                                               &g_vec.vector, 
-                                           &solution_vec.vector);
-    return status;
-  }
+  if (sys_size == 1)
+    {
+      state->c[1] = state->g[0] / state->diag[0];
+      return GSL_SUCCESS;
+    }
+  else
+    {
+      gsl_vector_view g_vec = gsl_vector_view_array(state->g, sys_size);
+      gsl_vector_view diag_vec = gsl_vector_view_array(state->diag, sys_size);
+      gsl_vector_view offdiag_vec = gsl_vector_view_array(state->offdiag, sys_size - 1);
+      gsl_vector_view solution_vec = gsl_vector_view_array ((state->c) + 1, sys_size);
+      
+      int status = gsl_linalg_solve_symm_tridiag(&diag_vec.vector, 
+                                                 &offdiag_vec.vector, 
+                                                 &g_vec.vector, 
+                                                 &solution_vec.vector);
+      return status;
+    }
 }
 
 

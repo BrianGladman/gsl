@@ -752,56 +752,117 @@ matrix @var{A} is destroyed by the Householder transformations.
 @node Tridiagonal Systems
 @section Tridiagonal Systems
 @cindex tridiagonal systems
+
+@deftypefun int gsl_linalg_solve_tridiag (const gsl_vector * @var{diag}, const gsl_vector * @var{e}, const gsl_vector * @var{f}, const gsl_vector * @var{b}, gsl_vector * @var{x})
+This function solves the general @math{N}-by-@math{N} system @math{A x =
+b} where @var{A} is tridiagonal (@c{$N\geq 2$}
+@math{N >= 2}). The super-diagonal and
+sub-diagonal vectors @var{e} and @var{f} must be one element shorter
+than the diagonal vector @var{diag}.  The form of @var{A} for the 4-by-4
+case is shown below,
+
+@tex
+\beforedisplay
+$$
+A = \pmatrix{d_0&e_0&  0& 0\cr
+             f_0&d_1&e_1& 0\cr
+             0  &f_1&d_2&e_2\cr 
+             0  &0  &f_2&d_3\cr}
+$$
+\afterdisplay
+@end tex
+@ifinfo
+@example
+A = ( d_0 e_0  0   0  )
+    ( f_0 d_1 e_1  0  )
+    (  0  f_1 d_2 e_2 )
+    (  0   0  f_2 d_3 )
+@end example
+@end ifinfo
+@end deftypefun
+
 @deftypefun int gsl_linalg_solve_symm_tridiag (const gsl_vector * @var{diag}, const gsl_vector * @var{e}, const gsl_vector * @var{b}, gsl_vector * @var{x})
 This function solves the general @math{N}-by-@math{N} system @math{A x =
-b} where @var{A} is symmetric tridiagonal.  The form of @var{A} for the
+b} where @var{A} is symmetric tridiagonal (@c{$N\geq 2$}
+@math{N >= 2}).  The off-diagonal vector
+@var{e} must be one element shorter than the diagonal vector @var{diag}.
+The form of @var{A} for the 4-by-4 case is shown below,
+
+@tex
+\beforedisplay
+$$
+A = \pmatrix{d_0&e_0&  0& 0\cr
+             e_0&d_1&e_1& 0\cr
+             0  &e_1&d_2&e_2\cr 
+             0  &0  &e_2&d_3\cr}
+$$
+\afterdisplay
+@end tex
+@ifinfo
+@example
+A = ( d_0 e_0  0   0  )
+    ( e_0 d_1 e_1  0  )
+    (  0  e_1 d_2 e_2 )
+    (  0   0  e_2 d_3 )
+@end example
+@end ifinfo
+@end deftypefun
+
+@deftypefun int gsl_linalg_solve_cyc_tridiag (const gsl_vector * @var{diag}, const gsl_vector * @var{e}, const gsl_vector * @var{f}, const gsl_vector * @var{b}, gsl_vector * @var{x})
+This function solves the general @math{N}-by-@math{N} system @math{A x =
+b} where @var{A} is cyclic tridiagonal (@c{$N\geq 3$}
+@math{N >= 3}).  The cyclic super-diagonal and
+sub-diagonal vectors @var{e} and @var{f} must have the same number of
+elements as the diagonal vector @var{diag}.  The form of @var{A} for the
 4-by-4 case is shown below,
 
 @tex
 \beforedisplay
 $$
-A = \pmatrix{d_0&e_0&   &  \cr
-             e_0&d_1&e_1&  \cr
-                &e_1&d_2&e_2\cr 
-                &   &e_2&d_3\cr}
+A = \pmatrix{d_0&e_0& 0 &f_3\cr
+             f_0&d_1&e_1& 0 \cr
+              0 &f_1&d_2&e_2\cr 
+             e_3& 0 &f_2&d_3\cr}
 $$
 \afterdisplay
 @end tex
 @ifinfo
 @example
-A = ( d_0 e_0         )
-    ( e_0 d_1 e_1     )
-    (     e_1 d_2 e_2 )
-    (         e_2 d_3 )
+A = ( d_0 e_0  0  f_3 )
+    ( f_0 d_1 e_1  0  )
+    (  0  f_1 d_2 e_2 )
+    ( e_3  0  f_2 d_3 )
 @end example
 @end ifinfo
-
 @end deftypefun
+
 
 @deftypefun int gsl_linalg_solve_symm_cyc_tridiag (const gsl_vector * @var{diag}, const gsl_vector * @var{e}, const gsl_vector * @var{b}, gsl_vector * @var{x})
 This function solves the general @math{N}-by-@math{N} system @math{A x =
-b} where @var{A} is symmetric cyclic tridiagonal.  The form of @var{A}
-for the 4-by-4 case is shown below,
+b} where @var{A} is symmetric cyclic tridiagonal (@c{$N\geq 3$}
+@math{N >= 3}).  The cyclic
+off-diagonal vector @var{e} must have the same number of elements as the
+diagonal vector @var{diag}.  The form of @var{A} for the 4-by-4 case is
+shown below,
 
 @tex
 \beforedisplay
 $$
-A = \pmatrix{d_0&e_0&   &e_3\cr
-             e_0&d_1&e_1&   \cr
-                &e_1&d_2&e_2\cr 
-             e_3&   &e_2&d_3\cr}
+A = \pmatrix{d_0&e_0& 0 &e_3\cr
+             e_0&d_1&e_1& 0 \cr
+              0 &e_1&d_2&e_2\cr 
+             e_3& 0 &e_2&d_3\cr}
 $$
 \afterdisplay
 @end tex
 @ifinfo
 @example
-A = ( d_0 e_0     e_3 )
-    ( e_0 d_1 e_1     )
-    (     e_1 d_2 e_2 )
-    ( e_3     e_2 d_3 )
+A = ( d_0 e_0  0  e_3 )
+    ( e_0 d_1 e_1  0  )
+    (  0  e_1 d_2 e_2 )
+    ( e_3  0  e_2 d_3 )
 @end example
 @end ifinfo
-
 @end deftypefun
 
 @node Linear Algebra Examples
