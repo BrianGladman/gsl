@@ -285,12 +285,7 @@ The output lists the 5 smallest values, in ascending order,
 
 @example
 $ ./a.out 
-5 smallest values from 100000
-0: 0.000005466630682349
-1: 0.000012384494766593
-2: 0.000017581274732947
-3: 0.000025131041184068
-4: 0.000031369971111417
+@verbatiminclude examples/sortsmall.out
 @end example
 
 @node Sorting References and Further Reading

@@ -1,10 +1,12 @@
 % GNUPLOT: plain TeX with Postscript
+\begingroup
+  \catcode`\@=11\relax
+  \def\GNUPLOTspecial{%
+    \def\do##1{\catcode`##1=12\relax}\dospecials
+    \catcode`\{=1\catcode`\}=2\catcode\%=14\relax\special}%
+%
 \expandafter\ifx\csname GNUPLOTpicture\endcsname\relax
-  \begingroup
-    % Inner version of \newdimen from btxmac.tex
-    \edef\innernewdimen{\expandafter\noexpand\csname newdimen\endcsname}%
-    \innernewdimen\GNUPLOTunit
-  \endgroup
+  \csname newdimen\endcsname\GNUPLOTunit
   \gdef\GNUPLOTpicture(#1,#2){\vbox to#2\GNUPLOTunit\bgroup
     \def\put(##1,##2)##3{\unskip\raise##2\GNUPLOTunit
       \hbox to0pt{\kern##1\GNUPLOTunit ##3\hss}\ignorespaces}%
@@ -19,16 +21,17 @@
   \gdef\endGNUPLOTpicture{\hss\egroup\egroup}%
 \fi
 \GNUPLOTunit=0.1bp
-\special{!
-%!PS-Adobe-2.0 EPSF-2.0
+{\GNUPLOTspecial{!
+%!PS-Adobe-2.0
 %%Title: rand-landau.tex
-%%Creator: gnuplot 3.5 (pre 3.6) patchlevel beta 347
-%%CreationDate: Wed Jul 18 12:49:58 2001
+%%Creator: gnuplot 3.7 patchlevel 2
+%%CreationDate: Mon Jul 28 15:49:34 2003
 %%DocumentFonts: 
 %%BoundingBox: 0 0 360 237
 %%Orientation: Landscape
+%%Pages: (atend)
 %%EndComments
-/gnudict 120 dict def
+/gnudict 256 dict def
 gnudict begin
 /Color false def
 /Solid false def
@@ -56,12 +59,13 @@ gnudict begin
   /hpt2 hpt 2 mul def /vpt2 vpt 2 mul def } def
 /DL { Color {setrgbcolor Solid {pop []} if 0 setdash }
  {pop pop pop Solid {pop []} if 0 setdash} ifelse } def
-/BL { stroke gnulinewidth 2 mul setlinewidth } def
-/AL { stroke gnulinewidth 2 div setlinewidth } def
-/UL { gnulinewidth mul /userlinewidth exch def } def
+/BL { stroke userlinewidth 2 mul setlinewidth } def
+/AL { stroke userlinewidth 2 div setlinewidth } def
+/UL { dup gnulinewidth mul /userlinewidth exch def
+      dup 1 lt {pop 1} if 10 mul /udl exch def } def
 /PL { stroke userlinewidth setlinewidth } def
 /LTb { BL [] 0 0 0 DL } def
-/LTa { AL [1 dl 2 dl] 0 setdash 0 0 0 setrgbcolor } def
+/LTa { AL [1 udl mul 2 udl mul] 0 setdash 0 0 0 setrgbcolor } def
 /LT0 { PL [] 1 0 0 DL } def
 /LT1 { PL [4 dl 2 dl] 0 1 0 DL } def
 /LT2 { PL [2 dl 3 dl] 0 0 1 DL } def
@@ -257,11 +261,15 @@ gnudict begin
 /CircW { stroke [] 0 setdash 
   hpt 0 360 arc Opaque stroke } def
 /BoxFill { gsave Rec 1 setgray fill grestore } def
+/Symbol-Oblique /Symbol findfont [1 0 .167 1 0 0] makefont
+dup length dict begin {1 index /FID eq {pop pop} {def} ifelse} forall
+currentdict end definefont
 end
 %%EndProlog
-}
+}}%
 \GNUPLOTpicture(3600,2376)
-\special{"
+{\GNUPLOTspecial{"
+%%Page: 1 1
 gnudict begin
 gsave
 0 0 translate
@@ -270,272 +278,274 @@ gsave
 newpath
 1.000 UL
 LTb
-350 300 M
+450 300 M
 63 0 V
-3087 0 R
+2937 0 R
 -63 0 V
-350 1238 M
+450 1188 M
 63 0 V
-3087 0 R
+2937 0 R
 -63 0 V
-350 2176 M
+450 2076 M
 63 0 V
-3087 0 R
+2937 0 R
 -63 0 V
-350 300 M
+450 300 M
 0 63 V
-0 1813 R
+0 1713 R
 0 -63 V
-560 300 M
+650 300 M
 0 63 V
-0 1813 R
+0 1713 R
 0 -63 V
-770 300 M
+850 300 M
 0 63 V
-0 1813 R
+0 1713 R
 0 -63 V
-980 300 M
+1050 300 M
 0 63 V
-0 1813 R
+0 1713 R
 0 -63 V
-1190 300 M
+1250 300 M
 0 63 V
-0 1813 R
+0 1713 R
 0 -63 V
-1400 300 M
+1450 300 M
 0 63 V
-0 1813 R
+0 1713 R
 0 -63 V
-1610 300 M
+1650 300 M
 0 63 V
-0 1813 R
+0 1713 R
 0 -63 V
-1820 300 M
+1850 300 M
 0 63 V
-0 1813 R
+0 1713 R
 0 -63 V
-2030 300 M
+2050 300 M
 0 63 V
-0 1813 R
+0 1713 R
 0 -63 V
-2240 300 M
+2250 300 M
 0 63 V
-0 1813 R
+0 1713 R
 0 -63 V
 2450 300 M
 0 63 V
-0 1813 R
+0 1713 R
 0 -63 V
-2660 300 M
+2650 300 M
 0 63 V
-0 1813 R
+0 1713 R
 0 -63 V
-2870 300 M
+2850 300 M
 0 63 V
-0 1813 R
+0 1713 R
 0 -63 V
-3080 300 M
+3050 300 M
 0 63 V
-0 1813 R
+0 1713 R
 0 -63 V
-3290 300 M
+3250 300 M
 0 63 V
-0 1813 R
+0 1713 R
 0 -63 V
-3500 300 M
+3450 300 M
 0 63 V
-0 1813 R
+0 1713 R
 0 -63 V
 1.000 UL
 LTb
-350 300 M
-3150 0 V
-0 1876 V
--3150 0 V
-350 300 L
+450 300 M
+3000 0 V
+0 1776 V
+-3000 0 V
+450 300 L
 1.000 UL
 LT0
-350 300 M
-21 0 V
-21 0 V
-21 0 V
-21 0 V
-21 0 V
-21 0 V
-21 0 V
-21 0 V
-21 0 V
-21 0 V
-21 0 V
-21 0 V
-21 0 V
-21 0 V
-21 0 V
-21 0 V
-21 1 V
-21 0 V
-21 2 V
-21 3 V
-21 6 V
-21 10 V
-21 15 V
-21 22 V
-21 31 V
-21 42 V
-21 53 V
-21 64 V
-21 77 V
-21 87 V
-21 96 V
-21 104 V
-21 108 V
-21 111 V
-21 111 V
-21 108 V
-21 104 V
-21 97 V
-21 89 V
-21 79 V
-21 69 V
-21 59 V
-21 49 V
-21 38 V
-21 28 V
-21 19 V
-21 10 V
-21 2 V
-21 -5 V
-21 -11 V
-21 -18 V
-21 -22 V
-21 -26 V
-21 -30 V
-21 -32 V
-21 -35 V
-21 -37 V
-21 -38 V
-21 -38 V
-21 -40 V
-21 -40 V
-21 -39 V
-21 -40 V
-21 -39 V
-21 -39 V
-21 -38 V
-21 -37 V
-21 -36 V
-21 -36 V
-21 -34 V
-21 -33 V
-21 -33 V
-21 -31 V
-21 -30 V
-21 -29 V
-21 -29 V
-21 -27 V
-21 -26 V
-21 -25 V
-21 -25 V
-21 -23 V
-21 -22 V
-21 -22 V
-21 -21 V
-21 -20 V
-21 -19 V
-21 -18 V
-21 -18 V
-21 -17 V
-21 -16 V
-21 -16 V
-21 -15 V
-21 -15 V
-21 -14 V
-21 -13 V
-21 -13 V
-21 -12 V
-21 -12 V
-21 -12 V
-21 -11 V
-21 -10 V
-21 -10 V
-21 -10 V
-21 -10 V
-21 -9 V
-21 -9 V
-21 -8 V
-21 -8 V
-21 -8 V
-21 -8 V
-21 -7 V
-21 -7 V
-21 -7 V
-21 -6 V
-21 -7 V
-21 -6 V
-21 -6 V
-21 -6 V
-21 -5 V
-21 -5 V
-21 -6 V
-21 -5 V
-21 -5 V
-21 -4 V
-21 -5 V
-21 -4 V
-21 -4 V
-21 -4 V
-21 -4 V
-21 -4 V
-21 -4 V
-21 -4 V
-21 -3 V
-21 -4 V
-21 -3 V
-21 -3 V
-21 -3 V
-21 -3 V
-21 -3 V
-21 -3 V
-21 -3 V
-21 -3 V
-21 -2 V
-21 -3 V
-21 -2 V
-21 -3 V
-21 -2 V
-21 -2 V
-21 -2 V
-21 -3 V
+450 300 M
+20 0 V
+20 0 V
+20 0 V
+20 0 V
+20 0 V
+20 0 V
+20 0 V
+20 0 V
+20 0 V
+20 0 V
+20 0 V
+20 0 V
+20 0 V
+20 0 V
+20 0 V
+20 0 V
+20 1 V
+20 0 V
+20 2 V
+20 3 V
+20 6 V
+20 9 V
+20 14 V
+20 21 V
+20 30 V
+20 39 V
+20 50 V
+20 61 V
+20 72 V
+20 83 V
+20 91 V
+20 98 V
+20 103 V
+20 105 V
+20 105 V
+20 102 V
+20 98 V
+20 92 V
+20 84 V
+20 75 V
+20 66 V
+20 56 V
+20 46 V
+20 36 V
+20 27 V
+20 18 V
+20 9 V
+20 2 V
+20 -5 V
+20 -11 V
+20 -16 V
+20 -21 V
+20 -25 V
+20 -28 V
+20 -31 V
+20 -33 V
+20 -34 V
+20 -36 V
+20 -37 V
+20 -38 V
+20 -37 V
+20 -38 V
+20 -37 V
+20 -37 V
+20 -37 V
+20 -36 V
+20 -35 V
+20 -34 V
+20 -34 V
+20 -32 V
+20 -32 V
+20 -31 V
+20 -29 V
+20 -29 V
+20 -28 V
+20 -26 V
+20 -26 V
+20 -25 V
+20 -24 V
+20 -23 V
+20 -22 V
+20 -21 V
+20 -21 V
+20 -19 V
+20 -19 V
+20 -18 V
+20 -18 V
+20 -16 V
+20 -17 V
+20 -15 V
+20 -15 V
+20 -14 V
+20 -14 V
+20 -13 V
+20 -13 V
+20 -12 V
+20 -12 V
+20 -11 V
+20 -11 V
+20 -10 V
+20 -10 V
+20 -10 V
+20 -9 V
+20 -9 V
+20 -9 V
+20 -8 V
+20 -8 V
+20 -8 V
+20 -7 V
+20 -8 V
+20 -6 V
+20 -7 V
+20 -7 V
+20 -6 V
+20 -6 V
+20 -6 V
+20 -5 V
+20 -6 V
+20 -5 V
+20 -5 V
+20 -5 V
+20 -5 V
+20 -4 V
+20 -5 V
+20 -4 V
+20 -4 V
+20 -4 V
+20 -4 V
+20 -4 V
+20 -3 V
+20 -4 V
+20 -3 V
+20 -4 V
+20 -3 V
+20 -3 V
+20 -3 V
+20 -3 V
+20 -3 V
+20 -3 V
+20 -2 V
+20 -3 V
+20 -3 V
+20 -2 V
+20 -2 V
+20 -3 V
+20 -2 V
+20 -2 V
+20 -3 V
+20 -2 V
+20 -2 V
 stroke
 grestore
 end
 showpage
-}
-\put(1925,2276){\cjust{Landau Distribution}}
-\put(1925,100){\cjust{$x$}}
-\put(0,1238){%
+}}%
+\put(1950,2226){\cjust{Landau Distribution}}%
+\put(1950,50){\cjust{$x$}}%
+\put(100,1188){%
 \special{ps: gsave currentpoint currentpoint translate
 270 rotate neg exch neg exch translate}%
 \cstack{$p(x)$}%
 \special{ps: currentpoint grestore moveto}%
-}
-\put(3500,200){\cjust{10}}
-\put(3290,200){\cjust{9}}
-\put(3080,200){\cjust{8}}
-\put(2870,200){\cjust{7}}
-\put(2660,200){\cjust{6}}
-\put(2450,200){\cjust{5}}
-\put(2240,200){\cjust{4}}
-\put(2030,200){\cjust{3}}
-\put(1820,200){\cjust{2}}
-\put(1610,200){\cjust{1}}
-\put(1400,200){\cjust{0}}
-\put(1190,200){\cjust{-1}}
-\put(980,200){\cjust{-2}}
-\put(770,200){\cjust{-3}}
-\put(560,200){\cjust{-4}}
-\put(350,200){\cjust{-5}}
-\put(300,2176){\rjust{0.2}}
-\put(300,1238){\rjust{0.1}}
-\put(300,300){\rjust{0}}
+}%
+\put(3450,200){\cjust{ 10}}%
+\put(3250,200){\cjust{ 9}}%
+\put(3050,200){\cjust{ 8}}%
+\put(2850,200){\cjust{ 7}}%
+\put(2650,200){\cjust{ 6}}%
+\put(2450,200){\cjust{ 5}}%
+\put(2250,200){\cjust{ 4}}%
+\put(2050,200){\cjust{ 3}}%
+\put(1850,200){\cjust{ 2}}%
+\put(1650,200){\cjust{ 1}}%
+\put(1450,200){\cjust{ 0}}%
+\put(1250,200){\cjust{-1}}%
+\put(1050,200){\cjust{-2}}%
+\put(850,200){\cjust{-3}}%
+\put(650,200){\cjust{-4}}%
+\put(450,200){\cjust{-5}}%
+\put(400,2076){\rjust{ 0.2}}%
+\put(400,1188){\rjust{ 0.1}}%
+\put(400,300){\rjust{ 0}}%
 \endGNUPLOTpicture
+\endgroup
+\endinput

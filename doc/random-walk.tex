@@ -1,10 +1,12 @@
 % GNUPLOT: plain TeX with Postscript
+\begingroup
+  \catcode`\@=11\relax
+  \def\GNUPLOTspecial{%
+    \def\do##1{\catcode`##1=12\relax}\dospecials
+    \catcode`\{=1\catcode`\}=2\catcode\%=14\relax\special}%
+%
 \expandafter\ifx\csname GNUPLOTpicture\endcsname\relax
-  \begingroup
-    % Inner version of \newdimen from btxmac.tex
-    \edef\innernewdimen{\expandafter\noexpand\csname newdimen\endcsname}%
-    \innernewdimen\GNUPLOTunit
-  \endgroup
+  \csname newdimen\endcsname\GNUPLOTunit
   \gdef\GNUPLOTpicture(#1,#2){\vbox to#2\GNUPLOTunit\bgroup
     \def\put(##1,##2)##3{\unskip\raise##2\GNUPLOTunit
       \hbox to0pt{\kern##1\GNUPLOTunit ##3\hss}\ignorespaces}%
@@ -19,16 +21,17 @@
   \gdef\endGNUPLOTpicture{\hss\egroup\egroup}%
 \fi
 \GNUPLOTunit=0.1bp
-\special{!
-%!PS-Adobe-2.0 EPSF-2.0
+{\GNUPLOTspecial{!
+%!PS-Adobe-2.0
 %%Title: random-walk.tex
-%%Creator: gnuplot 3.5 (pre 3.6) patchlevel beta 347
-%%CreationDate: Wed Jul 18 12:50:00 2001
+%%Creator: gnuplot 3.7 patchlevel 2
+%%CreationDate: Mon Jul 28 15:49:34 2003
 %%DocumentFonts: 
 %%BoundingBox: 0 0 251 216
 %%Orientation: Landscape
+%%Pages: (atend)
 %%EndComments
-/gnudict 120 dict def
+/gnudict 256 dict def
 gnudict begin
 /Color false def
 /Solid false def
@@ -56,12 +59,13 @@ gnudict begin
   /hpt2 hpt 2 mul def /vpt2 vpt 2 mul def } def
 /DL { Color {setrgbcolor Solid {pop []} if 0 setdash }
  {pop pop pop Solid {pop []} if 0 setdash} ifelse } def
-/BL { stroke gnulinewidth 2 mul setlinewidth } def
-/AL { stroke gnulinewidth 2 div setlinewidth } def
-/UL { gnulinewidth mul /userlinewidth exch def } def
+/BL { stroke userlinewidth 2 mul setlinewidth } def
+/AL { stroke userlinewidth 2 div setlinewidth } def
+/UL { dup gnulinewidth mul /userlinewidth exch def
+      dup 1 lt {pop 1} if 10 mul /udl exch def } def
 /PL { stroke userlinewidth setlinewidth } def
 /LTb { BL [] 0 0 0 DL } def
-/LTa { AL [1 dl 2 dl] 0 setdash 0 0 0 setrgbcolor } def
+/LTa { AL [1 udl mul 2 udl mul] 0 setdash 0 0 0 setrgbcolor } def
 /LT0 { PL [] 1 0 0 DL } def
 /LT1 { PL [4 dl 2 dl] 0 1 0 DL } def
 /LT2 { PL [2 dl 3 dl] 0 0 1 DL } def
@@ -257,11 +261,15 @@ gnudict begin
 /CircW { stroke [] 0 setdash 
   hpt 0 360 arc Opaque stroke } def
 /BoxFill { gsave Rec 1 setgray fill grestore } def
+/Symbol-Oblique /Symbol findfont [1 0 .167 1 0 0] makefont
+dup length dict begin {1 index /FID eq {pop pop} {def} ifelse} forall
+currentdict end definefont
 end
 %%EndProlog
-}
+}}%
 \GNUPLOTpicture(2519,2160)
-\special{"
+{\GNUPLOTspecial{"
+%%Page: 1 1
 gnudict begin
 gsave
 0 0 translate
@@ -270,247 +278,271 @@ gsave
 newpath
 1.000 UL
 LTb
-300 300 M
-1660 0 R
-300 419 M
-1660 0 R
-300 537 M
-1660 0 R
-300 656 M
-1660 0 R
-300 774 M
-1660 0 R
-300 893 M
-1660 0 R
-300 1011 M
-1660 0 R
-300 1130 M
-1660 0 R
-300 1249 M
-1660 0 R
-300 1367 M
-1660 0 R
-300 1486 M
-1660 0 R
-300 1604 M
-1660 0 R
-300 1723 M
-1660 0 R
-300 1841 M
-1660 0 R
-300 1960 M
-1660 0 R
-300 300 M
-0 1660 R
-359 300 M
+350 300 M
+1560 0 R
+350 411 M
+1560 0 R
+350 523 M
+1560 0 R
+350 634 M
+1560 0 R
+350 746 M
+1560 0 R
+350 857 M
+1560 0 R
+350 969 M
+1560 0 R
+350 1080 M
+1560 0 R
+350 1191 M
+1560 0 R
+350 1303 M
+1560 0 R
+350 1414 M
+1560 0 R
+350 1526 M
+1560 0 R
+350 1637 M
+1560 0 R
+350 1749 M
+1560 0 R
+350 1860 M
+1560 0 R
+350 300 M
+0 1560 R
+406 300 M
 0 63 V
-0 1597 R
+0 1497 R
 0 -63 V
-419 300 M
-0 1660 R
-478 300 M
+461 300 M
+0 1560 R
+517 300 M
 0 63 V
-0 1597 R
+0 1497 R
 0 -63 V
-537 300 M
-0 1660 R
-596 300 M
+573 300 M
+0 1560 R
+629 300 M
 0 63 V
-0 1597 R
+0 1497 R
 0 -63 V
-656 300 M
-0 1660 R
-715 300 M
+684 300 M
+0 1560 R
+740 300 M
 0 63 V
-0 1597 R
+0 1497 R
 0 -63 V
-774 300 M
-0 1660 R
-834 300 M
+796 300 M
+0 1560 R
+851 300 M
 0 63 V
-0 1597 R
+0 1497 R
 0 -63 V
-893 300 M
-0 1660 R
-952 300 M
+907 300 M
+0 1560 R
+963 300 M
 0 63 V
-0 1597 R
+0 1497 R
 0 -63 V
-1011 300 M
-0 1660 R
-1071 300 M
+1019 300 M
+0 1560 R
+1074 300 M
 0 63 V
-0 1597 R
+0 1497 R
 0 -63 V
 1130 300 M
-0 1660 R
-1189 300 M
+0 1560 R
+1186 300 M
 0 63 V
-0 1597 R
+0 1497 R
 0 -63 V
-1249 300 M
-0 1660 R
-1308 300 M
+1241 300 M
+0 1560 R
+1297 300 M
 0 63 V
-0 1597 R
+0 1497 R
 0 -63 V
-1367 300 M
-0 1660 R
-1426 300 M
+1353 300 M
+0 1560 R
+1409 300 M
 0 63 V
-0 1597 R
+0 1497 R
 0 -63 V
-1486 300 M
-0 1660 R
-1545 300 M
+1464 300 M
+0 1560 R
+1520 300 M
 0 63 V
-0 1597 R
+0 1497 R
 0 -63 V
-1604 300 M
-0 1660 R
-1664 300 M
+1576 300 M
+0 1560 R
+1631 300 M
 0 63 V
-0 1597 R
+0 1497 R
 0 -63 V
-1723 300 M
-0 1660 R
-1782 300 M
+1687 300 M
+0 1560 R
+1743 300 M
 0 63 V
-0 1597 R
+0 1497 R
 0 -63 V
-1841 300 M
-0 1660 R
-1901 300 M
+1799 300 M
+0 1560 R
+1854 300 M
 0 63 V
-0 1597 R
+0 1497 R
 0 -63 V
-1960 300 M
-0 1660 R
+1910 300 M
+0 1560 R
 1.000 UL
 LTa
-300 1130 M
-1660 0 V
+350 1080 M
+1560 0 V
 1.000 UL
 LTa
 1130 300 M
-0 1660 V
+0 1560 V
 1.000 UL
 LTb
-300 300 M
-1660 0 V
-0 1660 V
--1660 0 V
-300 300 L
+350 300 M
+1560 0 V
+0 1560 V
+-1560 0 V
+350 300 L
 1.000 UP
 1.000 UL
 LT0
-1130 1130 M
--118 -7 V
-911 1060 L
--105 55 V
--94 73 V
-58 103 V
--75 -91 V
-68 97 V
-6 -119 V
-1 -118 V
-653 1044 L
-477 86 R
-109 47 V
-41 -111 V
-91 77 V
--105 -56 V
-0 119 V
-19 117 V
-44 110 V
--115 32 V
--113 -35 V
--31 -114 V
-60 -186 R
-24 116 V
-115 26 V
-66 -99 V
-119 5 V
-104 -56 V
-115 -30 V
-118 8 V
--73 -93 V
-1686 893 L
-97 68 V
-1130 1130 Pls
-1012 1123 Pls
-911 1060 Pls
-806 1115 Pls
-712 1188 Pls
-770 1291 Pls
-695 1200 Pls
-763 1297 Pls
-769 1178 Pls
-770 1060 Pls
-653 1044 Pls
-1130 1130 Pls
-1239 1177 Pls
-1280 1066 Pls
-1371 1143 Pls
-1266 1087 Pls
-1266 1206 Pls
-1285 1323 Pls
-1329 1433 Pls
-1214 1465 Pls
-1101 1430 Pls
-1070 1316 Pls
-1130 1130 Pls
-1154 1246 Pls
-1269 1272 Pls
-1335 1173 Pls
-1454 1178 Pls
-1558 1122 Pls
-1673 1092 Pls
-1791 1100 Pls
-1718 1007 Pls
-1686 893 Pls
-1783 961 Pls
+1130 1080 M
+-66 90 V
+32 107 V
+98 53 V
+86 71 V
+-10 -111 V
+-100 -50 V
+-109 24 V
+-76 82 V
+108 29 V
+103 41 V
+-66 -336 R
+-103 43 V
+-108 25 V
+99 50 V
+-74 82 V
+-69 88 V
+42 -103 V
+-91 -63 V
+110 16 V
+57 -96 V
+-83 74 V
+220 -116 R
+-108 -26 V
+-51 99 V
+-59 95 V
+-106 34 V
+105 -35 V
+17 110 V
+-93 -62 V
+-9 111 V
+-63 -92 V
+44 103 V
+323 -337 R
+-107 -32 V
+66 90 V
+68 89 V
+-26 108 V
+-50 -99 V
+-69 -88 V
+100 -50 V
+83 -75 V
+101 46 V
+91 65 V
+1130 1080 Pls
+1064 1170 Pls
+1096 1277 Pls
+1194 1330 Pls
+1280 1401 Pls
+1270 1290 Pls
+1170 1240 Pls
+1061 1264 Pls
+985 1346 Pls
+1093 1375 Pls
+1196 1416 Pls
+1130 1080 Pls
+1027 1123 Pls
+919 1148 Pls
+1018 1198 Pls
+944 1280 Pls
+875 1368 Pls
+917 1265 Pls
+826 1202 Pls
+936 1218 Pls
+993 1122 Pls
+910 1196 Pls
+1130 1080 Pls
+1022 1054 Pls
+971 1153 Pls
+912 1248 Pls
+806 1282 Pls
+911 1247 Pls
+928 1357 Pls
+835 1295 Pls
+826 1406 Pls
+763 1314 Pls
+807 1417 Pls
+1130 1080 Pls
+1023 1048 Pls
+1089 1138 Pls
+1157 1227 Pls
+1131 1335 Pls
+1081 1236 Pls
+1012 1148 Pls
+1112 1098 Pls
+1195 1023 Pls
+1296 1069 Pls
+1387 1134 Pls
 stroke
 grestore
 end
 showpage
-}
-\put(1130,2060){\cjust{Random walk}}
-\put(1130,100){\cjust{$k$}}
-\put(0,1130){%
+}}%
+\put(1130,2010){\cjust{Random walk}}%
+\put(1130,50){\cjust{$k$}}%
+\put(100,1080){%
 \special{ps: gsave currentpoint currentpoint translate
 270 rotate neg exch neg exch translate}%
 \cstack{$p(k)$}%
 \special{ps: currentpoint grestore moveto}%
-}
-\put(1960,200){\cjust{7}}
-\put(1841,200){\cjust{6}}
-\put(1723,200){\cjust{5}}
-\put(1604,200){\cjust{4}}
-\put(1486,200){\cjust{3}}
-\put(1367,200){\cjust{2}}
-\put(1249,200){\cjust{1}}
-\put(1130,200){\cjust{0}}
-\put(1011,200){\cjust{-1}}
-\put(893,200){\cjust{-2}}
-\put(774,200){\cjust{-3}}
-\put(656,200){\cjust{-4}}
-\put(537,200){\cjust{-5}}
-\put(419,200){\cjust{-6}}
-\put(300,200){\cjust{-7}}
-\put(250,1960){\rjust{7}}
-\put(250,1841){\rjust{6}}
-\put(250,1723){\rjust{5}}
-\put(250,1604){\rjust{4}}
-\put(250,1486){\rjust{3}}
-\put(250,1367){\rjust{2}}
-\put(250,1249){\rjust{1}}
-\put(250,1130){\rjust{0}}
-\put(250,1011){\rjust{-1}}
-\put(250,893){\rjust{-2}}
-\put(250,774){\rjust{-3}}
-\put(250,656){\rjust{-4}}
-\put(250,537){\rjust{-5}}
-\put(250,419){\rjust{-6}}
-\put(250,300){\rjust{-7}}
+}%
+\put(1910,200){\cjust{ 7}}%
+\put(1799,200){\cjust{ 6}}%
+\put(1687,200){\cjust{ 5}}%
+\put(1576,200){\cjust{ 4}}%
+\put(1464,200){\cjust{ 3}}%
+\put(1353,200){\cjust{ 2}}%
+\put(1241,200){\cjust{ 1}}%
+\put(1130,200){\cjust{ 0}}%
+\put(1019,200){\cjust{-1}}%
+\put(907,200){\cjust{-2}}%
+\put(796,200){\cjust{-3}}%
+\put(684,200){\cjust{-4}}%
+\put(573,200){\cjust{-5}}%
+\put(461,200){\cjust{-6}}%
+\put(350,200){\cjust{-7}}%
+\put(300,1860){\rjust{ 7}}%
+\put(300,1749){\rjust{ 6}}%
+\put(300,1637){\rjust{ 5}}%
+\put(300,1526){\rjust{ 4}}%
+\put(300,1414){\rjust{ 3}}%
+\put(300,1303){\rjust{ 2}}%
+\put(300,1191){\rjust{ 1}}%
+\put(300,1080){\rjust{ 0}}%
+\put(300,969){\rjust{-1}}%
+\put(300,857){\rjust{-2}}%
+\put(300,746){\rjust{-3}}%
+\put(300,634){\rjust{-4}}%
+\put(300,523){\rjust{-5}}%
+\put(300,411){\rjust{-6}}%
+\put(300,300){\rjust{-7}}%
 \endGNUPLOTpicture
+\endgroup
+\endinput

@@ -2025,8 +2025,7 @@ of variates,
 
 @example
 $ GSL_RNG_SEED=123 ./a.out 
-GSL_RNG_SEED=123
- 1 1 2 1 2 6 2 1 8 7
+@verbatiminclude examples/randpoisson.2.out
 @end example
 
 @noindent

@@ -1,10 +1,12 @@
 % GNUPLOT: plain TeX with Postscript
+\begingroup
+  \catcode`\@=11\relax
+  \def\GNUPLOTspecial{%
+    \def\do##1{\catcode`##1=12\relax}\dospecials
+    \catcode`\{=1\catcode`\}=2\catcode\%=14\relax\special}%
+%
 \expandafter\ifx\csname GNUPLOTpicture\endcsname\relax
-  \begingroup
-    % Inner version of \newdimen from btxmac.tex
-    \edef\innernewdimen{\expandafter\noexpand\csname newdimen\endcsname}%
-    \innernewdimen\GNUPLOTunit
-  \endgroup
+  \csname newdimen\endcsname\GNUPLOTunit
   \gdef\GNUPLOTpicture(#1,#2){\vbox to#2\GNUPLOTunit\bgroup
     \def\put(##1,##2)##3{\unskip\raise##2\GNUPLOTunit
       \hbox to0pt{\kern##1\GNUPLOTunit ##3\hss}\ignorespaces}%
@@ -19,16 +21,17 @@
   \gdef\endGNUPLOTpicture{\hss\egroup\egroup}%
 \fi
 \GNUPLOTunit=0.1bp
-\special{!
-%!PS-Adobe-2.0 EPSF-2.0
+{\GNUPLOTspecial{!
+%!PS-Adobe-2.0
 %%Title: rand-bivariate-gaussian.tex
-%%Creator: gnuplot 3.5 (pre 3.6) patchlevel beta 347
-%%CreationDate: Wed Jul 18 12:49:55 2001
+%%Creator: gnuplot 3.7 patchlevel 2
+%%CreationDate: Mon Jul 28 15:49:34 2003
 %%DocumentFonts: 
 %%BoundingBox: 0 0 360 237
 %%Orientation: Landscape
+%%Pages: (atend)
 %%EndComments
-/gnudict 120 dict def
+/gnudict 256 dict def
 gnudict begin
 /Color false def
 /Solid false def
@@ -56,12 +59,13 @@ gnudict begin
   /hpt2 hpt 2 mul def /vpt2 vpt 2 mul def } def
 /DL { Color {setrgbcolor Solid {pop []} if 0 setdash }
  {pop pop pop Solid {pop []} if 0 setdash} ifelse } def
-/BL { stroke gnulinewidth 2 mul setlinewidth } def
-/AL { stroke gnulinewidth 2 div setlinewidth } def
-/UL { gnulinewidth mul /userlinewidth exch def } def
+/BL { stroke userlinewidth 2 mul setlinewidth } def
+/AL { stroke userlinewidth 2 div setlinewidth } def
+/UL { dup gnulinewidth mul /userlinewidth exch def
+      dup 1 lt {pop 1} if 10 mul /udl exch def } def
 /PL { stroke userlinewidth setlinewidth } def
 /LTb { BL [] 0 0 0 DL } def
-/LTa { AL [1 dl 2 dl] 0 setdash 0 0 0 setrgbcolor } def
+/LTa { AL [1 udl mul 2 udl mul] 0 setdash 0 0 0 setrgbcolor } def
 /LT0 { PL [] 1 0 0 DL } def
 /LT1 { PL [4 dl 2 dl] 0 1 0 DL } def
 /LT2 { PL [2 dl 3 dl] 0 0 1 DL } def
@@ -257,11 +261,15 @@ gnudict begin
 /CircW { stroke [] 0 setdash 
   hpt 0 360 arc Opaque stroke } def
 /BoxFill { gsave Rec 1 setgray fill grestore } def
+/Symbol-Oblique /Symbol findfont [1 0 .167 1 0 0] makefont
+dup length dict begin {1 index /FID eq {pop pop} {def} ifelse} forall
+currentdict end definefont
 end
 %%EndProlog
-}
+}}%
 \GNUPLOTpicture(3600,2376)
-\special{"
+{\GNUPLOTspecial{"
+%%Page: 1 1
 gnudict begin
 gsave
 0 0 translate
@@ -2357,19 +2365,21 @@ stroke
 grestore
 end
 showpage
-}
-\put(3202,1188){\cjust{$y$}}
-\put(2785,1723){\ljust{2}}
-\put(2785,1455){\ljust{1}}
-\put(2785,1188){\ljust{0}}
-\put(2785,920){\ljust{-1}}
-\put(2785,653){\ljust{-2}}
-\put(1800,385){\cjust{$x$}}
-\put(2735,553){\cjust{2}}
-\put(2267,553){\cjust{1}}
-\put(1800,553){\cjust{0}}
-\put(1332,553){\cjust{-1}}
-\put(865,553){\cjust{-2}}
-\put(3074,1912){\rjust{$\sigma_x=1, \sigma_y=1, \rho=0.9$}}
-\put(1800,2175){\cjust{Bivariate Gaussian Distribution}}
+}}%
+\put(3202,1188){\cjust{$y$}}%
+\put(2785,1723){\ljust{ 2}}%
+\put(2785,1455){\ljust{ 1}}%
+\put(2785,1188){\ljust{ 0}}%
+\put(2785,920){\ljust{-1}}%
+\put(2785,653){\ljust{-2}}%
+\put(1800,385){\cjust{$x$}}%
+\put(2735,553){\cjust{ 2}}%
+\put(2267,553){\cjust{ 1}}%
+\put(1800,553){\cjust{ 0}}%
+\put(1332,553){\cjust{-1}}%
+\put(865,553){\cjust{-2}}%
+\put(3074,1912){\rjust{$sigma_x=1, sigma_y=1, ho=0.9$}}%
+\put(1800,2175){\cjust{Bivariate Gaussian Distribution}}%
 \endGNUPLOTpicture
+\endgroup
+\endinput

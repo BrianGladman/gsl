@@ -1,10 +1,12 @@
 % GNUPLOT: plain TeX with Postscript
+\begingroup
+  \catcode`\@=11\relax
+  \def\GNUPLOTspecial{%
+    \def\do##1{\catcode`##1=12\relax}\dospecials
+    \catcode`\{=1\catcode`\}=2\catcode\%=14\relax\special}%
+%
 \expandafter\ifx\csname GNUPLOTpicture\endcsname\relax
-  \begingroup
-    % Inner version of \newdimen from btxmac.tex
-    \edef\innernewdimen{\expandafter\noexpand\csname newdimen\endcsname}%
-    \innernewdimen\GNUPLOTunit
-  \endgroup
+  \csname newdimen\endcsname\GNUPLOTunit
   \gdef\GNUPLOTpicture(#1,#2){\vbox to#2\GNUPLOTunit\bgroup
     \def\put(##1,##2)##3{\unskip\raise##2\GNUPLOTunit
       \hbox to0pt{\kern##1\GNUPLOTunit ##3\hss}\ignorespaces}%
@@ -19,16 +21,17 @@
   \gdef\endGNUPLOTpicture{\hss\egroup\egroup}%
 \fi
 \GNUPLOTunit=0.1bp
-\special{!
-%!PS-Adobe-2.0 EPSF-2.0
+{\GNUPLOTspecial{!
+%!PS-Adobe-2.0
 %%Title: rand-nbinomial.tex
-%%Creator: gnuplot 3.5 (pre 3.6) patchlevel beta 347
-%%CreationDate: Wed Jul 18 12:50:00 2001
+%%Creator: gnuplot 3.7 patchlevel 2
+%%CreationDate: Mon Jul 28 15:49:34 2003
 %%DocumentFonts: 
 %%BoundingBox: 0 0 360 237
 %%Orientation: Landscape
+%%Pages: (atend)
 %%EndComments
-/gnudict 120 dict def
+/gnudict 256 dict def
 gnudict begin
 /Color false def
 /Solid false def
@@ -56,12 +59,13 @@ gnudict begin
   /hpt2 hpt 2 mul def /vpt2 vpt 2 mul def } def
 /DL { Color {setrgbcolor Solid {pop []} if 0 setdash }
  {pop pop pop Solid {pop []} if 0 setdash} ifelse } def
-/BL { stroke gnulinewidth 2 mul setlinewidth } def
-/AL { stroke gnulinewidth 2 div setlinewidth } def
-/UL { gnulinewidth mul /userlinewidth exch def } def
+/BL { stroke userlinewidth 2 mul setlinewidth } def
+/AL { stroke userlinewidth 2 div setlinewidth } def
+/UL { dup gnulinewidth mul /userlinewidth exch def
+      dup 1 lt {pop 1} if 10 mul /udl exch def } def
 /PL { stroke userlinewidth setlinewidth } def
 /LTb { BL [] 0 0 0 DL } def
-/LTa { AL [1 dl 2 dl] 0 setdash 0 0 0 setrgbcolor } def
+/LTa { AL [1 udl mul 2 udl mul] 0 setdash 0 0 0 setrgbcolor } def
 /LT0 { PL [] 1 0 0 DL } def
 /LT1 { PL [4 dl 2 dl] 0 1 0 DL } def
 /LT2 { PL [2 dl 3 dl] 0 0 1 DL } def
@@ -257,11 +261,15 @@ gnudict begin
 /CircW { stroke [] 0 setdash 
   hpt 0 360 arc Opaque stroke } def
 /BoxFill { gsave Rec 1 setgray fill grestore } def
+/Symbol-Oblique /Symbol findfont [1 0 .167 1 0 0] makefont
+dup length dict begin {1 index /FID eq {pop pop} {def} ifelse} forall
+currentdict end definefont
 end
 %%EndProlog
-}
+}}%
 \GNUPLOTpicture(3600,2376)
-\special{"
+{\GNUPLOTspecial{"
+%%Page: 1 1
 gnudict begin
 gsave
 0 0 translate
@@ -270,433 +278,435 @@ gsave
 newpath
 1.000 UL
 LTb
-350 300 M
-3150 0 R
-350 925 M
-3150 0 R
-350 1551 M
-3150 0 R
-350 2176 M
-3150 0 R
-350 300 M
+450 300 M
+3000 0 R
+450 892 M
+3000 0 R
+450 1484 M
+3000 0 R
+450 2076 M
+3000 0 R
+450 300 M
 0 63 V
-0 1813 R
+0 1713 R
 0 -63 V
-493 300 M
-0 1876 R
-636 300 M
+586 300 M
+0 1776 R
+723 300 M
 0 63 V
-0 1813 R
+0 1713 R
 0 -63 V
-780 300 M
-0 1876 R
-923 300 M
+859 300 M
+0 1776 R
+995 300 M
 0 63 V
-0 1813 R
+0 1713 R
 0 -63 V
-1066 300 M
-0 1876 R
-1209 300 M
+1132 300 M
+0 1776 R
+1268 300 M
 0 63 V
-0 1813 R
+0 1713 R
 0 -63 V
-1352 300 M
-0 1876 R
-1495 300 M
+1405 300 M
+0 1776 R
+1541 300 M
 0 63 V
-0 1813 R
+0 1713 R
 0 -63 V
-1639 300 M
-0 1876 R
-1782 300 M
+1677 300 M
+0 1776 R
+1814 300 M
 0 63 V
-0 1813 R
+0 1713 R
 0 -63 V
-1925 300 M
-0 1876 R
-2068 300 M
+1950 300 M
+0 1776 R
+2086 300 M
 0 63 V
-0 1813 R
+0 1713 R
 0 -63 V
-2211 300 M
-0 1876 R
-2355 300 M
+2223 300 M
+0 1776 R
+2359 300 M
 0 63 V
-0 1813 R
+0 1713 R
 0 -63 V
-2498 300 M
-0 1876 R
-2641 300 M
+2495 300 M
+0 1776 R
+2632 300 M
 0 63 V
-0 1813 R
+0 1713 R
 0 -63 V
-2784 300 M
-0 1876 R
-2927 300 M
+2768 300 M
+0 1776 R
+2905 300 M
 0 63 V
-0 1813 R
+0 1713 R
 0 -63 V
-3070 300 M
-0 1876 R
-3214 300 M
+3041 300 M
+0 1776 R
+3177 300 M
 0 63 V
-0 1813 R
+0 1713 R
 0 -63 V
-3357 300 M
-0 1876 R
-3500 300 M
+3314 300 M
+0 1776 R
+3450 300 M
 0 63 V
-0 1813 R
+0 1713 R
 0 -63 V
 1.000 UL
 LTb
-350 300 M
-3150 0 V
-0 1876 V
--3150 0 V
-350 300 L
+450 300 M
+3000 0 V
+0 1776 V
+-3000 0 V
+450 300 L
 1.000 UL
 LT0
-3137 2063 M
+3087 1963 M
 263 0 V
-350 853 M
-11 0 V
+450 823 M
 10 0 V
-11 0 V
 10 0 V
-11 0 V
 10 0 V
-11 0 V
 10 0 V
-11 0 V
 10 0 V
-11 0 V
 10 0 V
-11 0 V
 10 0 V
-11 0 V
-11 0 V
 10 0 V
-11 0 V
 10 0 V
-11 0 V
 10 0 V
-11 0 V
 10 0 V
-11 0 V
 10 0 V
-11 0 V
 10 0 V
-11 0 V
-0 414 V
-11 0 V
 10 0 V
 11 0 V
 10 0 V
-11 0 V
 10 0 V
-11 0 V
 10 0 V
-11 0 V
 10 0 V
-11 0 V
 10 0 V
-11 0 V
 10 0 V
-11 0 V
-11 0 V
 10 0 V
-11 0 V
 10 0 V
-11 0 V
 10 0 V
-11 0 V
 10 0 V
-11 0 V
 10 0 V
-11 0 V
 10 0 V
-0 121 V
-11 0 V
-11 0 V
 10 0 V
-11 0 V
+0 393 V
 10 0 V
-11 0 V
 10 0 V
-11 0 V
 10 0 V
-11 0 V
 10 0 V
-11 0 V
 10 0 V
-11 0 V
 10 0 V
-11 0 V
-11 0 V
 10 0 V
-11 0 V
 10 0 V
-11 0 V
 10 0 V
-11 0 V
 10 0 V
-11 0 V
 10 0 V
-11 0 V
-0 -90 V
 10 0 V
-11 0 V
 10 0 V
-11 0 V
-11 0 V
 10 0 V
-11 0 V
 10 0 V
-11 0 V
 10 0 V
 11 0 V
 10 0 V
-11 0 V
 10 0 V
-11 0 V
 10 0 V
-11 0 V
-11 0 V
 10 0 V
-11 0 V
 10 0 V
-11 0 V
 10 0 V
-11 0 V
 10 0 V
-11 0 V
 10 0 V
-0 -187 V
-11 0 V
 10 0 V
-11 0 V
 10 0 V
-11 0 V
-11 0 V
+0 114 V
 10 0 V
-11 0 V
 10 0 V
-11 0 V
 10 0 V
-11 0 V
 10 0 V
-11 0 V
 10 0 V
-11 0 V
 10 0 V
-11 0 V
 10 0 V
-11 0 V
-11 0 V
 10 0 V
-11 0 V
 10 0 V
-11 0 V
 10 0 V
-11 0 V
-0 -203 V
 10 0 V
-11 0 V
 10 0 V
-11 0 V
 10 0 V
-11 0 V
-11 0 V
 10 0 V
-11 0 V
 10 0 V
-11 0 V
 10 0 V
-11 0 V
 10 0 V
-11 0 V
 10 0 V
-11 0 V
 10 0 V
 11 0 V
 10 0 V
-11 0 V
-11 0 V
 10 0 V
-11 0 V
 10 0 V
-11 0 V
 10 0 V
+10 0 V
+10 0 V
+10 0 V
+0 -86 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
 11 0 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
 0 -177 V
 10 0 V
-11 0 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
 10 0 V
 11 0 V
 10 0 V
+0 -191 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
+0 -168 V
 11 0 V
-11 0 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
+0 -131 V
+10 0 V
+10 0 V
 10 0 V
 11 0 V
 10 0 V
-11 0 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
+0 -95 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
 10 0 V
 11 0 V
 10 0 V
-11 0 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
+0 -66 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
 10 0 V
 11 0 V
 10 0 V
-11 0 V
 10 0 V
-11 0 V
-11 0 V
 10 0 V
-11 0 V
 10 0 V
-11 0 V
 10 0 V
-0 -139 V
-11 0 V
 10 0 V
-11 0 V
 10 0 V
-11 0 V
 10 0 V
-11 0 V
 10 0 V
-11 0 V
-11 0 V
 10 0 V
-11 0 V
 10 0 V
-11 0 V
 10 0 V
-11 0 V
 10 0 V
-11 0 V
 10 0 V
-11 0 V
 10 0 V
-11 0 V
-11 0 V
+10 0 V
+10 0 V
+0 -43 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
+10 0 V
 10 0 V
 11 0 V
 10 0 V
-11 0 V
-0 -100 V
 10 0 V
-11 0 V
 10 0 V
-11 0 V
 10 0 V
-11 0 V
 10 0 V
-11 0 V
 10 0 V
-11 0 V
-11 0 V
 10 0 V
-11 0 V
 10 0 V
-11 0 V
 10 0 V
-11 0 V
 10 0 V
-11 0 V
 10 0 V
-11 0 V
 10 0 V
-11 0 V
 10 0 V
-11 0 V
-11 0 V
 10 0 V
-0 -69 V
-11 0 V
-10 0 V
-11 0 V
-10 0 V
-11 0 V
-10 0 V
-11 0 V
-10 0 V
-11 0 V
-10 0 V
-11 0 V
-11 0 V
-10 0 V
-11 0 V
-10 0 V
-11 0 V
-10 0 V
-11 0 V
-10 0 V
-11 0 V
-10 0 V
-11 0 V
-10 0 V
-11 0 V
-10 0 V
-11 0 V
-11 0 V
-0 -46 V
-10 0 V
-11 0 V
-10 0 V
-11 0 V
-10 0 V
-11 0 V
-10 0 V
-11 0 V
-10 0 V
-11 0 V
-10 0 V
-11 0 V
-11 0 V
-10 0 V
-11 0 V
-10 0 V
-11 0 V
-10 0 V
-11 0 V
-10 0 V
-11 0 V
-10 0 V
-11 0 V
-10 0 V
-11 0 V
-10 0 V
-11 0 V
-0 -30 V
+0 -28 V
 stroke
 grestore
 end
 showpage
-}
-\put(3087,2063){\rjust{$p=0.5,n=3.5$}}
-\put(1925,2276){\cjust{Negative Binomial Distribution}}
-\put(1925,100){\cjust{$k$}}
-\put(0,1238){%
+}}%
+\put(3037,1963){\rjust{$p=0.5,n=3.5$}}%
+\put(1950,2226){\cjust{Negative Binomial Distribution}}%
+\put(1950,50){\cjust{$k$}}%
+\put(100,1188){%
 \special{ps: gsave currentpoint currentpoint translate
 270 rotate neg exch neg exch translate}%
 \cstack{$p(k)$}%
 \special{ps: currentpoint grestore moveto}%
-}
-\put(3357,200){\cjust{10}}
-\put(3070,200){\cjust{9}}
-\put(2784,200){\cjust{8}}
-\put(2498,200){\cjust{7}}
-\put(2211,200){\cjust{6}}
-\put(1925,200){\cjust{5}}
-\put(1639,200){\cjust{4}}
-\put(1352,200){\cjust{3}}
-\put(1066,200){\cjust{2}}
-\put(780,200){\cjust{1}}
-\put(493,200){\cjust{0}}
-\put(300,2176){\rjust{0.3}}
-\put(300,1551){\rjust{0.2}}
-\put(300,925){\rjust{0.1}}
-\put(300,300){\rjust{0}}
+}%
+\put(3314,200){\cjust{ 10}}%
+\put(3041,200){\cjust{ 9}}%
+\put(2768,200){\cjust{ 8}}%
+\put(2495,200){\cjust{ 7}}%
+\put(2223,200){\cjust{ 6}}%
+\put(1950,200){\cjust{ 5}}%
+\put(1677,200){\cjust{ 4}}%
+\put(1405,200){\cjust{ 3}}%
+\put(1132,200){\cjust{ 2}}%
+\put(859,200){\cjust{ 1}}%
+\put(586,200){\cjust{ 0}}%
+\put(400,2076){\rjust{ 0.3}}%
+\put(400,1484){\rjust{ 0.2}}%
+\put(400,892){\rjust{ 0.1}}%
+\put(400,300){\rjust{ 0}}%
 \endGNUPLOTpicture
+\endgroup
+\endinput
