@@ -1,3 +1,7 @@
+Thu Feb 24 16:19:55 2000  Brian Gough  <bjg@network-theory.co.uk>
+
+	* added missing prototypes for gsl_vector_complex_..._reverse
+
 Fri Feb 18 20:48:32 2000  Brian Gough  <bjg@network-theory.co.uk>
 
 	* swap_source.c (FUNCTION): added gsl_vector_reverse function for

@@ -62,6 +62,8 @@ int gsl_vector_complex_fprintf (FILE * stream,
 
 int gsl_vector_complex_copy (gsl_vector_complex * dest, const gsl_vector_complex * src);
 
+int gsl_vector_complex_reverse (gsl_vector_complex * v);
+
 int gsl_vector_complex_swap (gsl_vector_complex * v, size_t i, size_t j);
 
 int gsl_vector_complex_isnull (gsl_vector_complex * v);
