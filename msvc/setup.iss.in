@@ -2,8 +2,8 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 [Setup]
-AppName=the GNU Scientific Library
-AppVerName=the GNU Scientific Library @VERSION@
+AppName=GNU Scientific Library
+AppVerName=GNU Scientific Library @VERSION@
 ;AppPublisher=Brian Gough
 ;AppPublisherURL=http://www.network-theory.co.uk/gsl/
 ;AppSupportURL=http://www.network-theory.co.uk/gsl/
@@ -41,3 +41,16 @@ Name: "{group}\README"; Filename: "{app}\README.txt"
 Name: "{group}\NEWS"; Filename: "{app}\NEWS.txt"
 Name: "{group}\LICENSE"; Filename: "{app}\COPYING.txt"
 
+[Messages]
+SetupLdrStartupMessage=This will install the %1. Do you wish to continue?
+WelcomeLabel2=This will install the [name/ver] on your computer.%n%nIt is strongly recommended that you close all other applications you have running before continuing. This will help prevent any conflicts during the installation process.
+LicenseLabel2=Do you accept all the terms of the preceding License Agreement? If you choose No, Setup will close. To install the [name], you must accept this agreement.
+SelectDirDesc=Where should the [name] be installed?
+SelectDirLabel=Select the folder where you would like the [name] to be installed, then click Next.
+ReadyLabel1=Setup is now ready to begin installing the [name] on your computer.
+InstallingLabel=Please wait while Setup installs the [name] on your computer.
+FinishedLabelNoIcons=Setup has finished installing the [name] on your computer.
+FinishedLabel=Setup has finished installing the [name] on your computer. The application may be launched by selecting the installed icons.
+ConfirmUninstall=Are you sure you want to completely remove the %1 and all of its components?
+UninstallStatusLabel=Please wait while the %1 is removed from your computer.
+UninstalledAll=The %1 was successfully removed from your computer.
