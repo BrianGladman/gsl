@@ -38,20 +38,14 @@ trailing_eigenvalue (const gsl_vector * d, const gsl_vector * f)
 
   double mu;
 
-  if (dt > 0)
+  if (dt >= 0)
     {
       mu = tb - (tab * tab) / (dt + hypot (dt, tab));
     }
-  else if (dt < 0)
+  else 
     {
       mu = tb + (tab * tab) / ((-dt) + hypot (dt, tab));
     }
-  else 
-    {
-      /* dt == 0, this shouldn't happen */
-      abort();
-    }
-  
 
   return mu;
 }
@@ -215,7 +209,7 @@ svd2 (gsl_vector * d, gsl_vector * f, gsl_matrix * U, gsl_matrix * V)
 
 
 static void
-chase_out_intermediate_zero (gsl_vector * d, gsl_vector * f, gsl_matrix * U, size_t k1)
+chase_out_intermediate_zero (gsl_vector * d, gsl_vector * f, gsl_matrix * U, size_t k0)
 {
   const size_t M = U->size1;
   const size_t n = d->size;
@@ -223,10 +217,10 @@ chase_out_intermediate_zero (gsl_vector * d, gsl_vector * f, gsl_matrix * U, siz
   double x, y;
   size_t i, k;
 
-  x = gsl_vector_get (f, k1);
-  y = gsl_vector_get (d, k1+1);
+  x = gsl_vector_get (f, k0);
+  y = gsl_vector_get (d, k0+1);
 
-  for (k = k1; k < n - 1; k++)
+  for (k = k0; k < n - 1; k++)
     {
       create_givens (y, -x, &c, &s);
       
@@ -234,9 +228,9 @@ chase_out_intermediate_zero (gsl_vector * d, gsl_vector * f, gsl_matrix * U, siz
       
       for (i = 0; i < M; i++)
 	{
-	  double Uip = gsl_matrix_get (U, i, k);
+	  double Uip = gsl_matrix_get (U, i, k0);
 	  double Uiq = gsl_matrix_get (U, i, k + 1);
-	  gsl_matrix_set (U, i, k, c * Uip - s * Uiq);
+	  gsl_matrix_set (U, i, k0, c * Uip - s * Uiq);
 	  gsl_matrix_set (U, i, k + 1, s * Uip + c * Uiq);
 	}
       
@@ -244,7 +238,7 @@ chase_out_intermediate_zero (gsl_vector * d, gsl_vector * f, gsl_matrix * U, siz
       
       gsl_vector_set (d, k + 1, s * x + c * y);
 
-      if (k == k1)
+      if (k == k0)
         gsl_vector_set (f, k, c * x - s * y );
 
       if (k < n - 2) 
@@ -270,7 +264,7 @@ chase_out_trailing_zero (gsl_vector * d, gsl_vector * f, gsl_matrix * V)
   x = gsl_vector_get (d, n - 2);
   y = gsl_vector_get (f, n - 2);
 
-  for (k = n - 2; k > 0; k--)
+  for (k = n - 1; k > 0 && k--;)
     {
       create_givens (x, y, &c, &s);
 
@@ -279,9 +273,9 @@ chase_out_trailing_zero (gsl_vector * d, gsl_vector * f, gsl_matrix * V)
       for (i = 0; i < N; i++)
 	{
 	  double Vip = gsl_matrix_get (V, i, k);
-	  double Viq = gsl_matrix_get (V, i, k + 1);
+	  double Viq = gsl_matrix_get (V, i, n - 1);
 	  gsl_matrix_set (V, i, k, c * Vip - s * Viq);
-	  gsl_matrix_set (V, i, k + 1, s * Vip + c * Viq);
+	  gsl_matrix_set (V, i, n - 1, s * Vip + c * Viq);
 	}
 
       /* compute B <= B G */

@@ -1,5 +1,11 @@
 * What is new in gsl-1.2:
 
+** Extended gsl_linalg_SV_decomp to handle exact zeroes in the
+singular values, and added tests for 3x3 matrices.
+
+** Fixed a bug in gsl_linalg_SV_decomp which caused singular values to
+be sorted incorrectly.
+
 ** The declarations used to export static objects can now be
 controlled through a macro GSL_VAR and the header file
 <gsl/gsl_types.h>.

@@ -211,6 +211,7 @@ gsl_matrix * row12;
 
 gsl_matrix * A22;
 gsl_matrix * A33;
+gsl_matrix * A44;
 
 gsl_matrix_complex * c7;
 
@@ -1385,7 +1386,7 @@ int test_SV_decomp(void)
                     gsl_matrix_set (A22, 1,1, i4);
                     
                     f = test_SV_decomp_dim(A22, 16 * GSL_DBL_EPSILON);
-                    gsl_test(f, "  SV_decomp A(2x2)(%g, %g, %g, %g)", i1,i2,i3,i4);
+                    gsl_test(f, "  SV_decomp (2x2) A=[%g, %g; %g, %g]", i1,i2,i3,i4);
                     s += f;
                   }
               }
@@ -1394,42 +1395,57 @@ int test_SV_decomp(void)
   }
 
   {
-    int i,j;
-    int iter;
-    double carry;
-    double lower = 0, upper = 1;
+    int i;
+    double carry = 0, lower = 0, upper = 1;
+    double *a = A33->data;
 
-    for (i=0; i<3; i++) {
-      for (j=0; j<3; j++) {
-        gsl_matrix_set (A33, i,j, lower);
-      }
+    for (i=0; i<9; i++) {
+      a[i] = lower;
     }
     
-    for (iter=0; ; iter++) {
+    while (carry == 0.0) {
       f = test_SV_decomp_dim(A33, 64 * GSL_DBL_EPSILON);
-      gsl_test(f, "  SV_decomp A(3x3)(%g %g %g | %g %g %g | %g %g %g)",
-               gsl_matrix_get (A33, 0,0),gsl_matrix_get (A33, 0,1),gsl_matrix_get (A33, 0,2),
-               gsl_matrix_get (A33, 1,0),gsl_matrix_get (A33, 1,1),gsl_matrix_get (A33, 1,2),
-               gsl_matrix_get (A33, 2,0),gsl_matrix_get (A33, 2,1),gsl_matrix_get (A33, 2,2));
+      gsl_test(f, "  SV_decomp (3x3) A=[ %g, %g, %g; %g, %g, %g; %g, %g, %g]",
+               a[0], a[1], a[2], a[3], a[4], a[5], a[6], a[7], a[8]);
       
       /* increment */
       carry=1.0;
-      for (i=2; i>=0; i--) {
-        for (j=2; j>=0; j--) {
-          double v=gsl_matrix_get (A33, i,j)+carry;
-          if (v>upper) {
-            v=lower;
-            carry=1.0;
-          } else {
-            carry=0.0;
-          }
-          gsl_matrix_set (A33, i,j, v);
+      for (i=9; i>0 && i--;) 
+        {
+          double v=a[i]+carry;
+          carry = (v>upper) ? 1.0 : 0.0;
+          a[i] = (v>upper) ? lower : v;
         }
-      }
-      if (carry) break;
+    }
+  }
+
+#ifdef TEST_SVD_4X4
+  {
+    int i;
+    double carry = 0, lower = 0, upper = 1;
+    double *a = A44->data;
+
+    for (i=0; i<16; i++) {
+      a[i] = lower;
     }
     
+    while (carry == 0.0) {
+      f = test_SV_decomp_dim(A44, 64 * GSL_DBL_EPSILON);
+      gsl_test(f, "  SV_decomp (4x4) A=[ %g, %g, %g, %g; %g, %g, %g, %g; %g, %g, %g, %g; %g, %g, %g, %g]",
+               a[0], a[1], a[2], a[3], a[4], a[5], a[6], a[7], a[8], a[9],
+               a[10], a[11], a[12], a[13], a[14], a[15]);
+      
+      /* increment */
+      carry=1.0;
+      for (i=16; i>0 && i--;) 
+        {
+          double v=a[i]+carry;
+          carry = (v>upper) ? 1.0 : 0.0;
+          a[i] = (v>upper) ? lower : v;
+        }
+    }
   }
+#endif
 
   return s;
 }
@@ -2046,6 +2062,7 @@ int main(void)
 
   A22 = create_2x2_matrix (0.0, 0.0, 0.0, 0.0);
   A33 = gsl_matrix_alloc(3,3);
+  A44 = gsl_matrix_alloc(4,4);
 
   /* Matmult now obsolete */
 #ifdef MATMULT

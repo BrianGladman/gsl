@@ -84,7 +84,7 @@ gsl_linalg_SV_decomp (gsl_matrix * A, gsl_matrix * V, gsl_vector * S,
   {
     gsl_vector_view f = gsl_vector_subvector (work, 0, K - 1);
     
-    /* bidiagonalize matrix A, unpack A into U V S */
+    /* bidiagonalize matrix A, unpack A into U S V */
     
     gsl_linalg_bidiag_decomp (A, S, &f.vector);
     gsl_linalg_bidiag_unpack2 (A, S, &f.vector, V);
