@@ -142,9 +142,9 @@ struct gsl_fdf_struct
 
 typedef struct gsl_fdf_struct gsl_fdf ;
 
-#define GSL_FDF_F_EVAL(FDF,x) (*((FDF)->f))(x,(FDF)->params)
-#define GSL_FDF_DF_EVAL(FDF,x) (*((FDF)->df))(x,(FDF)->params)
-#define GSL_FDF_EVAL(FDF,x,y,dy) (*((FDF)->fdf))(x,(FDF)->params,(y),(dy))
+#define GSL_FDF_EVAL_F(FDF,x) (*((FDF)->f))(x,(FDF)->params)
+#define GSL_FDF_EVAL_DF(FDF,x) (*((FDF)->df))(x,(FDF)->params)
+#define GSL_FDF_EVAL_F_DF(FDF,x,y,dy) (*((FDF)->fdf))(x,(FDF)->params,(y),(dy))
 
 /* Definition of an interval */
 
