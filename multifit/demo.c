@@ -62,6 +62,8 @@ brown_fdf (const gsl_vector * x, void *params,
 int
 main (void)
 {
+  gsl_matrix * covar = gsl_matrix_alloc (4, 4);
+  
   const gsl_multifit_fdfsolver_type *T;
   gsl_multifit_fdfsolver *s;
 
@@ -95,7 +97,11 @@ main (void)
 
       //status = gsl_multifit_test_residual (s->f, 0.0000001);
     }
-  while (iter < 1000);
+  while (iter < 50);
+
+  gsl_multifit_covar (s->J, 0.0, covar);
+
+  gsl_matrix_fprintf(stdout, covar, "%g");
 
   printf ("status = %s\n", gsl_strerror (status));
 

@@ -164,8 +164,7 @@ lm_iteration:
 
       {
         int signum;
-        gsl_linalg_QRPT_decomp (J, tau, perm, &signum);
-        gsl_linalg_QR_unpack (J, tau, q, r);
+        gsl_linalg_QRPT_decomp2 (J, q, r, tau, perm, &signum);
       }
       
       return GSL_SUCCESS;

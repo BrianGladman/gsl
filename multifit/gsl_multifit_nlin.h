@@ -37,6 +37,12 @@
 
 __BEGIN_DECLS
 
+int gsl_multifit_gradient (const gsl_matrix * J, const gsl_vector * f,
+                           gsl_vector * g);
+
+int gsl_multifit_covar (const gsl_matrix * J, double epsrel, gsl_matrix * covar);
+
+
 /* Definition of vector-valued functions with parameters based on gsl_vector */
 
 struct gsl_multifit_function_struct
@@ -55,10 +61,6 @@ int gsl_multifit_fdjacobian (gsl_multifit_function * F,
                              const gsl_vector * x, 
                              const gsl_vector * f,
                              double epsrel, gsl_matrix * jacobian);
-
-int gsl_multifit_gradient (const gsl_matrix * J, const gsl_vector * f,
-                           gsl_vector * g);
-
 
 typedef struct
   {

@@ -37,8 +37,7 @@ set (void *vstate, gsl_multifit_function_fdf * fdf, gsl_vector * x, gsl_vector *
 
   /* Factorize J into QR decomposition */
 
-  gsl_linalg_QRPT_decomp (J, tau, perm, &signum);
-  gsl_linalg_QR_unpack (J, tau, q, r);
+  gsl_linalg_QRPT_decomp2 (J, q, r, tau, perm, &signum);
 
   return GSL_SUCCESS;
 }
