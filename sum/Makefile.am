@@ -1,17 +1,17 @@
 noinst_LIBRARIES = libgslsum.a 
 
-check_PROGRAMS = test_sum
+check_PROGRAMS = test
 
 include_HEADERS = \
 	gsl_sum.h
 
 INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../err 
 
-TESTS = test_sum
+TESTS = test
 
-test_sum_LDADD = libgslsum.a ../err/libgslerr.a ../err/libgsltest.a
-test_sum_DEPENDENCIES = libgslsum.a
-test_sum_SOURCES = test_sum.c
+test_LDADD = libgslsum.a ../err/libgslerr.a ../err/libgsltest.a
+test_DEPENDENCIES = libgslsum.a
+test_SOURCES = test.c
 
 libgslsum_a_SOURCES = 	\
 	levin_u.c levin_uerr.c
