@@ -14,7 +14,7 @@ check_PROGRAMS = test
 
 test_SOURCES = test.c
 
-test_LDADD = libgslcombination.la ../vector/libgslvector.la ../err/libgslerr.la ../test/libgsltest.la ../utils/libutils.la
+test_LDADD = libgslcombination.la ../vector/libgslvector.la  ../block/libgslblock.la ../err/libgslerr.la ../test/libgsltest.la ../utils/libutils.la
 
 #noinst_PROGRAMS = demo
 #demo_SOURCES = demo.c
