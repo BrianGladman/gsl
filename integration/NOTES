@@ -1,5 +1,8 @@
 This is a reimplementation of the double precision version of QUADPACK.
 
+Brian Gough
+bjg@vvv.lanl.gov
+
 Testing:
 
 The results of these functions should agree almost exactly with the
@@ -59,5 +62,5 @@ bjg|zeke> fort77 main.f foo.f       (fort77 is an f2c front end)
     foo:
 
 bjg|zeke> ./a.out 
- x =   1.96252698E-313        (Agggh. We have to use 1.23d0 to make it work!)
+ x =   1.96252698E-313        (Doh! We have to use 1.23d0 to make it work)
 

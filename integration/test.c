@@ -77,7 +77,8 @@ int main (void)
     gsl_integration_qk41 (book1, 0.0, 1.0, 
 			  &result, &abserr, &resabs, &resasc) ;
     gsl_test_rel(result,exp_result,1e-15,"qk41(book1) smooth result") ;
-    /* FIXME: seems to be a loss of precision on the error here */
+    /* FIXME: we have some roundoff error on this one, but it seems
+       reasonable (it's suprising that the others are exact) */
     gsl_test_rel(abserr,exp_abserr,1e-7,"qk41(book1) smooth abserr") ;
     gsl_test_rel(resabs,exp_resabs,1e-15,"qk41(book1) smooth resabs") ;    
     gsl_test_rel(resasc,exp_resasc,1e-15,"qk41(book1) smooth resasc") ;
@@ -110,7 +111,8 @@ int main (void)
     gsl_integration_qk61 (book1, 0.0, 1.0, 
 			  &result, &abserr, &resabs, &resasc) ;
     gsl_test_rel(result,exp_result,1e-15,"qk61(book1) smooth result") ;
-    /* FIXME: seems to be a loss of precision on the error here */
+    /* FIXME: we have some roundoff error on this one, but it seems
+       reasonable (it's suprising that the others are exact) */
     gsl_test_rel(abserr,exp_abserr,1e-5,"qk61(book1) smooth abserr") ;
     gsl_test_rel(resabs,exp_resabs,1e-15,"qk61(book1) smooth resabs") ;    
     gsl_test_rel(resasc,exp_resasc,1e-15,"qk61(book1) smooth resasc") ;

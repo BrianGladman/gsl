@@ -12,7 +12,7 @@ gsl_integration_qage_impl (double (*f) (double x),
 			   const double epsabs, const double epsrel,
 			   gsl_integration_workspace * workspace,
 			   size_t * last,
-			   double *result, double *abserr, size_t * nqeval,
+			   double * result, double * abserr, size_t * nqeval,
 			   gsl_integration_rule_t * const q)
 {
   double q_result, q_abserr, q_defabs, q_resabs;
@@ -209,8 +209,7 @@ gsl_integration_qage_impl (double (*f) (double x),
     {
       return GSL_SUCCESS;
     }
-
-  if (error_type == 2)
+  else if (error_type == 2)
     {
       GSL_ERROR ("roundoff error prevents tolerance from being achieved",
 		 GSL_EROUND);
@@ -224,9 +223,9 @@ gsl_integration_qage_impl (double (*f) (double x),
     {
       GSL_ERROR ("maximum number of subdivisions reached", GSL_EMAXITER);
     }
+  
+  /* FIXME: we get here if there was a NAN in the function evaluations */
 
-  /* FIXME: find the logic which can lead to this and fix it */
-
-  GSL_ERROR ("fell past end of qage_impl.c SHOULDN'T HAPPEN", GSL_ESANITY);
+  GSL_ERROR ("shouldn't happen", GSL_ESANITY);
 
 }

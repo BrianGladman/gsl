@@ -10,11 +10,9 @@ int
 gsl_integration_qagse_impl (double (*f) (double x),
 			    const double a, const double b,
 			    const double epsabs, const double epsrel,
-			    const size_t limit,
+			    gsl_integration_workspace * workspace,
 			    double *result, double *abserr,
-			    double alist[], double blist[],
-			    double rlist[], double elist[],
-			    size_t iord[], size_t * last, size_t * nqeval,
+			    size_t * last, size_t * nqeval,
 			    gsl_integration_rule_t * const q)
 {
   double q_result, q_abserr, q_defabs, q_resabs;
@@ -25,6 +23,13 @@ gsl_integration_qagse_impl (double (*f) (double x),
   size_t maxerr_index, nrmax = 0, i = 0, nres = 0, numrl2 = 1, ktmin = 0;
   int roundoff_type1 = 0, roundoff_type2 = 0, roundoff_type3 = 0;
   int error_type = 0, error_type2 = 0;
+
+  const size_t limit = workspace->limit ;
+  double * alist = workspace->alist ;
+  double * blist = workspace->blist ;
+  double * rlist = workspace->rlist ;
+  double * elist = workspace->elist ;
+  size_t * iord = workspace->iord ;
 
   int positive_integrand = 0;
   int extrapolate = 0;
@@ -67,8 +72,7 @@ gsl_integration_qagse_impl (double (*f) (double x),
       *last = 0;
 
       GSL_ERROR ("cannot reach tolerance because of roundoff error"
-		 "on first attempt",
-		 GSL_EROUND);
+		 "on first attempt", GSL_EROUND);
     }
   else if ((q_abserr <= tolerance && q_abserr != q_resabs) || q_abserr == 0)
     {
