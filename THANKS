@@ -67,3 +67,5 @@ functions
 * OKUJI Yoshinori <okuji@gnu.org> for a patch for fp-x86linux.c for libc5
 
 * Pablo Bianucci <pbian@pccp.com.ar> for patches to complex matrix/vectors
+
+* Toby White <tow@theor.ch.cam.ac.uk> for a patch to the docs

@@ -209,7 +209,7 @@ void
 my_error_handler (const char *reason, const char *file, int line)
 @{
     fprintf (stderr, "GSL error: %s\n", reason);
-    longjmp (main_loop);
+    longjmp (main_loop, 1);
 @}
 @end example
 
