@@ -26,7 +26,7 @@ main (int argc, char *argv[])
 {
   int status, factor_sum;
   unsigned int i, start, end, n;
-  complex *complex_data, *complex_tmp;
+  gsl_complex *complex_data, *complex_tmp;
   double rms, total;
 
   gsl_fft_complex_wavetable complex_wavetable;
@@ -45,10 +45,10 @@ main (int argc, char *argv[])
   for (n = start; n < end; n++)
     {
 
-      complex_data = malloc (n * sizeof (complex));
-      complex_tmp = malloc (n * sizeof (complex));
-      /*    fft_complex_data = malloc (n * sizeof (complex));
-         fft_complex_tmp = malloc (n * sizeof (complex)); */
+      complex_data = malloc (n * sizeof (gsl_complex));
+      complex_tmp = malloc (n * sizeof (gsl_complex));
+      /*    fft_complex_data = malloc (n * sizeof (gsl_complex));
+         fft_complex_tmp = malloc (n * sizeof (gsl_complex)); */
 
       status = gsl_fft_complex_wavetable_alloc (n, &complex_wavetable);
       status = gsl_fft_complex_init (n, &complex_wavetable);
@@ -60,7 +60,7 @@ main (int argc, char *argv[])
 	  complex_data[i].imag = ((double) rand ()) / RAND_MAX;
 	}
 
-      memcpy (complex_tmp, complex_data, n * sizeof (complex));
+      memcpy (complex_tmp, complex_data, n * sizeof (gsl_complex));
       gsl_fft_complex_forward (complex_data, n, &complex_wavetable);
       gsl_fft_complex_inverse (complex_data, n, &complex_wavetable);
 

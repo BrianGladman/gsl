@@ -2,7 +2,7 @@
 
 #include "bitreverse.h"
 
-int gsl_fft_complex_bitreverse_order (complex data[], 
+int gsl_fft_complex_bitreverse_order (gsl_complex data[], 
 				      const unsigned int n,
 				      const unsigned int logn)
 {
@@ -23,7 +23,7 @@ int gsl_fft_complex_bitreverse_order (complex data[],
       
       if (i < j)
 	{
-	  const complex data_tmp = data[i];
+	  const gsl_complex data_tmp = data[i];
 	  data[i] = data[j];
 	  data[j] = data_tmp;
 	}
@@ -61,7 +61,7 @@ int gsl_fft_real_bitreverse_order (double data[],
 }
 
 
-int gsl_fft_complex_goldrader_bitreverse_order (complex data[], 
+int gsl_fft_complex_goldrader_bitreverse_order (gsl_complex data[], 
 						const unsigned int n)
 {
   unsigned int i;
@@ -73,7 +73,7 @@ int gsl_fft_complex_goldrader_bitreverse_order (complex data[],
 
       if (i < j)
 	{
-	  const complex data_tmp = data[i];
+	  const gsl_complex data_tmp = data[i];
 	  data[i] = data[j];
 	  data[j] = data_tmp;
 	}
@@ -92,7 +92,7 @@ int gsl_fft_complex_goldrader_bitreverse_order (complex data[],
 }
 
 
-int gsl_fft_complex_rodriguez_bitreverse_order (complex data[], 
+int gsl_fft_complex_rodriguez_bitreverse_order (gsl_complex data[], 
 						const unsigned int n,
 						const unsigned int logn)
 {
@@ -114,7 +114,7 @@ int gsl_fft_complex_rodriguez_bitreverse_order (complex data[],
 
       if (i < j)
 	{
-	  const complex data_tmp = data[i];
+	  const gsl_complex data_tmp = data[i];
 	  data[i] = data[j];
 	  data[j] = data_tmp;
 	}

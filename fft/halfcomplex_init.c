@@ -106,14 +106,14 @@ gsl_fft_halfcomplex_wavetable_alloc (unsigned int n,
       GSL_ERROR ("length n must be positive integer", GSL_EDOM);
     }
 
-  wavetable->scratch = malloc (n * sizeof (complex));
+  wavetable->scratch = malloc (n * sizeof (gsl_complex));
 
   if (wavetable->scratch == NULL)
     {
       GSL_ERROR ("failed to allocate scratch space", GSL_ENOMEM);
     }
 
-  wavetable->trig = malloc (n * sizeof (complex));
+  wavetable->trig = malloc (n * sizeof (gsl_complex));
 
   if (wavetable->trig == NULL)
     {

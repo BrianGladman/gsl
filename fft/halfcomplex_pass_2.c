@@ -9,16 +9,16 @@ gsl_fft_halfcomplex_pass_2 (const double from[],
 			    double to[],
 			    const unsigned int product,
 			    const unsigned int n,
-			    const complex twiddle[])
+			    const gsl_complex twiddle[])
 {
 
   unsigned int i, j, k, k1, jump;
   unsigned int factor, q, m, product_1;
   unsigned int from0, from1;
   unsigned int to0, to1;
-  complex x0, x1;
-  complex w;
-  complex z0, z1;
+  gsl_complex x0, x1;
+  gsl_complex w;
+  gsl_complex z0, z1;
   double r0, r1, s0, s1;
   i = 0;
   j = 0;

@@ -110,11 +110,11 @@ void check_complex_bitreverse_order (unsigned int n)
   int status ;
   int result ;
   unsigned int logn, i ;
-  complex *complex_data, *complex_tmp, *complex_reversed_data;
+  gsl_complex *complex_data, *complex_tmp, *complex_reversed_data;
 
-  complex_tmp = malloc (n * sizeof (complex));
-  complex_data = malloc (n * sizeof (complex));
-  complex_reversed_data = malloc (n * sizeof (complex));
+  complex_tmp = malloc (n * sizeof (gsl_complex));
+  complex_data = malloc (n * sizeof (gsl_complex));
+  complex_reversed_data = malloc (n * sizeof (gsl_complex));
   
   for (i = 0; i < n; i++) 
     {
@@ -122,7 +122,7 @@ void check_complex_bitreverse_order (unsigned int n)
       complex_data[i].real = n + i + 1 ;
     }
 
-  memcpy (complex_tmp, complex_data, n * sizeof(complex)) ;
+  memcpy (complex_tmp, complex_data, n * sizeof(gsl_complex)) ;
 
   result = gsl_fft_binary_logn(n) ;
   
@@ -161,7 +161,7 @@ void check_complex_bitreverse_order (unsigned int n)
   gsl_test (status, "gsl_fft_complex_bitreverse_order, n = %d", n);
 
 #ifdef UNUSED
-  memcpy (complex_data, complex_tmp, n * sizeof(complex)) ;
+  memcpy (complex_data, complex_tmp, n * sizeof(gsl_complex)) ;
   gsl_fft_complex_goldrader_bitreverse_order (complex_data, n);
   status = compare_complex_results ("naive bit reverse", 
 				    complex_reversed_data,
@@ -170,7 +170,7 @@ void check_complex_bitreverse_order (unsigned int n)
 				    n, 1e6);
   gsl_test (status, "gsl_fft_complex_goldrader_bitreverse_order, n = %d", n);
 
-  memcpy (complex_data, complex_tmp, n * sizeof(complex)) ;
+  memcpy (complex_data, complex_tmp, n * sizeof(gsl_complex)) ;
   gsl_fft_complex_rodriguez_bitreverse_order (complex_data, n, logn);
   status = compare_complex_results ("naive bit reverse", 
 				    complex_reversed_data,
@@ -188,16 +188,16 @@ void check_complex_radix2 (unsigned int n)
 {
   int status ;
 
-  complex *complex_data, *complex_tmp;
-  complex *fft_complex_data, *fft_complex_tmp;
+  gsl_complex *complex_data, *complex_tmp;
+  gsl_complex *fft_complex_data, *fft_complex_tmp;
 
-  complex_data = malloc (n * sizeof (complex));
-  complex_tmp = malloc (n * sizeof (complex));
-  fft_complex_data = malloc (n * sizeof (complex));
-  fft_complex_tmp = malloc (n * sizeof (complex));
+  complex_data = malloc (n * sizeof (gsl_complex));
+  complex_tmp = malloc (n * sizeof (gsl_complex));
+  fft_complex_data = malloc (n * sizeof (gsl_complex));
+  fft_complex_tmp = malloc (n * sizeof (gsl_complex));
   
   gsl_fft_signal_complex_noise (n, complex_data, fft_complex_data);
-  memcpy (complex_tmp, complex_data, n * sizeof (complex));
+  memcpy (complex_tmp, complex_data, n * sizeof (gsl_complex));
   gsl_fft_complex_radix2_dif_forward (complex_data, n);
   status = compare_complex_results ("dft", fft_complex_data,
 				    "fft of noise", complex_data,
@@ -206,7 +206,7 @@ void check_complex_radix2 (unsigned int n)
 
 
   gsl_fft_signal_complex_noise (n, complex_data, fft_complex_data);
-  memcpy (complex_tmp, complex_data, n * sizeof (complex));
+  memcpy (complex_tmp, complex_data, n * sizeof (gsl_complex));
   gsl_fft_complex_radix2_forward (complex_data, n);
   status = compare_complex_results ("dft", fft_complex_data,
 				    "fft of noise", complex_data,
@@ -236,8 +236,8 @@ void check_real_radix2 (unsigned int n)
   double *real_data, *real_tmp;
   double *fft_real_data, *fft_real_tmp;
 
-  complex *complex_data, *complex_tmp;
-  complex *fft_complex_data, *fft_complex_tmp;
+  gsl_complex *complex_data, *complex_tmp;
+  gsl_complex *fft_complex_data, *fft_complex_tmp;
 
   char length[256];
 
@@ -247,16 +247,16 @@ void check_real_radix2 (unsigned int n)
   fft_real_data = malloc (n * sizeof (double));
   fft_real_tmp = malloc (n * sizeof (double));
 
-  complex_data = malloc (n * sizeof (complex));
-  complex_tmp = malloc (n * sizeof (complex));
+  complex_data = malloc (n * sizeof (gsl_complex));
+  complex_tmp = malloc (n * sizeof (gsl_complex));
 
-  fft_complex_data = malloc (n * sizeof (complex));
-  fft_complex_tmp = malloc (n * sizeof (complex));
+  fft_complex_data = malloc (n * sizeof (gsl_complex));
+  fft_complex_tmp = malloc (n * sizeof (gsl_complex));
   
   sprintf (length, "n = %d", n);
   
   gsl_fft_signal_real_noise (n, complex_data, fft_complex_data);
-  memcpy (complex_tmp, complex_data, n * sizeof (complex));
+  memcpy (complex_tmp, complex_data, n * sizeof (gsl_complex));
 
   for (i = 0; i < n; i++)
     {

@@ -8,7 +8,7 @@
 #include <fft_complex.h>
 
 int
-gsl_fft_complex_forward (complex data[],
+gsl_fft_complex_forward (gsl_complex data[],
 			 const unsigned int n,
 			 const gsl_fft_complex_wavetable * wavetable)
 {
@@ -18,7 +18,7 @@ gsl_fft_complex_forward (complex data[],
 }
 
 int
-gsl_fft_complex_backward (complex data[],
+gsl_fft_complex_backward (gsl_complex data[],
 			  const unsigned int n,
 			  const gsl_fft_complex_wavetable * wavetable)
 {
@@ -28,7 +28,7 @@ gsl_fft_complex_backward (complex data[],
 }
 
 int
-gsl_fft_complex_inverse (complex data[],
+gsl_fft_complex_inverse (gsl_complex data[],
 			 const unsigned int n,
 			 const gsl_fft_complex_wavetable * wavetable)
 {
@@ -55,7 +55,7 @@ gsl_fft_complex_inverse (complex data[],
 }
 
 int
-gsl_fft_complex (complex data[],
+gsl_fft_complex (gsl_complex data[],
 		 const unsigned int n,
 		 const gsl_fft_complex_wavetable * wavetable,
 		 const gsl_fft_direction sign)
@@ -67,12 +67,12 @@ gsl_fft_complex (complex data[],
 
   unsigned int q, product = 1;
 
-  complex *scratch = wavetable->scratch;
-  complex *twiddle1, *twiddle2, *twiddle3, *twiddle4, *twiddle5, *twiddle6;
+  gsl_complex *scratch = wavetable->scratch;
+  gsl_complex *twiddle1, *twiddle2, *twiddle3, *twiddle4, *twiddle5, *twiddle6;
 
   unsigned int state = 0;
-  complex *from = data;
-  complex *to = scratch;
+  gsl_complex *from = data;
+  gsl_complex *to = scratch;
 
   if (n == 0)
     {
@@ -169,7 +169,7 @@ gsl_fft_complex (complex data[],
 
   if (state == 1)		/* copy results back from scratch to data */
     {
-      memcpy (data, scratch, n * sizeof (complex));
+      memcpy (data, scratch, n * sizeof (gsl_complex));
     }
 
   return 0;

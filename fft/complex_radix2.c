@@ -4,7 +4,7 @@
 #include <gsl_errno.h>
 
 int
-gsl_fft_complex_radix2_forward (complex data[],
+gsl_fft_complex_radix2_forward (gsl_complex data[],
 				const unsigned int n)
 {
   gsl_fft_direction sign = forward;
@@ -13,7 +13,7 @@ gsl_fft_complex_radix2_forward (complex data[],
 }
 
 int
-gsl_fft_complex_radix2_backward (complex data[],
+gsl_fft_complex_radix2_backward (gsl_complex data[],
 				 const unsigned int n)
 {
   gsl_fft_direction sign = backward;
@@ -22,7 +22,7 @@ gsl_fft_complex_radix2_backward (complex data[],
 }
 
 int
-gsl_fft_complex_radix2_inverse (complex data[],
+gsl_fft_complex_radix2_inverse (gsl_complex data[],
 				const unsigned int n)
 {
   gsl_fft_direction sign = backward;
@@ -49,7 +49,7 @@ gsl_fft_complex_radix2_inverse (complex data[],
 
 
 int
-gsl_fft_complex_radix2_dif_forward (complex data[],
+gsl_fft_complex_radix2_dif_forward (gsl_complex data[],
 				const unsigned int n)
 {
   gsl_fft_direction sign = forward;
@@ -58,7 +58,7 @@ gsl_fft_complex_radix2_dif_forward (complex data[],
 }
 
 int
-gsl_fft_complex_radix2_dif_backward (complex data[],
+gsl_fft_complex_radix2_dif_backward (gsl_complex data[],
 				 const unsigned int n)
 {
   gsl_fft_direction sign = backward;
@@ -67,7 +67,7 @@ gsl_fft_complex_radix2_dif_backward (complex data[],
 }
 
 int
-gsl_fft_complex_radix2_dif_inverse (complex data[],
+gsl_fft_complex_radix2_dif_inverse (gsl_complex data[],
 				const unsigned int n)
 {
   gsl_fft_direction sign = backward;
@@ -94,7 +94,7 @@ gsl_fft_complex_radix2_dif_inverse (complex data[],
 
 
 int
-gsl_fft_complex_radix2 (complex data[],
+gsl_fft_complex_radix2 (gsl_complex data[],
 			const unsigned int n,
 			const gsl_fft_direction sign)
 {
@@ -204,7 +204,7 @@ gsl_fft_complex_radix2 (complex data[],
 
 
 int
-gsl_fft_complex_radix2_dif (complex data[],
+gsl_fft_complex_radix2_dif (gsl_complex data[],
 			    const unsigned int n,
 			    const gsl_fft_direction sign)
 {

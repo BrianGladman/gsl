@@ -9,8 +9,8 @@ gsl_fft_halfcomplex_pass_3 (const double from[],
 			    double to[],
 			    const unsigned int product,
 			    const unsigned int n,
-			    const complex twiddle1[],
-			    const complex twiddle2[])
+			    const gsl_complex twiddle1[],
+			    const gsl_complex twiddle2[])
 {
 
   unsigned int i, j, k, k1, jump;
@@ -60,15 +60,15 @@ gsl_fft_halfcomplex_pass_3 (const double from[],
 
   for (k = 1; k < (q + 1) / 2; k++)
     {
-      complex w1, w2;
+      gsl_complex w1, w2;
       w1 = twiddle1[k - 1];
       w2 = twiddle2[k - 1];
 
       for (k1 = 0; k1 < product_1; k1++)
 	{
-	  complex t1, t2, t3;
-	  complex z0, z1, z2;
-	  complex x0, x1, x2;
+	  gsl_complex t1, t2, t3;
+	  gsl_complex z0, z1, z2;
+	  gsl_complex x0, x1, x2;
 
 	  from0 = 3 * k1 * q + 2 * k - 1;
 	  from1 = from0 + 2 * q;

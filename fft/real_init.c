@@ -115,7 +115,7 @@ gsl_fft_real_wavetable_alloc (unsigned int n,
       GSL_ERROR ("failed to allocate scratch space", GSL_ENOMEM);
     }
 
-  wavetable->trig = malloc ((n / 2) * sizeof (complex));
+  wavetable->trig = malloc ((n / 2) * sizeof (gsl_complex));
 
   if (wavetable->trig == NULL)
     {

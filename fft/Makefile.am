@@ -33,7 +33,6 @@ dft_complex.c \
 gsl_dft_complex.h \
  \
 gsl_fft.h \
-benchmark.c \
  \
 complex.c \
 gsl_fft_complex.h \

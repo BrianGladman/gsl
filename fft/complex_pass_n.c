@@ -5,13 +5,13 @@
 #include <fft_complex.h>
 
 int
-gsl_fft_complex_pass_n (complex from[],
-			complex to[],
+gsl_fft_complex_pass_n (gsl_complex from[],
+			gsl_complex to[],
 			const gsl_fft_direction sign,
 			const unsigned int factor,
 			const unsigned int product,
 			const unsigned int n,
-			const complex twiddle[])
+			const gsl_complex twiddle[])
 {
   unsigned int i = 0, j = 0;
   unsigned int k, k1;
@@ -89,8 +89,8 @@ gsl_fft_complex_pass_n (complex from[],
 
 	  for (i = 0; i < m; i++) 
 	    {
-	      complex xp = to[i + e1 * m];
-	      complex xm = to[i + (factor - e1) *m];
+	      gsl_complex xp = to[i + e1 * m];
+	      gsl_complex xm = to[i + (factor - e1) *m];
 	
 	      const double ap = w_real * xp.real ;
 	      const double am = w_imag * xm.imag ; 

@@ -53,7 +53,7 @@ gsl_fft_halfcomplex (double *data,
   int product_1;
   int tskip;
   double *from, *to, *scratch;
-  complex *twiddle1, *twiddle2, *twiddle3, *twiddle4;
+  gsl_complex *twiddle1, *twiddle2, *twiddle3, *twiddle4;
 
   if (n == 0)
     {

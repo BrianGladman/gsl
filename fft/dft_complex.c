@@ -4,8 +4,8 @@
 #include <gsl_errno.h>
 
 int
-gsl_dft_complex_forward (const complex data[],
-			 complex result[],
+gsl_dft_complex_forward (const gsl_complex data[],
+			 gsl_complex result[],
 			 const unsigned int n)
 {
   gsl_fft_direction sign = forward;
@@ -14,8 +14,8 @@ gsl_dft_complex_forward (const complex data[],
 }
 
 int
-gsl_dft_complex_backward (const complex data[],
-			  complex result[],
+gsl_dft_complex_backward (const gsl_complex data[],
+			  gsl_complex result[],
 			  const unsigned int n)
 {
   gsl_fft_direction sign = backward;
@@ -25,8 +25,8 @@ gsl_dft_complex_backward (const complex data[],
 
 
 int
-gsl_dft_complex_inverse (const complex data[],
-			 complex result[],
+gsl_dft_complex_inverse (const gsl_complex data[],
+			 gsl_complex result[],
 			 const unsigned int n)
 {
   gsl_fft_direction sign = backward;
@@ -47,8 +47,8 @@ gsl_dft_complex_inverse (const complex data[],
 }
 
 int
-gsl_dft_complex (const complex data[],
-		 complex result[],
+gsl_dft_complex (const gsl_complex data[],
+		 gsl_complex result[],
 		 const unsigned int n,
 		 const gsl_fft_direction sign)
 {

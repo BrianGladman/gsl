@@ -101,7 +101,6 @@ dft_complex.c \
 gsl_dft_complex.h \
  \
 gsl_fft.h \
-benchmark.c \
  \
 complex.c \
 gsl_fft_complex.h \
@@ -152,15 +151,15 @@ CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
 libgslfft_a_LIBADD = 
-libgslfft_a_OBJECTS =  compare.o dft_complex.o benchmark.o complex.o \
-complex_init.o complex_pass_2.o complex_pass_3.o complex_pass_4.o \
-complex_pass_5.o complex_pass_6.o complex_pass_7.o complex_pass_n.o \
-complex_radix2.o factorize.o bitreverse.o halfcomplex.o \
-halfcomplex_init.o halfcomplex_pass_2.o halfcomplex_pass_3.o \
-halfcomplex_pass_4.o halfcomplex_pass_5.o halfcomplex_pass_n.o \
-halfcomplex_radix2.o halfcomplex_unpack.o real.o real_init.o \
-real_pass_2.o real_pass_3.o real_pass_4.o real_pass_5.o real_pass_n.o \
-real_radix2.o real_unpack.o signals.o
+libgslfft_a_OBJECTS =  compare.o dft_complex.o complex.o complex_init.o \
+complex_pass_2.o complex_pass_3.o complex_pass_4.o complex_pass_5.o \
+complex_pass_6.o complex_pass_7.o complex_pass_n.o complex_radix2.o \
+factorize.o bitreverse.o halfcomplex.o halfcomplex_init.o \
+halfcomplex_pass_2.o halfcomplex_pass_3.o halfcomplex_pass_4.o \
+halfcomplex_pass_5.o halfcomplex_pass_n.o halfcomplex_radix2.o \
+halfcomplex_unpack.o real.o real_init.o real_pass_2.o real_pass_3.o \
+real_pass_4.o real_pass_5.o real_pass_n.o real_radix2.o real_unpack.o \
+signals.o
 AR = ar
 PROGRAMS =  $(noinst_PROGRAMS)
 

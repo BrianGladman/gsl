@@ -9,7 +9,7 @@ gsl_fft_real_pass_2 (const double from[],
 		     double to[],
 		     const unsigned int product,
 		     const unsigned int n,
-		     const complex twiddle[])
+		     const gsl_complex twiddle[])
 {
   unsigned int k, k1;
 

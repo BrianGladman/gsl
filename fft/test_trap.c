@@ -44,10 +44,10 @@ main (int argc, char * argv[])
   int status ;
 
   double real_x ;
-  complex complex_x ;
+  gsl_complex complex_x ;
 
   double * real_data = &real_x ;
-  complex * complex_data = &complex_x  ; 
+  gsl_complex * complex_data = &complex_x  ; 
 
   gsl_fft_complex_wavetable complex_wavetable;
   gsl_fft_real_wavetable real_wavetable;

@@ -6,7 +6,7 @@
 
 int
 gsl_fft_real_unpack (const double real_coefficient[],
-		     complex complex_coefficient[],
+		     gsl_complex complex_coefficient[],
 		     const unsigned int n)
 {
   unsigned int i;

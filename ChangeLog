@@ -1,3 +1,8 @@
+Wed Mar 18 10:27:27 1998  Brian Gough  <bjg@vvv.lanl.gov>
+
+	* gsl_complex.h: the typedef for 'complex' has been renamed to
+ 	gsl_complex, to avoid conflicts with C++ bindings and libstdc++
+
 1998-02-09  Mark Galassi  <rosalia@cygnus.com>
 
 	* configure.in: 0.3b is now released, so I upped the version

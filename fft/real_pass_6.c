@@ -8,11 +8,11 @@ int
 gsl_fft_real_pass_6 (const double from[], double to[],
 		     const unsigned int product,
 		     const unsigned int n,
-		     const complex twiddle1[],
-		     const complex twiddle2[],
-		     const complex twiddle3[],
-		     const complex twiddle4[],
-		     const complex twiddle5[])
+		     const gsl_complex twiddle1[],
+		     const gsl_complex twiddle2[],
+		     const gsl_complex twiddle3[],
+		     const gsl_complex twiddle4[],
+		     const gsl_complex twiddle5[])
 {
 
   unsigned int i, j, k, k1, jump;
@@ -36,7 +36,7 @@ gsl_fft_real_pass_6 (const double from[], double to[],
       double t1_real, t2_real, t3_real, t4_real, t5_real, t6_real, t7_real,
         t8_real, t9_real, t10_real, t11_real;
       double z0_real, z1_real, z2_real, z3_real, z4_real;
-      complex x0, x1, x2;
+      gsl_complex x0, x1, x2;
 
       from0 = k1 * product_1;
       from1 = from0 + m;
@@ -137,7 +137,7 @@ gsl_fft_real_pass_6 (const double from[], double to[],
 
   for (k = 1; k < (product_1 + 1) / 2; k++)
     {
-      complex w1, w2, w3, w4;
+      gsl_complex w1, w2, w3, w4;
       w1.real = twiddle1[k - 1].real;
       w1.imag = -twiddle1[k - 1].imag;
       w2.real = twiddle2[k - 1].real;
@@ -149,9 +149,9 @@ gsl_fft_real_pass_6 (const double from[], double to[],
 
       for (k1 = 0; k1 < q; k1++)
 	{
-	  complex t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11;
-	  complex z0, z1, z2, z3, z4;
-	  complex x0, x1, x2, x3, x4;
+	  gsl_complex t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11;
+	  gsl_complex z0, z1, z2, z3, z4;
+	  gsl_complex x0, x1, x2, x3, x4;
 
 	  from0 = k1 * product_1 + 2 * k - 1;
 	  from1 = from0 + m;

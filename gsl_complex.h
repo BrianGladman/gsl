@@ -6,6 +6,6 @@ typedef struct
     double real;
     double imag;
   }
-complex;
+gsl_complex;
 
 #endif /* _GSL_COMPLEX_H */

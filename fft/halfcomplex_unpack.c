@@ -4,7 +4,7 @@
 
 int
 gsl_fft_halfcomplex_unpack (const double halfcomplex_coefficient[],
-			    complex complex_coefficient[],
+			    gsl_complex complex_coefficient[],
 			    const unsigned int n)
 {
   unsigned int i;

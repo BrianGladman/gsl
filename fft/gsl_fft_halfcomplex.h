@@ -22,9 +22,9 @@ typedef struct
     unsigned int n;
     unsigned int nf;
     unsigned int factor[64];
-    complex *twiddle[64];
-    complex *trig;
-    complex *scratch;
+    gsl_complex *twiddle[64];
+    gsl_complex *trig;
+    gsl_complex *scratch;
   }
 gsl_fft_halfcomplex_wavetable;
 
@@ -60,7 +60,7 @@ int
 
 int
   gsl_fft_halfcomplex_unpack (const double halfcomplex_coefficient[],
-			      complex complex_coefficient[],
+			      gsl_complex complex_coefficient[],
 			      const unsigned int n);
 
 #endif /* _GSL_FFT_HALFCOMPLEX_H */

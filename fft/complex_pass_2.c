@@ -5,12 +5,12 @@
 #include <fft_complex.h>
 
 int
-gsl_fft_complex_pass_2 (const complex from[],
-			complex to[],
+gsl_fft_complex_pass_2 (const gsl_complex from[],
+			gsl_complex to[],
 			const gsl_fft_direction sign,
 			const unsigned int product,
 			const unsigned int n,
-			const complex twiddle[])
+			const gsl_complex twiddle[])
 {
   unsigned int i = 0, j = 0;
   unsigned int k, k1;
@@ -48,7 +48,7 @@ gsl_fft_complex_pass_2 (const complex from[],
 
       for (k1 = 0; k1 < product_1; k1++)
 	{
-	  complex z0, z1;
+	  gsl_complex z0, z1;
 	  double x0_real, x0_imag, x1_real, x1_imag;
 
 	  {

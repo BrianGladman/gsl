@@ -20,7 +20,7 @@ void my_error_handler (const char *reason, const char *file, int line);
 int
 main (int argc, char *argv[])
 {
-  complex *data, *fft_data;
+  gsl_complex *data, *fft_data;
   gsl_fft_complex_wavetable complex_wavetable;
   unsigned int i, logn;
   int result;
@@ -45,8 +45,8 @@ main (int argc, char *argv[])
   status = gsl_fft_complex_init (n, &complex_wavetable);
   status = gsl_fft_complex_generate_wavetable (n, &complex_wavetable);
 
-  data = malloc (n * sizeof (complex));
-  fft_data = malloc (n * sizeof (complex));
+  data = malloc (n * sizeof (gsl_complex));
+  fft_data = malloc (n * sizeof (gsl_complex));
 
   for (i = 0; i < n; i++)
     {
@@ -57,7 +57,7 @@ main (int argc, char *argv[])
 
   /* compute the fft */
 
-  memcpy (fft_data, data, n * sizeof (complex));
+  memcpy (fft_data, data, n * sizeof (gsl_complex));
 
   start = clock ();
   i = 0;
@@ -80,7 +80,7 @@ main (int argc, char *argv[])
 
 
   /* compute the fft with radix2 */
-  memcpy (fft_data, data, n * sizeof (complex));
+  memcpy (fft_data, data, n * sizeof (gsl_complex));
 
   result = gsl_fft_binary_logn(n) ;
 

@@ -13,8 +13,8 @@ gsl_fft_signal_complex_pulse (const unsigned int k,
 			      const unsigned int n,
 			      const double z_real,
 			      const double z_imag,
-			      complex data[],
-			      complex fft[])
+			      gsl_complex data[],
+			      gsl_complex fft[])
 {
   unsigned int j;
 
@@ -23,7 +23,7 @@ gsl_fft_signal_complex_pulse (const unsigned int k,
       GSL_ERROR ("length n must be positive integer", GSL_EDOM);
     }
 
-  /* complex pulse at position k,  data[j] = z * delta_{jk} */
+  /* gsl_complex pulse at position k,  data[j] = z * delta_{jk} */
 
   for (j = 0; j < n; j++)
     {
@@ -54,8 +54,8 @@ int
 gsl_fft_signal_complex_constant (const unsigned int n,
 				      const double z_real,
 				      const double z_imag,
-				      complex data[],
-				      complex fft[])
+				      gsl_complex data[],
+				      gsl_complex fft[])
 {
   unsigned int j;
 
@@ -93,8 +93,8 @@ gsl_fft_signal_complex_exp (const int k,
 				 const unsigned int n,
 				 const double z_real,
 				 const double z_imag,
-				 complex data[],
-				 complex fft[])
+				 gsl_complex data[],
+				 gsl_complex fft[])
 {
   unsigned int j;
 
@@ -151,8 +151,8 @@ gsl_fft_signal_complex_exppair (const int k1,
 				     const double z1_imag,
 				     const double z2_real,
 				     const double z2_imag,
-				     complex data[],
-				     complex fft[])
+				     gsl_complex data[],
+				     gsl_complex fft[])
 {
   unsigned int j;
 
@@ -220,8 +220,8 @@ gsl_fft_signal_complex_exppair (const int k1,
 
 int
 gsl_fft_signal_complex_noise (const unsigned int n,
-				   complex data[],
-				   complex fft[])
+				   gsl_complex data[],
+				   gsl_complex fft[])
 {
   unsigned int i;
   int status;
@@ -246,8 +246,8 @@ gsl_fft_signal_complex_noise (const unsigned int n,
 
 int
 gsl_fft_signal_real_noise (const unsigned int n,
-				complex data[],
-				complex fft[])
+				gsl_complex data[],
+				gsl_complex fft[])
 {
   unsigned int i;
   int status;

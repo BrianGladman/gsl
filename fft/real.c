@@ -22,7 +22,7 @@ gsl_fft_real (double data[],
   unsigned int product_1;
 
   double *scratch = wavetable->scratch;
-  complex *twiddle1, *twiddle2, *twiddle3, *twiddle4;
+  gsl_complex *twiddle1, *twiddle2, *twiddle3, *twiddle4;
 
   unsigned int state = 0;
   double *from = data;
