@@ -38,11 +38,13 @@ cvs add filename	(to add a file to the repository)
 Let me know if any of these steps don't work.  I have tried them out
 on swift and they seem to work.
 
-I also think you need something like
+You also need something like
 
-export CVSMASK=0
+export CVSUMASK=0
 
-but I'm not sure offhand.
+in your ~/.bashrc and a file ~/.ssh/environment which contains
+
+ENV=.bashrc
 
 ----------
 
