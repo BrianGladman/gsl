@@ -84,5 +84,3 @@
 #include "matrix_source.c"
 #include "templates_off.h"
 #undef  BASE_CHAR
-
-
