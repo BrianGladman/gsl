@@ -1,9 +1,9 @@
       program main
       double precision a,b,result,abserr,resabs,resasc
       double precision book1,book3,book11,book15,book16
-      double precision book454,book455
-      double precision myfn1,myfn2
-      double precision alpha
+      double precision book454,book455,book458,book459
+      double precision myfn1,myfn2,myfn3
+      double precision alpha,beta
       double precision alist(1000),blist(1000),rlist(1000)
       double precision elist(1000),pts(1000)
       double precision points(4)
@@ -11,10 +11,11 @@
       integer ndin(1000)
       integer level(1000)
       integer inf
+      integer integr
       common /ALPHA/alpha
       external book1,book3,book11,book15,book16
-      external book454,book455
-      external myfn1,myfn2
+      external book454,book455,book458,book459
+      external myfn1,myfn2,myfn3
       call gsl_ieee_env_setup
 
       a = 0.0
@@ -133,20 +134,20 @@ c      do 11 i=1,10
 c        write(6,4) i,alist(i),blist(i),rlist(i),elist(i),iord(i)
 c 11   continue
       
-      alpha = 1.3
-      a = 0.3
-      b = 2.71
-      epsabs = 1d-14
-      epsrel = 0
-      key = 3
-      limit = 1000
-      print *, 'DQAGE oscill'
-      call dqage(book3,a,b,epsabs,epsrel,KEY,LIMIT,result,abserr,
-     $     neval,ier,alist,blist,rlist,elist,iord,last)
-      write(6,3) result, abserr, neval, ier, last
-      do 12 i=1,10
-         write(6,4) i,alist(i),blist(i),rlist(i),elist(i),iord(i)
- 12   continue
+c     alpha = 1.3
+c     a = 0.3
+c     b = 2.71
+c     epsabs = 1d-14
+c     epsrel = 0
+c     key = 3
+c     limit = 1000
+c     print *, 'DQAGE oscill'
+c     call dqage(book3,a,b,epsabs,epsrel,KEY,LIMIT,result,abserr,
+c    $     neval,ier,alist,blist,rlist,elist,iord,last)
+c     write(6,3) result, abserr, neval, ier, last
+c     do 12 i=1,10
+c        write(6,4) i,alist(i),blist(i),rlist(i),elist(i),iord(i)
+c12   continue
 
 c     alpha = 2.0
 c     a = -1.0
@@ -293,21 +294,71 @@ c      do i=1,20
 c         write(6,4) i,alist(i),blist(i),rlist(i),elist(i),iord(i)
 c      enddo
       
-      alpha = 1.0
+c     alpha = 1.0
+c     a = 0.0
+c     b = 3.0
+c     npts2 = 4
+c     points(1) = 1.0
+c     points(2) = sqrt(2.0d0)
+c     epsabs = 0.0
+c     epsrel = 1.0d-3
+c     limit = 1000
+c     print *, 'DQAGP'
+c     call dqagpe(book454,a,b,npts2,points,epsabs,epsrel,limit,
+c    $     result, abserr, neval,ier,alist,blist,rlist,elist,
+c    $     pts,iord,level,ndin,last)
+c     write(6,3) result, abserr, neval, ier, last
+c     do i=1,25
+c        write(6,4) i,alist(i),blist(i),rlist(i),elist(i),iord(i)
+c     enddo
+
+c      alpha = 1.0
+c      a = -1.0
+c      b = 5.0
+c      c = 0.0
+c      epsabs = 0.0
+c      epsrel = 1.0d-3
+c      limit = 1000
+c      print *, 'DQAGP'
+c      call dqawce(book459,a,b,c,epsabs,epsrel,limit,
+c     $     result, abserr, neval,ier,alist,blist,rlist,elist,
+c     $     iord,last)
+c      write(6,3) result, abserr, neval, ier, last
+c      do i=1,25
+c         write(6,4) i,alist(i),blist(i),rlist(i),elist(i),iord(i)
+c      enddo
+
+c     alpha = 0.0
+c     beta = 0.0
+c     integr = 2
+c     a = 0.0
+c     b = 1.0
+c     epsabs = 0.0
+c     epsrel = 1.0d-7
+c     limit = 1000
+c     print *, 'DQAGP'
+c     call dqawse(book458,a,b,alpha,beta,integr,epsabs,epsrel,limit,
+c    $     result, abserr, neval,ier,alist,blist,rlist,elist,
+c    $     iord,last)
+c     write(6,3) result, abserr, neval, ier, last
+c     do i=1,25
+c        write(6,4) i,alist(i),blist(i),rlist(i),elist(i),iord(i)
+c     enddo
+
+      alpha = -0.5
+      beta = -0.3
+      integr = 4
       a = 0.0
-      b = 3.0
-      npts2 = 4
-      points(1) = 1.0
-      points(2) = sqrt(2.0d0)
+      b = 1.0
       epsabs = 0.0
-      epsrel = 1.0d-3
+      epsrel = 1.0d-7
       limit = 1000
       print *, 'DQAGP'
-      call dqagpe(book454,a,b,npts2,points,epsabs,epsrel,limit,
+      call dqawse(book458,a,b,alpha,beta,integr,epsabs,epsrel,limit,
      $     result, abserr, neval,ier,alist,blist,rlist,elist,
-     $     pts,iord,level,ndin,last)
+     $     iord,last)
       write(6,3) result, abserr, neval, ier, last
-      do i=1,25
+      do i=1,10
          write(6,4) i,alist(i),blist(i),rlist(i),elist(i),iord(i)
       enddo
 
@@ -385,6 +436,24 @@ c      enddo
  6661 format("FF x = ", 1pe25.18, " book455 = ", 1pe25.18)
       end
 
+      double precision function book458(x)
+      double precision alpha,x
+      common /ALPHA/alpha
+      book458=1.0/(1.0 + log(x)**2)**2
+      write(6,6661) x, book458
+ 6661 format("FF x = ", 1pe25.18, " book458 = ", 1pe25.18)
+      end
+
+
+      double precision function book459(x)
+      double precision alpha,x
+      common /ALPHA/alpha
+      book459=1.0/(5.0*x**3 + 6.0)
+      write(6,6661) x, book459
+ 6661 format("FF x = ", 1pe25.18, " book459 = ", 1pe25.18)
+      end
+
+
       double precision function myfn1(x)
       double precision alpha,x
       common /ALPHA/alpha
@@ -395,6 +464,14 @@ c      enddo
       double precision alpha,x
       common /ALPHA/alpha
       myfn2=exp(alpha*x)
+      end
+
+      double precision function myfn3(x)
+      double precision alpha,x
+      common /ALPHA/alpha
+      myfn3=exp(-x)
+      write(6,6661) x, myfn3
+ 6661 format("FF x = ", 1pe25.18, " myfn3 = ", 1pe25.18)
       end
 
 

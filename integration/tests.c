@@ -131,6 +131,34 @@ double f455 (double x, void * params) {
   return log(x) / (1.0 + 100.0 * x * x) ;
 }
 
+/* f458(x) = 1/(1 + log(x)^2)^2 */
+/* integ(log(x) f458(x),x,0,1) = (Ci(1) sin(1) + (pi/2 - Si(1)) cos(1))/pi 
+                               = -0.1892752 */
+
+double f458 (double x, void * params) {
+  params = 0 ;
+
+  if (x == 0) 
+    {
+      return 0;
+    }
+  else 
+    {
+      double u = log(x);
+      double v = 1 + u * u;
+      
+      return 1.0 / (v * v) ;
+    }
+}
+
+/* f459(x) = 1/(5 x^3 + 6) */
+/* integ(f459/(x-0),x,-1,5) = log(125/631)/18 */
+
+double f459 (double x, void * params) {
+  params = 0 ;
+  return 1.0 / (5.0 * x * x * x + 6.0) ;
+}
+
 /* myfn1(x) = exp(-x - x^2) */
 /* integ(myfn1,x,-inf,inf) = sqrt(pi) exp(-1/4) */
 

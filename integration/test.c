@@ -1414,6 +1414,222 @@ int main (void)
 
   }
 
+
+  /* Test cauchy integration using a relative error bound */
+
+  {
+    int status = 0, i; struct counter_params p;
+    double result = 0, abserr=0;
+
+    gsl_integration_workspace * w = gsl_integration_workspace_alloc (1000) ;
+
+    /* All results are for GSL_IEEE_MODE=double-precision */
+
+    double exp_result = -8.994400695837000137E-02;
+    double exp_abserr =  1.185290176227023727E-06;
+    int exp_neval  =      215;
+    int exp_ier    =        0;
+    int exp_last   =        6;
+
+    double a[6] = { -1.000000000000000000E+00,
+		    2.500000000000000000E+00,
+		    1.250000000000000000E+00,
+		    6.250000000000000000E-01,
+		    -5.000000000000000000E-01,
+		    -7.500000000000000000E-01} ;
+    double b[6] = { -7.500000000000000000E-01,
+		    5.000000000000000000E+00,
+		    2.500000000000000000E+00,
+		    1.250000000000000000E+00,
+		    6.250000000000000000E-01,
+		    -5.000000000000000000E-01} ;
+    double r[6] = { -1.234231128040012976E-01,
+		    3.579970394639702888E-03,
+		    2.249831615049339983E-02,
+		    7.214232992127905808E-02,
+		    2.079093855884046535E-02,
+		    -8.553244917962132821E-02} ;
+    double e[6] = { 1.172832717970022565E-06,
+		    9.018232896137375412E-13,
+		    1.815172652101790755E-12,
+		    1.006998195150956048E-13,
+		    1.245463873006391609E-08,
+		    1.833082948207153514E-15 } ;
+    int order[6] = { 1, 5, 3, 2, 4, 6 } ;
+
+    double alpha = 1.0 ;
+    gsl_function f = { &f459, &alpha } ;
+    gsl_function fc = make_counter(&f, &p) ;
+
+    status = gsl_integration_qawc (&fc, -1.0, 5.0, 0.0, 0.0, 1.0e-3, w->limit,
+				   w, 
+				   &result, &abserr) ;
+    
+    gsl_test_rel(result,exp_result,1e-14,"qawc(f459) smooth result") ;
+    gsl_test_rel(abserr,exp_abserr,1e-6,"qawc(f459) smooth abserr") ;
+    gsl_test_int((int)(p.neval),exp_neval,"qawc(f459) smooth neval") ;  
+    gsl_test_int((int)(w->size),exp_last,"qawc(f459) smooth last") ;  
+    gsl_test_int(status,exp_ier,"qawc(f459) smooth status") ;
+
+    for (i = 0; i < 6 ; i++) 
+	gsl_test_rel(w->alist[i],a[i],1e-15,"qawc(f459) smooth alist") ;
+
+    for (i = 0; i < 6 ; i++) 
+	gsl_test_rel(w->blist[i],b[i],1e-15,"qawc(f459) smooth blist") ;
+
+    for (i = 0; i < 6 ; i++) 
+	gsl_test_rel(w->rlist[i],r[i],1e-14,"qawc(f459) smooth rlist") ;
+
+    for (i = 0; i < 6 ; i++) 
+	gsl_test_rel(w->elist[i],e[i],1e-6,"qawc(f459) smooth elist") ;
+
+    for (i = 0; i < 6 ; i++) 
+	gsl_test_int((int)w->order[i],order[i]-1,"qawc(f459) smooth order");
+
+    gsl_integration_workspace_free (w) ;
+
+  }
+
+  /* Test QAWS singular integration using a relative error bound */
+
+  {
+    int status = 0, i; struct counter_params p;
+    double result = 0, abserr=0;
+
+    gsl_integration_qaws_table * t 
+      = gsl_integration_qaws_table_alloc (0.0, 0.0, 1, 0);
+
+    gsl_integration_workspace * w = gsl_integration_workspace_alloc (1000) ;
+
+    /* All results are for GSL_IEEE_MODE=double-precision */
+
+    double exp_result = -1.892751853489401670E-01;
+    double exp_abserr = 1.129133712015747658E-08;
+    int exp_neval  =      280;
+    int exp_ier    =        0;
+    int exp_last   =        8;
+
+    double a[8] = { 0.000000000000000000E+00,
+		    5.000000000000000000E-01,
+		    2.500000000000000000E-01,
+		    1.250000000000000000E-01,
+		    6.250000000000000000E-02,
+		    3.125000000000000000E-02,
+		    1.562500000000000000E-02,
+		    7.812500000000000000E-03} ;
+    double b[8] = { 7.812500000000000000E-03,
+		    1.000000000000000000E+00,
+		    5.000000000000000000E-01,
+		    2.500000000000000000E-01,
+		    1.250000000000000000E-01,
+		    6.250000000000000000E-02,
+		    3.125000000000000000E-02,
+		    1.562500000000000000E-02} ;
+    double r[8] = { -4.126317299834445824E-05,
+		    -1.076283950172247789E-01,
+		    -6.240573216173390947E-02,
+		    -1.456169844189576269E-02,
+		    -3.408925115926728436E-03,
+		    -8.914083918175634211E-04,
+		    -2.574191402137795482E-04,
+		    -8.034390712936630608E-05} ;
+    double e[8] = { 1.129099387465713953E-08,
+		    3.423394967694403596E-13,
+		    6.928428071454762659E-16,
+		    1.616673288784094320E-16,
+		    3.784667152924835070E-17,
+		    9.896621209399419425E-18,
+		    2.857926564445496100E-18,
+		    8.919965558336773736E-19} ;
+    int order[8] = { 1, 2, 3, 4, 5, 6, 7, 8 } ;
+
+    double alpha = 1.0 ;
+    gsl_function f = { &f458, &alpha } ;
+    gsl_function fc = make_counter(&f, &p) ;
+
+    status = gsl_integration_qaws (&fc, 0.0, 1.0, t, 0.0, 1.0e-7, w->limit,
+				   w, 
+				   &result, &abserr) ;
+    
+    gsl_test_rel(result,exp_result,1e-14,"qaws(f458) smooth result") ;
+    gsl_test_rel(abserr,exp_abserr,1e-6,"qaws(f458) smooth abserr") ;
+    gsl_test_int((int)(p.neval),exp_neval,"qaws(f458) smooth neval") ;  
+    gsl_test_int((int)(w->size),exp_last,"qaws(f458) smooth last") ;  
+    gsl_test_int(status,exp_ier,"qaws(f458) smooth status") ;
+
+    for (i = 0; i < 6 ; i++) 
+	gsl_test_rel(w->alist[i],a[i],1e-15,"qaws(f458) smooth alist") ;
+
+    for (i = 0; i < 6 ; i++) 
+	gsl_test_rel(w->blist[i],b[i],1e-15,"qaws(f458) smooth blist") ;
+
+    for (i = 0; i < 6 ; i++) 
+	gsl_test_rel(w->rlist[i],r[i],1e-14,"qaws(f458) smooth rlist") ;
+
+    for (i = 0; i < 6 ; i++) 
+	gsl_test_rel(w->elist[i],e[i],1e-4,"qaws(f458) smooth elist") ;
+
+    for (i = 0; i < 6 ; i++) 
+	gsl_test_int((int)w->order[i],order[i]-1,"qaws(f458) smooth order");
+    
+    /* Test without logs */
+    
+    gsl_integration_qaws_table_set (t, -0.5, -0.3, 0, 0);
+    
+    status = gsl_integration_qaws (&fc, 0.0, 1.0, t, 0.0, 1.0e-7, w->limit,
+				   w, &result, &abserr) ;
+
+    exp_result = 9.896686656601706433E-01;
+    exp_abserr = 5.888032513201251628E-08;
+
+    gsl_test_rel(result,exp_result,1e-14,"qaws(f458) smooth result") ;
+    gsl_test_rel(abserr,exp_abserr,1e-6,"qaws(f458) smooth abserr") ;
+
+    /* Test with log(x - a) */
+
+    gsl_integration_qaws_table_set (t, -0.5, -0.3, 1, 0);
+    
+    status = gsl_integration_qaws (&fc, 0.0, 1.0, t, 0.0, 1.0e-7, w->limit,
+				   w, &result, &abserr) ;
+
+    exp_result = -3.636679470586539620E-01;
+    exp_abserr = 2.851348775257054093E-08;
+
+    gsl_test_rel(result,exp_result,1e-14,"qaws(f458) smooth result") ;
+    gsl_test_rel(abserr,exp_abserr,1e-6,"qaws(f458) smooth abserr") ;
+
+    /* Test with log(b - x) */
+
+    gsl_integration_qaws_table_set (t, -0.5, -0.3, 0, 1);
+    
+    status = gsl_integration_qaws (&fc, 0.0, 1.0, t, 0.0, 1.0e-7, w->limit,
+				   w, &result, &abserr) ;
+
+    exp_result = -1.911489253363409802E+00;
+    exp_abserr = 9.854016753016499034E-09;
+
+    gsl_test_rel(result,exp_result,1e-14,"qaws(f458) smooth result") ;
+    gsl_test_rel(abserr,exp_abserr,1e-6,"qaws(f458) smooth abserr") ;
+
+    /* Test with log(x - a) log(b - x) */
+
+    gsl_integration_qaws_table_set (t, -0.5, -0.3, 1, 1);
+    
+    status = gsl_integration_qaws (&fc, 0.0, 1.0, t, 0.0, 1.0e-7, w->limit,
+				   w, &result, &abserr) ;
+
+    exp_result = 3.159922862811048172E-01;
+    exp_abserr = 2.336183482198144595E-08;
+
+    gsl_test_rel(result,exp_result,1e-14,"qaws(f458) smooth result") ;
+    gsl_test_rel(abserr,exp_abserr,1e-6,"qaws(f458) smooth abserr") ;
+
+
+
+    gsl_integration_workspace_free (w) ;
+
+  }
+
   return gsl_test_summary() ;
 } 
 

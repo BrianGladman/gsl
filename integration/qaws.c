@@ -8,11 +8,12 @@
 #include "integration.h"
 #include "util.c"
 
-#include "qc25c.c"
+#include "qc25s.c"
 
 int
-gsl_integration_qawc (gsl_function * f,
-		      const double a, const double b, const double c,
+gsl_integration_qaws (gsl_function * f,
+		      const double a, const double b,
+		      gsl_integration_qaws_table * t,
 		      const double epsabs, const double epsrel,
 		      const size_t limit,
 		      gsl_integration_workspace * workspace,
@@ -23,7 +24,6 @@ gsl_integration_qawc (gsl_function * f,
   double tolerance;
   size_t iteration = 0;
   int roundoff_type1 = 0, roundoff_type2 = 0, error_type = 0;
-  int err_reliable;
 
   initialise (workspace, a, b);
 
@@ -36,19 +36,34 @@ gsl_integration_qawc (gsl_function * f,
 		 GSL_EBADTOL);
     };
 
-  if (c == a || c == b) 
-    {
-      *result = 0;
-      *abserr = 0;
-
-      GSL_ERROR ("cannot integrate with singularity on endpoint", GSL_EINVAL);
-    }      
-
   /* perform the first integration */
 
-  qc25c (f, a, b, c, &result0, &abserr0, &err_reliable);
+  {
+    double area1, area2;
+    double error1, error2;
+    int err_reliable1, err_reliable2;
+    double a1 = a;
+    double b1 = 0.5 * (a + b);
+    double a2 = b1;
+    double b2 = b;
 
-  set_initial_result (workspace, result0, abserr0);
+    qc25s (f, a, b, a1, b1, t, &area1, &error1, &err_reliable1);
+    qc25s (f, a, b, a2, b2, t, &area2, &error2, &err_reliable2);
+    
+    if (error1 > error2)
+      {
+	append_interval (workspace, a1, b1, area1, error1);
+	append_interval (workspace, a2, b2, area2, error2);
+      }
+    else
+      {
+	append_interval (workspace, a2, b2, area2, error2);
+	append_interval (workspace, a1, b1, area1, error1);
+      }
+    
+    result0 = area1 + area2;
+    abserr0 = error1 + error2;
+  }
 
   /* Test on accuracy */
 
@@ -93,19 +108,8 @@ gsl_integration_qawc (gsl_function * f,
       a2 = b1;
       b2 = b_i;
 
-      if (c > a1 && c < b1) 
-	{
-	  b1 = 0.5 * (c + b2) ;
-	  a2 = b1;
-	}
-      else if (c > b1 && c < b2)
-	{
-	  b1 = 0.5 * (a1 + c) ;
-	  a2 = b1;
-	}
-
-      qc25c (f, a1, b1, c, &area1, &error1, &err_reliable1);
-      qc25c (f, a2, b2, c, &area2, &error2, &err_reliable2);
+      qc25s (f, a, b, a1, b1, t, &area1, &error1, &err_reliable1);
+      qc25s (f, a, b, a2, b2, t, &area2, &error2, &err_reliable2);
 
       area12 = area1 + area2;
       error12 = error1 + error2;

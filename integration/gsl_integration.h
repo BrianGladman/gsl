@@ -28,6 +28,32 @@ void
   gsl_integration_workspace_free (gsl_integration_workspace * w);
 
 
+/* Workspace for QAWS integrator */
+
+typedef struct
+{
+  double alpha;
+  double beta;
+  int mu;
+  int nu;
+  double ri[25];
+  double rj[25];
+  double rg[25];
+  double rh[25];
+}
+gsl_integration_qaws_table;
+
+gsl_integration_qaws_table * 
+gsl_integration_qaws_table_alloc (double alpha, double beta, int mu, int nu);
+
+int
+gsl_integration_qaws_table_set (gsl_integration_qaws_table * t,
+                                double alpha, double beta, int mu, int nu);
+
+void
+gsl_integration_qaws_table_free (gsl_integration_qaws_table * t);
+
+
 /* Definition of an integration rule */
 
 typedef void gsl_integration_rule (const gsl_function * f,
@@ -121,5 +147,13 @@ int gsl_integration_qawc (gsl_function *f,
 			  double epsabs, double epsrel, size_t limit,
 			  gsl_integration_workspace * workspace,
 			  double * result, double * abserr);
+
+int gsl_integration_qaws (gsl_function * f,
+			  const double a, const double b,
+			  gsl_integration_qaws_table * t,
+			  const double epsabs, const double epsrel,
+			  const size_t limit,
+			  gsl_integration_workspace * workspace,
+			  double *result, double *abserr);
 
 #endif /* GSL_INTEGRATION_H */

@@ -8,7 +8,7 @@ bjg@netsci.freeserve.co.uk
 Bugs in the original quadpack
 =============================
 
-The use of DEFABS, RESABS and RESASC is inconsistent in DQAGSE and
+Notation: The use of DEFABS, RESABS and RESASC is inconsistent in DQAGSE and
 DQAGPE, in the function calls to the Gauss-Kronrod integrators. I have
 used the following definitions throughout,
 
@@ -19,9 +19,21 @@ used the following definitions throughout,
 DQAGPE: In the original DQAGPE the variable DEFABS is used in the loop
 for in the first integral approximation. At the end of the subroutine
 it is used in a divergence test. Since its value at that stage comes
-from the final partition the test is not meaningful. The value that
+from the final partition only, the test is not meaningful. The value that
 should be used in the test is RESABS.
 
+DQC25S: Around line 197 there is a summation loop which is slightly
+incorrect due to a typo.
+
+      RES12 = 0.0D+00
+      RES24 = 0.0D+00
+      DO 50 I=1,13
+        RES12 = RES12+CHEB12(I)*RG(I)
+        RES24 = RES12+CHEB24(I)*RG(I)
+   50 CONTINUE
+
+The line RES24 = RES12+CHEB24(I)*RG(I) should be RES24 = RES24+CHEB24(I)*RG(I)
+to make the summation correct.
 
 Testing
 =======

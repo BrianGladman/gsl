@@ -177,14 +177,14 @@ sort_results (gsl_integration_workspace * workspace)
   for (i = 0; i < nint; i++)
     {
       size_t i1 = order[i];
-      size_t e1 = elist[i1];
+      double e1 = elist[i1];
       size_t i_max = i1;
       size_t j;
 
       for (j = i + 1; j < nint; j++)
 	{
 	  size_t i2 = order[j];
-	  size_t e2 = elist[i2];
+	  double e2 = elist[i2];
 
 	  if (e2 >= e1)
 	    {
