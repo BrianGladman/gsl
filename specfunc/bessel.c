@@ -22,7 +22,9 @@
  * [Abramowitz+Stegun, 9.1.10]
  * [Abramowitz+Stegun, 9.6.7]
  *
- * Assumes: nu >= 0 
+ * Assumes: nu >= 0
+ *
+ * checked OK [GJ] Mon May  4 00:11:54 EDT 1998 
  */
 static int Inu_Jnu_taylorsum(const double nu, const double x,
                              const int sign,
@@ -189,6 +191,8 @@ static double trans_g3(const double * zpow)
  *   for kmax=4, choose x*x < 10.*(n+1)*GSL_ROOT5_MACH_EPS
  *
  * Checks: nu >= 0; x >= 0
+ *
+ * checked OK [GJ] Sun May  3 22:34:46 EDT 1998 
  */
 int gsl_sf_bessel_Inu_Jnu_taylor_impl(const double nu, const double x,
                                       const int sign,
@@ -203,8 +207,9 @@ int gsl_sf_bessel_Inu_Jnu_taylor_impl(const double nu, const double x,
   if(nu > 0. && x > 0.) {
     double g;
     int status = gsl_sf_lngamma_impl(nu+1., &g);  /* ok by construction */
-    double pre = exp(nu*log(0.5*x) - g);
-    if(pre > 0.) {
+    double ln_pre = nu*log(0.5*x) - g;
+    if(ln_pre > GSL_LOG_DBL_MIN + 1.) {
+      double pre = exp(ln_pre);
       double ts;
       status = Inu_Jnu_taylorsum(nu, x, sign, kmax, &ts);
       *result = pre * ts;
@@ -243,6 +248,8 @@ int gsl_sf_bessel_Inu_Jnu_taylor_impl(const double nu, const double x,
  * large enough for this to apply, the cos() and sin()
  * start loosing digits. However, this seems inevitable
  * for this particular method.
+ *
+ * checked OK [GJ] Sun May  3 22:35:00 EDT 1998 
  */
 int gsl_sf_bessel_Jnu_asympx_impl(const double nu, const double x, double * result)
 {
@@ -266,6 +273,8 @@ int gsl_sf_bessel_Jnu_asympx_impl(const double nu, const double x, double * resu
  * large enough for this to apply, the cos() and sin()
  * start loosing digits. However, this seems inevitable
  * for this particular method.
+ *
+ * checked OK [GJ] Mon May  4 00:06:52 EDT 1998 
  */
 int gsl_sf_bessel_Ynu_asympx_impl(const double nu, const double x, double * result)
 {

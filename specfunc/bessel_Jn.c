@@ -8,6 +8,7 @@
 #include "gsl_sf_bessel.h"
 
 #include "bessel.h"
+#include "bessel_amp_phase.h"
 #include "bessel_J0_impl.h"
 #include "bessel_J1_impl.h"
 
@@ -16,6 +17,7 @@
 
 /*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
 
+/* checked OK [GJ] Sun May  3 22:35:34 EDT 1998 */
 int gsl_sf_bessel_Jn_impl(int n, double x, double * result)
 {
   int sign = 1;
@@ -54,13 +56,13 @@ int gsl_sf_bessel_Jn_impl(int n, double x, double * result)
       *result *= sign;
       return status;
     }
-    else if(n > 30) {
-      int status = gsl_sf_bessel_Jnu_asymp_Olver_impl((double)n, x, result);
+    else if(GSL_ROOT3_MACH_EPS * x > (n*n+1)) {
+      int status = gsl_sf_bessel_Jnu_asympx_impl((double)n, x, result);
       *result *= sign;
       return status;
     }
-    else if(GSL_ROOT3_MACH_EPS * x > (n*n+1)) {
-      int status = gsl_sf_bessel_Jnu_asympx_impl((double)n, x, result);
+    else if(n > 30) {
+      int status = gsl_sf_bessel_Jnu_asymp_Olver_impl((double)n, x, result);
       *result *= sign;
       return status;
     }

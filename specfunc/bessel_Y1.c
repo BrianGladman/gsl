@@ -7,9 +7,11 @@
 #include "gsl_sf_chebyshev.h"
 #include "gsl_sf_bessel.h"
 
+#include "bessel_amp_phase.h"
+#include "bessel_J1_impl.h"
+
 #include "bessel_Y1_impl.h"
 
-#include "bessel_amp_phase.h"
 
 
 /*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
@@ -65,14 +67,19 @@ int gsl_sf_bessel_Y1_impl(const double x, double * result)
     return GSL_EOVRFLW;
   }
   else if(x < x_small) {
-    *result = two_over_pi * log(0.5*x) * gsl_sf_bessel_J1(x) +
-              (0.5 + gsl_sf_cheb_eval(-1., &by1_cs))/x;
-    return GSL_SUCCESS;
+    double J1 = 0.;
+    int status = gsl_sf_bessel_J1_impl(x, &J1);
+    *result = two_over_pi * log(0.5*x) * J1 + (0.5 + gsl_sf_cheb_eval(-1., &by1_cs))/x;
+    return status;
   }
   else if(x < 4.0) {
-    *result = two_over_pi * log(0.5*x) * gsl_sf_bessel_J1(x) +
-              (0.5 + gsl_sf_cheb_eval(0.125*x*x-1., &by1_cs))/x;
-    return GSL_SUCCESS;
+    double J1 = 0.;
+    int status = gsl_sf_bessel_J1_impl(x, &J1);
+    *result = two_over_pi * log(0.5*x) * J1 + (0.5 + gsl_sf_cheb_eval(0.125*x*x-1., &by1_cs))/x;
+    if(status == GSL_EUNDRFLW)
+      return GSL_ELOSS;
+    else
+      return status;
   }
   else if(x < xmax) {
     double z     = 32.0/(x*x) - 1.0;

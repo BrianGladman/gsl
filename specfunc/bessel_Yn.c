@@ -6,14 +6,74 @@
 #include <gsl_errno.h>
 #include "gsl_sf_bessel.h"
 
+#include "bessel.h"
+#include "bessel_amp_phase.h"
 #include "bessel_Y0_impl.h"
 #include "bessel_Y1_impl.h"
 
 #include "bessel_Yn_impl.h"
 
 
+/* checked OK [GJ] Sun May  3 23:25:41 EDT 1998 */
+static int bessel_Yn_small_x(const int n, const double x, double * result)
+{
+  int k;
+  double y = 0.25 * x * x;
+  double ln_x_2 = log(0.5*x);
+  double ln_nm1_fact;
+  double k_term;
+  double term1, sum1, ln_pre1;
+  double term2, sum2, pre2;
+
+  gsl_sf_lnfact_impl(n-1, &ln_nm1_fact);
+
+  ln_pre1 = -n*ln_x_2 + ln_nm1_fact;
+  if(ln_pre1 > GSL_LOG_DBL_MAX - 3.) return GSL_EOVRFLW;
+
+  sum1 = 1.0;
+  k_term = 1.0;
+  for(k=1; k<=n-1; k++) {
+    k_term *= y/(k * (n-k));
+    sum1 += k_term;
+  }
+  term1 = -exp(ln_pre1) * sum1 / M_PI;
+  
+  pre2 = -exp(n*ln_x_2) / M_PI;
+  if(fabs(pre2) > 0.0) {
+    const int KMAX = 20;
+    double psi_n;
+    double npk_fact;
+    double yk = 1.0;
+    double k_fact  = 1.0;
+    double psi_kp1 = -M_EULER;
+    double psi_npkp1;
+    gsl_sf_psi_int_impl(n, &psi_n);
+    gsl_sf_fact_impl(n, &npk_fact);
+    psi_npkp1 = psi_n + 1./n;
+    sum2 = (psi_kp1 + psi_npkp1 - 2.0*ln_x_2)/npk_fact;
+    for(k=1; k<KMAX; k++) {
+      psi_kp1   += 1./k;
+      psi_npkp1 += 1./(n+k);
+      k_fact   *= k;
+      npk_fact *= n+k;
+      yk *= -y;
+      k_term = yk*(psi_kp1 + psi_npkp1 - 2.0*ln_x_2)/(k_fact*npk_fact);
+      sum2 += k_term;
+    }
+    term2 = pre2 * sum2;
+  }
+  else {
+    term2 = 0.0;
+  }
+
+  *result = term1 + term2;
+  return GSL_SUCCESS;
+}
+
+
 /*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
 
+/* checked OK [GJ] Mon May  4 00:10:56 EDT 1998 */
 int gsl_sf_bessel_Yn_impl(int n, const double x, double * result)
 {
   int sign = 1;
@@ -40,29 +100,25 @@ int gsl_sf_bessel_Yn_impl(int n, const double x, double * result)
     if(x <= 0.) {
       return GSL_EDOM;
     }
-    if(x < GSL_ROOT4_MACH_EPS) {
-      double ln_x2  = log(0.5*x);
-      double ln_fc  = gsl_sf_lnfact(n-1);
-      double ln_pre = ln_fc - n * ln_x2;
-      if(ln_pre > GSL_LOG_DBL_MAX - 2.) {
-        *result = 0.; /* FIXME: should be Inf */
-	return GSL_EOVRFLW;
-      }
-      else {
-        double pre = exp(ln_pre);
-        double Jn  = exp(n * ln_x2);
-        double b0  = -pre * (1. + 0.25*x*x/(n-1.)) + 2./M_PI*ln_x2*Jn;
-	*result = sign * b0;
-	return GSL_SUCCESS;
-      }
+    if(x < 5.0) {
+      double b = 0.;
+      int status = bessel_Yn_small_x(n, x, &b);
+      *result = sign * b;
+      return status;
     }
-    else if(x > 500.*n) {
+    else if(GSL_ROOT3_MACH_EPS * x > (n*n + 1)) {
+      double b = 0.;
+      int status = gsl_sf_bessel_Ynu_asympx_impl(n, x, &b);
+      *result = sign * b;
+      return status;
+    }
+    else if(x > 700.*n) {
       double ampl  = gsl_sf_bessel_asymp_Mnu(n, x);
       double theta = gsl_sf_bessel_asymp_thetanu(n, x);
       *result = sign * ampl * sin(theta);
       return GSL_SUCCESS;
     }
-    else if(n < 30) {
+    else if(n > 30) {
       double b0 = 0.;
       int status = gsl_sf_bessel_Ynu_asymp_Olver_impl(n, x, &b0);
       *result = sign * b0;

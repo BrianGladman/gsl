@@ -649,44 +649,6 @@ static double olver_A4(double z, double abs_zeta)
 }
 
 
-void plot_it(void)
-{
-  double z;
-  double abs_zeta, zeta;
-
-  for(z=.7; z<1.3; z += .001) {
-    double rt = sqrt(fabs(1-z)*(1+z));
-    if(fabs(1-z) < GSL_ROOT3_MACH_EPS) {
-      /* z near 1 */
-      double a = 1.-z;
-      zeta = CubeRoot2_*a*(1. + 3./10.*a + 32./175.*a*a);
-      abs_zeta = fabs(zeta);
-    }
-    else if(z < 1.) {
-      /* z < 1 */
-      abs_zeta = pow(1.5*(log((1+rt)/z) - rt), 2./3.);
-      zeta = abs_zeta;
-    }
-    else {
-      /* z > 1 */
-      abs_zeta = pow(1.5*(rt - acos(1./z)), 2./3.);
-      zeta = -abs_zeta;
-    }
-    
-    printf("%20.14g %20.14g %20.14g   %20.14g  %20.14g  %20.14g  %20.14g  %20.14g  %20.14g  %20.14g  %20.14g\n",
-           z, zeta, abs_zeta,
-           olver_A1(z, abs_zeta),
-	   olver_A2(z, abs_zeta),
-	   olver_A3(z, abs_zeta),
-	   olver_A4(z, abs_zeta),
-           olver_B0(z, abs_zeta),
-	   olver_B1(z, abs_zeta),
-	   olver_B2(z, abs_zeta),
-	   olver_B3(z, abs_zeta)
-	   );
-  }
-}
-
 static inline double olver_Asum(double nu, double z, double abs_zeta)
 {
   double nu2 = nu*nu;
@@ -715,6 +677,8 @@ static inline double olver_Bsum(double nu, double z, double abs_zeta)
  *    nu =  5: uniformly good to >  8D
  *    nu = 10: uniformly good to > 10D
  *    nu = 20: uniformly good to > 13D
+ *
+ * checked OK [GJ] Sun May  3 22:36:29 EDT 1998 
  */
 int gsl_sf_bessel_Jnu_asymp_Olver_impl(double nu, double x, double * result)
 {
@@ -774,6 +738,8 @@ int gsl_sf_bessel_Jnu_asymp_Olver_impl(double nu, double x, double * result)
  *    nu =  5: uniformly good to >  8D
  *    nu = 10: uniformly good to > 10D
  *    nu = 20: uniformly good to > 13D
+ *
+ * checked OK [GJ] Sun May  3 22:59:22 EDT 1998 
  */
 int gsl_sf_bessel_Ynu_asymp_Olver_impl(double nu, double x, double * result)
 {

@@ -7,9 +7,9 @@
 #include "gsl_sf_chebyshev.h"
 #include "gsl_sf_bessel.h"
 
-#include "bessel_J1_impl.h"
-
 #include "bessel_amp_phase.h"
+
+#include "bessel_J1_impl.h"
 
 #define ROOT_EIGHT 2.82842712474619009760337744842
 
@@ -108,5 +108,5 @@ double gsl_sf_bessel_J1(const double x)
   if(status != GSL_SUCCESS) {
     GSL_WARNING("gsl_sf_bessel_J1", status);
   }
-  return status;
+  return y;
 }
