@@ -72,7 +72,7 @@ gsl_multimin_fdf_history_set(gsl_multimin_fdf_history *h,
 			     gsl_multimin_function_fdf *fdf,
 			     const gsl_vector * x)
 {
-  gsl_vector_copy(h->x,x);
+  gsl_vector_cpy(h->x,x);
   GSL_MULTIMIN_FN_EVAL_F_DF(fdf,h->x,&(h->f),h->g);
   if (!GSL_IS_REAL(h->f))
     GSL_ERROR("function not continuous", GSL_EBADFUNC);
@@ -85,7 +85,7 @@ gsl_multimin_fdf_history_set_with_value(gsl_multimin_fdf_history *h,
 					const gsl_vector * x,
 					double fx)
 {
-  gsl_vector_copy(h->x,x);
+  gsl_vector_cpy(h->x,x);
   GSL_MULTIMIN_FN_EVAL_DF(fdf,h->x,h->g);
   h->f = fx;
   return GSL_SUCCESS;
@@ -97,8 +97,8 @@ gsl_multimin_fdf_history_step(gsl_multimin_fdf_history *h,
 			      const gsl_vector * direction,
 			      double step)
 {
-  gsl_vector_copy(h->g1,h->g);
-  gsl_vector_copy(h->x1,h->x);
+  gsl_vector_cpy(h->g1,h->g);
+  gsl_vector_cpy(h->x1,h->x);
   h->f1 = h->f;
   gsl_multimin_compute_evaluation_point(h->x,h->x1,step,direction);
   GSL_MULTIMIN_FN_EVAL_F_DF(fdf,h->x,&(h->f),h->g);
@@ -113,8 +113,8 @@ gsl_multimin_fdf_history_step_with_value(gsl_multimin_fdf_history *h,
 					 const gsl_vector * direction,
 					 double step,double fx) 
 {
-  gsl_vector_copy(h->g1,h->g);
-  gsl_vector_copy(h->x1,h->x);
+  gsl_vector_cpy(h->g1,h->g);
+  gsl_vector_cpy(h->x1,h->x);
   h->f1 = h->f;
   gsl_multimin_compute_evaluation_point(h->x,h->x1,step,direction);
   GSL_MULTIMIN_FN_EVAL_DF(fdf,h->x,h->g);
