@@ -13,7 +13,6 @@
 #define REAL double
 
 #include "givens.c"
-#include "matrix.c"
 
 /* Factorise a general M x N matrix A into
  *  
@@ -61,7 +60,8 @@ gsl_linalg_QR_decomp (gsl_matrix * a, gsl_vector * tau)
 	  /* Compute the Householder transformation to reduce the j-th
 	     column of the matrix to a multiple of the j-th unit vector */
 
-	  gsl_vector c = col (a, i, i, M - 1);
+	  gsl_vector c_full = gsl_matrix_column (a, i);
+          gsl_vector c = gsl_vector_subvector (&c_full, i, M-i);
 
 	  double tau_i = gsl_linalg_householder_transform (&c);
 
@@ -72,7 +72,7 @@ gsl_linalg_QR_decomp (gsl_matrix * a, gsl_vector * tau)
 
 	  if (i + 1 < N)
 	    {
-	      gsl_matrix m = submatrix (a, i, i + 1, M - 1, N - 1);
+	      gsl_matrix m = gsl_matrix_submatrix (a, i, i + 1, M - i, N - (i + 1));
 
 	      gsl_linalg_householder_hm (tau_i, &c, &m, work);
 	    }
@@ -223,8 +223,9 @@ gsl_linalg_QR_QTvec (const gsl_matrix * qr, const gsl_vector * tau, gsl_vector *
 
       for (i = 0; i < GSL_MIN (M, N); i++)
 	{
-	  const gsl_vector h = col (qr, i, i, M - 1);
-	  gsl_vector w = subvector (v, i, M - 1);
+	  gsl_vector c = gsl_matrix_column (qr, i);
+          gsl_vector h = gsl_vector_subvector (&c, i, M - i);
+	  gsl_vector w = gsl_vector_subvector (v, i, M - i);
 	  double ti = gsl_vector_get (tau, i);
 	  gsl_linalg_householder_hv (ti, &h, &w);
 	}
@@ -266,8 +267,9 @@ gsl_linalg_QR_unpack (const gsl_matrix * qr, const gsl_vector * tau, gsl_matrix 
 	{
 	  i = k - 1;
 	  {
-	    const gsl_vector h = col (qr, i, i, M - 1);
-	    gsl_matrix m = submatrix (q, i, i, M - 1, M - 1);
+            gsl_vector c = gsl_matrix_column (qr, i);
+            gsl_vector h = gsl_vector_subvector (&c, i, M - i);
+	    gsl_matrix m = gsl_matrix_submatrix (q, i, i, M - i, M - i);
 	    double ti = gsl_vector_get (tau, i);
 	    gsl_linalg_householder_hm (ti, &h, &m, work);
 	  }

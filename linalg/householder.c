@@ -7,8 +7,6 @@
 
 #include "gsl_linalg.h"
 
-#include "matrix.c"
-
 double
 gsl_linalg_householder_transform (gsl_vector * v)
 {
@@ -17,25 +15,32 @@ gsl_linalg_householder_transform (gsl_vector * v)
 
   const size_t n = v->size ;
 
-  double alpha, beta, tau ;
-
-  gsl_vector x = subvector (v, 1, n-1) ; 
-  
-  double xnorm = gsl_blas_dnrm2 (&x);
-
-  if (xnorm == 0) 
+  if (n == 1)
     {
       return 0; /* tau = 0 */
     }
-
-  alpha = gsl_vector_get (v, 0) ;
-  beta = - (alpha >= 0 ? +1 : -1) * gsl_hypot(alpha, xnorm) ;
-  tau = (beta - alpha) / beta ;
-
-  gsl_blas_dscal (1.0 / (alpha - beta), &x);
-  gsl_vector_set (v, 0, beta) ;
-  
-  return tau;
+  else
+    { 
+      double alpha, beta, tau ;
+      
+      gsl_vector x = gsl_vector_subvector (v, 1, n - 1) ; 
+      
+      double xnorm = gsl_blas_dnrm2 (&x);
+      
+      if (xnorm == 0) 
+        {
+          return 0; /* tau = 0 */
+        }
+      
+      alpha = gsl_vector_get (v, 0) ;
+      beta = - (alpha >= 0 ? +1 : -1) * gsl_hypot(alpha, xnorm) ;
+      tau = (beta - alpha) / beta ;
+      
+      gsl_blas_dscal (1.0 / (alpha - beta), &x);
+      gsl_vector_set (v, 0, beta) ;
+      
+      return tau;
+    }
 }
 
 int
