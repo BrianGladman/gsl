@@ -60,8 +60,8 @@ corresponding to the integer factors of the length @math{N}.  If
 @c{$O(N \sum f_i)$}
 @math{O(N \sum f_i)}
 operations. For a radix-2 FFT this gives an operation count of
-@c{$O(N\log_2 N)$}
-@math{O(N\log_2 N)}.
+@c{$O(N \log_2 N)$}
+@math{O(N \log_2 N)}.
 
 All the FFT functions offer three types of transform: forwards, inverse
 and backwards, based on the same mathematical definitions. The

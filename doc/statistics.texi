@@ -62,19 +62,19 @@ The function @code{gsl_stats_mean} returns the arithmetic mean of
 
 The sample mean is an unbiased estimator of the population mean and is
 denoted by 
-@c{$\hat\mu$}
-@math{\hat\mu}.
+@c{$\Hat\mu$}
+@math{\Hat\mu}.
 
 @tex
 \beforedisplay
 $$
-{\hat\mu} = {1 \over N} \sum x_i
+{\Hat\mu} = {1 \over N} \sum x_i
 $$
 \afterdisplay
 @end tex
 @ifinfo
 @example
-@{\hat\mu@} = @{1 \over N@} \sum x_i
+@{\Hat\mu@} = @{1 \over N@} \sum x_i
 @end example
 @end ifinfo
 
@@ -85,8 +85,8 @@ where
 are the elements of the array @var{data}.
 
 For a gaussian distribution the variance of 
-@c{$\hat\mu$} 
-@math{\hat\mu} 
+@c{$\Hat\mu$} 
+@math{\Hat\mu} 
 is
 @c{$\sigma^2/N$}
 @math{\sigma^2/N}, 
@@ -111,13 +111,13 @@ This is an unbiased estimator of
 @tex
 \beforedisplay
 $$
-{\hat\sigma}^2 = {1 \over (N-1)} \sum (x_i - {\hat\mu})^2
+{\Hat\sigma}^2 = {1 \over (N-1)} \sum (x_i - {\Hat\mu})^2
 $$
 \afterdisplay
 @end tex
 @ifinfo
 @example
-@{\hat\sigma@}^2 = @{1 \over (N-1)@} \sum (x_i - @{\hat\mu@})^2
+@{\Hat\sigma@}^2 = @{1 \over (N-1)@} \sum (x_i - @{\Hat\mu@})^2
 @end example
 @end ifinfo
 
@@ -128,19 +128,19 @@ where
 are the elements of the array @var{data}. 
 
 Note that the normalisation factor of @math{1/(N-1)} is chosen to make
-@c{$\hat\sigma^2$} 
-@math{\hat\sigma^2} 
+@c{$\Hat\sigma^2$} 
+@math{\Hat\sigma^2} 
 an unbiased estimator. (A factor of @math{1/N}
 produces variances which, on the average, are too small since
 correlations between 
 @c{$x_i$}
 @math{x_i} and 
-@c{$\hat\mu$}
-@math{\hat\mu} tend to reduce the sample variance).
+@c{$\Hat\mu$}
+@math{\Hat\mu} tend to reduce the sample variance).
 
 For a gaussian distribution the variance of 
-@c{$\hat\sigma^2$}
-@math{\hat\sigma^2} is
+@c{$\Hat\sigma^2$}
+@math{\Hat\sigma^2} is
 @c{$2 \sigma^4/N$}
 @math{2 \sigma^4/N}. The one standard-deviation error on the variance is
 @c{$\sqrt{2} \sigma^2/\sqrt{N}$}
@@ -162,20 +162,20 @@ two functions, @code{gsl_stats_est_variance_with_mean} and
 The function @code{gsl_stats_est_variance_with_mean} returns the sample
 variance of @var{data} relative to the given value of @var{mean}.  The
 function is computed with 
-@c{$\hat\mu$}
-@math{\hat\mu} 
+@c{$\Hat\mu$}
+@math{\Hat\mu} 
 replaced by the value of @var{mean} that you supply,
 
 @tex
 \beforedisplay
 $$
-{\hat\sigma}^2 = {1 \over (N-1)} \sum (x_i - mean)^2
+{\Hat\sigma}^2 = {1 \over (N-1)} \sum (x_i - mean)^2
 $$
 \afterdisplay
 @end tex
 @ifinfo
 @example
-@{\hat\sigma@}^2 = @{1 \over (N-1)@} \sum (x_i - mean)^2
+@{\Hat\sigma@}^2 = @{1 \over (N-1)@} \sum (x_i - mean)^2
 @end example
 @end ifinfo
 
@@ -197,8 +197,8 @@ population mean of a distribution is known @emph{a priori}.
 
 In this case the estimator for the variance requires a factor @math{1/N}
 and the sample mean 
-@c{$\hat\mu$}
-@math{\hat\mu} must be replaced by the known
+@c{$\Hat\mu$}
+@math{\Hat\mu} must be replaced by the known
 population mean 
 @c{$\mu$}
 @math{\mu},
@@ -206,13 +206,13 @@ population mean
 @tex
 \beforedisplay
 $$
-{\hat\sigma}^2 = {1 \over N} \sum (x_i - \mu)^2
+{\Hat\sigma}^2 = {1 \over N} \sum (x_i - \mu)^2
 $$
 \afterdisplay
 @end tex
 @ifinfo
 @example
-@{\hat\sigma@}^2 = @{1 \over N@} \sum (x_i - \mu)^2
+@{\Hat\sigma@}^2 = @{1 \over N@} \sum (x_i - \mu)^2
 @end example
 @end ifinfo
 
@@ -241,13 +241,13 @@ The absolute deviation from the mean is defined as
 @tex
 \beforedisplay
 $$
-absdev  = {1 \over N} \sum |x_i - {\hat\mu}|
+absdev  = {1 \over N} \sum |x_i - {\Hat\mu}|
 $$
 \afterdisplay
 @end tex
 @ifinfo
 @example
-absdev  = @{1 \over N@} \sum |x_i - @{\hat\mu@}|
+absdev  = @{1 \over N@} \sum |x_i - @{\Hat\mu@}|
 @end example
 @end ifinfo
 
@@ -305,14 +305,14 @@ The skewness is defined as
 \beforedisplay
 $$
 skew = {1 \over N} \sum 
- {\left( x_i - {\hat\mu} \over {\hat\sigma} \right)}^3
+ {\left( x_i - {\Hat\mu} \over {\Hat\sigma} \right)}^3
 $$
 \afterdisplay
 @end tex
 @ifinfo
 @example
 skew = @{1 \over N@} \sum 
- @{\left( x_i - @{\hat\mu@} \over @{\hat\sigma@} \right)@}^3
+ @{\left( x_i - @{\Hat\mu@} \over @{\Hat\sigma@} \right)@}^3
 @end example
 @end ifinfo
 
@@ -368,7 +368,7 @@ The kurtosis is defined as
 \beforedisplay
 $$
 kurtosis = \left( {1 \over N} \sum 
- {\left(x_i - {\hat\mu} \over {\hat\sigma} \right)}^4 
+ {\left(x_i - {\Hat\mu} \over {\Hat\sigma} \right)}^4 
  \right) 
  - 3
 $$
@@ -377,7 +377,7 @@ $$
 @ifinfo
 @example
 kurtosis = ( @{1 \over N@} \sum 
- @{(x_i - @{\hat\mu@} \over @{\hat\sigma@} )@}^4 
+ @{(x_i - @{\Hat\mu@} \over @{\Hat\sigma@} )@}^4 
  ) 
  - 3
 @end example

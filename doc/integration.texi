@@ -24,7 +24,7 @@ aiming to satisfy the accuracy requirement
 @tex
 \beforedisplay
 $$
-|RESULT - I|  \leq max \{ epsabs, epsrel |I| \}
+|\hbox{\it RESULT} - I|  \leq max \{ epsabs, epsrel |I| \}
 $$
 \afterdisplay
 @end tex
@@ -37,13 +37,14 @@ $$
 @noindent
 where RESULT is the numerical approximation obtained by the
 algorithm. The integrators attempt to estimate the absolute error
+@c{$ABSERR = |\hbox{\it RESULT} - I|$}
 @math{ABSERR = |RESULT - I|} in such a way that the following inequality
 holds,
 
 @tex
 \beforedisplay
 $$
-|RESULT - I| \leq ABSERR \leq max \{ epsabs, epsrel |I| \}
+|\hbox{\it RESULT} - I| \leq ABSERR \leq max \{ epsabs, epsrel |I| \}
 $$
 \afterdisplay
 @end tex
@@ -87,38 +88,123 @@ minimise the total number of function evaluations.
 @node QAG adaptive integration
 @section QAG adaptive integration
 
+@deftypefun {gsl_integration_workspace *} gsl_integration_workspace_alloc (const size_t @var{n}) 
+This function allocates a workspace sufficient to hold @var{n} double
+precision intervals, their integration results and error estimates.
+@end deftypefun
+
+@deftypefun void gsl_integration_workspace_free (gsl_integration_workspace * @var{w})
+This function frees the memory associated with the workspace @var{w}.
+@end deftypefun
+
+@deftypefun int gsl_integration_qag (const gsl_function *@var{f}, double @var{a}, double @var{b}, double @var{epsabs}, double @var{epsrel}, size_t @var{limit}, int @var{key}, gsl_integration_workspace * @var{workspace},  double * @var{result}, double * @var{abserr})
+
+This function applies an integration rule adaptively until an estimate
+of the integral of @math{f} over @math{(a,b)} is achieved within the
+desired absolute and relative error limits, @var{epsabs} and
+@var{epsrel}. The function returns the final approximation,
+@var{result}, an estimate of the absolute error, @var{abserr} and the
+number of function evaluations used, @var{neval}. The integration rule
+is determined by the value of @var{key}, which should be chosen from the
+following symbolic names,
+
+@example
+GSL_INTEG_GAUSS15  (1)
+GSL_INTEG_GAUSS21  (2)
+GSL_INTEG_GAUSS31  (3)
+GSL_INTEG_GAUSS41  (4)
+GSL_INTEG_GAUSS51  (5)
+GSL_INTEG_GAUSS61  (6)
+@end example
+
+@noindent
+corresponding to the 15, 21, 31, 41, 51 and 61 point Gauss-Kronrod
+rules.
+
+On each iteration the adaptive integration strategy bisects the interval
+with the largest error estimate. The intervals are stored in the
+workspace @var{workspace}.
+@end deftypefun
+
+
 @node QAGS adaptive integration with end-point singularities
 @section QAGS adaptive integration with end-point singularities
+
+@deftypefun int gsl_integration_qags (const gsl_function * @var{f}, double @var{a}, double @var{b}, double @var{epsabs}, double @var{epsrel}, size_t @var{limit}, gsl_integration_workspace * @var{workspace}, double *@var{result}, double *@var{abserr})
+@end deftypefun
 
 @node QAGP adaptive integration with singular points
 @section QAGP adaptive integration with singular points
 
+@deftypefun int gsl_integration_qagp (const gsl_function * @var{f}, double *@var{pts}, size_t @var{npts}, double @var{epsabs}, double @var{epsrel}, size_t @var{limit}, gsl_integration_workspace * @var{workspace}, double *@var{result}, double *@var{abserr})
+@end deftypefun
+
 @node QAGI adaptive integration on infinite intervals
 @section QAGI adaptive integration on infinite intervals
+
+@deftypefun int gsl_integration_qagi (gsl_function * @var{f}, double @var{epsabs}, double @var{epsrel}, size_t @var{limit}, gsl_integration_workspace * @var{workspace}, double *@var{result}, double *@var{abserr})
+@end deftypefun
+
+@deftypefun int gsl_integration_qagiu (gsl_function * @var{f}, double @var{a}, double @var{epsabs}, double @var{epsrel}, size_t @var{limit}, gsl_integration_workspace * @var{workspace}, double *@var{result}, double *@var{abserr})
+@end deftypefun
+
+@deftypefun int gsl_integration_qagil (gsl_function * @var{f}, double @var{b}, double @var{epsabs}, double @var{epsrel}, size_t @var{limit}, gsl_integration_workspace * @var{workspace}, double *@var{result}, double *@var{abserr})
+@end deftypefun
 
 @node  QAWC adaptive integration for Cauchy principal value
 @section QAWC adaptive integration for Cauchy principal value
 
+@deftypefun int gsl_integration_qawc (gsl_function *@var{f}, double @var{a}, double @var{b}, double @var{c}, double @var{epsabs}, double @var{epsrel}, size_t @var{limit}, gsl_integration_workspace * @var{workspace}, double * @var{result}, double * @var{abserr})
+@end deftypefun
+
 @node  QAWS adaptive integration for singular functions
 @section QAWS adaptive integration for singular functions
+
+@deftypefun {gsl_integration_qaws_table *} gsl_integration_qaws_table_alloc (double @var{alpha}, double @var{beta}, int @var{mu}, int @var{nu})
+@end deftypefun
+
+@deftypefun int gsl_integration_qaws_table_set (gsl_integration_qaws_table * @var{t}, double @var{alpha}, double @var{beta}, int @var{mu}, int @var{nu})
+@end deftypefun
+
+@deftypefun void gsl_integration_qaws_table_free (gsl_integration_qaws_table * @var{t})
+@end deftypefun
+
+@deftypefun int gsl_integration_qaws (gsl_function * @var{f}, const double @var{a}, const double @var{b}, gsl_integration_qaws_table * @var{t}, const double @var{epsabs}, const double @var{epsrel}, const size_t @var{limit}, gsl_integration_workspace * @var{workspace}, double *@var{result}, double *@var{abserr})
+@end deftypefun
 
 @node  QAWO adaptive integration for oscillatory functions
 @section QAWO adaptive integration for oscillatory functions
 
+@deftypefun {gsl_integration_qawo_workspace *} gsl_integration_qawo_workspace_alloc (double @var{omega}, double @var{L}, enum gsl_integration_qawo_enum @var{sine}, size_t @var{n})
+@end deftypefun
+
+@deftypefun int gsl_integration_qawo_workspace_set (gsl_integration_qawo_workspace * @var{t}, double @var{omega}, double @var{L}, enum gsl_integration_qawo_enum @var{sine})
+@end deftypefun
+
+@deftypefun int gsl_integration_qawo_workspace_set_length (gsl_integration_qawo_workspace * @var{t}, double @var{L})
+@end deftypefun
+
+@deftypefun void gsl_integration_qawo_workspace_free (gsl_integration_qawo_workspace * @var{t})
+@end deftypefun
+
+@deftypefun int gsl_integration_qawo (gsl_function * @var{f}, const double @var{a}, const double @var{epsabs}, const double @var{epsrel}, const size_t @var{limit}, gsl_integration_workspace * @var{workspace}, gsl_integration_qawo_workspace * @var{wf}, double *@var{result}, double *@var{abserr})
+@end deftypefun
+
 @node  QAWF adaptive integration for Fourier integrals
 @section QAWF adaptive integration for Fourier integrals
 
-
+@deftypefun int gsl_integration_qawf (gsl_function * @var{f}, const double @var{a}, const double @var{epsabs}, const size_t @var{limit}, gsl_integration_workspace * @var{workspace}, gsl_integration_workspace * @var{cycle_workspace}, gsl_integration_qawo_workspace * @var{wf}, double *@var{result}, double *@var{abserr})
+@end deftypefun
 
 @node Numerical integration References and Further Reading
 @section Numerical integration  References and Further Reading
 
 @noindent
-The following book is the definitive reference for QUADPACK, being
-written by the original developers. It describes the algorithms and
-includes test programs, examples and useful advice on numerical
-integration. It also has many references to the numerical integration
-literature.
+The following book is the definitive reference for QUADPACK, and was
+written by the original authors. It provides descriptions of the
+algorithms, test programs, examples and useful advice on numerical
+integration. It also includes many references to the numerical
+integration literature used in developing QUADPACK.
 
 @itemize @asis
 @item

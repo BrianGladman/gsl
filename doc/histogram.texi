@@ -15,7 +15,6 @@ routines for selecting random samples from probability
 distributions. This can be useful for generating simulations based real
 data.
 
-
 @menu
 * The histogram struct::        
 * Histogram allocation::        

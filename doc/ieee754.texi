@@ -240,9 +240,11 @@ i=19 sum=2.718281828459041094 error=-3.9968e-15
 @end example
 
 @noindent
-The result is about @math{4 \times 10^@{-15@}} below the correct value, an
-order of magnitude worse than the result obtained in the
-@code{round-to-nearest} mode.
+The result is about 
+@c{$4 \times 10^{-15}$}
+@math{4 \times 10^-15} 
+below the correct value, an order of magnitude worse than the result
+obtained in the @code{round-to-nearest} mode.
 
 If we change to rounding mode to @code{round-up} then the series no
 longer converges (the reason is that when we add each term to the sum
@@ -267,7 +269,9 @@ i=12 sum=2.718281984329223633 error=1.5587e-07
 @end example
 
 @noindent
-with an error of @math{O(10^@{-7@})}, which corresponds to single
+with an error of 
+@c{$O(10^{-7})$}
+@math{O(10^-7)}, which corresponds to single
 precision accuracy (about 1 part in @math{10^7}). Continuing the
 iterations further does not decrease the error because all the
 subsequent results are rounded to the same value.

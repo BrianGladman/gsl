@@ -43,6 +43,9 @@
 \gdef\mycxxy#1#2{#1\Etex\mycxxz}
 \gdef\mycxxz#1{}
 %
+% Define \Hat to take over from \hat as an accent
+\gdef\Hat{\mathaccent "705E}
+%
 \gdef\beforedisplay{\vskip-10pt}
 \gdef\afterdisplay{\vskip-5pt}
 \gdef\beforedisplayh{\vskip-25pt}

@@ -10,6 +10,9 @@ Additional functions are available for transforming uniform random
 numbers into samples from continuous or discrete probability
 distributions such as the gaussian, log-normal or poisson distributions.
 
+@c Need to explain the difference between SERIAL and PARALLEL random 
+@c number generators here
+
 @menu
 * General comments on random numbers::  
 * The Random Number Generator Interface::  
@@ -362,7 +365,7 @@ and is known as the "Mersenne Twister" generator. It has a Mersenne
 prime period of 
 @c ----------------------------------------------------------------------
 @c{$2^{19937} - 1$} 
-@math{2^@{19937@} - 1} (about 
+@math{2^19937 - 1} (about 
 @c{$10^{6000}$}
 @math{10^6000}) and is
 equi-distributed in 623 dimensions. It has passed the @sc{diehard}
@@ -461,7 +464,7 @@ with coefficients
 @math{b_3 = -539608},
 and moduli 
 @c{$m_1 = 2^{31} - 1 = 2147483647$} 
-@math{m_1 = 2^@{31@} - 1 = 2147483647}
+@math{m_1 = 2^31 - 1 = 2147483647}
 and 
 @c{$m_2 = 2145483479$}
 @math{m_2 = 2145483479}.
@@ -509,7 +512,7 @@ with
 @math{a_5 = 104480}
 and 
 @c{$m = 2^{31}-1$}
-@math{m = 2^@{31@}-1}.
+@math{m = 2^31 - 1}.
 
 The period of this generator is about 
 @c{$10^{46}$}
@@ -538,7 +541,7 @@ $$
 @end tex
 @ifinfo
 @example
-x_n = (s^1_n ^^ s^2_n ^^ s^3_n) 
+x_n = (s1_n ^^ s2_n ^^ s3_n) 
 @end example
 @end ifinfo
 
@@ -558,9 +561,9 @@ $$
 @end tex
 @ifinfo
 @example
-s^1_@{n+1@} = (((s^1_n & 4294967294) <<12) ^^ (((s^1_n <<13) ^^ s^1_n) >>19))
-s^2_@{n+1@} = (((s^2_n & 4294967288) << 4) ^^ (((s^2_n << 2) ^^ s^2_n) >>25))
-s^3_@{n+1@} = (((s^3_n & 4294967280) <<17) ^^ (((s^3_n << 3) ^^ s^3_n) >>11))
+s1_@{n+1@} = (((s1_n & 4294967294) <<12) ^^ (((s1_n <<13) ^^ s1_n) >>19))
+s2_@{n+1@} = (((s2_n & 4294967288) << 4) ^^ (((s2_n << 2) ^^ s2_n) >>25))
+s3_@{n+1@} = (((s3_n & 4294967280) <<17) ^^ (((s3_n << 3) ^^ s3_n) >>11))
 @end example
 @end ifinfo
 
@@ -630,7 +633,7 @@ is the number of bits in the word, and D is the longest
 lag.  This would also mean that any one random number could 
 easily be zero; ie 
 @c{$0 \le r < 2^{32}$}
-@math{0 <= r < 2^@{32@}}.
+@math{0 <= r < 2^32}.
 
 Ziff doesn't say so, but it seems to me that the bits are
 completely independent here, so one could use this as an efficient
@@ -687,7 +690,7 @@ with
 @c{$c = 12345$}
 @math{c = 12345} and 
 @c{$m = 2^{31}$}
-@math{m = 2^@{31@}}.
+@math{m = 2^31}.
 The seed specifies the initial value, 
 @c{$x_1$}
 @math{x_1}. The period of this
@@ -755,7 +758,7 @@ defined on 48-bit unsigned integers with
 @c{$c = 11$} 
 @math{c = 11} and 
 @c{$m = 2^{48}$} 
-@math{m = 2^@{48@}}. 
+@math{m = 2^48}. 
 The seed specifies the upper 32 bits of the initial value, 
 @c{$x_1$}
 @math{x_1},
@@ -857,7 +860,7 @@ x_@{n+1@} = (a x_n) mod m
 @noindent
 defined on 48-bit unsigned integers with @math{a = 44485709377909} and
 @c{$m = 2^{48}$}
-@math{m = 2^@{48@}}.  The seed specifies the lower
+@math{m = 2^48}.  The seed specifies the lower
 32 bits of the initial value, 
 @c{$x_1$}
 @math{x_1}, with the lowest bit set to
@@ -976,7 +979,7 @@ x_@{n+1@} = (a x_n + c) mod m
 with 
 @math{a = 69069}, @math{c = 1} and 
 @c{$m = 2^{32}$}
-@math{m = 2^@{32@}}. The seed specifies the initial value, 
+@math{m = 2^32}. The seed specifies the initial value, 
 @c{$x_1$}
 @math{x_1}. The
 period of this generator is 
@@ -1004,7 +1007,7 @@ x_@{n+1@} = (a x_n) mod m
 @noindent
 with @math{a = 1664525} and 
 @c{$m = 2^{32}$}
-@math{m = 2^@{32@}}.
+@math{m = 2^32}.
 The seed specifies the initial value, 
 @c{$x_1$}
 @math{x_1}.
@@ -1029,7 +1032,7 @@ x_@{n+1@} = (a x_n) mod m
 @noindent
 with @math{a = 65539} and 
 @c{$m = 2^{31}$}
-@math{m = 2^@{31@}}. The
+@math{m = 2^31}. The
 seed specifies the initial value, 
 @c{$x_1$}
 @math{x_1}. The period of this
@@ -1060,7 +1063,7 @@ x_@{n+1@} = (a x_n) mod m
 @noindent
 with @math{a = 16807} and 
 @c{$m = 2^{31} - 1 = 2147483647$}
-@math{m = 2^@{31@} - 1 = 2147483647}. 
+@math{m = 2^31 - 1 = 2147483647}. 
 The seed specifies the initial value, 
 @c{$x_1$}
 @math{x_1}. The period of this
@@ -1131,40 +1134,30 @@ SX-3", @cite{International Journal of High Speed Computing} (1994).
 @c ./benchmark > tmp ; cat tmp | perl -n -e '($n,$s) = split(" ",$_) ; printf("%17s ",$n); print "-" x ($s/1e5), "\n";'
 @c ----------------------------------------------------------------------
 
+The following plot shows the relative performance of a selection the
+available random number generators.  The large number of generators
+based on single linear congruences are represented by the @code{random}
+generator below. These generators are fast but have the lowest
+statistical quality. The simulation quality generators which offer the
+best performance are @code{taus} and @code{mt19937}.
+
 @smallexample
- ranlux389 --
-    ranlux ---
-      cmrg ----
-       mrg --------
-   mt19937 ------------
-     tt800 ----------------
       taus ------------------
+   mt19937 ------------
+       mrg --------
+      cmrg ----
+    ranlux ---
+ ranlux389 --
 
-      ran0 ----------
-      ran1 -----------
-      ran2 -----
       ran3 -----------------
+      ran2 -----
+      ran1 -----------
+      ran0 ----------
 
-      ranf --------
-    rand48 ---------
-
-    ranmar --------------
-       zuf --------------
-    slatec ---------------
-      r250 --------------------
     random --------------------
 
-    minstd ------------
-       uni -----------------
-     uni32 ------------------
-       vax -----------------------
-transputer -----------------------
-      rand -------------------------
-   random8 -------------------------
-     randu ---------------------------
-
-          |---------|---------|---------|
-          0         1         2         3
+          |---------|---------|-----
+          0         1         2    
 
           Millions of random numbers per second
 @end smallexample

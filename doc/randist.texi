@@ -731,7 +731,9 @@ formula given above.
 @item
 Mean = @math{ab}, 
 Variance = @math{ab^2}, 
-Skewness = @math{2/\sqrt@{a@}}, 
+Skewness = 
+@c{$2/\sqrt{a}$}
+@math{2/\sqrt@{a@}}, 
 Excess = @math{6/a}
 
 @item
@@ -1596,10 +1598,29 @@ produce a random value @var{k} consistent with its probability.
 
 The obvious way to do this is to preprocess the probability list by
 generating a cumulative probability array with @math{K+1} elements:
-@code{C[0] = 0; C[k+1] = C[k]+P[k]}.  Note that this construction
-produces @math{C[K]=1}.  Now choose a uniform deviate @var{u} between 0
-and 1, and find the value of @var{k} such that 
-@c{$C[k] \le u < C[k+1]$}.  
+
+@tex
+\beforedisplay
+$$
+\eqalign{
+C[0] & = 0 \cr
+C[k+1] &= C[k]+P[k].
+}
+$$
+\afterdisplay
+@end tex
+@ifinfo
+@example
+  C[0] = 0 
+C[k+1] = C[k]+P[k].
+@end example
+@end ifinfo
+
+@noindent
+Note that this construction produces @math{C[K]=1}.  Now choose a
+uniform deviate @var{u} between 0 and 1, and find the value of @var{k}
+such that
+@c{$C[k] \le u < C[k+1]$}  
 @math{C[k] <= u < C[k+1]}.  
 Although this in principle requires of order 
 @c{$\log K$}
@@ -1847,7 +1868,7 @@ Variance =
 @c{$np(1-p)$} 
 @math{np(1-p)}, 
 Skewness = 
-@c{$(1-2p)/\sqrt{np(1-p)}$}, 
+@c{$(1-2p)/\sqrt{np(1-p)}$}
 @math{(1-2p)/\sqrt@{np(1-p)@}}, 
 Excess = 
 @c{$(1-6p(1-p))/(np(1-p))$}
