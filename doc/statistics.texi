@@ -105,7 +105,7 @@ For a gaussian distribution the variance of @math{\hat \mu} is
 @math{\sigma/\sqrt@{N@}}.
 
 If the underlying distribution has long tails then the mean may be
-subject to large fluctations, or in the worst case may not converge.
+subject to large fluctations.
 
 @end deftypefn
 
@@ -138,6 +138,9 @@ sample variance).
 For a gaussian distribution the variance of @math{\hat \sigma^2} is
 @math{2 \sigma^4/N}. The one standard-deviation error on the variance is
 @math{\sqrt@{2@} \sigma^2/\sqrt@{N@}}.
+
+If the underlying distribution has long tails then the variance may be
+subject to large fluctations, or may not converge.
 
 Both these functions compute the mean via a call to
 @code{gsl_stats_mean} or @code{gsl_stats_int_mean}. If you have already
@@ -260,8 +263,8 @@ compute the skewness of @var{data}, an array of length @var{n}.
 The skewness is defined as 
 @c
 @equation
-skew = @{1 \over N@}
-     \sum @{\left( x_i - @{\hat \mu@} \over @{\hat \sigma@} \right)@}^3
+skew = @{1 \over N@} \sum 
+ @{\left( x_i - @{\hat \mu@} \over @{\hat \sigma@} \right)@}^3
 @end equation
 @noindent
 where @math{x_i} are the elements of the array @var{data}.
@@ -303,8 +306,10 @@ array of length @var{n}.
 The kurtosis is defined as 
 @c
 @equation
-kurtosis = \left( @{1 \over N@} 
-  \sum @{\left(x_i - @{\hat \mu@} \over @{\hat \sigma@} \right)@}^4 \right) - 3
+kurtosis = \left( @{1 \over N@} \sum 
+ @{\left(x_i - @{\hat \mu@} \over @{\hat \sigma@} \right)@}^4 
+ \right) 
+ - 3
 @end equation
 @noindent
 
@@ -324,7 +329,8 @@ standard deviation @var{sd}.
 
 @equation
 kurtosis = @{1 \over N@}
-  \left( \sum @{\left(x_i - mean \over sd \right)@}^4 \right) - 3
+  \left( \sum @{\left(x_i - mean \over sd \right)@}^4 \right) 
+  - 3
 @end equation
 @noindent
 
