@@ -7,12 +7,31 @@
 #include "hyperg.h"
 #include "gsl_sf_exp.h"
 #include "gsl_sf_gamma.h"
+#include "gsl_sf_bessel.h"
 #include "gsl_sf_pow_int.h"
 #include "gsl_sf_hyperg.h"
 
 #define locEPS       (1000.0*GSL_MACH_EPS)
 #define locMAX(a,b)  ((a) > (b) ? (a) : (b))
 #define locMIN(a,b)  ((a) < (b) ? (a) : (b))
+
+
+
+/* Log[U(a,2a,x)]
+ * [Abramowitz+stegun, 13.6.21]
+ * Assumes x > 0, a > 1/2.
+ */
+static
+int
+hyperg_lnU_beq2a(const double a, const double x, double * result)
+{
+  const double nu = a - 0.5;
+  const double lnpre = 0.5*(x - M_LNPI) - nu*log(x);
+  double lnK;
+  gsl_sf_bessel_lnKnu_impl(nu, 0.5*x, &lnK);
+  *result = lnpre + lnK;
+  return GSL_SUCCESS;
+}
 
 
 /* Evaluate u_{N+1}/u_N by Steed's continued fraction method.
@@ -685,7 +704,10 @@ hyperg_U_int_bge1(const int a, const int b, const double x,
     }
     else {
       /* Recurse backward to near the b=2a+x line, then
-       * forward from a near zero to get the normalization.
+       * determine normalization by either direct evaluation
+       * or by a forward recursion. The direct evaluation
+       * is needed when x is small (which is precisely
+       * when it is easy to do).
        */
       const double scale_factor = GSL_SQRT_DBL_MAX;
       int scale_count_for = 0;
@@ -716,7 +738,32 @@ hyperg_U_int_bge1(const int a, const int b, const double x,
         Ua1_bck  = Ua;
         stat_bck = stat_CF1;
       }
-      {
+
+      if(b == 2*a1 && a1 > 1) {
+        /* This can happen when x is small, which is
+	 * precisely when we need to be careful with
+	 * this evaluation.
+	 */
+	hyperg_lnU_beq2a((double)a1, x, &lm_for);
+	Ua1_for = 1.0;
+        stat_for = GSL_SUCCESS;
+      }
+      else if(b == 2*a1 - 1 && a1 > 1) {
+        /* Similar to the above. Happens when x is small.
+	 * Use
+	 *   U(a,2a-1) = (x U(a,2a) - U(a-1,2(a-1))) / (2a - 2)
+	 */
+	double lnU00, lnU12;
+	double U00, U12;
+	hyperg_lnU_beq2a(a1-1.0, x, &lnU00);
+	hyperg_lnU_beq2a(a1,	 x, &lnU12);
+	lm_for = locMAX(lnU00, lnU12);
+	U00 = exp(lnU00 - lm_for);
+	U12 = exp(lnU12 - lm_for);
+	Ua1_for = (x * U12 - U00) /(2.0*a1 - 2.0);
+	stat_for = GSL_SUCCESS;
+      }
+      else {
         /* Recurse forward to determine U(a1,b) with
          * absolute normalization.
          */
@@ -724,7 +771,7 @@ hyperg_U_int_bge1(const int a, const int b, const double x,
         double Ua;
         double Uap1;
         int ap;
-        int stat_1 = hyperg_U_small_a_bgt0(a0, b, x, &Ua, &lm_for); /* U(1,b,x) */
+        stat_for = hyperg_U_small_a_bgt0(a0, b, x, &Ua, &lm_for); /* U(1,b,x) */
 
         Uam1 *= exp(-lm_for);
 
@@ -735,9 +782,10 @@ hyperg_U_int_bge1(const int a, const int b, const double x,
 	  RESCALE_2(Ua,Uam1,scale_factor,scale_count_for);
         }
         Ua1_for = Ua;
-	stat_for = stat_1;
       }
 
+      /* Now do the matching to produce the final result.
+       */
       if(Ua1_bck == 0.0) {
         *result = 0.0;
         *ln_multiplier = 0.0;

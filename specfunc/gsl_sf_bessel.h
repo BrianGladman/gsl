@@ -406,6 +406,7 @@ double  gsl_sf_bessel_Ynu(double nu, double x);
 /* Scaled modified cylindrical Bessel functions
  *
  * Exp[-|x|] BesselI[nu, x]
+ * x >= 0, nu >= 0
  *
  * exceptions: GSL_EDOM
  */
@@ -417,6 +418,7 @@ double  gsl_sf_bessel_Inu_scaled(double nu, double x);
 /* Modified cylindrical Bessel functions
  *
  * BesselI[nu, x]
+ * x >= 0, nu >= 0
  *
  * exceptions: GSL_EDOM, GSL_EOVRFLW
  */
@@ -425,10 +427,10 @@ int     gsl_sf_bessel_Inu_e(double nu, double x, double * result);
 double  gsl_sf_bessel_Inu(double nu, double x);
 
 
-
 /* Scaled modified cylindrical Bessel functions
  *
  * Exp[+|x|] BesselK[nu, x]
+ * x > 0, nu >= 0
  *
  * exceptions: GSL_EDOM
  */
@@ -440,12 +442,25 @@ double  gsl_sf_bessel_Knu_scaled(double nu, double x);
 /* Modified cylindrical Bessel functions
  *
  * BesselK[nu, x]
+ * x > 0, nu >= 0
  *
  * exceptions: GSL_EDOM, GSL_EUNDRFLW
  */
 int     gsl_sf_bessel_Knu_impl(double nu, double x, double * result);
 int     gsl_sf_bessel_Knu_e(double nu, double x, double * result);
 double  gsl_sf_bessel_Knu(double nu, double x);
+
+
+/* Logarithm of modified cylindrical Bessel functions.
+ *
+ * Log[BesselK[nu, x]]
+ * x > 0, nu >= 0
+ *
+ * exceptions: GSL_EDOM
+ */
+int     gsl_sf_bessel_lnKnu_impl(double nu, double x, double * result);
+int     gsl_sf_bessel_lnKnu_e(double nu, double x, double * result);
+double  gsl_sf_bessel_lnKnu(double nu, double x);
 
 
 /* Regular cylindrical Bessel functions J_nu(x) calculated
