@@ -46,16 +46,26 @@ halley_iteration(
   unsigned int i;
 
   for(i=0; i<max_iters; i++) {
+    double tol;
     const double e = exp(w);
     const double p = w + 1.0;
     double t = w*e - x;
     /* printf("FOO: %20.16g  %20.16g\n", w, t); */
-    t /= e*p - 0.5*(p + 1.0)*t/p;
+
+    if (w > 0) {
+      t = (t/p)/e;  /* Newton iteration */
+    } else {
+      t /= e*p - 0.5*(p + 1.0)*t/p;  /* Halley iteration */
+    };
+
     w -= t;
-    if(fabs(t) < GSL_DBL_EPSILON*(1.0 + fabs(w)))
+
+    tol = GSL_DBL_EPSILON * GSL_MAX_DBL(fabs(w), 1.0/(fabs(p)*e));
+
+    if(fabs(t) < tol)
     {
       result->val = w;
-      result->err = 2.0*GSL_DBL_EPSILON*(1.0 + fabs(w));
+      result->err = 2.0*tol;
       return GSL_SUCCESS;
     }
   }
