@@ -69,10 +69,11 @@ The library is installed as a single file, @file{libgsl.a}.  A shared
 version of the library is also installed on systems that support shared
 libraries.  The default location of these files is
 @file{/usr/local/lib}.  To link against the library you need to specify
-both the main library and a supporting @sc{cblas} library which standard
-basic linear algebra subroutines.  A suitable cblas implementation is
-provided in @file{libgslcblas} if your system does not provide one.  The
-following example shows how to link an application with the library,
+both the main library and a supporting @sc{cblas} library, which
+provides standard basic linear algebra subroutines.  A suitable @sc{cblas}
+implementation is provided in @file{libgslcblas} if your system does not
+provide one.  The following example shows how to link an application
+with the library,
 
 @example
 gcc app.o -lgsl -lgslcblas -lm
@@ -85,13 +86,13 @@ with an alternative blas library called @file{libcblas},
 gcc app.o -lgsl -lcblas -lm
 @end example
 @noindent
-For the best performance a platform-specific optimized cblas library (if
-available) should be substituted for @code{-lcblas}.  The library must
+For the best performance an optimized platform-specific @sc{cblas}
+library should be substituted for @code{-lcblas}.  The library must
 conform to the @sc{cblas} standard.  The @sc{atlas} package provides a
-high-performance tunable blas library.  It is free software and should
-be installed for any work requiring fast vector and matrix operations.
-The following command line will link with the @sc{atlas} library and its
-@sc{cblas} interface,
+portable high-performance @sc{blas} library with a @sc{cblas} interface.
+It is free software and should be installed for any work requiring fast
+vector and matrix operations.  The following command line will link with
+the @sc{atlas} library and @sc{cblas} interface,
 
 @example
 gcc app.o -lgsl -lcblas -latlas -lm
@@ -146,8 +147,10 @@ where @code{GSL_VERSION} is the two or three digit @sc{major.minor} or
 @sc{major.minor.micro} version number of the GSL Library release you
 require. A suitable choice for @code{action-if-not-found} is
 
+@example
 AC_MSG_ERROR(could not find required version of GSL)
-
+@end example
+@noindent
 Then, you can add the variables @code{GSL_LIBS} and @code{GSL_CFLAGS} to
 your Makefile.am files to obtain the correct compiler flags.
 @code{GSL_LIBS} is equal to the output of the @code{gsl-config --libs}
@@ -168,9 +171,11 @@ libgsdv_la_LDFLAGS =    \
 @cindex HAVE_INLINE
 @cindex autoconf, using with GSL
 The @code{inline} keyword is not part of ANSI C and the library does not
-export any inline function definitions by default.  The inline versions
-of functions can be included by defining the macro @code{HAVE_INLINE}
-when compiling an application.
+export any inline function definitions by default. However, the library
+provides optional inline versions of most performance-critical functions
+by conditional compilation.  The inline versions of these functions can
+be included by defining the macro @code{HAVE_INLINE} when compiling an
+application.
 
 @example
 gcc -c -DHAVE_INLINE app.c
@@ -200,8 +205,8 @@ The extended numerical type @code{long double} is part of the ANSI C
 standard and should be available in every modern compiler.  However, the
 precision of @code{long double} is platform dependent, and this should
 be considered when using it.  The IEEE standard only specifies the
-minimum precision of extended precision numbers, while @code{double} is
-the same on all platforms.
+minimum precision of extended precision numbers, while the precision of
+@code{double} is the same on all platforms.
 
 In some system libraries the @code{stdio.h} formatted input/output
 functions @code{printf} and @code{scanf} are not implemented correctly

@@ -409,7 +409,7 @@ These generators produce double precision output (48 bits) from the
 @deffnx {Generator} gsl_rng_ranlux389
 
 @cindex RANLUX random number generator
-The @code{ranlux} generator is an implemenation of the original
+The @code{ranlux} generator is an implementation of the original
 algorithm developed by L@"uscher.  It uses a
 lagged-fibonacci-with-skipping algorithm to produce "luxury random
 numbers".  It is a 24-bit generator, originally designed for
@@ -1088,7 +1088,7 @@ Park and Miller, "Random Number Generators: Good ones are hard to find",
 @deffn {Generator} gsl_rng_uni
 @deffnx {Generator} gsl_rng_uni32
 This is a reimplementation of the 16-bit SLATEC random number generator
-RUNIF. A generalisation of the generator to 32 bits is provided by
+RUNIF. A generalization of the generator to 32 bits is provided by
 @code{gsl_rng_uni32}.  The original source code is available from NETLIB.
 @end deffn
 

@@ -215,7 +215,7 @@ be necessary.  If the function is particularly shallow in the
 neighborhood of the minimum, or if the round-off error in the function
 evaluation is large, it may not be possible to rely solely on the norm
 of the gradient as a stopping criterion.  An additional requirement
-which can make the stopping critera more robust is to demand that the
+which can make the stopping criteria more robust is to demand that the
 estimate of the location of the minimum on successive iterations
 differ by more than some minimum distance.
 

@@ -175,7 +175,7 @@ the library is not free software.
 
 @emph{C Mathematical Function Handbook} by Louis Baker. A library of
 function approximations and methods corresponding to those in the
-"Handbook of Mathematical Functions" by Abramovitz and Stegun.  Source
+"Handbook of Mathematical Functions" by Abramowitz and Stegun.  Source
 code is available but the library is not free software.
 
 @emph{CCMATH} by Daniel A. Atkinson. A C numerical library covering 
@@ -919,7 +919,7 @@ in ANSI C.
 @node Thread-safety
 @section Thread-safety
 
-The library should be useable in thread-safe programs.  All the
+The library should be usable in thread-safe programs.  All the
 functions should be thread-safe, in the sense that they shouldn't use
 static variables, a.k.a. "common blocks".
 
@@ -1009,7 +1009,7 @@ functions to take advantage of the vendor-supplied system library, but
 to also provide portable implementations e.g. @code{gsl_hypot} which can
 be used as an automatic fall back via autoconf when necessary. See the
 usage of @code{hypot} in @file{gsl/complex/math.c}, the implementation
-of @code{gsl_hypot} and the correspoding parts of files
+of @code{gsl_hypot} and the corresponding parts of files
 @file{configure.in} and @file{config.h.in} as an example.
 
 @node Parallelism

@@ -597,7 +597,7 @@ with a relative step size of @code{GSL_SQRT_DBL_EPSILON}.
 @end deffn
 
 @deffn {Solver} gsl_multiroot_fsolver_hybrid
-@cindex HYBRID algorith, unscaled without derivates
+@cindex HYBRID algorithm, unscaled without derivatives
 This is a finite difference version of the Hybrid algorithm without
 internal scaling.
 @end deffn

@@ -1,12 +1,12 @@
 This chapter describes functions for computing eigenvalues and
 eigenvectors of generic matrices.  These functions are declared in the
-header file @file{gsl_sum.h}.
+header file @file{gsl_eigen.h}.
 
 The following functions work only for real, symmetric matrices.
 
 @deftypefun int gsl_eigen_jacobi (gsl_matrix * @var{matrix}, gsl_vector * @var{eval}, gsl_matrix * @var{evec}, unsigned int @var{max_rot}, unsigned int * @var{nrot})
-Find eigenvectors and eigenvalues by Jacobi iteration. The data in
-the input matrix is destroyed.
+This function finds the eigenvectors and eigenvalues of a real symmetric
+matrix by Jacobi iteration. The data in the input matrix is destroyed.
 @end deftypefun
 
 @comment @deftypefun int gsl_la_invert_jacobi (const gsl_matrix * @var{matrix}, gsl_matrix * @var{ainv}, unsigned int @var{max_rot})

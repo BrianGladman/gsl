@@ -38,7 +38,7 @@ return @code{GSL_SUCCESS}.
 
 The error handling form of the special functions always calculate an
 error estimate along with the value of the result.  Therefore,
-structures are provided for amalgating a value and error estimate.
+structures are provided for amalgamating a value and error estimate.
 These structures are declared in the header file @file{gsl_sf_result.h}.
 
 The @code{gsl_sf_result} struct contains value and error fields.
@@ -74,7 +74,7 @@ typedef struct
 @node Special Function Modes
 @section Special Function Modes
 
-The goal of the library is to acheive double precision accuracy wherever
+The goal of the library is to achieve double precision accuracy wherever
 possible.  However the cost of evaluating some special functions to
 double precision can be significant, particularly where very high order
 terms are required.  In these cases a @code{mode} argument allows the

@@ -3,7 +3,7 @@
 @cindex conversion of units
 @cindex units, conversion of
 This chapter describes macros for the values of physical constants, such
-as the speed of light, @math{c}, and gravitiational constant, @math{G}.
+as the speed of light, @math{c}, and gravitational constant, @math{G}.
 The values are available in different unit systems, including the
 standard MKS system (meters, kilograms, seconds) and the CGS system
 (centimeters, grams, seconds), which is commonly used in Astronomy.

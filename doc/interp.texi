@@ -30,7 +30,7 @@ Akima spline with periodic boundary conditions
 The interpolation object (@code{gsl_interp}) does not copy the
 data arrays but stores all static state computed from the data.
 The "x" data array is always assumed to be strictly ordered;
-the behaviour for other arrangements is not defined.
+the behavior for other arrangements is not defined.
 
 
 @section Functions
@@ -109,7 +109,7 @@ to the factory.  We would do
   ...
 @end example
 
-With this design, the interplation method can be changed
+With this design, the interpolation method can be changed
 dynamically, at runtime if desired, since the main block of code
 is unchanging and will work with any valid factory reference.
 

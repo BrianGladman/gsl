@@ -3,8 +3,8 @@
 
 This chapter describes basic mathematical functions.  Some of these
 functions are present in system libraries, but the alternative versions
-in the library can be used as a substitute when the system functions are
-not available.
+given here can be used as a substitute when the system functions are not
+available.
 
 The functions and macros are defined in the header file @file{gsl_math.h}.
 

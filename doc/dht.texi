@@ -45,19 +45,18 @@ $$
 
 @noindent
 It is this discrete expression which defines the discrete Hankel
-transform. The kernel in the summation above defines the matrix
-of the @math{\nu}-Hankel transform of size @math{M-1}.
-The coefficients of this matrix, being dependent on
-@math{\nu} and @math{M}, must be precomputed and stored;
-the @code{gsl_dht} object encapsulates this data.
-The allocation function @code{gsl_dht_new} returns
-a properly initialized
-object which can then be used to perform transforms on data
+transform. The kernel in the summation above defines the matrix of the
+@math{\nu}-Hankel transform of size @math{M-1}.  The coefficients of
+this matrix, being dependent on @math{\nu} and @math{M}, must be
+precomputed and stored; the @code{gsl_dht} object encapsulates this
+data.  The allocation function @code{gsl_dht_alloc} returns a
+@code{gsl_dht} object which must be properly initialized with
+@code{gsl_dht_calc} before it can be used to perform transforms on data
 sample vectors, for fixed @math{\nu} and @math{M}, using the
-@code{gsl_dht_apply} function. The implementation
-allows a scaling of the fundamental interval, for convenience,
-so that one take assume the function is defined on
-the interval @math{[0,X]}, rather than the unit interval.
+@code{gsl_dht_apply} function. The implementation allows a scaling of
+the fundamental interval, for convenience, so that one take assume the
+function is defined on the interval @math{[0,X]}, rather than the unit
+interval.
 
 Notice that by assumption @math{f(t)} vanishes at the endpoints
 of the interval, consistent with the inversion formula
@@ -66,9 +65,11 @@ corresponds to an orthogonal expansion in eigenfunctions
 of the Dirichlet problem for the Bessel differential equation.
 
 
-@deftypefun {gsl_dht *} gsl_dht_new (size_t @var{size}, double @var{nu}, double @var{xmax})
-Allocate and initialize a transform object.
+@deftypefun {gsl_dht *} gsl_dht_alloc (size_t @var{size})
+Allocates a Discrete Hankel transform of size @var{size}.
 @end deftypefun
+
+@comment , double @var{nu}, double @var{xmax}
 
 @deftypefun void gsl_dht_free (gsl_dht * @var{t})
 Free a transform object.

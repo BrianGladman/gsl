@@ -2,7 +2,7 @@
 @cindex maximization, see minimization
 @cindex minimization, one-dimensional
 @cindex finding minima
-@cindex non-linear functions, minimisation
+@cindex non-linear functions, minimization
 
 This chapter describes functions for finding minima of arbitrary
 one-dimensional functions.  The library provides low level components

@@ -167,7 +167,7 @@ function returns the final approximation, @var{result}, an estimate of
 the absolute error, @var{abserr} and the number of function evaluations
 used, @var{neval}.  The Gauss-Kronrod rules are designed in such a way
 that each rule uses all the results of its predecessors, in order to
-minimise the total number of function evaluations.
+minimize the total number of function evaluations.
 @end deftypefun
 
 

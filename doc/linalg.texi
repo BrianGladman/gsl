@@ -191,7 +191,7 @@ right-hand side @math{b}, which is replaced by the solution on output.
 @deftypefun int gsl_linalg_QR_lssolve (const gsl_matrix * @var{QR}, const gsl_vector * @var{tau}, const gsl_vector * @var{b}, gsl_vector * @var{x}, gsl_vector * @var{residual})
 This function finds the least squares solution to the overdetermined
 system @math{A x = b} where the matrix @var{A} has more rows than
-columns.  The least squares solution minimises the Euclidean norm of the
+columns.  The least squares solution minimizes the Euclidean norm of the
 residual, @math{||Ax - b||}.The routine uses the @math{QR} decomposition
 of @math{A} into (@var{QR}, @var{tau}) given by
 @code{gsl_linalg_QR_decomp}.  The solution is returned in @var{x}.  The
@@ -386,7 +386,7 @@ singular value indicates that the matrix is singular. The number of
 non-zero singular values indicates the rank of the matrix.  In practice
 singular value decomposition of a rank-deficient matrix will not produce
 exact zeroes for singular values, due to finite numerical
-precision. Small singular values should be edited by chosing a suitable
+precision. Small singular values should be edited by choosing a suitable
 tolerance.
 
 @deftypefun int gsl_linalg_SV_decomp (gsl_matrix * @var{A}, gsl_matrix * @var{Q}, gsl_vector * @var{S})
@@ -425,7 +425,7 @@ system is solved in the least squares sense, returning the solution
 @cindex matrix square root, Cholesky decomposition
 
 A symmetric, positive definite square matrix @math{A} has a Cholesky
-decomposition into a product of a lower triagular matrix @math{L} and
+decomposition into a product of a lower triangular matrix @math{L} and
 its transpose @math{L^T},
 
 @tex
@@ -496,9 +496,51 @@ matrix @var{A} is destroyed by the Householder transformations.
 @section Tridiagonal Systems
 @cindex tridiagonal systems
 @deftypefun int gsl_linalg_solve_symm_tridiag (const gsl_vector * @var{diag}, const gsl_vector * @var{offdiag}, const gsl_vector * @var{b}, gsl_vector * @var{x})
+This function solves the system @math{A x = b} where @var{A} is
+symmetric tridiagonal.  The form of @var{A} is shown below,
+@tex
+\beforedisplay
+$$
+A = \pmatrix{d0&o0&  &  \cr
+             o0&d1&o1&  \cr
+               &o1&d2&o2\cr 
+               &  &o2&d3\cr}
+$$
+\afterdisplay
+@end tex
+@ifinfo
+@example
+A = ( d0 o0       )
+    ( o0 d1 o1    )
+    (    o1 d2 o2 )
+    (       o2 d3 )
+@end example
+@end ifinfo
+
 @end deftypefun
 
 @deftypefun int gsl_linalg_solve_symm_cyc_tridiag (const gsl_vector * @var{diag}, const gsl_vector * @var{offdiag}, const gsl_vector * @var{b}, gsl_vector * @var{x})
+This function solves the system @math{A x = b} where @var{A} is
+symmetric cyclic tridiagonal.  The form of @var{A} is shown below,
+@tex
+\beforedisplay
+$$
+A = \pmatrix{d0&o0&  &o3\cr
+             o0&d1&o1&  \cr
+               &o1&d2&o2\cr 
+             o3&  &o2&d3\cr}
+$$
+\afterdisplay
+@end tex
+@ifinfo
+@example
+A = ( d0 o0    o3 )
+    ( o0 d1 o1    )
+    (    o1 d2 o2 )
+    ( o3    o2 d3 )
+@end example
+@end ifinfo
+
 @end deftypefun
 
 

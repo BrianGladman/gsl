@@ -59,7 +59,7 @@ assumed implicitly and does not have to be stored.
 Numbers smaller than 
 @c{$2^{E_{min}}$}
 @math{2^(E_min)}
-are be stored in @dfn{denormalised form} with a leading zero,
+are be stored in @dfn{denormalized form} with a leading zero,
 
 @tex
 \beforedisplay

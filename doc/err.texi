@@ -115,7 +115,7 @@ error handler.  The error handler is called by library functions when
 they report an error, just before they return to the caller.  The
 purpose of the handler is to provide a function where a breakpoint can
 be set that will catch library errors when running under the debugger.
-It is not intended for use in production programs.  These should handle
+It is not intended for use in production programs which should handle
 any errors using the error return codes described above.
 
 The default behavior of the error handler is to print a short message

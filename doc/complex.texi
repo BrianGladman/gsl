@@ -9,7 +9,7 @@ done for the csc,sec,cot,csch,sech,coth functions).
 For multiple-valued functions the branch cuts have been chosen to follow
 the conventions of Abramowitz and Stegun in the @cite{Handbook of
 Mathematical Functions}. The functions return principal values which are
-the same as those is GNU Calc, which in turn are the same as those
+the same as those in GNU Calc, which in turn are the same as those
 in @cite{Common Lisp, The Language (Second Edition)} @footnote{The first
 edition of @cite{Common Lisp, The Language} used different definitions
 from the second edition.} and the HP-28/48 series of calculators.
@@ -106,7 +106,7 @@ This function returns the magnitude of the complex number @var{z}, @math{|z|}.
 @end deftypefun
 
 @deftypefun double gsl_complex_abs2 (gsl_complex @var{z})
-This function returns the squared magnitued of the complex number
+This function returns the squared magnitude of the complex number
 @var{z}, @math{|z|^2}.
 @end deftypefun
 
@@ -134,33 +134,33 @@ This function returns the difference of the complex numbers @var{a} and
 @end deftypefun
 
 @deftypefun gsl_complex gsl_complex_mul (gsl_complex @var{a}, gsl_complex @var{b})
-This functions returns the product of the complex numbers @var{a} and
+This function returns the product of the complex numbers @var{a} and
 @var{b}, @math{z=ab}.
 @end deftypefun
 
 @deftypefun gsl_complex gsl_complex_div (gsl_complex @var{a}, gsl_complex @var{b})
-This functions returns the quotient of the complex numbers @var{a} and
+This function returns the quotient of the complex numbers @var{a} and
 @var{b}, @math{z=a/b}.
 @end deftypefun
 
 
 @deftypefun gsl_complex gsl_complex_add_real (gsl_complex @var{a}, double @var{x})
-This functions returns the sum of the complex number @var{a} and the
+This function returns the sum of the complex number @var{a} and the
 real number @var{x}, @math{z=a+x}.
 @end deftypefun
 
 @deftypefun gsl_complex gsl_complex_sub_real (gsl_complex @var{a}, double @var{x})
-This functions returns the difference of the complex number @var{a} and the
+This function returns the difference of the complex number @var{a} and the
 real number @var{x}, @math{z=a-x}.
 @end deftypefun
 
 @deftypefun gsl_complex gsl_complex_mul_real (gsl_complex @var{a}, double @var{b})
-This functions returns the product of the complex number @var{a} and the
+This function returns the product of the complex number @var{a} and the
 real number @var{x}, @math{z=ax}.
 @end deftypefun
 
 @deftypefun gsl_complex gsl_complex_div_real (gsl_complex @var{a}, double @var{b})
-This functions returns the quotient of the complex number @var{a} and the
+This function returns the quotient of the complex number @var{a} and the
 real number @var{x}, @math{z=a/x}.
 @end deftypefun
 
@@ -300,31 +300,32 @@ This function returns the complex cotangent of the complex number @var{z},
 
 @deftypefun gsl_complex gsl_complex_arcsin (gsl_complex @var{z})
 This function returns the complex arcsine of the complex number @var{z},
-@math{\arcsin(z)}. The branch cuts are on the real axis, less than -1
-and greater than 1.
+@math{\arcsin(z)}. The branch cuts are on the real axis, less than @math{-1}
+and greater than @math{1}.
 @end deftypefun
 
 @deftypefun gsl_complex gsl_complex_arcsin_real (double @var{z})
 This function returns the complex arcsine of the real number @var{z},
-@math{\arcsin(z)}. For @math{z} between -1 and 1, the function returns a
-real value in the range @math{(-\pi,\pi]}. For @math{z} less than -1 the
-result has a real part of @math{-\pi/2} and a positive imaginary part.
-For @math{z} greater than 1 the result has a real part of @math{\pi/2}
-and a negative imaginary part.
+@math{\arcsin(z)}. For @math{z} between @math{-1} and @math{1}, the
+function returns a real value in the range @math{(-\pi,\pi]}. For
+@math{z} less than @math{-1} the result has a real part of @math{-\pi/2}
+and a positive imaginary part.  For @math{z} greater than @math{1} the
+result has a real part of @math{\pi/2} and a negative imaginary part.
 @end deftypefun
 
 @deftypefun gsl_complex gsl_complex_arccos (gsl_complex @var{z})
 This function returns the complex arccosine of the complex number @var{z},
-@math{\arccos(z)}. The branch cuts are on the real axis, less than -1
-and greater than 1.
+@math{\arccos(z)}. The branch cuts are on the real axis, less than @math{-1}
+and greater than @math{1}.
 @end deftypefun
 
 @deftypefun gsl_complex gsl_complex_arccos_real (double @var{z})
 This function returns the complex arccosine of the real number @var{z},
-@math{\arccos(z)}. For @math{z} between -1 and 1, the function returns a
-real value in the range @math{[0,\pi]}. For @math{z} less than -1 the
-result has a real part of @math{\pi/2} and a negative imaginary part.
-For @math{z} greater than 1 the result is purely imaginary and positive.
+@math{\arccos(z)}. For @math{z} between @math{-1} and @math{1}, the
+function returns a real value in the range @math{[0,\pi]}. For @math{z}
+less than @math{-1} the result has a real part of @math{\pi/2} and a
+negative imaginary part.  For @math{z} greater than @math{1} the result
+is purely imaginary and positive.
 @end deftypefun
 
 @deftypefun gsl_complex gsl_complex_arctan (gsl_complex @var{z})
@@ -407,8 +408,8 @@ imaginary axis, below @math{-i} and above @math{i}.
 
 @deftypefun gsl_complex gsl_complex_arccosh (gsl_complex @var{z})
 This function returns the complex hyperbolic arccosine of the complex
-number @var{z}, @math{\arccosh(z)}.  The branch cut is on the real less
-than 1.
+number @var{z}, @math{\arccosh(z)}.  The branch cut is on the real axis,
+less than @math{1}.
 @end deftypefun
 
 @deftypefun gsl_complex gsl_complex_arccosh_real (double @var{z})
@@ -419,7 +420,7 @@ the real number @var{z}, @math{\arccosh(z)}.
 @deftypefun gsl_complex gsl_complex_arctanh (gsl_complex @var{z})
 This function returns the complex hyperbolic arctangent of the complex
 number @var{z}, @math{\arctanh(z)}.  The branch cuts are on the real
-axis, less than -1 and greater than 1.
+axis, less than @math{-1} and greater than @math{1}.
 @end deftypefun
 
 @deftypefun gsl_complex gsl_complex_arctanh_real (double @var{z})

@@ -535,12 +535,12 @@ functions fall into this category.
 
 @deftypefun int gsl_vector_memcpy (gsl_vector * @var{dest}, const gsl_vector * @var{src})
 This function copies the elements of the vector @var{src} into the
-vector @var{dest}.  The two vectors must be the same length.
+vector @var{dest}.  The two vectors must have the same length.
 @end deftypefun
 
 @deftypefun int gsl_vector_swap (gsl_vector * @var{v}, gsl_vector * @var{w})
 This function exchanges the elements of the vectors @var{v} and @var{w}
-by copying.
+by copying.  The two vectors must have the same length.
 @end deftypefun
 
 
@@ -956,6 +956,11 @@ Of course, the original matrix should not be deallocated while the new
 matrix is still in use.
 @end deftypefun
 
+@deftypefun const gsl_matrix gsl_matrix_const_submatrix (const gsl_matrix * @var{m}, size_t @var{i}, size_t @var{j}, size_t @var{n1}, size_t @var{n2})
+This function is equivalent to @code{gsl_matrix_submatrix} but can be
+used for matrices which are declared @code{const}.
+@end deftypefun
+
 @node Modifying matrix views
 @subsection Modifying matrix views
 
@@ -1237,7 +1242,7 @@ several equal minimum elements then the first element found is returned.
 @deftypefun void gsl_matrix_minmax_index (const gsl_matrix * @var{m}, size_t * @var{imin}, size_t * @var{imax})
 This function returns the indices of the minimum and maximum values in
 the matrix @var{m}, storing them in (@var{imin},@var{jmin}) and
-(@var{imax},@var{jmax}. When there are several equal minimum or maximum
+(@var{imax},@var{jmax}). When there are several equal minimum or maximum
 elements then the first elements found are returned.
 @end deftypefun
 

@@ -280,7 +280,7 @@ covers the coordinate @var{x} in the histogram @var{h}.  The bin is
 located using a binary search. The search includes an optimization for
 histograms with uniform range, and will return the correct bin
 immediately in this case.  If @var{x} is found in the range of the
-histgram then the function sets the index @var{i} and returns
+histogram then the function sets the index @var{i} and returns
 @code{GSL_SUCCESS}.  If @var{x} lies outside the valid range of the
 histogram then the function returns @code{GSL_EDOM} and the error
 handler is invoked.
@@ -948,7 +948,7 @@ xrange[nx-1] xrange[nx] yrange[ny-1] yrange[ny] bin(nx-1,ny-1)
 @noindent
 Each line contains the lower and upper limits of the bin and the
 contents of the bin.  Since the upper limits of the each bin are the
-lower limits of the neighbouring bins there is duplication of these
+lower limits of the neighboring bins there is duplication of these
 values but this allows the histogram to be manipulated with
 line-oriented tools.
 @end deftypefun

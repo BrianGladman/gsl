@@ -116,7 +116,7 @@ Evaluate derivative of a Chebyshev series at a given point.
 
 @deftypefun double gsl_sf_cheb_eval_integ (gsl_sf_cheb_series * @var{cs}, double @var{x})
 @deftypefunx int gsl_sf_cheb_eval_integ_e (gsl_sf_cheb_series * @var{cs}, double @var{x}, gsl_sf_result * @var{result})
-Evaluate integal of a Chebyshev series at a given point.  The
+Evaluate integral of a Chebyshev series at a given point.  The
 integral is fixed by the condition that it equals zero at
 the left end-point, i.e. it is precisely
 @math{\int_a^x dt cs(t; a,b)}.

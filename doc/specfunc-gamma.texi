@@ -98,7 +98,7 @@ value part (@var{lnr}), however, never suffers from loss of precision..
 
 @deftypefun double gsl_sf_taylorcoeff (int @var{n}, double @var{x})
 @deftypefunx int gsl_sf_taylorcoeff_e (int @var{n}, double @var{x}, gsl_sf_result * @var{result})
-These routines compute the Talyor coefficient @math{x^n / n!} for 
+These routines compute the Taylor coefficient @math{x^n / n!} for 
 @c{$x \ge 0$}
 @math{x >= 0}, 
 @c{$n \ge 0$}
@@ -156,7 +156,7 @@ equivalent to the sum @math{\log(n!) - \log(m!) - \log((n-m)!)}.
 @deftypefunx int gsl_sf_poch_e (double @var{a}, double @var{x}, gsl_sf_result * @var{result})
 These routines compute the Pochhammer symbol @math{(a)_x := \Gamma(a +
 x)/\Gamma(x)}, subject to @math{a} and @math{a+x} not being negative
-integers. The Pochhamer symbol is also known as the Apell symbol.
+integers. The Pochhammer symbol is also known as the Apell symbol.
 @comment exceptions:  GSL_EDOM, GSL_EOVRFLW
 @end deftypefun
 
@@ -170,8 +170,8 @@ These routines compute the logarithm of the Pochhammer symbol,
 @end deftypefun
 
 @deftypefun int gsl_sf_lnpoch_sgn_e (double @var{a}, double @var{x}, gsl_sf_result * @var{result}, double * @var{sgn})
-These routines compute the sign of the Pochhamer symbol and the
-logarithm of its magnitued.  The computed parameters are @math{result =
+These routines compute the sign of the Pochhammer symbol and the
+logarithm of its magnitude.  The computed parameters are @math{result =
 \log(|(a)_x|)} and @math{sgn = sgn((a)_x)} where @math{(a)_x :=
 \Gamma(a + x)/\Gamma(a)}, subject to @math{a}, @math{a+x} not being
 negative integers.
