@@ -1,3 +1,8 @@
+Thu Jul 30 16:12:05 1998  Brian Gough  <bjg@vvv.lanl.gov>
+
+	* Makefile.am: now using a script to write the AR commands
+ 	explicitly, this should be more portable
+
 Tue Jul 28 23:07:04 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
 	* Makefile.am: new style single build of libgsl.a
