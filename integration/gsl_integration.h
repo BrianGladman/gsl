@@ -116,4 +116,10 @@ int gsl_integration_qagp (const gsl_function * f,
 			  gsl_integration_workspace * workspace,
 			  double *result, double *abserr);
 
+int gsl_integration_qawc (gsl_function *f,
+			  double a, double b, double c,
+			  double epsabs, double epsrel, size_t limit,
+			  gsl_integration_workspace * workspace,
+			  double * result, double * abserr);
+
 #endif /* GSL_INTEGRATION_H */

@@ -105,8 +105,9 @@ gsl_integration_qag_impl (const gsl_function * f,
 
       if (resasc1 != error1 && resasc2 != error2)
 	{
-	  if (fabs (r_i - area12) <= 0.00001 * fabs (area12)
-	      && error12 >= 0.99 * e_i)
+	  double delta = r_i - area12;
+
+	  if (fabs (delta) <= 1.0e-5 * fabs (area12) && error12 >= 0.99 * e_i)
 	    {
 	      roundoff_type1++;
 	    }
@@ -128,14 +129,10 @@ gsl_integration_qag_impl (const gsl_function * f,
 	  /* set error flag in the case of bad integrand behaviour at
 	     a point of the integration range */
 
-	  {
-	    volatile double tmp = ((1 + 100 * GSL_DBL_EPSILON)
-				   * (fabs (a2) + 1000 * GSL_DBL_MIN));
-	    if (fabs (a1) <= tmp && fabs (b2) <= tmp)
-	      {
-		error_type = 3;
-	      }
-	  }
+	  if (subinterval_too_small (a1, a2, b2))
+	    {
+	      error_type = 3;
+	    }
 	}
 
       update (workspace, a1, b1, area1, error1, a2, b2, area2, error2);

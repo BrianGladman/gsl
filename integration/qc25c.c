@@ -1,27 +1,20 @@
-#include <config.h>
-#include <stdlib.h>
-#include <math.h>
-#include <gsl_math.h>
-#include <gsl_integration.h>
-
 struct fn_cauchy_params
 {
   gsl_function *function;
   double singularity;
 };
 
-
 static double fn_cauchy (double t, void *params);
 
 static void compute_moments (double cc, double *moment);
 
-void
+static void
 qc25c (gsl_function * f, double a, double b, double c, 
-       double *result, double *abserr);
+       double *result, double *abserr, int *err_reliable);
 
-void
+static void
 qc25c (gsl_function * f, double a, double b, double c, 
-       double *result, double *abserr)
+       double *result, double *abserr, int *err_reliable)
 {
   double cc = (2 * c - b - a) / (b - a);
 
@@ -40,6 +33,16 @@ qc25c (gsl_function * f, double a, double b, double c,
 
       gsl_integration_qk15 (&weighted_function, a, b, result, abserr,
 			    &resabs, &resasc);
+      
+      if (*abserr == resasc)
+	{
+	  *err_reliable = 0;
+	}
+      else 
+	{
+	  *err_reliable = 1;
+	}
+
       return;
     }
   else
@@ -62,6 +65,7 @@ qc25c (gsl_function * f, double a, double b, double c,
 
       *result = res24;
       *abserr = fabs(res24 - res12) ;
+      *err_reliable = 0;
 
       return;
     }
@@ -93,12 +97,12 @@ compute_moments (double cc, double *moment)
 
       if ((k % 2) == 0)
 	{
-	  const double km1 = k - 1.0;
-	  a2 = 2.0 * cc * a1 - a0 - 4.0 / (km1 * km1 - 1.0);
+	  a2 = 2.0 * cc * a1 - a0;
 	}
       else
 	{
-	  a2 = 2.0 * cc * a1 - a0;
+	  const double km1 = k - 1.0;
+	  a2 = 2.0 * cc * a1 - a0 - 4.0 / (km1 * km1 - 1.0);
 	}
 
       moment[k] = a2;

@@ -61,13 +61,6 @@ qelg (struct extrapolation_table *table, double *result, double *abserr)
 
   *abserr = GSL_DBL_MAX;
 
-#ifdef DEBUG
-  for (i = 0; i < 32; i++)
-    {
-      printf ("QELG: TAB i = %d epstab(i) %.18e\n", i + 1, epstab[i]);
-    };
-#endif
-
   if (n < 2)
     {
       *result = current;
@@ -77,10 +70,6 @@ qelg (struct extrapolation_table *table, double *result, double *abserr)
 
   epstab[n + 2] = epstab[n];
   epstab[n] = GSL_DBL_MAX;
-
-#ifdef DEBUG
-  printf ("QELG: outside loop, newelm = %d, n_orig = %d\n", newelm, n_orig);
-#endif
 
   for (i = 0; i < newelm; i++)
     {
@@ -99,17 +88,11 @@ qelg (struct extrapolation_table *table, double *result, double *abserr)
 
       double e3, delta1, err1, tol1, ss;
 
-#ifdef DEBUG
-      printf ("QELG: in loop, i = %d, newelm = %d\n", i, newelm);
-#endif
-
       if (err2 <= tol2 && err3 <= tol3)
 	{
 	  /* If e0, e1 and e2 are equal to within machine accuracy,
 	     convergence is assumed.  */
-#ifdef DEBUG
-	  printf ("QELG: err2 <= tol2 && err3 <= tol3\n");
-#endif
+
 	  *result = res;
 	  absolute = err2 + err3;
 	  relative = 5 * GSL_DBL_EPSILON * fabs (res);
@@ -125,34 +108,21 @@ qelg (struct extrapolation_table *table, double *result, double *abserr)
 
       /* If two elements are very close to each other, omit a part of
          the table by adjusting the value of n */
-#ifdef DEBUG
-      printf ("QELG: err1 = %.18e tol1 = %.18e\n", err1, tol1);
-      printf ("QELG: err2 = %.18e tol2 = %.18e\n", err2, tol2);
-      printf ("QELG: err3 = %.18e tol3 = %.18e\n", err3, tol3);
-#endif
+
       if (err1 <= tol1 || err2 <= tol2 || err3 <= tol3)
 	{
-#ifdef DEBUG
-	  printf ("QELG: err1 <= tol1 || err2 <= tol2 || err3 <= tol3\n");
-#endif
 	  n_final = 2 * i;
 	  break;
 	}
 
       ss = (1 / delta1 + 1 / delta2) - 1 / delta3;
 
-#ifdef DEBUG
-      printf ("QELG: ss = %.18e\n", ss);
-#endif
       /* Test to detect irregular behaviour in the table, and
          eventually omit a part of the table by adjusting the value of
          n. */
 
       if (fabs (ss * e1) <= 0.0001)
 	{
-#ifdef DEBUG
-	  printf ("QELG: fabs(ss*e1) <= 0.0001\n");
-#endif
 	  n_final = 2 * i;
 	  break;
 	}
@@ -165,14 +135,9 @@ qelg (struct extrapolation_table *table, double *result, double *abserr)
 
       {
 	const double error = err2 + fabs (res - e2) + err3;
-#ifdef DEBUG
-	printf ("QELG: *abserr = %.18e, error = %.18e\n", *abserr, error);
-#endif
+
 	if (error <= *abserr)
 	  {
-#ifdef DEBUG
-	    printf ("QELG: setting *abserr to %.18e\n", error);
-#endif
 	    *abserr = error;
 	    *result = res;
 	  }
@@ -187,9 +152,6 @@ qelg (struct extrapolation_table *table, double *result, double *abserr)
     if (n_final == limexp)
       {
 	n_final = 2 * (limexp / 2);
-#ifdef DEBUG
-	printf ("QELG: nfinal reduced to %d\n", n_final);
-#endif
       }
   }
 
@@ -197,9 +159,6 @@ qelg (struct extrapolation_table *table, double *result, double *abserr)
     {
       for (i = 0; i <= newelm; i++)
 	{
-#ifdef DEBUG
-	  printf ("QELG: A:copying epstab[%d] into epstab[%d]\n", i * 2 + 3, i * 2 + 1);
-#endif
 	  epstab[1 + i * 2] = epstab[i * 2 + 3];
 	}
     }
@@ -207,23 +166,14 @@ qelg (struct extrapolation_table *table, double *result, double *abserr)
     {
       for (i = 0; i <= newelm; i++)
 	{
-#ifdef DEBUG
-	  printf ("QELG: A:copying epstab[%d] into epstab[%d]\n", i * 2 + 2, i * 2);
-#endif
 	  epstab[i * 2] = epstab[i * 2 + 2];
 	}
     }
 
   if (n_orig != n_final)
     {
-#ifdef DEBUG
-      printf ("n_orig = %d, n_final = %d\n", n_orig, n_final);
-#endif
       for (i = 0; i <= n_final; i++)
 	{
-#ifdef DEBUG
-	  printf ("QELG: B:copying epstab[%d] into epstab[%d]\n", n_orig - n_final + i, i);
-#endif
 	  epstab[i] = epstab[n_orig - n_final + i];
 	}
     }
@@ -232,9 +182,6 @@ qelg (struct extrapolation_table *table, double *result, double *abserr)
 
   if (nres_orig < 3)
     {
-#ifdef DEBUG
-      printf ("QELG: setting term %d to %.18e\n", nres_orig, *result);
-#endif
       res3la[nres_orig] = *result;
       *abserr = GSL_DBL_MAX;
     }
@@ -242,23 +189,13 @@ qelg (struct extrapolation_table *table, double *result, double *abserr)
     {				/* Compute error estimate */
       *abserr = (fabs (*result - res3la[2]) + fabs (*result - res3la[1])
 		 + fabs (*result - res3la[0]));
-#ifdef DEBUG
-      printf ("QELG: error estimate computed as %.18e\n", *abserr);
-      printf ("QELG: result = %.18e\n", *result);
-      printf ("QELG: term1 = %.18e\n", res3la[2]);
-      printf ("QELG: term2 = %.18e\n", res3la[1]);
-      printf ("QELG: term3 = %.18e\n", res3la[0]);
-#endif
+
       res3la[0] = res3la[1];
       res3la[1] = res3la[2];
       res3la[2] = *result;
     }
 
   *abserr = GSL_MAX_DBL (*abserr, 5 * GSL_DBL_EPSILON * fabs (*result));
-
-#ifdef DEBUG
-  printf ("QELG: abserr = %.18e\n", *abserr);
-#endif
 
   return;
 }

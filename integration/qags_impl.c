@@ -1,4 +1,3 @@
-#include <assert.h>
 #include <config.h>
 #include <math.h>
 #include <float.h>
@@ -21,6 +20,7 @@ gsl_integration_qags_impl (const gsl_function * f,
 			   gsl_integration_rule * q)
 {
   double area, errsum;
+  double res_ext, err_ext;
   double result0, abserr0, resabs0, resasc0;
   double tolerance;
 
@@ -87,22 +87,13 @@ gsl_integration_qags_impl (const gsl_function * f,
 
   initialise_table (&table, result0);
 
-  *abserr = GSL_DBL_MAX;
-
-  /* Compare the integral of f(x) with the integral of |f(x)|
-     to determine if f(x) covers both positive and negative values */
-
-  if (fabs (result0) >= (1 - 50 * GSL_DBL_EPSILON) * resabs0)
-    {
-      positive_integrand = 1;
-    }
-  else
-    {
-      positive_integrand = 0;
-    }
-
   area = result0;
   errsum = abserr0;
+
+  res_ext = result0;
+  err_ext = GSL_DBL_MAX;
+
+  positive_integrand = test_positivity (result0, resabs0);
 
   iteration = 1;
 
@@ -151,9 +142,9 @@ gsl_integration_qags_impl (const gsl_function * f,
 
       if (resasc1 != error1 && resasc2 != error2)
 	{
-	  double delta_r = r_i - area12;
+	  double delta = r_i - area12;
 
-	  if (fabs (delta_r) <= 1e-5 * fabs (area12) && error12 >= 0.99 * e_i)
+	  if (fabs (delta) <= 1.0e-5 * fabs (area12) && error12 >= 0.99 * e_i)
 	    {
 	      if (!extrapolate)
 		{
@@ -185,14 +176,10 @@ gsl_integration_qags_impl (const gsl_function * f,
       /* set error flag in the case of bad integrand behaviour at
          a point of the integration range */
 
-      {
-	double tmp = ((1 + 100 * GSL_DBL_EPSILON)
-		      * (fabs (a2) + 1000 * GSL_DBL_MIN));
-	if (fabs (a1) <= tmp && fabs (b2) <= tmp)
-	  {
-	    error_type = 4;
-	  }
-      }
+      if (subinterval_too_small (a1, a2, b2))
+	{
+	  error_type = 4;
+	}
 
       /* append the newly-created intervals to the list */
 
@@ -260,19 +247,19 @@ gsl_integration_qags_impl (const gsl_function * f,
 
       ktmin++;
 
-      if (ktmin > 5 && *abserr < 0.001 * errsum)
+      if (ktmin > 5 && err_ext < 0.001 * errsum)
 	{
 	  error_type = 5;
 	}
 
-      if (abseps < *abserr)
+      if (abseps < err_ext)
 	{
 	  ktmin = 0;
-	  *abserr = abseps;
-	  *result = reseps;
+	  err_ext = abseps;
+	  res_ext = reseps;
 	  correc = error_over_large_intervals;
 	  ertest = GSL_MAX_DBL (epsabs, epsrel * fabs (reseps));
-	  if (*abserr <= ertest)
+	  if (err_ext <= ertest)
 	    break;
 	}
 
@@ -297,14 +284,17 @@ gsl_integration_qags_impl (const gsl_function * f,
     }
   while (iteration < limit);
 
-  if (*abserr == GSL_DBL_MAX)
+  *result = res_ext;
+  *abserr = err_ext;
+
+  if (err_ext == GSL_DBL_MAX)
     goto compute_result;
 
   if (error_type || error_type2)
     {
       if (error_type2)
 	{
-	  *abserr += correc;
+	  err_ext += correc;
 	}
 
       if (error_type == 0)
@@ -312,10 +302,10 @@ gsl_integration_qags_impl (const gsl_function * f,
 
       if (result != 0 && area != 0)
 	{
-	  if (*abserr / fabs (*result) > errsum / fabs (area))
+	  if (err_ext / fabs (res_ext) > errsum / fabs (area))
 	    goto compute_result;
 	}
-      else if (*abserr > errsum)
+      else if (err_ext > errsum)
 	{
 	  goto compute_result;
 	}
@@ -328,14 +318,14 @@ gsl_integration_qags_impl (const gsl_function * f,
   /*  Test on divergence. */
 
   {
-    double max_area = GSL_MAX_DBL (fabs (*result), fabs (area));
+    double max_area = GSL_MAX_DBL (fabs (res_ext), fabs (area));
 
     if (!positive_integrand && max_area < 0.01 * resabs0)
       goto return_error;
   }
 
   {
-    double ratio = *result / area;
+    double ratio = res_ext / area;
 
     if (ratio < 0.01 || ratio > 100 || errsum > fabs (area))
       error_type = 6;

@@ -45,3 +45,14 @@ gsl_integration_qagp_impl (const gsl_function *f,
 			   gsl_integration_rule * q);
 
 
+int
+gsl_integration_qawc_impl (gsl_function * f,
+			  const double a, const double b, const double c,
+			  const double epsabs, const double epsrel,
+			  const size_t limit,
+			  gsl_integration_workspace * workspace,
+			  double *result, double *abserr);
+
+void gsl_integration_qcheb (gsl_function * f, double a, double b, 
+			    double *cheb12, double *cheb24);
+

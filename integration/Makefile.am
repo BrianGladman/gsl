@@ -11,12 +11,11 @@ libgslintegration_a_SOURCES = \
 	qagi.c qagiu.c qagil.c \
 	qagp.c qagp_impl.c \
 	err.c err.h \
-	workspace.c
-
-#	qcheb.c qc25c.c qawc.c qawc_impl.c
+	workspace.c \
+	qcheb.c qawc.c qawc_impl.c
 
 include_HEADERS = gsl_integration.h
-noinst_HEADERS = integration.h qpsrt.c qelg.c
+noinst_HEADERS = integration.h qpsrt.c qelg.c  qc25c.c
 
 TESTS = test
 check_PROGRAMS = test

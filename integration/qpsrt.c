@@ -37,7 +37,6 @@ void qpsrt (gsl_integration_workspace * workspace)
   while (i_nrmax > 0 && errmax > elist[order[i_nrmax - 1]]) 
     {
       order[i_nrmax] = order[i_nrmax - 1] ;
-      /* printf("NR copied order[%d] to order[%d]\n", i_nrmax-1, i_nrmax); */
       i_nrmax-- ;
     } 
 
@@ -53,9 +52,6 @@ void qpsrt (gsl_integration_workspace * workspace)
     {
       top = limit - last + 1;
     }
-
-  /* printf("top = %d\n", top) ; */
-
   
   /* Insert errmax by traversing the list top-down, starting
      comparison from the element elist(order(i_nrmax+1)). */
@@ -65,12 +61,10 @@ void qpsrt (gsl_integration_workspace * workspace)
   while (errmax < elist[order[i]] && i < top)
     {
       order[i-1] = order[i] ;
-      /* printf("DOWN copied order[%d] to order[%d]\n", i, i-1); */
       i++ ;
     }
   
   order[i-1] = i_maxerr ;
-  /* printf("I-1 put %d into order[%d]\n", i_maxerr, i-1) ; */
   
   /* Insert errmin by traversing the list bottom-up */
   
@@ -81,12 +75,10 @@ void qpsrt (gsl_integration_workspace * workspace)
   while (errmin >= elist[order[k]] && k > i - 2)
     {
       order[k+1] = order[k] ;
-      /* printf("UP copied order[%d] to order[%d]\n", k, k+1); */
       k-- ;
     }
   
   order[k+1] = last ;
-  /* printf("K put %d into order[%d]\n", last, k+1) ; */
 
   /* Set i_max and e_max */
 

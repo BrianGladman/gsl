@@ -202,3 +202,34 @@ sort_results (gsl_integration_workspace * workspace)
 
   workspace->i = order[0] ;
 }
+
+static inline int
+subinterval_too_small (double a1, double a2, double b2);
+
+
+static inline int
+subinterval_too_small (double a1, double a2, double b2)
+{
+  const double e = GSL_DBL_EPSILON;
+  const double u = GSL_DBL_MIN;
+
+  double tmp = (1 + 100 * e) * (fabs (a2) + 1000 * u);
+
+  int status = fabs (a1) <= tmp && fabs (b2) <= tmp;
+
+  return status;
+}
+
+/* Compare the integral of f(x) with the integral of |f(x)|
+   to determine if f(x) covers both positive and negative values */
+
+static inline int
+test_positivity (double result, double resabs);
+
+static inline int
+test_positivity (double result, double resabs)
+{
+  int status = (fabs (result) >= (1 - 50 * GSL_DBL_EPSILON) * resabs);
+
+  return status;
+}

@@ -3,25 +3,20 @@
 #include <gsl_errno.h>
 #include <gsl_integration.h>
 
+#include "integration.h"
+
 int
-gsl_integration_qawc (const gsl_function *f,
+gsl_integration_qawc (gsl_function *f,
 		      double a, double b, double c,
-		      double epsabs, double epsrel,
+		      double epsabs, double epsrel, size_t limit,
 		      gsl_integration_workspace * workspace,
-		      size_t * last,
-		      double * result, double * abserr, size_t * neval)
+		      double * result, double * abserr)
 {
-  int status ;
-  size_t nqeval = 0;
-
-  status = gsl_integration_qawc_impl (f, a, b, c, epsabs, epsrel,
-				      workspace, 
-				      result, abserr, last, &nqeval) ;
+  int status = gsl_integration_qawc_impl (f, a, b, c, epsabs, epsrel, limit,
+					  workspace, result, abserr) ;
   
-  /* convert from quadrature rule evaluations to function evaluations */
-
-  *neval = 21 * nqeval ; /* FIXME */
-
   return status ;
 }
+
+
 
