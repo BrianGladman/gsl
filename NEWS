@@ -1,12 +1,16 @@
 * Will be new in gsl-0.4.2 (or 0.5; number is not yet decided):
 
+** Documentation now works out of the box with the standard Texinfo.
+
+** Full reimplementation of the QUADPACK integration library
+
 ** Introduced THANKS file.
 We appreciate all patches from people on the net, even those which are
 too small to warrant adding the author to the AUTHORS file.  The
 THANKS file should include everyone who sent in patches.  They should
 also be mentioned in the ChangeLog entry.
 
-* Will be new in gsl-0.4.1:
+* What was new in gsl-0.4.1:
 
 ** Two changes not making their way into the documentation
 A couple of things are not getting into the docs, so here are the
@@ -47,7 +51,7 @@ random number generators rand48 and ranf now work on the Alpha
       constraint that they be larger than some fixed value, eg 5 sigmas)
    Walker's algorithm for arbitrary discrete distributions
 
-* Will be new in gsl-0.4:
+* What was new in gsl-0.4:
 
 ** A single libgsl.a file is built in the top level directory and
 installed, instead of separate .a files for each subdirectory.
