@@ -1,7 +1,7 @@
 #ifndef GSL_RNG_H
 #define GSL_RNG_H
-
 #include <stdlib.h>
+#include <gsl_errno.h>
 
 typedef struct
   {
@@ -92,6 +92,9 @@ void gsl_rng_set (const gsl_rng * r, unsigned long int seed);
 unsigned long int gsl_rng_max (const gsl_rng * r);
 unsigned long int gsl_rng_min (const gsl_rng * r);
 const char *gsl_rng_name (const gsl_rng * r);
+size_t gsl_rng_size (const gsl_rng * r);
+void * gsl_rng_state (const gsl_rng * r);
+
 void gsl_rng_print_state (const gsl_rng * r);
 
 const gsl_rng_type * gsl_rng_env_setup (void);
@@ -125,15 +128,22 @@ gsl_rng_uniform_pos (const gsl_rng * r)
 extern inline unsigned long int
 gsl_rng_uniform_int (const gsl_rng * r, unsigned long int n)
 {
-  unsigned long int max = r->max;
-  unsigned long int scale = max / n;
+  unsigned long int offset = r->min;
+  unsigned long int range = r->max - offset;
+  unsigned long int scale = range / n;
   unsigned long int k;
 
-  do 
+  if (n > range) 
     {
-      k = ((r->get) (r->state)) / scale ;
+      GSL_ERROR_RETURN ("n exceeds maximum value of generator",
+			GSL_EINVAL, 0) ;
     }
-  while (k < n) ;
+
+  do
+    {
+      k = (((r->get) (r->state)) - offset) / scale;
+    }
+  while (k >= n);
 
   return k;
 }

@@ -1,3 +1,4 @@
+#include <config.h>
 #include <stdio.h>
 #include <math.h>
 #include <gsl_rng.h>
@@ -12,6 +13,7 @@ void rng_parallel_state_test (const gsl_rng_type * T);
 int rng_max_test (gsl_rng * r, unsigned long int *kmax, unsigned long int ran_max) ;
 int rng_min_test (gsl_rng * r, unsigned long int *kmin, unsigned long int ran_min, unsigned long int ran_max) ;
 int rng_sum_test (gsl_rng * r, double *sigma);
+int rng_bin_test (gsl_rng * r, double *sigma);
 
 #define N  10000
 #define N2 200000
@@ -450,6 +452,12 @@ generic_rng_test (const gsl_rng_type * T)
 	    "%s, sum test within acceptable sigma (observed %.2g sigma)",
 	    name, sigma);
 
+  status = rng_bin_test (r, &sigma);
+
+  gsl_test (status,
+	    "%s, bin test within acceptable chisq (observed %.2g sigma)",
+	    name, sigma);
+
   gsl_rng_set (r, 1);	/* set seed to 1 */
   status = rng_max_test (r, &kmax, ran_max);
 
@@ -543,7 +551,59 @@ rng_sum_test (gsl_rng * r, double *sigma)
   /* expect the average to have a variance of 1/(12 n) */
 
   *sigma = sum * sqrt (12.0 * N2);
-  status = (fabs (*sigma) > 3);		/* more than 3 sigma is an error */
+
+  /* more than 3 sigma is an error */
+  
+  status = (fabs (*sigma) > 3 || fabs(*sigma) < 0.003);
 
   return status;
 }
+
+#define BINS 17
+#define EXTRA 10
+int
+rng_bin_test (gsl_rng * r, double *sigma)
+{
+  int count[BINS+EXTRA];
+  double chisq = 0;
+  int i, status;
+
+  for (i = 0; i < BINS+EXTRA; i++)
+      count[i] = 0 ;
+
+
+  for (i = 0; i < N2; i++)
+    {
+      int j = gsl_rng_uniform_int (r, BINS);
+      count[j]++ ;
+    }
+
+  chisq = 0 ;
+  for (i = 0; i < BINS; i++)
+    {
+      double x = (double)N2/(double)BINS ;
+      double d = (count[i] - x) ;
+      chisq += (d*d) / x;
+    }
+
+  *sigma = sqrt(chisq/BINS) ;
+
+  /* more than 3 sigma is an error */
+  
+  status = (fabs (*sigma) > 3 || fabs(*sigma) < 0.003);
+
+  for (i = BINS; i < BINS+EXTRA; i++)
+    {
+      if (count[i] != 0)
+	{
+	  status = 1 ;
+	  gsl_test (status, 
+		    "%s, wrote outside range in bin test "
+		    "(%d observed vs %d expected)",
+		    gsl_rng_name(r), i, BINS - 1);
+	}
+    }
+
+  return status;
+}
+

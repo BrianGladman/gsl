@@ -136,7 +136,7 @@ gsl_rng_uniform_int (const gsl_rng * r, unsigned long int n)
   unsigned long int scale = range / n;
   unsigned long int k;
 
-  if (n > range) /*FIXME: test this and move it into gsl_rng.h */
+  if (n > range) 
     {
       GSL_ERROR_RETURN ("n exceeds maximum value of generator",
 			GSL_EINVAL, 0) ;
@@ -146,7 +146,7 @@ gsl_rng_uniform_int (const gsl_rng * r, unsigned long int n)
     {
       k = (((r->get) (r->state)) - offset) / scale;
     }
-  while (k > n);
+  while (k >= n);
 
   return k;
 }
@@ -167,6 +167,18 @@ const char *
 gsl_rng_name (const gsl_rng * r)
 {
   return r->name;
+}
+
+size_t
+gsl_rng_size (const gsl_rng * r)
+{
+  return r->size;
+}
+
+void *
+gsl_rng_state (const gsl_rng * r)
+{
+  return r->state;
 }
 
 void
