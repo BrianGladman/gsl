@@ -93,6 +93,7 @@ suite (@pxref{Random number generation}) and the FFT package
 
 @menu
 * Preliminaries::               
+* Error handling in GSL::       
 * Random number generation::    
 * Statistics::                  
 * FFTs::                        
@@ -109,6 +110,14 @@ suite (@pxref{Random number generation}) and the FFT package
 @node Preliminaries
 @chapter Preliminaries
 
+The GNU Scientific Library (GSL) is a collection of routines for
+numerical analysis.  The routines are written from scratch by the GSL
+team (@pxref{Contributors to GSL}) in C, and are meant to present a
+modern Applications Programming Interface (API) for C programmers, while
+allowing wrappers to be written for very high level languages.
+
+@node Error handling in GSL
+@chapter Error handling in GSL
 
 
 

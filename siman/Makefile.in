@@ -44,16 +44,18 @@ CC = @CC@
 
 CFLAGS=-g -Wall
 
-check_PROGRAMS = rtest
-lib_LIBRARIES = libgsl_roots.a
+check_PROGRAMS = siman_test
+lib_LIBRARIES = libgsl_siman.a
 
-rtest_SOURCES = rtest.c
-rtest_LDADD = libgsl_roots.a
-rtest_DEPENDENCIES = libgsl_roots.a
+siman_test_SOURCES = siman_test.c
+siman_test_LDADD = libgsl_siman.a -lgslrandom
+siman_test_DEPENDENCIES = libgsl_siman.a
 
-libgsl_roots_a_SOURCES = newton.c
+libgsl_siman_a_SOURCES = siman.c
 
-include_HEADERS = roots.h
+include_HEADERS = gsl_siman.h
+
+INCLUDES = -I. -I../random
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_CLEAN_FILES = 
 LIBRARIES =  $(lib_LIBRARIES)
@@ -63,11 +65,11 @@ DEFS = @DEFS@ -I. -I$(srcdir)
 CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
-libgsl_roots_a_LIBADD = 
-libgsl_roots_a_OBJECTS =  newton.o
+libgsl_siman_a_LIBADD = 
+libgsl_siman_a_OBJECTS =  siman.o
 AR = ar
-rtest_OBJECTS =  rtest.o
-rtest_LDFLAGS = 
+siman_test_OBJECTS =  siman_test.o
+siman_test_LDFLAGS = 
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
 LINK = $(CC) $(LDFLAGS) -o $@
 HEADERS =  $(include_HEADERS)
@@ -79,16 +81,16 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) \
 	$(TEXINFOS) $(MANS) $(EXTRA_DIST)
 
 TAR = tar
-DEP_FILES =  .deps/newton.P .deps/rtest.P
-SOURCES = $(libgsl_roots_a_SOURCES) $(rtest_SOURCES)
-OBJECTS = $(libgsl_roots_a_OBJECTS) $(rtest_OBJECTS)
+DEP_FILES =  .deps/siman.P .deps/siman_test.P
+SOURCES = $(libgsl_siman_a_SOURCES) $(siman_test_SOURCES)
+OBJECTS = $(libgsl_siman_a_OBJECTS) $(siman_test_OBJECTS)
 
 default: all
 
 .SUFFIXES:
 .SUFFIXES: .c .o
 $(srcdir)/Makefile.in: Makefile.am $(top_srcdir)/configure.in $(ACLOCAL) 
-	cd $(top_srcdir) && automake --gnu roots/Makefile
+	cd $(top_srcdir) && automake --gnu siman/Makefile
 
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status $(BUILT_SOURCES)
 	cd $(top_builddir) \
@@ -139,10 +141,10 @@ distclean-compile:
 
 maintainer-clean-compile:
 
-libgsl_roots.a: $(libgsl_roots_a_OBJECTS) $(libgsl_roots_a_DEPENDENCIES)
-	rm -f libgsl_roots.a
-	$(AR) cru libgsl_roots.a $(libgsl_roots_a_OBJECTS) $(libgsl_roots_a_LIBADD)
-	$(RANLIB) libgsl_roots.a
+libgsl_siman.a: $(libgsl_siman_a_OBJECTS) $(libgsl_siman_a_DEPENDENCIES)
+	rm -f libgsl_siman.a
+	$(AR) cru libgsl_siman.a $(libgsl_siman_a_OBJECTS) $(libgsl_siman_a_LIBADD)
+	$(RANLIB) libgsl_siman.a
 
 mostlyclean-checkPROGRAMS:
 
@@ -153,8 +155,8 @@ distclean-checkPROGRAMS:
 
 maintainer-clean-checkPROGRAMS:
 
-rtest: $(rtest_OBJECTS) $(rtest_DEPENDENCIES)
-	$(LINK) $(rtest_LDFLAGS) $(rtest_OBJECTS) $(rtest_LDADD) $(LIBS)
+siman_test: $(siman_test_OBJECTS) $(siman_test_DEPENDENCIES)
+	$(LINK) $(siman_test_LDFLAGS) $(siman_test_OBJECTS) $(siman_test_LDADD) $(LIBS)
 
 install-includeHEADERS: $(include_HEADERS)
 	$(NORMAL_INSTALL)
@@ -194,7 +196,7 @@ maintainer-clean-tags:
 
 distdir = $(top_builddir)/$(PACKAGE)-$(VERSION)/$(subdir)
 
-subdir = roots
+subdir = siman
 distdir: $(DISTFILES)
 	@for file in $(DISTFILES); do \
 	  d=$(srcdir); \

@@ -2,7 +2,7 @@
 
 CFLAGS=-g -Wall
 
-noinst_PROGRAMS = rtest
+check_PROGRAMS = rtest
 lib_LIBRARIES = libgsl_roots.a
 
 rtest_SOURCES = rtest.c

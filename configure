@@ -1030,7 +1030,7 @@ done
 ac_given_srcdir=$srcdir
 ac_given_INSTALL="$INSTALL"
 
-trap 'rm -fr `echo "fft/Makefile statistics/Makefile roots/Makefile doc/Makefile random/Makefile Makefile" | sed "s/:[^ ]*//g"` conftest*; exit 1' 1 2 15
+trap 'rm -fr `echo "fft/Makefile statistics/Makefile roots/Makefile doc/Makefile random/Makefile siman/Makefile Makefile" | sed "s/:[^ ]*//g"` conftest*; exit 1' 1 2 15
 EOF
 cat >> $CONFIG_STATUS <<EOF
 
@@ -1109,7 +1109,7 @@ EOF
 
 cat >> $CONFIG_STATUS <<EOF
 
-CONFIG_FILES=\${CONFIG_FILES-"fft/Makefile statistics/Makefile roots/Makefile doc/Makefile random/Makefile Makefile"}
+CONFIG_FILES=\${CONFIG_FILES-"fft/Makefile statistics/Makefile roots/Makefile doc/Makefile random/Makefile siman/Makefile Makefile"}
 EOF
 cat >> $CONFIG_STATUS <<\EOF
 for ac_file in .. $CONFIG_FILES; do if test "x$ac_file" != x..; then
