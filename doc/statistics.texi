@@ -28,6 +28,7 @@ a stable way, without large intermediate values that might overflow.
 * Mean and standard deviation and variance::  
 * Absolute deviation::          
 * Higher moments (skewness and kurtosis)::  
+* Autocorrelation::             
 * Weighted Samples::            
 * Maximum and Minimum values::  
 * Median and Percentiles::      
@@ -303,7 +304,6 @@ standard deviation of @var{data} and want to avoid recomputing them.
 @node Autocorrelation
 @section Autocorrelation
 
-
 @deftypefun double gsl_stats_lag1_autocorrelation (const double data[], const size_t @var{stride}, const size_t @var{n})
 This function computes the lag-1 autocorrelation of the dataset @var{data}.
 
@@ -315,16 +315,17 @@ a_1 = {\sum_{i = 1}^{n} (x_{i} - \hat\mu) (x_{i-1} - \hat\mu)
 \sum_{i = 1}^{n} (x_{i} - \hat\mu) (x_{i} - \hat\mu)}
 $$
 \afterdisplay
-@end deftypefun
+@end tex
 @ifinfo
 @example
 a_1 = @{\sum_@{i = 1@}^@{n@} (x_@{i@} - \hat\mu) (x_@{i-1@} - \hat\mu)
        \over
-       \sum_@{i = 1@}^@{n}@ (x_@{i@} - \hat\mu) (x_@{i@} - \hat\mu)@}
+       \sum_@{i = 1@}^@{n@} (x_@{i@} - \hat\mu) (x_@{i@} - \hat\mu)@}
 @end example
 @end ifinfo
 @noindent
 @end deftypefun
+
 
 @deftypefun double gsl_stats_lag1_autocorrelation_m (const double data[], const size_t @var{stride}, const size_t @var{n}, const double @var{mean})
 @end deftypefun
@@ -359,6 +360,7 @@ $$
 @end example
 @end ifinfo
 @end deftypefn
+
 
 @deftypefn Statistics double gsl_stats_wvariance (const double @var{w}[], size_t @var{wstride}, const double @var{data}[], size_t @var{stride}, size_t @var{n})
 This function returns the estimated variance of the dataset @var{data}
