@@ -122,7 +122,7 @@ ac_cv_decl_exit_success_and_failure=yes,
 ac_cv_decl_exit_success_and_failure=no)
 )
 
-if test "$ac_cv_decl_clocks_per_sec" = yes ; then
+if test "$ac_cv_decl_exit_success_and_failure" = yes ; then
   AC_DEFINE(HAVE_EXIT_SUCCESS_AND_FAILURE)
 fi ;
 
