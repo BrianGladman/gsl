@@ -22,6 +22,7 @@ your program.
 @menu
 * Representation of floating point numbers::  
 * Setting up your IEEE environment::  
+* IEEE References and Further Reading::  
 @end menu
 
 @node Representation of floating point numbers

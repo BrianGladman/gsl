@@ -921,6 +921,7 @@ The functions described in this section are declared in
 * The Exponential Power Distribution::  
 * The Cauchy Distribution::     
 * The Rayleigh Distribution::   
+* The Rayleigh Tail Distribution::  
 * The Symmetric Levy Distribution::  
 * The Gamma Distribution::      
 * The Flat (Uniform) Distribution::  
@@ -1282,6 +1283,54 @@ formula given above.
 @item
 Cumulative distribution function, 
 @math{CDF(x) = \int_@{-\infty@}^x p(x') dx' = 1 - \exp(-x^2/(2 \sigma^2))}
+
+@c @item
+@c Confidence limits:
+
+@c @math{p(|x| < \mu) = 0.5},
+@c @math{p(|x| < 2\mu) = 0.705},
+@c @math{p(|x| < 3\mu) = 0.795}
+
+@end itemize
+
+@c ----------------------------------------------------------------------
+@page
+@node The Rayleigh Tail Distribution
+@subsection The Rayleigh Tail Distribution
+@deftypefn Random double gsl_ran_rayleigh_tail (const gsl_rng * @var{r}, double @var{a} double @var{sigma})
+@cindex Rayleigh Tail random numbers
+This function returns a random number from the tail of the Rayleigh
+distribution with scale parameter @var{sigma} and a lower limit of
+@var{a}. The probability distribution for Rayleigh tail random numbers
+is,
+@c
+@equation
+p(x) dx = @{x \over \sigma^2@} \exp ((a^2 - x^2) /(2 \sigma^2)) dx
+@end equation
+@noindent
+for @math{x>a}.
+@end deftypefn
+
+@deftypefun double gsl_ran_rayleigh_tail_pdf (double @var{x}, double @var{a}, double @var{sigma})
+This function computes the probability density @math{p(x)} at @var{x}
+for an Rayleigh tail distribution with scale parameter @var{sigma} and
+lower limit @var{a}, using the formula given above.
+@end deftypefun
+
+@tex
+\centerline{\input rand-rayleigh-tail.tex}
+@end tex
+
+@subheading Properties
+@itemize @asis
+@item
+
+@c @item
+@c Characteristic function, @math{\phi(t) = \exp(-i\alpha t - \beta |t|)}
+
+@item
+Cumulative distribution function, 
+@math{CDF(x) = \int_@{-\infty@}^x p(x') dx' = 1 - \exp((a^2-x^2)/(2 \sigma^2))}
 
 @c @item
 @c Confidence limits:
