@@ -27,5 +27,7 @@ s/\#include \"(\w+)\.h\"/\#include \"int_$1.h\"/g ;
 s/gsl_statistics.h/gsl_statistics_int.h/g ;
 s/_GSL_STATISTICS_H/_GSL_STATISTICS_INT_H/g;
 
+print "/* This is an automatically generated file created by\n" ;
+print "   convert_double_to_int.pl -- do not edit                */\n\n";
 print ;
 
