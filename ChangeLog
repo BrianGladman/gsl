@@ -1,8 +1,12 @@
 Fri Sep  7 14:32:01 2001  Brian Gough  <bjg@network-theory.co.uk>
 
+	* gsl.pc.in: added pkg-config file
+
 	* configure.in: avoid clobbering any LIBS specified, by not
  	putting -lm in front of them.  This allows the user to specify an
  	alternate math library for the configure script.
+	(ac_cv_func_printf_longdouble): added generation of gsl.pc for
+ 	pkg-config
 
 Thu Sep  6 21:08:10 2001  Brian Gough  <bjg@network-theory.co.uk>
 
