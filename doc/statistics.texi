@@ -25,15 +25,13 @@ intermediate values that might overflow.
 
 @menu
 * Statistical Concepts::        
-* Mean::                        
-* Standard deviation and variance (unknown population mean)::  
-* Standard deviation and variance (known population mean)::  
+* Mean and standard deviation and variance::  
 * Absolute deviation::          
 * Higher moments (skewness and kurtosis)::  
 * Maximum and Minimum values::  
 * Median and Percentiles::      
 * Statistical tests::           
-* Example statistical programs::            
+* Example statistical programs::  
 * Statistics References and Further Reading::  
 @end menu
 
@@ -83,8 +81,8 @@ unbiased estimator is desirable. There are also other measures of an
 estimator properties, such as @dfn{precision} and @dfn{efficiency}
 (consult the references for details).
 
-@node Mean
-@section Mean
+@node Mean and standard deviation and variance
+@section Mean, Standard Deviation and Variance
 
 @deftypefn Statistics double gsl_stats_mean (const double @var{data[]}, size_t @var{n})
 @deftypefnx Statistics double gsl_stats_int_mean (const int @var{data[]}, size_t @var{n})
@@ -110,9 +108,6 @@ If the underlying distribution has long tails then the mean may be
 subject to large fluctations.
 
 @end deftypefn
-
-@node Standard deviation and variance (unknown population mean)
-@section Standard deviation and variance (unknown population mean)
 
 @deftypefn Statistics double gsl_stats_est_variance (const double @var{data[]}, size_t @var{n})
 @deftypefnx Statistics double gsl_stats_int_est_variance (const int @var{data[]}, size_t @var{n})
@@ -176,10 +171,6 @@ The standard deviation is defined as the square root of the
 variance. These functions return the square root of the corresponding
 variance functions above.
 @end deftypefn
-
-
-@node Standard deviation and variance (known population mean)
-@section Standard deviation and variance (known population mean)
 
 @deftypefn Statistics double gsl_stats_variance (const double @var{data[]}, size_t @var{n})
 @deftypefnx Statistics double gsl_stats_int_variance (const int @var{data[]}, size_t @var{n})

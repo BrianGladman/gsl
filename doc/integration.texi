@@ -17,7 +17,7 @@ integration literature.
 @itemize @asis
 @item
 R. Piessens, E. de Doncker-Kapenga, C.W. Uberhuber, D.K. Kahaner.
-@cite{@sc{QUADPACK} A subroutine package for automatic integration}
+@cite{@sc{quadpack} A subroutine package for automatic integration}
 Springer Verlag, 1983.
 @end itemize
 @noindent

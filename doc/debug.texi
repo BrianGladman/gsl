@@ -101,7 +101,6 @@ could also print out the values of other variables such as
 @section GCC warning options for numerical programs
 @cindex warning options
 @cindex gcc warning options
-@cindex -Wall
 
 Writing reliable numerical programs in C requires great
 care. Uninitialized variables, conversions to and from integers or from

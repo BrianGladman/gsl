@@ -218,21 +218,20 @@ order of magnitude worse than the result obtained in the
 @code{round-to-nearest} mode.
 
 If we change to rounding mode to @code{round-up} then the series no
-longer converges (the reason is that although the terms in the series
-decrease rapidly when we add them to the sum the result is always
-rounded up, which is guaranteed to increases the sum by at least one
-tick). To avoid this problem we would need to use a safer converge
-criterion, such as @code{while (fabs(sum - oldsum) > epsilon)}, with a
-suitably chosen value of epsilon.
+longer converges (the reason is that when we add each term to the sum
+the final result is always rounded up. This is guaranteed to increase the sum
+by at least one tick on each iteration). To avoid this problem we would
+need to use a safer converge criterion, such as @code{while (fabs(sum -
+oldsum) > epsilon)}, with a suitably chosen value of epsilon.
 
 Finally we can see the effect of computing the sum using
 single-precision rounding, in the default @code{round-to-nearest}
-mode. In this case the program still works with double precision numbers
-but the result of each floating point operation is internally rounded to
-single-precision accuracy by the CPU. This simulates the effect of
-writing the program using single-precision @code{float} variables
-instead of @code{double} variables. The iteration stops after about half
-the number of iterations and the final result is much less accurate,
+mode. In this case the program thinks it is still using double precision
+numbers but the CPU rounds the result of each floating point operation
+to single-precision accuracy. This simulates the effect of writing the
+program using single-precision @code{float} variables instead of
+@code{double} variables. The iteration stops after about half the number
+of iterations and the final result is much less accurate,
 
 @example
 GSL_IEEE_MODE="single-precision" ./a.out 
