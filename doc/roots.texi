@@ -25,6 +25,8 @@ errors.
 The header file @w{@file{gsl_roots.h}} contains prototypes for GSL root
 finding functions and some other related declarations.
 
+@strong{FIXME: add a note about performance.}
+
 @menu
 * Root Finding Overview::
 * High Level vs. Low Level::
@@ -149,6 +151,9 @@ far from zero for @w{@code{abs_epsilon}} to be useful.
 @item
 @w{@code{abs_epsilon}} was zero, and the search converged to a place too
 close to zero for @w{@code{rel_epsilon}} to be useful.
+
+@item
+@strong{FIXME: add stuff for delta.}
 @end itemize
    
 @item GSL_EZERODIV

@@ -93,7 +93,8 @@ my_df (double x) @{
 
 @end deftypevr
 
-@deftypevr {Function Argument} void {@t{(*} fdf@t{)(double *, double *, double)}}
+@deftypevr {Function Argument} void {@t{(*} fdf@t{)(double *, double *,
+double, int, int)}}
 A pointer to a function which calculates both the value of the function
 under search and the value of its first derivative. Because many terms
 of a function and its derivative are the same, it is often faster to use
@@ -103,19 +104,22 @@ separately. However, it is more complicated.
 It stores @math{f(x)} in its first argument and @math{f'(x)} in its
 second.
 
-Here's an optimized example where @math{f(x) = 2\sin(2x)\cos(x)}:
+Here's an example where @math{f(x) = 2\sin(2x)\cos(x)}:
 
 @smallexample
 @group
 void
-my_fdf (double * y, double * yprime, double x) @{
+my_fdf (double * y, double * yprime, double x,
+        int y_wanted, int yprime_wanted) @{
    double sin2x, cosx;
 
    sin2x = sin (2 * x);
    cosx = cos (x);
 
-   *y = 2 * sin2x * cos (x);
-   *yprime = 2 * sin2x * -sin (x) + 2 * cos (2 * x) * cosx);
+   if (y_wanted)
+      *y = 2 * sin2x * cos (x);
+   if (yprime_wanted)
+      *yprime = 2 * sin2x * -sin (x) + 2 * cos (2 * x) * cosx);
 @}
 @end group
 @end smallexample

@@ -118,6 +118,9 @@ for the reasoning behind this behavior.
 @subsection Search Stopping Parameters
 @cindex root finding, stopping parameters
 
+@strong{FIXME: clean up this section and add documentation for
+max_deltay.}
+
 GSL root finding functions (and numerical root finding functions in
 general) stop when one of the following conditions is true:
 
@@ -199,6 +202,8 @@ This is to prevents the algorithm from landing on a place where the test
 function's derivative is very small and zooming off to infinity or into
 a different solution basin.
 
+@strong{FIXME: talk about minimum value for max_step_size.}
+
 For example, if while solving @math{\sin(x) = 0}, @math{x_n} of Newton's
 Method (@pxref{Newtons Method}) landed on @math{1.570700000}
 (@math{\pi/2 \approx 1.570796327}), then @math{x_@{n+1@}}
@@ -264,14 +269,14 @@ of the end. The midpoint of each interval is also indicated.
 bisection.)
 @end ifinfo
 
-@deftypefun int gsl_root_bisection (@w{double * @var{root}}, @w{double (* @var{f})(double)}, @w{double * @var{lower_bound}}, @w{double * @var{upper_bound}}, @w{double @var{rel_epsilon}}, @w{double @var{abs_epsilon}}, @w{int @var{max_iterations}})
+@deftypefun int gsl_root_bisection (@w{double * @var{root}}, @w{double (* @var{f})(double)}, @w{double * @var{lower_bound}}, @w{double * @var{upper_bound}}, @w{double @var{rel_epsilon}}, @w{double @var{abs_epsilon}}, @w{unsigned int @var{max_iterations}}, @w{double @var{max_deltay}})
 @findex @r{root finding,} gsl_root_bisection
 
 Search for a zero of @code{f} using bisection. Returns @code{0} if
 successful, @code{-1} on error (@pxref{Root Finder Error
 Handling}).
 
-@code{f(lower_bound)} and @code{f(upper_bound)} must differ in sign.
+@code{f(*lower_bound)} and @code{f(*upper_bound)} must differ in sign.
 
 Arguments:
 @table @code
@@ -290,6 +295,9 @@ Parameters}.
 @item max_iterations
 The maximum allowed number of iterations. @xref{Search Stopping
 Parameters}.
+@item max_deltay
+The maximum allowed difference between @w{@code{f(*lower_bound)}} and
+@w{@code{f(*upper_bound)}}. @xref{Search Stopping Parameters.}
 @end table
 
 @end deftypefun
@@ -346,13 +354,13 @@ position of the beginning of the interval and @math{b_n} is the
 false position.)
 @end ifinfo
 
-@deftypefun int gsl_root_falsepos (@w{double * @var{root}}, @w{double (* @var{f})(double)}, @w{double * @var{lower_bound}}, @w{double * @var{upper_bound}}, @w{double @var{rel_epsilon}}, @w{double @var{abs_epsilon}}, @w{int @var{max_iterations}})
+@deftypefun int gsl_root_falsepos (@w{double * @var{root}}, @w{double (* @var{f})(double)}, @w{double * @var{lower_bound}}, @w{double * @var{upper_bound}}, @w{double @var{rel_epsilon}}, @w{double @var{abs_epsilon}}, @w{unsigned int @var{max_iterations}}, @w{double @var{max_deltay}})
 @findex @r{root finding,} gsl_root_falsepos
 
 Search for a zero of @code{f} using false position. Return @code{0} if
 successful, @code{-1} on error (@pxref{Root Finder Error Handling}.
 
-@code{f(lower_bound)} and @code{f(upper_bound)} must differ in sign.
+@code{f(*lower_bound)} and @code{f(*upper_bound)} must differ in sign.
 
 Arguments:
 @table @code
@@ -371,6 +379,9 @@ Parameters}.
 @item max_iterations
 The maximum allowed number of iterations. @xref{Search Stopping
 Parameters}.
+@item max_deltay
+The maximum allowed difference between @w{@code{f(*lower_bound)}} and
+@w{@code{f(*upper_bound)}}. @xref{Search Stopping Parameters.}
 @end table
 
 @end deftypefun
@@ -422,7 +433,7 @@ guess.
 Secant Method.)
 @end ifinfo
 
-@deftypefun int gsl_root_secant (@w{double * @var{root}}, @w{double (* @var{f})(double)}, @w{double * @var{guess}}, @w{double * @var{guess2}}, @w{double @var{epsilon}}, @w{int @var{max_iterations}}, @w{double @var{max_step_size}})
+@deftypefun int gsl_root_secant (@w{double * @var{root}}, @w{double (* @var{f})(double)}, @w{double * @var{guess}}, @w{double * @var{guess2}}, @w{double @var{epsilon}}, @w{unsigned int @var{max_iterations}}, @w{double @var{max_step_size}})
 @findex @r{root finding,} gsl_root_secant
 
 Search for a zero of @code{f} using Secant Method, with @code{*guess}
@@ -475,7 +486,7 @@ Several iterations of Newton's Method, where @math{g_n} is the
 Newton's Method.)
 @end ifinfo
 
-@deftypefun int gsl_root_newton (@w{double * @var{root}}, @w{double (* @var{f})(double)}, @w{double (* @var{df})(double)}, @w{void (* @var{fdf})(double *, double *, double)}, @w{double * @var{guess}}, @w{double @var{epsilon}}, @w{int @var{max_iterations}}, @w{double @var{max_step_size}})
+@deftypefun int gsl_root_newton (@w{double * @var{root}}, @w{void (* @var{fdf})(double *, double *, double, int, int)}, @w{double * @var{guess}}, @w{double @var{epsilon}}, @w{unsigned int @var{max_iterations}}, @w{double @var{max_step_size}})
 @findex @r{root finding,} gsl_root_newton
 
 Search for a zero of @code{f} using Newton's Method, with @code{*guess}
