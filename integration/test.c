@@ -1638,7 +1638,8 @@ int main (void)
 
     gsl_integration_workspace * w = gsl_integration_workspace_alloc (1000) ;
     gsl_integration_qawo_workspace * wo 
-      = gsl_integration_qawo_workspace_alloc (10.0 * M_PI, 1.0, 1, 1000) ;
+      = gsl_integration_qawo_workspace_alloc (10.0 * M_PI, 1.0,
+					      GSL_INTEG_SINE, 1000) ;
 
     /* All results are for GSL_IEEE_MODE=double-precision */
 
@@ -1690,7 +1691,7 @@ int main (void)
     gsl_function f = { &f456, &alpha } ;
     gsl_function fc = make_counter(&f, &p) ;
 
-    status = gsl_integration_qawo (&fc, 0.0, 1.0, 0.0, 1e-7, w->limit,
+    status = gsl_integration_qawo (&fc, 0.0, 0.0, 1e-7, w->limit,
 				   w, wo, &result, &abserr) ;
     
     gsl_test_rel(result,exp_result,1e-14,"qawo(f456) smooth result") ;
@@ -1715,6 +1716,80 @@ int main (void)
 	gsl_test_int((int)w->order[i],order[i]-1,"qawo(f456) smooth order");
 
     gsl_integration_qawo_workspace_free (wo) ;
+    gsl_integration_workspace_free (w) ;
+
+  }
+
+  /* Test fourier integration using an absolute error bound */
+
+  {
+    int status = 0, i; struct counter_params p;
+    double result = 0, abserr=0;
+
+    gsl_integration_workspace * w = gsl_integration_workspace_alloc (1000) ;
+    gsl_integration_workspace * wc = gsl_integration_workspace_alloc (1000) ;
+    gsl_integration_qawo_workspace * wo 
+      = gsl_integration_qawo_workspace_alloc (M_PI / 2.0, 1.0,
+					      GSL_INTEG_COSINE, 1000) ;
+
+    /* All results are for GSL_IEEE_MODE=double-precision */
+
+    double exp_result = 9.999999999279802765E-01;
+    double exp_abserr = 1.556289974669056164E-08;
+    int exp_neval  =      590;
+    int exp_ier    =        0;
+    int exp_last   =       12;
+
+    double r[12] = { 1.013283128125232802E+00,
+		    -1.810857954748607349E-02,
+		    7.466754034900931897E-03,
+		    -4.360312526786496237E-03,
+		    2.950184068216192904E-03,
+		    -2.168238443073697373E-03,
+		    1.680910783140869081E-03,
+		    -1.352797860944863345E-03,
+		    1.119354921991485901E-03,
+		    -9.462367583691360827E-04,
+		    8.136341270731781887E-04,
+		    -7.093931338504278145E-04 } ;
+    double e[12] = { 1.224798040766472695E-12,
+		    1.396565155187268456E-13,
+		    1.053844511655910310E-16,
+		    6.505213034913026604E-19,
+		    7.155734338404329264E-18,
+		    1.105886215935214523E-17,
+		    9.757819552369539906E-18,
+		    5.854691731421723944E-18,
+		    4.553649124439220312E-18,
+		    7.643625316022806260E-18,
+		    2.439454888092388058E-17,
+		    2.130457268934021451E-17 } ;
+
+    double alpha = 1.0 ;
+    gsl_function f = { &f457, &alpha } ;
+    gsl_function fc = make_counter(&f, &p) ;
+
+    status = gsl_integration_qawf (&fc, 0.0, 1e-7, w->limit,
+				   w, wc, wo, &result, &abserr) ;
+    
+    gsl_test_rel(result,exp_result,1e-14,"qawf(f457) smooth result") ;
+    gsl_test_rel(abserr,exp_abserr,1e-3,"qawf(f457) smooth abserr") ;
+    gsl_test_int((int)(p.neval),exp_neval,"qawf(f457) smooth neval") ;  
+    gsl_test_int((int)(w->size),exp_last,"qawf(f457) smooth last") ;  
+    gsl_test_int(status,exp_ier,"qawf(f457) smooth status") ;
+
+    for (i = 0; i < 9 ; i++) 
+	gsl_test_rel(w->rlist[i],r[i],1e-14,"qawf(f457) smooth rlist") ;
+
+    /* We can only get within two orders of magnitude on the error
+       here, which is very sensitive to the floating point precision */
+
+    for (i = 0; i < 9 ; i++) 
+	gsl_test_rel(w->elist[i],e[i],50.0,"qawf(f457) smooth elist") ;
+
+
+    gsl_integration_qawo_workspace_free (wo) ;
+    gsl_integration_workspace_free (wc) ;
     gsl_integration_workspace_free (w) ;
 
   }

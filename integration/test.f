@@ -1,23 +1,25 @@
       program main
       double precision a,b,result,abserr,resabs,resasc
       double precision book1,book3,book11,book15,book16
-      double precision book454,book455,book458,book459
+      double precision book454,book455,book457,book458,book459
       double precision myfn1,myfn2,myfn3,myfn4
       double precision alpha,beta
       double precision alist(1000),blist(1000),rlist(1000)
       double precision elist(1000),pts(1000)
+      double precision rslst(1000),erlst(1000)
       double precision points(4)
       double precision chebmo(1000,25)
       integer iord(1000)
       integer nnlog(1000)
       integer ndin(1000)
       integer level(1000)
+      integer ierlst(1000)
       integer maxp1,momcom
       integer inf
       integer integr
       common /ALPHA/alpha
       external book1,book3,book11,book15,book16
-      external book454,book455,book458,book459
+      external book454,book455,book457,book458,book459
       external myfn1,myfn2,myfn3,myfn4
       call gsl_ieee_env_setup
 
@@ -382,26 +384,47 @@ c     do i=1,10
 c        write(6,4) i,alist(i),blist(i),rlist(i),elist(i),iord(i)
 c     enddo
 
+c     a = 0.0
+c     b = 1.0
+c     omega = 10.0 * 3.14159265358979323846
+c     epsabs = 0.0
+c     epsrel = 1.0d-7
+c     limit = 1000
+c     integr = 2
+c     icall = 1
+c     maxp1 = 1000
+c     momcom = 0
+c     print *, 'DQAGP'
+c     call dqawoe(myfn4,a,b,omega,integr,epsabs,epsrel,limit,
+c    $     icall, maxp1,
+c    $     result, abserr, neval,ier,last,alist,blist,rlist,elist,
+c    $     iord, nnlog, momcom, chebmo)
+c     write(6,3) result, abserr, neval, ier, last
+c     do i=1,10
+c        write(6,4) i,alist(i),blist(i),rlist(i),elist(i),iord(i)
+c     enddo
+
       a = 0.0
       b = 1.0
-      omega = 10.0 * 3.14159265358979323846
-      epsabs = 0.0
-      epsrel = 1.0d-7
+      omega = 3.14159265358979323846 / 2.0
+      epsabs = 1.0d-7
+      epsrel = 0.0
       limit = 1000
-      integr = 2
+      limlst = 1000
+      integr = 1
       icall = 1
       maxp1 = 1000
       momcom = 0
       print *, 'DQAGP'
-      call dqawoe(myfn4,a,b,omega,integr,epsabs,epsrel,limit,
-     $     icall, maxp1,
-     $     result, abserr, neval,ier,last,alist,blist,rlist,elist,
-     $     iord, nnlog, momcom, chebmo)
+      call dqawfe(book457,a,omega,integr,epsabs,limlst, limit,
+     $     maxp1,
+     $     result, abserr, neval,ier,rslst, erlst, ierlst, lst,
+     $     alist,blist,rlist,elist,
+     $     iord, nnlog, chebmo)
       write(6,3) result, abserr, neval, ier, last
-      do i=1,10
-         write(6,4) i,alist(i),blist(i),rlist(i),elist(i),iord(i)
+      do i=1,20
+         write(6,4) i,rslst(i),erlst(i)
       enddo
-
 
 
  1    format(
@@ -475,6 +498,16 @@ c     enddo
       write(6,6661) x, book455
  6661 format("FF x = ", 1pe25.18, " book455 = ", 1pe25.18)
       end
+
+      double precision function book457(x)
+      double precision alpha,x
+      common /ALPHA/alpha
+      book457 = 0
+      if (x.gt.0) book457= 1.0/sqrt(x)
+      write(6,6661) x, book457
+ 6661 format("FF x = ", 1pe25.18, " book457 = ", 1pe25.18)
+      end
+
 
       double precision function book458(x)
       double precision alpha,x

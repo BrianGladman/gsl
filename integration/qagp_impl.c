@@ -391,7 +391,7 @@ gsl_integration_qagp_impl (const gsl_function * f,
 	{
 	  goto compute_result;
 	}
-      else if (area == 0)
+      else if (area == 0.0)
 	{
 	  goto return_error;
 	}

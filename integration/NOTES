@@ -50,6 +50,12 @@ incorrect
 The line RESABS = ABS(CHEB24(K))+ABS(CHEB24(K+1)) should be RESABS =
 RESABS + ABS(CHEB24(K))+ABS(CHEB24(K+1)) for the sum to make sense.
 
+DQAWFE: The accumulation of partial sums is incorrect. The current
+term is added to the extrapolated value PSUM. This extrapolated value
+includes an estimate of the effect of the current term, so the result
+is biased. I follow the proceedure of computing the raw partial sums
+and extrapolating them without any "feedback" from the extrapolation
+procedure into the sum.
 
 Testing
 =======

@@ -14,7 +14,8 @@ libgslintegration_a_SOURCES = \
 	workspace.c \
 	qcheb.c qawc.c \
 	qmomo.c qaws.c \
-	qmomof.c qawo.c
+	qmomof.c qawo.c \
+	qawf.c
 
 pkginclude_HEADERS = gsl_integration.h
 noinst_HEADERS = integration.h qpsrt.c qelg.c  qc25c.c qc25s.c qc25f.c

@@ -68,7 +68,7 @@ gsl_integration_qags_impl (const gsl_function * f,
       GSL_ERROR ("cannot reach tolerance because of roundoff error"
 		 "on first attempt", GSL_EROUND);
     }
-  else if ((abserr0 <= tolerance && abserr0 != resasc0) || abserr0 == 0)
+  else if ((abserr0 <= tolerance && abserr0 != resasc0) || abserr0 == 0.0)
     {
       *result = result0;
       *abserr = abserr0;
@@ -301,7 +301,7 @@ gsl_integration_qags_impl (const gsl_function * f,
       if (error_type == 0)
 	error_type = 3;
 
-      if (result != 0 && area != 0)
+      if (res_ext != 0.0 && area != 0.0)
 	{
 	  if (err_ext / fabs (res_ext) > errsum / fabs (area))
 	    goto compute_result;
@@ -310,7 +310,7 @@ gsl_integration_qags_impl (const gsl_function * f,
 	{
 	  goto compute_result;
 	}
-      else if (area == 0)
+      else if (area == 0.0)
 	{
 	  goto return_error;
 	}
@@ -328,7 +328,7 @@ gsl_integration_qags_impl (const gsl_function * f,
   {
     double ratio = res_ext / area;
 
-    if (ratio < 0.01 || ratio > 100 || errsum > fabs (area))
+    if (ratio < 0.01 || ratio > 100.0 || errsum > fabs (area))
       error_type = 6;
   }
 

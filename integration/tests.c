@@ -136,11 +136,23 @@ double f455 (double x, void * params) {
 
 double f456 (double x, void * params) {
   params = 0 ;
-  if (x == 0)
+  if (x == 0.0)
     {
       return 0;
     }
   return log(x) ;
+}
+
+/* f457(x) = 1/sqrt(x) */
+/* integ(f457*cos(pi x / 2),x,0,+inf) = 1 */
+
+double f457 (double x, void * params) {
+  params = 0 ;
+  if (x == 0.0)
+    {
+      return 0;
+    }
+  return 1/sqrt(x) ;
 }
 
 /* f458(x) = 1/(1 + log(x)^2)^2 */
@@ -150,7 +162,7 @@ double f456 (double x, void * params) {
 double f458 (double x, void * params) {
   params = 0 ;
 
-  if (x == 0) 
+  if (x == 0.0) 
     {
       return 0;
     }

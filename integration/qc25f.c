@@ -39,7 +39,7 @@ qc25f (gsl_function * f, double a, double b,
       fn_params.function = f;
       fn_params.omega = omega;
 
-      if (wf->sine) 
+      if (wf->sine == GSL_INTEG_SINE) 
 	{
 	  weighted_function.function = &fn_sin;
 	}
@@ -107,7 +107,7 @@ qc25f (gsl_function * f, double a, double b,
       c = half_length * cos(center * omega);
       s = half_length * sin(center * omega);
 
-      if (wf->sine)
+      if (wf->sine == GSL_INTEG_SINE)
 	{
 	  *result = c * res24_sin + s * res24_cos;
 	  *abserr = fabs(c * est_sin) + fabs(s * est_cos);

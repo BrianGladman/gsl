@@ -14,7 +14,7 @@
 
 int
 gsl_integration_qawo (gsl_function * f,
-		      const double a, const double b,
+		      const double a,
 		      const double epsabs, const double epsrel,
 		      const size_t limit,
 		      gsl_integration_workspace * workspace,
@@ -41,6 +41,8 @@ gsl_integration_qawo (gsl_function * f,
   int disallow_extrapolation = 0;
 
   struct extrapolation_table table;
+
+  double b = a + wf->L ;
 
   initialise (workspace, a, b);
 
@@ -71,7 +73,7 @@ gsl_integration_qawo (gsl_function * f,
       GSL_ERROR ("cannot reach tolerance because of roundoff error"
 		 "on first attempt", GSL_EROUND);
     }
-  else if ((abserr0 <= tolerance && abserr0 != resasc0) || abserr0 == 0)
+  else if ((abserr0 <= tolerance && abserr0 != resasc0) || abserr0 == 0.0)
     {
       *result = result0;
       *abserr = abserr0;
@@ -349,7 +351,7 @@ gsl_integration_qawo (gsl_function * f,
 	{
 	  goto compute_result;
 	}
-      else if (area == 0)
+      else if (area == 0.0)
 	{
 	  goto return_error;
 	}

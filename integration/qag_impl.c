@@ -56,7 +56,7 @@ gsl_integration_qag_impl (const gsl_function * f,
       GSL_ERROR ("cannot reach tolerance because of roundoff error "
 		 "on first attempt", GSL_EROUND);
     }
-  else if ((abserr0 <= tolerance && abserr0 != resasc0) || abserr0 == 0)
+  else if ((abserr0 <= tolerance && abserr0 != resasc0) || abserr0 == 0.0)
     {
       *result = result0;
       *abserr = abserr0;
