@@ -9,6 +9,8 @@ unimplemented case M<N correctly.
 ** Fixed conformance test for the SYRK and HERK blas functions
 gsl_blas_{s,d,c,z}syrk and gsl_blas_{c,z}herk for non-square matrices.
 
+** Configure now checks for presence of ieeefp.h if needed.
+
 * What was new in gsl-1.6:
 
 ** Added a new wavelet directory, with 1-dimensional and 2-dimensional

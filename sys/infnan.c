@@ -20,6 +20,10 @@
 #include <config.h>
 #include <math.h>
 
+#if HAVE_IEEEFP_H
+#include <ieeefp.h>
+#endif
+
 double gsl_nan (void);
 double gsl_posinf (void);
 double gsl_neginf (void);

@@ -80,6 +80,7 @@ if test "$ac_cv_c_extern_inline" != no ; then
 fi
 
 dnl Checks for header files.
+AC_CHECK_HEADERS(ieeefp.h)
 
 dnl Checks for typedefs, structures, and compiler characteristics.
 
