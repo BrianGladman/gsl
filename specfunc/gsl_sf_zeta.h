@@ -39,7 +39,7 @@ int gsl_sf_zeta_impl(double s, gsl_sf_result * result);
 int gsl_sf_zeta_e(double s, gsl_sf_result * result);
 
 
-/* Hurwicz Zeta Function
+/* Hurwitz Zeta Function
  * zeta(s,q) = Sum[ (k+q)^(-s), {k,0,Infinity} ]
  *
  * s > 1.0, q > 0.0
