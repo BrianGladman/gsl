@@ -22,8 +22,8 @@
 @end tex
 @c @cropmarks
 @c @afourpaper
-@c @paperbackbook
-@c @set @publish
+@comment @paperbackbook
+@comment @set publish
 @raggedbottom
 @c %**start of header
 @setfilename gsl-ref.info
@@ -335,10 +335,44 @@ library itself. When the library is complete and fully tested it will be
 announced for general use.
 
 @menu
+* Routines available in GSL::   
 * GSL is Free Software::        
+* Obtaining GSL::               
+* An Example Program::          
+* No Warranty::                 
+* Further Information::         
 @end menu
 
-@node GSL is Free Software,  , Introduction, Introduction
+@node Routines available in GSL, GSL is Free Software, Introduction, Introduction
+@section Routines available in GSL
+
+The library covers a wide range of topics in numerical computing.
+Routines are available for the following areas,
+
+@multitable @columnfractions 0.1 0.4 0.4 0.1
+@item @tab Complex Numbers            @tab Roots of Polynomials        
+@item @tab Special Functions          @tab Vectors and Matrices        
+@item @tab Permutations               @tab Sorting                    
+@item @tab BLAS Support               @tab Linear Algebra              
+@item @tab Eigensystems               @tab Fast Fourier Transforms    
+@item @tab Quadrature                 @tab Random Numbers    
+@item @tab Quasi-Random Sequences     @tab Random Distributions 
+@item @tab Statistics                 @tab Histograms                  
+@item @tab N-Tuples                   @tab Monte Carlo Integration     
+@item @tab Simulated Annealing        @tab Differential Equations  
+@item @tab Interpolation              @tab Numerical Differentiation   
+@item @tab Chebyshev Approximations   @tab Series Acceleration         
+@item @tab Discrete Hankel Transforms @tab Root-Finding   
+@item @tab Minimization               @tab Least-Squares Fitting          
+@item @tab Physical Constants         @tab IEEE Floating-Point 
+@end multitable
+@noindent
+The use of these routines is described in this manual.  Each chapter
+provides detailed definitions of the functions, followed by example
+programs and references to the articles on which the algorithms are
+based.
+
+@node GSL is Free Software, Obtaining GSL, Routines available in GSL, Introduction
 @section GSL is Free Software
 
 The subroutines in the GNU Scientific Library are ``free software'';
@@ -376,6 +410,81 @@ GNU Scientific Library are found in the GNU General Public License
 license is available from the GNU Project webpage @cite{Frequently Asked
 Questions about the GNU GPL},
 @url{http://www.gnu.org/copyleft/gpl-faq.html}.
+
+@node Obtaining GSL, An Example Program, GSL is Free Software, Introduction
+@section Obtaining GSL
+
+The source code for the library can be downloaded from the development
+website, @url{http://sources.redhat.com/gsl/}.  It compiles on most Unix
+platforms, and is also available for Microsoft Windows.
+
+Announcements of new releases, updates and other important events are
+made on the mailing list @code{gsl-announce@@sources.redhat.com}.  To
+subscribe to this list, send an email of the following form,
+
+@example
+To: gsl-announce-request@@sources.redhat.com 
+Subject: subscribe
+@end example
+@noindent
+You will receive a response asking to you to reply in order to confirm
+your subscription.
+
+@ifset publish
+Precompiled versions of the library can be obtained from
+@url{http://www.network-theory.co.uk/gsl/}.
+@end ifset
+
+@node   An Example Program, No Warranty, Obtaining GSL, Introduction
+@section An Example Program
+
+The following short program demonstrates the use of GSL by computing the
+value of the Bessel function @math{J_0(x)} for @math{x=5},
+
+@example
+#include <stdio.h>
+#include <gsl/gsl_sf_bessel.h>
+
+int
+main ()
+@{
+  double x = 5.0;
+
+  double y = gsl_sf_bessel_J0 (x);
+
+  printf("J0(%g) = %.18e\n", x, y);
+
+  return 0;
+@}
+@end example
+@noindent
+The output is shown below, and should be correct to double-precision
+accuracy,
+
+@example
+J0(5) = -1.775967713143382920e-01
+@end example
+@noindent
+The steps needed to compile programs which use the library are described
+in the next chapter.
+
+@node  No Warranty, Further Information, An Example Program, Introduction
+@section No Warranty
+
+The software described in this manual has no warranty, it is provided
+"as is".  It is your responsibility to validate the behavior of the
+routines and their accuracy using the source code provided.  Consult the
+GNU General Public license for further details (@pxref{GNU General
+Public License}).
+
+@node  Further Information,  , No Warranty, Introduction
+@section Further Information
+
+Additional information, including online copies of this manual, links to
+related projects, and mailing list archives are available from the
+website @url{http://sources.redhat.com/gsl/}.  The developers of the
+library can be reached via the public mailing list
+@code{gsl-discuss@@sources.redhat.com}.
 
 @node Using the library, Error Handling, Introduction, Top
 @chapter Using the library
@@ -640,14 +749,25 @@ fi
 
 @printindex tp
 
+@ifclear publish
 @comment Use @setchapternewpage odd to ensure that the contents starts 
 @comment on an odd page so that it can always be moved to the front when 
 @comment printing two-up.
-
-@ifclear publish
 @setchapternewpage odd
 @comment -@shortcontents
 @contents
 @end ifclear
 
+@ifset publish
+@comment final page must be blank for printed version
+@headings off
+@page
+@*
+@page
+@*
+@page
+@*
+@page
+@*
+@end ifset
 @bye
