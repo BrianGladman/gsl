@@ -74,10 +74,10 @@ gsl_ieee_set_mode (int precision, int rounding, int exception_mask)
 
   /* Turn on all the exceptions apart from 'inexact' */
 
-  mode = TRAP_INVALID | TRAP_DIV_BY_ZERO | TRAP_OVERFLOW | TRAP_UNDERFLOW ;
+  mode = TRP_INVALID | TRP_DIV_BY_ZERO | TRP_OVERFLOW | TRP_UNDERFLOW ;
 
   if (exception_mask & GSL_IEEE_MASK_INVALID)
-    mode &= ~ TRAP_INVALID ;
+    mode &= ~ TRP_INVALID ;
 
   if (exception_mask & GSL_IEEE_MASK_DENORMALIZED)
     GSL_ERROR ("AIX does not support the denormalized operand exception. "
@@ -85,21 +85,21 @@ gsl_ieee_set_mode (int precision, int rounding, int exception_mask)
 	       GSL_EUNSUP) ;
 
   if (exception_mask & GSL_IEEE_MASK_DIVISION_BY_ZERO)
-    mode &= ~ TRAP_DIV_BY_ZERO ;
+    mode &= ~ TRP_DIV_BY_ZERO ;
 
   if (exception_mask & GSL_IEEE_MASK_OVERFLOW)
-    mode &= ~ TRAP_OVERFLOW ;
+    mode &= ~ TRP_OVERFLOW ;
 
   if (exception_mask & GSL_IEEE_MASK_UNDERFLOW)
-    mode &=  ~ TRAP_UNDERFLOW ;
+    mode &=  ~ TRP_UNDERFLOW ;
 
   if (exception_mask & GSL_IEEE_TRAP_INEXACT)
     {
-      mode |= TRAP_INEXACT ;
+      mode |= TRP_INEXACT ;
     }
   else
     {
-      mode &= ~ TRAP_INEXACT ;
+      mode &= ~ TRP_INEXACT ;
     }
 
   /* AIX appears to require two steps -- first enable floating point traps
