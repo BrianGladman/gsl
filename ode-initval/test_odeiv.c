@@ -75,12 +75,11 @@ gsl_odeiv_system rhs_func_stiff = {
 };
 
 
-int test_stepper_linear(gsl_odeiv_step * stepper, double base_prec)
+int test_stepper_linear(gsl_odeiv_step * stepper, double h, double base_prec)
 {
   int s = 0;
   double y[2];
   double yerr[2];
-  double h = 1.0e-04;
   double t;
   double del;
   double delmax = 0.0;
@@ -95,7 +94,7 @@ int test_stepper_linear(gsl_odeiv_step * stepper, double base_prec)
       del = fabs((y[1] - (t+h))/y[1]);
       delmax = GSL_MAX_DBL(del, delmax);
       if(del > (count+1.0) * base_prec) {
-        printf("LINEAR(%20.17g)  %20.17g  %20.17g  %8.4g\n", t+h, y[1], t+h, del);
+        printf("  LINEAR(%20.17g)  %20.17g  %20.17g  %8.4g\n", t+h, y[1], t+h, del);
 	s++;
       }
     }
@@ -106,12 +105,11 @@ int test_stepper_linear(gsl_odeiv_step * stepper, double base_prec)
 }
 
 
-int test_stepper_sin(gsl_odeiv_step * stepper, double base_prec)
+int test_stepper_sin(gsl_odeiv_step * stepper, double h, double base_prec)
 {
   int s = 0;
   double y[2];
   double yerr[2];
-  double h = 2.0e-04;
   double t;
   double del;
   double delmax = 0.0;
@@ -140,7 +138,7 @@ int test_stepper_sin(gsl_odeiv_step * stepper, double base_prec)
         stat = ( del > 1.0e+09 * base_prec );
       }
       if(stat != 0) {
-        printf("SIN(%22.18g)  %22.18g  %22.18g  %10.6g\n", t+h, y[1], sin_th, del);
+        printf("  SIN(%22.18g)  %22.18g  %22.18g  %10.6g\n", t+h, y[1], sin_th, del);
       }
       s += stat;
     }
@@ -148,7 +146,7 @@ int test_stepper_sin(gsl_odeiv_step * stepper, double base_prec)
   }
   if(delmax > 1.0e+09 * base_prec) {
     s++;
-    printf("SIN(0 .. M_PI)  delmax = %g\n", delmax);
+    printf("  SIN(0 .. M_PI)  delmax = %g\n", delmax);
   }
 
 
@@ -156,44 +154,35 @@ int test_stepper_sin(gsl_odeiv_step * stepper, double base_prec)
     gsl_odeiv_step_impl(stepper, t, h, y, yerr, &rhs_func_sin);
     count++;
   }
-  del = fabs((y[1] - sin(t+h))/y[1]);
-  delmax = GSL_MAX_DBL(del, delmax);
-  if(del > count * 200.0 * base_prec) {
+  del = fabs((y[1] - sin(t))/y[1]);
+  if(del > count * 2.0 * base_prec) {
     s++;
-    printf("SIN(%22.18g)  %22.18g  %22.18g  %10.6g\n", t+h, y[1], sin(t+h), del);
-  }
-  if(delmax > 1.0e+09 * base_prec) {
-    s++;
-    printf("SIN(0 .. 100.5 M_PI)  delmax = %g\n", delmax);
+    printf("  SIN(%22.18g)  %22.18g  %22.18g  %10.6g\n", t+h, y[1], sin(t), del);
   }
 
   return s;
 }
 
 
-int test_stepper_exp(gsl_odeiv_step * stepper, double base_prec)
+int test_stepper_exp(gsl_odeiv_step * stepper, double h, double base_prec)
 {
   int s = 0;
   double y[2];
   double yerr[2];
-  double h = 2.0e-04;
   double t;
   double del;
-  double delmax = 0.0;
   int count = 0;
 
   y[0] = 1.0;
   y[1] = 1.0;
 
   for(t=0.0; t<20.0; t += h) {
+    double ex = exp(t + h);
     gsl_odeiv_step_impl(stepper, t, h, y, yerr, &rhs_func_exp);
-    if(count % 100 == 0) {
-      del = fabs((y[1] - exp(t+h))/y[1]);
-      delmax = GSL_MAX_DBL(del, delmax);
-      if(del > (count+1.0) * 2.0 * base_prec) {
-        printf("EXP(%20.17g)  %20.17g  %20.17g  %8.4g\n", t+h, y[1], exp(t+h), del);
-	s++;
-      }
+    del = fabs((y[1] - ex)/y[1]);
+    if(del > (count+1.0) * 2.0 * base_prec) {
+      printf("  EXP(%20.17g)  %20.17g  %20.17g  %8.4g\n", t+h, y[1], ex, del);
+      s++;
     }
     count++;
   }
@@ -202,15 +191,13 @@ int test_stepper_exp(gsl_odeiv_step * stepper, double base_prec)
 }
 
 
-int test_stepper_stiff(gsl_odeiv_step * stepper, double base_prec)
+int test_stepper_stiff(gsl_odeiv_step * stepper, double h, double base_prec)
 {
   int s = 0;
   double y[2];
   double yerr[2];
-  double h = 5.0e-04;
   double t;
   double del;
-  double delmax = 0.0;
   int count = 0;
 
   y[0] = 1.0;
@@ -225,9 +212,8 @@ int test_stepper_stiff(gsl_odeiv_step * stepper, double base_prec)
       double u = 2.0*e1 - e2;
       /* double v = -e1 + e2; */
       del = fabs((y[0] - u)/y[0]);
-      delmax = GSL_MAX_DBL(del, delmax);
       if(del > (count+1.0) * 100.0 * base_prec) {
-        printf("STIFF(%20.17g)  %20.17g  %20.17g  %8.4g\n", arg, y[0], u, del);
+        printf("  STIFF(%20.17g)  %20.17g  %20.17g  %8.4g\n", arg, y[0], u, del);
 	s++;
       }
     }
@@ -238,84 +224,201 @@ int test_stepper_stiff(gsl_odeiv_step * stepper, double base_prec)
 }
 
 
-int test_rk4(void)
+int test_stepper_rk2(void)
+{
+  gsl_odeiv_step * stepper = gsl_odeiv_step_factory_rk2.create(2);
+  int stat = 0;
+  int s;
+
+  s = test_stepper_linear(stepper, 1.0e-03, GSL_SQRT_DBL_EPSILON);
+  gsl_test(s, "  LINEAR");
+  stat += s;
+  gsl_odeiv_step_reset(stepper);
+
+  s = test_stepper_sin(stepper, 4.0e-04, GSL_SQRT_DBL_EPSILON);
+  gsl_test(s, "  SIN");
+  stat += s;
+
+  s = test_stepper_exp(stepper, 4.0e-04, GSL_SQRT_DBL_EPSILON);
+  gsl_test(s, "  EXP");
+  stat += s;
+
+  gsl_odeiv_step_free(stepper);
+  return stat;
+}
+
+
+int test_stepper_rk4(void)
 {
   gsl_odeiv_step * stepper = gsl_odeiv_step_factory_rk4.create(2);
   int stat = 0;
+  int s;
 
-  stat += test_stepper_linear(stepper, GSL_DBL_EPSILON);
+  s = test_stepper_linear(stepper, 1.0e-03, GSL_DBL_EPSILON);
+  gsl_test(s, "  LINEAR");
+  stat += s;
   gsl_odeiv_step_reset(stepper);
-  stat += test_stepper_sin(stepper, GSL_DBL_EPSILON);
+
+  s = test_stepper_sin(stepper, 2.0e-04, GSL_DBL_EPSILON);
+  gsl_test(s, "  SIN");
+  stat += s;
+
+  s = test_stepper_exp(stepper, 2.0e-04, GSL_DBL_EPSILON);
+  gsl_test(s, "  EXP");
+  stat += s;
 
   gsl_odeiv_step_free(stepper);
   return stat;
 }
 
 
-int test_rkck(void)
+int test_stepper_rkck(void)
 {
   gsl_odeiv_step * stepper = gsl_odeiv_step_factory_rkck.create(2);
   int stat = 0;
+  int s;
 
-  stat += test_stepper_linear(stepper, GSL_DBL_EPSILON);
+  s = test_stepper_linear(stepper, 1.0e-03, GSL_DBL_EPSILON);
+  gsl_test(s, "  LINEAR");
+  stat += s;
   gsl_odeiv_step_reset(stepper);
-  stat += test_stepper_sin(stepper, GSL_DBL_EPSILON);
+
+  s = test_stepper_sin(stepper, 5.0e-04, GSL_DBL_EPSILON);
+  gsl_test(s, "  SIN");
+  stat += s;
   gsl_odeiv_step_reset(stepper);
-  stat += test_stepper_exp(stepper, GSL_DBL_EPSILON);
+
+  s = test_stepper_exp(stepper, 5.0e-04, GSL_DBL_EPSILON);
+  gsl_test(s, "  EXP");
+  stat += s;
 
   gsl_odeiv_step_free(stepper);
   return stat;
 }
 
 
-int test_rk4imp(void)
+int test_stepper_rk8pd(void)
+{
+  gsl_odeiv_step * stepper = gsl_odeiv_step_factory_rk8pd.create(2);
+  int stat = 0;
+  int s;
+
+  s = test_stepper_linear(stepper, 5.0e-02, GSL_DBL_EPSILON);
+  gsl_test(s, "  LINEAR");
+  stat += s;
+  gsl_odeiv_step_reset(stepper);
+
+  s = test_stepper_sin(stepper, 5.0e-02, GSL_DBL_EPSILON);
+  gsl_test(s, "  SIN");
+  stat += s;
+  gsl_odeiv_step_reset(stepper);
+
+  s = test_stepper_exp(stepper, 5.0e-02, GSL_DBL_EPSILON);
+  gsl_test(s, "  EXP");
+  stat += s;
+  gsl_odeiv_step_reset(stepper);
+
+
+  s = test_stepper_sin(stepper, 0.2, GSL_SQRT_DBL_EPSILON);
+  gsl_test(s, "  SIN");
+  stat += s;
+  gsl_odeiv_step_reset(stepper);
+
+  s = test_stepper_exp(stepper, 0.2, GSL_SQRT_DBL_EPSILON);
+  gsl_test(s, "  EXP");
+  stat += s;
+  gsl_odeiv_step_reset(stepper);
+
+
+  gsl_odeiv_step_free(stepper);
+  return stat;
+}
+
+
+int test_stepper_rk4imp(void)
 {
   gsl_odeiv_step * stepper = gsl_odeiv_step_factory_rk4imp.create(2);
   int stat = 0;
+  int s;
 
-  stat += test_stepper_linear(stepper, GSL_DBL_EPSILON);
+  s = test_stepper_linear(stepper, 1.0e-03, GSL_DBL_EPSILON);
+  gsl_test(s, "  LINEAR");
+  stat += s;
   gsl_odeiv_step_reset(stepper);
-  stat += test_stepper_sin(stepper, GSL_DBL_EPSILON);
+
+  s = test_stepper_sin(stepper, 2.0e-04, GSL_DBL_EPSILON);
+  gsl_test(s, "  SIN");
+  stat += s;
   gsl_odeiv_step_reset(stepper);
-  stat += test_stepper_exp(stepper, GSL_DBL_EPSILON);
+
+  s = test_stepper_exp(stepper, 2.0e-04, GSL_DBL_EPSILON);
+  gsl_test(s, "  EXP");
+  stat += s;
   gsl_odeiv_step_reset(stepper);
-  stat += test_stepper_stiff(stepper, GSL_DBL_EPSILON);
-  
+
+  s = test_stepper_stiff(stepper, 2.0e-04, GSL_DBL_EPSILON);
+  gsl_test(s, "  STIFF");
+  stat += s;
+
   gsl_odeiv_step_free(stepper);
   return stat;
 }
 
 
-int test_gear1(void)
+int test_stepper_gear1(void)
 {
   gsl_odeiv_step * stepper = gsl_odeiv_step_factory_gear1.create(2);
   int stat = 0;
+  int s;
 
-  stat += test_stepper_linear(stepper, 20.0 * GSL_SQRT_DBL_EPSILON);
+  s = test_stepper_linear(stepper, 1.0e-03, GSL_SQRT_DBL_EPSILON);
+  gsl_test(s, "  LINEAR");
+  stat += s;
   gsl_odeiv_step_reset(stepper);
-  stat += test_stepper_sin(stepper, 20.0 * GSL_SQRT_DBL_EPSILON);
+
+  s = test_stepper_sin(stepper, 4.0e-04, 10.0 * GSL_SQRT_DBL_EPSILON);
+  gsl_test(s, "  SIN");
+  stat += s;
   gsl_odeiv_step_reset(stepper);
-  stat += test_stepper_exp(stepper, 20.0 * GSL_SQRT_DBL_EPSILON);
+
+  s = test_stepper_exp(stepper, 1.0e-03, 20.0 * GSL_SQRT_DBL_EPSILON);
+  gsl_test(s, "  EXP");
+  stat += s;
   gsl_odeiv_step_reset(stepper);
-  stat += test_stepper_stiff(stepper, 20.0 * GSL_SQRT_DBL_EPSILON);
+
+  s = test_stepper_stiff(stepper, 1.0e-03, 10.0 * GSL_SQRT_DBL_EPSILON);
+  gsl_test(s, "  STIFF");
+  stat += s;
 
   gsl_odeiv_step_free(stepper);
   return stat;
 }
 
 
-int test_gear2(void)
+int test_stepper_gear2(void)
 {
   gsl_odeiv_step * stepper = gsl_odeiv_step_factory_gear2.create(2);
   int stat = 0;
+  int s;
 
-  stat += test_stepper_linear(stepper, 20.0 * GSL_DBL_EPSILON);
+  s = test_stepper_linear(stepper, 2.0e-04, 20.0 * GSL_DBL_EPSILON);
+  gsl_test(s, "  LINEAR");
+  stat += s;
   gsl_odeiv_step_reset(stepper);
-  stat += test_stepper_sin(stepper, 20.0 * GSL_DBL_EPSILON);
+
+  s = test_stepper_sin(stepper, 2.0e-04, 20.0 * GSL_DBL_EPSILON);
+  gsl_test(s, "  SIN");
+  stat += s;
   gsl_odeiv_step_reset(stepper);
-  stat += test_stepper_exp(stepper, 20.0 * GSL_DBL_EPSILON);
+
+  s = test_stepper_exp(stepper, 2.0e-04, 20.0 * GSL_DBL_EPSILON);
+  gsl_test(s, "  EXP");
+  stat += s;
   gsl_odeiv_step_reset(stepper);
-  stat += test_stepper_stiff(stepper, 20.0 * GSL_DBL_EPSILON);
+
+  s = test_stepper_stiff(stepper, 2.0e-04, 20.0 * GSL_DBL_EPSILON);
+  gsl_test(s, "  STIFF");
+  stat += s;
 
   gsl_odeiv_step_free(stepper);
   return stat;
@@ -326,11 +429,13 @@ int main()
 {
   gsl_ieee_env_setup();
 
-  gsl_test(test_rk4(),     "Runge-Kutta 4");
-  gsl_test(test_rkck(),    "Runge-Kutta 5, Cash-Karp");
-  gsl_test(test_rk4imp(),  "Runge-Kutta 4, Gaussian implicit");
-  gsl_test(test_gear1(),   "Gear 1");
-/*  gsl_test(test_gear2(),   "Gear 2"); */
+  gsl_test(test_stepper_rk2(),     "Runge-Kutta 2(3), Euler-Cauchy");
+  gsl_test(test_stepper_rk4(),     "Runge-Kutta 4, Classical");
+  gsl_test(test_stepper_rkck(),    "Runge-Kutta 4(5), Cash-Karp");
+  gsl_test(test_stepper_rk8pd(),   "Runge-Kutta 8(9), Prince-Dormand");
+  gsl_test(test_stepper_rk4imp(),  "Runge-Kutta 4, Gaussian implicit");
+  gsl_test(test_stepper_gear1(),   "Gear 1");
+/*  gsl_test(test_stepper_gear2(),   "Gear 2"); */
 
   return gsl_test_summary();
 }

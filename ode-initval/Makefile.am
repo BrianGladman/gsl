@@ -24,8 +24,10 @@ libgslodeiv_a_SOURCES = \
 	gear1.c		\
 	gear2.c		\
 	odeiv.c		\
+	rk2.c		\
 	rk4.c		\
 	rk4imp.c	\
+	rk8pd.c		\
 	rkck.c
 
 strict:

@@ -60,14 +60,18 @@ gsl_odeiv_step_factory;
 
 /* Available stepper factories.
  *
+ * rk2    : embedded 2nd(3rd) Runge-Kutta
  * rk4    : 4th order (classical) Runge-Kutta
- * rkck   : embedded 4th(5th) Runge-Kutta with theoretical error estimate
+ * rkck   : embedded 4th(5th) Runge-Kutta
+ * rk8pd  : embedded 8th(9th) Runge-Kutta, Prince-Dormand
  * rk4imp : implicit 4th order Runge-Kutta at Gaussian points
  * gear1  : M=1 implicit Gear method
  * gear2  : M=2 implicit Gear method
  */
+extern const gsl_odeiv_step_factory  gsl_odeiv_step_factory_rk2;
 extern const gsl_odeiv_step_factory  gsl_odeiv_step_factory_rk4;
 extern const gsl_odeiv_step_factory  gsl_odeiv_step_factory_rkck;
+extern const gsl_odeiv_step_factory  gsl_odeiv_step_factory_rk8pd;
 extern const gsl_odeiv_step_factory  gsl_odeiv_step_factory_rk4imp;
 extern const gsl_odeiv_step_factory  gsl_odeiv_step_factory_gear1;
 extern const gsl_odeiv_step_factory  gsl_odeiv_step_factory_gear2;
