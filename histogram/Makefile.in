@@ -75,9 +75,13 @@ include_HEADERS = gsl_histogram.h gsl_histogram2d.h
 
 INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../vector -I$(srcdir)/../err -I$(srcdir)/../utils
 
+bin_PROGRAMS = gsl-histogram
 check_PROGRAMS = test test2d test_resample test2d_resample test_trap test2d_trap
 
 TESTS = test test2d test_resample test2d_resample test_trap test2d_trap
+
+gsl_histogram_SOURCES = gsl-histogram.c
+gsl_histogram_LDADD = libgslhistogram.a ../vector/libgslvector.a  ../err/libgslerr.a ../err/libgsltest.a ../utils/libutils.a
 
 test_LDADD = libgslhistogram.a ../vector/libgslvector.a  ../err/libgslerr.a ../err/libgsltest.a ../utils/libutils.a
 test2d_LDADD = libgslhistogram.a ../vector/libgslvector.a  ../err/libgslerr.a ../err/libgsltest.a ../utils/libutils.a
@@ -123,6 +127,12 @@ libgslhistogram_a_OBJECTS =  add.o find.o get.o init.o params.o reset.o \
 file.o pdf.o add2d.o find2d.o get2d.o init2d.o params2d.o reset2d.o \
 file2d.o pdf2d.o
 AR = ar
+PROGRAMS =  $(bin_PROGRAMS)
+
+gsl_histogram_OBJECTS =  gsl-histogram.o
+gsl_histogram_DEPENDENCIES =  libgslhistogram.a ../vector/libgslvector.a \
+../err/libgslerr.a ../err/libgsltest.a ../utils/libutils.a
+gsl_histogram_LDFLAGS = 
 test_OBJECTS =  test.o
 test_LDFLAGS = 
 test2d_OBJECTS =  test2d.o
@@ -148,15 +158,15 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 TAR = tar
 GZIP = --best
 DEP_FILES =  .deps/add.P .deps/add2d.P .deps/file.P .deps/file2d.P \
-.deps/find.P .deps/find2d.P .deps/get.P .deps/get2d.P .deps/init.P \
-.deps/init2d.P .deps/params.P .deps/params2d.P .deps/pdf.P \
-.deps/pdf2d.P .deps/reset.P .deps/reset2d.P .deps/test.P .deps/test2d.P \
-.deps/test2d_resample.P .deps/test2d_trap.P .deps/test_resample.P \
-.deps/test_trap.P
-SOURCES = $(libgslhistogram_a_SOURCES) $(test_SOURCES) $(test2d_SOURCES) $(test_resample_SOURCES) $(test2d_resample_SOURCES) $(test_trap_SOURCES) $(test2d_trap_SOURCES)
-OBJECTS = $(libgslhistogram_a_OBJECTS) $(test_OBJECTS) $(test2d_OBJECTS) $(test_resample_OBJECTS) $(test2d_resample_OBJECTS) $(test_trap_OBJECTS) $(test2d_trap_OBJECTS)
+.deps/find.P .deps/find2d.P .deps/get.P .deps/get2d.P \
+.deps/gsl-histogram.P .deps/init.P .deps/init2d.P .deps/params.P \
+.deps/params2d.P .deps/pdf.P .deps/pdf2d.P .deps/reset.P \
+.deps/reset2d.P .deps/test.P .deps/test2d.P .deps/test2d_resample.P \
+.deps/test2d_trap.P .deps/test_resample.P .deps/test_trap.P
+SOURCES = $(libgslhistogram_a_SOURCES) $(gsl_histogram_SOURCES) $(test_SOURCES) $(test2d_SOURCES) $(test_resample_SOURCES) $(test2d_resample_SOURCES) $(test_trap_SOURCES) $(test2d_trap_SOURCES)
+OBJECTS = $(libgslhistogram_a_OBJECTS) $(gsl_histogram_OBJECTS) $(test_OBJECTS) $(test2d_OBJECTS) $(test_resample_OBJECTS) $(test2d_resample_OBJECTS) $(test_trap_OBJECTS) $(test2d_trap_OBJECTS)
 
-all: Makefile $(LIBRARIES) $(HEADERS)
+all: Makefile $(LIBRARIES) $(PROGRAMS) $(HEADERS)
 
 .SUFFIXES:
 .SUFFIXES: .S .c .o .s
@@ -221,6 +231,31 @@ libgslhistogram.a: $(libgslhistogram_a_OBJECTS) $(libgslhistogram_a_DEPENDENCIES
 	$(AR) cru libgslhistogram.a $(libgslhistogram_a_OBJECTS) $(libgslhistogram_a_LIBADD)
 	$(RANLIB) libgslhistogram.a
 
+mostlyclean-binPROGRAMS:
+
+clean-binPROGRAMS:
+	-test -z "$(bin_PROGRAMS)" || rm -f $(bin_PROGRAMS)
+
+distclean-binPROGRAMS:
+
+maintainer-clean-binPROGRAMS:
+
+install-binPROGRAMS: $(bin_PROGRAMS)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(bindir)
+	@list='$(bin_PROGRAMS)'; for p in $$list; do \
+	  if test -f $$p; then \
+	    echo "  $(INSTALL_PROGRAM) $$p $(DESTDIR)$(bindir)/`echo $$p|sed '$(transform)'`"; \
+	     $(INSTALL_PROGRAM) $$p $(DESTDIR)$(bindir)/`echo $$p|sed '$(transform)'`; \
+	  else :; fi; \
+	done
+
+uninstall-binPROGRAMS:
+	@$(NORMAL_UNINSTALL)
+	list='$(bin_PROGRAMS)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(bindir)/`echo $$p|sed '$(transform)'`; \
+	done
+
 mostlyclean-checkPROGRAMS:
 
 clean-checkPROGRAMS:
@@ -229,6 +264,10 @@ clean-checkPROGRAMS:
 distclean-checkPROGRAMS:
 
 maintainer-clean-checkPROGRAMS:
+
+gsl-histogram: $(gsl_histogram_OBJECTS) $(gsl_histogram_DEPENDENCIES)
+	@rm -f gsl-histogram
+	$(LINK) $(gsl_histogram_LDFLAGS) $(gsl_histogram_OBJECTS) $(gsl_histogram_LDADD) $(LIBS)
 
 test: $(test_OBJECTS) $(test_DEPENDENCIES)
 	@rm -f test
@@ -364,7 +403,7 @@ dvi:
 check: all $(check_PROGRAMS)
 	$(MAKE) check-TESTS
 installcheck:
-install-exec: install-libLIBRARIES
+install-exec: install-libLIBRARIES install-binPROGRAMS
 	@$(NORMAL_INSTALL)
 
 install-data: install-includeHEADERS
@@ -373,12 +412,13 @@ install-data: install-includeHEADERS
 install: install-exec install-data all
 	@:
 
-uninstall: uninstall-libLIBRARIES uninstall-includeHEADERS
+uninstall: uninstall-libLIBRARIES uninstall-binPROGRAMS uninstall-includeHEADERS
 
 install-strip:
 	$(MAKE) INSTALL_PROGRAM='$(INSTALL_PROGRAM) -s' INSTALL_SCRIPT='$(INSTALL_PROGRAM)' install
 installdirs:
-	$(mkinstalldirs)  $(DATADIR)$(libdir) $(DATADIR)$(includedir)
+	$(mkinstalldirs)  $(DATADIR)$(libdir) $(DATADIR)$(bindir) \
+		$(DATADIR)$(includedir)
 
 
 mostlyclean-generic:
@@ -396,28 +436,32 @@ maintainer-clean-generic:
 	-test -z "$(MAINTAINERCLEANFILES)" || rm -f $(MAINTAINERCLEANFILES)
 	-test -z "$(BUILT_SOURCES)" || rm -f $(BUILT_SOURCES)
 mostlyclean:  mostlyclean-libLIBRARIES mostlyclean-compile \
-		mostlyclean-checkPROGRAMS mostlyclean-tags \
-		mostlyclean-depend mostlyclean-generic
+		mostlyclean-binPROGRAMS mostlyclean-checkPROGRAMS \
+		mostlyclean-tags mostlyclean-depend mostlyclean-generic
 
-clean:  clean-libLIBRARIES clean-compile clean-checkPROGRAMS clean-tags \
-		clean-depend clean-generic mostlyclean
+clean:  clean-libLIBRARIES clean-compile clean-binPROGRAMS \
+		clean-checkPROGRAMS clean-tags clean-depend \
+		clean-generic mostlyclean
 
 distclean:  distclean-libLIBRARIES distclean-compile \
-		distclean-checkPROGRAMS distclean-tags distclean-depend \
-		distclean-generic clean
+		distclean-binPROGRAMS distclean-checkPROGRAMS \
+		distclean-tags distclean-depend distclean-generic clean
 	-rm -f config.status
 
 maintainer-clean:  maintainer-clean-libLIBRARIES \
-		maintainer-clean-compile maintainer-clean-checkPROGRAMS \
-		maintainer-clean-tags maintainer-clean-depend \
-		maintainer-clean-generic distclean
+		maintainer-clean-compile maintainer-clean-binPROGRAMS \
+		maintainer-clean-checkPROGRAMS maintainer-clean-tags \
+		maintainer-clean-depend maintainer-clean-generic \
+		distclean
 	@echo "This command is intended for maintainers to use;"
 	@echo "it deletes files that may require special tools to rebuild."
 
 .PHONY: mostlyclean-libLIBRARIES distclean-libLIBRARIES \
 clean-libLIBRARIES maintainer-clean-libLIBRARIES uninstall-libLIBRARIES \
 install-libLIBRARIES mostlyclean-compile distclean-compile \
-clean-compile maintainer-clean-compile mostlyclean-checkPROGRAMS \
+clean-compile maintainer-clean-compile mostlyclean-binPROGRAMS \
+distclean-binPROGRAMS clean-binPROGRAMS maintainer-clean-binPROGRAMS \
+uninstall-binPROGRAMS install-binPROGRAMS mostlyclean-checkPROGRAMS \
 distclean-checkPROGRAMS clean-checkPROGRAMS \
 maintainer-clean-checkPROGRAMS uninstall-includeHEADERS \
 install-includeHEADERS tags mostlyclean-tags distclean-tags clean-tags \
