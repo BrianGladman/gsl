@@ -79,6 +79,53 @@ FUNCTION (test, func) (void)
   
   gsl_test (status, NAME (gsl_vector) "_set writes into array correctly with stride");
 
+  /* Reset stride to 1 */
+
+  v->stride = 1 ;
+
+  for (i = 0; i < N; i++)
+    {
+      BASE x = ZERO;
+      GSL_REAL (x) = i;
+      GSL_IMAG (x) = i + 1234;
+      FUNCTION (gsl_vector, set) (v, i, x);
+    };
+
+
+  {
+    BASE x, y ;
+    GSL_REAL(x) = 2 ;
+    GSL_IMAG(x) = 2 + 1234;
+    GSL_REAL(y) = 5 ;
+    GSL_IMAG(y) = 5 + 1234;
+
+    FUNCTION (gsl_vector,swap) (v, 2, 5) ;
+    
+    status = ! GSL_COMPLEX_EQ(FUNCTION(gsl_vector,get)(v,2),y) ;
+    status |= ! GSL_COMPLEX_EQ(FUNCTION(gsl_vector,get)(v,5),x) ;
+    
+    FUNCTION (gsl_vector,swap) (v, 2, 5) ;
+    
+    status |= ! GSL_COMPLEX_EQ(FUNCTION(gsl_vector,get)(v,2),x) ;
+    status |= ! GSL_COMPLEX_EQ(FUNCTION(gsl_vector,get)(v,5),y) ;
+  }
+
+  gsl_test (status, NAME(gsl_vector) "_swap" DESC " exchanges elements correctly") ;
+
+  status = 0;
+
+  FUNCTION (gsl_vector,reverse) (v) ;
+  
+  for (i = 0; i < N; i++)
+    {
+      BASE x ;
+      GSL_REAL(x) = N - i - 1 ;
+      GSL_IMAG(x) = N - i - 1 + 1234;
+
+      status |= !GSL_COMPLEX_EQ(FUNCTION (gsl_vector, get) (v, i),x);
+    }
+
+  gsl_test (status, NAME(gsl_vector) "_reverse" DESC " reverses elements correctly") ;
   
   FUNCTION (gsl_vector, free) (v);	/* free whatever is in v */
 }

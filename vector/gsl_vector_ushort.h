@@ -46,7 +46,9 @@ int gsl_vector_ushort_fscanf (FILE * stream, gsl_vector_ushort * v);
 int gsl_vector_ushort_fprintf (FILE * stream, const gsl_vector_ushort * v,
 			      const char *format);
 
-int gsl_vector_ushort_copy (gsl_vector_ushort * dest, const gsl_vector_ushort * src);
+int gsl_vector_ushort_cpy (gsl_vector_ushort * dest, const gsl_vector_ushort * src);
+
+int gsl_vector_ushort_reverse (gsl_vector_ushort * v);
 
 int gsl_vector_ushort_swap (gsl_vector_ushort * v, size_t i, size_t j);
 

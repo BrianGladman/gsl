@@ -69,8 +69,39 @@ FUNCTION (test, func) (void)
   
   gsl_test (status, NAME (gsl_vector) "_set" DESC " writes correctly with stride");
 
-  FUNCTION (gsl_vector, free) (v);	/* free whatever is in v */
+  /* Reset stride to 1 */
 
+  v->stride = 1 ;
+
+  for (i = 0; i < N; i++)
+    {
+      FUNCTION (gsl_vector, set) (v, i, (ATOMIC) i);
+    }
+
+  FUNCTION (gsl_vector,swap) (v, 2, 5) ;
+  
+  status = (FUNCTION(gsl_vector,get)(v,2) != 5) ;
+  status |= (FUNCTION(gsl_vector,get)(v,5) != 2) ;
+
+  FUNCTION (gsl_vector,swap) (v, 2, 5) ;
+
+  status |= (FUNCTION(gsl_vector,get)(v,2) != 2) ;
+  status |= (FUNCTION(gsl_vector,get)(v,5) != 5) ;
+
+  gsl_test (status, NAME(gsl_vector) "_swap" DESC " exchanges elements correctly") ;
+
+  status = 0;
+
+  FUNCTION (gsl_vector,reverse) (v) ;
+  
+  for (i = 0; i < N; i++)
+    {
+      status |= (FUNCTION (gsl_vector, get) (v, i) !=  (ATOMIC) (N - i - 1));
+    }
+
+  gsl_test (status, NAME(gsl_vector) "_reverse" DESC " reverses elements correctly") ;
+
+  FUNCTION (gsl_vector, free) (v);	/* free whatever is in v */
 }
 
 

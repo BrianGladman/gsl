@@ -1,3 +1,11 @@
+Fri Feb 18 20:48:32 2000  Brian Gough  <bjg@network-theory.co.uk>
+
+	* swap_source.c (FUNCTION): added gsl_vector_reverse function for
+ 	flipping the order of a vector
+
+	* copy_source.c: renamed gsl_vector_copy to gsl_vector_cpy
+	since it acts like memcpy (dest, src) not 'cp(copy) from to'
+
 Thu Dec  2 20:39:02 1999  Brian Gough  <bjg@network-theory.co.uk>
 
 	* init_source.c: fixed bug, block element needs to be null in

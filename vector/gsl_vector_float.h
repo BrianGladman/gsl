@@ -46,7 +46,9 @@ int gsl_vector_float_fscanf (FILE * stream, gsl_vector_float * v);
 int gsl_vector_float_fprintf (FILE * stream, const gsl_vector_float * v,
 			      const char *format);
 
-int gsl_vector_float_copy (gsl_vector_float * dest, const gsl_vector_float * src);
+int gsl_vector_float_cpy (gsl_vector_float * dest, const gsl_vector_float * src);
+
+int gsl_vector_float_reverse (gsl_vector_float * v);
 
 int gsl_vector_float_swap (gsl_vector_float * v, size_t i, size_t j);
 
