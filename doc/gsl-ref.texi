@@ -178,7 +178,7 @@ not recommended for general use.
 @menu
 * Preliminaries::               
 * Using the library::           
-* Error handling in GSL::       
+* Error handling::              
 * Mathematical Functions::      
 * Complex Numbers::             
 * Vectors and Matrices::        
@@ -233,17 +233,17 @@ GSL is currently in developers release, for people who want to work on
 the library itself. When the library is complete and fully tested it
 will be announced for general use.
 
-@node Using the library, Error handling in GSL, Preliminaries, Top
+@node Using the library, Error handling, Preliminaries, Top
 @chapter Using the library
 @cindex usage, compiling application programs
 @include usage.texi
 
-@node Error handling in GSL, Mathematical Functions, Using the library, Top
-@chapter Error handling in GSL
+@node Error handling, Mathematical Functions, Using the library, Top
+@chapter Error handling
 @cindex Errors
 @include err.texi
 
-@node  Mathematical Functions, Complex Numbers, Error handling in GSL, Top
+@node  Mathematical Functions, Complex Numbers, Error handling, Top
 @chapter Mathematical Functions
 @include math.texi
 

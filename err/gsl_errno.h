@@ -93,6 +93,9 @@ typedef void gsl_stream_handler_t (const char * label, const char * file,
 gsl_error_handler_t * 
 gsl_set_error_handler (gsl_error_handler_t * new_handler);
 
+gsl_error_handler_t *
+gsl_set_error_handler_off ();
+
 gsl_stream_handler_t * 
 gsl_set_stream_handler (gsl_stream_handler_t * new_handler);
 

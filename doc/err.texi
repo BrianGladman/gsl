@@ -115,7 +115,7 @@ error handler.  The error handler is called by library functions when
 they report an error, just before they return to the caller.  The
 purpose of the handler is to provide a function where a breakpoint can
 be set that will catch library errors when running under the debugger.
-It is not intended for use in production programs. These should handle
+It is not intended for use in production programs.  These should handle
 any errors using the error return codes described above.
 
 The default behavior of the error handler is to print a short message
@@ -174,7 +174,6 @@ old_handler = gsl_set_error_handler (&my_error_handler);
 
 gsl_set_error_handler (old_handler) ; /* restore old handler */
 @end example
-
 @noindent
 To use the default behavior (@code{abort} on error) set the error
 handler to @code{NULL},
@@ -183,35 +182,18 @@ handler to @code{NULL},
 old_handler = gsl_set_error_handler (NULL); 
 @end example
 @end deftypefun
-@noindent
-The error handler can be turned off by defining an error handler which
-does nothing,
 
-@example
-#include <gsl/gsl_errno.h>
+@deftypefun gsl_error_handler_t gsl_set_error_handler_off ()
+This function turns off the error handler by defining an error handler
+which does nothing. This will cause the program to continue after any
+error, so the return values from GSL routines must be checked.  This is
+the recommended behavior for production programs.  The previous handler
+is returned (so that you can restore it later).
+@end deftypefun
 
-void no_error_handler (const char *reason, const char *file, int line, int gsl_errno);
-
-main ()
-@{
-   gsl_set_error_handler (&no_error_handler);
-   ....
-@}
-
-void
-no_error_handler (const char *reason, const char *file, int line, int gsl_errno)
-@{
-    /* do nothing */
-    return;
-@}
-@end example
-@noindent
-This will cause the program to continue after any error, so the return
-values from GSL routines must be checked.  
-
-The error behavior can be for specific applications by recompiling the
-library with a customized definition of the @code{GSL_ERROR} macro in
-the file @file{gsl_errno.h}.
+The error behavior can be changed for specific applications by
+recompiling the library with a customized definition of the
+@code{GSL_ERROR} macro in the file @file{gsl_errno.h}.
 
 @c @noindent
 @c Here is a skeleton outline of a program which defines its own error
