@@ -1,3 +1,8 @@
+Fri Sep 15 20:04:28 2000  Brian Gough  <bjg@network-theory.co.uk>
+
+	* source_iamax_r.h source_iamax_c.h: initialize max index to zero
+ 	before loop, so that the result is defined for a null vector
+
 Mon May 22 12:27:47 2000  Brian Gough  <bjg@network-theory.co.uk>
 
 	* Makefile.am (lib_LTLIBRARIES): renamed libgslblasnative.la to
