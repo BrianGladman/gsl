@@ -206,10 +206,10 @@ int gsl_sf_bessel_Inu_Jnu_taylor_impl(const double nu, const double x,
     return GSL_SUCCESS;
   }
   else if(nu == 0.0) {
-    int status = Inu_Jnu_taylorsum(nu, x, sign, kmax, result);
-    return status;
+    return Inu_Jnu_taylorsum(nu, x, sign, kmax, result);
   }
-  else if(nu > 0.0 && x > 0.0) {
+  else {
+    /* nu > 0 and x > 0 */
     double lg;
     double ln_pre;
     gsl_sf_lngamma_impl(nu+1.0, &lg);  /* ok by construction */
@@ -226,8 +226,6 @@ int gsl_sf_bessel_Inu_Jnu_taylor_impl(const double nu, const double x,
       return GSL_EUNDRFLW;
     }
   }
-  
-
 }
 
 

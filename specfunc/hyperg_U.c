@@ -348,10 +348,15 @@ hyperg_U_series(const double a, const double b, const double x, double * result)
     int stat_gamri1 = gsl_sf_gammainv_impl(xi + 1.0, &gamri1);
     int stat_gamrni = gsl_sf_gammainv_impl(aintb + xi, &gamrni);
 
+    int stat_gamall = GSL_ERROR_SELECT_5(stat_sum, stat_gamr, stat_pochai, stat_gamri1, stat_gamrni);
+
     double pochaxibeps;
     double gamrxi1beps;
     int stat_pochaxibeps = gsl_sf_poch_impl(a, xi-beps, &pochaxibeps);
     int stat_gamrxi1beps = gsl_sf_gammainv_impl(xi + 1.0 - beps, &gamrxi1beps);
+
+    int stat_all = GSL_ERROR_SELECT_3(stat_gamall, stat_pochaxibeps, stat_gamrxi1beps);
+
     double b0 = factor * pochaxibeps * gamrni * gamrxi1beps;
 
     if(fabs(xeps-1.0) < 0.5) {
@@ -378,7 +383,9 @@ hyperg_U_series(const double a, const double b, const double x, double * result)
 
       double dchu = sum + c0 + xeps1*b0;
       double xn = N;
-      
+
+      stat_all = GSL_ERROR_SELECT_5(stat_all, stat_dexprl, stat_poch1bxibeps, stat_pch1i, stat_pch1ai);
+
       for(i=1; i<1000; i++) {
         double xi  = istrt + i;
         double xi1 = istrt + i - 1;
@@ -396,7 +403,7 @@ hyperg_U_series(const double a, const double b, const double x, double * result)
         return GSL_EMAXITER;
       }
       else {
-        return GSL_SUCCESS;
+        return stat_all;
       }
     }
     else {
@@ -409,8 +416,10 @@ hyperg_U_series(const double a, const double b, const double x, double * result)
       double dgamrbxi;
       int stat_dgamrbxi = gsl_sf_gammainv_impl(b+xi, &dgamrbxi);
       double a0 = factor * pochai * dgamrbxi * gamri1 / beps;
-      b0 = xeps * b0 / beps;
 
+      stat_all = GSL_ERROR_SELECT_2(stat_all, stat_dgamrbxi);
+
+      b0 = xeps * b0 / beps;
       dchu = sum + a0 - b0;
       
       for(i=1; i<1000; i++) {
@@ -429,7 +438,7 @@ hyperg_U_series(const double a, const double b, const double x, double * result)
         return GSL_EMAXITER;
       }
       else {
-        return GSL_SUCCESS;
+        return stat_all;
       }
     }
   }

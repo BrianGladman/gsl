@@ -13,7 +13,7 @@
 #define locMAX(a,b)   ((a) > (b) ? (a) : (b))
 #define locMIN(a,b)   ((a) < (b) ? (a) : (b))
 
-
+#if 0
 static
 int
 hyperg_0F1_series(double c, double x, double * result, double * prec)
@@ -122,6 +122,7 @@ hyperg_0F1_series(double c, double x, double * result, double * prec)
   else
     return GSL_SUCCESS;
 }
+#endif /* 0 */
 
 
 /* Evaluate bessel_I(nu, x), allowing nu < 0.
@@ -199,7 +200,7 @@ gsl_sf_hyperg_0F1_impl(double c, double x, double * result)
   const double rintc = floor(c + 0.5);
   const int c_neg_integer = (c < 0.0 && fabs(c - rintc) < locEPS);
 
-  if(fabs(c) < locEPS || c_neg_integer) {
+  if(c == 0.0 || c_neg_integer) {
     *result = 0.0;
     return GSL_EDOM;
   }

@@ -4,6 +4,7 @@
 #include <math.h>
 #include <gsl_math.h>
 #include <gsl_errno.h>
+#include "gsl_sf_exp.h"
 #include "gsl_sf_pow_int.h"
 #include "gsl_sf_gamma.h"
 #include "gsl_sf_psi.h"
@@ -325,7 +326,7 @@ hyperg_2F1_reflect(const double a, const double b, const double c,
       int stat_ad1 = gsl_sf_lngamma_impl(a+d1, &lng_ad1);
       int stat_bd1 = gsl_sf_lngamma_impl(b+d1, &lng_bd1);
 
-      if(stat_ad1 == GSL_SUCCESS && stat_bd1 == GSL_SUCCESS) {
+      if(stat_ad1 == GSL_SUCCESS && stat_bd1 == GSL_SUCCESS && stat_ad == GSL_SUCCESS) {
         /* Gamma functions in the denominator are ok.
 	 * Proceed with evaluation.
 	 */
@@ -374,11 +375,15 @@ hyperg_2F1_reflect(const double a, const double b, const double c,
       int stat_1pd  = gsl_sf_psi_impl(1.0 + ad, &psi_1pd);
       int stat_apd1 = gsl_sf_psi_impl(a + d1,   &psi_apd1);
       int stat_bpd1 = gsl_sf_psi_impl(b + d1,   &psi_bpd1);
+      int stat_dall = GSL_ERROR_SELECT_3(stat_1pd, stat_apd1, stat_bpd1);
+
       double psi  = psi_1 + psi_1pd - psi_apd1 - psi_bpd1 - ln_omx;
       double fact = 1.0;
       double sum2 = psi;
       double ln_pre2 = lng_c + d1*ln_omx - lng_ad2 - lng_bd2;
-      
+
+      int stat_e;
+
       /* Do F2 sum.
        */
       for(i=1; i<maxiter; i++) {
@@ -390,13 +395,17 @@ hyperg_2F1_reflect(const double a, const double b, const double c,
 
       if(i == maxiter) stat_F2 = GSL_EMAXITER;
 
-      if(ln_pre2 + log(fabs(sum2)) < GSL_LOG_DBL_MAX) {
-        F2 = exp(ln_pre2) * sum2;
+      if(sum2 == 0.0) {
+        F2 = 0.0;
       }
       else {
-        *result = 0.0; /* FIXME: should be Inf */
-        return GSL_EOVRFLW;
+        stat_e = gsl_sf_exp_sgn_impl(ln_pre2 + log(fabs(sum2)), sum2, &F2);
+        if(stat_e == GSL_EOVRFLW) {
+          *result = 0.0;
+	  return GSL_EOVRFLW;
+        }
       }
+      stat_F2 = GSL_ERROR_SELECT_2(stat_F2, stat_dall);
     }
     else {
       /* Gamma functions on the denominator not ok.
@@ -703,14 +712,8 @@ int gsl_sf_hyperg_2F1_renorm_impl(const double a, const double b, const double c
 	double sg = s1 * s2 * s3 * s4 * s5;
 	double sF = ( F > 0.0 ? 1.0 : -1.0 );
 	double lnr = ln_pre + (1.0-c)*log(x) + log(fabs(F));
-	if(lnr < GSL_LOG_DBL_MAX) {
-          *result = sg * sF * exp(lnr);
-          return GSL_SUCCESS;
-	}
-	else {
-	  *result = 0.0;
-	  return GSL_EOVRFLW;
-	}
+	int stat_e = gsl_sf_exp_sgn_impl(lnr, sg * sF, result);
+	return GSL_ERROR_SELECT_2(stat_e, stat_F);
       }
     }
   }
