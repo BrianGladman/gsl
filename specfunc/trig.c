@@ -58,24 +58,50 @@ cosh_m1_series(const double x, double * result)
 }
 
 
-/* Chebyshev expansion for sine function
-
+/* Chebyshev expansion for f(t) = g((t+1)Pi/8), -1<t<1
+ * g(x) = (sin(x)/x - 1)/(x*x)
  */
-static double sin_data[11] = {
-  -0.3749911549558731758399,
-  -0.1816031552372502018638,
-   0.0058047092745986335594,
-  -0.0000869543117793407571,
-   0.0000007543701480888515,
-  -0.0000000042671296650560,
-   0.0000000000169804229455,
-  -0.0000000000000501205789,
-   0.0000000000000001141010,
-  -0.0000000000000000002064,
-   0.0000000000000000000003
+static double sin_data[12] = {
+  -0.3295190160663511504173,
+   0.0025374284671667991990,
+   0.0006261928782647355874,
+  -4.6495547521854042157541e-06,
+  -5.6917531549379706526677e-07,
+   3.7283335140973803627866e-09,
+   3.0267376484747473727186e-10,
+  -1.7400875016436622322022e-12,
+  -1.0554678305790849834462e-13,
+   5.3701981409132410797062e-16,
+   2.5984137983099020336115e-17,
+  -1.1821555255364833468288e-19
 };
 static gsl_sf_cheb_series sin_cs = {
   sin_data,
+  11,
+  -1, 1,
+  (double *)0,
+  (double *)0,
+  11
+};
+
+/* Chebyshev expansion for f(t) = g((t+1)Pi/8), -1<t<1
+ * g(x) = (2(cos(x) - 1)/(x^2) + 1) / x^2
+ */
+static double cos_data[11] = {
+  0.165391825637921473505668118136,
+ -0.00084852883845000173671196530195,
+ -0.000210086507222940730213625768083,
+  1.16582269619760204299639757584e-6,
+  1.43319375856259870334412701165e-7,
+ -7.4770883429007141617951330184e-10,
+ -6.0969994944584252706997438007e-11,
+  2.90748249201909353949854872638e-13,
+  1.77126739876261435667156490461e-14,
+ -7.6896421502815579078577263149e-17,
+ -3.7363121133079412079201377318e-18
+};
+static gsl_sf_cheb_series cos_cs = {
+  cos_data,
   10,
   -1, 1,
   (double *)0,
@@ -83,18 +109,13 @@ static gsl_sf_cheb_series sin_cs = {
   10
 };
 
-const static double pihi = 3.140625;
-const static double pilo = 9.6765358979323846264e-04;
-const static double pirec  = 0.3183098861837906715377675;
-const static double pi2rec = 0.6366197723675813430755351;
-
 
 /*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
 
 /* I would have prefered just using the library sin() function.
  * But after some experimentation I decided that there was
  * no good way to understand the error; library sin() is just a black box.
- * So we have to roll our own. SLATEC is a reasonable place to start...
+ * So we have to roll our own.
  */
 int
 gsl_sf_sin_impl(double x, gsl_sf_result * result)
@@ -103,44 +124,69 @@ gsl_sf_sin_impl(double x, gsl_sf_result * result)
     return GSL_EFAULT;
   }
   else {
-    const double y = fabs(x);
+    const double P1 = 7.85398125648498535156e-1;
+    const double P2 = 3.77489470793079817668e-8;
+    const double P3 = 2.69515142907905952645e-15;
 
-    if(y < GSL_SQRT_DBL_EPSILON) {
-      result->val = x;
-      result->err = fabs(x*x*x);
+    const double sgn_x = GSL_SIGN(x);
+    const double abs_x = fabs(x);
+
+    if(abs_x < GSL_ROOT4_DBL_EPSILON) {
+      const double x2 = x*x;
+      result->val = x * (1.0 - x2/6.0);
+      result->err = fabs(x*x2*x2 / 100.0);
       return GSL_SUCCESS;
     }
     else {
-      double xn  = dint (y*pirec+0.5);
-      int    n2  = dmod (xn, 2.0) + 0.5;
-      double sgn = GSL_SIGN(x);
-      double f   = (y-xn*pihi) - xn*pilo;
-      gsl_sf_result cs_result;
+      double sgn_result = sgn_x;
+      double y = floor(abs_x/(0.25*M_PI));
+      int octant = y - ldexp(floor(ldexp(y,-3)),3);
+      int stat_cs;
+      double z;
 
-      const int stat_cs = gsl_sf_cheb_eval_impl(&sin_cs, 2.0* (f*pi2rec)*(f*pi2rec)-1.0, &cs_result);
-      if (n2 != 0) sgn = -sgn;
-
-      result->val  = f + f*cs_result.val;
-      result->val *= sgn;
-      if(result->val > 1.0) {
-      	result->val = 1.0;
-      }
-      if(result->val < -1.0) {
-        result->val = -1.0;
+      if(GSL_IS_ODD(octant)) {
+        octant += 1;
+	octant &= 07;
+	y += 1.0;
       }
 
-      result->err = 2.0 * GSL_DBL_EPSILON * fabs(result->val);
-      if(y > 1.0/GSL_DBL_EPSILON) {
-        result->err *= 1.0/GSL_DBL_EPSILON;
+      if(octant > 3) {
+        octant -= 4;
+	sgn_result = -sgn_result;
       }
-      else if(y > 1.0/GSL_SQRT_DBL_EPSILON) {
-        result->err *= 1.0/GSL_SQRT_DBL_EPSILON;
+      
+      z = ((abs_x - y * P1) - y * P2) - y * P3;
+
+      if(octant == 0) {
+        gsl_sf_result sin_cs_result;
+	const double t = 8.0*fabs(z)/M_PI - 1.0;
+	stat_cs = gsl_sf_cheb_eval_impl(&sin_cs, t, &sin_cs_result);
+        result->val = z * (1.0 + z*z * sin_cs_result.val);
+      }
+      else { /* octant == 2 */
+        gsl_sf_result cos_cs_result;
+	const double t = 8.0*fabs(z)/M_PI - 1.0;
+	stat_cs = gsl_sf_cheb_eval_impl(&cos_cs, t, &cos_cs_result);
+        result->val = 1.0 - 0.5*z*z * (1.0 - z*z * cos_cs_result.val);
+      }
+
+      result->val *= sgn_result;
+
+      if(abs_x > 1.0/GSL_DBL_EPSILON) {
+        result->err = fabs(result->val);
+      }
+      else if(abs_x > 1.0/GSL_SQRT_DBL_EPSILON) {
+        result->err = 2.0 * GSL_SQRT_DBL_EPSILON * fabs(result->val);
+      }
+      else {
+        result->err = 2.0 * GSL_DBL_EPSILON * fabs(result->val);
       }
 
       return stat_cs;
     }
   }
 }
+
 
 int
 gsl_sf_cos_impl(double x, gsl_sf_result * result)
@@ -149,41 +195,66 @@ gsl_sf_cos_impl(double x, gsl_sf_result * result)
     return GSL_EFAULT;
   }
   else {
-    const double absx = fabs(x);
-    const double y    = absx + 0.5*M_PI;
+    const double P1 = 7.85398125648498535156e-1;
+    const double P2 = 3.77489470793079817668e-8;
+    const double P3 = 2.69515142907905952645e-15;
 
-    if(y < GSL_SQRT_DBL_EPSILON) {
-      result->val = 1.0;
-      result->err = fabs(x*x);
+    const double sgn_x = GSL_SIGN(x);
+    const double abs_x = fabs(x);
+
+    if(abs_x < GSL_ROOT4_DBL_EPSILON) {
+      const double x2 = x*x;
+      result->val = 1.0 - 0.5*x2;
+      result->err = fabs(x2*x2/12.0);
       return GSL_SUCCESS;
     }
     else {
+      double sgn_result = sgn_x;
+      double y = floor(abs_x/(0.25*M_PI));
+      int octant = y - ldexp(floor(ldexp(y,-3)),3);
       int stat_cs;
-      gsl_sf_result cs_result;
-      double xn  = dint (y*pirec+0.5);
-      int    n2  = dmod (xn, 2.0) + 0.5;
-      double f;
-      xn -= 0.5;
-      f   = (absx-xn*pihi) - xn*pilo;
+      double z;
 
-      stat_cs = gsl_sf_cheb_eval_impl(&sin_cs, 2.0* (f*pi2rec)*(f*pi2rec)-1.0, &cs_result);
-
-      result->val = f + f*cs_result.val;
-      if (n2 != 0) result->val = -result->val;
-
-      if(result->val > 1.0) {
-        result->val = 1.0;
-      }
-      if(result->val < -1.0) {
-        result->val = -1.0;
+      if(GSL_IS_ODD(octant)) {
+        octant += 1;
+	octant &= 07;
+	y += 1.0;
       }
 
-      result->err = 2.0 * GSL_DBL_EPSILON * fabs(result->val);
-      if(y > 1.0/GSL_DBL_EPSILON) {
-        result->err *= 1.0/GSL_DBL_EPSILON;
+      if(octant > 3) {
+        octant -= 4;
+	sgn_result = -sgn_result;
       }
-      else if(y > 1.0/GSL_SQRT_DBL_EPSILON) {
-        result->err *= 1.0/GSL_SQRT_DBL_EPSILON;
+
+      if(octant > 1) {
+        sgn_result = -sgn_result;
+      }
+
+      z = ((abs_x - y * P1) - y * P2) - y * P3;
+
+      if(octant == 0) {
+        gsl_sf_result cos_cs_result;
+        const double t = 8.0*fabs(z)/M_PI - 1.0;
+        stat_cs = gsl_sf_cheb_eval_impl(&cos_cs, t, &cos_cs_result);
+        result->val = 1.0 - 0.5*z*z * (1.0 - z*z * cos_cs_result.val);
+      }
+      else { /* octant == 2 */
+        gsl_sf_result sin_cs_result;
+        const double t = 8.0*fabs(z)/M_PI - 1.0;
+        stat_cs = gsl_sf_cheb_eval_impl(&sin_cs, t, &sin_cs_result);
+        result->val = z * (1.0 + z*z * sin_cs_result.val);
+      }
+
+      result->val *= sgn_result;
+
+      if(abs_x > 1.0/GSL_DBL_EPSILON) {
+        result->err = fabs(result->val);
+      }
+      else if(abs_x > 1.0/GSL_SQRT_DBL_EPSILON) {
+        result->err = 2.0 * GSL_SQRT_DBL_EPSILON * fabs(result->val);
+      }
+      else {
+        result->err = 2.0 * GSL_DBL_EPSILON * fabs(result->val);
       }
 
       return stat_cs;
