@@ -1,3 +1,12 @@
+2004-03-06  Brian Gough  <bjg@network-theory.co.uk>
+
+	* test.c (test_SV_decomp_mod_dim): added tests for SV_decomp_mod
+
+	* svd.c (gsl_linalg_SV_decomp): handle the case N=1 (SVD of a
+	column vector)
+	(gsl_linalg_SV_decomp_mod): handle the case N=1 (SVD of a column
+	vector)
+
 2004-03-05  Brian Gough  <bjg@network-theory.co.uk>
 
 	* test.c (test_SV_decomp): add tests with inf/nan

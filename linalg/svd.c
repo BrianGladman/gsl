@@ -80,6 +80,23 @@ gsl_linalg_SV_decomp (gsl_matrix * A, gsl_matrix * V, gsl_vector * S,
                  GSL_EBADLEN);
     }
 
+  /* Handle the case of N = 1 (SVD of a column vector) */
+
+  if (N == 1)
+    {
+      gsl_vector_view column = gsl_matrix_column (A, 0);
+      double norm = gsl_blas_dnrm2 (&column.vector);
+
+      gsl_vector_set (S, 0, norm); 
+      gsl_matrix_set (V, 0, 0, 1.0);
+      
+      if (norm != 0.0)
+        {
+          gsl_blas_dscal (1.0/norm, &column.vector);
+        }
+
+      return GSL_SUCCESS;
+    }
   
   {
     gsl_vector_view f = gsl_vector_subvector (work, 0, K - 1);
@@ -101,7 +118,7 @@ gsl_linalg_SV_decomp (gsl_matrix * A, gsl_matrix * V, gsl_vector * S,
       {
         double fbm1 = gsl_vector_get (&f.vector, b - 1);
 
-        if (fbm1 == 0.0 || gsl_isnan(fbm1))
+        if (fbm1 == 0.0 || gsl_isnan (fbm1))
           {
             b--;
             continue;
@@ -116,7 +133,7 @@ gsl_linalg_SV_decomp (gsl_matrix * A, gsl_matrix * V, gsl_vector * S,
           {
             double fam1 = gsl_vector_get (&f.vector, a - 1);
 
-            if (fam1 == 0.0 || gsl_isnan(fam1))
+            if (fam1 == 0.0 || gsl_isnan (fam1))
               {
                 break;
               }
@@ -236,6 +253,22 @@ gsl_linalg_SV_decomp_mod (gsl_matrix * A,
     {
       GSL_ERROR ("length of workspace must match second dimension of matrix A",
                  GSL_EBADLEN);
+    }
+
+  if (N == 1)
+    {
+      gsl_vector_view column = gsl_matrix_column (A, 0);
+      double norm = gsl_blas_dnrm2 (&column.vector);
+
+      gsl_vector_set (S, 0, norm); 
+      gsl_matrix_set (V, 0, 0, 1.0);
+      
+      if (norm != 0.0)
+        {
+          gsl_blas_dscal (1.0/norm, &column.vector);
+        }
+
+      return GSL_SUCCESS;
     }
 
   /* Convert A into an upper triangular matrix R */

@@ -1,4 +1,8 @@
-* What is new in gsl-1.4:
+* What is new in gsl-1.5:
+
+** The singular value decomposition routines gsl_linalg_SV_decomp and
+gsl_linalg_SV_decomp_mod now handle the SVD of a column vector (N=1,
+arbitrary M), which can occur in linear fitting.
 
 ** Restored missing header files gsl_const_mks.h and gsl_const_cgs.h.
 The incorrect values of the electrical units for gsl_const_cgs
