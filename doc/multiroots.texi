@@ -819,9 +819,9 @@ int
 print_state (size_t iter, gsl_multiroot_fsolver * s)
 @{
   printf ("iter = %3u x = % 10.3f % 10.3f  f(x) = % .3e % .3e\n",
-	  iter,
-	  gsl_vector_get (s->x, 0), gsl_vector_get (s->x, 1),
-	  gsl_vector_get (s->f, 0), gsl_vector_get (s->f, 1));
+          iter,
+          gsl_vector_get (s->x, 0), gsl_vector_get (s->x, 1),
+          gsl_vector_get (s->f, 0), gsl_vector_get (s->f, 1));
 @}
 @end example
 @noindent
@@ -885,7 +885,7 @@ rosenbrock_df (const gsl_vector * x, void *params, gsl_matrix * df)
 
 int
 rosenbrock_fdf (const gsl_vector * x, void *params,
-		gsl_vector * f, gsl_matrix * df)
+                gsl_vector * f, gsl_matrix * df)
 @{
   rosenbrock_f (x, params, f);
   rosenbrock_df (x, params, df);

@@ -580,7 +580,7 @@ main (void)
       print_state (iter, s);
 
       if (status)
-	break;
+        break;
 
       status = gsl_multifit_test_delta (s->dx, s->x, 0.0001, 0.0001);
     @}
@@ -606,9 +606,9 @@ int
 print_state (size_t iter, gsl_multifit_fdfsolver * s)
 @{
   printf ("iter: %3u x = % 15.8f % 15.8f % 15.8f |f(x)| = %g\n",
-	  iter,
-	  gsl_vector_get (s->x, 0), gsl_vector_get (s->x, 1),
-	  gsl_vector_get (s->x, 2), gsl_blas_dnrm2 (s->f));
+          iter,
+          gsl_vector_get (s->x, 0), gsl_vector_get (s->x, 1),
+          gsl_vector_get (s->x, 2), gsl_blas_dnrm2 (s->f));
 @}
 @end example
 
