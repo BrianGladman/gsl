@@ -202,7 +202,7 @@ int gsl_matrix_fscanf (FILE * stream, gsl_matrix * m);
 int gsl_matrix_fprintf (FILE * stream, const gsl_matrix * m, const char * format);
  
 int gsl_matrix_memcpy(gsl_matrix * dest, const gsl_matrix * src);
-int gsl_matrix_swap(gsl_matrix * m1, const gsl_matrix * m2);
+int gsl_matrix_swap(gsl_matrix * m1, gsl_matrix * m2);
 
 int gsl_matrix_swap_rows(gsl_matrix * m, const size_t i, const size_t j);
 int gsl_matrix_swap_columns(gsl_matrix * m, const size_t i, const size_t j);

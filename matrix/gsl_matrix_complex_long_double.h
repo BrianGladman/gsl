@@ -199,7 +199,7 @@ int gsl_matrix_complex_long_double_fscanf (FILE * stream, gsl_matrix_complex_lon
 int gsl_matrix_complex_long_double_fprintf (FILE * stream, const gsl_matrix_complex_long_double * m, const char * format);
 
 int gsl_matrix_complex_long_double_memcpy(gsl_matrix_complex_long_double * dest, const gsl_matrix_complex_long_double * src);
-int gsl_matrix_complex_long_double_swap(gsl_matrix_complex_long_double * m1, const gsl_matrix_complex_long_double * m2);
+int gsl_matrix_complex_long_double_swap(gsl_matrix_complex_long_double * m1, gsl_matrix_complex_long_double * m2);
 
 int gsl_matrix_complex_long_double_swap_rows(gsl_matrix_complex_long_double * m, const size_t i, const size_t j);
 int gsl_matrix_complex_long_double_swap_columns(gsl_matrix_complex_long_double * m, const size_t i, const size_t j);

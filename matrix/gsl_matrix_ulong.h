@@ -202,7 +202,7 @@ int gsl_matrix_ulong_fscanf (FILE * stream, gsl_matrix_ulong * m);
 int gsl_matrix_ulong_fprintf (FILE * stream, const gsl_matrix_ulong * m, const char * format);
  
 int gsl_matrix_ulong_memcpy(gsl_matrix_ulong * dest, const gsl_matrix_ulong * src);
-int gsl_matrix_ulong_swap(gsl_matrix_ulong * m1, const gsl_matrix_ulong * m2);
+int gsl_matrix_ulong_swap(gsl_matrix_ulong * m1, gsl_matrix_ulong * m2);
 
 int gsl_matrix_ulong_swap_rows(gsl_matrix_ulong * m, const size_t i, const size_t j);
 int gsl_matrix_ulong_swap_columns(gsl_matrix_ulong * m, const size_t i, const size_t j);

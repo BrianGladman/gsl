@@ -51,8 +51,7 @@ FUNCTION (gsl_matrix, memcpy) (TYPE (gsl_matrix) * dest,
 
 
 int
-FUNCTION (gsl_matrix, swap) (TYPE (gsl_matrix) * dest,
-                             const TYPE (gsl_matrix) * src)
+FUNCTION (gsl_matrix, swap) (TYPE (gsl_matrix) * dest, TYPE (gsl_matrix) * src)
 {
   const size_t src_size1 = src->size1;
   const size_t src_size2 = src->size2;

@@ -202,7 +202,7 @@ int gsl_matrix_uchar_fscanf (FILE * stream, gsl_matrix_uchar * m);
 int gsl_matrix_uchar_fprintf (FILE * stream, const gsl_matrix_uchar * m, const char * format);
  
 int gsl_matrix_uchar_memcpy(gsl_matrix_uchar * dest, const gsl_matrix_uchar * src);
-int gsl_matrix_uchar_swap(gsl_matrix_uchar * m1, const gsl_matrix_uchar * m2);
+int gsl_matrix_uchar_swap(gsl_matrix_uchar * m1, gsl_matrix_uchar * m2);
 
 int gsl_matrix_uchar_swap_rows(gsl_matrix_uchar * m, const size_t i, const size_t j);
 int gsl_matrix_uchar_swap_columns(gsl_matrix_uchar * m, const size_t i, const size_t j);
