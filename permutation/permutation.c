@@ -96,3 +96,23 @@ gsl_permutation_reverse (gsl_permutation * p)
       p->data[j] = tmp ;
     }
 }
+
+int 
+gsl_permutation_invert (gsl_permutation * inv, const gsl_permutation * p)
+{
+  const size_t size = p->size ;
+
+  size_t i ;
+
+  if (inv->size != size)
+    {
+      GSL_ERROR("permutation lengths are not equal", GSL_EBADLEN);
+    }
+  
+  for (i = 0; i < size; i++) 
+    {
+      inv->data[p->data[i]] = i ;
+    }
+  
+  return GSL_SUCCESS ;
+}
