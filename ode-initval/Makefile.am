@@ -20,7 +20,7 @@ test_odeiv_LDADD = libgslodeiv.a \
 	../linalg/libgsllinalg.a \
 	../matrix/libgslmatrix.a \
 	../vector/libgslvector.a \
-	../vector/libgslblock.a \
+	../block/libgslblock.a \
         ../utils/libutils.a
 test_odeiv_DEPENDENCIES = libgslodeiv.a
 test_odeiv_SOURCES = test_odeiv.c

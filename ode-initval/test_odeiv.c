@@ -25,9 +25,11 @@ int rhs_linear(double t, const double y[], double f[], void * params)
 int jac_linear(double t, const double y[], double * dfdy, double dfdt[], void * params)
 {
   gsl_matrix dfdy_mat;
-  dfdy_mat.data = dfdy;
   dfdy_mat.size1 = 2;
   dfdy_mat.size2 = 2;
+  dfdy_mat.dim2  = 2;
+  dfdy_mat.data  = dfdy;
+  dfdy_mat.block = 0;
   gsl_matrix_set(&dfdy_mat, 0, 0, 0.0);
   gsl_matrix_set(&dfdy_mat, 0, 1, 0.0);
   gsl_matrix_set(&dfdy_mat, 1, 0, 1.0);
@@ -57,9 +59,11 @@ int rhs_sin(double t, const double y[], double f[], void * params)
 int jac_sin(double t, const double y[], double * dfdy, double dfdt[], void * params)
 {
   gsl_matrix dfdy_mat;
-  dfdy_mat.data = dfdy;
+  dfdy_mat.data  = dfdy;
   dfdy_mat.size1 = 2;
   dfdy_mat.size2 = 2;
+  dfdy_mat.dim2  = 2;
+  dfdy_mat.block = 0;
   gsl_matrix_set(&dfdy_mat, 0, 0,  0.0);
   gsl_matrix_set(&dfdy_mat, 0, 1, -1.0);
   gsl_matrix_set(&dfdy_mat, 1, 0,  1.0);
@@ -92,6 +96,8 @@ int jac_exp(double t, const double y[], double * dfdy, double dfdt[], void * par
   dfdy_mat.data = dfdy;
   dfdy_mat.size1 = 2;
   dfdy_mat.size2 = 2;
+  dfdy_mat.dim2  = 2;
+  dfdy_mat.block = 0;
   gsl_matrix_set(&dfdy_mat, 0, 0, 0.0);
   gsl_matrix_set(&dfdy_mat, 0, 1, 1.0);
   gsl_matrix_set(&dfdy_mat, 1, 0, 1.0);
@@ -124,6 +130,8 @@ int jac_stiff(double t, const double y[], double * dfdy, double dfdt[], void * p
   dfdy_mat.data = dfdy;
   dfdy_mat.size1 = 2;
   dfdy_mat.size2 = 2;
+  dfdy_mat.dim2  = 2;
+  dfdy_mat.block = 0;
   gsl_matrix_set(&dfdy_mat, 0, 0,   998.0);
   gsl_matrix_set(&dfdy_mat, 0, 1,  1998.0);
   gsl_matrix_set(&dfdy_mat, 1, 0,  -999.0);
@@ -616,7 +624,7 @@ int test_evolve_system(
     s++;
   }
 
-printf(" COUNT= %d    STUT= %d\n", e->count, e->count_stutter);
+/* printf(" COUNT= %d    STUT= %d\n", e->count, e->count_stutter); */
 
   gsl_odeiv_evolve_free(e);
   gsl_odeiv_evolve_control_free(c);
@@ -774,7 +782,7 @@ int test_evolve(void)
 int main()
 {
   gsl_ieee_env_setup();
-/*
+
   gsl_test(test_stepper_rk2(),     "Runge-Kutta 2(3), Euler-Cauchy");
   gsl_test(test_stepper_rk4(),     "Runge-Kutta 4, Classical");
   gsl_test(test_stepper_rkck(),    "Runge-Kutta 4(5), Cash-Karp");
@@ -783,11 +791,11 @@ int main()
   gsl_test(test_stepper_rk4imp(),  "Runge-Kutta 4, Gaussian implicit");
   gsl_test(test_stepper_gear1(),   "Gear 1");
   gsl_test(test_stepper_gear2(),   "Gear 2");
-*/
+
   gsl_test(test_stepper_bsimp(),   "Bulirsch-Stoer Implicit");
 
-/*
+
   gsl_test(test_evolve(),  "Evolution");
-*/
+
   return gsl_test_summary();
 }
