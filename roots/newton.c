@@ -26,10 +26,10 @@ typedef struct
   }
 newton_state_t;
 
-int newton_init (void * vstate, gsl_function_fdf * fdf, double * root);
-int newton_iterate (void * vstate, gsl_function_fdf * fdf, double * root);
+static int newton_init (void * vstate, gsl_function_fdf * fdf, double * root);
+static int newton_iterate (void * vstate, gsl_function_fdf * fdf, double * root);
 
-int
+static int
 newton_init (void * vstate, gsl_function_fdf * fdf, double * root)
 {
   newton_state_t * state = (newton_state_t *) vstate;
@@ -43,7 +43,7 @@ newton_init (void * vstate, gsl_function_fdf * fdf, double * root)
 
 }
 
-int
+static int
 newton_iterate (void * vstate, gsl_function_fdf * fdf, double * root)
 {
   newton_state_t * state = (newton_state_t *) vstate;

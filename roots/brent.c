@@ -22,11 +22,11 @@ typedef struct
   }
 brent_state_t;
 
-int brent_init (void * vstate, gsl_function * f, double * root, gsl_interval * x);
-int brent_iterate (void * vstate, gsl_function * f, double * root, gsl_interval * x);
+static int brent_init (void * vstate, gsl_function * f, double * root, gsl_interval * x);
+static int brent_iterate (void * vstate, gsl_function * f, double * root, gsl_interval * x);
 
 
-int
+static int
 brent_init (void * vstate, gsl_function * f, double * root, gsl_interval * x)
 {
   brent_state_t * state = (brent_state_t *) vstate;
@@ -62,7 +62,7 @@ brent_init (void * vstate, gsl_function * f, double * root, gsl_interval * x)
 
 }
 
-int
+static int
 brent_iterate (void * vstate, gsl_function * f, double * root, gsl_interval * x)
 {
   brent_state_t * state = (brent_state_t *) vstate;

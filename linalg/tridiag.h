@@ -9,7 +9,7 @@
 
 #include <stdlib.h>
 
-
+static
 int solve_tridiag(
   const double diag[], size_t d_stride,
   const double offdiag[], size_t o_stride,
@@ -18,6 +18,7 @@ int solve_tridiag(
   size_t N
   );
 
+static
 int solve_cyctridiag(
   const double diag[], size_t d_stride,
   const double offdiag[], size_t o_stride,

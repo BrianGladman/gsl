@@ -16,7 +16,7 @@
  *           0  offdiag[1]       diag[2]
  *           0           0    offdiag[2]   .....
  */
-int 
+static int 
 solve_tridiag(
   const double diag[], size_t d_stride,
   const double offdiag[], size_t o_stride,
@@ -95,7 +95,7 @@ solve_tridiag(
  * FIXME: must use the strides
 
  */
-int 
+static int 
 solve_cyc_tridiag(
   const double diag[], size_t d_stride,
   const double offdiag[], size_t o_stride,
