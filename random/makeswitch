@@ -1,0 +1,22 @@
+#! /bin/sh 
+## $Id$
+## Convert template switch.xc to actual switch.c/gsl_ran_switch.h
+## source code by replacing xxx section with specific mrg, crmg, etc.
+
+list=$*
+
+sed -n -e '/include..xxx.h./,$p' < switch.xc > tmp.xxx
+sed    -e '/include..xxx.h./,$d' < switch.xc > switch.c
+
+for xxx in $list; do
+    sed s/xxx/$xxx/g tmp.xxx >> switch.c
+    echo "void gsl_ran_use_$xxx(void);" >> gsl_ran_switch.h
+done
+
+/bin/rm tmp.xxx
+
+##
+
+
+
+
