@@ -62,6 +62,6 @@ cd %{name}-%{version}; make install prefix=%{mybuildroot}/usr
 /usr/bin/gsl-config
 /usr/bin/gsl-histogram
 /usr/bin/gsl-randist
-/usr/lib/gsl
+/usr/lib
 /usr/include/gsl
 /usr/share/aclocal/gsl.m4
