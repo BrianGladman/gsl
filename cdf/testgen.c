@@ -145,10 +145,14 @@ integrate_upper (gsl_function * f, double a)
 
 
 int
-test (gsl_function * f, double x[], int N, char *fmt)
+test (const char * name, gsl_function * f, double x[], int N, char *fmt)
 {
   int i;
   double res, err, sum = 0, sumerr = 0;
+
+  printf ("void test_auto_%s (void);\n\n", name);
+
+  printf ("void\ntest_auto_%s (void)\n{\n", name);
 
   /* gsl_set_error_handler_off(); */
 
@@ -225,9 +229,10 @@ test (gsl_function * f, double x[], int N, char *fmt)
         printf (fmt, "_Qinv", sum, x[i]);
     }
   
-  printf("\n");
+  printf ("}\n\n");
 
   gsl_integration_workspace_free (w);
+
 }
 
 int
@@ -264,9 +269,11 @@ main (void)
     1.0
   };
 
-#define TEST(name,params,range,n) { double p[] = { params } ; gsl_function f = {&name, p}; test(&f, range, n, "TEST(gsl_cdf_" #name "%s, (%.10e," #params "), %.12e, TEST_TOL6);\n"); }
+#define TEST(name,params,range,n) { double p[] = { params } ; gsl_function f = {&name, p}; test(#name, &f, range, n, "    TEST(gsl_cdf_" #name "%s, (%.16e," #params "), %.12e, TEST_TOL6);\n"); }
 
-#define TEST2(name,p1,p2,range,n) { double p[] = { p1,p2 } ; gsl_function f = {&name, p}; test(&f, range, n, "TEST(gsl_cdf_" #name "%s, (%.10e," #p1 "," #p2 "), %.12e, TEST_TOL6);\n"); }
+#define TEST2(name,p1,p2,range,n) { double p[] = { p1,p2 } ; gsl_function f = {&name, p}; test(#name, &f, range, n, "    TEST(gsl_cdf_" #name "%s, (%.16e," #p1 "," #p2 "), %.12e, TEST_TOL6);\n"); }
+
+#define TEST2A(desc,name,p1,p2,range,n) { double p[] = { p1,p2 } ; gsl_function f = {&name, p}; test(#desc, &f, range, n, "    TEST(gsl_cdf_" #name "%s, (%.16e," #p1 "," #p2 "), %.12e, TEST_TOL6);\n"); }
 
 
   inverse = 0;
@@ -293,6 +300,5 @@ main (void)
   TEST2(pareto, 1.3, 2.7, xpos, Npos);
   TEST(logistic, 1.3, xall, N);
 
-  TEST2(gamma, 1.3,123.0, xpos, Npos);
-
+  TEST2A(gammalarge, gamma, 1.3,123.0, xpos, Npos);
 }
