@@ -46,9 +46,21 @@ by the Foundation.
 @subtitle Edition @value{EDITION}, for gsl Version @value{VERSION}
 @subtitle @value{UPDATED}
 @author Mark Galassi
+@author Space Data Systems group, Los Alamos National Laboratory
+@author @email{rosalia@@nis.lanl.gov}
+@author
 @author Jim Davies
+@author Space Data Systems Group, Los Alamos National Laboratory and
+@author Department of Computer Science, Georgia Institute of Technology
+@author @email{jimmyd@@nis.lanl.gov}
+@author
 @author James Theiler
+@author Los Alamos National Laboratory
+@author @email{jt@@nis.lanl.gov}
+@author
 @author Brian Gough
+@author Los Alamos National Laboratory
+@author @email{bjg@@vvv.lanl.gov}
 
 @page
 @vskip 0pt plus 1filll
