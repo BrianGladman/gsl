@@ -5,8 +5,9 @@
 #include <gsl_complex.h>
 #include <gsl_errno.h>
 
-#include <gsl_fft_signals.h>
 #include <gsl_dft_complex.h>
+
+#include "fft_signals.h"
 
 int
 gsl_fft_signal_complex_pulse (const size_t k,

@@ -1,5 +1,7 @@
 Tue Jul 28 11:30:43 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
+	* renamed gsl_fft_signals.h to fft_signals.h (not exported)
+
 	* fft.h: a place to keep some local macros
 
 	* c.c: renamed complex.c to c.c

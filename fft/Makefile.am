@@ -2,7 +2,7 @@ lib_LIBRARIES = libgslfft.a
 
 check_PROGRAMS = test_trap test_radix2 test benchmark errs
 
-include_HEADERS = gsl_fft.h gsl_fft_complex.h gsl_fft_halfcomplex.h gsl_fft_real.h gsl_fft_signals.h gsl_dft_complex.h
+include_HEADERS = gsl_fft.h gsl_fft_complex.h gsl_fft_halfcomplex.h gsl_fft_real.h gsl_dft_complex.h
 
 noinst_HEADERS = fft.h fft_complex.h fft_halfcomplex.h fft_real.h
 
@@ -21,9 +21,9 @@ test_trap_DEPENDENCIES = libgslfft.a
 test_radix2_DEPENDENCIES = libgslfft.a
 benchmark_DEPENDENCIES = libgslfft.a
 
-test_SOURCES = test.c
-test_trap_SOURCES = test_trap.c
-test_radix2_SOURCES = test_radix2.c
+test_SOURCES = test.c signals.c
+test_trap_SOURCES = test_trap.c signals.c
+test_radix2_SOURCES = test_radix2.c signals.c
 benchmark_SOURCES = benchmark.c 
 
 libgslfft_a_SOURCES = \
@@ -70,7 +70,5 @@ real_pass_4.c \
 real_pass_5.c \
 real_pass_n.c \
 real_radix2.c \
-real_unpack.c \
- \
-signals.c
+real_unpack.c
 

@@ -11,8 +11,9 @@
 #include <gsl_fft_complex.h>
 #include <gsl_fft_real.h>
 #include <gsl_fft_halfcomplex.h>
-#include <gsl_fft_signals.h>
 #include <gsl_test.h>
+
+#include "fft_signals.h"
 
 #include "compare.h"
 
