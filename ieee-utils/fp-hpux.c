@@ -1,3 +1,5 @@
+#define _INCLUDE_HPUX_SOURCE
+
 #include <math.h>
 #include <stdio.h>
 #include <gsl_ieee_utils.h>
@@ -7,6 +9,7 @@ int
 gsl_ieee_set_mode (int precision, int rounding, int exception_mask)
 {
   fp_except mode = 0 ;
+  fp_rnd    rnd  = 0 ;
 
   switch (precision)
     {
@@ -24,22 +27,28 @@ gsl_ieee_set_mode (int precision, int rounding, int exception_mask)
       break ;
     }
 
+
   switch (rounding)
     {
     case GSL_IEEE_ROUND_TO_NEAREST:
-      fpsetround (FP_RN) ;
+      rnd = FP_RN ;
+      fpsetround (rnd) ;
       break ;
     case GSL_IEEE_ROUND_DOWN:
-      fpsetround (FP_RM) ;
+      rnd = FP_RM ;
+      fpsetround (rnd) ;
       break ;
     case GSL_IEEE_ROUND_UP:
-      fpsetround (FP_RP) ;
+      rnd = FP_RP ;
+      fpsetround (rnd) ;
       break ;
     case GSL_IEEE_ROUND_TO_ZERO:
-      fpsetround (FP_RZ) ;
+      rnd = FP_RZ ;
+      fpsetround (rnd) ;
       break ;
     default:
-      fpsetround (FP_RN) ;
+      rnd = FP_RN ;
+      fpsetround (rnd) ;
     }
 
   /* Turn on all the exceptions apart from 'inexact' */
