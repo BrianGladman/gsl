@@ -19,3 +19,4 @@ libgsl.la
 libtool
 stamp-h
 stamp-h.in
+typescript.make
