@@ -191,13 +191,13 @@ The probability distribution for bivariate gaussian random variates is,
 @tex
 \beforedisplay
 $$
-p(x,y) dx dy = {1 \over 2 \pi \sigma_x \sigma_y \sqrt{1-\rho^2}} \exp \left(-(x^2 + y^2 - 2 \rho x y) \over 2\sigma_x^2\sigma_y^2 (1-\rho^2)\right) dx dy
+p(x,y) dx dy = {1 \over 2 \pi \sigma_x \sigma_y \sqrt{1-\rho^2}} \exp \left(-{(x^2/\sigma_x^2 + y^2/\sigma_y^2 - 2 \rho x y/(\sigma_x\sigma_y)) \over 2(1-\rho^2)}\right) dx dy
 $$
 \afterdisplay
 @end tex
 @ifinfo
 @example
-p(x,y) dx dy = @{1 \over 2 \pi \sigma_x \sigma_y \sqrt@{1-\rho^2@}@} \exp (-(x^2 + y^2 - 2 \rho x y)/2\sigma_x^2\sigma_y^2 (1-\rho^2)) dx dy
+p(x,y) dx dy = @{1 \over 2 \pi \sigma_x \sigma_y \sqrt@{1-\rho^2@}@} \exp (-(x^2/\sigma_x^2 + y^2/\sigma_y^2 - 2 \rho x y/(\sigma_x\sigma_y))/2(1-\rho^2)) dx dy
 @end example
 @end ifinfo
 
