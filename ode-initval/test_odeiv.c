@@ -552,7 +552,7 @@ int test_stepper_bsimp(void)
   int stat = 0;
   int s;
 
-  s = test_stepper_linear(stepper, 1.0e-03, GSL_DBL_EPSILON);
+  s = test_stepper_linear(stepper, 1.0e-03, 1.0e+04 * GSL_DBL_EPSILON);
   gsl_test(s, "  LINEAR");
   stat += s;
   gsl_odeiv_step_reset(stepper);

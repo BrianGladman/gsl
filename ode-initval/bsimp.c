@@ -66,7 +66,7 @@ bsimp_deuf_kchoice(double eps, size_t dimension)
   double a_work[SEQUENCE_COUNT];
   double alpha[SEQUENCE_MAX][SEQUENCE_MAX];
 
-  size_t i, k;
+  int i, k;
 
   a_work[0] = bd_sequence[0] + 1.0;
 
@@ -74,8 +74,9 @@ bsimp_deuf_kchoice(double eps, size_t dimension)
     a_work[k + 1] = a_work[k] + bd_sequence[k + 1];
   }
 
-  for(i=1; i<SEQUENCE_MAX; i++) {
-    for(k=0; k < i-1; k++) {
+  for(i=0; i<SEQUENCE_MAX; i++) {
+    alpha[i][i] = 1.0;
+    for(k=0; k<i; k++) {
       const double tmp1 = a_work[k + 1] - a_work[i + 1];
       const double tmp2 = (a_work[i + 1] - a_work[0] + 1.0) * (2*k + 1);
       alpha[k][i] = pow(small_eps, tmp1/tmp2);
@@ -88,8 +89,8 @@ bsimp_deuf_kchoice(double eps, size_t dimension)
     a_work[k + 1] = a_work[k] + bd_sequence[k + 1];
   }
 
-  for(k=1; k < SEQUENCE_MAX-1; k++) {
-    if(a_work[k + 1] > a_work[k] * alpha[k - 1][k]) break;
+  for(k=0; k < SEQUENCE_MAX-1; k++) {
+    if(a_work[k + 2] > a_work[k+1] * alpha[k][k+1]) break;
   }
 
   return k;
