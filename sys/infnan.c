@@ -100,5 +100,37 @@ gsl_finite (const double x)
   int status = (y == y);
   return status;
 }
+#else
+
+#ifdef HAVE_ISNAN
+int
+gsl_isnan (const double x)
+{
+  return isnan(x);
+}
+#endif
+
+#ifdef HAVE_ISINF
+int
+gsl_isinf (const double x)
+{
+    return isinf(x);
+}
+#endif
+
+#ifdef HAVE_FINITE
+int
+gsl_finite (const double x)
+{
+  return finite(x);
+}
+#elif defined(HAVE_ISFINITE)
+int
+gsl_finite (const double x)
+{
+  return isfinite(x);
+}
+#endif
+
 #endif
 

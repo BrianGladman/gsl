@@ -1,3 +1,13 @@
+2003-01-02  Brian Gough  <brian.gough@network-theory.co.uk>
+
+	* symmv.c (gsl_eigen_symmv): change gsl_isnan to isnan
+
+	* symm.c (gsl_eigen_symm): change gsl_isnan to isnan
+
+	* hermv.c (gsl_eigen_hermv): change gsl_isnan to isnan
+
+	* herm.c (gsl_eigen_herm): change gsl_isnan to isnan
+
 2002-11-16  Brian Gough  <bjg@network-theory.co.uk>
 
 	* symm.c (gsl_eigen_symm): prevent infinite loop for NaNs

@@ -173,7 +173,7 @@ gsl_eigen_hermv (gsl_matrix_complex * A, gsl_vector * eval,
       
       while (b > 0)
         {
-          if (sd[b - 1] == 0.0 || gsl_isnan(sd[b - 1]))
+          if (sd[b - 1] == 0.0 || isnan(sd[b - 1]))
             {
               b--;
               continue;

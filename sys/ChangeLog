@@ -1,3 +1,8 @@
+2003-01-02  Brian Gough  <brian.gough@network-theory.co.uk>
+
+	* infnan.c (gsl_isnan): fall back to isnan,isinf,finite/isfinite
+	if available and IEEE comparisons do not work
+
 Wed Dec 11 17:29:24 2002  Brian Gough  <brian.gough@network-theory.co.uk>
 
 	* ldfrexp.c: fix include to use <gsl/gsl_math.h> instead of
