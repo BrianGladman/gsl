@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <gsl_errno.h>
-#include <gsl_roots.h>
+#include <gsl_min.h>
 
 gsl_min_fsolver *
 gsl_min_fsolver_alloc (const gsl_min_fsolver_type * T, 

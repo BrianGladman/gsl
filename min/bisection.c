@@ -1,5 +1,5 @@
 
-/* bisection.c -- bisection root finding algorithm */
+/* bisection.c -- bisection minimum finding algorithm */
 
 #include <config.h>
 
@@ -13,7 +13,7 @@
 #include <gsl_errno.h>
 #include <gsl_min.h>
 
-#include "roots.h"
+#include "min.h"
 
 typedef struct
   {
@@ -36,15 +36,15 @@ bisection_init (void * vstate, gsl_function * f, double * minimum, gsl_interval 
 
   SAFE_FUNC_CALL (f, x_lower, &f_lower);
   SAFE_FUNC_CALL (f, x_upper, &f_upper);
-  SAFE_FUNC_CALL (f, minimum, &f_middle);
+  SAFE_FUNC_CALL (f, *minimum, &f_middle);
   
   state->f_lower = f_lower;
   state->f_upper = f_upper;
   state->f_middle = f_middle;
 
-  if ((f_lower < 0.0 && f_upper < 0.0) || (f_lower > 0.0 && f_upper > 0.0))
+  if (f_middle >= f_lower || f_middle >= f_upper)
     {
-      GSL_ERROR ("endpoints do not straddle y=0", GSL_EINVAL);
+      GSL_ERROR ("endpoints do not enclose a minimum", GSL_EINVAL);
     }
 
   return GSL_SUCCESS;
@@ -52,67 +52,65 @@ bisection_init (void * vstate, gsl_function * f, double * minimum, gsl_interval 
 }
 
 int
-bisection_iterate (void * vstate, gsl_function * f, double * root, gsl_interval * x)
+bisection_iterate (void * vstate, gsl_function * f, double * minimum, gsl_interval * x)
 {
   bisection_state_t * state = (bisection_state_t *) vstate;
-
-  double x_bisect, f_bisect;
 
   const double x_lower = x->lower ;
   const double x_upper = x->upper ;
 
-  const double f_lower = state->f_lower; 
-  const double f_upper = state->f_upper;
+  const double f_middle = state->f_middle;
 
-  if (f_lower == 0.0)
-    {
-      *root = x_lower ;
-      x->upper = x_lower;
-      return GSL_SUCCESS;
-    }
+  const double golden = 0.318966 ;
   
-  if (f_upper == 0.0)
+  const double w_lower = (*minimum - x_lower);
+  const double w_upper = (x_upper - *minimum);
+
+  if (w_lower > w_upper) 
     {
-      *root = x_upper ;
-      x->lower = x_upper;
-      return GSL_SUCCESS;
-    }
-  
-  x_bisect = (x_lower + x_upper) / 2.0;
-  
-  SAFE_FUNC_CALL (f, x_bisect, &f_bisect);
-      
-  if (f_bisect == 0.0)
-    {
-      *root = x_bisect;
-      x->lower = x_bisect;
-      x->upper = x_bisect;
-      return GSL_SUCCESS;
-    }
-      
-  /* Discard the half of the interval which doesn't contain the root. */
-  
-  if ((f_lower > 0.0 && f_bisect < 0.0) || (f_lower < 0.0 && f_bisect > 0.0))
-    {
-      *root = 0.5 * (x_lower + x_bisect) ;
-      x->upper = x_bisect;
-      state->f_upper = f_bisect;
-    }
+      double x_new = *minimum - golden * w_lower ;
+
+      double f_new;
+      SAFE_FUNC_CALL (f, x_new, &f_new);
+
+      if (f_new < f_middle)
+        {
+          *minimum = x_new ;
+          state->f_middle = f_new ;
+        }
+      else 
+        {
+          x->lower = x_new ;
+          state->f_lower = f_new ;
+        }
+    } 
   else
     {
-      *root = 0.5 * (x_bisect + x_upper) ;
-      x->lower = x_bisect;
-      state->f_lower = f_bisect;
+      double x_new = *minimum + golden * w_upper ;
+
+      double f_new;
+      SAFE_FUNC_CALL (f, x_new, &f_new);
+
+      if (f_new < f_middle)
+        {
+          *minimum = x_new ;
+          state->f_middle = f_new ;
+        }
+      else 
+        {
+          x->upper = x_new ;
+          state->f_upper = f_new ;
+        }
     }
 
   return GSL_SUCCESS;
 }
 
 
-static const gsl_root_fsolver_type bisection_type =
+static const gsl_min_fsolver_type bisection_type =
 {"bisection",				/* name */
  sizeof (bisection_state_t),
  &bisection_init,
  &bisection_iterate};
 
-const gsl_root_fsolver_type  * gsl_root_fsolver_bisection = &bisection_type;
+const gsl_min_fsolver_type  * gsl_min_fsolver_bisection = &bisection_type;

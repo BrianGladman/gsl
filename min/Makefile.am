@@ -1,21 +1,17 @@
-# -*-makefile-*-
+pkglib_LIBRARIES = libgslmin.a 
 
-pkglib_LIBRARIES = libgslroots.a 
+pkginclude_HEADERS = gsl_min.h
 
-pkginclude_HEADERS = gsl_roots.h
-
-noinst_HEADERS = roots.h
+noinst_HEADERS = min.h
 
 INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../err
 
-libgslroots_a_SOURCES = bisection.c brent.c falsepos.c \
-			newton.c  secant.c steffenson.c \
-			convergence.c fsolver.c fdfsolver.c 
+libgslmin_a_SOURCES = fsolver.c bisection.c convergence.c
 
 check_PROGRAMS = test
 
 TESTS = test
 
-test_SOURCES = test.c test_roots.c test_funcs.c test_macros.c test.h
-test_LDADD = libgslroots.a ../err/libgslerr.a ../err/libgsltest.a
-test_DEPENDENCIES = libgslroots.a
+test_SOURCES = test.c test_funcs.c test.h
+test_LDADD = libgslmin.a ../err/libgslerr.a ../err/libgsltest.a
+test_DEPENDENCIES = libgslmin.a
