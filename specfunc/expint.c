@@ -308,9 +308,9 @@ int gsl_sf_expint_E1_impl(const double x, double * result)
 
 int gsl_sf_expint_Ei_impl(double x, double * result)
 {
-  int status = gsl_sf_expint_E1_impl(x, result);
+  int status = gsl_sf_expint_E1_impl(-x, result);
   if(status == GSL_SUCCESS) {
-    if(x < 0.) *result *= -1.;
+    *result *= -1.;
   }
   return status;
 }
@@ -340,7 +340,7 @@ int gsl_sf_expint_E1_e(const double x, double * result)
 
 int gsl_sf_expint_Ei_e(const double x, double * result)
 {
-  int status = gsl_sf_expint_E1_impl(x, result);
+  int status = gsl_sf_expint_Ei_impl(x, result);
   if(status != GSL_SUCCESS) {
     GSL_ERROR("gsl_sf_expint_Ei_e", status);
   }
