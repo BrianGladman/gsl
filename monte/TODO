@@ -17,3 +17,8 @@ Also, when there are inconsistent values it might make sense to scale
 the error by chisq, as is often done experimentally -- at least that
 way the error would be increased.
 
+* The original VEGAS allowed to user to calculate other weighted
+quantities.  The appropriate way to implement it in GSL would be to
+provide a separate routine which returns sample points and weights so
+that the user can caculate any quantity.
+
