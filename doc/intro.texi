@@ -13,6 +13,7 @@ General Public License.
 * Obtaining GSL::               
 * An Example Program::          
 * No Warranty::                 
+* Reporting Bugs::              
 * Further Information::         
 @end menu
 
@@ -195,7 +196,7 @@ A short program which exercises the bug
 It is also useful if you can report whether the same problem occurs
 when the library is compiled without optimization. Thank you.
 
-@node  Further Information,  , No Warranty, Introduction
+@node  Further Information
 @section Further Information
 @cindex mailing list archives
 @cindex website, developer information
