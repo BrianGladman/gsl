@@ -1,3 +1,7 @@
+Mon Apr 30 13:29:34 2001  Brian Gough  <bjg@network-theory.co.uk>
+
+	* renamed gsl_interp_obj to gsl_interp
+
 Mon Apr 23 10:29:51 2001  Brian Gough  <bjg@network-theory.co.uk>
 
 	* unified error handling conventions to _e for error handling

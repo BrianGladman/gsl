@@ -29,11 +29,11 @@
 /* linear interpolation object */
 typedef struct
   {
-    int (*eval) (const gsl_interp_obj *, const double xa[], const double ya[], double x, gsl_interp_accel *, double *y);
-    int (*eval_d) (const gsl_interp_obj *, const double xa[], const double ya[], double x, gsl_interp_accel *, double *y_p);
-    int (*eval_d2) (const gsl_interp_obj *, const double xa[], const double ya[], double x, gsl_interp_accel *, double *y_pp);
-    int (*eval_i) (const struct _gsl_interp_obj_struct *, const double xa[], const double ya[], gsl_interp_accel *, double a, double b, double * result);    
-    void (*free) (gsl_interp_obj *);
+    int (*eval) (const gsl_interp *, const double xa[], const double ya[], double x, gsl_interp_accel *, double *y);
+    int (*eval_d) (const gsl_interp *, const double xa[], const double ya[], double x, gsl_interp_accel *, double *y_p);
+    int (*eval_d2) (const gsl_interp *, const double xa[], const double ya[], double x, gsl_interp_accel *, double *y_pp);
+    int (*eval_i) (const struct _gsl_interp_struct *, const double xa[], const double ya[], gsl_interp_accel *, double a, double b, double * result);    
+    void (*free) (gsl_interp *);
     double xmin;
     double xmax;
     size_t size;
@@ -42,28 +42,28 @@ gsl_interp_linear;
 
 
 static
-gsl_interp_obj *
+gsl_interp *
 linear_create (const double xa[], const double ya[], size_t size);
 
 static
 void
-linear_free (gsl_interp_obj * interp);
+linear_free (gsl_interp * interp);
 
 static
 int
-linear_eval (const gsl_interp_obj *, const double xa[], const double ya[], double x, gsl_interp_accel *, double *y);
+linear_eval (const gsl_interp *, const double xa[], const double ya[], double x, gsl_interp_accel *, double *y);
 
 static
 int
-linear_eval_d (const gsl_interp_obj *, const double xa[], const double ya[], double x, gsl_interp_accel *, double *dydx);
+linear_eval_d (const gsl_interp *, const double xa[], const double ya[], double x, gsl_interp_accel *, double *dydx);
 
 static
 int
-linear_eval_d2 (const gsl_interp_obj *, const double xa[], const double ya[], double x, gsl_interp_accel *, double *y_pp);
+linear_eval_d2 (const gsl_interp *, const double xa[], const double ya[], double x, gsl_interp_accel *, double *y_pp);
 
 static
 int
-linear_eval_i (const gsl_interp_obj *, const double xa[], const double ya[], gsl_interp_accel *, double, double, double *);
+linear_eval_i (const gsl_interp *, const double xa[], const double ya[], gsl_interp_accel *, double, double, double *);
 
 
 const gsl_interp_factory gsl_interp_factory_linear =
@@ -75,7 +75,7 @@ const gsl_interp_factory gsl_interp_factory_linear =
 
 
 static
-gsl_interp_obj *
+gsl_interp *
 linear_create (const double x_array[], const double y_array[], size_t size)
 {
   y_array = 0;			/* prevent warning about unused parameter */
@@ -96,14 +96,14 @@ linear_create (const double x_array[], const double y_array[], size_t size)
 	  interp->xmax = x_array[size - 1];
 	  interp->size = size;
 	}
-      return (gsl_interp_obj *) interp;
+      return (gsl_interp *) interp;
     }
 }
 
 
 static
 void
-linear_free (gsl_interp_obj * linear_interp)
+linear_free (gsl_interp * linear_interp)
 {
   if (linear_interp != 0)
     free ((gsl_interp_linear *) linear_interp);
@@ -112,7 +112,7 @@ linear_free (gsl_interp_obj * linear_interp)
 
 static
 int
-linear_eval (const gsl_interp_obj * linear_interp,
+linear_eval (const gsl_interp * linear_interp,
 		  const double x_array[], const double y_array[],
 		  double x,
 		  gsl_interp_accel * a,
@@ -168,7 +168,7 @@ linear_eval (const gsl_interp_obj * linear_interp,
 
 static
 int
-linear_eval_d (const gsl_interp_obj * linear_interp,
+linear_eval_d (const gsl_interp * linear_interp,
 		    const double x_array[], const double y_array[],
 		    double x,
 		    gsl_interp_accel * a,
@@ -221,7 +221,7 @@ linear_eval_d (const gsl_interp_obj * linear_interp,
 
 static
 int
-linear_eval_d2 (const gsl_interp_obj * linear_interp,
+linear_eval_d2 (const gsl_interp * linear_interp,
 		     const double x_array[], const double y_array[],
 		     double x,
 		     gsl_interp_accel * a,
@@ -243,7 +243,7 @@ linear_eval_d2 (const gsl_interp_obj * linear_interp,
 
 static
 int
-linear_eval_i (const gsl_interp_obj * linear_interp,
+linear_eval_i (const gsl_interp * linear_interp,
 		    const double x_array[], const double y_array[],
 		    gsl_interp_accel * acc,
                     double a, double b,

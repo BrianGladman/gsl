@@ -1,5 +1,7 @@
 * What is new in gsl-0.7+:
 
+** The gsl_interp_obj has been renamed to gsl_interp
+
 ** The poly_eval and pow_int functions have been moved from the
 specfunc directory to the poly and sys directories.
 

@@ -31,22 +31,22 @@
 /* akima interpolation object */
 typedef struct
   {
-    int (*eval) (const gsl_interp_obj *,
+    int (*eval) (const gsl_interp *,
 		      const double xa[], const double ya[],
 		      double x,
 		      gsl_interp_accel *, double *y);
-    int (*eval_d) (const gsl_interp_obj *,
+    int (*eval_d) (const gsl_interp *,
 			const double xa[], const double ya[],
 			double x,
 			gsl_interp_accel *, double *dydx);
-    int (*eval_d2) (const gsl_interp_obj *,
+    int (*eval_d2) (const gsl_interp *,
 			 const double xa[], const double ya[],
 			 double x,
 			 gsl_interp_accel *, double *y_pp);
-    int (*eval_i) (const gsl_interp_obj *,
+    int (*eval_i) (const gsl_interp *,
 			const double xa[], const double ya[],
 			gsl_interp_accel *, double a, double b, double * result);
-    void (*free) (gsl_interp_obj *);
+    void (*free) (gsl_interp *);
     double xmin;
     double xmax;
     size_t size;
@@ -58,33 +58,33 @@ gsl_interp_akima;
 
 
 static
-gsl_interp_obj *
+gsl_interp *
 akima_natural_create (const double xa[], const double ya[], size_t size);
 
 static
-gsl_interp_obj *
+gsl_interp *
 akima_periodic_create (const double xa[], const double ya[], size_t size);
 
 
 static
 void
-akima_free (gsl_interp_obj * interp);
+akima_free (gsl_interp * interp);
 
 static
 int
-akima_eval (const gsl_interp_obj *, const double xa[], const double ya[], double x, gsl_interp_accel *, double *y);
+akima_eval (const gsl_interp *, const double xa[], const double ya[], double x, gsl_interp_accel *, double *y);
 
 static
 int
-akima_eval_d (const gsl_interp_obj *, const double xa[], const double ya[], double x, gsl_interp_accel *, double *y_p);
+akima_eval_d (const gsl_interp *, const double xa[], const double ya[], double x, gsl_interp_accel *, double *y_p);
 
 static
 int
-akima_eval_d2 (const gsl_interp_obj *, const double xa[], const double ya[], double x, gsl_interp_accel *, double *y_pp);
+akima_eval_d2 (const gsl_interp *, const double xa[], const double ya[], double x, gsl_interp_accel *, double *y_pp);
 
 static
 int
-akima_eval_i (const gsl_interp_obj *, const double xa[], const double ya[], gsl_interp_accel *, double, double, double *);
+akima_eval_i (const gsl_interp *, const double xa[], const double ya[], gsl_interp_accel *, double, double, double *);
 
 
 const gsl_interp_factory gsl_interp_factory_akima_natural =
@@ -181,7 +181,7 @@ interp_akima_calc (gsl_interp_akima * interp, const double x_array[], double * m
 
 
 static
-gsl_interp_obj *
+gsl_interp *
 akima_natural_create (const double x_array[],
 		      const double y_array[],
 		      size_t size)
@@ -216,12 +216,12 @@ akima_natural_create (const double x_array[],
 	}
     }
 
-  return (gsl_interp_obj *) interp;
+  return (gsl_interp *) interp;
 }
 
 
 static
-gsl_interp_obj *
+gsl_interp *
 akima_periodic_create (const double x_array[],
 		       const double y_array[],
 		       size_t size)
@@ -256,13 +256,13 @@ akima_periodic_create (const double x_array[],
 	}
     }
 
-  return (gsl_interp_obj *) interp;
+  return (gsl_interp *) interp;
 }
 
 
 static
 void
-akima_free (gsl_interp_obj * akima_interp)
+akima_free (gsl_interp * akima_interp)
 {
   gsl_interp_akima *interp = (gsl_interp_akima *) akima_interp;
   if (interp != 0)
@@ -280,7 +280,7 @@ akima_free (gsl_interp_obj * akima_interp)
 
 static
 int
-akima_eval (const gsl_interp_obj * akima_interp,
+akima_eval (const gsl_interp * akima_interp,
 		 const double x_array[], const double y_array[],
 		 double x,
 		 gsl_interp_accel * a,
@@ -327,7 +327,7 @@ akima_eval (const gsl_interp_obj * akima_interp,
 
 static
 int
-akima_eval_d (const gsl_interp_obj * akima_interp,
+akima_eval_d (const gsl_interp * akima_interp,
 		   const double x_array[], const double y_array[],
 		   double x,
 		   gsl_interp_accel * a,
@@ -376,7 +376,7 @@ akima_eval_d (const gsl_interp_obj * akima_interp,
 
 static
 int
-akima_eval_d2 (const gsl_interp_obj * akima_interp,
+akima_eval_d2 (const gsl_interp * akima_interp,
 		    const double x_array[], const double y_array[],
 		    double x,
 		    gsl_interp_accel * a,
@@ -424,7 +424,7 @@ akima_eval_d2 (const gsl_interp_obj * akima_interp,
 
 static
 int
-akima_eval_i (const gsl_interp_obj * akima_interp,
+akima_eval_i (const gsl_interp * akima_interp,
 		   const double x_array[], const double y_array[],
 		   gsl_interp_accel * acc,
                    double a, double b,

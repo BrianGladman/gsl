@@ -7,7 +7,7 @@ This chapter describes functions for performing interpolation.
 All the interpolation methods conform to a model which tries
 to factor out the various subtasks for creation, lookup and
 evaluation.  The state of an interpolation object is stored
-in a @code{gsl_interp_obj}; these are created by special purpose
+in a @code{gsl_interp}; these are created by special purpose
 factories, one for each interpolation method.  State for searches
 is stored in a @code{gsl_interp_accel}, which is a kind of iterator
 for interpolation lookups.
@@ -27,7 +27,7 @@ Akima spline with natural boundary conditions
 Akima spline with periodic boundary conditions
 @end table
 
-The interpolation object (@code{gsl_interp_obj}) does not copy the
+The interpolation object (@code{gsl_interp}) does not copy the
 data arrays but stores all static state computed from the data.
 The "x" data array is always assumed to be strictly ordered;
 the behaviour for other arrangements is not defined.
@@ -48,18 +48,18 @@ This is how lookups are performed during evaluation of an interpolation.
 Returns an index such that @code{xarray[index] <= x < xarray[index+1]}.
 @end deftypefun
 
-@deftypefun  double gsl_interp_eval (const gsl_interp_obj * @var{obj}, const double xa[], const double ya[], double @var{x}, gsl_interp_accel * @var{a})
-@deftypefunx int gsl_interp_eval_e (const gsl_interp_obj * @var{obj}, const double xa[], const double ya[], double @var{x}, gsl_interp_accel * @var{a}, double * @var{y})
+@deftypefun  double gsl_interp_eval (const gsl_interp * @var{obj}, const double xa[], const double ya[], double @var{x}, gsl_interp_accel * @var{a})
+@deftypefunx int gsl_interp_eval_e (const gsl_interp * @var{obj}, const double xa[], const double ya[], double @var{x}, gsl_interp_accel * @var{a}, double * @var{y})
 Evaluate an interpolation at a given point, doing lookup with
 the given accelerator state.
 @end deftypefun
 
-@deftypefun double gsl_interp_eval_deriv (const gsl_interp_obj * @var{obj}, const double xa[], const double ya[], double @var{x}, gsl_interp_accel * @var{a})
-@deftypefunx int gsl_interp_eval_deriv_e (const gsl_interp_obj * @var{obj}, const double xa[], const double ya[], double @var{x}, gsl_interp_accel * @var{a}, double * @var{y})
+@deftypefun double gsl_interp_eval_deriv (const gsl_interp * @var{obj}, const double xa[], const double ya[], double @var{x}, gsl_interp_accel * @var{a})
+@deftypefunx int gsl_interp_eval_deriv_e (const gsl_interp * @var{obj}, const double xa[], const double ya[], double @var{x}, gsl_interp_accel * @var{a}, double * @var{y})
 Evaluate the derivative of an interpolation at a given point.
 @end deftypefun
 
-@deftypefun void gsl_interp_obj_free (gsl_interp_obj * @var{interp_obj})
+@deftypefun void gsl_interp_free (gsl_interp * @var{interp})
 Free an interpolation object.
 @end deftypefun
 
@@ -84,14 +84,14 @@ use the interpolation object and accelerator, and finally free resources.
   int status;
   ...
   gsl_interp_factory f = gsl_interp_factory_linear;
-  gsl_interp_obj * interp = f.create(x, y, 64);
+  gsl_interp * interp = f.create(x, y, 64);
   gsl_interp_accel * a = gsl_interp_accel_new ();
   ...
   x0 = 5.7;
   status = gsl_interp_eval(interp, x, y, x0, a, &y0);
   ...
   gsl_interp_accel_free (a);
-  gsl_interp_obj_free (interp);
+  gsl_interp_free (interp);
 @end example
 
 

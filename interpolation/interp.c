@@ -26,7 +26,7 @@
 
 
 int
-gsl_interp_eval_e (const gsl_interp_obj * obj,
+gsl_interp_eval_e (const gsl_interp * obj,
 		      const double xa[], const double ya[], double x,
 		      gsl_interp_accel * a, double *y)
 {
@@ -34,7 +34,7 @@ gsl_interp_eval_e (const gsl_interp_obj * obj,
 }
 
 double
-gsl_interp_eval (const gsl_interp_obj * obj,
+gsl_interp_eval (const gsl_interp * obj,
 		 const double xa[], const double ya[], double x,
 		 gsl_interp_accel * a)
 {
@@ -49,7 +49,7 @@ gsl_interp_eval (const gsl_interp_obj * obj,
 
 
 int
-gsl_interp_eval_deriv_e (const gsl_interp_obj * obj,
+gsl_interp_eval_deriv_e (const gsl_interp * obj,
 			    const double xa[], const double ya[], double x,
 			    gsl_interp_accel * a,
 			    double *dydx)
@@ -58,7 +58,7 @@ gsl_interp_eval_deriv_e (const gsl_interp_obj * obj,
 }
 
 double
-gsl_interp_eval_deriv (const gsl_interp_obj * obj,
+gsl_interp_eval_deriv (const gsl_interp * obj,
 		       const double xa[], const double ya[], double x,
 		       gsl_interp_accel * a)
 {
@@ -73,7 +73,7 @@ gsl_interp_eval_deriv (const gsl_interp_obj * obj,
 
 
 int
-gsl_interp_eval_deriv2_e (const gsl_interp_obj * obj,
+gsl_interp_eval_deriv2_e (const gsl_interp * obj,
 			     const double xa[], const double ya[], double x,
 			     gsl_interp_accel * a,
 			     double * d2)
@@ -82,7 +82,7 @@ gsl_interp_eval_deriv2_e (const gsl_interp_obj * obj,
 }
 
 double
-gsl_interp_eval_deriv2 (const gsl_interp_obj * obj,
+gsl_interp_eval_deriv2 (const gsl_interp * obj,
 		        const double xa[], const double ya[], double x,
 		        gsl_interp_accel * a)
 {
@@ -97,7 +97,7 @@ gsl_interp_eval_deriv2 (const gsl_interp_obj * obj,
 
 
 int
-gsl_interp_eval_integ_e (const gsl_interp_obj * obj,
+gsl_interp_eval_integ_e (const gsl_interp * obj,
 			    const double xa[], const double ya[],
                             double a, double b,
 			    gsl_interp_accel * acc,
@@ -108,7 +108,7 @@ gsl_interp_eval_integ_e (const gsl_interp_obj * obj,
 
 
 double
-gsl_interp_eval_integ (const gsl_interp_obj * obj,
+gsl_interp_eval_integ (const gsl_interp * obj,
 		       const double xa[], const double ya[],
                        double a, double b,
 		       gsl_interp_accel * acc)
@@ -124,7 +124,7 @@ gsl_interp_eval_integ (const gsl_interp_obj * obj,
 
 
 void
-gsl_interp_obj_free (gsl_interp_obj * obj)
+gsl_interp_free (gsl_interp * obj)
 {
   if (obj != 0)
     obj->free (obj);

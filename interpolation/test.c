@@ -103,7 +103,7 @@ test_interp (
   size_t i;
 
   gsl_interp_accel *a = gsl_interp_accel_new ();
-  gsl_interp_obj *interp = factory->create (data_table->x,
+  gsl_interp *interp = factory->create (data_table->x,
 					    data_table->y,
 					    data_table->n);
 
@@ -126,7 +126,7 @@ test_interp (
     }
 
   gsl_interp_accel_free (a);
-  gsl_interp_obj_free (interp);
+  gsl_interp_free (interp);
 
   return status;
 }

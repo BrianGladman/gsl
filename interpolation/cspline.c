@@ -32,11 +32,11 @@
 /* cubic spline interpolation object */
 typedef struct
   {
-    int (*eval) (const gsl_interp_obj *, const double xa[], const double ya[], double x, gsl_interp_accel *, double *y);
-    int (*eval_d) (const gsl_interp_obj *, const double xa[], const double ya[], double x, gsl_interp_accel *, double *dydx);
-    int (*eval_d2) (const gsl_interp_obj *, const double xa[], const double ya[], double x, gsl_interp_accel *, double *dydx);
-    int (*eval_i) (const struct _gsl_interp_obj_struct *, const double xa[], const double ya[], gsl_interp_accel *, double a, double b, double * result);
-    void (*free) (gsl_interp_obj *);
+    int (*eval) (const gsl_interp *, const double xa[], const double ya[], double x, gsl_interp_accel *, double *y);
+    int (*eval_d) (const gsl_interp *, const double xa[], const double ya[], double x, gsl_interp_accel *, double *dydx);
+    int (*eval_d2) (const gsl_interp *, const double xa[], const double ya[], double x, gsl_interp_accel *, double *dydx);
+    int (*eval_i) (const struct _gsl_interp_struct *, const double xa[], const double ya[], gsl_interp_accel *, double a, double b, double * result);
+    void (*free) (gsl_interp *);
     double xmin;
     double xmax;
     size_t size;
@@ -45,32 +45,32 @@ typedef struct
 gsl_interp_cspline;
 
 static
-gsl_interp_obj *
+gsl_interp *
 cspline_natural_create (const double xa[], const double ya[], size_t size);
 
 static
-gsl_interp_obj *
+gsl_interp *
 cspline_periodic_create (const double xa[], const double ya[], size_t size);
 
 static
 void
-cspline_free (gsl_interp_obj * interp);
+cspline_free (gsl_interp * interp);
 
 static
 int
-cspline_eval (const gsl_interp_obj *, const double xa[], const double ya[], double x, gsl_interp_accel *, double *y);
+cspline_eval (const gsl_interp *, const double xa[], const double ya[], double x, gsl_interp_accel *, double *y);
 
 static
 int
-cspline_eval_d (const gsl_interp_obj *, const double xa[], const double ya[], double x, gsl_interp_accel *, double *dydx);
+cspline_eval_d (const gsl_interp *, const double xa[], const double ya[], double x, gsl_interp_accel *, double *dydx);
 
 static
 int
-cspline_eval_d2 (const gsl_interp_obj *, const double xa[], const double ya[], double x, gsl_interp_accel *, double *dydx);
+cspline_eval_d2 (const gsl_interp *, const double xa[], const double ya[], double x, gsl_interp_accel *, double *dydx);
 
 static
 int
-cspline_eval_i (const gsl_interp_obj *, const double xa[], const double ya[], gsl_interp_accel *, double a, double b, double * result);
+cspline_eval_i (const gsl_interp *, const double xa[], const double ya[], gsl_interp_accel *, double a, double b, double * result);
 
 
 /* global cubic spline factory objects */
@@ -249,7 +249,7 @@ cspline_calc_periodic (
 
 /* factory method */
 static
-gsl_interp_obj *
+gsl_interp *
 cspline_natural_create (const double x_array[], const double y_array[], size_t size)
 {
   if (size <= 1)
@@ -260,16 +260,16 @@ cspline_natural_create (const double x_array[], const double y_array[], size_t s
       if (interp != 0)
 	{
 	  int status = cspline_calc_natural (interp, x_array, y_array);
-	  if(status != GSL_SUCCESS) interp->free((gsl_interp_obj *)interp);
+	  if(status != GSL_SUCCESS) interp->free((gsl_interp *)interp);
 	}
-      return (gsl_interp_obj *) interp;
+      return (gsl_interp *) interp;
     }
 }
 
 
 /* factory method */
 static
-gsl_interp_obj *
+gsl_interp *
 cspline_periodic_create (const double x_array[], const double y_array[], size_t size)
 {
   if (size <= 1)
@@ -280,16 +280,16 @@ cspline_periodic_create (const double x_array[], const double y_array[], size_t 
       if (interp != 0)
 	{
 	  int status = cspline_calc_periodic (interp, x_array, y_array);
-	  if(status != GSL_SUCCESS) interp->free((gsl_interp_obj *)interp);
+	  if(status != GSL_SUCCESS) interp->free((gsl_interp *)interp);
 	}
-      return (gsl_interp_obj *) interp;
+      return (gsl_interp *) interp;
     }
 }
 
 
 static
 void
-cspline_free (gsl_interp_obj * interp_cspline)
+cspline_free (gsl_interp * interp_cspline)
 {
   gsl_interp_cspline *interp = (gsl_interp_cspline *) interp_cspline;
 
@@ -314,7 +314,7 @@ do {                                                         \
 
 static
 int
-cspline_eval (const gsl_interp_obj * cspline_interp,
+cspline_eval (const gsl_interp * cspline_interp,
 		   const double x_array[], const double y_array[],
 		   double x,
 		   gsl_interp_accel * a,
@@ -374,7 +374,7 @@ cspline_eval (const gsl_interp_obj * cspline_interp,
 
 static
 int
-cspline_eval_d (const gsl_interp_obj * cspline_interp,
+cspline_eval_d (const gsl_interp * cspline_interp,
 		     const double x_array[], const double y_array[],
 		     double x,
 		     gsl_interp_accel * a,
@@ -433,7 +433,7 @@ cspline_eval_d (const gsl_interp_obj * cspline_interp,
 
 static
 int
-cspline_eval_d2 (const gsl_interp_obj * cspline_interp,
+cspline_eval_d2 (const gsl_interp * cspline_interp,
 		      const double x_array[], const double y_array[],
 		      double x,
 		      gsl_interp_accel * a,
@@ -492,7 +492,7 @@ cspline_eval_d2 (const gsl_interp_obj * cspline_interp,
 
 static
 int
-cspline_eval_i (const gsl_interp_obj * cspline_interp,
+cspline_eval_i (const gsl_interp * cspline_interp,
 		     const double x_array[], const double y_array[],
 		     gsl_interp_accel * acc,
                      double a, double b,
