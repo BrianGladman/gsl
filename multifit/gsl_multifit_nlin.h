@@ -56,6 +56,10 @@ int gsl_multifit_fdjacobian (gsl_multifit_function * F,
                              const gsl_vector * f,
                              double epsrel, gsl_matrix * jacobian);
 
+int gsl_multifit_gradient (const gsl_matrix * J, const gsl_vector * f,
+                           gsl_vector * g);
+
+
 typedef struct
   {
     const char *name;

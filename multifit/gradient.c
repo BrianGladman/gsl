@@ -27,6 +27,7 @@ int
 gsl_multifit_gradient (const gsl_matrix * J, const gsl_vector * f,
                        gsl_vector * g)
 {
-  gsl_blas_dgemv (CblasNoTrans, 1.0, J, f, 0.0, g);
+  int status = gsl_blas_dgemv (CblasNoTrans, 1.0, J, f, 0.0, g);
+  return status;
 }
   
