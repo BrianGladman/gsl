@@ -144,6 +144,30 @@ This function computes the value of
 alternative to the BSD math function @code{hypot(x,y)}.
 @end deftypefun
 
+@deftypefun double gsl_acosh (const double @var{x})
+@cindex acosh
+@cindex hyperbolic cosine, inverse
+@cindex inverse hyperbolic cosine
+This function computes the value of @math{\arccosh(x)}. It provides an
+alternative to the standard math function @code{acosh(x)}.
+@end deftypefun
+
+@deftypefun double gsl_asinh (const double @var{x})
+@cindex asinh
+@cindex hyperbolic sine, inverse
+@cindex inverse hyperbolic sine
+This function computes the value of @math{\arcsinh(x)}. It provides an
+alternative to the standard math function @code{asinh(x)}.
+@end deftypefun
+
+@deftypefun double gsl_atanh (const double @var{x})
+@cindex atanh
+@cindex hyperbolic tangent, inverse
+@cindex inverse hyperbolic tangent
+This function computes the value of @math{\arctanh(x)}. It provides an
+alternative to the standard math function @code{atanh(x)}.
+@end deftypefun
+
 @node Testing the Sign of Numbers
 @section Testing the Sign of Numbers
 

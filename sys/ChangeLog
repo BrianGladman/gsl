@@ -1,3 +1,7 @@
+Sun Feb 25 11:54:21 2001  Brian Gough  <bjg@network-theory.co.uk>
+
+	* invhyp.c: added gsl_acosh, gsl_asinh, gsl_atanh
+
 Mon Jan 29 10:53:06 2001  Brian Gough  <bjg@network-theory.co.uk>
 
 	* hypot.c: removed the inline from gsl_hypot, since this is the

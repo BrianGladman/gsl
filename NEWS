@@ -1,5 +1,8 @@
 * What is new in gsl-0.7+:
 
+** The library now includes implementations of log1p, expm1, hypot,
+acosh, asinh, atanh for platforms which do not provide them.
+
 ** The convention for alloc and set functions has changed so that they
 are orthogonal. After allocating an object it is now necessary to
 initialize it.

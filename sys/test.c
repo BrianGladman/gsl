@@ -94,6 +94,79 @@ main (void)
   y = gsl_hypot (1e307, 1e307) ; y_expected = 1.414213562373095048801688e307;
   gsl_test_rel (y, y_expected, 1e-15, "gsl_hypot(1e307, 1e307)");
 
+
+  /* Test for acosh */
+
+  y = gsl_acosh (1.0); y_expected = 0.0;
+  gsl_test_rel (y, y_expected, 1e-15, "gsl_acosh(1.0)");
+
+  y = gsl_acosh (1.1); y_expected = 4.435682543851151891329110663525e-1;
+  gsl_test_rel (y, y_expected, 1e-15, "gsl_acosh(1.1)");
+
+  y = gsl_acosh (10.0); y_expected = 2.9932228461263808979126677137742e0;
+  gsl_test_rel (y, y_expected, 1e-15, "gsl_acosh(10.0)");
+
+  y = gsl_acosh (1e10); y_expected = 2.3718998110500402149594646668302e1;
+  gsl_test_rel (y, y_expected, 1e-15, "gsl_acosh(1e10)");
+
+  /* Test for asinh */
+
+  y = gsl_asinh (0.0); y_expected = 0.0;
+  gsl_test_rel (y, y_expected, 1e-15, "gsl_asinh(0.0)");
+
+  y = gsl_asinh (1e-10); y_expected = 9.9999999999999999999833333333346e-11;
+  gsl_test_rel (y, y_expected, 1e-15, "gsl_asinh(1e-10)");
+
+  y = gsl_asinh (-1e-10); y_expected = -9.9999999999999999999833333333346e-11;
+  gsl_test_rel (y, y_expected, 1e-15, "gsl_asinh(1e-10)");
+
+  y = gsl_asinh (0.1); y_expected = 9.983407889920756332730312470477e-2;
+  gsl_test_rel (y, y_expected, 1e-15, "gsl_asinh(0.1)");
+
+  y = gsl_asinh (-0.1); y_expected = -9.983407889920756332730312470477e-2;
+  gsl_test_rel (y, y_expected, 1e-15, "gsl_asinh(-0.1)");
+
+  y = gsl_asinh (1.0); y_expected = 8.8137358701954302523260932497979e-1;
+  gsl_test_rel (y, y_expected, 1e-15, "gsl_asinh(1.0)");
+
+  y = gsl_asinh (-1.0); y_expected = -8.8137358701954302523260932497979e-1;
+  gsl_test_rel (y, y_expected, 1e-15, "gsl_asinh(-1.0)");
+
+  y = gsl_asinh (10.0); y_expected = 2.9982229502979697388465955375965e0;
+  gsl_test_rel (y, y_expected, 1e-15, "gsl_asinh(10)");
+
+  y = gsl_asinh (-10.0); y_expected = -2.9982229502979697388465955375965e0;
+  gsl_test_rel (y, y_expected, 1e-15, "gsl_asinh(-10)");
+
+  y = gsl_asinh (1e10); y_expected = 2.3718998110500402149599646668302e1;
+  gsl_test_rel (y, y_expected, 1e-15, "gsl_asinh(1e10)");
+
+  y = gsl_asinh (-1e10); y_expected = -2.3718998110500402149599646668302e1;
+  gsl_test_rel (y, y_expected, 1e-15, "gsl_asinh(-1e10)");
+
+  /* Test for atanh */
+
+  y = gsl_atanh (0.0); y_expected = 0.0;
+  gsl_test_rel (y, y_expected, 1e-15, "gsl_atanh(0.0)");
+
+  y = gsl_atanh (1e-20); y_expected = 1e-20;
+  gsl_test_rel (y, y_expected, 1e-15, "gsl_atanh(1e-20)");
+
+  y = gsl_atanh (-1e-20); y_expected = -1e-20;
+  gsl_test_rel (y, y_expected, 1e-15, "gsl_atanh(-1e-20)");
+
+  y = gsl_atanh (0.1); y_expected = 1.0033534773107558063572655206004e-1;
+  gsl_test_rel (y, y_expected, 1e-15, "gsl_atanh(0.1)");
+
+  y = gsl_atanh (-0.1); y_expected = -1.0033534773107558063572655206004e-1;
+  gsl_test_rel (y, y_expected, 1e-15, "gsl_atanh(-0.1)");
+
+  y = gsl_atanh (0.9); y_expected = 1.4722194895832202300045137159439e0;
+  gsl_test_rel (y, y_expected, 1e-15, "gsl_atanh(0.9)");
+
+  y = gsl_atanh (-0.9); y_expected = -1.4722194895832202300045137159439e0;
+  gsl_test_rel (y, y_expected, 1e-15, "gsl_atanh(0.9)");
+
   return gsl_test_summary ();
 }
 

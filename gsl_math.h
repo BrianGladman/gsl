@@ -180,6 +180,9 @@ GSL_MIN_LDBL (long double a, long double b)
 double gsl_log1p (const double x);
 double gsl_expm1 (const double x);
 double gsl_hypot (const double x, const double y);
+double gsl_acosh (const double x);
+double gsl_asinh (const double x);
+double gsl_atanh (const double x);
 
 double gsl_coerce_double (const double x);
 float gsl_coerce_float (const float x);
