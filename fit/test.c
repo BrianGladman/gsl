@@ -100,6 +100,21 @@ main (void)
     gsl_test_rel (sumsq, expected_sumsq, 1e-10, "norris gsl_fit_mul sumsq") ;
   }
 
+  {
+    double c0, c1, cov00, cov01, cov11, sumsq;
+       
+    double expected_c1 = 1.00174208046979e+00; /* all computed from octave */
+    double expected_cov11 = 9.46651156027293e-08;  
+    double expected_sumsq = 2.76112596299330e+01;
+    
+    gsl_fit_wmul (x, xstride, w, wstride, y, ystride, norris_n, &c1, &cov11, &sumsq);
+
+    gsl_test_rel (c1, expected_c1, 1e-10, "norris gsl_fit_wmul c1") ;
+    gsl_test_rel (cov11, expected_cov11, 1e-10, "norris gsl_fit_wmul cov11") ;
+    gsl_test_rel (sumsq, expected_sumsq, 1e-10, "norris gsl_fit_wmul sumsq") ;
+  }
+
+
 #ifdef JUNK
     printf("c0 = %.18e\n", c0);
     printf("c1 = %.18e\n", c1);

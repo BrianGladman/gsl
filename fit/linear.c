@@ -194,8 +194,6 @@ gsl_fit_wlinear (const double *x, size_t xstride,
 }
 
 
-
-
 int
 gsl_fit_mul (const double *x, size_t xstride,
              const double *y, size_t ystride,
@@ -246,6 +244,85 @@ gsl_fit_mul (const double *x, size_t xstride,
     *cov_11 = s2 * 1.0 / (n * (m_x * m_x + m_dx2));
       
     *sumsq = d2;
+  }
+
+  return GSL_SUCCESS;
+}
+
+
+int
+gsl_fit_wmul (const double *x, size_t xstride,
+              const double *w, size_t wstride,
+              const double *y, size_t ystride,
+              size_t n,
+              double *c1,
+              double *cov_11, 
+              double *chisq)
+{
+
+  /* compute the weighted means and weighted deviations from the means */
+
+  /* wm denotes a "weighted mean", wm(f) = (sum_i w_i f_i) / (sum_i w_i) */
+
+  double W = 0, wm_x = 0, wm_y = 0, wm_dx2 = 0, wm_dxdy = 0;
+
+  size_t i;
+
+  for (i = 0; i < n; i++)
+    {
+      const double wi = w[i*wstride];
+
+      if (wi > 0)
+	{
+	  W += wi;
+	  wm_x += (x[i*xstride] - wm_x) * (wi / W);
+	  wm_y += (y[i*ystride] - wm_y) * (wi / W);
+	}
+    }
+
+  W = 0;			/* reset the total weight */
+
+  for (i = 0; i < n; i++)
+    {
+      const double wi = w[i*wstride];
+
+      if (wi > 0)
+	{
+	  const double dx = x[i*xstride] - wm_x;
+	  const double dy = y[i*ystride] - wm_y;
+
+	  W += wi;
+	  wm_dx2 += (dx * dx - wm_dx2) * (wi / W);
+	  wm_dxdy += (dx * dy - wm_dxdy) * (wi / W);
+	}
+    }
+
+  /* In terms of y = a + b x */
+
+  {
+    double d2 = 0;
+    double b = (wm_x * wm_y  + wm_dxdy) / ( wm_x * wm_x + wm_dx2);
+    
+    *c1 = b;
+
+    *cov_11 = 1 / (W  * (wm_x * wm_x + wm_dx2));
+    
+    /* Compute chi^2 = \sum w_i (y_i - b * x_i)^2 */
+    
+    for (i = 0; i < n; i++)
+      {
+        const double wi = w[i*wstride];
+        
+        if (wi > 0)
+          {
+            const double dx = x[i*xstride] - wm_x;
+            const double dy = y[i*ystride] - wm_y;
+            const double d = (wm_y - b * wm_x) + (dy - b * dx);
+            d2 += wi * d * d;
+          }
+      }
+    
+    *chisq = d2;
   }
 
   return GSL_SUCCESS;
