@@ -89,7 +89,7 @@ int gsl_monte_miser_integrate(gsl_monte_miser_state* state,
     estimate_calls = myMAX(state->min_calls, 
 			   (unsigned long)(calls*(state->estimate_frac)) );
     if (estimate_calls <= num_dim) {
-      GSL_WARNING("estimate calls is close to nun_dim!", GSL_ESANITY);
+      GSL_ERROR("estimate calls is close to nun_dim!", GSL_ESANITY);
     }
 
     x_mid = gsl_monte_vector_alloc(num_dim);
@@ -246,16 +246,13 @@ int gsl_monte_miser_integrate(gsl_monte_miser_state* state,
 	}
       }
       else {
-	char warning[100];
 	if ((sigma_l[i] < 0) && (state->verbose > 0) ) {
 	  /* FIXME: Get a proper error code here */
-	  sprintf(warning, "no points in left-half space(%lu)!?", i);
-	  GSL_WARNING(warning, GSL_ESANITY);
+	  GSL_ERROR("no points in left-half space!", GSL_ESANITY);
 	}
 	if ((sigma_r[i] < 0) && (state->verbose > 0) ) {
 	  /* FIXME: Get a proper error code here */
-	  sprintf(warning, "no points in right-half space(%lu)!?", i);
-	  GSL_WARNING(warning, GSL_ESANITY);
+	  GSL_ERROR("no points in right-half space!", GSL_ESANITY);
 	}
       }
     }
@@ -315,6 +312,8 @@ gsl_monte_miser_state* gsl_monte_miser_alloc(size_t num_dim)
     GSL_ERROR_VAL ("failed to allocate space for miser state struct",
                         GSL_ENOMEM, 0);
   }
+
+  s->check_done = 0;
   s->num_dim = num_dim;
 
   return s;
@@ -325,7 +324,6 @@ int gsl_monte_miser_validate(gsl_monte_miser_state* state,
 			     unsigned long num_dim, unsigned long calls)
 {
   unsigned long i;
-  char warning[100];
 
   if (state == (gsl_monte_miser_state*) NULL) {
     GSL_ERROR("Allocate state structure before calling!", GSL_EINVAL);
@@ -336,41 +334,28 @@ int gsl_monte_miser_validate(gsl_monte_miser_state* state,
     return GSL_SUCCESS;
     
   if (num_dim <= 0) {
-    sprintf(warning, "number of dimensions must be greater than zero, not %lu",
-	    num_dim);
-    GSL_ERROR(warning, GSL_EINVAL);
+    GSL_ERROR("number of dimensions must be positive", GSL_EINVAL);
   }
 
   if (num_dim > state->num_dim) {
-    sprintf(warning, 
-	    "number of dimensions (%lu) greater than allocated size (%lu)",
-	    num_dim, state->num_dim);
-    GSL_ERROR(warning, GSL_EINVAL);
+    GSL_ERROR("number of dimensions exceeds allocated size", GSL_EINVAL);
   }
   
   for (i=0; i < num_dim; i++ ) {
     if (xu[i] - xl[i] <= 0 ) {
-      sprintf(warning, "xu[%lu] must be greater than xu[%lu]", i, i);
-    GSL_ERROR(warning, GSL_EINVAL);
+      GSL_ERROR("xu must be greater than xl", GSL_EINVAL);
     }
     if (xu[i] - xl[i] > GSL_DBL_MAX) {
-      sprintf(warning, 
-	      "Range of integration is too large for cord %lu, please rescale", 
-	      i);
-      GSL_ERROR(warning, GSL_EINVAL);
+      GSL_ERROR("Range of integration is too large, please rescale",  GSL_EINVAL);
     }
   }
 
   if ( calls <= 0 ) {
-    sprintf(warning, "number of calls must be greater than zero, not %lu",
-	    calls);
-    GSL_ERROR(warning, GSL_EINVAL);
+    GSL_ERROR("number of calls must be greater than zero", GSL_EINVAL);
   }
 
   if ( state->alpha < 0 ) {
-    sprintf(warning, "alpha less than zero (currently %f) does not make sense!",
-	    state->alpha);
-    GSL_ERROR(warning, GSL_EINVAL);
+    GSL_ERROR("alpha is negative", GSL_EINVAL);
   }
 
   state->check_done = 1;

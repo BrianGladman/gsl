@@ -1,3 +1,14 @@
+Tue Sep 19 19:16:37 2000  Brian Gough  <bjg@network-theory.co.uk>
+
+	* plain.c (gsl_monte_plain_alloc): initialise check_done to avoid
+ 	warning about use of unitialised memory
+
+	* vegas.c (gsl_monte_vegas_alloc): as above
+
+	* miser.c (gsl_monte_miser_alloc): as above
+
+	* plain.c miser.c: removed use of sprintf for error messages
+
 Wed May 31 19:50:19 2000  Brian Gough  <bjg@network-theory.co.uk>
 
 	* miser_test.c (main): increased tolerances to allow tests to pass

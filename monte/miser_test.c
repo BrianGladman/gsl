@@ -60,7 +60,7 @@ int main()
 {
   double res = 0;
   double err = 0;
-  double chisq = 0;
+  /* double chisq = 0; */
   int status = 0;
   double tol = 1e-2;
   int step = 1;
@@ -76,7 +76,7 @@ int main()
 
   gsl_ieee_env_setup ();   
 
-  printf("testing allocation/innput checks\n");
+  printf("testing allocation/input checks\n");
 
   status = gsl_monte_miser_validate(s, xl, xu, 4, 10);
   gsl_test(status != 0,  "error if not initialized");
@@ -208,9 +208,6 @@ int main()
 /* Simple constant function */
 double fconst(double x[])
 {
-  double prod = 1.0;
-  int i;
-
   return  1;
 }
 

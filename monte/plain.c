@@ -89,6 +89,7 @@ gsl_monte_plain_state* gsl_monte_plain_alloc(size_t num_dim)
                         GSL_ENOMEM, 0);
   }
 
+  s->check_done = 0;
   s->num_dim = num_dim;
   return s;
 }
@@ -98,7 +99,6 @@ int gsl_monte_plain_validate(gsl_monte_plain_state* state,
 			     unsigned long num_dim, unsigned long calls)
 {
   unsigned long i;
-  char warning[100];
 
   if (state == (gsl_monte_plain_state*) NULL) {
     GSL_ERROR("Allocate state structure before calling!", GSL_EINVAL);
@@ -109,35 +109,24 @@ int gsl_monte_plain_validate(gsl_monte_plain_state* state,
     return GSL_SUCCESS;
     
   if (num_dim <= 0) {
-    sprintf(warning, "number of dimensions must be greater than zero, not %lu",
-	    num_dim);
-    GSL_ERROR(warning, GSL_EINVAL);
+    GSL_ERROR("number of dimensions must be positive", GSL_EINVAL);
   }
 
   if (num_dim > state->num_dim) {
-    sprintf(warning, 
-	    "number of dimensions (%lu) greater than allocated size (%lu)",
-	    num_dim, state->num_dim);
-    GSL_ERROR(warning, GSL_EINVAL);
+    GSL_ERROR("number of dimensions exceeds allocated size", GSL_EINVAL);
   }
   
   for (i=0; i < num_dim; i++ ) {
     if (xu[i] - xl[i] <= 0 ) {
-      sprintf(warning, "xu[%lu] must be greater than xu[%lu]", i, i);
-    GSL_ERROR(warning, GSL_EINVAL);
+      GSL_ERROR("xu must be greater than xl", GSL_EINVAL);
     }
     if (xu[i] - xl[i] > GSL_DBL_MAX) {
-      sprintf(warning, 
-	      "Range of integration is too large for cord %lu, please rescale", 
-	      i);
-      GSL_ERROR(warning, GSL_EINVAL);
+      GSL_ERROR("Range of integration is too large, please rescale",  GSL_EINVAL);
     }
   }
 
   if ( calls <= 1 ) {
-    sprintf(warning, "number of calls must be greater than 1, not %lu",
-	    calls);
-    GSL_ERROR(warning, GSL_EINVAL);
+    GSL_ERROR("number of calls must be greater than 1", GSL_EINVAL);
   }
   
   state->check_done = 1;

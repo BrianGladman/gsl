@@ -215,9 +215,6 @@ int main()
 /* Simple constant function */
 double fconst(double x[])
 {
-  double prod = 1.0;
-  int i;
-
   return  1;
 }
 
