@@ -116,6 +116,7 @@ double gsl_histogram_sigma (const gsl_histogram * h);
 
 double gsl_histogram_mean (const gsl_histogram * h);
 
+double gsl_histogram_sum (const gsl_histogram * h);
 
 int gsl_histogram_fwrite (FILE * stream, const gsl_histogram * h) ;
 int gsl_histogram_fread (FILE * stream, gsl_histogram * h);

@@ -112,6 +112,10 @@ gsl_histogram2d_min_val(const gsl_histogram2d *h);
 void
 gsl_histogram2d_min_bin (const gsl_histogram2d *h, size_t *i, size_t *j);
 
+
+double
+gsl_histogram2d_sum (const gsl_histogram2d *h);
+
 int 
 gsl_histogram2d_equal_bins_p(const gsl_histogram2d *h1,
 			     const gsl_histogram2d *h2) ;

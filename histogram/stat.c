@@ -119,3 +119,21 @@ gsl_histogram_sigma (const gsl_histogram * h)
   }
 }
 
+
+/*
+  sum up all bins of histogram
+ */
+
+double 
+gsl_histogram_sum(const gsl_histogram * h)
+{
+  double sum=0;
+  size_t i=0;
+  size_t n;
+  n=h->n;
+
+  while(i < n)
+    sum += h->bin[i++];
+
+  return sum;
+}

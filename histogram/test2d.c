@@ -416,6 +416,11 @@ main (void)
       g->bin[i] = (i + 27) * (i + 1);
     }
 
+  {
+    double sum=gsl_histogram2d_sum (h);
+    gsl_test(sum != N*M*27+((N*M-1)*N*M)/2, "gsl_histogram2d_sum sum all bin values");
+  }
+
   gsl_histogram2d_memcpy (h1, g);
   gsl_histogram2d_add (h1, h);
 

@@ -1,5 +1,8 @@
 * What is new in gsl-1.1:
 
+** The histogram routines now include a sum function, gsl_histogram_sum
+for computing the total bin sum.
+
 ** Internal error checking of user-defined functions has been improved
 in the multiroots functions.
 

@@ -365,6 +365,11 @@ distribution. Negative bin values are ignored for the purposes of this
 calculation. The accuracy of the result is limited by the bin width.
 @end deftypefun
 
+@deftypefun double gsl_histogram_sum (const gsl_histogram * @var{h})
+This function returns the sum of all bin values. Negative bin values
+are included in the sum.
+@end deftypefun
+
 @node Histogram Operations
 @section Histogram Operations
 
@@ -939,6 +944,11 @@ returned.
 @comment distribution. Negative bin values are ignored for the purposes of this
 @comment calculation.
 @comment @end deftypefun
+
+@deftypefun double gsl_histogram2d_sum (const gsl_histogram2d * @var{h})
+This function returns the sum of all bin values. Negative bin values
+are included in the sum.
+@end deftypefun
 
 @node 2D Histogram Operations
 @section 2D Histogram Operations

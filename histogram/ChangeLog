@@ -1,3 +1,11 @@
+Mon Jan 14 19:34:31 2002  Brian Gough  <bjg@network-theory.co.uk>
+
+	* stat.c (gsl_histogram_sum): new function to sum bins (Achim
+ 	Gaedke)
+
+	* maxval2d.c (gsl_histogram2d_sum): new function to sum bins
+ 	(Achim Gaedke)
+
 Thu Oct 18 14:48:07 2001  Brian Gough  <bjg@network-theory.co.uk>
 
 	* pdf2d.c (gsl_histogram2d_pdf_alloc): changed the definition of
