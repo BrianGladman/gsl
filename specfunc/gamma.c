@@ -1029,7 +1029,12 @@ gamma_xgthalf(const double x, gsl_sf_result * result)
     result->val = 1.77245385090551602729817;
     result->err = GSL_DBL_EPSILON * result->val;
     return GSL_SUCCESS;
-  }
+  } else if (x <= (FACT_TABLE_MAX + 1.0) && x == floor(x)) {
+    int n = (int) floor (x);
+    result->val = fact_table[n - 1].f;
+    result->err = GSL_DBL_EPSILON * result->val;
+    return GSL_SUCCESS;
+  }    
   else if(fabs(x - 1.0) < 0.01) {
     /* Use series for Gamma[1+eps] - 1/(1+eps).
      */

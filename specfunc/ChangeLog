@@ -1,5 +1,8 @@
 Wed Dec  5 19:25:26 2001  Brian Gough  <bjg@network-theory.co.uk>
 
+	* gamma.c (gamma_xgthalf): return gamma(x) exactly when x is an
+ 	integer
+
 	* hyperg_1F1.c (hyperg_1F1_ab_posint):  fix bug in recurrence
  	initialisation, as done for hyperg_1F1_ab_pos
 

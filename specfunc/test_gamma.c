@@ -60,6 +60,7 @@ int test_gamma(void)
   TEST_SF(s,  gsl_sf_gamma_e, (10.0, &r), 362880.0                  , TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s,  gsl_sf_gamma_e, (100.0, &r), 9.332621544394415268e+155 , TEST_TOL2, GSL_SUCCESS);
   TEST_SF(s,  gsl_sf_gamma_e, (170.0, &r), 4.269068009004705275e+304 , TEST_TOL2, GSL_SUCCESS);
+  TEST_SF(s,  gsl_sf_gamma_e, (171.0, &r), 7.257415615307998967e+306 , TEST_TOL2, GSL_SUCCESS);
   TEST_SF(s,  gsl_sf_gamma_e, (-10.5, &r), -2.640121820547716316e-07  , TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s,  gsl_sf_gamma_e, (-11.25, &r), 6.027393816261931672e-08  , TEST_TOL0, GSL_SUCCESS); /* exp()... not my fault */
   TEST_SF(s,  gsl_sf_gamma_e, (-1.0+1.0/65536.0, &r), -65536.42280587818970 , TEST_TOL0, GSL_SUCCESS);
