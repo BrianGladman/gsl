@@ -8,7 +8,7 @@ int main (void)
   size_t i;
   int status = 0 ;
 
-  gsl_histogram * h = gsl_histogram_alloc_uniform (10, 0.0, 1.0) ;
+  gsl_histogram * h = gsl_histogram_calloc_uniform (10, 0.0, 1.0) ;
   
   gsl_histogram_increment (h, 0.1) ;
   gsl_histogram_increment (h, 0.2) ;
@@ -18,7 +18,7 @@ int main (void)
   { 
     gsl_histogram_pdf * p = gsl_histogram_pdf_alloc (h) ;
 
-    gsl_histogram * hh = gsl_histogram_alloc_uniform (100, 0.0, 1.0) ;
+    gsl_histogram * hh = gsl_histogram_calloc_uniform (100, 0.0, 1.0) ;
 
     for (i = 0; i < 100000 ; i++)
       {

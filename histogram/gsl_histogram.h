@@ -16,8 +16,8 @@ typedef struct {
   double * sum ;
 } gsl_histogram_pdf ;
 
-gsl_histogram * gsl_histogram_alloc (size_t n);
-gsl_histogram * gsl_histogram_alloc_uniform (size_t n, double xmin, 
+gsl_histogram * gsl_histogram_calloc (size_t n);
+gsl_histogram * gsl_histogram_calloc_uniform (size_t n, double xmin, 
 					     double xmax);
 void gsl_histogram_free (gsl_histogram * h);
 int gsl_histogram_increment (gsl_histogram * h, double x);

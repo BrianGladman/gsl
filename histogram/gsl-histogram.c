@@ -6,7 +6,7 @@ int
 main (int argc, char **argv)
 {
   double a = 0.0, b = 1.0 ;
-  int n = 10;
+  size_t n = 10;
 
   if (argc != 4)
     {
@@ -20,7 +20,7 @@ main (int argc, char **argv)
   n = atoi (argv[3]);
 
   {
-    gsl_histogram * h = gsl_histogram_alloc_uniform (n, a, b) ;
+    gsl_histogram * h = gsl_histogram_calloc_uniform (n, a, b) ;
     int status ;
     
     do {

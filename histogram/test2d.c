@@ -14,14 +14,14 @@ int main (void)
   gsl_histogram2d * h;
   size_t i, j, k;
   
-  h = gsl_histogram2d_alloc(N,M) ;
+  h = gsl_histogram2d_calloc(N,M) ;
   
-  gsl_test(h->xrange == 0, "gsl_histogram2d_alloc returns valid yrange pointer") ;
-  gsl_test(h->yrange == 0, "gsl_histogram2d_alloc returns valid yrange pointer") ;
-  gsl_test(h->bin == 0, "gsl_histogram2d_alloc returns valid bin pointer") ;
+  gsl_test(h->xrange == 0, "gsl_histogram2d_calloc returns valid yrange pointer") ;
+  gsl_test(h->yrange == 0, "gsl_histogram2d_calloc returns valid yrange pointer") ;
+  gsl_test(h->bin == 0, "gsl_histogram2d_calloc returns valid bin pointer") ;
   
-  gsl_test(h->nx != N, "gsl_histogram2d_alloc returns valid nx") ;
-  gsl_test(h->ny != M, "gsl_histogram2d_alloc returns valid ny") ;
+  gsl_test(h->nx != N, "gsl_histogram2d_calloc returns valid nx") ;
+  gsl_test(h->ny != M, "gsl_histogram2d_calloc returns valid ny") ;
   
   k = 0 ;
   for (i = 0 ; i < N ; i++) 
@@ -76,7 +76,7 @@ int main (void)
   }
   
   gsl_histogram2d_free (h) ;
-  h = gsl_histogram2d_alloc(N1,M1) ;
+  h = gsl_histogram2d_calloc(N1,M1) ;
 
   {
 
@@ -105,7 +105,7 @@ int main (void)
   }
 
   gsl_histogram2d_free (h) ;
-  h = gsl_histogram2d_alloc(N,M) ;
+  h = gsl_histogram2d_calloc(N,M) ;
 
   {
     int status = 0 ;
@@ -184,18 +184,18 @@ int main (void)
 
   gsl_histogram2d_free(h);  /* free whatever is in h */
 
-  h = gsl_histogram2d_alloc_uniform (N1, M1, 0.0, 5.0, 0.0, 5.0) ;
+  h = gsl_histogram2d_calloc_uniform (N1, M1, 0.0, 5.0, 0.0, 5.0) ;
 
   gsl_test(h->xrange == 0,
-	   "gsl_histogram2d_alloc_uniform returns valid range pointer") ;
+	   "gsl_histogram2d_calloc_uniform returns valid range pointer") ;
   gsl_test(h->yrange == 0,
-	   "gsl_histogram2d_alloc_uniform returns valid range pointer") ;
+	   "gsl_histogram2d_calloc_uniform returns valid range pointer") ;
   gsl_test(h->bin == 0,
-	   "gsl_histogram2d_alloc_uniform returns valid bin pointer") ;
+	   "gsl_histogram2d_calloc_uniform returns valid bin pointer") ;
   gsl_test(h->nx != N1,
-	   "gsl_histogram2d_alloc_uniform returns valid nx") ;
+	   "gsl_histogram2d_calloc_uniform returns valid nx") ;
   gsl_test(h->ny != M1,
-	   "gsl_histogram2d_alloc_uniform returns valid ny") ;
+	   "gsl_histogram2d_calloc_uniform returns valid ny") ;
 
   gsl_histogram2d_accumulate (h, 0.0, 3.01, 1.0) ;
   gsl_histogram2d_accumulate (h, 0.1, 2.01, 2.0) ;
@@ -244,7 +244,7 @@ int main (void)
 
   {
     FILE * f = fopen("test.txt","r") ;
-    gsl_histogram2d * hh = gsl_histogram2d_alloc (N1,M1);
+    gsl_histogram2d * hh = gsl_histogram2d_calloc (N1,M1);
     int status = 0 ;
 
     gsl_histogram2d_fscanf(f, hh) ;
@@ -290,7 +290,7 @@ int main (void)
 
   {
     FILE * f = fopen("test.dat","r") ;
-    gsl_histogram2d * hh = gsl_histogram2d_alloc (N1,M1);
+    gsl_histogram2d * hh = gsl_histogram2d_calloc (N1,M1);
     int status = 0 ;
 
     gsl_histogram2d_fread(f, hh) ;

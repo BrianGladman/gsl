@@ -4,7 +4,7 @@
 #include <gsl_histogram2d.h>
 
 gsl_histogram2d *
-gsl_histogram2d_alloc_uniform (const size_t nx, const size_t ny, 
+gsl_histogram2d_calloc_uniform (const size_t nx, const size_t ny, 
 			       const double xmin, const double xmax,
 			       const double ymin, const double ymax)
 {
@@ -20,7 +20,7 @@ gsl_histogram2d_alloc_uniform (const size_t nx, const size_t ny,
       GSL_ERROR_RETURN ("ymin must be less than ymax", GSL_EINVAL, 0) ;
     }
 
-  h = gsl_histogram2d_alloc (nx, ny) ;
+  h = gsl_histogram2d_calloc (nx, ny) ;
   
   if (h == 0) 
     {
@@ -45,7 +45,7 @@ gsl_histogram2d_alloc_uniform (const size_t nx, const size_t ny,
 }
 
 gsl_histogram2d *
-gsl_histogram2d_alloc (const size_t nx, const size_t ny)
+gsl_histogram2d_calloc (const size_t nx, const size_t ny)
 {
   gsl_histogram2d * h ;
  

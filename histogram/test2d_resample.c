@@ -8,7 +8,7 @@ int main (void)
   size_t i, j;
   int status = 0 ;
 
-  gsl_histogram2d * h = gsl_histogram2d_alloc_uniform (10, 10,
+  gsl_histogram2d * h = gsl_histogram2d_calloc_uniform (10, 10,
 						       0.0, 1.0, 
 						       0.0, 1.0) ;
   
@@ -20,7 +20,7 @@ int main (void)
   { 
     gsl_histogram2d_pdf * p = gsl_histogram2d_pdf_alloc (h) ;
 
-    gsl_histogram2d * hh = gsl_histogram2d_alloc_uniform (20, 20, 
+    gsl_histogram2d * hh = gsl_histogram2d_calloc_uniform (20, 20, 
 							  0.0, 1.0,
 							  0.0, 1.0) ;
     

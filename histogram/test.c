@@ -11,11 +11,11 @@ int main (void)
   gsl_histogram * h;
   size_t i, j;
 
-  h = gsl_histogram_alloc(N) ;
+  h = gsl_histogram_calloc(N) ;
 
-  gsl_test(h->range == 0, "gsl_histogram_alloc returns valid range pointer") ;
-  gsl_test(h->bin == 0, "gsl_histogram_alloc returns valid bin pointer") ;
-  gsl_test(h->nbins != N, "gsl_histogram_alloc returns valid size") ;
+  gsl_test(h->range == 0, "gsl_histogram_calloc returns valid range pointer") ;
+  gsl_test(h->bin == 0, "gsl_histogram_calloc returns valid bin pointer") ;
+  gsl_test(h->nbins != N, "gsl_histogram_calloc returns valid size") ;
 
   for (i = 0 ; i < N ; i++) 
     {
@@ -120,14 +120,14 @@ int main (void)
 
   gsl_histogram_free(h);  /* free whatever is in h */
 
-  h = gsl_histogram_alloc_uniform (N, 0.0, 1.0) ;
+  h = gsl_histogram_calloc_uniform (N, 0.0, 1.0) ;
 
   gsl_test(h->range == 0,
-	   "gsl_histogram_alloc_uniform returns valid range pointer") ;
+	   "gsl_histogram_calloc_uniform returns valid range pointer") ;
   gsl_test(h->bin == 0,
-	   "gsl_histogram_alloc_uniform returns valid bin pointer") ;
+	   "gsl_histogram_calloc_uniform returns valid bin pointer") ;
   gsl_test(h->nbins != N,
-	   "gsl_histogram_alloc_uniform returns valid size") ;
+	   "gsl_histogram_calloc_uniform returns valid size") ;
 
   gsl_histogram_accumulate (h, 0.0, 1.0) ;
   gsl_histogram_accumulate (h, 0.1, 2.0) ;
@@ -173,7 +173,7 @@ int main (void)
 
   {
     FILE * f = fopen("test.txt","r") ;
-    gsl_histogram * hh = gsl_histogram_alloc (N);
+    gsl_histogram * hh = gsl_histogram_calloc (N);
     int status = 0 ;
 
     gsl_histogram_fscanf(f, hh) ;
@@ -202,7 +202,7 @@ int main (void)
 
   {
     FILE * f = fopen("test.dat","r") ;
-    gsl_histogram * hh = gsl_histogram_alloc (N);
+    gsl_histogram * hh = gsl_histogram_calloc (N);
     int status = 0 ;
 
     gsl_histogram_fread(f, hh) ;

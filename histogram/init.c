@@ -4,7 +4,7 @@
 #include <gsl_histogram.h>
 
 gsl_histogram *
-gsl_histogram_alloc_uniform (const size_t n, const double xmin,
+gsl_histogram_calloc_uniform (const size_t n, const double xmin,
 			     const double xmax)
 {
   gsl_histogram * h ;
@@ -14,7 +14,7 @@ gsl_histogram_alloc_uniform (const size_t n, const double xmin,
       GSL_ERROR_RETURN ("xmin must be less than xmax", GSL_EINVAL, 0) ;
     }
   
-  h = gsl_histogram_alloc (n) ;
+  h = gsl_histogram_calloc (n) ;
   
   if (h == 0) 
     {
@@ -34,7 +34,7 @@ gsl_histogram_alloc_uniform (const size_t n, const double xmin,
 }
 
 gsl_histogram *
-gsl_histogram_alloc (size_t n)
+gsl_histogram_calloc (size_t n)
 {
   gsl_histogram * h ;
  

@@ -18,8 +18,8 @@ typedef struct {
   double * sum ;
 } gsl_histogram2d_pdf ;
 
-gsl_histogram2d * gsl_histogram2d_alloc (size_t nx, size_t ny);
-gsl_histogram2d * gsl_histogram2d_alloc_uniform (size_t nx, size_t ny,
+gsl_histogram2d * gsl_histogram2d_calloc (size_t nx, size_t ny);
+gsl_histogram2d * gsl_histogram2d_calloc_uniform (size_t nx, size_t ny,
 					     double xmin, double xmax,
 					     double ymin, double ymax);
 
