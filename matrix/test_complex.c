@@ -1,6 +1,6 @@
 #include <config.h>
 #include <stdio.h>
-#include <gsl_matrix_complex.h>
+#include <gsl_matrix.h>
 #include <gsl_test.h>
 
 #define N 107
@@ -20,8 +20,8 @@ int main (void)
 
   for (i = 0 ; i < N ; i++) {
     for (j = 0 ; j < M ; j++) {
-      gsl_complex z ;
-      k++ ; z.real = k ; z.imag = k + 1000 ;
+      gsl_complex z;
+      k++ ; z.dat[0] = k ; z.dat[1] = k + 1000 ;
       gsl_matrix_complex_set(m,i,j,z) ;
     }
   }
@@ -32,7 +32,7 @@ int main (void)
     for (i = 0 ; i < N ; i++) {
       for (j = 0 ; j < M ; j++) {
 	k++ ;
-	if(m->data[i*M + j].real != k || m->data[i*M + j].imag != k + 1000) 
+	if(m->data[2*(i*M + j)] != k || m->data[2*(i*M + j)+1] != k + 1000) 
 	  status = 1 ;
       } ;
     } ;
@@ -47,7 +47,7 @@ int main (void)
       for (j = 0 ; j < M ; j++) {
 	gsl_complex z = gsl_matrix_complex_get(m,i,j) ;
 	k++ ;
-	if(z.real != k || z.imag != k + 1000) 
+	if(z.dat[0] != k || z.dat[1] != k + 1000) 
 	  status = 1 ;
       } ;
     } ;
@@ -67,7 +67,7 @@ int main (void)
 
     for (i = 0 ; i < N ; i++) {
       for (j = 0 ; j < M ; j++) {
-	if(m->data[i*M + j].real != 0.0 || m->data[i*M + j].imag != 0.0) 
+	if(m->data[2*(i*M + j)] != 0.0 || m->data[2*(i*M + j)+1] != 0.0) 
 	  status = 1 ;
       } 
     }
@@ -80,7 +80,7 @@ int main (void)
     for (i = 0 ; i < N ; i++) {
       for (j = 0 ; j < M ; j++) {
 	gsl_complex z ;
-	k++ ; z.real = k ; z.imag = k + 1000 ;
+	k++ ; z.dat[0] = k ; z.dat[1] = k + 1000 ;
 	gsl_matrix_complex_set(m,i,j,z) ;
       }
     }
@@ -100,7 +100,7 @@ int main (void)
     for (i = 0 ; i < N ; i++) {
       for (j = 0 ; j < M ; j++) {
 	k++ ; 
-	if (mm->data[i*M + j].real != k || mm->data[i*M + j].imag != k + 1000)
+	if (mm->data[2*(i*M + j)] != k || mm->data[2*(i*M + j)+1] != k + 1000)
 	  status = 1 ;
       }
     }
@@ -117,7 +117,7 @@ int main (void)
     for (i = 0 ; i < N ; i++) {
       for (j = 0 ; j < M ; j++) {
 	gsl_complex z ;
-	k++ ; z.real = k ; z.imag = k + 1000 ;
+	k++ ; z.dat[0] = k ; z.dat[1] = k + 1000 ;
 	gsl_matrix_complex_set(m,i,j,z) ;
       }
     }
@@ -137,7 +137,7 @@ int main (void)
     for (i = 0 ; i < N ; i++) {
       for (j = 0 ; j < M ; j++) {
 	k++ ; 
-	if (mm->data[i*M + j].real != k || mm->data[i*M + j].imag != k + 1000 )
+	if (mm->data[2*(i*M + j)] != k || mm->data[2*(i*M + j)+1] != k + 1000 )
 	    status = 1 ;
       }
     }

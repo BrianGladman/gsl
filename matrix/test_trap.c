@@ -5,9 +5,6 @@
 #define GSL_WARNINGS_OFF
 
 #include <gsl_matrix.h>
-#include <gsl_matrix_int.h>
-#include <gsl_matrix_float.h>
-#include <gsl_matrix_complex.h>
 #include <gsl_test.h>
 
 #define N 107
@@ -26,9 +23,9 @@ int main (void)
 
   size_t i = 0, j = 0;
   double x; 
-  gsl_complex z = {1.2, 3.4} ;
+  gsl_complex z = {{1.2, 3.4}} ;
   gsl_complex z1 ;
-  gsl_complex zero = {0.0, 0.0} ;
+  gsl_complex zero = {{0.0, 0.0}} ;
   
   gsl_warnings_off = 1 ;
 
@@ -295,54 +292,54 @@ int main (void)
   z1 = gsl_matrix_complex_get(mc, i-1, 0) ;
   gsl_test(!status,
 	   "gsl_matrix_complex_get traps first index below lower bound") ;
-  gsl_test(z1.real != zero.real, 
+  gsl_test(z1.dat[0] != zero.dat[0], 
 	   "gsl_matrix_complex_get returns zero real for first index below l.b.") ;
-  gsl_test(z1.imag != zero.imag, 
+  gsl_test(z1.dat[1] != zero.dat[1], 
 	   "gsl_matrix_complex_get returns zero imag for first index below l.b.") ;
 
   status = 0 ;
   z1 = gsl_matrix_complex_get(mc, 0, j-1) ;
   gsl_test(!status,
 	   "gsl_matrix_complex_get traps second index below lower bound") ;
-  gsl_test(z1.real != zero.real, 
+  gsl_test(z1.dat[0] != zero.dat[0], 
 	   "gsl_matrix_complex_get returns zero real for second index below l.b.") ;
-  gsl_test(z1.imag != zero.imag, 
+  gsl_test(z1.dat[1] != zero.dat[1], 
 	   "gsl_matrix_complex_get returns zero imag for second index below l.b.") ;
 
   status = 0 ;
   z1 = gsl_matrix_complex_get(mc, N+1, 0) ;
   gsl_test(!status, 
 	   "gsl_matrix_complex_get traps first index above upper bound") ;
-  gsl_test(z1.real != zero.real, 
+  gsl_test(z1.dat[0] != zero.dat[0], 
 	   "gsl_matrix_complex_get returns zero real for first index above u.b.") ;
-  gsl_test(z1.imag != zero.imag, 
+  gsl_test(z1.dat[1] != zero.dat[1], 
 	   "gsl_matrix_complex_get returns zero imag for first index above u.b.") ;
 
   status = 0 ;
   z1 = gsl_matrix_complex_get(mc, 0, M+1) ;
   gsl_test(!status, 
 	   "gsl_matrix_complex_get traps second index above upper bound") ;
-  gsl_test(z1.real != zero.real, 
+  gsl_test(z1.dat[0] != zero.dat[0], 
 	   "gsl_matrix_complex_get returns zero real for second index above u.b.") ;
-  gsl_test(z1.imag != zero.imag, 
+  gsl_test(z1.dat[1] != zero.dat[1], 
 	   "gsl_matrix_complex_get returns zero imag for second index above u.b.") ;
 
   status = 0 ;
   z1 = gsl_matrix_complex_get(mc, N, 0) ;
   gsl_test(!status, 
 	   "gsl_matrix_complex_get traps first index at upper bound") ;
-  gsl_test(z1.real != zero.real, 
+  gsl_test(z1.dat[0] != zero.dat[0], 
 	   "gsl_matrix_complex_get returns zero real for first index at u.b.") ;
-  gsl_test(z1.imag != zero.imag, 
+  gsl_test(z1.dat[1] != zero.dat[1], 
 	   "gsl_matrix_complex_get returns zero imag for first index at u.b.") ;
 
   status = 0 ;
   z1 = gsl_matrix_complex_get(mc, 0, M) ;
   gsl_test(!status, 
 	   "gsl_matrix_complex_get traps second index at upper bound") ;
-  gsl_test(z1.real != zero.real, 
+  gsl_test(z1.dat[0] != zero.dat[0], 
 	   "gsl_matrix_complex_get returns zero real for second index at u.b.") ;
-  gsl_test(z1.imag != zero.imag, 
+  gsl_test(z1.dat[1] != zero.dat[1], 
 	   "gsl_matrix_complex_get returns zero imag for second index at u.b.") ;
 
   return gsl_test_summary ();

@@ -26,7 +26,7 @@ FUNCTION(gsl_matrix,alloc) (const size_t n1, const size_t n2)
 			GSL_ENOMEM, 0);
     }
 
-  m->data = (BASE *) malloc(n1 * n2 * sizeof(BASE)) ;
+  m->data = (ATOMIC *) malloc(MULTIPLICITY * n1 * n2 * sizeof(ATOMIC)) ;
 
   if (m->data == 0) 
     {
@@ -52,7 +52,9 @@ FUNCTION(gsl_matrix,calloc) (const size_t n1, const size_t n2)
   if (m == 0) 
     return 0 ;
 
-  for (i = 0 ; i < MULTIPLICITY*MULTIPLICITY * n1 * n2; i++)  /* initialize matrix to zero */
+  /* initialize matrix to zero */
+
+  for (i = 0 ; i < MULTIPLICITY * n1 * n2; i++)  
     {
       m->data[i] = 0.0 ;
     }

@@ -47,7 +47,7 @@ gsl_matrix_complex_float_get(const gsl_matrix_complex_float * m,
       GSL_ERROR_CONTINUE("second index out of range", GSL_EINVAL) ;
     }
 #endif
-  return *(gsl_complex_float *)(m->data + i * m->size2 + j) ;
+  return *(gsl_complex_float *)(m->data + 2*(i * m->size2 + j)) ;
 } 
 
 extern inline 
@@ -65,7 +65,7 @@ gsl_matrix_complex_float_set(gsl_matrix_complex_float * m,
       GSL_ERROR_RETURN_NOTHING("second index out of range", GSL_EINVAL) ;
     }
 #endif
-  *(gsl_complex_float *)(m->data + i * m->size2 + j) = x ;
+  *(gsl_complex_float *)(m->data + 2*(i * m->size2 + j)) = x ;
 }
 #endif /* HAVE_INLINE */
 

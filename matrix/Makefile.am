@@ -42,3 +42,5 @@ CLEANFILES = test.txt test.dat
 noinst_HEADERS = matrix_source.c init_source.c file_source.c source.h unsource.h
 
 libgslmatrix_a_SOURCES = source.h init.c matrix.c file.c
+
+

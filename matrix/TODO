@@ -1,0 +1,5 @@
+1. IMPORTANT. Write tests which check both the inline and non-inline
+versions of get/set functions.
+
+2. Need tests for all types, can probably paramterise with macros so
+that there is just one source file
