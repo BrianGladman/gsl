@@ -323,6 +323,9 @@ algorithm depends on the problem.  Each of the algorithms uses the value
 of the function and its gradient at each evaluation point.
 
 @deffn {Minimizer} gsl_multimin_fdfminimizer_conjugate_fr
+@cindex Fletcher-Reeves conjugate gradient algorithm, minimization
+@cindex Conjugate gradient algorithm, minimization
+@cindex Minimization, conjugate gradient algorithm
 This is the Fletcher-Reeves conjugate gradient algorithm. The conjugate
 gradient algorithm proceeds as a succession of line minimizations. The
 sequence of search directions to build up an approximation to the
@@ -341,6 +344,8 @@ direction.
 @end deffn
 
 @deffn {Minimizer} gsl_multimin_fdfminimizer_conjugate_pr
+@cindex Polak-Ribiere algorithm, minimization
+@cindex Minimization, Polak-Ribiere algorithm
 This is the Polak-Ribiere conjugate gradient algorithm.  It is similar
 to the Fletcher-Reeves method, differing only in the choice of the
 coefficient @math{\beta}. Both methods work well when the evaluation
@@ -349,7 +354,9 @@ is well approximated by a quadratic hypersurface.
 @end deffn
 
 @deffn {Minimizer} gsl_multimin_fdfminimizer_vector_bfgs
-This is the vector Broyden-Fletcher-Goldfarb-Shanno conjugate gradient
+@cindex BFGS conjugate gradient algorithm, minimization
+@cindex Minimization, BFGS conjugate gradient algorithm
+This is the vector Broyden-Fletcher-Goldfarb-Shanno (BFGS) conjugate gradient
 algorithm.  It is a quasi-Newton method which builds up an approximation
 to the second derivatives of the function @math{f} using the difference
 between successive gradient vectors.  By combining the first and second
@@ -358,6 +365,8 @@ function minimum, assuming quadratic behavior in that region.
 @end deffn
 
 @deffn {Minimizer} gsl_multimin_fdfminimizer_steepest_descent
+@cindex Steepest descent algorithm, minimization
+@cindex Minimization, steepest descent algorithm
 The steepest descent algorithm follows the downhill gradient of the
 function at each step. When a downhill step is successful the step-size
 is increased by factor of two.  If the downhill step leads to a higher
