@@ -54,7 +54,8 @@ noinst_HEADERS = \
 	source_symv.h		\
 	source_syr.h		\
 	source_syr2.h		\
-	source_tbmv_r.h
+	source_tbmv_r.h		\
+	source_tpmv_r.h
 
 
 INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../err -I$(srcdir)/../matrix -I$(srcdir)/../vector -I$(srcdir)/../block
