@@ -226,7 +226,7 @@ double gsl_sf_fermi_integral_1(const double A)
   double y;
   int status = gsl_sf_fermi_integral_1_impl(A, &y);
   if(status != GSL_SUCCESS){
-    GSL_WARNING("gsl_sf_fermi_integral_1");
+    GSL_WARNING("gsl_sf_fermi_integral_1", status);
   }
   return y;
 }
@@ -236,7 +236,7 @@ double gsl_sf_fermi_integral_2(const double A)
   double y;
   int status = gsl_sf_fermi_integral_2_impl(A, &y);
   if(status != GSL_SUCCESS){
-    GSL_WARNING("gsl_sf_fermi_integral_2");
+    GSL_WARNING("gsl_sf_fermi_integral_2", status);
   }
   return y;
 }

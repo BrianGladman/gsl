@@ -193,7 +193,7 @@ double gsl_sf_psi_int(const int n)
   double y;
   int status = gsl_sf_psi_int_impl(n, &y);
   if(status != GSL_SUCCESS){
-    GSL_WARNING("gsl_sf_psi_int");
+    GSL_WARNING("gsl_sf_psi_int", status);
   }
   return y;
 }
@@ -203,7 +203,7 @@ double gsl_sf_psi(const double x)
   double y;
   int status = gsl_sf_psi_impl(x, &y);
   if(status != GSL_SUCCESS){
-    GSL_WARNING("gsl_sf_psi");
+    GSL_WARNING("gsl_sf_psi", status);
   }
   return y;
 }

@@ -314,7 +314,7 @@ double gsl_sf_legendre_Pl(const int l, const double x)
   double y;
   int status = gsl_sf_legendre_Pl_impl(l, x, &y, (double *)0);
   if(status != GSL_SUCCESS) {
-    GSL_WARNING("gsl_sf_legendre_Pl");
+    GSL_WARNING("gsl_sf_legendre_Pl", status);
   }
   return y;
 }
@@ -324,7 +324,7 @@ double gsl_sf_legendre_Plm(const int l, const int m, const double x)
   double y;
   int status = gsl_sf_legendre_Plm_impl(l, m, 1.-x, 1.+x, &y, (double *)0);
   if(status != GSL_SUCCESS) {
-    GSL_WARNING("gsl_sf_legendre_Plm");
+    GSL_WARNING("gsl_sf_legendre_Plm", status);
   }
   return y;
 }
@@ -334,7 +334,7 @@ double gsl_sf_legendre_sphPlm(const int l, const int m, const double x)
   double y;
   int status = gsl_sf_legendre_sphPlm_impl(l, m, 1.-x, 1.+x, &y, (double *)0);
   if(status != GSL_SUCCESS) {
-    GSL_WARNING("gsl_sf_legendre_sphPlm");
+    GSL_WARNING("gsl_sf_legendre_sphPlm", status);
   }
   return y;
 }

@@ -76,7 +76,7 @@ double gsl_sf_bessel_K(const int n, const double x)
   double y = 0.;
   int status = gsl_sf_bessel_K_scaled_impl(n, x, &y);
   if(status != GSL_SUCCESS) {
-    GSL_WARNING("gsl_sf_bessel_K");
+    GSL_WARNING("gsl_sf_bessel_K", status);
   }
   y *= exp(-x);
   return y;

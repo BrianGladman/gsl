@@ -174,7 +174,7 @@ double gsl_sf_bessel_Jn(const int n, const double x)
   double y;
   int status = gsl_sf_bessel_Jn_impl(n, x, &y);
   if(status != GSL_SUCCESS) {
-    GSL_WARNING("gsl_sf_bessel_Jn");
+    GSL_WARNING("gsl_sf_bessel_Jn", status);
   }
   return y;
 }

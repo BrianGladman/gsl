@@ -343,7 +343,7 @@ double gsl_sf_Si(double x)
   double y;
   int status = gsl_sf_Si_impl(x, &y);
   if(status != GSL_SUCCESS) {
-    GSL_WARNING("gsl_sf_Si_e");
+    GSL_WARNING("gsl_sf_Si_e", status);
   }
   return y;
 }
@@ -353,7 +353,7 @@ double gsl_sf_Ci(double x)
   double y;
   int status = gsl_sf_Ci_impl(x, &y);
   if(status != GSL_SUCCESS) {
-    GSL_WARNING("gsl_sf_Ci_e");
+    GSL_WARNING("gsl_sf_Ci_e", status);
   }
   return y;
 }

@@ -88,7 +88,7 @@ double gsl_sf_bessel_Yn(const int n, const double x)
   double y;
   int status = gsl_sf_bessel_Yn_impl(n, x, &y);
   if(status != GSL_SUCCESS) {
-    GSL_WARNING("gsl_sf_bessel_Yn");
+    GSL_WARNING("gsl_sf_bessel_Yn", status);
   }
   return y;
 }

@@ -360,7 +360,7 @@ double gsl_sf_expint_E1(double x)
   double y;
   int status = gsl_sf_expint_E1_impl(x, &y);
   if(status != GSL_SUCCESS) {
-    GSL_WARNING("gsl_sf_expint_E1");
+    GSL_WARNING("gsl_sf_expint_E1", status);
   }
   return y;
 }
@@ -370,7 +370,7 @@ double gsl_sf_expint_Ei(double x)
   double y;
   int status = gsl_sf_expint_Ei_impl(x, &y);
   if(status != GSL_SUCCESS) {
-    GSL_WARNING("gsl_sf_expint_Ei");
+    GSL_WARNING("gsl_sf_expint_Ei", status);
   }
   return y;
 }

@@ -409,7 +409,7 @@ double gsl_sf_lngamma(const double x)
   double y;
   int status = gsl_sf_lngamma_impl(x, &y);
   if(status != GSL_SUCCESS) {
-    GSL_WARNING("gsl_sf_lngamma");
+    GSL_WARNING("gsl_sf_lngamma", status);
   }
   return y;
 }
@@ -419,7 +419,7 @@ double gsl_sf_lnfact(const int n)
   double y;
   int status = gsl_sf_lnfact_impl(n, &y);
   if(status != GSL_SUCCESS) {
-    GSL_WARNING("gsl_sf_lnfact");
+    GSL_WARNING("gsl_sf_lnfact", status);
   }
   return y;
 }

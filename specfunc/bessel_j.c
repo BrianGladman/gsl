@@ -193,7 +193,7 @@ double gsl_sf_bessel_j0(const double x)
   double y;
   int status = gsl_sf_bessel_j0_impl(x, &y);
   if(status != GSL_SUCCESS) {
-    GSL_WARNING("gsl_sf_bessel_j0");
+    GSL_WARNING("gsl_sf_bessel_j0", status);
   }
   return y;
 }
@@ -203,7 +203,7 @@ double gsl_sf_bessel_j1(const double x)
   double y;
   int status = gsl_sf_bessel_j1_impl(x, &y);
   if(status != GSL_SUCCESS) {
-    GSL_WARNING("gsl_sf_bessel_j1");
+    GSL_WARNING("gsl_sf_bessel_j1", status);
   }
   return y;
 }
@@ -213,7 +213,7 @@ double gsl_sf_bessel_j2(const double x)
   double y;
   int status = gsl_sf_bessel_j2_impl(x, &y);
   if(status != GSL_SUCCESS) {
-    GSL_WARNING("gsl_sf_bessel_j2");
+    GSL_WARNING("gsl_sf_bessel_j2", status);
   }
   return y;
 }

@@ -117,7 +117,7 @@ double gsl_sf_Shi(double x)
   double y;
   int status = gsl_sf_Shi_impl(x, &y);
   if(status != GSL_SUCCESS) {
-    GSL_WARNING("gsl_sf_Shi");
+    GSL_WARNING("gsl_sf_Shi", status);
   }
   return y;
 }
@@ -127,7 +127,7 @@ double gsl_sf_Chi(double x)
   double y;
   int status = gsl_sf_Chi_impl(x, &y);
   if(status != GSL_SUCCESS) {
-    GSL_WARNING("gsl_sf_Chi");
+    GSL_WARNING("gsl_sf_Chi", status);
   }
   return y;
 }

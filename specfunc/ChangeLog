@@ -1,3 +1,9 @@
+Wed Apr 15 21:27:48 1998  Brian Gough  <bjg@vvv.lanl.gov>
+
+	* added the return code as the second argument of GSL_WARNING, so
+ 	we can filter on the error number or output a standard message for
+ 	each one.
+
 1998-02-02  Mark Galassi  <rosalia@cygnus.com>
 
 	* Makefile.am (include_HEADERS): added gsl_specfunc.h so it gets

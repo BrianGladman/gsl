@@ -253,7 +253,7 @@ double gsl_sf_conical_sph_irr_1(const double lambda, const double x)
   double y;
   int status = gsl_sf_conical_sph_irr_1_impl(lambda, 1.-x, 1.+x, &y);
   if(status != GSL_SUCCESS) {
-    GSL_WARNING("gsl_sf_conical_sph_irr_1_e");
+    GSL_WARNING("gsl_sf_conical_sph_irr_1_e", status);
   }
   return y;
 }
@@ -263,7 +263,7 @@ double gsl_sf_conical_sph_reg_0(const double lambda, const double x)
   double y;
   int status = gsl_sf_conical_sph_reg_0_impl(lambda, 1.-x, 1.+x, &y);
   if(status != GSL_SUCCESS) {
-    GSL_WARNING("gsl_sf_conical_sph_reg_0_e");
+    GSL_WARNING("gsl_sf_conical_sph_reg_0_e", status);
   }
   return y;
 }
@@ -273,7 +273,7 @@ double gsl_sf_conical_sph_reg(const int l, const double lambda, const double x)
   double y;
   int status = gsl_sf_conical_sph_reg_impl(l, lambda, 1.-x, 1.+x, &y, (double *)0);
   if(status != GSL_SUCCESS) {
-    GSL_WARNING("gsl_sf_conical_sph_reg");
+    GSL_WARNING("gsl_sf_conical_sph_reg", status);
   }
   return y;
 }

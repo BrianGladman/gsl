@@ -607,7 +607,7 @@ double gsl_sf_airy_Bi(const double x)
   double y;
   int status = gsl_sf_airy_Bi_impl(x, &y);
   if(status != GSL_SUCCESS) {
-    GSL_WARNING("gsl_sf_airy_Bi");
+    GSL_WARNING("gsl_sf_airy_Bi", status);
   }
   return y;
 }

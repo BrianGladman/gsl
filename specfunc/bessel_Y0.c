@@ -99,7 +99,7 @@ double gsl_sf_bessel_Y0(const double x)
   double y;
   int status = gsl_sf_bessel_Y0_impl(x, &y);
   if(status != GSL_SUCCESS) {
-    GSL_WARNING("gsl_sf_bessel_Y0");
+    GSL_WARNING("gsl_sf_bessel_Y0", status);
   }
   return y;
 }
