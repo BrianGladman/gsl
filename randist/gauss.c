@@ -2,8 +2,9 @@
 #include <stdlib.h>
 #include <math.h>
 #include "gsl_ran.h"
+#include "gsl_randist.h"
 
-double gsl_ran_gaussian() 
+double gsl_ran_gaussian(void) 
 {
     double x,y,rr;
     
