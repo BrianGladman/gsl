@@ -227,21 +227,21 @@ main (void)
   {
     gsl_combination * d = gsl_combination_alloc (6,4);
     int s = gsl_combination_memcpy (d, c);
-    gsl_test (s, "gsl_combination_memcpy, (6,4) vs (6,3)");
+    gsl_test (!s, "gsl_combination_memcpy, (6,4) vs (6,3)");
     gsl_combination_free(d);
   }
 
   {
     gsl_combination * d = gsl_combination_alloc (7,3);
     int s = gsl_combination_memcpy (d, c);
-    gsl_test (s, "gsl_combination_memcpy, (7,3) vs (6,3)");
+    gsl_test (!s, "gsl_combination_memcpy, (7,3) vs (6,3)");
     gsl_combination_free(d);
   }
 
   {
     gsl_combination * d = gsl_combination_alloc (7,2);
     int s = gsl_combination_memcpy (d, c);
-    gsl_test (s, "gsl_combination_memcpy, (7,2) vs (6,3)");
+    gsl_test (!s, "gsl_combination_memcpy, (7,2) vs (6,3)");
     gsl_combination_free(d);
   }
 
