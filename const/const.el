@@ -18,7 +18,7 @@
        )
 
 (setq  gsl-constants
-       '(("c"             "SPEED_OF_LIGHT"      "the speed of light")
+       '(("c"             "SPEED_OF_LIGHT")
          ("Grav"          "GRAVITATIONAL_CONSTANT")
          ("h"             "PLANCKS_CONSTANT_H")
          ("hbar"          "PLANCKS_CONSTANT_HBAR")
@@ -182,3 +182,4 @@
 (defun run-num ()
   (display "GSL_CONST_NUM" mks gsl-dimensionless-constants)
 )
+

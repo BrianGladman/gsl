@@ -20,3 +20,7 @@
 #ifdef __GSL_CONST_NUM__
 #define __GSL_CONST_NUM__
 
+#define GSL_CONST_NUM_FINE_STRUCTURE (7.29735307964e-3) /* 1 */
+#define GSL_CONST_NUM_AVAGADRO (6.0221367e23) /* 1 / mol */
+
+#endif /* __GSL_CONST_NUM__ */
