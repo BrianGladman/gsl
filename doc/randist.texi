@@ -51,7 +51,7 @@ corresponding cumulative distribution functions are declared in
 * The Beta Distribution::       
 * The Logistic Distribution::   
 * The Pareto Distribution::     
-* The Spherical Distribution (2D & 3D)::  
+* The Spherical Distribution (Random Direction Vectors)::  
 * The Weibull Distribution::    
 * The Type-1 Gumbel Distribution::  
 * The Type-2 Gumbel Distribution::  
@@ -59,8 +59,8 @@ corresponding cumulative distribution functions are declared in
 * General Discrete Distributions::  
 * The Poisson Distribution::    
 * The Bernoulli Distribution::  
-* The Binomial Distribution::
-* The Multinomial Distribution::   
+* The Binomial Distribution::   
+* The Multinomial Distribution::  
 * The Negative Binomial Distribution::  
 * The Pascal Distribution::     
 * The Geometric Distribution::  
@@ -1186,8 +1186,8 @@ distribution with exponent @var{a} and scale @var{b}.
 @end deftypefun
 
 @page
-@node The Spherical Distribution (2D & 3D)
-@section The Spherical Distribution (2D & 3D)
+@node Spherical Vector Distributions
+@section Spherical Vector Distributions
 
 The spherical distributions generate random vectors, located on a
 spherical surface.  They can be used as random directions, for example in
@@ -1217,8 +1217,6 @@ this approach, @var{u} and @var{v} are chosen at random from the
 interior of a unit circle, and then @math{x=(u^2-v^2)/(u^2+v^2)} and
 @math{y=uv/(u^2+v^2)}.
 @end deftypefn
-
-
 
 @deftypefn Random void gsl_ran_dir_3d (const gsl_rng * @var{r}, double *@var{x}, double *@var{y}, double * @var{z})
 @cindex 3D random direction vector
