@@ -9,6 +9,6 @@
  * storage scheme.
  */
 #include <math.h>
-#include "raw_complex.h"
+#include "complex_internal.h"
 #include "gsl_blas_raw_cm.h"
 
