@@ -11,6 +11,12 @@ For example, the array @math{(0,1,3,2)} represents a permutation
 which exchanges the last two elements of a four element vector.
 The corresponding identity permutation is @math{(0,1,2,3)}.   
 
+An inversion in a permutation @math{p} is a couple @math{(p_i, p_j)} 
+like @math{i < j} and @math{p_i > p_j}. 
+
+A cycle in a permutation @math{p} is a suite @math{(i_0, i_1, ..., i_p)} 
+like @math{p(i_0) = i_1, p(i_1) = i_2, ..., p(i_p) = i_0}.
+
 Note that the permutations produced by the linear algebra routines
 correspond to the exchange of matrix columns, and so should be considered
 as applying to row-vectors in the form @math{v' = v P} rather than
@@ -51,6 +57,24 @@ typedef struct
 
 @node Permutation allocation
 @section Permutation allocation
+
+@deftypefun {gsl_permutation_workspace *} gsl_permutation_workspace_alloc (size_t @var{n})
+This function allocates a workspace for a permutation, needed by some functions below.
+The size of the workspace is @math{O(n)}.
+@end deftypefun
+
+@deftypefun int gsl_permutation_workspace_free (gsl_permutation_workspace * @var{w})
+This function frees the memory associated with the workspace @var{w}.
+@end deftypefun
+
+@deftypefun {gsl_permutation_cycles_workspace *} gsl_permutation_cycles_workspace_alloc (size_t @var{n})
+This function allocates a workspace for computing the cycles of a permutation, needed by some functions below.
+The size of the workspace is @math{O(n^2 + 2n)}.
+@end deftypefun
+
+@deftypefun int gsl_permutation_cycles_workspace_free (gsl_permutation_cycles_workspace * @var{w})
+This function frees the memory associated with the workspace @var{w}.
+@end deftypefun
 
 @deftypefun {gsl_permutation *} gsl_permutation_alloc (size_t @var{n})
 This function allocates memory for a new permutation of size @var{n}.
@@ -115,6 +139,14 @@ elements should contain each of the numbers 0 .. @var{n}-1 once and only
 once.
 @end deftypefun
 
+@deftypefun size_t gsl_permutation_inversions_count (const gsl_permutation * @var{p})
+This function computes the number of inversions in the permutation @var{p}.
+@end deftypefun
+
+@deftypefun size_t gsl_permutation_cycles_count (const gsl_permutation * @var{p}, gsl_permutation_workspace * @var{w})
+This function computes the number of cycles in the permutation @var{p}.
+@end deftypefun
+
 @node Permutation functions
 @section Permutation functions
 
@@ -144,6 +176,28 @@ This function steps backwards from the permutation @var{p} to the
 previous permutation in lexicographic order, returning
 @code{GSL_SUCCESS}.  If no previous permutation is available it returns
 @code{GSL_FAILURE} and leaves @var{p} unmodified.
+@end deftypefun
+
+@deftypefun int gsl_permutation_randomize (gsl_permutation * @var{p}, gsl_permutation_workspace * @var{w}, const gsl_rng * @var{r})
+This function randomizes very efficiently the permutation @var{p} using the inversion 
+tab bijection and returns @code{GSL_SUCCESS}. If no previous permutation is available 
+it returns @code{GSL_FAILURE} and leaves @var{p} unmodified.
+@end deftypefun
+
+@deftypefun int gsl_permutation_to_cycles (gsl_permutation * @var{p}, gsl_permutation_cycles_workspace * @var{w})
+This function transform the permutation @var{p} to its cycles representation, using the 
+Foata bijection and returns @code{GSL_SUCCESS}.  If no previous permutation is available 
+it returns @code{GSL_FAILURE} and leaves @var{p} unmodified.
+
+The gsl function below do the inverse job: deduce the permutation @math{p} from its cycles
+representation.
+@end deftypefun
+
+@deftypefun int gsl_permutation_cycles_to_permutation (gsl_permutation * @var{p}, gsl_permutation_workspace * @var{w})
+This function assumes that the permutation @var{p} is under its cycles representation 
+and converts it to the standard representation and returns @code{GSL_SUCCESS}. If no previous 
+permutation is available it returns @code{GSL_FAILURE} and leaves @var{p} unmodified.
+This function is the inverse function of gsl_permutation_to_cycles().
 @end deftypefun
 
 @node Applying Permutations
@@ -255,7 +309,7 @@ main (void)
   printf("\n");
 
   printf("inverse permutation:");  
-  gsl_permutation_invert (q, p);
+  gsl_permutation_inverse (q, p);
   gsl_permutation_fprintf (stdout, q, " %u");
   printf("\n");
 
@@ -328,4 +382,13 @@ The subject of permutations is covered extensively in Knuth's
 @item
 Donald E. Knuth, @cite{The Art of Computer Programming: Sorting and
 Searching} (Vol 3, 3rd Ed, 1997), Addison-Wesley, ISBN 0201896850.
+@end itemize
+
+Some additional permutation properties are exposed in
+@cite{An Introduction to the Analysis of Algorithms},
+
+@itemize @asis
+@item
+Robert Sedgewick and Philippe Flajolet, 
+@cite{An Introduction to the Analysis of Algorithms}, 1996, Addison-Wesley Publishing, ISBN 2-84180-957-9.
 @end itemize
