@@ -117,7 +117,7 @@ FILE * gsl_set_stream (FILE * new_stream);
    GSL_MESSAGE() instead.  */
     
 #ifdef GSL_WARNINGS_OFF   /* throw away warnings */
-#define GSL_WARNING(warning) \
+#define GSL_WARNING(warning, gsl_errno) \
        do { } while(0)
 #else                     /* output all warnings */
 #define GSL_WARNING(warning, gsl_errno) \
