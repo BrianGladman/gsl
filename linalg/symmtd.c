@@ -32,7 +32,7 @@
  *
  *  * The full matrix for Q can be obtained as the product
  *
- *       Q = Q_N .. Q_2 Q_1
+ *       Q = Q_1 Q_2 ... Q_(N-2)
  *
  * where 
  *
@@ -40,12 +40,16 @@
  *
  * and where v_i is a Householder vector
  *
- *       v_i = [1, A(i+2,i), A(i+3,i), ... , A(N,i)]
+ *       v_i = [0, ... , 0, 1, A(i+1,i), A(i+2,i), ... , A(N,i)]
  *
  * This storage scheme is the same as in LAPACK.  See LAPACK's
  * ssytd2.f for details.
  *
- * See Golub & Van Loan, "Matrix Computations" (3rd ed), Section 8.3 */
+ * See Golub & Van Loan, "Matrix Computations" (3rd ed), Section 8.3 
+ *
+ * Note: this description uses 1-based indices. The code below uses
+ * 0-based indices 
+ */
 
 #include <config.h>
 #include <stdlib.h>
