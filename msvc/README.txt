@@ -36,10 +36,8 @@ Using GSL with Microsoft Visual C++ 6.0
 By default the GSL libraries and header files are installed in the
 following locations,
 
-    C:\Program Files\GSL-VERSION\include\gsl  - header files
-    C:\Program Files\GSL-VERSION\lib          - lib files
-
-where VERSION is the version number, e.g. 1.0
+    C:\Program Files\GSL\include\gsl  - header files
+    C:\Program Files\GSL\lib          - lib files
 
 The "Release" and "Debug" versions of the libraries are installed in
 the lib directory as follows,
@@ -49,14 +47,16 @@ the lib directory as follows,
 
 The debug version has a 'd' at the end of the library name.
 
-To compile an application which uses GSL the following project
-settings are required,
+To compile an application which uses GSL the Visual C++ options that
+you need to change are,
 
-    Project Settings
-      C/C++
-        Category: Preprocessor  
-          Additional Include Directories: 
-             "C:\Program Files\GSL-VERSION\include"
+    Tools --  Options -- Directories
+          Include Files
+             "C:\Program Files\GSL\include"
+          Library Files: 
+             "C:\Program Files\GSL\lib"
+
+and to add the libraries to the project settings,
 
     Project Settings
       Link
@@ -64,9 +64,6 @@ settings are required,
           Object/Library Modules: 
              libgsl.lib libgslcblas.lib ...   for the release configuration
           or libgsld.lib libgslcblasd.lib ... for the debug configuration
-         and
-          Additional Library Path: 
-             "C:\Program Files\GSL-VERSION\lib"
 
 Make sure that the Object/Library module settings are made for the
 appropriate configuration (either 'Release' or 'Debug').
