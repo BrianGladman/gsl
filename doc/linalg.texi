@@ -159,7 +159,7 @@ compute an orthonormal basis for a set of vectors. The first @math{N}
 columns of @math{Q} form an orthonormal basis for the range of @math{A},
 @math{ran(A)}, when @math{A} has full column rank.
 
-@deftypefun int gsl_linalg_QR_decomp (gsl_matrix * @var{A}, gsl_vector * @var{tau})
+@deftypefun int gsl_linalg_QR_decomp (gsl_matrix * @var{A}, gsl_vector * @var{tau}, gsl_vector * @var{work})
 This function factorizes the @math{M}-by-@math{N} matrix @var{A} into
 the @math{QR} decomposition @math{A = Q R}.  On output the diagonal and
 upper triangular part of the input matrix contain the matrix
@@ -171,7 +171,8 @@ vector @var{tau} must be of length @math{k=\min(M,N)}. The matrix
 where @math{Q_i = I - \tau_i v_i v_i^T} and @math{v_i} is the
 Householder vector @math{v_i =
 (0,...,1,A(i+1,i),A(i+2,i),...,A(m,i))}. This is the same storage scheme
-as used by @sc{lapack}.
+as used by @sc{lapack}.  The routine requires a workspace of size
+@math{N} which should be provided by the vector @var{work}.
 
 The algorithm used to perform the decomposition is Householder QR (Golub
 & Van Loan, @cite{Matrix Computations}, Algorithm 5.2.1).
@@ -230,10 +231,11 @@ the product @math{b' = Q^T b} has already been computed using
 @code{gsl_linalg_QR_QTvec}.
 @end deftypefun
 
-@deftypefun int gsl_linalg_QR_unpack (const gsl_matrix * @var{QR}, const gsl_vector * @var{tau}, gsl_matrix * @var{Q}, gsl_matrix * @var{R})
+@deftypefun int gsl_linalg_QR_unpack (const gsl_matrix * @var{QR}, const gsl_vector * @var{tau}, gsl_matrix * @var{Q}, gsl_matrix * @var{R}, gsl_vector * @var{work})
 This function unpacks the encoded @math{QR} decomposition
 (@var{QR},@var{tau}) into the matrices @var{Q} and @var{R}, where
-@var{Q} is @math{M}-by-@math{M} and @var{R} is @math{M}-by-@math{N}.
+@var{Q} is @math{M}-by-@math{M} and @var{R} is @math{M}-by-@math{N}.  A
+workspace of size @math{M} should be provided in the vector @var{work}.
 @end deftypefun
 
 @deftypefun int gsl_linalg_QR_QRsolve (gsl_matrix * @var{Q}, gsl_matrix * @var{R}, const gsl_vector * @var{b}, gsl_vector * @var{x})
@@ -289,7 +291,7 @@ solved by back-substitution and permutation.  We denote the @math{QR}
 decomposition with column pivoting by @math{QRP^T} since @math{A = Q R
 P^T}.
 
-@deftypefun int gsl_linalg_QRPT_decomp (gsl_matrix * @var{A}, gsl_vector * @var{tau}, gsl_permutation * @var{p}, int *@var{signum})
+@deftypefun int gsl_linalg_QRPT_decomp (gsl_matrix * @var{A}, gsl_vector * @var{tau}, gsl_permutation * @var{p}, int *@var{signum}, gsl_vector * @var{norm}, gsl_vector * @var{work})
 This function factorizes the @math{M}-by-@math{N} matrix @var{A} into
 the @math{QRP^T} decomposition @math{A = Q R P^T}.  On output the
 diagonal and upper triangular part of the input matrix contain the
@@ -304,7 +306,10 @@ matrix @math{Q} is related to these components by, @math{Q = Q_k ... Q_2
 Q_1} where @math{Q_i = I - \tau_i v_i v_i^T} and @math{v_i} is the
 Householder vector @math{v_i =
 (0,...,1,A(i+1,i),A(i+2,i),...,A(m,i))}. This is the same storage scheme
-as used by @sc{lapack}.
+as used by @sc{lapack}.  On output the norms of each column of @var{R}
+are stored in the vector @var{norm}.  The routine also requires a
+workspace of size @math{N} which should be provided in the vector
+@var{work}.
 
 The algorithm used to perform the decomposition is Householder QR with
 column pivoting (Golub & Van Loan, @cite{Matrix Computations}, Algorithm
