@@ -3,7 +3,7 @@
 #include <gsl_fft_complex.h>
 
 int
-gsl_fft_complex_pass_n (const complex from[],
+gsl_fft_complex_pass_n (complex from[],
 			complex to[],
 			const gsl_fft_direction sign,
 			const unsigned int factor,
@@ -21,89 +21,66 @@ gsl_fft_complex_pass_n (const complex from[],
 
   double w_real, w_imag;
 
+  int e, e1, e2;
+
   for (k = 0; k < q; k++)
     {
       for (k1 = 0; k1 < product_1; k1++)
 	{
-	  /* compute x = W(factor) z */
+	  to[i] = from[i];
+	  for (e = 1; e < (factor - 1) / 2 + 1; e++)
+	    {
+	      const unsigned int j = i + e * m;
+	      const unsigned int jc = i + (factor - e) * m;
+	      to[j].real = from[j].real + from[jc].real;
+	      to[j].imag = from[j].imag + from[jc].imag;
+	      to[jc].real = from[j].real - from[jc].real;
+	      to[jc].imag = from[j].imag - from[jc].imag;
+	    }
 
-	  unsigned int e1;
+	  for (e = 0; e < factor; e++)
+	    {
+	      double sum_real = to[i].real;
+	      double sum_imag = to[i].imag;
+	      for (e1 = 1; e1 < (factor - 1) / 2 + 1; e1++)
+		{
+		  complex xp = to[i + e1 * m];
+		  complex xm = to[i + (factor - e1) * m];
+		  double w_real = cos (2 * M_PI * (double) e * (double) e1 / (double) factor);
+		  double w_imag = sin (2 * (int) sign * M_PI * (double) e * (double) e1 / (double) factor);
+		  sum_real += w_real * xp.real - w_imag * xm.imag;
+		  sum_imag += w_real * xp.imag + w_imag * xm.real;
+		}
+	      from[i + e * m].real = sum_real;
+	      from[i + e * m].imag = sum_imag;
+	    }
 
+	  i++;
+	}
+    }
+
+  i = 0;
+  j = 0;
+
+  for (k = 0; k < q; k++)
+    {
+      for (k1 = 0; k1 < product_1; k1++)
+	{
 	  for (e1 = 0; e1 < factor; e1++)
 	    {
-	      unsigned int e2;
-	      unsigned int idx = 0;
-	      const unsigned int idx_step = e1 * q;
-	      double sum_real = 0.0, sum_imag = 0.0;
+	      double w_real = cos (2 * M_PI * (double) k * (double) e1 / (double) (factor * q));
+	      double w_imag = sin (2 * (int) sign * M_PI * (double) k * (double) e1 / (double) (factor * q));
+	      double x_real = from[i + e1 * m].real;
+	      double x_imag = from[i + e1 * m].imag;
 
-	      for (e2 = 0; e2 < factor; e2++)
-		{
-		  double t_real, t_imag;
-		  const unsigned int from0 = e2 * m + i;
-		  double f_real = from[from0].real;
-		  double f_imag = from[from0].imag;
-
-		  if (idx == 0)
-		    {
-		      t_real = 1.0;
-		      t_imag = 0.0;
-		    }
-		  else
-		    {
-		      /* make use of twiddle vector to compute
-		         elements of W matrix */
-		      if (sign == forward)
-			{
-			  t_real = twiddle[idx - 1].real;
-			  t_imag = twiddle[idx - 1].imag;
-			}
-		      else
-			{
-			  t_real = twiddle[idx - 1].real;
-			  t_imag = -twiddle[idx - 1].imag;
-			}
-		    }
-
-		  sum_real += t_real * f_real - t_imag * f_imag;
-		  sum_imag += t_real * f_imag + t_imag * f_real;
-		  idx += idx_step;
-		  idx %= factor * q;
-		}
-
-	      /* apply twiddle factor */
-
-	      if (e1 == 0 || k == 0)
-		{
-		  w_real = 1.0;
-		  w_imag = 0.0;
-		}
-	      else
-		{
-		  const unsigned int w_idx = (e1 - 1) * q + k - 1;
-		  if (sign == forward)
-		    {
-		      w_real = twiddle[w_idx].real;
-		      w_imag = twiddle[w_idx].imag;
-		    }
-		  else
-		    {
-		      w_real = twiddle[w_idx].real;
-		      w_imag = -twiddle[w_idx].imag;
-		    }
-		};
-
-	      {
-		const unsigned int to_idx = product_1 * e1 + j;
-
-		to[to_idx].real = w_real * sum_real - w_imag * sum_imag;
-		to[to_idx].imag = w_real * sum_imag + w_imag * sum_real;
-	      }
-
+	      to[j + e1 * product_1].real = w_real * x_real - w_imag * x_imag;
+	      to[j + e1 * product_1].imag = w_real * x_imag + w_imag * x_real;
 	    }
 	  i++;
 	  j++;
 	}
       j += jump;
     }
+
   return 0;
 }
