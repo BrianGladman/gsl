@@ -9,112 +9,50 @@
 #include "gsl_sf_legendre.h"
 
 
-/*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
+/*-*-*-*-*-*-*-*-*-*-*-* Private Section *-*-*-*-*-*-*-*-*-*-*-*/
 
-/* l >= 0;  0 <= x <= 1
- *
- * if harvest != 0: 
- *   size of harvest[] = l-m+1
- *   harvest[0] = P_m^m(x)  ...  harvest[l-m] = P_l^m(x)
- */
-int gsl_sf_legendre_Pl_impl(const int l,
-                            const double x,
-                            double * result, double * harvest
-			    )
-{ 
-  if(l < 0 || x < 0. || x > 1.) {
-    return GSL_EDOM;
-  }
-  else if(l == 0) {
-    *result = 1.;
-    if(harvest != 0) harvest[0] = 1.;
-    return GSL_SUCCESS;
-  }
-  else if(l == 1) {
-    *result = x;
-    if(harvest != 0) {
-      harvest[0] = 1.;
-      harvest[1] = x;
+/* assumes: -1 <= x <= 1, 2 <= l */
+static int legendre_Pl_recurse(const int l, const double x, double * result, double * harvest)
+{
+  int ell;
+  double pmm   = 1.;       /* P_0(x) */
+  double pmmp1 = x;	   /* P_1(x) */
+  double p_ell = pmmp1;
+
+  /* Compute P_l, l > 1, upward recurrence on l. */
+  if(harvest != 0) {
+    harvest[0] = pmm;
+    harvest[1] = pmmp1;
+    for(ell=2; ell <= l; ell++){
+      p_ell = (x*(2*ell-1)*pmmp1 - (ell-1)*pmm) / ell;
+      pmm = pmmp1;
+      pmmp1 = p_ell;
+      harvest[ell] = p_ell;
     }
-    return GSL_SUCCESS;
-  }
-  else if(l == 2) {
-    double P2 = 0.5*(3.*x*x-1.);
-    *result = P2;
-    if(harvest != 0) {
-      harvest[0] = 1.;
-      harvest[1] = x;
-      harvest[2] = P2;
-    }
-    return GSL_SUCCESS;
   }
   else {
-    int ell;
-    double pmm   = 1.;             /* P_m^m(x) */
-    double pmmp1 = x * pmm;        /* P_{m+1}^m(x) */
-    double p_ell = pmmp1;
-
-    /* Compute P_l, l > 1, upward recurrence on l. */
-    if(harvest != 0) {
-      harvest[0] = pmm;
-      harvest[1] = pmmp1;
-      for(ell=2; ell <= l; ell++){
-        p_ell = (x*(2*ell-1)*pmmp1 - (ell-1)*pmm) / ell;
-        pmm = pmmp1;
-        pmmp1 = p_ell;
-        harvest[ell] = p_ell;
-      }
+    for(ell=2; ell <= l; ell++){
+      p_ell = (x*(2*ell-1)*pmmp1 - (ell-1)*pmm) / ell;
+      pmm = pmmp1;
+      pmmp1 = p_ell;
     }
-    else {
-      for(ell=2; ell <= l; ell++){
-        p_ell = (x*(2*ell-1)*pmmp1 - (ell-1)*pmm) / ell;
-        pmm = pmmp1;
-        pmmp1 = p_ell;
-      }
-    }
-
-    *result = p_ell;
-    return GSL_SUCCESS;
   }
+
+  *result = p_ell;
+  return GSL_SUCCESS;
 }
 
-/* l >= m >= 0;  0 <= x <= 1
- *
- * if harvest != 0: 
- *   size of harvest[] = l-m+1
- *   harvest[0] = P_m^m(x)  ...  harvest[l-m] = P_l^m(x)
- */
-int gsl_sf_legendre_Plm_impl(const int l, const int m,
-                             const double one_m_x, const double one_p_x,
-                             double * result, double * harvest
-			     )
+/* assumes: -1 <= x <= 1, 0 <= l, 0 <= m <= l, no overflow condition */
+static int legendre_Plm_recurse(const int l, const int m,
+                                const double one_m_x, const double one_p_x,
+                                double * result, double * harvest
+			        )
 {
   double x = 0.5 * (one_p_x - one_m_x);
   double pmm;                 /* P_m^m(x) */
   double pmmp1;               /* P_{m+1}^m(x) */
 
-  /* If l is large and m is large, then we have to worry
-   * about overflow. Calculate an approximate exponent which
-   * measures the normalization of this thing.
-   */
-  double dif = l-m;
-  double sum = l+m;
-  double exp_check = 0.5 * log(2.*l+1.) 
-                     + 0.5 * dif * (log(dif)-1.)
-                     - 0.5 * sum * (log(sum)-1.);
-
-  /* check args */
-  if(m < 0 || l < m || x < 0. || x > 1.) {
-    return GSL_EDOM;
-  }
-  
-  /* Bail out if it looks like overflow. */  
-  if(exp_check < GSL_LOG_DBL_MIN + 10.){
-    return GSL_EOVRFLW;
-  }
-
   /* Calculate P_m^m from the analytic result:
-   *          P_0^0(x) = 1
    *          P_m^m(x) = (-1)^m (2m-1)!! (1-x^2)^(m/2) , m > 0
    */
   pmm = 1.;
@@ -163,16 +101,11 @@ int gsl_sf_legendre_Plm_impl(const int l, const int m,
   }
 }
 
-/* l >= m >= 0; 0 <= x <= 1
- *
- * if harvest != 0: 
- *   size of harvest[] = l-m+1
- *   harvest[0] = sphP_m^m(x)  ...  harvest[l-m] = sphP_l^m(x)
- */
-int gsl_sf_legendre_sphPlm_impl(const int l, int m,
-                                const double one_m_x, const double one_p_x,
-                                double * result, double * harvest
-				)
+/* assumes:  -1 <= x <= 1, 0 <= l, 0 <= m <= l */
+static int legendre_sphPlm_recurse(const int l, int m,
+                                   const double one_m_x, const double one_p_x,
+                                   double * result, double * harvest
+				   )
 {
   int i;
   double x = 0.5 * (one_p_x - one_m_x);
@@ -181,11 +114,6 @@ int gsl_sf_legendre_sphPlm_impl(const int l, int m,
    * We include part of the normalization factor here.
    */
   double ymm = sqrt((2.*(double)l+1.) / (4.*M_PI));
-
-  /* check args */
-  if(m < 0 || l < m || x < 0. || x > 1.) {
-    return GSL_EDOM;
-  }
 
   /* If m > 0, then calculate Y_m^m from the analytic result.
    * If m==0, then we don't have to do anything; ymm is ready to go.
@@ -239,6 +167,107 @@ int gsl_sf_legendre_sphPlm_impl(const int l, int m,
     *result = y_ell;
     return GSL_SUCCESS;
   }
+}
+
+
+/*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
+
+/* checks: l >= 0;  -1 <= x <= 1
+ *
+ * if harvest != 0: 
+ *   size of harvest[] = l+1
+ *   harvest[0] = P_0(x)  ...  harvest[l] = P_l(x)
+ */
+int gsl_sf_legendre_Pl_impl(const int l,
+                            const double x,
+                            double * result, double * harvest
+			    )
+{ 
+  if(l < 0 || x < -1. || x > 1.) {
+    return GSL_EDOM;
+  }
+  else if(l == 0) {
+    *result = 1.;
+    if(harvest != 0) harvest[0] = 1.;
+    return GSL_SUCCESS;
+  }
+  else if(l == 1) {
+    *result = x;
+    if(harvest != 0) {
+      harvest[0] = 1.;
+      harvest[1] = x;
+    }
+    return GSL_SUCCESS;
+  }
+  else if(l == 2) {
+    double P2 = 0.5*(3.*x*x-1.);
+    *result = P2;
+    if(harvest != 0) {
+      harvest[0] = 1.;
+      harvest[1] = x;
+      harvest[2] = P2;
+    }
+    return GSL_SUCCESS;
+  }
+  else {
+    return legendre_Pl_recurse(l, x, result, harvest);
+  }
+}
+
+/* checks: l >= m >= 0;  -1 <= x <= 1
+ *
+ * if harvest != 0: 
+ *   size of harvest[] = l-m+1
+ *   harvest[0] = P_m^m(x)  ...  harvest[l-m] = P_l^m(x)
+ */
+int gsl_sf_legendre_Plm_impl(const int l, const int m,
+                             const double one_m_x, const double one_p_x,
+                             double * result, double * harvest
+			     )
+{
+  /* If l is large and m is large, then we have to worry
+   * about overflow. Calculate an approximate exponent which
+   * measures the normalization of this thing.
+   */
+  double dif = l-m;
+  double sum = l+m;
+  double exp_check = 0.5 * log(2.*l+1.) 
+                     + 0.5 * dif * (log(dif)-1.)
+                     - 0.5 * sum * (log(sum)-1.);
+
+  /* check args */
+  if(m < 0 || l < m || one_m_x < 0.0 || one_p_x < 0.0) {
+    return GSL_EDOM;
+  }
+  
+  /* Bail out if it looks like overflow. */  
+  if(exp_check < GSL_LOG_DBL_MIN + 10.){
+    return GSL_EOVRFLW;
+  }
+
+  return legendre_Plm_recurse(l, m, one_m_x, one_p_x, result, harvest);
+}
+
+/* l >= m >= 0; 0 <= x <= 1
+ *
+ * if harvest != 0: 
+ *   size of harvest[] = l-m+1
+ *   harvest[0] = sphP_m^m(x)  ...  harvest[l-m] = sphP_l^m(x)
+ */
+int gsl_sf_legendre_sphPlm_impl(const int l, int m,
+                                const double one_m_x, const double one_p_x,
+                                double * result, double * harvest
+				)
+{
+  int i;
+  double x = 0.5 * (one_p_x - one_m_x);
+
+  /* check args */
+  if(m < 0 || l < m || one_m_x < 0.0 || one_p_x < 0.0) {
+    return GSL_EDOM;
+  }
+
+  return legendre_sphPlm_recurse(l, m, one_m_x, one_p_x, result, harvest);
 }
 
 
