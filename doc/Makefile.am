@@ -10,7 +10,8 @@ noinst_DATA = siman-test.eps siman-energy.eps 12-cities.eps \
 	fft-complex-radix2.eps fft-real-mixedradix.eps \
 	roots-bisection.eps roots-false-position.eps \
 	roots-newtons-method.eps roots-secant-method.eps \
-	histogram.eps histogram2d.eps min-interval.eps
+	histogram.eps histogram2d.eps min-interval.eps \
+        fit-wlinear.eps
 
 EXTRA_DIST = gsl-design.texi \
         siman-test.eps siman-energy.eps 12-cities.eps \
@@ -22,6 +23,7 @@ EXTRA_DIST = gsl-design.texi \
 	roots-bisection.eps roots-false-position.eps \
 	roots-newtons-method.eps roots-secant-method.eps \
 	histogram.eps histogram2d.eps min-interval.eps \
+        fit-wlinear.eps \
 	rand-beta.tex rand-binomial.tex rand-cauchy.tex rand-chisq.tex \
 	rand-erlang.tex rand-exponential.tex rand-fdist.tex rand-flat.tex \
 	rand-gamma.tex rand-gaussian.tex rand-geometric.tex rand-laplace.tex \
