@@ -18,7 +18,7 @@
  */
 
 /* Author: MJB */
-/* RCS $Id$ */
+/* Modified by: Brian Gough, 12/2000 */
 
 /* This is an implementation of the adaptive Monte-Carlo algorithm
    of G. P. Lepage, originally described in J. Comp. Phys. 27, 192(1978).
@@ -30,25 +30,25 @@
 
    The input coordinates are x[j], with upper and lower limits xu[j]
    and xl[j].  The integration length in the j-th direction is
-   delx[j].  Each coordinate x[j] is rescaled to a variable
-   y[j] in the range 0 to 1. This range is divided into bins with
-   boundaries y_bin[i][j], where i=0 corresponds to y=0 and i=bins to
-   y=1.  The integral contribution from the bin preceding y_bin[i][j]
-   is called bin_sum[i][j] (thus bin_sum[0][j] is not used).  The grid
-   is refined (ie, bins are adjusted) using grid_sum[i][j] which is
-   some variation on the squared sum.  A third parameter used in
-   defining the real coordinate using random numbers is called z.  It
-   ranges from 0 to bins.  Its integer part gives the lower index of
-   the bin into which a call is to be placed, and the remainder gives
-   the location inside the bin.  
+   delx[j].  Each coordinate x[j] is rescaled to a variable y[j] in
+   the range 0 to 1.  The range is divided into bins with boundaries
+   xi[i][j], where i=0 corresponds to y=0 and i=bins to y=1.  The grid
+   is refined (ie, bins are adjusted) using d[i][j] which is some
+   variation on the squared sum.  A third parameter used in defining
+   the real coordinate using random numbers is called z.  It ranges
+   from 0 to bins.  Its integer part gives the lower index of the bin
+   into which a call is to be placed, and the remainder gives the
+   location inside the bin.
+
+   When stratified sampling is used the bins are grouped into boxes,
+   and the algorithm allocates an equal number of function calls to
+   each box.
 
    The variable alpha controls how "stiff" the rebinning algorithm is.  
    alpha = 0 means never change the grid.  Alpha is typically set between
    1 and 2.
 
-   The variable accuracy allows the program to terminate when the desired
-   accuracty has been achieved.
-*/
+   */
 
 /* configuration headers */
 #include <config.h>
@@ -64,46 +64,42 @@
 #include <gsl/gsl_monte_vegas.h>
 
 /* lib-specific headers */
+#define BINS_MAX 50		/* even integer, will be divided by two */
 
-#define TINY 1.0e-30
-
-/* Setting the variable acc allows the user to terminate the computation
-   when the desired accuracy has been achieved.
-*/
-
-struct grid {
-  int k;
-  int d;
-  double * x;  /* array of size x[K][d] */
-};
-
-/* A separable grid with coordinates ... */
-#define COORD(grid,i,j) ((grid)->x[(i)*(grid)->d + (j)])
-
-struct distribution {
-  int k;
-  int d;
-  double * value;  /* array of size value[K][d] */
-};
-
-/* A separable grid with coordinates ... */
-#define VALUE(dist,i,j) ((dist)->value[(i)*(dist)->d + (j)])
-
-
+/* A separable grid with coordinates and values */
+#define COORD(s,i,j) ((s)->xi[(i)*(s)->dim + (j)])
+#define NEW_COORD(s,i) ((s)->xin[(i)])
+#define VALUE(s,i,j) ((s)->d[(i)*(s)->dim + (j)])
 
 /* predeclare functions */
 
-void adjust_bins (gsl_monte_vegas_state * state,
-		  double bin[GSL_V_BINS_MAX + 1][GSL_V_MAX_DIM],
-		  double weight[GSL_V_BINS_MAX + 1],
-		  double pts_per_bin, int j, int bins_prev, int bins);
+typedef int coord;
 
-inline int change_box_coord (int box_coord[GSL_V_MAX_DIM],
-			     int ng, unsigned long j);
+static void init_grid (gsl_monte_vegas_state * s, double xl[], double xu[],
+		size_t dim);
+static void reset_grid_values (gsl_monte_vegas_state * s);
+static void init_box_coord (gsl_monte_vegas_state * s, coord box[]);
+static int change_box_coord (gsl_monte_vegas_state * s, coord box[]);
+static void accumulate_distribution (gsl_monte_vegas_state * s, coord bin[],
+                                     double y);
+static void random_point (double x[], coord bin[], double *bin_vol,
+                          const coord box[], 
+                          const double xl[], const double xu[],
+                          gsl_monte_vegas_state * s, gsl_rng * r);
+static void resize_grid (gsl_monte_vegas_state * s, int bins);
+static void refine_grid (gsl_monte_vegas_state * s);
 
-inline void init_array (double array[GSL_V_BINS_MAX + 1][GSL_V_MAX_DIM],
-			int imax, unsigned long jmax);
-
+static void print_lim (gsl_monte_vegas_state * state,
+                       double xl[], double xu[], unsigned long dim);
+static void print_head (gsl_monte_vegas_state * state,
+                        unsigned long num_dim, unsigned long calls,
+                        int it_num, int bins, int boxes);
+static void print_res (gsl_monte_vegas_state * state,
+                       int itr, double res, double err, 
+                       double cum_res, double cum_err,
+                       double chi_sq);
+static void print_dist (gsl_monte_vegas_state * state, unsigned long dim);
+static void print_grid (gsl_monte_vegas_state * state, unsigned long dim);
 
 int
 gsl_monte_vegas_integrate (gsl_monte_function * f,
@@ -113,15 +109,12 @@ gsl_monte_vegas_integrate (gsl_monte_function * f,
 			   gsl_monte_vegas_state * state,
 			   double *result, double *abserr)
 {
-  int i, j, k;
-  int status;
+  double cum_int, cum_sig;
+  int i, k;
 
-  double cum_int = 1.0;
-  double cum_sig = 1.0;
-
-  if (dim > state->dim)
+  if (dim != state->dim)
     {
-      GSL_ERROR ("number of dimensions exceeds allocated size", GSL_EINVAL);
+      GSL_ERROR ("number of dimensions must match allocated size", GSL_EINVAL);
     }
 
   for (i = 0; i < dim; i++)
@@ -140,27 +133,13 @@ gsl_monte_vegas_integrate (gsl_monte_function * f,
 
   if (state->stage == 0)
     {
-      init_array (state->y_bin, GSL_V_BINS_MAX, dim);
-
-      for (j = 0; j < dim; ++j)
-	{
-	  state->y_bin[1][j] = 1.;
-	}
-
-      state->bins_prev = 1;
-      state->vol = 1;
-
-      for (j = 0; j < dim; ++j)
-	{
-	  state->delx[j] = xu[j] - xl[j];
-	  state->vol *= state->delx[j];
-	}
+      init_grid (state, xl, xu, dim);
 
       if (state->verbose >= 0)
 	{
 	  print_lim (state, xl, xu, dim);
 	}
-    }				/* stage == 0 */
+    }
 
   if (state->stage <= 1)
     {
@@ -168,70 +147,55 @@ gsl_monte_vegas_integrate (gsl_monte_function * f,
       state->sum_wgts = 0;
       state->chi_sum = 0;
       state->it_num = 1;
-    }				/* stage <= 1 */
+    }
 
   if (state->stage <= 2)
     {
-      state->bins = GSL_V_BINS_MAX;
-      state->boxes = 1;
+      int bins = state->bins_max;
+      int boxes = 1;
 
       if (state->mode != GSL_VEGAS_MODE_IMPORTANCE_ONLY)
 	{
 	  /* shooting for 2 calls/box */
-	  int box_per_bin;
-	  state->boxes = floor (pow (calls / 2.0, 1.0 / dim));
+
+	  boxes = floor (pow (calls / 2.0, 1.0 / dim));
 	  state->mode = GSL_VEGAS_MODE_IMPORTANCE;
 
-	  if ((2 * state->boxes >= GSL_V_BINS_MAX))
+	  if (2 * boxes >= state->bins_max)
 	    {
 	      /* if bins/box < 2 */
+	      int box_per_bin = GSL_MAX (boxes / state->bins_max, 1);
+
+	      bins = GSL_MIN(boxes / box_per_bin, state->bins_max);
+	      boxes = box_per_bin * bins;
+
 	      state->mode = GSL_VEGAS_MODE_STRATIFIED;
-	      box_per_bin = state->boxes / GSL_V_BINS_MAX;
-
-	      if (state->boxes % GSL_V_BINS_MAX)
-		{
-		  ++box_per_bin;
-		}
-
-	      state->bins = state->boxes / box_per_bin;
-	      state->boxes = box_per_bin * state->bins;
 	    }
 	}
 
       {
-	int tot_boxes;
-	tot_boxes = floor (pow ((double) state->boxes, (double) dim));
+	double tot_boxes = pow ((double) boxes, (double) dim);
 	state->calls_per_box = GSL_MAX (calls / tot_boxes, 2);
 	calls = state->calls_per_box * tot_boxes;
       }
 
       /* total volume of x-space/(avg num of calls/bin) */
-      state->jac = state->vol *
-	pow ((double) state->bins, (double) dim) / calls;
+      state->jac = state->vol * pow ((double) bins, (double) dim) / calls;
+
+      state->boxes = boxes;
 
       /* If the number of bins changes from the previous invocation, bins
          are expanded or contracted accordingly, while preserving bin
          density */
 
-      if (state->bins != state->bins_prev)
+      if (bins != state->bins)
 	{
-	  double weight[GSL_V_BINS_MAX + 1], tot_weight;
+	  resize_grid (state, bins);
 
-	  /* weight is ratio of bin sizes */
-	  tot_weight = (double) state->bins_prev / state->bins;
-
-	  for (i = 1; i <= state->bins_prev; ++i)
+	  if (state->verbose > 1)
 	    {
-	      weight[i] = 1;
+	      print_grid (state, dim);
 	    }
-
-	  for (j = 0; j < dim; ++j)
-	    {
-	      adjust_bins (state, state->y_bin, weight, tot_weight, j,
-			   state->bins_prev, state->bins);
-	    }
-
-	  state->bins_prev = state->bins;
 	}
 
       if (state->verbose >= 0)
@@ -239,134 +203,111 @@ gsl_monte_vegas_integrate (gsl_monte_function * f,
 	  print_head (state,
 		      dim, calls, state->it_num, state->bins, state->boxes);
 	}
-    }				/* stage <= 2 */
+    }
 
   state->it_start = state->it_num;
-  cum_int = 1.;
-  cum_sig = 1.;
 
-  for (; state->it_num <= state->max_it_num &&
-       state->acc * fabs (cum_int) < cum_sig; ++state->it_num)
+  cum_int = 0.0;
+  cum_sig = 0.0;
+
+  state->chisq = 0.0;
+  state->samples = 0;
+
+  for (; state->it_num <= state->max_it_num; ++state->it_num)
     {
-      double intgrl, intgrl_sq, sig;
-      double wgt, x[GSL_V_MAX_DIM];
-      int box_coord[GSL_V_MAX_DIM];
+      double intgrl = 0.0, intgrl_sq = 0.0;
+      double sig = 0.0;
+      double wgt;
+      size_t calls_per_box = state->calls_per_box;
+      double jacbin = state->jac;
+      double *x = state->x;
+      coord *bin = state->bin;
 
-      for (j = 0; j < dim; ++j)
-	{
-	  box_coord[j] = 0;
-	}
+      reset_grid_values (state);
+      init_box_coord (state, state->box);
 
-      init_array (state->grid_sum, state->bins, dim);
-      init_array (state->bin_sum, state->bins, dim);
-      intgrl = 0.;
-      sig = 0.;
       do
 	{
-	  int bin_coord[GSL_V_MAX_DIM];
-	  double f, f_sq, f_sum, f_sq_sum;
+          double m = 0, q = 0;
+	  double f_sq_sum = 0.0;
 
-	  f_sum = 0.;
-	  f_sq_sum = 0.;
-
-	  for (k = 1; k <= state->calls_per_box; ++k)
+	  for (k = 0; k < calls_per_box; k++)
 	    {
-	      double jacbin, y, z;
+	      double fval, bin_vol;
 
-	      jacbin = state->jac;
-	      for (j = 0; j < dim; ++j)
+	      random_point (x, bin, &bin_vol, state->box, xl, xu, state, r);
+
+	      fval = jacbin * bin_vol * GSL_MONTE_FN_EVAL (f, x);
+
+              /* recurrence for mean and variance */
+
+              {
+                double d = fval - m;
+                m += d / (k + 1.0);
+                q += d * d * (k / (k + 1.0));
+              }
+
+	      if (state->mode != GSL_VEGAS_MODE_STRATIFIED)
 		{
-		  double binwdth;
-
-		  /* box_coord + ran gives the position in the box
-		     units, while z is the position in bin units.  */
-		  /*      z = (box_coord[j] + gsl_rng_uniform(r) ) * bins_per_box; */
-		  z = (box_coord[j] +
-		       gsl_rng_uniform (r)) * state->bins / state->boxes;
-		  bin_coord[j] = z;
-
-		  if (bin_coord[j] == 0)
-		    {
-		      binwdth = state->y_bin[1][j];
-		      y = z * binwdth;
-		    }
-		  else
-		    {
-		      binwdth = state->y_bin[bin_coord[j] + 1][j] -
-			state->y_bin[bin_coord[j]][j];
-		      y =
-			state->y_bin[bin_coord[j]][j] + (z -
-							 bin_coord[j]) *
-			binwdth;
-		    }
-
-		  x[j] = xl[j] + y * state->delx[j];
-
-		  if (j > 2)
-		    {
-		    }
-
-		  jacbin *= binwdth;
+                  double f_sq = fval * fval;
+		  accumulate_distribution (state, bin, f_sq);
 		}
-
-	      /*
-	       * At this point, jacbin is the real volume of the bin/(ave. no.
-	       * calls/bin) 
-	       */
-	      f = jacbin * GSL_MONTE_FN_EVAL (f, x);
-
-	      f_sq = f * f;
-	      f_sum += f;
-	      f_sq_sum += f_sq;
-
-	      for (j = 0; j < dim; ++j)
-		{
-		  state->bin_sum[bin_coord[j] + 1][j] += f;
-
-		  if (state->mode != GSL_VEGAS_MODE_STRATIFIED)
-		    {
-		      state->grid_sum[bin_coord[j] + 1][j] += f_sq;
-		    }
-		}
-	    }			/* end of k loop */
-
-	  f_sq_sum = sqrt (f_sq_sum * state->calls_per_box);
-	  f_sq_sum = (f_sq_sum - f_sum) * (f_sq_sum + f_sum);
-	  intgrl += f_sum;
-
-	  if (f_sq_sum <= 0.0)
-	    {
-	      f_sq_sum = TINY;
 	    }
-	  sig += f_sq_sum;
+
+	  intgrl += m * calls_per_box;
+
+	  f_sq_sum = q * calls_per_box ;
+
+	  sig += f_sq_sum ;
 
 	  if (state->mode == GSL_VEGAS_MODE_STRATIFIED)
 	    {
-	      for (j = 0; j < dim; ++j)
-		state->grid_sum[bin_coord[j] + 1][j] += f_sq_sum;
+	      accumulate_distribution (state, bin, f_sq_sum);
 	    }
 	}
-      while (change_box_coord (box_coord, state->boxes, dim - 1));
-      /* end of box_coord loop */
+      while (change_box_coord (state, state->box));
 
       /* Compute final results for this iteration   */
 
-      sig = sig / (state->calls_per_box - 1);
-      intgrl_sq = intgrl * intgrl;
-      wgt = 1. / sig;
-      state->wtd_int_sum += intgrl * wgt;
-      state->sum_wgts += wgt;
-      state->chi_sum += intgrl_sq * wgt;
-      cum_int = state->wtd_int_sum / state->sum_wgts;
-      state->chisq = 0.;
+      sig = sig / (calls_per_box - 1.0)  ;
 
-      if (state->it_num != 1)
-	{
-	  state->chisq = (state->chi_sum - state->wtd_int_sum * cum_int) /
-	    (state->it_num - 1.0);
-	}
+      if (sig > 0) 
+        {
+          wgt = 1.0 / sig;
+        }
+      else if (state->sum_wgts > 0) 
+        {
+          wgt = state->sum_wgts / state->it_num;
+        }
+      else 
+        {
+          wgt = 0.0;
+        }
+        
+     intgrl_sq = intgrl * intgrl;
 
-      cum_sig = sqrt (1 / state->sum_wgts);
+     if (wgt > 0.0)
+       {
+         state->samples++ ;
+         state->sum_wgts += wgt;
+         state->wtd_int_sum += intgrl * wgt;
+         state->chi_sum += intgrl_sq * wgt;
+
+         cum_int = state->wtd_int_sum / state->sum_wgts;
+         cum_sig = sqrt (1 / state->sum_wgts);
+
+         if (state->samples > 1)
+           {
+             state->chisq = (state->chi_sum - state->wtd_int_sum * cum_int) /
+               (state->samples - 1.0);
+           }
+       }
+     else
+       {
+         cum_int += (intgrl - cum_int) / state->it_num;
+         cum_sig = 0.0;
+       }         
+
 
       if (state->verbose >= 0)
 	{
@@ -379,135 +320,27 @@ gsl_monte_vegas_integrate (gsl_monte_function * f,
 	    }
 	}
 
-      /* Adjust the grid  */
-      for (j = 0; j < dim; ++j)
+      if (state->verbose > 1)
 	{
-	  double oldg, newg, grid_tot_j, tot_weight;
-	  double weight[GSL_V_BINS_MAX + 1];
+          print_dist (state, dim);
+        }
 
-	  oldg = state->grid_sum[1][j];
-	  newg = state->grid_sum[2][j];
-	  state->grid_sum[1][j] = (oldg + newg) / 2;
-	  grid_tot_j = state->grid_sum[1][j];
+      refine_grid (state);
 
-	  /* This implements gs[i][j] = (gs[i-1][j]+gs[i][j]+gs[i+1][j])/3 */
-	  for (i = 2; i < state->bins; ++i)
-	    {
-	      state->grid_sum[i][j] = oldg + newg;
-	      oldg = newg;
-	      newg = state->grid_sum[i + 1][j];
-	      state->grid_sum[i][j] = (state->grid_sum[i][j] + newg) / 3;
-	      grid_tot_j += state->grid_sum[i][j];
-	    }
-	  state->grid_sum[state->bins][j] = (newg + oldg) / 2;
-
-	  grid_tot_j += state->grid_sum[state->bins][j];
-
-	  for (i = 1, tot_weight = 0; i <= state->bins; ++i)
-	    {
-	      weight[i] = 0;
-	      if (state->grid_sum[i][j] > 0)
-		{
-		  oldg = grid_tot_j / state->grid_sum[i][j];
-		  /* damped change */
-		  weight[i] =
-		    pow (((oldg - 1) / oldg / log (oldg)), state->alpha);
-		}
-	      tot_weight += weight[i];
-	    }
-	  adjust_bins (state, state->y_bin, weight, tot_weight / state->bins,
-		       j, state->bins, state->bins);
+      if (state->verbose > 1)
+	{
+	  print_grid (state, dim);
 	}
+
     }
 
   *result = cum_int;
   *abserr = cum_sig;
 
-  if ((state->it_num > state->max_it_num) ||
-      (state->acc * fabs (cum_int) > cum_sig))
-    {
-      /* should throw an error of some kind */
-    }
-
-  /* final stuff */
-  return status;
+  return GSL_SUCCESS;
 }
 
-/* Adjust bin boundaries so that each bin has the same number of
-   points/bin.  Do this by stepping through the current bins, moving
-   the boundary as we go and counting the number of points until we
-   exceed the desired number.  Then we move the boundary back an
-   appropriate amount.  
-*/
 
-void
-adjust_bins (gsl_monte_vegas_state * state,
-	     double bin[GSL_V_BINS_MAX + 1][GSL_V_MAX_DIM],
-	     double weight[GSL_V_BINS_MAX + 1],
-	     double pts_per_bin, int j, int bins_prev, int bins)
-{
-  int i, k;
-  double xold, xnew, xin[GSL_V_BINS_MAX + 1], dw;
-
-  xnew = 0;
-  dw = 0;
-  i = 1;
-
-  for (k = 1; k <= bins_prev; ++k)
-    {
-      dw += weight[k];
-      xold = xnew;
-      xnew = bin[k][j];
-
-      for (; dw > pts_per_bin; ++i)
-	{
-	  dw -= pts_per_bin;
-	  xin[i] = xnew - (xnew - xold) * dw / weight[k];
-	}
-    }
-
-  for (i = 1; i < bins; ++i)
-    {
-      bin[i][j] = xin[i];
-    }
-
-  bin[bins][j] = 1;
-  return;
-}
-
-/* change_box_coord steps through the box coord like
-   {0,0}, {0, 1}, {0, 2}, {0, 3}, {1, 0}, {1, 1}, {1, 2}, ...
-*/
-inline int
-change_box_coord (int box_coord[GSL_V_MAX_DIM], int ng, unsigned long j_start)
-{
-  int j = j_start;
-  while (j >= 0)
-    {
-      ++box_coord[j];
-      if ((box_coord[j] %= ng) != 0)
-	{
-	  return (1);
-	}
-      j--;
-    }
-  return (0);
-}
-
-inline void
-init_array (double array[GSL_V_BINS_MAX + 1][GSL_V_MAX_DIM],
-	    int imax, unsigned long jmax)
-{
-  int i, j;
-
-  for (j = 0; j < jmax; ++j)
-    {
-      for (i = 0; i <= imax; ++i)
-	{
-	  array[i][j] = 0;
-	}
-    }
-}
 
 gsl_monte_vegas_state *
 gsl_monte_vegas_alloc (size_t dim)
@@ -521,46 +354,100 @@ gsl_monte_vegas_alloc (size_t dim)
 		     GSL_ENOMEM, 0);
     }
 
-  s->delx = (double *) malloc (GSL_V_MAX_DIM * sizeof(double));
-  
+  s->delx = (double *) malloc (dim * sizeof (double));
+
   if (s->delx == 0)
     {
-      free(s);
+      free (s);
       GSL_ERROR_VAL ("failed to allocate space for delx", GSL_ENOMEM, 0);
     }
 
-  s->grid_sum = (double *) malloc ((GSL_V_BINS_MAX+1)*GSL_V_MAX_DIM * sizeof(double));
+  s->d = (double *) malloc (BINS_MAX * dim * sizeof (double));
 
-  if (s->grid_sum == 0)
+  if (s->d == 0)
     {
-      free(s->delx);
-      free(s);
-      GSL_ERROR_VAL ("failed to allocate space for grid_sum", GSL_ENOMEM, 0);
-    }
-      
-
-  s->bin_sum = (double *) malloc ((GSL_V_BINS_MAX+1)*GSL_V_MAX_DIM * sizeof(double));
-
-  if (s->bin_sum == 0)
-    {
-      free(s->grid_sum);
-      free(s->delx);
-      free(s);
-      GSL_ERROR_VAL ("failed to allocate space for bin_sum", GSL_ENOMEM, 0);
+      free (s->delx);
+      free (s);
+      GSL_ERROR_VAL ("failed to allocate space for d", GSL_ENOMEM, 0);
     }
 
-  s->y_bin = (double *) malloc ((GSL_V_BINS_MAX+1)*GSL_V_MAX_DIM * sizeof(double));
+  s->xi = (double *) malloc ((BINS_MAX + 1) * dim * sizeof (double));
 
-  if (s->y_bin == 0)
+  if (s->xi == 0)
     {
-      free(s->bin_sum);
-      free(s->grid_sum);
-      free(s->delx);
-      free(s);
-      GSL_ERROR_VAL ("failed to allocate space for y_bin", GSL_ENOMEM, 0);
+      free (s->d);
+      free (s->delx);
+      free (s);
+      GSL_ERROR_VAL ("failed to allocate space for xi", GSL_ENOMEM, 0);
     }
-  
+
+  s->xin = (double *) malloc ((BINS_MAX + 1) * sizeof (double));
+
+  if (s->xin == 0)
+    {
+      free (s->xi);
+      free (s->d);
+      free (s->delx);
+      free (s);
+      GSL_ERROR_VAL ("failed to allocate space for xin", GSL_ENOMEM, 0);
+    }
+
+  s->weight = (double *) malloc (BINS_MAX * sizeof (double));
+
+  if (s->weight == 0)
+    {
+      free (s->xin);
+      free (s->xi);
+      free (s->d);
+      free (s->delx);
+      free (s);
+      GSL_ERROR_VAL ("failed to allocate space for xin", GSL_ENOMEM, 0);
+    }
+
+  s->box = (coord *) malloc (dim * sizeof (coord));
+
+  if (s->box == 0)
+    {
+      free (s->weight);
+      free (s->xin);
+      free (s->xi);
+      free (s->d);
+      free (s->delx);
+      free (s);
+      GSL_ERROR_VAL ("failed to allocate space for box", GSL_ENOMEM, 0);
+    }
+
+  s->bin = (coord *) malloc (dim * sizeof (coord));
+
+  if (s->bin == 0)
+    {
+      free (s->box);
+      free (s->weight);
+      free (s->xin);
+      free (s->xi);
+      free (s->d);
+      free (s->delx);
+      free (s);
+      GSL_ERROR_VAL ("failed to allocate space for bin", GSL_ENOMEM, 0);
+    }
+
+  s->x = (double *) malloc (dim * sizeof (double));
+
+  if (s->x == 0)
+    {
+      free (s->bin);
+      free (s->box);
+      free (s->weight);
+      free (s->xin);
+      free (s->xi);
+      free (s->d);
+      free (s->delx);
+      free (s);
+      GSL_ERROR_VAL ("failed to allocate space for x", GSL_ENOMEM, 0);
+    }
+
   s->dim = dim;
+  s->bins_max = BINS_MAX;
 
   gsl_monte_vegas_init (s);
 
@@ -572,13 +459,14 @@ int
 gsl_monte_vegas_init (gsl_monte_vegas_state * state)
 {
   state->stage = 0;
-  state->acc = -1;
   state->alpha = 1.5;
   state->verbose = -1;
   state->max_it_num = 5;
   state->mode = GSL_VEGAS_MODE_IMPORTANCE;
   state->init_done = 1;
   state->chisq = 0;
+  state->bins = state->bins_max;
+  state->ostream = stdout;
   return GSL_SUCCESS;
 }
 
@@ -586,13 +474,282 @@ void
 gsl_monte_vegas_free (gsl_monte_vegas_state * s)
 {
   free (s->delx);
-  free (s->grid_sum);
-  free (s->bin_sum);
-  free (s->y_sum);
+  free (s->d);
+  free (s->xi);
+  free (s->xin);
+  free (s->weight);
+  free (s->box);
+  free (s->bin);
   free (s);
 }
 
-void
+static void
+init_box_coord (gsl_monte_vegas_state * s, coord box[])
+{
+  size_t i;
+
+  size_t dim = s->dim;
+
+  for (i = 0; i < dim; i++)
+    {
+      box[i] = 0;
+    }
+}
+
+/* change_box_coord steps through the box coord like
+   {0,0}, {0, 1}, {0, 2}, {0, 3}, {1, 0}, {1, 1}, {1, 2}, ...
+*/
+static int
+change_box_coord (gsl_monte_vegas_state * s, coord box[])
+{
+  int j = s->dim - 1;
+
+  int ng = s->boxes;
+
+  while (j >= 0)
+    {
+      box[j] = (box[j] + 1) % ng;
+
+      if (box[j] != 0)
+	{
+	  return 1;
+	}
+
+      j--;
+    }
+
+  return 0;
+}
+
+static void
+init_grid (gsl_monte_vegas_state * s, double xl[], double xu[], size_t dim)
+{
+  size_t j;
+
+  double vol = 1.0;
+
+  s->bins = 1;
+
+  for (j = 0; j < dim; j++)
+    {
+      double dx = xu[j] - xl[j];
+      s->delx[j] = dx;
+      vol *= dx;
+
+      COORD (s, 0, j) = 0.0;
+      COORD (s, 1, j) = 1.0;
+    }
+
+  s->vol = vol;
+}
+
+
+static void
+reset_grid_values (gsl_monte_vegas_state * s)
+{
+  size_t i, j;
+
+  size_t dim = s->dim;
+  size_t bins = s->bins;
+
+  for (i = 0; i < bins; i++)
+    {
+      for (j = 0; j < dim; j++)
+	{
+	  VALUE (s, i, j) = 0.0;
+	}
+    }
+}
+
+static void
+accumulate_distribution (gsl_monte_vegas_state * s, coord bin[], double y)
+{
+  size_t j;
+  size_t dim = s->dim;
+
+  for (j = 0; j < dim; j++)
+    {
+      int i = bin[j];
+      VALUE (s, i, j) += y;
+    }
+}
+
+static void
+random_point (double x[], coord bin[], double *bin_vol,
+	      const coord box[], const double xl[], const double xu[],
+	      gsl_monte_vegas_state * s, gsl_rng * r)
+{
+  /* Use the random number generator r to return a random position x
+     in a given box.  The value of bin gives the bin location of the
+     random position (there may be several bins within a given box) */
+
+  double vol = 1.0;
+
+  size_t j;
+
+  size_t dim = s->dim;
+  size_t bins = s->bins;
+  size_t boxes = s->boxes;
+
+  for (j = 0; j < dim; ++j)
+    {
+      /* box[j] + ran gives the position in the box units, while z
+         is the position in bin units.  */
+
+      double z = ((box[j] + gsl_rng_uniform_pos (r)) / boxes) * bins;
+
+      int k = z;
+
+      double y, bin_width;
+
+      bin[j] = k;
+
+      if (k == 0)
+	{
+	  bin_width = COORD (s, 1, j);
+	  y = z * bin_width;
+	}
+      else
+	{
+	  bin_width = COORD (s, k + 1, j) - COORD (s, k, j);
+	  y = COORD (s, k, j) + (z - k) * bin_width;
+	}
+
+      x[j] = xl[j] + y * s->delx[j];
+
+      vol *= bin_width;
+    }
+
+  *bin_vol = vol;
+}
+
+
+static void
+resize_grid (gsl_monte_vegas_state * s, int bins)
+{
+  size_t j, k;
+  size_t dim = s->dim;
+
+  /* weight is ratio of bin sizes */
+
+  double pts_per_bin = (double) s->bins / (double) bins;
+
+  for (j = 0; j < dim; j++)
+    {
+      double xold;
+      double xnew = 0;
+      double dw = 0;
+      int i = 1;
+
+      for (k = 1; k <= s->bins; k++)
+	{
+	  dw += 1.0;
+	  xold = xnew;
+	  xnew = COORD (s, k, j);
+
+	  for (; dw > pts_per_bin; i++)
+	    {
+	      dw -= pts_per_bin;
+	      NEW_COORD (s, i) = xnew - (xnew - xold) * dw;
+	    }
+	}
+
+      for (k = 1 ; k < bins; k++)
+        {
+          COORD(s, k, j) = NEW_COORD(s, k);
+        }
+
+      COORD (s, bins, j) = 1;
+    }
+
+  s->bins = bins;
+}
+
+static void
+refine_grid (gsl_monte_vegas_state * s)
+{
+  size_t i, j, k;
+  size_t dim = s->dim;
+  size_t bins = s->bins;
+
+  for (j = 0; j < dim; j++)
+    {
+      double grid_tot_j, tot_weight;
+      double * weight = s->weight;
+
+      double oldg = VALUE (s, 0, j);
+      double newg = VALUE (s, 1, j);
+
+      VALUE (s, 0, j) = (oldg + newg) / 2;
+      grid_tot_j = VALUE (s, 0, j);
+
+      /* This implements gs[i][j] = (gs[i-1][j]+gs[i][j]+gs[i+1][j])/3 */
+
+      for (i = 1; i < bins - 1; i++)
+	{
+	  double rc = oldg + newg;
+	  oldg = newg;
+	  newg = VALUE (s, i + 1, j);
+	  VALUE (s, i, j) = (rc + newg) / 3;
+	  grid_tot_j += VALUE (s, i, j);
+	}
+      VALUE (s, bins - 1, j) = (newg + oldg) / 2;
+
+      grid_tot_j += VALUE (s, bins - 1, j);
+
+      tot_weight = 0;
+
+      for (i = 0; i < bins; i++)
+	{
+	  weight[i] = 0;
+
+	  if (VALUE (s, i, j) > 0)
+	    {
+	      oldg = grid_tot_j / VALUE (s, i, j);
+	      /* damped change */
+	      weight[i] = pow (((oldg - 1) / oldg / log (oldg)), s->alpha);
+	    }
+
+	  tot_weight += weight[i];
+
+#ifdef DEBUG
+          printf("weight[%d] = %g\n", i, weight[i]);
+#endif
+	}
+
+      {
+	double pts_per_bin = tot_weight / bins;
+
+	double xold;
+	double xnew = 0;
+	double dw = 0;
+	i = 1;
+
+	for (k = 0; k < bins; k++)
+	  {
+	    dw += weight[k];
+	    xold = xnew;
+	    xnew = COORD (s, k + 1, j);
+
+	    for (; dw > pts_per_bin; i++)
+	      {
+		dw -= pts_per_bin;
+		NEW_COORD (s, i) = xnew - (xnew - xold) * dw / weight[k];
+	      }
+	  }
+
+        for (k = 1 ; k < bins ; k++)
+          {
+            COORD(s, k, j) = NEW_COORD(s, k);
+          }
+
+	COORD (s, bins, j) = 1;
+      }
+    }
+}
+
+
+static void
 print_lim (gsl_monte_vegas_state * state,
 	   double xl[], double xu[], unsigned long dim)
 {
@@ -605,14 +762,14 @@ print_lim (gsl_monte_vegas_state * state,
   fflush (state->ostream);
 }
 
-void
+static void
 print_head (gsl_monte_vegas_state * state,
 	    unsigned long num_dim, unsigned long calls,
 	    int it_num, int bins, int boxes)
 {
   fprintf (state->ostream,
-	   "\nnum_dim=%lu, calls=%lu, it_num=%d, max_it_num=%d, acc=%.3f, ",
-	   num_dim, calls, it_num, state->max_it_num, state->acc);
+	   "\nnum_dim=%lu, calls=%lu, it_num=%d, max_it_num=%d ",
+	   num_dim, calls, it_num, state->max_it_num);
   fprintf (state->ostream,
 	   "verb=%d, alph=%.2f,\nmode=%d, bins=%d, boxes=%d\n",
 	   state->verbose, state->alpha, state->mode, bins, boxes);
@@ -622,12 +779,12 @@ print_head (gsl_monte_vegas_state * state,
 
   fprintf (state->ostream,
 	   "iteration     integral    sigma             integral   ");
-  fprintf (state->ostream, "      sigma     chi-sq/it\n number\n");
+  fprintf (state->ostream, "      sigma     chi-sq/it\n\n");
   fflush (state->ostream);
 
 }
 
-void
+static void
 print_res (gsl_monte_vegas_state * state,
 	   int itr, double res, double err, double cum_res, double cum_err,
 	   double chi_sq)
@@ -638,10 +795,10 @@ print_res (gsl_monte_vegas_state * state,
   fflush (state->ostream);
 }
 
-void
-print_grid (gsl_monte_vegas_state * state, unsigned long dim)
+static void
+print_dist (gsl_monte_vegas_state * state, unsigned long dim)
 {
-  int mod, i, j;
+  int i, j;
   int p = state->verbose;
   if (p < 1)
     return;
@@ -649,13 +806,37 @@ print_grid (gsl_monte_vegas_state * state, unsigned long dim)
   for (j = 0; j < dim; ++j)
     {
       fprintf (state->ostream, "\n axis %d \n", j);
-      fprintf (state->ostream, "      x          delta         x     ");
-      fprintf (state->ostream, "    delta         x          delta\n");
-      for (i = 1 + p / 2, mod = 1; i <= state->bins; i += p, ++mod)
+      fprintf (state->ostream, "      x   g\n");
+      for (i = 0; i < state->bins; i++)
 	{
-	  fprintf (state->ostream, "%11.2e%13.2e ",
-		   state->y_bin[i][j], state->bin_sum[i][j]);
-	  if (mod % 3 == 0)
+	  fprintf (state->ostream, "%11.2e - %11.2e", COORD (state, i, j),
+                   COORD(state,i+1,j));
+	  fprintf (state->ostream, " %11.2e\n", VALUE (state, i, j));
+
+	}
+      fprintf (state->ostream, "\n");
+    }
+  fprintf (state->ostream, "\n");
+  fflush (state->ostream);
+
+}
+
+static void
+print_grid (gsl_monte_vegas_state * state, unsigned long dim)
+{
+  int i, j;
+  int p = state->verbose;
+  if (p < 1)
+    return;
+
+  for (j = 0; j < dim; ++j)
+    {
+      fprintf (state->ostream, "\n axis %d \n", j);
+      fprintf (state->ostream, "      x   \n");
+      for (i = 0; i <= state->bins; i++)
+	{
+	  fprintf (state->ostream, "%11.2e", COORD (state, i, j));
+	  if (i % 5 == 4)
 	    fprintf (state->ostream, "\n");
 	}
       fprintf (state->ostream, "\n");

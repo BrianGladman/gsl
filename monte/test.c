@@ -43,6 +43,7 @@
 
 #define PLAIN
 #define MISER
+#define VEGAS
 
 double xl[11]  = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 double xu[11]  = { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 };
@@ -221,6 +222,23 @@ main ()
 #undef MONTE_ALLOC
 #undef MONTE_INTEGRATE
 #undef MONTE_FREE
+#undef MONTE_ERROR_TEST
+#endif
+
+#ifdef VEGAS
+#define NAME "vegas"
+#define MONTE_STATE gsl_monte_vegas_state
+#define MONTE_ALLOC gsl_monte_vegas_alloc
+#define MONTE_INTEGRATE gsl_monte_vegas_integrate
+#define MONTE_FREE gsl_monte_vegas_free
+#define MONTE_ERROR_TEST(err,expected) gsl_test(err > 3.0 * GSL_MAX(expected,1e-10), NAME ", %s, abserr[%d] (obs %g vs plain %g)", I->description, i, err, expected)
+#include "test_main.c"
+#undef NAME
+#undef MONTE_STATE
+#undef MONTE_ALLOC
+#undef MONTE_INTEGRATE
+#undef MONTE_FREE
+#undef MONTE_ERROR_TEST
 #endif
       
   return gsl_test_summary ();

@@ -17,10 +17,16 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-/* MISER.  Based on the algorithm described in Numerical recipes. */
+/* MISER.  Based on the algorithm described in the following article,
+
+   W.H. Press, G.R. Farrar, "Recursive Stratified Sampling for
+   Multidimensional Monte Carlo Integration", Computers in Physics,
+   v4 (1990), pp190-195.
+
+*/
 
 /* Author: MJB */
-/* RCS: $Id$ */
+/* Modified by Brian Gough 12/2000 */
 
 #include <config.h>
 #include <math.h>
@@ -32,6 +38,16 @@
 #include <gsl/gsl_monte.h>
 #include <gsl/gsl_monte_miser.h>
 
+static int
+estimate_corrmc (gsl_monte_function * f,
+		 const double xl[], const double xu[],
+		 size_t dim, size_t calls,
+		 gsl_rng * r,
+		 gsl_monte_miser_state * state,
+		 double *result, double *abserr,
+		 const double xmid[], double sigma_l[], double sigma_r[]);
+
+
 int
 gsl_monte_miser_integrate (gsl_monte_function * f,
 			   const double xl[], const double xu[],
@@ -40,8 +56,6 @@ gsl_monte_miser_integrate (gsl_monte_function * f,
 			   gsl_monte_miser_state * state,
 			   double *result, double *abserr)
 {
-  int status = 0;
-
   size_t n, estimate_calls, calls_l, calls_r;
   const size_t min_calls = state->min_calls;
   size_t i;
@@ -50,7 +64,6 @@ gsl_monte_miser_integrate (gsl_monte_function * f,
 
   double res_est = 0, err_est = 0;
   double res_r = 0, err_r = 0, res_l = 0, err_l = 0;
-  double fval;
   double xbi_l, xbi_m, xbi_r, s;
 
   double vol;
@@ -60,9 +73,9 @@ gsl_monte_miser_integrate (gsl_monte_function * f,
   double *xmid = state->xmid;
   double *sigma_l = state->sigma_l, *sigma_r = state->sigma_r;
 
-  if (dim > state->dim)
+  if (dim != state->dim)
     {
-      GSL_ERROR ("number of dimensions exceeds allocated size", GSL_EINVAL);
+      GSL_ERROR ("number of dimensions must match allocated size", GSL_EINVAL);
     }
 
   for (i = 0; i < dim; i++)
@@ -516,8 +529,10 @@ gsl_monte_miser_alloc (size_t dim)
 int
 gsl_monte_miser_init (gsl_monte_miser_state * s)
 {
-  s->min_calls = s->dim * 15;
-  s->min_calls_per_bisection = 8 * s->min_calls;
+  /* We use 8 points in each halfspace to estimate the variance. There are
+     2*dim halfspaces, and each requires a minimum of 2 points. */
+  s->min_calls = 16 * s->dim;
+  s->min_calls_per_bisection = 64 * s->min_calls;
   s->estimate_frac = 0.1;
   s->alpha = 2.0;
   s->dither = 0.0;
@@ -601,7 +616,7 @@ estimate_maxmin (gsl_monte_function * f,
 }
 #endif
 
-int
+static int
 estimate_corrmc (gsl_monte_function * f,
 		 const double xl[], const double xu[],
 		 size_t dim, size_t calls,
@@ -634,10 +649,29 @@ estimate_corrmc (gsl_monte_function * f,
   for (n = 0; n < calls; n++)
     {
       double fval;
+      
+      int j = (n/2) % dim;
+      int side = (n % 2);
 
       for (i = 0; i < dim; i++)
 	{
-	  x[i] = xl[i] + gsl_rng_uniform_pos (r) * (xu[i] - xl[i]);
+          double z = gsl_rng_uniform_pos (r) ;
+
+          if (i != j) 
+            {
+              x[i] = xl[i] + z * (xu[i] - xl[i]);
+            }
+          else
+            {
+              if (side == 0) 
+                {
+                  x[i] = xmid[i] + z * (xu[i] - xmid[i]);
+                }
+              else
+                {
+                  x[i] = xl[i] + z * (xmid[i] - xl[i]);
+                }
+            }
 	}
 
       fval = GSL_MONTE_FN_EVAL (f, x);
@@ -678,4 +712,5 @@ estimate_corrmc (gsl_monte_function * f,
 	}
     }
 
+  return GSL_SUCCESS;
 }

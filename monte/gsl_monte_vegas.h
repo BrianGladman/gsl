@@ -38,14 +38,29 @@
 
 __BEGIN_DECLS
 
-#define GSL_V_BINS_MAX 50  /* even integer because will be divided by two. */
-#define GSL_V_MAX_DIM 10
-
 enum {GSL_VEGAS_MODE_IMPORTANCE = 1, 
       GSL_VEGAS_MODE_IMPORTANCE_ONLY = 0, 
       GSL_VEGAS_MODE_STRATIFIED = -1};
 
 typedef struct {
+  /* grid */
+  size_t dim;
+  size_t bins_max;
+  int bins;
+  int boxes; /* these are both counted along the axes */
+  double * xi;
+  double * xin;
+  double * delx;
+  double * weight;
+  double vol;
+
+  double * x;
+  int * bin;
+  int * box;
+  
+  /* distribution */
+  double * d;
+
   /* control variables */
   double acc;
   double alpha;
@@ -54,14 +69,10 @@ typedef struct {
   int max_it_num;
   int stage;
 
-  /* state variables */
   int it_start;
   int bins_prev;
   int calls_per_box;
   int it_num;
-  unsigned long dim;
-  int bins;
-  int boxes; /* boxes and bins are counted along the axes */
   int init_done;
   int check_done;
 
@@ -71,16 +82,11 @@ typedef struct {
   double sum_wgts;
   double chi_sum;
   double chisq;
-  double vol;
+  size_t samples;
 
-  /* workspace */
-  double delx[GSL_V_MAX_DIM];
-  double grid_sum[GSL_V_BINS_MAX+1][GSL_V_MAX_DIM];
-  double bin_sum[GSL_V_BINS_MAX+1][GSL_V_MAX_DIM];
-  double y_bin[GSL_V_BINS_MAX+1][GSL_V_MAX_DIM];
+  FILE * ostream;
 
 } gsl_monte_vegas_state;
-
 
 int gsl_monte_vegas_integrate(gsl_monte_function * f, 
                               double xl[], double xu[], 

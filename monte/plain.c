@@ -41,9 +41,9 @@ gsl_monte_plain_integrate (const gsl_monte_function * f,
   double *x = state->x;
   size_t n, i;
 
-  if (dim > state->dim)
+  if (dim != state->dim)
     {
-      GSL_ERROR ("number of dimensions exceeds allocated size", GSL_EINVAL);
+      GSL_ERROR ("number of dimensions must match allocated size", GSL_EINVAL);
     }
 
   for (i = 0; i < dim; i++)

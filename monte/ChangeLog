@@ -1,3 +1,8 @@
+Wed Dec 20 21:32:40 2000  Brian Gough  <bjg@network-theory.co.uk>
+
+	* vegas.c: tidied up the algorithm, deal with cases of sigma = 0
+ 	explicitly.
+
 Sat Dec  9 14:19:53 2000  Brian Gough  <bjg@network-theory.co.uk>
 
 	* reorganization and clean up
