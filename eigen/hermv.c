@@ -215,8 +215,8 @@ gsl_eigen_hermv (gsl_matrix_complex * A, gsl_vector * eval,
                 
                 for (k = 0; k < N; k++)
                   {
-                    gsl_complex qki = gsl_matrix_complex_get (evec, k, i);
-                    gsl_complex qkj = gsl_matrix_complex_get (evec, k, i + 1);
+                    gsl_complex qki = gsl_matrix_complex_get (evec, k, a + i);
+                    gsl_complex qkj = gsl_matrix_complex_get (evec, k, a + i + 1);
                     /* qki <= qki * c - qkj * s */
                     /* qkj <= qki * s + qkj * c */
                     gsl_complex x1 = gsl_complex_mul_real(qki, c);
@@ -228,8 +228,8 @@ gsl_eigen_hermv (gsl_matrix_complex * A, gsl_vector * eval,
                     gsl_complex qqki = gsl_complex_add(x1, y1);
                     gsl_complex qqkj = gsl_complex_add(x2, y2);
                     
-                    gsl_matrix_complex_set (evec, k, i, qqki);
-                    gsl_matrix_complex_set (evec, k, i + 1, qqkj);
+                    gsl_matrix_complex_set (evec, k, a + i, qqki);
+                    gsl_matrix_complex_set (evec, k, a + i + 1, qqkj);
                   }
               }
             

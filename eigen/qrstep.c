@@ -60,18 +60,13 @@ trailing_eigenvalue (const size_t n, const double d[], const double sd[])
 
   double mu;
 
-  if (dt > 0)
+  if (dt >= 0)
     {
       mu = tb - (tab * tab) / (dt + hypot (dt, tab));
     }
-  else if (dt < 0)
-    {
-      mu = tb + (tab * tab) / ((-dt) + hypot (dt, tab));
-    }
   else
     {
-      /* FIXME: what is the best choice of mu for dt == 0 ? */
-      mu = tb;
+      mu = tb + (tab * tab) / ((-dt) + hypot (dt, tab));
     }
 
   return mu;
@@ -134,7 +129,7 @@ qrstep (const size_t n, double d[], double sd[], double gc[], double gs[])
       double c, s;
       create_givens (x, z, &c, &s);
 
-      /* store Givens rotatation */
+      /* store Givens rotation */
       if (gc != NULL)
         gc[k] = c; 
       if (gs != NULL)

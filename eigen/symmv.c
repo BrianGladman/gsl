@@ -192,10 +192,10 @@ gsl_eigen_symmv (gsl_matrix * A, gsl_vector * eval, gsl_matrix * evec,
                 
                 for (k = 0; k < N; k++)
                   {
-                    double qki = gsl_matrix_get (evec, k, i);
-                    double qkj = gsl_matrix_get (evec, k, i + 1);
-                    gsl_matrix_set (evec, k, i, qki * c - qkj * s);
-                    gsl_matrix_set (evec, k, i + 1, qki * s + qkj * c);
+                    double qki = gsl_matrix_get (evec, k, a + i);
+                    double qkj = gsl_matrix_get (evec, k, a + i + 1);
+                    gsl_matrix_set (evec, k, a + i, qki * c - qkj * s);
+                    gsl_matrix_set (evec, k, a + i + 1, qki * s + qkj * c);
                   }
               }
             

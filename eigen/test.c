@@ -356,7 +356,23 @@ int main()
   gsl_matrix *rs10 = create_random_symm_matrix (10);
   gsl_matrix_complex *rh10 = create_random_herm_matrix (10);
 
+  double r[] =  { 0,  0, -1,  0, 
+                  0,  1,  0,  1,
+                 -1,  0,  0,  0,
+                  0,  1,  0,  0 };
+
+  double c[] =  { 0,0,  0,0, -1,0,  0,0, 
+                  0,0,  1,0,  0,0,  1,0,
+                 -1,0,  0,0,  0,0,  0,0,
+                  0,0,  1,0,  0,0,  0,0 };
+
+  gsl_matrix_view s4 = gsl_matrix_view_array (r, 4, 4);
+  gsl_matrix_complex_view h4 = gsl_matrix_complex_view_array (c, 4, 4);
+
   gsl_ieee_env_setup ();
+
+  test_eigen_symm("symm(4)", &s4.matrix);
+  test_eigen_herm("herm(4)", &h4.matrix);
 
   test_eigen_symm("symm(10)", rs10);
   test_eigen_herm("herm(10)", rh10);

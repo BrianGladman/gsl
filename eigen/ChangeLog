@@ -1,3 +1,14 @@
+Thu Aug  2 18:17:58 2001  Brian Gough  <bjg@network-theory.co.uk>
+
+	* hermv.c (gsl_eigen_hermv): fixed index bug in accumulation of evec.
+
+	* symmv.c (gsl_eigen_symmv): fixed index bug in accumulation of evec.
+
+	* test.c (main): added two new test cases
+
+	* qrstep.c (trailing_eigenvalue): chose better value of mu when
+ 	dt=0, prevents infinite loop.
+
 Sun Jul  1 22:43:45 2001  Brian Gough  <bjg@network-theory.co.uk>
 
 	*  modified to use new-style vector views
