@@ -811,8 +811,10 @@ hyperg_U_int_bge1(const int a, const int b, const double x,
       int scale_count_bck = 0;
       int a0 = 1;
       int a1 = a0 + ceil(0.5*(b-x) - a0);
-      double Ua1_bck;
-      double Ua1_for;
+      double Ua1_bck_val;
+      double Ua1_bck_err;
+      double Ua1_for_val;
+      double Ua1_for_err;
       int stat_for;
       int stat_bck;
       double lm_for;
@@ -832,7 +834,8 @@ hyperg_U_int_bge1(const int a, const int b, const double x,
           Ua   = Uam1;
 	  RESCALE_2(Ua,Uap1,scale_factor,scale_count_bck);
         }
-        Ua1_bck  = Ua;
+        Ua1_bck_val = Ua;
+	Ua1_bck_err = 2.0 * GSL_DBL_EPSILON * (fabs(a1-a)+1.0) * fabs(Ua);
         stat_bck = stat_CF1;
       }
 
@@ -842,7 +845,8 @@ hyperg_U_int_bge1(const int a, const int b, const double x,
 	 * this evaluation.
 	 */
 	hyperg_lnU_beq2a((double)a1, x, &lm_for);
-	Ua1_for = 1.0;
+	Ua1_for_val = 1.0;
+	Ua1_for_err = 0.0;
         stat_for = GSL_SUCCESS;
       }
       else if(b == 2*a1 - 1 && a1 > 1) {
@@ -851,13 +855,15 @@ hyperg_U_int_bge1(const int a, const int b, const double x,
 	 *   U(a,2a-1) = (x U(a,2a) - U(a-1,2(a-1))) / (2a - 2)
 	 */
 	double lnU00, lnU12;
-	double U00, U12;
+	gsl_sf_result U00, U12;
 	hyperg_lnU_beq2a(a1-1.0, x, &lnU00);
 	hyperg_lnU_beq2a(a1,	 x, &lnU12);
 	lm_for = GSL_MAX(lnU00, lnU12);
-	U00 = exp(lnU00 - lm_for);
-	U12 = exp(lnU12 - lm_for);
-	Ua1_for = (x * U12 - U00) /(2.0*a1 - 2.0);
+	gsl_sf_exp_impl(lnU00 - lm_for, &U00);
+	gsl_sf_exp_impl(lnU12 - lm_for, &U12);
+	Ua1_for_val  = (x * U12.val - U00.val) /(2.0*a1 - 2.0);
+	Ua1_for_err  = (fabs(x)*U12.err + U00.err) / fabs(2.0*a1 - 2.0);
+	Ua1_for_err += GSL_DBL_EPSILON * fabs(Ua1_for_val);
 	stat_for = GSL_SUCCESS;
       }
       else {
@@ -871,7 +877,6 @@ hyperg_U_int_bge1(const int a, const int b, const double x,
         int ap;
         stat_for = hyperg_U_small_a_bgt0(a0, b, x, &r_Ua, &lm_for); /* U(1,b,x) */
 	Ua = r_Ua.val;
-
         Uam1 *= exp(-lm_for);
 
         for(ap=a0; ap<a1; ap++) {
@@ -880,18 +885,20 @@ hyperg_U_int_bge1(const int a, const int b, const double x,
           Ua   = Uap1;
 	  RESCALE_2(Ua,Uam1,scale_factor,scale_count_for);
         }
-        Ua1_for = Ua;
+        Ua1_for_val  = Ua;
+	Ua1_for_err  = fabs(Ua) * fabs(r_Ua.err/r_Ua.val);
+	Ua1_for_err += 2.0 * GSL_DBL_EPSILON * (fabs(a1-a0)+1.0) * fabs(result->val);
       }
 
       /* Now do the matching to produce the final result.
        */
-      if(Ua1_bck == 0.0) {
+      if(Ua1_bck_val == 0.0) {
         result->val = 0.0;
 	result->err = 0.0;
         *ln_multiplier = 0.0;
         return GSL_EZERODIV;
       }
-      else if(Ua1_for == 0.0) {
+      else if(Ua1_for_val == 0.0) {
         /* Should never happen. */
         result->val = 0.0;
 	result->err = 0.0;
@@ -900,16 +907,16 @@ hyperg_U_int_bge1(const int a, const int b, const double x,
       }
       else {
         double lns = (scale_count_for - scale_count_bck)*log(scale_factor);
-	double ln_for_val = log(fabs(Ua1_for));
-	double ln_for_err = GSL_DBL_EPSILON * (fabs(a1-a)+1.0);
-	double ln_bck_val = log(fabs(Ua1_bck));
-	double ln_bck_err = GSL_DBL_EPSILON * (fabs(a0-a1)+1.0);
+	double ln_for_val = log(fabs(Ua1_for_val));
+	double ln_for_err = GSL_DBL_EPSILON + fabs(Ua1_for_err/Ua1_for_val);
+	double ln_bck_val = log(fabs(Ua1_bck_val));
+	double ln_bck_err = GSL_DBL_EPSILON + fabs(Ua1_bck_err/Ua1_bck_val);
         double lnr_val = lm_for + ln_for_val - ln_bck_val + lns;
 	double lnr_err = ln_for_err + ln_bck_err
 	                 + GSL_DBL_EPSILON * (fabs(lm_for) + fabs(ln_for_val)
                                               + fabs(ln_bck_val) + fabs(lns)
                                               );
-	double sgn = GSL_SIGN(Ua1_for) * GSL_SIGN(Ua1_bck);
+	double sgn = GSL_SIGN(Ua1_for_val) * GSL_SIGN(Ua1_bck_val);
         int stat_e = gsl_sf_exp_err_impl(lnr_val, lnr_err, result);
 	result->val *= sgn;
 
