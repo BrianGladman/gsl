@@ -1,20 +1,21 @@
 TODO 
 
-* Make sure gsl_config.h is used consistently. This is especially
-  relevant for HAVE_INLINE use in installed headers.
+* Make sure config.h is used consistently. This is especially relevant
+for HAVE_INLINE use in installed headers.
 
-* Allow the user to test which version they are using, so that a specific
-version can be required.
-
-* Add swig.i files and swig demos so that swig can be run more easily
-
-* Redesign the interface to iterative function to use an init/do-while
-construct
+* Allow the user to test which version they are using, so that a
+specific version can be required.
  
-* Make the return value EINVAL vs EDOM consistent for invalid parameters
+* Make the return value EINVAL vs EDOM consistent for invalid
+parameters. EDOM means a domain error (i.e. float or mathematically
+undefined), EINVAL means invalid (i.e. zero length)
 
 * Change return 0 to return GSL_SUCCESS, and return -1 to GSL_FAILURE
-throughout, where appropriate
+throughout, where appropriate. Similarly change any if(...) checks of
+return values to use == GSL_SUCCESS, if they are checking for zero.
+N.B. want to be careful about accidentally omitting error conditions
+if using something like == GSL_FAILURE when function returns a
+different error code.
 
 * Constant objects (like gsl_roots_fsolver_brent) ought to have
 constant pointers (const gsl_roots_fsolver_type * const
@@ -22,67 +23,31 @@ gsl_roots_fsolver_brent)??
 
 * Upgrade to texinfo-4.0
 
-* >>> There is a file ieee-utils/fp-sparclinux.c which shows how to
-define a gsl_ieee_set_mode function for a variant of Linux.  If you
-would like to make and test a corresponding file for M68K Linux
-(fp-m68klinux.c) we can include the patch in GSL. (There are also
-corresponding HAVE_SPARCLINUX_IEEE_INTERFACE macros in config.h.in,
-configure.in and fp.c). Otherwise I will make a note to add a file
-like this for the next release (and to rename the current fp-linux.c
-to fp-i86linux.c).
+* There is a file ieee-utils/fp-sparclinux.c which shows how to define
+a gsl_ieee_set_mode function for a variant of Linux. If you would like
+to make and test a corresponding file for M68K Linux (fp-m68klinux.c)
+we can include the patch in GSL. (There are also corresponding
+HAVE_SPARCLINUX_IEEE_INTERFACE macros in config.h.in, configure.in and
+fp.c). Otherwise I will make a note to add a file like this for the
+next release (and to rename the current fp-linux.c to fp-i86linux.c).
 
 * More tests. We should (at least) have a test for every error
 condition. Write a perl script to check for error conditions that
 aren't tested. Actually GCOV does a better job -- use that for
 coverage testing.
 
-VAGUE WISHLIST
+* Add swig.i files and swig demos so that swig can be run more easily
 
-These are the public domain packages we should convert to C and put
-under the GPL:
+* Redesign the interface to iterative function to use an init/do-while
+construct
 
-fftpack -- mostly done (sine and cosine transforms still to do, want
-           to add 2-d ffts, N-d ffts, convolutions)
-quadpack -- in progress (Brian)
-specfun -- in progress (Jerry)
-ranlib --  add the stuff we don't have
-minpack -- 
-odepack --
-blas --  
-starpac -- 
-dassl --
-eispack --
-lapack  -- 
-linpack -- 
-any others ???
+* Sine and Cosine Transforms from FFTPACK. A simple multidimensional
+fft. Put a pointer to FFTW in the documentation, recommending it for
+serious fft work.
 
-(At the present rate we'll be into the next century before we get to
-the end of that list).
-
-* We need support for general N-d arrays. Currently we have only
-vectors and matrices, which are two-dimensional.
-
-* BLAS, we should have something tunable like ATLAS but less
-complicated so we can run a few quick tests at configure time to find
-out how much cache there is and how many registers. Give people a way
-to do the full tuning if they want to.
-
-* Make sure GNUDL will be able to do everything that PAW can do
-(non-trivial).
-
-* We have to make SWIG wrappers work.
-
-* Write a C++ interface to replace Rogue Wave's Math.h++
-  (Brian has started this)
-
-* Some header files for physical constants (?).
-
-* Other stuff we might want: filters, wavelets, coordinate system
-transformations, grids and fields, ...
-
-* Public domain mapping tools http://www.soest.hawaii.edu/gmt/
-  Actually some discussion on debian-devel says they may not be so 
-  public domain as they claim. Look into it.
+* Some header files for physical constants (speed of light, etc),
+using data from the Particle Data Book. (e.g. gsl_physics.h, could
+also have gsl_chemistry.h, gsl_astro.h, etc)
 
 
 
