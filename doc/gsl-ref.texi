@@ -218,10 +218,14 @@ not recommended for general use.
 @chapter Preliminaries
 
 The GNU Scientific Library (GSL) is a collection of routines for
-numerical analysis.  The routines are written from scratch by the GSL
+numerical computing.  The routines are written from scratch by the GSL
 team (@pxref{Contributors to GSL}) in C, and are meant to present a
 modern Applications Programming Interface (API) for C programmers, while
 allowing wrappers to be written for very high level languages.
+
+GSL is currently in developers release, for people who want to work on
+the library itself. When the library is complete and fully tested it
+will be announced for general use.
 
 @node Using the library, Error handling in GSL, Preliminaries, Top
 @chapter Using the library
