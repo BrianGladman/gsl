@@ -8,6 +8,9 @@ requirements.
 
 * use  GSL_NAN, GSL_POSINF, GSL_NEGINF macros 
 
+* add Fresnel Integrals to specfunc.  See TOMS 723 + 2 subsequent
+errata.
+
 * Complex polynomial solvers (Got Newton-Mueller from
 jotahtin@cc.hut.fi, still to add (BJG)).
 
