@@ -60,7 +60,7 @@ int gsl_vector_complex_float_fprintf (FILE * stream,
 				      const gsl_vector_complex_float * v,
 				      const char *format);
 
-int gsl_vector_complex_float_copy (gsl_vector_complex_float * dest, const gsl_vector_complex_float * src);
+int gsl_vector_complex_float_memcpy (gsl_vector_complex_float * dest, const gsl_vector_complex_float * src);
 
 int gsl_vector_complex_float_reverse (gsl_vector_complex_float * v);
 

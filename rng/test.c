@@ -263,14 +263,14 @@ rng_state_test (const gsl_rng_type * T)
       gsl_rng_get (r);	/* throw away N iterations */
     }
 
-  gsl_rng_cpy (r_save, r);	/* save the intermediate state */
+  gsl_rng_memcpy (r_save, r);	/* save the intermediate state */
 
   for (i = 0; i < N; ++i)
     {
       test_a[i] = gsl_rng_get (r);
     }
 
-  gsl_rng_cpy (r, r_save);	/* restore the intermediate state */
+  gsl_rng_memcpy (r, r_save);	/* restore the intermediate state */
   gsl_rng_free (r_save);
 
   for (i = 0; i < N; ++i)
@@ -309,7 +309,7 @@ rng_parallel_state_test (const gsl_rng_type * T)
       gsl_rng_get (r1);		/* throw away N iterations */
     }
 
-  gsl_rng_cpy (r2, r1);		/* save the intermediate state */
+  gsl_rng_memcpy (r2, r1);		/* save the intermediate state */
 
   for (i = 0; i < N; ++i)
     {

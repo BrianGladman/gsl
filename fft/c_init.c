@@ -121,8 +121,8 @@ FUNCTION(gsl_fft_complex,free) (TYPE(gsl_fft_wavetable_complex) * wavetable)
 }
 
 int
-FUNCTION(gsl_fft_complex,cpy) (TYPE(gsl_fft_wavetable_complex) * dest,
-					 TYPE(gsl_fft_wavetable_complex) * src)
+FUNCTION(gsl_fft_complex,memcpy) (TYPE(gsl_fft_wavetable_complex) * dest,
+                                  TYPE(gsl_fft_wavetable_complex) * src)
 {
   int i, n, nf ;
 

@@ -236,7 +236,7 @@ test_LU_solve_dim(const gsl_matrix * m, const double * actual, double eps)
   gsl_vector * rhs = gsl_vector_alloc(dim);
   gsl_matrix * lu  = gsl_matrix_alloc(dim,dim);
   gsl_vector * solution = gsl_vector_alloc(dim);
-  gsl_matrix_copy(lu,m);
+  gsl_matrix_memcpy(lu,m);
   for(i=0; i<dim; i++) gsl_vector_set(rhs, i, i+1.0);
   s += gsl_la_decomp_LU_impl(lu, perm, &signum);
   s += gsl_la_solve_LU_impl(lu, perm, rhs, solution);
@@ -306,7 +306,7 @@ test_QR_solve_dim(const gsl_matrix * m, const double * actual, double eps)
   gsl_matrix * qr  = gsl_matrix_alloc(dim,dim);
   gsl_vector * d = gsl_vector_alloc(dim);
   gsl_vector * solution = gsl_vector_alloc(dim);
-  gsl_matrix_copy(qr,m);
+  gsl_matrix_memcpy(qr,m);
   for(i=0; i<dim; i++) gsl_vector_set(rhs, i, i+1.0);
   s += gsl_la_decomp_QR_impl(qr, d);
   s += gsl_la_solve_QR_impl(qr, d, rhs, solution);
@@ -378,7 +378,7 @@ test_QRPT_solve_dim(const gsl_matrix * m, const double * actual, double eps)
   gsl_matrix * qr  = gsl_matrix_alloc(dim,dim);
   gsl_vector * d = gsl_vector_alloc(dim);
   gsl_vector * solution = gsl_vector_alloc(dim);
-  gsl_matrix_copy(qr,m);
+  gsl_matrix_memcpy(qr,m);
   for(i=0; i<dim; i++) gsl_vector_set(rhs, i, i+1.0);
   s += gsl_la_decomp_QRPT_impl(qr, d, perm, &signum);
   s += gsl_la_solve_QRPT_impl(qr, d, perm, rhs, solution);
@@ -458,8 +458,8 @@ test_QR_update_dim(const gsl_matrix * m, double eps)
   gsl_vector * u = gsl_vector_alloc(dim);
   gsl_vector * v = gsl_vector_alloc(dim);
   gsl_vector * w = gsl_vector_alloc(dim);
-  gsl_matrix_copy(qr1,m);
-  gsl_matrix_copy(qr2,m);
+  gsl_matrix_memcpy(qr1,m);
+  gsl_matrix_memcpy(qr2,m);
   for(i=0; i<dim; i++) gsl_vector_set(rhs, i, i+1.0);
   for(i=0; i<dim; i++) gsl_vector_set(u, i, sin(i+1.0));
   for(i=0; i<dim; i++) gsl_vector_set(v, i, cos(i+2.0) + sin(i*i+3.0));
@@ -588,7 +588,7 @@ test_HH_solve_dim(const gsl_matrix * m, const double * actual, double eps)
   gsl_matrix * hh  = gsl_matrix_alloc(dim,dim);
   gsl_vector * d = gsl_vector_alloc(dim);
   gsl_vector * solution = gsl_vector_alloc(dim);
-  gsl_matrix_copy(hh,m);
+  gsl_matrix_memcpy(hh,m);
   for(i=0; i<dim; i++) gsl_vector_set(solution, i, i+1.0);
   s += gsl_la_solve_HH_impl(hh, solution);
   for(i=0; i<dim; i++) {

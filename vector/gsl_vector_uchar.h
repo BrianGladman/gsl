@@ -46,7 +46,7 @@ int gsl_vector_uchar_fscanf (FILE * stream, gsl_vector_uchar * v);
 int gsl_vector_uchar_fprintf (FILE * stream, const gsl_vector_uchar * v,
 			      const char *format);
 
-int gsl_vector_uchar_cpy (gsl_vector_uchar * dest, const gsl_vector_uchar * src);
+int gsl_vector_uchar_memcpy (gsl_vector_uchar * dest, const gsl_vector_uchar * src);
 
 int gsl_vector_uchar_reverse (gsl_vector_uchar * v);
 

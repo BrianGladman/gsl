@@ -78,7 +78,7 @@ FUNCTION (test, func) (void)
     k = 0;
     for (i = 0; i < N; i++)
       {
-	FUNCTION (gsl_matrix, copy_row) (v, m, i);
+	FUNCTION (gsl_matrix, get_row) (v, m, i);
 
 	for (j = 0; j < M; j++)
 	  {
@@ -88,7 +88,7 @@ FUNCTION (test, func) (void)
 	  }
       }
 
-    gsl_test (status, NAME (gsl_matrix) "_copy_row extracts row correctly");
+    gsl_test (status, NAME (gsl_matrix) "_get_row extracts row correctly");
   }
 
  FUNCTION (gsl_matrix, free) (m);

@@ -117,7 +117,7 @@ gnewton_iterate (void * vstate, gsl_multiroot_function_fdf * fdf, gsl_vector * x
 
   size_t n = fdf->n ;
 
-  gsl_matrix_copy (state->lu, J);
+  gsl_matrix_memcpy (state->lu, J);
 
   gsl_la_decomp_LU_impl (state->lu, state->permutation, &signum);
 
@@ -154,7 +154,7 @@ new_step:
 
   /* copy x_trial into x */
 
-  gsl_vector_cpy (x, state->x_trial);
+  gsl_vector_memcpy (x, state->x_trial);
 
   for (i = 0; i < n; i++)
     {

@@ -34,25 +34,17 @@ gsl_rng_alloc (const gsl_rng_type * T)
   return r;
 }
 
-gsl_rng *
-gsl_rng_cpy (gsl_rng * dest, const gsl_rng * src)
+int
+gsl_rng_memcpy (gsl_rng * dest, const gsl_rng * src)
 {
-  if (dest->type->size != src->type->size)
+  if (dest->type != src->type)
     {
-      dest->state = realloc (dest->state, src->type->size);
-
-      if (dest->state == 0)
-	{
-	  GSL_ERROR_RETURN ("failed to reallocate space for rng state",
-			    GSL_ENOMEM, 0);
-	}
+      GSL_ERROR ("generators must be of the same type", GSL_EINVAL);
     }
-
-  dest->type = src->type;
 
   memcpy (dest->state, src->state, src->type->size);
 
-  return dest;
+  return GSL_SUCCESS;
 }
 
 gsl_rng *

@@ -36,7 +36,7 @@ gsl_multiroot_fdjacobian (gsl_multiroot_function * F,
 	GSL_ERROR ("failed to allocate space for f1 workspace", GSL_ENOMEM);
       }
 
-    gsl_vector_cpy (x1, x);	/* copy x into x1 */
+    gsl_vector_memcpy (x1, x);	/* copy x into x1 */
 
     for (j = 0; j < n; j++)
       {

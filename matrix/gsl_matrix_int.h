@@ -50,8 +50,8 @@ int gsl_matrix_int_fwrite (FILE * stream, const gsl_matrix_int * m) ;
 int gsl_matrix_int_fscanf (FILE * stream, gsl_matrix_int * m);
 int gsl_matrix_int_fprintf (FILE * stream, const gsl_matrix_int * m, const char * format);
  
-int gsl_matrix_int_copy_row(gsl_vector_int * v, const gsl_matrix_int * m, size_t i);
-int gsl_matrix_int_copy_col(gsl_vector_int * v, const gsl_matrix_int * m, size_t j);
+int gsl_matrix_int_get_row(gsl_vector_int * v, const gsl_matrix_int * m, size_t i);
+int gsl_matrix_int_get_col(gsl_vector_int * v, const gsl_matrix_int * m, size_t j);
 int gsl_matrix_int_set_row(gsl_matrix_int * m, size_t i, const gsl_vector_int * v);
 int gsl_matrix_int_set_col(gsl_matrix_int * m, size_t j, const gsl_vector_int * v);
 
@@ -59,7 +59,7 @@ int gsl_matrix_int_swap_rows(gsl_matrix_int * m, size_t i, size_t j);
 int gsl_matrix_int_swap_cols(gsl_matrix_int * m, size_t i, size_t j);
 int gsl_matrix_int_swap_rowcol(gsl_matrix_int * m, size_t i, size_t j);
 
-int gsl_matrix_int_copy(gsl_matrix_int * dest, const gsl_matrix_int * src);
+int gsl_matrix_int_memcpy(gsl_matrix_int * dest, const gsl_matrix_int * src);
 
 int gsl_vector_int_view_row_from_matrix (gsl_vector_int * v, gsl_matrix_int * m, size_t i);
 int gsl_vector_int_view_col_from_matrix (gsl_vector_int * v, gsl_matrix_int * m, size_t j);

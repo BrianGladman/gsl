@@ -67,7 +67,7 @@ gsl_fft_wavetable_complex *gsl_fft_complex_alloc (size_t n);
 
 void gsl_fft_complex_free (gsl_fft_wavetable_complex * wavetable);
 
-int gsl_fft_complex_cpy (gsl_fft_wavetable_complex * dest,
+int gsl_fft_complex_memcpy (gsl_fft_wavetable_complex * dest,
                          gsl_fft_wavetable_complex * src);
 
 

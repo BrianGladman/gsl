@@ -462,8 +462,8 @@ iterate (void *vstate, gsl_multiroot_function_fdf * fdf, gsl_vector * x, gsl_vec
 
   if (ratio >= p0001)
     {
-      gsl_vector_cpy (x, x_trial);
-      gsl_vector_cpy (f, f_trial);
+      gsl_vector_memcpy (x, x_trial);
+      gsl_vector_memcpy (f, f_trial);
       state->fnorm = fnorm1;
       state->iter++;
     }

@@ -102,7 +102,7 @@ dnewton_iterate (void * vstate, gsl_multiroot_function * function, gsl_vector * 
 
   size_t n = function->n ;
 
-  gsl_matrix_copy (state->lu, state->J);
+  gsl_matrix_memcpy (state->lu, state->J);
 
   gsl_la_decomp_LU_impl (state->lu, state->permutation, &signum);
 

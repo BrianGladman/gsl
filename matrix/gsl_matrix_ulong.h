@@ -50,8 +50,8 @@ int gsl_matrix_ulong_fwrite (FILE * stream, const gsl_matrix_ulong * m) ;
 int gsl_matrix_ulong_fscanf (FILE * stream, gsl_matrix_ulong * m);
 int gsl_matrix_ulong_fprintf (FILE * stream, const gsl_matrix_ulong * m, const char * format);
  
-int gsl_matrix_ulong_copy_row(gsl_vector_ulong * v, const gsl_matrix_ulong * m, size_t i);
-int gsl_matrix_ulong_copy_col(gsl_vector_ulong * v, const gsl_matrix_ulong * m, size_t j);
+int gsl_matrix_ulong_get_row(gsl_vector_ulong * v, const gsl_matrix_ulong * m, size_t i);
+int gsl_matrix_ulong_get_col(gsl_vector_ulong * v, const gsl_matrix_ulong * m, size_t j);
 int gsl_matrix_ulong_set_row(gsl_matrix_ulong * m, size_t i, const gsl_vector_ulong * v);
 int gsl_matrix_ulong_set_col(gsl_matrix_ulong * m, size_t j, const gsl_vector_ulong * v);
 
@@ -59,7 +59,7 @@ int gsl_matrix_ulong_swap_rows(gsl_matrix_ulong * m, size_t i, size_t j);
 int gsl_matrix_ulong_swap_cols(gsl_matrix_ulong * m, size_t i, size_t j);
 int gsl_matrix_ulong_swap_rowcol(gsl_matrix_ulong * m, size_t i, size_t j);
 
-int gsl_matrix_ulong_copy(gsl_matrix_ulong * dest, const gsl_matrix_ulong * src);
+int gsl_matrix_ulong_memcpy(gsl_matrix_ulong * dest, const gsl_matrix_ulong * src);
 
 int gsl_vector_ulong_view_row_from_matrix (gsl_vector_ulong * v, gsl_matrix_ulong * m, size_t i);
 int gsl_vector_ulong_view_col_from_matrix (gsl_vector_ulong * v, gsl_matrix_ulong * m, size_t j);

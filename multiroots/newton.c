@@ -83,7 +83,7 @@ newton_iterate (void * vstate, gsl_multiroot_function_fdf * fdf, gsl_vector * x,
 
   size_t n = fdf->n ;
 
-  gsl_matrix_copy (state->lu, J);
+  gsl_matrix_memcpy (state->lu, J);
 
   gsl_la_decomp_LU_impl (state->lu, state->permutation, &signum);
 

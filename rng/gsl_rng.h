@@ -79,7 +79,7 @@ extern const gsl_rng_type *gsl_rng_default;
 extern unsigned long int gsl_rng_default_seed;
 
 gsl_rng *gsl_rng_alloc (const gsl_rng_type * T);
-gsl_rng *gsl_rng_cpy (gsl_rng * dest, const gsl_rng * src);
+int gsl_rng_memcpy (gsl_rng * dest, const gsl_rng * src);
 gsl_rng *gsl_rng_clone (const gsl_rng * r);
 
 void gsl_rng_free (gsl_rng * r);

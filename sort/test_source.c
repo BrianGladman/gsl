@@ -20,7 +20,7 @@ TYPE (test_sort_vector) (size_t N, size_t stride)
   FUNCTION (my, initialize) (orig);
 
   /* Already sorted */
-  FUNCTION (gsl_vector, cpy) (data, orig);
+  FUNCTION (gsl_vector, memcpy) (data, orig);
 
   status = FUNCTION (gsl_sort_vector, index) (p, data);
   status |= FUNCTION (my, pcheck) (p, data, orig);
@@ -32,7 +32,7 @@ TYPE (test_sort_vector) (size_t N, size_t stride)
 
   /* Reverse the data */
 
-  FUNCTION (gsl_vector, cpy) (data, orig);
+  FUNCTION (gsl_vector, memcpy) (data, orig);
   FUNCTION (gsl_vector, reverse) (data);
 
   status = FUNCTION (gsl_sort_vector, index) (p, data);
@@ -45,7 +45,7 @@ TYPE (test_sort_vector) (size_t N, size_t stride)
 
   /* Perform some shuffling */
 
-  FUNCTION (gsl_vector, cpy) (data, orig);
+  FUNCTION (gsl_vector, memcpy) (data, orig);
   FUNCTION (my, randomize) (data);
 
   status = FUNCTION (gsl_sort_vector, index) (p, data);

@@ -138,9 +138,9 @@ conjugate_direction(void *vstate,gsl_multimin_fdf_history *h ,gsl_vector * dir)
 	  gsl_vector_set(state->last_direction,i,tmp);
 	  gsl_vector_set(dir,i,tmp);
 	}
-      /*      gsl_vector_cpy(state->last_direction,h->g);
+      /*      gsl_vector_memcpy(state->last_direction,h->g);
       gsl_blas_dscal(-1,state->last_direction);
-      gsl_vector_cpy(dir,state->last_direction);*/
+      gsl_vector_memcpy(dir,state->last_direction);*/
       state->first_move = 0;
       return GSL_SUCCESS;
     }
@@ -163,14 +163,14 @@ conjugate_direction(void *vstate,gsl_multimin_fdf_history *h ,gsl_vector * dir)
 	      tmp = gsl_vector_get(state->last_direction,i)-gsl_vector_get(h->g,i);
 	      gsl_vector_set(state->last_direction,i,tmp);
 	    }
-	  /*	  gsl_vector_cpy(state->delta_gradient,h->g);
+	  /*	  gsl_vector_memcpy(state->delta_gradient,h->g);
 	  gsl_blas_daxpy(-1,h->g1,state->delta_gradient);
 	  gsl_blas_ddot(h->g,state->delta_gradient,&gamma);
 	  gamma /= scalar;
 	  gsl_blas_dscal(gamma,state->last_direction); 
 	  gsl_blas_daxpy(-1,h->g,state->last_direction); */
 	}
-      gsl_vector_cpy(dir,state->last_direction);
+      gsl_vector_memcpy(dir,state->last_direction);
       return GSL_SUCCESS;
     }
 }

@@ -1,6 +1,6 @@
 int
-FUNCTION (gsl_vector, cpy) (TYPE (gsl_vector) * dest,
-                            const TYPE (gsl_vector) * src)
+FUNCTION (gsl_vector, memcpy) (TYPE (gsl_vector) * dest,
+                               const TYPE (gsl_vector) * src)
 {
   const size_t src_size = src->size;
   const size_t dest_size = dest->size;

@@ -1,5 +1,5 @@
 int
-FUNCTION (gsl_matrix, copy_row) (TYPE (gsl_vector) * v,
+FUNCTION (gsl_matrix, get_row) (TYPE (gsl_vector) * v,
                                  const TYPE (gsl_matrix) * m,
 				 const size_t i)
 {
@@ -32,7 +32,7 @@ FUNCTION (gsl_matrix, copy_row) (TYPE (gsl_vector) * v,
 }
 
 int
-FUNCTION (gsl_matrix, copy_col) (TYPE (gsl_vector) * v,
+FUNCTION (gsl_matrix, get_col) (TYPE (gsl_vector) * v,
                                  const TYPE (gsl_matrix) * m,
 				 const size_t j)
 {

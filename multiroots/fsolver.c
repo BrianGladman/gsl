@@ -106,7 +106,7 @@ gsl_multiroot_fsolver_set (gsl_multiroot_fsolver * s,
                            gsl_vector * x)
 {
   s->function = f;
-  gsl_vector_cpy(s->x,x);
+  gsl_vector_memcpy(s->x,x);
   
   return (s->type->set) (s->state, s->function, s->x, s->f, s->dx);
 }

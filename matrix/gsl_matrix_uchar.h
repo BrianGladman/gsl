@@ -50,8 +50,8 @@ int gsl_matrix_uchar_fwrite (FILE * stream, const gsl_matrix_uchar * m) ;
 int gsl_matrix_uchar_fscanf (FILE * stream, gsl_matrix_uchar * m);
 int gsl_matrix_uchar_fprintf (FILE * stream, const gsl_matrix_uchar * m, const char * format);
  
-int gsl_matrix_uchar_copy_row(gsl_vector_uchar * v, const gsl_matrix_uchar * m, size_t i);
-int gsl_matrix_uchar_copy_col(gsl_vector_uchar * v, const gsl_matrix_uchar * m, size_t j);
+int gsl_matrix_uchar_get_row(gsl_vector_uchar * v, const gsl_matrix_uchar * m, size_t i);
+int gsl_matrix_uchar_get_col(gsl_vector_uchar * v, const gsl_matrix_uchar * m, size_t j);
 int gsl_matrix_uchar_set_row(gsl_matrix_uchar * m, size_t i, const gsl_vector_uchar * v);
 int gsl_matrix_uchar_set_col(gsl_matrix_uchar * m, size_t j, const gsl_vector_uchar * v);
 
@@ -59,7 +59,7 @@ int gsl_matrix_uchar_swap_rows(gsl_matrix_uchar * m, size_t i, size_t j);
 int gsl_matrix_uchar_swap_cols(gsl_matrix_uchar * m, size_t i, size_t j);
 int gsl_matrix_uchar_swap_rowcol(gsl_matrix_uchar * m, size_t i, size_t j);
 
-int gsl_matrix_uchar_copy(gsl_matrix_uchar * dest, const gsl_matrix_uchar * src);
+int gsl_matrix_uchar_memcpy(gsl_matrix_uchar * dest, const gsl_matrix_uchar * src);
 
 int gsl_vector_uchar_view_row_from_matrix (gsl_vector_uchar * v, gsl_matrix_uchar * m, size_t i);
 int gsl_vector_uchar_view_col_from_matrix (gsl_vector_uchar * v, gsl_matrix_uchar * m, size_t j);
