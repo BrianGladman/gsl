@@ -2,7 +2,6 @@
 /* Get Poisson Deviates */
 
 #include <math.h>
-#include "gsl_random.h"
 #include "gsl_ran.h"
 
 double gsl_ran_exponential(double mu)
