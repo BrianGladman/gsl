@@ -89,6 +89,9 @@ main (void)
   gsl_ieee_env_setup();
 
   {
+    gsl_multifit_linear_workspace * work = 
+      gsl_multifit_linear_alloc (longley_n, longley_p);
+
     gsl_matrix X = gsl_matrix_view (longley_x, longley_n, longley_p);
     gsl_vector y = gsl_vector_view (longley_y, longley_n);
     gsl_vector * c = gsl_vector_alloc (longley_p);
@@ -115,7 +118,7 @@ main (void)
 
     double expected_chisq = 836424.055505915;
 
-    gsl_multifit_linear (&X, &y, c, cov, &chisq);
+    gsl_multifit_linear (&X, &y, c, cov, &chisq, work);
 
     gsl_test_rel (gsl_vector_get(c,0), expected_c[0], 1e-10, "longley gsl_fit_multilinear c0") ;
     gsl_test_rel (gsl_vector_get(c,1), expected_c[1], 1e-10, "longley gsl_fit_multilinear c1") ;
@@ -139,10 +142,14 @@ main (void)
 
     gsl_vector_free(c);
     gsl_matrix_free(cov);
+    gsl_multifit_linear_free (work);
   }
 
 
   {
+    gsl_multifit_linear_workspace * work = 
+      gsl_multifit_linear_alloc (longley_n, longley_p);
+
     gsl_matrix X = gsl_matrix_view (longley_x, longley_n, longley_p);
     gsl_vector y = gsl_vector_view (longley_y, longley_n);
     gsl_vector * w = gsl_vector_alloc (longley_n);
@@ -191,7 +198,7 @@ main (void)
 
     gsl_vector_set_all (w, 1.0);
 
-    gsl_multifit_wlinear (&X, w, &y, c, cov, &chisq);
+    gsl_multifit_wlinear (&X, w, &y, c, cov, &chisq, work);
 
     gsl_test_rel (gsl_vector_get(c,0), expected_c[0], 1e-10, "longley gsl_fit_wmultilinear c0") ;
     gsl_test_rel (gsl_vector_get(c,1), expected_c[1], 1e-10, "longley gsl_fit_wmultilinear c1") ;
@@ -215,9 +222,13 @@ main (void)
     gsl_vector_free(w);
     gsl_vector_free(c);
     gsl_matrix_free(cov);
+    gsl_multifit_linear_free (work);
   }
 
   {
+    gsl_multifit_linear_workspace * work = 
+      gsl_multifit_linear_alloc (filip_n, filip_p);
+
     gsl_matrix * X = gsl_matrix_alloc (filip_n, filip_p);
     gsl_vector y = gsl_vector_view (filip_y, filip_n);
     gsl_vector * c = gsl_vector_alloc (filip_p);
@@ -260,7 +271,7 @@ main (void)
           }
       }
 
-    gsl_multifit_linear (X, &y, c, cov, &chisq);
+    gsl_multifit_linear (X, &y, c, cov, &chisq, work);
 
     gsl_test_rel (gsl_vector_get(c,0), expected_c[0], 1e-7, "filip gsl_fit_multilinear c0") ;
     gsl_test_rel (gsl_vector_get(c,1), expected_c[1], 1e-7, "filip gsl_fit_multilinear c1") ;
@@ -293,9 +304,13 @@ main (void)
     gsl_vector_free(c);
     gsl_matrix_free(cov);
     gsl_matrix_free(X);
+    gsl_multifit_linear_free (work);
   }
 
   {
+    gsl_multifit_linear_workspace * work = 
+      gsl_multifit_linear_alloc (filip_n, filip_p);
+
     gsl_matrix * X = gsl_matrix_alloc (filip_n, filip_p);
     gsl_vector y = gsl_vector_view (filip_y, filip_n);
     gsl_vector * w = gsl_vector_alloc (filip_n);
@@ -342,7 +357,7 @@ main (void)
 
     gsl_vector_set_all (w, 1.0);
 
-    gsl_multifit_wlinear (X, w, &y, c, cov, &chisq);
+    gsl_multifit_wlinear (X, w, &y, c, cov, &chisq, work);
 
     gsl_test_rel (gsl_vector_get(c,0), expected_c[0], 1e-7, "filip gsl_fit_multilinear c0") ;
     gsl_test_rel (gsl_vector_get(c,1), expected_c[1], 1e-7, "filip gsl_fit_multilinear c1") ;
@@ -372,10 +387,14 @@ main (void)
     gsl_vector_free(c);
     gsl_matrix_free(cov);
     gsl_matrix_free(X);
+    gsl_multifit_linear_free (work);
   }
 
 
   {
+    gsl_multifit_linear_workspace * work = 
+      gsl_multifit_linear_alloc (pontius_n, pontius_p);
+
     gsl_matrix * X = gsl_matrix_alloc (pontius_n, pontius_p);
     gsl_vector y = gsl_vector_view (pontius_y, pontius_n);
     gsl_vector * c = gsl_vector_alloc (pontius_p);
@@ -402,7 +421,7 @@ main (void)
           }
       }
 
-    gsl_multifit_linear (X, &y, c, cov, &chisq);
+    gsl_multifit_linear (X, &y, c, cov, &chisq, work);
 
     gsl_test_rel (gsl_vector_get(c,0), expected_c[0], 1e-10, "pontius gsl_fit_multilinear c0") ;
     gsl_test_rel (gsl_vector_get(c,1), expected_c[1], 1e-10, "pontius gsl_fit_multilinear c1") ;
@@ -419,10 +438,14 @@ main (void)
     gsl_vector_free(c);
     gsl_matrix_free(cov);
     gsl_matrix_free(X);
+    gsl_multifit_linear_free (work);
   }
 
 
   {
+    gsl_multifit_linear_workspace * work = 
+      gsl_multifit_linear_alloc (pontius_n, pontius_p);
+
     gsl_matrix * X = gsl_matrix_alloc (pontius_n, pontius_p);
     gsl_vector y = gsl_vector_view (pontius_y, pontius_n);
     gsl_vector * w = gsl_vector_alloc (pontius_n);
@@ -453,7 +476,7 @@ main (void)
 
     gsl_vector_set_all (w, 1.0);
 
-    gsl_multifit_wlinear (X, w, &y, c, cov, &chisq);
+    gsl_multifit_wlinear (X, w, &y, c, cov, &chisq, work);
 
     gsl_test_rel (gsl_vector_get(c,0), expected_c[0], 1e-10, "pontius gsl_fit_multilinear c0") ;
     gsl_test_rel (gsl_vector_get(c,1), expected_c[1], 1e-10, "pontius gsl_fit_multilinear c1") ;
@@ -475,6 +498,7 @@ main (void)
     gsl_vector_free(c);
     gsl_matrix_free(cov);
     gsl_matrix_free(X);
+    gsl_multifit_linear_free (work);
   }
 
 

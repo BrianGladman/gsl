@@ -1,4 +1,4 @@
-/* fit/multiple.c
+/* multifit/multilinear.c
  * 
  * Copyright (C) 2000 Brian Gough
  * 
@@ -36,7 +36,8 @@ gsl_multifit_linear (const gsl_matrix * X,
                      const gsl_vector * y,
                      gsl_vector * c,
                      gsl_matrix * cov,
-                     double * chisq)
+                     double * chisq,
+                     gsl_multifit_linear_workspace * work)
 {
 
   if (X->size1 != y->size) 
@@ -58,19 +59,23 @@ gsl_multifit_linear (const gsl_matrix * X,
       GSL_ERROR ("number of parameters does not match size of covariance matrix",
                  GSL_EBADLEN);
     }
+  else if (X->size1 != work->n || X->size2 != work->p)
+    {
+      GSL_ERROR ("size of workspace does not match size of observation matrix",
+                 GSL_EBADLEN);
+    }
   else 
     {
-      const size_t M = X->size1;
-      const size_t N = X->size2;
+      const size_t n = X->size1;
+      const size_t p = X->size2;
       
       size_t i, j;
 
-      gsl_matrix * A = gsl_matrix_alloc (M, N);
-      gsl_matrix * Q = gsl_matrix_alloc (N, N);
-      gsl_matrix * QSI = gsl_matrix_alloc (N, N);
-      gsl_vector * S = gsl_vector_alloc (N);
-      gsl_vector * t = gsl_vector_alloc (M);
-      gsl_vector * xt = gsl_vector_calloc (N);
+      gsl_matrix * A = work->A;
+      gsl_matrix * Q = work->Q;
+      gsl_matrix * QSI = work->QSI;
+      gsl_vector * S = work->S;
+      gsl_vector * xt = work->xt;
 
       /* Copy X to workspace,  A =  X */
       
@@ -88,7 +93,7 @@ gsl_multifit_linear (const gsl_matrix * X,
 
       gsl_matrix_memcpy (QSI, Q);
 
-      for (j = 0 ; j < N ; j++)
+      for (j = 0 ; j < p ; j++)
         {
           gsl_vector column = gsl_matrix_column (QSI, j);
           double alpha = gsl_vector_get (S, j);
@@ -106,7 +111,7 @@ gsl_multifit_linear (const gsl_matrix * X,
       {
         double s2 = 0, r2 = 0;
         
-        for (i = 0; i < M; i++) 
+        for (i = 0; i < n; i++) 
           {
             double yi = gsl_vector_get (y, i);
             const gsl_vector row = gsl_matrix_const_row (X, i);
@@ -116,17 +121,17 @@ gsl_multifit_linear (const gsl_matrix * X,
             r2 +=  ri * ri;
           }
 
-        s2 = r2 / (M - N);
+        s2 = r2 / (n - p);
 
         *chisq = r2;
 
         /* Form variance-covariance matrix cov = s2 * (Q S^-1) (Q S^-1)^T */
         
-        for (i = 0; i < N; i++) 
+        for (i = 0; i < p; i++) 
           {
             gsl_vector row_i = gsl_matrix_row (QSI, i);
             
-            for (j = i; j < N ; j++)
+            for (j = i; j < p ; j++)
               {
                 gsl_vector row_j = gsl_matrix_row (QSI, j);
                 
@@ -140,13 +145,6 @@ gsl_multifit_linear (const gsl_matrix * X,
           }
       }
 
-      gsl_matrix_free (A);
-      gsl_matrix_free (Q);
-      gsl_matrix_free (QSI);
-      gsl_vector_free (S);
-      gsl_vector_free (t);
-      gsl_vector_free (xt);
-
       return GSL_SUCCESS;
     }
 }
@@ -157,7 +155,8 @@ gsl_multifit_wlinear (const gsl_matrix * X,
                       const gsl_vector * y,
                       gsl_vector * c,
                       gsl_matrix * cov,
-                      double * chisq)
+                      double * chisq,
+                      gsl_multifit_linear_workspace * work)
 {
   if (X->size1 != y->size) 
     {
@@ -183,25 +182,30 @@ gsl_multifit_wlinear (const gsl_matrix * X,
       GSL_ERROR ("number of parameters does not match size of covariance matrix",
                  GSL_EBADLEN);
     }
+  else if (X->size1 != work->n || X->size2 != work->p)
+    {
+      GSL_ERROR ("size of workspace does not match size of observation matrix",
+                 GSL_EBADLEN);
+    }
   else 
     {
-      const size_t M = X->size1;
-      const size_t N = X->size2;
+      const size_t n = X->size1;
+      const size_t p = X->size2;
       
       size_t i, j;
 
-      gsl_matrix * A = gsl_matrix_alloc (M, N);
-      gsl_matrix * Q = gsl_matrix_alloc (N, N);
-      gsl_matrix * QSI = gsl_matrix_alloc (N, N);
-      gsl_vector * S = gsl_vector_alloc (N);
-      gsl_vector * t = gsl_vector_alloc (M);
-      gsl_vector * xt = gsl_vector_calloc (N);
+      gsl_matrix * A = work->A;
+      gsl_matrix * Q = work->Q;
+      gsl_matrix * QSI = work->QSI;
+      gsl_vector * S = work->S;
+      gsl_vector * t = work->t;
+      gsl_vector * xt = work->xt;
 
       /* Scale X,  A = sqrt(w) X */
       
       gsl_matrix_memcpy (A, X);
 
-      for (i = 0; i < M; i++)
+      for (i = 0; i < n; i++)
         {
           double wi = gsl_vector_get (w, i);
 
@@ -220,7 +224,7 @@ gsl_multifit_wlinear (const gsl_matrix * X,
       
       /* Solve sqrt(w) y = A c for c, by first computing t = sqrt(w) y */
 
-      for (i = 0; i < M; i++)
+      for (i = 0; i < n; i++)
         {
           double wi = gsl_vector_get (w, i);
           double yi = gsl_vector_get (y, i);
@@ -234,7 +238,7 @@ gsl_multifit_wlinear (const gsl_matrix * X,
 
       gsl_matrix_memcpy (QSI, Q);
 
-      for (j = 0 ; j < N ; j++)
+      for (j = 0 ; j < p ; j++)
         {
           gsl_vector column = gsl_matrix_column (QSI, j);
           double alpha = gsl_vector_get (S, j);
@@ -251,11 +255,11 @@ gsl_multifit_wlinear (const gsl_matrix * X,
       
       /* Form covariance matrix cov = (Q S^-1) (Q S^-1)^T */
 
-      for (i = 0; i < N; i++) 
+      for (i = 0; i < p; i++) 
         {
           gsl_vector row_i = gsl_matrix_row (QSI, i);
 
-          for (j = i; j < N ; j++)
+          for (j = i; j < p ; j++)
             {
               gsl_vector row_j = gsl_matrix_row (QSI, j);
               
@@ -273,7 +277,7 @@ gsl_multifit_wlinear (const gsl_matrix * X,
       {
         double r2 = 0;
         
-        for (i = 0; i < M; i++) 
+        for (i = 0; i < n; i++) 
           {
             double yi = gsl_vector_get (y, i);
             double wi = gsl_vector_get (w, i);
@@ -286,13 +290,6 @@ gsl_multifit_wlinear (const gsl_matrix * X,
       
         *chisq = r2;
       }
-
-      gsl_matrix_free (A);
-      gsl_matrix_free (Q);
-      gsl_matrix_free (QSI);
-      gsl_vector_free (S);
-      gsl_vector_free (t);
-      gsl_vector_free (xt);
 
       return GSL_SUCCESS;
     }

@@ -4,7 +4,7 @@ pkginclude_HEADERS = gsl_multifit.h
 
 INCLUDES= -I$(top_builddir)
 
-libgslmultifit_la_SOURCES = multilinear.c 
+libgslmultifit_la_SOURCES = multilinear.c work.c
 
 check_PROGRAMS = test
 
