@@ -11,32 +11,39 @@
    if not, write to the Free Foundation, Inc., 59 Temple Place, Suite
    330, Boston, MA 02111-1307 USA
 
-   Copyright (C) 1998 Brian Gough, reimplemented for GSL
+   Original implementation was copyright (C) 1997 Makoto Matsumoto and
+   Takuji Nishimura. Coded by Takuji Nishimura, considering the
+   suggestions by Topher Cooper and Marc Rieffel in July-Aug. 1997, "A
+   C-program for MT19937: Integer version (1998/4/6)"
 
-   Original work was copyright (C) 1997 Makoto Matsumoto and Takuji
-   Nishimura. Coded by Takuji Nishimura, considering the suggestions
-   by Topher Cooper and Marc Rieffel in July-Aug. 1997, "A C-program
-   for MT19937: Integer version (1998/4/6)"
+   This implementation copyright (C) 1998 Brian Gough. I reorganized
+   the code to use the module framework of GSL.  The license on this
+   implementation was changed from LGPL to GPL, following paragraph 3
+   of the LGPL, version 2.
 
    The original code included the comment: "When you use this, send an
    email to: matumoto@math.keio.ac.jp with an appropriate reference to
    your work".
 
-   The algorithm is too mathematical to explain here. See the paper
-   for details.
+   Makoto Matsumoto has a web page with more information about the
+   generator, http://www.math.keio.ac.jp/~matumoto/emt.html. 
+
+   The paper below has details of the algorithm.
 
    From: Makoto Matsumoto and Takuji Nishimura, "Mersenne Twister: A
    623-dimensionally equidistributerd uniform pseudorandom number
    generator". ACM Transactions on Modeling and Computer Simulation,
    Vol. 8, No. 1 (Jan. 1998), Pages 3-30
 
+   You can obtain the paper directly from Makoto Matsumoto's web page.
+
    The period of this generator is 2^{19937} - 1.
 
 */
 
+#include <config.h>
+#include <stdlib.h>
 #include <gsl_rng.h>
-
-
 
 inline unsigned long int mt_get (void *vstate);
 double mt_get_double (void *vstate);
@@ -113,6 +120,11 @@ mt_set (void *vstate, unsigned long int s)
     s = 4357;	/* the default seed is 4357 */
 
   state->mt[0] = s & 0xffffffffUL;
+
+  /* We use the congruence s_{n+1} = (69069*s_n) mod 2^32 to
+     initialize the state. This works because ANSI-C unsigned long
+     integer arithmetic is automatically modulo 2^32 (or a higher
+     power of two), so we can safely ignore overflow. */
 
 #define LCG(n) ((69069 * n) & 0xffffffffUL)
 
