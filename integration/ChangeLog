@@ -1,3 +1,8 @@
+Tue Apr 17 22:11:28 2001  Brian Gough  <bjg@network-theory.co.uk>
+
+	* qc25f.c (qc25f): need GSL_ERROR_VOID because function does not
+ 	return value
+
 Mon Apr 16 20:09:09 2001  Brian Gough  <bjg@network-theory.co.uk>
 
 	* qc25f.c (qc25f): removed unnecessary variables, replaced use of

@@ -80,7 +80,7 @@ qc25f (gsl_function * f, double a, double b,
       if (level >= wf->n)
 	{
           /* table overflow should not happen, check before calling */
-          GSL_ERROR("table overflow in internal function", GSL_ESANITY);
+          GSL_ERROR_VOID("table overflow in internal function", GSL_ESANITY);
 	}
 
       /* obtain moments from the table */
