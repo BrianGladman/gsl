@@ -1,3 +1,8 @@
+2001-05-21  Mark Galassi  <rosalia@galassi.org>
+
+	* config.guess, config.sub: removed these auto-generated files
+	from CVS since they are built for developers by autogen.sh.
+
 Tue May 15 10:59:43 2001  Brian Gough  <bjg@network-theory.co.uk>
 
 	* autogen.sh: upgraded to latest libtool and automake
