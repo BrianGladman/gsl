@@ -12,7 +12,7 @@ include_HEADERS = 		\
 	gsl_blas_raw_L1.h	\
 	gsl_blas_raw_cm.h
 
-noinst_HEADERS = blas_raw_native_L23_source.c
+# noinst_HEADERS = 
 
 
 INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../err -I$(srcdir)/../vector -I$(srcdir)/../matrix

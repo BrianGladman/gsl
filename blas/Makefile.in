@@ -84,7 +84,7 @@ include_HEADERS = 		\
 	gsl_blas_raw_L1.h	\
 	gsl_blas_raw_cm.h
 
-noinst_HEADERS = blas_raw_native_L23_source.c
+# noinst_HEADERS = 
 
 INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../err -I$(srcdir)/../vector -I$(srcdir)/../matrix
 
@@ -124,7 +124,7 @@ AR = ar
 CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
 LINK = $(CC) $(CFLAGS) $(LDFLAGS) -o $@
-HEADERS =  $(include_HEADERS) $(noinst_HEADERS)
+HEADERS =  $(include_HEADERS)
 
 DIST_COMMON =  Makefile.am Makefile.in
 
