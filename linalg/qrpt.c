@@ -391,15 +391,13 @@ gsl_la_Rsolve_QRPT_impl (const gsl_matrix * qr_matrix,
 int
 gsl_la_update_QRPT_impl (gsl_matrix * q, gsl_matrix * r,
                          const gsl_vector_int * permutation,
-                         const gsl_vector * u, const gsl_vector * v,
-                         gsl_vector * w)
+                         gsl_vector * w, const gsl_vector * v)
 {
   if (q->size1 != q->size2 || r->size1 != r-> size2)
     {
       return GSL_ENOTSQR;
     }
-  else if (r->size1 != q->size2 || u->size != q->size2 || v->size != q->size2
-           || w->size != q->size2 )
+  else if (r->size1 != q->size2 || v->size != q->size2 || w->size != q->size2 )
     {
       return GSL_EBADLEN;
     }
@@ -409,24 +407,10 @@ gsl_la_update_QRPT_impl (gsl_matrix * q, gsl_matrix * r,
     }
   else
     {
-      size_t i, j, k;
+      size_t j, k;
       const size_t M = q->size1;
       const size_t N = q->size2;
       double w0;
-      
-      /* First compute w = Q^T u, (Equation 12.5.1) */
-      
-      for (j = 0; j < M; j++)
-        {
-          double sum = 0;
-          
-          for (i = 0; i < N; i++)
-            {
-              sum += gsl_matrix_get (q, i, j) * gsl_vector_get (u, i);
-            }
-          
-          gsl_vector_set (w, j, sum);
-        }
       
       /* Apply Given's rotations to reduce w to (|w|, 0, 0, ... , 0) 
          

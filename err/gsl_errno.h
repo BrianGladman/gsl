@@ -32,7 +32,9 @@ enum {
   GSL_EDIVERGE = 22,  /* integral or series is divergent */
   GSL_EUNSUP   = 23,  /* requested feature is not supported by the hardware */
   GSL_EUNIMPL  = 24,  /* requested feature not (yet) implemented */
-  GSL_ECACHE   = 25   /* cache table limit exceeded */
+  GSL_ECACHE   = 25,  /* cache table limit exceeded */
+  GSL_ENOPROG  = 26,  /* iteration is not making progress towards solution */
+  GSL_ENOPROGJ = 27   /* jacobian evaluations are not improving the solution */
 } ;
 
 void gsl_error (const char * reason, const char * file, int line,

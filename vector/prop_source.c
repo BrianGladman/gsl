@@ -12,7 +12,7 @@ FUNCTION (gsl_vector, isnull) (TYPE (gsl_vector) * v)
       
       for (k = 0; k < MULTIPLICITY; k++) 
         {
-          if (v->data[stride * j + k] != 0.0)
+          if (v->data[MULTIPLICITY * stride * j + k] != 0.0)
             {
               return 0;
             }

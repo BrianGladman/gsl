@@ -62,6 +62,10 @@ gsl_strerror (const int gsl_errno)
       return "the requested feature is not (yet) implemented";
     case GSL_ECACHE:
       return "cache table limit exceeded";
+    case GSL_ENOPROG:
+      return "iteration is not making progress towards solution";
+    case GSL_ENOPROGJ:
+      return "jacobian evaluations are not improving the solution";
     default:
       return "unknown error code" ;
     }

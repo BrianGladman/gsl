@@ -43,6 +43,9 @@ gsl_vector_complex_float_get (const gsl_vector_complex_float * v, size_t i);
 void gsl_vector_complex_float_set (gsl_vector_complex_float * v, size_t i,
                                    gsl_complex_float z);
 
+void gsl_vector_complex_float_set_all (gsl_vector_complex_float * v,
+                                       gsl_complex_float z);
+
 int gsl_vector_complex_float_fread (FILE * stream,
 				    gsl_vector_complex_float * v);
 int gsl_vector_complex_float_fwrite (FILE * stream,

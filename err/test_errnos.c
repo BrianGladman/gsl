@@ -49,6 +49,8 @@ main (void)
   CHECK(GSL_EUNSUP);
   CHECK(GSL_EUNIMPL);
   CHECK(GSL_ECACHE);
+  CHECK(GSL_ENOPROG);
+  CHECK(GSL_ENOPROGJ);
 
   for (i = 0 ; i < n ; i++) 
     {

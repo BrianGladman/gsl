@@ -98,8 +98,7 @@ gsl_la_Rsolve_QR_impl (const gsl_matrix * qr_matrix,
 
 int 
 gsl_la_update_QR_impl (gsl_matrix * q, gsl_matrix * r,
-                       const gsl_vector * u, const gsl_vector * v, 
-                       gsl_vector * w);
+                       gsl_vector * w, const gsl_vector * v);
 
 int
 gsl_la_QTvec_QR_impl (const gsl_matrix * qr_matrix, 
@@ -109,6 +108,10 @@ gsl_la_QTvec_QR_impl (const gsl_matrix * qr_matrix,
 int
 gsl_la_unpack_QR_impl (const gsl_matrix * qr, const gsl_vector * rdiag,
                        gsl_matrix * q, gsl_matrix * r);
+
+
+int
+gsl_la_Rsolve_impl (const gsl_matrix * r, gsl_vector * solution);
 
 
 /* Q R P^T decomposition */
@@ -141,8 +144,7 @@ gsl_la_Rsolve_QRPT_impl (const gsl_matrix * qr_matrix,
 int 
 gsl_la_update_QRPT_impl (gsl_matrix * q, gsl_matrix * r,
                          const gsl_vector_int * permutation,
-                         const gsl_vector * u, const gsl_vector * v, 
-                         gsl_vector * w);
+                         gsl_vector * u, const gsl_vector * v);
 
 /* Linear Solve Using Householder Transformations
  *

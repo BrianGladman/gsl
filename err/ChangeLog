@@ -1,3 +1,9 @@
+Sun Nov 28 17:17:03 1999  Brian Gough  <bjg@network-theory.co.uk>
+
+	* gsl_errno.h: added GSL_ENOPROG and GSL_ENOPROGJ to handle error
+ 	conditions from minpack hybrid algorithms (INFO=5,4 in the
+ 	original code)
+
 Thu Oct 28 14:41:31 1999  Brian Gough  <bjg@network-theory.co.uk>
 
 	* gsl_test.h: changed variable name in prototype for clarity

@@ -656,26 +656,27 @@ trig_initpt (gsl_vector * x)
 {
   size_t i;
 
-  for (i = 0; i < N; i++)
+  for (i = 0; i < N; i++)       /* choose an initial point which converges */
     {
-      gsl_vector_set (x, i, 1.0 / N);
+      gsl_vector_set (x, i, 0.05);   
     }
 }
 
 int
 trig_f (const gsl_vector * x, void *params, gsl_vector * f)
 {
-  size_t i,j;
+  size_t i;
+  double sum = 0;
 
   for (i = 0; i < N; i++)
     {
-      double z, sum = 0;
-      double xi = gsl_vector_get (x,i);
+      sum += cos(gsl_vector_get(x,i));
+    }
 
-      for (j = 0; j < N; j++)
-        sum += cos(gsl_vector_get(x,j));
-      
-      z = N - sum + (i + 1) * (1 - cos(xi)) - sin(xi);
+  for (i = 0; i < N; i++)
+    {
+      double xi = gsl_vector_get (x,i);
+      double z = N - sum + (i + 1) * (1 - cos(xi)) - sin(xi);
 
       gsl_vector_set (f, i, z);
     }

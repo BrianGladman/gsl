@@ -414,6 +414,7 @@ test_QR_update_dim(const gsl_matrix * m, double eps)
   for(i=0; i<dim; i++) gsl_vector_set(u, i, sin(i+1.0));
   for(i=0; i<dim; i++) gsl_vector_set(v, i, sin(i*i+3.0));
 
+
   for(i=0; i<dim; i++) 
     {
       double ui = gsl_vector_get(u, i);
@@ -430,7 +431,19 @@ test_QR_update_dim(const gsl_matrix * m, double eps)
 
   s += gsl_la_decomp_QR_impl(qr2, d);
   s += gsl_la_unpack_QR_impl(qr2, d, q, r);
-  s += gsl_la_update_QR_impl(q, r, u, v, w);
+
+
+  /* compute w = Q^T u */
+      
+  for (j = 0; j < dim; j++)
+    {
+      double sum = 0;
+      for (i = 0; i < dim; i++)
+          sum += gsl_matrix_get (q, i, j) * gsl_vector_get (u, i);
+      gsl_vector_set (w, j, sum);
+    }
+
+  s += gsl_la_update_QR_impl(q, r, w, v);
   s += gsl_la_qrsolve_QR_impl(q, r, rhs, solution2);
 
   for(i=0; i<dim; i++) {

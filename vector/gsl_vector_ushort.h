@@ -34,6 +34,8 @@ unsigned short *gsl_vector_ushort_ptr (const gsl_vector_ushort * v, const size_t
 unsigned short gsl_vector_ushort_get (const gsl_vector_ushort * v, const size_t i);
 void gsl_vector_ushort_set (gsl_vector_ushort * v, const size_t i, unsigned short x);
 
+void gsl_vector_ushort_set_all (gsl_vector_ushort * v, unsigned short x);
+
 int gsl_vector_ushort_fread (FILE * stream, gsl_vector_ushort * v);
 int gsl_vector_ushort_fwrite (FILE * stream, const gsl_vector_ushort * v);
 int gsl_vector_ushort_fscanf (FILE * stream, gsl_vector_ushort * v);

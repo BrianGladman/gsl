@@ -4,7 +4,7 @@ pkglib_LIBRARIES = libgslmultiroots.a
 
 pkginclude_HEADERS = gsl_multiroots.h
 
-noinst_HEADERS = enorm.c
+noinst_HEADERS = enorm.c dogleg.c
 
 INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../linalg -I$(srcdir)/../matrix -I$(srcdir)/../vector -I$(srcdir)/../block -I$(srcdir)/../ieee-utils -I$(srcdir)/../err
 

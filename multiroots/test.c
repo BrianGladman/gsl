@@ -13,10 +13,10 @@ int test_f (const char * desc, gsl_multiroot_function_fdf * fdf, initpt_function
 int 
 main (void)
 {
-  const gsl_multiroot_fsolver_type * fsolvers[4] ;
+  const gsl_multiroot_fsolver_type * fsolvers[5] ;
   const gsl_multiroot_fsolver_type ** T1 ;
 
-  const gsl_multiroot_fdfsolver_type * fdfsolvers[4] ;
+  const gsl_multiroot_fdfsolver_type * fdfsolvers[5] ;
   const gsl_multiroot_fdfsolver_type ** T2 ;
 
   double f;
@@ -29,45 +29,44 @@ main (void)
   fdfsolvers[0] = gsl_multiroot_fdfsolver_newton;
   fdfsolvers[1] = gsl_multiroot_fdfsolver_gnewton;
   fdfsolvers[2] = gsl_multiroot_fdfsolver_hybridj;
-  fdfsolvers[3] = 0 ;
+  fdfsolvers[3] = gsl_multiroot_fdfsolver_hybridsj;
+  fdfsolvers[4] = 0;
 
   gsl_ieee_env_setup();
 
 
-  for (f = 1.0 ; f <= 100 ; f*=10)
+  f = 1.0 ;
+  
+  T1 = fsolvers ;
+  
+  while (*T1 != 0) 
     {
-
-      T1 = fsolvers ;
-      
-      while (*T1 != 0) 
-        {
-          test_f ("Rosenbrock", &rosenbrock, rosenbrock_initpt, f, *T1);
-          test_f ("Roth", &roth, roth_initpt, f, *T1);
-          test_f ("Powell badly scaled", &powellscal, powellscal_initpt, f, *T1);
-          test_f ("Brown badly scaled", &brownscal, brownscal_initpt, f, *T1);
-          test_f ("Powell singular", &powellsing, powellsing_initpt, f, *T1);
-          test_f ("Wood", &wood, wood_initpt, f, *T1);
-          test_f ("Helical", &helical, helical_initpt, f, *T1);
-          test_f ("Discrete BVP", &dbv, dbv_initpt, f, *T1);
-          test_f ("Trig", &trig, trig_initpt, f, *T1);
-          T1++;
-        }
-      
-      T2 = fdfsolvers ;
-      
-      while (*T2 != 0) 
-        {
-          test_fdf ("Rosenbrock", &rosenbrock, rosenbrock_initpt, f, *T2);
-          test_fdf ("Roth", &roth, roth_initpt, f, *T2);
-          test_fdf ("Powell badly scaled", &powellscal, powellscal_initpt, f, *T2);
-          test_fdf ("Brown badly scaled", &brownscal, brownscal_initpt, f, *T2);
-          test_fdf ("Powell singular", &powellsing, powellsing_initpt, f, *T2);
-          test_fdf ("Wood", &wood, wood_initpt, f, *T2);
-          test_fdf ("Helical", &helical, helical_initpt, f, *T2);
-          test_fdf ("Discrete BVP", &dbv, dbv_initpt, f, *T2);
-          test_fdf ("Trig", &trig, trig_initpt, f, *T2);
-          T2++;
-        }
+      test_f ("Rosenbrock", &rosenbrock, rosenbrock_initpt, f, *T1);
+      test_f ("Roth", &roth, roth_initpt, f, *T1);
+      test_f ("Powell badly scaled", &powellscal, powellscal_initpt, f, *T1);
+      test_f ("Brown badly scaled", &brownscal, brownscal_initpt, f, *T1);
+      test_f ("Powell singular", &powellsing, powellsing_initpt, f, *T1);
+      test_f ("Wood", &wood, wood_initpt, f, *T1);
+      test_f ("Helical", &helical, helical_initpt, f, *T1);
+      test_f ("Discrete BVP", &dbv, dbv_initpt, f, *T1);
+      test_f ("Trig", &trig, trig_initpt, f, *T1);
+      T1++;
+    }
+  
+  T2 = fdfsolvers ;
+  
+  while (*T2 != 0) 
+    {
+      test_fdf ("Rosenbrock", &rosenbrock, rosenbrock_initpt, f, *T2);
+      test_fdf ("Roth", &roth, roth_initpt, f, *T2);
+      test_fdf ("Powell badly scaled", &powellscal, powellscal_initpt, f, *T2);
+      test_fdf ("Brown badly scaled", &brownscal, brownscal_initpt, f, *T2);
+      test_fdf ("Powell singular", &powellsing, powellsing_initpt, f, *T2);
+      test_fdf ("Wood", &wood, wood_initpt, f, *T2);
+      test_fdf ("Helical", &helical, helical_initpt, f, *T2);
+      test_fdf ("Discrete BVP", &dbv, dbv_initpt, f, *T2);
+      test_fdf ("Trig", &trig, trig_initpt, f, *T2);
+      T2++;
     }
 
   return gsl_test_summary ();
@@ -121,6 +120,10 @@ test_fdf (const char * desc, gsl_multiroot_function_fdf * function,
     {
       iter++;
       status = gsl_multiroot_fdfsolver_iterate (s);
+      
+      if (status)
+        break ;
+
       status = gsl_multiroot_test_residual (s->f, 0.0000001);
     }
   while (status == GSL_CONTINUE && iter < 1000);
@@ -206,6 +209,10 @@ test_f (const char * desc, gsl_multiroot_function_fdf * fdf,
     {
       iter++;
       status = gsl_multiroot_fsolver_iterate (s);
+      
+      if (status)
+        break ;
+
       status = gsl_multiroot_test_residual (s->f, 0.0000001);
     }
   while (status == GSL_CONTINUE && iter < 1000);

@@ -21,7 +21,8 @@ FUNCTION (gsl_vector, copy) (TYPE (gsl_vector) * dest,
 
         for (k = 0; k < MULTIPLICITY; k++) 
           {
-            dest->data[dest_stride * j + k] = src->data[src_stride*j + k];
+            dest->data[MULTIPLICITY * dest_stride * j + k] 
+              = src->data[MULTIPLICITY * src_stride*j + k];
           }
       }
   }

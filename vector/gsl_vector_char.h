@@ -34,6 +34,8 @@ char *gsl_vector_char_ptr (const gsl_vector_char * v, const size_t i);
 char gsl_vector_char_get (const gsl_vector_char * v, const size_t i);
 void gsl_vector_char_set (gsl_vector_char * v, const size_t i, char x);
 
+void gsl_vector_char_set_all (gsl_vector_char * v, char x);
+
 int gsl_vector_char_fread (FILE * stream, gsl_vector_char * v);
 int gsl_vector_char_fwrite (FILE * stream, const gsl_vector_char * v);
 int gsl_vector_char_fscanf (FILE * stream, gsl_vector_char * v);
