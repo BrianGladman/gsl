@@ -1,3 +1,7 @@
+Mon Jun 17 22:31:33 2002  Brian Gough  <bjg@network-theory.co.uk>
+
+	* test_complex_source.c (FUNCTION): fixed non-constant initializer
+
 Wed May  1 21:33:44 2002  Brian Gough  <bjg@network-theory.co.uk>
 
 	* gsl_matrix_complex_float.h (gsl_matrix_complex_float_get): moved

@@ -302,10 +302,12 @@ void FUNCTION (test, arith) (void)
     {
       for (j = 0; j < Q; j++)
 	{
-	  BASE z = { {(ATOMIC) k, (ATOMIC) k + 10}
-	  };
-	  BASE z1 = { {(ATOMIC) k + 5, (ATOMIC) k + 20}
-	  };
+	  BASE z, z1;
+          GSL_REAL(z) = (ATOMIC) k;
+          GSL_IMAG(z) = (ATOMIC) (k + 10);
+	  GSL_REAL(z1) = (ATOMIC) (k + 5);
+          GSL_IMAG(z1) = (ATOMIC) (k + 20);
+
 	  FUNCTION (gsl_matrix, set) (a, i, j, z);
 	  FUNCTION (gsl_matrix, set) (b, i, j, z1);
 	  k++;
