@@ -11,22 +11,27 @@
 (load-library "calc/calc-units.el")
 (calc-extensions)
 
+(setq  gsl-dimensionless-constants
+       '(("fsc"           "FINE_STRUCTURE_ALPHA")
+         )
+       )
+
 (setq  gsl-constants
-  '(("c"      "SPEED_OF_LIGHT")
-    ("au"     "ASTRONOMICAL_UNIT")
-    ("Grav"   "GRAVITATIONAL_CONSTANT")
-    ("float(lyr)"    "LIGHT_YEAR")
-    ("pc"     "PARSEC")
-    ("ga"     "GRAV_ACCEL")
-    ("ev"     "ELECTRON_VOLT")
-    ("h"      "PLANCKS_CONSTANT_H")
-    ("hbar"   "PLANCKS_CONSTANT_HBAR")
-    ("me"     "MASS_ELECTRON")
-    ("mu"     "MASS_MUON")
-    ("mp"     "MASS_PROTON")
-    ("mn"     "MASS_NEUTRON")
-    )
-  )
+       '(("c"             "SPEED_OF_LIGHT")
+         ("au"            "ASTRONOMICAL_UNIT")
+         ("Grav"          "GRAVITATIONAL_CONSTANT")
+         ("float(lyr)"    "LIGHT_YEAR")
+         ("pc"            "PARSEC")
+         ("ga"            "GRAV_ACCEL")
+         ("ev"            "ELECTRON_VOLT")
+         ("h"             "PLANCKS_CONSTANT_H")
+         ("hbar"          "PLANCKS_CONSTANT_HBAR")
+         ("me"            "MASS_ELECTRON")
+         ("mu"            "MASS_MUON")
+         ("mp"            "MASS_PROTON")
+         ("mn"            "MASS_NEUTRON")
+         )
+       )
 
 ;;; work around bug in calc 2.02f
 (defun math-extract-units (expr)
@@ -56,9 +61,21 @@
 (setq cgs (nth 1 (assq 'cgs math-standard-units-systems)))
 (setq mks (nth 1 (assq 'mks math-standard-units-systems)))
 
-
-(defun run ()
-  (mapcar (lambda (x) (apply 'fn "GSL_CONST_MKS" mks x)) gsl-constants)
-  (mapcar (lambda (x) (apply 'fn "GSL_CONST_CGS" cgs x)) gsl-constants)
+(defun display (prefix system constants)
+  (princ (format "#ifdef __%s__\n" prefix))
+  (princ (format "#define __%s__\n\n" prefix))
+  (mapcar (lambda (x) (apply 'fn prefix system x)) constants)
+  (princ (format "\n#endif /* __%s__ */\n" prefix))
 )
 
+(defun run-cgs ()
+  (display "GSL_CONST_CGS" cgs gsl-constants)
+)
+
+(defun run-mks ()
+  (display "GSL_CONST_MKS" mks gsl-constants)
+)
+
+(defun run-num ()
+  (display "GSL_CONST_NUM" mks gsl-dimensionless-constants)
+)

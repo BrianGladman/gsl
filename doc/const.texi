@@ -1,0 +1,12 @@
+This chapter describes macros for the values of physical constants, such
+as the speed of light, @math{c}, and gravitiational constant, @math{G}.
+The values are available in different unit systems, including the
+standard MKS system (meters, kilograms, seconds) and the CGS system
+(centimeters, grams, seconds), which is commonly used in Astronomy.
+
+The definitions of constants in the MKS system are available in the file
+@file{gsl_const_mks.h}.  The constants in the CGS system are defined in
+@file{gsl_const_cgs.h}.  Dimensionless constants, such as the fine
+structure constant, which are pure numbers are defined in
+@file{gsl_const_num.h}.
+

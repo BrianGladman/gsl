@@ -1,5 +1,9 @@
 #!/usr/bin/perl
 
+if (@ARGV < 2) {
+    die "addgpl.pl authors [files]\n";
+};
+
 $authors = shift(@ARGV) ;
 @DATA = <DATA>;
 
@@ -11,7 +15,7 @@ for $file (@ARGV) {
     close(FILE);
 
     next if grep(/copyright/i, @lines);  # skip any existing copyrights
-    next if !grep(/^\s*[a-z]/, @lines) ;  # doesn't contain any code
+    next if !grep(/^\#|^\s*[a-z]/, @lines) ;  # doesn't contain any code
     
     print "$file $authors\n" ;
     next if $authors =~ /--test/i;
