@@ -1,7 +1,7 @@
 /* $Id$ */
 
 #include <stdio.h>
-#include "gsl_special.h"
+#include "gsl_sf.h"
 
 int
 main(int argc, char **argv)

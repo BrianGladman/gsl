@@ -18,6 +18,9 @@
                              too much time doing something */
 #define GSL_EZERODIV  12  /* tried to divide by zero */
 #define GSL_ETOL      13  /* user specified an invalid tolerance */
+#define GSL_EUNDRFLW  14  /* underflow */
+#define GSL_EOVRFLW   15  /* overflow (duh... ) */
+
 
 /* just to make things slightly clearer */
 enum {GSL_SUCCESS = 0, GSL_FAILURE = -1};

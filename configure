@@ -628,7 +628,7 @@ echo timestamp > conftestfile
 # directory).
 if (
    set X `ls -Lt $srcdir/configure conftestfile 2> /dev/null`
-   if test "$*" = "X"; then
+   if test "" = "X"; then
       # -L didn't work.
       set X `ls -t $srcdir/configure conftestfile`
    fi
@@ -1985,7 +1985,7 @@ done
 ac_given_srcdir=$srcdir
 ac_given_INSTALL="$INSTALL"
 
-trap 'rm -fr `echo "err/Makefile fft/Makefile statistics/Makefile roots/Makefile random/Makefile randist/Makefile siman/Makefile doc/Makefile utils/Makefile Makefile config.h" | sed "s/:[^ ]*//g"` conftest*; exit 1' 1 2 15
+trap 'rm -fr `echo "err/Makefile fft/Makefile specfunc/Makefile statistics/Makefile roots/Makefile random/Makefile randist/Makefile siman/Makefile doc/Makefile utils/Makefile Makefile config.h" | sed "s/:[^ ]*//g"` conftest*; exit 1' 1 2 15
 EOF
 cat >> $CONFIG_STATUS <<EOF
 
@@ -2078,7 +2078,7 @@ EOF
 
 cat >> $CONFIG_STATUS <<EOF
 
-CONFIG_FILES=\${CONFIG_FILES-"err/Makefile fft/Makefile statistics/Makefile roots/Makefile random/Makefile randist/Makefile siman/Makefile doc/Makefile utils/Makefile Makefile"}
+CONFIG_FILES=\${CONFIG_FILES-"err/Makefile fft/Makefile specfunc/Makefile statistics/Makefile roots/Makefile random/Makefile randist/Makefile siman/Makefile doc/Makefile utils/Makefile Makefile"}
 EOF
 cat >> $CONFIG_STATUS <<\EOF
 for ac_file in .. $CONFIG_FILES; do if test "x$ac_file" != x..; then

@@ -534,7 +534,7 @@ static double airy_aie(double x)
   if(x < 1.0) {
     char buff[50];
     sprintf(buff,"airy_aie: x= %g  < 1", x);
-    push_error(buff, Error_Domain_);
+    GSL_MESSAGE(buff);
     return 0.;
   }
   else {
@@ -552,7 +552,7 @@ static double airy_bie(double x)
   if(x < 2.0) {
     char buff[50];
     sprintf(buff,"airy_bie: x= %g  < 2", x);
-    push_error(buff, Error_Domain_);
+    GSL_MESSAGE(buff);
     return 0.;
   }
   else if(x < 4.0) {

@@ -1,7 +1,8 @@
 #include <math.h>
+#include <gsl_math.h>
 #include <gsl_errno.h>
 #include "gsl_sf_chebyshev.h"
-#include "gsl_bessel.h"
+#include "gsl_sf_bessel.h"
 
 
 /* based on SLATEC besi0 */
@@ -79,7 +80,7 @@ static struct gsl_sf_ChebSeries ai0_cs = {
   -1, 1
 };
 
-static double a102_data[22] = {
+static double ai02_data[22] = {
    .05449041101410882,
    .00336911647825569,
    .00006889758346918,
@@ -113,7 +114,7 @@ static struct gsl_sf_ChebSeries ai02_cs = {
 
 double gsl_sf_bessel_I0_scaled(double x)
 {
-  static double x_small = 2.0 * 1.e-7; 
+  static double x_small = 2.0 * GSL_SQRT_MACH_EPS; 
 
   double y = fabs(x);
 
@@ -134,7 +135,7 @@ double gsl_sf_bessel_I0_scaled(double x)
 
 double gsl_sf_bessel_I0(double x)
 {
-  static double x_small = 2. * 1.e-7;
+  static double x_small = 2. * GSL_SQRT_MACH_EPS;
   static double xmax    = ; /* alog (r1mach(2)) */
 
   double y = fabs(x);

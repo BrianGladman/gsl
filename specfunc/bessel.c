@@ -364,7 +364,7 @@ double gsl_sf_log_bessel_I0(double x)
 
 double gsl_sf_log_bessel_I1(double x)
 {
-  double ax = fabs(x)
+  double ax = fabs(x);
   double ans, y;
   double poly1, poly2;
 

@@ -1,6 +1,7 @@
 #include <math.h>
+#include <gsl_math.h>
 #include <gsl_errno.h>
-#include "gsl_sf_cheb.h"
+#include "gsl_sf_chebyshev.h"
 #include "gsl_sf_bessel.h"
 
 
@@ -114,12 +115,13 @@ struct gsl_sf_ChebSeries ai12_cs = {
 double gsl_sf_bessel_I1_scaled(double x)
 {
   static double xmin    = 2.0 * DBL_MIN;
-  static double x_small = ROOT_EIGHT * 1.e-7;
+  static double x_small = ROOT_EIGHT * GSL_SQRT_MACH_EPS;
 
   double y = fabs(x);
 
   if(y < xmin) {
-    return 0.; /* underflow ?? */
+    gsl_errno = GSL_EUNDRFLW;
+    return 0.;
   }
   else if(y < x_small) {
     return 0.5*x;
@@ -141,13 +143,14 @@ double gsl_sf_bessel_I1_scaled(double x)
 double gsl_sf_bessel_I1(double x)
 {
   static double xmin    = 2.0 * DBL_MIN;
-  static double x_small = ROOT_EIGHT * 1.e-7;
+  static double x_small = ROOT_EIGHT * GSL_SQRT_MACH_EPS;
   static double xmax    = ; /* alog (r1mach(2)) */
 
   double y = fabs(x);
 
   if(y < xmin) {
-    return 0.; /* underflow ?? */
+    gsl_errno = GSL_EUNDRFLW;
+    return 0.;
   }
   else if(y < x_small) {
     return 0.5*x;
