@@ -21,6 +21,7 @@ multidimensional nonlinear fitting functions and related declarations.
 * Iteration of the Minimization Algorithm::  
 * Search Stopping Parameters for Minimization Algorithms::  
 * Minimization Algorithms using Derivatives::  
+* Minimization Algorithms without Derivatives::  
 * Computing the covariance matrix of best fit parameters::  
 * Example programs for Nonlinear Fitting::  
 * References and Further Reading for Nonlinear Fitting::  
@@ -306,7 +307,7 @@ guess must be sufficiently close to the root for it to work.
 @cindex LMDER algorithm
 @cindex MINPACK, minimization algorithms
 This is a robust and efficient version of the Levenberg-Marquardt
-algorithm as implemented in the scaled @sc{LMDER} routine in
+algorithm as implemented in the scaled @sc{lmder} routine in
 @sc{minpack}.  Minpack was written by Jorge J. Mor@'e, Burton S. Garbow
 and Kenneth E. Hillstrom.
 
