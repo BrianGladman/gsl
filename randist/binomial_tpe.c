@@ -85,7 +85,7 @@ Stirling (double y1)
     (13860.0 -
      (462.0 - (132.0 - (99.0 - 140.0 / y2) / y2) / y2) / y2) / y1 / 166320.0;
   return s;
-};
+}
 
 unsigned int
 gsl_ran_binomial_tpe (const gsl_rng * rng, double pp, unsigned int n)
@@ -228,7 +228,7 @@ gsl_ran_binomial_tpe (const gsl_rng * rng, double pp, unsigned int n)
 	{
 	  /* Right tail */
 	  ix = (int) (xr - log (v) / lambda_r);
-	  if (ix > n)
+	  if (ix > (double)n)
 	    goto TryAgain;
 	  v *= ((u - p3) * lambda_r);
 	}
