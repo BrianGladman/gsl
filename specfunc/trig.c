@@ -442,10 +442,14 @@ gsl_sf_polar_to_rect_impl(const double r, const double theta,
 {
   double t   = theta;
   int status = gsl_sf_angle_restrict_symm_impl(&t);
+  double c = cos(t);
+  double s = sin(t);
   x->val = r * cos(t);
   y->val = r * sin(t);
-  x->err = GSL_DBL_EPSILON * fabs(x->val);
-  y->err = GSL_DBL_EPSILON * fabs(y->val);
+  x->err  = r * fabs(s * GSL_DBL_EPSILON * t);
+  x->err += 2.0 * GSL_DBL_EPSILON * fabs(x->val);
+  y->err  = r * fabs(c * GSL_DBL_EPSILON * t);
+  y->err += 2.0 * GSL_DBL_EPSILON * fabs(y->val);
   return status;
 }
 
@@ -455,11 +459,11 @@ gsl_sf_rect_to_polar_impl(const double x, const double y,
                           gsl_sf_result * r, gsl_sf_result * theta)
 {
   r->val = hypot(x, y);
-  r->err = GSL_DBL_EPSILON * fabs(r->val);
+  r->err = 2.0 * GSL_DBL_EPSILON * fabs(r->val);
 
   if(r->val > 0.0) {
     theta->val = atan2(y, x);
-    theta->err = GSL_DBL_EPSILON * fabs(theta->val);
+    theta->err = 2.0 * GSL_DBL_EPSILON * fabs(theta->val);
     return GSL_SUCCESS;
   }
   else {

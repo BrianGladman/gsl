@@ -954,7 +954,7 @@ fd_neg(const double j, const double x, gsl_sf_result * result)
       if(fabs(term/sum) < GSL_DBL_EPSILON) break;
     }
     result->val = sum;
-    result->err = GSL_DBL_EPSILON * fabs(sum);
+    result->err = 2.0 * GSL_DBL_EPSILON * fabs(sum);
     return GSL_SUCCESS;
   }
   else {
@@ -963,19 +963,21 @@ fd_neg(const double j, const double x, gsl_sf_result * result)
     double ex  = -exp(x);
     double enx = -ex;
     double f = 0.0;
+    double f_previous;
     int jterm;
     for(jterm=0; jterm<=itmax; jterm++) {
       double p = pow(jterm+1.0, j+1.0);
-      double f_previous = f;
       double term = enx/p;
+      f_previous = f;
       fd_whiz(term, jterm, qnum, qden, &f, &s);
       xn += x;
-      if(fabs(f-f_previous) < fabs(f)*10.0*GSL_DBL_EPSILON || xn < GSL_LOG_DBL_MIN) break;
+      if(fabs(f-f_previous) < fabs(f)*2.0*GSL_DBL_EPSILON || xn < GSL_LOG_DBL_MIN) break;
       enx *= ex;
     }
 
-    result->val = f;
-    result->err = GSL_DBL_EPSILON * fabs(f);
+    result->val  = f;
+    result->err  = fabs(f-f_previous);
+    result->err += 2.0 * GSL_DBL_EPSILON * fabs(f);
 
     if(jterm == itmax)
       return GSL_EMAXITER;
@@ -1000,6 +1002,7 @@ fd_asymp(const double j, const double x, gsl_sf_result * result)
   double xm2  = (1.0/x)/x;
   double xgam = 1.0;
   double add = DBL_MAX;
+  double cos_term;
   gsl_sf_result fneg;
   gsl_sf_result exp_arg;
   int stat_fneg;
@@ -1020,8 +1023,11 @@ fd_asymp(const double j, const double x, gsl_sf_result * result)
 
   stat_fneg = fd_neg(j, -x, &fneg);
   stat_e    = gsl_sf_exp_impl((j+1.0)*log(x) - lg.val, &exp_arg);
-  result->val = cos(j*M_PI) * fneg.val + 2.0 * seqn * exp_arg.val;
-  result->err = fabs(2.0 * seqn) * exp_arg.err + GSL_DBL_EPSILON * fabs(result->val);
+  cos_term  = cos(j*M_PI);
+  result->val  = cos_term * fneg.val + 2.0 * seqn * exp_arg.val;
+  result->err  = fabs(2.0 * seqn) * exp_arg.err;
+  result->err += fabs(cos_term) * fneg.err;
+  result->err += 4.0 * GSL_DBL_EPSILON * fabs(result->val);
   return GSL_ERROR_SELECT_4(stat_e, stat_ser, stat_fneg, stat_lg);
 }
 
@@ -1119,7 +1125,7 @@ fd_series_int(const int j, const double x, gsl_sf_result * result)
   }
 
   result->val = sum;
-  result->err = GSL_DBL_EPSILON * fabs(sum);
+  result->err = 2.0 * GSL_DBL_EPSILON * fabs(sum);
 
   return GSL_SUCCESS;
 }
@@ -1220,6 +1226,7 @@ fd_UMseries_int(const int j, const double x, gsl_sf_result * result)
 
   stat_sum = ( n == nmax ? GSL_EMAXITER : GSL_SUCCESS );
   stat_e   = gsl_sf_exp_mult_impl(lnpre, pre*(sum_even + sum_odd), result);
+  result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
 
   return GSL_ERROR_SELECT_3(stat_e, stat_h, stat_sum);
 }
@@ -1438,8 +1445,9 @@ int gsl_sf_fermi_dirac_int_impl(const int j, const double x, gsl_sf_result * res
     int stat_asymp = fd_asymp(j, x, &fasymp);
 
     if(stat_asymp == GSL_SUCCESS) {
-      result->val = fasymp.val;
-      result->err = fasymp.err;
+      result->val  = fasymp.val;
+      result->err  = fasymp.err;
+      result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
       return stat_asymp;
     }
     else {

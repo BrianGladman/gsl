@@ -8,34 +8,6 @@
 #include "gsl_sf_bessel.h"
 
 
-/* I_{n+1}/I_n
- */
-static
-int
-bessel_In_CF1(const int n, const double x, const double threshold, double * ratio)
-{
-  const int kmax = 2000;
-  double tk   = 1.0;
-  double sum  = 1.0;
-  double rhok = 0.0;
-  int k;
-
-  for(k=1; k<=kmax; k++) {
-    double ak = 0.25 * (x/(n+k)) * (x/(n+k+1.0));
-    rhok = -ak*(1.0 + rhok)/(1.0 + ak*(1.0 + rhok));
-    tk  *= rhok;
-    sum += tk;
-    if(fabs(tk/sum) < threshold) break;
-  }
-
-  *ratio = 0.5*x/(n+1.0) * sum;
-
-  if(k == kmax)
-    return GSL_EMAXITER;
-  else
-    return GSL_SUCCESS;
-}
-
 
 /*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
 
@@ -62,10 +34,12 @@ gsl_sf_bessel_In_scaled_impl(int n, const double x, gsl_sf_result * result)
     return GSL_SUCCESS;
   }
   else if(x*x < 10.0*(n+1.0)/M_E) {
-    double t;
-    int stat_In = gsl_sf_bessel_Inu_Jnu_taylor_impl((double)n, ax, 1, 50, GSL_DBL_EPSILON, &t);
-    result->val = t * exp(-ax);
-    result->err = GSL_DBL_EPSILON * result->val * fabs(ax);
+    gsl_sf_result t;
+    double ex   = exp(-ax);
+    int stat_In = gsl_sf_bessel_IJ_taylor_impl((double)n, ax, 1, 50, GSL_DBL_EPSILON, &t);
+    result->val  = t.val * ex;
+    result->err  = t.err * ex;
+    result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
     if(x < 0.0 && GSL_IS_ODD(n)) result->val = -result->val;
     return stat_In;
   }
@@ -73,7 +47,7 @@ gsl_sf_bessel_In_scaled_impl(int n, const double x, gsl_sf_result * result)
     gsl_sf_result I0_scaled;
     int stat_I0 = gsl_sf_bessel_I0_scaled_impl(ax, &I0_scaled);
     double rat;
-    int stat_CF1 = bessel_In_CF1(n, ax, GSL_DBL_EPSILON, &rat);
+    int stat_CF1 = gsl_sf_bessel_I_CF1_ser((double)n, ax, &rat);
     double Ikp1 = rat * GSL_SQRT_DBL_MIN;
     double Ik	= GSL_SQRT_DBL_MIN;
     double Ikm1;

@@ -4,10 +4,13 @@
 #ifndef BESSEL_TEMME_H_
 #define BESSEL_TEMME_H_
 
+#include "gsl_sf_result.h"
+
 
 int
 gsl_sf_bessel_Y_temme(double nu, double x,
-                      double * Y_nu, double * Y_nup1, double * Yp_nu);
+                      gsl_sf_result * Y_nu,
+                      gsl_sf_result * Y_nup1);
 
 int
 gsl_sf_bessel_K_scaled_temme(double nu, double x,

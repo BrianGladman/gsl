@@ -7,12 +7,16 @@
 #include "gsl_sf_result.h"
 
 
-int gsl_sf_bessel_Inu_Jnu_taylor_impl(double nu, double x,
-                                      int sign,
-                                      int kmax,
-				      double threshold,
-                                      double * result
-                                      );
+/* Taylor expansion for J_nu(x) or I_nu(x)
+ *   sign = -1  ==> Jnu
+ *   sign = +1  ==> Inu
+ */
+int gsl_sf_bessel_IJ_taylor_impl(double nu, double x,
+                                 int sign,
+                                 int kmax,
+				 double threshold,
+                                 gsl_sf_result * result
+                                 );
 
 int gsl_sf_bessel_Jnu_asympx_impl(double nu, double x, gsl_sf_result * result);
 int gsl_sf_bessel_Ynu_asympx_impl(double nu, double x, gsl_sf_result * result);
@@ -24,22 +28,33 @@ int gsl_sf_bessel_Inu_scaled_asymp_unif_impl(double nu, double x, gsl_sf_result 
 int gsl_sf_bessel_Knu_scaled_asymp_unif_impl(double nu, double x, gsl_sf_result * result);
 
 
+/* ratio = J_{nu+1}(x) / J_nu(x)
+ * sgn   = sgn(J_nu(x))
+ */
 int
-gsl_sf_bessel_JnuYnu_zero(double nu,
-                          double * Jnu,  double * Ynu,
-                          double * Jpnu, double * Ypnu
-		          );
+gsl_sf_bessel_J_CF1(double nu, double x, double * ratio, double * sgn);
 
-int
-gsl_sf_bessel_J_CF1_ser(double nu, double x, double * ratio);
 
+/* ratio = I_{nu+1}(x) / I_nu(x)
+ */
 int
 gsl_sf_bessel_I_CF1_ser(double nu, double x, double * ratio);
 
 
+/* Evaluate the Steed method continued fraction CF2 for
+ *
+ * (J' + i Y')/(J + i Y) := P + i Q
+ */
 int
 gsl_sf_bessel_JY_steed_CF2(double nu, double x,
                            double * P, double * Q);
+
+
+int
+gsl_sf_bessel_JY_mu_restricted(double mu, double x,
+                               gsl_sf_result * Jmu, gsl_sf_result * Jmup1,
+                               gsl_sf_result * Ymu, gsl_sf_result * Ymup1);
+
 
 int
 gsl_sf_bessel_K_scaled_steed_temme_CF2(const double nu, const double x,

@@ -10,36 +10,6 @@
 #include "bessel_olver.h"
 #include "gsl_sf_bessel.h"
 
-/* continued fraction [Abramowitz+Stegun, 9.1.73]
- */
-static
-int
-bessel_Jn_CF1(const int n, const double x, double * ratio)
-{
-  int k = 60;
-  double pk  = 2 * (n + k);
-  double xk  = x * x;
-  double ans = pk;
-
-  do {
-    pk -= 2.0;
-    if(ans == 0.0) {
-      *ratio = 0.0;
-      return GSL_EZERODIV;
-    }
-    ans = pk - (xk/ans);
-  }
-  while(--k > 0);
-
-  if(ans != 0.0) {
-    *ratio = x/ans;
-    return GSL_SUCCESS;
-  }
-  else {
-    *ratio = 0.0;
-    return GSL_EZERODIV;
-  }
-}
 
 
 /*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
@@ -85,10 +55,11 @@ int gsl_sf_bessel_Jn_impl(int n, double x, gsl_sf_result * result)
       return GSL_SUCCESS;
     }
     else if(x*x < 10.0*(n+1.0)*GSL_ROOT5_DBL_EPSILON) {
-      double b;
-      int status = gsl_sf_bessel_Inu_Jnu_taylor_impl((double)n, x, -1, 50, GSL_DBL_EPSILON, &b);
-      result->val = sign * b;
-      result->err = GSL_DBL_EPSILON * fabs(result->val);
+      gsl_sf_result b;
+      int status = gsl_sf_bessel_IJ_taylor_impl((double)n, x, -1, 50, GSL_DBL_EPSILON, &b);
+      result->val  = sign * b.val;
+      result->err  = b.err;
+      result->err += GSL_DBL_EPSILON * fabs(result->val);
       return status;
     }
     else if(GSL_ROOT3_DBL_EPSILON * x > (n*n+1.0)) {
@@ -105,33 +76,33 @@ int gsl_sf_bessel_Jn_impl(int n, double x, gsl_sf_result * result)
       double ans;
       double err;
       double ratio;
+      double sgn;
       int stat_b;
-      int stat_CF1 = bessel_Jn_CF1(n, x, &ratio);
+      int stat_CF1 = gsl_sf_bessel_J_CF1((double)n, x, &ratio, &sgn);
 
       /* backward recurrence */
-      double Jk   = ratio;
-      double Jkm1 = 1.0;
-      double Jkm2;
+      double Jkp1 = GSL_SQRT_DBL_MIN * ratio;
+      double Jk   = GSL_SQRT_DBL_MIN;
+      double Jkm1;
       int k;
 
-      for(k=n-1; k>0; k--) {
-        double r = 2.0 * k;
-	Jkm2 = (Jkm1 * r  -  Jk * x) / x;
+      for(k=n; k>0; k--) {
+	Jkm1 = 2.0*k/x * Jk - Jkp1;
+	Jkp1 = Jk;
 	Jk   = Jkm1;
-	Jkm1 = Jkm2;
       }
 
-      if(fabs(Jk) > fabs(Jkm1)) {
+      if(fabs(Jkp1) > fabs(Jk)) {
         gsl_sf_result b1;
 	stat_b = gsl_sf_bessel_J1_impl(x, &b1);
-	ans = b1.val/Jk * ratio;
-	err = b1.err/Jk * ratio;
+	ans = b1.val/Jkp1 * GSL_SQRT_DBL_MIN;
+	err = b1.err/Jkp1 * GSL_SQRT_DBL_MIN;
       }
       else {
         gsl_sf_result b0;
 	stat_b = gsl_sf_bessel_J0_impl(x, &b0);
-	ans = b0.val/Jkm1 * ratio;
-	err = b0.err/Jkm1 * ratio;
+	ans = b0.val/Jk * GSL_SQRT_DBL_MIN;
+	err = b0.err/Jk * GSL_SQRT_DBL_MIN;
       }
 
       result->val = sign * ans;

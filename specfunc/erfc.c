@@ -327,7 +327,7 @@ int gsl_sf_erf_impl(double x, gsl_sf_result * result)
     gsl_sf_result result_erfc;
     gsl_sf_erfc_impl(x, &result_erfc);
     result->val  = 1.0 - result_erfc.val;
-    result->val  = result_erfc.err;
+    result->err  = result_erfc.err;
     result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
   }
@@ -342,7 +342,7 @@ int gsl_sf_erf_Z_impl(double x, gsl_sf_result * result)
   else {
     const double ex2 = exp(-x*x/2.0);
     result->val  = ex2 / (M_SQRT2 * M_SQRTPI);
-    result->err  = (fabs(x) * result->val) * GSL_DBL_EPSILON;
+    result->err  = fabs(x * result->val) * GSL_DBL_EPSILON;
     result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
     if(result->val == 0.0) {
       return GSL_EUNDRFLW;
@@ -364,6 +364,7 @@ int gsl_sf_erf_Q_impl(double x, gsl_sf_result * result)
     int stat = gsl_sf_erfc_impl(x/M_SQRT2, &result_erfc);
     result->val  = 0.5 * result_erfc.val;
     result->err  = 0.5 * result_erfc.err;
+    result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
     return stat;
   }
 }

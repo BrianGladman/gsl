@@ -12,46 +12,11 @@
 #include "gsl_sf_gamma.h"
 #include "gsl_sf_trig.h"
 #include "bessel_amp_phase.h"
+#include "bessel_temme.h"
 #include "bessel.h"
 
 #define CubeRoot2_  1.25992104989487316476721060728
 
-
-/* sum which occurs in Taylor series for J_nu(x) * Gamma(nu+1)/((x/2)^nu)
- * or for I_nu(x) * Gamma(nu+1)/((x/2)^nu)
- *  sign = -1  ==> Jnu
- *  sign = +1  ==> Inu
- * [Abramowitz+Stegun, 9.1.10]
- * [Abramowitz+Stegun, 9.6.7]
- *
- * Assumes: nu >= 0
- */
-static int Inu_Jnu_taylorsum(const double nu, const double x,
-                             const int sign,
-                             const int kmax,
-			     const double threshold,
-                             double * result
-                             )
-{
-  int k;
-  double y = sign * 0.25 * x*x;
-
-  double sum  = 1.0;
-  double term = 1.0;
-
-  for(k=1; k<=kmax; k++) {
-    term *= y/(nu+k)/k;
-    sum  += term;
-    if(fabs(term/sum) < threshold) break;
-  }
-
-  *result = sum;
-
-  if(k == kmax)
-    return GSL_EMAXITER;
-  else
-    return GSL_SUCCESS;
-}
 
 
 /* Debye functions [Abramowitz+Stegun, 9.3.9-10] */
@@ -110,76 +75,101 @@ static double debye_u6(const double * tpow)
 
 /*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
 
-/* Taylor expansion for J_nu(x) or I_nu(x)
- *   sign = -1  ==> Jnu
- *   sign = +1  ==> Inu
- *
- * error ~ o( (x/2)^(2N) / N! / (nu+1)^N )   N = kmax + 1
- *
- * empirical error analysis:
- *   for kmax=4, choose x*x < 10.*(n+1)*GSL_ROOT5_MACH_EPS
- *
- * Checks: nu >= 0; x >= 0
- */
-int gsl_sf_bessel_Inu_Jnu_taylor_impl(const double nu, const double x,
-                                      const int sign,
-                                      const int kmax,
-				      const double threshold,
-                                      double * r
-                                      )
+int
+gsl_sf_bessel_IJ_taylor_impl(const double nu, const double x,
+                             const int sign,
+                             const int kmax,
+                             const double threshold,
+                             gsl_sf_result * result
+                             )
 {
-  if(nu < 0.0 || x < 0.0) {
-    *r = 0.0;
+  if(result == 0) {
+    return GSL_EFAULT;
+  }
+  else if(nu < 0.0 || x < 0.0) {
+    result->val = 0.0;
+    result->err = 0.0;
     return GSL_EDOM;
   }
   else if(x == 0.0) {
     if(nu == 0.0) {
-      *r = 1.0;
+      result->val = 1.0;
+      result->err = 0.0;
     }
     else {
-      *r = 0.0;
+      result->val = 0.0;
+      result->err = 0.0;
     }
     return GSL_SUCCESS;
   }
-  else if(nu == 0.0) {
-    /* avoid unnecessary gamma computation */
-    return Inu_Jnu_taylorsum(nu, x, sign, kmax, threshold, r);
-  }
   else {
-    /* nu > 0 and x > 0 */
-    double pre;
-    double sum;
-    int stat_sum = Inu_Jnu_taylorsum(nu, x, sign, kmax, threshold, &sum);
-    int stat_pre;
-    int stat_m;
-    gsl_sf_result m;
+    gsl_sf_result prefactor;   /* (x/2)^nu / Gamma(nu+1) */
+    gsl_sf_result sum;
 
-    /* prefactor = (x/2)^nu / Gamma(nu+1)
-     */
-    if(nu > INT_MAX-1) {
-      gsl_sf_result result_pre;
-      double ln_pre;
-      gsl_sf_result lg;
-      gsl_sf_lngamma_impl(nu+1.0, &lg);  /* ok by construction */
-      ln_pre = nu*log(0.5*x) - lg.val;
-      stat_pre = gsl_sf_exp_impl(ln_pre, &result_pre);
-      pre = result_pre.val;
+    int stat_pre;
+    int stat_sum;
+    int stat_mul;
+
+    if(nu == 0.0) {
+      prefactor.val = 1.0;
+      prefactor.err = 0.0;
     }
-    else {
-      /* y^nu / Gamma(nu+1) = y^N /N! y^f / (N+1)_f */
-      int    N = (int)floor(nu + 0.5);
-      double f = nu - N;
+    else if(nu < INT_MAX-1) {
+      /* Separate the integer part and use
+       * y^nu / Gamma(nu+1) = y^N /N! y^f / (N+1)_f,
+       * to control the error.
+       */
+      const int    N = (int)floor(nu + 0.5);
+      const double f = nu - N;
       gsl_sf_result poch_factor;
       gsl_sf_result tc_factor;
-      int stat_poch = gsl_sf_poch_impl(N+1.0, f, &poch_factor);
-      int stat_tc   = gsl_sf_taylorcoeff_impl(N, 0.5*x, &tc_factor);
-      pre = tc_factor.val * pow(0.5*x,f) / poch_factor.val;
+      const int stat_poch = gsl_sf_poch_impl(N+1.0, f, &poch_factor);
+      const int stat_tc   = gsl_sf_taylorcoeff_impl(N, 0.5*x, &tc_factor);
+      const double p = pow(0.5*x,f);
+      prefactor.val  = tc_factor.val * p / poch_factor.val;
+      prefactor.err  = tc_factor.err * p / poch_factor.val;
+      prefactor.err += fabs(prefactor.val) / poch_factor.val * poch_factor.err;
+      prefactor.err += 2.0 * GSL_DBL_EPSILON * fabs(prefactor.val);
       stat_pre = GSL_ERROR_SELECT_2(stat_tc, stat_poch);
     }
+    else {
+      gsl_sf_result lg;
+      const int stat_lg = gsl_sf_lngamma_impl(nu+1.0, &lg);
+      const double term1  = nu*log(0.5*x);
+      const double term2  = lg.val;
+      const double ln_pre = term1 - term2;
+      const double ln_pre_err = GSL_DBL_EPSILON * (fabs(term1)+fabs(term2)) + lg.err;
+      const int stat_ex = gsl_sf_exp_err_impl(ln_pre, ln_pre_err, &prefactor);
+      stat_pre = GSL_ERROR_SELECT_2(stat_ex, stat_lg);
+    }
 
-    stat_m = gsl_sf_multiply_impl(pre, sum, &m);
-    *r = m.val;
-    return GSL_ERROR_SELECT_3(stat_m, stat_pre, stat_sum);
+    /* Evaluate the sum.
+     * [Abramowitz+Stegun, 9.1.10]
+     * [Abramowitz+Stegun, 9.6.7]
+     */
+    {
+      const double y = sign * 0.25 * x*x;
+      double sumk = 1.0;
+      double term = 1.0;
+      int k;
+
+      for(k=1; k<=kmax; k++) {
+        term *= y/((nu+k)*k);
+        sumk += term;
+        if(fabs(term/sumk) < threshold) break;
+      }
+
+      sum.val = sumk;
+      sum.err = threshold * fabs(sumk);
+
+      stat_sum = ( k >= kmax ? GSL_EMAXITER : GSL_SUCCESS );
+    }
+
+    stat_mul = gsl_sf_multiply_err_impl(prefactor.val, prefactor.err,
+                                        sum.val, sum.err,
+                                        result);
+
+    return GSL_ERROR_SELECT_3(stat_mul, stat_pre, stat_sum);
   }
 }
 
@@ -194,7 +184,6 @@ int gsl_sf_bessel_Inu_Jnu_taylor_impl(const double nu, const double x,
  * large enough for this to apply, the cos() and sin()
  * start loosing digits. However, this seems inevitable
  * for this particular method.
- *
  */
 int
 gsl_sf_bessel_Jnu_asympx_impl(const double nu, const double x, gsl_sf_result * result)
@@ -346,8 +335,6 @@ gsl_sf_bessel_Inu_scaled_asymp_unif_impl(const double nu, const double x, gsl_sf
  *
  * error:
  *   identical to that above for Inu_scaled
- *
- * checked OK [GJ] Sun May  3 21:27:11 EDT 1998 
  */
 int
 gsl_sf_bessel_Knu_scaled_asymp_unif_impl(const double nu, const double x, gsl_sf_result * result)
@@ -382,58 +369,176 @@ gsl_sf_bessel_Knu_scaled_asymp_unif_impl(const double nu, const double x, gsl_sf
 }
 
 
-/* Safely evaluate J_nu, Y_nu, J'_nu, Y'_nu at x = 0.
- * Assumes nu >= 0.
+/* Evaluate J_mu(x),J_{mu+1}(x) and Y_mu(x),Y_{mu+1}(x)  for |mu| < 1/2
  */
 int
-gsl_sf_bessel_JnuYnu_zero(const double nu,
-                          double * Jnu,  double * Ynu,
-                          double * Jpnu, double * Ypnu
-		          )
+gsl_sf_bessel_JY_mu_restricted(const double mu, const double x,
+                               gsl_sf_result * Jmu, gsl_sf_result * Jmup1,
+                               gsl_sf_result * Ymu, gsl_sf_result * Ymup1)
 {
-  int status = 0;
-
-  if(Jnu != (double *)0) {
-    if(nu == 0.0) *Jnu = 1.0;
-    else *Jnu = 0.0;
+  if(Jmu == 0 || Jmup1 == 0 || Ymu == 0 || Ymup1 == 0) {
+    return GSL_EFAULT;
   }
-  if(Jpnu != (double *)0) {
-    if(nu < 1.0) {
-      *Jpnu = 0.0;
-      status += 1;
-    }
-    else if(nu == 1.0) {
-      *Jpnu = 0.5;
+  else if(x < 0.0 || fabs(mu) > 0.5) {
+    Jmu->val   = 0.0;
+    Jmu->err   = 0.0;
+    Jmup1->val = 0.0;
+    Jmup1->err = 0.0;
+    Ymu->val   = 0.0;
+    Ymu->err   = 0.0;
+    Ymup1->val = 0.0;
+    Ymup1->err = 0.0;
+    return GSL_EDOM;
+  }
+  else if(x == 0.0) {
+    if(mu == 0.0) {
+      Jmu->val   = 1.0;
+      Jmu->err   = 0.0;
     }
     else {
-      *Jpnu = 0.0;
+      Jmu->val   = 0.0;
+      Jmu->err   = 0.0;
+    }
+    Jmup1->val = 0.0;
+    Jmup1->err = 0.0;
+    Ymu->val   = 0.0;
+    Ymu->err   = 0.0;
+    Ymup1->val = 0.0;
+    Ymup1->err = 0.0;
+    return GSL_EDOM;
+  }
+  else {
+    int stat_Y;
+    int stat_J;
+
+    if(x < 2.0) {
+      /* Use Taylor series for J and the Temme series for Y.
+       * The Taylor series for J requires nu > 0, so we shift
+       * up one and use the recursion relation to get Jmu, in
+       * case mu < 0.
+       */
+      gsl_sf_result Jmup2;
+      int stat_J1 = gsl_sf_bessel_IJ_taylor_impl(mu+1.0, x, -1, 100, GSL_DBL_EPSILON,  Jmup1);
+      int stat_J2 = gsl_sf_bessel_IJ_taylor_impl(mu+2.0, x, -1, 100, GSL_DBL_EPSILON, &Jmup2);
+      double c = 2.0*(mu+1.0)/x;
+      Jmu->val  = c * Jmup1->val - Jmup2.val;
+      Jmu->err  = c * Jmup1->err + Jmup2.err;
+      Jmu->err += GSL_DBL_EPSILON * fabs(Jmu->val);
+      stat_J = GSL_ERROR_SELECT_2(stat_J1, stat_J2);
+      stat_Y = gsl_sf_bessel_Y_temme(mu, x, Ymu, Ymup1);
+      return GSL_ERROR_SELECT_2(stat_J, stat_Y);
+    }
+    else if(x < 1000.0) {
+      double P, Q;
+      double J_ratio;
+      double J_sgn;
+      const int stat_CF1 = gsl_sf_bessel_J_CF1(mu, x, &J_ratio, &J_sgn);
+      const int stat_CF2 = gsl_sf_bessel_JY_steed_CF2(mu, x, &P, &Q);
+      double gamma = (P - J_ratio)/Q;
+      double f     = mu/x - J_ratio;
+      Jmu->val = J_sgn * sqrt(2.0/(M_PI*x) / (Q + gamma*(P-f)));
+      Jmu->err = 4.0 * GSL_DBL_EPSILON * fabs(Jmu->val);
+      Jmup1->val = J_ratio * Jmu->val;
+      Jmup1->err = fabs(J_ratio) * Jmu->err;
+      Ymu->val = gamma * Jmu->val;
+      Ymu->err = fabs(gamma) * Jmu->err;
+      Ymup1->val = Ymu->val * (mu/x - P - Q/gamma);
+      Ymup1->err = Ymu->err * fabs(mu/x - P - Q/gamma) + 4.0*GSL_DBL_EPSILON*fabs(Ymup1->val);
+      return GSL_ERROR_SELECT_2(stat_CF1, stat_CF2);
+    }
+    else {
+      /* Use asymptotics for large argument.
+       */
+      const int stat_J0 = gsl_sf_bessel_Jnu_asympx_impl(mu,     x, Jmu);
+      const int stat_J1 = gsl_sf_bessel_Jnu_asympx_impl(mu+1.0, x, Jmup1);
+      const int stat_Y0 = gsl_sf_bessel_Ynu_asympx_impl(mu,     x, Ymu);
+      const int stat_Y1 = gsl_sf_bessel_Ynu_asympx_impl(mu+1.0, x, Ymup1);
+      stat_J = GSL_ERROR_SELECT_2(stat_J0, stat_J1);
+      stat_Y = GSL_ERROR_SELECT_2(stat_Y0, stat_Y1);
+      return GSL_ERROR_SELECT_2(stat_J, stat_Y);
     }
   }
-  if(Ynu != (double *)0) {
-    *Ynu = 0.0;
-    status += 1;
+}
+
+
+int
+gsl_sf_bessel_J_CF1(const double nu, const double x,
+                    double * ratio, double * sgn)
+{
+  const double RECUR_BIG = GSL_SQRT_DBL_MAX;
+  const int maxiter = 10000;
+  int n = 1;
+  double Anm2 = 1.0;
+  double Bnm2 = 0.0;
+  double Anm1 = 0.0;
+  double Bnm1 = 1.0;
+  double a1 = x/(2.0*(nu+1.0));
+  double An = Anm1 + a1*Anm2;
+  double Bn = Bnm1 + a1*Bnm2;
+  double an;
+  double fn = An/Bn;
+  double dn = a1;
+  double s  = 1.0;
+
+  while(n < maxiter) {
+    double old_fn;
+    double del;
+    n++;
+    Anm2 = Anm1;
+    Bnm2 = Bnm1;
+    Anm1 = An;
+    Bnm1 = Bn;
+    an = -x*x/(4.0*(nu+n-1.0)*(nu+n));
+    An = Anm1 + an*Anm2;
+    Bn = Bnm1 + an*Bnm2;
+
+    if(fabs(An) > RECUR_BIG || fabs(Bn) > RECUR_BIG) {
+      An /= RECUR_BIG;
+      Bn /= RECUR_BIG;
+      Anm1 /= RECUR_BIG;
+      Bnm1 /= RECUR_BIG;
+      Anm2 /= RECUR_BIG;
+      Bnm2 /= RECUR_BIG;
+    }
+
+    old_fn = fn;
+    fn = An/Bn;
+    del = old_fn/fn;
+
+    dn = 1.0 / (2.0/x - (nu+n-1.0)/(nu+n) * dn);
+    if(dn < 0.0) s = -s;
+
+    if(fabs(del - 1.0) < 4.0*GSL_DBL_EPSILON) break;
   }
-  if(Ypnu != (double *)0) {
-    *Ypnu = 0.0;
-    status += 1;
-  }
-  if(status)
-    return GSL_EDOM;
+
+  *ratio = fn;
+  *sgn   = s;
+
+  if(n >= maxiter)
+    return GSL_EMAXITER;
   else
     return GSL_SUCCESS;
 }
 
 
+
 /* Evaluate the continued fraction CF1 for J_{nu+1}/J_nu
  * using Gautschi (Euler) equivalent series.
+ * This exhibits an annoying problem because the
+ * a_k are not positive definite (in fact they are all negative).
+ * There are cases when rho_k blows up. Example: nu=1,x=4.
  */
+#if 0
 int
-gsl_sf_bessel_J_CF1_ser(const double nu, const double x, double * ratio)
+gsl_sf_bessel_J_CF1_ser(const double nu, const double x,
+                        double * ratio, double * sgn)
 {
   const int maxk = 20000;
   double tk   = 1.0;
   double sum  = 1.0;
   double rhok = 0.0;
+  double dk = 0.0;
+  double s  = 1.0;
   int k;
 
   for(k=1; k<maxk; k++) {
@@ -441,16 +546,22 @@ gsl_sf_bessel_J_CF1_ser(const double nu, const double x, double * ratio)
     rhok = -ak*(1.0 + rhok)/(1.0 + ak*(1.0 + rhok));
     tk  *= rhok;
     sum += tk;
+
+    dk = 1.0 / (2.0/x - (nu+k-1.0)/(nu+k) * dk);
+    if(dk < 0.0) s = -s;
+
     if(fabs(tk/sum) < GSL_DBL_EPSILON) break;
   }
 
   *ratio = x/(2.0*(nu+1.0)) * sum;
+  *sgn   = s;
 
   if(k == maxk)
     return GSL_EMAXITER;
   else
     return GSL_SUCCESS;
 }
+#endif
 
 
 /* Evaluate the continued fraction CF1 for I_{nu+1}/I_nu
@@ -482,10 +593,6 @@ gsl_sf_bessel_I_CF1_ser(const double nu, const double x, double * ratio)
 }
 
 
-/* Evaluate the Steed method continued fraction CF2 for
- *
- * (J' + i Y')/(J + i Y) := P + i Q
- */
 int
 gsl_sf_bessel_JY_steed_CF2(const double nu, const double x,
                            double * P, double * Q)

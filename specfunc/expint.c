@@ -292,24 +292,27 @@ int gsl_sf_expint_E1_impl(const double x, gsl_sf_result * result)
     const double s = exp(-x)/x;
     gsl_sf_result result_c;
     gsl_sf_cheb_eval_impl(&AE11_cs, 20.0/x+1.0, &result_c);
-    result->val = s * (1.0 + result_c.val);
-    result->err = s * result_c.err + GSL_DBL_EPSILON * fabs(result->val);
+    result->val  = s * (1.0 + result_c.val);
+    result->err  = s * result_c.err;
+    result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
   }
   else if(x <= -4.0) {
     const double s = exp(-x)/x;
     gsl_sf_result result_c;
     gsl_sf_cheb_eval_impl(&AE12_cs, (40.0/x+7.0)/3.0, &result_c);
-    result->val = s * (1.0 + result_c.val);
-    result->err = s * result_c.err + GSL_DBL_EPSILON * fabs(result->val);
+    result->val  = s * (1.0 + result_c.val);
+    result->err  = s * result_c.err;
+    result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
   }
   else if(x <= -1.0) {
     const double ln_term = -log(fabs(x));
     gsl_sf_result result_c;
     gsl_sf_cheb_eval_impl(&E11_cs, (2.0*x+5.0)/3.0, &result_c);
-    result->val = ln_term + result_c.val;
-    result->err = result_c.err + GSL_DBL_EPSILON * fabs(ln_term);
+    result->val  = ln_term + result_c.val;
+    result->err  = result_c.err + GSL_DBL_EPSILON * fabs(ln_term);
+    result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
   }
   else if(x == 0.0) {
@@ -321,24 +324,27 @@ int gsl_sf_expint_E1_impl(const double x, gsl_sf_result * result)
     const double ln_term = -log(x);
     gsl_sf_result result_c;
     gsl_sf_cheb_eval_impl(&E12_cs, x, &result_c);
-    result->val = ln_term - 0.6875 + x + result_c.val;
-    result->err = result_c.err + GSL_DBL_EPSILON * fabs(ln_term);
+    result->val  = ln_term - 0.6875 + x + result_c.val;
+    result->err  = result_c.err + GSL_DBL_EPSILON * fabs(ln_term);
+    result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
   }
   else if(x <= 4.0) {
     const double s = exp(-x)/x;
     gsl_sf_result result_c;
     gsl_sf_cheb_eval_impl(&AE13_cs, (8.0/x-5.0)/3.0, &result_c);
-    result->val = s * (1.0 + result_c.val);
-    result->err = s * result_c.err + GSL_DBL_EPSILON * fabs(result->val);
+    result->val  = s * (1.0 + result_c.val);
+    result->err  = s * result_c.err;
+    result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
   }
   else if(x <= xmax) {
     const double s = exp(-x)/x;
     gsl_sf_result result_c;
     gsl_sf_cheb_eval_impl(&AE14_cs, 8.0/x-1.0, &result_c);
-    result->val = s * (1.0 +  result_c.val);
-    result->err = s * result_c.err + GSL_DBL_EPSILON * fabs(result->val);
+    result->val  = s * (1.0 +  result_c.val);
+    result->err  = s * result_c.err;
+    result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
   }
   else {
@@ -366,8 +372,9 @@ int gsl_sf_expint_E2_impl(const double x, gsl_sf_result * result)
     const double ex = exp(-x);
     gsl_sf_result result_E1;
     int stat_E1 = gsl_sf_expint_E1_impl(x, &result_E1);
-    result->val = ex - x*result_E1.val;
-    result->err = GSL_DBL_EPSILON*ex + fabs(x * result_E1.err);
+    result->val  = ex - x*result_E1.val;
+    result->err  = GSL_DBL_EPSILON*ex + fabs(x * result_E1.err);
+    result->err += GSL_DBL_EPSILON * fabs(result->val);
     return stat_E1;
   }
   else if(x < xmax) {
@@ -388,7 +395,7 @@ int gsl_sf_expint_E2_impl(const double x, gsl_sf_result * result)
     const double sum6 = c6+y*(c7+y*(c8+y*(c9+y*(c10+y*(c11+y*(c12+y*c13))))));
     const double sum  = y*(c1+y*(c2+y*(c3+y*(c4+y*(c5+y*sum6)))));
     result->val = exp(-x) * (1.0 + sum)/x;
-    result->err = GSL_DBL_EPSILON * result->val;
+    result->err = 2.0 * GSL_DBL_EPSILON * result->val;
     return GSL_SUCCESS;
   }
   else {
@@ -406,7 +413,7 @@ int gsl_sf_expint_Ei_impl(const double x, gsl_sf_result * result)
   }
   else {
     int status = gsl_sf_expint_E1_impl(-x, result);
-    result->val = - result->val;
+    result->val = -result->val;
     return status;
   }
 }

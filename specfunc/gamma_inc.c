@@ -15,23 +15,28 @@
  */
 static
 int
-gamma_inc_D(const double a, const double x, double * result)
+gamma_inc_D(const double a, const double x, gsl_sf_result * result)
 {
   if(a < 10.0) {
     double lnr;
     gsl_sf_result lg;
     gsl_sf_lngamma_impl(a+1.0, &lg);
     lnr = a * log(x) - x - lg.val;
-    *result = exp(lnr);
+    result->val = exp(lnr);
+    result->err = 2.0 * GSL_DBL_EPSILON * (fabs(lnr) + 1.0) * fabs(result->val);
     return GSL_SUCCESS;
   }
   else {
     double mu = (x-a)/a;
+    double term1;
     gsl_sf_result gstar;
     gsl_sf_result ln_term;
     gsl_sf_log_1plusx_mx_impl(mu, &ln_term);  /* log(1+mu) - mu */
     gsl_sf_gammastar_impl(a, &gstar);
-    *result = exp(a*ln_term.val)/sqrt(2.0*M_PI*a)/gstar.val;
+    term1 = exp(a*ln_term.val)/sqrt(2.0*M_PI*a);
+    result->val  = term1/gstar.val;
+    result->err  = 2.0 * GSL_DBL_EPSILON * (fabs(a*ln_term.val) + 1.0) * fabs(result->val);
+    result->err += gstar.err/fabs(gstar.val) * fabs(result->val);
     return GSL_SUCCESS;
   }
 }
@@ -45,7 +50,7 @@ gamma_inc_P_series(const double a, const double x, gsl_sf_result * result)
 {
   const int nmax = 5000;
 
-  double D;
+  gsl_sf_result D;
   int stat_D = gamma_inc_D(a, x, &D);
 
   double sum  = 1.0;
@@ -57,8 +62,9 @@ gamma_inc_P_series(const double a, const double x, gsl_sf_result * result)
     if(fabs(term/sum) < GSL_DBL_EPSILON) break;
   }
 
-  result->val = D * sum;
-  result->err = 2.0 * GSL_DBL_EPSILON * fabs(result->val);
+  result->val  = D.val * sum;
+  result->err  = D.err * fabs(sum);
+  result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
 
   if(n == nmax)
     return GSL_EMAXITER;
@@ -75,9 +81,8 @@ gamma_inc_Q_large_x(const double a, const double x, gsl_sf_result * result)
 {
   const int nmax = 5000;
 
-  double D;
+  gsl_sf_result D;
   const int stat_D = gamma_inc_D(a, x, &D);
-  const double pre = D * (a/x);
 
   double sum  = 1.0;
   double term = 1.0;
@@ -91,8 +96,9 @@ gamma_inc_Q_large_x(const double a, const double x, gsl_sf_result * result)
     last  = term;
   }
 
-  result->val = pre * sum;
-  result->err = 2.0 * GSL_DBL_EPSILON * fabs(result->val);
+  result->val  = D.val * (a/x) * sum;
+  result->err  = D.err * fabs((a/x) * sum);
+  result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
 
   if(n == nmax)
     return GSL_EMAXITER;
@@ -159,9 +165,8 @@ gamma_inc_Q_CF(const double a, const double x, gsl_sf_result * result)
 {
   const int kmax = 5000;
 
-  double D;
+  gsl_sf_result D;
   const int stat_D = gamma_inc_D(a, x, &D);
-  const double pre = D * a/x;
 
   double sum  = 1.0;
   double tk   = 1.0;
@@ -180,8 +185,9 @@ gamma_inc_Q_CF(const double a, const double x, gsl_sf_result * result)
     if(fabs(tk/sum) < GSL_DBL_EPSILON) break;
   }
 
-  result->val = pre * sum;
-  result->err = 2.0 * GSL_DBL_EPSILON * fabs(result->val);
+  result->val  = D.val * (a/x) * sum;
+  result->err  = D.err * fabs((a/x) * sum);
+  result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
 
   if(k == kmax)
     return GSL_EMAXITER;
@@ -199,6 +205,7 @@ gamma_inc_Q_series(const double a, const double x, gsl_sf_result * result)
   double term1;  /* 1 - x^a/Gamma(a+1) */
   double sum;    /* 1 + (a+1)/(a+2)(-x)/2! + (a+1)/(a+3)(-x)^2/3! + ... */
   int stat_sum;
+  double term2;  /* a temporary variable used at the end */
 
   {
     /* Evaluate series for 1 - x^a/Gamma(a+1), small a
@@ -289,8 +296,10 @@ gamma_inc_Q_series(const double a, const double x, gsl_sf_result * result)
       stat_sum = GSL_SUCCESS;
   }
 
-  result->val = term1 + (1.0 - term1) * a/(a+1.0) * x * sum;
-  result->err = 2.0 * GSL_DBL_EPSILON * fabs(result->val);
+  term2 = (1.0 - term1) * a/(a+1.0) * x * sum;
+  result->val  = term1 + term2;
+  result->err  = GSL_DBL_EPSILON * (fabs(term1) + 2.0*fabs(term2));
+  result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
   return stat_sum;
 }
 

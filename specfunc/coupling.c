@@ -177,8 +177,9 @@ gsl_sf_coupling_3j_impl(int two_ja, int two_jb, int two_jc,
       }
     }
 
-    result->val = sum_pos - sum_neg;
-    result->err = 2.0 * GSL_DBL_EPSILON * (sum_pos + sum_neg);
+    result->val  = sum_pos - sum_neg;
+    result->err  = 2.0 * GSL_DBL_EPSILON * (sum_pos + sum_neg);
+    result->err += 2.0 * GSL_DBL_EPSILON * (tkmax - tkmin) * fabs(result->val);
 
     return GSL_SUCCESS;
   }
@@ -273,8 +274,9 @@ gsl_sf_coupling_6j_impl(int two_ja, int two_jb, int two_jc,
       }      
     }
     
-    result->val = sum_pos - sum_neg;
-    result->err = 2.0 * GSL_DBL_EPSILON * (sum_pos + sum_neg);
+    result->val  = sum_pos - sum_neg;
+    result->err  = 2.0 * GSL_DBL_EPSILON * (sum_pos + sum_neg);
+    result->err += 2.0 * GSL_DBL_EPSILON * (tkmax - tkmin) * fabs(result->val);
 
     return GSL_SUCCESS;
   }
@@ -312,10 +314,12 @@ gsl_sf_coupling_9j_impl(int two_ja, int two_jb, int two_jc,
     int tkmax = locMin3(two_ja + two_ji, two_jh + two_jd, two_jb + two_jf);
     double sum_pos = 0.0;
     double sum_neg = 0.0;
+    double sumsq_err = 0.0;
     double phase;
     for(tk=tkmin; tk<=tkmax; tk += 2) {
       gsl_sf_result s1, s2, s3;
       double term;
+      double term_err;
       int status = 0;
       status += gsl_sf_coupling_6j_impl(two_ja, two_ji, two_jd,  two_jh, tk, two_jg,  &s1);
       status += gsl_sf_coupling_6j_impl(two_jb, two_jf, two_jh,  two_jd, tk, two_je,  &s2);
@@ -326,6 +330,9 @@ gsl_sf_coupling_9j_impl(int two_ja, int two_jb, int two_jc,
 	return GSL_EOVRFLW;
       }
       term = s1.val * s2.val * s3.val;
+      term_err  = s1.err * fabs(s2.val*s3.val);
+      term_err += s2.err * fabs(s1.val*s3.val);
+      term_err += s3.err * fabs(s1.val*s2.val);
 
       if((tk + 1) * term >= 0.0) {
         sum_pos += (tk + 1) * term;
@@ -333,12 +340,16 @@ gsl_sf_coupling_9j_impl(int two_ja, int two_jb, int two_jc,
       else {
         sum_neg -= (tk + 1) * term;
       }
+
+      sumsq_err += ((tk+1) * term_err) * ((tk+1) * term_err);
     }
 
     phase = GSL_IS_ODD(tkmin) ? -1.0 : 1.0;
 
-    result->val = phase * (sum_pos - sum_neg);
-    result->err = 2.0 * GSL_DBL_EPSILON * (sum_pos + sum_neg);
+    result->val  = phase * (sum_pos - sum_neg);
+    result->err  = 2.0 * GSL_DBL_EPSILON * (sum_pos + sum_neg);
+    result->err += sqrt(sumsq_err / (tkmax-tkmin+1.0));
+    result->err += 2.0 * GSL_DBL_EPSILON * (tkmax-tkmin) * fabs(result->val);
 
     return GSL_SUCCESS;
   }

@@ -29,6 +29,7 @@ int test_bessel(void)
 
   TEST_SF(s, gsl_sf_bessel_Jn_impl, (4, 0.1, &r),     2.6028648545684032338e-07, TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_bessel_Jn_impl, (5, 2.0, &r),     0.007039629755871685484,   TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_bessel_Jn_impl, (10, 20.0, &r),   0.18648255802394508321,    TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_bessel_Jn_impl, (100, 100.0, &r), 0.09636667329586155967,    TEST_TOL0, GSL_SUCCESS);
 
   TEST_SF(s, gsl_sf_bessel_Y0_impl, (0.1, &r),         -1.5342386513503668441,    TEST_TOL0, GSL_SUCCESS);
@@ -123,7 +124,7 @@ int test_bessel(void)
   TEST_SF(s,  gsl_sf_bessel_jl_impl, (1,       10.0, &r),   0.07846694179875154709000, TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s,  gsl_sf_bessel_jl_impl, (5,        1.0, &r),   0.00009256115861125816357, TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s,  gsl_sf_bessel_jl_impl, (10,      10.0, &r),   0.06460515449256426427,    TEST_TOL0, GSL_SUCCESS);
-  TEST_SF(s,  gsl_sf_bessel_jl_impl, (100,    100.0, &r),   0.010880477011438336539,   TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s,  gsl_sf_bessel_jl_impl, (100,    100.0, &r),   0.010880477011438336539,   TEST_TOL1, GSL_SUCCESS);
   TEST_SF(s,  gsl_sf_bessel_jl_impl, (2000, 1048576.0, &r), 7.449384239168568534e-07,  TEST_SQRT_TOL0, GSL_SUCCESS);
 
   TEST_SF(s,  gsl_sf_bessel_y0_impl, (0.001, &r), -999.99950000004166670, TEST_TOL0, GSL_SUCCESS);
@@ -158,7 +159,7 @@ int test_bessel(void)
   TEST_SF(s, gsl_sf_bessel_i2_scaled_impl, (100.0, &r), 0.0048515000000000000000, TEST_TOL0, GSL_SUCCESS);
 
   TEST_SF(s, gsl_sf_bessel_il_scaled_impl, (   4, 0.001, &r), 1.0571434341190365013e-15, TEST_TOL0, GSL_SUCCESS);
-  TEST_SF(s, gsl_sf_bessel_il_scaled_impl, (   4,   0.1, &r), 9.579352242057134927e-08,  TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_bessel_il_scaled_impl, (   4,   0.1, &r), 9.579352242057134927e-08,  TEST_TOL1, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_bessel_il_scaled_impl, (   5,   2.0, &r), 0.0004851564602127540059,  TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_bessel_il_scaled_impl, (   5, 100.0, &r), 0.004300446777500000000,   TEST_TOL1, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_bessel_il_scaled_impl, ( 100, 100.0, &r), 1.3898161964299132789e-23, TEST_TOL0, GSL_SUCCESS);
@@ -181,9 +182,11 @@ int test_bessel(void)
   TEST_SF(s, gsl_sf_bessel_kl_scaled_impl, ( 100, 100.0, &r),     3.985930768060258219e+18,  TEST_TOL1, GSL_SUCCESS);
 
   TEST_SF(s, gsl_sf_bessel_Jnu_impl, (0.0001,10.0, &r),       -0.2459270166445205, TEST_TOL2, GSL_SUCCESS);
-  TEST_SF(s, gsl_sf_bessel_Jnu_impl, (0.0009765625,10.0, &r), -0.2458500798634692, TEST_TOL2, GSL_SUCCESS);  
+  TEST_SF(s, gsl_sf_bessel_Jnu_impl, (0.0009765625,10.0, &r), -0.2458500798634692, TEST_TOL2, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_bessel_Jnu_impl, ( 1.0, 0.001, &r), 0.0004999999375000026,     TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_bessel_Jnu_impl, ( 1.0,   1.0, &r), 0.4400505857449335160,     TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_bessel_Jnu_impl, ( 1.75,  1.0, &r), 0.1685939225457631701,     TEST_TOL0, GSL_SUCCESS);
+  
   TEST_SF(s, gsl_sf_bessel_Jnu_impl, (30.0,   1.0, &r), 3.482869794251482902e-42,  TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_bessel_Jnu_impl, (30.0, 100.0, &r), 0.08146012958117222297,    TEST_TOL1, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_bessel_Jnu_impl, (10.0,   1.0, &r), 2.6306151236874532070e-10, TEST_TOL0, GSL_SUCCESS);

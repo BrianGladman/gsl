@@ -312,7 +312,7 @@ gsl_sf_exprel_n_impl(const int N, const double x, gsl_sf_result * result)
   }
   else if(fabs(x) < GSL_ROOT3_DBL_EPSILON * N) {
     result->val = 1.0 + x/(N+1) * (1.0 + x/(N+2));
-    result->err = GSL_DBL_EPSILON;
+    result->err = 2.0 * GSL_DBL_EPSILON;
     return GSL_SUCCESS;
   }
   else if(N == 0) {
@@ -331,10 +331,15 @@ gsl_sf_exprel_n_impl(const int N, const double x, gsl_sf_result * result)
        * exprel_N(x) ~= e^x N!/x^N
        */
       gsl_sf_result lnf_N;
-      double lnr;
+      double lnr_val;
+      double lnr_err;
+      double lnterm;
       gsl_sf_lnfact_impl(N, &lnf_N);
-      lnr = x + lnf_N.val - N*log(x);
-      return gsl_sf_exp_impl(lnr, result);
+      lnterm = N*log(x);
+      lnr_val  = x + lnf_N.val - lnterm;
+      lnr_err  = GSL_DBL_EPSILON * (fabs(x) + fabs(lnf_N.val) + fabs(lnterm));
+      lnr_err += lnf_N.err;
+      return gsl_sf_exp_err_impl(lnr_val, lnr_err, result);
     }
     else if(x > N) {
       /* Write the identity
@@ -345,14 +350,18 @@ gsl_sf_exprel_n_impl(const int N, const double x, gsl_sf_result * result)
       double ln_x = log(x);
       gsl_sf_result lnf_N;
       double lg_N;
-      double lnpre;
+      double lnpre_val;
+      double lnpre_err;
       gsl_sf_lnfact_impl(N, &lnf_N);    /* log(N!)       */
       lg_N  = lnf_N.val - log(N);       /* log(Gamma(N)) */
-      lnpre = x + lnf_N.val - N*ln_x;
-      if(lnpre < GSL_LOG_DBL_MAX - 5.0) {
+      lnpre_val  = x + lnf_N.val - N*ln_x;
+      lnpre_err  = GSL_DBL_EPSILON * (fabs(x) + fabs(lnf_N.val) + fabs(N*ln_x));
+      lnpre_err += lnf_N.err;
+      if(lnpre_val < GSL_LOG_DBL_MAX - 5.0) {
         int stat_eG;
-	double pre = exp(lnpre);
 	gsl_sf_result bigG_ratio;
+	gsl_sf_result pre;
+	int stat_ex = gsl_sf_exp_err_impl(lnpre_val, lnpre_err, &pre);
         double ln_bigG_ratio_pre = -x + (N-1)*ln_x - lg_N;
 	double bigGsum = 1.0;
 	double term = 1.0;
@@ -363,9 +372,11 @@ gsl_sf_exprel_n_impl(const int N, const double x, gsl_sf_result * result)
 	}
 	stat_eG = gsl_sf_exp_mult_impl(ln_bigG_ratio_pre, bigGsum, &bigG_ratio);
 	if(stat_eG == GSL_SUCCESS) {
-          result->val  = pre * (1.0 - bigG_ratio.val);
-	  result->err  = pre * (2.0*GSL_DBL_EPSILON + bigG_ratio.err);
-	  return GSL_SUCCESS;
+          result->val  = pre.val * (1.0 - bigG_ratio.val);
+	  result->err  = pre.val * (2.0*GSL_DBL_EPSILON + bigG_ratio.err);
+	  result->err += pre.err * fabs(1.0 - bigG_ratio.val);
+	  result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
+	  return stat_ex;
 	}
 	else {
 	  result->val = 0.0;

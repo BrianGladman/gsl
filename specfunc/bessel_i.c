@@ -184,11 +184,13 @@ int gsl_sf_bessel_il_scaled_impl(const int l, double x, gsl_sf_result * result)
     return stat_il;
   }
   else if(x*x < 10.0*(l+1.5)/M_E) {
-    double b = 0.0;
-    int status = gsl_sf_bessel_Inu_Jnu_taylor_impl(l+0.5, x, 1, 50, GSL_DBL_EPSILON, &b);
-    result->val = sgn * exp(-ax) * sqrt((0.5*M_PI)/x) * b;
-    result->err = 2.0 * GSL_DBL_EPSILON * fabs(result->val);
-    return status;
+    gsl_sf_result b;
+    int stat = gsl_sf_bessel_IJ_taylor_impl(l+0.5, x, 1, 50, GSL_DBL_EPSILON, &b);
+    double pre   = exp(-ax) * sqrt((0.5*M_PI)/x);
+    result->val  = sgn * pre * b.val;
+    result->err  = pre * b.err;
+    result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
+    return stat;
   }
   else if(l < 150) {
     gsl_sf_result i0_scaled;

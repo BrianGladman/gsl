@@ -25,20 +25,13 @@ gsl_sf_bessel_Inu_scaled_impl(double nu, double x, gsl_sf_result * result)
     result->err = 0.0;
     return GSL_EDOM;
   }
-  else if(x*x < 10.0*(nu+1.0)*GSL_ROOT5_DBL_EPSILON) {
-    double b;
-    double ex = exp(-x);
-    int stat = gsl_sf_bessel_Inu_Jnu_taylor_impl(nu, x, 1, 50, GSL_DBL_EPSILON, &b);
-    result->val = ex * b;
-    result->err = 2.0 * GSL_DBL_EPSILON * fabs(result->val);
-    return stat;
-  }
   else if(x*x < 10.0*(nu+1.0)) {
-    double b;
+    gsl_sf_result b;
     double ex = exp(-x);
-    int stat = gsl_sf_bessel_Inu_Jnu_taylor_impl(nu, x, 1, 100, GSL_DBL_EPSILON, &b);
-    result->val = ex * b;
-    result->err = 2.0 * GSL_DBL_EPSILON * fabs(result->val);
+    int stat = gsl_sf_bessel_IJ_taylor_impl(nu, x, 1, 100, GSL_DBL_EPSILON, &b);
+    result->val  = b.val * ex;
+    result->err  = b.err * ex;
+    result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
     return stat;
   }
   else if(0.5/(nu*nu + x*x) < GSL_ROOT3_DBL_EPSILON) {

@@ -161,10 +161,12 @@ gsl_sf_bessel_jl_impl(const int l, const double x, gsl_sf_result * result)
     return gsl_sf_bessel_j2_impl(x, result);
   }
   else if(x*x < 10.0*(l+0.5)/M_E) {
-    double b = 0.0;
-    int status = gsl_sf_bessel_Inu_Jnu_taylor_impl(l+0.5, x, -1, 50, GSL_DBL_EPSILON, &b);
-    result->val = sqrt((0.5*M_PI)/x) * b;
-    result->err = 2.0 * GSL_DBL_EPSILON * fabs(result->val);
+    gsl_sf_result b;
+    int status = gsl_sf_bessel_IJ_taylor_impl(l+0.5, x, -1, 50, GSL_DBL_EPSILON, &b);
+    double pre   = sqrt((0.5*M_PI)/x);
+    result->val  = pre * b.val;
+    result->err  = pre * b.err;
+    result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
     return status;
   }
   else if(GSL_ROOT3_DBL_EPSILON * x > (l*l + l + 1.0)) {
@@ -184,8 +186,9 @@ gsl_sf_bessel_jl_impl(const int l, const double x, gsl_sf_result * result)
     return status;
   }
   else {
+    double sgn;
     double ratio;
-    int stat_CF1 = gsl_sf_bessel_J_CF1_ser(l+0.5, x, &ratio);
+    int stat_CF1 = gsl_sf_bessel_J_CF1(l+0.5, x, &ratio, &sgn);
     double jellp1 = GSL_SQRT_DBL_EPSILON * ratio;
     double jell   = GSL_SQRT_DBL_EPSILON;
     double jellm1;

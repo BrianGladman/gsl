@@ -141,7 +141,7 @@ pochrel_smallx(const double a, const double x, gsl_sf_result * result)
 
     if(bp == a) {
       result->val = dpoch1;
-      result->err = 2.0 * GSL_DBL_EPSILON * fabs(result->val);
+      result->err = 2.0 * GSL_DBL_EPSILON * (fabs(incr) + 1.0) * fabs(result->val);
       return GSL_SUCCESS;
     }
     else {
@@ -151,9 +151,12 @@ pochrel_smallx(const double a, const double x, gsl_sf_result * result)
        */
       double sinpxx = sin(M_PI*x)/x;
       double sinpx2 = sin(0.5*M_PI*x);
-      double trig   = sinpxx/tan(M_PI*b) - 2.0*sinpx2*(sinpx2/x);
+      double t1 = sinpxx/tan(M_PI*b);
+      double t2 = 2.0*sinpx2*(sinpx2/x);
+      double trig  = t1 - t2;
       result->val  = dpoch1 * (1.0 + x*trig) + trig;
-      result->err  = 2.0 * GSL_DBL_EPSILON * fabs(result->val);
+      result->err  = (fabs(dpoch1*x) + 1.0) * GSL_DBL_EPSILON * (fabs(t1) + fabs(t2));
+      result->err += 2.0 * GSL_DBL_EPSILON * (fabs(incr) + 1.0) * fabs(result->val);
       return GSL_SUCCESS;
     }    
   }
@@ -174,8 +177,9 @@ lnpoch_pos(const double a, const double x, gsl_sf_result * result)
     gsl_sf_result g2;
     gsl_sf_gammainv_impl(a,   &g1);
     gsl_sf_gammainv_impl(a+x, &g2);
-    result->val = -log(g2.val/g1.val);
-    result->err = 2.0 * GSL_DBL_EPSILON * fabs(result->val);
+    result->val  = -log(g2.val/g1.val);
+    result->err  = g1.err/fabs(g1.val) + g2.err/fabs(g2.val);
+    result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
   }
   else if(absx < 0.1*a && a > 15.0) {
@@ -217,7 +221,9 @@ lnpoch_pos(const double a, const double x, gsl_sf_result * result)
     term2 = (x + a - 0.5) * ln_1peps.val;
 
     result->val  = term1 + term2 + ser;
-    result->err  = fabs(GSL_DBL_EPSILON*term1) + fabs((x + a - 0.5)*ln_1peps.err);
+    result->err  = GSL_DBL_EPSILON*fabs(term1);
+    result->err += fabs((x + a - 0.5)*ln_1peps.err);
+    result->err += fabs(ln_1peps.val) * GSL_DBL_EPSILON * (fabs(x) + fabs(a) + 0.5);
     result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
   }
@@ -226,7 +232,7 @@ lnpoch_pos(const double a, const double x, gsl_sf_result * result)
     int stat_p = pochrel_smallx(a, x, &poch_rel);
     double eps = x*poch_rel.val;
     int stat_e = gsl_sf_log_1plusx_impl(eps, result);
-    result->err  = fabs(x * poch_rel.err / (1.0 + eps));
+    result->err  = 2.0 * fabs(x * poch_rel.err / (1.0 + eps));
     result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
     return GSL_ERROR_SELECT_2(stat_e, stat_p);
   }
@@ -292,8 +298,10 @@ gsl_sf_lnpoch_sgn_impl(const double a, const double x,
       gsl_sf_result lnp_pos;
       int stat_pp   = lnpoch_pos(1.0-a, -x, &lnp_pos);
       double lnterm = log(fabs(sin_1/sin_2));
-      result->val = log(fabs(sin_1/sin_2)) - lnp_pos.val;
-      result->err = 2.0 * GSL_DBL_EPSILON * fabs(lnterm) + lnp_pos.err;
+      result->val  = lnterm - lnp_pos.val;
+      result->err  = lnp_pos.err;
+      result->err += 2.0 * GSL_DBL_EPSILON * (fabs(1.0-a) + fabs(1.0-a-x)) * fabs(lnterm);
+      result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
       *sgn = GSL_SIGN(sin_1*sin_2);
       return stat_pp;
     }
@@ -373,8 +381,9 @@ gsl_sf_pochrel_impl(const double a, const double x, gsl_sf_result * result)
     }
     else {
       const double el = exp(lnpoch.val);
-      result->val = (sgn*el - 1.0)/x;
-      result->err = fabs(result->val) * (lnpoch.err + 2.0 * GSL_DBL_EPSILON);
+      result->val  = (sgn*el - 1.0)/x;
+      result->err  = fabs(result->val) * (lnpoch.err + 2.0 * GSL_DBL_EPSILON);
+      result->err += GSL_DBL_EPSILON * (fabs(sgn*el) + 1.0) / fabs(x);
       return stat_poch;
     }
   }

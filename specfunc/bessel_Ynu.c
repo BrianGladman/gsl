@@ -5,6 +5,7 @@
 #include <gsl_math.h>
 #include <gsl_errno.h>
 #include "bessel.h"
+#include "bessel_olver.h"
 #include "bessel_temme.h"
 #include "gsl_sf_bessel.h"
 
@@ -52,52 +53,56 @@ gsl_sf_bessel_Ynu_impl(double nu, double x, gsl_sf_result * result)
     result->err = 0.0;
     return GSL_EDOM;
   }
+  else if(nu > 50.0) {
+    return gsl_sf_bessel_Ynu_asymp_Olver_impl(nu, x, result);
+  }
   else {
+    /* -1/2 <= mu <= 1/2 */
     int N = (int)(nu + 0.5);
-    double mu = nu - N;      /* -1/2 <= mu <= 1/2 */
-    double Y_mu, Y_mup1, Yp_mu;
-    double Y_nu, Yp_nu;
+    double mu = nu - N;
+ 
+    double Ymu, Ymup1;
     int stat_mu;
-    int stat_0, stat_1;
+    double Ynm1;
+    double Yn;
+    double Ynp1;
+    int n;
 
-    /* Determine Y_mu, Y'_mu for |mu| < 1/2
-     */
     if(x < 2.0) {
-      stat_mu = gsl_sf_bessel_Y_temme(mu, x, &Y_mu, &Y_mup1, &Yp_mu);
-      stat_0 = GSL_SUCCESS;
-      stat_1 = GSL_SUCCESS;
+      /* Determine Ymu, Ymup1 directly. This is really
+       * an optimization since this case could as well
+       * be handled by a call to gsl_sf_bessel_JY_mu_restricted(),
+       * as below.
+       */
+      gsl_sf_result Y_mu, Y_mup1;
+      stat_mu = gsl_sf_bessel_Y_temme(mu, x, &Y_mu, &Y_mup1);
+      Ymu   = Y_mu.val;
+      Ymup1 = Y_mup1.val;
     }
     else {
-      double J_mu, J_mup1, Jp_mu;
-      double P, Q;
-      if(mu >= 0.0) {
-        gsl_sf_result r_J_mu;
-	gsl_sf_result r_J_mup1;
-        stat_0 = gsl_sf_bessel_Jnu_impl(mu,     x, &r_J_mu);
-        stat_1 = gsl_sf_bessel_Jnu_impl(mu+1.0, x, &r_J_mup1);
-	J_mu   = r_J_mu.val;
-	J_mup1 = r_J_mup1.val;
-      }
-      else {
-        gsl_sf_result r_J_mup1;
-        gsl_sf_result r_J_mup2;
-	stat_0 = gsl_sf_bessel_Jnu_impl(mu+1.0, x, &r_J_mup1);
-        stat_1 = gsl_sf_bessel_Jnu_impl(mu+2.0, x, &r_J_mup2);
-	J_mu = 2.0*(mu+1.0)/x * r_J_mup1.val - r_J_mup2.val;
-      }
-      stat_mu = gsl_sf_bessel_JY_steed_CF2(mu, x, &P, &Q);
-      Jp_mu = mu/x * J_mu - J_mup1;
-      Y_mu  = (P*J_mu - Jp_mu)/Q;
-      Yp_mu = (Y_mu*Jp_mu + 2.0/(M_PI*x))/J_mu;
+      /* Determine Ymu, Ymup1 and Jmu, Jmup1.
+       */
+      gsl_sf_result Y_mu, Y_mup1;
+      gsl_sf_result J_mu, J_mup1;
+      stat_mu = gsl_sf_bessel_JY_mu_restricted(mu, x, &J_mu, &J_mup1, &Y_mu, &Y_mup1);
+      Ymu   = Y_mu.val;
+      Ymup1 = Y_mup1.val;
     }
 
-    bessel_Y_recur(mu, x, N, Y_mu, Yp_mu, &Y_nu, &Yp_nu);
+    /* Forward recursion to get Ynu, Ynup1.
+     */
+    Ynm1 = Ymu;
+    Yn   = Ymup1;
+    for(n=1; n<=N; n++) {
+      Ynp1 = 2.0*(mu+n)/x * Yn - Ynm1;
+      Ynm1 = Yn;
+      Yn   = Ynp1;
+    }
 
-    result->val  = Y_nu;
-    result->err  = GSL_DBL_EPSILON * fabs(GSL_MAX_DBL(N, 1.0) * result->val);
-    result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
+    result->val = Ynm1; /* Y_nu */
+    result->err = GSL_DBL_EPSILON * (0.5*N + 2.0) * fabs(Ynm1);
 
-    return GSL_ERROR_SELECT_3(stat_mu, stat_0, stat_1);
+    return stat_mu;
   }
 }
 

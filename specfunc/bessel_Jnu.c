@@ -63,32 +63,88 @@ gsl_sf_bessel_Jnu_impl(const double nu, const double x, gsl_sf_result * result)
     return GSL_EDOM;
   }
   else if(x == 0.0) {
-    double b;
-    int stat = gsl_sf_bessel_JnuYnu_zero(nu, &b, (double *)0, (double *)0, (double *)0);
-    result->val = b;
-    result->err = 2.0 * GSL_DBL_EPSILON * fabs(result->val);
-    return stat;
-  }
-  else if(x*x < 10.0*(nu+1.0)*GSL_ROOT5_DBL_EPSILON) {
-    double b;
-    int stat = gsl_sf_bessel_Inu_Jnu_taylor_impl(nu, x, -1, 50, GSL_DBL_EPSILON, &b);
-    result->val = b;
-    result->err = 2.0 * GSL_DBL_EPSILON * fabs(result->val);
-    return stat;
+    if(nu == 0.0) {
+      result->val = 1.0;
+      result->err = 0.0;
+    }
+    else {
+      result->val = 0.0;
+      result->err = 0.0;
+    }
+    return GSL_SUCCESS;
   }
   else if(x*x < 10.0*(nu+1.0)) {
-    double b;
-    int stat = gsl_sf_bessel_Inu_Jnu_taylor_impl(nu, x, -1, 100, GSL_DBL_EPSILON, &b);
-    result->val = b;
-    result->err = 2.0 * GSL_DBL_EPSILON * fabs(result->val);
-    return stat;
+    return gsl_sf_bessel_IJ_taylor_impl(nu, x, -1, 100, GSL_DBL_EPSILON, result);
   }
-  else if(nu > 25.0) {
+  else if(nu > 50.0) {
     return gsl_sf_bessel_Jnu_asymp_Olver_impl(nu, x, result);
   }
   else {
-    gsl_sf_result Jnup1;
-    return bessel_J_recur_asymp(nu, x, result, &Jnup1);
+    /* -1/2 <= mu <= 1/2 */
+    int N = (int)(nu + 0.5);
+    double mu = nu - N;
+
+    /* Determine the J ratio at nu.
+     */
+    double Jnup1_Jnu;
+    double sgn_Jnu;
+    const int stat_CF1 = gsl_sf_bessel_J_CF1(nu, x, &Jnup1_Jnu, &sgn_Jnu);
+
+    if(x < 2.0) {
+      /* Determine Y_mu, Y_mup1 directly and recurse forward to nu.
+       * Then use the CF1 information to solve for J_nu and J_nup1.
+       */
+      gsl_sf_result Y_mu, Y_mup1;
+      const int stat_mu = gsl_sf_bessel_Y_temme(mu, x, &Y_mu, &Y_mup1);
+      
+      double Ynm1 = Y_mu.val;
+      double Yn   = Y_mup1.val;
+      double Ynp1;
+      int n;
+      for(n=1; n<N; n++) {
+        Ynp1 = 2.0*(mu+n)/x * Yn - Ynm1;
+	Ynm1 = Yn;
+	Yn   = Ynp1;
+      }
+
+      result->val = 2.0/(M_PI*x) / (Jnup1_Jnu*Yn - Ynp1);
+      result->err = GSL_DBL_EPSILON * (0.5*N + 2.0) * fabs(result->val);
+      return GSL_ERROR_SELECT_2(stat_mu, stat_CF1);
+    }
+    else {
+      /* Recurse backward from nu to mu, determining the J ratio
+       * at mu. Use this together with a Steed method CF2 to
+       * determine the actual J_mu, and thus obtain the normalization.
+       */
+      double Jmu;
+      double Jmup1_Jmu;
+      double sgn_Jmu;
+      double Jmuprime_Jmu;
+      double P, Q;
+      const int stat_CF2 = gsl_sf_bessel_JY_steed_CF2(mu, x, &P, &Q);
+      double gamma;
+ 
+      double Jnp1 = sgn_Jnu * GSL_SQRT_DBL_MIN * Jnup1_Jnu;
+      double Jn   = sgn_Jnu * GSL_SQRT_DBL_MIN;
+      double Jnm1;
+      int n;
+      for(n=N; n>0; n--) {
+        Jnm1 = 2.0*(mu+n)/x * Jn - Jnp1;
+        Jnp1 = Jn;
+        Jn   = Jnm1;
+      }
+      Jmup1_Jmu = Jnp1/Jn;
+      sgn_Jmu   = GSL_SIGN(Jn);
+      Jmuprime_Jmu = nu/x - Jmup1_Jmu;
+
+      gamma = (P - Jmuprime_Jmu)/Q;
+      Jmu   = sgn_Jmu * sqrt(2.0/(M_PI*x) / (Q + gamma*(P-Jmuprime_Jmu)));
+
+      result->val = Jmu * (sgn_Jnu * GSL_SQRT_DBL_MIN) / Jn;
+      result->err = GSL_DBL_EPSILON * (0.5*N + 2.0) * fabs(result->val);
+
+      return GSL_ERROR_SELECT_2(stat_CF2, stat_CF1);
+    }
   }
 }
 

@@ -87,7 +87,8 @@ gsl_sf_temme_gamma(const double nu, double * g_1pnu, double * g_1mnu, double * g
 
 int
 gsl_sf_bessel_Y_temme(const double nu, const double x,
-                      double * Y_nu, double * Y_nup1, double * Yp_nu)
+                      gsl_sf_result * Ynu,
+                      gsl_sf_result * Ynup1)
 {
   const int max_iter = 15000;
   
@@ -137,11 +138,12 @@ gsl_sf_bessel_Y_temme(const double nu, const double x,
     if(fabs(del0) < 0.5*(1.0 + fabs(sum0))*GSL_DBL_EPSILON) break;
   }
 
-  *Y_nu   = -sum0;
-  *Y_nup1 = -sum1 * 2.0/x;
-  *Yp_nu  = nu/x * *Y_nu - *Y_nup1;
+  Ynu->val   = -sum0;
+  Ynu->err   = 8.0 * GSL_DBL_EPSILON * fabs(Ynu->val);
+  Ynup1->val = -sum1 * 2.0/x;
+  Ynup1->err = 8.0 * GSL_DBL_EPSILON * fabs(Ynup1->val);
 
-  stat_iter = ( k == max_iter ? GSL_EMAXITER : GSL_SUCCESS );
+  stat_iter = ( k >= max_iter ? GSL_EMAXITER : GSL_SUCCESS );
   return GSL_ERROR_SELECT_2(stat_iter, stat_g);
 }
 
