@@ -68,6 +68,8 @@ function @math{Q(x) = (1/(2\pi)) \int_x^\infty dt \exp(-t^2/2)}.
 @comment Exceptional Return Values: none
 @end deftypefun
 
+@cindex hazard function
+
 The "hazard function" for the normal distrbution,
 also known as the inverse Mill's ratio, is defined as
 @math{h(x) = Z(x)/Q(x) = \sqrt{2/\pi} \exp(-x^2 / 2) / \erfc(x/\sqrt{2})}.
