@@ -6,6 +6,8 @@
 #include <gsl_poly.h>
 #include <gsl_test.h>
 
+#include "test.h"
+
 void 
 test_poly(void)
 {
