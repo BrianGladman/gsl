@@ -383,7 +383,7 @@ numbers to read.  The function returns 0 for success and
 @node Creating subvector views
 @section Creating subvector views
 
-@deftypefun gsl_vector gsl_vector_subvector (gsl_vector *@var{v}, size_t @var{i}, size_t @var{n})
+@deftypefun gsl_vector gsl_vector_subvector (gsl_vector *@var{v}, size_t @var{offset}, size_t @var{n})
 This function returns a @code{gsl_vector} struct which is a view of a
 subvector of another vector @var{v}.  The start of the new vector is
 offset by @var{offset} elements from the start of the original vector.
@@ -409,7 +409,7 @@ Of course, the original vector should not be deallocated while the new
 vector is still in use.
 @end deftypefun
 
-@deftypefun gsl_vector gsl_vector_subvector_with_stride (gsl_vector *@var{v}, size_t @var{i}, size_t @var{n}, size_t @var{stride})
+@deftypefun gsl_vector gsl_vector_subvector_with_stride (gsl_vector *@var{v}, size_t @var{offset}, size_t @var{n}, size_t @var{stride})
 This function returns a @code{gsl_vector} struct which is a view of a
 subvector of another vector @var{v}. The subvector is formed in the same
 way as for @code{gsl_vector_subvector} but with an additional stride
@@ -446,12 +446,12 @@ double r = gsl_blas_dnrm2 (&v_odd);
 @end example
 
 
-@deftypefun {const gsl_vector} gsl_vector_const_subvector (const gsl_vector * @var{v}, size_t @var{i}, size_t @var{n})
+@deftypefun {const gsl_vector} gsl_vector_const_subvector (const gsl_vector * @var{v}, size_t @var{offset}, size_t @var{n})
 This function is equivalent to @code{gsl_vector_subvector} but can be used for
 vectors which are declared @code{const}.
 @end deftypefun
 
-@deftypefun {const gsl_vector} gsl_vector_const_subvector_with_stride (const gsl_vector * @var{v}, size_t @var{i}, size_t @var{n}, size_t @var{stride})
+@deftypefun {const gsl_vector} gsl_vector_const_subvector_with_stride (const gsl_vector * @var{v}, size_t @var{offset}, size_t @var{n}, size_t @var{stride})
 This function is equivalent to @code{gsl_vector_subvector_with_stride}
 but can be used for vectors which are declared @code{const}.
 @end deftypefun
