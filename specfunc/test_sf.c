@@ -314,14 +314,43 @@ int check_coupling(void)
   double y;
   int status = 0;
   int s;
-  
+
+  gsl_sf_coupling_3j_impl(0, 1, 1, 0, 1, -1, &y);
+  s = 0;
+  s += ( frac_diff( y, sqrt(1.0/2.0) ) > 1.0e-14 );
+  gsl_test(s, "  3j(ja=0    jb=1/2  j=1/2  ma=0    mb=1/2  m=-1/2)");
+  status += s;
+
   gsl_sf_coupling_3j_impl(1, 1, 2, 1, -1, 0, &y);
   s = 0;
-  s += ( frac_diff( y, sqrt(0.5) ) > 1.0e-14 );
-  gsl_test(s, "  3j(1/2, 1/2, 1, 1/2, -1/2, 0)");
-  printf("%20.16g\n", y);
+  s += ( frac_diff( y, sqrt(1.0/6.0) ) > 1.0e-14 );
+  gsl_test(s, "  3j(ja=1/2  jb=1/2  j=1    ma=1/2  mb=-1/2 m=0)");
   status += s;
-  
+
+  gsl_sf_coupling_3j_impl(2, 4, 6, 0, 2, -2, &y);
+  s = 0;
+  s += ( frac_diff( y, sqrt(8.0/105.0) ) > 1.0e-14 );
+  gsl_test(s, "  3j(ja=1    jb=2    j=3    ma=0    mb=1    m=-1)");
+  status += s;
+
+  gsl_sf_coupling_6j_impl(2, 2, 4, 2, 2, 2, &y);
+  s = 0;
+  s += ( frac_diff( y, 1.0/6.0 ) > 1.0e-14 );
+  gsl_test(s, "  6j(ja=1    jb=1    jc=2    jd=1    je=1    jf=1)");
+  status += s;
+
+  gsl_sf_coupling_9j_impl(4, 2, 4, 3, 3, 2, 1, 1, 2, &y);
+  s = 0;
+  s += ( frac_diff( y, -0.040824829046386 ) > 1.0e-13 );
+  gsl_test(s, "  9j(ja=2    jb=1    jc=2    jd=3/2    je=3/2    jf=1    jg=1/2  jh=1/2  ji=1)");
+  status += s;
+
+  gsl_sf_coupling_9j_impl(8, 4, 10, 7, 3, 8, 1, 1, 2, &y);
+  s = 0;
+  s += ( frac_diff( y, 0.025458753860866 ) > 1.0e-13 );
+  gsl_test(s, "  9j(ja=4    jb=2    jc=5    jd=7/2    je=3/2    jf=4    jg=1/2  jh=1/2  ji=1)");
+  status += s;
+
   return status;
 }
 
