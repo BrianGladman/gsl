@@ -115,7 +115,9 @@ my_f (double x, size_t dim, void * p) @{
         abort();
       @}
 
-   return  fp->a * x[0] * x[0] + fp->b * x[0] * x[1] + fp->c * x[1] * x[1] ;
+   return  fp->a * x[0] * x[0] 
+             + fp->b * x[0] * x[1] 
+               + fp->c * x[1] * x[1] ;
 @}
 
 gsl_monte_function F ;
@@ -129,7 +131,8 @@ F.params = &params ;
 The function @math{f(x)} can be evaluated using the following macro,
 
 @example
-#define GSL_MONTE_FN_EVAL(F,x) (*((F)->function))(x,(F)->dim,(F)->params)
+#define GSL_MONTE_FN_EVAL(F,x) 
+    (*((F)->function))(x,(F)->dim,(F)->params)
 @end example
 
 @node PLAIN Monte Carlo
@@ -611,7 +614,7 @@ Monte Carlo routines only select points which are strictly within the
 integration region and so no special measures are needed to avoid these
 singularities.
 
-@example
+@smallexample
 #include <stdlib.h>
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_monte.h>
@@ -709,7 +712,7 @@ main ()
     gsl_monte_vegas_free (s);
   @}
 @}
-@end example
+@end smallexample
 @noindent
 With 500,000 function calls the plain Monte Carlo algorithm achieves a
 fractional error of 0.6%.  The estimated error @code{sigma} is

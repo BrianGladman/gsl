@@ -102,8 +102,11 @@ For example, the following code creates an instance of a Brent solver,
 to solve a 3-dimensional system of equations.
 
 @example
-gsl_multiroot_fsolver * s = 
-    gsl_multiroot_fsolver_alloc (gsl_multiroot_fsolver_brent, 3);
+const gsl_multiroot_fsolver_type * T 
+    = gsl_multiroot_fsolver_brent;
+
+gsl_multiroot_fsolver * s 
+    = gsl_multiroot_fsolver_alloc (T, 3);
 @end example
 
 If there is insufficient memory to create the solver then the function
@@ -118,8 +121,11 @@ For example, the following code creates an instance of a Newton-Raphson solver,
 for a 2-dimensional system of equations.
 
 @example
+const gsl_multiroot_fdfsolver_type * T 
+    = gsl_multiroot_fdfsolver_newton;
+
 gsl_multiroot_fdfsolver * s = 
-    gsl_multiroot_fdfsolver_alloc (gsl_multiroot_fdfsolver_newton, 2);
+    gsl_multiroot_fdfsolver_alloc (, 2);
 @end example
 
 If there is insufficient memory to create the solver then the function
@@ -147,7 +153,8 @@ These functions free all the memory associated with the solver @var{s}.
 These functions return a pointer to the name of the solver.  For example,
 
 @example
-printf("s is a '%s' solver\n", gsl_multiroot_fdfsolver_name (s)) ;
+printf("s is a '%s' solver\n", 
+       gsl_multiroot_fdfsolver_name (s)) ;
 @end example
 
 @noindent
@@ -209,7 +216,8 @@ struct powell_params @{ double A ; @} ;
 
 int
 powell (gsl_vector * x, void * p, gsl_vector * f) @{
-   struct powell_params * params = *(struct powell_params *)p ;
+   struct powell_params * params 
+     = *(struct powell_params *)p ;
    double A = (params->A) ;
    double x0 = gsl_vector_get(x,0);
    double x1 = gsl_vector_get(x,1);
@@ -267,7 +275,8 @@ include analytic derivatives using the following code,
 @example
 int
 powell_df (gsl_vector * x, void * p, gsl_matrix * J) @{
-   struct powell_params * params = *(struct powell_params *)p ;
+   struct powell_params * params 
+     = *(struct powell_params *)p ;
    double A = (params->A) ;
    double x0 = gsl_vector_get(x,0);
    double x1 = gsl_vector_get(x,1);
@@ -279,8 +288,10 @@ powell_df (gsl_vector * x, void * p, gsl_matrix * J) @{
 @}
 
 int
-powell_fdf (gsl_vector * x, void * p, gsl_matrix * f, gsl_matrix * J) @{
-   struct powell_params * params = *(struct powell_params *)p ;
+powell_fdf (gsl_vector * x, void * p, 
+            gsl_matrix * f, gsl_matrix * J) @{
+   struct powell_params * params 
+     = *(struct powell_params *)p ;
    double A = (params->A) ;
    double x0 = gsl_vector_get(x,0);
    double x1 = gsl_vector_get(x,1);
@@ -735,7 +746,8 @@ struct rparams
   @};
 
 int
-rosenbrock_f (const gsl_vector * x, void *params, gsl_vector * f)
+rosenbrock_f (const gsl_vector * x, void *params, 
+              gsl_vector * f)
 @{
   double a = ((struct rparams *) params)->a;
   double b = ((struct rparams *) params)->b;
@@ -794,7 +806,7 @@ main (void)
       if (status)   /* check if solver is stuck */
         break;
 
-      status = gsl_multiroot_test_residual (s->f, 0.0000001);
+      status = gsl_multiroot_test_residual (s->f, 1e-7);
     @}
   while (status == GSL_CONTINUE && iter < 1000);
 
@@ -819,10 +831,13 @@ values.
 int
 print_state (size_t iter, gsl_multiroot_fsolver * s)
 @{
-  printf ("iter = %3u x = % 10.3f % 10.3f  f(x) = % .3e % .3e\n",
+  printf ("iter = %3u x = % 10.3f % 10.3f "
+          "f(x) = % .3e % .3e\n",
           iter,
-          gsl_vector_get (s->x, 0), gsl_vector_get (s->x, 1),
-          gsl_vector_get (s->f, 0), gsl_vector_get (s->f, 1));
+          gsl_vector_get (s->x, 0), 
+          gsl_vector_get (s->x, 1),
+          gsl_vector_get (s->f, 0), 
+          gsl_vector_get (s->f, 1));
 @}
 @end example
 @noindent
@@ -833,7 +848,7 @@ downhill, in an attempt to reduce the large value of the residual. Once
 the root has been approximately located, on iteration 8, the Newton
 behavior takes over and convergence is very rapid.
 
-@example
+@smallexample
 iter =   0 x =  -10.00000000  -5.00000000  f(x) =  1.100e+01 -1.050e+03
 iter =   1 x =  -10.00000000  -5.00000000  f(x) =  1.100e+01 -1.050e+03
 iter =   2 x =   -3.97577039  24.82704463  f(x) =  4.976e+00  9.020e+01
@@ -847,7 +862,7 @@ iter =   9 x =    1.00000000   0.87821493  f(x) =  1.268e-10 -1.218e+00
 iter =  10 x =    1.00000000   0.98919827  f(x) =  1.124e-11 -1.080e-01
 iter =  11 x =    1.00000000   1.00000000  f(x) =  0.000e+00  0.000e+00
 status = success
-@end example
+@end smallexample
 @noindent
 Note that the algorithm does not update the location on every
 iteration. Some iterations are used to adjust the trust-region
@@ -864,7 +879,8 @@ below.
 
 @example
 int
-rosenbrock_df (const gsl_vector * x, void *params, gsl_matrix * df)
+rosenbrock_df (const gsl_vector * x, void *params, 
+               gsl_matrix * df)
 @{
   double a = ((struct rparams *) params)->a;
   double b = ((struct rparams *) params)->b;
@@ -912,7 +928,8 @@ main (void)
   struct rparams p = @{1.0, 10.0@};
   gsl_multiroot_function_fdf f = @{&rosenbrock_f, 
                                   &rosenbrock_df, 
-                                  &rosenbrock_fdf, n, &p@};
+                                  &rosenbrock_fdf, 
+                                  n, &p@};
 
   double x_init[2] = @{-10.0, -5.0@};
   gsl_vector *x = gsl_vector_alloc (n);
@@ -937,7 +954,7 @@ main (void)
       if (status)
         break;
 
-      status = gsl_multiroot_test_residual (s->f, 0.0000001);
+      status = gsl_multiroot_test_residual (s->f, 1e-7);
     @}
   while (status == GSL_CONTINUE && iter < 1000);
 
@@ -956,13 +973,13 @@ illustrate the behavior of a different derivative solver we switch to
 that it scales back its step if the full step would lead "uphill". Here
 is the output for the @code{gnewton} algorithm,
 
-@example
+@smallexample
 iter =  0 x = -10.00000000  -5.00000000  f(x) =  1.100e+01 -1.050e+03
 iter =  1 x =  -4.23051697 -65.31732261  f(x) =  5.231e+00 -8.321e+02
 iter =  2 x =   1.00000000 -26.35830775  f(x) = -8.882e-16 -2.736e+02
 iter =  3 x =   1.00000000   1.00000000  f(x) = -2.220e-16 -4.441e-15
 status = success
-@end example
+@end smallexample
 @noindent
 The convergence is much more rapid, but takes a wide excursion out to
 the point @math{(-4.23,-65.3)}. This could cause the algorithm to go

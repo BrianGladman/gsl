@@ -178,8 +178,9 @@ main (void)
   struct data ntuple_row;
   int i;
 
-  gsl_ntuple *ntuple = gsl_ntuple_create ("test.dat", &ntuple_row, 
-                                          sizeof (ntuple_row));
+  gsl_ntuple *ntuple 
+    = gsl_ntuple_create ("test.dat", &ntuple_row, 
+                         sizeof (ntuple_row));
 
   gsl_rng_env_setup();
 
@@ -227,10 +228,12 @@ main (void)
   struct data ntuple_row;
   int i;
 
-  gsl_ntuple *ntuple = gsl_ntuple_open ("test.dat", &ntuple_row,
-                                        sizeof (ntuple_row));
+  gsl_ntuple *ntuple 
+    = gsl_ntuple_open ("test.dat", &ntuple_row,
+                       sizeof (ntuple_row));
 
-  gsl_histogram *h = gsl_histogram_calloc_uniform (100, 0., 10.);
+  gsl_histogram *h 
+    = gsl_histogram_calloc_uniform (100, 0., 10.);
 
   gsl_ntuple_select_fn S;
   gsl_ntuple_value_fn V;
@@ -285,7 +288,7 @@ Note the cut-off at the lower bound.
 
 @iftex
 @sp 1
-@center @image{ntuple,5in}
+@center @image{ntuple,4in}
 @end iftex
 
 @node Ntuple References and Further Reading

@@ -433,7 +433,8 @@ main (void)
   double au = GSL_CONST_MKS_ASTRONOMICAL_UNIT;
   double minutes = GSL_CONST_MKS_MINUTE;
 
-  double r_earth = 1.00 * au;  /* distance stored in meters */
+  /* distance stored in meters */
+  double r_earth = 1.00 * au;  
   double r_mars  = 1.52 * au;
 
   double t_min, t_max;

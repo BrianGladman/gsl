@@ -84,15 +84,20 @@ transformation @math{z = \mu + x} on the numbers returned by
 calls the random number generator @var{r}.
 @end deftypefn
 
-@deftypefun double gsl_ran_gaussian_ratio_method (const gsl_rng * @var{r}, const double @var{sigma})
-This function computes a gaussian random number using the
-Kinderman-Monahan ratio method.
-@end deftypefun
-
 @deftypefun double gsl_ran_gaussian_pdf (double @var{x}, double @var{sigma})
 This function computes the probability density @math{p(x)} at @var{x}
 for a Gaussian distribution with standard deviation @var{sigma}, using
 the formula given above.
+@end deftypefun
+
+@sp 1
+@tex
+\centerline{\input rand-gaussian.tex}
+@end tex
+
+@deftypefun double gsl_ran_gaussian_ratio_method (const gsl_rng * @var{r}, const double @var{sigma})
+This function computes a gaussian random number using the
+Kinderman-Monahan ratio method.
 @end deftypefun
 
 @deftypefn Random double gsl_ran_ugaussian (const gsl_rng * @var{r})
@@ -102,11 +107,6 @@ These functions compute results for the unit Gaussian distribution.  They
 are equivalent to the functions above with a standard deviation of one,
 @var{sigma} = 1.
 @end deftypefn
-
-@sp 1
-@tex
-\centerline{\input rand-gaussian.tex}
-@end tex
 
 @page
 @node The Gaussian Tail Distribution
@@ -1186,19 +1186,21 @@ An approach invented by G. Marsaglia (Generating discrete random numbers
 in a computer, Comm ACM 6, 37-38 (1963)) is very clever, and readers
 interested in examples of good algorithm design are directed to this
 short and well-written paper.  Unfortunately, for large @math{K},
-Marsaglia's lookup table can be quite large.  A much better approach is
-due to Alastair J. Walker (An efficient method for generating discrete
-random variables with general distributions, ACM Trans on Mathematical
-Software 3, 253-256 (1977); see also Knuth, v2, 3rd ed, p120-121,139).
-This requires two lookup tables, one floating point and one integer, but
-both only of size @math{K}.  After preprocessing, the random numbers are
-generated in O(1) time, even for large @math{K}.  The preprocessing
-suggested by Walker requires @math{O(K^2)} effort, but that is not
-actually necessary, and the implementation provided here only takes
-@math{O(K)} effort.  In general, more preprocessing leads to faster
-generation of the individual random numbers, but a diminishing return is
-reached pretty early.  Knuth points out that the optimal preprocessing
-is combinatorially difficult for large @math{K}.
+Marsaglia's lookup table can be quite large.  
+
+A much better approach is due to Alastair J. Walker (An efficient method
+for generating discrete random variables with general distributions, ACM
+Trans on Mathematical Software 3, 253-256 (1977); see also Knuth, v2,
+3rd ed, p120-121,139).  This requires two lookup tables, one floating
+point and one integer, but both only of size @math{K}.  After
+preprocessing, the random numbers are generated in O(1) time, even for
+large @math{K}.  The preprocessing suggested by Walker requires
+@math{O(K^2)} effort, but that is not actually necessary, and the
+implementation provided here only takes @math{O(K)} effort.  In general,
+more preprocessing leads to faster generation of the individual random
+numbers, but a diminishing return is reached pretty early.  Knuth points
+out that the optimal preprocessing is combinatorially difficult for
+large @math{K}.
 
 This method can be used to speed up some of the discrete random number
 generators below, such as the binomial distribution.  To use if for
@@ -1238,6 +1240,7 @@ around.
 De-allocates the lookup table pointed to by @var{g}.
 @end deftypefn
 
+@page
 @node The Poisson Distribution
 @section The Poisson Distribution
 @deftypefn Random {unsigned int} gsl_ran_poisson (const gsl_rng * @var{r}, double @var{mu})
@@ -1636,15 +1639,17 @@ main ()
   int i, n = 10;
   double mu = 3.0;
 
-  /* create a generator chosen by the environment variable GSL_RNG_TYPE */
+  /* create a generator chosen by the 
+     environment variable GSL_RNG_TYPE */
 
   gsl_rng_env_setup();
 
   T = gsl_rng_default;
   r = gsl_rng_alloc (T);
 
-  /* print n random variates chosen from the poisson distribution with
-     mean parameter mu */
+  /* print n random variates chosen from 
+     the poisson distribution with mean 
+     parameter mu */
 
   for (i = 0; i < n; i++) 
     @{

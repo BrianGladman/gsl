@@ -382,7 +382,7 @@ int
 main ()
 @{
   int status;
-  int iterations = 0, max_iterations = 100;
+  int iter = 0, max_iter = 100;
   gsl_min_fminimizer *s;
   double m = 2.0, m_expected = M_PI;
   double x_lower =  0, x_upper = 6.0;
@@ -397,15 +397,16 @@ main ()
   printf ("using %s method\n", gsl_min_fminimizer_name (s));
 
   printf ("%5s [%9s, %9s] %9s %9s %10s %9s\n",
-          "iter", "lower", "upper", "min", "actual", "err", "err(est)");
+          "iter", "lower", "upper", "min", "actual",
+          "err", "err(est)");
 
   printf ("%5d [%.7f, %.7f] %.7f %.7f %+.7f %.7f\n",
-          iterations, x_lower, x_upper,
+          iter, x_lower, x_upper,
           m, m_expected, m - m_expected, x_upper - x_lower);
 
   do
     @{
-      iterations++;
+      iter++;
       status = gsl_min_fminimizer_iterate (s);
 
       m = gsl_min_fminimizer_minimum (s);
@@ -418,10 +419,10 @@ main ()
         printf ("Converged:\n");
 
       printf ("%5d [%.7f, %.7f] %.7f %.7f %+.7f %.7f\n",
-              iterations, x_lower, x_upper,
+              iter, x_lower, x_upper,
               m, m_expected, m - m_expected, x_upper - x_lower);
     @}
-  while (status == GSL_CONTINUE && iterations < max_iterations);
+  while (status == GSL_CONTINUE && iter < max_iter);
 
 @}
 @end example
@@ -429,7 +430,7 @@ main ()
 @noindent
 Here are the results of the minimization procedure.
 
-@example
+@smallexample
 bash$ ./a.out 
     0 [0.0000000, 6.0000000] 2.0000000 3.1415927 -1.1415927 6.0000000
     1 [2.0000000, 6.0000000] 3.2758640 3.1415927 +0.1342713 4.0000000
@@ -444,7 +445,7 @@ bash$ ./a.out
    10 [3.1346075, 3.1424060] 3.1415885 3.1415927 -0.0000041 0.0077985
 Converged:
    11 [3.1415885, 3.1424060] 3.1415927 3.1415927 -0.0000000 0.0008175
-@end example
+@end smallexample
 
 @node Minimization References and Further Reading
 @section References and Further Reading

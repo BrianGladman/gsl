@@ -168,7 +168,9 @@ simply add the following line to your @file{configure.in} file instead
 of the tests above:
 
 @example
-AM_PATH_GSL(GSL_VERSION,[action-if-found],[action-if-not-found])
+AM_PATH_GSL(GSL_VERSION,
+           [action-if-found],
+           [action-if-not-found])
 @end example
 @noindent
 The argument @code{GSL_VERSION} should be the two or three digit
@@ -233,26 +235,7 @@ versions of the functions will be used instead.
 Note that the actual usage of the inline keyword is @code{extern
 inline}, which eliminates unnecessary function definitions in @sc{gcc}.
 If the form @code{extern inline} causes problems with other compilers a
-stricter autoconf test can be used,
-
-@example
-dnl Check for "extern inline", using a modified version of the test
-dnl for AC_C_INLINE from acspecific.mt
-dnl
-AC_CACHE_CHECK([for extern inline], ac_cv_c_extern_inline,
-[ac_cv_c_extern_inline=no
-AC_TRY_COMPILE([extern $ac_cv_c_inline double foo(double x);
-extern $ac_cv_c_inline double foo(double x) @{ return x + 1.0 ; @} ;
-double foo (double x) @{ return x + 1.0 ; @};], 
-[  foo(1.0)  ],
-[ac_cv_c_extern_inline="yes"])
-])
-
-if test "$ac_cv_c_extern_inline" != no ; then
-  AC_DEFINE(HAVE_INLINE,1)
-  AC_SUBST(HAVE_INLINE)
-fi
-@end example
+stricter autoconf test can be used, see @ref{Autoconf Macros}.
 
 @node Long double
 @section Long double
@@ -272,9 +255,8 @@ compilation and eliminating certain GSL functions which depend on them
 if necessary,
 
 @example
-checking whether printf/scanf works with long double... no
+checking whether printf works with long double... no
 @end example
-
 @noindent
 Consequently when @code{long double} formatted input/output does not
 work on a given system it will not be possible to link a program which
@@ -306,7 +288,7 @@ and place the following macro definitions in the file
 @file{config.h.in},
 
 @example
-/* Substitute gsl functions for missing system functions */
+/* Substitute gsl_hypot for missing system function */
 
 #ifndef HAVE_HYPOT
 #define hypot gsl_hypot
@@ -409,20 +391,19 @@ definitions for all the types.  To include only the double precision
 header, or any other specific type, file use its individual filename.
 
 @example
-#include <gsl/gsl_foo.h>                  All types listed below
-#include <gsl/gsl_foo_double.h>           double        
-#include <gsl/gsl_foo_long_double.h>      long double   
-#include <gsl/gsl_foo_float.h>            float         
-#include <gsl/gsl_foo_long.h>             long          
-#include <gsl/gsl_foo_ulong.h>            unsigned long 
-#include <gsl/gsl_foo_int.h>              int           
-#include <gsl/gsl_foo_uint.h>             unsigned int  
-#include <gsl/gsl_foo_short.h>            short         
-#include <gsl/gsl_foo_ushort.h>           unsigned short
-#include <gsl/gsl_foo_char.h>             char          
-#include <gsl/gsl_foo_uchar.h>            unsigned char 
+#include <gsl/gsl_foo.h>               All types
+#include <gsl/gsl_foo_double.h>        double        
+#include <gsl/gsl_foo_long_double.h>   long double   
+#include <gsl/gsl_foo_float.h>         float         
+#include <gsl/gsl_foo_long.h>          long          
+#include <gsl/gsl_foo_ulong.h>         unsigned long 
+#include <gsl/gsl_foo_int.h>           int           
+#include <gsl/gsl_foo_uint.h>          unsigned int  
+#include <gsl/gsl_foo_short.h>         short         
+#include <gsl/gsl_foo_ushort.h>        unsigned short
+#include <gsl/gsl_foo_char.h>          char          
+#include <gsl/gsl_foo_uchar.h>         unsigned char 
 @end example
-
 
 @node Compatibility with C++
 @section Compatibility with C++

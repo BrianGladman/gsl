@@ -4,32 +4,32 @@
 @cindex BLAS
 @cindex CBLAS
 
-The Basic Linear Algebra Subprograms (BLAS) define a set of fundamental
+The Basic Linear Algebra Subprograms (@sc{blas}) define a set of fundamental
 operations on vectors and matrices which can be used to create optimized
 higher-level linear algebra functionality.
 
 The library provides a low-level layer which corresponds directly to the
-C-language BLAS standard, referred to here as ``CBLAS'', and a
+C-language @sc{blas} standard, referred to here as ``@sc{cblas}'', and a
 higher-level interface for operations on GSL vectors and matrices.
 Users who are interested in simple operations on GSL vector and matrix
 objects should use the high-level layer, which is specified in the file
 @code{gsl_blas.h}.  This should satisfy the needs of most users.  Note
 that GSL matrices are implemented using dense-storage so the interface
-only includes the corresponding dense-storage BLAS functions.  The full
-BLAS functionality for band-format and packed-format matrices is
-available through the low-level CBLAS interface.
+only includes the corresponding dense-storage @sc{blas} functions.  The full
+@sc{blas} functionality for band-format and packed-format matrices is
+available through the low-level @sc{cblas} interface.
 
 The interface for the @code{gsl_cblas} layer is specified in the file
-@code{gsl_cblas.h}.  This interface corresponds the BLAS Technical
-Forum's draft standard for the C interface to legacy BLAS
-implementations. Users who have access to other conforming CBLAS
+@code{gsl_cblas.h}.  This interface corresponds the @sc{blas} Technical
+Forum's draft standard for the C interface to legacy @sc{blas}
+implementations. Users who have access to other conforming @sc{cblas}
 implementations can use these in place of the version provided by the
-library.  Note that users who have only a Fortran BLAS library can use a
-CBLAS conformant wrapper to convert it into a CBLAS library.  A
-reference CBLAS wrapper for legacy Fortran implementations exists as
-part of the draft CBLAS standard and can be obtained from Netlib.
+library.  Note that users who have only a Fortran @sc{blas} library can use a
+@sc{cblas} conformant wrapper to convert it into a @sc{cblas} library.  A
+reference @sc{cblas} wrapper for legacy Fortran implementations exists as
+part of the draft @sc{cblas} standard and can be obtained from Netlib.
 
-There are three levels of BLAS operations,
+There are three levels of @sc{blas} operations,
 
 @table @b
 @item Level 1
@@ -114,7 +114,7 @@ general matrix-matrix multiply'' and @sc{zgemm} stands for
 @section GSL BLAS Interface
 
 GSL provides dense vector and matrix objects, based on the relevant
-built-in types.  The library provides an interface to the BLAS
+built-in types.  The library provides an interface to the @sc{blas}
 operations which apply to these objects.  The interface to this
 functionality is given in the file @code{gsl_blas.h}.
 
@@ -1028,7 +1028,7 @@ available from Netlib.
 @section Examples
 
 The following program computes the product of two matrices using the
-Level-3 blas function @sc{sgemm},
+Level-3 @sc{blas} function @sc{sgemm},
 
 @tex
 \beforedisplay
@@ -1087,7 +1087,8 @@ main ()
 
   /* Compute C = A B */
 
-  cblas_sgemm (CblasRowMajor, CblasNoTrans, CblasNoTrans, 2, 2, 3,
+  cblas_sgemm (CblasRowMajor, 
+               CblasNoTrans, CblasNoTrans, 2, 2, 3,
                1.0, A, lda, B, ldb, 0.0, C, ldc);
 
   printf("[ %g, %g\n", C[0], C[1]);
@@ -1103,7 +1104,7 @@ gcc demo.c -lgslcblas
 @end example
 @noindent
 There is no need to link with the main library @code{-lgsl} in this
-case as the CBLAS library is an independent unit. Here is the output
+case as the @sc{cblas} library is an independent unit. Here is the output
 from the program,
 @example
 $ ./a.out
@@ -1114,8 +1115,8 @@ $ ./a.out
 @node BLAS References and Further Reading
 @section References and Further Reading
 
-Information on the BLAS standards, including both the legacy and draft
-interface standards, is available online from the BLAS Homepage and BLAS
+Information on the @sc{blas} standards, including both the legacy and draft
+interface standards, is available online from the @sc{blas} Homepage and @sc{blas}
 Technical Forum web-site.
 
 @itemize @asis
@@ -1128,7 +1129,7 @@ Technical Forum web-site.
 @end itemize
 @noindent
 The following papers contain the specifications for Level 1, Level 2 and
-Level 3 BLAS.
+Level 3 @sc{blas}.
 
 @itemize @asis
 @item
@@ -1148,5 +1149,5 @@ Mathematical Software}, Vol. 16 (1990), Pages 1-28.
 @end itemize
 @noindent
 Postscript versions of the latter two papers are available from
-@url{http://www.netlib.org/blas/}. A CBLAS wrapper for Fortran BLAS
+@url{http://www.netlib.org/blas/}. A @sc{cblas} wrapper for Fortran @sc{blas}
 libraries is available from the same location.

@@ -112,19 +112,8 @@ The generator is automatically initialized with the default seed,
 either directly or by using the environment variable @code{GSL_RNG_SEED},
 @pxref{Random number environment variables}.
 
-Some of the defined generator types are,
-
-@example
-gsl_rng_cmrg, gsl_rng_gfsr4, gsl_rng_minstd, gsl_rng_mrg,
-gsl_rng_mt19937, gsl_rng_r250, gsl_rng_ran0, gsl_rng_ran1, gsl_rng_ran2,
-gsl_rng_ran3, gsl_rng_rand, gsl_rng_rand48, gsl_rng_random_bsd,
-gsl_rng_random_glibc2, gsl_rng_random_libc5, gsl_rng_randu,
-gsl_rng_ranf, gsl_rng_ranlux, gsl_rng_ranlux389, gsl_rng_ranlxd1,
-gsl_rng_ranlxd2, gsl_rng_ranlxs0, gsl_rng_ranlxs1, gsl_rng_ranlxs2,
-gsl_rng_ranmar, gsl_rng_slatec, gsl_rng_taus, gsl_rng_transputer,
-gsl_rng_tt800, gsl_rng_uni, gsl_rng_uni32, gsl_rng_vax, gsl_rng_zuf
-@end example
-The details of each generator are given later in this chapter.
+The details of the available generator types are
+described later in this chapter.
 @end deftypefn
 
 @deftypefn Random void gsl_rng_set (const gsl_rng * @var{r}, unsigned long int @var{s})
@@ -234,7 +223,7 @@ fwrite (state, n, 1, stream);
 @end example
 @end deftypefn
 
-@deftypefn {const gsl_rng_type **} gsl_rng_types_setup (void)
+@deftypefn Random {const gsl_rng_type **} gsl_rng_types_setup (void)
 This function returns a pointer to an array of all the available
 generator types, terminated by a null pointer. The function should be
 called once at the start of the program, if needed.  The following code
@@ -1175,25 +1164,25 @@ which offer the best performance are @code{taus}, @code{gfsr4} and
 @comment represented by the @code{random} generator below.  These generators are
 @comment fast but have the lowest statistical quality.
 
-@smallexample
-  1754 k ints/sec,    870 k doubles/sec, taus
-  1613 k ints/sec,    855 k doubles/sec, gfsr4
-  1370 k ints/sec,    769 k doubles/sec, mt19937
-   565 k ints/sec,    571 k doubles/sec, ranlxs0
-   400 k ints/sec,    405 k doubles/sec, ranlxs1
-   490 k ints/sec,    389 k doubles/sec, mrg
-   407 k ints/sec,    297 k doubles/sec, ranlux
-   243 k ints/sec,    254 k doubles/sec, ranlxd1
-   251 k ints/sec,    253 k doubles/sec, ranlxs2
-   238 k ints/sec,    215 k doubles/sec, cmrg
-   247 k ints/sec,    198 k doubles/sec, ranlux389
-   141 k ints/sec,    140 k doubles/sec, ranlxd2
+@example
+1754 k ints/sec,    870 k doubles/sec, taus
+1613 k ints/sec,    855 k doubles/sec, gfsr4
+1370 k ints/sec,    769 k doubles/sec, mt19937
+ 565 k ints/sec,    571 k doubles/sec, ranlxs0
+ 400 k ints/sec,    405 k doubles/sec, ranlxs1
+ 490 k ints/sec,    389 k doubles/sec, mrg
+ 407 k ints/sec,    297 k doubles/sec, ranlux
+ 243 k ints/sec,    254 k doubles/sec, ranlxd1
+ 251 k ints/sec,    253 k doubles/sec, ranlxs2
+ 238 k ints/sec,    215 k doubles/sec, cmrg
+ 247 k ints/sec,    198 k doubles/sec, ranlux389
+ 141 k ints/sec,    140 k doubles/sec, ranlxd2
 
-  1852 k ints/sec,    935 k doubles/sec, ran3
-   813 k ints/sec,    575 k doubles/sec, ran0
-   787 k ints/sec,    476 k doubles/sec, ran1
-   379 k ints/sec,    292 k doubles/sec, ran2
-@end smallexample
+1852 k ints/sec,    935 k doubles/sec, ran3
+ 813 k ints/sec,    575 k doubles/sec, ran0
+ 787 k ints/sec,    476 k doubles/sec, ran1
+ 379 k ints/sec,    292 k doubles/sec, ran2
+@end example
 
 @node Random Number References and Further Reading
 @section References and Further Reading
@@ -1208,8 +1197,15 @@ Algorithms} (Vol 2, 3rd Ed, 1997), Addison-Wesley, ISBN 0201896842.
 @end itemize
 @noindent
 Further information is available in the review paper written by Pierre
-L'Ecuyer, available at
-@url{http://www.iro.umontreal.ca/~lecuyer/myftp/papers/handsim.ps}.
+L'Ecuyer,
+
+@itemize @asis
+P. L'Ecuyer, ``Random Number Generation'', Chapter 4 of the
+Handbook on Simulation, Jerry Banks Ed., Wiley, 1998, 93--137.
+
+@url{http://www.iro.umontreal.ca/~lecuyer/papers.html}
+in the file @file{handsim.ps}.
+@end itemize
 
 On the World Wide Web, see the pLab home page
 (@url{http://random.mat.sbg.ac.at/}) for a lot of information on the
@@ -1221,8 +1217,8 @@ available online.
 
 @itemize @asis
 @item
-@cite{DIEHARD source code} 
-G. Marsaglia
+@cite{DIEHARD source code} G. Marsaglia,
+@item
 @url{http://stat.fsu.edu/pub/diehard/}
 @end itemize
 

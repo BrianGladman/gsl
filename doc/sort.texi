@@ -41,7 +41,8 @@ each of size @var{size}, into ascending order using the comparison
 function @var{compare}.  The type of the comparison function is defined by,
 
 @example
-int (*gsl_comparison_fn_t) (const void * a, const void * b)
+int 
+(*gsl_comparison_fn_t) (const void * a, const void * b)
 @end example
 @noindent
 A comparison function should return a negative integer if the first
@@ -63,7 +64,8 @@ compare_doubles (const double * a, const double * b)
 The appropriate function call to perform the sort is,
 
 @example
-gsl_heapsort (array, size, sizeof(double), compare_doubles);
+gsl_heapsort (array, count, sizeof(double), 
+              compare_doubles);
 @end example
 
 Note that unlike @code{qsort} the heapsort algorithm cannot be made into

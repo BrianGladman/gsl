@@ -280,7 +280,8 @@ main ()
   int status = gsl_sf_bessel_J0_e (x, &result);
 
   printf("status  = %s\n", gsl_strerror(status));
-  printf("J0(5.0) = %.18f +/- %.18f\n", result.val, result.err);
+  printf("J0(5.0) = %.18f +/- %.18f\n", 
+         result.val, result.err);
   printf("exact   = %.18f\n", expected);
 @}
 @end example

@@ -10,8 +10,8 @@ specialised routines for specific cases.  These include integration over
 infinite and semi-infinite ranges, singular integrals, including
 logarithmic singularities, computation of Cauchy principal values and
 oscillatory integrals.  The library reimplements the algorithms used in
-QUADPACK, a numerical integration package written by Piessens,
-Doncker-Kapenga, Uberhuber and Kahaner.  Fortran code for QUADPACK is
+@sc{quadpack}, a numerical integration package written by Piessens,
+Doncker-Kapenga, Uberhuber and Kahaner.  Fortran code for @sc{quadpack} is
 available on Netlib.
 
 These functions are declared in the header file
@@ -100,7 +100,7 @@ The routines will fail to converge if the error bounds are too
 stringent, but always return the best approximation obtained up to that
 stage.
 
-The algorithms in QUADPACK use a naming convention based on the
+The algorithms in @sc{quadpack} use a naming convention based on the
 following letters,
 
 @display 
@@ -148,7 +148,7 @@ integral of the original function.  The Chebyschev expansion can be
 extended to higher orders to improve the approximation.  The presence of
 singularities (or other behavior) in the integrand can cause slow
 convergence in the Chebyschev approximation.  The modified
-Clenshaw-Curtis rules used in QUADPACK separate out several common
+Clenshaw-Curtis rules used in @sc{quadpack} separate out several common
 weight functions which cause slow convergence.  These weight functions
 are integrated analytically against the Chebyschev polynomials to
 precompute @dfn{modified Chebyschev moments}.  Combining the moments with
@@ -793,7 +793,8 @@ double f (double x, void * params) @{
 int 
 main ()
 @{
-  gsl_integration_workspace * w = gsl_integration_workspace_alloc(1000);
+  gsl_integration_workspace * w 
+    = gsl_integration_workspace_alloc(1000);
   
   double result, error;
   double expected = -4.0;
@@ -803,12 +804,13 @@ main ()
   F.function = &f;
   F.params = &alpha;
 
-  gsl_integration_qags (&F, 0, 1, 0, 1e-7, 1000, w, &result, &error); 
+  gsl_integration_qags (&F, 0, 1, 0, 1e-7, 1000,
+                        w, &result, &error); 
 
   printf("result          = % .18f\n", result);
   printf("exact result    = % .18f\n", expected);
   printf("estimated error = % .18f\n", error);
-  printf("actual error    = % .18f\n",  result - expected);
+  printf("actual error    = % .18f\n", result - expected);
   printf("intervals =  %d\n", w->size);
 @}
 @end example
@@ -837,11 +839,11 @@ magnitude.
 @section References and Further Reading
 
 @noindent
-The following book is the definitive reference for QUADPACK, and was
+The following book is the definitive reference for @sc{quadpack}, and was
 written by the original authors.  It provides descriptions of the
 algorithms, program listings, test programs and examples.  It also
 includes useful advice on numerical integration and many references to
-the numerical integration literature used in developing QUADPACK.
+the numerical integration literature used in developing @sc{quadpack}.
 
 @itemize @asis
 @item

@@ -93,8 +93,10 @@ parameters. For example, the following code creates an instance of a
 Levenberg-Marquardt solver for 100 data points and 3 parameters,
 
 @example
-gsl_multifit_fdfsolver * s = 
-    gsl_multifit_fdfsolver_alloc (gsl_multifit_fdfsolver_lmder, 100, 3);
+const gsl_multifit_fdfsolver_type * T 
+    = gsl_multifit_fdfsolver_lmder;
+gsl_multifit_fdfsolver * s 
+    = gsl_multifit_fdfsolver_alloc (T, 100, 3);
 @end example
 
 If there is insufficient memory to create the solver then the function
@@ -123,7 +125,8 @@ These functions free all the memory associated with the solver @var{s}.
 These functions return a pointer to the name of the solver.  For example,
 
 @example
-printf("s is a '%s' solver\n", gsl_multifit_fdfsolver_name (s)) ;
+printf("s is a '%s' solver\n", 
+       gsl_multifit_fdfsolver_name (s)) ;
 @end example
 
 @noindent
@@ -468,7 +471,8 @@ struct data @{
 @};
 
 int
-expb_f (const gsl_vector * x, void *params, gsl_vector * f)
+expb_f (const gsl_vector * x, void *params, 
+        gsl_vector * f)
 @{
   size_t n = ((struct data *)params)->n;
   double *y = ((struct data *)params)->y;
@@ -491,7 +495,8 @@ expb_f (const gsl_vector * x, void *params, gsl_vector * f)
 @}
 
 int
-expb_df (const gsl_vector * x, void *params, gsl_matrix * df)
+expb_df (const gsl_vector * x, void *params, 
+         gsl_matrix * df)
 @{
   size_t n = ((struct data *)params)->n;
   double *sigma = ((struct data *) params)->sigma;
@@ -506,16 +511,18 @@ expb_df (const gsl_vector * x, void *params, gsl_matrix * df)
       /*  Yi = b + A * exp(lambda * i)  */
       double t = i;
       double s = sigma[i];
+      double explt = exp(lambda * t);
       gsl_matrix_set (df, i, 0, -1/s);
-      gsl_matrix_set (df, i, 1, -exp (lambda * t)/s);
-      gsl_matrix_set (df, i, 2, -t * A * exp (lambda * t)/s);
+      gsl_matrix_set (df, i, 1, -explt/s); 
+      gsl_matrix_set (df, i, 2, -t * A * explt/s);
 
     @}
   return GSL_SUCCESS;
 @}
 
 int
-expb_fdf (const gsl_vector * x, void *params, gsl_vector * f, gsl_matrix * df)
+expb_fdf (const gsl_vector * x, void *params,
+          gsl_vector * f, gsl_matrix * df)
 @{
   expb_f (x, params, f);
   expb_df (x, params, df);
@@ -569,7 +576,8 @@ main (void)
   for (i = 0; i < n; i++)
     @{
       double t = i;
-      y[i] = 1.0 + 5 * exp (-0.1 * t) + gsl_ran_gaussian(r, 0.1);
+      y[i] = 1.0 + 5 * exp (-0.1 * t) 
+                 + gsl_ran_gaussian(r, 0.1);
       sigma[i] = 0.1;
       printf("data: %d %g %g\n", i, y[i], sigma[i]);
     @};
@@ -593,7 +601,8 @@ main (void)
       if (status)
         break;
 
-      status = gsl_multifit_test_delta (s->dx, s->x, 0.0001, 0.0001);
+      status = gsl_multifit_test_delta (s->dx, s->x,
+                                        1e-4, 1e-4);
     @}
   while (status == GSL_CONTINUE && iter < 500);
 
@@ -616,10 +625,13 @@ main (void)
 int
 print_state (size_t iter, gsl_multifit_fdfsolver * s)
 @{
-  printf ("iter: %3u x = % 15.8f % 15.8f % 15.8f |f(x)| = %g\n",
+  printf ("iter: %3u x = % 15.8f % 15.8f % 15.8f "
+          "|f(x)| = %g\n",
           iter,
-          gsl_vector_get (s->x, 0), gsl_vector_get (s->x, 1),
-          gsl_vector_get (s->x, 2), gsl_blas_dnrm2 (s->f));
+          gsl_vector_get (s->x, 0), 
+          gsl_vector_get (s->x, 1),
+          gsl_vector_get (s->x, 2), 
+          gsl_blas_dnrm2 (s->f));
 @}
 @end example
 @noindent
@@ -627,7 +639,7 @@ The iteration terminates when the change in x is smaller than 0.0001, as
 both an absolute and relative change.  Here are the results of running
 the program,
 
-@example
+@smallexample
 iter:   0 x = 0.00000000 1.00000000 -0.00000000 |f(x)| = 118.574
 iter:   1 x = 0.64919194 1.64919194 -0.01780026 |f(x)| = 77.2069
                                    
@@ -637,7 +649,7 @@ iter:  13 x = 1.01060903 5.01278421 -0.10056277 |f(x)| = 6.37815
 b      = 1.01061 +/- 0.0394169
 A      = 5.01278 +/- 0.0598364
 lambda = -0.100563 +/- 0.00311668
-@end example
+@end smallexample
 @noindent
 The approximate values of the parameters are found correctly.  The
 errors on the parameters are given by the square roots of the diagonal
@@ -651,7 +663,7 @@ elements of the covariance matrix.
 @node References and Further Reading for Nonlinear Least-Squares Fitting
 @section References and Further Reading
 @noindent
-The MINPACK algorithm is described in the following article,
+The @sc{minpack} algorithm is described in the following article,
 
 @itemize @asis
 @item

@@ -1,5 +1,30 @@
 \input texinfo @c -*-texinfo-*-
 
+@comment This will be for the printing version of the manual
+
+@tex
+\gdef\paperbackbook{{\globaldefs = 1
+  \parskip = 2pt plus 1pt
+  \setleading{12pt}%
+  %
+  \internalpagesizes{7.5in}{5.in}{\voffset}{.25in}{\bindingoffset}{16pt}%
+  %
+  \lispnarrowing = 0.3in
+  \tolerance = 700
+  \hfuzz = 1pt
+  \contentsrightmargin = 0pt
+  \deftypemargin = 0pt
+  \defbodyindent = .5cm
+  %
+  \let\smalldisplay = \smalldisplayx
+  \let\smallexample = \smalllispx
+  \let\smallformat = \smallformatx
+  \let\smalllisp = \smalllispx
+}}
+@end tex
+@comment @paperbackbook
+
+@cropmarks
 @c %**start of header
 @setfilename gsl-ref.info
 @settitle GNU Scientific Library -- Reference Manual
@@ -142,8 +167,9 @@ by the GSL Team.
 @end ifinfo
 
 @titlepage
-@title GNU Scientific Library -- Reference Manual
-@subtitle Edition @value{EDITION}, for gsl Version @value{VERSION}
+@title GNU Scientific Library
+@subtitle Reference Manual
+@subtitle Edition @value{EDITION}, for GSL Version @value{VERSION}
 @subtitle @value{UPDATED}
 
 @author Mark Galassi 
@@ -152,7 +178,6 @@ Cygnus Solutions and Los Alamos National Laboratory
 @sp 1
 
 @author Jim Davies 
-Space Data Systems Group, Los Alamos National Laboratory and 
 Department of Computer Science, Georgia Institute of Technology
 @comment @email{jimmyd@@nis.lanl.gov}
 @sp 1
@@ -167,10 +192,11 @@ Network Theory Limited
 @comment @email{bjg@@network-theory.co.uk}
 @sp 1
 
-@author Reid Priedhorsky 
-Mathematical Modeling and Analysis Group, Los Alamos National Laboratory
+@comment Asked to be moved to 'contributors' appendix
+@comment @author Reid Priedhorsky 
+@comment Mathematical Modeling and Analysis Group, Los Alamos National Laboratory
 @comment @email{rp@@lanl.gov}
-@sp 1
+@comment @sp 1
 
 @author Gerard Jungman 
 Theoretical Fluid Dynamics Group, Los Alamos National Laboratory
@@ -270,6 +296,7 @@ More information about GSL can be found at the project homepage,
 * IEEE floating-point arithmetic::  
 * Debugging Numerical Programs::  
 * Contributors to GSL::         
+* Autoconf Macros::             
 * GNU General Public License::  
 * GNU Free Documentation License::  
 * Concept Index::               
@@ -485,7 +512,7 @@ Questions about the GNU GPL},
 @appendix Debugging Numerical Programs
 @include debug.texi
 
-@node Contributors to GSL, GNU General Public License, Debugging Numerical Programs, Top
+@node Contributors to GSL, Autoconf Macros, Debugging Numerical Programs, Top
 @appendix Contributors to GSL
 
 (See the AUTHORS file in the distribution for up-to-date information.)
@@ -507,11 +534,14 @@ manual.
 FFTs, numerical integration, random number generators and distributions,
 root finding, minimization and fitting, polynomial solvers, complex
 numbers, physical constants, permutations, vector and matrix functions,
-histograms, statistics, ieee-utils, revised CBLAS Level 2 & 3, matrix
+histograms, statistics, ieee-utils, revised @sc{cblas} Level 2 & 3, matrix
 decompositions and eigensystems.
 
-@item Reid Priedhorsky
-Wrote the root finding package and the relevant chapter in this manual.
+@item Reid Priedhorsky 
+Wrote and documented the initial version of the root finding routines
+while at Los Alamos National Laboratory, Mathematical Modeling and
+Analysis Group.  
+@comment email: reid@reidster.net
 
 @item Gerard Jungman
 series acceleration, ODEs, BLAS, Linear Algebra, Eigensystems,
@@ -531,11 +561,37 @@ Multidimensional minimization.
 
 @end table
 
+@node  Autoconf Macros, GNU General Public License, Contributors to GSL, Top
+@unnumbered Autoconf Macros
+
+@noindent
+The following autoconf test will check for extern inline,
+
+@smallexample
+dnl Check for "extern inline", using a modified version of the test
+dnl for AC_C_INLINE from acspecific.mt
+dnl
+AC_CACHE_CHECK([for extern inline], ac_cv_c_extern_inline,
+[ac_cv_c_extern_inline=no
+AC_TRY_COMPILE([extern $ac_cv_c_inline double foo(double x);
+extern $ac_cv_c_inline double foo(double x) @{ return x + 1.0 ; @} ;
+double foo (double x) @{ return x + 1.0 ; @};], 
+[  foo(1.0)  ],
+[ac_cv_c_extern_inline="yes"])
+])
+
+if test "$ac_cv_c_extern_inline" != no ; then
+  AC_DEFINE(HAVE_INLINE,1)
+  AC_SUBST(HAVE_INLINE)
+fi
+@end smallexample
+
+
 @comment @node  Copyright, GNU General Public License, Contributors to GSL, Top
 @comment @unnumbered Copyright
 @comment @include science.texi
 
-@node  GNU General Public License, GNU Free Documentation License, Contributors to GSL, Top
+@node  GNU General Public License, GNU Free Documentation License, Autoconf Macros, Top
 @unnumbered GNU General Public License
 @include gpl.texi
 

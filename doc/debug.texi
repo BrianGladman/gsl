@@ -34,9 +34,9 @@ investigate the values of variable at that point.  Here is an example
 from the program @code{fft/test_trap}, which contains the following
 line,
 
-@example
+@smallexample
 status = gsl_fft_complex_wavetable_alloc (0, &complex_wavetable);
-@end example
+@end smallexample
 
 @noindent
 The function @code{gsl_fft_complex_wavetable_alloc} takes the length of
@@ -46,33 +46,33 @@ be generated because the length of an FFT is not allowed to be zero.
 To debug this problem we start @code{gdb}, using the file
 @file{.gdbinit} to define a breakpoint in @code{gsl_error},
 
-@example
+@smallexample
 bash$ gdb test_trap
 GDB is free software and you are welcome to distribute copies of it
  under certain conditions; type "show copying" to see the conditions.
 There is absolutely no warranty for GDB; type "show warranty" for details.
 GDB 4.16 (i586-debian-linux), Copyright 1996 Free Software Foundation, Inc...
 Breakpoint 1 at 0x8050b1e: file error.c, line 14.
-@end example
+@end smallexample
 
 @noindent
 When we run the program this breakpoint catches the error and shows the
 reason for it. 
 
-@example
+@smallexample
 (gdb) run
 Starting program: /home/bjg/gsl/fft/test_trap 
 
 Breakpoint 1, gsl_error (reason=0x8052b0d "length n must be positive integer", 
     file=0x8052b04 "c_init.c", line=108, gsl_errno=1) at error.c:14
 14        if (gsl_error_handler) 
-@end example
+@end smallexample
 @comment 
 @noindent
 The first argument of @code{gsl_error} is always a string describing the
 error.  Now we can look at the backtrace to see what caused the problem,
 
-@example
+@smallexample
 (gdb) bt
 #0  gsl_error (reason=0x8052b0d "length n must be positive integer", 
     file=0x8052b04 "c_init.c", line=108, gsl_errno=1) at error.c:14
@@ -80,7 +80,7 @@ error.  Now we can look at the backtrace to see what caused the problem,
     at c_init.c:108
 #2  0x8048a00 in main (argc=1, argv=0xbffff9bc) at test_trap.c:94
 #3  0x80488be in ___crt_dummy__ ()
-@end example
+@end smallexample
 @comment 
 @noindent
 We can see that the error was generated in the function
@@ -91,7 +91,7 @@ file @file{test_trap.c}.
 By moving up to the level of the original call we can find the line that
 caused the error,
 
-@example
+@smallexample
 (gdb) up
 #1  0x8049376 in gsl_fft_complex_wavetable_alloc (n=0, wavetable=0xbffff778)
     at c_init.c:108
@@ -99,7 +99,7 @@ caused the error,
 (gdb) up
 #2  0x8048a00 in main (argc=1, argv=0xbffff9bc) at test_trap.c:94
 94        status = gsl_fft_complex_wavetable_alloc (0, &complex_wavetable);
-@end example
+@end smallexample
 @comment 
 @noindent
 Thus we have found the line that caused the problem.  From this point we
@@ -112,7 +112,7 @@ could also print out the values of other variables such as
 The contents of floating point registers can be examined using the
 command @code{info float} (not available on all platforms).
 
-@example
+@smallexample
 (gdb) info float
      st0: 0xc4018b895aa17a945000  Valid Normal -7.838871203780989910922e+308
      st1: 0x3ff9ea3f50e4d7275000  Valid Normal 0.02859464454261210347719
@@ -129,15 +129,15 @@ command @code{info float} (not available on all platforms).
      fcs: 0x051a0023
   fopoff: 0x08086820
   fopsel:     0x002b
-@end example
+@end smallexample
 @noindent
 Individual registers can be examined using the variables @var{$reg},
 where @var{reg} is the register name.
 
-@example
+@smallexample
 (gdb) p $st1 
 $1 = 0.02859464454261210347719
-@end example
+@end smallexample
 
 @node Handling floating point exceptions
 @section Handling floating point exceptions
@@ -147,21 +147,21 @@ point exception occurs.  This can be useful for finding the cause of an
 unexpected infinity or @code{NaN}.  The current handler settings can be
 shown with the command @code{info signal SIGFPE}.
 
-@example
+@smallexample
 (gdb) info signal SIGFPE
 Signal        Stop      Print   Pass to program Description
 SIGFPE        Yes       Yes     Yes             Arithmetic exception
-@end example
+@end smallexample
 @noindent
 Unless the program uses a signal handler the default setting should be
 changed so that SIGFPE is not passed to the program, as this would cause
 it to exit.  The command @code{handle SIGFPE stop nopass} prevents this.
 
-@example
+@smallexample
 (gdb) handle SIGFPE stop nopass
 Signal        Stop      Print   Pass to program Description
 SIGFPE        Yes       Yes     No              Arithmetic exception
-@end example
+@end smallexample
 @noindent
 Depending on the platform it may be necessary to instruct the kernel to
 generate signals for floating point exceptions.  For programs using GSL
@@ -240,8 +240,8 @@ programs:
 gcc -ansi -pedantic -Werror -Wall -W -Wmissing-prototypes
   -Wstrict-prototypes -Wtraditional -Wconversion -Wshadow
   -Wpointer-arith -Wcast-qual -Wcast-align -Wwrite-strings
-  -Waggregate-return -fshort-enums -fno-common -Wnested-externs
-  -Dinline= -g -O4
+  -Waggregate-return -Wnested-externs -fshort-enums 
+  -fno-common -Dinline= -g -O4
 @end example
 
 @noindent

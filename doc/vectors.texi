@@ -455,7 +455,8 @@ even elements of the vector @code{v} of length @code{n}, while leaving the
 odd elements untouched,
 
 @example
-gsl_vector_view v_even = gsl_vector_subvector_with_stride (v, 0, 2, n/2);
+gsl_vector_view v_even 
+  = gsl_vector_subvector_with_stride (v, 0, 2, n/2);
 gsl_vector_set_zero (&v_even.vector);
 @end example
 @noindent
@@ -466,7 +467,8 @@ computes the norm of odd elements of @code{v} using the @sc{blas}
 routine @sc{dnrm2},
 
 @example
-gsl_vector_view v_odd = gsl_vector_subvector_with_stride (v, 1, 2, n/2);
+gsl_vector_view v_odd 
+  = gsl_vector_subvector_with_stride (v, 1, 2, n/2);
 double r = gsl_blas_dnrm2 (&v_odd.vector);
 @end example
 
@@ -1523,7 +1525,8 @@ int main ()
   
   for (i = 0; i < 100; i++)
     for (j = 0; j < 3; j++)
-      printf("m(%d,%d) = %g\n", i, j, gsl_matrix_get (m, i, j));
+      printf("m(%d,%d) = %g\n", i, j, 
+             gsl_matrix_get (m, i, j));
 @}
 @end example
 @comment
@@ -1554,7 +1557,7 @@ The next program shows how to write a matrix to a file.
 
 int main ()
 @{
-  int i, j, differences = 0; 
+  int i, j, k = 0; 
   gsl_matrix * m = gsl_matrix_alloc (100, 100) ;
   gsl_matrix * a = gsl_matrix_alloc (100, 100) ;
   
@@ -1576,10 +1579,13 @@ int main ()
 
   for (i = 0; i < 100; i++)
     for (j = 0 ; j < 100; j++)
-        if (gsl_matrix_get(m, i, j) != gsl_matrix_get(a, i, j))
-           differences ++ ;
+      @{
+        double mij = gsl_matrix_get(m, i, j);
+        double aij = gsl_matrix_get(a, i, j);
+        if (mij != aij) k++ ;
+      @}
 
-  printf("differences = %d (should be zero)\n", differences) ;
+  printf("differences = %d (should be zero)\n", k) ;
 
 @}
 @end example
@@ -1640,11 +1646,13 @@ matrix column 7, norm = 3.65202
 matrix column 8, norm = 2.08524
 matrix column 9, norm = 3.07313
 
-octave> m = sin(0:9)' * ones(1,10) + ones(10,1) * cos(0:9); 
+octave> m = sin(0:9)' * ones(1,10) 
+               + ones(10,1) * cos(0:9); 
 octave> sqrt(sum(m.^2))
 ans =
 
-  4.3146  3.1205  2.1932  3.2611  2.5342  2.5728  4.2047  3.6520  2.0852  3.0731
+  4.3146  3.1205  2.1932  3.2611  2.5342  2.5728
+  4.2047  3.6520  2.0852  3.0731
 @end example
 
 

@@ -293,11 +293,13 @@ main ()
 
   printf("# best fit: Y = %g + %g X\n", c0, c1);
   printf("# covariance matrix:\n");
-  printf("# [ %g, %g\n#   %g, %g]\n", cov00, cov01, cov01, cov11);
+  printf("# [ %g, %g\n#   %g, %g]\n", 
+         cov00, cov01, cov01, cov11);
   printf("# chisq = %g\n", chisq);
 
   for (i = 0; i < n; i++)
-    printf("data: %g %g %g\n", x[i], y[i], 1/sqrt(w[i]));
+    printf("data: %g %g %g\n", 
+                  x[i], y[i], 1/sqrt(w[i]));
 
   printf("\n");
 
@@ -306,7 +308,10 @@ main ()
       double xf = x[0] + (i/100.0) * (x[n-1] - x[0]);
       double yf, yf_err;
 
-      gsl_fit_linear_est (xf, c0, c1, cov00, cov01, cov11, &yf, &yf_err);
+      gsl_fit_linear_est (xf, 
+                          c0, c1, 
+                          cov00, cov01, cov11, 
+                          &yf, &yf_err);
 
       printf("fit: %g %g\n", xf, yf);
       printf("hi : %g %g\n", xf, yf + yf_err);
@@ -327,7 +332,10 @@ $ more tmp
 #   -19.9, 0.01]
 # chisq = 0.8
 
-$ for n in data fit hi lo ; do grep "^$n" tmp | cut -d: -f2 > $n ; done
+$ for n in data fit hi lo ; 
+   do 
+     grep "^$n" tmp | cut -d: -f2 > $n ; 
+   done
 $ graph -T X -X x -Y y -y 0 20 -m 0 -S 2 -Ie data 
      -S 0 -I a -m 1 fit -m 2 hi -m 2 lo
 @end example
@@ -417,7 +425,8 @@ main (int argc, char **argv)
     @}
 
   @{
-    gsl_multifit_linear_workspace * work = gsl_multifit_linear_alloc (n, 3);
+    gsl_multifit_linear_workspace * work 
+      = gsl_multifit_linear_alloc (n, 3);
     gsl_multifit_wlinear (X, w, y, c, cov, &chisq, work);
     gsl_multifit_linear_free (work);
   @}
@@ -426,12 +435,16 @@ main (int argc, char **argv)
 #define COV(i,j) (gsl_matrix_get(cov,(i),(j)))
 
   @{
-    printf("# best fit: Y = %g + %g X + %g X^2\n", C(0), C(1), C(2));
+    printf("# best fit: Y = %g + %g X + %g X^2\n", 
+           C(0), C(1), C(2));
 
     printf("# covariance matrix:\n");
-    printf("[ %+.5e, %+.5e, %+.5e  \n", COV(0,0), COV(0,1), COV(0,2));
-    printf("  %+.5e, %+.5e, %+.5e  \n", COV(1,0), COV(1,1), COV(1,2));
-    printf("  %+.5e, %+.5e, %+.5e ]\n", COV(2,0), COV(2,1), COV(2,2));
+    printf("[ %+.5e, %+.5e, %+.5e  \n",
+              COV(0,0), COV(0,1), COV(0,2));
+    printf("  %+.5e, %+.5e, %+.5e  \n", 
+              COV(1,0), COV(1,1), COV(1,2));
+    printf("  %+.5e, %+.5e, %+.5e ]\n", 
+              COV(2,0), COV(2,1), COV(2,2));
     printf("# chisq = %g\n", chisq);
   @}
 @}
@@ -460,9 +473,10 @@ int main (void)
   for (x = 0.1 ; x < 2; x+= 0.1)
     @{
       double y0 = exp(x);
-      double err = 0.1*y0;
+      double sigma = 0.1*y0;
+      double dy = gsl_ran_gaussian(r, sigma)
 
-      printf("%g %g %g\n", x, y0 + gsl_ran_gaussian(r, err), err);
+      printf("%g %g %g\n", x, y0 + dy, sigma);
     @}
 @}
 @end example

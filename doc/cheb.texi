@@ -143,7 +143,6 @@ f (double x, void *p)
     return 0.75;
 @}
 
-
 int
 main (void)
 @{
@@ -163,7 +162,8 @@ main (void)
       double x = i / (double)n;
       double r10 = gsl_cheb_eval_n (cs, 10, x);
       double r40 = gsl_cheb_eval (cs, x);
-      printf ("%g %g %g %g\n", x, GSL_FN_EVAL (&F, x), r10, r40);
+      printf ("%g %g %g %g\n", 
+              x, GSL_FN_EVAL (&F, x), r10, r40);
     @}
 
   gsl_cheb_free (cs);

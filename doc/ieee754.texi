@@ -91,26 +91,26 @@ A zero is encoded with the special exponent of
 The format for single precision numbers uses 32 bits divided in the
 following way,
 
-@example
+@smallexample
 seeeeeeeefffffffffffffffffffffff
     
 s = sign bit, 1 bit
 e = exponent, 8 bits  (E_min = -126, E_max = 127, bias = 127)
 f = fraction, 23 bits
-@end example
+@end smallexample
 
 @noindent
 @cindex double precision, IEEE format
 The format for double precision numbers uses 64 bits divided in the
 following way,
 
-@example
+@smallexample
 seeeeeeeeeeeffffffffffffffffffffffffffffffffffffffffffffffffffff
 
 s = sign bit, 1 bit
 e = exponent, 11 bits  (E_min = -1022, E_max = 1023, bias = 1023)
 f = fraction, 52 bits
-@end example
+@end smallexample
 
 @noindent
 It is often useful to be able to investigate the behavior of a
@@ -174,9 +174,14 @@ main ()
 
   double fd = f; /* promote from float to double */
   
-  printf("   float ="); gsl_ieee_printf_float(&f); printf("\n");
-  printf("promoted ="); gsl_ieee_printf_double(&fd); printf("\n");
-  printf("  double ="); gsl_ieee_printf_double(&d); printf("\n");
+  printf("   float ="); gsl_ieee_printf_float(&f); 
+  printf("\n");
+
+  printf("promoted ="); gsl_ieee_printf_double(&fd); 
+  printf("\n");
+
+  printf("  double ="); gsl_ieee_printf_double(&d); 
+  printf("\n");
 @}
 @end example
 
@@ -185,11 +190,11 @@ The binary representation of @math{1/3} is @math{0.01010101... }.  The
 output below shows that the IEEE format normalizes this fraction to give
 a leading digit of 1,
 
-@example
+@smallexample
    float = 1.01010101010101010101011*2^-2
 promoted = 1.0101010101010101010101100000000000000000000000000000*2^-2
   double = 1.0101010101010101010101010101010101010101010101010101*2^-2
-@end example
+@end smallexample
 
 @noindent
 The output also shows that a single-precision number is promoted to
@@ -351,7 +356,8 @@ int main (void)
       sum += x;
       x = x / i;
       
-      printf("i=%2d sum=%.18f error=%g\n",i, sum, sum - M_E);
+      printf("i=%2d sum=%.18f error=%g\n",
+             i, sum, sum - M_E);
 
       if (i > 30)
          break ;

@@ -552,7 +552,7 @@ the interval.
 @comment eps file "roots-bisection.eps"
 @iftex
 @sp 1
-@center @image{roots-bisection,5in}
+@center @image{roots-bisection,4in}
 
 @quotation
 Four iterations of bisection, where @math{a_n} is @math{n}th position of
@@ -585,7 +585,7 @@ the interval on the current iteration.
 
 @comment eps file "roots-false-position.eps"
 @comment @iftex
-@comment @image{roots-false-position,5in}
+@comment @image{roots-false-position,4in}
 @comment @quotation
 @comment Several iterations of false position, where @math{a_n} is @math{n}th
 @comment position of the beginning of the interval and @math{b_n} is the
@@ -663,7 +663,7 @@ for multiple roots.
 @comment eps file "roots-newtons-method.eps"
 @iftex
 @sp 1
-@center @image{roots-newtons-method,5in}
+@center @image{roots-newtons-method,4in}
 
 @quotation
 Several iterations of Newton's Method, where @math{g_n} is the
@@ -794,7 +794,8 @@ struct quadratic_params
 
 double quadratic (double x, void *params);
 double quadratic_deriv (double x, void *params);
-void quadratic_fdf (double x, void *params, double *y, double *dy);
+void quadratic_fdf (double x, void *params, 
+                    double *y, double *dy);
 @end example
 
 @noindent
@@ -804,7 +805,8 @@ We place the function definitions in a separate file (@file{demo_fn.c}),
 double
 quadratic (double x, void *params)
 @{
-  struct quadratic_params *p = (struct quadratic_params *) params;
+  struct quadratic_params *p 
+    = (struct quadratic_params *) params;
 
   double a = p->a;
   double b = p->b;
@@ -816,7 +818,8 @@ quadratic (double x, void *params)
 double
 quadratic_deriv (double x, void *params)
 @{
-  struct quadratic_params *p = (struct quadratic_params *) params;
+  struct quadratic_params *p 
+    = (struct quadratic_params *) params;
 
   double a = p->a;
   double b = p->b;
@@ -828,7 +831,8 @@ quadratic_deriv (double x, void *params)
 void
 quadratic_fdf (double x, void *params, double *y, double *dy)
 @{
-  struct quadratic_params *p = (struct quadratic_params *) params;
+  struct quadratic_params *p 
+    = (struct quadratic_params *) params;
 
   double a = p->a;
   double b = p->b;
@@ -873,7 +877,7 @@ int
 main ()
 @{
   int status;
-  int iterations = 0, max_iterations = 100;
+  int iter = 0, max_iter = 100;
   gsl_root_fsolver *s;
   double r = 0, r_expected = sqrt (5.0);
   double x_lower = 0.0, x_upper = 5.0;
@@ -889,25 +893,28 @@ main ()
   printf ("using %s method\n", gsl_root_fsolver_name (s));
 
   printf ("%5s [%9s, %9s] %9s %9s %10s %9s\n",
-          "iter", "lower", "upper", "root", "actual", "err", "err(est)");
+          "iter", "lower", "upper", "root", "actual",
+          "err", "err(est)");
 
   do
     @{
-      iterations++;
+      iter++;
       status = gsl_root_fsolver_iterate (s);
       r = gsl_root_fsolver_root (s);
       x_lower = gsl_root_fsolver_x_lower (s);
       x_upper = gsl_root_fsolver_x_upper (s);
-      status = gsl_root_test_interval (x_lower, x_upper, 0, 0.001);
+      status = gsl_root_test_interval (x_lower, x_upper,
+                                       0, 0.001);
 
       if (status == GSL_SUCCESS)
         printf ("Converged:\n");
 
       printf ("%5d [%.7f, %.7f] %.7f %.7f %+.7f %.7f\n",
-              iterations, x_lower, x_upper,
-              r, r_expected, r - r_expected, x_upper - x_lower);
+              iter, x_lower, x_upper,
+              r, r_expected, r - r_expected, 
+              x_upper - x_lower);
     @}
-  while (status == GSL_CONTINUE && iterations < max_iterations);
+  while (status == GSL_CONTINUE && iter < max_iter);
 
 @}
 @end example
@@ -915,7 +922,7 @@ main ()
 @noindent
 Here are the results of the iterations,
 
-@example
+@smallexample
 bash$ ./a.out 
 using brent method
  iter [    lower,     upper]      root    actual        err  err(est)
@@ -926,7 +933,7 @@ using brent method
     5 [2.2000000, 2.2366300] 2.2366300 2.2360680 +0.0005621 0.0366300
 Converged:
     6 [2.2360634, 2.2366300] 2.2360634 2.2360680 -0.0000046 0.0005666
-@end example
+@end smallexample
 
 @noindent
 If the program is modified to use the bisection solver instead of
@@ -934,7 +941,7 @@ Brent's method, by changing @code{gsl_root_fsolver_brent} to
 @code{gsl_root_fsolver_bisection} the slower convergence of the
 Bisection method can be observed,
 
-@example
+@smallexample
 bash$ ./a.out 
 using bisection method
  iter [    lower,     upper]      root    actual        err  err(est)
@@ -951,7 +958,7 @@ using bisection method
    11 [2.2338867, 2.2363281] 2.2351074 2.2360680 -0.0009606 0.0024414
 Converged:
    12 [2.2351074, 2.2363281] 2.2357178 2.2360680 -0.0003502 0.0012207
-@end example
+@end smallexample
 
 The next program solves the same function using a derivative solver
 instead.
@@ -969,7 +976,7 @@ int
 main ()
 @{
   int status;
-  int iterations = 0, max_iterations = 100;
+  int iter = 0, max_iter = 100;
   gsl_root_fdfsolver *s;
   double x0, x = 5.0, r_expected = sqrt (5.0);
   gsl_function_fdf FDF;
@@ -989,7 +996,7 @@ main ()
           "iter", "root", "actual", "err", "err(est)");
   do
     @{
-      iterations++;
+      iter++;
       status = gsl_root_fdfsolver_iterate (s);
       x0 = x;
       x = gsl_root_fdfsolver_root (s);
@@ -999,9 +1006,9 @@ main ()
         printf ("Converged:\n");
 
       printf ("%5d %10.7f %10.7f %+10.7f %10.7f\n",
-              iterations, x, r_expected, x - r_expected, x - x0);
+              iter, x, r_expected, x - r_expected, x - x0);
     @}
-  while (status == GSL_CONTINUE && iterations < max_iterations);
+  while (status == GSL_CONTINUE && iter < max_iter);
 
 @}
 @end example
