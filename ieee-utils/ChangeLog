@@ -1,5 +1,9 @@
 Mon Jun  1 15:27:08 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
+	* fp-sunos4.c: support for sunos4 IEEE interface
+
+	* fp-solaris.c: support for solaris IEEE interface
+
 	* renamed fp-mode-string.c to fp-env.c, in order to avoid short
  	filename problems
 
