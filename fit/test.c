@@ -49,7 +49,7 @@ main (void)
     double expected_c0 = -0.262323073774029;
     double expected_c1 =  1.00211681802045; 
     double expected_cov00 = 0.232818234301152;
-    double expected_cov01 = 0.0;
+    double expected_cov01 = -7.74327536339570e-05;  /* computed from octave */
     double expected_cov11 = 0.429796848199937E-03;
     double expected_sumsq = 26.6173985294224;
     
@@ -62,7 +62,7 @@ main (void)
     gsl_test_rel (c0, expected_c0, 1e-10, "norris gsl_fit_linear c0") ;
     gsl_test_rel (c1, expected_c1, 1e-10, "norris gsl_fit_linear c1") ;
     gsl_test_rel (sqrt(cov00), expected_cov00, 1e-10, "norris gsl_fit_linear cov00") ;
-    gsl_test_rel (cov01, expected_cov00, 1e-10, "norris gsl_fit_linear cov01") ;
+    gsl_test_rel (cov01, expected_cov01, 1e-10, "norris gsl_fit_linear cov01") ;
     gsl_test_rel (sqrt(cov11), expected_cov11, 1e-10, "norris gsl_fit_linear cov11") ;
     gsl_test_rel (sumsq, expected_sumsq, 1e-10, "norris gsl_fit_linear sumsq") ;
 

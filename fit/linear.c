@@ -21,7 +21,6 @@
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_fit.h>
 
-
 /* Fit the data (x_i, y_i) to the linear relationship 
 
    Y = c0 + c1 x
@@ -29,9 +28,15 @@
    returning, 
 
    c0, c1  --  coefficients
-   s0, s1  --  the standard deviations of c0 and c1,
-   r       --  the correlation coefficient between c0 and c1,
-   chisq   --  weighted sum of squares of residuals */
+   cov00, cov01, cov11  --  variance-covariance matrix of c0 and c1,
+   sumsq   --   sum of squares of residuals 
+
+   This fit can be used in the case where the errors for the data are
+   uknown, but assumed the be equal for all points. The resulting
+   variance-covariance matrix estimates the error in the coefficients
+   from the observed variance of the points around the best fit line.
+
+*/
 
 int
 gsl_fit_linear (const double *x, size_t xstride,
@@ -63,17 +68,12 @@ gsl_fit_linear (const double *x, size_t xstride,
   /* In terms of y = a + b x */
 
   {
-    double d2 = 0;
+    double s2 = 0, d2 = 0;
     double b = m_dxdy / m_dx2;
     double a = m_y - m_x * b;
     
     *c0 = a;
     *c1 = b;
-
-    *cov_00 = (1.0 / n) * (1 +  m_x * m_x /  m_dx2);
-    *cov_11 = 1.0 / (n * m_dx2);
-    
-    *cov_01 = -m_x / (n * m_dx2);
 
     /* Compute chi^2 = \sum (y_i - (a + b * x_i))^2 */
     
@@ -84,6 +84,13 @@ gsl_fit_linear (const double *x, size_t xstride,
         const double d = dy - b * dx;
         d2 += d * d;
       }
+
+    s2 = d2 / (n - 2.0);  /* chisq per degree of freedom */
+    
+    *cov_00 = s2 * (1.0 / n) * (1 +  m_x * m_x /  m_dx2);
+    *cov_11 = s2 * 1.0 / (n * m_dx2);
+      
+    *cov_01 = s2 * (-m_x) / (n * m_dx2);
     
     *sumsq = d2;
   }
