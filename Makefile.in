@@ -58,9 +58,9 @@ mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = config.h
 CONFIG_CLEAN_FILES = 
 DIST_COMMON =  README AUTHORS COPYING ChangeLog INSTALL Makefile.am \
-Makefile.in NEWS aclocal.m4 config.guess config.h.in config.sub \
-configure configure.in install-sh mdate-sh missing mkinstalldirs \
-stamp-h.in texinfo.tex
+Makefile.in NEWS acconfig.h aclocal.m4 config.guess config.h.in \
+config.sub configure configure.in install-sh mdate-sh missing \
+mkinstalldirs stamp-h.in texinfo.tex
 
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
@@ -92,7 +92,7 @@ stamp-h: $(CONFIG_HEADER_IN) $(top_builddir)/config.status
 	     $(SHELL) ./config.status
 	@echo timestamp > stamp-h
 $(srcdir)/$(CONFIG_HEADER_IN): stamp-h.in
-$(srcdir)/stamp-h.in: $(top_srcdir)/configure.in $(ACLOCAL_M4) 
+$(srcdir)/stamp-h.in: $(top_srcdir)/configure.in $(ACLOCAL_M4) acconfig.h
 	cd $(top_srcdir) && $(AUTOHEADER)
 	echo timestamp > $(srcdir)/stamp-h.in
 
