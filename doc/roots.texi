@@ -116,7 +116,7 @@ the function visually by plotting before searching for a root.
 @section Initializing the Solver
 
 @deftypefun {gsl_root_fsolver *} gsl_root_fsolver_alloc (const gsl_root_fsolver_type * @var{T})
-This function returns a pointer to a a newly allocated instance of a
+This function returns a pointer to a newly allocated instance of a
 solver of type @var{T}.  For example, the following code creates an
 instance of a bisection solver,
 
@@ -133,7 +133,7 @@ code of @code{GSL_ENOMEM}.
 @end deftypefun
 
 @deftypefun {gsl_root_fdfsolver *} gsl_root_fdfsolver_alloc (const gsl_root_fdfsolver_type * @var{T})
-This function returns a pointer to a a newly allocated instance of a
+This function returns a pointer to a newly allocated instance of a
 derivative-based solver of type @var{T}.  For example, the following
 code creates an instance of a Newton-Raphson solver,
 
@@ -517,7 +517,7 @@ $$
 
 @noindent
 and returns @code{GSL_CONTINUE} otherwise.  This criterion is suitable
-for situations where the the precise location of the root, @math{x}, is
+for situations where the precise location of the root, @math{x}, is
 unimportant provided a value can be found where the residual,
 @math{|f(x)|}, is small enough.
 @end deftypefun

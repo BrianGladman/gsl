@@ -78,7 +78,7 @@ regime.
 @section Initializing the Solver
 
 @deftypefun {gsl_multifit_fsolver *} gsl_multifit_fsolver_alloc (const gsl_multifit_fsolver_type * @var{T}, size_t @var{n}, size_t @var{p})
-This function returns a pointer to a a newly allocated instance of a
+This function returns a pointer to a newly allocated instance of a
 solver of type @var{T} for @var{n} observations and @var{p} parameters.
 
 If there is insufficient memory to create the solver then the function
@@ -87,7 +87,7 @@ code of @code{GSL_ENOMEM}.
 @end deftypefun
 
 @deftypefun {gsl_multifit_fdfsolver *} gsl_multifit_fdfsolver_alloc (const gsl_multifit_fdfsolver_type * @var{T}, size_t @var{n}, size_t @var{p})
-This function returns a pointer to a a newly allocated instance of a
+This function returns a pointer to a newly allocated instance of a
 derivative solver of type @var{T} for @var{n} observations and @var{p}
 parameters. For example, the following code creates an instance of a
 Levenberg-Marquardt solver for 100 data points and 3 parameters,
@@ -292,7 +292,7 @@ $$
 
 @noindent
 and returns @code{GSL_CONTINUE} otherwise.  This criterion is suitable
-for situations where the the precise location of the minimum, @math{x},
+for situations where the precise location of the minimum, @math{x},
 is unimportant provided a value can be found where the gradient is small
 enough.
 @end deftypefun

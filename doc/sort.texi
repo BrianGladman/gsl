@@ -111,7 +111,7 @@ included using the header files @file{gsl_sort.h} and
 
 There are no functions for sorting complex arrays or vectors, since the
 ordering of complex numbers is not uniquely defined.  To sort a complex
-vector by magnitude compute a real vector containing the the magnitudes
+vector by magnitude compute a real vector containing the magnitudes
 of the complex elements, and sort this vector indirectly.  The resulting
 index gives the appropriate ordering of the original complex vector.
 

@@ -60,7 +60,7 @@ This function should store the vector elements
 @c{$\partial f_i(t,y,params) / \partial t$}
 @math{df_i(t,y,params)/dt} in the array @var{dfdt} and the 
 Jacobian matrix @c{$J_{ij}$}
-@math{J_@{ij@}} in the the array
+@math{J_@{ij@}} in the array
 @var{dfdy} regarded as a row-ordered matrix @code{J(i,j) = dfdy[i * dim + j]}
 where @code{dim} is the dimension of the system.
 
@@ -604,7 +604,7 @@ their values into @var{dydt_in}.
 @node ODE References and Further Reading
 @section References and Further Reading
 @noindent
-Many of the the basic Runge-Kutta formulas can be found in the Handbook of
+Many of the basic Runge-Kutta formulas can be found in the Handbook of
 Mathematical Functions,
 
 @itemize @asis

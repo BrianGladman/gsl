@@ -800,7 +800,7 @@ imaginary part of the zero-frequency term @code{complex[0].imag} is
 known to be zero by the symmetry.
 
 The next table shows the output for an even-length sequence, @math{n=5}
-In the even case both the there are two values which are purely real,
+In the even case there are two values which are purely real,
 
 @example
 complex[0].real  =  halfcomplex[0]

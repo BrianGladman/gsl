@@ -301,7 +301,7 @@ checking completely without modifying any source files by recompiling
 your program with the preprocessor definition
 @code{GSL_RANGE_CHECK_OFF}.  Provided your compiler supports inline
 functions the effect of turning off range checking is to replace calls
-to @code{gsl_vector_get(v,i)} by @code{v->data[i*v->stride]} and and
+to @code{gsl_vector_get(v,i)} by @code{v->data[i*v->stride]} and
 calls to @code{gsl_vector_set(v,i,x)} by @code{v->data[i*v->stride]=x}.
 Thus there should be no performance penalty for using the range checking
 functions when range checking is turned off.

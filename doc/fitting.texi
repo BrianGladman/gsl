@@ -371,7 +371,7 @@ X = [ 1   , x_0  , x_0^2 ;
 @end ifinfo
 @noindent
 where the column of ones corresponds to the constant term @math{c_0}.
-The two remaining columns corresponds to the terms @math{c_1 x} and and
+The two remaining columns corresponds to the terms @math{c_1 x} and
 @math{c_2 x^2}.
 
 The program reads @var{n} lines of data in the format (@var{x}, @var{y},

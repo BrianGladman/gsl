@@ -57,15 +57,15 @@ These routines compute the Wigner 6-j coefficient,
 @tex
 \beforedisplay
 $$
-\pmatrix{ja & jb & jc\cr
-         jd & je & jf\cr}
+\left\{\matrix{ja & jb & jc\cr
+               jd & je & jf\cr}\right\}
 $$
 \afterdisplay
 @end tex
 @ifinfo
 @example
-(ja jb jc
- jd je jf)
+@{ja jb jc
+ jd je jf@}
 @end example
 @end ifinfo
 @noindent
@@ -85,17 +85,17 @@ These routines compute the Wigner 9-j coefficient,
 @tex
 \beforedisplay
 $$
-\pmatrix{ja & jb & jc\cr
-         jd & je & jf\cr
-         jg & jh & ji\cr}
+\left\{\matrix{ja & jb & jc\cr
+               jd & je & jf\cr
+               jg & jh & ji\cr}\right\}
 $$
 \afterdisplay
 @end tex
 @ifinfo
 @example
-(ja jb jc
+@{ja jb jc
  jd je jf
- jg jh ji)
+ jg jh ji@}
 @end example
 @end ifinfo
 @noindent

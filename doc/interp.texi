@@ -17,8 +17,8 @@ The functions described in this section are declared in the header files
 * Interpolation Functions::     
 * Interpolation Types::         
 * Index Look-up and Acceleration::  
-* Evaluation of interpolating functions::  
-* Higher-level interface::      
+* Evaluation of Interpolating Functions::  
+* Higher-level Interface::      
 * Interpolation Example programs::  
 * Interpolation References and Further Reading::  
 @end menu
@@ -29,8 +29,8 @@ The functions described in this section are declared in the header files
 Given a set of data points @math{(x_1, y_1) \dots (x_n, y_n)} the
 routines described in this section compute a continuous interpolating
 function @math{y(x)} such that @math{y_i = y(x_i)}.  The interpolation
-is piecewise smooth, and its behavior at the points is determined by the
-type of interpolation used.
+is piecewise smooth, and its behavior at the end-points is determined by
+the type of interpolation used.
 
 @node Interpolation Functions
 @section Interpolation Functions
@@ -78,7 +78,7 @@ of points.
 
 @deffn {Interpolation Type} gsl_interp_cspline
 @cindex cubic splines
-Cubic spline with natural boundary conditions
+Cubic spline with natural boundary conditions.
 @end deffn
 
 @deffn {Interpolation Type} gsl_interp_cspline_periodic
@@ -87,21 +87,21 @@ Cubic spline with periodic boundary conditions
 
 @deffn {Interpolation Type} gsl_interp_akima
 @cindex Akima splines
-Akima spline with natural boundary conditions
+Akima spline with natural boundary conditions.
 @end deffn
 
 @deffn {Interpolation Type} gsl_interp_akima_periodic
-Akima spline with periodic boundary conditions
+Akima spline with periodic boundary conditions.
 @end deffn
 
-The following related functions are available,
+The following related functions are available:
 
 @deftypefun {const char *} gsl_interp_name (const gsl_interp * @var{interp})
 This function returns the name of the interpolation type used by @var{interp}.
 For example,
 
 @example
-printf("interp uses '%s' interpolation\n", 
+printf("interp uses '%s' interpolation.\n", 
        gsl_interp_name (interp));
 @end example
 @noindent
@@ -151,8 +151,8 @@ xarray[i+1]}.
 This function frees the accelerator object @var{a}.
 @end deftypefun
 
-@node Evaluation of interpolating functions
-@section Evaluation of interpolating functions
+@node Evaluation of Interpolating Functions
+@section Evaluation of Interpolating Functions
 
 @deftypefun  double gsl_interp_eval (const gsl_interp * @var{interp}, const double @var{xa}[], const double @var{ya}[], double @var{x}, gsl_interp_accel * @var{a})
 @deftypefunx int gsl_interp_eval_e (const gsl_interp * @var{interp}, const double @var{xa}[], const double @var{ya}[], double @var{x}, gsl_interp_accel * @var{a}, double * @var{y})
@@ -185,8 +185,8 @@ interpolation object @var{interp}, data arrays @var{xa} and @var{ya} and
 the accelerator @var{a}.
 @end deftypefun
 
-@node Higher-level interface
-@section Higher-level interface
+@node Higher-level Interface
+@section Higher-level Interface
 
 The functions described in the previous sections required the user to
 supply pointers to the @math{x} and @math{y} arrays on each call.  The

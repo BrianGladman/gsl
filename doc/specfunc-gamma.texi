@@ -204,8 +204,8 @@ These routines compute the relative Pochhammer symbol @math{((a,x) -
 @deftypefunx int gsl_sf_gamma_inc_Q_e (double @var{a}, double @var{x}, gsl_sf_result * @var{result})
 @cindex incomplete Gamma function
 These routines compute the normalized incomplete Gamma Function
-@c{$P(a,x) = 1/\Gamma(a) \int_x^\infty dt\, t^{(a-1)} \exp(-t)$}
-@math{P(a,x) = 1/\Gamma(a) \int_x\infty dt t^@{a-1@} \exp(-t)}
+@c{$Q(a,x) = 1/\Gamma(a) \int_x^\infty dt\, t^{(a-1)} \exp(-t)$}
+@math{Q(a,x) = 1/\Gamma(a) \int_x\infty dt t^@{a-1@} \exp(-t)}
 for @math{a > 0}, @c{$x \ge 0$}
 @math{x >= 0}.
 @comment exceptions: GSL_EDOM
@@ -218,7 +218,10 @@ These routines compute the complementary normalized incomplete Gamma Function
 @c{$P(a,x) = 1/\Gamma(a) \int_0^x dt\, t^{(a-1)} \exp(-t)$}
 @math{P(a,x) = 1/\Gamma(a) \int_0^x dt t^@{a-1@} \exp(-t)}
 for @math{a > 0}, @c{$x \ge 0$}
-@math{x >= 0}.
+@math{x >= 0}. 
+
+Note that Abramowitz & Stegun call @math{P(a,x)} the incomplete gamma
+function (section 6.5).
 @comment exceptions: GSL_EDOM
 @end deftypefun
 

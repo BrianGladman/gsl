@@ -112,7 +112,7 @@ algorithm and can be reused for different problems.
 
 @deftypefun {gsl_multimin_fdfminimizer *} gsl_multimin_fdfminimizer_alloc (const gsl_multimin_fdfminimizer_type *@var{T}, size_t @var{n})
 @deftypefunx {gsl_multimin_fminimizer *} gsl_multimin_fminimizer_alloc (const gsl_multimin_fminimizer_type *@var{T}, size_t @var{n})
-This function returns a pointer to a a newly allocated instance of a
+This function returns a pointer to a newly allocated instance of a
 minimizer of type @var{T} for an @var{n}-dimension function.  If there
 is insufficient memory to create the minimizer then the function returns
 a null pointer and the error handler is invoked with an error code of

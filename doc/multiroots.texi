@@ -118,7 +118,7 @@ dimension of the problem and the algorithm and can be reused for
 different problems.
 
 @deftypefun {gsl_multiroot_fsolver *} gsl_multiroot_fsolver_alloc (const gsl_multiroot_fsolver_type * @var{T}, size_t @var{n})
-This function returns a pointer to a a newly allocated instance of a
+This function returns a pointer to a newly allocated instance of a
 solver of type @var{T} for a system of @var{n} dimensions.
 For example, the following code creates an instance of a hybrid solver, 
 to solve a 3-dimensional system of equations.
@@ -136,7 +136,7 @@ code of @code{GSL_ENOMEM}.
 @end deftypefun
 
 @deftypefun {gsl_multiroot_fdfsolver *} gsl_multiroot_fdfsolver_alloc (const gsl_multiroot_fdfsolver_type * @var{T}, size_t @var{n})
-This function returns a pointer to a a newly allocated instance of a
+This function returns a pointer to a newly allocated instance of a
 derivative solver of type @var{T} for a system of @var{n} dimensions.
 For example, the following code creates an instance of a Newton-Raphson solver,
 for a 2-dimensional system of equations.
@@ -455,7 +455,7 @@ $$
 
 @noindent
 and returns @code{GSL_CONTINUE} otherwise.  This criterion is suitable
-for situations where the the precise location of the root, @math{x}, is
+for situations where the precise location of the root, @math{x}, is
 unimportant provided a value can be found where the residual is small
 enough.
 @end deftypefun

@@ -144,7 +144,7 @@ $$
 
 
 @deftypefn Statistics double gsl_stats_sd_with_fixed_mean (const double @var{data}[], size_t @var{stride}, size_t @var{n}, double @var{mean})
-This function calculates the standard deviation of @var{data} for a a
+This function calculates the standard deviation of @var{data} for a
 fixed population mean @var{mean}.  The result is the square root of the
 corresponding variance function.
 @end deftypefn

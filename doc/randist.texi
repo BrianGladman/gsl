@@ -262,7 +262,7 @@ given above.
 @deftypefn Random double gsl_ran_laplace (const gsl_rng * @var{r}, double @var{a})
 @cindex two-sided exponential random variates
 @cindex Laplace distribution random variates
-This function returns a random variate from the the Laplace distribution
+This function returns a random variate from the Laplace distribution
 with width @var{a}.  The distribution is,
 
 @tex

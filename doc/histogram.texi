@@ -552,7 +552,7 @@ code of @code{GSL_ENOMEM}.
 @end deftypefun
 
 @deftypefun int gsl_histogram_pdf_init (gsl_histogram_pdf * @var{p}, const gsl_histogram * @var{h})
-This function initializes the probability distribution @var{p} with with
+This function initializes the probability distribution @var{p} with
 the contents of the histogram @var{h}. If any of the bins of @var{h} are
 negative then the error handler is invoked with an error code of
 @code{GSL_EDOM} because a probability distribution cannot contain
@@ -1236,7 +1236,7 @@ main (void)
 The following plot shows the distribution of the simulated events.  Using
 a higher resolution grid we can see the original underlying histogram
 and also the statistical fluctuations caused by the events being
-uniformly distributed over the the area of the original bins.
+uniformly distributed over the area of the original bins.
 
 @iftex
 @sp 1
