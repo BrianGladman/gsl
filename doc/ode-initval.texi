@@ -62,6 +62,12 @@ the array @var{dfdt} and the Jacobian matrix @c{$J_{ij}$}
 @var{dfdy} regarded as a row-ordered matrix @code{J(i,j) = dfdy[i * dim + j]}
 where @code{dim} is the dimension of the system.
 
+Some of the simpler solver algorithms do not make use of the Jacobian
+matrix, so it is not always strictly necessary to provide it (this
+element of the struct can be replace by a null pointer).  However, it is
+useful to provide the Jacobian to allow the solver algorithms to be
+interchanged -- the best algorithms make use of the Jacobian.
+
 @item size_t @var{dimension};
 This is the dimension of the system of equations
 
@@ -171,7 +177,8 @@ Implicit 4th order Runge-Kutta at Gaussian points
 @cindex Bulirsch-Stoer method
 @cindex Bader and Deuflhard, Bulirsch-Stoer method.
 @cindex Deuflhard and Bader, Bulirsch-Stoer method.
-Implicit Bulirsch-Stoer method of Bader and Deuflhard.
+Implicit Bulirsch-Stoer method of Bader and Deuflhard.  This algorithm
+requires the Jacobian.
 @end deffn
 
 @deffn {Step Type} gsl_odeiv_step_gear1 
