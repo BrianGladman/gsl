@@ -3092,7 +3092,7 @@ n=16;
 # endfor
 
 for j = 1:5
-  for i = [s,d] #,c,z]
+  for i = [c] #[s,d] #,c,z]
     S = context(i);
     for trans = Trans(S)
       for alpha = coeff(S)
