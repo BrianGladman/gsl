@@ -387,31 +387,48 @@ Simulation}, Vol. 8, No. 1 (Jan. 1998), Pages 3-30
 
 @deffn {Generator} gsl_rng_ranlux
 @deffnx {Generator} gsl_rng_ranlux389
+
 @cindex RANLUX random number generator
 The @code{ranlux} generator uses the lagged-fibonacci-with-skipping
-algorithm of Luscher to produce "luxury random numbers". It is a 24-bit
+algorithm of L@"uscher to produce "luxury random numbers". It is a 24-bit
 generator, originally designed for single-precision IEEE floating point
-numbers. The period of the generator is about 
-@c{$10^{171}$}
-@math{10^171}. 
-The generator is slow, but the algorithm has mathematically proven
-properties. It can provide truly decorrelated numbers at a known level
-of randomness. The default level of decorrelation recommended by Luscher
-is provided by @code{gsl_rng_ranlux}, while @code{gsl_rng_ranlux389}
-gives the highest level of randomness, with all 24 bits decorrelated.
-Both types of generator use 24 words of state per generator.
+numbers. The period of the generator is about @c{$10^{171}$}
+@math{10^171}.  The generator is slow, but the algorithm has 
+mathematically proven properties. It can provide truly decorrelated
+numbers at a known level of randomness. The default level of
+decorrelation recommended by L@"uscher is provided by
+@code{gsl_rng_ranlux}, while @code{gsl_rng_ranlux389} gives the highest
+level of randomness, with all 24 bits decorrelated.  Both types of
+generator use 24 words of state per generator.
 
 For more information see,
 @itemize @asis
 @item
-M. Luscher, "A portable high-quality random number generator for
+M. L@"uscher, "A portable high-quality random number generator for
 lattice field theory calculations", @cite{Computer Physics
 Communications}, 79 (1994) 100-110.
 @item
 F. James, "RANLUX: A Fortran implementation of the high-quality
-pseudo-random number generator of Luscher", @cite{Computer Physics
+pseudo-random number generator of L@"uscher", @cite{Computer Physics
 Communications}, 79 (1994) 111-114
 @end itemize
+@end deffn
+
+@deffn {Generator} gsl_rng_ranlxs0
+@deffnx {Generator} gsl_rng_ranlxs1
+@deffnx {Generator} gsl_rng_ranlxs2
+@deffnx {Generator} gsl_rng_ranlxd1
+@deffnx {Generator} gsl_rng_ranlxd2
+@cindex RANLXS random number generator
+@cindex RANLXD random number generator
+
+The generator @code{ranlxs0} is a second-generation version of
+@code{ranlux}. It uses double-precision floating point arithmetic
+internally and can be significantly faster on 64-bit architectures than
+the integer version of @code{ranlux}. This generator is available with
+single precision output (24 bits) at three luxury levels @code{ranlxs0},
+@code{ranlxs1} and @code{ranlxs2}, with with double precision output (48
+bits) at two luxury levels @code{ranlxd1} and @code{ranlxd2}.
 @end deffn
 
 @deffn {Generator} gsl_rng_cmrg
@@ -1128,44 +1145,45 @@ SX-3", @cite{International Journal of High Speed Computing} (1994).
 @section Performance
 
 @comment
-@comment I made the plot like this
+@comment I made the original plot like this
 @comment ./benchmark > tmp ; cat tmp | perl -n -e '($n,$s) = split(" ",$_) ; printf("%17s ",$n); print "-" x ($s/1e5), "\n";'
 @comment
 
-The following plot shows the relative performance of a selection the
-available random number generators.  The large number of generators
-based on single linear congruences are represented by the @code{random}
-generator below. These generators are fast but have the lowest
-statistical quality. The simulation quality generators which offer the
-best performance are @code{taus} and @code{mt19937}.
+The following table shows the relative performance of a selection the
+available random number generators.  The simulation quality generators
+which offer the best performance are @code{taus}, @code{gfsr4} and
+@code{mt19937}.
+
+@comment The large number of generators based on single linear congruences are
+@comment represented by the @code{random} generator below. These generators are
+@comment fast but have the lowest statistical quality.
 
 @smallexample
-      taus ------------------
-   mt19937 ------------
-       mrg --------
-      cmrg ----
-    ranlux ---
- ranlux389 --
+  1754 k ints/sec,    870 k doubles/sec, taus
+  1613 k ints/sec,    855 k doubles/sec, gfsr4
+  1370 k ints/sec,    769 k doubles/sec, mt19937
+   565 k ints/sec,    571 k doubles/sec, ranlxs0
+   400 k ints/sec,    405 k doubles/sec, ranlxs1
+   490 k ints/sec,    389 k doubles/sec, mrg
+   407 k ints/sec,    297 k doubles/sec, ranlux
+   243 k ints/sec,    254 k doubles/sec, ranlxd1
+   251 k ints/sec,    253 k doubles/sec, ranlxs2
+   238 k ints/sec,    215 k doubles/sec, cmrg
+   247 k ints/sec,    198 k doubles/sec, ranlux389
+   141 k ints/sec,    140 k doubles/sec, ranlxd2
 
-      ran3 -----------------
-      ran2 -----
-      ran1 -----------
-      ran0 ----------
-
-    random --------------------
-
-          |---------|---------|-----
-          0         1         2    
-
-          Millions of random numbers per second
+  1852 k ints/sec,    935 k doubles/sec, ran3
+   813 k ints/sec,    575 k doubles/sec, ran0
+   787 k ints/sec,    476 k doubles/sec, ran1
+   379 k ints/sec,    292 k doubles/sec, ran2
 @end smallexample
-
 
 @node Random Number References and Further Reading
 @section Random Number References and Further Reading
 @noindent
 
-@url{ftp://ftp.iro.umontreal.ca/pub/simulation/lecuyer/papers/handsim.ps}.
+The subject of random number generation and testing is reviewed
+extensively in Knuth's @cite{Seminumerical Algorithms}.
 
 @itemize @asis
 @item
@@ -1174,30 +1192,14 @@ Algorithms} (Vol 2, 3rd Ed, 1997), Addison-Wesley, ISBN 0201896842.
 @end itemize
 @noindent
 
-@itemize @asis
-@item
-Luc Devroye, @cite{Non-Uniform Random Variate Generation},
-Springer-Verlag, ISBN 0-387-96305-7.
-@end itemize
-@noindent
+Further information is available in the review paper written by Pierre
+L'Ecuyer, available at
+@url{ftp://ftp.iro.umontreal.ca/pub/simulation/lecuyer/papers/handsim.ps}.
 
-See the pLab home page (http://random.mat.sbg.ac.at/) for a lot of information
-on the state-of-the-art in random number generation, and for numerous links
-to various "random" WWW sites.  
-
-For physicists the Particle Data Group provides a useful short review of
-techniques for generating distributions of random numbers in the
-"Monte Carlo" section of its Annual Review of Particle Physics.
-
-@itemize @asis
-@item
-@cite{Review of Particle Properties}
-R.M. Barnett et al., Physical Review D54, 1 (1996)
-@url{http://pdg.lbl.gov/}.
-@end itemize
-@noindent
-The Review of Particle Physics is available online in postscript and pdf
-format.
+On the World Wide Web, see the pLab home page
+(@url{http://random.mat.sbg.ac.at/}) for a lot of information on the
+state-of-the-art in random number generation, and for numerous links to
+various "random" WWW sites.
 
 The source code for the @sc{diehard} random number generator tests is also
 available online.
@@ -1214,7 +1216,9 @@ G. Marsaglia
 @noindent
 Thanks to Makoto Matsumoto, Takuji Nishimura and Yoshiharu Kurita for
 making the source code to their generators (MT19937, MM&TN; TT800,
-MM&YK) available under the GNU General Public License.
+MM&YK) available under the GNU General Public License. Thanks to Martin
+L@"uscher for providing notes and source code for the @sc{ranlxs} and
+@sc{ranlxd} generators.
 
 @comment lcg
 @comment [ LCG(n) := n * 69069 mod (2^32) ]
