@@ -4,5 +4,7 @@ info_TEXINFOS = gsl-ref.texi
 noinst_TEXINFOS = gsl-design.texi
 gsl_ref_TEXINFOS = fft.texi random.texi
 
-noinst_DATA = siman-test.eps siman-energy.eps
-EXTRA_DIST = siman-test.eps siman-energy.eps
+noinst_DATA = siman-test.eps siman-energy.eps 12-cities.eps \
+	initial-route.eps final-route.eps
+EXTRA_DIST = siman-test.eps siman-energy.eps 12-cities.eps \
+	initial-route.eps final-route.eps

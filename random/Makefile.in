@@ -4,14 +4,6 @@
 # This Makefile.in is free software; the Free Software Foundation
 # gives unlimited permission to copy, distribute and modify it.
 
-### $Id$
-### This file is a template for Makefile.am (which is a template for 
-### Makefile.in, which is a template for Makefile...) 
-
-### You can bootstrap your way to a regular Makefile with 
-###     make -f Makefile.ami Makefile.am
-### followed by the usual automake/configure routines
-
 
 SHELL = /bin/sh
 

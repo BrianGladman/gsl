@@ -558,45 +558,105 @@ run. This was generated with the simple instruction}
 
 The TSP (@emph{Traveling Salesman Problem}) is the classic combinatorial
 optimization problem.  I have provided a very simple version of it,
-mostly because I have not yet found a good database of cities.  This
-should maybe be called the @emph{Flying Salesman Problem}, since I am
-using the great-circle distance between cities, rather than the driving
-distance.
+based on the coordinates of twelve cities in the southwestern United
+States.  This should maybe be called the @emph{Flying Salesman Problem},
+since I am using the great-circle distance between cities, rather than
+the driving distance.  Also: I assume the earth is a sphere, so I don't
+use geoid distances.
 
+The @code{gsl_siman_solve()} routine finds a route which is 3490.62
+Kilometers long; this is confirmed by an exhaustive search of all
+possible routes with the same initial city.
+
+The full code can be found in @file{siman/siman_tsp.c}, but I include
+here some plots generated with in the following way:
+@smallexample
+./siman_tsp > tsp.output
+grep -v "^#" tsp.output  | xyplot -ps -d "x................y" -lx "generation" -ly "distance" -lt "TSP -- 12 southwest cities" > 12-cities.eps
+grep initial_city_coord tsp.output | awk '@{print $2 "   " $3@}' | xyplot -ps -d "xy" -lx "longitude (- means west)" -ly "latitude" -lt "TSP -- initial-order" > initial-route.eps
+grep final_city_coord tsp.output | awk '@{print $2 "   " $3@}' | xyplot -ps -d "xy" -lx "longitude (- means west)" -ly "latitude" -lt "TSP -- final-order" > final-route.eps
+@end smallexample
+
+
+This is the output showing the initial order of the cities; longitude is
+negative, since it is west and I want the plot to look like a map.
 @example
-Stsp_city cities[N_CITIES] = @{@{"Santa_Fe",    10.2,	35.4@},
-                              @{"Albuquerque", 12.1,	31.4@},
-                              @{"Alamagordo",  12.1,	26.1@},
-                              @{"Los_Alamos",  12.9,	36.0@},
-                              @{"Tesuque",     10.2,	35.7@},
-                              @{"Las_Cruces",  12.1,	18.4@},
-                              @{"Phoenix",     30.1,	22.4@},
-                              @{"Tuscon",      31.2,	20.0@}@};
-
-/* distance between two cities */
-double city_distance(Stsp_city c1, Stsp_city c2)
-@{
-  double dx = c2.x - c1.x;
-  double dy = c2.y - c1.y;
-  return sqrt(dx*dx + dy*dy);
-@}
+# initial coordinates of cities (longitude and latitude)
+###initial_city_coord: -105.95 35.68 Santa_Fe
+###initial_city_coord: -112.07 33.54 Phoenix
+###initial_city_coord: -106.62 35.12 Albuquerque
+###initial_city_coord: -103.2 34.41 Clovis
+###initial_city_coord: -107.87 37.29 Durango
+###initial_city_coord: -96.77 32.79 Dallas
+###initial_city_coord: -105.92 35.77 Tesuque
+###initial_city_coord: -107.84 35.15 Grants
+###initial_city_coord: -106.28 35.89 Los Alamos
+###initial_city_coord: -106.76 32.34 Las Cruces
+###initial_city_coord: -108.58 37.35 Cortez
+###initial_city_coord: -108.74 35.52 Gallup
+###initial_city_coord: -105.95 35.68 Santa_Fe
 @end example
 
 The optimal route turns out to be:
 @example
-Los_Alamos
-Tesuque
-Santa_Fe
-Albuquerque
-Alamagordo
-Las_Cruces
-Tuscon
-Phoenix
+# final coordinates of cities (longitude and latitude)
+###final_city_coord: -105.95 35.68 Santa_Fe
+###final_city_coord: -106.28 35.89 Los Alamos
+###final_city_coord: -106.62 35.12 Albuquerque
+###final_city_coord: -107.84 35.15 Grants
+###final_city_coord: -107.87 37.29 Durango
+###final_city_coord: -108.58 37.35 Cortez
+###final_city_coord: -108.74 35.52 Gallup
+###final_city_coord: -112.07 33.54 Phoenix
+###final_city_coord: -106.76 32.34 Las Cruces
+###final_city_coord: -96.77 32.79 Dallas
+###final_city_coord: -103.2 34.41 Clovis
+###final_city_coord: -105.92 35.77 Tesuque
+###final_city_coord: -105.95 35.68 Santa_Fe
 @end example
 
-The full code can be found in @file{siman/siman_tsp.c}
+@tex
+\input epsf
 
+% nine, eight and six point fonts
+\font\ninerm=cmr9   \font\eightrm=cmr8   \font\sixrm=cmr6
+\font\ninei=cmmi9   \font\eighti=cmmi8   \font\sixi=cmmi6
+\font\ninesy=cmsy9  \font\eightsy=cmsy8  \font\sixsy=cmsy6
+\font\ninebf=cmbx9  \font\eightbf=cmbx8  \font\sixbf=cmbx6
+\font\ninett=cmtt9  \font\eighttt=cmtt8
+\font\nineit=cmti9  \font\eightit=cmti8
+\font\ninesl=cmsl9  \font\eightsl=cmsl8
 
+\medskip
+\centerline{\epsfxsize=3in\epsfbox{initial-route.eps}\epsfxsize=3in\epsfbox{final-route.eps}}
+\nobreak
+\centerline{\nineit Initial and final (optimal?) route for the 12
+southwestern cities Flying Salesman Problem.}
+\medskip
+@end tex
+
+Here's a plot of the cost function (energy) versus generation (point in
+the calculation at which a new temperature is set) for this problem:
+
+@tex
+\input epsf
+
+% nine, eight and six point fonts
+\font\ninerm=cmr9   \font\eightrm=cmr8   \font\sixrm=cmr6
+\font\ninei=cmmi9   \font\eighti=cmmi8   \font\sixi=cmmi6
+\font\ninesy=cmsy9  \font\eightsy=cmsy8  \font\sixsy=cmsy6
+\font\ninebf=cmbx9  \font\eightbf=cmbx8  \font\sixbf=cmbx6
+\font\ninett=cmtt9  \font\eighttt=cmtt8
+\font\nineit=cmti9  \font\eightit=cmti8
+\font\ninesl=cmsl9  \font\eightsl=cmsl8
+
+\medskip
+\centerline{\epsfxsize=4.4in\epsfbox{12-cities.eps}}
+\nobreak
+\centerline{\nineit Example of a simulated annealing run for the 12}
+\centerline{\nineit southwestern cities Flying Salesman Problem.}
+\medskip
+@end tex
 
 
 @node Contributors to GSL

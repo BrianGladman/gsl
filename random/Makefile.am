@@ -1,10 +1,4 @@
-### $Id$
-### This file is a template for Makefile.am (which is a template for 
-### Makefile.in, which is a template for Makefile...) 
 
-### You can bootstrap your way to a regular Makefile with 
-###     make -f Makefile.ami Makefile.am
-### followed by the usual automake/configure routines
 
 ## Include here the list of algorithms for random number generation
 ## The first one should be the "favorite" (ie, default)
