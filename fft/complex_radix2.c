@@ -142,21 +142,29 @@ gsl_fft_complex_radix2 (complex data[],
 
       unsigned int a, b;
 
-      for (a = 0; a < dual; a++)
+      /* a = 0 */
+
+      for (b = 0; b < n; b += 2 * dual)
 	{
-	  for (b = 0; b < n; b += 2 * dual)
-	    {
-	      const unsigned int i = b + a;
-	      const unsigned int j = b + a + dual;
+	  const unsigned int i = b ;
+	  const unsigned int j = b + dual;
+	  
+	  const double z1_real = data[j].real ;
+	  const double z1_imag = data[j].imag ;
 
-	      const double wd_real = w_real * data[j].real - w_imag * data[j].imag;
-	      const double wd_imag = w_real * data[j].imag + w_imag * data[j].real;
+	  const double wd_real = z1_real -  z1_imag;
+	  const double wd_imag = z1_imag +  z1_real;
+	  
+	  data[j].real = data[i].real - wd_real;
+	  data[j].imag = data[i].imag - wd_imag;
+	  data[i].real += wd_real;
+	  data[i].imag += wd_imag;
+	}
+      
+      /* a = 1 .. (dual-1) */
 
-	      data[j].real = data[i].real - wd_real;
-	      data[j].imag = data[i].imag - wd_imag;
-	      data[i].real += wd_real;
-	      data[i].imag += wd_imag;
-	    }
+      for (a = 1; a < dual; a++)
+	{
 
 	  /* trignometric recurrence for w-> exp(i theta) w */
 
@@ -166,6 +174,23 @@ gsl_fft_complex_radix2 (complex data[],
 	    w_real = tmp_real;
 	    w_imag = tmp_imag;
 	  }
+
+	  for (b = 0; b < n; b += 2 * dual)
+	    {
+	      const unsigned int i = b + a;
+	      const unsigned int j = b + a + dual;
+
+	      const double z1_real = data[j].real ;
+	      const double z1_imag = data[j].imag ;
+	      
+	      const double wd_real = w_real * z1_real - w_imag * z1_imag;
+	      const double wd_imag = w_real * z1_imag + w_imag * z1_real;
+
+	      data[j].real = data[i].real - wd_real;
+	      data[j].imag = data[i].imag - wd_imag;
+	      data[i].real += wd_real;
+	      data[i].imag += wd_imag;
+	    }
 	}
       dual *= 2;
     }
