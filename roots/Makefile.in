@@ -4,8 +4,8 @@
 # This Makefile.in is free software; the Free Software Foundation
 # gives unlimited permission to copy, distribute and modify it.
 
-# $Id$
 # -*-makefile-*-
+# $Id$
 
 
 SHELL = /bin/sh
@@ -80,7 +80,7 @@ test_DEPENDENCIES = libroots.a
 
 test_SOURCES = test.c test.h
 
-libroots_a_SOURCES = bisection.c
+libroots_a_SOURCES = utility.c bisection.c falsepos.c
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
 CONFIG_CLEAN_FILES = 
@@ -92,7 +92,7 @@ CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
 libroots_a_LIBADD = 
-libroots_a_OBJECTS =  bisection.o
+libroots_a_OBJECTS =  utility.o bisection.o falsepos.o
 AR = ar
 PROGRAMS =  $(noinst_PROGRAMS)
 
@@ -110,7 +110,8 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 TAR = tar
 GZIP = --best
-DEP_FILES =  .deps/bisection.P .deps/test.P
+DEP_FILES =  .deps/bisection.P .deps/falsepos.P .deps/test.P \
+.deps/utility.P
 SOURCES = $(libroots_a_SOURCES) $(test_SOURCES)
 OBJECTS = $(libroots_a_OBJECTS) $(test_OBJECTS)
 

@@ -1,3 +1,4 @@
+/* roots.h -- declarations for internal root finding and RF support stuff. */ 
 /* $Id# */
 
 #ifndef __ROOTS_H__
@@ -33,6 +34,38 @@ do { \
 /* Return nonzero if a and b are within tolerance of each other. */
 #define _WITHIN_TOL(a, b, rel_epsilon, abs_epsilon) \
      (fabs((a) - (b)) < rel_epsilon * _MINA(a, b) + abs_epsilon)
+
+/* Barf if a and b are not within delta of each other. FIXME.3: This has
+   problems if a and b are nearly equal, but GSL's current use of it does not
+   run into this situation. */
+#define _BARF_DELTAY(a, b, delta) \
+do { \
+  if (fabs(a - b) > delta) \
+    GSL_ERROR("function is probably not continuous", GSL_EBADFUNC); \
+} while (0)
+
+
+/* Function Prototypes */
+
+int
+_gsl_root_validate_bfp_args(void * root, void * f, double * lower_bound,
+                            double * upper_bound, double rel_epsilon,
+                            double abs_epsilon, unsigned int max_iterations,
+                            double max_deltay);
+
+int
+_gsl_root_validate_args_p(void * root, void * f, double * lower_bound,
+                          double * upper_bound, double rel_epsilon,
+                          double abs_epsilon, unsigned int max_iterations);
+
+int
+_gsl_root_ivt_guar(double (* f)(double), double lower_bound,
+                   double upper_bound);
+
+int
+_gsl_root_silly_user(double * root, double (* f)(double), double lower_bound,
+                     double upper_bound, double rel_epsilon,
+                     double abs_epsilon, double max_deltay);
 
 #endif /* __ROOTS_H__ */
 

@@ -10,6 +10,9 @@
    protect against roundoff problems. */
 #define GSL_ROOT_EPSILON_BUFFER 10.0
 
+/* The minimum allowed value of max_deltay. Somewhat arbitrary. */
+#define GSL_ROOT_MIN_MAX_DELTAY 1.0
+
 
 /* Macros */
 
@@ -23,7 +26,12 @@
 int
 gsl_root_bisection(double * root, double (* f)(double), double * lower_bound,
                    double * upper_bound, double rel_epsilon,
-                   double abs_epsilon, unsigned int max_iterations);
+                   double abs_epsilon, unsigned int max_iterations, 
+                   double max_deltay);
+int
+gsl_root_falsepos(double * root, double (* f)(double), double * lower_bound,
+                  double * upper_bound, double rel_epsilon, double abs_epsilon,
+                  unsigned int max_iterations, double max_deltay);
 
 
 #endif /* __GSL_ROOTS_H__ */

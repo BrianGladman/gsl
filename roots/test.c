@@ -27,10 +27,11 @@
 
 /* stopping parameters */
 #define TEST_REL_EPSILON    10 * DBL_EPSILON * GSL_ROOT_EPSILON_BUFFER
-/* #define TEST_REL_EPSILON    0.0001 */
+/* #define TEST_REL_EPSILON    0.0000001 */
 #define TEST_ABS_EPSILON    10 * DBL_EPSILON * GSL_ROOT_EPSILON_BUFFER
-/* #define TEST_ABS_EPSILON    0.0001 */
+/* #define TEST_ABS_EPSILON    0.0000001 */
 #define TEST_MAX_ITERATIONS 100
+#define TEST_MAX_DELTAY     2000000.0
 
 /* Some globals to store data about errors that occur. Any call to
    error_handler will overwrite these! We set the strings to NULL so we can
@@ -68,8 +69,8 @@ main(void)
   printf("  cos(x) [-3, 0] ... ");
   gsl_test_root_bisection(cos, -3.0, 0.0, -M_PI/2.0, &num_passed,
                           &num_failed); 
-  printf("  x^{20} - 1 [0.9, 1.1] ... ");
-  gsl_test_root_bisection(gsl_test_root_hairy_1, 0.9, 1.1, 1.0, &num_passed,
+  printf("  x^{20} - 1 [0.1, 2] ... ");
+  gsl_test_root_bisection(gsl_test_root_hairy_1, 0.1, 2.0, 1.0, &num_passed,
                           &num_failed); 
   printf("  sqrt(abs(x)) * sgn(x) [-1/3, 1] ... ");
   gsl_test_root_bisection(gsl_test_root_hairy_2, -1.0/3.0, 1.0, 0.0,
@@ -80,6 +81,31 @@ main(void)
   printf("  x exp(-x) [-1/3, 2] ... ");
   gsl_test_root_bisection(gsl_test_root_hairy_4, -1.0/3.0, 2.0, 0.0,
                           &num_passed, &num_failed);
+  /* test false position */
+  printf("Testing `gsl_root_falsepos': \n");
+  printf("  sin(x) [3, 4] ... ");
+  gsl_test_root_falsepos(sin, 3.0, 4.0, M_PI, &num_passed, &num_failed); 
+  printf("  sin(x) [-4, -3] ... ");
+  gsl_test_root_falsepos(sin, -4.0, -3.0, -M_PI, &num_passed, &num_failed); 
+  printf("  sin(x) [-1/3, 1] ... ");
+  gsl_test_root_falsepos(sin, -1.0/3.0, 1.0, 0.0, &num_passed, &num_failed); 
+  printf("  cos(x) [0, 3] ... ");
+  gsl_test_root_falsepos(cos, 0.0, 3.0, M_PI/2.0, &num_passed, &num_failed); 
+  printf("  cos(x) [-3, 0] ... ");
+  gsl_test_root_falsepos(cos, -3.0, 0.0, -M_PI/2.0, &num_passed,
+                         &num_failed); 
+  printf("  x^{20} - 1 [0.1, 2] ... ");
+  gsl_test_root_falsepos(gsl_test_root_hairy_1, 0.1, 2.0, 1.0, &num_passed,
+                         &num_failed); 
+  printf("  sqrt(abs(x)) * sgn(x) [-1/3, 1] ... ");
+  gsl_test_root_falsepos(gsl_test_root_hairy_2, -1.0/3.0, 1.0, 0.0,
+                         &num_passed, &num_failed);
+  printf("  x^2 - 1e-8 [0, 1] ... ");
+  gsl_test_root_falsepos(gsl_test_root_hairy_3, 0.0, 1.0, sqrt(1e-8),
+                         &num_passed, &num_failed);
+  printf("  x exp(-x) [-1/3, 2] ... ");
+  gsl_test_root_falsepos(gsl_test_root_hairy_4, -1.0/3.0, 2.0, 0.0,
+                         &num_passed, &num_failed);
 
   /* now summarize the results */
   printf("--\nRoot finding testing complete.\n");
@@ -152,9 +178,9 @@ gsl_test_root_macros(int * num_passed, int * num_failed)
   }
 }
 
-/* Find the root of the function pointed to by f, using the interval
-   [lower_bound, upper_bound]. Check if f succeeded and that it was accurate
-   enough. */
+/* Using gsl_root_bisection, find the root of the function pointed to by f,
+   using the interval [lower_bound, upper_bound]. Check if f succeeded and
+   that it was accurate enough. */
 void
 gsl_test_root_bisection(double (* f)(double), double lower_bound,
                         double upper_bound, double cor_root, int * num_passed,
@@ -165,10 +191,41 @@ gsl_test_root_bisection(double (* f)(double), double lower_bound,
   
   err = gsl_root_bisection(&root, f, &lower_bound, &upper_bound,
                            TEST_REL_EPSILON, TEST_ABS_EPSILON,
-                           TEST_MAX_ITERATIONS);
+                           TEST_MAX_ITERATIONS, TEST_MAX_DELTAY);
   /* if there was an error */
   if (err != GSL_SUCCESS) {
-    printf("failed (#%d, %s, %s:%d)\n", gsl_errno, g_reason, g_file, g_line);
+    printf("failed (error %d, %s)\n", gsl_errno, g_reason);
+    (void)(*num_failed)++;
+  }
+  /* if it wasn't accurate enough */
+  else if (!_WITHIN_TOL(root, cor_root, TEST_REL_EPSILON, TEST_ABS_EPSILON)) {
+    printf("failed (inaccurate)\n");
+    (void)(*num_failed)++;
+  }
+  /* if the test passed */
+  else {
+    printf("ok\n");
+    (void)(*num_passed)++;
+  }
+}
+
+/* Using gsl_root_falsepos, find the root of the function pointed to by f,
+   using the interval [lower_bound, upper_bound]. Check if f succeeded and
+   that it was accurate enough. */
+void
+gsl_test_root_falsepos(double (* f)(double), double lower_bound,
+                        double upper_bound, double cor_root, int * num_passed,
+                        int * num_failed)
+{
+  int err;
+  double root;
+  
+  err = gsl_root_falsepos(&root, f, &lower_bound, &upper_bound,
+                          TEST_REL_EPSILON, TEST_ABS_EPSILON,
+                          TEST_MAX_ITERATIONS, TEST_MAX_DELTAY);
+  /* if there was an error */
+  if (err != GSL_SUCCESS) {
+    printf("failed (error %d, %s)\n", gsl_errno, g_reason);
     (void)(*num_failed)++;
   }
   /* if it wasn't accurate enough */

@@ -19,4 +19,4 @@ test_DEPENDENCIES = libroots.a
 
 test_SOURCES = test.c test.h
 
-libroots_a_SOURCES = bisection.c
+libroots_a_SOURCES = utility.c bisection.c falsepos.c
