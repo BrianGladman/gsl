@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "gsl_ran.h"
+#include "gsl_randist.h"
 
 int
 main(int argc, char **argv)
