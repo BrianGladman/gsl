@@ -27,6 +27,7 @@
 #include <gsl/gsl_complex_math.h>
 #include <gsl/gsl_permute_vector.h>
 #include <gsl/gsl_blas.h>
+#include <gsl/gsl_complex_math.h>
 
 #include "gsl_linalg.h"
 
@@ -268,4 +269,66 @@ gsl_linalg_complex_LU_invert (const gsl_matrix_complex * LU, const gsl_permutati
     }
 
   return status;
+}
+
+gsl_complex
+gsl_linalg_complex_LU_det (gsl_matrix_complex * LU, int signum)
+{
+  size_t i, n = LU->size1;
+
+  gsl_complex det = gsl_complex_rect((double) signum, 0.0);
+
+  for (i = 0; i < n; i++)
+    {
+      gsl_complex zi = gsl_matrix_complex_get (LU, i, i);
+      det = gsl_complex_mul (det, zi);
+    }
+
+  return det;
+}
+
+
+double
+gsl_linalg_complex_LU_lndet (gsl_matrix_complex * LU)
+{
+  size_t i, n = LU->size1;
+
+  double lndet = 0.0;
+
+  for (i = 0; i < n; i++)
+    {
+      gsl_complex z = gsl_matrix_complex_get (LU, i, i);
+      lndet += log (gsl_complex_abs (z));
+    }
+
+  return lndet;
+}
+
+
+gsl_complex
+gsl_linalg_complex_LU_sgndet (gsl_matrix_complex * LU, int signum)
+{
+  size_t i, n = LU->size1;
+
+  gsl_complex phase = gsl_complex_rect((double) signum, 0.0);
+
+  for (i = 0; i < n; i++)
+    {
+      gsl_complex z = gsl_matrix_complex_get (LU, i, i);
+      
+      double r = gsl_complex_abs(z);
+
+      if (r == 0)
+	{
+	  phase = gsl_complex_rect(0.0, 0.0);
+	  break;
+	}
+      else
+        {
+          z = gsl_complex_div_real(z, r);
+          phase = gsl_complex_mul(phase, z);
+        }
+    }
+
+  return phase;
 }

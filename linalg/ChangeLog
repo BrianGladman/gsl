@@ -1,3 +1,7 @@
+Mon Sep 10 22:35:24 2001  Brian Gough  <bjg@network-theory.co.uk>
+
+	* test.c (test_LUc_solve): added a test for complex LU
+
 Tue Sep  4 17:22:58 2001  Brian Gough  <bjg@network-theory.co.uk>
 
 	* luc.c: added LU decomposition for complex matrices

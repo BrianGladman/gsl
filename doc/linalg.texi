@@ -60,6 +60,7 @@ matrices this decomposition can be used to convert the linear system
 @math{U x = y}), which can be solved by forward and back-substitution.
 
 @deftypefun int gsl_linalg_LU_decomp (gsl_matrix * @var{A}, gsl_permutation * @var{p}, int *@var{signum})
+@deftypefunx int gsl_linalg_complex_LU_decomp (gsl_matrix_complex * @var{A}, gsl_permutation * @var{p}, int *@var{signum})
 This function factorizes the square matrix @var{A} into the @math{LU}
 decomposition @math{PA = LU}.  On output the diagonal and upper
 triangular part of the input matrix @var{A} contain the matrix
@@ -81,12 +82,14 @@ Algorithm 3.4.1).
 
 @cindex linear systems, solution of
 @deftypefun int gsl_linalg_LU_solve (const gsl_matrix * @var{LU}, const gsl_permutation * @var{p}, const gsl_vector * @var{b}, gsl_vector * @var{x})
+@deftypefunx int gsl_linalg_complex_LU_solve (const gsl_matrix_complex * @var{LU}, const gsl_permutation * @var{p}, const gsl_vector_complex * @var{b}, gsl_vector_complex * @var{x})
 This function solves the system @math{A x = b} using the @math{LU}
 decomposition of @math{A} into (@var{LU}, @var{p}) given by
-@code{gsl_linalg_LU_decomp}.
+@code{gsl_linalg_LU_decomp} or @code{gsl_linalg_complex_LU_decomp}.
 @end deftypefun
 
 @deftypefun int gsl_linalg_LU_svx (const gsl_matrix * @var{LU}, const gsl_permutation * @var{p}, gsl_vector * @var{x})
+@deftypefunx int gsl_linalg_complex_LU_svx (const gsl_matrix_complex * @var{LU}, const gsl_permutation * @var{p}, gsl_vector_complex * @var{x})
 This function solves the system @math{A x = b} in-place using the
 @math{LU} decomposition of @math{A} into (@var{LU},@var{p}). On input
 @var{x} should contain the right-hand side @math{b}, which is replaced
@@ -97,6 +100,7 @@ by the solution on output.
 @cindex iterative refinement of solutions in linear systems
 @cindex linear systems, refinement of solutions
 @deftypefun int gsl_linalg_LU_refine (const gsl_matrix * @var{A}, const gsl_matrix * @var{LU}, const gsl_permutation * @var{p}, const gsl_vector * @var{b}, gsl_vector * @var{x}, gsl_vector * @var{residual})
+@deftypefunx int gsl_linalg_complex_LU_refine (const gsl_matrix_complex * @var{A}, const gsl_matrix_complex * @var{LU}, const gsl_permutation * @var{p}, const gsl_vector_complex * @var{b}, gsl_vector_complex * @var{x}, gsl_vector_complex * @var{residual})
 This function applies an iterative improvement to @var{x}, the solution
 of @math{A x = b}, using the @math{LU} decomposition of @math{A} into
 (@var{LU},@var{p}). The initial residual @math{r = A x - b} is also
@@ -106,6 +110,7 @@ computed and stored in @var{residual}.
 @cindex inverse of a matrix, by LU decomposition
 @cindex matrix inverse
 @deftypefun int gsl_linalg_LU_invert (const gsl_matrix * @var{LU}, const gsl_permutation * @var{p}, gsl_matrix * @var{inverse})
+@deftypefunx int gsl_complex_linalg_LU_invert (const gsl_matrix_complex * @var{LU}, const gsl_permutation * @var{p}, gsl_matrix_complex * @var{inverse})
 This function computes the inverse of a matrix @math{A} from its
 @math{LU} decomposition (@var{LU},@var{p}), storing the result in the
 matrix @var{inverse}. The inverse is computed by solving the system
@@ -115,6 +120,7 @@ matrix @var{inverse}. The inverse is computed by solving the system
 @cindex determinant of a matrix, by LU decomposition
 @cindex matrix determinant
 @deftypefun double gsl_linalg_LU_det (gsl_matrix * @var{LU}, int @var{signum})
+@deftypefunx gsl_complex gsl_linalg_complex_LU_det (gsl_matrix_complex * @var{LU}, int @var{signum})
 This function computes the determinant of a matrix @math{A} from its
 @math{LU} decomposition, @var{LU}. The determinant is computed as the
 product of the diagonal elements of @math{U} and the sign of the row
@@ -123,6 +129,7 @@ permutation @var{signum}.
 
 @cindex logarithm of the determinant of a matrix
 @deftypefun double gsl_linalg_LU_lndet (gsl_matrix * @var{LU})
+@deftypefunx double gsl_linalg_complex_LU_lndet (gsl_matrix_complex * @var{LU})
 This function computes the logarithm of the absolute value of the
 determinant of a matrix @math{A}, @math{\ln|det(A)|}, from its @math{LU}
 decomposition, @var{LU}.  This function may be useful if the direct
@@ -131,8 +138,10 @@ computation of the determinant would overflow or underflow.
 
 @cindex sign of the determinant of a matrix
 @deftypefun int gsl_linalg_LU_sgndet (gsl_matrix * @var{LU}, int @var{signum})
-This function computes the sign of the determinant of a matrix @math{A},
-@math{sign(det(A))}, from its @math{LU} decomposition, @var{LU}.
+@deftypefun gsl_complex gsl_linalg_complex_LU_sgndet (gsl_matrix_complex * @var{LU}, int @var{signum})
+This function computes the sign or phase factor of the determinant of a
+matrix @math{A}, @math{det(A)/|det(A)|}, from its @math{LU} decomposition,
+@var{LU}.
 @end deftypefun
 
 @node QR Decomposition

@@ -27,6 +27,7 @@
 #include <gsl/gsl_ieee_utils.h>
 #include <gsl/gsl_permute_vector.h>
 #include <gsl/gsl_blas.h>
+#include <gsl/gsl_complex_math.h>
 #include "gsl_linalg.h"
 
 int check (double x, double actual, double eps);
@@ -39,6 +40,8 @@ int test_matmult(void);
 int test_matmult_mod(void);
 int test_LU_solve_dim(const gsl_matrix * m, const double * actual, double eps);
 int test_LU_solve(void);
+int test_LUc_solve_dim(const gsl_matrix_complex * m, const double * actual, double eps);
+int test_LUc_solve(void);
 int test_QR_solve_dim(const gsl_matrix * m, const double * actual, double eps);
 int test_QR_solve(void);
 int test_QR_lssolve_dim(const gsl_matrix * m, const double * actual, double eps);
@@ -146,6 +149,19 @@ create_moler_matrix(size_t size)
   return m;
 }
 
+gsl_matrix_complex *
+create_complex_matrix(size_t size)
+{
+  size_t i, j;
+  gsl_matrix_complex * m = gsl_matrix_complex_alloc(size, size);
+  for(i=0; i<size; i++) {
+    for(j=0; j<size; j++) {
+      gsl_complex z = gsl_complex_rect(1.0/(i+j+1.0), 1/(i*i+j*j+0.5));
+      gsl_matrix_complex_set(m, i, j, z);
+    }
+  }
+  return m;
+}
 
 gsl_matrix *
 create_row_matrix(size_t size1, size_t size2)
@@ -176,6 +192,8 @@ gsl_matrix * row3;
 gsl_matrix * row5;
 gsl_matrix * row12;
 
+gsl_matrix_complex * c7;
+
 double m53_lssolution[] = {52.5992295702070, -337.7263113752073, 
                            351.8823436427604};
 double hilb2_solution[] = {-8.0, 18.0} ;
@@ -186,6 +204,13 @@ double hilb12_solution[] = {-1728.0, 245388.0, -8528520.0,
                             -14202796608.0, 27336497760.0, -33921201600.0,
                             26189163000.0, -11437874448.0, 2157916488.0 };
 
+double c7_solution[] = { 2.40717272023734e+01, -9.84612797621247e+00,
+                         -2.69338853034031e+02, 8.75455232472528e+01,
+                         2.96661356736296e+03, -1.02624473923993e+03,
+                         -1.82073812124749e+04, 5.67384473042410e+03,
+                         5.57693879019068e+04, -1.61540963210502e+04,
+                         -7.88941207561151e+04, 1.95053812987858e+04,
+                         3.95548551241728e+04, -7.76593696255317e+03 };
 
 gsl_matrix * vander2;
 gsl_matrix * vander3;
@@ -446,6 +471,75 @@ int test_LU_solve(void)
 
   return s;
 }
+
+
+int
+test_LUc_solve_dim(const gsl_matrix_complex * m, const double * actual, double eps)
+{
+  int s = 0;
+  int signum;
+  size_t i, dim = m->size1;
+
+  gsl_permutation * perm = gsl_permutation_alloc(dim);
+  gsl_vector_complex * rhs = gsl_vector_complex_alloc(dim);
+  gsl_matrix_complex * lu  = gsl_matrix_complex_alloc(dim,dim);
+  gsl_vector_complex * x = gsl_vector_complex_alloc(dim);
+  gsl_vector_complex * residual = gsl_vector_complex_alloc(dim);
+  gsl_matrix_complex_memcpy(lu,m);
+  for(i=0; i<dim; i++) 
+    {
+      gsl_complex z = gsl_complex_rect (2.0*i+1.0, 2.0*i+2.0);
+      gsl_vector_complex_set(rhs, i, z);
+    }
+  s += gsl_linalg_complex_LU_decomp(lu, perm, &signum);
+  s += gsl_linalg_complex_LU_solve(lu, perm, rhs, x);
+
+  for(i=0; i<dim; i++) {
+    gsl_complex z = gsl_vector_complex_get(x, i);
+    int foo_r = check(GSL_REAL(z),actual[2*i],eps);
+    int foo_i = check(GSL_IMAG(z),actual[2*i+1],eps);
+    if(foo_r || foo_i) {
+      printf("%3d[%d]: %22.18g   %22.18g\n", dim, i, GSL_REAL(z), actual[2*i]);
+      printf("%3d[%d]: %22.18g   %22.18g\n", dim, i, GSL_IMAG(z), actual[2*i+1]);
+    }
+    s += foo_r + foo_i;
+  }
+
+  s += gsl_linalg_complex_LU_refine(m, lu, perm, rhs, x, residual);
+
+  for(i=0; i<dim; i++) {
+    gsl_complex z = gsl_vector_complex_get(x, i);
+    int foo_r = check(GSL_REAL(z),actual[2*i],eps);
+    int foo_i = check(GSL_IMAG(z),actual[2*i+1],eps);
+    if(foo_r || foo_i) {
+      printf("%3d[%d]: %22.18g   %22.18g (improved)\n", dim, i, GSL_REAL(z), actual[2*i]);
+      printf("%3d[%d]: %22.18g   %22.18g (improved)\n", dim, i, GSL_IMAG(z), actual[2*i+1]);
+    }
+    s += foo_r + foo_i;
+  }
+
+  gsl_vector_complex_free(residual);
+  gsl_vector_complex_free(x);
+  gsl_matrix_complex_free(lu);
+  gsl_vector_complex_free(rhs);
+  gsl_permutation_free(perm);
+
+  return s;
+}
+
+
+int test_LUc_solve(void)
+{
+  int f;
+  int s = 0;
+
+  f = test_LUc_solve_dim(c7, c7_solution, 1024.0 * 1024.0 * GSL_DBL_EPSILON);
+  gsl_test(f, "  complex_LU_solve complex(7)");
+  s += f;
+
+  return s;
+}
+
 
 int
 test_QR_solve_dim(const gsl_matrix * m, const double * actual, double eps)
@@ -1629,6 +1723,8 @@ int main(void)
 
   moler10 = create_moler_matrix(10);
 
+  c7 = create_complex_matrix(7);
+
   row3 = create_row_matrix(3,3);
   row5 = create_row_matrix(5,5);
   row12 = create_row_matrix(12,12);
@@ -1640,6 +1736,7 @@ int main(void)
 #endif
   gsl_test(test_bidiag_decomp(),  "Bidiagonal Decomposition");
   gsl_test(test_LU_solve(),       "LU Decomposition and Solve");
+  gsl_test(test_LUc_solve(),      "Complex LU Decomposition and Solve");
   gsl_test(test_QR_decomp(),      "QR Decomposition");
   gsl_test(test_QR_solve(),       "QR Solve");
   gsl_test(test_QR_lssolve(),     "QR LS Solve");
@@ -1662,6 +1759,8 @@ int main(void)
   gsl_matrix_free(vander3);
   gsl_matrix_free(vander4);
   gsl_matrix_free(vander12);
+
+  gsl_matrix_complex_free(c7);
 
   exit (gsl_test_summary());
 }
