@@ -26,4 +26,4 @@ dnl Checks for typedefs, structures, and compiler characteristics.
 
 dnl Checks for library functions.
 
-AC_OUTPUT(statistics/Makefile doc/Makefile random/Makefile Makefile)
+AC_OUTPUT(statistics/Makefile roots/Makefile doc/Makefile random/Makefile Makefile)
