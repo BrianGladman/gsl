@@ -7,13 +7,13 @@ noinst_LIBRARIES = 			\
 
 include_HEADERS = 		\
 	gsl_blas.h		\
-	gsl_blas_native.h	\
 	gsl_blas_types.h	\
 	gsl_blas_raw.h		\
 	gsl_blas_raw_L1.h	\
 	gsl_blas_raw_cm.h
 
-# noinst_HEADERS = 
+noinst_HEADERS = blas_raw_native_L23_source.c
+
 
 INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../err -I$(srcdir)/../vector -I$(srcdir)/../matrix
 

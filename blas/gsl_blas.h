@@ -35,9 +35,7 @@ int gsl_blas_ddot (const gsl_vector * X,
 		   double * result
 		   );
 
-/*
- * Functions having prefixes Z and C only
- */
+
 int  gsl_blas_cdotu (const gsl_vector_complex_float * X,
                      const gsl_vector_complex_float * Y,
                      gsl_complex_float * dotu);
@@ -54,9 +52,7 @@ int  gsl_blas_zdotc (const gsl_vector_complex * X,
                      const gsl_vector_complex * Y,
                      gsl_complex * dotc);
 
-/*
- * Functions having prefixes S D SC DZ
- */
+
 float  gsl_blas_snrm2  (const gsl_vector_float * X);
 float  gsl_blas_sasum  (const gsl_vector_float * X);
 double gsl_blas_dnrm2  (const gsl_vector * X);
@@ -66,18 +62,13 @@ float  gsl_blas_scasum (const gsl_vector_complex_float * X);
 double gsl_blas_dznrm2 (const gsl_vector_complex * X);
 double gsl_blas_dzasum (const gsl_vector_complex * X);
 
-/*
- * Functions having standard 4 prefixes (S D C Z)
- */
+
 CBLAS_INDEX gsl_blas_isamax (const gsl_vector_float * X);
 CBLAS_INDEX gsl_blas_idamax (const gsl_vector * X);
 CBLAS_INDEX gsl_blas_icamax (const gsl_vector_complex_float * X);
 CBLAS_INDEX gsl_blas_izamax (const gsl_vector_complex * X);
 
 
-/*
- * Routines with standard 4 prefixes (s, d, c, z)
- */
 int  gsl_blas_sswap (gsl_vector_float * X,
                      gsl_vector_float * Y);
 
@@ -118,9 +109,7 @@ int  gsl_blas_zaxpy (const gsl_complex * alpha,
                      const gsl_vector_complex * X,
                      gsl_vector_complex * Y);
 
-/*
- * Routines with S and D prefix only
- */
+
 int  gsl_blas_srotg (float a[], float b[], float c[], float s[]);
 
 int  gsl_blas_srotmg (float d1[], float d2[], float b1[], float b2, float P[]);
@@ -146,9 +135,7 @@ int  gsl_blas_drotm (gsl_vector * X,
                      gsl_vector * Y,
                      const double P[]);
 
-/*
- * Routines with S D C Z CS and ZD prefixes
- */
+
 void gsl_blas_sscal  (float  alpha, gsl_vector_float * X);
 void gsl_blas_dscal  (double alpha, gsl_vector * X);
 void gsl_blas_cscal  (const gsl_complex_float * alpha, gsl_vector_complex_float * X);
