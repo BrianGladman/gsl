@@ -80,8 +80,6 @@ gsl_permutation_valid (gsl_permutation * p)
   return GSL_SUCCESS;
 }
 
-
-
 int
 gsl_permutation_reverse (gsl_permutation * p)
 {
@@ -89,15 +87,11 @@ gsl_permutation_reverse (gsl_permutation * p)
 
   size_t i ;
   
-  for (i = 0; i < size; i++) 
+  for (i = 0; i < (size / 2); i++) 
     {
-      size_t tmp ;
       size_t j = size - i - 1;
 
-      if (i == j)
-        continue ;
-      
-      tmp = p->data[i] ;
+      size_t tmp = p->data[i] ;
       p->data[i] = p->data[j] ;
       p->data[j] = tmp ;
     }
