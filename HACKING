@@ -51,6 +51,9 @@ checkout and to use a nice cvs diff option, like
 There is a script fixpatch.pl in gsl/scripts which will make the
 resulting output suitable for piping to 'patch'.
 
+Please test your patch before sending it, by applying it to a clean
+set of files and running 'make'.
+
 If your patch contains lines longer than 80 characters please check
 that your mailer does not break these lines.  If in doubt, send the
 patch as a mime attachment or uuencoded file.
