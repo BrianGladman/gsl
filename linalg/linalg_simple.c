@@ -9,6 +9,7 @@
  * BLAS operations, specialized data representations,
  * or other optimizations.
  */
+#include <config.h>
 #include <stdlib.h>
 #include <gsl_math.h>
 #include <gsl_vector.h>

@@ -4,6 +4,10 @@
 #ifndef GSL_LINALG_H
 #define GSL_LINALG_H
 
+#include <gsl_vector.h>
+#include <gsl_matrix.h>
+
+
 /* Singular Value Decomposition
  *
  * exceptions: 
@@ -24,7 +28,7 @@ gsl_la_decomp_LU_impl(gsl_matrix * matrix,
 		      int * signum);
 
 
-/* Linear Solve Using LU Deocmposition
+/* Linear Solve Using LU Decomposition
  *
  * exceptions: 
  */
