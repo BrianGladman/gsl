@@ -25,16 +25,18 @@ gsl_rng_env_setup (void)
       
       check(&gsl_rng_default, gsl_rng_bad_rand, p) ;
       check(&gsl_rng_default, gsl_rng_bad_randu, p) ;
-      check(&gsl_rng_default, gsl_rng_vax, p) ;
+      check(&gsl_rng_default, gsl_rng_cmrg, p) ;
+      check(&gsl_rng_default, gsl_rng_minstd, p) ;
+      check(&gsl_rng_default, gsl_rng_mrg, p) ;
+      check(&gsl_rng_default, gsl_rng_mt19937, p) ;
+      check(&gsl_rng_default, gsl_rng_rand, p) ;
       check(&gsl_rng_default, gsl_rng_ranlux, p) ;
       check(&gsl_rng_default, gsl_rng_ranlux389, p) ;
-      check(&gsl_rng_default, gsl_rng_cmrg, p) ;
-      check(&gsl_rng_default, gsl_rng_mrg, p) ;
-      check(&gsl_rng_default, gsl_rng_minstd, p) ;
-      check(&gsl_rng_default, gsl_rng_rand, p) ;
       check(&gsl_rng_default, gsl_rng_taus, p) ;
+      check(&gsl_rng_default, gsl_rng_tt800, p) ;
       check(&gsl_rng_default, gsl_rng_uni, p) ;
       check(&gsl_rng_default, gsl_rng_uni32, p) ;
+      check(&gsl_rng_default, gsl_rng_vax, p) ;
       check(&gsl_rng_default, gsl_rng_zuf, p) ;
       
       if (gsl_rng_default == 0) 
