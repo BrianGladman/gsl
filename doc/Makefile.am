@@ -5,8 +5,13 @@ noinst_TEXINFOS = gsl-design.texi
 gsl_ref_TEXINFOS = err.texi fft.texi random.texi roots.texi
 
 noinst_DATA = siman-test.eps siman-energy.eps 12-cities.eps \
-	initial-route.eps final-route.eps
+	initial-route.eps final-route.eps \
+	fft-complex-radix2-f.eps fft-complex-radix2-t.eps \
+	fft-complex-radix2.eps fft-real-mixedradix.eps
+
 EXTRA_DIST = siman-test.eps siman-energy.eps 12-cities.eps \
 	initial-route.eps final-route.eps \
 	fftalgorithms.tex fftalgorithms.bib \
-	algorithm.sty algorithmic.sty calc.sty
+	algorithm.sty algorithmic.sty calc.sty \
+	fft-complex-radix2-f.eps fft-complex-radix2-t.eps \
+	fft-complex-radix2.eps fft-real-mixedradix.eps
