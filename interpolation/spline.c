@@ -18,6 +18,7 @@
  */
 
 #include <config.h>
+#include <string.h>
 #include <gsl/gsl_errno.h>
 #include "gsl_interp.h"
 #include "gsl_spline.h"
