@@ -1,4 +1,4 @@
-/* differentiation/test.c
+/* diff/test.c
  * 
  * Copyright (C) 2000 David Morrison
  * 
@@ -26,231 +26,166 @@
 #include <gsl/gsl_test.h>
 
 double
-f1(double x, void *params)
+f1 (double x, void *params)
 {
-  return exp(x);
+  return exp (x);
 }
 
 double
-df1(double x, void *params)
+df1 (double x, void *params)
 {
-  return exp(x);
+  return exp (x);
 }
 
 double
-f2(double x, void *params)
+f2 (double x, void *params)
 {
-  if (x >= 0.0) {
-    return x * sqrt(x);
-  } else {
-    return 0.0;
-  }
+  if (x >= 0.0)
+    {
+      return x * sqrt (x);
+    }
+  else
+    {
+      return 0.0;
+    }
 }
 
 double
-df2(double x, void *params)
+df2 (double x, void *params)
 {
-  if (x >= 0.0) {
-    return 1.5 * sqrt(x);
-  } else {
-    return 0.0;
-  }
+  if (x >= 0.0)
+    {
+      return 1.5 * sqrt (x);
+    }
+  else
+    {
+      return 0.0;
+    }
 }
 
 double
-f3(double x, void *params)
+f3 (double x, void *params)
 {
-  if (x != 0.0) {
-    return sin(1/x);
-  } else {
-    return 0.0;
-  }
+  if (x != 0.0)
+    {
+      return sin (1 / x);
+    }
+  else
+    {
+      return 0.0;
+    }
 }
 
 double
-df3(double x, void *params)
+df3 (double x, void *params)
 {
-  if (x != 0.0) {
-    return -cos(1/x)/(x*x);
-  } else {
-    return 0.0;
-  }
+  if (x != 0.0)
+    {
+      return -cos (1 / x) / (x * x);
+    }
+  else
+    {
+      return 0.0;
+    }
 }
 
 double
-f4(double x, void *params)
+f4 (double x, void *params)
 {
-  return exp(-x*x);
+  return exp (-x * x);
 }
 
 double
-df4(double x, void *params)
+df4 (double x, void *params)
 {
-  return -2.0 * x * exp(-x*x);
+  return -2.0 * x * exp (-x * x);
 }
 
 double
-f5(double x, void *params)
+f5 (double x, void *params)
 {
-  return x*x;
+  return x * x;
 }
 
 double
-df5(double x, void *params)
+df5 (double x, void *params)
 {
   return 2.0 * x;
 }
 
 double
-f6(double x, void *params)
+f6 (double x, void *params)
 {
-  return 1.0/x;
+  return 1.0 / x;
 }
 
 double
-df6(double x, void *params)
+df6 (double x, void *params)
 {
   return -1.0 / (x * x);
 }
 
-double
-vf1(const gsl_vector *x, void *params)
-{
-  return gsl_vector_get(x, 0) +
-    pow(gsl_vector_get(x, 1), 2.0) +
-    pow(gsl_vector_get(x, 2), 3.0);
-}   
+typedef int (diff_fn) (const gsl_function * f, double x, double * res, double *abserr);
 
-void
-gvf1(const gsl_vector *x, gsl_vector *g)
+int
+test (diff_fn * diff, gsl_function * f, gsl_function * df, double x, 
+      const char * desc)
 {
-   gsl_vector_set(g, 0, 1.0);
-   gsl_vector_set(g, 1, 2.0 * gsl_vector_get(x,1));
-   gsl_vector_set(g, 2, 3.0 * gsl_vector_get(x,2) *
-		  gsl_vector_get(x,2)); 
-}   
-
-double
-vf2(const gsl_vector *x, void *params)
-{
-  return 1.0 * exp(gsl_vector_get(x,0)) +
-    2.0 * exp(gsl_vector_get(x,1)) +
-    3.0 * exp(gsl_vector_get(x,2));
-}   
-
-void
-gvf2(const gsl_vector *x, gsl_vector *g)
-{
-   gsl_vector_set(g, 0, 1.0 * exp(gsl_vector_get(x,0)));
-   gsl_vector_set(g, 1, 2.0 * exp(gsl_vector_get(x,1)));
-   gsl_vector_set(g, 2, 3.0 * exp(gsl_vector_get(x,2)));
-}   
+  double result, abserr;
+  double expected = GSL_FN_EVAL (df, x);
+  (*diff) (f, x, &result, &abserr);
+  gsl_test_abs (result, expected, abserr, desc);
+  gsl_test (fabs(result-expected) >  abserr, "%s, valid error estimate", desc);
+}
 
 int
 main ()
-{ 
-  int i;
-  double x, exp_result;
-  double result, abserr;
-  gsl_vector *vx, *vg;
-  gsl_multimin_function vf = {0,0,0};
-  gsl_function f = {0,0}, df = {0,0}; 
+{
+  gsl_function F1, DF1, F2, DF2, F3, DF3, F4, DF4, F5, DF5, F6, DF6;
 
-  f.function = &f1;
-  df.function = &df1;
-  x = 1.0;
-  exp_result = GSL_FN_EVAL(&df, x);
-  gsl_diff_central(&f, x, &result, &abserr);
-  printf("result = %12.8G\n", result);
-  printf("abserr = %12.8G\n", abserr);
-  gsl_test_rel(result, exp_result, abserr,
-	       "central difference method");
+  F1.function = &f1;
+  DF1.function = &df1;
 
-  f.function = &f3;
-  df.function = &df3;
-  x = 0.45;
-  exp_result = GSL_FN_EVAL(&df, x);
-  gsl_diff_central(&f, x, &result, &abserr);
-  printf("result = %12.8G\n", result);
-  printf("abserr = %12.8G\n", abserr);
-  gsl_test_rel(result, exp_result, abserr,
-	       "central difference method");
+  F2.function = &f2;
+  DF2.function = &df2;
 
-  f.function = &f4;
-  df.function = &df4;
-  x = 0.5;
-  exp_result = GSL_FN_EVAL(&df, x);
-  gsl_diff_central(&f, x, &result, &abserr);
-  printf("result = %12.8G\n", result);
-  printf("abserr = %12.8G\n", abserr);
-  gsl_test_rel(result, exp_result, abserr,
-	       "central difference method");
+  F3.function = &f3;
+  DF3.function = &df3;
 
-  f.function = &f2;
-  df.function = &df2;
-  x = 0.1;
-  exp_result = GSL_FN_EVAL(&df, x);
-  gsl_diff_forward(&f, x, &result, &abserr);
-  printf("result = %12.8G\n", result);
-  printf("abserr = %12.8G\n", abserr);
-  gsl_test_rel(result, exp_result, abserr,
-	       "forward difference method");
+  F4.function = &f4;
+  DF4.function = &df4;
 
-  f.function = &f5;
-  df.function = &df5;
-  x = 0.0;
-  exp_result = GSL_FN_EVAL(&df, x);
-  gsl_diff_forward(&f, x, &result, &abserr);
-  printf("result = %12.8G\n", result);
-  printf("abserr = %12.8G\n", abserr);
-  gsl_test_rel(result, exp_result, abserr,
-	       "forward difference method");
+  F5.function = &f5;
+  DF5.function = &df5;
 
-  f.function = &f6;
-  df.function = &df6;
-  x = 10.0;
-  exp_result = GSL_FN_EVAL(&df, x);
-  gsl_diff_backward(&f, x, &result, &abserr);
-  printf("result = %12.8G\n", result);
-  printf("abserr = %12.8G\n", abserr);
-  gsl_test_rel(result, exp_result, abserr,
-	       "forward backward method");
-
-  vf.f = &vf1;
-  vf.n = 3;
-  vx = gsl_vector_calloc(3);
-  for (i = 0; i < 3; i++) 
-    {
-      gsl_vector_set(vx, i, 1.0);
-    }
-  vg = gsl_vector_calloc(3);
-  gsl_diff_gradient(&vf, vx, vg);
-  printf("calc g = (%12.8G,%12.8G,%12.8G)\n", 
-	 gsl_vector_get(vg, 0),
-	 gsl_vector_get(vg, 1),
-	 gsl_vector_get(vg, 2));
-  gvf1(vx, vg);
-  printf("true g = (%12.8G,%12.8G,%12.8G)\n", 
-	 gsl_vector_get(vg, 0),
-	 gsl_vector_get(vg, 1),
-	 gsl_vector_get(vg, 2));
+  F6.function = &f6;
+  DF6.function = &df6;
   
-  vf.f = &vf2;
-  vf.n = 3;
-  for (i = 0; i < 3; i++) 
-    {
-      gsl_vector_set(vx, i, i);
-    }
-  gsl_diff_gradient(&vf, vx, vg);
-  printf("calc g = (%12.8G,%12.8G,%12.8G)\n", 
-	 gsl_vector_get(vg, 0),
-	 gsl_vector_get(vg, 1),
-	 gsl_vector_get(vg, 2));
-  gvf2(vx, vg);
-  printf("true g = (%12.8G,%12.8G,%12.8G)\n", 
-	 gsl_vector_get(vg, 0),
-	 gsl_vector_get(vg, 1),
-	 gsl_vector_get(vg, 2));
-  
-  return gsl_test_summary();
+  test (&gsl_diff_central, &F1, &DF1, 1.0, "exp(x), x=1, central diff");
+  test (&gsl_diff_forward, &F1, &DF1, 1.0, "exp(x), x=1, forward diff");
+  test (&gsl_diff_backward, &F1, &DF1, 1.0, "exp(x), x=1, backward diff");
+
+  test (&gsl_diff_central, &F2, &DF2, 0.1, "x^(3/2), x=0.1, central diff");
+  test (&gsl_diff_forward, &F2, &DF2, 0.1, "x^(3/2), x=0.1, forward diff");
+  test (&gsl_diff_backward, &F2, &DF2, 0.1, "x^(3/2), x=0.1, backward diff");
+
+  test (&gsl_diff_central, &F3, &DF3, 0.45, "sin(1/x), x=0.45, central diff");
+  test (&gsl_diff_forward, &F3, &DF3, 0.45, "sin(1/x), x=0.45, forward diff");
+  test (&gsl_diff_backward, &F3, &DF3, 0.45, "sin(1/x), x=0.45, backward diff");
+
+  test (&gsl_diff_central, &F4, &DF4, 0.5, "exp(-x^2), x=0.5, central diff");
+  test (&gsl_diff_forward, &F4, &DF4, 0.5, "exp(-x^2), x=0.5, forward diff");
+  test (&gsl_diff_backward, &F4, &DF4, 0.5, "exp(-x^2), x=0.5, backward diff");
+
+  test (&gsl_diff_central, &F5, &DF5, 0.0, "x^2, x=0, central diff");
+  test (&gsl_diff_forward, &F5, &DF5, 0.0, "x^2, x=0, forward diff");
+  test (&gsl_diff_backward, &F5, &DF5, 0.0, "x^2, x=0, backward diff");
+
+  test (&gsl_diff_central, &F6, &DF6, 10.0, "1/x, x=10, central diff");
+  test (&gsl_diff_forward, &F6, &DF6, 10.0, "1/x, x=10, forward diff");
+  test (&gsl_diff_backward, &F6, &DF6, 10.0, "1/x, x=10, backward diff");
+
+  return gsl_test_summary ();
 }
+
+

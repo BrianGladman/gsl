@@ -187,6 +187,7 @@ not recommended for general use.
 * Eigensystems::                
 * Special Functions::           
 * Roots of Polynomials::        
+* Numerical Differentiation::   
 * Interpolation::               
 * Series Acceleration::         
 * Random Number Generation::    
@@ -269,11 +270,15 @@ will be announced for general use.
 @chapter Special Functions
 @include specfunc.texi
 
-@node  Roots of Polynomials, Interpolation, Special Functions, Top
+@node  Roots of Polynomials, Numerical Differentiation, Special Functions, Top
 @chapter Roots of Polynomials
 @include poly.texi
 
-@node   Interpolation, Series Acceleration, Roots of Polynomials, Top
+@node  Numerical Differentiation, Interpolation, Roots of Polynomials, Top
+@chapter Numerical Differentiation
+@include diff.texi
+
+@node   Interpolation, Series Acceleration, Numerical Differentiation, Top
 @chapter Interpolation
 @include interp.texi
 

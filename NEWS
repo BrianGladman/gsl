@@ -1,5 +1,7 @@
 * What is new in gsl-0.7+:
 
+** There is a new module for estimating numerical derivatives of functions
+
 ** There is a new module for handling data with ntuples
 
 ** The histogram lookup functions are now optimized for the case of

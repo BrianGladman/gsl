@@ -1,4 +1,4 @@
-/* integration/gsl_diff.h
+/* diff/gsl_diff.h
  * 
  * Copyright (C) 2000 David Morrison
  * 
@@ -20,7 +20,6 @@
 #ifndef __GSL_DIFF_H__
 #define __GSL_DIFF_H__
 #include <gsl/gsl_math.h>
-#include <gsl/gsl_multimin.h>
 
 #undef __BEGIN_DECLS
 #undef __END_DECLS
@@ -37,10 +36,6 @@ __BEGIN_DECLS
 int gsl_diff_central (const gsl_function *f,
 		      double x,
 		      double *result, double *abserr);
-
-int gsl_diff_gradient(const gsl_multimin_function *f,
-		      gsl_vector *x,
-		      gsl_vector *g);
 
 int gsl_diff_backward (const gsl_function *f,
 		       double x,
