@@ -110,7 +110,7 @@ test_f (const gsl_min_fminimizer_type * T,
 		m, correct_minimum);
     }
 
-  gsl_min_fminimizer_free (s;)
+  gsl_min_fminimizer_free (s);
 
 }
 
