@@ -63,7 +63,7 @@ the vector.
 @end deftypefun
 
 @deftypefun {gsl_vector *} gsl_vector_calloc (size_t @var{n})
-This function allocates memory for a vector and initialize all the
+This function allocates memory for a vector and initializes all the
 elements of the vector to zero.
 @end deftypefun
 
@@ -339,7 +339,7 @@ the matrix.
 @end deftypefun
 
 @deftypefun {gsl_matrix *} gsl_matrix_calloc (size_t @var{n1}, size_t @var{n2})
-These functions allocate memory for a matrix and initialize all the
+These functions allocate memory for a matrix and initializes all the
 elements of the matrix to zero.
 @end deftypefun
 
