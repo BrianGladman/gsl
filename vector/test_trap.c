@@ -8,7 +8,8 @@
 
 #define N 10000
 
-void my_error_handler (const char *reason, const char *file, int line);
+void my_error_handler (const char *reason, const char *file, 
+		       int line, int err);
 
 int status = 0 ;
 
@@ -17,6 +18,9 @@ int main (void)
   gsl_vector * v;
   size_t j = 0;
   double x; 
+  
+  gsl_check_range = 1 ;
+  gsl_warnings_off = 1 ;
 
   gsl_set_error_handler (&my_error_handler);
 
@@ -43,8 +47,8 @@ int main (void)
 }
 
 void
-my_error_handler (const char *reason, const char *file, int line)
+my_error_handler (const char *reason, const char *file, int line, int err)
 {
-  if (0) printf ("(caught [%s:%d: %s])\n", file, line, reason) ;
+  if (0) printf ("(caught [%s:%d: %s (%d)])\n", file, line, reason, err) ;
   status = 1 ;
 }

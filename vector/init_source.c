@@ -10,7 +10,7 @@ FUNCTION(gsl_vector,alloc) (const size_t n)
   if (n == 0)
     {
       GSL_ERROR_RETURN ("vector length n must be positive integer", 
-			GSL_EDOM, 0);
+			GSL_EDOM, 0) ;
     }
 
   v = (TYPE(gsl_vector) *) malloc(sizeof(TYPE(gsl_vector))) ;
