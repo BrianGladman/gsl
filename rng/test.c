@@ -8,8 +8,11 @@ void rng_test (const gsl_rng_type * T, unsigned long int seed, unsigned int n,
 void generic_rng_test (const gsl_rng_type * T);
 void rng_state_test (const gsl_rng_type * T);
 void rng_parallel_state_test (const gsl_rng_type * T);
+int rng_max_test (gsl_rng * r, unsigned long int * kmax, unsigned long int ran_max) ;
+int rng_sum_test (gsl_rng * r, double * sigma) ;
 
 #define N 10000
+#define N2 1000000
 
 int
 main (void)
@@ -214,67 +217,95 @@ rng_parallel_state_test (const gsl_rng_type * T)
 void
 generic_rng_test (const gsl_rng_type * T)
 {
-  long int n = 1000000;
-
   gsl_rng * r = gsl_rng_alloc (T);
-  const unsigned long int ran_max = gsl_rng_max (r);
   const char *name = gsl_rng_name (r);
+  unsigned long int kmax = 0 ;
+  double sigma = 0 ;
+  const unsigned long int ran_max = gsl_rng_max (r);
+  
+ int status = rng_max_test(r, &kmax, ran_max) ;
 
-  {
-    unsigned long int actual_uncovered;
-    double expected_uncovered;
-    int status;
-    unsigned long int kmax = 0;
-    int i;
+  gsl_test (status,
+	    "%s, observed vs theoretical maximum (%lu vs %lu)",
+	    name, kmax, ran_max);
 
-    for (i = 0; i < n; ++i)
-      {
-	unsigned long int k = gsl_rng_get (r);
-	if (k > kmax)
-	  kmax = k;
-      }
+  status = rng_sum_test(r, &sigma) ;
 
-    actual_uncovered = ran_max - kmax;
-    expected_uncovered = (double) ran_max / (double) n;
+  gsl_test (status,
+	    "%s, sum test within acceptable sigma (observed %.2g sigma)",
+	    name, sigma);
 
-    /* The uni generator never actually reaches its ran_max in practice,
-       due to the way the initial state is generated from the seed.
-       Thus it only hits 32766 instead of 32767. 
+  gsl_rng_set(r, 1) ; /* set seed to 1 */
+  status = rng_max_test(r, &kmax, ran_max) ;
 
-       We'll let it pass by checking if the observed max is just 1 below
-       the theoretical max.  */
+  gsl_rng_set(r, 1) ; /* set seed to 1 */
+  status |= rng_sum_test(r, &sigma) ;
 
-    status = (kmax > ran_max)
-      || (actual_uncovered > 4 * expected_uncovered  && actual_uncovered > 1);
+  gsl_rng_set(r, 12345) ; /* set seed to 1 */
+  status |= rng_max_test(r, &kmax, ran_max) ;
 
-    gsl_test (status,
-	      "%s, observed vs theoretical maximum (%lu vs %lu)",
-	      name, kmax, ran_max, n);
-  };
+  gsl_rng_set(r, 12345) ; /* set seed to 1 */
+  status |= rng_sum_test(r, &sigma) ;
 
-  {
-    double sum = 0, sigma;
-    int i, status;
-
-    for (i = 0; i < n; ++i)
-      {
-	double x = gsl_rng_get_uni (r) - 0.5;
-	sum += x ;
-      }
-	
-    sum /= n;
-
-    /* expect the average to have a variance of 1/(12 n) */
-
-    sigma = sum * sqrt (12.0 * n);
-    status = (fabs (sigma) > 3);	/* more than 3 sigma is an error */
-
-    gsl_test (status,
-	      "%s, sum test within acceptable sigma (observed %g sigma)",
-	      name, sigma);
-
-  }
+  gsl_test (status, "%s, maximum and sum tests for non-default seeds", name);
 
   gsl_rng_free (r) ;
 }
+
+int
+rng_max_test (gsl_rng * r, unsigned long int * kmax, unsigned long int ran_max)
+{
+  unsigned long int actual_uncovered;
+  double expected_uncovered;
+  int status;
+  unsigned long int max = 0;
+  int i;
+
+  for (i = 0; i < N2; ++i)
+    {
+      unsigned long int k = gsl_rng_get (r);
+      if (k > max)
+	max = k;
+    }
+  
+  *kmax = max ;
+
+  actual_uncovered = ran_max - max;
+  expected_uncovered = (double) ran_max / (double) N2;
+  
+  /* The uni generator never actually reaches its ran_max in practice,
+     due to the way the initial state is generated from the seed.
+     Thus it only hits 32766 instead of 32767. 
+     
+     We'll let it pass by checking if the observed max is just 1 below
+     the theoretical max.  */
+  
+  status = (max > ran_max)
+    || (actual_uncovered > 4 * expected_uncovered  && actual_uncovered > 1);
+
+  return status ;
+}
+
+int
+rng_sum_test (gsl_rng * r, double * sigma)
+{
+  double sum = 0;
+  int i, status;
+  
+  for (i = 0; i < N2; ++i)
+    {
+      double x = gsl_rng_get_uni (r) - 0.5;
+      sum += x ;
+    }
+  
+  sum /= N2;
+  
+  /* expect the average to have a variance of 1/(12 n) */
+  
+  *sigma = sum * sqrt (12.0 * N2);
+  status = (fabs (*sigma) > 3);	/* more than 3 sigma is an error */
+  
+  return status ;
+}
+
 
