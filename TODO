@@ -1,31 +1,17 @@
-Consult the individual TODO files in each directory for more specific
-projects.
+
+Consult the TODO files in each directory for specific requirements.
+
+* Document ode-initval, dht
 
 * Annotate the header files with GAMS classifications
 
 * Document the use of autogen.sh in the HACKING file
 
-* Add Lattice Method and Quasi-random Method to monte carlo integration
-
-* Run tests where matrix tda != size2, note that tda is a physical
-dimension and size2 is the number of columns in the matrix. This will
-probably find a lot of bugs in the matrix logic.
-
-* Fix up ieee-utils/fp-m68klinux.c for correct behavior and actually
-test it.
-
 * More tests. We should (at least) have a test for every error
 condition.  Use GCOV to improve coverage.
 
-* Sine and Cosine Transforms from FFTPACK. A simple multidimensional
-fft.
-
 * Add a "Related Projects" section to the web page in order to link to
 GSDV
-
-* Document Jacobi eigen function, in particular that it only works for
-symmetric matrices.
-
 
 Before Each Release
 ===================

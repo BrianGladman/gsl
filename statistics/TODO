@@ -1,10 +1,6 @@
 * Look at STARPAC ftp://ftp.ucar.edu/starpac/ and Statlib
 http://lib.stat.cmu.edu/ for more ideas
 
-* Clean up the documentation to reduce the proliferation of prototypes
-for all the different types (float double etc). e.g. Just document the
-double versions and explain how to call the others by analogy.
-
 * Try using the Kahan summation formula to improve accuracy for the
 NIST tests (see Brian for details, below is a sketch of the algorithm).
 
@@ -18,11 +14,8 @@ NIST tests (see Brian for details, below is a sketch of the algorithm).
          sum = t
       ENDDO
 
-* Allow weighted values, mean(x) = \sum_i w_i x_i / \sum w_i,
-mean_weight(x) = \sum w_i, etc
-
 * Prevent incorrect use of unsorted data for quartile calculations
-using a typedef for sorted data.
+using a typedef for sorted data (?)
 
 * Rejection of outliers
 
@@ -31,6 +24,8 @@ average), detrending, various econometric things. Integrated
 quantities (area under the curve). Interpolation of noisy data/fitting
 -- maybe add that to the existing interpolation stuff.What about
 missing data and gaps?
+
+   There is a new GNU package called gretl which does econometrics
 
 * Statistical tests (equal means, equal variance, etc).
 

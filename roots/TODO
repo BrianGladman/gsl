@@ -1,9 +1,3 @@
-* Surely this has been fixed now????
-
-    FIXME: there is a problem with BRENT. The interval sometimes skips off
-    the root.  Somewhere the best guess is being used as the interval
-    endpoint which is wrong.
-
 * Add an inline version of the iterate method for speed? Perhaps not,
 the time taken for each iteration surely dominated by the convergence
 test.

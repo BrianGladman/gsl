@@ -1,7 +1,7 @@
 * Clean up the tests.
 
-* IMPORTANT. Write tests which check both the inline and non-inline
-versions of get/set functions.
+* Run tests where matrix tda != size2, note that tda is a physical
+dimension and size2 is the number of columns in the matrix. This will
+probably find a lot of bugs in the matrix logic.
 
-* Need tests for all types, can probably paramterise with macros so
-that there is just one source file
+

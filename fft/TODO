@@ -1,0 +1,6 @@
+* Sine and Cosine Transforms from FFTPACK. 
+
+* A simple multidimensional fft.
+
+* Workspace should be split into separate static table and scratch
+space to avoid unnecessary recalculation of twiddle factors.

@@ -1,16 +1,18 @@
-* Add get_array type methods which can provide optimized versions
-of each function
-
 * Add all the new generators from Knuth's 3rd Edition 
 
 * Add SWNS generator Phys.Rev.E 50 (2) p. 1607-1615 (1994), Phys.Rev.E
 60 (6), p.7626-7628 (1999)
 
+* Add get_array type methods which can provide optimized versions of
+each function (?). We should offer the possibility of eliminating
+function call overhead -- there are various possible ways to implement
+it.
+
 * Add ISAAC generator (??)
 
 * Add (A)RC4 ? (and maybe MD5)
 
-* Check that RANLXS will work on machines with non-standard with of
+* Check that RANLXS will work on machines with non-standard width of
 float/dbl (original has checks for DBL_MANT_DIG ..)
 
 * mention more clearly why not all Cokus used (or recheck MT pages for
@@ -58,5 +60,3 @@ need to make MT be the fastest of the simulation quality generators if
 it is the default. DONE. It didn't improve the speed on other
 platforms, so I just used the tricks which also worked on the pentium
 (e.g. changing mag[x&1] to x&1 ? mag[1] : mag[0])
-
-x9. Send to M.Makumoto for review. DONE, no reply as of 4 Nov 1998 though.

@@ -178,7 +178,7 @@ push_stack(gsl_stack_t *s, size_t v)
 {
     if ((s->i) >= (s->N)) {
         fprintf(stderr,"Cannot push stack!\n");
-        abort();                /* fatal!! */
+        abort();                /* FIXME: fatal!! */
     }
     (s->v)[s->i] = v;
     s->i += 1;
@@ -188,7 +188,7 @@ static size_t pop_stack(gsl_stack_t *s)
 {
     if ((s->i) == 0) {
         fprintf(stderr,"Cannot pop stack!\n");
-        abort();
+        abort();               /* FIXME: fatal!! */
     }
     s->i -= 1;
     return ((s->v)[s->i]);

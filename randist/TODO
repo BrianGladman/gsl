@@ -3,12 +3,10 @@ using a rational function approximation for the rejection scaling
 parameter.
 
 * Do something about the possibility of the user providing invalid
-parameters (e.g. negative variance etc)
+parameters (e.g. negative variance etc). Not sure what to do though,
+since returning an error code is not possible. Maybe just return zero.
 
 * Add the triangular distribution.
-
-* fix error handling in discrete.c to use GSL_ERROR(), do the same
-for memory management
 
 * Look at Marsaglia & Tsang, "The Monte Python Method for generating
 random variables", ACM TOMS Vol 24, No 3, p341

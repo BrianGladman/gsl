@@ -17,72 +17,130 @@ to compress it, because the resulting file is huge.
 Making all in blas
     gcc -DHAVE_CONFIG_H -I. -I../../blas -I.. -I../.. -g -O2 -Wall -Wp,-MD,.deps/blas_raw_native.pp -c ../../blas/blas_raw_native.c -o blas_raw_native.o
 *** ../../blas/source_iamax_r.h: In function `gsl_blas_raw_isamax':
-*** ../../blas/source_iamax_r.h:9: warning: `result' might be used uninitialized in this function
+*** ../../blas/source_iamax_r.h:28: warning: `result' might be used uninitialized in this function
 *** ../../blas/source_iamax_r.h: In function `gsl_blas_raw_idamax':
-*** ../../blas/source_iamax_r.h:9: warning: `result' might be used uninitialized in this function
+*** ../../blas/source_iamax_r.h:28: warning: `result' might be used uninitialized in this function
 *** ../../blas/source_iamax_c.h: In function `gsl_blas_raw_icamax':
-*** ../../blas/source_iamax_c.h:8: warning: `result' might be used uninitialized in this function
+*** ../../blas/source_iamax_c.h:27: warning: `result' might be used uninitialized in this function
 *** ../../blas/source_iamax_c.h: In function `gsl_blas_raw_izamax':
-*** ../../blas/source_iamax_c.h:8: warning: `result' might be used uninitialized in this function
+*** ../../blas/source_iamax_c.h:27: warning: `result' might be used uninitialized in this function
     echo timestamp > blas_raw_native.lo
 --------
 Making all in linalg
     gcc -DHAVE_CONFIG_H -I. -I../../linalg -I.. -I.. -g -O2 -Wall -Wp,-MD,.deps/qr.pp -c ../../linalg/qr.c -o qr.o
 *** ../../linalg/qr.c: In function `gsl_linalg_QR_QTvec':
-*** ../../linalg/qr.c:255: warning: passing arg 1 of `gsl_matrix_column' discards `const' from pointer target type
+*** ../../linalg/qr.c:274: warning: passing arg 1 of `gsl_matrix_column' discards `const' from pointer target type
 *** ../../linalg/qr.c: In function `gsl_linalg_QR_unpack':
-*** ../../linalg/qr.c:299: warning: passing arg 1 of `gsl_matrix_column' discards `const' from pointer target type
+*** ../../linalg/qr.c:318: warning: passing arg 1 of `gsl_matrix_column' discards `const' from pointer target type
     echo timestamp > qr.lo
 --------
 Making all in specfunc
     gcc -DHAVE_CONFIG_H -I. -I../../specfunc -I.. -I.. -g -O2 -Wall -Wp,-MD,.deps/bessel_Jnu.pp -c ../../specfunc/bessel_Jnu.c -o bessel_Jnu.o
 *** ../../specfunc/bessel_Jnu.c: In function `gsl_sf_bessel_Jnu_impl':
-*** ../../specfunc/bessel_Jnu.c:104: warning: `Ynp1' might be used uninitialized in this function
+*** ../../specfunc/bessel_Jnu.c:123: warning: `Ynp1' might be used uninitialized in this function
     echo timestamp > bessel_Jnu.lo
 --------
     gcc -DHAVE_CONFIG_H -I. -I../../specfunc -I.. -I.. -g -O2 -Wall -Wp,-MD,.deps/bessel_i.pp -c ../../specfunc/bessel_i.c -o bessel_i.o
 *** ../../specfunc/bessel_i.c: In function `gsl_sf_bessel_il_scaled_impl':
-*** ../../specfunc/bessel_i.c:231: warning: `iellm1' might be used uninitialized in this function
+*** ../../specfunc/bessel_i.c:250: warning: `iellm1' might be used uninitialized in this function
     echo timestamp > bessel_i.lo
---------
-    gcc -DHAVE_CONFIG_H -I. -I../../specfunc -I.. -I.. -g -O2 -Wall -Wp,-MD,.deps/dilog.pp -c ../../specfunc/dilog.c -o dilog.o
-*** ../../specfunc/dilog.c: In function `gsl_sf_complex_dilog_impl':
-*** ../../specfunc/dilog.c:401: warning: unused variable `dummy'
-    echo timestamp > dilog.lo
 --------
     gcc -DHAVE_CONFIG_H -I. -I../../specfunc -I.. -I.. -g -O2 -Wall -Wp,-MD,.deps/gegenbauer.pp -c ../../specfunc/gegenbauer.c -o gegenbauer.o
 *** ../../specfunc/gegenbauer.c: In function `gsl_sf_gegenpoly_n_impl':
-*** ../../specfunc/gegenbauer.c:113: warning: `gk' might be used uninitialized in this function
+*** ../../specfunc/gegenbauer.c:132: warning: `gk' might be used uninitialized in this function
     echo timestamp > gegenbauer.lo
 --------
     gcc -DHAVE_CONFIG_H -I. -I../../specfunc -I.. -I.. -g -O2 -Wall -Wp,-MD,.deps/legendre_poly.pp -c ../../specfunc/legendre_poly.c -o legendre_poly.o
 *** ../../specfunc/legendre_poly.c: In function `gsl_sf_legendre_Plm_impl':
-*** ../../specfunc/legendre_poly.c:253: warning: `p_ell' might be used uninitialized in this function
+*** ../../specfunc/legendre_poly.c:272: warning: `p_ell' might be used uninitialized in this function
 *** ../../specfunc/legendre_poly.c: In function `gsl_sf_legendre_sphPlm_impl':
-*** ../../specfunc/legendre_poly.c:418: warning: `y_ell' might be used uninitialized in this function
+*** ../../specfunc/legendre_poly.c:437: warning: `y_ell' might be used uninitialized in this function
     echo timestamp > legendre_poly.lo
 --------
 Making all in monte
     gcc -DHAVE_CONFIG_H -I. -I../../monte -I.. -I.. -I../.. -g -O2 -Wall -Wp,-MD,.deps/miser.pp -c ../../monte/miser.c -o miser.o
 *** ../../monte/miser.c: In function `gsl_monte_miser_validate':
-*** ../../monte/miser.c:328: warning: long unsigned int format, size_t arg (arg 4)
+*** ../../monte/miser.c:347: warning: long unsigned int format, size_t arg (arg 4)
     echo timestamp > miser.lo
 --------
     gcc -DHAVE_CONFIG_H -I. -I../../monte -I.. -I.. -I../.. -g -O2 -Wall -Wp,-MD,.deps/plain.pp -c ../../monte/plain.c -o plain.o
 *** ../../monte/plain.c: In function `gsl_monte_plain_validate':
-*** ../../monte/plain.c:101: warning: long unsigned int format, size_t arg (arg 4)
+*** ../../monte/plain.c:120: warning: long unsigned int format, size_t arg (arg 4)
     echo timestamp > plain.lo
+--------
+Making all in doc
+      && makeinfo `echo ../../doc/gsl-ref.texi | sed 's,.*/,,'`
+*** ./vectors.texi:1106: `Vector and Matrix References and Further Reading' has no Up field.
+*** ./vectors.texi:1106: warning: unreferenced node `Vector and Matrix References and Further Reading'.
+*** makeinfo: Removing output file `/home/bjg/gsl/doc/gsl-ref.info' due to errors; use --force to preserve.
+*** make[2]: *** [gsl-ref.info] Error 2
+*** make[2]: Target `all' not remade because of errors.
+    make[2]: Leaving directory `/home/bjg/gsl/=gsl.build/doc'
+--------
+    make[2]: Leaving directory `/home/bjg/gsl/=gsl.build'
+*** make[1]: *** [all-recursive] Error 1
+    make[1]: Leaving directory `/home/bjg/gsl/=gsl.build'
+*** make: *** [all-recursive-am] Error 2
+*** make: Target `all' not remade because of errors.
+--------
+Making check in vector
+    PASS: gsl_vector_float_mul multiplies correctly
+*** FAIL: gsl_vector_float_div divides correctly
+    PASS: gsl_vector_long_double_alloc returns valid pointer
+--------
+    PASS: gsl_vector_complex_long_double_get returns zero imag at upper bound
+*** FAIL: test
+    PASS: gsl_vector_alloc returns valid pointer
+--------
+    PASS: gsl_vector_float_mul multiplies correctly
+*** FAIL: gsl_vector_float_div divides correctly
+    PASS: gsl_vector_long_double_alloc returns valid pointer
+--------
+    PASS: gsl_vector_complex_long_double_get returns zero imag at upper bound
+*** FAIL: test_static
+    ===================
+--------
+    ===================
+*** make[2]: *** [check-TESTS] Error 1
+    make[2]: Leaving directory `/home/bjg/gsl/=gsl.build/vector'
+*** make[1]: *** [check-am] Error 2
+*** make[1]: Target `check' not remade because of errors.
+    make[1]: Leaving directory `/home/bjg/gsl/=gsl.build/vector'
+--------
+Making check in matrix
+    PASS: gsl_matrix_float_mul_elements multiplies correctly
+*** FAIL: gsl_matrix_float_div_elements divides correctly
+    PASS: gsl_matrix_long_double_alloc returns valid pointer
+--------
+    PASS: gsl_matrix_complex_long_double_get, zero imag for 2nd index at u.b.
+*** FAIL: test
+    PASS: gsl_matrix_alloc returns valid pointer
+--------
+    PASS: gsl_matrix_float_mul_elements multiplies correctly
+*** FAIL: gsl_matrix_float_div_elements divides correctly
+    PASS: gsl_matrix_long_double_alloc returns valid pointer
+--------
+    PASS: gsl_matrix_complex_long_double_get, zero imag for 2nd index at u.b.
+*** FAIL: test_static
+    ===================
+--------
+    ===================
+*** make[2]: *** [check-TESTS] Error 1
+    make[2]: Leaving directory `/home/bjg/gsl/=gsl.build/matrix'
+*** make[1]: *** [check-am] Error 2
+*** make[1]: Target `check' not remade because of errors.
+    make[1]: Leaving directory `/home/bjg/gsl/=gsl.build/matrix'
 --------
 Making check in blas
     gcc -DHAVE_CONFIG_H -I. -I../../blas -I.. -I../..    -g -O2 -Wall -c ../../blas/test_blas_raw.c
 *** ../../blas/test_blas_raw.c: In function `test_tbsv':
-*** ../../blas/test_blas_raw.c:1383: warning: unused variable `tmp_d'
+*** ../../blas/test_blas_raw.c:1402: warning: unused variable `tmp_d'
     gcc -DHAVE_CONFIG_H -I. -I../../blas -I.. -I../..    -g -O2 -Wall -c ../../blas/test_cases.c
 --------
 Making check in specfunc
     PASS:   gsl_sf_conicalP_1_impl(200.0, 10.0, &r)
 *** FAIL:   gsl_sf_conicalP_1_impl(1000.0, 100.0, &r)
-      ../../specfunc/test_legendre.c 196
+      ../../specfunc/test_legendre.c 215
 --------
     PASS:   gsl_sf_legendre_Ql_impl(1000, 1.1, &r)
 *** FAIL: Legendre Functions
@@ -102,39 +160,47 @@ Making check in specfunc
 Making check in monte
     gcc -DHAVE_CONFIG_H -I. -I../../monte -I.. -I.. -I../..    -g -O2 -Wall -c ../../monte/vegas_test.c
 *** ../../monte/vegas_test.c: In function `fconst':
-*** ../../monte/vegas_test.c:198: warning: unused variable `i'
-*** ../../monte/vegas_test.c:197: warning: unused variable `prod'
-    /bin/sh ../libtool --mode=link gcc  -g -O2 -Wall  -o vegas_test  vegas_test.o libgslmonte.la ../rng/libgslrng.la ../vector/libgslvector.la 	../block/libgslblock.la	../err/libgslerr.la ../err/libgsltest.la ../utils/libutils.la -lm 
+*** ../../monte/vegas_test.c:217: warning: unused variable `i'
+*** ../../monte/vegas_test.c:216: warning: unused variable `prod'
+    /bin/sh ../libtool --mode=link gcc  -g -O2 -Wall  -o vegas_test  vegas_test.o libgslmonte.la ../rng/libgslrng.la ../vector/libgslvector.la 	../block/libgslblock.la	../err/libgslerr.la ../test/libgsltest.la ../utils/libutils.la -lm 
 --------
     gcc -DHAVE_CONFIG_H -I. -I../../monte -I.. -I.. -I../..    -g -O2 -Wall -c ../../monte/miser_test.c
 *** ../../monte/miser_test.c: In function `main':
-*** ../../monte/miser_test.c:43: warning: unused variable `chisq'
+*** ../../monte/miser_test.c:62: warning: unused variable `chisq'
 *** ../../monte/miser_test.c: In function `fconst':
-*** ../../monte/miser_test.c:189: warning: unused variable `i'
-*** ../../monte/miser_test.c:188: warning: unused variable `prod'
-    /bin/sh ../libtool --mode=link gcc  -g -O2 -Wall  -o miser_test  miser_test.o libgslmonte.la ../rng/libgslrng.la ../vector/libgslvector.la 		../block/libgslblock.la ../err/libgslerr.la ../err/libgsltest.la ../utils/libutils.la -lm 
+*** ../../monte/miser_test.c:208: warning: unused variable `i'
+*** ../../monte/miser_test.c:207: warning: unused variable `prod'
+    /bin/sh ../libtool --mode=link gcc  -g -O2 -Wall  -o miser_test  miser_test.o libgslmonte.la ../rng/libgslrng.la ../vector/libgslvector.la 		../block/libgslblock.la ../err/libgslerr.la ../test/libgsltest.la ../utils/libutils.la -lm 
 --------
     gcc -DHAVE_CONFIG_H -I. -I../../monte -I.. -I.. -I../..    -g -O2 -Wall -c ../../monte/plain_test.c
 *** ../../monte/plain_test.c: In function `main':
-*** ../../monte/plain_test.c:43: warning: unused variable `chisq'
+*** ../../monte/plain_test.c:62: warning: unused variable `chisq'
 *** ../../monte/plain_test.c: In function `fconst':
-*** ../../monte/plain_test.c:187: warning: unused variable `i'
-*** ../../monte/plain_test.c:186: warning: unused variable `prod'
-    /bin/sh ../libtool --mode=link gcc  -g -O2 -Wall  -o plain_test  plain_test.o libgslmonte.la ../rng/libgslrng.la ../vector/libgslvector.la 		../block/libgslblock.la ../err/libgslerr.la ../err/libgsltest.la ../utils/libutils.la -lm 
+*** ../../monte/plain_test.c:206: warning: unused variable `i'
+*** ../../monte/plain_test.c:205: warning: unused variable `prod'
+    /bin/sh ../libtool --mode=link gcc  -g -O2 -Wall  -o plain_test  plain_test.o libgslmonte.la ../rng/libgslrng.la ../vector/libgslvector.la 		../block/libgslblock.la ../err/libgslerr.la ../test/libgsltest.la ../utils/libutils.la -lm 
 --------
 Making check in min
     gcc -DHAVE_CONFIG_H -I. -I../../min -I.. -I..    -g -O2 -Wall -c ../../min/test.c
 *** ../../min/test.c: In function `test_bracket':
-*** ../../min/test.c:182: warning: control reaches end of non-void function
+*** ../../min/test.c:201: warning: control reaches end of non-void function
     gcc -DHAVE_CONFIG_H -I. -I../../min -I.. -I..    -g -O2 -Wall -c ../../min/test_funcs.c
 --------
 Making check in multimin
     gcc -DHAVE_CONFIG_H -I. -I../../multimin -I.. -I..    -g -O2 -Wall -c ../../multimin/test.c
 *** ../../multimin/test.c: In function `test_fdf':
-*** ../../multimin/test.c:122: warning: control reaches end of non-void function
+*** ../../multimin/test.c:141: warning: control reaches end of non-void function
     gcc -DHAVE_CONFIG_H -I. -I../../multimin -I.. -I..    -g -O2 -Wall -c ../../multimin/test_funcs.c
 --------
 Making check in doc
+      && makeinfo `echo ../../doc/gsl-ref.texi | sed 's,.*/,,'`
+*** ./vectors.texi:1176: `Vector and Matrix References and Further Reading' has no Up field.
+*** ./vectors.texi:1176: warning: unreferenced node `Vector and Matrix References and Further Reading'.
+*** makeinfo: Removing output file `/home/bjg/gsl/doc/gsl-ref.info' due to errors; use --force to preserve.
+*** make[1]: *** [gsl-ref.info] Error 2
+*** make[1]: Target `check' not remade because of errors.
+    make[1]: Leaving directory `/home/bjg/gsl/=gsl.build/doc'
+--------
     make[1]: Leaving directory `/home/bjg/gsl/=gsl.build'
 *** make: *** [check-recursive] Error 1
 *** make: Target `check' not remade because of errors.

@@ -1,20 +1,3 @@
-* check that size / limit is not exceeded 
-   -DONE the checking is missing for the qawo workspace stuff. 
-   -DONE we never check if limit < workspace->limit, which is obviously needed 
- 
-* check that routines work correctly for (b, a) and (a, b)
-   -DONE
-
-* DONE check the inner workings of the qawo workspace. I haven't verified
-it except by checking the overall result.
-
-* DONE what is this business with  
-
-  if (error_type > 2)
-      error_type--;
-
-   WELL, THAT'S JUST THE WAY IT IS. We could make it more consistent but
-   then it would be more confusing doing comparisons with the original
-   code so we'll just leave it for now.
-
-* DONE Take a look at the FIXMEs
+* Change qawf workspace so that it does not dynamically extend itself
+since this prevents it being used multithreaded.  Try to use static
+tables of precomputed constants and separate workspaces.
