@@ -1,5 +1,3 @@
-
-
 #include <stdio.h>
 
 int
@@ -10,6 +8,7 @@ int
 
   for (i = 0; i < n; i++)
     {
+      
 #if MULTIPLICITY == 1
       int status = fprintf (stream,
 			    format,

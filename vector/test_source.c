@@ -1,9 +1,11 @@
-int FUNCTION (test, func) (void);
+void FUNCTION (test, func) (void);
+void FUNCTION (test, text) (void);
+void FUNCTION (test, binary) (void);
 
-int
+void
   FUNCTION (test, func) (void)
 {
-  TYPE (gsl_vector) * v, *w;
+  TYPE (gsl_vector) * v;
   size_t i;
 
   v = FUNCTION (gsl_vector, alloc) (N);
@@ -57,6 +59,15 @@ int
 
     gsl_test (status, NAME (gsl_vector) "_calloc initializes array to zero");
   }
+}
+
+void
+  FUNCTION (test, text) (void)
+{
+  TYPE (gsl_vector) * v, *w;
+  size_t i;
+
+  v = FUNCTION (gsl_vector, alloc) (N);
 
   {
     FILE *f = fopen ("test.txt", "w");
@@ -89,7 +100,16 @@ int
 
     fclose (f);
   }
+}
 
+
+void
+  FUNCTION (test, binary) (void)
+{
+  TYPE (gsl_vector) * v = FUNCTION (gsl_vector, alloc) (N);
+  TYPE (gsl_vector) * w = FUNCTION (gsl_vector, alloc) (N);
+
+  size_t i;
 
   {
     FILE *f = fopen ("test.dat", "w");
@@ -120,6 +140,46 @@ int
 
     fclose (f);
   }
+ 
+}
 
-  return gsl_test_summary ();
+void FUNCTION (test, trap) (void);
+
+void
+  FUNCTION (test, trap) (void)
+{
+  TYPE (gsl_vector) * v = FUNCTION(gsl_vector,alloc) (N);
+
+  size_t j = 0;
+  double x;
+
+  err_status = 0;
+  FUNCTION(gsl_vector,set) (v, j - 1, 1.2);
+  gsl_test (!err_status, NAME(gsl_vector) "_set traps index below lower array bound");
+
+  err_status = 0;
+  FUNCTION(gsl_vector,set) (v, N + 1, 1.2);
+  gsl_test (!err_status, NAME(gsl_vector) "_set traps index above upper array bound");
+
+  err_status = 0;
+  FUNCTION(gsl_vector,set) (v, N, 1.2);
+  gsl_test (!err_status, NAME(gsl_vector) "_set traps index at upper array bound");
+
+  err_status = 0;
+  x = FUNCTION(gsl_vector,get) (v, j - 1);
+  gsl_test (!err_status, NAME(gsl_vector) "_get traps index below lower array bound");
+  gsl_test(x != 0,
+	   NAME(gsl_vector) "_get returns zero for index below lower array bound") ;
+
+  err_status = 0;
+  x = FUNCTION(gsl_vector,get) (v, N + 1);
+  gsl_test (!err_status, NAME(gsl_vector) "_get traps index above upper array bound");
+  gsl_test(x != 0,
+	   NAME(gsl_vector) "_get returns zero for index above upper array bound") ;
+
+  err_status = 0;
+  x = FUNCTION(gsl_vector,get) (v, N);
+  gsl_test (!err_status, NAME(gsl_vector) "_get traps index at upper array bound");
+  gsl_test(x != 0,
+	   NAME(gsl_vector) "_get returns zero for index at upper array bound") ;
 }

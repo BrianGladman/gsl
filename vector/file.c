@@ -1,7 +1,6 @@
 #include <config.h>
 #include <gsl_vector.h>
 
-
 #define BASE_GSL_COMPLEX_LONG
 #include "templates_on.h"
 #include "file_source.c"
