@@ -1188,6 +1188,80 @@ which offer the best performance are @code{taus}, @code{gfsr4} and
  379 k ints/sec,    292 k doubles/sec, ran2
 @end example
 
+@node Random Number Generator Examples
+@section Examples
+
+The following program demonstrates the use of a random number generator
+to produce uniform random numbers in range [0.0, 1.0),
+
+@example
+#include <stdio.h>
+#include <gsl/gsl_rng.h>
+
+int
+main (void)
+@{
+  const gsl_rng_type * T;
+  gsl_rng * r;
+
+  int i, n = 10;
+
+  gsl_rng_env_setup();
+
+  T = gsl_rng_default;
+  r = gsl_rng_alloc (T);
+
+  for (i = 0; i < n; i++) 
+    @{
+      double u = gsl_rng_uniform (r);
+      printf("%.5f\n", u);
+    @}
+
+  gsl_rng_free (r);
+
+  return 0;
+@}
+@end example
+@noindent
+Here is the output of the program,
+
+@example
+$ ./a.out 
+0.66758
+0.36908
+0.72483
+0.68776
+0.57365
+0.81078
+0.27108
+0.83777
+0.13736
+0.95745
+@end example
+@noindent
+The numbers depend on the seed used by the generator.  The default seed
+can be changed with the @code{GSL_RNG_SEED} environment variable to
+produce a different stream of numbers.  The generator itself can be
+changed using the environment variable @code{GSL_RNG_TYPE}.  Here is the
+output of the program using a seed value of 123 and the
+mutiple-recursive generator @code{mrg},
+
+@example
+$ GSL_RNG_SEED=123 GSL_RNG_TYPE=mrg ./a.out 
+GSL_RNG_TYPE=mrg
+GSL_RNG_SEED=123
+0.33050
+0.86631
+0.32982
+0.67620
+0.53391
+0.06457
+0.16847
+0.70229
+0.04371
+0.86374
+@end example
+
 @node Random Number References and Further Reading
 @section References and Further Reading
 @noindent
