@@ -4,34 +4,12 @@
 #include <config.h>
 #include <stdlib.h>
 #include <gsl_errno.h>
+#include "odeiv_util.h"
 #include "gsl_odeiv.h"
 
 
-/* rk8pd state object */
-typedef struct {
-  double * work;  /* workspace  */
-}
-gsl_odeiv_step_rk8pd_state;
-
-
-/* rk8pd stepper object */
-/*
-typedef struct {
-  int  (*_step)  (void * state, unsigned int dim, double t, double h, double y[], double yerr[], gsl_odeiv_system * dydt);
-  int  (*_reset) (void * state);
-  void (*_free)  (void * state);
-  void * _state;
-  unsigned int dimension;
-}
-gsl_odeiv_step_rk8pd;
-*/
-typedef gsl_odeiv_step gsl_odeiv_step_rk8pd;
-
-
 static gsl_odeiv_step * rk8pd_create(unsigned int dimension);
-static int  rk8pd_step(void * state, unsigned int dim, double t, double h, double y[], double yerr[], const gsl_odeiv_system * dydt);
-static int  rk8pd_reset(void *);
-static void rk8pd_free(void *);
+static int  rk8pd_step(void * state, void * work, unsigned int dim, double t, double h, double y[], double yerr[], const gsl_odeiv_system * dydt);
 
 
 const gsl_odeiv_step_factory gsl_odeiv_step_factory_rk8pd = 
@@ -45,41 +23,16 @@ static
 gsl_odeiv_step *
 rk8pd_create(unsigned int dimension)
 {
-  gsl_odeiv_step_rk8pd * rk8pd;
-
-  if(dimension == 0) return 0;
-
-  rk8pd = (gsl_odeiv_step_rk8pd *) malloc(sizeof(gsl_odeiv_step_rk8pd));
-  if(rk8pd_step != 0) {
-    rk8pd->dimension = dimension;
-    rk8pd->_step  = rk8pd_step;
-    rk8pd->_free  = rk8pd_free;
-    rk8pd->_reset = rk8pd_reset;
-    rk8pd->_state = (gsl_odeiv_step_rk8pd_state *) malloc(sizeof(gsl_odeiv_step_rk8pd_state));
-    if(rk8pd->_state != 0) {
-      gsl_odeiv_step_rk8pd_state * s = (gsl_odeiv_step_rk8pd_state *) rk8pd->_state;
-      s->work = (double *) malloc(14 * dimension * sizeof(double));
-      if(s->work == 0) {
-        free(rk8pd->_state);
-	free(rk8pd);
-	return 0;
-      }
-    }
-    else {
-      free(rk8pd);
-      return 0;
-    }
-  }
-  return (gsl_odeiv_step *) rk8pd;
+  gsl_odeiv_step * step = gsl_odeiv_step_new(dimension, 8, 0, 14 * dimension * sizeof(double));
+  step->_step = rk8pd_step;
+  return step;
 }
 
 
 static
 int
-rk8pd_step(void * state, unsigned int dim, double t, double h, double y[], double yerr[], const gsl_odeiv_system * dydt)
+rk8pd_step(void * state, void * work, unsigned int dim, double t, double h, double y[], double yerr[], const gsl_odeiv_system * dydt)
 {
-  gsl_odeiv_step_rk8pd_state * s = (gsl_odeiv_step_rk8pd_state * ) state;
-
   /* Prince-Dormand constants */
   static const double Abar[] = {
     14005451.0/335480064.0,
@@ -209,20 +162,21 @@ rk8pd_step(void * state, unsigned int dim, double t, double h, double y[], doubl
   int status;
 
   /* divide up the work space */
-  double * k1 = s->work;
-  double * k2 = s->work + dim;
-  double * k3 = s->work + 2*dim;
-  double * k4 = s->work + 3*dim;
-  double * k5 = s->work + 4*dim;
-  double * k6 = s->work + 5*dim;
-  double * k7 = s->work + 6*dim;
-  double * k8 = s->work + 7*dim;
-  double * k9 = s->work + 8*dim;
-  double * k10 = s->work + 9*dim;
-  double * k11 = s->work + 10*dim;
-  double * k12 = s->work + 11*dim;
-  double * k13 = s->work + 12*dim;
-  double * ytmp = s->work + 13*dim;
+  double * w  = (double *) work;
+  double * k1 = w;
+  double * k2 = w + dim;
+  double * k3 = w + 2*dim;
+  double * k4 = w + 3*dim;
+  double * k5 = w + 4*dim;
+  double * k6 = w + 5*dim;
+  double * k7 = w + 6*dim;
+  double * k8 = w + 7*dim;
+  double * k9 = w + 8*dim;
+  double * k10 = w + 9*dim;
+  double * k11 = w + 10*dim;
+  double * k12 = w + 11*dim;
+  double * k13 = w + 12*dim;
+  double * ytmp = w + 13*dim;
 
   /* k1 step */
   status  = ( GSL_ODEIV_FN_EVAL(dydt, t, y, k1) != 0 );
@@ -287,7 +241,6 @@ rk8pd_step(void * state, unsigned int dim, double t, double h, double y[], doubl
   /* k13 step */
   status += ( GSL_ODEIV_FN_EVAL(dydt, t + h, ytmp, k13) != 0 );
 
-
   /* final sum and error estimate */
   for(i=0;i<dim;i++) {
     const double ksum8 = Abar[0]*k1[i] + Abar[5]*k6[i] + Abar[6]*k7[i] + Abar[7]*k8[i] + Abar[8]*k9[i] + Abar[9]*k10[i] + Abar[10]*k11[i] + Abar[11]*k12[i] + Abar[12]*k13[i];
@@ -297,24 +250,4 @@ rk8pd_step(void * state, unsigned int dim, double t, double h, double y[], doubl
   }
 
   return ( status == 0 ? GSL_SUCCESS : GSL_EBADFUNC );
-}
-
-
-static
-int
-rk8pd_reset(void * state)
-{
-  /* gsl_odeiv_step_rk8pd_state * s = (gsl_odeiv_step_rk8pd_state *) state; */
-  /* nothing to do for state reset */
-  return GSL_SUCCESS;
-}
-
-
-static
-void
-rk8pd_free(void * state)
-{
-  gsl_odeiv_step_rk8pd_state * s = (gsl_odeiv_step_rk8pd_state *) state;
-  if(s->work != 0) free(s->work);
-  free(s);
 }

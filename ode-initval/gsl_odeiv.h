@@ -33,15 +33,18 @@ gsl_odeiv_system;
 
 /* General stepper object.
  *
- * Opaque object for stepping
- * an ODE system from t to t+h.
+ * Opaque object for stepping an ODE system from t to t+h.
+ * In general the object has some state which facilitates
+ * iterating the stepping operation.
  */
 typedef struct {
-  int  (*_step)  (void *, unsigned int dim, double t, double h, double y[], double yerr[], const gsl_odeiv_system * dydt);
-  int  (*_reset) (void *);
-  void (*_free)  (void *);
+  int  (*_step)  (void *_state, void * _work, unsigned int dim, double t, double h, double y[], double yerr[], const gsl_odeiv_system * dydt);
+  int  (*_reset) (void * _state);
+  void (*_free)  (void * _state, void * _work);
   void * _state;
+  void * _work;
   unsigned int dimension;
+  unsigned int order;
 }
 gsl_odeiv_step;
 

@@ -6,32 +6,12 @@
 #include <string.h>
 #include <gsl_math.h>
 #include <gsl_errno.h>
+#include "odeiv_util.h"
 #include "gsl_odeiv.h"
 
 
-/* gear1 state object */
-typedef struct {
-  double * work;   /* workspace  */
-}
-gsl_odeiv_step_gear1_state;
-
-
-/* gear1 stepper object */
-typedef struct {
-  int  (*_step)  (void * state, unsigned int dim, double t, double h, double y[], double yerr[], gsl_odeiv_system * dydt);
-  int  (*_reset) (void * state);
-  void (*_free)  (void * state);
-  void * _state;
-  unsigned int dimension;
-}
-gsl_odeiv_step_gear1;
-
-
 static gsl_odeiv_step * gear1_create(unsigned int dimension);
-static int  gear1_step(void * state, unsigned int dim, double t, double h, double y[], double yerr[], gsl_odeiv_system * dydt);
-static int  gear1_reset(void *);
-static void gear1_free(void *);
-
+static int  gear1_step(void *, void *, unsigned int dim, double t, double h, double y[], double yerr[], const gsl_odeiv_system * dydt);
 
 const gsl_odeiv_step_factory gsl_odeiv_step_factory_gear1 = 
 {
@@ -44,44 +24,20 @@ static
 gsl_odeiv_step *
 gear1_create(unsigned int dimension)
 {
-  gsl_odeiv_step_gear1 * gear1;
-
-  if(dimension == 0) return 0;
-
-  gear1 = (gsl_odeiv_step_gear1 *) malloc(sizeof(gsl_odeiv_step_gear1));
-  if(gear1_step != 0) {
-    gear1->dimension = dimension;
-    gear1->_step  = gear1_step;
-    gear1->_free  = gear1_free;
-    gear1->_reset = gear1_reset;
-    gear1->_state = (gsl_odeiv_step_gear1_state *) malloc(sizeof(gsl_odeiv_step_gear1_state));
-    if(gear1->_state != 0) {
-      gsl_odeiv_step_gear1_state * s = (gsl_odeiv_step_gear1_state *) gear1->_state;
-      s->work = (double *) malloc(2*dimension * sizeof(double));
-      if(s->work == 0) {
-        free(gear1->_state);
-	free(gear1);
-	return 0;
-      }
-    }
-    else {
-      free(gear1);
-      return 0;
-    }
-  }
-  return (gsl_odeiv_step *) gear1;
+  gsl_odeiv_step * step = gsl_odeiv_step_new(dimension, 1 /* FIXME: ?? */, 0, 2*dimension * sizeof(double));
+  step->_step = gear1_step;
+  return step;
 }
 
 
 static
 int
-gear1_step(void * state, unsigned int dim, double t, double h, double y[], double yerr[], gsl_odeiv_system * dydt)
+gear1_step(void * state, void * work, unsigned int dim, double t, double h, double y[], double yerr[], const gsl_odeiv_system * dydt)
 {
-  gsl_odeiv_step_gear1_state * s = (gsl_odeiv_step_gear1_state *) state;
-
   /* divide up the workspace */
-  double * k = s->work;
-  double * y0 = s->work + dim;
+  double * w  = (double *) work;
+  double * k  = w;
+  double * y0 = w + dim;
 
   const int iter_steps = 3;
   int status = 0;
@@ -98,28 +54,10 @@ gear1_step(void * state, unsigned int dim, double t, double h, double y[], doubl
     }
   }
 
+  /* fudge the error estimate */
   for(i=0; i<dim; i++) {
     yerr[i] = h * h * k[i];
   }
 
   return  ( status == 0 ? GSL_SUCCESS : GSL_EBADFUNC );
-}
-
-
-static
-int
-gear1_reset(void * state)
-{
-  /* nothing to do for state reset */
-  return GSL_SUCCESS;
-}
-
-
-static
-void
-gear1_free(void * state)
-{
-  gsl_odeiv_step_gear1_state * s = (gsl_odeiv_step_gear1_state *) state;
-  if(s->work != 0) free(s->work);
-  free(s);
 }

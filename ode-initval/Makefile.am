@@ -24,6 +24,7 @@ libgslodeiv_a_SOURCES = \
 	gear1.c		\
 	gear2.c		\
 	odeiv.c		\
+	odeiv_util.c	\
 	rk2.c		\
 	rk4.c		\
 	rk4imp.c	\

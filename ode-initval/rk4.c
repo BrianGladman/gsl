@@ -5,31 +5,12 @@
 #include <stdlib.h>
 #include <string.h>
 #include <gsl_errno.h>
+#include "odeiv_util.h"
 #include "gsl_odeiv.h"
 
 
-/* rk4 state object */
-typedef struct {
-  double * work;   /* workspace  */
-}
-gsl_odeiv_step_rk4_state;
-
-
-/* rk4 stepper object */
-typedef struct {
-  int  (*_step)  (void * state, unsigned int dim, double t, double h, double y[], double yerr[], gsl_odeiv_system * dydt);
-  int  (*_reset) (void * state);
-  void (*_free)  (void * state);
-  void * _state;
-  unsigned int dimension;
-}
-gsl_odeiv_step_rk4;
-
-
 static gsl_odeiv_step * rk4_create(unsigned int dimension);
-static int  rk4_step(void * state, unsigned int dim, double t, double h, double y[], double yerr[], gsl_odeiv_system * dydt);
-static int  rk4_reset(void *);
-static void rk4_free(void *);
+static int  rk4_step(void * state, void * work, unsigned int dim, double t, double h, double y[], double yerr[], const gsl_odeiv_system * dydt);
 
 
 const gsl_odeiv_step_factory gsl_odeiv_step_factory_rk4 = 
@@ -43,47 +24,24 @@ static
 gsl_odeiv_step *
 rk4_create(unsigned int dimension)
 {
-  gsl_odeiv_step_rk4 * rk4;
-
-  if(dimension == 0) return 0;
-
-  rk4 = (gsl_odeiv_step_rk4 *) malloc(sizeof(gsl_odeiv_step_rk4));
-  if(rk4_step != 0) {
-    rk4->dimension = dimension;
-    rk4->_step  = rk4_step;
-    rk4->_free  = rk4_free;
-    rk4->_reset = rk4_reset;
-    rk4->_state = (gsl_odeiv_step_rk4_state *) malloc(sizeof(gsl_odeiv_step_rk4_state));
-    if(rk4->_state != 0) {
-      gsl_odeiv_step_rk4_state * s = (gsl_odeiv_step_rk4_state *) rk4->_state;
-      s->work = (double *) malloc(3*dimension * sizeof(double));
-      if(s->work == 0) {
-        free(rk4->_state);
-	free(rk4);
-	return 0;
-      }
-    }
-    else {
-      free(rk4);
-      return 0;
-    }
-  }
-  return (gsl_odeiv_step *) rk4;
+  gsl_odeiv_step * step = gsl_odeiv_step_new(dimension, 4, 0, 3*dimension * sizeof(double));
+  step->_step = rk4_step;
+  return step;
 }
 
 
 static
 int
-rk4_step(void * state, unsigned int dim, double t, double h, double y[], double yerr[], gsl_odeiv_system * dydt)
+rk4_step(void * state, void * work, unsigned int dim, double t, double h, double y[], double yerr[], const gsl_odeiv_system * dydt)
 {
+  /* divide up the workspace */
+  double * w    = (double *) work;
+  double * k    = w;
+  double * y0   = w + dim;
+  double * ytmp = w + 2*dim;
+
   int i;
   int status;
-  gsl_odeiv_step_rk4_state * s = (gsl_odeiv_step_rk4_state *) state;
-
-  /* divide up the workspace */
-  double * k    = s->work;
-  double * y0   = s->work + dim;
-  double * ytmp = s->work + 2*dim;
 
   /* Copy the starting value. We will write over
    * the y[] vector, using it for scratch and
@@ -121,24 +79,4 @@ rk4_step(void * state, unsigned int dim, double t, double h, double y[], double 
   } 
 
   return  ( status == 0 ? GSL_SUCCESS : GSL_EBADFUNC );
-}
-
-
-static
-int
-rk4_reset(void * state)
-{
-  /* gsl_odeiv_step_rk4_state * s = (gsl_odeiv_step_rk4_state *) state; */
-  /* nothing to do for state reset */
-  return GSL_SUCCESS;
-}
-
-
-static
-void
-rk4_free(void * state)
-{
-  gsl_odeiv_step_rk4_state * s = (gsl_odeiv_step_rk4_state *) state;
-  if(s->work != 0) free(s->work);
-  free(s);
 }

@@ -242,6 +242,7 @@ int test_stepper_rk2(void)
   stat += s;
 
   gsl_odeiv_step_free(stepper);
+
   return stat;
 }
 
@@ -266,6 +267,7 @@ int test_stepper_rk4(void)
   stat += s;
 
   gsl_odeiv_step_free(stepper);
+
   return stat;
 }
 
@@ -291,6 +293,7 @@ int test_stepper_rkck(void)
   stat += s;
 
   gsl_odeiv_step_free(stepper);
+
   return stat;
 }
 
@@ -329,6 +332,7 @@ int test_stepper_rk8pd(void)
 
 
   gsl_odeiv_step_free(stepper);
+
   return stat;
 }
 
@@ -359,6 +363,7 @@ int test_stepper_rk4imp(void)
   stat += s;
 
   gsl_odeiv_step_free(stepper);
+
   return stat;
 }
 
@@ -389,6 +394,7 @@ int test_stepper_gear1(void)
   stat += s;
 
   gsl_odeiv_step_free(stepper);
+
   return stat;
 }
 
@@ -430,6 +436,7 @@ int test_stepper_gear2(void)
 
 
   gsl_odeiv_step_free(stepper);
+
   return stat;
 }
 

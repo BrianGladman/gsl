@@ -4,32 +4,12 @@
 #include <config.h>
 #include <stdlib.h>
 #include <gsl_errno.h>
+#include "odeiv_util.h"
 #include "gsl_odeiv.h"
 
 
-/* rkck state object */
-typedef struct {
-  double * work;  /* workspace  */
-}
-gsl_odeiv_step_rkck_state;
-
-
-/* rkck stepper object */
-typedef struct {
-  int  (*_step)  (void * state, unsigned int dim, double t, double h, double y[], double yerr[], gsl_odeiv_system * dydt);
-  int  (*_reset) (void * state);
-  void (*_free)  (void * state);
-  void * _state;
-  unsigned int dimension;
-}
-gsl_odeiv_step_rkck;
-
-
 static gsl_odeiv_step * rkck_create(unsigned int dimension);
-static int  rkck_step(void * state, unsigned int dim, double t, double h, double y[], double yerr[], gsl_odeiv_system * dydt);
-static int  rkck_reset(void *);
-static void rkck_free(void *);
-
+static int  rkck_step(void * state, void * work, unsigned int dim, double t, double h, double y[], double yerr[], const gsl_odeiv_system * dydt);
 
 const gsl_odeiv_step_factory gsl_odeiv_step_factory_rkck = 
 {
@@ -42,41 +22,16 @@ static
 gsl_odeiv_step *
 rkck_create(unsigned int dimension)
 {
-  gsl_odeiv_step_rkck * rkck;
-
-  if(dimension == 0) return 0;
-
-  rkck = (gsl_odeiv_step_rkck *) malloc(sizeof(gsl_odeiv_step_rkck));
-  if(rkck_step != 0) {
-    rkck->dimension = dimension;
-    rkck->_step  = rkck_step;
-    rkck->_free  = rkck_free;
-    rkck->_reset = rkck_reset;
-    rkck->_state = (gsl_odeiv_step_rkck_state *) malloc(sizeof(gsl_odeiv_step_rkck_state));
-    if(rkck->_state != 0) {
-      gsl_odeiv_step_rkck_state * s = (gsl_odeiv_step_rkck_state *) rkck->_state;
-      s->work = (double *) malloc(7 * dimension * sizeof(double));
-      if(s->work == 0) {
-        free(rkck->_state);
-	free(rkck);
-	return 0;
-      }
-    }
-    else {
-      free(rkck);
-      return 0;
-    }
-  }
-  return (gsl_odeiv_step *) rkck;
+  gsl_odeiv_step * step = gsl_odeiv_step_new(dimension, 4, 0, 7 * dimension * sizeof(double));
+  step->_step = rkck_step;
+  return step;
 }
 
 
 static
 int
-rkck_step(void * state, unsigned int dim, double t, double h, double y[], double yerr[], gsl_odeiv_system * dydt)
+rkck_step(void * state, void * work, unsigned int dim, double t, double h, double y[], double yerr[], const gsl_odeiv_system * dydt)
 {
-  gsl_odeiv_step_rkck_state * s = (gsl_odeiv_step_rkck_state * ) state;
-
   /* Cash-Karp constants */
   const double ah[] = { 1.0/5.0, 0.3, 3.0/5.0, 1.0, 7.0/8.0 };
   const double b21  = 1.0/5.0;
@@ -98,13 +53,14 @@ rkck_step(void * state, unsigned int dim, double t, double h, double y[], double
   int status;
 
   /* divide up the work space */
-  double * k1 = s->work;
-  double * k2 = s->work + dim;
-  double * k3 = s->work + 2*dim;
-  double * k4 = s->work + 3*dim;
-  double * k5 = s->work + 4*dim;
-  double * k6 = s->work + 5*dim;
-  double * ytmp = s->work + 6*dim;
+  double * w  = (double *) work;
+  double * k1 = w;
+  double * k2 = w + dim;
+  double * k3 = w + 2*dim;
+  double * k4 = w + 3*dim;
+  double * k5 = w + 4*dim;
+  double * k6 = w + 5*dim;
+  double * ytmp = w + 6*dim;
 
   /* k1 step */
   status  = ( GSL_ODEIV_FN_EVAL(dydt, t, y, k1) != 0 );
@@ -142,24 +98,4 @@ rkck_step(void * state, unsigned int dim, double t, double h, double y[], double
 
 
   return ( status == 0 ? GSL_SUCCESS : GSL_EBADFUNC );
-}
-
-
-static
-int
-rkck_reset(void * state)
-{
-  /* gsl_odeiv_step_rkck_state * s = (gsl_odeiv_step_rkck_state *) state; */
-  /* nothing to do for state reset */
-  return GSL_SUCCESS;
-}
-
-
-static
-void
-rkck_free(void * state)
-{
-  gsl_odeiv_step_rkck_state * s = (gsl_odeiv_step_rkck_state *) state;
-  if(s->work != 0) free(s->work);
-  free(s);
 }
