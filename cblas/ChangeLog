@@ -1,3 +1,7 @@
+Mon Jul  2 22:21:00 2001  Brian Gough  <bjg@network-theory.co.uk>
+
+	* test.c: added missing #include <config.h>
+
 Fri Apr 27 19:53:10 2001  Brian Gough  <bjg@network-theory.co.uk>
 
 	* source_tpmv_r.h: moved index declarations to more restricted scope
