@@ -145,8 +145,8 @@ gsl_multifit_fdfsolver;
 
 gsl_multifit_fdfsolver *
 gsl_multifit_fdfsolver_alloc (const gsl_multifit_fdfsolver_type * T, 
-                                   gsl_multifit_function_fdf * fdf,
-                                   gsl_vector * x);
+                              gsl_multifit_function_fdf * fdf,
+                              gsl_vector * x);
 
 int
 gsl_multifit_fdfsolver_set (gsl_multifit_fdfsolver * s, 
@@ -165,9 +165,9 @@ gsl_vector * gsl_multifit_fdfsolver_position (const gsl_multifit_fdfsolver * s);
 int gsl_multifit_test_delta (const gsl_vector * dx, const gsl_vector * x, 
                              double epsabs, double epsrel);
 
-int gsl_multifit_test_residual (const gsl_vector * f, double epsabs);
+int gsl_multifit_test_gradient (const gsl_vector * g, double epsabs);
 
-extern const gsl_multifit_fsolver_type * gsl_multifit_fsolver_hybrids;
+/* extern const gsl_multifit_fsolver_type * gsl_multifit_fsolver_gradient; */
 
 extern const gsl_multifit_fdfsolver_type * gsl_multifit_fdfsolver_lmder;
 extern const gsl_multifit_fdfsolver_type * gsl_multifit_fdfsolver_lmsder;

@@ -151,7 +151,7 @@ lm_iteration:
       GSL_MULTIFIT_FN_EVAL_DF (fdf, x_trial, J);
 
       /* wa2_j  = diag_j * x_j */
-      state->xnorm = enorm(x);
+      state->xnorm = scaled_enorm(diag, x);
       state->fnorm = fnorm1;
       state->iter++;
 

@@ -220,8 +220,7 @@ lmpar (gsl_matrix * r, const gsl_permutation * perm, const gsl_vector * qtf,
        gsl_vector * newton, gsl_vector * gradient, gsl_vector * sdiag, 
        gsl_vector * x, gsl_vector * w)
 {
-  double dxnorm, gnorm, fp, fp_old, par_lower, par_upper, par_c,
-    wnorm, phider;
+  double dxnorm, gnorm, fp, fp_old, par_lower, par_upper, par_c;
 
   double par = *par_inout;
 
@@ -269,9 +268,11 @@ lmpar (gsl_matrix * r, const gsl_permutation * perm, const gsl_vector * qtf,
 
   compute_newton_bound (r, newton, dxnorm, perm, diag, w);
 
-  phider = pow (enorm (w), 2.0);
-
-  par_lower = fp / (delta * phider);
+  {
+    double wnorm = enorm (w);
+    double phider = wnorm * wnorm;
+    par_lower = fp / (delta * phider);
+  }
 
 #ifdef DEBUG
   printf("par       = %g\n", par      );
@@ -402,9 +403,10 @@ iteration:
   gsl_vector_fprintf(stdout, w, "%g"); printf("\n");
 #endif
 
-  wnorm = enorm (w);
-
-  par_c = fp / (delta * wnorm * wnorm);
+  {
+    double wnorm = enorm (w);
+    par_c = fp / (delta * wnorm * wnorm);
+  }
 
 #ifdef DEBUG
   printf("fp = %g\n", fp);

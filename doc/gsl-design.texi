@@ -807,6 +807,13 @@ We don't intend to provide support for parallelism within the library
 itself. A parallel library would require a completely different design
 and would carry overhead that other applications do not need.
 
+@node Miscellaneous
+@section Miscellaneous
+
+Don't use @code{l} as a variable name --- it is difficult to distinguish
+from the number @code{1}. (This seems to be a favorite in old Fortran
+programs).
+
 @node Copying
 @unnumbered Copying
 

@@ -196,6 +196,7 @@ not recommended for general use.
 * Statistics::                  
 * Histograms::                  
 * Fitting::                     
+* Nonlinear Fitting::           
 * One dimensional Root-Finding::  
 * Multidimensional Root-Finding::  
 * Minimization::                
@@ -303,11 +304,15 @@ will be announced for general use.
 @chapter Histograms
 @include histogram.texi
 
-@node Fitting, One dimensional Root-Finding, Histograms, Top
+@node Fitting, Nonlinear Fitting, Histograms, Top
 @chapter Fitting
 @include fitting.texi
 
-@node  One dimensional Root-Finding, Multidimensional Root-Finding, Fitting, Top
+@node Nonlinear Fitting, One dimensional Root-Finding, Fitting, Top
+@chapter Nonlinear Fitting
+@include multifit.texi
+
+@node  One dimensional Root-Finding, Multidimensional Root-Finding, Nonlinear Fitting, Top
 @chapter One dimensional Root-Finding
 @include roots.texi
 

@@ -12,16 +12,17 @@
 (calc-extensions)
 
 (setq  gsl-dimensionless-constants
-       '(("fsc"           "FINE_STRUCTURE_ALPHA")
+       '(("fsc"           "FINE_STRUCTURE")
          ("Nav"           "AVAGADRO")
          )
        )
 
 (setq  gsl-constants
-       '(("c"             "SPEED_OF_LIGHT")
+       '(("c"             "SPEED_OF_LIGHT"      "the speed of light")
          ("Grav"          "GRAVITATIONAL_CONSTANT")
          ("h"             "PLANCKS_CONSTANT_H")
          ("hbar"          "PLANCKS_CONSTANT_HBAR")
+         ("mu0"           "VACUUM_PERMEABILITY")
 
          ("au"            "ASTRONOMICAL_UNIT")
          ("float(lyr)"    "LIGHT_YEAR")
@@ -34,6 +35,16 @@
          ("mu"            "MASS_MUON")
          ("mp"            "MASS_PROTON")
          ("mn"            "MASS_NEUTRON")
+
+         ("Ryd"           "RYDBERG")
+         ("k"             "BOLTZMANN")
+         ("muB"           "BOHR_MAGNETON")
+         ("muN"           "NUCLEAR_MAGNETON")
+         ("mue"           "ELECTRON_MAGNETIC_MOMENT")
+         ("mup"           "PROTON_MAGNETIC_MOMENT")
+
+         ("R0"            "MOLAR_GAS")
+         ("V0"            "STANDARD_GAS_VOLUME")
 
          ("min"           "MINUTE")
          ("hr"            "HOUR")
@@ -59,21 +70,68 @@
          ("barn"          "BARN")
 
          ("l"             "LITER")
-         ("gal"           "USGALLON")
+         ("gal"           "US_GALLON")
          ("qt"            "QUART")
          ("pt"            "PINT")
          ("cup"           "CUP")
          ("ozfl"          "FLUID_OUNCE")
          ("tbsp"          "TABLESPOON")
          ("tsp"           "TEASPOON")
-         ("galC"          "CANADIANGALLON")
-         ("galUK"         "UKGALLON")
+         ("galC"          "CANADIAN_GALLON")
+         ("galUK"         "UK_GALLON")
          
          ("mph"           "MILES_PER_HOUR")
          ("kph"           "KILOMETERS_PER_HOUR")
          ("knot"          "KNOT")
 
-         ("amu"            "UNIFIED_ATOMIC_MASS")
+         ("lb"            "POUND_MASS")
+         ("oz"            "OUNCE_MASS")
+         ("ton"           "TON")
+         ("t"             "METRIC_TON")
+         ("tonUK"         "UK_TON")
+         ("ozt"           "TROY_OUNCE")
+         ("ct"            "CARAT")
+         ("amu"           "UNIFIED_ATOMIC_MASS")
+
+         ("gf"            "GRAM_FORCE")
+         ("lbf"           "POUND_FORCE")
+         ("kip"           "KILOPOUND_FORCE")
+         ("pdl"           "POUNDAL")
+
+         ("cal"           "CALORIE")
+         ("btu"           "BTU")
+         ("ev"            "ELECTRON_VOLT")
+         ("therm"         "THERM")
+
+         ("hp"            "HORSEPOWER")
+         
+         ("bar"           "BAR")
+         ("atm"           "STD_ATMOSPHERE")
+         ("torr"          "TORR")
+         ("mHg"           "METER_OF_MERCURY")
+         ("inHg"          "INCH_OF_MERCURY")
+         ("inH2O"         "INCH_OF_WATER")
+         ("psi"           "PSI")
+
+         ("P"             "POISE")
+         ("St"            "STOKES")
+         
+         ("Fdy"           "FARADAY")
+         ("e"             "ELECTRON_CHARGE")
+         ("G"             "GAUSS")
+
+         ("sb"            "STILB")
+         ("lm"            "LUMEN")
+         ("lx"            "LUX")
+         ("ph"            "PHOT")
+         ("fc"            "FOOTCANDLE")
+         ("lam"           "LAMBERT")
+         ("flam"          "FOOTLAMBERT")
+         
+         ("Ci"            "CURIE")
+         ("R"             "ROENTGEN")
+         ("rd"            "RAD")
+
 
          )
        )

@@ -1,4 +1,4 @@
-/* multiroots/fsolver.c
+/* multifit/fsolver.c
  * 
  * Copyright (C) 1996, 1997, 1998, 1999, 2000 Brian Gough
  * 
@@ -21,33 +21,34 @@
 #include <stdlib.h>
 #include <string.h>
 #include <gsl/gsl_errno.h>
-#include <gsl/gsl_multiroots.h>
+#include <gsl/gsl_multifit_nlin.h>
 
-gsl_multiroot_fsolver *
-gsl_multiroot_fsolver_alloc (const gsl_multiroot_fsolver_type * T, 
-                             gsl_multiroot_function * f, gsl_vector * x)
+gsl_multifit_fsolver *
+gsl_multifit_fsolver_alloc (const gsl_multifit_fsolver_type * T, 
+                            gsl_multifit_function * f, gsl_vector * x)
 {
   int status;
 
-  gsl_multiroot_fsolver * s;
+  gsl_multifit_fsolver * s;
 
   const size_t n = f->n ;
+  const size_t p = f->p ;
 
-  if (x->size != n) 
+  if (x->size != p) 
     {
       GSL_ERROR_VAL ("vector length not compatible with function", 
                         GSL_EBADLEN, 0);
     }
 
-  s = (gsl_multiroot_fsolver *) malloc (sizeof (gsl_multiroot_fsolver));
+  s = (gsl_multifit_fsolver *) malloc (sizeof (gsl_multifit_fsolver));
 
   if (s == 0)
     {
-      GSL_ERROR_VAL ("failed to allocate space for multiroot solver struct",
+      GSL_ERROR_VAL ("failed to allocate space for multifit solver struct",
 			GSL_ENOMEM, 0);
     }
 
-  s->x = gsl_vector_calloc (n);
+  s->x = gsl_vector_calloc (p);
 
   if (s->x == 0) 
     {
@@ -64,7 +65,7 @@ gsl_multiroot_fsolver_alloc (const gsl_multiroot_fsolver_type * T,
       GSL_ERROR_VAL ("failed to allocate space for f", GSL_ENOMEM, 0);
     }
 
-  s->dx = gsl_vector_calloc (n);
+  s->dx = gsl_vector_calloc (p);
 
   if (s->dx == 0) 
     {
@@ -83,13 +84,13 @@ gsl_multiroot_fsolver_alloc (const gsl_multiroot_fsolver_type * T,
       gsl_vector_free (s->f);
       free (s);		/* exception in constructor, avoid memory leak */
       
-      GSL_ERROR_VAL ("failed to allocate space for multiroot solver state",
+      GSL_ERROR_VAL ("failed to allocate space for multifit solver state",
 			GSL_ENOMEM, 0);
     }
 
   s->type = T ;
 
-  status = (s->type->alloc)(s->state, n);
+  status = (s->type->alloc)(s->state, n, p);
 
   if (status != GSL_SUCCESS)
     {
@@ -103,7 +104,7 @@ gsl_multiroot_fsolver_alloc (const gsl_multiroot_fsolver_type * T,
       GSL_ERROR_VAL ("failed to set solver", status, 0);
     }
   
-  status = gsl_multiroot_fsolver_set (s, f, x); /* seed the generator */
+  status = gsl_multifit_fsolver_set (s, f, x); /* seed the generator */
   
   if (status != GSL_SUCCESS)
     {
@@ -120,9 +121,9 @@ gsl_multiroot_fsolver_alloc (const gsl_multiroot_fsolver_type * T,
 }
 
 int
-gsl_multiroot_fsolver_set (gsl_multiroot_fsolver * s, 
-                           gsl_multiroot_function * f, 
-                           gsl_vector * x)
+gsl_multifit_fsolver_set (gsl_multifit_fsolver * s, 
+                          gsl_multifit_function * f, 
+                          gsl_vector * x)
 {
   s->function = f;
   gsl_vector_memcpy(s->x,x);
@@ -131,13 +132,13 @@ gsl_multiroot_fsolver_set (gsl_multiroot_fsolver * s,
 }
 
 int
-gsl_multiroot_fsolver_iterate (gsl_multiroot_fsolver * s)
+gsl_multifit_fsolver_iterate (gsl_multifit_fsolver * s)
 {
   return (s->type->iterate) (s->state, s->function, s->x, s->f, s->dx);
 }
 
 void
-gsl_multiroot_fsolver_free (gsl_multiroot_fsolver * s)
+gsl_multifit_fsolver_free (gsl_multifit_fsolver * s)
 {
   (s->type->free) (s->state);
   free (s->state);
@@ -148,13 +149,13 @@ gsl_multiroot_fsolver_free (gsl_multiroot_fsolver * s)
 }
 
 const char *
-gsl_multiroot_fsolver_name (const gsl_multiroot_fsolver * s)
+gsl_multifit_fsolver_name (const gsl_multifit_fsolver * s)
 {
   return s->type->name;
 }
 
 gsl_vector *
-gsl_multiroot_fsolver_root (const gsl_multiroot_fsolver * s)
+gsl_multifit_fsolver_position (const gsl_multifit_fsolver * s)
 {
   return s->x;
 }

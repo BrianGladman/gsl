@@ -16,16 +16,24 @@ structure constant, which are pure numbers are defined in
 The electromagnetic fine structure constant @math{\alpha}.
 
 @item GSL_CONST_NUM_AVAGADRO
-Avogadro's number, @math{N_a}
+Avogadro's number, @math{N_a}.
 
 @item GSL_CONST_MKS_SPEED_OF_LIGHT
+The speed of light in vacuum, @math{c}.
 
 @item GSL_CONST_MKS_ASTRONOMICAL_UNIT
+The length of 1 astronomical unit (mean earth-sun distance), @math{au}.
 
 @item GSL_CONST_MKS_GRAVITATIONAL_CONSTANT
+The gravitational constant, @math{G}.
 
 @item GSL_CONST_MKS_LIGHT_YEAR
+The distance of 1 light-year, @math{ly}.
 
 @item GSL_CONST_MKS_PARSEC
+The distance of 1 parsec, @math{pc}.
+
+@item GSL_CONST_MKS_GRAV_ACCEL
+The standard gravitational acceleration on Earth, @math{g}.
 
 @end table

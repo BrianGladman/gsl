@@ -20,6 +20,3 @@
 #ifdef __GSL_CONST_NUM__
 #define __GSL_CONST_NUM__
 
-#define GSL_CONST_NUM_FINE_STRUCTURE_ALPHA (7.29735307964e-3) /* 1 */
-
-#endif /* __GSL_CONST_NUM__ */
