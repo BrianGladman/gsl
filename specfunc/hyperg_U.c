@@ -185,7 +185,8 @@ gsl_sf_hyperg_U_impl(const double a, const double b, const double x, double * re
      * U(a,b,x) = U(a,a+1,x) when 1+a-b=0
      * and U(a,a+1,x) = x^(-a).
      */
-    double lnr = -a * log(x);
+    double lnx = log(x);
+    double lnr = -a * lnx;
     return gsl_sf_exp_impl(lnr, result);
   }
   else {
