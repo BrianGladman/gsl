@@ -17,6 +17,8 @@ void gsl_vector_free (gsl_vector * v);
 double gsl_vector_get(const gsl_vector * v, const size_t i);
 void gsl_vector_set(gsl_vector * v, const size_t i, const double x);
 
+extern int gsl_check_range ;
+
 /* inline functions if you are using GCC */
 
 #ifndef __STRICT_ANSI__
@@ -25,7 +27,7 @@ double
 gsl_vector_get(const gsl_vector * v, const size_t i)
 {
 #ifdef GSL_CHECK_RANGE
-  if (i < 0 || i >= v->size)  /* if size_t is unsigned i<0 is impossible! */
+  if (i >= v->size) /* size_t is unsigned, can't be negative */
     {
       GSL_ERROR_RETURN("index out of range", GSL_EINVAL, 0) ;
     }
@@ -38,7 +40,7 @@ void
 gsl_vector_set(gsl_vector * v, const size_t i, const double x)
 {
 #ifdef GSL_CHECK_RANGE
-  if (i < 0 || i >= v->size) /* if size_t is unsigned  i<0 is impossible! */
+  if (i >= v->size) /* size_t is unsigned, can't be negative */
     {
       GSL_ERROR_RETURN("index out of range", GSL_EINVAL, /* nothing */) ;
     }
