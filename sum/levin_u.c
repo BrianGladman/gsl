@@ -26,22 +26,22 @@
 int
 gsl_sum_levin_u_accel (const double *array, const size_t array_size,
                        gsl_sum_levin_u_workspace * w, 
-                       double *sum_accel, double *err)
+                       double *sum_accel, double *abserr)
 {
   return gsl_sum_levin_u_minmax (array, array_size,
-				 0, array_size - 1, w, sum_accel, err);
+				 0, array_size - 1, w, sum_accel, abserr);
 }
 
 int
 gsl_sum_levin_u_minmax (const double *array, const size_t array_size,
 			const size_t min_terms, const size_t max_terms,
 			gsl_sum_levin_u_workspace * w,
-			double *sum_accel, double *err)
+			double *sum_accel, double *abserr)
 {
   if (array_size == 0)
     {
       *sum_accel = 0.0;
-      *err = 0.0;
+      *abserr = 0.0;
       w->sum_plain = 0.0;
       w->terms_used = 0;
       return GSL_SUCCESS;
@@ -49,7 +49,7 @@ gsl_sum_levin_u_minmax (const double *array, const size_t array_size,
   else if (array_size == 1)
     {
       *sum_accel = array[0];
-      *err = 0.0;
+      *abserr = 0.0;
       w->sum_plain = array[0];
       w->terms_used = 1;
       return GSL_SUCCESS;
@@ -157,7 +157,7 @@ gsl_sum_levin_u_minmax (const double *array, const size_t array_size,
 	     error estimate.  */
 
 	  *sum_accel = least_trunc_result;
-	  *err = GSL_MAX_DBL (least_trunc, least_trunc_noise);
+	  *abserr = GSL_MAX_DBL (least_trunc, least_trunc_noise);
 	  w->terms_used = n;
 	  return GSL_SUCCESS;
 	}
@@ -167,7 +167,7 @@ gsl_sum_levin_u_minmax (const double *array, const size_t array_size,
 	     calculated values.  */
 
 	  *sum_accel = result_n;
-	  *err = GSL_MAX_DBL (trunc_n, noise_n);
+	  *abserr = GSL_MAX_DBL (trunc_n, noise_n);
 	  w->terms_used = n;
 	  return GSL_SUCCESS;
 	}

@@ -24,19 +24,22 @@ These functions are declared in the header file @file{gsl_sum.h}.
 @node Acceleration functions
 @section Acceleration functions
 
-The following functions compute the full Levin u-transform of series
+The following functions compute the full Levin u-transform of a series
 with its error estimate.  The error estimate is computed by propagating
-rounding errors from each term through to the final extrapolation.  The
-rounding errors are assumed to originate from finite precision and are
-taken to be relative errors of order @code{GSL_DBL_EPSILON} for each
-term. This is appropriate for summing analytic series where each term is
-known to high accuracy.  The calculation of the error in the
-extrapolated value is an @math{O(N^2)} process, which is expensive in
-time and memory. A full table of intermediate values and derivatives
-through to @math{O(N)} must be computed and stored, but this does give a
-reliable error estimate.  A faster but less reliable method which
-estimates the error from the convergence of the extrapolated value is
-described in the next section.
+rounding errors from each term through to the final extrapolation. 
+
+These functions are intended for summing analytic series where each term
+is known to high accuracy, and the rounding errors are assumed to
+originate from finite precision. They are taken to be relative errors of
+order @code{GSL_DBL_EPSILON} for each term.
+
+The calculation of the error in the extrapolated value is an
+@math{O(N^2)} process, which is expensive in time and memory.  A faster
+but less reliable method which estimates the error from the convergence
+of the extrapolated value is described in the next section For the
+method described here a full table of intermediate values and
+derivatives through to @math{O(N)} must be computed and stored, but this
+does give a reliable error estimate. .
 
 @deftypefun {gsl_sum_levin_u_workspace *} gsl_sum_levin_u_alloc (size_t @var{n})
 This function allocates a workspace for a Levin u-transform of @var{n}
@@ -47,12 +50,12 @@ terms.  The size of the workspace is @math{O(2n^2 + 3n)}.
 This function frees the memory associated with the workspace @var{w}.
 @end deftypefun
 
-@deftypefun int gsl_sum_levin_u_accel (const double * @var{array}, size_t @var{array_size}, gsl_sum_levin_u_workspace * @var{w}, double * @var{sum_accel}, double * @var{err})
+@deftypefun int gsl_sum_levin_u_accel (const double * @var{array}, size_t @var{array_size}, gsl_sum_levin_u_workspace * @var{w}, double * @var{sum_accel}, double * @var{abserr})
 This function takes the terms of a series in @var{array} of size
 @var{array_size} and computes the extrapolated limit of the series using
 a Levin u-transform.  Additional working space must be provided in
 @var{w}.  The extrapolated sum is stored in @var{sum_accel}, with an
-estimate of the absolute error stored in @var{err}.  The actual
+estimate of the absolute error stored in @var{abserr}.  The actual
 term-by-term sum is returned in @code{w->sum_plain}. The algorithm
 calculates the truncation error (the difference between two successive
 extrapolations) and round-off error (propagated from the individual
@@ -89,7 +92,7 @@ terms, without error estimation.  The size of the workspace is
 This function frees the memory associated with the workspace @var{w}.
 @end deftypefun
 
-@deftypefun int gsl_sum_levin_utrunc_accel (const double * @var{array}, size_t @var{array_size}, gsl_sum_levin_utrunc_workspace * @var{w}, double * @var{sum_accel}, double * @var{err_trunc})
+@deftypefun int gsl_sum_levin_utrunc_accel (const double * @var{array}, size_t @var{array_size}, gsl_sum_levin_utrunc_workspace * @var{w}, double * @var{sum_accel}, double * @var{abserr_trunc})
 This function takes the terms of a series in @var{array} of size
 @var{array_size} and computes the extrapolated limit of the series using
 a Levin u-transform.  Additional working space must be provided in
@@ -97,10 +100,10 @@ a Levin u-transform.  Additional working space must be provided in
 term-by-term sum is returned in @code{w->sum_plain}. The algorithm
 terminates when the difference between two successive extrapolations
 reaches a minimum or is sufficiently small. The difference between these
-two values is used as estimate of the error and is stored in @var{err}.
-To improve the reliability of the algorithm the extrapolated values are
-replaced by moving averages when calculating the truncation error,
-smoothing out any fluctuations.
+two values is used as estimate of the error and is stored in
+@var{abserr_trunc}.  To improve the reliability of the algorithm the
+extrapolated values are replaced by moving averages when calculating the
+truncation error, smoothing out any fluctuations.
 @end deftypefun
 
 

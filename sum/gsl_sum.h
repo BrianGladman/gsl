@@ -79,7 +79,7 @@ void gsl_sum_levin_u_free (gsl_sum_levin_u_workspace * w);
 int gsl_sum_levin_u_accel (const double *array,
                            const size_t n,
                            gsl_sum_levin_u_workspace * w,
-                           double *sum_accel, double *err);
+                           double *sum_accel, double *abserr);
 
 /* Basic Levin-u acceleration method with constraints on the terms
  * used,
@@ -99,7 +99,7 @@ int gsl_sum_levin_u_minmax (const double *array,
 			    const size_t min_terms,
 			    const size_t max_terms,
 			    gsl_sum_levin_u_workspace * w,
-			    double *sum_accel, double *err);
+			    double *sum_accel, double *abserr);
 
 /* Basic Levin-u step w/o reference to the array of terms.
  * We only need to specify the value of the current term
@@ -144,14 +144,14 @@ void gsl_sum_levin_utrunc_free (gsl_sum_levin_utrunc_workspace * w);
 int gsl_sum_levin_utrunc_accel (const double *array,
                                 const size_t n,
                                 gsl_sum_levin_utrunc_workspace * w,
-                                double *sum_accel, double *err_trunc);
+                                double *sum_accel, double *abserr_trunc);
 
 int gsl_sum_levin_utrunc_minmax (const double *array,
 				 const size_t n,
 				 const size_t min_terms,
 				 const size_t max_terms,
 				 gsl_sum_levin_utrunc_workspace * w,
-				 double *sum_accel, double *err_trunc);
+				 double *sum_accel, double *abserr_trunc);
 
 int gsl_sum_levin_utrunc_step (const double term,
 			       const size_t n,
