@@ -32,15 +32,77 @@
    r       --  the correlation coefficient between c0 and c1,
    chisq   --  weighted sum of squares of residuals */
 
-int 
-gsl_fit_linear (const double * x, 
-                const double * w,  const double * y, 
-                size_t n,
-                double * c0, double * c1, 
-                double * s0, double * s1, double * r, 
-                double * chisq)
+int
+gsl_fit_linear (const double *x,
+		const double *w, const double *y,
+		size_t n,
+		double *c0, double *c1,
+		double *s0, double *s1, double *r, double *chisq)
 {
-  
+
+  /* compute the weighted means and weighted deviations from the means */
+
+  /* wm denotes a "weighted mean", wm(f) = (sum_i w_i f_i) / (sum_i w_i) */
+
+  double wm_x = 0, wm_y = 0, wm_dx2 = 0, wm_dxy = 0;
+
+  for (i = 0; i < n; i++)
+    {
+      const double wi = w[i];
+
+      if (wi > 0)
+	{
+	  W += wi;
+	  wm_x += (x[i] - wm_x) * (wi / W);
+	  wm_y += (y[i] - wm_y) * (wi / W);
+	}
+    }
+
+  W = 0;			/* reset the total weight */
+
+  for (i = 0; i < n; i++)
+    {
+      const double wi = w[i];
+
+      if (wi > 0)
+	{
+	  const double dx = x[i] - wm_x;
+	  const double dy = y[i] - wm_y;
+
+	  W += wi;
+	  wm_dx2 += (dx * dx - wm_dx2) * (wi / W);
+	  wm_dxdy += (dx * dy - wm_dxy) * (wi / W);
+	}
+    }
+
+  /* In terms of y = a + b x */
+
+  double b = wm_dxy / wm_dx2;
+  double a = wm_y - wm_x * b;
+
+  *c0 = a;
+  *c1 = b;
+
+  *cov_00 = (1 / W) * (1 +  wm_x * wm_x / (W * wm_dx2));
+  *cov_11 = 1 / (W * wm_dx2);
+
+  *cov_01 = -wm_x / (W * wm_dx2);
+
+  double d2 = 0;
+
+  for (i = 0; i < n; i++)
+    {
+      const double wi = w[i];
+
+      if (wi > 0)
+	{
+	  const double dx = x[i] - wm_x;
+	  const double dy = y[i] - wm_y;
+	  const double d = dy - b * dx;
+	  d2 += wi * d * d;
+	}
+    }
+
+
+  *chisq = d2;
 }
-
-
