@@ -32,7 +32,10 @@ C0sq(double eta)
     return 0.0;
   }
   else {
-    return twopieta/expm1(twopieta);
+    double scale = 0 ;
+    int status = gsl_sf_expm1_impl (twopieta, &scale) ; 
+    /* FIXME: check return code? */
+    return twopieta/scale;
   }
 }
 

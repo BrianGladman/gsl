@@ -1,3 +1,8 @@
+Tue Aug 18 13:36:15 1998  Brian Gough  <bjg@vvv.lanl.gov>
+
+	* coulomb.c (C0sq): changed to using gsl_sf_expm1_impl instead of
+ 	expm1, since the latter is a GNU extension.
+
 Mon Aug  3 14:43:16 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
 	* bessel_amp_phase.h: undefined consts are now declared extern
