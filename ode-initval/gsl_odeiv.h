@@ -213,6 +213,7 @@ typedef struct {
   double * yerr;
   double * dydt_in;
   double * dydt_out;
+  double last_step;
   size_t dimension;
   unsigned int count;
   unsigned int count_stutter;

@@ -96,6 +96,7 @@ gsl_odeiv_evolve_impl(
         step_stat = gsl_odeiv_step_impl(step, t, h, y, e->yerr, 0, e->dydt_out, dydt);
       }
       t += h;
+      e->last_step = h;
 
       ++e->count;
       /* if(step->stutter) ++e->count_stutter; */
