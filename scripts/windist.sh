@@ -22,7 +22,13 @@ tar xvfz $tarfile
   ../../../doc/texi2html -htmlhelp -verbose ../gsl-ref.texi ; )
   cp -a ../msvc . ;
  (cd msvc ; rm -rf usr *~ demo/*~ ; make ; cp -a gsl-ref.hhp ../doc/html; )
-)
+) 
+
+if [ $? != 0 ] ; then
+   echo failed to build;
+   exit 1;
+fi;
+
 
 test -e $ver.zip && mv -b $ver.zip $ver.zip.old
 zip -l -r $ver.zip $ver -x '*~' -x '*/CVS/*' -x '*/.*'
