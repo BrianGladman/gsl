@@ -440,14 +440,6 @@ hyperg_U_small_a(const double a, const double b, const double x, double * result
 int
 gsl_sf_hyperg_U_impl(const double a, const double b, const double x, double * result)
 {
-  double a = 0.5;
-  double b = 3.0;
-  double x = 1.0;
-  double f;
-  hyperg_U_CF1(a, b, 10, x, &f);
-  printf("%22.18g\n", f);
-  exit(0);
-  
   if(x <= 0.0) {
     *result = 0.0;
     return GSL_EDOM;

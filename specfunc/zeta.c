@@ -365,7 +365,7 @@ int gsl_sf_zeta_impl(const double s, double * result)
       return GSL_SUCCESS;
     }
     else {
-      *result = 0.; /* FIXME: should be Inf */
+      *result = 0.0; /* FIXME: should be Inf */
       return GSL_EOVRFLW;
     }
   }
@@ -403,31 +403,47 @@ int gsl_sf_zeta_int_impl(const int n, double * result)
 
 int gsl_sf_eta_int_impl(int n, double * result)
 {
-  double z;
-  int stat_z = gsl_sf_zeta_int_impl(n, &z);
-  if(stat_z == GSL_SUCCESS) {
-    double pre = 1.0 - pow(2.0,1.0-n);
-    *result = pre * z;
+  if(n == 1) {
+    *result = M_LN2;
+    return GSL_SUCCESS;
   }
   else {
-    *result = 0.0;
+    double z;
+    int stat_z = gsl_sf_zeta_int_impl(n, &z);
+    if(stat_z == GSL_SUCCESS) {
+      double pre = 1.0 - pow(2.0,1.0-n);
+      *result = pre * z;
+    }
+    else {
+      *result = 0.0;
+    }
+    return stat_z;
   }
-  return stat_z;
 }
 
 
 int gsl_sf_eta_impl(const double s, double * result)
 {
-  double z;
-  int stat_z = gsl_sf_zeta_int_impl(s, &z);
-  if(stat_z == GSL_SUCCESS) {
-    double pre = 1.0 - pow(2.0,1.0-s);
-    *result = pre * z;
+  if(fabs(s-1.0) < GSL_MACH_EPS) {
+    *result = M_LN2;
+    return GSL_SUCCESS;
+  }
+  else if(fabs(s-1.0) < 10.0*GSL_SQRT_MACH_EPS) {
+    *result = M_LN2 * (1.0 + (M_EULER - 0.5*M_LN2)*(s-1.0));
+    return GSL_SUCCESS;
   }
   else {
-    *result = 0.0;
+    double z;
+    int stat_z = gsl_sf_zeta_impl(s, &z);
+    if(stat_z == GSL_SUCCESS) {
+      double pre = 1.0 - pow(2.0,1.0-s);
+      *result = pre * z;
+    }
+    else {
+      *result = 0.0;
+    }
+    return stat_z;
   }
-  return stat_z;
 }
 
 /*-*-*-*-*-*-*-*-*-*-*-* Error Handling Versions *-*-*-*-*-*-*-*-*-*-*-*/
