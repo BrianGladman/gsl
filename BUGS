@@ -305,3 +305,4 @@ BUG#15 -- gsl_const
 The gsl_const directory is broken in gsl-1.4 (the include file doesn't
 include the right files) and is not backwards compatible.
 
+The documentation for plancks constant is missing from the manual!
