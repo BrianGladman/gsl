@@ -46,8 +46,6 @@ gsl_root_fsolver_alloc (const gsl_root_fsolver_type * T,
 			 gsl_function * f, gsl_interval x);
 void gsl_root_fsolver_free (gsl_root_fsolver * s);
 
-const char * gsl_root_fsolver_name (const gsl_root_fsolver * s);
-
 int gsl_root_fsolver_set (gsl_root_fsolver * s, 
 			   gsl_function * f, gsl_interval x);
 

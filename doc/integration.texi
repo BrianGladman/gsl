@@ -67,7 +67,7 @@ $$
 @end tex
 @ifinfo
 @example
-|RESULT - I| <= ABSERR <= \max@{ epsabs, epsrel |I|@}
+|RESULT - I| <= ABSERR <= max@{ epsabs, epsrel |I|@}
 @end example
 @end ifinfo
 
@@ -91,46 +91,47 @@ following letters,
 @code{S} - singularities can be more readily integrated
 @code{P} - points of special difficulty can be supplied
 @code{I} - infinite range of integration
-@code{O} - oscillatory weight function, @math{\cos} or @math{\sin}
+@code{O} - oscillatory weight function, cos or sin
 @code{F} - Fourier integral
 @code{C} - Cauchy principal value
 @end display
 
 @noindent
-The algorithms in QUADPACK are based Gauss-Kronrod rules for general
-integrands and modified Clenshaw-Curtis quadrature rules for integrands
-with weight functions. The rules are used to compute an approximation to
-an integral over a small range.  An estimate of the error in the
-approximation is made by comparing the difference between higher order
-and lower order estimates.
+The algorithms are built on pairs of quadrature rules, a high order rule
+and a lower order rule. The high order rule is used to compute the best
+approximation to an integral over a small range.  The difference between
+the higher order and lower order results gives an estimate of the error
+in the approximation.
 
 @cindex Gauss-Kronrod quadrature
-A Gauss-Kronrod rule begins with a classical Gaussian quadrature rule of
-order @math{m}. This is extended with additional points between each of
-the abscissae to give a higher order Kronrod rule of order @math{2m+1}.
-The Kronrod rule is efficient because it uses the existing function
-evaluations from the Gaussian rule.  The higher order Kronrod rule is
-used as the best approximation to the integral, and the difference
-between the two rules is used as an estimate of the error in the
-approximation.
+The algorithms for general functions (without a weight function) are
+based on Gauss-Kronrod rules. A Gauss-Kronrod rule begins with a
+classical Gaussian quadrature rule of order @math{m}. This is extended
+with additional points between each of the abscissae to give a higher
+order Kronrod rule of order @math{2m+1}.  The Kronrod rule is efficient
+because it reuses existing function evaluations from the Gaussian rule.
+The higher order Kronrod rule is used as the best approximation to the
+integral, and the difference between the two rules is used as an
+estimate of the error in the approximation.
 
 @cindex Clenshaw-Curtis quadrature
 @cindex Modified Clenshaw-Curtis quadrature
-A Clenshaw-Curtis rule takes an @math{n}-th order Chebyschev polynomial
-approximation to the integrand. This polynomial can be integrated
-exactly to give an approximation to the integral of the original
-function. The Chebyschev expansion can be extended to higher orders to
-improve the approximation.  The presence of singularities (or other
-behavior) in the integrand can cause slow convergence in the Chebyschev
-approximation.  The modified Clenshaw-Curtis rules used in QUADPACK
-separate out several common weight functions which cause slow
-convergence. These weight functions are integrated analytically against
-the Chebyschev polynomials to precompute @dfn{modified Chebyschev
-moments}. Combining the moments with the Chebyschev approximation to the
-function gives the desired integral. The use of analytic integration for
-the singular part of the function allows exact cancellations and
-substantially improves the overall convergence behavior of the
-integration.
+For integrands with weight functions the algorithms use Clenshaw-Curtis
+quadrature rules.  A Clenshaw-Curtis rule begins with an @math{n}-th
+order Chebyschev polynomial approximation to the integrand. This
+polynomial can be integrated exactly to give an approximation to the
+integral of the original function. The Chebyschev expansion can be
+extended to higher orders to improve the approximation.  The presence of
+singularities (or other behavior) in the integrand can cause slow
+convergence in the Chebyschev approximation.  The modified
+Clenshaw-Curtis rules used in QUADPACK separate out several common
+weight functions which cause slow convergence. These weight functions
+are integrated analytically against the Chebyschev polynomials to
+precompute @dfn{modified Chebyschev moments}. Combining the moments with
+the Chebyschev approximation to the function gives the desired
+integral. The use of analytic integration for the singular part of the
+function allows exact cancellations and substantially improves the
+overall convergence behavior of the integration.
 
 @menu
 * QNG non-adaptive Gauss-Kronrod integration::  
@@ -171,10 +172,10 @@ minimise the total number of function evaluations.
 @node QAG adaptive integration
 @section QAG adaptive integration
 
-The QAG algorithm uses an adaptive integration procedure. The
+The QAG algorithm is a simple adaptive integration procedure. The
 integration region is divided into subintervals, and on each iteration
 the subinterval with the largest estimated error is bisected.  This
-reduces the overall error more rapidly, as the subintervals become
+reduces the overall error rapidly, as the subintervals become
 concentrated around local difficulties in the integrand.  These
 subintervals are managed by a @code{gsl_integration_workspace} struct,
 which handles the memory for the subinterval ranges, results and error
@@ -215,8 +216,10 @@ while lower-order rules save time when the function contains local
 difficulties, such as discontinuities.
 
 On each iteration the adaptive integration strategy bisects the interval
-with the largest error estimate. The subintervals and their results and
-error estimates are stored in the memory provided by @var{workspace}.
+with the largest error estimate. The subintervals and their results are
+stored in the memory provided by @var{workspace}. The maximum number of
+subintervals is given by @var{limit}, which may not exceed the allocated
+size of the workspace.
 @end deftypefun
 
 
@@ -224,12 +227,12 @@ error estimates are stored in the memory provided by @var{workspace}.
 @section QAGS adaptive integration with singularities
 
 The presence of an integrable singularity in the integration region
-causes an adaptive routine to successively concentrate new subintervals
-around the singularity. As the subintervals decrease in size the
+causes an adaptive routine to concentrate new subintervals around the
+singularity. As the subintervals decrease in size the successive
 approximations to the integral converge in a limiting fashion. This
 approach to the limit can be accelerated using an extrapolation
 procedure. The QAGS algorithm combines adaptive bisection with the Wynn
-@math{\epsilon}-algorithm to speed up the integration of many types of
+epsilon-algorithm to speed up the integration of many types of
 integrable singularities.
 
 @deftypefun int gsl_integration_qags (const gsl_function * @var{f}, double @var{a}, double @var{b}, double @var{epsabs}, double @var{epsrel}, size_t @var{limit}, gsl_integration_workspace * @var{workspace}, double *@var{result}, double *@var{abserr})
@@ -242,7 +245,10 @@ using the epsilon-algorithm, which accelerates the convergence of the
 integral in the presence of discontinuities and integrable
 singularities. The function returns the final approximation from the
 extrapolation, @var{result}, and an estimate of the absolute error,
-@var{abserr}.
+@var{abserr}. The subintervals and their results are stored in the
+memory provided by @var{workspace}. The maximum number of subintervals
+is given by @var{limit}, which may not exceed the allocated size of the
+workspace.
 
 @end deftypefun
 
@@ -417,7 +423,7 @@ $$
 @end tex
 @ifinfo
 @example
-W(x) = (x-a)^alpha (b-x)^beta log^\mu (x-a) log^\nu (b-x)
+W(x) = (x-a)^alpha (b-x)^beta log^mu (x-a) log^nu (b-x)
 @end example
 @end ifinfo
 
@@ -490,7 +496,7 @@ $$
 @end tex
 @ifinfo
 @example
-I = \int_a^b dx f(x) (x-a)^alpha (b-x)^beta log^\mu (x-a) log^\nu (b-x)
+I = \int_a^b dx f(x) (x-a)^alpha (b-x)^beta log^mu (x-a) log^nu (b-x)
 @end example
 @end ifinfo
 
@@ -577,7 +583,7 @@ This function frees all the memory associated with the workspace @var{t}.
 This function uses an adaptive algorithm to compute the integral of
 @math{f} over @math{(a,b)} with the weight function 
 @math{\sin(\omega x)} or @math{\cos(\omega x)} defined 
-by the workspace @var{wf}.
+by the table @var{wf}.
 
 @tex
 \beforedisplay
@@ -590,8 +596,8 @@ $$
 @end tex
 @ifinfo
 @example
-I =  \int_a^b dx f(x) \sin(\omega x)
-I =  \int_a^b dx f(x) \cos(\omega x)
+I = \int_a^b dx f(x) sin(omega x)
+I = \int_a^b dx f(x) cos(omega x)
 @end example
 @end ifinfo
 
@@ -599,7 +605,10 @@ I =  \int_a^b dx f(x) \cos(\omega x)
 The results are extrapolated using the epsilon-algorithm to accelerate
 the convergence of the integral. The function returns the final
 approximation from the extrapolation, @var{result}, and an estimate of
-the absolute error, @var{abserr}.
+the absolute error, @var{abserr}. The subintervals and their results are
+stored in the memory provided by @var{workspace}. The maximum number of
+subintervals is given by @var{limit}, which may not exceed the allocated
+size of the workspace.
 
 Those subintervals with ``large'' widths @math{d}, @math{d\omega > 4} are
 computed using a 25-point Clenshaw-Curtis integration rule, which handles the
@@ -629,15 +638,15 @@ $$
 @end tex
 @ifinfo
 @example
-I =  \int_a^@{+\infty@} dx f(x) \sin(\omega x)
-I =  \int_a^@{+\infty@} dx f(x) \cos(\omega x)
+I = \int_a^@{+\infty@} dx f(x) sin(omega x)
+I = \int_a^@{+\infty@} dx f(x) cos(omega x)
 @end example
 @end ifinfo
 
-The parameter @math{\omega} is taken from the workspace @var{wf} (the
-length @var{L} can take any value, since it is overridden by this
-function to a value appropriate for the fourier integration). The
-integral is computed over the subintervals,
+The parameter @math{\omega} is taken from the table @var{wf} (the length
+@var{L} can take any value, since it is overridden by this function to a
+value appropriate for the fourier integration). The integral is computed
+using the QAWO algorithm over each of the subintervals,
 
 @tex
 \beforedisplay
@@ -705,12 +714,18 @@ $$
 @end tex
 @ifinfo
 @example
-TOL_k = u_k \max@{abserr, \max_@{i<k@}@{E_i@}@}
+TOL_k = u_k max@{abserr, max_@{i<k@}@{E_i@}@}
 @end example
 @end ifinfo
 
 @noindent
 where @math{E_k} is the estimated error on the interval @math{C_k}.
+
+The subintervals and their results are stored in the memory provided by
+@var{workspace}. The maximum number of subintervals is given by
+@var{limit}, which may not exceed the allocated size of the workspace.
+The integration over each subinterval uses the memory provided by
+@var{cycle_workspace} as scratch space for the QAWO algorithm.
 
 @end deftypefun
 

@@ -7,7 +7,7 @@
 
    gcc -I. -I.. -I../err demo.c libgslroots.a ../err/libgslerr.a  -lm 
 
-*/
+ */
 
 
 struct quadratic_params
@@ -34,14 +34,14 @@ main ()
   F.function = &quadratic;
   F.params = &params;
 
-  s = gsl_root_fsolver_alloc (gsl_root_fsolver_bisection, &F, x);
+  s = gsl_root_fsolver_alloc (gsl_root_fsolver_brent, &F, x);
 
   do
     {
       iterations++;
       gsl_root_fsolver_iterate (s);
       status = gsl_root_test_interval (s->interval, 0.001, 0.001);
-      printf ("%5d  %.5f [%.5f,%.5f]\n",
+      printf ("%5d  %.7f [%.7f,%.7f]\n",
 	      iterations, s->root, s->interval.lower, s->interval.upper);
     }
   while (status == GSL_CONTINUE && iterations < max_iterations);
@@ -53,7 +53,7 @@ main ()
 }
 
 
-double 
+double
 quadratic (double x, void *params)
 {
   struct quadratic_params *p = (struct quadratic_params *) params;
@@ -62,10 +62,10 @@ quadratic (double x, void *params)
   double b = p->b;
   double c = p->c;
 
-  return a * x * x + b * x + c;
+  return (a * x + b) * x + c;
 }
 
-double 
+double
 quadratic_deriv (double x, void *params)
 {
   struct quadratic_params *p = (struct quadratic_params *) params;
@@ -77,7 +77,7 @@ quadratic_deriv (double x, void *params)
   return 2.0 * a * x + b;
 }
 
-void 
+void
 quadratic_fdf (double x, void *params, double *y, double *dy)
 {
   struct quadratic_params *p = (struct quadratic_params *) params;
@@ -86,6 +86,6 @@ quadratic_fdf (double x, void *params, double *y, double *dy)
   double b = p->b;
   double c = p->c;
 
-  *y = a * x * x + b * x + c;
+  *y = (a * x + b) * x + c;
   *dy = 2.0 * a * x + b;
 }
