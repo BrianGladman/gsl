@@ -392,6 +392,8 @@ void
 rng_parallel_state_test (const gsl_rng_type * T)
 {
   unsigned long int test_a[N], test_b[N];
+  unsigned long int test_c[N], test_d[N];
+  double test_e[N], test_f[N];
 
   int i;
 
@@ -410,6 +412,10 @@ rng_parallel_state_test (const gsl_rng_type * T)
       /* check that there is no hidden state intermixed between r1 and r2 */
       test_a[i] = gsl_rng_get (r1);	
       test_b[i] = gsl_rng_get (r2);
+      test_c[i] = gsl_rng_uniform_int (r1, 1234);	
+      test_d[i] = gsl_rng_uniform_int (r2, 1234);
+      test_e[i] = gsl_rng_uniform (r1);	
+      test_f[i] = gsl_rng_uniform (r2);
     }
 
   {
@@ -417,6 +423,8 @@ rng_parallel_state_test (const gsl_rng_type * T)
     for (i = 0; i < N; ++i)
       {
 	status |= (test_b[i] != test_a[i]);
+	status |= (test_c[i] != test_d[i]);
+	status |= (test_e[i] != test_f[i]);
       }
     gsl_test (status, "%s, parallel random number state consistency",
 	      gsl_rng_name (r1));
