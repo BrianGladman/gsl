@@ -18,17 +18,14 @@ main (int argc, char *argv[])
   size_t n = 0;
   double mu, nu, nu1, nu2, sigma, a, b, p;
   unsigned int N, t, n1, n2 ;
+  unsigned long int seed = 0 ;
   const char * name ;
   gsl_rng * r ;
 
-  gsl_rng_env_setup() ;
-
-  r = gsl_rng_alloc(gsl_rng_default) ;
-
-  if (argc < 3) 
+  if (argc < 4) 
     {
       printf (
-"Usage: gsl-randist n DIST param1 param2 ...\n"
+"Usage: gsl-randist seed n DIST param1 param2 ...\n"
 "Generates n samples from the distribution DIST with parameters param1,\n"
 "param2, etc. Valid distributions are,\n"
 "\n"
@@ -37,9 +34,20 @@ main (int argc, char *argv[])
       exit (0);
     }
 
-  
+  argv++ ; seed = atol (argv[0]); argc-- ;
   argv++ ; n = atol (argv[0]); argc-- ;
   argv++ ; name = argv[0] ; argc-- ; argc-- ;
+
+  gsl_rng_env_setup() ;
+
+  if (gsl_rng_default_seed != 0) {
+    fprintf(stderr, "overriding GSL_RNG_SEED with command line value, seed = %d\n", seed) ;
+  }
+  
+  gsl_rng_default_seed = seed ;
+
+  r = gsl_rng_alloc(gsl_rng_default) ;
+
 
 #define NAME(x) !strcmp(name,(x))
 #define OUTPUT(x) for (i = 0; i < n; i++) { printf("%g\n", (x)) ; }

@@ -90,3 +90,9 @@ srcdir is always your working dir, and so $(srcdir)/.. is the
 top-level dir where gsl_math.h and gsl_complex.h are located.
 
 ----------
+
+To rebuild the top-level Makefile.am use
+
+./libfixmk.pl 
+
+in the top-level directory. It rewrites the dependencies for libgsl.a.

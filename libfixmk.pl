@@ -1,5 +1,7 @@
 #!/usr/bin/perl
 
+push(@ARGV,"Makefile") ;
+
 while (<>) {
     $line = "" ;
 
@@ -37,9 +39,20 @@ while (<>) {
     }
 }
 
+open(TMP,">Makefile.am.tmp") ;
+open(FILE,"<Makefile.am") ;
+select(TMP) ;
+while (<FILE>) {
+    last if /^libgsl.a:/ ;
+    print ;
+}
+close (FILE) ;
+
 print "libgsl.a: ", join(" ",@deps), "\n" ;
 print "\t", "\@rm -f libgsl.a\n" ;
 print join("\n", @cmds) ;
 print "\n" ;
 print "\t", "\$(RANLIB) libgsl.a\n" ;
+close(TMP) ;
 
+rename("Makefile.am.tmp","Makefile.am");
