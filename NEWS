@@ -1,5 +1,7 @@
 * What is new in gsl-0.7+:
 
+** There is a new module for handling data with ntuples
+
 ** The histogram lookup functions are now optimized for the case of
 uniform bins, and include an inline binary search for speed.
 

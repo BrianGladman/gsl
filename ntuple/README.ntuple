@@ -1,0 +1,88 @@
+A very preliminar support for ntuples has been provided.
+
+You can store in a ntuple a set of values associated to an event, than
+you can extract these data and book any combination of these values in
+an histogram using a selection function.
+
+You have to define a data structure containing the values that you
+want to store, then you can create an ntuple associating it to a file,
+writing this set of values (normally inside a loop) for each event.
+
+If you want to create histogram from ntuple data you have also to
+define a booking value returning function and a selection function.  
+
+An example of how it work is the following:
+
+struct data {
+    int num;
+    double x;
+    double y;
+    double z;
+};
+int sel_func( void * ntuple_row );
+double val_func( void * ntuple_row);
+
+int main (void)
+{
+    gsl_ntuple * ntuple;
+    struct data ntuple_row;
+    int i;
+    double x,y,z;
+    long k;
+    gsl_histogramfix * h;
+
+    ntuple = gsl_ntuple_create("ntuple.file", (void *) (&ntuple_row), 
+                               sizeof(ntuple_row));
+    k= (1<<16);
+    for (i=0; i<1000; i++) {
+        x = rand();
+        x /= k;
+        x /= k;
+        z = rand(); 
+        z /= k;
+        z /= k;
+        y = rand(); 
+        y /= k;
+        y /= k;
+        ntuple_row.x = exp(x*x/1.)/exp(1.); 
+        ntuple_row.y = exp(y*y/1.)/exp(1.); 
+        ntuple_row.z = exp(z*z/1.)/exp(1.); 
+        ntuple_row.num = i;
+        printf("x,y,z = %f,%f,%f; n=%x \n",ntuple_row.x, 
+               ntuple_row.y, ntuple_row.x, ntuple_row.num);
+        gsl_ntuple_bookdata(ntuple);
+    }
+    gsl_ntuple_close(ntuple);
+    ntuple = gsl_ntuple_open("ntuple.file", (void *) (&ntuple_row), 
+                             sizeof(ntuple_row));
+    for (i=0; i<100; i++) { 
+        gsl_ntuple_read(ntuple);
+        printf("x,y,z = %f,%f,%f; n=%d\n", ntuple_row.x, 
+               ntuple_row.z, ntuple_row.y, ntuple_row.num);
+    }
+    gsl_ntuple_close(ntuple);
+    
+    h = gsl_histogramfix_calloc(100, 0., 1.);
+    ntuple = gsl_ntuple_open("ntuple.file", (void *) (&ntuple_row), 
+                             sizeof(ntuple_row));
+    gsl_ntuple_projfix(h, ntuple, val_func, sel_func);
+    gsl_histogramfix_fprintf(stdout, h, "%f", "%f");
+
+    return 0;
+}
+
+int sel_func( void * ntuple_row ) {
+    return 1;
+}
+
+double val_func( void * ntuple_row) {
+    double x, y, z;
+    x = ((struct data *)ntuple_row)->x;
+    y = ((struct data *)ntuple_row)->y;
+    z = ((struct data *)ntuple_row)->z;
+    return x;
+}
+
+
+
+

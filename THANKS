@@ -1,5 +1,5 @@
 * Simone Piccardi <piccardi@fi.infn.it> for extensions to the
-histogram routines
+histogram routines, and providing the ntuple code
 
 * Nelson H. F. Beebe <beebe@math.utah.edu> for references and testing
 the software on many different platforms.
