@@ -62,18 +62,18 @@
 
    Additional polishing for GSL coding standards by Brian Gough.  */
 
-#define SMALL_MEAN 14		/* If n*p < SMALL_MEAN then use BINV
-				   algorithm. The ranlib
-				   implementation used cutoff=30; but
-				   on my computer 14 works better */
+#define SMALL_MEAN 14           /* If n*p < SMALL_MEAN then use BINV
+                                   algorithm. The ranlib
+                                   implementation used cutoff=30; but
+                                   on my computer 14 works better */
 
-#define BINV_CUTOFF 110		/* In BINV, do not permit ix too large */
+#define BINV_CUTOFF 110         /* In BINV, do not permit ix too large */
 
-#define FAR_FROM_MEAN 20	/* If ix-n*p is larger than this, then
-				   use the "squeeze" algorithm.
-				   Ranlib used 20, and this seems to
-				   be the best choice on my machine as
-				   well */
+#define FAR_FROM_MEAN 20        /* If ix-n*p is larger than this, then
+                                   use the "squeeze" algorithm.
+                                   Ranlib used 20, and this seems to
+                                   be the best choice on my machine as
+                                   well */
 
 #define LNFACT(x) gsl_sf_lnfact(x)
 
@@ -90,9 +90,9 @@ Stirling (double y1)
 unsigned int
 gsl_ran_binomial_tpe (const gsl_rng * rng, double pp, unsigned int n)
 {
-  int ix;			/* return value */
+  int ix;                       /* return value */
 
-  const double p = (pp > 0.5) ? 1 - pp : pp;	/* choose p=min(pp,1-pp) */
+  const double p = (pp > 0.5) ? 1 - pp : pp;    /* choose p=min(pp,1-pp) */
   const double q = 1 - p;
   const double s = p / q;
   const double np = n * p;
@@ -104,50 +104,50 @@ gsl_ran_binomial_tpe (const gsl_rng * rng, double pp, unsigned int n)
 
   if (np < SMALL_MEAN)
     {
-      double f0 = gsl_pow_int (q, n);	/* f(x), starting with x=0 */
+      double f0 = gsl_pow_int (q, n);   /* f(x), starting with x=0 */
 
       while (1)
-	{
-	  /* This while(1) loop will almost certainly only loop once; but
-	   * if u=1 to within a few epsilons of machine precision, then it
-	   * is possible for roundoff to prevent the main loop over ix to
-	   * achieve its proper value.  following the ranlib implementation,
-	   * we introduce a check for that situation, and when it occurs,
-	   * we just try again.
-	   */
+        {
+          /* This while(1) loop will almost certainly only loop once; but
+           * if u=1 to within a few epsilons of machine precision, then it
+           * is possible for roundoff to prevent the main loop over ix to
+           * achieve its proper value.  following the ranlib implementation,
+           * we introduce a check for that situation, and when it occurs,
+           * we just try again.
+           */
 
-	  double f = f0;
-	  double u = gsl_rng_uniform (rng);
+          double f = f0;
+          double u = gsl_rng_uniform (rng);
 
-	  for (ix = 0; ix <= BINV_CUTOFF; ++ix)
-	    {
-	      if (u < f)
-		goto Finish;
-	      u -= f;
-	      /* Use recursion f(x+1) = f(x)*[(n-x)/(x+1)]*[p/(1-p)] */
-	      f *= s * (n - ix) / (ix + 1);
-	    }
+          for (ix = 0; ix <= BINV_CUTOFF; ++ix)
+            {
+              if (u < f)
+                goto Finish;
+              u -= f;
+              /* Use recursion f(x+1) = f(x)*[(n-x)/(x+1)]*[p/(1-p)] */
+              f *= s * (n - ix) / (ix + 1);
+            }
 
-	  /* It should be the case that the 'goto Finish' was encountered
-	   * before this point was ever reached.  But if we have reached
-	   * this point, then roundoff has prevented u from decreasing
-	   * all the way to zero.  This can happen only if the initial u
-	   * was very nearly equal to 1, which is a rare situation.  In
-	   * that rare situation, we just try again.
-	   *
-	   * Note, following the ranlib implementation, we loop ix only to
-	   * a hardcoded value of SMALL_MEAN_LARGE_N=110; we could have
-	   * looped to n, and 99.99...% of the time it won't matter.  This
-	   * choice, I think is a little more robust against the rare
-	   * roundoff error.  If n>LARGE_N, then it is technically
-	   * possible for ix>LARGE_N, but it is astronomically rare, and
-	   * if ix is that large, it is more likely due to roundoff than
-	   * probability, so better to nip it at LARGE_N than to take a
-	   * chance that roundoff will somehow conspire to produce an even
-	   * larger (and more improbable) ix.  If n<LARGE_N, then once
-	   * ix=n, f=0, and the loop will continue until ix=LARGE_N.
-	   */
-	}
+          /* It should be the case that the 'goto Finish' was encountered
+           * before this point was ever reached.  But if we have reached
+           * this point, then roundoff has prevented u from decreasing
+           * all the way to zero.  This can happen only if the initial u
+           * was very nearly equal to 1, which is a rare situation.  In
+           * that rare situation, we just try again.
+           *
+           * Note, following the ranlib implementation, we loop ix only to
+           * a hardcoded value of SMALL_MEAN_LARGE_N=110; we could have
+           * looped to n, and 99.99...% of the time it won't matter.  This
+           * choice, I think is a little more robust against the rare
+           * roundoff error.  If n>LARGE_N, then it is technically
+           * possible for ix>LARGE_N, but it is astronomically rare, and
+           * if ix is that large, it is more likely due to roundoff than
+           * probability, so better to nip it at LARGE_N than to take a
+           * chance that roundoff will somehow conspire to produce an even
+           * larger (and more improbable) ix.  If n<LARGE_N, then once
+           * ix=n, f=0, and the loop will continue until ix=LARGE_N.
+           */
+        }
     }
   else
     {
@@ -155,11 +155,11 @@ gsl_ran_binomial_tpe (const gsl_rng * rng, double pp, unsigned int n)
 
       int k;
 
-      double ffm = np + p;	/* ffm = n*p+p             */
-      int m = (int) ffm;	/* m = int floor[n*p+p]    */
-      double fm = m;		/* fm = double m;          */
-      double xm = fm + 0.5;	/* xm = half integer mean (tip of triangle)  */
-      double npq = np * q;	/* npq = n*p*q            */
+      double ffm = np + p;      /* ffm = n*p+p             */
+      int m = (int) ffm;        /* m = int floor[n*p+p]    */
+      double fm = m;            /* fm = double m;          */
+      double xm = fm + 0.5;     /* xm = half integer mean (tip of triangle)  */
+      double npq = np * q;      /* npq = n*p*q            */
 
       /* Compute cumulative area of tri, para, exp tails */
 
@@ -193,7 +193,7 @@ gsl_ran_binomial_tpe (const gsl_rng * rng, double pp, unsigned int n)
       double p4 = p3 + c / lambda_r;
 
       double var, accept;
-      double u, v;		/* random variates */
+      double u, v;              /* random variates */
 
     TryAgain:
 
@@ -202,36 +202,36 @@ gsl_ran_binomial_tpe (const gsl_rng * rng, double pp, unsigned int n)
       v = gsl_rng_uniform (rng);
 
       if (u <= p1)
-	{
-	  /* Triangular region */
-	  ix = (int) (xm - p1 * v + u);
-	  goto Finish;
-	}
+        {
+          /* Triangular region */
+          ix = (int) (xm - p1 * v + u);
+          goto Finish;
+        }
       else if (u <= p2)
-	{
-	  /* Parallelogram region */
-	  double x = xl + (u - p1) / c;
-	  v = v * c + 1.0 - fabs (x - xm) / p1;
-	  if (v > 1.0 || v <= 0.0)
-	    goto TryAgain;
-	  ix = (int) x;
-	}
+        {
+          /* Parallelogram region */
+          double x = xl + (u - p1) / c;
+          v = v * c + 1.0 - fabs (x - xm) / p1;
+          if (v > 1.0 || v <= 0.0)
+            goto TryAgain;
+          ix = (int) x;
+        }
       else if (u <= p3)
-	{
-	  /* Left tail */
-	  ix = (int) (xl + log (v) / lambda_l);
-	  if (ix < 0)
-	    goto TryAgain;
-	  v *= ((u - p2) * lambda_l);
-	}
+        {
+          /* Left tail */
+          ix = (int) (xl + log (v) / lambda_l);
+          if (ix < 0)
+            goto TryAgain;
+          v *= ((u - p2) * lambda_l);
+        }
       else
-	{
-	  /* Right tail */
-	  ix = (int) (xr - log (v) / lambda_r);
-	  if (ix > (double)n)
-	    goto TryAgain;
-	  v *= ((u - p3) * lambda_r);
-	}
+        {
+          /* Right tail */
+          ix = (int) (xr - log (v) / lambda_r);
+          if (ix > (double)n)
+            goto TryAgain;
+          v *= ((u - p3) * lambda_r);
+        }
 
       /* At this point, the goal is to test whether v <= f(x)/f(m) 
        *
@@ -248,8 +248,8 @@ gsl_ran_binomial_tpe (const gsl_rng * rng, double pp, unsigned int n)
       var = log (v);
 
       accept =
-	LNFACT (m) + LNFACT (n - m) - LNFACT (ix) - LNFACT (n - ix)
-	+ (ix - m) * log (p / q);
+        LNFACT (m) + LNFACT (n - m) - LNFACT (ix) - LNFACT (n - ix)
+        + (ix - m) * log (p / q);
 
 #else /* SQUEEZE METHOD */
 
@@ -258,108 +258,108 @@ gsl_ran_binomial_tpe (const gsl_rng * rng, double pp, unsigned int n)
       k = abs (ix - m);
 
       if (k <= FAR_FROM_MEAN)
-	{
-	  /* 
-	   * If ix near m (ie, |ix-m|<FAR_FROM_MEAN), then do
-	   * explicit evaluation using recursion relation for f(x)
-	   */
-	  double g = (n + 1) * s;
-	  double f = 1.0;
+        {
+          /* 
+           * If ix near m (ie, |ix-m|<FAR_FROM_MEAN), then do
+           * explicit evaluation using recursion relation for f(x)
+           */
+          double g = (n + 1) * s;
+          double f = 1.0;
 
-	  var = v;
+          var = v;
 
-	  if (m < ix)
-	    {
-	      int i;
-	      for (i = m + 1; i <= ix; i++)
-		{
-		  f *= (g / i - s);
-		}
-	    }
-	  else if (m > ix)
-	    {
-	      int i;
-	      for (i = ix + 1; i <= m; i++)
-		{
-		  f /= (g / i - s);
-		}
-	    }
+          if (m < ix)
+            {
+              int i;
+              for (i = m + 1; i <= ix; i++)
+                {
+                  f *= (g / i - s);
+                }
+            }
+          else if (m > ix)
+            {
+              int i;
+              for (i = ix + 1; i <= m; i++)
+                {
+                  f /= (g / i - s);
+                }
+            }
 
-	  accept = f;
-	}
+          accept = f;
+        }
       else
-	{
-	  /* If ix is far from the mean m: k=ABS(ix-m) large */
+        {
+          /* If ix is far from the mean m: k=ABS(ix-m) large */
 
-	  var = log (v);
+          var = log (v);
 
-	  if (k < npq / 2 - 1)
-	    {
-	      /* "Squeeze" using upper and lower bounds on
-	       * log(f(x)) The squeeze condition was derived
-	       * under the condition k < npq/2-1 */
-	      double amaxp =
-		k / npq * ((k * (k / 3.0 + 0.625) + (1.0 / 6.0)) / npq + 0.5);
-	      double ynorm = -(k * k / (2.0 * npq));
-	      if (var < ynorm - amaxp)
-		goto Finish;
-	      if (var > ynorm + amaxp)
-		goto TryAgain;
-	    }
+          if (k < npq / 2 - 1)
+            {
+              /* "Squeeze" using upper and lower bounds on
+               * log(f(x)) The squeeze condition was derived
+               * under the condition k < npq/2-1 */
+              double amaxp =
+                k / npq * ((k * (k / 3.0 + 0.625) + (1.0 / 6.0)) / npq + 0.5);
+              double ynorm = -(k * k / (2.0 * npq));
+              if (var < ynorm - amaxp)
+                goto Finish;
+              if (var > ynorm + amaxp)
+                goto TryAgain;
+            }
 
-	  /* Now, again: do the test log(v) vs. log f(x)/f(M) */
+          /* Now, again: do the test log(v) vs. log f(x)/f(M) */
 
 #if USE_EXACT
-	  /* This is equivalent to the above, but is a little (~20%) slower */
-	  /* There are five log's vs three above, maybe that's it? */
+          /* This is equivalent to the above, but is a little (~20%) slower */
+          /* There are five log's vs three above, maybe that's it? */
 
-	  accept = LNFACT (m) + LNFACT (n - m)
-	    - LNFACT (ix) - LNFACT (n - ix) + (ix - m) * log (p / q);
+          accept = LNFACT (m) + LNFACT (n - m)
+            - LNFACT (ix) - LNFACT (n - ix) + (ix - m) * log (p / q);
 
 #else /* USE STIRLING */
-	  /* The "#define Stirling" above corresponds to the first five
-	   * terms in asymptoic formula for
-	   * log Gamma (y) - (y-0.5)log(y) + y - 0.5 log(2*pi);
-	   * See Abramowitz and Stegun, eq 6.1.40
-	   */
+          /* The "#define Stirling" above corresponds to the first five
+           * terms in asymptoic formula for
+           * log Gamma (y) - (y-0.5)log(y) + y - 0.5 log(2*pi);
+           * See Abramowitz and Stegun, eq 6.1.40
+           */
 
-	  /* Note below: two Stirling's are added, and two are
-	   * subtracted.  In both K+S, and in the ranlib
-	   * implementation, all four are added.  I (jt) believe that
-	   * is a mistake -- this has been confirmed by personal
-	   * correspondence w/ Dr. Kachitvichyanukul.  Note, however,
-	   * the corrections are so small, that I couldn't find an
-	   * example where it made a difference that could be
-	   * observed, let alone tested.  In fact, define'ing Stirling
-	   * to be zero gave identical results!!  In practice, alv is
-	   * O(1), ranging 0 to -10 or so, while the Stirling
-	   * correction is typically O(10^{-5}) ...setting the
-	   * correction to zero gives about a 2% performance boost;
-	   * might as well keep it just to be pendantic.  */
+          /* Note below: two Stirling's are added, and two are
+           * subtracted.  In both K+S, and in the ranlib
+           * implementation, all four are added.  I (jt) believe that
+           * is a mistake -- this has been confirmed by personal
+           * correspondence w/ Dr. Kachitvichyanukul.  Note, however,
+           * the corrections are so small, that I couldn't find an
+           * example where it made a difference that could be
+           * observed, let alone tested.  In fact, define'ing Stirling
+           * to be zero gave identical results!!  In practice, alv is
+           * O(1), ranging 0 to -10 or so, while the Stirling
+           * correction is typically O(10^{-5}) ...setting the
+           * correction to zero gives about a 2% performance boost;
+           * might as well keep it just to be pendantic.  */
 
-	  {
-	    double x1 = ix + 1.0;
-	    double w1 = n - ix + 1.0;
-	    double f1 = fm + 1.0;
-	    double z1 = n + 1.0 - fm;
+          {
+            double x1 = ix + 1.0;
+            double w1 = n - ix + 1.0;
+            double f1 = fm + 1.0;
+            double z1 = n + 1.0 - fm;
 
-	    accept = xm * log (f1 / x1) + (n - m + 0.5) * log (z1 / w1)
-	      + (ix - m) * log (w1 * p / (x1 * q))
-	      + Stirling (f1) + Stirling (z1) - Stirling (x1) - Stirling (w1);
-	  }
+            accept = xm * log (f1 / x1) + (n - m + 0.5) * log (z1 / w1)
+              + (ix - m) * log (w1 * p / (x1 * q))
+              + Stirling (f1) + Stirling (z1) - Stirling (x1) - Stirling (w1);
+          }
 #endif
 #endif
-	}
+        }
 
 
       if (var <= accept)
-	{
-	  goto Finish;
-	}
+        {
+          goto Finish;
+        }
       else
-	{
-	  goto TryAgain;
-	}
+        {
+          goto TryAgain;
+        }
     }
 
 Finish:

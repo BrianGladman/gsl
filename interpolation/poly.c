@@ -40,7 +40,7 @@ polynomial_alloc (size_t size)
   if (state == 0)
     {
       GSL_ERROR_NULL ("failed to allocate space for polynomial state",
-		      GSL_ENOMEM);
+                      GSL_ENOMEM);
     }
 
   state->d = (double *) malloc (sizeof (double) * size);
@@ -75,7 +75,7 @@ polynomial_alloc (size_t size)
 
 static int
 polynomial_init (void *vstate,
-		 const double xa[], const double ya[], size_t size)
+                 const double xa[], const double ya[], size_t size)
 {
   polynomial_state_t *state = (polynomial_state_t *) vstate;
 
@@ -86,8 +86,8 @@ polynomial_init (void *vstate,
 
 static int
 polynomial_eval (const void *vstate,
-		 const double xa[], const double ya[], size_t size, double x,
-		 gsl_interp_accel * acc, double *y)
+                 const double xa[], const double ya[], size_t size, double x,
+                 gsl_interp_accel * acc, double *y)
 {
   polynomial_state_t *state = (polynomial_state_t *) vstate;
 
@@ -99,8 +99,8 @@ polynomial_eval (const void *vstate,
 
 static int
 polynomial_deriv (const void *vstate,
-		  const double xa[], const double ya[], size_t size, double x,
-		  gsl_interp_accel * acc, double *y)
+                  const double xa[], const double ya[], size_t size, double x,
+                  gsl_interp_accel * acc, double *y)
 {
   polynomial_state_t *state = (polynomial_state_t *) vstate;
 
@@ -113,8 +113,8 @@ polynomial_deriv (const void *vstate,
 
 static int
 polynomial_deriv2 (const void *vstate,
-		   const double xa[], const double ya[], size_t size,
-		   double x, gsl_interp_accel * acc, double *y)
+                   const double xa[], const double ya[], size_t size,
+                   double x, gsl_interp_accel * acc, double *y)
 {
   polynomial_state_t *state = (polynomial_state_t *) vstate;
 
@@ -127,8 +127,8 @@ polynomial_deriv2 (const void *vstate,
 
 static int
 polynomial_integ (const void *vstate, const double xa[], const double ya[],
-		  size_t size, gsl_interp_accel * acc, double a, double b,
-		  double *result)
+                  size_t size, gsl_interp_accel * acc, double a, double b,
+                  double *result)
 {
   polynomial_state_t *state = (polynomial_state_t *) vstate;
   size_t i;

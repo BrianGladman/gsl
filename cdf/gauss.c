@@ -248,9 +248,9 @@ gsl_cdf_ugaussian_P (const double x)
       result = gauss_medium (x);
 
       if (x > 0.0)
-	{
-	  result = 1.0 - result;
-	}
+        {
+          result = 1.0 - result;
+        }
 
       return result;
     }
@@ -269,9 +269,9 @@ gsl_cdf_ugaussian_P (const double x)
       result = gauss_large (x);
 
       if (x > 0.0)
-	{
-	  result = 1.0 - result;
-	}
+        {
+          result = 1.0 - result;
+        }
     }
 
   return result;
@@ -293,13 +293,13 @@ gsl_cdf_ugaussian_Q (const double x)
       result = gauss_small (x);
 
       if (x < 0.0)
-	{
-	  result = fabs (result) + 0.5;
-	}
+        {
+          result = fabs (result) + 0.5;
+        }
       else
-	{
-	  result = 0.5 - result;
-	}
+        {
+          result = 0.5 - result;
+        }
 
       return result;
     }
@@ -308,9 +308,9 @@ gsl_cdf_ugaussian_Q (const double x)
       result = gauss_medium (x);
 
       if (x < 0.0)
-	{
-	  result = 1.0 - result;
-	}
+        {
+          result = 1.0 - result;
+        }
 
       return result;
     }
@@ -329,9 +329,9 @@ gsl_cdf_ugaussian_Q (const double x)
       result = gauss_large (x);
 
       if (x < 0.0)
-	{
-	  result = 1.0 - result;
-	}
+        {
+          result = 1.0 - result;
+        }
 
     }
 

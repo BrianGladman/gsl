@@ -47,7 +47,7 @@ rk4imp_alloc (size_t dim)
   if (state == 0)
     {
       GSL_ERROR_NULL ("failed to allocate space for rk4imp_state",
-		      GSL_ENOMEM);
+                      GSL_ENOMEM);
     }
 
   state->k1nu = (double *) malloc (dim * sizeof (double));
@@ -94,13 +94,13 @@ rk4imp_alloc (size_t dim)
 
 static int
 rk4imp_apply (void *vstate,
-	      size_t dim,
-	      double t,
-	      double h,
-	      double y[],
-	      double yerr[],
-	      const double dydt_in[],
-	      double dydt_out[], 
+              size_t dim,
+              double t,
+              double h,
+              double y[],
+              double yerr[],
+              const double dydt_in[],
+              double dydt_out[], 
               const gsl_odeiv_system * sys)
 {
   rk4imp_state_t *state = (rk4imp_state_t *) vstate;
@@ -133,21 +133,21 @@ rk4imp_apply (void *vstate,
   for (nu = 0; nu < iter_steps; nu++)
     {
       for (i = 0; i < dim; i++)
-	{
-	  ytmp1[i] =
-	    y[i] + h * (0.25 * k1nu[i] + 0.5 * (0.5 - ir3) * k2nu[i]);
-	  ytmp2[i] =
-	    y[i] + h * (0.25 * k2nu[i] + 0.5 * (0.5 + ir3) * k1nu[i]);
-	}
+        {
+          ytmp1[i] =
+            y[i] + h * (0.25 * k1nu[i] + 0.5 * (0.5 - ir3) * k2nu[i]);
+          ytmp2[i] =
+            y[i] + h * (0.25 * k2nu[i] + 0.5 * (0.5 + ir3) * k1nu[i]);
+        }
       {
-	int s =
-	  GSL_ODEIV_FN_EVAL (sys, t + 0.5 * h * (1.0 - ir3), ytmp1, k1nu);
-	GSL_STATUS_UPDATE (&status, s);
+        int s =
+          GSL_ODEIV_FN_EVAL (sys, t + 0.5 * h * (1.0 - ir3), ytmp1, k1nu);
+        GSL_STATUS_UPDATE (&status, s);
       }
       {
-	int s =
-	  GSL_ODEIV_FN_EVAL (sys, t + 0.5 * h * (1.0 + ir3), ytmp2, k2nu);
-	GSL_STATUS_UPDATE (&status, s);
+        int s =
+          GSL_ODEIV_FN_EVAL (sys, t + 0.5 * h * (1.0 + ir3), ytmp2, k2nu);
+        GSL_STATUS_UPDATE (&status, s);
       }
     }
 
@@ -156,9 +156,9 @@ rk4imp_apply (void *vstate,
     {
       const double d_i = 0.5 * (k1nu[i] + k2nu[i]);
       if (dydt_out != NULL)
-	dydt_out[i] = d_i;
+        dydt_out[i] = d_i;
       y[i] += h * d_i;
-      yerr[i] = h * h * d_i;	/* FIXME: is this an overestimate ? */
+      yerr[i] = h * h * d_i;    /* FIXME: is this an overestimate ? */
     }
 
   return status;
@@ -196,9 +196,9 @@ rk4imp_free (void *vstate)
   free (state);
 }
 
-static const gsl_odeiv_step_type rk4imp_type = { "rk4imp",	/* name */
-  1,				/* can use dydt_in */
-  0,				/* gives exact dydt_out */
+static const gsl_odeiv_step_type rk4imp_type = { "rk4imp",      /* name */
+  1,                            /* can use dydt_in */
+  0,                            /* gives exact dydt_out */
   &rk4imp_alloc,
   &rk4imp_apply,
   &rk4imp_reset,

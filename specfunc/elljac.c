@@ -71,8 +71,8 @@ gsl_sf_elljac_e(double u, double m, double * sn, double * cn, double * dn)
       c[n+1] = 0.5 * (a[n] - b[n]);
       if(n >= N - 2) {
         status = GSL_EMAXITER;
-	c[N-1] = 0.0;
-	break;
+        c[N-1] = 0.0;
+        break;
       }
       ++n;
     }

@@ -124,24 +124,24 @@ mid_trial:
 
     if (e2 != 0.0)
       {
-	du = e1 / e2;
+        du = e1 / e2;
       }
 
     if (du > 0 && du < (stepc - stepb) && fabs(du) < 0.5 * old2)
       {
-	stepm = u + du;
+        stepm = u + du;
       }
     else if (du < 0 && du > (stepa - stepb) && fabs(du) < 0.5 * old2)
       {
-	stepm = u + du;
+        stepm = u + du;
       }
     else if ((stepc - stepb) > (stepb - stepa))
       {
-	stepm = 0.38 * (stepc - stepb) + stepb;
+        stepm = 0.38 * (stepc - stepb) + stepb;
       }
     else
       {
-	stepm = stepb - 0.38 * (stepb - stepa);
+        stepm = stepb - 0.38 * (stepb - stepa);
       }
   }
 
@@ -156,28 +156,28 @@ mid_trial:
   if (fm > fb)
     {
       if (fm < fv)
-	{
-	  w = v;
-	  v = stepm;
-	  fw = fv;
-	  fv = fm;
-	}
+        {
+          w = v;
+          v = stepm;
+          fw = fv;
+          fv = fm;
+        }
       else if (fm < fw)
-	{
-	  w = stepm;
-	  fw = fm;
-	}
+        {
+          w = stepm;
+          fw = fm;
+        }
 
       if (stepm < stepb)
-	{
-	  stepa = stepm;
-	  fa = fm;
-	}
+        {
+          stepa = stepm;
+          fa = fm;
+        }
       else
-	{
-	  stepc = stepm;
-	  fc = fm;
-	}
+        {
+          stepc = stepm;
+          fc = fm;
+        }
       goto mid_trial;
     }
   else if (fm <= fb)
@@ -218,19 +218,19 @@ mid_trial:
         }
 
       if (stepm < stepb)
-	{
-	  stepc = stepb;
-	  fc = fb;
-	  stepb = stepm;
-	  fb = fm;
-	}
+        {
+          stepc = stepb;
+          fc = fb;
+          stepb = stepm;
+          fb = fm;
+        }
       else
-	{
-	  stepa = stepb;
-	  fa = fb;
-	  stepb = stepm;
-	  fb = fm;
-	}
+        {
+          stepa = stepb;
+          fa = fb;
+          stepb = stepm;
+          fb = fm;
+        }
       goto mid_trial;
     }
 }

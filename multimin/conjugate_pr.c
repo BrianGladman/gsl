@@ -98,8 +98,8 @@ conjugate_pr_alloc (void *vstate, size_t n)
 
 static int
 conjugate_pr_set (void *vstate, gsl_multimin_function_fdf * fdf,
-		  const gsl_vector * x, double *f, gsl_vector * gradient,
-		  double step_size, double tol)
+                  const gsl_vector * x, double *f, gsl_vector * gradient,
+                  double step_size, double tol)
 {
   conjugate_pr_state_t *state = (conjugate_pr_state_t *) vstate;
 
@@ -148,8 +148,8 @@ conjugate_pr_restart (void *vstate)
 
 static int
 conjugate_pr_iterate (void *vstate, gsl_multimin_function_fdf * fdf,
-		      gsl_vector * x, double *f,
-		      gsl_vector * gradient, gsl_vector * dx)
+                      gsl_vector * x, double *f,
+                      gsl_vector * gradient, gsl_vector * dx)
 {
   conjugate_pr_state_t *state = (conjugate_pr_state_t *) vstate;
 
@@ -209,7 +209,7 @@ conjugate_pr_iterate (void *vstate, gsl_multimin_function_fdf * fdf,
      xb based on parabolic interpolation */
 
   intermediate_point (fdf, x, p, dir / pnorm, pg,
-		      stepa, stepc, fa, fc, x1, dx1, gradient, &stepb, &fb);
+                      stepa, stepc, fa, fc, x1, dx1, gradient, &stepb, &fb);
 
   if (stepb == 0.0)
     {
@@ -217,8 +217,8 @@ conjugate_pr_iterate (void *vstate, gsl_multimin_function_fdf * fdf,
     }
 
   minimize (fdf, x, p, dir / pnorm,
-	    stepa, stepb, stepc, fa, fb, fc, tol,
-	    x1, dx1, x2, dx, gradient, &(state->step), f, &g1norm);
+            stepa, stepb, stepc, fa, fb, fc, tol,
+            x1, dx1, x2, dx, gradient, &(state->step), f, &g1norm);
 
   gsl_vector_memcpy (x, x2);
 
@@ -263,7 +263,7 @@ conjugate_pr_iterate (void *vstate, gsl_multimin_function_fdf * fdf,
 
 
 static const gsl_multimin_fdfminimizer_type conjugate_pr_type = {
-  "conjugate_pr",		/* name */
+  "conjugate_pr",               /* name */
   sizeof (conjugate_pr_state_t),
   &conjugate_pr_alloc,
   &conjugate_pr_set,

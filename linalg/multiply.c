@@ -40,21 +40,21 @@ gsl_linalg_matmult (const gsl_matrix * A, const gsl_matrix * B, gsl_matrix * C)
       size_t i, j, k;
 
       for (i = 0; i < C->size1; i++)
-	{
-	  for (j = 0; j < C->size2; j++)
-	    {
-	      a = gsl_matrix_get (A, i, 0);
-	      b = gsl_matrix_get (B, 0, j);
-	      temp = a * b;
-	      for (k = 1; k < A->size2; k++)
-		{
-		  a = gsl_matrix_get (A, i, k);
-		  b = gsl_matrix_get (B, k, j);
-		  temp += a * b;
-		}
-	      gsl_matrix_set (C, i, j, temp);
-	    }
-	}
+        {
+          for (j = 0; j < C->size2; j++)
+            {
+              a = gsl_matrix_get (A, i, 0);
+              b = gsl_matrix_get (B, 0, j);
+              temp = a * b;
+              for (k = 1; k < A->size2; k++)
+                {
+                  a = gsl_matrix_get (A, i, k);
+                  b = gsl_matrix_get (B, k, j);
+                  temp += a * b;
+                }
+              gsl_matrix_set (C, i, j, temp);
+            }
+        }
 
       return GSL_SUCCESS;
     }
@@ -63,8 +63,8 @@ gsl_linalg_matmult (const gsl_matrix * A, const gsl_matrix * B, gsl_matrix * C)
 
 int
 gsl_linalg_matmult_mod (const gsl_matrix * A, gsl_linalg_matrix_mod_t modA,
-		    const gsl_matrix * B, gsl_linalg_matrix_mod_t modB,
-		    gsl_matrix * C)
+                    const gsl_matrix * B, gsl_linalg_matrix_mod_t modB,
+                    gsl_matrix * C)
 {
   if (modA == GSL_LINALG_MOD_NONE && modB == GSL_LINALG_MOD_NONE)
     {
@@ -80,58 +80,58 @@ gsl_linalg_matmult_mod (const gsl_matrix * A, gsl_linalg_matrix_mod_t modA,
       size_t dim2_C = C->size2;
 
       if (modA & GSL_LINALG_MOD_TRANSPOSE)
-	SWAP_SIZE_T (dim1_A, dim2_A);
+        SWAP_SIZE_T (dim1_A, dim2_A);
       if (modB & GSL_LINALG_MOD_TRANSPOSE)
-	SWAP_SIZE_T (dim1_B, dim2_B);
+        SWAP_SIZE_T (dim1_B, dim2_B);
 
       if (dim2_A != dim1_B || dim1_A != dim1_C || dim2_B != dim2_C)
-	{
-	  GSL_ERROR ("matrix sizes are not conformant", GSL_EBADLEN);
-	}
+        {
+          GSL_ERROR ("matrix sizes are not conformant", GSL_EBADLEN);
+        }
       else
-	{
-	  double a, b;
-	  double temp;
-	  size_t i, j, k;
-	  size_t a1, a2, b1, b2;
+        {
+          double a, b;
+          double temp;
+          size_t i, j, k;
+          size_t a1, a2, b1, b2;
 
-	  for (i = 0; i < dim1_C; i++)
-	    {
-	      for (j = 0; j < dim2_C; j++)
-		{
-		  a1 = i;
-		  a2 = 0;
-		  b1 = 0;
-		  b2 = j;
-		  if (modA & GSL_LINALG_MOD_TRANSPOSE)
-		    SWAP_SIZE_T (a1, a2);
-		  if (modB & GSL_LINALG_MOD_TRANSPOSE)
-		    SWAP_SIZE_T (b1, b2);
+          for (i = 0; i < dim1_C; i++)
+            {
+              for (j = 0; j < dim2_C; j++)
+                {
+                  a1 = i;
+                  a2 = 0;
+                  b1 = 0;
+                  b2 = j;
+                  if (modA & GSL_LINALG_MOD_TRANSPOSE)
+                    SWAP_SIZE_T (a1, a2);
+                  if (modB & GSL_LINALG_MOD_TRANSPOSE)
+                    SWAP_SIZE_T (b1, b2);
 
-		  a = gsl_matrix_get (A, a1, a2);
-		  b = gsl_matrix_get (B, b1, b2);
-		  temp = a * b;
+                  a = gsl_matrix_get (A, a1, a2);
+                  b = gsl_matrix_get (B, b1, b2);
+                  temp = a * b;
 
-		  for (k = 1; k < dim2_A; k++)
-		    {
-		      a1 = i;
-		      a2 = k;
-		      b1 = k;
-		      b2 = j;
-		      if (modA & GSL_LINALG_MOD_TRANSPOSE)
-			SWAP_SIZE_T (a1, a2);
-		      if (modB & GSL_LINALG_MOD_TRANSPOSE)
-			SWAP_SIZE_T (b1, b2);
-		      a = gsl_matrix_get (A, a1, a2);
-		      b = gsl_matrix_get (B, b1, b2);
-		      temp += a * b;
-		    }
+                  for (k = 1; k < dim2_A; k++)
+                    {
+                      a1 = i;
+                      a2 = k;
+                      b1 = k;
+                      b2 = j;
+                      if (modA & GSL_LINALG_MOD_TRANSPOSE)
+                        SWAP_SIZE_T (a1, a2);
+                      if (modB & GSL_LINALG_MOD_TRANSPOSE)
+                        SWAP_SIZE_T (b1, b2);
+                      a = gsl_matrix_get (A, a1, a2);
+                      b = gsl_matrix_get (B, b1, b2);
+                      temp += a * b;
+                    }
 
-		  gsl_matrix_set (C, i, j, temp);
-		}
-	    }
+                  gsl_matrix_set (C, i, j, temp);
+                }
+            }
 
-	  return GSL_SUCCESS;
-	}
+          return GSL_SUCCESS;
+        }
     }
 }

@@ -26,42 +26,42 @@
 
 int
 gsl_poly_complex_solve_quadratic (double a, double b, double c,
-				  gsl_complex *z0, gsl_complex *z1)
+                                  gsl_complex *z0, gsl_complex *z1)
 {
   double disc = b * b - 4 * a * c;
 
   if (disc > 0)
     {
       if (b == 0)
-	{
-	  double s = fabs (0.5 * sqrt (disc) / a);
-	  GSL_REAL (*z0) = -s;
-	  GSL_IMAG (*z0) = 0;
-	  GSL_REAL (*z1) = s;
-	  GSL_IMAG (*z1) = 0;
-	}
+        {
+          double s = fabs (0.5 * sqrt (disc) / a);
+          GSL_REAL (*z0) = -s;
+          GSL_IMAG (*z0) = 0;
+          GSL_REAL (*z1) = s;
+          GSL_IMAG (*z1) = 0;
+        }
       else
-	{
-	  double sgnb = (b > 0 ? 1 : -1);
-	  double temp = -0.5 * (b + sgnb * sqrt (disc));
-	  double r1 = temp / a;
-	  double r2 = c / temp;
+        {
+          double sgnb = (b > 0 ? 1 : -1);
+          double temp = -0.5 * (b + sgnb * sqrt (disc));
+          double r1 = temp / a;
+          double r2 = c / temp;
 
-	  if (r1 < r2)
-	    {
-	      GSL_REAL (*z0) = r1;
-	      GSL_IMAG (*z0) = 0;
-	      GSL_REAL (*z1) = r2;
-	      GSL_IMAG (*z1) = 0;
-	    }
-	  else
-	    {
-	      GSL_REAL (*z0) = r2;
-	      GSL_IMAG (*z0) = 0;
-	      GSL_REAL (*z1) = r1;
-	      GSL_IMAG (*z1) = 0;
-	    }
-	}
+          if (r1 < r2)
+            {
+              GSL_REAL (*z0) = r1;
+              GSL_IMAG (*z0) = 0;
+              GSL_REAL (*z1) = r2;
+              GSL_IMAG (*z1) = 0;
+            }
+          else
+            {
+              GSL_REAL (*z0) = r2;
+              GSL_IMAG (*z0) = 0;
+              GSL_REAL (*z1) = r1;
+              GSL_IMAG (*z1) = 0;
+            }
+        }
       return 2;
     }
   else if (disc == 0)

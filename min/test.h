@@ -21,19 +21,19 @@ gsl_function create_function (double (*f)(double, void *));
 
 void
 test_f_e (const gsl_min_fminimizer_type * T, 
-	  const char * description, gsl_function *f,
-	  double lower_bound, double minimum, double upper_bound, 
+          const char * description, gsl_function *f,
+          double lower_bound, double minimum, double upper_bound, 
           double correct_minimum);
 
 void
 test_f (const gsl_min_fminimizer_type * T, 
         const char * description, gsl_function *f,
-	double lower_bound, double middle, double upper_bound, 
+        double lower_bound, double middle, double upper_bound, 
         double correct_minimum);
 
 int
 test_bracket (const char * description,gsl_function *f,double lower_bound, 
-	      double upper_bound, unsigned int max);
+              double upper_bound, unsigned int max);
 
 double f_cos (double x, void * p);
 double func1 (double x, void * p);

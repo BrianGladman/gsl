@@ -96,17 +96,17 @@ int test_gamma(void)
 
   TEST_SF_2(s, gsl_sf_lngamma_complex_e, (5.0, 2.0, &r1, &r2),
             2.7487017561338026749, TEST_TOL0,
-	    3.0738434100497007915, TEST_TOL0,
+            3.0738434100497007915, TEST_TOL0,
             GSL_SUCCESS);
-	    
+            
   TEST_SF_2(s, gsl_sf_lngamma_complex_e, (100.0, 100.0, &r1, &r2),
             315.07804459949331323, TEST_TOL1,
-	    2.0821801804113110099, TEST_TOL3,
+            2.0821801804113110099, TEST_TOL3,
             GSL_SUCCESS);
 
   TEST_SF_2(s, gsl_sf_lngamma_complex_e, (100.0, -1000.0, &r1, &r2),
             -882.3920483010362817000, TEST_TOL1,
-	    -2.1169293725678813270, TEST_TOL3,
+            -2.1169293725678813270, TEST_TOL3,
             GSL_SUCCESS);
 
   TEST_SF_2(s, gsl_sf_lngamma_complex_e, (-100.0, -1.0, &r1, &r2),

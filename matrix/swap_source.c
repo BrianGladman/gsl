@@ -19,7 +19,7 @@
 
 int
 FUNCTION (gsl_matrix, swap_rows) (TYPE (gsl_matrix) * m,
-				 const size_t i, const size_t j)
+                                 const size_t i, const size_t j)
 {
   const size_t size1 = m->size1;
   const size_t size2 = m->size2;

@@ -39,19 +39,19 @@
       BASE tmp = X[ix];
       INDEX jx = ix + incX;
       for (j = i + 1; j < N; j++) {
-	const BASE Aij = Ap[TPUP(N, i, j)];
-	tmp -= Aij * X[jx];
-	jx += incX;
+        const BASE Aij = Ap[TPUP(N, i, j)];
+        tmp -= Aij * X[jx];
+        jx += incX;
       }
       if (nonunit) {
-	X[ix] = tmp / Ap[TPUP(N, i, i)];
+        X[ix] = tmp / Ap[TPUP(N, i, i)];
       } else {
-	X[ix] = tmp;
+        X[ix] = tmp;
       }
       ix -= incX;
     }
   } else if ((order == CblasRowMajor && Trans == CblasNoTrans && Uplo == CblasLower)
-	     || (order == CblasColMajor && Trans == CblasTrans && Uplo == CblasUpper)) {
+             || (order == CblasColMajor && Trans == CblasTrans && Uplo == CblasUpper)) {
 
     /* forward substitution */
     INDEX ix = OFFSET(N, incX);
@@ -63,19 +63,19 @@
       BASE tmp = X[ix];
       INDEX jx = OFFSET(N, incX);
       for (j = 0; j < i; j++) {
-	const BASE Aij = Ap[TPLO(N, i, j)];
-	tmp -= Aij * X[jx];
-	jx += incX;
+        const BASE Aij = Ap[TPLO(N, i, j)];
+        tmp -= Aij * X[jx];
+        jx += incX;
       }
       if (nonunit) {
-	X[ix] = tmp / Ap[TPLO(N, i, j)];
+        X[ix] = tmp / Ap[TPLO(N, i, j)];
       } else {
-	X[ix] = tmp;
+        X[ix] = tmp;
       }
       ix += incX;
     }
   } else if ((order == CblasRowMajor && Trans == CblasTrans && Uplo == CblasUpper)
-	     || (order == CblasColMajor && Trans == CblasNoTrans && Uplo == CblasLower)) {
+             || (order == CblasColMajor && Trans == CblasNoTrans && Uplo == CblasLower)) {
 
     /* form  x := inv( A' )*x */
 
@@ -89,19 +89,19 @@
       BASE tmp = X[ix];
       INDEX jx = OFFSET(N, incX);
       for (j = 0; j < i; j++) {
-	const BASE Aji = Ap[TPUP(N, j, i)];
-	tmp -= Aji * X[jx];
-	jx += incX;
+        const BASE Aji = Ap[TPUP(N, j, i)];
+        tmp -= Aji * X[jx];
+        jx += incX;
       }
       if (nonunit) {
-	X[ix] = tmp / Ap[TPUP(N, i, i)];
+        X[ix] = tmp / Ap[TPUP(N, i, i)];
       } else {
-	X[ix] = tmp;
+        X[ix] = tmp;
       }
       ix += incX;
     }
   } else if ((order == CblasRowMajor && Trans == CblasTrans && Uplo == CblasLower)
-	     || (order == CblasColMajor && Trans == CblasNoTrans && Uplo == CblasUpper)) {
+             || (order == CblasColMajor && Trans == CblasNoTrans && Uplo == CblasUpper)) {
 
     /* backsubstitution */
     INDEX ix = OFFSET(N, incX) + (N - 1) * incX;
@@ -113,14 +113,14 @@
       BASE tmp = X[ix];
       INDEX jx = ix + incX;
       for (j = i + 1; j < N; j++) {
-	const BASE Aji = Ap[TPLO(N, j, i)];
-	tmp -= Aji * X[jx];
-	jx += incX;
+        const BASE Aji = Ap[TPLO(N, j, i)];
+        tmp -= Aji * X[jx];
+        jx += incX;
       }
       if (nonunit) {
-	X[ix] = tmp / Ap[TPLO(N, i, i)];
+        X[ix] = tmp / Ap[TPLO(N, i, i)];
       } else {
-	X[ix] = tmp;
+        X[ix] = tmp;
       }
       ix -= incX;
     }

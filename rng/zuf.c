@@ -30,7 +30,7 @@ static inline unsigned long int zuf_get (void *vstate);
 static double zuf_get_double (void *vstate);
 static void zuf_set (void *state, unsigned long int s);
 
-static const unsigned long int zuf_randmax = 16777216;	/* 2^24 */
+static const unsigned long int zuf_randmax = 16777216;  /* 2^24 */
 
 typedef struct
   {
@@ -99,7 +99,7 @@ zuf_set (void *vstate, unsigned long int s)
 /*  variable seed should be 0 < seed <31328 */
 
   if (s == 0)
-    s = 1802;	/* default seed is 1802 */
+    s = 1802;   /* default seed is 1802 */
 
   ij = s;
 
@@ -113,26 +113,26 @@ zuf_set (void *vstate, unsigned long int s)
       y = 0.5;
       /* 24 bits?? */
       for (jj = 1; jj <= 24; ++jj)
-	{
-	  m = i * j % 179 * k % 179;
-	  i = j;
-	  j = k;
-	  k = m;
-	  l = (l * 53 + 1) % 169;
-	  if (l * m % 64 >= 32)
-	    {
-	      x += y;
-	    }
-	  y *= 0.5;
-	}
+        {
+          m = i * j % 179 * k % 179;
+          i = j;
+          j = k;
+          k = m;
+          l = (l * 53 + 1) % 169;
+          if (l * m % 64 >= 32)
+            {
+              x += y;
+            }
+          y *= 0.5;
+        }
       state->u[ii] = (unsigned long int) (x * zuf_randmax);
     }
 }
 
 static const gsl_rng_type zuf_type =
-{"zuf",				/* name */
- 0x00ffffffUL,			/* RAND_MAX */
- 0,				/* RAND_MIN */
+{"zuf",                         /* name */
+ 0x00ffffffUL,                  /* RAND_MAX */
+ 0,                             /* RAND_MIN */
  sizeof (zuf_state_t),
  &zuf_set,
  &zuf_get,

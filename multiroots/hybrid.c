@@ -61,17 +61,17 @@ hybrid_state_t;
 
 static int hybrid_alloc (void *vstate, size_t n);
 static int hybrid_set (void *vstate, gsl_multiroot_function * func,
-		       gsl_vector * x, gsl_vector * f, gsl_vector * dx);
+                       gsl_vector * x, gsl_vector * f, gsl_vector * dx);
 static int hybrids_set (void *vstate, gsl_multiroot_function * func,
-			gsl_vector * x, gsl_vector * f, gsl_vector * dx);
+                        gsl_vector * x, gsl_vector * f, gsl_vector * dx);
 static int set (void *vstate, gsl_multiroot_function * func, gsl_vector * x,
-		gsl_vector * f, gsl_vector * dx, int scale);
+                gsl_vector * f, gsl_vector * dx, int scale);
 static int hybrid_iterate (void *vstate, gsl_multiroot_function * func,
-			   gsl_vector * x, gsl_vector * f, gsl_vector * dx);
+                           gsl_vector * x, gsl_vector * f, gsl_vector * dx);
 static void hybrid_free (void *vstate);
 static int iterate (void *vstate, gsl_multiroot_function * func,
-		    gsl_vector * x, gsl_vector * f, gsl_vector * dx,
-		    int scale);
+                    gsl_vector * x, gsl_vector * f, gsl_vector * dx,
+                    int scale);
 
 static int
 hybrid_alloc (void *vstate, size_t n)
@@ -341,7 +341,7 @@ hybrid_alloc (void *vstate, size_t n)
 
 static int
 hybrid_set (void *vstate, gsl_multiroot_function * func, gsl_vector * x,
-	    gsl_vector * f, gsl_vector * dx)
+            gsl_vector * f, gsl_vector * dx)
 {
   int status = set (vstate, func, x, f, dx, 0);
   return status;
@@ -349,7 +349,7 @@ hybrid_set (void *vstate, gsl_multiroot_function * func, gsl_vector * x,
 
 static int
 hybrids_set (void *vstate, gsl_multiroot_function * func, gsl_vector * x,
-	     gsl_vector * f, gsl_vector * dx)
+             gsl_vector * f, gsl_vector * dx)
 {
   int status = set (vstate, func, x, f, dx, 1);
   return status;
@@ -419,7 +419,7 @@ set (void *vstate, gsl_multiroot_function * func, gsl_vector * x,
 
 static int
 hybrid_iterate (void *vstate, gsl_multiroot_function * func, gsl_vector * x,
-		gsl_vector * f, gsl_vector * dx)
+                gsl_vector * f, gsl_vector * dx)
 {
   int status = iterate (vstate, func, x, f, dx, 0);
   return status;
@@ -427,7 +427,7 @@ hybrid_iterate (void *vstate, gsl_multiroot_function * func, gsl_vector * x,
 
 static int
 hybrids_iterate (void *vstate, gsl_multiroot_function * func, gsl_vector * x,
-		 gsl_vector * f, gsl_vector * dx)
+                 gsl_vector * f, gsl_vector * dx)
 {
   int status = iterate (vstate, func, x, f, dx, 1);
   return status;
@@ -435,7 +435,7 @@ hybrids_iterate (void *vstate, gsl_multiroot_function * func, gsl_vector * x,
 
 static int
 iterate (void *vstate, gsl_multiroot_function * func, gsl_vector * x,
-	 gsl_vector * f, gsl_vector * dx, int scale)
+         gsl_vector * f, gsl_vector * dx, int scale)
 {
   hybrid_state_t *state = (hybrid_state_t *) vstate;
 
@@ -477,9 +477,9 @@ iterate (void *vstate, gsl_multiroot_function * func, gsl_vector * x,
   if (state->iter == 1)
     {
       if (pnorm < state->delta)
-	{
-	  state->delta = pnorm;
-	}
+        {
+          state->delta = pnorm;
+        }
     }
 
   /* Evaluate function at x + p */
@@ -489,7 +489,7 @@ iterate (void *vstate, gsl_multiroot_function * func, gsl_vector * x,
 
     if (status != GSL_SUCCESS)
       {
-	return GSL_EBADFUNC;
+        return GSL_EBADFUNC;
       }
   }
 
@@ -538,9 +538,9 @@ iterate (void *vstate, gsl_multiroot_function * func, gsl_vector * x,
       state->ncsuc++;
 
       if (ratio >= p5 || state->ncsuc > 1)
-	state->delta = GSL_MAX (state->delta, pnorm / p5);
+        state->delta = GSL_MAX (state->delta, pnorm / p5);
       if (fabs (ratio - 1) <= p1)
-	state->delta = pnorm / p5;
+        state->delta = pnorm / p5;
     }
 
   /* Test for successful iteration */
@@ -569,16 +569,16 @@ iterate (void *vstate, gsl_multiroot_function * func, gsl_vector * x,
       state->nslow2++;
 
       if (state->iter == 1)
-	{
-	  if (scale)
-	    compute_diag (J, diag);
-	  state->delta = compute_delta (diag, x);
-	}
+        {
+          if (scale)
+            compute_diag (J, diag);
+          state->delta = compute_delta (diag, x);
+        }
       else
-	{
-	  if (scale)
-	    update_diag (J, diag);
-	}
+        {
+          if (scale)
+            update_diag (J, diag);
+        }
 
       /* Factorize J into QR decomposition */
 
@@ -639,7 +639,7 @@ hybrid_free (void *vstate)
 }
 
 static const gsl_multiroot_fsolver_type hybrid_type = {
-  "hybrid",			/* name */
+  "hybrid",                     /* name */
   sizeof (hybrid_state_t),
   &hybrid_alloc,
   &hybrid_set,
@@ -648,7 +648,7 @@ static const gsl_multiroot_fsolver_type hybrid_type = {
 };
 
 static const gsl_multiroot_fsolver_type hybrids_type = {
-  "hybrids",			/* name */
+  "hybrids",                    /* name */
   sizeof (hybrid_state_t),
   &hybrid_alloc,
   &hybrids_set,

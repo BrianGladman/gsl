@@ -71,9 +71,9 @@ gsl_ran_gaussian_ratio_method (const gsl_rng * r, const double sigma)
     {
       v = gsl_rng_uniform (r);
       do
-	{
-	  u = gsl_rng_uniform (r);
-	}
+        {
+          u = gsl_rng_uniform (r);
+        }
       while (u == 0);
       /* Const 1.715... = sqrt(8/e) */
       x = 1.71552776992141359295 * (v - 0.5) / u;

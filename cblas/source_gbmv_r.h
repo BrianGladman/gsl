@@ -69,26 +69,26 @@
       const INDEX j_max = GSL_MIN(lenX, i + U + 1);
       INDEX jx = OFFSET(lenX, incX) + j_min * incX;
       for (j = j_min; j < j_max; j++) {
-	temp += X[jx] * A[(L - i + j) + i * lda];
-	jx += incX;
+        temp += X[jx] * A[(L - i + j) + i * lda];
+        jx += incX;
       }
       Y[iy] += alpha * temp;
       iy += incY;
     }
   } else if ((order == CblasRowMajor && Trans == CblasTrans)
-	     || (order == CblasColMajor && Trans == CblasNoTrans)) {
+             || (order == CblasColMajor && Trans == CblasNoTrans)) {
     /* form  y := alpha*A'*x + y */
     INDEX jx = OFFSET(lenX, incX);
     for (j = 0; j < lenX; j++) {
       const BASE temp = alpha * X[jx];
       if (temp != 0.0) {
-	const INDEX i_min = (j > U ? j - U : 0);
-	const INDEX i_max = GSL_MIN(lenY, j + L + 1);
-	INDEX iy = OFFSET(lenY, incY) + i_min * incY;
-	for (i = i_min; i < i_max; i++) {
-	  Y[iy] += temp * A[lda * j + (U + i - j)];
-	  iy += incY;
-	}
+        const INDEX i_min = (j > U ? j - U : 0);
+        const INDEX i_max = GSL_MIN(lenY, j + L + 1);
+        INDEX iy = OFFSET(lenY, incY) + i_min * incY;
+        for (i = i_min; i < i_max; i++) {
+          Y[iy] += temp * A[lda * j + (U + i - j)];
+          iy += incY;
+        }
       }
       jx += incX;
     }

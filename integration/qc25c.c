@@ -51,16 +51,16 @@ qc25c (gsl_function * f, double a, double b, double c,
       weighted_function.params = &fn_params;
 
       gsl_integration_qk15 (&weighted_function, a, b, result, abserr,
-			    &resabs, &resasc);
+                            &resabs, &resasc);
       
       if (*abserr == resasc)
-	{
-	  *err_reliable = 0;
-	}
+        {
+          *err_reliable = 0;
+        }
       else 
-	{
-	  *err_reliable = 1;
-	}
+        {
+          *err_reliable = 1;
+        }
 
       return;
     }
@@ -73,14 +73,14 @@ qc25c (gsl_function * f, double a, double b, double c,
       compute_moments (cc, moment);
 
       for (i = 0; i < 13; i++)
-	{
-	  res12 += cheb12[i] * moment[i];
-	}
+        {
+          res12 += cheb12[i] * moment[i];
+        }
 
       for (i = 0; i < 25; i++)
-	{
-	  res24 += cheb24[i] * moment[i];
-	}
+        {
+          res24 += cheb24[i] * moment[i];
+        }
 
       *result = res24;
       *abserr = fabs(res24 - res12) ;
@@ -115,14 +115,14 @@ compute_moments (double cc, double *moment)
       double a2;
 
       if ((k % 2) == 0)
-	{
-	  a2 = 2.0 * cc * a1 - a0;
-	}
+        {
+          a2 = 2.0 * cc * a1 - a0;
+        }
       else
-	{
-	  const double km1 = k - 1.0;
-	  a2 = 2.0 * cc * a1 - a0 - 4.0 / (km1 * km1 - 1.0);
-	}
+        {
+          const double km1 = k - 1.0;
+          a2 = 2.0 * cc * a1 - a0 - 4.0 / (km1 * km1 - 1.0);
+        }
 
       moment[k] = a2;
 

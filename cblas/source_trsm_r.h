@@ -43,25 +43,25 @@
 
     if (alpha != 1.0) {
       for (i = 0; i < n1; i++) {
-	for (j = 0; j < n2; j++) {
-	  B[ldb * i + j] *= alpha;
-	}
+        for (j = 0; j < n2; j++) {
+          B[ldb * i + j] *= alpha;
+        }
       }
     }
 
     for (i = n1; i > 0 && i--;) {
       if (nonunit) {
-	BASE Aii = A[lda * i + i];
-	for (j = 0; j < n2; j++) {
-	  B[ldb * i + j] /= Aii;
-	}
+        BASE Aii = A[lda * i + i];
+        for (j = 0; j < n2; j++) {
+          B[ldb * i + j] /= Aii;
+        }
       }
 
       for (k = 0; k < i; k++) {
-	const BASE Aki = A[k * lda + i];
-	for (j = 0; j < n2; j++) {
-	  B[ldb * k + j] -= Aki * B[ldb * i + j];
-	}
+        const BASE Aki = A[k * lda + i];
+        for (j = 0; j < n2; j++) {
+          B[ldb * k + j] -= Aki * B[ldb * i + j];
+        }
       }
     }
 
@@ -71,25 +71,25 @@
 
     if (alpha != 1.0) {
       for (i = 0; i < n1; i++) {
-	for (j = 0; j < n2; j++) {
-	  B[ldb * i + j] *= alpha;
-	}
+        for (j = 0; j < n2; j++) {
+          B[ldb * i + j] *= alpha;
+        }
       }
     }
 
     for (i = 0; i < n1; i++) {
       if (nonunit) {
-	BASE Aii = A[lda * i + i];
-	for (j = 0; j < n2; j++) {
-	  B[ldb * i + j] /= Aii;
-	}
+        BASE Aii = A[lda * i + i];
+        for (j = 0; j < n2; j++) {
+          B[ldb * i + j] /= Aii;
+        }
       }
 
       for (k = i + 1; k < n1; k++) {
-	const BASE Aik = A[i * lda + k];
-	for (j = 0; j < n2; j++) {
-	  B[ldb * k + j] -= Aik * B[ldb * i + j];
-	}
+        const BASE Aik = A[i * lda + k];
+        for (j = 0; j < n2; j++) {
+          B[ldb * k + j] -= Aik * B[ldb * i + j];
+        }
       }
     }
 
@@ -100,25 +100,25 @@
 
     if (alpha != 1.0) {
       for (i = 0; i < n1; i++) {
-	for (j = 0; j < n2; j++) {
-	  B[ldb * i + j] *= alpha;
-	}
+        for (j = 0; j < n2; j++) {
+          B[ldb * i + j] *= alpha;
+        }
       }
     }
 
     for (i = 0; i < n1; i++) {
       if (nonunit) {
-	BASE Aii = A[lda * i + i];
-	for (j = 0; j < n2; j++) {
-	  B[ldb * i + j] /= Aii;
-	}
+        BASE Aii = A[lda * i + i];
+        for (j = 0; j < n2; j++) {
+          B[ldb * i + j] /= Aii;
+        }
       }
 
       for (k = i + 1; k < n1; k++) {
-	const BASE Aki = A[k * lda + i];
-	for (j = 0; j < n2; j++) {
-	  B[ldb * k + j] -= Aki * B[ldb * i + j];
-	}
+        const BASE Aki = A[k * lda + i];
+        for (j = 0; j < n2; j++) {
+          B[ldb * k + j] -= Aki * B[ldb * i + j];
+        }
       }
     }
 
@@ -129,25 +129,25 @@
 
     if (alpha != 1.0) {
       for (i = 0; i < n1; i++) {
-	for (j = 0; j < n2; j++) {
-	  B[ldb * i + j] *= alpha;
-	}
+        for (j = 0; j < n2; j++) {
+          B[ldb * i + j] *= alpha;
+        }
       }
     }
 
     for (i = n1; i > 0 && i--;) {
       if (nonunit) {
-	BASE Aii = A[lda * i + i];
-	for (j = 0; j < n2; j++) {
-	  B[ldb * i + j] /= Aii;
-	}
+        BASE Aii = A[lda * i + i];
+        for (j = 0; j < n2; j++) {
+          B[ldb * i + j] /= Aii;
+        }
       }
 
       for (k = 0; k < i; k++) {
-	const BASE Aik = A[i * lda + k];
-	for (j = 0; j < n2; j++) {
-	  B[ldb * k + j] -= Aik * B[ldb * i + j];
-	}
+        const BASE Aik = A[i * lda + k];
+        for (j = 0; j < n2; j++) {
+          B[ldb * k + j] -= Aik * B[ldb * i + j];
+        }
       }
     }
 
@@ -157,25 +157,25 @@
 
     if (alpha != 1.0) {
       for (i = 0; i < n1; i++) {
-	for (j = 0; j < n2; j++) {
-	  B[ldb * i + j] *= alpha;
-	}
+        for (j = 0; j < n2; j++) {
+          B[ldb * i + j] *= alpha;
+        }
       }
     }
 
     for (i = 0; i < n1; i++) {
       for (j = 0; j < n2; j++) {
-	if (nonunit) {
-	  BASE Ajj = A[lda * j + j];
-	  B[ldb * i + j] /= Ajj;
-	}
+        if (nonunit) {
+          BASE Ajj = A[lda * j + j];
+          B[ldb * i + j] /= Ajj;
+        }
 
-	{
-	  BASE Bij = B[ldb * i + j];
-	  for (k = j + 1; k < n2; k++) {
-	    B[ldb * i + k] -= A[j * lda + k] * Bij;
-	  }
-	}
+        {
+          BASE Bij = B[ldb * i + j];
+          for (k = j + 1; k < n2; k++) {
+            B[ldb * i + k] -= A[j * lda + k] * Bij;
+          }
+        }
       }
     }
 
@@ -185,26 +185,26 @@
 
     if (alpha != 1.0) {
       for (i = 0; i < n1; i++) {
-	for (j = 0; j < n2; j++) {
-	  B[ldb * i + j] *= alpha;
-	}
+        for (j = 0; j < n2; j++) {
+          B[ldb * i + j] *= alpha;
+        }
       }
     }
 
     for (i = 0; i < n1; i++) {
       for (j = n2; j > 0 && j--;) {
 
-	if (nonunit) {
-	  BASE Ajj = A[lda * j + j];
-	  B[ldb * i + j] /= Ajj;
-	}
+        if (nonunit) {
+          BASE Ajj = A[lda * j + j];
+          B[ldb * i + j] /= Ajj;
+        }
 
-	{
-	  BASE Bij = B[ldb * i + j];
-	  for (k = 0; k < j; k++) {
-	    B[ldb * i + k] -= A[k * lda + j] * Bij;
-	  }
-	}
+        {
+          BASE Bij = B[ldb * i + j];
+          for (k = 0; k < j; k++) {
+            B[ldb * i + k] -= A[k * lda + j] * Bij;
+          }
+        }
       }
     }
 
@@ -215,26 +215,26 @@
 
     if (alpha != 1.0) {
       for (i = 0; i < n1; i++) {
-	for (j = 0; j < n2; j++) {
-	  B[ldb * i + j] *= alpha;
-	}
+        for (j = 0; j < n2; j++) {
+          B[ldb * i + j] *= alpha;
+        }
       }
     }
 
     for (i = 0; i < n1; i++) {
       for (j = n2; j > 0 && j--;) {
 
-	if (nonunit) {
-	  BASE Ajj = A[lda * j + j];
-	  B[ldb * i + j] /= Ajj;
-	}
+        if (nonunit) {
+          BASE Ajj = A[lda * j + j];
+          B[ldb * i + j] /= Ajj;
+        }
 
-	{
-	  BASE Bij = B[ldb * i + j];
-	  for (k = 0; k < j; k++) {
-	    B[ldb * i + k] -= A[j * lda + k] * Bij;
-	  }
-	}
+        {
+          BASE Bij = B[ldb * i + j];
+          for (k = 0; k < j; k++) {
+            B[ldb * i + k] -= A[j * lda + k] * Bij;
+          }
+        }
       }
     }
 
@@ -245,25 +245,25 @@
 
     if (alpha != 1.0) {
       for (i = 0; i < n1; i++) {
-	for (j = 0; j < n2; j++) {
-	  B[ldb * i + j] *= alpha;
-	}
+        for (j = 0; j < n2; j++) {
+          B[ldb * i + j] *= alpha;
+        }
       }
     }
 
     for (i = 0; i < n1; i++) {
       for (j = 0; j < n2; j++) {
-	if (nonunit) {
-	  BASE Ajj = A[lda * j + j];
-	  B[ldb * i + j] /= Ajj;
-	}
+        if (nonunit) {
+          BASE Ajj = A[lda * j + j];
+          B[ldb * i + j] /= Ajj;
+        }
 
-	{
-	  BASE Bij = B[ldb * i + j];
-	  for (k = j + 1; k < n2; k++) {
-	    B[ldb * i + k] -= A[k * lda + j] * Bij;
-	  }
-	}
+        {
+          BASE Bij = B[ldb * i + j];
+          for (k = j + 1; k < n2; k++) {
+            B[ldb * i + k] -= A[k * lda + j] * Bij;
+          }
+        }
       }
     }
 

@@ -35,45 +35,45 @@
  Chebyshev expansions: based on SLATEC e1.f, W. Fullerton
  
  Series for AE11       on the interval -1.00000D-01 to  0.
-					with weighted error   1.76E-17
-					 log weighted error  16.75
-			       significant figures required  15.70
-				    decimal places required  17.55
+                                        with weighted error   1.76E-17
+                                         log weighted error  16.75
+                               significant figures required  15.70
+                                    decimal places required  17.55
 
 
  Series for AE12       on the interval -2.50000D-01 to -1.00000D-01
-					with weighted error   5.83E-17
-					 log weighted error  16.23
-			       significant figures required  15.76
-				    decimal places required  16.93
+                                        with weighted error   5.83E-17
+                                         log weighted error  16.23
+                               significant figures required  15.76
+                                    decimal places required  16.93
 
 
  Series for E11        on the interval -4.00000D+00 to -1.00000D+00
-					with weighted error   1.08E-18
-					 log weighted error  17.97
-			       significant figures required  19.02
-				    decimal places required  18.61
+                                        with weighted error   1.08E-18
+                                         log weighted error  17.97
+                               significant figures required  19.02
+                                    decimal places required  18.61
 
 
  Series for E12        on the interval -1.00000D+00 to  1.00000D+00
-					with weighted error   3.15E-18
-					 log weighted error  17.50
-			approx significant figures required  15.8
-				    decimal places required  18.10
+                                        with weighted error   3.15E-18
+                                         log weighted error  17.50
+                        approx significant figures required  15.8
+                                    decimal places required  18.10
 
 
  Series for AE13       on the interval  2.50000D-01 to  1.00000D+00
-					with weighted error   2.34E-17
-					 log weighted error  16.63
-			       significant figures required  16.14
-				    decimal places required  17.33
+                                        with weighted error   2.34E-17
+                                         log weighted error  16.63
+                               significant figures required  16.14
+                                    decimal places required  17.33
 
 
- Series for AE14       on the interval  0.	    to  2.50000D-01
-					with weighted error   5.41E-17
-					 log weighted error  16.27
-			       significant figures required  15.38
-				    decimal places required  16.97
+ Series for AE14       on the interval  0.          to  2.50000D-01
+                                        with weighted error   5.41E-17
+                                         log weighted error  16.27
+                               significant figures required  15.38
+                                    decimal places required  16.97
 */
 
 static double AE11_data[39] = {

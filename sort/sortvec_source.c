@@ -29,14 +29,14 @@ FUNCTION (my, downheap) (BASE * data, const size_t stride, const size_t N, size_
       size_t j = 2 * k;
 
       if (j < N && data[j * stride] < data[(j + 1) * stride])
-	{
-	  j++;
-	}
+        {
+          j++;
+        }
 
       if (v >= data[j * stride])
-	{
-	  break;
-	}
+        {
+          break;
+        }
 
       data[k * stride] = data[j * stride];
 
@@ -54,7 +54,7 @@ TYPE (gsl_sort) (BASE * data, const size_t stride, const size_t n)
 
   if (n == 0)
     {
-      return;			/* No data to sort */
+      return;                   /* No data to sort */
     }
 
   /* We have n_data elements, last element is at 'n_data-1', first at
@@ -63,7 +63,7 @@ TYPE (gsl_sort) (BASE * data, const size_t stride, const size_t n)
   N = n - 1;
 
   k = N / 2;
-  k++;				/* Compensate the first use of 'k--' */
+  k++;                          /* Compensate the first use of 'k--' */
   do
     {
       k--;

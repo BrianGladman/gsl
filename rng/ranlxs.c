@@ -40,11 +40,11 @@ static const int next[12] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 0};
 static const int snext[24] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
                               14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 0};
 
-static const double sbase = 16777216.0;		/* 2^24 */
-static const double sone_bit = 1.0 / 16777216.0;	/* 1/2^24 */
-static const double one_bit = 1.0 / 281474976710656.0;	/* 1/2^48 */
+static const double sbase = 16777216.0;         /* 2^24 */
+static const double sone_bit = 1.0 / 16777216.0;        /* 1/2^24 */
+static const double one_bit = 1.0 / 281474976710656.0;  /* 1/2^48 */
 
-static const double shift = 268435456.0;	/* 2^28 */
+static const double shift = 268435456.0;        /* 2^28 */
 
 #define RANLUX_STEP(x1,x2,i1,i2,i3)      \
           x1=xdbl[i1] - xdbl[i2];        \
@@ -88,14 +88,14 @@ increment_state (ranlxs_state_t * state)
       y1 = xdbl[jr] - xdbl[ir];
       y2 = y1 - carry;
       if (y2 < 0)
-	{
-	  carry = one_bit;
-	  y2 += 1;
-	}
+        {
+          carry = one_bit;
+          y2 += 1;
+        }
       else
-	{
-	  carry = 0;
-	}
+        {
+          carry = 0;
+        }
       xdbl[ir] = y2;
       ir = next[ir];
       jr = next[jr];
@@ -121,14 +121,14 @@ increment_state (ranlxs_state_t * state)
       RANLUX_STEP (y3, y2, 6, 11, 10);
 
       if (y3 < 0)
-	{
-	  carry = one_bit;
-	  y3 += 1;
-	}
+        {
+          carry = one_bit;
+          y3 += 1;
+        }
       else
-	{
-	  carry = 0;
-	}
+        {
+          carry = 0;
+        }
       xdbl[11] = y3;
     }
 
@@ -139,14 +139,14 @@ increment_state (ranlxs_state_t * state)
       y1 = xdbl[jr] - xdbl[ir];
       y2 = y1 - carry;
       if (y2 < 0)
-	{
-	  carry = one_bit;
-	  y2 += 1;
-	}
+        {
+          carry = one_bit;
+          y2 += 1;
+        }
       else
-	{
-	  carry = 0;
-	}
+        {
+          carry = 0;
+        }
       xdbl[ir] = y2;
       ydbl[ir] = y2 + shift;
       ir = next[ir];
@@ -166,7 +166,7 @@ increment_state (ranlxs_state_t * state)
       x = xdbl[k];
       y2 = ydbl[k] - shift;
       if (y2 > x)
-	y2 -= sone_bit;
+        y2 -= sone_bit;
       y1 = (x - y2) * sbase;
 
       xflt[m++] = (float) y1;
@@ -199,7 +199,7 @@ ranlxs_get_double (void *vstate)
 static unsigned long int
 ranlxs_get (void *vstate)
 {
-  return ranlxs_get_double (vstate) * 16777216.0;	/* 2^24 */
+  return ranlxs_get_double (vstate) * 16777216.0;       /* 2^24 */
 }
 
 static void
@@ -213,7 +213,7 @@ ranlxs_set_lux (void *vstate, unsigned long int s, unsigned int luxury)
   long int seed;
 
   if (s == 0)
-    s = 1;			/* default seed is 1 */
+    s = 1;                      /* default seed is 1 */
 
   seed = s;
 
@@ -233,13 +233,13 @@ ranlxs_set_lux (void *vstate, unsigned long int s, unsigned int luxury)
       x = 0;
 
       for (m = 1; m <= 48; ++m)
-	{
-	  y = (double) xbit[ibit];
-	  x += x + y;
-	  xbit[ibit] = (xbit[ibit] + xbit[jbit]) % 2;
-	  ibit = (ibit + 1) % 31;
-	  jbit = (jbit + 1) % 31;
-	}
+        {
+          y = (double) xbit[ibit];
+          x += x + y;
+          xbit[ibit] = (xbit[ibit] + xbit[jbit]) % 2;
+          ibit = (ibit + 1) % 31;
+          jbit = (jbit + 1) % 31;
+        }
       state->xdbl[k] = one_bit * x;
     }
 
@@ -271,27 +271,27 @@ ranlxs2_set (void *vstate, unsigned long int s)
 
 
 static const gsl_rng_type ranlxs0_type =
-{"ranlxs0",			/* name */
- 0x00ffffffUL,			/* RAND_MAX */
- 0,				/* RAND_MIN */
+{"ranlxs0",                     /* name */
+ 0x00ffffffUL,                  /* RAND_MAX */
+ 0,                             /* RAND_MIN */
  sizeof (ranlxs_state_t),
  &ranlxs0_set,
  &ranlxs_get,
  &ranlxs_get_double};
 
 static const gsl_rng_type ranlxs1_type =
-{"ranlxs1",			/* name */
- 0x00ffffffUL,			/* RAND_MAX */
- 0,				/* RAND_MIN */
+{"ranlxs1",                     /* name */
+ 0x00ffffffUL,                  /* RAND_MAX */
+ 0,                             /* RAND_MIN */
  sizeof (ranlxs_state_t),
  &ranlxs1_set,
  &ranlxs_get,
  &ranlxs_get_double};
 
 static const gsl_rng_type ranlxs2_type =
-{"ranlxs2",			/* name */
- 0x00ffffffUL,			/* RAND_MAX */
- 0,				/* RAND_MIN */
+{"ranlxs2",                     /* name */
+ 0x00ffffffUL,                  /* RAND_MAX */
+ 0,                             /* RAND_MIN */
  sizeof (ranlxs_state_t),
  &ranlxs2_set,
  &ranlxs_get,

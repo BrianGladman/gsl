@@ -63,7 +63,7 @@ gsl_linalg_SV_decomp (gsl_matrix * A, gsl_matrix * V, gsl_vector * S,
   else if (V->size1 != N)
     {
       GSL_ERROR ("square matrix V must match second dimension of matrix A",
-		 GSL_EBADLEN);
+                 GSL_EBADLEN);
     }
   else if (V->size1 != V->size2)
     {
@@ -72,12 +72,12 @@ gsl_linalg_SV_decomp (gsl_matrix * A, gsl_matrix * V, gsl_vector * S,
   else if (S->size != N)
     {
       GSL_ERROR ("length of vector S must match second dimension of matrix A",
-		 GSL_EBADLEN);
+                 GSL_EBADLEN);
     }
   else if (work->size != N)
     {
       GSL_ERROR ("length of workspace must match second dimension of matrix A",
-		 GSL_EBADLEN);
+                 GSL_EBADLEN);
     }
 
   
@@ -170,19 +170,19 @@ gsl_linalg_SV_decomp (gsl_matrix * A, gsl_matrix * V, gsl_vector * S,
           if (Sj > S_max)
             {
               S_max = Sj;
-	      i_max = j;
-	    }
-	}
+              i_max = j;
+            }
+        }
       
       if (i_max != i)
-	{
-	  /* swap eigenvalues */
-	  gsl_vector_swap_elements (S, i, i_max);
+        {
+          /* swap eigenvalues */
+          gsl_vector_swap_elements (S, i, i_max);
           
-	  /* swap eigenvectors */
-	  gsl_matrix_swap_columns (A, i, i_max);
-	  gsl_matrix_swap_columns (V, i, i_max);
-	}
+          /* swap eigenvectors */
+          gsl_matrix_swap_columns (A, i, i_max);
+          gsl_matrix_swap_columns (V, i, i_max);
+        }
     }
   
   return GSL_SUCCESS;
@@ -193,8 +193,8 @@ gsl_linalg_SV_decomp (gsl_matrix * A, gsl_matrix * V, gsl_vector * S,
 
 int
 gsl_linalg_SV_decomp_mod (gsl_matrix * A,
-			  gsl_matrix * X,
-			  gsl_matrix * V, gsl_vector * S, gsl_vector * work)
+                          gsl_matrix * X,
+                          gsl_matrix * V, gsl_vector * S, gsl_vector * work)
 {
   size_t i, j;
 
@@ -208,7 +208,7 @@ gsl_linalg_SV_decomp_mod (gsl_matrix * A,
   else if (V->size1 != N)
     {
       GSL_ERROR ("square matrix V must match second dimension of matrix A",
-		 GSL_EBADLEN);
+                 GSL_EBADLEN);
     }
   else if (V->size1 != V->size2)
     {
@@ -217,7 +217,7 @@ gsl_linalg_SV_decomp_mod (gsl_matrix * A,
   else if (X->size1 != N)
     {
       GSL_ERROR ("square matrix X must match second dimension of matrix A",
-		 GSL_EBADLEN);
+                 GSL_EBADLEN);
     }
   else if (X->size1 != X->size2)
     {
@@ -226,12 +226,12 @@ gsl_linalg_SV_decomp_mod (gsl_matrix * A,
   else if (S->size != N)
     {
       GSL_ERROR ("length of vector S must match second dimension of matrix A",
-		 GSL_EBADLEN);
+                 GSL_EBADLEN);
     }
   else if (work->size != N)
     {
       GSL_ERROR ("length of workspace must match second dimension of matrix A",
-		 GSL_EBADLEN);
+                 GSL_EBADLEN);
     }
 
   /* Convert A into an upper triangular matrix R */
@@ -245,11 +245,11 @@ gsl_linalg_SV_decomp_mod (gsl_matrix * A,
       /* Apply the transformation to the remaining columns */
 
       if (i + 1 < N)
-	{
-	  gsl_matrix_view m =
-	    gsl_matrix_submatrix (A, i, i + 1, M - i, N - (i + 1));
-	  gsl_linalg_householder_hm (tau_i, &v.vector, &m.matrix);
-	}
+        {
+          gsl_matrix_view m =
+            gsl_matrix_submatrix (A, i, i + 1, M - i, N - (i + 1));
+          gsl_linalg_householder_hm (tau_i, &v.vector, &m.matrix);
+        }
 
       gsl_vector_set (S, i, tau_i);
     }
@@ -259,20 +259,20 @@ gsl_linalg_SV_decomp_mod (gsl_matrix * A,
   for (i = 0; i < N; i++)
     {
       for (j = 0; j < i; j++)
-	{
-	  gsl_matrix_set (X, i, j, 0.0);
-	}
+        {
+          gsl_matrix_set (X, i, j, 0.0);
+        }
 
       {
-	double Aii = gsl_matrix_get (A, i, i);
-	gsl_matrix_set (X, i, i, Aii);
+        double Aii = gsl_matrix_get (A, i, i);
+        gsl_matrix_set (X, i, i, Aii);
       }
 
       for (j = i + 1; j < N; j++)
-	{
-	  double Aij = gsl_matrix_get (A, i, j);
-	  gsl_matrix_set (X, i, j, Aij);
-	}
+        {
+          double Aij = gsl_matrix_get (A, i, j);
+          gsl_matrix_set (X, i, j, Aij);
+        }
     }
 
   /* Convert A into an orthogonal matrix L */
@@ -296,17 +296,17 @@ gsl_linalg_SV_decomp_mod (gsl_matrix * A,
 
     for (i = 0; i < M; i++)
       {
-	gsl_vector_view L_i = gsl_matrix_row (A, i);
-	gsl_vector_set_zero (&sum.vector);
+        gsl_vector_view L_i = gsl_matrix_row (A, i);
+        gsl_vector_set_zero (&sum.vector);
 
-	for (j = 0; j < N; j++)
-	  {
-	    double Lij = gsl_vector_get (&L_i.vector, j);
-	    gsl_vector_view X_j = gsl_matrix_row (X, j);
-	    gsl_blas_daxpy (Lij, &X_j.vector, &sum.vector);
-	  }
+        for (j = 0; j < N; j++)
+          {
+            double Lij = gsl_vector_get (&L_i.vector, j);
+            gsl_vector_view X_j = gsl_matrix_row (X, j);
+            gsl_blas_daxpy (Lij, &X_j.vector, &sum.vector);
+          }
 
-	gsl_vector_memcpy (&L_i.vector, &sum.vector);
+        gsl_vector_memcpy (&L_i.vector, &sum.vector);
       }
   }
 
@@ -324,19 +324,19 @@ gsl_linalg_SV_decomp_mod (gsl_matrix * A,
 
 int
 gsl_linalg_SV_solve (const gsl_matrix * U,
-		     const gsl_matrix * V,
-		     const gsl_vector * S,
-		     const gsl_vector * b, gsl_vector * x)
+                     const gsl_matrix * V,
+                     const gsl_vector * S,
+                     const gsl_vector * b, gsl_vector * x)
 {
   if (U->size1 != b->size)
     {
       GSL_ERROR ("first dimension of matrix U must size of vector b",
-		 GSL_EBADLEN);
+                 GSL_EBADLEN);
     }
   else if (U->size2 != S->size)
     {
       GSL_ERROR ("length of vector S must match second dimension of matrix U",
-		 GSL_EBADLEN);
+                 GSL_EBADLEN);
     }
   else if (V->size1 != V->size2)
     {
@@ -345,7 +345,7 @@ gsl_linalg_SV_solve (const gsl_matrix * U,
   else if (S->size != V->size1)
     {
       GSL_ERROR ("length of vector S must match size of matrix V",
-		 GSL_EBADLEN);
+                 GSL_EBADLEN);
     }
   else if (V->size2 != x->size)
     {
@@ -361,13 +361,13 @@ gsl_linalg_SV_solve (const gsl_matrix * U,
       gsl_blas_dgemv (CblasTrans, 1.0, U, b, 0.0, w);
 
       for (i = 0; i < N; i++)
-	{
-	  double wi = gsl_vector_get (w, i);
-	  double alpha = gsl_vector_get (S, i);
-	  if (alpha != 0)
-	    alpha = 1.0 / alpha;
-	  gsl_vector_set (w, i, alpha * wi);
-	}
+        {
+          double wi = gsl_vector_get (w, i);
+          double alpha = gsl_vector_get (S, i);
+          if (alpha != 0)
+            alpha = 1.0 / alpha;
+          gsl_vector_set (w, i, alpha * wi);
+        }
 
       gsl_blas_dgemv (CblasNoTrans, 1.0, V, w, 0.0, x);
 
@@ -410,7 +410,7 @@ gsl_linalg_SV_decomp_jacobi (gsl_matrix * A, gsl_matrix * Q, gsl_vector * S)
   else if (Q->size1 != A->size2)
     {
       GSL_ERROR ("square matrix Q must match second dimension of matrix A",
-		 GSL_EBADLEN);
+                 GSL_EBADLEN);
     }
   else if (Q->size1 != Q->size2)
     {
@@ -419,7 +419,7 @@ gsl_linalg_SV_decomp_jacobi (gsl_matrix * A, gsl_matrix * Q, gsl_vector * S)
   else if (S->size != A->size2)
     {
       GSL_ERROR ("length of vector S must match second dimension of matrix A",
-		 GSL_EBADLEN);
+                 GSL_EBADLEN);
     }
   else
     {
@@ -443,141 +443,141 @@ gsl_linalg_SV_decomp_jacobi (gsl_matrix * A, gsl_matrix * Q, gsl_vector * S)
       /* Orthogonalize A by plane rotations. */
 
       while (count > 0 && sweep <= sweepmax)
-	{
-	  /* Initialize rotation counter. */
-	  count = N * (N - 1) / 2;
+        {
+          /* Initialize rotation counter. */
+          count = N * (N - 1) / 2;
 
-	  for (j = 0; j < N - 1; j++)
-	    {
-	      for (k = j + 1; k < N; k++)
-		{
-		  double a = 0.0;
-		  double b = 0.0;
-		  double p = 0.0;
-		  double q = 0.0;
-		  double r = 0.0;
-		  double cosine, sine;
-		  double v;
+          for (j = 0; j < N - 1; j++)
+            {
+              for (k = j + 1; k < N; k++)
+                {
+                  double a = 0.0;
+                  double b = 0.0;
+                  double p = 0.0;
+                  double q = 0.0;
+                  double r = 0.0;
+                  double cosine, sine;
+                  double v;
 
-		  gsl_vector_view cj = gsl_matrix_column (A, j);
-		  gsl_vector_view ck = gsl_matrix_column (A, k);
+                  gsl_vector_view cj = gsl_matrix_column (A, j);
+                  gsl_vector_view ck = gsl_matrix_column (A, k);
 
-		  gsl_blas_ddot (&cj.vector, &ck.vector, &p);
+                  gsl_blas_ddot (&cj.vector, &ck.vector, &p);
 
-		  a = gsl_blas_dnrm2 (&cj.vector);
-		  b = gsl_blas_dnrm2 (&ck.vector);
+                  a = gsl_blas_dnrm2 (&cj.vector);
+                  b = gsl_blas_dnrm2 (&ck.vector);
 
-		  q = a * a;
-		  r = b * b;
+                  q = a * a;
+                  r = b * b;
 
-		  /* NOTE: this could be handled better by scaling
-		   * the calculation of the inner products above.
-		   * But I'm too lazy. This will have to do. [GJ]
-		   */
+                  /* NOTE: this could be handled better by scaling
+                   * the calculation of the inner products above.
+                   * But I'm too lazy. This will have to do. [GJ]
+                   */
 
-		  /* FIXME: This routine is a hack. We need to get the
-		     state of the art in Jacobi SVD's here ! */
+                  /* FIXME: This routine is a hack. We need to get the
+                     state of the art in Jacobi SVD's here ! */
 
-		  /* This is an adhoc method of testing for a "zero"
-		     singular value. We consider it to be zero if it
-		     is sufficiently small compared with the currently
-		     leading column. Note that b <= a is guaranteed by
-		     the sweeping algorithm. BJG */
+                  /* This is an adhoc method of testing for a "zero"
+                     singular value. We consider it to be zero if it
+                     is sufficiently small compared with the currently
+                     leading column. Note that b <= a is guaranteed by
+                     the sweeping algorithm. BJG */
 
-		  if (b <= tolerance * a)
-		    {
-		      /* probably |b| = 0 */
-		      count--;
-		      continue;
-		    }
+                  if (b <= tolerance * a)
+                    {
+                      /* probably |b| = 0 */
+                      count--;
+                      continue;
+                    }
 
-		  if (fabs (p) <= tolerance * a * b)
-		    {
-		      /* columns j,k orthogonal
-		       * note that p*p/(q*r) is automatically <= 1.0
-		       */
-		      count--;
-		      continue;
-		    }
+                  if (fabs (p) <= tolerance * a * b)
+                    {
+                      /* columns j,k orthogonal
+                       * note that p*p/(q*r) is automatically <= 1.0
+                       */
+                      count--;
+                      continue;
+                    }
 
-		  /* calculate rotation angles */
-		  if (q < r)
-		    {
-		      cosine = 0.0;
-		      sine = 1.0;
-		    }
-		  else
-		    {
-		      q -= r;
-		      v = hypot (2.0 * p, q);
-		      cosine = sqrt ((v + q) / (2.0 * v));
-		      sine = p / (v * cosine);
-		    }
+                  /* calculate rotation angles */
+                  if (q < r)
+                    {
+                      cosine = 0.0;
+                      sine = 1.0;
+                    }
+                  else
+                    {
+                      q -= r;
+                      v = hypot (2.0 * p, q);
+                      cosine = sqrt ((v + q) / (2.0 * v));
+                      sine = p / (v * cosine);
+                    }
 
-		  /* apply rotation to A */
-		  for (i = 0; i < M; i++)
-		    {
-		      const double Aik = gsl_matrix_get (A, i, k);
-		      const double Aij = gsl_matrix_get (A, i, j);
-		      gsl_matrix_set (A, i, j, Aij * cosine + Aik * sine);
-		      gsl_matrix_set (A, i, k, -Aij * sine + Aik * cosine);
-		    }
+                  /* apply rotation to A */
+                  for (i = 0; i < M; i++)
+                    {
+                      const double Aik = gsl_matrix_get (A, i, k);
+                      const double Aij = gsl_matrix_get (A, i, j);
+                      gsl_matrix_set (A, i, j, Aij * cosine + Aik * sine);
+                      gsl_matrix_set (A, i, k, -Aij * sine + Aik * cosine);
+                    }
 
-		  /* apply rotation to Q */
-		  for (i = 0; i < N; i++)
-		    {
-		      const double Qij = gsl_matrix_get (Q, i, j);
-		      const double Qik = gsl_matrix_get (Q, i, k);
-		      gsl_matrix_set (Q, i, j, Qij * cosine + Qik * sine);
-		      gsl_matrix_set (Q, i, k, -Qij * sine + Qik * cosine);
-		    }
-		}
-	    }
+                  /* apply rotation to Q */
+                  for (i = 0; i < N; i++)
+                    {
+                      const double Qij = gsl_matrix_get (Q, i, j);
+                      const double Qik = gsl_matrix_get (Q, i, k);
+                      gsl_matrix_set (Q, i, j, Qij * cosine + Qik * sine);
+                      gsl_matrix_set (Q, i, k, -Qij * sine + Qik * cosine);
+                    }
+                }
+            }
 
-	  /* Sweep completed. */
-	  sweep++;
-	}
+          /* Sweep completed. */
+          sweep++;
+        }
 
       /* 
        * Orthogonalization complete. Compute singular values.
        */
 
       {
-	double prev_norm = -1.0;
+        double prev_norm = -1.0;
 
-	for (j = 0; j < N; j++)
-	  {
-	    gsl_vector_view column = gsl_matrix_column (A, j);
-	    double norm = gsl_blas_dnrm2 (&column.vector);
+        for (j = 0; j < N; j++)
+          {
+            gsl_vector_view column = gsl_matrix_column (A, j);
+            double norm = gsl_blas_dnrm2 (&column.vector);
 
-	    /* Determine if singular value is zero, according to the
-	       criteria used in the main loop above (i.e. comparison
-	       with norm of previous column). */
+            /* Determine if singular value is zero, according to the
+               criteria used in the main loop above (i.e. comparison
+               with norm of previous column). */
 
-	    if (norm == 0.0 || prev_norm == 0.0 
+            if (norm == 0.0 || prev_norm == 0.0 
                 || (j > 0 && norm <= tolerance * prev_norm))
-	      {
-		gsl_vector_set (S, j, 0.0);	/* singular */
-		gsl_vector_set_zero (&column.vector);	/* annihilate column */
+              {
+                gsl_vector_set (S, j, 0.0);     /* singular */
+                gsl_vector_set_zero (&column.vector);   /* annihilate column */
 
-		prev_norm = 0.0;
-	      }
-	    else
-	      {
-		gsl_vector_set (S, j, norm);	/* non-singular */
-		gsl_vector_scale (&column.vector, 1.0 / norm);	/* normalize column */
+                prev_norm = 0.0;
+              }
+            else
+              {
+                gsl_vector_set (S, j, norm);    /* non-singular */
+                gsl_vector_scale (&column.vector, 1.0 / norm);  /* normalize column */
 
-		prev_norm = norm;
-	      }
-	  }
+                prev_norm = norm;
+              }
+          }
       }
 
       if (count > 0)
-	{
-	  /* reached sweep limit */
-	  GSL_ERROR ("Jacobi iterations did not reach desired tolerance",
-		     GSL_ETOL);
-	}
+        {
+          /* reached sweep limit */
+          GSL_ERROR ("Jacobi iterations did not reach desired tolerance",
+                     GSL_ETOL);
+        }
 
       return GSL_SUCCESS;
     }

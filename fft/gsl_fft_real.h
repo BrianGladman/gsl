@@ -72,8 +72,8 @@ int gsl_fft_real_transform (double data[], const size_t stride, const size_t n,
 
 
 int gsl_fft_real_unpack (const double real_coefficient[],
-			 double complex_coefficient[],
-			 const size_t stride, const size_t n);
+                         double complex_coefficient[],
+                         const size_t stride, const size_t n);
 
 __END_DECLS
 

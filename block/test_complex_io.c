@@ -31,7 +31,7 @@ FUNCTION (test, text) (void)
 
     for (i = 0; i < N; i++)
       {
-	v->data[2*i] = (ATOMIC)i ;
+        v->data[2*i] = (ATOMIC)i ;
         v->data[2*i + 1] = (ATOMIC)(10*i + 1) ;
       };
 
@@ -52,8 +52,8 @@ FUNCTION (test, text) (void)
     status = 0;
     for (i = 0; i < N; i++)
       {
-	if (w->data[2 * i] != (ATOMIC) i || w->data[2 * i + 1] != (ATOMIC) (10*i + 1))
-	  status = 1;
+        if (w->data[2 * i] != (ATOMIC) i || w->data[2 * i + 1] != (ATOMIC) (10*i + 1))
+          status = 1;
       };
     fclose (f);
 

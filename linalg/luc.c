@@ -74,57 +74,57 @@ gsl_linalg_complex_LU_decomp (gsl_matrix_complex * A, gsl_permutation * p, int *
       gsl_permutation_init (p);
 
       for (j = 0; j < N - 1; j++)
-	{
-	  /* Find maximum in the j-th column */
+        {
+          /* Find maximum in the j-th column */
 
-	  gsl_complex ajj = gsl_matrix_complex_get (A, j, j);
+          gsl_complex ajj = gsl_matrix_complex_get (A, j, j);
           double max = gsl_complex_abs (ajj);
-	  size_t i_pivot = j;
+          size_t i_pivot = j;
 
-	  for (i = j + 1; i < N; i++)
-	    {
-	      gsl_complex aij = gsl_matrix_complex_get (A, i, j);
+          for (i = j + 1; i < N; i++)
+            {
+              gsl_complex aij = gsl_matrix_complex_get (A, i, j);
               double ai = gsl_complex_abs (aij);
 
-	      if (ai > max)
-		{
-		  max = ai;
-		  i_pivot = i;
-		}
-	    }
+              if (ai > max)
+                {
+                  max = ai;
+                  i_pivot = i;
+                }
+            }
 
-	  if (i_pivot != j)
-	    {
-	      gsl_matrix_complex_swap_rows (A, j, i_pivot);
-	      gsl_permutation_swap (p, j, i_pivot);
-	      *signum = -(*signum);
-	    }
+          if (i_pivot != j)
+            {
+              gsl_matrix_complex_swap_rows (A, j, i_pivot);
+              gsl_permutation_swap (p, j, i_pivot);
+              *signum = -(*signum);
+            }
 
-	  ajj = gsl_matrix_complex_get (A, j, j);
+          ajj = gsl_matrix_complex_get (A, j, j);
 
-	  if (!(GSL_REAL(ajj) == 0.0 && GSL_IMAG(ajj) == 0.0))
-	    {
-	      for (i = j + 1; i < N; i++)
-		{
-		  gsl_complex aij_orig = gsl_matrix_complex_get (A, i, j);
+          if (!(GSL_REAL(ajj) == 0.0 && GSL_IMAG(ajj) == 0.0))
+            {
+              for (i = j + 1; i < N; i++)
+                {
+                  gsl_complex aij_orig = gsl_matrix_complex_get (A, i, j);
                   gsl_complex aij = gsl_complex_div (aij_orig, ajj);
-		  gsl_matrix_complex_set (A, i, j, aij);
+                  gsl_matrix_complex_set (A, i, j, aij);
 
-		  for (k = j + 1; k < N; k++)
-		    {
-		      gsl_complex aik = gsl_matrix_complex_get (A, i, k);
-		      gsl_complex ajk = gsl_matrix_complex_get (A, j, k);
+                  for (k = j + 1; k < N; k++)
+                    {
+                      gsl_complex aik = gsl_matrix_complex_get (A, i, k);
+                      gsl_complex ajk = gsl_matrix_complex_get (A, j, k);
                       
                       /* aik = aik - aij * ajk */
 
                       gsl_complex aijajk = gsl_complex_mul (aij, ajk);
                       gsl_complex aik_new = gsl_complex_sub (aik, aijajk);
 
-		      gsl_matrix_complex_set (A, i, k, aik_new);
-		    }
-		}
-	    }
-	}
+                      gsl_matrix_complex_set (A, i, k, aik_new);
+                    }
+                }
+            }
+        }
       
       return GSL_SUCCESS;
     }
@@ -265,7 +265,7 @@ gsl_linalg_complex_LU_invert (const gsl_matrix_complex * LU, const gsl_permutati
       int status_i = gsl_linalg_complex_LU_svx (LU, p, &(c.vector));
 
       if (status_i)
-	status = status_i;
+        status = status_i;
     }
 
   return status;
@@ -319,10 +319,10 @@ gsl_linalg_complex_LU_sgndet (gsl_matrix_complex * LU, int signum)
       double r = gsl_complex_abs(z);
 
       if (r == 0)
-	{
-	  phase = gsl_complex_rect(0.0, 0.0);
-	  break;
-	}
+        {
+          phase = gsl_complex_rect(0.0, 0.0);
+          break;
+        }
       else
         {
           z = gsl_complex_div_real(z, r);

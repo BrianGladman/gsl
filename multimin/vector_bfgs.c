@@ -141,8 +141,8 @@ vector_bfgs_alloc (void *vstate, size_t n)
 
 static int
 vector_bfgs_set (void *vstate, gsl_multimin_function_fdf * fdf,
-		 const gsl_vector * x, double *f, gsl_vector * gradient,
-		 double step_size, double tol)
+                 const gsl_vector * x, double *f, gsl_vector * gradient,
+                 double step_size, double tol)
 {
   vector_bfgs_state_t *state = (vector_bfgs_state_t *) vstate;
 
@@ -194,8 +194,8 @@ vector_bfgs_restart (void *vstate)
 
 static int
 vector_bfgs_iterate (void *vstate, gsl_multimin_function_fdf * fdf,
-		     gsl_vector * x, double *f,
-		     gsl_vector * gradient, gsl_vector * dx)
+                     gsl_vector * x, double *f,
+                     gsl_vector * gradient, gsl_vector * dx)
 {
   vector_bfgs_state_t *state = (vector_bfgs_state_t *) vstate;
 
@@ -256,7 +256,7 @@ vector_bfgs_iterate (void *vstate, gsl_multimin_function_fdf * fdf,
      xb based on parabolic interpolation */
 
   intermediate_point (fdf, x, p, dir / pnorm, pg,
-		      stepa, stepc, fa, fc, x1, dx1, gradient, &stepb, &fb);
+                      stepa, stepc, fa, fc, x1, dx1, gradient, &stepb, &fb);
 
   if (stepb == 0.0)
     {
@@ -264,8 +264,8 @@ vector_bfgs_iterate (void *vstate, gsl_multimin_function_fdf * fdf,
     }
 
   minimize (fdf, x, p, dir / pnorm,
-	    stepa, stepb, stepc, fa, fb, fc, tol,
-	    x1, dx1, x2, dx, gradient, &(state->step), f, &g1norm);
+            stepa, stepb, stepc, fa, fb, fc, tol,
+            x1, dx1, x2, dx, gradient, &(state->step), f, &g1norm);
 
   gsl_vector_memcpy (x, x2);
 
@@ -330,7 +330,7 @@ vector_bfgs_iterate (void *vstate, gsl_multimin_function_fdf * fdf,
 }
 
 static const gsl_multimin_fdfminimizer_type vector_bfgs_type = {
-  "vector_bfgs",		/* name */
+  "vector_bfgs",                /* name */
   sizeof (vector_bfgs_state_t),
   &vector_bfgs_alloc,
   &vector_bfgs_set,

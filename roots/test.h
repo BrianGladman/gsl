@@ -33,21 +33,21 @@ void
 
 void
 test_f (const gsl_root_fsolver_type * T, 
-	const char * description, gsl_function *f,
-	double lower_bound, double upper_bound, double correct_root);
+        const char * description, gsl_function *f,
+        double lower_bound, double upper_bound, double correct_root);
 
 void
 test_f_e (const gsl_root_fsolver_type * T, const char * description, 
-	  gsl_function *f,
-	  double lower_bound, double upper_bound, double correct_root);
+          gsl_function *f,
+          double lower_bound, double upper_bound, double correct_root);
 
 void
 test_fdf (const gsl_root_fdfsolver_type * T, const char * description, 
-	  gsl_function_fdf *fdf, double root, double correct_root);
+          gsl_function_fdf *fdf, double root, double correct_root);
 
 void
 test_fdf_e (const gsl_root_fdfsolver_type * T, const char * description, 
-	    gsl_function_fdf *fdf, double root, double correct_root);
+            gsl_function_fdf *fdf, double root, double correct_root);
 
 
 void

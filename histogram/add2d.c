@@ -34,7 +34,7 @@ gsl_histogram2d_increment (gsl_histogram2d * h, double x, double y)
 
 int
 gsl_histogram2d_accumulate (gsl_histogram2d * h,
-			    double x, double y, double weight)
+                            double x, double y, double weight)
 {
   const size_t nx = h->nx;
   const size_t ny = h->ny;
@@ -51,13 +51,13 @@ gsl_histogram2d_accumulate (gsl_histogram2d * h,
   if (i >= nx)
     {
       GSL_ERROR ("index lies outside valid range of 0 .. nx - 1",
-		 GSL_ESANITY);
+                 GSL_ESANITY);
     }
 
   if (j >= ny)
     {
       GSL_ERROR ("index lies outside valid range of 0 .. ny - 1",
-		 GSL_ESANITY);
+                 GSL_ESANITY);
     }
 
   h->bin[i * ny + j] += weight;

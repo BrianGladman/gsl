@@ -36,10 +36,10 @@
       const BASE ax = fabs(x);
 
       if (scale < ax) {
-	ssq = 1.0 + ssq * (scale / ax) * (scale / ax);
-	scale = ax;
+        ssq = 1.0 + ssq * (scale / ax) * (scale / ax);
+        scale = ax;
       } else {
-	ssq += (ax / scale) * (ax / scale);
+        ssq += (ax / scale) * (ax / scale);
       }
     }
 

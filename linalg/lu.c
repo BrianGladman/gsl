@@ -75,48 +75,48 @@ gsl_linalg_LU_decomp (gsl_matrix * A, gsl_permutation * p, int *signum)
       gsl_permutation_init (p);
 
       for (j = 0; j < N - 1; j++)
-	{
-	  /* Find maximum in the j-th column */
+        {
+          /* Find maximum in the j-th column */
 
-	  REAL ajj, max = fabs (gsl_matrix_get (A, j, j));
-	  size_t i_pivot = j;
+          REAL ajj, max = fabs (gsl_matrix_get (A, j, j));
+          size_t i_pivot = j;
 
-	  for (i = j + 1; i < N; i++)
-	    {
-	      REAL aij = fabs (gsl_matrix_get (A, i, j));
+          for (i = j + 1; i < N; i++)
+            {
+              REAL aij = fabs (gsl_matrix_get (A, i, j));
 
-	      if (aij > max)
-		{
-		  max = aij;
-		  i_pivot = i;
-		}
-	    }
+              if (aij > max)
+                {
+                  max = aij;
+                  i_pivot = i;
+                }
+            }
 
-	  if (i_pivot != j)
-	    {
-	      gsl_matrix_swap_rows (A, j, i_pivot);
-	      gsl_permutation_swap (p, j, i_pivot);
-	      *signum = -(*signum);
-	    }
+          if (i_pivot != j)
+            {
+              gsl_matrix_swap_rows (A, j, i_pivot);
+              gsl_permutation_swap (p, j, i_pivot);
+              *signum = -(*signum);
+            }
 
-	  ajj = gsl_matrix_get (A, j, j);
+          ajj = gsl_matrix_get (A, j, j);
 
-	  if (ajj != 0.0)
-	    {
-	      for (i = j + 1; i < N; i++)
-		{
-		  REAL aij = gsl_matrix_get (A, i, j) / ajj;
-		  gsl_matrix_set (A, i, j, aij);
+          if (ajj != 0.0)
+            {
+              for (i = j + 1; i < N; i++)
+                {
+                  REAL aij = gsl_matrix_get (A, i, j) / ajj;
+                  gsl_matrix_set (A, i, j, aij);
 
-		  for (k = j + 1; k < N; k++)
-		    {
-		      REAL aik = gsl_matrix_get (A, i, k);
-		      REAL ajk = gsl_matrix_get (A, j, k);
-		      gsl_matrix_set (A, i, k, aik - aij * ajk);
-		    }
-		}
-	    }
-	}
+                  for (k = j + 1; k < N; k++)
+                    {
+                      REAL aik = gsl_matrix_get (A, i, k);
+                      REAL ajk = gsl_matrix_get (A, j, k);
+                      gsl_matrix_set (A, i, k, aik - aij * ajk);
+                    }
+                }
+            }
+        }
       
       return GSL_SUCCESS;
     }
@@ -248,7 +248,7 @@ gsl_linalg_LU_invert (const gsl_matrix * LU, const gsl_permutation * p, gsl_matr
       int status_i = gsl_linalg_LU_svx (LU, p, &(c.vector));
 
       if (status_i)
-	status = status_i;
+        status = status_i;
     }
 
   return status;
@@ -298,14 +298,14 @@ gsl_linalg_LU_sgndet (gsl_matrix * LU, int signum)
       double u = gsl_matrix_get (LU, i, i);
 
       if (u < 0)
-	{
-	  s *= -1;
-	}
+        {
+          s *= -1;
+        }
       else if (u == 0)
-	{
-	  s = 0;
-	  break;
-	}
+        {
+          s = 0;
+          break;
+        }
     }
 
   return s;

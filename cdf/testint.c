@@ -11,10 +11,10 @@ static double il_transform (double t, void *params);
 
 int
 qagil (gsl_function * f,
-		       double b,
-		       double epsabs, double epsrel, size_t limit,
-		       gsl_integration_workspace * workspace,
-		       double *result, double *abserr)
+                       double b,
+                       double epsabs, double epsrel, size_t limit,
+                       gsl_integration_workspace * workspace,
+                       double *result, double *abserr)
 {
   int status;
 
@@ -59,10 +59,10 @@ static double iu_transform (double t, void *params);
 
 int
 qagiu (gsl_function * f,
-		       double a,
-		       double epsabs, double epsrel, size_t limit,
-		       gsl_integration_workspace * workspace,
-		       double *result, double *abserr)
+                       double a,
+                       double epsabs, double epsrel, size_t limit,
+                       gsl_integration_workspace * workspace,
+                       double *result, double *abserr)
 {
   int status;
 

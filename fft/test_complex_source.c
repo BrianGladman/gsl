@@ -23,12 +23,12 @@
 
 void FUNCTION(test_complex,func) (size_t stride, size_t n);
 int FUNCTION(test,offset) (const BASE data[], size_t stride, 
-			   size_t n, size_t offset);
+                           size_t n, size_t offset);
 void FUNCTION(test_complex,bitreverse_order) (size_t stride, size_t n) ;
 void FUNCTION(test_complex,radix2) (size_t stride, size_t n);
 
 int FUNCTION(test,offset) (const BASE data[], size_t stride, 
-			   size_t n, size_t offset)
+                           size_t n, size_t offset)
 {
   int status = 0 ;
   size_t i, j, k = 0 ;
@@ -38,12 +38,12 @@ int FUNCTION(test,offset) (const BASE data[], size_t stride,
       k += 2 ;
       
       for (j = 1; j < stride; j++)
-	{
-	  status |= data[k] != k + offset ;
-	  k++ ;
-	  status |= data[k] != k + offset ;
-	  k++ ;
-	}
+        {
+          status |= data[k] != k + offset ;
+          k++ ;
+          status |= data[k] != k + offset ;
+          k++ ;
+        }
     }
   return status ;
 }
@@ -70,20 +70,20 @@ void FUNCTION(test_complex,func) (size_t stride, size_t n)
       fft_complex_tmp[i] = (BASE)(i + 3000.0) ;
     }
 
-  gsl_set_error_handler (NULL);	/* abort on any errors */
+  gsl_set_error_handler (NULL); /* abort on any errors */
 
   /* Test allocation */
 
   {
     cw = FUNCTION(gsl_fft_complex_wavetable,alloc) (n);
     gsl_test (cw == 0, NAME(gsl_fft_complex_wavetable) 
-	      "_alloc, n = %d, stride = %d", n, stride);
+              "_alloc, n = %d, stride = %d", n, stride);
   }
 
   {
     cwork = FUNCTION(gsl_fft_complex_workspace,alloc) (n);
     gsl_test (cwork == 0, NAME(gsl_fft_complex_workspace) 
-	      "_alloc, n = %d", n);
+              "_alloc, n = %d", n);
   }
 
 
@@ -93,31 +93,31 @@ void FUNCTION(test_complex,func) (size_t stride, size_t n)
     FUNCTION(fft_signal,complex_noise) (n, stride, complex_data, fft_complex_data);
     for (i = 0 ; i < n ; i++)
       {
-	REAL(complex_tmp,stride,i) = REAL(complex_data,stride,i) ;
-	IMAG(complex_tmp,stride,i) = IMAG(complex_data,stride,i) ;
+        REAL(complex_tmp,stride,i) = REAL(complex_data,stride,i) ;
+        IMAG(complex_tmp,stride,i) = IMAG(complex_data,stride,i) ;
       }
     
     FUNCTION(gsl_fft_complex,forward) (complex_data, stride, n, cw, cwork);
 
     for (i = 0 ; i < n ; i++)
       {
-	REAL(fft_complex_tmp,stride,i) = REAL(complex_data,stride,i) ;
-	IMAG(fft_complex_tmp,stride,i) = IMAG(complex_data,stride,i) ;
+        REAL(fft_complex_tmp,stride,i) = REAL(complex_data,stride,i) ;
+        IMAG(fft_complex_tmp,stride,i) = IMAG(complex_data,stride,i) ;
       }
 
     status = FUNCTION(compare_complex,results) ("dft", fft_complex_data,
-						"fft of noise", complex_data,
-						stride, n, 1e6);
+                                                "fft of noise", complex_data,
+                                                stride, n, 1e6);
     gsl_test (status, NAME(gsl_fft_complex) 
-	      "_forward with signal_noise, n = %d, stride = %d",  n, stride);
+              "_forward with signal_noise, n = %d, stride = %d",  n, stride);
 
     if (stride > 1) 
       {
-	status = FUNCTION(test, offset) (complex_data, stride, n, 0) ;
-	
-	gsl_test (status, NAME(gsl_fft_complex) 
-		  "_forward avoids unstrided data, n = %d, stride = %d",
-		  n, stride);
+        status = FUNCTION(test, offset) (complex_data, stride, n, 0) ;
+        
+        gsl_test (status, NAME(gsl_fft_complex) 
+                  "_forward avoids unstrided data, n = %d, stride = %d",
+                  n, stride);
       }
   }
   
@@ -126,18 +126,18 @@ void FUNCTION(test_complex,func) (size_t stride, size_t n)
   {
     status = FUNCTION(gsl_fft_complex,inverse) (complex_data, stride, n, cw, cwork);
     status = FUNCTION(compare_complex,results) ("orig", complex_tmp,
-						"fft inverse", complex_data,
-						stride, n, 1e6);
+                                                "fft inverse", complex_data,
+                                                stride, n, 1e6);
     gsl_test (status, NAME(gsl_fft_complex) 
-	      "_inverse with signal_noise, n = %d, stride = %d", n, stride);
+              "_inverse with signal_noise, n = %d, stride = %d", n, stride);
 
     if (stride > 1) 
       {
-	status = FUNCTION(test, offset) (complex_data, stride, n, 0) ;
-	
-	gsl_test (status, NAME(gsl_fft_complex) 
-		  "_inverse other data untouched, n = %d, stride = %d",
-		  n, stride);
+        status = FUNCTION(test, offset) (complex_data, stride, n, 0) ;
+        
+        gsl_test (status, NAME(gsl_fft_complex) 
+                  "_inverse other data untouched, n = %d, stride = %d",
+                  n, stride);
       }
 
   }
@@ -149,25 +149,25 @@ void FUNCTION(test_complex,func) (size_t stride, size_t n)
 
     for (i = 0; i < n; i++)
       {
-	REAL(complex_tmp,stride,i) *= n;
-	IMAG(complex_tmp,stride,i) *= n;
+        REAL(complex_tmp,stride,i) *= n;
+        IMAG(complex_tmp,stride,i) *= n;
       }
     status = FUNCTION(compare_complex,results) ("orig", 
-						complex_tmp,
-						"fft backward", 
-						fft_complex_tmp,
-						stride, n, 1e6);
+                                                complex_tmp,
+                                                "fft backward", 
+                                                fft_complex_tmp,
+                                                stride, n, 1e6);
 
     gsl_test (status, NAME(gsl_fft_complex) 
-	      "_backward with signal_noise, n = %d, stride = %d", n, stride);
+              "_backward with signal_noise, n = %d, stride = %d", n, stride);
 
     if (stride > 1) 
       {
-	status = FUNCTION(test, offset) (fft_complex_tmp, stride, n, 3000) ;
-	
-	gsl_test (status, NAME(gsl_fft_complex) 
-		  "_backward avoids unstrided data, n = %d, stride = %d",
-		  n, stride);
+        status = FUNCTION(test, offset) (fft_complex_tmp, stride, n, 3000) ;
+        
+        gsl_test (status, NAME(gsl_fft_complex) 
+                  "_backward avoids unstrided data, n = %d, stride = %d",
+                  n, stride);
       }
 
   }
@@ -176,13 +176,13 @@ void FUNCTION(test_complex,func) (size_t stride, size_t n)
   
   {
     FUNCTION(fft_signal,complex_pulse) (1, n, stride, 1.0, 0.0, complex_data,
-					fft_complex_data);
+                                        fft_complex_data);
     FUNCTION(gsl_fft_complex,forward) (complex_data, stride, n, cw, cwork);
     status = FUNCTION(compare_complex,results) ("analytic", fft_complex_data,
-						"fft of pulse", complex_data, 
-						stride, n, 1e6);
+                                                "fft of pulse", complex_data, 
+                                                stride, n, 1e6);
     gsl_test (status, NAME(gsl_fft_complex) 
-	      "_forward with signal_pulse, n = %d, stride = %d", n, stride);
+              "_forward with signal_pulse, n = %d, stride = %d", n, stride);
 
   }
 
@@ -191,14 +191,14 @@ void FUNCTION(test_complex,func) (size_t stride, size_t n)
 
   {
     FUNCTION(fft_signal,complex_constant) (n, stride, 1.0, 0.0, complex_data,
-					   fft_complex_data);
+                                           fft_complex_data);
     FUNCTION(gsl_fft_complex,forward) (complex_data, stride, n, cw, cwork);
     status = FUNCTION(compare_complex,results) ("analytic", fft_complex_data,
-						"fft of constant", 
-						complex_data,
-						stride, n, 1e6);
+                                                "fft of constant", 
+                                                complex_data,
+                                                stride, n, 1e6);
     gsl_test (status, NAME(gsl_fft_complex) 
-	      "_forward with signal_constant, n = %d, stride = %d", n, stride);
+              "_forward with signal_constant, n = %d, stride = %d", n, stride);
   }
 
   /* Test an exponential (cos/sin) signal */
@@ -207,17 +207,17 @@ void FUNCTION(test_complex,func) (size_t stride, size_t n)
     status = 0;
     for (i = 0; i < n; i++)
       {
-	FUNCTION(fft_signal,complex_exp) ((int)i, n, stride, 1.0, 0.0, complex_data,
-					  fft_complex_data);
-	FUNCTION(gsl_fft_complex,forward) (complex_data, stride, n, cw, cwork);
-	status |= FUNCTION(compare_complex,results) ("analytic", 
-						     fft_complex_data,
-						     "fft of exp", 
-						     complex_data,
-						     stride, n, 1e6);
+        FUNCTION(fft_signal,complex_exp) ((int)i, n, stride, 1.0, 0.0, complex_data,
+                                          fft_complex_data);
+        FUNCTION(gsl_fft_complex,forward) (complex_data, stride, n, cw, cwork);
+        status |= FUNCTION(compare_complex,results) ("analytic", 
+                                                     fft_complex_data,
+                                                     "fft of exp", 
+                                                     complex_data,
+                                                     stride, n, 1e6);
       }
     gsl_test (status, NAME(gsl_fft_complex) 
-	      "_forward with signal_exp, n = %d, stride = %d", n, stride);
+              "_forward with signal_exp, n = %d, stride = %d", n, stride);
   }
 
   FUNCTION(gsl_fft_complex_wavetable,free) (cw);
@@ -258,11 +258,11 @@ FUNCTION(test_complex,bitreverse_order) (size_t stride, size_t n)
       size_t bit ;
 
       for (bit = 0; bit < logn; bit++)
-	{
-	  j <<= 1;		/* reverse shift i into j */
-	  j |= i_tmp & 1;
-	  i_tmp >>= 1;
-	}
+        {
+          j <<= 1;              /* reverse shift i into j */
+          j |= i_tmp & 1;
+          i_tmp >>= 1;
+        }
 
       reversed_data[2*j*stride] = data[2*i*stride] ;
       reversed_data[2*j*stride+1] = data[2*i*stride+1] ;
@@ -271,10 +271,10 @@ FUNCTION(test_complex,bitreverse_order) (size_t stride, size_t n)
   FUNCTION(fft_complex,bitreverse_order) (data, stride, n, logn);
 
   status = FUNCTION(compare_complex,results) ("naive bit reverse", 
-					      reversed_data,
-				    "gsl_fft_complex_bitreverse_order", 
-					      data,
-					      stride, n, 1e6);
+                                              reversed_data,
+                                    "gsl_fft_complex_bitreverse_order", 
+                                              data,
+                                              stride, n, 1e6);
 
   gsl_test (status, "gsl_fft_complex_bitreverse_order, n = %d", n);
 
@@ -301,41 +301,41 @@ void FUNCTION(test_complex,radix2) (size_t stride, size_t n)
       fft_complex_tmp[i] = (BASE)(i + 3000.0) ;
     }
 
-  gsl_set_error_handler (NULL);	/* abort on any errors */
+  gsl_set_error_handler (NULL); /* abort on any errors */
 
   /* Test radix-2 fft with noise */
 
   {
     FUNCTION(fft_signal,complex_noise) (n, stride, complex_data, 
-					fft_complex_data);
+                                        fft_complex_data);
     for (i = 0 ; i < n ; i++)
       {
-	REAL(complex_tmp,stride,i) = REAL(complex_data,stride,i) ;
-	IMAG(complex_tmp,stride,i) = IMAG(complex_data,stride,i) ;
+        REAL(complex_tmp,stride,i) = REAL(complex_data,stride,i) ;
+        IMAG(complex_tmp,stride,i) = IMAG(complex_data,stride,i) ;
       }
     
     FUNCTION(gsl_fft_complex,radix2_forward) (complex_data, stride, n);
 
     for (i = 0 ; i < n ; i++)
       {
-	REAL(fft_complex_tmp,stride,i) = REAL(complex_data,stride,i) ;
-	IMAG(fft_complex_tmp,stride,i) = IMAG(complex_data,stride,i) ;
+        REAL(fft_complex_tmp,stride,i) = REAL(complex_data,stride,i) ;
+        IMAG(fft_complex_tmp,stride,i) = IMAG(complex_data,stride,i) ;
       }
 
     status = FUNCTION(compare_complex,results) ("dft", fft_complex_data,
-						"fft of noise", complex_data,
-						stride, n, 1e6);
+                                                "fft of noise", complex_data,
+                                                stride, n, 1e6);
     gsl_test (status, NAME(gsl_fft_complex) 
-	      "_radix2_forward with signal_noise, n = %d, stride = %d",  
-	      n, stride);
+              "_radix2_forward with signal_noise, n = %d, stride = %d",  
+              n, stride);
 
     if (stride > 1) 
       {
-	status = FUNCTION(test, offset) (complex_data, stride, n, 0) ;
-	
-	gsl_test (status, NAME(gsl_fft_complex) 
-		  "_radix2_forward avoids unstrided data, n = %d, stride = %d",
-		  n, stride);
+        status = FUNCTION(test, offset) (complex_data, stride, n, 0) ;
+        
+        gsl_test (status, NAME(gsl_fft_complex) 
+                  "_radix2_forward avoids unstrided data, n = %d, stride = %d",
+                  n, stride);
       }
   }
   
@@ -344,18 +344,18 @@ void FUNCTION(test_complex,radix2) (size_t stride, size_t n)
   {
     status = FUNCTION(gsl_fft_complex,radix2_inverse) (complex_data, stride, n);
     status = FUNCTION(compare_complex,results) ("orig", complex_tmp,
-						"fft inverse", complex_data,
-						stride, n, 1e6);
+                                                "fft inverse", complex_data,
+                                                stride, n, 1e6);
     gsl_test (status, NAME(gsl_fft_complex) 
-	      "_radix2_inverse with signal_noise, n = %d, stride = %d", n, stride);
+              "_radix2_inverse with signal_noise, n = %d, stride = %d", n, stride);
 
     if (stride > 1) 
       {
-	status = FUNCTION(test, offset) (complex_data, stride, n, 0) ;
-	
-	gsl_test (status, NAME(gsl_fft_complex) 
-		  "_radix2_inverse other data untouched, n = %d, stride = %d",
-		  n, stride);
+        status = FUNCTION(test, offset) (complex_data, stride, n, 0) ;
+        
+        gsl_test (status, NAME(gsl_fft_complex) 
+                  "_radix2_inverse other data untouched, n = %d, stride = %d",
+                  n, stride);
       }
 
   }
@@ -367,25 +367,25 @@ void FUNCTION(test_complex,radix2) (size_t stride, size_t n)
 
     for (i = 0; i < n; i++)
       {
-	REAL(complex_tmp,stride,i) *= n;
-	IMAG(complex_tmp,stride,i) *= n;
+        REAL(complex_tmp,stride,i) *= n;
+        IMAG(complex_tmp,stride,i) *= n;
       }
     status = FUNCTION(compare_complex,results) ("orig", 
-						complex_tmp,
-						"fft backward", 
-						fft_complex_tmp,
-						stride, n, 1e6);
+                                                complex_tmp,
+                                                "fft backward", 
+                                                fft_complex_tmp,
+                                                stride, n, 1e6);
 
     gsl_test (status, NAME(gsl_fft_complex) 
-	      "_radix2_backward with signal_noise, n = %d, stride = %d", n, stride);
+              "_radix2_backward with signal_noise, n = %d, stride = %d", n, stride);
 
     if (stride > 1) 
       {
-	status = FUNCTION(test, offset) (fft_complex_tmp, stride, n, 3000) ;
-	
-	gsl_test (status, NAME(gsl_fft_complex) 
-		  "_radix2_backward avoids unstrided data, n = %d, stride = %d",
-		  n, stride);
+        status = FUNCTION(test, offset) (fft_complex_tmp, stride, n, 3000) ;
+        
+        gsl_test (status, NAME(gsl_fft_complex) 
+                  "_radix2_backward avoids unstrided data, n = %d, stride = %d",
+                  n, stride);
       }
 
   }
@@ -394,13 +394,13 @@ void FUNCTION(test_complex,radix2) (size_t stride, size_t n)
   
   {
     FUNCTION(fft_signal,complex_pulse) (1, n, stride, 1.0, 0.0, complex_data,
-					fft_complex_data);
+                                        fft_complex_data);
     FUNCTION(gsl_fft_complex,radix2_forward) (complex_data, stride, n);
     status = FUNCTION(compare_complex,results) ("analytic", fft_complex_data,
-						"fft of pulse", complex_data, 
-						stride, n, 1e6);
+                                                "fft of pulse", complex_data, 
+                                                stride, n, 1e6);
     gsl_test (status, NAME(gsl_fft_complex) 
-	      "_radix2_forward with signal_pulse, n = %d, stride = %d", n, stride);
+              "_radix2_forward with signal_pulse, n = %d, stride = %d", n, stride);
 
   }
 
@@ -409,15 +409,15 @@ void FUNCTION(test_complex,radix2) (size_t stride, size_t n)
 
   {
     FUNCTION(fft_signal,complex_constant) (n, stride, 1.0, 0.0, complex_data,
-					   fft_complex_data);
+                                           fft_complex_data);
     FUNCTION(gsl_fft_complex,radix2_forward) (complex_data, stride, n);
     status = FUNCTION(compare_complex,results) ("analytic", fft_complex_data,
-						"fft of constant", 
-						complex_data,
-						stride, n, 1e6);
+                                                "fft of constant", 
+                                                complex_data,
+                                                stride, n, 1e6);
     gsl_test (status, NAME(gsl_fft_complex) 
-	      "_radix2_forward with signal_constant, n = %d, stride = %d", 
-	      n, stride);
+              "_radix2_forward with signal_constant, n = %d, stride = %d", 
+              n, stride);
   }
 
   /* Test an exponential (cos/sin) signal */
@@ -426,17 +426,17 @@ void FUNCTION(test_complex,radix2) (size_t stride, size_t n)
     status = 0;
     for (i = 0; i < n; i++)
       {
-	FUNCTION(fft_signal,complex_exp) ((int)i, n, stride, 1.0, 0.0, complex_data,
-					  fft_complex_data);
-	FUNCTION(gsl_fft_complex,radix2_forward) (complex_data, stride, n);
-	status |= FUNCTION(compare_complex,results) ("analytic", 
-						     fft_complex_data,
-						     "fft of exp", 
-						     complex_data,
-						     stride, n, 1e6);
+        FUNCTION(fft_signal,complex_exp) ((int)i, n, stride, 1.0, 0.0, complex_data,
+                                          fft_complex_data);
+        FUNCTION(gsl_fft_complex,radix2_forward) (complex_data, stride, n);
+        status |= FUNCTION(compare_complex,results) ("analytic", 
+                                                     fft_complex_data,
+                                                     "fft of exp", 
+                                                     complex_data,
+                                                     stride, n, 1e6);
       }
     gsl_test (status, NAME(gsl_fft_complex) 
-	      "_radix2_forward with signal_exp, n = %d, stride = %d", n, stride);
+              "_radix2_forward with signal_exp, n = %d, stride = %d", n, stride);
   }
 
   

@@ -33,20 +33,20 @@
       const BASE tmp = alpha * X[ix];
       INDEX jx = ix;
       for (j = i; j < N; j++) {
-	A[lda * i + j] += X[jx] * tmp;
-	jx += incX;
+        A[lda * i + j] += X[jx] * tmp;
+        jx += incX;
       }
       ix += incX;
     }
   } else if ((order == CblasRowMajor && Uplo == CblasLower)
-	     || (order == CblasColMajor && Uplo == CblasUpper)) {
+             || (order == CblasColMajor && Uplo == CblasUpper)) {
     INDEX ix = OFFSET(N, incX);
     for (i = 0; i < N; i++) {
       const BASE tmp = alpha * X[ix];
       INDEX jx = OFFSET(N, incX);
       for (j = 0; j <= i; j++) {
-	A[lda * i + j] += X[jx] * tmp;
-	jx += incX;
+        A[lda * i + j] += X[jx] * tmp;
+        jx += incX;
       }
       ix += incX;
     }

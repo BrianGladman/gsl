@@ -210,7 +210,7 @@ gsl_sf_legendre_Pl_array(const int lmax, const double x, double * result_array)
     /* upward recurrence: l P_l = (2l-1) z P_{l-1} - (l-1) P_{l-2} */
 
     double p_ellm2 = 1.0;    /* P_0(x) */
-    double p_ellm1 = x;	   /* P_1(x) */
+    double p_ellm1 = x;    /* P_1(x) */
     double p_ell = p_ellm1;
     int ell;
 

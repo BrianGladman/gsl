@@ -28,16 +28,16 @@
 #include <stdio.h>
 
 /* set up parameters for this simulated annealing run */
-#define N_TRIES 200		/* how many points do we try before stepping */
-#define ITERS_FIXED_T 1000	/* how many iterations for each T? */
-#define STEP_SIZE 1.0		/* max step size in random walk */
-#define K 1.0			/* Boltzmann constant */
-#define T_INITIAL 0.008		/* initial temperature */
-#define MU_T 1.003		/* damping factor for temperature */
+#define N_TRIES 200             /* how many points do we try before stepping */
+#define ITERS_FIXED_T 1000      /* how many iterations for each T? */
+#define STEP_SIZE 1.0           /* max step size in random walk */
+#define K 1.0                   /* Boltzmann constant */
+#define T_INITIAL 0.008         /* initial temperature */
+#define MU_T 1.003              /* damping factor for temperature */
 #define T_MIN 2.0e-6
 
 gsl_siman_params_t params = {N_TRIES, ITERS_FIXED_T, STEP_SIZE,
-			     K, T_INITIAL, MU_T, T_MIN};
+                             K, T_INITIAL, MU_T, T_MIN};
 
 inline double square (double x) ;
 inline double square (double x) { return x * x ; } 
@@ -93,29 +93,29 @@ int main(void)
 
   x = -10.0 ;
   gsl_siman_solve(r, &x, E1, S1, M1, NULL, NULL, NULL, NULL,
-		  sizeof(double), params);
+                  sizeof(double), params);
   gsl_test_rel(x, x_min, 1e-3, "f(x)= exp(-(x-1)^2) sin(8x), x0=-10") ;
 
   x = +10.0 ;
   gsl_siman_solve(r, &x, E1, S1, M1, NULL, NULL, NULL, NULL,
-		  sizeof(double), params);
+                  sizeof(double), params);
   gsl_test_rel(x, x_min, 1e-3, "f(x)= exp(-(x-1)^2) sin(8x), x0=10") ;
 
   /* Start at the false minimum */
 
   x = +0.6 ; 
   gsl_siman_solve(r, &x, E1, S1, M1, NULL, NULL, NULL, NULL,
-		  sizeof(double), params);
+                  sizeof(double), params);
   gsl_test_rel(x, x_min, 1e-3, "f(x)= exp(-(x-1)^2) sin(8x), x0=0.6") ;
 
   x = +0.5 ; 
   gsl_siman_solve(r, &x, E1, S1, M1, NULL, NULL, NULL, NULL,
-		  sizeof(double), params);
+                  sizeof(double), params);
   gsl_test_rel(x, x_min, 1e-3, "f(x)= exp(-(x-1)^2) sin(8x), x0=0.5") ;
 
   x = +0.4 ; 
   gsl_siman_solve(r, &x, E1, S1, M1, NULL, NULL, NULL, NULL,
-		  sizeof(double), params);
+                  sizeof(double), params);
   gsl_test_rel(x, x_min, 1e-3, "f(x)= exp(-(x-1)^2) sin(8x), x0=0.4") ;
 
   gsl_rng_free(r);
@@ -125,23 +125,23 @@ int main(void)
   x0.D1 = 12.0;
   printf("#one dimensional problem, x0 = %f\n", x0.D1);
   gsl_siman_Usolve(r, &x0, test_E_1D, test_step_1D, distance_1D,
-		   print_pos_1D, params);
+                   print_pos_1D, params);
 
 
   x0.D2[0] = 12.0;
   x0.D2[1] = 5.5;
   printf("#two dimensional problem, (x0,y0) = (%f,%f)\n",
-	 x0.D2[0], x0.D2[1]);
+         x0.D2[0], x0.D2[1]);
   gsl_siman_Usolve(r, &x0, test_E_2D, test_step_2D, distance_2D,
-		   print_pos_2D, params); 
+                   print_pos_2D, params); 
 
   x0.D3[0] = 12.2;
   x0.D3[1] = 5.5;
   x0.D3[2] = -15.5;
   printf("#three dimensional problem, (x0,y0,z0) = (%f,%f,%f)\n",
-	 x0.D3[0], x0.D3[1], x0.D3[2]);
+         x0.D3[0], x0.D3[1], x0.D3[2]);
   gsl_siman_Usolve(r, &x0, test_E_3D, test_step_3D, distance_3D, 
-		   print_pos_3D, params); 
+                   print_pos_3D, params); 
 
   x0.D2[0] = 12.2;
   x0.D2[1] = 5.5;

@@ -36,9 +36,9 @@
 #include "schrage.c"
 
 #define AA1      271828183UL
-#define AA2     1833324378UL	/* = -314159269 mod (2 ^ 31 -1) */
-#define MM      0x7fffffffUL	/* 2 ^ 31 - 1 */
-#define CEIL_SQRT_MM 46341UL	/* sqrt(2 ^ 31 - 1) */
+#define AA2     1833324378UL    /* = -314159269 mod (2 ^ 31 -1) */
+#define MM      0x7fffffffUL    /* 2 ^ 31 - 1 */
+#define CEIL_SQRT_MM 46341UL    /* sqrt(2 ^ 31 - 1) */
 
 static inline unsigned long int ran_get (void *vstate);
 static double ran_get_double (void *vstate);
@@ -82,7 +82,7 @@ ran_set (void *vstate, unsigned long int s)
   ran_state_t *state = (ran_state_t *) vstate;
 
   if ((s % MM) == 0)
-    s = 1;			/* default seed is 1 */
+    s = 1;                      /* default seed is 1 */
 
   state->x0 = s % MM;
   state->x1 = s % MM;
@@ -91,9 +91,9 @@ ran_set (void *vstate, unsigned long int s)
 }
 
 static const gsl_rng_type ran_type = {
-  "knuthran2",			/* name */
-  MM - 1L,			/* RAND_MAX */
-  0,				/* RAND_MIN */
+  "knuthran2",                  /* name */
+  MM - 1L,                      /* RAND_MAX */
+  0,                            /* RAND_MIN */
   sizeof (ran_state_t),
   &ran_set,
   &ran_get,

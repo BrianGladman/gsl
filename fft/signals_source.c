@@ -21,12 +21,12 @@
 
 int
 FUNCTION(fft_signal,complex_pulse) (const size_t k,
-				    const size_t n,
-				    const size_t stride,
-				    const BASE z_real,
-				    const BASE z_imag,
-				    BASE data[],
-				    BASE fft[])
+                                    const size_t n,
+                                    const size_t stride,
+                                    const BASE z_real,
+                                    const BASE z_imag,
+                                    BASE data[],
+                                    BASE fft[])
 {
   size_t j;
 
@@ -64,11 +64,11 @@ FUNCTION(fft_signal,complex_pulse) (const size_t k,
 
 int
 FUNCTION(fft_signal,complex_constant) (const size_t n,
-				       const size_t stride,
-				       const BASE z_real,
-				       const BASE z_imag,
-				       BASE data[],
-				       BASE fft[])
+                                       const size_t stride,
+                                       const BASE z_real,
+                                       const BASE z_imag,
+                                       BASE data[],
+                                       BASE fft[])
 {
   size_t j;
 
@@ -103,12 +103,12 @@ FUNCTION(fft_signal,complex_constant) (const size_t n,
 
 int
 FUNCTION(fft_signal,complex_exp) (const int k,
-				  const size_t n,
-				  const size_t stride,
-				  const BASE z_real,
-				  const BASE z_imag,
-				  BASE data[],
-				  BASE fft[])
+                                  const size_t n,
+                                  const size_t stride,
+                                  const BASE z_real,
+                                  const BASE z_imag,
+                                  BASE data[],
+                                  BASE fft[])
 {
   size_t j;
 
@@ -141,11 +141,11 @@ FUNCTION(fft_signal,complex_exp) (const int k,
 
     if (k <= 0)
       {
-	freq = (n-k) % n ;
+        freq = (n-k) % n ;
       }
     else
       {
-	freq = (k % n);
+        freq = (k % n);
       };
 
     REAL(fft,stride,freq) = ((BASE) n) * z_real;
@@ -159,15 +159,15 @@ FUNCTION(fft_signal,complex_exp) (const int k,
 
 int
 FUNCTION(fft_signal,complex_exppair) (const int k1,
-				      const int k2,
-				      const size_t n,
-				      const size_t stride,
-				      const BASE z1_real,
-				      const BASE z1_imag,
-				      const BASE z2_real,
-				      const BASE z2_imag,
-				      BASE data[],
-				      BASE fft[])
+                                      const int k2,
+                                      const size_t n,
+                                      const size_t stride,
+                                      const BASE z1_real,
+                                      const BASE z1_imag,
+                                      const BASE z2_real,
+                                      const BASE z2_imag,
+                                      BASE data[],
+                                      BASE fft[])
 {
   size_t j;
 
@@ -206,20 +206,20 @@ FUNCTION(fft_signal,complex_exppair) (const int k1,
 
     if (k1 <= 0)
       {
-	freq1 = (n - k1) % n;
+        freq1 = (n - k1) % n;
       }
     else
       {
-	freq1 = (k1 % n);
+        freq1 = (k1 % n);
       };
 
     if (k2 <= 0)
       {
-	freq2 = (n - k2) % n;
+        freq2 = (n - k2) % n;
       }
     else
       {
-	freq2 = (k2 % n);
+        freq2 = (k2 % n);
       };
 
     REAL(fft,stride,freq1) += ((BASE) n) * z1_real;
@@ -235,9 +235,9 @@ FUNCTION(fft_signal,complex_exppair) (const int k1,
 
 int
 FUNCTION(fft_signal,complex_noise) (const size_t n,
-				    const size_t stride,
-				    BASE data[],
-				    BASE fft[])
+                                    const size_t stride,
+                                    BASE data[],
+                                    BASE fft[])
 {
   size_t i;
   int status;
@@ -262,9 +262,9 @@ FUNCTION(fft_signal,complex_noise) (const size_t n,
 
 int
 FUNCTION(fft_signal,real_noise) (const size_t n,
-				 const size_t stride,
-				 BASE data[],
-				 BASE fft[])
+                                 const size_t stride,
+                                 BASE data[],
+                                 BASE fft[])
 {
   size_t i;
   int status;

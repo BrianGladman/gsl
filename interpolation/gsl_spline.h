@@ -60,35 +60,35 @@ gsl_spline_eval(const gsl_spline * spline, double x, gsl_interp_accel * a);
 int
 gsl_spline_eval_deriv_e(const gsl_spline * spline,
                         double x,
-			gsl_interp_accel * a,
+                        gsl_interp_accel * a,
                         double * y);
 
 double
 gsl_spline_eval_deriv(const gsl_spline * spline,
                       double x,
-		      gsl_interp_accel * a);
+                      gsl_interp_accel * a);
 
 int
 gsl_spline_eval_deriv2_e(const gsl_spline * spline,
                          double x,
-			 gsl_interp_accel * a,
+                         gsl_interp_accel * a,
                          double * y);
 
 double
 gsl_spline_eval_deriv2(const gsl_spline * spline,
                        double x,
-		       gsl_interp_accel * a);
+                       gsl_interp_accel * a);
 
 int
 gsl_spline_eval_integ_e(const gsl_spline * spline,
                         double a, double b,
-			gsl_interp_accel * acc,
+                        gsl_interp_accel * acc,
                         double * y);
 
 double
 gsl_spline_eval_integ(const gsl_spline * spline,
                       double a, double b,
-		      gsl_interp_accel * acc);
+                      gsl_interp_accel * acc);
 
 void
 gsl_spline_free(gsl_spline * spline);

@@ -31,7 +31,7 @@ gsl_histogram_get (const gsl_histogram * h, size_t i)
   if (i >= n)
     {
       GSL_ERROR_VAL ("index lies outside valid range of 0 .. n - 1",
-			GSL_EDOM, 0);
+                        GSL_EDOM, 0);
     }
 
   return h->bin[i];
@@ -39,7 +39,7 @@ gsl_histogram_get (const gsl_histogram * h, size_t i)
 
 int
 gsl_histogram_get_range (const gsl_histogram * h, size_t i,
-			 double *lower, double *upper)
+                         double *lower, double *upper)
 {
   const size_t n = h->n;
 
@@ -56,7 +56,7 @@ gsl_histogram_get_range (const gsl_histogram * h, size_t i,
 
 int
 gsl_histogram_find (const gsl_histogram * h,
-		    const double x, size_t * i)
+                    const double x, size_t * i)
 {
   int status = find (h->n, h->range, x, i);
 

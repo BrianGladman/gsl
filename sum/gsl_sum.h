@@ -31,8 +31,8 @@
 # define __BEGIN_DECLS extern "C" {
 # define __END_DECLS }
 #else
-# define __BEGIN_DECLS		/* empty */
-# define __END_DECLS		/* empty */
+# define __BEGIN_DECLS          /* empty */
+# define __END_DECLS            /* empty */
 #endif
 
 __BEGIN_DECLS
@@ -51,8 +51,8 @@ __BEGIN_DECLS
 typedef struct
 {
   size_t size;
-  size_t i;			/* position in array */
-  size_t terms_used;		/* number of calls */
+  size_t i;                     /* position in array */
+  size_t terms_used;            /* number of calls */
   double sum_plain;
   double *q_num;
   double *q_den;
@@ -94,11 +94,11 @@ int gsl_sum_levin_u_accel (const double *array,
  */
 
 int gsl_sum_levin_u_minmax (const double *array,
-			    const size_t n,
-			    const size_t min_terms,
-			    const size_t max_terms,
-			    gsl_sum_levin_u_workspace * w,
-			    double *sum_accel, double *abserr);
+                            const size_t n,
+                            const size_t min_terms,
+                            const size_t max_terms,
+                            gsl_sum_levin_u_workspace * w,
+                            double *sum_accel, double *abserr);
 
 /* Basic Levin-u step w/o reference to the array of terms.
  * We only need to specify the value of the current term
@@ -114,9 +114,9 @@ int gsl_sum_levin_u_minmax (const double *array,
 
 int
 gsl_sum_levin_u_step (const double term,
-		      const size_t n,
-		      const size_t nmax,
-		      gsl_sum_levin_u_workspace * w, 
+                      const size_t n,
+                      const size_t nmax,
+                      gsl_sum_levin_u_workspace * w, 
                       double *sum_accel);
 
 /* The following functions perform the same calculation without
@@ -128,8 +128,8 @@ gsl_sum_levin_u_step (const double term,
 typedef struct
 {
   size_t size;
-  size_t i;			/* position in array */
-  size_t terms_used;		/* number of calls */
+  size_t i;                     /* position in array */
+  size_t terms_used;            /* number of calls */
   double sum_plain;
   double *q_num;
   double *q_den;
@@ -146,15 +146,15 @@ int gsl_sum_levin_utrunc_accel (const double *array,
                                 double *sum_accel, double *abserr_trunc);
 
 int gsl_sum_levin_utrunc_minmax (const double *array,
-				 const size_t n,
-				 const size_t min_terms,
-				 const size_t max_terms,
-				 gsl_sum_levin_utrunc_workspace * w,
-				 double *sum_accel, double *abserr_trunc);
+                                 const size_t n,
+                                 const size_t min_terms,
+                                 const size_t max_terms,
+                                 gsl_sum_levin_utrunc_workspace * w,
+                                 double *sum_accel, double *abserr_trunc);
 
 int gsl_sum_levin_utrunc_step (const double term,
-			       const size_t n,
-			       gsl_sum_levin_utrunc_workspace * w, 
+                               const size_t n,
+                               gsl_sum_levin_utrunc_workspace * w, 
                                double *sum_accel);
 
 __END_DECLS

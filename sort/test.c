@@ -113,19 +113,19 @@ main (void)
   for (i = 1; i < 1024; i = (i < 32) ? i + 1 : 2 * i)
     {
       for (s = 1; s < 4; s++)
-	{
-	  test_sort_vector (i, s);
-	  test_sort_vector_float (i, s);
-	  test_sort_vector_long_double (i, s);
-	  test_sort_vector_ulong (i, s);
-	  test_sort_vector_long (i, s);
-	  test_sort_vector_uint (i, s);
-	  test_sort_vector_int (i, s);
-	  test_sort_vector_ushort (i, s);
-	  test_sort_vector_short (i, s);
-	  test_sort_vector_uchar (i, s);
-	  test_sort_vector_char (i, s);
-	}
+        {
+          test_sort_vector (i, s);
+          test_sort_vector_float (i, s);
+          test_sort_vector_long_double (i, s);
+          test_sort_vector_ulong (i, s);
+          test_sort_vector_long (i, s);
+          test_sort_vector_uint (i, s);
+          test_sort_vector_int (i, s);
+          test_sort_vector_ushort (i, s);
+          test_sort_vector_short (i, s);
+          test_sort_vector_uchar (i, s);
+          test_sort_vector_char (i, s);
+        }
     }
 
   exit (gsl_test_summary ());

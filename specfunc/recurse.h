@@ -35,9 +35,9 @@ int CONCAT(recurse_forward_simple, func) (                                    \
                                const int n_max, const int n_min,              \
                                const double parameters[],                     \
                                const double f_n_min,                          \
-			       const double f_n_min_p1,                       \
+                               const double f_n_min_p1,                       \
                                double * f,                                    \
-			       double * f_n_max                               \
+                               double * f_n_max                               \
                                )                                              \
 {                                                                             \
   int n;                                                                      \
@@ -75,12 +75,12 @@ int CONCAT(recurse_forward_simple, func) (                                    \
  */
 #define GEN_RECURSE_BACKWARD_MINIMAL_SIMPLE(func)                             \
 int CONCAT(recurse_backward_minimal_simple, func) (                           \
-	                       const int n_start,                             \
+                               const int n_start,                             \
                                const int n_max, const int n_min,              \
                                const double parameters[],                     \
                                const double f_n_min,                          \
                                double * f,                                    \
-			       double * f_n_max                               \
+                               double * f_n_max                               \
                                )                                              \
 {                                                                             \
   int n;                                                                      \

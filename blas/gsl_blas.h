@@ -60,13 +60,13 @@ int gsl_blas_dsdot (const gsl_vector_float * X,
 
 int gsl_blas_sdot (const gsl_vector_float * X,
                    const gsl_vector_float * Y,
-		   float * result
-		   );
+                   float * result
+                   );
 
 int gsl_blas_ddot (const gsl_vector * X,
                    const gsl_vector * Y,
-		   double * result
-		   );
+                   double * result
+                   );
 
 
 int  gsl_blas_cdotu (const gsl_vector_complex_float * X,

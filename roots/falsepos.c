@@ -155,14 +155,14 @@ falsepos_iterate (void * vstate, gsl_function * f, double * root, double * x_low
       *x_upper = x_bisect;
       state->f_upper = f_bisect;
       if (*root > x_bisect)
-	*root = 0.5 * (x_left + x_bisect) ;
+        *root = 0.5 * (x_left + x_bisect) ;
     }
   else
     {
       *x_lower = x_bisect;
       state->f_lower = f_bisect;
       if (*root < x_bisect)
-	*root = 0.5 * (x_bisect + x_right) ;
+        *root = 0.5 * (x_bisect + x_right) ;
     }
 
   return GSL_SUCCESS;
@@ -170,7 +170,7 @@ falsepos_iterate (void * vstate, gsl_function * f, double * root, double * x_low
 
 
 static const gsl_root_fsolver_type falsepos_type =
-{"falsepos",				/* name */
+{"falsepos",                            /* name */
  sizeof (falsepos_state_t),
  &falsepos_init,
  &falsepos_iterate};

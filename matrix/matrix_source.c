@@ -20,39 +20,39 @@
 #ifndef HIDE_INLINE_STATIC
 BASE
 FUNCTION (gsl_matrix, get) (const TYPE (gsl_matrix) * m,
-			    const size_t i, const size_t j)
+                            const size_t i, const size_t j)
 {
   BASE zero = ZERO;
 
   if (gsl_check_range)
     {
-      if (i >= m->size1)	/* size_t is unsigned, can't be negative */
-	{
-	  GSL_ERROR_VAL ("first index out of range", GSL_EINVAL, zero);
-	}
-      else if (j >= m->size2)	/* size_t is unsigned, can't be negative */
-	{
-	  GSL_ERROR_VAL ("second index out of range", GSL_EINVAL, zero);
-	}
+      if (i >= m->size1)        /* size_t is unsigned, can't be negative */
+        {
+          GSL_ERROR_VAL ("first index out of range", GSL_EINVAL, zero);
+        }
+      else if (j >= m->size2)   /* size_t is unsigned, can't be negative */
+        {
+          GSL_ERROR_VAL ("second index out of range", GSL_EINVAL, zero);
+        }
     }
   return *(BASE *) (m->data + MULTIPLICITY * (i * m->tda + j));
 }
 
 void
 FUNCTION (gsl_matrix, set) (TYPE (gsl_matrix) * m,
-			    const size_t i, const size_t j,
-			    const BASE x)
+                            const size_t i, const size_t j,
+                            const BASE x)
 {
   if (gsl_check_range)
     {
-      if (i >= m->size1)	/* size_t is unsigned, can't be negative */
-	{
-	  GSL_ERROR_VOID ("first index out of range", GSL_EINVAL);
-	}
-      else if (j >= m->size2)	/* size_t is unsigned, can't be negative */
-	{
-	  GSL_ERROR_VOID ("second index out of range", GSL_EINVAL);
-	}
+      if (i >= m->size1)        /* size_t is unsigned, can't be negative */
+        {
+          GSL_ERROR_VOID ("first index out of range", GSL_EINVAL);
+        }
+      else if (j >= m->size2)   /* size_t is unsigned, can't be negative */
+        {
+          GSL_ERROR_VOID ("second index out of range", GSL_EINVAL);
+        }
     }
   *(BASE *) (m->data + MULTIPLICITY * (i * m->tda + j)) = x;
 }
@@ -64,14 +64,14 @@ FUNCTION (gsl_matrix, ptr) (TYPE (gsl_matrix) * m,
 {
   if (gsl_check_range)
     {
-      if (i >= m->size1)	/* size_t is unsigned, can't be negative */
-	{
-	  GSL_ERROR_NULL ("first index out of range", GSL_EINVAL);
-	}
-      else if (j >= m->size2)	/* size_t is unsigned, can't be negative */
-	{
-	  GSL_ERROR_NULL ("second index out of range", GSL_EINVAL);
-	}
+      if (i >= m->size1)        /* size_t is unsigned, can't be negative */
+        {
+          GSL_ERROR_NULL ("first index out of range", GSL_EINVAL);
+        }
+      else if (j >= m->size2)   /* size_t is unsigned, can't be negative */
+        {
+          GSL_ERROR_NULL ("second index out of range", GSL_EINVAL);
+        }
     }
   return (BASE *) (m->data + MULTIPLICITY * (i * m->tda + j));
 }
@@ -83,14 +83,14 @@ FUNCTION (gsl_matrix, const_ptr) (const TYPE (gsl_matrix) * m,
 {
   if (gsl_check_range)
     {
-      if (i >= m->size1)	/* size_t is unsigned, can't be negative */
-	{
-	  GSL_ERROR_NULL ("first index out of range", GSL_EINVAL);
-	}
-      else if (j >= m->size2)	/* size_t is unsigned, can't be negative */
-	{
-	  GSL_ERROR_NULL ("second index out of range", GSL_EINVAL);
-	}
+      if (i >= m->size1)        /* size_t is unsigned, can't be negative */
+        {
+          GSL_ERROR_NULL ("first index out of range", GSL_EINVAL);
+        }
+      else if (j >= m->size2)   /* size_t is unsigned, can't be negative */
+        {
+          GSL_ERROR_NULL ("second index out of range", GSL_EINVAL);
+        }
     }
   return (const BASE *) (m->data + MULTIPLICITY * (i * m->tda + j));
 }

@@ -76,15 +76,15 @@ main (void)
       status = gsl_multimin_fdfminimizer_iterate (s);
 
       if (status)
-	break;
+        break;
 
       status = gsl_multimin_test_gradient (s->gradient, 1e-3);
 
       if (status == GSL_SUCCESS)
-	printf ("Minimum found at:\n");
+        printf ("Minimum found at:\n");
 
       printf ("%5d %.5f %.5f %10.5f\n", iter,
-	      gsl_vector_get (s->x, 0), gsl_vector_get (s->x, 1), s->f);
+              gsl_vector_get (s->x, 0), gsl_vector_get (s->x, 1), s->f);
 
     }
   while (status == GSL_CONTINUE && iter < 100);

@@ -90,7 +90,7 @@ minstd_set (void *vstate, unsigned long int s)
   minstd_state_t *state = (minstd_state_t *) vstate;
 
   if (s == 0)
-    s = 1;	/* default seed is 1 */
+    s = 1;      /* default seed is 1 */
 
   state->x = s;
 
@@ -98,9 +98,9 @@ minstd_set (void *vstate, unsigned long int s)
 }
 
 static const gsl_rng_type minstd_type =
-{"minstd",			/* name */
- 2147483646,			/* RAND_MAX */
- 1,          			/* RAND_MIN */
+{"minstd",                      /* name */
+ 2147483646,                    /* RAND_MAX */
+ 1,                             /* RAND_MIN */
  sizeof (minstd_state_t),
  &minstd_set,
  &minstd_get,

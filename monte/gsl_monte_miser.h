@@ -66,10 +66,10 @@ typedef struct {
 
 int gsl_monte_miser_integrate(gsl_monte_function * f, 
                               const double xl[], const double xh[], 
-			      size_t dim, size_t calls, 
+                              size_t dim, size_t calls, 
                               gsl_rng *r, 
                               gsl_monte_miser_state* state,
-			      double *result, double *abserr);
+                              double *result, double *abserr);
 
 gsl_monte_miser_state* gsl_monte_miser_alloc(size_t dim);
 

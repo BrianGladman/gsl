@@ -39,11 +39,11 @@ qag (const gsl_function *f,
 
 int
 gsl_integration_qag (const gsl_function *f,
-		     double a, double b,
-		     double epsabs, double epsrel, size_t limit,
-		     int key,
-		     gsl_integration_workspace * workspace,
-		     double * result, double * abserr)
+                     double a, double b,
+                     double epsabs, double epsrel, size_t limit,
+                     int key,
+                     gsl_integration_workspace * workspace,
+                     double * result, double * abserr)
 {
   int status ;
   gsl_integration_rule * integration_rule = gsl_integration_qk15 ;
@@ -79,7 +79,7 @@ gsl_integration_qag (const gsl_function *f,
       break ;      
     default:
       GSL_ERROR("value of key does specify a known integration rule", 
-		GSL_EINVAL) ;
+                GSL_EINVAL) ;
     }
 
   status = qag (f, a, b, epsabs, epsrel, limit,
@@ -105,7 +105,7 @@ qag (const gsl_function * f,
   size_t iteration = 0;
   int roundoff_type1 = 0, roundoff_type2 = 0, error_type = 0;
 
-  double round_off;	
+  double round_off;     
 
   /* Initialize results */
 
@@ -122,7 +122,7 @@ qag (const gsl_function * f,
   if (epsabs <= 0 && (epsrel < 50 * GSL_DBL_EPSILON || epsrel < 0.5e-28))
     {
       GSL_ERROR ("tolerance cannot be acheived with given epsabs and epsrel",
-		 GSL_EBADTOL);
+                 GSL_EBADTOL);
     }
 
   /* perform the first integration */
@@ -145,7 +145,7 @@ qag (const gsl_function * f,
       *abserr = abserr0;
 
       GSL_ERROR ("cannot reach tolerance because of roundoff error "
-		 "on first attempt", GSL_EROUND);
+                 "on first attempt", GSL_EROUND);
     }
   else if ((abserr0 <= tolerance && abserr0 != resasc0) || abserr0 == 0.0)
     {
@@ -195,36 +195,36 @@ qag (const gsl_function * f,
       area += area12 - r_i;
 
       if (resasc1 != error1 && resasc2 != error2)
-	{
-	  double delta = r_i - area12;
+        {
+          double delta = r_i - area12;
 
-	  if (fabs (delta) <= 1.0e-5 * fabs (area12) && error12 >= 0.99 * e_i)
-	    {
-	      roundoff_type1++;
-	    }
-	  if (iteration >= 10 && error12 > e_i)
-	    {
-	      roundoff_type2++;
-	    }
-	}
+          if (fabs (delta) <= 1.0e-5 * fabs (area12) && error12 >= 0.99 * e_i)
+            {
+              roundoff_type1++;
+            }
+          if (iteration >= 10 && error12 > e_i)
+            {
+              roundoff_type2++;
+            }
+        }
 
       tolerance = GSL_MAX_DBL (epsabs, epsrel * fabs (area));
 
       if (errsum > tolerance)
-	{
-	  if (roundoff_type1 >= 6 || roundoff_type2 >= 20)
-	    {
-	      error_type = 2;	/* round off error */
-	    }
+        {
+          if (roundoff_type1 >= 6 || roundoff_type2 >= 20)
+            {
+              error_type = 2;   /* round off error */
+            }
 
-	  /* set error flag in the case of bad integrand behaviour at
-	     a point of the integration range */
+          /* set error flag in the case of bad integrand behaviour at
+             a point of the integration range */
 
-	  if (subinterval_too_small (a1, a2, b2))
-	    {
-	      error_type = 3;
-	    }
-	}
+          if (subinterval_too_small (a1, a2, b2))
+            {
+              error_type = 3;
+            }
+        }
 
       update (workspace, a1, b1, area1, error1, a2, b2, area2, error2);
 
@@ -245,12 +245,12 @@ qag (const gsl_function * f,
   else if (error_type == 2)
     {
       GSL_ERROR ("roundoff error prevents tolerance from being achieved",
-		 GSL_EROUND);
+                 GSL_EROUND);
     }
   else if (error_type == 3)
     {
       GSL_ERROR ("bad integrand behavior found in the integration interval",
-		 GSL_ESING);
+                 GSL_ESING);
     }
   else if (iteration == limit)
     {

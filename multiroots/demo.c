@@ -51,7 +51,7 @@ rosenbrock_df (const gsl_vector * x, void *params, gsl_matrix * df)
 
 int
 rosenbrock_fdf (const gsl_vector * x, void *params,
-		gsl_vector * f, gsl_matrix * df)
+                gsl_vector * f, gsl_matrix * df)
 {
   rosenbrock_f (x, params, f);
   rosenbrock_df (x, params, df);
@@ -113,7 +113,7 @@ main (void)
       print_state (iter, s);
 
       if (status)
-	break;
+        break;
 
       status = gsl_multiroot_test_residual (s->f, 0.0000001);
     }
@@ -134,9 +134,9 @@ int
 print_state (size_t iter, SOLVER * s)
 {
   printf ("iter = %3u x = % 15.8f % 15.8f  f(x) = % .3e % .3e\n",
-	  iter,
-	  gsl_vector_get (s->x, 0), gsl_vector_get (s->x, 1),
-	  gsl_vector_get (s->f, 0), gsl_vector_get (s->f, 1));
+          iter,
+          gsl_vector_get (s->x, 0), gsl_vector_get (s->x, 1),
+          gsl_vector_get (s->f, 0), gsl_vector_get (s->f, 1));
 }
 
 

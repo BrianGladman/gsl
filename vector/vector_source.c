@@ -23,11 +23,11 @@ FUNCTION (gsl_vector, get) (const TYPE (gsl_vector) * v, const size_t i)
 {
   if (gsl_check_range)
     {
-      if (i >= v->size)		/* size_t is unsigned, can't be negative */
-	{
-	  BASE zero = ZERO;
-	  GSL_ERROR_VAL ("index out of range", GSL_EINVAL, zero);
-	}
+      if (i >= v->size)         /* size_t is unsigned, can't be negative */
+        {
+          BASE zero = ZERO;
+          GSL_ERROR_VAL ("index out of range", GSL_EINVAL, zero);
+        }
     }
 
   /* The following line is a generalization of return v->data[i] */
@@ -40,10 +40,10 @@ FUNCTION (gsl_vector, set) (TYPE (gsl_vector) * v, const size_t i, BASE x)
 {
   if (gsl_check_range)
     {
-      if (i >= v->size)		/* size_t is unsigned, can't be negative */
-	{
-	  GSL_ERROR_VOID ("index out of range", GSL_EINVAL);
-	}
+      if (i >= v->size)         /* size_t is unsigned, can't be negative */
+        {
+          GSL_ERROR_VOID ("index out of range", GSL_EINVAL);
+        }
     }
 
   /* The following line is a generalization of v->data[i] = x */
@@ -56,10 +56,10 @@ FUNCTION (gsl_vector, ptr) (TYPE (gsl_vector) * v, const size_t i)
 {
   if (gsl_check_range)
     {
-      if (i >= v->size)		/* size_t is unsigned, can't be negative */
-	{
-	  GSL_ERROR_NULL ("index out of range", GSL_EINVAL);
-	}
+      if (i >= v->size)         /* size_t is unsigned, can't be negative */
+        {
+          GSL_ERROR_NULL ("index out of range", GSL_EINVAL);
+        }
     }
 
   return (BASE *) (v->data + MULTIPLICITY * i * v->stride);
@@ -70,10 +70,10 @@ FUNCTION (gsl_vector, const_ptr) (const TYPE (gsl_vector) * v, const size_t i)
 {
   if (gsl_check_range)
     {
-      if (i >= v->size)		/* size_t is unsigned, can't be negative */
-	{
-	  GSL_ERROR_NULL ("index out of range", GSL_EINVAL);
-	}
+      if (i >= v->size)         /* size_t is unsigned, can't be negative */
+        {
+          GSL_ERROR_NULL ("index out of range", GSL_EINVAL);
+        }
     }
 
   /* The following line is a generalization of return v->data[i] */

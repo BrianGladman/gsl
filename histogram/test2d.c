@@ -52,9 +52,9 @@ test2d (void)
   g = gsl_histogram2d_calloc (M, N);
 
   gsl_test (h->xrange == 0,
-	    "gsl_histogram2d_calloc returns valid xrange pointer");
+            "gsl_histogram2d_calloc returns valid xrange pointer");
   gsl_test (h->yrange == 0,
-	    "gsl_histogram2d_calloc returns valid yrange pointer");
+            "gsl_histogram2d_calloc returns valid yrange pointer");
   gsl_test (h->bin == 0, "gsl_histogram2d_calloc returns valid bin pointer");
 
   gsl_test (h->nx != M, "gsl_histogram2d_calloc returns valid nx");
@@ -63,11 +63,11 @@ test2d (void)
   hr = gsl_histogram2d_calloc_range (MR, NR, xr, yr);
 
   gsl_test (hr->xrange == 0,
-	    "gsl_histogram2d_calloc_range returns valid xrange pointer");
+            "gsl_histogram2d_calloc_range returns valid xrange pointer");
   gsl_test (hr->yrange == 0,
-	    "gsl_histogram2d_calloc_range returns valid yrange pointer");
+            "gsl_histogram2d_calloc_range returns valid yrange pointer");
   gsl_test (hr->bin == 0,
-	    "gsl_histogram2d_calloc_range returns valid bin pointer");
+            "gsl_histogram2d_calloc_range returns valid bin pointer");
 
   gsl_test (hr->nx != MR, "gsl_histogram2d_calloc_range returns valid nx");
   gsl_test (hr->ny != NR, "gsl_histogram2d_calloc_range returns valid ny");
@@ -76,28 +76,28 @@ test2d (void)
     int status = 0;
     for (i = 0; i <= MR; i++)
       {
-	if (hr->xrange[i] != xr[i])
-	  {
-	    status = 1;
-	  }
+        if (hr->xrange[i] != xr[i])
+          {
+            status = 1;
+          }
       };
 
     gsl_test (status,
-	      "gsl_histogram2d_calloc_range creates xrange");
+              "gsl_histogram2d_calloc_range creates xrange");
   }
 
   {
     int status = 0;
     for (i = 0; i <= NR; i++)
       {
-	if (hr->yrange[i] != yr[i])
-	  {
-	    status = 1;
-	  }
+        if (hr->yrange[i] != yr[i])
+          {
+            status = 1;
+          }
       };
 
     gsl_test (status,
-	      "gsl_histogram2d_calloc_range creates yrange");
+              "gsl_histogram2d_calloc_range creates yrange");
   }
 
   for (i = 0; i <= MR; i++)
@@ -115,10 +115,10 @@ test2d (void)
 
     for (i = 0; i <= MR; i++)
       {
-	if (hr->xrange[i] != xr[i])
-	  {
-	    status = 1;
-	  }
+        if (hr->xrange[i] != xr[i])
+          {
+            status = 1;
+          }
       };
 
     gsl_test (status, "gsl_histogram2d_set_ranges sets xrange");
@@ -128,10 +128,10 @@ test2d (void)
     int status = 0;
     for (i = 0; i <= NR; i++)
       {
-	if (hr->yrange[i] != yr[i])
-	  {
-	    status = 1;
-	  }
+        if (hr->yrange[i] != yr[i])
+          {
+            status = 1;
+          }
       };
 
     gsl_test (status, "gsl_histogram2d_set_ranges sets yrange");
@@ -142,10 +142,10 @@ test2d (void)
   for (i = 0; i < M; i++)
     {
       for (j = 0; j < N; j++)
-	{
-	  k++;
-	  gsl_histogram2d_accumulate (h, (double) i, (double) j, (double) k);
-	};
+        {
+          k++;
+          gsl_histogram2d_accumulate (h, (double) i, (double) j, (double) k);
+        };
     }
 
   {
@@ -153,17 +153,17 @@ test2d (void)
     k = 0;
     for (i = 0; i < M; i++)
       {
-	for (j = 0; j < N; j++)
-	  {
-	    k++;
-	    if (h->bin[i * N + j] != (double) k)
-	      {
-		status = 1;
-	      }
-	  }
+        for (j = 0; j < N; j++)
+          {
+            k++;
+            if (h->bin[i * N + j] != (double) k)
+              {
+                status = 1;
+              }
+          }
       }
     gsl_test (status,
-	      "gsl_histogram2d_accumulate writes into array");
+              "gsl_histogram2d_accumulate writes into array");
   }
 
   {
@@ -171,12 +171,12 @@ test2d (void)
     k = 0;
     for (i = 0; i < M; i++)
       {
-	for (j = 0; j < N; j++)
-	  {
-	    k++;
-	    if (gsl_histogram2d_get (h, i, j) != (double) k)
-	      status = 1;
-	  };
+        for (j = 0; j < N; j++)
+          {
+            k++;
+            if (gsl_histogram2d_get (h, i, j) != (double) k)
+              status = 1;
+          };
       }
     gsl_test (status, "gsl_histogram2d_get reads from array");
   }
@@ -197,8 +197,8 @@ test2d (void)
     int status = 0;
     for (i = 0; i <= M; i++)
       {
-	if (h1->xrange[i] != h->xrange[i])
-	  status = 1;
+        if (h1->xrange[i] != h->xrange[i])
+          status = 1;
       };
     gsl_test (status, "gsl_histogram2d_memcpy copies bin xranges");
   }
@@ -207,8 +207,8 @@ test2d (void)
     int status = 0;
     for (i = 0; i <= N; i++)
       {
-	if (h1->yrange[i] != h->yrange[i])
-	  status = 1;
+        if (h1->yrange[i] != h->yrange[i])
+          status = 1;
       };
     gsl_test (status, "gsl_histogram2d_memcpy copies bin yranges");
   }
@@ -217,12 +217,12 @@ test2d (void)
     int status = 0;
     for (i = 0; i < M; i++)
       {
-	for (j = 0; j < N; j++)
-	  {
-	    if (gsl_histogram2d_get (h1, i, j) !=
-		gsl_histogram2d_get (h, i, j))
-	      status = 1;
-	  }
+        for (j = 0; j < N; j++)
+          {
+            if (gsl_histogram2d_get (h1, i, j) !=
+                gsl_histogram2d_get (h, i, j))
+              status = 1;
+          }
       }
     gsl_test (status, "gsl_histogram2d_memcpy copies bin values");
   }
@@ -235,8 +235,8 @@ test2d (void)
     int status = 0;
     for (i = 0; i <= M; i++)
       {
-	if (h1->xrange[i] != h->xrange[i])
-	  status = 1;
+        if (h1->xrange[i] != h->xrange[i])
+          status = 1;
       };
     gsl_test (status, "gsl_histogram2d_clone copies bin xranges");
   }
@@ -245,8 +245,8 @@ test2d (void)
     int status = 0;
     for (i = 0; i <= N; i++)
       {
-	if (h1->yrange[i] != h->yrange[i])
-	  status = 1;
+        if (h1->yrange[i] != h->yrange[i])
+          status = 1;
       };
     gsl_test (status, "gsl_histogram2d_clone copies bin yranges");
   }
@@ -255,12 +255,12 @@ test2d (void)
     int status = 0;
     for (i = 0; i < M; i++)
       {
-	for (j = 0; j < N; j++)
-	  {
-	    if (gsl_histogram2d_get (h1, i, j) !=
-		gsl_histogram2d_get (h, i, j))
-	      status = 1;
-	  }
+        for (j = 0; j < N; j++)
+          {
+            if (gsl_histogram2d_get (h1, i, j) !=
+                gsl_histogram2d_get (h, i, j))
+              status = 1;
+          }
       }
     gsl_test (status, "gsl_histogram2d_clone copies bin values");
   }
@@ -273,8 +273,8 @@ test2d (void)
 
     for (i = 0; i < M * N; i++)
       {
-	if (h->bin[i] != 0)
-	  status = 1;
+        if (h->bin[i] != 0)
+          status = 1;
       }
     gsl_test (status, "gsl_histogram2d_reset zeros array");
   }
@@ -288,26 +288,26 @@ test2d (void)
 
     for (i = 0; i < M1; i++)
       {
-	for (j = 0; j < N1; j++)
-	  {
-	    gsl_histogram2d_increment (h, (double) i, (double) j);
+        for (j = 0; j < N1; j++)
+          {
+            gsl_histogram2d_increment (h, (double) i, (double) j);
 
-	    for (k = 0; k <= i * N1 + j; k++)
-	      {
-		if (h->bin[k] != 1)
-		  {
-		    status = 1;
-		  }
-	      }
+            for (k = 0; k <= i * N1 + j; k++)
+              {
+                if (h->bin[k] != 1)
+                  {
+                    status = 1;
+                  }
+              }
 
-	    for (k = i * N1 + j + 1; k < M1 * N1; k++)
-	      {
-		if (h->bin[k] != 0)
-		  {
-		    status = 1;
-		  }
-	      }
-	  }
+            for (k = i * N1 + j + 1; k < M1 * N1; k++)
+              {
+                if (h->bin[k] != 0)
+                  {
+                    status = 1;
+                  }
+              }
+          }
       }
     gsl_test (status, "gsl_histogram2d_increment increases bin value");
   }
@@ -319,16 +319,16 @@ test2d (void)
     int status = 0;
     for (i = 0; i < M; i++)
       {
-	double x0 = 0, x1 = 0;
-	gsl_histogram2d_get_xrange (h, i, &x0, &x1);
+        double x0 = 0, x1 = 0;
+        gsl_histogram2d_get_xrange (h, i, &x0, &x1);
 
-	if (x0 != i || x1 != i + 1)
-	  {
-	    status = 1;
-	  }
+        if (x0 != i || x1 != i + 1)
+          {
+            status = 1;
+          }
       }
     gsl_test (status,
-	      "gsl_histogram2d_get_xlowerlimit and xupperlimit");
+              "gsl_histogram2d_get_xlowerlimit and xupperlimit");
   }
 
 
@@ -336,16 +336,16 @@ test2d (void)
     int status = 0;
     for (i = 0; i < N; i++)
       {
-	double y0 = 0, y1 = 0;
-	gsl_histogram2d_get_yrange (h, i, &y0, &y1);
+        double y0 = 0, y1 = 0;
+        gsl_histogram2d_get_yrange (h, i, &y0, &y1);
 
-	if (y0 != i || y1 != i + 1)
-	  {
-	    status = 1;
-	  }
+        if (y0 != i || y1 != i + 1)
+          {
+            status = 1;
+          }
       }
     gsl_test (status,
-	      "gsl_histogram2d_get_ylowerlimit and yupperlimit");
+              "gsl_histogram2d_get_ylowerlimit and yupperlimit");
   }
 
 
@@ -402,22 +402,22 @@ test2d (void)
   {
     double min = gsl_histogram2d_min_val (h);
     gsl_test (min != -654321.0,
-	      "gsl_histogram2d_min_val finds minimum value");
+              "gsl_histogram2d_min_val finds minimum value");
   }
 
   {
     size_t imax, jmax;
     gsl_histogram2d_max_bin (h, &imax, &jmax);
     gsl_test (imax != 3
-	      || jmax != 2,
-	      "gsl_histogram2d_max_bin finds maximum value bin");
+              || jmax != 2,
+              "gsl_histogram2d_max_bin finds maximum value bin");
   }
 
   {
     size_t imin, jmin;
     gsl_histogram2d_min_bin (h, &imin, &jmin);
     gsl_test (imin != 4
-	      || jmin != 3, "gsl_histogram2d_min_bin find minimum value bin");
+              || jmin != 3, "gsl_histogram2d_min_bin find minimum value bin");
   }
 
   for (i = 0; i < M * N; i++)
@@ -429,7 +429,7 @@ test2d (void)
   {
     double sum = gsl_histogram2d_sum (h);
     gsl_test (sum != N * M * 27 + ((N * M - 1) * N * M) / 2,
-	      "gsl_histogram2d_sum sums all bin values");
+              "gsl_histogram2d_sum sums all bin values");
   }
 
   {
@@ -451,9 +451,9 @@ test2d (void)
       double expected_xmean = (h3->xrange[xbin] + h3->xrange[xbin + 1]) / 2.0;
       double expected_ymean = (h3->yrange[ybin] + h3->yrange[ybin + 1]) / 2.0;
       gsl_test_abs (xmean, expected_xmean, 100.0 * GSL_DBL_EPSILON,
-		    "gsl_histogram2d_xmean");
+                    "gsl_histogram2d_xmean");
       gsl_test_abs (ymean, expected_ymean, 100.0 * GSL_DBL_EPSILON,
-		    "gsl_histogram2d_ymean");
+                    "gsl_histogram2d_ymean");
     };
     gsl_histogram2d_free (h3);
   }
@@ -474,18 +474,18 @@ test2d (void)
     /* initialize with 2d gauss pdf in two directions */
     for (xbin = 0; xbin < M; xbin++)
       {
-	double xi =
-	  ((h3->xrange[xbin] + h3->xrange[xbin + 1]) / 2.0 - xmean) / xsigma;
-	for (ybin = 0; ybin < N; ybin++)
-	  {
-	    double yi =
-	      ((h3->yrange[ybin] + h3->yrange[ybin + 1]) / 2.0 -
-	       ymean) / ysigma;
-	    double prob =
-	      norm * exp (-(xi * xi - 2.0 * correl * xi * yi + yi * yi) /
-			  2.0 / (1 - correl * correl));
-	    h3->bin[xbin * N + ybin] = prob;
-	  }
+        double xi =
+          ((h3->xrange[xbin] + h3->xrange[xbin + 1]) / 2.0 - xmean) / xsigma;
+        for (ybin = 0; ybin < N; ybin++)
+          {
+            double yi =
+              ((h3->yrange[ybin] + h3->yrange[ybin + 1]) / 2.0 -
+               ymean) / ysigma;
+            double prob =
+              norm * exp (-(xi * xi - 2.0 * correl * xi * yi + yi * yi) /
+                          2.0 / (1 - correl * correl));
+            h3->bin[xbin * N + ybin] = prob;
+          }
       }
     {
       double xs = gsl_histogram2d_xsigma (h3);
@@ -514,8 +514,8 @@ test2d (void)
     int status = 0;
     for (i = 0; i < M * N; i++)
       {
-	if (h1->bin[i] != g->bin[i] + h->bin[i])
-	  status = 1;
+        if (h1->bin[i] != g->bin[i] + h->bin[i])
+          status = 1;
       }
     gsl_test (status, "gsl_histogram2d_add histogram addition");
   }
@@ -527,8 +527,8 @@ test2d (void)
     int status = 0;
     for (i = 0; i < M * N; i++)
       {
-	if (h1->bin[i] != g->bin[i] - h->bin[i])
-	  status = 1;
+        if (h1->bin[i] != g->bin[i] - h->bin[i])
+          status = 1;
       }
     gsl_test (status, "gsl_histogram2d_sub histogram subtraction");
   }
@@ -541,8 +541,8 @@ test2d (void)
     int status = 0;
     for (i = 0; i < M * N; i++)
       {
-	if (h1->bin[i] != g->bin[i] * h->bin[i])
-	  status = 1;
+        if (h1->bin[i] != g->bin[i] * h->bin[i])
+          status = 1;
       }
     gsl_test (status, "gsl_histogram2d_mul histogram multiplication");
   }
@@ -554,8 +554,8 @@ test2d (void)
     int status = 0;
     for (i = 0; i < M * N; i++)
       {
-	if (h1->bin[i] != g->bin[i] / h->bin[i])
-	  status = 1;
+        if (h1->bin[i] != g->bin[i] / h->bin[i])
+          status = 1;
       }
     gsl_test (status, "gsl_histogram2d_div histogram division");
   }
@@ -567,8 +567,8 @@ test2d (void)
     int status = 0;
     for (i = 0; i < M * N; i++)
       {
-	if (h1->bin[i] != 0.5 * g->bin[i])
-	  status = 1;
+        if (h1->bin[i] != 0.5 * g->bin[i])
+          status = 1;
       }
     gsl_test (status, "gsl_histogram2d_scale histogram scaling");
   }
@@ -580,22 +580,22 @@ test2d (void)
     int status = 0;
     for (i = 0; i < M * N; i++)
       {
-	if (h1->bin[i] != 0.25 + g->bin[i])
-	  status = 1;
+        if (h1->bin[i] != 0.25 + g->bin[i])
+          status = 1;
       }
     gsl_test (status, "gsl_histogram2d_shift histogram shift");
   }
 
-  gsl_histogram2d_free (h);	/* free whatever is in h */
+  gsl_histogram2d_free (h);     /* free whatever is in h */
 
   h = gsl_histogram2d_calloc_uniform (M1, N1, 0.0, 5.0, 0.0, 5.0);
 
   gsl_test (h->xrange == 0,
-	    "gsl_histogram2d_calloc_uniform returns valid range pointer");
+            "gsl_histogram2d_calloc_uniform returns valid range pointer");
   gsl_test (h->yrange == 0,
-	    "gsl_histogram2d_calloc_uniform returns valid range pointer");
+            "gsl_histogram2d_calloc_uniform returns valid range pointer");
   gsl_test (h->bin == 0,
-	    "gsl_histogram2d_calloc_uniform returns valid bin pointer");
+            "gsl_histogram2d_calloc_uniform returns valid bin pointer");
   gsl_test (h->nx != M1, "gsl_histogram2d_calloc_uniform returns valid nx");
   gsl_test (h->ny != N1, "gsl_histogram2d_calloc_uniform returns valid ny");
 
@@ -616,34 +616,34 @@ test2d (void)
 
     for (i = 0; i < M1; i++)
       {
-	for (j = 0; j < N1; j++)
-	  {
-	    if (i == i1 && j == j1)
-	      {
-		expected = 1.0;
-	      }
-	    else if (i == i2 && j == j2)
-	      {
-		expected = 2.0;
-	      }
-	    else if (i == i3 && j == j3)
-	      {
-		expected = 3.0;
-	      }
-	    else if (i == i4 && j == j4)
-	      {
-		expected = 4.0;
-	      }
-	    else
-	      {
-		expected = 0.0;
-	      }
+        for (j = 0; j < N1; j++)
+          {
+            if (i == i1 && j == j1)
+              {
+                expected = 1.0;
+              }
+            else if (i == i2 && j == j2)
+              {
+                expected = 2.0;
+              }
+            else if (i == i3 && j == j3)
+              {
+                expected = 3.0;
+              }
+            else if (i == i4 && j == j4)
+              {
+                expected = 4.0;
+              }
+            else
+              {
+                expected = 0.0;
+              }
 
-	    if (h->bin[i * N1 + j] != expected)
-	      {
-		status = 1;
-	      }
-	  }
+            if (h->bin[i * N1 + j] != expected)
+              {
+                status = 1;
+              }
+          }
       }
     gsl_test (status, "gsl_histogram2d_find returns index");
   }
@@ -663,32 +663,32 @@ test2d (void)
 
     for (i = 0; i <= M1; i++)
       {
-	if (h->xrange[i] != hh->xrange[i])
-	  {
-	    printf ("xrange[%d] : %g orig vs %g\n",
-		    (int) i, h->xrange[i], hh->xrange[i]);
-	    status = 1;
-	  }
+        if (h->xrange[i] != hh->xrange[i])
+          {
+            printf ("xrange[%d] : %g orig vs %g\n",
+                    (int) i, h->xrange[i], hh->xrange[i]);
+            status = 1;
+          }
       }
 
     for (j = 0; j <= N1; j++)
       {
-	if (h->yrange[j] != hh->yrange[j])
-	  {
-	    printf ("yrange[%d] : %g orig vs %g\n",
-		    (int) j, h->yrange[j], hh->yrange[j]);
-	    status = 1;
-	  }
+        if (h->yrange[j] != hh->yrange[j])
+          {
+            printf ("yrange[%d] : %g orig vs %g\n",
+                    (int) j, h->yrange[j], hh->yrange[j]);
+            status = 1;
+          }
       }
 
     for (i = 0; i < M1 * N1; i++)
       {
-	if (h->bin[i] != hh->bin[i])
-	  {
-	    printf ("bin[%d] : %g orig vs %g\n",
-		    (int) i, h->bin[i], hh->bin[i]);
-	    status = 1;
-	  }
+        if (h->bin[i] != hh->bin[i])
+          {
+            printf ("bin[%d] : %g orig vs %g\n",
+                    (int) i, h->bin[i], hh->bin[i]);
+            status = 1;
+          }
       }
 
     gsl_test (status, "gsl_histogram2d_fprintf and fscanf");
@@ -712,32 +712,32 @@ test2d (void)
 
     for (i = 0; i <= M1; i++)
       {
-	if (h->xrange[i] != hh->xrange[i])
-	  {
-	    printf ("xrange[%d] : %g orig vs %g\n",
-		    (int) i, h->xrange[i], hh->xrange[i]);
-	    status = 1;
-	  }
+        if (h->xrange[i] != hh->xrange[i])
+          {
+            printf ("xrange[%d] : %g orig vs %g\n",
+                    (int) i, h->xrange[i], hh->xrange[i]);
+            status = 1;
+          }
       }
 
     for (j = 0; j <= N1; j++)
       {
-	if (h->yrange[j] != hh->yrange[j])
-	  {
-	    printf ("yrange[%d] : %g orig vs %g\n",
-		    (int) j, h->yrange[j], hh->yrange[j]);
-	    status = 1;
-	  }
+        if (h->yrange[j] != hh->yrange[j])
+          {
+            printf ("yrange[%d] : %g orig vs %g\n",
+                    (int) j, h->yrange[j], hh->yrange[j]);
+            status = 1;
+          }
       }
 
     for (i = 0; i < M1 * N1; i++)
       {
-	if (h->bin[i] != hh->bin[i])
-	  {
-	    printf ("bin[%d] : %g orig vs %g\n",
-		    (int) i, h->bin[i], hh->bin[i]);
-	    status = 1;
-	  }
+        if (h->bin[i] != hh->bin[i])
+          {
+            printf ("bin[%d] : %g orig vs %g\n",
+                    (int) i, h->bin[i], hh->bin[i]);
+            status = 1;
+          }
       }
 
     gsl_test (status, "gsl_histogram2d_fwrite and fread");

@@ -124,13 +124,13 @@ r250_set (void *vstate, unsigned long int s)
   int i;
 
   if (s == 0)
-    s = 1;	/* default seed is 1 */
+    s = 1;      /* default seed is 1 */
 
   state->i = 0;
 
 #define LCG(n) ((69069 * n) & 0xffffffffUL)
 
-  for (i = 0; i < 250; i++)	/* Fill the buffer  */
+  for (i = 0; i < 250; i++)     /* Fill the buffer  */
     {
       s = LCG (s);
       state->x[i] = s;
@@ -145,11 +145,11 @@ r250_set (void *vstate, unsigned long int s)
 
     for (i = 0; i < 32; i++)
       {
-	int k = 7 * i + 3;	/* Select a word to operate on        */
-	state->x[k] &= mask;	/* Turn off bits left of the diagonal */
-	state->x[k] |= msb;	/* Turn on the diagonal bit           */
-	mask >>= 1;
-	msb >>= 1;
+        int k = 7 * i + 3;      /* Select a word to operate on        */
+        state->x[k] &= mask;    /* Turn off bits left of the diagonal */
+        state->x[k] |= msb;     /* Turn on the diagonal bit           */
+        mask >>= 1;
+        msb >>= 1;
       }
   }
 
@@ -157,9 +157,9 @@ r250_set (void *vstate, unsigned long int s)
 }
 
 static const gsl_rng_type r250_type =
-{"r250",			/* name */
- 0xffffffffUL,			/* RAND_MAX */
- 0,			        /* RAND_MIN */
+{"r250",                        /* name */
+ 0xffffffffUL,                  /* RAND_MAX */
+ 0,                             /* RAND_MIN */
  sizeof (r250_state_t),
  &r250_set,
  &r250_get,

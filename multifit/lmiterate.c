@@ -60,12 +60,12 @@ lm_iteration:
   if (state->iter == 1)
     {
       if (pnorm < state->delta)
-	{
+        {
 #ifdef DEBUG
           printf("set delta = pnorm = %g\n" , pnorm);
 #endif
-	  state->delta = pnorm;
-	}
+          state->delta = pnorm;
+        }
     }
 
   /* Evaluate function at x + p */
@@ -184,8 +184,8 @@ lm_iteration:
 
       {
         int signum;
- 	gsl_matrix_memcpy (r, J);
- 	gsl_linalg_QRPT_decomp (r, tau, perm, &signum, work1);
+        gsl_matrix_memcpy (r, J);
+        gsl_linalg_QRPT_decomp (r, tau, perm, &signum, work1);
       }
       
       return GSL_SUCCESS;

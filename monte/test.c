@@ -55,7 +55,7 @@ double f2 (double x[], size_t d, void *params);
 double f3 (double x[], size_t d, void *params);
 
 void my_error_handler (const char *reason, const char *file,
-		       int line, int err);
+                       int line, int err);
 
 struct problem {
   gsl_monte_function * f;
@@ -323,7 +323,7 @@ f1 (double x[], size_t num_dim, void *params)
       sum += dx * dx;
     }
   return (pow (M_2_SQRTPI / (2. * a), (double) num_dim) *
-	  exp (-sum / (a * a)));
+          exp (-sum / (a * a)));
 }
 
 /* double gaussian */

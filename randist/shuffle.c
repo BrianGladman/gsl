@@ -35,13 +35,13 @@ void swap (void * base, size_t size, size_t i, size_t j)
   if (i == j)
     return ;
   
-  do						
-    {						
-      char tmp = *a;				
-      *a++ = *b;				
-      *b++ = tmp;				
+  do                                            
+    {                                           
+      char tmp = *a;                            
+      *a++ = *b;                                
+      *b++ = tmp;                               
     } 
-  while (--s > 0);				
+  while (--s > 0);                              
 }
 
 static inline void 
@@ -51,11 +51,11 @@ copy (void * dest, size_t i, void * src, size_t j, size_t size)
   register char * b = size * j + (char *) src ;
   register size_t s = size ;
   
-  do						
-    {						
-      *a++ = *b++;				
+  do                                            
+    {                                           
+      *a++ = *b++;                              
     } 
-  while (--s > 0);				
+  while (--s > 0);                              
 }
 
 /* Randomly permute (shuffle) N indices
@@ -80,7 +80,7 @@ gsl_ran_shuffle (const gsl_rng * r, void * base, size_t n, size_t size)
 
 int
 gsl_ran_choose (const gsl_rng * r, void * dest, size_t k, void * src, 
-		 size_t n, size_t size)
+                 size_t n, size_t size)
 {
   size_t i, j = 0;
 
@@ -98,10 +98,10 @@ gsl_ran_choose (const gsl_rng * r, void * dest, size_t k, void * src,
   for (i = 0; i < n && j < k; i++)
     {
       if ((n - i) * gsl_rng_uniform (r) < k - j)
-	{
-	  copy (dest, j, src, i, size) ;
-	  j++ ;
-	}
+        {
+          copy (dest, j, src, i, size) ;
+          j++ ;
+        }
     }
 
   return GSL_SUCCESS;
@@ -109,7 +109,7 @@ gsl_ran_choose (const gsl_rng * r, void * dest, size_t k, void * src,
 
 void
 gsl_ran_sample (const gsl_rng * r, void * dest, size_t k, void * src, 
-		size_t n, size_t size)
+                size_t n, size_t size)
 {
   size_t i, j = 0;
 

@@ -160,14 +160,14 @@ void gsl_vector_complex_float_set_all (gsl_vector_complex_float * v,
 int gsl_vector_complex_float_set_basis (gsl_vector_complex_float * v, size_t i);
 
 int gsl_vector_complex_float_fread (FILE * stream,
-				    gsl_vector_complex_float * v);
+                                    gsl_vector_complex_float * v);
 int gsl_vector_complex_float_fwrite (FILE * stream,
-				     const gsl_vector_complex_float * v);
+                                     const gsl_vector_complex_float * v);
 int gsl_vector_complex_float_fscanf (FILE * stream,
-				     gsl_vector_complex_float * v);
+                                     gsl_vector_complex_float * v);
 int gsl_vector_complex_float_fprintf (FILE * stream,
-				      const gsl_vector_complex_float * v,
-				      const char *format);
+                                      const gsl_vector_complex_float * v,
+                                      const char *format);
 
 int gsl_vector_complex_float_memcpy (gsl_vector_complex_float * dest, const gsl_vector_complex_float * src);
 
@@ -183,7 +183,7 @@ int gsl_vector_complex_float_isnull (const gsl_vector_complex_float * v);
 extern inline
 gsl_complex_float
 gsl_vector_complex_float_get (const gsl_vector_complex_float * v,
-			      const size_t i)
+                              const size_t i)
 {
 #if GSL_RANGE_CHECK
   if (i >= v->size)
@@ -198,7 +198,7 @@ gsl_vector_complex_float_get (const gsl_vector_complex_float * v,
 extern inline
 void
 gsl_vector_complex_float_set (gsl_vector_complex_float * v,
-			      const size_t i, gsl_complex_float z)
+                              const size_t i, gsl_complex_float z)
 {
 #if GSL_RANGE_CHECK
   if (i >= v->size)
@@ -212,7 +212,7 @@ gsl_vector_complex_float_set (gsl_vector_complex_float * v,
 extern inline
 gsl_complex_float *
 gsl_vector_complex_float_ptr (gsl_vector_complex_float * v,
-			      const size_t i)
+                              const size_t i)
 {
 #if GSL_RANGE_CHECK
   if (i >= v->size)

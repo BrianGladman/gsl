@@ -19,8 +19,8 @@
 
 int
 FUNCTION(gsl_dft_complex,forward) (const BASE data[], 
-				   const size_t stride, const size_t n,
-				   BASE result[])
+                                   const size_t stride, const size_t n,
+                                   BASE result[])
 {
   gsl_fft_direction sign = forward;
   int status = FUNCTION(gsl_dft_complex,transform) (data, stride, n, result, sign);
@@ -29,8 +29,8 @@ FUNCTION(gsl_dft_complex,forward) (const BASE data[],
 
 int
 FUNCTION(gsl_dft_complex,backward) (const BASE data[], 
-				    const size_t stride, const size_t n,
-				    BASE result[])
+                                    const size_t stride, const size_t n,
+                                    BASE result[])
 {
   gsl_fft_direction sign = backward;
   int status = FUNCTION(gsl_dft_complex,transform) (data, stride, n, result, sign);
@@ -40,8 +40,8 @@ FUNCTION(gsl_dft_complex,backward) (const BASE data[],
 
 int
 FUNCTION(gsl_dft_complex,inverse) (const BASE data[], 
-				   const size_t stride, const size_t n,
-				   BASE result[])
+                                   const size_t stride, const size_t n,
+                                   BASE result[])
 {
   gsl_fft_direction sign = backward;
   int status = FUNCTION(gsl_dft_complex,transform) (data, stride, n, result, sign);
@@ -53,8 +53,8 @@ FUNCTION(gsl_dft_complex,inverse) (const BASE data[],
     size_t i;
     for (i = 0; i < n; i++)
       {
-	REAL(result,stride,i) *= norm;
-	IMAG(result,stride,i) *= norm;
+        REAL(result,stride,i) *= norm;
+        IMAG(result,stride,i) *= norm;
       }
   }
   return status;
@@ -62,9 +62,9 @@ FUNCTION(gsl_dft_complex,inverse) (const BASE data[],
 
 int
 FUNCTION(gsl_dft_complex,transform) (const BASE data[], 
-				     const size_t stride, const size_t n,
-				     BASE result[],
-				     const gsl_fft_direction sign)
+                                     const size_t stride, const size_t n,
+                                     BASE result[],
+                                     const gsl_fft_direction sign)
 {
 
   size_t i, j, exponent;
@@ -81,21 +81,21 @@ FUNCTION(gsl_dft_complex,transform) (const BASE data[],
       exponent = 0;
 
       for (j = 0; j < n; j++)
-	{
-	  double theta = d_theta * (double) exponent;
-	  /* sum = exp(i theta) * data[j] */
+        {
+          double theta = d_theta * (double) exponent;
+          /* sum = exp(i theta) * data[j] */
 
-	  ATOMIC w_real = (ATOMIC) cos (theta);
-	  ATOMIC w_imag = (ATOMIC) sin (theta);
+          ATOMIC w_real = (ATOMIC) cos (theta);
+          ATOMIC w_imag = (ATOMIC) sin (theta);
 
-	  ATOMIC data_real = REAL(data,stride,j);
-	  ATOMIC data_imag = IMAG(data,stride,j);
+          ATOMIC data_real = REAL(data,stride,j);
+          ATOMIC data_imag = IMAG(data,stride,j);
 
-	  sum_real += w_real * data_real - w_imag * data_imag;
-	  sum_imag += w_real * data_imag + w_imag * data_real;
+          sum_real += w_real * data_real - w_imag * data_imag;
+          sum_imag += w_real * data_imag + w_imag * data_real;
 
-	  exponent = (exponent + i) % n;
-	}
+          exponent = (exponent + i) % n;
+        }
       REAL(result,stride,i) = sum_real;
       IMAG(result,stride,i) = sum_imag;
     }

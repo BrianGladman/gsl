@@ -94,7 +94,7 @@ pochrel_smallx(const double a, const double x, gsl_sf_result * result)
   }
   else {
     const double bp   = (  (a < -0.5) ? 1.0-a-x : a );
-    const int	 incr = ( (bp < 10.0) ? 11.0-bp : 0 );
+    const int    incr = ( (bp < 10.0) ? 11.0-bp : 0 );
     const double b    = bp + incr;
     double dpoch1;
     gsl_sf_result dexprl;
@@ -122,9 +122,9 @@ pochrel_smallx(const double a, const double x, gsl_sf_result * result)
       if(nterms > 20) {
         /* NTERMS IS TOO BIG, MAYBE D1MACH(3) IS BAD */
         /* nterms = 20; */
-	result->val = 0.0;
-	result->err = 0.0;
-	GSL_ERROR ("error", GSL_ESANITY);
+        result->val = 0.0;
+        result->err = 0.0;
+        GSL_ERROR ("error", GSL_ESANITY);
       }
 
       for(k=2; k<=nterms; k++) {

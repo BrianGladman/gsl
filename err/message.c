@@ -29,7 +29,7 @@ unsigned int gsl_message_mask = GSL_MESSAGE_MASK;
 
 void
 gsl_message (const char * reason, const char * file, int line, 
-	     unsigned int mask)
+             unsigned int mask)
 {
   if (mask & gsl_message_mask)
     {

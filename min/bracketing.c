@@ -29,9 +29,9 @@
 
 int 
 gsl_min_find_bracket(gsl_function *f,double *x_minimum,double * f_minimum,
-		     double * x_lower, double * f_lower, 
+                     double * x_lower, double * f_lower, 
                      double * x_upper, double * f_upper,
-		     size_t eval_max)
+                     size_t eval_max)
 {
   /* The three following variables must be declared volatile to avoid storage
      in extended precision registers available on some architecture. The code
@@ -47,7 +47,7 @@ gsl_min_find_bracket(gsl_function *f,double *x_minimum,double * f_minimum,
   double x_left = *x_lower;
   double x_right= *x_upper; 
   double x_center;
-  const double golden = 0.3819660;	/* golden = (3 - sqrt(5))/2 */
+  const double golden = 0.3819660;      /* golden = (3 - sqrt(5))/2 */
   size_t nb_eval = 0;
   
   
@@ -69,51 +69,51 @@ gsl_min_find_bracket(gsl_function *f,double *x_minimum,double * f_minimum,
   do
     {
       if (f_center < f_left )
-	{
-	  if (f_center < f_right)
-	    {
-	      *x_lower = x_left;
-	      *x_upper = x_right;
-	      *x_minimum = x_center;
-	      *f_lower = f_left;
-	      *f_upper = f_right;
-	      *f_minimum = f_center;
-/*	      gsl_ieee_printf_double (&f_left);
-	      printf(" ");
-	      gsl_ieee_printf_double (&f_center);
-	      printf("\n");*/
-	      return GSL_SUCCESS;
-	    }
-	  else if (f_center > f_right)
-	    {
-	      x_left = x_center;
-	      f_left = f_center;
-	      x_center = x_right;
-	      f_center = f_right;
-	      x_right = (x_center - x_left) / golden + x_left;
-	      nb_eval++;
-	      SAFE_FUNC_CALL (f, x_right, &f_right);
-	    }
-	  else /* f_center == f_right */
-	    {
-	      x_right = x_center;
-	      f_right = f_center;
-	      x_center = (x_right - x_left) * golden + x_left;
-	      nb_eval++;
-	      SAFE_FUNC_CALL (f, x_center, &f_center);
-	    }
-	}
+        {
+          if (f_center < f_right)
+            {
+              *x_lower = x_left;
+              *x_upper = x_right;
+              *x_minimum = x_center;
+              *f_lower = f_left;
+              *f_upper = f_right;
+              *f_minimum = f_center;
+/*            gsl_ieee_printf_double (&f_left);
+              printf(" ");
+              gsl_ieee_printf_double (&f_center);
+              printf("\n");*/
+              return GSL_SUCCESS;
+            }
+          else if (f_center > f_right)
+            {
+              x_left = x_center;
+              f_left = f_center;
+              x_center = x_right;
+              f_center = f_right;
+              x_right = (x_center - x_left) / golden + x_left;
+              nb_eval++;
+              SAFE_FUNC_CALL (f, x_right, &f_right);
+            }
+          else /* f_center == f_right */
+            {
+              x_right = x_center;
+              f_right = f_center;
+              x_center = (x_right - x_left) * golden + x_left;
+              nb_eval++;
+              SAFE_FUNC_CALL (f, x_center, &f_center);
+            }
+        }
       else /* f_center >= f_left */
-	{
-	  x_right = x_center;
-	  f_right = f_center;
-	  x_center = (x_right - x_left) * golden + x_left;
-	  nb_eval++;
-	  SAFE_FUNC_CALL (f, x_center, &f_center);
-	}
+        {
+          x_right = x_center;
+          f_right = f_center;
+          x_center = (x_right - x_left) * golden + x_left;
+          nb_eval++;
+          SAFE_FUNC_CALL (f, x_center, &f_center);
+        }
     }
   while (nb_eval < eval_max 
-	 && (x_right - x_left) > GSL_SQRT_DBL_EPSILON * ( (x_right + x_left) * 0.5 ) + GSL_SQRT_DBL_EPSILON);
+         && (x_right - x_left) > GSL_SQRT_DBL_EPSILON * ( (x_right + x_left) * 0.5 ) + GSL_SQRT_DBL_EPSILON);
   *x_lower = x_left;
   *x_upper = x_right;
   *x_minimum = x_center;

@@ -42,10 +42,10 @@ qagp (const gsl_function *f,
 
 int
 gsl_integration_qagp (const gsl_function *f,
-		      double * pts, size_t npts,
-		      double epsabs, double epsrel, size_t limit,
-		      gsl_integration_workspace * workspace,
-		      double * result, double * abserr)
+                      double * pts, size_t npts,
+                      double epsabs, double epsrel, size_t limit,
+                      gsl_integration_workspace * workspace,
+                      double * result, double * abserr)
 {
   int status = qagp (f, pts, npts,  
                      epsabs, epsrel, limit,
@@ -86,7 +86,7 @@ qagp (const gsl_function * f,
 
   struct extrapolation_table table;
 
-  const size_t nint = npts - 1;	/* number of intervals */
+  const size_t nint = npts - 1; /* number of intervals */
 
   size_t *ndin = workspace->level; /* temporarily alias ndin to level */
 
@@ -112,7 +112,7 @@ qagp (const gsl_function * f,
   if (epsabs <= 0 && (epsrel < 50 * GSL_DBL_EPSILON || epsrel < 0.5e-28))
     {
       GSL_ERROR ("tolerance cannot be acheived with given epsabs and epsrel",
-		 GSL_EBADTOL);
+                 GSL_EBADTOL);
     }
 
   /* Check that the integration range and break points are an
@@ -121,9 +121,9 @@ qagp (const gsl_function * f,
   for (i = 0; i < nint; i++)
     {
       if (pts[i + 1] < pts[i])
-	{
-	  GSL_ERROR ("points are not in an ascending sequence", GSL_EINVAL);
-	}
+        {
+          GSL_ERROR ("points are not in an ascending sequence", GSL_EINVAL);
+        }
     }
 
   /* Perform the first integration */
@@ -149,13 +149,13 @@ qagp (const gsl_function * f,
       append_interval (workspace, a1, b1, area1, error1);
 
       if (error1 == resasc1 && error1 != 0.0)
-	{
-	  ndin[i] = 1;
-	}
+        {
+          ndin[i] = 1;
+        }
       else
-	{
-	  ndin[i] = 0;
-	}
+        {
+          ndin[i] = 0;
+        }
     }
 
   /* Compute the initial error estimate */
@@ -165,9 +165,9 @@ qagp (const gsl_function * f,
   for (i = 0; i < nint; i++)
     {
       if (ndin[i])
-	{
-	  workspace->elist[i] = abserr0;
-	}
+        {
+          workspace->elist[i] = abserr0;
+        }
 
       errsum = errsum + workspace->elist[i];
 
@@ -193,7 +193,7 @@ qagp (const gsl_function * f,
       *abserr = abserr0;
 
       GSL_ERROR ("cannot reach tolerance because of roundoff error"
-		 "on first attempt", GSL_EROUND);
+                 "on first attempt", GSL_EROUND);
     }
   else if (abserr0 <= tolerance)
     {
@@ -225,7 +225,7 @@ qagp (const gsl_function * f,
 
   positive_integrand = test_positivity (result0, resabs0);
 
-  iteration = nint - 1;	
+  iteration = nint - 1; 
 
   do
     {
@@ -271,141 +271,141 @@ qagp (const gsl_function * f,
       tolerance = GSL_MAX_DBL (epsabs, epsrel * fabs (area));
 
       if (resasc1 != error1 && resasc2 != error2)
-	{
-	  double delta = r_i - area12;
+        {
+          double delta = r_i - area12;
 
-	  if (fabs (delta) <= 1.0e-5 * fabs (area12) && error12 >= 0.99 * e_i)
-	    {
-	      if (!extrapolate)
-		{
-		  roundoff_type1++;
-		}
-	      else
-		{
-		  roundoff_type2++;
-		}
-	    }
+          if (fabs (delta) <= 1.0e-5 * fabs (area12) && error12 >= 0.99 * e_i)
+            {
+              if (!extrapolate)
+                {
+                  roundoff_type1++;
+                }
+              else
+                {
+                  roundoff_type2++;
+                }
+            }
 
-	  if (i > 10 && error12 > e_i)
-	    {
-	      roundoff_type3++;
-	    }
-	}
+          if (i > 10 && error12 > e_i)
+            {
+              roundoff_type3++;
+            }
+        }
 
       /* Test for roundoff and eventually set error flag */
 
       if (roundoff_type1 + roundoff_type2 >= 10 || roundoff_type3 >= 20)
-	{
-	  error_type = 2;	/* round off error */
-	}
+        {
+          error_type = 2;       /* round off error */
+        }
 
       if (roundoff_type2 >= 5)
-	{
-	  error_type2 = 1;
-	}
+        {
+          error_type2 = 1;
+        }
 
       /* set error flag in the case of bad integrand behaviour at
          a point of the integration range */
 
       if (subinterval_too_small (a1, a2, b2))
-	{
-	  error_type = 4;
-	}
+        {
+          error_type = 4;
+        }
 
       /* append the newly-created intervals to the list */
 
       update (workspace, a1, b1, area1, error1, a2, b2, area2, error2);
 
       if (errsum <= tolerance)
-	{
-	  goto compute_result;
-	}
+        {
+          goto compute_result;
+        }
 
       if (error_type)
-	{
-	  break;
-	}
+        {
+          break;
+        }
 
       if (iteration >= limit - 1)
-	{
-	  error_type = 1;
-	  break;
-	}
+        {
+          error_type = 1;
+          break;
+        }
 
       if (disallow_extrapolation)
-	{
-	  continue;
-	}
+        {
+          continue;
+        }
 
       error_over_large_intervals += -last_e_i;
 
       if (current_level < workspace->maximum_level)
-	{
-	  error_over_large_intervals += error12;
-	}
+        {
+          error_over_large_intervals += error12;
+        }
 
       if (!extrapolate)
-	{
-	  /* test whether the interval to be bisected next is the
-	     smallest interval. */
-	  if (large_interval (workspace))
-	    continue;
+        {
+          /* test whether the interval to be bisected next is the
+             smallest interval. */
+          if (large_interval (workspace))
+            continue;
 
-	  extrapolate = 1;
-	  workspace->nrmax = 1;
-	}
+          extrapolate = 1;
+          workspace->nrmax = 1;
+        }
 
       /* The smallest interval has the largest error.  Before
-	 bisecting decrease the sum of the errors over the larger
-	 intervals (error_over_large_intervals) and perform
-	 extrapolation. */
+         bisecting decrease the sum of the errors over the larger
+         intervals (error_over_large_intervals) and perform
+         extrapolation. */
 
       if (!error_type2 && error_over_large_intervals > ertest)
-	{
-	  if (increase_nrmax (workspace))
-	    continue;
-	}
+        {
+          if (increase_nrmax (workspace))
+            continue;
+        }
 
       /* Perform extrapolation */
 
       append_table (&table, area);
 
       if (table.n < 3) 
-	{
-	  goto skip_extrapolation;
-	} 
+        {
+          goto skip_extrapolation;
+        } 
 
       qelg (&table, &reseps, &abseps);
 
       ktmin++;
 
       if (ktmin > 5 && err_ext < 0.001 * errsum)
-	{
-	  error_type = 5;
-	}
+        {
+          error_type = 5;
+        }
 
       if (abseps < err_ext)
-	{
-	  ktmin = 0;
-	  err_ext = abseps;
-	  res_ext = reseps;
-	  correc = error_over_large_intervals;
-	  ertest = GSL_MAX_DBL (epsabs, epsrel * fabs (reseps));
-	  if (err_ext <= ertest)
-	    break;
-	}
+        {
+          ktmin = 0;
+          err_ext = abseps;
+          res_ext = reseps;
+          correc = error_over_large_intervals;
+          ertest = GSL_MAX_DBL (epsabs, epsrel * fabs (reseps));
+          if (err_ext <= ertest)
+            break;
+        }
 
       /* Prepare bisection of the smallest interval. */
 
       if (table.n == 1)
-	{
-	  disallow_extrapolation = 1;
-	}
+        {
+          disallow_extrapolation = 1;
+        }
 
       if (error_type == 5)
-	{
-	  break;
-	}
+        {
+          break;
+        }
 
     skip_extrapolation:
 
@@ -425,26 +425,26 @@ qagp (const gsl_function * f,
   if (error_type || error_type2)
     {
       if (error_type2)
-	{
-	  err_ext += correc;
-	}
+        {
+          err_ext += correc;
+        }
 
       if (error_type == 0)
-	error_type = 3;
+        error_type = 3;
 
       if (result != 0 && area != 0)
-	{
-	  if (err_ext / fabs (res_ext) > errsum / fabs (area))
-	    goto compute_result;
-	}
+        {
+          if (err_ext / fabs (res_ext) > errsum / fabs (area))
+            goto compute_result;
+        }
       else if (err_ext > errsum)
-	{
-	  goto compute_result;
-	}
+        {
+          goto compute_result;
+        }
       else if (area == 0.0)
-	{
-	  goto return_error;
-	}
+        {
+          goto return_error;
+        }
     }
 
   /*  Test on divergence. */
@@ -486,22 +486,22 @@ return_error:
   else if (error_type == 2)
     {
       GSL_ERROR ("cannot reach tolerance because of roundoff error",
-		 GSL_EROUND);
+                 GSL_EROUND);
     }
   else if (error_type == 3)
     {
       GSL_ERROR ("bad integrand behavior found in the integration interval",
-		 GSL_ESING);
+                 GSL_ESING);
     }
   else if (error_type == 4)
     {
       GSL_ERROR ("roundoff error detected in the extrapolation table",
-		 GSL_EROUND);
+                 GSL_EROUND);
     }
   else if (error_type == 5)
     {
       GSL_ERROR ("integral is divergent, or slowly convergent",
-		 GSL_EDIVERGE);
+                 GSL_EDIVERGE);
     }
   else
     {

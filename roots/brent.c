@@ -128,63 +128,63 @@ brent_iterate (void * vstate, gsl_function * f, double * root, double * x_lower,
       *root = b;
 
       if (b < c) 
-	{
-	  *x_lower = b;
-	  *x_upper = c;
-	}
+        {
+          *x_lower = b;
+          *x_upper = c;
+        }
       else
-	{
-	  *x_lower = c;
-	  *x_upper = b;
-	}
+        {
+          *x_lower = c;
+          *x_upper = b;
+        }
 
       return GSL_SUCCESS;
     }
   
   if (fabs (e) < tol || fabs (fa) <= fabs (fb))
     {
-      d = m;		/* use bisection */
+      d = m;            /* use bisection */
       e = m;
     }
   else
     {
-      double p, q, r;	/* use inverse cubic interpolation */
+      double p, q, r;   /* use inverse cubic interpolation */
       double s = fb / fa;
       
       if (ac_equal)
-	{
-	  p = 2 * m * s;
-	  q = 1 - s;
-	}
+        {
+          p = 2 * m * s;
+          q = 1 - s;
+        }
       else
-	{
-	  q = fa / fc;
-	  r = fb / fc;
-	  p = s * (2 * m * q * (q - r) - (b - a) * (r - 1));
-	  q = (q - 1) * (r - 1) * (s - 1);
-	}
+        {
+          q = fa / fc;
+          r = fb / fc;
+          p = s * (2 * m * q * (q - r) - (b - a) * (r - 1));
+          q = (q - 1) * (r - 1) * (s - 1);
+        }
       
       if (p > 0)
-	{
-	  q = -q;
-	}
+        {
+          q = -q;
+        }
       else
-	{
-	  p = -p;
-	}
+        {
+          p = -p;
+        }
       
       if (2 * p < GSL_MIN (3 * m * q - fabs (tol * q), fabs (e * q)))
-	{
-	  e = d;
-	  d = p / q;
-	}
+        {
+          e = d;
+          d = p / q;
+        }
       else
-	{
-	  /* interpolation failed, fall back to bisection */
-	  
-	  d = m;
-	  e = m;
-	}
+        {
+          /* interpolation failed, fall back to bisection */
+          
+          d = m;
+          e = m;
+        }
     }
   
   a = b;
@@ -236,7 +236,7 @@ brent_iterate (void * vstate, gsl_function * f, double * root, double * x_lower,
 
   
 static const gsl_root_fsolver_type brent_type =
-{"brent",				/* name */
+{"brent",                               /* name */
  sizeof (brent_state_t),
  &brent_init,
  &brent_iterate};

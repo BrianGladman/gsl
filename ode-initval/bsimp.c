@@ -43,11 +43,11 @@ static const int bd_sequence[SEQUENCE_COUNT] =
 
 typedef struct
 {
-  gsl_matrix *d;		/* workspace for extrapolation         */
-  gsl_matrix *a_mat;		/* workspace for linear system matrix  */
-  gsl_permutation *p_vec;	/* workspace for LU permutation        */
+  gsl_matrix *d;                /* workspace for extrapolation         */
+  gsl_matrix *a_mat;            /* workspace for linear system matrix  */
+  gsl_permutation *p_vec;       /* workspace for LU permutation        */
 
-  double x[SEQUENCE_MAX];	/* workspace for extrapolation */
+  double x[SEQUENCE_MAX];       /* workspace for extrapolation */
 
   /* state info */
   size_t k_current;
@@ -114,11 +114,11 @@ bsimp_deuf_kchoice (double eps, size_t dimension)
     {
       alpha[i][i] = 1.0;
       for (k = 0; k < i; k++)
-	{
-	  const double tmp1 = a_work[k + 1] - a_work[i + 1];
-	  const double tmp2 = (a_work[i + 1] - a_work[0] + 1.0) * (2 * k + 1);
-	  alpha[k][i] = pow (small_eps, tmp1 / tmp2);
-	}
+        {
+          const double tmp1 = a_work[k + 1] - a_work[i + 1];
+          const double tmp2 = (a_work[i + 1] - a_work[0] + 1.0) * (2 * k + 1);
+          alpha[k][i] = pow (small_eps, tmp1 / tmp2);
+        }
     }
 
   a_work[0] += dimension;
@@ -131,7 +131,7 @@ bsimp_deuf_kchoice (double eps, size_t dimension)
   for (k = 0; k < SEQUENCE_MAX - 1; k++)
     {
       if (a_work[k + 2] > a_work[k + 1] * alpha[k][k + 1])
-	break;
+        break;
     }
 
   return k;
@@ -139,11 +139,11 @@ bsimp_deuf_kchoice (double eps, size_t dimension)
 
 static void
 poly_extrap (gsl_matrix * d,
-	     const double x[],
-	     const unsigned int i_step,
-	     const double x_i,
-	     const double y_i[],
-	     double y_0[], double y_0_err[], double work[], const size_t dim)
+             const double x[],
+             const unsigned int i_step,
+             const double x_i,
+             const double y_i[],
+             double y_0[], double y_0_err[], double work[], const size_t dim)
 {
   size_t j, k;
 
@@ -153,35 +153,35 @@ poly_extrap (gsl_matrix * d,
   if (i_step == 0)
     {
       for (j = 0; j < dim; j++)
-	{
-	  gsl_matrix_set (d, 0, j, y_i[j]);
-	}
+        {
+          gsl_matrix_set (d, 0, j, y_i[j]);
+        }
     }
   else
     {
       DBL_MEMCPY (work, y_i, dim);
 
       for (k = 0; k < i_step; k++)
-	{
-	  double delta = 1.0 / (x[i_step - k - 1] - x_i);
-	  const double f1 = delta * x_i;
-	  const double f2 = delta * x[i_step - k - 1];
+        {
+          double delta = 1.0 / (x[i_step - k - 1] - x_i);
+          const double f1 = delta * x_i;
+          const double f2 = delta * x[i_step - k - 1];
 
-	  for (j = 0; j < dim; j++)
-	    {
-	      const double q_kj = gsl_matrix_get (d, k, j);
-	      gsl_matrix_set (d, k, j, y_0_err[j]);
-	      delta = work[j] - q_kj;
-	      y_0_err[j] = f1 * delta;
-	      work[j] = f2 * delta;
-	      y_0[j] += y_0_err[j];
-	    }
-	}
+          for (j = 0; j < dim; j++)
+            {
+              const double q_kj = gsl_matrix_get (d, k, j);
+              gsl_matrix_set (d, k, j, y_0_err[j]);
+              delta = work[j] - q_kj;
+              y_0_err[j] = f1 * delta;
+              work[j] = f2 * delta;
+              y_0[j] += y_0_err[j];
+            }
+        }
 
       for (j = 0; j < dim; j++)
-	{
-	  gsl_matrix_set (d, i_step, j, y_0_err[j]);
-	}
+        {
+          gsl_matrix_set (d, i_step, j, y_0_err[j]);
+        }
     }
 }
 
@@ -191,15 +191,15 @@ poly_extrap (gsl_matrix * d,
 
 static int
 bsimp_step_local (void *vstate,
-		  size_t dim,
-		  const double t0,
-		  const double h_total,
-		  const unsigned int n_step,
-		  const double y[],
-		  const double yp[],
-		  const double dfdt[],
-		  const gsl_matrix * dfdy,
-		  double y_out[], 
+                  size_t dim,
+                  const double t0,
+                  const double h_total,
+                  const unsigned int n_step,
+                  const double y[],
+                  const double yp[],
+                  const double dfdt[],
+                  const gsl_matrix * dfdy,
+                  double y_out[], 
                   const gsl_odeiv_system * sys)
 {
   bsimp_state_t *state = (bsimp_state_t *) vstate;
@@ -237,9 +237,9 @@ bsimp_step_local (void *vstate,
   for (i = 0; i < dim; i++)
     {
       for (j = 0; j < dim; j++)
-	{
-	  gsl_matrix_set (a_mat, i, j, -h * gsl_matrix_get (dfdy, i, j));
-	}
+        {
+          gsl_matrix_set (a_mat, i, j, -h * gsl_matrix_get (dfdy, i, j));
+        }
       gsl_matrix_set (a_mat, i, i, gsl_matrix_get (a_mat, i, i) + 1.0);
     }
 
@@ -282,20 +282,20 @@ bsimp_step_local (void *vstate,
   for (n_inter = 1; n_inter < n_step; n_inter++)
     {
       for (i = 0; i < dim; i++)
-	{
-	  rhs_temp[i] = h * y_out[i] - delta[i];
-	}
+        {
+          rhs_temp[i] = h * y_out[i] - delta[i];
+        }
 
       gsl_linalg_LU_solve (a_mat, p_vec, &rhs_temp_vec.vector, &delta_temp_vec.vector);
 
       sum = 0.0;
 
       for (i = 0; i < dim; i++)
-	{
-	  delta[i] += 2.0 * delta_temp[i];
-	  y_temp[i] += delta[i];
+        {
+          delta[i] += 2.0 * delta_temp[i];
+          y_temp[i] += delta[i];
           sum += fabs(delta[i]) / w[i];
-	}
+        }
 
       if (sum > max_sum) 
         {
@@ -400,7 +400,7 @@ bsimp_apply (void *vstate,
 
   if (h + t_local == t_local)
     {
-      return GSL_EUNDRFLW;	/* FIXME: error condition */
+      return GSL_EUNDRFLW;      /* FIXME: error condition */
     }
 
   DBL_MEMCPY (y_extrap_save, y, dim);
@@ -509,9 +509,9 @@ bsimp_free (void * vstate)
 }
 
 static const gsl_odeiv_step_type bsimp_type = { 
-  "bsimp",	                /* name */
-  1,				/* can use dydt_in */
-  0,				/* gives exact dydt_out */
+  "bsimp",                      /* name */
+  1,                            /* can use dydt_in */
+  0,                            /* gives exact dydt_out */
   &bsimp_alloc,
   &bsimp_apply,
   &bsimp_reset,

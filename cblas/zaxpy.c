@@ -4,7 +4,7 @@
 
 void
 cblas_zaxpy (const int N, const void *alpha, const void *X, const int incX,
-	     void *Y, const int incY)
+             void *Y, const int incY)
 {
 #define BASE double
 #include "source_axpy_c.h"

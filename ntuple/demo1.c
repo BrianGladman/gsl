@@ -20,7 +20,7 @@ main (void)
   int i;
 
   gsl_ntuple *ntuple = gsl_ntuple_open ("test.dat", &ntuple_row,
-					sizeof (ntuple_row));
+                                        sizeof (ntuple_row));
 
   gsl_histogram *h = gsl_histogram_calloc_uniform (100, 0., 10.);
 

@@ -112,7 +112,7 @@ goldensection_iterate (void * vstate, gsl_function * f, double * x_minimum, doub
 
 
 static const gsl_min_fminimizer_type goldensection_type =
-{"goldensection",				/* name */
+{"goldensection",                               /* name */
  sizeof (goldensection_state_t),
  &goldensection_init,
  &goldensection_iterate};

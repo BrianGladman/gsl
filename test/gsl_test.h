@@ -37,11 +37,11 @@ void
 
 void
 gsl_test_rel (double result, double expected, double relative_error,
-	      const char *test_description, ...) ;
+              const char *test_description, ...) ;
 
 void
 gsl_test_abs (double result, double expected, double absolute_error,
-	      const char *test_description, ...) ;
+              const char *test_description, ...) ;
 
 void
 gsl_test_factor (double result, double expected, double factor,
@@ -52,7 +52,7 @@ gsl_test_int (int result, int expected, const char *test_description, ...) ;
 
 void
 gsl_test_str (const char * result, const char * expected, 
-	      const char *test_description, ...) ;
+              const char *test_description, ...) ;
 
 void
   gsl_test_verbose (int verbose) ;

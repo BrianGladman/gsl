@@ -27,8 +27,8 @@
 
 int
 gsl_histogram2d_pdf_sample (const gsl_histogram2d_pdf * p,
-			    double r1, double r2,
-			    double *x, double *y)
+                            double r1, double r2,
+                            double *x, double *y)
 {
   size_t k;
   int status;
@@ -73,7 +73,7 @@ gsl_histogram2d_pdf_alloc (const size_t nx, const size_t ny)
   if (n == 0)
     {
       GSL_ERROR_VAL ("histogram2d pdf length n must be positive integer",
-			GSL_EDOM, 0);
+                        GSL_EDOM, 0);
     }
 
   p = (gsl_histogram2d_pdf *) malloc (sizeof (gsl_histogram2d_pdf));
@@ -81,17 +81,17 @@ gsl_histogram2d_pdf_alloc (const size_t nx, const size_t ny)
   if (p == 0)
     {
       GSL_ERROR_VAL ("failed to allocate space for histogram2d pdf struct",
-			GSL_ENOMEM, 0);
+                        GSL_ENOMEM, 0);
     }
 
   p->xrange = (double *) malloc ((nx + 1) * sizeof (double));
 
   if (p->xrange == 0)
     {
-      free (p);		/* exception in constructor, avoid memory leak */
+      free (p);         /* exception in constructor, avoid memory leak */
 
       GSL_ERROR_VAL ("failed to allocate space for histogram2d pdf xranges",
-			GSL_ENOMEM, 0);
+                        GSL_ENOMEM, 0);
     }
 
   p->yrange = (double *) malloc ((ny + 1) * sizeof (double));
@@ -99,10 +99,10 @@ gsl_histogram2d_pdf_alloc (const size_t nx, const size_t ny)
   if (p->yrange == 0)
     {
       free (p->xrange);
-      free (p);		/* exception in constructor, avoid memory leak */
+      free (p);         /* exception in constructor, avoid memory leak */
 
       GSL_ERROR_VAL ("failed to allocate space for histogram2d pdf yranges",
-			GSL_ENOMEM, 0);
+                        GSL_ENOMEM, 0);
     }
 
   p->sum = (double *) malloc ((n + 1) * sizeof (double));
@@ -111,10 +111,10 @@ gsl_histogram2d_pdf_alloc (const size_t nx, const size_t ny)
     {
       free (p->yrange);
       free (p->xrange);
-      free (p);		/* exception in constructor, avoid memory leak */
+      free (p);         /* exception in constructor, avoid memory leak */
 
       GSL_ERROR_VAL ("failed to allocate space for histogram2d pdf sums",
-			GSL_ENOMEM, 0);
+                        GSL_ENOMEM, 0);
     }
 
   p->nx = nx;
@@ -139,10 +139,10 @@ gsl_histogram2d_pdf_init (gsl_histogram2d_pdf * p, const gsl_histogram2d * h)
   for (i = 0; i < n; i++)
     {
       if (h->bin[i] < 0)
-	{
-	  GSL_ERROR ("histogram bins must be non-negative to compute"
-		     "a probability distribution", GSL_EDOM);
-	}
+        {
+          GSL_ERROR ("histogram bins must be non-negative to compute"
+                     "a probability distribution", GSL_EDOM);
+        }
     }
 
   for (i = 0; i < nx + 1; i++)
@@ -160,15 +160,15 @@ gsl_histogram2d_pdf_init (gsl_histogram2d_pdf * p, const gsl_histogram2d * h)
 
     for (i = 0; i < n; i++)
       {
-	mean += (h->bin[i] - mean) / ((double) (i + 1));
+        mean += (h->bin[i] - mean) / ((double) (i + 1));
       }
 
     p->sum[0] = 0;
 
     for (i = 0; i < n; i++)
       {
-	sum += (h->bin[i] / mean) / n;
-	p->sum[i + 1] = sum;
+        sum += (h->bin[i] / mean) / n;
+        p->sum[i + 1] = sum;
       }
   }
 

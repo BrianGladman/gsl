@@ -36,7 +36,7 @@ gsl_multiroot_fsolver_alloc (const gsl_multiroot_fsolver_type * T,
   if (s == 0)
     {
       GSL_ERROR_VAL ("failed to allocate space for multiroot solver struct",
-			GSL_ENOMEM, 0);
+                        GSL_ENOMEM, 0);
     }
 
   s->x = gsl_vector_calloc (n);
@@ -73,10 +73,10 @@ gsl_multiroot_fsolver_alloc (const gsl_multiroot_fsolver_type * T,
       gsl_vector_free (s->dx);
       gsl_vector_free (s->x);
       gsl_vector_free (s->f);
-      free (s);		/* exception in constructor, avoid memory leak */
+      free (s);         /* exception in constructor, avoid memory leak */
       
       GSL_ERROR_VAL ("failed to allocate space for multiroot solver state",
-			GSL_ENOMEM, 0);
+                        GSL_ENOMEM, 0);
     }
 
   s->type = T ;
@@ -90,7 +90,7 @@ gsl_multiroot_fsolver_alloc (const gsl_multiroot_fsolver_type * T,
       gsl_vector_free (s->dx);
       gsl_vector_free (s->x);
       gsl_vector_free (s->f);
-      free (s);		/* exception in constructor, avoid memory leak */
+      free (s);         /* exception in constructor, avoid memory leak */
       
       GSL_ERROR_VAL ("failed to set solver", status, 0);
     }

@@ -52,41 +52,41 @@ test1d_resample (void)
 
     for (i = 0; i < 100000; i++)
       {
-	double u = urand();
-	double x = gsl_histogram_pdf_sample (p, u);
-	gsl_histogram_increment (hh, x);
+        double u = urand();
+        double x = gsl_histogram_pdf_sample (p, u);
+        gsl_histogram_increment (hh, x);
       }
 
     for (i = 0; i < 100; i++)
       {
-	double y = gsl_histogram_get (hh, i) / 2500;
-	double x, xmax;
-	size_t k;
-	double ya;
+        double y = gsl_histogram_get (hh, i) / 2500;
+        double x, xmax;
+        size_t k;
+        double ya;
 
-	gsl_histogram_get_range (hh, i, &x, &xmax);
+        gsl_histogram_get_range (hh, i, &x, &xmax);
 
-	gsl_histogram_find (h, x, &k);
-	ya = gsl_histogram_get (h, k);
+        gsl_histogram_find (h, x, &k);
+        ya = gsl_histogram_get (h, k);
 
-	if (ya == 0)
-	  {
-	    if (y != 0)
-	      {
-		printf ("%d: %g vs %g\n", (int) i, y, ya);
-		status = 1;
-	      }
-	  }
-	else
-	  {
-	    double err = 1 / sqrt (gsl_histogram_get (hh, i));
-	    double sigma = fabs ((y - ya) / (ya * err));
-	    if (sigma > 3)
-	      {
-		status = 1;
-		printf ("%g vs %g err=%g sigma=%g\n", y, ya, err, sigma);
-	      }
-	  }
+        if (ya == 0)
+          {
+            if (y != 0)
+              {
+                printf ("%d: %g vs %g\n", (int) i, y, ya);
+                status = 1;
+              }
+          }
+        else
+          {
+            double err = 1 / sqrt (gsl_histogram_get (hh, i));
+            double sigma = fabs ((y - ya) / (ya * err));
+            if (sigma > 3)
+              {
+                status = 1;
+                printf ("%g vs %g err=%g sigma=%g\n", y, ya, err, sigma);
+              }
+          }
       }
 
     gsl_histogram_pdf_free (p) ;

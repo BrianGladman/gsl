@@ -40,7 +40,7 @@ FUNCTION (gsl_vector, fwrite) (FILE * stream, const TYPE (gsl_vector) * v)
 #if !(USES_LONGDOUBLE && !HAVE_PRINTF_LONGDOUBLE)
 int
 FUNCTION (gsl_vector, fprintf) (FILE * stream, const TYPE (gsl_vector) * v,
-				const char *format)
+                                const char *format)
 {
   int status = FUNCTION (gsl_block, raw_fprintf) (stream,
                                                   v->data,

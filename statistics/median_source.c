@@ -21,7 +21,7 @@
 double
 FUNCTION(gsl_stats,median_from_sorted_data) (const BASE sorted_data[],
                                              const size_t stride,
-					     const size_t n)
+                                             const size_t n)
 {
   double median ;
   const size_t lhs = (n - 1) / 2 ;

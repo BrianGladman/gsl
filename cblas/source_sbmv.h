@@ -60,18 +60,18 @@
       INDEX jy = OFFSET(N, incY) + j_min * incY;
       Y[iy] += tmp1 * A[0 + i * lda];
       for (j = j_min; j < j_max; j++) {
-	BASE Aij = A[(j - i) + i * lda];
-	Y[jy] += tmp1 * Aij;
-	tmp2 += Aij * X[jx];
-	jx += incX;
-	jy += incY;
+        BASE Aij = A[(j - i) + i * lda];
+        Y[jy] += tmp1 * Aij;
+        tmp2 += Aij * X[jx];
+        jx += incX;
+        jy += incY;
       }
       Y[iy] += alpha * tmp2;
       ix += incX;
       iy += incY;
     }
   } else if ((order == CblasRowMajor && Uplo == CblasLower)
-	     || (order == CblasColMajor && Uplo == CblasUpper)) {
+             || (order == CblasColMajor && Uplo == CblasUpper)) {
     INDEX ix = OFFSET(N, incX);
     INDEX iy = OFFSET(N, incY);
 
@@ -83,11 +83,11 @@
       INDEX jx = OFFSET(N, incX) + j_min * incX;
       INDEX jy = OFFSET(N, incY) + j_min * incY;
       for (j = j_min; j < j_max; j++) {
-	BASE Aij = A[(K - i + j) + i * lda];
-	Y[jy] += tmp1 * Aij;
-	tmp2 += Aij * X[jx];
-	jx += incX;
-	jy += incY;
+        BASE Aij = A[(K - i + j) + i * lda];
+        Y[jy] += tmp1 * Aij;
+        tmp2 += Aij * X[jx];
+        jx += incX;
+        jy += incY;
       }
       Y[iy] += tmp1 * A[K + i * lda] + alpha * tmp2;
       ix += incX;

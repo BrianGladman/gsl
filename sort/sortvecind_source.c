@@ -29,14 +29,14 @@ FUNCTION (index, downheap) (size_t * p, const BASE * data, const size_t stride, 
       size_t j = 2 * k;
 
       if (j < N && data[p[j] * stride] < data[p[j + 1] * stride])
-	{
-	  j++;
-	}
+        {
+          j++;
+        }
 
       if (data[pki * stride] >= data[p[j] * stride])
-	{
-	  break;
-	}
+        {
+          break;
+        }
 
       p[k] = p[j];
 
@@ -54,7 +54,7 @@ FUNCTION (gsl_sort, index) (size_t * p, const BASE * data, const size_t stride, 
 
   if (n == 0)
     {
-      return;	/* No data to sort */
+      return;   /* No data to sort */
     }
 
   /* set permutation to identity */
@@ -70,7 +70,7 @@ FUNCTION (gsl_sort, index) (size_t * p, const BASE * data, const size_t stride, 
   N = n - 1;
 
   k = N / 2;
-  k++;				/* Compensate the first use of 'k--' */
+  k++;                          /* Compensate the first use of 'k--' */
   do
     {
       k--;

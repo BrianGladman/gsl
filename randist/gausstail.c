@@ -41,9 +41,9 @@ gsl_ran_gaussian_tail (const gsl_rng * r, const double a, const double sigma)
       double x;
 
       do
-	{
-	  x = gsl_ran_gaussian (r, 1.0);
-	}
+        {
+          x = gsl_ran_gaussian (r, 1.0);
+        }
       while (x < s);
       return x * sigma;
     }
@@ -58,15 +58,15 @@ gsl_ran_gaussian_tail (const gsl_rng * r, const double a, const double sigma)
       double u, v, x;
 
       do
-	{
-	  u = gsl_rng_uniform (r);
-	  do
-	    {
-	      v = gsl_rng_uniform (r);
-	    }
-	  while (v == 0.0);
-	  x = sqrt (s * s - 2 * log (v));
-	}
+        {
+          u = gsl_rng_uniform (r);
+          do
+            {
+              v = gsl_rng_uniform (r);
+            }
+          while (v == 0.0);
+          x = sqrt (s * s - 2 * log (v));
+        }
       while (x * u > s);
       return x * sigma;
     }

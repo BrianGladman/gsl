@@ -72,9 +72,9 @@ transputer_set (void *vstate, unsigned long int s)
 }
 
 static const gsl_rng_type transputer_type =
-{"transputer",				/* name */
- 0xffffffffUL,			/* RAND_MAX */
- 1,				/* RAND_MIN */
+{"transputer",                          /* name */
+ 0xffffffffUL,                  /* RAND_MAX */
+ 1,                             /* RAND_MIN */
  sizeof (transputer_state_t),
  &transputer_set,
  &transputer_get,

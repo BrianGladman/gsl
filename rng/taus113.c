@@ -106,7 +106,7 @@ taus113_set (void *vstate, unsigned long int s)
   taus113_state_t *state = (taus113_state_t *) vstate;
 
   if (!s)
-    s = 1UL;			/* default seed is 1 */
+    s = 1UL;                    /* default seed is 1 */
 
   state->z1 = LCG (s);
   if (state->z1 < 2UL)
@@ -137,9 +137,9 @@ taus113_set (void *vstate, unsigned long int s)
 }
 
 static const gsl_rng_type taus113_type = {
-  "taus113",			/* name */
-  0xffffffffUL,			/* RAND_MAX */
-  0,				/* RAND_MIN */
+  "taus113",                    /* name */
+  0xffffffffUL,                 /* RAND_MAX */
+  0,                            /* RAND_MIN */
   sizeof (taus113_state_t),
   &taus113_set,
   &taus113_get,

@@ -31,14 +31,14 @@
 
 void 
 gsl_siman_solve (const gsl_rng * r, void *x0_p, gsl_siman_Efunc_t Ef,
-		 gsl_siman_step_t take_step,
-		 gsl_siman_metric_t distance,
-		 gsl_siman_print_t print_position,
-		 gsl_siman_copy_t copyfunc,
-		 gsl_siman_copy_construct_t copy_constructor,
-		 gsl_siman_destroy_t destructor,
-		 size_t element_size,
-		 gsl_siman_params_t params)
+                 gsl_siman_step_t take_step,
+                 gsl_siman_metric_t distance,
+                 gsl_siman_print_t print_position,
+                 gsl_siman_copy_t copyfunc,
+                 gsl_siman_copy_construct_t copy_constructor,
+                 gsl_siman_destroy_t destructor,
+                 size_t element_size,
+                 gsl_siman_params_t params)
 {
   void *x, *new_x, *best_x;
   double E, new_E, best_E;
@@ -50,7 +50,7 @@ gsl_siman_solve (const gsl_rng * r, void *x0_p, gsl_siman_Efunc_t Ef,
      copy_constructor and destrcutor) are passed, or that an element
      size is given */
   assert((copyfunc != NULL && copy_constructor != NULL && destructor != NULL)
-	 || (element_size != 0));
+         || (element_size != 0));
 
   distance = 0 ; /* This parameter is not currently used */
   E = Ef(x0_p);
@@ -83,9 +83,9 @@ gsl_siman_solve (const gsl_rng * r, void *x0_p, gsl_siman_Efunc_t Ef,
     n_eless = 0;
     for (i = 0; i < params.iters_fixed_T; ++i) {
       if (copyfunc) {
-	copyfunc(x, new_x);
+        copyfunc(x, new_x);
       } else {
-	memcpy (new_x, x, element_size);
+        memcpy (new_x, x, element_size);
       }
 
       take_step (r, new_x, params.step_size);
@@ -100,29 +100,29 @@ gsl_siman_solve (const gsl_rng * r, void *x0_p, gsl_siman_Efunc_t Ef,
         best_E=new_E;
       }
 
-      ++n_evals;		/* keep track of Ef() evaluations */
+      ++n_evals;                /* keep track of Ef() evaluations */
       /* now take the crucial step: see if the new point is accepted
-	 or not, as determined by the boltzman probability */
+         or not, as determined by the boltzman probability */
       if (new_E < E) {
-	/* yay! take a step */
-	if (copyfunc) {
-	  copyfunc(new_x, x);
-	} else {
-	  memcpy (x, new_x, element_size);
-	}
-	E = new_E;
-	++n_eless;
+        /* yay! take a step */
+        if (copyfunc) {
+          copyfunc(new_x, x);
+        } else {
+          memcpy (x, new_x, element_size);
+        }
+        E = new_E;
+        ++n_eless;
       } else if (gsl_rng_uniform(r) < exp (-(new_E - E)/(params.k * T)) ) {
-	/* yay! take a step */
-	if (copyfunc) {
-	  copyfunc(new_x, x);
-	} else {
-	  memcpy(x, new_x, element_size);
-	}
-	E = new_E;
-	++n_accepts;
+        /* yay! take a step */
+        if (copyfunc) {
+          copyfunc(new_x, x);
+        } else {
+          memcpy(x, new_x, element_size);
+        }
+        E = new_E;
+        ++n_accepts;
       } else {
-	++n_rejects;
+        ++n_rejects;
       }
     }
 
@@ -168,19 +168,19 @@ gsl_siman_solve (const gsl_rng * r, void *x0_p, gsl_siman_Efunc_t Ef,
 
 void 
 gsl_siman_solve_many (const gsl_rng * r, void *x0_p, gsl_siman_Efunc_t Ef,
-		      gsl_siman_step_t take_step,
-		      gsl_siman_metric_t distance,
-		      gsl_siman_print_t print_position,
-		      size_t element_size,
-		      gsl_siman_params_t params)
+                      gsl_siman_step_t take_step,
+                      gsl_siman_metric_t distance,
+                      gsl_siman_print_t print_position,
+                      size_t element_size,
+                      gsl_siman_params_t params)
 {
   /* the new set of trial points, and their energies and probabilities */
   void *x, *new_x;
   double *energies, *probs, *sum_probs;
-  double Ex;			/* energy of the chosen point */
-  double T;			/* the temperature */
+  double Ex;                    /* energy of the chosen point */
+  double T;                     /* the temperature */
   int i, done;
-  double u;			/* throw the die to choose a new "x" */
+  double u;                     /* throw the die to choose a new "x" */
   int n_iter;
 
   if (print_position) {
@@ -204,14 +204,14 @@ gsl_siman_solve_many (const gsl_rng * r, void *x0_p, gsl_siman_Efunc_t Ef,
     {
       Ex = Ef (x);
       for (i = 0; i < params.n_tries - 1; ++i)
-	{			/* only go to N_TRIES-2 */
-	  /* center the new_x[] around x, then pass it to take_step() */
-	  sum_probs[i] = 0;
-	  memcpy ((char *)new_x + i * element_size, x, element_size);
-	  take_step (r, (char *)new_x + i * element_size, params.step_size);
-	  energies[i] = Ef ((char *)new_x + i * element_size);
-	  probs[i] = exp (-(energies[i] - Ex) / (params.k * T));
-	}
+        {                       /* only go to N_TRIES-2 */
+          /* center the new_x[] around x, then pass it to take_step() */
+          sum_probs[i] = 0;
+          memcpy ((char *)new_x + i * element_size, x, element_size);
+          take_step (r, (char *)new_x + i * element_size, params.step_size);
+          energies[i] = Ef ((char *)new_x + i * element_size);
+          probs[i] = exp (-(energies[i] - Ex) / (params.k * T));
+        }
       /* now add in the old value of "x", so it is a contendor */
       memcpy ((char *)new_x + (params.n_tries - 1) * element_size, x, element_size);
       energies[params.n_tries - 1] = Ex;
@@ -220,30 +220,30 @@ gsl_siman_solve_many (const gsl_rng * r, void *x0_p, gsl_siman_Efunc_t Ef,
       /* now throw biased die to see which new_x[i] we choose */
       sum_probs[0] = probs[0];
       for (i = 1; i < params.n_tries; ++i)
-	{
-	  sum_probs[i] = sum_probs[i - 1] + probs[i];
-	}
+        {
+          sum_probs[i] = sum_probs[i - 1] + probs[i];
+        }
       u = gsl_rng_uniform (r) * sum_probs[params.n_tries - 1];
       for (i = 0; i < params.n_tries; ++i)
-	{
-	  if (u < sum_probs[i])
-	    {
-	      memcpy (x, (char *)new_x + i * element_size, element_size);
-	      break;
-	    }
-	}
+        {
+          if (u < sum_probs[i])
+            {
+              memcpy (x, (char *)new_x + i * element_size, element_size);
+              break;
+            }
+        }
       if (print_position)
-	{
-	  printf ("%5d\t%12g\t", n_iter, T);
-	  print_position (x);
-	  printf ("\t%12g\t%12g\n", distance (x, x0_p), Ex);
-	}
+        {
+          printf ("%5d\t%12g\t", n_iter, T);
+          print_position (x);
+          printf ("\t%12g\t%12g\n", distance (x, x0_p), Ex);
+        }
       T /= params.mu_t;
       ++n_iter;
       if (T < params.t_min)
-	{
-	  done = 1;
-	}
+        {
+          done = 1;
+        }
     }
 
   /* now return the value via x0_p */

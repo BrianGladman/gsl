@@ -31,19 +31,19 @@ gsl_combination_alloc (const size_t n, const size_t k)
   if (n == 0)
     {
       GSL_ERROR_VAL ("combination parameter n must be positive integer",
-			GSL_EDOM, 0);
+                        GSL_EDOM, 0);
     }
   if (k > n)
     {
       GSL_ERROR_VAL ("combination length k must be an integer less than or equal to n",
-			GSL_EDOM, 0);
+                        GSL_EDOM, 0);
     }
   c = (gsl_combination *) malloc (sizeof (gsl_combination));
 
   if (c == 0)
     {
       GSL_ERROR_VAL ("failed to allocate space for combination struct",
-			GSL_ENOMEM, 0);
+                        GSL_ENOMEM, 0);
     }
 
   if (k > 0)
@@ -52,10 +52,10 @@ gsl_combination_alloc (const size_t n, const size_t k)
 
       if (c->data == 0)
         {
-	  free (c);		/* exception in constructor, avoid memory leak */
+          free (c);             /* exception in constructor, avoid memory leak */
 
-	  GSL_ERROR_VAL ("failed to allocate space for combination data",
-			 GSL_ENOMEM, 0);
+          GSL_ERROR_VAL ("failed to allocate space for combination data",
+                         GSL_ENOMEM, 0);
         }
     }
 

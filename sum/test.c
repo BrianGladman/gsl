@@ -48,8 +48,8 @@ main (void)
 
     for (n = 0; n < N; n++)
       {
-	double np1 = n + 1.0;
-	t[n] = 1.0 / (np1 * np1);
+        double np1 = n + 1.0;
+        t[n] = 1.0 / (np1 * np1);
       }
 
     check_trunc (t, zeta_2, "zeta(2)");
@@ -68,7 +68,7 @@ main (void)
     t[0] = 1.0;
     for (n = 1; n < N; n++)
       {
-	t[n] = t[n - 1] * (x / n);
+        t[n] = t[n - 1] * (x / n);
       }
 
     check_trunc (t, y, "exp(10)");
@@ -87,7 +87,7 @@ main (void)
     t[0] = 1.0;
     for (n = 1; n < N; n++)
       {
-	t[n] = t[n - 1] * (x / n);
+        t[n] = t[n - 1] * (x / n);
       }
 
     check_trunc (t, y, "exp(-10)");
@@ -105,7 +105,7 @@ main (void)
     t[0] = x;
     for (n = 1; n < N; n++)
       {
-	t[n] = t[n - 1] * (x * n) / (n + 1.0);
+        t[n] = t[n - 1] * (x * n) / (n + 1.0);
       }
 
     check_trunc (t, y, "-log(1/2)");
@@ -123,7 +123,7 @@ main (void)
     t[0] = x;
     for (n = 1; n < N; n++)
       {
-	t[n] = t[n - 1] * (x * n) / (n + 1.0);
+        t[n] = t[n - 1] * (x * n) / (n + 1.0);
       }
 
     check_trunc (t, y, "-log(2)");
@@ -142,7 +142,7 @@ main (void)
 
     for (n = 1; n < N; n++)
       {
-	t[n] = -t[n - 1] * (4.0 * (n + 1.0) - 1.0) / (M_PI * M_PI);
+        t[n] = -t[n - 1] * (4.0 * (n + 1.0) - 1.0) / (M_PI * M_PI);
       }
 
     check_trunc (t, result, "asymptotic series");
@@ -163,7 +163,7 @@ main (void)
 
     for (n = 1; n < N; n++)
       {
-	t[n] = 1/(n+1.0) + log(n/(n+1.0));
+        t[n] = 1/(n+1.0) + log(n/(n+1.0));
       }
 
     check_trunc (t, result, "Euler's constant");
@@ -187,7 +187,7 @@ main (void)
 
     for (n = 0; n < N; n++)
       {
-	t[n] = (n%2 ? -1 : 1) * 1.0 /sqrt(n + 1.0);
+        t[n] = (n%2 ? -1 : 1) * 1.0 /sqrt(n + 1.0);
       }
 
     check_trunc (t, result, "eta(1/2)");

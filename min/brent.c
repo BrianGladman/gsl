@@ -48,7 +48,7 @@ brent_init (void *vstate, gsl_function * f, double x_minimum, double f_minimum, 
 {
   brent_state_t *state = (brent_state_t *) vstate;
 
-  const double golden = 0.3819660;	/* golden = (3 - sqrt(5))/2 */
+  const double golden = 0.3819660;      /* golden = (3 - sqrt(5))/2 */
 
   double v = x_lower + golden * (x_upper - x_lower);
   double w = v;
@@ -92,7 +92,7 @@ brent_iterate (void *vstate, gsl_function * f, double *x_minimum, double * f_min
   const double f_w = state->f_w;
   const double f_z = *f_minimum;
 
-  const double golden = 0.3819660;	/* golden = (3 - sqrt(5))/2 */
+  const double golden = 0.3819660;      /* golden = (3 - sqrt(5))/2 */
 
   const double w_lower = (z - x_left);
   const double w_upper = (x_right - z);
@@ -113,13 +113,13 @@ brent_iterate (void *vstate, gsl_function * f, double *x_minimum, double * f_min
       q = 2 * (q - r);
 
       if (q > 0)
-	{
-	  p = -p;
-	}
+        {
+          p = -p;
+        }
       else
-	{
-	  q = -q;
-	}
+        {
+          q = -q;
+        }
 
       r = e;
       e = d;
@@ -133,9 +133,9 @@ brent_iterate (void *vstate, gsl_function * f, double *x_minimum, double * f_min
       u = z + d;
 
       if ((u - x_left) < t2 || (x_right - z) < t2)
-	{
-	  d = (z < midpoint) ? tolerance : -tolerance ;
-	}
+        {
+          d = (z < midpoint) ? tolerance : -tolerance ;
+        }
     }
   else
     {
@@ -161,30 +161,30 @@ brent_iterate (void *vstate, gsl_function * f, double *x_minimum, double * f_min
   if (f_u > f_z)
     {
       if (u < z)
-	{
-	  *x_lower = u;
+        {
+          *x_lower = u;
           *f_lower = f_u;
           return GSL_SUCCESS;
-	}
+        }
       else
-	{
-	  *x_upper = u;
+        {
+          *x_upper = u;
           *f_upper = f_u;
           return GSL_SUCCESS;
-	}
+        }
     }
   else if (f_u < f_z)
     {
       if (u < z)
-	{
-	  *x_upper = z;
+        {
+          *x_upper = z;
           *f_upper = f_z;
-	}
+        }
       else
-	{
-	  *x_lower = z;
+        {
+          *x_lower = z;
           *f_lower = f_z;
-	}
+        }
 
       state->v = w;
       state->f_v = f_w;
@@ -216,7 +216,7 @@ brent_iterate (void *vstate, gsl_function * f, double *x_minimum, double * f_min
 
 
 static const gsl_min_fminimizer_type brent_type =
-{"brent",			/* name */
+{"brent",                       /* name */
  sizeof (brent_state_t),
  &brent_init,
  &brent_iterate};

@@ -136,7 +136,7 @@ int gsl_vector_short_fread (FILE * stream, gsl_vector_short * v);
 int gsl_vector_short_fwrite (FILE * stream, const gsl_vector_short * v);
 int gsl_vector_short_fscanf (FILE * stream, gsl_vector_short * v);
 int gsl_vector_short_fprintf (FILE * stream, const gsl_vector_short * v,
-			      const char *format);
+                              const char *format);
 
 int gsl_vector_short_memcpy (gsl_vector_short * dest, const gsl_vector_short * src);
 

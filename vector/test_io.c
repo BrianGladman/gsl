@@ -32,7 +32,7 @@ FUNCTION (test, text) (void)
 
     for (i = 0; i < N; i++)
       {
-	FUNCTION (gsl_vector, set) (v, i, (ATOMIC) i);
+        FUNCTION (gsl_vector, set) (v, i, (ATOMIC) i);
       };
 
     FUNCTION (gsl_vector, fprintf) (f, v, OUT_FORMAT);
@@ -48,8 +48,8 @@ FUNCTION (test, text) (void)
     status = 0;
     for (i = 0; i < N; i++)
       {
-	if (w->data[i] != (ATOMIC) i)
-	  status = 1;
+        if (w->data[i] != (ATOMIC) i)
+          status = 1;
       };
 
     gsl_test (status, NAME (gsl_vector) "_fprintf and fscanf");

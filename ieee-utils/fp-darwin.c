@@ -64,24 +64,24 @@ gsl_ieee_set_mode (int precision, int rounding, int exception_mask)
   /* and that disable is what is wanted.             */
 
   if (exception_mask & GSL_IEEE_MASK_INVALID)
-    fp_scr.ve = 0 ;				//ve bit:  invalid op exception enable
+    fp_scr.ve = 0 ;                             //ve bit:  invalid op exception enable
 
   if (exception_mask & GSL_IEEE_MASK_DENORMALIZED)
     GSL_ERROR ("powerpc does not support the denormalized operand exception. "
                "Use 'mask-denormalized' to work around this.", GSL_EUNSUP) ;
 
   if (exception_mask & GSL_IEEE_MASK_DIVISION_BY_ZERO)
-    fp_scr.ze = 0 ;                          	//ze bit:  zero divide exception enable
+    fp_scr.ze = 0 ;                             //ze bit:  zero divide exception enable
 
   if (exception_mask & GSL_IEEE_MASK_OVERFLOW)
-    fp_scr.oe = 0 ;                         	//oe bit:  overflow exception enable
+    fp_scr.oe = 0 ;                             //oe bit:  overflow exception enable
 
   if (exception_mask & GSL_IEEE_MASK_UNDERFLOW)
-    fp_scr.ue  = 0 ;                        	//ue bit:  underflow exception enable
+    fp_scr.ue  = 0 ;                            //ue bit:  underflow exception enable
 
   if (exception_mask & GSL_IEEE_TRAP_INEXACT)
     {
-      fp_scr.xe = 1 ;                    	//xe bit:  inexact exception enable
+      fp_scr.xe = 1 ;                           //xe bit:  inexact exception enable
     }
   else
     {

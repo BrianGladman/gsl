@@ -85,17 +85,17 @@ gsl_cdf_gamma_Pinv (double P, double a, double b)
 
       double step = step0;
       if (fabs (step1) < fabs (step0))
-	step += step1;
+        step += step1;
 
       if (x + step > 0)
-	x += step;
+        x += step;
       else
-	{
-	  x /= 2.0;
-	}
+        {
+          x /= 2.0;
+        }
 
       if (fabs (step0) > 1e-10 * x)
-	goto start;
+        goto start;
     }
 
   }
@@ -163,17 +163,17 @@ gsl_cdf_gamma_Qinv (double Q, double a, double b)
 
       double step = step0;
       if (fabs (step1) < fabs (step0))
-	step += step1;
+        step += step1;
 
       if (x + step > 0)
-	x += step;
+        x += step;
       else
-	{
-	  x /= 2.0;
-	}
+        {
+          x /= 2.0;
+        }
 
       if (fabs (step0) > 1e-10 * x)
-	goto start;
+        goto start;
     }
 
   }

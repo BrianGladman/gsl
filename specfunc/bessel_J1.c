@@ -40,11 +40,11 @@
 
 /* chebyshev expansions
 
- series for bj1        on the interval  0.	    to  1.60000d+01
-					with weighted error   4.48e-17
-					 log weighted error  16.35
-			       significant figures required  15.77
-				    decimal places required  16.89
+ series for bj1        on the interval  0.          to  1.60000d+01
+                                        with weighted error   4.48e-17
+                                         log weighted error  16.35
+                               significant figures required  15.77
+                                    decimal places required  16.89
 
 */
 static double bj1_data[12] = {

@@ -51,14 +51,14 @@ FUNCTION(gsl_fft_real_wavetable,alloc) (size_t n)
         malloc ((n / 2) * sizeof (TYPE(gsl_complex)));
       
       if (wavetable->trig == NULL)
-	{
+        {
           /* error in constructor, prevent memory leak */
           
           free(wavetable) ; 
 
-	  GSL_ERROR_VAL ("failed to allocate trigonometric lookup table", 
-			    GSL_ENOMEM, 0);
-	}
+          GSL_ERROR_VAL ("failed to allocate trigonometric lookup table", 
+                            GSL_ENOMEM, 0);
+        }
     }
 
   wavetable->n = n;
@@ -86,26 +86,26 @@ FUNCTION(gsl_fft_real_wavetable,alloc) (size_t n)
       size_t j;
       const size_t factor = wavetable->factor[i];
       wavetable->twiddle[i] = wavetable->trig + t;
-      product_1 = product;	/* product_1 = p_(i-1) */
+      product_1 = product;      /* product_1 = p_(i-1) */
       product *= factor;
       q = n / product;
 
       for (j = 1; j < factor; j++)
-	{
-	  size_t k;
-	  size_t m = 0;
-	  for (k = 1; k < (product_1 + 1) / 2; k++)
-	    {
-	      double theta;
-	      m = m + j * q;
-	      m = m % n;
-	      theta = d_theta * m;	/*  d_theta*j*k*q */
-	      GSL_REAL(wavetable->trig[t]) = cos (theta);
-	      GSL_IMAG(wavetable->trig[t]) = sin (theta);
+        {
+          size_t k;
+          size_t m = 0;
+          for (k = 1; k < (product_1 + 1) / 2; k++)
+            {
+              double theta;
+              m = m + j * q;
+              m = m % n;
+              theta = d_theta * m;      /*  d_theta*j*k*q */
+              GSL_REAL(wavetable->trig[t]) = cos (theta);
+              GSL_IMAG(wavetable->trig[t]) = sin (theta);
 
-	      t++;
-	    }
-	}
+              t++;
+            }
+        }
     }
 
   if (t > (n / 2))

@@ -53,9 +53,9 @@ increase_nrmax (gsl_integration_workspace * workspace)
       workspace->i = i_max ;
 
       if (level[i_max] < workspace->maximum_level)
-	{
-	  return 1;
-	}
+        {
+          return 1;
+        }
 
       workspace->nrmax++;
 

@@ -216,7 +216,7 @@ gnewton_free (void * vstate)
 
 
 static const gsl_multiroot_fdfsolver_type gnewton_type =
-{"gnewton",				/* name */
+{"gnewton",                             /* name */
  sizeof (gnewton_state_t),
  &gnewton_alloc,
  &gnewton_set,

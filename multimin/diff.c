@@ -22,7 +22,7 @@
 
 int
 gsl_multimin_diff (const gsl_multimin_function * f,
-		   const gsl_vector * x, gsl_vector * g)
+                   const gsl_vector * x, gsl_vector * g)
 {
   size_t i, n = f->n;
 

@@ -87,19 +87,19 @@ gsl_ieee_env_setup (void)
   else 
     {
       if (exception_mask & GSL_IEEE_MASK_INVALID)
-	PRINTC("mask-invalid") ;
+        PRINTC("mask-invalid") ;
       
       if (exception_mask & GSL_IEEE_MASK_DENORMALIZED)
-	PRINTC("mask-denormalized") ;
+        PRINTC("mask-denormalized") ;
       
       if (exception_mask & GSL_IEEE_MASK_DIVISION_BY_ZERO)
-	PRINTC("mask-division-by-zero") ;
+        PRINTC("mask-division-by-zero") ;
       
       if (exception_mask & GSL_IEEE_MASK_OVERFLOW)
-	PRINTC("mask-overflow") ;
+        PRINTC("mask-overflow") ;
       
       if (exception_mask & GSL_IEEE_MASK_UNDERFLOW)
-	PRINTC("mask-underflow") ;
+        PRINTC("mask-underflow") ;
     }
 
   if (exception_mask & GSL_IEEE_TRAP_INEXACT)

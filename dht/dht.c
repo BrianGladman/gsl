@@ -208,11 +208,11 @@ gsl_dht_apply(const gsl_dht * t, double * f_in, double * f_out)
       size_t n_local;
       if(i < m) {
         m_local = i;
-	n_local = m;
+        n_local = m;
       }
       else {
         m_local = m;
-	n_local = i;
+        n_local = i;
       }
       Y = t->Jjj[n_local*(n_local+1)/2 + m_local] / t->J2[i+1];
       sum += Y * f_in[i];

@@ -44,7 +44,7 @@ gsl_histogram2d_memcpy (gsl_histogram2d * dest, const gsl_histogram2d * src)
   if (dest->nx != src->nx || dest->ny != src->ny)
     {
       GSL_ERROR ("histograms have different sizes, cannot copy",
-		 GSL_EINVAL);
+                 GSL_EINVAL);
     }
   
   for (i = 0; i <= nx; i++)
@@ -84,7 +84,7 @@ gsl_histogram2d_clone (const gsl_histogram2d * src)
   if (h == 0)
     {
       GSL_ERROR_VAL ("failed to allocate space for histogram struct",
-			GSL_ENOMEM, 0);
+                        GSL_ENOMEM, 0);
     }
 
   for (i = 0; i < nx * ny; i++)

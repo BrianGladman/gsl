@@ -46,7 +46,7 @@ main ()
   printf ("using %s method\n", gsl_root_fdfsolver_name (s));
 
   printf ("%-5s %10s %10s %10s %10s\n",
-	  "iter", "root", "actual", "err", "err(est)");
+          "iter", "root", "actual", "err", "err(est)");
   do
     {
       iterations++;
@@ -56,10 +56,10 @@ main ()
       status = gsl_root_test_delta (x, x0, 0, 0.001);
 
       if (status == GSL_SUCCESS)
-	printf ("Converged:\n");
+        printf ("Converged:\n");
 
       printf ("%5d %10.7f %10.7f %+10.7f %10.7f\n",
-	      iterations, x, r_expected, x - r_expected, x - x0);
+              iterations, x, r_expected, x - r_expected, x - x0);
     }
   while (status == GSL_CONTINUE && iterations < max_iterations);
 

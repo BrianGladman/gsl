@@ -271,7 +271,7 @@ gsl_sf_ellint_RJ_e(double x, double y, double z, double p, gsl_mode_t mode, gsl_
       rcstatus = gsl_sf_ellint_RC_e(alfa, beta, mode, &rcresult);
       if(rcstatus != GSL_SUCCESS) {
         result->val = 0.0;
-	result->err = 0.0;
+        result->err = 0.0;
         return rcstatus;
       }
       sigma  += power4 * rcresult.val;

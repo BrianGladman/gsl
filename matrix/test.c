@@ -126,7 +126,7 @@ int status = 0;
 #undef  BASE_CHAR
 
 void my_error_handler (const char *reason, const char *file,
-		       int line, int err);
+                       int line, int err);
 
 int
 main (void)

@@ -29,7 +29,7 @@
 
 int
 FUNCTION(gsl_fft_real,transform) (BASE data[], const size_t stride, const size_t n,
-				  const TYPE(gsl_fft_real_wavetable) * wavetable,
+                                  const TYPE(gsl_fft_real_wavetable) * wavetable,
                                   TYPE(gsl_fft_real_workspace) * work)
 {
   const size_t nf = wavetable->nf;
@@ -55,7 +55,7 @@ FUNCTION(gsl_fft_real,transform) (BASE data[], const size_t stride, const size_t
     }
 
   if (n == 1)
-    {				/* FFT of one data point is the identity */
+    {                           /* FFT of one data point is the identity */
       return 0;
     }
 
@@ -79,65 +79,65 @@ FUNCTION(gsl_fft_real,transform) (BASE data[], const size_t stride, const size_t
       tskip = (product_1 + 1) / 2 - 1;
 
       if (state == 0)
-	{
-	  in = data;
-	  istride = stride;
-	  out = scratch;
-	  ostride = 1;
-	  state = 1;
-	}
+        {
+          in = data;
+          istride = stride;
+          out = scratch;
+          ostride = 1;
+          state = 1;
+        }
       else
-	{
-	  in = scratch;
-	  istride = 1;
-	  out = data;
-	  ostride = stride;
-	  state = 0;
-	}
+        {
+          in = scratch;
+          istride = 1;
+          out = data;
+          ostride = stride;
+          state = 0;
+        }
 
       if (factor == 2)
-	{
-	  twiddle1 = wavetable->twiddle[i];
-	  FUNCTION(fft_real,pass_2) (in, istride, out, ostride, product, n, twiddle1);
-	}
+        {
+          twiddle1 = wavetable->twiddle[i];
+          FUNCTION(fft_real,pass_2) (in, istride, out, ostride, product, n, twiddle1);
+        }
       else if (factor == 3)
-	{
-	  twiddle1 = wavetable->twiddle[i];
-	  twiddle2 = twiddle1 + tskip;
-	  FUNCTION(fft_real,pass_3) (in, istride, out, ostride, product, n, twiddle1,
-			       twiddle2);
-	}
+        {
+          twiddle1 = wavetable->twiddle[i];
+          twiddle2 = twiddle1 + tskip;
+          FUNCTION(fft_real,pass_3) (in, istride, out, ostride, product, n, twiddle1,
+                               twiddle2);
+        }
       else if (factor == 4)
-	{
-	  twiddle1 = wavetable->twiddle[i];
-	  twiddle2 = twiddle1 + tskip;
-	  twiddle3 = twiddle2 + tskip;
-	  FUNCTION(fft_real,pass_4) (in, istride, out, ostride, product, n, twiddle1,
-				     twiddle2, twiddle3);
-	}
+        {
+          twiddle1 = wavetable->twiddle[i];
+          twiddle2 = twiddle1 + tskip;
+          twiddle3 = twiddle2 + tskip;
+          FUNCTION(fft_real,pass_4) (in, istride, out, ostride, product, n, twiddle1,
+                                     twiddle2, twiddle3);
+        }
       else if (factor == 5)
-	{
-	  twiddle1 = wavetable->twiddle[i];
-	  twiddle2 = twiddle1 + tskip;
-	  twiddle3 = twiddle2 + tskip;
-	  twiddle4 = twiddle3 + tskip;
-	  FUNCTION(fft_real,pass_5) (in, istride, out, ostride, product, n, twiddle1,
-				     twiddle2, twiddle3, twiddle4);
-	}
+        {
+          twiddle1 = wavetable->twiddle[i];
+          twiddle2 = twiddle1 + tskip;
+          twiddle3 = twiddle2 + tskip;
+          twiddle4 = twiddle3 + tskip;
+          FUNCTION(fft_real,pass_5) (in, istride, out, ostride, product, n, twiddle1,
+                                     twiddle2, twiddle3, twiddle4);
+        }
       else
-	{
-	  twiddle1 = wavetable->twiddle[i];
-	  FUNCTION(fft_real,pass_n) (in, istride, out, ostride, factor, product, n,
-				     twiddle1);
-	}
+        {
+          twiddle1 = wavetable->twiddle[i];
+          FUNCTION(fft_real,pass_n) (in, istride, out, ostride, factor, product, n,
+                                     twiddle1);
+        }
     }
 
-  if (state == 1)		/* copy results back from scratch to data */
+  if (state == 1)               /* copy results back from scratch to data */
     {
       for (i = 0; i < n; i++)
-	{
-	  data[stride*i] = scratch[i] ;
-	}
+        {
+          data[stride*i] = scratch[i] ;
+        }
     }
 
   return 0;

@@ -31,7 +31,7 @@ FUNCTION (test, text) (void)
 
     for (i = 0; i < N; i++)
       {
-	v->data[i] = (ATOMIC) i;
+        v->data[i] = (ATOMIC) i;
       };
 
     FUNCTION (gsl_block, fprintf) (f, v, OUT_FORMAT);
@@ -51,8 +51,8 @@ FUNCTION (test, text) (void)
     status = 0;
     for (i = 0; i < N; i++)
       {
-	if (w->data[i] != (ATOMIC) i)
-	  status = 1;
+        if (w->data[i] != (ATOMIC) i)
+          status = 1;
       };
 
     gsl_test (status, NAME (gsl_block) "_fprintf and fscanf");

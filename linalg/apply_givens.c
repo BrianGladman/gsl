@@ -19,7 +19,7 @@
 
 inline static void
 apply_givens_qr (size_t M, size_t N, gsl_matrix * Q, gsl_matrix * R,
-		 size_t i, size_t j, double c, double s)
+                 size_t i, size_t j, double c, double s)
 {
   size_t k;
 

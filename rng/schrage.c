@@ -37,7 +37,7 @@ schrage (unsigned long int a, unsigned long int b, unsigned long int m)
 static inline unsigned long int
 schrage_mult (unsigned long int a, unsigned long int b,
               unsigned long int m,
-	      unsigned long int sqrtm)
+              unsigned long int sqrtm)
 {
   /* To multiply a and b use Schrage's method 3 times.
    * represent a in base ceil(sqrt(m))  a = a1*ceil(sqrt(m)) + a0  

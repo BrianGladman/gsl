@@ -43,14 +43,14 @@ gsl_ran_poisson (const gsl_rng * r, double mu)
       double X = gsl_ran_gamma_int (r, m);
 
       if (X >= mu)
-	{
-	  return k + gsl_ran_binomial (r, mu / X, m - 1);
-	}
+        {
+          return k + gsl_ran_binomial (r, mu / X, m - 1);
+        }
       else
-	{
-	  k += m;
-	  mu -= X; 
-	}
+        {
+          k += m;
+          mu -= X; 
+        }
     }
 
   /* This following method works well when mu is small */
@@ -70,7 +70,7 @@ gsl_ran_poisson (const gsl_rng * r, double mu)
 
 void
 gsl_ran_poisson_array (const gsl_rng * r, size_t n, unsigned int array[],
-		       double mu)
+                       double mu)
 {
   size_t i;
 

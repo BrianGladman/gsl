@@ -18,47 +18,47 @@
  */
 
 int FUNCTION(fft_signal,complex_pulse) (const size_t k, 
-					const size_t n,
-					const size_t stride,
-					const BASE z_real, 
+                                        const size_t n,
+                                        const size_t stride,
+                                        const BASE z_real, 
                                         const BASE z_imag,
-					BASE data[],
-					BASE fft[]);
+                                        BASE data[],
+                                        BASE fft[]);
 
 int FUNCTION(fft_signal,complex_constant) (const size_t n,
-					   const size_t stride,
-					   const BASE z_real,
-					   const BASE z_imag,
-					   BASE data[],
-					   BASE fft[]);
+                                           const size_t stride,
+                                           const BASE z_real,
+                                           const BASE z_imag,
+                                           BASE data[],
+                                           BASE fft[]);
 
 int FUNCTION(fft_signal,complex_exp) (const int k,
-				      const size_t n,
-				      const size_t stride,
-				      const BASE z_real,
-				      const BASE z_imag,
-				      BASE data[],
-				      BASE fft[]);
+                                      const size_t n,
+                                      const size_t stride,
+                                      const BASE z_real,
+                                      const BASE z_imag,
+                                      BASE data[],
+                                      BASE fft[]);
 
 
 int FUNCTION(fft_signal,complex_exppair) (const int k1,
-					  const int k2,
-					  const size_t n,
-					  const size_t stride,
-					  const BASE z1_real,
-					  const BASE z1_imag,
-					  const BASE z2_real,
-					  const BASE z2_imag,
-					  BASE data[],
-					  BASE fft[]);
+                                          const int k2,
+                                          const size_t n,
+                                          const size_t stride,
+                                          const BASE z1_real,
+                                          const BASE z1_imag,
+                                          const BASE z2_real,
+                                          const BASE z2_imag,
+                                          BASE data[],
+                                          BASE fft[]);
 
 int FUNCTION(fft_signal,complex_noise) (const size_t n,
-					const size_t stride,
-					BASE data[],
-					BASE fft[]);
+                                        const size_t stride,
+                                        BASE data[],
+                                        BASE fft[]);
 
 int FUNCTION(fft_signal,real_noise) (const size_t n,
-				     const size_t stride,
-				     BASE data[],
-				     BASE fft[]);
+                                     const size_t stride,
+                                     BASE data[],
+                                     BASE fft[]);
 

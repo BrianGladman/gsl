@@ -35,7 +35,7 @@ const double EPSREL = 0.001 ;
 const unsigned int MAX_ITERATIONS = 100;
 
 void my_error_handler (const char *reason, const char *file,
-		       int line, int err);
+                       int line, int err);
 
 #define WITHIN_TOL(a, b, epsrel, epsabs) \
  (fabs((a) - (b)) < (epsrel) * GSL_MIN(fabs(a), fabs(b)) + (epsabs))
@@ -85,7 +85,7 @@ main (void)
 void
 test_f (const gsl_min_fminimizer_type * T, 
         const char * description, gsl_function *f,
-	double lower_bound, double middle, double upper_bound, 
+        double lower_bound, double middle, double upper_bound, 
         double correct_minimum)
 {
   int status;
@@ -116,10 +116,10 @@ test_f (const gsl_min_fminimizer_type * T,
 #endif
 
       if (a > b)
-	gsl_test (GSL_FAILURE, "interval is invalid (%g,%g)", a, b);
+        gsl_test (GSL_FAILURE, "interval is invalid (%g,%g)", a, b);
 
       if (m < a || m > b)
-	gsl_test (GSL_FAILURE, "m lies outside interval %g (%g,%g)", m, a, b);
+        gsl_test (GSL_FAILURE, "m lies outside interval %g (%g,%g)", m, a, b);
 
       if (status) break ;
 
@@ -128,15 +128,15 @@ test_f (const gsl_min_fminimizer_type * T,
   while (status == GSL_CONTINUE && iterations < MAX_ITERATIONS);
 
   gsl_test (status, "%s, %s (%g obs vs %g expected) ", 
-	    gsl_min_fminimizer_name(s), description, 
-	    gsl_min_fminimizer_x_minimum(s), correct_minimum);
+            gsl_min_fminimizer_name(s), description, 
+            gsl_min_fminimizer_x_minimum(s), correct_minimum);
 
   /* check the validity of the returned result */
 
   if (!WITHIN_TOL (m, correct_minimum, EPSREL, EPSABS))
     {
       gsl_test (GSL_FAILURE, "incorrect precision (%g obs vs %g expected)", 
-		m, correct_minimum);
+                m, correct_minimum);
     }
 
   gsl_min_fminimizer_free (s);
@@ -145,8 +145,8 @@ test_f (const gsl_min_fminimizer_type * T,
 
 void
 test_f_e (const gsl_min_fminimizer_type * T, 
-	  const char * description, gsl_function *f,
-	  double lower_bound, double middle, double upper_bound, 
+          const char * description, gsl_function *f,
+          double lower_bound, double middle, double upper_bound, 
           double correct_minimum)
 {
   int status;
@@ -180,7 +180,7 @@ test_f_e (const gsl_min_fminimizer_type * T,
   while (status == GSL_CONTINUE && iterations < MAX_ITERATIONS);
 
   gsl_test (!status, "%s, %s", gsl_min_fminimizer_name(s), description, 
-	    gsl_min_fminimizer_x_minimum(s) - correct_minimum);
+            gsl_min_fminimizer_x_minimum(s) - correct_minimum);
 
   gsl_min_fminimizer_free (s);
 }
@@ -194,7 +194,7 @@ my_error_handler (const char *reason, const char *file, int line, int err)
 
 int
 test_bracket (const char * description,gsl_function *f,double lower_bound, 
-	      double upper_bound, unsigned int max)
+              double upper_bound, unsigned int max)
 {
   int status;
   double x_lower, x_upper;
@@ -207,7 +207,7 @@ test_bracket (const char * description,gsl_function *f,double lower_bound,
   SAFE_FUNC_CALL (f,x_upper,&f_upper);
   status=gsl_min_find_bracket(f,&x_minimum,&f_minimum,&x_lower,&f_lower,&x_upper,&f_upper,max);
   gsl_test (status,"%s, interval: [%g,%g], values: (%g,%g), minimum at: %g, value: %g",
-	    description,x_lower,x_upper,f_lower,f_upper,x_minimum,f_minimum);
+            description,x_lower,x_upper,f_lower,f_upper,x_minimum,f_minimum);
   return status;
 }
 

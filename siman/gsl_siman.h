@@ -49,9 +49,9 @@ typedef void (*gsl_siman_destroy_t) (void *xp);
    initial guess. */
 
 typedef struct {
-  int n_tries;		/* how many points to try for each step */
-  int iters_fixed_T;	/* how many iterations at each temperature? */
-  double step_size;	/* max step size in the random walk */
+  int n_tries;          /* how many points to try for each step */
+  int iters_fixed_T;    /* how many iterations at each temperature? */
+  double step_size;     /* max step size in the random walk */
   /* the following parameters are for the Boltzmann distribution */
   double k, t_initial, mu_t, t_min;
 } gsl_siman_params_t;
@@ -59,23 +59,23 @@ typedef struct {
 /* prototype for the workhorse function */
 
 void gsl_siman_solve(const gsl_rng * r, 
-		     void *x0_p, gsl_siman_Efunc_t Ef,
-		     gsl_siman_step_t take_step,
-		     gsl_siman_metric_t distance,
-		     gsl_siman_print_t print_position,
-		     gsl_siman_copy_t copyfunc,
-		     gsl_siman_copy_construct_t copy_constructor,
-		     gsl_siman_destroy_t destructor,
-		     size_t element_size,
-		     gsl_siman_params_t params);
+                     void *x0_p, gsl_siman_Efunc_t Ef,
+                     gsl_siman_step_t take_step,
+                     gsl_siman_metric_t distance,
+                     gsl_siman_print_t print_position,
+                     gsl_siman_copy_t copyfunc,
+                     gsl_siman_copy_construct_t copy_constructor,
+                     gsl_siman_destroy_t destructor,
+                     size_t element_size,
+                     gsl_siman_params_t params);
 
 void 
 gsl_siman_solve_many (const gsl_rng * r, void *x0_p, gsl_siman_Efunc_t Ef,
-		      gsl_siman_step_t take_step,
-		      gsl_siman_metric_t distance,
-		      gsl_siman_print_t print_position,
-		      size_t element_size,
-		      gsl_siman_params_t params);
+                      gsl_siman_step_t take_step,
+                      gsl_siman_metric_t distance,
+                      gsl_siman_print_t print_position,
+                      size_t element_size,
+                      gsl_siman_params_t params);
 
 __END_DECLS
 

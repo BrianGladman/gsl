@@ -4,7 +4,7 @@
 
 void
 cblas_zdotu_sub (const int N, const void *X, const int incX, const void *Y,
-	     const int incY, void *result)
+             const int incY, void *result)
 {
 #define BASE double
 #define CONJ_SIGN 1.0

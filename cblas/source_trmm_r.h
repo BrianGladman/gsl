@@ -43,19 +43,19 @@
 
     for (i = 0; i < n1; i++) {
       for (j = 0; j < n2; j++) {
-	BASE temp = 0.0;
+        BASE temp = 0.0;
 
-	if (nonunit) {
-	  temp = A[i * lda + i] * B[i * ldb + j];
-	} else {
-	  temp = B[i * ldb + j];
-	}
+        if (nonunit) {
+          temp = A[i * lda + i] * B[i * ldb + j];
+        } else {
+          temp = B[i * ldb + j];
+        }
 
-	for (k = i + 1; k < n1; k++) {
-	  temp += A[lda * i + k] * B[k * ldb + j];
-	}
+        for (k = i + 1; k < n1; k++) {
+          temp += A[lda * i + k] * B[k * ldb + j];
+        }
 
-	B[ldb * i + j] = alpha * temp;
+        B[ldb * i + j] = alpha * temp;
       }
     }
 
@@ -65,19 +65,19 @@
 
     for (i = n1; i > 0 && i--;) {
       for (j = 0; j < n2; j++) {
-	BASE temp = 0.0;
+        BASE temp = 0.0;
 
-	for (k = 0; k < i; k++) {
-	  temp += A[lda * k + i] * B[k * ldb + j];
-	}
+        for (k = 0; k < i; k++) {
+          temp += A[lda * k + i] * B[k * ldb + j];
+        }
 
-	if (nonunit) {
-	  temp += A[i * lda + i] * B[i * ldb + j];
-	} else {
-	  temp += B[i * ldb + j];
-	}
+        if (nonunit) {
+          temp += A[i * lda + i] * B[i * ldb + j];
+        } else {
+          temp += B[i * ldb + j];
+        }
 
-	B[ldb * i + j] = alpha * temp;
+        B[ldb * i + j] = alpha * temp;
       }
     }
 
@@ -88,19 +88,19 @@
 
     for (i = n1; i > 0 && i--;) {
       for (j = 0; j < n2; j++) {
-	BASE temp = 0.0;
+        BASE temp = 0.0;
 
-	for (k = 0; k < i; k++) {
-	  temp += A[lda * i + k] * B[k * ldb + j];
-	}
+        for (k = 0; k < i; k++) {
+          temp += A[lda * i + k] * B[k * ldb + j];
+        }
 
-	if (nonunit) {
-	  temp += A[i * lda + i] * B[i * ldb + j];
-	} else {
-	  temp += B[i * ldb + j];
-	}
+        if (nonunit) {
+          temp += A[i * lda + i] * B[i * ldb + j];
+        } else {
+          temp += B[i * ldb + j];
+        }
 
-	B[ldb * i + j] = alpha * temp;
+        B[ldb * i + j] = alpha * temp;
       }
     }
 
@@ -112,19 +112,19 @@
 
     for (i = 0; i < n1; i++) {
       for (j = 0; j < n2; j++) {
-	BASE temp = 0.0;
+        BASE temp = 0.0;
 
-	if (nonunit) {
-	  temp = A[i * lda + i] * B[i * ldb + j];
-	} else {
-	  temp = B[i * ldb + j];
-	}
+        if (nonunit) {
+          temp = A[i * lda + i] * B[i * ldb + j];
+        } else {
+          temp = B[i * ldb + j];
+        }
 
-	for (k = i + 1; k < n1; k++) {
-	  temp += A[lda * k + i] * B[k * ldb + j];
-	}
+        for (k = i + 1; k < n1; k++) {
+          temp += A[lda * k + i] * B[k * ldb + j];
+        }
 
-	B[ldb * i + j] = alpha * temp;
+        B[ldb * i + j] = alpha * temp;
       }
     }
 
@@ -134,19 +134,19 @@
 
     for (i = 0; i < n1; i++) {
       for (j = n2; j > 0 && j--;) {
-	BASE temp = 0.0;
+        BASE temp = 0.0;
 
-	for (k = 0; k < j; k++) {
-	  temp += A[lda * k + j] * B[i * ldb + k];
-	}
+        for (k = 0; k < j; k++) {
+          temp += A[lda * k + j] * B[i * ldb + k];
+        }
 
-	if (nonunit) {
-	  temp += A[j * lda + j] * B[i * ldb + j];
-	} else {
-	  temp += B[i * ldb + j];
-	}
+        if (nonunit) {
+          temp += A[j * lda + j] * B[i * ldb + j];
+        } else {
+          temp += B[i * ldb + j];
+        }
 
-	B[ldb * i + j] = alpha * temp;
+        B[ldb * i + j] = alpha * temp;
       }
     }
 
@@ -156,19 +156,19 @@
 
     for (i = 0; i < n1; i++) {
       for (j = 0; j < n2; j++) {
-	BASE temp = 0.0;
+        BASE temp = 0.0;
 
-	if (nonunit) {
-	  temp = A[j * lda + j] * B[i * ldb + j];
-	} else {
-	  temp = B[i * ldb + j];
-	}
+        if (nonunit) {
+          temp = A[j * lda + j] * B[i * ldb + j];
+        } else {
+          temp = B[i * ldb + j];
+        }
 
-	for (k = j + 1; k < n2; k++) {
-	  temp += A[lda * j + k] * B[i * ldb + k];
-	}
+        for (k = j + 1; k < n2; k++) {
+          temp += A[lda * j + k] * B[i * ldb + k];
+        }
 
-	B[ldb * i + j] = alpha * temp;
+        B[ldb * i + j] = alpha * temp;
       }
     }
 
@@ -178,20 +178,20 @@
 
     for (i = 0; i < n1; i++) {
       for (j = 0; j < n2; j++) {
-	BASE temp = 0.0;
+        BASE temp = 0.0;
 
-	if (nonunit) {
-	  temp = A[j * lda + j] * B[i * ldb + j];
-	} else {
-	  temp = B[i * ldb + j];
-	}
+        if (nonunit) {
+          temp = A[j * lda + j] * B[i * ldb + j];
+        } else {
+          temp = B[i * ldb + j];
+        }
 
-	for (k = j + 1; k < n2; k++) {
-	  temp += A[lda * k + j] * B[i * ldb + k];
-	}
+        for (k = j + 1; k < n2; k++) {
+          temp += A[lda * k + j] * B[i * ldb + k];
+        }
 
 
-	B[ldb * i + j] = alpha * temp;
+        B[ldb * i + j] = alpha * temp;
       }
     }
 
@@ -201,19 +201,19 @@
 
     for (i = 0; i < n1; i++) {
       for (j = n2; j > 0 && j--;) {
-	BASE temp = 0.0;
+        BASE temp = 0.0;
 
-	for (k = 0; k < j; k++) {
-	  temp += A[lda * j + k] * B[i * ldb + k];
-	}
+        for (k = 0; k < j; k++) {
+          temp += A[lda * j + k] * B[i * ldb + k];
+        }
 
-	if (nonunit) {
-	  temp += A[j * lda + j] * B[i * ldb + j];
-	} else {
-	  temp += B[i * ldb + j];
-	}
+        if (nonunit) {
+          temp += A[j * lda + j] * B[i * ldb + j];
+        } else {
+          temp += B[i * ldb + j];
+        }
 
-	B[ldb * i + j] = alpha * temp;
+        B[ldb * i + j] = alpha * temp;
       }
     }
 

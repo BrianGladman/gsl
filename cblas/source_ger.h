@@ -26,8 +26,8 @@
       const BASE tmp = alpha * X[ix];
       INDEX jy = OFFSET(N, incY);
       for (j = 0; j < N; j++) {
-	A[lda * i + j] += Y[jy] * tmp;
-	jy += incY;
+        A[lda * i + j] += Y[jy] * tmp;
+        jy += incY;
       }
       ix += incX;
     }
@@ -37,8 +37,8 @@
       const BASE tmp = alpha * Y[jy];
       INDEX ix = OFFSET(M, incX);
       for (i = 0; i < M; i++) {
-	A[i + lda * j] += X[ix] * tmp;
-	ix += incX;
+        A[i + lda * j] += X[ix] * tmp;
+        ix += incX;
       }
       jy += incY;
     }

@@ -197,14 +197,14 @@ int gsl_sf_bessel_Kn_scaled_array(const int nmin, const int nmax, const double x
       }
       else {
         /* Overflow. Set the rest of the elements to
-	 * zero and bug out.
-	 * FIXME: Note: this relies on the convention
-	 * that the test x < DBL_MIN fails for x not
-	 * a number. This may be only an IEEE convention,
-	 * so the portability is unclear.
-	 */
+         * zero and bug out.
+         * FIXME: Note: this relies on the convention
+         * that the test x < DBL_MIN fails for x not
+         * a number. This may be only an IEEE convention,
+         * so the portability is unclear.
+         */
         int j;
-	for(j=n; j<=nmax+1; j++) result_array[j-1-nmin] = 0.0;
+        for(j=n; j<=nmax+1; j++) result_array[j-1-nmin] = 0.0;
         GSL_ERROR ("overflow", GSL_EOVRFLW);
       }
     }

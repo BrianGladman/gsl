@@ -42,10 +42,10 @@
    call GSL_ERROR and return GSL_FAILURE) otherwise. */
 int
 _gsl_root_validate_bfp_args (double *root, double (*f) (double),
-			     double *lower_bound,
-			     double *upper_bound, double epsrel,
-			     double epsabs, unsigned int max_iterations,
-			     double max_deltay)
+                             double *lower_bound,
+                             double *upper_bound, double epsrel,
+                             double epsabs, unsigned int max_iterations,
+                             double max_deltay)
 {
   /* Is the maximum delta-y too small? */
   if (max_deltay < GSL_ROOT_MIN_MAX_DELTAY)
@@ -57,7 +57,7 @@ _gsl_root_validate_bfp_args (double *root, double (*f) (double),
 
   /* The rest of the arguments are common. */
   return _gsl_root_validate_args (root, f, lower_bound, upper_bound,
-				  epsrel, epsabs, max_iterations);
+                                  epsrel, epsabs, max_iterations);
 }
 
 /* Validate arguments commond to gsl_root_secant and gsl_root_newtons. Return
@@ -65,10 +65,10 @@ _gsl_root_validate_bfp_args (double *root, double (*f) (double),
    GSL_ERROR and return GSL_FAILURE) otherwise. */
 int
 _gsl_root_validate_sn_args (double *root, double (*f) (double),
-			    double *guess1,
-			    double *guess2, double epsrel,
-			    double epsabs, unsigned int max_iterations,
-			    double max_step_size)
+                            double *guess1,
+                            double *guess2, double epsrel,
+                            double epsabs, unsigned int max_iterations,
+                            double max_step_size)
 {
   /* Is the maximum step size ridiculous? */
   if (max_step_size <= 0.0)
@@ -76,7 +76,7 @@ _gsl_root_validate_sn_args (double *root, double (*f) (double),
 
   /* The rest of the arguments are common. */
   return _gsl_root_validate_args (root, f, guess1, guess2, epsrel,
-				  epsabs, max_iterations);
+                                  epsabs, max_iterations);
 }
 
 /* Validate the arguments common to all four low level functions. Return
@@ -89,8 +89,8 @@ _gsl_root_validate_sn_args (double *root, double (*f) (double),
    * The relative error is not too small. */
 int
 _gsl_root_validate_args (double *root, double (*f) (double), double *where1,
-			 double *where2, double epsrel,
-			 double epsabs, unsigned int max_iterations)
+                         double *where2, double epsrel,
+                         double epsabs, unsigned int max_iterations)
 {
   /* Are any pointers null? */
   if ((root == NULL) || (f == NULL) || (where1 == NULL)
@@ -117,7 +117,7 @@ _gsl_root_validate_args (double *root, double (*f) (double), double *where1,
    GSL_FAILURE. */
 int
 _gsl_root_ivt_guar (double (*f) (double), double lower_bound,
-		    double upper_bound)
+                    double upper_bound)
 {
   double fl, fu;
 
@@ -142,8 +142,8 @@ _gsl_root_ivt_guar (double (*f) (double), double lower_bound,
    arguments _before_ calling this function). */
 int
 _gsl_root_silly_user (double *root, double (*f) (double), double lower_bound,
-		      double upper_bound, double epsrel,
-		      double epsabs, double max_deltay)
+                      double upper_bound, double epsrel,
+                      double epsabs, double max_deltay)
 {
   double fl, fu;
 
@@ -168,7 +168,7 @@ _gsl_root_silly_user (double *root, double (*f) (double), double lower_bound,
   if (max_deltay > 0.0)
     _BARF_DELTAY (fl, fu, max_deltay);
   if (_WITHIN_TOL (lower_bound, upper_bound, 2 * epsrel,
-		   2 * epsabs))
+                   2 * epsabs))
     {
       *root = (lower_bound + upper_bound) / 2.0;
       return 1;

@@ -34,10 +34,10 @@
 
 
 void testMoments (double (*f) (void), const char *name,
-		  double a, double b, double p);
+                  double a, double b, double p);
 void testPDF (double (*f) (void), double (*pdf) (double), const char *name);
 void testDiscretePDF (double (*f) (void), double (*pdf) (unsigned int),
-		      const char *name);
+                      const char *name);
 
 void test_shuffle (void);
 void test_choose (void);
@@ -350,37 +350,37 @@ test_shuffle (void)
   for (i = 0; i < 10; i++)
     {
       for (j = 0; j < 10; j++)
-	{
-	  count[i][j] = 0;
-	}
+        {
+          count[i][j] = 0;
+        }
     }
 
   for (i = 0; i < N; i++)
     {
       for (j = 0; j < 10; j++)
-	x[j] = j;
+        x[j] = j;
 
       gsl_ran_shuffle (r_global, x, 10, sizeof (int));
 
       for (j = 0; j < 10; j++)
-	count[x[j]][j]++;
+        count[x[j]][j]++;
     }
 
   for (i = 0; i < 10; i++)
     {
       for (j = 0; j < 10; j++)
-	{
-	  double expected = N / 10.0;
-	  double d = fabs (count[i][j] - expected);
-	  double sigma = d / sqrt (expected);
-	  if (sigma > 5 && d > 1)
-	    {
-	      status = 1;
-	      gsl_test (status,
-			"gsl_ran_shuffle %d,%d (%g observed vs %g expected)",
-			i, j, count[i][j] / N, 0.1);
-	    }
-	}
+        {
+          double expected = N / 10.0;
+          double d = fabs (count[i][j] - expected);
+          double sigma = d / sqrt (expected);
+          if (sigma > 5 && d > 1)
+            {
+              status = 1;
+              gsl_test (status,
+                        "gsl_ran_shuffle %d,%d (%g observed vs %g expected)",
+                        i, j, count[i][j] / N, 0.1);
+            }
+        }
     }
 
   gsl_test (status, "gsl_ran_shuffle on {0, 1, 2, 3, 4, 5, 6, 7, 8, 9}");
@@ -403,12 +403,12 @@ test_choose (void)
   for (i = 0; i < N; i++)
     {
       for (j = 0; j < 10; j++)
-	x[j] = j;
+        x[j] = j;
 
       gsl_ran_choose (r_global, y, 3, x, 10, sizeof (int));
 
       for (j = 0; j < 3; j++)
-	count[y[j]]++;
+        count[y[j]]++;
     }
 
   for (i = 0; i < 10; i++)
@@ -417,12 +417,12 @@ test_choose (void)
       double d = fabs (count[i] - expected);
       double sigma = d / sqrt (expected);
       if (sigma > 5 && d > 1)
-	{
-	  status = 1;
-	  gsl_test (status,
-		    "gsl_ran_choose %d (%g observed vs %g expected)",
-		    i, count[i] / N, 0.1);
-	}
+        {
+          status = 1;
+          gsl_test (status,
+                    "gsl_ran_choose %d (%g observed vs %g expected)",
+                    i, count[i] / N, 0.1);
+        }
     }
 
   gsl_test (status, "gsl_ran_choose (3) on {0, 1, 2, 3, 4, 5, 6, 7, 8, 9}");
@@ -434,7 +434,7 @@ test_choose (void)
 
 void
 testMoments (double (*f) (void), const char *name,
-	     double a, double b, double p)
+             double a, double b, double p)
 {
   int i;
   double count = 0, expected, sigma;
@@ -444,7 +444,7 @@ testMoments (double (*f) (void), const char *name,
     {
       double r = f ();
       if (r < b && r > a)
-	count++;
+        count++;
     }
 
   expected = p * N;
@@ -453,7 +453,7 @@ testMoments (double (*f) (void), const char *name,
   status = (sigma > 3);
 
   gsl_test (status, "%s [%g,%g] (%g observed vs %g expected)",
-	    name, a, b, count / N, p);
+            name, a, b, count / N, p);
 }
 
 #define BINS 100
@@ -473,10 +473,10 @@ testPDF (double (*f) (void), double (*pdf) (double), const char *name)
     {
       double r = f ();
       if (r < b && r > a)
-	{
-	  j = (int) ((r - a) / dx);
-	  count[j]++;
-	}
+        {
+          j = (int) ((r - a) / dx);
+          count[j]++;
+        }
     }
 
   for (i = 0; i < BINS; i++)
@@ -488,11 +488,11 @@ testPDF (double (*f) (void), double (*pdf) (double), const char *name)
 #define STEPS 100
       double sum = 0;
 
-      if (fabs (x) < 1e-10)	/* hit the origin exactly */
-	x = 0.0;
+      if (fabs (x) < 1e-10)     /* hit the origin exactly */
+        x = 0.0;
 
       for (j = 1; j < STEPS; j++)
-	sum += pdf (x + j * dx / STEPS);
+        sum += pdf (x + j * dx / STEPS);
 
       p[i] = 0.5 * (pdf (x) + 2 * sum + pdf (x + dx - 1e-7)) * dx / STEPS;
     }
@@ -502,28 +502,28 @@ testPDF (double (*f) (void), double (*pdf) (double), const char *name)
       double x = a + i * dx;
       double d = fabs (count[i] - N * p[i]);
       if (p[i] != 0)
-	{
-	  double s = d / sqrt (N * p[i]);
-	  status_i = (s > 5) && (d > 1);
-	}
+        {
+          double s = d / sqrt (N * p[i]);
+          status_i = (s > 5) && (d > 1);
+        }
       else
-	{
-	  status_i = (count[i] != 0);
-	}
+        {
+          status_i = (count[i] != 0);
+        }
       status |= status_i;
       if (status_i)
-	gsl_test (status_i, "%s [%g,%g) (%g/%d=%g observed vs %g expected)",
-		  name, x, x + dx, count[i], N, count[i] / N, p[i]);
+        gsl_test (status_i, "%s [%g,%g) (%g/%d=%g observed vs %g expected)",
+                  name, x, x + dx, count[i], N, count[i] / N, p[i]);
     }
 
   if (status == 0)
     gsl_test (status, "%s, sampling against pdf over range [%g,%g) ",
-	      name, a, b);
+              name, a, b);
 }
 
 void
 testDiscretePDF (double (*f) (void), double (*pdf) (unsigned int),
-		 const char *name)
+                 const char *name)
 {
   double count[BINS], p[BINS];
   unsigned int i;
@@ -536,7 +536,7 @@ testDiscretePDF (double (*f) (void), double (*pdf) (unsigned int),
     {
       int r = (int) (f ());
       if (r >= 0 && r < BINS)
-	count[r]++;
+        count[r]++;
     }
 
   for (i = 0; i < BINS; i++)
@@ -546,23 +546,23 @@ testDiscretePDF (double (*f) (void), double (*pdf) (unsigned int),
     {
       double d = fabs (count[i] - N * p[i]);
       if (p[i] != 0)
-	{
-	  double s = d / sqrt (N * p[i]);
-	  status_i = (s > 5) && (d > 1);
-	}
+        {
+          double s = d / sqrt (N * p[i]);
+          status_i = (s > 5) && (d > 1);
+        }
       else
-	{
-	  status_i = (count[i] != 0);
-	}
+        {
+          status_i = (count[i] != 0);
+        }
       status |= status_i;
       if (status_i)
-	gsl_test (status_i, "%s i=%d (%g observed vs %g expected)",
-		  name, i, count[i] / N, p[i]);
+        gsl_test (status_i, "%s i=%d (%g observed vs %g expected)",
+                  name, i, count[i] / N, p[i]);
     }
 
   if (status == 0)
     gsl_test (status, "%s, sampling against pdf over range [%d,%d) ",
-	      name, 0, BINS);
+              name, 0, BINS);
 }
 
 
@@ -821,7 +821,7 @@ test_dirichlet_pdf (double x)
   double theta[2];
 
   if (x <= 0.0 || x >= 1.0)
-    return 0.0;			/* Out of range */
+    return 0.0;                 /* Out of range */
 
   theta[0] = x;
   theta[1] = 1.0 - x;
@@ -857,23 +857,23 @@ test_dirichlet_moments (void)
     {
       gsl_ran_dirichlet (r_global, DIRICHLET_K, alpha, theta);
       for (k = 0; k < DIRICHLET_K; k++)
-	theta_sum[k] += theta[k];
+        theta_sum[k] += theta[k];
     }
 
   for (k = 0; k < DIRICHLET_K; k++)
     {
       mean = alpha[k] / alpha_sum;
       sd =
-	sqrt ((alpha[k] * (1. - alpha[k] / alpha_sum)) /
-	      (alpha_sum * (alpha_sum + 1.)));
+        sqrt ((alpha[k] * (1. - alpha[k] / alpha_sum)) /
+              (alpha_sum * (alpha_sum + 1.)));
       obs_mean = theta_sum[k] / N;
       sigma = sqrt ((double) N) * fabs (mean - obs_mean) / sd;
 
       status = (sigma > 3.0);
 
       gsl_test (status,
-		"test gsl_ran_dirichlet: mean (%g observed vs %g expected)",
-		obs_mean, mean);
+                "test gsl_ran_dirichlet: mean (%g observed vs %g expected)",
+                obs_mean, mean);
     }
 }
 
@@ -902,7 +902,7 @@ test_multinomial_moments (void)
     {
       gsl_ran_multinomial (r_global, MULTI_DIM, sum_n, p, x);
       for (k = 0; k < MULTI_DIM; k++)
-	x_sum[k] += x[k];
+        x_sum[k] += x[k];
     }
 
   for (k = 0; k < MULTI_DIM; k++)
@@ -916,8 +916,8 @@ test_multinomial_moments (void)
       status = (sigma > 3.0);
 
       gsl_test (status,
-		"test gsl_ran_multinomial: mean (%g observed vs %g expected)",
-		obs_mean, mean);
+                "test gsl_ran_multinomial: mean (%g observed vs %g expected)",
+                obs_mean, mean);
     }
 }
 

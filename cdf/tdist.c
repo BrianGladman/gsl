@@ -196,13 +196,13 @@ gsl_cdf_tdist_P (const double x, const double nu)
       double eps = u / (1 + u);
 
       if (x >= 0)
-	{
-	  P = beta_inc_AXPY (0.5, 0.5, 0.5, nu / 2.0, eps);
-	}
+        {
+          P = beta_inc_AXPY (0.5, 0.5, 0.5, nu / 2.0, eps);
+        }
       else
-	{
-	  P = beta_inc_AXPY (-0.5, 0.5, 0.5, nu / 2.0, eps);
-	}
+        {
+          P = beta_inc_AXPY (-0.5, 0.5, 0.5, nu / 2.0, eps);
+        }
     }
   else
     {
@@ -210,13 +210,13 @@ gsl_cdf_tdist_P (const double x, const double nu)
       double eps = v / (1 + v);
 
       if (x >= 0)
-	{
-	  P = beta_inc_AXPY (-0.5, 1.0, nu / 2.0, 0.5, eps);
-	}
+        {
+          P = beta_inc_AXPY (-0.5, 1.0, nu / 2.0, 0.5, eps);
+        }
       else
-	{
-	  P = beta_inc_AXPY (0.5, 0.0, nu / 2.0, 0.5, eps);
-	}
+        {
+          P = beta_inc_AXPY (0.5, 0.0, nu / 2.0, 0.5, eps);
+        }
     }
 
   return P;
@@ -244,13 +244,13 @@ gsl_cdf_tdist_Q (const double x, const double nu)
       double eps = u / (1 + u);
 
       if (x >= 0)
-	{
-	  Q = beta_inc_AXPY (-0.5, 0.5, 0.5, nu / 2.0, eps);
-	}
+        {
+          Q = beta_inc_AXPY (-0.5, 0.5, 0.5, nu / 2.0, eps);
+        }
       else
-	{
-	  Q = beta_inc_AXPY (0.5, 0.5, 0.5, nu / 2.0, eps);
-	}
+        {
+          Q = beta_inc_AXPY (0.5, 0.5, 0.5, nu / 2.0, eps);
+        }
     }
   else
     {
@@ -258,13 +258,13 @@ gsl_cdf_tdist_Q (const double x, const double nu)
       double eps = v / (1 + v);
 
       if (x >= 0)
-	{
-	  Q = beta_inc_AXPY (0.5, 0.0, nu / 2.0, 0.5, eps);
-	}
+        {
+          Q = beta_inc_AXPY (0.5, 0.0, nu / 2.0, 0.5, eps);
+        }
       else
-	{
-	  Q = beta_inc_AXPY (-0.5, 1.0, nu / 2.0, 0.5, eps);
-	}
+        {
+          Q = beta_inc_AXPY (-0.5, 1.0, nu / 2.0, 0.5, eps);
+        }
     }
 
   return Q;

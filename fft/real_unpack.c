@@ -21,8 +21,8 @@
 
 int
 FUNCTION(gsl_fft_real,unpack) (const BASE real_coefficient[],
-			       BASE complex_coefficient[],
-			       const size_t stride, const size_t n)
+                               BASE complex_coefficient[],
+                               const size_t stride, const size_t n)
 {
   size_t i;
 

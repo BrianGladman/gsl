@@ -146,7 +146,7 @@ gsl_sf_beta_inc_e(
 
       stat = GSL_ERROR_SELECT_2(stat_exp, stat_cf);
       if(stat == GSL_SUCCESS) {
-	CHECK_UNDERFLOW(result);
+        CHECK_UNDERFLOW(result);
       }
       return stat;
     }
@@ -162,7 +162,7 @@ gsl_sf_beta_inc_e(
       result->err += 2.0 * GSL_DBL_EPSILON * (1.0 + fabs(term));
       stat = GSL_ERROR_SELECT_2(stat_exp, stat_cf);
       if(stat == GSL_SUCCESS) {
-	CHECK_UNDERFLOW(result);
+        CHECK_UNDERFLOW(result);
       }
       return stat;
     }

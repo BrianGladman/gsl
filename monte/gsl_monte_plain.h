@@ -47,11 +47,11 @@ typedef struct {
 
 int
 gsl_monte_plain_integrate (const gsl_monte_function * f,
-			   const double xl[], const double xu[],
-			   const size_t dim,
-			   const size_t calls, 
-			   gsl_rng * r,
-			   gsl_monte_plain_state * state,
+                           const double xl[], const double xu[],
+                           const size_t dim,
+                           const size_t calls, 
+                           gsl_rng * r,
+                           gsl_monte_plain_state * state,
                            double *result, double *abserr);
 
 gsl_monte_plain_state* gsl_monte_plain_alloc(size_t dim);

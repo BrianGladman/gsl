@@ -41,9 +41,9 @@ gsl_poly_dd_init (double dd[], const double xa[], const double ya[],
   for (i = 2; i < size; i++)
     {
       for (j = size - 1; j >= i; j--)
-	{
-	  dd[j] = (dd[j] - dd[j - 1]) / (xa[j] - xa[j - i]);
-	}
+        {
+          dd[j] = (dd[j] - dd[j - 1]) / (xa[j] - xa[j - i]);
+        }
     }
 
   return GSL_SUCCESS;
@@ -87,14 +87,14 @@ gsl_poly_dd_taylor (double c[], double xp,
       w[i] = -w[i + 1] * (xa[size - 2 - i] - xp);
 
       for (j = i + 1; j < size - 1; j++)
-	{
-	  w[j] = w[j] - w[j + 1] * (xa[size - 2 - i] - xp);
-	}
+        {
+          w[j] = w[j] - w[j + 1] * (xa[size - 2 - i] - xp);
+        }
 
       for (j = i; j < size; j++)
-	{
-	  c[j - i] += w[j] * dd[size - i - 1];
-	}
+        {
+          c[j - i] += w[j] * dd[size - i - 1];
+        }
     }
 
   return GSL_SUCCESS;

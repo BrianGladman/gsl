@@ -36,15 +36,15 @@
       INDEX jx = ix;
       INDEX jy = iy;
       for (j = i; j < N; j++) {
-	Ap[TPUP(N, i, j)] += tmp1 * Y[jy] + tmp2 * X[jx];
-	jx += incX;
-	jy += incY;
+        Ap[TPUP(N, i, j)] += tmp1 * Y[jy] + tmp2 * X[jx];
+        jx += incX;
+        jy += incY;
       }
       ix += incX;
       iy += incY;
     }
   } else if ((order == CblasRowMajor && Uplo == CblasLower)
-	     || (order == CblasColMajor && Uplo == CblasUpper)) {
+             || (order == CblasColMajor && Uplo == CblasUpper)) {
     INDEX ix = OFFSET(N, incX);
     INDEX iy = OFFSET(N, incY);
     for (i = 0; i < N; i++) {
@@ -53,9 +53,9 @@
       INDEX jx = OFFSET(N, incX);
       INDEX jy = OFFSET(N, incY);
       for (j = 0; j <= i; j++) {
-	Ap[TPLO(N, i, j)] += tmp1 * Y[jy] + tmp2 * X[jx];
-	jx += incX;
-	jy += incY;
+        Ap[TPLO(N, i, j)] += tmp1 * Y[jy] + tmp2 * X[jx];
+        jx += incX;
+        jy += incY;
       }
       ix += incX;
       iy += incY;

@@ -57,10 +57,10 @@ qrsolv (gsl_matrix * r, const gsl_permutation * p, const double lambda,
       double qtbj = gsl_vector_get (qtb, j);
 
       for (i = j + 1; i < n; i++)
-	{
-	  double rji = gsl_matrix_get (r, j, i);
-	  gsl_matrix_set (r, i, j, rji);
-	}
+        {
+          double rji = gsl_matrix_get (r, j, i);
+          gsl_matrix_set (r, i, j, rji);
+        }
 
       gsl_vector_set (x, j, rjj);
       gsl_vector_set (wa, j, qtbj);
@@ -77,16 +77,16 @@ qrsolv (gsl_matrix * r, const gsl_permutation * p, const double lambda,
       double diagpj = lambda * gsl_vector_get (diag, pj);
 
       if (diagpj == 0)
-	{
-	  continue;
-	}
+        {
+          continue;
+        }
 
       gsl_vector_set (sdiag, j, diagpj);
 
       for (k = j + 1; k < n; k++)
-	{
-	  gsl_vector_set (sdiag, k, 0.0);
-	}
+        {
+          gsl_vector_set (sdiag, k, 0.0);
+        }
 
       /* The transformations to eliminate the row of d modify only a
          single element of qtb beyond the first n, which is initially
@@ -95,51 +95,51 @@ qrsolv (gsl_matrix * r, const gsl_permutation * p, const double lambda,
       qtbpj = 0;
 
       for (k = j; k < n; k++)
-	{
-	  /* Determine a Givens rotation which eliminates the
-	     appropriate element in the current row of d */
+        {
+          /* Determine a Givens rotation which eliminates the
+             appropriate element in the current row of d */
 
           double sine, cosine;
 
           double wak = gsl_vector_get (wa, k);
           double rkk = gsl_matrix_get (r, k, k);
-	  double sdiagk = gsl_vector_get (sdiag, k);
+          double sdiagk = gsl_vector_get (sdiag, k);
 
-	  if (sdiagk == 0)
-	    {
-	      continue;
-	    }
+          if (sdiagk == 0)
+            {
+              continue;
+            }
 
-	  if (fabs (rkk) < fabs (sdiagk))
-	    {
-	      double cotangent = rkk / sdiagk;
-	      sine = 0.5 / sqrt (0.25 + 0.25 * cotangent * cotangent);
-	      cosine = sine * cotangent;
-	    }
-	  else
-	    {
-	      double tangent = sdiagk / rkk;
-	      cosine = 0.5 / sqrt (0.25 + 0.25 * tangent * tangent);
-	      sine = cosine * tangent;
-	    }
+          if (fabs (rkk) < fabs (sdiagk))
+            {
+              double cotangent = rkk / sdiagk;
+              sine = 0.5 / sqrt (0.25 + 0.25 * cotangent * cotangent);
+              cosine = sine * cotangent;
+            }
+          else
+            {
+              double tangent = sdiagk / rkk;
+              cosine = 0.5 / sqrt (0.25 + 0.25 * tangent * tangent);
+              sine = cosine * tangent;
+            }
 
-	  /* Compute the modified diagonal element of r and the
-	     modified element of [qtb,0] */
+          /* Compute the modified diagonal element of r and the
+             modified element of [qtb,0] */
 
-	  {
-	    double new_rkk = cosine * rkk + sine * sdiagk;
-	    double new_wak = cosine * wak + sine * qtbpj;
-	    
+          {
+            double new_rkk = cosine * rkk + sine * sdiagk;
+            double new_wak = cosine * wak + sine * qtbpj;
+            
             qtbpj = -sine * wak + cosine * qtbpj;
 
-	    gsl_matrix_set(r, k, k, new_rkk);
-	    gsl_vector_set(wa, k, new_wak);
+            gsl_matrix_set(r, k, k, new_rkk);
+            gsl_vector_set(wa, k, new_wak);
           }
 
-	  /* Accumulate the transformation in the row of s */
+          /* Accumulate the transformation in the row of s */
 
-	  for (i = k + 1; i < n; i++)
-	    {
+          for (i = k + 1; i < n; i++)
+            {
               double rik = gsl_matrix_get (r, i, k);
               double sdiagi = gsl_vector_get (sdiag, i);
               
@@ -148,8 +148,8 @@ qrsolv (gsl_matrix * r, const gsl_permutation * p, const double lambda,
               
               gsl_matrix_set(r, i, k, new_rik);
               gsl_vector_set(sdiag, i, new_sdiagi);
-	    }
-	}
+            }
+        }
 
       /* Store the corresponding diagonal element of s and restore the
          corresponding diagonal element of r */
@@ -174,10 +174,10 @@ qrsolv (gsl_matrix * r, const gsl_permutation * p, const double lambda,
       double sdiagj = gsl_vector_get (sdiag, j);
 
       if (sdiagj == 0)
-	{
-	  nsing = j;
-	  break;
-	}
+        {
+          nsing = j;
+          break;
+        }
     }
 
   for (j = nsing; j < n; j++)
@@ -192,9 +192,9 @@ qrsolv (gsl_matrix * r, const gsl_permutation * p, const double lambda,
       j = (nsing - 1) - k;
 
       for (i = j + 1; i < nsing; i++)
-	{
-	  sum += gsl_matrix_get(r, i, j) * gsl_vector_get(wa, i);
-	}
+        {
+          sum += gsl_matrix_get(r, i, j) * gsl_vector_get(wa, i);
+        }
 
       {
         double waj = gsl_vector_get (wa, j);

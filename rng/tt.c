@@ -62,26 +62,26 @@ tt_get (void *vstate)
     {
       int i;
       for (i = 0; i < N - M; i++)
-	{
-	  x[i] = x[i + M] ^ (x[i] >> 1) ^ mag01[x[i] % 2];
-	}
+        {
+          x[i] = x[i + M] ^ (x[i] >> 1) ^ mag01[x[i] % 2];
+        }
       for (; i < N; i++)
-	{
-	  x[i] = x[i + (M - N)] ^ (x[i] >> 1) ^ mag01[x[i] % 2];
-	};
+        {
+          x[i] = x[i + (M - N)] ^ (x[i] >> 1) ^ mag01[x[i] % 2];
+        };
       n = 0;
     }
 
   y = x[n];
-  y ^= (y << 7) & 0x2b5b2500UL;		/* s and b, magic vectors */
-  y ^= (y << 15) & 0xdb8b0000UL;	/* t and c, magic vectors */
-  y &= 0xffffffffUL;	/* you may delete this line if word size = 32 */
+  y ^= (y << 7) & 0x2b5b2500UL;         /* s and b, magic vectors */
+  y ^= (y << 15) & 0xdb8b0000UL;        /* t and c, magic vectors */
+  y &= 0xffffffffUL;    /* you may delete this line if word size = 32 */
 
   /* The following line was added by Makoto Matsumoto in the 1996
      version to improve lower bit's correlation.  Delete this line
      to use the code published in 1994.  */
 
-  y ^= (y >> 16);	/* added to the 1994 version */
+  y ^= (y >> 16);       /* added to the 1994 version */
 
   state->n = n + 1;
 
@@ -112,7 +112,7 @@ tt_set (void *vstate, unsigned long int s)
     0xa6b7aadbUL}};
 
 
-  if (s == 0)	/* default seed is given explicitly in the original code */
+  if (s == 0)   /* default seed is given explicitly in the original code */
     {
       *state = init_state;
     }
@@ -125,16 +125,16 @@ tt_set (void *vstate, unsigned long int s)
       state->x[0] = s & 0xffffffffUL;
 
       for (i = 1; i < N; i++)
-	state->x[i] = (69069 * state->x[i - 1]) & 0xffffffffUL;
+        state->x[i] = (69069 * state->x[i - 1]) & 0xffffffffUL;
     }
 
   return;
 }
 
 static const gsl_rng_type tt_type =
-{"tt800",			/* name */
- 0xffffffffUL,			/* RAND_MAX */
- 0,			        /* RAND_MIN */
+{"tt800",                       /* name */
+ 0xffffffffUL,                  /* RAND_MAX */
+ 0,                             /* RAND_MIN */
  sizeof (tt_state_t),
  &tt_set,
  &tt_get,

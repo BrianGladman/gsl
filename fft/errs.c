@@ -74,10 +74,10 @@ main (int argc, char *argv[])
       status = gsl_fft_complex_generate (n, cw);
 
       for (i = 0; i < n; i++)
-	{
-	  REAL(complex_data,1,i) = urand();
-	  IMAG(complex_data,1,i) = urand();
-	}
+        {
+          REAL(complex_data,1,i) = urand();
+          IMAG(complex_data,1,i) = urand();
+        }
 
       memcpy (complex_tmp, complex_data, n * 2 * sizeof (double));
       gsl_fft_complex_forward (complex_data, 1, n, cw);
@@ -85,20 +85,20 @@ main (int argc, char *argv[])
 
       total = 0.0;
       for (i = 0; i < n; i++)
-	{
-	  double dr = REAL(complex_data,1,i) - REAL(complex_tmp,1,i);
-	  double di = IMAG(complex_data,1,i) - IMAG(complex_tmp,1,i);
-	  total += dr * dr + di * di;
-	}
+        {
+          double dr = REAL(complex_data,1,i) - REAL(complex_tmp,1,i);
+          double di = IMAG(complex_data,1,i) - IMAG(complex_tmp,1,i);
+          total += dr * dr + di * di;
+        }
 
       rms = sqrt (total / n);
 
       factor_sum = 0;
       for (i = 0; i < cw->nf; i++)
-	{
-	  int j = cw->factor[i];
-	  factor_sum += j;
-	}
+        {
+          int j = cw->factor[i];
+          factor_sum += j;
+        }
 
       printf ("n = %d factor_sum = %d rms = %e\n", n, factor_sum, rms);
 

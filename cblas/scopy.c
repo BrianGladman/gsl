@@ -4,7 +4,7 @@
 
 void
 cblas_scopy (const int N, const float *X, const int incX, float *Y,
-	     const int incY)
+             const int incY)
 {
 #define BASE float
 #include "source_copy_r.h"

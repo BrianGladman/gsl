@@ -19,7 +19,7 @@
 
 int
 FUNCTION(gsl_fft_complex,radix2_forward) (TYPE(gsl_complex_packed_array) data,
-					  const size_t stride, const size_t n)
+                                          const size_t stride, const size_t n)
 {
   gsl_fft_direction sign = forward;
   int status = FUNCTION(gsl_fft_complex,radix2_transform) (data, stride, n, sign);
@@ -28,7 +28,7 @@ FUNCTION(gsl_fft_complex,radix2_forward) (TYPE(gsl_complex_packed_array) data,
 
 int
 FUNCTION(gsl_fft_complex,radix2_backward) (TYPE(gsl_complex_packed_array) data,
-					   const size_t stride, const size_t n)
+                                           const size_t stride, const size_t n)
 {
   gsl_fft_direction sign = backward;
   int status = FUNCTION(gsl_fft_complex,radix2_transform) (data, stride, n, sign);
@@ -37,7 +37,7 @@ FUNCTION(gsl_fft_complex,radix2_backward) (TYPE(gsl_complex_packed_array) data,
 
 int
 FUNCTION(gsl_fft_complex,radix2_inverse) (TYPE(gsl_complex_packed_array) data,
-					  const size_t stride, const size_t n)
+                                          const size_t stride, const size_t n)
 {
   gsl_fft_direction sign = backward;
   int status = FUNCTION(gsl_fft_complex,radix2_transform) (data, stride, n, sign);
@@ -54,8 +54,8 @@ FUNCTION(gsl_fft_complex,radix2_inverse) (TYPE(gsl_complex_packed_array) data,
     size_t i;
     for (i = 0; i < n; i++)
       {
-	REAL(data,stride,i) *= norm;
-	IMAG(data,stride,i) *= norm;
+        REAL(data,stride,i) *= norm;
+        IMAG(data,stride,i) *= norm;
       }
   }
 
@@ -66,9 +66,9 @@ FUNCTION(gsl_fft_complex,radix2_inverse) (TYPE(gsl_complex_packed_array) data,
 
 int
 FUNCTION(gsl_fft_complex,radix2_transform) (TYPE(gsl_complex_packed_array) data,
-					    const size_t stride, 
-					    const size_t n,
-					    const gsl_fft_direction sign)
+                                            const size_t stride, 
+                                            const size_t n,
+                                            const gsl_fft_direction sign)
 {
   int result ;
   size_t dual;
@@ -118,53 +118,53 @@ FUNCTION(gsl_fft_complex,radix2_transform) (TYPE(gsl_complex_packed_array) data,
       /* a = 0 */
 
       for (b = 0; b < n; b += 2 * dual)
-	{
-	  const size_t i = b ;
-	  const size_t j = b + dual;
-	  
-	  const ATOMIC z1_real = REAL(data,stride,j) ;
-	  const ATOMIC z1_imag = IMAG(data,stride,j) ;
+        {
+          const size_t i = b ;
+          const size_t j = b + dual;
+          
+          const ATOMIC z1_real = REAL(data,stride,j) ;
+          const ATOMIC z1_imag = IMAG(data,stride,j) ;
 
-	  const ATOMIC wd_real = z1_real ;
-	  const ATOMIC wd_imag = z1_imag ;
-	  
-	  REAL(data,stride,j) = REAL(data,stride,i) - wd_real;
-	  IMAG(data,stride,j) = IMAG(data,stride,i) - wd_imag;
-	  REAL(data,stride,i) += wd_real;
-	  IMAG(data,stride,i) += wd_imag;
-	}
+          const ATOMIC wd_real = z1_real ;
+          const ATOMIC wd_imag = z1_imag ;
+          
+          REAL(data,stride,j) = REAL(data,stride,i) - wd_real;
+          IMAG(data,stride,j) = IMAG(data,stride,i) - wd_imag;
+          REAL(data,stride,i) += wd_real;
+          IMAG(data,stride,i) += wd_imag;
+        }
       
       /* a = 1 .. (dual-1) */
 
       for (a = 1; a < dual; a++)
-	{
+        {
 
-	  /* trignometric recurrence for w-> exp(i theta) w */
+          /* trignometric recurrence for w-> exp(i theta) w */
 
-	  {
-	    const ATOMIC tmp_real = w_real - s * w_imag - s2 * w_real;
-	    const ATOMIC tmp_imag = w_imag + s * w_real - s2 * w_imag;
-	    w_real = tmp_real;
-	    w_imag = tmp_imag;
-	  }
+          {
+            const ATOMIC tmp_real = w_real - s * w_imag - s2 * w_real;
+            const ATOMIC tmp_imag = w_imag + s * w_real - s2 * w_imag;
+            w_real = tmp_real;
+            w_imag = tmp_imag;
+          }
 
-	  for (b = 0; b < n; b += 2 * dual)
-	    {
-	      const size_t i = b + a;
-	      const size_t j = b + a + dual;
+          for (b = 0; b < n; b += 2 * dual)
+            {
+              const size_t i = b + a;
+              const size_t j = b + a + dual;
 
-	      const ATOMIC z1_real = REAL(data,stride,j) ;
-	      const ATOMIC z1_imag = IMAG(data,stride,j) ;
-	      
-	      const ATOMIC wd_real = w_real * z1_real - w_imag * z1_imag;
-	      const ATOMIC wd_imag = w_real * z1_imag + w_imag * z1_real;
+              const ATOMIC z1_real = REAL(data,stride,j) ;
+              const ATOMIC z1_imag = IMAG(data,stride,j) ;
+              
+              const ATOMIC wd_real = w_real * z1_real - w_imag * z1_imag;
+              const ATOMIC wd_imag = w_real * z1_imag + w_imag * z1_real;
 
-	      REAL(data,stride,j) = REAL(data,stride,i) - wd_real;
-	      IMAG(data,stride,j) = IMAG(data,stride,i) - wd_imag;
-	      REAL(data,stride,i) += wd_real;
-	      IMAG(data,stride,i) += wd_imag;
-	    }
-	}
+              REAL(data,stride,j) = REAL(data,stride,i) - wd_real;
+              IMAG(data,stride,j) = IMAG(data,stride,i) - wd_imag;
+              REAL(data,stride,i) += wd_real;
+              IMAG(data,stride,i) += wd_imag;
+            }
+        }
       dual *= 2;
     }
 
@@ -175,8 +175,8 @@ FUNCTION(gsl_fft_complex,radix2_transform) (TYPE(gsl_complex_packed_array) data,
 
 int
 FUNCTION(gsl_fft_complex,radix2_dif_forward) (TYPE(gsl_complex_packed_array) data, 
-					      const size_t stride, 
-					      const size_t n)
+                                              const size_t stride, 
+                                              const size_t n)
 {
   gsl_fft_direction sign = forward;
   int status = FUNCTION(gsl_fft_complex,radix2_dif_transform) (data, stride, n, sign);
@@ -185,8 +185,8 @@ FUNCTION(gsl_fft_complex,radix2_dif_forward) (TYPE(gsl_complex_packed_array) dat
 
 int
 FUNCTION(gsl_fft_complex,radix2_dif_backward) (TYPE(gsl_complex_packed_array) data,
-					       const size_t stride, 
-					       const size_t n)
+                                               const size_t stride, 
+                                               const size_t n)
 {
   gsl_fft_direction sign = backward;
   int status = FUNCTION(gsl_fft_complex,radix2_dif_transform) (data, stride, n, sign);
@@ -195,8 +195,8 @@ FUNCTION(gsl_fft_complex,radix2_dif_backward) (TYPE(gsl_complex_packed_array) da
 
 int
 FUNCTION(gsl_fft_complex,radix2_dif_inverse) (TYPE(gsl_complex_packed_array) data, 
-					      const size_t stride, 
-					      const size_t n)
+                                              const size_t stride, 
+                                              const size_t n)
 {
   gsl_fft_direction sign = backward;
   int status = FUNCTION(gsl_fft_complex,radix2_dif_transform) (data, stride, n, sign);
@@ -213,8 +213,8 @@ FUNCTION(gsl_fft_complex,radix2_dif_inverse) (TYPE(gsl_complex_packed_array) dat
     size_t i;
     for (i = 0; i < n; i++)
       {
-	REAL(data,stride,i) *= norm;
-	IMAG(data,stride,i) *= norm;
+        REAL(data,stride,i) *= norm;
+        IMAG(data,stride,i) *= norm;
       }
   }
 
@@ -223,9 +223,9 @@ FUNCTION(gsl_fft_complex,radix2_dif_inverse) (TYPE(gsl_complex_packed_array) dat
 
 int
 FUNCTION(gsl_fft_complex,radix2_dif_transform) (TYPE(gsl_complex_packed_array) data, 
-				      const size_t stride, 
-				      const size_t n,
-				      const gsl_fft_direction sign)
+                                      const size_t stride, 
+                                      const size_t n,
+                                      const gsl_fft_direction sign)
 {
   int result ;
   size_t dual;
@@ -269,32 +269,32 @@ FUNCTION(gsl_fft_complex,radix2_dif_transform) (TYPE(gsl_complex_packed_array) d
       size_t a, b;
 
       for (b = 0; b < dual; b++)
-	{
-	  for (a = 0; a < n; a+= 2 * dual)
-	    {
-	      const size_t i = b + a;
-	      const size_t j = b + a + dual;
-	      
-	      const ATOMIC t1_real = REAL(data,stride,i) + REAL(data,stride,j);
-	      const ATOMIC t1_imag = IMAG(data,stride,i) + IMAG(data,stride,j);
-	      const ATOMIC t2_real = REAL(data,stride,i) - REAL(data,stride,j);
-	      const ATOMIC t2_imag = IMAG(data,stride,i) - IMAG(data,stride,j);
+        {
+          for (a = 0; a < n; a+= 2 * dual)
+            {
+              const size_t i = b + a;
+              const size_t j = b + a + dual;
+              
+              const ATOMIC t1_real = REAL(data,stride,i) + REAL(data,stride,j);
+              const ATOMIC t1_imag = IMAG(data,stride,i) + IMAG(data,stride,j);
+              const ATOMIC t2_real = REAL(data,stride,i) - REAL(data,stride,j);
+              const ATOMIC t2_imag = IMAG(data,stride,i) - IMAG(data,stride,j);
 
-	      REAL(data,stride,i) = t1_real;
-	      IMAG(data,stride,i) = t1_imag;
-	      REAL(data,stride,j) = w_real*t2_real - w_imag * t2_imag;
-	      IMAG(data,stride,j) = w_real*t2_imag + w_imag * t2_real;
-	    }
+              REAL(data,stride,i) = t1_real;
+              IMAG(data,stride,i) = t1_imag;
+              REAL(data,stride,j) = w_real*t2_real - w_imag * t2_imag;
+              IMAG(data,stride,j) = w_real*t2_imag + w_imag * t2_real;
+            }
 
-	  /* trignometric recurrence for w-> exp(i theta) w */
+          /* trignometric recurrence for w-> exp(i theta) w */
 
-	  {
-	    const ATOMIC tmp_real = w_real - s * w_imag - s2 * w_real;
-	    const ATOMIC tmp_imag = w_imag + s * w_real - s2 * w_imag;
-	    w_real = tmp_real;
-	    w_imag = tmp_imag;
-	  }
-	}
+          {
+            const ATOMIC tmp_real = w_real - s * w_imag - s2 * w_real;
+            const ATOMIC tmp_imag = w_imag + s * w_real - s2 * w_imag;
+            w_real = tmp_real;
+            w_imag = tmp_imag;
+          }
+        }
       dual /= 2;
     }
 

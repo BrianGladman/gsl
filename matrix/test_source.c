@@ -40,10 +40,10 @@ FUNCTION (test, func) (void)
   for (i = 0; i < M; i++)
     {
       for (j = 0; j < N; j++)
-	{
-	  k++;
-	  FUNCTION (gsl_matrix, set) (m, i, j, (BASE) k);
-	}
+        {
+          k++;
+          FUNCTION (gsl_matrix, set) (m, i, j, (BASE) k);
+        }
     }
 
   {
@@ -51,12 +51,12 @@ FUNCTION (test, func) (void)
     k = 0;
     for (i = 0; i < M; i++)
       {
-	for (j = 0; j < N; j++)
-	  {
-	    k++;
-	    if (m->data[i * N + j] != (BASE) k)
-	      status = 1;
-	  };
+        for (j = 0; j < N; j++)
+          {
+            k++;
+            if (m->data[i * N + j] != (BASE) k)
+              status = 1;
+          };
       };
 
     gsl_test (status, NAME (gsl_matrix) "_set writes into array");
@@ -67,18 +67,18 @@ FUNCTION (test, func) (void)
     k = 0;
     for (i = 0; i < M; i++)
       {
-	for (j = 0; j < N; j++)
-	  {
-	    k++;
-	    if (FUNCTION (gsl_matrix, get) (m, i, j) != (BASE) k)
-	      status = 1;
-	  };
+        for (j = 0; j < N; j++)
+          {
+            k++;
+            if (FUNCTION (gsl_matrix, get) (m, i, j) != (BASE) k)
+              status = 1;
+          };
       };
     gsl_test (status, NAME (gsl_matrix) "_get reads from array");
   }
 
 
-  FUNCTION (gsl_matrix, free) (m);	/* free whatever is in m */
+  FUNCTION (gsl_matrix, free) (m);      /* free whatever is in m */
 
   m = FUNCTION (gsl_matrix, calloc) (M, N);
   v = FUNCTION (gsl_vector, calloc) (N);
@@ -87,10 +87,10 @@ FUNCTION (test, func) (void)
   for (i = 0; i < M; i++)
     {
       for (j = 0; j < N; j++)
-	{
-	  k++;
-	  FUNCTION (gsl_matrix, set) (m, i, j, (BASE) k);
-	}
+        {
+          k++;
+          FUNCTION (gsl_matrix, set) (m, i, j, (BASE) k);
+        }
     }
 
   {
@@ -98,14 +98,14 @@ FUNCTION (test, func) (void)
     k = 0;
     for (i = 0; i < M; i++)
       {
-	FUNCTION (gsl_matrix, get_row) (v, m, i);
+        FUNCTION (gsl_matrix, get_row) (v, m, i);
 
-	for (j = 0; j < N; j++)
-	  {
-	    k++;
-	    if (v->data[j] != (BASE) k)
-	      status = 1;
-	  }
+        for (j = 0; j < N; j++)
+          {
+            k++;
+            if (v->data[j] != (BASE) k)
+              status = 1;
+          }
       }
 
     gsl_test (status, NAME (gsl_matrix) "_get_row extracts row");
@@ -306,11 +306,11 @@ FUNCTION (test, text) (void)
 
     for (i = 0; i < M; i++)
       {
-	for (j = 0; j < N; j++)
-	  {
-	    k++;
-	    FUNCTION (gsl_matrix, set) (m, i, j, (BASE) k);
-	  }
+        for (j = 0; j < N; j++)
+          {
+            k++;
+            FUNCTION (gsl_matrix, set) (m, i, j, (BASE) k);
+          }
       }
 
     FUNCTION (gsl_matrix, fprintf) (f, m, OUT_FORMAT);
@@ -326,12 +326,12 @@ FUNCTION (test, text) (void)
     k = 0;
     for (i = 0; i < M; i++)
       {
-	for (j = 0; j < N; j++)
-	  {
-	    k++;
-	    if (mm->data[i * N + j] != (BASE) k)
-	      status = 1;
-	  }
+        for (j = 0; j < N; j++)
+          {
+            k++;
+            if (mm->data[i * N + j] != (BASE) k)
+              status = 1;
+          }
       }
 
     gsl_test (status, NAME (gsl_matrix) "_fprintf and fscanf");
@@ -357,11 +357,11 @@ FUNCTION (test, binary) (void)
     k = 0;
     for (i = 0; i < M; i++)
       {
-	for (j = 0; j < N; j++)
-	  {
-	    k++;
-	    FUNCTION (gsl_matrix, set) (m, i, j, (BASE) k);
-	  }
+        for (j = 0; j < N; j++)
+          {
+            k++;
+            FUNCTION (gsl_matrix, set) (m, i, j, (BASE) k);
+          }
       }
 
     FUNCTION (gsl_matrix, fwrite) (f, m);
@@ -377,12 +377,12 @@ FUNCTION (test, binary) (void)
     k = 0;
     for (i = 0; i < M; i++)
       {
-	for (j = 0; j < N; j++)
-	  {
-	    k++;
-	    if (mm->data[i * N + j] != (BASE) k)
-	      status = 1;
-	  }
+        for (j = 0; j < N; j++)
+          {
+            k++;
+            if (mm->data[i * N + j] != (BASE) k)
+              status = 1;
+          }
       }
 
     gsl_test (status, NAME (gsl_matrix) "_write and read");
@@ -405,64 +405,64 @@ FUNCTION (test, trap) (void)
   status = 0;
   FUNCTION (gsl_matrix, set) (m, M + 1, 0, (BASE) 1.2);
   gsl_test (!status,
-	    NAME (gsl_matrix) "_set traps 1st index above upper bound");
+            NAME (gsl_matrix) "_set traps 1st index above upper bound");
 
   status = 0;
   FUNCTION (gsl_matrix, set) (m, 0, N + 1, (BASE) 1.2);
   gsl_test (!status,
-	    NAME (gsl_matrix) "_set traps 2nd index above upper bound");
+            NAME (gsl_matrix) "_set traps 2nd index above upper bound");
 
   status = 0;
   FUNCTION (gsl_matrix, set) (m, M, 0, (BASE) 1.2);
   gsl_test (!status,
-	    NAME (gsl_matrix) "_set traps 1st index at upper bound");
+            NAME (gsl_matrix) "_set traps 1st index at upper bound");
 
   status = 0;
   FUNCTION (gsl_matrix, set) (m, 0, N, (BASE) 1.2);
   gsl_test (!status,
-	    NAME (gsl_matrix) "_set traps 2nd index at upper bound");
+            NAME (gsl_matrix) "_set traps 2nd index at upper bound");
 
   status = 0;
   x = FUNCTION (gsl_matrix, get) (m, i - 1, 0);
   gsl_test (!status,
-	    NAME (gsl_matrix) "_get traps 1st index below lower bound");
+            NAME (gsl_matrix) "_get traps 1st index below lower bound");
   gsl_test (x != 0,
      NAME (gsl_matrix) "_get returns zero for 1st index below lower bound");
 
   status = 0;
   x = FUNCTION (gsl_matrix, get) (m, 0, j - 1);
   gsl_test (!status,
-	    NAME (gsl_matrix) "_get traps 2nd index below lower bound");
+            NAME (gsl_matrix) "_get traps 2nd index below lower bound");
   gsl_test (x != 0,
      NAME (gsl_matrix) "_get returns zero for 2nd index below lower bound");
 
   status = 0;
   x = FUNCTION (gsl_matrix, get) (m, M + 1, 0);
   gsl_test (!status,
-	    NAME (gsl_matrix) "_get traps 1st index above upper bound");
+            NAME (gsl_matrix) "_get traps 1st index above upper bound");
   gsl_test (x != 0,
      NAME (gsl_matrix) "_get returns zero for 1st index above upper bound");
 
   status = 0;
   x = FUNCTION (gsl_matrix, get) (m, 0, N + 1);
   gsl_test (!status,
-	    NAME (gsl_matrix) "_get traps 2nd index above upper bound");
+            NAME (gsl_matrix) "_get traps 2nd index above upper bound");
   gsl_test (x != 0,
      NAME (gsl_matrix) "_get returns zero for 2nd index above upper bound");
 
   status = 0;
   x = FUNCTION (gsl_matrix, get) (m, M, 0);
   gsl_test (!status,
-	    NAME (gsl_matrix) "_get traps 1st index at upper bound");
+            NAME (gsl_matrix) "_get traps 1st index at upper bound");
   gsl_test (x != 0,
-	NAME (gsl_matrix) "_get returns zero for 1st index at upper bound");
+        NAME (gsl_matrix) "_get returns zero for 1st index at upper bound");
 
   status = 0;
   x = FUNCTION (gsl_matrix, get) (m, 0, N);
   gsl_test (!status,
-	    NAME (gsl_matrix) "_get traps 2nd index at upper bound");
+            NAME (gsl_matrix) "_get traps 2nd index at upper bound");
   gsl_test (x != 0,
-	NAME (gsl_matrix) "_get returns zero for 2nd index at upper bound");
+        NAME (gsl_matrix) "_get returns zero for 2nd index at upper bound");
 
   FUNCTION (gsl_matrix, free) (m);
 }

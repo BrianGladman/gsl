@@ -26,7 +26,7 @@
 #include <gsl/gsl_ieee_utils.h>
 
 void rng_test (const gsl_rng_type * T, unsigned long int seed, unsigned int n,
-	       unsigned long int result);
+               unsigned long int result);
 void rng_float_test (const gsl_rng_type * T);
 void generic_rng_test (const gsl_rng_type * T);
 void rng_state_test (const gsl_rng_type * T);
@@ -202,7 +202,7 @@ main (void)
 
 void
 rng_test (const gsl_rng_type * T, unsigned long int seed, unsigned int n,
-	  unsigned long int result)
+          unsigned long int result)
 {
   gsl_rng *r = gsl_rng_alloc (T);
   unsigned int i;
@@ -221,7 +221,7 @@ rng_test (const gsl_rng_type * T, unsigned long int seed, unsigned int n,
 
   status = (k != result);
   gsl_test (status, "%s, %u steps (%u observed vs %u expected)",
-	    gsl_rng_name (r), n, k, result);
+            gsl_rng_name (r), n, k, result);
 
   gsl_rng_free (r);
 }
@@ -250,14 +250,14 @@ rng_float_test (const gsl_rng_type * T)
       k = gsl_rng_get (ri);
       u = gsl_rng_get (rf);
       if (c*k != u)
-	{
-	  status = 1 ;
-	  break ;
-	}
+        {
+          status = 1 ;
+          break ;
+        }
     }
 
   gsl_test (status, "%s, ratio of int to double (%g observed vs %g expected)",
-	    gsl_rng_name (ri), c, k/u);
+            gsl_rng_name (ri), c, k/u);
 
   gsl_rng_free (ri);
   gsl_rng_free (rf);
@@ -276,17 +276,17 @@ rng_state_test (const gsl_rng_type * T)
 
   for (i = 0; i < N; ++i)
     {
-      gsl_rng_get (r);	/* throw away N iterations */
+      gsl_rng_get (r);  /* throw away N iterations */
     }
 
-  gsl_rng_memcpy (r_save, r);	/* save the intermediate state */
+  gsl_rng_memcpy (r_save, r);   /* save the intermediate state */
 
   for (i = 0; i < N; ++i)
     {
       test_a[i] = gsl_rng_get (r);
     }
 
-  gsl_rng_memcpy (r, r_save);	/* restore the intermediate state */
+  gsl_rng_memcpy (r, r_save);   /* restore the intermediate state */
   gsl_rng_free (r_save);
 
   for (i = 0; i < N; ++i)
@@ -298,10 +298,10 @@ rng_state_test (const gsl_rng_type * T)
     int status = 0;
     for (i = 0; i < N; ++i)
       {
-	status |= (test_b[i] != test_a[i]);
+        status |= (test_b[i] != test_a[i]);
       }
     gsl_test (status, "%s, random number state consistency",
-	      gsl_rng_name (r));
+              gsl_rng_name (r));
   }
 
   gsl_rng_free (r);
@@ -322,19 +322,19 @@ rng_parallel_state_test (const gsl_rng_type * T)
 
   for (i = 0; i < N; ++i)
     {
-      gsl_rng_get (r1);		/* throw away N iterations */
+      gsl_rng_get (r1);         /* throw away N iterations */
     }
 
-  gsl_rng_memcpy (r2, r1);		/* save the intermediate state */
+  gsl_rng_memcpy (r2, r1);              /* save the intermediate state */
 
   for (i = 0; i < N; ++i)
     {
       /* check that there is no hidden state intermixed between r1 and r2 */
-      test_a[i] = gsl_rng_get (r1);	
+      test_a[i] = gsl_rng_get (r1);     
       test_b[i] = gsl_rng_get (r2);
-      test_c[i] = gsl_rng_uniform_int (r1, 1234);	
+      test_c[i] = gsl_rng_uniform_int (r1, 1234);       
       test_d[i] = gsl_rng_uniform_int (r2, 1234);
-      test_e[i] = gsl_rng_uniform (r1);	
+      test_e[i] = gsl_rng_uniform (r1); 
       test_f[i] = gsl_rng_uniform (r2);
     }
 
@@ -342,12 +342,12 @@ rng_parallel_state_test (const gsl_rng_type * T)
     int status = 0;
     for (i = 0; i < N; ++i)
       {
-	status |= (test_b[i] != test_a[i]);
-	status |= (test_c[i] != test_d[i]);
-	status |= (test_e[i] != test_f[i]);
+        status |= (test_b[i] != test_a[i]);
+        status |= (test_c[i] != test_d[i]);
+        status |= (test_e[i] != test_f[i]);
       }
     gsl_test (status, "%s, parallel random number state consistency",
-	      gsl_rng_name (r1));
+              gsl_rng_name (r1));
   }
 
   gsl_rng_free (r1);
@@ -366,7 +366,7 @@ rng_read_write_test (const gsl_rng_type * T)
 
   for (i = 0; i < N; ++i)
     {
-      gsl_rng_get (r);	/* throw away N iterations */
+      gsl_rng_get (r);  /* throw away N iterations */
     }
 
   { /* save the state to a binary file */
@@ -395,10 +395,10 @@ rng_read_write_test (const gsl_rng_type * T)
     int status = 0;
     for (i = 0; i < N; ++i)
       {
-	status |= (test_b[i] != test_a[i]);
+        status |= (test_b[i] != test_a[i]);
       }
     gsl_test (status, "%s, random number generator read and write",
-	      gsl_rng_name (r));
+              gsl_rng_name (r));
   }
 
   gsl_rng_free (r);
@@ -417,43 +417,43 @@ generic_rng_test (const gsl_rng_type * T)
   int status = rng_max_test (r, &kmax, ran_max);
 
   gsl_test (status,
-	    "%s, observed vs theoretical maximum (%lu vs %lu)",
-	    name, kmax, ran_max);
+            "%s, observed vs theoretical maximum (%lu vs %lu)",
+            name, kmax, ran_max);
 
   status = rng_min_test (r, &kmin, ran_min, ran_max);
 
   gsl_test (status,
-	    "%s, observed vs theoretical minimum (%lu vs %lu)",
-	    name, kmin, ran_min);
+            "%s, observed vs theoretical minimum (%lu vs %lu)",
+            name, kmin, ran_min);
 
   status = rng_sum_test (r, &sigma);
 
   gsl_test (status,
-	    "%s, sum test within acceptable sigma (observed %.2g sigma)",
-	    name, sigma);
+            "%s, sum test within acceptable sigma (observed %.2g sigma)",
+            name, sigma);
 
   status = rng_bin_test (r, &sigma);
 
   gsl_test (status,
-	    "%s, bin test within acceptable chisq (observed %.2g sigma)",
-	    name, sigma);
+            "%s, bin test within acceptable chisq (observed %.2g sigma)",
+            name, sigma);
 
-  gsl_rng_set (r, 1);	/* set seed to 1 */
+  gsl_rng_set (r, 1);   /* set seed to 1 */
   status = rng_max_test (r, &kmax, ran_max);
 
-  gsl_rng_set (r, 1);	/* set seed to 1 */
+  gsl_rng_set (r, 1);   /* set seed to 1 */
   status |= rng_min_test (r, &kmin, ran_min, ran_max);
 
-  gsl_rng_set (r, 1);	/* set seed to 1 */
+  gsl_rng_set (r, 1);   /* set seed to 1 */
   status |= rng_sum_test (r, &sigma);
 
-  gsl_rng_set (r, 12345);	/* set seed to a "typical" value */
+  gsl_rng_set (r, 12345);       /* set seed to a "typical" value */
   status |= rng_max_test (r, &kmax, ran_max);
 
-  gsl_rng_set (r, 12345);	/* set seed to a "typical" value */
+  gsl_rng_set (r, 12345);       /* set seed to a "typical" value */
   status |= rng_min_test (r, &kmin, ran_min, ran_max);
 
-  gsl_rng_set (r, 12345);	/* set seed to a "typical" value */
+  gsl_rng_set (r, 12345);       /* set seed to a "typical" value */
   status |= rng_sum_test (r, &sigma);
 
   gsl_test (status, "%s, maximum and sum tests for non-default seeds", name);
@@ -474,7 +474,7 @@ rng_max_test (gsl_rng * r, unsigned long int *kmax, unsigned long int ran_max)
     {
       unsigned long int k = gsl_rng_get (r);
       if (k > max)
-	max = k;
+        max = k;
     }
 
   *kmax = max;
@@ -489,7 +489,7 @@ rng_max_test (gsl_rng * r, unsigned long int *kmax, unsigned long int ran_max)
 
 int
 rng_min_test (gsl_rng * r, unsigned long int *kmin, 
-	      unsigned long int ran_min, unsigned long int ran_max)
+              unsigned long int ran_min, unsigned long int ran_max)
 {
   unsigned long int actual_uncovered;
   double expect_uncovered;
@@ -501,7 +501,7 @@ rng_min_test (gsl_rng * r, unsigned long int *kmin,
     {
       unsigned long int k = gsl_rng_get (r);
       if (k < min)
-	min = k;
+        min = k;
     }
 
   *kmin = min;
@@ -579,13 +579,13 @@ rng_bin_test (gsl_rng * r, double *sigma)
   for (i = BINS; i < BINS+EXTRA; i++)
     {
       if (count[i] != 0)
-	{
-	  status = 1 ;
-	  gsl_test (status, 
-		    "%s, wrote outside range in bin test "
-		    "(%d observed vs %d expected)",
-		    gsl_rng_name(r), i, BINS - 1);
-	}
+        {
+          status = 1 ;
+          gsl_test (status, 
+                    "%s, wrote outside range in bin test "
+                    "(%d observed vs %d expected)",
+                    gsl_rng_name(r), i, BINS - 1);
+        }
     }
 
   return status;

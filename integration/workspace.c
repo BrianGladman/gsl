@@ -30,7 +30,7 @@ gsl_integration_workspace_alloc (const size_t n)
   if (n == 0)
     {
       GSL_ERROR_VAL ("workspace length n must be positive integer",
-			GSL_EDOM, 0);
+                        GSL_EDOM, 0);
     }
 
   w = (gsl_integration_workspace *) 
@@ -39,17 +39,17 @@ gsl_integration_workspace_alloc (const size_t n)
   if (w == 0)
     {
       GSL_ERROR_VAL ("failed to allocate space for workspace struct",
-			GSL_ENOMEM, 0);
+                        GSL_ENOMEM, 0);
     }
 
   w->alist = (double *) malloc (n * sizeof (double));
 
   if (w->alist == 0)
     {
-      free (w);		/* exception in constructor, avoid memory leak */
+      free (w);         /* exception in constructor, avoid memory leak */
 
       GSL_ERROR_VAL ("failed to allocate space for alist ranges",
-			GSL_ENOMEM, 0);
+                        GSL_ENOMEM, 0);
     }
 
   w->blist = (double *) malloc (n * sizeof (double));
@@ -57,10 +57,10 @@ gsl_integration_workspace_alloc (const size_t n)
   if (w->blist == 0)
     {
       free (w->alist);
-      free (w);		/* exception in constructor, avoid memory leak */
+      free (w);         /* exception in constructor, avoid memory leak */
 
       GSL_ERROR_VAL ("failed to allocate space for blist ranges",
-			GSL_ENOMEM, 0);
+                        GSL_ENOMEM, 0);
     }
 
   w->rlist = (double *) malloc (n * sizeof (double));
@@ -69,10 +69,10 @@ gsl_integration_workspace_alloc (const size_t n)
     {
       free (w->blist);
       free (w->alist);
-      free (w);		/* exception in constructor, avoid memory leak */
+      free (w);         /* exception in constructor, avoid memory leak */
 
       GSL_ERROR_VAL ("failed to allocate space for rlist ranges",
-			GSL_ENOMEM, 0);
+                        GSL_ENOMEM, 0);
     }
 
 
@@ -83,10 +83,10 @@ gsl_integration_workspace_alloc (const size_t n)
       free (w->rlist);
       free (w->blist);
       free (w->alist);
-      free (w);		/* exception in constructor, avoid memory leak */
+      free (w);         /* exception in constructor, avoid memory leak */
 
       GSL_ERROR_VAL ("failed to allocate space for elist ranges",
-			GSL_ENOMEM, 0);
+                        GSL_ENOMEM, 0);
     }
 
   w->order = (size_t *) malloc (n * sizeof (size_t));
@@ -97,10 +97,10 @@ gsl_integration_workspace_alloc (const size_t n)
       free (w->rlist);
       free (w->blist);
       free (w->alist);
-      free (w);		/* exception in constructor, avoid memory leak */
+      free (w);         /* exception in constructor, avoid memory leak */
 
       GSL_ERROR_VAL ("failed to allocate space for order ranges",
-			GSL_ENOMEM, 0);
+                        GSL_ENOMEM, 0);
     }
 
   w->level = (size_t *) malloc (n * sizeof (size_t));
@@ -112,10 +112,10 @@ gsl_integration_workspace_alloc (const size_t n)
       free (w->rlist);
       free (w->blist);
       free (w->alist);
-      free (w);		/* exception in constructor, avoid memory leak */
+      free (w);         /* exception in constructor, avoid memory leak */
 
       GSL_ERROR_VAL ("failed to allocate space for order ranges",
-			GSL_ENOMEM, 0);
+                        GSL_ENOMEM, 0);
     }
 
   w->size = 0 ;

@@ -48,9 +48,9 @@ gsl_histogram2d_max_val (const gsl_histogram2d * h)
   for (i = 0; i < nx * ny; i++)
     {
       if (h->bin[i] > max)
-	{
-	  max = h->bin[i];
-	}
+        {
+          max = h->bin[i];
+        }
     }
   return max;
 }
@@ -70,16 +70,16 @@ gsl_histogram2d_max_bin (const gsl_histogram2d * h, size_t * imax_out, size_t * 
   for (i = 0; i < nx; i++)
     {
       for (j = 0; j < ny; j++)
-	{
-	  double x = h->bin[i * ny + j];
+        {
+          double x = h->bin[i * ny + j];
 
-	  if (x > max)
-	    {
-	      max = x;
-	      imax = i;
-	      jmax = j;
-	    }
-	}
+          if (x > max)
+            {
+              max = x;
+              imax = i;
+              jmax = j;
+            }
+        }
     }
 
   *imax_out = imax;
@@ -101,9 +101,9 @@ gsl_histogram2d_min_val (const gsl_histogram2d * h)
   for (i = 0; i < nx * ny; i++)
     {
       if (h->bin[i] < min)
-	{
-	  min = h->bin[i];
-	}
+        {
+          min = h->bin[i];
+        }
     }
 
   return min;
@@ -122,16 +122,16 @@ gsl_histogram2d_min_bin (const gsl_histogram2d * h, size_t * imin_out, size_t * 
   for (i = 0; i < nx; i++)
     {
       for (j = 0; j < ny; j++)
-	{
-	  double x = h->bin[i * ny + j];
+        {
+          double x = h->bin[i * ny + j];
 
-	  if (x < min)
-	    {
-	      min = x;
-	      imin = i;
-	      jmin = j;
-	    }
-	}
+          if (x < min)
+            {
+              min = x;
+              imin = i;
+              jmin = j;
+            }
+        }
     }
 
   *imin_out = imin;

@@ -43,31 +43,31 @@ gsl_multiroot_fdjacobian (gsl_multiroot_function * F,
 
     if (x1 == 0)
       {
-	GSL_ERROR ("failed to allocate space for x1 workspace", GSL_ENOMEM);
+        GSL_ERROR ("failed to allocate space for x1 workspace", GSL_ENOMEM);
       }
 
     f1 = gsl_vector_alloc (m);
 
     if (f1 == 0)
       {
-	gsl_vector_free (x1);
+        gsl_vector_free (x1);
 
-	GSL_ERROR ("failed to allocate space for f1 workspace", GSL_ENOMEM);
+        GSL_ERROR ("failed to allocate space for f1 workspace", GSL_ENOMEM);
       }
 
-    gsl_vector_memcpy (x1, x);	/* copy x into x1 */
+    gsl_vector_memcpy (x1, x);  /* copy x into x1 */
 
     for (j = 0; j < n; j++)
       {
-	double xj = gsl_vector_get (x, j);
-	double dx = epsrel * fabs (xj);
+        double xj = gsl_vector_get (x, j);
+        double dx = epsrel * fabs (xj);
 
-	if (dx == 0)
-	  {
-	    dx = epsrel;
-	  }
+        if (dx == 0)
+          {
+            dx = epsrel;
+          }
 
-	gsl_vector_set (x1, j, xj + dx);
+        gsl_vector_set (x1, j, xj + dx);
         
         {
           int status = GSL_MULTIROOT_FN_EVAL (F, x1, f1);
@@ -78,14 +78,14 @@ gsl_multiroot_fdjacobian (gsl_multiroot_function * F,
             }
         }
 
-	gsl_vector_set (x1, j, xj);
+        gsl_vector_set (x1, j, xj);
 
-	for (i = 0; i < m; i++)
-	  {
-	    double g1 = gsl_vector_get (f1, i);
-	    double g0 = gsl_vector_get (f, i);
-	    gsl_matrix_set (jacobian, i, j, (g1 - g0) / dx);
-	  }
+        for (i = 0; i < m; i++)
+          {
+            double g1 = gsl_vector_get (f1, i);
+            double g0 = gsl_vector_get (f, i);
+            gsl_matrix_set (jacobian, i, j, (g1 - g0) / dx);
+          }
       }
 
     gsl_vector_free (x1);

@@ -49,7 +49,7 @@ static inline unsigned long int ranmar_get (void *vstate);
 static double ranmar_get_double (void *vstate);
 static void ranmar_set (void *state, unsigned long int s);
 
-static const unsigned long int two24 = 16777216;	/* 2^24 */
+static const unsigned long int two24 = 16777216;        /* 2^24 */
 
 typedef struct
   {
@@ -140,17 +140,17 @@ ranmar_set (void *vstate, unsigned long int s)
       unsigned long int t = two24 ;
 
       for (b = 0; b < 24; b++)
-	{
-	  unsigned long int m = (((i * j) % 179) * k) % 179 ;
-	  i = j ;
-	  j = k ;
-	  k = m ;
-	  l = (53 * l + 1) % 169 ;
-	  t >>= 1 ;
-	  
-	  if ((l * m) % 64 >= 32)
-	    sum += t ;
-	}
+        {
+          unsigned long int m = (((i * j) % 179) * k) % 179 ;
+          i = j ;
+          j = k ;
+          k = m ;
+          l = (53 * l + 1) % 169 ;
+          t >>= 1 ;
+          
+          if ((l * m) % 64 >= 32)
+            sum += t ;
+        }
 
       state->u[a] = sum ;
     }
@@ -162,9 +162,9 @@ ranmar_set (void *vstate, unsigned long int s)
 }
 
 static const gsl_rng_type ranmar_type =
-{"ranmar",			/* name */
- 0x00ffffffUL,			/* RAND_MAX */
- 0,				/* RAND_MIN */
+{"ranmar",                      /* name */
+ 0x00ffffffUL,                  /* RAND_MAX */
+ 0,                             /* RAND_MIN */
  sizeof (ranmar_state_t),
  &ranmar_set,
  &ranmar_get,

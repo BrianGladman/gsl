@@ -79,7 +79,7 @@ ran_set (void *vstate, unsigned long int s)
   ran_state_t *state = (ran_state_t *) vstate;
 
   if ((s%MMM) == 0)
-    s = 1;			/* default seed is 1 */
+    s = 1;                      /* default seed is 1 */
 
   state->x = s % MMM;
 
@@ -87,9 +87,9 @@ ran_set (void *vstate, unsigned long int s)
 }
 
 static const gsl_rng_type ran_type = {
-  "lecuyer21",			/* name */
-  MMM-1,			/* RAND_MAX */
-  1,				/* RAND_MIN */
+  "lecuyer21",                  /* name */
+  MMM-1,                        /* RAND_MAX */
+  1,                            /* RAND_MIN */
   sizeof (ran_state_t),
   &ran_set,
   &ran_get,

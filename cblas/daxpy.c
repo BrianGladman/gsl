@@ -4,7 +4,7 @@
 
 void
 cblas_daxpy (const int N, const double alpha, const double *X, const int incX,
-	     double *Y, const int incY)
+             double *Y, const int incY)
 {
 #define BASE double
 #include "source_axpy_r.h"

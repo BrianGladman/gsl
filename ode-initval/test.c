@@ -77,7 +77,7 @@ rhs_linear (double t, const double y[], double f[], void *params)
 
 int
 jac_linear (double t, const double y[], double *dfdy, double dfdt[],
-	    void *params)
+            void *params)
 {
   gsl_matrix dfdy_mat;
   dfdy_mat.size1 = 2;
@@ -114,7 +114,7 @@ rhs_sin (double t, const double y[], double f[], void *params)
 
 int
 jac_sin (double t, const double y[], double *dfdy, double dfdt[],
-	 void *params)
+         void *params)
 {
   gsl_matrix dfdy_mat;
   dfdy_mat.data = dfdy;
@@ -151,7 +151,7 @@ rhs_exp (double t, const double y[], double f[], void *params)
 
 int
 jac_exp (double t, const double y[], double *dfdy, double dfdt[],
-	 void *params)
+         void *params)
 {
   gsl_matrix dfdy_mat;
   dfdy_mat.data = dfdy;
@@ -188,7 +188,7 @@ rhs_stiff (double t, const double y[], double f[], void *params)
 
 int
 jac_stiff (double t, const double y[], double *dfdy, double dfdt[],
-	   void *params)
+           void *params)
 {
   gsl_matrix dfdy_mat;
   dfdy_mat.data = dfdy;
@@ -215,7 +215,7 @@ gsl_odeiv_system rhs_func_stiff = {
 
 void
 test_stepper_linear (const gsl_odeiv_step_type * T, double h,
-		     double base_prec)
+                     double base_prec)
 {
   int s = 0;
   double y[2];
@@ -236,16 +236,16 @@ test_stepper_linear (const gsl_odeiv_step_type * T, double h,
       del = fabs ((y[1] - (t + h)) / y[1]);
       delmax = GSL_MAX_DBL (del, delmax);
       if (del > (count + 1.0) * base_prec)
-	{
-	  printf ("  LINEAR(%20.17g)  %20.17g  %20.17g  %8.4g\n", t + h, y[1],
-		  t + h, del);
-	  s++;
-	}
+        {
+          printf ("  LINEAR(%20.17g)  %20.17g  %20.17g  %8.4g\n", t + h, y[1],
+                  t + h, del);
+          s++;
+        }
       count++;
     }
 
   gsl_test (s, "%s, linear [0,4], max relative error = %g",
-	    gsl_odeiv_step_name (stepper), delmax);
+            gsl_odeiv_step_name (stepper), delmax);
 
   gsl_odeiv_step_free (stepper);
 }
@@ -275,28 +275,28 @@ test_stepper_sin (const gsl_odeiv_step_type * T, double h, double base_prec)
       del = fabs ((y[1] - sin_th) / sin_th);
       delmax = GSL_MAX_DBL (del, delmax);
       {
-	if (t < 0.5 * M_PI)
-	  {
-	    stat = (del > (count + 1.0) * base_prec);
-	  }
-	else if (t < 0.7 * M_PI)
-	  {
-	    stat = (del > 1.0e+04 * base_prec);
-	  }
-	else if (t < 0.9 * M_PI)
-	  {
-	    stat = (del > 1.0e+06 * base_prec);
-	  }
-	else
-	  {
-	    stat = (del > 1.0e+09 * base_prec);
-	  }
-	if (stat != 0)
-	  {
-	    printf ("  SIN(%22.18g)  %22.18g  %22.18g  %10.6g\n", t + h, y[1],
-		    sin_th, del);
-	  }
-	s += stat;
+        if (t < 0.5 * M_PI)
+          {
+            stat = (del > (count + 1.0) * base_prec);
+          }
+        else if (t < 0.7 * M_PI)
+          {
+            stat = (del > 1.0e+04 * base_prec);
+          }
+        else if (t < 0.9 * M_PI)
+          {
+            stat = (del > 1.0e+06 * base_prec);
+          }
+        else
+          {
+            stat = (del > 1.0e+09 * base_prec);
+          }
+        if (stat != 0)
+          {
+            printf ("  SIN(%22.18g)  %22.18g  %22.18g  %10.6g\n", t + h, y[1],
+                    sin_th, del);
+          }
+        s += stat;
       }
       count++;
     }
@@ -307,7 +307,7 @@ test_stepper_sin (const gsl_odeiv_step_type * T, double h, double base_prec)
     }
 
   gsl_test (s, "%s, sine [0,pi], max relative error = %g",
-	    gsl_odeiv_step_name (stepper), delmax);
+            gsl_odeiv_step_name (stepper), delmax);
 
   delmax = 0.0;
   for (; t < 100.5 * M_PI; t += h)
@@ -322,11 +322,11 @@ test_stepper_sin (const gsl_odeiv_step_type * T, double h, double base_prec)
     {
       s++;
       printf ("  SIN(%22.18g)  %22.18g  %22.18g  %10.6g\n", t + h, y[1],
-	      sin (t), del);
+              sin (t), del);
     }
 
   gsl_test (s, "%s, sine [pi,100.5*pi], max absolute error = %g",
-	    gsl_odeiv_step_name (stepper), delmax);
+            gsl_odeiv_step_name (stepper), delmax);
 
   gsl_odeiv_step_free (stepper);
 }
@@ -354,16 +354,16 @@ test_stepper_exp (const gsl_odeiv_step_type * T, double h, double base_prec)
       del = fabs ((y[1] - ex) / y[1]);
       delmax = GSL_MAX_DBL (del, delmax);
       if (del > (count + 1.0) * 2.0 * base_prec)
-	{
-	  printf ("  EXP(%20.17g)  %20.17g  %20.17g  %8.4g\n", t + h, y[1],
-		  ex, del);
-	  s++;
-	}
+        {
+          printf ("  EXP(%20.17g)  %20.17g  %20.17g  %8.4g\n", t + h, y[1],
+                  ex, del);
+          s++;
+        }
       count++;
     }
 
   gsl_test (s, "%s, exponential [0,20], max relative error = %g",
-	    gsl_odeiv_step_name (stepper), delmax);
+            gsl_odeiv_step_name (stepper), delmax);
 
   gsl_odeiv_step_free (stepper);
 }
@@ -386,40 +386,40 @@ test_stepper_stiff (const gsl_odeiv_step_type * T, double h, double base_prec)
   for (t = 0.0; t < 20.0; t += h)
     {
       gsl_odeiv_step_apply (stepper, t, h, y, yerr, NULL, NULL,
-			    &rhs_func_stiff);
+                            &rhs_func_stiff);
 
       if (t > 0.04)
-	{
-	  double arg = t + h;
-	  double e1 = exp (-arg);
-	  double e2 = exp (-1000.0 * arg);
-	  double u = 2.0 * e1 - e2;
-	  /* double v = -e1 + e2; */
-	  del = fabs ((y[0] - u) / y[0]);
-	  delmax = GSL_MAX_DBL (del, delmax);
+        {
+          double arg = t + h;
+          double e1 = exp (-arg);
+          double e2 = exp (-1000.0 * arg);
+          double u = 2.0 * e1 - e2;
+          /* double v = -e1 + e2; */
+          del = fabs ((y[0] - u) / y[0]);
+          delmax = GSL_MAX_DBL (del, delmax);
 
-	  if (del > (count + 1.0) * 100.0 * base_prec)
-	    {
-	      printf ("  STIFF(%20.17g)  %20.17g  %20.17g  %8.4g\n", arg,
-		      y[0], u, del);
-	      s++;
-	    }
-	}
+          if (del > (count + 1.0) * 100.0 * base_prec)
+            {
+              printf ("  STIFF(%20.17g)  %20.17g  %20.17g  %8.4g\n", arg,
+                      y[0], u, del);
+              s++;
+            }
+        }
       count++;
     }
 
   gsl_test (s, "%s, stiff [0,20], max relative error = %g",
-	    gsl_odeiv_step_name (stepper), delmax);
+            gsl_odeiv_step_name (stepper), delmax);
 
   gsl_odeiv_step_free (stepper);
 }
 
 void
 test_evolve_system_flat (gsl_odeiv_step * step,
-			 const gsl_odeiv_system * sys,
-			 double t0, double t1, double hstart,
-			 double y[], double yfin[],
-			 double err_target, const char *desc)
+                         const gsl_odeiv_system * sys,
+                         double t0, double t1, double hstart,
+                         double y[], double yfin[],
+                         double err_target, const char *desc)
 {
   int s = 0;
   double frac;
@@ -443,7 +443,7 @@ test_evolve_system_flat (gsl_odeiv_step * step,
     }
 
   gsl_test (s, "%s, %s, evolve, no control, max relative error = %g",
-	    gsl_odeiv_step_name (step), desc, frac);
+            gsl_odeiv_step_name (step), desc, frac);
 
   gsl_odeiv_evolve_free (e);
 }
@@ -451,10 +451,10 @@ test_evolve_system_flat (gsl_odeiv_step * step,
 
 void
 test_evolve_system (const gsl_odeiv_step_type * T,
-		    const gsl_odeiv_system * sys,
-		    double t0, double t1, double hstart,
-		    double y[], double yfin[],
-		    double err_target, const char *desc)
+                    const gsl_odeiv_system * sys,
+                    double t0, double t1, double hstart,
+                    double y[], double yfin[],
+                    double err_target, const char *desc)
 {
   int s = 0;
   double frac;
@@ -483,7 +483,7 @@ test_evolve_system (const gsl_odeiv_step_type * T,
     }
 
   gsl_test (s, "%s, %s, evolve, standard control, relative error = %g",
-	    gsl_odeiv_step_name (step), desc, frac);
+            gsl_odeiv_step_name (step), desc, frac);
 
   gsl_odeiv_evolve_free (e);
   gsl_odeiv_control_free (c);

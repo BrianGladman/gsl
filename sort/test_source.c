@@ -166,8 +166,8 @@ FUNCTION (my, initialize) (TYPE (gsl_vector) * v)
     {
       kk = k;
       k++;
-      if (k < kk)		/* prevent overflow */
-	k = kk;
+      if (k < kk)               /* prevent overflow */
+        k = kk;
       FUNCTION (gsl_vector, set) (v, i, k);
     }
 }
@@ -192,9 +192,9 @@ FUNCTION (my, check) (TYPE (gsl_vector) * data, TYPE (gsl_vector) * orig)
   for (i = 0; i < data->size; i++)
     {
       if (FUNCTION (gsl_vector, get) (data, i) != FUNCTION (gsl_vector, get) (orig, i))
-	{
-	  return GSL_FAILURE;
-	}
+        {
+          return GSL_FAILURE;
+        }
     }
 
   return GSL_SUCCESS;
@@ -208,9 +208,9 @@ FUNCTION (my, pcheck) (gsl_permutation * p, TYPE (gsl_vector) * data, TYPE (gsl_
   for (i = 0; i < p->size; i++)
     {
       if (FUNCTION (gsl_vector, get) (data, p->data[i]) != FUNCTION (gsl_vector, get) (orig, i))
-	{
-	  return GSL_FAILURE;
-	}
+        {
+          return GSL_FAILURE;
+        }
     }
 
   return GSL_SUCCESS;
@@ -224,9 +224,9 @@ FUNCTION (my, scheck) (BASE * x, size_t k, TYPE (gsl_vector) * data)
   for (i = 0; i < k; i++)
     {
       if (x[i] != FUNCTION (gsl_vector, get) (data, i))
-	{
-	  return GSL_FAILURE;
-	}
+        {
+          return GSL_FAILURE;
+        }
     }
 
   return GSL_SUCCESS;
@@ -242,9 +242,9 @@ FUNCTION (my, lcheck) (BASE * x, size_t k, TYPE (gsl_vector) * data)
   for (i = 0; i < k; i++)
     {
       if (x[i] != FUNCTION (gsl_vector, get) (data, data->size - i - 1))
-	{
-	  return GSL_FAILURE;
-	}
+        {
+          return GSL_FAILURE;
+        }
     }
 
   return GSL_SUCCESS;
@@ -261,9 +261,9 @@ FUNCTION (my, sicheck) (size_t * p1, size_t k, gsl_permutation * p,
     {
       if (FUNCTION(gsl_vector,get)(data,p1[i]) 
           != FUNCTION(gsl_vector,get)(data, p->data[i]))
-	{
-	  return GSL_FAILURE;
-	}
+        {
+          return GSL_FAILURE;
+        }
     }
 
   return GSL_SUCCESS;
@@ -279,9 +279,9 @@ FUNCTION (my, licheck) (size_t * p1, size_t k, gsl_permutation * p,
     {
       if (FUNCTION(gsl_vector,get)(data,p1[i]) 
           != FUNCTION(gsl_vector,get)(data, p->data[p->size - i - 1]))
-	{
-	  return GSL_FAILURE;
-	}
+        {
+          return GSL_FAILURE;
+        }
     }
 
   return GSL_SUCCESS;

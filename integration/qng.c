@@ -29,13 +29,13 @@
 
 int
 gsl_integration_qng (const gsl_function *f,
-		     double a, double b,
-		     double epsabs, double epsrel,
-		     double * result, double * abserr, size_t * neval)
+                     double a, double b,
+                     double epsabs, double epsrel,
+                     double * result, double * abserr, size_t * neval)
 {
   double fv1[5], fv2[5], fv3[5], fv4[5];
   double savfun[21];  /* array of function values which have been computed */
-  double res10, res21, res43, res87;	/* 10, 21, 43 and 87 point results */
+  double res10, res21, res43, res87;    /* 10, 21, 43 and 87 point results */
   double result_kronrod, err ; 
   double resabs; /* approximation to the integral of abs(f) */
   double resasc; /* approximation to the integral of abs(f-i/(b-a)) */
@@ -53,7 +53,7 @@ gsl_integration_qng (const gsl_function *f,
       * abserr = 0;
       * neval = 0;
       GSL_ERROR ("tolerance cannot be acheived with given epsabs and epsrel",
-		 GSL_EBADTOL);
+                 GSL_EBADTOL);
     };
 
   /* Compute the integral using the 10- and 21-point formula. */
@@ -98,9 +98,9 @@ gsl_integration_qng (const gsl_function *f,
     
     for (k = 0; k < 5; k++)
       {
-	resasc +=
-	  (w21a[k] * (fabs (fv1[k] - mean) + fabs (fv2[k] - mean))
-	  + w21b[k] * (fabs (fv3[k] - mean) + fabs (fv4[k] - mean)));
+        resasc +=
+          (w21a[k] * (fabs (fv1[k] - mean) + fabs (fv2[k] - mean))
+          + w21b[k] * (fabs (fv3[k] - mean) + fabs (fv4[k] - mean)));
       }
     resasc *= abs_half_length ;
   }
@@ -132,7 +132,7 @@ gsl_integration_qng (const gsl_function *f,
     {
       const double abscissa = half_length * x3[k];
       const double fval = (GSL_FN_EVAL(f, center + abscissa) 
-			   + GSL_FN_EVAL(f, center - abscissa));
+                           + GSL_FN_EVAL(f, center - abscissa));
       res43 += fval * w43b[k];
       savfun[k + 10] = fval;
     }
@@ -163,7 +163,7 @@ gsl_integration_qng (const gsl_function *f,
     {
       const double abscissa = half_length * x4[k];
       res87 += w87b[k] * (GSL_FN_EVAL(f, center + abscissa) 
-			  + GSL_FN_EVAL(f, center - abscissa));
+                          + GSL_FN_EVAL(f, center - abscissa));
     }
 
   /*  test for convergence */

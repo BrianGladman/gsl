@@ -136,7 +136,7 @@ int gsl_vector_uchar_fread (FILE * stream, gsl_vector_uchar * v);
 int gsl_vector_uchar_fwrite (FILE * stream, const gsl_vector_uchar * v);
 int gsl_vector_uchar_fscanf (FILE * stream, gsl_vector_uchar * v);
 int gsl_vector_uchar_fprintf (FILE * stream, const gsl_vector_uchar * v,
-			      const char *format);
+                              const char *format);
 
 int gsl_vector_uchar_memcpy (gsl_vector_uchar * dest, const gsl_vector_uchar * src);
 

@@ -39,7 +39,7 @@
   }
 
   if (D2 * y == 0.0) {
-    P[0] = -2;			/* case of H = I, page 315 */
+    P[0] = -2;                  /* case of H = I, page 315 */
     return;
   }
 
@@ -58,7 +58,7 @@
 
     u = 1 - h21 * h12;
 
-    if (u <= 0.0) {		/* the case u <= 0 is rejected */
+    if (u <= 0.0) {             /* the case u <= 0 is rejected */
       P[0] = -1;
       P[1] = 0;
       P[2] = 0;

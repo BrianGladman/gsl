@@ -44,8 +44,8 @@ __BEGIN_DECLS
  */
 int gsl_sf_coupling_3j_e(int two_ja, int two_jb, int two_jc,
                             int two_ma, int two_mb, int two_mc,
-			    gsl_sf_result * result
-			    );
+                            gsl_sf_result * result
+                            );
 double gsl_sf_coupling_3j(int two_ja, int two_jb, int two_jc,
                           int two_ma, int two_mb, int two_mc
                           );

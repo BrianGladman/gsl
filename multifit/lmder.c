@@ -365,7 +365,7 @@ lmder_free (void *vstate)
 
 static const gsl_multifit_fdfsolver_type lmder_type =
 {
-  "lmder",			/* name */
+  "lmder",                      /* name */
   sizeof (lmder_state_t),
   &lmder_alloc,
   &lmder_set,
@@ -375,7 +375,7 @@ static const gsl_multifit_fdfsolver_type lmder_type =
 
 static const gsl_multifit_fdfsolver_type lmsder_type =
 {
-  "lmsder",			/* name */
+  "lmsder",                     /* name */
   sizeof (lmder_state_t),
   &lmder_alloc,
   &lmsder_set,

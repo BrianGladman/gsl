@@ -143,7 +143,7 @@ std_control_free (void * vstate)
 }
 
 static const gsl_odeiv_control_type std_control_type =
-{"standard",			/* name */
+{"standard",                    /* name */
  &std_control_alloc,
  &std_control_init,
  &std_control_hadjust,

@@ -61,10 +61,10 @@
    Computation, 68, 225 (1999), 261--269:
    http://www.iro.umontreal.ca/~lecuyer/myftp/papers/tausme2.ps
 
-	... the k_j most significant bits of z_j must be non-
-	zero, for each j. (Note: this restriction also applies to the 
-	computer code given in [4], but was mistakenly not mentioned in
-	that paper.)
+        ... the k_j most significant bits of z_j must be non-
+        zero, for each j. (Note: this restriction also applies to the 
+        computer code given in [4], but was mistakenly not mentioned in
+        that paper.)
    
    This affects the seeding procedure by imposing the requirement
    s1 > 1, s2 > 7, s3 > 15.
@@ -117,7 +117,7 @@ taus_set (void *vstate, unsigned long int s)
   taus_state_t *state = (taus_state_t *) vstate;
 
   if (s == 0)
-    s = 1;	/* default seed is 1 */
+    s = 1;      /* default seed is 1 */
 
 #define LCG(n) ((69069 * n) & 0xffffffffUL)
   state->s1 = LCG (s);
@@ -140,7 +140,7 @@ taus2_set (void *vstate, unsigned long int s)
   taus_state_t *state = (taus_state_t *) vstate;
 
   if (s == 0)
-    s = 1;	/* default seed is 1 */
+    s = 1;      /* default seed is 1 */
 
 #define LCG(n) ((69069 * n) & 0xffffffffUL)
   state->s1 = LCG (s);
@@ -162,9 +162,9 @@ taus2_set (void *vstate, unsigned long int s)
 
 
 static const gsl_rng_type taus_type =
-{"taus",			/* name */
- 0xffffffffUL,			/* RAND_MAX */
- 0,			        /* RAND_MIN */
+{"taus",                        /* name */
+ 0xffffffffUL,                  /* RAND_MAX */
+ 0,                             /* RAND_MIN */
  sizeof (taus_state_t),
  &taus_set,
  &taus_get,
@@ -173,9 +173,9 @@ static const gsl_rng_type taus_type =
 const gsl_rng_type *gsl_rng_taus = &taus_type;
 
 static const gsl_rng_type taus2_type =
-{"taus2",			/* name */
- 0xffffffffUL,			/* RAND_MAX */
- 0,			        /* RAND_MIN */
+{"taus2",                       /* name */
+ 0xffffffffUL,                  /* RAND_MAX */
+ 0,                             /* RAND_MIN */
  sizeof (taus_state_t),
  &taus2_set,
  &taus_get,

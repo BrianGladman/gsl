@@ -61,7 +61,7 @@ gsl_histogram_pdf_alloc (const size_t n)
   if (n == 0)
     {
       GSL_ERROR_VAL ("histogram pdf length n must be positive integer",
-			GSL_EDOM, 0);
+                        GSL_EDOM, 0);
     }
 
   p = (gsl_histogram_pdf *) malloc (sizeof (gsl_histogram_pdf));
@@ -69,17 +69,17 @@ gsl_histogram_pdf_alloc (const size_t n)
   if (p == 0)
     {
       GSL_ERROR_VAL ("failed to allocate space for histogram pdf struct",
-			GSL_ENOMEM, 0);
+                        GSL_ENOMEM, 0);
     }
 
   p->range = (double *) malloc ((n + 1) * sizeof (double));
 
   if (p->range == 0)
     {
-      free (p);		/* exception in constructor, avoid memory leak */
+      free (p);         /* exception in constructor, avoid memory leak */
 
       GSL_ERROR_VAL ("failed to allocate space for histogram pdf ranges",
-			GSL_ENOMEM, 0);
+                        GSL_ENOMEM, 0);
     }
 
   p->sum = (double *) malloc ((n + 1) * sizeof (double));
@@ -87,10 +87,10 @@ gsl_histogram_pdf_alloc (const size_t n)
   if (p->sum == 0)
     {
       free (p->range);
-      free (p);		/* exception in constructor, avoid memory leak */
+      free (p);         /* exception in constructor, avoid memory leak */
 
       GSL_ERROR_VAL ("failed to allocate space for histogram pdf sums",
-			GSL_ENOMEM, 0);
+                        GSL_ENOMEM, 0);
     }
 
   p->n = n;
@@ -112,10 +112,10 @@ gsl_histogram_pdf_init (gsl_histogram_pdf * p, const gsl_histogram * h)
   for (i = 0; i < n; i++)
     {
       if (h->bin[i] < 0)
-	{
-	  GSL_ERROR ("histogram bins must be non-negative to compute"
-		     "a probability distribution", GSL_EDOM);
-	}
+        {
+          GSL_ERROR ("histogram bins must be non-negative to compute"
+                     "a probability distribution", GSL_EDOM);
+        }
     }
 
   for (i = 0; i < n + 1; i++)
@@ -128,15 +128,15 @@ gsl_histogram_pdf_init (gsl_histogram_pdf * p, const gsl_histogram * h)
 
     for (i = 0; i < n; i++)
       {
-	mean += (h->bin[i] - mean) / ((double) (i + 1));
+        mean += (h->bin[i] - mean) / ((double) (i + 1));
       }
 
     p->sum[0] = 0;
 
     for (i = 0; i < n; i++)
       {
-	sum += (h->bin[i] / mean) / n;
-	p->sum[i + 1] = sum;
+        sum += (h->bin[i] / mean) / n;
+        p->sum[i + 1] = sum;
       }
   }
 

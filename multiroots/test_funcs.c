@@ -60,7 +60,7 @@ rosenbrock_f (const gsl_vector * x, void *params, gsl_vector * f)
   gsl_vector_set (f, 0, y0);
   gsl_vector_set (f, 1, y1);
 
-  params = 0;			/* avoid warning about unused parameters */
+  params = 0;                   /* avoid warning about unused parameters */
 
   return GSL_SUCCESS;
 }
@@ -80,14 +80,14 @@ rosenbrock_df (const gsl_vector * x, void *params, gsl_matrix * df)
   gsl_matrix_set (df, 1, 0, df10);
   gsl_matrix_set (df, 1, 1, df11);
 
-  params = 0;			/* avoid warning about unused parameters */
+  params = 0;                   /* avoid warning about unused parameters */
 
   return GSL_SUCCESS;
 }
 
 int
 rosenbrock_fdf (const gsl_vector * x, void *params,
-		gsl_vector * f, gsl_matrix * df)
+                gsl_vector * f, gsl_matrix * df)
 {
   rosenbrock_f (x, params, f);
   rosenbrock_df (x, params, df);
@@ -123,7 +123,7 @@ roth_f (const gsl_vector * x, void *params, gsl_vector * f)
   gsl_vector_set (f, 0, y0);
   gsl_vector_set (f, 1, y1);
 
-  params = 0;			/* avoid warning about unused parameters */
+  params = 0;                   /* avoid warning about unused parameters */
 
   return GSL_SUCCESS;
 }
@@ -143,14 +143,14 @@ roth_df (const gsl_vector * x, void *params, gsl_matrix * df)
   gsl_matrix_set (df, 1, 0, df10);
   gsl_matrix_set (df, 1, 1, df11);
 
-  params = 0;			/* avoid warning about unused parameters */
+  params = 0;                   /* avoid warning about unused parameters */
 
   return GSL_SUCCESS;
 }
 
 int
 roth_fdf (const gsl_vector * x, void *params,
-		gsl_vector * f, gsl_matrix * df)
+                gsl_vector * f, gsl_matrix * df)
 {
   roth_f (x, params, f);
   roth_df (x, params, df);
@@ -187,7 +187,7 @@ powellscal_f (const gsl_vector * x, void *params, gsl_vector * f)
   gsl_vector_set (f, 0, y0);
   gsl_vector_set (f, 1, y1);
 
-  params = 0;			/* avoid warning about unused parameters */
+  params = 0;                   /* avoid warning about unused parameters */
 
   return GSL_SUCCESS;
 }
@@ -206,14 +206,14 @@ powellscal_df (const gsl_vector * x, void *params, gsl_matrix * df)
   gsl_matrix_set (df, 1, 0, df10);
   gsl_matrix_set (df, 1, 1, df11);
 
-  params = 0;			/* avoid warning about unused parameters */
+  params = 0;                   /* avoid warning about unused parameters */
 
   return GSL_SUCCESS;
 }
 
 int
 powellscal_fdf (const gsl_vector * x, void *params,
-		  gsl_vector * f, gsl_matrix * df)
+                  gsl_vector * f, gsl_matrix * df)
 {
   powellscal_f (x, params, f);
   powellscal_df (x, params, df);
@@ -249,7 +249,7 @@ brownscal_f (const gsl_vector * x, void *params, gsl_vector * f)
   gsl_vector_set (f, 0, y0);
   gsl_vector_set (f, 1, y1);
 
-  params = 0;			/* avoid warning about unused parameters */
+  params = 0;                   /* avoid warning about unused parameters */
 
   return GSL_SUCCESS;
 }
@@ -268,14 +268,14 @@ brownscal_df (const gsl_vector * x, void *params, gsl_matrix * df)
   gsl_matrix_set (df, 1, 0, df10);
   gsl_matrix_set (df, 1, 1, df11);
 
-  params = 0;			/* avoid warning about unused parameters */
+  params = 0;                   /* avoid warning about unused parameters */
 
   return GSL_SUCCESS;
 }
 
 int
 brownscal_fdf (const gsl_vector * x, void *params,
-		  gsl_vector * f, gsl_matrix * df)
+                  gsl_vector * f, gsl_matrix * df)
 {
   brownscal_f (x, params, f);
   brownscal_df (x, params, df);
@@ -319,7 +319,7 @@ powellsing_f (const gsl_vector * x, void *params, gsl_vector * f)
   gsl_vector_set (f, 2, y2);
   gsl_vector_set (f, 3, y3);
 
-  params = 0;			/* avoid warning about unused parameters */
+  params = 0;                   /* avoid warning about unused parameters */
 
   return GSL_SUCCESS;
 }
@@ -357,14 +357,14 @@ powellsing_df (const gsl_vector * x, void *params, gsl_matrix * df)
   gsl_matrix_set (df, 3, 2, df32);
   gsl_matrix_set (df, 3, 3, df33);
 
-  params = 0;			/* avoid warning about unused parameters */
+  params = 0;                   /* avoid warning about unused parameters */
 
   return GSL_SUCCESS;
 }
 
 int
 powellsing_fdf (const gsl_vector * x, void *params,
-		    gsl_vector * f, gsl_matrix * df)
+                    gsl_vector * f, gsl_matrix * df)
 {
   powellsing_f (x, params, f);
   powellsing_df (x, params, df);
@@ -411,7 +411,7 @@ wood_f (const gsl_vector * x, void *params, gsl_vector * f)
   gsl_vector_set (f, 2, y2);
   gsl_vector_set (f, 3, y3);
 
-  params = 0;			/* avoid warning about unused parameters */
+  params = 0;                   /* avoid warning about unused parameters */
 
   return GSL_SUCCESS;
 }
@@ -452,14 +452,14 @@ wood_df (const gsl_vector * x, void *params, gsl_matrix * df)
   gsl_matrix_set (df, 3, 2, df32);
   gsl_matrix_set (df, 3, 3, df33);
 
-  params = 0;			/* avoid warning about unused parameters */
+  params = 0;                   /* avoid warning about unused parameters */
 
   return GSL_SUCCESS;
 }
 
 int
 wood_fdf (const gsl_vector * x, void *params,
-		    gsl_vector * f, gsl_matrix * df)
+                    gsl_vector * f, gsl_matrix * df)
 {
   wood_f (x, params, f);
   wood_df (x, params, df);
@@ -517,7 +517,7 @@ helical_f (const gsl_vector * x, void *params, gsl_vector * f)
   gsl_vector_set (f, 1, y1);
   gsl_vector_set (f, 2, y2);
 
-  params = 0;			/* avoid warning about unused parameters */
+  params = 0;                   /* avoid warning about unused parameters */
 
   return GSL_SUCCESS;
 }
@@ -548,14 +548,14 @@ helical_df (const gsl_vector * x, void *params, gsl_matrix * df)
   gsl_matrix_set (df, 2, 1, df21);
   gsl_matrix_set (df, 2, 2, df22);
 
-  params = 0;			/* avoid warning about unused parameters */
+  params = 0;                   /* avoid warning about unused parameters */
 
   return GSL_SUCCESS;
 }
 
 int
 helical_fdf (const gsl_vector * x, void *params,
-		    gsl_vector * f, gsl_matrix * df)
+                    gsl_vector * f, gsl_matrix * df)
 {
   helical_f (x, params, f);
   helical_df (x, params, df);
@@ -614,7 +614,7 @@ dbv_f (const gsl_vector * x, void *params, gsl_vector * f)
 
     }
 
-  params = 0;			/* avoid warning about unused parameters */
+  params = 0;                   /* avoid warning about unused parameters */
 
   return GSL_SUCCESS;
 }
@@ -648,14 +648,14 @@ dbv_df (const gsl_vector * x, void *params, gsl_matrix * df)
 
     }
 
-  params = 0;			/* avoid warning about unused parameters */
+  params = 0;                   /* avoid warning about unused parameters */
 
   return GSL_SUCCESS;
 }
 
 int
 dbv_fdf (const gsl_vector * x, void *params,
-		    gsl_vector * f, gsl_matrix * df)
+                    gsl_vector * f, gsl_matrix * df)
 {
   dbv_f (x, params, f);
   dbv_df (x, params, df);
@@ -701,7 +701,7 @@ trig_f (const gsl_vector * x, void *params, gsl_vector * f)
       gsl_vector_set (f, i, z);
     }
 
-  params = 0;			/* avoid warning about unused parameters */
+  params = 0;                   /* avoid warning about unused parameters */
 
   return GSL_SUCCESS;
 }
@@ -728,14 +728,14 @@ trig_df (const gsl_vector * x, void *params, gsl_matrix * df)
         }
     }
 
-  params = 0;			/* avoid warning about unused parameters */
+  params = 0;                   /* avoid warning about unused parameters */
 
   return GSL_SUCCESS;
 }
 
 int
 trig_fdf (const gsl_vector * x, void *params,
-		    gsl_vector * f, gsl_matrix * df)
+                    gsl_vector * f, gsl_matrix * df)
 {
   trig_f (x, params, f);
   trig_df (x, params, df);

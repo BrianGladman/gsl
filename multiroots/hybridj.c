@@ -418,9 +418,9 @@ iterate (void *vstate, gsl_multiroot_function_fdf * fdf, gsl_vector * x, gsl_vec
   if (state->iter == 1)
     {
       if (pnorm < state->delta)
-	{
-	  state->delta = pnorm;
-	}
+        {
+          state->delta = pnorm;
+        }
     }
 
   /* Evaluate function at x + p */
@@ -479,9 +479,9 @@ iterate (void *vstate, gsl_multiroot_function_fdf * fdf, gsl_vector * x, gsl_vec
       state->ncsuc++;
 
       if (ratio >= p5 || state->ncsuc > 1)
-	state->delta = GSL_MAX (state->delta, pnorm / p5);
+        state->delta = GSL_MAX (state->delta, pnorm / p5);
       if (fabs (ratio - 1) <= p1)
-	state->delta = pnorm / p5;
+        state->delta = pnorm / p5;
     }
 
   /* Test for successful iteration */
@@ -517,11 +517,11 @@ iterate (void *vstate, gsl_multiroot_function_fdf * fdf, gsl_vector * x, gsl_vec
       state->nslow2++;
 
       if (state->iter == 1)
-	{
+        {
           if (scale)
             compute_diag (J, diag);
-	  state->delta = compute_delta (diag, x);
-	}
+          state->delta = compute_delta (diag, x);
+        }
       else
         {
           if (scale)
@@ -586,7 +586,7 @@ hybridj_free (void *vstate)
 
 static const gsl_multiroot_fdfsolver_type hybridj_type =
 {
-  "hybridj",			/* name */
+  "hybridj",                    /* name */
   sizeof (hybridj_state_t),
   &hybridj_alloc,
   &hybridj_set,
@@ -596,7 +596,7 @@ static const gsl_multiroot_fdfsolver_type hybridj_type =
 
 static const gsl_multiroot_fdfsolver_type hybridsj_type =
 {
-  "hybridsj",			/* name */
+  "hybridsj",                   /* name */
   sizeof (hybridj_state_t),
   &hybridj_alloc,
   &hybridsj_set,

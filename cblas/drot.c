@@ -4,7 +4,7 @@
 
 void
 cblas_drot (const int N, double *X, const int incX, double *Y, const int incY,
-	    const double c, const double s)
+            const double c, const double s)
 {
 #define BASE double
 #include "source_rot.h"

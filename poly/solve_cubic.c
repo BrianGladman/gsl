@@ -55,23 +55,23 @@ gsl_poly_solve_cubic (double a, double b, double c,
          for exact computation with integers */
 
       /* Due to finite precision some double roots may be missed, and
-	 considered to be a pair of complex roots z = x +/- epsilon i
-	 close to the real axis. */
+         considered to be a pair of complex roots z = x +/- epsilon i
+         close to the real axis. */
 
       double sqrtQ = sqrt (Q);
 
       if (R > 0)
-	{
-	  *x0 = -2 * sqrtQ  - a / 3;
-	  *x1 = sqrtQ - a / 3;
-	  *x2 = sqrtQ - a / 3;
-	}
+        {
+          *x0 = -2 * sqrtQ  - a / 3;
+          *x1 = sqrtQ - a / 3;
+          *x2 = sqrtQ - a / 3;
+        }
       else
-	{
-	  *x0 = - sqrtQ  - a / 3;
-	  *x1 = - sqrtQ - a / 3;
-	  *x2 = 2 * sqrtQ - a / 3;
-	}
+        {
+          *x0 = - sqrtQ  - a / 3;
+          *x1 = - sqrtQ - a / 3;
+          *x2 = 2 * sqrtQ - a / 3;
+        }
       return 3 ;
     }
   else if (CR2 < CQ3) /* equivalent to R2 < Q3 */
@@ -87,15 +87,15 @@ gsl_poly_solve_cubic (double a, double b, double c,
       /* Sort *x0, *x1, *x2 into increasing order */
 
       if (*x0 > *x1)
-	SWAP(*x0, *x1) ;
+        SWAP(*x0, *x1) ;
       
       if (*x1 > *x2)
-	{
-	  SWAP(*x1, *x2) ;
-	  
-	  if (*x0 > *x1)
-	    SWAP(*x0, *x1) ;
-	}
+        {
+          SWAP(*x1, *x2) ;
+          
+          if (*x0 > *x1)
+            SWAP(*x0, *x1) ;
+        }
       
       return 3;
     }

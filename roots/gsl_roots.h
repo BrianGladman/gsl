@@ -95,7 +95,7 @@ gsl_root_fdfsolver_alloc (const gsl_root_fdfsolver_type * T);
 
 int
 gsl_root_fdfsolver_set (gsl_root_fdfsolver * s, 
-			 gsl_function_fdf * fdf, double root);
+                         gsl_function_fdf * fdf, double root);
 
 int
 gsl_root_fdfsolver_iterate (gsl_root_fdfsolver * s);

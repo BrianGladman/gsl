@@ -1,6 +1,6 @@
 static double
 rat_eval (const double a[], const size_t na,
-	  const double b[], const size_t nb, const double x)
+          const double b[], const size_t nb, const double x)
 {
   size_t i, j;
   double u, v, r;

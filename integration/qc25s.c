@@ -31,7 +31,7 @@ static double fn_qaws_R (double x, void *params);
 
 static void
 compute_result (const double * r, const double * cheb12, const double * cheb24,
-		double * result12, double * result24);
+                double * result12, double * result24);
 
 
 static void
@@ -65,29 +65,29 @@ qc25s (gsl_function * f, double a, double b, double a1, double b1,
       gsl_integration_qcheb (&weighted_function, a1, b1, cheb12, cheb24);
 
       if (t->mu == 0)
-	{
-	  double res12 = 0, res24 = 0;
-	  double u = factor;
+        {
+          double res12 = 0, res24 = 0;
+          double u = factor;
 
-	  compute_result (t->ri, cheb12, cheb24, &res12, &res24);
+          compute_result (t->ri, cheb12, cheb24, &res12, &res24);
 
-	  *result = u * res24;
-	  *abserr = fabs(u * (res24 - res12));
-	}
+          *result = u * res24;
+          *abserr = fabs(u * (res24 - res12));
+        }
       else 
-	{
-	  double res12a = 0, res24a = 0;
-	  double res12b = 0, res24b = 0;
+        {
+          double res12a = 0, res24a = 0;
+          double res12b = 0, res24b = 0;
 
-	  double u = factor * log(b1 - a1);
-	  double v = factor;
+          double u = factor * log(b1 - a1);
+          double v = factor;
 
-	  compute_result (t->ri, cheb12, cheb24, &res12a, &res24a);
-	  compute_result (t->rg, cheb12, cheb24, &res12b, &res24b);
+          compute_result (t->ri, cheb12, cheb24, &res12a, &res24a);
+          compute_result (t->rg, cheb12, cheb24, &res12b, &res24b);
 
-	  *result = u * res24a + v * res24b;
-	  *abserr = fabs(u * (res24a - res12a)) + fabs(v * (res24b - res12b));
-	}
+          *result = u * res24a + v * res24b;
+          *abserr = fabs(u * (res24a - res12a)) + fabs(v * (res24b - res12b));
+        }
 
       *err_reliable = 0;
 
@@ -103,29 +103,29 @@ qc25s (gsl_function * f, double a, double b, double a1, double b1,
       gsl_integration_qcheb (&weighted_function, a1, b1, cheb12, cheb24);
 
       if (t->nu == 0)
-	{
-	  double res12 = 0, res24 = 0;
-	  double u = factor;
+        {
+          double res12 = 0, res24 = 0;
+          double u = factor;
 
-	  compute_result (t->rj, cheb12, cheb24, &res12, &res24);
+          compute_result (t->rj, cheb12, cheb24, &res12, &res24);
 
-	  *result = u * res24;
-	  *abserr = fabs(u * (res24 - res12));
-	}
+          *result = u * res24;
+          *abserr = fabs(u * (res24 - res12));
+        }
       else 
-	{
-	  double res12a = 0, res24a = 0;
-	  double res12b = 0, res24b = 0;
+        {
+          double res12a = 0, res24a = 0;
+          double res12b = 0, res24b = 0;
 
-	  double u = factor * log(b1 - a1);
-	  double v = factor;
+          double u = factor * log(b1 - a1);
+          double v = factor;
 
-	  compute_result (t->rj, cheb12, cheb24, &res12a, &res24a);
-	  compute_result (t->rh, cheb12, cheb24, &res12b, &res24b);
+          compute_result (t->rj, cheb12, cheb24, &res12a, &res24a);
+          compute_result (t->rh, cheb12, cheb24, &res12b, &res24b);
 
-	  *result = u * res24a + v * res24b;
-	  *abserr = fabs(u * (res24a - res12a)) + fabs(v * (res24b - res12b));
-	}
+          *result = u * res24a + v * res24b;
+          *abserr = fabs(u * (res24a - res12a)) + fabs(v * (res24b - res12b));
+        }
 
       *err_reliable = 0;
 
@@ -138,16 +138,16 @@ qc25s (gsl_function * f, double a, double b, double a1, double b1,
       weighted_function.function = &fn_qaws;
   
       gsl_integration_qk15 (&weighted_function, a1, b1, result, abserr,
-			    &resabs, &resasc);
+                            &resabs, &resasc);
 
       if (*abserr == resasc)
-	{
-	  *err_reliable = 0;
-	}
+        {
+          *err_reliable = 0;
+        }
       else 
-	{
-	  *err_reliable = 1;
-	}
+        {
+          *err_reliable = 1;
+        }
 
       return;
     }
@@ -217,7 +217,7 @@ fn_qaws_R (double x, void *params)
 
 static void
 compute_result (const double * r, const double * cheb12, const double * cheb24,
-		double * result12, double * result24)
+                double * result12, double * result24)
 {
   size_t i;
   double res12 = 0;

@@ -4,7 +4,7 @@
 
 void
 cblas_dswap (const int N, double *X, const int incX, double *Y,
-	     const int incY)
+             const int incY)
 {
 #define BASE double
 #include "source_swap_r.h"

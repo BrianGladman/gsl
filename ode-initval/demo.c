@@ -14,7 +14,7 @@ func (double t, const double y[], double f[], void *params)
 
 int
 jac (double t, const double y[], double *dfdy, double dfdt[],
-	    void *params)
+            void *params)
 {
   double mu = *(double *)params;
   gsl_matrix_view dfdy_mat = gsl_matrix_view_array (dfdy, 2, 2);

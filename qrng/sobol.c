@@ -173,7 +173,7 @@ static int sobol_init(void * state, unsigned int dimension)
       ell = 1;
       for(k=0; k<degree_i; k++) {
         ell *= 2;
-    	if(includ[k]) newv ^= (ell * s_state->v_direction[j-k-1][i_dim]);
+        if(includ[k]) newv ^= (ell * s_state->v_direction[j-k-1][i_dim]);
       }
       s_state->v_direction[j][i_dim] = newv;
     }

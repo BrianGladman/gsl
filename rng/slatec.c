@@ -194,9 +194,9 @@ slatec_set (void *vstate, unsigned long int s)
 }
 
 static const gsl_rng_type slatec_type =
-{"slatec",			/* name */
- 4194303,			/* RAND_MAX */
- 0,				/* RAND_MIN */
+{"slatec",                      /* name */
+ 4194303,                       /* RAND_MAX */
+ 0,                             /* RAND_MIN */
  sizeof (slatec_state_t),
  &slatec_set,
  &slatec_get,

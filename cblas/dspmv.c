@@ -4,9 +4,9 @@
 
 void
 cblas_dspmv (const enum CBLAS_ORDER order, const enum CBLAS_UPLO Uplo,
-	     const int N, const double alpha, const double *Ap,
-	     const double *X, const int incX, const double beta, double *Y,
-	     const int incY)
+             const int N, const double alpha, const double *Ap,
+             const double *X, const int incX, const double beta, double *Y,
+             const int incY)
 {
 #define BASE double
 #include "source_spmv.h"

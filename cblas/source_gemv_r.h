@@ -63,24 +63,24 @@
       BASE temp = 0.0;
       INDEX ix = OFFSET(lenX, incX);
       for (j = 0; j < lenX; j++) {
-	temp += X[ix] * A[lda * i + j];
-	ix += incX;
+        temp += X[ix] * A[lda * i + j];
+        ix += incX;
       }
       Y[iy] += alpha * temp;
       iy += incY;
     }
   } else if ((order == CblasRowMajor && Trans == CblasTrans)
-	     || (order == CblasColMajor && Trans == CblasNoTrans)) {
+             || (order == CblasColMajor && Trans == CblasNoTrans)) {
     /* form  y := alpha*A'*x + y */
     INDEX ix = OFFSET(lenX, incX);
     for (j = 0; j < lenX; j++) {
       const BASE temp = alpha * X[ix];
       if (temp != 0.0) {
-	INDEX iy = OFFSET(lenY, incY);
-	for (i = 0; i < lenY; i++) {
-	  Y[iy] += temp * A[lda * j + i];
-	  iy += incY;
-	}
+        INDEX iy = OFFSET(lenY, incY);
+        for (i = 0; i < lenY; i++) {
+          Y[iy] += temp * A[lda * j + i];
+          iy += incY;
+        }
       }
       ix += incX;
     }

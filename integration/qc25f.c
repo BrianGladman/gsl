@@ -51,18 +51,18 @@ qc25f (gsl_function * f, double a, double b,
       fn_params.omega = omega;
 
       if (wf->sine == GSL_INTEG_SINE) 
-	{
-	  weighted_function.function = &fn_sin;
-	}
+        {
+          weighted_function.function = &fn_sin;
+        }
       else
-	{
-	  weighted_function.function = &fn_cos;
-	}
+        {
+          weighted_function.function = &fn_cos;
+        }
 
       weighted_function.params = &fn_params;
 
       gsl_integration_qk15 (&weighted_function, a, b, result, abserr,
-			    resabs, resasc);
+                            resabs, resasc);
       
       return;
     }
@@ -78,10 +78,10 @@ qc25f (gsl_function * f, double a, double b,
       gsl_integration_qcheb (f, a, b, cheb12, cheb24);
 
       if (level >= wf->n)
-	{
+        {
           /* table overflow should not happen, check before calling */
           GSL_ERROR_VOID("table overflow in internal function", GSL_ESANITY);
-	}
+        }
 
       /* obtain moments from the table */
 
@@ -91,11 +91,11 @@ qc25f (gsl_function * f, double a, double b,
       res12_sin = 0 ;
 
       for (i = 0; i < 6; i++)
-	{
-	  size_t k = 10 - 2 * i;
-	  res12_cos += cheb12[k] * moment[k];
-	  res12_sin += cheb12[k + 1] * moment[k + 1];
-	}
+        {
+          size_t k = 10 - 2 * i;
+          res12_cos += cheb12[k] * moment[k];
+          res12_sin += cheb12[k + 1] * moment[k + 1];
+        }
 
       res24_cos = cheb24[24] * moment[24];
       res24_sin = 0 ;
@@ -103,12 +103,12 @@ qc25f (gsl_function * f, double a, double b,
       result_abs = fabs(cheb24[24]) ;
 
       for (i = 0; i < 12; i++)
-	{
-	  size_t k = 22 - 2 * i;
-	  res24_cos += cheb24[k] * moment[k];
-	  res24_sin += cheb24[k + 1] * moment[k + 1];
-	  result_abs += fabs(cheb24[k]) + fabs(cheb24[k+1]);
-	}
+        {
+          size_t k = 22 - 2 * i;
+          res24_cos += cheb24[k] * moment[k];
+          res24_sin += cheb24[k + 1] * moment[k + 1];
+          result_abs += fabs(cheb24[k]) + fabs(cheb24[k+1]);
+        }
 
       est_cos = fabs(res24_cos - res12_cos);
       est_sin = fabs(res24_sin - res12_sin);
@@ -117,15 +117,15 @@ qc25f (gsl_function * f, double a, double b,
       s = half_length * sin(center * omega);
 
       if (wf->sine == GSL_INTEG_SINE)
-	{
-	  *result = c * res24_sin + s * res24_cos;
-	  *abserr = fabs(c * est_sin) + fabs(s * est_cos);
-	}
+        {
+          *result = c * res24_sin + s * res24_cos;
+          *abserr = fabs(c * est_sin) + fabs(s * est_cos);
+        }
       else
-	{
-      	  *result = c * res24_cos - s * res24_sin;
-	  *abserr = fabs(c * est_cos) + fabs(s * est_sin);
-	}
+        {
+          *result = c * res24_cos - s * res24_sin;
+          *abserr = fabs(c * est_cos) + fabs(s * est_sin);
+        }
       
       *resabs = result_abs * half_length;
       *resasc = GSL_DBL_MAX;

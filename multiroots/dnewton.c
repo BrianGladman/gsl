@@ -176,7 +176,7 @@ dnewton_free (void * vstate)
 
 
 static const gsl_multiroot_fsolver_type dnewton_type =
-{"dnewton",				/* name */
+{"dnewton",                             /* name */
  sizeof (dnewton_state_t),
  &dnewton_alloc,
  &dnewton_set,

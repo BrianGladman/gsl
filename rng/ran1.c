@@ -91,14 +91,14 @@ ran1_set (void *vstate, unsigned long int s)
   int i;
 
   if (s == 0)
-    s = 1;	/* default seed is 1 */
+    s = 1;      /* default seed is 1 */
 
   for (i = 0; i < 8; i++)
     {
       long int h = s / q;
       long int t = a * (s - h * q) - h * r;
       if (t < 0)
-	t += m;
+        t += m;
       s = t;
     }
 
@@ -107,7 +107,7 @@ ran1_set (void *vstate, unsigned long int s)
       long int h = s / q;
       long int t = a * (s - h * q) - h * r;
       if (t < 0)
-	t += m;
+        t += m;
       s = t;
       state->shuffle[i] = s;
     }
@@ -119,9 +119,9 @@ ran1_set (void *vstate, unsigned long int s)
 }
 
 static const gsl_rng_type ran1_type =
-{"ran1",			/* name */
- 2147483646,			/* RAND_MAX */
- 1,				/* RAND_MIN */
+{"ran1",                        /* name */
+ 2147483646,                    /* RAND_MAX */
+ 1,                             /* RAND_MIN */
  sizeof (ran1_state_t),
  &ran1_set,
  &ran1_get,

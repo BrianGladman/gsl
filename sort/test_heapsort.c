@@ -128,9 +128,9 @@ reverse (double *data, size_t N)
       size_t j = N - i - 1;
 
       {
-	double tmp = data[i];
-	data[i] = data[j];
-	data[j] = tmp;
+        double tmp = data[i];
+        data[i] = data[j];
+        data[j] = tmp;
       }
     }
 }
@@ -143,9 +143,9 @@ check (double *data, double *orig, size_t N)
   for (i = 0; i < N; i++)
     {
       if (data[i] != orig[i])
-	{
-	  return GSL_FAILURE;
-	}
+        {
+          return GSL_FAILURE;
+        }
     }
 
   return GSL_SUCCESS;
@@ -159,9 +159,9 @@ pcheck (size_t * p, double *data, double *orig, size_t N)
   for (i = 0; i < N; i++)
     {
       if (data[p[i]] != orig[i])
-	{
-	  return GSL_FAILURE;
-	}
+        {
+          return GSL_FAILURE;
+        }
     }
 
   return GSL_SUCCESS;

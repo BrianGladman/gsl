@@ -29,7 +29,7 @@ FUNCTION(gsl_stats,max) (const BASE data[], const size_t stride, const size_t n)
   for (i = 0; i < n; i++)
     {
       if (data[i * stride] > max)
-	max = data[i * stride];
+        max = data[i * stride];
     }
 
   return max;
@@ -46,7 +46,7 @@ FUNCTION(gsl_stats,min) (const BASE data[], const size_t stride, const size_t n)
   for (i = 0; i < n; i++)
     {
       if (data[i * stride] < min)
-	min = data[i * stride];
+        min = data[i * stride];
     }
 
   return min;
@@ -65,9 +65,9 @@ FUNCTION(gsl_stats,minmax) (BASE * min_out, BASE * max_out, const BASE data[], c
   for (i = 0; i < n; i++)
     {
       if (data[i * stride] < min)
-	min = data[i * stride];
+        min = data[i * stride];
       if (data[i * stride] > max)
-	max = data[i * stride];
+        max = data[i * stride];
     }
 
   *min_out = min ;
@@ -86,10 +86,10 @@ FUNCTION(gsl_stats,max_index) (const BASE data[], const size_t stride, const siz
   for (i = 0; i < n; i++)
     {
       if (data[i * stride] > max)
-	{
-	  max = data[i * stride];
-	  max_index = i ;
-	}
+        {
+          max = data[i * stride];
+          max_index = i ;
+        }
     }
 
   return max_index;
@@ -107,10 +107,10 @@ FUNCTION(gsl_stats,min_index) (const BASE data[], const size_t stride, const siz
   for (i = 0; i < n; i++)
     {
       if (data[i * stride] < min)
-	{
-	  min = data[i * stride];
-	  min_index = i ;
-	}
+        {
+          min = data[i * stride];
+          min_index = i ;
+        }
     }
 
   return min_index;

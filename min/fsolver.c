@@ -76,17 +76,17 @@ gsl_min_fminimizer_alloc (const gsl_min_fminimizer_type * T)
   if (s == 0)
     {
       GSL_ERROR_VAL ("failed to allocate space for minimizer struct",
-			GSL_ENOMEM, 0);
+                        GSL_ENOMEM, 0);
     };
 
   s->state = malloc (T->size);
 
   if (s->state == 0)
     {
-      free (s);		/* exception in constructor, avoid memory leak */
+      free (s);         /* exception in constructor, avoid memory leak */
 
       GSL_ERROR_VAL ("failed to allocate space for minimizer state",
-			GSL_ENOMEM, 0);
+                        GSL_ENOMEM, 0);
     };
 
   s->type = T ;

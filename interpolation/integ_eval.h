@@ -23,7 +23,7 @@
 
 static inline double
 integ_eval (double ai, double bi, double ci, double di, double xi, double a,
-	    double b)
+            double b)
 {
   const double t0 = b + a;
   const double t1 = a * a + a * b + b * b;

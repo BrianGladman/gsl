@@ -37,7 +37,7 @@ static void ranlxd2_set (void *state, unsigned long int s);
 
 static const int next[12] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 0};
 
-static const double one_bit = 1.0 / 281474976710656.0;	/* 1/2^48 */
+static const double one_bit = 1.0 / 281474976710656.0;  /* 1/2^48 */
 
 #define RANLUX_STEP(x1,x2,i1,i2,i3)      \
           x1=xdbl[i1] - xdbl[i2];        \
@@ -77,14 +77,14 @@ increment_state (ranlxd_state_t * state)
       y1 = xdbl[jr] - xdbl[ir];
       y2 = y1 - carry;
       if (y2 < 0)
-	{
-	  carry = one_bit;
-	  y2 += 1;
-	}
+        {
+          carry = one_bit;
+          y2 += 1;
+        }
       else
-	{
-	  carry = 0;
-	}
+        {
+          carry = 0;
+        }
       xdbl[ir] = y2;
       ir = next[ir];
       jr = next[jr];
@@ -110,14 +110,14 @@ increment_state (ranlxd_state_t * state)
       RANLUX_STEP (y3, y2, 6, 11, 10);
 
       if (y3 < 0)
-	{
-	  carry = one_bit;
-	  y3 += 1;
-	}
+        {
+          carry = one_bit;
+          y3 += 1;
+        }
       else
-	{
-	  carry = 0;
-	}
+        {
+          carry = 0;
+        }
       xdbl[11] = y3;
     }
 
@@ -128,14 +128,14 @@ increment_state (ranlxd_state_t * state)
       y1 = xdbl[jr] - xdbl[ir];
       y2 = y1 - carry;
       if (y2 < 0)
-	{
-	  carry = one_bit;
-	  y2 += 1;
-	}
+        {
+          carry = one_bit;
+          y2 += 1;
+        }
       else
-	{
-	  carry = 0;
-	}
+        {
+          carry = 0;
+        }
       xdbl[ir] = y2;
       ir = next[ir];
       jr = next[jr];
@@ -149,7 +149,7 @@ increment_state (ranlxd_state_t * state)
 static inline unsigned long int
 ranlxd_get (void *vstate)
 {
-  return ranlxd_get_double (vstate) * 4294967296.0;	/* 2^32 */
+  return ranlxd_get_double (vstate) * 4294967296.0;     /* 2^32 */
 }
 
 static double
@@ -178,7 +178,7 @@ ranlxd_set_lux (void *vstate, unsigned long int s, unsigned int luxury)
   long int seed;
 
   if (s == 0)
-    s = 1;			/* default seed is 1 */
+    s = 1;                      /* default seed is 1 */
 
   seed = s;
 
@@ -198,13 +198,13 @@ ranlxd_set_lux (void *vstate, unsigned long int s, unsigned int luxury)
       x = 0;
 
       for (l = 1; l <= 48; ++l)
-	{
-	  y = (double) ((xbit[ibit] + 1) % 2);
-	  x += x + y;
-	  xbit[ibit] = (xbit[ibit] + xbit[jbit]) % 2;
-	  ibit = (ibit + 1) % 31;
-	  jbit = (jbit + 1) % 31;
-	}
+        {
+          y = (double) ((xbit[ibit] + 1) % 2);
+          x += x + y;
+          xbit[ibit] = (xbit[ibit] + xbit[jbit]) % 2;
+          ibit = (ibit + 1) % 31;
+          jbit = (jbit + 1) % 31;
+        }
       state->xdbl[k] = one_bit * x;
     }
 
@@ -228,18 +228,18 @@ ranlxd2_set (void *vstate, unsigned long int s)
 }
 
 static const gsl_rng_type ranlxd1_type =
-{"ranlxd1",			/* name */
- 0xffffffffUL,			/* RAND_MAX */
- 0,				/* RAND_MIN */
+{"ranlxd1",                     /* name */
+ 0xffffffffUL,                  /* RAND_MAX */
+ 0,                             /* RAND_MIN */
  sizeof (ranlxd_state_t),
  &ranlxd1_set,
  &ranlxd_get,
  &ranlxd_get_double};
 
 static const gsl_rng_type ranlxd2_type =
-{"ranlxd2",			/* name */
- 0xffffffffUL,			/* RAND_MAX */
- 0,				/* RAND_MIN */
+{"ranlxd2",                     /* name */
+ 0xffffffffUL,                  /* RAND_MAX */
+ 0,                             /* RAND_MIN */
  sizeof (ranlxd_state_t),
  &ranlxd2_set,
  &ranlxd_get,

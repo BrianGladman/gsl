@@ -75,18 +75,18 @@ enum {
 } ;
 
 void gsl_error (const char * reason, const char * file, int line,
-		int gsl_errno);
+                int gsl_errno);
 
 void gsl_stream_printf (const char *label, const char *file,
-			int line, const char *reason);
+                        int line, const char *reason);
 
 const char * gsl_strerror (const int gsl_errno);
 
 typedef void gsl_error_handler_t (const char * reason, const char * file,
-				  int line, int gsl_errno);
+                                  int line, int gsl_errno);
 
 typedef void gsl_stream_handler_t (const char * label, const char * file,
-				   int line, const char * reason);
+                                   int line, const char * reason);
 
 gsl_error_handler_t * 
 gsl_set_error_handler (gsl_error_handler_t * new_handler);

@@ -45,7 +45,7 @@
  */
 int
 gsl_histogram2d_equal_bins_p (const gsl_histogram2d * h1,
-			      const gsl_histogram2d * h2)
+                              const gsl_histogram2d * h2)
 {
 
   if ((h1->nx != h2->nx) || (h1->ny != h2->ny))
@@ -57,17 +57,17 @@ gsl_histogram2d_equal_bins_p (const gsl_histogram2d * h1,
     /* init ranges */
     for (i = 0; i <= (h1->nx); i++)
       {
-	if (h1->xrange[i] != h2->xrange[i])
-	  {
-	    return 0;
-	  }
+        if (h1->xrange[i] != h2->xrange[i])
+          {
+            return 0;
+          }
       }
     for (i = 0; i <= (h1->ny); i++)
       {
-	if (h1->yrange[i] != h2->yrange[i])
-	  {
-	    return 0;
-	  }
+        if (h1->yrange[i] != h2->yrange[i])
+          {
+            return 0;
+          }
       }
   }
   return 1;

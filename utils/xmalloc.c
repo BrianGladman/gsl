@@ -36,9 +36,9 @@ extern void *xmalloc (int), *xrealloc (void *, int);
 
 
 /* **************************************************************** */
-/*								    */
-/*		   Memory Allocation and Deallocation.		    */
-/*								    */
+/*                                                                  */
+/*                 Memory Allocation and Deallocation.              */
+/*                                                                  */
 /* **************************************************************** */
 
 /* Return a pointer to free()able block of memory large enough

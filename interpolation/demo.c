@@ -30,8 +30,8 @@ main (void)
 
     for (xi = x[0]; xi < x[9]; xi += 0.01)
       {
-	double yi = gsl_spline_eval (spline, xi, acc);
-	printf ("%g %g\n", xi, yi);
+        double yi = gsl_spline_eval (spline, xi, acc);
+        printf ("%g %g\n", xi, yi);
       }
     gsl_spline_free (spline);
     gsl_interp_accel_free(acc);

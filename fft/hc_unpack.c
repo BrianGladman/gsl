@@ -19,8 +19,8 @@
 
 int
 FUNCTION(gsl_fft_halfcomplex,unpack) (const BASE halfcomplex_coefficient[],
-				      BASE complex_coefficient[],
-				      const size_t stride, const size_t n)
+                                      BASE complex_coefficient[],
+                                      const size_t stride, const size_t n)
 {
   size_t i;
 
@@ -55,8 +55,8 @@ FUNCTION(gsl_fft_halfcomplex,unpack) (const BASE halfcomplex_coefficient[],
 
 int
 FUNCTION(gsl_fft_halfcomplex,radix2_unpack) (const BASE halfcomplex_coefficient[],
-					     BASE complex_coefficient[],
-					     const size_t stride, const size_t n)
+                                             BASE complex_coefficient[],
+                                             const size_t stride, const size_t n)
 {
   size_t i;
 

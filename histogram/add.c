@@ -46,7 +46,7 @@ gsl_histogram_accumulate (gsl_histogram * h, double x, double weight)
   if (index >= n)
     {
       GSL_ERROR ("index lies outside valid range of 0 .. n - 1",
-		 GSL_ESANITY);
+                 GSL_ESANITY);
     }
 
   h->bin[index] += weight;

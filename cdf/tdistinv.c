@@ -81,13 +81,13 @@ gsl_cdf_tdist_Pinv (const double P, const double nu)
       double beta = gsl_sf_beta (0.5, nu / 2);
 
       if (P < 0.5)
-	{
-	  x = -sqrt (nu) * pow (beta * nu * P, -1.0 / nu);
-	}
+        {
+          x = -sqrt (nu) * pow (beta * nu * P, -1.0 / nu);
+        }
       else
-	{
-	  x = sqrt (nu) * pow (beta * nu * (1 - P), -1.0 / nu);
-	}
+        {
+          x = sqrt (nu) * pow (beta * nu * (1 - P), -1.0 / nu);
+        }
 
       /* Correct nu -> nu/(1+nu/x^2) in the leading term to account
          for higher order terms. This avoids overestimating x, which
@@ -115,19 +115,19 @@ gsl_cdf_tdist_Pinv (const double P, const double nu)
       double step = step0;
 
       if (fabs (step1) < fabs (step0))
-	{
-	  step += step1;
-	}
+        {
+          step += step1;
+        }
 
       if (P > 0.5 && x + step < 0)
-	x /= 2;
+        x /= 2;
       else if (P < 0.5 && x + step > 0)
-	x /= 2;
+        x /= 2;
       else
-	x += step;
+        x += step;
 
       if (fabs (step) > 1e-10 * fabs (x))
-	goto start;
+        goto start;
     }
   }
 
@@ -174,13 +174,13 @@ gsl_cdf_tdist_Qinv (const double Q, const double nu)
       double beta = gsl_sf_beta (0.5, nu / 2);
 
       if (Q < 0.5)
-	{
-	  x = sqrt (nu) * pow (beta * nu * Q, -1.0 / nu);
-	}
+        {
+          x = sqrt (nu) * pow (beta * nu * Q, -1.0 / nu);
+        }
       else
-	{
-	  x = -sqrt (nu) * pow (beta * nu * (1 - Q), -1.0 / nu);
-	}
+        {
+          x = -sqrt (nu) * pow (beta * nu * (1 - Q), -1.0 / nu);
+        }
 
       /* Correct nu -> nu/(1+nu/x^2) in the leading term to account
          for higher order terms. This avoids overestimating x, which
@@ -208,19 +208,19 @@ gsl_cdf_tdist_Qinv (const double Q, const double nu)
       double step = step0;
 
       if (fabs (step1) < fabs (step0))
-	{
-	  step += step1;
-	}
+        {
+          step += step1;
+        }
 
       if (Q < 0.5 && x + step < 0)
-	x /= 2;
+        x /= 2;
       else if (Q > 0.5 && x + step > 0)
-	x /= 2;
+        x /= 2;
       else
-	x += step;
+        x += step;
 
       if (fabs (step) > 1e-10 * fabs (x))
-	goto start;
+        goto start;
     }
   }
 

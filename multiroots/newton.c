@@ -141,7 +141,7 @@ newton_free (void * vstate)
 
 
 static const gsl_multiroot_fdfsolver_type newton_type =
-{"newton",				/* name */
+{"newton",                              /* name */
  sizeof (newton_state_t),
  &newton_alloc,
  &newton_set,

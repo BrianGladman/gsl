@@ -835,7 +835,7 @@ double besselJ_meissel(double nu, double x)
       int k;
       double xo2 = 0.5 * x;
       double gamfactor = pow(nu,nu) * exp(-nu) * sqrt(nu * 2. * M_PI)
-	* (1. + 1./(12.*nu) + 1./(288.*nu*nu));
+        * (1. + 1./(12.*nu) + 1./(288.*nu*nu));
       double prefactor = pow(xo2, nu) / gamfactor;
       double C[5];
 
@@ -847,7 +847,7 @@ double besselJ_meissel(double nu, double x)
       
       result = 0.;
       for(k=0; k<5; k++)
-	result += C[k] * pow(xo2, 2.*k);
+        result += C[k] * pow(xo2, 2.*k);
 
       result *= prefactor;
     }

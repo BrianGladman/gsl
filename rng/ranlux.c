@@ -58,9 +58,9 @@ static void ranlux_set_lux (void *state, unsigned long int s, unsigned int luxur
 static void ranlux_set (void *state, unsigned long int s);
 static void ranlux389_set (void *state, unsigned long int s);
 
-static const unsigned long int mask_lo = 0x00ffffffUL;	/* 2^24 - 1 */
+static const unsigned long int mask_lo = 0x00ffffffUL;  /* 2^24 - 1 */
 static const unsigned long int mask_hi = ~0x00ffffffUL;
-static const unsigned long int two24 = 16777216;	/* 2^24 */
+static const unsigned long int two24 = 16777216;        /* 2^24 */
 
 typedef struct
   {
@@ -133,7 +133,7 @@ ranlux_get (void *vstate)
       unsigned int i;
       state->n = 0;
       for (i = 0; i < skip; i++)
-	increment_state (state);
+        increment_state (state);
     }
 
   return r;
@@ -154,7 +154,7 @@ ranlux_set_lux (void *vstate, unsigned long int s, unsigned int luxury)
   long int seed;
 
   if (s == 0)
-    s = 314159265;	/* default seed is 314159265 */
+    s = 314159265;      /* default seed is 314159265 */
 
   seed = s;
 
@@ -166,9 +166,9 @@ ranlux_set_lux (void *vstate, unsigned long int s, unsigned int luxury)
       unsigned long int k = seed / 53668;
       seed = 40014 * (seed - k * 53668) - k * 12211;
       if (seed < 0)
-	{
-	  seed += 2147483563;
-	}
+        {
+          seed += 2147483563;
+        }
       state->u[i] = seed % two24;
     }
 
@@ -201,18 +201,18 @@ ranlux389_set (void *vstate, unsigned long int s)
 
 
 static const gsl_rng_type ranlux_type =
-{"ranlux",			/* name */
- 0x00ffffffUL,			/* RAND_MAX */
- 0,				/* RAND_MIN */
+{"ranlux",                      /* name */
+ 0x00ffffffUL,                  /* RAND_MAX */
+ 0,                             /* RAND_MIN */
  sizeof (ranlux_state_t),
  &ranlux_set,
  &ranlux_get,
  &ranlux_get_double};
 
 static const gsl_rng_type ranlux389_type =
-{"ranlux389",			/* name */
- 0x00ffffffUL,			/* RAND_MAX */
- 0,				/* RAND_MIN */
+{"ranlux389",                   /* name */
+ 0x00ffffffUL,                  /* RAND_MAX */
+ 0,                             /* RAND_MIN */
  sizeof (ranlux_state_t),
  &ranlux389_set,
  &ranlux_get,

@@ -25,7 +25,7 @@
 
 int
 gsl_diff_backward (const gsl_function * f,
-		   double x, double *result, double *abserr)
+                   double x, double *result, double *abserr)
 {
   /* Construct a divided difference table with a fairly large step
      size to get a very rough estimate of f''.  Use this to estimate
@@ -47,9 +47,9 @@ gsl_diff_backward (const gsl_function * f,
   for (k = 1; k < 4; k++)
     {
       for (i = 0; i < 3 - k; i++)
-	{
-	  d[i] = (d[i + 1] - d[i]) / (a[i + k] - a[i]);
-	}
+        {
+          d[i] = (d[i + 1] - d[i]) / (a[i + k] - a[i]);
+        }
     }
 
   /* Adapt procedure described on pg. 282 of CdB to find best value of
@@ -77,7 +77,7 @@ gsl_diff_backward (const gsl_function * f,
 
 int
 gsl_diff_forward (const gsl_function * f,
-		  double x, double *result, double *abserr)
+                  double x, double *result, double *abserr)
 {
   /* Construct a divided difference table with a fairly large step
      size to get a very rough estimate of f''.  Use this to estimate
@@ -99,9 +99,9 @@ gsl_diff_forward (const gsl_function * f,
   for (k = 1; k < 4; k++)
     {
       for (i = 0; i < 3 - k; i++)
-	{
-	  d[i] = (d[i + 1] - d[i]) / (a[i + k] - a[i]);
-	}
+        {
+          d[i] = (d[i + 1] - d[i]) / (a[i + k] - a[i]);
+        }
     }
 
   /* Adapt procedure described on pg. 282 of CdB to find best value of
@@ -129,7 +129,7 @@ gsl_diff_forward (const gsl_function * f,
 
 int
 gsl_diff_central (const gsl_function * f,
-		  double x, double *result, double *abserr)
+                  double x, double *result, double *abserr)
 {
   /* Construct a divided difference table with a fairly large step
      size to get a very rough estimate of f'''.  Use this to estimate
@@ -151,9 +151,9 @@ gsl_diff_central (const gsl_function * f,
   for (k = 1; k < 5; k++)
     {
       for (i = 0; i < 4 - k; i++)
-	{
-	  d[i] = (d[i + 1] - d[i]) / (a[i + k] - a[i]);
-	}
+        {
+          d[i] = (d[i + 1] - d[i]) / (a[i + k] - a[i]);
+        }
     }
 
   /* Adapt procedure described on pg. 282 of CdB to find best

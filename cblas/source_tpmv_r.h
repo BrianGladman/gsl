@@ -35,15 +35,15 @@
       BASE temp = (nonunit ? X[ix] * atmp : X[ix]);
       INDEX jx = OFFSET(N, incX) + (i + 1) * incX;
       for (j = i + 1; j < N; j++) {
-	atmp = Ap[TPUP(N, i, j)];
-	temp += atmp * X[jx];
-	jx += incX;
+        atmp = Ap[TPUP(N, i, j)];
+        temp += atmp * X[jx];
+        jx += incX;
       }
       X[ix] = temp;
       ix += incX;
     }
   } else if ((order == CblasRowMajor && Trans == CblasNoTrans && Uplo == CblasLower)
-	     || (order == CblasColMajor && Trans == CblasTrans && Uplo == CblasUpper)) {
+             || (order == CblasColMajor && Trans == CblasTrans && Uplo == CblasUpper)) {
 
     INDEX ix = OFFSET(N, incX) + (N - 1) * incX;
     for (i = N; i > 0 && i--;) {
@@ -51,15 +51,15 @@
       BASE temp = (nonunit ? X[ix] * atmp : X[ix]);
       INDEX jx = OFFSET(N, incX);
       for (j = 0; j < i; j++) {
-	atmp = Ap[TPLO(N, i, j)];
-	temp += atmp * X[jx];
-	jx += incX;
+        atmp = Ap[TPLO(N, i, j)];
+        temp += atmp * X[jx];
+        jx += incX;
       }
       X[ix] = temp;
       ix -= incX;
     }
   } else if ((order == CblasRowMajor && Trans == CblasTrans && Uplo == CblasUpper)
-	     || (order == CblasColMajor && Trans == CblasNoTrans && Uplo == CblasLower)) {
+             || (order == CblasColMajor && Trans == CblasNoTrans && Uplo == CblasLower)) {
     /* form  x := A'*x */
 
     INDEX ix = OFFSET(N, incX) + (N - 1) * incX;
@@ -68,15 +68,15 @@
       BASE temp = (nonunit ? X[ix] * atmp : X[ix]);
       INDEX jx = OFFSET(N, incX);
       for (j = 0; j < i; j++) {
-	atmp = Ap[TPUP(N, j, i)];
-	temp += atmp * X[jx];
-	jx += incX;
+        atmp = Ap[TPUP(N, j, i)];
+        temp += atmp * X[jx];
+        jx += incX;
       }
       X[ix] = temp;
       ix -= incX;
     }
   } else if ((order == CblasRowMajor && Trans == CblasTrans && Uplo == CblasLower)
-	     || (order == CblasColMajor && Trans == CblasNoTrans && Uplo == CblasUpper)) {
+             || (order == CblasColMajor && Trans == CblasNoTrans && Uplo == CblasUpper)) {
 
     INDEX ix = OFFSET(N, incX);
     for (i = 0; i < N; i++) {
@@ -84,9 +84,9 @@
       BASE temp = (nonunit ? X[ix] * atmp : X[ix]);
       INDEX jx = OFFSET(N, incX) + (i + 1) * incX;
       for (j = i + 1; j < N; j++) {
-	atmp = Ap[TPLO(N, j, i)];
-	temp += atmp * X[jx];
-	jx += incX;
+        atmp = Ap[TPLO(N, j, i)];
+        temp += atmp * X[jx];
+        jx += incX;
       }
       X[ix] = temp;
       ix += incX;

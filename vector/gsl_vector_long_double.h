@@ -136,7 +136,7 @@ int gsl_vector_long_double_fread (FILE * stream, gsl_vector_long_double * v);
 int gsl_vector_long_double_fwrite (FILE * stream, const gsl_vector_long_double * v);
 int gsl_vector_long_double_fscanf (FILE * stream, gsl_vector_long_double * v);
 int gsl_vector_long_double_fprintf (FILE * stream, const gsl_vector_long_double * v,
-			      const char *format);
+                              const char *format);
 
 int gsl_vector_long_double_memcpy (gsl_vector_long_double * dest, const gsl_vector_long_double * src);
 

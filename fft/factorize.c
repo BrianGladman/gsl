@@ -25,8 +25,8 @@
 
 static int
 fft_complex_factorize (const size_t n,
-			   size_t *nf,
-			   size_t factors[])
+                           size_t *nf,
+                           size_t factors[])
 {
   const size_t complex_subtransforms[] =
   {7, 6, 5, 4, 3, 2, 0};
@@ -40,8 +40,8 @@ fft_complex_factorize (const size_t n,
 
 static int
 fft_halfcomplex_factorize (const size_t n,
-			       size_t *nf,
-			       size_t factors[])
+                               size_t *nf,
+                               size_t factors[])
 {
   const size_t halfcomplex_subtransforms[] =
   {5, 4, 3, 2, 0};
@@ -52,8 +52,8 @@ fft_halfcomplex_factorize (const size_t n,
 
 static int
 fft_real_factorize (const size_t n,
-			size_t *nf,
-			size_t factors[])
+                        size_t *nf,
+                        size_t factors[])
 {
   const size_t real_subtransforms[] =
   {5, 4, 3, 2, 0};
@@ -65,9 +65,9 @@ fft_real_factorize (const size_t n,
 
 static int
 fft_factorize (const size_t n,
-		   const size_t implemented_subtransforms[],
-		   size_t *n_factors,
-		   size_t factors[])
+                   const size_t implemented_subtransforms[],
+                   size_t *n_factors,
+                   size_t factors[])
 
 {
   size_t nf = 0;
@@ -93,11 +93,11 @@ fft_factorize (const size_t n,
     {
       factor = implemented_subtransforms[i];
       while ((ntest % factor) == 0)
-	{
-	  ntest = ntest / factor;
-	  factors[nf] = factor;
-	  nf++;
-	}
+        {
+          ntest = ntest / factor;
+          factors[nf] = factor;
+          nf++;
+        }
       i++;
     }
 
@@ -119,9 +119,9 @@ fft_factorize (const size_t n,
   while (ntest != 1)
     {
       while ((ntest % factor) != 0)
-	{
-	  factor += 2;
-	}
+        {
+          factor += 2;
+        }
       ntest = ntest / factor;
       factors[nf] = factor;
       nf++;
@@ -133,12 +133,12 @@ fft_factorize (const size_t n,
 
     for (i = 0; i < nf; i++)
       {
-	product *= factors[i];
+        product *= factors[i];
       }
 
     if (product != n)
       {
-	GSL_ERROR ("factorization failed", GSL_ESANITY);
+        GSL_ERROR ("factorization failed", GSL_ESANITY);
       }
   }
 

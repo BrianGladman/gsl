@@ -32,15 +32,15 @@ gsl_ieee_set_mode (int precision, int rounding, int exception_mask)
     {
     case GSL_IEEE_SINGLE_PRECISION:
       GSL_ERROR ("single precision rounding is not supported by <fenv.h>",
-		 GSL_EUNSUP) ;
+                 GSL_EUNSUP) ;
       break ;
     case GSL_IEEE_DOUBLE_PRECISION:
       GSL_ERROR ("double precision rounding is not supported by <fenv.h>",
-		 GSL_EUNSUP) ;
+                 GSL_EUNSUP) ;
       break ;
     case GSL_IEEE_EXTENDED_PRECISION:
       GSL_ERROR ("extended precision rounding is not supported by <fenv.h>",
-		 GSL_EUNSUP) ;
+                 GSL_EUNSUP) ;
       break ;
     }
 
@@ -116,7 +116,7 @@ gsl_ieee_set_mode (int precision, int rounding, int exception_mask)
   else
     {
       GSL_ERROR ("denormalized operand exception not supported by <fenv.h>. "
-		 "Use 'mask-denormalized' to work around this.", GSL_EUNSUP) ;
+                 "Use 'mask-denormalized' to work around this.", GSL_EUNSUP) ;
     }
 
   if (exception_mask & GSL_IEEE_MASK_DIVISION_BY_ZERO)

@@ -203,9 +203,9 @@ gear2_free(void *vstate)
   free(state);
 }
 
-static const gsl_odeiv_step_type gear2_type = { "gear2",	/* name */
-  1,				/* can use dydt_in */
-  0,				/* gives exact dydt_out */
+static const gsl_odeiv_step_type gear2_type = { "gear2",        /* name */
+  1,                            /* can use dydt_in */
+  0,                            /* gives exact dydt_out */
   &gear2_alloc,
   &gear2_apply,
   &gear2_reset,

@@ -34,7 +34,7 @@ gsl_ran_binomial (const gsl_rng * r, double p, unsigned int n)
 {
   unsigned int i, a, b, k = 0;
 
-  while (n > 10)	/* This parameter is tunable */
+  while (n > 10)        /* This parameter is tunable */
     {
       double X;
       a = 1 + (n / 2);
@@ -43,23 +43,23 @@ gsl_ran_binomial (const gsl_rng * r, double p, unsigned int n)
       X = gsl_ran_beta (r, (double) a, (double) b);
 
       if (X >= p)
-	{
-	  n = a - 1;
-	  p /= X;
-	}
+        {
+          n = a - 1;
+          p /= X;
+        }
       else
-	{
-	  k += a;
-	  n = b - 1;
-	  p = (p - X) / (1 - X);
-	}
+        {
+          k += a;
+          n = b - 1;
+          p = (p - X) / (1 - X);
+        }
     }
 
   for (i = 0; i < n; i++)
     {
       double u = gsl_rng_uniform (r);
       if (u < p)
-	k++;
+        k++;
     }
 
   return k;
@@ -67,7 +67,7 @@ gsl_ran_binomial (const gsl_rng * r, double p, unsigned int n)
 
 double
 gsl_ran_binomial_pdf (const unsigned int k, const double p,
-		      const unsigned int n)
+                      const unsigned int n)
 {
   if (k > n)
     {

@@ -42,33 +42,33 @@ gsl_rng_env_setup (void)
       /* check GSL_RNG_TYPE against the names of all the generators */
 
       for (t = t0; *t != 0; t++)
-	{
+        {
           if (strcmp (p, (*t)->name) == 0)
             {
               gsl_rng_default = *t;
               break;
             }
-	}
+        }
 
       if (gsl_rng_default == 0)
-	{
-	  int i = 0;
+        {
+          int i = 0;
 
-	  fprintf (stderr, "GSL_RNG_TYPE=%s not recognized\n", p);
-	  fprintf (stderr, "Valid generator types are:\n");
+          fprintf (stderr, "GSL_RNG_TYPE=%s not recognized\n", p);
+          fprintf (stderr, "Valid generator types are:\n");
 
-	  for (t = t0; *t != 0; t++)
-	    {
-	      fprintf (stderr, " %18s", (*t)->name);
+          for (t = t0; *t != 0; t++)
+            {
+              fprintf (stderr, " %18s", (*t)->name);
 
-	      if ((++i) % 4 == 0)
-		{
-		  putchar ('\n');
-		}
-	    }
+              if ((++i) % 4 == 0)
+                {
+                  putchar ('\n');
+                }
+            }
 
-	  GSL_ERROR_VAL ("unknown generator", GSL_EINVAL, 0);
-	}
+          GSL_ERROR_VAL ("unknown generator", GSL_EINVAL, 0);
+        }
 
       fprintf (stderr, "GSL_RNG_TYPE=%s\n", gsl_rng_default->name);
     }

@@ -31,11 +31,11 @@
       const BASE tmp_imag = alpha_imag * X_real + alpha_real * X_imag;
       INDEX jy = OFFSET(N, incY);
       for (j = 0; j < N; j++) {
-	const BASE Y_real = CONST_REAL(Y, jy);
-	const BASE Y_imag = CONST_IMAG(Y, jy);
-	REAL(A, lda * i + j) += Y_real * tmp_real - Y_imag * tmp_imag;
-	IMAG(A, lda * i + j) += Y_imag * tmp_real + Y_real * tmp_imag;
-	jy += incY;
+        const BASE Y_real = CONST_REAL(Y, jy);
+        const BASE Y_imag = CONST_IMAG(Y, jy);
+        REAL(A, lda * i + j) += Y_real * tmp_real - Y_imag * tmp_imag;
+        IMAG(A, lda * i + j) += Y_imag * tmp_real + Y_real * tmp_imag;
+        jy += incY;
       }
       ix += incX;
     }
@@ -48,11 +48,11 @@
       const BASE tmp_imag = alpha_imag * Y_real + alpha_real * Y_imag;
       INDEX ix = OFFSET(M, incX);
       for (i = 0; i < M; i++) {
-	const BASE X_real = CONST_REAL(X, ix);
-	const BASE X_imag = CONST_IMAG(X, ix);
-	REAL(A, i + lda * j) += X_real * tmp_real - X_imag * tmp_imag;
-	IMAG(A, i + lda * j) += X_imag * tmp_real + X_real * tmp_imag;
-	ix += incX;
+        const BASE X_real = CONST_REAL(X, ix);
+        const BASE X_imag = CONST_IMAG(X, ix);
+        REAL(A, i + lda * j) += X_real * tmp_real - X_imag * tmp_imag;
+        IMAG(A, i + lda * j) += X_imag * tmp_real + X_real * tmp_imag;
+        ix += incX;
       }
       jy += incY;
     }

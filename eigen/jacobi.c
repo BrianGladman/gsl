@@ -121,12 +121,12 @@ gsl_eigen_jacobi(gsl_matrix * a,
         for(iq=ip+1; iq<n; iq++) {
           const REAL d_ip = gsl_vector_get(eval, ip);
           const REAL d_iq = gsl_vector_get(eval, iq);
-	  const REAL a_ipiq = gsl_matrix_get(a, ip, iq);
+          const REAL a_ipiq = gsl_matrix_get(a, ip, iq);
           g = 100.0 * fabs(a_ipiq);
           if(   i > 4
              && fabs(d_ip)+g == fabs(d_ip)
              && fabs(d_iq)+g == fabs(d_iq)
-	     ) {
+             ) {
             gsl_matrix_set(a, ip, iq, 0.0);
           }
           else if(fabs(a_ipiq) > thresh) {
@@ -146,9 +146,9 @@ gsl_eigen_jacobi(gsl_matrix * a,
             h   = t * a_ipiq;
             z[ip] -= h;
             z[iq] += h;
-	    gsl_vector_set(eval, ip, d_ip - h);
-	    gsl_vector_set(eval, iq, d_iq + h);
-	    gsl_matrix_set(a, ip, iq, 0.0);
+            gsl_vector_set(eval, ip, d_ip - h);
+            gsl_vector_set(eval, iq, d_iq + h);
+            gsl_matrix_set(a, ip, iq, 0.0);
 
             for(j=0; j<ip; j++){
               jac_rotate(a, j, ip, j, iq, &g, &h, s, tau);
@@ -169,7 +169,7 @@ gsl_eigen_jacobi(gsl_matrix * a,
       for (ip=0; ip<n; ip++) {
         b[ip] += z[ip];
         z[ip]  = 0.0;
-	gsl_vector_set(eval, ip, b[ip]);
+        gsl_vector_set(eval, ip, b[ip]);
       }
 
       /* continue iteration */
@@ -238,14 +238,14 @@ gsl_eigen_invert_jacobi(const gsl_matrix * a,
         gsl_matrix_set(ainv, i, j, 0.0);
         for(k=0; k<n; k++) {
           for(l=0; l<n; l++) {
-	    REAL ainv_ij = gsl_matrix_get(ainv, i, j);
-	    REAL evec_il = gsl_matrix_get(evec, i, l);
-	    REAL evec_jk = gsl_matrix_get(evec, j, k);
-	    REAL inv_diag_lk = gsl_matrix_get(inv_diag, l, k);
-	    REAL delta = evec_il * inv_diag_lk * evec_jk;
-	    gsl_matrix_set(ainv, i, j, ainv_ij + delta);
-	  }
-	}
+            REAL ainv_ij = gsl_matrix_get(ainv, i, j);
+            REAL evec_il = gsl_matrix_get(evec, i, l);
+            REAL evec_jk = gsl_matrix_get(evec, j, k);
+            REAL inv_diag_lk = gsl_matrix_get(inv_diag, l, k);
+            REAL delta = evec_il * inv_diag_lk * evec_jk;
+            gsl_matrix_set(ainv, i, j, ainv_ij + delta);
+          }
+        }
       }
     }
 

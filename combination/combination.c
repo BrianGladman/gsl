@@ -46,10 +46,10 @@ gsl_combination_get (const gsl_combination * c, const size_t i)
 {
   if (gsl_check_range)
     {
-      if (i >= c->k)		/* size_t is unsigned, can't be negative */
-	{
-	  GSL_ERROR_VAL ("index out of range", GSL_EINVAL, 0);
-	}
+      if (i >= c->k)            /* size_t is unsigned, can't be negative */
+        {
+          GSL_ERROR_VAL ("index out of range", GSL_EINVAL, 0);
+        }
     }
 
   return c->data[i];
@@ -87,7 +87,7 @@ gsl_combination_valid (gsl_combination * c)
           if (c->data[j] > ci)
             {
               GSL_ERROR("combination indices not in increasing order",
-			GSL_FAILURE) ;
+                        GSL_FAILURE) ;
             }
         }
     }

@@ -39,10 +39,10 @@
 
 int
 gsl_fit_linear (const double *x, const size_t xstride,
-		const double *y, const size_t ystride,
-		const size_t n,
-		double *c0, double *c1,
-		double *cov_00, double *cov_01, double *cov_11, double *sumsq)
+                const double *y, const size_t ystride,
+                const size_t n,
+                double *c0, double *c1,
+                double *cov_00, double *cov_01, double *cov_11, double *sumsq)
 {
   double m_x = 0, m_y = 0, m_dx2 = 0, m_dxdy = 0;
 
@@ -77,13 +77,13 @@ gsl_fit_linear (const double *x, const size_t xstride,
 
     for (i = 0; i < n; i++)
       {
-	const double dx = x[i * xstride] - m_x;
-	const double dy = y[i * ystride] - m_y;
-	const double d = dy - b * dx;
-	d2 += d * d;
+        const double dx = x[i * xstride] - m_x;
+        const double dy = y[i * ystride] - m_y;
+        const double d = dy - b * dx;
+        d2 += d * d;
       }
 
-    s2 = d2 / (n - 2.0);	/* chisq per degree of freedom */
+    s2 = d2 / (n - 2.0);        /* chisq per degree of freedom */
 
     *cov_00 = s2 * (1.0 / n) * (1 + m_x * m_x / m_dx2);
     *cov_11 = s2 * 1.0 / (n * m_dx2);
@@ -110,12 +110,12 @@ gsl_fit_linear (const double *x, const size_t xstride,
 
 int
 gsl_fit_wlinear (const double *x, const size_t xstride,
-		 const double *w, const size_t wstride,
-		 const double *y, const size_t ystride,
-		 const size_t n,
-		 double *c0, double *c1,
-		 double *cov_00, double *cov_01, double *cov_11,
-		 double *chisq)
+                 const double *w, const size_t wstride,
+                 const double *y, const size_t ystride,
+                 const size_t n,
+                 double *c0, double *c1,
+                 double *cov_00, double *cov_01, double *cov_11,
+                 double *chisq)
 {
 
   /* compute the weighted means and weighted deviations from the means */
@@ -131,28 +131,28 @@ gsl_fit_wlinear (const double *x, const size_t xstride,
       const double wi = w[i * wstride];
 
       if (wi > 0)
-	{
-	  W += wi;
-	  wm_x += (x[i * xstride] - wm_x) * (wi / W);
-	  wm_y += (y[i * ystride] - wm_y) * (wi / W);
-	}
+        {
+          W += wi;
+          wm_x += (x[i * xstride] - wm_x) * (wi / W);
+          wm_y += (y[i * ystride] - wm_y) * (wi / W);
+        }
     }
 
-  W = 0;			/* reset the total weight */
+  W = 0;                        /* reset the total weight */
 
   for (i = 0; i < n; i++)
     {
       const double wi = w[i * wstride];
 
       if (wi > 0)
-	{
-	  const double dx = x[i * xstride] - wm_x;
-	  const double dy = y[i * ystride] - wm_y;
+        {
+          const double dx = x[i * xstride] - wm_x;
+          const double dy = y[i * ystride] - wm_y;
 
-	  W += wi;
-	  wm_dx2 += (dx * dx - wm_dx2) * (wi / W);
-	  wm_dxdy += (dx * dy - wm_dxdy) * (wi / W);
-	}
+          W += wi;
+          wm_dx2 += (dx * dx - wm_dx2) * (wi / W);
+          wm_dxdy += (dx * dy - wm_dxdy) * (wi / W);
+        }
     }
 
   /* In terms of y = a + b x */
@@ -174,15 +174,15 @@ gsl_fit_wlinear (const double *x, const size_t xstride,
 
     for (i = 0; i < n; i++)
       {
-	const double wi = w[i * wstride];
+        const double wi = w[i * wstride];
 
-	if (wi > 0)
-	  {
-	    const double dx = x[i * xstride] - wm_x;
-	    const double dy = y[i * ystride] - wm_y;
-	    const double d = dy - b * dx;
-	    d2 += wi * d * d;
-	  }
+        if (wi > 0)
+          {
+            const double dx = x[i * xstride] - wm_x;
+            const double dy = y[i * ystride] - wm_y;
+            const double d = dy - b * dx;
+            d2 += wi * d * d;
+          }
       }
 
     *chisq = d2;
@@ -195,9 +195,9 @@ gsl_fit_wlinear (const double *x, const size_t xstride,
 
 int
 gsl_fit_linear_est (const double x,
-		    const double c0, const double c1,
-		    const double c00, const double c01, const double c11,
-		    double *y, double *y_err)
+                    const double c0, const double c1,
+                    const double c00, const double c01, const double c11,
+                    double *y, double *y_err)
 {
   *y = c0 + c1 * x;
   *y_err = sqrt (c00 + x * (2 * c01 + c11 * x));
@@ -207,8 +207,8 @@ gsl_fit_linear_est (const double x,
 
 int
 gsl_fit_mul (const double *x, const size_t xstride,
-	     const double *y, const size_t ystride,
-	     const size_t n, 
+             const double *y, const size_t ystride,
+             const size_t n, 
              double *c1, double *cov_11, double *sumsq)
 {
   double m_x = 0, m_y = 0, m_dx2 = 0, m_dxdy = 0;
@@ -242,13 +242,13 @@ gsl_fit_mul (const double *x, const size_t xstride,
 
     for (i = 0; i < n; i++)
       {
-	const double dx = x[i * xstride] - m_x;
-	const double dy = y[i * ystride] - m_y;
-	const double d = (m_y - b * m_x) + dy - b * dx;
-	d2 += d * d;
+        const double dx = x[i * xstride] - m_x;
+        const double dy = y[i * ystride] - m_y;
+        const double d = (m_y - b * m_x) + dy - b * dx;
+        d2 += d * d;
       }
 
-    s2 = d2 / (n - 1.0);	/* chisq per degree of freedom */
+    s2 = d2 / (n - 1.0);        /* chisq per degree of freedom */
 
     *cov_11 = s2 * 1.0 / (n * (m_x * m_x + m_dx2));
 
@@ -261,9 +261,9 @@ gsl_fit_mul (const double *x, const size_t xstride,
 
 int
 gsl_fit_wmul (const double *x, const size_t xstride,
-	      const double *w, const size_t wstride,
-	      const double *y, const size_t ystride,
-	      const size_t n, 
+              const double *w, const size_t wstride,
+              const double *y, const size_t ystride,
+              const size_t n, 
               double *c1, double *cov_11, double *chisq)
 {
 
@@ -280,28 +280,28 @@ gsl_fit_wmul (const double *x, const size_t xstride,
       const double wi = w[i * wstride];
 
       if (wi > 0)
-	{
-	  W += wi;
-	  wm_x += (x[i * xstride] - wm_x) * (wi / W);
-	  wm_y += (y[i * ystride] - wm_y) * (wi / W);
-	}
+        {
+          W += wi;
+          wm_x += (x[i * xstride] - wm_x) * (wi / W);
+          wm_y += (y[i * ystride] - wm_y) * (wi / W);
+        }
     }
 
-  W = 0;			/* reset the total weight */
+  W = 0;                        /* reset the total weight */
 
   for (i = 0; i < n; i++)
     {
       const double wi = w[i * wstride];
 
       if (wi > 0)
-	{
-	  const double dx = x[i * xstride] - wm_x;
-	  const double dy = y[i * ystride] - wm_y;
+        {
+          const double dx = x[i * xstride] - wm_x;
+          const double dy = y[i * ystride] - wm_y;
 
-	  W += wi;
-	  wm_dx2 += (dx * dx - wm_dx2) * (wi / W);
-	  wm_dxdy += (dx * dy - wm_dxdy) * (wi / W);
-	}
+          W += wi;
+          wm_dx2 += (dx * dx - wm_dx2) * (wi / W);
+          wm_dxdy += (dx * dy - wm_dxdy) * (wi / W);
+        }
     }
 
   /* In terms of y = b x */
@@ -318,15 +318,15 @@ gsl_fit_wmul (const double *x, const size_t xstride,
 
     for (i = 0; i < n; i++)
       {
-	const double wi = w[i * wstride];
+        const double wi = w[i * wstride];
 
-	if (wi > 0)
-	  {
-	    const double dx = x[i * xstride] - wm_x;
-	    const double dy = y[i * ystride] - wm_y;
-	    const double d = (wm_y - b * wm_x) + (dy - b * dx);
-	    d2 += wi * d * d;
-	  }
+        if (wi > 0)
+          {
+            const double dx = x[i * xstride] - wm_x;
+            const double dy = y[i * ystride] - wm_y;
+            const double d = (wm_y - b * wm_x) + (dy - b * dx);
+            d2 += wi * d * d;
+          }
       }
 
     *chisq = d2;

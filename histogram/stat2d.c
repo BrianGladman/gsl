@@ -79,16 +79,16 @@ gsl_histogram2d_xmean (const gsl_histogram2d * h)
       double wi = 0;
 
       for (j = 0; j < ny; j++)
-	{
-	  double wij = h->bin[i * ny + j];
-	  if (wij > 0)
-	    wi += wij;
-	}
+        {
+          double wij = h->bin[i * ny + j];
+          if (wij > 0)
+            wi += wij;
+        }
       if (wi > 0)
-	{
-	  W += wi;
-	  wmean += (xi - wmean) * (wi / W);
-	}
+        {
+          W += wi;
+          wmean += (xi - wmean) * (wi / W);
+        }
     }
 
   return wmean;
@@ -119,17 +119,17 @@ gsl_histogram2d_ymean (const gsl_histogram2d * h)
       double wj = 0;
 
       for (i = 0; i < nx; i++)
-	{
-	  double wij = h->bin[i * ny + j];
-	  if (wij > 0)
-	    wj += wij;
-	}
+        {
+          double wij = h->bin[i * ny + j];
+          if (wij > 0)
+            wj += wij;
+        }
 
       if (wj > 0)
-	{
-	  W += wj;
-	  wmean += (yj - wmean) * (wj / W);
-	}
+        {
+          W += wj;
+          wmean += (yj - wmean) * (wj / W);
+        }
     }
 
   return wmean;
@@ -161,17 +161,17 @@ gsl_histogram2d_xsigma (const gsl_histogram2d * h)
       double wi = 0;
 
       for (j = 0; j < ny; j++)
-	{
-	  double wij = h->bin[i * ny + j];
-	  if (wij > 0)
-	    wi += wij;
-	}
+        {
+          double wij = h->bin[i * ny + j];
+          if (wij > 0)
+            wi += wij;
+        }
 
       if (wi > 0)
-	{
-	  W += wi;
-	  wvariance += ((xi * xi) - wvariance) * (wi / W);
-	}
+        {
+          W += wi;
+          wvariance += ((xi * xi) - wvariance) * (wi / W);
+        }
     }
 
   {
@@ -206,16 +206,16 @@ gsl_histogram2d_ysigma (const gsl_histogram2d * h)
       double wj = 0;
 
       for (i = 0; i < nx; i++)
-	{
-	  double wij = h->bin[i * ny + j];
-	  if (wij > 0)
-	    wj += wij;
-	}
+        {
+          double wij = h->bin[i * ny + j];
+          if (wij > 0)
+            wj += wij;
+        }
       if (wj > 0)
-	{
-	  W += wj;
-	  wvariance += ((yj * yj) - wvariance) * (wj / W);
-	}
+        {
+          W += wj;
+          wvariance += ((yj * yj) - wvariance) * (wj / W);
+        }
     }
 
   {
@@ -248,17 +248,17 @@ gsl_histogram2d_cov (const gsl_histogram2d * h)
   for (j = 0; j < ny; j++)
     {
       for (i = 0; i < nx; i++)
-	{
-	  double xi = (h->xrange[i + 1] + h->xrange[i]) / 2.0 - xmean;
-	  double yj = (h->yrange[j + 1] + h->yrange[j]) / 2.0 - ymean;
-	  double wij = h->bin[i * ny + j];
+        {
+          double xi = (h->xrange[i + 1] + h->xrange[i]) / 2.0 - xmean;
+          double yj = (h->yrange[j + 1] + h->yrange[j]) / 2.0 - ymean;
+          double wij = h->bin[i * ny + j];
 
-	  if (wij > 0)
-	    {
-	      W += wij;
-	      wcovariance += ((xi * yj) - wcovariance) * (wij / W);
-	    }
-	}
+          if (wij > 0)
+            {
+              W += wij;
+              wcovariance += ((xi * yj) - wcovariance) * (wij / W);
+            }
+        }
     }
 
   return wcovariance;

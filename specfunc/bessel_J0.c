@@ -37,11 +37,11 @@
 
 /* chebyshev expansions for Bessel functions
 
- series for bj0        on the interval  0.	    to  1.60000d+01
-					with weighted error   7.47e-18
-					 log weighted error  17.13
-			       significant figures required  16.98
-				    decimal places required  17.68
+ series for bj0        on the interval  0.          to  1.60000d+01
+                                        with weighted error   7.47e-18
+                                         log weighted error  17.13
+                               significant figures required  16.98
+                                    decimal places required  17.68
 
 */
 

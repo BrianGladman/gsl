@@ -51,17 +51,17 @@ void FUNCTION(test_real,func) (size_t stride, size_t n)
       fft_complex_data[i] = (BASE)(i + 3000.0) ;
     }
 
-  gsl_set_error_handler (NULL);	/* abort on any errors */
+  gsl_set_error_handler (NULL); /* abort on any errors */
   
   /* mixed radix real fft */
   
   rw = FUNCTION(gsl_fft_real_wavetable,alloc) (n);
   gsl_test (rw == 0, NAME(gsl_fft_real_wavetable) 
-	    "_alloc, n = %d, stride = %d", n, stride);
+            "_alloc, n = %d, stride = %d", n, stride);
 
   rwork = FUNCTION(gsl_fft_real_workspace,alloc) (n);
   gsl_test (rwork == 0, NAME(gsl_fft_real_workspace) 
-	    "_alloc, n = %d", n);
+            "_alloc, n = %d", n);
     
   FUNCTION(fft_signal,real_noise) (n, stride, complex_data, fft_complex_data);
   memcpy (complex_tmp, complex_data, 2 * n * stride * sizeof (BASE));
@@ -75,16 +75,16 @@ void FUNCTION(test_real,func) (size_t stride, size_t n)
   FUNCTION(gsl_fft_halfcomplex,unpack) (real_data, complex_data, stride, n);
   
   status = FUNCTION(compare_complex,results) ("dft", fft_complex_data,
-					      "fft of noise", complex_data,
-					      stride, n, 1e6);
+                                              "fft of noise", complex_data,
+                                              stride, n, 1e6);
   gsl_test (status, NAME(gsl_fft_real) 
-	    " with signal_real_noise, n = %d, stride = %d", n, stride);
+            " with signal_real_noise, n = %d, stride = %d", n, stride);
   
   /* compute the inverse fft */
 
   hcw = FUNCTION(gsl_fft_halfcomplex_wavetable,alloc) (n);
   gsl_test (hcw == 0, NAME(gsl_fft_halfcomplex_wavetable) 
-	    "_alloc, n = %d, stride = %d", n, stride);
+            "_alloc, n = %d, stride = %d", n, stride);
 
   status = FUNCTION(gsl_fft_halfcomplex,transform) (real_data, stride, n, hcw, rwork);
   
@@ -96,11 +96,11 @@ void FUNCTION(test_real,func) (size_t stride, size_t n)
   FUNCTION(gsl_fft_real,unpack) (real_data, complex_data, stride, n);
   
   status = FUNCTION(compare_complex,results) ("orig", complex_tmp,
-					      "fft inverse", complex_data,
-					      stride, n, 1e6);
+                                              "fft inverse", complex_data,
+                                              stride, n, 1e6);
 
   gsl_test (status, NAME(gsl_fft_halfcomplex) 
-	    " with data from signal_noise, n = %d, stride = %d", n, stride);
+            " with data from signal_noise, n = %d, stride = %d", n, stride);
 
   FUNCTION(gsl_fft_real_workspace,free) (rwork);
   FUNCTION(gsl_fft_real_wavetable,free) (rw);
@@ -141,11 +141,11 @@ FUNCTION(test_real,bitreverse_order) (size_t stride, size_t n)
       size_t bit ;
 
       for (bit = 0; bit < logn; bit++)
-	{
-	  j <<= 1;		/* reverse shift i into j */
-	  j |= i_tmp & 1;
-	  i_tmp >>= 1;
-	}
+        {
+          j <<= 1;              /* reverse shift i into j */
+          j |= i_tmp & 1;
+          i_tmp >>= 1;
+        }
 
       reversed_data[j*stride] = data[i*stride] ;
     }
@@ -153,10 +153,10 @@ FUNCTION(test_real,bitreverse_order) (size_t stride, size_t n)
   FUNCTION(fft_real,bitreverse_order) (data, stride, n, logn);
 
   status = FUNCTION(compare_real,results) ("naive bit reverse", 
-					   reversed_data,
-					   "gsl_fft_complex_bitreverse_order", 
-					   data,
-					   stride, n, 1e6);
+                                           reversed_data,
+                                           "gsl_fft_complex_bitreverse_order", 
+                                           data,
+                                           stride, n, 1e6);
 
   gsl_test (status, NAME(gsl_fft_real) "_bitreverse_order, n = %d", n);
 
@@ -188,7 +188,7 @@ void FUNCTION(test_real,radix2) (size_t stride, size_t n)
       fft_complex_data[i] = (BASE)(i + 3000.0) ;
     }
 
-  gsl_set_error_handler (NULL);	/* abort on any errors */
+  gsl_set_error_handler (NULL); /* abort on any errors */
   
   /* radix-2 real fft */
   
@@ -204,10 +204,10 @@ void FUNCTION(test_real,radix2) (size_t stride, size_t n)
   FUNCTION(gsl_fft_halfcomplex,radix2_unpack) (real_data, complex_data, stride, n);
   
   status = FUNCTION(compare_complex,results) ("dft", fft_complex_data,
-					      "fft of noise", complex_data,
-					      stride, n, 1e6);
+                                              "fft of noise", complex_data,
+                                              stride, n, 1e6);
   gsl_test (status, NAME(gsl_fft_real) 
-	    "_radix2 with signal_real_noise, n = %d, stride = %d", n, stride);
+            "_radix2 with signal_real_noise, n = %d, stride = %d", n, stride);
   
   /* compute the inverse fft */
   
@@ -221,11 +221,11 @@ void FUNCTION(test_real,radix2) (size_t stride, size_t n)
   FUNCTION(gsl_fft_real,unpack) (real_data, complex_data, stride, n);
   
   status = FUNCTION(compare_complex,results) ("orig", complex_tmp,
-					      "fft inverse", complex_data,
-					      stride, n, 1e6);
+                                              "fft inverse", complex_data,
+                                              stride, n, 1e6);
 
   gsl_test (status, NAME(gsl_fft_halfcomplex) 
-	    "_radix2 with data from signal_noise, n = %d, stride = %d", n, stride);
+            "_radix2 with data from signal_noise, n = %d, stride = %d", n, stride);
 
 
   free(real_data) ;

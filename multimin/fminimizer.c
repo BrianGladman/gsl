@@ -23,7 +23,7 @@
 
 gsl_multimin_fminimizer *
 gsl_multimin_fminimizer_alloc (const gsl_multimin_fminimizer_type * T,
-			       size_t n)
+                               size_t n)
 {
   int status;
 
@@ -33,7 +33,7 @@ gsl_multimin_fminimizer_alloc (const gsl_multimin_fminimizer_type * T,
   if (s == 0)
     {
       GSL_ERROR_VAL ("failed to allocate space for minimizer struct",
-		     GSL_ENOMEM, 0);
+                     GSL_ENOMEM, 0);
     }
 
   s->type = T;
@@ -53,7 +53,7 @@ gsl_multimin_fminimizer_alloc (const gsl_multimin_fminimizer_type * T,
       gsl_vector_free (s->x);
       free (s);
       GSL_ERROR_VAL ("failed to allocate space for minimizer state",
-		     GSL_ENOMEM, 0);
+                     GSL_ENOMEM, 0);
     }
 
   status = (T->alloc) (s->state, n);
@@ -72,9 +72,9 @@ gsl_multimin_fminimizer_alloc (const gsl_multimin_fminimizer_type * T,
 
 int
 gsl_multimin_fminimizer_set (gsl_multimin_fminimizer * s,
-			     gsl_multimin_function * f,
-			     const gsl_vector * x,
-			     const gsl_vector * step_size)
+                             gsl_multimin_function * f,
+                             const gsl_vector * x,
+                             const gsl_vector * step_size)
 {
   if (s->x->size != f->n)
     {

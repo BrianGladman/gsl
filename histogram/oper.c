@@ -58,10 +58,10 @@ gsl_histogram_equal_bins_p (const gsl_histogram * h1, const gsl_histogram * h2)
 
     for (i = 0; i <= h1->n; i++)
       {
-	if (h1->range[i] != h2->range[i])
-	  {
-	    return 0;
-	  }
+        if (h1->range[i] != h2->range[i])
+          {
+            return 0;
+          }
       }
   }
 

@@ -60,7 +60,7 @@ gsl_ran_fdist_pdf (const double x, const double nu1, const double nu2)
       double lg2 = gsl_sf_lngamma (nu2 / 2);
       
       p = exp (lglg + lg12 - lg1 - lg2)
-	* pow (x, nu1 / 2 - 1) * pow (nu2 + nu1 * x, -nu1 / 2 - nu2 / 2);
+        * pow (x, nu1 / 2 - 1) * pow (nu2 + nu1 * x, -nu1 / 2 - nu2 / 2);
       
       return p;
     }

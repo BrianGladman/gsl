@@ -36,7 +36,7 @@
 #include <gsl/gsl_rng.h>
 
 #define AA 1566083941UL
-#define MM 0xffffffffUL		/* 2 ^ 32 - 1 */
+#define MM 0xffffffffUL         /* 2 ^ 32 - 1 */
 
 static inline unsigned long int ran_get (void *vstate);
 static double ran_get_double (void *vstate);
@@ -72,7 +72,7 @@ ran_set (void *vstate, unsigned long int s)
   ran_state_t *state = (ran_state_t *) vstate;
 
   if (s == 0)
-    s = 1;			/* default seed is 1 */
+    s = 1;                      /* default seed is 1 */
 
   state->x = s & MM;
 
@@ -80,9 +80,9 @@ ran_set (void *vstate, unsigned long int s)
 }
 
 static const gsl_rng_type ran_type = {
-  "waterman14",			/* name */
-  MM,				/* RAND_MAX */
-  1,				/* RAND_MIN */
+  "waterman14",                 /* name */
+  MM,                           /* RAND_MAX */
+  1,                            /* RAND_MIN */
   sizeof (ran_state_t),
   &ran_set,
   &ran_get,

@@ -48,21 +48,21 @@ FUNCTION (gsl_sort, smallest_index) (size_t * p, const size_t k,
       BASE xi = src[i * stride];
 
       if (j < k)
-	{
-	  j++;
-	}
+        {
+          j++;
+        }
       else if (xi >= xbound)
-	{
-	  continue;
-	}
+        {
+          continue;
+        }
 
       for (i1 = j - 1; i1 > 0 ; i1--)
-	{
+        {
           if (xi > src[p[i1 - 1] * stride])
             break;
 
-	  p[i1] = p[i1 - 1];
-	}
+          p[i1] = p[i1 - 1];
+        }
 
       p[i1] = i;
 
@@ -113,21 +113,21 @@ FUNCTION (gsl_sort, largest_index) (size_t * p, const size_t k,
       BASE xi = src[i * stride];
 
       if (j < k)
-	{
-	  j++;
-	}
+        {
+          j++;
+        }
       else if (xi <= xbound)
-	{
-	  continue;
-	}
+        {
+          continue;
+        }
 
       for (i1 = j - 1; i1 > 0 ; i1--)
-	{
+        {
           if (xi < src[stride * p[i1 - 1]])
             break;
 
-	  p[i1] = p[i1 - 1];
-	}
+          p[i1] = p[i1 - 1];
+        }
 
       p[i1] = i;
 

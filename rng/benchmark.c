@@ -109,7 +109,7 @@ benchmark (const gsl_rng_type * T)
     {
       int j;
       for (j = 0; j < N; j++)
-	isum += gsl_rng_get (r);
+        isum += gsl_rng_get (r);
 
       i += N;
       end = clock ();
@@ -123,7 +123,7 @@ benchmark (const gsl_rng_type * T)
     {
       int j;
       for (j = 0; j < N; j++)
-	dsum += gsl_rng_uniform (r);
+        dsum += gsl_rng_uniform (r);
 
       d += N;
       end = clock ();
@@ -134,7 +134,7 @@ benchmark (const gsl_rng_type * T)
 
 
   printf ("%6.0f k ints/sec, %6.0f k doubles/sec, %s\n",
-	  i / t1 / 1000.0, d / t2 / 1000.0, gsl_rng_name (r));
+          i / t1 / 1000.0, d / t2 / 1000.0, gsl_rng_name (r));
 
   gsl_rng_free (r);
 }

@@ -208,7 +208,7 @@ workspace GSLLIBMT.dsw.
 Dynamically linked multi-threaded libraries can be
 built with the /MD option.  Different versions of the
 library using this options can be built from the
-workspace GSLLIBMT.dsw. 
+workspace GSLDLL.dsw. 
 
 Building GSL with different compilation options
 ===============================================
@@ -220,7 +220,7 @@ DLL.  To compile the library use the following
 procedure:
 
 1.  Build the workspace GSLLIBML.dsw, GSLLIBMT.dsw or
-GSLLIBMT.dsw using 'Batch Build'.  These should
+GSLDLL.dsw using 'Batch Build'.  These should
 generate their output in the GSLLIBMT, GSLLIBML and
 GSLDLL directories, producing the following
 libraries:

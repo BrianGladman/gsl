@@ -559,7 +559,7 @@ hahn1_df (const gsl_vector * x, void *params, gsl_matrix * df)
 
 int
 hahn1_fdf (const gsl_vector * x, void *params,
-	   gsl_vector * f, gsl_matrix * df)
+           gsl_vector * f, gsl_matrix * df)
 {
   hahn1_f (x, params, f);
   hahn1_df (x, params, df);

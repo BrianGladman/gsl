@@ -49,13 +49,13 @@ gsl_test (int status, const char *test_description,...)
     {
       passed++;
       if (verbose)
-	printf ("PASS: ");
+        printf ("PASS: ");
     }
   else
     {
       failed++;
       if (verbose)
-	printf ("FAIL: ");
+        printf ("FAIL: ");
     }
 
   if (verbose)
@@ -81,7 +81,7 @@ gsl_test (int status, const char *test_description,...)
 
 void
 gsl_test_rel (double result, double expected, double relative_error,
-	      const char *test_description,...)
+              const char *test_description,...)
 {
   int status ;
 
@@ -104,13 +104,13 @@ gsl_test_rel (double result, double expected, double relative_error,
     {
       passed++;
       if (verbose)
-	printf ("PASS: ");
+        printf ("PASS: ");
     }
   else
     {
       failed++;
       if (verbose)
-	printf ("FAIL: ");
+        printf ("FAIL: ");
       
     }
 
@@ -129,20 +129,20 @@ gsl_test_rel (double result, double expected, double relative_error,
       va_end (ap);
 #endif
       if (status == 0)
-	{
-	  if (strlen(test_description) < 45)
-	    {
-	      printf(" (%g observed vs %g expected)", result, expected) ;
-	    }
-	  else
-	    {
-	      printf(" (%g obs vs %g exp)", result, expected) ;
-	    }
-	}
+        {
+          if (strlen(test_description) < 45)
+            {
+              printf(" (%g observed vs %g expected)", result, expected) ;
+            }
+          else
+            {
+              printf(" (%g obs vs %g exp)", result, expected) ;
+            }
+        }
       else 
-	{
-	  printf(" (%.18g observed vs %.18g expected)", result, expected) ;
-	}
+        {
+          printf(" (%.18g observed vs %.18g expected)", result, expected) ;
+        }
 
       printf ("\n") ;
       fflush (stdout);
@@ -151,7 +151,7 @@ gsl_test_rel (double result, double expected, double relative_error,
 
 void
 gsl_test_abs (double result, double expected, double absolute_error,
-	      const char *test_description,...)
+              const char *test_description,...)
 {
   int status ;
 
@@ -170,13 +170,13 @@ gsl_test_abs (double result, double expected, double absolute_error,
     {
       passed++;
       if (verbose)
-	printf ("PASS: ");
+        printf ("PASS: ");
     }
   else
     {
       failed++;
       if (verbose)
-	printf ("FAIL: ");
+        printf ("FAIL: ");
       
     }
 
@@ -195,20 +195,20 @@ gsl_test_abs (double result, double expected, double absolute_error,
       va_end (ap);
 #endif
       if (status == 0)
-	{
-	  if (strlen(test_description) < 45)
-	    {
-	      printf(" (%g observed vs %g expected)", result, expected) ;
-	    }
-	  else
-	    {
-	      printf(" (%g obs vs %g exp)", result, expected) ;
-	    }
-	}
+        {
+          if (strlen(test_description) < 45)
+            {
+              printf(" (%g observed vs %g expected)", result, expected) ;
+            }
+          else
+            {
+              printf(" (%g obs vs %g exp)", result, expected) ;
+            }
+        }
       else 
-	{
-	  printf(" (%.18g observed vs %.18g expected)", result, expected) ;
-	}
+        {
+          printf(" (%.18g observed vs %.18g expected)", result, expected) ;
+        }
 
       printf ("\n") ;
       fflush (stdout);
@@ -242,13 +242,13 @@ gsl_test_factor (double result, double expected, double factor,
     {
       passed++;
       if (verbose)
-	printf ("PASS: ");
+        printf ("PASS: ");
     }
   else
     {
       failed++;
       if (verbose)
-	printf ("FAIL: ");
+        printf ("FAIL: ");
       
     }
 
@@ -267,20 +267,20 @@ gsl_test_factor (double result, double expected, double factor,
       va_end (ap);
 #endif
       if (status == 0)
-	{
-	  if (strlen(test_description) < 45)
-	    {
-	      printf(" (%g observed vs %g expected)", result, expected) ;
-	    }
-	  else
-	    {
-	      printf(" (%g obs vs %g exp)", result, expected) ;
-	    }
-	}
+        {
+          if (strlen(test_description) < 45)
+            {
+              printf(" (%g observed vs %g expected)", result, expected) ;
+            }
+          else
+            {
+              printf(" (%g obs vs %g exp)", result, expected) ;
+            }
+        }
       else 
-	{
-	  printf(" (%.18g observed vs %.18g expected)", result, expected) ;
-	}
+        {
+          printf(" (%.18g observed vs %.18g expected)", result, expected) ;
+        }
 
       printf ("\n") ;
       fflush (stdout);
@@ -298,13 +298,13 @@ gsl_test_int (int result, int expected, const char *test_description,...)
     {
       passed++;
       if (verbose)
-	printf ("PASS: ");
+        printf ("PASS: ");
     }
   else
     {
       failed++;
       if (verbose)
-	printf ("FAIL: ");
+        printf ("FAIL: ");
     }
 
   if (verbose)
@@ -322,13 +322,13 @@ gsl_test_int (int result, int expected, const char *test_description,...)
       va_end (ap);
 #endif
       if (status == 0)
-	{
-	  printf(" (%d observed vs %d expected)", result, expected) ;
-	}
+        {
+          printf(" (%d observed vs %d expected)", result, expected) ;
+        }
       else 
-	{
-	  printf(" (%d observed vs %d expected)", result, expected) ;
-	}
+        {
+          printf(" (%d observed vs %d expected)", result, expected) ;
+        }
 
       printf ("\n");
       fflush (stdout);
@@ -337,7 +337,7 @@ gsl_test_int (int result, int expected, const char *test_description,...)
 
 void
 gsl_test_str (const char * result, const char * expected, 
-	      const char *test_description,...)
+              const char *test_description,...)
 {
   int status = strcmp(result,expected) ;
 
@@ -347,13 +347,13 @@ gsl_test_str (const char * result, const char * expected,
     {
       passed++;
       if (verbose)
-	printf ("PASS: ");
+        printf ("PASS: ");
     }
   else
     {
       failed++;
       if (verbose)
-	printf ("FAIL: ");
+        printf ("FAIL: ");
     }
 
   if (verbose)
@@ -371,9 +371,9 @@ gsl_test_str (const char * result, const char * expected,
       va_end (ap);
 #endif
       if (status)
-	{
-	  printf(" (%s observed vs %s expected)", result, expected) ;
-	}
+        {
+          printf(" (%s observed vs %s expected)", result, expected) ;
+        }
 
       printf ("\n");
       fflush (stdout);
@@ -393,31 +393,31 @@ int
 gsl_test_summary (void)
 {
 
-  if (verbose && 0)		/* FIXME: turned it off, this annoys me */
+  if (verbose && 0)             /* FIXME: turned it off, this annoys me */
     printf ("%d tests, passed %d, failed %d.\n", tests, passed, failed);
 
   if (failed != 0)
     {
 
-      if (verbose && 0)		/* FIXME: turned it off, this annoys me */
-	{
-	  printf ("%d TEST%s FAILED.\n", failed, failed == 1 ? "" : "S");
-	}
+      if (verbose && 0)         /* FIXME: turned it off, this annoys me */
+        {
+          printf ("%d TEST%s FAILED.\n", failed, failed == 1 ? "" : "S");
+        }
       return EXIT_FAILURE;
     }
 
   if (tests != passed + failed)
     {
       if (verbose)
-	printf ("TEST RESULTS DO NOT ADD UP %d != %d + %d\n",
-		tests, passed, failed);
+        printf ("TEST RESULTS DO NOT ADD UP %d != %d + %d\n",
+                tests, passed, failed);
       return EXIT_FAILURE;
     }
 
   if (passed == tests)
     {
-      if (verbose && 0)		/* FIXME: turned it off, this annoys me */
-	printf ("All tests passed successfully\n");
+      if (verbose && 0)         /* FIXME: turned it off, this annoys me */
+        printf ("All tests passed successfully\n");
       return EXIT_SUCCESS;
     }
 

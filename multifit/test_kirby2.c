@@ -383,7 +383,7 @@ kirby2_df (const gsl_vector * x, void *params, gsl_matrix * df)
 
 int
 kirby2_fdf (const gsl_vector * x, void *params,
-	   gsl_vector * f, gsl_matrix * df)
+           gsl_vector * f, gsl_matrix * df)
 {
   kirby2_f (x, params, f);
   kirby2_df (x, params, df);

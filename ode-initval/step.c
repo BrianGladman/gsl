@@ -41,9 +41,9 @@ gsl_odeiv_step_alloc(const gsl_odeiv_step_type * T, size_t dim)
 
   if (s->state == 0)
     {
-      free (s);		/* exception in constructor, avoid memory leak */
+      free (s);         /* exception in constructor, avoid memory leak */
 
-      GSL_ERROR_NULL ("failed to allocate space for ode state",	GSL_ENOMEM);
+      GSL_ERROR_NULL ("failed to allocate space for ode state", GSL_ENOMEM);
     };
     
   return s;

@@ -175,13 +175,13 @@ rkf45_alloc (size_t dim)
 
 static int
 rkf45_apply (void *vstate,
-	    size_t dim,
-	    double t,
-	    double h,
-	    double y[],
-	    double yerr[],
-	    const double dydt_in[],
-	    double dydt_out[], const gsl_odeiv_system * sys)
+            size_t dim,
+            double t,
+            double h,
+            double y[],
+            double yerr[],
+            const double dydt_in[],
+            double dydt_out[], const gsl_odeiv_system * sys)
 {
   rkf45_state_t *state = (rkf45_state_t *) vstate;
 
@@ -234,7 +234,7 @@ rkf45_apply (void *vstate,
   for (i = 0; i < dim; i++)
     ytmp[i] =
       y[i] + h * (b5[0] * k1[i] + b5[1] * k2[i] + b5[2] * k3[i] +
-		  b5[3] * k4[i]);
+                  b5[3] * k4[i]);
 
   /* k5 step */
   {
@@ -244,7 +244,7 @@ rkf45_apply (void *vstate,
   for (i = 0; i < dim; i++)
     ytmp[i] =
       y[i] + h * (b6[0] * k1[i] + b6[1] * k2[i] + b6[2] * k3[i] +
-		  b6[3] * k4[i] + b6[4] * k5[i]);
+                  b6[3] * k4[i] + b6[4] * k5[i]);
 
   /* k6 step and final sum */
   {
@@ -257,14 +257,14 @@ rkf45_apply (void *vstate,
       const double d_i = c1 * k1[i] + c3 * k3[i] + c4 * k4[i] + c5 * k5[i] + c6 * k6[i];
       y[i] += h * d_i;
       if (dydt_out != NULL)
-	dydt_out[i] = d_i;
+        dydt_out[i] = d_i;
     }
 
   /* difference between 4th and 5th order */
   for (i = 0; i < dim; i++)
     yerr[i] =
       h * (ec[1] * k1[i] + ec[3] * k3[i] + ec[4] * k4[i] + ec[5] * k5[i] +
-	   ec[6] * k6[i]);
+           ec[6] * k6[i]);
 
   return status;
 }
@@ -310,9 +310,9 @@ rkf45_free (void *vstate)
   free (state);
 }
 
-static const gsl_odeiv_step_type rkf45_type = { "rkf45",	/* name */
-  1,				/* can use dydt_in */
-  0,				/* gives exact dydt_out */
+static const gsl_odeiv_step_type rkf45_type = { "rkf45",        /* name */
+  1,                            /* can use dydt_in */
+  0,                            /* gives exact dydt_out */
   &rkf45_alloc,
   &rkf45_apply,
   &rkf45_reset,

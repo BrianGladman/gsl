@@ -94,16 +94,16 @@ GSL_VAR const gsl_min_fminimizer_type  * gsl_min_fminimizer_brent;
 
 typedef
 int (*gsl_min_bracketing_function)(gsl_function *f,
-				   double *x_minimum,double * f_minimum,
-				   double *x_lower, double * f_lower,
+                                   double *x_minimum,double * f_minimum,
+                                   double *x_lower, double * f_lower,
                                    double *x_upper, double * f_upper,
-				   size_t eval_max);
+                                   size_t eval_max);
 
 int 
 gsl_min_find_bracket(gsl_function *f,double *x_minimum,double * f_minimum,
-		     double *x_lower, double * f_lower,
+                     double *x_lower, double * f_lower,
                      double *x_upper, double * f_upper,
-		     size_t eval_max);
+                     size_t eval_max);
 
 __END_DECLS
 

@@ -53,7 +53,7 @@ gsl_integration_qk (const int n,
 
   for (j = 0; j < (n - 1) / 2; j++)
     {
-      const int jtw = j * 2 + 1;	/* j=1,2,3 jtw=2,4,6 */
+      const int jtw = j * 2 + 1;        /* j=1,2,3 jtw=2,4,6 */
       const double abscissa = half_length * xgk[jtw];
       const double fval1 = GSL_FN_EVAL (f, center - abscissa);
       const double fval2 = GSL_FN_EVAL (f, center + abscissa);

@@ -71,8 +71,8 @@ int gsl_fft_real_float_transform (float data[], const size_t stride, const size_
 
 
 int gsl_fft_real_float_unpack (const float real_float_coefficient[],
-			       float complex_coefficient[],
-			       const size_t stride, const size_t n);
+                               float complex_coefficient[],
+                               const size_t stride, const size_t n);
 
 __END_DECLS
 

@@ -4,7 +4,7 @@
 
 void
 cblas_srotm (const int N, float *X, const int incX, float *Y, const int incY,
-	     const float *P)
+             const float *P)
 {
 #define BASE float
 #include "source_rotm.h"

@@ -102,7 +102,7 @@ gfsr4_set (void *vstate, unsigned long int s)
   unsigned long int mask = 0xffffffffUL;
 
   if (s == 0)
-    s = 4357;	/* the default seed is 4357 */
+    s = 4357;   /* the default seed is 4357 */
 
   /* We use the congruence s_{n+1} = (69069*s_n) mod 2^32 to
      initialize the state. This works because ANSI-C unsigned long
@@ -117,12 +117,12 @@ gfsr4_set (void *vstate, unsigned long int s)
       unsigned long t = 0 ;
       unsigned long bit = msb ;
       for (j = 0; j < 32; j++)
-	{
-	  s = LCG(s) ;
-	  if (s & msb) 
-	    t |= bit ;
-	  bit >>= 1 ;
-	}
+        {
+          s = LCG(s) ;
+          if (s & msb) 
+            t |= bit ;
+          bit >>= 1 ;
+        }
       state->ra[i] = t ;
     }
 
@@ -132,8 +132,8 @@ gfsr4_set (void *vstate, unsigned long int s)
    */
   for (i=0; i<32; ++i) {
       int k=7+i*3;
-      state->ra[k] &= mask;	/* Turn off bits left of the diagonal */
-      state->ra[k] |= msb;	/* Turn on the diagonal bit           */
+      state->ra[k] &= mask;     /* Turn off bits left of the diagonal */
+      state->ra[k] |= msb;      /* Turn on the diagonal bit           */
       mask >>= 1;
       msb >>= 1;
   }
@@ -142,9 +142,9 @@ gfsr4_set (void *vstate, unsigned long int s)
 }
 
 static const gsl_rng_type gfsr4_type =
-{"gfsr4",			/* name */
- 0xffffffffUL,			/* RAND_MAX  */
- 0,			        /* RAND_MIN  */
+{"gfsr4",                       /* name */
+ 0xffffffffUL,                  /* RAND_MAX  */
+ 0,                             /* RAND_MIN  */
  sizeof (gfsr4_state_t),
  &gfsr4_set,
  &gfsr4_get,

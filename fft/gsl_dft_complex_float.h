@@ -39,16 +39,16 @@
 __BEGIN_DECLS
 
 int gsl_dft_complex_float_forward (const float data[], const size_t stride, const size_t n,
-			     float result[]);
+                             float result[]);
 
 int gsl_dft_complex_float_backward (const float data[], const size_t stride, const size_t n,
-			      float result[]);
+                              float result[]);
 
 int gsl_dft_complex_float_inverse (const float data[], const size_t stride, const size_t n,
-			     float result[]);
+                             float result[]);
 
 int gsl_dft_complex_float_transform (const float data[], const size_t stride, const size_t n,
-		     float result[], const gsl_fft_direction sign);
+                     float result[], const gsl_fft_direction sign);
 
 __END_DECLS
 

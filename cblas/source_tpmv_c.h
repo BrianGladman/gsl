@@ -35,13 +35,13 @@
       BASE temp_r;
       BASE temp_i;
       if (nonunit) {
-	BASE x_real = REAL(X, ix);
-	BASE x_imag = IMAG(X, ix);
-	temp_r = Aii_real * x_real - Aii_imag * x_imag;
-	temp_i = Aii_real * x_imag + Aii_imag * x_real;
+        BASE x_real = REAL(X, ix);
+        BASE x_imag = IMAG(X, ix);
+        temp_r = Aii_real * x_real - Aii_imag * x_imag;
+        temp_i = Aii_real * x_imag + Aii_imag * x_real;
       } else {
-	temp_r = REAL(X, ix);
-	temp_i = IMAG(X, ix);
+        temp_r = REAL(X, ix);
+        temp_i = IMAG(X, ix);
       }
 
       {
@@ -62,7 +62,7 @@
       ix += incX;
     }
   } else if ((order == CblasRowMajor && Trans == CblasNoTrans && Uplo == CblasLower)
-	     || (order == CblasColMajor && Trans == CblasTrans && Uplo == CblasUpper)) {
+             || (order == CblasColMajor && Trans == CblasTrans && Uplo == CblasUpper)) {
 
     INDEX ix = OFFSET(N, incX) + incX * (N - 1);
     for (i = N; i > 0 && i--;) {
@@ -71,13 +71,13 @@
       BASE temp_r;
       BASE temp_i;
       if (nonunit) {
-	BASE x_real = REAL(X, ix);
-	BASE x_imag = IMAG(X, ix);
-	temp_r = Aii_real * x_real - Aii_imag * x_imag;
-	temp_i = Aii_real * x_imag + Aii_imag * x_real;
+        BASE x_real = REAL(X, ix);
+        BASE x_imag = IMAG(X, ix);
+        temp_r = Aii_real * x_real - Aii_imag * x_imag;
+        temp_i = Aii_real * x_imag + Aii_imag * x_real;
       } else {
-	temp_r = REAL(X, ix);
-	temp_i = IMAG(X, ix);
+        temp_r = REAL(X, ix);
+        temp_i = IMAG(X, ix);
       }
 
       {
@@ -98,7 +98,7 @@
       ix -= incX;
     }
   } else if ((order == CblasRowMajor && Trans == CblasTrans && Uplo == CblasUpper)
-	     || (order == CblasColMajor && Trans == CblasNoTrans && Uplo == CblasLower)) {
+             || (order == CblasColMajor && Trans == CblasNoTrans && Uplo == CblasLower)) {
     /* form  x := A'*x */
 
     INDEX ix = OFFSET(N, incX) + incX * (N - 1);
@@ -108,13 +108,13 @@
       BASE temp_r;
       BASE temp_i;
       if (nonunit) {
-	BASE x_real = REAL(X, ix);
-	BASE x_imag = IMAG(X, ix);
-	temp_r = Aii_real * x_real - Aii_imag * x_imag;
-	temp_i = Aii_real * x_imag + Aii_imag * x_real;
+        BASE x_real = REAL(X, ix);
+        BASE x_imag = IMAG(X, ix);
+        temp_r = Aii_real * x_real - Aii_imag * x_imag;
+        temp_i = Aii_real * x_imag + Aii_imag * x_real;
       } else {
-	temp_r = REAL(X, ix);
-	temp_i = IMAG(X, ix);
+        temp_r = REAL(X, ix);
+        temp_i = IMAG(X, ix);
       }
       {
         INDEX jx = OFFSET(N, incX);
@@ -134,7 +134,7 @@
       ix -= incX;
     }
   } else if ((order == CblasRowMajor && Trans == CblasTrans && Uplo == CblasLower)
-	     || (order == CblasColMajor && Trans == CblasNoTrans && Uplo == CblasUpper)) {
+             || (order == CblasColMajor && Trans == CblasNoTrans && Uplo == CblasUpper)) {
 
     INDEX ix = OFFSET(N, incX);
     for (i = 0; i < N; i++) {
@@ -143,13 +143,13 @@
       BASE temp_r;
       BASE temp_i;
       if (nonunit) {
-	BASE x_real = REAL(X, ix);
-	BASE x_imag = IMAG(X, ix);
-	temp_r = Aii_real * x_real - Aii_imag * x_imag;
-	temp_i = Aii_real * x_imag + Aii_imag * x_real;
+        BASE x_real = REAL(X, ix);
+        BASE x_imag = IMAG(X, ix);
+        temp_r = Aii_real * x_real - Aii_imag * x_imag;
+        temp_i = Aii_real * x_imag + Aii_imag * x_real;
       } else {
-	temp_r = REAL(X, ix);
-	temp_i = IMAG(X, ix);
+        temp_r = REAL(X, ix);
+        temp_i = IMAG(X, ix);
       }
       {
         INDEX jx = OFFSET(N, incX) + (i + 1) * incX;

@@ -92,12 +92,12 @@ compute_diag (const gsl_matrix * J, gsl_vector * diag)
     {
       double sum = 0;
       for (i = 0; i < n; i++)
-	{
-	  double Jij = gsl_matrix_get (J, i, j);
-	  sum += Jij * Jij;
-	}
+        {
+          double Jij = gsl_matrix_get (J, i, j);
+          sum += Jij * Jij;
+        }
       if (sum == 0)
-	sum = 1.0;
+        sum = 1.0;
 
       gsl_vector_set (diag, j, sqrt (sum));
     }
@@ -112,18 +112,18 @@ update_diag (const gsl_matrix * J, gsl_vector * diag)
     {
       double cnorm, diagj, sum = 0;
       for (i = 0; i < n; i++)
-	{
-	  double Jij = gsl_matrix_get (J, i, j);
-	  sum += Jij * Jij;
-	}
+        {
+          double Jij = gsl_matrix_get (J, i, j);
+          sum += Jij * Jij;
+        }
       if (sum == 0)
-	sum = 1.0;
+        sum = 1.0;
 
       cnorm = sqrt (sum);
       diagj = gsl_vector_get (diag, j);
 
       if (cnorm > diagj)
-	gsl_vector_set (diag, j, cnorm);
+        gsl_vector_set (diag, j, cnorm);
     }
 }
 
@@ -181,7 +181,7 @@ compute_qtf (const gsl_matrix * q, const gsl_vector * f, gsl_vector * qtf)
     {
       double sum = 0;
       for (i = 0; i < N; i++)
-	sum += gsl_matrix_get (q, i, j) * gsl_vector_get (f, i);
+        sum += gsl_matrix_get (q, i, j) * gsl_vector_get (f, i);
 
       gsl_vector_set (qtf, j, sum);
     }
@@ -197,9 +197,9 @@ compute_rdx (const gsl_matrix * r, const gsl_vector * dx, gsl_vector * rdx)
       double sum = 0;
 
       for (j = i; j < N; j++)
-	{
-	  sum += gsl_matrix_get (r, i, j) * gsl_vector_get (dx, j);
-	}
+        {
+          sum += gsl_matrix_get (r, i, j) * gsl_vector_get (dx, j);
+        }
 
       gsl_vector_set (rdx, i, sum);
     }
@@ -243,7 +243,7 @@ newton_direction (const gsl_matrix * r, const gsl_vector * qtf, gsl_vector * p)
 
 static void
 gradient_direction (const gsl_matrix * r, const gsl_vector * qtf,
-		    const gsl_vector * diag, gsl_vector * g)
+                    const gsl_vector * diag, gsl_vector * g)
 {
   const size_t M = r->size1;
   const size_t N = r->size2;
@@ -256,9 +256,9 @@ gradient_direction (const gsl_matrix * r, const gsl_vector * qtf,
       double dj;
 
       for (i = 0; i < N; i++)
-	{
-	  sum += gsl_matrix_get (r, i, j) * gsl_vector_get (qtf, i);
-	}
+        {
+          sum += gsl_matrix_get (r, i, j) * gsl_vector_get (qtf, i);
+        }
 
       dj = gsl_vector_get (diag, j);
       gsl_vector_set (g, j, -sum / dj);
@@ -290,11 +290,11 @@ compute_Rg (const gsl_matrix * r, const gsl_vector * gradient, gsl_vector * Rg)
       double sum = 0;
 
       for (j = i; j < N; j++)
-	{
-	  double gj = gsl_vector_get (gradient, j);
-	  double rij = gsl_matrix_get (r, i, j);
-	  sum += rij * gj;
-	}
+        {
+          double gj = gsl_vector_get (gradient, j);
+          double rij = gsl_matrix_get (r, i, j);
+          sum += rij * gj;
+        }
 
       gsl_vector_set (Rg, i, sum);
     }
@@ -316,8 +316,8 @@ scaled_addition (double alpha, gsl_vector * newton, double beta, gsl_vector * gr
 
 static int
 dogleg (const gsl_matrix * r, const gsl_vector * qtf,
-	const gsl_vector * diag, double delta,
-	gsl_vector * newton, gsl_vector * gradient, gsl_vector * p)
+        const gsl_vector * diag, double delta,
+        gsl_vector * newton, gsl_vector * gradient, gsl_vector * p)
 {
   double qnorm, gnorm, sgnorm, bnorm, temp;
 
@@ -359,7 +359,7 @@ dogleg (const gsl_matrix * r, const gsl_vector * qtf,
 
   minimum_step (gnorm, diag, gradient);
 
-  compute_Rg (r, gradient, p);	/* Use p as temporary space to compute Rg */
+  compute_Rg (r, gradient, p);  /* Use p as temporary space to compute Rg */
 
 #ifdef DEBUG
   printf("mingrad = "); gsl_vector_fprintf(stdout, gradient, "%g"); printf("\n");

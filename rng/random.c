@@ -313,13 +313,13 @@ glibc2_initialize (long int * x, int n, unsigned long int s)
       const long int h = s / 127773;
       const long int t = 16807 * (s - h * 127773) - h * 2836;
       if (t < 0)
-	{
-	  s = t + 2147483647 ;
-	}
+        {
+          s = t + 2147483647 ;
+        }
       else
-	{
-	  s = t ;
-	}
+        {
+          s = t ;
+        }
 
     x[i] = s ;
     }
@@ -469,162 +469,162 @@ random256_libc5_set (void *vstate, unsigned long int s)
 }
 
 static const gsl_rng_type random_glibc2_type =
-{"random-glibc2",			/* name */
- 0x7fffffffUL,			/* RAND_MAX */
- 0,				/* RAND_MIN */
+{"random-glibc2",                       /* name */
+ 0x7fffffffUL,                  /* RAND_MAX */
+ 0,                             /* RAND_MIN */
  sizeof (random128_state_t),
  &random128_glibc2_set,
  &random128_get,
  &random128_get_double};
 
 static const gsl_rng_type random8_glibc2_type =
-{"random8-glibc2",			/* name */
- 0x7fffffffUL,			/* RAND_MAX */
- 0,				/* RAND_MIN */
+{"random8-glibc2",                      /* name */
+ 0x7fffffffUL,                  /* RAND_MAX */
+ 0,                             /* RAND_MIN */
  sizeof (random8_state_t),
  &random8_glibc2_set,
  &random8_get,
  &random8_get_double};
 
 static const gsl_rng_type random32_glibc2_type =
-{"random32-glibc2",			/* name */
- 0x7fffffffUL,			/* RAND_MAX */
- 0,				/* RAND_MIN */
+{"random32-glibc2",                     /* name */
+ 0x7fffffffUL,                  /* RAND_MAX */
+ 0,                             /* RAND_MIN */
  sizeof (random32_state_t),
  &random32_glibc2_set,
  &random32_get,
  &random32_get_double};
 
 static const gsl_rng_type random64_glibc2_type =
-{"random64-glibc2",			/* name */
- 0x7fffffffUL,			/* RAND_MAX */
- 0,				/* RAND_MIN */
+{"random64-glibc2",                     /* name */
+ 0x7fffffffUL,                  /* RAND_MAX */
+ 0,                             /* RAND_MIN */
  sizeof (random64_state_t),
  &random64_glibc2_set,
  &random64_get,
  &random64_get_double};
 
 static const gsl_rng_type random128_glibc2_type =
-{"random128-glibc2",			/* name */
- 0x7fffffffUL,			/* RAND_MAX */
- 0,				/* RAND_MIN */
+{"random128-glibc2",                    /* name */
+ 0x7fffffffUL,                  /* RAND_MAX */
+ 0,                             /* RAND_MIN */
  sizeof (random128_state_t),
  &random128_glibc2_set,
  &random128_get,
  &random128_get_double};
 
 static const gsl_rng_type random256_glibc2_type =
-{"random256-glibc2",			/* name */
- 0x7fffffffUL,			/* RAND_MAX */
- 0,				/* RAND_MIN */
+{"random256-glibc2",                    /* name */
+ 0x7fffffffUL,                  /* RAND_MAX */
+ 0,                             /* RAND_MIN */
  sizeof (random256_state_t),
  &random256_glibc2_set,
  &random256_get,
  &random256_get_double};
 
 static const gsl_rng_type random_libc5_type =
-{"random-libc5",			/* name */
- 0x7fffffffUL,			/* RAND_MAX */
- 0,				/* RAND_MIN */
+{"random-libc5",                        /* name */
+ 0x7fffffffUL,                  /* RAND_MAX */
+ 0,                             /* RAND_MIN */
  sizeof (random128_state_t),
  &random128_libc5_set,
  &random128_get,
  &random128_get_double};
 
 static const gsl_rng_type random8_libc5_type =
-{"random8-libc5",			/* name */
- 0x7fffffffUL,			/* RAND_MAX */
- 0,				/* RAND_MIN */
+{"random8-libc5",                       /* name */
+ 0x7fffffffUL,                  /* RAND_MAX */
+ 0,                             /* RAND_MIN */
  sizeof (random8_state_t),
  &random8_libc5_set,
  &random8_get,
  &random8_get_double};
 
 static const gsl_rng_type random32_libc5_type =
-{"random32-libc5",			/* name */
- 0x7fffffffUL,			/* RAND_MAX */
- 0,				/* RAND_MIN */
+{"random32-libc5",                      /* name */
+ 0x7fffffffUL,                  /* RAND_MAX */
+ 0,                             /* RAND_MIN */
  sizeof (random32_state_t),
  &random32_libc5_set,
  &random32_get,
  &random32_get_double};
 
 static const gsl_rng_type random64_libc5_type =
-{"random64-libc5",			/* name */
- 0x7fffffffUL,			/* RAND_MAX */
- 0,				/* RAND_MIN */
+{"random64-libc5",                      /* name */
+ 0x7fffffffUL,                  /* RAND_MAX */
+ 0,                             /* RAND_MIN */
  sizeof (random64_state_t),
  &random64_libc5_set,
  &random64_get,
  &random64_get_double};
 
 static const gsl_rng_type random128_libc5_type =
-{"random128-libc5",			/* name */
- 0x7fffffffUL,			/* RAND_MAX */
- 0,				/* RAND_MIN */
+{"random128-libc5",                     /* name */
+ 0x7fffffffUL,                  /* RAND_MAX */
+ 0,                             /* RAND_MIN */
  sizeof (random128_state_t),
  &random128_libc5_set,
  &random128_get,
  &random128_get_double};
 
 static const gsl_rng_type random256_libc5_type =
-{"random256-libc5",			/* name */
- 0x7fffffffUL,			/* RAND_MAX */
- 0,				/* RAND_MIN */
+{"random256-libc5",                     /* name */
+ 0x7fffffffUL,                  /* RAND_MAX */
+ 0,                             /* RAND_MIN */
  sizeof (random256_state_t),
  &random256_libc5_set,
  &random256_get,
  &random256_get_double};
 
 static const gsl_rng_type random_bsd_type =
-{"random-bsd",			/* name */
- 0x7fffffffUL,			/* RAND_MAX */
- 0,				/* RAND_MIN */
+{"random-bsd",                  /* name */
+ 0x7fffffffUL,                  /* RAND_MAX */
+ 0,                             /* RAND_MIN */
  sizeof (random128_state_t),
  &random128_bsd_set,
  &random128_get,
  &random128_get_double};
 
 static const gsl_rng_type random8_bsd_type =
-{"random8-bsd",			/* name */
- 0x7fffffffUL,			/* RAND_MAX */
- 0,				/* RAND_MIN */
+{"random8-bsd",                 /* name */
+ 0x7fffffffUL,                  /* RAND_MAX */
+ 0,                             /* RAND_MIN */
  sizeof (random8_state_t),
  &random8_bsd_set,
  &random8_get,
  &random8_get_double};
 
 static const gsl_rng_type random32_bsd_type =
-{"random32-bsd",			/* name */
- 0x7fffffffUL,			/* RAND_MAX */
- 0,				/* RAND_MIN */
+{"random32-bsd",                        /* name */
+ 0x7fffffffUL,                  /* RAND_MAX */
+ 0,                             /* RAND_MIN */
  sizeof (random32_state_t),
  &random32_bsd_set,
  &random32_get,
  &random32_get_double};
 
 static const gsl_rng_type random64_bsd_type =
-{"random64-bsd",			/* name */
- 0x7fffffffUL,			/* RAND_MAX */
- 0,				/* RAND_MIN */
+{"random64-bsd",                        /* name */
+ 0x7fffffffUL,                  /* RAND_MAX */
+ 0,                             /* RAND_MIN */
  sizeof (random64_state_t),
  &random64_bsd_set,
  &random64_get,
  &random64_get_double};
 
 static const gsl_rng_type random128_bsd_type =
-{"random128-bsd",		/* name */
- 0x7fffffffUL,			/* RAND_MAX */
- 0,				/* RAND_MIN */
+{"random128-bsd",               /* name */
+ 0x7fffffffUL,                  /* RAND_MAX */
+ 0,                             /* RAND_MIN */
  sizeof (random128_state_t),
  &random128_bsd_set,
  &random128_get,
  &random128_get_double};
 
 static const gsl_rng_type random256_bsd_type =
-{"random256-bsd",		/* name */
- 0x7fffffffUL,			/* RAND_MAX */
- 0,				/* RAND_MIN */
+{"random256-bsd",               /* name */
+ 0x7fffffffUL,                  /* RAND_MAX */
+ 0,                             /* RAND_MIN */
  sizeof (random256_state_t),
  &random256_bsd_set,
  &random256_get,

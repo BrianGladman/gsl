@@ -4,7 +4,7 @@
 
 double
 cblas_dsdot (const int N, const float *X, const int incX, const float *Y,
-	     const int incY)
+             const int incY)
 {
 #define INIT_VAL  0.0
 #define ACC_TYPE  double

@@ -101,7 +101,7 @@ gsl_sf_bessel_Inu_e(double nu, double x, gsl_sf_result * result)
   int stat_I = gsl_sf_bessel_Inu_scaled_e(nu, x, &b);
   int stat_e = gsl_sf_exp_mult_err_e(x, fabs(x*GSL_DBL_EPSILON),
                                         b.val, b.err,
-					result);
+                                        result);
   return GSL_ERROR_SELECT_2(stat_e, stat_I);
 }
 

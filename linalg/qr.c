@@ -74,26 +74,26 @@ gsl_linalg_QR_decomp (gsl_matrix * A, gsl_vector * tau)
       size_t i;
 
       for (i = 0; i < GSL_MIN (M, N); i++)
-	{
-	  /* Compute the Householder transformation to reduce the j-th
-	     column of the matrix to a multiple of the j-th unit vector */
+        {
+          /* Compute the Householder transformation to reduce the j-th
+             column of the matrix to a multiple of the j-th unit vector */
 
-	  gsl_vector_view c_full = gsl_matrix_column (A, i);
+          gsl_vector_view c_full = gsl_matrix_column (A, i);
           gsl_vector_view c = gsl_vector_subvector (&(c_full.vector), i, M-i);
 
-	  double tau_i = gsl_linalg_householder_transform (&(c.vector));
+          double tau_i = gsl_linalg_householder_transform (&(c.vector));
 
-	  gsl_vector_set (tau, i, tau_i);
+          gsl_vector_set (tau, i, tau_i);
 
-	  /* Apply the transformation to the remaining columns and
-	     update the norms */
+          /* Apply the transformation to the remaining columns and
+             update the norms */
 
-	  if (i + 1 < N)
-	    {
-	      gsl_matrix_view m = gsl_matrix_submatrix (A, i, i + 1, M - i, N - (i + 1));
-	      gsl_linalg_householder_hm (tau_i, &(c.vector), &(m.matrix));
-	    }
-	}
+          if (i + 1 < N)
+            {
+              gsl_matrix_view m = gsl_matrix_submatrix (A, i, i + 1, M - i, N - (i + 1));
+              gsl_linalg_householder_hm (tau_i, &(c.vector), &(m.matrix));
+            }
+        }
 
       return GSL_SUCCESS;
     }
@@ -331,13 +331,13 @@ gsl_linalg_QR_QTvec (const gsl_matrix * QR, const gsl_vector * tau, gsl_vector *
       /* compute Q^T v */
 
       for (i = 0; i < GSL_MIN (M, N); i++)
-	{
-	  gsl_vector_const_view c = gsl_matrix_const_column (QR, i);
+        {
+          gsl_vector_const_view c = gsl_matrix_const_column (QR, i);
           gsl_vector_const_view h = gsl_vector_const_subvector (&(c.vector), i, M - i);
-	  gsl_vector_view w = gsl_vector_subvector (v, i, M - i);
-	  double ti = gsl_vector_get (tau, i);
-	  gsl_linalg_householder_hv (ti, &(h.vector), &(w.vector));
-	}
+          gsl_vector_view w = gsl_vector_subvector (v, i, M - i);
+          double ti = gsl_vector_get (tau, i);
+          gsl_linalg_householder_hv (ti, &(h.vector), &(w.vector));
+        }
       return GSL_SUCCESS;
     }
 }
@@ -364,14 +364,14 @@ gsl_linalg_QR_Qvec (const gsl_matrix * QR, const gsl_vector * tau, gsl_vector * 
       /* compute Q^T v */
 
       for (i = GSL_MIN (M, N); i > 0 && i--;)
-	{
-	  gsl_vector_const_view c = gsl_matrix_const_column (QR, i);
+        {
+          gsl_vector_const_view c = gsl_matrix_const_column (QR, i);
           gsl_vector_const_view h = gsl_vector_const_subvector (&(c.vector), 
                                                                 i, M - i);
-	  gsl_vector_view w = gsl_vector_subvector (v, i, M - i);
-	  double ti = gsl_vector_get (tau, i);
-	  gsl_linalg_householder_hv (ti, &h.vector, &w.vector);
-	}
+          gsl_vector_view w = gsl_vector_subvector (v, i, M - i);
+          double ti = gsl_vector_get (tau, i);
+          gsl_linalg_householder_hv (ti, &h.vector, &w.vector);
+        }
       return GSL_SUCCESS;
     }
 }
@@ -406,25 +406,25 @@ gsl_linalg_QR_unpack (const gsl_matrix * QR, const gsl_vector * tau, gsl_matrix 
       gsl_matrix_set_identity (Q);
 
       for (i = GSL_MIN (M, N); i > 0 && i--;)
-	{
+        {
           gsl_vector_const_view c = gsl_matrix_const_column (QR, i);
           gsl_vector_const_view h = gsl_vector_const_subvector (&c.vector,
                                                                 i, M - i);
           gsl_matrix_view m = gsl_matrix_submatrix (Q, i, i, M - i, M - i);
           double ti = gsl_vector_get (tau, i);
           gsl_linalg_householder_hm (ti, &h.vector, &m.matrix);
-	}
+        }
 
       /*  Form the right triangular matrix R from a packed QR matrix */
 
       for (i = 0; i < M; i++)
-	{
-	  for (j = 0; j < i && j < N; j++)
-	    gsl_matrix_set (R, i, j, 0.0);
+        {
+          for (j = 0; j < i && j < N; j++)
+            gsl_matrix_set (R, i, j, 0.0);
 
-	  for (j = i; j < N; j++)
-	    gsl_matrix_set (R, i, j, gsl_matrix_get (QR, i, j));
-	}
+          for (j = i; j < N; j++)
+            gsl_matrix_set (R, i, j, gsl_matrix_get (QR, i, j));
+        }
 
       return GSL_SUCCESS;
     }
@@ -445,7 +445,7 @@ gsl_linalg_QR_unpack (const gsl_matrix * QR, const gsl_vector * tau, gsl_matrix 
 
 int
 gsl_linalg_QR_update (gsl_matrix * Q, gsl_matrix * R,
-		      gsl_vector * w, const gsl_vector * v)
+                      gsl_vector * w, const gsl_vector * v)
 {
   const size_t M = R->size1;
   const size_t N = R->size2;
@@ -475,41 +475,41 @@ gsl_linalg_QR_update (gsl_matrix * Q, gsl_matrix * R,
          so that H is upper Hessenberg.  (12.5.2) */
 
       for (k = M - 1; k > 0; k--)
-	{
-	  double c, s;
-	  double wk = gsl_vector_get (w, k);
-	  double wkm1 = gsl_vector_get (w, k - 1);
+        {
+          double c, s;
+          double wk = gsl_vector_get (w, k);
+          double wkm1 = gsl_vector_get (w, k - 1);
 
-	  create_givens (wkm1, wk, &c, &s);
-	  apply_givens_vec (w, k - 1, k, c, s);
-	  apply_givens_qr (M, N, Q, R, k - 1, k, c, s);
-	}
+          create_givens (wkm1, wk, &c, &s);
+          apply_givens_vec (w, k - 1, k, c, s);
+          apply_givens_qr (M, N, Q, R, k - 1, k, c, s);
+        }
 
       w0 = gsl_vector_get (w, 0);
 
       /* Add in w v^T  (Equation 12.5.3) */
 
       for (j = 0; j < N; j++)
-	{
-	  double r0j = gsl_matrix_get (R, 0, j);
-	  double vj = gsl_vector_get (v, j);
-	  gsl_matrix_set (R, 0, j, r0j + w0 * vj);
-	}
+        {
+          double r0j = gsl_matrix_get (R, 0, j);
+          double vj = gsl_vector_get (v, j);
+          gsl_matrix_set (R, 0, j, r0j + w0 * vj);
+        }
 
       /* Apply Givens transformations R' = G_(n-1)^T ... G_1^T H
          Equation 12.5.4 */
 
       for (k = 1; k < GSL_MIN(M,N+1); k++)
-	{
-	  double c, s;
-	  double diag = gsl_matrix_get (R, k - 1, k - 1);
-	  double offdiag = gsl_matrix_get (R, k, k - 1);
+        {
+          double c, s;
+          double diag = gsl_matrix_get (R, k - 1, k - 1);
+          double offdiag = gsl_matrix_get (R, k, k - 1);
 
-	  create_givens (diag, offdiag, &c, &s);
-	  apply_givens_qr (M, N, Q, R, k - 1, k, c, s);
+          create_givens (diag, offdiag, &c, &s);
+          apply_givens_qr (M, N, Q, R, k - 1, k, c, s);
 
-	  gsl_matrix_set (R, k, k - 1, 0.0);	/* exact zero of G^T */
-	}
+          gsl_matrix_set (R, k, k - 1, 0.0);    /* exact zero of G^T */
+        }
 
       return GSL_SUCCESS;
     }

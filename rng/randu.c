@@ -76,7 +76,7 @@ randu_set (void *vstate, unsigned long int s)
   randu_state_t *state = (randu_state_t *) vstate;
 
   if (s == 0)
-    s = 1;	/* default seed is 1 */
+    s = 1;      /* default seed is 1 */
 
   state->x = s;
 
@@ -84,9 +84,9 @@ randu_set (void *vstate, unsigned long int s)
 }
 
 static const gsl_rng_type randu_type =
-{"randu",			/* name */
- 0x7fffffffUL,			/* RAND_MAX */
- 1,       			/* RAND_MIN */
+{"randu",                       /* name */
+ 0x7fffffffUL,                  /* RAND_MAX */
+ 1,                             /* RAND_MIN */
  sizeof (randu_state_t),
  &randu_set,
  &randu_get,

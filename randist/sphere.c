@@ -57,7 +57,7 @@ gsl_ran_dir_2d_trig_method (const gsl_rng * r, double *x, double *y)
    * it can be faster -- it is on my home Pentium -- than von Neumann's
    * solution, or slower -- as it is on my Sun Sparc 20 at work
    */
-  double t = 6.2831853071795864 * gsl_rng_uniform (r);		/* 2*PI */
+  double t = 6.2831853071795864 * gsl_rng_uniform (r);          /* 2*PI */
   *x = cos (t);
   *y = sin (t);
 }
@@ -83,9 +83,9 @@ gsl_ran_dir_3d (const gsl_rng * r, double *x, double *y, double *z)
     }
   while (s > 1.0 || s == 0.0);
 
-  *z = -1 + 2 * s;		/* z uniformly distributed from -1 to 1 */
-  a = 2 * sqrt (1 - s);		/* factor to adjust x,y so that x^2+y^2
-				 * is equal to 1-z^2 */
+  *z = -1 + 2 * s;              /* z uniformly distributed from -1 to 1 */
+  a = 2 * sqrt (1 - s);         /* factor to adjust x,y so that x^2+y^2
+                                 * is equal to 1-z^2 */
   *x *= a;
   *y *= a;
 }
@@ -105,10 +105,10 @@ gsl_ran_dir_nd (const gsl_rng * r, size_t n, double *x)
   do
     {
       for (i = 0; i < n; ++i)
-	{
-	  x[i] = gsl_ran_gaussian (r, 1.0);
-	  d += x[i] * x[i];
-	}
+        {
+          x[i] = gsl_ran_gaussian (r, 1.0);
+          d += x[i] * x[i];
+        }
     }
   while (d == 0);
   d = sqrt (d);

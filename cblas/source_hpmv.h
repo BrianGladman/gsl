@@ -78,16 +78,16 @@
       REAL(Y, iy) += temp1_real * Aii_real;
       IMAG(Y, iy) += temp1_imag * Aii_real;
       for (j = j_min; j < j_max; j++) {
-	BASE Aij_real = CONST_REAL(Ap, TPUP(N, i, j));
-	BASE Aij_imag = conj * CONST_IMAG(Ap, TPUP(N, i, j));
-	REAL(Y, jy) += temp1_real * Aij_real - temp1_imag * (-Aij_imag);
-	IMAG(Y, jy) += temp1_real * (-Aij_imag) + temp1_imag * Aij_real;
-	x_real = CONST_REAL(X, jx);
-	x_imag = CONST_IMAG(X, jx);
-	temp2_real += x_real * Aij_real - x_imag * Aij_imag;
-	temp2_imag += x_real * Aij_imag + x_imag * Aij_real;
-	jx += incX;
-	jy += incY;
+        BASE Aij_real = CONST_REAL(Ap, TPUP(N, i, j));
+        BASE Aij_imag = conj * CONST_IMAG(Ap, TPUP(N, i, j));
+        REAL(Y, jy) += temp1_real * Aij_real - temp1_imag * (-Aij_imag);
+        IMAG(Y, jy) += temp1_real * (-Aij_imag) + temp1_imag * Aij_real;
+        x_real = CONST_REAL(X, jx);
+        x_imag = CONST_IMAG(X, jx);
+        temp2_real += x_real * Aij_real - x_imag * Aij_imag;
+        temp2_imag += x_real * Aij_imag + x_imag * Aij_real;
+        jx += incX;
+        jy += incY;
       }
       REAL(Y, iy) += alpha_real * temp2_real - alpha_imag * temp2_imag;
       IMAG(Y, iy) += alpha_real * temp2_imag + alpha_imag * temp2_real;
@@ -95,7 +95,7 @@
       iy += incY;
     }
   } else if ((order == CblasRowMajor && Uplo == CblasLower)
-	     || (order == CblasColMajor && Uplo == CblasUpper)) {
+             || (order == CblasColMajor && Uplo == CblasUpper)) {
 
     INDEX ix = OFFSET(N, incX);
     INDEX iy = OFFSET(N, incY);
@@ -115,16 +115,16 @@
       REAL(Y, iy) += temp1_real * Aii_real;
       IMAG(Y, iy) += temp1_imag * Aii_real;
       for (j = j_min; j < j_max; j++) {
-	BASE Aij_real = CONST_REAL(Ap, TPLO(N, i, j));
-	BASE Aij_imag = conj * CONST_IMAG(Ap, TPLO(N, i, j));
-	REAL(Y, jy) += temp1_real * Aij_real - temp1_imag * (-Aij_imag);
-	IMAG(Y, jy) += temp1_real * (-Aij_imag) + temp1_imag * Aij_real;
-	x_real = CONST_REAL(X, jx);
-	x_imag = CONST_IMAG(X, jx);
-	temp2_real += x_real * Aij_real - x_imag * Aij_imag;
-	temp2_imag += x_real * Aij_imag + x_imag * Aij_real;
-	jx += incX;
-	jy += incY;
+        BASE Aij_real = CONST_REAL(Ap, TPLO(N, i, j));
+        BASE Aij_imag = conj * CONST_IMAG(Ap, TPLO(N, i, j));
+        REAL(Y, jy) += temp1_real * Aij_real - temp1_imag * (-Aij_imag);
+        IMAG(Y, jy) += temp1_real * (-Aij_imag) + temp1_imag * Aij_real;
+        x_real = CONST_REAL(X, jx);
+        x_imag = CONST_IMAG(X, jx);
+        temp2_real += x_real * Aij_real - x_imag * Aij_imag;
+        temp2_imag += x_real * Aij_imag + x_imag * Aij_real;
+        jx += incX;
+        jy += incY;
       }
       REAL(Y, iy) += alpha_real * temp2_real - alpha_imag * temp2_imag;
       IMAG(Y, iy) += alpha_real * temp2_imag + alpha_imag * temp2_real;

@@ -28,8 +28,8 @@
 
 int
 gsl_dft_complex_forward (const double data[], 
-			 const size_t stride, const size_t n,
-			 double result[])
+                         const size_t stride, const size_t n,
+                         double result[])
 {
   gsl_fft_direction sign = forward;
   int status = gsl_dft_complex (data, stride, n, result, sign);
@@ -38,8 +38,8 @@ gsl_dft_complex_forward (const double data[],
 
 int
 gsl_dft_complex_backward (const double data[], 
-			 const size_t stride, const size_t n,
-			 double result[])
+                         const size_t stride, const size_t n,
+                         double result[])
 {
   gsl_fft_direction sign = backward;
   int status = gsl_dft_complex (data, stride, n, result, sign);
@@ -49,8 +49,8 @@ gsl_dft_complex_backward (const double data[],
 
 int
 gsl_dft_complex_inverse (const double data[], 
-			 const size_t stride, const size_t n,
-			 double result[])
+                         const size_t stride, const size_t n,
+                         double result[])
 {
   gsl_fft_direction sign = backward;
   int status = gsl_dft_complex (data, stride, n, result, sign);
@@ -62,8 +62,8 @@ gsl_dft_complex_inverse (const double data[],
     size_t i;
     for (i = 0; i < n; i++)
       {
-	REAL(result,stride,i) *= norm;
-	IMAG(result,stride,i) *= norm;
+        REAL(result,stride,i) *= norm;
+        IMAG(result,stride,i) *= norm;
       }
   }
   return status;
@@ -71,9 +71,9 @@ gsl_dft_complex_inverse (const double data[],
 
 int
 gsl_dft_complex (const double data[], 
-		 const size_t stride, const size_t n,
-		 double result[],
-		 const gsl_fft_direction sign)
+                 const size_t stride, const size_t n,
+                 double result[],
+                 const gsl_fft_direction sign)
 {
 
   size_t i, j, exponent;
@@ -90,21 +90,21 @@ gsl_dft_complex (const double data[],
       exponent = 0;
 
       for (j = 0; j < n; j++)
-	{
-	  double theta = d_theta * (double) exponent;
-	  /* sum = exp(i theta) * data[j] */
+        {
+          double theta = d_theta * (double) exponent;
+          /* sum = exp(i theta) * data[j] */
 
-	  ATOMIC w_real = cos (theta);
-	  ATOMIC w_imag = sin (theta);
+          ATOMIC w_real = cos (theta);
+          ATOMIC w_imag = sin (theta);
 
-	  ATOMIC data_real = REAL(data,stride,j);
-	  ATOMIC data_imag = IMAG(data,stride,j);
+          ATOMIC data_real = REAL(data,stride,j);
+          ATOMIC data_imag = IMAG(data,stride,j);
 
-	  sum_real += w_real * data_real - w_imag * data_imag;
-	  sum_imag += w_real * data_imag + w_imag * data_real;
+          sum_real += w_real * data_real - w_imag * data_imag;
+          sum_imag += w_real * data_imag + w_imag * data_real;
 
-	  exponent = (exponent + i) % n;
-	}
+          exponent = (exponent + i) % n;
+        }
       REAL(result,stride,i) = sum_real;
       IMAG(result,stride,i) = sum_imag;
     }

@@ -33,10 +33,10 @@ FUNCTION (test, text) (void)
 
     for (i = 0; i < N; i++)
       {
-	BASE x;
-	GSL_REAL (x) = (ATOMIC)i;
-	GSL_IMAG (x) = (ATOMIC)(i + 1);
-	FUNCTION (gsl_vector, set) (v, i, x);
+        BASE x;
+        GSL_REAL (x) = (ATOMIC)i;
+        GSL_IMAG (x) = (ATOMIC)(i + 1);
+        FUNCTION (gsl_vector, set) (v, i, x);
       };
 
     FUNCTION (gsl_vector, fprintf) (f, v, OUT_FORMAT);
@@ -52,8 +52,8 @@ FUNCTION (test, text) (void)
     status = 0;
     for (i = 0; i < N; i++)
       {
-	if (w->data[2 * i] != (ATOMIC) i || w->data[2 * i + 1] != (ATOMIC) (i + 1))
-	  status = 1;
+        if (w->data[2 * i] != (ATOMIC) i || w->data[2 * i + 1] != (ATOMIC) (i + 1))
+          status = 1;
       };
     fclose (f);
   }

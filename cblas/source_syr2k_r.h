@@ -41,29 +41,29 @@
   if (beta == 0.0) {
     if (uplo == CblasUpper) {
       for (i = 0; i < N; i++) {
-	for (j = i; j < N; j++) {
-	  C[ldc * i + j] = 0.0;
-	}
+        for (j = i; j < N; j++) {
+          C[ldc * i + j] = 0.0;
+        }
       }
     } else {
       for (i = 0; i < N; i++) {
-	for (j = 0; j <= i; j++) {
-	  C[ldc * i + j] = 0.0;
-	}
+        for (j = 0; j <= i; j++) {
+          C[ldc * i + j] = 0.0;
+        }
       }
     }
   } else if (beta != 1.0) {
     if (uplo == CblasUpper) {
       for (i = 0; i < N; i++) {
-	for (j = i; j < N; j++) {
-	  C[ldc * i + j] *= beta;
-	}
+        for (j = i; j < N; j++) {
+          C[ldc * i + j] *= beta;
+        }
       }
     } else {
       for (i = 0; i < N; i++) {
-	for (j = 0; j <= i; j++) {
-	  C[ldc * i + j] *= beta;
-	}
+        for (j = 0; j <= i; j++) {
+          C[ldc * i + j] *= beta;
+        }
       }
     }
   }
@@ -75,12 +75,12 @@
 
     for (i = 0; i < N; i++) {
       for (j = i; j < N; j++) {
-	BASE temp = 0.0;
-	for (k = 0; k < K; k++) {
-	  temp += (A[i * lda + k] * B[j * ldb + k]
-		   + B[i * ldb + k] * A[j * lda + k]);
-	}
-	C[i * ldc + j] += alpha * temp;
+        BASE temp = 0.0;
+        for (k = 0; k < K; k++) {
+          temp += (A[i * lda + k] * B[j * ldb + k]
+                   + B[i * ldb + k] * A[j * lda + k]);
+        }
+        C[i * ldc + j] += alpha * temp;
       }
     }
 
@@ -88,11 +88,11 @@
 
     for (k = 0; k < K; k++) {
       for (i = 0; i < N; i++) {
-	BASE temp1 = alpha * A[k * lda + i];
-	BASE temp2 = alpha * B[k * ldb + i];
-	for (j = i; j < N; j++) {
-	  C[i * lda + j] += temp1 * B[k * ldb + j] + temp2 * A[k * lda + j];
-	}
+        BASE temp1 = alpha * A[k * lda + i];
+        BASE temp2 = alpha * B[k * ldb + i];
+        for (j = i; j < N; j++) {
+          C[i * lda + j] += temp1 * B[k * ldb + j] + temp2 * A[k * lda + j];
+        }
       }
     }
 
@@ -101,12 +101,12 @@
 
     for (i = 0; i < N; i++) {
       for (j = 0; j <= i; j++) {
-	BASE temp = 0.0;
-	for (k = 0; k < K; k++) {
-	  temp += (A[i * lda + k] * B[j * ldb + k]
-		   + B[i * ldb + k] * A[j * lda + k]);
-	}
-	C[i * ldc + j] += alpha * temp;
+        BASE temp = 0.0;
+        for (k = 0; k < K; k++) {
+          temp += (A[i * lda + k] * B[j * ldb + k]
+                   + B[i * ldb + k] * A[j * lda + k]);
+        }
+        C[i * ldc + j] += alpha * temp;
       }
     }
 
@@ -114,11 +114,11 @@
 
     for (k = 0; k < K; k++) {
       for (i = 0; i < N; i++) {
-	BASE temp1 = alpha * A[k * lda + i];
-	BASE temp2 = alpha * B[k * ldb + i];
-	for (j = 0; j <= i; j++) {
-	  C[i * lda + j] += temp1 * B[k * ldb + j] + temp2 * A[k * lda + j];
-	}
+        BASE temp1 = alpha * A[k * lda + i];
+        BASE temp2 = alpha * B[k * ldb + i];
+        for (j = 0; j <= i; j++) {
+          C[i * lda + j] += temp1 * B[k * ldb + j] + temp2 * A[k * lda + j];
+        }
       }
     }
 

@@ -14,9 +14,9 @@ chop_small_elements (const size_t N, const double d[], double sd[])
       double d_ip1 = d[i + 1];
 
       if (fabs (sd_i) < GSL_DBL_EPSILON * (fabs (d_i) + fabs (d_ip1)))
-	{
-	  sd[i] = 0.0;
-	}
+        {
+          sd[i] = 0.0;
+        }
       d_i = d_ip1;
     }
 }
@@ -104,15 +104,15 @@ qrstep (const size_t n, double d[], double sd[], double gc[], double gs[])
         gs[0] = s;
 
       {
-	double ap1 = c * (c * ap - s * bp) + s * (s * aq - c * bp);
-	double bp1 = c * (s * ap + c * bp) - s * (s * bp + c * aq);
+        double ap1 = c * (c * ap - s * bp) + s * (s * aq - c * bp);
+        double bp1 = c * (s * ap + c * bp) - s * (s * bp + c * aq);
 
-	double aq1 = s * (s * ap + c * bp) + c * (s * bp + c * aq);
+        double aq1 = s * (s * ap + c * bp) + c * (s * bp + c * aq);
 
-	ak = ap1;
-	bk = bp1;
+        ak = ap1;
+        bk = bp1;
 
-	ap = aq1;
+        ap = aq1;
       }
 
       d[0] = ak;
@@ -138,37 +138,37 @@ qrstep (const size_t n, double d[], double sd[], double gc[], double gs[])
       /* compute G' T G */
 
       {
-	double bk1 = c * bk - s * zk;
+        double bk1 = c * bk - s * zk;
 
-	double ap1 = c * (c * ap - s * bp) + s * (s * aq - c * bp);
-	double bp1 = c * (s * ap + c * bp) - s * (s * bp + c * aq);
-	double zp1 = -s * bq;
+        double ap1 = c * (c * ap - s * bp) + s * (s * aq - c * bp);
+        double bp1 = c * (s * ap + c * bp) - s * (s * bp + c * aq);
+        double zp1 = -s * bq;
 
-	double aq1 = s * (s * ap + c * bp) + c * (s * bp + c * aq);
-	double bq1 = c * bq;
+        double aq1 = s * (s * ap + c * bp) + c * (s * bp + c * aq);
+        double bq1 = c * bq;
 
-	ak = ap1;
-	bk = bp1;
-	zk = zp1;
+        ak = ap1;
+        bk = bp1;
+        zk = zp1;
 
-	ap = aq1;
-	bp = bq1;
+        ap = aq1;
+        bp = bq1;
 
-	if (k < n - 2)
-	  aq = d[k + 2];
-	if (k < n - 3)
-	  bq = sd[k + 2];
+        if (k < n - 2)
+          aq = d[k + 2];
+        if (k < n - 3)
+          bq = sd[k + 2];
 
-	d[k] = ak;
+        d[k] = ak;
 
-	if (k > 0)
-	  sd[k - 1] = bk1;
+        if (k > 0)
+          sd[k - 1] = bk1;
 
-	if (k < n - 2)
-	  sd[k + 1] = bp;
+        if (k < n - 2)
+          sd[k + 1] = bp;
 
-	x = bk;
-	z = zk;
+        x = bk;
+        z = zk;
       }
     }
 

@@ -36,7 +36,7 @@
 #include "urand.c"
 
 void my_error_handler (const char *reason, const char *file,
-		       int line, int err);
+                       int line, int err);
 
 int
 main (int argc, char *argv[])

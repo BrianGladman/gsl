@@ -37,9 +37,9 @@
   } else {
     n1 = N;
     n2 = M;
-    side = (Side == CblasLeft) ? CblasRight : CblasLeft;	/* exchanged */
-    uplo = (Uplo == CblasUpper) ? CblasLower : CblasUpper;	/* exchanged */
-    trans = (TransA == CblasNoTrans) ? CblasNoTrans : CblasTrans;	/* same */
+    side = (Side == CblasLeft) ? CblasRight : CblasLeft;        /* exchanged */
+    uplo = (Uplo == CblasUpper) ? CblasLower : CblasUpper;      /* exchanged */
+    trans = (TransA == CblasNoTrans) ? CblasNoTrans : CblasTrans;       /* same */
   }
 
   if (side == CblasLeft && uplo == CblasUpper && trans == CblasNoTrans) {
@@ -48,40 +48,40 @@
 
     if (!(alpha_real == 1.0 && alpha_imag == 0.0)) {
       for (i = 0; i < n1; i++) {
-	for (j = 0; j < n2; j++) {
-	  const BASE Bij_real = REAL(B, ldb * i + j);
-	  const BASE Bij_imag = IMAG(B, ldb * i + j);
-	  REAL(B, ldb * i + j) = alpha_real * Bij_real - alpha_imag * Bij_imag;
-	  IMAG(B, ldb * i + j) = alpha_real * Bij_imag + alpha_imag * Bij_real;
-	}
+        for (j = 0; j < n2; j++) {
+          const BASE Bij_real = REAL(B, ldb * i + j);
+          const BASE Bij_imag = IMAG(B, ldb * i + j);
+          REAL(B, ldb * i + j) = alpha_real * Bij_real - alpha_imag * Bij_imag;
+          IMAG(B, ldb * i + j) = alpha_real * Bij_imag + alpha_imag * Bij_real;
+        }
       }
     }
 
     for (i = n1; i > 0 && i--;) {
       if (nonunit) {
-	const BASE Aii_real = CONST_REAL(A, lda * i + i);
-	const BASE Aii_imag = conj * CONST_IMAG(A, lda * i + i);
-	const BASE s = xhypot(Aii_real, Aii_imag);
-	const BASE a_real = Aii_real / s;
-	const BASE a_imag = Aii_imag / s;
+        const BASE Aii_real = CONST_REAL(A, lda * i + i);
+        const BASE Aii_imag = conj * CONST_IMAG(A, lda * i + i);
+        const BASE s = xhypot(Aii_real, Aii_imag);
+        const BASE a_real = Aii_real / s;
+        const BASE a_imag = Aii_imag / s;
 
-	for (j = 0; j < n2; j++) {
-	  const BASE Bij_real = REAL(B, ldb * i + j);
-	  const BASE Bij_imag = IMAG(B, ldb * i + j);
-	  REAL(B, ldb * i + j) = (Bij_real * a_real + Bij_imag * a_imag) / s;
-	  IMAG(B, ldb * i + j) = (Bij_imag * a_real - Bij_real * a_imag) / s;
-	}
+        for (j = 0; j < n2; j++) {
+          const BASE Bij_real = REAL(B, ldb * i + j);
+          const BASE Bij_imag = IMAG(B, ldb * i + j);
+          REAL(B, ldb * i + j) = (Bij_real * a_real + Bij_imag * a_imag) / s;
+          IMAG(B, ldb * i + j) = (Bij_imag * a_real - Bij_real * a_imag) / s;
+        }
       }
 
       for (k = 0; k < i; k++) {
-	const BASE Aki_real = CONST_REAL(A, k * lda + i);
-	const BASE Aki_imag = conj * CONST_IMAG(A, k * lda + i);
-	for (j = 0; j < n2; j++) {
-	  const BASE Bij_real = REAL(B, ldb * i + j);
-	  const BASE Bij_imag = IMAG(B, ldb * i + j);
-	  REAL(B, ldb * k + j) -= Aki_real * Bij_real - Aki_imag * Bij_imag;
-	  IMAG(B, ldb * k + j) -= Aki_real * Bij_imag + Aki_imag * Bij_real;
-	}
+        const BASE Aki_real = CONST_REAL(A, k * lda + i);
+        const BASE Aki_imag = conj * CONST_IMAG(A, k * lda + i);
+        for (j = 0; j < n2; j++) {
+          const BASE Bij_real = REAL(B, ldb * i + j);
+          const BASE Bij_imag = IMAG(B, ldb * i + j);
+          REAL(B, ldb * k + j) -= Aki_real * Bij_real - Aki_imag * Bij_imag;
+          IMAG(B, ldb * k + j) -= Aki_real * Bij_imag + Aki_imag * Bij_real;
+        }
       }
     }
 
@@ -91,41 +91,41 @@
 
     if (!(alpha_real == 1.0 && alpha_imag == 0.0)) {
       for (i = 0; i < n1; i++) {
-	for (j = 0; j < n2; j++) {
-	  const BASE Bij_real = REAL(B, ldb * i + j);
-	  const BASE Bij_imag = IMAG(B, ldb * i + j);
-	  REAL(B, ldb * i + j) = alpha_real * Bij_real - alpha_imag * Bij_imag;
-	  IMAG(B, ldb * i + j) = alpha_real * Bij_imag + alpha_imag * Bij_real;
-	}
+        for (j = 0; j < n2; j++) {
+          const BASE Bij_real = REAL(B, ldb * i + j);
+          const BASE Bij_imag = IMAG(B, ldb * i + j);
+          REAL(B, ldb * i + j) = alpha_real * Bij_real - alpha_imag * Bij_imag;
+          IMAG(B, ldb * i + j) = alpha_real * Bij_imag + alpha_imag * Bij_real;
+        }
       }
     }
 
     for (i = 0; i < n1; i++) {
 
       if (nonunit) {
-	const BASE Aii_real = CONST_REAL(A, lda * i + i);
-	const BASE Aii_imag = conj * CONST_IMAG(A, lda * i + i);
-	const BASE s = xhypot(Aii_real, Aii_imag);
-	const BASE a_real = Aii_real / s;
-	const BASE a_imag = Aii_imag / s;
+        const BASE Aii_real = CONST_REAL(A, lda * i + i);
+        const BASE Aii_imag = conj * CONST_IMAG(A, lda * i + i);
+        const BASE s = xhypot(Aii_real, Aii_imag);
+        const BASE a_real = Aii_real / s;
+        const BASE a_imag = Aii_imag / s;
 
-	for (j = 0; j < n2; j++) {
-	  const BASE Bij_real = REAL(B, ldb * i + j);
-	  const BASE Bij_imag = IMAG(B, ldb * i + j);
-	  REAL(B, ldb * i + j) = (Bij_real * a_real + Bij_imag * a_imag) / s;
-	  IMAG(B, ldb * i + j) = (Bij_imag * a_real - Bij_real * a_imag) / s;
-	}
+        for (j = 0; j < n2; j++) {
+          const BASE Bij_real = REAL(B, ldb * i + j);
+          const BASE Bij_imag = IMAG(B, ldb * i + j);
+          REAL(B, ldb * i + j) = (Bij_real * a_real + Bij_imag * a_imag) / s;
+          IMAG(B, ldb * i + j) = (Bij_imag * a_real - Bij_real * a_imag) / s;
+        }
       }
 
       for (k = i + 1; k < n1; k++) {
-	const BASE Aik_real = CONST_REAL(A, i * lda + k);
-	const BASE Aik_imag = conj * CONST_IMAG(A, i * lda + k);
-	for (j = 0; j < n2; j++) {
-	  const BASE Bij_real = REAL(B, ldb * i + j);
-	  const BASE Bij_imag = IMAG(B, ldb * i + j);
-	  REAL(B, ldb * k + j) -= Aik_real * Bij_real - Aik_imag * Bij_imag;
-	  IMAG(B, ldb * k + j) -= Aik_real * Bij_imag + Aik_imag * Bij_real;
-	}
+        const BASE Aik_real = CONST_REAL(A, i * lda + k);
+        const BASE Aik_imag = conj * CONST_IMAG(A, i * lda + k);
+        for (j = 0; j < n2; j++) {
+          const BASE Bij_real = REAL(B, ldb * i + j);
+          const BASE Bij_imag = IMAG(B, ldb * i + j);
+          REAL(B, ldb * k + j) -= Aik_real * Bij_real - Aik_imag * Bij_imag;
+          IMAG(B, ldb * k + j) -= Aik_real * Bij_imag + Aik_imag * Bij_real;
+        }
       }
     }
 
@@ -135,41 +135,41 @@
 
     if (!(alpha_real == 1.0 && alpha_imag == 0.0)) {
       for (i = 0; i < n1; i++) {
-	for (j = 0; j < n2; j++) {
-	  const BASE Bij_real = REAL(B, ldb * i + j);
-	  const BASE Bij_imag = IMAG(B, ldb * i + j);
-	  REAL(B, ldb * i + j) = alpha_real * Bij_real - alpha_imag * Bij_imag;
-	  IMAG(B, ldb * i + j) = alpha_real * Bij_imag + alpha_imag * Bij_real;
-	}
+        for (j = 0; j < n2; j++) {
+          const BASE Bij_real = REAL(B, ldb * i + j);
+          const BASE Bij_imag = IMAG(B, ldb * i + j);
+          REAL(B, ldb * i + j) = alpha_real * Bij_real - alpha_imag * Bij_imag;
+          IMAG(B, ldb * i + j) = alpha_real * Bij_imag + alpha_imag * Bij_real;
+        }
       }
     }
 
     for (i = 0; i < n1; i++) {
 
       if (nonunit) {
-	const BASE Aii_real = CONST_REAL(A, lda * i + i);
-	const BASE Aii_imag = conj * CONST_IMAG(A, lda * i + i);
-	const BASE s = xhypot(Aii_real, Aii_imag);
-	const BASE a_real = Aii_real / s;
-	const BASE a_imag = Aii_imag / s;
+        const BASE Aii_real = CONST_REAL(A, lda * i + i);
+        const BASE Aii_imag = conj * CONST_IMAG(A, lda * i + i);
+        const BASE s = xhypot(Aii_real, Aii_imag);
+        const BASE a_real = Aii_real / s;
+        const BASE a_imag = Aii_imag / s;
 
-	for (j = 0; j < n2; j++) {
-	  const BASE Bij_real = REAL(B, ldb * i + j);
-	  const BASE Bij_imag = IMAG(B, ldb * i + j);
-	  REAL(B, ldb * i + j) = (Bij_real * a_real + Bij_imag * a_imag) / s;
-	  IMAG(B, ldb * i + j) = (Bij_imag * a_real - Bij_real * a_imag) / s;
-	}
+        for (j = 0; j < n2; j++) {
+          const BASE Bij_real = REAL(B, ldb * i + j);
+          const BASE Bij_imag = IMAG(B, ldb * i + j);
+          REAL(B, ldb * i + j) = (Bij_real * a_real + Bij_imag * a_imag) / s;
+          IMAG(B, ldb * i + j) = (Bij_imag * a_real - Bij_real * a_imag) / s;
+        }
       }
 
       for (k = i + 1; k < n1; k++) {
-	const BASE Aki_real = CONST_REAL(A, k * lda + i);
-	const BASE Aki_imag = conj * CONST_IMAG(A, k * lda + i);
-	for (j = 0; j < n2; j++) {
-	  const BASE Bij_real = REAL(B, ldb * i + j);
-	  const BASE Bij_imag = IMAG(B, ldb * i + j);
-	  REAL(B, ldb * k + j) -= Aki_real * Bij_real - Aki_imag * Bij_imag;
-	  IMAG(B, ldb * k + j) -= Aki_real * Bij_imag + Aki_imag * Bij_real;
-	}
+        const BASE Aki_real = CONST_REAL(A, k * lda + i);
+        const BASE Aki_imag = conj * CONST_IMAG(A, k * lda + i);
+        for (j = 0; j < n2; j++) {
+          const BASE Bij_real = REAL(B, ldb * i + j);
+          const BASE Bij_imag = IMAG(B, ldb * i + j);
+          REAL(B, ldb * k + j) -= Aki_real * Bij_real - Aki_imag * Bij_imag;
+          IMAG(B, ldb * k + j) -= Aki_real * Bij_imag + Aki_imag * Bij_real;
+        }
       }
     }
 
@@ -180,40 +180,40 @@
 
     if (!(alpha_real == 1.0 && alpha_imag == 0.0)) {
       for (i = 0; i < n1; i++) {
-	for (j = 0; j < n2; j++) {
-	  const BASE Bij_real = REAL(B, ldb * i + j);
-	  const BASE Bij_imag = IMAG(B, ldb * i + j);
-	  REAL(B, ldb * i + j) = alpha_real * Bij_real - alpha_imag * Bij_imag;
-	  IMAG(B, ldb * i + j) = alpha_real * Bij_imag + alpha_imag * Bij_real;
-	}
+        for (j = 0; j < n2; j++) {
+          const BASE Bij_real = REAL(B, ldb * i + j);
+          const BASE Bij_imag = IMAG(B, ldb * i + j);
+          REAL(B, ldb * i + j) = alpha_real * Bij_real - alpha_imag * Bij_imag;
+          IMAG(B, ldb * i + j) = alpha_real * Bij_imag + alpha_imag * Bij_real;
+        }
       }
     }
 
     for (i = n1; i > 0 && i--;) {
       if (nonunit) {
-	const BASE Aii_real = CONST_REAL(A, lda * i + i);
-	const BASE Aii_imag = conj * CONST_IMAG(A, lda * i + i);
-	const BASE s = xhypot(Aii_real, Aii_imag);
-	const BASE a_real = Aii_real / s;
-	const BASE a_imag = Aii_imag / s;
+        const BASE Aii_real = CONST_REAL(A, lda * i + i);
+        const BASE Aii_imag = conj * CONST_IMAG(A, lda * i + i);
+        const BASE s = xhypot(Aii_real, Aii_imag);
+        const BASE a_real = Aii_real / s;
+        const BASE a_imag = Aii_imag / s;
 
-	for (j = 0; j < n2; j++) {
-	  const BASE Bij_real = REAL(B, ldb * i + j);
-	  const BASE Bij_imag = IMAG(B, ldb * i + j);
-	  REAL(B, ldb * i + j) = (Bij_real * a_real + Bij_imag * a_imag) / s;
-	  IMAG(B, ldb * i + j) = (Bij_imag * a_real - Bij_real * a_imag) / s;
-	}
+        for (j = 0; j < n2; j++) {
+          const BASE Bij_real = REAL(B, ldb * i + j);
+          const BASE Bij_imag = IMAG(B, ldb * i + j);
+          REAL(B, ldb * i + j) = (Bij_real * a_real + Bij_imag * a_imag) / s;
+          IMAG(B, ldb * i + j) = (Bij_imag * a_real - Bij_real * a_imag) / s;
+        }
       }
 
       for (k = 0; k < i; k++) {
-	const BASE Aik_real = CONST_REAL(A, i * lda + k);
-	const BASE Aik_imag = conj * CONST_IMAG(A, i * lda + k);
-	for (j = 0; j < n2; j++) {
-	  const BASE Bij_real = REAL(B, ldb * i + j);
-	  const BASE Bij_imag = IMAG(B, ldb * i + j);
-	  REAL(B, ldb * k + j) -= Aik_real * Bij_real - Aik_imag * Bij_imag;
-	  IMAG(B, ldb * k + j) -= Aik_real * Bij_imag + Aik_imag * Bij_real;
-	}
+        const BASE Aik_real = CONST_REAL(A, i * lda + k);
+        const BASE Aik_imag = conj * CONST_IMAG(A, i * lda + k);
+        for (j = 0; j < n2; j++) {
+          const BASE Bij_real = REAL(B, ldb * i + j);
+          const BASE Bij_imag = IMAG(B, ldb * i + j);
+          REAL(B, ldb * k + j) -= Aik_real * Bij_real - Aik_imag * Bij_imag;
+          IMAG(B, ldb * k + j) -= Aik_real * Bij_imag + Aik_imag * Bij_real;
+        }
       }
     }
 
@@ -223,39 +223,39 @@
 
     if (!(alpha_real == 1.0 && alpha_imag == 0.0)) {
       for (i = 0; i < n1; i++) {
-	for (j = 0; j < n2; j++) {
-	  const BASE Bij_real = REAL(B, ldb * i + j);
-	  const BASE Bij_imag = IMAG(B, ldb * i + j);
-	  REAL(B, ldb * i + j) = alpha_real * Bij_real - alpha_imag * Bij_imag;
-	  IMAG(B, ldb * i + j) = alpha_real * Bij_imag + alpha_imag * Bij_real;
-	}
+        for (j = 0; j < n2; j++) {
+          const BASE Bij_real = REAL(B, ldb * i + j);
+          const BASE Bij_imag = IMAG(B, ldb * i + j);
+          REAL(B, ldb * i + j) = alpha_real * Bij_real - alpha_imag * Bij_imag;
+          IMAG(B, ldb * i + j) = alpha_real * Bij_imag + alpha_imag * Bij_real;
+        }
       }
     }
 
     for (i = 0; i < n1; i++) {
       for (j = 0; j < n2; j++) {
-	if (nonunit) {
-	  const BASE Ajj_real = CONST_REAL(A, lda * j + j);
-	  const BASE Ajj_imag = conj * CONST_IMAG(A, lda * j + j);
-	  const BASE s = xhypot(Ajj_real, Ajj_imag);
-	  const BASE a_real = Ajj_real / s;
-	  const BASE a_imag = Ajj_imag / s;
-	  const BASE Bij_real = REAL(B, ldb * i + j);
-	  const BASE Bij_imag = IMAG(B, ldb * i + j);
-	  REAL(B, ldb * i + j) = (Bij_real * a_real + Bij_imag * a_imag) / s;
-	  IMAG(B, ldb * i + j) = (Bij_imag * a_real - Bij_real * a_imag) / s;
-	}
+        if (nonunit) {
+          const BASE Ajj_real = CONST_REAL(A, lda * j + j);
+          const BASE Ajj_imag = conj * CONST_IMAG(A, lda * j + j);
+          const BASE s = xhypot(Ajj_real, Ajj_imag);
+          const BASE a_real = Ajj_real / s;
+          const BASE a_imag = Ajj_imag / s;
+          const BASE Bij_real = REAL(B, ldb * i + j);
+          const BASE Bij_imag = IMAG(B, ldb * i + j);
+          REAL(B, ldb * i + j) = (Bij_real * a_real + Bij_imag * a_imag) / s;
+          IMAG(B, ldb * i + j) = (Bij_imag * a_real - Bij_real * a_imag) / s;
+        }
 
-	{
-	  const BASE Bij_real = REAL(B, ldb * i + j);
-	  const BASE Bij_imag = IMAG(B, ldb * i + j);
-	  for (k = j + 1; k < n2; k++) {
-	    const BASE Ajk_real = CONST_REAL(A, j * lda + k);
-	    const BASE Ajk_imag = conj * CONST_IMAG(A, j * lda + k);
-	    REAL(B, ldb * i + k) -= Ajk_real * Bij_real - Ajk_imag * Bij_imag;
-	    IMAG(B, ldb * i + k) -= Ajk_real * Bij_imag + Ajk_imag * Bij_real;
-	  }
-	}
+        {
+          const BASE Bij_real = REAL(B, ldb * i + j);
+          const BASE Bij_imag = IMAG(B, ldb * i + j);
+          for (k = j + 1; k < n2; k++) {
+            const BASE Ajk_real = CONST_REAL(A, j * lda + k);
+            const BASE Ajk_imag = conj * CONST_IMAG(A, j * lda + k);
+            REAL(B, ldb * i + k) -= Ajk_real * Bij_real - Ajk_imag * Bij_imag;
+            IMAG(B, ldb * i + k) -= Ajk_real * Bij_imag + Ajk_imag * Bij_real;
+          }
+        }
       }
     }
 
@@ -265,40 +265,40 @@
 
     if (!(alpha_real == 1.0 && alpha_imag == 0.0)) {
       for (i = 0; i < n1; i++) {
-	for (j = 0; j < n2; j++) {
-	  const BASE Bij_real = REAL(B, ldb * i + j);
-	  const BASE Bij_imag = IMAG(B, ldb * i + j);
-	  REAL(B, ldb * i + j) = alpha_real * Bij_real - alpha_imag * Bij_imag;
-	  IMAG(B, ldb * i + j) = alpha_real * Bij_imag + alpha_imag * Bij_real;
-	}
+        for (j = 0; j < n2; j++) {
+          const BASE Bij_real = REAL(B, ldb * i + j);
+          const BASE Bij_imag = IMAG(B, ldb * i + j);
+          REAL(B, ldb * i + j) = alpha_real * Bij_real - alpha_imag * Bij_imag;
+          IMAG(B, ldb * i + j) = alpha_real * Bij_imag + alpha_imag * Bij_real;
+        }
       }
     }
 
     for (i = 0; i < n1; i++) {
       for (j = n2; j > 0 && j--;) {
 
-	if (nonunit) {
-	  const BASE Ajj_real = CONST_REAL(A, lda * j + j);
-	  const BASE Ajj_imag = conj * CONST_IMAG(A, lda * j + j);
-	  const BASE s = xhypot(Ajj_real, Ajj_imag);
-	  const BASE a_real = Ajj_real / s;
-	  const BASE a_imag = Ajj_imag / s;
-	  const BASE Bij_real = REAL(B, ldb * i + j);
-	  const BASE Bij_imag = IMAG(B, ldb * i + j);
-	  REAL(B, ldb * i + j) = (Bij_real * a_real + Bij_imag * a_imag) / s;
-	  IMAG(B, ldb * i + j) = (Bij_imag * a_real - Bij_real * a_imag) / s;
-	}
+        if (nonunit) {
+          const BASE Ajj_real = CONST_REAL(A, lda * j + j);
+          const BASE Ajj_imag = conj * CONST_IMAG(A, lda * j + j);
+          const BASE s = xhypot(Ajj_real, Ajj_imag);
+          const BASE a_real = Ajj_real / s;
+          const BASE a_imag = Ajj_imag / s;
+          const BASE Bij_real = REAL(B, ldb * i + j);
+          const BASE Bij_imag = IMAG(B, ldb * i + j);
+          REAL(B, ldb * i + j) = (Bij_real * a_real + Bij_imag * a_imag) / s;
+          IMAG(B, ldb * i + j) = (Bij_imag * a_real - Bij_real * a_imag) / s;
+        }
 
-	{
-	  const BASE Bij_real = REAL(B, ldb * i + j);
-	  const BASE Bij_imag = IMAG(B, ldb * i + j);
-	  for (k = 0; k < j; k++) {
-	    const BASE Akj_real = CONST_REAL(A, k * lda + j);
-	    const BASE Akj_imag = conj * CONST_IMAG(A, k * lda + j);
-	    REAL(B, ldb * i + k) -= Akj_real * Bij_real - Akj_imag * Bij_imag;
-	    IMAG(B, ldb * i + k) -= Akj_real * Bij_imag + Akj_imag * Bij_real;
-	  }
-	}
+        {
+          const BASE Bij_real = REAL(B, ldb * i + j);
+          const BASE Bij_imag = IMAG(B, ldb * i + j);
+          for (k = 0; k < j; k++) {
+            const BASE Akj_real = CONST_REAL(A, k * lda + j);
+            const BASE Akj_imag = conj * CONST_IMAG(A, k * lda + j);
+            REAL(B, ldb * i + k) -= Akj_real * Bij_real - Akj_imag * Bij_imag;
+            IMAG(B, ldb * i + k) -= Akj_real * Bij_imag + Akj_imag * Bij_real;
+          }
+        }
       }
     }
 
@@ -309,40 +309,40 @@
 
     if (!(alpha_real == 1.0 && alpha_imag == 0.0)) {
       for (i = 0; i < n1; i++) {
-	for (j = 0; j < n2; j++) {
-	  const BASE Bij_real = REAL(B, ldb * i + j);
-	  const BASE Bij_imag = IMAG(B, ldb * i + j);
-	  REAL(B, ldb * i + j) = alpha_real * Bij_real - alpha_imag * Bij_imag;
-	  IMAG(B, ldb * i + j) = alpha_real * Bij_imag + alpha_imag * Bij_real;
-	}
+        for (j = 0; j < n2; j++) {
+          const BASE Bij_real = REAL(B, ldb * i + j);
+          const BASE Bij_imag = IMAG(B, ldb * i + j);
+          REAL(B, ldb * i + j) = alpha_real * Bij_real - alpha_imag * Bij_imag;
+          IMAG(B, ldb * i + j) = alpha_real * Bij_imag + alpha_imag * Bij_real;
+        }
       }
     }
 
     for (i = 0; i < n1; i++) {
       for (j = n2; j > 0 && j--;) {
 
-	if (nonunit) {
-	  const BASE Ajj_real = CONST_REAL(A, lda * j + j);
-	  const BASE Ajj_imag = conj * CONST_IMAG(A, lda * j + j);
-	  const BASE s = xhypot(Ajj_real, Ajj_imag);
-	  const BASE a_real = Ajj_real / s;
-	  const BASE a_imag = Ajj_imag / s;
-	  const BASE Bij_real = REAL(B, ldb * i + j);
-	  const BASE Bij_imag = IMAG(B, ldb * i + j);
-	  REAL(B, ldb * i + j) = (Bij_real * a_real + Bij_imag * a_imag) / s;
-	  IMAG(B, ldb * i + j) = (Bij_imag * a_real - Bij_real * a_imag) / s;
-	}
+        if (nonunit) {
+          const BASE Ajj_real = CONST_REAL(A, lda * j + j);
+          const BASE Ajj_imag = conj * CONST_IMAG(A, lda * j + j);
+          const BASE s = xhypot(Ajj_real, Ajj_imag);
+          const BASE a_real = Ajj_real / s;
+          const BASE a_imag = Ajj_imag / s;
+          const BASE Bij_real = REAL(B, ldb * i + j);
+          const BASE Bij_imag = IMAG(B, ldb * i + j);
+          REAL(B, ldb * i + j) = (Bij_real * a_real + Bij_imag * a_imag) / s;
+          IMAG(B, ldb * i + j) = (Bij_imag * a_real - Bij_real * a_imag) / s;
+        }
 
-	{
-	  const BASE Bij_real = REAL(B, ldb * i + j);
-	  const BASE Bij_imag = IMAG(B, ldb * i + j);
-	  for (k = 0; k < j; k++) {
-	    const BASE Ajk_real = CONST_REAL(A, j * lda + k);
-	    const BASE Ajk_imag = conj * CONST_IMAG(A, j * lda + k);
-	    REAL(B, ldb * i + k) -= Ajk_real * Bij_real - Ajk_imag * Bij_imag;
-	    IMAG(B, ldb * i + k) -= Ajk_real * Bij_imag + Ajk_imag * Bij_real;
-	  }
-	}
+        {
+          const BASE Bij_real = REAL(B, ldb * i + j);
+          const BASE Bij_imag = IMAG(B, ldb * i + j);
+          for (k = 0; k < j; k++) {
+            const BASE Ajk_real = CONST_REAL(A, j * lda + k);
+            const BASE Ajk_imag = conj * CONST_IMAG(A, j * lda + k);
+            REAL(B, ldb * i + k) -= Ajk_real * Bij_real - Ajk_imag * Bij_imag;
+            IMAG(B, ldb * i + k) -= Ajk_real * Bij_imag + Ajk_imag * Bij_real;
+          }
+        }
       }
     }
 
@@ -353,40 +353,40 @@
 
     if (!(alpha_real == 1.0 && alpha_imag == 0.0)) {
       for (i = 0; i < n1; i++) {
-	for (j = 0; j < n2; j++) {
-	  const BASE Bij_real = REAL(B, ldb * i + j);
-	  const BASE Bij_imag = IMAG(B, ldb * i + j);
-	  REAL(B, ldb * i + j) = alpha_real * Bij_real - alpha_imag * Bij_imag;
-	  IMAG(B, ldb * i + j) = alpha_real * Bij_imag + alpha_imag * Bij_real;
-	}
+        for (j = 0; j < n2; j++) {
+          const BASE Bij_real = REAL(B, ldb * i + j);
+          const BASE Bij_imag = IMAG(B, ldb * i + j);
+          REAL(B, ldb * i + j) = alpha_real * Bij_real - alpha_imag * Bij_imag;
+          IMAG(B, ldb * i + j) = alpha_real * Bij_imag + alpha_imag * Bij_real;
+        }
       }
     }
 
     for (i = 0; i < n1; i++) {
       for (j = 0; j < n2; j++) {
-	if (nonunit) {
-	  const BASE Ajj_real = CONST_REAL(A, lda * j + j);
-	  const BASE Ajj_imag = conj * CONST_IMAG(A, lda * j + j);
-	  const BASE s = xhypot(Ajj_real, Ajj_imag);
-	  const BASE a_real = Ajj_real / s;
-	  const BASE a_imag = Ajj_imag / s;
-	  const BASE Bij_real = REAL(B, ldb * i + j);
-	  const BASE Bij_imag = IMAG(B, ldb * i + j);
-	  REAL(B, ldb * i + j) = (Bij_real * a_real + Bij_imag * a_imag) / s;
-	  IMAG(B, ldb * i + j) = (Bij_imag * a_real - Bij_real * a_imag) / s;
-	}
+        if (nonunit) {
+          const BASE Ajj_real = CONST_REAL(A, lda * j + j);
+          const BASE Ajj_imag = conj * CONST_IMAG(A, lda * j + j);
+          const BASE s = xhypot(Ajj_real, Ajj_imag);
+          const BASE a_real = Ajj_real / s;
+          const BASE a_imag = Ajj_imag / s;
+          const BASE Bij_real = REAL(B, ldb * i + j);
+          const BASE Bij_imag = IMAG(B, ldb * i + j);
+          REAL(B, ldb * i + j) = (Bij_real * a_real + Bij_imag * a_imag) / s;
+          IMAG(B, ldb * i + j) = (Bij_imag * a_real - Bij_real * a_imag) / s;
+        }
 
-	{
-	  const BASE Bij_real = REAL(B, ldb * i + j);
-	  const BASE Bij_imag = IMAG(B, ldb * i + j);
+        {
+          const BASE Bij_real = REAL(B, ldb * i + j);
+          const BASE Bij_imag = IMAG(B, ldb * i + j);
 
-	  for (k = j + 1; k < n2; k++) {
-	    const BASE Akj_real = CONST_REAL(A, k * lda + j);
-	    const BASE Akj_imag = conj * CONST_IMAG(A, k * lda + j);
-	    REAL(B, ldb * i + k) -= Akj_real * Bij_real - Akj_imag * Bij_imag;
-	    IMAG(B, ldb * i + k) -= Akj_real * Bij_imag + Akj_imag * Bij_real;
-	  }
-	}
+          for (k = j + 1; k < n2; k++) {
+            const BASE Akj_real = CONST_REAL(A, k * lda + j);
+            const BASE Akj_imag = conj * CONST_IMAG(A, k * lda + j);
+            REAL(B, ldb * i + k) -= Akj_real * Bij_real - Akj_imag * Bij_imag;
+            IMAG(B, ldb * i + k) -= Akj_real * Bij_imag + Akj_imag * Bij_real;
+          }
+        }
       }
     }
 

@@ -47,17 +47,17 @@ gsl_ran_tdist (const gsl_rng * r, const double nu)
     {
       double Y1, Y2, Z, t;
       do
-	{
-	  Y1 = gsl_ran_ugaussian (r);
-	  Y2 = gsl_ran_exponential (r, 1 / (nu/2 - 1));
+        {
+          Y1 = gsl_ran_ugaussian (r);
+          Y2 = gsl_ran_exponential (r, 1 / (nu/2 - 1));
 
-	  Z = Y1 * Y1 / (nu - 2);
-	}
+          Z = Y1 * Y1 / (nu - 2);
+        }
       while (1 - Z < 0 || exp (-Y2 - Z) > (1 - Z));
 
       /* Note that there is a typo in Knuth's formula, the line below
-	 is taken from the original paper of Marsaglia, Mathematics of
-	 Computation, 34 (1980), p 234-256 */
+         is taken from the original paper of Marsaglia, Mathematics of
+         Computation, 34 (1980), p 234-256 */
 
       t = Y1 / sqrt ((1 - 2 / nu) * (1 - Z));
       return t;

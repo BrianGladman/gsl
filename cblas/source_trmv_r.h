@@ -33,18 +33,18 @@
       const INDEX j_max = N;
       INDEX jx = OFFSET(N, incX) + j_min * incX;
       for (j = j_min; j < j_max; j++) {
-	temp += X[jx] * A[lda * i + j];
-	jx += incX;
+        temp += X[jx] * A[lda * i + j];
+        jx += incX;
       }
       if (nonunit) {
-	X[ix] = temp + X[ix] * A[lda * i + i];
+        X[ix] = temp + X[ix] * A[lda * i + i];
       } else {
-	X[ix] += temp;
+        X[ix] += temp;
       }
       ix += incX;
     }
   } else if ((order == CblasRowMajor && Trans == CblasNoTrans && Uplo == CblasLower)
-	     || (order == CblasColMajor && Trans == CblasTrans && Uplo == CblasUpper)) {
+             || (order == CblasColMajor && Trans == CblasTrans && Uplo == CblasUpper)) {
     INDEX ix = OFFSET(N, incX) + (N - 1) * incX;
     for (i = N; i > 0 && i--;) {
       BASE temp = 0.0;
@@ -52,18 +52,18 @@
       const INDEX j_max = i;
       INDEX jx = OFFSET(N, incX) + j_min * incX;
       for (j = j_min; j < j_max; j++) {
-	temp += X[jx] * A[lda * i + j];
-	jx += incX;
+        temp += X[jx] * A[lda * i + j];
+        jx += incX;
       }
       if (nonunit) {
-	X[ix] = temp + X[ix] * A[lda * i + i];
+        X[ix] = temp + X[ix] * A[lda * i + i];
       } else {
-	X[ix] += temp;
+        X[ix] += temp;
       }
       ix -= incX;
     }
   } else if ((order == CblasRowMajor && Trans == CblasTrans && Uplo == CblasUpper)
-	     || (order == CblasColMajor && Trans == CblasNoTrans && Uplo == CblasLower)) {
+             || (order == CblasColMajor && Trans == CblasNoTrans && Uplo == CblasLower)) {
     /* form  x := A'*x */
     INDEX ix = OFFSET(N, incX) + (N - 1) * incX;
     for (i = N; i > 0 && i--;) {
@@ -72,18 +72,18 @@
       const INDEX j_max = i;
       INDEX jx = OFFSET(N, incX) + j_min * incX;
       for (j = j_min; j < j_max; j++) {
-	temp += X[jx] * A[lda * j + i];
-	jx += incX;
+        temp += X[jx] * A[lda * j + i];
+        jx += incX;
       }
       if (nonunit) {
-	X[ix] = temp + X[ix] * A[lda * i + i];
+        X[ix] = temp + X[ix] * A[lda * i + i];
       } else {
-	X[ix] += temp;
+        X[ix] += temp;
       }
       ix -= incX;
     }
   } else if ((order == CblasRowMajor && Trans == CblasTrans && Uplo == CblasLower)
-	     || (order == CblasColMajor && Trans == CblasNoTrans && Uplo == CblasUpper)) {
+             || (order == CblasColMajor && Trans == CblasNoTrans && Uplo == CblasUpper)) {
     INDEX ix = OFFSET(N, incX);
     for (i = 0; i < N; i++) {
       BASE temp = 0.0;
@@ -91,13 +91,13 @@
       const INDEX j_max = N;
       INDEX jx = OFFSET(N, incX) + (i + 1) * incX;
       for (j = j_min; j < j_max; j++) {
-	temp += X[jx] * A[lda * j + i];
-	jx += incX;
+        temp += X[jx] * A[lda * j + i];
+        jx += incX;
       }
       if (nonunit) {
-	X[ix] = temp + X[ix] * A[lda * i + i];
+        X[ix] = temp + X[ix] * A[lda * i + i];
       } else {
-	X[ix] += temp;
+        X[ix] += temp;
       }
       ix += incX;
     }

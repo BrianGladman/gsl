@@ -36,24 +36,24 @@
 
 /* chebyshev expansions
 
- series for bi0        on the interval  0.	    to  9.00000d+00
-					with weighted error   2.46e-18
-					 log weighted error  17.61
-			       significant figures required  17.90
-				    decimal places required  18.15
+ series for bi0        on the interval  0.          to  9.00000d+00
+                                        with weighted error   2.46e-18
+                                         log weighted error  17.61
+                               significant figures required  17.90
+                                    decimal places required  18.15
 
  series for ai0        on the interval  1.25000d-01 to  3.33333d-01
-					with weighted error   7.87e-17
-					 log weighted error  16.10
-			       significant figures required  14.69
-				    decimal places required  16.76
+                                        with weighted error   7.87e-17
+                                         log weighted error  16.10
+                               significant figures required  14.69
+                                    decimal places required  16.76
 
 
- series for ai02       on the interval  0.	    to  1.25000d-01
-					with weighted error   3.79e-17
-					 log weighted error  16.42
-			       significant figures required  14.86
-				    decimal places required  17.09
+ series for ai02       on the interval  0.          to  1.25000d-01
+                                        with weighted error   3.79e-17
+                                         log weighted error  16.42
+                               significant figures required  14.86
+                                    decimal places required  17.09
 */
 
 static double bi0_data[12] = {

@@ -110,17 +110,17 @@ double gauss_legendre_10(double (*func)(double), double a, double b)
 {
   int j;
   static double x[] = {0., 
-			 0.1488743389,
-			 0.4333953941,
-			 0.6794095682,
-			 0.8650633666,
-			 0.9739065285};
+                         0.1488743389,
+                         0.4333953941,
+                         0.6794095682,
+                         0.8650633666,
+                         0.9739065285};
   static double w[] = {0.,
-			 0.2955242247,
-			 0.2692667193,
-			 0.2190863625,
-			 0.1494513491,
-			 0.0666713443};
+                         0.2955242247,
+                         0.2692667193,
+                         0.2190863625,
+                         0.1494513491,
+                         0.0666713443};
   
   double xm = 0.5 * (b + a);
   double xr = 0.5 * (b - a);
@@ -192,14 +192,14 @@ void trapezoid_rule(double(*f)(double), double a, double b, int n, double *s)
 #define FUNC(x) ((*func)(x))
 
 void test_trapezoid_rule(double(*func)(double), double a, double b, int n,
-			 double *s)
+                         double *s)
 {
   double x, tnm, sum, del;
   int it, j;
 
   if(n==1){
     printf("t:  a= %g  b= %g   f(a)= %g  f(b)= %g\n",
-	   a, b, FUNC(a), FUNC(b));
+           a, b, FUNC(a), FUNC(b));
   }
 
   if(n==1){
@@ -273,9 +273,9 @@ static inline double f_y(double y)
 { return dummy_f(dummy_x0 + dummy_w * tan(dummy_w * y)); }
 
 double gsl_integ_lorenz(double (*f)(double),
-		    	double x0, double w,
-		    	double a, double b,
-		    	double eps)
+                        double x0, double w,
+                        double a, double b,
+                        double eps)
 {
   dummy_f = f;
   dummy_x0 = x0;

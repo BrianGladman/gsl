@@ -187,27 +187,27 @@ gsl_sf_sin_e(double x, gsl_sf_result * result)
 
       if(GSL_IS_ODD(octant)) {
         octant += 1;
-	octant &= 07;
-	y += 1.0;
+        octant &= 07;
+        y += 1.0;
       }
 
       if(octant > 3) {
         octant -= 4;
-	sgn_result = -sgn_result;
+        sgn_result = -sgn_result;
       }
       
       z = ((abs_x - y * P1) - y * P2) - y * P3;
 
       if(octant == 0) {
         gsl_sf_result sin_cs_result;
-	const double t = 8.0*fabs(z)/M_PI - 1.0;
-	stat_cs = cheb_eval_e(&sin_cs, t, &sin_cs_result);
+        const double t = 8.0*fabs(z)/M_PI - 1.0;
+        stat_cs = cheb_eval_e(&sin_cs, t, &sin_cs_result);
         result->val = z * (1.0 + z*z * sin_cs_result.val);
       }
       else { /* octant == 2 */
         gsl_sf_result cos_cs_result;
-	const double t = 8.0*fabs(z)/M_PI - 1.0;
-	stat_cs = cheb_eval_e(&cos_cs, t, &cos_cs_result);
+        const double t = 8.0*fabs(z)/M_PI - 1.0;
+        stat_cs = cheb_eval_e(&cos_cs, t, &cos_cs_result);
         result->val = 1.0 - 0.5*z*z * (1.0 - z*z * cos_cs_result.val);
       }
 
@@ -259,13 +259,13 @@ gsl_sf_cos_e(double x, gsl_sf_result * result)
 
       if(GSL_IS_ODD(octant)) {
         octant += 1;
-	octant &= 07;
-	y += 1.0;
+        octant &= 07;
+        y += 1.0;
       }
 
       if(octant > 3) {
         octant -= 4;
-	sgn_result = -sgn_result;
+        sgn_result = -sgn_result;
       }
 
       if(octant > 1) {

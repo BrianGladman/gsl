@@ -59,14 +59,14 @@ static inline unsigned long int mt_get (void *vstate);
 static double mt_get_double (void *vstate);
 static void mt_set (void *state, unsigned long int s);
 
-#define N 624	/* Period parameters */
+#define N 624   /* Period parameters */
 #define M 397
 
 /* most significant w-r bits */
-static const unsigned long UPPER_MASK = 0x80000000UL;	
+static const unsigned long UPPER_MASK = 0x80000000UL;   
 
 /* least significant r bits */
-static const unsigned long LOWER_MASK = 0x7fffffffUL;	
+static const unsigned long LOWER_MASK = 0x7fffffffUL;   
 
 typedef struct
   {
@@ -86,23 +86,23 @@ mt_get (void *vstate)
 #define MAGIC(y) (((y)&0x1) ? 0x9908b0dfUL : 0)
 
   if (state->mti >= N)
-    {	/* generate N words at one time */
+    {   /* generate N words at one time */
       int kk;
 
       for (kk = 0; kk < N - M; kk++)
-	{
-	  unsigned long y = (mt[kk] & UPPER_MASK) | (mt[kk + 1] & LOWER_MASK);
-	  mt[kk] = mt[kk + M] ^ (y >> 1) ^ MAGIC(y);
-	}
+        {
+          unsigned long y = (mt[kk] & UPPER_MASK) | (mt[kk + 1] & LOWER_MASK);
+          mt[kk] = mt[kk + M] ^ (y >> 1) ^ MAGIC(y);
+        }
       for (; kk < N - 1; kk++)
-	{
-	  unsigned long y = (mt[kk] & UPPER_MASK) | (mt[kk + 1] & LOWER_MASK);
-	  mt[kk] = mt[kk + (M - N)] ^ (y >> 1) ^ MAGIC(y);
-	}
+        {
+          unsigned long y = (mt[kk] & UPPER_MASK) | (mt[kk + 1] & LOWER_MASK);
+          mt[kk] = mt[kk + (M - N)] ^ (y >> 1) ^ MAGIC(y);
+        }
 
       {
-	unsigned long y = (mt[N - 1] & UPPER_MASK) | (mt[0] & LOWER_MASK);
-	mt[N - 1] = mt[M - 1] ^ (y >> 1) ^ MAGIC(y);
+        unsigned long y = (mt[N - 1] & UPPER_MASK) | (mt[0] & LOWER_MASK);
+        mt[N - 1] = mt[M - 1] ^ (y >> 1) ^ MAGIC(y);
       }
 
       state->mti = 0;
@@ -134,7 +134,7 @@ mt_set (void *vstate, unsigned long int s)
   int i;
 
   if (s == 0)
-    s = 4357;	/* the default seed is 4357 */
+    s = 4357;   /* the default seed is 4357 */
 
   state->mt[0]= s & 0xffffffffUL;
 
@@ -159,7 +159,7 @@ mt_1999_set (void *vstate, unsigned long int s)
   int i;
 
   if (s == 0)
-    s = 4357;	/* the default seed is 4357 */
+    s = 4357;   /* the default seed is 4357 */
 
   /* This is the October 1999 version of the seeding procedure. It
      was updated by the original developers to avoid the periodicity
@@ -192,7 +192,7 @@ mt_1998_set (void *vstate, unsigned long int s)
   int i;
 
   if (s == 0)
-    s = 4357;	/* the default seed is 4357 */
+    s = 4357;   /* the default seed is 4357 */
 
   state->mt[0] = s & 0xffffffffUL;
 
@@ -205,27 +205,27 @@ mt_1998_set (void *vstate, unsigned long int s)
 }
 
 static const gsl_rng_type mt_type =
-{"mt19937",			/* name */
- 0xffffffffUL,			/* RAND_MAX  */
- 0,			        /* RAND_MIN  */
+{"mt19937",                     /* name */
+ 0xffffffffUL,                  /* RAND_MAX  */
+ 0,                             /* RAND_MIN  */
  sizeof (mt_state_t),
  &mt_set,
  &mt_get,
  &mt_get_double};
 
 static const gsl_rng_type mt_1999_type =
-{"mt19937_1999",		/* name */
- 0xffffffffUL,			/* RAND_MAX  */
- 0,			        /* RAND_MIN  */
+{"mt19937_1999",                /* name */
+ 0xffffffffUL,                  /* RAND_MAX  */
+ 0,                             /* RAND_MIN  */
  sizeof (mt_state_t),
  &mt_1999_set,
  &mt_get,
  &mt_get_double};
 
 static const gsl_rng_type mt_1998_type =
-{"mt19937_1998",		/* name */
- 0xffffffffUL,			/* RAND_MAX  */
- 0,			        /* RAND_MIN  */
+{"mt19937_1998",                /* name */
+ 0xffffffffUL,                  /* RAND_MAX  */
+ 0,                             /* RAND_MIN  */
  sizeof (mt_state_t),
  &mt_1998_set,
  &mt_get,

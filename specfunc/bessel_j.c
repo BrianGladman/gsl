@@ -332,7 +332,7 @@ int gsl_sf_bessel_jl_steed_array(const int lmax, const double x, double * jl_x)
       FP += del;
       if(D < 0.0) F = -F;
       if(B > end) {
-	GSL_ERROR ("error", GSL_EMAXITER);
+        GSL_ERROR ("error", GSL_EMAXITER);
       }
     }
     while(fabs(del) >= fabs(FP) * GSL_DBL_EPSILON);
@@ -347,11 +347,11 @@ int gsl_sf_bessel_jl_steed_array(const int lmax, const double x, double * jl_x)
       int LP;
       jl_x[lmax] = F;
       for(LP = 1; LP<=lmax; LP++) {
-	jl_x[L-1] = PL * jl_x[L] + XP2;
-	FP = PL*jl_x[L-1] - jl_x[L];
-	XP2 = FP;
-	PL -= x_inv;
-	--L;
+        jl_x[L-1] = PL * jl_x[L] + XP2;
+        FP = PL*jl_x[L-1] - jl_x[L];
+        XP2 = FP;
+        PL -= x_inv;
+        --L;
       }
       F = jl_x[0];
     }
@@ -362,7 +362,7 @@ int gsl_sf_bessel_jl_steed_array(const int lmax, const double x, double * jl_x)
     if(lmax > 0) {
       int L;
       for(L=1; L<=lmax; L++) {
-	jl_x[L] *= W;
+        jl_x[L] *= W;
       }
     }
 

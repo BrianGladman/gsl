@@ -40,19 +40,19 @@
       BASE tmp = X[ix];
       jx = ix + incX;
       for (j = i + 1; j < N; j++) {
-	const BASE Aij = A[lda * i + j];
-	tmp -= Aij * X[jx];
-	jx += incX;
+        const BASE Aij = A[lda * i + j];
+        tmp -= Aij * X[jx];
+        jx += incX;
       }
       if (nonunit) {
-	X[ix] = tmp / A[lda * i + i];
+        X[ix] = tmp / A[lda * i + i];
       } else {
-	X[ix] = tmp;
+        X[ix] = tmp;
       }
       ix -= incX;
     }
   } else if ((order == CblasRowMajor && Trans == CblasNoTrans && Uplo == CblasLower)
-	     || (order == CblasColMajor && Trans == CblasTrans && Uplo == CblasUpper)) {
+             || (order == CblasColMajor && Trans == CblasTrans && Uplo == CblasUpper)) {
 
     /* forward substitution */
     ix = OFFSET(N, incX);
@@ -64,19 +64,19 @@
       BASE tmp = X[ix];
       jx = OFFSET(N, incX);
       for (j = 0; j < i; j++) {
-	const BASE Aij = A[lda * i + j];
-	tmp -= Aij * X[jx];
-	jx += incX;
+        const BASE Aij = A[lda * i + j];
+        tmp -= Aij * X[jx];
+        jx += incX;
       }
       if (nonunit) {
-	X[ix] = tmp / A[lda * i + i];
+        X[ix] = tmp / A[lda * i + i];
       } else {
-	X[ix] = tmp;
+        X[ix] = tmp;
       }
       ix += incX;
     }
   } else if ((order == CblasRowMajor && Trans == CblasTrans && Uplo == CblasUpper)
-	     || (order == CblasColMajor && Trans == CblasNoTrans && Uplo == CblasLower)) {
+             || (order == CblasColMajor && Trans == CblasNoTrans && Uplo == CblasLower)) {
 
     /* form  x := inv( A' )*x */
 
@@ -90,19 +90,19 @@
       BASE tmp = X[ix];
       jx = OFFSET(N, incX);
       for (j = 0; j < i; j++) {
-	const BASE Aji = A[lda * j + i];
-	tmp -= Aji * X[jx];
-	jx += incX;
+        const BASE Aji = A[lda * j + i];
+        tmp -= Aji * X[jx];
+        jx += incX;
       }
       if (nonunit) {
-	X[ix] = tmp / A[lda * i + i];
+        X[ix] = tmp / A[lda * i + i];
       } else {
-	X[ix] = tmp;
+        X[ix] = tmp;
       }
       ix += incX;
     }
   } else if ((order == CblasRowMajor && Trans == CblasTrans && Uplo == CblasLower)
-	     || (order == CblasColMajor && Trans == CblasNoTrans && Uplo == CblasUpper)) {
+             || (order == CblasColMajor && Trans == CblasNoTrans && Uplo == CblasUpper)) {
 
     /* backsubstitution */
     ix = OFFSET(N, incX) + (N - 1) * incX;
@@ -114,14 +114,14 @@
       BASE tmp = X[ix];
       jx = ix + incX;
       for (j = i + 1; j < N; j++) {
-	const BASE Aji = A[lda * j + i];
-	tmp -= Aji * X[jx];
-	jx += incX;
+        const BASE Aji = A[lda * j + i];
+        tmp -= Aji * X[jx];
+        jx += incX;
       }
       if (nonunit) {
-	X[ix] = tmp / A[lda * i + i];
+        X[ix] = tmp / A[lda * i + i];
       } else {
-	X[ix] = tmp;
+        X[ix] = tmp;
       }
       ix -= incX;
     }

@@ -30,13 +30,13 @@
 
 int
 gsl_integration_qawf (gsl_function * f,
-		      const double a,
-		      const double epsabs,
-		      const size_t limit,
-		      gsl_integration_workspace * workspace,
-		      gsl_integration_workspace * cycle_workspace,
-		      gsl_integration_qawo_table * wf,
-		      double *result, double *abserr)
+                      const double a,
+                      const double epsabs,
+                      const size_t limit,
+                      gsl_integration_workspace * workspace,
+                      gsl_integration_workspace * cycle_workspace,
+                      gsl_integration_qawo_table * wf,
+                      double *result, double *abserr)
 {
   double area, errsum;
   double res_ext, err_ext;
@@ -77,24 +77,24 @@ gsl_integration_qawf (gsl_function * f,
   if (omega == 0.0)
     {
       if (wf->sine == GSL_INTEG_SINE)
-	{
-	  /* The function sin(w x) f(x) is always zero for w = 0 */
+        {
+          /* The function sin(w x) f(x) is always zero for w = 0 */
 
-	  *result = 0;
-	  *abserr = 0;
+          *result = 0;
+          *abserr = 0;
 
-	  return GSL_SUCCESS;
-	}
+          return GSL_SUCCESS;
+        }
       else
-	{
-	  /* The function cos(w x) f(x) is always f(x) for w = 0 */
+        {
+          /* The function cos(w x) f(x) is always f(x) for w = 0 */
 
-	  int status = gsl_integration_qagiu (f, a, epsabs, 0.0,
-					      cycle_workspace->limit,
-					      cycle_workspace,
-					      result, abserr);
-	  return status;
-	}
+          int status = gsl_integration_qagiu (f, a, epsabs, 0.0,
+                                              cycle_workspace->limit,
+                                              cycle_workspace,
+                                              result, abserr);
+          return status;
+        }
     }
 
   if (epsabs > GSL_DBL_MIN / (1 - p))
@@ -131,8 +131,8 @@ gsl_integration_qawf (gsl_function * f,
       double epsabs1 = eps * factor;
 
       int status = gsl_integration_qawo (f, a1, epsabs1, 0.0, limit,
-					 cycle_workspace, wf,
-					 &area1, &error1);
+                                         cycle_workspace, wf,
+                                         &area1, &error1);
 
       append_interval (workspace, a1, b1, area1, error1);
 
@@ -148,52 +148,52 @@ gsl_integration_qawf (gsl_function * f,
       total_error = errsum + truncation_error;
 
       if (total_error < epsabs && iteration > 4)
-	{
-	  goto compute_result;
-	}
+        {
+          goto compute_result;
+        }
 
       if (error1 > correc)
-	{
-	  correc = error1;
-	}
+        {
+          correc = error1;
+        }
 
       if (status)
-	{
-	  eps = GSL_MAX_DBL (initial_eps, correc * (1.0 - p));
-	}
+        {
+          eps = GSL_MAX_DBL (initial_eps, correc * (1.0 - p));
+        }
 
       if (status && total_error < 10 * correc && iteration > 3)
-	{
-	  goto compute_result;
-	}
+        {
+          goto compute_result;
+        }
 
       append_table (&table, area);
 
       if (table.n < 2)
-	{
-	  continue;
-	}
+        {
+          continue;
+        }
 
       qelg (&table, &reseps, &erreps);
 
       ktmin++;
 
       if (ktmin >= 15 && err_ext < 0.001 * total_error)
-	{
-	  error_type = 4;
-	}
+        {
+          error_type = 4;
+        }
 
       if (erreps < err_ext)
-	{
-	  ktmin = 0;
-	  err_ext = erreps;
-	  res_ext = reseps;
+        {
+          ktmin = 0;
+          err_ext = erreps;
+          res_ext = reseps;
 
-	  if (err_ext + 10 * correc <= epsabs)
-	    break;
-	  if (err_ext <= epsabs && 10 * correc >= epsabs)
-	    break;
-	}
+          if (err_ext + 10 * correc <= epsabs)
+            break;
+          if (err_ext <= epsabs && 10 * correc >= epsabs)
+            break;
+        }
 
     }
 
@@ -216,7 +216,7 @@ gsl_integration_qawf (gsl_function * f,
   if (res_ext != 0.0 && area != 0.0)
     {
       if (err_ext / fabs (res_ext) > errsum / fabs (area))
-	goto compute_result;
+        goto compute_result;
     }
   else if (err_ext > errsum)
     {
@@ -255,22 +255,22 @@ return_error:
   else if (error_type == 2)
     {
       GSL_ERROR ("cannot reach tolerance because of roundoff error",
-		 GSL_EROUND);
+                 GSL_EROUND);
     }
   else if (error_type == 3)
     {
       GSL_ERROR ("bad integrand behavior found in the integration interval",
-		 GSL_ESING);
+                 GSL_ESING);
     }
   else if (error_type == 4)
     {
       GSL_ERROR ("roundoff error detected in the extrapolation table",
-		 GSL_EROUND);
+                 GSL_EROUND);
     }
   else if (error_type == 5)
     {
       GSL_ERROR ("integral is divergent, or slowly convergent",
-		 GSL_EDIVERGE);
+                 GSL_EDIVERGE);
     }
   else
     {

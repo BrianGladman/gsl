@@ -520,7 +520,7 @@ int
 coulomb_F_recur(double lam_min, int kmax,
                 double eta, double x,
                 double F_lam_max, double Fp_lam_max,
-		double * F_lam_min, double * Fp_lam_min
+                double * F_lam_min, double * Fp_lam_min
                 )
 {
   double x_inv = 1.0/x;
@@ -559,7 +559,7 @@ int
 coulomb_G_recur(const double lam_min, const int kmax,
                 const double eta, const double x,
                 const double G_lam_min, const double Gp_lam_min,
-		double * G_lam_max, double * Gp_lam_max
+                double * G_lam_max, double * Gp_lam_max
                 )
 {
   double x_inv = 1.0/x;
@@ -595,8 +595,8 @@ int
 coulomb_CF1(double lambda,
             double eta, double x,
             double * fcl_sign,
-	    double * result,
-	    int * count
+            double * result,
+            int * count
             )
 {
   const double CF1_small = 1.e-30;
@@ -653,7 +653,7 @@ int
 old_coulomb_CF1(const double lambda,
                 double eta, double x,
                 double * fcl_sign,
-	        double * result
+                double * result
                 )
 {
   const double CF1_abort = 1.e5;
@@ -821,7 +821,7 @@ static
 int
 coulomb_jwkb(const double lam, const double eta, const double x,
              gsl_sf_result * fjwkb, gsl_sf_result * gjwkb,
-	     double * exponent)
+             double * exponent)
 {
   const double llp1      = lam*(lam+1.0) + 6.0/35.0;
   const double llp1_eff  = GSL_MAX(llp1, 0.0);
@@ -882,7 +882,7 @@ static
 int
 coulomb_AS_xlt2eta(const double lam, const double eta, const double x,
                    gsl_sf_result * f_AS, gsl_sf_result * g_AS,
-	           double * exponent)
+                   double * exponent)
 {
   /* no time to do this now... */
 }
@@ -895,10 +895,10 @@ coulomb_AS_xlt2eta(const double lam, const double eta, const double x,
 int
 gsl_sf_coulomb_wave_FG_e(const double eta, const double x,
                             const double lam_F,
-			    const int  k_lam_G,      /* lam_G = lam_F - k_lam_G */
+                            const int  k_lam_G,      /* lam_G = lam_F - k_lam_G */
                             gsl_sf_result * F, gsl_sf_result * Fp,
-			    gsl_sf_result * G, gsl_sf_result * Gp,
-			    double * exp_F, double * exp_G)
+                            gsl_sf_result * G, gsl_sf_result * Gp,
+                            double * exp_F, double * exp_G)
 {
   const double lam_G = lam_F - k_lam_G;
 
@@ -969,8 +969,8 @@ gsl_sf_coulomb_wave_FG_e(const double eta, const double x,
     if(span != 0) {
       stat_Fr = coulomb_F_recur(lam_min, span, eta, x,
                                 F_lam_F, Fp_lam_F,
-		                &F_lam_min_unnorm, &Fp_lam_min_unnorm
-		                );
+                                &F_lam_min_unnorm, &Fp_lam_min_unnorm
+                                );
     }
     else {
       F_lam_min_unnorm  =  F_lam_F;
@@ -1021,8 +1021,8 @@ gsl_sf_coulomb_wave_FG_e(const double eta, const double x,
     /* Recurse up to get the required G,G' values. */
     stat_Gr = coulomb_G_recur(lam_min, GSL_MAX(N-k_lam_G,0), eta, x,
                               G_lam_min.val, Gp_lam_min.val,
-		              &G_lam_G, &Gp_lam_G
-		              );
+                              &G_lam_G, &Gp_lam_G
+                              );
 
     F->val  = F_lam_F;
     F->err  = F_lam_F_err;
@@ -1157,8 +1157,8 @@ gsl_sf_coulomb_wave_FG_e(const double eta, const double x,
     F_recur_count = GSL_MAX(k_lam_G, N);
     stat_Fr = coulomb_F_recur(lam_min, F_recur_count, eta, x,
                               F_lam_F, Fp_lam_F,
-		              &F_lam_min_unnorm, &Fp_lam_min_unnorm
-		              );
+                              &F_lam_min_unnorm, &Fp_lam_min_unnorm
+                              );
     Fp_over_F_lam_min = Fp_lam_min_unnorm / F_lam_min_unnorm;
 
     /* Steed evaluation to complete evaluation of F,Fp,G,Gp at lam_min */
@@ -1179,8 +1179,8 @@ gsl_sf_coulomb_wave_FG_e(const double eta, const double x,
     G_recur_count = GSL_MAX(N-k_lam_G,0);
     stat_Gr = coulomb_G_recur(lam_min, G_recur_count, eta, x,
                               G_lam_min, Gp_lam_min,
-		              &G_lam_G, &Gp_lam_G
-		              );
+                              &G_lam_G, &Gp_lam_G
+                              );
 
     err_amplify = CF1_count + CF2_count + F_recur_count + G_recur_count + 1;
 
@@ -1208,7 +1208,7 @@ int
 gsl_sf_coulomb_wave_F_array(double lam_min, int kmax,
                                  double eta, double x, 
                                  double * fc_array,
-			         double * F_exp)
+                                 double * F_exp)
 {
   if(x == 0.0) {
     int k;
@@ -1260,7 +1260,7 @@ int
 gsl_sf_coulomb_wave_FG_array(double lam_min, int kmax,
                                   double eta, double x,
                                   double * fc_array, double * gc_array,
-			          double * F_exp, double * G_exp)
+                                  double * F_exp, double * G_exp)
 {
   const double x_inv = 1.0/x;
   const double lam_max = lam_min + kmax;
@@ -1315,9 +1315,9 @@ gsl_sf_coulomb_wave_FG_array(double lam_min, int kmax,
 int
 gsl_sf_coulomb_wave_FGp_array(double lam_min, int kmax,
                                    double eta, double x,
-		                   double * fc_array, double * fcp_array,
-		                   double * gc_array, double * gcp_array,
-			           double * F_exp, double * G_exp)
+                                   double * fc_array, double * fcp_array,
+                                   double * gc_array, double * gcp_array,
+                                   double * F_exp, double * G_exp)
 
 {
   const double x_inv = 1.0/x;
@@ -1377,8 +1377,8 @@ gsl_sf_coulomb_wave_FGp_array(double lam_min, int kmax,
 int
 gsl_sf_coulomb_wave_sphF_array(double lam_min, int kmax,
                                     double eta, double x,
-		                    double * fc_array,
-			            double * F_exp)
+                                    double * fc_array,
+                                    double * F_exp)
 {
   int k;
 

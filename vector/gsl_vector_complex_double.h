@@ -160,14 +160,14 @@ void gsl_vector_complex_set_all (gsl_vector_complex * v,
 int gsl_vector_complex_set_basis (gsl_vector_complex * v, size_t i);
 
 int gsl_vector_complex_fread (FILE * stream,
-				    gsl_vector_complex * v);
+                                    gsl_vector_complex * v);
 int gsl_vector_complex_fwrite (FILE * stream,
-				     const gsl_vector_complex * v);
+                                     const gsl_vector_complex * v);
 int gsl_vector_complex_fscanf (FILE * stream,
-				     gsl_vector_complex * v);
+                                     gsl_vector_complex * v);
 int gsl_vector_complex_fprintf (FILE * stream,
-				      const gsl_vector_complex * v,
-				      const char *format);
+                                      const gsl_vector_complex * v,
+                                      const char *format);
 
 int gsl_vector_complex_memcpy (gsl_vector_complex * dest, const gsl_vector_complex * src);
 
@@ -183,7 +183,7 @@ int gsl_vector_complex_isnull (const gsl_vector_complex * v);
 extern inline
 gsl_complex
 gsl_vector_complex_get (const gsl_vector_complex * v,
-			      const size_t i)
+                              const size_t i)
 {
 #if GSL_RANGE_CHECK
   if (i >= v->size)
@@ -198,7 +198,7 @@ gsl_vector_complex_get (const gsl_vector_complex * v,
 extern inline
 void
 gsl_vector_complex_set (gsl_vector_complex * v,
-			      const size_t i, gsl_complex z)
+                              const size_t i, gsl_complex z)
 {
 #if GSL_RANGE_CHECK
   if (i >= v->size)
@@ -212,7 +212,7 @@ gsl_vector_complex_set (gsl_vector_complex * v,
 extern inline
 gsl_complex *
 gsl_vector_complex_ptr (gsl_vector_complex * v,
-			      const size_t i)
+                              const size_t i)
 {
 #if GSL_RANGE_CHECK
   if (i >= v->size)

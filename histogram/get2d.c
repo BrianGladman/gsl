@@ -32,13 +32,13 @@ gsl_histogram2d_get (const gsl_histogram2d * h, const size_t i, const size_t j)
   if (i >= nx)
     {
       GSL_ERROR_VAL ("index i lies outside valid range of 0 .. nx - 1",
-			GSL_EDOM, 0);
+                        GSL_EDOM, 0);
     }
 
   if (j >= ny)
     {
       GSL_ERROR_VAL ("index j lies outside valid range of 0 .. ny - 1",
-			GSL_EDOM, 0);
+                        GSL_EDOM, 0);
     }
 
   return h->bin[i * ny + j];
@@ -46,7 +46,7 @@ gsl_histogram2d_get (const gsl_histogram2d * h, const size_t i, const size_t j)
 
 int
 gsl_histogram2d_get_xrange (const gsl_histogram2d * h, const size_t i,
-			    double *xlower, double *xupper)
+                            double *xlower, double *xupper)
 {
   const size_t nx = h->nx;
 
@@ -63,7 +63,7 @@ gsl_histogram2d_get_xrange (const gsl_histogram2d * h, const size_t i,
 
 int
 gsl_histogram2d_get_yrange (const gsl_histogram2d * h, const size_t j,
-			    double *ylower, double *yupper)
+                            double *ylower, double *yupper)
 {
   const size_t ny = h->ny;
 
@@ -80,8 +80,8 @@ gsl_histogram2d_get_yrange (const gsl_histogram2d * h, const size_t j,
 
 int
 gsl_histogram2d_find (const gsl_histogram2d * h,
-		      const double x, const double y,
-		      size_t * i, size_t * j)
+                      const double x, const double y,
+                      size_t * i, size_t * j)
 {
   int status = find (h->nx, h->xrange, x, i);
 

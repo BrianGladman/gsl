@@ -34,7 +34,7 @@
 #include <stdlib.h>
 #include <gsl/gsl_rng.h>
 
-#define MM 0xffffffffUL		/* 2 ^ 32 */
+#define MM 0xffffffffUL         /* 2 ^ 32 */
 
 static inline unsigned long int ran_get (void *vstate);
 static double ran_get_double (void *vstate);
@@ -80,9 +80,9 @@ ran_set (void *vstate, unsigned long int s)
 }
 
 static const gsl_rng_type ran_type = {
-  "coveyou",			/* name */
-  MM-1,				/* RAND_MAX */
-  2,				/* RAND_MIN */
+  "coveyou",                    /* name */
+  MM-1,                         /* RAND_MAX */
+  2,                            /* RAND_MIN */
   sizeof (ran_state_t),
   &ran_set,
   &ran_get,

@@ -67,7 +67,7 @@ gsl_sf_bessel_In_scaled_e(int n, const double x, gsl_sf_result * result)
     double rat;
     int stat_CF1 = gsl_sf_bessel_I_CF1_ser((double)n, ax, &rat);
     double Ikp1 = rat * GSL_SQRT_DBL_MIN;
-    double Ik	= GSL_SQRT_DBL_MIN;
+    double Ik   = GSL_SQRT_DBL_MIN;
     double Ikm1;
     int k;
     for(k=n; k >= 1; k--) {

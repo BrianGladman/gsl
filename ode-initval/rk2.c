@@ -92,13 +92,13 @@ rk2_alloc (size_t dim)
 
 static int
 rk2_apply (void *vstate,
-	   size_t dim,
-	   double t,
-	   double h,
-	   double y[],
-	   double yerr[],
-	   const double dydt_in[],
-	   double dydt_out[], 
+           size_t dim,
+           double t,
+           double h,
+           double y[],
+           double yerr[],
+           const double dydt_in[],
+           double dydt_out[], 
            const gsl_odeiv_system * sys)
 {
   rk2_state_t *state = (rk2_state_t *) vstate;
@@ -153,7 +153,7 @@ rk2_apply (void *vstate,
       y[i] += h * ksum3;
       yerr[i] = h * (k2[i] - ksum3);
       if (dydt_out)
-	dydt_out[i] = ksum3;
+        dydt_out[i] = ksum3;
     }
 
   return status;
@@ -191,9 +191,9 @@ rk2_free (void *vstate)
   free (state);
 }
 
-static const gsl_odeiv_step_type rk2_type = { "rk2",	/* name */
-  1,				/* can use dydt_in */
-  0,				/* gives exact dydt_out */
+static const gsl_odeiv_step_type rk2_type = { "rk2",    /* name */
+  1,                            /* can use dydt_in */
+  0,                            /* gives exact dydt_out */
   &rk2_alloc,
   &rk2_apply,
   &rk2_reset,

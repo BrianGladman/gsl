@@ -32,11 +32,11 @@ FUNCTION (gsl_matrix, max) (const TYPE (gsl_matrix) * m)
   for (i = 0; i < M; i++)
     {
       for (j = 0; j < N; j++)
-	{
-	  BASE x = m->data[i * tda + j];
-	  if (x > max)
-	    max = x;
-	}
+        {
+          BASE x = m->data[i * tda + j];
+          if (x > max)
+            max = x;
+        }
     }
 
   return max;
@@ -57,11 +57,11 @@ FUNCTION (gsl_matrix, min) (const TYPE (gsl_matrix) * m)
   for (i = 0; i < M; i++)
     {
       for (j = 0; j < N; j++)
-	{
-	  BASE x = m->data[i * tda + j];
-	  if (x < min)
-	    min = x;
-	}
+        {
+          BASE x = m->data[i * tda + j];
+          if (x < min)
+            min = x;
+        }
     }
 
   return min;
@@ -87,17 +87,17 @@ FUNCTION (gsl_matrix, minmax) (const TYPE (gsl_matrix) * m,
   for (i = 0; i < M; i++)
     {
       for (j = 0; j < N; j++)
-	{
-	  BASE x = m->data[i * tda + j];
-	  if (x < min)
-	    {
-	      min = x;
-	    }
-	  if (x > max)
-	    {
-	      max = x;
-	    }
-	}
+        {
+          BASE x = m->data[i * tda + j];
+          if (x < min)
+            {
+              min = x;
+            }
+          if (x > max)
+            {
+              max = x;
+            }
+        }
     }
 
   *min_out = min;
@@ -120,15 +120,15 @@ FUNCTION (gsl_matrix, max_index) (const TYPE (gsl_matrix) * m, size_t * imax_out
   for (i = 0; i < M; i++)
     {
       for (j = 0; j < N; j++)
-	{
-	  BASE x = m->data[i * tda + j];
-	  if (x > max)
+        {
+          BASE x = m->data[i * tda + j];
+          if (x > max)
             {
               max = x;
               imax = i;
               jmax = j;
             }
-	}
+        }
     }
 
   *imax_out = imax;
@@ -151,15 +151,15 @@ FUNCTION (gsl_matrix, min_index) (const TYPE (gsl_matrix) * m, size_t * imin_out
   for (i = 0; i < M; i++)
     {
       for (j = 0; j < N; j++)
-	{
-	  BASE x = m->data[i * tda + j];
-	  if (x < min)
+        {
+          BASE x = m->data[i * tda + j];
+          if (x < min)
             {
               min = x;
               imin = i;
               jmin = j;
             }
-	}
+        }
     }
 
   *imin_out = imin;
@@ -188,21 +188,21 @@ FUNCTION (gsl_matrix, minmax_index) (const TYPE (gsl_matrix) * m,
   for (i = 0; i < M; i++)
     {
       for (j = 0; j < N; j++)
-	{
-	  BASE x = m->data[i * tda + j];
-	  if (x < min)
-	    {
-	      min = x;
-	      imin = i;
-	      jmin = j;
-	    }
-	  if (x > max)
-	    {
-	      max = x;
-	      imax = i;
-	      jmax = j;
-	    }
-	}
+        {
+          BASE x = m->data[i * tda + j];
+          if (x < min)
+            {
+              min = x;
+              imin = i;
+              jmin = j;
+            }
+          if (x > max)
+            {
+              max = x;
+              imax = i;
+              jmax = j;
+            }
+        }
     }
 
   *imin_out = imin;

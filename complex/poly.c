@@ -20,7 +20,7 @@
 /* Muller-Newton root finder */
 int
 gsl_complex_poly_solve(gsl_complex *coeff, int n,
-		       gsl_complex *Roots, double *maxerr);
+                       gsl_complex *Roots, double *maxerr);
 
 /***********************************************************************
  * Muller-Newton polynom root solver
@@ -165,7 +165,7 @@ int gsl_complex_poly_deflate(gsl_complex *coeff,int n,gsl_complex *R,int flag) {
   e  : bound for |q2| (epsilon)
 */
 void gsl_complex_poly_muller_init(struct gsl_complex_poly_workspace *w,
-				  gsl_complex *xb,double *epsilon) 
+                                  gsl_complex *xb,double *epsilon) 
 {
   GSL_SET_COMPLEX(&w->x0,0.,0.);                   /* orig: x0 = 0 + j*1     */
   GSL_SET_COMPLEX(&w->x1,-1./sqrt(2),-1./sqrt(2)); /* orig: x1 = 0 - j*1     */
@@ -182,7 +182,7 @@ void gsl_complex_poly_muller_init(struct gsl_complex_poly_workspace *w,
 
 /* Polynomial Value f=P(x0) Horner's metods (df!=NULL -> df=P'(x0)) */
 void gsl_complex_poly_fdvalue(gsl_complex *coeff,int n,
-			      gsl_complex *f,gsl_complex *df,gsl_complex *x0) 
+                              gsl_complex *f,gsl_complex *df,gsl_complex *x0) 
 {
   int i;
   gsl_complex tmp;
@@ -258,7 +258,7 @@ void gsl_complex_poly_muller_rootofparabola(struct gsl_complex_poly_workspace *w
 /* Main Iteration Equation: x2 = h2*q2 + x2  */
 /* h2abs: Absolute value of the old distance */
 void gsl_complex_poly_muller_iterequ(struct gsl_complex_poly_workspace *w,
-				     double *h2abs) 
+                                     double *h2abs) 
 {
   double h2absnew; /* Absolute value of the new h2 */
   double help;     /* help variable */
@@ -289,19 +289,19 @@ void gsl_complex_poly_muller_suppressoverflow(struct gsl_complex_poly_workspace 
     if (help>1.0 && fabs(nred*log10(help))>GSL_MULLER_BOUND6) {
       kiter++; /* if |x2|>1 and |x2|^nred>10^BOUND6 */
       if (kiter<GSL_MULLER_KITERMAX) { /* Then Halve The Distance Between */
-	gsl_complex_mul_d(&w->h2,&w->h2,0.5);  /* h2*=0.5; new and old x2 */
-	gsl_complex_mul_d(&w->q2,&w->q2,0.5);  /* q2*=0.5; */
-	gsl_complex_sub(&w->x2,&w->x2,&w->h2); /* x2-=h2; */
-	f=TRUE;
+        gsl_complex_mul_d(&w->h2,&w->h2,0.5);  /* h2*=0.5; new and old x2 */
+        gsl_complex_mul_d(&w->q2,&w->q2,0.5);  /* q2*=0.5; */
+        gsl_complex_sub(&w->x2,&w->x2,&w->h2); /* x2-=h2; */
+        f=TRUE;
       } else 
-	kiter=0;  
+        kiter=0;  
     }
   } while(f);
 }
 
 void gsl_complex_poly_muller_computefunc(struct gsl_complex_poly_workspace *w,
-					 gsl_complex *coeff,int n,
-					 double f1absq,double *f2absq,double epsilon)
+                                         gsl_complex *coeff,int n,
+                                         double f1absq,double *f2absq,double epsilon)
 {
   double tmp;
   int overflow; /* overflow flag */
@@ -325,13 +325,13 @@ void gsl_complex_poly_muller_computefunc(struct gsl_complex_poly_workspace *w,
     
     /* Muller's modification to improve convergence */
     if ((*f2absq>(GSL_MULLER_CONVERGENCE*f1absq)) && 
-	(gsl_complex_abs(&w->q2)>epsilon) && 
-	(w->iter<GSL_MULLER_ITERMAX)) 
+        (gsl_complex_abs(&w->q2)>epsilon) && 
+        (w->iter<GSL_MULLER_ITERMAX)) 
       {
-	gsl_complex_mul_d(&w->q2,&w->q2,0.5);  /* q2*=0.5; in case of overflow: */
-	gsl_complex_mul_d(&w->h2,&w->h2,0.3);  /* h2*=0.3; halve q2 and h2; compute new x2 */
-	gsl_complex_sub(&w->x2,&w->x2,&w->h2); /* x2-=h2; */
-	overflow=TRUE;
+        gsl_complex_mul_d(&w->q2,&w->q2,0.5);  /* q2*=0.5; in case of overflow: */
+        gsl_complex_mul_d(&w->h2,&w->h2,0.3);  /* h2*=0.3; halve q2 and h2; compute new x2 */
+        gsl_complex_sub(&w->x2,&w->x2,&w->h2); /* x2-=h2; */
+        overflow=TRUE;
       }
   } while(overflow);
 }
@@ -340,7 +340,7 @@ void gsl_complex_poly_muller_computefunc(struct gsl_complex_poly_workspace *w,
   calc muller approximation for newton iteration 
 */
 void gsl_complex_poly_muller_calc(struct gsl_complex_poly_workspace *w,
-				  gsl_complex *coeff,int n,gsl_complex *xb) 
+                                  gsl_complex *coeff,int n,gsl_complex *xb) 
 {  
   gsl_complex df,tmp;
   double f1absq=GSL_MULLER_FVALUE;  /* f1absq=|f1|^2 */
@@ -380,36 +380,36 @@ void gsl_complex_poly_muller_calc(struct gsl_complex_poly_workspace *w,
       
       /* is the new x-value (x2) the best approximation? */
       if ((f2absq<=(GSL_MULLER_BOUND1*f1absq)) && 
-	  (f2absq>=(GSL_MULLER_BOUND2*f1absq))) 
-	{
-	  /* function-value changes slowly */
-	  if (gsl_complex_abs(&w->h2)<GSL_MULLER_BOUND3) { 
-	    /* if |h[2]| is small enough => double q2 and h[2] */
-	    gsl_complex_mul_d(&w->q2,&w->q2,2.0); /* q2*=2.0; */
-	    gsl_complex_mul_d(&w->h2,&w->h2,2.0); /* h2*=2.0; */
-	  } else {  
-	    /* otherwise: |q2| = 1 and h[2]=h[2]*q2 */
-	    GSL_SET_COMPLEX(&w->q2,cos((double)w->iter),sin((double)w->iter));
-	    gsl_complex_mul(&w->h2,&w->h2,&w->q2); /* h2*=q2; */
-	  }
-	} else if (f2absq<f2absqb) {
-	  f2absqb=f2absq;             /* the new function value is the */
-	  gsl_complex_set(xb,&w->x2); /* xb=x2 (best approximation) */
-	  noise=0;                    /* reset noise counter */
-	  
-	  gsl_complex_sub(&tmp,&w->x2,&w->x1);
-	  gsl_complex_div(&tmp,&tmp,&w->x2); /* tmp=(x2-x1)/x2 */
-	  if ((sqrt(f2absq)<epsilon) && (gsl_complex_abs(&tmp)<epsilon)) 
-	    rootd=TRUE;  /* root determined */
-	}
+          (f2absq>=(GSL_MULLER_BOUND2*f1absq))) 
+        {
+          /* function-value changes slowly */
+          if (gsl_complex_abs(&w->h2)<GSL_MULLER_BOUND3) { 
+            /* if |h[2]| is small enough => double q2 and h[2] */
+            gsl_complex_mul_d(&w->q2,&w->q2,2.0); /* q2*=2.0; */
+            gsl_complex_mul_d(&w->h2,&w->h2,2.0); /* h2*=2.0; */
+          } else {  
+            /* otherwise: |q2| = 1 and h[2]=h[2]*q2 */
+            GSL_SET_COMPLEX(&w->q2,cos((double)w->iter),sin((double)w->iter));
+            gsl_complex_mul(&w->h2,&w->h2,&w->q2); /* h2*=q2; */
+          }
+        } else if (f2absq<f2absqb) {
+          f2absqb=f2absq;             /* the new function value is the */
+          gsl_complex_set(xb,&w->x2); /* xb=x2 (best approximation) */
+          noise=0;                    /* reset noise counter */
+          
+          gsl_complex_sub(&tmp,&w->x2,&w->x1);
+          gsl_complex_div(&tmp,&tmp,&w->x2); /* tmp=(x2-x1)/x2 */
+          if ((sqrt(f2absq)<epsilon) && (gsl_complex_abs(&tmp)<epsilon)) 
+            rootd=TRUE;  /* root determined */
+        }
       
       /* increase noise counter */
       if (fabs((gsl_complex_abs(xb)-
-		gsl_complex_abs(&w->x2))/gsl_complex_abs(xb))<GSL_MULLER_NOISESTART) 
-	noise++;
+                gsl_complex_abs(&w->x2))/gsl_complex_abs(xb))<GSL_MULLER_NOISESTART) 
+        noise++;
     } while ((w->iter<=GSL_MULLER_ITERMAX) && 
-	     (!rootd) && 
-	     (noise<=GSL_MULLER_NOISEMAX));
+             (!rootd) && 
+             (noise<=GSL_MULLER_NOISEMAX));
     
     seconditer++; /* increase seconditer */
      
@@ -417,19 +417,19 @@ void gsl_complex_poly_muller_calc(struct gsl_complex_poly_workspace *w,
     if ((seconditer==1) && (f2absqb>0)) { 
       gsl_complex_poly_fdvalue(coeff,n,&w->f2,&df,xb); /* f2=P(x0), df=P'(x0) */      
       if (gsl_complex_abs(&w->f2)/(gsl_complex_abs(&df)*gsl_complex_abs(xb))>GSL_MULLER_BOUND7) {
-	/* start second iteration with new initial estimations */
-	GSL_SET_COMPLEX(&w->x0,1.0,0.0);
-	GSL_SET_COMPLEX(&w->x1,-1.0,0.0);
-	GSL_SET_COMPLEX(&w->x2,0.0,0.0);
+        /* start second iteration with new initial estimations */
+        GSL_SET_COMPLEX(&w->x0,1.0,0.0);
+        GSL_SET_COMPLEX(&w->x1,-1.0,0.0);
+        GSL_SET_COMPLEX(&w->x2,0.0,0.0);
 
-	gsl_complex_poly_fdvalue(coeff,n,&w->f0,NULL,&w->x0);
-	gsl_complex_poly_fdvalue(coeff,n,&w->f1,NULL,&w->x1);
-	gsl_complex_poly_fdvalue(coeff,n,&w->f2,NULL,&w->x2);
-	
-	w->iter=0;    /* reset iteration counter */
-	seconditer++; /* increase seconditer */
-	rootd=FALSE;  /* no root determined */
-	noise=0;      /* reset noise counter */
+        gsl_complex_poly_fdvalue(coeff,n,&w->f0,NULL,&w->x0);
+        gsl_complex_poly_fdvalue(coeff,n,&w->f1,NULL,&w->x1);
+        gsl_complex_poly_fdvalue(coeff,n,&w->f2,NULL,&w->x2);
+        
+        w->iter=0;    /* reset iteration counter */
+        seconditer++; /* increase seconditer */
+        rootd=FALSE;  /* no root determined */
+        noise=0;      /* reset noise counter */
       }
     }
   } while (seconditer==2);  
@@ -441,7 +441,7 @@ void gsl_complex_poly_muller_calc(struct gsl_complex_poly_workspace *w,
   xmin : best x determined in newton()
 */
 void gsl_complex_poly_newton(gsl_complex *xmin,gsl_complex *L,int n,
-			     gsl_complex *ns,double *dxabs,int flag) 
+                             gsl_complex *ns,double *dxabs,int flag) 
 {
   int iter=0;  /* counter */
   int noise=0; /* noisecounter */
@@ -469,19 +469,19 @@ void gsl_complex_poly_newton(gsl_complex *xmin,gsl_complex *L,int n,
     if (gsl_complex_abs(&df)!=0.0) { /* calculate new dx */
       gsl_complex_div(&dxh,&f,&df); /* dxh=f/df; */
       if (gsl_complex_abs(&dxh)<*dxabs*GSL_NEWTON_FACTOR) { /* new dx small enough? */
-	gsl_complex_set(&dx,&dxh); /* dx=dxh, store new dx for next iteration */
-	*dxabs=gsl_complex_abs(&dx);                       
+        gsl_complex_set(&dx,&dxh); /* dx=dxh, store new dx for next iteration */
+        *dxabs=gsl_complex_abs(&dx);                       
       }
     }
     
     if (gsl_complex_abs(xmin)!=0.0) {
       if (*dxabs/gsl_complex_abs(xmin)<eps || noise ==GSL_NEWTON_NOISEMAX) { // routine ends 
-	if (fabs(GSL_COMPLEX_P_IMAG(xmin))<GSL_NEWTON_BOUND && (!flag)) {
-	  /* define determined root as real if imag. part<BOUND */
-	  GSL_SET_IMAG(xmin,0.0); /* xmin.I=0 */
-	}
-	*dxabs=*dxabs/gsl_complex_abs(xmin); /* return relative error */
-	return; /* return best approximation (xmin) */
+        if (fabs(GSL_COMPLEX_P_IMAG(xmin))<GSL_NEWTON_BOUND && (!flag)) {
+          /* define determined root as real if imag. part<BOUND */
+          GSL_SET_IMAG(xmin,0.0); /* xmin.I=0 */
+        }
+        *dxabs=*dxabs/gsl_complex_abs(xmin); /* return relative error */
+        return; /* return best approximation (xmin) */
       }
     } 
     gsl_complex_sub(&x0,&x0,&dx); /* main iteration: x0 = x0 - P(x0)/P'(x0) */
@@ -504,10 +504,10 @@ void gsl_complex_poly_newton(gsl_complex *xmin,gsl_complex *L,int n,
 
 int
 gsl_complex_poly_solve(gsl_complex *coeff, int n,
-			    gsl_complex *Roots, double *maxerr,
-			    gsl_complex *coeff_deflated,
-			    struct gsl_complex_poly_workspace *w,
-			    int compcoef)
+                            gsl_complex *Roots, double *maxerr,
+                            gsl_complex *coeff_deflated,
+                            struct gsl_complex_poly_workspace *w,
+                            int compcoef)
 {
   int k,l=-1,ndef,rdef,off;
   double newerr;
@@ -566,7 +566,7 @@ gsl_complex_poly_solve(gsl_complex *coeff, int n,
 
 int
 gsl_complex_poly_solve(gsl_complex *coeff, int n,
-		       gsl_complex *Roots, double *maxerr)
+                       gsl_complex *Roots, double *maxerr)
 {
   double dummy;
   int res,k,compcoef=FALSE;  
@@ -579,7 +579,7 @@ gsl_complex_poly_solve(gsl_complex *coeff, int n,
   
   if (!maxerr) maxerr=&dummy;
   res=gsl_complex_poly_solve(coeff,n,Roots,maxerr,defspace,&w,compcoef);
-			     
+                             
   free(defspace);
   return res;
 }

@@ -42,7 +42,7 @@ gsl_eigen_symm_alloc (const size_t n)
   if (n == 0)
     {
       GSL_ERROR_NULL ("matrix dimension must be positive integer",
-		      GSL_EINVAL);
+                      GSL_EINVAL);
     }
 
   w = ((gsl_eigen_symm_workspace *)
@@ -83,7 +83,7 @@ gsl_eigen_symm_free (gsl_eigen_symm_workspace * w)
 
 int
 gsl_eigen_symm (gsl_matrix * A, gsl_vector * eval,
-		     gsl_eigen_symm_workspace * w)
+                     gsl_eigen_symm_workspace * w)
 {
   if (A->size1 != A->size2)
     {
@@ -104,21 +104,21 @@ gsl_eigen_symm (gsl_matrix * A, gsl_vector * eval,
       /* handle special case */
 
       if (N == 1)
-	{
-	  double A00 = gsl_matrix_get (A, 0, 0);
-	  gsl_vector_set (eval, 0, A00);
-	  return GSL_SUCCESS;
-	}
+        {
+          double A00 = gsl_matrix_get (A, 0, 0);
+          gsl_vector_set (eval, 0, A00);
+          return GSL_SUCCESS;
+        }
 
       /* use sd as the temporary workspace for the decomposition,
          since we can discard the tau result immediately if we are not
          computing eigenvectors */
 
       {
-	gsl_vector_view d_vec = gsl_vector_view_array (d, N);
-	gsl_vector_view sd_vec = gsl_vector_view_array (sd, N - 1);
-	gsl_vector_view tau = gsl_vector_view_array (sd, N - 1);
-	gsl_linalg_symmtd_decomp (A, &tau.vector);
+        gsl_vector_view d_vec = gsl_vector_view_array (d, N);
+        gsl_vector_view sd_vec = gsl_vector_view_array (sd, N - 1);
+        gsl_vector_view tau = gsl_vector_view_array (sd, N - 1);
+        gsl_linalg_symmtd_decomp (A, &tau.vector);
         gsl_linalg_symmtd_unpack_T (A, &d_vec.vector, &sd_vec.vector);
       }
       

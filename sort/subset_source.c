@@ -17,7 +17,7 @@
 
 int
 FUNCTION (gsl_sort, smallest) (BASE * dest, const size_t k,
-			       const BASE * src, const size_t stride,
+                               const BASE * src, const size_t stride,
                                const size_t n)
 {
   size_t i, j;
@@ -48,21 +48,21 @@ FUNCTION (gsl_sort, smallest) (BASE * dest, const size_t k,
       BASE xi = src[i * stride];
 
       if (j < k)
-	{
-	  j++;
-	}
+        {
+          j++;
+        }
       else if (xi >= xbound)
-	{
-	  continue;
-	}
+        {
+          continue;
+        }
 
       for (i1 = j - 1; i1 > 0 ; i1--)
-	{
+        {
           if (xi > dest[i1 - 1])
             break;
 
-	  dest[i1] = dest[i1 - 1];
-	}
+          dest[i1] = dest[i1 - 1];
+        }
 
       dest[i1] = xi;
 
@@ -113,21 +113,21 @@ FUNCTION (gsl_sort, largest) (BASE * dest, const size_t k,
       BASE xi = src[i * stride];
 
       if (j < k)
-	{
-	  j++;
-	}
+        {
+          j++;
+        }
       else if (xi <= xbound)
-	{
-	  continue;
-	}
+        {
+          continue;
+        }
 
       for (i1 = j - 1; i1 > 0 ; i1--)
-	{
+        {
           if (xi < dest[i1 - 1])
             break;
 
-	  dest[i1] = dest[i1 - 1];
-	}
+          dest[i1] = dest[i1 - 1];
+        }
 
       dest[i1] = xi;
 

@@ -113,16 +113,16 @@ qelg (struct extrapolation_table *table, double *result, double *abserr)
       double e3, delta1, err1, tol1, ss;
 
       if (err2 <= tol2 && err3 <= tol3)
-	{
-	  /* If e0, e1 and e2 are equal to within machine accuracy,
-	     convergence is assumed.  */
+        {
+          /* If e0, e1 and e2 are equal to within machine accuracy,
+             convergence is assumed.  */
 
-	  *result = res;
-	  absolute = err2 + err3;
-	  relative = 5 * GSL_DBL_EPSILON * fabs (res);
-	  *abserr = GSL_MAX_DBL (absolute, relative);
-	  return;
-	}
+          *result = res;
+          absolute = err2 + err3;
+          relative = 5 * GSL_DBL_EPSILON * fabs (res);
+          *abserr = GSL_MAX_DBL (absolute, relative);
+          return;
+        }
 
       e3 = epstab[n - 2 * i];
       epstab[n - 2 * i] = e1;
@@ -134,10 +134,10 @@ qelg (struct extrapolation_table *table, double *result, double *abserr)
          the table by adjusting the value of n */
 
       if (err1 <= tol1 || err2 <= tol2 || err3 <= tol3)
-	{
-	  n_final = 2 * i;
-	  break;
-	}
+        {
+          n_final = 2 * i;
+          break;
+        }
 
       ss = (1 / delta1 + 1 / delta2) - 1 / delta3;
 
@@ -146,10 +146,10 @@ qelg (struct extrapolation_table *table, double *result, double *abserr)
          n. */
 
       if (fabs (ss * e1) <= 0.0001)
-	{
-	  n_final = 2 * i;
-	  break;
-	}
+        {
+          n_final = 2 * i;
+          break;
+        }
 
       /* Compute a new element and eventually adjust the value of
          result. */
@@ -158,13 +158,13 @@ qelg (struct extrapolation_table *table, double *result, double *abserr)
       epstab[n - 2 * i] = res;
 
       {
-	const double error = err2 + fabs (res - e2) + err3;
+        const double error = err2 + fabs (res - e2) + err3;
 
-	if (error <= *abserr)
-	  {
-	    *abserr = error;
-	    *result = res;
-	  }
+        if (error <= *abserr)
+          {
+            *abserr = error;
+            *result = res;
+          }
       }
     }
 
@@ -175,31 +175,31 @@ qelg (struct extrapolation_table *table, double *result, double *abserr)
 
     if (n_final == limexp)
       {
-	n_final = 2 * (limexp / 2);
+        n_final = 2 * (limexp / 2);
       }
   }
 
   if (n_orig % 2 == 1)
     {
       for (i = 0; i <= newelm; i++)
-	{
-	  epstab[1 + i * 2] = epstab[i * 2 + 3];
-	}
+        {
+          epstab[1 + i * 2] = epstab[i * 2 + 3];
+        }
     }
   else
     {
       for (i = 0; i <= newelm; i++)
-	{
-	  epstab[i * 2] = epstab[i * 2 + 2];
-	}
+        {
+          epstab[i * 2] = epstab[i * 2 + 2];
+        }
     }
 
   if (n_orig != n_final)
     {
       for (i = 0; i <= n_final; i++)
-	{
-	  epstab[i] = epstab[n_orig - n_final + i];
-	}
+        {
+          epstab[i] = epstab[n_orig - n_final + i];
+        }
     }
 
   table->n = n_final + 1;
@@ -210,9 +210,9 @@ qelg (struct extrapolation_table *table, double *result, double *abserr)
       *abserr = GSL_DBL_MAX;
     }
   else
-    {				/* Compute error estimate */
+    {                           /* Compute error estimate */
       *abserr = (fabs (*result - res3la[2]) + fabs (*result - res3la[1])
-		 + fabs (*result - res3la[0]));
+                 + fabs (*result - res3la[0]));
 
       res3la[0] = res3la[1];
       res3la[1] = res3la[2];

@@ -42,7 +42,7 @@ gsl_odeiv_control_alloc(const gsl_odeiv_control_type * T)
 
   if (c->state == 0)
     {
-      free (c);		/* exception in constructor, avoid memory leak */
+      free (c);         /* exception in constructor, avoid memory leak */
 
       GSL_ERROR_NULL ("failed to allocate space for control state", 
                       GSL_ENOMEM);

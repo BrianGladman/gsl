@@ -36,23 +36,23 @@
 
 /* chebyshev expansions 
 
- series for bk0        on the interval  0.	    to  4.00000d+00
-					with weighted error   3.57e-19
-					 log weighted error  18.45
-			       significant figures required  17.99
-				    decimal places required  18.97
+ series for bk0        on the interval  0.          to  4.00000d+00
+                                        with weighted error   3.57e-19
+                                         log weighted error  18.45
+                               significant figures required  17.99
+                                    decimal places required  18.97
 
  series for ak0        on the interval  1.25000d-01 to  5.00000d-01
-					with weighted error   5.34e-17
-					 log weighted error  16.27
-			       significant figures required  14.92
-				    decimal places required  16.89
+                                        with weighted error   5.34e-17
+                                         log weighted error  16.27
+                               significant figures required  14.92
+                                    decimal places required  16.89
 
- series for ak02       on the interval  0.	    to  1.25000d-01
-					with weighted error   2.34e-17
-					 log weighted error  16.63
-			       significant figures required  14.67
-				    decimal places required  17.20
+ series for ak02       on the interval  0.          to  1.25000d-01
+                                        with weighted error   2.34e-17
+                                         log weighted error  16.63
+                               significant figures required  14.67
+                                    decimal places required  17.20
 */
 
 static double bk0_data[11] = {
@@ -192,7 +192,7 @@ int gsl_sf_bessel_K0_e(const double x, gsl_sf_result * result)
     int stat_K0 = gsl_sf_bessel_K0_scaled_e(x, &K0_scaled);
     int stat_e  = gsl_sf_exp_mult_err_e(-x, GSL_DBL_EPSILON*fabs(x),
                                            K0_scaled.val, K0_scaled.err,
-					   result);
+                                           result);
     return GSL_ERROR_SELECT_2(stat_e, stat_K0);
   }
 }

@@ -42,7 +42,7 @@ __BEGIN_DECLS
  * by defining GSL_MESSAGING_OFF.  */
 
 void gsl_message(const char * message, const char * file, int line,
-		 unsigned int mask);
+                 unsigned int mask);
 
 #ifndef GSL_MESSAGE_MASK
 #define GSL_MESSAGE_MASK 0xffffffffu /* default all messages allowed */
@@ -69,7 +69,7 @@ enum {
 #define GSL_MESSAGE(message, mask) \
        do { \
        if (mask & GSL_MESSAGE_MASK) \
-	 gsl_message (message, __FILE__, __LINE__, mask) ; \
+         gsl_message (message, __FILE__, __LINE__, mask) ; \
        } while (0)
 #endif
 

@@ -136,7 +136,7 @@ steffenson_iterate (void * vstate, gsl_function_fdf * fdf, double * root)
 
 
 static const gsl_root_fdfsolver_type steffenson_type =
-{"steffenson",				/* name */
+{"steffenson",                          /* name */
  sizeof (steffenson_state_t),
  &steffenson_init,
  &steffenson_iterate};

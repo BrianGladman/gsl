@@ -1201,8 +1201,8 @@ fd_UMseries_int(const int j, const double x, gsl_sf_result * result)
   stat_sum = ( n >= nmax ? GSL_EMAXITER : GSL_SUCCESS );
   stat_e   = gsl_sf_exp_mult_err_e(lnpre_val, lnpre_err,
                                       pre*(sum_even_val + sum_odd_val),
-				      pre*(sum_even_err + sum_odd_err),
-				      result);
+                                      pre*(sum_even_err + sum_odd_err),
+                                      result);
   result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
 
   return GSL_ERROR_SELECT_3(stat_e, stat_h, stat_sum);

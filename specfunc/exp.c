@@ -475,30 +475,30 @@ gsl_sf_exprel_n_e(const int N, const double x, gsl_sf_result * result)
       lnpre_err += lnf_N.err;
       if(lnpre_val < GSL_LOG_DBL_MAX - 5.0) {
         int stat_eG;
-	gsl_sf_result bigG_ratio;
-	gsl_sf_result pre;
-	int stat_ex = gsl_sf_exp_err_e(lnpre_val, lnpre_err, &pre);
+        gsl_sf_result bigG_ratio;
+        gsl_sf_result pre;
+        int stat_ex = gsl_sf_exp_err_e(lnpre_val, lnpre_err, &pre);
         double ln_bigG_ratio_pre = -x + (N-1)*ln_x - lg_N;
-	double bigGsum = 1.0;
-	double term = 1.0;
-	int k;
-	for(k=1; k<N; k++) {
-	  term *= (N-k)/x;
-	  bigGsum += term;
-	}
-	stat_eG = gsl_sf_exp_mult_e(ln_bigG_ratio_pre, bigGsum, &bigG_ratio);
-	if(stat_eG == GSL_SUCCESS) {
+        double bigGsum = 1.0;
+        double term = 1.0;
+        int k;
+        for(k=1; k<N; k++) {
+          term *= (N-k)/x;
+          bigGsum += term;
+        }
+        stat_eG = gsl_sf_exp_mult_e(ln_bigG_ratio_pre, bigGsum, &bigG_ratio);
+        if(stat_eG == GSL_SUCCESS) {
           result->val  = pre.val * (1.0 - bigG_ratio.val);
-	  result->err  = pre.val * (2.0*GSL_DBL_EPSILON + bigG_ratio.err);
-	  result->err += pre.err * fabs(1.0 - bigG_ratio.val);
-	  result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
-	  return stat_ex;
-	}
-	else {
-	  result->val = 0.0;
-	  result->err = 0.0;
-	  return stat_eG;
-	}
+          result->err  = pre.val * (2.0*GSL_DBL_EPSILON + bigG_ratio.err);
+          result->err += pre.err * fabs(1.0 - bigG_ratio.val);
+          result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
+          return stat_ex;
+        }
+        else {
+          result->val = 0.0;
+          result->err = 0.0;
+          return stat_eG;
+        }
       }
       else {
         OVERFLOW_ERROR(result);
@@ -517,7 +517,7 @@ gsl_sf_exprel_n_e(const int N, const double x, gsl_sf_result * result)
       int k;
       for(k=1; k<N; k++) {
         term *= (N-k)/x;
-	sum  += term;
+        sum  += term;
       }
       result->val = -N/x * sum;
       result->err = 2.0 * GSL_DBL_EPSILON * fabs(result->val);

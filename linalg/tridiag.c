@@ -66,10 +66,10 @@ solve_tridiag(
       gamma[0] = offdiag[0] / alpha[0];
 
       for (i = 1; i < N - 1; i++)
-	{
-	  alpha[i] = diag[d_stride * i] - offdiag[o_stride*(i - 1)] * gamma[i - 1];
-	  gamma[i] = offdiag[o_stride * i] / alpha[i];
-	}
+        {
+          alpha[i] = diag[d_stride * i] - offdiag[o_stride*(i - 1)] * gamma[i - 1];
+          gamma[i] = offdiag[o_stride * i] / alpha[i];
+        }
 
       if (N > 1) 
         {
@@ -79,23 +79,23 @@ solve_tridiag(
       /* update RHS */
       z[0] = b[0];
       for (i = 1; i < N; i++)
-	{
-	  z[i] = b[b_stride * i] - gamma[i - 1] * z[i - 1];
-	}
+        {
+          z[i] = b[b_stride * i] - gamma[i - 1] * z[i - 1];
+        }
       for (i = 0; i < N; i++)
-	{
-	  c[i] = z[i] / alpha[i];
-	}
+        {
+          c[i] = z[i] / alpha[i];
+        }
 
       /* backsubstitution */
       x[x_stride * (N - 1)] = c[N - 1];
       if (N >= 2)
-	{
-	  for (i = N - 2, j = 0; j <= N - 2; j++, i--)
-	    {
-	      x[x_stride * i] = c[i] - gamma[i] * x[x_stride * (i + 1)];
-	    }
-	}
+        {
+          for (i = N - 2, j = 0; j <= N - 2; j++, i--)
+            {
+              x[x_stride * i] = c[i] - gamma[i] * x[x_stride * (i + 1)];
+            }
+        }
 
       status = GSL_SUCCESS;
     }
@@ -225,15 +225,15 @@ solve_cyc_tridiag(
       delta[0] = offdiag[o_stride * (N-1)] / alpha[0];
 
       for (i = 1; i < N - 2; i++)
-	{
-	  alpha[i] = diag[d_stride * i] - offdiag[o_stride * (i-1)] * gamma[i - 1];
-	  gamma[i] = offdiag[o_stride * i] / alpha[i];
-	  delta[i] = -delta[i - 1] * offdiag[o_stride * (i-1)] / alpha[i];
-	}
+        {
+          alpha[i] = diag[d_stride * i] - offdiag[o_stride * (i-1)] * gamma[i - 1];
+          gamma[i] = offdiag[o_stride * i] / alpha[i];
+          delta[i] = -delta[i - 1] * offdiag[o_stride * (i-1)] / alpha[i];
+        }
       for (i = 0; i < N - 2; i++)
-	{
-	  sum += alpha[i] * delta[i] * delta[i];
-	}
+        {
+          sum += alpha[i] * delta[i] * delta[i];
+        }
       alpha[N - 2] = diag[d_stride * (N - 2)] - offdiag[o_stride * (N - 3)] * gamma[N - 3];
       gamma[N - 2] = (offdiag[o_stride * (N - 2)] - offdiag[o_stride * (N - 3)] * delta[N - 3]) / alpha[N - 2];
       alpha[N - 1] = diag[d_stride * (N - 1)] - sum - alpha[(N - 2)] * gamma[N - 2] * gamma[N - 2];
@@ -241,30 +241,30 @@ solve_cyc_tridiag(
       /* update */
       z[0] = b[0];
       for (i = 1; i < N - 1; i++)
-	{
-	  z[i] = b[b_stride * i] - z[i - 1] * gamma[i - 1];
-	}
+        {
+          z[i] = b[b_stride * i] - z[i - 1] * gamma[i - 1];
+        }
       sum = 0.0;
       for (i = 0; i < N - 2; i++)
-	{
-	  sum += delta[i] * z[i];
-	}
+        {
+          sum += delta[i] * z[i];
+        }
       z[N - 1] = b[b_stride * (N - 1)] - sum - gamma[N - 2] * z[N - 2];
       for (i = 0; i < N; i++)
-	{
-	  c[i] = z[i] / alpha[i];
-	}
+        {
+          c[i] = z[i] / alpha[i];
+        }
 
       /* backsubstitution */
       x[x_stride * (N - 1)] = c[N - 1];
       x[x_stride * (N - 2)] = c[N - 2] - gamma[N - 2] * x[x_stride * (N - 1)];
       if (N >= 3)
-	{
-	  for (i = N - 3, j = 0; j <= N - 3; j++, i--)
-	    {
-	      x[x_stride * i] = c[i] - gamma[i] * x[x_stride * (i + 1)] - delta[i] * x[x_stride * (N - 1)];
-	    }
-	}
+        {
+          for (i = N - 3, j = 0; j <= N - 3; j++, i--)
+            {
+              x[x_stride * i] = c[i] - gamma[i] * x[x_stride * (i + 1)] - delta[i] * x[x_stride * (N - 1)];
+            }
+        }
 
       status = GSL_SUCCESS;
     }
@@ -419,16 +419,16 @@ gsl_linalg_solve_symm_tridiag(
 {
   if(diag->size != rhs->size ||
           (offdiag->size != rhs->size && offdiag->size != rhs->size-1) ||
-	  (solution->size != rhs->size)
+          (solution->size != rhs->size)
           ) {
     return GSL_EBADLEN;
   }
   else {
     return solve_tridiag(diag->data, diag->stride,
                          offdiag->data, offdiag->stride,
-			 rhs->data, rhs->stride,
-	                 solution->data, solution->stride,
-	                 diag->size);
+                         rhs->data, rhs->stride,
+                         solution->data, solution->stride,
+                         diag->size);
   }
 }
 
@@ -473,9 +473,9 @@ gsl_linalg_solve_symm_cyc_tridiag(
   else {
     return solve_cyc_tridiag(diag->data, diag->stride,
                              offdiag->data, offdiag->stride,
-			     rhs->data, rhs->stride,
-	                     solution->data, solution->stride,
-	                     diag->size);
+                             rhs->data, rhs->stride,
+                             solution->data, solution->stride,
+                             diag->size);
   }
 }
 

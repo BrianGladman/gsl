@@ -23,7 +23,7 @@
 
 gsl_multimin_fdfminimizer *
 gsl_multimin_fdfminimizer_alloc (const gsl_multimin_fdfminimizer_type * T,
-				 size_t n)
+                                 size_t n)
 {
   int status;
 
@@ -33,7 +33,7 @@ gsl_multimin_fdfminimizer_alloc (const gsl_multimin_fdfminimizer_type * T,
   if (s == 0)
     {
       GSL_ERROR_VAL ("failed to allocate space for minimizer struct",
-		     GSL_ENOMEM, 0);
+                     GSL_ENOMEM, 0);
     }
 
   s->type = T;
@@ -74,7 +74,7 @@ gsl_multimin_fdfminimizer_alloc (const gsl_multimin_fdfminimizer_type * T,
       gsl_vector_free (s->dx);
       free (s);
       GSL_ERROR_VAL ("failed to allocate space for minimizer state",
-		     GSL_ENOMEM, 0);
+                     GSL_ENOMEM, 0);
     }
 
   status = (T->alloc) (s->state, n);

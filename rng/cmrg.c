@@ -84,8 +84,8 @@ static const long int b3 = -539608, qb3 = 3976, rb3 = 2071;
 
 typedef struct
   {
-    long int x1, x2, x3;	/* first component */
-    long int y1, y2, y3;	/* second component */
+    long int x1, x2, x3;        /* first component */
+    long int y1, y2, y3;        /* second component */
   }
 cmrg_state_t;
 
@@ -158,7 +158,7 @@ cmrg_set (void *vstate, unsigned long int s)
   cmrg_state_t *state = (cmrg_state_t *) vstate;
 
   if (s == 0)
-    s = 1;	/* default seed is 1 */
+    s = 1;      /* default seed is 1 */
 
 #define LCG(n) ((69069 * n) & 0xffffffffUL)
   s = LCG (s);
@@ -186,9 +186,9 @@ cmrg_set (void *vstate, unsigned long int s)
 }
 
 static const gsl_rng_type cmrg_type =
-{"cmrg",			/* name */
- 2147483646,			/* RAND_MAX */
- 0,			        /* RAND_MIN */
+{"cmrg",                        /* name */
+ 2147483646,                    /* RAND_MAX */
+ 0,                             /* RAND_MIN */
  sizeof (cmrg_state_t),
  &cmrg_set,
  &cmrg_get,

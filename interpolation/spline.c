@@ -104,8 +104,8 @@ gsl_spline_eval_e (const gsl_spline * spline,
 
 double
 gsl_spline_eval (const gsl_spline * spline,
-		 double x,
-		 gsl_interp_accel * a)
+                 double x,
+                 gsl_interp_accel * a)
 {
   return gsl_interp_eval (spline->interp, 
                           spline->x, spline->y,
@@ -126,8 +126,8 @@ gsl_spline_eval_deriv_e (const gsl_spline * spline,
 
 double
 gsl_spline_eval_deriv (const gsl_spline * spline,
-		       double x,
-		       gsl_interp_accel * a)
+                       double x,
+                       gsl_interp_accel * a)
 {
   return gsl_interp_eval_deriv (spline->interp, 
                                 spline->x, spline->y,
@@ -148,8 +148,8 @@ gsl_spline_eval_deriv2_e (const gsl_spline * spline,
 
 double
 gsl_spline_eval_deriv2 (const gsl_spline * spline,
-		        double x,
-		        gsl_interp_accel * a)
+                        double x,
+                        gsl_interp_accel * a)
 {
   return gsl_interp_eval_deriv2 (spline->interp, 
                                  spline->x, spline->y,
@@ -172,7 +172,7 @@ gsl_spline_eval_integ_e (const gsl_spline * spline,
 double
 gsl_spline_eval_integ (const gsl_spline * spline,
                        double a, double b,
-		       gsl_interp_accel * acc)
+                       gsl_interp_accel * acc)
 {
   return gsl_interp_eval_integ (spline->interp, 
                                 spline->x, spline->y,

@@ -24,7 +24,7 @@
    weights as evaluated with 80 decimal digit arithmetic by
    L. W. Fullerton, Bell Labs, Nov. 1981. */
 
-static const double xgk[16] =	/* abscissae of the 31-point kronrod rule */
+static const double xgk[16] =   /* abscissae of the 31-point kronrod rule */
 {
   0.998002298693397060285172840152271,
   0.987992518020485428489565718586613,
@@ -47,7 +47,7 @@ static const double xgk[16] =	/* abscissae of the 31-point kronrod rule */
 /* xgk[1], xgk[3], ... abscissae of the 15-point gauss rule. 
    xgk[0], xgk[2], ... abscissae to optimally extend the 15-point gauss rule */
 
-static const double wg[8] =	/* weights of the 15-point gauss rule */
+static const double wg[8] =     /* weights of the 15-point gauss rule */
 {
   0.030753241996117268354628393577204,
   0.070366047488108124709267416450667,
@@ -59,7 +59,7 @@ static const double wg[8] =	/* weights of the 15-point gauss rule */
   0.202578241925561272880620199967519
 };
 
-static const double wgk[16] =	/* weights of the 31-point kronrod rule */
+static const double wgk[16] =   /* weights of the 31-point kronrod rule */
 {
   0.005377479872923348987792051430128,
   0.015007947329316122538374763075807,

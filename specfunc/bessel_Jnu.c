@@ -130,8 +130,8 @@ gsl_sf_bessel_Jnu_e(const double nu, const double x, gsl_sf_result * result)
       int n;
       for(n=1; n<N; n++) {
         Ynp1 = 2.0*(mu+n)/x * Yn - Ynm1;
-	Ynm1 = Yn;
-	Yn   = Ynp1;
+        Ynm1 = Yn;
+        Yn   = Ynp1;
       }
 
       result->val = 2.0/(M_PI*x) / (Jnup1_Jnu*Yn - Ynp1);

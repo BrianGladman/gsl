@@ -237,30 +237,30 @@ main (void)
             pcan->data[j] = 0;
           }
 
-	gsl_permutation_linear_to_canonical (pcan, plin);
+        gsl_permutation_linear_to_canonical (pcan, plin);
 
-	for (j = 0; j < 5; j++)
-	  {
-	    status |= (pcan->data[j] != c5[i][j]);
-	  }
+        for (j = 0; j < 5; j++)
+          {
+            status |= (pcan->data[j] != c5[i][j]);
+          }
 
-	status |= (gsl_permutation_canonical_cycles (pcan) != cycles[i]);
+        status |= (gsl_permutation_canonical_cycles (pcan) != cycles[i]);
 
-	status |= (gsl_permutation_linear_cycles (plin) != cycles[i]);
+        status |= (gsl_permutation_linear_cycles (plin) != cycles[i]);
 
         for (j = 0; j < 5; j++)
           {
             plin->data[j] = 0;
           }
 
-	gsl_permutation_canonical_to_linear (plin, pcan);
-		
-	for (j = 0; j < 5; j++)
-	  {
-	    status |= (plin->data[j] != p5[i][j]);
-	  }
+        gsl_permutation_canonical_to_linear (plin, pcan);
+                
+        for (j = 0; j < 5; j++)
+          {
+            status |= (plin->data[j] != p5[i][j]);
+          }
 
-	i++;
+        i++;
       }
     while (gsl_permutation_next(p) == GSL_SUCCESS);
 
@@ -280,9 +280,9 @@ main (void)
     gsl_permutation_init (p);
     
     do 
-      {	
-	status |= gsl_permutation_inversions (p) != inversions[i];
-	i++;
+      { 
+        status |= gsl_permutation_inversions (p) != inversions[i];
+        i++;
       }
     while (gsl_permutation_next(p) == GSL_SUCCESS);
     

@@ -56,17 +56,17 @@
       INDEX jy = OFFSET(N, incY) + j_min * incY;
       Y[iy] += temp1 * A[lda * i + i];
       for (j = j_min; j < j_max; j++) {
-	Y[jy] += temp1 * A[lda * i + j];
-	temp2 += X[jx] * A[lda * i + j];
-	jx += incX;
-	jy += incY;
+        Y[jy] += temp1 * A[lda * i + j];
+        temp2 += X[jx] * A[lda * i + j];
+        jx += incX;
+        jy += incY;
       }
       Y[iy] += alpha * temp2;
       ix += incX;
       iy += incY;
     }
   } else if ((order == CblasRowMajor && Uplo == CblasLower)
-	     || (order == CblasColMajor && Uplo == CblasUpper)) {
+             || (order == CblasColMajor && Uplo == CblasUpper)) {
     INDEX ix = OFFSET(N, incX) + (N - 1) * incX;
     INDEX iy = OFFSET(N, incY) + (N - 1) * incY;
     for (i = N; i > 0 && i--;) {
@@ -78,10 +78,10 @@
       INDEX jy = OFFSET(N, incY) + j_min * incY;
       Y[iy] += temp1 * A[lda * i + i];
       for (j = j_min; j < j_max; j++) {
-	Y[jy] += temp1 * A[lda * i + j];
-	temp2 += X[jx] * A[lda * i + j];
-	jx += incX;
-	jy += incY;
+        Y[jy] += temp1 * A[lda * i + j];
+        temp2 += X[jx] * A[lda * i + j];
+        jx += incX;
+        jy += incY;
       }
       Y[iy] += alpha * temp2;
       ix -= incX;

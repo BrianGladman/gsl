@@ -986,10 +986,10 @@ int test_gegen(void)
   TEST_SF(s,  gsl_sf_gegenpoly_3_e, ( 5.0,   1.0, &r), 220.000, TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s,  gsl_sf_gegenpoly_3_e, ( 100.0, 0.5, &r), 161600.000, TEST_TOL0, GSL_SUCCESS);
 
-  TEST_SF(s,  gsl_sf_gegenpoly_n_e, (1,       1.0, 1.0, &r), 2.000		, TEST_TOL0, GSL_SUCCESS);
-  TEST_SF(s,  gsl_sf_gegenpoly_n_e, (10,      1.0, 1.0, &r), 11.000		, TEST_TOL0, GSL_SUCCESS);
-  TEST_SF(s,  gsl_sf_gegenpoly_n_e, (10,      1.0, 0.1, &r), -0.4542309376	, TEST_TOL0, GSL_SUCCESS);
-  TEST_SF(s,  gsl_sf_gegenpoly_n_e, (10,      5.0, 1.0, &r), 9.23780e+4  	, TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s,  gsl_sf_gegenpoly_n_e, (1,       1.0, 1.0, &r), 2.000              , TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s,  gsl_sf_gegenpoly_n_e, (10,      1.0, 1.0, &r), 11.000             , TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s,  gsl_sf_gegenpoly_n_e, (10,      1.0, 0.1, &r), -0.4542309376      , TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s,  gsl_sf_gegenpoly_n_e, (10,      5.0, 1.0, &r), 9.23780e+4         , TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s,  gsl_sf_gegenpoly_n_e, (10,    100.0, 0.5, &r), 1.5729338392690000e+13, TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s,  gsl_sf_gegenpoly_n_e, (1000,  100.0, 1.0, &r), 3.3353666135627322e+232, TEST_TOL1, GSL_SUCCESS);
   TEST_SF(s,  gsl_sf_gegenpoly_n_e, (100,  2000.0, 1.0, &r), 5.8753432034937579e+202, TEST_TOL0, GSL_SUCCESS);
@@ -1206,27 +1206,27 @@ int test_log(void)
 
   TEST_SF_2(s, gsl_sf_complex_log_e, (1.0, 1.0, &r1, &r2),
             0.3465735902799726547, TEST_TOL0,
-	    0.7853981633974483096, TEST_TOL0,
+            0.7853981633974483096, TEST_TOL0,
             GSL_SUCCESS);
 
   TEST_SF_2(s, gsl_sf_complex_log_e, (1.0, -1.0, &r1, &r2),
              0.3465735902799726547, TEST_TOL0,
-	    -0.7853981633974483096, TEST_TOL0,
+            -0.7853981633974483096, TEST_TOL0,
             GSL_SUCCESS);
 
   TEST_SF_2(s, gsl_sf_complex_log_e, (1.0, 100.0, &r1, &r2),
             4.605220183488258022, TEST_TOL0,
-	    1.560796660108231381, TEST_TOL0,
+            1.560796660108231381, TEST_TOL0,
             GSL_SUCCESS);
 
   TEST_SF_2(s, gsl_sf_complex_log_e, (-1000.0, -1.0, &r1, &r2),
              6.907755778981887052, TEST_TOL0,
-	    -3.1405926539231263718, TEST_TOL0,
+            -3.1405926539231263718, TEST_TOL0,
             GSL_SUCCESS);
 
   TEST_SF_2(s, gsl_sf_complex_log_e, (-1.0, 0.0, &r1, &r2),
              0.0, TEST_TOL0,
-	     3.1415926535897932385, TEST_TOL0,
+             3.1415926535897932385, TEST_TOL0,
              GSL_SUCCESS);
 
 
@@ -1499,12 +1499,12 @@ int test_trig(void)
 
   TEST_SF_2(s, gsl_sf_polar_to_rect, (10.0, M_PI/6.0, &r1, &r2),
             (10.0 * sqrt(3) / 2.0), TEST_TOL0,
-	    (10.0 * 0.5), TEST_TOL0,
+            (10.0 * 0.5), TEST_TOL0,
             GSL_SUCCESS);
 
   TEST_SF_2(s, gsl_sf_polar_to_rect, (10.0, -2.0/3.0*M_PI, &r1, &r2),
             (10.0 * (-0.5)), TEST_TOL1,
-	    (10.0 * (-sqrt(3.0)/2.0)), TEST_TOL1,
+            (10.0 * (-sqrt(3.0)/2.0)), TEST_TOL1,
             GSL_SUCCESS);
 
 

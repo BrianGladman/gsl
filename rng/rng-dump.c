@@ -37,7 +37,7 @@ main (int argc, char **argv)
     {
       printf ("Usage: diehard\n");
       printf ("Output 3 million numbers in binary format," 
-	      "suitable for testing with DIEHARD\n");
+              "suitable for testing with DIEHARD\n");
       exit (0);
     }
 
@@ -48,25 +48,25 @@ main (int argc, char **argv)
       int status ;
 
       for (j = 0; j < 1024; j++)
-	{
-	  unsigned long int u = gsl_rng_get (r) ;
-	  buffer[4 * j + 0] = u & 0xFF ;
-	  u >>= 8;
-	  buffer[4 * j + 1] = u & 0xFF ;
-	  u >>= 8;
-	  buffer[4 * j + 2] = u & 0xFF ;
-	  u >>= 8;
-	  buffer[4 * j + 3] = u & 0xFF ;
+        {
+          unsigned long int u = gsl_rng_get (r) ;
+          buffer[4 * j + 0] = u & 0xFF ;
+          u >>= 8;
+          buffer[4 * j + 1] = u & 0xFF ;
+          u >>= 8;
+          buffer[4 * j + 2] = u & 0xFF ;
+          u >>= 8;
+          buffer[4 * j + 3] = u & 0xFF ;
 
-	}
+        }
       
       status = fwrite(buffer, 4 * sizeof(char), 1024, stdout) ;
 
       if (status != 1024) 
-	{
-	  perror("fwrite") ;
-	  exit(EXIT_FAILURE) ;
-	}
+        {
+          perror("fwrite") ;
+          exit(EXIT_FAILURE) ;
+        }
     }
 
   return 0;

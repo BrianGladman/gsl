@@ -41,7 +41,7 @@ gsl_complex gsl_complex_polar (double r, double theta); /* r= r e^(i theta) */
 #if HAVE_INLINE
 extern inline gsl_complex
 gsl_complex_rect (double x, double y)
-{				/* return z = x + i y */
+{                               /* return z = x + i y */
   gsl_complex z;
   GSL_SET_COMPLEX (&z, x, y);
   return z;

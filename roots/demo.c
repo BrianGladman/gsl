@@ -46,7 +46,7 @@ main ()
   printf ("using %s method\n", gsl_root_fsolver_name (s));
 
   printf ("%5s [%9s, %9s] %9s %9s %10s %9s\n",
-	  "iter", "lower", "upper", "root", "actual", "err", "err(est)");
+          "iter", "lower", "upper", "root", "actual", "err", "err(est)");
 
   do
     {
@@ -58,11 +58,11 @@ main ()
       status = gsl_root_test_interval (x, 0, 0.001);
 
       if (status == GSL_SUCCESS)
-	printf ("Converged:\n");
+        printf ("Converged:\n");
 
       printf ("%5d [%.7f, %.7f] %.7f %.7f %+.7f %.7f\n",
-	      iterations, x_lower, x_upper,
-	      r, r_expected, r - r_expected, x_upper - x_lower);
+              iterations, x_lower, x_upper,
+              r, r_expected, r - r_expected, x_upper - x_lower);
     }
   while (status == GSL_CONTINUE && iterations < max_iterations);
 

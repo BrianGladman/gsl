@@ -160,14 +160,14 @@ void gsl_vector_complex_long_double_set_all (gsl_vector_complex_long_double * v,
 int gsl_vector_complex_long_double_set_basis (gsl_vector_complex_long_double * v, size_t i);
 
 int gsl_vector_complex_long_double_fread (FILE * stream,
-				    gsl_vector_complex_long_double * v);
+                                    gsl_vector_complex_long_double * v);
 int gsl_vector_complex_long_double_fwrite (FILE * stream,
-				     const gsl_vector_complex_long_double * v);
+                                     const gsl_vector_complex_long_double * v);
 int gsl_vector_complex_long_double_fscanf (FILE * stream,
-				     gsl_vector_complex_long_double * v);
+                                     gsl_vector_complex_long_double * v);
 int gsl_vector_complex_long_double_fprintf (FILE * stream,
-				      const gsl_vector_complex_long_double * v,
-				      const char *format);
+                                      const gsl_vector_complex_long_double * v,
+                                      const char *format);
 
 int gsl_vector_complex_long_double_memcpy (gsl_vector_complex_long_double * dest, const gsl_vector_complex_long_double * src);
 
@@ -183,7 +183,7 @@ int gsl_vector_complex_long_double_isnull (const gsl_vector_complex_long_double 
 extern inline
 gsl_complex_long_double
 gsl_vector_complex_long_double_get (const gsl_vector_complex_long_double * v,
-			      const size_t i)
+                              const size_t i)
 {
 #if GSL_RANGE_CHECK
   if (i >= v->size)
@@ -198,7 +198,7 @@ gsl_vector_complex_long_double_get (const gsl_vector_complex_long_double * v,
 extern inline
 void
 gsl_vector_complex_long_double_set (gsl_vector_complex_long_double * v,
-			      const size_t i, gsl_complex_long_double z)
+                              const size_t i, gsl_complex_long_double z)
 {
 #if GSL_RANGE_CHECK
   if (i >= v->size)
@@ -212,7 +212,7 @@ gsl_vector_complex_long_double_set (gsl_vector_complex_long_double * v,
 extern inline
 gsl_complex_long_double *
 gsl_vector_complex_long_double_ptr (gsl_vector_complex_long_double * v,
-			      const size_t i)
+                              const size_t i)
 {
 #if GSL_RANGE_CHECK
   if (i >= v->size)

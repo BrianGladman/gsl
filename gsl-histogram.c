@@ -57,7 +57,7 @@ main (int argc, char **argv)
 
     while (fscanf(stdin, "%lg", &x) == 1)
       {
-	gsl_histogram_increment(h, x);
+        gsl_histogram_increment(h, x);
       }
 
 #ifdef DISPLAY_STATS

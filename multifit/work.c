@@ -32,11 +32,11 @@ gsl_multifit_linear_alloc (size_t n, size_t p)
   if (w == 0)
     {
       GSL_ERROR_VAL ("failed to allocate space for multifit_linear struct",
-		     GSL_ENOMEM, 0);
+                     GSL_ENOMEM, 0);
     }
 
-  w->n = n;			/* number of observations */
-  w->p = p;			/* number of parameters */
+  w->n = n;                     /* number of observations */
+  w->p = p;                     /* number of parameters */
 
   w->A = gsl_matrix_alloc (n, p);
 

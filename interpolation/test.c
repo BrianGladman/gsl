@@ -132,7 +132,7 @@ test_interp (
       diff_deriv = deriv - test_d_table->y[i];
       diff_integ = integ - test_i_table->y[i];
       if (fabs (diff_y) > 1.e-10 || fabs(diff_deriv) > 1.0e-10 || fabs(diff_integ) > 1.0e-10) {
-	status++;
+        status++;
       }
     }
 

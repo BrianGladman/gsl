@@ -103,7 +103,7 @@ brown_df (const gsl_vector * x, void *params, gsl_matrix * df)
 
 int
 brown_fdf (const gsl_vector * x, void *params,
-	   gsl_vector * f, gsl_matrix * df)
+           gsl_vector * f, gsl_matrix * df)
 {
   brown_f (x, params, f);
   brown_df (x, params, df);

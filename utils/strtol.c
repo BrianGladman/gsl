@@ -23,8 +23,8 @@ Cambridge, MA 02139, USA.  */
 #include <stdlib.h>
 #include <errno.h>
 
-#ifndef	UNSIGNED
-#define	UNSIGNED	0
+#ifndef UNSIGNED
+#define UNSIGNED        0
 #endif
 
 /* Convert NPTR to an `unsigned long int' or `long int' in base BASE.
@@ -33,9 +33,9 @@ Cambridge, MA 02139, USA.  */
    If BASE is < 2 or > 36, it is reset to 10.
    If ENDPTR is not NULL, a pointer to the character after the last
    one converted is stored in *ENDPTR.  */
-#if	UNSIGNED
+#if     UNSIGNED
 unsigned long int
-#define	strtol	strtoul
+#define strtol  strtoul
 #else
 long int
 #endif
@@ -85,13 +85,13 @@ strtol (nptr, endptr, base)
   if (base == 0)
     if (*s == '0')
       {
-	if (toupper (s[1]) == 'X')
-	  {
-	    s += 2;
-	    base = 16;
-	  }
-	else
-	  base = 8;
+        if (toupper (s[1]) == 'X')
+          {
+            s += 2;
+            base = 16;
+          }
+        else
+          base = 8;
       }
     else
       base = 10;
@@ -107,21 +107,21 @@ strtol (nptr, endptr, base)
   for (c = *s; c != '\0'; c = *++s)
     {
       if (isdigit (c))
-	c -= '0';
+        c -= '0';
       else if (isalpha (c))
-	c = toupper (c) - 'A' + 10;
+        c = toupper (c) - 'A' + 10;
       else
-	break;
+        break;
       if (c >= base)
-	break;
+        break;
       /* Check for overflow.  */
       if (i > cutoff || (i == cutoff && c > cutlim))
-	overflow = 1;
+        overflow = 1;
       else
-	{
-	  i *= (unsigned long int) base;
-	  i += c;
-	}
+        {
+          i *= (unsigned long int) base;
+          i += c;
+        }
     }
 
   /* Check if anything actually happened.  */
@@ -133,18 +133,18 @@ strtol (nptr, endptr, base)
   if (endptr != NULL)
     *endptr = (char *) s;
 
-#if	!UNSIGNED
+#if     !UNSIGNED
   /* Check for a value that is within the range of
      `unsigned long int', but outside the range of `long int'.  */
   if (i > (negative ?
-	   -(unsigned long int) LONG_MIN : (unsigned long int) LONG_MAX))
+           -(unsigned long int) LONG_MIN : (unsigned long int) LONG_MAX))
     overflow = 1;
 #endif
 
   if (overflow)
     {
       errno = ERANGE;
-#if	UNSIGNED
+#if     UNSIGNED
       return ULONG_MAX;
 #else
       return negative ? LONG_MIN : LONG_MAX;

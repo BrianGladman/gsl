@@ -19,7 +19,7 @@
 
 static inline
 void append_interval (gsl_integration_workspace * workspace,
-		      double a1, double b1, double area1, double error1)
+                      double a1, double b1, double area1, double error1)
 {
   const size_t i_new = workspace->size ;
 

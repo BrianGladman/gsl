@@ -40,7 +40,7 @@ FUNCTION (test, func) (void)
   gsl_test (size != N, NAME (gsl_block) "_size returns valid size");
 
 
-  FUNCTION (gsl_block, free) (v);	/* free whatever is in v */
+  FUNCTION (gsl_block, free) (v);       /* free whatever is in v */
 
   v = FUNCTION (gsl_block, calloc) (N);
 
@@ -58,12 +58,12 @@ FUNCTION (test, func) (void)
   for (i = 0; i < N; i++)
     {
       if (v->data[i] != 0.0)
-	status = 1;
+        status = 1;
     };
   
   gsl_test (status, NAME (gsl_block) "_calloc initializes array to zero");
 
-  FUNCTION (gsl_block, free) (v);	/* free whatever is in v */
+  FUNCTION (gsl_block, free) (v);       /* free whatever is in v */
 }
 
 
@@ -79,7 +79,7 @@ FUNCTION (test, binary) (void)
 
     for (i = 0; i < N; i++)
       {
-	v->data[i] = (ATOMIC)(N - i);
+        v->data[i] = (ATOMIC)(N - i);
       };
 
     FUNCTION (gsl_block, fwrite) (f, v);
@@ -100,8 +100,8 @@ FUNCTION (test, binary) (void)
 
     for (i = 0; i < N; i++)
       {
-	if (w->data[i] != (ATOMIC) (N - i))
-	  status = 1;
+        if (w->data[i] != (ATOMIC) (N - i))
+          status = 1;
       };
 
     fclose (f);

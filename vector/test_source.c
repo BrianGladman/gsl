@@ -44,21 +44,21 @@ FUNCTION (test, func) (void)
   for (i = 0; i < N; i++)
     {
       if (v->data[i] != (ATOMIC) i)
-	status = 1;
+        status = 1;
     };
   
   gsl_test (status,
-	    NAME (gsl_vector) "_set" DESC " writes into array");
+            NAME (gsl_vector) "_set" DESC " writes into array");
 
 
   status = 0;
   for (i = 0; i < N; i++)
     {
       if (FUNCTION (gsl_vector, get) (v, i) != (ATOMIC) i)
-	status = 1;
+        status = 1;
     };
   gsl_test (status,
-	    NAME (gsl_vector) "_get" DESC " reads from array");
+            NAME (gsl_vector) "_get" DESC " reads from array");
 
 
   /* Now set stride to 2 */
@@ -69,7 +69,7 @@ FUNCTION (test, func) (void)
   for (i = 0; i < N / 2; i++)
     {
       if (FUNCTION (gsl_vector, get) (v, i) != (ATOMIC) (2 * i))
-	status = 1;
+        status = 1;
     };
   gsl_test (status, NAME (gsl_vector) "_get" DESC " reads with stride");
 
@@ -83,7 +83,7 @@ FUNCTION (test, func) (void)
   for (i = 0; i < N / 2; i++)
     {
       if (v->data[2 * i] != (ATOMIC) (i + 1000))
-	status = 1;
+        status = 1;
     };
   
   gsl_test (status, NAME (gsl_vector) "_set" DESC " writes with stride");
@@ -278,7 +278,7 @@ FUNCTION (test, func) (void)
 
 
 
-  FUNCTION (gsl_vector, free) (v);	/* free whatever is in v */
+  FUNCTION (gsl_vector, free) (v);      /* free whatever is in v */
 }
 
 
@@ -295,7 +295,7 @@ FUNCTION (test, binary) (void)
 
     for (i = 0; i < N; i++)
       {
-	FUNCTION (gsl_vector, set) (v, i, (ATOMIC) (N - i));
+        FUNCTION (gsl_vector, set) (v, i, (ATOMIC) (N - i));
       };
 
     FUNCTION (gsl_vector, fwrite) (f, v);
@@ -311,8 +311,8 @@ FUNCTION (test, binary) (void)
     status = 0;
     for (i = 0; i < N; i++)
       {
-	if (w->data[i] != (ATOMIC) (N - i))
-	  status = 1;
+        if (w->data[i] != (ATOMIC) (N - i))
+          status = 1;
       };
 
     gsl_test (status, NAME (gsl_vector) "_write and read");
@@ -320,8 +320,8 @@ FUNCTION (test, binary) (void)
     fclose (f);
   }
 
-  FUNCTION (gsl_vector, free) (v);	/* free whatever is in v */
-  FUNCTION (gsl_vector, free) (w);	/* free whatever is in w */
+  FUNCTION (gsl_vector, free) (v);      /* free whatever is in v */
+  FUNCTION (gsl_vector, free) (w);      /* free whatever is in w */
 }
 
 void
@@ -348,21 +348,21 @@ FUNCTION (test, trap) (void)
   x = FUNCTION (gsl_vector, get) (v, j - 1);
   gsl_test (!status, NAME (gsl_vector) "_get traps index below lower bound");
   gsl_test (x != 0,
-	 NAME (gsl_vector) "_get returns zero for index below lower bound");
+         NAME (gsl_vector) "_get returns zero for index below lower bound");
 
   status = 0;
   x = FUNCTION (gsl_vector, get) (v, N + 1);
   gsl_test (!status, NAME (gsl_vector) "_get traps index above upper bound");
   gsl_test (x != 0,
-	 NAME (gsl_vector) "_get returns zero for index above upper bound");
+         NAME (gsl_vector) "_get returns zero for index above upper bound");
 
   status = 0;
   x = FUNCTION (gsl_vector, get) (v, N);
   gsl_test (!status, NAME (gsl_vector) "_get traps index at upper bound");
   gsl_test (x != 0,
-	    NAME (gsl_vector) "_get returns zero for index at upper bound");
+            NAME (gsl_vector) "_get returns zero for index at upper bound");
 
-  FUNCTION (gsl_vector, free) (v);	/* free whatever is in v */
+  FUNCTION (gsl_vector, free) (v);      /* free whatever is in v */
 }
 
 

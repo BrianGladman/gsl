@@ -38,22 +38,22 @@ sort_results (gsl_integration_workspace * workspace)
       size_t j;
 
       for (j = i + 1; j < nint; j++)
-	{
-	  size_t i2 = order[j];
-	  double e2 = elist[i2];
+        {
+          size_t i2 = order[j];
+          double e2 = elist[i2];
 
-	  if (e2 >= e1)
-	    {
-	      i_max = i2;
-	      e1 = e2;
-	    }
-	}
+          if (e2 >= e1)
+            {
+              i_max = i2;
+              e1 = e2;
+            }
+        }
 
       if (i_max != i1)
-	{
-	  order[i] = order[i_max];
-	  order[i_max] = i1;
-	}
+        {
+          order[i] = order[i_max];
+          order[i_max] = i1;
+        }
     }
 
   workspace->i = order[0] ;

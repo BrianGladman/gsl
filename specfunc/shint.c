@@ -34,10 +34,10 @@
 /* based on SLATEC shi.f, W. Fullerton
 
  series for shi  on the interval  0.00000e+00 to  1.40625e-01
-					with weighted error   4.67e-20
-					 log weighted error  19.33
-			       significant figures required  17.07
-				    decimal places required  19.75
+                                        with weighted error   4.67e-20
+                                         log weighted error  19.33
+                               significant figures required  17.07
+                                    decimal places required  19.75
 */
 static double shi_data[7] = {
    0.0078372685688900950695,

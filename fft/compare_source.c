@@ -21,9 +21,9 @@
 
 int
 FUNCTION(compare_complex,results) (const char *name_a, const BASE a[],
-				   const char *name_b, const BASE b[],
-				   size_t stride, size_t n,
-				   const double allowed_ticks)
+                                   const char *name_b, const BASE b[],
+                                   size_t stride, size_t n,
+                                   const double allowed_ticks)
 {
   size_t i;
   double ticks, max_ticks = 0;
@@ -36,9 +36,9 @@ FUNCTION(compare_complex,results) (const char *name_a, const BASE a[],
       di = b[2*stride*i+1] - a[2*stride*i+1];
       ticks = (fabs (dr) + fabs (di)) / BASE_EPSILON;
       if (ticks > max_ticks)
-	{
-	  max_ticks = ticks;
-	}
+        {
+          max_ticks = ticks;
+        }
     }
 
   if (max_ticks < allowed_ticks)
@@ -55,18 +55,18 @@ FUNCTION(compare_complex,results) (const char *name_a, const BASE a[],
       ticks = (fabs (dr) + fabs (di)) / BASE_EPSILON;
 
       if (ticks > 1000)
-	{
-	  flag = "***";
-	}
+        {
+          flag = "***";
+        }
       else
-	{
-	  flag = "";
-	}
+        {
+          flag = "";
+        }
 
       printf ("%15s: %d  %.16f %.16f %s\n", name_a, (int)i,
-	      a[2*stride*i], a[2*stride*i+1], flag);
+              a[2*stride*i], a[2*stride*i+1], flag);
       printf ("%15s: %d  %.16f %.16f %e %s\n", name_b, (int)i,
-	      b[2*stride*i], b[2*stride*i+1], ticks, flag);
+              b[2*stride*i], b[2*stride*i+1], ticks, flag);
     }
 
   return -1;
@@ -75,9 +75,9 @@ FUNCTION(compare_complex,results) (const char *name_a, const BASE a[],
 
 int
 FUNCTION(compare_real,results) (const char *name_a, const BASE a[],
-				const char *name_b, const BASE b[],
-				size_t stride, size_t n,
-				const double allowed_ticks)
+                                const char *name_b, const BASE b[],
+                                size_t stride, size_t n,
+                                const double allowed_ticks)
 {
   size_t i;
   double ticks, max_ticks = 0;
@@ -89,9 +89,9 @@ FUNCTION(compare_real,results) (const char *name_a, const BASE a[],
       dr = b[stride*i] - a[stride*i];
       ticks = fabs (dr) / BASE_EPSILON;
       if (ticks > max_ticks)
-	{
-	  max_ticks = ticks;
-	}
+        {
+          max_ticks = ticks;
+        }
     }
 
   if (max_ticks < allowed_ticks)
@@ -107,18 +107,18 @@ FUNCTION(compare_real,results) (const char *name_a, const BASE a[],
       ticks = fabs (dr) / BASE_EPSILON;
 
       if (ticks > 1000)
-	{
-	  flag = "***";
-	}
+        {
+          flag = "***";
+        }
       else
-	{
-	  flag = "";
-	}
+        {
+          flag = "";
+        }
 
       printf ("%15s: %d  %.16f %s\n", name_a, (int)i, 
-	      a[stride*i], flag);
+              a[stride*i], flag);
       printf ("%15s: %d  %.16f %e %s\n", name_b, (int)i, 
-	      b[stride*i], ticks, flag);
+              b[stride*i], ticks, flag);
     }
 
   return -1;

@@ -105,9 +105,9 @@ static inline unsigned long int uni_get (void *vstate);
 static double uni_get_double (void *vstate);
 static void uni_set (void *state, unsigned long int s);
 
-static const unsigned int MDIG = 16;	/* Machine digits in int */
-static const unsigned int m1 = 32767;	/* 2^(MDIG-1) - 1 */
-static const unsigned int m2 = 256;	/* 2^(MDIG/2) */
+static const unsigned int MDIG = 16;    /* Machine digits in int */
+static const unsigned int m1 = 32767;   /* 2^(MDIG-1) - 1 */
+static const unsigned int m2 = 256;     /* 2^(MDIG/2) */
 
 typedef struct
   {
@@ -168,8 +168,8 @@ uni_set (void *vstate, unsigned long int s)
   /* A flaw in this approach is that seeds 1,2 give exactly the
      same random number sequence!  */
 
-  s = 2 * s + 1;	/* enforce seed be odd */
-  seed = (s < m1 ? s : m1);	/* seed should be less than m1 */
+  s = 2 * s + 1;        /* enforce seed be odd */
+  seed = (s < m1 ? s : m1);     /* seed should be less than m1 */
 
   k0 = 9069 % m2;
   k1 = 9069 / m2;
@@ -190,9 +190,9 @@ uni_set (void *vstate, unsigned long int s)
 }
 
 static const gsl_rng_type uni_type =
-{"uni",				/* name */
- 32766,				/* RAND_MAX */
- 0,				/* RAND_MIN */
+{"uni",                         /* name */
+ 32766,                         /* RAND_MAX */
+ 0,                             /* RAND_MIN */
  sizeof (uni_state_t),
  &uni_set,
  &uni_get,

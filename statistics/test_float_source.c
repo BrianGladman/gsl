@@ -180,7 +180,7 @@ FUNCTION (test, func) (const size_t stridea, const size_t strideb)
   {
     BASE expected = (BASE)0.1331;
     gsl_test  (FUNCTION(gsl_stats,max) (groupa, stridea, na) != expected,
-	       NAME(gsl_stats) "_max (" OUT_FORMAT " observed vs " OUT_FORMAT " expected)", 
+               NAME(gsl_stats) "_max (" OUT_FORMAT " observed vs " OUT_FORMAT " expected)", 
                FUNCTION(gsl_stats,max) (groupa, stridea, na), expected);
   }
 
@@ -188,8 +188,8 @@ FUNCTION (test, func) (const size_t stridea, const size_t strideb)
     BASE min = FUNCTION(gsl_stats,min) (groupa, stridea, na);
     BASE expected = (BASE)0.0242;
     gsl_test (min != expected,
-	      NAME(gsl_stats) "_min (" OUT_FORMAT " observed vs " OUT_FORMAT " expected)", 
-	      min, expected);
+              NAME(gsl_stats) "_min (" OUT_FORMAT " observed vs " OUT_FORMAT " expected)", 
+              min, expected);
   }
 
   {
@@ -200,27 +200,27 @@ FUNCTION (test, func) (const size_t stridea, const size_t strideb)
     FUNCTION(gsl_stats,minmax) (&min, &max, groupa, stridea, na);
  
     gsl_test  (max != expected_max,
-	       NAME(gsl_stats) "_minmax max (" OUT_FORMAT " observed vs " OUT_FORMAT " expected)", 
-	       max, expected_max);
+               NAME(gsl_stats) "_minmax max (" OUT_FORMAT " observed vs " OUT_FORMAT " expected)", 
+               max, expected_max);
     gsl_test  (min != expected_min,
-	       NAME(gsl_stats) "_minmax min (" OUT_FORMAT " observed vs " OUT_FORMAT " expected)", 
-	       min, expected_min);
+               NAME(gsl_stats) "_minmax min (" OUT_FORMAT " observed vs " OUT_FORMAT " expected)", 
+               min, expected_min);
   }
 
   {
     int max_index = FUNCTION(gsl_stats,max_index) (groupa, stridea, na);
     int expected = 4;
     gsl_test (max_index != expected,
-	      NAME(gsl_stats) "_max_index (%d observed vs %d expected)",
-	      max_index, expected);
+              NAME(gsl_stats) "_max_index (%d observed vs %d expected)",
+              max_index, expected);
   }
 
   {
     int min_index = FUNCTION(gsl_stats,min_index) (groupa, stridea, na);
     int expected = 3;
     gsl_test (min_index != expected,
-	      NAME(gsl_stats) "_min_index (%d observed vs %d expected)",
-	      min_index, expected);
+              NAME(gsl_stats) "_min_index (%d observed vs %d expected)",
+              min_index, expected);
   }
 
   {
@@ -231,11 +231,11 @@ FUNCTION (test, func) (const size_t stridea, const size_t strideb)
     FUNCTION(gsl_stats,minmax_index) (&min_index, &max_index, groupa, stridea, na);
 
     gsl_test  (max_index != expected_max_index,
-	       NAME(gsl_stats) "_minmax_index max (%u observed vs %u expected)", 
-	       max_index, expected_max_index);
+               NAME(gsl_stats) "_minmax_index max (%u observed vs %u expected)", 
+               max_index, expected_max_index);
     gsl_test  (min_index != expected_min_index,
-	       NAME(gsl_stats) "_minmax_index min (%u observed vs %u expected)", 
-	       min_index, expected_min_index);
+               NAME(gsl_stats) "_minmax_index min (%u observed vs %u expected)", 
+               min_index, expected_min_index);
   }
 
 
@@ -250,14 +250,14 @@ FUNCTION (test, func) (const size_t stridea, const size_t strideb)
     double median = FUNCTION(gsl_stats,median_from_sorted_data)(sorted, stridea, na) ;
     double expected = 0.07505;
     gsl_test_rel  (median,expected, rel,
-		   NAME(gsl_stats) "_median_from_sorted_data (even)");
+                   NAME(gsl_stats) "_median_from_sorted_data (even)");
   }
 
   {
     double median = FUNCTION(gsl_stats,median_from_sorted_data)(sorted, stridea, na - 1) ;
     double expected = 0.0728;
     gsl_test_rel  (median,expected, rel,
-		   NAME(gsl_stats) "_median_from_sorted_data");
+                   NAME(gsl_stats) "_median_from_sorted_data");
   }
 
 
@@ -265,28 +265,28 @@ FUNCTION (test, func) (const size_t stridea, const size_t strideb)
     double zeroth = FUNCTION(gsl_stats,quantile_from_sorted_data)(sorted, stridea, na, 0.0) ;
     double expected = 0.0242;
     gsl_test_rel  (zeroth,expected, rel,
-		   NAME(gsl_stats) "_quantile_from_sorted_data (0)");
+                   NAME(gsl_stats) "_quantile_from_sorted_data (0)");
   }
 
   {
     double top = FUNCTION(gsl_stats,quantile_from_sorted_data)(sorted, stridea, na, 1.0) ;
     double expected = 0.1331;
     gsl_test_rel  (top,expected, rel,
-		   NAME(gsl_stats) "_quantile_from_sorted_data (100)");
+                   NAME(gsl_stats) "_quantile_from_sorted_data (100)");
   }
 
   {
     double median = FUNCTION(gsl_stats,quantile_from_sorted_data)(sorted, stridea, na, 0.5) ;
     double expected = 0.07505;
     gsl_test_rel  (median,expected, rel,
-		   NAME(gsl_stats) "_quantile_from_sorted_data (50even)");
+                   NAME(gsl_stats) "_quantile_from_sorted_data (50even)");
   }
 
   {
     double median = FUNCTION(gsl_stats,quantile_from_sorted_data)(sorted, stridea, na - 1, 0.5);
     double expected = 0.0728;
     gsl_test_rel  (median,expected, rel,
-		   NAME(gsl_stats) "_quantile_from_sorted_data (50odd)");
+                   NAME(gsl_stats) "_quantile_from_sorted_data (50odd)");
 
   }
 

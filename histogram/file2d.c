@@ -60,7 +60,7 @@ gsl_histogram2d_fwrite (FILE * stream, const gsl_histogram2d * h)
 
 int
 gsl_histogram2d_fprintf (FILE * stream, const gsl_histogram2d * h,
-			 const char *range_format, const char *bin_format)
+                         const char *range_format, const char *bin_format)
 {
   size_t i, j;
   const size_t nx = h->nx;
@@ -70,83 +70,83 @@ gsl_histogram2d_fprintf (FILE * stream, const gsl_histogram2d * h,
   for (i = 0; i < nx; i++)
     {
       for (j = 0; j < ny; j++)
-	{
-	  status = fprintf (stream, range_format, h->xrange[i]);
+        {
+          status = fprintf (stream, range_format, h->xrange[i]);
 
-	  if (status < 0)
-	    {
-	      GSL_ERROR ("fprintf failed", GSL_EFAILED);
-	    }
+          if (status < 0)
+            {
+              GSL_ERROR ("fprintf failed", GSL_EFAILED);
+            }
 
-	  status = putc (' ', stream);
+          status = putc (' ', stream);
 
-	  if (status == EOF)
-	    {
-	      GSL_ERROR ("putc failed", GSL_EFAILED);
-	    }
+          if (status == EOF)
+            {
+              GSL_ERROR ("putc failed", GSL_EFAILED);
+            }
 
-	  status = fprintf (stream, range_format, h->xrange[i + 1]);
+          status = fprintf (stream, range_format, h->xrange[i + 1]);
 
-	  if (status < 0)
-	    {
-	      GSL_ERROR ("fprintf failed", GSL_EFAILED);
-	    }
+          if (status < 0)
+            {
+              GSL_ERROR ("fprintf failed", GSL_EFAILED);
+            }
 
-	  status = putc (' ', stream);
+          status = putc (' ', stream);
 
-	  if (status == EOF)
-	    {
-	      GSL_ERROR ("putc failed", GSL_EFAILED);
-	    }
+          if (status == EOF)
+            {
+              GSL_ERROR ("putc failed", GSL_EFAILED);
+            }
 
-	  status = fprintf (stream, range_format, h->yrange[j]);
+          status = fprintf (stream, range_format, h->yrange[j]);
 
-	  if (status < 0)
-	    {
-	      GSL_ERROR ("fprintf failed", GSL_EFAILED);
-	    }
+          if (status < 0)
+            {
+              GSL_ERROR ("fprintf failed", GSL_EFAILED);
+            }
 
-	  status = putc (' ', stream);
+          status = putc (' ', stream);
 
-	  if (status == EOF)
-	    {
-	      GSL_ERROR ("putc failed", GSL_EFAILED);
-	    }
+          if (status == EOF)
+            {
+              GSL_ERROR ("putc failed", GSL_EFAILED);
+            }
 
-	  status = fprintf (stream, range_format, h->yrange[j + 1]);
+          status = fprintf (stream, range_format, h->yrange[j + 1]);
 
-	  if (status < 0)
-	    {
-	      GSL_ERROR ("fprintf failed", GSL_EFAILED);
-	    }
+          if (status < 0)
+            {
+              GSL_ERROR ("fprintf failed", GSL_EFAILED);
+            }
 
-	  status = putc (' ', stream);
+          status = putc (' ', stream);
 
-	  if (status == EOF)
-	    {
-	      GSL_ERROR ("putc failed", GSL_EFAILED);
-	    }
+          if (status == EOF)
+            {
+              GSL_ERROR ("putc failed", GSL_EFAILED);
+            }
 
-	  status = fprintf (stream, bin_format, h->bin[i * ny + j]);
+          status = fprintf (stream, bin_format, h->bin[i * ny + j]);
 
-	  if (status < 0)
-	    {
-	      GSL_ERROR ("fprintf failed", GSL_EFAILED);
-	    }
+          if (status < 0)
+            {
+              GSL_ERROR ("fprintf failed", GSL_EFAILED);
+            }
 
-	  status = putc ('\n', stream);
+          status = putc ('\n', stream);
 
-	  if (status == EOF)
-	    {
-	      GSL_ERROR ("putc failed", GSL_EFAILED);
-	    }
-	}
+          if (status == EOF)
+            {
+              GSL_ERROR ("putc failed", GSL_EFAILED);
+            }
+        }
       status = putc ('\n', stream);
 
       if (status == EOF)
-	{
-	  GSL_ERROR ("putc failed", GSL_EFAILED);
-	}
+        {
+          GSL_ERROR ("putc failed", GSL_EFAILED);
+        }
     }
 
   return GSL_SUCCESS;
@@ -163,18 +163,18 @@ gsl_histogram2d_fscanf (FILE * stream, gsl_histogram2d * h)
   for (i = 0; i < nx; i++)
     {
       for (j = 0; j < ny; j++)
-	{
-	  int status = fscanf (stream,
-			       "%lg %lg %lg %lg %lg",
-			       h->xrange + i, &xupper,
-			       h->yrange + j, &yupper,
-			       h->bin + i * ny + j);
+        {
+          int status = fscanf (stream,
+                               "%lg %lg %lg %lg %lg",
+                               h->xrange + i, &xupper,
+                               h->yrange + j, &yupper,
+                               h->bin + i * ny + j);
 
-	  if (status != 5)
-	    {
-	      GSL_ERROR ("fscanf failed", GSL_EFAILED);
-	    }
-	}
+          if (status != 5)
+            {
+              GSL_ERROR ("fscanf failed", GSL_EFAILED);
+            }
+        }
       h->yrange[ny] = yupper;
     }
 

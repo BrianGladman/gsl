@@ -203,7 +203,7 @@ nelson_df (const gsl_vector * x, void *params, gsl_matrix * df)
 
 int
 nelson_fdf (const gsl_vector * x, void *params,
-	   gsl_vector * f, gsl_matrix * df)
+           gsl_vector * f, gsl_matrix * df)
 {
   nelson_f (x, params, f);
   nelson_df (x, params, df);

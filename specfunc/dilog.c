@@ -309,14 +309,14 @@ dilogc_unitdisk(double r, double theta, gsl_sf_result * real_dl, gsl_sf_result *
    */
   if(r_tmp.val < 0.98) {
     stat_dilog = dilogc_series_1(r_tmp.val, cos_theta_tmp, sin_theta_tmp,
-				 &result_re_tmp, &result_im_tmp
-				 );
+                                 &result_re_tmp, &result_im_tmp
+                                 );
   }
   else {
     double theta_tmp = atan2(y_tmp.val, x_tmp.val);
     stat_dilog = dilogc_series_2(r_tmp.val, theta_tmp, cos_theta_tmp, sin_theta_tmp,
                                  &result_re_tmp, &result_im_tmp
-				 );
+                                 );
   }
 
   /* Unwind reflection if necessary.
@@ -451,7 +451,7 @@ gsl_sf_complex_dilog_e(const double r, double theta,
      */
     stat_dilog = dilogc_unitdisk(r_tmp, theta_tmp,
                                  &result_re_tmp, &result_im_tmp
-				 );
+                                 );
 
     /* Unwind the inversion if necessary. We calculate
      * the imaginary part explicitly if using the inversion

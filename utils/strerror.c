@@ -33,11 +33,11 @@ char *
 strerror(n)
 int n;
 {
-	static char mesg[30];
+        static char mesg[30];
 
-	if (n < 0 || n >= sys_nerr) {
-		sprintf(mesg, "Unknown error (%d)", n);
-		return mesg;
-	} else
-		return sys_errlist[n];
+        if (n < 0 || n >= sys_nerr) {
+                sprintf(mesg, "Unknown error (%d)", n);
+                return mesg;
+        } else
+                return sys_errlist[n];
 }

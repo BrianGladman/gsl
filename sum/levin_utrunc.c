@@ -32,18 +32,18 @@ gsl_sum_levin_utrunc_accel (const double *array,
                             double *sum_accel, double *abserr_trunc)
 {
   return gsl_sum_levin_utrunc_minmax (array, array_size,
-				      0, array_size - 1,
-				      w, sum_accel, abserr_trunc);
+                                      0, array_size - 1,
+                                      w, sum_accel, abserr_trunc);
 }
 
 
 int
 gsl_sum_levin_utrunc_minmax (const double *array,
-			     const size_t array_size,
-			     const size_t min_terms,
-			     const size_t max_terms,
-			     gsl_sum_levin_utrunc_workspace * w,
-			     double *sum_accel, double *abserr_trunc)
+                             const size_t array_size,
+                             const size_t min_terms,
+                             const size_t max_terms,
+                             gsl_sum_levin_utrunc_workspace * w,
+                             double *sum_accel, double *abserr_trunc)
 {
   if (array_size == 0)
     {
@@ -79,12 +79,12 @@ gsl_sum_levin_utrunc_minmax (const double *array,
          tests are made, and no truncation information is stored. */
 
       for (n = 0; n < min_terms; n++)
-	{
-	  const double t = array[n];
+        {
+          const double t = array[n];
 
-	  result_nm1 = result_n;
-	  gsl_sum_levin_utrunc_step (t, n, w, &result_n);
-	}
+          result_nm1 = result_n;
+          gsl_sum_levin_utrunc_step (t, n, w, &result_n);
+        }
 
       /* Assume the result after the minimum calculation is the best. */
 
@@ -94,72 +94,72 @@ gsl_sum_levin_utrunc_minmax (const double *array,
          condition. */
 
       for (; n <= nmax; n++)
-	{
-	  const double t = array[n];
+        {
+          const double t = array[n];
 
-	  result_nm1 = result_n;
-	  gsl_sum_levin_utrunc_step (t, n, w, &result_n);
+          result_nm1 = result_n;
+          gsl_sum_levin_utrunc_step (t, n, w, &result_n);
 
-	  /* Compute the truncation error directly */
+          /* Compute the truncation error directly */
 
-	  actual_trunc_nm1 = actual_trunc_n;
-	  actual_trunc_n = fabs (result_n - result_nm1);
+          actual_trunc_nm1 = actual_trunc_n;
+          actual_trunc_n = fabs (result_n - result_nm1);
 
-	  /* Average results to make a more reliable estimate of the
-	     real truncation error */
+          /* Average results to make a more reliable estimate of the
+             real truncation error */
 
-	  trunc_nm1 = trunc_n;
-	  trunc_n = 0.5 * (actual_trunc_n + actual_trunc_nm1);
+          trunc_nm1 = trunc_n;
+          trunc_n = 0.5 * (actual_trunc_n + actual_trunc_nm1);
 
-	  /* Determine if we are in the convergence region. */
+          /* Determine if we are in the convergence region. */
 
-	  better = (trunc_n < trunc_nm1 || trunc_n < SMALL * fabs (result_n));
-	  converging = converging || (better && before);
-	  before = better;
+          better = (trunc_n < trunc_nm1 || trunc_n < SMALL * fabs (result_n));
+          converging = converging || (better && before);
+          before = better;
 
-	  if (converging)
-	    {
-	      if (trunc_n < least_trunc)
-		{
-		  /* Found a low truncation point in the convergence
-		     region. Save it. */
+          if (converging)
+            {
+              if (trunc_n < least_trunc)
+                {
+                  /* Found a low truncation point in the convergence
+                     region. Save it. */
 
-		  least_trunc = trunc_n;
-		  result_least_trunc = result_n;
-		}
+                  least_trunc = trunc_n;
+                  result_least_trunc = result_n;
+                }
 
-	      if (fabs (trunc_n / result_n) < 10.0 * GSL_MACH_EPS)
-		break;
-	    }
-	}
+              if (fabs (trunc_n / result_n) < 10.0 * GSL_MACH_EPS)
+                break;
+            }
+        }
 
       if (converging)
-	{
-	  /* Stopped in the convergence region. Return result and
-	     error estimate. */
+        {
+          /* Stopped in the convergence region. Return result and
+             error estimate. */
 
-	  *sum_accel = result_least_trunc;
-	  *abserr_trunc = least_trunc;
-	  w->terms_used = n;
-	  return GSL_SUCCESS;
-	}
+          *sum_accel = result_least_trunc;
+          *abserr_trunc = least_trunc;
+          w->terms_used = n;
+          return GSL_SUCCESS;
+        }
       else
-	{
-	  /* Never reached the convergence region. Use the last
-	     calculated values. */
+        {
+          /* Never reached the convergence region. Use the last
+             calculated values. */
 
-	  *sum_accel = result_n;
-	  *abserr_trunc = trunc_n;
-	  w->terms_used = n;
-	  return GSL_SUCCESS;
-	}
+          *sum_accel = result_n;
+          *abserr_trunc = trunc_n;
+          w->terms_used = n;
+          return GSL_SUCCESS;
+        }
     }
 }
 
 int
 gsl_sum_levin_utrunc_step (const double term,
-			   const size_t n,
-			   gsl_sum_levin_utrunc_workspace * w, double *sum_accel)
+                           const size_t n,
+                           gsl_sum_levin_utrunc_workspace * w, double *sum_accel)
 {
   if (term == 0.0)
     {
@@ -189,12 +189,12 @@ gsl_sum_levin_utrunc_step (const double term,
       w->q_num[n] = w->sum_plain * w->q_den[n];
 
       for (j = n - 1; j >= 0; j--)
-	{
-	  double c = factor * (j + 1) / (n + 1);
-	  factor *= ratio;
-	  w->q_den[j] = w->q_den[j + 1] - c * w->q_den[j];
-	  w->q_num[j] = w->q_num[j + 1] - c * w->q_num[j];
-	}
+        {
+          double c = factor * (j + 1) / (n + 1);
+          factor *= ratio;
+          w->q_den[j] = w->q_den[j + 1] - c * w->q_den[j];
+          w->q_num[j] = w->q_num[j + 1] - c * w->q_num[j];
+        }
 
       *sum_accel = w->q_num[0] / w->q_den[0];
       return GSL_SUCCESS;

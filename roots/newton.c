@@ -98,7 +98,7 @@ newton_iterate (void * vstate, gsl_function_fdf * fdf, double * root)
 
 
 static const gsl_root_fdfsolver_type newton_type =
-{"newton",				/* name */
+{"newton",                              /* name */
  sizeof (newton_state_t),
  &newton_init,
  &newton_iterate};

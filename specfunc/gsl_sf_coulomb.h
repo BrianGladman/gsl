@@ -74,10 +74,10 @@ double gsl_sf_hydrogenicR(const int n, const int l, const double Z, const double
 int
 gsl_sf_coulomb_wave_FG_e(const double eta, const double x,
                             const double lam_F,
-			    const int  k_lam_G,
+                            const int  k_lam_G,
                             gsl_sf_result * F, gsl_sf_result * Fp,
-			    gsl_sf_result * G, gsl_sf_result * Gp,
-			    double * exp_F, double * exp_G);
+                            gsl_sf_result * G, gsl_sf_result * Gp,
+                            double * exp_F, double * exp_G);
 
 
 /* F_L(eta,x) as array */
@@ -92,17 +92,17 @@ int gsl_sf_coulomb_wave_F_array(
 int gsl_sf_coulomb_wave_FG_array(double lam_min, int kmax,
                                 double eta, double x,
                                 double * fc_array, double * gc_array,
-				double * F_exponent,
-				double * G_exponent
+                                double * F_exponent,
+                                double * G_exponent
                                 );
 
 /* F_L(eta,x), G_L(eta,x), F'_L(eta,x), G'_L(eta,x) as arrays */
 int gsl_sf_coulomb_wave_FGp_array(double lam_min, int kmax,
                                 double eta, double x,
                                 double * fc_array, double * fcp_array,
-				double * gc_array, double * gcp_array,
-				double * F_exponent,
-				double * G_exponent
+                                double * gc_array, double * gcp_array,
+                                double * F_exponent,
+                                double * G_exponent
                                 );
 
 /* Coulomb wave function divided by the argument,
@@ -111,9 +111,9 @@ int gsl_sf_coulomb_wave_FGp_array(double lam_min, int kmax,
  */
 int gsl_sf_coulomb_wave_sphF_array(double lam_min, int kmax,
                                         double eta, double x,
-	              	                double * fc_array,
-			                double * F_exponent
-	      	      	                );
+                                        double * fc_array,
+                                        double * F_exponent
+                                        );
 
 
 /* Coulomb wave function normalization constant.

@@ -60,68 +60,68 @@ int test_dilog(void)
   TEST_SF_2(s, gsl_sf_complex_dilog_e, (1.00001, M_PI/2.0, &r1, &r2),
             -0.20562022409960237363, TEST_TOL1,
              0.91597344814458309320, TEST_TOL1,
-	     GSL_SUCCESS);
+             GSL_SUCCESS);
 
   TEST_SF_2(s, gsl_sf_complex_dilog_e, (0.99999, M_PI/2.0, &r1, &r2),
             -0.20561329262779687646, TEST_TOL0,
              0.91595774018131512060, TEST_TOL0,
-	     GSL_SUCCESS);
+             GSL_SUCCESS);
 
   TEST_SF_2(s, gsl_sf_complex_dilog_e, (0.991, M_PI/2.0, &r1, &r2),
             -0.20250384721077806127, TEST_TOL0,
              0.90888544355846447810, TEST_TOL0,
-	     GSL_SUCCESS);
+             GSL_SUCCESS);
 
   TEST_SF_2(s, gsl_sf_complex_dilog_e, (0.98, M_PI/2.0, &r1, &r2),
             -0.19871638377785918403, TEST_TOL2,
              0.90020045882981847610, TEST_TOL2,
-	     GSL_SUCCESS);
+             GSL_SUCCESS);
 
   TEST_SF_2(s, gsl_sf_complex_dilog_e, (0.95, M_PI/2.0, &r1, &r2),
             -0.18848636456893572091, TEST_TOL1,
              0.87633754133420277830, TEST_TOL1,
-	     GSL_SUCCESS);
+             GSL_SUCCESS);
 
   TEST_SF_2(s, gsl_sf_complex_dilog_e, (0.8, M_PI/2.0, &r1, &r2),
             -0.13980800855429037810, TEST_TOL0,
              0.75310609092419884460, TEST_TOL0,
-	     GSL_SUCCESS);
+             GSL_SUCCESS);
 
 
   TEST_SF_2(s, gsl_sf_complex_dilog_e, (0.5, M_PI/2.0, &r1, &r2),
             -0.05897507442156586346, TEST_TOL0,
              0.48722235829452235710, TEST_TOL0,
-	     GSL_SUCCESS);
+             GSL_SUCCESS);
 
   TEST_SF_2(s, gsl_sf_complex_dilog_e, (0.01, M_PI/2.0, &r1, &r2),
             -0.000024999375027776215378, TEST_TOL3,
              0.009999888892888684820, TEST_TOL3,
-	     GSL_SUCCESS);
+             GSL_SUCCESS);
 
   TEST_SF_2(s, gsl_sf_complex_dilog_e, (10.0, M_PI/2.0, &r1, &r2),
             -3.0596887943287347304, TEST_TOL0,
              3.7167814930680685900, TEST_TOL0,
-	     GSL_SUCCESS);
+             GSL_SUCCESS);
 
   TEST_SF_2(s, gsl_sf_complex_dilog_e, (100.0, M_PI/2.0, &r1, &r2),
             -11.015004738293824854, TEST_TOL0,
              7.2437843013083534970, TEST_TOL0,
-	     GSL_SUCCESS);
+             GSL_SUCCESS);
 
   TEST_SF_2(s, gsl_sf_complex_dilog_e, (0.99, M_PI/8.0, &r1, &r2),
             1.0571539648820244720, TEST_TOL0,
             0.7469145254610851318, TEST_TOL0,
-	    GSL_SUCCESS);
+            GSL_SUCCESS);
 
   TEST_SF_2(s, gsl_sf_complex_dilog_e, (0.99, M_PI/64.0, &r1, &r2),
             1.5381800285902999666, TEST_TOL0,
             0.1825271634987756651, TEST_TOL0,
-	    GSL_SUCCESS);
+            GSL_SUCCESS);
 
   TEST_SF_2(s, gsl_sf_complex_dilog_e, (0.9, 3.0*M_PI/4.0, &r1, &r2),
             -0.6062840301356530985, TEST_TOL1,
              0.4836632833122775721, TEST_TOL1,
-	    GSL_SUCCESS);
+            GSL_SUCCESS);
 
   return s;
 }

@@ -44,9 +44,9 @@ gsl_histogram_max_val (const gsl_histogram * h)
   for (i = 0; i < n; i++)
     {
       if (h->bin[i] > max)
-	{
-	  max = h->bin[i];
-	}
+        {
+          max = h->bin[i];
+        }
     }
   return max;
 }
@@ -60,10 +60,10 @@ gsl_histogram_max_bin (const gsl_histogram * h)
   for (i = 0; i < h->n; i++)
     {
       if (h->bin[i] > max)
-	{
-	  max = h->bin[i];
-	  imax = i;
-	}
+        {
+          max = h->bin[i];
+          imax = i;
+        }
     }
   return imax;
 }
@@ -76,9 +76,9 @@ gsl_histogram_min_val (const gsl_histogram * h)
   for (i = 0; i < h->n; i++)
     {
       if (h->bin[i] < min)
-	{
-	  min = h->bin[i];
-	}
+        {
+          min = h->bin[i];
+        }
     }
   return min;
 }
@@ -92,10 +92,10 @@ gsl_histogram_min_bin (const gsl_histogram * h)
   for (i = 0; i < h->n; i++)
     {
       if (h->bin[i] < min)
-	{
-	  min = h->bin[i];
-	  imin = i;
-	}
+        {
+          min = h->bin[i];
+          imin = i;
+        }
     }
   return imin;
 }

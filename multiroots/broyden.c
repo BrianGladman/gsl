@@ -253,9 +253,9 @@ broyden_iterate (void *vstate, gsl_multiroot_function * function, gsl_vector * x
       double sum = 0;
 
       for (j = 0; j < n; j++)
-	{
-	  sum += gsl_matrix_get (H, i, j) * gsl_vector_get (f, j);
-	}
+        {
+          sum += gsl_matrix_get (H, i, j) * gsl_vector_get (f, j);
+        }
       gsl_vector_set (p, i, sum);
     }
 
@@ -347,9 +347,9 @@ new_step:
       double sum = 0;
 
       for (j = 0; j < n; j++)
-	{
-	  sum += gsl_matrix_get (H, i, j) * gsl_vector_get (y, j);
-	}
+        {
+          sum += gsl_matrix_get (H, i, j) * gsl_vector_get (y, j);
+        }
 
       gsl_vector_set (v, i, sum);
     }
@@ -383,9 +383,9 @@ new_step:
       double sum = 0;
 
       for (j = 0; j < n; j++)
-	{
-	  sum += gsl_matrix_get (H, j, i) * gsl_vector_get (p, j);
-	}
+        {
+          sum += gsl_matrix_get (H, j, i) * gsl_vector_get (p, j);
+        }
 
       gsl_vector_set (w, i, sum);
     }
@@ -397,11 +397,11 @@ new_step:
       double vi = gsl_vector_get (v, i);
 
       for (j = 0; j < n; j++)
-	{
-	  double wj = gsl_vector_get (w, j);
-	  double Hij = gsl_matrix_get (H, i, j) - vi * wj / lambda;
-	  gsl_matrix_set (H, i, j, Hij);
-	}
+        {
+          double wj = gsl_vector_get (w, j);
+          double Hij = gsl_matrix_get (H, i, j) - vi * wj / lambda;
+          gsl_matrix_set (H, i, j, Hij);
+        }
     }
 
   /* copy fnew into f */
@@ -446,7 +446,7 @@ broyden_free (void *vstate)
 
 
 static const gsl_multiroot_fsolver_type broyden_type =
-{"broyden",			/* name */
+{"broyden",                     /* name */
  sizeof (broyden_state_t),
  &broyden_alloc,
  &broyden_set,

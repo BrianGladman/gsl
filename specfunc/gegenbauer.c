@@ -126,8 +126,8 @@ gsl_sf_gegenpoly_n_e(int n, double lambda, double x, gsl_sf_result * result)
       double gk = 0.0;
       for(k=4; k<=n; k++) {
         gk = (2.0*(k+lambda-1.0)*x*gkm1 - (k+2.0*lambda-2.0)*gkm2) / k;
-	gkm2 = gkm1;
-	gkm1 = gk;
+        gkm2 = gkm1;
+        gkm1 = gk;
       }
       result->val = gk;
       result->err = 2.0 * GSL_DBL_EPSILON * 0.5 * n * fabs(gk);
@@ -161,7 +161,7 @@ gsl_sf_gegenpoly_array(int nmax, double lambda, double x, double * result_array)
   /* n <= nmax */
   for(k=2; k<=nmax; k++) {
     double term1 = 2.0*(k+lambda-1.0) * x * result_array[k-1];
-    double term2 = (k+2.0*lambda-2.0)	  * result_array[k-2];
+    double term2 = (k+2.0*lambda-2.0)     * result_array[k-2];
     result_array[k] = (term1 - term2) / k;
   }
   

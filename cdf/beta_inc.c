@@ -22,10 +22,10 @@
 
 static double
 beta_cont_frac (const double a, const double b, const double x,
-		const double epsabs)
+                const double epsabs)
 {
-  const unsigned int max_iter = 512;	/* control iterations      */
-  const double cutoff = 2.0 * GSL_DBL_MIN;	/* control the zero cutoff */
+  const unsigned int max_iter = 512;    /* control iterations      */
+  const double cutoff = 2.0 * GSL_DBL_MIN;      /* control the zero cutoff */
   unsigned int iter_count = 0;
   double cf;
 
@@ -50,10 +50,10 @@ beta_cont_frac (const double a, const double b, const double x,
       num_term = 1.0 + coeff / num_term;
 
       if (fabs (den_term) < cutoff)
-	den_term = GSL_NAN;
+        den_term = GSL_NAN;
 
       if (fabs (num_term) < cutoff)
-	num_term = GSL_NAN;
+        num_term = GSL_NAN;
 
       den_term = 1.0 / den_term;
 
@@ -67,10 +67,10 @@ beta_cont_frac (const double a, const double b, const double x,
       num_term = 1.0 + coeff / num_term;
 
       if (fabs (den_term) < cutoff)
-	den_term = GSL_NAN;
+        den_term = GSL_NAN;
 
       if (fabs (num_term) < cutoff)
-	num_term = GSL_NAN;
+        num_term = GSL_NAN;
 
       den_term = 1.0 / den_term;
 
@@ -78,10 +78,10 @@ beta_cont_frac (const double a, const double b, const double x,
       cf *= delta_frac;
 
       if (fabs (delta_frac - 1.0) < 2.0 * GSL_DBL_EPSILON)
-	break;
+        break;
 
       if (cf * fabs (delta_frac - 1.0) < epsabs)
-	break;
+        break;
 
       ++iter_count;
     }
@@ -102,7 +102,7 @@ beta_cont_frac (const double a, const double b, const double x,
 
 static double
 beta_inc_AXPY (const double A, const double Y,
-	       const double a, const double b, const double x)
+               const double a, const double b, const double x)
 {
   if (x == 0.0)
     {
@@ -120,31 +120,31 @@ beta_inc_AXPY (const double A, const double Y,
       double prefactor = exp (ln_pre);
 
       if (x < (a + 1.0) / (a + b + 2.0))
-	{
-	  /* Apply continued fraction directly. */
-	  double epsabs = fabs (Y / (A * prefactor / a)) * GSL_DBL_EPSILON;
+        {
+          /* Apply continued fraction directly. */
+          double epsabs = fabs (Y / (A * prefactor / a)) * GSL_DBL_EPSILON;
 
-	  double cf = beta_cont_frac (a, b, x, epsabs);
+          double cf = beta_cont_frac (a, b, x, epsabs);
 
-	  return A * (prefactor * cf / a) + Y;
-	}
+          return A * (prefactor * cf / a) + Y;
+        }
       else
-	{
-	  /* Apply continued fraction after hypergeometric transformation. */
-	  double epsabs =
-	    fabs ((A + Y) / (A * prefactor / b)) * GSL_DBL_EPSILON;
-	  double cf = beta_cont_frac (b, a, 1.0 - x, epsabs);
-	  double term = prefactor * cf / b;
+        {
+          /* Apply continued fraction after hypergeometric transformation. */
+          double epsabs =
+            fabs ((A + Y) / (A * prefactor / b)) * GSL_DBL_EPSILON;
+          double cf = beta_cont_frac (b, a, 1.0 - x, epsabs);
+          double term = prefactor * cf / b;
 
-	  if (A == -Y)
-	    {
-	      return -A * term;
-	    }
-	  else
-	    {
-	      return A * (1 - term) + Y;
-	    }
-	}
+          if (A == -Y)
+            {
+              return -A * term;
+            }
+          else
+            {
+              return A * (1 - term) + Y;
+            }
+        }
     }
 }
 
@@ -153,7 +153,7 @@ beta_inc_AXPY (const double A, const double Y,
 #if 0
 static double
 beta_series (const double a, const double b, const double x,
-	     const double epsabs)
+             const double epsabs)
 {
   double f = x / (1 - x);
   double c = (b - 1) / (a + 1) * f;

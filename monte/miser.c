@@ -40,21 +40,21 @@
 
 static int
 estimate_corrmc (gsl_monte_function * f,
-		 const double xl[], const double xu[],
-		 size_t dim, size_t calls,
-		 gsl_rng * r,
-		 gsl_monte_miser_state * state,
-		 double *result, double *abserr,
-		 const double xmid[], double sigma_l[], double sigma_r[]);
+                 const double xl[], const double xu[],
+                 size_t dim, size_t calls,
+                 gsl_rng * r,
+                 gsl_monte_miser_state * state,
+                 double *result, double *abserr,
+                 const double xmid[], double sigma_l[], double sigma_r[]);
 
 
 int
 gsl_monte_miser_integrate (gsl_monte_function * f,
-			   const double xl[], const double xu[],
-			   size_t dim, size_t calls,
-			   gsl_rng * r,
-			   gsl_monte_miser_state * state,
-			   double *result, double *abserr)
+                           const double xl[], const double xu[],
+                           size_t dim, size_t calls,
+                           gsl_rng * r,
+                           gsl_monte_miser_state * state,
+                           double *result, double *abserr)
 {
   size_t n, estimate_calls, calls_l, calls_r;
   const size_t min_calls = state->min_calls;
@@ -81,15 +81,15 @@ gsl_monte_miser_integrate (gsl_monte_function * f,
   for (i = 0; i < dim; i++)
     {
       if (xu[i] <= xl[i])
-	{
-	  GSL_ERROR ("xu must be greater than xl", GSL_EINVAL);
-	}
+        {
+          GSL_ERROR ("xu must be greater than xl", GSL_EINVAL);
+        }
 
       if (xu[i] - xl[i] > GSL_DBL_MAX)
-	{
-	  GSL_ERROR ("Range of integration is too large, please rescale",
-		     GSL_EINVAL);
-	}
+        {
+          GSL_ERROR ("Range of integration is too large, please rescale",
+                     GSL_EINVAL);
+        }
     }
 
   if (state->alpha < 0)
@@ -111,29 +111,29 @@ gsl_monte_miser_integrate (gsl_monte_function * f,
       double m = 0.0, q = 0.0;
 
       if (calls < 2)
-	{
-	  GSL_ERROR ("insufficient calls for subvolume", GSL_EFAILED);
-	}
+        {
+          GSL_ERROR ("insufficient calls for subvolume", GSL_EFAILED);
+        }
 
       for (n = 0; n < calls; n++)
-	{
-	  /* Choose a random point in the integration region */
+        {
+          /* Choose a random point in the integration region */
 
-	  for (i = 0; i < dim; i++)
-	    {
-	      x[i] = xl[i] + gsl_rng_uniform_pos (r) * (xu[i] - xl[i]);
-	    }
+          for (i = 0; i < dim; i++)
+            {
+              x[i] = xl[i] + gsl_rng_uniform_pos (r) * (xu[i] - xl[i]);
+            }
 
-	  {
-	    double fval = GSL_MONTE_FN_EVAL (f, x);
+          {
+            double fval = GSL_MONTE_FN_EVAL (f, x);
 
-	    /* recurrence for mean and variance */
+            /* recurrence for mean and variance */
 
-	    double d = fval - m;
-	    m += d / (n + 1.0);
-	    q += d * d * (n / (n + 1.0));
-	  }
-	}
+            double d = fval - m;
+            m += d / (n + 1.0);
+            q += d * d * (n / (n + 1.0));
+          }
+        }
 
       *result = vol * m;
 
@@ -164,7 +164,7 @@ gsl_monte_miser_integrate (gsl_monte_function * f,
      for each half-region for each bisection. */
 
   estimate_corrmc (f, xl, xu, dim, estimate_calls,
-		   r, state, &res_est, &err_est, xmid, sigma_l, sigma_r);
+                   r, state, &res_est, &err_est, xmid, sigma_l, sigma_r);
 
   /* We have now used up some calls for the estimation */
 
@@ -181,31 +181,31 @@ gsl_monte_miser_integrate (gsl_monte_function * f,
 
     for (i = 0; i < dim; i++)
       {
-	if (sigma_l[i] >= 0 && sigma_r[i] >= 0)
-	  {
-	    /* estimates are okay */
-	    double var = pow (sigma_l[i], beta) + pow (sigma_r[i], beta);
+        if (sigma_l[i] >= 0 && sigma_r[i] >= 0)
+          {
+            /* estimates are okay */
+            double var = pow (sigma_l[i], beta) + pow (sigma_r[i], beta);
 
-	    if (var <= best_var)
-	      {
-		found_best = 1;
-		best_var = var;
-		i_bisect = i;
-		weight_l = pow (sigma_l[i], beta);
-		weight_r = pow (sigma_r[i], beta);
-	      }
-	  }
-	else
-	  {
-	    if (sigma_l[i] < 0)
-	      {
-		GSL_ERROR ("no points in left-half space!", GSL_ESANITY);
-	      }
-	    if (sigma_r[i] < 0)
-	      {
-		GSL_ERROR ("no points in right-half space!", GSL_ESANITY);
-	      }
-	  }
+            if (var <= best_var)
+              {
+                found_best = 1;
+                best_var = var;
+                i_bisect = i;
+                weight_l = pow (sigma_l[i], beta);
+                weight_r = pow (sigma_r[i], beta);
+              }
+          }
+        else
+          {
+            if (sigma_l[i] < 0)
+              {
+                GSL_ERROR ("no points in left-half space!", GSL_ESANITY);
+              }
+            if (sigma_r[i] < 0)
+              {
+                GSL_ERROR ("no points in right-half space!", GSL_ESANITY);
+              }
+          }
       }
   }
 
@@ -246,24 +246,24 @@ gsl_monte_miser_integrate (gsl_monte_function * f,
 
     if (xu_tmp == 0)
       {
-	GSL_ERROR_VAL ("out of memory for left workspace", GSL_ENOMEM, 0);
+        GSL_ERROR_VAL ("out of memory for left workspace", GSL_ENOMEM, 0);
       }
 
     for (i = 0; i < dim; i++)
       {
-	xu_tmp[i] = xu[i];
+        xu_tmp[i] = xu[i];
       }
 
     xu_tmp[i_bisect] = xbi_m;
 
     status = gsl_monte_miser_integrate (f, xl, xu_tmp,
-					dim, calls_l, r, state,
-					&res_l, &err_l);
+                                        dim, calls_l, r, state,
+                                        &res_l, &err_l);
     free (xu_tmp);
 
     if (status != GSL_SUCCESS)
       {
-	return status;
+        return status;
       }
   }
 
@@ -276,24 +276,24 @@ gsl_monte_miser_integrate (gsl_monte_function * f,
 
     if (xl_tmp == 0)
       {
-	GSL_ERROR_VAL ("out of memory for right workspace", GSL_ENOMEM, 0);
+        GSL_ERROR_VAL ("out of memory for right workspace", GSL_ENOMEM, 0);
       }
 
     for (i = 0; i < dim; i++)
       {
-	xl_tmp[i] = xl[i];
+        xl_tmp[i] = xl[i];
       }
 
     xl_tmp[i_bisect] = xbi_m;
 
     status = gsl_monte_miser_integrate (f, xl_tmp, xu,
-					dim, calls_r, r, state,
-					&res_r, &err_r);
+                                        dim, calls_r, r, state,
+                                        &res_r, &err_r);
     free (xl_tmp);
 
     if (status != GSL_SUCCESS)
       {
-	return status;
+        return status;
       }
   }
 
@@ -312,7 +312,7 @@ gsl_monte_miser_alloc (size_t dim)
   if (s == 0)
     {
       GSL_ERROR_VAL ("failed to allocate space for miser state struct",
-		     GSL_ENOMEM, 0);
+                     GSL_ENOMEM, 0);
     }
 
   s->x = (double *) malloc (dim * sizeof (double));
@@ -562,12 +562,12 @@ gsl_monte_miser_free (gsl_monte_miser_state * s)
 
 static int
 estimate_corrmc (gsl_monte_function * f,
-		 const double xl[], const double xu[],
-		 size_t dim, size_t calls,
-		 gsl_rng * r,
-		 gsl_monte_miser_state * state,
-		 double *result, double *abserr,
-		 const double xmid[], double sigma_l[], double sigma_r[])
+                 const double xl[], const double xu[],
+                 size_t dim, size_t calls,
+                 gsl_rng * r,
+                 gsl_monte_miser_state * state,
+                 double *result, double *abserr,
+                 const double xmid[], double sigma_l[], double sigma_r[])
 {
   size_t i, n;
   
@@ -599,7 +599,7 @@ estimate_corrmc (gsl_monte_function * f,
       unsigned int side = (n % 2);
 
       for (i = 0; i < dim; i++)
-	{
+        {
           double z = gsl_rng_uniform_pos (r) ;
 
           if (i != j) 
@@ -617,33 +617,33 @@ estimate_corrmc (gsl_monte_function * f,
                   x[i] = xl[i] + z * (xmid[i] - xl[i]);
                 }
             }
-	}
+        }
 
       fval = GSL_MONTE_FN_EVAL (f, x);
 
       /* recurrence for mean and variance */
       {
-	double d = fval - m;
-	m += d / (n + 1.0);
-	q += d * d * (n / (n + 1.0));
+        double d = fval - m;
+        m += d / (n + 1.0);
+        q += d * d * (n / (n + 1.0));
       }
 
       /* compute the variances on each side of the bisection */
       for (i = 0; i < dim; i++)
-	{
-	  if (x[i] <= xmid[i])
-	    {
-	      fsum_l[i] += fval;
-	      fsum2_l[i] += fval * fval;
-	      hits_l[i]++;
-	    }
-	  else
-	    {
-	      fsum_r[i] += fval;
-	      fsum2_r[i] += fval * fval;
-	      hits_r[i]++;
-	    }
-	}
+        {
+          if (x[i] <= xmid[i])
+            {
+              fsum_l[i] += fval;
+              fsum2_l[i] += fval * fval;
+              hits_l[i]++;
+            }
+          else
+            {
+              fsum_r[i] += fval;
+              fsum2_r[i] += fval * fval;
+              hits_r[i]++;
+            }
+        }
     }
 
   for (i = 0; i < dim; i++)
@@ -651,18 +651,18 @@ estimate_corrmc (gsl_monte_function * f,
       double fraction_l = (xmid[i] - xl[i]) / (xu[i] - xl[i]);
 
       if (hits_l[i] > 0)
-	{
-	  fsum_l[i] /= hits_l[i];
-	  sigma_l[i] = sqrt (fsum2_l[i] - fsum_l[i] * fsum_l[i] / hits_l[i]);
-	  sigma_l[i] *= fraction_l * vol / hits_l[i];
-	}
+        {
+          fsum_l[i] /= hits_l[i];
+          sigma_l[i] = sqrt (fsum2_l[i] - fsum_l[i] * fsum_l[i] / hits_l[i]);
+          sigma_l[i] *= fraction_l * vol / hits_l[i];
+        }
 
       if (hits_r[i] > 0)
-	{
-	  fsum_r[i] /= hits_r[i];
-	  sigma_r[i] = sqrt (fsum2_r[i] - fsum_r[i] * fsum_r[i] / hits_r[i]);
-	  sigma_r[i] *= (1 - fraction_l) * vol / hits_r[i];
-	}
+        {
+          fsum_r[i] /= hits_r[i];
+          sigma_r[i] = sqrt (fsum2_r[i] - fsum_r[i] * fsum_r[i] / hits_r[i]);
+          sigma_r[i] *= (1 - fraction_l) * vol / hits_r[i];
+        }
     }
 
   *result = vol * m;

@@ -132,7 +132,7 @@ gsl_sf_hyperg_0F1_e(double c, double x, gsl_sf_result * result)
       double ln_pre_err = lg_c.err + 2.0 * GSL_DBL_EPSILON * fabs(tl);
       return gsl_sf_exp_mult_err_e(ln_pre_val, ln_pre_err,
                                       sgn*Jcm1.val, Jcm1.err,
-				      result);
+                                      result);
     }
   }
   else if(x == 0.0) {
@@ -162,7 +162,7 @@ gsl_sf_hyperg_0F1_e(double c, double x, gsl_sf_result * result)
       const double ln_pre_err = lg_c.err + 2.0 * GSL_DBL_EPSILON * fabs(tl);
       return gsl_sf_exp_mult_err_e(ln_pre_val, ln_pre_err,
                                       sgn*Icm1.val, Icm1.err,
-				      result);
+                                      result);
     }
   }
 }

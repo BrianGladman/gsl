@@ -105,8 +105,8 @@ ranf_get_double (void * vstate)
   ranf_advance (state) ; 
 
   return (ldexp((double) state->x2, -16)
-	  + ldexp((double) state->x1, -32) 
-	  + ldexp((double) state->x0, -48)) ;
+          + ldexp((double) state->x1, -32) 
+          + ldexp((double) state->x0, -48)) ;
 }
 
 static void
@@ -149,9 +149,9 @@ ranf_set (void *vstate, unsigned long int s)
 }
 
 static const gsl_rng_type ranf_type =
-{"ranf",			/* name */
- 0xffffffffUL,			/* RAND_MAX */
- 0,				/* RAND_MIN */
+{"ranf",                        /* name */
+ 0xffffffffUL,                  /* RAND_MAX */
+ 0,                             /* RAND_MIN */
  sizeof (ranf_state_t),
  &ranf_set,
  &ranf_get,

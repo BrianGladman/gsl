@@ -148,7 +148,7 @@ sc_control_free (void * vstate)
 }
 
 static const gsl_odeiv_control_type sc_control_type =
-{"scaled",			/* name */
+{"scaled",                      /* name */
  &sc_control_alloc,
  &sc_control_init,
  &sc_control_hadjust,

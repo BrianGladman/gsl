@@ -103,7 +103,7 @@ g05faf_advance (void *vstate)
 
   a >>= 8 ;
   a += (a0 * x7 + a1 * x6 + a2 * x5 + a3 * x4 + a4 * x3 + a5 * x2 + a6 * x1 
-	+ a7 * x0) ;
+        + a7 * x0) ;
   state->x7 = (a & 0x00000007UL) ;
 
 }
@@ -116,7 +116,7 @@ g05faf_get (void *vstate)
   g05faf_advance (state) ;
 
   return ((state->x7 << 29) + (state->x6 << 21) +  
-	  (state->x5 << 13) + (state->x4 << 5) + (state->x3 >> 3));
+          (state->x5 << 13) + (state->x4 << 5) + (state->x3 >> 3));
 }
 
 static double
@@ -127,13 +127,13 @@ g05faf_get_double (void * vstate)
   g05faf_advance (state) ;  
 
   return (ldexp((double) state->x7, -3)
-	  + ldexp((double) state->x6, -11) 
-	  + ldexp((double) state->x5, -19)
-	  + ldexp((double) state->x4, -27)
-	  + ldexp((double) state->x3, -35)
-	  + ldexp((double) state->x2, -43)
-	  + ldexp((double) state->x1, -51)
-	  + ldexp((double) state->x0, -59)) ;
+          + ldexp((double) state->x6, -11) 
+          + ldexp((double) state->x5, -19)
+          + ldexp((double) state->x4, -27)
+          + ldexp((double) state->x3, -35)
+          + ldexp((double) state->x2, -43)
+          + ldexp((double) state->x1, -51)
+          + ldexp((double) state->x0, -59)) ;
 }
 
 static void
@@ -150,9 +150,9 @@ g05faf_set (void *vstate, unsigned long int s)
 }
 
 static const gsl_rng_type g05faf_type =
-{"g05faf",			/* name */
- 0xffffffffUL,			/* RAND_MAX */
- 0,				/* RAND_MIN */
+{"g05faf",                      /* name */
+ 0xffffffffUL,                  /* RAND_MAX */
+ 0,                             /* RAND_MIN */
  sizeof (g05faf_state_t),
  &g05faf_set,
  &g05faf_get,

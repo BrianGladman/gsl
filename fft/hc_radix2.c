@@ -19,8 +19,8 @@
 
 int
 FUNCTION(gsl_fft_halfcomplex,radix2_backward) (BASE data[],
-					       const size_t stride,
-					       const size_t n)
+                                               const size_t stride,
+                                               const size_t n)
 {
   int status = FUNCTION(gsl_fft_halfcomplex,radix2_transform) (data, stride, n) ;
   return status ;
@@ -28,8 +28,8 @@ FUNCTION(gsl_fft_halfcomplex,radix2_backward) (BASE data[],
 
 int
 FUNCTION(gsl_fft_halfcomplex,radix2_inverse) (BASE data[],
-					      const size_t stride,
-					      const size_t n)
+                                              const size_t stride,
+                                              const size_t n)
 {
   int status = FUNCTION(gsl_fft_halfcomplex,radix2_transform) (data, stride, n);
 
@@ -45,7 +45,7 @@ FUNCTION(gsl_fft_halfcomplex,radix2_inverse) (BASE data[],
     size_t i;
     for (i = 0; i < n; i++)
       {
-	data[stride*i] *= norm;
+        data[stride*i] *= norm;
       }
   }
   return status;
@@ -53,8 +53,8 @@ FUNCTION(gsl_fft_halfcomplex,radix2_inverse) (BASE data[],
 
 int
 FUNCTION(gsl_fft_halfcomplex,radix2_transform) (BASE data[],
-						const size_t stride,
-						const size_t n)
+                                                const size_t stride,
+                                                const size_t n)
 {
   int result ;
   size_t p, p_1, q;
@@ -91,71 +91,71 @@ FUNCTION(gsl_fft_halfcomplex,radix2_transform) (BASE data[],
       /* a = 0 */
 
       for (b = 0; b < q; b++)
-	{
-	  const ATOMIC z0 = VECTOR(data,stride,b*p);
-	  const ATOMIC z1 = VECTOR(data,stride,b*p + p_1);
-	  
-	  const ATOMIC t0_real = z0 + z1 ;
-	  const ATOMIC t1_real = z0 - z1 ;
-	  
-	  VECTOR(data,stride,b*p) = t0_real;
-	  VECTOR(data,stride,b*p + p_1) = t1_real ;
-	}
+        {
+          const ATOMIC z0 = VECTOR(data,stride,b*p);
+          const ATOMIC z1 = VECTOR(data,stride,b*p + p_1);
+          
+          const ATOMIC t0_real = z0 + z1 ;
+          const ATOMIC t1_real = z0 - z1 ;
+          
+          VECTOR(data,stride,b*p) = t0_real;
+          VECTOR(data,stride,b*p + p_1) = t1_real ;
+        }
 
       /* a = 1 ... p_{i-1}/2 - 1 */
 
       {
-	ATOMIC w_real = 1.0;
-	ATOMIC w_imag = 0.0;
+        ATOMIC w_real = 1.0;
+        ATOMIC w_imag = 0.0;
 
-	const ATOMIC theta = 2.0 * M_PI / p;
-	
-	const ATOMIC s = sin (theta);
-	const ATOMIC t = sin (theta / 2.0);
-	const ATOMIC s2 = 2.0 * t * t;
-	
-	for (a = 1; a < (p_1)/2; a++)
-	  {
-	    /* trignometric recurrence for w-> exp(i theta) w */
-	    
-	    {
-	      const ATOMIC tmp_real = w_real - s * w_imag - s2 * w_real;
-	      const ATOMIC tmp_imag = w_imag + s * w_real - s2 * w_imag;
-	      w_real = tmp_real;
-	      w_imag = tmp_imag;
-	    }
-	    
-	    for (b = 0; b < q; b++)
-	      {
-		ATOMIC z0_real = VECTOR(data,stride,b*p + a) ;
-		ATOMIC z0_imag = VECTOR(data,stride,b*p + p - a) ;
-		ATOMIC z1_real = VECTOR(data,stride,b*p + p_1 - a) ;
-		ATOMIC z1_imag = -VECTOR(data,stride,b*p + p_1 + a) ;
-		
-		/* t0 = z0 + z1 */
-		
-		ATOMIC t0_real = z0_real + z1_real;
-		ATOMIC t0_imag = z0_imag + z1_imag;
-		
-		/* t1 = (z0 - z1) */
-		
-		ATOMIC t1_real = z0_real -  z1_real;
-		ATOMIC t1_imag = z0_imag -  z1_imag;
-		
-		VECTOR(data,stride,b*p + a) = t0_real ;
-		VECTOR(data,stride,b*p + p_1 - a) = t0_imag ;
-		
-		VECTOR(data,stride,b*p + p_1 + a) = (w_real * t1_real - w_imag * t1_imag) ;
-		VECTOR(data,stride,b*p + p - a) = (w_real * t1_imag + w_imag * t1_real) ;
-	      }
-	  }
+        const ATOMIC theta = 2.0 * M_PI / p;
+        
+        const ATOMIC s = sin (theta);
+        const ATOMIC t = sin (theta / 2.0);
+        const ATOMIC s2 = 2.0 * t * t;
+        
+        for (a = 1; a < (p_1)/2; a++)
+          {
+            /* trignometric recurrence for w-> exp(i theta) w */
+            
+            {
+              const ATOMIC tmp_real = w_real - s * w_imag - s2 * w_real;
+              const ATOMIC tmp_imag = w_imag + s * w_real - s2 * w_imag;
+              w_real = tmp_real;
+              w_imag = tmp_imag;
+            }
+            
+            for (b = 0; b < q; b++)
+              {
+                ATOMIC z0_real = VECTOR(data,stride,b*p + a) ;
+                ATOMIC z0_imag = VECTOR(data,stride,b*p + p - a) ;
+                ATOMIC z1_real = VECTOR(data,stride,b*p + p_1 - a) ;
+                ATOMIC z1_imag = -VECTOR(data,stride,b*p + p_1 + a) ;
+                
+                /* t0 = z0 + z1 */
+                
+                ATOMIC t0_real = z0_real + z1_real;
+                ATOMIC t0_imag = z0_imag + z1_imag;
+                
+                /* t1 = (z0 - z1) */
+                
+                ATOMIC t1_real = z0_real -  z1_real;
+                ATOMIC t1_imag = z0_imag -  z1_imag;
+                
+                VECTOR(data,stride,b*p + a) = t0_real ;
+                VECTOR(data,stride,b*p + p_1 - a) = t0_imag ;
+                
+                VECTOR(data,stride,b*p + p_1 + a) = (w_real * t1_real - w_imag * t1_imag) ;
+                VECTOR(data,stride,b*p + p - a) = (w_real * t1_imag + w_imag * t1_real) ;
+              }
+          }
       }
 
       if (p_1 >  1) {
-	for (b = 0; b < q; b++) {
-	  VECTOR(data,stride,b*p + p_1/2) *= 2 ;
-	  VECTOR(data,stride,b*p + p_1 + p_1/2) *= -2 ;
-	}
+        for (b = 0; b < q; b++) {
+          VECTOR(data,stride,b*p + p_1/2) *= 2 ;
+          VECTOR(data,stride,b*p + p_1 + p_1/2) *= -2 ;
+        }
       }
 
       p_1 = p_1 / 2 ;

@@ -97,7 +97,7 @@ m_selection_fails(int two_ja, int two_jb, int two_jc,
       || GSL_IS_ODD(two_jb + two_mb)
       || GSL_IS_ODD(two_jc + two_mc)
       || (two_ma + two_mb + two_mc) != 0
-	  );
+          );
 }
 
 
@@ -236,9 +236,9 @@ gsl_sf_coupling_6j_e(int two_ja, int two_jb, int two_jc,
 
     tkmax = locMin5(two_ja + two_jb + two_je + two_jd + 2,
                     two_ja + two_jb - two_jc,
-		    two_je + two_jd - two_jc,
-		    two_ja + two_je - two_jf,
-		    two_jb + two_jd - two_jf);
+                    two_je + two_jd - two_jc,
+                    two_ja + two_je - two_jf,
+                    two_jb + two_jd - two_jf);
 
     phase = GSL_IS_ODD((two_ja + two_jb + two_je + two_jd + tkmin)/2)
             ? -1.0

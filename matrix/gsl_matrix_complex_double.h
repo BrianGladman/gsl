@@ -233,7 +233,7 @@ int gsl_matrix_complex_set_col(gsl_matrix_complex * m, const size_t j, const gsl
 extern inline 
 gsl_complex
 gsl_matrix_complex_get(const gsl_matrix_complex * m, 
-		     const size_t i, const size_t j)
+                     const size_t i, const size_t j)
 {
 #if GSL_RANGE_CHECK
   gsl_complex zero = {{0,0}};
@@ -253,7 +253,7 @@ gsl_matrix_complex_get(const gsl_matrix_complex * m,
 extern inline 
 void
 gsl_matrix_complex_set(gsl_matrix_complex * m, 
-		     const size_t i, const size_t j, const gsl_complex x)
+                     const size_t i, const size_t j, const gsl_complex x)
 {
 #if GSL_RANGE_CHECK
   if (i >= m->size1)

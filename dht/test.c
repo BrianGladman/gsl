@@ -172,7 +172,7 @@ test_dht_poly1(void)
   if(fabs( f_out[5]-(-0.000190850))/0.000190850 > 1.0e-05) stat++;
   if(fabs(f_out[10]-0.000024342)/0.000024342    > 1.0e-04) stat++;
   if(fabs(f_out[35]-(-4.04e-07))/4.04e-07       > 1.0e-03) stat++;
-  if(fabs(f_out[100]-1.0e-08)/1.0e-08	        > 0.25)    stat++;
+  if(fabs(f_out[100]-1.0e-08)/1.0e-08           > 0.25)    stat++;
 
   gsl_dht_free(t);
 

@@ -80,13 +80,13 @@ rk4_alloc (size_t dim)
 
 static int
 rk4_apply (void *vstate,
-	   size_t dim,
-	   double t,
-	   double h,
-	   double y[],
-	   double yerr[],
-	   const double dydt_in[],
-	   double dydt_out[], 
+           size_t dim,
+           double t,
+           double h,
+           double y[],
+           double yerr[],
+           const double dydt_in[],
+           double dydt_out[], 
            const gsl_odeiv_system * sys)
 {
   rk4_state_t *state = (rk4_state_t *) vstate;
@@ -118,7 +118,7 @@ rk4_apply (void *vstate,
 
   for (i = 0; i < dim; i++)
     {
-      y[i] = h / 6.0 * k[i];	/* use y[] to store delta_y */
+      y[i] = h / 6.0 * k[i];    /* use y[] to store delta_y */
       ytmp[i] = y0[i] + 0.5 * h * k[i];
     }
 
@@ -158,7 +158,7 @@ rk4_apply (void *vstate,
       yerr[i] = h * y[i];
       y[i] += y0[i];
       if (dydt_out != NULL)
-	dydt_out[i] = k[i];
+        dydt_out[i] = k[i];
     }
 
   return status;
@@ -194,9 +194,9 @@ rk4_free (void *vstate)
   free (state);
 }
 
-static const gsl_odeiv_step_type rk4_type = { "rk4",	/* name */
-  1,				/* can use dydt_in */
-  0,				/* gives exact dydt_out */
+static const gsl_odeiv_step_type rk4_type = { "rk4",    /* name */
+  1,                            /* can use dydt_in */
+  0,                            /* gives exact dydt_out */
   &rk4_alloc,
   &rk4_apply,
   &rk4_reset,

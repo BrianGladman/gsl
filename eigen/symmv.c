@@ -121,21 +121,21 @@ gsl_eigen_symmv (gsl_matrix * A, gsl_vector * eval, gsl_matrix * evec,
       /* handle special case */
 
       if (N == 1)
-	{
-	  double A00 = gsl_matrix_get (A, 0, 0);
-	  gsl_vector_set (eval, 0, A00);
+        {
+          double A00 = gsl_matrix_get (A, 0, 0);
+          gsl_vector_set (eval, 0, A00);
           gsl_matrix_set (evec, 0, 0, 1.0);
-	  return GSL_SUCCESS;
-	}
+          return GSL_SUCCESS;
+        }
 
       /* use sd as the temporary workspace for the decomposition when
          computing eigenvectors */
 
       {
-	gsl_vector_view d_vec = gsl_vector_view_array (d, N);
-	gsl_vector_view sd_vec = gsl_vector_view_array (sd, N - 1);
-	gsl_vector_view tau = gsl_vector_view_array (sd, N - 1);
-	gsl_linalg_symmtd_decomp (A, &tau.vector);
+        gsl_vector_view d_vec = gsl_vector_view_array (d, N);
+        gsl_vector_view sd_vec = gsl_vector_view_array (sd, N - 1);
+        gsl_vector_view tau = gsl_vector_view_array (sd, N - 1);
+        gsl_linalg_symmtd_decomp (A, &tau.vector);
         gsl_linalg_symmtd_unpack (A, &tau.vector, evec, &d_vec.vector, &sd_vec.vector);
       }
 

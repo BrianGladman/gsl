@@ -104,8 +104,8 @@ rand48_get_double (void * vstate)
   rand48_advance (state) ;  
 
   return (ldexp((double) state->x2, -16)
-	  + ldexp((double) state->x1, -32) 
-	  + ldexp((double) state->x0, -48)) ;
+          + ldexp((double) state->x1, -32) 
+          + ldexp((double) state->x0, -48)) ;
 }
 
 static void
@@ -130,9 +130,9 @@ rand48_set (void *vstate, unsigned long int s)
 }
 
 static const gsl_rng_type rand48_type =
-{"rand48",			/* name */
- 0xffffffffUL,			/* RAND_MAX */
- 0,				/* RAND_MIN */
+{"rand48",                      /* name */
+ 0xffffffffUL,                  /* RAND_MAX */
+ 0,                             /* RAND_MIN */
  sizeof (rand48_state_t),
  &rand48_set,
  &rand48_get,

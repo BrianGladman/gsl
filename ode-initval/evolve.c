@@ -37,7 +37,7 @@ gsl_odeiv_evolve_alloc (size_t dim)
   if (e == 0)
     {
       GSL_ERROR_NULL ("failed to allocate space for evolve struct",
-		      GSL_ENOMEM);
+                      GSL_ENOMEM);
     }
 
   e->y0 = (double *) malloc (dim * sizeof (double));
@@ -111,10 +111,10 @@ gsl_odeiv_evolve_free (gsl_odeiv_evolve * e)
  */
 int
 gsl_odeiv_evolve_apply (gsl_odeiv_evolve * e,
-			gsl_odeiv_control * con,
-			gsl_odeiv_step * step,
-			const gsl_odeiv_system * dydt,
-			double *t, double t1, double *h, double y[])
+                        gsl_odeiv_control * con,
+                        gsl_odeiv_step * step,
+                        const gsl_odeiv_system * dydt,
+                        double *t, double t1, double *h, double y[])
 {
   const double t0 = *t;
   double h0 = *h;
@@ -161,14 +161,14 @@ try_step:
   if (step->type->can_use_dydt_in)
     {
       step_status =
-	gsl_odeiv_step_apply (step, t0, h0, y, e->yerr, e->dydt_in,
-			      e->dydt_out, dydt);
+        gsl_odeiv_step_apply (step, t0, h0, y, e->yerr, e->dydt_in,
+                              e->dydt_out, dydt);
     }
   else
     {
       step_status =
-	gsl_odeiv_step_apply (step, t0, h0, y, e->yerr, NULL, e->dydt_out,
-			      dydt);
+        gsl_odeiv_step_apply (step, t0, h0, y, e->yerr, NULL, e->dydt_out,
+                              dydt);
     }
 
   e->count++;
@@ -190,12 +190,12 @@ try_step:
         = gsl_odeiv_control_hadjust (con, step, y, e->yerr, e->dydt_out, &h0);
 
       if (hadjust_status == GSL_ODEIV_HADJ_DEC)
-	{
-	  /* Step was decreased. Undo and go back to try again. */
-	  DBL_MEMCPY (y, e->y0, dydt->dimension);
+        {
+          /* Step was decreased. Undo and go back to try again. */
+          DBL_MEMCPY (y, e->y0, dydt->dimension);
           e->failed_steps++;
-	  goto try_step;
-	}
+          goto try_step;
+        }
     }
 
   *h = h0;  /* suggest step size for next time-step */

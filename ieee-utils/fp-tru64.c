@@ -75,15 +75,15 @@ gsl_ieee_set_mode (int precision, int rounding, int exception_mask)
     {
     case GSL_IEEE_SINGLE_PRECISION:
       GSL_ERROR ("Tru64 Unix on the alpha only supports default precision rounding",
-		 GSL_EUNSUP) ;
+                 GSL_EUNSUP) ;
       break ;
     case GSL_IEEE_DOUBLE_PRECISION:
       GSL_ERROR ("Tru64 Unix on the alpha only supports default precision rounding",
-		 GSL_EUNSUP) ;
+                 GSL_EUNSUP) ;
       break ;
     case GSL_IEEE_EXTENDED_PRECISION:
       GSL_ERROR ("Tru64 Unix on the alpha only supports default precision rounding",
-		 GSL_EUNSUP) ;
+                 GSL_EUNSUP) ;
       break ;
     }
 
@@ -114,21 +114,21 @@ gsl_ieee_set_mode (int precision, int rounding, int exception_mask)
   /* Turn on all the exceptions apart from 'inexact' */
 
   /* from the ieee(3) man page:
-   * IEEE_TRAP_ENABLE_INV	->	Invalid operation
-   * IEEE_TRAP_ENABLE_DZE	->	Divide by 0
-   * IEEE_TRAP_ENABLE_OVF	->	Overflow
-   * IEEE_TRAP_ENABLE_UNF	->	Underflow
-   * IEEE_TRAP_ENABLE_INE	->	Inexact (requires special option to C compiler)
-   * IEEE_TRAP_ENABLE_DNO	->	denormal operand
+   * IEEE_TRAP_ENABLE_INV       ->      Invalid operation
+   * IEEE_TRAP_ENABLE_DZE       ->      Divide by 0
+   * IEEE_TRAP_ENABLE_OVF       ->      Overflow
+   * IEEE_TRAP_ENABLE_UNF       ->      Underflow
+   * IEEE_TRAP_ENABLE_INE       ->      Inexact (requires special option to C compiler)
+   * IEEE_TRAP_ENABLE_DNO       ->      denormal operand
    * Note: IEEE_TRAP_ENABLE_DNO is not supported on OSF 3.x or Digital Unix
    * 4.0 - 4.0d(?).
-   * IEEE_TRAP_ENABLE_MASK	->	mask of all the trap enables
-   * IEEE_MAP_DMZ			->	map denormal inputs to zero
-   * IEEE_MAP_UMZ			->	map underflow results to zero
+   * IEEE_TRAP_ENABLE_MASK      ->      mask of all the trap enables
+   * IEEE_MAP_DMZ                       ->      map denormal inputs to zero
+   * IEEE_MAP_UMZ                       ->      map underflow results to zero
    */
 
   mode = IEEE_TRAP_ENABLE_INV | IEEE_TRAP_ENABLE_DZE | IEEE_TRAP_ENABLE_OVF
-		| IEEE_TRAP_ENABLE_UNF ;
+                | IEEE_TRAP_ENABLE_UNF ;
 
   if (exception_mask & GSL_IEEE_MASK_INVALID)
     mode &= ~ IEEE_TRAP_ENABLE_INV ;

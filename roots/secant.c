@@ -109,7 +109,7 @@ secant_iterate (void * vstate, gsl_function_fdf * fdf, double * root)
 
 
 static const gsl_root_fdfsolver_type secant_type =
-{"secant",				/* name */
+{"secant",                              /* name */
  sizeof (secant_state_t),
  &secant_init,
  &secant_iterate};

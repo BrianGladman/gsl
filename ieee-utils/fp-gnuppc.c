@@ -70,7 +70,7 @@ gsl_ieee_set_mode (int precision, int rounding, int exception_mask)
 
   if (exception_mask & GSL_IEEE_MASK_DENORMALIZED)
     GSL_ERROR ("powerpc does not support the denormalized operand exception. "
-	       "Use 'mask-denormalized' to work around this.", GSL_EUNSUP) ;
+               "Use 'mask-denormalized' to work around this.", GSL_EUNSUP) ;
 
   if (exception_mask & GSL_IEEE_MASK_DIVISION_BY_ZERO)
     mode |= _FPU_MASK_ZM ;

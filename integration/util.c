@@ -19,19 +19,19 @@
 
 static inline
 void update (gsl_integration_workspace * workspace,
-		 double a1, double b1, double area1, double error1,
-		 double a2, double b2, double area2, double error2);
+                 double a1, double b1, double area1, double error1,
+                 double a2, double b2, double area2, double error2);
 
 static inline void
 retrieve (const gsl_integration_workspace * workspace, 
-	  double * a, double * b, double * r, double * e);
+          double * a, double * b, double * r, double * e);
 
 
 
 static inline
 void update (gsl_integration_workspace * workspace,
-	     double a1, double b1, double area1, double error1,
-	     double a2, double b2, double area2, double error2)
+             double a1, double b1, double area1, double error1,
+             double a2, double b2, double area2, double error2)
 {
   double * alist = workspace->alist ;
   double * blist = workspace->blist ;
@@ -48,7 +48,7 @@ void update (gsl_integration_workspace * workspace,
   
   if (error2 > error1)
     {
-      alist[i_max] = a2;	/* blist[maxerr] is already == b2 */
+      alist[i_max] = a2;        /* blist[maxerr] is already == b2 */
       rlist[i_max] = area2;
       elist[i_max] = error2;
       level[i_max] = new_level;
@@ -61,7 +61,7 @@ void update (gsl_integration_workspace * workspace,
     }
   else
     {
-      blist[i_max] = b1;	/* alist[maxerr] is already == a1 */
+      blist[i_max] = b1;        /* alist[maxerr] is already == a1 */
       rlist[i_max] = area1;
       elist[i_max] = error1;
       level[i_max] = new_level;
@@ -85,7 +85,7 @@ void update (gsl_integration_workspace * workspace,
 
 static inline void
 retrieve (const gsl_integration_workspace * workspace, 
-	  double * a, double * b, double * r, double * e)
+          double * a, double * b, double * r, double * e)
 {
   const size_t i = workspace->i;
   double * alist = workspace->alist;

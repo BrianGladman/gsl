@@ -34,14 +34,14 @@ downheap (size_t * p, const void *data, const size_t size, const size_t N, size_
       size_t j = 2 * k;
 
       if (j < N && CMP (data, size, p[j], p[j + 1]) < 0)
-	{
-	  j++;
-	}
+        {
+          j++;
+        }
 
       if (CMP (data, size, pki, p[j]) >= 0)
-	{
-	  break;
-	}
+        {
+          break;
+        }
 
       p[k] = p[j];
 
@@ -62,7 +62,7 @@ gsl_heapsort_index (size_t * p, const void *data, size_t count, size_t size, gsl
 
   if (count == 0)
     {
-      return GSL_SUCCESS;	/* No data to sort */
+      return GSL_SUCCESS;       /* No data to sort */
     }
 
   for (i = 0; i < count; i++)
@@ -76,7 +76,7 @@ gsl_heapsort_index (size_t * p, const void *data, size_t count, size_t size, gsl
   N = count - 1;
 
   k = N / 2;
-  k++;				/* Compensate the first use of 'k--' */
+  k++;                          /* Compensate the first use of 'k--' */
   do
     {
       k--;

@@ -90,7 +90,7 @@ enum {
 
 void gsl_ieee_env_setup (void) ;
 int gsl_ieee_read_mode_string (const char * description, int * precision,
-			       int * rounding, int * exception_mask) ;
+                               int * rounding, int * exception_mask) ;
 int gsl_ieee_set_mode (int precision, int rounding, int exception_mask) ;
 
 __END_DECLS

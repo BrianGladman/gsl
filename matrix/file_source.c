@@ -87,7 +87,7 @@ FUNCTION (gsl_matrix, fwrite) (FILE * stream, const TYPE (gsl_matrix) * m)
 #if !(USES_LONGDOUBLE && !HAVE_PRINTF_LONGDOUBLE)
 int
 FUNCTION (gsl_matrix, fprintf) (FILE * stream, const TYPE (gsl_matrix) * m,
-				const char *format)
+                                const char *format)
 {
   int status = 0;
 

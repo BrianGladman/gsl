@@ -85,17 +85,17 @@ static cheb_series r1py_cs = {
 
 /* Chebyshev fits from SLATEC code for psi(x)
 
- Series for PSI        on the interval  0.	   to  1.00000D+00
-				       with weighted error   2.03E-17
-					log weighted error  16.69
-			      significant figures required  16.39
-				   decimal places required  17.37
+ Series for PSI        on the interval  0.         to  1.00000D+00
+                                       with weighted error   2.03E-17
+                                        log weighted error  16.69
+                              significant figures required  16.39
+                                   decimal places required  17.37
 
- Series for APSI       on the interval  0.	   to  2.50000D-01
-				       with weighted error   5.54E-17
-					log weighted error  16.26
-			      significant figures required  14.42
-				   decimal places required  16.86
+ Series for APSI       on the interval  0.         to  2.50000D-01
+                                       with weighted error   5.54E-17
+                                        log weighted error  16.26
+                              significant figures required  14.42
+                                   decimal places required  16.86
 
 */
 
@@ -419,10 +419,10 @@ int gsl_sf_psi_e(const double x, gsl_sf_result * result)
       }
       else {
         result->val  = log(y) - 0.5/x + result_c.val - M_PI * c/s;
-	result->err  = M_PI*fabs(x)*GSL_DBL_EPSILON/(s*s);
-	result->err += result_c.err;
+        result->err  = M_PI*fabs(x)*GSL_DBL_EPSILON/(s*s);
+        result->err += result_c.err;
         result->err += GSL_DBL_EPSILON * fabs(result->val);
-	return GSL_SUCCESS;
+        return GSL_SUCCESS;
       }
     }
     else {
@@ -500,7 +500,7 @@ gsl_sf_psi_1piy_e(const double y, gsl_sf_result * result)
     const double lny = log(ay);
     const double sum = yi2 * (1.0/12.0 +
                          yi2 * (1.0/120.0 +
-	                   yi2 * (1.0/252.0 +
+                           yi2 * (1.0/252.0 +
                              yi2 * (1.0/240.0 +
                                yi2 * (1.0/132.0 + 691.0/32760.0 * yi2)))));
     result->val = lny + sum;
@@ -600,7 +600,7 @@ int gsl_sf_psi_n_e(const int n, const double x, gsl_sf_result * result)
     int stat_nf = gsl_sf_lnfact_e((unsigned int) n, &ln_nf);
     int stat_e  = gsl_sf_exp_mult_err_e(ln_nf.val, ln_nf.err,
                                            hzeta.val, hzeta.err,
-					   result);
+                                           result);
     if(GSL_IS_EVEN(n)) result->val = -result->val;
     return GSL_ERROR_SELECT_3(stat_e, stat_nf, stat_hz);
   }

@@ -432,7 +432,7 @@ static cheb_series big2_cs = {
                     log weighted error  16.29
           significant figures required  14.41
                decimal places required  17.06
-	       
+               
  [GJ] Sun Apr 19 18:14:31 EDT 1998
  There was something wrong with these coefficients. I was getting
  errors after 3 or 4 digits. So I recomputed this table. Now I get

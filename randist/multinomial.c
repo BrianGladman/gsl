@@ -42,7 +42,7 @@
 
 void
 gsl_ran_multinomial (const gsl_rng * r, const size_t K,
-		     const unsigned int N, const double p[], unsigned int n[])
+                     const unsigned int N, const double p[], unsigned int n[])
 {
   size_t k;
   double norm = 0.0;
@@ -80,7 +80,7 @@ gsl_ran_multinomial (const gsl_rng * r, const size_t K,
 
 double
 gsl_ran_multinomial_pdf (const size_t K,
-			 const double p[], const unsigned int n[])
+                         const double p[], const unsigned int n[])
 {
   return exp (gsl_ran_multinomial_lnpdf (K, p, n));
 }
@@ -88,7 +88,7 @@ gsl_ran_multinomial_pdf (const size_t K,
 
 double
 gsl_ran_multinomial_lnpdf (const size_t K,
-			   const double p[], const unsigned int n[])
+                           const double p[], const unsigned int n[])
 {
   size_t k;
   unsigned int N = 0;

@@ -31,15 +31,15 @@ gsl_ieee_set_mode (int precision, int rounding, int exception_mask)
     {
     case GSL_IEEE_SINGLE_PRECISION:
       GSL_ERROR ("NetBSD only supports default precision rounding",
-		 GSL_EUNSUP);
+                 GSL_EUNSUP);
       break;
     case GSL_IEEE_DOUBLE_PRECISION:
       GSL_ERROR ("NetBSD only supports default precision rounding",
-		 GSL_EUNSUP);
+                 GSL_EUNSUP);
       break;
     case GSL_IEEE_EXTENDED_PRECISION:
       GSL_ERROR ("NetBSD only supports default precision rounding",
-		 GSL_EUNSUP);
+                 GSL_EUNSUP);
       break;
     }
 

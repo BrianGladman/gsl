@@ -151,9 +151,9 @@ gsl_sf_bessel_Yn_e(int n, const double x, gsl_sf_result * result)
       int j;
 
       for(j=1; j<n; j++) { 
-	byp = j*two_over_x*by - bym;
-	bym = by;
-	by  = byp;
+        byp = j*two_over_x*by - bym;
+        bym = by;
+        by  = byp;
       }
       result->val  = sign * by;
       result->err  = fabs(result->val) * (fabs(r_by.err/r_by.val) + fabs(r_bym.err/r_bym.val));
@@ -191,7 +191,7 @@ gsl_sf_bessel_Yn_array(const int nmin, const int nmax, const double x, double * 
       for(n=nmin+1; n<=nmax+1; n++) {
         result_array[n-nmin-1] = Ynm1;
         Ynp1 = -Ynm1 + 2.0*n/x * Yn;
-	Ynm1 = Yn;
+        Ynm1 = Yn;
         Yn   = Ynp1;
       }
     }

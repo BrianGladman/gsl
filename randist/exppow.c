@@ -55,13 +55,13 @@ gsl_ran_exppow (const gsl_rng * r, const double a, const double b)
       double z = a * pow(v, 1/b) ;
 
       if (u > 0.5) 
-	{
-	  return z ;
-	} 
+        {
+          return z ;
+        } 
       else 
-	{
-	  return -z ;
-	}
+        {
+          return -z ;
+        }
     }
   else if (b == 1) 
     {
@@ -78,13 +78,13 @@ gsl_ran_exppow (const gsl_rng * r, const double a, const double b)
 
       double s = 1.4489 ; 
       do 
-	{
-	  x = gsl_ran_laplace (r, a) ;
-	  y = gsl_ran_laplace_pdf (x,a) ;
-	  h = gsl_ran_exppow_pdf (x,a,b) ;
-	  ratio = h/(s * y) ;
-	  u = gsl_rng_uniform (r) ;
-	} 
+        {
+          x = gsl_ran_laplace (r, a) ;
+          y = gsl_ran_laplace_pdf (x,a) ;
+          h = gsl_ran_exppow_pdf (x,a,b) ;
+          ratio = h/(s * y) ;
+          u = gsl_rng_uniform (r) ;
+        } 
       while (u > ratio) ;
       
       return x ;
@@ -102,19 +102,19 @@ gsl_ran_exppow (const gsl_rng * r, const double a, const double b)
       const double sigma = a / sqrt(2.0) ;
 
       /* Scale factor chosen by upper bound on ratio at b = infinity.
-	 This could be improved by using a rational function
-	 approximation to the bounding curve. */
+         This could be improved by using a rational function
+         approximation to the bounding curve. */
 
       double s = 2.4091 ;  /* this is sqrt(pi) e / 2 */
 
       do 
-	{
-	  x = gsl_ran_gaussian (r, sigma) ;
-	  y = gsl_ran_gaussian_pdf (x, sigma) ;
-	  h = gsl_ran_exppow_pdf (x, a, b) ;
-	  ratio = h/(s * y) ;
-	  u = gsl_rng_uniform (r) ;
-	} 
+        {
+          x = gsl_ran_gaussian (r, sigma) ;
+          y = gsl_ran_gaussian_pdf (x, sigma) ;
+          h = gsl_ran_exppow_pdf (x, a, b) ;
+          ratio = h/(s * y) ;
+          u = gsl_rng_uniform (r) ;
+        } 
       while (u > ratio) ;
 
       return x;

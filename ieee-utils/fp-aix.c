@@ -37,15 +37,15 @@ gsl_ieee_set_mode (int precision, int rounding, int exception_mask)
 
     case GSL_IEEE_SINGLE_PRECISION:
       GSL_ERROR ("AIX only supports default precision rounding",
-		 GSL_EUNSUP) ;
+                 GSL_EUNSUP) ;
       break ;
     case GSL_IEEE_DOUBLE_PRECISION:
       GSL_ERROR ("AIX only supports default precision rounding",
-		 GSL_EUNSUP) ;
+                 GSL_EUNSUP) ;
       break ;
     case GSL_IEEE_EXTENDED_PRECISION:
       GSL_ERROR ("AIX only supports default precision rounding",
-		 GSL_EUNSUP) ;
+                 GSL_EUNSUP) ;
       break ;
     }
 
@@ -81,8 +81,8 @@ gsl_ieee_set_mode (int precision, int rounding, int exception_mask)
 
   if (exception_mask & GSL_IEEE_MASK_DENORMALIZED)
     GSL_ERROR ("AIX does not support the denormalized operand exception. "
-	       "Use 'mask-denormalized' to work around this.",
-	       GSL_EUNSUP) ;
+               "Use 'mask-denormalized' to work around this.",
+               GSL_EUNSUP) ;
 
   if (exception_mask & GSL_IEEE_MASK_DIVISION_BY_ZERO)
     mode &= ~ TRP_DIV_BY_ZERO ;

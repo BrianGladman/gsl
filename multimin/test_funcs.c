@@ -59,7 +59,7 @@ void rosenbrock_df (const gsl_vector * x, void *params, gsl_vector * df)
 }
 
 void rosenbrock_fdf (const gsl_vector * x, void *params, double * f,
-		     gsl_vector * df) 
+                     gsl_vector * df) 
 {
   double u = gsl_vector_get(x,0);
   double v = gsl_vector_get(x,1);
@@ -111,7 +111,7 @@ void roth_df (const gsl_vector * x, void *params, gsl_vector * df)
 }
 
 void roth_fdf (const gsl_vector * x, void *params, double * f,
-	       gsl_vector * df) 
+               gsl_vector * df) 
 {
   *f = roth_f (x,params);
   roth_df(x,params,df);
@@ -192,7 +192,7 @@ void Nrosenbrock_df (const gsl_vector * x, void *params, gsl_vector * df)
 }
 
 void Nrosenbrock_fdf (const gsl_vector * x, void *params, double * f,
-		     gsl_vector * df) 
+                     gsl_vector * df) 
 {
   *f = rosenbrock_f (x, params);
   Nrosenbrock_df (x, params, df);
@@ -214,7 +214,7 @@ void Nroth_df (const gsl_vector * x, void *params, gsl_vector * df)
 }
 
 void Nroth_fdf (const gsl_vector * x, void *params, double * f,
-		     gsl_vector * df) 
+                     gsl_vector * df) 
 {
   *f = roth_f (x, params);
   Nroth_df (x, params, df);
@@ -237,7 +237,7 @@ void Nwood_df (const gsl_vector * x, void *params, gsl_vector * df)
 }
 
 void Nwood_fdf (const gsl_vector * x, void *params, double * f,
-		     gsl_vector * df) 
+                     gsl_vector * df) 
 {
   *f = wood_f (x, params);
   Nwood_df (x, params, df);

@@ -30,7 +30,7 @@
 
 int
 test_fdf(const char * desc, gsl_multimin_function_fdf *f, 
-	 initpt_function initpt, const gsl_multimin_fdfminimizer_type *T);
+         initpt_function initpt, const gsl_multimin_fdfminimizer_type *T);
 
 int
 test_f(const char * desc, gsl_multimin_function *f, initpt_function initpt);
@@ -79,8 +79,8 @@ main (void)
 int
 test_fdf(const char * desc, 
          gsl_multimin_function_fdf *f,
-	 initpt_function initpt,
-	 const gsl_multimin_fdfminimizer_type *T)
+         initpt_function initpt,
+         const gsl_multimin_fdfminimizer_type *T)
 {
   int status;
   size_t iter = 0;
@@ -124,7 +124,7 @@ test_fdf(const char * desc,
   status |= (fabs(s->f) > 1e-5);
 
   gsl_test(status, "%s, on %s: %i iterations, f(x)=%g",
-	   gsl_multimin_fdfminimizer_name(s),desc, iter, s->f);
+           gsl_multimin_fdfminimizer_name(s),desc, iter, s->f);
 
   gsl_multimin_fdfminimizer_free(s);
   gsl_vector_free(x);
@@ -174,14 +174,14 @@ test_f(const char * desc, gsl_multimin_function *f, initpt_function initpt)
 #endif
 
       status = gsl_multimin_test_size (gsl_multimin_fminimizer_size (s),
-				       1e-3);
+                                       1e-3);
     }
   while (iter < 5000 && status == GSL_CONTINUE);
 
   status |= (fabs(s->fval) > 1e-5);
 
   gsl_test(status, "%s, on %s: %i iterations, f(x)=%g",
-	   gsl_multimin_fminimizer_name(s),desc, iter, s->fval);
+           gsl_multimin_fminimizer_name(s),desc, iter, s->fval);
 
   gsl_multimin_fminimizer_free(s);
   gsl_vector_free(x);

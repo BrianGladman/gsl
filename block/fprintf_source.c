@@ -34,31 +34,31 @@ FUNCTION (gsl_block, fprintf) (FILE * stream, const TYPE(gsl_block) * b, const c
       int status;
 
       for (k = 0; k < MULTIPLICITY; k++)
-	{
-	  if (k > 0)
-	    {
-	      status = putc (' ', stream);
+        {
+          if (k > 0)
+            {
+              status = putc (' ', stream);
 
-	      if (status == EOF)
-		{
-		  GSL_ERROR ("putc failed", GSL_EFAILED);
-		}
-	    }
-	  status = fprintf (stream,
-			    format,
-			    data[MULTIPLICITY * i + k]);
-	  if (status < 0)
-	    {
-	      GSL_ERROR ("fprintf failed", GSL_EFAILED);
-	    }
-	}
+              if (status == EOF)
+                {
+                  GSL_ERROR ("putc failed", GSL_EFAILED);
+                }
+            }
+          status = fprintf (stream,
+                            format,
+                            data[MULTIPLICITY * i + k]);
+          if (status < 0)
+            {
+              GSL_ERROR ("fprintf failed", GSL_EFAILED);
+            }
+        }
 
       status = putc ('\n', stream);
 
       if (status == EOF)
-	{
-	  GSL_ERROR ("putc failed", GSL_EFAILED);
-	}
+        {
+          GSL_ERROR ("putc failed", GSL_EFAILED);
+        }
     }
 
   return 0;
@@ -77,19 +77,19 @@ FUNCTION (gsl_block, fscanf) (FILE * stream, TYPE(gsl_block) * b)
     {
       int k;
       for (k = 0; k < MULTIPLICITY; k++)
-	{
+        {
           ATOMIC_IO tmp ;
 
-	  int status = fscanf (stream, IN_FORMAT, &tmp) ;
+          int status = fscanf (stream, IN_FORMAT, &tmp) ;
           
           data [MULTIPLICITY * i + k] = tmp;
 
 
-	  if (status != 1)
+          if (status != 1)
             {
               GSL_ERROR ("fscanf failed", GSL_EFAILED);
             }
-	}
+        }
     }
 
   return GSL_SUCCESS;
@@ -111,31 +111,31 @@ FUNCTION (gsl_block, raw_fprintf) (FILE * stream,
       int status;
 
       for (k = 0; k < MULTIPLICITY; k++)
-	{
-	  if (k > 0)
-	    {
-	      status = putc (' ', stream);
+        {
+          if (k > 0)
+            {
+              status = putc (' ', stream);
 
-	      if (status == EOF)
-		{
-		  GSL_ERROR ("putc failed", GSL_EFAILED);
-		}
-	    }
-	  status = fprintf (stream,
-			    format,
-			    data[MULTIPLICITY * i * stride + k]);
-	  if (status < 0)
-	    {
-	      GSL_ERROR ("fprintf failed", GSL_EFAILED);
-	    }
-	}
+              if (status == EOF)
+                {
+                  GSL_ERROR ("putc failed", GSL_EFAILED);
+                }
+            }
+          status = fprintf (stream,
+                            format,
+                            data[MULTIPLICITY * i * stride + k]);
+          if (status < 0)
+            {
+              GSL_ERROR ("fprintf failed", GSL_EFAILED);
+            }
+        }
 
       status = putc ('\n', stream);
 
       if (status == EOF)
-	{
-	  GSL_ERROR ("putc failed", GSL_EFAILED);
-	}
+        {
+          GSL_ERROR ("putc failed", GSL_EFAILED);
+        }
     }
 
   return 0;
@@ -153,16 +153,16 @@ FUNCTION (gsl_block, raw_fscanf) (FILE * stream,
     {
       int k;
       for (k = 0; k < MULTIPLICITY; k++)
-	{
+        {
           ATOMIC_IO tmp;
 
-	  int status = fscanf (stream, IN_FORMAT, &tmp) ;
+          int status = fscanf (stream, IN_FORMAT, &tmp) ;
 
           data [MULTIPLICITY * i * stride + k] = tmp;
 
-	  if (status != 1)
-	    GSL_ERROR ("fscanf failed", GSL_EFAILED);
-	}
+          if (status != 1)
+            GSL_ERROR ("fscanf failed", GSL_EFAILED);
+        }
     }
 
   return GSL_SUCCESS;

@@ -37,11 +37,11 @@
 
 /* chebyshev expansions
 
- series for by0        on the interval  0.	    to  1.60000d+01
-					with weighted error   1.20e-17
-					 log weighted error  16.92
-			       significant figures required  16.15
-				    decimal places required  17.48
+ series for by0        on the interval  0.          to  1.60000d+01
+                                        with weighted error   1.20e-17
+                                         log weighted error  16.92
+                               significant figures required  16.15
+                                    decimal places required  17.48
 */
 
 static double by0_data[13] = {

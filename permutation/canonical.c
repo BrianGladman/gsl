@@ -28,7 +28,7 @@
 
 int
 gsl_permutation_linear_to_canonical (gsl_permutation * q,
-				     const gsl_permutation * p)
+                                     const gsl_permutation * p)
 {
   const size_t n = p->size;
   size_t i, k, s;
@@ -49,13 +49,13 @@ gsl_permutation_linear_to_canonical (gsl_permutation * q,
       s = 1;
 
       while (k > i)
-	{
-	  k = pp[k];
-	  s++;
-	}
+        {
+          k = pp[k];
+          s++;
+        }
 
       if (k < i)
-	continue;
+        continue;
 
       /* Now have k == i, i.e the least in its cycle, and s == cycle length */
 
@@ -67,14 +67,14 @@ gsl_permutation_linear_to_canonical (gsl_permutation * q,
       s = 1;
 
       while (k > i)
-	{
-	  qq[t + s] = k;
-	  k = pp[k];
-	  s++;
-	}
+        {
+          qq[t + s] = k;
+          k = pp[k];
+          s++;
+        }
 
       if (t == 0)
-	break;
+        break;
     }
 
   return GSL_SUCCESS;
@@ -82,7 +82,7 @@ gsl_permutation_linear_to_canonical (gsl_permutation * q,
 
 int
 gsl_permutation_canonical_to_linear (gsl_permutation * p,
-				     const gsl_permutation * q)
+                                     const gsl_permutation * q)
 {
   size_t i, k, kk, first;
   const size_t n = p->size;
@@ -108,16 +108,16 @@ gsl_permutation_canonical_to_linear (gsl_permutation * p,
       kk = qq[i];
 
       if (kk > first)
-	{
-	  pp[k] = pp[kk];
-	  k = kk;
-	}
+        {
+          pp[k] = pp[kk];
+          k = kk;
+        }
       else
-	{
-	  pp[k] = first;
-	  k = kk;
-	  first = pp[kk];
-	}
+        {
+          pp[k] = first;
+          k = kk;
+          first = pp[kk];
+        }
     }
 
   pp[k] = first;
@@ -136,12 +136,12 @@ gsl_permutation_inversions (const gsl_permutation * p)
   for (i = 0; i < size - 1; i++)
     {
       for (j = i + 1; j < size; j++)
-	{
-	  if (p->data[i] > p->data[j])
-	    {
-	      count++;
-	    }
-	}
+        {
+          if (p->data[i] > p->data[j])
+            {
+              count++;
+            }
+        }
     }
 
   return count;
@@ -160,12 +160,12 @@ gsl_permutation_linear_cycles (const gsl_permutation * p)
       k = p->data[i];
 
       while (k > i)
-	{
-	  k = p->data[k];
-	}
+        {
+          k = p->data[k];
+        }
 
       if (k < i)
-	continue;
+        continue;
 
       count++;
     }
@@ -183,10 +183,10 @@ gsl_permutation_canonical_cycles (const gsl_permutation * p)
   for (i = 0; i < p->size; i++)
     {
       if (p->data[i] < min)
-	{
-	  min = p->data[i];
-	  count++;
-	}
+        {
+          min = p->data[i];
+          count++;
+        }
     }
 
   return count;

@@ -110,7 +110,7 @@ mrg_set (void *vstate, unsigned long int s)
   mrg_state_t *state = (mrg_state_t *) vstate;
 
   if (s == 0)
-    s = 1;	/* default seed is 1 */
+    s = 1;      /* default seed is 1 */
 
 #define LCG(n) ((69069 * n) & 0xffffffffUL)
   s = LCG (s);
@@ -138,8 +138,8 @@ mrg_set (void *vstate, unsigned long int s)
 }
 
 static const gsl_rng_type mrg_type =
-{"mrg",				/* name */
- 2147483646,			/* RAND_MAX */
+{"mrg",                         /* name */
+ 2147483646,                    /* RAND_MAX */
  0,                             /* RAND_MIN */
  sizeof (mrg_state_t),
  &mrg_set,

@@ -88,11 +88,11 @@ gsl_poly_dd_taylor (double c[], double xp,
  * Roots are returned ordered.
  */
 int gsl_poly_solve_quadratic (double a, double b, double c, 
-			      double * x0, double * x1);
+                              double * x0, double * x1);
 
 int 
 gsl_poly_complex_solve_quadratic (double a, double b, double c, 
-				  gsl_complex * z0, gsl_complex * z1);
+                                  gsl_complex * z0, gsl_complex * z1);
 
 
 /* Solve for real roots of the cubic equation
@@ -102,12 +102,12 @@ gsl_poly_complex_solve_quadratic (double a, double b, double c,
  * Roots are returned ordered.
  */
 int gsl_poly_solve_cubic (double a, double b, double c, 
-			  double * x0, double * x1, double * x2);
+                          double * x0, double * x1, double * x2);
 
 int 
 gsl_poly_complex_solve_cubic (double a, double b, double c, 
-			      gsl_complex * z0, gsl_complex * z1, 
-			      gsl_complex * z2);
+                              gsl_complex * z0, gsl_complex * z1, 
+                              gsl_complex * z2);
 
 
 /* Solve for the complex roots of a general real polynomial */

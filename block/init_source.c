@@ -25,7 +25,7 @@ FUNCTION (gsl_block, alloc) (const size_t n)
   if (n == 0)
     {
       GSL_ERROR_VAL ("block length n must be positive integer",
-			GSL_EINVAL, 0);
+                        GSL_EINVAL, 0);
     }
 
   b = (TYPE (gsl_block) *) malloc (sizeof (TYPE (gsl_block)));
@@ -33,17 +33,17 @@ FUNCTION (gsl_block, alloc) (const size_t n)
   if (b == 0)
     {
       GSL_ERROR_VAL ("failed to allocate space for block struct",
-			GSL_ENOMEM, 0);
+                        GSL_ENOMEM, 0);
     }
 
   b->data = (ATOMIC *) malloc (MULTIPLICITY * n * sizeof (ATOMIC));
 
   if (b->data == 0)
     {
-      free (b);		/* exception in constructor, avoid memory leak */
+      free (b);         /* exception in constructor, avoid memory leak */
 
       GSL_ERROR_VAL ("failed to allocate space for block data",
-			GSL_ENOMEM, 0);
+                        GSL_ENOMEM, 0);
     }
 
   b->size = n;

@@ -29,8 +29,8 @@
 
 int
 FUNCTION(gsl_fft_halfcomplex,backward) (BASE data[], const size_t stride, 
-					const size_t n,
-					const TYPE(gsl_fft_halfcomplex_wavetable) * wavetable,
+                                        const size_t n,
+                                        const TYPE(gsl_fft_halfcomplex_wavetable) * wavetable,
                                         TYPE(gsl_fft_real_workspace) * work)
 {
   int status = FUNCTION(gsl_fft_halfcomplex,transform) (data, stride, n, wavetable, work) ;
@@ -39,8 +39,8 @@ FUNCTION(gsl_fft_halfcomplex,backward) (BASE data[], const size_t stride,
 
 int
 FUNCTION(gsl_fft_halfcomplex,inverse) (BASE data[], const size_t stride, 
-				       const size_t n,
-				       const TYPE(gsl_fft_halfcomplex_wavetable) * wavetable,
+                                       const size_t n,
+                                       const TYPE(gsl_fft_halfcomplex_wavetable) * wavetable,
                                        TYPE(gsl_fft_real_workspace) * work)
 {
   int status = FUNCTION(gsl_fft_halfcomplex,transform) (data, stride, n, wavetable, work);
@@ -57,7 +57,7 @@ FUNCTION(gsl_fft_halfcomplex,inverse) (BASE data[], const size_t stride,
     size_t i;
     for (i = 0; i < n; i++)
       {
-	data[stride*i] *= norm;
+        data[stride*i] *= norm;
       }
   }
   return status;
@@ -65,7 +65,7 @@ FUNCTION(gsl_fft_halfcomplex,inverse) (BASE data[], const size_t stride,
 
 int
 FUNCTION(gsl_fft_halfcomplex,transform) (BASE data[], const size_t stride, const size_t n,
-					 const TYPE(gsl_fft_halfcomplex_wavetable) * wavetable,
+                                         const TYPE(gsl_fft_halfcomplex_wavetable) * wavetable,
                                          TYPE(gsl_fft_real_workspace) * work)
 {
   BASE * const scratch = work->scratch;
@@ -89,7 +89,7 @@ FUNCTION(gsl_fft_halfcomplex,transform) (BASE data[], const size_t stride, const
     }
 
   if (n == 1)
-    {				/* FFT of one data point is the identity */
+    {                           /* FFT of one data point is the identity */
       return 0;
     }
 
@@ -117,68 +117,68 @@ FUNCTION(gsl_fft_halfcomplex,transform) (BASE data[], const size_t stride, const
       tskip = (q + 1) / 2 - 1;
 
       if (state == 0)
-	{
-	  in = data;
-	  istride = stride;
-	  out = scratch;
-	  ostride = 1;
-	  state = 1;
-	}
+        {
+          in = data;
+          istride = stride;
+          out = scratch;
+          ostride = 1;
+          state = 1;
+        }
       else
-	{
-	  in = scratch;
-	  istride = 1;
-	  out = data;
-	  ostride = stride;
-	  state = 0;
-	}
+        {
+          in = scratch;
+          istride = 1;
+          out = data;
+          ostride = stride;
+          state = 0;
+        }
 
       if (factor == 2)
-	{
-	  twiddle1 = wavetable->twiddle[i];
-	  FUNCTION(fft_halfcomplex,pass_2) (in, istride, out, ostride, 
-					    product, n, twiddle1);
-	}
+        {
+          twiddle1 = wavetable->twiddle[i];
+          FUNCTION(fft_halfcomplex,pass_2) (in, istride, out, ostride, 
+                                            product, n, twiddle1);
+        }
       else if (factor == 3)
-	{
-	  twiddle1 = wavetable->twiddle[i];
-	  twiddle2 = twiddle1 + tskip;
-	  FUNCTION(fft_halfcomplex,pass_3) (in, istride, out, ostride,
-					    product, n, twiddle1, twiddle2);
-	}
+        {
+          twiddle1 = wavetable->twiddle[i];
+          twiddle2 = twiddle1 + tskip;
+          FUNCTION(fft_halfcomplex,pass_3) (in, istride, out, ostride,
+                                            product, n, twiddle1, twiddle2);
+        }
       else if (factor == 4)
-	{
-	  twiddle1 = wavetable->twiddle[i];
-	  twiddle2 = twiddle1 + tskip;
-	  twiddle3 = twiddle2 + tskip;
-	  FUNCTION(fft_halfcomplex,pass_4) (in, istride, out, ostride,
-					    product, n, twiddle1, twiddle2, 
-					    twiddle3);
-	}
+        {
+          twiddle1 = wavetable->twiddle[i];
+          twiddle2 = twiddle1 + tskip;
+          twiddle3 = twiddle2 + tskip;
+          FUNCTION(fft_halfcomplex,pass_4) (in, istride, out, ostride,
+                                            product, n, twiddle1, twiddle2, 
+                                            twiddle3);
+        }
       else if (factor == 5)
-	{
-	  twiddle1 = wavetable->twiddle[i];
-	  twiddle2 = twiddle1 + tskip;
-	  twiddle3 = twiddle2 + tskip;
-	  twiddle4 = twiddle3 + tskip;
-	  FUNCTION(fft_halfcomplex,pass_5) (in, istride, out, ostride,
-					    product, n, twiddle1, twiddle2, 
-					    twiddle3, twiddle4);
-	}
+        {
+          twiddle1 = wavetable->twiddle[i];
+          twiddle2 = twiddle1 + tskip;
+          twiddle3 = twiddle2 + tskip;
+          twiddle4 = twiddle3 + tskip;
+          FUNCTION(fft_halfcomplex,pass_5) (in, istride, out, ostride,
+                                            product, n, twiddle1, twiddle2, 
+                                            twiddle3, twiddle4);
+        }
       else
-	{
-	  twiddle1 = wavetable->twiddle[i];
-	  FUNCTION(fft_halfcomplex,pass_n) (in, istride, out, ostride,
-					    factor, product, n, twiddle1);
-	}
+        {
+          twiddle1 = wavetable->twiddle[i];
+          FUNCTION(fft_halfcomplex,pass_n) (in, istride, out, ostride,
+                                            factor, product, n, twiddle1);
+        }
     }
 
-  if (state == 1)		/* copy results back from scratch to data */
+  if (state == 1)               /* copy results back from scratch to data */
     {
       for (i = 0; i < n; i++)
-	{
-	  data[stride*i] = scratch[i] ;
-	}
+        {
+          data[stride*i] = scratch[i] ;
+        }
     }
 
   return 0;

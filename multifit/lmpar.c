@@ -35,9 +35,9 @@ count_nsing (const gsl_matrix * r)
       double rii = gsl_matrix_get (r, i, i);
 
       if (rii == 0)
-	{
-	  break;
-	}
+        {
+          break;
+        }
     }
 
   return i;
@@ -46,7 +46,7 @@ count_nsing (const gsl_matrix * r)
 
 static void
 compute_newton_direction (const gsl_matrix * r, const gsl_permutation * perm,
-			  const gsl_vector * qtf, gsl_vector * x)
+                          const gsl_vector * qtf, gsl_vector * x)
 {
 
   /* Compute and store in x the Gauss-Newton direction. If the
@@ -98,9 +98,9 @@ compute_newton_direction (const gsl_matrix * r, const gsl_permutation * perm,
 
 static void
 compute_newton_correction (const gsl_matrix * r, const gsl_vector * sdiag,
-			   const gsl_permutation * p, gsl_vector * x,
+                           const gsl_permutation * p, gsl_vector * x,
                            double dxnorm,
-			   const gsl_vector * diag, gsl_vector * w)
+                           const gsl_vector * diag, gsl_vector * w)
 {
   size_t n = r->size2;
   size_t i, j;
@@ -125,12 +125,12 @@ compute_newton_correction (const gsl_matrix * r, const gsl_vector * sdiag,
       gsl_vector_set (w, j, tj);
 
       for (i = j + 1; i < n; i++)
-	{
-	  double rij = gsl_matrix_get (r, i, j);
-	  double wi = gsl_vector_get (w, i);
+        {
+          double rij = gsl_matrix_get (r, i, j);
+          double wi = gsl_vector_get (w, i);
 
-	  gsl_vector_set (w, i, wi - rij * tj);
-	}
+          gsl_vector_set (w, i, wi - rij * tj);
+        }
     }
 }
 
@@ -170,23 +170,23 @@ compute_newton_bound (const gsl_matrix * r, const gsl_vector * x,
       double sum = 0;
 
       for (i = 0; i < j; i++)
-	{
-	  sum += gsl_matrix_get (r, i, j) * gsl_vector_get (w, i);
-	}
+        {
+          sum += gsl_matrix_get (r, i, j) * gsl_vector_get (w, i);
+        }
 
       {
-	double rjj = gsl_matrix_get (r, j, j);
-	double wj = gsl_vector_get (w, j);
+        double rjj = gsl_matrix_get (r, j, j);
+        double wj = gsl_vector_get (w, j);
 
-	gsl_vector_set (w, j, (wj - sum) / rjj);
+        gsl_vector_set (w, j, (wj - sum) / rjj);
       }
     }
 }
 
 static void
 compute_gradient_direction (const gsl_matrix * r, const gsl_permutation * p,
-			    const gsl_vector * qtf, const gsl_vector * diag,
-			    gsl_vector * g)
+                            const gsl_vector * qtf, const gsl_vector * diag,
+                            gsl_vector * g)
 {
   const size_t n = r->size2;
 
@@ -197,15 +197,15 @@ compute_gradient_direction (const gsl_matrix * r, const gsl_permutation * p,
       double sum = 0;
 
       for (i = 0; i <= j; i++)
-	{
-	  sum += gsl_matrix_get (r, i, j) * gsl_vector_get (qtf, i);
-	}
+        {
+          sum += gsl_matrix_get (r, i, j) * gsl_vector_get (qtf, i);
+        }
 
       {
-	size_t pj = gsl_permutation_get (p, j);
-	double dpj = gsl_vector_get (diag, pj);
+        size_t pj = gsl_permutation_get (p, j);
+        double dpj = gsl_vector_get (diag, pj);
 
-	gsl_vector_set (g, j, sum / dpj);
+        gsl_vector_set (g, j, sum / dpj);
       }
     }
 }
@@ -424,23 +424,23 @@ iteration:
   if (fp > 0)
     {
       if (par > par_lower)
-	{
-	  par_lower = par;
+        {
+          par_lower = par;
 #ifdef DEBUG
       printf("fp > 0: set par_lower = par = %g\n", par);
 #endif
 
-	}
+        }
     }
   else if (fp < 0)
     {
       if (par < par_upper)
-	{
+        {
 #ifdef DEBUG
       printf("fp < 0: set par_upper = par = %g\n", par);
 #endif
-	  par_upper = par;
-	}
+          par_upper = par;
+        }
     }
 
   /* Compute an improved estimate for par */

@@ -81,14 +81,14 @@
       const INDEX j_max = GSL_MIN(lenX, i + U + 1);
       INDEX ix = OFFSET(lenX, incX) + j_min * incX;
       for (j = j_min; j < j_max; j++) {
-	const BASE x_real = CONST_REAL(X, ix);
-	const BASE x_imag = CONST_IMAG(X, ix);
-	const BASE A_real = CONST_REAL(A, lda * i + (L + j - i));
-	const BASE A_imag = CONST_IMAG(A, lda * i + (L + j - i));
+        const BASE x_real = CONST_REAL(X, ix);
+        const BASE x_imag = CONST_IMAG(X, ix);
+        const BASE A_real = CONST_REAL(A, lda * i + (L + j - i));
+        const BASE A_imag = CONST_IMAG(A, lda * i + (L + j - i));
 
-	dotR += A_real * x_real - A_imag * x_imag;
-	dotI += A_real * x_imag + A_imag * x_real;
-	ix += incX;
+        dotR += A_real * x_real - A_imag * x_imag;
+        dotI += A_real * x_imag + A_imag * x_real;
+        ix += incX;
       }
 
       REAL(Y, iy) += alpha_real * dotR - alpha_imag * dotI;
@@ -96,7 +96,7 @@
       iy += incY;
     }
   } else if ((order == CblasRowMajor && TransA == CblasTrans)
-	     || (order == CblasColMajor && TransA == CblasNoTrans)) {
+             || (order == CblasColMajor && TransA == CblasNoTrans)) {
     /* form  y := alpha*A'*x + y */
     INDEX ix = OFFSET(lenX, incX);
     for (j = 0; j < lenX; j++) {
@@ -105,16 +105,16 @@
       BASE tmpR = alpha_real * x_real - alpha_imag * x_imag;
       BASE tmpI = alpha_real * x_imag + alpha_imag * x_real;
       if (!(tmpR == 0.0 && tmpI == 0.0)) {
-	const INDEX i_min = (j > U ? j - U : 0);
-	const INDEX i_max = GSL_MIN(lenY, j + L + 1);
-	INDEX iy = OFFSET(lenY, incY) + i_min * incY;
-	for (i = i_min; i < i_max; i++) {
-	  const BASE A_real = CONST_REAL(A, lda * j + (U + i - j));
-	  const BASE A_imag = CONST_IMAG(A, lda * j + (U + i - j));
-	  REAL(Y, iy) += A_real * tmpR - A_imag * tmpI;
-	  IMAG(Y, iy) += A_real * tmpI + A_imag * tmpR;
-	  iy += incY;
-	}
+        const INDEX i_min = (j > U ? j - U : 0);
+        const INDEX i_max = GSL_MIN(lenY, j + L + 1);
+        INDEX iy = OFFSET(lenY, incY) + i_min * incY;
+        for (i = i_min; i < i_max; i++) {
+          const BASE A_real = CONST_REAL(A, lda * j + (U + i - j));
+          const BASE A_imag = CONST_IMAG(A, lda * j + (U + i - j));
+          REAL(Y, iy) += A_real * tmpR - A_imag * tmpI;
+          IMAG(Y, iy) += A_real * tmpI + A_imag * tmpR;
+          iy += incY;
+        }
       }
       ix += incX;
     }
@@ -127,16 +127,16 @@
       BASE tmpR = alpha_real * x_real - alpha_imag * x_imag;
       BASE tmpI = alpha_real * x_imag + alpha_imag * x_real;
       if (!(tmpR == 0.0 && tmpI == 0.0)) {
-	const INDEX i_min = (j > U ? j - U : 0);
-	const INDEX i_max = GSL_MIN(lenY, j + L + 1);
-	INDEX iy = OFFSET(lenY, incY) + i_min * incY;
-	for (i = i_min; i < i_max; i++) {
-	  const BASE A_real = CONST_REAL(A, lda * j + (U + i - j));
-	  const BASE A_imag = CONST_IMAG(A, lda * j + (U + i - j));
-	  REAL(Y, iy) += A_real * tmpR - (-A_imag) * tmpI;
-	  IMAG(Y, iy) += A_real * tmpI + (-A_imag) * tmpR;
-	  iy += incY;
-	}
+        const INDEX i_min = (j > U ? j - U : 0);
+        const INDEX i_max = GSL_MIN(lenY, j + L + 1);
+        INDEX iy = OFFSET(lenY, incY) + i_min * incY;
+        for (i = i_min; i < i_max; i++) {
+          const BASE A_real = CONST_REAL(A, lda * j + (U + i - j));
+          const BASE A_imag = CONST_IMAG(A, lda * j + (U + i - j));
+          REAL(Y, iy) += A_real * tmpR - (-A_imag) * tmpI;
+          IMAG(Y, iy) += A_real * tmpI + (-A_imag) * tmpR;
+          iy += incY;
+        }
       }
       ix += incX;
     }
@@ -150,14 +150,14 @@
       const INDEX j_max = GSL_MIN(lenX, i + U + 1);
       INDEX ix = OFFSET(lenX, incX) + j_min * incX;
       for (j = j_min; j < j_max; j++) {
-	const BASE x_real = CONST_REAL(X, ix);
-	const BASE x_imag = CONST_IMAG(X, ix);
-	const BASE A_real = CONST_REAL(A, lda * i + (L + j - i));
-	const BASE A_imag = CONST_IMAG(A, lda * i + (L + j - i));
+        const BASE x_real = CONST_REAL(X, ix);
+        const BASE x_imag = CONST_IMAG(X, ix);
+        const BASE A_real = CONST_REAL(A, lda * i + (L + j - i));
+        const BASE A_imag = CONST_IMAG(A, lda * i + (L + j - i));
 
-	dotR += A_real * x_real - (-A_imag) * x_imag;
-	dotI += A_real * x_imag + (-A_imag) * x_real;
-	ix += incX;
+        dotR += A_real * x_real - (-A_imag) * x_imag;
+        dotI += A_real * x_imag + (-A_imag) * x_real;
+        ix += incX;
       }
 
       REAL(Y, iy) += alpha_real * dotR - alpha_imag * dotI;

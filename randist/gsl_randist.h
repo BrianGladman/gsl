@@ -133,7 +133,7 @@ double gsl_ran_pareto_pdf (const double x, const double a, const double b);
 
 unsigned int gsl_ran_poisson (const gsl_rng * r, double mu);
 void gsl_ran_poisson_array (const gsl_rng * r, size_t n, unsigned int array[],
-			    double mu);
+                            double mu);
 double gsl_ran_poisson_pdf (const unsigned int k, const double mu);
 
 double gsl_ran_rayleigh (const gsl_rng * r, const double sigma);

@@ -99,8 +99,8 @@ main (int argc, char *argv[])
 
   if (gsl_rng_default_seed != 0) {
     fprintf(stderr, 
-	    "overriding GSL_RNG_SEED with command line value, seed = %ld\n", 
-	    seed) ;
+            "overriding GSL_RNG_SEED with command line value, seed = %ld\n", 
+            seed) ;
   }
   
   gsl_rng_default_seed = seed ;
@@ -222,7 +222,7 @@ main (int argc, char *argv[])
       DBL_ARG(sigmay) ;
       DBL_ARG(rho) ;
       OUTPUT2(gsl_ran_bivariate_gaussian (r, sigmax, sigmay, rho, &x, &y), 
-	      x, y);
+              x, y);
     }
   else if (NAME("dir-2d"))
     {

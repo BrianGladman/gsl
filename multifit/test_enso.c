@@ -265,7 +265,7 @@ enso_df (const gsl_vector * x, void *params, gsl_matrix * df)
 
 int
 enso_fdf (const gsl_vector * x, void *params,
-	   gsl_vector * f, gsl_matrix * df)
+           gsl_vector * f, gsl_matrix * df)
 {
   enso_f (x, params, f);
   enso_df (x, params, df);

@@ -125,8 +125,8 @@ gsl_interp_eval_e (const gsl_interp * interp,
 
 double
 gsl_interp_eval (const gsl_interp * interp,
-		 const double xa[], const double ya[], double x,
-		 gsl_interp_accel * a)
+                 const double xa[], const double ya[], double x,
+                 gsl_interp_accel * a)
 {
   double y;
   int status = interp->type->eval (interp->state, xa, ya, interp->size, x, a, &y);
@@ -159,8 +159,8 @@ gsl_interp_eval_deriv_e (const gsl_interp * interp,
 
 double
 gsl_interp_eval_deriv (const gsl_interp * interp,
-		       const double xa[], const double ya[], double x,
-		       gsl_interp_accel * a)
+                       const double xa[], const double ya[], double x,
+                       gsl_interp_accel * a)
 {
   double dydx;
   int status = interp->type->eval_deriv (interp->state, xa, ya, interp->size, x, a, &dydx);
@@ -193,8 +193,8 @@ gsl_interp_eval_deriv2_e (const gsl_interp * interp,
 
 double
 gsl_interp_eval_deriv2 (const gsl_interp * interp,
-		        const double xa[], const double ya[], double x,
-		        gsl_interp_accel * a)
+                        const double xa[], const double ya[], double x,
+                        gsl_interp_accel * a)
 {
   double d2;
   int status = interp->type->eval_deriv2 (interp->state, xa, ya, interp->size, x, a, &d2);
@@ -229,9 +229,9 @@ gsl_interp_eval_integ_e (const gsl_interp * interp,
 
 double
 gsl_interp_eval_integ (const gsl_interp * interp,
-		       const double xa[], const double ya[],
+                       const double xa[], const double ya[],
                        double a, double b,
-		       gsl_interp_accel * acc)
+                       gsl_interp_accel * acc)
 {
   double result;
   int status = interp->type->eval_integ (interp->state, xa, ya, interp->size, acc, a, b, &result);

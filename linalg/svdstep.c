@@ -12,9 +12,9 @@ chop_small_elements (gsl_vector * d, gsl_vector * f)
       double d_ip1 = gsl_vector_get (d, i + 1);
 
       if (fabs (f_i) < GSL_DBL_EPSILON * (fabs (d_i) + fabs (d_ip1)))
-	{
-	  gsl_vector_set (f, i, 0.0);
-	}
+        {
+          gsl_vector_set (f, i, 0.0);
+        }
       d_i = d_ip1;
     }
 
@@ -108,12 +108,12 @@ svd2 (gsl_vector * d, gsl_vector * f, gsl_matrix * U, gsl_matrix * V)
       /* Compute U <= U G */
 
       for (i = 0; i < M; i++)
-	{
-	  double Uip = gsl_matrix_get (U, i, 0);
-	  double Uiq = gsl_matrix_get (U, i, 1);
-	  gsl_matrix_set (U, i, 0, c * Uip - s * Uiq);
-	  gsl_matrix_set (U, i, 1, s * Uip + c * Uiq);
-	}
+        {
+          double Uip = gsl_matrix_get (U, i, 0);
+          double Uiq = gsl_matrix_get (U, i, 1);
+          gsl_matrix_set (U, i, 0, c * Uip - s * Uiq);
+          gsl_matrix_set (U, i, 1, s * Uip + c * Uiq);
+        }
 
       /* Compute V <= V X */
 
@@ -227,12 +227,12 @@ chase_out_intermediate_zero (gsl_vector * d, gsl_vector * f, gsl_matrix * U, siz
       /* Compute U <= U G */
       
       for (i = 0; i < M; i++)
-	{
-	  double Uip = gsl_matrix_get (U, i, k0);
-	  double Uiq = gsl_matrix_get (U, i, k + 1);
-	  gsl_matrix_set (U, i, k0, c * Uip - s * Uiq);
-	  gsl_matrix_set (U, i, k + 1, s * Uip + c * Uiq);
-	}
+        {
+          double Uip = gsl_matrix_get (U, i, k0);
+          double Uiq = gsl_matrix_get (U, i, k + 1);
+          gsl_matrix_set (U, i, k0, c * Uip - s * Uiq);
+          gsl_matrix_set (U, i, k + 1, s * Uip + c * Uiq);
+        }
       
       /* compute B <= G^T B */
       
@@ -271,12 +271,12 @@ chase_out_trailing_zero (gsl_vector * d, gsl_vector * f, gsl_matrix * V)
       /* Compute V <= V G where G = [c, s ; -s, c] */
       
       for (i = 0; i < N; i++)
-	{
-	  double Vip = gsl_matrix_get (V, i, k);
-	  double Viq = gsl_matrix_get (V, i, n - 1);
-	  gsl_matrix_set (V, i, k, c * Vip - s * Viq);
-	  gsl_matrix_set (V, i, n - 1, s * Vip + c * Viq);
-	}
+        {
+          double Vip = gsl_matrix_get (V, i, k);
+          double Viq = gsl_matrix_get (V, i, n - 1);
+          gsl_matrix_set (V, i, k, c * Vip - s * Viq);
+          gsl_matrix_set (V, i, n - 1, s * Vip + c * Viq);
+        }
 
       /* compute B <= B G */
       
@@ -379,46 +379,46 @@ qrstep (gsl_vector * d, gsl_vector * f, gsl_matrix * U, gsl_matrix * V)
       /* Compute V <= V G */
 
       for (i = 0; i < N; i++)
-	{
-	  double Vip = gsl_matrix_get (V, i, k);
-	  double Viq = gsl_matrix_get (V, i, k + 1);
-	  gsl_matrix_set (V, i, k, c * Vip - s * Viq);
-	  gsl_matrix_set (V, i, k + 1, s * Vip + c * Viq);
-	}
+        {
+          double Vip = gsl_matrix_get (V, i, k);
+          double Viq = gsl_matrix_get (V, i, k + 1);
+          gsl_matrix_set (V, i, k, c * Vip - s * Viq);
+          gsl_matrix_set (V, i, k + 1, s * Vip + c * Viq);
+        }
 
       /* compute B <= B G */
 
       {
-	double bk1 = c * bk - s * z;
+        double bk1 = c * bk - s * z;
 
-	double ap1 = c * ap - s * bp;
-	double bp1 = s * ap + c * bp;
-	double zp1 = -s * aq;
+        double ap1 = c * ap - s * bp;
+        double bp1 = s * ap + c * bp;
+        double zp1 = -s * aq;
 
-	double aq1 = c * aq;
+        double aq1 = c * aq;
 
-	if (k > 0)
-	  {
-	    gsl_vector_set (f, k - 1, bk1);
-	  }
+        if (k > 0)
+          {
+            gsl_vector_set (f, k - 1, bk1);
+          }
 
-	ak = ap1;
-	bk = bp1;
-	zk = zp1;
+        ak = ap1;
+        bk = bp1;
+        zk = zp1;
 
-	ap = aq1;
+        ap = aq1;
 
-	if (k < n - 2)
-	  {
-	    bp = gsl_vector_get (f, k + 1);
-	  }
-	else
-	  {
-	    bp = 0.0;
-	  }
+        if (k < n - 2)
+          {
+            bp = gsl_vector_get (f, k + 1);
+          }
+        else
+          {
+            bp = 0.0;
+          }
 
-	y = ak;
-	z = zk;
+        y = ak;
+        z = zk;
       }
 
       create_givens (y, z, &c, &s);
@@ -426,43 +426,43 @@ qrstep (gsl_vector * d, gsl_vector * f, gsl_matrix * U, gsl_matrix * V)
       /* Compute U <= U G */
 
       for (i = 0; i < M; i++)
-	{
-	  double Uip = gsl_matrix_get (U, i, k);
-	  double Uiq = gsl_matrix_get (U, i, k + 1);
-	  gsl_matrix_set (U, i, k, c * Uip - s * Uiq);
-	  gsl_matrix_set (U, i, k + 1, s * Uip + c * Uiq);
-	}
+        {
+          double Uip = gsl_matrix_get (U, i, k);
+          double Uiq = gsl_matrix_get (U, i, k + 1);
+          gsl_matrix_set (U, i, k, c * Uip - s * Uiq);
+          gsl_matrix_set (U, i, k + 1, s * Uip + c * Uiq);
+        }
 
       /* compute B <= G^T B */
 
       {
-	double ak1 = c * ak - s * zk;
-	double bk1 = c * bk - s * ap;
-	double zk1 = -s * bp;
+        double ak1 = c * ak - s * zk;
+        double bk1 = c * bk - s * ap;
+        double zk1 = -s * bp;
 
-	double ap1 = s * bk + c * ap;
-	double bp1 = c * bp;
+        double ap1 = s * bk + c * ap;
+        double bp1 = c * bp;
 
-	gsl_vector_set (d, k, ak1);
+        gsl_vector_set (d, k, ak1);
 
-	ak = ak1;
-	bk = bk1;
-	zk = zk1;
+        ak = ak1;
+        bk = bk1;
+        zk = zk1;
 
-	ap = ap1;
-	bp = bp1;
+        ap = ap1;
+        bp = bp1;
 
-	if (k < n - 2)
-	  {
-	    aq = gsl_vector_get (d, k + 2);
-	  }
-	else
-	  {
-	    aq = 0.0;
-	  }
+        if (k < n - 2)
+          {
+            aq = gsl_vector_get (d, k + 2);
+          }
+        else
+          {
+            aq = 0.0;
+          }
 
-	y = bk;
-	z = zk;
+        y = bk;
+        z = zk;
       }
     }
 

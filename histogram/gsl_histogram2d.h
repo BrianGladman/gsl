@@ -52,24 +52,24 @@ typedef struct {
 gsl_histogram2d * gsl_histogram2d_alloc (const size_t nx, const size_t ny);
 gsl_histogram2d * gsl_histogram2d_calloc (const size_t nx, const size_t ny);
 gsl_histogram2d * gsl_histogram2d_calloc_uniform (const size_t nx, const size_t ny,
-					     const double xmin, const double xmax,
-					     const double ymin, const double ymax);
+                                             const double xmin, const double xmax,
+                                             const double ymin, const double ymax);
 
 void gsl_histogram2d_free (gsl_histogram2d * h);
 
 int gsl_histogram2d_increment (gsl_histogram2d * h, double x, double y);
 int gsl_histogram2d_accumulate (gsl_histogram2d * h, 
-				double x, double y, double weight);
+                                double x, double y, double weight);
 int gsl_histogram2d_find (const gsl_histogram2d * h, 
-			  const double x, const double y, size_t * i, size_t * j);
+                          const double x, const double y, size_t * i, size_t * j);
 
 double gsl_histogram2d_get (const gsl_histogram2d * h, const size_t i, const size_t j);
 int gsl_histogram2d_get_xrange (const gsl_histogram2d * h, const size_t i,
-				double * xlower, double * xupper);
+                                double * xlower, double * xupper);
 int gsl_histogram2d_get_yrange (const gsl_histogram2d * h, const size_t j,
-				double * ylower, double * yupper);
+                                double * ylower, double * yupper);
 
-				     
+                                     
 double gsl_histogram2d_xmax (const gsl_histogram2d * h);
 double gsl_histogram2d_xmin (const gsl_histogram2d * h);
 size_t gsl_histogram2d_nx (const gsl_histogram2d * h);
@@ -82,7 +82,7 @@ void gsl_histogram2d_reset (gsl_histogram2d * h);
 
 gsl_histogram2d * 
 gsl_histogram2d_calloc_range(size_t nx, size_t ny, 
-			     double *xrange, double *yrange);
+                             double *xrange, double *yrange);
 
 int 
 gsl_histogram2d_set_ranges_uniform (gsl_histogram2d * h, 
@@ -132,7 +132,7 @@ gsl_histogram2d_sum (const gsl_histogram2d *h);
 
 int 
 gsl_histogram2d_equal_bins_p(const gsl_histogram2d *h1,
-			     const gsl_histogram2d *h2) ;
+                             const gsl_histogram2d *h2) ;
 
 int
 gsl_histogram2d_add(gsl_histogram2d *h1, const gsl_histogram2d *h2);
@@ -155,16 +155,16 @@ gsl_histogram2d_shift(gsl_histogram2d *h, double shift);
 int gsl_histogram2d_fwrite (FILE * stream, const gsl_histogram2d * h) ;
 int gsl_histogram2d_fread (FILE * stream, gsl_histogram2d * h);
 int gsl_histogram2d_fprintf (FILE * stream, const gsl_histogram2d * h, 
-			     const char * range_format,
-			     const char * bin_format);
+                             const char * range_format,
+                             const char * bin_format);
 int gsl_histogram2d_fscanf (FILE * stream, gsl_histogram2d * h);
 
 gsl_histogram2d_pdf * gsl_histogram2d_pdf_alloc (const size_t nx, const size_t ny);
 int gsl_histogram2d_pdf_init (gsl_histogram2d_pdf * p, const gsl_histogram2d * h);
 void gsl_histogram2d_pdf_free (gsl_histogram2d_pdf * p);
 int gsl_histogram2d_pdf_sample (const gsl_histogram2d_pdf * p, 
-				   double r1, double r2, 
-				   double * x, double * y);
+                                   double r1, double r2, 
+                                   double * x, double * y);
 
 __END_DECLS
 

@@ -58,8 +58,8 @@ steepest_descent_alloc (void *vstate, size_t n)
 
 static int
 steepest_descent_set (void *vstate, gsl_multimin_function_fdf * fdf,
-		      const gsl_vector * x, double *f,
-		      gsl_vector * gradient, double step_size)
+                      const gsl_vector * x, double *f,
+                      gsl_vector * gradient, double step_size)
 {
   steepest_descent_state_t *state = (steepest_descent_state_t *) vstate;
 
@@ -93,8 +93,8 @@ steepest_descent_restart (void *vstate)
 
 static int
 steepest_descent_iterate (void *vstate, gsl_multimin_function_fdf * fdf,
-			  gsl_vector * x, double *f,
-			  gsl_vector * gradient, gsl_vector * dx)
+                          gsl_vector * x, double *f,
+                          gsl_vector * gradient, gsl_vector * dx)
 {
   steepest_descent_state_t *state = (steepest_descent_state_t *) vstate;
 
@@ -226,7 +226,7 @@ minimize:
 }
 
 static const gsl_multimin_fdfminimizer_type steepest_descent_type =
-  { "steepest_descent",		/* name */
+  { "steepest_descent",         /* name */
   sizeof (steepest_descent_state_t),
   &steepest_descent_alloc,
   &steepest_descent_set,

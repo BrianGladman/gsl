@@ -32,7 +32,7 @@
 int gsl_sf_bessel_IJ_taylor_e(const double nu, const double x,
                                  const int sign,
                                  const int kmax,
-				 const double threshold,
+                                 const double threshold,
                                  gsl_sf_result * result
                                  );
 
@@ -77,7 +77,7 @@ gsl_sf_bessel_JY_mu_restricted(const double mu, const double x,
 int
 gsl_sf_bessel_K_scaled_steed_temme_CF2(const double nu, const double x,
                                        double * K_nu, double * K_nup1,
-				       double * Kp_nu);
+                                       double * Kp_nu);
 
 
 /* These are of use in calculating the oscillating

@@ -84,12 +84,12 @@ typedef struct
   int (*alloc) (void *state, size_t n);
   int (*set) (void *state, gsl_multimin_function * f,
               const gsl_vector * x, 
-	      double * size,
+              double * size,
               const gsl_vector * step_size);
   int (*iterate) (void *state, gsl_multimin_function * f, 
                   gsl_vector * x, 
-		  double * size,
-		  double * fval);
+                  double * size,
+                  double * fval);
   void (*free) (void *state);
 }
 gsl_multimin_fminimizer_type;
@@ -111,13 +111,13 @@ gsl_multimin_fminimizer;
 
 gsl_multimin_fminimizer *
 gsl_multimin_fminimizer_alloc(const gsl_multimin_fminimizer_type *T,
-			      size_t n);
+                              size_t n);
 
 int 
 gsl_multimin_fminimizer_set (gsl_multimin_fminimizer * s,
-			     gsl_multimin_function * f,
-			     const gsl_vector * x,
-			     const gsl_vector * step_size);
+                             gsl_multimin_function * f,
+                             const gsl_vector * x,
+                             const gsl_vector * step_size);
 
 void
 gsl_multimin_fminimizer_free(gsl_multimin_fminimizer *s);

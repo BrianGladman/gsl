@@ -16,7 +16,7 @@ gsl_qrng_alloc (const gsl_qrng_type * T, unsigned int dimension)
   if (r == 0)
     {
       GSL_ERROR_VAL ("allocation failed for qrng struct",
-			GSL_ENOMEM, 0);
+                        GSL_ENOMEM, 0);
     };
 
   r->dimension = dimension;
@@ -27,7 +27,7 @@ gsl_qrng_alloc (const gsl_qrng_type * T, unsigned int dimension)
     {
       free (r);
       GSL_ERROR_VAL ("allocation failed for qrng state",
-			GSL_ENOMEM, 0);
+                        GSL_ENOMEM, 0);
     };
 
   r->type = T;
@@ -67,7 +67,7 @@ gsl_qrng_clone (const gsl_qrng * q)
   if (r == 0)
     {
       GSL_ERROR_VAL ("failed to allocate space for rng struct",
-			GSL_ENOMEM, 0);
+                        GSL_ENOMEM, 0);
     };
 
   r->dimension = q->dimension;
@@ -78,7 +78,7 @@ gsl_qrng_clone (const gsl_qrng * q)
     {
       free (r);
       GSL_ERROR_VAL ("failed to allocate space for rng state",
-			GSL_ENOMEM, 0);
+                        GSL_ENOMEM, 0);
     };
 
   r->type = q->type;

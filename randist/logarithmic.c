@@ -46,18 +46,18 @@ gsl_ran_logarithmic (const gsl_rng * r, const double p)
       double q = 1 - exp (c * u);
 
       if (v <= q*q)
-	{
-	  double x = 1 + log(v)/log(q) ;
-	  return x ;
-	}
+        {
+          double x = 1 + log(v)/log(q) ;
+          return x ;
+        }
       else if (v <= q)
-	{
-	  return 2;
-	}
+        {
+          return 2;
+        }
       else
-	{
-	  return 1 ;
-	}
+        {
+          return 1 ;
+        }
     }
 }
 

@@ -37,8 +37,8 @@
  */
 gsl_histogram2d *
 gsl_histogram2d_calloc_range (size_t nx, size_t ny,
-			      double *xrange,
-			      double *yrange)
+                              double *xrange,
+                              double *yrange)
 {
   size_t i, j;
   gsl_histogram2d *h;
@@ -48,13 +48,13 @@ gsl_histogram2d_calloc_range (size_t nx, size_t ny,
   if (nx == 0)
     {
       GSL_ERROR_VAL ("histogram length nx must be positive integer",
-			GSL_EDOM, 0);
+                        GSL_EDOM, 0);
     }
 
   if (ny == 0)
     {
       GSL_ERROR_VAL ("histogram length ny must be positive integer",
-			GSL_EDOM, 0);
+                        GSL_EDOM, 0);
     }
 
   /* init ranges */
@@ -62,19 +62,19 @@ gsl_histogram2d_calloc_range (size_t nx, size_t ny,
   for (i = 0; i < nx; i++)
     {
       if (xrange[i] >= xrange[i + 1])
-	{
-	  GSL_ERROR_VAL ("histogram xrange not in increasing order",
-			    GSL_EDOM, 0);
-	}
+        {
+          GSL_ERROR_VAL ("histogram xrange not in increasing order",
+                            GSL_EDOM, 0);
+        }
     }
 
   for (j = 0; j < ny; j++)
     {
       if (yrange[j] >= yrange[j + 1])
-	{
-	  GSL_ERROR_VAL ("histogram yrange not in increasing order"
-			    ,GSL_EDOM, 0);
-	}
+        {
+          GSL_ERROR_VAL ("histogram yrange not in increasing order"
+                            ,GSL_EDOM, 0);
+        }
     }
 
   /* Allocate histogram  */
@@ -84,7 +84,7 @@ gsl_histogram2d_calloc_range (size_t nx, size_t ny,
   if (h == 0)
     {
       GSL_ERROR_VAL ("failed to allocate space for histogram struct",
-			GSL_ENOMEM, 0);
+                        GSL_ENOMEM, 0);
     }
 
   h->xrange = (double *) malloc ((nx + 1) * sizeof (double));
@@ -95,7 +95,7 @@ gsl_histogram2d_calloc_range (size_t nx, size_t ny,
       free (h);
 
       GSL_ERROR_VAL ("failed to allocate space for histogram xrange",
-			GSL_ENOMEM, 0);
+                        GSL_ENOMEM, 0);
     }
 
   h->yrange = (double *) malloc ((ny + 1) * sizeof (double));
@@ -106,7 +106,7 @@ gsl_histogram2d_calloc_range (size_t nx, size_t ny,
       free (h);
 
       GSL_ERROR_VAL ("failed to allocate space for histogram yrange",
-			GSL_ENOMEM, 0);
+                        GSL_ENOMEM, 0);
     }
 
   h->bin = (double *) malloc (nx * ny * sizeof (double));
@@ -119,7 +119,7 @@ gsl_histogram2d_calloc_range (size_t nx, size_t ny,
       free (h);
 
       GSL_ERROR_VAL ("failed to allocate space for histogram bins",
-			GSL_ENOMEM, 0);
+                        GSL_ENOMEM, 0);
     }
 
   /* init histogram */
@@ -141,9 +141,9 @@ gsl_histogram2d_calloc_range (size_t nx, size_t ny,
   for (i = 0; i < nx; i++)
     {
       for (j = 0; j < ny; j++)
-	{
-	  h->bin[i * ny + j] = 0;
-	}
+        {
+          h->bin[i * ny + j] = 0;
+        }
     }
 
   h->nx = nx;

@@ -37,11 +37,11 @@
 
 /* chebyshev expansions
 
- series for by1        on the interval  0.	    to  1.60000d+01
-					with weighted error   1.87e-18
-					 log weighted error  17.73
-			       significant figures required  17.83
-				    decimal places required  18.30
+ series for by1        on the interval  0.          to  1.60000d+01
+                                        with weighted error   1.87e-18
+                                         log weighted error  17.73
+                               significant figures required  17.83
+                                    decimal places required  18.30
 */
 
 static double by1_data[14] = {

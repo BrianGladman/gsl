@@ -80,7 +80,7 @@ ran3_set (void *vstate, unsigned long int s)
   long int j, k;
 
   if (s == 0)
-    s = 1;	/* default seed is 1 */
+    s = 1;      /* default seed is 1 */
 
   j = (M_SEED - s) % M_BIG;
 
@@ -98,7 +98,7 @@ ran3_set (void *vstate, unsigned long int s)
       state->buffer[n] = k;
       k = j - k;
       if (k < 0)
-	k += M_BIG;
+        k += M_BIG;
       j = state->buffer[n];
 
     }
@@ -106,12 +106,12 @@ ran3_set (void *vstate, unsigned long int s)
   for (i1 = 0; i1 < 4; i1++)
     {
       for (i = 1; i < 56; i++)
-	{
-	  long int t = state->buffer[i] - state->buffer[1 + (i + 30) % 55];
-	  if (t < 0)
-	    t += M_BIG;
-	  state->buffer[i] = t;
-	}
+        {
+          long int t = state->buffer[i] - state->buffer[1 + (i + 30) % 55];
+          if (t < 0)
+            t += M_BIG;
+          state->buffer[i] = t;
+        }
     }
 
   state->x = 0;
@@ -121,9 +121,9 @@ ran3_set (void *vstate, unsigned long int s)
 }
 
 static const gsl_rng_type ran3_type =
-{"ran3",			/* name */
- M_BIG,				/* RAND_MAX */
- 0,				/* RAND_MIN */
+{"ran3",                        /* name */
+ M_BIG,                         /* RAND_MAX */
+ 0,                             /* RAND_MIN */
  sizeof (ran3_state_t),
  &ran3_set,
  &ran3_get,

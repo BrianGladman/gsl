@@ -29,12 +29,12 @@
 
 int
 gsl_monte_plain_integrate (const gsl_monte_function * f,
-			   const double xl[], const double xu[],
-			   const size_t dim,
-			   const size_t calls,
-			   gsl_rng * r,
-			   gsl_monte_plain_state * state,
-			   double *result, double *abserr)
+                           const double xl[], const double xu[],
+                           const size_t dim,
+                           const size_t calls,
+                           gsl_rng * r,
+                           gsl_monte_plain_state * state,
+                           double *result, double *abserr)
 {
   double vol, m = 0, q = 0;
   double *x = state->x;
@@ -48,15 +48,15 @@ gsl_monte_plain_integrate (const gsl_monte_function * f,
   for (i = 0; i < dim; i++)
     {
       if (xu[i] <= xl[i])
-	{
-	  GSL_ERROR ("xu must be greater than xl", GSL_EINVAL);
-	}
+        {
+          GSL_ERROR ("xu must be greater than xl", GSL_EINVAL);
+        }
 
       if (xu[i] - xl[i] > GSL_DBL_MAX)
-	{
-	  GSL_ERROR ("Range of integration is too large, please rescale",
-		     GSL_EINVAL);
-	}
+        {
+          GSL_ERROR ("Range of integration is too large, please rescale",
+                     GSL_EINVAL);
+        }
     }
 
   /* Compute the volume of the region */
@@ -73,18 +73,18 @@ gsl_monte_plain_integrate (const gsl_monte_function * f,
       /* Choose a random point in the integration region */
 
       for (i = 0; i < dim; i++)
-	{
-	  x[i] = xl[i] + gsl_rng_uniform_pos (r) * (xu[i] - xl[i]);
-	}
+        {
+          x[i] = xl[i] + gsl_rng_uniform_pos (r) * (xu[i] - xl[i]);
+        }
 
       {
-	double fval = GSL_MONTE_FN_EVAL (f, x);
+        double fval = GSL_MONTE_FN_EVAL (f, x);
 
-	/* recurrence for mean and variance */
+        /* recurrence for mean and variance */
 
-	double d = fval - m;
-	m += d / (n + 1.0);
-	q += d * d * (n / (n + 1.0));
+        double d = fval - m;
+        m += d / (n + 1.0);
+        q += d * d * (n / (n + 1.0));
       }
     }
 
@@ -111,7 +111,7 @@ gsl_monte_plain_alloc (size_t dim)
   if (s == 0)
     {
       GSL_ERROR_VAL ("failed to allocate space for state struct",
-		     GSL_ENOMEM, 0);
+                     GSL_ENOMEM, 0);
     }
 
   s->x = (double *) malloc (dim * sizeof (double));
@@ -120,7 +120,7 @@ gsl_monte_plain_alloc (size_t dim)
     {
       free (s);
       GSL_ERROR_VAL ("failed to allocate space for working vector",
-		     GSL_ENOMEM, 0);
+                     GSL_ENOMEM, 0);
     }
 
   s->dim = dim;

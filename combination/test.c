@@ -55,9 +55,9 @@ main (void)
     {
       if ( i >= 20 )
         {
-	  status = 1;
+          status = 1;
           break;
-	}
+        }
       for (j = 0; j < 3; j++)
         {
           status |= (c->data[j] != c63[i][j]);
@@ -113,9 +113,9 @@ main (void)
     {
       if ( i == 0 )
         {
-	  status = 1;
+          status = 1;
           break;
-	}
+        }
 
       i--;
 

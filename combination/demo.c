@@ -17,10 +17,10 @@ main (void)
       c = gsl_combination_calloc (4, i);
       do
         {
-	  printf("{");
-	  gsl_combination_fprintf (stdout, c, " %u");
-	  printf(" }\n");
-	}
+          printf("{");
+          gsl_combination_fprintf (stdout, c, " %u");
+          printf(" }\n");
+        }
       while (gsl_combination_next(c) == GSL_SUCCESS);
       gsl_combination_free(c);
     }
@@ -31,10 +31,10 @@ main (void)
       gsl_combination_init_last(c) ;
       do
         {
-	  printf("{");
-	  gsl_combination_fprintf (stdout, c, " %u");
-	  printf(" }\n");
-	}
+          printf("{");
+          gsl_combination_fprintf (stdout, c, " %u");
+          printf(" }\n");
+        }
       while (gsl_combination_prev(c) == GSL_SUCCESS);
       gsl_combination_free(c);
     }

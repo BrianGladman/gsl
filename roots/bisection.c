@@ -126,7 +126,7 @@ bisection_iterate (void * vstate, gsl_function * f, double * root, double * x_lo
 
 
 static const gsl_root_fsolver_type bisection_type =
-{"bisection",				/* name */
+{"bisection",                           /* name */
  sizeof (bisection_state_t),
  &bisection_init,
  &bisection_iterate};

@@ -46,28 +46,28 @@ test1d_trap (void)
   h = gsl_histogram_calloc (0);
   gsl_test (!status, "gsl_histogram_calloc traps zero-length histogram");
   gsl_test (h != 0,
-	    "gsl_histogram_calloc returns NULL for zero-length histogram");
+            "gsl_histogram_calloc returns NULL for zero-length histogram");
 
   status = 0;
   h = gsl_histogram_calloc_uniform (0, 0.0, 1.0);
   gsl_test (!status,
-	    "gsl_histogram_calloc_uniform traps zero-length histogram");
+            "gsl_histogram_calloc_uniform traps zero-length histogram");
   gsl_test (h != 0,
      "gsl_histogram_calloc_uniform returns NULL for zero-length histogram");
 
   status = 0;
   h = gsl_histogram_calloc_uniform (10, 1.0, 1.0);
   gsl_test (!status,
-	    "gsl_histogram_calloc_uniform traps equal endpoints");
+            "gsl_histogram_calloc_uniform traps equal endpoints");
   gsl_test (h != 0,
-	    "gsl_histogram_calloc_uniform returns NULL for equal endpoints");
+            "gsl_histogram_calloc_uniform returns NULL for equal endpoints");
 
   status = 0;
   h = gsl_histogram_calloc_uniform (10, 2.0, 1.0);
   gsl_test (!status,
-	    "gsl_histogram_calloc_uniform traps invalid range");
+            "gsl_histogram_calloc_uniform traps invalid range");
   gsl_test (h != 0,
-	    "gsl_histogram_calloc_uniform returns NULL for invalid range");
+            "gsl_histogram_calloc_uniform returns NULL for invalid range");
 
   h = gsl_histogram_calloc_uniform (N, 0.0, 1.0);
 
@@ -98,11 +98,11 @@ test1d_trap (void)
 
   status = gsl_histogram_get_range (h, N, &lower, &upper);
   gsl_test (status != GSL_EDOM,
-	    "gsl_histogram_get_range traps index at n");
+            "gsl_histogram_get_range traps index at n");
 
   status = gsl_histogram_get_range (h, N + 1, &lower, &upper);
   gsl_test (status != GSL_EDOM,
-	    "gsl_histogram_get_range traps index above n");
+            "gsl_histogram_get_range traps index above n");
 
 
   status = 0;

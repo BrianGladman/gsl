@@ -55,12 +55,12 @@ void gsl_histogram_free (gsl_histogram * h);
 int gsl_histogram_increment (gsl_histogram * h, double x);
 int gsl_histogram_accumulate (gsl_histogram * h, double x, double weight);
 int gsl_histogram_find (const gsl_histogram * h, 
-			const double x, size_t * i);
+                        const double x, size_t * i);
 
 double gsl_histogram_get (const gsl_histogram * h, size_t i);
 int gsl_histogram_get_range (const gsl_histogram * h, size_t i, 
-			     double * lower, double * upper);
-				     
+                             double * lower, double * upper);
+                                     
 double gsl_histogram_max (const gsl_histogram * h);
 double gsl_histogram_min (const gsl_histogram * h);
 size_t gsl_histogram_bins (const gsl_histogram * h);
@@ -121,7 +121,7 @@ double gsl_histogram_sum (const gsl_histogram * h);
 int gsl_histogram_fwrite (FILE * stream, const gsl_histogram * h) ;
 int gsl_histogram_fread (FILE * stream, gsl_histogram * h);
 int gsl_histogram_fprintf (FILE * stream, const gsl_histogram * h, 
-			   const char * range_format, const char * bin_format);
+                           const char * range_format, const char * bin_format);
 int gsl_histogram_fscanf (FILE * stream, gsl_histogram * h);
 
 gsl_histogram_pdf * gsl_histogram_pdf_alloc (const size_t n);

@@ -132,8 +132,8 @@ gsl_ieee_double_to_rep (const double * x, gsl_ieee_double_rep * r)
   r->mantissa[52] = '\0' ;
 
   non_zero = (u.ieee.byte[0] || u.ieee.byte[1] || u.ieee.byte[2]
-	      || u.ieee.byte[3] || u.ieee.byte[4] || u.ieee.byte[5] 
-	      || (u.ieee.byte[6] & 0x0f)) ;
+              || u.ieee.byte[3] || u.ieee.byte[4] || u.ieee.byte[5] 
+              || (u.ieee.byte[6] & 0x0f)) ;
 
   r->type = determine_ieee_type (non_zero, e, 2047) ;
 }
@@ -146,7 +146,7 @@ static char nybble[16][5]={ /* include space for the \0 */
   "1000", "1001", "1010", "1011",
   "1100", "1101", "1110", "1111"
 }  ;
-	  
+          
 static void
 sprint_nybble(int i, char *s)
 {
@@ -171,24 +171,24 @@ determine_ieee_type (int non_zero, int exponent, int max_exponent)
   if (exponent == max_exponent)
     {
       if (non_zero)
-	{
-	  return GSL_IEEE_TYPE_NAN ;
-	}
+        {
+          return GSL_IEEE_TYPE_NAN ;
+        }
       else
-	{
-	  return GSL_IEEE_TYPE_INF ;
-	}
+        {
+          return GSL_IEEE_TYPE_INF ;
+        }
     }
   else if (exponent == 0)
     {
       if (non_zero)
-	{
-	  return GSL_IEEE_TYPE_DENORMAL ;
-	}
+        {
+          return GSL_IEEE_TYPE_DENORMAL ;
+        }
       else
-	{
-	  return GSL_IEEE_TYPE_ZERO ;
-	}
+        {
+          return GSL_IEEE_TYPE_ZERO ;
+        }
     }
   else
     {

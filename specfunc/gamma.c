@@ -259,7 +259,7 @@ static struct {int n; double f; long i; } doub_fact_table[DOUB_FACT_TABLE_SIZE] 
   { 3,  3.000000000000000000000000000,    3L    },
   { 4,  8.000000000000000000000000000,    8L    },
   { 5,  15.00000000000000000000000000,    15L   },
-  { 6,  48.00000000000000000000000000,    48L	},
+  { 6,  48.00000000000000000000000000,    48L   },
   { 7,  105.0000000000000000000000000,    105L  },
   { 8,  384.0000000000000000000000000,    384L  },
   { 9,  945.0000000000000000000000000,    945L  },
@@ -1221,12 +1221,12 @@ int gsl_sf_lngamma_sgn_e(double x, gsl_sf_result * result_lg, double * sgn)
       if(x < INT_MIN + 2.0) {
         result_lg->val = 0.0;
         result_lg->err = 0.0;
-	*sgn = 0.0;
-	GSL_ERROR ("error", GSL_EROUND);
+        *sgn = 0.0;
+        GSL_ERROR ("error", GSL_EROUND);
       }
       else {
         int N = -(int)(x - 0.5);
-	double eps = x + N;
+        double eps = x + N;
         return lngamma_sgn_sing(N, eps, result_lg, sgn);
       }
     }
@@ -1266,8 +1266,8 @@ gsl_sf_gamma_e(const double x, gsl_sf_result * result)
       gamma_xgthalf(1.0-x, &g);
       if(fabs(sin_term) * g.val * GSL_DBL_MIN < 1.0) {
         result->val  = 1.0/(sin_term * g.val);
-	result->err  = fabs(g.err/g.val) * fabs(result->val);
-	result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
+        result->err  = fabs(g.err/g.val) * fabs(result->val);
+        result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
         return GSL_SUCCESS;
       }
       else {

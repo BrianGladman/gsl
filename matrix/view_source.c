@@ -194,22 +194,22 @@ FUNCTION (gsl_matrix, view_from_matrix) (TYPE(gsl_matrix) * m,
   if (n1 == 0)
     {
       GSL_ERROR_VAL ("matrix dimension n1 must be positive integer",
-			GSL_EINVAL, 0);
+                        GSL_EINVAL, 0);
     }
   else if (n2 == 0)
     {
       GSL_ERROR_VAL ("matrix dimension n2 must be positive integer",
-			GSL_EINVAL, 0);
+                        GSL_EINVAL, 0);
     }
   else if (k1 + n1 > mm->size1)
     {
       GSL_ERROR_VAL ("submatrix dimension 1 exceeds size of original",
-			GSL_EINVAL, 0);
+                        GSL_EINVAL, 0);
     }
   else if (k2 + n2 > mm->size2)
     {
       GSL_ERROR_VAL ("submatrix dimension 2 exceeds size of original",
-			GSL_EINVAL, 0);
+                        GSL_EINVAL, 0);
     }
 
   m->data = mm->data + k1 * mm->tda + k2 ;

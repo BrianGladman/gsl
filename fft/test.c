@@ -38,7 +38,7 @@
 #include <gsl/gsl_test.h>
 
 void my_error_handler (const char *reason, const char *file,
-		       int line, int err);
+                       int line, int err);
 
 #include "complex_internal.h"
 
@@ -89,26 +89,26 @@ main (int argc, char *argv[])
   for (i = 1 ; i <= end ; i *= 2) 
     {
       if (i >= start) 
-	{
-	  for (stride = 1 ; stride < 4 ; stride++)
-	    {
-	      test_complex_bitreverse_order (stride, i) ;
-	      test_complex_radix2 (stride, i) ;
-	      test_real_bitreverse_order (stride, i) ;
-	      test_real_radix2 (stride, i) ;
-	    }
-	}
+        {
+          for (stride = 1 ; stride < 4 ; stride++)
+            {
+              test_complex_bitreverse_order (stride, i) ;
+              test_complex_radix2 (stride, i) ;
+              test_real_bitreverse_order (stride, i) ;
+              test_real_radix2 (stride, i) ;
+            }
+        }
     }
 
   for (i = start ; i <= end ; i++) 
     {
       for (stride = 1 ; stride < 4 ; stride++)
-	{
-	  test_complex_func (stride, i) ;
-	  test_complex_float_func (stride, i) ;
-	  test_real_func (stride, i) ;
-	  test_real_float_func (stride, i) ;
-	}
+        {
+          test_complex_func (stride, i) ;
+          test_complex_float_func (stride, i) ;
+          test_real_func (stride, i) ;
+          test_real_float_func (stride, i) ;
+        }
     }
 
   gsl_set_error_handler (&my_error_handler);

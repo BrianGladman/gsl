@@ -121,8 +121,8 @@ gsl_sf_hyperg_1F1_large_b_e(const double a, const double b, const double x, gsl_
 int
 gsl_sf_hyperg_U_large_b_e(const double a, const double b, const double x,
                              gsl_sf_result * result,
-			     double * ln_multiplier
-			     )
+                             double * ln_multiplier
+                             )
 {
   double N   = floor(b);  /* b = N + eps */
   double eps = b - N;

@@ -30,7 +30,7 @@ gsl_stream_handler_t * gsl_stream_handler = NULL;
 
 void
 gsl_stream_printf (const char *label, const char *file, int line, 
-		   const char *reason)
+                   const char *reason)
 {
   if (gsl_stream == NULL)
     {

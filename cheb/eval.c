@@ -71,7 +71,7 @@ gsl_cheb_eval_n (const gsl_cheb_series * cs, const size_t n, const double x)
 
 int
 gsl_cheb_eval_err (const gsl_cheb_series * cs, const double x,
-		   double *result, double *abserr)
+                   double *result, double *abserr)
 {
   size_t i;
   double d1 = 0.0;
@@ -107,8 +107,8 @@ gsl_cheb_eval_err (const gsl_cheb_series * cs, const double x,
 
 int
 gsl_cheb_eval_n_err (const gsl_cheb_series * cs,
-		     const size_t n, const double x,
-		     double *result, double *abserr)
+                     const size_t n, const double x,
+                     double *result, double *abserr)
 {
   size_t i;
   double d1 = 0.0;
@@ -146,8 +146,8 @@ gsl_cheb_eval_n_err (const gsl_cheb_series * cs,
 
 int
 gsl_cheb_eval_mode_e (const gsl_cheb_series * cs,
-		      const double x, gsl_mode_t mode,
-		      double *result, double *abserr)
+                      const double x, gsl_mode_t mode,
+                      double *result, double *abserr)
 {
   size_t i;
   double d1 = 0.0;

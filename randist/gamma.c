@@ -66,14 +66,14 @@ gsl_ran_gamma_int (const gsl_rng * r, const unsigned int a)
       double prod = 1;
 
       for (i = 0; i < a; i++)
-	{
-	  prod *= gsl_rng_uniform_pos (r);
-	}
+        {
+          prod *= gsl_rng_uniform_pos (r);
+        }
 
       /* Note: for 12 iterations we are safe against underflow, since
-	 the smallest positive random number is O(2^-32). This means
-	 the smallest possible product is 2^(-12*32) = 10^-116 which
-	 is within the range of double precision. */
+         the smallest positive random number is O(2^-32). This means
+         the smallest possible product is 2^(-12*32) = 10^-116 which
+         is within the range of double precision. */
 
       return -log (prod);
     }
@@ -97,10 +97,10 @@ gamma_large (const gsl_rng * r, const double a)
   do
     {
       do
-	{
-	  y = tan (M_PI * gsl_rng_uniform (r));
-	  x = sqa * y + a - 1;
-	}
+        {
+          y = tan (M_PI * gsl_rng_uniform (r));
+          x = sqa * y + a - 1;
+        }
       while (x <= 0);
       v = gsl_rng_uniform (r);
     }
@@ -123,15 +123,15 @@ gamma_frac (const gsl_rng * r, const double a)
       v = gsl_rng_uniform_pos (r);
 
       if (u < p)
-	{
-	  x = exp ((1 / a) * log (v));
-	  q = exp (-x);
-	}
+        {
+          x = exp ((1 / a) * log (v));
+          q = exp (-x);
+        }
       else
-	{
-	  x = 1 - log (v);
-	  q = exp ((a - 1) * log (x));
-	}
+        {
+          x = 1 - log (v);
+          q = exp ((a - 1) * log (x));
+        }
     }
   while (gsl_rng_uniform (r) >= q);
 
@@ -148,9 +148,9 @@ gsl_ran_gamma_pdf (const double x, const double a, const double b)
   else if (x == 0)
     {
       if (a == 1)
-	return 1/b ;
+        return 1/b ;
       else
-	return 0 ;
+        return 0 ;
     }
   else if (a == 1)
     {

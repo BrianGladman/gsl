@@ -32,8 +32,8 @@
 
 void
 gsl_ran_bivariate_gaussian (const gsl_rng * r, 
-			    double sigma_x, double sigma_y, double rho,
-			    double *x, double *y)
+                            double sigma_x, double sigma_y, double rho,
+                            double *x, double *y)
 {
   double u, v, r2, scale;
 
@@ -57,8 +57,8 @@ gsl_ran_bivariate_gaussian (const gsl_rng * r,
 
 double
 gsl_ran_bivariate_gaussian_pdf (const double x, const double y, 
-				const double sigma_x, const double sigma_y,
-				const double rho)
+                                const double sigma_x, const double sigma_y,
+                                const double rho)
 {
   double u = x / sigma_x ;
   double v = y / sigma_y ;

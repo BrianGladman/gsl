@@ -45,52 +45,52 @@ gsl_eigen_symmv_sort (gsl_vector * eval, gsl_matrix * evec,
       size_t i;
 
       for (i = 0; i < N - 1; i++)
-	{
-	  size_t j;
-	  size_t k = i;
+        {
+          size_t j;
+          size_t k = i;
 
-	  double ek = gsl_vector_get (eval, i);
+          double ek = gsl_vector_get (eval, i);
 
-	  /* search for something to swap */
-	  for (j = i + 1; j < N; j++)
-	    {
-	      int test;
-	      const double ej = gsl_vector_get (eval, j);
+          /* search for something to swap */
+          for (j = i + 1; j < N; j++)
+            {
+              int test;
+              const double ej = gsl_vector_get (eval, j);
 
-	      switch (sort_type)
-		{	
+              switch (sort_type)
+                {       
                 case GSL_EIGEN_SORT_VAL_ASC:
-		  test = (ej < ek);
-		  break;
-		case GSL_EIGEN_SORT_VAL_DESC:
-		  test = (ej > ek);
-		  break;
-		case GSL_EIGEN_SORT_ABS_ASC:
-		  test = (fabs (ej) < fabs (ek));
-		  break;
-		case GSL_EIGEN_SORT_ABS_DESC:
-		  test = (fabs (ej) > fabs (ek));
-		  break;
+                  test = (ej < ek);
+                  break;
+                case GSL_EIGEN_SORT_VAL_DESC:
+                  test = (ej > ek);
+                  break;
+                case GSL_EIGEN_SORT_ABS_ASC:
+                  test = (fabs (ej) < fabs (ek));
+                  break;
+                case GSL_EIGEN_SORT_ABS_DESC:
+                  test = (fabs (ej) > fabs (ek));
+                  break;
                 default:
                   GSL_ERROR ("unrecognized sort type", GSL_EINVAL);
-		}
+                }
 
-	      if (test)
-		{
-		  k = j;
-		  ek = ej;
-		}
-	    }
+              if (test)
+                {
+                  k = j;
+                  ek = ej;
+                }
+            }
 
-	  if (k != i)
-	    {
-	      /* swap eigenvalues */
-	      gsl_vector_swap_elements (eval, i, k);
+          if (k != i)
+            {
+              /* swap eigenvalues */
+              gsl_vector_swap_elements (eval, i, k);
 
-	      /* swap eigenvectors */
+              /* swap eigenvectors */
               gsl_matrix_swap_columns (evec, i, k);
-	    }
-	}
+            }
+        }
 
       return GSL_SUCCESS;
     }
@@ -115,52 +115,52 @@ gsl_eigen_hermv_sort (gsl_vector * eval, gsl_matrix_complex * evec,
       size_t i;
 
       for (i = 0; i < N - 1; i++)
-	{
-	  size_t j;
-	  size_t k = i;
+        {
+          size_t j;
+          size_t k = i;
 
-	  double ek = gsl_vector_get (eval, i);
+          double ek = gsl_vector_get (eval, i);
 
-	  /* search for something to swap */
-	  for (j = i + 1; j < N; j++)
-	    {
-	      int test;
-	      const double ej = gsl_vector_get (eval, j);
+          /* search for something to swap */
+          for (j = i + 1; j < N; j++)
+            {
+              int test;
+              const double ej = gsl_vector_get (eval, j);
 
-	      switch (sort_type)
-		{	
+              switch (sort_type)
+                {       
                 case GSL_EIGEN_SORT_VAL_ASC:
-		  test = (ej < ek);
-		  break;
-		case GSL_EIGEN_SORT_VAL_DESC:
-		  test = (ej > ek);
-		  break;
-		case GSL_EIGEN_SORT_ABS_ASC:
-		  test = (fabs (ej) < fabs (ek));
-		  break;
-		case GSL_EIGEN_SORT_ABS_DESC:
-		  test = (fabs (ej) > fabs (ek));
-		  break;
+                  test = (ej < ek);
+                  break;
+                case GSL_EIGEN_SORT_VAL_DESC:
+                  test = (ej > ek);
+                  break;
+                case GSL_EIGEN_SORT_ABS_ASC:
+                  test = (fabs (ej) < fabs (ek));
+                  break;
+                case GSL_EIGEN_SORT_ABS_DESC:
+                  test = (fabs (ej) > fabs (ek));
+                  break;
                 default:
                   GSL_ERROR ("unrecognized sort type", GSL_EINVAL);
-		}
+                }
 
-	      if (test)
-		{
-		  k = j;
-		  ek = ej;
-		}
-	    }
+              if (test)
+                {
+                  k = j;
+                  ek = ej;
+                }
+            }
 
-	  if (k != i)
-	    {
-	      /* swap eigenvalues */
-	      gsl_vector_swap_elements (eval, i, k);
+          if (k != i)
+            {
+              /* swap eigenvalues */
+              gsl_vector_swap_elements (eval, i, k);
 
-	      /* swap eigenvectors */
+              /* swap eigenvectors */
               gsl_matrix_complex_swap_columns (evec, i, k);
-	    }
-	}
+            }
+        }
 
       return GSL_SUCCESS;
     }

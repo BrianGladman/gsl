@@ -33,23 +33,23 @@
 
 /* Chebyshev expansions
 
- Series for DAW        on the interval  0.	    to  1.00000E+00
-					with weighted error   8.95E-32
-					 log weighted error  31.05
-			       significant figures required  30.41
-				    decimal places required  31.71
+ Series for DAW        on the interval  0.          to  1.00000E+00
+                                        with weighted error   8.95E-32
+                                         log weighted error  31.05
+                               significant figures required  30.41
+                                    decimal places required  31.71
 
- Series for DAW2       on the interval  0.	    to  1.60000E+01
-					with weighted error   1.61E-32
-					 log weighted error  31.79
-			       significant figures required  31.40
-				    decimal places required  32.62
+ Series for DAW2       on the interval  0.          to  1.60000E+01
+                                        with weighted error   1.61E-32
+                                         log weighted error  31.79
+                               significant figures required  31.40
+                                    decimal places required  32.62
 
- Series for DAWA       on the interval  0.	    to  6.25000E-02
-					with weighted error   1.97E-32
-					 log weighted error  31.71
-			       significant figures required  29.79
-				    decimal places required  32.64
+ Series for DAWA       on the interval  0.          to  6.25000E-02
+                                        with weighted error   1.97E-32
+                                         log weighted error  31.71
+                               significant figures required  29.79
+                                    decimal places required  32.64
 */
 static double daw_data[21] = {
    -0.6351734375145949201065127736293e-02,

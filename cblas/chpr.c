@@ -4,8 +4,8 @@
 
 void
 cblas_chpr (const enum CBLAS_ORDER order, const enum CBLAS_UPLO Uplo,
-	    const int N, const float alpha, const void *X, const int incX,
-	    void *Ap)
+            const int N, const float alpha, const void *X, const int incX,
+            void *Ap)
 {
 #define BASE float
 #include "source_hpr.h"

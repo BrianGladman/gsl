@@ -55,18 +55,18 @@ downheap (void *data, const size_t size, const size_t N, size_t k, gsl_compariso
       size_t j = 2 * k;
 
       if (j < N && CMP (data, size, j, j + 1) < 0)
-	{
-	  j++;
-	}
+        {
+          j++;
+        }
 
       if (CMP (data, size, k, j) < 0)
-	{
-	  swap (data, size, j, k);
-	}
+        {
+          swap (data, size, j, k);
+        }
       else
-	{
-	  break;
-	}
+        {
+          break;
+        }
 
       k = j;
     }
@@ -84,7 +84,7 @@ gsl_heapsort (void *data, size_t count, size_t size, gsl_comparison_fn_t compare
 
   if (count == 0)
     {
-      return;			/* No data to sort */
+      return;                   /* No data to sort */
     }
 
   /* We have n_data elements, last element is at 'n_data-1', first at
@@ -93,7 +93,7 @@ gsl_heapsort (void *data, size_t count, size_t size, gsl_comparison_fn_t compare
   N = count - 1;
 
   k = N / 2;
-  k++;				/* Compensate the first use of 'k--' */
+  k++;                          /* Compensate the first use of 'k--' */
   do
     {
       k--;

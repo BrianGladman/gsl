@@ -106,7 +106,7 @@ gsl_sf_bessel_sequence_Jnu_e(double nu, gsl_mode_t mode, size_t size, double * v
     while(v[i] < x_small && i < size) {
       if(v[i] <= x) {
         /* Strict ordering failure. */
-	GSL_ERROR ("error", GSL_EFAILED);
+        GSL_ERROR ("error", GSL_EFAILED);
       }
       x = v[i];
       gsl_sf_bessel_Jnu_e(nu, x, &J0);
@@ -134,7 +134,7 @@ gsl_sf_bessel_sequence_Jnu_e(double nu, gsl_mode_t mode, size_t size, double * v
 
       if(v[i] <= x) {
         /* Strict ordering failure. */
-	GSL_ERROR ("error", GSL_EFAILED);
+        GSL_ERROR ("error", GSL_EFAILED);
       }
 
       /* Integrate over interval up to next sample point.

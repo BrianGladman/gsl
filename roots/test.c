@@ -34,7 +34,7 @@ const double EPSABS = (10 * GSL_DBL_EPSILON);
 const unsigned int MAX_ITERATIONS = 150;
 
 void my_error_handler (const char *reason, const char *file,
-		       int line, int err);
+                       int line, int err);
 
 #define WITHIN_TOL(a, b, epsrel, epsabs) \
  ((fabs((a) - (b)) < (epsrel) * GSL_MIN(fabs(a), fabs(b)) + (epsabs)))
@@ -121,7 +121,7 @@ main (void)
     }
 
   test_fdf (gsl_root_fdfsolver_steffenson,
-	    "(x - 1)^7 {0.9}", &FDF_func6, 0.9, 1.0);    
+            "(x - 1)^7 {0.9}", &FDF_func6, 0.9, 1.0);    
 
   /* now summarize the results */
 
@@ -135,7 +135,7 @@ main (void)
 
 void
 test_f (const gsl_root_fsolver_type * T, const char * description, gsl_function *f,
-	double lower_bound, double upper_bound, double correct_root)
+        double lower_bound, double upper_bound, double correct_root)
 {
   int status;
   size_t iterations = 0;
@@ -161,10 +161,10 @@ test_f (const gsl_root_fsolver_type * T, const char * description, gsl_function 
       b = gsl_root_fsolver_x_upper(s);
       
       if (a > b)
-	gsl_test (GSL_FAILURE, "interval is invalid (%g,%g)", a, b);
+        gsl_test (GSL_FAILURE, "interval is invalid (%g,%g)", a, b);
 
       if (r < a || r > b)
-	gsl_test (GSL_FAILURE, "r lies outside interval %g (%g,%g)", r, a, b);
+        gsl_test (GSL_FAILURE, "r lies outside interval %g (%g,%g)", r, a, b);
 
       status = gsl_root_test_interval (a,b, EPSABS, EPSREL);
     }
@@ -172,8 +172,8 @@ test_f (const gsl_root_fsolver_type * T, const char * description, gsl_function 
 
 
   gsl_test (status, "%s, %s (%g obs vs %g expected) ", 
-	    gsl_root_fsolver_name(s), description, 
-	    gsl_root_fsolver_root(s), correct_root);
+            gsl_root_fsolver_name(s), description, 
+            gsl_root_fsolver_root(s), correct_root);
 
   if (iterations == MAX_ITERATIONS)
     {
@@ -185,7 +185,7 @@ test_f (const gsl_root_fsolver_type * T, const char * description, gsl_function 
   if (!WITHIN_TOL (r, correct_root, EPSREL, EPSABS))
     {
       gsl_test (GSL_FAILURE, "incorrect precision (%g obs vs %g expected)", 
-		r, correct_root);
+                r, correct_root);
 
     }
 
@@ -194,8 +194,8 @@ test_f (const gsl_root_fsolver_type * T, const char * description, gsl_function 
 
 void
 test_f_e (const gsl_root_fsolver_type * T, 
-	  const char * description, gsl_function *f,
-	  double lower_bound, double upper_bound, double correct_root)
+          const char * description, gsl_function *f,
+          double lower_bound, double upper_bound, double correct_root)
 {
   int status;
   size_t iterations = 0;
@@ -223,19 +223,19 @@ test_f_e (const gsl_root_fsolver_type * T,
       x_lower = gsl_root_fsolver_x_lower(s);
       x_upper = gsl_root_fsolver_x_lower(s);
       status = gsl_root_test_interval (x_lower, x_upper, 
-				      EPSABS, EPSREL);
+                                      EPSABS, EPSREL);
     }
   while (status == GSL_CONTINUE && iterations < MAX_ITERATIONS);
 
   gsl_test (!status, "%s, %s", gsl_root_fsolver_name(s), description, 
-	    gsl_root_fsolver_root(s) - correct_root);
+            gsl_root_fsolver_root(s) - correct_root);
 
   gsl_root_fsolver_free(s);
 }
 
 void
 test_fdf (const gsl_root_fdfsolver_type * T, const char * description, 
-	gsl_function_fdf *fdf, double root, double correct_root)
+        gsl_function_fdf *fdf, double root, double correct_root)
 {
   int status;
   size_t iterations = 0;
@@ -250,13 +250,13 @@ test_fdf (const gsl_root_fdfsolver_type * T, const char * description,
       prev = gsl_root_fdfsolver_root(s);
       gsl_root_fdfsolver_iterate (s);
       status = gsl_root_test_delta(gsl_root_fdfsolver_root(s), prev, 
-				   EPSABS, EPSREL);
+                                   EPSABS, EPSREL);
     }
   while (status == GSL_CONTINUE && iterations < MAX_ITERATIONS);
 
   gsl_test (status, "%s, %s (%g obs vs %g expected) ", 
-	    gsl_root_fdfsolver_name(s), description, 
-	    gsl_root_fdfsolver_root(s), correct_root);
+            gsl_root_fdfsolver_name(s), description, 
+            gsl_root_fdfsolver_root(s), correct_root);
 
   if (iterations == MAX_ITERATIONS)
     {
@@ -266,10 +266,10 @@ test_fdf (const gsl_root_fdfsolver_type * T, const char * description,
   /* check the validity of the returned result */
 
   if (!WITHIN_TOL (gsl_root_fdfsolver_root(s), correct_root, 
-		   EPSREL, EPSABS))
+                   EPSREL, EPSABS))
     {
       gsl_test (GSL_FAILURE, "incorrect precision (%g obs vs %g expected)", 
-		gsl_root_fdfsolver_root(s), correct_root);
+                gsl_root_fdfsolver_root(s), correct_root);
 
     }
   gsl_root_fdfsolver_free(s);
@@ -277,8 +277,8 @@ test_fdf (const gsl_root_fdfsolver_type * T, const char * description,
 
 void
 test_fdf_e (const gsl_root_fdfsolver_type * T, 
-	    const char * description, gsl_function_fdf *fdf,
-	    double root, double correct_root)
+            const char * description, gsl_function_fdf *fdf,
+            double root, double correct_root)
 {
   int status;
   size_t iterations = 0;
@@ -295,12 +295,12 @@ test_fdf_e (const gsl_root_fdfsolver_type * T,
       prev = gsl_root_fdfsolver_root(s);
       gsl_root_fdfsolver_iterate (s);
       status = gsl_root_test_delta(gsl_root_fdfsolver_root(s), prev, 
-				   EPSABS, EPSREL);
+                                   EPSABS, EPSREL);
     }
   while (status == GSL_CONTINUE && iterations < MAX_ITERATIONS);
 
   gsl_test (!status, "%s, %s", gsl_root_fdfsolver_name(s), 
-	    description, gsl_root_fdfsolver_root(s) - correct_root);
+            description, gsl_root_fdfsolver_root(s) - correct_root);
   gsl_root_fdfsolver_free(s);
 }
 

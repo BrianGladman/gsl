@@ -30,7 +30,7 @@ gsl_permutation_alloc (const size_t n)
   if (n == 0)
     {
       GSL_ERROR_VAL ("permutation length n must be positive integer",
-			GSL_EDOM, 0);
+                        GSL_EDOM, 0);
     }
 
   p = (gsl_permutation *) malloc (sizeof (gsl_permutation));
@@ -38,17 +38,17 @@ gsl_permutation_alloc (const size_t n)
   if (p == 0)
     {
       GSL_ERROR_VAL ("failed to allocate space for permutation struct",
-			GSL_ENOMEM, 0);
+                        GSL_ENOMEM, 0);
     }
 
   p->data = (size_t *) malloc (n * sizeof (size_t));
 
   if (p->data == 0)
     {
-      free (p);		/* exception in constructor, avoid memory leak */
+      free (p);         /* exception in constructor, avoid memory leak */
 
       GSL_ERROR_VAL ("failed to allocate space for permutation data",
-			GSL_ENOMEM, 0);
+                        GSL_ENOMEM, 0);
     }
 
   p->size = n;

@@ -106,20 +106,20 @@ nmsimplex_contract_by_best (nmsimplex_state_t * state, size_t best,
   for (i = 0; i < x1->size1; i++)
     {
       if (i != best)
-	{
-	  for (j = 0; j < x1->size2; j++)
-	    {
-	      newval = 0.5 * (gsl_matrix_get (x1, i, j)
-			      + gsl_matrix_get (x1, best, j));
-	      gsl_matrix_set (x1, i, j, newval);
-	    }
+        {
+          for (j = 0; j < x1->size2; j++)
+            {
+              newval = 0.5 * (gsl_matrix_get (x1, i, j)
+                              + gsl_matrix_get (x1, best, j));
+              gsl_matrix_set (x1, i, j, newval);
+            }
 
-	  /* evaluate function in the new point */
+          /* evaluate function in the new point */
 
-	  gsl_matrix_get_row (xc, x1, i);
-	  newval = GSL_MULTIMIN_FN_EVAL (f, xc);
-	  gsl_vector_set (y1, i, newval);
-	}
+          gsl_matrix_get_row (xc, x1, i);
+          newval = GSL_MULTIMIN_FN_EVAL (f, xc);
+          gsl_vector_set (y1, i, newval);
+        }
     }
 
   return GSL_SUCCESS;
@@ -139,9 +139,9 @@ nmsimplex_calc_center (const nmsimplex_state_t * state, gsl_vector * mp)
     {
       val = 0.0;
       for (i = 0; i < x1->size1; i++)
-	{
-	  val += gsl_matrix_get (x1, i, j);
-	}
+        {
+          val += gsl_matrix_get (x1, i, j);
+        }
       val /= x1->size1;
       gsl_vector_set (mp, j, val);
     }
@@ -217,8 +217,8 @@ nmsimplex_alloc (void *vstate, size_t n)
 
 static int
 nmsimplex_set (void *vstate, gsl_multimin_function * f,
-	       const gsl_vector * x,
-	       double *size, const gsl_vector * step_size)
+               const gsl_vector * x,
+               double *size, const gsl_vector * step_size)
 {
   int status;
   size_t i;
@@ -241,9 +241,9 @@ nmsimplex_set (void *vstate, gsl_multimin_function * f,
       status = gsl_vector_memcpy (xtemp, x);
 
       if (status != 0)
-	{
-	  GSL_ERROR ("vector memcopy failed", GSL_EFAILED);
-	}
+        {
+          GSL_ERROR ("vector memcopy failed", GSL_EFAILED);
+        }
 
       val = gsl_vector_get (xtemp, i) + gsl_vector_get (step_size, i);
       gsl_vector_set (xtemp, i, val);
@@ -272,7 +272,7 @@ nmsimplex_free (void *vstate)
 
 static int
 nmsimplex_iterate (void *vstate, gsl_multimin_function * f,
-		   gsl_vector * x, double *size, double *fval)
+                   gsl_vector * x, double *size, double *fval)
 {
 
   /* Simplex iteration tries to minimize function f value */
@@ -302,22 +302,22 @@ nmsimplex_iterate (void *vstate, gsl_multimin_function * f,
     {
       val = (gsl_vector_get (y1, i));
       if (val < dlo)
-	{
-	  dlo = val;
-	  lo = i;
-	}
+        {
+          dlo = val;
+          lo = i;
+        }
       else if (val > dhi)
-	{
-	  ds_hi = dhi;
-	  s_hi = hi;
-	  dhi = val;
-	  hi = i;
-	}
+        {
+          ds_hi = dhi;
+          s_hi = hi;
+          dhi = val;
+          hi = i;
+        }
       else if (val > ds_hi)
-	{
-	  ds_hi = val;
-	  s_hi = i;
-	}
+        {
+          ds_hi = val;
+          s_hi = i;
+        }
     }
 
   /* reflect the highest value */
@@ -332,15 +332,15 @@ nmsimplex_iterate (void *vstate, gsl_multimin_function * f,
       val2 = nmsimplex_move_corner (-2.0, state, hi, xc2, f);
 
       if (val2 < gsl_vector_get (y1, lo))
-	{
-	  gsl_matrix_set_row (x1, hi, xc2);
-	  gsl_vector_set (y1, hi, val2);
-	}
+        {
+          gsl_matrix_set_row (x1, hi, xc2);
+          gsl_vector_set (y1, hi, val2);
+        }
       else
-	{
-	  gsl_matrix_set_row (x1, hi, xc);
-	  gsl_vector_set (y1, hi, val);
-	}
+        {
+          gsl_matrix_set_row (x1, hi, xc);
+          gsl_vector_set (y1, hi, val);
+        }
     }
 
   /* reflection does not improve things enough */
@@ -348,36 +348,36 @@ nmsimplex_iterate (void *vstate, gsl_multimin_function * f,
   else if (val > gsl_vector_get (y1, s_hi))
     {
       if (val <= gsl_vector_get (y1, hi))
-	{
+        {
 
-	  /* if trial point is better than highest point, replace 
-	     highest point */
+          /* if trial point is better than highest point, replace 
+             highest point */
 
-	  gsl_matrix_set_row (x1, hi, xc);
-	  gsl_vector_set (y1, hi, val);
-	}
+          gsl_matrix_set_row (x1, hi, xc);
+          gsl_vector_set (y1, hi, val);
+        }
 
       /* try one dimensional contraction */
 
       val2 = nmsimplex_move_corner (0.5, state, hi, xc2, f);
 
       if (val2 <= gsl_vector_get (y1, hi))
-	{
-	  gsl_matrix_set_row (state->x1, hi, xc2);
-	  gsl_vector_set (y1, hi, val2);
-	}
+        {
+          gsl_matrix_set_row (state->x1, hi, xc2);
+          gsl_vector_set (y1, hi, val2);
+        }
 
       else
-	{
+        {
 
-	  /* contract the whole simplex in respect to the best point */
+          /* contract the whole simplex in respect to the best point */
 
-	  status = nmsimplex_contract_by_best (state, lo, xc, f);
-	  if (status != 0)
-	    {
-	      GSL_ERROR ("nmsimplex_contract_by_best failed", GSL_EFAILED);
-	    }
-	}
+          status = nmsimplex_contract_by_best (state, lo, xc, f);
+          if (status != 0)
+            {
+              GSL_ERROR ("nmsimplex_contract_by_best failed", GSL_EFAILED);
+            }
+        }
     }
   else
     {
@@ -403,7 +403,7 @@ nmsimplex_iterate (void *vstate, gsl_multimin_function * f,
 }
 
 static const gsl_multimin_fminimizer_type nmsimplex_type = 
-{ "nmsimplex",	/* name */
+{ "nmsimplex",  /* name */
   sizeof (nmsimplex_state_t),
   &nmsimplex_alloc,
   &nmsimplex_set,

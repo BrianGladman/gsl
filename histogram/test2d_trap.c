@@ -47,57 +47,57 @@ test2d_trap (void)
   h = gsl_histogram2d_calloc (0, 10);
   gsl_test (!status, "gsl_histogram_calloc traps zero-width histogram");
   gsl_test (h != 0,
-	    "gsl_histogram2d_calloc returns NULL for zero-width histogram");
+            "gsl_histogram2d_calloc returns NULL for zero-width histogram");
 
 
   status = 0;
   h = gsl_histogram2d_calloc (10, 0);
   gsl_test (!status, "gsl_histogram_calloc traps zero-length histogram");
   gsl_test (h != 0,
-	    "gsl_histogram2d_calloc returns NULL for zero-length histogram");
+            "gsl_histogram2d_calloc returns NULL for zero-length histogram");
 
 
   status = 0;
   h = gsl_histogram2d_calloc_uniform (0, 10, 0.0, 1.0, 0.0, 1.0);
   gsl_test (!status,
-	    "gsl_histogram2d_calloc_uniform traps zero-width histogram");
+            "gsl_histogram2d_calloc_uniform traps zero-width histogram");
   gsl_test (h != 0,
     "gsl_histogram2d_calloc_uniform returns NULL for zero-width histogram");
 
   status = 0;
   h = gsl_histogram2d_calloc_uniform (10, 0, 0.0, 1.0, 0.0, 1.0);
   gsl_test (!status,
-	    "gsl_histogram2d_calloc_uniform traps zero-length histogram");
+            "gsl_histogram2d_calloc_uniform traps zero-length histogram");
   gsl_test (h != 0,
    "gsl_histogram2d_calloc_uniform returns NULL for zero-length histogram");
 
   status = 0;
   h = gsl_histogram2d_calloc_uniform (10, 10, 0.0, 1.0, 1.0, 1.0);
   gsl_test (!status,
-	    "gsl_histogram2d_calloc_uniform traps equal endpoints");
+            "gsl_histogram2d_calloc_uniform traps equal endpoints");
   gsl_test (h != 0,
-	 "gsl_histogram2d_calloc_uniform returns NULL for equal endpoints");
+         "gsl_histogram2d_calloc_uniform returns NULL for equal endpoints");
 
   status = 0;
   h = gsl_histogram2d_calloc_uniform (10, 10, 1.0, 1.0, 0.0, 1.0);
   gsl_test (!status,
-	    "gsl_histogram2d_calloc_uniform traps equal endpoints");
+            "gsl_histogram2d_calloc_uniform traps equal endpoints");
   gsl_test (h != 0,
-	 "gsl_histogram2d_calloc_uniform returns NULL for equal endpoints");
+         "gsl_histogram2d_calloc_uniform returns NULL for equal endpoints");
 
   status = 0;
   h = gsl_histogram2d_calloc_uniform (10, 10, 0.0, 1.0, 2.0, 1.0);
   gsl_test (!status,
-	    "gsl_histogram2d_calloc_uniform traps invalid range");
+            "gsl_histogram2d_calloc_uniform traps invalid range");
   gsl_test (h != 0,
-	    "gsl_histogram2d_calloc_uniform returns NULL for invalid range");
+            "gsl_histogram2d_calloc_uniform returns NULL for invalid range");
 
   status = 0;
   h = gsl_histogram2d_calloc_uniform (10, 10, 2.0, 1.0, 0.0, 1.0);
   gsl_test (!status,
-	    "gsl_histogram2d_calloc_uniform traps invalid range");
+            "gsl_histogram2d_calloc_uniform traps invalid range");
   gsl_test (h != 0,
-	    "gsl_histogram2d_calloc_uniform returns NULL for invalid range");
+            "gsl_histogram2d_calloc_uniform returns NULL for invalid range");
 
   h = gsl_histogram2d_calloc_uniform (N, M, 0.0, 1.0, 0.0, 1.0);
 

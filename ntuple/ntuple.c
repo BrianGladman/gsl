@@ -37,7 +37,7 @@ gsl_ntuple_create (char *filename, void *ntuple_data, size_t size)
   if (ntuple == 0)
     {
       GSL_ERROR_VAL ("failed to allocate space for ntuple struct",
-		     GSL_ENOMEM, 0);
+                     GSL_ENOMEM, 0);
     }
 
   ntuple->ntuple_data = ntuple_data;
@@ -67,7 +67,7 @@ gsl_ntuple_open (char *filename, void *ntuple_data, size_t size)
   if (ntuple == 0)
     {
       GSL_ERROR_VAL ("failed to allocate space for ntuple struct",
-		     GSL_ENOMEM, 0);
+                     GSL_ENOMEM, 0);
     }
 
   ntuple->ntuple_data = ntuple_data;
@@ -96,7 +96,7 @@ gsl_ntuple_write (gsl_ntuple * ntuple)
   size_t nwrite;
 
   nwrite = fwrite (ntuple->ntuple_data, ntuple->size,
-		   1, ntuple->file);
+                   1, ntuple->file);
 
   if (nwrite != 1)
     {
@@ -167,13 +167,13 @@ gsl_ntuple_project (gsl_histogram * h, gsl_ntuple * ntuple,
       
       if (nread != 1) 
         {
-	  GSL_ERROR ("failed to read ntuple for projection", GSL_EFAILED);
-	}
+          GSL_ERROR ("failed to read ntuple for projection", GSL_EFAILED);
+        }
 
       if (EVAL(select_func, ntuple->ntuple_data))
-	{
-	  gsl_histogram_increment (h, EVAL(value_func, ntuple->ntuple_data));
-	}
+        {
+          gsl_histogram_increment (h, EVAL(value_func, ntuple->ntuple_data));
+        }
     }
   while (1);
 

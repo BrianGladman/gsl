@@ -59,18 +59,18 @@
       Y[iy] += tmp1 * Ap[TPUP(N, i, i)];
 
       for (j = j_min; j < j_max; j++) {
-	const BASE apk = Ap[TPUP(N, i, j)];
-	Y[jy] += tmp1 * apk;
-	tmp2 += apk * X[jx];
-	jy += incY;
-	jx += incX;
+        const BASE apk = Ap[TPUP(N, i, j)];
+        Y[jy] += tmp1 * apk;
+        tmp2 += apk * X[jx];
+        jy += incY;
+        jx += incX;
       }
       Y[iy] += alpha * tmp2;
       ix += incX;
       iy += incY;
     }
   } else if ((order == CblasRowMajor && Uplo == CblasLower)
-	     || (order == CblasColMajor && Uplo == CblasUpper)) {
+             || (order == CblasColMajor && Uplo == CblasUpper)) {
     INDEX ix = OFFSET(N, incX);
     INDEX iy = OFFSET(N, incY);
     for (i = 0; i < N; i++) {
@@ -85,11 +85,11 @@
       Y[iy] += tmp1 * Ap[TPLO(N, i, i)];
 
       for (j = j_min; j < j_max; j++) {
-	const BASE apk = Ap[TPLO(N, i, j)];
-	Y[jy] += tmp1 * apk;
-	tmp2 += apk * X[jx];
-	jy += incY;
-	jx += incX;
+        const BASE apk = Ap[TPLO(N, i, j)];
+        Y[jy] += tmp1 * apk;
+        tmp2 += apk * X[jx];
+        jy += incY;
+        jx += incX;
       }
       Y[iy] += alpha * tmp2;
       ix += incX;

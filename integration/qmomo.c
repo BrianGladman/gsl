@@ -24,7 +24,7 @@
 
 static void
 initialise (double * ri, double * rj, double * rg, double * rh,
-	    double alpha, double beta);
+            double alpha, double beta);
 
 gsl_integration_qaws_table * 
 gsl_integration_qaws_table_alloc (double alpha, double beta, int mu, int nu)
@@ -57,7 +57,7 @@ gsl_integration_qaws_table_alloc (double alpha, double beta, int mu, int nu)
   if (t == 0)
     {
       GSL_ERROR_VAL ("failed to allocate space for qaws_table struct",
-			GSL_ENOMEM, 0);
+                        GSL_ENOMEM, 0);
     }
 
   t->alpha = alpha;
@@ -114,7 +114,7 @@ gsl_integration_qaws_table_free (gsl_integration_qaws_table * t)
 
 static void
 initialise (double * ri, double * rj, double * rg, double * rh,
-	    double alpha, double beta)
+            double alpha, double beta)
 {
   const double alpha_p1 = alpha + 1.0;
   const double beta_p1 = beta + 1.0;
@@ -138,7 +138,7 @@ initialise (double * ri, double * rj, double * rg, double * rh,
   for (i = 2; i < 25; i++)
     {
       ri[i] = -(r_alpha + an * (an - alpha_p2) * ri[i - 1])
-	/ (anm1 * (an + alpha_p1));
+        / (anm1 * (an + alpha_p1));
       anm1 = an;
       an = an + 1.0;
     }
@@ -152,7 +152,7 @@ initialise (double * ri, double * rj, double * rg, double * rh,
   for (i = 2; i < 25; i++)
     {
       rj[i] = -(r_beta + an * (an - beta_p2) * rj[i - 1])
-	/ (anm1 * (an + beta_p1));
+        / (anm1 * (an + beta_p1));
       anm1 = an;
       an = an + 1.0;
     }
@@ -166,7 +166,7 @@ initialise (double * ri, double * rj, double * rg, double * rh,
   for (i = 2; i < 25; i++)
     {
       rg[i] = -(an * (an - alpha_p2) * rg[i - 1] - an * ri[i - 1]
-		+ anm1 * ri[i]) / (anm1 * (an + alpha_p1));
+                + anm1 * ri[i]) / (anm1 * (an + alpha_p1));
       anm1 = an;
       an = an + 1.0;
     }
@@ -180,7 +180,7 @@ initialise (double * ri, double * rj, double * rg, double * rh,
   for (i = 2; i < 25; i++)
     {
       rh[i] = -(an * (an - beta_p2) * rh[i - 1] - an * rj[i - 1]
-		+ anm1 * rj[i]) / (anm1 * (an + beta_p1));
+                + anm1 * rj[i]) / (anm1 * (an + beta_p1));
       anm1 = an;
       an = an + 1.0;
     }

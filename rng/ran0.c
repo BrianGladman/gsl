@@ -80,7 +80,7 @@ ran0_set (void *vstate, unsigned long int s)
   if (s == mask)
     {
       GSL_ERROR_VOID ("ran0 should not use seed == mask", 
-				GSL_EINVAL);
+                                GSL_EINVAL);
     }
 
   state->x = s ^ mask;
@@ -89,9 +89,9 @@ ran0_set (void *vstate, unsigned long int s)
 }
 
 static const gsl_rng_type ran0_type =
-{"ran0",			/* name */
- 2147483646,			/* RAND_MAX */
- 1,				/* RAND_MIN */
+{"ran0",                        /* name */
+ 2147483646,                    /* RAND_MAX */
+ 1,                             /* RAND_MIN */
  sizeof (ran0_state_t),
  &ran0_set,
  &ran0_get,

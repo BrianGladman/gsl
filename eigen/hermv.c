@@ -145,20 +145,20 @@ gsl_eigen_hermv (gsl_matrix_complex * A, gsl_vector * eval,
       /* handle special case */
 
       if (N == 1)
-	{
-	  gsl_complex A00 = gsl_matrix_complex_get (A, 0, 0);
-	  gsl_vector_set (eval, 0, GSL_REAL(A00));
+        {
+          gsl_complex A00 = gsl_matrix_complex_get (A, 0, 0);
+          gsl_vector_set (eval, 0, GSL_REAL(A00));
           gsl_matrix_complex_set (evec, 0, 0, GSL_COMPLEX_ONE);
-	  return GSL_SUCCESS;
-	}
+          return GSL_SUCCESS;
+        }
 
       /* Transform the matrix into a symmetric tridiagonal form */
 
       {
-	gsl_vector_view d_vec = gsl_vector_view_array (d, N);
-	gsl_vector_view sd_vec = gsl_vector_view_array (sd, N - 1);
-	gsl_vector_complex_view tau_vec = gsl_vector_complex_view_array (w->tau, N-1);
-	gsl_linalg_hermtd_decomp (A, &tau_vec.vector);
+        gsl_vector_view d_vec = gsl_vector_view_array (d, N);
+        gsl_vector_view sd_vec = gsl_vector_view_array (sd, N - 1);
+        gsl_vector_complex_view tau_vec = gsl_vector_complex_view_array (w->tau, N-1);
+        gsl_linalg_hermtd_decomp (A, &tau_vec.vector);
         gsl_linalg_hermtd_unpack (A, &tau_vec.vector, evec, &d_vec.vector, &sd_vec.vector);
       }
 

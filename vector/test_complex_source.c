@@ -45,7 +45,7 @@ FUNCTION (test, func) (void)
   for (i = 0; i < N; i++)
     {
       if (v->data[2 * i] != (ATOMIC) i || v->data[2 * i + 1] != (ATOMIC) (i + 1234))
-	status = 1;
+        status = 1;
     };
   
   gsl_test (status, NAME (gsl_vector) "_set writes into array");
@@ -59,7 +59,7 @@ FUNCTION (test, func) (void)
       GSL_IMAG (x) = (ATOMIC)(i + 1234);
       y = FUNCTION (gsl_vector, get) (v, i);
       if (!GSL_COMPLEX_EQ (x, y))
-	status = 1;
+        status = 1;
     };
   gsl_test (status, NAME (gsl_vector) "_get reads from array");
 
@@ -76,7 +76,7 @@ FUNCTION (test, func) (void)
       GSL_IMAG (x) = (ATOMIC)(2 * i + 1234);
       y = FUNCTION (gsl_vector, get) (v, i);
       if (!GSL_COMPLEX_EQ (x, y))
-	status = 1;
+        status = 1;
     };
   gsl_test (status, NAME (gsl_vector) "_get reads from array with stride");
 
@@ -93,7 +93,7 @@ FUNCTION (test, func) (void)
   for (i = 0; i < N / 2; i++)
     {
       if (v->data[2 * 2 * i] != (ATOMIC) i || v->data[2 * 2 * i + 1] != (ATOMIC) (i + 1234))
-	status = 1;
+        status = 1;
     };
   
   gsl_test (status, NAME (gsl_vector) "_set writes into array with stride");
@@ -154,7 +154,7 @@ FUNCTION (test, func) (void)
 
   gsl_test (status, NAME(gsl_vector) "_reverse" DESC " reverses elements") ;
   
-  FUNCTION (gsl_vector, free) (v);	/* free whatever is in v */
+  FUNCTION (gsl_vector, free) (v);      /* free whatever is in v */
 }
 
 void
@@ -170,10 +170,10 @@ FUNCTION (test, binary) (void)
 
     for (i = 0; i < N; i++)
       {
-	BASE x = ZERO;
-	GSL_REAL (x) = (ATOMIC)(N - i);
-	GSL_IMAG (x) = (ATOMIC)(N - i + 1);
-	FUNCTION (gsl_vector, set) (v, i, x);
+        BASE x = ZERO;
+        GSL_REAL (x) = (ATOMIC)(N - i);
+        GSL_IMAG (x) = (ATOMIC)(N - i + 1);
+        FUNCTION (gsl_vector, set) (v, i, x);
       };
 
     FUNCTION (gsl_vector, fwrite) (f, v);
@@ -189,8 +189,8 @@ FUNCTION (test, binary) (void)
     status = 0;
     for (i = 0; i < N; i++)
       {
-	if (w->data[2 * i] != (ATOMIC) (N - i) || w->data[2 * i + 1] != (ATOMIC) (N - i + 1))
-	  status = 1;
+        if (w->data[2 * i] != (ATOMIC) (N - i) || w->data[2 * i + 1] != (ATOMIC) (N - i + 1))
+          status = 1;
       };
     fclose (f);
   }
@@ -216,12 +216,12 @@ FUNCTION (test, trap) (void)
   status = 0;
   FUNCTION (gsl_vector, set) (vc, j - 1, z);
   gsl_test (!status,
-	    NAME (gsl_vector) "_set traps index below lower bound");
+            NAME (gsl_vector) "_set traps index below lower bound");
 
   status = 0;
   FUNCTION (gsl_vector, set) (vc, N + 1, z);
   gsl_test (!status,
-	    NAME (gsl_vector) "_set traps index above upper bound");
+            NAME (gsl_vector) "_set traps index above upper bound");
 
   status = 0;
   FUNCTION (gsl_vector, set) (vc, N, z);
@@ -230,29 +230,29 @@ FUNCTION (test, trap) (void)
   status = 0;
   z1 = FUNCTION (gsl_vector, get) (vc, j - 1);
   gsl_test (!status,
-	    NAME (gsl_vector) "_get traps index below lower bound");
+            NAME (gsl_vector) "_get traps index below lower bound");
 
   gsl_test (GSL_REAL (z1) != 0,
-	    NAME (gsl_vector) "_get returns zero real below lower bound");
+            NAME (gsl_vector) "_get returns zero real below lower bound");
   gsl_test (GSL_IMAG (z1) != 0,
-	    NAME (gsl_vector) "_get returns zero imag below lower bound");
+            NAME (gsl_vector) "_get returns zero imag below lower bound");
 
   status = 0;
   z1 = FUNCTION (gsl_vector, get) (vc, N + 1);
   gsl_test (!status,
-	    NAME (gsl_vector) "_get traps index above upper bound");
+            NAME (gsl_vector) "_get traps index above upper bound");
   gsl_test (GSL_REAL (z1) != 0,
-	    NAME (gsl_vector) "_get returns zero real above upper bound");
+            NAME (gsl_vector) "_get returns zero real above upper bound");
   gsl_test (GSL_IMAG (z1) != 0,
-	    NAME (gsl_vector) "_get returns zero imag above upper bound");
+            NAME (gsl_vector) "_get returns zero imag above upper bound");
 
   status = 0;
   z1 = FUNCTION (gsl_vector, get) (vc, N);
   gsl_test (!status, NAME (gsl_vector) "_get traps index at upper bound");
   gsl_test (GSL_REAL (z1) != 0,
-	    NAME (gsl_vector) "_get returns zero real at upper bound");
+            NAME (gsl_vector) "_get returns zero real at upper bound");
   gsl_test (GSL_IMAG (z1) != 0,
-	    NAME (gsl_vector) "_get returns zero imag at upper bound");
+            NAME (gsl_vector) "_get returns zero imag at upper bound");
 
   FUNCTION (gsl_vector, free) (vc);
 }

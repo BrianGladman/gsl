@@ -24,7 +24,7 @@
    weights as evaluated with 80 decimal digit arithmetic by
    L. W. Fullerton, Bell Labs, Nov. 1981. */
 
-static const double xgk[11] =	/* abscissae of the 21-point kronrod rule */
+static const double xgk[11] =   /* abscissae of the 21-point kronrod rule */
 {
   0.995657163025808080735527280689003,
   0.973906528517171720077964012084452,
@@ -42,7 +42,7 @@ static const double xgk[11] =	/* abscissae of the 21-point kronrod rule */
 /* xgk[1], xgk[3], ... abscissae of the 10-point gauss rule. 
    xgk[0], xgk[2], ... abscissae to optimally extend the 10-point gauss rule */
 
-static const double wg[5] =	/* weights of the 10-point gauss rule */
+static const double wg[5] =     /* weights of the 10-point gauss rule */
 {
   0.066671344308688137593568809893332,
   0.149451349150580593145776339657697,
@@ -51,7 +51,7 @@ static const double wg[5] =	/* weights of the 10-point gauss rule */
   0.295524224714752870173892994651338
 };
 
-static const double wgk[11] =	/* weights of the 21-point kronrod rule */
+static const double wgk[11] =   /* weights of the 21-point kronrod rule */
 {
   0.011694638867371874278064396062192,
   0.032558162307964727478818972459390,
@@ -69,8 +69,8 @@ static const double wgk[11] =	/* weights of the 21-point kronrod rule */
 
 void
 gsl_integration_qk21 (const gsl_function * f, double a, double b,
-		      double *result, double *abserr,
-		      double *resabs, double *resasc)
+                      double *result, double *abserr,
+                      double *resabs, double *resasc)
 {
   double fv1[11], fv2[11];
   gsl_integration_qk (11, xgk, wg, wgk, fv1, fv2, f, a, b, result, abserr, resabs, resasc);

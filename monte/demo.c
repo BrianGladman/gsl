@@ -32,7 +32,7 @@ display_results (char *title, double result, double error)
   printf ("sigma  = % .6f\n", error);
   printf ("exact  = % .6f\n", exact);
   printf ("error  = % .6f = %.1g sigma\n", result - exact,
-	  fabs (result - exact) / error);
+          fabs (result - exact) / error);
 }
 
 int
@@ -79,9 +79,9 @@ main ()
 
     do
       {
-	gsl_monte_vegas_integrate (&G, xl, xu, 3, calls, r, s, &res, &err);
-	printf ("result = % .6f sigma = % .6f chisq/dof = %.1f\n",
-		res, err, s->chisq);
+        gsl_monte_vegas_integrate (&G, xl, xu, 3, calls, r, s, &res, &err);
+        printf ("result = % .6f sigma = % .6f chisq/dof = %.1f\n",
+                res, err, s->chisq);
       }
     while (fabs (s->chisq - 1.0) > 0.5);
 
