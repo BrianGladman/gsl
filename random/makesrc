@@ -1,5 +1,4 @@
 #! /bin/sh
-## $Id$
 ## Usage: 'makesrc --all'    makes all
 ##        'makesrc --switch' makes switch.c gsl_ran_switch.h
 ##        'makesrc xxx'      makes xxx-state.c, xxx.h, xxx-gen.c

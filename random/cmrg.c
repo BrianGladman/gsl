@@ -1,4 +1,3 @@
-/* $Id$ */
 /**
   From:
   P. L'Ecuyer, "Combined Multiple Recursive Random Number Generators,"

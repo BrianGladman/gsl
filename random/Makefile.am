@@ -38,7 +38,7 @@ include_HEADERS= gsl_ran.h gsl_ran_switch.h
 test_switch_SOURCES= test-switch.c switch.c 
 
 switch.c gsl_ran_switch.h:
-	./makesrc --switch
+	$(srcdir)/makesrc --switch
 
 ## The user doesn't really _need_ these, assuming that the
 ## distribution includes all the .c and .h sources.
@@ -144,25 +144,25 @@ bench_rand_LDADD=         rand.o rand-gen.o
 ## THE_BUILT_SOURCES= taus.h taus-state.c taus-gen.c mrg.h mrg-state.c mrg-gen.c cmrg.h cmrg-state.c cmrg-gen.c uni.h uni-state.c uni-gen.c uni32.h uni32-state.c uni32-gen.c zuf.h zuf-state.c zuf-gen.c rand.h rand-state.c rand-gen.c gsl_ran_switch.h switch.c
 ## If you need to build these sources, use the 'makesrc' script
 taus.h taus-state.c taus-gen.c: makesrc
-	./makesrc taus
+	$(srcdir)/makesrc $(srcdir)/taus
 
 mrg.h mrg-state.c mrg-gen.c: makesrc
-	./makesrc mrg
+	$(srcdir)/makesrc $(srcdir)/mrg
 
 cmrg.h cmrg-state.c cmrg-gen.c: makesrc
-	./makesrc cmrg
+	$(srcdir)/makesrc $(srcdir)/cmrg
 
 uni.h uni-state.c uni-gen.c: makesrc
-	./makesrc uni
+	$(srcdir)/makesrc $(srcdir)/uni
 
 uni32.h uni32-state.c uni32-gen.c: makesrc
-	./makesrc uni32
+	$(srcdir)/makesrc $(srcdir)/uni32
 
 zuf.h zuf-state.c zuf-gen.c: makesrc
-	./makesrc zuf
+	$(srcdir)/makesrc $(srcdir)/zuf
 
 rand.h rand-state.c rand-gen.c: makesrc
-	./makesrc rand
+	$(srcdir)/makesrc $(srcdir)/rand
 
 ## This target is kind of like 'distclean'
 tooclean:
