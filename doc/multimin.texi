@@ -190,11 +190,11 @@ an optimization of the separate functions for @math{f(x)} and @math{g(x)} --
 it is always faster to compute the function and its derivative at the
 same time. 
 
-@item size_t @var{n}
+@item size_t n
 the dimension of the system, i.e. the number of components of the
 vectors @var{x}.
 
-@item void * @var{params}
+@item void * params
 a pointer to the parameters of the function.
 @end table
 @end deftp
@@ -208,11 +208,11 @@ this function should return the result
 @c{$f(x,\hbox{\it params})$}
 @math{f(x,params)} for argument @var{x} and parameters @var{params}.
 
-@item size_t @var{n}
+@item size_t n
 the dimension of the system, i.e. the number of components of the
 vectors @var{x}.
 
-@item void * @var{params}
+@item void * params
 a pointer to the parameters of the function.
 @end table
 @end deftp

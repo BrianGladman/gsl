@@ -193,12 +193,12 @@ following data types:
 This data type defines a general function with parameters. 
 
 @table @code
-@item double (* @var{function}) (double @var{x}, void * @var{params})
+@item double (* function) (double @var{x}, void * @var{params})
 this function should return the value
 @c{$f(x,\hbox{\it params})$}
 @math{f(x,params)} for argument @var{x} and parameters @var{params}
 
-@item void * @var{params}
+@item void * params
 a pointer to the parameters of the function
 @end table
 @end deftp
@@ -256,18 +256,18 @@ This data type defines a general function with parameters and its first
 derivative.
 
 @table @code
-@item double (* @var{f}) (double @var{x}, void * @var{params})
+@item double (* f) (double @var{x}, void * @var{params})
 this function should return the value of
 @c{$f(x,\hbox{\it params})$}
 @math{f(x,params)} for argument @var{x} and parameters @var{params}
 
-@item double (* @var{df}) (double @var{x}, void * @var{params})
+@item double (* df) (double @var{x}, void * @var{params})
 this function should return the value of the derivative of @var{f} with
 respect to @var{x},
 @c{$f'(x,\hbox{\it params})$}
 @math{f'(x,params)}, for argument @var{x} and parameters @var{params}
 
-@item void (* @var{fdf}) (double @var{x}, void * @var{params}, double * @var{f}, double * @var{d}f)
+@item void (* fdf) (double @var{x}, void * @var{params}, double * @var{f}, double * @var{d}f)
 this function should set the values of the function @var{f} to 
 @c{$f(x,\hbox{\it params})$}
 @math{f(x,params)}
@@ -279,7 +279,7 @@ an optimization of the separate functions for @math{f(x)} and @math{f'(x)} --
 it is always faster to compute the function and its derivative at the
 same time. 
 
-@item void * @var{params}
+@item void * params
 a pointer to the parameters of the function
 @end table
 @end deftp

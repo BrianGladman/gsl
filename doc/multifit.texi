@@ -149,15 +149,15 @@ this function should store the vector result
 @math{f(x,params)} in @var{f} for argument @var{x} and parameters @var{params},
 returning an appropriate error code if the function cannot be computed.
 
-@item size_t @var{n}
+@item size_t n
 the number of functions, i.e. the number of components of the
 vector @var{f}
 
-@item size_t @var{p}
+@item size_t p
 the number of independent variables, i.e. the number of components of
 the vectors @var{x}
 
-@item void * @var{params}
+@item void * params
 a pointer to the parameters of the function
 @end table
 @end deftp
@@ -187,15 +187,15 @@ an optimization of the separate functions for @math{f(x)} and @math{J(x)} --
 it is always faster to compute the function and its derivative at the
 same time. 
 
-@item size_t @var{n}
+@item size_t n
 the number of functions, i.e. the number of components of the
 vector @var{f}
 
-@item size_t @var{p}
+@item size_t p
 the number of independent variables, i.e. the number of components of
 the vectors @var{x}
 
-@item void * @var{params}
+@item void * params
 a pointer to the parameters of the function
 @end table
 @end deftp

@@ -49,20 +49,20 @@ datatype.
 This data type defines a general ODE system with arbitrary parameters.
 
 @table @code
-@item int (* @var{function}) (double t, const double y[], double dydt[], void * params)
+@item int (* function) (double t, const double y[], double dydt[], void * params)
 This function should store the vector elements
 @c{$f_i(t,y,\hbox{\it params})$}
 @math{f_i(t,y,params)} in the array @var{dydt},
 for arguments (@var{t},@var{y}) and parameters @var{params}
 
-@item  int (* @var{jacobian}) (double t, const double y[], double * dfdy, double dfdt[], void * params);
+@item  int (* jacobian) (double t, const double y[], double * dfdy, double dfdt[], void * params);
 This function should store the vector elements 
 @c{$\partial f_i(t,y,params) / \partial t$}
 @math{df_i(t,y,params)/dt} in the array @var{dfdt} and the 
 Jacobian matrix @c{$J_{ij}$}
 @math{J_@{ij@}} in the array
-@var{dfdy} regarded as a row-ordered matrix @code{J(i,j) = dfdy[i * dim + j]}
-where @code{dim} is the dimension of the system.
+@var{dfdy} regarded as a row-ordered matrix @code{J(i,j) = dfdy[i * dimension + j]}
+where @code{dimension} is the dimension of the system.
 
 Some of the simpler solver algorithms do not make use of the Jacobian
 matrix, so it is not always strictly necessary to provide it (this
@@ -70,10 +70,10 @@ element of the struct can be replace by a null pointer).  However, it is
 useful to provide the Jacobian to allow the solver algorithms to be
 interchanged -- the best algorithms make use of the Jacobian.
 
-@item size_t @var{dimension};
+@item size_t dimension;
 This is the dimension of the system of equations
 
-@item void * @var{params}
+@item void * params
 This is a pointer to the arbitrary parameters of the system.
 @end table
 @end deftp
