@@ -39,6 +39,7 @@
 #undef OUT_FORMAT
 #undef ATOMIC_IO
 #undef ZERO
+#undef ONE
 #undef NAME
 #undef STRING
 #undef EXPAND

@@ -14,6 +14,7 @@
 #define OUT_FORMAT "%Lg"
 #define ATOMIC_IO ATOMIC
 #define ZERO {{0,0}}
+#define ONE {{1,0}}
 
 #elif defined(BASE_GSL_COMPLEX)
 #define BASE gsl_complex
@@ -24,6 +25,7 @@
 #define OUT_FORMAT "%g"
 #define ATOMIC_IO ATOMIC
 #define ZERO {{0,0}}
+#define ONE {{1,0}}
 
 #elif defined(BASE_GSL_COMPLEX_FLOAT)
 #define BASE gsl_complex_float
@@ -34,6 +36,7 @@
 #define OUT_FORMAT "%g"
 #define ATOMIC_IO ATOMIC
 #define ZERO {{0,0}}
+#define ONE {{1,0}}
 
 #elif defined(BASE_LONG_DOUBLE)
 #define BASE long double
@@ -45,6 +48,7 @@
 #define OUT_FORMAT "%Lg"
 #define ATOMIC_IO ATOMIC
 #define ZERO 0
+#define ONE 1
 
 #elif defined(BASE_DOUBLE)
 #define BASE double
@@ -55,6 +59,7 @@
 #define OUT_FORMAT "%g"
 #define ATOMIC_IO ATOMIC
 #define ZERO 0
+#define ONE 1
 #define BASE_EPSILON GSL_DBL_EPSILON
 
 #elif defined(BASE_FLOAT)
@@ -66,6 +71,7 @@
 #define OUT_FORMAT "%g"
 #define ATOMIC_IO ATOMIC
 #define ZERO 0
+#define ONE 1
 #define BASE_EPSILON GSL_FLT_EPSILON
 
 #elif defined(BASE_ULONG)
@@ -77,6 +83,7 @@
 #define OUT_FORMAT "%lu"
 #define ATOMIC_IO ATOMIC
 #define ZERO 0
+#define ONE 1
 
 #elif defined(BASE_LONG)
 #define BASE long
@@ -87,6 +94,7 @@
 #define OUT_FORMAT "%ld"
 #define ATOMIC_IO ATOMIC
 #define ZERO 0
+#define ONE 1
 
 #elif defined(BASE_UINT)
 #define BASE unsigned int
@@ -97,6 +105,7 @@
 #define OUT_FORMAT "%u"
 #define ATOMIC_IO ATOMIC
 #define ZERO 0
+#define ONE 1
 
 #elif defined(BASE_INT)
 #define BASE int
@@ -107,6 +116,7 @@
 #define OUT_FORMAT "%d"
 #define ATOMIC_IO ATOMIC
 #define ZERO 0
+#define ONE 1
 
 #elif defined(BASE_USHORT)
 #define BASE unsigned short
@@ -117,6 +127,7 @@
 #define OUT_FORMAT "%hu"
 #define ATOMIC_IO ATOMIC
 #define ZERO 0
+#define ONE 1
 
 #elif defined(BASE_SHORT)
 #define BASE short
@@ -127,6 +138,7 @@
 #define OUT_FORMAT "%hd"
 #define ATOMIC_IO ATOMIC
 #define ZERO 0
+#define ONE 1
 
 #elif defined(BASE_UCHAR)
 #define BASE unsigned char
@@ -137,6 +149,7 @@
 #define OUT_FORMAT "%u"
 #define ATOMIC_IO unsigned int
 #define ZERO 0
+#define ONE 1
 
 #elif defined(BASE_CHAR)
 #define BASE char
@@ -147,6 +160,7 @@
 #define OUT_FORMAT "%d"
 #define ATOMIC_IO int
 #define ZERO 0
+#define ONE 1
 
 #else
 #error unknown BASE_ directive in source.h

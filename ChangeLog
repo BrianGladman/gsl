@@ -1,5 +1,7 @@
 Sat Mar 11 11:18:33 2000  Brian Gough  <bjg@network-theory.co.uk>
 
+	* templates_on.h: added a definition for ONE, to match ZERO
+
 	* Changed matrix struct element dim2 to tda throughout
 
 Mon Mar  6 19:48:27 2000  Brian Gough  <bjg@network-theory.co.uk>
