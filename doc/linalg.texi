@@ -14,6 +14,7 @@ optimizations.
 * QR Decomposition::            
 * QR Decomposition with Column Pivoting::  
 * Singular Value Decomposition::  
+* Cholesky Decomposition::      
 * Householder solver for linear systems::  
 * Tridiagonal Systems::         
 * Linear Algebra References and Further Reading::  
@@ -377,6 +378,60 @@ In the over-determined case where @var{A} has more rows than columns the
 system is solved in the least squares sense, returning the solution
 @var{x} which minimizes @math{||A x - b||_2}.
 @end deftypefun
+
+@node Cholesky Decomposition
+@section Cholesky Decomposition
+@cindex Cholesky decomposition
+@cindex square root of a matrix, Cholesky decomposition
+@cindex matrix square root, Cholesky decomposition
+
+A symmetric, positive definite square matrix @math{A} has a Cholesky
+decomposition into a product of a lower triagular matrix @math{L} and
+its transpose @math{L^T},
+
+@tex
+\beforedisplay
+$$
+A = L L^T
+$$
+\afterdisplay
+@end tex
+@ifinfo
+@example
+A = L L^T
+@end example
+@end ifinfo
+@noindent
+This is sometimes referred to as taking the square-root of a matrix. The
+Cholesky decomposition can only be carried out when all the eigenvalues
+of the matrix are positive.  This decomposition can be used to convert
+the linear system @math{A x = b} into a pair of triangular systems
+(@math{L y = b}, @math{L^T x = y}), which can be solved by forward and
+back-substitution.
+
+@deftypefun int gsl_linalg_cholesky_decomp (gsl_matrix * @var{A})
+This function factorizes the positive-definite square matrix @var{A}
+into the Cholesky decomposition @math{A = L L^T}. On output the diagonal
+and lower triangular part of the input matrix @var{A} contain the matrix
+@math{L}. The upper triangular part of the input matrix contains
+@math{L^T}, the diagonal terms being identical for both @math{L} and
+@math{L^T}.  If the matrix is not positive-definite then the
+decomposition will fail, returning the error code @code{GSL_EDOM}.
+@end deftypefun
+
+@deftypefun int gsl_linalg_cholesky_solve (const gsl_matrix * @var{cholesky}, const gsl_vector * @var{b}, gsl_vector * @var{x})
+This function solves the system @math{A x = b} using the Cholesky
+decomposition of @math{A} into the matrix @var{cholesky} given by
+@code{gsl_linalg_cholesky_decomp}.
+@end deftypefun
+
+@deftypefun int gsl_linalg_cholesky_svx (const gsl_matrix * @var{cholesky}, gsl_vector * @var{x})
+This function solves the system @math{A x = b} in-place using the
+Cholesky decomposition of @math{A} into the matrix @var{cholesky}. On
+input @var{x} should contain the right-hand side @math{b}, which is
+replaced by the solution on output.
+@end deftypefun
+
 
 @node Householder solver for linear systems
 @section Householder solver for linear systems

@@ -39,6 +39,9 @@ repository, now does not run configure.
 and comparing histograms, performing arithmetic on histograms and
 finding maximum and minimum values.
 
+** The linear algebra directory supports additional methods, including
+rectangular QR, rectangular QRPT and Cholesky decomposition.
+
 * Was new in gsl-0.5:
 
 ** There is now a KNOWN-PROBLEMS file which lists compilation problems

@@ -1,3 +1,8 @@
+Wed May  3 21:19:45 2000  Brian Gough  <bjg@network-theory.co.uk>
+
+	* cholesky.c: added cholesky decomposition/solve from Thomas
+ 	Walter. Modified for GSL.
+
 Fri Apr 28 17:13:00 2000  Brian Gough  <bjg@network-theory.co.uk>
 
 	* renamed all matrices to use upper case variable names, e.g. A

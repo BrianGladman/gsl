@@ -376,7 +376,7 @@ Wrote the Monte Carlo library.
 Wrote the initial complex arithmetic functions.
 
 @item  Thomas Walter 
-Wrote the initial heapsort routines.
+Wrote the initial heapsort routines and cholesky decomposition.
 @end table
 
 

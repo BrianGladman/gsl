@@ -15,7 +15,7 @@ test_LDADD = libgsllinalg.la ../blas/libgslblas.la ../blas/libgslblasnative.la .
 test_DEPENDENCIES = libgsllinalg.la
 test_SOURCES = test.c
 
-libgsllinalg_la_SOURCES = multiply.c tridiag.c tridiag.h lu.c hh.c qr.c qrpt.c svd.c householder.c
+libgsllinalg_la_SOURCES = multiply.c tridiag.c tridiag.h lu.c hh.c qr.c qrpt.c svd.c householder.c cholesky.c
 
 noinst_HEADERS =  givens.c
 

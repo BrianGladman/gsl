@@ -198,6 +198,17 @@ int gsl_linalg_QRPT_update (gsl_matrix * Q,
 			    gsl_vector * u,
 			    const gsl_vector * v);
 
+/* Cholesky Decomposition */
+
+int gsl_linalg_cholesky_decomp (gsl_matrix * A);
+
+int gsl_linalg_cholesky_solve (const gsl_matrix * cholesky,
+                               const gsl_vector * b,
+                               gsl_vector * x);
+
+int gsl_linalg_cholesky_svx (const gsl_matrix * cholesky,
+                             gsl_vector * x);
+
 /* Linear Solve Using Householder Transformations
 
  * exceptions: 
