@@ -183,9 +183,19 @@ decomposition of @math{A} into (@var{QR}, @var{tau}) given by
 
 @deftypefun int gsl_linalg_QR_svx (const gsl_matrix * @var{QR}, const gsl_vector * @var{tau}, gsl_vector * @var{x})
 This function solves the system @math{A x = b} in-place using the
-@math{QR} decomposition of @math{A} into (@var{QR},@var{tau}). On input
-@var{x} should contain the right-hand side @math{b}, which is replaced by
-the solution on output.
+@math{QR} decomposition of @math{A} into (@var{QR},@var{tau}) given by
+@code{gsl_linalg_QR_decomp}. On input @var{x} should contain the
+right-hand side @math{b}, which is replaced by the solution on output.
+@end deftypefun
+
+@deftypefun int gsl_linalg_QR_lssolve (const gsl_matrix * @var{QR}, const gsl_vector * @var{tau}, const gsl_vector * @var{b}, gsl_vector * @var{x}, gsl_vector * @var{residual})
+This function finds the least squares solution to the overdetermined
+system @math{A x = b} where the matrix @var{A} has more rows than
+columns.  The least squares solution minimises the Euclidean norm of the
+residual, @math{||Ax - b||}.The routine uses the @math{QR} decomposition
+of @math{A} into (@var{QR}, @var{tau}) given by
+@code{gsl_linalg_QR_decomp}.  The solution is returned in @var{x}.  The
+residual is computed as a by-product and stored in @var{residual}.
 @end deftypefun
 
 @deftypefun int gsl_linalg_QR_QTvec (const gsl_matrix * @var{QR}, const gsl_vector * @var{tau}, gsl_vector * @var{v})
@@ -194,6 +204,14 @@ This function applies the matrix @math{Q^T} encoded in the decomposition
 v} in @var{v}.  The matrix multiplication is carried out directly using
 the encoding of the Householder vectors without needing to form the full
 matrix @math{Q^T}.
+@end deftypefun
+
+@deftypefun int gsl_linalg_QR_Qvec (const gsl_matrix * @var{QR}, const gsl_vector * @var{tau}, gsl_vector * @var{v})
+This function applies the matrix @math{Q} encoded in the decomposition
+(@var{QR},@var{tau}) to the vector @var{v}, storing the result @math{Q
+v} in @var{v}.  The matrix multiplication is carried out directly using
+the encoding of the Householder vectors without needing to form the full
+matrix @math{Q}.
 @end deftypefun
 
 @deftypefun int gsl_linalg_QR_Rsolve (const gsl_matrix * @var{QR}, const gsl_vector * @var{b}, gsl_vector * @var{x})
