@@ -58,11 +58,6 @@ typedef struct gsl_multifit_function_struct gsl_multifit_function ;
 
 #define GSL_MULTIFIT_FN_EVAL(F,x,y) (*((F)->f))(x,(F)->params,(y))
 
-int gsl_multifit_fdjacobian (gsl_multifit_function * F,
-                             const gsl_vector * x, 
-                             const gsl_vector * f,
-                             double epsrel, gsl_matrix * jacobian);
-
 typedef struct
   {
     const char *name;

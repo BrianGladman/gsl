@@ -1,3 +1,8 @@
+2004-12-23  Brian Gough  <bjg@network-theory.co.uk>
+
+	* gsl_multifit_nlin.h: removed unused declaration of 
+	gsl_multifit_fdjacobian
+
 2004-06-14  Brian Gough  <bjg@network-theory.co.uk>
 
 	* lmiterate.c (iterate): handle case where fnorm = 0 to avoid
