@@ -22,7 +22,7 @@ static
 gsl_odeiv_step *
 rkck_create(unsigned int dimension)
 {
-  gsl_odeiv_step * step = gsl_odeiv_step_new(dimension, 4, 0, 7 * dimension * sizeof(double));
+  gsl_odeiv_step * step = gsl_odeiv_step_new(gsl_odeiv_step_factory_rkck.name, dimension, 4, 0, 7 * dimension * sizeof(double));
   step->_step = rkck_step;
   return step;
 }

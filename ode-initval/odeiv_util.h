@@ -12,6 +12,7 @@
  */
 gsl_odeiv_step *
 gsl_odeiv_step_new(
+  const char * name,
   unsigned int dim,
   unsigned int ord,
   size_t state_size,

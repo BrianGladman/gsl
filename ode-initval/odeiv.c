@@ -7,6 +7,13 @@
 #include "gsl_odeiv.h"
 
 
+const char *
+gsl_odeiv_step_name(const gsl_odeiv_step * s)
+{
+  return s->_name;
+}
+
+
 int
 gsl_odeiv_step_impl(
   gsl_odeiv_step * s,
@@ -36,6 +43,7 @@ void
 gsl_odeiv_step_free(gsl_odeiv_step * s)
 {
   if(s != 0) {
+    free(s->_name);
     if(s->_free != 0)  s->_free(s->_state, s->_work);
     if(s->_state != 0) free(s->_state);
     if(s->_work != 0)  free(s->_work);

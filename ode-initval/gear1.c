@@ -24,7 +24,7 @@ static
 gsl_odeiv_step *
 gear1_create(unsigned int dimension)
 {
-  gsl_odeiv_step * step = gsl_odeiv_step_new(dimension, 1 /* FIXME: ?? */, 0, 2*dimension * sizeof(double));
+  gsl_odeiv_step * step = gsl_odeiv_step_new(gsl_odeiv_step_factory_gear1.name, dimension, 1 /* FIXME: ?? */, 0, 2*dimension * sizeof(double));
   step->_step = gear1_step;
   return step;
 }

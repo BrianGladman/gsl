@@ -39,7 +39,7 @@ gear2_create(unsigned int dimension)
 {
   gear2_state * state;
 
-  gsl_odeiv_step * step = gsl_odeiv_step_new(dimension, 2 /* FIXME: ?? */, sizeof(gear2_state), 2*dimension * sizeof(double));
+  gsl_odeiv_step * step = gsl_odeiv_step_new(gsl_odeiv_step_factory_gear2.name, dimension, 2 /* FIXME: ?? */, sizeof(gear2_state), 2*dimension * sizeof(double));
   if(step == 0) return 0;
 
   step->_step  = gear2_step;

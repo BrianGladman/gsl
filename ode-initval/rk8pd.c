@@ -23,7 +23,7 @@ static
 gsl_odeiv_step *
 rk8pd_create(unsigned int dimension)
 {
-  gsl_odeiv_step * step = gsl_odeiv_step_new(dimension, 8, 0, 14 * dimension * sizeof(double));
+  gsl_odeiv_step * step = gsl_odeiv_step_new(gsl_odeiv_step_factory_rk8pd.name, dimension, 8, 0, 14 * dimension * sizeof(double));
   step->_step = rk8pd_step;
   return step;
 }

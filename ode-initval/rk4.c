@@ -24,7 +24,7 @@ static
 gsl_odeiv_step *
 rk4_create(unsigned int dimension)
 {
-  gsl_odeiv_step * step = gsl_odeiv_step_new(dimension, 4, 0, 3*dimension * sizeof(double));
+  gsl_odeiv_step * step = gsl_odeiv_step_new(gsl_odeiv_step_factory_rk4.name, dimension, 4, 0, 3*dimension * sizeof(double));
   step->_step = rk4_step;
   return step;
 }

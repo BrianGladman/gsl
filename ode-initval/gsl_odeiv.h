@@ -38,6 +38,7 @@ gsl_odeiv_system;
  * iterating the stepping operation.
  */
 typedef struct {
+  char * _name;
   int  (*_step)  (void *_state, void * _work, unsigned int dim, double t, double h, double y[], double yerr[], const gsl_odeiv_system * dydt);
   int  (*_reset) (void * _state);
   void (*_free)  (void * _state, void * _work);
@@ -82,6 +83,7 @@ extern const gsl_odeiv_step_factory  gsl_odeiv_step_factory_gear2;
 
 /* General stepper object methods.
  */
+const char * gsl_odeiv_step_name(const gsl_odeiv_step * s);
 int  gsl_odeiv_step_impl(gsl_odeiv_step * s, double t, double h, double y[], double yerr[], const gsl_odeiv_system * dydt);
 int  gsl_odeiv_step_reset(gsl_odeiv_step * s);
 void gsl_odeiv_step_free(gsl_odeiv_step * s);
