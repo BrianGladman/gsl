@@ -69,7 +69,7 @@ VERSION = @VERSION@
 full_top_builddir = @full_top_builddir@
 full_top_srcdir = @full_top_srcdir@
 
-SUBDIRS = utils err random vector matrix randist fft roots specfunc statistics siman integration histogram doc
+SUBDIRS = utils err ieee-utils random vector matrix randist fft roots specfunc statistics siman integration histogram doc
 
 include_HEADERS = gsl_complex.h gsl_math.h
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -79,7 +79,7 @@ CONFIG_CLEAN_FILES =
 HEADERS =  $(include_HEADERS)
 
 DIST_COMMON =  README AUTHORS COPYING ChangeLog INSTALL Makefile.am \
-Makefile.in NEWS acconfig.h aclocal.m4 config.guess config.h.in \
+Makefile.in NEWS TODO acconfig.h aclocal.m4 config.guess config.h.in \
 config.sub configure configure.in install-sh mdate-sh missing \
 mkinstalldirs stamp-h.in texinfo.tex
 

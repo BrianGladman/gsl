@@ -21,6 +21,7 @@ dnl Check compiler features
 AC_TYPE_SIZE_T
 AC_C_CONST
 AC_C_INLINE
+AC_C_BIGENDIAN
 
 dnl some magic to get a full path to the working directory
 full_top_srcdir=`cd $srcdir; pwd`
@@ -134,5 +135,5 @@ fi ;
 #
 
 #
-AC_OUTPUT(err/Makefile fft/Makefile specfunc/Makefile statistics/Makefile roots/Makefile random/Makefile randist/Makefile siman/Makefile integration/Makefile doc/Makefile utils/Makefile vector/Makefile matrix/Makefile histogram/Makefile Makefile)
+AC_OUTPUT(err/Makefile ieee-utils/Makefile fft/Makefile specfunc/Makefile statistics/Makefile roots/Makefile random/Makefile randist/Makefile siman/Makefile integration/Makefile doc/Makefile utils/Makefile vector/Makefile matrix/Makefile histogram/Makefile Makefile)
 
