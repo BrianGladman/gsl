@@ -77,7 +77,7 @@ for $file (@ARGV) {
         my $name = $dir; 
         $name =~ s/.*\///; 
         $name =~ s/-/_/g;
-        if ($prog =~ /test/) {
+        if ($prog =~ /^test/) {
             $name = "${prog}_${name}";
             push (@tests, "$name");
         } else {
