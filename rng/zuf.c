@@ -33,7 +33,7 @@ unsigned long int zuf_get (void *vstate)
     
     state->u[n] = t;
     
-    if (n == 607) 
+    if (n == 606) 
       {
 	state->n = 0 ;
       }
