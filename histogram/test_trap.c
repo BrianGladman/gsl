@@ -1,6 +1,4 @@
-
 #include <config.h>
-#include <fcntl.h>
 #include <stdio.h>
 #include <gsl_histogram.h>
 #include <gsl_test.h>

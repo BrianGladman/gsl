@@ -1,4 +1,3 @@
-
 #include <config.h>
 #include <gsl_errno.h>
 #include <gsl_histogram2d.h>

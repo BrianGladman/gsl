@@ -1,3 +1,4 @@
+#include <config.h>
 #include <stdio.h>
 #include <gsl_errno.h>
 #include <gsl_vector.h>

@@ -1,5 +1,3 @@
-
-
 #include <config.h>
 #include <math.h>
 #include <gsl_histogram2d.h>
