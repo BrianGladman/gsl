@@ -10,6 +10,7 @@ include_HEADERS = \
 	gsl_sf_chebyshev.h  	\
 	gsl_sf_clausen.h	\
 	gsl_sf_coulomb.h	\
+	gsl_sf_debye.h      	\
 	gsl_sf_dilog.h      	\
 	gsl_sf_ellint.h        	\
 	gsl_sf_erf.h        	\
@@ -67,6 +68,7 @@ libgslspecfunc_a_SOURCES = 	\
 	chebyshev.c		\
 	clausen.c		\
 #	coulomb.c		\ doesn't work yet
+	debye.c			\
 	dilog.c			\
 	ellint.c		\
 	erfc.c			\
