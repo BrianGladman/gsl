@@ -1,3 +1,8 @@
+Fri Oct 23 12:51:01 1998  Brian Gough  <bjg@vvv.lanl.gov>
+
+	* test_results.c (gsl_test_rel): print a shorter "observed vs
+ 	expected" message if the description is 45 characters or longer
+
 Mon Jun  1 11:02:04 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
 	* gsl_errno.h: added GSL_EUNSUP for errors caused by a hardware

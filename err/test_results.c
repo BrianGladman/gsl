@@ -107,7 +107,14 @@ gsl_test_rel (double result, double expected, double relative_error,
 #endif
       if (status == 0)
 	{
-	  printf(" (%g observed vs %g expected)", result, expected) ;
+	  if (strlen(test_description) < 45)
+	    {
+	      printf(" (%g observed vs %g expected)", result, expected) ;
+	    }
+	  else
+	    {
+	      printf(" (%g obs vs %g exp)", result, expected) ;
+	    }
 	}
       else 
 	{
