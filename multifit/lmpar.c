@@ -93,7 +93,7 @@ compute_newton_direction (const gsl_matrix * r, const gsl_permutation * perm,
         }
     }
 
-  gsl_permute_vector (perm, x);
+  gsl_permute_vector_inverse (perm, x);
 }
 
 static void
