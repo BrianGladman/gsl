@@ -1,3 +1,7 @@
+Sat Sep 12 13:03:19 1998  Brian Gough  <bjg@vvv.lanl.gov>
+
+	* rayleigh.c: added rayleigh distribution
+
 Mon Aug 31                James Theiler <jt@lanl.gov>
 
 	* Makefile.am: added ../utils/libutils.a to some LDADD's

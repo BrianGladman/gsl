@@ -114,6 +114,8 @@ double test_dir3dyz (void);
 double test_dir3dyz_pdf (double x);
 double test_dir3dzx (void);
 double test_dir3dzx_pdf (double x);
+double test_rayleigh (void);
+double test_rayleigh_pdf (double x);
 double test_tdist1 (void);
 double test_tdist1_pdf (double x);
 double test_tdist2 (void);
@@ -178,6 +180,7 @@ main (void)
   test_pdf (FUNC2(test_logistic));
   test_pdf (FUNC2(test_lognormal));
   test_pdf (FUNC2(test_pareto));
+  test_pdf (FUNC2(test_rayleigh));
   test_pdf (FUNC2(test_tdist1));
   test_pdf (FUNC2(test_tdist2));
   test_pdf (FUNC2(test_laplace));
@@ -1083,6 +1086,19 @@ test_pareto_pdf (double x)
 {
   return gsl_ran_pareto_pdf (x, 1.9, 2.75);
 }
+
+double
+test_rayleigh (void)
+{
+  return gsl_ran_rayleigh (r_global, 1.9);
+}
+
+double
+test_rayleigh_pdf (double x)
+{
+  return gsl_ran_rayleigh_pdf (x, 1.9);
+}
+
 
 double
 test_poisson (void)

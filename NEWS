@@ -1,5 +1,7 @@
 #We need to do a better job with the NEWS file!
 
+** Additional random number distributions: Rayleigh distribution
+
 * Will be new in gsl-0.4:
 
 ** A single libgsl.a file is built in the top level directory and

@@ -245,6 +245,12 @@ main (int argc, char *argv[])
       DBL_ARG(mu) ;
       INT_OUTPUT(gsl_ran_poisson (r, mu));
     }
+  else if (NAME("rayleigh"))
+    {
+      ARGS(1, "sigma = scale parameter");
+      DBL_ARG(sigma) ;
+      OUTPUT(gsl_ran_rayleigh (r, sigma));
+    }
   else if (NAME("tdist"))
     {
       ARGS(1, "nu = degrees of freedom");

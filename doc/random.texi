@@ -920,6 +920,7 @@ The functions described in this section are declared in
 * The Laplace Distribution::    
 * The Exponential Power Distribution::  
 * The Cauchy Distribution::     
+* The Rayleigh Distribution::   
 * The Symmetric Levy Distribution::  
 * The Gamma Distribution::      
 * The Flat (Uniform) Distribution::  
@@ -1241,6 +1242,53 @@ Confidence limits:
 @math{p(|x| < \mu) = 0.5},
 @math{p(|x| < 2\mu) = 0.705},
 @math{p(|x| < 3\mu) = 0.795}
+
+@end itemize
+
+@c ----------------------------------------------------------------------
+@page
+@node The Rayleigh Distribution
+@subsection The Rayleigh Distribution
+@deftypefn Random double gsl_ran_rayleigh (const gsl_rng * @var{r}, double @var{sigma})
+@cindex Rayleigh random numbers
+This function returns a random number from the Rayleigh distribution with
+scale parameter @var{sigma}. The probability distribution for Rayleigh
+random numbers is,
+@c
+@equation
+p(x) dx = @{x \over \sigma^2@} \exp(- x^2/(2 \sigma^2)) dx
+@end equation
+@noindent
+for @math{x>0}.
+@end deftypefn
+
+@deftypefun double gsl_ran_rayleigh_pdf (double @var{x}, double @var{sigma})
+This function computes the probability density @math{p(x)} at @var{x}
+for an Rayleigh distribution with scale parameter @var{sigma}, using the
+formula given above.
+@end deftypefun
+
+@tex
+\centerline{\input rand-rayleigh.tex}
+@end tex
+
+@subheading Properties
+@itemize @asis
+@item
+
+@c @item
+@c Characteristic function, @math{\phi(t) = \exp(-i\alpha t - \beta |t|)}
+
+@item
+Cumulative distribution function, 
+@math{CDF(x) = \int_@{-\infty@}^x p(x') dx' = 1 - \exp(-x^2/(2 \sigma^2))}
+
+@c @item
+@c Confidence limits:
+
+@c @math{p(|x| < \mu) = 0.5},
+@c @math{p(|x| < 2\mu) = 0.705},
+@c @math{p(|x| < 3\mu) = 0.795}
 
 @end itemize
 

@@ -80,6 +80,9 @@ void gsl_ran_poisson_array (const gsl_rng * r, size_t n, unsigned int array[],
 			    double mu);
 double gsl_ran_poisson_pdf (unsigned int k, double mu);
 
+double gsl_ran_rayleigh (const gsl_rng * r, double sigma);
+double gsl_ran_rayleigh_pdf (double x, double sigma);
+
 double gsl_ran_tdist (const gsl_rng * r, double nu);
 double gsl_ran_tdist_pdf (double x, double nu);
 

@@ -75,7 +75,8 @@ libgslrandist_a_SOURCES = \
  bernoulli.c beta.c binomial.c cauchy.c chisq.c erlang.c exponential.c \
  exppow.c fdist.c flat.c gamma.c gauss.c geometric.c \
  gumbel.c hyperg.c laplace.c levy.c logarithmic.c logistic.c lognormal.c \
- nbinomial.c pareto.c pascal.c poisson.c shuffle.c sphere.c tdist.c weibull.c 
+ nbinomial.c pareto.c pascal.c poisson.c rayleigh.c \
+ shuffle.c sphere.c tdist.c weibull.c 
 
 include_HEADERS= gsl_randist.h
 
@@ -104,8 +105,8 @@ libgslrandist_a_LIBADD =
 libgslrandist_a_OBJECTS =  bernoulli.o beta.o binomial.o cauchy.o \
 chisq.o erlang.o exponential.o exppow.o fdist.o flat.o gamma.o gauss.o \
 geometric.o gumbel.o hyperg.o laplace.o levy.o logarithmic.o logistic.o \
-lognormal.o nbinomial.o pareto.o pascal.o poisson.o shuffle.o sphere.o \
-tdist.o weibull.o
+lognormal.o nbinomial.o pareto.o pascal.o poisson.o rayleigh.o \
+shuffle.o sphere.o tdist.o weibull.o
 AR = ar
 PROGRAMS =  $(bin_PROGRAMS)
 
@@ -136,8 +137,8 @@ DEP_FILES =  .deps/bernoulli.P .deps/beta.P .deps/binomial.P \
 .deps/geometric.P .deps/gsl-randist.P .deps/gumbel.P .deps/hyperg.P \
 .deps/laplace.P .deps/levy.P .deps/logarithmic.P .deps/logistic.P \
 .deps/lognormal.P .deps/nbinomial.P .deps/pareto.P .deps/pascal.P \
-.deps/poisson.P .deps/shuffle.P .deps/sphere.P .deps/tdist.P \
-.deps/test.P .deps/weibull.P
+.deps/poisson.P .deps/rayleigh.P .deps/shuffle.P .deps/sphere.P \
+.deps/tdist.P .deps/test.P .deps/weibull.P
 SOURCES = $(libgslrandist_a_SOURCES) $(gsl_randist_SOURCES) $(test_SOURCES)
 OBJECTS = $(libgslrandist_a_OBJECTS) $(gsl_randist_OBJECTS) $(test_OBJECTS)
 

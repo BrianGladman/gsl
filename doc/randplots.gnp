@@ -142,6 +142,16 @@ p(x)= x>b ? a*b**a/x**(a+1) : 0
 plot a=1.0, b=1, p(x) title "$a=1, b=1$", \
 	a=3.0, b=2, p(x) title "$a=3, b=2 $"
 
+set xrange [0:5]
+set yrange [0:0.7]
+set ytics 0.1
+set xtics 1
+set output "rand-rayleigh.tex"
+set title "Rayleigh Distribution"
+p(x)= (x/sigma**2)*exp(-x**2/(2*sigma**2))
+plot sigma=1.0, p(x) title "$\sigma=1$", \
+	sigma=2.0, p(x) title "$\sigma=2$"
+
 set xrange [0:4]
 set yrange [0:0.4]
 set ytics 0.1

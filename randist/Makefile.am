@@ -3,7 +3,8 @@ libgslrandist_a_SOURCES = \
  bernoulli.c beta.c binomial.c cauchy.c chisq.c erlang.c exponential.c \
  exppow.c fdist.c flat.c gamma.c gauss.c geometric.c \
  gumbel.c hyperg.c laplace.c levy.c logarithmic.c logistic.c lognormal.c \
- nbinomial.c pareto.c pascal.c poisson.c shuffle.c sphere.c tdist.c weibull.c 
+ nbinomial.c pareto.c pascal.c poisson.c rayleigh.c \
+ shuffle.c sphere.c tdist.c weibull.c 
 
 
 include_HEADERS= gsl_randist.h
