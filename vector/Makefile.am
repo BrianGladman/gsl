@@ -19,6 +19,6 @@ test_static_SOURCES = test_static.c
 
 CLEANFILES = test.txt test.dat
 
-noinst_HEADERS = vector_source.c init_source.c file_source.c copy_source.c swap_source.c prop_source.c test_complex_source.c test_source.c test_io.c test_complex_io.c minmax_source.c oper_source.c subvector_source.c
+noinst_HEADERS = vector_source.c init_source.c file_source.c copy_source.c swap_source.c prop_source.c test_complex_source.c test_source.c test_io.c test_complex_io.c minmax_source.c oper_source.c subvector_source.c view_source.c
 
-libgslvector_la_SOURCES = init.c file.c vector.c copy.c swap.c prop.c minmax.c oper.c subvector.c
+libgslvector_la_SOURCES = init.c file.c vector.c copy.c swap.c prop.c minmax.c oper.c subvector.c view.c

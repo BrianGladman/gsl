@@ -170,63 +170,6 @@ FUNCTION (gsl_vector, free) (TYPE (gsl_vector) * v)
 }
 
 
-
-int
-FUNCTION(gsl_vector, view_from_vector) (TYPE(gsl_vector) * v,
-                                        TYPE(gsl_vector) * base,
-                                        size_t offset, size_t n, size_t stride)
-{
-  if (n == 0)
-    {
-      GSL_ERROR ("vector length n must be positive integer", GSL_EINVAL);
-    }
-
-  if (stride == 0)
-    {
-      GSL_ERROR ("stride must be positive integer", GSL_EINVAL);
-    }
-
-  if (base->size <= offset + (n - 1) * stride)
-    {
-      GSL_ERROR ("vector would extend past end of vector", GSL_EINVAL);
-    }
-
-  if (v->block != 0)
-    {
-      GSL_ERROR ("vector already has memory allocated to it", GSL_ENOMEM);
-    }
-
-  v->data = base->data + MULTIPLICITY * base->stride * offset ;
-  v->size = n;
-  v->stride = base->stride * stride;
-  v->block = base->block;
-
-  return GSL_SUCCESS;
-}
-
-
-TYPE(gsl_vector)
-FUNCTION(gsl_vector, view) (ATOMIC * base, size_t n)
-{
-  TYPE(gsl_vector) v = {0, 0, 0, 0, 0};
-
-  if (n == 0)
-    {
-      GSL_ERROR_VAL ("vector length n must be positive integer", 
-                     GSL_EINVAL, v);
-    }
-
-  v.data = base  ;
-  v.size = n;
-  v.stride = 1;
-  v.block = 0;
-  v.owner = 0;
-
-  return v;
-}
-
-
-
 void
 FUNCTION (gsl_vector, set_all) (TYPE (gsl_vector) * v, BASE x)
 {

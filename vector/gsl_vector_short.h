@@ -68,6 +68,10 @@ int gsl_vector_short_view_from_vector (gsl_vector_short *v,
                                        gsl_vector_short *base,
                                        size_t offset, size_t n, size_t stride);
 
+int gsl_vector_short_view_from_array (gsl_vector_short *v, 
+                                      short *base,
+                                      size_t offset, size_t n, size_t stride);
+
 gsl_vector_short gsl_vector_short_subvector (gsl_vector_short *v, size_t i, size_t n);
 gsl_vector_short gsl_vector_short_subvector_with_stride (gsl_vector_short *v, size_t i, size_t n, size_t stride);
 

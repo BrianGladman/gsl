@@ -1,3 +1,7 @@
+Tue Mar 27 15:12:07 2001  Brian Gough  <bjg@network-theory.co.uk>
+
+	* view_source.c: split view functions into a separate file
+
 Sat Sep  9 16:45:15 2000  Brian Gough  <bjg@network-theory.co.uk>
 
 	* added an owner field for indicating whether the underlying

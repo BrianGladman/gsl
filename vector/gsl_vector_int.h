@@ -68,6 +68,10 @@ int gsl_vector_int_view_from_vector (gsl_vector_int *v,
                                        gsl_vector_int *base,
                                        size_t offset, size_t n, size_t stride);
 
+int gsl_vector_int_view_from_array (gsl_vector_int *v, 
+                                      int *base,
+                                      size_t offset, size_t n, size_t stride);
+
 gsl_vector_int gsl_vector_int_subvector (gsl_vector_int *v, size_t i, size_t n);
 gsl_vector_int gsl_vector_int_subvector_with_stride (gsl_vector_int *v, size_t i, size_t n, size_t stride);
 

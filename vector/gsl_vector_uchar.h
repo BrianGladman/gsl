@@ -68,6 +68,10 @@ int gsl_vector_uchar_view_from_vector (gsl_vector_uchar *v,
                                        gsl_vector_uchar *base,
                                        size_t offset, size_t n, size_t stride);
 
+int gsl_vector_uchar_view_from_array (gsl_vector_uchar *v, 
+                                      unsigned char *base,
+                                      size_t offset, size_t n, size_t stride);
+
 gsl_vector_uchar gsl_vector_uchar_subvector (gsl_vector_uchar *v, size_t i, size_t n);
 gsl_vector_uchar gsl_vector_uchar_subvector_with_stride (gsl_vector_uchar *v, size_t i, size_t n, size_t stride);
 
