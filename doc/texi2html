@@ -2035,6 +2035,8 @@ sub byalpha {
 ######################################################################
 
 sub print_hhc_header {
+    my $title = $value{'_title'} || $value{'_settitle'} || $docu_name;
+    chomp($title);
     print FILE <<EOT;
 <!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
 <HTML>
@@ -2046,11 +2048,18 @@ sub print_hhc_header {
         <param name="Type" value="Reference">
         <param name="TypeDesc" value="Reference topics">
 </OBJECT>
+<UL>
+<LI> <OBJECT type="text/sitemap">
+    <param name="Name" value="$title">
+    <param name="Type" value="Reference">
+    <param name="Local" value="$docu_toc">
+    </OBJECT>
 EOT
 }
 
 sub print_hhc_footer {
     print FILE <<EOT;
+</UL>
 </BODY></HTML>
 EOT
 }
@@ -2095,7 +2104,7 @@ sub dump_hhk {
     local (@lines) = ();
     if (open(FILE, ">$file")) {
         print "# creating $file...\n" if $verbose;
-        &print_hhc_header();
+        &print_hhk_header();
         push (@lines, "<UL>");
         for my $k (sort keys %$gindex) {
             my @entries = split("$;", $gindex->{$k}) ;
@@ -2111,7 +2120,7 @@ sub dump_hhk {
         }
         push (@lines, "</UL>");
         &print (*lines, FILE);
-        &print_hhc_footer;
+        &print_hhk_footer;
         close(FILE);
     } else {
         warn "$ERROR Can't write to $file: $!\n";
