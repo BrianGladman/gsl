@@ -1,12 +1,14 @@
 #include <config.h>
 #include <gsl_vector.h>
 
+#ifdef HAVE_LONGDOUBLE_PRINTF
 #define BASE_GSL_COMPLEX_LONG
 #include "templates_on.h"
 #include "file_source.c"
 #include "fprintf_block.c"
 #include "templates_off.h"
 #undef  BASE_GSL_COMPLEX_LONG
+#endif
 
 #define BASE_GSL_COMPLEX
 #include "templates_on.h"
@@ -22,12 +24,14 @@
 #include "templates_off.h"
 #undef  BASE_GSL_COMPLEX_FLOAT
 
+#ifdef HAVE_LONGDOUBLE_PRINTF
 #define BASE_LONG_DOUBLE
 #include "templates_on.h"
 #include "file_source.c"
 #include "fprintf_block.c"
 #include "templates_off.h"
 #undef  BASE_LONG_DOUBLE
+#endif
 
 #define BASE_DOUBLE
 #include "templates_on.h"

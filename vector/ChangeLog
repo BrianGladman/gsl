@@ -1,3 +1,9 @@
+Sun Nov  8 18:39:40 1998  Brian Gough  <bjg@vvv.lanl.gov>
+
+	* test_io.c, test_complex_io.c: split out the printf/scanf
+ 	routines since these aren't supported on all platforms
+	for long double
+
 Fri Jul 24 19:44:52 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
 	* added parent pointer in structs, to determine whether or not

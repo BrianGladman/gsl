@@ -36,6 +36,6 @@ test_static_SOURCES = test_static.c
 CLEANFILES = test.txt test.dat
 
 noinst_HEADERS = vector_source.c init_source.c file_source.c fprintf_block.c \
-	test_complex_source.c test_source.c
+	test_complex_source.c test_source.c test_io.c test_complex_io.c
 
 libgslvector_a_SOURCES = init.c file.c vector.c
