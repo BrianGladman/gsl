@@ -27,9 +27,8 @@
 double
 gsl_ran_gaussian_tail (const gsl_rng * r, const double a, const double sigma)
 {
-  /* Returns a gaussian random variable larger than s
-   * This implementation does one-tailed deviates.
-   * FIXME: what to do about a < 0?
+  /* Returns a gaussian random variable larger than a
+   * This implementation does one-sided upper-tailed deviates.
    */
 
   double s = a / sigma;
@@ -43,7 +42,7 @@ gsl_ran_gaussian_tail (const gsl_rng * r, const double a, const double sigma)
 
       do
 	{
-	  x = fabs (gsl_ran_gaussian (r, 1.0));
+	  x = gsl_ran_gaussian (r, 1.0);
 	}
       while (x < s);
       return x * sigma;

@@ -84,6 +84,10 @@ double test_gaussian_ratio_method (void);
 double test_gaussian_ratio_method_pdf (double x);
 double test_gaussian_tail (void);
 double test_gaussian_tail_pdf (double x);
+double test_gaussian_tail1 (void);
+double test_gaussian_tail1_pdf (double x);
+double test_gaussian_tail2 (void);
+double test_gaussian_tail2_pdf (double x);
 double test_ugaussian (void);
 double test_ugaussian_pdf (double x);
 double test_ugaussian_ratio_method (void);
@@ -229,6 +233,8 @@ main (void)
   testPDF (FUNC2(ugaussian));
   testPDF (FUNC2(ugaussian_ratio_method));
   testPDF (FUNC2(gaussian_tail));
+  testPDF (FUNC2(gaussian_tail1));
+  testPDF (FUNC2(gaussian_tail2));
   testPDF (FUNC2(ugaussian_tail));
   
   testPDF (FUNC2(bivariate_gaussian1));
@@ -923,6 +929,31 @@ test_gaussian_tail_pdf (double x)
 {
   return gsl_ran_gaussian_tail_pdf (x, 1.7, 0.25) ;
 }
+
+double
+test_gaussian_tail1 (void)
+{
+  return gsl_ran_gaussian_tail (r_global, -1.7, 5.0);
+}
+
+double
+test_gaussian_tail1_pdf (double x)
+{
+  return gsl_ran_gaussian_tail_pdf (x, -1.7, 5.0) ;
+}
+
+double
+test_gaussian_tail2 (void)
+{
+  return gsl_ran_gaussian_tail (r_global, 0.1, 2.0);
+}
+
+double
+test_gaussian_tail2_pdf (double x)
+{
+  return gsl_ran_gaussian_tail_pdf (x, 0.1, 2.0) ;
+}
+
 
 double
 test_ugaussian (void)

@@ -1,3 +1,8 @@
+Sat Jun 23 12:30:38 2001  Brian Gough  <bjg@network-theory.co.uk>
+
+	* gausstail.c (gsl_ran_gaussian_tail): allow negative values for
+ 	the tail cutoff parameter.
+
 Mon May 21 12:17:07 2001  Brian Gough  <bjg@network-theory.co.uk>
 
 	* shuffle.c (gsl_ran_choose): removed void * return value
