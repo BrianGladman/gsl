@@ -11,6 +11,7 @@
 #include "gsl_sf_hyperg.h"
 
 #define locMAX(a,b)     ((a) > (b) ? (a) : (b))
+#define locMIN(a,b)     ((a) < (b) ? (a) : (b))
 #define locEPS          (1000.0*GSL_MACH_EPS)
 
 
@@ -1404,12 +1405,30 @@ hyperg_1F1_ab_pos(const double a, const double b, const double x, double * resul
 }
 
 
+/* Assumes b != integer
+ */
 static
 int
 hyperg_1F1_ab_neg(const double a, const double b, const double x,
                   double * result)
 {
-  if(x > 0.0) {
+  const double abs_a = fabs(a);
+  const double abs_b = fabs(b);
+  const double size_a = locMAX(abs_a, 1.0);
+  const double size_b = locMAX(abs_b, 1.0);
+
+  if(   x > 0.0
+     && size_b > size_a
+     && size_a*log(M_E*x/size_b) < GSL_LOG_MACH_EPS+7.0
+    ) {
+    /* Series terms are positive definite up until
+     * there is a sign change. But by then the
+     * terms are small due to the last condition.
+     */
+    double prec;
+    return gsl_sf_hyperg_1F1_series_impl(a, b, x, result, &prec);
+  }
+  else if(x > 0.0) {
     /* [Abramowitz+Stegun, 13.1.3]
      *
      * M(1+a-b,2-b,x) = Gamma(a)/Gamma(b) x^(b-1) *
@@ -1441,6 +1460,7 @@ hyperg_1F1_ab_neg(const double a, const double b, const double x,
 
     inner = term_M - (1.0-bp) * U;
     lninner = log(fabs(inner));
+printf("--:  %22.18g   %22.18g\n", term_M, (1.0-bp) * U);
 
     return gsl_sf_exp_sgn_impl(lninner + lnpre, inner, result);
   }
@@ -1560,7 +1580,6 @@ gsl_sf_hyperg_1F1_impl(const double a, const double b, const double x,
      */
     if(fabs(a) < 10.0*locEPS) {
       /* a and b near zero: 1 + a/b (exp(x)-1)
-       * FIXME: is this right?
        */
       double exm1;
       int stat_e = gsl_sf_expm1_impl(x, &exm1);
@@ -1612,6 +1631,57 @@ gsl_sf_hyperg_1F1_impl(const double a, const double b, const double x,
     int inta = floor(a + 0.1);
     int intb = floor(b + 0.1);
     return gsl_sf_hyperg_1F1_int_impl(inta, intb, x, result);
+  }
+  else if(a_neg_integer && b <= a && x > 0.0) {
+    /* The polynomial evaluation is safe since all
+     * the terms are positive definite.
+     */
+    int inta = floor(a + 0.1);
+    return hyperg_1F1_a_negint_poly(inta, b, x, result);
+  }
+  else if(bma_neg_integer && a < 0.0 && b < 0.0 && x < 0.0) {
+    /* Kummer transformed version of safe polynomial.
+     */
+    double K;
+    int intbma = floor(bma + 0.1);
+    int stat_K = hyperg_1F1_a_negint_poly(intbma, b, -x, &K);
+    if(K != 0.0 && stat_K == GSL_SUCCESS) {
+      return gsl_sf_exp_sgn_impl(x + log(fabs(K)), K, result);
+    }
+    else {
+      *result = 0.0;
+      return stat_K;
+    }
+  }
+  else if(a_neg_integer && x > 0.0) {
+    /* Combine [Abeamowitz+Stegun, 13.6.9 + 13.6.27]
+     * M(-n,1+y,x) = (-1)^n / (y+1)_n U(-n,1+y,x)
+     */
+    int n = -(int)floor(a+0.1);
+    double sgn = ( GSL_IS_ODD(n) ? -1.0 : 1.0 );
+    double lnpoch;
+    double sgpoch;
+    double U;
+    int stat_p = gsl_sf_lnpoch_sgn_impl(b, n, &lnpoch, &sgpoch);
+    int stat_U = gsl_sf_hyperg_U_impl(-n, b, x, &U);
+    if(stat_p == GSL_SUCCESS) {
+      if(U != 0.0 && (stat_U == GSL_SUCCESS || stat_U == GSL_ELOSS)) {
+        double lnr = -lnpoch + log(fabs(U));
+        int stat_e = gsl_sf_exp_sgn_impl(lnr, sgn * sgpoch * U, result);
+	if(stat_e == GSL_SUCCESS)
+	  return stat_U;
+	else
+	  return stat_e;
+      }
+      else {
+        *result = 0.0;
+        return stat_U;
+      }
+    }
+    else {
+      *result = 0.0;
+      return stat_p;
+    }
   }
   else if(b_neg_integer) {
     /* b is a neg integer, but a is not even an integer,
