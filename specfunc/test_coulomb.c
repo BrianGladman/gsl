@@ -50,6 +50,7 @@ int test_coulomb(void)
   TEST_SF(s, gsl_sf_hydrogenicR_1_e, (3.0, 10.0, &r), 9.724727052062819704e-13, TEST_TOL1, GSL_SUCCESS);
   status += s;
 
+  TEST_SF(s, gsl_sf_hydrogenicR_e, (4, 1, 3.0, 0.0, &r),  0.0,  TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_hydrogenicR_e, (4, 0, 3.0, 2.0, &r), -0.03623182256981820062,  TEST_TOL2, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_hydrogenicR_e, (4, 1, 3.0, 2.0, &r), -0.028065049083129581005, TEST_TOL2, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_hydrogenicR_e, (4, 2, 3.0, 2.0, &r),  0.14583027278668431009,  TEST_TOL0, GSL_SUCCESS);

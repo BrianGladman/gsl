@@ -1,5 +1,8 @@
 * What will be new in gsl-1.7:
 
+** The bound coulomb function gsl_sf_hydrogenicR_e no longer reports
+an underflow for exact zeroes of the wavefunction.
+
 ** gsl_linalg_SV_decomp_jacobi now reports an error for the
 unimplemented case M<N correctly.
 

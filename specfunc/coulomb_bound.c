@@ -96,7 +96,8 @@ gsl_sf_hydrogenicR_e(const int n, const int l,
     result->val  = W_val * lag.val;
     result->err  = W_val * lag.err + W_err * fabs(lag.val);
     result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
-    if (stat_lag == GSL_SUCCESS && stat_norm == GSL_SUCCESS) {
+    if ((l == 0 || (r > 0 && l > 0)) && lag.val != 0.0 
+        && stat_lag == GSL_SUCCESS && stat_norm == GSL_SUCCESS) {
       CHECK_UNDERFLOW(result);
     };
     return GSL_ERROR_SELECT_2(stat_lag, stat_norm);

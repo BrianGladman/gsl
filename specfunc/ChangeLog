@@ -1,3 +1,9 @@
+2005-03-02  Brian Gough  <bjg@network-theory.co.uk>
+
+	* coulomb_bound.c (gsl_sf_hydrogenicR_e): don't check for
+	underflow when function is known to be zero (e.g. r=0 l>0 or at
+	zeroes of the laguerre polynomial).
+
 2004-12-29  Brian Gough  <bjg@network-theory.co.uk>
 
 	* dilog.c (gsl_sf_complex_dilog_e): use const consistently in
