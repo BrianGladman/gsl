@@ -8,7 +8,8 @@ void rng_test (const gsl_rng_type * T, unsigned long int seed, unsigned int n,
 void generic_rng_test (const gsl_rng_type * T);
 void rng_state_test (const gsl_rng_type * T);
 void rng_parallel_state_test (const gsl_rng_type * T);
-int rng_max_test (gsl_rng * r, unsigned long int *kmax, unsigned long int ran_max);
+int rng_max_test (gsl_rng * r, unsigned long int *kmax, unsigned long int ran_max) ;
+int rng_min_test (gsl_rng * r, unsigned long int *kmin, unsigned long int ran_min, unsigned long int ran_max) ;
 int rng_sum_test (gsl_rng * r, double *sigma);
 
 #define N  10000
@@ -27,6 +28,7 @@ main (void)
   rng_test (gsl_rng_minstd, 1, 10000, 1043618065);
   rng_test (gsl_rng_mrg, 1, 10000, 2064828650);
   rng_test (gsl_rng_taus, 1, 10000, 2733957125UL);
+  rng_test (gsl_rng_tds, 1, 10000, 1244127297UL);
   rng_test (gsl_rng_vax, 1, 10000, 3051034865UL);
 
   /* FIXME: the ranlux tests below were made by running the fortran code and
@@ -50,7 +52,6 @@ main (void)
      would be preferable. */
 
   rng_test (gsl_rng_r250, 1, 10000, 1100653588);
-
   rng_test (gsl_rng_mt19937, 4357, 1000, 1309179303);
   rng_test (gsl_rng_tt800, 0, 10000, 2856609219UL);
 
@@ -59,6 +60,7 @@ main (void)
   rng_test (gsl_rng_ran2, 0, 10000, 1701364455);
   rng_test (gsl_rng_ran3, 0, 10000, 186340785);
 
+  rng_test (gsl_rng_ranmar, 1, 10000, 14428370);
 
   /* Test save/restore functions */
 
@@ -76,7 +78,9 @@ main (void)
   rng_state_test (gsl_rng_randu);
   rng_state_test (gsl_rng_ranlux);
   rng_state_test (gsl_rng_ranlux389);
+  rng_state_test (gsl_rng_ranmar);
   rng_state_test (gsl_rng_taus);
+  rng_state_test (gsl_rng_tds);
   rng_state_test (gsl_rng_tt800);
   rng_state_test (gsl_rng_uni);
   rng_state_test (gsl_rng_uni32);
@@ -97,7 +101,9 @@ main (void)
   rng_parallel_state_test (gsl_rng_randu);
   rng_parallel_state_test (gsl_rng_ranlux);
   rng_parallel_state_test (gsl_rng_ranlux389);
+  rng_parallel_state_test (gsl_rng_ranmar);
   rng_parallel_state_test (gsl_rng_taus);
+  rng_parallel_state_test (gsl_rng_tds);
   rng_parallel_state_test (gsl_rng_tt800);
   rng_parallel_state_test (gsl_rng_uni);
   rng_parallel_state_test (gsl_rng_uni32);
@@ -122,7 +128,9 @@ main (void)
   generic_rng_test (gsl_rng_randu);
   generic_rng_test (gsl_rng_ranlux);
   generic_rng_test (gsl_rng_ranlux389);
+  generic_rng_test (gsl_rng_ranmar);
   generic_rng_test (gsl_rng_taus);
+  generic_rng_test (gsl_rng_tds);
   generic_rng_test (gsl_rng_tt800);
   generic_rng_test (gsl_rng_uni);
   generic_rng_test (gsl_rng_uni32);
@@ -223,7 +231,8 @@ rng_parallel_state_test (const gsl_rng_type * T)
 
   for (i = 0; i < N; ++i)
     {
-      test_a[i] = gsl_rng_get (r1);	/* check that there is no hidden state */
+      /* check that there is no hidden state intermixed between r1 and r2 */
+      test_a[i] = gsl_rng_get (r1);	
       test_b[i] = gsl_rng_get (r2);
     }
 
@@ -247,15 +256,22 @@ generic_rng_test (const gsl_rng_type * T)
 {
   gsl_rng *r = gsl_rng_alloc (T);
   const char *name = gsl_rng_name (r);
-  unsigned long int kmax = 0;
+  unsigned long int kmax = 0, kmin = 1000;
   double sigma = 0;
   const unsigned long int ran_max = gsl_rng_max (r);
+  const unsigned long int ran_min = gsl_rng_min (r);
 
   int status = rng_max_test (r, &kmax, ran_max);
 
   gsl_test (status,
 	    "%s, observed vs theoretical maximum (%lu vs %lu)",
 	    name, kmax, ran_max);
+
+  status = rng_min_test (r, &kmin, ran_min, ran_max);
+
+  gsl_test (status,
+	    "%s, observed vs theoretical minimum (%lu vs %lu)",
+	    name, kmin, ran_min);
 
   status = rng_sum_test (r, &sigma);
 
@@ -267,12 +283,18 @@ generic_rng_test (const gsl_rng_type * T)
   status = rng_max_test (r, &kmax, ran_max);
 
   gsl_rng_set (r, 1);	/* set seed to 1 */
+  status |= rng_min_test (r, &kmin, ran_min, ran_max);
+
+  gsl_rng_set (r, 1);	/* set seed to 1 */
   status |= rng_sum_test (r, &sigma);
 
-  gsl_rng_set (r, 12345);	/* set seed to 1 */
+  gsl_rng_set (r, 12345);	/* set seed to a "typical" value */
   status |= rng_max_test (r, &kmax, ran_max);
 
-  gsl_rng_set (r, 12345);	/* set seed to 1 */
+  gsl_rng_set (r, 12345);	/* set seed to a "typical" value */
+  status |= rng_min_test (r, &kmin, ran_min, ran_max);
+
+  gsl_rng_set (r, 12345);	/* set seed to a "typical" value */
   status |= rng_sum_test (r, &sigma);
 
   gsl_test (status, "%s, maximum and sum tests for non-default seeds", name);
@@ -284,7 +306,7 @@ int
 rng_max_test (gsl_rng * r, unsigned long int *kmax, unsigned long int ran_max)
 {
   unsigned long int actual_uncovered;
-  double expected_uncovered;
+  double expect_uncovered;
   int status;
   unsigned long int max = 0;
   int i;
@@ -299,17 +321,36 @@ rng_max_test (gsl_rng * r, unsigned long int *kmax, unsigned long int ran_max)
   *kmax = max;
 
   actual_uncovered = ran_max - max;
-  expected_uncovered = (double) ran_max / (double) N2;
+  expect_uncovered = (double) ran_max / (double) N2;
 
-  /* The uni generator never actually reaches its ran_max in practice,
-     due to the way the initial state is generated from the seed.
-     Thus it only hits 32766 instead of 32767. 
+  status = (max > ran_max) || (actual_uncovered > 5 * expect_uncovered) ;
 
-     We'll let it pass by checking if the observed max is just 1 below
-     the theoretical max.  */
+  return status;
+}
 
-  status = (max > ran_max)
-    || (actual_uncovered > 5 * expected_uncovered && actual_uncovered > 1);
+int
+rng_min_test (gsl_rng * r, unsigned long int *kmin, 
+	      unsigned long int ran_min, unsigned long int ran_max)
+{
+  unsigned long int actual_uncovered;
+  double expect_uncovered;
+  int status;
+  unsigned long int min = 1e9;
+  int i;
+
+  for (i = 0; i < N2; ++i)
+    {
+      unsigned long int k = gsl_rng_get (r);
+      if (k < min)
+	min = k;
+    }
+
+  *kmin = min;
+
+  actual_uncovered = min - ran_min;
+  expect_uncovered = (double) ran_max / (double) N2;
+
+  status = (min < ran_min) || (actual_uncovered > 5 * expect_uncovered);
 
   return status;
 }
