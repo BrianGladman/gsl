@@ -1,6 +1,6 @@
-/* ieee-utils/fp-linux.c
+/* ieee-utils/fp-ppclinux.c
  * 
- * Copyright (C) 1996, 1997, 1998, 1999, 2000 Brian Gough
+ * Copyright (C) 1996, 1997, 1998, 1999, 2000 Brian Gough, John Fisher
  * 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,6 +22,13 @@
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_ieee_utils.h>
 
+
+/*
+ * Identical to fp-linux.c, except with references to
+ * _FPU_SINGLE, _FPU_DOUBLE, _FPU_EXTENDED, _FPU_MASK_DM
+ * and _FPU_MASK_PM converted to errors.
+ */
+
 int
 gsl_ieee_set_mode (int precision, int rounding, int exception_mask)
 {
@@ -30,16 +37,14 @@ gsl_ieee_set_mode (int precision, int rounding, int exception_mask)
   switch (precision)
     {
     case GSL_IEEE_SINGLE_PRECISION:
-      mode |= _FPU_SINGLE ;
+      GSL_ERROR ("powerpc linux only supports default precision rounding", GSL_EUNSUP);
       break ;
     case GSL_IEEE_DOUBLE_PRECISION:
-      mode |= _FPU_DOUBLE ;
+      GSL_ERROR ("powerpc linux only supports default precision rounding", GSL_EUNSUP);
       break ;
     case GSL_IEEE_EXTENDED_PRECISION:
-      mode |= _FPU_EXTENDED ;
+      GSL_ERROR ("powerpc linux only supports default precision rounding", GSL_EUNSUP);
       break ;
-    default:
-      mode |= _FPU_EXTENDED ;
     }
 
   switch (rounding)
@@ -64,7 +69,8 @@ gsl_ieee_set_mode (int precision, int rounding, int exception_mask)
     mode |= _FPU_MASK_IM ;
 
   if (exception_mask & GSL_IEEE_MASK_DENORMALIZED)
-    mode |= _FPU_MASK_DM ;
+    GSL_ERROR ("powerpc linux does not support the denormalized operand exception. "
+	       "Use 'mask-denormalized' to work around this.", GSL_EUNSUP) ;
 
   if (exception_mask & GSL_IEEE_MASK_DIVISION_BY_ZERO)
     mode |= _FPU_MASK_ZM ;
@@ -77,11 +83,7 @@ gsl_ieee_set_mode (int precision, int rounding, int exception_mask)
 
   if (exception_mask & GSL_IEEE_TRAP_INEXACT)
     {
-      mode &= ~ _FPU_MASK_PM ;
-    }
-  else
-    {
-      mode |= _FPU_MASK_PM ;
+     GSL_ERROR ("powerpc linux does not support traps for inexact operations", GSL_EUNSUP) ;
     }
 
   _FPU_SETCW(mode) ;

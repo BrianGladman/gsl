@@ -140,9 +140,13 @@ case "$host" in
 	AC_DEFINE(HAVE_M68KLINUX_IEEE_INTERFACE)
 	AC_MSG_RESULT([m68klinux]) 
         ;;
-    *-*-linux*) 
-	AC_DEFINE(HAVE_LINUX_IEEE_INTERFACE)
-	AC_MSG_RESULT([linux]) 
+    powerpc-*-linux*) 
+	AC_DEFINE(HAVE_PPCLINUX_IEEE_INTERFACE)
+	AC_MSG_RESULT([ppclinux]) 
+        ;;
+    *86-*-linux*) 
+	AC_DEFINE(HAVE_X86LINUX_IEEE_INTERFACE)
+	AC_MSG_RESULT([x86linux]) 
         ;;
     *-*-sunos4*) 
         AC_DEFINE(HAVE_SUNOS4_IEEE_INTERFACE)

@@ -4,8 +4,10 @@
 #include "fp-sparclinux.c"
 #elif defined(HAVE_M68KLINUX_IEEE_INTERFACE)
 #include "fp-m68klinux.c"
-#elif defined(HAVE_LINUX_IEEE_INTERFACE)
-#include "fp-linux.c"
+#elif defined(HAVE_PPCLINUX_IEEE_INTERFACE)
+#include "fp-ppclinux.c"
+#elif defined(HAVE_X86LINUX_IEEE_INTERFACE)
+#include "fp-x86linux.c"
 #elif defined(HAVE_HPUX_IEEE_INTERFACE)
 #include "fp-hpux.c"
 #elif defined(HAVE_SUNOS4_IEEE_INTERFACE)

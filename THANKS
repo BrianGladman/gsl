@@ -60,3 +60,6 @@ functions
 
 * Steve Robbins <stever@bic.mni.mcgill.ca> patch to work around FP_RND
   problems on Tru64, testing and other patches.
+
+* John Fisher <johnfish@uclink4.berkeley.edu> testing on powerpc linux 
+  and support for fp-ppclinux.c
