@@ -1438,14 +1438,18 @@ hyperg_1F1_ab_neg(const double a, const double b, const double x,
     double ap = a - b + 1.0;
     double lnpre;
     double lg_ap, lg_bp;
+    double sg_ap;
     double lnc1;
     double lg_2mbp, lg_1papmbp;
     double sg_2mbp, sg_1papmbp;
     double M, U;
     double term_M;
     double inner, lninner;
+    int stat_F;
+    int stat_U;
+    int stat_e;
 
-    gsl_sf_lngamma_impl(ap, &lg_ap);
+    gsl_sf_lngamma_sgn_impl(ap, &lg_ap, &sg_ap);
     gsl_sf_lngamma_impl(bp, &lg_bp);
     lnpre = lg_ap - lg_bp + (bp-1.0)*log(x);
 
@@ -1453,16 +1457,16 @@ hyperg_1F1_ab_neg(const double a, const double b, const double x,
     gsl_sf_lngamma_sgn_impl(1.0+ap-bp, &lg_1papmbp, &sg_1papmbp);
     lnc1 = lg_2mbp - lg_1papmbp;
 
-    gsl_sf_hyperg_1F1_impl(ap, bp, x, &M);
-    gsl_sf_hyperg_U_impl(ap, bp, x, &U);
+    stat_F = gsl_sf_hyperg_1F1_impl(ap, bp, x, &M);
+    stat_U = gsl_sf_hyperg_U_impl(ap, bp, x, &U);
 
-    gsl_sf_exp_sgn_impl(lnc1 + log(fabs(M)), sg_2mbp*sg_1papmbp*M, &term_M);
+    stat_e = gsl_sf_exp_sgn_impl(lnc1+log(fabs(M)), sg_2mbp*sg_1papmbp*M, &term_M);
 
     inner = term_M - (1.0-bp) * U;
     lninner = log(fabs(inner));
 printf("--:  %22.18g   %22.18g\n", term_M, (1.0-bp) * U);
 
-    return gsl_sf_exp_sgn_impl(lninner + lnpre, inner, result);
+    return gsl_sf_exp_sgn_impl(lninner + lnpre, sg_ap*inner, result);
   }
   else {
     *result = 0.0;
