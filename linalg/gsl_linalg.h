@@ -23,6 +23,7 @@ gsl_la_eigen_sort_t;
 
 
 /* Simple implementation of matrix multiply.
+ * Calculates C = A.B
  *
  * exceptions: GSL_EFAULT, GSL_EBADLEN
  */
@@ -57,9 +58,18 @@ gsl_la_decomp_SV_impl(gsl_matrix * A,
  * exceptions: 
  */
 int
-gsl_la_decomp_LU_impl(gsl_matrix * matrix,
-                      gsl_vector_int * permutation,
-		      int * signum);
+gsl_la_decomp_LU_Gauss_impl(gsl_matrix * matrix,
+                            gsl_vector_int * permutation,
+		            int * signum);
+
+/* LU Decomposition
+ *
+ * exceptions: 
+ */
+int
+gsl_la_decomp_LU_Crout_impl(gsl_matrix * matrix,
+                            gsl_vector_int * permutation,
+		            int * signum);
 
 
 /* Linear Solve Using LU Decomposition

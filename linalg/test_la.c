@@ -1,6 +1,7 @@
 /* Author:  G. Jungman
  * RCS:     $Id$
  */
+#include <gsl_test.h>
 #include <gsl_math.h>
 #include "gsl_linalg.h"
 
@@ -130,6 +131,75 @@ test_matmult_mod(void)
 }
 
 
+static int
+test_LU_solve_dim(size_t dim, const double * actual)
+{
+  int s = 0;
+  int signum;
+  size_t i;
+
+  gsl_vector_int * perm = gsl_vector_int_alloc(dim);
+  gsl_vector * rhs = gsl_vector_alloc(dim);
+  gsl_matrix * hm  = create_hilbert_matrix(dim);
+  gsl_vector * solution = gsl_vector_alloc(dim);
+  for(i=0; i<dim; i++) gsl_vector_set(rhs, i, i+1.0);
+  s += gsl_la_decomp_LU_Crout_impl(hm, perm, &signum);
+  s += gsl_la_solve_LU_impl(hm, perm, rhs, solution);
+  for(i=0; i<dim; i++) {
+    int foo = ( fabs(gsl_vector_get(solution, i) - actual[i]) > 16.0 * dim * GSL_DBL_EPSILON );
+    s += foo;
+    if(foo) {
+      printf("%3d[%d]: %22.18g   %22.18g\n", dim, i, gsl_vector_get(solution, i), actual[i]);
+    }
+  }
+  gsl_vector_free(solution);
+  gsl_matrix_free(hm);
+  gsl_vector_free(rhs);
+  gsl_vector_int_free(perm);
+
+  return s;
+}
+
+
+int test_LU_solve(void)
+{
+  int s = 0;
+  double actual[16];
+
+  actual[0] =  -8.0;
+  actual[1] =  18.0;
+  s += test_LU_solve_dim(2, actual);
+
+  actual[0] =   27.0;
+  actual[1] = -192.0;
+  actual[2] =  210.0;
+  s += test_LU_solve_dim(3, actual);
+
+  actual[0] =   -64.0;
+  actual[1] =   900.0;
+  actual[2] = -2520.0;
+  actual[3] =  1820.0;
+  s += test_LU_solve_dim(4, actual);
+
+/*
+  actual[0]  = -1728.0;
+  actual[1]  =  245388.0;
+  actual[2]  = -8528520.0;
+  actual[3]  =  127026900.0;
+  actual[4]  = -1009008000.0;
+  actual[5]  =  4768571808.0;
+  actual[6]  = -14202796608.0;
+  actual[7]  =  27336497760.0;
+  actual[8]  = -33921201600.0;
+  actual[9]  =  26189163000.0;
+  actual[10] = -11437874448.0;
+  actual[11] =  2157916488.0;
+  s += test_LU_solve_dim(12, actual);
+*/
+  return s;
+}
+
+
 int test_eigen_jacobi(void)
 {
   int s = 0;
@@ -199,6 +269,7 @@ int main()
 {
   gsl_test(test_matmult(),        "Matrix Multiply");
   gsl_test(test_matmult_mod(),    "Matrix Multiply with Modification");
+  gsl_test(test_LU_solve(),       "LU Decomposition and Solve");
   gsl_test(test_eigen_jacobi(),   "Eigensystem:  Jacobi Method");
   gsl_test(test_invert_jacobi(),  "Inversion:    Jacobi Method");
 
