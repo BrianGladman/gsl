@@ -1,41 +1,33 @@
-pkglib_LIBRARIES = libgsllinalg.a 
+pkglib_LIBRARIES = libgsleigen.a 
 
-check_PROGRAMS = test_la
+check_PROGRAMS = test
 
 pkginclude_HEADERS = \
-	gsl_linalg.h
+	gsl_eigen.h
 
-noinst_HEADERS = tridiag.h
-
+# noinst_HEADERS = tridiag.h
 
 INCLUDES = \
 	-I$(srcdir)/..		\
 	-I$(srcdir)/../err	\
+	-I$(srcdir)/../linalg	\
 	-I$(srcdir)/../matrix	\
 	-I$(srcdir)/../vector   \
 	-I$(srcdir)/../block
 
-TESTS = test_la
+TESTS = test
 
-test_la_LDADD = libgsllinalg.a 		\
+test_LDADD = libgsleigen.a 		\
 	../sys/libgslsys.a		\
 	../err/libgsltest.a		\
+	../linalg/libgsllinalg.a        \
 	../matrix/libgslmatrix.a	\
 	../vector/libgslvector.a	\
 	../block/libgslblock.a	        \
-	../err/libgslerr.a              \
+ 	../err/libgslerr.a              \
         ../utils/libutils.a
 
-test_la_DEPENDENCIES = libgsllinalg.a
-test_la_SOURCES = test_la.c
+test_DEPENDENCIES = libgsleigen.a
+test_SOURCES = test.c
 
-libgsllinalg_a_SOURCES = 	\
-	multiply.c		\
-	tridiag.c
-
-#not working yet:	eigen_sort.c
-#	                linalg_simple.c
-
-strict:
-	$(MAKE) CFLAGS="-ansi -pedantic -W -Wall -Wtraditional -Wconversion -Wshadow -Wpointer-arith -Wcast-qual -Wcast-align -Wwrite-strings -Waggregate-return -Wstrict-prototypes -fshort-enums -fno-common -Wmissing-prototypes -Wnested-externs -g -O4 -Dinline=''"
-
+libgsleigen_a_SOURCES = eigen_sort.c jacobi.c

@@ -32,9 +32,7 @@ test_la_SOURCES = test_la.c
 libgsllinalg_a_SOURCES = 	\
 	multiply.c		\
 	tridiag.c		\
-	eigen_sort.c		\
-	linalg_simple.c
+	lu.c qr.c svd.c
 
 strict:
 	$(MAKE) CFLAGS="-ansi -pedantic -W -Wall -Wtraditional -Wconversion -Wshadow -Wpointer-arith -Wcast-qual -Wcast-align -Wwrite-strings -Waggregate-return -Wstrict-prototypes -fshort-enums -fno-common -Wmissing-prototypes -Wnested-externs -g -O4 -Dinline=''"
-

@@ -4,7 +4,7 @@
 #include <config.h>
 #include <stdlib.h>
 #include <gsl_math.h>
-#include "gsl_linalg.h"
+#include "gsl_eigen.h"
 
 
 /* The eigen_sort_impl below is not very good, but it is
@@ -16,9 +16,9 @@
 
 
 int
-gsl_la_eigen_sort_impl(gsl_vector * eval,
-                       gsl_matrix * evec,
-                       gsl_la_eigen_sort_t sort_type)
+gsl_eigen_sort_impl(gsl_vector * eval,
+                    gsl_matrix * evec,
+                    gsl_eigen_sort_t sort_type)
 {
   if(eval == 0 || evec == 0) {
     return GSL_EFAULT;
@@ -40,7 +40,7 @@ gsl_la_eigen_sort_impl(gsl_vector * eval,
 
       /* search for something to swap */
       for(j=i+1; j<N; j++) {
-        int test = (sort_type == GSL_LA_EIGEN_SORT_VALUE ? eval->data[j] <= tmp : fabs(eval->data[j]) <= fabs(tmp));
+        int test = (sort_type == GSL_EIGEN_SORT_VALUE ? eval->data[j] <= tmp : fabs(eval->data[j]) <= fabs(tmp));
         if(test) {
           k = j;
           tmp = eval->data[k];
@@ -53,8 +53,8 @@ gsl_la_eigen_sort_impl(gsl_vector * eval,
         eval->data[i] = tmp;
 
         /* swap eigenvectors */ /* matrix should probably export row/col swap ops */
-        gsl_matrix_copy_col(evec, i, tmp_vec_1);
-	gsl_matrix_copy_col(evec, k, tmp_vec_2);
+        gsl_matrix_copy_col(tmp_vec_1, evec, i);
+	gsl_matrix_copy_col(tmp_vec_2, evec, k);
 	gsl_matrix_set_col(evec, i, tmp_vec_2);
 	gsl_matrix_set_col(evec, k, tmp_vec_1);
       }
