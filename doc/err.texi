@@ -129,7 +129,7 @@ return values of the GSL routines.
 All GSL error handlers have the type @code{gsl_error_handler_t}, which is
 defined in @file{gsl_errno.h},
 
-@deftp {Data Type} void gsl_error_handler_t
+@deftp {Data Type} gsl_error_handler_t
 
 This is the type of GSL error handler functions. An error handler will
 be passed three arguments, specifying the reason for the error, the
@@ -289,7 +289,7 @@ stream is stored in a static variable, so there can only be one error
 stream per program.
 @end deftypefun
 
-@deftp {Data Type} void gsl_stream_handler_t
+@deftp {Data Type} gsl_stream_handler_t
 This is the type of GSL stream handler functions. A stream handler will
 be passed four arguments, specifying a label (such as @sc{error} or
 @sc{warning}), the source file in which the error occurred, the line

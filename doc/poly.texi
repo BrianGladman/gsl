@@ -146,7 +146,7 @@ the special cases of the quadratic, cubic and quartic equation. The
 algorithm described in this section uses an iterative method to find the
 approximate locations of roots of higher order polynomials.
 
-@deftypefun gsl_poly_complex_workspace * gsl_poly_complex_workspace_alloc (size_t @var{n})
+@deftypefun {gsl_poly_complex_workspace *} gsl_poly_complex_workspace_alloc (size_t @var{n})
 This function allocates space for a @code{gsl_poly_complex_workspace}
 struct and a scratch area suitable for solving a polynomial with @var{n}
 coefficients using the routine @code{gsl_poly_complex_solve}.

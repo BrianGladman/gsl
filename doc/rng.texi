@@ -978,7 +978,7 @@ per generator.
 For more information see,
 @itemize @asis
 @item
-From: Makoto Matsumoto and Yoshiharu Kurita, "Twisted GFSR Generators
+Makoto Matsumoto and Yoshiharu Kurita, "Twisted GFSR Generators
 II", @cite{ACM Transactions on Modelling and Computer Simulation},
 Vol. 4, No. 3, 1994, pages 254-266.
 @end itemize

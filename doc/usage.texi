@@ -21,6 +21,7 @@ would use these functions and give incorrect results.
 * Long double::                 
 * Alternative optimized functions::  
 * Support for different numeric types::  
+* Compatibility with C++::      
 @end menu
 
 @node Compiling and Linking
@@ -37,8 +38,8 @@ directory.  You should write any preprocessor include statements with a
 @end example
 
 @noindent
-If this directory is not installed on the standard search path of your
-compiler you will also need to provide the location to the preprocessor
+If the directory is not installed on the standard search path of your
+compiler you will also need to provide its location to the preprocessor
 as a command line flag.  The default location of the @file{gsl}
 directory is @file{/usr/local/include/gsl}.
 
@@ -67,6 +68,33 @@ gcc app.o -lgsl -lgslblascblas -lcblas -lm
 @noindent
 The library must conform to the @sc{cblas} standard. For more
 information see @ref{BLAS Support}.
+
+To run a program linked with the shared version of the library it may be
+necessary to define the shell variable @code{LD_LIBRARY_PATH} to include
+the directory where the library is installed. For example,
+
+@example
+LD_LIBRARY_PATH=/usr/local/gsl:$LD_LIBRARY_PATH ./app
+@end example
+@noindent
+To compile a statically linked version of the program instead, use the
+@code{-static} flag in @code{gcc},
+
+@example
+gcc -static app.o -lgsl -lgslblasnative -lm
+@end example
+@noindent
+The installed program @code{gsl-config} provides information on the
+appropriate compiler and linker options for compiling programs using the
+library. For example, the following command shows that the library has
+been installed under the directory @file{/usr/local},
+
+@example
+$ gsl-config --prefix
+/usr/local
+@end example
+@noindent
+Further information is available using the command @code{gsl-config --help}.
 
 @node Inline functions
 @section Inline functions
@@ -136,18 +164,15 @@ reading and writing.
 
 @cindex alternative optimized functions
 @cindex optimized functions, alternatives
-The main implementation of some frequently-used functions in the library
-will not be optimal on all architectures.  For example, the routine for
-Gaussian random variates can be implemented using several different
-algorithms, such as the polar method or ratio method.  The relative
-speeds of the algorithms depend on different factors, and so the choice
-of the fastest algorithm is platform-dependent.  In cases like this the
-library provides alternate implementations of the function with exactly
-the same interface.  If you write your application using calls to the
-standard implementations of the functions you can select the alternative
-versions later via a preprocessor macro.  It is also possible to
-introduce your own optimized functions this way while retaining
-portability.  For example,
+The main implementation of some functions in the library will not be
+optimal on all architectures.  For example, there are several ways to
+compute a Gaussian random variate and their relative speeds are
+platform-dependent.  In cases like this the library provides alternate
+implementations of these functions with the same interface.  If you
+write your application using calls to the standard implementation you
+can select an alternative version later via a preprocessor definition.
+It is also possible to introduce your own optimized functions this way
+while retaining portability.  For example,
 
 @example
 #ifdef SPARC
@@ -235,3 +260,8 @@ header, or any other specific type, file use its individual filename.
 @end example
 
 
+@node Compatibility with C++
+@section Compatibility with C++
+@cindex C++, compatibility
+The library header files automatically define functions to have
+@code{extern "C"} linkage when included in C++ programs.

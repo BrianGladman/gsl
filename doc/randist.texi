@@ -15,7 +15,6 @@ analytically. This usually requires several samples from the generator.
 The functions described in this section are declared in
 @file{gsl_randist.h}.
 
-@comment 
 @menu
 * The Gaussian Distribution::   
 * The Gaussian Tail Distribution::  
@@ -87,10 +86,6 @@ for a Gaussian distribution with standard deviation @var{sigma}, using
 the formula given above.
 @end deftypefun
 
-@tex
-\centerline{\input rand-gaussian.tex}
-@end tex
-
 @deftypefn Random double gsl_ran_ugaussian (const gsl_rng * @var{r})
 @deftypefnx Random double gsl_ran_ugaussian_pdf (double @var{x})
 These functions compute results for the unit Gaussian distribution. They
@@ -98,34 +93,11 @@ are equivalent to the functions above with a standard deviation of one,
 @var{sigma} = 1.
 @end deftypefn
 
-@subheading Properties
-
+@sp 1
 @tex
-Mean = $\mu$,
-Variance = $\sigma^2$,
-Skewness = 0,
-Excess = 0
-
-Cumulants, $\kappa_1=\mu$, $\kappa_2=\sigma^2$, $\kappa_n=0$ for $n>2$
-
-Characteristic function, $\phi(t) = \exp(-i\mu t - \sigma^2 t^2/2)$
-
-Cumulative distribution function, 
-$CDF(x) = \int_{-\infty}^x p(x') dx' = {1 \over 2 }(1 - \hbox{erf}((x-m)/\sqrt{2\sigma^2}))$
-
-Confidence limits:
-$p(|x-\mu| < \sigma) = 0.683$,
-$p(|x-\mu| < 2\sigma) = 0.954$,
-$p(|x-\mu| < 3\sigma) = 0.9973$
-
-Useful integral:
-
-$$
-\int_{-\infty}^{+\infty} x^{2n} p(x) dx = 2^n \sigma^{2n+1} \Gamma(n+ {1 \over 2}) / \sqrt\pi
-$$
+\centerline{\input rand-gaussian.tex}
 @end tex
 
-@comment
 @page
 @node The Gaussian Tail Distribution
 @section The Gaussian Tail Distribution
@@ -177,6 +149,7 @@ for a Gaussian tail distribution with standard deviation @var{sigma} and
 lower limit @var{a}, using the formula given above.
 @end deftypefun
 
+@sp 1
 @tex
 \centerline{\input rand-gaussian-tail.tex}
 @end tex
@@ -192,7 +165,7 @@ deviation of one, @var{sigma} = 1.
 @page
 @node The Bivariate Gaussian Distribution
 @section The Bivariate Gaussian Distribution
-@comment
+
 @deftypefn Random void gsl_ran_bivariate_gaussian (const gsl_rng * @var{r}, double @var{sigma_x}, double @var{sigma_y}, double @var{rho}, double * @var{x}, double * @var{y})
 @cindex Gaussian random numbers
 This function generates a pair of correlated gaussian variates, with
@@ -226,11 +199,11 @@ deviations @var{sigma_x}, @var{sigma_y} and correlation coefficient
 @var{rho}, using the formula given above.
 @end deftypefun
 
+@sp 1
 @tex
 \centerline{\input rand-bivariate-gaussian.tex}
 @end tex
 
-@comment
 @page
 @node The Exponential Distribution
 @section The Exponential Distribution
@@ -263,36 +236,11 @@ for an exponential distribution with mean @var{mu}, using the formula
 given above.
 @end deftypefun
 
+@sp 1
 @tex
 \centerline{\input rand-exponential.tex}
 @end tex
 
-@tex
-Mean = $\mu$,
-Variance = $\mu^2$,
-Skewness = 2, 
-Excess = 6
-
-Cumulants, $\kappa_1=\mu$, $\kappa_n=\mu^n \Gamma(n)$ for $n>1$
-
-Characteristic function, $\phi(t) = 1/(1-i\mu t)$
-
-Cumulative distribution function, 
-$CDF(x) = \int_0^x p(x') dx' = 1 - \exp(-x/\mu)$
-
-Confidence limits:
-$p(x < \mu) = 0.632$,
-$p(x < 2\mu) = 0.865$,
-$p(x < 3\mu) = 0.950$
-
-Useful integral:
-
-$$
-\int_0^\infty x^n p(x) dx = n! \mu^{n+1}
-$$
-@end tex
-
-@comment
 @page
 @node The Laplace Distribution
 @section The Laplace Distribution
@@ -325,38 +273,11 @@ for a Laplace distribution with mean @var{mu}, using the formula
 given above.
 @end deftypefun
 
+@sp 1
 @tex
 \centerline{\input rand-laplace.tex}
 @end tex
 
-@tex
-Mean = 0, 
-Variance = $2\mu^2$,
-Skewness = 0, 
-Excess = 6
-
-Cumulants, 
-$\kappa_1=0$ 
-$\kappa_2=2 \mu^2$
-$\kappa_{2n+1}=0$
-$\kappa_{2n}=(2n)!\mu^{2n}/n$
-
-Characteristic function, 
-$\phi(t) = 1/(1+\mu^2 t^2)$
-
-Cumulative distribution function, 
-$CDF(x) = \int_0^x p(x') dx' = {1 \over 2} \exp(-|x|)$
-for $x < 0$ and 
-$1 - {1 \over 2}\exp(-|x|)$
-for $x > 0$.
-
-Confidence limits:
-
-Useful integral:
-
-@end tex
-
-@comment
 @page
 @node The Exponential Power Distribution
 @section The Exponential Power Distribution
@@ -391,25 +312,11 @@ for an exponential power distribution with scale parameter @var{mu}
 and exponent @var{a}, using the formula given above.
 @end deftypefun
 
+@sp 1
 @tex
 \centerline{\input rand-exppow.tex}
 @end tex
 
-@tex
-Mean = 0, 
-Variance = $\mu^2 \Gamma(3/a)/\Gamma(1/a)$,
-Skewness = 0, 
-Excess = $\Gamma(5/a)\Gamma(1/a)/\Gamma(3/a)^2$
-
-Cumulants, $\kappa_1=FIXME$, $\kappa_n=FIXME$, for $n>1$
-
-Characteristic function, $\phi(t) = FIXME$
-
-Cumulative distribution function, $CDF(x) = \int_0^x p(x') dx' = FIXME$
-@end tex
-
-
-@comment
 @page
 @node The Cauchy Distribution
 @section The Cauchy Distribution
@@ -443,28 +350,11 @@ for a Cauchy distribution with scale parameter @var{mu}, using the formula
 given above.
 @end deftypefun
 
+@sp 1
 @tex
 \centerline{\input rand-cauchy.tex}
 @end tex
 
-@subheading Properties
-@tex
-The Cauchy distribution decreases as $1/|x|^2$ for large $x$. This
-makes the variance infinite. Other higher moments are either infinite or
-undefined.
-
-Characteristic function, $\phi(t) = \exp(-i\alpha t - \beta |t|)$
-
-Cumulative distribution function, $CDF(x) = \int_{-\infty}^x p(x') dx' =
-{1 \over 2} + {1\over \pi} \arctan(x/\mu)$
-
-Confidence limits:
-$p(|x| < \mu) = 0.5$,
-$p(|x| < 2\mu) = 0.705$,
-$p(|x| < 3\mu) = 0.795$
-@end tex
-
-@comment
 @page
 @node The Rayleigh Distribution
 @section The Rayleigh Distribution
@@ -496,16 +386,11 @@ for an Rayleigh distribution with scale parameter @var{sigma}, using the
 formula given above.
 @end deftypefun
 
+@sp 1
 @tex
 \centerline{\input rand-rayleigh.tex}
 @end tex
 
-@subheading Properties
-@tex
-
-@end tex
-
-@comment
 @page
 @node The Rayleigh Tail Distribution
 @section The Rayleigh Tail Distribution
@@ -539,15 +424,11 @@ for an Rayleigh tail distribution with scale parameter @var{sigma} and
 lower limit @var{a}, using the formula given above.
 @end deftypefun
 
+@sp 1
 @tex
 \centerline{\input rand-rayleigh-tail.tex}
 @end tex
 
-@subheading Properties
-@tex
-@end tex
-
-@comment
 @page
 @node The Symmetric Levy Distribution
 @section The Symmetric Levy Distribution
@@ -586,26 +467,11 @@ for a symmetric Levy distribution with scale parameter @var{mu} and
 exponent @var{a}, using the formula given above.
 @end deftypefun
 
+@sp 1
 @tex
 \centerline{\input rand-levy.tex}
 @end tex
 
-@subheading Properties
-@tex
-Mean = 0, 
-Variance = FIXME, 
-Skewness = 0, 
-Excess = FIXME
-
-Cumulants, $\kappa_1=FIXME$, $\kappa_n=FIXME$ for $n>1$
-
-Characteristic function, $\phi(t) = FIXME$
-
-Cumulative distribution function, 
-$CDF(x) = \int_0^x p(x') dx' = FIXME$
-@end tex
-
-@comment
 @page
 @node The Gamma Distribution
 @section The Gamma Distribution
@@ -638,44 +504,11 @@ for a gamma distribution with parameters @var{a} and @var{b}, using the
 formula given above.
 @end deftypefun
 
+@sp 1
 @tex
 \centerline{\input rand-gamma.tex}
 @end tex
 
-@subheading Properties
-@tex
-Mean = $ab$, 
-Variance = $ab^2$, 
-Skewness = $2/\sqrt{a}$,
-Excess = $6/a$
-
-Cumulants, $\kappa_1=ab$, $\kappa_n=a\Gamma(n) b^n$ for $n>1$
-
-Characteristic function, $\phi(t) = 1 - i bt$
-@end tex
-
-@comment @comment
-@comment @page
-@comment @node The Erlang distribution
-@comment @section The Erlang distribution
-@comment The Erlang distribution is the sum of @xmath{n} exponential variates,
-@comment each with mean @xmath{a}. 
-
-@comment @deftypefn Random double gsl_ran_erlang (const gsl_rng * @var{r}, double @var{a}, double @var{n})
-@comment @cindex Erlang random numbers
-@comment This function returns a random number from the Erlang distribution.
-@comment @c
-@comment @equation{
-@comment p(x) dx = @{x^@{n-1@} \over (n-1)! a^n @} \exp (-x/a)  dx
-@comment }
-@comment @noindent
-@comment for @xmath{x \ge 0}. 
-@comment @end deftypefn
-@comment @tex
-@comment \centerline{\input rand-erlang.tex}
-@comment @end tex
-
-@comment
 @page
 @node The Flat (Uniform) Distribution
 @section The Flat (Uniform) Distribution
@@ -707,27 +540,11 @@ for a uniform distribution from @var{a} to @var{b}, using the formula
 given above.
 @end deftypefun
 
+@sp 1
 @tex
 \centerline{\input rand-flat.tex}
 @end tex
 
-@subheading Properties
-@tex
-Mean = $(a+b)/2$,
-Variance = $(b-a)^2/12$, 
-Skewness = 0, 
-Excess = -6/5
-
-Cumulants, 
-$\kappa_1=(a+b)/2$, 
-$\kappa_{2n+1}=0$,
-$\kappa_{2n}=(b-a)^{2n} B_{2n}/(2n)$
-
-Characteristic function, $\phi(t) = (2 \sin(ht/2)/(ht)) \exp(i t (b+a)/2)$
-where $h = (b - a)$.
-@end tex
-
-@comment
 @page
 @node The Lognormal Distribution
 @section The Lognormal Distribution
@@ -758,25 +575,11 @@ for a lognormal distribution with parameters @var{zeta} and @var{sigma},
 using the formula given above.
 @end deftypefun
 
+@sp 1
 @tex
 \centerline{\input rand-lognormal.tex}
 @end tex
 
-@subheading Properties
-@tex
-Mean = $st$, 
-Variance = $s(s-1)t^2$,
-Skewness = $(s+2)\sqrt{s-1}$,
-Excess = $(s-1)(s^3+3s^2+6s+6)$
-where $s = \exp(\sigma^2)$ and $t = \exp(\zeta)$.
-
-The mode (maximum) occurs at $x = \exp(\zeta - \sigma^2)$.
-
-Cumulative distribution function, $CDF(x) = \int_0^x p(x') dx' = {1
-\over 2} erfc((\zeta-\ln(x))/(\sqrt{2} \sigma))$
-@end tex
-
-@comment
 @page
 @node The Chi-squared Distribution
 @section The Chi-squared Distribution
@@ -828,30 +631,11 @@ for a chi-squared distribution with @var{nu} degrees of freedom, using
 the formula given above.
 @end deftypefun
 
+@sp 1
 @tex
 \centerline{\input rand-chisq.tex}
 @end tex
 
-@subheading Properties
-@tex
-Mean = $\nu$,
-Variance = $2\nu$,
-Skewness = $2\sqrt{2/\nu}$,
-Excess = $12/\nu$
-
-Cumulants, $\kappa_1=FIXME$, $\kappa_n=FIXME$ for $n>1$
-
-Characteristic function, $\phi(t) = FIXME$
-
-Cumulative distribution function, $CDF(x) = \int_0^x p(x') dx' = FIXME$
-
-Confidence limits:
-
-Useful integral:
-
-@end tex
-
-@comment
 @page
 @node The F-distribution
 @section The F-distribution
@@ -910,18 +694,11 @@ for an F-distribution with @var{nu1} and @var{nu2} degrees of freedom,
 using the formula given above.
 @end deftypefun
 
+@sp 1
 @tex
 \centerline{\input rand-fdist.tex}
 @end tex
 
-@subheading Properties
-@tex
-Mean = $\nu_2/(\nu_2 - 2)$ (for $\nu_2 > 2$), 
-Variance = $2\nu_2^2 (\nu_1 + \nu_2 - 2)/(\nu_1 (\nu_2 - 2)^2 (\nu_2 - 4))$
-(for $\nu_2 > 4$
-@end tex
-
-@comment
 @page
 @node The t-distribution
 @section The t-distribution
@@ -974,11 +751,11 @@ for a t-distribution with @var{nu} degrees of freedom, using the formula
 given above.
 @end deftypefun
 
+@sp 1
 @tex
 \centerline{\input rand-tdist.tex}
 @end tex
 
-@comment
 @page
 @node The Beta Distribution
 @section The Beta Distribution
@@ -1008,26 +785,11 @@ for a beta distribution with parameters @var{a} and @var{b}, using the
 formula given above.
 @end deftypefun
 
+@sp 1
 @tex
 \centerline{\input rand-beta.tex}
 @end tex
 
-@subheading Properties
-@tex
-Mean = $a/(a+b)$,
-Variance = $ab/((a+b)^2 (a+b+1))$, 
-Skewness = $2(a-b)/(a+b+2)$,
-Excess = $\sqrt{(a+b+1) \over ab} \left( {3(a+b+1)(2(a+b)^2 + ab(a+b-6)) \over ab(a+b+2)(a+b+3)} - 3 \right)$
-
-In the symmetric case $a=b$ these results simplify to,
-
-Mean = 1/2, 
-Variance = $1/(4(2a+1))$, 
-Skewness = 0,
-Excess = $-6 \sqrt{2a + 1}/(a(2a+3))$
-@end tex
-
-@comment
 @page
 @node The Logistic Distribution
 @section The Logistic Distribution
@@ -1059,27 +821,11 @@ for a logistic distribution with scale parameter @var{mu}, using the
 formula given above.
 @end deftypefun
 
+@sp 1
 @tex
 \centerline{\input rand-logistic.tex}
 @end tex
 
-@subheading Properties
-@tex
-Mean = 0, 
-Variance = $\pi^2 \mu^2 / 3$,
-Skewness = 0, 
-Excess = 6/5
-
-Cumulative distribution function, 
-$CDF(x) = \int_{-\infty}^x p(x') dx' = 1/(1+\exp(-x/\mu))$
-
-Confidence limits:
-
-Useful integral:
-
-@end tex
-
-@comment
 @page
 @node The Pareto Distribution
 @section The Pareto Distribution
@@ -1111,31 +857,11 @@ for a Pareto distribution with exponent @var{a} and scale @var{b}, using
 the formula given above.
 @end deftypefun
 
+@sp 1
 @tex
 \centerline{\input rand-pareto.tex}
 @end tex
 
-@subheading Properties
-@tex
-Mean = $ab/(a-1)$ (for $a>1$), 
-Variance = $a b^2/((a-2)(a-1)^2)$ (for $a>2$),
-Skewness = $2(a+1)\sqrt{(a-2)/a}/(a-3)$,
-Excess = $6(a(a^2+a-6)-2)/(a(a-3)(a-4))$,
-Mode = $b$
-
-Cumulants, $\kappa_1=FIXME$, $\kappa_n=FIXME$ for $n>1$
-
-Characteristic function, $\phi(t) = FIXME$
-
-Cumulative distribution function, $CDF(x) = \int_0^x p(x') dx' = 1 - (b / x)^a$
-
-Confidence limits:
-
-Useful integral:
-
-@end tex
-
-@comment
 @page
 @node The Spherical Distribution (2D & 3D)
 @section The Spherical Distribution (2D & 3D)
@@ -1226,12 +952,12 @@ main ()
 @noindent
 Example output from the program, three 10-step random walks from the origin.
 
+@sp 1
 @tex
-\centerline{\input random-walk.tex}      
+\centerline{\input random-walk.tex}
 @end tex
 
 
-@comment
 @page
 @node The Weibull Distribution
 @section The Weibull Distribution
@@ -1263,20 +989,11 @@ for a Weibull distribution with scale @var{mu} and exponent @var{a},
 using the formula given above.
 @end deftypefun
 
+@sp 1
 @tex
 \centerline{\input rand-weibull.tex}
 @end tex
 
-@subheading Properties
-@tex
-Mean = $\Gamma(1+1/a) \mu$, 
-Variance = $(\Gamma(1+2/a)-\Gamma(1+1/a))\mu^2$
-
-Cumulative distribution function, 
-$CDF(x) = \int_0^x p(x') dx' = 1 - \exp(-(x/\mu)^a)$
-@end tex
-
-@comment
 @page
 @node The Type-1 Gumbel Distribution
 @section  The Type-1 Gumbel Distribution
@@ -1309,21 +1026,11 @@ for a Type-1 Gumbel distribution with parameters @var{a} and @var{b},
 using the formula given above.
 @end deftypefun
 
+@sp 1
 @tex
 \centerline{\input rand-gumbel1.tex}
 @end tex
 
-@subheading Properties
-@tex
-?????????????FIXME
-Mean = $\Gamma(1+1/a) \mu$ 
-Variance = $(\Gamma(1+2/a)-\Gamma(1+1/a))\mu^2$
-
-Cumulative distribution function, 
-$CDF(x) = \int_0^x p(x') dx' = 1 - \exp(-(x/\mu)^a)$
-@end tex
-
-@comment
 @page
 @node The Type-2 Gumbel Distribution
 @section  The Type-2 Gumbel Distribution
@@ -1356,20 +1063,11 @@ for a Type-2 Gumbel distribution with parameters @var{a} and @var{b},
 using the formula given above.
 @end deftypefun
 
+@sp 1
 @tex
 \centerline{\input rand-gumbel2.tex}
 @end tex
 
-@subheading Properties
-@tex
-Mean = $\Gamma(1+1/a) \mu$, 
-Variance = $(\Gamma(1+2/a)-\Gamma(1+1/a))\mu^2$
-
-Cumulative distribution function, 
-$CDF(x) = \int_0^x p(x') dx' = 1 - \exp(-(x/\mu)^a)$
-@end tex
-
-@comment
 @page
 @node General Discrete Distributions
 @section General Discrete Distributions
@@ -1466,7 +1164,6 @@ keep this original array @var{P[k]} around.
 De-allocates the lookup table pointed to by @var{g}.
 @end deftypefn
 
-@comment
 @node The Poisson Distribution
 @section The Poisson Distribution
 @deftypefn Random {unsigned int} gsl_ran_poisson (const gsl_rng * @var{r}, double @var{mu})
@@ -1499,23 +1196,11 @@ from a Poisson distribution with mean @var{mu}, using the formula
 given above.
 @end deftypefun
 
+@sp 1
 @tex
 \centerline{\input rand-poisson.tex}
 @end tex
 
-@subheading Properties
-@tex
-Mean = $\mu$,
-Variance = $\mu^2$,
-Skewness = $1/\sqrt\mu$,
-Excess = $1/\mu$
-
-Cumulants, $\kappa_n=m$ for all $n$
-
-Characteristic function, $\phi(t) = \exp(m(e^{it}-1))$
-@end tex
-
-@comment
 @page
 @node The Bernoulli Distribution
 @section The Bernoulli Distribution
@@ -1550,23 +1235,11 @@ This function computes the probability @math{p(k)} of obtaining
 @var{p}, using the formula given above.
 @end deftypefun
 
+@sp 1
 @tex
 \centerline{\input rand-bernoulli.tex}
 @end tex
 
-@subheading Properties
-@tex
-Mean = $p$, 
-Variance = $p(1-p)$, 
-Skewness = $(1-2p)/\sqrt{p(1-p)}$, 
-Excess = $1-6p(1-p))/(p(1-p))$
-
-Cumulants, $\kappa_n=FIXME$ for all $n$
-
-Characteristic function, $\phi(t) = FIXME$
-@end tex
-
-@comment
 @page
 @node The Binomial Distribution
 @section The Binomial Distribution
@@ -1599,23 +1272,11 @@ from a binomial distribution with parameters @var{p} and @var{n}, using
 the formula given above.
 @end deftypefun
 
+@sp 1
 @tex
 \centerline{\input rand-binomial.tex}
 @end tex
 
-@subheading Properties
-@tex
-Mean = @math{np}, 
-Variance = $np(1-p)$,
-Skewness = $(1-2p)/\sqrt{np(1-p)}$,
-Excess = $(1-6p(1-p))/(np(1-p))$
-
-Cumulants, $\kappa_1=np$, $\kappa_{r+1}=p(1-p)(d\kappa_r/dp)$ for $n > 1$
-
-Characteristic function, $\phi(t) = (1-p + p\exp(it))^n$
-@end tex
-
-@comment
 @page
 @node The Negative Binomial Distribution
 @section The Negative Binomial Distribution
@@ -1649,6 +1310,7 @@ from a negative binomial distribution with parameters @var{p} and
 @var{n}, using the formula given above.
 @end deftypefun
 
+@sp 1
 @tex
 \centerline{\input rand-nbinomial.tex}
 @end tex
@@ -1679,15 +1341,6 @@ from a Pascal distribution with parameters @var{p} and
 @var{n}, using the formula given above.
 @end deftypefun
 
-@subheading Properties
-@tex
-Mean = $n(1-p)/p$,
-Variance = $n(1-p)/p^2$,
-Skewness = $(2-p)/\sqrt{n(1-p)}$,
-Excess = $(1/n)(6+{p^2 \over 1 - p})$
-@end tex
-
-@comment
 @page
 @node The Geometric Distribution
 @section The Geometric Distribution
@@ -1722,23 +1375,11 @@ from a geometric distribution with probability parameter @var{p}, using
 the formula given above.
 @end deftypefun
 
+@sp 1
 @tex
 \centerline{\input rand-geometric.tex}
 @end tex
 
-@subheading Properties
-@tex
-Mean = $(1-p)/p$,
-Variance = $(1-p)/p^2$,
-Skewness = $(2-p)/\sqrt{1-p}$,
-Excess = $6+(p^2/(1-p))$
-
-Cumulants, $\kappa_1=(1-p)/p$, $\kappa_{r+1}=-(1-p)(d\kappa_r/dp)$ for $r > 1$
-
-Characteristic function, $\phi(t) = p/(1 - (1-p)\exp(it)$
-@end tex
-
-@comment
 @page
 @node The Hypergeometric Distribution
 @section The Hypergeometric Distribution
@@ -1772,18 +1413,11 @@ from a hypergeometric distribution with parameters @var{n1}, @var{n2},
 @var{n3}, using the formula given above.
 @end deftypefun
 
+@sp 1
 @tex
 \centerline{\input rand-hypergeometric.tex}
 @end tex
 
-@subheading Properties
-@tex
-Mean = $t n_1 / N$, 
-Variance = $t n_1 n_2 (N-t)/(N^2(N-1))$,
-Skewness = $(n_2 - n_1)(N-2t) \sqrt{(N-1)/(t n_1 n_2 (N-t))}$ where $N = n_1 + n_2$.
-@end tex
-
-@comment
 @page
 @node The Logarithmic Distribution
 @section The Logarithmic Distribution
@@ -1816,22 +1450,10 @@ from a logarithmic distribution with probability parameter @var{p},
 using the formula given above.
 @end deftypefun
 
+@sp 1
 @tex
 \centerline{\input rand-logarithmic.tex}
 @end tex
-
-@subheading Properties
-@tex
-Mean = $a p / (1-p)$, 
-Variance = $a p (1-a p)/(1-p)^2$ where $a = -1/\log(1-p)$
-@end tex
-
-@comment
-@comment - @deftypefn Random void gsl_ran_poisson_array (const gsl_rng * @var{r}, double @var{mu}, int @var{N}, int *@var{p})
-@comment - @code{gsl_ran_poisson_array} places an array of @var{N}
-@comment poisson--distributed random numbers with mean @var{mu} into the array
-@comment - @var{p}.
-@comment - @end deftypefn
 
 @page
 @node Shuffling and Sampling
@@ -1929,8 +1551,7 @@ If the library and header files are installed under @file{/usr/local}
 options,
 
 @example
-gcc -L/usr/local/lib/gsl demo.c -lgslrandist 
-  -lgslrng -lgslspecfunc -lgslerr -lm
+gcc demo.c -lgsl -lgslblasnative -lm
 @end example
 
 @noindent

@@ -7,7 +7,7 @@ permutations. A permutation @math{p} is represented by an array of
 @math{p} to a vector @math{v} yields a new vector @math{v'} where
 @c{$v'_i = v_{p_i}$}
 @math{v'_i = v_@{p_i@}}. 
-For example, the array @math{(0,1,3,2)} represents a permutation of
+For example, the array @math{(0,1,3,2)} represents a permutation
 which exchanges the last two elements of a four element vector.
 The corresponding identity permutation is @math{(0,1,2,3)}. 
 

@@ -158,11 +158,8 @@ by the Foundation.
 This file documents the @value{GSL}, a collection of numerical
 routines for scientific computing.
 
-As of @value{UPDATED}, the complete packages are the random number suite
-(@pxref{Random Number Generation}), the quadrature package
-(@pxref{Numerical Integration}), the FFT package (@pxref{Fast Fourier
-Transforms}), the simulated annealing package (@pxref{Simulated
-Annealing}) and the root finding package (@pxref{One dimensional Root-Finding}).  Work is under way on a special function library.
+As of @value{UPDATED} the library is in developers release only and is
+not recommended for general use.
 @end ifinfo
 
 @menu

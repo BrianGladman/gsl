@@ -504,7 +504,7 @@ provide an estimate of the run-time or numerical error.
 Here is the wavetable structure. It is declared in the header file
 @file{gsl_fft_complex.h}.
 
-@deftp {Data Type} {struct gsl_fft_complex_wavetable}
+@deftp {Data Type} gsl_fft_complex_wavetable
 
 This is a structure that holds the factorization and pointers to the
 scratch area and trigonometric lookup tables for the mixed radix fft

@@ -335,8 +335,8 @@ times. The bracketing solvers also keep track of the current best
 interval bounding the root. This information can be accessed with the
 following auxiliary functions,
 
-@deftypefun gsl_vector * gsl_multiroot_fsolver_root (const gsl_multiroot_fsolver * @var{s})
-@deftypefunx gsl_vector * gsl_multiroot_fdfsolver_root (const gsl_multiroot_fdfsolver * @var{s})
+@deftypefun {gsl_vector *} gsl_multiroot_fsolver_root (const gsl_multiroot_fsolver * @var{s})
+@deftypefunx {gsl_vector *} gsl_multiroot_fdfsolver_root (const gsl_multiroot_fdfsolver * @var{s})
 These functions return the current estimate of the root for the solver @var{s}.
 @end deftypefun
 
