@@ -64,7 +64,8 @@ void gsl_ran_zuf_seed_wstate(void *vState, int seed)
 
     /* It is crucial that m == n-273 mod 607 at all times;
      * For speed of execution, however, this is never enforced.
-     * Instead is is set in the initializer: note 607-273=334
+     * Instead is is set here (and in the state initializer):
+     * note 607-273=334
      */
     theState->n=0;
     theState->m=334;
@@ -99,21 +100,6 @@ void gsl_ran_zuf_seed_wstate(void *vState, int seed)
 	theState->u[ii] = s;
     }
 } 
-
-void gsl_ran_zuf_copyState(void *tState,
-                         void *fState)
-{
-    int k;
-    gsl_ran_zuf_randomState *toState, *fromState;
-    toState   = (gsl_ran_zuf_randomState *)tState;
-    fromState = (gsl_ran_zuf_randomState *)fState;
-
-    for (k=0; k<607; ++k) {
-        toState->u[k] = fromState->u[k];
-    }
-    toState->n = fromState->n;
-    toState->m = fromState->m;
-}
 
 /* It is crucial that m == n-273 mod 607 at all times;
  * For speed of execution, however, this is never enforced.

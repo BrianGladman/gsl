@@ -48,23 +48,6 @@ void gsl_ran_taus_seed_wstate(void *vState,int s)
     ((gsl_ran_taus_randomState *)vState)->s3 = 34567 + 3*s;
 }
 
-
-
-/* get/set randomState */
-void gsl_ran_taus_copyState(void *tState,
-                         void *fState)
-{
-    gsl_ran_taus_randomState *toState, *fromState;
-    toState   = (gsl_ran_taus_randomState *)tState;
-    fromState = (gsl_ran_taus_randomState *)fState;
-
-    toState->s1 = fromState->s1;
-    toState->s2 = fromState->s2;
-    toState->s3 = fromState->s3;
-
-}
-    
-    
 static gsl_ran_taus_randomState state = { 12345, 54321, 98765 };
 #include "taus-state.c"
 

@@ -82,21 +82,6 @@ void gsl_ran_cmrg_seed_wstate(void *vState, int s)
     return;
 }
 
-void gsl_ran_cmrg_copyState(void *tState,
-                         void *fState)
-{
-    gsl_ran_cmrg_randomState *toState, *fromState;
-    toState   = (gsl_ran_cmrg_randomState *)tState;
-    fromState = (gsl_ran_cmrg_randomState *)fState;
-
-    toState->x10 = fromState->x10;
-    toState->x11 = fromState->x11;
-    toState->x12 = fromState->x12;
-    toState->x20 = fromState->x20;
-    toState->x21 = fromState->x21;
-    toState->x22 = fromState->x22;
-}
-    
 static gsl_ran_cmrg_randomState state = { 10, 20, 30, 40, 50 , 60};
 #include "cmrg-state.c"
 

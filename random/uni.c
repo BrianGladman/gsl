@@ -148,22 +148,6 @@ void gsl_ran_uni_seed_wstate(void *vState, int jd)
 }
 
 
-/* get/set randomState */
-void gsl_ran_uni_copyState(void *tState,
-                         void *fState)
-{
-    int k;
-    gsl_ran_uni_randomState *toState, *fromState;
-    toState   = (gsl_ran_uni_randomState *)tState;
-    fromState = (gsl_ran_uni_randomState *)fState;
-
-    for (k=0; k<17; ++k) {
-        toState->m[k] = fromState->m[k];
-    }
-    toState->i = fromState->i;
-    toState->j = fromState->j;
-}
-
 static gsl_ran_uni_randomState state = {
     { 30788, 23052,  2053, 19346, 10646, 19427, 23975,
       19049, 10949, 19693, 29746, 26748, 2796,  23890,

@@ -19,8 +19,6 @@ typedef struct {
     long x1,x2,x3,x4,x5;
 } gsl_ran_mrg_randomState;
 
-static gsl_ran_mrg_randomState state = { 12345, 23456, 34567, 45678, 56789 };
-
 inline unsigned long gsl_ran_mrg_random_wstate(void *vState)
 {
     long h, p1, p5;
@@ -56,7 +54,7 @@ inline double gsl_ran_mrg_max(void)
 void gsl_ran_mrg_seed_wstate(void *vState, int s)
 {
     
-    /* An entirely adhoc way of seeding! This does not come
+    /* An entirely adhoc way of seeding! This does **not** come
        from L'Ecuyer et al */
     s -= 1;
     ((gsl_ran_mrg_randomState *)vState)->x1 = 12345 + s;
@@ -68,23 +66,9 @@ void gsl_ran_mrg_seed_wstate(void *vState, int s)
 }
 
 
-/* get/set randomState */
-void gsl_ran_mrg_copyState(void *tState,
-                         void *fState)
-{
-    gsl_ran_mrg_randomState *toState, *fromState;
-    toState   = (gsl_ran_mrg_randomState *)tState;
-    fromState = (gsl_ran_mrg_randomState *)fState;
+static gsl_ran_mrg_randomState state = { 12345, 23456, 34567, 45678, 56789 };
 
-    toState->x1 = fromState->x1;
-    toState->x2 = fromState->x2;
-    toState->x3 = fromState->x3;
-    toState->x4 = fromState->x4;
-    toState->x5 = fromState->x5;
 
-}
-
-static gsl_ran_mrg_randomState state;
 #include "mrg-state.c"
 
     

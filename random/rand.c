@@ -171,18 +171,6 @@ void gsl_ran_rand_seed_wstate(void *vState, int jd)
 }
 
 
-/* get/set randomState */
-void gsl_ran_rand_copyState(void *tState, void *fState)
-{
-    int k;
-    gsl_ran_rand_randomState *toState, *fromState;
-    toState   = (gsl_ran_rand_randomState *)tState;
-    fromState = (gsl_ran_rand_randomState *)fState;
-
-    toState->x0 = fromState->x0;
-    toState->x1 = fromState->x1;
-}
-
 static gsl_ran_rand_randomState state = { 0,0 };
 
 #include "rand-state.c"
