@@ -6,6 +6,6 @@
 
 
 int gsl_sf_hyperg_2F1_impl(double a, double b, double c, double x, double * result);
-
+int gsl_sf_hyperg_2F1_conj_impl(double aR, double aI, double c, double x, double * result);
 
 #endif  /* !GSL_SF_HYPERG_H_ */

@@ -45,6 +45,165 @@ static int hyperg_2F1_series(const double a, const double b, const double c,
   return GSL_SUCCESS;
 }
 
+/* a = aR + i aI, b = aR - i aI */
+static int hyperg_2F1_conj_series(const double aR, const double aI, const double c,
+                                  double x, double * result, double * prec)
+{
+  if(fabs(c) < locEPS) {
+    *prec   = 1.0;
+    *result = 0.0; /* FIXME: ?? */
+    return GSL_ELOSS;
+  }
+  else {
+    double sum    = 1.0;
+    double del    = 1.0;
+    double delmax = 1.0;
+    double absdel;
+    int k = 0;
+    do {
+      del *= ((aR+k)*(aR+k) + aI*aI)/((k+1.0)*(c+k)) * x;
+      sum += del;
+      absdel = fabs(del);
+      delmax = locMAX(absdel, delmax);
+      if(++k > 20000) {
+        *prec   = 1.0;
+        *result = sum;
+        return GSL_ELOSS;
+      }
+    } while(fabs(del/sum) > locEPS);
+    *result = sum;
+    *prec   = (GSL_MACH_EPS*delmax)/fabs(sum) + k*GSL_MACH_EPS;
+    return GSL_SUCCESS;
+  }
+}
+
+static int hyperg_2F1_luke(const double a, const double b, const double c,
+                           const double x, 
+			   double * result, double * prec)
+{
+  const int nmax = 10000;
+  int n = 3;
+  const double x3 = x*x*x;
+  const double t0 = a*b/c;
+  const double t1 = (a+1.0)*(b+1.0)/(2.0*c);
+  const double t2 = (a+2.0)*(b+2.0)/(2.0*(c+1.0));
+  double F = 1.0;
+
+  double Bnm3 = 1.0;                                  /* B0 */
+  double Bnm2 = 1.0 + t1 * x;                         /* B1 */
+  double Bnm1 = 1.0 + t2 * x * (1.0 + t1/3.0 * x);    /* B2 */
+ 
+  double Anm3 = 1.0;                                                      /* A0 */
+  double Anm2 = Bnm2 - t0 * x;                                            /* A1 */
+  double Anm1 = Bnm1 - t0*(1.0 + t2*x)*x + t0 * t1 * (c/(c+1.0)) * x*x;   /* A2 */
+
+  while(1) {
+    double npam1 = n + a - 1;
+    double npbm1 = n + b - 1;
+    double npcm1 = n + c - 1;
+    double npam2 = n + a - 2;
+    double npbm2 = n + b - 2;
+    double npcm2 = n + c - 2;
+    double tnm1  = 2*n - 1;
+    double tnm3  = 2*n - 3;
+    double tnm5  = 2*n - 5;
+    double n2 = n*n;
+    double F1 =  (3.0*n2 + (a+b-6)*n + 2 - a*b - 2*(a+b)) / (2*tnm3*npcm1);
+    double F2 = -(3.0*n2 - (a+b+6)*n + 2 - a*b)*npam1*npbm1/(4*tnm1*tnm3*npcm2*npcm1);
+    double F3 = (npam2*npam1*npbm2*npbm1*(n-a-2)*(n-b-2)) / (8*tnm3*tnm3*tnm5*(n+c-3)*npcm2*npcm1);
+    double E  = npam1*npbm1*(n-c-1) / (2*tnm3*npcm2*npcm1);
+
+    double An = (1.0+F1*x)*Anm1 + (E + F2*x)*x*Anm2 + F3*x3*Anm3;
+    double Bn = (1.0+F1*x)*Bnm1 + (E + F2*x)*x*Bnm2 + F3*x3*Bnm3;
+    double r = An/Bn;
+
+    *prec = fabs(F - r)/F;
+    F = r;
+
+    if(*prec < locEPS || n > nmax) break;
+
+    n++;
+    Bnm3 = Bnm2;
+    Bnm2 = Bnm1;
+    Bnm1 = Bn;
+    Anm3 = Anm2;
+    Anm2 = Anm1;
+    Anm1 = An;
+  }
+  
+  *result = F;
+
+  if(*prec > locEPS)
+    return GSL_ELOSS;
+  else
+    return GSL_SUCCESS;
+}
+
+/* a = aR + i aI, b = aR - i aI */
+static int hyperg_2F1_conj_luke(const double aR, const double aI, const double c,
+                                const double x, 
+			        double * result, double * prec)
+{
+  const int nmax = 10000;
+  int n = 3;
+  const double x3 = x*x*x;
+  const double atimesb = aR*aR + aI*aI;
+  const double apb     = 2.0*aR;
+  const double t0 = atimesb/c;
+  const double t1 = (atimesb +     apb + 1.0)/(2.0*c);
+  const double t2 = (atimesb + 2.0*apb + 4.0)/(2.0*(c+1.0));
+  double F = 1.0;
+
+  double Bnm3 = 1.0;                                  /* B0 */
+  double Bnm2 = 1.0 + t1 * x;                         /* B1 */
+  double Bnm1 = 1.0 + t2 * x * (1.0 + t1/3.0 * x);    /* B2 */
+ 
+  double Anm3 = 1.0;                                                      /* A0 */
+  double Anm2 = Bnm2 - t0 * x;                                            /* A1 */
+  double Anm1 = Bnm1 - t0*(1.0 + t2*x)*x + t0 * t1 * (c/(c+1.0)) * x*x;   /* A2 */
+
+  while(1) {
+    double nm1 = n - 1;
+    double nm2 = n - 2;
+    double npam1_npbm1 = atimesb + nm1*apb + nm1*nm1;
+    double npam2_npbm2 = atimesb + nm2*apb + nm2*nm2;
+    double npcm1 = nm1 + c;
+    double npcm2 = nm2 + c;
+    double tnm1  = 2*n - 1;
+    double tnm3  = 2*n - 3;
+    double tnm5  = 2*n - 5;
+    double n2 = n*n;
+    double F1 =  (3.0*n2 + (apb-6)*n + 2 - atimesb - 2*apb) / (2*tnm3*npcm1);
+    double F2 = -(3.0*n2 - (apb+6)*n + 2 - atimesb)*npam1_npbm1/(4*tnm1*tnm3*npcm2*npcm1);
+    double F3 = (npam2_npbm2*npam1_npbm1*(nm2*nm2 - nm2*apb + atimesb)) / (8*tnm3*tnm3*tnm5*(n+c-3)*npcm2*npcm1);
+    double E  = npam1_npbm1*(n-c-1) / (2*tnm3*npcm2*npcm1);
+
+    double An = (1.0+F1*x)*Anm1 + (E + F2*x)*x*Anm2 + F3*x3*Anm3;
+    double Bn = (1.0+F1*x)*Bnm1 + (E + F2*x)*x*Bnm2 + F3*x3*Bnm3;
+    double r = An/Bn;
+
+    *prec = fabs(F - r)/F;
+    F = r;
+
+    if(*prec < locEPS || n > nmax) break;
+
+    n++;
+    Bnm3 = Bnm2;
+    Bnm2 = Bnm1;
+    Bnm1 = Bn;
+    Anm3 = Anm2;
+    Anm2 = Anm1;
+    Anm1 = An;
+  }
+  
+  *result = F;
+
+  if(*prec > locEPS)
+    return GSL_ELOSS;
+  else
+    return GSL_SUCCESS;
+}
+
 static int pow_omx(const double x, const double p, double * result)
 {
   double ln_omx;
@@ -204,5 +363,32 @@ int gsl_sf_hyperg_2F1_impl(const double a, const double b, const double c,
     else {
       return GSL_SUCCESS;
     }
+  }
+}
+
+
+int gsl_sf_hyperg_2F1_conj_impl(const double aR, const double aI, const double c,
+                                const double x,
+				double * result)
+{
+  const double ax = fabs(x);
+  const int c_neg_integer = ( c < 0.0  &&  fabs(c - rint(c)) < locEPS );
+
+  if(ax >= 1.0) return GSL_EDOM;
+  if(c_neg_integer) return GSL_EDOM;
+
+  if(ax < 0.2 && fabs(aR) < 20.0 && fabs(aI) < 20.0) {
+    double prec;
+    int status = hyperg_2F1_conj_series(aR, aI, c, x, result, &prec);
+    return status;
+  }
+  else if(fabs(aR) < 5.0 && fabs(aI) < 5.0) {
+    double prec;
+    int status = hyperg_2F1_conj_series(aR, aI, c, x, result, &prec);
+    return status;
+  }
+  else {
+    int status = hyperg_2F1_conj_luke(aR, aI, c, x, result, &prec);
+    return status;
   }
 }
