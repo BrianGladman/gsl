@@ -169,7 +169,7 @@ Currently the solver may partially modify the state, if the error
 occurs in the middle of an RK step calculation for example.
 
 ----------------------------------------------------------------------
-BUG#18 -- RNG250 discrepancy
+BUG#18 -- R250 discrepancy, and initialisation in R250 / GSFR4
 
 This bug report is correct. The original paper has the same discrepancy.
 
@@ -191,6 +191,15 @@ This error seems to be very common. It must have been introduced long time ago.
 I fed some data from both variants into Marsaglia's diehard and found that the 
 documented version is better in most tests. Thus the error is probably in the 
 implementation and the documentation is right.
+
+The orthogonalisation routine for R250 is different from the original
+paper (it should be k=7*i+3 instead of k=7+i*3)
+
+Also in the initialisation of GSFR, the initial lower 6695 indices
+never participate in calculations of subsequent random numbers, so the
+"orthogonalisation" has no effect.  Check whether this also affects
+R250.
+
 ----------------------------------------------------------------------
 BUG#19 -- randist/landau has an out of range error
 
@@ -225,3 +234,5 @@ int main() {
 
 Reported by "Kevin M. Huffenberger" <khuffenb@Princeton.EDU>
 ----------------------------------------------------------------------
+
+
