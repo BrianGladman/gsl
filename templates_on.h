@@ -16,6 +16,7 @@
 #define ATOMIC_IO ATOMIC
 #define ZERO {{0.0L,0.0L}}
 #define ONE {{1.0L,0.0L}}
+#define BASE_EPSILON GSL_DBL_EPSILON
 
 #elif defined(BASE_GSL_COMPLEX)
 #define BASE gsl_complex
@@ -28,6 +29,7 @@
 #define ATOMIC_IO ATOMIC
 #define ZERO {{0.0,0.0}}
 #define ONE {{1.0,0.0}}
+#define BASE_EPSILON GSL_DBL_EPSILON
 
 #elif defined(BASE_GSL_COMPLEX_FLOAT)
 #define BASE gsl_complex_float
@@ -40,6 +42,7 @@
 #define ATOMIC_IO ATOMIC
 #define ZERO {{0.0F,0.0F}}
 #define ONE {{1.0F,0.0F}}
+#define BASE_EPSILON GSL_FLT_EPSILON
 
 #elif defined(BASE_LONG_DOUBLE)
 #define BASE long double
@@ -52,6 +55,7 @@
 #define ATOMIC_IO ATOMIC
 #define ZERO 0.0L
 #define ONE 1.0L
+#define BASE_EPSILON GSL_DBL_EPSILON
 
 #elif defined(BASE_DOUBLE)
 #define BASE double
