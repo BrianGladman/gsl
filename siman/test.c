@@ -225,7 +225,7 @@ void S1(const gsl_rng * r, void *xp, double step_size)
 /*   new_x = new_x*2*step_size; */
 /*   new_x = new_x - step_size + old_x; */
 
-  printf("test step from old_x = %g to new_x = %g\n", old_x, new_x);
+  /* printf("test step from old_x = %g to new_x = %g\n", old_x, new_x); */
 
   memcpy(xp, &new_x, sizeof(new_x));
 }
@@ -251,7 +251,7 @@ int main(void)
   gsl_ieee_env_setup ();
 
   x = -10.0 ;
-  gsl_siman_solve(r, &x, E1, S1, M1, &debug_pos_1D, sizeof(double), params);
+  gsl_siman_solve(r, &x, E1, S1, M1, 0, sizeof(double), params);
   gsl_test_rel(x, x_min, 1e-3, "f(x)= exp(-(x-1)^2) sin(8x), x0=-10") ;
 
   x = +10.0 ;
