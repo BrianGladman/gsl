@@ -12,7 +12,6 @@ config.log
 config.status
 configure
 gsl-config
-gsl.spec
 gsl_version.h
 libgsl.la
 libtool
