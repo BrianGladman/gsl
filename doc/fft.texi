@@ -1,0 +1,979 @@
+@chapter FFTs
+
+This chapter describes functions for performing Fast Fourier Transforms
+(FFTs). There are radix-2 routines (for lengths which are a power of
+two) and mixed-radix routines (which work for any length). For details
+and derivations of the underlying algorithms consult @cite{GSL FFT
+Algorithms}.
+
+The mixed-radix routines are a reimplementation of the Fortran FFTPACK
+library by Paul Swarztrauber and available on Netlib. FFTPACK also
+includes some routines for sine and cosine transforms but these are
+currently not available in @code{gsl}.
+
+@section Mathematical Definitions 
+
+All the FFT functions offer three types of transform: forwards, inverse
+and backwards, based on the same mathematical definitions. The
+definition of the (forward) fourier transform, @math{x}=FFT(@math{z}), is,
+@tex
+$$
+x_j = \sum_{k=0}^{n-1} z_k \exp(2\pi i j k / n) 
+$$
+@end tex
+@ifinfo
+
+@example
+x_j = \sum_@{k=0@}^@{n-1@} z_k \exp(2\pi i j k / n) 
+@end example
+@end ifinfo
+@noindent
+and the definition of the inverse transform, @math{x}=IFFT(@math{z}), is,
+@tex
+$$
+z_j = {1 \over n} \sum_{k=0}^{n-1} x_k \exp(- 2\pi i j k / n).
+$$
+@end tex
+@ifinfo
+
+@example
+z_j = @{1 \over n@} \sum_@{k=0@}^@{n-1@} x_k \exp(- 2\pi i j k / n).
+@end example
+@end ifinfo
+@noindent
+The factor of @math{1/n} makes this a true inverse. For example, a call
+to @code{gsl_fft_complex_forward} followed by a call to
+@code{gsl_fft_complex_inverse} should return the original data (within
+numerical errors).
+
+The backwards FFT is simply our terminology for an unscaled version of
+the inverse,
+@tex
+$$
+z^{backwards}_j = \sum_{j=0}^{n-1} x_j \exp(-2 \pi i j k / n).
+$$
+@end tex
+@ifinfo
+
+@example
+z^@{backwards@}_j = \sum_@{k=0@}^@{n-1@} x_k \exp(- 2\pi i j k / n).
+@end example
+@end ifinfo
+@noindent
+When the overall scale of the result is unimportant it is often
+convenient to use the backwards FFT instead of the inverse to save
+unnecessary divisions.
+
+
+@section Radix-2 algorithms for complex data
+
+The radix-2 algorithms described in this section are simple and compact,
+although not necessarily the most efficient. They use the Cooley-Tukey
+algorithm to compute complex FFTs for lengths which are a power of 2.
+The self-sorting mixed-radix routines offer better performance, at the
+expense of requiring additional scratch space.
+
+All these functions are declared in the header file @file{gsl_fft_complex.h}.
+
+@deftypefun int gsl_fft_complex_radix2_forward (complex data[], const unsigned int n)
+
+@deftypefunx int gsl_fft_complex_radix2_backward (complex data[], const unsigned int n)
+
+@deftypefunx int gsl_fft_complex_radix2_inverse (complex data[], const unsigned int n)
+
+These functions compute the forward, backward and inverse FFTs of
+@var{data}, a complex array of length @var{n}, using an in-place radix-2
+decimation-in-time algorithm. The length of the data @var{n} is
+restricted to powers of two.
+
+Here is a table which shows the layout of the array @var{data}, and the
+correspondence between the time-domain data @math{z}, and the
+frequency-domain data @math{x}.
+
+@example
+        index    z             x=FFT(z)
+
+        0        z(t=0)        x(f=0)
+        1        z(t=1)        x(f=1/N)
+        2        z(t=2)        x(f=2/N)
+        .        ......        ........
+
+        N/2      z(t=N/2)      x(f=+1/2,-1/2)
+
+        N-3      z(t=N-3)      x(f=-3/N)
+        N-2      z(t=N-2)      x(f=-2/N)
+        N-1      z(t=N-1)      x(f=-1/N)
+@end example
+@noindent
+The table assumes that the interval between samples in the time domain
+is 1. If the time-step is @math{dt} then the frequencies should be
+rescaled by @math{1/dt}.
+
+The frequency-domain data includes both positive and negative
+frequencies, ranging from @math{-1/2} through 0 to @math{+1/2}. The
+positive frequencies are stored from the beginning of the array up to
+the middle, and the negative frequencies are stored backwards from the
+end of the array. Note that the most positive and negative
+frequencies (@math{+1/2},@math{-1/2}) are equivalent.
+
+The functions return a value of @code{0} if no errors were detected, and
+@code{-1} in the case of error. The following @code{gsl_errno}
+condition is defined for these functions:
+
+@table @code
+@item GSL_EDOM
+The length of the data @var{n} is not a power of two.
+@end table
+
+@end deftypefun
+
+
+@deftypefun int gsl_fft_complex_radix2_dif_forward (complex data[], const unsigned int n)
+
+@deftypefunx int gsl_fft_complex_radix2_dif_backward (complex data[], const unsigned int n)
+
+@deftypefunx int gsl_fft_complex_radix2_dif_inverse (complex data[], const unsigned int n)
+
+These are decimation-in-frequency versions of the radix-2 FFT functions.
+
+@end deftypefun
+
+@subsection Examples
+
+Here is an example program which computes the FFT of a short pulse in a
+sample of length 128. To make the resulting fourier transform real the
+pulse is defined for equal positive and negative times (-10 @dots{} 10) (the
+negative times wrap around the end of the array).
+
+@example
+#include <stdio.h>
+#include <math.h>
+#include <gsl_errno.h>
+#include <gsl_fft_complex.h>
+
+int main ()
+@{
+  int i;
+  complex data[128];
+
+  for (i = 0; i < 128; i++)
+    @{
+       data[i].real = 0.0;
+       data[i].imag = 0.0;
+    @}
+
+  data[0].real = 1.0;
+
+  for (i = 1; i <= 10; i++)
+    @{
+       data[i].real = data[n-i].imag = 1.0;
+    @}
+
+  for (i = 0; i < 128; i++)
+    @{
+      printf ("%d %e %e\n", i, data[i].real, data[i].imag);
+    @}
+  printf ("\n");
+
+  gsl_fft_complex_radix2_forward (data, 128);
+
+  for (i = 0; i < 128; i++)
+    @{
+      printf ("%d %e %e\n", i, data[i].real, data[i].imag);
+    @}
+
+@}
+@end example
+
+Note, we have assumed that the program is using the default @code{gsl}
+error handler (which calls @code{abort} for any errors).  If you are not
+using a safe error handler you would need to check the return status of
+@code{gsl_fft_complex_radix2_forward}.
+
+@section Mixed-Radix radix for complex data
+
+This section describes mixed-radix FFT algorithms for complex data.  The
+mixed-radix functions work for FFTs of any length. They are a
+reimplementation of the Fortran FFTPACK library by Paul Swarztrauber and
+also follow the review article "Self-sorting Mixed-radix FFTs" by Clive
+Temperton. The routines here use the same indexing scheme and basic
+algorithms as FFTPACK.
+
+The mixed-radix algorithm is based on sub-transform modules -- highly
+optimised small length FFTs which are combined to create larger FFTs.
+There are efficient modules for factors of 2, 3, 4, 5, and 6. The
+modules for the composite factors of 4 and 6 are faster than combining
+the modules for 2*2 and 2*3.
+
+For factors which are not implemented as modules there is a fall-back to
+a general length-k module. This module is O(k^2), and less efficient
+than a dedicated module would be. However, lengths which use the general
+length-k module will still be factorised as much as possible. For
+example, a length of 77 will be factorised into 7*11. Large prime
+factors are the worst case scenario, e.g. as found in n=2*3*99991, and
+should be avoided because their O(k^2) scaling will dominate the
+run-time (consult @cite{GSL FFT Algorithms} for possible ways around
+this problem).
+
+The mixed-radix initialisation function @code{gsl_fft_complex_init}
+returns the full list of factors and can be used to check how well the
+length has been factorised, and estimate the run-time. For programs
+under user control you may wish to warn if the length is poorly
+factorised. If you frequently encounter data lengths which cannot be
+factorised using the existing small-prime modules consult @cite{GSL FFT
+Algorithms} for details on adding support for other factors.
+
+@c First, the space for the trigonometric lookup tables and scratch area is
+@c allocated by a call to one of the @code{wavetable_alloc} functions. We
+@c call the combination of factorisation, scratch space and trignometric
+@c lookup arrays a @dfn{wavetable}. It contains the sine and cosine
+@c waveforms for the all the frequencies that will be used in the FFT.
+
+@c The wavetable is initialized by a call to the corresponding @code{init}
+@c function. It factorizes the data length, using the implemented
+@c subtransforms as preferred factors wherever possible. The trigonometric
+@c lookup table for the chosen factorization is also computed.
+
+@c An FFT is computed by a call to one of the @code{forward},
+@c @code{backward} or @code{inverse} functions, with the data, length and
+@c wavetable as arguments.
+
+All these functions are declared in the header file @file{gsl_fft_complex.h}.
+
+@deftypefun int gsl_fft_complex_wavetable_alloc (unsigned int @var{n}, gsl_fft_complex_wavetable * @var{wavetable});
+
+This function allocates space for a scratch area and a trigonometric
+lookup table, both of size @var{n} complex elements. The relevant
+components of @var{wavetable} are modified to point to the newly
+allocated memory.
+
+The function returns a value of @code{0} if no errors were detected,
+and @code{-1} in the case of error. The following @code{gsl_errno}
+conditions are defined for this function:
+
+@table @code
+@item GSL_EDOM
+The length of the data @var{n} is not a positive integer (i.e. @var{n} is zero).
+
+@item GSL_ENOMEM
+The requested memory could not be allocated (@code{malloc} returned
+a null pointer).
+@end table
+
+@end deftypefun
+
+@deftypefun int gsl_fft_complex_init (const unsigned int @var{n}, gsl_fft_complex_wavetable * @var{wavetable});
+
+This function initializes @var{wavetable}. It selects a factorization of
+the length @var{n} into the implemented subtransforms, storing the
+details of the factorization in @var{wavetable}. Using this
+factorisation it then prepares a trigonometric lookup table in the
+memory previously allocated by @code{gsl_fft_complex_wavetable_alloc}.
+
+The wavetable is computed using direct calls to @code{sin} and
+@code{cos}, for accuracy. It could be computed faster using recursion
+relations if necessary. If an application performs many FFTs of the same
+length then computing the wavetable is a one-off overhead which does not
+affect the final throughput.
+
+The wavetable structure can be used repeatedly for any transform of the
+same length. The table is not modified by calls to any of the other FFT
+functions. The same wavetable can be used for both forward and backward
+(or inverse) transforms of a given length.
+
+The function returns a value of @code{0} if no errors were detected,
+and @code{-1} in the case of error. The following @code{gsl_errno}
+conditions are defined for this function:
+
+@table @code
+@item GSL_EDOM
+The length of the data @var{n} is not a positive integer (i.e. @var{n} is zero).
+
+@item GSL_EFACTOR
+The length @var{n} could not be factorized (this shouldn't happen).
+
+@item GSL_EFAILED
+A failure was detected in the wavetable generation. This could be caused
+by an inconsistency in a user-supplied @var{wavetable} structure.
+@end table
+
+@end deftypefun
+
+@deftypefun int gsl_fft_complex_wavetable_free (gsl_fft_complex_wavetable * @var{wavetable});
+
+This function frees the blocks of memory previously allocated by
+@code{gsl_fft_complex_wavetable_alloc} and pointed to by the components
+of @var{wavetable}.
+
+The wavetable should be freed if no further FFTs of the same length will
+be needed.
+@end deftypefun
+
+The functions @code{gsl_fft_complex_init},
+@code{gsl_fft_wavetable_alloc} and @code{gsl_fft_wavetable_free} all
+operate on a structure @code{gsl_fft_complex_wavetable}. This structure
+contains internal parameters for the FFT. 
+
+It is not necessary to set any of the members directly except for
+advanced usage.  However, it can useful to examine the wavetable
+returned by @code{gsl_fft_complex_init}. For example, the factorization
+chosen by @code{gsl_fft_complex_init} is given and can be used to
+provide an estimate of the run-time or numerical error.
+
+Here is the wavtable structure. It is declared in the header file
+@file{gsl_fft_complex.h}.
+
+@deftp {Data Type} struct gsl_fft_complex_wavetable
+
+This is a structure that holds the factorization and pointers to the
+scratch area and trigonometric lookup tables for the mixed radix fft
+algorithm. It has the following members:
+
+@table @code
+@item unsigned int n
+This is the number of complex data points
+
+@item unsigned int nf
+This is the number of factors that the length @code{n} was decomposed into.
+
+@item unsigned int factor[64]
+This is the array of factors. Only the first @code{nf} elements are
+used. (This is a fixed length array and therefore in violation of the
+GNU Coding Standards).
+
+@item complex * scratch
+This is a pointer to a scratch area of @code{n} complex elements,
+capable of holding intermediate copies of the original data set.
+
+@item complex * trig
+This is a pointer to a preallocated trigonometric lookup table of
+@code{n} complex elements.
+
+@item complex * twiddle[64]
+This is an array of pointers into @code{trig}, giving the twiddle
+factors for each pass.
+
+@end table
+
+@end deftp
+
+@deftypefun int gsl_fft_complex_forward (complex @var{data}[], const unsigned int @var{n}, const gsl_fft_wavetable * @var{wavetable})
+@deftypefunx int gsl_fft_complex_inverse (complex @var{data}[], const unsigned int @var{n}, const gsl_fft_complex_wavetable * @var{wavetable})
+@deftypefunx int gsl_fft_complex_backward (complex @var{data}[], const unsigned int @var{n}, const gsl_fft_complex_wavetable * @var{wavetable})
+
+These functions compute the forward, backward and inverse FFT of
+@var{data}, a complex array of length @var{n}, using a mixed radix
+decimation-in-frequency algorithm. 
+
+The caller must supply a @var{wavetable} containing the chosen
+factorization, trigonometric lookup tables and scratch area. The
+wavetable can be easily prepared using the functions
+@code{gsl_fft_complex_init} and @code{gsl_fft_complex_alloc}.
+
+There is no restriction on the length @var{n}.  Efficient modules are
+provided for subtransforms of length 2, 3, 4, 5, and 6. Any remaining
+factors are computed with a slow, O(n^2), general-n module.
+
+The functions return a value of @code{0} if no errors were detected,
+and @code{-1} in the case of error. The following @code{gsl_errno}
+conditions are defined for these functions:
+
+@table @code
+@item GSL_EDOM
+The length of the data @var{n} is not a positive integer (i.e. @var{n} is zero).
+
+@item GSL_EINVAL
+The length of the data @var{n} and the length used to compute the given
+@var{wavetable} do not match.
+@end table
+@end deftypefun
+
+@subsection Examples
+
+Here is an example program which computes the FFT of a short pulse in a
+sample of length 630 (=2*3*3*5*7) using the mixed-radix algorithm.
+
+@example
+#include <stdio.h>
+#include <math.h>
+#include <gsl_errno.h>
+#include <gsl_fft_complex.h>
+
+int main ()
+@{
+  int i;
+  const int n = 630 ;
+  complex data[n];
+
+  gsl_fft_complex_wavetable wavetable;
+
+  for (i = 0; i < n; i++)
+    @{
+      data[i].real = 0.0 ;
+      data[i].imag = 0.0 ;
+    @}
+
+  data[0].real = 1.0 ;
+
+  for (i = 1; i < 10; i++)
+    @{
+      data[i].real = data[n-i].real = 1.0 ;
+    @}
+
+  for (i = 0; i < n; i++)
+    @{
+      printf ("%d: %e %e\n", i, data[i].real, data[i].imag);
+    @}
+  printf ("\n");
+
+  gsl_fft_complex_wavetable_alloc (n, &wavetable);
+  gsl_fft_complex_init (n, &wavetable);
+
+  for (i = 0; i < wavetable.nf; i++)
+    @{
+       printf("# factor %d: %d\n", i, wavetable.factor[i]);
+    @}
+
+  gsl_fft_complex_forward (data, n, &wavetable);
+
+  for (i = 0; i < n; i++)
+    @{
+      printf ("%d: %e %e\n", i, data[i].real, data[i].imag);
+    @}
+
+  gsl_fft_complex_wavetable_free (&wavetable);
+
+@}
+@end example
+
+Note, we have assumed that the program is using the default @code{gsl}
+error handler (which calls @code{abort} for any errors).  If you are not
+using a safe error handler you would need to check the return status of
+of all the @code{gsl} routines.
+
+@section Mixed-Radix routines for real data
+
+This section describes mixed-radix FFT algorithms for real data. The
+mixed-radix functions work for FFTs of any length. They are a
+reimplementation of the real-FFT routines in the Fortran FFTPACK library
+by Paul Swarztrauber. The theory behind the algorithm is explained in
+the article "Fast Mixed-Radix Real Fourier Transforms" by Clive
+Temperton. The routines here use the same indexing scheme and basic
+algorithms as FFTPACK.
+
+These functions for real data are similar to those for complex data.
+However, there is an important difference between forward and inverse
+transforms. The fourier transform, @math{z}, of a real data sequence,
+@math{x}, is not real. It is a complex sequence with a special symmetry:
+@tex
+$$
+z_k = z_{n-k}^*
+$$
+@end tex
+@noindent
+A transform sequence with this symmetry is called
+@dfn{conjugate-complex} or @dfn{half-complex}. This different structure
+requires different storage-layouts for the forward transform (from real
+to half-complex) and inverse transform (from half-complex back to real).
+As a consequence the routines are divided into two sets: functions in
+@code{gsl_fft_real} which operate on real sequences and functions in
+@code{gsl_fft_halfcomplex} which operate on half-complex sequences.
+
+The natural direction for a fourier transform of a real sequence,
+@math{x}, is consider the real sequence as built up by fourier
+synthesis, from the half-complex coefficients, @math{c},
+
+[FIXME: this is compatible with FFTPACK but not Numerical Recipes, and
+the Complex routines are the other way round. Change the direction of
+one so we are internally consistent!]
+
+@tex
+$$
+x_j = \sum_{k=0}^{n-1} c_k \exp(2 \pi i j k /n)
+$$
+@end tex
+@noindent
+and the coefficients are found by fourier analysis,
+@tex
+$$
+c_k = {1 \over n} \sum_{j=0}^{n-1} x_k \exp(-2 \pi i j k /n)
+$$
+@end tex
+@noindent
+This means that @code{gsl_fft_real} corresponds to
+@code{gsl_fft_complex_backward}, because it is an fft in the inverse
+direction without a scaling factor.
+
+[End of FIXME: after this we are ok]
+
+The symmetry of the half-complex sequence implies that only half the
+full sequence of @var{n} complex numbers needs to be stored. The
+remaining half can be reconstructed using the symmetry condition. (This
+works for all lengths, even and odd. When the length is even the middle
+value, where @math{k=n/2}, is also real). Only @var{n} real numbers are
+required to store the half-complex sequence the transform of a real
+sequence of length @var{n} can be stored in the same size array as the
+original data.
+
+The functions use the FFTPACK storage convention for half-complex
+sequences. In this convention the half-complex transform of a real
+sequence is stored in with frequencies in increasing order, starting at
+zero, with the real and imaginary parts of each frequency in neighboring
+locations. When a value is known to be real the imaginary part is not
+stored. The imaginary part of the zero-frequency component is never
+stored. It is known to be zero (since the zero frequency component is
+simply the sum of the input data (all real)). For a sequence of even
+length the imaginary part of the frequency @math{n/2} is not stored
+either, since the symmetry @math{z_k = z_k^*} implies that this is
+purely real too.
+
+The storage ordering is best shown by example. 
+
+First the case of an odd-length sequence, @math{n=5}. Here is the
+correspondence between the 5 values in the half-complex sequence
+returned by @code{gsl_fft_real}, @var{halfcomplex[]} and the values
+@var{complex[]} that would be returned if the same real input sequence
+were passed to @code{gsl_fft_complex_backward} as a complex sequence
+(with imaginary parts set to @code{0}),
+
+@example
+halfcomplex[0] = complex[0].real
+halfcomplex[1] = complex[1].real
+halfcomplex[2] = complex[1].imag
+halfcomplex[3] = complex[2].real
+halfcomplex[4] = complex[2].imag
+@end example
+@noindent
+The remaining elements of the @var{complex} array, @code{complex[3]} and
+@code{complex[4]} can be filled in using the symmetry condition,
+
+@example
+complex[3].real = complex[2].real
+complex[3].imag = -complex[2].imag
+complex[4].real = complex[1].real
+complex[4].imag = -complex[1].imag
+@end example
+@noindent
+with @code{complex[0].imag} set to zero.
+
+For a transform of even length, @math{n=6}, both the first and last
+values are real,
+
+@example
+halfcomplex[0] = complex[0].real
+halfcomplex[1] = complex[1].real
+halfcomplex[2] = complex[1].imag
+halfcomplex[3] = complex[2].real
+halfcomplex[4] = complex[2].imag
+halfcomplex[5] = complex[3].real
+@end example
+@noindent
+Again, the remaining elements of the @var{complex} array,
+@code{complex[4]} and @code{complex[5]} can be filled in using the
+symmetry condition,
+
+@example
+complex[4].real = complex[2].real
+complex[4].imag = -complex[2].imag
+complex[5].real = complex[1].real
+complex[5].imag = -complex[1].imag
+@end example
+@noindent
+with @code{complex[0].imag} and @code{complex[3].imag} both set to zero.
+
+
+All these functions are declared in the header files
+@file{gsl_fft_real.h} and @file{gsl_fft_halfcomplex.h}.
+
+@deftypefun int gsl_fft_real_wavetable_alloc (unsigned int @var{n}, gsl_fft_real_wavetable * @var{wavetable});
+@deftypefunx int gsl_fft_halfcomplex_wavetable_alloc (unsigned int @var{n}, gsl_fft_halfcomplex_wavetable * @var{wavetable});
+These functions allocate space for a scratch area of size @var{n} real
+elements and a trigonometric lookup table, of size @var{n/2} complex
+elements. The relevant components of @var{wavetable} are modified to point
+to the newly allocated memory.
+
+These functions return a value of @code{0} if no errors were detected,
+and @code{-1} in the case of error. The following @code{gsl_errno}
+conditions are defined for these functions:
+
+@table @code
+@item GSL_EDOM
+The length of the data @var{n} is not a positive integer (i.e. @var{n} is zero).
+
+@item GSL_ENOMEM
+The requested memory could not be allocated (@code{malloc} returned
+a null pointer).
+@end table
+
+@end deftypefun
+
+
+
+@deftypefun int gsl_fft_real_init (const unsigned int @var{n}, gsl_fft_real_wavetable * @var{wavetable});
+@deftypefunx int gsl_fft_halfcomplex_init (const unsigned int @var{n}, gsl_fft_halfcomplex_wavetable * @var{wavetable});
+
+These functions initialize @var{wavetable}.  They first select a
+factorization of the length @var{n} into the implemented subtransforms,
+storing the details of the factorization in @var{wavetable}.
+
+Using this factorisation they then prepare a trigonometric lookup table
+in the memory previously allocated by
+@code{gsl_fft_real_wavetable_alloc} or
+@code{gsl_fft_halfcomplex_wavetable_alloc}. The wavetable is computed
+using direct calls to @code{sin} and @code{cos}, for accuracy. It could
+be computed faster using recursion relations if necessary. If an
+application performs many FFTs of the same length then computing the
+wavetable is a one-off overhead which does not affect the final
+throughput.
+
+The wavetable structure can be used repeatedly for any transform of the
+same length. The table is not modified by calls to any of the other FFT
+functions. The same wavetable can be used for both forward and backward
+(or inverse) transforms of a given length.
+
+The functions return a value of @code{0} if no errors were detected,
+and @code{-1} in the case of error. The following @code{gsl_errno}
+conditions are defined for these functions:
+
+@table @code
+@item GSL_EDOM
+The length of the data @var{n} is not a positive integer (i.e. @var{n} is zero).
+
+@item GSL_EFACTOR
+The length @var{n} could not be factorized (this shouldn't happen).
+
+@item GSL_EFAILED
+A failure was detected in the wavetable generation. This could be caused
+by an inconsistency in a user-supplied @var{wavetable} structure.
+@end table
+
+@end deftypefun
+
+@deftypefun int gsl_fft_real_wavetable_free (gsl_fft_real_wavetable * @var{wavetable});
+@deftypefunx int gsl_fft_halfcomplex_wavetable_free (gsl_fft_halfcomplex_wavetable * @var{wavetable});
+
+These functions free the blocks of memory previously allocated by
+@code{gsl_fft_real_wavetable_alloc} or
+@code{gsl_fft_halfcomplex_wavetable_alloc} and pointed to by the
+components of @var{wavetable}.
+
+The wavetable should be freed if no further FFTs of the same length will
+be needed.
+@end deftypefun
+
+
+@deftypefun int gsl_fft_real (double @var{data}[], const unsigned int @var{n}, const gsl_fft_real_wavetable * @var{wavetable})
+@deftypefunx int gsl_fft_halfcomplex (double @var{data}[], const unsigned int @var{n}, const gsl_fft_halfcomplex_wavetable * @var{wavetable})
+
+These functions compute the FFT of @var{data}, a real or half-complex
+array of length @var{n}, using a mixed radix decimation-in-frequency
+algorithm. For @code{gsl_fft_real} @var{data} is an array of
+time-ordered real data.  For @code{gsl_fft_halfcomplex} @var{data}
+contains fourier coefficients in the half-complex ordering described
+above.
+
+The caller must supply a @var{wavetable} containing the chosen
+factorization, trigonometric lookup tables and scratch area. The
+wavetable can be easily prepared using the functions
+@code{gsl_fft_real_alloc} and @code{gsl_fft_real_init} or
+@code{gsl_fft_halfcomplex_alloc} and @code{gsl_fft_halfcomplex_init}.
+
+There is no restriction on the length @var{n}.  Efficient modules are
+provided for subtransforms of length 2, 3, 4 and 5. Any remaining
+factors are computed with a slow, O(n^2), general-n module.
+
+The functions return a value of @code{0} if no errors were detected,
+and @code{-1} in the case of error. The following @code{gsl_errno}
+conditions are defined for these functions:
+
+@table @code
+@item GSL_EDOM
+The length of the data @var{n} is not a positive integer (i.e. @var{n}
+is zero).
+
+@item GSL_EINVAL
+The length of the data @var{n} and the length used to compute the given
+@var{wavetable} do not match.
+@end table
+@end deftypefun
+
+
+@deftypefun int gsl_fft_real_unpack (const double real_coefficient[], complex complex_coefficient[], const unsigned int n)
+
+This function converts a single real array, @var{real_coefficient} into
+an equivalent complex array, @var{complex_coefficient}, (with imaginary
+part set to zero), suitable for @code{gsl_fft_complex} routines. The
+algorithm for the conversion is simply,
+
+@example
+for (i = 0; i < n; i++)
+    @{
+      complex_coefficient[i].real = real_coefficient[i];
+      complex_coefficient[i].imag = 0.0;
+    @}
+@end example
+
+The function returns a value of @code{0} if no errors were detected, and
+@code{-1} in the case of error. There is only one @code{gsl_errno}
+condition defined for this function:
+
+@table @code
+@item GSL_EDOM
+The length of the data @var{n} is not a positive integer (i.e. @var{n}
+is zero).
+@end table
+@end deftypefun
+
+@deftypefun int gsl_fft_halfcomplex_unpack (const double halfcomplex_coefficient[], complex complex_coefficient[], const unsigned int n)
+
+This function converts @var{halfcomplex_coefficient}, an array of
+half-complex coefficients as returned by @code{gsl_fft_real}, into an
+ordinary complex array, @var{complex_coefficient}. It fills in the
+complex array using the symmetry @math{z_k = z_@{n-k@}^*} to reconstruct
+the redundant elements. The algorithm for the conversion is,
+
+@example  
+complex_coefficient[0].real = halfcomplex_coefficient[0];
+complex_coefficient[0].imag = 0.0;
+
+for (i = 1; i < n - i; i++)
+  @{
+    const double hc_real = halfcomplex_coefficient[2 * i - 1];
+    const double hc_imag = halfcomplex_coefficient[2 * i];
+    complex_coefficient[i].real = hc_real;
+    complex_coefficient[i].imag = hc_imag;
+    complex_coefficient[n - i].real = hc_real;
+    complex_coefficient[n - i].imag = -hc_imag;
+  @}
+ if (i == n - i)
+  @{
+    complex_coefficient[i].real = halfcomplex_coefficient[n - 1];
+    complex_coefficient[i].imag = 0.0;
+  @}
+@end example
+
+The function returns a value of @code{0} if no errors were detected, and
+@code{-1} in the case of error. There is only one @code{gsl_errno}
+condition defined for this function:
+
+@table @code
+@item GSL_EDOM
+The length of the data @var{n} is not a positive integer (i.e. @var{n}
+is zero).
+@end table
+@end deftypefun
+
+@subsection Examples
+
+Here is an example program using @code{gsl_fft_real} and
+@code{gsl_fft_halfcomplex}. It generates a real signal in the shape of a
+square pulse. The pulse is fourier transformed to frequency space, and
+all but the lowest ten frequency components are removed from the array
+of fourier coefficients returned by @code{gsl_fft_real}. 
+
+The remaining fourier coefficients are transformed back to the
+time-domain, to give a filtered version of the square pulse. Since the
+array of fourier coefficients are stored using the half-complex symmetry
+both positive and negative frequencies are removed and the final
+filtered signal is also real.
+
+@example
+#include <stdio.h>
+#include <math.h>
+#include <gsl_errno.h>
+#include <gsl_fft_real.h>
+#include <gsl_fft_halfcomplex.h>
+
+int main ()
+@{
+  int i, n = 100;
+  double data[n];
+
+  gsl_fft_real_wavetable real_wavetable;
+  gsl_fft_halfcomplex_wavetable halfcomplex_wavetable;
+
+  for (i = 0; i < n; i++)
+    @{
+      data[i] = 0.0;
+    @}
+
+  for (i = n / 3; i < 2 * n / 3; i++)
+    @{
+      data[i] = 1.0;
+    @}
+
+  for (i = 0; i < n; i++)
+    @{
+      printf ("%d: %e\n", i, data[i]);
+    @}
+  printf ("\n");
+
+  gsl_fft_real_wavetable_alloc (n, &real_wavetable);
+  gsl_fft_real_init (n, &real_wavetable);
+  gsl_fft_real (data, n, &real_wavetable);
+  gsl_fft_real_wavetable_free (&real_wavetable);
+
+  for (i = 11; i < n; i++)
+    @{
+      data[i] = 0;
+    @}
+
+  gsl_fft_halfcomplex_wavetable_alloc (n, &halfcomplex_wavetable);
+  gsl_fft_halfcomplex_init (n, &halfcomplex_wavetable);
+  gsl_fft_halfcomplex_inverse (data, n, &halfcomplex_wavetable);
+  gsl_fft_halfcomplex_wavetable_free (&halfcomplex_wavetable);
+
+  for (i = 0; i < n; i++)
+    @{
+      printf ("%d: %e\n", i, data[i]);
+    @}
+@}
+@end example
+
+
+
+@section Test Signals
+
+This section describes functions for generating simple test signals,
+such as unit pulses, constant signals, complex exponentials (sine and
+cosine waves) and pairs of complex exponentials with different
+frequencies. The Fourier transforms for these signals can be calculated
+analytically. Each function returns both the test signal and its Fourier
+transform.
+
+There are also some routines for generating white noise. In this case
+the transform cannot be calculated analytically, and is computed using a
+brute-force discrete Fourier transform.
+
+These functions are declared in the header file @file{gsl_fft_test.h}.
+
+@deftypefun int gsl_fft_test_signal_complex_pulse (const unsigned int t, const unsigned int n, const double z_real, const double z_imag, complex data[], complex fft[])
+
+This function prepares a ``delta-function'' pulse of complex amplitude
+(@var{z_real},@var{z_imag}) at time @var{t} in the complex array
+@var{data} of length @var{n}. The pulse only occupies one array element.
+All other elements of @var{data} are set to zero. The function also
+returns the fourier transform of the pulse in the complex array
+@var{fft}, also of length @var{n}.
+
+The mathematical definition of the pulse is, writing (@math{z_real + i
+z_imag}) as @math{z},
+@tex
+$$
+z_k =  z \delta_{kt}
+$$
+@end tex
+where @math{\delta_@{kt@}=1} if @math{k=t}, and 0 otherwise. The fourier
+transform is,
+@tex
+$$
+x_j = \sum_{k=0}^{n-1} z \delta_{kt} W^{jk}_n = z \exp(2\pi i j t/n)
+$$
+@end tex
+
+@end deftypefun
+
+@deftypefun int gsl_fft_test_signal_complex_constant (const unsigned int n, const double z_real, const double z_imag, complex data[], complex fft[])
+
+This function prepares a constant complex signal of amplitude
+(@var{z_real},@var{z_imag}) in the complex array @var{data} of length
+@var{n}. The function also returns the fourier transform of the constant
+in the complex array @var{fft}, also of length @var{n}.
+
+The mathematical definition of the pulse is, 
+
+@tex
+$$
+z_k = z
+$$
+@end tex
+
+and the fourier transform is,
+
+@tex
+$$
+x_j = \sum_{k=0}^{n-1} z W^{jk}_n = z n \delta_{j0}
+$$
+@end tex
+
+@end deftypefun
+
+@deftypefun int gsl_fft_test_signal_complex_exp (const int f, const unsigned int n, const double z_real, const double z_imag, complex data[], complex fft[])
+
+This function prepares a complex exponential signal of amplitude
+(@var{z_real},@var{z_imag}) and frequency @var{f} in the complex array
+@var{data} of length @var{n}. The function also returns the fourier
+transform of the signal in the complex array @var{fft}, also of length
+@var{n}.
+
+The mathematical definition of the complex exponential signal is,
+@tex
+$$
+z_k = z \exp(2\pi i k f/n)
+$$
+@end tex
+and the fourier transform is,
+@tex
+$$
+x_j = \sum_{k=0}^{n-1} z \exp(2\pi i k f/n) W^{jk}_n = z \delta_{j+f,0}
+$$
+@end tex
+
+@end deftypefun
+
+@deftypefun int gsl_fft_test_signal_complex_exppair (const int f1, const int f2, const unsigned int n, const double z1_real, const double z1_imag, const double z2_real, const double z2_imag, complex data[], complex fft[])
+
+This function prepares a pair of exponential signals of amplitude
+(@var{z1_real},@var{z1_imag}) and (@var{z2_real},@var{z2_imag}) with
+frequencies @var{f1} and @var{f2} in the complex array @var{data} of
+length @var{n}. The function also returns the fourier transform of the
+signal in the complex array @var{fft}, also of length @var{n}.
+
+The mathematical definition of the pair of exponential signals is,
+@tex
+$$
+z_k = z_1 \exp(2\pi i k f_1/n) + z_2 \exp(2\pi i k f_2/n)
+$$
+@end tex
+and the fourier transform is,
+@tex
+$$
+x_j =  z_1 \delta_{j+f_1,0}  + z_2 \delta_{j+f_2,0}
+$$
+@end tex
+
+@end deftypefun
+
+@deftypefun int gsl_fft_test_signal_complex_noise (const unsigned int n, complex data[], complex fft[])
+
+This function prepares a complex white-noise signal in the complex array
+@var{data} of length @var{n}. The real and imaginary components of each
+array element are independent uniform distributed random values in the
+range [0,1] (computed using the system @code{rand} function). The
+function also returns the fourier transform of the signal in the complex
+array @var{fft}, also of length @var{n}. The fourier transform is
+computed using the brute-force discrete fourier transfrom
+@code{gsl_dft_complex_forward}. Note that the direct computation of the
+discrete fourier transform has worse numerical stability than an FFT, so
+the array @var{fft} is only useful in detecting large errors.
+
+@end deftypefun
+
+@deftypefun int gsl_fft_test_signal_real_noise (const unsigned int n, complex data[], complex fft[])
+
+This function generates real white noise instead of complex white noise.
+It is the same as @code{gsl_fft_test_signal_complex_noise} but with the
+imaginary parts of @var{data} explicitly set to zero.
+
+@end deftypefun
+
+All these functions return a value of @code{0} if no errors were
+detected, and @code{-1} in the case of error. There is only one
+@code{gsl_errno} conditions defined for these functions:
+
+@table @code
+@item GSL_EDOM
+The length of the data @var{n} is not a positive integer (i.e. @var{n} is zero).
+@end table
+
+
