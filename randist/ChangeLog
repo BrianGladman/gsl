@@ -1,3 +1,8 @@
+Thu Oct  7 12:55:40 1999  Brian Gough  <bjg@network-theory.co.uk>
+
+	* discrete.c (gsl_ran_discrete_free): removed unreachable code
+ 	"return 0";
+
 Fri Aug  6 16:02:08 1999  Brian Gough  <bjg@network-theory.co.uk>
 
 	* sphere.c (gsl_ran_dir_nd): number of dimensions is now unsigned

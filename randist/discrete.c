@@ -327,14 +327,13 @@ gsl_ran_discrete(const gsl_rng *r, const gsl_ran_discrete_t *g)
     f = (g->F)[c];
     /* fprintf(stderr,"c,f,u: %d %.4f %f\n",c,f,u); */
     if (f == 1.0) return c;
+
     if (u < f) {
         return c;
     }
     else {
         return (g->A)[c];
     }
-
-    return 0;
 }
 void gsl_ran_discrete_free(gsl_ran_discrete_t *g)
 {
