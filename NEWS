@@ -24,6 +24,9 @@ also support weighted samples
 ** The names of the statistics functions have been reorganized for
 improved clarity. Consult manual for details.
 
+** The environment variable GSL_IEEE_MODE now uses , as a separator
+instead of ;
+
 * Was new in gsl-0.5:
 
 ** There is now a KNOWN-PROBLEMS file which lists compilation problems
