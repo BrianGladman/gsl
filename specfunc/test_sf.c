@@ -134,6 +134,50 @@ int check_bessel(void)
   return status;
 }
 
+int check_cheb(void)
+{
+  double x;
+  double f;
+  int status = 0;
+  int s;
+  
+  struct gsl_sf_cheb_series * cs = gsl_sf_cheb_new(sin, -M_PI, M_PI, 30);
+
+  f = 0.0;
+  for(x=-M_PI; x<M_PI; x += M_PI/100.0) {
+    f += fabs(gsl_sf_cheb_eval(x, cs) - sin(x));
+  }
+  s = 0;
+  s += ( f > 100.0 * 1.0e-14 );
+  gsl_test(s, "  cheb_eval()");
+  status += s;
+  
+  f = 0.0;
+  for(x=-M_PI; x<M_PI; x += M_PI/100.0) {
+    f += fabs(gsl_sf_cheb_eval_n(x, 25, cs) - sin(x));
+  }
+  s = 0;
+  s += ( f > 100.0 * 1.0e-14 );
+  gsl_test(s, "  cheb_eval_n()");
+  status += s;
+  
+  gsl_sf_cheb_calc_impl(cs, sin);
+  f = 0.0;
+  for(x=-M_PI; x<M_PI; x += M_PI/100.0) {
+    f += fabs(gsl_sf_cheb_eval(x, cs) - sin(x));
+  }
+  s = 0;
+  s += ( f > 100.0 * 1.0e-14 );
+  gsl_test(s, "  cheb_calc()");
+  status += s;
+  
+  
+  
+  gsl_sf_cheb_free(cs);
+  
+  return status;
+}
+
 
 int check_clausen(void)
 {
@@ -1213,6 +1257,7 @@ int main(int argc, char * argv[])
 {
   gsl_test(check_airy(),       "Airy Functions");
   gsl_test(check_bessel(),     "Bessel Functions");
+  gsl_test(check_cheb(),       "Chebyshev Evaluation");
   gsl_test(check_clausen(),    "Clausen Integral");
   gsl_test(check_coulomb(),    "Coulomb Wave Functions");
   gsl_test(check_coupling(),   "Coupling Coefficients");

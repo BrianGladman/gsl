@@ -11,6 +11,7 @@
 #include <math.h>
 #include <gsl_math.h>
 #include <gsl_errno.h>
+#include "gsl_sf_exp.h"
 #include "gsl_sf_pow_int.h"
 #include "gsl_sf_gamma.h"
 #include "gsl_sf_coulomb.h"
@@ -32,9 +33,8 @@ C0sq(double eta)
     return 0.0;
   }
   else {
-    double scale = 0 ;
-    int status = gsl_sf_expm1_impl (twopieta, &scale) ; 
-    /* FIXME: check return code? */
+    double scale = 0.0;
+    gsl_sf_expm1_impl(twopieta, &scale);
     return twopieta/scale;
   }
 }

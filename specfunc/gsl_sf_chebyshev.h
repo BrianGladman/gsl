@@ -32,7 +32,9 @@ struct gsl_sf_cheb_series * gsl_sf_cheb_new(double (*func)(double),
    use gsl_sf_cheb_new() instead.
    Returns a GSL error status, GSL_SUCCESS on success.
  */
-int gsl_sf_cheb_calc(struct gsl_sf_cheb_series * cs, double (*func)(double));
+int gsl_sf_cheb_calc_impl(struct gsl_sf_cheb_series * cs, double (*func)(double));
+int gsl_sf_cheb_calc_e(struct gsl_sf_cheb_series * cs, double (*func)(double));
+
 
 
 /* Evaluate a Chebyshev series at a given point.
