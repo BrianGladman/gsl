@@ -1,3 +1,8 @@
+Tue Sep 19 21:42:13 2000  Brian Gough  <bjg@network-theory.co.uk>
+
+	* qrpt.c (gsl_linalg_QRPT_decomp2): added convenience function to
+ 	compute q,r unpacked decomposition directly
+
 Wed Aug 16 19:50:35 2000  Brian Gough  <bjg@network-theory.co.uk>
 
 	* svd.c (gsl_linalg_SV_decomp): take more care with singular
