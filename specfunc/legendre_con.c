@@ -5,7 +5,9 @@
 #include <gsl_math.h>
 #include <gsl_errno.h>
 #include "legendre.h"
+#include "gsl_sf_exp.h"
 #include "gsl_sf_poly.h"
+#include "gsl_sf_trig.h"
 #include "gsl_sf_gamma.h"
 #include "gsl_sf_ellint.h"
 #include "gsl_sf_pow_int.h"
@@ -339,7 +341,8 @@ static double olver_U3(double beta2, double p)
  * [Dunster, Proc. Roy. Soc. Edinburgh 119A, 311 (1991), p. 326]
  */
 int
-gsl_sf_conicalP_xlt1_large_neg_mu_impl(double mu, double tau, double x, double * result)
+gsl_sf_conicalP_xlt1_large_neg_mu_impl(double mu, double tau, double x,
+                                       double * result, double * ln_multiplier)
 {
   double beta  = tau/mu;
   double beta2 = beta*beta;
@@ -351,18 +354,23 @@ gsl_sf_conicalP_xlt1_large_neg_mu_impl(double mu, double tau, double x, double *
   double ln_pre_2 = -0.25 * log(1.0 + beta2*(1.0-x));
   double ln_pre_3 = -tau * atan(p*beta);
   double ln_pre = ln_pre_1 + ln_pre_2 + ln_pre_3;
-  
-  if(ln_pre > GSL_LOG_DBL_MAX) {
-    *result = 0.0; /* FIXME: should be Inf */
-    return GSL_EOVRFLW;
-  }
-  else if(ln_pre < GSL_LOG_DBL_MIN) {
+  double sum   = 1.0 - olver_U1(beta2, p)/mu + olver_U2(beta2, p)/(mu*mu);
+
+  if(sum == 0.0) {
     *result = 0.0;
-    return GSL_EUNDRFLW;
+    *ln_multiplier = 0.0;
+    return GSL_SUCCESS;
   }
   else {
-    double sum = 1.0 - olver_U1(beta2, p)/mu + olver_U2(beta2, p)/(mu*mu);
-    *result = exp(ln_pre) * sum;
+    double ln_sum = log(fabs(sum));
+    int stat_e = gsl_sf_exp_sgn_impl(ln_sum + ln_pre, sum, result);
+    if(stat_e != GSL_SUCCESS) {
+      *result = GSL_SIGN(sum);
+      *ln_multiplier = ln_sum + ln_pre;
+    }
+    else {
+      *ln_multiplier = 0.0;
+    }
     return lg_stat;
   }
 }
@@ -412,39 +420,53 @@ static double olver_A1_th(double mu, double theta, double x)
  */
 int
 gsl_sf_conicalP_xgt1_neg_mu_largetau_impl(const double mu, const double tau,
-                                          const double x, double * result)
+                                          const double x, double acosh_x,
+                                          double * result, double * ln_multiplier)
 {
-  double xi = acosh(x);
-  double xi_pre;
-  double pre;
-  double sumA, sumB;
+  double xi = acosh_x;
+  double ln_xi_pre;
+  double ln_pre;
+  double sumA, sumB, sum;
   double arg;
   double J_mup1, J_mu, J_mum1;
 
   if(xi < GSL_ROOT4_MACH_EPS) {
-    xi_pre = 1.0 - xi*xi/6.0;
+    ln_xi_pre = -xi*xi/6.0;           /* log(1.0 - xi*xi/6.0) */
   }
   else {
-    xi_pre = xi/sinh(xi);
+    double lnshxi;
+    gsl_sf_lnsinh_impl(xi, &lnshxi);
+    ln_xi_pre = log(xi) - lnshxi;     /* log(xi/sinh(xi) */
   }
 
-  pre = sqrt(xi_pre) * pow(1.0/tau, mu);
-  if(pre == 0.0) {
-    *result = 0.0;
-    return GSL_EUNDRFLW;
-  }
+  ln_pre = 0.5*ln_xi_pre - mu*log(tau);
 
   arg = tau*xi;
-
   gsl_sf_bessel_Jnu_impl(mu + 1.0,   arg, &J_mup1);
   gsl_sf_bessel_Jnu_impl(mu,         arg, &J_mu);
-  J_mum1 = -J_mup1 + 2.0*mu/arg; /* careful of mu < 1 */
+  J_mum1 = -J_mup1 + 2.0*mu/arg;      /* careful of mu < 1 */
 
   sumA = 1.0 - olver_A1_xi(-mu, xi, x)/(tau*tau);
   sumB = olver_B0_xi(-mu, xi);
+  sum  = J_mu * sumA - xi/tau * J_mum1 * sumB;
 
-  *result = pre * (J_mu * sumA - xi/tau * J_mum1 * sumB);
-  return GSL_SUCCESS; /* FIXME: hmmm, success??? */
+  if(sum == 0.0) {
+    *result = 0.0;
+    *ln_multiplier = 0.0;
+    return GSL_SUCCESS;
+  }
+  else {
+    double ln_sum = log(fabs(sum));
+    int stat_e = gsl_sf_exp_sgn_impl(ln_sum + ln_pre, sum, result);
+    if(stat_e != GSL_SUCCESS) {
+      *result = GSL_SIGN(sum);
+      *ln_multiplier = ln_sum + ln_pre;
+    }
+    else {
+      *ln_multiplier = 0.0;
+    }
+    return GSL_SUCCESS;
+  }
 }
 
 
@@ -456,39 +478,52 @@ gsl_sf_conicalP_xgt1_neg_mu_largetau_impl(const double mu, const double tau,
  */
 int
 gsl_sf_conicalP_xlt1_neg_mu_largetau_impl(const double mu, const double tau,
-                                          const double x, double * result)
+                                          const double x, const double acos_x,
+                                          double * result, double * ln_multiplier)
 {
-  double theta = acos(x);
-  double th_pre;
-  double pre;
-  double sumA, sumB;
+  double theta = acos_x;
+  double ln_th_pre;
+  double ln_pre;
+  double sumA, sumB, sum;
   double arg;
   double I_mup1, I_mu, I_mum1;
 
   if(theta < GSL_ROOT4_MACH_EPS) {
-    th_pre = 1.0 + theta*theta/6.0;
+    ln_th_pre = theta*theta/6.0;   /* log(1.0 + theta*theta/6.0) */
   }
   else {
-    th_pre = theta/sin(theta);
+    
+    ln_th_pre = log(theta/sin(theta));
   }
 
-  pre = sqrt(th_pre) * pow(1.0/tau, mu);
-  if(pre == 0.0) {
-    *result = 0.0;
-    return GSL_EUNDRFLW;
-  }
+  ln_pre = 0.5 * ln_th_pre - mu * log(tau);
 
   arg = tau*theta;
-
   gsl_sf_bessel_Inu_impl(mu + 1.0,   arg, &I_mup1);
   gsl_sf_bessel_Inu_impl(mu,         arg, &I_mu);
   I_mum1 = I_mup1 + 2.0*mu/arg; /* careful of mu < 1 */
 
   sumA = 1.0 - olver_A1_th(-mu, theta, x)/(tau*tau);
   sumB = olver_B0_th(-mu, theta);
+  sum  = I_mu * sumA - theta/tau * I_mum1 * sumB;
 
-  *result = pre * (I_mu * sumA - theta/tau * I_mum1 * sumB);
-  return GSL_SUCCESS;
+  if(sum == 0.0) {
+    *result = 0.0;
+    *ln_multiplier = 0.0;
+    return GSL_SUCCESS;
+  }
+  else {
+    double ln_sum = log(fabs(sum));
+    int stat_e = gsl_sf_exp_sgn_impl(ln_sum + ln_pre, sum, result);
+    if(stat_e != GSL_SUCCESS) {
+      *result = GSL_SIGN(sum);
+      *ln_multiplier = ln_sum + ln_pre;
+    }
+    else {
+      *ln_multiplier = 0.0;
+    }
+    return GSL_SUCCESS;
+  }
 }
 
 
@@ -620,7 +655,7 @@ gsl_sf_conical_0_impl(const double lambda, const double x, double * result)
           || ((0.2 < x && x < 1.5)  && (lambda < 20.0))
           ) {
   }
-  else if(1.5 <= x && lambda < locMax(x,20.0)) {
+  else if(1.5 <= x && lambda < locMAX(x,20.0)) {
   }
   else {
   }
@@ -673,7 +708,7 @@ gsl_sf_conical_1_impl(const double lambda, const double x, double * result)
           || ((0.2 < x && x < 1.5)  && (lambda < 20.0))
           ) {
   }
-  else if(1.5 <= x && lambda < locMax(x,20.0)) {
+  else if(1.5 <= x && lambda < locMAX(x,20.0)) {
   }
   else {
   }
@@ -824,15 +859,6 @@ int gsl_sf_conical_sph_reg_e(const int l, const double lambda, const double x, d
   int status = gsl_sf_conical_sph_reg_impl(l, lambda, x, result);
   if(status != GSL_SUCCESS) {
     GSL_ERROR("gsl_sf_conical_sph_reg_e", status);
-  }
-  return status;
-}
-
-int gsl_sf_conical_sph_reg_array_e(const int l, const double lambda, const double x, double * result_array)
-{
-  int status = gsl_sf_conical_sph_reg_array_impl(l, lambda, x, result_array);
-  if(status != GSL_SUCCESS) {
-    GSL_ERROR("gsl_sf_conical_sph_reg_array_e", status);
   }
   return status;
 }

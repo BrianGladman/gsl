@@ -11,7 +11,8 @@
  * |x| < 1
  */
 int
-gsl_sf_conicalP_xlt1_large_neg_mu_impl(double mu, double tau, double x, double * result);
+gsl_sf_conicalP_xlt1_large_neg_mu_impl(double mu, double tau, double x,
+                                       double * result, double * ln_multiplier);
 
 
 /* Large tau uniform asymptotics
@@ -20,7 +21,8 @@ gsl_sf_conicalP_xlt1_large_neg_mu_impl(double mu, double tau, double x, double *
  */
 int
 gsl_sf_conicalP_xgt1_neg_mu_largetau_impl(const double mu, const double tau,
-                                          const double x, double * result);
+                                          const double x, const double acosh_x,
+                                          double * result, double * ln_multiplier);
 
 
 /* Large tau uniform asymptotics
@@ -29,5 +31,6 @@ gsl_sf_conicalP_xgt1_neg_mu_largetau_impl(const double mu, const double tau,
  */
 int
 gsl_sf_conicalP_xlt1_neg_mu_largetau_impl(const double mu, const double tau,
-                                          const double x, double * result);
+                                          const double x, const double acos_x,
+                                          double * result, double * ln_multiplier);
 

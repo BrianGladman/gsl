@@ -246,11 +246,32 @@ gsl_sf_legendre_H3d_impl(const int ell, const double lambda, const double eta, d
   else if(ell == 1) {
     return gsl_sf_legendre_H3d_1_impl(lambda, eta, result);
   }
+  else if(eta == 0.0) {
+    *result = 0.0;
+    return GSL_SUCCESS;
+  }
   else if(xi < 1.0) {
     return legendre_H3d_series(ell, lambda, eta, result);
   }
   else if(abs_lam > 1000.0*ell*ell) {
-    
+    double P;
+    double lm;
+    int stat_P = gsl_sf_conicalP_xgt1_neg_mu_largetau_impl(ell+0.5,
+                                                           lambda,
+                                                           eta, acosh(eta),
+                                                           &P, &lm);
+    if(lm == 0.0 || P == 0.0) {
+      *result = P;
+      return stat_P;
+    }
+    else {
+      double lnP = log(fabs(P));
+      int stat_e = gsl_sf_exp_sgn_impl(lnP + lm, P, result);
+      if(stat_e == GSL_SUCCESS)
+        return stat_P;
+      else
+        return stat_e;
+    }
   }
   else {
     const double coth_eta = 1.0/tanh(eta);
@@ -283,33 +304,6 @@ gsl_sf_legendre_H3d_impl(const int ell, const double lambda, const double eta, d
   }
 }
 
-
-
-int
-gsl_sf_hyper_array_impl(int lmax, double lambda, double x, double * result, double * harvest)
-{
-  double X = 1./tanh(x);
-  double y2, y1, y0;
-  int ell;
-
-/*
-  gsl_sf_hyper_0_impl(lambda, x, &y2);
-  gsl_sf_hyper_1_impl(lambda, x, &y1);
-*/
-  harvest[0] = y2;
-  harvest[1] = y1;
-
-  for(ell=2; ell<=lmax; ell++) {
-    double a = sqrt(lambda*lambda + ell*ell);
-    double b = sqrt(lambda*lambda + (ell-1)*(ell-1));
-    y0 = ((2*ell-1)*X*y1 - b*y2) / a;
-    y2 = y1;
-    y1 = y0;
-    harvest[ell] = y0;
-  }
-
-  *result = y0;
-}
 
 
 /*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
