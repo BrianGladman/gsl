@@ -94,4 +94,4 @@ AC_MSG_CHECKING(whether RAND_MAX is known for $host_os)
 fi
 
 
-AC_OUTPUT(fft/Makefile statistics/Makefile roots/Makefile random/Makefile randist/Makefile siman/Makefile doc/Makefile Makefile)
+AC_OUTPUT(err/Makefile fft/Makefile statistics/Makefile roots/Makefile random/Makefile randist/Makefile siman/Makefile doc/Makefile Makefile)

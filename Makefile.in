@@ -44,7 +44,7 @@ PACKAGE = @PACKAGE@
 VERSION = @VERSION@
 CC = @CC@
 
-SUBDIRS = random randist fft roots statistics siman doc
+SUBDIRS = err random randist fft roots statistics siman doc
 ACLOCAL = $(top_srcdir)/aclocal.m4
 CONFIG_HEADER_IN = config.h.in
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
