@@ -9,6 +9,7 @@ $switch = $ARGV[0] ;
 if ($switch eq 'on') {
     print "switching libtool on...\n" ;
     while (<>) {
+        s/pkglib_pkglib/pkglib/g ;
 	s/pkglib_LIBRARIES/noinst_LTLIBRARIES/g ;
 	s/\#?\s*libgsl_a_LIBADD/libgsl_la_LIBADD/g ;
 	s/lib(\w+)\.a/lib$1.la/g ;
@@ -24,6 +25,7 @@ if ($switch eq 'on') {
     print "switching libtool off...\n" ;
     while (<>) {
 	s/noinst_LTLIBRARIES/pkglib_LIBRARIES/g ;
+	s/LTLIBRARIES/pkglib_LIBRARIES/g ;
 	s/libgsl_la_LIBADD/\# libgsl_a_LIBADD/g ;
 	s/lib(\w+)\.la/lib$1.a/g ;
 	s/lib(\w+)_la/lib$1_a/g ;

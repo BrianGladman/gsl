@@ -1,5 +1,8 @@
 TODO 
 
+* make all internal functions static, and all exported functions &
+variables prefixed with gsl_ or GSL_.
+
 * Make sure config.h is used consistently. This is especially relevant
 for HAVE_INLINE use in installed headers.
 
