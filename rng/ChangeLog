@@ -1,3 +1,10 @@
+Wed May  2 15:35:38 2001  Brian Gough  <bjg@network-theory.co.uk>
+
+	* ran1.c (ran1_get_double): use float constants for comparison
+	for compatibility with original Numerical Recipes routines
+
+	* ran2.c (ran2_get_double): ditto
+	
 Fri Apr 27 18:47:07 2001  Brian Gough  <bjg@network-theory.co.uk>
 
 	* types.c (gsl_rng_types_setup): added void to make prototype

@@ -88,9 +88,9 @@ ran2_get (void *vstate)
 static double
 ran2_get_double (void *vstate)
 {
-  float x_max = 1 - 1.2e-7 ; /* Numerical Recipes version of 1-FLT_EPS */
+  float x_max = 1 - 1.2e-7f ; /* Numerical Recipes version of 1-FLT_EPS */
 
-  float x = ran2_get (vstate) / 2147483563.0 ;
+  float x = ran2_get (vstate) / 2147483563.0f ;
  
   if (x > x_max) 
     return x_max ;
