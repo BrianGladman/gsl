@@ -809,8 +809,10 @@ SX-3", @cite{International Journal of High Speed Computing} (1994).
 
 @section Performance
 
+@c
 @c I made the plot like this
 @c ./benchmark > tmp ; cat tmp | perl -n -e '($n,$s) = split(" ",$_) ; printf("%17s ",$n); print "-" x ($s/1e5), "\n";'
+@c
 
 @smallexample
  ranlux389 --
@@ -914,7 +916,7 @@ Confidence limits:
 Useful integral:
 @equation
 \int_@{-\infty@}^@{+\infty@} x^@{2n@} p(x) dx 
-= 2^n \sigma^@{2n@} \Gamma(n+ @{1 \over 2@}) / \sqrt\pi
+= 2^n \sigma^@{2n+1@} \Gamma(n+ @{1 \over 2@}) / \sqrt\pi
 @end equation
 
 @end itemize
@@ -1002,13 +1004,21 @@ Confidence limits:
 Useful integral:
 @equation
 \int_0^\infty x^n p(x) dx 
-= n! \mu^(n+1)
+= n! \mu^@{n+1@}
 @end equation
 
 @end itemize
 
 
 @page
+@subsection The Chi-squared Distribution
+The chi-squared distribution arises in statistics If @math{Y_i} are
+@math{n} independent normal variates then the sum-of-squares @math{X_i},
+@equation
+X_i = \sum_i Y_i^2
+@end equation
+has a chi-squared distribution with @math{n} degrees of freedom.
+
 @deftypefn Random double gsl_ran_chisq (const gsl_rng * @var{r}, double @var{nu})
 @cindex Chi-squared random numbers
 This function returns a random number from the chi-squared distribution
@@ -1024,7 +1034,36 @@ for @math{x \ge 0}.
 \centerline{\input rand-chisq.tex}
 @end tex
 
+
+@unnumberedsubsubsec Properties
+@itemize @asis
+@item
+Mean = @math{\nu}, Variance = @math{FIXME}, Skewness = FIXME, Excess = FIXME
+
+@item
+Cumulants, @math{\kappa_1=FIXME}, @math{\kappa_n=FIXME},
+for @math{n>1}
+
+@item
+Characteristic function, @math{\phi(t) = FIXME}
+
+@item
+Cumulative distribution function, 
+@math{CDF(x) = \int_0^x p(x') dx' = FIXME
+@item
+Confidence limits:
+
+@item
+Useful integral:
+
+@end itemize
+
+
 @page
+@subsection The Erlang distribution
+The Erlang distribution is the sum of @math{n} exponential variates,
+each with mean @math{a}.
+
 @deftypefn Random double gsl_ran_erlang (const gsl_rng * @var{r}, double @var{a}, double @var{n})
 @cindex Erlang random numbers
 This function returns a random number from the Erlang distribution.
@@ -1040,6 +1079,17 @@ for @math{x \ge 0}.
 @end tex
 
 @page
+@subsection The F-distribution
+The F-distribution arises in statistics. If @math{Y_1} and @math{Y_2} are
+chi-squared deviates with @math{\nu_1} and @math{\nu_2} degrees of freedom
+then the ratio
+
+@equation
+X = @{ (Y_1 / \nu_1) \over (Y_2 / \nu_2) @}
+@end equation
+
+has an F-distribution @math{F(x;\nu_1,\nu_2)}.
+
 @deftypefn Random double gsl_ran_fdist (const gsl_rng * @var{r}, double @var{nu1}, double @var{nu2})
 @cindex F-distribution random numbers
 This function returns a random number from the F-distribution with degrees of freedom @var{nu1} and @var{nu2}.
@@ -1106,6 +1156,8 @@ p(x) dx = @{\Gamma(a+b) \over \Gamma(a) \Gamma(b)@} x^@{a-1@} (1-x)^@{b-1@} dx
 @end tex
 
 @page
+@subsection The Logistic Distribution
+
 @deftypefn Random double gsl_ran_logistic (const gsl_rng * @var{r})
 @cindex Logistic random numbers
 This function returns a random number from the logistic
@@ -1169,6 +1221,17 @@ normalized such that @math{|v|^2 = x^2 + y^2 + z^2 = 1}.
 @end deftypefn
 
 @page
+@subsection The t-distribution
+The t-distribution arises in statistics. If @math{Y_1} has a normal
+distribution and @math{Y_2} has a  chi-squared distribution with @math{\nu}
+degrees of freedom then the ratio
+
+@equation
+X = @{ Y_1 \over \sqrt@{Y_2 / \nu_2@} @}
+@end equation
+
+has a t-distribution @math{t(x;\nu)} with @math{\nu} degrees of freedom.
+
 @deftypefn Random double gsl_ran_tdist (const gsl_rng * @var{r}, double @var{nu})
 @cindex t-distribution random numbers
 This function returns a random number from the t-distribution. The

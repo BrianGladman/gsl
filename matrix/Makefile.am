@@ -1,6 +1,6 @@
 lib_LIBRARIES = libgslmatrix.a 
 
-check_PROGRAMS = test test_int test_float test_complex test_trap
+check_PROGRAMS = test test_static
 
 include_HEADERS = 			\
 	gsl_matrix.h 			\
@@ -23,19 +23,13 @@ INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../vector -I$(srcdir)/../err
 TESTS = test test_float test_int test_complex test_trap
 
 test_LDADD = libgslmatrix.a ../vector/libgslvector.a ../err/libgslerr.a ../err/libgsltest.a
-test_int_LDADD = libgslmatrix.a ../vector/libgslvector.a ../err/libgslerr.a ../err/libgsltest.a
-test_float_LDADD = libgslmatrix.a ../vector/libgslvector.a ../err/libgslerr.a ../err/libgsltest.a
-test_complex_LDADD = libgslmatrix.a ../vector/libgslvector.a ../err/libgslerr.a ../err/libgsltest.a
-test_trap_LDADD = libgslmatrix.a ../vector/libgslvector.a ../err/libgslerr.a ../err/libgsltest.a
+test_static_LDADD = libgslmatrix.a ../vector/libgslvector.a ../err/libgslerr.a ../err/libgsltest.a
 
 test_DEPENDENCIES = libgslmatrix.a
-test_trap_DEPENDENCIES = libgslmatrix.a
-
 test_SOURCES = test.c
-test_int_SOURCES = test_int.c
-test_float_SOURCES = test_float.c
-test_complex_SOURCES = test_complex.c
-test_trap_SOURCES = test_trap.c
+
+test_static_DEPENDENCIES = libgslmatrix.a
+test_static_SOURCES = test.c
 
 CLEANFILES = test.txt test.dat
 

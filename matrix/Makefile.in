@@ -72,7 +72,7 @@ full_top_srcdir = @full_top_srcdir@
 
 lib_LIBRARIES = libgslmatrix.a 
 
-check_PROGRAMS = test test_int test_float test_complex test_trap
+check_PROGRAMS = test test_static
 
 include_HEADERS = 			\
 	gsl_matrix.h 			\
@@ -95,19 +95,13 @@ INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../vector -I$(srcdir)/../err
 TESTS = test test_float test_int test_complex test_trap
 
 test_LDADD = libgslmatrix.a ../vector/libgslvector.a ../err/libgslerr.a ../err/libgsltest.a
-test_int_LDADD = libgslmatrix.a ../vector/libgslvector.a ../err/libgslerr.a ../err/libgsltest.a
-test_float_LDADD = libgslmatrix.a ../vector/libgslvector.a ../err/libgslerr.a ../err/libgsltest.a
-test_complex_LDADD = libgslmatrix.a ../vector/libgslvector.a ../err/libgslerr.a ../err/libgsltest.a
-test_trap_LDADD = libgslmatrix.a ../vector/libgslvector.a ../err/libgslerr.a ../err/libgsltest.a
+test_static_LDADD = libgslmatrix.a ../vector/libgslvector.a ../err/libgslerr.a ../err/libgsltest.a
 
 test_DEPENDENCIES = libgslmatrix.a
-test_trap_DEPENDENCIES = libgslmatrix.a
-
 test_SOURCES = test.c
-test_int_SOURCES = test_int.c
-test_float_SOURCES = test_float.c
-test_complex_SOURCES = test_complex.c
-test_trap_SOURCES = test_trap.c
+
+test_static_DEPENDENCIES = libgslmatrix.a
+test_static_SOURCES = test.c
 
 CLEANFILES = test.txt test.dat
 
@@ -129,20 +123,8 @@ libgslmatrix_a_OBJECTS =  init.o matrix.o file.o
 AR = ar
 test_OBJECTS =  test.o
 test_LDFLAGS = 
-test_int_OBJECTS =  test_int.o
-test_int_DEPENDENCIES =  libgslmatrix.a ../vector/libgslvector.a \
-../err/libgslerr.a ../err/libgsltest.a
-test_int_LDFLAGS = 
-test_float_OBJECTS =  test_float.o
-test_float_DEPENDENCIES =  libgslmatrix.a ../vector/libgslvector.a \
-../err/libgslerr.a ../err/libgsltest.a
-test_float_LDFLAGS = 
-test_complex_OBJECTS =  test_complex.o
-test_complex_DEPENDENCIES =  libgslmatrix.a ../vector/libgslvector.a \
-../err/libgslerr.a ../err/libgsltest.a
-test_complex_LDFLAGS = 
-test_trap_OBJECTS =  test_trap.o
-test_trap_LDFLAGS = 
+test_static_OBJECTS =  test.o
+test_static_LDFLAGS = 
 CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
 LINK = $(CC) $(CFLAGS) $(LDFLAGS) -o $@
@@ -155,11 +137,9 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 TAR = tar
 GZIP = --best
-DEP_FILES =  .deps/file.P .deps/init.P .deps/matrix.P .deps/test.P \
-.deps/test_complex.P .deps/test_float.P .deps/test_int.P \
-.deps/test_trap.P
-SOURCES = $(libgslmatrix_a_SOURCES) $(test_SOURCES) $(test_int_SOURCES) $(test_float_SOURCES) $(test_complex_SOURCES) $(test_trap_SOURCES)
-OBJECTS = $(libgslmatrix_a_OBJECTS) $(test_OBJECTS) $(test_int_OBJECTS) $(test_float_OBJECTS) $(test_complex_OBJECTS) $(test_trap_OBJECTS)
+DEP_FILES =  .deps/file.P .deps/init.P .deps/matrix.P .deps/test.P
+SOURCES = $(libgslmatrix_a_SOURCES) $(test_SOURCES) $(test_static_SOURCES)
+OBJECTS = $(libgslmatrix_a_OBJECTS) $(test_OBJECTS) $(test_static_OBJECTS)
 
 all: Makefile $(LIBRARIES) $(HEADERS)
 
@@ -239,21 +219,9 @@ test: $(test_OBJECTS) $(test_DEPENDENCIES)
 	@rm -f test
 	$(LINK) $(test_LDFLAGS) $(test_OBJECTS) $(test_LDADD) $(LIBS)
 
-test_int: $(test_int_OBJECTS) $(test_int_DEPENDENCIES)
-	@rm -f test_int
-	$(LINK) $(test_int_LDFLAGS) $(test_int_OBJECTS) $(test_int_LDADD) $(LIBS)
-
-test_float: $(test_float_OBJECTS) $(test_float_DEPENDENCIES)
-	@rm -f test_float
-	$(LINK) $(test_float_LDFLAGS) $(test_float_OBJECTS) $(test_float_LDADD) $(LIBS)
-
-test_complex: $(test_complex_OBJECTS) $(test_complex_DEPENDENCIES)
-	@rm -f test_complex
-	$(LINK) $(test_complex_LDFLAGS) $(test_complex_OBJECTS) $(test_complex_LDADD) $(LIBS)
-
-test_trap: $(test_trap_OBJECTS) $(test_trap_DEPENDENCIES)
-	@rm -f test_trap
-	$(LINK) $(test_trap_LDFLAGS) $(test_trap_OBJECTS) $(test_trap_LDADD) $(LIBS)
+test_static: $(test_static_OBJECTS) $(test_static_DEPENDENCIES)
+	@rm -f test_static
+	$(LINK) $(test_static_LDFLAGS) $(test_static_OBJECTS) $(test_static_LDADD) $(LIBS)
 
 install-includeHEADERS: $(include_HEADERS)
 	@$(NORMAL_INSTALL)
