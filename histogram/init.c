@@ -4,7 +4,8 @@
 #include <gsl_histogram.h>
 
 gsl_histogram *
-gsl_histogram_alloc_uniform (size_t n, const double xmin, const double xmax)
+gsl_histogram_alloc_uniform (const size_t n, const double xmin,
+			     const double xmax)
 {
   gsl_histogram * h = gsl_histogram_alloc (n) ;
 
@@ -79,7 +80,16 @@ gsl_histogram_alloc (size_t n)
       }
   }
 
+  h->nbins = n;
+
   return h ;
 }
 
 
+void
+gsl_histogram_free (gsl_histogram * h)
+{
+  free (h->range);
+  free (h->bin);
+  free (h);
+}

@@ -15,7 +15,7 @@ gsl_histogram_find (const size_t n, const double * range,
       return -1 ;
     }
 
-  if (x > range[n])
+  if (x >= range[n])
     {
       return +1 ;
     }
@@ -41,7 +41,7 @@ compare_range (const double * x, const double * range)
     {
       return -1 ;
     }
-  else if (*x > *(range + 1))
+  else if (*x >= *(range + 1))
     {
       return +1 ;
     } 

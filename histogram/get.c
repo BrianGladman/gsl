@@ -2,35 +2,45 @@
 #include <gsl_errno.h>
 #include <gsl_histogram.h>
 
-int
-gsl_histogram_get (const gsl_histogram * h, size_t i, double * y)
+double
+gsl_histogram_get (const gsl_histogram * h, size_t i)
 {
   const size_t n = h->nbins ;
 
   if (i > n) 
     {
-      GSL_ERROR("index lies outside valid range of 0 .. nbins - 1", EDOM) ;
+      GSL_ERROR_RETURN ("index lies outside valid range of 0 .. nbins - 1",
+			EDOM, 0) ;
     }
   
-  *y = h->bin[i] ;
-
-  return 0 ;
+  return h->bin[i] ;
 }
 
-int
-gsl_histogram_get_binrange (const gsl_histogram * h, size_t i,
-			    double * x0, double * x1)
+double
+gsl_histogram_get_lowerlimit (const gsl_histogram * h, size_t i)
 {
   const size_t n = h->nbins ;
 
   if (i > n) 
     {
-      GSL_ERROR("index lies outside valid range of 0 .. nbins - 1", EDOM) ;
+      GSL_ERROR_RETURN ("index lies outside valid range of 0 .. nbins - 1",
+			EDOM, 0) ;
     }
   
-  *x0 = h->range[i] ;
-  *x1 = h->range[i + 1] ;
+  return h->range[i] ;
+}
 
-  return 0 ;
+double
+gsl_histogram_get_upperlimit (const gsl_histogram * h, size_t i)
+{
+  const size_t n = h->nbins ;
+
+  if (i > n) 
+    {
+      GSL_ERROR_RETURN ("index lies outside valid range of 0 .. nbins - 1",
+			EDOM, 0) ;
+    }
+  
+  return h->range[i+1] ;
 }
 

@@ -7,7 +7,7 @@ gsl_histogram_max (const gsl_histogram * h)
 {
   const int n = h->nbins ;
 
-  return h->range[n + 1] ;
+  return h->range[n] ;
 }
 
 double
