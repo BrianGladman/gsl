@@ -133,6 +133,94 @@ int check_bessel(void)
 }
 
 
+int check_coulomb(void)
+{
+  int status = 0;
+  int s;
+  
+  int kmax = 9;
+  double F[10], Fp[10], G[10], Gp[10];
+  double Fe, Ge;
+  double lam_min;
+  double eta, x;
+
+  lam_min = 0.0;
+  eta = 10.0;
+  x = 5.0;
+  gsl_sf_coulomb_wave_FGp_impl(lam_min, kmax, eta, x, F, Fp, G, Gp, &Fe, &Ge);
+  s = 0;
+  s += ( frac_diff(  F[0],  1.72074051358e-06 ) > 1.e-11 );
+  s += ( frac_diff( Fp[0],  3.09759065782e-06 ) > 1.e-11 );
+  s += ( frac_diff(  G[0],  1.67638043033e+05 ) > 1.e-11 );
+  s += ( frac_diff( Gp[0], -2.79371561379e+05 ) > 1.e-11 );
+  gsl_test(s, "0  10  5");
+  status += s;
+
+  lam_min = 0.0;
+  eta = -50.0;
+  x = 5.0;
+  gsl_sf_coulomb_wave_FGp_impl(lam_min, kmax, eta, x, F, Fp, G, Gp, &Fe, &Ge);
+  s = 0;
+  s += ( frac_diff(  F[0], 1.52236975714e-01 ) > 1.e-11 );
+  s += ( frac_diff( Fp[0], 2.03091041166     ) > 1.e-11 );
+  /* FIXME: gc[], gcp[] */
+  gsl_test(s, "0 -50 5");
+  status += s;
+
+  lam_min = 0.0;
+  eta = 5.0;
+  x = 1.0;
+  gsl_sf_coulomb_wave_FGp_impl(lam_min, kmax, eta, x, F, Fp, G, Gp, &Fe, &Ge);
+  s = 0;
+  s += ( frac_diff(  F[0], 2.041301212572022e-05 ) > 1.e-14 );
+  s += ( frac_diff( Fp[0], 6.761540253864853e-05 ) > 1.e-14 );
+  /* FIXME: gc[], gcp[] */
+  gsl_test(s, "0  5  1");
+  status += s;
+
+  lam_min = 0.0;
+  eta = 20.0;
+  x = 1.0;
+  gsl_sf_coulomb_wave_FGp_impl(lam_min, kmax, eta, x, F, Fp, G, Gp, &Fe, &Ge);
+  s = 0;
+  s += ( frac_diff(  F[0], 2.96e-23 ) > 1.e-2 );
+  s += ( frac_diff( Fp[0], 1.93e-22 ) > 1.e-2 );
+  s += ( frac_diff(  G[0], 2.69e+21 ) > 1.e-2 );
+  /* FIXME: gcp[0] ?? */
+  gsl_test(s, "0 20  1");
+  status += s;
+  
+  lam_min = 0.0;
+  eta = 1.0;
+  x = 20.0;
+  gsl_sf_coulomb_wave_FGp_impl(lam_min, kmax, eta, x, F, Fp, G, Gp, &Fe, &Ge);
+  s = 0;
+  s += ( frac_diff(  F[0],  0.3292255362657516 ) > 1.e-14 );
+  s += ( frac_diff( Fp[0],  0.9221468899352102 ) > 1.e-14 );
+  s += ( frac_diff(  G[0],  0.9724283986971382 ) > 1.e-14 );
+  s += ( frac_diff( Gp[0], -0.3137003818968372 ) > 1.e-14 );
+  /* FIXME: the signs here may not be right...
+   * are there typos in A+S ??
+   */
+  gsl_test(s, "0  1 20");
+  status += s;
+
+  lam_min = 0.0;
+  eta = 10.0;
+  x = 10.0;
+  gsl_sf_coulomb_wave_FGp_impl(lam_min, kmax, eta, x, F, Fp, G, Gp, &Fe, &Ge);
+  s = 0;
+  s += ( frac_diff(  F[0],  0.00162627111965791 ) > 1.e-14 );
+  s += ( frac_diff( Fp[0],  0.00170604762646088 ) > 1.e-14 );
+  s += ( frac_diff(  G[0],  307.8732176248016   ) > 1.e-14 );
+  s += ( frac_diff( Gp[0], -291.9277247696547   ) > 1.e-14 );
+  gsl_test(s, "0 10 10");
+  status += s;
+
+  return status;
+}
+
+
 int check_hyperg(void)
 {
   int status = 0;
@@ -206,15 +294,15 @@ int check_zeta(void)
 
 int main(int argc, char * argv[])
 {
-
   gsl_test(check_airy(),       "Airy functions");
   gsl_test(check_bessel(),     "Bessel functions");
-  
+  gsl_test(check_coulomb(),    "Coulomb Wave Functions");
+
   gsl_test(check_hyperg(),     "Hypergeometric Functions");
   
   gsl_test(check_zeta(),       "Zeta functions");
   
   gsl_test_summary();
 
-  exit(0);  
+  return 0;  
 }

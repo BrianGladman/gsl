@@ -1,6 +1,11 @@
 /* Author:  G. Jungman
  * RCS:     $Id$
  */
+/* Evaluation of Coulomb wave functions F_L(eta, x), G_L(eta, x),
+ * and their derivatives. Uses Steed's method, following the
+ * analysis of [Barnett, Comp. Phys. Comm., 21, 297 (1981)].
+ * Refinements for asymptotic regimes are also used.
+ */
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
@@ -77,6 +82,7 @@ gsl_sf_coulomb_CL_impl(double lam, double eta, double * result)
   }
 }
 
+
 /* cl[0] .. cl[kmax] = C_{lam_min}(eta) .. C_{lam_min+kmax}(eta)
  */
 int
@@ -109,8 +115,8 @@ gsl_sf_coulomb_CL_list(double lam_min, int kmax, double eta, double * cl)
  *
  * Empirically, this is quite well-behaved for
  *   L >= -1/2
- *   eta < 20
- *   x   < 20
+ *   eta < 10
+ *   x   < 10
  */
 static
 int
@@ -406,6 +412,8 @@ coulomb_CF2(double lam_min, double eta, double x,
  *
  *   result_F = fjwkb * exp(-exponent)
  *   result_G = gjwkb * exp( exponent)
+ *
+ * See [Biedenharn et al. Phys. Rev. 97, 542-554 (1955)]
  */
 static
 int
@@ -595,6 +603,9 @@ coulomb_small_args(double lam_min, int kmax,
 }
 
 
+/* Evaluate sequences of Coulomb
+ * wave functions for x = 0.
+ */
 static
 int
 coulomb_zero_x(double lam_min, int kmax,
@@ -638,15 +649,36 @@ coulomb_zero_x(double lam_min, int kmax,
 }
 
 
+/* Coulomb wave functions F_L(eta,x), G_L(eta,x) and
+ * their derivatives. Apply Steed's method in the
+ * standard regime. Catch asymptotic regimes and
+ * apply series methods when possible.
+ *
+ * Note the definition is such that:
+ *     F_L(0, x) =  x j_L(x) =  sqrt(x) sqrt(pi/2) J_{L+1/2}(x)
+ *     G_L(0, x) = -x y_L(x) = -sqrt(x) sqrt(pi/2) Y_{L+1/2}(x)
+ *  
+ *  ==>
+ *  
+ *     J_nu(x) =  sqrt(2/(pi x)) F_{nu-1/2}(0,x)
+ *     Y_nu(x) = -sqrt(2/(pi x)) G_{nu-1/2}(0,x)
+ *
+ */
+/* Original fortran code from COULFG() subroutine, heavily
+ * modified by yours truly. The troglodyte fortran code makes
+ * some sense if you read the paper:
+ * [Barnett, Comp. Phys. Comm., 21, 297 (1981)]
+ * But not much.
+ */
 static
 int
-coulomb(double lam_min, int kmax,
-        double eta, double x,
-        double * fc, double * fcp,
-	double * gc, double * gcp,
-	double * F_exponent,
-	double * G_exponent
-        )
+gsl_sf_coulomb_wave_impl(double lam_min, int kmax,
+                         double eta, double x,
+                         double * fc, double * fcp,
+	                 double * gc, double * gcp,
+	                 double * F_exponent,
+	                 double * G_exponent
+                         )
 {
   const double small = 100.0*GSL_SQRT_DBL_MIN;
 
@@ -729,671 +761,149 @@ coulomb(double lam_min, int kmax,
 }
 
 
-/* junk for coulfg() */
-#define CFG_ABORT	 1.e5 /* 2.e4 */
-#define CFG_TM30	 1.e-30
-
-#define CFG_ACCUR	 GSL_MACH_EPS
-#define CFG_ACC	         (10.*CFG_ACCUR)
-#define CFG_ACC4	 (CFG_ACC*100.*100.)
-
-
-/* coulfg() mode control */
-#define Mode_F   3
-#define Mode_FG  2
-#define Mode_FGp 1
-
-
-/* zero argument calculation of coulomb wave functions
- * assumes xlmin >= 0.0
- *   fc[0] .. fc[kmax] = F_{xlmin}(eta,0) .. F_{xlmin+kmax}(eta,0)
- *   etc.
- */
-static
 int
-coulF_zero_x(double eta, double xlmin, int kmax, double * fc)
+gsl_sf_coulomb_wave_F_impl(double lam_min, int kmax,
+                           double eta, double x, 
+                           double * fc,
+			   double * F_exp)
+{
+  double G_exp;
+  return gsl_sf_coulomb_wave_impl(lam_min, kmax,
+                                  eta, x,
+	                          fc, (double *) 0,
+                                  (double *) 0, (double *) 0,
+				  F_exp, &G_exp
+	                          );
+}
+
+
+int
+gsl_sf_coulomb_wave_FG_impl(double lam_min, int kmax,
+                            double eta, double x,
+                            double * fc, double * gc,
+			    double * F_exp, double * G_exp)
+{
+  return gsl_sf_coulomb_wave_impl(lam_min, kmax,
+                                  eta, x,
+                                  fc, (double *) 0,
+                                  gc, (double *) 0,
+				  F_exp, G_exp
+                                  );
+}
+
+int
+gsl_sf_coulomb_wave_FGp_impl(double lam_min, int kmax,
+                             double eta, double x,
+		             double * fc, double * fcp,
+		             double * gc, double * gcp,
+			     double * F_exp, double * G_exp)
+
+{
+  return gsl_sf_coulomb_wave_impl(lam_min, kmax,
+                                  eta, x, 
+                                  fc, fcp,
+                                  gc, gcp,
+				  F_exp, G_exp
+                                  );
+}
+
+
+int
+gsl_sf_coulomb_wave_sphF_impl(double lam_min, int kmax,
+                              double eta, double x,
+		              double * fc,
+			      double * F_exp)
 {
   int k;
-  for(k=0; k<=kmax; k++) fc[k] = 0.0;
-  return GSL_SUCCESS;
-}
-static
-int
-coulG_zero_x(double eta, double xlmin, int kmax, double * gc)
-{
-  if(xlmin == 0.0 && kmax == 0) {
-    gc[0] = 1.0/sqrt(C0sq(eta));
-    return GSL_SUCCESS;
-  }
-  else {
+
+  if(x < 0.0 || lam_min < -0.5) {
     return GSL_EDOM;
   }
-}
-static
-int
-coulFp_zero_x(double eta, double xlmin, int kmax, double * fcp)
-{
-  int k;
-  if(xlmin == 0.0) {
-    fcp[0] = sqrt(C0sq(eta));
-  }
-  else {
-    fcp[0] = 0.0;
-  }
-  for(k=1; k<=kmax; k++) fcp[k] = 0.0;
-  return GSL_SUCCESS;
-}
-static
-int
-coulGp_zero_x(double eta, double xlmin, int kmax, double * gcp)
-{
-  if(xlmin == 0.0 && kmax == 0) {
-    gcp[0] = 0.0;
-    return GSL_SUCCESS;
-  }
-  else {
-    return GSL_EDOM;
-  }
-}
-static
-int
-coulfg_zero_x(double eta, double xlmin, int kmax,
-              double * fc, double * gc, double * fcp, double * gcp,
-              int mode)
-{
-  if(mode==Mode_F) {
-    return coulF_zero_x(eta, xlmin, kmax, fc);
-  }
-  else if(mode==Mode_FG) {
-    int status_F = coulF_zero_x(eta, xlmin, kmax, fc);
-    int status_G = coulG_zero_x(eta, xlmin, kmax, gc);
-    return status_F | status_G;
-  }
-  else if(mode==Mode_FGp) {
-    int status_F  =  coulF_zero_x(eta, xlmin, kmax, fc);
-    int status_G  =  coulG_zero_x(eta, xlmin, kmax, gc);
-    int status_Fp = coulFp_zero_x(eta, xlmin, kmax, fcp);
-    int status_Gp = coulGp_zero_x(eta, xlmin, kmax, gcp);
-    return status_F | status_G | status_Fp | status_Gp;
-  }
-  else {
-    /* NOT REACHED */
-    return GSL_EFAILED;
-  }
-}
-
-
-/* small argument calculation of coulomb wave functions 
- * based on expansion in terms of spherical Bessel functions
- * [Abramowitz and Stegun 14.4.5]
- *
- * This is effectively a series in eta*x, as long as x is small.
- *
- *   F_L  ~ C_L(eta) x^(L+1)
- *   Fp_L ~ (L+1) C_L(eta) x^L = (L+1)/x F_L
- *
- *   G_L  ~ 1/(2L+1) 1/C_L(eta) 1/x^L = 1/(2L+1) x/F_L,  L > 0
- *   G_0  ~ 2eta/C_0^2(eta) F_0 ln(2x) + 1/C_0(eta) ~ x/F_0(1 + 2eta x ln(2x))
- *
- *   Gp_L ~ -L/(2L+1) 1/C_L(eta) 1/x^(L+1) = -L/x G_L, L > 0
- *   Gp_0 ~ 2eta / C_0(eta) (ln(2x) + 1) ~ 2eta x/F_0 (ln(2x) + 1)
- *
- * assumes x > 0.0
- */
-static
-int
-coulfg_small_args(double x, double eta, double xlmin, int kmax,
-                  double * fc, double * gc, double * fcp, double * gcp,
-                  int mode)
-{
-  int k;
-  double * cl = (double *)malloc((kmax+1)*sizeof(double));
-
-  if(cl == 0){
-    return GSL_ENOMEM;
-  }
-
-  gsl_sf_coulomb_CL_list(xlmin, kmax, eta, cl);
- 
-  /* calculate F_L */
-  if(mode==Mode_F || mode==Mode_FG || mode==Mode_FGp) {
+  else if(x < 1.0/DBL_MAX) {
     for(k=0; k<=kmax; k++) {
-      fc[k] = cl[k] * pow(x,xlmin+k+1.0);
+      fc[k] = 0.0;
     }
+    if(lam_min == 0.0) {
+      fc[0] = sqrt(C0sq(eta));
+    }
+    *F_exp = 0.0;
+    return GSL_SUCCESS;
   }
-  
-  /* calculate G_L */
-  if(mode==Mode_FG || mode==Mode_FGp) {
-    if(xlmin == 0.0) {
-      gc[0] = x/fc[0] * (1.0 + 2.0*eta * x * log(2.0*x));
-    }
-    else {
-      gc[0] = 1.0/(2.0*xlmin+1.0) /cl[0] /pow(x,xlmin);
-    }
-    for(k=1; k<=kmax; k++) {
-      gc[k] = x/(2.0*(xlmin+k)+1.) / fc[k];
-    }
-  }
-
-  /* calculate F_L' and G_L' */
-  if(mode==Mode_FGp) {
+  else {
+    double G_exp;
+    gsl_sf_coulomb_wave_impl(lam_min, kmax,
+                             eta, x,
+                             fc, (double *) 0,
+                             (double *) 0, (double *) 0,
+			     F_exp, &G_exp
+                             );
     for(k=0; k<=kmax; k++) {
-      fcp[k] = fc[k] * (xlmin+k+1.0)/x;
+      fc[k] = fc[k] / x;
     }
-    if(xlmin == 0.0) {
-      gcp[0] = 2.0*eta * x/fc[0] * (1.0 + log(2.0*x));
-    }
-    else {
-      gcp[0] = gc[0] * (-xlmin)/x;
-    }
-    for(k=1; k<=kmax; k++) {
-      gcp[k] = -gc[k] * (xlmin + k)/x;
-    }
-  }
-
-  free(cl);
-  return GSL_SUCCESS;
-}
-
-
-
-/* ------------------------------------------------------------ 
-
- The following hack job is based on some fortran code.
-   There is a small function jwkb() and the main function
-   coulfg(). See the comments with coulfg().
-   
-  ------------------------------------------------------------ */
-
-
-/* overflow exponent, can be != 0 if scaling required,
-   which occurs if the wkb method is invoked and
-   it generates large exponents
- */
-static int over_exp_ = 0;
-int coul_wave_overflow_exp(void) { return over_exp_; }
-
-
-/*
-  COMPUTES JWKB APPROXIMATIONS TO COULOMB FUNCTIONS FOR XL.GE. 0
-  AS MODIFIED BY BIEDENHARN ET AL. PHYS REV 97 (1955) 542-554
-  
-  F_xl(eta, x)
-
-*/
-#define ALOGE  0.43429448
-static
-int
-jwkb(double x, double eta, double xl,
-     double * fjwkb, double * gjwkb, int *iexp)
-{
-
-  double gh2  = x*(2.*eta - x);
-  double xll1 = locMax(xl*(xl + 1.), 0.0);
-
-  if(gh2 + xll1 > 0.0) {   /* if( x < turning point) */
-    double hll = xll1 + 6.0/35.0;
-    double hl  = sqrt(hll);
-    double sl  = eta/hl + hl/x;
-    double rl2 = 1.0 + eta*eta/hll;
-    double gh  = sqrt(gh2 + hll)/x;
-    double phi = x*gh - 0.5*(hl*log((gh+sl)*(gh+sl)/rl2) - log(gh));
-    double phi10;
-
-    if(eta != 0.0) phi -= eta*atan2(x*gh,x - eta);
-    phi10 = -phi*ALOGE;
-    *iexp = (int)phi10;
-
-    if(*iexp > 300)  {
-      /* overflow in G: scale F,F' by 10^-iexp and G,G' by 10^iexp */
-      over_exp_ = *iexp;
-      *gjwkb = pow(10.0, phi10 - *iexp);
-      return GSL_EOVRFLW;
-    }
-    if(*iexp <= 300) {
-      *gjwkb = exp(-phi);
-      *iexp  = 0;
-    }
-    *fjwkb = 0.5/(gh * *gjwkb);
-
-    return GSL_SUCCESS;
-  }
-  else {
-    /* above turning point: INTERNAL ERROR */
-    return GSL_EFAILED;
-  }
-}
-#undef ALOGE
-
-
-/*
- SUBROUTINE COULFG(X,ETA,XLMIN,XLMAX, FC,GC,FCP,GCP, MODE1,KFN,IFAIL)
-
-C  REVISED IJT WITH L-T ALGORITHMN FOR CONTINUED FRACTIONS
-CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
-C								       C
-C  REVISED COULOMB WAVEFUNCTION PROGRAM USING STEED'S METHOD	       C
-C								       C
-C  A. R. BARNETT	   MANCHESTER  MARCH   1981		       C
-C								       C
-C  ORIGINAL PROGRAM 'RCWFN'	 IN    CPC  8 (1974) 377-395	       C
-C		  + 'RCWFF'	 IN    CPC 11 (1976) 141-142	       C
-C  FULL DESCRIPTION OF ALGORITHM IN    CPC 21 (1981) 297-314	       C
-C  THIS VERSION WRITTEN UP	 IN    CPC 27 (1982) 147-166	       C
-C								       C
-C  COULFG RETURNS F,G,F',G', FOR REAL XX.GT.0,REAL ETA1 (INCLUDING 0), C
-C   AND REAL LAMBDA(XLMIN) .GT. -1 FOR INTEGER-SPACED LAMBDA VALUES    C
-C   THUS GIVING POSITIVE-ENERGY SOLUTIONS TO THE COULOMB SCHRODINGER   C
-C   EQUATION,TO THE KLEIN-GORDON EQUATION AND TO SUITABLE FORMS OF     C
-C   THE DIRAC EQUATION ,ALSO SPHERICAL & CYLINDRICAL BESSEL EQUATIONS  C
-C								       C
-C  FOR A RANGE OF LAMBDA VALUES (XLMAX - XLMIN) MUST BE AN INTEGER,    C
-C  STARTING ARRAY ELEMENT IS M1 = MAX0(IDINT(XLMIN+ACCUR),0) + 1       C
-C      SEE TEXT FOR MODIFICATIONS FOR INTEGER L-VALUES		       C
-C								       C
-C  IF 'MODE' = 1  GET F,G,F',G'	  FOR INTEGER-SPACED LAMBDA VALUES     C
-C	     = 2      F,G      UNUSED ARRAYS MUST BE DIMENSIONED IN    C
-C	     = 3      F		      CALL TO AT LEAST LENGTH (1)      C
-C  IF 'KFN'  = 0 REAL	     COULOMB FUNCTIONS ARE RETURNED	       C
-C	     = 1 SPHERICAL   BESSEL	 "	"     "		       C
-C	     = 2 CYLINDRICAL BESSEL	 "	"     "		       C
-C  THE USE OF 'MODE' AND 'KFN' IS INDEPENDENT			       C
-C								       C
-C  PRECISION:  RESULTS TO WITHIN 2-3 DECIMALS OF 'MACHINE ACCURACY'    C
-C   IN OSCILLATING REGION X .GE. ETA1 + SQRT(ETA1**2 + XLM(XLM+1))     C
-C   COULFG IS CODED FOR REAL*8 ON IBM OR EQUIVALENT  ACCUR = 10**-16   C
-C   USE AUTODBL + EXTENDED PRECISION ON HX COMPILER  ACCUR = 10**-33   C
-C   FOR MANTISSAS OF 56 & 112 BITS. FOR SINGLE PRECISION CDC (48 BITS) C
-C   REASSIGN DSQRT=SQRT ETC.  SEE TEXT FOR COMPLEX ARITHMETIC VERSION  C
-CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
-*/
-
-/* I turned off the KFN input, since this will only be used
-   for calculating Coulomb wave functions explicitly. Of course,
-   there is no reason this cannot be called with eta=0, in which
-   case Bessel functions is what you get...
-   
-   F_L(0, x) =  x j_L(x) =  sqrt(x) sqrt(pi/2) J_{L+1/2}(x)
-   G_L(0, x) = -x y_L(x) = -sqrt(x) sqrt(pi/2) Y_{L+1/2}(x)
-   
-   ==>
-   
-   J_nu(x) =  sqrt(2/(pi x)) F_{nu-1/2}(0,x)
-   Y_nu(x) = -sqrt(2/(pi x)) G_{nu-1/2}(0,x)
-
- */
-
-/* This troglodyte code makes some sense if you read the paper:
-   Barnett, Comp. Phys. Comm., 21, 297 (1981).
-   But not much.
- */
-
-/* Behavioural change: the original fortran version would load
-   the computed values into the arrays starting at an index given
-   by the lowest requested l value (integer part). This is dumb.
-   I changed it so that it always loads them starting at index 0.
-   You can easily get the other effect by passing an offset
-   pointer if you like.
- */
-
-static
-int
-coulfg(double x, double eta, double xlmin, int kmax,
-       double * fc, double * gc, double * fcp, double * gcp,
-       int mode)
-{
-  double acch = sqrt(CFG_ACC);
-
-  double xlmax    = xlmin + kmax;
-  double upper_l  = xlmax;
-  int i_delta_lam = kmax;
-
-  int iexp = 1;
-  double fjwkb = 0.0;
-  double gjwkb = 0.0;
-
-  if(x < 0.0 || xlmin <= -0.5 || kmax < 0) {
-    return GSL_EDOM;
-  }
-
-  if(x == 0.0) {
-    return coulfg_zero_x(eta, xlmin, xlmax, fc, gc, fcp, gcp, mode);
-  }
-  else if(x < 0.001 && fabs(eta*x) < 0.01) {
-    return coulfg_small_args(x, eta, xlmin, xlmax, fc, gc, fcp, gcp, mode);
-  }
-  else if(x < acch) {
-    /* This is the case when eta is very large.
-       There must be something easy we can do here.
-    */
-    return GSL_EFAILED;
-  }
-  else {
-    /* check if x is below the turning point */
-    int xlturn = (x*(x - 2.*eta) < xlmin*(xlmin + 1.0) ? 1 : 0);
-
-    double e2mm1 = eta*eta + xlmin*(xlmin + 1.0);
-
-    double x_inv = 1./x;
-    double fcl = 1.0;
-    double gcl;
-    double pk  = upper_l + 1.0;
-    double px  = pk  + CFG_ABORT;
-    double df;
-
-    int L;
-    double xl;
-
-    double F = eta/pk + pk*x_inv;
-    double D;
-    double C;
-
-    /* the real ang imaginary parts
-     * of the second continued fraction
-     */
-    double P;
-    double Q;
-
-    double gam;
-    double fcm;
-    double W;
-    double gpl;
-
-    if(fabs(F) < CFG_TM30) F = CFG_TM30;
-    D = 0.0;
-    C = F;
-
-    /* Compute first continued fraction. This
-     * gives F'/F at the upper lambda value.
-     */
-    do {
-      double pk1 = pk + 1.0;
-      double ek  = eta / pk;
-      double rk2 = 1. + ek*ek;
-      double tk  = (pk + pk1)*(x_inv + ek/pk1);
-      D   =  tk - rk2 * D;
-      C   =  tk - rk2 / C;
-      if(fabs(C) < CFG_TM30) C = CFG_TM30;
-      if(fabs(D) < CFG_TM30) D = CFG_TM30;
-      D = 1.0/D;
-      df = D * C;
-      F  = F * df;
-      if(D < 0.) fcl = -fcl; /* sign of result depends on sign of denominator */
-      pk = pk1;
-      if( pk > px ) {
-        /* first continued fraction not converging */
-	return GSL_ERUNAWAY;
-      }
-    }
-    while(fabs(df-1.) > CFG_ACC);
-
-
-    /* At this point we have computed F'/F at the
-     * upper lambda value and stored it in F.
-     *
-     * Now use downward recurrence to the minimum lambda value.
-     *    F_{lam-1}  = (S_lam F_lam + F_lam') / R_lam
-     *    F_{lam-1}' = (S_lam F_{lam-1} - R_lam F_lam)
-     * where
-     *    R_lam = sqrt(1 + (eta/lam)^2)
-     *    S_lam = lam/x + eta/lam
-     *
-     * Combining this with the ratio computed above, we
-     * obtain F and F' at the minimum lambda value.
-     *
-     * Use the array gc[] to store the values of R_lam on
-     * the way down, which we will need later if we are
-     * calculating the G functions.
-     */
-    if(i_delta_lam != 0) {
-      int lp;
-      double fpl;
-      fcl *= CFG_TM30;
-      fpl = fcl*F;
-      if(mode == Mode_FGp) fcp[i_delta_lam] = fpl;
-      fc[i_delta_lam] = fcl;
-      xl  = upper_l;
-      for(lp=1; lp<=i_delta_lam; lp++) {
-	double el = eta/xl;
-	double rl = sqrt(1. + el*el);
-	double sl = el  + xl*x_inv;
-	double fc_lm1;
-	fc_lm1 = (fcl*sl + fpl)/rl;
-	fpl    =  fc_lm1*sl - fcl*rl;
-	fcl    =  fc_lm1;
-	L      =  i_delta_lam - lp;
-	fc[L]  =  fcl;
-	if(mode == Mode_FGp) fcp[L]  = fpl;
-	if(mode != Mode_F  /* && eta_ne_zero */) gc[L+1] = rl;
-	--xl;
-      }
-      
-      if(fcl == 0.) fcl = CFG_ACC;
-      F	= fpl/fcl;
-    }
-
-
-    /* At this point we have calculated the values
-     * of F and F' at the minimum lambda:  fcl, fpl.
-     * The unnormalized values of fcl[] and fcp[]
-     * have also been set on the way down.
-     */
-    
-    /* If we are below the turning point, there is a danger
-     * that G is very large. Evaluate F and G at the minimum lambda,
-     * using the WKB approximation.
-     */
-    if(xlturn) jwkb(x, eta, locMax(xlmin,0.0), &fjwkb, &gjwkb, &iexp);
-    
-    /* if(iexp != 1) fprintf(stderr,"iexp= %d\n", iexp); */
-    /* FIXME: have to do something about this overflow business */
-
-    if(iexp > 1 || gjwkb > 1.0/(acch*100.)) {
-      /* ARRIVE HERE IF G(xlmin) > 10**6 OR iexp > 70 and xlturn = true
-       */
-      /* We do not attempt the second continued fraction
-       * in this case since it will lose accuracy. Simply
-       * set the normalization as determined by the WKB
-       * solution and move on.
-       */
-      W	 = fjwkb;
-      gam = gjwkb*W;
-      P	  = F;
-      Q	  = 1.;
-    }
-    else {
-      /* Evaluate the second continued fraction to 
-       * obtain the ratio
-       *    (G' + i F')/(G + i F)
-       * at the minimum lambda value.
-       */
-      double ta =  2.0*CFG_ABORT;
-      double wi =  2.*eta;
-      double ar = -e2mm1;
-      double ai =  eta;
-      double br =  2.*(x - eta);
-      double bi =  2.;
-      double dr =  br/(br*br + bi*bi);
-      double di = -bi/(br*br + bi*bi);
-
-      double dp = -x_inv*(ar*di + ai*dr);
-      double dq =  x_inv*(ar*dr - ai*di);
-      
-      double A;
-      double B;
-
-      xlturn = 0;
-      pk =  0.0;
-      P	 =  0.0;
-      Q	 =  1. - eta*x_inv;
-      
-      do {
-	P += dp;
-	Q += dq;
-	pk += 2.;
-	ar += pk;
-	ai += wi;
-	bi += 2.;
-	D  = ar*dr - ai*di + br;
-	di = ai*dr + ar*di + bi;
-	C  = 1./(D*D + di*di);
-	dr =  C*D;
-	di = -C*di;
-	A  = br*dr - bi*di - 1.;
-	B  = bi*dr + br*di;
-	C  = dp*A  - dq*B;
-	dq = dp*B  + dq*A;
-	dp = C;
-	if(pk > ta) {
-	  /* second continued fraction not converging */
-	  return GSL_ERUNAWAY;
-	}
-      }
-      while(fabs(dp)+fabs(dq) >= (fabs(P)+fabs(Q))*CFG_ACC);
-
-      gam = (F - P)/Q;
-      if(Q <= CFG_ACC4*fabs(P)) {
-        /*
-	GSL_ERROR("coulfg: final Q < abs(P)*CFG_ACC*1e4", GSL_EFAILED);
-	*/
-	return GSL_EFAILED;
-	/* Not sure what this condition is */
-      }
-      
-      /* This is the normalization factor */
-      W	= 1.0/sqrt((F - P)*gam + Q);
-    }
-    
-    /* Get the right sign for the value at the minimum lambda */
-    fcm   = ( fcl > 0.0 ? W : -W);  /* fcm   = DSIGN(W,fcl)*beta; beta=1*/
-    fc[0] = fcm;
-
-    /* Calculate the other values at the
-     * minimum lambda point, if needed.
-     */
-    if(mode == Mode_FG || mode == Mode_FGp) {
-      if(! xlturn)   gcl =  fcm*gam;
-      if(  xlturn)   gcl =  gjwkb;
-      gc[0]  = gcl;
-      gpl =  gcl*(P - Q/gam);
-    }
-    if(mode == Mode_FGp) {
-      gcp[0] = gpl;
-      fcp[0] = fcm*F;
-    }
-    
-    /* If we are calculating for one lambda
-     * value only, then we are done.
-     */
-    if(i_delta_lam == 0 ) return GSL_SUCCESS;
-
-    /* Now we have the correct normalization factor. */
-    W = W/fabs(fcl);
-
-    /* Perform upward recursion to obtain the G
-     * values, and update the F' and G' values
-     * if those are needed. Recall that the R_lam
-     * values from the first (downward) recursion are
-     * stored in gc[].
-     */
-    for(L=0; L<=i_delta_lam-1; L++) {
-
-      double gcl1;
-      
-      xl += 1.0;
-
-      if(mode == Mode_FGp || mode == Mode_FG) {
-	/* if(eta_ne_zero) */ double el = eta/xl;
-	/* if(eta_ne_zero) */ double rl = gc[L+1];
-	double sl = el + xl*x_inv;
-	gcl1  = ((sl)*gcl - gpl)/rl;
-	gpl   = rl*gcl - (sl)*gcl1;
-	gcl   = gcl1;
-	gc[L+1] = gcl1;
-      }
-      if(mode == Mode_FGp) {
-	gcp[L+1] = gpl;
-	fcp[L+1] = W*fcp[L+1];
-      }
-      fc[L+1] = W * fc[L+1];
-    }
-    
     return GSL_SUCCESS;
   }
 }
 
 
-
 int
-gsl_sf_coulomb_wave_F_impl(double x, double eta,
-		           double lam_min, double lam_max,
-                           double * fc)
+gsl_sf_coulomb_wave_F_e(double lam_min, int kmax,
+                        double eta, double x,
+                        double * fc,
+			double * F_exponent
+                        )
 {
-  return coulfg(x, eta, lam_min, lam_max,
-	        fc, (double *) 0, (double *) 0, (double *) 0,
-	        Mode_F
-	        );
-}
-
-
-int
-gsl_sf_coulomb_wave_FG_impl(double x, double eta,
-                            double lam_min, double lam_max,
-                            double * fc, double * gc)
-{
-  return coulfg(x, eta, lam_min, lam_max,
-	        fc, gc, (double *) 0, (double *) 0,
-	        Mode_FG
-	        );
-}
-
-int
-gsl_sf_coulomb_wave_FGp_impl(double x, double eta,
-		             double lam_min, double lam_max,
-		             double * fc, double * gc,
-		             double * fcp, double * gcp)
-
-{
-  return coulfg(x, eta, lam_min, lam_max,
-	        fc, gc, fcp, gcp,
-	        Mode_FGp
-	        );
-}
-
-
-int
-gsl_sf_coulomb_wave_sphF_impl(double x, double eta,
-		              double lam_min, double lam_max,
-		              double * fc)
-{
-  int mode;
-  double delta_lam = lam_max - lam_min + CFG_ACC;
-  int i_delta_lam  = (int)delta_lam;
-  int i;
-
-  if(fabs(x) <= 100.*GSL_MACH_EPS) {
-    /* if x==0 then it is nonzero and finite only for l=0 */
-    double ell = lam_min;
-    mode = 0;
-    for(i=0; i<=i_delta_lam; i++) {
-      if(fabs(ell) < 1000.*GSL_MACH_EPS) {
-	fc[i] = sqrt(C0sq(eta));
-      }
-      else {
-	fc[i] = 0.;
-      }
-      ell += 1.;
-    }
+  int status = gsl_sf_coulomb_wave_F_impl(lam_min, kmax, x, eta,
+                                          fc,
+					  F_exponent
+					  );
+  if(status != GSL_SUCCESS) {
+    GSL_ERROR("gsl_sf_coulomb_wave_F_e", status);
   }
-  else {
-    mode = 1;
-    coulfg(x, eta, lam_min, lam_max,
-	   fc, (double *) 0, (double *) 0, (double *) 0,
-	   Mode_F
-	   );
-    for(i=0; i<=i_delta_lam; i++) { fc[i] = fc[i] / x; }
+  return status;
+}
+
+
+int
+gsl_sf_coulomb_wave_FG_e(double lam_min, int kmax,
+                         double eta, double x,
+                         double * fc,
+			 double * gc,
+			 double * F_exponent,
+			 double * G_exponent
+                         )
+{
+  int status = gsl_sf_coulomb_wave_FG_impl(lam_min, kmax,
+                                           eta, x,
+                                           fc, gc,
+					   F_exponent, G_exponent
+					   );
+  if(status != GSL_SUCCESS) {
+    GSL_ERROR("gsl_sf_coulomb_wave_FG_e", status);
   }
-  return GSL_SUCCESS;
+  return status;
+}
+
+
+int
+gsl_sf_coulomb_wave_FGp_e(double lam_min, int kmax,
+                          double eta, double x,
+                          double * fc, double * fcp,
+                          double * gc, double * gcp,
+                          double * F_exponent,
+                          double * G_exponent
+                          )
+{
+  int status = gsl_sf_coulomb_wave_FGp_impl(lam_min, kmax,
+                                            eta, x,
+                                            fc, fcp,
+                                            gc, gcp,
+                                            F_exponent,
+                                            G_exponent
+                                            );
+  if(status != GSL_SUCCESS) {
+    GSL_ERROR("gsl_sf_coulomb_wave_FGp_e", status);
+  }
+  return status;
 }
 
 
@@ -1405,15 +915,18 @@ test_coulomb(void)
 
   double lam_min = 0.0;
   double eta = 10.0;
-  double x = 20.0;
+  double x = 10.0;
 
   double fc[kmax+1], fcp[kmax+1], gc[kmax+1], gcp[kmax+1];
   double F_e, G_e;
 
-  int stat = coulomb(lam_min, kmax, eta, x, fc, fcp, gc, gcp, &F_e, &G_e);
+  int stat = gsl_sf_coulomb_wave_impl(lam_min, kmax, eta, x,
+                                      fc, fcp,
+				      gc, gcp,
+				      &F_e, &G_e);
   
   for(k=0; k<=kmax; k++) {
-    printf("%5.3g   %16.12g  %16.12g  %16.12g  %16.12g\n",
+    printf("%5.3g   %20.16g  %20.16g  %20.16g  %20.16g\n",
            lam_min + k, fc[k], fcp[k], gc[k], gcp[k]
 	   );
   }
