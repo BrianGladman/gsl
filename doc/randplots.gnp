@@ -223,10 +223,12 @@ plot a=1.0, b=1.0, p1(x) title "Type 1, $a=1,b=1$", \
 
 # Discrete distributions
 
-set xlabel "$k$ (k covers the range $[k,k+1]$)"
+set xlabel "$k$"
 set ylabel "$p(k)$"
+set ticscale 0 1
+set mxtics 2
 
-set xrange [0:10]
+set xrange [-0.5:10.5]
 set yrange [0:0.3]
 set ytics 0.1
 set xtics 1
@@ -234,9 +236,9 @@ set function style step
 set output "rand-poisson.tex"
 set title "Poisson Distribution"
 p(x)=mu**int(x)/(int(x)!) * exp(-mu)
-plot mu=2.5, p(x) title "$\mu=2.5$"
+plot mu=2.5, p(x+0.5) title "$\mu=2.5$"
 
-set xrange [0:2]
+set xrange [:1.5]
 set yrange [0:1]
 set ytics 0.1
 set xtics 1
@@ -244,36 +246,36 @@ set function style step
 set output "rand-bernoulli.tex"
 set title "Bernoulli Trial"
 p(x)= (int(x) == 0) ? 1-p : p
-plot p = 0.7, p(x) title "$p=0.7$"
+plot p = 0.7, p(x+0.5) title "$p=0.7$"
 
-set xrange [0:32]
-set yrange [0:0.2]
-set xtics 5
+set xrange [:10.5]
+set yrange [0:0.3]
+set xtics 1
 set ytics 0.1
 set output "rand-binomial.tex"
 set title "Binomial Distribution"
 p(x)= P**int(x)*(1-P)**(n-int(x))*gamma(n+1.0)/gamma(int(x)+1.0)/gamma(n-int(x)+1.0) + 1e-5
-plot P=0.5,n=24.99999999, p(x) title "$p=0.5,n=25$"
+plot P=0.5,n=9.99999999, p(x+0.5) title "$p=0.5,n=9$"
 
-set xrange [0:5]
+set xrange [:5.5]
 set yrange [0:0.7]
 set ytics 0.1
 set xtics 1
 set output "rand-geometric.tex"
 set title "Geometric Distribution"
 p(x)=P*(1-P)**int(x)
-plot P=0.5, p(x) title "$p=0.5$"
+plot P=0.5, p(x+0.5) title "$p=0.5$"
 
-set xrange [0:10]
+set xrange [:10.5]
 set yrange [0:0.7]
 set ytics 0.1
 set xtics 1
 set output "rand-logarithmic.tex"
 set title "Logarithmic Distribution"
 p(x)=int(x) ? (-1/log(1-P))*(P**int(x))/int(x) : 0
-plot P=0.7, p(x) title "$p=0.7$"
+plot P=0.7, p(x+0.5) title "$p=0.7$"
 
-set xrange [0:10]
+set xrange [:10.5]
 set yrange [0:0.7]
 set ytics 0.1
 set xtics 1
@@ -281,13 +283,15 @@ set output "rand-hypergeometric.tex"
 set title "Hypergeometric Distribution"
 choose(a,b)=gamma(a+1)/(gamma(b+1)*gamma(a-b+1))
 p(x)=choose(n1,int(x))*choose(n2,t-int(x))/choose(n1+n2,t)
-plot n1=5, n2=20, t=3, p(x) title "$n1=5, n2=20, t=3$"
+plot n1=5, n2=20, t=3, p(x+0.5) title "$n1=5, n2=20, t=3$"
 
-set xrange [0:10]
+set xrange [:10.5]
 set yrange [0:0.3]
 set xtics 1
 set ytics 0.1
 set output "rand-nbinomial.tex"
 set title "Negative Binomial Distribution"
 p(x)= (P**n)*((1-P)**(int(x)))*gamma(n+int(x))/gamma(n)/gamma(int(x)+1.0) + 1e-5
-plot P=0.5,n=3, p(x) title "$p=0.5,n=3$"
+plot P=0.5,n=3, p(x+0.5) title "$p=0.5,n=3$"
+
+
