@@ -41,7 +41,7 @@ weight is the reciprocal of variance for each datapoint in @var{y}.
 The covariance matrix for the parameters (@var{c0}, @var{c1}) is
 estimated from weighted data and returned via the parameters
 (@var{cov00}, @var{cov01}, @var{cov11}).  The weighted sum of squares of
-the residuals from the best-fit line, @math{\Chi^2}, is returned in
+the residuals from the best-fit line, @math{\chi^2}, is returned in
 @var{chisq}.
 @end deftypefun
 
@@ -73,7 +73,7 @@ weight is the reciprocal of variance for each datapoint in @var{y}.
 
 The variance of the parameter @var{c1} is estimated from the weighted
 data and returned via the parameters @var{cov11}.  The weighted sum of
-squares of the residuals from the best-fit line, @math{\Chi^2}, is
+squares of the residuals from the best-fit line, @math{\chi^2}, is
 returned in @var{chisq}.
 @end deftypefun
 
