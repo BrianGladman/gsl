@@ -17,7 +17,7 @@
 @ifinfo
 This file documents the @value{GSL}.
 
-Copyright (C) 1996, 1997, 1998, 1999, 2000, 2001 The GSL Project.
+Copyright (C) 1996, 1997, 1998, 1999, 2000, 2001, 2004 The GSL Project.
 
 Permission is granted to make and distribute verbatim copies of
 this manual provided the copyright notice and this permission notice
@@ -56,7 +56,7 @@ Network Theory Limited
 
 @page
 @vskip 0pt plus 1filll
-Copyright @copyright{} 1996,1997,1998,1999,2000,2001 The GSL Project.
+Copyright @copyright{} 1996,1997,1998,1999,2000,2001,2004 The GSL Project.
 
 Permission is granted to make and distribute verbatim copies of
 this manual provided the copyright notice and this permission notice

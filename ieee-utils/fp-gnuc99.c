@@ -1,6 +1,6 @@
 /* ieee-utils/fp-gnuc99.c
  * 
- * Copyright (C) 2003 Brian Gough
+ * Copyright (C) 2003, 2004 Brian Gough
  * 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

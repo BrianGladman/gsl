@@ -5,6 +5,7 @@ Makefile
 Makefile.in
 _libs
 aclocal.m4
+autom4te.cache
 config.cache
 config.h
 config.h.win32
@@ -16,6 +17,7 @@ gsl_version.h
 libgsl.la
 libtool
 stamp-h
+stamp-h1
 stamp-h.in
 typescript.make
 gsl-randist
