@@ -10,7 +10,7 @@
     for(i=0; i<m; i++) {
       Y[i] += alpha * X[i];
     }
-    for(i=m; i<N-3; i += 4) {
+    for(i=m; i+3<N; i += 4) {
       Y[i]   += alpha*X[i];
       Y[i+1] += alpha*X[i+1];
       Y[i+2] += alpha*X[i+2];
