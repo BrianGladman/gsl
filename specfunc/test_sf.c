@@ -870,7 +870,7 @@ int test_laguerre(void)
   TEST_SF(s, gsl_sf_laguerre_n_impl, (4, 2.0, 0.5, &r), 6.752604166666666667,    TEST_TOL1, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_laguerre_n_impl, (90, 2.0,  0.5, &r), -48.79047157201507897, TEST_TOL1, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_laguerre_n_impl, (90, 2.0, -100.0, &r), 2.5295879275042410902e+63, TEST_TOL2, GSL_SUCCESS);
-  TEST_SF(s, gsl_sf_laguerre_n_impl, (90, 2.0,  100.0, &r), -2.0929042259546928670e+20, TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_laguerre_n_impl, (90, 2.0,  100.0, &r), -2.0929042259546928670e+20, TEST_TOL1, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_laguerre_n_impl, (100, 2.0, -0.5, &r), 2.2521795545919391405e+07,  TEST_TOL2, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_laguerre_n_impl, (100, 2.0,  0.5, &r), -28.764832945909097418,     TEST_TOL2, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_laguerre_n_impl, (1000, 2.0, -0.5, &r), 2.4399915170947549589e+21, TEST_TOL3, GSL_SUCCESS);

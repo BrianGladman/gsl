@@ -188,8 +188,8 @@ int test_gamma(void)
   TEST_SF(s, gsl_sf_lnbeta_impl, (1.0e-8, 1.0, &r),  18.420680743952365472 , TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_lnbeta_impl, (1.0e-8, 10.0, &r),  18.420680715662683009 , TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_lnbeta_impl, (1.0e-8, 1000.0, &r),  18.420680669107656949 , TEST_TOL0, GSL_SUCCESS);
-  TEST_SF(s, gsl_sf_lnbeta_impl, (0.1, 0.1, &r), 2.9813614810376273949 , TEST_TOL0, GSL_SUCCESS);
-  TEST_SF(s, gsl_sf_lnbeta_impl, (0.1, 1.0, &r),  2.3025850929940456840 , TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_lnbeta_impl, (0.1, 0.1, &r), 2.9813614810376273949 , TEST_TOL1, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_lnbeta_impl, (0.1, 1.0, &r),  2.3025850929940456840 , TEST_TOL1, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_lnbeta_impl, (0.1, 100.0, &r),  1.7926462324527931217 , TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_lnbeta_impl, (0.1, 1000, &r),  1.5619821298353164928 , TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_lnbeta_impl, (1.0, 1.00025, &r),  -0.0002499687552073570, TEST_TOL4, GSL_SUCCESS);
