@@ -111,5 +111,6 @@
 #define GSL_CONST_MKS_CURIE (3.7e10) /* 1 / s */
 #define GSL_CONST_MKS_ROENTGEN (2.58e-4) /* A s / kg */
 #define GSL_CONST_MKS_RAD (1e-2) /* m^2 / s^2 */
+#define GSL_CONST_MKS_SOLAR_MASS (1.98892e30) /* kg */
 
 #endif /* __GSL_CONST_MKS__ */

@@ -131,7 +131,7 @@
          ("R"             "ROENTGEN")
          ("rd"            "RAD")
 
-
+         ("1.98892e30 kg"       "SOLAR_MASS")
          )
        )
 

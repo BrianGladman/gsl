@@ -94,6 +94,9 @@ The distance of 1 parsec, @math{pc}.
 
 @item GSL_CONST_MKS_GRAV_ACCEL
 The standard gravitational acceleration on Earth, @math{g}.
+
+@item GSL_CONST_MKS_SOLAR_MASS
+The mass of the Sun.
 @end table
 
 @node Atomic and Nuclear Physics
