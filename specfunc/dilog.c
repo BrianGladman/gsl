@@ -1,116 +1,98 @@
 /* Author:  G. Jungman
  * RCS:     $Id$
  */
-#include <gsl_errno.h>
 #include <gsl_math.h>
-#include "gsl_sf_chebyshev.h"
+#include <gsl_errno.h>
 #include "gsl_sf_clausen.h"
-#include "gsl_sf_expint.h"
 #include "gsl_sf_trig.h"
 #include "gsl_sf_log.h"
 #include "gsl_sf_dilog.h"
 
-#define locMin(a,b)  ((a) < (b) ? (a) : (b))
-#define locMax(a,b)  ((a) > (b) ? (a) : (b))
 
-
-/* Chebyshev fit for f(t), -1 < t < 1
- * f(t) := g(y(t))
- * g(y) := Li2(e^y) - y^2 / 2
- * ln(100) < y < ln(1000)
- *     100 < x < 1000
+/* Evaluate series for real dilog(x)
+ * Sum[ x^k / k^2, {k,1,Infinity}]
+ *
+ * Converges rapidly for |x| < 1/2.
  */
-static double li2_100_data[16] = {
- -61.028079324811232797820044037,
- -13.250456556257821054795103038,
- -0.6639108587048147840321307640,
-  0.0002200540327603079836383037,
- -0.0000313868258373686202867481,
-  3.6260369837091164247821887091e-06,
- -3.5496362345786979782455944857e-07,
-  3.0620871708238888177065740622e-08,
- -2.4246508584548732667041886525e-09,
-  1.8455504629240591893145007108e-10,
- -1.4152531131794409561489951395e-11,
-  1.1297627664081362099337605665e-12,
- -9.4449717256599517834598188335e-14,
-  8.1522854869580797300554951414e-15,
- -7.1420495403769695224676811122e-16,
-  6.2912377518369338425394488383e-17
-};
-static struct gsl_sf_cheb_series li2_100_cs = {
-  li2_100_data,
-  15,
-  -1, 1,
-  (double *)0,
-  (double *)0
-};
-
-
-/* Chebyshev fit for f(t), -1 < t < 1
- * f(t) := g(y(t))
- * g(y) := Li2(e^y) - y^2 / 2
- * ln(12.8) < y < ln(100)
- *     12.8 < x < 100
- */
-static double li2_128_data[20] = {
- -20.143648665645142102724844394,
- -7.3205904240532221814737357600,
- -0.5366068386310610280100336649,
-  0.0014474301595135692246987985,
- -0.0001955700828883060185739608,
-  0.0000224631238841696967842219,
- -2.3705284953339821946312727933e-06,
-  2.4678700660662671110541595250e-07,
- -2.6602697657502708483759115435e-08,
-  3.0086702014507668782188160992e-09,
- -3.5329565849464834813281331964e-10,
-  4.2506826109785483748269984540e-11,
- -5.2021743313231527081025406483e-12,
-  6.4580207435845740872418744638e-13,
- -8.1198790560514584576622308967e-14,
-  1.0324722357928494025287106650e-14,
- -1.3256357964592402022034221203e-15,
-  1.7163997468657032520536099126e-16,
- -2.2381415252860542554097578635e-17,
-  2.8879257066187275357654284735e-18
-};
-static struct gsl_sf_cheb_series li2_128_cs = {
-  li2_128_data,
-  19,
-  -1, 1,
-  (double *)0,
-  (double *)0
-};
-
-
-/* data for summation loop for dilog()
- * (n(n+1)(n+2))^2
- */
-const static double n_np1_np2_sq[30] = {
-  36.0,         576.0,       36.0e+2,      144.0e+2,     441.0e+2,
-  112896.0,     254016.0,    5184.0e+2,    9801.0e+2,    17424.0e+2,
-  2944656.0,    4769856.0,   74529.0e+2,   112896.0e+2,  166464.0e+2,
-  23970816.0,   33802596.0,  467856.0e+2,  636804.0e+2,  853776.0e+2,
-  112911876.0,  147476736.0, 19044.0e+4,   24336.0e+4,   3080025.0e+2,
-  386358336.0,  480661776.0, 5934096.0e+2, 7273809.0e+2, 8856576.0e+2
-};
-
-/* summation loop used by most cases in dilog() */
-static double do_sum(const double y, const double by, double dl)
+static
+int
+dilog_series(const double x, double * result)
 {
-  double a;
-  double b = 4.0*y*y/by;
-  double previous_dl;
-  int i;
-  for(i=0; i<30; i++) {
-    b *= y;
-    a  = b/n_np1_np2_sq[i];
-    previous_dl = dl;
-    dl += a;
-    if(fabs(a) < GSL_MACH_EPS) break;
+  const int kmax = 1000;
+  double sum  = x;
+  double term = x;
+  int k;
+  for(k=2; k<kmax; k++) {
+    double rk = (k-1.0)/k;
+    term *= x;
+    term *= rk*rk;
+    sum += term;
+    if(fabs(term/sum) < GSL_MACH_EPS) break;
   }
-  return dl;
+
+  *result = sum;
+  if(k == kmax)
+    return GSL_EMAXITER;
+  else
+    return GSL_SUCCESS;
+}
+
+
+/* Assumes x >= 0.0
+ */
+static
+int
+dilog_xge0(const double x, double * result)
+{
+  if(x > 2.0) {
+    const double log_x = log(x);
+    double ser;
+    int stat_ser = dilog_series(1.0/x, &ser);
+    *result = M_PI*M_PI/3.0 - ser - 0.5*log_x*log_x;
+    return stat_ser;
+  }
+  else if(x > 1.01) {
+    const double log_x    = log(x);
+    const double log_term = log_x * (log(1.0-1.0/x) + 0.5*log_x);
+    double ser;
+    int stat_ser = dilog_series(1.0 - 1.0/x, &ser);
+    *result = M_PI*M_PI/6.0 + ser - log_term;
+    return stat_ser;
+  }
+  else if(x > 1.0) {
+    /* series around x = 1.0 */
+    const double eps = x - 1.0;
+    const double lne = log(eps);
+    const double c0 = M_PI*M_PI/6.0;
+    const double c1 =   1.0 - lne;
+    const double c2 = -(1.0 - 2.0*lne)/4.0;
+    const double c3 =  (1.0 - 3.0*lne)/9.0;
+    const double c4 = -(1.0 - 4.0*lne)/16.0;
+    const double c5 =  (1.0 - 5.0*lne)/25.0;
+    const double c6 = -(1.0 - 6.0*lne)/36.0;
+    const double c7 =  (1.0 - 7.0*lne)/49.0;
+    const double c8 = -(1.0 - 8.0*lne)/64.0;
+    *result = c0+eps*(c1+eps*(c2+eps*(c3+eps*(c4+eps*(c5+eps*(c6+eps*(c7+eps*c8)))))));
+    return GSL_SUCCESS;
+  }
+  else if(x == 1.0) {
+    *result = M_PI*M_PI/6.0;
+    return GSL_SUCCESS;
+  }
+  else if(x > 0.5) {
+    double ser;
+    int stat_ser = dilog_series(1.0-x, &ser);
+    *result = M_PI*M_PI/6.0 - ser - log(x)*log(1.0-x);
+    return stat_ser;
+  }
+  else if(x > 0.0) {
+    return dilog_series(x, result);
+  }
+  else {
+    /* x == 0.0 */
+    *result = 0.0;
+    return GSL_SUCCESS;
+  }
 }
 
 
@@ -229,8 +211,7 @@ dilogc_series_2(double r, double theta, double cos_theta, double sin_theta,
  */
 static
 int
-complex_dilog_unitdisk(double r, double theta,
-                       double * real_dl, double * imag_dl)
+dilogc_unitdisk(double r, double theta, double * real_dl, double * imag_dl)
 {
   const double zeta2 = M_PI*M_PI/6.0;
   int stat_dilog;
@@ -297,144 +278,19 @@ complex_dilog_unitdisk(double r, double theta,
 
 /*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
 
+
 int
 gsl_sf_dilog_impl(const double x, double * result)
 {
-  if(x > 1000.0) {
-    /* Li2(x) = Li2(A) + (ln(A)^2 - ln(x)^2)/2 + S(A) - S(x)
-     *
-     * S(s) = 1/s + 1/2^2 1/s^2 + 1/3^2 1/s^3 + ...
-     *
-     * A = 10.0
-     */
-    const double ix = 1.0/x;
-    const double lx = log(x);
-    const double ln_A  = 2.3025850929940456840;  /* log(10) */
-    const double li2_A = 0.5363012873578627366;  /* Li2(10) */
-    const double S_A   = 0.1026177910993911311;
-    const double S_x   = ix * (1.0 + ix*(0.25 + ix*(1.0/9.0 + ix*(1.0/16.0 + ix/25.0))));
-    *result = li2_A + 0.5*ln_A*ln_A + S_A - S_x - 0.5*lx*lx;
-    return GSL_SUCCESS;
-  }
-  else if(x > 100.0) {
-    const double a = 4.60517018598809136803598;  /* log(100)  */
-    const double b = 6.90775527898213705205397;  /* log(1000) */
-    const double y = log(x);
-    const double t = 2.0*(y-a)/(b-a) - 1.0;
-    const double c = gsl_sf_cheb_eval(&li2_100_cs, t);
-    *result = c + 0.5*y*y;
-    return GSL_SUCCESS;
-  }
-  else if(x > 12.8) {
-    const double a = 2.54944517092557148190263; /* log(12.8) */
-    const double b = 4.60517018598809136803598; /* log(100)  */
-    const double y = log(x);
-    const double t = 2.0*(y-a)/(b-a) - 1.0;
-    const double c = gsl_sf_cheb_eval(&li2_128_cs, t);
-    *result = c + 0.5*y*y;
-    return GSL_SUCCESS;
-  }
-  else if(x > 12.4) {
-    const double x0 = 12.5951703698450184;   /* positive real zero of dilog(x) */
-    const double dx = x-x0;
-    const double c1 = -0.19456574163185890;
-    const double c2 =  0.004300177565288112;
-    const double c3 = -0.0001291882631106331;
-    const double c4 =  3.44864872694839e-06;
-    const double c5 =  5.66899694544e-10;
-    const double c6 = -1.26641834906114e-08;
-    const double c7 =  1.63966793864394e-09;
-    const double c8 = -1.64221074630073e-10;
-    const double c9 =  1.49644905020987e-11;
-    *result = dx*(c1 + dx*(c2 + dx*(c3 + dx*(c4 + dx*(c5 + dx*(c6 + dx*(c7 + dx*(c8 + dx*c9))))))));
-    return GSL_SUCCESS;
-  }
-  else if(x >= 2.0) {
-    const double log_x = log(x);
-    const double inv_x = 1.0/x;
-    const double den   = -(1.0 + 4.0*inv_x + inv_x*inv_x);
-    const double term1 = 0.25*inv_x * (16.0 + 23.0*inv_x);
-    const double term2 = (1.0+inv_x)*(1.0-inv_x) * log(1.0-inv_x);
-    const double c0 = 3.28986813369645287;
-    const double dl = c0 - 0.5*log_x*log_x + (term1+3.0*term2)/den;
-    *result = do_sum(inv_x, den, dl);
-    return GSL_SUCCESS;
-  }
-  else if(x > 1.0) {
-    /* DILOG COMPUTED FROM REF. NO. 1, P.244, EQ(7) WITH
-     * X=1/X + EQ(6), AND DESCRIPTION OF THIS ALGORITHM, EQ(4).
-     */
-    double Y = 1.0 - 1.0/x;
-    double DX = log(x);
-    double BY = 1.0 + Y*(4.+Y);
-    double dl = 1.64493406684822643 + DX*(0.5*DX-log(x-1.)) 
-      + (Y*(4.0+5.75*Y)-3.*(1.+Y)*DX/x)/BY;
-    *result = do_sum(Y, BY, dl);
-    return GSL_SUCCESS;
-  }
-  else if(x == 1.0) {
-    /* DILOG COMPUTED FROM REF. NO. 1, P.244, EQ(2). */
-    *result = 1.64493406684822643;
-    return GSL_SUCCESS;
-  }
-  else if(x > 0.5) {
-    /* DILOG COMPUTED FROM REF. NO. 1, P.244, EQ(7),
-     * AND DESCRIPTION OF THIS ALGORITHM, EQ(4).
-     */
-    double Y = 1.0 - x;
-    double DX = log(x);
-    double BY = -1.0 - Y*(4.0+Y);
-    double dl = 1.64493406684822643 
-      - DX*log(Y) + (Y*(4.0+5.75*Y)+3.0*(1.0+Y)*DX*x)/BY;
-    *result = do_sum(Y, BY, dl);
-    return GSL_SUCCESS;
-  }
-  else if(x > 0.01) {
-    /* DILOG COMPUTED FROM DESCRIPTION OF THIS ALGORITHM, EQ(4) */
-    double Y = x;
-    double BY = 1.0 + Y*(4.0+Y);
-    double dl = (Y*(4.0+5.75*Y)+3.0*(1.0+Y)*(1.0-Y)*log(1.0-Y))/BY;
-    *result = do_sum(Y, BY, dl);
-    return GSL_SUCCESS;
-  }
-  else if(x > -0.01) {
-    /* DILOG COMPUTED FROM REF. NO. 1, P.244, EQ(8),
-     * AND DESCRIPTION OF THIS ALGORITHM, EQ(4).
-     */
-    double Y = x/(x-1.0);
-    double DX = log(1.0-x);
-    double BY = -1.0 - Y*(4.0+Y);
-    double dl = (Y*(4.0+5.75*Y)-3.0*(1.0+Y)*(1.0-Y)*DX)/BY - 0.5*DX*DX;
-    *result = do_sum(Y, BY, dl);
-    return GSL_SUCCESS;
-  }
-  else if(x > -1.0) {
-    /* DILOG COMPUTED FROM REF. NO. 1, P.244, EQ(1). */
-    *result = x*(1.0+
-	         x*(0.25+x*(1.0/9.0+
-			    x*(0.0625+x*(4.0e-2+
-				         x*(1.0/36.0+x*(1.0/49.0+x/64.0)))))));
-    return GSL_SUCCESS;
+  if(x >= 0.0) {
+    return dilog_xge0(x, result);
   }
   else {
-    /* x < -1.0 */
-    /* DILOG COMPUTED FROM REF. NO. 1, P.245, EQ(12) WITH
-     * X=-X, AND DESCRIPTION OF THIS ALGORITHM, EQ(4).
-     */
-    double Y = 1.0/(1.0-x);
-    double DX = log(-x);
-    double DY = log(Y);
-    double BY = 1.0 + Y*(4.0+Y);
-    double dl = -1.64493406684822643 +
-      0.5*DY*(DY+2.0*DX) + (Y*(4.0+5.75*Y) + 3.0*(1.0+Y)*(1.0-Y)*(DX+DY))/BY;
-    if(dl + 4.0*Y == dl) {
-      *result = dl;
-      return GSL_SUCCESS;
-    }
-    else {
-      *result = do_sum(Y, BY, dl);
-      return GSL_SUCCESS;
-    }
+    double d1, d2;
+    int stat_d1 = dilog_xge0( -x, &d1);
+    int stat_d2 = dilog_xge0(x*x, &d2);
+    *result = -d1 + 0.5 * d2;
+    return GSL_ERROR_SELECT_2(stat_d1, stat_d2);
   }
 }
 
@@ -491,9 +347,9 @@ gsl_sf_complex_dilog_impl(const double r, double theta,
 
     /* Calculate in the unit disk.
      */
-    stat_dilog = complex_dilog_unitdisk(r_tmp, theta_tmp,
-                                        &result_re_tmp, &result_im_tmp
-					);
+    stat_dilog = dilogc_unitdisk(r_tmp, theta_tmp,
+                                 &result_re_tmp, &result_im_tmp
+				 );
 
     /* Unwind the inversion if necessary. We calculate
      * the imaginary part explicitly if using the inversion

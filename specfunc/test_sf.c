@@ -1137,15 +1137,13 @@ int check_dilog(void)
   s = 0;
   s += ( frac_diff( gsl_sf_dilog(-0.5), -0.4484142069236462024 ) > 1.0e-14 );
   gsl_test(s, "  gsl_sf_dilog(-0.5)");
-  printf("%22.18g\n", gsl_sf_dilog(-0.5));
   status += s;
 
   s = 0;
   s += ( frac_diff( gsl_sf_dilog(-0.001), -0.0009997501110486510834 ) > 1.0e-14 );
   gsl_test(s, "  gsl_sf_dilog(-0.001)");
-  printf("%22.18g\n", gsl_sf_dilog(-0.001));
   status += s;
-  
+
   s = 0;
   s += ( frac_diff( gsl_sf_dilog(0.1),  0.1026177910993911 ) > 1.0e-14 );
   gsl_test(s, "  gsl_sf_dilog(0.1)");
@@ -1175,7 +1173,12 @@ int check_dilog(void)
   s += ( frac_diff( gsl_sf_dilog( 5.0),  1.7837191612666306277 ) > 1.0e-14 );
   gsl_test(s, "  gsl_sf_dilog(5.0)");
   status += s;
-  
+
+  s = 0;
+  s += ( frac_diff( gsl_sf_dilog( 11.0), 0.3218540439999117111 ) > 1.0e-14 );
+  gsl_test(s, "  gsl_sf_dilog(11.0)");
+  status += s;
+
   s = 0;
   s += ( frac_diff( gsl_sf_dilog(12.59), 0.0010060918167266208634  ) > 1.0e-12 );
   gsl_test(s, "  gsl_sf_dilog(12.59)");
@@ -1187,7 +1190,7 @@ int check_dilog(void)
   status += s;
 
   s = 0;
-  s += ( frac_diff( gsl_sf_dilog(13.0), -0.07806971248458575855 ) > 1.0e-13 );
+  s += ( frac_diff( gsl_sf_dilog(13.0), -0.07806971248458575855 ) > 1.0e-14 );
   gsl_test(s, "  gsl_sf_dilog(13.0)");
   status += s;
 
