@@ -131,7 +131,25 @@ function T = test_bmatvectors (S, j)
     T.v1 = T.v2;
     T.v2 = tmp;
   endif
+endfunction
 
+
+function T = test_tbmatvector (S, j)
+  T.k = fix(j/4)+1;
+  b = T.k+1;
+  T.n =  b+fix(j/2);
+  T.lda = T.n;
+  T.s = (-1)**(fix(j/2));
+
+  T.trans = trans(S);
+
+  if (S.complex == 0)
+    T.A = random_matrix(T.lda, T.lda);
+    T.v = random_vector(T.n);
+  else
+    T.A = random_matrix(T.lda, T.lda)+ I * random_matrix(T.lda, T.lda);
+    T.v = random_vector(T.n) + I * random_vector(T.n);
+  endif
 endfunction
 
 
@@ -208,6 +226,21 @@ function m = trmatrix (order, uplo, Diag, A, lda, N)
 endfunction
 
 
+function m = tbmatrix (order, uplo, Diag, A, lda, N, K)
+
+  if (uplo == 121) # upper
+    m = bandmatrix(order, A, lda, N, N, 0, K);
+    m = triu(m);
+  else  # lower
+    m = bandmatrix(order, A, lda, N, N, K, 0);
+    m = tril(m);
+  endif
+  
+  if (Diag == 132)  # unit diag
+    m = m - diag(diag(m)) + eye(size(m));
+  endif
+endfunction
+
 function MM = op(M, trans);
   if (trans == 111)
     MM = M ;
@@ -217,7 +250,6 @@ function MM = op(M, trans);
     MM = M' ;
   endif
 endfunction
-
 
 function m = bandmatrix (order, A, lda, M, N, KL, KU)
   if (order == 102)   # column major
@@ -578,7 +610,17 @@ function XX = blas_trmv (order, uplo, trans, diag, N, A, lda, X, incX)
   
   XX = vout(X, incX, N, y);
 endfunction
+ 
+function XX = blas_tbmv (order, uplo, trans, diag, N, K, A, lda, X, incX)
+  a = tbmatrix (order, uplo, diag, A, lda, N, K);
+  a = op(a, trans);
+  x = vector (X, incX, N);
+
+  y =  a * x ;
   
+  XX = vout(X, incX, N, y);
+endfunction
+ 
 
 ######################################################################
 
@@ -983,8 +1025,8 @@ endfunction
 function test_trmv (S, fn, order, uplo, trans, diag, N, A, lda, X, incX)
   begin_block();
   define(S, "int", "order", order);
-  define(S, "int", "uplo", order);
   define(S, "int", "trans", trans);
+  define(S, "int", "uplo", uplo);
   define(S, "int", "diag", diag);
   define(S, "int", "N", N);
   define(S, "int", "lda", lda);
@@ -995,6 +1037,26 @@ function test_trmv (S, fn, order, uplo, trans, diag, N, A, lda, X, incX)
   XX = feval(strcat("blas_", fn), order, uplo, trans, diag, N, A, lda, X, incX);
   define(S, "vector", "x_expected", XX);
   call("cblas_", S.prefix, fn, "(order, uplo, trans, diag, N, A, lda, X, incX)");
+  test(S, "vector", "X", "x_expected", strcat(S.prefix, fn), X);
+  end_block();
+endfunction
+
+function test_tbmv (S, fn, order, uplo, trans, diag, N, K, A, lda, X, incX)
+  begin_block();
+  define(S, "int", "order", order);
+  define(S, "int", "trans", trans);
+  define(S, "int", "uplo", uplo);
+  define(S, "int", "diag", diag);
+  define(S, "int", "N", N);
+  define(S, "int", "K", K);
+  define(S, "int", "lda", lda);
+  define(S, "matrix", "A", A);
+  define(S, "vector", "X", X);
+  define(S, "int", "incX", incX);
+
+  XX = feval(strcat("blas_", fn), order, uplo, trans, diag, N, K, A, lda, X, incX);
+  define(S, "vector", "x_expected", XX);
+  call("cblas_", S.prefix, fn, "(order, uplo, trans, diag, N, K, A, lda, X, incX)");
   test(S, "vector", "X", "x_expected", strcat(S.prefix, fn), X);
   end_block();
 endfunction
@@ -1203,8 +1265,10 @@ n=16;
 #   endfor
 # endfor
 
+n=32;
+
 for j = 1:n
-  for i = [s,d,c,z]
+  for i = [s,d] #[s,d,c,z]
     S = context(i);
     T = test_tbmatvector(S, j);
     for alpha = coeff(S)
@@ -1212,7 +1276,7 @@ for j = 1:n
         for order = [101, 102]
           for uplo = [121, 122]
             for diag = [131, 132]
-              test_tbmv (S, "trmv", order, uplo, T.trans, diag, T.n, T.k,
+              test_tbmv (S, "tbmv", order, uplo, T.trans, diag, T.n, T.k,
                          T.A, T.lda, T.v, T.s);
             endfor
           endfor

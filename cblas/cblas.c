@@ -32,6 +32,11 @@
 #define OFFSET(N, incX) ((incX) > 0 ?  0 : ((N) - 1) * (-(incX)))
 #define BLAS_ERROR(x)  abort(); 
 
+#define CONJUGATE(x) ((x) == CblasConjTrans)
+#define TRANSPOSE(x) ((x) == CblasTrans || (x) == CblasConjTrans)
+#define UPPER(x) ((x) == CblasUpper)
+#define LOWER(x) ((x) == CblasLower)
+
 /* Handling of packed complex types... */
 
 #define REAL(a,i) (((BASE *) a)[2*(i)])
@@ -651,7 +656,7 @@ cblas_dtbmv (const enum CBLAS_ORDER order, const enum CBLAS_UPLO Uplo,
 #include "source_tbmv_r.h"
 #undef BASE
 }
-
+#ifdef 0
 void
 cblas_ctbmv (const enum CBLAS_ORDER order, const enum CBLAS_UPLO Uplo,
 	     const enum CBLAS_TRANSPOSE TransA, const enum CBLAS_DIAG Diag,
@@ -674,7 +679,7 @@ cblas_ztbmv (const enum CBLAS_ORDER order, const enum CBLAS_UPLO Uplo,
 #undef BASE
 }
 
-#ifdef 0
+
 
 /* TPMV */
 

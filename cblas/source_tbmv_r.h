@@ -23,93 +23,122 @@
  */
 
 {
-    int nounit = (Diag == CblasNonUnit);
-    size_t i, j;
-    size_t ix, jx;
+  int nounit = (Diag == CblasNonUnit);
+  size_t i, j;
+  size_t ix, jx;
 
-    if ((order == CblasRowMajor && TransA == CblasNoTrans)
-        || (order == CblasColMajor && TransA == CblasTrans)) {
-	/* form  x := A*x */
+  if ((order == CblasRowMajor && TransA == CblasNoTrans && Uplo == CblasUpper)
+      || (order == CblasColMajor && TransA == CblasTrans && Uplo == CblasLower))
+    {
+      /* form  x := A*x */
 
-	if (Uplo == CblasUpper) {
-	    size_t ix = OFFSET(N, incX);
-	    for (i = 0; i < N; i++) {
-		BASE temp = 0.0;
-		const size_t j_min = i + 1;
-		const size_t j_max = GSL_MIN(N, i + K + 1);
-		size_t jx = OFFSET(N, incX) + j_min * incX;
-		for (j = j_min; j < j_max; j++) {
-		    temp += X[jx] * A[lda * (K+i-j) + j];
-		    jx += incX;
-		}
-		if (nounit) {
-		    X[ix] = temp + X[ix] * A[lda * K + i];
-		} else {
-		    X[ix] += temp;
-		}
-		ix += incX;
+      size_t ix = OFFSET (N, incX);
+      for (i = 0; i < N; i++)
+	{
+	  BASE temp = 0.0;
+	  const size_t j_min = i + 1;
+	  const size_t j_max = GSL_MIN (N, i + K + 1);
+	  size_t jx = OFFSET (N, incX) + j_min * incX;
+	  for (j = j_min; j < j_max; j++)
+	    {
+	      temp += X[jx] * A[lda * (K + i - j) + j];
+	      jx += incX;
 	    }
-	} else {
-	    size_t ix = OFFSET(N, incX) + (N - 1) * incX;
-	    for (i = N; i > 0 && i--;) {
-		BASE temp = 0.0;
-		const size_t j_min = (K > i ? 0 : i - K);
-		const size_t j_max =  i;
-		size_t jx = OFFSET(N, incX) + j_min * incX;
-		for (j = j_min; j < j_max; j++) {
-		    temp += X[jx] * A[lda * (i-j) + j];
-		    jx += incX;
-		}
-		if (nounit) {
-		    X[ix] =
-			temp + X[ix] * A[lda * 0 +  i];
-		} else {
-		    X[ix] += temp;
-		}
-		ix -= incX;
+	  if (nounit)
+	    {
+	      X[ix] = temp + X[ix] * A[lda * K + i];
 	    }
+	  else
+	    {
+	      X[ix] += temp;
+	    }
+	  ix += incX;
 	}
-    } else if ((order == CblasRowMajor && TransA == CblasTrans)
-               || (order == CblasColMajor && TransA == CblasNoTrans)) {
-	/* form  x := A'*x */
+    }
+  else
+    if ((order == CblasRowMajor && TransA == CblasNoTrans && Uplo == CblasLower) 
+        || (order == CblasColMajor && TransA == CblasTrans && Uplo == CblasUpper))
+    {
 
-	if (Uplo == CblasUpper) {
-	    size_t ix = OFFSET (N, incX) + (N - 1) * incX;
-	    for (i = N; i > 0 && i--;) {
-		BASE temp = 0.0;
-		const size_t j_min = (K > i ? 0 : i - K);
-                const size_t j_max = i; 
-		size_t jx = OFFSET (N, incX) + j_min * incX;
-		for (j = j_min; j < j_max; j++) {
-		    temp += X[jx] * A[lda * j + (K+i-j)];
-		    jx += incX;
-		}
-		if (nounit) {
-		    X[ix] =
-			temp + X[ix] * A[lda * i + K];
-		} else {
-		    X[ix] += temp;
-		}
-		ix -= incX;
+      size_t ix = OFFSET (N, incX) + (N - 1) * incX;
+      for (i = N; i > 0 && i--;)
+	{
+	  BASE temp = 0.0;
+	  const size_t j_min = (K > i ? 0 : i - K);
+	  const size_t j_max = i;
+	  size_t jx = OFFSET (N, incX) + j_min * incX;
+	  for (j = j_min; j < j_max; j++)
+	    {
+	      temp += X[jx] * A[lda * (i - j) + j];
+	      jx += incX;
 	    }
-	} else {
-	    size_t ix = OFFSET(N, incX);
-	    for (i = 0; i < N; i++) {
-		BASE temp = 0.0;
-                const size_t j_min = i + 1;
-                const size_t j_max = GSL_MIN(N, i + K + 1); 
-		size_t jx = (i + 1) * incX;
-		for (j = j_min; j < j_max; j++) {
-		    temp += X[jx] * A[lda * j + (K+i-j)];
-		    jx += incX;
-		}
-		if (nounit) {
-		    X[ix] = temp + X[ix] * A[lda * i + K];
-		} else {
-		    X[ix] += temp;
-		}
-		ix += incX;
+	  if (nounit)
+	    {
+	      X[ix] = temp + X[ix] * A[lda * 0 + i];
 	    }
+	  else
+	    {
+	      X[ix] += temp;
+	    }
+	  ix -= incX;
 	}
-    } 
+
+    }
+  else
+    if ((order == CblasRowMajor && TransA == CblasTrans && Uplo == CblasUpper) 
+        || (order == CblasColMajor && TransA == CblasNoTrans && Uplo == CblasLower))
+    {
+      /* form  x := A'*x */
+      size_t ix = OFFSET (N, incX) + (N - 1) * incX;
+
+      for (i = N; i > 0 && i--;)
+	{
+	  BASE temp = 0.0;
+	  const size_t j_min = (K > i ? 0 : i - K);
+	  const size_t j_max = i;
+	  size_t jx = OFFSET (N, incX) + j_min * incX;
+	  for (j = j_min; j < j_max; j++)
+	    {
+	      temp += X[jx] * A[lda * j + (i - j)];
+	      jx += incX;
+	    }
+	  if (nounit)
+	    {
+	      X[ix] = temp + X[ix] * A[lda * i + 0];
+	    }
+	  else
+	    {
+	      X[ix] += temp;
+	    }
+	  ix -= incX;
+	}
+    }
+  else
+    if ((order == CblasRowMajor && TransA == CblasTrans && Uplo == CblasLower) 
+        || (order == CblasColMajor && TransA == CblasNoTrans && Uplo == CblasUpper))
+    {
+
+      size_t ix = OFFSET (N, incX);
+      for (i = 0; i < N; i++)
+	{
+	  BASE temp = 0.0;
+	  const size_t j_min = i + 1;
+	  const size_t j_max = GSL_MIN (N, i + K + 1);
+	  size_t jx = OFFSET (N, incX) + j_min * incX;
+	  for (j = j_min; j < j_max; j++)
+	    {
+	      temp += X[jx] * A[lda * j + (K - j + i)];
+	      jx += incX;
+	    }
+	  if (nounit)
+	    {
+	      X[ix] = temp + X[ix] * A[lda * i + K];
+	    }
+	  else
+	    {
+	      X[ix] += temp;
+	    }
+	  ix += incX;
+	}
+    }
 }
