@@ -46,7 +46,8 @@ int gsl_vector_long_view_from_vector (gsl_vector_long *v,
                                        gsl_vector_long *base,
                                        size_t offset, size_t n, size_t stride);
 
-gsl_vector_long gsl_vector_long_subvector (gsl_vector_long *v, size_t i, size_t n, size_t stride);
+gsl_vector_long gsl_vector_long_subvector (gsl_vector_long *v, size_t i, size_t n);
+gsl_vector_long gsl_vector_long_subvector_with_stride (gsl_vector_long *v, size_t i, size_t n, size_t stride);
 
 long *gsl_vector_long_ptr (const gsl_vector_long * v, const size_t i);
 long gsl_vector_long_get (const gsl_vector_long * v, const size_t i);

@@ -181,7 +181,29 @@ FUNCTION(gsl_vector, view_from_vector) (TYPE(gsl_vector) * v,
 
 
 TYPE(gsl_vector)
-FUNCTION(gsl_vector, sub_vector) (TYPE(gsl_vector) * v, size_t offset, size_t n, size_t stride)
+FUNCTION(gsl_vector, subvector) (TYPE(gsl_vector) * v, size_t offset, size_t n)
+{
+  TYPE(gsl_vector) s = {0, 0, 0, 0};
+
+  if (n == 0)
+    {
+      GSL_ERROR_RETURN ("vector length n must be positive integer", GSL_EDOM, s);
+    }
+
+  if (offset + (n - 1) >= v->size)
+    {
+      GSL_ERROR_RETURN ("vector would extend past end of vector", GSL_EDOM, s);
+    }
+
+  s.data = v->data +  v->stride * offset ;
+  s.size = n;
+  s.stride = v->stride;
+
+  return s;
+}
+
+TYPE(gsl_vector)
+FUNCTION(gsl_vector, subvector_with_stride) (TYPE(gsl_vector) * v, size_t offset, size_t n, size_t stride)
 {
   TYPE(gsl_vector) s = {0, 0, 0, 0};
 

@@ -1,3 +1,8 @@
+Sat Apr 22 15:09:44 2000  Brian Gough  <bjg@network-theory.co.uk>
+
+	* init_source.c (FUNCTION): separated subvector functions into
+ 	gsl_vector_subvector and gsl_vector_subvector_with_stride
+
 Sat Mar 25 20:23:58 2000  Brian Gough  <bjg@network-theory.co.uk>
 
 	* swap_source.c (FUNCTION): renames gsl_vector_swap to
