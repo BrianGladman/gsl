@@ -24,6 +24,7 @@ pkginclude_HEADERS = \
 	gsl_sf_gamma.h      	\
 	gsl_sf_hyperg.h		\
 	gsl_sf_laguerre.h   	\
+    gsl_sf_lambert.h    \
 	gsl_sf_legendre.h	\
 	gsl_sf_log.h 		\
 	gsl_sf_pow_int.h 	\
@@ -131,6 +132,7 @@ libgslspecfunc_la_SOURCES = 	\
 	hyperg_U.c		\
 	hyperg.c		\
 	laguerre.c		\
+    lambert.c       \
 	legendre_H3d.c		\
 	legendre_Qn.c		\
 	legendre_con.c		\

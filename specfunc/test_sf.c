@@ -984,6 +984,42 @@ int test_laguerre(void)
 }
 
 
+int test_lambert(void)
+{
+  gsl_sf_result r;
+  int s = 0;
+
+  TEST_SF(s, gsl_sf_lambert_W0_e, (0.0, &r),  0.0,  TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_lambert_W0_e, (1.0, &r),  0.567143290409783872999969,  TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_lambert_W0_e, (2.0, &r),  0.852605502013725491346472,  TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_lambert_W0_e, (20.0, &r), 2.205003278024059970493066,  TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_lambert_W0_e, (1000.0, &r), 5.24960285240159622712606,  TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_lambert_W0_e, (1.0e+6, &r), 11.38335808614005262200016,  TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_lambert_W0_e, (1.0e+12, &r), 24.43500440493491313826305,  TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_lambert_W0_e, (1.0e+308, &r), 702.641362034106812081125,  TEST_TOL0, GSL_SUCCESS);
+
+  TEST_SF(s, gsl_sf_lambert_W0_e, (-1.0/M_E - GSL_DBL_EPSILON, &r), -1.0,  TEST_TOL0, GSL_EDOM);
+  TEST_SF(s, gsl_sf_lambert_W0_e, (-1.0/M_E + 1.0/(1024.0*1024.0*1024.0), &r), -0.999928845560308370714970, TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_lambert_W0_e, (-1.0/M_E + 1.0/(1024.0*1024.0), &r), -0.997724730359774141620354, TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_lambert_W0_e, (-1.0/M_E + 1.0/512.0, &r), -0.900335676696088773044678, TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_lambert_W0_e, (-1.0/M_E + 0.25, &r), -0.1349044682661213545487599, TEST_TOL0, GSL_SUCCESS);
+
+  TEST_SF(s, gsl_sf_lambert_Wm1_e, (0.0, &r),  0.0,  TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_lambert_Wm1_e, (1.0, &r),  0.567143290409783872999969,  TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_lambert_Wm1_e, (2.0, &r),  0.852605502013725491346472,  TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_lambert_Wm1_e, (20.0, &r), 2.205003278024059970493066,  TEST_TOL0, GSL_SUCCESS);
+
+  TEST_SF(s, gsl_sf_lambert_Wm1_e, (-1.0/M_E - GSL_DBL_EPSILON, &r), -1.0,  TEST_TOL0, GSL_EDOM);
+  TEST_SF(s, gsl_sf_lambert_Wm1_e, (-1.0/M_E + 1.0/(1024.0*1024.0*1024.0), &r), -1.000071157815154608049055, TEST_TOL1, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_lambert_Wm1_e, (-1.0/M_E + 1.0/(1024.0*1024.0), &r), -1.002278726118593023934693, TEST_TOL1, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_lambert_Wm1_e, (-1.0/M_E + 1.0/512.0, &r), -1.106761200865743124599130, TEST_TOL1, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_lambert_Wm1_e, (-1.0/M_E + 1.0/64.0, &r), -1.324240940341812125489772, TEST_TOL1, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_lambert_Wm1_e, (-1.0/M_E + 0.25, &r), -3.345798131120112, TEST_TOL1, GSL_SUCCESS);
+
+  return s;
+}
+
+
 int test_log(void)
 {
   gsl_sf_result r;
@@ -1494,6 +1530,7 @@ int main(int argc, char * argv[])
   gsl_test(test_gegen(),      "Gegenbauer Polynomials");
   gsl_test(test_hyperg(),     "Hypergeometric Functions");
   gsl_test(test_laguerre(),   "Laguerre Polynomials");
+  gsl_test(test_lambert(),    "Lambert W Functions");
   gsl_test(test_legendre(),   "Legendre Functions");
   gsl_test(test_log(),        "Logarithm");
   gsl_test(test_pow_int(),    "Integer Powers");

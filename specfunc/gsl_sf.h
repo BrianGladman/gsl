@@ -25,6 +25,7 @@
 #include <gsl/gsl_sf_gegenbauer.h>
 #include <gsl/gsl_sf_hyperg.h>
 #include <gsl/gsl_sf_laguerre.h>
+#include <gsl/gsl_sf_lambert.h>
 #include <gsl/gsl_sf_legendre.h>
 #include <gsl/gsl_sf_log.h>
 #include <gsl/gsl_sf_pow_int.h>
