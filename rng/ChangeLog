@@ -1,6 +1,9 @@
 Mon Aug  3 18:25:52 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
-	* mt.c: made constants static since they shouldn't be exported
+	* mt.c: made constants static since they shouldn't be exported,
+ 	added some speed improvements from Cokus' code (not all of them
+ 	since they seemed to use more registers than available on the
+ 	pentium).
 
 Thu Jul  9 13:56:20 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
