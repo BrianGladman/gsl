@@ -6,6 +6,8 @@ debugging the code.
 
 See the NEWS file for recent developments.
 
+The project hompage is http://sources.redhat.com/gsl/
+
 A test suite is available for most of the libraries.  It can be
 invoked with "make check" in each directory.  All tests can be run
 together with "make check" at the top level.
