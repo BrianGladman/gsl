@@ -85,7 +85,7 @@ gsl_sf_bessel_sequence_Jnu_impl(double nu, gsl_mode_t mode, size_t size, double 
      * is small. This is necessary because the
      * integration is not very good there.
      */
-    while(v[i] < x_small) {
+    while(v[i] < x_small && i < size) {
       if(v[i] <= x) {
         /* Strict ordering failure. */
 	return GSL_EFAILED;
