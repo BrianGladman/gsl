@@ -1,5 +1,7 @@
 #We need to do a better job with the NEWS file!
 
+** The random number generators rand48 and ranf now work on the Alpha
+
 ** Additional random number distributions: Rayleigh distribution
 
 * Will be new in gsl-0.4:

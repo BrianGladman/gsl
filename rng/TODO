@@ -4,11 +4,12 @@ change it to provide 2^31 different initial states (this will also
 prevent the high bits being zero). DONE - we now use a 32-bit
 generator.
 
-2. Make things work on 64 bit platforms. Sometimes we just need to use
-& 0xffffffff on 32 bit quantities that are returned to the user where
-we rely on 32 bit arithmetic, sometimes it is more complicated
+x2. Make things work on 64 bit platforms. Sometimes we just need to
+use & 0xffffffff on 32 bit quantities that are returned to the user
+where we rely on 32 bit arithmetic, sometimes it is more complicated
 (e.g. the Tausworthe generator relies on 32 bit arithmetic at all
 stages). DONE, needs to be tested on an actual 64 bit machine though
+DONE (I tested it on the Alpha (ancho).
 
 x3. Add reimplementations of the Numerical Recipes generators, since
 lots of people use those. DONE, for ran0,1,2,3
@@ -38,7 +39,7 @@ it is the default. DONE. It didn't improve the speed on other
 platforms, so I just used the tricks which also worked on the pentium
 (e.g. changing mag[x&1] to x&1 ? mag[1] : mag[0])
 
-9. Send to M.Makumoto for review.
+x9. Send to M.Makumoto for review. DONE, no reply as of 4 Nov 1998 though.
 
 x10. Add random/srandom DONE.
 

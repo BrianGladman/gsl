@@ -1,3 +1,15 @@
+1998-11-04    <bjg@ancho.lanl.gov>
+
+	* ranf.c: fix portability problems on alpha, by ensuring that
+	shorts are correctly promoted to longs at the appropriate points
+
+	* rand48.c: fix portability problems by ensuring that shorts are
+	correctly promoted to longs at the appropriate points
+
+	* rng-dump.c (main): write out file correctly by using chars
+	instead of unsigned long ints, since these can vary in size on
+	different architectures
+
 Wed Oct 28 15:02:22 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
 	* rng.c: added #include <string.h> to get prototype for memcpy
