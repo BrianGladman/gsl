@@ -292,6 +292,13 @@ GSL is currently in beta-test release, for people who want to test the
 library itself. When the library is complete and fully tested it will be
 announced for general use.
 
+@menu
+* GSL is Free Software::        
+@end menu
+
+@node GSL is Free Software,  , Introduction, Introduction
+@section GSL is Free Software
+
 The subroutines in the GNU Scientific Library are ``free software'';
 this means that everyone is free to use them, and to redistribute them
 in other free programs.  The library should not be redistributed in
