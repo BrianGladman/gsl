@@ -6,7 +6,7 @@
 * The Future::                  
 @end menu
 
-
+@c
 @c RCS: $Id$
 @c
 
@@ -20,19 +20,77 @@ well as the code) is still evolving - the code at a faster rate.
 @node Algorithms, Interface
 @section Algorithms
 
+@subsection PLAIN (or Simple) Monte Carlo
+
+We begin by establishing some notation.  Let @math{E_\mu(f)} denote the
+expactation value (or average) of the function @math{f} with respect
+to some measure @math{\mu}.  We will write @math{E_L(f)} for the
+normal (or Lebesgue) integral and simple @math{E(f)} for a Monte Carlo
+estimate.  Specifically then,
+@equation
+  E(f) = @{1 \over N @} \Sum_i^N f(x_i).
+@end equation
+Similarly, we will denote the variance of the expactation value
+as @math{Var_@{\mu@}(f)}, defined as 
+@equation
+  Var_\mu(f) = E_\mu(f^2) - (E_\mu(f))^2.
+@end equation
+The fundamental point of Monte Carlo integration is that for
+large @math{N}, 
+@equation
+  E_L(f) - E(f) \approx @{Var_L(f)\over N @}
+@end equation
+and furthermore, 
+@equation
+  Var(f) \approx @{ Var(f) \over N@}
+@end equation
+That's all there is to simple Monte Carlo.
+
+
 @subsection MISER
 
-One of the basic ideas of all stratified sampling techniques is
-the observation that for two regions @math{a} and @math{b} with
-variances @math{\sigma_a} and @math{\sigma_b}, the combined 
-variance 
+The starting point of all stratified sampling techniques is
+the observation that for two disjoint regions @math{a} and @math{b} with
+Monte Carlo estimates of the integral @math{E_a(f)} and @math{E_b(f)} of the 
+integral of f in those regions
+and variances @math{Var_a(f)} and @math{Var_b(f)}, the variance @math{Var(f)}
+of the combined estimate @math{E(f) = 1/2 E_a(f) + 1/2 E_b(f)}
+is given by
 @equation
-  \sigma^2 = @{\sigma^2_a \over N_a@} + @{\sigma^2_b \over (N-N_a)@}
+  Var(f) = @{Var_@{L,a@}(f) \over 4 N_a@} + @{Var_@{L,b@}(f) \over 4 N_b@}
 @end equation
-is minimized by choosing (assuming one can)
+This variance 
+is minimized (subject to the constrain that @math{N_a + N_b} is fixed) 
+by choosing (assuming one can) @math{N_a} s.t.
 @equation
-   @{N_a \over N @} = @{ \sigma_a \over \sigma_a + \sigma_b @}
-@endequation
+  @{N_a \over N_a+N_b @} = @{ \sigma_a^(1/2) \over \sigma_a + \sigma_b @}
+@end equation
+(where we have written @math{\sigma} for @math{Var_L(f)}).  
+For such a choice, the variance is given by
+@equation
+  Var(f) =  @{ (\sigma_a + \sigma_b)^2 \over 4 N @}
+@end equation
+In words, 
+the variance of the estimate (and hence the error) is minimized by
+concentrating points in regions where the variance of the function
+@math{f} is large.
+
+The most straightforward stratified sampling routine divides a
+hypercubic integration region into sub-cubss along the coordinate axes.
+This is simple to do, but gets out of hand for large numbers of
+dimensions @math{d} because the number of sub-cubes grows like 
+@math{K^d} where @math{K} is the number of sub-divisions along the
+axis.  
+
+What MISER does (and other recursive strafied samplers) is to bisect
+the hypercube along one coordinate axis.  The direction is chosen
+by examining all possible bisections (@math{d} of them) and picking
+the one that gives the best combined variance.  The same procedure
+is then done for each of the two half-spaces (chosing @math{N_a} and
+@math{N_b} as described above), and so on. 
+Since by assumption one does not know the variance @math{Var_L(f)} in
+the various sub-regions, it is estimated using some fraction of
+the total number of points alloted to the estimate.  
 
 @subsection VEGAS
 
@@ -40,28 +98,52 @@ is minimized by choosing (assuming one can)
 @node Interface, Example, Algorithms
 @section Interface
 
-All of the integration routines use the same interface.  Their
+All of the integration routines use the same interface.  There
 is an allocator to allocate memory to hold control variables and
 workspace, a routine to initialize those control variables,
 the integrator itself, and of course a function to free the space
 when done.  For an integrator algorithm, call it COOL
 (substitute any of the currently existing algorithms) we then 
 have
-@deftypefun gsl_monte_COOL_state* gsl_monte_COOL_alloc()
+@deftypefun Monte gsl_monte_COOL_state* gsl_monte_COOL_alloc()
 @end deftypefun
-@deftypefun int gsl_monte_COOL_init(gsl_monte_COOL_state* s, 
+@deftypefun Monte int gsl_monte_COOL_init(gsl_monte_COOL_state* s, 
         double *x_lower, double* x_upper, double*)
 @end deftypefun
-@deftypefun int gsl_monte_COOL_free(gsl_monte_COOL_state* s), 
+@deftypefun Monte int gsl_monte_COOL_free(gsl_monte_COOL_state* s), 
 @end deftypefun
-@deftypefun int gsl_monte_COOL(gsl_monte_COOL_state* s, 
+@deftypefun Monte int gsl_monte_COOL(gsl_monte_COOL_state* s, 
         double *x_lower, double* x_upper, long int dimension,
         long int function_calls, double* result, double* error,
         ...)
 @end deftypefun
 
 Notice the ellipses in last argument to the actual integration routine.
+This is because the vegas algorithm (and perhaps others in the future)
+return extra information -- in the case of vegas, it is the "chisq"
+of the result.  
 
+We describe the algorithm-specific variables.  
+
+PLAIN: None
+
+MISER:
+@deftypevr double alpha
+alpha controls how the variances for the two sub-regions are combined.
+The Numberical Recipes gang argue that it is better to use some power
+alpha, so that
+@equation 
+  Var(f) = @{\sigma_a^@{\alpha/2@} \over N_a^\alpha @} + 
+               \sigma_b^@{\alpha/2@} \over N_b^\alpha @}
+@end equation
+@end deftypevr
+
+@deftypevr double dither
+Rather than exactly bisection the integration region, the NR boys
+had the clever idea of introducing a "dither" parameter to introduce
+a bit of fuzz.  This helps in the case when the function to be integrated
+has some symmetry.  If needed, dither should be around 0.1. 
+@end deftypevr 
 
 @node Example, The Future, Interface
 @section Example
@@ -127,6 +209,7 @@ The old interface will probably stay around for a while (though, since
 this is @math{version < 1}, the author 
 does not want to be held to such as statement).
 
+@c
 @c @display
 @c   To Be Fixed.
 @c @end display
