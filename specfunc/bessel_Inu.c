@@ -40,23 +40,23 @@ gsl_sf_bessel_Inu_impl(double nu, double x, double * result)
 
 
 int
-gsl_sf_bessel_Jnu_e(double nu, double x, double * result)
+gsl_sf_bessel_Inu_e(double nu, double x, double * result)
 {
-  int status = gsl_sf_bessel_Jnu_impl(nu, x, result);
+  int status = gsl_sf_bessel_Inu_impl(nu, x, result);
   if(status != GSL_SUCCESS) {
-    GSL_ERROR("gsl_sf_bessel_Jnu_e", status);
+    GSL_ERROR("gsl_sf_bessel_Inu_e", status);
   }
   return status;
 }
 
 
 double
-gsl_sf_bessel_Jnu(double nu, double x)
+gsl_sf_bessel_Inu(double nu, double x)
 {
   double y;
-  int status = gsl_sf_bessel_Jnu_impl(nu, x, &y);
+  int status = gsl_sf_bessel_Inu_impl(nu, x, &y);
   if(status != GSL_SUCCESS) {
-    GSL_WARNING("gsl_sf_bessel_Jnu", status);
+    GSL_WARNING("gsl_sf_bessel_Inu", status);
   }
   return y;
 }
