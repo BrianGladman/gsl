@@ -15,14 +15,14 @@ main (void)
   /* specific tests of known results */
 
   rng_test (gsl_rng_minstd,1,10000,1043618065);
-  generic_rng_test (gsl_rng_minstd);
-
+  rng_test (gsl_rng_bad_rand,1,10000,1910041713);
   rng_test (gsl_rng_bad_randu,1,10000,1623524161);
 
   /* generic statistical tests */
 
   generic_rng_test (gsl_rng_cmrg);
   generic_rng_test (gsl_rng_mrg);
+  generic_rng_test (gsl_rng_minstd);
   generic_rng_test (gsl_rng_rand);
   generic_rng_test (gsl_rng_taus);
   generic_rng_test (gsl_rng_uni);
