@@ -257,7 +257,7 @@ gsl_sf_legendre_Plm_e(const int l, const int m, const double x, gsl_sf_result * 
       return GSL_SUCCESS;
     }
     else{
-      double p_ell;
+      double p_ell = 0.0;
       int ell;
     
       /* Compute P_l^m, l > m+1 by upward recurrence on l. */
@@ -418,7 +418,7 @@ gsl_sf_legendre_sphPlm_e(const int l, int m, const double x, gsl_sf_result * res
       return GSL_SUCCESS;
     }
     else{
-      double y_ell;
+      double y_ell = 0.0;
       int ell;
 
       /* Compute Y_l^m, l > m+1, upward recursion on l. */

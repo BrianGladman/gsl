@@ -1,3 +1,17 @@
+Thu Oct 11 14:21:34 2001  Brian Gough  <bjg@network-theory.co.uk>
+
+	* gegenbauer.c (gsl_sf_gegenpoly_n_e): initialize variable gk to
+ 	zero to avoid warning
+
+	* bessel_i.c (gsl_sf_bessel_il_scaled_e): initialize variable
+ 	iellm1 to zero to avoid warning
+
+	* bessel_Jnu.c (gsl_sf_bessel_Jnu_e): initialize variable Ynp1 to
+ 	zero to avoid warning
+
+	* legendre_poly.c (gsl_sf_legendre_sphPlm_e): initialize variables
+ 	p_ell, y_ell to zero to avoid warning
+
 Thu Sep  6 10:38:51 2001  Brian Gough  <bjg@network-theory.co.uk>
 
 	* clausen.c: added missing initialiser to cheb_series struct

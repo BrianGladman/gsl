@@ -240,7 +240,7 @@ int gsl_sf_bessel_il_scaled_e(const int l, double x, gsl_sf_result * result)
     int stat_a2 = gsl_sf_bessel_Inu_scaled_asymp_unif_e(LMAX     + 0.5, x, &r_iell);
     double iellp1 = r_iellp1.val;
     double iell   = r_iell.val;
-    double iellm1;
+    double iellm1 = 0.0;
     int ell;
     iellp1 *= rt_term;
     iell   *= rt_term;

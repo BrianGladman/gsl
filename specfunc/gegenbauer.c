@@ -123,7 +123,7 @@ gsl_sf_gegenpoly_n_e(int n, double lambda, double x, gsl_sf_result * result)
       int stat_g  = GSL_ERROR_SELECT_2(stat_g2, stat_g3);
       double gkm2 = g2.val;
       double gkm1 = g3.val;
-      double gk;
+      double gk = 0.0;
       for(k=4; k<=n; k++) {
         gk = (2.0*(k+lambda-1.0)*x*gkm1 - (k+2.0*lambda-2.0)*gkm2) / k;
 	gkm2 = gkm1;
