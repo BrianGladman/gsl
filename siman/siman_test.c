@@ -159,7 +159,7 @@ double distance_3D(Element x, Element y)
 	      + square(y.D3[2]-x.D3[2]));
 }
 
-/* now some functions to try out the non-union interface */
+/* now some functions to test in one dimension */
 double E1(void *xp)
 {
   double x = * ((double *) xp);
@@ -182,9 +182,9 @@ void S1(void *xp, double step_size)
   double new_x;
 
   r = gsl_ran_uniform();
-  new_x = r;
-  new_x = new_x*2*params.step_size;
-  new_x = new_x - params.step_size + old_x;
+  new_x = r*2*step_size - step_size + old_x;
+/*   new_x = new_x*2*step_size; */
+/*   new_x = new_x - step_size + old_x; */
 
   memcpy(xp, &new_x, sizeof(new_x));
 }
@@ -196,9 +196,9 @@ void P1(void *xp)
 
 int main(int argc, char *argv[])
 {
-  Element x0;			/* initial pguess for search */
+  Element x0;			/* initial guess for search */
 
-  double x_initial = 5.5;
+  double x_initial = 15.5;
 
   gsl_siman_solve(&x_initial, E1, S1, M1, P1, sizeof(double), params);
 
