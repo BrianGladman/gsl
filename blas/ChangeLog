@@ -1,3 +1,8 @@
+2005-04-05  Brian Gough  <bjg@network-theory.co.uk>
+
+	* blas.c (gsl_blas_ssyrk): test conformance against size correctly
+	allowing for transpose
+
 2004-12-21  Brian Gough  <bjg@network-theory.co.uk>
 
 	* blas.c (gsl_blas_ssyrk): corrected K to be A->size2 instead of

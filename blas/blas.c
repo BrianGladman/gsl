@@ -1627,13 +1627,14 @@ gsl_blas_ssyrk (CBLAS_UPLO_t Uplo, CBLAS_TRANSPOSE_t Trans, float alpha,
 {
   const size_t M = C->size1;
   const size_t N = C->size2;
+  const size_t J = (Trans == CblasNoTrans) ? A->size1 : A->size2;
   const size_t K = (Trans == CblasNoTrans) ? A->size2 : A->size1;
 
   if (M != N)
     {
       GSL_ERROR ("matrix C must be square", GSL_ENOTSQR);
     }
-  else if (N != K)
+  else if (N != J)
     {
       GSL_ERROR ("invalid length", GSL_EBADLEN);
     }
@@ -1650,13 +1651,14 @@ gsl_blas_dsyrk (CBLAS_UPLO_t Uplo, CBLAS_TRANSPOSE_t Trans, double alpha,
 {
   const size_t M = C->size1;
   const size_t N = C->size2;
+  const size_t J = (Trans == CblasNoTrans) ? A->size1 : A->size2;
   const size_t K = (Trans == CblasNoTrans) ? A->size2 : A->size1;
 
   if (M != N)
     {
       GSL_ERROR ("matrix C must be square", GSL_ENOTSQR);
     }
-  else if (N != K)
+  else if (N != J)
     {
       GSL_ERROR ("invalid length", GSL_EBADLEN);
     }
@@ -1676,13 +1678,14 @@ gsl_blas_csyrk (CBLAS_UPLO_t Uplo, CBLAS_TRANSPOSE_t Trans,
 {
   const size_t M = C->size1;
   const size_t N = C->size2;
+  const size_t J = (Trans == CblasNoTrans) ? A->size1 : A->size2;
   const size_t K = (Trans == CblasNoTrans) ? A->size2 : A->size1;
 
   if (M != N)
     {
       GSL_ERROR ("matrix C must be square", GSL_ENOTSQR);
     }
-  else if (N != K)
+  else if (N != J)
     {
       GSL_ERROR ("invalid length", GSL_EBADLEN);
     }
@@ -1701,13 +1704,14 @@ gsl_blas_zsyrk (CBLAS_UPLO_t Uplo, CBLAS_TRANSPOSE_t Trans,
 {
   const size_t M = C->size1;
   const size_t N = C->size2;
+  const size_t J = (Trans == CblasNoTrans) ? A->size1 : A->size2;
   const size_t K = (Trans == CblasNoTrans) ? A->size2 : A->size1;
 
   if (M != N)
     {
       GSL_ERROR ("matrix C must be square", GSL_ENOTSQR);
     }
-  else if (N != K)
+  else if (N != J)
     {
       GSL_ERROR ("invalid length", GSL_EBADLEN);
     }
@@ -1727,13 +1731,14 @@ gsl_blas_cherk (CBLAS_UPLO_t Uplo, CBLAS_TRANSPOSE_t Trans, float alpha,
 {
   const size_t M = C->size1;
   const size_t N = C->size2;
+  const size_t J = (Trans == CblasNoTrans) ? A->size1 : A->size2;
   const size_t K = (Trans == CblasNoTrans) ? A->size2 : A->size1;
 
   if (M != N)
     {
       GSL_ERROR ("matrix C must be square", GSL_ENOTSQR);
     }
-  else if (N != K)
+  else if (N != J)
     {
       GSL_ERROR ("invalid length", GSL_EBADLEN);
     }
@@ -1751,13 +1756,14 @@ gsl_blas_zherk (CBLAS_UPLO_t Uplo, CBLAS_TRANSPOSE_t Trans, double alpha,
 {
   const size_t M = C->size1;
   const size_t N = C->size2;
+  const size_t J = (Trans == CblasNoTrans) ? A->size1 : A->size2;
   const size_t K = (Trans == CblasNoTrans) ? A->size2 : A->size1;
 
   if (M != N)
     {
       GSL_ERROR ("matrix C must be square", GSL_ENOTSQR);
     }
-  else if (N != K)
+  else if (N != J)
     {
       GSL_ERROR ("invalid length", GSL_EBADLEN);
     }
