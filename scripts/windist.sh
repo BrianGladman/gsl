@@ -23,5 +23,6 @@ tar xvfz $tarfile
 )
 
 zip -l -r $ver.zip $ver
+rm -r $ver
 
 

@@ -1,3 +1,23 @@
+* What is new in gsl-0.9.2:
+
+* Vector and matrix views are now compliant with the ANSI standard.
+
+* Added Lambert functions gsl_sf_lambert_W0, gsl_sf_lambert_Wm1.
+
+* The reference manual now uses the GNU Free Documentation License.
+
+* Fixed a couple of bugs in the SVD routines.
+
+* Macros for Infinity and Nan now work correctly with Microsoft Visual
+C++, and a bug in the config.h file for the finite() function has been
+fixed.
+
+* Redundant entries in the test suite for the complex math functions
+have been removed, making the distribution size smaller.
+
+* Installed programs gsl-randist and gsl-histogram now use shared
+libraries.
+
 * What was new in gsl-0.9.1:
 
 ** The single precision ffts now uses float throughout, rather than
