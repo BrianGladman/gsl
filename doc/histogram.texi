@@ -1195,7 +1195,7 @@ main (void)
   const gsl_rng_type * T;
   gsl_rng * r;
 
-  gsl_histogram2d * h = gsl_histogram2d_alloc (10, 10)
+  gsl_histogram2d * h = gsl_histogram2d_alloc (10, 10);
 
   gsl_histogram2d_set_ranges_uniform (h, 
                                       0.0, 1.0,
@@ -1213,7 +1213,7 @@ main (void)
   @{
     int i;
     gsl_histogram2d_pdf * p 
-      = gsl_histogram2d_pdf_alloc (h->n);
+      = gsl_histogram2d_pdf_alloc (h->nx, h->ny);
     
     gsl_histogram2d_pdf_init (p, h);
 
