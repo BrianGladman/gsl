@@ -149,21 +149,20 @@ algorithm used. They can determined using the auxilliary functions
 @end deftypefn
 
 @deftypefn Random double gsl_rng_uniform (const gsl_rng * @var{r})
-This function returns a double precision floating point number
-uniformly distributed in the range [0,1), including 0.0 but excluding
-1.0. The value is typically obtained by dividing the result of
-@code{gsl_rng_get(r)} by @code{gsl_rng_max(r) + 1} in double
+This function returns a double precision floating point number uniformly
+distributed in the range [0,1), including 0.0 but excluding 1.0. The
+value is typically obtained by dividing the result of
+@code{gsl_rng_get(r)} by @code{gsl_rng_max(r) + 1.0} in double
 precision. Some generators compute this ratio internally so that they
-provide floating point numbers with more than the 32 bits of
-randomness than can be represented in a single @code{unsigned long
-int}.
+provide floating point numbers with more than the 32 bits of randomness
+than can be represented in a single @code{unsigned long int}.
 @end deftypefn
 
 @deftypefn Random double gsl_rng_uniform_pos (const gsl_rng * @var{r})
-This function returns a positive double precision floating point
-number uniformly distributed in the range (0,1), excluding both 0.0
-and 1.0. The number is obtained by sampling the generator using the
-algorithm of @code{gsl_rng_uniform} until it returns a non-zero value.
+This function returns a positive double precision floating point number
+uniformly distributed in the range (0,1), excluding both 0.0 and 1.0.
+The number is obtained by sampling the generator using the same
+algorithm as @code{gsl_rng_uniform} until a non-zero value is obtained.
 You can use this function if you need to avoid a singularity at 0.0.
 @end deftypefn
 
@@ -171,7 +170,7 @@ You can use this function if you need to avoid a singularity at 0.0.
 This function returns a random integer from 0 to @var{n-1} inclusive.
 All integers in the range [0,@var{n-1}] are equally likely, regardless
 of the generator used. An offset correction is applied so that this
-function can return zero with the correct probability even if the
+function returns zero with the correct probability even if the
 underlying generator has a minimum value of 1 and cannot return zero.
 
 If @var{n} is larger than the range of the generator then the function
@@ -182,7 +181,7 @@ returns zero.
 @node Auxiliary random number generator functions
 @section Auxiliary random number generator functions
 The following functions provide information about an existing
-generator. You can use them in preference to hard-coding the generator
+generator. You should use them in preference to hard-coding the generator
 parameters into your own code.
 
 @deftypefn Random {const char *} gsl_rng_name (const gsl_rng * @var{r})
@@ -210,14 +209,16 @@ value is 1.
 @node Random number environment variables
 @section Random number environment variables
 
-The library allows you to set a default generator and default seed using
-the environment variables @code{GSL_RNG_TYPE} and @code{GSL_RNG_SEED}
-and the function @code{gsl_rng_env_setup}.
+The library allows you to choose a default generator and seed from the
+environment variables @code{GSL_RNG_TYPE} and @code{GSL_RNG_SEED} and
+the function @code{gsl_rng_env_setup}. This makes it easy try out
+different generators and seeds without having to recompile your program.
 
 @deftypefun {const gsl_rng_type *} gsl_rng_env_setup (void)
 This function reads the environment variables @code{GSL_RNG_TYPE} and
-@code{GSL_RNG_SEED} and sets the corresponding library variables
-@code{gsl_rng_default} and @code{gsl_rng_default_seed},
+@code{GSL_RNG_SEED} and uses their values to set the corresponding
+library variables @code{gsl_rng_default} and
+@code{gsl_rng_default_seed} which are defined as follows,
 
 @example
 extern const gsl_rng_type *gsl_rng_default
@@ -225,24 +226,24 @@ extern unsigned long int gsl_rng_default_seed
 @end example
 
 The environment variable @code{GSL_RNG_TYPE} should be the name of a
-generator, for example @code{taus} or @code{mt19937}. The environment
+generator, such as @code{taus} or @code{mt19937}. The environment
 variable @code{GSL_RNG_SEED} should contain the desired seed value. It
-is converted to an @code{unsigned long int} using the C library
-function @code{strtoul}.
+is converted to an @code{unsigned long int} using the C library function
+@code{strtoul}.
 
 The initial default generator is @code{gsl_rng_cmrg} and the initial
 value of @code{gsl_rng_default seed} is zero.
 @end deftypefun
 @noindent
-Here is a short program which shows how to create a single global
-generator using defaults from the environment variables
-@code{GSL_RNG_TYPE} and @code{GSL_RNG_SEED},
+Here is a short program which shows how to create a global
+generator using the environment variables @code{GSL_RNG_TYPE} and
+@code{GSL_RNG_SEED},
 
 @example
 #include <stdio.h>
 #include <gsl_rng.h>
 
-gsl_rng * r ;
+gsl_rng * r ;  /* global generator */
 
 int 
 main ()
@@ -282,7 +283,7 @@ first value = 2720986350
 @section Saving and restoring random number generator state
 
 The above methods ignore the random number `state' which changes from
-call to call.  It is often useful to be able to "save" and "restore" the
+call to call.  It is often useful to be able to save and restore the
 state.  To permit these practices, a few somewhat more advanced
 functions are supplied.  These include:
 
@@ -311,8 +312,7 @@ This is deliberate so that you can switch algorithms without having to
 change any of your application source code. The library provides a
 large number of generators of different types, including simulation
 quality generators, generators provided for compatibility with other
-libraries and historically famous (or infamous) generators known to
-produce poor quality random numbers.
+libraries and historical generators from the past.
 
 @subsection Simulation quality generators
 
@@ -324,9 +324,9 @@ have extremely long periods and pass most statistical tests.
 The MT19937 generator of Makoto Matsumoto and Takuji Nishimura is based
 on a variant of the twisted generalized feedback shift-register
 generator, with a Mersenne prime period of @math{2^@{19937@} - 1} (about
-@math{10^@{6000@}}).  It is equi-distributed in 623 dimensions and has
-passed the @sc{diehard} statistical tests. It uses 631 words of storage
-state per generator and is comparable in speed to the other generators.
+@math{10^@{6000@}}). It is equi-distributed in 623 dimensions and has
+passed the @sc{diehard} statistical tests. It uses 624 words of state
+per generator and is comparable in speed to the other generators.
 
 For more information see,
 @itemize @asis
@@ -350,7 +350,7 @@ provide truly decorrelated numbers at a known level. The generator
 @code{gsl_rng_ranlux} is the default level of decorrelation recommended
 by Luscher and @code{gsl_rng_ranlux389} provides the highest level of
 randomness, with all 24 bits decorrelated. Both types of generator use
-35 words of storage per generator.
+24 words of state per generator.
 
 For more information see,
 @itemize @asis
@@ -399,7 +399,7 @@ and moduli @math{m_1 = 2^@{31@} - 1 = 2147483647} and @math{m_2 =
 2145483479}.
 
 The period of this generator is about @math{2^@{205@}}. It uses 
-13 words of storage per generator. For more information see,
+6 words of state per generator. For more information see,
 
 @itemize @asis
 @item
@@ -420,8 +420,8 @@ and Coutre.  Its sequence is,
 with @math{a_1 = 107374182}, @math{a_2 = a_3 = a_4 = 0}, @math{a_5 = 104480}
 and @math{m = 2^@{31@}-1}.
 
-The period of this generator is about @math{10^@{46@}}. It uses 13 words
-of storage per generator. More information can be found in the following
+The period of this generator is about @math{10^@{46@}}. It uses 5 words
+of state per generator. More information can be found in the following
 paper,
 @itemize @asis
 @item
@@ -457,8 +457,8 @@ denotes ``exclusive-or''. Note that the algorithm relies on the properties
 of 32-bit unsigned integers and has been implemented using a bitmask
 of @code{0xFFFFFFFF} to make it work on 64 bit machines.
 
-The period of this generator is about @math{2^@{88@}}. It uses 10 words
-of storage per generator. For more information see,
+The period of this generator is about @math{2^@{88@}}. It uses 3 words
+of state per generator. For more information see,
 
 @itemize @asis
 @item
@@ -496,7 +496,7 @@ x_n = x_@{n-103@} \oplus x_@{n-250@}
 @noindent
 where @math{\oplus} denote ``exclusive-or'', defined on 32-bit
 words. The period of this generator is about @math{2^@{250@}} and it
-uses 258 words of storage per generator.
+uses 250 words of state per generator.
 
 For more information see,
 @itemize @asis
@@ -509,35 +509,26 @@ number generator", @cite{Journal of Computational Physics}, 40, 517-526
 
 
 @subsection Generators provided for compatibility
-@cindex Random number generators, Numerical recipes
-@cindex Numerical recipes, random number generators
-The following generators are provided for compatibility with
-@cite{Numerical Recipes}. Note that the original Numerical Recipes
-functions used single precision while we use double precision, which
-might lead to minor discrepancies at the level of rounding error. If
-necessary you can force the returned values to single precision by
-storing them in a @code{volatile float}, which prevents the value
-being held in a register with double or extended precision. Apart from
-this difference the underlying algorithms for the integer part of the
-generators are the same.
+The generators in this section are provided for compatibility with
+existing libraries. If you are converting an existing program to use GSL
+then you can select these generators to check your new implementation
+against the original one, using the same random number generator. After
+verifying that your new program rerproduces the original results you can
+then switch to a higher-quality generator.
 
-@deffn {Generator} gsl_rng_ran0 
-Numerical recipes @code{ran0} implements Park and Miller's @sc{minstd}
-algorithm.
-@end deffn
+The standard Unix random number generators @code{rand}, @code{random}
+and @code{rand48} are provided as part of GSL. Although these generators
+are widely available sometime they aren't all available on the same
+platform in the system libraries. This makes it more difficult to write
+portable code and so we have included them in GSL for convenience. Note
+that these generators don't produce high-quality randomness and aren't
+suitable for work requiring accurate statistics. However, if you won't
+be measuring statistical quantities and just want to introduce some
+variation into your program then these generators are quite acceptable.
 
-@deffn {Generator} gsl_rng_ran1 
-Numerical recipes @code{ran1}
-@end deffn
-
-@deffn {Generator} gsl_rng_ran2 
-Numerical recipes @code{ran2}
-@end deffn
-
-@deffn {Generator} gsl_rng_ran3 
-Numerical recipes @code{ran3}
-@end deffn
-
+@cindex BSD random number generator, rand
+@cindex Unix random number generators, rand
+@cindex Unix random number generators, rand48
 
 @deffn {Generator} gsl_rng_rand
 @cindex BSD random number generator
@@ -553,6 +544,10 @@ generator is @math{2^@{31@}}, and it uses 1 word of storage per
 generator.
 @end deffn
 
+@deffn {Generator} gsl_rng_random
+To be written
+@end deffn
+
 @deffn {Generator} gsl_rng_rand48
 @cindex rand48 random number generator
 This is the 48-bit Unix @code{rand48} generator. Its sequence is
@@ -561,17 +556,53 @@ This is the 48-bit Unix @code{rand48} generator. Its sequence is
 x_@{n+1@} = (a x_n + c) @mod m
 @end equation
 @noindent
-with @math{a =25214903917}, @math{c = 11} and @math{m = 2^@{48@}}. The
-seed specifies the upper 32 bits of the initial value, @math{x_1},
-with the lower 16 bits set to @code{0x330E}. The function
-@code{gsl_rng_get} returns the upper 32 bits from each term of the
-sequence. This does not have a direct parallel in the original
-@code{rand48} functions, but forcing the result to type @code{long
-int} reproduce the sequence of @code{mrand48}. The function
-@code{gsl_rng_uniform} uses the full 48 bits of internal state to
-return the double precision number @math{x_n/m}, which is equivalent
-to the function @code{drand48}.
+defined on 48-bit unsigned integers with @math{a =25214903917}, @math{c
+= 11} and @math{m = 2^@{48@}}. The seed specifies the upper 32 bits of
+the initial value, @math{x_1}, with the lower 16 bits set to
+@code{0x330E}. The function @code{gsl_rng_get} returns the upper 32 bits
+from each term of the sequence. This does not have a direct parallel in
+the original @code{rand48} functions, but forcing the result to type
+@code{long int} reproduce the sequence of @code{mrand48}. The function
+@code{gsl_rng_uniform} uses the full 48 bits of internal state to return
+the double precision number @math{x_n/m}, which is equivalent to the
+function @code{drand48}.
 @end deffn
+
+@cindex Random number generators, Numerical recipes
+@cindex Numerical recipes, random number generators
+The following generators are provided for compatibility with
+@cite{Numerical Recipes}. Note that the original Numerical Recipes
+functions used single precision while we use double precision. This will
+lead to minor discrepancies, but only at the level of single-precision
+rounding error. If necessary you can force the returned values to single
+precision by storing them in a @code{volatile float}, which prevents the
+value being held in a register with double or extended precision. Apart
+from this difference the underlying algorithms for the integer part of
+the generators are the same.
+
+@deffn {Generator} gsl_rng_ran0 
+Numerical recipes @code{ran0} implements Park and Miller's @sc{minstd}
+algorithm.
+@end deffn
+
+@deffn {Generator} gsl_rng_ran1 
+Numerical recipes @code{ran1} implements Park and Miller's @sc{minstd}
+algorithm with a 32-element Bayes-Durham shuffle box.
+@end deffn
+
+@deffn {Generator} gsl_rng_ran2 
+Numerical recipes @code{ran2} implements  a L'Ecuyer combined recursive
+generator with a 32-element Bayes-Durham shuffle-box.
+@end deffn
+
+@deffn {Generator} gsl_rng_ran3 
+Numerical recipes @code{ran3} implements Knuths's portable
+subtractive generator.
+@end deffn
+
+The following generator is provided for compatibility with the CRAY
+MATHLIB routine RANF. It produces double precision floating point
+numbers which should be identical to those from the original RANF.
 
 @deffn {Generator} gsl_rng_ranf
 @cindex RANF random number generator
@@ -626,10 +657,19 @@ specifies the initial value, @math{x_1}. The period of this generator is
 @math{2^@{32@}} and it uses 1 word of storage per generator.
 @end deffn
 
+@deffn {Generator} gsl_rng_tds
+@sc{inmos} Transputer Development system.
+This is the INMOS Transputer Development System generator. The sequence is,
+
+   x_{n+1} = (a x_n) mod m
+
+with @math{a = 1664525} and @math{m = 2^@{32@}}. The seed specifies the initial
+value, @math{x_1}.
+@end deffn
 
 @deffn {Generator} gsl_rng_randu
 @cindex RANDU random number generator
-This is the IBM/360 @code{RANDU} generator. Its sequence is
+This is the IBM @code{RANDU} generator. Its sequence is
 @c
 @equation
 x_@{n+1@} = (a x_n) @mod m
@@ -637,14 +677,8 @@ x_@{n+1@} = (a x_n) @mod m
 @noindent
 with @math{a = 65539} and @math{m = 2^@{31@}}. The seed specifies the
 initial value, @math{x_1}. The period of this generator was only 2^29.
-@end deffn
-
-
-@deffn {Generator} gsl_rng_ranmar
-@cindex RANMAR random number generator
-This is the RANMAR lagged-fibonacci generator of Marsaglia, Zaman and
-Tsang.  It is a 24-bit generator, originally designed for
-single-precision IEEE floating point numbers.
+It has become a textbook example of a poor generator that was once in
+widespread use. The sequence obeys
 @end deffn
 
 @deffn {Generator} gsl_rng_minstd
@@ -652,12 +686,23 @@ single-precision IEEE floating point numbers.
 This is Park and Miller's "minimal standard" generator
 @end deffn
 
+@deffn {Generator} gsl_rng_ranmar
+@cindex RANMAR random number generator
+This is the RANMAR lagged-fibonacci generator of Marsaglia, Zaman and
+Tsang.  It is a 24-bit generator, originally designed for
+single-precision IEEE floating point numbers. CERNLIB
+@end deffn
 
-uni       Fibonacci subtraction
-uni32     32 bit version of uni
-rand      Linear congruential 
-zuf
+@deffn {Generator} gsl_rng_uni
+@deffnx {Generator} gsl_rng_uni
+@end deffn
 
+@deffn {Generator} gsl_rng_cmlib
+@end deffn
+
+
+@deffn {Generator} gsl_rng_zuf
+@end deffn
 
 @section Performance
 

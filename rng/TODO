@@ -27,4 +27,13 @@ DONE
 are listing as "Simulation Quality" -- some of those are a bit old and
 might fail one or two diehard tests.
 
-7. Add drand48, NAG, CRAY, CDC 48-bit generators
+7. Add drand48,   DONE
+       NAG,       missing 
+       CRAY,      DONE 
+       CDC 48-bit missing 
+
+8. Get the macros from the faster MT19937 generator and use them.
+
+9. Send to M.Makumoto for review.
+
+10. Add random/srandom

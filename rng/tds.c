@@ -9,7 +9,7 @@
    with a = 1664525 and m = 2^32. The seed specifies the initial
    value, x_1.
 
-   The theoretical value of x_{10001} is FIXME.
+   The theoretical value of x_{10001} is 1244127297.
 
    The period of this generator is 2^32. */
 
