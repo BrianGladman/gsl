@@ -802,3 +802,23 @@ double gsl_sf_lnfact(const int n)
   }
   return y;
 }
+
+double gsl_sf_lnchoose(unsigned int n, unsigned int m)
+{
+  double y;
+  int status = gsl_sf_lnchoose_impl(n, m, &y);
+  if(status != GSL_SUCCESS) {
+    GSL_WARNING("gsl_sf_lnchoose", status);
+  }
+  return y;
+}
+
+double gsl_sf_choose(unsigned int n, unsigned int m)
+{
+  double y;
+  int status = gsl_sf_choose_impl(n, m, &y);
+  if(status != GSL_SUCCESS) {
+    GSL_WARNING("gsl_sf_choose", status);
+  }
+  return y;
+}
