@@ -8,6 +8,51 @@
 #include "gsl_dht.h"
 
 
+/* Test exact small transform.
+ */
+int
+test_dht_exact(void)
+{
+  int stat = 0;
+  double f_in[3] = { 1.0, 2.0, 3.0 };
+  double f_out[3];
+  gsl_dht_transform * t = gsl_dht_transform_new(3, 1.0, 1.0);
+  gsl_dht_transform_apply(t, f_in, f_out);
+
+  /* Check values. */
+  if(fabs( f_out[0]-( 0.375254649407520))/0.375254649407520 > 1.0e-14) stat++;
+  if(fabs( f_out[1]-(-0.133507872695560))/0.133507872695560 > 1.0e-14) stat++;
+  if(fabs( f_out[2]-( 0.044679925143840))/0.044679925143840 > 1.0e-14) stat++;
+
+
+  /* Check inverse.
+   * We have to adjust the normalization
+   * so we can use the same precalculated transform.
+   */
+  gsl_dht_transform_apply(t, f_out, f_in);
+  f_in[0] *= 13.323691936314223*13.323691936314223;  /* jzero[1,4]^2 */
+  f_in[1] *= 13.323691936314223*13.323691936314223;
+  f_in[2] *= 13.323691936314223*13.323691936314223;
+
+  /* The loss of precision on the inverse
+   * is a little surprising. However, this
+   * thing is quite tricky since the band-limited
+   * function represented by the samples {1,2,3}
+   * need not be very nice. Like in any spectral
+   * application, you really have to have some
+   * a-priori knowledge of the underlying functions.
+   */
+  if(fabs( f_in[0]-1.0)/1.0 > 2.0e-05) stat++;
+  if(fabs( f_in[1]-2.0)/2.0 > 2.0e-05) stat++;
+  if(fabs( f_in[2]-3.0)/3.0 > 2.0e-05) stat++;
+
+  gsl_dht_transform_free(t);
+
+  return stat;
+}
+
+
+
 /* Test the transform
  * Integrate[x J_0(a x) / (x^2 + 1), {x,0,Inf}] = K_0(a)
  */
@@ -117,6 +162,7 @@ test_dht_poly1(void)
 
 int main()
 {
+  gsl_test( test_dht_exact(),   "Small Exact DHT");
   gsl_test( test_dht_simple(),  "Simple  DHT");
   gsl_test( test_dht_exp1(),    "Exp  J1 DHT");
   gsl_test( test_dht_poly1(),   "Poly J1 DHT");
