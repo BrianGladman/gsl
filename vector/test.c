@@ -38,14 +38,10 @@ int status = 0;
 #define DESC ""
 #endif
 
-#define N 1027
 
 #define BASE_GSL_COMPLEX_LONG
 #include "templates_on.h"
 #include "test_complex_source.c"
-#if HAVE_PRINTF_LONGDOUBLE
-#include "test_complex_io.c"
-#endif
 #include "templates_off.h"
 #undef  BASE_GSL_COMPLEX_LONG
 
@@ -53,93 +49,78 @@ int status = 0;
 #define BASE_GSL_COMPLEX
 #include "templates_on.h"
 #include "test_complex_source.c"
-#include "test_complex_io.c"
 #include "templates_off.h"
 #undef  BASE_GSL_COMPLEX
 
 #define BASE_GSL_COMPLEX_FLOAT
 #include "templates_on.h"
 #include "test_complex_source.c"
-#include "test_complex_io.c"
 #include "templates_off.h"
 #undef  BASE_GSL_COMPLEX_FLOAT
 
 #define BASE_LONG_DOUBLE
 #include "templates_on.h"
 #include "test_source.c"
-#if HAVE_PRINTF_LONGDOUBLE
-#include "test_io.c"
-#endif
 #include "templates_off.h"
 #undef  BASE_LONG_DOUBLE
 
 #define BASE_DOUBLE
 #include "templates_on.h"
 #include "test_source.c"
-#include "test_io.c"
 #include "templates_off.h"
 #undef  BASE_DOUBLE
 
 #define BASE_FLOAT
 #include "templates_on.h"
 #include "test_source.c"
-#include "test_io.c"
 #include "templates_off.h"
 #undef  BASE_FLOAT
 
 #define BASE_ULONG
 #include "templates_on.h"
 #include "test_source.c"
-#include "test_io.c"
 #include "templates_off.h"
 #undef  BASE_ULONG
 
 #define BASE_LONG
 #include "templates_on.h"
 #include "test_source.c"
-#include "test_io.c"
 #include "templates_off.h"
 #undef  BASE_LONG
 
 #define BASE_UINT
 #include "templates_on.h"
 #include "test_source.c"
-#include "test_io.c"
 #include "templates_off.h"
 #undef  BASE_UINT
 
 #define BASE_INT
 #include "templates_on.h"
 #include "test_source.c"
-#include "test_io.c"
 #include "templates_off.h"
 #undef  BASE_INT
 
 #define BASE_USHORT
 #include "templates_on.h"
 #include "test_source.c"
-#include "test_io.c"
 #include "templates_off.h"
 #undef  BASE_USHORT
 
 #define BASE_SHORT
 #include "templates_on.h"
 #include "test_source.c"
-#include "test_io.c"
 #include "templates_off.h"
 #undef  BASE_SHORT
 
 #define BASE_UCHAR
 #include "templates_on.h"
 #include "test_source.c"
-#include "test_io.c"
 #include "templates_off.h"
 #undef  BASE_UCHAR
 
 #define BASE_CHAR
 #include "templates_on.h"
 #include "test_source.c"
-#include "test_io.c"
 #include "templates_off.h"
 #undef  BASE_CHAR
 
@@ -149,73 +130,104 @@ void my_error_handler (const char *reason, const char *file,
 int
 main (void)
 {
+  size_t stride, ostride, N;
+
   gsl_ieee_env_setup ();
 
-  test_func ();
-  test_float_func ();
-  test_long_double_func ();
-  test_ulong_func ();
-  test_long_func ();
-  test_uint_func ();
-  test_int_func ();
-  test_ushort_func ();
-  test_short_func ();
-  test_uchar_func ();
-  test_char_func ();
-  test_complex_func ();
-  test_complex_float_func ();
-  test_complex_long_double_func ();
+  for (N = 10; N < 1024; N = 2*N + 1) 
+    {
+      for (stride = 1; stride < 5 ; stride++)
+        {
+          test_func (stride, N);
+          test_float_func (stride, N);
+          test_long_double_func (stride, N);
+          test_ulong_func (stride, N);
+          test_long_func (stride, N);
+          test_uint_func (stride, N);
+          test_int_func (stride, N);
+          test_ushort_func (stride, N);
+          test_short_func (stride, N);
+          test_uchar_func (stride, N);
+          test_char_func (stride, N);
 
-  test_text ();
-  test_float_text ();
+          test_complex_func (stride, N);
+          test_complex_float_func (stride, N);
+          test_complex_long_double_func (stride, N);
+
+          for (ostride = 1; ostride < 5 ; ostride++)
+            {
+              test_ops (stride, ostride, N);
+              test_float_ops (stride, ostride, N);
+              test_long_double_ops (stride, ostride, N);
+              test_ulong_ops (stride, ostride, N);
+              test_long_ops (stride, ostride, N);
+              test_uint_ops (stride, ostride, N);
+              test_int_ops (stride, ostride, N);
+              test_ushort_ops (stride, ostride, N);
+              test_short_ops (stride, ostride, N);
+              test_uchar_ops (stride, ostride, N);
+              test_char_ops (stride, ostride, N);
+            }              
+
+          test_text (stride, N);
+          test_float_text (stride, N);
 #if HAVE_PRINTF_LONGDOUBLE
-  test_long_double_text ();
+          test_long_double_text (stride, N);
 #endif
-  test_ulong_text ();
-  test_long_text ();
-  test_uint_text ();
-  test_int_text ();
-  test_ushort_text ();
-  test_short_text ();
-  test_uchar_text ();
-  test_char_text ();
-  test_complex_text ();
-  test_complex_float_text ();
+          test_ulong_text (stride, N);
+          test_long_text (stride, N);
+          test_uint_text (stride, N);
+          test_int_text (stride, N);
+          test_ushort_text (stride, N);
+          test_short_text (stride, N);
+          test_uchar_text (stride, N);
+          test_char_text (stride, N);
+
+          test_complex_text (stride, N);
+          test_complex_float_text (stride, N);
 #if HAVE_PRINTF_LONGDOUBLE
-  test_complex_long_double_text ();
+          test_complex_long_double_text (stride, N);
 #endif
 
-  test_binary ();
-  test_float_binary ();
-  test_long_double_binary ();
-  test_ulong_binary ();
-  test_long_binary ();
-  test_uint_binary ();
-  test_int_binary ();
-  test_ushort_binary ();
-  test_short_binary ();
-  test_uchar_binary ();
-  test_char_binary ();
-  test_complex_binary ();
-  test_complex_float_binary ();
-  test_complex_long_double_binary ();
+          test_file (stride, N);
+          test_float_file (stride, N);
+          test_long_double_file (stride, N);
+          test_ulong_file (stride, N);
+          test_long_file (stride, N);
+          test_uint_file (stride, N);
+          test_int_file (stride, N);
+          test_ushort_file (stride, N);
+          test_short_file (stride, N);
+          test_uchar_file (stride, N);
+          test_char_file (stride, N);
+          test_complex_file (stride, N);
+          test_complex_float_file (stride, N);
+          test_complex_long_double_file (stride, N);
+        }
+    }
 
   gsl_set_error_handler (&my_error_handler);
 
-  test_trap ();
-  test_float_trap ();
-  test_long_double_trap ();
-  test_ulong_trap ();
-  test_long_trap ();
-  test_uint_trap ();
-  test_int_trap ();
-  test_ushort_trap ();
-  test_short_trap ();
-  test_uchar_trap ();
-  test_char_trap ();
-  test_complex_trap ();
-  test_complex_float_trap ();
-  test_complex_long_double_trap ();
+  for (N = 1; N < 1024; N *=2) 
+    {
+      for (stride = 1; stride < 5 ; stride++)
+        {
+          test_trap (stride, N);
+          test_float_trap (stride, N);
+          test_long_double_trap (stride, N);
+          test_ulong_trap (stride, N);
+          test_long_trap (stride, N);
+          test_uint_trap (stride, N);
+          test_int_trap (stride, N);
+          test_ushort_trap (stride, N);
+          test_short_trap (stride, N);
+          test_uchar_trap (stride, N);
+          test_char_trap (stride, N);
+          test_complex_trap (stride, N);
+          test_complex_float_trap (stride, N);
+          test_complex_long_double_trap (stride, N);
+        }
+    }
 
   exit (gsl_test_summary ());
 }
