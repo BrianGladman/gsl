@@ -24,9 +24,6 @@ library compile without -g instead of using strip.
 which is fixed in the 2.5 development version of autoconf.  In the
 meantime compile without -g instead if you need to reduce the file size.
 
-* gcc-2.96 has an optimization bug which causes the tests in eigen/ to
-fail.
-
 
 AIX
 ---
@@ -39,12 +36,16 @@ shared libraries,
     ./configure --disable-shared
     make
 
-DEC Alpha
----------
+Compaq/DEC Alpha
+----------------
 
-With gcc-2.95 the tests fail in the eigen/ directory.  This is due to
-an optimization bug which causes errors in the manipulation of complex
-numbers.   This may be fixed in more recent versions of gcc.
+With gcc-2.95/2.96 the tests fail in the eigen/ directory.  This is
+due to a compiler optimization bug which causes errors in the
+manipulation of complex numbers.  Do not use the library if you
+encounter this problem.
+
+This may be fixed in more recent versions of gcc.  Compiling without
+optimisation will work around the bug.
 
 DOS
 ---
