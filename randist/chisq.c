@@ -23,9 +23,9 @@
 #include <gsl/gsl_rng.h>
 #include <gsl/gsl_randist.h>
 
-/* The chisq distributions has the form
+/* The chisq distribution has the form
 
-   p(x) dx = (1/Gamma(nu/2)) (x/2)^(nu/2 - 1) exp(-x/2) dx
+   p(x) dx = (1/(2*Gamma(nu/2))) (x/2)^(nu/2 - 1) exp(-x/2) dx
 
    for x = 0 ... +infty */
 
