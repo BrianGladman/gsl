@@ -17,7 +17,7 @@
 @ifinfo
 This file documents the @value{GSL}.
 
-Copyright (C) 1996, 1997, 1998, 1999, 2000 The GSL Project.
+Copyright (C) 1996, 1997, 1998, 1999, 2000, 2001 The GSL Project.
 
 Permission is granted to make and distribute verbatim copies of
 this manual provided the copyright notice and this permission notice
@@ -43,12 +43,12 @@ by the Foundation.
 
 @titlepage
 @title GNU Scientific Library -- Design document
-@subtitle Edition @value{EDITION}, for gsl Version @value{VERSION}
-@subtitle @value{UPDATED}
+@comment @subtitle Edition @value{EDITION}, for gsl Version @value{VERSION}
+@comment @subtitle @value{UPDATED}
 @author Mark Galassi @footnote{Cygnus Solutions and Los Alamos National Laboratory}
 @author @email{rosalia@@lanl.gov}
 @author
-@author James Theiler @footnote{Astrophysics and Radiation Measurements group, Los Alamos National Laboratory}
+@author James Theiler @footnote{Astrophysics and Radiation Measurements Group, Los Alamos National Laboratory}
 @author @email{jt@@nis.lanl.gov}
 @author
 @author Brian Gough @footnote{Network Theory Limited}
@@ -74,7 +74,7 @@ by the Foundation.
 @end titlepage
 
 @node Top, Motivation, (dir), (dir)
-@top GSL
+@top About GSL
 
 @ifinfo
 This file documents the the @value{GSL}, a collection
@@ -89,8 +89,8 @@ modify, and improve the interfaces and/or implementations of whichever
 routines might be needed for a particular purpose.
 
 GSL is intended to provide a free equivalent to existing proprietary
-numerical libraries written in C or Fortran, such as NAG, IMSL and IBM's
-ESSL.
+numerical libraries written in C or Fortran, such as NAG, IMSL's CNL and
+IBM's ESSL.
 
 The target platform is a low-end desktop workstation. The goal is to
 provide something which is generally useful, and the library is aimed at
@@ -102,7 +102,7 @@ general users rather than specialists.
 * Copying::                     
 @end menu
 
-@node Motivation
+@node Motivation, Design, Top, Top
 @chapter Motivation
 @cindex numerical analysis
 @cindex free software
@@ -162,7 +162,8 @@ extensive use of variable length argument lists to emulate "default
 arguments".
 
 Forth Scientific Library [see the URL
-http://www.taygeta.com/fsl/sciforth.html].
+http://www.taygeta.com/fsl/sciforth.html].  Mainly of interest to Forth
+users.
 
 @emph{Numerical Algorithms with C} G. Engeln-Mullges, F. Uhlig. A nice
 numerical library written in ANSI C with an accompanying
@@ -178,8 +179,10 @@ function approximations and methods corresponding to those in the
 "Handbook of Mathematical Functions" by Abramowitz and Stegun.  Source
 code is available but the library is not free software.
 
-@emph{CCMATH} by Daniel A. Atkinson. A C numerical library covering 
-similar areas to GSL and also under the GPL. The code is quite terse.
+@emph{CCMATH} by Daniel A. Atkinson. A C numerical library covering
+similar areas to GSL. The code is quite terse.  Earlier versions were
+under the GPL but unfortunately it has changed to the LGPL in recent
+versions.
 
 @emph{CEPHES} A useful collection of high-quality special functions
 written in C. Not GPL'ed.
@@ -208,7 +211,7 @@ contributors will have to contribute copylefted software and they cannot
 mind that evil profit-making companies (such as those which sell
 "environments") might use this software as part of their packages.
 
-@node Design
+@node Design, Copying, Motivation, Top
 @chapter Design
 
 @menu
@@ -216,7 +219,7 @@ mind that evil profit-making companies (such as those which sell
 * Interface to other languages::  
 * What routines are implemented::  
 * What routines are not implemented::  
-* Tensions in the Design of  Numerical Libraries::  
+* Design of  Numerical Libraries::  
 * Code Reuse::                  
 * Standards and conventions::   
 * Background and Preparation::  
@@ -251,14 +254,14 @@ mind that evil profit-making companies (such as those which sell
 * Miscellaneous::               
 @end menu
 
-@node Language for implementation
+@node Language for implementation, Interface to other languages, Design, Design
 @section Language for implementation
 
 @strong{One language only (C)}
 
 Advantages: simpler, compiler available and quite universal.
 
-@node Interface to other languages
+@node Interface to other languages, What routines are implemented, Language for implementation, Design
 @section Interface to other languages
 
 Wrapper packages are supplied as "extra" packages; not as part of the
@@ -266,7 +269,7 @@ Wrapper packages are supplied as "extra" packages; not as part of the
 
 Use standard tools to make wrappers: swig, g-wrap
 
-@node What routines are implemented
+@node What routines are implemented, What routines are not implemented, Interface to other languages, Design
 @section What routines are implemented
 
 Anything which is in any of the existing libraries.  Obviously it makes
@@ -327,7 +330,7 @@ research projects.  We should concentrate on supplying the former.
 
 @end itemize
 
-@node What routines are not implemented
+@node What routines are not implemented, Design of  Numerical Libraries, What routines are implemented, Design
 @section What routines are not implemented
 
 @itemize @bullet
@@ -341,11 +344,17 @@ very specialized applications (since there are so many types of PDEs,
 types of solution, types of grid, etc).  This sort of thing should
 remain separate.  It is better to point people to the good applications
 which exist.
+
+@item anything which is independent and useful separately.
+
+Arguably functions for manipulating date and time, or financial
+functions might be included in a "scientific" library.  However, these
+sorts of modules could equally well be used independently in other
+programs, so it makes sense for them to be separate libraries.
 @end itemize
 
-
-@node Tensions in the Design of  Numerical Libraries
-@section Tensions in the Design of  Numerical Libraries
+@node  Design of  Numerical Libraries, Code Reuse, What routines are not implemented, Design
+@section  Design of  Numerical Libraries
 
 In writing a numerical library there is a unavoidable tension between
 completeness and simplicity.  By completeness I mean the ability to
@@ -368,11 +377,12 @@ mathematics within such a language would just lead to a morass of
 unmaintainable code.  However, it's easy to go down that road if you
 don't think about it ahead of time.
 
-So choose simplicity over completeness.  Keep modules independent where
-possible. If interdependencies between modules are introduced be sure
-about where you are going to draw the line.  
+It is better to choose simplicity over completeness.  In designing new
+parts of the library keep modules independent where possible. If
+interdependencies between modules are introduced be sure about where you
+are going to draw the line.
 
-@node Code Reuse
+@node Code Reuse, Standards and conventions, Design of  Numerical Libraries, Design
 @section Code Reuse
 
 It is useful if people can grab a single source file and include it in
@@ -382,7 +392,7 @@ user might need to define a few macros, such as GSL_ERROR, to compile
 the file but that is ok.  Examples where this can be done: grabbing a
 single random number generator.
 
-@node Standards and conventions
+@node Standards and conventions, Background and Preparation, Code Reuse, Design
 @section Standards and conventions
 
 The people who kick off this project should set the coding standards and
@@ -408,11 +418,12 @@ version then so be it.  It is not worthwhile making the library
 over-complicated.  There are numerical libraries in other languages, and
 if people need the features of those languages it would be sensible for
 them to use the corresponding libraries, rather than coercing a C
-library into doing that job.  It should be borne in mind at all time
-that C is a macro-assembler.  If you are in doubt about something being
-too complicated ask yourself the question "Would I try to write this in
-macro-assembler?" If the answer is obviously "No" then do not try to
-include it in GSL. [BJG]
+library into doing that job.  
+
+It should be borne in mind at all time that C is a macro-assembler.  If
+you are in doubt about something being too complicated ask yourself the
+question "Would I try to write this in macro-assembler?" If the answer
+is obviously "No" then do not try to include it in GSL. [BJG]
 
 It will be useful to read the following paper,
 
@@ -449,7 +460,7 @@ Proceedings of the Summer '91 Usenix Conference, pp.  235-256, 1991.
 @end itemize
 
 
-@node Background and Preparation
+@node Background and Preparation, Documentation, Standards and conventions, Design
 @section Background and Preparation
 
 Before implementing something be sure to research the subject
@@ -458,11 +469,11 @@ important steps are,
 
 @enumerate
 @item
-to determine whether there is already a free library which does the job.
-If so, there is no need to reimplement it.  Carry out a search on
-Netlib, GAMs, na-net, sci.math.num-analysis and the web in general. This
-should also provide a list of existing proprietary libraries which are
-relevant.
+to determine whether there is already a free library (GPL or
+GPL-compatible) which does the job.  If so, there is no need to
+reimplement it.  Carry out a search on Netlib, GAMs, na-net,
+sci.math.num-analysis and the web in general. This should also provide a
+list of existing proprietary libraries which are relevant.
 
 @item 
 make a comparative survey of existing implementations in the
@@ -478,15 +489,17 @@ read up on the subject and determine the state-of-the-art.  Find the
 latest review papers.  A search of the following journals should be
 undertaken.
 
-ACM Transactions on Mathematical Software
-Numerische Mathematik
-Journal of Computation and Applied Mathematics
-Computer Physics Communications
-SIAM Journal of Numerical Analysis
-SIAM Journal of Scientific Computing
+@itemize @asis
+@item ACM Transactions on Mathematical Software
+@item Numerische Mathematik
+@item Journal of Computation and Applied Mathematics
+@item Computer Physics Communications
+@item SIAM Journal of Numerical Analysis
+@item SIAM Journal of Scientific Computing
+@end itemize
 @end enumerate
 
-@node Documentation
+@node Documentation, Namespace, Background and Preparation, Design
 @section Documentation
 Documentation: the project leaders should give examples of how things
 are to be documented.  High quality documentation is absolutely
@@ -495,7 +508,7 @@ reference for the provided functions. The priority is to provide
 reference documentation for each function. It is not necessary to
 provide tutorial documentation.
 
-@node Namespace
+@node Namespace, Header files, Documentation, Design
 @section Namespace
 
 Use @code{gsl_} as a prefix for all exported functions and variables.
@@ -509,7 +522,7 @@ All installed libraries should have a name like libgslhistogram.a
 Any installed executables (utility programs etc) should have the prefix
 @code{gsl-} (with a hyphen, not an underscore).
 
-@node Header files
+@node Header files, Target system, Namespace, Design
 @section Header files
 
 Installed header files should be idempotent, i.e. surround them by the
@@ -522,13 +535,13 @@ preprocessor conditionals like the following,
 #endif /* __GSL_HISTOGRAM_H__ */
 @end example
 
-@node Target system
+@node Target system, Function Names, Header files, Design
 @section Target system
 
 The target system is ANSI C, with a full Standard C Library, and IEEE
 arithmetic.
 
-@node Function Names
+@node Function Names, Object-orientation, Target system, Design
 @section Function Names
 
 Each module has a name, which prefixes any function names in that
@@ -536,7 +549,7 @@ module, e.g. the module gsl_fft has function names like
 gsl_fft_init. The modules correspond to subdirectories of the library
 source tree.
 
-@node Object-orientation
+@node Object-orientation, Comments, Function Names, Design
 @section Object-orientation
 
 The algorithms should be object oriented, but only to the extent that is
@@ -578,7 +591,7 @@ resize_grid (struct grid * g, int k_new)
 @end example
 
 
-@node Comments
+@node Comments, Minimal structs, Object-orientation, Design
 @section Comments
 
 Follow the GNU Coding Standards.  A relevant quote is,
@@ -589,7 +602,7 @@ capitalize it!  Changing the spelling makes it a different identifier.
 If you don't like starting a sentence with a lower case letter, write
 the sentence differently (e.g., "The identifier lower-case is ...").''
 
-@node Minimal structs
+@node Minimal structs, Algorithm decomposition, Comments, Design
 @section Minimal structs
 
 We prefer to make structs which are minimal.  For example, if a certain
@@ -598,7 +611,7 @@ and without derivative information) it is better to make separate types
 of struct to handle those cases.  i.e. run time type identification is
 not desirable.
 
-@node Algorithm decomposition
+@node Algorithm decomposition, Memory allocation and ownership, Minimal structs, Design
 @section Algorithm decomposition
 
 Iterative algorithms should be decomposed into an INITIALIZE, ITERATE,
@@ -616,7 +629,7 @@ realtime process.  This is only possible if the algorithm is broken down
 into step-level components.  Higher level decompositions would not give
 sufficient flexibility.
 
-@node Memory allocation and ownership
+@node Memory allocation and ownership, Memory layout, Algorithm decomposition, Design
 @section Memory allocation and ownership
 
 Functions which allocate memory on the heap should end in _alloc
@@ -632,14 +645,14 @@ memory allocation.  All memory should be allocated and freed through
 separate functions and passed around as a "workspace" argument.  This
 allows memory allocation to be factored out of tight loops.
 
-@node Memory layout
+@node Memory layout, Linear Algebra Levels, Memory allocation and ownership, Design
 @section Memory layout
 
 We use flat blocks of memory to store matrices and vectors, not C-style
 pointer-to-pointer arrays.  The matrices are stored in row-major order
 -- i.e. the column index (second index) moves continuously through memory. 
 
-@node Linear Algebra Levels
+@node Linear Algebra Levels, Exceptions and Error handling, Memory layout, Design
 @section Linear Algebra Levels
 
 Functions using linear algebra are divided into two levels:
@@ -669,7 +682,7 @@ using the C arguments, by typing v->data, v->stride, v->size instead.
 A gsl_vector version of low-level functions would mainly be a
 convenience.
 
-@node Exceptions and Error handling
+@node Exceptions and Error handling, Persistence, Linear Algebra Levels, Design
 @section Exceptions and Error handling
 
 The basic error handling procedure is the return code (see gsl_errno.h
@@ -692,7 +705,7 @@ there is no need to use GSL_ERROR there.
 Be sure to free any memory allocated by your function if you return an
 error (in particular for errors in partially initialized objects).
 
-@node Persistence
+@node Persistence, Using Return Values, Exceptions and Error handling, Design
 @section Persistence
 
 If you make an object foo which uses blocks of memory (e.g. vector,
@@ -730,7 +743,7 @@ ide, const char *format);
 @noindent
 to do the actual reading and writing.
 
-@node Using Return Values
+@node Using Return Values, Variable Names, Persistence, Design
 @section Using Return Values
 
 Always assign a return value to a variable before using it.  This allows
@@ -757,7 +770,7 @@ These can then be inspected more easily in the debugger, and breakpoints
 can be placed more precisely.  The compiler will eliminate the temporary
 variables automatically when the program is compiled with optimization.
 
-@node Variable Names
+@node Variable Names, Datatype widths, Using Return Values, Design
 @section Variable Names
 
 Try to follow existing conventions for variable names,
@@ -789,7 +802,7 @@ general integer number, e.g. number of elements of array, in fft, etc
 random number generator (gsl_rng)
 @end table
 
-@node Datatype widths
+@node Datatype widths, size_t, Variable Names, Design
 @section Datatype widths
 
 Be aware that in ANSI C the type @code{int} is only guaranteed to
@@ -799,7 +812,7 @@ will have 32 bits or more.  Of course, on many platforms the type
 @code{int} does have 32 bits instead of 16 bits but we have to code to
 the ANSI standard rather than a specific platform.
 
-@node size_t
+@node size_t, Arrays vs Pointers, Datatype widths, Design
 @section size_t
 
 All objects (blocks of memory, etc) should be measured in terms of a
@@ -827,7 +840,7 @@ for (i = 0; i < N; i++) @{ j = N - i ; ... @}
 @end example
 
 
-@node Arrays vs Pointers
+@node Arrays vs Pointers, Constness, size_t, Design
 @section Arrays vs Pointers
 
 A function can be declared with either pointer arguments or array
@@ -855,7 +868,7 @@ int bar (double x[], size_t n);
 int baz (const double x[], size_t n);           
 @end example
 
-@node Constness
+@node Constness, Pseudo-templates, Arrays vs Pointers, Design
 @section Constness
 
 Use @code{const} in function prototypes wherever an object pointed to by
@@ -866,7 +879,7 @@ you from accidentally modifying a variable which should be constant
 optimization.  These comments also apply to arguments passed by value
 which should be made @code{const} when that is meaningful.
 
-@node Pseudo-templates
+@node Pseudo-templates, Test suites, Constness, Design
 @section Pseudo-templates
 
 There are some pseudo-template macros available in @file{templates_on.h}
@@ -893,7 +906,7 @@ unavoidable that other data-types will be encountered.
 For floating point work "double" is considered a "natural type".  This
 sort of idea is a part of the C language.
 
-@node Test suites
+@node Test suites, Compilation, Pseudo-templates, Design
 @section Test suites
 
 The implementor of each library should provide a reasonable test suite
@@ -917,7 +930,7 @@ The tests should be deterministic.  Use the @code{gsl_test} functions
 provided to perform separate tests for each feature with a separate
 output PASS/FAIL line, so that any failure can be uniquely identified.
 
-@node Compilation
+@node Compilation, Thread-safety, Test suites, Design
 @section Compilation
 
 Make sure everything compiles cleanly.  Use the strict compilation
@@ -938,20 +951,19 @@ Make sure that the library will also compile with C++ compilers
 (g++).  This should not be too much of a problem if you have been writing
 in ANSI C.
 
-@node Thread-safety
+@node Thread-safety, Legal issues, Compilation, Design
 @section Thread-safety
 
-The library should be usable in thread-safe programs.  All the
-functions should be thread-safe, in the sense that they shouldn't use
-static variables, a.k.a. "common blocks".
+The library should be usable in thread-safe programs.  All the functions
+should be thread-safe, in the sense that they shouldn't use static
+variables.
 
 We don't require everything to be completely thread safe, but anything
-that isn't should be obvious, and not a function.  For example, some
-global variables are used to control the overall behavior of the library
-(range-checking on/off, function to call on fatal error, etc).  Since
-these are accessed directly by the user it is obvious to the
-multi-threaded programmer that they shouldn't be modified by different
-threads.
+that isn't should be obvious.  For example, some global variables are
+used to control the overall behavior of the library (range-checking
+on/off, function to call on fatal error, etc).  Since these are accessed
+directly by the user it is obvious to the multi-threaded programmer that
+they shouldn't be modified by different threads.
 
 There is no need to provide any explicit support for threads
 (e.g. locking mechanisms etc), just to avoid anything which would make
@@ -959,7 +971,7 @@ it impossible for someone to call a GSL routine from a multithreaded
 program.
 
 
-@node Legal issues
+@node Legal issues, Non-UNIX portability, Thread-safety, Design
 @section Legal issues
 
 @itemize @bullet
@@ -992,7 +1004,7 @@ numerical analysis.
 
 @end itemize
 
-@node Non-UNIX portability
+@node Non-UNIX portability, Compatibility with other libraries, Legal issues, Design
 @section Non-UNIX portability
 
 There is good reason to make this library work on non-UNIX systems.  It
@@ -1010,7 +1022,7 @@ We should also read up on what Cygnus is doing for their win32
 portability.
 
 
-@node Compatibility with other libraries
+@node Compatibility with other libraries, Parallelism, Non-UNIX portability, Design
 @section Compatibility with other libraries
 
 We do not regard compatibility with other numerical libraries as a
@@ -1034,21 +1046,21 @@ usage of @code{hypot} in @file{gsl/complex/math.c}, the implementation
 of @code{gsl_hypot} and the corresponding parts of files
 @file{configure.in} and @file{config.h.in} as an example.
 
-@node Parallelism
+@node Parallelism, Miscellaneous, Compatibility with other libraries, Design
 @section Parallelism
 
 We don't intend to provide support for parallelism within the library
 itself. A parallel library would require a completely different design
 and would carry overhead that other applications do not need.
 
-@node Miscellaneous
+@node Miscellaneous,  , Parallelism, Design
 @section Miscellaneous
 
 Don't use the letter @code{l} as a variable name --- it is difficult to
 distinguish from the number @code{1}. (This seems to be a favorite in
 old Fortran programs).
 
-@node Copying
+@node Copying,  , Design, Top
 @unnumbered Copying
 
    The subroutines and source code in the @value{GSL} package are "free";
