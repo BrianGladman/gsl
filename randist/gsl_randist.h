@@ -143,8 +143,8 @@ void gsl_ran_dir_3d (const gsl_rng * r, double * x, double * y, double * z);
 void gsl_ran_dir_nd (const gsl_rng * r, size_t n, double * x);
 
 void gsl_ran_shuffle (const gsl_rng * r, void * base, size_t nmembm, size_t size);
-void * gsl_ran_choose (const gsl_rng * r, void * dest, size_t k, void * src, size_t n, size_t size) ;
-void * gsl_ran_sample (const gsl_rng * r, void * dest, size_t k, void * src, size_t n, size_t size) ;
+int gsl_ran_choose (const gsl_rng * r, void * dest, size_t k, void * src, size_t n, size_t size) ;
+void gsl_ran_sample (const gsl_rng * r, void * dest, size_t k, void * src, size_t n, size_t size) ;
 
 
 typedef struct {                /* struct for Walker algorithm */

@@ -78,7 +78,7 @@ gsl_ran_shuffle (const gsl_rng * r, void * base, size_t n, size_t size)
     }
 }
 
-void *
+int
 gsl_ran_choose (const gsl_rng * r, void * dest, size_t k, void * src, 
 		 size_t n, size_t size)
 {
@@ -91,8 +91,8 @@ gsl_ran_choose (const gsl_rng * r, void * dest, size_t k, void * src,
 
   if (k > n)
     {
-      GSL_ERROR_VAL ("k is greater than n, cannot sample more than n items",
-			GSL_EINVAL, 0) ;
+      GSL_ERROR ("k is greater than n, cannot sample more than n items",
+                 GSL_EINVAL) ;
     }
 
   for (i = 0; i < n && j < k; i++)
@@ -104,10 +104,10 @@ gsl_ran_choose (const gsl_rng * r, void * dest, size_t k, void * src,
 	}
     }
 
-  return dest;
+  return GSL_SUCCESS;
 }
 
-void *
+void
 gsl_ran_sample (const gsl_rng * r, void * dest, size_t k, void * src, 
 		size_t n, size_t size)
 {
@@ -121,6 +121,4 @@ gsl_ran_sample (const gsl_rng * r, void * dest, size_t k, void * src,
 
       copy (dest, i, src, j, size) ;
     }
-
-  return dest;
 }

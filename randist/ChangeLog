@@ -1,3 +1,8 @@
+Mon May 21 12:17:07 2001  Brian Gough  <bjg@network-theory.co.uk>
+
+	* shuffle.c (gsl_ran_choose): removed void * return value
+	(gsl_ran_sample): removed void * return value
+
 Tue Apr 24 17:10:47 2001  Brian Gough  <bjg@network-theory.co.uk>
 
 	* bernoulli.c (gsl_ran_bernoulli_pdf): removed unnecessary
