@@ -3,7 +3,7 @@
    101 decimal digit arithmetic by L. W. Fullerton, Bell Labs, Nov
    1981. */
 
-/* x1      abscissae common to the 10-, 21-, 43- and 87-point rule */
+/* x1, abscissae common to the 10-, 21-, 43- and 87-point rule */
 static const double x1[5] = {
   0.973906528517171720077964012084452,
   0.865063366688984510732096688423493,
@@ -12,7 +12,7 @@ static const double x1[5] = {
   0.148874338981631210884826001129720
 } ;
 
-/*      w10     weights of the 10-point formula */
+/* w10, weights of the 10-point formula */
 static const double w10[5] = {
   0.066671344308688137593568809893332,
   0.149451349150580593145776339657697,
@@ -21,7 +21,7 @@ static const double w10[5] = {
   0.295524224714752870173892994651338
 } ;
 
-/* 	  x2      abscissae common to the 21-, 43- and 87-point rule */
+/* x2, abscissae common to the 21-, 43- and 87-point rule */
 static const double x2[5] = {
   0.995657163025808080735527280689003,
   0.930157491355708226001207180059508,
@@ -30,7 +30,7 @@ static const double x2[5] = {
   0.294392862701460198131126603103866
 } ;
 
-/* w21a    weights of the 21-point formula for abscissae x1 */
+/* w21a, weights of the 21-point formula for abscissae x1 */
 static const double w21a[5] = {
   0.032558162307964727478818972459390,
   0.075039674810919952767043140916190,
@@ -39,7 +39,7 @@ static const double w21a[5] = {
   0.147739104901338491374841515972068
 } ;
 
-/* w21b    weights of the 21-point formula for abscissae x2 */
+/* w21b, weights of the 21-point formula for abscissae x2 */
 static const double w21b[6] = {
   0.011694638867371874278064396062192,
   0.054755896574351996031381300244580,
@@ -49,7 +49,7 @@ static const double w21b[6] = {
   0.149445554002916905664936468389821
 } ;
 
-/* x3      abscissae common to the 43- and 87-point rule */
+/* x3, abscissae common to the 43- and 87-point rule */
 static const double x3[11] = {
   0.999333360901932081394099323919911,
   0.987433402908088869795961478381209,
@@ -64,7 +64,7 @@ static const double x3[11] = {
   0.074650617461383322043914435796506
 } ;
 
-/* w43a    weights of the 43-point formula for abscissae x1, x3 */
+/* w43a, weights of the 43-point formula for abscissae x1, x3 */
 static const double w43a[10] = {
   0.016296734289666564924281974617663,
   0.037522876120869501461613795898115,
@@ -78,7 +78,7 @@ static const double w43a[10] = {
   0.071387267268693397768559114425516
 } ;
 
-/* w43b    weights of the 43-point formula for abscissae x3 */
+/* w43b, weights of the 43-point formula for abscissae x3 */
 static const double w43b[12] = {
   0.001844477640212414100389106552965,
   0.010798689585891651740465406741293,
@@ -94,7 +94,7 @@ static const double w43b[12] = {
   0.074722147517403005594425168280423
 } ;
 
-/* x4      abscissae of the 87-point rule */
+/* x4, abscissae of the 87-point rule */
 static const double x4[22] = {
   0.999902977262729234490529830591582,
   0.997989895986678745427496322365960,
@@ -120,7 +120,7 @@ static const double x4[22] = {
   0.037352123394619870814998165437704
 } ;
 
-/* w87a    weights of the 87-point formula for abscissae x1, x2, x3 */
+/* w87a, weights of the 87-point formula for abscissae x1, x2, x3 */
 static const double w87a[21] = {
   0.008148377384149172900002878448190,
   0.018761438201562822243935059003794,
@@ -145,7 +145,7 @@ static const double w87a[21] = {
   0.037253875503047708539592001191226
 } ;
 
-/* w87b    weights of the 87-point formula for abscissae x4    */
+/* w87b, weights of the 87-point formula for abscissae x4    */
 static const double w87b[23] = {
   0.000274145563762072350016527092881,
   0.001807124155057942948341311753254,

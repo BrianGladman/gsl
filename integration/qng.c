@@ -32,7 +32,7 @@ gsl_integration_qng (double (*f) (double x),
       * abserr = 0;
       * neval = 0;
       GSL_ERROR ("tolerance cannot be acheived with given epsabs and epsrel",
-		 GSL_EINVAL);
+		 GSL_EBADTOL);
     };
 
   /* Compute the integral using the 10- and 21-point formula. */
