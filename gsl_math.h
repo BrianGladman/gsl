@@ -156,7 +156,4 @@ struct gsl_interval_struct
 
 typedef struct gsl_interval_struct gsl_interval;
 
-
-
-
 #endif /* !_GSL_MATH_H */

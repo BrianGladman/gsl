@@ -47,6 +47,9 @@ gsl_complex_float;
 #define GSL_COMPLEX_P_IMAG(zp)  ((zp)->dat[1])
 #define GSL_COMPLEX_EQ(z1,z2) ((z1).dat[0] == (z2).dat[0] && \
 			       ((z1).dat[1] == (z2).dat[1]))
-#define GSL_COMPLEX_SET(z,x,y) do {(z).dat[0]=(x); (z).dat[1]=(y);} while(0)
+
+#define GSL_SET_COMPLEX(zp,x,y) do {(zp)->dat[0]=(x); (zp)->dat[1]=(y);} while(0)
+#define GSL_SET_REAL(zp,x) do {(zp)->dat[0]=(x);} while(0)
+#define GSL_SET_IMAG(zp,y) do {(zp)->dat[1]=(y);} while(0)
 
 #endif /* _GSL_COMPLEX_H */
