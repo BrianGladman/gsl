@@ -9,11 +9,11 @@ noinst_PROGRAMS = test test_int
 
 TESTS = test test_int
 
-test_SOURCES = test.c
+test_SOURCES = test.c test.h
 test_LDADD = libgslstatistics.a ../err/libgsltest.a
 test_DEPENDENCIES = libgslstatistics.a
 
-test_int_SOURCES = test_int.c
+test_int_SOURCES = test_int.c test.h
 test_int_LDADD = libgslstatistics.a ../err/libgsltest.a
 test_int_DEPENDENCIES = libgslstatistics.a
 
