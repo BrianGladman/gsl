@@ -382,7 +382,7 @@ A general rectangular @math{M}-by-@math{N} matrix @math{A} has a
 singular value decomposition (@sc{svd}) into the product of an
 @math{M}-by-@math{N} orthogonal matrix @math{U}, an @math{N}-by-@math{N}
 diagonal matrix of singular values @math{S} and the transpose of an
-@math{M}-by-@math{M} orthogonal square matrix @math{V},
+@math{N}-by-@math{N} orthogonal square matrix @math{V},
 
 @tex
 \beforedisplay
