@@ -3,8 +3,6 @@
 #include <math.h>
 #include <gsl_integration.h>
 
-#include <stdio.h>
-
 #include "err.h"
 
 void

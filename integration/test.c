@@ -450,7 +450,7 @@ int main (void)
     gsl_test_int(status,exp_ier,"qng(f1) sing beyond 87pt status") ;
   }
 
-  /* Test the adaptive integrator QAGE */
+  /* Test the adaptive integrator QAG */
 
   {
     int status = 0, i; size_t last = 0,  neval = 0;
@@ -477,30 +477,30 @@ int main (void)
     double alpha = 2.6 ;
     gsl_function f = { &f1, &alpha } ;
 
-    status = gsl_integration_qage (&f, 0.0, 1.0, 0.0, 1e-10, 
-				   GSL_INTEG_GAUSS15, w, &last, 
-				   &result, &abserr, &neval) ;
+    status = gsl_integration_qag (&f, 0.0, 1.0, 0.0, 1e-10, 
+				  GSL_INTEG_GAUSS15, w, &last, 
+				  &result, &abserr, &neval) ;
 
-    gsl_test_rel(result,exp_result,1e-15,"qage(f1) smooth result") ;
-    gsl_test_rel(abserr,exp_abserr,1e-6,"qage(f1) smooth abserr") ;
-    gsl_test_int((int)neval,exp_neval,"qage(f1) smooth neval") ;  
-    gsl_test_int((int)last,exp_last,"qage(f1) smooth last") ;  
-    gsl_test_int(status,exp_ier,"qage(f1) smooth status") ;
-
-    for (i = 0; i < 6 ; i++) 
-	gsl_test_rel(w->alist[i],a[i],1e-15,"qage(f1) smooth alist") ;
+    gsl_test_rel(result,exp_result,1e-15,"qag(f1) smooth result") ;
+    gsl_test_rel(abserr,exp_abserr,1e-6,"qag(f1) smooth abserr") ;
+    gsl_test_int((int)neval,exp_neval,"qag(f1) smooth neval") ;  
+    gsl_test_int((int)last,exp_last,"qag(f1) smooth last") ;  
+    gsl_test_int(status,exp_ier,"qag(f1) smooth status") ;
 
     for (i = 0; i < 6 ; i++) 
-	gsl_test_rel(w->blist[i],b[i],1e-15,"qage(f1) smooth blist") ;
+	gsl_test_rel(w->alist[i],a[i],1e-15,"qag(f1) smooth alist") ;
 
     for (i = 0; i < 6 ; i++) 
-	gsl_test_rel(w->rlist[i],r[i],1e-15,"qage(f1) smooth rlist") ;
+	gsl_test_rel(w->blist[i],b[i],1e-15,"qag(f1) smooth blist") ;
 
     for (i = 0; i < 6 ; i++) 
-	gsl_test_rel(w->elist[i],e[i],1e-6,"qage(f1) smooth elist") ;
+	gsl_test_rel(w->rlist[i],r[i],1e-15,"qag(f1) smooth rlist") ;
 
     for (i = 0; i < 6 ; i++) 
-	gsl_test_int((int)w->iord[i],iord[i]-1,"qage(f1) smooth iord") ;
+	gsl_test_rel(w->elist[i],e[i],1e-6,"qag(f1) smooth elist") ;
+
+    for (i = 0; i < 6 ; i++) 
+	gsl_test_int((int)w->iord[i],iord[i]-1,"qag(f1) smooth iord") ;
 
     gsl_integration_workspace_free (w) ;
 
@@ -538,30 +538,30 @@ int main (void)
     double alpha = 2.6 ;
     gsl_function f = { &f1, &alpha } ;
 
-    status = gsl_integration_qage (&f, 0.0, 1.0, 1e-14, 0.0, 
-				   GSL_INTEG_GAUSS21, w, &last, 
-				   &result, &abserr, &neval) ;
+    status = gsl_integration_qag (&f, 0.0, 1.0, 1e-14, 0.0, 
+				  GSL_INTEG_GAUSS21, w, &last, 
+				  &result, &abserr, &neval) ;
 
-    gsl_test_rel(result,exp_result,1e-15,"qage(f1,21pt) smooth result") ;
-    gsl_test_rel(abserr,exp_abserr,1e-6,"qage(f1,21pt) smooth abserr") ;
-    gsl_test_int((int)neval,exp_neval,"qage(f1,21pt) smooth neval") ;  
-    gsl_test_int((int)last,exp_last,"qage(f1,21pt) smooth last") ;  
-    gsl_test_int(status,exp_ier,"qage(f1,21pt) smooth status") ;
-
-    for (i = 0; i < 8 ; i++) 
-	gsl_test_rel(w->alist[i],a[i],1e-15,"qage(f1,21pt) smooth alist") ;
+    gsl_test_rel(result,exp_result,1e-15,"qag(f1,21pt) smooth result") ;
+    gsl_test_rel(abserr,exp_abserr,1e-6,"qag(f1,21pt) smooth abserr") ;
+    gsl_test_int((int)neval,exp_neval,"qag(f1,21pt) smooth neval") ;  
+    gsl_test_int((int)last,exp_last,"qag(f1,21pt) smooth last") ;  
+    gsl_test_int(status,exp_ier,"qag(f1,21pt) smooth status") ;
 
     for (i = 0; i < 8 ; i++) 
-	gsl_test_rel(w->blist[i],b[i],1e-15,"qage(f1,21pt) smooth blist") ;
+	gsl_test_rel(w->alist[i],a[i],1e-15,"qag(f1,21pt) smooth alist") ;
 
     for (i = 0; i < 8 ; i++) 
-	gsl_test_rel(w->rlist[i],r[i],1e-15,"qage(f1,21pt) smooth rlist") ;
+	gsl_test_rel(w->blist[i],b[i],1e-15,"qag(f1,21pt) smooth blist") ;
 
     for (i = 0; i < 8 ; i++) 
-	gsl_test_rel(w->elist[i],e[i],1e-6,"qage(f1,21pt) smooth elist") ;
+	gsl_test_rel(w->rlist[i],r[i],1e-15,"qag(f1,21pt) smooth rlist") ;
 
     for (i = 0; i < 8 ; i++) 
-	gsl_test_int((int)w->iord[i],iord[i]-1,"qage(f1,21pt) smooth iord");
+	gsl_test_rel(w->elist[i],e[i],1e-6,"qag(f1,21pt) smooth elist") ;
+
+    for (i = 0; i < 8 ; i++) 
+	gsl_test_int((int)w->iord[i],iord[i]-1,"qag(f1,21pt) smooth iord");
 
     gsl_integration_workspace_free (w) ;
 
@@ -585,15 +585,15 @@ int main (void)
     double alpha = 1.3 ;
     gsl_function f = { &f3, &alpha } ;
 
-    status = gsl_integration_qage (&f, 0.3, 2.71, 1e-14, 0.0, 
-				   GSL_INTEG_GAUSS31, w, &last, 
-				   &result, &abserr, &neval) ;
+    status = gsl_integration_qag (&f, 0.3, 2.71, 1e-14, 0.0, 
+				  GSL_INTEG_GAUSS31, w, &last, 
+				  &result, &abserr, &neval) ;
 
-    gsl_test_rel(result,exp_result,1e-15,"qage(f3,31pt) oscill result");
-    gsl_test_rel(abserr,exp_abserr,1e-6,"qage(f3,31pt) oscill abserr");
-    gsl_test_int((int)neval,exp_neval,"qage(f3,31pt) oscill neval") ;  
-    gsl_test_int((int)last,exp_last,"qage(f3,31pt) oscill last") ;  
-    gsl_test_int(status,exp_ier,"qage(f3,31pt) oscill status") ;
+    gsl_test_rel(result,exp_result,1e-15,"qag(f3,31pt) oscill result");
+    gsl_test_rel(abserr,exp_abserr,1e-6,"qag(f3,31pt) oscill abserr");
+    gsl_test_int((int)neval,exp_neval,"qag(f3,31pt) oscill neval") ;  
+    gsl_test_int((int)last,exp_last,"qag(f3,31pt) oscill last") ;  
+    gsl_test_int(status,exp_ier,"qag(f3,31pt) oscill status") ;
 
     gsl_integration_workspace_free (w) ;
 
@@ -614,13 +614,13 @@ int main (void)
     double alpha = 2.0 ;
     gsl_function f = { &f16, &alpha } ;
 
-    status = gsl_integration_qage (&f, -1.0, 1.0, 1e-14, 0.0, 
-				   GSL_INTEG_GAUSS51, w, &last, 
-				   &result, &abserr, &neval) ;
+    status = gsl_integration_qag (&f, -1.0, 1.0, 1e-14, 0.0, 
+				  GSL_INTEG_GAUSS51, w, &last, 
+				  &result, &abserr, &neval) ;
 
-    gsl_test_int((int)neval,exp_neval,"qage(f16,51pt) sing neval") ;  
-    gsl_test_int((int)last,exp_last,"qage(f16,51pt) sing last") ;  
-    gsl_test_int(status,exp_ier,"qage(f16,51pt) sing status") ;
+    gsl_test_int((int)neval,exp_neval,"qag(f16,51pt) sing neval") ;  
+    gsl_test_int((int)last,exp_last,"qag(f16,51pt) sing last") ;  
+    gsl_test_int(status,exp_ier,"qag(f16,51pt) sing status") ;
 
     gsl_integration_workspace_free (w) ;
 
@@ -661,36 +661,36 @@ int main (void)
     double alpha = 1.0 ;
     gsl_function f = { &f16, &alpha } ;
     
-    status = gsl_integration_qage (&f, -1.0, 1.0, 1e-14, 0.0, 
-				   GSL_INTEG_GAUSS61, w, &last, 
-				   &result, &abserr, &neval) ;
+    status = gsl_integration_qag (&f, -1.0, 1.0, 1e-14, 0.0, 
+				  GSL_INTEG_GAUSS61, w, &last, 
+				  &result, &abserr, &neval) ;
 
-    gsl_test_rel(result,exp_result,1e-15,"qage(f16,61pt) limit result") ;
-    gsl_test_rel(abserr,exp_abserr,1e-6,"qage(f16,61pt) limit abserr") ;
-    gsl_test_int((int)neval,exp_neval,"qage(f16,61pt) limit neval") ;  
-    gsl_test_int((int)last,exp_last,"qage(f16,61pt) limit last") ;  
-    gsl_test_int(status,exp_ier,"qage(f16,61pt) limit status") ;
-
-    for (i = 0; i < 3 ; i++) 
-	gsl_test_rel(w->alist[i],a[i],1e-15,"qage(f16,61pt) limit alist") ;
+    gsl_test_rel(result,exp_result,1e-15,"qag(f16,61pt) limit result") ;
+    gsl_test_rel(abserr,exp_abserr,1e-6,"qag(f16,61pt) limit abserr") ;
+    gsl_test_int((int)neval,exp_neval,"qag(f16,61pt) limit neval") ;  
+    gsl_test_int((int)last,exp_last,"qag(f16,61pt) limit last") ;  
+    gsl_test_int(status,exp_ier,"qag(f16,61pt) limit status") ;
 
     for (i = 0; i < 3 ; i++) 
-	gsl_test_rel(w->blist[i],b[i],1e-15,"qage(f16,61pt) limit blist") ;
+	gsl_test_rel(w->alist[i],a[i],1e-15,"qag(f16,61pt) limit alist") ;
 
     for (i = 0; i < 3 ; i++) 
-	gsl_test_rel(w->rlist[i],r[i],1e-15,"qage(f16,61pt) limit rlist") ;
+	gsl_test_rel(w->blist[i],b[i],1e-15,"qag(f16,61pt) limit blist") ;
 
     for (i = 0; i < 3 ; i++) 
-	gsl_test_rel(w->elist[i],e[i],1e-6,"qage(f16,61pt) limit elist") ;
+	gsl_test_rel(w->rlist[i],r[i],1e-15,"qag(f16,61pt) limit rlist") ;
 
     for (i = 0; i < 3 ; i++) 
-	gsl_test_int((int)w->iord[i],iord[i]-1,"qage(f16,61pt) limit iord");
+	gsl_test_rel(w->elist[i],e[i],1e-6,"qag(f16,61pt) limit elist") ;
+
+    for (i = 0; i < 3 ; i++) 
+	gsl_test_int((int)w->iord[i],iord[i]-1,"qag(f16,61pt) limit iord");
 
     gsl_integration_workspace_free (w) ;
 
   }
 
-  /* Test the adaptive integrator with extrapolation QAGSE */
+  /* Test the adaptive integrator with extrapolation QAGS */
 
   {
     int status = 0, i; size_t last = 0,  neval = 0;
@@ -721,30 +721,30 @@ int main (void)
     double alpha = 2.6 ;
     gsl_function f = { &f1, &alpha } ;
 
-    status = gsl_integration_qagse (&f, 0.0, 1.0, 0.0, 1e-10, 
-				    w, &last, 
-				    &result, &abserr, &neval) ;
+    status = gsl_integration_qags (&f, 0.0, 1.0, 0.0, 1e-10, 
+				   w, &last, 
+				   &result, &abserr, &neval) ;
 
-    gsl_test_rel(result,exp_result,1e-15,"qagse(f1) smooth result") ;
-    gsl_test_rel(abserr,exp_abserr,1e-6,"qagse(f1) smooth abserr") ;
-    gsl_test_int((int)neval,exp_neval,"qagse(f1) smooth neval") ;  
-    gsl_test_int((int)last,exp_last,"qagse(f1) smooth last") ;  
-    gsl_test_int(status,exp_ier,"qagse(f1) smooth status") ;
-
-    for (i = 0; i < 5 ; i++) 
-	gsl_test_rel(w->alist[i],a[i],1e-15,"qagse(f1) smooth alist") ;
+    gsl_test_rel(result,exp_result,1e-15,"qags(f1) smooth result") ;
+    gsl_test_rel(abserr,exp_abserr,1e-6,"qags(f1) smooth abserr") ;
+    gsl_test_int((int)neval,exp_neval,"qags(f1) smooth neval") ;  
+    gsl_test_int((int)last,exp_last,"qags(f1) smooth last") ;  
+    gsl_test_int(status,exp_ier,"qags(f1) smooth status") ;
 
     for (i = 0; i < 5 ; i++) 
-	gsl_test_rel(w->blist[i],b[i],1e-15,"qagse(f1) smooth blist") ;
+	gsl_test_rel(w->alist[i],a[i],1e-15,"qags(f1) smooth alist") ;
 
     for (i = 0; i < 5 ; i++) 
-	gsl_test_rel(w->rlist[i],r[i],1e-15,"qagse(f1) smooth rlist") ;
+	gsl_test_rel(w->blist[i],b[i],1e-15,"qags(f1) smooth blist") ;
 
     for (i = 0; i < 5 ; i++) 
-	gsl_test_rel(w->elist[i],e[i],1e-6,"qagse(f1) smooth elist") ;
+	gsl_test_rel(w->rlist[i],r[i],1e-15,"qags(f1) smooth rlist") ;
 
     for (i = 0; i < 5 ; i++) 
-	gsl_test_int((int)w->iord[i],iord[i]-1,"qagse(f1) smooth iord") ;
+	gsl_test_rel(w->elist[i],e[i],1e-6,"qags(f1) smooth elist") ;
+
+    for (i = 0; i < 5 ; i++) 
+	gsl_test_int((int)w->iord[i],iord[i]-1,"qags(f1) smooth iord") ;
 
     gsl_integration_workspace_free (w) ;
 
@@ -807,35 +807,123 @@ int main (void)
     double alpha = 2.0 ;
     gsl_function f = { &f11, &alpha } ;
 
-    status = gsl_integration_qagse (&f, 1.0, 1000.0, 1e-7, 0.0, 
-				    w, &last, 
-				    &result, &abserr, &neval) ;
-
-    gsl_test_rel(result,exp_result,1e-15,"qagse(f11) smooth result") ;
-    gsl_test_rel(abserr,exp_abserr,1e-3,"qagse(f11) smooth abserr") ;
-    gsl_test_int((int)neval,exp_neval,"qagse(f11) smooth neval") ;  
-    gsl_test_int((int)last,exp_last,"qagse(f11) smooth last") ;  
-    gsl_test_int(status,exp_ier,"qagse(f11) smooth status") ;
-
-    for (i = 0; i < 9 ; i++) 
-	gsl_test_rel(w->alist[i],a[i],1e-15,"qagse(f11) smooth alist") ;
+    status = gsl_integration_qags (&f, 1.0, 1000.0, 1e-7, 0.0, 
+				   w, &last, 
+				   &result, &abserr, &neval) ;
+    
+    gsl_test_rel(result,exp_result,1e-15,"qags(f11) smooth result") ;
+    gsl_test_rel(abserr,exp_abserr,1e-3,"qags(f11) smooth abserr") ;
+    gsl_test_int((int)neval,exp_neval,"qags(f11) smooth neval") ;  
+    gsl_test_int((int)last,exp_last,"qags(f11) smooth last") ;  
+    gsl_test_int(status,exp_ier,"qags(f11) smooth status") ;
 
     for (i = 0; i < 9 ; i++) 
-	gsl_test_rel(w->blist[i],b[i],1e-15,"qagse(f11) smooth blist") ;
+	gsl_test_rel(w->alist[i],a[i],1e-15,"qags(f11) smooth alist") ;
 
     for (i = 0; i < 9 ; i++) 
-	gsl_test_rel(w->rlist[i],r[i],1e-15,"qagse(f11) smooth rlist") ;
+	gsl_test_rel(w->blist[i],b[i],1e-15,"qags(f11) smooth blist") ;
 
     for (i = 0; i < 9 ; i++) 
-	gsl_test_rel(w->elist[i],e[i],1e-5,"qagse(f11) smooth elist") ;
+	gsl_test_rel(w->rlist[i],r[i],1e-15,"qags(f11) smooth rlist") ;
 
     for (i = 0; i < 9 ; i++) 
-	gsl_test_int((int)w->iord[i],iord[i]-1,"qagse(f11) smooth iord");
+	gsl_test_rel(w->elist[i],e[i],1e-5,"qags(f11) smooth elist") ;
+
+    for (i = 0; i < 9 ; i++) 
+	gsl_test_int((int)w->iord[i],iord[i]-1,"qags(f11) smooth iord");
 
     gsl_integration_workspace_free (w) ;
 
   }
 
+  /* Test f11 using an absolute error bound */
+
+  {
+    int status = 0, i; size_t last = 0,  neval = 0;
+    double result = 0, abserr=0;
+
+    gsl_integration_workspace * w = gsl_integration_workspace_alloc (1000) ;
+
+    /* All results are for GSL_IEEE_MODE=double-precision */
+
+    double exp_result = -3.616892186127022568E-01 ;
+    double exp_abserr = 3.016716913328831851E-06;
+    int exp_neval  =      285;
+    int exp_ier    =        0;
+    int exp_last   =       10;
+
+    double a[10] = { 9.687500000000000000E-01,
+		     0.000000000000000000E+00,
+		     5.000000000000000000E-01,
+		     2.500000000000000000E-01,
+		     7.500000000000000000E-01,
+		     1.250000000000000000E-01,
+		     8.750000000000000000E-01,
+		     6.250000000000000000E-02,
+		     9.375000000000000000E-01,
+		     3.125000000000000000E-02 } ;
+    double b[10] = { 1.000000000000000000E+00,
+		     3.125000000000000000E-02,
+		     7.500000000000000000E-01,
+		     5.000000000000000000E-01,
+		     8.750000000000000000E-01,
+		     2.500000000000000000E-01,
+		     9.375000000000000000E-01,
+		     1.250000000000000000E-01,
+		     9.687500000000000000E-01,
+		     6.250000000000000000E-02 } ;
+    double r[10] = { -1.390003415539725340E-01,
+		     1.429785306003466313E-03,
+		     -1.229943369113085765E-02,
+		     2.995321156568048898E-03,
+		     -4.980050133751051655E-02,
+		     2.785385934678596704E-03,
+		     -8.653752279614615461E-02,
+		     1.736218164975512294E-03,
+		     -8.398745675010892142E-02,
+		     1.041689192004495576E-03 } ;
+    double e[10] = { 2.395037249893453013E-02,
+		     2.161214992172538524E-04,
+		     5.720644840858777846E-14,
+		     1.091466087843516782E-17,
+		     3.147380432198176412E-14,
+		     2.576959039041310205E-17,
+		     8.833965040117939002E-16,
+		     1.367912092338271854E-17,
+		     4.620599841818525952E-16,
+		     6.672586818503247492E-18 } ;
+    int iord[10] = { 1, 2, 3, 5, 7, 9, 6, 8, 4, 10 } ;
+
+    gsl_function f = { &f455, 0 } ;
+
+    status = gsl_integration_qagiu (&f, 0.0, 0.0, 1.0e-3, 
+				    w, &last, 
+				    &result, &abserr, &neval) ;
+    
+    gsl_test_rel(result,exp_result,1e-15,"qagiu(f455) smooth result") ;
+    gsl_test_rel(abserr,exp_abserr,1e-3,"qagiu(f455) smooth abserr") ;
+    gsl_test_int((int)neval,exp_neval,"qagiu(f455) smooth neval") ;  
+    gsl_test_int((int)last,exp_last,"qagiu(f455) smooth last") ;  
+    gsl_test_int(status,exp_ier,"qagiu(f455) smooth status") ;
+
+    for (i = 0; i < 10 ; i++) 
+	gsl_test_rel(w->alist[i],a[i],1e-15,"qagiu(f455) smooth alist") ;
+
+    for (i = 0; i < 10 ; i++) 
+	gsl_test_rel(w->blist[i],b[i],1e-15,"qagiu(f455) smooth blist") ;
+
+    for (i = 0; i < 10 ; i++) 
+	gsl_test_rel(w->rlist[i],r[i],1e-15,"qagiu(f455) smooth rlist") ;
+
+    for (i = 0; i < 10 ; i++) 
+	gsl_test_rel(w->elist[i],e[i],1e-5,"qagiu(f455) smooth elist") ;
+
+    for (i = 0; i < 10 ; i++) 
+	gsl_test_int((int)w->iord[i],iord[i]-1,"qagiu(f455) smooth iord");
+
+    gsl_integration_workspace_free (w) ;
+
+  }
 
   return gsl_test_summary() ;
 } 

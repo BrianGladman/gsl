@@ -11,8 +11,9 @@ libgslintegration_a_SOURCES = integration.c \
 	qk61.c qk61.h \
 	qk.c \
 	qng.c qng.h \
-	qage.c qage_impl.c qpsrt.c qpsrt.h \
-	qagse.c	qagse_impl.c qelg.c \
+	qag.c qag_impl.c qpsrt.c qpsrt.h \
+	qags.c qags_impl.c qelg.c \
+	qagi.c qagiu.c qagil.c \
 	err.c err.h \
 	workspace.c
 

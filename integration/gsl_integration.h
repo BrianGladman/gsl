@@ -68,7 +68,7 @@ int gsl_integration_qng (const gsl_function *f,
 			 size_t * neval);
 
 int
-gsl_integration_qage (const gsl_function *f,
+gsl_integration_qag (const gsl_function *f,
 		      double a, double b,
 		      double epsabs, double epsrel,
 		      int key,
@@ -77,13 +77,37 @@ gsl_integration_qage (const gsl_function *f,
 		      double * result, double * abserr, size_t * neval) ;
 
 int
-gsl_integration_qage_impl (const gsl_function *f,
+gsl_integration_qag_impl (const gsl_function *f,
 			   const double a, const double b,
 			   const double epsabs, const double epsrel,
 			   gsl_integration_workspace * workspace,
 			   size_t * last,
 			   double * result, double * abserr, size_t * nqeval,
 			   gsl_integration_rule_t * const q) ;
+
+int
+gsl_integration_qagi (gsl_function *f,
+		      double epsabs, double epsrel,
+		      gsl_integration_workspace * workspace,
+		      size_t * last,
+		      double * result, double * abserr, size_t * neval) ;
+
+int
+gsl_integration_qagiu (gsl_function *f,
+		       double a,
+		       double epsabs, double epsrel,
+		       gsl_integration_workspace * workspace,
+		       size_t * last,
+		       double * result, double * abserr, size_t * neval) ;
+
+int
+gsl_integration_qagil (gsl_function *f,
+		       double b,
+		       double epsabs, double epsrel,
+		       gsl_integration_workspace * workspace,
+		       size_t * last,
+		       double * result, double * abserr, size_t * neval) ;
+
 
 /* The low-level integration rules in QUADPACK are identified by small
    integers (1-6). We'll use symbolic constants to refer to them. 
@@ -106,19 +130,19 @@ gsl_integration_qelg (size_t * n, double epstab[],
 		      double res3la[], size_t * nres) ;
 
 int
-gsl_integration_qagse (const gsl_function *f,
+gsl_integration_qags (const gsl_function *f,
 		      double a, double b,
 		      double epsabs, double epsrel,
 		      gsl_integration_workspace * workspace, size_t * last,
 		      double * result, double * abserr, size_t * neval) ;
 
 int
-gsl_integration_qagse_impl (const gsl_function *f, 
-			    double a, double b, 
-			    double epsabs, double epsrel,
-			    gsl_integration_workspace * workspace,
-			    double * result, double * abserr, 
-			    size_t * last, size_t * nqeval,
-			    gsl_integration_rule_t * q) ;
+gsl_integration_qags_impl (const gsl_function *f, 
+			   double a, double b, 
+			   double epsabs, double epsrel,
+			   gsl_integration_workspace * workspace,
+			   double * result, double * abserr, 
+			   size_t * last, size_t * nqeval,
+			   gsl_integration_rule_t * q) ;
 
 #endif /* GSL_INTEGRATION_H */

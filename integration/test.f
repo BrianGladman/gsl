@@ -1,12 +1,13 @@
       program main
       double precision a,b,result,abserr,resabs,resasc
-      double precision book1,book3,book11,book16
+      double precision book1,book3,book11,book16,book455
       double precision alpha
       double precision alist(1000),blist(1000),rlist(1000)
       double precision elist(1000)
       integer iord(1000)
+      integer inf
       common /ALPHA/alpha
-      external book1,book3,book11,book16
+      external book1,book3,book11,book16,book455
 
       call gsl_ieee_env_setup
 
@@ -63,30 +64,30 @@ c     write(6,1) result, abserr, resabs, resasc
 
 
 
-      ier = 0
-      neval = 0
-      alpha = 2.6
-      epsabs = 1.0e-1
-      epsrel = 0.0
-      a = 0.0
-      b = 1.0
-      print *,'QNG book1'
-      print *,'alpha = ',alpha
-      call dqng(book1,a,b,epsabs,epsrel,result,abserr,neval,ier)
-      write(6,2) result, abserr, neval, ier
-      epsabs = 0.0
-      epsrel = 1e-9
-      call dqng(book1,a,b,epsabs,epsrel,result,abserr,neval,ier)
-      write(6,2) result, abserr, neval, ier
-      epsabs = 0.0
-      epsrel = 1e-13
-      call dqng(book1,a,b,epsabs,epsrel,result,abserr,neval,ier)
-      write(6,2) result, abserr, neval, ier
-      alpha = -0.9
-      epsabs = 0.0
-      epsrel = 1e-3
-      call dqng(book1,a,b,epsabs,epsrel,result,abserr,neval,ier)
-      write(6,2) result, abserr, neval, ier
+c      ier = 0
+c      neval = 0
+c      alpha = 2.6
+c      epsabs = 1.0e-1
+c      epsrel = 0.0
+c      a = 0.0
+c      b = 1.0
+c      print *,'QNG book1'
+c      print *,'alpha = ',alpha
+c      call dqng(book1,a,b,epsabs,epsrel,result,abserr,neval,ier)
+c      write(6,2) result, abserr, neval, ier
+c      epsabs = 0.0
+c      epsrel = 1e-9
+c      call dqng(book1,a,b,epsabs,epsrel,result,abserr,neval,ier)
+c      write(6,2) result, abserr, neval, ier
+c      epsabs = 0.0
+c      epsrel = 1e-13
+c      call dqng(book1,a,b,epsabs,epsrel,result,abserr,neval,ier)
+c      write(6,2) result, abserr, neval, ier
+c      alpha = -0.9
+c      epsabs = 0.0
+c      epsrel = 1e-3
+c      call dqng(book1,a,b,epsabs,epsrel,result,abserr,neval,ier)
+c      write(6,2) result, abserr, neval, ier
 
 c     alpha = 1.3
 c      a = 0.3
@@ -202,17 +203,31 @@ c     do 16 i=1,10
 c        write(6,4) i,alist(i),blist(i),rlist(i),elist(i),iord(i)
 c16   continue
 
+c      alpha = 2.0
+c      a = 1.0
+c      b = 1000.0
+c      epsabs = 1d-7
+c      epsrel = 0.0
+c      limit = 1000
+c      print *, 'DQAGSE abs'
+c      call dqagse(book11,a,b,epsabs,epsrel,LIMIT,result,abserr,
+c     $     neval,ier,alist,blist,rlist,elist,iord,last)
+c      write(6,3) result, abserr, neval, ier, last
+c      do i=1,10
+c         write(6,4) i,alist(i),blist(i),rlist(i),elist(i),iord(i)
+c      enddo
+
       alpha = 2.0
-      a = 1.0
-      b = 1000.0
-      epsabs = 1d-7
-      epsrel = 0.0
+      a = 0.0
+      inf = 1
+      epsabs = 0.0
+      epsrel = 1.0d-3
       limit = 1000
-      print *, 'DQAGSE abs'
-      call dqagse(book11,a,b,epsabs,epsrel,LIMIT,result,abserr,
+      print *, 'DQAGSI abs'
+      call dqagie(book455,a,inf,epsabs,epsrel,limit,result,abserr,
      $     neval,ier,alist,blist,rlist,elist,iord,last)
       write(6,3) result, abserr, neval, ier, last
-      do i=1,10
+      do i=1,20
          write(6,4) i,alist(i),blist(i),rlist(i),elist(i),iord(i)
       enddo
 
@@ -265,6 +280,12 @@ c16   continue
       double precision alpha,x
       common /ALPHA/alpha
       book16=(x**(alpha-1.0))/((1.0+10.0*x)**2.0)
+      end
+
+      double precision function book455(x)
+      double precision alpha,x
+      common /ALPHA/alpha
+      book455=log(x)/(1.0 + 100.0*x*x)
       end
 
 

@@ -5,13 +5,13 @@
 #include <gsl_integration.h>
 
 int
-gsl_integration_qage (const gsl_function *f,
-		      double a, double b,
-		      double epsabs, double epsrel,
-		      int key,
-		      gsl_integration_workspace * workspace,
-		      size_t * last,
-		      double * result, double * abserr, size_t * neval)
+gsl_integration_qag (const gsl_function *f,
+		     double a, double b,
+		     double epsabs, double epsrel,
+		     int key,
+		     gsl_integration_workspace * workspace,
+		     size_t * last,
+		     double * result, double * abserr, size_t * neval)
 {
   int status ;
   size_t nqeval = 0;
@@ -51,10 +51,10 @@ gsl_integration_qage (const gsl_function *f,
 		GSL_EINVAL) ;
     }
 
-  status = gsl_integration_qage_impl (f, a, b, epsabs, epsrel, 
-				      workspace, last, 
-				      result, abserr, &nqeval, 
-				      integration_rule) ;
+  status = gsl_integration_qag_impl (f, a, b, epsabs, epsrel, 
+				     workspace, last, 
+				     result, abserr, &nqeval, 
+				     integration_rule) ;
 
   /* convert from number of quadrature rule evaluations to number of
      function evaluations */

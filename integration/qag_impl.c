@@ -8,13 +8,13 @@
 #include "qpsrt.h"
 
 int
-gsl_integration_qage_impl (const gsl_function *f,
-			   const double a, const double b,
-			   const double epsabs, const double epsrel,
-			   gsl_integration_workspace * workspace,
-			   size_t * last,
-			   double * result, double * abserr, size_t * nqeval,
-			   gsl_integration_rule_t * const q)
+gsl_integration_qag_impl (const gsl_function *f,
+			  const double a, const double b,
+			  const double epsabs, const double epsrel,
+			  gsl_integration_workspace * workspace,
+			  size_t * last,
+			  double * result, double * abserr, size_t * nqeval,
+			  gsl_integration_rule_t * const q)
 {
   double q_result, q_abserr, q_defabs, q_resabs;
   double tolerance ;
