@@ -1089,10 +1089,22 @@ int check_gamma(void)
   
   s = 0;
   s += ( frac_diff( gsl_sf_lngamma(0.1),    2.252712651734205 ) > 1.e-14 );
-  s += ( frac_diff( gsl_sf_lngamma(100.0),  359.1342053695753 ) > 1.e-14 );
-  gsl_test(s, "  gsl_sf_lngamma");
+  gsl_test(s, "  gsl_sf_lngamma(1/10)");
   status += s;
-  
+
+  s += ( frac_diff( gsl_sf_lngamma(100.0),  359.1342053695753 ) > 1.e-14 );
+  gsl_test(s, "  gsl_sf_lngamma(100)");
+  status += s;
+
+  s = 0;
+  s += ( frac_diff( gsl_sf_lngamma(-0.1),    2.368961332728788655 ) > 1.e-14 );
+  gsl_test(s, "  gsl_sf_lngamma(-1/10)");
+  status += s;
+
+  s += ( frac_diff( gsl_sf_lngamma(-100.5), -364.9009683094273518 ) > 1.e-14 );
+  gsl_test(s, "  gsl_sf_lngamma(-100.5)");
+  status += s;
+
   s = 0;
   zr = 5.0;
   zi = 2.0;

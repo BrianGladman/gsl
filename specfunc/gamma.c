@@ -580,27 +580,48 @@ static void lngamma_lanczos_complex(double zr, double zi, double * yr, double * 
 }
 
 
-/*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
-
-/* Lanczos with gamma=7, truncated at 1/(z+8) 
+/* Lanczos method for real x > 0;
+ * gamma=7, truncated at 1/(z+8) 
  * [J. SIAM Numer. Anal, Ser. B, 1 (1964) 86]
  */
+static
+int
+lngamma_lanczos(double x, double * result)
+{
+  int k;
+  double Ag;
+
+  x -= 1.; /* Lanczos writes z! instead of Gamma(z) */
+  
+  Ag = lanczos_7_c[0];
+  for(k=1; k<=8; k++) { Ag += lanczos_7_c[k]/(x+k); }
+
+  *result =  (x+0.5)*log(x+7.5) - (x+7.5) + LogRootTwoPi_ + log(Ag);
+  return GSL_SUCCESS;
+}
+
+
+/*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
+
+
 int gsl_sf_lngamma_impl(double x, double * result)
 {
-  if(x <= 0.0) {
-    return GSL_EDOM;
+  if(x >= 0.5) {
+    return lngamma_lanczos(x, result);
   }
   else {
-    int k;
-    double Ag;
-
-    x -= 1.; /* Lanczos writes z! instead of Gamma(z) */
-  
-    Ag = lanczos_7_c[0];
-    for(k=1; k<=8; k++) { Ag += lanczos_7_c[k]/(x+k); }
-
-    *result =  (x+0.5)*log(x+7.5) - (x+7.5) + LogRootTwoPi_ + log(Ag);
-    return GSL_SUCCESS;
+    double z = 1.0 - x;
+    double s = sin(M_PI*z);
+    if(s == 0.0) {
+      *result = 0.0;
+      return GSL_EDOM;
+    }
+    else {
+      double lg_z;
+      lngamma_lanczos(z, &lg_z);
+      *result = log(M_PI/fabs(s)) - lg_z;
+      return GSL_SUCCESS;
+    }
   }
 }
 

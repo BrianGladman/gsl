@@ -2,9 +2,14 @@
  * RCS:     $Id$
  */
 /* Evaluation of Coulomb wave functions F_L(eta, x), G_L(eta, x),
- * and their derivatives. Uses Steed's method, following the
- * analysis of [Barnett, Comp. Phys. Comm., 21, 297 (1981)].
- * Refinements for asymptotic regimes are also used.
+ * and their derivatives. A combination of Steed's method, asymptotic
+ * results, and power series.
+ *
+ * Steed's method:
+ *  [Barnett, CPC 21, 297 (1981)]
+ * Power series and other methods:
+ *  [Bardin et al., CPC 3, 73 (1972)]
+ *  [Abad+Sesma, CPC 71, 110 (1992)]
  */
 #include <stdio.h>
 #include <stdlib.h>
@@ -49,6 +54,8 @@ C0sq(double eta)
  * arguments the phase of the complex gamma function is not
  * very accurately determined. However the modulus is, and that
  * is all that we need to calculate C_L.
+ *
+ * This is not valid for L <= -3/2  or  L = -1.
  */
 static
 double
@@ -56,17 +63,19 @@ CLeta(double L, double eta)
 {
   double ln1; /* log of numerator Gamma function */
   double ln2; /* log of denominator Gamma function */
+  double sgn = 1.0;
 
-  if(fabs(eta) < GSL_MACH_EPS) {
+  if(fabs(eta/(L+1.0)) < GSL_MACH_EPS) {
     gsl_sf_lngamma_impl(L+1.0, &ln1);
   }
   else {
     double p1;                 /* phase of numerator Gamma -- not used */
     gsl_sf_lngamma_complex_impl(L+1.0, eta, &ln1, &p1); /* should be ok */
   }
-  gsl_sf_lngamma_impl(2*L+2.0, &ln2);
-  
-  return exp(L*M_LN2 - 0.5*eta*M_PI + ln1 - ln2);
+  gsl_sf_lngamma_impl(2.0*(L+1.0), &ln2);
+  if(L < -1.0) sgn = -sgn;
+
+  return sgn * exp(L*M_LN2 - 0.5*eta*M_PI + ln1 - ln2);
 }
 
 
@@ -189,9 +198,20 @@ coulomb_Phi_series(const double lam, const double eta, const double x,
 }
 
 
-/* Evaluate the Frobenius series for G_lam(eta,x).
+/* Evaluate the Frobenius series for F_lam(eta,x) and G_lam(eta,x).
+ * Homegrown algebra. Evaluates the series for F_{lam} and
+ * F_{-lam-1}, then uses
+ *    G_{lam} = (F_{lam} cos(phi) - F_{-lam-1}) / sin(phi)
+ * where
+ *    phi = Arg[Gamma[1+lam+I eta]] - Arg[Gamma[-lam + I eta]] - (lam+1/2)Pi
+ *        = Arg[Sin[Pi(-lam+I eta)] - (lam+1/2)Pi
+ *        = atan2(-cos(lam Pi)sinh(eta Pi), -sin(lam Pi)cosh(eta Pi)) - (lam+1/2)Pi
  *
- * G_lam = x^(-lam) Sum[ v_m, {m,0,Infinity}]
+ * F_lam =             Clam x^(lam+1) Sum[u_m, {m,0,Infinity}]
+ * G_lam = 1/(Clam (2lam+1)) x^(-lam) Sum[v_m, {m,0,Infinity}]
+ *
+ * u_m := a_m x^m
+ * a_m m (m+1+2lam) - 2 eta a_{m-1} + a_{m-2} = 0
  *
  * v_m := b_m x^m
  * b_m m (m-1-2lam) - 2 eta b_{m-1} + b_{m-2} = 0
@@ -200,40 +220,139 @@ coulomb_Phi_series(const double lam, const double eta, const double x,
  */
 static
 int
-coulomb_G_series(const double lam, const double eta, const double x, double *result)
+coulomb_FG_series(const double lam, const double eta, const double x,
+                  double * F, double * G)
 {
   const int max_iter = 800;
-  double Clam = CLeta(lam, eta);
-  double vmm2 = 1.0;                  /* v_0 */
-  double vmm1 = -x*eta/lam * vmm2;    /* v_1 */
-  double vm;
-  double sum  = vmm2 + vmm1;
+  const double ClamA = CLeta(lam, eta);
+  const double ClamB = CLeta(-lam-1.0, eta);
+  const double tlp1 = 2.0*lam + 1.0;
+  const double pow_x = pow(x, lam);
+  const double Y = -cos(lam*M_PI) * sinh(eta*M_PI);
+  const double X = -sin(lam*M_PI) * cosh(eta*M_PI);
+  const double phi_lam = atan2(Y,X) - (lam+0.5)*M_PI;
+
+  double uA_mm2 = 1.0;                  /* uA sum is for F_{lam} */
+  double uA_mm1 = x*eta/(lam+1.0);
+  double uA_m;
+  double uB_mm2 = 1.0;                  /* uB sum is for F_{-lam-1} */
+  double uB_mm1 = -x*eta/lam;
+  double uB_m;
+  double A_sum = uA_mm2 + uA_mm1;
+  double B_sum = uB_mm2 + uB_mm1;
+  double A_abs_del_prev = fabs(A_sum);
+  double B_abs_del_prev = fabs(B_sum);
+  double FA, FB;
   int m = 2;
   
   while(m < max_iter) {
-    vm = x*(2.0*eta*vmm1 - x*vmm2)/(m*(m-1-2.0*lam));
-    sum += vm;
-    if(sum != 0.0 && fabs(vm/sum) < 40.0*GSL_MACH_EPS) break;
-    vmm2 = vmm1;
-    vmm1 = vm;
+    double abs_dA;
+    double abs_dB;
+    uA_m = x*(2.0*eta*uA_mm1 - x*uA_mm2)/(m*(m+tlp1));
+    uB_m = x*(2.0*eta*uB_mm1 - x*uB_mm2)/(m*(m-tlp1));
+    A_sum += uA_m;
+    B_sum += uB_m;
+    abs_dA = fabs(uA_m);
+    abs_dB = fabs(uB_m);
+    if(m > 15) {
+      /* Don't bother checking until we have gone out a little ways;
+       * a minor optimization. Also make sure to check both the
+       * current and the previous increment because the odd and even
+       * terms of the sum can have very different behaviour, depending
+       * on the value of eta.
+       */
+      double max_abs_dA = locMax(abs_dA, A_abs_del_prev);
+      double max_abs_dB = locMax(abs_dB, B_abs_del_prev);
+      double abs_A = fabs(A_sum);
+      double abs_B = fabs(B_sum);
+      if(   max_abs_dA/(max_abs_dA + abs_A) < 40.0*GSL_MACH_EPS
+         && max_abs_dB/(max_abs_dB + abs_B) < 40.0*GSL_MACH_EPS
+         ) break;
+    }
+    A_abs_del_prev = abs_dA;
+    B_abs_del_prev = abs_dB;
+    uA_mm2 = uA_mm1;
+    uA_mm1 = uA_m;
+    uB_mm2 = uB_mm1;
+    uB_mm1 = uB_m;
     m++;
   }
 
-  *result = pow(x, -lam) * sum /((2.0*lam+1.0)*Clam);
+  FA = A_sum * ClamA * pow_x * x;
+  FB = B_sum * ClamB / pow_x;
+
+  *F = FA;
+  *G = (FA * cos(phi_lam) - FB)/sin(phi_lam);
+
   if(m == max_iter)
     return GSL_EMAXITER;
   else
     return GSL_SUCCESS;
+
+#if 0
+  double u_mm2 = 1.0;                  /* u_0 */
+  double u_mm1 = x*eta/(lam+1.0);      /* u_1 */
+  double u_m;
+  double v_mm2 = 1.0;                  /* v_0 */
+  double v_mm1 = -x*eta/lam;           /* v_1 */
+  double v_m;
+  double f_sum = u_mm2 + u_mm1;
+  double g_sum = v_mm2 + v_mm1;
+  double f_abs_del_prev = fabs(f_sum);
+  double g_abs_del_prev = fabs(g_sum);
+  int m = 2;
+  
+  while(m < max_iter) {
+    double abs_df;
+    double abs_dg;
+    u_m = x*(2.0*eta*u_mm1 - x*u_mm2)/(m*(m+tlp1));
+    v_m = x*(2.0*eta*v_mm1 - x*v_mm2)/(m*(m-tlp1));
+    f_sum += u_m;
+    g_sum += v_m;
+    abs_df = fabs(u_m);
+    abs_dg = fabs(v_m);
+    if(m > 15) {
+      /* Don't bother checking until we have gone out a little ways;
+       * a minor optimization. Also make sure to check both the
+       * current and the previous increment because the odd and even
+       * terms of the sum can have very different behaviour, depending
+       * on the value of eta.
+       */
+      double max_abs_df = locMax(abs_df, f_abs_del_prev);
+      double max_abs_dg = locMax(abs_dg, g_abs_del_prev);
+      double abs_f = fabs(f_sum);
+      double abs_g = fabs(g_sum);
+      if(   max_abs_df/(max_abs_df + abs_f) < 40.0*GSL_MACH_EPS
+         && max_abs_dg/(max_abs_dg + abs_g) < 40.0*GSL_MACH_EPS
+         ) break;
+    }
+    f_abs_del_prev = abs_df;
+    g_abs_del_prev = abs_dg;
+    u_mm2 = u_mm1;
+    u_mm1 = u_m;
+    v_mm2 = v_mm1;
+    v_mm1 = v_m;
+    m++;
+  }
+
+  *F = f_sum * Clam * pow_x * x;
+  *G = (g_sum - cos(phi_lam)*pow_x*pow_x*x*f_sum) / (Clam * tlp1) / pow_x;
+
+  if(m == max_iter)
+    return GSL_EMAXITER;
+  else
+    return GSL_SUCCESS;
+#endif
 }
 
 
-/* Evaluate the Frobenius series for G_0(eta,x)
+/* Evaluate the Frobenius series for F_0(eta,x) and G_0(eta,x).
  * See [Bardin et al., CPC 3, 73 (1972), (14)-(17)];
  * note the misprint in (17): nu_0=1 is correct, not nu_0=0.
  */
 static
 int
-coulomb_G0_series(const double eta, const double x, double * result)
+coulomb_FG0_series(const double eta, const double x, double * F, double * G)
 {
   const int max_iter = 800;
   const double x2  = x*x;
@@ -241,37 +360,113 @@ coulomb_G0_series(const double eta, const double x, double * result)
   double C0 = CLeta(0.0, eta);
   double r1pie;
   int psi_stat = gsl_sf_psi_1piy_impl(eta, &r1pie);
-  double nu_mm2 = 1.0;                              /* nu_0 */
-  double nu_mm1 = tex*(2.0*M_EULER-1.0+r1pie);      /* nu_1 */
-  double nu_m;
-  double nusum  = nu_mm2 + nu_mm1;
   double u_mm2 = 0.0;  /* u_0 */
   double u_mm1 = x;    /* u_1 */
   double u_m;
-  double usum = u_mm2 + u_mm1;
+  double v_mm2 = 1.0;                              /* nu_0 */
+  double v_mm1 = tex*(2.0*M_EULER-1.0+r1pie);      /* nu_1 */
+  double v_m;
+  double u_sum = u_mm2 + u_mm1;
+  double v_sum = v_mm2 + v_mm1;
+  double u_abs_del_prev = fabs(u_sum);
+  double v_abs_del_prev = fabs(v_sum);
   int m = 2;
   
   while(m < max_iter) {
+    double abs_du;
+    double abs_dv;
     double m_mm1 = m*(m-1.0);
-    u_m  = (tex*u_mm1  - x2*u_mm2)/m_mm1;
-    nu_m = (tex*nu_mm1 - x2*nu_mm2 - 2.0*eta*(2.0*m-1.0)*u_m)/m_mm1;
-    nusum += nu_m;
-    usum  += u_m;
-    if(   nusum != 0.0
-       && usum  != 0.0
-       && (fabs(nu_m/nusum) + fabs(u_m/usum) < 40.0*GSL_MACH_EPS)) break;
-    nu_mm2 = nu_mm1;
-    nu_mm1 = nu_m;
+    u_m = (tex*u_mm1 - x2*u_mm2)/m_mm1;
+    v_m = (tex*v_mm1 - x2*v_mm2 - 2.0*eta*(2*m-1)*u_m)/m_mm1;
+    u_sum += u_m;
+    v_sum += v_m;
+    abs_du = fabs(u_m);
+    abs_dv = fabs(v_m);
+    if(m > 15) {
+      /* Don't bother checking until we have gone out a little ways;
+       * a minor optimization. Also make sure to check both the
+       * current and the previous increment because the odd and even
+       * terms of the sum can have very different behaviour, depending
+       * on the value of eta.
+       */
+      double max_abs_du = locMax(abs_du, u_abs_del_prev);
+      double max_abs_dv = locMax(abs_dv, v_abs_del_prev);
+      double abs_u = fabs(u_sum);
+      double abs_v = fabs(v_sum);
+      if(   max_abs_du/(max_abs_du + abs_u) < 40.0*GSL_MACH_EPS
+         && max_abs_dv/(max_abs_dv + abs_v) < 40.0*GSL_MACH_EPS
+         ) break;
+    }
+    u_abs_del_prev = abs_du;
+    v_abs_del_prev = abs_dv;
     u_mm2 = u_mm1;
     u_mm1 = u_m;
+    v_mm2 = v_mm1;
+    v_mm1 = v_m;
     m++;
   }
-  
-  *result = (nusum + 2.0*eta*usum * log(2.0*x)) / C0;
+
+  *F = C0 * u_sum;
+  *G = (v_sum + 2.0*eta*u_sum * log(2.0*x)) / C0;
+
   if(m == max_iter)
     return GSL_EMAXITER;
   else
     return psi_stat;
+}
+
+
+/* Evaluate the Frobenius series for F_{-1/2}(eta,x) and G_{-1/2}(eta,x).
+ * Homegrown algebra.
+ */
+static
+int
+coulomb_FGmhalf_series(const double eta, const double x, double * F, double * G)
+{
+  const int max_iter = 800;
+  const double rx  = sqrt(x);
+  const double x2  = x*x;
+  const double tex = 2.0*eta*x;
+  const double Cmhalf = CLeta(-0.5, eta);
+  double u_mm2 = 1.0;                      /* u_0 */
+  double u_mm1 = tex * u_mm2;              /* u_1 */
+  double u_m;
+  double v_mm2, v_mm1, v_m;
+  double f_sum, g_sum;
+  double rpsi_1pe, rpsi_1p2e;
+  int m = 2;
+
+  gsl_sf_psi_1piy_impl(eta,     &rpsi_1pe);
+  gsl_sf_psi_1piy_impl(2.0*eta, &rpsi_1p2e);
+
+  v_mm2 = 2.0*M_EULER - M_LN2 - rpsi_1pe + 2.0*rpsi_1p2e;
+  v_mm1 = tex*(v_mm2 - 2.0*u_mm2);
+
+  f_sum = u_mm2 + u_mm1;
+  g_sum = v_mm2 + v_mm1;
+
+  while(m < max_iter) {
+    double m2 = m*m;
+    u_m = (tex*u_mm1 - x2*u_mm2)/m2;
+    v_m = (tex*v_mm1 - x2*v_mm2 - 2.0*m*u_m)/m2;
+    f_sum += u_m;
+    g_sum += v_m;
+    if(   f_sum != 0.0
+       && g_sum != 0.0
+       && (fabs(u_m/f_sum) + fabs(v_m/g_sum) < 40.0*GSL_MACH_EPS)) break;
+    u_mm2 = u_mm1;
+    u_mm1 = u_m;
+    v_mm2 = v_mm1;
+    v_mm1 = v_m;
+    m++;
+  }
+  
+  *F = Cmhalf * rx * f_sum;
+  *G = -rx*(f_sum * log(x) + g_sum)/Cmhalf;
+  if(m == max_iter)
+    return GSL_EMAXITER;
+  else
+    return GSL_SUCCESS;
 }
 
 
@@ -698,18 +893,16 @@ gsl_sf_coulomb_wave_FG_impl(const double eta, const double x,
     const int N    = (int)(lam_F + 0.5);
     const int span = locMax(k_lam_G, N);
     const double lam_min = lam_F - N;    /* -1/2 <= lam_min <= 1/2 */
-    const double C_lam_min = CLeta(lam_min, eta);
-    const double pow_x = pow(x, lam_min);
     double F_lam_F, Fp_lam_F;
     double G_lam_G, Gp_lam_G;
     double Fp_over_F_lam_F;
     double F_sign_lam_F;
     double F_lam_min_unnorm, Fp_lam_min_unnorm;
-    double Phi, Phi_star;
+    double Fp_over_F_lam_min;
     double F_lam_min, Fp_lam_min;
     double G_lam_min, Gp_lam_min;
     double F_scale;
-    
+
     /* Determine F'/F at lam_F. */
     coulomb_CF1(lam_F, eta, x, &F_sign_lam_F, &Fp_over_F_lam_F);
 
@@ -721,21 +914,23 @@ gsl_sf_coulomb_wave_FG_impl(const double eta, const double x,
 		    &F_lam_min_unnorm, &Fp_lam_min_unnorm
 		    );
 
-    /* Determine F,F' at lam_min. */
-    coulomb_Phi_series(lam_min, eta, x, &Phi, &Phi_star);
-    F_lam_min  = C_lam_min * pow_x * x * Phi;
-    Fp_lam_min = C_lam_min * pow_x * Phi_star;
-    F_scale = F_lam_min / F_lam_min_unnorm;
-
-    /* Determine G and G' at lam_min. */
-    if(lam_min == 0.0) {
-      coulomb_G0_series(eta, x, &G_lam_min);
+    /* Determine F and G at lam_min. */
+    if(lam_min == -0.5) {
+      coulomb_FGmhalf_series(eta, x, &F_lam_min, &G_lam_min);
+    }
+    else if(lam_min == 0.0) {
+      coulomb_FG0_series(eta, x, &F_lam_min, &G_lam_min);
+    }
+    else if(lam_min == 0.5) {
     }
     else {
-      /* FIXME: do something about -1/2 and 1/2 */
-      coulomb_G_series(lam_min, eta, x, &G_lam_min);
+      coulomb_FG_series(lam_min, eta, x, &F_lam_min, &G_lam_min);
     }
-    Gp_lam_min = (Fp_lam_min/F_lam_min)*G_lam_min - 1.0/F_lam_min;
+
+    /* Determine remaining quantities. */
+    Fp_over_F_lam_min = Fp_lam_min_unnorm / F_lam_min_unnorm;
+    Gp_lam_min = Fp_over_F_lam_min*G_lam_min - 1.0/F_lam_min;
+    F_scale = F_lam_min / F_lam_min_unnorm;
  
     /* Apply scale to the original F,F' values. */
     F_lam_F  *= F_scale;

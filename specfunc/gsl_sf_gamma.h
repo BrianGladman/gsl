@@ -5,7 +5,10 @@
 #define GSL_GAMMAFUNCTION_H_
 
 
-/* Log[Gamma(x)]; Lanczos method
+/* Log[Gamma(x)], x not a negative integer
+ * Uses real Lanczos method.
+ * Returns the real part of Log[Gamma[x]] when x < 0,
+ * i.e. Log[|Gamma[x]|].
  *
  * exceptions: GSL_EDOM
  */
@@ -14,7 +17,9 @@ int     gsl_sf_lngamma_e(double x, double * result);
 double  gsl_sf_lngamma(double);   
 
 
-/* Gamma(z) for z complex.
+/* Log[Gamma(z)] for z complex, z not a negative integer
+ * Uses complex Lanczos method.
+ *
  * Calculates:
  *   lnr = log|Gamma(z)|
  *   arg = arg(Gamma(z))  in (-Pi, Pi]
