@@ -54,10 +54,10 @@ The square root of three, @math{\sqrt 3}
 The constant pi, @math{\pi}
 
 @item M_PI_2
-pi divided by two, @math{\pi/2}
+Pi divided by two, @math{\pi/2}
 
 @item M_PI_4
-pi divided by four, @math{\pi/4}
+Pi divided by four, @math{\pi/4}
 
 @item M_SQRTPI
 The square root of pi, @math{\sqrt\pi}

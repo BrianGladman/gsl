@@ -248,12 +248,12 @@ announced for general use.
 
 The subroutines in the GNU Scientific Library are ``free software'';
 this means that everyone is free to use them, and free to redistribute
-them in other free programs if they wish.  The library is not in the
-public domain; it is copyrighted and there are conditions on its
-distribution, but these conditions are designed to permit everything
-that a good cooperating citizen would want to do.  What is not allowed
-is to try to prevent others from further sharing any version of the
-software that they might get from you.
+them in other free programs.  The library is not in the public domain;
+it is copyrighted and there are conditions on its distribution, but
+these conditions are designed to permit everything that a good
+cooperating citizen would want to do.  What is not allowed is to try to
+prevent others from further sharing any version of the software that
+they might get from you.
 
 Specifically, we want to make sure that you have the right to give away
 copies of any programs related to the GNU Scientific Library, that you
@@ -275,10 +275,10 @@ that any problems introduced by others will not reflect on our
 reputation.
 
 The precise conditions for the distribution of software related to the
-GNU Scientific Library are found in the GNU General Public License that
-accompanies them (@pxref{GNU General Public License}).  Further
-information about this license is available from the GNU Project webpage
-@cite{Frequently Asked Questions about the GNU GPL},
+GNU Scientific Library are found in the GNU General Public License
+(@pxref{GNU General Public License}).  Further information about this
+license is available from the GNU Project webpage @cite{Frequently Asked
+Questions about the GNU GPL},
 @url{http://www.gnu.org/copyleft/gpl-faq.html}.
 
 @node Using the library, Error handling, Preliminaries, Top
