@@ -461,5 +461,5 @@ from the NIST website,
 
 @itemize @asis
 @item
-@url{http://physics.nist.gov/cuu/Constants/index.html}
+@url{http://www.physics.nist.gov/cuu/Constants/index.html}
 @end itemize
