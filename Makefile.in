@@ -42,7 +42,7 @@ PACKAGE = @PACKAGE@
 VERSION = @VERSION@
 CC = @CC@
 
-SUBDIRS = random fft roots statistics siman doc
+SUBDIRS = random randist fft roots statistics siman 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_CLEAN_FILES = 
 DIST_COMMON =  README AUTHORS COPYING ChangeLog INSTALL Makefile.am \
