@@ -21,7 +21,6 @@ dnl Check compiler features
 AC_TYPE_SIZE_T
 AC_C_CONST
 AC_C_INLINE
-AC_C_BIGENDIAN
 
 dnl some magic to get a full path to the working directory
 full_top_srcdir=`cd $srcdir; pwd`
