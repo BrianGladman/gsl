@@ -1,3 +1,18 @@
+* In math.c, what are the relative merits of using sin(R)**2 vs
+sin(2R) in the trigonometric functions. (Guarantee of positivity for
+overall expression?).
+
+* The asymptotic behavior of the complex trigonometric functions may
+overflow because it involves expressions like cosh(x) / D , where D =
+cosh^2 which is computed prior to the division. This should be made
+uniform somehow.
+
+* Need to specify the branch cuts for all the functions that have
+them.  If there is a choice follow the Common Lisp
+Standard/HP-calculators as described in the GNU Calc Manual.
+ 
+* Some articles worth looking at
+
 @Article{Stewart:1985:NCD,
   author =       "G. W. Stewart",
   title =        "A Note on Complex Division",
