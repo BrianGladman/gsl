@@ -1,7 +1,14 @@
 /* $Id$ */
-/* This file was generated automatically from the template file
- * x-gen.xc (either that or it _is_ the template file)
+/* File xxx-gen.xc is a template file
+ *
+ * This is either the template file xxx-gen.xc or else is generated
+ * automatically from it.  If you want to make changes to this file,
+ * make sure that the changes are to the template file xxx-gen.xc;
+ * you can then rebuild the files XXX-switch.c, XXX-gen.c, and XXX.h by
+ * running the script 'makesrc XXX' If you run the script with no
+ * arguments, it makes all built-sources
  */
+
 
 #include "XXX.h"             /* defines gsl_ran_XXX_ prototypes */
 #include "gsl_ran.h"         /* defines gsl_ran_ prototypes */

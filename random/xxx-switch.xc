@@ -8,9 +8,8 @@
 #include "gsl_ran.h"            /* defines gsl_ran_ prototypes */
 #include "gsl_ran_switch.h"
 
-#define MAXALGNAMELEN 10        /* only short algorithm names allowed */
 typedef struct {
-    char name[MAXALGNAMELEN];
+    char *name;
     unsigned long (*random_wstate)(void *);
     double (*uniform_wstate)(void *);
     double (*max)();
@@ -91,8 +90,8 @@ void gsl_ran_use_default() {
 #include "XXX.h"
 void gsl_ran_use_XXX() {
     if (A==NULL) gsl_ran_newAlgorithm();
-    
-    strncpy(A->name,"XXX",MAXALGNAMELEN);
+
+    A->name = strdup("XXX");
     A->random_wstate = gsl_ran_XXX_random_wstate;
     A->uniform_wstate = gsl_ran_XXX_uniform_wstate;
     A->max = gsl_ran_XXX_max;

@@ -1,9 +1,15 @@
 /* $Id$ */
 /* File xxx-state.xc is a template file
- * This is either file xxx-state.xc or else is generated automatically 
- * from the template file xxx-state.xc
  *
- * It defines functions gsl_ran_XXX_
+ * This is either the template file xxx-state.xc or else is generated
+ * automatically from it.  If you want to make changes to this file,
+ * make sure that the changes are to the template file xxx-state.xc;
+ * you can then rebuild the files XXX-state.c, XXX-gen.c, and XXX.h by
+ * running the script 'makesrc XXX'.  If you run the script with as
+ * 'makesrc --all' then it makes all built-sources
+ */
+/*
+ * This file defines functions gsl_ran_XXX_
  *   seed(),random(),uniform(),copyState(),getState(),setState()
  * in terms of the routines defined by the human programmer in XXX.c
  *
