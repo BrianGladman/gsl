@@ -1,4 +1,3 @@
-/* $Id$ */
 /* Gamma distribution of order a>0 is defined by:
  *
  *   F(x) = \frac{1}{\Gamma(a)}\int_0^x t^{a-1} e^{-t} dt
@@ -21,10 +20,9 @@
 static double gsl_ran_gammalarge(double a)
 {
     /* Works only if a>1, and is most efficient if a is large */
-    /* This algorithm, reported in Knuth, is attributed to Ahrens.
-     * A faster one, we are told, can be found in:
-     * J. H. Ahrens and U. Dieter, Computing 12 (1974) 223-246.
-     */
+    /* This algorithm, reported in Knuth, is attributed to Ahrens.  A
+       faster one, we are told, can be found in: J. H. Ahrens and
+       U. Dieter, Computing 12 (1974) 223-246.  */
     double sqa,x,y,v;
     sqa = sqrt(2*a-1);
     do {
@@ -75,12 +73,6 @@ double gsl_ran_gamma(double a)
     }
 }
 
-
-            
-            
-    
-        
-    
 double gsl_ran_gammaint(int a)
 {
     if (a < 12) {

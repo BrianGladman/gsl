@@ -18,7 +18,7 @@
 @ifinfo
 This file documents the @value{GSL}.
 
-Copyright (C) 1996, 1997 The GSL Project.
+Copyright (C) 1996, 1997, 1998 The GSL Project.
 
 Permission is granted to make and distribute verbatim copies of
 this manual provided the copyright notice and this permission notice
@@ -63,7 +63,7 @@ by the Foundation.
 
 @page
 @vskip 0pt plus 1filll
-Copyright @copyright{} 1996,1997 The GSL Project.
+Copyright @copyright{} 1996, 1997, 1998 The GSL Project.
 
 Permission is granted to make and distribute verbatim copies of
 this manual provided the copyright notice and this permission notice
@@ -89,9 +89,11 @@ by the Foundation.
 This file documents the the @value{GSL}, a collection of numerical
 routines for scientific computing.
 
-As of @value{UPDATED}, the only complete packages are the random number
-suite (@pxref{Random number generation}) and the FFT package
-(@pxref{FFTs}).
+As of @value{UPDATED}, thecomplete packages are the random number suite
+(@pxref{Random number generation}), the FFT package (@pxref{FFTs}), the
+simulated annealing package (@pxref{Simulated Annealing}) and the root
+finding package (@pxref{Root finding}).  Work is under way on a special
+function library.
 @end ifinfo
 
 
@@ -102,7 +104,7 @@ suite (@pxref{Random number generation}) and the FFT package
 * Basic statistics::            
 * FFTs::                        
 * Root finding::                
-* Simulated annealing::         
+* Simulated Annealing::         
 * Debugging Numerical Programs::  
 * Contributors to GSL::         
 * Copying::                     
@@ -238,7 +240,7 @@ Here is a basic example of how to use these functions:
 
 #include <gsl_bstats.h>
 
-/* to compile: gcc file_name.c libgsl_statistics.a -lm */
+/* to compile: gcc file_name.c libgslstatistics.a -lm */
 
 int main()
 @{
@@ -261,13 +263,13 @@ int main()
 @include fft.texi
 
 @c Section on root finding
-@node Root finding, Simulated annealing, FFTs, Top
+@node Root finding, Simulated Annealing, FFTs, Top
 @chapter Root finding
 @include roots.texi
 
 @c Section on simulated annealing
-@node Simulated annealing, Debugging Numerical Programs, Root finding, Top
-@chapter Simulated annealing
+@node Simulated Annealing, Debugging Numerical Programs, Root finding, Top
+@chapter Simulated Annealing
 @cindex simulated annealing
 @cindex combinatorial searches
 
@@ -299,7 +301,7 @@ probability of taking a step is given by a Boltzmann distribution.
 * Examples with Simulated Annealing::  
 @end menu
 
-@node Simulated Annealing algorithm, Simulated Annealing functions, Simulated annealing, Simulated annealing
+@node Simulated Annealing algorithm, Simulated Annealing functions, Simulated Annealing, Simulated Annealing
 @section Simulated Annealing algorithm
 
 
@@ -329,8 +331,6 @@ This slight probability of taking a step that gives @emph{higher} energy
 is what allows simulated annealing to frequently get out of local
 minima.
 
-------
-
 An initial guess is supplied.  At each step, a point is chosen at a
 random distance from the current one, where the random distance @emph{r}
 is distributed according to a Boltzmann distribution
@@ -351,7 +351,7 @@ T -> T/mu_T
 where mu_T is slightly greater than 1.
 
 
-@node Simulated Annealing functions, Examples with Simulated Annealing, Simulated Annealing algorithm, Simulated annealing
+@node Simulated Annealing functions, Examples with Simulated Annealing, Simulated Annealing algorithm, Simulated Annealing
 @section Simulated Annealing functions
 
 @deftp {Simulated annealing} gsl_Efunc_t
@@ -419,7 +419,7 @@ If @var{print_position} is null, no information is printed to the
 screen.
 @end deftypefn
 
-@node Examples with Simulated Annealing,  , Simulated Annealing functions, Simulated annealing
+@node Examples with Simulated Annealing,  , Simulated Annealing functions, Simulated Annealing
 @section Examples with Simulated Annealing
 
 GSL's Simulated Annealing package is clumsy, and it has to be because it
@@ -636,7 +636,7 @@ the calculation at which a new temperature is set) for this problem:
 @end tex
 
 
-@node Debugging Numerical Programs, Contributors to GSL, Simulated annealing, Top
+@node Debugging Numerical Programs, Contributors to GSL, Simulated Annealing, Top
 @appendix Debugging Numerical Programs
 
 
@@ -657,10 +657,14 @@ Wrote the basic statistical routines and the relevant chapter in this
 manual.
 
 @item Brian Gough
-Wrote the FFT package and the relevant chapter in this manual.
+Wrote the FFT package and the relevant chapter in this manual.  Also
+wrote the error handling infrastructure.
 
 @item Reid Priedhorsky
 Wrote the root finding package and the relevant chapter in this manual.
+
+@item Gerry Jungman
+Wrote the special function library.
 
 @end table
 
@@ -668,14 +672,14 @@ Wrote the root finding package and the relevant chapter in this manual.
 @node Copying, Concept Index, Contributors to GSL, Top
 @appendix Copying
 
-   The subroutines and source code in the @value{GSL} package are "free";
-this means that everyone is free to use them and free to redistribute
-them on a free basis.  The @value{GSL}-related programs are not in the
-public domain; they are copyrighted and there are restrictions on their
-distribution, but these restrictions are designed to permit everything
-that a good cooperating citizen would want to do.  What is not allowed
-is to try to prevent others from further sharing any version of these
-programs that they might get from you.
+   The subroutines and source code in the @value{GSL} package are
+``free''; this means that everyone is free to use them and free to
+redistribute them on a free basis.  The @value{GSL}-related programs are
+not in the public domain; they are copyrighted and there are
+restrictions on their distribution, but these restrictions are designed
+to permit everything that a good cooperating citizen would want to do.
+What is not allowed is to try to prevent others from further sharing any
+version of these programs that they might get from you.
 
    Specifically, we want to make sure that you have the right to give
 away copies of the programs that relate to @value{GSL}, that you receive

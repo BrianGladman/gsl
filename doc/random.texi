@@ -108,7 +108,7 @@ where @code{dx} is @code{1./gsl_ran_max()}.
 variance one.
 @end deftypefn
 
-@deftypefn Random double gsl_ran_poisson (double @var{mu})
+@deftypefn Random int gsl_ran_poisson (double @var{mu})
 @code{gsl_ran_poisson} returns a poisson--distributed random number,
 with mean @var{mu}.
 @end deftypefn
@@ -122,6 +122,14 @@ poisson--distributed random numbers with mean @var{mu} into the array
 @deftypefn Random double gsl_ran_exponential (double @var{mu})
 @code{gsl_ran_exponential} returns a poisson--distributed random number,
 with mean @var{mu}.  This is calculated with @math{-mu*log(x)}.
+@end deftypefn
+
+@deftypefn Random int gsl_ran_gamma (double @var{a})
+@code{gsl_ran_gamma} returns a gamma-distributed random number.  The
+distribution function is
+@equation
+F(x) = @{ @{1@} \over @{ \Gamma(a)@} \int_0^x t^@{a-1@} e^@{-t@} dt @}
+@end equation
 @end deftypefn
 
 @deftypefn Random {int *} gsl_ran_shuffle(int N, int *x)

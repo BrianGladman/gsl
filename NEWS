@@ -1,34 +1,14 @@
-Guile NEWS --- history of user-visible changes.  -*- text -*-
-Copyright (C) 1996, 1997 Free Software Foundation, Inc.
-See the end for copying conditions.
+Time to start keeping a NEWS file.
 
-Please send Guile bug reports to bug-guile@prep.ai.mit.edu.
-
-Changes since GSL 0.3a:
+This covers changes made *after* the gsl-0.2 snapshot
+
+* Changed libgsl_statisctics.a to libgslstatistics.a and
+  libgsl_siman.a to libgslsiman.a, since most of the packages don't
+  have the underscore.  Users will have to remove the old files,
+  unless they do a "make uninstall" on the previous release before
+  they install this new one.
 
 * Changes to the random number suite
 
 ** Incorporated the gauss, poisson and exponential distributions in
    the standard libgslrandom.a
-
-
-Copyright information:
-
-Copyright (C) 1997 The GSL Project.
-
-   Permission is granted to anyone to make or distribute verbatim copies
-   of this document as received, in any medium, provided that the
-   copyright notice and this permission notice are preserved,
-   thus giving the recipient permission to redistribute in turn.
-
-   Permission is granted to distribute modified versions
-   of this document, or of portions of it,
-   under the above conditions, provided also that they
-   carry prominent notices stating who last changed them.
-
-
-Local variables:
-mode: outline
-paragraph-separate: "[ 	]*$"
-end:
-
