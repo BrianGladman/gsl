@@ -22,9 +22,7 @@ More information about GSL
 
 The project homepage is http://www.gnu.org/software/gsl/
 
-The developers page is http://sources.redhat.com/gsl/
-
-Please report bugs to the GSL discussion list gsl-discuss@sources.redhat.com
+Please report bugs to bug-gsl@gnu.org
 
 See the NEWS file for recent developments.
 

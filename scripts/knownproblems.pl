@@ -74,7 +74,7 @@ sections,
   3) make check  (using strict IEEE double-precision arithmetic)
 
 If you find a bug which is not on this list please report it to the
-mailing list gsl-discuss@sources.redhat.com. Thank you.
+mailing list bug-gsl@gnu.org. Thank you.
 
 p.s. If you want to send us the output of 'make check' please extract
 only the relevant parts, because the complete output is huge (over 10

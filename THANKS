@@ -191,4 +191,5 @@ dirichlet distribution
 
 * Reinhold Bader <Reinhold.Bader@lrz-muenchen.de>, fixes for Hitachi SR8000
 
-* Slaven Peles <peles@cns.physics.gatech.edu>, build options for Compaq cc
+* Slaven Peles <peles@cns.physics.gatech.edu>, build options for
+Compaq cc, doc bug fix

@@ -181,5 +181,5 @@ be reached via the project's public mailing list,
 @code{gsl-discuss@@sources.redhat.com}
 @end itemize
 @noindent
-This mailing list can be used to report bugs or to ask questions not
-covered by this manual.
+This mailing list can be used to ask questions not covered by this
+manual.
