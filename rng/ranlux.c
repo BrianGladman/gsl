@@ -54,7 +54,7 @@
 
 static inline unsigned long int ranlux_get (void *vstate);
 static double ranlux_get_double (void *vstate);
-static void ranlux_set_impl (void *state, unsigned long int s, unsigned int luxury);
+static void ranlux_set_lux (void *state, unsigned long int s, unsigned int luxury);
 static void ranlux_set (void *state, unsigned long int s);
 static void ranlux389_set (void *state, unsigned long int s);
 
@@ -146,7 +146,7 @@ ranlux_get_double (void *vstate)
 }
 
 static void
-ranlux_set_impl (void *vstate, unsigned long int s, unsigned int luxury)
+ranlux_set_lux (void *vstate, unsigned long int s, unsigned int luxury)
 {
   ranlux_state_t *state = (ranlux_state_t *) vstate;
   int i;
@@ -190,13 +190,13 @@ ranlux_set_impl (void *vstate, unsigned long int s, unsigned int luxury)
 static void
 ranlux_set (void *vstate, unsigned long int s)
 {
-  ranlux_set_impl (vstate, s, 223);
+  ranlux_set_lux (vstate, s, 223);
 }
 
 static void
 ranlux389_set (void *vstate, unsigned long int s)
 {
-  ranlux_set_impl (vstate, s, 389);
+  ranlux_set_lux (vstate, s, 389);
 }
 
 

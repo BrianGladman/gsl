@@ -31,7 +31,7 @@
 
 static inline unsigned long int ranlxd_get (void *vstate);
 static double ranlxd_get_double (void *vstate);
-static void ranlxd_set_impl (void *state, unsigned long int s, unsigned int luxury);
+static void ranlxd_set_lux (void *state, unsigned long int s, unsigned int luxury);
 static void ranlxd1_set (void *state, unsigned long int s);
 static void ranlxd2_set (void *state, unsigned long int s);
 
@@ -168,7 +168,7 @@ ranlxd_get_double (void *vstate)
 }
 
 static void
-ranlxd_set_impl (void *vstate, unsigned long int s, unsigned int luxury)
+ranlxd_set_lux (void *vstate, unsigned long int s, unsigned int luxury)
 {
   ranlxd_state_t *state = (ranlxd_state_t *) vstate;
 
@@ -218,13 +218,13 @@ ranlxd_set_impl (void *vstate, unsigned long int s, unsigned int luxury)
 static void
 ranlxd1_set (void *vstate, unsigned long int s)
 {
-  ranlxd_set_impl (vstate, s, 202);
+  ranlxd_set_lux (vstate, s, 202);
 }
 
 static void
 ranlxd2_set (void *vstate, unsigned long int s)
 {
-  ranlxd_set_impl (vstate, s, 397);
+  ranlxd_set_lux (vstate, s, 397);
 }
 
 static const gsl_rng_type ranlxd1_type =

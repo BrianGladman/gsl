@@ -1,3 +1,17 @@
+Fri Dec  8 20:30:58 2000  Brian Gough  <bjg@network-theory.co.uk>
+
+	* ranlxs.c: renamed internal function ranlxs_set_impl to
+ 	ranlxs_set
+	
+	* ranlxd.c: renamed internal function ranlxd_set_impl to
+ 	ranlxd_set
+
+	* ranlux.c: renamed internal function ranlux_set_impl to
+ 	ranlux_set
+
+	* random.c: renamed internal function random_get_impl function to
+ 	random_get
+
 Sat Jul 29 14:29:54 2000  Brian Gough  <bjg@network-theory.co.uk>
 
 	* test.c (main): updated test value for MT19937 for new seeding

@@ -39,7 +39,7 @@
   
  */
 
-static inline long int random_get_impl (int * i, int * j, int n, long int * x);
+static inline long int random_get (int * i, int * j, int n, long int * x);
 
 static inline unsigned long int random8_get (void *vstate);
 static inline unsigned long int random32_get (void *vstate);
@@ -119,7 +119,7 @@ random8_get (void *vstate)
 }
 
 static inline long int
-random_get_impl (int * i, int * j, int n, long int * x)
+random_get (int * i, int * j, int n, long int * x)
 {
   long int k ;
 
@@ -141,7 +141,7 @@ static inline unsigned long int
 random32_get (void *vstate)
 {
   random32_state_t *state = (random32_state_t *) vstate;
-  unsigned long int k = random_get_impl (&state->i, &state->j, 7, state->x) ; 
+  unsigned long int k = random_get (&state->i, &state->j, 7, state->x) ; 
   return k ;
 }
 
@@ -149,7 +149,7 @@ static inline unsigned long int
 random64_get (void *vstate)
 {
   random64_state_t *state = (random64_state_t *) vstate;
-  long int k = random_get_impl (&state->i, &state->j, 15, state->x) ; 
+  long int k = random_get (&state->i, &state->j, 15, state->x) ; 
   return k ;
 }
 
@@ -157,7 +157,7 @@ static inline unsigned long int
 random128_get (void *vstate)
 {
   random128_state_t *state = (random128_state_t *) vstate;
-  unsigned long int k = random_get_impl (&state->i, &state->j, 31, state->x) ; 
+  unsigned long int k = random_get (&state->i, &state->j, 31, state->x) ; 
   return k ;
 }
 
@@ -165,7 +165,7 @@ static inline unsigned long int
 random256_get (void *vstate)
 {
   random256_state_t *state = (random256_state_t *) vstate;
-  long int k = random_get_impl (&state->i, &state->j, 63, state->x) ; 
+  long int k = random_get (&state->i, &state->j, 63, state->x) ; 
   return k ;
 }
 
