@@ -1,6 +1,8 @@
 #!/usr/bin/perl
 
-open(LIBGSL, ">gsl.dsp");
+# This script is a mess.
+
+open(LIBGSL, ">libgsl.dsp");
 print LIBGSL &begin_project_lib("libgsl");
 print LIBGSL &begin_target("libgsl");
 
@@ -74,6 +76,7 @@ for $file (@ARGV) {
         $name =~ s/.*\///; 
         $name =~ s/-/_/g;
         $name = "${prog}_${name}";
+        push (@tests, "$name");
         open(TEST, ">$name.dsp");
         warn "$name $prog => ", @sources, "\n";
         print TEST &begin_project_app($name);
@@ -92,28 +95,29 @@ for $file (@ARGV) {
 print LIBGSL &end_target();
 print LIBGSL &end_project();
 
-# libraries are noinst_LTLIBRARIES lib_LTLIBRARIES
-# installed headers are pkginclude_HEADERS
-# headers are noinst_HEADERS
-# includes are INCLUDES
-# program bin_PROGRAMS check_PROGRAMS
+#  Write GSL workspace
 
-# {
-#     print "# lib = $lib\n" ;
-#     print "TEMPLATE = lib\n";
-#     print "SOURCES = ", join(" ", @sources), "\n" ; 
-#     print "INCLUDEPATH = ..\n";
-#     #print "INTERFACES = ", join(" ", @ext_headers), "\n" ; 
-#     print "HEADERS = ", join(" ", @ext_headers, @int_headers), "\n" ; 
-#     print "TARGET = ", base($lib), "\n" ;
-# }
-#     print "# app = $prog\n" ;
-#     @sources = &list_sources($prog);
-#     print "# SOURCES = ", join(" ", @sources), "\n" ; 
-#     @ldadds = &list_ldadds($prog);
-#     print "# needs libs ", join(", ", @ldadds), "\n" ; 
-# }
+open(GSL, ">GSL.dsw");
+print GSL &begin_workspace();
+print GSL &add_workspace_project("libgsl", "libgsl.dsp");
+print GSL &add_workspace_project("libgslcblas", "libgslcblas.dsp");
+print GSL &end_workspace();
+close GSL;
 
+#  Write test workspace
+
+open(TEST, ">GSLTESTS.dsw");
+print TEST &begin_workspace();
+print TEST &add_workspace_project("GSLTESTS", "GSLTESTS.dsp", @tests);
+for $t (@tests) {
+    print TEST &add_workspace_project($t, "$t.dsp");
+}
+print TEST &end_workspace();
+close (TEST);
+
+open(TEST, ">GSLTESTS.dsp");
+print TEST &generic_project("GSLTESTS");
+close(TEST);
 
 ######################################################################
 
@@ -283,7 +287,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib  kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /machine:I386
-# ADD LINK32 gsl.lib gslcblas.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /machine:I386 /out:"$proj.exe" /libpath:"Release"
+# ADD LINK32 gsl.lib gslcblas.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /machine:I386 /out:"bin\\$proj.exe" /libpath:"Release"
 
 !ELSEIF  "\$(CFG)" == "$proj - Win32 Debug"
 
@@ -308,7 +312,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib  kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 gsl.lib gslcblas.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /out:"$proj.exe" /pdbtype:sept /libpath:"Debug"
+# ADD LINK32 gsl.lib gslcblas.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /out:"bin\\$proj.exe" /pdbtype:sept /libpath:"Debug"
 
 !ENDIF 
 EOF
@@ -392,3 +396,127 @@ $prop
 }
 
 ######################################################################
+
+sub begin_workspace {
+    return <<'EOF';
+Microsoft Developer Studio Workspace File, Format Version 6.00
+# WARNING: DO NOT EDIT OR DELETE THIS WORKSPACE FILE!
+
+EOF
+}
+
+sub end_workspace {
+    return <<'EOF';
+###############################################################################
+
+Global:
+
+Package=<5>
+{{{
+}}}
+
+Package=<3>
+{{{
+}}}
+
+###############################################################################
+
+EOF
+}
+
+sub add_workspace_project {
+    my ($name, $file, @dependencies) = @_;
+
+    my $depends = "";
+    for my $d (@dependencies) {
+        $depends .= "    Begin Project Dependency\n";
+        $depends .= "    Project_Dep_Name $d\n";
+        $depends .= "    End Project Dependency\n";
+    }
+
+    return <<"EOF";
+###############################################################################
+
+Project: "$name"="$file" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+$depends}}}
+
+EOF
+}
+
+######################################################################
+
+sub generic_project {
+    my ($name) = @_;
+    return <<"EOF";
+# Microsoft Developer Studio Project File - Name="$name" - Package Owner=<4>
+# Microsoft Developer Studio Generated Build File, Format Version 6.00
+# ** DO NOT EDIT **
+
+# TARGTYPE "Win32 (x86) Generic Project" 0x010a
+
+CFG=$name - Win32 Debug
+!MESSAGE This is not a valid makefile. To build this project using NMAKE,
+!MESSAGE use the Export Makefile command and run
+!MESSAGE 
+!MESSAGE NMAKE /f "$name.mak".
+!MESSAGE 
+!MESSAGE You can specify a configuration when running NMAKE
+!MESSAGE by defining the macro CFG on the command line. For example:
+!MESSAGE 
+!MESSAGE NMAKE /f "$name.mak" CFG="$name - Win32 Debug"
+!MESSAGE 
+!MESSAGE Possible choices for configuration are:
+!MESSAGE 
+!MESSAGE "$name - Win32 Release" (based on "Win32 (x86) Generic Project")
+!MESSAGE "$name - Win32 Debug" (based on "Win32 (x86) Generic Project")
+!MESSAGE 
+
+# Begin Project
+# PROP AllowPerConfigDependencies 0
+# PROP Scc_ProjName ""
+# PROP Scc_LocalPath ""
+MTL=midl.exe
+
+!IF  "\$(CFG)" == "$name - Win32 Release"
+
+# PROP BASE Use_MFC 0
+# PROP BASE Use_Debug_Libraries 0
+# PROP BASE Output_Dir "Release"
+# PROP BASE Intermediate_Dir "Release"
+# PROP BASE Target_Dir ""
+# PROP Use_MFC 0
+# PROP Use_Debug_Libraries 0
+# PROP Output_Dir "Release"
+# PROP Intermediate_Dir "Release"
+# PROP Target_Dir ""
+
+!ELSEIF  "\$(CFG)" == "$name - Win32 Debug"
+
+# PROP BASE Use_MFC 0
+# PROP BASE Use_Debug_Libraries 1
+# PROP BASE Output_Dir "Debug"
+# PROP BASE Intermediate_Dir "Debug"
+# PROP BASE Target_Dir ""
+# PROP Use_MFC 0
+# PROP Use_Debug_Libraries 1
+# PROP Output_Dir "Debug"
+# PROP Intermediate_Dir "Debug"
+# PROP Target_Dir ""
+
+!ENDIF 
+
+# Begin Target
+
+# Name "$name - Win32 Release"
+# Name "$name - Win32 Debug"
+# End Target
+# End Project
+EOF
+}
