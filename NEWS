@@ -1,5 +1,8 @@
 * What is new in gsl-1.3+:
 
+** Fixed gsl_sf_gammainv to return zero instead of a domain
+error for arguments corresponding to singularities in gamma.
+
 ** Fixed a bug in the simplex minimization algorithm which
 caused it to fail to find the second highest point correctly
 when searching the set of simplex points.

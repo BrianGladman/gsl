@@ -250,5 +250,6 @@ doc fix for bessel functions, bug fix for gsl_sf_psi_1_int
 fix for the conjugate gradient algorithm multidimensional
 minimisers.
 
+* Krzysztof Pachucki <krp@fuw.edu.pl> bug report for gsl_sf_hypergU_int
 
 

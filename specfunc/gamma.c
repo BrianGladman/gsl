@@ -1348,7 +1348,11 @@ gsl_sf_gammainv_e(const double x, gsl_sf_result * result)
 {
   /* CHECK_POINTER(result) */
 
-  if(x < 0.5) {
+  if (x <= 0.0 && x == floor(x)) { /* negative integer */
+    result->val = 0.0;
+    result->err = 0.0;
+    return GSL_SUCCESS;
+  } else if(x < 0.5) {
     gsl_sf_result lng;
     double sgn;
     int stat_lng = gsl_sf_lngamma_sgn_e(x, &lng, &sgn);

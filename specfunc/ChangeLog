@@ -1,3 +1,8 @@
+2003-04-18  Brian Gough  <bjg@network-theory.co.uk>
+
+	* gamma.c (gsl_sf_gammainv_e): handle any singularities in
+	gamma(x) up front and return zero directly
+
 2003-04-12  Brian Gough  <bjg@network-theory.co.uk>
 
 	* psi.c: changed value of psi(1,1) in table psi_1_table to be
