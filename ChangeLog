@@ -1,8 +1,21 @@
+1999-08-05  Mark Galassi  <rosalia@lanl.gov>
+
+	* configure.in: added a + to the version, indicating that any
+	snapshots made from anonymous CVS in this state should be
+	interpreted as "after 0.4.1 and before the next version", and no
+	other promises.
+
+	* THANKS: added this THANKS file.  We appreciate all patches from
+	people on the net, even those which are too small to warrant
+	adding the author to the AUTHORS file.  The THANKS file should
+	include everyone who sent in patches.  They should also be
+	mentioned in the ChangeLog entry.
+
 Sun Apr 11 20:40:35 1999  Brian Gough  <bjg@netsci.freeserve.co.uk>
 
 	* libraries and include files are now installed in pkglibdir and
- 	pkgincludedir (e.g. /usr/local/lib/gsl/ and
- 	/usr/local/include/gsl/ by default)
+	pkgincludedir (e.g. /usr/local/lib/gsl/ and
+	/usr/local/include/gsl/ by default)
 
 	* libraries are now built and installed separately
 

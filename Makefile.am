@@ -1,5 +1,7 @@
 ## Process this file with automake to produce Makefile.in
 
+# AUTOMAKE_OPTIONS = readme-alpha
+
 SUBDIRS = err sys utils ieee-utils vector matrix linalg blas specfunc dht rng randist fft poly roots statistics siman sum integration interpolation histogram monte doc
 
 pkginclude_HEADERS = gsl_complex.h gsl_math.h gsl_machine.h gsl_mode.h gsl_precision.h

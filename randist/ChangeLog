@@ -14,8 +14,9 @@ Tue Jul 27 14:14:38 1999  Brian Gough  <bjg@network-theory.co.uk>
 
 1999-06-30  Mark Galassi  <rosalia@lanl.gov>
 
-	* discrete.c: (thanks to Frederick W. Wheeler) changed the type
-	stack_t to gsl_stack_t to avoid a conflict on HPUX.
+	* discrete.c: (thanks to Frederick W. Wheeler
+	<wheeler@cipr.rpi.edu>) changed the type stack_t to gsl_stack_t to
+	avoid a conflict on HPUX.
 
 Sun Feb 28 20:41:18 1999  Brian Gough  <bjg@netsci.freeserve.co.uk>
 

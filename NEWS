@@ -1,3 +1,11 @@
+* Will be new in gsl-0.4.2 (or 0.5; number is not yet decided):
+
+** Introduced THANKS file.
+We appreciate all patches from people on the net, even those which are
+too small to warrant adding the author to the AUTHORS file.  The
+THANKS file should include everyone who sent in patches.  They should
+also be mentioned in the ChangeLog entry.
+
 * Will be new in gsl-0.4.1:
 
 ** Two changes not making their way into the documentation
