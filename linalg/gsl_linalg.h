@@ -20,6 +20,7 @@
 #ifndef __GSL_LINALG_H__
 #define __GSL_LINALG_H__
 
+#include <gsl/gsl_mode.h>
 #include <gsl/gsl_permutation.h>
 #include <gsl/gsl_vector.h>
 #include <gsl/gsl_matrix.h>
@@ -68,6 +69,20 @@ int gsl_linalg_matmult_mod (const gsl_matrix * A,
 			    const gsl_matrix * B,
 			    gsl_linalg_matrix_mod_t modB,
 			    gsl_matrix * C);
+
+/* Calculate the matrix exponential by the scaling and
+ * squaring method described in Moler + Van Loan,
+ * SIAM Rev 20, 801 (1978). The mode argument allows
+ * choosing an optimal strategy, from the table
+ * given in the paper, for a given precision.
+ *
+ * exceptions: GSL_ENOTSQR, GSL_EBADLEN
+ */
+int gsl_linalg_exponential_ss(
+  const gsl_matrix * A,
+  gsl_matrix * eA,
+  gsl_mode_t mode
+  );
 
 
 /* Householder Transformations */
