@@ -8,7 +8,7 @@ INCLUDES= -I$(top_builddir) -I$(top_srcdir)
 
 TESTS = test
 
-test_LDADD = libgslblock.la ../ieee-utils/libgslieeeutils.la ../err/libgslerr.la ../test/libgsltest.la ../utils/libutils.la
+test_LDADD = libgslblock.la ../ieee-utils/libgslieeeutils.la ../err/libgslerr.la ../test/libgsltest.la ../sys/libgslsys.la ../utils/libutils.la
 
 test_SOURCES = test.c
 

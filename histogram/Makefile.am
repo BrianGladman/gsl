@@ -14,7 +14,7 @@ TESTS = test
 EXTRA_DIST = urand.c
 
 test_SOURCES = test.c test1d.c test2d.c test1d_resample.c test2d_resample.c test1d_trap.c test2d_trap.c
-test_LDADD = libgslhistogram.la ../block/libgslblock.la ../ieee-utils/libgslieeeutils.la ../err/libgslerr.la ../test/libgsltest.la
+test_LDADD = libgslhistogram.la ../block/libgslblock.la ../ieee-utils/libgslieeeutils.la ../err/libgslerr.la ../test/libgsltest.la ../sys/libgslsys.la
 
 CLEANFILES = test.txt test.dat
 

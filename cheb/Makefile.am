@@ -10,7 +10,7 @@ TESTS = test
 
 check_PROGRAMS = test
 
-test_LDADD = libgslcheb.la ../ieee-utils/libgslieeeutils.la ../sys/libgslsys.la ../err/libgslerr.la ../test/libgsltest.la ../utils/libutils.la
+test_LDADD = libgslcheb.la ../ieee-utils/libgslieeeutils.la ../test/libgsltest.la ../sys/libgslsys.la ../err/libgslerr.la ../utils/libutils.la
 
 test_SOURCES = test.c
 
