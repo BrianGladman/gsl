@@ -8,7 +8,7 @@ gsl_multiroot_test_delta (const gsl_vector * dx, const gsl_vector * x,
                      double epsabs, double epsrel)
 {
   size_t i;
-
+  int ok = 1;
   const size_t n = x->size ;
 
   if (epsrel < 0.0)
@@ -22,13 +22,21 @@ gsl_multiroot_test_delta (const gsl_vector * dx, const gsl_vector * x,
       double dxi = gsl_vector_get(dx,i);
       double tolerance = epsabs + epsrel * fabs(xi)  ;
 
-      if (fabs(dxi) > tolerance)
+      if (fabs(dxi) < tolerance)
         {
-          return GSL_CONTINUE;
+          ok = 1;
+        }
+      else
+        {
+          ok = 0;
+          break;
         }
     }
-  
-  return GSL_SUCCESS ;
+
+  if (ok)
+    return GSL_SUCCESS ;
+
+  return GSL_CONTINUE;
 }
 
 int
@@ -53,11 +61,11 @@ gsl_multiroot_test_residual (const gsl_vector * f, double epsabs)
     }
 
 
-  if (residual > epsabs)
+  if (residual < epsabs)
     {
-      return GSL_CONTINUE;
+      return GSL_SUCCESS;
     }
   
-  return GSL_SUCCESS ;
+  return GSL_CONTINUE ;
 }
 

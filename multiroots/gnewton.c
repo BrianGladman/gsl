@@ -11,6 +11,8 @@
 #include <gsl_multiroots.h>
 #include <gsl_linalg.h>
 
+#include "enorm.c"
+
 /* Simple globally convergent Newton method (rejects uphill steps) */
 
 typedef struct
@@ -26,16 +28,6 @@ gnewton_state_t;
 int gnewton_init (void * vstate, gsl_multiroot_function_fdf * fdf, gsl_vector * x, gsl_vector * f, gsl_matrix * J, gsl_vector * dx);
 int gnewton_iterate (void * vstate, gsl_multiroot_function_fdf * fdf, gsl_vector * x, gsl_vector * f, gsl_matrix * J, gsl_vector * dx);
 void gnewton_free (void * vstate);
-
-static double enorm (const gsl_vector * f) {
-  double e2 = 0 ;
-  size_t i, n = f->size ;
-  for (i = 0; i < n ; i++) {
-    double fi= gsl_vector_get(f, i);
-    e2 += fi * fi ;
-  }
-  return sqrt(e2);
-}
 
 int
 gnewton_init (void * vstate, gsl_multiroot_function_fdf * FDF, gsl_vector * x, gsl_vector * f, gsl_matrix * J, gsl_vector * dx)
@@ -144,6 +136,8 @@ new_step:
       t *= (sqrt(1.0 + 6.0 * theta) - 1.0) / (3.0 * theta);
       goto new_step;
     }
+
+  /* copy x_trial into x */
 
   gsl_vector_copy (x, state->x_trial);
 
