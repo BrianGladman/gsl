@@ -49,10 +49,12 @@ library.
 The speed of light in vacuum, @math{c}.
 
 @item GSL_CONST_MKSA_VACUUM_PERMEABILITY
-The permeability of free space, @math{\mu_0}
+The permeability of free space, @math{\mu_0}. This constant is defined
+in the MKSA system only.
 
 @item GSL_CONST_MKSA_VACUUM_PERMITTIVITY
-The permittivity of free space, @math{\epsilon_0}.
+The permittivity of free space, @math{\epsilon_0}.  This constant is
+defined in the MKSA system only.
 
 @item GSL_CONST_NUM_AVOGADRO
 Avogadro's number, @math{N_a}.
