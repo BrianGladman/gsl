@@ -51,7 +51,7 @@ gsl_ran_logarithmic_pdf (const unsigned int k, const double p)
     }
   else 
     {
-      double P = pow(p, k) / (double) k / log(1/(1-p)) ;
+      double P = pow(p, (double)k) / (double) k / log(1/(1-p)) ;
       return P;
     }
 }

@@ -72,10 +72,10 @@ gsl_ran_dir_3d (const gsl_rng * r, double *x, double *y, double *z)
 }
 
 void
-gsl_ran_dir_nd (const gsl_rng * r, int n, double *x)
+gsl_ran_dir_nd (const gsl_rng * r, size_t n, double *x)
 {
   double d;
-  int i;
+  size_t i;
   /* See Knuth, v2, 3rd ed, p135-136.  The method is attributed to
    * G. W. Brown, in Modern Mathematics for the Engineer (1956).
    * The idea is that gaussians G(x) have the property that

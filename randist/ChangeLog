@@ -1,3 +1,12 @@
+Fri Aug  6 16:02:08 1999  Brian Gough  <bjg@network-theory.co.uk>
+
+	* sphere.c (gsl_ran_dir_nd): number of dimensions is now unsigned
+ 	(size_t)
+
+	* logarithmic.c (gsl_ran_logarithmic_pdf): removed warning about
+ 	passing arg 2 of `pow' as floating rather than integer due to
+ 	prototype
+
 Sun Aug  1 20:29:43 1999  Brian Gough  <bjg@network-theory.co.uk>
 
 	* discrete.c: converted to GSL_ERROR macros for error handling
