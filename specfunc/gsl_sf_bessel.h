@@ -103,6 +103,26 @@ int gsl_sf_bessel_jl_array_e(int lmax, double x, double * result_array);
 double gsl_sf_bessel_jl(int l, double x);
 
 
+/* Irregular spherical Bessel functions y_0(x), y_1(x), y_2(x) */
+
+int gsl_sf_bessel_y0_e(double x, double * result);   /* none */
+int gsl_sf_bessel_y1_e(double x, double * result);   /* GSL_EUNDRFLW */
+int gsl_sf_bessel_y2_e(double x, double * result);   /* GSL_EUNDRFLW */
+
+double gsl_sf_bessel_y0(double x);   /* none      */
+double gsl_sf_bessel_y1(double x);   /* underflow */
+double gsl_sf_bessel_y2(double x);   /* underflow */
+
+
+/* Irregular spherical Bessel functions y_l(x) */
+
+int gsl_sf_bessel_yl_e(int l, double x, double * result);
+int gsl_sf_bessel_yl_array_e(int lmax, double x, double * result_array);
+
+double gsl_sf_bessel_yl(int l, double x);
+
+
+
 /* Regular cylindrical Bessel functions J_nu(x) calculated
    with the Meissel uniform approximation. Assumes x >= 0.
    This approximation is accurate to near 10^{-3} at the boundaries
@@ -166,6 +186,7 @@ int gsl_sf_bessel_In_array_impl(int nmax, double x, double * result_array);
 
 int gsl_sf_bessel_J0_impl(double x, double * result);
 int gsl_sf_bessel_J1_impl(double x, double * result);
+int gsl_sf_bessel_Jn_impl(int n, double x, double * result);
 
 int gsl_sf_bessel_K0_scaled_impl(double x, double * result);
 int gsl_sf_bessel_K0_impl(double x, double * result);
@@ -180,9 +201,7 @@ int gsl_sf_bessel_Kn_scaled_array_impl(int nmax, double x, double * result_array
 int gsl_sf_bessel_Kn_array_impl(int nmax, double x, double * result_array);
 
 int gsl_sf_bessel_Y0_impl(double x, double * result);
-
 int gsl_sf_bessel_Y1_impl(double x, double * result);
-
 int gsl_sf_bessel_Yn_impl(int n, double x, double * result);
 
 
@@ -192,6 +211,12 @@ int gsl_sf_bessel_j2_impl(double x, double * result);
 int gsl_sf_bessel_jl_impl(int l, double x, double * result);
 int gsl_sf_bessel_jl_array_impl(int lmax, double x, double * result_array);
 int gsl_sf_bessel_j_steed_array_impl(int lmax, double x, double * jl_x);
+
+int gsl_sf_bessel_y0_impl(double x, double * result);
+int gsl_sf_bessel_y1_impl(double x, double * result);
+int gsl_sf_bessel_y2_impl(double x, double * result);
+
+int gsl_sf_bessel_yl_array_impl(int lmax, double x, double * result_array);
 
 
 #endif /* !GSL_BESSEL_H_ */

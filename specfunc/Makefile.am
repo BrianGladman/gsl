@@ -59,6 +59,7 @@ libgslspecfunc_a_SOURCES = 	\
         bessel_amp_phase.h      \
 	bessel_j.c		\
 	bessel_olver.c		\
+	bessel_y.c		\
 	chebyshev.c		\
 #	coulomb.c		\ doesn't work yet
 	dilog.c			\

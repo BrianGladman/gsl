@@ -8,20 +8,18 @@
 #include "gsl_sf_pow_int.h"
 #include "gsl_sf_bessel.h"
 
-#define RootPi_Over2_  0.886226925453
-#define Gamma1pt5_    RootPi_Over2_
-
 
 /*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
 
 int gsl_sf_bessel_j0_impl(const double x, double * result)
 {
   if(fabs(x) < GSL_ROOT4_MACH_EPS) {
-    return 1. - x*x/6.;
+    *result = 1. - x*x/6.;
   }
   else {
-    return sin(x)/x;
+    *result = sin(x)/x;
   }
+  return GSL_SUCCESS;
 }
 
 int gsl_sf_bessel_j1_impl(const double x, double * result)
@@ -35,10 +33,14 @@ int gsl_sf_bessel_j1_impl(const double x, double * result)
     return GSL_SUCCESS;
   }
   else {
+    /*
     double tan_half = tan(0.5 * x);
     double den = 1. + tan_half*tan_half;
     double cos_x = (tan_half*tan_half - 1.) / den;
     double sin_x = 2. * tan_half / den;
+    */
+    double cos_x = cos(x);
+    double sin_x = sin(x);
     *result = sin_x/(x*x) - cos_x/x;
     return GSL_SUCCESS;
   }
@@ -55,11 +57,16 @@ int gsl_sf_bessel_j2_impl(const double x, double * result)
     return GSL_SUCCESS;
   }
   else {
+    double x2 = x*x;
+    /*
     double tan_half = tan(0.5 * x);
     double den = 1. + tan_half*tan_half;
     double cos_x = (tan_half*tan_half - 1.) / den;
     double sin_x = 2. * tan_half / den;
-    *result =  (3./x - 1.) * sin_x/x - 3.*cos_x/(x*x);
+    */
+    double cos_x = cos(x);
+    double sin_x = sin(x);
+    *result =  (3./x2 - 1.) * sin_x/x - 3.*cos_x/x2;
     return GSL_SUCCESS;
   }
 }  
@@ -74,18 +81,21 @@ int gsl_sf_bessel_jl_impl(const int l, const double x, double * result)
     return GSL_SUCCESS;
   }
   else if(x*x < 10.*(l+1.5)*GSL_ROOT5_MACH_EPS) {
-    int status = gsl_sf_bessel_Inu_Jnu_taylor_impl(l+0.5, x, -1, 4, result);
-    *result *= sqrt(M_PI/(2.0*x));
+    double b = 0.0;
+    int status = gsl_sf_bessel_Inu_Jnu_taylor_impl(l+0.5, x, -1, 4, &b);
+    *result = sqrt(M_PI/(2.0*x)) * b;
     return status;
   }
   else if(GSL_ROOT3_MACH_EPS * x > (l*l + l + 1)) {
-    int status = gsl_sf_bessel_Jnu_asympx_impl(l + 0.5, x, result);
-    *result *= sqrt(M_PI/(2.0*x));
+    double b = 0.0;
+    int status = gsl_sf_bessel_Jnu_asympx_impl(l + 0.5, x, &b);
+    *result = sqrt(M_PI/(2.0*x)) * b;
     return status;
   }
   else if(l > 30) {
-    int status = gsl_sf_bessel_Jnu_asymp_Olver_impl(l + 0.5, x, result);
-    *result *= sqrt(M_PI/(2.0*x));
+    double b = 0.0;
+    int status = gsl_sf_bessel_Jnu_asymp_Olver_impl(l + 0.5, x, &b);
+    *result = sqrt(M_PI/(2.0*x)) * b;
     return status;
   }
   else if(l == 0) {

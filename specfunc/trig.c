@@ -63,6 +63,16 @@ int gsl_sf_complex_cos_impl(const double zr, const double zi, double * czr, doub
   }
 }
 
+/*
+inline int gsl_sf_sincos_impl(const double theta, double * s, double * c)
+{
+  double tan_half = tan(0.5 * theta);
+  double den = 1. + tan_half*tan_half;
+  double cos_theta = (tan_half*tan_half - 1.) / den;
+  double sin_theta = 2. * tan_half / den;
+}
+*/
+
 int gsl_sf_polar_to_rect_impl(const double r, const double theta, double * x, double * y)
 {
   if(fabs(theta) == M_PI) {

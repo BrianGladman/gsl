@@ -138,6 +138,29 @@ int gsl_sf_bessel_Yn_impl(int n, const double x, double * result)
   }
 }
 
+int gsl_sf_bessel_Yn_array_impl(const nmax, const double x, double * result_array)
+{
+  if(nmax < 1 || x <= 0.0) {
+    return GSL_EDOM;
+  }
+  else {
+    int j;
+    double by, bym, byp;
+    double two_over_x = 2.0/x;
+    gsl_sf_bessel_Y1_impl(x, &by);
+    gsl_sf_bessel_Y0_impl(x, &bym);
+    result_array[0] = bym;
+    result_array[1] = by;
+    for(j=1; j<nmax; j++) { 
+      byp = j*two_over_x*by - bym;
+      result_array[j+1] = byp;
+      bym = by;
+      by  = byp;
+    }
+    return GSL_SUCCESS;
+  }
+}
+
 
 /*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
 
