@@ -24,7 +24,7 @@
 #include <stdlib.h>
 
 #ifdef HAVE_VPRINTF
-#ifdef __STDC__
+#ifdef STDC_HEADERS
 #include <stdarg.h>
 #else
 #include <varargs.h>
@@ -64,7 +64,7 @@ gsl_test (int status, const char *test_description,...)
 #ifdef HAVE_VPRINTF
       va_list ap;
 
-#ifdef __STDC__
+#ifdef STDC_HEADERS
       va_start (ap, test_description);
 #else
       va_start (ap);
@@ -116,7 +116,7 @@ gsl_test_rel (double result, double expected, double relative_error,
 #ifdef HAVE_VPRINTF
       va_list ap;
 
-#ifdef __STDC__
+#ifdef STDC_HEADERS
       va_start (ap, test_description);
 #else
       va_start (ap);
@@ -175,7 +175,7 @@ gsl_test_abs (double result, double expected, double absolute_error,
 #ifdef HAVE_VPRINTF
       va_list ap;
 
-#ifdef __STDC__
+#ifdef STDC_HEADERS
       va_start (ap, test_description);
 #else
       va_start (ap);
@@ -247,7 +247,7 @@ gsl_test_factor (double result, double expected, double factor,
 #ifdef HAVE_VPRINTF
       va_list ap;
 
-#ifdef __STDC__
+#ifdef STDC_HEADERS
       va_start (ap, test_description);
 #else
       va_start (ap);
@@ -302,7 +302,7 @@ gsl_test_int (int result, int expected, const char *test_description,...)
 #ifdef HAVE_VPRINTF
       va_list ap;
 
-#ifdef __STDC__
+#ifdef STDC_HEADERS
       va_start (ap, test_description);
 #else
       va_start (ap);
@@ -351,7 +351,7 @@ gsl_test_str (const char * result, const char * expected,
 #ifdef HAVE_VPRINTF
       va_list ap;
 
-#ifdef __STDC__
+#ifdef STDC_HEADERS
       va_start (ap, test_description);
 #else
       va_start (ap);

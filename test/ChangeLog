@@ -1,3 +1,8 @@
+Fri Sep 28 10:40:21 2001  Brian Gough  <bjg@network-theory.co.uk>
+
+	* results.c: use the definition STDC_HEADERS instead of __STDC__
+ 	as recommended by the autoconf manual
+
 Thu Sep  6 10:17:10 2001  Brian Gough  <bjg@network-theory.co.uk>
 
 	* results.c (gsl_test_factor): fixed factor to work for case of
