@@ -3,6 +3,10 @@
 #include <limits.h>
 #include <float.h>
 
+#ifndef M_E
+#define M_E             2.71828182845904523536028747135 /* e */
+#endif
+
 #ifndef M_SQRT2
 #define M_SQRT2		1.41421356237309504880168872421
 #endif
