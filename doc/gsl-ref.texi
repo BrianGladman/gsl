@@ -104,8 +104,7 @@ As of @value{UPDATED}, the complete packages are the random number suite
 (@pxref{Random number generation}), the FFT package (@pxref{FFTs}), the
 simulated annealing package (@pxref{Simulated Annealing}) and the root
 finding package (@pxref{Root finding}).  Work is under way on a special
-function library, statistics, histograms, vectors and matrices
-(including BLAS).
+function library and numerical integration.
 @end ifinfo
 
 @menu
