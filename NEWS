@@ -1,5 +1,7 @@
 * What is new in gsl-1.2:
 
+** Added missing declaration for the generator gsl_rng_mt_19937_1998.
+
 ** Fixed a bug in gsl_linalg_solv_symm_cyc_tridiag which caused it to
 produce incorrect results.
 
