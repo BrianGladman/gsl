@@ -840,7 +840,7 @@ formula given above.
 @node The Pareto Distribution
 @section The Pareto Distribution
 @deftypefn Random double gsl_ran_pareto (const gsl_rng * @var{r}, double @var{a}, double @var{b})
-@cindex Lognormal random numbers
+@cindex Pareto random numbers
 This function returns a random number from the Pareto distribution of
 order @var{a}.  The distribution function is,
 
