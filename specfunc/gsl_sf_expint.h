@@ -55,7 +55,8 @@ int     gsl_sf_expint_E2_e(const double x, gsl_sf_result * result);
 double     gsl_sf_expint_E2(const double x);
 
 
-/* Ei(x) := PV Integrate[ Exp[-t]/t, {t,-x,Infinity}]
+/* Ei(x) := - PV Integrate[ Exp[-t]/t, {t,-x,Infinity}]
+ *       :=   PV Integrate[ Exp[t]/t, {t,-Infinity,x}]
  *
  * x != 0.0
  * exceptions: GSL_EDOM, GSL_EOVRFLW, GSL_EUNDRFLW
