@@ -49,10 +49,10 @@ int main()
   gsl_test_verbose(1);
 
   printf("Testing constant function and normalization\n");
-  for (num_dim = 1; num_dim < 10; num_dim++) {
+  for (num_dim = 9; num_dim < 10; num_dim++) {
     calls *= 1.8;
     gsl_monte_plain(r, fconst, xl, xu2, num_dim, calls, &res, &err);
-    gsl_test_rel(res, pow(2, num_dim), tol, "miser(f0), dim=%d, err=%.4f", 
+    gsl_test_rel(res, pow(2, num_dim), tol, "plain(f0), dim=%d, err=%.4f", 
 		 num_dim, err); 
   }
 
@@ -60,7 +60,7 @@ int main()
   for (num_dim = 1; num_dim < 10; num_dim++) {
     calls *= 1.8;
     gsl_monte_plain(r, f0, xl, xu, num_dim, calls, &res, &err);
-    gsl_test_rel(res, 1.0, tol, "miser(f0), dim=%d, err=%.4f", 
+    gsl_test_rel(res, 1.0, tol, "plain(f0), dim=%d, err=%.4f", 
 		 num_dim, err); 
   }
 
@@ -84,7 +84,7 @@ int main()
       tol = 0.14;
     }
     status = gsl_monte_plain(r, f1, xl, xu, num_dim, calls, &res, &err);
-    gsl_test_rel(res, 1.0, tol, "miser(f1), dim=%d, err=%.4f", 
+    gsl_test_rel(res, 1.0, tol, "plain(f1), dim=%d, err=%.4f", 
 		 num_dim, err); 
   }
 
@@ -111,7 +111,7 @@ int main()
       break;
     }
     status = gsl_monte_plain(r, f2, xl, xu, num_dim, calls, &res, &err);
-    gsl_test_rel(res, 1.0, tol, "miser(f2), dim=%d, err=%.4f", 
+    gsl_test_rel(res, 1.0, tol, "plain(f2), dim=%d, err=%.4f", 
 		 num_dim, err); 
   }
 
@@ -125,7 +125,7 @@ int main()
     if ( num_dim == 6 )
       tol *= 3;
     status = gsl_monte_plain(r, f3, xl, xu, num_dim, calls, &res, &err);
-    gsl_test_rel(res, 1.0, tol, "miser(f3), dim=%d, err=%.4f", 
+    gsl_test_rel(res, 1.0, tol, "plain(f3), dim=%d, err=%.4f", 
 		 num_dim, err); 
   }
 

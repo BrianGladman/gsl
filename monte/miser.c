@@ -27,6 +27,7 @@
 #define TINY 1.0e-30
 #define BIG 1.0e30
 
+#define SQR(a) ((a)*(a))
 #define myMAX(a,b) ((a) >= (b) ? (a) : (b))
 #define myMIN(a,b) ((a) <= (b) ? (a) : (b))
 
@@ -38,7 +39,6 @@ size_t min_calls_per_bisection = 60;
 double dither;
 
 static long iran;
-static long idum;
 
 void ranpt(const gsl_rng * r, gsl_vector* pt, double* xl, double* xh, size_t n);
 
@@ -46,14 +46,14 @@ inline void ranpt(const gsl_rng * r, gsl_vector* pt, double* xl, double* xh, siz
 {
   size_t j;
 
-  for (j=0; j < n; j++)
-    gsl_vector_set(pt, j, xl[j]+(xh[j]-xl[j])*gsl_rng_uniform(r));
+  for (j = 0; j < n; j++)
+    gsl_vector_set(pt, j, xl[j] + (xh[j] - xl[j])*gsl_rng_uniform(r));
 }
 
 
 int gsl_monte_miser(const gsl_rng * r, 
 		    double (*func)(double []), double xl[], double xh[], 
-		    size_t num_dim, size_t calls, double *avg, double *var)
+		    size_t num_dim, size_t calls, double *res, double *err)
 {
   int status = 0;
 
@@ -62,7 +62,7 @@ int gsl_monte_miser(const gsl_rng * r,
   size_t n, npre, calls_l, calls_r;
   size_t j;
   int j_bisect;
-  double avg_l, var_l;
+  double res_l, err_l;
   double frac_l, fval;
   double rgn_l, rgn_m, rgn_r, s, sig_l, sig_l_bisect, sig_r, sig_r_bisect;
   double sum, sum_bisect;
@@ -73,7 +73,7 @@ int gsl_monte_miser(const gsl_rng * r,
   pt = gsl_vector_alloc(num_dim);
 
   if (calls < min_calls_per_bisection) {
-    status = gsl_monte_plain(r, func, xl, xh, num_dim, calls, avg, var);
+    status = gsl_monte_plain(r, func, xl, xh, num_dim, calls, res, err);
   }
   else {
     rmid = gsl_vector_alloc(num_dim);
@@ -87,9 +87,12 @@ int gsl_monte_miser(const gsl_rng * r,
 
     /* bisect the integration region, with some fuzz */
     for (j = 0; j < num_dim; j++) {
-      iran = (iran*2661+36979) % 175000;
-      s = COPYSIGN(dither, (double)(iran-87500));
-      gsl_vector_set(rmid, j, (0.5+s)*xl[j]+(0.5-s)*xh[j]);
+
+      iran = (iran*2661 + 36979) % 175000;
+      s = COPYSIGN(dither, (double)(iran - 87500));
+
+      gsl_vector_set(rmid, j, (0.5 + s)*xl[j] + (0.5 - s)*xh[j]);
+
       fmin_l->data[j] = fmin_r->data[j] = BIG;
       fmax_l->data[j] = fmax_r->data[j] = -BIG;
     }
@@ -100,7 +103,8 @@ int gsl_monte_miser(const gsl_rng * r,
     */
     for (n = 1; n <= npre; n++) {
       ranpt(r, pt, xl, xh, num_dim);
-      fval=(*func)(pt->data);
+
+      fval = (*func)(pt->data);
       for (j = 0; j < num_dim; j++) {
 	if (pt->data[j] <= rmid->data[j]) {
 	  fmin_l->data[j] = myMIN(fmin_l->data[j], fval);
@@ -119,9 +123,9 @@ int gsl_monte_miser(const gsl_rng * r,
     for (j = 0; j < num_dim;j++) {
       if (fmax_l->data[j] > fmin_l->data[j] && 
 	  fmax_r->data[j] > fmin_r->data[j]) {
-	sig_l = myMAX(TINY, pow(fmax_l->data[j]-fmin_l->data[j], 2.0/3.0));
-	sig_r = myMAX(TINY, pow(fmax_r->data[j]-fmin_r->data[j], 2.0/3.0));
-	sum = sig_l+sig_r;
+	sig_l = myMAX(TINY, pow(fmax_l->data[j] - fmin_l->data[j], 2.0/3.0));
+	sig_r = myMAX(TINY, pow(fmax_r->data[j] - fmin_r->data[j], 2.0/3.0));
+	sum = sig_l + sig_r;
 	if (sum <= sum_bisect) {
 	  sum_bisect = sum;
 	  j_bisect = j;
@@ -143,30 +147,30 @@ int gsl_monte_miser(const gsl_rng * r,
     rgn_m = rmid->data[j_bisect];
     rgn_r = xh[j_bisect];
     
-    frac_l = fabs((rgn_m-rgn_l)/(rgn_r-rgn_l));
-    calls_l = (unsigned long)
-      (min_calls + (calls-npre-2*min_calls)*frac_l*sig_l_bisect
-       /(frac_l*sig_l_bisect+(1.0-frac_l)*sig_r_bisect));
+    frac_l = fabs((rgn_m - rgn_l)/(rgn_r - rgn_l));
+    calls_l = (size_t)
+      (min_calls + (calls - npre - 2*min_calls)*frac_l*sig_l_bisect
+       /(frac_l*sig_l_bisect + (1.0 - frac_l)*sig_r_bisect));
     calls_r = calls - npre - calls_l;
 
     xl_temp = gsl_vector_alloc(num_dim);
     xh_temp = gsl_vector_alloc(num_dim);
 
-    for (j = 0; j < num_dim;j++) {
+    for (j = 0; j < num_dim; j++) {
       xl_temp->data[j] = xl[j];
       xh_temp->data[j] = xh[j];
     }
 
     xh_temp->data[j_bisect] = rmid->data[j_bisect];
     status = gsl_monte_miser(r, func, xl_temp->data, xh_temp->data, 
-		   num_dim, calls_l, &avg_l, &var_l);
+		   num_dim, calls_l, &res_l, &err_l);
     xl_temp->data[j_bisect] = rmid->data[j_bisect];
     xh_temp->data[j_bisect] = xh[j_bisect];
     status = gsl_monte_miser(r, func, xl_temp->data, xh_temp->data, 
-		   num_dim, calls_r, avg, var);
+		   num_dim, calls_r, res, err);
 
-    *avg = frac_l*avg_l+(1-frac_l)*(*avg);
-    *var = frac_l*frac_l*var_l+(1-frac_l)*(1-frac_l)*(*var);
+    *res = res_l + (*res);
+    *err = sqrt( SQR(err_l) + SQR(*err) );   
 
     gsl_vector_free(xl_temp);
     gsl_vector_free(xh_temp);
