@@ -1,5 +1,8 @@
 2004-06-14  Brian Gough  <bjg@network-theory.co.uk>
 
+	* lmiterate.c (iterate): handle case where fnorm = 0 to avoid
+	division by zero
+
 	* covar.c (gsl_multifit_covar): change tolerance test to match
 	original code, and handle case where tolr = 0
 

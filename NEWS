@@ -1,5 +1,8 @@
 * What is new in gsl-1.5:
 
+** Multifit routines now handle iterations where |f| is already
+minimised to zero, without division by zero.
+
 ** Fixed the singular value tolerance test in the multifit covariance
 calculation from < to <= to match the original MINPACK code.
 

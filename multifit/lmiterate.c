@@ -26,6 +26,11 @@ iterate (void *vstate, gsl_multifit_function_fdf * fdf, gsl_vector * x, gsl_vect
 
   double p1 = 0.1, p25 = 0.25, p5 = 0.5, p75 = 0.75, p0001 = 0.0001;
 
+  if (state->fnorm == 0.0) 
+    {
+      return GSL_SUCCESS;
+    }
+
   /* Compute qtf = Q^T f */
 
   gsl_vector_memcpy (qtf, f);
@@ -46,8 +51,12 @@ iterate (void *vstate, gsl_multifit_function_fdf * fdf, gsl_vector * x, gsl_vect
 lm_iteration:
   
   iter++ ;
-  
-  lmpar (r, perm, qtf, diag, state->delta, &(state->par), newton, gradient, sdiag, dx, w);
+
+  {
+    int status = lmpar (r, perm, qtf, diag, state->delta, &(state->par), newton, gradient, sdiag, dx, w);
+    if (status)
+      return status;
+  }
 
   /* Take a trial step */
 
