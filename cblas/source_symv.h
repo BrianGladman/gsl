@@ -24,50 +24,75 @@
 
 {
     size_t i, j;
-    size_t ix, iy, jx, jy;
 
-    iy = 0;
-    for (i = 0; i < N; i++) {
-	Y[iy] *= beta;
-	iy += incY;
+    if (alpha == 0.0 && beta == 1.0)
+	return;
+
+    /* form  y := beta*y */
+    if (beta == 0.0) {
+        size_t iy = OFFSET(N, incY);
+	for (i = 0; i < N; i++) {
+	    Y[iy] = 0.0;
+	    iy += incY;
+	}
+    } else if (beta != 1.0) {
+	size_t iy = OFFSET(N, incY);
+	for (i = 0; i < N; i++) {
+	    Y[iy] *= beta;
+	    iy += incY;
+	}
     }
 
-    if (Uplo == CblasUpper) {
-	jx = 0;
-	jy = 0;
-	for (j = 0; j < N; j++) {
-	    BASE tmp1 = alpha * X[jx];
-	    BASE tmp2 = 0.0;
-	    Y[jy] += tmp1 * A[lda * j + j];
-	    ix = jx;
-	    iy = jy;
-	    for (i = j + 1; i < N; i++) {
-		ix += incX;
-		iy += incY;
-		Y[iy] += tmp1 * A[lda * j + i];
-		tmp2 += A[lda * j + i] * X[ix];
-	    }
-	    Y[jy] += alpha * tmp2;
-	    jx += incX;
-	    jy += incY;
-	}
+    if (alpha == 0.0)
+	return;
+
+    /* form  y := alpha*A*x + y */
+
+    if ((order == CblasRowMajor && Uplo == CblasUpper)
+        || (order == CblasColMajor && Uplo == CblasLower)) {
+      size_t ix = OFFSET(N, incX);
+      size_t iy = OFFSET(N, incY);
+      for (i = 0; i < N; i++) {
+        BASE temp1 = alpha * X[ix];
+        BASE temp2 = 0.0;
+        const size_t j_min = i + 1;
+        const size_t j_max = N;
+        size_t jx = OFFSET(N, incX) + j_min * incX;
+        size_t jy = OFFSET(N, incY) + j_min * incY;
+        Y[iy] += temp1 * A[lda * i + i];
+        for (j = j_min; j < j_max; j++) {
+          Y[jy] += temp1 * A[lda * i + j];
+          temp2 += X[jx] * A[lda * i + j];
+          jx += incX;
+          jy += incY;
+        }
+        Y[iy] += alpha * temp2;
+        ix += incX;
+        iy += incY;
+      }
+    } else if ((order == CblasRowMajor && Uplo == CblasLower)
+               || (order == CblasColMajor && Uplo == CblasUpper)) {
+      size_t ix = OFFSET(N, incX) + (N - 1) * incX;
+      size_t iy = OFFSET(N, incY) + (N - 1) * incY;
+      for (i = N; i > 0 && i--;) {
+        BASE temp1 = alpha * X[ix];
+        BASE temp2 = 0.0;
+        const size_t j_min = 0;
+        const size_t j_max = i;
+        size_t jx = OFFSET(N, incX) + j_min * incX;
+        size_t jy = OFFSET(N, incY) + j_min * incY;
+        Y[iy] += temp1 * A[lda * i + i];
+        for (j = j_min; j < j_max; j++) {
+          Y[jy] += temp1 * A[lda * i + j];
+          temp2 += X[jx] * A[lda * i + j];
+          jx += incX;
+          jy += incY;
+        }
+        Y[iy] += alpha * temp2;
+        ix -= incX;
+        iy -= incY;
+      }
     } else {
-	jx = 0;
-	jy = 0;
-	for (j = 0; j < N; j++) {
-	    BASE tmp1 = alpha * X[jx];
-	    BASE tmp2 = 0.0;
-	    ix = 0;
-	    iy = 0;
-	    for (i = 0; i < j; i++) {
-		Y[iy] += tmp1 * A[lda * j + i];
-		tmp2 += A[lda * j + i] * X[ix];
-		ix += incX;
-		iy += incY;
-	    }
-	    Y[jy] += tmp1 * A[lda * j + j] + alpha * tmp2;
-	    jx += incX;
-	    jy += incY;
-	}
+      BLAS_ERROR ("unrecognized operation");
     }
 }

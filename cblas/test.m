@@ -167,6 +167,24 @@ function T = test_tpmatvector (S, j)
   endif
 endfunction
 
+function T = test_symatvectors (S, j)
+  T.n = fix(j/4)+1;
+  T.lda = fix(j/4)+1;
+  T.s1 = (-1)**(rem(fix(j/2),2));
+  T.s2 = (-1)**(rem(j,2)) ;
+
+  if (S.complex == 0)
+    T.A = random_matrix(T.n, T.n);
+    T.v1 = random_vector(T.n);
+    T.v2 = random_vector(T.n);
+  else
+    T.A = random_matrix(T.n, T.n) + I * random_matrix(T.n, T.n);
+    T.v1 = random_vector(T.n) + I * random_vector(T.n);
+    T.v2 = random_vector(T.n) + I * random_vector(T.n);
+  endif
+endfunction
+
+
 
 function v = random_vector(n)
   v = fix((rand(1,n)-0.5)*2000)/10;
@@ -678,12 +696,37 @@ function XX = blas_tpmv (order, uplo, trans, diag, N, A, X, incX)
   a = tpmatrix (order, uplo, diag, A, N);
   a = op(a, trans);
   x = vector (X, incX, N);
-a
-x
+
   y =  a * x ;
   
   XX = vout(X, incX, N, y);
 endfunction
+
+function YY = blas_symv (order, uplo, N, alpha, A, lda, X, incX, beta, Y, \
+                         incY)
+  a = trmatrix (order, uplo, 131, A, lda, N); # nounit
+  a = (a + a.' - diag(diag(a)));  # symmetrise
+  x = vector (X, incX, N);
+  y = vector (Y, incY, N);
+  
+  y = alpha * a * x + beta * y;
+  
+  YY = vout(Y, incY, N, y);
+endfunction
+
+function YY = blas_hemv (order, uplo, N, alpha, A, lda, X, incX, beta, Y, \
+                         incY)
+  a = trmatrix (order, uplo, 131, A, lda, N); # nounit
+  t = triu(a,1) + tril(a,-1);
+  a = diag(real(diag(a))) + t + t';  # make hermitian
+  x = vector (X, incX, N);
+  y = vector (Y, incY, N);
+  
+  y = alpha * a * x + beta * y;
+  
+  YY = vout(Y, incY, N, y);
+endfunction
+
 
 
 ######################################################################
@@ -1144,6 +1187,29 @@ function test_tpmv (S, fn, order, uplo, trans, diag, N, A, X, incX)
   end_block();
 endfunction
 
+function test_hesymv (S, fn, order, uplo, N, alpha, A, lda,  X, incX, \
+                    beta, Y, incY)
+  begin_block();
+  define(S, "int", "order", order);
+  define(S, "int", "uplo", uplo);
+  define(S, "scalar", "alpha", alpha);
+  define(S, "scalar", "beta", beta);
+  define(S, "int", "N", N);
+  define(S, "int", "lda", lda);
+  define(S, "matrix", "A", A);
+  define(S, "vector", "X", X);
+  define(S, "int", "incX", incX);
+  define(S, "vector", "Y", Y);
+  define(S, "int", "incY", incY);
+
+  YY = feval(strcat("blas_", fn), order, uplo, N, alpha, A, lda, X, incX, \
+             beta, Y, incY);
+  define(S, "vector", "y_expected", YY);
+  call("cblas_", S.prefix, fn, "(order, uplo, N, alpha, A, lda, X, incX, beta, Y, incY)");
+  test(S, "vector", "Y", "y_expected", strcat(S.prefix, fn), Y);
+  end_block();
+endfunction
+
 
 ######################################################################
 
@@ -1361,18 +1427,55 @@ n=16;
 #   endfor
 # endfor
 
+# for j = 1:n
+#   for i = [s,d,c,z]
+#     S = context(i);
+#     T = test_tpmatvector(S, j);
+#     for order = [101, 102]
+#       for uplo = [121, 122]
+#         for diag = [131, 132]
+#           test_tpmv (S, "tpmv", order, uplo, T.trans, diag, T.n, 
+#                      T.A, T.v, T.s);
+#         endfor
+#       endfor
+#     endfor
+#   endfor
+# endfor
+
+# for j = 1:n
+#   for i = [s,d]
+#     S = context(i);
+#     T = test_symatvectors(S, j);
+#     for alpha = coeff(S)
+#       for beta = coeff(S)
+#         for order = [101, 102]
+#           for uplo = [121, 122]
+#             for diag = [131, 132]
+#               test_hesymv (S, "symv", order, uplo, T.n, alpha, T.A, T.lda, T.v1, \
+#                            T.s1, beta, T.v2, T.s2);
+#             endfor
+#           endfor
+#         endfor
+#       endfor
+#     endfor
+#   endfor
+# endfor
+
 for j = 1:n
-  for i = [s,d,c,z]
+  for i = [c,z]
     S = context(i);
-    T = test_tpmatvector(S, j);
-    for order = [101, 102]
-      for uplo = [121, 122]
-        for diag = [131, 132]
-          test_tpmv (S, "tpmv", order, uplo, T.trans, diag, T.n, 
-                     T.A, T.v, T.s);
+    T = test_symatvectors(S, j);
+    for alpha = coeff(S)
+      for beta = coeff(S)
+        for order = [101, 102]
+          for uplo = [121, 122]
+            for diag = [131, 132]
+              test_hesymv (S, "hemv", order, uplo, T.n, alpha, T.A, T.lda, T.v1, \
+                           T.s1, beta, T.v2, T.s2);
+            endfor
+          endfor
         endfor
       endfor
     endfor
   endfor
 endfor
-

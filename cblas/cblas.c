@@ -609,7 +609,7 @@ cblas_zhemv (const enum CBLAS_ORDER order, const enum CBLAS_UPLO Uplo,
 #undef BASE
 }
 
-
+#ifdef 0
 /* HBMV */
 
 void
@@ -656,6 +656,7 @@ cblas_zhpmv (const enum CBLAS_ORDER order, const enum CBLAS_UPLO Uplo,
 #include "source_hpmv.h"
 #undef BASE
 }
+#endif
 
 /* SYMV */
 
