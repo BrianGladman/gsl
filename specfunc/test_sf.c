@@ -4782,8 +4782,27 @@ int check_legendre(void)
   gsl_test(s, "  gsl_sf_legendre_H3d_impl(5, 1.0e+08, 100.0)");
   status += s;
 
+  s = 0;
+  s += ( frac_diff(gsl_sf_legendre_Q0(-0.5), -0.5493061443340548457 ) > 1.0e-14 );
+  s += ( frac_diff(gsl_sf_legendre_Q0( 1.5),  0.8047189562170501873 ) > 1.0e-14 );
+  gsl_test(s, "  gsl_sf_legendre_Q0");
+  status += s;
+
+  s = 0;
+  s += ( frac_diff(gsl_sf_legendre_Q1(-0.5), -0.7253469278329725772  ) > 1.0e-14 );
+  s += ( frac_diff(gsl_sf_legendre_Q1( 1.5),  0.20707843432557528095 ) > 1.0e-14 );
+  gsl_test(s, "  gsl_sf_legendre_Q1");
+  status += s;
+
+  s = 0;
+  s += ( frac_diff(gsl_sf_legendre_Q2(-0.5), 0.8186632680417568557  ) > 1.0e-14 );
+  s += ( frac_diff(gsl_sf_legendre_Q2( 1.5), 0.06356699912401928849 ) > 1.0e-14 );
+  gsl_test(s, "  gsl_sf_legendre_Q2");
+  status += s;
+
   return status;
 }
+
 
 int check_log(void)
 {

@@ -1,0 +1,58 @@
+*-text-*-
+RCS: $Id$
+
+
+----------------------------------------------------------------------
+
+The following constitute the set of things which
+should be finished before a 1.0 level release.
+
+* Implement the conicalP_sph_reg() functions.
+  DONE: Fri Nov  6 23:33:53 MST 1998 [GJ]
+
+* Implement toroidal functions, toroidalP_...().
+
+* Irregular (Q) Legendre functions, at least
+  the integer order ones. More general cases
+  can probably wait.
+
+* Make hyperg_1F1() work right.
+
+* Implement the low-energy regime for the Coulomb
+  wave functions. This is fairly well understood in
+  the recent literature but will require some
+  detailed work.
+
+* Clean-up the Fermi-Dirac code. The full Fermi-Dirac
+  functions can probably wait until a later release,
+  but we should have at least the j = integer and
+  j = 1/2-integer cases for the 1.0 release. The
+  latter are not too hard.
+
+* Go over the tests and make sure nothing is left out.
+
+* Fill out our scorecard, working from the "Needs in
+  Special Functions" paper.
+
+
+----------------------------------------------------------------------
+
+The following are important but probably involve
+significant effort, and it is too much to expect
+completion before a 1.0 level release.
+
+* Characterize the algorithms. A significant fraction of
+  the code is home-grown and it should be reviewed by
+  other parties.
+
+
+----------------------------------------------------------------------
+
+The following are extra features which need not be implemented
+for a version 1.0 release.
+
+* Spheroidal wave functions.
+
+* Mathieu functions.
+
+* Weierstrass elliptic functions.

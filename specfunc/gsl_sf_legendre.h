@@ -33,6 +33,33 @@ double gsl_sf_legendre_P4(double x);
 double gsl_sf_legendre_P5(double x);
 
 
+/* Q_0(x), x > -1, x != 1
+ *
+ * exceptions: GSL_EDOM
+ */
+int     gsl_sf_legendre_Q0_impl(double x, double * result);
+int     gsl_sf_legendre_Q0_e(double x, double * result);
+double  gsl_sf_legendre_Q0(double x);
+
+
+/* Q_1(x), x > -1, x != 1
+ *
+ * exceptions: GSL_EDOM
+ */
+int     gsl_sf_legendre_Q1_impl(double x, double * result);
+int     gsl_sf_legendre_Q1_e(double x, double * result);
+double  gsl_sf_legendre_Q1(double x);
+
+
+/* Q_2(x), x > -1, x != 1
+ *
+ * exceptions: GSL_EDOM
+ */
+int     gsl_sf_legendre_Q2_impl(double x, double * result);
+int     gsl_sf_legendre_Q2_e(double x, double * result);
+double  gsl_sf_legendre_Q2(double x);
+
+
 /* P_l^m(x)  m >= 0; l >= m; |x| <= 1.0
  *
  * Note that this function grows combinatorially with l.
