@@ -267,6 +267,7 @@ mind that evil profit-making companies (such as those which sell
 * Non-UNIX portability::        
 * Compatibility with other libraries::  
 * Parallelism::                 
+* Precision::                   
 * Miscellaneous::               
 @end menu
 
@@ -1089,14 +1090,22 @@ usage of @code{hypot} in @file{gsl/complex/math.c}, the implementation
 of @code{gsl_hypot} and the corresponding parts of files
 @file{configure.in} and @file{config.h.in} as an example.
 
-@node Parallelism, Miscellaneous, Compatibility with other libraries, Design
+@node Parallelism, Precision, Compatibility with other libraries, Design
 @section Parallelism
 
 We don't intend to provide support for parallelism within the library
 itself. A parallel library would require a completely different design
 and would carry overhead that other applications do not need.
 
-@node Miscellaneous,  , Parallelism, Design
+@node Precision, Miscellaneous, Parallelism, Design
+@section Precision
+
+For algorithms which use cutoffs or other precision-related terms please
+express these in terms of GSL_DBL_EPSILON and GSL_DBL_MIN, or powers or
+combinations of these.  This makes it easier to port the routines to
+different precisions.
+
+@node Miscellaneous,  , Precision, Design
 @section Miscellaneous
 
 Don't use the letter @code{l} as a variable name --- it is difficult to
