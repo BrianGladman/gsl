@@ -12,6 +12,12 @@ int     gsl_sf_legendre_Pl_impl(int l, double x, double * result, double * harve
 int     gsl_sf_legendre_Pl_e(int l, double x, double * result);
 double  gsl_sf_legendre_Pl(int l, double x);
 
+
+/* P_l(x) for l=0,...,lmax
+ *
+ * exceptions: GSL_EDOM
+ */
+int gsl_sf_legendre_Pl_array_impl(int lmax, double x, double * result_array);
 int gsl_sf_legendre_Pl_array_e(int lmax, double x, double * result_array);
 
 
@@ -24,17 +30,6 @@ double gsl_sf_legendre_P2(double x);
 double gsl_sf_legendre_P3(double x);
 double gsl_sf_legendre_P4(double x);
 double gsl_sf_legendre_P5(double x);
-
-
-#ifdef HAVE_INLINE
-extern inline double gsl_sf_legendre_P1(double x) { return x; }
-extern inline double gsl_sf_legendre_P2(double x) { return 0.5*(3.*x*x - 1.); }
-extern inline double gsl_sf_legendre_P3(double x) { return 0.5*x*(5.*x*x - 3.); }
-extern inline double gsl_sf_legendre_P4(double x)
-{ double x2 = x*x; return (35.*x2*x2 - 30.*x2 + 3.)/8.; }
-extern inline double gsl_sf_legendre_P5(double x)
-{ double x2 = x*x; return x*(63.*x2*x2 - 70.*x2 + 15.)/8.; }
-#endif /* HAVE_INLINE */
 
 
 /* P_l^m(x)  m >= 0; l >= m; x >= 0
@@ -113,5 +108,15 @@ double gsl_sf_conical_sph_reg(int l, double lambda, double x);  /* domain */
 
 int gsl_sf_conical_xlt1_large_mu_impl(double mu, double tau, double x, double * result);
 
+
+#ifdef HAVE_INLINE
+extern inline double gsl_sf_legendre_P1(double x) { return x; }
+extern inline double gsl_sf_legendre_P2(double x) { return 0.5*(3.*x*x - 1.); }
+extern inline double gsl_sf_legendre_P3(double x) { return 0.5*x*(5.*x*x - 3.); }
+extern inline double gsl_sf_legendre_P4(double x)
+{ double x2 = x*x; return (35.*x2*x2 - 30.*x2 + 3.)/8.; }
+extern inline double gsl_sf_legendre_P5(double x)
+{ double x2 = x*x; return x*(63.*x2*x2 - 70.*x2 + 15.)/8.; }
+#endif /* HAVE_INLINE */
 
 #endif /* !GSL_LEGENDRE_H_ */

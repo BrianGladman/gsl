@@ -17,21 +17,25 @@
 /*-*-*-*-*-*-*-*-*-*-*-* Private Section *-*-*-*-*-*-*-*-*-*-*-*/
 
 
-/* [Dunster, Proc. Roy. Soc. Edinburgh 119A, 311 (1991), p. 326 */
+/* Implementation of large negative mu asymptotic
+ * [Dunster, Proc. Roy. Soc. Edinburgh 119A, 311 (1991), p. 326]
+ */
 
 static inline double olver_U1(double beta2, double p)
 {
-  return (p-1.)/(24.*(1.+beta2)) * (3. + beta2*(2. + 5.*p*(1.+p)));
+  return (p-1.0)/(24.0*(1.0+beta2)) * (3.0 + beta2*(2.0 + 5.0*p*(1.0+p)));
 }
+
 static inline double olver_U2(double beta2, double p)
 {
   double beta4 = beta2*beta2;
   double p2    = p*p;
-  double poly1 =  4.*beta4 + 84.*beta2 - 63.;
-  double poly2 = 16.*beta4 + 90.*beta2 - 81.;
-  double poly3 = beta2*p2*(97.*beta2 - 432. + 77.*p*(beta2-6.) - 385.*beta2*p2*(1. + p));
-  return (1.-p)/(1152.*(1.+beta2)) * (poly1 + poly2 + poly3);
+  double poly1 =  4.0*beta4 + 84.0*beta2 - 63.0;
+  double poly2 = 16.0*beta4 + 90.0*beta2 - 81.0;
+  double poly3 = beta2*p2*(97.0*beta2 - 432.0 + 77.0*p*(beta2-6.0) - 385.0*beta2*p2*(1.0 + p));
+  return (1.0-p)/(1152.0*(1.0+beta2)) * (poly1 + poly2 + poly3);
 }
+
 static const double U3c1[] = {   -1307.0,   -1647.0,    3375.0,    3675.0 };
 static const double U3c2[] = {   29366.0,   35835.0, -252360.0, -272630.0,
                                 276810.0,  290499.0 };
@@ -44,26 +48,31 @@ static const double U3c5[] = {       9136.0,      22480.0,     12760.0,
                                   -252480.0,   -4662165.0,   -1705341.0,
 				 92370135.0,   86244015.0, -263678415.0,
 			       -260275015.0, 185910725.0,  185910725.0 };
+
 static double olver_U3(double beta2, double p)
 {
   double beta4 = beta2*beta2;
   double beta6 = beta4*beta2;
   double opb2s = (1.0+beta2)*(1.0+beta2);
-  double den   = 39813120. * opb2s*opb2s;
+  double den   = 39813120.0 * opb2s*opb2s;
   double poly1 = gsl_sf_poly_eval(U3c1, 4, p);
   double poly2 = gsl_sf_poly_eval(U3c2, 6, p);
   double poly3 = gsl_sf_poly_eval(U3c3, 8, p);
   double poly4 = gsl_sf_poly_eval(U3c4, 10, p);
   double poly5 = gsl_sf_poly_eval(U3c5, 12, p);
   
-  return (p-1.)*(      1215*poly1 + 324*beta2*poly2
-                 + 54*beta4*poly3 +  12*beta6*poly4
+  return (p-1.0)*(     1215.0*poly1 + 324.0*beta2*poly2
+                 + 54.0*beta4*poly3 +  12.0*beta6*poly4
 		 + beta4*beta4*poly5
 		 ) / den;
 }
 
-/* P^{-mu}_{-1/2 + I tau}, mu -> Inf */
-static int conicalP_xlt1_large_neg_mu(double mu, double tau, double x, double * result)
+/* Large mu asymptotic.
+ * P^{-mu}_{-1/2 + I tau}, mu -> Inf
+ */
+static
+int
+conicalP_xlt1_large_neg_mu(double mu, double tau, double x, double * result)
 {
   double beta  = tau/mu;
   double beta2 = beta*beta;
@@ -83,120 +92,100 @@ static int conicalP_xlt1_large_neg_mu(double mu, double tau, double x, double * 
     return GSL_EUNDRFLW;
   }
   else {
-    double sum = 1. - olver_U1(beta2, p)/mu + olver_U2(beta2, p)/(mu*mu);
+    double sum = 1.0 - olver_U1(beta2, p)/mu + olver_U2(beta2, p)/(mu*mu);
     *result = exp(ln_pre) * sum;
     return GSL_SUCCESS;
   }
 }
 
 
-/* A_n^{-mu}, B_n^{-mu}   [Olver, p.465, 469] */
+
+/* Implementation of large tau asymptotic
+ *
+ * [Olver, p.465, 469]
+ * A_n^{-mu}, B_n^{-mu}
+ */
 
 static double olver_B0_xi(double mu, double xi)
 {
-  return (1. - 4.*mu*mu)/(8.*xi) * (1./tanh(xi) - 1./xi);
+  return (1.0 - 4.0*mu*mu)/(8.0*xi) * (1.0/tanh(xi) - 1./xi);
 }
+
 static double olver_A1_xi(double mu, double xi, double x)
 {
   double B = olver_B0_xi(mu, xi);
-  double psi = (4.*mu*mu - 1.)/16. * (1./(x*x-1.) - 1./(xi*xi));
-  return 0.5*xi*xi*B*B + (mu+0.5)*B - psi + mu/6.*(0.25 - mu*mu);
+  double psi = (4.0*mu*mu - 1.0)/16.0 * (1.0/(x*x-1.0) - 1.0/(xi*xi));
+  return 0.5*xi*xi*B*B + (mu+0.5)*B - psi + mu/6.0*(0.25 - mu*mu);
 }
+
 static double olver_B0_th(double mu, double theta)
 {
-  return -(1. - 4.*mu*mu)/(8.*theta) * (1./tan(theta) - 1./theta);
+  return -(1.0 - 4.0*mu*mu)/(8.0*theta) * (1.0/tan(theta) - 1.0/theta);
 }
+
 static double olver_A1_th(double mu, double theta, double x)
 {
   double B = olver_B0_th(mu, theta);
-  double psi = (4.*mu*mu - 1.)/16. * (1./(x*x-1.) + 1./(theta*theta));
-  return -0.5*theta*theta*B*B + (mu+0.5)*B - psi + mu/6.*(0.25 - mu*mu);
+  double psi = (4.0*mu*mu - 1.0)/16.0 * (1.0/(x*x-1.0) + 1.0/(theta*theta));
+  return -0.5*theta*theta*B*B + (mu+0.5)*B - psi + mu/6.0*(0.25 - mu*mu);
 }
 
 
-/* P^{-m}_{-1/2 + I tau}, tau -> Inf   [Olver, p. 473] */
-static int cylconicalP_xlt1_large_tau_impl(int m, double tau, double x, double * result)
-{
-  double theta = acos(x);
-  double th_pre;
-  double pre;
-  double sumA, sumB;
-  double arg;
-  double Im, Imm1;
-  
-  if(theta < GSL_ROOT4_MACH_EPS) {
-    th_pre = 1. + theta*theta/6.;
-  }
-  else {
-    th_pre = theta/sin(theta);
-  }
-  
-  pre = sqrt(th_pre) * gsl_sf_pow_int(1./tau, m);
-  if(pre == 0.0) {
-    *result = 0.0;
-    return GSL_EUNDRFLW;
-  }
-  
-  arg = tau*theta;
-  
-  gsl_sf_bessel_In_impl(m,   arg, &Im);
-  gsl_sf_bessel_In_impl(m-1, arg, &Imm1);
-  
-  sumA = 1. - olver_A1_th(m, theta, x)/(tau*tau);
-  sumB = olver_B0_th(m, theta)/tau;
-  
-  *result = pre * (Im * sumA - theta/tau * Imm1 * sumB);
-  return GSL_SUCCESS; /* FIXME: hmmm, success??? */
-}
-
-/* P^{-1/2 - ell}_{-1/2 + I tau}, tau -> Inf   [Olver, p. 473]
- * 
+/* Large tau uniform asymptotics
+ * P^{-mu}_{-1/2 + I tau}
+ * -1 < x < 1
+ * tau -> Inf 
+ * [Olver, p. 473]
  */
-static int sphconicalP_xlt1_large_tau_impl(int ell, double tau, double x, double * result)
+static
+int
+conicalP_xlt1_negorder_largetau_impl(const double mu, const double tau,
+                                     const double x, double * result)
 {
-  double mu = ell + 0.5;
   double theta = acos(x);
   double th_pre;
   double pre;
   double sumA, sumB;
   double arg;
-  double rt_term;
-  double Im, Imm1;
-  
+  double I_mup1, I_mu, I_mum1;
+
   if(theta < GSL_ROOT4_MACH_EPS) {
-    th_pre = 1. + theta*theta/6.;
+    th_pre = 1.0 + theta*theta/6.0;
   }
   else {
     th_pre = theta/sin(theta);
   }
-  
-  pre = sqrt(th_pre) * pow(1./tau, mu);
+
+  pre = sqrt(th_pre) * pow(1.0/tau, mu);
   if(pre == 0.0) {
     *result = 0.0;
     return GSL_EUNDRFLW;
   }
   
   arg = tau*theta;
-
-  gsl_sf_bessel_il_impl(ell,   arg, &Im);
-  gsl_sf_bessel_il_impl(ell-1, arg, &Imm1);
-  rt_term = sqrt(2.0*arg/M_PI);
-  Im   *= rt_term;
-  Imm1 *= rt_term;
-
-  sumA = 1. - olver_A1_th(mu, theta, x)/(tau*tau);
+  
+  gsl_sf_bessel_Inu_impl(mu + 1.0,   arg, &I_mup1);
+  gsl_sf_bessel_Inu_impl(mu,         arg, &I_mu);
+  I_mum1 = I_mup1 + 2.0*mu/arg;
+  
+  sumA = 1.0 - olver_A1_th(mu, theta, x)/(tau*tau);
   sumB = olver_B0_th(mu, theta)/tau;
   
-  *result = pre * (Im * sumA - theta/tau * Imm1 * sumB);
+  *result = pre * (I_mu * sumA - theta/tau * I_mum1 * sumB);
   return GSL_SUCCESS; /* FIXME: hmmm, success??? */
 }
 
+
 /* P^{-mu}_{-1/2 + I tau}  first hypergeometric representation
+ * -1 < x < 1
+ * more effective for |x| small
  *
  * [Kolbig,   (3)] (note typo in args of gamma functions)
  * [Bateman, (22)] (correct form)
  */
-static int conicalP_xlt1_hyperg_A(double mu, double tau, double x, double * result)
+static
+int
+conicalP_xlt1_hyperg_A(double mu, double tau, double x, double * result)
 {
   double x2 = x*x;
   double pre  = M_SQRTPI * pow(0.5*sqrt(1-x2), mu);
@@ -219,20 +208,25 @@ static int conicalP_xlt1_hyperg_A(double mu, double tau, double x, double * resu
 }
 
 /* P^{-mu}_{-1/2 + I tau}  second hypergeometric representation
+ * -1 < x < 3
+ * effective for x near 1
  *
  * [Zhurina+Karmazina,  (3.1)]   mu != a positive integer
  */
-static int conicalP_xnear1_hyperg_B(double mu, double tau, double x, double * result)
+static
+int
+conicalP_xnear1_hyperg_B(double mu, double tau, double x, double * result)
 {
   double ln_pre;
   double ln_g0, ln_g1, ln_g2, arg_g1, arg_g2;
   double F;
   
-  int stat_F = gsl_sf_hyperg_2F1_conj_impl(0.5 - mu, tau, 1.0-mu, 0.5*(1.0-x), &F);
+  int stat_F = gsl_sf_hyperg_2F1_conj_renorm_impl(0.5 - mu, tau, 1.0-mu, 0.5*(1.0-x), &F);
   
   /* FIXME: error handling */
 
-  ln_g0 = gsl_sf_lngamma(1.0 - mu);
+  /* ln_g0 = gsl_sf_lngamma(1.0 - mu); using renorm version above */
+  ln_g0 = 0.0;
   gsl_sf_lngamma_complex_impl(0.5-mu, tau, &ln_g1, &arg_g1);
   gsl_sf_lngamma_complex_impl(0.5+mu, tau, &ln_g2, &arg_g2);
 
@@ -256,13 +250,13 @@ int gsl_sf_conical_sph_irr_1_impl(const double lambda,
                                   )
 {
   double x = 0.5 * (one_plus_x - one_minus_x);
-  if(fabs(x) < 1.) {
+  if(fabs(x) < 1.0) {
     double ac  = acos(x);
     double den = sqrt(sqrt(one_minus_x*one_plus_x));
     *result = Root_2OverPi_ / den * cosh(ac * lambda);
     return GSL_SUCCESS;
   }
-  else if(one_minus_x < 0.) { /* x > 1. */
+  else if(one_minus_x < 0.0) { /* x > 1 */
     double sq_term = sqrt(-one_minus_x*one_plus_x);
     double ln_term = log(x + sq_term);
     double den = sqrt(sq_term);
@@ -271,6 +265,7 @@ int gsl_sf_conical_sph_irr_1_impl(const double lambda,
   }
   else {
     /* |x| == 1 or x < -1 */
+    *result = 0.0;
     return GSL_EDOM;
   }
 }
@@ -287,7 +282,7 @@ int gsl_sf_conical_sph_reg_0_impl(const double lambda,
                                   )
 {
   double x = 0.5 * (one_plus_x - one_minus_x);
-  if(fabs(x) < 1.) {
+  if(fabs(x) < 1.0) {
     double ac  = acos(x);
     double den = sqrt(sqrt(one_minus_x*one_plus_x));
     double arg = ac * lambda;
@@ -299,7 +294,7 @@ int gsl_sf_conical_sph_reg_0_impl(const double lambda,
     }
     return GSL_SUCCESS;
   }
-  else if(one_minus_x < 0.) { /* x > 1. */
+  else if(one_minus_x < 0.0) { /* x > 1 */
     double sq_term = sqrt(-one_minus_x*one_plus_x);
     double ln_term = log(x + sq_term);
     double den = sqrt(sq_term);
@@ -312,12 +307,13 @@ int gsl_sf_conical_sph_reg_0_impl(const double lambda,
     }
     return GSL_SUCCESS;
   }
-  else if(one_minus_x == 0.) { /* x == 1. */
-    *result = 0.;
+  else if(one_minus_x == 0.0) { /* x == 1 */
+    *result = 0.0;
     return GSL_SUCCESS;
   }  
   else {
     /* x <= -1 */
+    *result = 0.0;
     return GSL_EDOM;
   }
 }
@@ -329,7 +325,7 @@ int gsl_sf_conical_sph_reg_impl(const int lmax, const double lambda,
 {
   double x = 0.5 * (one_p_x - one_m_x);
 
-  if(fabs(x) < 1.) {
+  if(fabs(x) < 1.0) {
     double f0;
     double p[2];
     int l_start = 20 + (int) ceil(lmax * (1. + (0.14 + 0.026*lambda)));
@@ -339,7 +335,7 @@ int gsl_sf_conical_sph_reg_impl(const int lmax, const double lambda,
     recurse_backward_minimal_simple_conical_sph_reg_xlt1(l_start, lmax, 0, p, f0, harvest, result);
     
   }
-  else if(x > 1.) {
+  else if(x > 1.0) {
     double f0;
     double p[2];
     int l_start = 10 + (int) ceil(lmax * (1. + (0.14 + 0.026*lambda)*(x-1.)));

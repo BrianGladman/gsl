@@ -12,7 +12,8 @@
 /*-*-*-*-*-*-*-*-*-*-*-* Private Section *-*-*-*-*-*-*-*-*-*-*-*/
 
 /* assumes: -1 <= x <= 1, 2 <= l */
-static int legendre_Pl_recurse(const int l, const double x, double * result, double * harvest)
+static int legendre_Pl_recurse(const int l, const double x, double * result,
+                               double * harvest)
 {
   int ell;
   double pmm   = 1.;       /* P_0(x) */
@@ -215,6 +216,13 @@ int gsl_sf_legendre_Pl_impl(const int l,
   }
 }
 
+/*
+int gsl_sf_legendre_Pl_array_impl(const int lmax, const double x, double * result_array)
+{
+}
+*/
+
+
 /* checks: l >= m >= 0;  -1 <= x <= 1
  *
  * if harvest != 0: 
@@ -301,7 +309,7 @@ int gsl_sf_legendre_sphPlm_e(const int l, const int m, const double x, double * 
 int gsl_sf_legendre_Pl_array_e(const int l, const double x, double * result_array)
 {
   double y;
-  int status = gsl_sf_legendre_Pl_impl(l, x, &y, result_array);
+  int status = gsl_sf_legendre_Pl_array_impl(l, x, /*&y, */result_array);
   if(status != GSL_SUCCESS) {
     GSL_ERROR("gsl_sf_legendre_Pl_array_e", status);
   }
