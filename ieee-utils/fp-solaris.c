@@ -56,7 +56,8 @@ gsl_ieee_set_mode (int precision, int rounding, int exception_mask)
     mode &= ~ FP_X_INV ;
 
   if (exception_mask & GSL_IEEE_MASK_DENORMALIZED)
-    GSL_ERROR ("solaris does not support the denormalized operand exception",
+    GSL_ERROR ("solaris does not support the denormalized operand exception. "
+	       "Use 'mask-denormalized' to work around this.",
 	       GSL_EUNSUP) ;
 
   if (exception_mask & GSL_IEEE_MASK_DIVISION_BY_ZERO)

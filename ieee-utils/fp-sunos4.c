@@ -57,8 +57,8 @@ gsl_ieee_set_mode (int precision, int rounding, int exception_mask)
     }
   else
     {
-      GSL_ERROR ("sunos4 does not support the denormalized operand\n"
-		 "exception. Use 'mask-denormalized' to work around this.\n",
+      GSL_ERROR ("sunos4 does not support the denormalized operand exception. "
+		 "Use 'mask-denormalized' to work around this.",
 		 GSL_EUNSUP) ;
     }
 
