@@ -287,8 +287,9 @@ not well understood or is not smooth, so that techniques like Newton's
 method (which requires calculating Jacobian derivative matrices) cannot
 be used.
 
-Simulated annealing is a stochastic search technique based on the idea
-of a @emph{cooling schedule} for the random steps which are taken.
+Simulated annealing is a stochastic search technique which has shown
+good results in avoiding local minima; it is based on the idea of a
+@emph{cooling schedule} for the size of random steps which are taken.
 @cindex cooling schedule
 @cindex schedule - cooling
 
@@ -304,25 +305,24 @@ r = e^(-E/kT).
 After a few search steps using this distribution, the temperature
 @emph{T} is lowered according to some scheme, for example
 @tex
-$T \rightarrow T/\mu_T$.
+$T \rightarrow T/\mu_T$
 @end tex
 @ifinfo
-T -> T/mu_T.
+T -> T/mu_T
 @end ifinfo
-
-
-
+where mu_T is slightly greater than 1.
 
 @menu
 * Simulated Annealing algorithm::  
-* The Simulated Annealing functions::  
+* Simulated Annealing functions::  
+* Examples with Simulated Annealing::  
 @end menu
 
 @node Simulated Annealing algorithm
 @section Simulated Annealing algorithm
 
-@node The Simulated Annealing functions
-@section The Simulated Annealing functions
+@node Simulated Annealing functions
+@section Simulated Annealing functions
 
 @deftp {Simulated annealing} gsl_Efunc_t
 @smallexample
@@ -388,6 +388,66 @@ number_of_iterations temperature x x-(*x0_p) Ef(x)
 If @var{print_position} is null, no information is printed to the
 screen.
 @end deftypefn
+
+@node Examples with Simulated Annealing
+@section Examples with Simulated Annealing
+
+GSL's Simulated Annealing package is clumsy, and it has to be because it
+is written in C, for C callers, and tries to be polymorphic at the same
+time.  But here we provide some examples which can be pasted into your
+application with little change and should make things easier.
+
+The first example, in one dimensional cartesian space, sets up an energy
+function which is a damped sine wave; this has many local minima, but
+only one global minimum, somewhere between 1.0 and 1.5.  The initial
+guess given is 15.5, which is several local minima away from the global
+minimum.
+
+@example
+/* now some functions to test in one dimension */
+double E1(void *xp)
+@{
+  double x = * ((double *) xp);
+
+  return exp(-square(x-1))*sin(8*x);
+@}
+
+double M1(void *xp, void *yp)
+@{
+  double x = *((double *) xp);
+  double y = *((double *) yp);
+
+  return fabs(x - y);
+@}
+
+void S1(void *xp, double step_size)
+@{
+  double r;
+  double old_x = *((double *) xp);
+  double new_x;
+
+  r = gsl_ran_uniform();
+  new_x = r*2*step_size - step_size + old_x;
+
+  memcpy(xp, &new_x, sizeof(new_x));
+@}
+
+void P1(void *xp)
+@{
+  printf("%12g", *((double *) xp));
+@}
+
+int main(int argc, char *argv[])
+@{
+  Element x0;			/* initial pguess for search */
+
+  double x_initial = 15.5;
+
+  gsl_siman_solve(&x_initial, E1, S1, M1, P1, sizeof(double), params);
+  return 0;
+@}
+@end example
+
 
 @node Contributors to GSL
 @appendix Contributors to GSL
