@@ -146,15 +146,16 @@ int gsl_sf_bessel_Inu_Jnu_taylor_impl(const double nu, const double x,
     *result= 1.;
     return GSL_SUCCESS;
   }
-  
-  if(x == 0.) {
+  else if(x == 0.) {
     *result = 0.;
     return GSL_SUCCESS;
   }
-  
-  if(nu == 0.) {
+  else if(nu == 0.) {
     int status = Inu_Jnu_taylorsum(nu, x, sign, kmax, result);
     return status;
+  }
+  else {
+    return GSL_SUCCESS; /* NOT REACHED */
   }
 }
 

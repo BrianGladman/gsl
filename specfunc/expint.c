@@ -234,37 +234,49 @@ static double AE14_data[26] = {
 static struct gsl_sf_ChebSeries AE11_cs = {
   AE11_data,
   38,
-  -1, 1
+  -1, 1,
+  (double *)0,
+  (double *)0
 };
 
 static struct gsl_sf_ChebSeries AE12_cs = {
   AE12_data,
   24,
-  -1, 1
+  -1, 1,
+  (double *)0,
+  (double *)0
 };
 
 static struct gsl_sf_ChebSeries E11_cs = {
   E11_data,
   18,
-  -1, 1
+  -1, 1,
+  (double *)0,
+  (double *)0
 };
 
 static struct gsl_sf_ChebSeries E12_cs = {
   E12_data,
   15,
-  -1, 1
+  -1, 1,
+  (double *)0,
+  (double *)0
 };
 
 static struct gsl_sf_ChebSeries AE13_cs = {
   AE13_data,
   24,
-  -1, 1
+  -1, 1,
+  (double *)0,
+  (double *)0
 };
 
 static struct gsl_sf_ChebSeries AE14_cs = {
   AE14_data,
   25,
-  -1, 1
+  -1, 1,
+  (double *)0,
+  (double *)0
 };
 
 

@@ -52,7 +52,9 @@ static double bk1_data[11] = {
 static struct gsl_sf_ChebSeries bk1_cs = {
   bk1_data,
   10,
-  -1, 1
+  -1, 1,
+  (double *)0,
+  (double *)0
 };
 
 static double ak1_data[17] = {
@@ -78,7 +80,9 @@ static double ak1_data[17] = {
 static struct gsl_sf_ChebSeries ak1_cs = {
   ak1_data,
   16,
-  -1, 1
+  -1, 1,
+  (double *)0,
+  (double *)0
 };
 
 static double ak12_data[14] = {
@@ -101,7 +105,9 @@ static double ak12_data[14] = {
 static struct gsl_sf_ChebSeries ak12_cs = {
   ak12_data,
   13,
-  -1, 1
+  -1, 1,
+  (double *)0,
+  (double *)0
 };
 
 

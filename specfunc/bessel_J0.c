@@ -44,7 +44,9 @@ static double bj0_data[13] = {
 static struct gsl_sf_ChebSeries bj0_cs = {
   bj0_data,
   12,
-  -1, 1
+  -1, 1,
+  (double *)0,
+  (double *)0
 };
 
 int gsl_sf_bessel_J0_impl(const double x, double * result)

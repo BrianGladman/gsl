@@ -4,10 +4,8 @@
 #include "gsl_sf_chebyshev.h"
 #include "gsl_sf_expint.h"
 
-
-extern int gsl_sf_expint_Ei_impl(double, double *);
-extern int gsl_sf_expint_E1_impl(double, double *);
-
+#include "expint_impl.h"
+#include "shint_impl.h"
 
 
 /*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
@@ -32,7 +30,9 @@ static double shi_data[7] = {
 static struct gsl_sf_ChebSeries shi_cs = {
   shi_data,
   6,
-  -1, 1
+  -1, 1,
+  (double *)0,
+  (double *)0
 };
 
 /* checked OK [GJ] */

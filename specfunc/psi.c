@@ -96,12 +96,16 @@ static double apsics_data[16] = {
 static struct gsl_sf_ChebSeries psi_cs = {
   psics_data,
   22,
-  -1, 1
+  -1, 1,
+  (double *)0,
+  (double *)0
 };
 static struct gsl_sf_ChebSeries apsi_cs = {
   apsics_data,
   15,
-  -1, 1
+  -1, 1,
+  (double *)0,
+  (double *)0
 };
 
 
@@ -115,7 +119,8 @@ int gsl_sf_psi_impl(const double x, double * result)
     double aux = 0.;
     if(y < xbig) aux = gsl_sf_cheb_eval(8./(y*y)-1., &apsi_cs);
     if(x < 0.) {
-      *result = log(y) - 0.5/x + aux - M_PI * cot(M_PI*x);
+      /* *result = log(y) - 0.5/x + aux - M_PI * cot(M_PI*x); */
+      *result = log(y) - 0.5/x + aux - M_PI * cos(M_PI*x)/sin(M_PI*x);
     }
     else {
       *result = log(y) - 0.5/x + aux;  /* note: x > 0 by construction */

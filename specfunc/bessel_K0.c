@@ -52,7 +52,9 @@ static double bk0_data[11] = {
 static struct gsl_sf_ChebSeries bk0_cs = {
   bk0_data,
   10,
-  -1, 1
+  -1, 1,
+  (double *)0,
+  (double *)0
 };
 
 static double ak0_data[17] = {
@@ -78,7 +80,9 @@ static double ak0_data[17] = {
 static struct gsl_sf_ChebSeries ak0_cs = {
   ak0_data,
   16,
-  -1, 1
+  -1, 1,
+  (double *)0,
+  (double *)0
 };
 
 static double ak02_data[14] = {
@@ -101,7 +105,9 @@ static double ak02_data[14] = {
 static struct gsl_sf_ChebSeries ak02_cs = {
   ak02_data,
   13,
-  -1, 1
+  -1, 1,
+  (double *)0,
+  (double *)0
 };
 
 int gsl_sf_bessel_K0_scaled_impl(const double x, double * result)

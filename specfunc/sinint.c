@@ -4,6 +4,8 @@
 #include "gsl_sf_chebyshev.h"
 #include "gsl_sf_expint.h"
 
+#include "sinint_impl.h"
+
 
 /*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
 
@@ -41,7 +43,9 @@ static double f1_data[20] = {
 static struct gsl_sf_ChebSeries f1_cs = {
   f1_data,
   19,
-  -1, 1
+  -1, 1,
+  (double *)0,
+  (double *)0
 };
 
 /*
@@ -86,7 +90,9 @@ static double f2_data[29] = {
 static struct gsl_sf_ChebSeries f2_cs = {
   f2_data,
   28,
-  -1, 1
+  -1, 1,
+  (double *)0,
+  (double *)0
 };
 
 /*
@@ -123,7 +129,9 @@ static double g1_data[21] = {
 static struct gsl_sf_ChebSeries g1_cs = {
   g1_data,
   20,
-  -1, 1
+  -1, 1,
+  (double *)0,
+  (double *)0
 };
 
 /*
@@ -173,7 +181,9 @@ static double g2_data[34] = {
 static struct gsl_sf_ChebSeries g2_cs = {
   g2_data,
   33,
-  -1, 1
+  -1, 1,
+  (double *)0,
+  (double *)0
 };
 
 
@@ -236,14 +246,15 @@ static double si_data[12] = {
 static struct gsl_sf_ChebSeries si_cs = {
   si_data,
   11,
-  -1, 1
+  -1, 1,
+  (double *)0,
+  (double *)0
 };
 
 
 /* checked OK [GJ] */
 int gsl_sf_Si_impl(const double x, double * result)
 {
-  double xsml = GSL_SQRT_MACH_EPS;  /* sqrt (eps) (??) */
   double ax   = fabs(x);
   
   if(ax < GSL_SQRT_MACH_EPS) {
@@ -289,7 +300,9 @@ static double ci_data[13] = {
 static struct gsl_sf_ChebSeries ci_cs = {
   ci_data,
   12,
-  -1, 1
+  -1, 1,
+  (double *)0,
+  (double *)0
 };
 
 /* checked OK [GJ] */

@@ -44,7 +44,9 @@ static double by0_data[13] = {
 static struct gsl_sf_ChebSeries by0_cs = {
   by0_data,
   12,
-  -1, 1
+  -1, 1,
+  (double *)0,
+  (double *)0
 };
 
 
