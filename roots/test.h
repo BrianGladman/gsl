@@ -3,47 +3,47 @@
 void
 test_macros();
 
-int
+void
 test_bisection (const char * description,
 		double (* f)(double), 
 		double lower_bound, double upper_bound, 
 		double correct_root);
 
-int
+void
 test_bisection_failure (const char * description,
 			double (* f)(double), 
 			double lower_bound, double upper_bound, 
 			double correct_root);
 
-int
+void
 test_falsepos (const char * description,
 	       double (* f)(double), 
 	       double lower_bound, double upper_bound, 
 	       double correct_root);
 
-int
+void
 test_falsepos_failure (const char * description,
 		       double (* f)(double), 
 		       double lower_bound, double upper_bound, 
 		       double correct_root);
-int
+void
 test_secant (const char * description,
 	     double (* f)(double), 
 	     double guess1, double guess2,
 	     double correct_root);
 
-int
+void
 test_secant_failure (const char * description,
 		     double (* f)(double), 
 		     double guess1, double guess2,
 		     double correct_root);
 
-int
+void
 test_newton(const char * description,
 	    void (* fdf)(double *, double *, double, int, int),
 	    double guess, double correct_root);
 
-int
+void
 test_newton_failure(const char * description,
 		    void (* fdf)(double *, double *, double, int, int),
 		    double guess, double correct_root);
