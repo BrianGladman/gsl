@@ -723,9 +723,10 @@ gsl_sf_hyperg_2F1_renorm_impl(const double a, const double b, const double c,
     /* generic c */
     double F;
     double lng;
-    int stat_g = gsl_sf_lngamma_impl(c, &lng);
+    double sgn;
+    int stat_g = gsl_sf_lngamma_sgn_impl(c, &lng, &sgn);
     int stat_F = gsl_sf_hyperg_2F1_impl(a, b, c, x, &F);
-    int stat_e = gsl_sf_exp_mult_impl(-lng, F, result);
+    int stat_e = gsl_sf_exp_mult_impl(-lng, sgn*F, result);
     return GSL_ERROR_SELECT_3(stat_e, stat_F, stat_g);
   }
 }
@@ -737,7 +738,49 @@ gsl_sf_hyperg_2F1_conj_renorm_impl(const double aR, const double aI, const doubl
 			           double * result
 			           )
 {
-/* FIXME: copy above, when it works right */
+  const double rintc = floor(c  + 0.5);
+  const double rinta = floor(aR + 0.5);
+  const int a_neg_integer = ( aR < 0.0 && fabs(aR-rinta) < locEPS && aI == 0.0);
+  const int c_neg_integer = (  c < 0.0 && fabs(c - rintc) < locEPS );
+
+  if(c_neg_integer) {
+    if(a_neg_integer && aR > c+0.1) {
+      /* 2F1 terminates early */
+      *result = 0.0;
+      return GSL_SUCCESS;
+    }
+    else {
+      /* 2F1 does not terminate early enough, so something survives */
+      /* [Abramowitz+Stegun, 15.1.2] */
+      double g1, g2, g3;
+      double a1, a2;
+      int stat = 0;
+      stat += gsl_sf_lngamma_complex_impl(aR-c+1, aI, &g1, &a1);
+      stat += gsl_sf_lngamma_complex_impl(aR, aI, &g2, &a2);
+      stat += gsl_sf_lngamma_impl(-c+2.0, &g3);
+      if(stat != 0) {
+        *result = 0.0;
+        return GSL_EDOM;
+      }
+      else {
+        double F;
+        int stat_F = gsl_sf_hyperg_2F1_conj_impl(aR-c+1, aI, -c+2, x, &F);
+        double ln_pre = 2.0*(g1 - g2) - g3;
+	int stat_e = gsl_sf_exp_mult_impl(ln_pre, F, result);
+	return GSL_ERROR_SELECT_2(stat_e, stat_F);
+      }
+    }
+  }
+  else {
+    /* generic c */
+    double F;
+    double lng;
+    double sgn;
+    int stat_g = gsl_sf_lngamma_sgn_impl(c, &lng, &sgn);
+    int stat_F = gsl_sf_hyperg_2F1_conj_impl(aR, aI, c, x, &F);
+    int stat_e = gsl_sf_exp_mult_impl(-lng, sgn*F, result);
+    return GSL_ERROR_SELECT_3(stat_e, stat_F, stat_g);
+  }
 }
 
 

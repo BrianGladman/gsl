@@ -4402,6 +4402,98 @@ int check_hyperg(void)
   status += s;
   */
 
+
+  /* 2F1 renorm */
+
+  s = 0;
+  s += ( frac_diff(gsl_sf_hyperg_2F1_renorm(1, 1, 1, 0.5), 2.0 ) > 1.e-14 );
+  gsl_test(s, "  gsl_sf_hyperg_2F1_renorm(1,1,1,0.5)");
+  status += s;
+
+  s = 0;
+  s += ( frac_diff(gsl_sf_hyperg_2F1_renorm(8, 8, 1, 0.5), 12451584.0 ) > 1.e-12 );
+  gsl_test(s, "  gsl_sf_hyperg_2F1_renorm(8, 8, 1, 0.5)");
+  status += s;
+
+  s = 0;
+  s += ( frac_diff(gsl_sf_hyperg_2F1_renorm(8, -8, 1, 0.5), 0.13671875 ) > 1.e-12 );
+  gsl_test(s, "  gsl_sf_hyperg_2F1_renorm(8, -8, 1, 0.5)");
+  status += s;
+
+  s = 0;
+  s += ( frac_diff(gsl_sf_hyperg_2F1_renorm(8, -8, 1, -0.5), 4945.13671875 ) > 1.e-12 );
+  gsl_test(s, "  gsl_sf_hyperg_2F1_renorm(8, -8, 1, -0.5)");
+  status += s;
+
+  s = 0;
+  gsl_sf_hyperg_2F1_renorm_impl(8, -8, -5.5, 0.5, &y);
+  s += ( frac_diff(gsl_sf_hyperg_2F1_renorm(8, -8, -5.5, 0.5), -83081.19167659493609 ) > 1.e-12 );
+  gsl_test(s, "  gsl_sf_hyperg_2F1_renorm(8, -8, -5.5, 0.5)");
+  status += s;
+
+  s = 0;
+  s += ( frac_diff(gsl_sf_hyperg_2F1_renorm(8, -8, -5.5, -0.5), 2.2510895952730178518e+06 ) > 1.e-12 );
+  gsl_test(s, "  gsl_sf_hyperg_2F1_renorm(8, -8, -5.5, -0.5)");
+  status += s;
+
+  s = 0;
+  s += ( frac_diff(gsl_sf_hyperg_2F1_renorm(8, 8, 5, 0.5), 175.2380952380952381 ) > 1.e-14 );
+  gsl_test(s, "  gsl_sf_hyperg_2F1_renorm(8, 8, 5, 0.5)");
+  status += s;
+
+  s = 0;
+  s += ( frac_diff(gsl_sf_hyperg_2F1_renorm(9, 9, -1.5, 0.99), 1.6063266334913066551e+46 ) > 1.e-10 );
+  gsl_test(s, "  gsl_sf_hyperg_2F1_renorm(9, 9, -1.5, 0.99)");
+  status += s;
+
+  s = 0;
+  s += ( frac_diff(gsl_sf_hyperg_2F1_renorm(9, 9, -1.5, -0.99), 0.06234327316254516616 ) > 1.e-10 );
+  gsl_test(s, "  gsl_sf_hyperg_2F1_renorm(9, 9, -1.5, -0.99)");
+  status += s;
+
+  s = 0;
+  s += ( frac_diff(gsl_sf_hyperg_2F1_renorm(5, 5, -1, 0.5), 4949760.0 ) > 1.e-10 );
+  gsl_test(s, "  gsl_sf_hyperg_2F1_renorm(5, 5, -1, 0.5)");
+  status += s;
+
+  s = 0;
+  s += ( frac_diff(gsl_sf_hyperg_2F1_renorm(5, 5, -10, 0.5), 139408493229637632000.0 ) > 1.e-10 );
+  gsl_test(s, "  gsl_sf_hyperg_2F1_renorm(5, 5, -10, 0.5)");
+  status += s;
+
+  s = 0;
+  s += ( frac_diff(gsl_sf_hyperg_2F1_renorm(5, 5, -100, 0.5), 3.0200107544594411315e+206 ) > 1.e-10 );
+  gsl_test(s, "  gsl_sf_hyperg_2F1_renorm(5, 5, -100, 0.5)");
+  status += s;
+  
+  /* 2F1 conj renorm */
+
+  s = 0;
+  s += ( frac_diff(gsl_sf_hyperg_2F1_conj_renorm(9, 9, -1.5, 0.99), 5.912269095984229412e+49 ) > 1.e-10 );
+  gsl_test(s, "  gsl_sf_hyperg_2F1_conj_renorm(9, 9, -1.5, 0.99)");
+  status += s;
+
+  s = 0;
+  s += ( frac_diff(gsl_sf_hyperg_2F1_conj_renorm(9, 9, -1.5, -0.99), 0.10834020229476124874 ) > 1.e-10 );
+  gsl_test(s, "  gsl_sf_hyperg_2F1_conj_renorm(9, 9, -1.5, -0.99)");
+  status += s;
+
+  s = 0;
+  s += ( frac_diff(gsl_sf_hyperg_2F1_conj_renorm(5, 5, -1, 0.5), 1.4885106335357933625e+08 ) > 1.e-10 );
+  gsl_test(s, "  gsl_sf_hyperg_2F1_conj_renorm(5, 5, -1, 0.5)");
+  status += s;
+
+  s = 0;
+  s += ( frac_diff(gsl_sf_hyperg_2F1_conj_renorm(5, 5, -10, 0.5), 7.968479361426355095e+21 ) > 1.e-10 );
+  gsl_test(s, "  gsl_sf_hyperg_2F1_conj_renorm(5, 5, -10, 0.5)");
+  status += s;
+
+  s = 0;
+  s += ( frac_diff(gsl_sf_hyperg_2F1_conj_renorm(5, 5, -100, 0.5), 3.1113180227052313057e+208 ) > 1.e-10 );
+  gsl_test(s, "  gsl_sf_hyperg_2F1_conj_renorm(5, 5, -100, 0.5)");
+  status += s;
+
+
   return status;
 }
 
