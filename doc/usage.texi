@@ -6,9 +6,10 @@ This chapter describes how to compile programs that use GSL, and
 introduces its conventions.  
 
 @menu
-* ANSI C Compliance::           
+* An Example Program::          
 * Compiling and Linking::       
 * Shared Libraries::            
+* ANSI C Compliance::           
 * Inline functions::            
 * Long double::                 
 * Portability functions::       
@@ -19,6 +20,7 @@ introduces its conventions.
 * Thread-safety::               
 * Code Reuse::                  
 @end menu
+
 @node   An Example Program
 @section An Example Program
 
@@ -38,29 +40,6 @@ accuracy,
 @noindent
 The steps needed to compile this program are described in the following
 sections.
-
-@node ANSI C Compliance
-@section ANSI C Compliance
-
-The library is written in ANSI C and is intended to conform to the ANSI
-C standard.  It should be portable to any system with a working ANSI C
-compiler.
-
-The library does not rely on any non-ANSI extensions in the interface it
-exports to the user.  Programs you write using GSL can be ANSI
-compliant.  Extensions which can be used in a way compatible with pure
-ANSI C are supported, however, via conditional compilation.  This allows
-the library to take advantage of compiler extensions on those platforms
-which support them.
-
-When an ANSI C feature is known to be broken on a particular system the
-library will exclude any related functions at compile-time.  This should
-make it impossible to link a program that would use these functions and
-give incorrect results.
-
-To avoid namespace conflicts all exported function names and variables
-have the prefix @code{gsl_}, while exported macros have the prefix
-@code{GSL_}.
 
 @node Compiling and Linking
 @section Compiling and Linking
@@ -97,7 +76,11 @@ location.
 The library is installed as a single file, @file{libgsl.a}.  A shared
 version of the library is also installed on systems that support shared
 libraries.  The default location of these files is
-@file{/usr/local/lib}.  To link against the library you need to specify
+@file{/usr/local/lib}.  If this directory is not on the standard search
+path of your linker you will also need to provide its location as a
+command line flag.
+
+To link against the library you need to specify
 both the main library and a supporting @sc{cblas} library, which
 provides standard basic linear algebra subroutines.  A suitable
 @sc{cblas} implementation is provided in the library
@@ -105,9 +88,13 @@ provides standard basic linear algebra subroutines.  A suitable
 example shows how to link an application with the library,
 
 @example
-gcc example.o -lgsl -lgslcblas -lm
+gcc -L/usr/local/lib example.o -lgsl -lgslcblas -lm
 @end example
 @noindent
+The default library path for @code{gcc} searches @file{/usr/local/lib}
+automatically so the @code{-L} option can be omitted when GSL is
+installed in its default location.
+
 The following command line shows how you would link the same application
 with an alternative blas library called @file{libcblas},
 
@@ -173,6 +160,29 @@ To compile a statically linked version of the program, use the
 @example
 gcc -static example.o -lgsl -lgslcblas -lm
 @end example
+
+@node ANSI C Compliance
+@section ANSI C Compliance
+
+The library is written in ANSI C and is intended to conform to the ANSI
+C standard.  It should be portable to any system with a working ANSI C
+compiler.
+
+The library does not rely on any non-ANSI extensions in the interface it
+exports to the user.  Programs you write using GSL can be ANSI
+compliant.  Extensions which can be used in a way compatible with pure
+ANSI C are supported, however, via conditional compilation.  This allows
+the library to take advantage of compiler extensions on those platforms
+which support them.
+
+When an ANSI C feature is known to be broken on a particular system the
+library will exclude any related functions at compile-time.  This should
+make it impossible to link a program that would use these functions and
+give incorrect results.
+
+To avoid namespace conflicts all exported function names and variables
+have the prefix @code{gsl_}, while exported macros have the prefix
+@code{GSL_}.
 
 @node Inline functions
 @section Inline functions

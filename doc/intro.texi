@@ -11,7 +11,6 @@ General Public License.
 * Routines available in GSL::   
 * GSL is Free Software::        
 * Obtaining GSL::               
-* An Example Program::          
 * No Warranty::                 
 * Reporting Bugs::              
 * Further Information::         
