@@ -48,6 +48,15 @@ double gsl_ran_bivariate_gaussian_pdf (double x, double y);
 unsigned int gsl_ran_geometric (const gsl_rng * r, double p);
 double gsl_ran_geometric_pdf (unsigned int n, double p);
 
+unsigned int gsl_ran_hypergeometric (const gsl_rng * r, unsigned int n1, unsigned int n2, unsigned int t);
+double gsl_ran_hypergeometric_pdf (unsigned int n, unsigned int n1, unsigned int n2, unsigned int t);
+
+double gsl_ran_gumbel1 (const gsl_rng * r, double a, double b);
+double gsl_ran_gumbel1_pdf (double x, double a, double b);
+
+double gsl_ran_gumbel2 (const gsl_rng * r, double a, double b);
+double gsl_ran_gumbel2_pdf (double x, double a, double b);
+
 double gsl_ran_logistic (const gsl_rng * r);
 double gsl_ran_logistic_pdf (double x);
 
@@ -56,6 +65,9 @@ double gsl_ran_lognormal_pdf (double x);
 
 unsigned int gsl_ran_negative_binomial (const gsl_rng * r, double p, double t);
 double gsl_ran_negative_binomial_pdf (unsigned int n, double p, double t);
+
+unsigned int gsl_ran_pascal (const gsl_rng * r, double p, unsigned int n);
+double gsl_ran_pascal_pdf (unsigned int k, double p, unsigned int n);
 
 double gsl_ran_pareto (const gsl_rng * r, double a);
 double gsl_ran_pareto_pdf (double x, double a);

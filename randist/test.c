@@ -7,7 +7,7 @@
 #include <gsl_rng.h>
 #include <gsl_test.h>
 
-#define N 100000
+#define N 200000
 void test_moments (double (*f) (void), const char *name,
 		   double a, double b, double p);
 void test_pdf (double (*f) (void), double (*pdf)(double), const char *name);
@@ -48,24 +48,36 @@ double test_gamma_large (void);
 double test_gamma_large_pdf (double x);
 double test_gaussian (void);
 double test_gaussian_pdf (double x);
+double test_gumbel1 (void);
+double test_gumbel1_pdf (double x);
+double test_gumbel2 (void);
+double test_gumbel2_pdf (double x);
 double test_ugaussian (void);
 double test_ugaussian_pdf (double x);
 double test_geometric (void);
 double test_geometric_pdf (unsigned int x);
+double test_hypergeometric1 (void);
+double test_hypergeometric1_pdf (unsigned int x);
+double test_hypergeometric2 (void);
+double test_hypergeometric2_pdf (unsigned int x);
 double test_logistic (void);
 double test_logistic_pdf (double x);
 double test_lognormal (void);
 double test_lognormal_pdf (double x);
 double test_negative_binomial (void);
 double test_negative_binomial_pdf (unsigned int n);
+double test_pascal (void);
+double test_pascal_pdf (unsigned int n);
 double test_pareto (void);
 double test_pareto_pdf (double x);
 double test_poisson (void);
 double test_poisson_pdf (unsigned int x);
 double test_poisson_large (void);
 double test_poisson_large_pdf (unsigned int x);
-double test_tdist (void);
-double test_tdist_pdf (double x);
+double test_tdist1 (void);
+double test_tdist1_pdf (double x);
+double test_tdist2 (void);
+double test_tdist2_pdf (double x);
 double test_laplace (void);
 double test_laplace_pdf (double x);
 double test_weibull (void);
@@ -80,12 +92,13 @@ main (void)
   r_global = gsl_rng_alloc (gsl_rng_default);
 
 #define FUNC(x) x, "gsl_ran_" #x
+#define FUNC2(x) x, x ## _pdf, "gsl_ran_" #x
+
   test_moments (FUNC (test_ugaussian), 0.0, 100.0, 0.5);
   test_moments (FUNC (test_ugaussian), -1.0, 1.0, 0.68);
   test_moments (FUNC (test_exponential), 0.0, 1.0, 1- exp(-0.5));
   test_moments (FUNC (test_cauchy), 0.0, 10000.0, 0.5);
 
-#define FUNC2(x) x, x ## _pdf, "gsl_ran_" #x
   test_pdf (FUNC2(test_beta));
   test_pdf (FUNC2(test_cauchy));
   test_pdf (FUNC2(test_chisq));
@@ -104,10 +117,13 @@ main (void)
   test_pdf (FUNC2(test_gamma_large));
   test_pdf (FUNC2(test_gaussian));
   test_pdf (FUNC2(test_ugaussian));
+  test_pdf (FUNC2(test_gumbel1));
+  test_pdf (FUNC2(test_gumbel2));
   test_pdf (FUNC2(test_logistic));
   test_pdf (FUNC2(test_lognormal));
   test_pdf (FUNC2(test_pareto));
-  test_pdf (FUNC2(test_tdist));
+  test_pdf (FUNC2(test_tdist1));
+  test_pdf (FUNC2(test_tdist2));
   test_pdf (FUNC2(test_laplace));
   test_pdf (FUNC2(test_weibull));
 
@@ -116,7 +132,10 @@ main (void)
   test_discrete_pdf (FUNC2(test_binomial));
   test_discrete_pdf (FUNC2(test_binomial_large));
   test_discrete_pdf (FUNC2(test_geometric));
+  test_discrete_pdf (FUNC2(test_hypergeometric1));
+  test_discrete_pdf (FUNC2(test_hypergeometric2));
   test_discrete_pdf (FUNC2(test_negative_binomial));
+  test_discrete_pdf (FUNC2(test_pascal));
 
   return gsl_test_summary();
 }
@@ -484,6 +503,58 @@ test_geometric_pdf (unsigned int n)
 }
 
 double
+test_hypergeometric1 (void)
+{
+  return gsl_ran_hypergeometric (r_global, 5, 7, 4);
+}
+
+double
+test_hypergeometric1_pdf (unsigned int n)
+{
+  return gsl_ran_hypergeometric_pdf (n, 5, 7, 4);
+}
+
+
+double
+test_hypergeometric2 (void)
+{
+  return gsl_ran_hypergeometric (r_global, 5, 7, 11);
+}
+
+double
+test_hypergeometric2_pdf (unsigned int n)
+{
+  return gsl_ran_hypergeometric_pdf (n, 5, 7, 11);
+}
+
+
+double
+test_gumbel1 (void)
+{
+  return gsl_ran_gumbel1 (r_global, 3.12, 4.56);
+}
+
+double
+test_gumbel1_pdf (double x)
+{
+  return gsl_ran_gumbel1_pdf (x, 3.12, 4.56);
+}
+
+double
+test_gumbel2 (void)
+{
+  return gsl_ran_gumbel2 (r_global, 3.12, 4.56);
+}
+
+double
+test_gumbel2_pdf (double x)
+{
+  return gsl_ran_gumbel2_pdf (x, 3.12, 4.56);
+}
+
+
+
+double
 test_logistic (void)
 {
   return gsl_ran_logistic (r_global);
@@ -518,6 +589,19 @@ test_negative_binomial_pdf (unsigned int n)
 {
   return gsl_ran_negative_binomial_pdf (n, 0.3, 20.0);
 }
+
+double
+test_pascal (void)
+{
+  return gsl_ran_pascal (r_global, 0.8, 3);
+}
+
+double
+test_pascal_pdf (unsigned int n)
+{
+  return gsl_ran_pascal_pdf (n, 0.8, 3);
+}
+
 
 double
 test_pareto (void)
@@ -557,16 +641,29 @@ test_poisson_large_pdf (unsigned int n)
 
 
 double
-test_tdist (void)
+test_tdist1 (void)
+{
+  return gsl_ran_tdist (r_global, 1.75);
+}
+
+double
+test_tdist1_pdf (double x)
+{
+  return gsl_ran_tdist_pdf (x, 1.75);
+}
+
+double
+test_tdist2 (void)
 {
   return gsl_ran_tdist (r_global, 12.75);
 }
 
 double
-test_tdist_pdf (double x)
+test_tdist2_pdf (double x)
 {
   return gsl_ran_tdist_pdf (x, 12.75);
 }
+
 
 double
 test_laplace (void)

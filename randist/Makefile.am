@@ -1,10 +1,10 @@
 noinst_LIBRARIES = libgslrandist.a
 libgslrandist_a_SOURCES = \
-        beta.c bernoulli.c binomial.c cauchy.c chisq.c erlang.c \
-        exponential.c exppow.c fdist.c flat.c \
-	gamma.c gauss.c geometric.c levy.c logistic.c lognormal.c \
-	nbinomial.c \
-	pareto.c poisson.c shuffle.c sphere.c tdist.c laplace.c weibull.c
+ bernoulli.c beta.c binomial.c cauchy.c chisq.c erlang.c exponential.c \
+ exppow.c fdist.c flat.c gamma.c gauss.c geometric.c \
+ gumbel.c hyperg.c laplace.c levy.c logistic.c lognormal.c nbinomial.c \
+ pareto.c pascal.c poisson.c shuffle.c sphere.c tdist.c weibull.c 
+
 
 include_HEADERS= gsl_randist.h
 

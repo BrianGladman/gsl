@@ -72,11 +72,10 @@ full_top_srcdir = @full_top_srcdir@
 
 noinst_LIBRARIES = libgslrandist.a
 libgslrandist_a_SOURCES = \
-        beta.c bernoulli.c binomial.c cauchy.c chisq.c erlang.c \
-        exponential.c exppow.c fdist.c flat.c \
-	gamma.c gauss.c geometric.c levy.c logistic.c lognormal.c \
-	nbinomial.c \
-	pareto.c poisson.c shuffle.c sphere.c tdist.c laplace.c weibull.c
+ bernoulli.c beta.c binomial.c cauchy.c chisq.c erlang.c exponential.c \
+ exppow.c fdist.c flat.c gamma.c gauss.c geometric.c \
+ gumbel.c hyperg.c laplace.c levy.c logistic.c lognormal.c nbinomial.c \
+ pareto.c pascal.c poisson.c shuffle.c sphere.c tdist.c weibull.c 
 
 include_HEADERS= gsl_randist.h
 
@@ -102,10 +101,11 @@ CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
 libgslrandist_a_LIBADD = 
-libgslrandist_a_OBJECTS =  beta.o bernoulli.o binomial.o cauchy.o \
+libgslrandist_a_OBJECTS =  bernoulli.o beta.o binomial.o cauchy.o \
 chisq.o erlang.o exponential.o exppow.o fdist.o flat.o gamma.o gauss.o \
-geometric.o levy.o logistic.o lognormal.o nbinomial.o pareto.o \
-poisson.o shuffle.o sphere.o tdist.o laplace.o weibull.o
+geometric.o gumbel.o hyperg.o laplace.o levy.o logistic.o lognormal.o \
+nbinomial.o pareto.o pascal.o poisson.o shuffle.o sphere.o tdist.o \
+weibull.o
 AR = ar
 test_OBJECTS =  test.o
 test_DEPENDENCIES =  libgslrandist.a ../rng/libgslrng.a \
@@ -126,10 +126,10 @@ GZIP = --best
 DEP_FILES =  .deps/bernoulli.P .deps/beta.P .deps/binomial.P \
 .deps/cauchy.P .deps/chisq.P .deps/erlang.P .deps/exponential.P \
 .deps/exppow.P .deps/fdist.P .deps/flat.P .deps/gamma.P .deps/gauss.P \
-.deps/geometric.P .deps/laplace.P .deps/levy.P .deps/logistic.P \
-.deps/lognormal.P .deps/nbinomial.P .deps/pareto.P .deps/poisson.P \
-.deps/shuffle.P .deps/sphere.P .deps/tdist.P .deps/test.P \
-.deps/weibull.P
+.deps/geometric.P .deps/gumbel.P .deps/hyperg.P .deps/laplace.P \
+.deps/levy.P .deps/logistic.P .deps/lognormal.P .deps/nbinomial.P \
+.deps/pareto.P .deps/pascal.P .deps/poisson.P .deps/shuffle.P \
+.deps/sphere.P .deps/tdist.P .deps/test.P .deps/weibull.P
 SOURCES = $(libgslrandist_a_SOURCES) $(test_SOURCES)
 OBJECTS = $(libgslrandist_a_OBJECTS) $(test_OBJECTS)
 
