@@ -3,7 +3,6 @@ matrix interface to ordinary C arrays. By writing your functions in
 terms of vectors and matrices you can pass a single structure containing
 both data and dimensions without needing additional function arguments.
 
-
 @menu
 * The vector struct::           
 * Vector allocation::           
@@ -12,6 +11,7 @@ both data and dimensions without needing additional function arguments.
 * Example programs for vectors::  
 * The matrix struct::           
 * Matrix allocation::           
+* Accessing matrix elements::   
 @end menu
 
 @node The vector struct
@@ -220,8 +220,8 @@ elements of @code{v}, written using the format specifier
 @section The matrix struct
 
 Matrices are defined by a @code{gsl_matrix} structure which contains
-threes members, the two dimensions of the matrix and a pointer to a
-block of memory where the elements of the matrix are stored. The
+three members, the two dimensions of the matrix and a pointer to a block
+of memory where the elements of the matrix are stored. The
 @code{gsl_matrix} structure is very simple and looks like this,
 
 @example
