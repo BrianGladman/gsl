@@ -220,33 +220,25 @@ int
 coulomb_connection(const double lam, const double eta,
                    double * cos_phi, double * sin_phi)
 {
-
-  const double sin_lamh = sin((lam+0.5)*M_PI);  /*  cos(lam*M_PI) */
-  const double cos_lamh = cos((lam+0.5)*M_PI);  /* -sin(lam*M_PI) */
-  const double eta_pi = eta*M_PI;
-  if(eta_pi < 7.0) {
-    const double th = tanh(eta_pi);
-    const double Y  = th * sin_lamh;
-    const double X  = cos_lamh;
-    const double R  = sqrt(X*X + Y*Y);
-    const double cos_beta = X/R;
-    const double sin_beta = Y/R;
-    *cos_phi = cos_beta * cos_lamh + sin_beta * sin_lamh;
-    *sin_phi = sin_beta * cos_lamh - cos_beta * sin_lamh;
-    return GSL_SUCCESS;
-  }
-  else if(-2.0*eta_pi > GSL_LOG_DBL_MIN){
-    double emx = exp(-2.0*eta_pi);
-    double eps = (2.0*emx)/(1.0 + emx);   /* 1 - tanh(eta pi) */
-    double cs  = cos_lamh * sin_lamh;
-    *cos_phi = 1.0 - 0.5*eps*eps*cs*cs;
-    *sin_phi = -eps * cs * (1.0 + eps * sin_lamh*sin_lamh);
-    return GSL_SUCCESS;
-  }
-  else {
+  if(eta > -GSL_LOG_DBL_MIN/2.0*M_PI-1.0) {
     *cos_phi = 1.0;
     *sin_phi = 0.0;
     return GSL_EUNDRFLW;
+  }
+  else if(eta > -GSL_LOG_DBL_EPSILON/(4.0*M_PI)) {
+    const double eps = 2.0 * exp(-2.0*M_PI*eta);
+    const double tpl = tan(M_PI * lam);
+    const double dth = eps * tpl / (tpl*tpl + 1.0);
+    *cos_phi = -1.0 + 0.5 * dth*dth;
+    *sin_phi = -dth;
+    return GSL_SUCCESS;
+  }
+  else {
+    double X   = tanh(M_PI * eta) / tan(M_PI * lam);
+    double phi = -atan(X) - (lam + 0.5) * M_PI;
+    *cos_phi = cos(phi);
+    *sin_phi = sin(phi);
+    return GSL_SUCCESS;
   }
 }
 
@@ -259,6 +251,8 @@ coulomb_connection(const double lam, const double eta,
  *    phi = Arg[Gamma[1+lam+I eta]] - Arg[Gamma[-lam + I eta]] - (lam+1/2)Pi
  *        = Arg[Sin[Pi(-lam+I eta)] - (lam+1/2)Pi
  *        = atan2(-cos(lam Pi)sinh(eta Pi), -sin(lam Pi)cosh(eta Pi)) - (lam+1/2)Pi
+ *
+ *        = -atan(X) - (lam+1/2) Pi,  X = tanh(eta Pi)/tan(lam Pi)
  *
  * Not appropriate for lam <= -1/2, lam = 0, or lam >= 1/2.
  */
@@ -290,7 +284,15 @@ coulomb_FG_series(const double lam, const double eta, const double x,
   gsl_sf_result FA, FB;
   int m = 2;
 
-  coulomb_connection(lam, eta, &cos_phi_lam, &sin_phi_lam);
+  int stat_conn = coulomb_connection(lam, eta, &cos_phi_lam, &sin_phi_lam);
+
+  if(stat_conn == GSL_EUNDRFLW) {
+    F->val = FA.val;
+    F->err = FA.err;
+    G->val = 0.0; /* FIXME: should be Inf */
+    G->err = 0.0;
+    return GSL_EOVRFLW;
+  }
 
   while(m < max_iter) {
     double abs_dA;

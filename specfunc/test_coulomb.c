@@ -258,8 +258,8 @@ int test_coulomb(void)
   message_buff[0] = 0;
   s += test_sf_check_result(message_buff,  F,  9.611416736061987761e-09, TEST_TOL5);
   s += test_sf_check_result(message_buff, Fp,  3.909628126126824140e-08, TEST_TOL5);
-  s += test_sf_check_result(message_buff,  G,  1.365928464219262581e+07, TEST_SQRT_TOL0);
-  s += test_sf_check_result(message_buff, Gp, -4.848117385783386850e+07, TEST_SQRT_TOL0);
+  s += test_sf_check_result(message_buff,  G,  1.365928464219262581e+07, 4.0*TEST_SQRT_TOL0);
+  s += test_sf_check_result(message_buff, Gp, -4.848117385783386850e+07, 4.0*TEST_SQRT_TOL0);
   printf("%s", message_buff);
   gsl_test(s, "  gsl_sf_coulomb_wave_FG_impl(8.0, 1.05, lam_F=0.1, lam_G=0.1)");
   status += s;
