@@ -128,7 +128,9 @@ for HAVE_INLINE use in installed headers.
 * Update the NEWS file.
 
 * Regenerate everything. make dist, unpack somewhere and then
-configure, make, make check.
+configure, make, make check.  Try running make check under ulimit -v
+65536 to be sure that excessive memory is not required to do the
+compilation.
 
 * Make a KNOWN-PROBLEMS file. Run scripts/mkknownproblems.sh.
 
