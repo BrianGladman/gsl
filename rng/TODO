@@ -1,21 +1,25 @@
-6. run the DIEHARD tests on all the generators, especially the ones we
+
+* Add SWNS generator Phys.Rev.E 50 (2) p. 1607-1615 (1994), Phys.Rev.E
+60 (6), p.7626-7628 (1999)
+
+* run the DIEHARD tests on all the generators, especially the ones we
 are listing as "Simulation Quality" -- some of those are a bit old and
 might fail one or two diehard tests.
 
-7. Add drand48,   DONE
+* Add drand48,   DONE
        NAG,       missing, gave up! 
        CRAY,      DONE 
        CDC 48-bit missing 
 
-11. Check out the bug fix to mrand48 that was made in glibc2, pr757
+* Check out the bug fix to mrand48 that was made in glibc2, pr757
 
-12. Check out  the following paper,
+* Check out  the following paper,
 
 On the anomaly of ran1() in Monte Carlo pricing of financial
 derivatives; Akira Tajima , Syoiti Ninomiya , and Shu Tezuka ; Winter
 simulation , 1996, Page 360, from ACM
 
-13. The following papers have been published, I think we refer to them
+* The following papers have been published, I think we refer to them
 (or could do),
 
     Pierre L'Ecuyer, "Tables of Linear Congruential Generators of different
@@ -25,14 +29,18 @@ simulation , 1996, Page 360, from ACM
     Pierre L'Ecuyer, "Tables of Maximally equidistributed combined LSFR
     generators", ibid, p261-270
 
-14. Look at this paper: I. Vattulainen, "Framework for testing random numbers
-    in parallel calculations", Phys. Rev. E, 59, 6, June 1999, p7200
+* Look at this paper: I. Vattulainen, "Framework for testing random numbers
+  in parallel calculations", Phys. Rev. E, 59, 6, June 1999, p7200
 
-15. Check that RANLXS will work on machines with non-standard with of
+* Check that RANLXS will work on machines with non-standard with of
 float/dbl (original has checks for DBL_MANT_DIG ..)
 
-17. add ISAAC generator (??), mention more clearly why cokus not used
-(or recheck for improvements)
+* Add ISAAC generator (??)
+
+* Add (A)RC4 ? (and maybe MD5)
+
+* mention more clearly why not all Cokus used (or recheck MT pages for
+improvements)
 
 ----------------------------------------------------------------------
 DONE
