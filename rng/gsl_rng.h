@@ -106,6 +106,8 @@ extern const gsl_rng_type *gsl_rng_uni;
 extern const gsl_rng_type *gsl_rng_vax;
 extern const gsl_rng_type *gsl_rng_zuf;
 
+const gsl_rng_type ** gsl_rng_types_setup();
+
 extern const gsl_rng_type *gsl_rng_default;
 extern unsigned long int gsl_rng_default_seed;
 

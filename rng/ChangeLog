@@ -1,3 +1,12 @@
+Tue Jan 23 13:24:26 2001  Brian Gough  <bjg@network-theory.co.uk>
+
+	* types.c (gsl_rng_types_setup): provide a function that returns a
+ 	list of all the generator types
+
+	* default.c (gsl_rng_env_setup): get the list of generators from a
+ 	function rather than having a list in the code itself.  Display a
+ 	list of the valid generators if the user provides an incorrect one.
+
 Fri Dec  8 20:30:58 2000  Brian Gough  <bjg@network-theory.co.uk>
 
 	* ranlxs.c: renamed internal function ranlxs_set_impl to
