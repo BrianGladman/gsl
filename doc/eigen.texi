@@ -1,14 +1,22 @@
-This chapter describes functions for computing eigenvalues and eigenvectors.
+This chapter describes functions for computing eigenvalues and eigenvectors
+of generic matrices.
 
 The following functions work only for real, symmetric matrices.
 
 @deftypefun int gsl_eigen_jacobi_impl (gsl_matrix * @var{matrix}, gsl_vector * @var{eval}, gsl_matrix * @var{evec}, unsigned int @var{max_rot}, unsigned int * @var{nrot})
+Find eigenvectors and eigenvalues by Jacobi iteration. The data in
+the input matrix is destroyed.
 @end deftypefun
 
 @deftypefun int gsl_la_invert_jacobi_impl (const gsl_matrix * @var{matrix}, gsl_matrix * @var{ainv}, unsigned int @var{max_rot})
+Invert a matrix by Jacobi iteration.
 @end deftypefun
 
 @deftypefun int gsl_eigen_sort_impl (gsl_vector * @var{eval}, gsl_matrix * @var{evec}, gsl_eigen_sort_t @var{sort_type})
+Sort eigensystem results based on eigenvalues.
+Sorts in order of increasing value or increasing
+absolute value, depending on the value of
+@var{sort_type}, which can be GSL_EIGEN_SORT_VALUE
+or GSL_EIGEN_SORT_ABSVALUE.
 @end deftypefun
-
 
