@@ -562,14 +562,6 @@ fi
 @unnumbered GNU Free Documentation License
 @include fdl.texi
 
-@ifset publish
-@comment @node The GNU Manifesto, Function Index, GNU Free Documentation License, Top
-@comment @unnumbered The GNU Manifesto
-@comment @include gnu.texi
-
-@include gnumerics.texi
-@end ifset
-
 @comment htmlhelp: @bye
 
 @iftex
