@@ -432,9 +432,9 @@ test_stepper_err (const gsl_odeiv_step_type * T, double h, double base_prec)
 
   for (t = 0.0; t < M_PI; t += h)
     {
-      int stat;
+      /* int stat; */
       double y1_t = y[1];
-      double sin_th = sin(t+h);
+      /* double sin_th = sin(t+h); */
       /* next line gives dy_exp = sin(t+h) - sin(t) */
       double dy_exp = cos(t)*sin(h)-2*sin(t)*pow(sin(h/2),2.0);
       double dy_t;
