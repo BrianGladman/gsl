@@ -148,7 +148,7 @@ taus2_set (void *vstate, unsigned long int s)
   state->s2 = LCG (state->s1);
   if (state->s2 < 8) state->s2 += 8UL;
   state->s3 = LCG (state->s2);
-  if (state->s3 < 8) state->s3 += 16UL;
+  if (state->s3 < 16) state->s3 += 16UL;
 
   /* "warm it up" */
   taus_get (state);

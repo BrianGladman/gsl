@@ -295,3 +295,8 @@ int main()
 }
 
 ----------------------------------------------------------------------
+
+BUG#12
+
+The arguments for Wigner 6j are in the wrong order (a,b,e,d,c,f)
+depending on what convention you use.
