@@ -1,3 +1,12 @@
+Fri Jun 12 22:30:21 1998  Brian Gough  <bjg@vvv.lanl.gov>
+
+	* qage_impl.c: started using volatile (selectively) to enforce
+ 	strict IEEE behavior for the branches where it matters. I was
+ 	going to use gcc's -ffloat-store option but it didn't work for me.
+  	Using volatile is not really a complete solution but is probably
+ 	close enough for all practical purposes (also it doesn't degrade
+ 	the performance as much as -ffloat-store would).
+	
 Sat May 30 15:40:51 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
 	* test.c (main): basic tests of qage are now complete

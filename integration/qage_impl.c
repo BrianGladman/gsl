@@ -16,9 +16,12 @@ gsl_integration_qage_impl (double (*f) (double x),
 			   gsl_integration_rule_t * const q)
 {
   double q_result, q_abserr, q_defabs, q_resabs;
-  double tolerance, maxerr_value, area, errsum;
+  double tolerance ;
+  double maxerr_value, area, errsum;
   size_t maxerr_index, nrmax, i;
   int roundoff_type1 = 0, roundoff_type2 = 0, error_type = 0;
+
+  volatile double round_off ; /* volatile is needed for strict IEEE behavior */
 
   const size_t limit = workspace->limit ;
   double * alist = workspace->alist ;
@@ -54,7 +57,9 @@ gsl_integration_qage_impl (double (*f) (double x),
 
   tolerance = max (epsabs, epsrel * fabs (q_result));
 
-  if (q_abserr <= 50 * DBL_EPSILON * q_defabs && q_abserr > tolerance)
+  round_off = 50 * DBL_EPSILON * q_defabs ;
+
+  if (q_abserr <= round_off && q_abserr > tolerance)
     {
       *result = q_result;
       *abserr = q_abserr;
@@ -141,8 +146,8 @@ gsl_integration_qage_impl (double (*f) (double x),
 	     a point of the integration range */
 
 	  {
-	    double tmp = ((1 + 100 * DBL_EPSILON) 
-			  * (fabs (a2) + 1000 * DBL_MIN));
+	    volatile double tmp = ((1 + 100 * DBL_EPSILON) 
+				   * (fabs (a2) + 1000 * DBL_MIN));
 	    if (fabs (a1) <= tmp && fabs (b2) <= tmp)
 	      {
 		error_type = 3;
