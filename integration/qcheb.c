@@ -3,12 +3,18 @@
 #include <gsl_math.h>
 #include <gsl_integration.h>
 
+/* This function computes the 12-th order and 24-th order Chebyshev
+   approximations to f(x) on [a,b] */
+
 void
 gsl_integration_qcheb (gsl_function * f, double a, double b, double *cheb12, double *cheb24)
 {
   size_t i;
   double fval[25], v[12];
 
+  /* These are the values of cos(pi*k/24) for k=1..11 needed for the
+     Chebyshev expansion of f(x) */
+  
   const double x[11] = { 0.9914448613738104,     
 			 0.9659258262890683,
 			 0.9238795325112868,     

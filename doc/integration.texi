@@ -1,18 +1,36 @@
-To be written
 
 @menu
+* QNG - non-adaptive Gauss-Kronrod integration::  
+* QAG - adaptive Gauss-Kronrod integration::  
+* QAGS - adaptive Gauss-Kronrod integration with extrapolation::  
+* QAGP - adaptive Gauss-Kronrod integration with extrapolation allowing for discontinuities::  
+* QAGI - adaptive Gauss-Kronrod integration with extrapolation on infinite intervals::  
 * Numerical integration References and Further Reading::  
 @end menu
+
+@node QNG - non-adaptive Gauss-Kronrod integration
+@section QNG - non-adaptive Gauss-Kronrod integration
+
+@node QAG - adaptive Gauss-Kronrod integration
+@section QAG - adaptive Gauss-Kronrod integration
+
+@node QAGS - adaptive Gauss-Kronrod integration with extrapolation
+@section QAGS - adaptive Gauss-Kronrod integration with extrapolation
+
+@node QAGP - adaptive Gauss-Kronrod integration with extrapolation allowing for discontinuities
+@section QAGP - adaptive Gauss-Kronrod integration with extrapolation allowing for discontinuities
+
+@node QAGI - adaptive Gauss-Kronrod integration with extrapolation on infinite intervals
+@section QAGI - adaptive Gauss-Kronrod integration with extrapolation on infinite intervals
 
 @node Numerical integration References and Further Reading
 @section Numerical integration  References and Further Reading
 
 @noindent
-The complete story of QUADPACK is given in the book of the same name
-written by the original developers. It describes the algorithms used in
-QUADPACK and includes test programs, examples and useful advice on
-numerical integration. It also has many references to the numerical
-integration literature.
+The definitive reference for QUADPACK is the book written by the
+original developers. It describes the algorithms and includes test
+programs, examples and useful advice on numerical integration. It also
+has many references to the numerical integration literature.
 
 @itemize @asis
 @item
