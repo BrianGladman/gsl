@@ -145,7 +145,8 @@ neighboring elements.  For example, the following definition of a packed
 array of length 6,
 
 @example
-gsl_complex_packed_array data[6];
+double x[3*2];
+gsl_complex_packed_array data = x;
 @end example
 
 @noindent
@@ -221,13 +222,13 @@ expense of requiring additional working space.
 
 All these functions are declared in the header file @file{gsl_fft_complex.h}.
 
-@deftypefun int gsl_fft_complex_radix2_forward (gsl_complex_packed_array @var{data}[], size_t @var{stride}, size_t @var{n})
+@deftypefun int gsl_fft_complex_radix2_forward (gsl_complex_packed_array @var{data}, size_t @var{stride}, size_t @var{n})
 
-@deftypefunx int gsl_fft_complex_radix2_transform (gsl_complex_packed_array @var{data}[], size_t @var{stride}, size_t @var{n}, gsl_fft_direction @var{sign})
+@deftypefunx int gsl_fft_complex_radix2_transform (gsl_complex_packed_array @var{data}, size_t @var{stride}, size_t @var{n}, gsl_fft_direction @var{sign})
 
-@deftypefunx int gsl_fft_complex_radix2_backward (gsl_complex_packed_array @var{data}[], size_t @var{stride}, size_t @var{n})
+@deftypefunx int gsl_fft_complex_radix2_backward (gsl_complex_packed_array @var{data}, size_t @var{stride}, size_t @var{n})
 
-@deftypefunx int gsl_fft_complex_radix2_inverse (gsl_complex_packed_array @var{data}[], size_t @var{stride}, size_t @var{n})
+@deftypefunx int gsl_fft_complex_radix2_inverse (gsl_complex_packed_array @var{data}, size_t @var{stride}, size_t @var{n})
 
 These functions compute forward, backward and inverse FFTs of length
 @var{n} with stride @var{stride}, on the packed complex array @var{data}
@@ -241,13 +242,13 @@ detected, or @code{GSL_EDOM} if the length of the data @var{n} is not a
 power of two.
 @end deftypefun
 
-@deftypefun int gsl_fft_complex_radix2_dif_forward (gsl_complex_packed_array @var{data}[], size_t @var{stride}, size_t @var{n})
+@deftypefun int gsl_fft_complex_radix2_dif_forward (gsl_complex_packed_array @var{data}, size_t @var{stride}, size_t @var{n})
 
-@deftypefunx int gsl_fft_complex_radix2_dif_transform (gsl_complex_packed_array @var{data}[], size_t @var{stride}, size_t @var{n}, gsl_fft_direction @var{sign})
+@deftypefunx int gsl_fft_complex_radix2_dif_transform (gsl_complex_packed_array @var{data}, size_t @var{stride}, size_t @var{n}, gsl_fft_direction @var{sign})
 
-@deftypefunx int gsl_fft_complex_radix2_dif_backward (gsl_complex_packed_array @var{data}[], size_t @var{stride}, size_t @var{n})
+@deftypefunx int gsl_fft_complex_radix2_dif_backward (gsl_complex_packed_array @var{data}, size_t @var{stride}, size_t @var{n})
 
-@deftypefunx int gsl_fft_complex_radix2_dif_inverse (gsl_complex_packed_array @var{data}[], size_t @var{stride}, size_t @var{n})
+@deftypefunx int gsl_fft_complex_radix2_dif_inverse (gsl_complex_packed_array @var{data}, size_t @var{stride}, size_t @var{n})
 
 These are decimation-in-frequency versions of the radix-2 FFT functions.
 
@@ -493,10 +494,10 @@ same length will be needed.
 @noindent
 The following functions compute the transform,
 
-@deftypefun int gsl_fft_complex_forward (gsl_complex_packed_array @var{data}[], size_t @var{stride}, size_t @var{n}, const gsl_fft_complex_wavetable * @var{wavetable}, gsl_fft_complex_workspace * @var{work})
-@deftypefunx int gsl_fft_complex_transform (gsl_complex_packed_array @var{data}[], size_t @var{stride}, size_t @var{n}, const gsl_fft_complex_wavetable * @var{wavetable}, gsl_fft_complex_workspace * @var{work}, gsl_fft_direction @var{sign})
-@deftypefunx int gsl_fft_complex_backward (gsl_complex_packed_array @var{data}[], size_t @var{stride}, size_t @var{n}, const gsl_fft_complex_wavetable * @var{wavetable}, gsl_fft_complex_workspace * @var{work})
-@deftypefunx int gsl_fft_complex_inverse (gsl_complex_packed_array @var{data}[], size_t @var{stride}, size_t @var{n}, const gsl_fft_complex_wavetable * @var{wavetable}, gsl_fft_complex_workspace * @var{work})
+@deftypefun int gsl_fft_complex_forward (gsl_complex_packed_array @var{data}, size_t @var{stride}, size_t @var{n}, const gsl_fft_complex_wavetable * @var{wavetable}, gsl_fft_complex_workspace * @var{work})
+@deftypefunx int gsl_fft_complex_transform (gsl_complex_packed_array @var{data}, size_t @var{stride}, size_t @var{n}, const gsl_fft_complex_wavetable * @var{wavetable}, gsl_fft_complex_workspace * @var{work}, gsl_fft_direction @var{sign})
+@deftypefunx int gsl_fft_complex_backward (gsl_complex_packed_array @var{data}, size_t @var{stride}, size_t @var{n}, const gsl_fft_complex_wavetable * @var{wavetable}, gsl_fft_complex_workspace * @var{work})
+@deftypefunx int gsl_fft_complex_inverse (gsl_complex_packed_array @var{data}, size_t @var{stride}, size_t @var{n}, const gsl_fft_complex_wavetable * @var{wavetable}, gsl_fft_complex_workspace * @var{work})
 
 These functions compute forward, backward and inverse FFTs of length
 @var{n} with stride @var{stride}, on the packed complex array
@@ -906,7 +907,7 @@ for (i = 0; i < n; i++)
 @end example
 @end deftypefun
 
-@deftypefun int gsl_fft_halfcomplex_unpack (const double @var{halfcomplex_coefficient}[], gsl_complex_packed_array @var{complex_coefficient}[], size_t @var{stride}, size_t @var{n})
+@deftypefun int gsl_fft_halfcomplex_unpack (const double @var{halfcomplex_coefficient}[], gsl_complex_packed_array @var{complex_coefficient}, size_t @var{stride}, size_t @var{n})
 
 This function converts @var{halfcomplex_coefficient}, an array of
 half-complex coefficients as returned by @code{gsl_fft_real_transform}, into an
