@@ -66,21 +66,23 @@ gsl_sf_atanint_impl(const double x, gsl_sf_result * result)
     const double t = 2.0 * (x*x - 0.5);
     gsl_sf_result result_c;
     gsl_sf_cheb_eval_impl(&atanint_cs, t, &result_c);
-    result->val = x * result_c.val;
-    result->err = x * result_c.err;
+    result->val  = x * result_c.val;
+    result->err  = x * result_c.err;
+    result->err += GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
   }
   else if(ax < 1.0/GSL_SQRT_DBL_EPSILON) {
     const double t = 2.0 * (1.0/(x*x) - 0.5);
     gsl_sf_result result_c;
     gsl_sf_cheb_eval_impl(&atanint_cs, t, &result_c);
-    result->val = sgn * (0.5*M_PI*log(ax) + result_c.val/ax);
-    result->err = result_c.err/ax + fabs(result->val*GSL_DBL_EPSILON);
+    result->val  = sgn * (0.5*M_PI*log(ax) + result_c.val/ax);
+    result->err  = result_c.err/ax + fabs(result->val*GSL_DBL_EPSILON);
+    result->err += GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
   }
   else {
     result->val = sgn * 0.5*M_PI*log(ax);
-    result->err = fabs(result->val * GSL_DBL_EPSILON);
+    result->err = 2.0 * fabs(result->val * GSL_DBL_EPSILON);
     return GSL_SUCCESS;
   }
 }

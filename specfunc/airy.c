@@ -625,7 +625,7 @@ static int airy_aie(const double x, gsl_mode_t mode, gsl_sf_result * result)
   gsl_sf_result result_c;
   gsl_sf_cheb_eval_mode_impl(&aip_cs, z, mode, &result_c);
   result->val = (0.28125 + result_c.val)/y;
-  result->err = result_c.err/y;
+  result->err = result_c.err/y + GSL_DBL_EPSILON * fabs(result->val);
   return GSL_SUCCESS;
 }
 
@@ -642,7 +642,7 @@ static int airy_bie(const double x, gsl_mode_t mode, gsl_sf_result * result)
     gsl_sf_result result_c;
     gsl_sf_cheb_eval_mode_impl(&bip_cs, z, mode, &result_c);
     result->val = (0.625 + result_c.val)/y;
-    result->err = result_c.err/y;
+    result->err = result_c.err/y + GSL_DBL_EPSILON * fabs(result->val);
   }
   else {
     double sqx = sqrt(x);
@@ -651,7 +651,7 @@ static int airy_bie(const double x, gsl_mode_t mode, gsl_sf_result * result)
     gsl_sf_result result_c;
     gsl_sf_cheb_eval_mode_impl(&bip2_cs, z, mode, &result_c);
     result->val = (0.625 + result_c.val)/y;
-    result->err = result_c.err/y;
+    result->err = result_c.err/y + GSL_DBL_EPSILON * fabs(result->val);
   }
 
   return GSL_SUCCESS;
