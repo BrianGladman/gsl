@@ -192,9 +192,18 @@ MacOS applications such as Stuffit Expander will truncate filenames to
 unpack the distribution.
 
 There are problems with dynamic linker, so the library should be
-compiled with
+compiled with,
 
   ./configure --disable-shared
+
+To build shared libraries you can install MacOS X versions of libtool,
+automake and autoconf, and then reconfigure:
+
+  1. Get the fink packaging tool (http://fink.sourceforge.net)
+  2, Install fink's libtool14, automake, autoconf25.
+  3. Regenerate GSL's configuration using ./autogen.sh in the 
+     top-level directory.
+  4. ./configure, make
 
 To avoid warnings about long-double, use the flag
 
