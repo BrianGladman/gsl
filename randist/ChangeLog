@@ -1,3 +1,8 @@
+2003-02-09  Brian Gough  <bjg@network-theory.co.uk>
+
+	* discrete.c (gsl_ran_discrete_preproc): fixed bug reported by
+	ahoward <ahoward@pollux.usc.edu>
+
 2003-01-25  Brian Gough  <brian.gough@network-theory.co.uk>
 
 	* chisq.c: corrected comments

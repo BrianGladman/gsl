@@ -60,6 +60,8 @@ double test_discrete1 (void);
 double test_discrete1_pdf (unsigned int n);
 double test_discrete2 (void);
 double test_discrete2_pdf (unsigned int n);
+double test_discrete3 (void);
+double test_discrete3_pdf (unsigned int n);
 double test_erlang (void);
 double test_erlang_pdf (double x);
 double test_exponential (void);
@@ -225,6 +227,13 @@ main (void)
   testMoments (FUNC (discrete1), 0.5, 1.5, 0.40);
   testMoments (FUNC (discrete1), 1.5, 3.5, 0.01);
 
+  testMoments (FUNC (discrete2), -0.5,  0.5, 1.0/45.0 );
+  testMoments (FUNC (discrete2),  8.5,  9.5, 0 );
+  
+  testMoments (FUNC (discrete3), -0.5, 0.5, 0.05 );
+  testMoments (FUNC (discrete3),  0.5, 1.5, 0.05 );
+  testMoments (FUNC (discrete3), -0.5, 9.5, 0.5 );
+
   test_dirichlet_moments ();
   test_multinomial_moments ();
 
@@ -293,6 +302,7 @@ main (void)
 
   testDiscretePDF (FUNC2 (discrete1));
   testDiscretePDF (FUNC2 (discrete2));
+  testDiscretePDF (FUNC2 (discrete3));
   testDiscretePDF (FUNC2 (poisson));
   testDiscretePDF (FUNC2 (poisson_large));
   testDiscretePDF (FUNC2 (bernoulli));
@@ -850,6 +860,7 @@ test_multinomial_moments (void)
 
 static gsl_ran_discrete_t *g1 = NULL;
 static gsl_ran_discrete_t *g2 = NULL;
+static gsl_ran_discrete_t *g3 = NULL;
 
 double
 test_discrete1 (void)
@@ -883,6 +894,23 @@ double
 test_discrete2_pdf (unsigned int n)
 {
   return gsl_ran_discrete_pdf ((size_t) n, g2);
+}
+double
+test_discrete3 (void)
+{
+  static double P[20];
+  if (g3 == NULL)
+    { int i;
+      for (i=0; i<20; ++i) P[i]=1.0/20;
+      g3 = gsl_ran_discrete_preproc (20, P);
+    }
+  return gsl_ran_discrete (r_global, g3);
+}
+
+double
+test_discrete3_pdf (unsigned int n)
+{
+  return gsl_ran_discrete_pdf ((size_t) n, g3);
 }
 
 

@@ -224,3 +224,8 @@ memory allocation
 
 * W.M. Vissers" <vissers@theochem.kun.nl> bug report for
 gsl_complex_arccsc_real
+
+* Paolo Redaelli <paolo.redaelli@libero.it> bug report for chebyshev
+functions
+
+* Andrew Howard <ahoward@pollux.usc.edu> bug report for gsl_ran_discrete

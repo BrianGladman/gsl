@@ -277,10 +277,9 @@ gsl_ran_discrete_preproc(size_t Kevents, const double *ProbArray)
     while (size_stack(Smalls) > 0) {
         s = pop_stack(Smalls);
         if (size_stack(Bigs) == 0) {
-            /* Then we are on our last value */
             (g->A)[s]=s;
             (g->F)[s]=1.0;
-            break;
+            continue;
         }
         b = pop_stack(Bigs);
         (g->A)[s]=b;
@@ -310,6 +309,10 @@ gsl_ran_discrete_preproc(size_t Kevents, const double *ProbArray)
     }
     /* Stacks have been emptied, and A and F have been filled */
 
+    if ( size_stack(Smalls) != 0) {
+      GSL_ERROR_VAL ("Smalls stack has not been emptied",
+                     GSL_ESANITY, 0 );
+    }
     
 #if 0
     /* if 1, then artificially set all F[k]'s to unity.  This will
