@@ -24,8 +24,8 @@ FUNCTION(fft_halfcomplex,pass_3) (const BASE in[],
 				  const size_t ostride,
 				  const size_t product,
 				  const size_t n,
-				  const gsl_complex twiddle1[],
-				  const gsl_complex twiddle2[])
+				  const TYPE(gsl_complex) twiddle1[],
+				  const TYPE(gsl_complex) twiddle2[])
 {
   size_t i, j, k, k1, jump;
   size_t factor, q, m, product_1;

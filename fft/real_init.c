@@ -47,8 +47,8 @@ FUNCTION(gsl_fft_real_wavetable,alloc) (size_t n)
     }
   else
     {
-      wavetable->trig = (gsl_complex *) 
-        malloc ((n / 2) * sizeof (gsl_complex));
+      wavetable->trig = (TYPE(gsl_complex) *) 
+        malloc ((n / 2) * sizeof (TYPE(gsl_complex)));
       
       if (wavetable->trig == NULL)
 	{

@@ -26,7 +26,7 @@ FUNCTION(fft_complex,pass_n) (BASE in[],
 			      const size_t factor,
 			      const size_t product,
 			      const size_t n,
-			      const gsl_complex twiddle[])
+			      const TYPE(gsl_complex) twiddle[])
 {
   size_t i = 0, j = 0;
   size_t k, k1;
@@ -78,7 +78,7 @@ FUNCTION(fft_complex,pass_n) (BASE in[],
     {
       size_t idx = e*q ;
       const size_t idx_step = e * q ;
-      double w_real, w_imag ;
+      ATOMIC w_real, w_imag ;
 
       const size_t em = e * m ;
       const size_t ecm = (factor - e) * m ;
@@ -108,22 +108,22 @@ FUNCTION(fft_complex,pass_n) (BASE in[],
 
 	  for (i = 0; i < m; i++) 
 	    {
-	      const double xp_real = REAL(out,ostride,i + e1 * m);
-	      const double xp_imag = IMAG(out,ostride,i + e1 * m);
-	      const double xm_real = REAL(out,ostride,i + (factor - e1) *m);
-	      const double xm_imag = IMAG(out,ostride,i + (factor - e1) *m);
+	      const ATOMIC xp_real = REAL(out,ostride,i + e1 * m);
+	      const ATOMIC xp_imag = IMAG(out,ostride,i + e1 * m);
+	      const ATOMIC xm_real = REAL(out,ostride,i + (factor - e1) *m);
+	      const ATOMIC xm_imag = IMAG(out,ostride,i + (factor - e1) *m);
 	
-	      const double ap = w_real * xp_real ;
-	      const double am = w_imag * xm_imag ; 
+	      const ATOMIC ap = w_real * xp_real ;
+	      const ATOMIC am = w_imag * xm_imag ; 
 
-	      double sum_real = ap - am;
-	      double sumc_real = ap + am;
+	      ATOMIC sum_real = ap - am;
+	      ATOMIC sumc_real = ap + am;
 
-	      const double bp = w_real * xp_imag ;
-	      const double bm = w_imag * xm_real ;
+	      const ATOMIC bp = w_real * xp_imag ;
+	      const ATOMIC bm = w_imag * xm_real ;
 
-	      double sum_imag = bp + bm;
-	      double sumc_imag = bp - bm;
+	      ATOMIC sum_imag = bp + bm;
+	      ATOMIC sumc_imag = bp - bm;
 
 	      REAL(in,istride,i + em) += sum_real;
 	      IMAG(in,istride,i + em) += sum_imag;
@@ -178,10 +178,10 @@ FUNCTION(fft_complex,pass_n) (BASE in[],
 	{
 	  for (e1 = 1; e1 < factor; e1++)
 	    {
-	      double x_real = REAL(in, istride,i + e1 * m);
-	      double x_imag = IMAG(in, istride,i + e1 * m);
+	      ATOMIC x_real = REAL(in, istride,i + e1 * m);
+	      ATOMIC x_imag = IMAG(in, istride,i + e1 * m);
 
-	      double w_real, w_imag ;
+	      ATOMIC w_real, w_imag ;
 	      if (sign == forward) {
 		w_real = GSL_REAL(twiddle[(e1-1)*q + k-1]) ;
 		w_imag = GSL_IMAG(twiddle[(e1-1)*q + k-1]) ;

@@ -81,7 +81,7 @@ FUNCTION(gsl_fft_halfcomplex,transform) (BASE data[], const size_t stride, const
   int state;
   int product_1;
   int tskip;
-  gsl_complex *twiddle1, *twiddle2, *twiddle3, *twiddle4;
+  TYPE(gsl_complex) *twiddle1, *twiddle2, *twiddle3, *twiddle4;
 
   if (n == 0)
     {

@@ -24,7 +24,7 @@ FUNCTION(fft_real,pass_2) (const BASE in[],
 			   const size_t ostride,
 			   const size_t product,
 			   const size_t n,
-			   const gsl_complex twiddle[])
+			   const TYPE(gsl_complex) twiddle[])
 {
   size_t k, k1;
 

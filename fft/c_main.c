@@ -87,7 +87,7 @@ FUNCTION(gsl_fft_complex,transform) (TYPE(gsl_complex_packed_array) data,
 
   size_t q, product = 1;
 
-  gsl_complex *twiddle1, *twiddle2, *twiddle3, *twiddle4,
+  TYPE(gsl_complex) *twiddle1, *twiddle2, *twiddle3, *twiddle4,
     *twiddle5, *twiddle6;
 
   size_t state = 0;

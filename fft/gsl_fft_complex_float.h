@@ -87,8 +87,8 @@ typedef struct
     size_t n;
     size_t nf;
     size_t factor[64];
-    gsl_complex *twiddle[64];
-    gsl_complex *trig;
+    gsl_complex_float *twiddle[64];
+    gsl_complex_float *trig;
   }
 gsl_fft_complex_wavetable_float;
 

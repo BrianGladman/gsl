@@ -23,11 +23,11 @@ static void
 FUNCTION(fft_real,pass_6) (const BASE from[], BASE to[],
 			   const size_t product,
 			   const size_t n,
-			   const gsl_complex twiddle1[],
-			   const gsl_complex twiddle2[],
-			   const gsl_complex twiddle3[],
-			   const gsl_complex twiddle4[],
-			   const gsl_complex twiddle5[])
+			   const TYPE(gsl_complex) twiddle1[],
+			   const TYPE(gsl_complex) twiddle2[],
+			   const TYPE(gsl_complex) twiddle3[],
+			   const TYPE(gsl_complex) twiddle4[],
+			   const TYPE(gsl_complex) twiddle5[])
 {
   size_t i, j, k, k1, jump;
   size_t factor, q, m, product_1;
@@ -146,7 +146,7 @@ FUNCTION(fft_real,pass_6) (const BASE from[], BASE to[],
 
   for (k = 1; k < (product_1 + 1) / 2; k++)
     {
-      gsl_complex w1, w2, w3, w4;
+      TYPE(gsl_complex) w1, w2, w3, w4;
       w1.real = twiddle1[k - 1].real;
       w1.imag = -twiddle1[k - 1].imag;
       w2.real = twiddle2[k - 1].real;
@@ -158,9 +158,9 @@ FUNCTION(fft_real,pass_6) (const BASE from[], BASE to[],
 
       for (k1 = 0; k1 < q; k1++)
 	{
-	  gsl_complex t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11;
-	  gsl_complex z0, z1, z2, z3, z4;
-	  gsl_complex x0, x1, x2, x3, x4;
+	  TYPE(gsl_complex) t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11;
+	  TYPE(gsl_complex) z0, z1, z2, z3, z4;
+	  TYPE(gsl_complex) x0, x1, x2, x3, x4;
 
 	  from0 = k1 * product_1 + 2 * k - 1;
 	  from1 = from0 + m;

@@ -41,7 +41,7 @@ FUNCTION(gsl_fft_real,transform) (BASE data[], const size_t stride, const size_t
   size_t product_1;
 
   BASE *const scratch = work->scratch;
-  gsl_complex *twiddle1, *twiddle2, *twiddle3, *twiddle4;
+  TYPE(gsl_complex) *twiddle1, *twiddle2, *twiddle3, *twiddle4;
 
   size_t state = 0;
   BASE *in = data;
