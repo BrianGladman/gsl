@@ -120,7 +120,7 @@ could also print out the values of other variables such as
 @section Examining floating point registers
 
 The contents of floating point registers can be examined using the
-command @code{info float} (on supported all platforms).
+command @code{info float} (on supported platforms).
 
 @smallexample
 (gdb) info float
