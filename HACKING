@@ -221,20 +221,20 @@ has documentation.
 Savannah CVS Information
 ========================
 
-Developer CVS Access via SSH (Version 1, RSA)
+Developer CVS Access via SSH.
 
-Only project developers can access the CVS tree via this method. SSH1
-must be installed on your client machine. If you have SSH version two,
-add
+Only project developers can access the CVS tree via this method. SSH2
+must be installed on your client machine.  Put the following 
+in your ~/.ssh/config file:
 
   Host subversions.gnu.org
-     Protocol 1
+     Protocol 2
+     ForwardX11 no
 
-in your ~/.ssh/config file, even if you think that your SSH will
-switch to protocol 1 automatically. Substitute developername with the
-proper value. Your savannah password is useless for cvs. You have to
-register a CVS/SSH Shared key in the Account Maintenance page for the
-machine from which you run cvs.
+Substitute developername with the proper value.  Your savannah
+password is useless for cvs.  You have to register a CVS/SSH Shared
+key in the Account Maintenance page for the machine from which you run
+cvs.
 
 Source tree:
 
