@@ -12,7 +12,7 @@ TESTS = test test2d test_resample test2d_resample test_trap test2d_trap test_gsl
 EXTRA_DIST = test_gsl_histogram.sh
 
 gsl_histogram_SOURCES = gsl-histogram.c
-gsl_histogram_LDADD = libgslhistogram.la ../block/libgslblock.la  ../err/libgslerr.la ../err/libgsltest.la ../utils/libutils.la
+gsl_histogram_LDADD = libgslhistogram.la ../block/libgslblock.la  ../err/libgslerr.la ../utils/libutils.la
 noinst_HEADERS = urand.c
 
 test_LDADD = libgslhistogram.la ../block/libgslblock.la  ../err/libgslerr.la ../err/libgsltest.la
