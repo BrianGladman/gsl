@@ -166,7 +166,7 @@ equivalent to the sum @math{\log(n!) - \log(m!) - \log((n-m)!)}.
 @cindex Pochhammer symbol
 @cindex Apell symbol, see Pochammer symbol
 These routines compute the Pochhammer symbol @math{(a)_x := \Gamma(a +
-x)/\Gamma(x)}, subject to @math{a} and @math{a+x} not being negative
+x)/\Gamma(a)}, subject to @math{a} and @math{a+x} not being negative
 integers. The Pochhammer symbol is also known as the Apell symbol.
 @comment exceptions:  GSL_EDOM, GSL_EOVRFLW
 @end deftypefun

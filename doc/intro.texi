@@ -28,7 +28,7 @@ Routines are available for the following areas,
 @item @tab Special Functions          @tab Vectors and Matrices        
 @item @tab Permutations               @tab Combinations              
 @item @tab Sorting                    @tab BLAS Support               
-@item @tab Linear Algebra             @tab BLAS Support               
+@item @tab Linear Algebra             @tab CBLAS Library
 @item @tab Fast Fourier Transforms    @tab Eigensystems               
 @item @tab Random Numbers             @tab Quadrature                 
 @item @tab Random Distributions       @tab Quasi-Random Sequences     

@@ -117,8 +117,8 @@ with no Invariant Sections, no Front-Cover Texts, and no Back-Cover Texts.
 A copy of the license is included in the section entitled ``GNU
 Free Documentation License''.
 
-The Texinfo source for this manual may be obtained from
-@code{http://www.network-theory.co.uk/gsl/manual/src/}.
+The Texinfo source for this manual may be obtained from: @*
+@code{http://www.network-theory.co.uk/gsl/manual/src/}
 @end copying
 @end iftex
 
@@ -174,7 +174,7 @@ University of Paris-Dauphine
 @flushleft
 A catalogue record for this book is available from the British Library.
 
-Second Edition, First Printing, December 2002 (24/12/2002)
+Second Edition, First Printing, February 2002 (14/2/2002)
 
 Published by Network Theory Limited.
 
