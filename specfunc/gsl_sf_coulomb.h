@@ -12,12 +12,12 @@ double gsl_sf_hydrogenicR(int n, int l, double Z, double r);
 
 
 /* Coulomb wave function normalization constant.
-   See Abramowitz+Stegun 14.1.8 14.1.9.
+   [Abramowitz+Stegun 14.1.8, 14.1.9]
    coulomb_CL() calculates recursively in the same
    manner as coulomb_CL_list()
  */
 double gsl_sf_coulomb_CL(double lam, double eta);
-void   gsl_sf_coulomb_CL_list(double l_min, int count, double eta, double *cl);
+int    gsl_sf_coulomb_CL_list(double l_min, int count, double eta, double *cl);
 
 
 /* Coulomb wave functions F,G for general lambda > -1

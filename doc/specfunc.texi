@@ -15,6 +15,7 @@ This chapter describes the GSL special function library.
 * Legendre Functions and Spherical Harmonics::
 * Logarithm (Complex)::
 * Power Function::
+* Psi (DiGamma) Function::
 * Trigonometric Functions (Complex)::
 @end menu
 
@@ -64,6 +65,28 @@ a re-implementation of the Airy Chebyshev fits in the SLATEC Fortran library.
 @node Chebyshev Polynomials
 @section Chebyshev Polynomials
 @cindex Chebyshev polynomials
+
+The Chebyshev polynomials @math{T_n(x) = \cos(n \acos x)} provide an 
+orthogonal basis of polynomials on the interval @math{[-1,1]},
+with the weight function @math{1 \over \sqrt@{1-x^2@} }. The first few such
+polynomials are
+
+@equation
+	T_0(x) = 1,
+@end equation
+@equation
+	T_1(x) = x,
+@end equation
+@equation
+	T_2(x) = 2 x^2 - 1.
+@end equation
+
+By construction, @math{T_n(x)} has precisely @math{n} zeroes
+in the interval @math{[-1, 1]}, located at
+@math{x_k^@{(n)@} = \cos( @{ \pi \over n @} (k-1/2) )}. It is the
+nature of these zeroes and the behaviour of the set of polynomials at
+these special points which makes the Chebyshev polynomials
+especially useful in numerical approximation of functions.
 
 
 
@@ -133,6 +156,13 @@ a simple function to fill this gap.
 #include <gsl_sf_pow_int.h>
 double y = gsl_sf_pow_int(3., 12)
 @end example
+
+@c ---------------------------------------------------------------------------
+@node Psi (DiGamma) Function
+@section Psi (DiGamma) Function
+@cindex psi function
+@cindex digamma function
+
 
 @c ---------------------------------------------------------------------------
 @node Trigonometric Functions (Complex)

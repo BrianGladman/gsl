@@ -65,10 +65,6 @@ double gsl_sf_hydrogenicR(int n, int l, double Z, double r)
 }
 
 
-
-/* appease the blind idiot god Solaris... */
-/* extern double expm1(double); */
-
 /* the L=0 normalization constant */
 static double C0sq(double eta)
 {
@@ -87,7 +83,7 @@ static double C0sq(double eta)
 
 
 /* the full definition of C_L(eta) for any valid L and eta
-   Abramowitz and Stegun 14.1.7
+   [Abramowitz and Stegun 14.1.7]
    This depends on the complex gamma function. For large
    arguments the phase of the complex gamma function is not
    very accurately determined. However the modulus is, and that
@@ -99,13 +95,13 @@ static double CLeta(double L, double eta)
   double ln2; /* log of denominator Gamma function */
 
   if(fabs(eta) < GSL_MACH_EPS) {
-    ln1 = lngamma(L+1.);
+    ln1 = gsl_sf_lngamma(L+1.);
   }
   else {
     double p1;  /* phase of numerator Gamma -- not used */
-    complex_lngamma(L+1., eta, &ln1, &p1);
+    gsl_sf_complex_lngamma(L+1., eta, &ln1, &p1);
   }
-  ln2 = lngamma(2.*L+2.);
+  ln2 = gsl_sf_lngamma(2.*L+2.);
   
   return exp(L*M_LN2 - 0.5*eta*M_PI + ln1 - ln2);
 }
@@ -131,7 +127,7 @@ double gsl_sf_coulomb_CL(double lam, double eta)
 }
 
 
-void gsl_sf_coulomb_CL_list(double lam_min, int count, double eta, double * cl)
+int gsl_sf_coulomb_CL_list(double lam_min, int count, double eta, double * cl)
 {
   int ell;
   cl[0] = gsl_sf_coulomb_CL(lam_min, eta);
@@ -140,6 +136,8 @@ void gsl_sf_coulomb_CL_list(double lam_min, int count, double eta, double * cl)
     double L = lam_min + ell;
     cl[ell] = cl[ell-1] * sqrt(L*L + eta*eta)/(L*(2.*L+1.));
   }
+  
+  return GSL_SUCCESS;
 }
 
 
@@ -194,7 +192,7 @@ static void coulfg_zero_x(double eta, double xlmin, double xlmax,
 
 /* small argument calculation of coulomb wave functions 
    based on expansion in terms of spherical Bessel functions
-   See Abramowitz and Stegun 14.4.5
+   [Abramowitz and Stegun 14.4.5]
  */
 static void coulfg_small_args(double x, double eta, double xlmin, double xlmax,
 			      double *fc, double *gc, double *fcp, double *gcp,
@@ -226,7 +224,7 @@ static void coulfg_small_args(double x, double eta, double xlmin, double xlmax,
       gcp[i] = gc[i] * (-i)/x;
     }
   }
-  free_vector(cl);
+  free(cl);
 }
 
 
