@@ -9,12 +9,15 @@ SUBLIBS = blas/libgslblas.la block/libgslblock.la dht/libgsldht.la eigen/libgsle
 bin_SCRIPTS = gsl-config
 
 pkginclude_HEADERS = gsl_math.h gsl_machine.h gsl_mode.h gsl_precision.h
-EXTRA_DIST = autogen.sh gsl-config.in configure.in THANKS KNOWN-PROBLEMS gsl.spec
+EXTRA_DIST = autogen.sh gsl-config.in configure.in THANKS KNOWN-PROBLEMS gsl.spec gsl.m4
 
 lib_LTLIBRARIES = libgsl.la
 libgsl_la_SOURCES = version.c
 libgsl_la_LIBADD = $(SUBLIBS)
 noinst_HEADERS = complex_internal.h templates_on.h templates_off.h
+
+m4datadir = $(datadir)/aclocal
+m4data_DATA = gsl.m4
 
 #bin_PROGRAMS = main dummy
 #dummy_SOURCES = version.c
