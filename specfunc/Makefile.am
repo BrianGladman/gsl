@@ -56,6 +56,7 @@ libgslspecfunc_a_SOURCES = 	\
 	gamma.c			\
 	laguerre.c		\
 	legendre.c		\
+	legendre_assoc.c	\
 	log.c			\
 	pow_int.c		\
 	psi.c			\
