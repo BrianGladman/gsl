@@ -1,3 +1,4 @@
 1. Try using the Kahan summation formula to improve accuracy for the
 NIST tests.
 
+2. Allow weighted values, mean(x) = sum_i w_i x_i

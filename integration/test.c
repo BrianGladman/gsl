@@ -3,6 +3,7 @@
 #include <gsl_integration.h>
 #include <gsl_errno.h>
 #include <gsl_test.h>
+#include <gsl_ieee_utils.h>
 
 #include "tests.h"
 
@@ -13,6 +14,7 @@ void my_error_handler (const char *reason, const char *file,
 
 int main (void)
 {
+  gsl_ieee_env_setup ();
   gsl_set_error_handler (&my_error_handler); 
 
   /* Test the basic Gauss-Kronrod rules with a smooth positive function. */

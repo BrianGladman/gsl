@@ -1,6 +1,6 @@
 noinst_LIBRARIES = libgslintegration.a
 
-INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../err
+INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../ieee-utils -I$(srcdir)/../err
 
 libgslintegration_a_SOURCES = integration.c \
 	qk15.c qk15.h \
@@ -23,4 +23,4 @@ check_PROGRAMS = test
 
 test_SOURCES = test.c tests.c tests.h
 test_LDADD = libgslintegration.a
-test_LDADD = libgslintegration.a ../err/libgslerr.a ../err/libgsltest.a 
+test_LDADD = libgslintegration.a ../ieee-utils/libgslieeeutils.a ../err/libgslerr.a ../err/libgsltest.a 

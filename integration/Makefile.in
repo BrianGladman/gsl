@@ -72,7 +72,7 @@ full_top_srcdir = @full_top_srcdir@
 
 noinst_LIBRARIES = libgslintegration.a
 
-INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../err
+INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../ieee-utils -I$(srcdir)/../err
 
 libgslintegration_a_SOURCES = integration.c \
 	qk15.c qk15.h \
@@ -95,7 +95,7 @@ check_PROGRAMS = test
 
 test_SOURCES = test.c tests.c tests.h
 test_LDADD = libgslintegration.a
-test_LDADD = libgslintegration.a ../err/libgslerr.a ../err/libgsltest.a 
+test_LDADD = libgslintegration.a ../ieee-utils/libgslieeeutils.a ../err/libgslerr.a ../err/libgsltest.a 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
 CONFIG_CLEAN_FILES = 
@@ -112,8 +112,8 @@ qk51.o qk61.o qk.o qng.o qage.o qage_impl.o qpsrt.o qagse.o \
 qagse_impl.o qelg.o err.o workspace.o
 AR = ar
 test_OBJECTS =  test.o tests.o
-test_DEPENDENCIES =  libgslintegration.a ../err/libgslerr.a \
-../err/libgsltest.a
+test_DEPENDENCIES =  libgslintegration.a ../ieee-utils/libgslieeeutils.a \
+../err/libgslerr.a ../err/libgsltest.a
 test_LDFLAGS = 
 CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
