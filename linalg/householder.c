@@ -44,7 +44,7 @@ gsl_linalg_householder_transform (gsl_vector * v)
 }
 
 int
-gsl_linalg_householder_hm (double tau, const gsl_vector *v, gsl_matrix *m, gsl_vector * work)
+gsl_linalg_householder_hm (double tau, const gsl_vector * v, gsl_matrix * A, gsl_vector * work)
 {
   /* applies a householder transformation v,tau to matrix m */
 
@@ -53,37 +53,37 @@ gsl_linalg_householder_hm (double tau, const gsl_vector *v, gsl_matrix *m, gsl_v
   if (tau == 0)
     return GSL_SUCCESS;
 
-  /* w = M' v */
+  /* w = A' v */
 
-  for (i = 0; i < m->size2; i++)
+  for (i = 0; i < A->size2; i++)
     {
-      double sum = gsl_matrix_get(m,0,i);  
+      double sum = gsl_matrix_get(A,0,i);  
 
-      for (j = 1; j < m->size1; j++)  /* note, computed for v(0) = 1 above */
+      for (j = 1; j < A->size1; j++)  /* note, computed for v(0) = 1 above */
         {
-          sum += gsl_matrix_get(m,j,i) * gsl_vector_get(v,j);
+          sum += gsl_matrix_get(A,j,i) * gsl_vector_get(v,j);
         }
       gsl_vector_set(work, i, sum);
     }
 
-  /* M = M - v w' */
+  /* A = A - v w' */
 
-  for (j = 0; j < m->size2; j++) 
+  for (j = 0; j < A->size2; j++) 
     {
       double wj = gsl_vector_get (work, j);
-      double m0j = gsl_matrix_get (m, 0, j);
-      gsl_matrix_set (m, 0, j, m0j - tau *  wj);
+      double A0j = gsl_matrix_get (A, 0, j);
+      gsl_matrix_set (A, 0, j, A0j - tau *  wj);
     }
 
-  for (i = 1; i < m->size1; i++)
+  for (i = 1; i < A->size1; i++)
     {
       double vi = gsl_vector_get (v, i);
 
-      for (j = 0; j < m->size2; j++) 
+      for (j = 0; j < A->size2; j++) 
         {
           double wj = gsl_vector_get (work, j);
-          double mij = gsl_matrix_get (m, i, j);
-          gsl_matrix_set (m, i, j, mij - tau * vi * wj);
+          double Aij = gsl_matrix_get (A, i, j);
+          gsl_matrix_set (A, i, j, Aij - tau * vi * wj);
         }
     }
 
@@ -91,7 +91,7 @@ gsl_linalg_householder_hm (double tau, const gsl_vector *v, gsl_matrix *m, gsl_v
 }
 
 int
-gsl_linalg_householder_hv (double tau, const gsl_vector *v, gsl_vector *w)
+gsl_linalg_householder_hv (double tau, const gsl_vector * v, gsl_vector * w)
 {
   /* applies a householder transformation v to vector w */
   size_t i;

@@ -27,7 +27,7 @@ create_givens (const double a, const double b, double *c, double *s)
 }
 
 inline static void
-apply_givens_qr (size_t M, size_t N, gsl_matrix * q, gsl_matrix * r,
+apply_givens_qr (size_t M, size_t N, gsl_matrix * Q, gsl_matrix * R,
 		 size_t i, size_t j, double c, double s)
 {
   size_t k;
@@ -36,10 +36,10 @@ apply_givens_qr (size_t M, size_t N, gsl_matrix * q, gsl_matrix * r,
 
   for (k = 0; k < N; k++)
     {
-      double qki = gsl_matrix_get (q, k, i);
-      double qkj = gsl_matrix_get (q, k, j);
-      gsl_matrix_set (q, k, i, qki * c - qkj * s);
-      gsl_matrix_set (q, k, j, qki * s + qkj * c);
+      double qki = gsl_matrix_get (Q, k, i);
+      double qkj = gsl_matrix_get (Q, k, j);
+      gsl_matrix_set (Q, k, i, qki * c - qkj * s);
+      gsl_matrix_set (Q, k, j, qki * s + qkj * c);
     }
 
   /* Apply rotation to matrix R, R' = G^T R (note: upper triangular so
@@ -47,10 +47,10 @@ apply_givens_qr (size_t M, size_t N, gsl_matrix * q, gsl_matrix * r,
 
   for (k = GSL_MIN (i, j); k < N; k++)
     {
-      double rik = gsl_matrix_get (r, i, k);
-      double rjk = gsl_matrix_get (r, j, k);
-      gsl_matrix_set (r, i, k, c * rik - s * rjk);
-      gsl_matrix_set (r, j, k, s * rik + c * rjk);
+      double rik = gsl_matrix_get (R, i, k);
+      double rjk = gsl_matrix_get (R, j, k);
+      gsl_matrix_set (R, i, k, c * rik - s * rjk);
+      gsl_matrix_set (R, j, k, s * rik + c * rjk);
     }
 }
 

@@ -999,7 +999,7 @@ test_HH_solve_dim(const gsl_matrix * m, const double * actual, double eps)
   gsl_vector * x = gsl_vector_alloc(dim);
   gsl_matrix_memcpy(hh,m);
   for(i=0; i<dim; i++) gsl_vector_set(x, i, i+1.0);
-  s += gsl_linalg_HH_solve(hh, x);
+  s += gsl_linalg_HH_svx(hh, x);
   for(i=0; i<dim; i++) {
     int foo = check(gsl_vector_get(x, i),actual[i],eps);
     if( foo) {

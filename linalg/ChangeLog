@@ -1,3 +1,7 @@
+Fri Apr 28 17:13:00 2000  Brian Gough  <bjg@network-theory.co.uk>
+
+	* renamed all matrices to use upper case variable names, e.g. A
+
 Thu Apr 27 20:31:46 2000  Brian Gough  <bjg@network-theory.co.uk>
 
 	* test.c: tightened up accuracy of the decomp test

@@ -44,10 +44,10 @@
  * This storage scheme is the same as in LAPACK.  */
 
 int
-gsl_linalg_QRPT_decomp (gsl_matrix * a, gsl_vector * tau, gsl_permutation * p, int *signum)
+gsl_linalg_QRPT_decomp (gsl_matrix * A, gsl_vector * tau, gsl_permutation * p, int *signum)
 {
-  const size_t M = a->size1;
-  const size_t N = a->size2;
+  const size_t M = A->size1;
+  const size_t N = A->size2;
 
   if (tau->size != GSL_MIN (M, N))
     {
@@ -60,8 +60,8 @@ gsl_linalg_QRPT_decomp (gsl_matrix * a, gsl_vector * tau, gsl_permutation * p, i
   else
     {
       size_t i;
-      gsl_vector *work = gsl_vector_alloc (N);
-      gsl_vector *norm = gsl_vector_alloc (N);
+      gsl_vector * work = gsl_vector_alloc (N);
+      gsl_vector * norm = gsl_vector_alloc (N);
 
       *signum = 1;
 
@@ -71,7 +71,7 @@ gsl_linalg_QRPT_decomp (gsl_matrix * a, gsl_vector * tau, gsl_permutation * p, i
 
       for (i = 0; i < N; i++)
 	{
-	  gsl_vector c = gsl_matrix_column (a, i);
+	  gsl_vector c = gsl_matrix_column (A, i);
 	  double x = gsl_blas_dnrm2 (&c);
 	  gsl_vector_set (norm, i, x);
 	}
@@ -96,7 +96,7 @@ gsl_linalg_QRPT_decomp (gsl_matrix * a, gsl_vector * tau, gsl_permutation * p, i
 
 	  if (kmax != i)
 	    {
-	      gsl_matrix_swap_columns (a, i, kmax);
+	      gsl_matrix_swap_columns (A, i, kmax);
 	      gsl_permutation_swap (p, i, kmax);
 	      gsl_vector_set (norm, kmax, gsl_vector_get (norm, i));
 	      (*signum) = -(*signum);
@@ -106,7 +106,7 @@ gsl_linalg_QRPT_decomp (gsl_matrix * a, gsl_vector * tau, gsl_permutation * p, i
 	     column of the matrix to a multiple of the j-th unit vector */
 
 	  {
-	    gsl_vector c_full = gsl_matrix_column (a, i);
+	    gsl_vector c_full = gsl_matrix_column (A, i);
             gsl_vector c = gsl_vector_subvector (&c_full, i, M - i);
 	    double tau_i = gsl_linalg_householder_transform (&c);
 
@@ -116,7 +116,7 @@ gsl_linalg_QRPT_decomp (gsl_matrix * a, gsl_vector * tau, gsl_permutation * p, i
 
 	    if (i + 1 < N)
 	      {
-		gsl_matrix m = gsl_matrix_submatrix (a, i, i + 1, M - i, N - (i+1));
+		gsl_matrix m = gsl_matrix_submatrix (A, i, i + 1, M - i, N - (i+1));
 
 		gsl_linalg_householder_hm (tau_i, &c, &m, work);
 	      }
@@ -130,7 +130,7 @@ gsl_linalg_QRPT_decomp (gsl_matrix * a, gsl_vector * tau, gsl_permutation * p, i
                 {
                   double y = 0;
                   double x = gsl_vector_get (norm, j);
-                  double temp = gsl_matrix_get (a, i, j) / x;
+                  double temp = gsl_matrix_get (A, i, j) / x;
                   
                   if (fabs (temp) >= 1)
                     y = 0.0;
@@ -139,7 +139,7 @@ gsl_linalg_QRPT_decomp (gsl_matrix * a, gsl_vector * tau, gsl_permutation * p, i
                   
                   if (fabs (y / x) < sqrt (20.0) * GSL_SQRT_DBL_EPSILON)
                     {
-                      gsl_vector c_full = gsl_matrix_column (a, j);
+                      gsl_vector c_full = gsl_matrix_column (A, j);
                       gsl_vector c = gsl_vector_subvector(&c_full, i+1, M - (i+1));
                       y = gsl_blas_dnrm2 (&c);
                     }
@@ -166,25 +166,25 @@ gsl_linalg_QRPT_decomp (gsl_matrix * a, gsl_vector * tau, gsl_permutation * p, i
    to obtain x. Based on SLATEC code. */
 
 int
-gsl_linalg_QRPT_solve (const gsl_matrix * qr,
+gsl_linalg_QRPT_solve (const gsl_matrix * QR,
 		       const gsl_vector * tau,
 		       const gsl_permutation * p,
 		       const gsl_vector * b,
                        gsl_vector * x)
 {
-  if (qr->size1 != qr->size2)
+  if (QR->size1 != QR->size2)
     {
       GSL_ERROR ("QR matrix must be square", GSL_ENOTSQR);
     }
-  else if (qr->size1 != p->size)
+  else if (QR->size1 != p->size)
     {
       GSL_ERROR ("matrix size must match permutation size", GSL_EBADLEN);
     }
-  else if (qr->size1 != b->size)
+  else if (QR->size1 != b->size)
     {
       GSL_ERROR ("matrix size must match b size", GSL_EBADLEN);
     }
-  else if (qr->size2 != x->size)
+  else if (QR->size2 != x->size)
     {
       GSL_ERROR ("matrix size must match solution size", GSL_EBADLEN);
     }
@@ -192,27 +192,27 @@ gsl_linalg_QRPT_solve (const gsl_matrix * qr,
     {
       gsl_vector_memcpy (x, b);
 
-      gsl_linalg_QRPT_svx (qr, tau, p, x);
+      gsl_linalg_QRPT_svx (QR, tau, p, x);
       
       return GSL_SUCCESS;
     }
 }
 
 int
-gsl_linalg_QRPT_svx (const gsl_matrix * qr,
+gsl_linalg_QRPT_svx (const gsl_matrix * QR,
                      const gsl_vector * tau,
                      const gsl_permutation * p,
                      gsl_vector * x)
 {
-  if (qr->size1 != qr->size2)
+  if (QR->size1 != QR->size2)
     {
       GSL_ERROR ("QR matrix must be square", GSL_ENOTSQR);
     }
-  else if (qr->size1 != p->size)
+  else if (QR->size1 != p->size)
     {
       GSL_ERROR ("matrix size must match permutation size", GSL_EBADLEN);
     }
-  else if (qr->size2 != x->size)
+  else if (QR->size2 != x->size)
     {
       GSL_ERROR ("matrix size must match solution size", GSL_EBADLEN);
     }
@@ -220,11 +220,11 @@ gsl_linalg_QRPT_svx (const gsl_matrix * qr,
     {
       /* compute sol = Q^T b */
 
-      gsl_linalg_QR_QTvec (qr, tau, x);
+      gsl_linalg_QR_QTvec (QR, tau, x);
 
       /* Solve R x = sol, storing x inplace in sol */
 
-      gsl_blas_dtrsv (CblasUpper, CblasNoTrans, CblasNonUnit, qr, x);
+      gsl_blas_dtrsv (CblasUpper, CblasNoTrans, CblasNonUnit, QR, x);
 
       gsl_permute_vector_inverse (p, x);
 
@@ -234,17 +234,17 @@ gsl_linalg_QRPT_svx (const gsl_matrix * qr,
 
 
 int
-gsl_linalg_QRPT_qrsolve (const gsl_matrix * q, const gsl_matrix * r,
+gsl_linalg_QRPT_qrsolve (const gsl_matrix * Q, const gsl_matrix * R,
 			 const gsl_permutation * p,
 			 const gsl_vector * b,
 			 gsl_vector * x)
 {
-  if (q->size1 != q->size2 || r->size1 != r->size2)
+  if (Q->size1 != Q->size2 || R->size1 != R->size2)
     {
       return GSL_ENOTSQR;
     }
-  else if (q->size1 != p->size || q->size1 != r->size1
-	   || q->size1 != b->size)
+  else if (Q->size1 != p->size || Q->size1 != R->size1
+	   || Q->size1 != b->size)
     {
       return GSL_EBADLEN;
     }
@@ -252,11 +252,11 @@ gsl_linalg_QRPT_qrsolve (const gsl_matrix * q, const gsl_matrix * r,
     {
       /* compute b' = Q^T b */
 
-      gsl_blas_dgemv (CblasNoTrans, 1.0, q, b, 0.0, x);
+      gsl_blas_dgemv (CblasNoTrans, 1.0, Q, b, 0.0, x);
 
       /* Solve R x = b', storing x inplace */
 
-      gsl_blas_dtrsv (CblasUpper, CblasNoTrans, CblasNonUnit, r, x);
+      gsl_blas_dtrsv (CblasUpper, CblasNoTrans, CblasNonUnit, R, x);
 
       /* Apply permutation to solution in place */
 
@@ -267,15 +267,15 @@ gsl_linalg_QRPT_qrsolve (const gsl_matrix * q, const gsl_matrix * r,
 }
 
 int
-gsl_linalg_QRPT_Rsolve (const gsl_matrix * qr,
+gsl_linalg_QRPT_Rsolve (const gsl_matrix * QR,
 			const gsl_permutation * p,
 			gsl_vector * x)
 {
-  if (qr->size1 != qr->size2)
+  if (QR->size1 != QR->size2)
     {
       return GSL_ENOTSQR;
     }
-  else if (qr->size1 != x->size)
+  else if (QR->size1 != x->size)
     {
       return GSL_EBADLEN;
     }
@@ -283,7 +283,7 @@ gsl_linalg_QRPT_Rsolve (const gsl_matrix * qr,
     {
       /* Solve R x = b, storing x inplace */
 
-      gsl_blas_dtrsv (CblasUpper, CblasNoTrans, CblasNonUnit, qr, x);
+      gsl_blas_dtrsv (CblasUpper, CblasNoTrans, CblasNonUnit, QR, x);
 
       gsl_permute_vector_inverse (p, x);
 
@@ -303,23 +303,23 @@ gsl_linalg_QRPT_Rsolve (const gsl_matrix * qr,
    12.5 (Updating Matrix Factorizations, Rank-One Changes)  */
 
 int
-gsl_linalg_QRPT_update (gsl_matrix * q, gsl_matrix * r,
+gsl_linalg_QRPT_update (gsl_matrix * Q, gsl_matrix * R,
 			const gsl_permutation * p,
 			gsl_vector * w, const gsl_vector * v)
 {
-  if (q->size1 != q->size2 || r->size1 != r->size2)
+  if (Q->size1 != Q->size2 || R->size1 != R->size2)
     {
       return GSL_ENOTSQR;
     }
-  else if (r->size1 != q->size2 || v->size != q->size2 || w->size != q->size2)
+  else if (R->size1 != Q->size2 || v->size != Q->size2 || w->size != Q->size2)
     {
       return GSL_EBADLEN;
     }
   else
     {
       size_t j, k;
-      const size_t M = q->size1;
-      const size_t N = q->size2;
+      const size_t M = Q->size1;
+      const size_t N = Q->size2;
       double w0;
 
       /* Apply Given's rotations to reduce w to (|w|, 0, 0, ... , 0) 
@@ -337,7 +337,7 @@ gsl_linalg_QRPT_update (gsl_matrix * q, gsl_matrix * r,
 
 	  create_givens (wkm1, wk, &c, &s);
 	  apply_givens_vec (w, k - 1, k, c, s);
-	  apply_givens_qr (M, N, q, r, k - 1, k, c, s);
+	  apply_givens_qr (M, N, Q, R, k - 1, k, c, s);
 	}
 
       w0 = gsl_vector_get (w, 0);
@@ -346,10 +346,10 @@ gsl_linalg_QRPT_update (gsl_matrix * q, gsl_matrix * r,
 
       for (j = 0; j < N; j++)
 	{
-	  double r0j = gsl_matrix_get (r, 0, j);
+	  double r0j = gsl_matrix_get (R, 0, j);
 	  int p_j = gsl_permutation_get (p, j);
 	  double vj = gsl_vector_get (v, p_j);
-	  gsl_matrix_set (r, 0, j, r0j + w0 * vj);
+	  gsl_matrix_set (R, 0, j, r0j + w0 * vj);
 	}
 
       /* Apply Givens transformations R' = G_(n-1)^T ... G_1^T H  
@@ -358,11 +358,11 @@ gsl_linalg_QRPT_update (gsl_matrix * q, gsl_matrix * r,
       for (k = 1; k < N; k++)
 	{
 	  double c, s;
-	  double diag = gsl_matrix_get (r, k - 1, k - 1);
-	  double offdiag = gsl_matrix_get (r, k, k - 1);
+	  double diag = gsl_matrix_get (R, k - 1, k - 1);
+	  double offdiag = gsl_matrix_get (R, k, k - 1);
 
 	  create_givens (diag, offdiag, &c, &s);
-	  apply_givens_qr (M, N, q, r, k - 1, k, c, s);
+	  apply_givens_qr (M, N, Q, R, k - 1, k, c, s);
 	}
 
       return GSL_SUCCESS;

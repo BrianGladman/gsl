@@ -11,23 +11,49 @@
 
 /* [Engeln-Mullges + Uhlig, Alg. 4.42]
  */
+
 int
-gsl_linalg_HH_solve (gsl_matrix * a, gsl_vector * x)
+gsl_linalg_HH_solve (gsl_matrix * A, const gsl_vector * b, gsl_vector * x)
 {
-  if (a->size1 > a->size2)
+  if (A->size1 > A->size2)
     {
       /* System is underdetermined. */
 
       GSL_ERROR ("System is underdetermined", GSL_EINVAL);
     }
-  else if (a->size2 != x->size)
+  else if (A->size2 != x->size)
     {
       GSL_ERROR ("matrix and vector sizes must be equal", GSL_EBADLEN);
     }
   else
     {
-      const int N = a->size1;
-      const int M = a->size2;
+      int status ;
+
+      gsl_vector_memcpy (x, b);
+
+      status = gsl_linalg_HH_svx (A, x);
+      
+      return status ;
+    }
+}
+
+int
+gsl_linalg_HH_svx (gsl_matrix * A, gsl_vector * x)
+{
+  if (A->size1 > A->size2)
+    {
+      /* System is underdetermined. */
+
+      GSL_ERROR ("System is underdetermined", GSL_EINVAL);
+    }
+  else if (A->size2 != x->size)
+    {
+      GSL_ERROR ("matrix and vector sizes must be equal", GSL_EBADLEN);
+    }
+  else
+    {
+      const int N = A->size1;
+      const int M = A->size2;
       int i, j, k;
       REAL *d = (REAL *) malloc (N * sizeof (REAL));
 
@@ -40,7 +66,7 @@ gsl_linalg_HH_solve (gsl_matrix * a, gsl_vector * x)
 
       for (i = 0; i < N; i++)
 	{
-	  const REAL aii = gsl_matrix_get (a, i, i);
+	  const REAL aii = gsl_matrix_get (A, i, i);
 	  REAL alpha;
 	  REAL f;
 	  REAL ak;
@@ -49,7 +75,7 @@ gsl_linalg_HH_solve (gsl_matrix * a, gsl_vector * x)
 
 	  for (k = i; k < M; k++)
 	    {
-	      REAL aki = gsl_matrix_get (a, k, i);
+	      REAL aki = gsl_matrix_get (A, k, i);
 	      r += aki * aki;
 	    }
 
@@ -63,7 +89,7 @@ gsl_linalg_HH_solve (gsl_matrix * a, gsl_vector * x)
 	  alpha = sqrt (r) * GSL_SIGN (aii);
 
 	  ak = 1.0 / (r + alpha * aii);
-	  gsl_matrix_set (a, i, i, aii + alpha);
+	  gsl_matrix_set (A, i, i, aii + alpha);
 
 	  d[i] = -alpha;
 
@@ -73,8 +99,8 @@ gsl_linalg_HH_solve (gsl_matrix * a, gsl_vector * x)
 	      f = 0.0;
 	      for (j = i; j < M; j++)
 		{
-		  REAL ajk = gsl_matrix_get (a, j, k);
-		  REAL aji = gsl_matrix_get (a, j, i);
+		  REAL ajk = gsl_matrix_get (A, j, k);
+		  REAL aji = gsl_matrix_get (A, j, i);
 		  norm += ajk * ajk;
 		  f += ajk * aji;
 		}
@@ -84,9 +110,9 @@ gsl_linalg_HH_solve (gsl_matrix * a, gsl_vector * x)
 
 	      for (j = i; j < M; j++)
 		{
-		  REAL ajk = gsl_matrix_get (a, j, k);
-		  REAL aji = gsl_matrix_get (a, j, i);
-		  gsl_matrix_set (a, j, k, ajk - f * aji);
+		  REAL ajk = gsl_matrix_get (A, j, k);
+		  REAL aji = gsl_matrix_get (A, j, i);
+		  gsl_matrix_set (A, j, k, ajk - f * aji);
 		}
 	    }
 
@@ -102,13 +128,13 @@ gsl_linalg_HH_solve (gsl_matrix * a, gsl_vector * x)
 	  f = 0.0;
 	  for (j = i; j < M; j++)
 	    {
-	      f += gsl_vector_get (x, j) * gsl_matrix_get (a, j, i);
+	      f += gsl_vector_get (x, j) * gsl_matrix_get (A, j, i);
 	    }
 	  f *= ak;
 	  for (j = i; j < M; j++)
 	    {
 	      REAL xj = gsl_vector_get (x, j);
-              REAL aji = gsl_matrix_get (a, j, i);
+              REAL aji = gsl_matrix_get (A, j, i);
 	      gsl_vector_set (x, j, xj - f * aji);
 	    }
 	}
@@ -121,7 +147,7 @@ gsl_linalg_HH_solve (gsl_matrix * a, gsl_vector * x)
 	  REAL sum = 0.0;
 	  for (k = i + 1; k < N; k++)
 	    {
-	      sum += gsl_matrix_get (a, i, k) * gsl_vector_get (x, k);
+	      sum += gsl_matrix_get (A, i, k) * gsl_vector_get (x, k);
 	    }
 
 	  gsl_vector_set (x, i, (xi - sum) / d[i]);

@@ -40,10 +40,10 @@
  * This storage scheme is the same as in LAPACK.  */
 
 int
-gsl_linalg_QR_decomp (gsl_matrix * a, gsl_vector * tau)
+gsl_linalg_QR_decomp (gsl_matrix * A, gsl_vector * tau)
 {
-  const size_t M = a->size1;
-  const size_t N = a->size2;
+  const size_t M = A->size1;
+  const size_t N = A->size2;
 
   if (tau->size != GSL_MIN (M, N))
     {
@@ -53,14 +53,14 @@ gsl_linalg_QR_decomp (gsl_matrix * a, gsl_vector * tau)
     {
       size_t i;
 
-      gsl_vector *work = gsl_vector_alloc (N);
+      gsl_vector * work = gsl_vector_alloc (N);
 
       for (i = 0; i < GSL_MIN (M, N); i++)
 	{
 	  /* Compute the Householder transformation to reduce the j-th
 	     column of the matrix to a multiple of the j-th unit vector */
 
-	  gsl_vector c_full = gsl_matrix_column (a, i);
+	  gsl_vector c_full = gsl_matrix_column (A, i);
           gsl_vector c = gsl_vector_subvector (&c_full, i, M-i);
 
 	  double tau_i = gsl_linalg_householder_transform (&c);
@@ -72,7 +72,7 @@ gsl_linalg_QR_decomp (gsl_matrix * a, gsl_vector * tau)
 
 	  if (i + 1 < N)
 	    {
-	      gsl_matrix m = gsl_matrix_submatrix (a, i, i + 1, M - i, N - (i + 1));
+	      gsl_matrix m = gsl_matrix_submatrix (A, i, i + 1, M - i, N - (i + 1));
 
 	      gsl_linalg_householder_hm (tau_i, &c, &m, work);
 	    }
@@ -92,17 +92,17 @@ gsl_linalg_QR_decomp (gsl_matrix * a, gsl_vector * tau)
  */
 
 int
-gsl_linalg_QR_solve (const gsl_matrix * qr, const gsl_vector * tau, const gsl_vector * b, gsl_vector * x)
+gsl_linalg_QR_solve (const gsl_matrix * QR, const gsl_vector * tau, const gsl_vector * b, gsl_vector * x)
 {
-  if (qr->size1 != qr->size2)
+  if (QR->size1 != QR->size2)
     {
       GSL_ERROR ("QR matrix must be square", GSL_ENOTSQR);
     }
-  else if (qr->size1 != b->size)
+  else if (QR->size1 != b->size)
     {
       GSL_ERROR ("matrix size must match b size", GSL_EBADLEN);
     }
-  else if (qr->size2 != x->size)
+  else if (QR->size2 != x->size)
     {
       GSL_ERROR ("matrix size must match solution size", GSL_EBADLEN);
     }
@@ -114,21 +114,21 @@ gsl_linalg_QR_solve (const gsl_matrix * qr, const gsl_vector * tau, const gsl_ve
 
       /* Solve for x */
 
-      gsl_linalg_QR_svx (qr, tau, x);
+      gsl_linalg_QR_svx (QR, tau, x);
 
       return GSL_SUCCESS;
     }
 }
 
 int
-gsl_linalg_QR_svx (const gsl_matrix * qr, const gsl_vector * tau, gsl_vector * x)
+gsl_linalg_QR_svx (const gsl_matrix * QR, const gsl_vector * tau, gsl_vector * x)
 {
 
-  if (qr->size1 != qr->size2)
+  if (QR->size1 != QR->size2)
     {
       GSL_ERROR ("QR matrix must be square", GSL_ENOTSQR);
     }
-  else if (qr->size1 != x->size)
+  else if (QR->size1 != x->size)
     {
       GSL_ERROR ("matrix size must match x/rhs size", GSL_EBADLEN);
     }
@@ -136,11 +136,40 @@ gsl_linalg_QR_svx (const gsl_matrix * qr, const gsl_vector * tau, gsl_vector * x
     {
       /* compute rhs = Q^T b */
 
-      gsl_linalg_QR_QTvec (qr, tau, x);
+      gsl_linalg_QR_QTvec (QR, tau, x);
 
       /* Solve R x = rhs, storing x in-place */
 
-      gsl_blas_dtrsv (CblasUpper, CblasNoTrans, CblasNonUnit, qr, x);
+      gsl_blas_dtrsv (CblasUpper, CblasNoTrans, CblasNonUnit, QR, x);
+
+      return GSL_SUCCESS;
+    }
+}
+
+int
+gsl_linalgQR_Rsolve (const gsl_matrix * QR, const gsl_vector * b, gsl_vector * x)
+{
+  if (QR->size1 != QR->size2)
+    {
+      GSL_ERROR ("QR matrix must be square", GSL_ENOTSQR);
+    }
+  else if (QR->size1 != b->size)
+    {
+      GSL_ERROR ("matrix size must match b size", GSL_EBADLEN);
+    }
+  else if (QR->size2 != x->size)
+    {
+      GSL_ERROR ("matrix size must match x size", GSL_EBADLEN);
+    }
+  else
+    {
+      /* Copy x <- b */
+
+      gsl_vector_memcpy (x, b);
+
+      /* Solve R x = b, storing x in-place */
+
+      gsl_blas_dtrsv (CblasUpper, CblasNoTrans, CblasNonUnit, QR, x);
 
       return GSL_SUCCESS;
     }
@@ -148,13 +177,13 @@ gsl_linalg_QR_svx (const gsl_matrix * qr, const gsl_vector * tau, gsl_vector * x
 
 
 int
-gsl_linalgQR_Rsolve (const gsl_matrix * qr, gsl_vector * x)
+gsl_linalgQR_Rsvx (const gsl_matrix * QR, gsl_vector * x)
 {
-  if (qr->size1 != qr->size2)
+  if (QR->size1 != QR->size2)
     {
       GSL_ERROR ("QR matrix must be square", GSL_ENOTSQR);
     }
-  else if (qr->size1 != x->size)
+  else if (QR->size1 != x->size)
     {
       GSL_ERROR ("matrix size must match rhs size", GSL_EBADLEN);
     }
@@ -162,24 +191,24 @@ gsl_linalgQR_Rsolve (const gsl_matrix * qr, gsl_vector * x)
     {
       /* Solve R x = b, storing x in-place */
 
-      gsl_blas_dtrsv (CblasUpper, CblasNoTrans, CblasNonUnit, qr, x);
+      gsl_blas_dtrsv (CblasUpper, CblasNoTrans, CblasNonUnit, QR, x);
 
       return GSL_SUCCESS;
     }
 }
 
 int
-gsl_linalg_R_solve (const gsl_matrix * r, const gsl_vector * b, gsl_vector *x)
+gsl_linalg_R_solve (const gsl_matrix * R, const gsl_vector * b, gsl_vector * x)
 {
-  if (r->size1 != r->size2)
+  if (R->size1 != R->size2)
     {
       GSL_ERROR ("R matrix must be square", GSL_ENOTSQR);
     }
-  else if (r->size1 != b->size)
+  else if (R->size1 != b->size)
     {
       GSL_ERROR ("matrix size must match b size", GSL_EBADLEN);
     }
-  else if (r->size2 != x->size)
+  else if (R->size2 != x->size)
     {
       GSL_ERROR ("matrix size must match solution size", GSL_EBADLEN);
     }
@@ -191,7 +220,7 @@ gsl_linalg_R_solve (const gsl_matrix * r, const gsl_vector * b, gsl_vector *x)
 
       /* Solve R x = b, storing x inplace in b */
 
-      gsl_blas_dtrsv (CblasUpper, CblasNoTrans, CblasNonUnit, r, x);
+      gsl_blas_dtrsv (CblasUpper, CblasNoTrans, CblasNonUnit, R, x);
 
       return GSL_SUCCESS;
     }
@@ -202,10 +231,10 @@ gsl_linalg_R_solve (const gsl_matrix * r, const gsl_vector * b, gsl_vector *x)
  */
 
 int
-gsl_linalg_QR_QTvec (const gsl_matrix * qr, const gsl_vector * tau, gsl_vector * v)
+gsl_linalg_QR_QTvec (const gsl_matrix * QR, const gsl_vector * tau, gsl_vector * v)
 {
-  const size_t M = qr->size1;
-  const size_t N = qr->size2;
+  const size_t M = QR->size1;
+  const size_t N = QR->size2;
 
   if (tau->size != GSL_MIN (M, N))
     {
@@ -223,7 +252,7 @@ gsl_linalg_QR_QTvec (const gsl_matrix * qr, const gsl_vector * tau, gsl_vector *
 
       for (i = 0; i < GSL_MIN (M, N); i++)
 	{
-	  gsl_vector c = gsl_matrix_column (qr, i);
+	  gsl_vector c = gsl_matrix_column (QR, i);
           gsl_vector h = gsl_vector_subvector (&c, i, M - i);
 	  gsl_vector w = gsl_vector_subvector (v, i, M - i);
 	  double ti = gsl_vector_get (tau, i);
@@ -236,16 +265,16 @@ gsl_linalg_QR_QTvec (const gsl_matrix * qr, const gsl_vector * tau, gsl_vector *
 /*  Form the orthogonal matrix Q from the packed QR matrix */
 
 int
-gsl_linalg_QR_unpack (const gsl_matrix * qr, const gsl_vector * tau, gsl_matrix * q, gsl_matrix * r)
+gsl_linalg_QR_unpack (const gsl_matrix * QR, const gsl_vector * tau, gsl_matrix * Q, gsl_matrix * R)
 {
-  const size_t M = qr->size1;
-  const size_t N = qr->size2;
+  const size_t M = QR->size1;
+  const size_t N = QR->size2;
 
-  if (q->size1 != M || q->size2 != M)
+  if (Q->size1 != M || Q->size2 != M)
     {
       GSL_ERROR ("Q matrix must be M x M", GSL_ENOTSQR);
     }
-  else if (r->size1 != M || r->size2 != N)
+  else if (R->size1 != M || R->size2 != N)
     {
       GSL_ERROR ("R matrix must be M x N", GSL_ENOTSQR);
     }
@@ -257,19 +286,19 @@ gsl_linalg_QR_unpack (const gsl_matrix * qr, const gsl_vector * tau, gsl_matrix 
     {
       size_t i, j, k;
 
-      gsl_vector *work = gsl_vector_alloc (M);
+      gsl_vector * work = gsl_vector_alloc (M);
 
       /* Initialize Q to the identity */
 
-      gsl_matrix_set_identity (q);
+      gsl_matrix_set_identity (Q);
 
       for (k = GSL_MIN (M, N); k > 0; k--)
 	{
 	  i = k - 1;
 	  {
-            gsl_vector c = gsl_matrix_column (qr, i);
+            gsl_vector c = gsl_matrix_column (QR, i);
             gsl_vector h = gsl_vector_subvector (&c, i, M - i);
-	    gsl_matrix m = gsl_matrix_submatrix (q, i, i, M - i, M - i);
+	    gsl_matrix m = gsl_matrix_submatrix (Q, i, i, M - i, M - i);
 	    double ti = gsl_vector_get (tau, i);
 	    gsl_linalg_householder_hm (ti, &h, &m, work);
 	  }
@@ -280,10 +309,10 @@ gsl_linalg_QR_unpack (const gsl_matrix * qr, const gsl_vector * tau, gsl_matrix 
       for (i = 0; i < M; i++)
 	{
 	  for (j = 0; j < i && j < N; j++)
-	    gsl_matrix_set (r, i, j, 0.0);
+	    gsl_matrix_set (R, i, j, 0.0);
 
 	  for (j = i; j < N; j++)
-	    gsl_matrix_set (r, i, j, gsl_matrix_get (qr, i, j));
+	    gsl_matrix_set (R, i, j, gsl_matrix_get (QR, i, j));
 	}
 
       gsl_vector_free (work);
@@ -306,13 +335,13 @@ gsl_linalg_QR_unpack (const gsl_matrix * qr, const gsl_vector * tau, gsl_matrix 
  */
 
 int
-gsl_linalg_QR_update (gsl_matrix * q, gsl_matrix * r,
+gsl_linalg_QR_update (gsl_matrix * Q, gsl_matrix * R,
 		      gsl_vector * w, const gsl_vector * v)
 {
-  const size_t M = r->size1;
-  const size_t N = r->size2;
+  const size_t M = R->size1;
+  const size_t N = R->size2;
 
-  if (q->size1 != M || q->size2 != M)
+  if (Q->size1 != M || Q->size2 != M)
     {
       GSL_ERROR ("Q matrix must be M x M if R is M x N", GSL_ENOTSQR);
     }
@@ -344,7 +373,7 @@ gsl_linalg_QR_update (gsl_matrix * q, gsl_matrix * r,
 
 	  create_givens (wkm1, wk, &c, &s);
 	  apply_givens_vec (w, k - 1, k, c, s);
-	  apply_givens_qr (M, N, q, r, k - 1, k, c, s);
+	  apply_givens_qr (M, N, Q, R, k - 1, k, c, s);
 	}
 
       w0 = gsl_vector_get (w, 0);
@@ -353,9 +382,9 @@ gsl_linalg_QR_update (gsl_matrix * q, gsl_matrix * r,
 
       for (j = 0; j < N; j++)
 	{
-	  double r0j = gsl_matrix_get (r, 0, j);
+	  double r0j = gsl_matrix_get (R, 0, j);
 	  double vj = gsl_vector_get (v, j);
-	  gsl_matrix_set (r, 0, j, r0j + w0 * vj);
+	  gsl_matrix_set (R, 0, j, r0j + w0 * vj);
 	}
 
       /* Apply Givens transformations R' = G_(n-1)^T ... G_1^T H
@@ -364,13 +393,13 @@ gsl_linalg_QR_update (gsl_matrix * q, gsl_matrix * r,
       for (k = 1; k < N; k++)
 	{
 	  double c, s;
-	  double diag = gsl_matrix_get (r, k - 1, k - 1);
-	  double offdiag = gsl_matrix_get (r, k, k - 1);
+	  double diag = gsl_matrix_get (R, k - 1, k - 1);
+	  double offdiag = gsl_matrix_get (R, k, k - 1);
 
 	  create_givens (diag, offdiag, &c, &s);
-	  apply_givens_qr (M, N, q, r, k - 1, k, c, s);
+	  apply_givens_qr (M, N, Q, R, k - 1, k, c, s);
 
-	  gsl_matrix_set (r, k, k - 1, 0.0);	/* exact zero of G^T */
+	  gsl_matrix_set (R, k, k - 1, 0.0);	/* exact zero of G^T */
 	}
 
       return GSL_SUCCESS;
@@ -378,16 +407,16 @@ gsl_linalg_QR_update (gsl_matrix * q, gsl_matrix * r,
 }
 
 int
-gsl_linalg_QR_qrsolve (gsl_matrix * q, gsl_matrix * r, gsl_vector * b, gsl_vector * x)
+gsl_linalg_QR_qrsolve (gsl_matrix * Q, gsl_matrix * R, const gsl_vector * b, gsl_vector * x)
 {
-  const size_t M = r->size1;
-  const size_t N = r->size2;
+  const size_t M = R->size1;
+  const size_t N = R->size2;
 
   if (M != N)
     {
       return GSL_ENOTSQR;
     }
-  else if (q->size1 != M || b->size != M || x->size != M)
+  else if (Q->size1 != M || b->size != M || x->size != M)
     {
       return GSL_EBADLEN;
     }
@@ -395,11 +424,11 @@ gsl_linalg_QR_qrsolve (gsl_matrix * q, gsl_matrix * r, gsl_vector * b, gsl_vecto
     {
       /* compute sol = Q^T b */
 
-      gsl_blas_dgemv (CblasNoTrans, 1.0, q, b, 0.0, x);
+      gsl_blas_dgemv (CblasNoTrans, 1.0, Q, b, 0.0, x);
 
       /* Solve R x = sol, storing x in-place */
 
-      gsl_blas_dtrsv (CblasUpper, CblasNoTrans, CblasNonUnit, r, x);
+      gsl_blas_dtrsv (CblasUpper, CblasNoTrans, CblasNonUnit, R, x);
 
       return GSL_SUCCESS;
     }

@@ -37,19 +37,19 @@
  */
 
 int
-gsl_linalg_LU_decomp (gsl_matrix * a, gsl_permutation * p, int *signum)
+gsl_linalg_LU_decomp (gsl_matrix * A, gsl_permutation * p, int *signum)
 {
-  if (a->size1 != a->size2)
+  if (A->size1 != A->size2)
     {
       GSL_ERROR ("LU decomposition requires square matrix", GSL_ENOTSQR);
     }
-  else if (p->size != a->size1)
+  else if (p->size != A->size1)
     {
       GSL_ERROR ("permuation length must match matrix size", GSL_EBADLEN);
     }
   else
     {
-      const size_t N = a->size1;
+      const size_t N = A->size1;
       size_t i, j, k;
 
       *signum = 1;
@@ -59,12 +59,12 @@ gsl_linalg_LU_decomp (gsl_matrix * a, gsl_permutation * p, int *signum)
 	{
 	  /* Find maximum in the j-th column */
 
-	  REAL ajj, max = fabs (gsl_matrix_get (a, j, j));
+	  REAL ajj, max = fabs (gsl_matrix_get (A, j, j));
 	  size_t i_pivot = j;
 
 	  for (i = j + 1; i < N; i++)
 	    {
-	      REAL aij = fabs (gsl_matrix_get (a, i, j));
+	      REAL aij = fabs (gsl_matrix_get (A, i, j));
 
 	      if (aij > max)
 		{
@@ -75,25 +75,25 @@ gsl_linalg_LU_decomp (gsl_matrix * a, gsl_permutation * p, int *signum)
 
 	  if (i_pivot != j)
 	    {
-	      gsl_matrix_swap_rows (a, j, i_pivot);
+	      gsl_matrix_swap_rows (A, j, i_pivot);
 	      gsl_permutation_swap (p, j, i_pivot);
 	      *signum = -(*signum);
 	    }
 
-	  ajj = gsl_matrix_get (a, j, j);
+	  ajj = gsl_matrix_get (A, j, j);
 
 	  if (ajj != 0.0)
 	    {
 	      for (i = j + 1; i < N; i++)
 		{
-		  REAL aij = gsl_matrix_get (a, i, j) / ajj;
-		  gsl_matrix_set (a, i, j, aij);
+		  REAL aij = gsl_matrix_get (A, i, j) / ajj;
+		  gsl_matrix_set (A, i, j, aij);
 
 		  for (k = j + 1; k < N; k++)
 		    {
-		      REAL aik = gsl_matrix_get (a, i, k);
-		      REAL ajk = gsl_matrix_get (a, j, k);
-		      gsl_matrix_set (a, i, k, aik - aij * ajk);
+		      REAL aik = gsl_matrix_get (A, i, k);
+		      REAL ajk = gsl_matrix_get (A, j, k);
+		      gsl_matrix_set (A, i, k, aik - aij * ajk);
 		    }
 		}
 	    }
@@ -119,9 +119,9 @@ gsl_linalg_LU_decomp (gsl_matrix * a, gsl_permutation * p, int *signum)
 
 	  for (j = 0; j < N; j++)
 	    {
-	      REAL aij = fabs (gsl_matrix_get (a, i, j));
+	      REAL aij = fabs (gsl_matrix_get (A, i, j));
 
-	      if (aij > max_row_element)
+	      if (Aij > max_row_element)
 		{
 		  max_row_element = aij;
 		}
@@ -147,27 +147,27 @@ gsl_linalg_LU_decomp (gsl_matrix * a, gsl_permutation * p, int *signum)
 
 	  for (i = 0; i < j; i++)
 	    {			/* equation (2.3.12) except for i = j */
-	      REAL sum = gsl_matrix_get (a, i, j);
+	      REAL sum = gsl_matrix_get (A, i, j);
 	      for (k = 0; k < i; k++)
 		{
-		  REAL aik = gsl_matrix_get (a, i, k);
-		  REAL akj = gsl_matrix_get (a, k, j);
+		  REAL aik = gsl_matrix_get (A, i, k);
+		  REAL akj = gsl_matrix_get (A, k, j);
 		  sum -= aik * akj;
 		}
-	      gsl_matrix_set (a, i, j, sum);
+	      gsl_matrix_set (A, i, j, sum);
 	    }
 
 	  for (i = j; i < N; i++)
 	    {			/* equation (2.3.13) */
 	      REAL dum;
-	      REAL sum = gsl_matrix_get (a, i, j);
+	      REAL sum = gsl_matrix_get (A, i, j);
 	      for (k = 0; k < j; k++)
 		{
-		  REAL aik = gsl_matrix_get (a, i, k);
-		  REAL akj = gsl_matrix_get (a, k, j);
+		  REAL aik = gsl_matrix_get (A, i, k);
+		  REAL akj = gsl_matrix_get (A, k, j);
 		  sum -= aik * akj;
 		}
-	      gsl_matrix_set (a, i, j, sum);
+	      gsl_matrix_set (A, i, j, sum);
 
 	      dum = scale[i] * fabs (sum);
 
@@ -184,7 +184,7 @@ gsl_linalg_LU_decomp (gsl_matrix * a, gsl_permutation * p, int *signum)
 
 	  if (j != i_pivot)
 	    {
-	      gsl_matrix_swap_rows (a, j, i_pivot);
+	      gsl_matrix_swap_rows (A, j, i_pivot);
 	      gsl_permutation_swap (p, j, i_pivot);
 	      *signum = -(*signum);
 	      scale[i_pivot] = scale[j];
@@ -192,7 +192,7 @@ gsl_linalg_LU_decomp (gsl_matrix * a, gsl_permutation * p, int *signum)
 
 	  /* Trap apparent singularity. */
 
-	  if (gsl_matrix_get (a, j, j) == 0.0)
+	  if (gsl_matrix_get (A, j, j) == 0.0)
 	    {
 	      *signum = 0;
 	      free (scale);
@@ -201,11 +201,11 @@ gsl_linalg_LU_decomp (gsl_matrix * a, gsl_permutation * p, int *signum)
 
 	  if (j != N - 1)
 	    {
-	      REAL ajj = gsl_matrix_get (a, j, j);
+	      REAL ajj = gsl_matrix_get (A, j, j);
 	      for (i = j + 1; i < N; i++)
 		{
-		  REAL aij = gsl_matrix_get (a, i, j);
-		  gsl_matrix_set (a, i, j, aij / ajj);
+		  REAL aij = gsl_matrix_get (A, i, j);
+		  gsl_matrix_set (A, i, j, aij / ajj);
 		}
 	    }
 	}
@@ -217,21 +217,21 @@ gsl_linalg_LU_decomp (gsl_matrix * a, gsl_permutation * p, int *signum)
 }
 
 int
-gsl_linalg_LU_solve (const gsl_matrix * lu, const gsl_permutation * p, const gsl_vector * b, gsl_vector * x)
+gsl_linalg_LU_solve (const gsl_matrix * LU, const gsl_permutation * p, const gsl_vector * b, gsl_vector * x)
 {
-  if (lu->size1 != lu->size2)
+  if (LU->size1 != LU->size2)
     {
       GSL_ERROR ("LU matrix must be square", GSL_ENOTSQR);
     }
-  else if (lu->size1 != p->size)
+  else if (LU->size1 != p->size)
     {
       GSL_ERROR ("permuation length must match matrix size", GSL_EBADLEN);
     }
-  else if (lu->size1 != b->size)
+  else if (LU->size1 != b->size)
     {
       GSL_ERROR ("matrix size must match b size", GSL_EBADLEN);
     }
-  else if (lu->size2 != x->size)
+  else if (LU->size2 != x->size)
     {
       GSL_ERROR ("matrix size must match solution size", GSL_EBADLEN);
     }
@@ -243,7 +243,7 @@ gsl_linalg_LU_solve (const gsl_matrix * lu, const gsl_permutation * p, const gsl
 
       /* Solve for x */
 
-      gsl_linalg_LU_svx (lu, p, x);
+      gsl_linalg_LU_svx (LU, p, x);
 
       return GSL_SUCCESS;
     }
@@ -251,17 +251,17 @@ gsl_linalg_LU_solve (const gsl_matrix * lu, const gsl_permutation * p, const gsl
 
 
 int
-gsl_linalg_LU_svx (const gsl_matrix * lu, const gsl_permutation * p, gsl_vector * x)
+gsl_linalg_LU_svx (const gsl_matrix * LU, const gsl_permutation * p, gsl_vector * x)
 {
-  if (lu->size1 != lu->size2)
+  if (LU->size1 != LU->size2)
     {
       GSL_ERROR ("LU matrix must be square", GSL_ENOTSQR);
     }
-  else if (lu->size1 != p->size)
+  else if (LU->size1 != p->size)
     {
       GSL_ERROR ("permuation length must match matrix size", GSL_EBADLEN);
     }
-  else if (lu->size1 != x->size)
+  else if (LU->size1 != x->size)
     {
       GSL_ERROR ("matrix size must match solution/rhs size", GSL_EBADLEN);
     }
@@ -273,11 +273,11 @@ gsl_linalg_LU_svx (const gsl_matrix * lu, const gsl_permutation * p, gsl_vector 
 
       /* Solve for c using forward-substitution, L c = P b */
 
-      gsl_blas_dtrsv (CblasLower, CblasNoTrans, CblasUnit, lu, x);
+      gsl_blas_dtrsv (CblasLower, CblasNoTrans, CblasUnit, LU, x);
 
       /* Perform back-substitution, U x = c */
 
-      gsl_blas_dtrsv (CblasUpper, CblasNoTrans, CblasNonUnit, lu, x);
+      gsl_blas_dtrsv (CblasUpper, CblasNoTrans, CblasNonUnit, LU, x);
 
       return GSL_SUCCESS;
     }
@@ -285,42 +285,42 @@ gsl_linalg_LU_svx (const gsl_matrix * lu, const gsl_permutation * p, gsl_vector 
 
 
 int
-gsl_linalg_LU_refine (const gsl_matrix * a, const gsl_matrix * lu, const gsl_permutation * p, const gsl_vector * b, gsl_vector * x, gsl_vector * residual)
+gsl_linalg_LU_refine (const gsl_matrix * A, const gsl_matrix * LU, const gsl_permutation * p, const gsl_vector * b, gsl_vector * x, gsl_vector * residual)
 {
-  if (a->size1 != a->size2)
+  if (A->size1 != A->size2)
     {
       GSL_ERROR ("matrix a must be square", GSL_ENOTSQR);
     }
-  if (lu->size1 != lu->size2)
+  if (LU->size1 != LU->size2)
     {
       GSL_ERROR ("LU matrix must be square", GSL_ENOTSQR);
     }
-  else if (a->size1 != lu->size2)
+  else if (A->size1 != LU->size2)
     {
       GSL_ERROR ("LU matrix must be decomposition of a", GSL_ENOTSQR);
     }
-  else if (lu->size1 != p->size)
+  else if (LU->size1 != p->size)
     {
       GSL_ERROR ("permuation length must match matrix size", GSL_EBADLEN);
     }
-  else if (lu->size1 != b->size)
+  else if (LU->size1 != b->size)
     {
       GSL_ERROR ("matrix size must match b size", GSL_EBADLEN);
     }
-  else if (lu->size1 != x->size)
+  else if (LU->size1 != x->size)
     {
       GSL_ERROR ("matrix size must match solution size", GSL_EBADLEN);
     }
   else
     {
-      /* Compute residual, residual = (a * x  - b) */
+      /* Compute residual, residual = (A * x  - b) */
 
       gsl_vector_memcpy (residual, b);
-      gsl_blas_dgemv (CblasNoTrans, 1.0, a, x, -1.0, residual);
+      gsl_blas_dgemv (CblasNoTrans, 1.0, A, x, -1.0, residual);
 
-      /* Find correction, delta = - (a^-1) * residual, and apply it */
+      /* Find correction, delta = - (A^-1) * residual, and apply it */
 
-      gsl_linalg_LU_svx (lu, p, residual);
+      gsl_linalg_LU_svx (LU, p, residual);
       gsl_blas_daxpy (-1.0, residual, x);
 
       return GSL_SUCCESS;
@@ -328,9 +328,9 @@ gsl_linalg_LU_refine (const gsl_matrix * a, const gsl_matrix * lu, const gsl_per
 }
 
 int
-gsl_linalg_LU_invert (const gsl_matrix * lu, const gsl_permutation * p, gsl_matrix * inverse)
+gsl_linalg_LU_invert (const gsl_matrix * LU, const gsl_permutation * p, gsl_matrix * inverse)
 {
-  size_t i, n = lu->size1;
+  size_t i, n = LU->size1;
 
   int status = GSL_SUCCESS;
 
@@ -339,7 +339,7 @@ gsl_linalg_LU_invert (const gsl_matrix * lu, const gsl_permutation * p, gsl_matr
   for (i = 0; i < n; i++)
     {
       gsl_vector c = gsl_matrix_column (inverse, i);
-      int status_i = gsl_linalg_LU_svx (lu, p, &c);
+      int status_i = gsl_linalg_LU_svx (LU, p, &c);
 
       if (status_i)
 	status = status_i;
@@ -349,15 +349,15 @@ gsl_linalg_LU_invert (const gsl_matrix * lu, const gsl_permutation * p, gsl_matr
 }
 
 double
-gsl_linalg_LU_det (gsl_matrix * lu, int signum)
+gsl_linalg_LU_det (gsl_matrix * LU, int signum)
 {
-  size_t i, n = lu->size1;
+  size_t i, n = LU->size1;
 
   double det = (double) signum;
 
   for (i = 0; i < n; i++)
     {
-      det *= gsl_matrix_get (lu, i, i);
+      det *= gsl_matrix_get (LU, i, i);
     }
 
   return det;
@@ -365,15 +365,15 @@ gsl_linalg_LU_det (gsl_matrix * lu, int signum)
 
 
 double
-gsl_linalg_LU_lndet (gsl_matrix * lu)
+gsl_linalg_LU_lndet (gsl_matrix * LU)
 {
-  size_t i, n = lu->size1;
+  size_t i, n = LU->size1;
 
   double lndet = 0.0;
 
   for (i = 0; i < n; i++)
     {
-      lndet += log (fabs (gsl_matrix_get (lu, i, i)));
+      lndet += log (fabs (gsl_matrix_get (LU, i, i)));
     }
 
   return lndet;
@@ -381,15 +381,15 @@ gsl_linalg_LU_lndet (gsl_matrix * lu)
 
 
 int
-gsl_linalg_LU_sgndet (gsl_matrix * lu, int signum)
+gsl_linalg_LU_sgndet (gsl_matrix * LU, int signum)
 {
-  size_t i, n = lu->size1;
+  size_t i, n = LU->size1;
 
   int s = signum;
 
   for (i = 0; i < n; i++)
     {
-      double u = gsl_matrix_get (lu, i, i);
+      double u = gsl_matrix_get (LU, i, i);
 
       if (u < 0)
 	{
