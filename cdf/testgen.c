@@ -264,9 +264,9 @@ main (void)
     1.0
   };
 
-#define TEST(name,params,range,n) { double p[] = { params } ; gsl_function f = {&name, p}; test(&f, range, n, "TEST(gsl_cdf_" #name "%s, (%.18g," #params "), %.12e, TEST_TOL6);\n"); }
+#define TEST(name,params,range,n) { double p[] = { params } ; gsl_function f = {&name, p}; test(&f, range, n, "TEST(gsl_cdf_" #name "%s, (%.10e," #params "), %.12e, TEST_TOL6);\n"); }
 
-#define TEST2(name,p1,p2,range,n) { double p[] = { p1,p2 } ; gsl_function f = {&name, p}; test(&f, range, n, "TEST(gsl_cdf_" #name "%s, (%.18g," #p1 "," #p2 "), %.12e, TEST_TOL6);\n"); }
+#define TEST2(name,p1,p2,range,n) { double p[] = { p1,p2 } ; gsl_function f = {&name, p}; test(&f, range, n, "TEST(gsl_cdf_" #name "%s, (%.10e," #p1 "," #p2 "), %.12e, TEST_TOL6);\n"); }
 
 
   inverse = 0;
