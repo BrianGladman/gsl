@@ -39,11 +39,7 @@ void FUNCTION(test_real,func) (size_t stride, size_t n)
   rw = FUNCTION(gsl_fft_real,alloc) (n);
   gsl_test (rw == 0, NAME(gsl_fft_real) 
 	    "_alloc, n = %d, stride = %d", n, stride);
-  
-  status = FUNCTION(gsl_fft_real,init) (n, rw);
-  gsl_test (status, NAME(gsl_fft_real) 
-	    "_wavetable_init, n = %d, stride = %d", n, stride);
-  
+    
   FUNCTION(fft_signal,real_noise) (n, stride, complex_data, fft_complex_data);
   memcpy (complex_tmp, complex_data, 2 * n * stride * sizeof (BASE));
 
@@ -66,10 +62,6 @@ void FUNCTION(test_real,func) (size_t stride, size_t n)
   hcw = FUNCTION(gsl_fft_halfcomplex,alloc) (n);
   gsl_test (hcw == 0, NAME(gsl_fft_halfcomplex) 
 	    "_alloc, n = %d, stride = %d", n, stride);
-  
-  status = FUNCTION(gsl_fft_halfcomplex,init) (n, hcw);
-  gsl_test (status, NAME(gsl_fft_halfcomplex) 
-	    "_wavetable_init, n = %d, stride = %d", n, stride);
   
   status = FUNCTION(gsl_fft_halfcomplex,transform) (real_data, stride, n, hcw);
   

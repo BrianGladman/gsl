@@ -31,12 +31,6 @@ int gsl_fft_halfcomplex_inverse (double data[], size_t stride, size_t n,
 int gsl_fft_halfcomplex_transform (double data[], size_t stride, size_t n,
 				   const gsl_fft_wavetable_halfcomplex * wavetable);
 
-int gsl_fft_halfcomplex_init (size_t n,
-			      gsl_fft_wavetable_halfcomplex * wavetable);
-
-int gsl_fft_halfcomplex_generate (size_t n,
-					    gsl_fft_wavetable_halfcomplex * wavetable);
-
 gsl_fft_wavetable_halfcomplex * gsl_fft_halfcomplex_alloc (size_t n);
 
 void

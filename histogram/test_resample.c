@@ -61,8 +61,14 @@ main (void)
 	      }
 	  }
       }
+
+    gsl_histogram_pdf_free (p) ;
+    gsl_histogram_free (hh);
+
     gsl_test (status, "gsl_histogram_pdf_sample within statistical errors");
   }
+
+  gsl_histogram_free (h);
 
   return gsl_test_summary ();
 }

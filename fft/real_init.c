@@ -1,15 +1,59 @@
 #include "factorize.h"
 
-int
-FUNCTION(gsl_fft_real,init) (size_t n,
-			     TYPE(gsl_fft_wavetable_real) * wavetable)
+TYPE(gsl_fft_wavetable_real) *
+FUNCTION(gsl_fft_real,alloc) (size_t n)
 {
   int status;
+  size_t i;
   size_t n_factors;
+  size_t t, product, product_1, q;
+  double d_theta;
+
+  TYPE(gsl_fft_wavetable_real) * wavetable;
 
   if (n == 0)
     {
-      GSL_ERROR ("length n must be positive integer", GSL_EDOM);
+      GSL_ERROR_RETURN ("length n must be positive integer", GSL_EDOM, 0);
+    }
+
+  wavetable = (TYPE(gsl_fft_wavetable_real) *) 
+    malloc(sizeof(TYPE(gsl_fft_wavetable_real)));
+
+  if (wavetable == NULL)
+    {
+      GSL_ERROR_RETURN ("failed to allocate struct", GSL_ENOMEM, 0);
+    }
+
+  wavetable->scratch = (BASE *) malloc (n * sizeof (BASE));
+
+  if (wavetable->scratch == NULL)
+    {
+      /* error in constructor, prevent memory leak */
+      
+      free(wavetable) ; 
+
+      GSL_ERROR_RETURN ("failed to allocate scratch space", GSL_ENOMEM, 0);
+    }
+
+  if (n == 1) 
+    {
+      wavetable->trig = 0;
+    }
+  else
+    {
+      wavetable->trig = (gsl_complex *) 
+        malloc ((n / 2) * sizeof (gsl_complex));
+      
+      if (wavetable->trig == NULL)
+	{
+          /* error in constructor, prevent memory leak */
+          
+          free(wavetable->scratch);
+          free(wavetable) ; 
+
+	  GSL_ERROR_RETURN ("failed to allocate trigonometric lookup table", 
+			    GSL_ENOMEM, 0);
+	}
     }
 
   wavetable->n = n;
@@ -18,38 +62,16 @@ FUNCTION(gsl_fft_real,init) (size_t n,
 
   if (status)
     {
-      GSL_ERROR ("factorization failed", GSL_EFACTOR);
+      /* error in constructor, prevent memory leak */
+      
+      free(wavetable->trig);
+      free(wavetable->scratch);
+      free(wavetable) ; 
+
+      GSL_ERROR_RETURN ("factorization failed", GSL_EFACTOR, 0);
     }
 
   wavetable->nf = n_factors;
-
-  status = FUNCTION(gsl_fft_real,generate) (n, wavetable);
-
-  if (status)
-    {
-      GSL_ERROR ("could not generate wavetable", GSL_EFAILED);
-    }
-
-  return 0;
-}
-
-int
-FUNCTION(gsl_fft_real,generate) (size_t n,
-					   TYPE(gsl_fft_wavetable_real) * wavetable)
-{
-  size_t i;
-  double d_theta;
-  size_t t, product, product_1, q;
-
-  if (n == 0)
-    {
-      GSL_ERROR ("length n must be positive integer", GSL_EDOM);
-    }
-
-  if (n != wavetable->n)
-    {
-      GSL_ERROR ("wavetable does not match length of data", GSL_EINVAL);
-    }
 
   d_theta = 2.0 * M_PI / ((double) n);
 
@@ -84,55 +106,19 @@ FUNCTION(gsl_fft_real,generate) (size_t n,
 
   if (t > (n / 2))
     {
-      GSL_ERROR ("overflowed trigonometric lookup table", GSL_ESANITY);
+      /* error in constructor, prevent memory leak */
+
+      free(wavetable->trig);
+      free(wavetable->scratch);
+      free(wavetable) ; 
+
+      GSL_ERROR_RETURN ("overflowed trigonometric lookup table", 
+                        GSL_ESANITY, 0);
     }
 
-  return 0;
+  return wavetable;
 }
 
-TYPE(gsl_fft_wavetable_real) *
-FUNCTION(gsl_fft_real,alloc) (size_t n)
-{
-  TYPE(gsl_fft_wavetable_real) * w;
-
-  if (n == 0)
-    {
-      GSL_ERROR_RETURN ("length n must be positive integer", GSL_EDOM, 0);
-    }
-
-  w = (TYPE(gsl_fft_wavetable_real) *) malloc(sizeof(TYPE(gsl_fft_wavetable_real)));
-
-  if (w == NULL)
-    {
-      GSL_ERROR_RETURN ("failed to allocate struct", GSL_ENOMEM, 0);
-    }
-
-  w->scratch = (BASE *) malloc (n * sizeof (BASE));
-
-  if (w->scratch == NULL)
-    {
-      free(w) ; /* error in constructor, prevent memory leak */
-
-      GSL_ERROR_RETURN ("failed to allocate scratch space", GSL_ENOMEM, 0);
-    }
-
-  if (n == 1) 
-    {
-      w->trig = 0;
-    }
-  else
-    {
-      w->trig = (gsl_complex *) malloc ((n / 2) * sizeof (gsl_complex));
-      
-      if (w->trig == NULL)
-	{
-	  GSL_ERROR_RETURN ("failed to allocate trigonometric lookup table", 
-			    GSL_ENOMEM, 0);
-	}
-    }
-
-  return w;
-}
 
 void
 FUNCTION(gsl_fft_real,free) (TYPE(gsl_fft_wavetable_real) * wavetable)

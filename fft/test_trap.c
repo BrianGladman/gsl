@@ -26,29 +26,6 @@ FUNCTION(test,trap) (void)
   hcw = FUNCTION(gsl_fft_halfcomplex,alloc) (0);
   gsl_test (hcw != 0, "trap for n = 0 in " NAME(gsl_fft_halfcomplex) "_alloc");
 
-  /* n = 0 in wavetable_init */
-
-  status = FUNCTION(gsl_fft_complex,init) (0, cw);
-  gsl_test (!status, "trap for n = 0 in " NAME(gsl_fft_wavetable) "_complex_init");
-
-  status = FUNCTION(gsl_fft_real,init) (0, rw);
-  gsl_test (!status, "trap for n = 0 in " NAME(gsl_fft_real) "_wavetable_init");
- 
-  status = FUNCTION(gsl_fft_halfcomplex,init) (0, hcw);
-  gsl_test (!status, "trap for n = 0 in " NAME(gsl_fft_halfcomplex) "_wavetable_init");
-
-
-  /* n = 0 in generate */
-
-  status = FUNCTION(gsl_fft_complex,generate) (0, cw);
-  gsl_test (!status, "trap for n = 0 in " NAME(gsl_fft_complex) "_generate");
-
-  status = FUNCTION(gsl_fft_real,generate) (0, rw);
-  gsl_test (!status, "trap for n = 0 in " NAME(gsl_fft_real) "_generate");
-
-  status = FUNCTION(gsl_fft_halfcomplex,generate) (0, hcw);
-  gsl_test (!status, "trap for n = 0 in " NAME(gsl_fft_halfcomplex) "_generate");
-
   cw = FUNCTION(gsl_fft_complex,alloc) (10);
   hcw = FUNCTION(gsl_fft_halfcomplex,alloc) (10);
   rw = FUNCTION(gsl_fft_real,alloc) (10);
@@ -115,6 +92,10 @@ FUNCTION(test,trap) (void)
   hcw->n = 3;
   status = FUNCTION(gsl_fft_halfcomplex,transform) (real_data, 1, 4, hcw);
   gsl_test (!status, "trap for n != nw in " NAME(gsl_fft_halfcomplex) "_transform");
+
+  FUNCTION (gsl_fft_halfcomplex,free) (hcw) ;
+  FUNCTION (gsl_fft_real,free) (rw) ;
+  FUNCTION (gsl_fft_complex,free) (cw) ;
 
 }
 

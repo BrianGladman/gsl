@@ -61,14 +61,6 @@ void FUNCTION(test_complex,func) (size_t stride, size_t n)
 	      "_alloc, n = %d, stride = %d", n, stride);
   }
 
-  /* Test initialization */
-
-  {
-    status = FUNCTION(gsl_fft_complex,init) (n, cw);
-    gsl_test (status, NAME(gsl_fft_complex) 
-	      "_init, n = %d, stride = %d", n, stride);
-  }
-
   /* Test mixed radix fft with noise */
 
   {

@@ -355,7 +355,8 @@ main (void)
     gsl_histogram2d_free (hh);
     fclose (f);
   }
-
+  
+  gsl_histogram2d_free (h);
 
   return gsl_test_summary ();
 }

@@ -32,7 +32,6 @@ main (int argc, char **argv)
 
   {
     gsl_histogram *h = gsl_histogram_calloc_uniform (n, a, b);
-    int status;
     double x;
 
     while (fscanf(stdin, "%lg", &x) == 1)

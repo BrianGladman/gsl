@@ -46,19 +46,20 @@ int
 FUNCTION(gsl_fft_halfcomplex,transform) (BASE data[], const size_t stride, const size_t n,
 					 const TYPE(gsl_fft_wavetable_halfcomplex) * wavetable)
 {
-  size_t factor, product, q, state;
+  BASE * scratch = wavetable->scratch;
+
+  BASE * in;
+  BASE * out;
+  size_t istride, ostride ;
+
+
+  size_t factor, product, q;
   size_t i;
   size_t nf;
+  int state;
   int product_1;
   int tskip;
   gsl_complex *twiddle1, *twiddle2, *twiddle3, *twiddle4;
-
-  BASE * const scratch = wavetable->scratch;
-
-  BASE * in = data;
-  size_t istride = stride;
-  BASE * out = scratch;
-  size_t ostride = 1;
 
   if (n == 0)
     {
@@ -74,6 +75,8 @@ FUNCTION(gsl_fft_halfcomplex,transform) (BASE data[], const size_t stride, const
     {
       GSL_ERROR ("wavetable does not match length of data", GSL_EINVAL);
     }
+
+
 
   nf = wavetable->nf;
   product = 1;

@@ -46,7 +46,6 @@ main (void)
   gsl_test (h != 0,
 	    "gsl_histogram_calloc_uniform returns NULL for invalid range");
 
-
   h = gsl_histogram_calloc_uniform (N, 0.0, 1.0);
 
   status = gsl_histogram_accumulate (h, 1.0, 10.0);
@@ -94,6 +93,8 @@ main (void)
   status = 0;
   gsl_histogram_find (h, 1.1, &i);
   gsl_test (status != GSL_EDOM, "gsl_histogram_find traps x above xmax");
+
+  gsl_histogram_free (h);
 
   return gsl_test_summary ();
 }

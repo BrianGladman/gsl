@@ -241,5 +241,7 @@ main (void)
     fclose (f);
   }
 
+  gsl_histogram_free (h);
+
   return gsl_test_summary ();
 }

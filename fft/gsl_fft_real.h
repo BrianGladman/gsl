@@ -23,11 +23,6 @@ gsl_fft_wavetable_real;
 int gsl_fft_real_transform (double data[], size_t stride, size_t n,
 		  const gsl_fft_wavetable_real * wavetable);
 
-int gsl_fft_real_init (size_t n, gsl_fft_wavetable_real * wavetable);
-
-int gsl_fft_real_generate (size_t n,
-				     gsl_fft_wavetable_real * wavetable);
-
 gsl_fft_wavetable_real * gsl_fft_real_alloc (size_t n);
 
 void  gsl_fft_real_free (gsl_fft_wavetable_real * wavetable);

@@ -55,14 +55,12 @@ main (void)
   gsl_test (h != 0,
 	 "gsl_histogram2d_calloc_uniform returns NULL for equal endpoints");
 
-
   status = 0;
   h = gsl_histogram2d_calloc_uniform (10, 10, 1.0, 1.0, 0.0, 1.0);
   gsl_test (!status,
 	    "gsl_histogram2d_calloc_uniform traps equal endpoints");
   gsl_test (h != 0,
 	 "gsl_histogram2d_calloc_uniform returns NULL for equal endpoints");
-
 
   status = 0;
   h = gsl_histogram2d_calloc_uniform (10, 10, 0.0, 1.0, 2.0, 1.0);
@@ -71,14 +69,12 @@ main (void)
   gsl_test (h != 0,
 	    "gsl_histogram2d_calloc_uniform returns NULL for invalid range");
 
-
   status = 0;
   h = gsl_histogram2d_calloc_uniform (10, 10, 2.0, 1.0, 0.0, 1.0);
   gsl_test (!status,
 	    "gsl_histogram2d_calloc_uniform traps invalid range");
   gsl_test (h != 0,
 	    "gsl_histogram2d_calloc_uniform returns NULL for invalid range");
-
 
   h = gsl_histogram2d_calloc_uniform (N, M, 0.0, 1.0, 0.0, 1.0);
 
@@ -170,6 +166,8 @@ main (void)
   status = 0;
   gsl_histogram2d_find (h, 0.0, 1.1, &i, &j);
   gsl_test (status != GSL_EDOM, "gsl_histogram2d_find traps y above ymax");
+
+  gsl_histogram2d_free (h);
 
   return gsl_test_summary ();
 }

@@ -1,3 +1,10 @@
+Wed Aug 18 11:41:40 1999  Brian Gough  <bjg@network-theory.co.uk>
+
+	* eliminated obvious memory leaks from the tests, so that we can
+ 	check that the _free functions work correctly
+
+	* gsl-histogram.c (main): removed unused variable
+
 Fri Aug  6 11:19:37 1999  Brian Gough  <bjg@network-theory.co.uk>
 
 	* removed dependence on rand() and RAND_MAX
