@@ -24,14 +24,25 @@ unsigned int failed = 0;
 int
 main (int argc, char *argv[])
 {
-  int i, status, factor_sum;
-  unsigned int n;
+  int status, factor_sum;
+  unsigned int i, start, end, n;
   complex *complex_data, *complex_tmp;
   double rms, total;
 
   gsl_fft_complex_wavetable complex_wavetable;
 
-  for (n = 1; n < 1000; n++)
+  if (argc == 2)
+    {
+      start = strtol (argv[1], NULL, 0);
+      end = start + 1;
+    }
+  else
+    {
+      start = 1 ;
+      end = 1000 ;
+    }
+
+  for (n = start; n < end; n++)
     {
 
       complex_data = malloc (n * sizeof (complex));
@@ -79,3 +90,5 @@ main (int argc, char *argv[])
 
   return 0;
 }
+
+
