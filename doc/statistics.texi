@@ -86,8 +86,8 @@ estimator properties, such as @dfn{precision} and @dfn{efficiency}
 @node Mean
 @section Mean
 
-@deftypefn Statistics double gsl_stats_mean (const double data[], size_t n)
-@deftypefnx Statistics double gsl_stats_int_mean (const int data[], size_t n)
+@deftypefn Statistics double gsl_stats_mean (const double @var{data[]}, size_t @var{n})
+@deftypefnx Statistics double gsl_stats_int_mean (const int @var{data[]}, size_t @var{n})
 
 The function @code{gsl_stats_mean} returns the arithmetic mean of
 @var{data}, a double-precision array of length @var{n}. The function
@@ -114,8 +114,8 @@ subject to large fluctations.
 @node Standard deviation and variance (unknown population mean)
 @section Standard deviation and variance (unknown population mean)
 
-@deftypefn Statistics double gsl_stats_est_variance (const double data[], size_t n)
-@deftypefnx Statistics double gsl_stats_int_est_variance (const int data[], size_t n)
+@deftypefn Statistics double gsl_stats_est_variance (const double @var{data[]}, size_t @var{n})
+@deftypefnx Statistics double gsl_stats_int_est_variance (const int @var{data[]}, size_t @var{n})
 
 The function @code{gsl_stats_est_variance} returns the estimated
 variance of @var{data}, a double-precision array of length @var{n}.
@@ -152,8 +152,8 @@ two functions, @code{gsl_stats_est_variance_with_mean} and
 
 @end deftypefn
 
-@deftypefn Statistics double gsl_stats_est_variance_with_mean (const double data[], size_t n, double mean)
-@deftypefnx Statistics double gsl_stats_int_est_variance_with_mean (const int data[], size_t n, double mean)
+@deftypefn Statistics double gsl_stats_est_variance_with_mean (const double @var{data[]}, size_t @var{n}, double @var{mean})
+@deftypefnx Statistics double gsl_stats_int_est_variance_with_mean (const int @var{data[]}, size_t @var{n}, double @var{mean})
 
 The function @code{gsl_stats_est_variance_with_mean} returns the sample
 variance of @var{data} relative to the given value of @var{mean}, and
@@ -167,10 +167,10 @@ The functions are computed with @math{\hat \mu} replaced by the value of
 
 @end deftypefn
 
-@deftypefn Statistics double gsl_stats_est_sd (const double data[], size_t n)
-@deftypefnx Statistics double gsl_stats_int_est_sd (const int data[], size_t n)
-@deftypefnx Statistics double gsl_stats_est_sd_with_mean (const double data[], size_t n, double mean)
-@deftypefnx Statistics double gsl_stats_int_est_sd_with_mean (const int data[], size_t n, double mean)
+@deftypefn Statistics double gsl_stats_est_sd (const double @var{data[]}, size_t @var{n})
+@deftypefnx Statistics double gsl_stats_int_est_sd (const int @var{data[]}, size_t @var{n})
+@deftypefnx Statistics double gsl_stats_est_sd_with_mean (const double @var{data[]}, size_t @var{n}, double @var{mean})
+@deftypefnx Statistics double gsl_stats_int_est_sd_with_mean (const int @var{data[]}, size_t @var{n}, double @var{mean})
 
 The standard deviation is defined as the square root of the
 variance. These functions return the square root of the corresponding
@@ -181,10 +181,10 @@ variance functions above.
 @node Standard deviation and variance (known population mean)
 @section Standard deviation and variance (known population mean)
 
-@deftypefn Statistics double gsl_stats_variance (const double data[], size_t n)
-@deftypefnx Statistics double gsl_stats_int_variance (const int data[], size_t n)
-@deftypefnx Statistics double gsl_stats_variance_with_mean (const double data[], size_t n, double mean)
-@deftypefnx Statistics double gsl_stats_int_variance_with_mean (const int data[], size_t n, double mean)
+@deftypefn Statistics double gsl_stats_variance (const double @var{data[]}, size_t @var{n})
+@deftypefnx Statistics double gsl_stats_int_variance (const int @var{data[]}, size_t @var{n})
+@deftypefnx Statistics double gsl_stats_variance_with_mean (const double @var{data[]}, size_t @var{n}, double @var{mean})
+@deftypefnx Statistics double gsl_stats_int_variance_with_mean (const int @var{data[]}, size_t @var{n}, double @var{mean})
 
 These functions compute an unbiased estimate of the variance when the
 population mean of a distribution is known @emph{a priori}.
@@ -199,10 +199,10 @@ population mean @math{\mu},
 @noindent
 @end deftypefn
 
-@deftypefn Statistics double gsl_stats_sd (const double data[], size_t n)
-@deftypefnx Statistics double gsl_stats_int_sd (const int data[], size_t n)
-@deftypefnx Statistics double gsl_stats_sd_with_mean (const double data[], size_t n, double mean)
-@deftypefnx Statistics double gsl_stats_int_sd_with_mean (const int data[], size_t n, double mean)
+@deftypefn Statistics double gsl_stats_sd (const double @var{data[]}, size_t @var{n})
+@deftypefnx Statistics double gsl_stats_int_sd (const int @var{data[]}, size_t @var{n})
+@deftypefnx Statistics double gsl_stats_sd_with_mean (const double @var{data[]}, size_t @var{n}, double @var{mean})
+@deftypefnx Statistics double gsl_stats_int_sd_with_mean (const int @var{data[]}, size_t @var{n}, double @var{mean})
 
 The functions @code{gsl_stats_sd}, @code{gsl_stats_int_sd},
 @code{gsl_stats_sd_with_mean} and @code{gsl_stats_int_sd_with_mean}
@@ -214,8 +214,8 @@ corresponding variance function.
 @node Absolute deviation
 @section Absolute deviation
 
-@deftypefn Statistics double gsl_stats_absdev (const double data[], size_t n)
-@deftypefnx Statistics double gsl_stats_int_absdev (const int data[], size_t n)
+@deftypefn Statistics double gsl_stats_absdev (const double @var{data[]}, size_t @var{n})
+@deftypefnx Statistics double gsl_stats_int_absdev (const int @var{data[]}, size_t @var{n})
 
 The function @code{gsl_stats_absdev} computes the absolute deviation
 from the mean of @var{data}, a double precision array of length @var{n}.
@@ -236,8 +236,8 @@ Both these functions compute the mean of @var{data} via a call to
 
 @end deftypefn
 
-@deftypefn Statistics double gsl_stats_absdev_with_mean (const double data[], size_t n, double mean)
-@deftypefnx Statistics double gsl_stats_int_absdev_with_mean (const int data[], size_t n, double mean)
+@deftypefn Statistics double gsl_stats_absdev_with_mean (const double @var{data[]}, size_t @var{n}, double @var{mean})
+@deftypefnx Statistics double gsl_stats_int_absdev_with_mean (const int @var{data[]}, size_t @var{n}, double @var{mean})
 
 The functions @code{gsl_stats_absdev_with_mean} and
 @code{gsl_stats_int_absdev_with_mean} compute the absolute deviation of
@@ -257,8 +257,8 @@ median).
 @node Higher moments (skewness and kurtosis)
 @section Higher moments (skewness and kurtosis)
 
-@deftypefn Statistics double gsl_stats_skew (const double data[], size_t n)
-@deftypefnx Statistics double gsl_stats_int_skew (const int data[], size_t n, double mean)
+@deftypefn Statistics double gsl_stats_skew (const double @var{data[]}, size_t @var{n})
+@deftypefnx Statistics double gsl_stats_int_skew (const int @var{data[]}, size_t @var{n}, double @var{mean})
 The functions @code{gsl_stats_skew} and @code{gsl_stats_int_skew}
 compute the skewness of @var{data}, an array of length @var{n}.
 
@@ -280,8 +280,8 @@ Both these functions compute the mean and standard deviation of
 
 @end deftypefn
 
-@deftypefn Statistics double gsl_stats_skew_with_mean_and_sd (const double data[], size_t n, double mean, double sd)
-@deftypefnx Statistics double gsl_stats_int_skew_with_mean_and_sd (const int data[], size_t n, double mean, double sd)
+@deftypefn Statistics double gsl_stats_skew_with_mean_and_sd (const double @var{data[]}, size_t @var{n}, double @var{mean}, double @var{sd})
+@deftypefnx Statistics double gsl_stats_int_skew_with_mean_and_sd (const int @var{data[]}, size_t @var{n}, double @var{mean}, double @var{sd})
 
 The functions @code{gsl_stats_skew_with_mean_and_sd} and
 @code{gsl_stats_int_skew_with_mean_and_sd} compute the skewness of the
@@ -298,8 +298,8 @@ These functions are useful if you have already computed the mean and
 standard deviation of @var{data} and want to avoid recomputing them.
 @end deftypefn
 
-@deftypefn Statistics double gsl_stats_kurtosis (const double data[], size_t n)
-@deftypefnx Statistics double gsl_stats_int_kurtosis (const int data[], size_t n, double mean)
+@deftypefn Statistics double gsl_stats_kurtosis (const double @var{data[]}, size_t @var{n})
+@deftypefnx Statistics double gsl_stats_int_kurtosis (const int @var{data[]}, size_t @var{n}, double @var{mean})
 
 The functions @code{gsl_stats_kurtosis} and
 @code{gsl_stats_int_kurtosis} compute the kurtosis of @var{data}, an
@@ -321,8 +321,8 @@ distribution by the -3 in the defintion.
 
 @end deftypefn
 
-@deftypefn Statistics double gsl_stats_kurtosis_with_mean_and_sd (const double data[], size_t n, double mean, double sd)
-@deftypefnx Statistics double gsl_stats_int_kurtosis_with_mean_and_sd (const int data[], size_t n, double mean, double sd)
+@deftypefn Statistics double gsl_stats_kurtosis_with_mean_and_sd (const double @var{data[]}, size_t @var{n}, double @var{mean}, double @var{sd})
+@deftypefnx Statistics double gsl_stats_int_kurtosis_with_mean_and_sd (const int @var{data[]}, size_t @var{n}, double @var{mean}, double @var{sd})
 
 The functions @code{gsl_stats_kurtosis_with_mean_and_sd} and
 @code{gsl_stats_int_kurtosis_with_mean_and_sd} compute the kurtosis of
@@ -343,8 +343,8 @@ standard deviation of @var{data} and want to avoid recomputing them.
 @node Maximum and Minimum values
 @section Maximum and Minimum values
 
-@deftypefn Statistics double gsl_stats_max (const double data[], size_t n)
-@deftypefnx Statistics int gsl_stats_int_max (const int data[], size_t n)
+@deftypefn Statistics double gsl_stats_max (const double @var{data[]}, size_t @var{n})
+@deftypefnx Statistics int gsl_stats_int_max (const int @var{data[]}, size_t @var{n})
 
 The function @code{gsl_stats_max} returns the maximum value in
 @var{data}, a double-precision array of length @var{n}.  The function
@@ -357,8 +357,8 @@ magnitude you will need to apply @code{fabs} or @code{abs} to your data
 before calling this function.
 
 @end deftypefn
-@deftypefn Statistics double gsl_stats_min (const double data[], size_t n)
-@deftypefnx Statistics int gsl_stats_int_min (const int data[], size_t n)
+@deftypefn Statistics double gsl_stats_min (const double @var{data[]}, size_t @var{n})
+@deftypefnx Statistics int gsl_stats_int_min (const int @var{data[]}, size_t @var{n})
 
 The function @code{gsl_stats_min} returns the minimun value in
 @var{data}, a double-precision array of length @var{n}.  The function
@@ -371,8 +371,8 @@ magnitude you will need to apply @code{fabs} or @code{abs} to your data
 before calling this function.
 @end deftypefn
 
-@deftypefn Statistics size_t gsl_stats_max_index (const double data[], size_t n)
-@deftypefnx Statistics size_t gsl_stats_int_max_index (const int data[], size_t n)
+@deftypefn Statistics size_t gsl_stats_max_index (const double @var{data[]}, size_t @var{n})
+@deftypefnx Statistics size_t gsl_stats_int_max_index (const int @var{data[]}, size_t @var{n})
 
 The function @code{gsl_stats_max_index} returns the index of the maximum
 value in @var{data}, a double-precision array of length @var{n}. The
@@ -384,8 +384,8 @@ one is chosen.
 
 @end deftypefn
 
-@deftypefn Statistics size_t gsl_stats_min_index (const double data[], size_t n)
-@deftypefnx Statistics size_t gsl_stats_int_min_index (const int data[], size_t n)
+@deftypefn Statistics size_t gsl_stats_min_index (const double @var{data[]}, size_t @var{n})
+@deftypefnx Statistics size_t gsl_stats_int_min_index (const int @var{data[]}, size_t @var{n})
 
 The function @code{gsl_stats_min_index} returns the index of the minimum
 value in @var{data}, a double-precision array of length @var{n}. The
@@ -402,8 +402,8 @@ one is chosen.
 The median and percentile functions described in this section operate on
 sorted data. 
 
-@deftypefn Statistics void gsl_stats_sort_data (double data[], size_t n)
-@deftypefnx Statistics void gsl_stats_int_sort_data (int data[], size_t n)
+@deftypefn Statistics void gsl_stats_sort_data (double @var{data[]}, size_t @var{n})
+@deftypefnx Statistics void gsl_stats_int_sort_data (int @var{data[]}, size_t @var{n})
 
 The function @code{gsl_stats_sort_data} sorts the elements of
 @var{data}, a double-precision array of length @var{n}, into ascending
@@ -414,8 +414,8 @@ system @code{qsort} function is used to perform the sorting.
 The function @code{gsl_stats_int_sort_data} sorts an integer array.
 @end deftypefn
 
-@deftypefn Statistics double gsl_stats_median_from_sorted_data (const double sorted_data[], size_t n)
-@deftypefnx Statistics double gsl_stats_int_median_from_sorted_data (const int sorted_data[], size_t n)
+@deftypefn Statistics double gsl_stats_median_from_sorted_data (const double @var{sorted_data[]}, size_t @var{n})
+@deftypefnx Statistics double gsl_stats_int_median_from_sorted_data (const int @var{sorted_data[]}, size_t @var{n})
 
 The function @code{gsl_stats_median_from_sorted_data} returns the median
 value of @var{sorted_data}, a double-precision array of length @var{n} with its
@@ -434,8 +434,8 @@ interpolation the function @code{gsl_stats_int_median_from_sorted_data}
 always returns a floating-point number.
 @end deftypefn
 
-@deftypefn Statistics double gsl_stats_percentile_from_sorted_data (const double sorted_data[], size_t n, double f)
-@deftypefnx Statistics double gsl_stats_int_percentile_from_sorted_data (const int sorted_data[], size_t n, double f)
+@deftypefn Statistics double gsl_stats_percentile_from_sorted_data (const double @var{sorted_data[]}, size_t @var{n}, double @var{f})
+@deftypefnx Statistics double gsl_stats_int_percentile_from_sorted_data (const int @var{sorted_data[]}, size_t @var{n}, double @var{f})
 
 The function @code{gsl_stats_median_from_sorted_data} returns a
 percentile value of @var{sorted_data}, a double-precision array of
@@ -473,8 +473,8 @@ floating-point number.
 
 FIXME, do more work on the statistical tests
 
-@c @deftypefn Statistics double gsl_stats_ttest (const double data1[], double data2[], size_t n1, size_t n2)
-@c @deftypefnx Statistics double gsl_stats_int_ttest (const double data1[], double data2[], size_t n1, size_t n2)
+@c @deftypefn Statistics double gsl_stats_ttest (const double @var{data1[]}, double @var{data2[]}, size_t @var{n1}, size_t @var{n2})
+@c @deftypefnx Statistics double gsl_stats_int_ttest (const double @var{data1[]}, double @var{data2[]}, size_t @var{n1}, size_t @var{n2})
 
 @c The function @code{gsl_stats_ttest} computes the t-test statistic for
 @c the two arrays @var{data1[]} and @var{data2[]}, of lengths @var{n1} and

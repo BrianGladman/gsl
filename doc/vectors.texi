@@ -51,7 +51,7 @@ number of @code{GSL_ENOMEM}) in addition to returning a null
 pointer. Thus if you use the library error handler to abort your program
 then it isn't necessary to check every @code{alloc}.
 
-@deftypefun {gsl_vector *} gsl_vector_alloc (size_t n)
+@deftypefun {gsl_vector *} gsl_vector_alloc (size_t @var{n})
 This function allocates memory for a vector and its @var{n} elements,
 returning a pointer to a newly initialized vector struct.  The elements
 of the vector are not initialized and so their values are undefined. Use
@@ -62,12 +62,12 @@ A null pointer is returned if insufficient memory is available to store
 the vector.
 @end deftypefun
 
-@deftypefun {gsl_vector *} gsl_vector_calloc (size_t n)
+@deftypefun {gsl_vector *} gsl_vector_calloc (size_t @var{n})
 This function allocates memory for a vector and initialize all the
 elements of the vector to zero.
 @end deftypefun
 
-@deftypefun void gsl_vector_free (gsl_vector * v)
+@deftypefun void gsl_vector_free (gsl_vector * @var{v})
 This function frees the memory used by a vector @var{v} previously
 allocated with @code{gsl_vector_alloc} or @code{gsl_vector_calloc}.
 @end deftypefun
@@ -76,23 +76,23 @@ allocated with @code{gsl_vector_alloc} or @code{gsl_vector_calloc}.
 The following functions perform the same tasks as the functions above
 for single-precision and integer vectors.
 
-@deftypefun {gsl_vector_float *} gsl_vector_float_alloc (size_t n)
-@deftypefunx {gsl_vector_float *} gsl_vector_float_calloc (size_t n)
-@deftypefunx void gsl_vector_float_free (gsl_vector_float * v)
+@deftypefun {gsl_vector_float *} gsl_vector_float_alloc (size_t @var{n})
+@deftypefunx {gsl_vector_float *} gsl_vector_float_calloc (size_t @var{n})
+@deftypefunx void gsl_vector_float_free (gsl_vector_float * @var{v})
 These functions perform memory management for single-precision floating
 point vectors defined with the  struct @code{gsl_vector_float}.
 @end deftypefun
 
-@deftypefun {gsl_vector_complex *} gsl_vector_complex_alloc (size_t n)
-@deftypefunx {gsl_vector_complex *} gsl_vector_complex_calloc (size_t n)
-@deftypefunx void gsl_vector_complex_free (gsl_vector_complex * v)
+@deftypefun {gsl_vector_complex *} gsl_vector_complex_alloc (size_t @var{n})
+@deftypefunx {gsl_vector_complex *} gsl_vector_complex_calloc (size_t @var{n})
+@deftypefunx void gsl_vector_complex_free (gsl_vector_complex * @var{v})
 These functions perform memory management for complex vectors defined
 with the struct @code{gsl_vector_complex}.
 @end deftypefun
 
-@deftypefun {gsl_vector_int *} gsl_vector_int_alloc (size_t n)
-@deftypefunx {gsl_vector_int *} gsl_vector_int_calloc (size_t n)
-@deftypefunx void gsl_vector_int_free (gsl_vector_int * v)
+@deftypefun {gsl_vector_int *} gsl_vector_int_alloc (size_t @var{n})
+@deftypefunx {gsl_vector_int *} gsl_vector_int_calloc (size_t @var{n})
+@deftypefunx void gsl_vector_int_free (gsl_vector_int * @var{v})
 These functions perform memory management for integer vectors defined
 with the struct @code{gsl_vector_int}.
 @end deftypefun
@@ -118,13 +118,13 @@ to @code{gsl_vector_get(v,i)} by @code{v->data[i]} and and calls to
 be no performance penalty at all for using the library functions when
 range checking is turned off.
 
-@deftypefun double gsl_vector_get (const gsl_vector * v, size_t i)
+@deftypefun double gsl_vector_get (const gsl_vector * @var{v}, size_t @var{i})
 This function returns the @var{i}th element of a vector @var{v}. If
 @var{i} lies outside the allowed range of 0 to @var{n-1} then the error
 handler is invoked and 0 is returned.
 @end deftypefun
 
-@deftypefun void gsl_vector_set (gsl_vector * v, size_t i, double x)
+@deftypefun void gsl_vector_set (gsl_vector * @var{v}, size_t @var{i}, double @var{x})
 This function sets the value of the @var{i}th element of a vector
 @var{v} to @var{x}. If @var{i} lies outside the allowed range of 0 to
 @var{n-1} then the error handler is invoked.
@@ -134,18 +134,18 @@ This function sets the value of the @var{i}th element of a vector
 The following functions perform the same tasks for vectors of the type
 @code{gsl_vector_float} and @code{gsl_vector_int}.
 
-@deftypefun float gsl_vector_float_get (const gsl_vector_float * v, size_t i)
-@deftypefunx void gsl_vector_float_set (gsl_vector_float * v, size_t i, float x)
+@deftypefun float gsl_vector_float_get (const gsl_vector_float * @var{v}, size_t @var{i})
+@deftypefunx void gsl_vector_float_set (gsl_vector_float * @var{v}, size_t @var{i}, float @var{x})
 These functions access the elements of a single-precision vector.
 @end deftypefun
 
-@deftypefun gsl_complex gsl_vector_complex_get (const gsl_vector_complex * v, size_t i)
-@deftypefunx void gsl_vector_complex_set (gsl_vector_complex * v, size_t i, gsl_complex x)
+@deftypefun gsl_complex gsl_vector_complex_get (const gsl_vector_complex * @var{v}, size_t @var{i})
+@deftypefunx void gsl_vector_complex_set (gsl_vector_complex * @var{v}, size_t @var{i}, gsl_complex @var{x})
 These functions access the elements of a complex vector.
 @end deftypefun
 
-@deftypefun int gsl_vector_int_get (const gsl_vector_int * v, size_t i)
-@deftypefunx void gsl_vector_int_set (gsl_vector_int * v, size_t i, int x)
+@deftypefun int gsl_vector_int_get (const gsl_vector_int * @var{v}, size_t @var{i})
+@deftypefunx void gsl_vector_int_set (gsl_vector_int * @var{v}, size_t @var{i}, int @var{x})
 These functions access the elements of an integer vector.
 @end deftypefun
 
@@ -155,7 +155,7 @@ These functions access the elements of an integer vector.
 The library provides functions for reading and writing vectors to a file
 as binary data or formatted text.
 
-@deftypefun int gsl_vector_fwrite (FILE * stream, const gsl_vector * v)
+@deftypefun int gsl_vector_fwrite (FILE * @var{stream}, const gsl_vector * @var{v})
 This function writes the elements of the vector @var{v} to the stream
 @var{stream} in binary format. The return value is 0 for success and
 @code{GSL_EFAILED} if there was a problem writing to the file. Since the
@@ -163,7 +163,7 @@ data is written in the native binary format it may not be portable
 between different architectures.
 @end deftypefun
 
-@deftypefun int gsl_vector_fread (FILE * stream, gsl_vector * v)
+@deftypefun int gsl_vector_fread (FILE * @var{stream}, gsl_vector * @var{v})
 This function reads into the vector @var{v} from the open stream
 @var{stream} in binary format. The vector @var{v} must be preallocated
 with the correct length since the function uses the size of @var{v} to
@@ -173,7 +173,7 @@ data is assumed to have been written in the native binary format on the
 same architecture.
 @end deftypefun
 
-@deftypefun int gsl_vector_fprintf (FILE * stream, const gsl_vector * v, const char * format)
+@deftypefun int gsl_vector_fprintf (FILE * @var{stream}, const gsl_vector * @var{v}, const char * @var{format})
 This function writes the elements of the vector @var{v} line-by-line to
 the stream @var{stream} using the format specifier @var{format}, which
 should be one of the @code{%g}, @code{%e} or @code{%f} formats for
@@ -182,7 +182,7 @@ floating point numbers and @code{%d} for integers. The function returns
 the file.
 @end deftypefun
 
-@deftypefun int gsl_vector_fscanf (FILE * stream, gsl_vector * v)
+@deftypefun int gsl_vector_fscanf (FILE * @var{stream}, gsl_vector * @var{v})
 This function reads formatted data from the stream @var{stream} into the
 vector @var{v}. The vector @var{v} must be preallocated with the correct
 length since the function uses the size of @var{v} to determine how many
@@ -195,27 +195,27 @@ The following functions read and write single-precision and integer
 vectors with the types @code{gsl_vector_float} and
 @code{gsl_vector_int}.
 
-@deftypefun int gsl_vector_float_fwrite (FILE * stream, const gsl_vector_float * v)
-@deftypefunx int gsl_vector_float_fread (FILE * stream, gsl_vector_float * v)
-@deftypefunx int gsl_vector_float_fprintf (FILE * stream, const gsl_vector_float * v, const char * format)
-@deftypefunx int gsl_vector_float_fscanf (FILE * stream, gsl_vector_float * v)
+@deftypefun int gsl_vector_float_fwrite (FILE * @var{stream}, const gsl_vector_float * @var{v})
+@deftypefunx int gsl_vector_float_fread (FILE * @var{stream}, gsl_vector_float * @var{v})
+@deftypefunx int gsl_vector_float_fprintf (FILE * @var{stream}, const gsl_vector_float * @var{v}, const char * @var{format})
+@deftypefunx int gsl_vector_float_fscanf (FILE * @var{stream}, gsl_vector_float * @var{v})
 These functions read and write single-precision vectors as binary data
 or formatted text.
 @end deftypefun
 
-@deftypefun int gsl_vector_complex_fwrite (FILE * stream, const gsl_vector_complex * v)
-@deftypefunx int gsl_vector_complex_fread (FILE * stream, gsl_vector_complex * v)
-@deftypefunx int gsl_vector_complex_fprintf (FILE * stream, const gsl_vector_complex * v, const char * format)
-@deftypefunx int gsl_vector_complex_fscanf (FILE * stream, gsl_vector_complex * v)
+@deftypefun int gsl_vector_complex_fwrite (FILE * @var{stream}, const gsl_vector_complex * @var{v})
+@deftypefunx int gsl_vector_complex_fread (FILE * @var{stream}, gsl_vector_complex * @var{v})
+@deftypefunx int gsl_vector_complex_fprintf (FILE * @var{stream}, const gsl_vector_complex * @var{v}, const char * @var{format})
+@deftypefunx int gsl_vector_complex_fscanf (FILE * @var{stream}, gsl_vector_complex * @var{v})
 These functions read and write complex vectors as binary data or
 formatted text.
 @end deftypefun
 
 
-@deftypefun int gsl_vector_int_fwrite (FILE * stream, const gsl_vector_int * v)
-@deftypefunx int gsl_vector_int_fread (FILE * stream, gsl_vector_int * v)
-@deftypefunx int gsl_vector_int_fprintf (FILE * stream, const gsl_vector_int * v, const char * format)
-@deftypefunx int gsl_vector_int_fscanf (FILE * stream, gsl_vector_int * v)
+@deftypefun int gsl_vector_int_fwrite (FILE * @var{stream}, const gsl_vector_int * @var{v})
+@deftypefunx int gsl_vector_int_fread (FILE * @var{stream}, gsl_vector_int * @var{v})
+@deftypefunx int gsl_vector_int_fprintf (FILE * @var{stream}, const gsl_vector_int * @var{v}, const char * @var{format})
+@deftypefunx int gsl_vector_int_fscanf (FILE * @var{stream}, gsl_vector_int * @var{v})
 These functions read and write integer vectors as binary data or
 formatted text.
 @end deftypefun
@@ -327,7 +327,7 @@ then the functions call the GSL error handler (with an error number of
 use the library error handler to abort your program then it isn't
 necessary to check every @code{alloc}.
 
-@deftypefun {gsl_matrix *} gsl_matrix_alloc (size_t n1, size_t n2)
+@deftypefun {gsl_matrix *} gsl_matrix_alloc (size_t @var{n1}, size_t @var{n2})
 These functions allocate memory for a matrix and its @var{n1} @var{n2}
 elements, returning a pointer to a newly initialized matrix struct.  The
 elements of the matrix are not initialized and so their values are
@@ -338,12 +338,12 @@ A null pointer is returned if insufficient memory is available to store
 the matrix.
 @end deftypefun
 
-@deftypefun {gsl_matrix *} gsl_matrix_calloc (size_t n1, size_t n2)
+@deftypefun {gsl_matrix *} gsl_matrix_calloc (size_t @var{n1}, size_t @var{n2})
 These functions allocate memory for a matrix and initialize all the
 elements of the matrix to zero.
 @end deftypefun
 
-@deftypefun void gsl_matrix_free (gsl_matrix * m)
+@deftypefun void gsl_matrix_free (gsl_matrix * @var{m})
 These functions free a matrix @var{m} previously allocated with
 @code{gsl_matrix_alloc} or @code{gsl_matrix_calloc}.
 @end deftypefun
@@ -353,23 +353,23 @@ These functions free a matrix @var{m} previously allocated with
 The following functions perform the same tasks as the functions above
 for single-precision and integer matrices.
 
-@deftypefun {gsl_matrix_float *} gsl_matrix_float_alloc (size_t n1, size_t n2)
-@deftypefunx {gsl_matrix_float *} gsl_matrix_float_calloc (size_t n1, size_t n2)
-@deftypefunx void gsl_matrix_float_free (gsl_matrix_float * m)
+@deftypefun {gsl_matrix_float *} gsl_matrix_float_alloc (size_t @var{n1}, size_t @var{n2})
+@deftypefunx {gsl_matrix_float *} gsl_matrix_float_calloc (size_t @var{n1}, size_t @var{n2})
+@deftypefunx void gsl_matrix_float_free (gsl_matrix_float * @var{m})
 These functions perform memory management for single-precision floating
 point matrices defined with the  struct @code{gsl_matrix_float}.
 @end deftypefun
 
-@deftypefun {gsl_matrix_complex *} gsl_matrix_complex_alloc (size_t n1, size_t n2)
-@deftypefunx {gsl_matrix_complex *} gsl_matrix_complex_calloc (size_t n1, size_t n2)
-@deftypefunx void gsl_matrix_complex_free (gsl_matrix_complex * m)
+@deftypefun {gsl_matrix_complex *} gsl_matrix_complex_alloc (size_t @var{n1}, size_t @var{n2})
+@deftypefunx {gsl_matrix_complex *} gsl_matrix_complex_calloc (size_t @var{n1}, size_t @var{n2})
+@deftypefunx void gsl_matrix_complex_free (gsl_matrix_complex * @var{m})
 These functions perform memory management for complex matrices defined
 with the struct @code{gsl_matrix_complex}.
 @end deftypefun
 
-@deftypefun {gsl_matrix_int *} gsl_matrix_int_alloc (size_t n1, size_t n2)
-@deftypefunx {gsl_matrix_int *} gsl_matrix_int_calloc (size_t n1, size_t n2)
-@deftypefunx void gsl_matrix_int_free (gsl_matrix_int * m)
+@deftypefun {gsl_matrix_int *} gsl_matrix_int_alloc (size_t @var{n1}, size_t @var{n2})
+@deftypefunx {gsl_matrix_int *} gsl_matrix_int_calloc (size_t @var{n1}, size_t @var{n2})
+@deftypefunx void gsl_matrix_int_free (gsl_matrix_int * @var{m})
 These functions perform memory management for integer matrices defined
 with the struct @code{gsl_matrix_int}.
 @end deftypefun
@@ -394,14 +394,14 @@ m->data[i * n2 + j]
 @noindent
 where @var{n2} is the second dimension of the matrix.
 
-@deftypefun double gsl_matrix_get (const gsl_matrix * m, size_t i, size_t j)
+@deftypefun double gsl_matrix_get (const gsl_matrix * @var{m}, size_t @var{i}, size_t @var{j})
 These functions return the (@var{i},@var{j})th element of a matrix
 @var{m}. If @var{i} or @var{j} lie outside the allowed range of 0 to
 @var{n1-1} and 0 to @var{n2-1} then the error handler is invoked and 0
 is returned.
 @end deftypefun
 
-@deftypefun void gsl_matrix_set (gsl_matrix * m, size_t i, size_t j, double x)
+@deftypefun void gsl_matrix_set (gsl_matrix * @var{m}, size_t @var{i}, size_t @var{j}, double @var{x})
 These functions set the value of the (@var{i},@var{j})th element of a
 matrix @var{m} to @var{x}. If @var{i} or @var{j} lies outside the
 allowed range of 0 to @var{n1-1} and 0 to @var{n2-1} then the error
@@ -412,18 +412,18 @@ handler is invoked.
 The following functions perform the same tasks for matrices of the type
 @code{gsl_matrix_float} and @code{gsl_matrix_int}.
 
-@deftypefun float gsl_matrix_float_get (const gsl_matrix_float * m, size_t i, size_t j)
-@deftypefunx void gsl_matrix_float_set (gsl_matrix_float * m, size_t i, size_t j, float x)
+@deftypefun float gsl_matrix_float_get (const gsl_matrix_float * @var{m}, size_t @var{i}, size_t @var{j})
+@deftypefunx void gsl_matrix_float_set (gsl_matrix_float * @var{m}, size_t @var{i}, size_t @var{j}, float @var{x})
 These functions access the elements of a single-precision matrix.
 @end deftypefun
 
-@deftypefun gsl_complex gsl_matrix_complex_get (const gsl_matrix_complex * m, size_t i, size_t j)
-@deftypefunx void gsl_matrix_complex_set (gsl_matrix_complex * m, size_t i, size_t j, gsl_complex x)
+@deftypefun gsl_complex gsl_matrix_complex_get (const gsl_matrix_complex * @var{m}, size_t @var{i}, size_t @var{j})
+@deftypefunx void gsl_matrix_complex_set (gsl_matrix_complex * @var{m}, size_t @var{i}, size_t @var{j}, gsl_complex @var{x})
 These functions access the elements of a complex matrix.
 @end deftypefun
 
-@deftypefun int gsl_matrix_int_get (const gsl_matrix_int * m, size_t i, size_t j)
-@deftypefunx void gsl_matrix_int_set (gsl_matrix_int * m, size_t i, size_t j, int x)
+@deftypefun int gsl_matrix_int_get (const gsl_matrix_int * @var{m}, size_t @var{i}, size_t @var{j})
+@deftypefunx void gsl_matrix_int_set (gsl_matrix_int * @var{m}, size_t @var{i}, size_t @var{j}, int @var{x})
 These functions access the elements of an integer matrix.
 @end deftypefun
 
@@ -433,7 +433,7 @@ These functions access the elements of an integer matrix.
 The library provides functions for reading and writing matrices to a file
 as binary data or formatted text.
 
-@deftypefun int gsl_matrix_fwrite (FILE * stream, const gsl_matrix * m)
+@deftypefun int gsl_matrix_fwrite (FILE * @var{stream}, const gsl_matrix * @var{m})
 This function writes the elements of the matrix @var{m} to the stream
 @var{stream} in binary format. The return value is 0 for success and
 @code{GSL_EFAILED} if there was a problem writing to the file. Since the
@@ -441,7 +441,7 @@ data is written in the native binary format it may not be portable
 between different architectures.
 @end deftypefun
 
-@deftypefun int gsl_matrix_fread (FILE * stream, gsl_matrix * m)
+@deftypefun int gsl_matrix_fread (FILE * @var{stream}, gsl_matrix * @var{m})
 This function reads into the matrix @var{m} from the open stream
 @var{stream} in binary format. The matrix @var{m} must be preallocated
 with the correct length since the function uses the size of @var{m} to
@@ -451,7 +451,7 @@ data is assumed to have been written in the native binary format on the
 same architecture.
 @end deftypefun
 
-@deftypefun int gsl_matrix_fprintf (FILE * stream, const gsl_matrix * m, const char * format)
+@deftypefun int gsl_matrix_fprintf (FILE * @var{stream}, const gsl_matrix * @var{m}, const char * @var{format})
 This function writes the elements of the matrix @var{m} line-by-line to
 the stream @var{stream} using the format specifier @var{format}, which
 should be one of the @code{%g}, @code{%e} or @code{%f} formats for
@@ -460,7 +460,7 @@ floating point numbers and @code{%d} for integers. The function returns
 the file.
 @end deftypefun
 
-@deftypefun int gsl_matrix_fscanf (FILE * stream, gsl_matrix * m)
+@deftypefun int gsl_matrix_fscanf (FILE * @var{stream}, gsl_matrix * @var{m})
 This function reads formatted data from the stream @var{stream} into the
 matrix @var{m}. The matrix @var{m} must be preallocated with the correct
 length since the function uses the size of @var{m} to determine how many
@@ -473,26 +473,26 @@ The following functions read and write single-precision and integer
 matrices with the types @code{gsl_matrix_float} and
 @code{gsl_matrix_int}.
 
-@deftypefun int gsl_matrix_float_fwrite (FILE * stream, const gsl_matrix_float * m)
-@deftypefunx int gsl_matrix_float_fread (FILE * stream, gsl_matrix_float * m)
-@deftypefunx int gsl_matrix_float_fprintf (FILE * stream, const gsl_matrix_float * m, const char * format)
-@deftypefunx int gsl_matrix_float_fscanf (FILE * stream, gsl_matrix_float * m)
+@deftypefun int gsl_matrix_float_fwrite (FILE * @var{stream}, const gsl_matrix_float * @var{m})
+@deftypefunx int gsl_matrix_float_fread (FILE * @var{stream}, gsl_matrix_float * @var{m})
+@deftypefunx int gsl_matrix_float_fprintf (FILE * @var{stream}, const gsl_matrix_float * @var{m}, const char * @var{format})
+@deftypefunx int gsl_matrix_float_fscanf (FILE * @var{stream}, gsl_matrix_float * @var{m})
 These functions read and write single-precision matrices as binary data
 or formatted text.
 @end deftypefun
 
-@deftypefun int gsl_matrix_complex_fwrite (FILE * stream, const gsl_matrix_complex * m)
-@deftypefunx int gsl_matrix_complex_fread (FILE * stream, gsl_matrix_complex * m)
-@deftypefunx int gsl_matrix_complex_fprintf (FILE * stream, const gsl_matrix_complex * m, const char * format)
-@deftypefunx int gsl_matrix_complex_fscanf (FILE * stream, gsl_matrix_complex * m)
+@deftypefun int gsl_matrix_complex_fwrite (FILE * @var{stream}, const gsl_matrix_complex * @var{m})
+@deftypefunx int gsl_matrix_complex_fread (FILE * @var{stream}, gsl_matrix_complex * @var{m})
+@deftypefunx int gsl_matrix_complex_fprintf (FILE * @var{stream}, const gsl_matrix_complex * @var{m}, const char * @var{format})
+@deftypefunx int gsl_matrix_complex_fscanf (FILE * @var{stream}, gsl_matrix_complex * @var{m})
 These functions read and write complex matrices as binary data or
 formatted text.
 @end deftypefun
 
-@deftypefun int gsl_matrix_int_fwrite (FILE * stream, const gsl_matrix_int * m)
-@deftypefunx int gsl_matrix_int_fread (FILE * stream, gsl_matrix_int * m)
-@deftypefunx int gsl_matrix_int_fprintf (FILE * stream, const gsl_matrix_int * m, const char * format)
-@deftypefunx int gsl_matrix_int_fscanf (FILE * stream, gsl_matrix_int * m)
+@deftypefun int gsl_matrix_int_fwrite (FILE * @var{stream}, const gsl_matrix_int * @var{m})
+@deftypefunx int gsl_matrix_int_fread (FILE * @var{stream}, gsl_matrix_int * @var{m})
+@deftypefunx int gsl_matrix_int_fprintf (FILE * @var{stream}, const gsl_matrix_int * @var{m}, const char * @var{format})
+@deftypefunx int gsl_matrix_int_fscanf (FILE * @var{stream}, gsl_matrix_int * @var{m})
 These functions read and write integer matrices as binary data or
 formatted text.
 @end deftypefun

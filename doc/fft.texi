@@ -157,11 +157,11 @@ expense of requiring additional scratch space.
 
 All these functions are declared in the header file @file{gsl_fft_complex.h}.
 
-@deftypefun int gsl_fft_complex_radix2_forward (gsl_complex data[], const size_t n)
+@deftypefun int gsl_fft_complex_radix2_forward (gsl_complex @var{data[]}, size_t @var{n})
 
-@deftypefunx int gsl_fft_complex_radix2_backward (gsl_complex data[], const size_t n)
+@deftypefunx int gsl_fft_complex_radix2_backward (gsl_complex @var{data[]}, size_t @var{n})
 
-@deftypefunx int gsl_fft_complex_radix2_inverse (gsl_complex data[], const size_t n)
+@deftypefunx int gsl_fft_complex_radix2_inverse (gsl_complex @var{data[]}, size_t @var{n})
 
 These functions compute the forward, backward and inverse FFTs of
 @var{data}, a complex array of length @var{n}, using an in-place radix-2
@@ -180,11 +180,11 @@ The length of the data @var{n} is not a power of two.
 @end deftypefun
 
 
-@deftypefun int gsl_fft_complex_radix2_dif_forward (gsl_complex data[], const size_t n)
+@deftypefun int gsl_fft_complex_radix2_dif_forward (gsl_complex @var{data[]}, size_t @var{n})
 
-@deftypefunx int gsl_fft_complex_radix2_dif_backward (gsl_complex data[], const size_t n)
+@deftypefunx int gsl_fft_complex_radix2_dif_backward (gsl_complex @var{data[]}, size_t @var{n})
 
-@deftypefunx int gsl_fft_complex_radix2_dif_inverse (gsl_complex data[], const size_t n)
+@deftypefunx int gsl_fft_complex_radix2_dif_inverse (gsl_complex @var{data[]}, size_t @var{n})
 
 These are decimation-in-frequency versions of the radix-2 FFT functions.
 
@@ -325,16 +325,17 @@ FFT Algorithms} for details on adding support for other factors.
 
 All these functions are declared in the header file @file{gsl_fft_complex.h}.
 
-@deftypefun int gsl_fft_complex_wavetable_alloc (size_t @var{n}, gsl_fft_complex_wavetable * @var{wavetable});
+@deftypefun {gsl_fft_complex_wavetable *} gsl_fft_complex_wavetable_alloc (size_t @var{n});
 
-This function allocates space for a scratch area and a trigonometric
-lookup table, both of size @var{n} complex elements. The relevant
-components of @var{wavetable} are modified to point to the newly
-allocated memory.
+This function allocates space for a @code{gsl_fft_complex_wavetable}
+struct, and a scratch area and trigonometric lookup table, both of size
+@var{n} complex elements. The relevant components of the wavetable are
+initialized to point to the newly allocated memory.
 
-The function returns a value of @code{0} if no errors were detected,
-and @code{-1} in the case of error. The following @code{gsl_errno}
-conditions are defined for this function:
+The function returns a pointer to the newly allocated
+@code{gsl_fft_complex_wavetable} if no errors were detected, and 0 in
+the case of error. The following @code{gsl_errno} conditions are defined
+for this function:
 
 @table @code
 @item GSL_EDOM
@@ -347,7 +348,7 @@ a null pointer).
 
 @end deftypefun
 
-@deftypefun int gsl_fft_complex_init (const size_t @var{n}, gsl_fft_complex_wavetable * @var{wavetable});
+@deftypefun int gsl_fft_complex_init (size_t @var{n}, gsl_fft_complex_wavetable * @var{wavetable});
 
 This function initializes @var{wavetable}. It selects a factorization of
 the length @var{n} into the implemented subtransforms, storing the
@@ -384,7 +385,7 @@ by an inconsistency in a user-supplied @var{wavetable} structure.
 
 @end deftypefun
 
-@deftypefun int gsl_fft_complex_wavetable_free (gsl_fft_complex_wavetable * @var{wavetable});
+@deftypefun void gsl_fft_complex_wavetable_free (gsl_fft_complex_wavetable * @var{wavetable});
 
 This function frees the blocks of memory previously allocated by
 @code{gsl_fft_complex_wavetable_alloc} and pointed to by the components
@@ -444,9 +445,9 @@ factors for each pass.
 
 @end deftp
 
-@deftypefun int gsl_fft_complex_forward (gsl_complex @var{data}[], const size_t @var{n}, const gsl_fft_wavetable * @var{wavetable})
-@deftypefunx int gsl_fft_complex_inverse (gsl_complex @var{data}[], const size_t @var{n}, const gsl_fft_complex_wavetable * @var{wavetable})
-@deftypefunx int gsl_fft_complex_backward (gsl_complex @var{data}[], const size_t @var{n}, const gsl_fft_complex_wavetable * @var{wavetable})
+@deftypefun int gsl_fft_complex_forward (gsl_complex @var{data[]}, size_t @var{n}, const gsl_fft_wavetable * @var{wavetable})
+@deftypefunx int gsl_fft_complex_inverse (gsl_complex @var{data[]}, size_t @var{n}, const gsl_fft_complex_wavetable * @var{wavetable})
+@deftypefunx int gsl_fft_complex_backward (gsl_complex @var{data[]}, size_t @var{n}, const gsl_fft_complex_wavetable * @var{wavetable})
 
 These functions compute the forward, backward and inverse FFT of
 @var{data}, a complex array of length @var{n}, using a mixed radix
@@ -495,7 +496,7 @@ int main ()
   const int n = 630 ;
   gsl_complex data[n];
 
-  gsl_fft_complex_wavetable wavetable;
+  gsl_fft_complex_wavetable * wavetable;
 
   for (i = 0; i < n; i++)
     @{
@@ -516,22 +517,22 @@ int main ()
     @}
   printf ("\n");
 
-  gsl_fft_complex_wavetable_alloc (n, &wavetable);
-  gsl_fft_complex_init (n, &wavetable);
+  wavetable = gsl_fft_complex_wavetable_alloc (n);
+  gsl_fft_complex_init (n, wavetable);
 
-  for (i = 0; i < wavetable.nf; i++)
+  for (i = 0; i < wavetable->nf; i++)
     @{
-       printf("# factor %d: %d\n", i, wavetable.factor[i]);
+       printf("# factor %d: %d\n", i, wavetable->factor[i]);
     @}
 
-  gsl_fft_complex_forward (data, n, &wavetable);
+  gsl_fft_complex_forward (data, n, wavetable);
 
   for (i = 0; i < n; i++)
     @{
       printf ("%d: %e %e\n", i, data[i].real, data[i].imag);
     @}
 
-  gsl_fft_complex_wavetable_free (&wavetable);
+  gsl_fft_complex_wavetable_free (wavetable);
 
 @}
 @end example
@@ -611,7 +612,7 @@ are a power of 2.
 The radix-2 FFT functions for real data are declared in the header files
 @file{gsl_fft_real.h} 
 
-@deftypefun int gsl_fft_real_radix2 (double data[], const size_t n)
+@deftypefun int gsl_fft_real_radix2 (double @var{data[]}, size_t @var{n})
 
 This function computes an in-place radix-2 FFT of @var{data}, a real
 array of length @var{n}. The output is a half-complex sequence, which is
@@ -651,8 +652,8 @@ complex[N-1].imag  =   -data[N-1]
 The radix-2 FFT functions for halfcomplex data are declared in the
 header file @file{gsl_fft_halfcomplex.h}.
 
-@deftypefun int gsl_fft_halfcomplex_radix2_inverse (double data[], const size_t n)
-@deftypefunx int gsl_fft_halfcomplex_radix2_backwards (double data[], const size_t n)
+@deftypefun int gsl_fft_halfcomplex_radix2_inverse (double @var{data[]}, size_t @var{n})
+@deftypefunx int gsl_fft_halfcomplex_radix2_backwards (double @var{data[]}, size_t @var{n})
 
 These functions compute the inverse or backwards in-place radix-2 FFT of
 the half-complex sequence @var{data}, a real of length @var{n} stored
@@ -739,16 +740,17 @@ The upper elements of the @var{complex} array, @code{complex[4]} and
 All these functions are declared in the header files
 @file{gsl_fft_real.h} and @file{gsl_fft_halfcomplex.h}.
 
-@deftypefun int gsl_fft_real_wavetable_alloc (size_t @var{n}, gsl_fft_real_wavetable * @var{wavetable});
-@deftypefunx int gsl_fft_halfcomplex_wavetable_alloc (size_t @var{n}, gsl_fft_halfcomplex_wavetable * @var{wavetable});
-These functions allocate space for a scratch area of size @var{n} real
-elements and a trigonometric lookup table, of size @math{n/2} complex
-elements. The relevant components of @var{wavetable} are modified to point
-to the newly allocated memory.
+@deftypefun {gsl_fft_real_wavetable *} gsl_fft_real_wavetable_alloc (size_t @var{n});
+@deftypefunx {gsl_fft_halfcomplex_wavetable *} gsl_fft_halfcomplex_wavetable_alloc (size_t @var{n});
 
-These functions return a value of @code{0} if no errors were detected,
-and @code{-1} in the case of error. The following @code{gsl_errno}
-conditions are defined for these functions:
+These functions allocate space for a wavetable struct, a scratch area of
+size @var{n} real elements and a trigonometric lookup table, of size
+@math{n/2} complex elements. The relevant components of the wavetable
+are modified to point to the newly allocated memory.
+
+These functions return a pointer to the newly allocated struct if no
+errors were detected, and @code{0} in the case of error. The following
+@code{gsl_errno} conditions are defined for these functions:
 
 @table @code
 @item GSL_EDOM
@@ -763,8 +765,8 @@ a null pointer).
 @end deftypefun
 
 
-@deftypefun int gsl_fft_real_init (const size_t @var{n}, gsl_fft_real_wavetable * @var{wavetable});
-@deftypefunx int gsl_fft_halfcomplex_init (const size_t @var{n}, gsl_fft_halfcomplex_wavetable * @var{wavetable});
+@deftypefun int gsl_fft_real_init (size_t @var{n}, gsl_fft_real_wavetable * @var{wavetable});
+@deftypefunx int gsl_fft_halfcomplex_init (size_t @var{n}, gsl_fft_halfcomplex_wavetable * @var{wavetable});
 
 These functions initialize @var{wavetable}.  They first select a
 factorization of the length @var{n} into the implemented subtransforms,
@@ -804,8 +806,8 @@ by an inconsistency in a user-supplied @var{wavetable} structure.
 
 @end deftypefun
 
-@deftypefun int gsl_fft_real_wavetable_free (gsl_fft_real_wavetable * @var{wavetable});
-@deftypefunx int gsl_fft_halfcomplex_wavetable_free (gsl_fft_halfcomplex_wavetable * @var{wavetable});
+@deftypefun void gsl_fft_real_wavetable_free (gsl_fft_real_wavetable * @var{wavetable});
+@deftypefunx void gsl_fft_halfcomplex_wavetable_free (gsl_fft_halfcomplex_wavetable * @var{wavetable});
 
 These functions free the blocks of memory previously allocated by
 @code{gsl_fft_real_wavetable_alloc} or
@@ -817,8 +819,8 @@ be needed.
 @end deftypefun
 
 
-@deftypefun int gsl_fft_real (double @var{data}[], const size_t @var{n}, const gsl_fft_real_wavetable * @var{wavetable})
-@deftypefunx int gsl_fft_halfcomplex (double @var{data}[], const size_t @var{n}, const gsl_fft_halfcomplex_wavetable * @var{wavetable})
+@deftypefun int gsl_fft_real (double @var{data[]}, size_t @var{n}, const gsl_fft_real_wavetable * @var{wavetable})
+@deftypefunx int gsl_fft_halfcomplex (double @var{data[]}, size_t @var{n}, const gsl_fft_halfcomplex_wavetable * @var{wavetable})
 
 These functions compute the FFT of @var{data}, a real or half-complex
 array of length @var{n}, using a mixed radix decimation-in-frequency
@@ -853,7 +855,7 @@ The length of the data @var{n} and the length used to compute the given
 @end deftypefun
 
 
-@deftypefun int gsl_fft_real_unpack (const double real_coefficient[], gsl_complex complex_coefficient[], const size_t n)
+@deftypefun int gsl_fft_real_unpack (const double @var{real_coefficient[]}, gsl_complex @var{complex_coefficient[]}, size_t @var{n})
 
 This function converts a single real array, @var{real_coefficient} into
 an equivalent complex array, @var{complex_coefficient}, (with imaginary
@@ -879,7 +881,7 @@ is zero).
 @end table
 @end deftypefun
 
-@deftypefun int gsl_fft_halfcomplex_unpack (const double halfcomplex_coefficient[], gsl_complex complex_coefficient[], const size_t n)
+@deftypefun int gsl_fft_halfcomplex_unpack (const double @var{halfcomplex_coefficient[]}, gsl_complex @var{complex_coefficient[]}, size_t @var{n})
 
 This function converts @var{halfcomplex_coefficient}, an array of
 half-complex coefficients as returned by @code{gsl_fft_real}, into an
@@ -945,8 +947,8 @@ int main ()
   int i, n = 100;
   double data[n];
 
-  gsl_fft_real_wavetable real_wavetable;
-  gsl_fft_halfcomplex_wavetable halfcomplex_wavetable;
+  gsl_fft_real_wavetable * real_wavetable;
+  gsl_fft_halfcomplex_wavetable * halfcomplex_wavetable;
 
   for (i = 0; i < n; i++)
     @{
@@ -964,20 +966,20 @@ int main ()
     @}
   printf ("\n");
 
-  gsl_fft_real_wavetable_alloc (n, &real_wavetable);
-  gsl_fft_real_init (n, &real_wavetable);
-  gsl_fft_real (data, n, &real_wavetable);
-  gsl_fft_real_wavetable_free (&real_wavetable);
+  real_wavetable = gsl_fft_real_wavetable_alloc (n);
+  gsl_fft_real_init (n, real_wavetable);
+  gsl_fft_real (data, n, real_wavetable);
+  gsl_fft_real_wavetable_free (real_wavetable);
 
   for (i = 11; i < n; i++)
     @{
       data[i] = 0;
     @}
 
-  gsl_fft_halfcomplex_wavetable_alloc (n, &halfcomplex_wavetable);
-  gsl_fft_halfcomplex_init (n, &halfcomplex_wavetable);
-  gsl_fft_halfcomplex_inverse (data, n, &halfcomplex_wavetable);
-  gsl_fft_halfcomplex_wavetable_free (&halfcomplex_wavetable);
+  halfcomplex_wavetable = gsl_fft_halfcomplex_wavetable_alloc (n);
+  gsl_fft_halfcomplex_init (n, halfcomplex_wavetable);
+  gsl_fft_halfcomplex_inverse (data, n, halfcomplex_wavetable);
+  gsl_fft_halfcomplex_wavetable_free (halfcomplex_wavetable);
 
   for (i = 0; i < n; i++)
     @{
@@ -1022,7 +1024,7 @@ to check and independent of all the other routines.
 
 These functions are declared in the header file @file{gsl_fft_signals.h}.
 
-@deftypefun int gsl_fft_signal_complex_pulse (const size_t t, const size_t n, const double z_real, const double z_imag, gsl_complex data[], complex fft[])
+@deftypefun int gsl_fft_signal_complex_pulse (size_t @var{t}, size_t @var{n}, double @var{z_real}, double @var{z_imag}, gsl_complex @var{data[]}, complex @var{fft[]})
 
 This function prepares a ``delta-function'' pulse of complex amplitude
 (@var{z_real},@var{z_imag}) at time @var{t} in the complex array
@@ -1046,7 +1048,7 @@ x_j = \sum_@{k=0@}^@{n-1@} z \delta_@{kt@} \exp(-2\pi i j k/n)
 @end equation
 @end deftypefun
 
-@deftypefun int gsl_fft_signal_complex_constant (const size_t n, const double z_real, const double z_imag, gsl_complex data[], complex fft[])
+@deftypefun int gsl_fft_signal_complex_constant (size_t @var{n}, double @var{z_real}, double @var{z_imag}, gsl_complex @var{data[]}, complex @var{fft[]})
 
 This function prepares a constant complex signal of amplitude
 (@var{z_real},@var{z_imag}) in the complex array @var{data} of length
@@ -1067,7 +1069,7 @@ x_j = \sum_@{k=0@}^@{n-1@} z \exp(-2\pi i j k/n)
 @end equation
 @end deftypefun
 
-@deftypefun int gsl_fft_signal_complex_exp (const int f, const size_t n, const double z_real, const double z_imag, gsl_complex data[], gsl_complex fft[])
+@deftypefun int gsl_fft_signal_complex_exp (int @var{f}, size_t @var{n}, double @var{z_real}, double @var{z_imag}, gsl_complex @var{data[]}, gsl_complex @var{fft[]})
 
 This function prepares a complex exponential signal of amplitude
 (@var{z_real},@var{z_imag}) and frequency @var{f} in the complex array
@@ -1090,7 +1092,7 @@ x_j = \sum_@{k=0@}^@{n-1@} z \exp(2\pi i k f/n) \exp(-2\pi i j k/n)
 @end equation
 @end deftypefun
 
-@deftypefun int gsl_fft_signal_complex_exppair (const int f1, const int f2, const size_t n, const double z1_real, const double z1_imag, const double z2_real, const double z2_imag, gsl_complex data[], gsl_complex fft[])
+@deftypefun int gsl_fft_signal_complex_exppair (int @var{f1}, int @var{f2}, size_t @var{n}, double @var{z1_real}, double @var{z1_imag}, double @var{z2_real}, double @var{z2_imag}, gsl_complex @var{data[]}, gsl_complex @var{fft[]})
 
 This function prepares a pair of exponential signals of amplitude
 (@var{z1_real},@var{z1_imag}) and (@var{z2_real},@var{z2_imag}) with
@@ -1111,7 +1113,7 @@ x_j =  z_1 n \delta_@{j,f_1@}  + z_2 n \delta_@{j,f_2@}
 @end equation
 @end deftypefun
 
-@deftypefun int gsl_fft_signal_complex_noise (const size_t n, gsl_complex data[], gsl_complex fft[])
+@deftypefun int gsl_fft_signal_complex_noise (size_t @var{n}, gsl_complex @var{data[]}, gsl_complex @var{fft[]})
 
 This function prepares a complex white-noise signal in the complex array
 @var{data} of length @var{n}. The real and imaginary components of each
@@ -1126,7 +1128,7 @@ the array @var{fft} is only useful in detecting large errors.
 
 @end deftypefun
 
-@deftypefun int gsl_fft_signal_real_noise (const size_t n, gsl_complex data[], gsl_complex fft[])
+@deftypefun int gsl_fft_signal_real_noise (size_t @var{n}, gsl_complex @var{data[]}, gsl_complex @var{fft[]})
 
 This function generates real white noise instead of complex white noise.
 It is the same as @code{gsl_fft_signal_complex_noise} but with the
