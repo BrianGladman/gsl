@@ -306,42 +306,7 @@ The example program below creates a random permutation by shuffling and
 finds its inverse.
 
 @example
-#include <stdio.h>
-#include <gsl/gsl_rng.h>
-#include <gsl/gsl_randist.h>
-#include <gsl/gsl_permutation.h>
-
-int
-main (void) 
-@{
-  const size_t N = 10;
-  const gsl_rng_type * T;
-  gsl_rng * r;
-
-  gsl_permutation * p = gsl_permutation_alloc (N);
-  gsl_permutation * q = gsl_permutation_alloc (N);
-
-  gsl_rng_env_setup();
-  T = gsl_rng_default;
-  r = gsl_rng_alloc (T);
-
-  printf ("initial permutation:");  
-  gsl_permutation_init (p);
-  gsl_permutation_fprintf (stdout, p, " %u");
-  printf ("\n");
-
-  printf (" random permutation:");  
-  gsl_ran_shuffle (r, p->data, N, sizeof(size_t));
-  gsl_permutation_fprintf (stdout, p, " %u");
-  printf ("\n");
-
-  printf ("inverse permutation:");  
-  gsl_permutation_inverse (q, p);
-  gsl_permutation_fprintf (stdout, q, " %u");
-  printf ("\n");
-
-  return 0;
-@}
+@verbatiminclude examples/permshuffle.c
 @end example
 @noindent
 Here is the output from the program,
@@ -361,25 +326,7 @@ The next example program steps forwards through all possible 3-rd order
 permutations, starting from the identity,
 
 @example
-#include <stdio.h>
-#include <gsl/gsl_permutation.h>
-
-int
-main (void) 
-@{
-  gsl_permutation * p = gsl_permutation_alloc (3);
-
-  gsl_permutation_init (p);
-
-  do 
-   @{
-      gsl_permutation_fprintf (stdout, p, " %u");
-      printf ("\n");
-   @}
-  while (gsl_permutation_next(p) == GSL_SUCCESS);
-
-  return 0;
-@}
+@verbatiminclude examples/permseq.c
 @end example
 @noindent
 Here is the output from the program,

@@ -269,35 +269,13 @@ the special functions, in this case to compute the Bessel function
 @math{J_0(5.0)},
 
 @example
-#include <stdio.h>
-#include <gsl/gsl_sf_bessel.h>
-
-int
-main (void)
-@{
-  double x = 5.0;
-  gsl_sf_result result;
-
-  double expected = -0.17759677131433830434739701;
-  
-  int status = gsl_sf_bessel_J0_e (x, &result);
-
-  printf ("status  = %s\n", gsl_strerror(status));
-  printf ("J0(5.0) = %.18f\n"
-          "      +/- % .18f\n", 
-          result.val, result.err);
-  printf ("exact   = %.18f\n", expected);
-  return status;
-@}
+@verbatiminclude examples/specfun_e.c
 @end example
 @noindent
 Here are the results of running the program,
 @example
 $ ./a.out 
-status  = success
-J0(5.0) = -0.177596771314338292 
-      +/-  0.000000000000000193
-exact   = -0.177596771314338292
+@verbatiminclude examples/specfun_e.out
 @end example
 @noindent
 The next program computes the same quantity using the natural form of
@@ -305,28 +283,13 @@ the function. In this case the error term @var{result.err} and return
 status are not accessible.
 
 @example
-#include <stdio.h>
-#include <gsl/gsl_sf_bessel.h>
-
-int
-main (void)
-@{
-  double x = 5.0;
-  double expected = -0.17759677131433830434739701;
-  
-  double y = gsl_sf_bessel_J0 (x);
-
-  printf ("J0(5.0) = %.18f\n", y);
-  printf ("exact   = %.18f\n", expected);
-  return 0;
-@}
+@verbatiminclude examples/specfun.c
 @end example
 @noindent
 The results of the function are the same,
 @example
 $ ./a.out 
-J0(5.0) = -0.177596771314338292
-exact   = -0.177596771314338292
+@verbatiminclude examples/specfun.out
 @end example
 
 

@@ -667,91 +667,26 @@ for integer data types.
 Here is a basic example of how to use the statistical functions:
 
 @example
-#include <stdio.h>
-#include <gsl/gsl_statistics.h>
-
-int
-main(void)
-@{
-  double data[5] = @{17.2, 18.1, 16.5, 18.3, 12.6@};
-  double mean, variance, largest, smallest;
-
-  mean     = gsl_stats_mean(data, 1, 5);
-  variance = gsl_stats_variance(data, 1, 5);
-  largest  = gsl_stats_max(data, 1, 5);
-  smallest = gsl_stats_min(data, 1, 5);
-
-  printf ("The dataset is %g, %g, %g, %g, %g\n",
-         data[0], data[1], data[2], data[3], data[4]);
-
-  printf ("The sample mean is %g\n", mean);
-  printf ("The estimated variance is %g\n", variance);
-  printf ("The largest value is %g\n", largest);
-  printf ("The smallest value is %g\n", smallest);
-  return 0;
-@}
+@verbatiminclude examples/stat.c
 @end example
 
 The program should produce the following output,
 
 @example
-The dataset is 17.2, 18.1, 16.5, 18.3, 12.6
-The sample mean is 16.54
-The estimated variance is 4.2984
-The largest value is 18.3
-The smallest value is 12.6
+@verbatiminclude examples/stat.out
 @end example
 
 
 Here is an example using sorted data,
 
 @example
-#include <stdio.h>
-#include <gsl/gsl_sort.h>
-#include <gsl/gsl_statistics.h>
-
-int
-main(void)
-@{
-  double data[5] = @{17.2, 18.1, 16.5, 18.3, 12.6@};
-  double median, upperq, lowerq;
-
-  printf ("Original dataset:  %g, %g, %g, %g, %g\n",
-         data[0], data[1], data[2], data[3], data[4]);
-
-  gsl_sort (data, 1, 5);
-
-  printf ("Sorted dataset: %g, %g, %g, %g, %g\n",
-         data[0], data[1], data[2], data[3], data[4]);
-
-  median 
-    = gsl_stats_median_from_sorted_data (data, 
-                                         1, 5);
-
-  upperq 
-    = gsl_stats_quantile_from_sorted_data (data, 
-                                           1, 5,
-                                           0.75);
-  lowerq 
-    = gsl_stats_quantile_from_sorted_data (data, 
-                                           1, 5,
-                                           0.25);
-
-  printf ("The median is %g\n", median);
-  printf ("The upper quartile is %g\n", upperq);
-  printf ("The lower quartile is %g\n", lowerq);
-  return 0;
-@}
+@verbatiminclude examples/statsort.c
 @end example
 
 This program should produce the following output,
 
 @example
-Original dataset: 17.2, 18.1, 16.5, 18.3, 12.6
-Sorted dataset: 12.6, 16.5, 17.2, 18.1, 18.3
-The median is 17.2
-The upper quartile is 18.1
-The lower quartile is 16.5
+@verbatiminclude examples/statsort.out
 @end example
 
 @node Statistics References and Further Reading

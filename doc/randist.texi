@@ -1764,42 +1764,8 @@ to produce variates from a distribution.  It prints 10 samples from the
 Poisson distribution with a mean of 3.
 
 @example
-#include <stdio.h>
-#include <gsl/gsl_rng.h>
-#include <gsl/gsl_randist.h>
-
-int
-main (void)
-@{
-  const gsl_rng_type * T;
-  gsl_rng * r;
-
-  int i, n = 10;
-  double mu = 3.0;
-
-  /* create a generator chosen by the 
-     environment variable GSL_RNG_TYPE */
-
-  gsl_rng_env_setup();
-
-  T = gsl_rng_default;
-  r = gsl_rng_alloc (T);
-
-  /* print n random variates chosen from 
-     the poisson distribution with mean 
-     parameter mu */
-
-  for (i = 0; i < n; i++) 
-    @{
-      unsigned int k = gsl_ran_poisson (r, mu);
-      printf (" %u", k);
-    @}
-
-  printf ("\n");
-  return 0;
-@}
+@verbatiminclude examples/randpoisson.c
 @end example
-
 @noindent
 If the library and header files are installed under @file{/usr/local}
 (the default location) then the program can be compiled with these
@@ -1814,7 +1780,7 @@ Here is the output of the program,
 
 @example
 $ ./a.out 
- 4 2 3 3 1 3 4 1 3 5
+@verbatiminclude examples/randpoisson.out
 @end example
 
 @noindent
@@ -1833,33 +1799,7 @@ GSL_RNG_SEED=123
 The following program generates a random walk in two dimensions.
 
 @example
-#include <stdio.h>
-#include <gsl/gsl_rng.h>
-#include <gsl/gsl_randist.h>
-
-int
-main (void)
-@{
-  int i;
-  double x = 0, y = 0, dx, dy;
-
-  const gsl_rng_type * T;
-  gsl_rng * r;
-
-  gsl_rng_env_setup();
-  T = gsl_rng_default;
-  r = gsl_rng_alloc (T);
-
-  printf ("%g %g\n", x, y);
-
-  for (i = 0; i < 10; i++)
-    @{
-      gsl_ran_dir_2d (r, &dx, &dy);
-      x += dx; y += dy; 
-      printf ("%g %g\n", x, y);
-    @}
-  return 0;
-@}
+@verbatiminclude examples/randwalk.c
 @end example
 
 @noindent

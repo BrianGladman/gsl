@@ -164,28 +164,14 @@ numbers to read.  The function returns 0 for success and
 The following program shows how to allocate a block,
 
 @example
-#include <stdio.h>
-#include <gsl/gsl_block.h>
-
-int
-main (void)
-@{
-  gsl_block * b = gsl_block_alloc (100);
-  
-  printf ("length of block = %u\n", b->size);
-  printf ("block data address = %#x\n", b->data);
-
-  gsl_block_free (b);
-  return 0;
-@}
+@verbatiminclude examples/block.c
 @end example
 @comment
 @noindent
 Here is the output from the program,
 
 @example
-length of block = 100
-block data address = 0x804b0d8
+@verbatiminclude examples/block.out
 @end example
 @comment
 
@@ -745,27 +731,7 @@ using the functions @code{gsl_vector_alloc}, @code{gsl_vector_set} and
 @code{gsl_vector_get}.
 
 @example
-#include <stdio.h>
-#include <gsl/gsl_vector.h>
-
-int
-main (void)
-@{
-  int i;
-  gsl_vector * v = gsl_vector_alloc (3);
-  
-  for (i = 0; i < 3; i++)
-    @{
-      gsl_vector_set (v, i, 1.23 + i);
-    @}
-  
-  for (i = 0; i < 100; i++)
-    @{
-      printf ("v_%d = %g\n", i, gsl_vector_get (v, i));
-    @}
-
-  return 0;
-@}
+@verbatiminclude examples/vector.c
 @end example
 @comment
 @noindent
@@ -785,27 +751,7 @@ IOT trap/Abort (core dumped)
 The next program shows how to write a vector to a file.
 
 @example
-#include <stdio.h>
-#include <gsl/gsl_vector.h>
-
-int
-main (void)
-@{
-  int i; 
-  gsl_vector * v = gsl_vector_alloc (100);
-  
-  for (i = 0; i < 100; i++)
-    @{
-      gsl_vector_set (v, i, 1.23 + i);
-    @}
-
-  @{  
-     FILE * f = fopen ("test.dat", "w");
-     gsl_vector_fprintf (f, v, "%.5g");
-     fclose (f);
-  @}
-  return 0;
-@}
+@verbatiminclude examples/vectorw.c
 @end example
 @comment
 @noindent
@@ -815,28 +761,7 @@ elements of @code{v}, written using the format specifier
 @code{gsl_vector_fscanf (f, v)} as follows:
 
 @example
-#include <stdio.h>
-#include <gsl/gsl_vector.h>
-
-int
-main (void)
-@{
-  int i; 
-  gsl_vector * v = gsl_vector_alloc (10);
-
-  @{  
-     FILE * f = fopen ("test.dat", "r");
-     gsl_vector_fscanf (f, v);
-     fclose (f);
-  @}
-
-  for (i = 0; i < 10; i++)
-    @{
-      printf ("%g\n", gsl_vector_get(v, i));
-    @}
-
-  return 0;
-@}
+@verbatiminclude examples/vectorr.c
 @end example
 
 
@@ -1551,26 +1476,7 @@ using the functions @code{gsl_matrix_alloc}, @code{gsl_matrix_set} and
 @code{gsl_matrix_get}.
 
 @example
-#include <stdio.h>
-#include <gsl/gsl_matrix.h>
-
-int
-main (void)
-@{
-  int i, j; 
-  gsl_matrix * m = gsl_matrix_alloc (10, 3);
-  
-  for (i = 0; i < 10; i++)
-    for (j = 0; j < 3; j++)
-      gsl_matrix_set (m, i, j, 0.23 + 100*i + j);
-  
-  for (i = 0; i < 100; i++)
-    for (j = 0; j < 3; j++)
-      printf ("m(%d,%d) = %g\n", i, j, 
-              gsl_matrix_get (m, i, j));
-
-  return 0;
-@}
+@verbatiminclude examples/matrix.c
 @end example
 @comment
 @noindent
@@ -1595,43 +1501,7 @@ IOT trap/Abort (core dumped)
 The next program shows how to write a matrix to a file.
 
 @example
-#include <stdio.h>
-#include <gsl/gsl_matrix.h>
-
-int
-main (void)
-@{
-  int i, j, k = 0; 
-  gsl_matrix * m = gsl_matrix_alloc (100, 100);
-  gsl_matrix * a = gsl_matrix_alloc (100, 100);
-  
-  for (i = 0; i < 100; i++)
-    for (j = 0; j < 100; j++)
-      gsl_matrix_set (m, i, j, 0.23 + i + j);
-
-  @{  
-     FILE * f = fopen ("test.dat", "wb");
-     gsl_matrix_fwrite (f, m);
-     fclose (f);
-  @}
-
-  @{  
-     FILE * f = fopen ("test.dat", "rb");
-     gsl_matrix_fread (f, a);
-     fclose (f);
-  @}
-
-  for (i = 0; i < 100; i++)
-    for (j = 0; j < 100; j++)
-      @{
-        double mij = gsl_matrix_get (m, i, j);
-        double aij = gsl_matrix_get (a, i, j);
-        if (mij != aij) k++;
-      @}
-
-  printf ("differences = %d (should be zero)\n", k);
-  return (k > 0);
-@}
+@verbatiminclude examples/matrixw.c
 @end example
 @comment
 @noindent
@@ -1644,34 +1514,7 @@ The following program demonstrates the use of vector views.  The program
 computes the column-norms of a matrix.
 
 @example
-#include <math.h>
-#include <stdio.h>
-#include <gsl/gsl_matrix.h>
-#include <gsl/gsl_blas.h>
-
-int
-main (void)
-@{
-  size_t i,j;
-
-  gsl_matrix *m = gsl_matrix_alloc (10, 10);
-
-  for (i = 0; i < 10; i++)
-    for (j = 0; j < 10; j++)
-      gsl_matrix_set (m, i, j, sin (i) + cos (j));
-
-  for (j = 0; j < 10; j++)
-    @{
-      gsl_vector_view column = gsl_matrix_column (m, j);
-      double d;
-
-      d = gsl_blas_dnrm2 (&column.vector);
-
-      printf ("matrix column %d, norm = %g\n", j, d);
-    @}
-
-  gsl_matrix_free (m);
-@}
+@verbatiminclude examples/vectorview.c
 @end example
 @noindent
 Here is the output of the program, which can be confirmed using @sc{gnu
@@ -1679,17 +1522,10 @@ Octave},
 
 @example
 $ ./a.out
-matrix column 0, norm = 4.31461
-matrix column 1, norm = 3.1205
-matrix column 2, norm = 2.19316
-matrix column 3, norm = 3.26114
-matrix column 4, norm = 2.53416
-matrix column 5, norm = 2.57281
-matrix column 6, norm = 4.20469
-matrix column 7, norm = 3.65202
-matrix column 8, norm = 2.08524
-matrix column 9, norm = 3.07313
+@verbatiminclude examples/vectorview.out
+@end example
 
+@example
 octave> m = sin(0:9)' * ones(1,10) 
                + ones(10,1) * cos(0:9); 
 octave> sqrt(sum(m.^2))

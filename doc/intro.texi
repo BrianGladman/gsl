@@ -133,24 +133,14 @@ The following short program demonstrates the use of the library by
 computing the value of the Bessel function @math{J_0(x)} for @math{x=5},
 
 @example
-#include <stdio.h>
-#include <gsl/gsl_sf_bessel.h>
-
-int
-main (void)
-@{
-  double x = 5.0;
-  double y = gsl_sf_bessel_J0 (x);
-  printf ("J0(%g) = %.18e\n", x, y);
-  return 0;
-@}
+@verbatiminclude examples/intro.c
 @end example
 @noindent
 The output is shown below, and should be correct to double-precision
 accuracy,
 
 @example
-J0(5) = -1.775967713143382920e-01
+@verbatiminclude examples/intro.out
 @end example
 @noindent
 The steps needed to compile programs which use the library are described

@@ -777,41 +777,7 @@ The program below computes this integral to a relative accuracy bound of
 @code{1e-7}.
 
 @example
-#include <stdio.h>
-#include <math.h>
-#include <gsl/gsl_integration.h>
-
-double f (double x, void * params) @{
-  double alpha = *(double *) params;
-  double f = log(alpha*x) / sqrt(x);
-  return f;
-@}
-
-int
-main (void)
-@{
-  gsl_integration_workspace * w 
-    = gsl_integration_workspace_alloc (1000);
-  
-  double result, error;
-  double expected = -4.0;
-  double alpha = 1.0;
-
-  gsl_function F;
-  F.function = &f;
-  F.params = &alpha;
-
-  gsl_integration_qags (&F, 0, 1, 0, 1e-7, 1000,
-                        w, &result, &error); 
-
-  printf ("result          = % .18f\n", result);
-  printf ("exact result    = % .18f\n", expected);
-  printf ("estimated error = % .18f\n", error);
-  printf ("actual error    = % .18f\n", result - expected);
-  printf ("intervals =  %d\n", w->size);
-
-  return 0;
-@}
+@verbatiminclude examples/integration.c
 @end example
 
 @noindent
@@ -820,11 +786,7 @@ subdivisions.
 
 @example
 bash$ ./a.out 
-result          = -3.999999999999973799
-exact result    = -4.000000000000000000
-estimated error =  0.000000000000246025
-actual error    =  0.000000000000026201
-intervals =  8
+@verbatiminclude examples/integration.out
 @end example
 
 @noindent

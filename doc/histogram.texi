@@ -612,49 +612,7 @@ read it prints out the accumulated histogram using
 @code{gsl_histogram_fprintf}.
 
 @example
-#include <stdio.h>
-#include <stdlib.h>
-#include <gsl/gsl_histogram.h>
-
-int
-main (int argc, char **argv)
-@{
-  double a, b;
-  size_t n;
-
-  if (argc != 4)
-    @{
-      printf ("Usage: gsl-histogram xmin xmax n\n"
-              "Computes a histogram of the data "
-              "on stdin using n bins from xmin "
-              "to xmax\n");
-      exit (0);
-    @}
-
-  a = atof (argv[1]);
-  b = atof (argv[2]);
-  n = atoi (argv[3]);
-
-  @{
-    int status;
-    double x;
-
-    gsl_histogram * h = gsl_histogram_alloc (n);
-            
-    gsl_histogram_set_uniform (h, a, b);
-
-    while (fscanf (stdin, "%lg", &x) == 1)
-      @{
-        gsl_histogram_increment (h, x);
-      @}
-
-    gsl_histogram_fprintf (stdout, h, "%g", "%g");
-
-    gsl_histogram_free (h);
-  @}
-  
-  exit (0);
-@}
+@verbatiminclude examples/histogram.c
 @end example
 
 @noindent
@@ -1193,52 +1151,7 @@ generate a random sample of 1000 simulated events, which are printed
 out.
 
 @example
-#include <stdio.h>
-#include <gsl/gsl_rng.h>
-#include <gsl/gsl_histogram2d.h>
-
-int
-main (void)
-@{
-  const gsl_rng_type * T;
-  gsl_rng * r;
-
-  gsl_histogram2d * h = gsl_histogram2d_alloc (10, 10);
-
-  gsl_histogram2d_set_ranges_uniform (h, 
-                                      0.0, 1.0,
-                                      0.0, 1.0);
-
-  gsl_histogram2d_accumulate (h, 0.3, 0.3, 1);
-  gsl_histogram2d_accumulate (h, 0.8, 0.1, 5);
-  gsl_histogram2d_accumulate (h, 0.7, 0.9, 0.5);
-
-  gsl_rng_env_setup ();
-  
-  T = gsl_rng_default;
-  r = gsl_rng_alloc (T);
-
-  @{
-    int i;
-    gsl_histogram2d_pdf * p 
-      = gsl_histogram2d_pdf_alloc (h->nx, h->ny);
-    
-    gsl_histogram2d_pdf_init (p, h);
-
-    for (i = 0; i < 1000; i++) @{
-      double x, y;
-      double u = gsl_rng_uniform (r);
-      double v = gsl_rng_uniform (r);
-       
-      int status 
-       = gsl_histogram2d_pdf_sample (p, u, v, &x, &y);
-      
-      printf ("%g %g\n", x, y);
-    @}
-  @}
-  
- return 0;
-@}
+@verbatiminclude examples/histogram2d.c
 @end example
 @noindent
 The following plot shows the distribution of the simulated events.  Using

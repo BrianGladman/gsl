@@ -282,39 +282,16 @@ generator using the environment variables @code{GSL_RNG_TYPE} and
 @code{GSL_RNG_SEED},
 
 @example
-#include <stdio.h>
-#include <gsl/gsl_rng.h>
-
-gsl_rng * r;  /* global generator */
-
-int
-main (void)
-@{
-  const gsl_rng_type * T;
-
-  gsl_rng_env_setup();
-
-  T = gsl_rng_default;
-  r = gsl_rng_alloc (T);
-  
-  printf ("generator type: %s\n", gsl_rng_name (r));
-  printf ("seed = %u\n", gsl_rng_default_seed);
-  printf ("first value = %u\n", gsl_rng_get (r));
-  return 0;
-@}
+@verbatiminclude examples/rng.c
 @end example
-
 @noindent
 Running the program without any environment variables uses the initial
 defaults, an @code{mt19937} generator with a seed of 0,
 
 @example
 bash$ ./a.out 
-generator type: mt19937
-seed = 0
-first value = 4293858116
+@verbatiminclude examples/rng.out
 @end example
-
 @noindent
 By setting the two variables on the command line we can
 change the default generator and the seed,
@@ -1388,48 +1365,14 @@ The following program demonstrates the use of a random number generator
 to produce uniform random numbers in range [0.0, 1.0),
 
 @example
-#include <stdio.h>
-#include <gsl/gsl_rng.h>
-
-int
-main (void)
-@{
-  const gsl_rng_type * T;
-  gsl_rng * r;
-
-  int i, n = 10;
-
-  gsl_rng_env_setup();
-
-  T = gsl_rng_default;
-  r = gsl_rng_alloc (T);
-
-  for (i = 0; i < n; i++) 
-    @{
-      double u = gsl_rng_uniform (r);
-      printf ("%.5f\n", u);
-    @}
-
-  gsl_rng_free (r);
-
-  return 0;
-@}
+@verbatiminclude examples/rngunif.c
 @end example
 @noindent
 Here is the output of the program,
 
 @example
 $ ./a.out 
-0.99974
-0.16291
-0.28262
-0.94720
-0.23166
-0.48497
-0.95748
-0.74431
-0.54004
-0.73995
+@verbatiminclude examples/rngunif.out
 @end example
 @noindent
 The numbers depend on the seed used by the generator.  The default seed

@@ -270,9 +270,7 @@ function where an error might be reported,
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_fft_complex.h>
 
-int 
-main (void) 
-@{
+...
   int status;
   size_t n = 37;
 
@@ -289,9 +287,7 @@ main (void)
     @}
     exit (-1);
   @}
-
-  exit (0);
-@}
+...
 @end example
 @comment 
 @noindent

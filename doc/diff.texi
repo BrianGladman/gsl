@@ -57,52 +57,14 @@ undefined for @math{x<0} so the derivative at @math{x=0} is computed
 using @code{gsl_diff_forward}.
 
 @example
-#include <stdio.h>
-#include <gsl/gsl_math.h>
-#include <gsl/gsl_diff.h>
-
-double f (double x, void * params)
-@{
-  return pow (x, 1.5);
-@}
-
-int
-main (void)
-@{
-  gsl_function F;
-  double result, abserr;
-
-  F.function = &f;
-  F.params = 0;
-
-  printf ("f(x) = x^(3/2)\n");
-
-  gsl_diff_central (&F, 2.0, &result, &abserr);
-  printf ("x = 2.0\n");
-  printf ("f'(x) = %.10f +/- %.5f\n", result, abserr);
-  printf ("exact = %.10f\n\n", 1.5 * sqrt(2.0));
-
-  gsl_diff_forward (&F, 0.0, &result, &abserr);
-  printf ("x = 0.0\n");
-  printf ("f'(x) = %.10f +/- %.5f\n", result, abserr);
-  printf ("exact = %.10f\n", 0.0);
-
-  return 0;
-@}
+@verbatiminclude examples/diff.c
 @end example
 @noindent
 Here is the output of the program,
+
 @example
-$ ./demo 
-f(x) = x^(3/2)
-
-x = 2.0
-f'(x) = 2.1213203435 +/- 0.01490
-exact = 2.1213203436
-
-x = 0.0
-f'(x) = 0.0012172897 +/- 0.05028
-exact = 0.0000000000
+$ ./a.out
+@verbatiminclude examples/diff.out
 @end example
 
 @node Numerical Differentiation References
