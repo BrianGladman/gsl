@@ -502,7 +502,6 @@ procedure begins with the current estimate.
 The estimates are averaged using the arithmetic mean, but no error is computed.
 @end table
 
-
 The @sc{vegas} algorithm is highly configurable. The following variables
 can be accessed through the @code{gsl_monte_vegas_state} struct,
 
@@ -783,8 +782,4 @@ G.P. Lepage,
 @cite{VEGAS: An Adaptive Multi-dimensional Integration Program},
 Cornell preprint CLNS 80-447, March 1980
 @end itemize
-
-@noindent
-
-
 
