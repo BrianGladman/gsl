@@ -137,7 +137,7 @@ gsl_integration_qng (double (*f) (double x),
       res87 += savfun[k] * w87a[k];
     }
 
-  for (k = 0; k < 21; k++)
+  for (k = 0; k < 22; k++)
     {
       const double abscissa = half_length * x4[k];
       res87 += w87b[k] * (f (center + abscissa) + f (center - abscissa));
