@@ -391,7 +391,8 @@ one is chosen.
 @section Median and Percentiles
 
 The median and percentile functions described in this section operate on
-sorted data. 
+sorted data. For convenience we use @dfn{quantiles}, measured on a scale
+of 0 to 1, instead of percentiles (which use a scale of 0 to 100).
 
 @deftypefn Statistics void gsl_stats_sort_data (double @var{data[]}, size_t @var{n})
 @deftypefnx Statistics void gsl_stats_int_sort_data (int @var{data[]}, size_t @var{n})
@@ -425,23 +426,23 @@ interpolation the function @code{gsl_stats_int_median_from_sorted_data}
 always returns a floating-point number.
 @end deftypefn
 
-@deftypefn Statistics double gsl_stats_percentile_from_sorted_data (const double @var{sorted_data[]}, size_t @var{n}, double @var{f})
-@deftypefnx Statistics double gsl_stats_int_percentile_from_sorted_data (const int @var{sorted_data[]}, size_t @var{n}, double @var{f})
+@deftypefn Statistics double gsl_stats_quantile_from_sorted_data (const double @var{sorted_data[]}, size_t @var{n}, double @var{f})
+@deftypefnx Statistics double gsl_stats_int_quantile_from_sorted_data (const int @var{sorted_data[]}, size_t @var{n}, double @var{f})
 
 The function @code{gsl_stats_median_from_sorted_data} returns a
-percentile value of @var{sorted_data}, a double-precision array of
+quantile value of @var{sorted_data}, a double-precision array of
 length @var{n} with its elements in ascending numerical order.  The
-percentile is determined by the @var{f}, a fraction between 0 and 1. For
+quantile is determined by the @var{f}, a fraction between 0 and 1. For
 example, to compute the value of the 75th percentile @var{f} should have
 the value 0.75.
 
 There are no checks to see whether the data are sorted, so the function
 @code{gsl_stats_sort_data} should always be used first.
 
-The percentile is found by interpolation, using the formula
+The quantile is found by interpolation, using the formula
 
 @equation
-percentile = (1 - \delta) data[i] + \delta data[i+1]
+quantile = (1 - \delta) data[i] + \delta data[i+1]
 @end equation
 @noindent
 where @math{i} is @code{floor}(@math{(n - 1)f}) and @math{\delta} is 
@@ -451,10 +452,10 @@ Thus the minimum value of the array (@var{data[0]}) is given by @var{f}
 equal to zero, the maximum value (@var{data[n-1]}) is given by @var{f}
 equal to one and the median value is given by @var{f} equal to 0.5.
 
-The function @code{gsl_stats_int_percentile_from_sorted_data} returns a
-percentile of an integer array. Since the percentile is found by
+The function @code{gsl_stats_int_quantile_from_sorted_data} returns a
+quantile of an integer array. Since the quantile is found by
 interpolation the function
-@code{gsl_stats_int_percentile_from_sorted_data} always returns a
+@code{gsl_stats_int_quantile_from_sorted_data} always returns a
 floating-point number.
 @end deftypefn
 
@@ -533,8 +534,8 @@ int main()
         data[0], data[1], data[2], data[3], data[4]);
 
   median   = gsl_stats_median_from_sorted_data(data, 5);
-  upperq   = gsl_stats_percentile_from_sorted_data(data, 5, 0.75);
-  lowerq   = gsl_stats_percentile_from_sorted_data(data, 5, 0.25);
+  upperq   = gsl_stats_quantile_from_sorted_data(data, 5, 0.75);
+  lowerq   = gsl_stats_quantile_from_sorted_data(data, 5, 0.25);
 
   printf("The median is %g\n", median) ;
   printf("The upper quartile is %g\n", upperq) ;

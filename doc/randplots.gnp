@@ -59,7 +59,7 @@ set yrange [0:1]
 set xrange [0:3]
 set output "rand-chisq.tex"
 set title "Chi-squared Distribution"
-p(x)=x**(nu/2.0-1.0) *exp(-x)/ gamma(nu/2.0)
+p(x)=(x/2)**(nu/2.0-1.0) *exp(-x/2)/ gamma(nu/2.0)
 plot nu=1.0, p(x) title "$\nu=1$", \
       nu=2.0, p(x) title "$\nu=2$", \
 	nu=3.0, p(x) title "$\nu=3$"
@@ -202,6 +202,15 @@ set output "rand-geometric.tex"
 set title "Geometric Distribution"
 p(x)=P*(1-P)**int(x)
 plot P=0.5, p(x) title "$p=0.5$"
+
+set xrange [0:10]
+set yrange [0:0.7]
+set ytics 0.1
+set xtics 1
+set output "rand-logarithmic.tex"
+set title "Logarithmic Distribution"
+p(x)=int(x) ? (-1/log(1-P))*(P**int(x))/int(x) : 0
+plot P=0.7, p(x) title "$p=0.7$"
 
 set xrange [0:10]
 set yrange [0:0.7]
