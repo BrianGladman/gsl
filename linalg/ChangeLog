@@ -1,3 +1,9 @@
+Mon Aug 12 20:12:55 2002  Brian Gough  <bjg@network-theory.co.uk>
+
+	* bidiag.c (gsl_linalg_bidiag_unpack_B): fixed to copy
+ 	superdiagonal and not subdiagonal, as was incorrectly done
+ 	previously.
+
 Sun Jun 16 11:57:00 2002  Brian Gough  <bjg@network-theory.co.uk>
 
 	* svd.c (gsl_linalg_SV_decomp): keep track of maximum value
