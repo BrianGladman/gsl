@@ -146,7 +146,7 @@ int
 			  const complex twiddle5[]);
 
 int
-  gsl_fft_complex_pass_n (const complex from[],
+  gsl_fft_complex_pass_n (complex from[],
 			  complex to[],
 			  const gsl_fft_direction sign,
 			  const unsigned int factor,
