@@ -1,3 +1,9 @@
+Thu Mar  2 20:51:23 2000  Brian Gough  <bjg@network-theory.co.uk>
+
+	* fprintf_source.c: all input is now done through an ATOMIC_IO
+ 	type, since char has to be written/read using a different type
+ 	(int).
+
 Fri Oct  1 15:48:31 1999  Brian Gough  <bjg@network-theory.co.uk>
 
 	* this directory handles the memory management for vectors and

@@ -59,9 +59,13 @@ FUNCTION (gsl_block, fscanf) (FILE * stream, TYPE(gsl_block) * b)
       int k;
       for (k = 0; k < MULTIPLICITY; k++)
 	{
-	  int status = fscanf (stream,
-			       IN_FORMAT,
-			       data + MULTIPLICITY * i + k);
+          ATOMIC_IO tmp ;
+
+	  int status = fscanf (stream, IN_FORMAT, &tmp) ;
+          
+          data [MULTIPLICITY * i + k] = tmp;
+
+
 	  if (status != 1)
             {
               GSL_ERROR ("fscanf failed", GSL_EFAILED);
@@ -131,9 +135,12 @@ FUNCTION (gsl_block, raw_fscanf) (FILE * stream,
       int k;
       for (k = 0; k < MULTIPLICITY; k++)
 	{
-	  int status = fscanf (stream,
-			       IN_FORMAT,
-			       data + MULTIPLICITY * i * stride + k);
+          ATOMIC_IO tmp;
+
+	  int status = fscanf (stream, IN_FORMAT, &tmp) ;
+
+          data [MULTIPLICITY * i * stride + k] = tmp;
+
 	  if (status != 1)
 	    GSL_ERROR ("fscanf failed", GSL_EFAILED);
 	}

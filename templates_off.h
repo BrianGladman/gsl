@@ -37,6 +37,7 @@
 #undef MULTIPLICITY
 #undef IN_FORMAT
 #undef OUT_FORMAT
+#undef ATOMIC_IO
 #undef ZERO
 #undef NAME
 #undef STRING

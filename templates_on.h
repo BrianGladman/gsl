@@ -12,6 +12,7 @@
 #define MULTIPLICITY 2
 #define IN_FORMAT "%Lg"
 #define OUT_FORMAT "%Lg"
+#define ATOMIC_IO ATOMIC
 #define ZERO {{0,0}}
 
 #elif defined(BASE_GSL_COMPLEX)
@@ -21,6 +22,7 @@
 #define MULTIPLICITY 2
 #define IN_FORMAT "%lg"
 #define OUT_FORMAT "%g"
+#define ATOMIC_IO ATOMIC
 #define ZERO {{0,0}}
 
 #elif defined(BASE_GSL_COMPLEX_FLOAT)
@@ -30,6 +32,7 @@
 #define MULTIPLICITY 2
 #define IN_FORMAT "%g"
 #define OUT_FORMAT "%g"
+#define ATOMIC_IO ATOMIC
 #define ZERO {{0,0}}
 
 #elif defined(BASE_LONG_DOUBLE)
@@ -40,6 +43,7 @@
 #define MULTIPLICITY 1
 #define IN_FORMAT "%Lg"
 #define OUT_FORMAT "%Lg"
+#define ATOMIC_IO ATOMIC
 #define ZERO 0
 
 #elif defined(BASE_DOUBLE)
@@ -49,6 +53,7 @@
 #define MULTIPLICITY 1
 #define IN_FORMAT "%lg"
 #define OUT_FORMAT "%g"
+#define ATOMIC_IO ATOMIC
 #define ZERO 0
 #define BASE_EPSILON GSL_DBL_EPSILON
 
@@ -59,6 +64,7 @@
 #define MULTIPLICITY 1
 #define IN_FORMAT "%g"
 #define OUT_FORMAT "%g"
+#define ATOMIC_IO ATOMIC
 #define ZERO 0
 #define BASE_EPSILON GSL_FLT_EPSILON
 
@@ -69,6 +75,7 @@
 #define MULTIPLICITY 1
 #define IN_FORMAT "%lu"
 #define OUT_FORMAT "%lu"
+#define ATOMIC_IO ATOMIC
 #define ZERO 0
 
 #elif defined(BASE_LONG)
@@ -78,6 +85,7 @@
 #define MULTIPLICITY 1
 #define IN_FORMAT "%ld"
 #define OUT_FORMAT "%ld"
+#define ATOMIC_IO ATOMIC
 #define ZERO 0
 
 #elif defined(BASE_UINT)
@@ -87,6 +95,7 @@
 #define MULTIPLICITY 1
 #define IN_FORMAT "%u"
 #define OUT_FORMAT "%u"
+#define ATOMIC_IO ATOMIC
 #define ZERO 0
 
 #elif defined(BASE_INT)
@@ -96,6 +105,7 @@
 #define MULTIPLICITY 1
 #define IN_FORMAT "%d"
 #define OUT_FORMAT "%d"
+#define ATOMIC_IO ATOMIC
 #define ZERO 0
 
 #elif defined(BASE_USHORT)
@@ -105,6 +115,7 @@
 #define MULTIPLICITY 1
 #define IN_FORMAT "%hu"
 #define OUT_FORMAT "%hu"
+#define ATOMIC_IO ATOMIC
 #define ZERO 0
 
 #elif defined(BASE_SHORT)
@@ -114,6 +125,7 @@
 #define MULTIPLICITY 1
 #define IN_FORMAT "%hd"
 #define OUT_FORMAT "%hd"
+#define ATOMIC_IO ATOMIC
 #define ZERO 0
 
 #elif defined(BASE_UCHAR)
@@ -121,8 +133,9 @@
 #define SHORT uchar
 #define ATOMIC unsigned char
 #define MULTIPLICITY 1
-#define IN_FORMAT "%c%*c"
+#define IN_FORMAT "%u"
 #define OUT_FORMAT "%u"
+#define ATOMIC_IO unsigned int
 #define ZERO 0
 
 #elif defined(BASE_CHAR)
@@ -130,8 +143,9 @@
 #define SHORT char
 #define ATOMIC char
 #define MULTIPLICITY 1
-#define IN_FORMAT "%c%*c"
+#define IN_FORMAT "%d"
 #define OUT_FORMAT "%d"
+#define ATOMIC_IO int
 #define ZERO 0
 
 #else
