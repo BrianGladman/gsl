@@ -8,9 +8,13 @@ are now available.
 ** Vector and matrix views now have access to the address of the
 underlying block for compatibility with VSIPL (www.vsipl.org).
 
-** The seeding procedure of the MT19937 random number generator has
-been updated to match the 10/99 release of the original code. This
-fixes a weakness which occurred for seeds which were powers of 2.
+** There is a new library for generating low-discrepancy quasi-random
+sequences.
+
+** The seeding procedure of the default random number generator
+MT19937 has been updated to match the 10/99 release of the original
+code.  This fixes a weakness which occurred for seeds which were
+powers of 2.
 
 ** The blas library libgslblasnative has been renamed libgslblas to avoid
 confusion with system blas library
