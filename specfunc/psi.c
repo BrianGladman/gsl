@@ -642,10 +642,12 @@ int gsl_sf_psi_1_e(const double x, gsl_sf_result * result)
     for(m = 0; m < M; ++m)
       sum += 1.0/((x+m)*(x+m));
 
-    int stat_psi = psi_n_xg0(1, fx, result);
-    result->val += sum;
-    result->err += M * GSL_DBL_EPSILON * sum;
-    return stat_psi;
+    {
+      int stat_psi = psi_n_xg0(1, fx, result);
+      result->val += sum;
+      result->err += M * GSL_DBL_EPSILON * sum;
+      return stat_psi;
+    }
   }
   else
   {
