@@ -23,6 +23,8 @@ typedef struct
     gsl_vector * qtf;
     gsl_vector * newton;
     gsl_vector * gradient;
+
+    gsl_vector * x_trial;
   }
 hybridj_state_t;
 
@@ -36,7 +38,7 @@ hybridj_alloc (void * vstate, size_t n)
 {
   hybridj_state_t * state = (hybridj_state_t *) vstate;
   gsl_matrix * q, *r;
-  gsl_vector * rdiag, *diag, *qtf, *newton, *gradient;
+  gsl_vector * rdiag, *diag, *qtf, *newton, *gradient, *x_trial;
 
   q = gsl_matrix_calloc (n,n);
   
@@ -222,9 +224,18 @@ hybridj_iterate (void * vstate, gsl_multiroot_function_fdf * fdf, gsl_vector * x
   gsl_vector * diag = state->diag;
   gsl_vector * qtf = state->qtf;
 
+  double prered, preref, actred;
+  double pnorm, fnorm, fnorm1, fnorm1p;
+  double ratio;
+  double p0001;
+  double p1, p5;
+
+  int nsuc = 0;
+  int ncfail = 0;
+
   /* compute dogleg step */
 
-  dogleg (r, qtf, diag, delta, newton, gradient, dx);
+  dogleg (r, qtf, diag, state->delta, state->newton, state->gradient, dx);
 
   /* take a trial step */
 
@@ -232,7 +243,7 @@ hybridj_iterate (void * vstate, gsl_multiroot_function_fdf * fdf, gsl_vector * x
     {
       double pi = gsl_vector_get (dx, i);
       double xi = gsl_vector_get (x, i);
-      gsl_vector_set (x_trial, i, xi + pi);
+      gsl_vector_set (state->x_trial, i, xi + pi);
     }
 
   pnorm = scaled_enorm (diag, dx);
@@ -285,16 +296,16 @@ hybridj_iterate (void * vstate, gsl_multiroot_function_fdf * fdf, gsl_vector * x
     {
       nsuc = 0;
       ncfail++;
-      delta *= p5;
+      state->delta *= p5;
     }
   else
     {
       ncfail = 0;
-      ncsuc++;
-      if (ratio >= p5 || ncsuc > 1)
-        delta = GSL_MAX(delta, pnorm/p5);
+      nsuc++;
+      if (ratio >= p5 || nsuc > 1)
+        state->delta = GSL_MAX(state->delta, pnorm/p5);
       if (fabs(ratio-1) <= p1) 
-        delta = pnorm/p5;
+        state->delta = pnorm/p5;
     }
 
   if (ratio >= p0001)
