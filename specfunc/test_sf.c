@@ -339,6 +339,15 @@ int test_coupling(void)
   TEST_SF(s, gsl_sf_coupling_6j_e, (2, 2, 4, 2, -2, 2, &r), GSL_NAN, GSL_NAN, GSL_EDOM);
   TEST_SF(s, gsl_sf_coupling_6j_e, (2, 2, 4, 2, 2, -2, &r), GSL_NAN, GSL_NAN, GSL_EDOM);
 
+  /* Test 6j triangle conditions */
+
+  TEST_SF(s, gsl_sf_coupling_6j_e, (2, 2, 4, 2, 2, 7, &r), 0, 0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_coupling_6j_e, (2, 2, 4, 2, 7, 2, &r), 0, 0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_coupling_6j_e, (2, 2, 4, 7, 2, 2, &r), 0, 0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_coupling_6j_e, (2, 2, 7, 2, 2, 2, &r), 0, 0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_coupling_6j_e, (2, 7, 4, 2, 2, 2, &r), 0, 0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_coupling_6j_e, (7, 2, 4, 2, 2, 2, &r), 0, 0, GSL_SUCCESS);
+
   /* Test 9j */
 
   TEST_SF(s, gsl_sf_coupling_9j_e, (4, 2,  4, 3, 3, 2, 1, 1, 2, &r), -sqrt(1.0/6.0)/10.0, TEST_TOL2, GSL_SUCCESS);
@@ -346,16 +355,25 @@ int test_coupling(void)
 
   /* Test 9j error checking */
 
-  TEST_SF(s, gsl_sf_coupling_9j_e, (-4, 2,  4, 3, 3, 2, 1, 1, 2, &r), GSL_NAN, GSL_NAN, GSL_EDOM);
-  TEST_SF(s, gsl_sf_coupling_9j_e, (4, -2,  4, 3, 3, 2, 1, 1, 2, &r), GSL_NAN, GSL_NAN, GSL_EDOM);
-  TEST_SF(s, gsl_sf_coupling_9j_e, (4, 2,  -4, 3, 3, 2, 1, 1, 2, &r), GSL_NAN, GSL_NAN, GSL_EDOM);
-  TEST_SF(s, gsl_sf_coupling_9j_e, (4, 2,  4, -3, 3, 2, 1, 1, 2, &r), GSL_NAN, GSL_NAN, GSL_EDOM);
-  TEST_SF(s, gsl_sf_coupling_9j_e, (4, 2,  4, 3, -3, 2, 1, 1, 2, &r), GSL_NAN, GSL_NAN, GSL_EDOM);
-  TEST_SF(s, gsl_sf_coupling_9j_e, (4, 2,  4, 3, 3, -2, 1, 1, 2, &r), GSL_NAN, GSL_NAN, GSL_EDOM);
-  TEST_SF(s, gsl_sf_coupling_9j_e, (4, 2,  4, 3, 3, 2, -1, 1, 2, &r), GSL_NAN, GSL_NAN, GSL_EDOM);
-  TEST_SF(s, gsl_sf_coupling_9j_e, (4, 2,  4, 3, 3, 2, 1, -1, 2, &r), GSL_NAN, GSL_NAN, GSL_EDOM);
-  TEST_SF(s, gsl_sf_coupling_9j_e, (4, 2,  4, 3, 3, 2, 1, 1, -2, &r), GSL_NAN, GSL_NAN, GSL_EDOM);
+  TEST_SF(s, gsl_sf_coupling_9j_e, (-4, 2, 4, 3, 3, 2, 1, 1, 2, &r), GSL_NAN, GSL_NAN, GSL_EDOM);
+  TEST_SF(s, gsl_sf_coupling_9j_e, (4, -2, 4, 3, 3, 2, 1, 1, 2, &r), GSL_NAN, GSL_NAN, GSL_EDOM);
+  TEST_SF(s, gsl_sf_coupling_9j_e, (4, 2, -4, 3, 3, 2, 1, 1, 2, &r), GSL_NAN, GSL_NAN, GSL_EDOM);
+  TEST_SF(s, gsl_sf_coupling_9j_e, (4, 2, 4, -3, 3, 2, 1, 1, 2, &r), GSL_NAN, GSL_NAN, GSL_EDOM);
+  TEST_SF(s, gsl_sf_coupling_9j_e, (4, 2, 4, 3, -3, 2, 1, 1, 2, &r), GSL_NAN, GSL_NAN, GSL_EDOM);
+  TEST_SF(s, gsl_sf_coupling_9j_e, (4, 2, 4, 3, 3, -2, 1, 1, 2, &r), GSL_NAN, GSL_NAN, GSL_EDOM);
+  TEST_SF(s, gsl_sf_coupling_9j_e, (4, 2, 4, 3, 3, 2, -1, 1, 2, &r), GSL_NAN, GSL_NAN, GSL_EDOM);
+  TEST_SF(s, gsl_sf_coupling_9j_e, (4, 2, 4, 3, 3, 2, 1, -1, 2, &r), GSL_NAN, GSL_NAN, GSL_EDOM);
+  TEST_SF(s, gsl_sf_coupling_9j_e, (4, 2, 4, 3, 3, 2, 1, 1, -2, &r), GSL_NAN, GSL_NAN, GSL_EDOM);
 
+  TEST_SF(s, gsl_sf_coupling_9j_e, (10, 2, 4, 3, 3, 2, 1, 1, 2, &r), 0, 0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_coupling_9j_e, (4, 10, 4, 3, 3, 2, 1, 1, 2, &r), 0, 0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_coupling_9j_e, (4, 2, 10, 3, 3, 2, 1, 1, 2, &r), 0, 0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_coupling_9j_e, (4, 2, 4, 10, 3, 2, 1, 1, 2, &r), 0, 0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_coupling_9j_e, (4, 2, 4, 3, 10, 2, 1, 1, 2, &r), 0, 0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_coupling_9j_e, (4, 2, 4, 3, 3, 10, 1, 1, 2, &r), 0, 0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_coupling_9j_e, (4, 2, 4, 3, 3, 2, 10, 1, 2, &r), 0, 0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_coupling_9j_e, (4, 2, 4, 3, 3, 2, 1, 10, 2, &r), 0, 0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_coupling_9j_e, (4, 2, 4, 3, 3, 2, 1, 1, 10, &r), 0, 0, GSL_SUCCESS);
   return s;
 }
 
