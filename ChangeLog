@@ -1,3 +1,9 @@
+Tue Jun 23 19:49:22 1998  Brian Gough  <bjg@vvv.lanl.gov>
+
+	* added a top-level file gsl_config.h for detecting features when
+ 	users include the library headers. Currently it just turns on
+ 	HAVE_INLINE if you are using GCC or C++.
+
 1998-05-16  Mark Galassi  <rosalia@cygnus.com>
 
 	* configure.in: Brian fixed the error where libgslerr.a was not

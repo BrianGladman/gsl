@@ -61,6 +61,7 @@ host_alias = @host_alias@
 host_triplet = @host@
 CC = @CC@
 CPP = @CPP@
+HAVE_INLINE = @HAVE_INLINE@
 LN_S = @LN_S@
 MAKEINFO = @MAKEINFO@
 PACKAGE = @PACKAGE@
@@ -71,7 +72,7 @@ full_top_srcdir = @full_top_srcdir@
 
 SUBDIRS = err ieee-utils rng random vector matrix randist fft roots specfunc statistics siman integration histogram doc
 
-include_HEADERS = gsl_complex.h gsl_math.h
+include_HEADERS = gsl_config.h gsl_complex.h gsl_math.h
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = config.h
