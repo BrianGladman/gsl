@@ -32,12 +32,10 @@
 */
 
 int
-TYPE (gsl_permute) (const size_t * p, BASE * data, const size_t stride, const size_t n)
+TYPE (gsl_permute) (const size_t * p, ATOMIC * data, const size_t stride, const size_t n)
 {
   size_t i, k, pk;
 
-  BASE r1, t;
-  
   for (i = 0; i < n; i++)
     {
       k = p[i];
@@ -57,28 +55,37 @@ TYPE (gsl_permute) (const size_t * p, BASE * data, const size_t stride, const si
       
       /* shuffle the elements of the cycle */
       
-      t = data[i*stride];
+      {
+        unsigned int a;
+
+        ATOMIC t[MULTIPLICITY];
+        
+        for (a = 0; a < MULTIPLICITY; a++)
+          t[a] = data[i*stride*MULTIPLICITY + a];
       
-      while (pk != i)
-        {
-          r1 = data[pk*stride];
-          data[k*stride] = r1;
-          k = pk;
-          pk = p[k];
-        };
-      
-      data[k*stride] = t;
+        while (pk != i)
+          {
+            for (a = 0; a < MULTIPLICITY; a++)
+              {
+                ATOMIC r1 = data[pk*stride*MULTIPLICITY + a];
+                data[k*stride*MULTIPLICITY + a] = r1;
+              }
+            k = pk;
+            pk = p[k];
+          };
+        
+        for (a = 0; a < MULTIPLICITY; a++)
+          data[k*stride*MULTIPLICITY + a] = t[a];
+      }
     }
 
   return GSL_SUCCESS;
 }
 
 int
-FUNCTION (gsl_permute,inverse) (const size_t * p, BASE * data, const size_t stride, const size_t n)
+FUNCTION (gsl_permute,inverse) (const size_t * p, ATOMIC * data, const size_t stride, const size_t n)
 {
   size_t i, k, pk;
-
-  BASE r1, t;
 
   for (i = 0; i < n; i++)
     {
@@ -99,18 +106,30 @@ FUNCTION (gsl_permute,inverse) (const size_t * p, BASE * data, const size_t stri
       
       /* shuffle the elements of the cycle in the inverse direction */
       
-      t = data[k*stride];
+      {
+        unsigned int a;
 
-      while (pk != i)
-        {
-          r1 = data[pk*stride];
-          data[pk*stride] = t;
-          k = pk;
-          pk = p[k];
-          t = r1;
-        };
-      
-      data[pk*stride] = t;
+        ATOMIC t[MULTIPLICITY];
+
+        for (a = 0; a < MULTIPLICITY; a++)
+          t[a] = data[k*stride*MULTIPLICITY+a];
+
+        while (pk != i)
+          {
+            for (a = 0; a < MULTIPLICITY; a++)
+              {
+                ATOMIC r1 = data[pk*stride*MULTIPLICITY + a];
+                data[pk*stride*MULTIPLICITY + a] = t[a];
+                t[a] = r1;
+              }
+
+            k = pk;
+            pk = p[k];
+          };
+
+        for (a = 0; a < MULTIPLICITY; a++)
+          data[pk*stride*MULTIPLICITY+a] = t[a];
+      }
     }
 
   return GSL_SUCCESS;

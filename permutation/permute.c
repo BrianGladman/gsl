@@ -4,6 +4,24 @@
 #include <gsl/gsl_permute.h>
 #include <gsl/gsl_permute_vector.h>
 
+#define BASE_GSL_COMPLEX_LONG
+#include "templates_on.h"
+#include "permute_source.c"
+#include "templates_off.h"
+#undef  BASE_GSL_COMPLEX_LONG
+
+#define BASE_GSL_COMPLEX
+#include "templates_on.h"
+#include "permute_source.c"
+#include "templates_off.h"
+#undef  BASE_GSL_COMPLEX
+
+#define BASE_GSL_COMPLEX_FLOAT
+#include "templates_on.h"
+#include "permute_source.c"
+#include "templates_off.h"
+#undef  BASE_GSL_COMPLEX_FLOAT
+
 #define BASE_LONG_DOUBLE
 #include "templates_on.h"
 #include "permute_source.c"

@@ -1,6 +1,10 @@
 #ifndef __GSL_PERMUTE_VECTOR_H__
 #define __GSL_PERMUTE_VECTOR_H__
 
+#include <gsl/gsl_permute_vector_complex_long_double.h>
+#include <gsl/gsl_permute_vector_complex_double.h>
+#include <gsl/gsl_permute_vector_complex_float.h>
+
 #include <gsl/gsl_permute_vector_long_double.h>
 #include <gsl/gsl_permute_vector_double.h>
 #include <gsl/gsl_permute_vector_float.h>
