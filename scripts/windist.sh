@@ -14,7 +14,7 @@ ver=${tarfile%%.tar.gz}
 tar xvfz $tarfile
 ( cd $ver;
   ./configure;
- (cd gsl ; make LN_S=mv )
+ (cd gsl ; make LN_S=mv ; perl -i ../../msvc/mkdllheaders.pl *.h ; )
  (cd doc ; 
   test -e gsl-ref.info && rm -f *.info *.info-* ; 
   mkdir html ; 

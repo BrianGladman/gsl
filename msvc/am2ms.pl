@@ -2,6 +2,28 @@
 
 # This script is a mess!
 
+$target = shift @ARGV;
+
+@confs = ("Release", "Debug");
+
+if ($target eq 'GSLLIB') {
+    $begin_project_lib = \&begin_project_static_lib;
+    @options = ("Release", "/ML", "Debug", "/MLd");
+} elsif ($target eq 'GSLLIBMT') {
+    $begin_project_lib = \&begin_project_static_lib;
+    @options = ("Release", "/MT", "Debug", "/MTd");
+} elsif ($target eq 'GSLLIBMD') {
+    $begin_project_lib = \&begin_project_static_lib;
+    @options = ("Release", "/MD", "Debug", "/MDd");
+} elsif ($target eq 'GSLDLL') {
+    $begin_project_lib = \&begin_project_dll;
+    @options = ("Release", "/MD /LD", "Debug", "/MDd /LDd");
+    $app_options = '/D "GSL_IMPORTS"';
+} else {
+    die "unrecognized target $target";
+}
+
+
 %automake = ();
 
 for $file (@ARGV) {
@@ -31,11 +53,6 @@ for $file (@ARGV) {
     }
 }
 
-#@confs = ("Release", "Debug");
-#@options = ("Release", "/ML", "Debug", "/MLd");
-
-@confs = ("ReleaseDLL", "DebugDLL");
-@options = ("ReleaseDLL", "/MD /LD", "DebugDLL", "/MDd /LDd");
 
 for $file (@ARGV) {
     my $makefile = $automake{$file};
@@ -57,9 +74,9 @@ for $file (@ARGV) {
         push(@lib_projects, $name);
         #print "adding to $name \n";
         open(LIB, ">$name.dsp");
-        print LIB &begin_project_dll($name, @options);
+        print LIB &$begin_project_lib($name, @options);
         print LIB &begin_target($name);
-        print LIB &add_def(".", "$name.def");
+        print LIB &add_def(".", "$name.def") if $target =~ /DLL/i;
         print LIB &add_files($name, @confs, $dir, $name, 'inc', $makefile->list_sources($lib));
         print LIB &add_files($name, @confs, $dir, $name, 'exclude', grep(!/^test_/,@int_headers));
         print LIB &add_files($name, @confs, $dir, $name, 'exclude', @ext_headers);
@@ -70,9 +87,9 @@ for $file (@ARGV) {
 }
 
 open(LIBGSL, ">libgsl.dsp");
-print LIBGSL &begin_project_dll("libgsl", @options, "libgslcblas.lib");
+print LIBGSL &$begin_project_lib("libgsl", @options, "libgslcblas.lib");
 print LIBGSL &begin_target("libgsl");
-print LIBGSL &add_def(".", "libgsl.def");
+print LIBGSL &add_def(".", "libgsl.def") if $target =~ /DLL/i;
 push(@lib_projects, "libgsl");
 for $file (@ARGV) {
     my $makefile = $automake{$file};
@@ -134,7 +151,7 @@ for $file (@ARGV) {
         }
         open(TEST, ">$name.dsp");
         warn "$name $prog => ", @sources, "\n";
-        print TEST &begin_project_app($name, @options);
+        print TEST &begin_project_app($name, @options, $app_options);
         print TEST &begin_target($name);
         print TEST &add_files($name, @confs, $dir, $name, 'inc', $makefile->list_sources($prog));
         print TEST &add_files($name, @confs, $dir, $name, 'exclude', grep(/^test_/,@int_headers));
@@ -149,40 +166,37 @@ for $file (@ARGV) {
 open(GSL, ">GSL.dsw");
 print GSL &begin_workspace();
 for $lib (@lib_projects) {
-    print GSL &add_workspace_project("$lib", "msvc\\$lib.dsp");
+    print GSL &add_workspace_project("$lib", "$target\\$lib.dsp");
 }
+print GSL &end_workspace();
+close GSL;
+
+open(GSL, ">GSLTESTS.dsw");
+print GSL &begin_workspace();
 for $t (@tests) {
-    print GSL &add_workspace_project($t, "msvc\\$t.dsp");
+    print GSL &add_workspace_project($t, "$target\\$t.dsp");
 }
 print GSL &end_workspace();
 close GSL;
 
 # Write test batch files
 
-open(TEST, ">MAKE_CHECK.bat");
-print TEST &begin_check();
-for $dir ("Release", "Debug") {
+for $dir (@confs) {
+    open(TEST, ">MAKE_CHECK_${dir}.bat");
+    print TEST &begin_check();
+
     for $t (@tests) {
         print TEST &add_check($dir,$t);
     }
+
     print TEST &missing_checks();
+    print TEST &end_check();
+    close(TEST);
 }
-print TEST &end_check();
-close(TEST);
-
-# Write script to copy headers into gsl directory
-
-open(BATCH, ">COPY_GSL_HEADERS.bat");
-for $h (@installed_headers) {
-    $h =~ s#../##;
-    $h =~ s#/#\\#g;  # convert to dos style path
-    print BATCH "copy $h gsl\n" ;
-}
-close(BATCH);
 
 ######################################################################
 
-sub begin_project_lib {
+sub begin_project_static_lib {
     my ($proj, $release, $release_options, $debug, $debug_options) = @_;
 
     return <<"EOF";
@@ -358,7 +372,7 @@ EOF
 
 
 sub begin_project_app {
-    my ($proj, $release, $release_options, $debug, $debug_options) = @_;
+    my ($proj, $release, $release_options, $debug, $debug_options, $app_options) = @_;
 
     return <<"EOF";
 # Microsoft Developer Studio Project File - Name="$proj" - Package Owner=<4>
@@ -405,7 +419,7 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /Op- /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /c
-# ADD CPP /nologo ${release_options} /Za /W3 /GX /O2 /Op- /I "..\\msvc" /I "." /I ".." /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /FD /c
+# ADD CPP /nologo ${release_options} /Za /W3 /GX /O2 /Op- /I "..\\msvc" /I "." /I ".." /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" ${app_options} /FD /c
 # SUBTRACT CPP /YX
 # ADD BASE RSC /l 0x809 /d "NDEBUG"
 # ADD RSC /l 0x809 /d "NDEBUG"
@@ -414,7 +428,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib  kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /machine:I386
-# ADD LINK32 libgsl.lib libgslcblas.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /machine:I386 /libpath:"$release"
+# ADD LINK32 libgsl.lib libgslcblas.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /machine:I386 /out:"$release\\$proj.exe" /libpath:"$release"
 
 !ELSEIF  "\$(CFG)" == "$proj - Win32 Debug"
 
@@ -430,7 +444,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /Z7 /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /GZ  /c
-# ADD CPP /nologo ${debug_options} /Za /W3 /Gm /GX /Z7 /Od /I "..\\msvc" /I "." /I ".." /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /FD /GZ  /c
+# ADD CPP /nologo ${debug_options} /Za /W3 /Gm /GX /Z7 /Od /I "..\\msvc" /I "." /I ".." /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" ${app_options} /FD /GZ  /c
 # SUBTRACT CPP /YX
 # ADD BASE RSC /l 0x809 /d "_DEBUG"
 # ADD RSC /l 0x809 /d "_DEBUG"
@@ -439,7 +453,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib  kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 libgsl.lib libgslcblas.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept /libpath:"$debug"
+# ADD LINK32 libgsl.lib libgslcblas.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /out:"$debug\\$proj.exe" /pdbtype:sept /libpath:"$debug"
 
 !ENDIF 
 EOF
@@ -692,7 +706,7 @@ sub add_check {
     my ($dir, $test) = @_;
     return <<"EOF";
 \@echo running $dir $test...
-\@msvc\\$dir\\$test.exe >> result.dat
+\@$dir\\$test.exe >> result.dat
 \@if not errorlevel 1 echo PASS: $dir\\$test >> result.dat
 \@if errorlevel 1 echo FAIL: $dir\\$test >> result.dat
 EOF

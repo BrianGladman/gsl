@@ -4,10 +4,10 @@
 [Setup]
 AppName=GNU Scientific Library
 AppVerName=GNU Scientific Library @VERSION@
-;AppPublisher=Brian Gough
-;AppPublisherURL=http://www.network-theory.co.uk/gsl/
-;AppSupportURL=http://www.network-theory.co.uk/gsl/
-;AppUpdatesURL=http://www.network-theory.co.uk/gsl/
+;;AppPublisher=Brian Gough
+;;AppPublisherURL=http://www.network-theory.co.uk/gsl/
+;;AppSupportURL=http://www.network-theory.co.uk/gsl/
+;;AppUpdatesURL=http://www.network-theory.co.uk/gsl/
 DefaultDirName={pf}\GSL
 DefaultGroupName=GNU Scientific Library
 OutputBaseFilename=gsl-@VERSION@-setup
@@ -17,10 +17,10 @@ AlwaysCreateUninstallIcon=yes
 LicenseFile="..\Copying"
 UninstallFilesDir={app}\uninstall
 CompressLevel=9
-;InfoBeforeFile=Readme
-;InfoAfterFile=msvc\README.txt
-; uncomment the following line if you want your installation to run on NT 3.51 too.
-; MinVersion=4,3.51
+;;InfoBeforeFile=Readme
+;;InfoAfterFile=msvc\README.txt
+;;uncomment the following line if you want your installation to run on NT 3.51 too.
+;;MinVersion=4,3.51
 
 [Files]
 Source: "README.txt"; DestDir: "{app}"; DestName: "README.txt";  Flags: isreadme;
@@ -29,19 +29,21 @@ Source: "..\NEWS"; DestDir: "{app}"; DestName: "NEWS.txt";
 Source: "..\THANKS"; DestDir: "{app}"; DestName: "THANKS.txt";
 Source: "..\AUTHORS"; DestDir: "{app}"; DestName: "AUTHORS.txt";
 ;
+Source: "..\gsl\*.*"; DestDir: "{app}\include\gsl";
+;
+;; Comment these lines out if not shipping source
 Source: "..\*.dsp"; DestDir: "{app}\src"; Flags: recursesubdirs;
 Source: "..\*.dsw"; DestDir: "{app}\src"; Flags: recursesubdirs;
 Source: "..\*.h"; DestDir: "{app}\src"; Flags: recursesubdirs;
 Source: "..\*.c"; DestDir: "{app}\src"; Flags: recursesubdirs;
 ;
-Source: "..\gsl\*.*"; DestDir: "{app}\include\gsl";
-;
 Source: "Release\libgsl.lib"; DestDir: "{app}\lib";
 Source: "Release\libgslcblas.lib"; DestDir: "{app}\lib"; 
-Source: "Debug\libgsl.lib"; DestDir: "{app}\lib";  DestName: "libgsld.lib"
-Source: "Debug\libgslcblas.lib"; DestDir: "{app}\lib"; DestName: "libgslcblasd.lib";
 Source: "ReleaseMT\libgsl.lib"; DestDir: "{app}\lib"; DestName: "libgslMT.lib"
 Source: "ReleaseMT\libgslcblas.lib"; DestDir: "{app}\lib"; DestName: "libgslcblasMT.lib";
+
+Source: "Debug\libgsl.lib"; DestDir: "{app}\lib";  DestName: "libgsld.lib"
+Source: "Debug\libgslcblas.lib"; DestDir: "{app}\lib"; DestName: "libgslcblasd.lib";
 Source: "DebugMT\libgsl.lib"; DestDir: "{app}\lib";  DestName: "libgslMTd.lib"
 Source: "DebugMT\libgslcblas.lib"; DestDir: "{app}\lib"; DestName: "libgslcblasMTd.lib";
 

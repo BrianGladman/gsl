@@ -10,7 +10,7 @@ print "LIBRARY $name\n";
 print "DESCRIPTION \"GNU Scientific Library $lib\"\n";
 print "EXPORTS\n";
 
-open (LIB, "<$file") || die "can't open lib with nm: $!";
+open (LIB, "<$file") || die "can't open file: $!";
 while (<LIB>) {
     chomp;
     my ($address, $type, $fn) = split(' ', $_);

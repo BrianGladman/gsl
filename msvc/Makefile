@@ -1,11 +1,17 @@
 all:
-	perl am2ms.pl ../Makefile.am ../*/Makefile.am
-	#perl -i -p -e 's/\012/\015\012/' *.dsp *.dsw *.bat
-	mv *.dsw ..
-	mv *.bat ..
+	for n in GSLLIB GSLLIBMT GSLLIBMD GSLDLL ; do  \
+	( cd .. ; mkdir $$n ; cd $$n ; \
+	  perl ../msvc/am2ms.pl $$n ../Makefile.am ../*/Makefile.am ; \
+	  mv GSL.dsw ../$$n.dsw ; \
+	  mv GSLTESTS.dsw ../$${n}TESTS.dsw ; \
+	 ) \
+	done
+	#mv *.dsw ..
+	#mv *.bat ..
 	perl gensetup.pl setup.iss.in > setup.iss
-	perl mkexports.pl libgsl.nm.dat > libgsl.def
-	perl mkexports.pl libgslcblas.nm.dat > libgslcblas.def
+	perl mkexports.pl libgsl.nm.dat > ../GSLDLL/libgsl.def
+	perl mkexports.pl libgslcblas.nm.dat > ../GSLDLL/libgslcblas.def
+	rm libgsl.nm.dat libgslcblas.nm.dat
         
 update:
 	nm ../.libs/libgsl.a > libgsl.nm.dat
@@ -15,4 +21,5 @@ update:
 
 clean:
 	rm -f *.dsp *.dsw *.bat *.plg *.opt *.ncb
+	rm -f libgsl.nm.dat libgslcblas.nm.dat
 
