@@ -41,6 +41,7 @@ gsl_root_bisection (double *root, double (*f) (double),
   if (fl == 0.0)
     {
       *root = *lower_bound;
+      *upper_bound = *lower_bound;
       return GSL_SUCCESS;
     }
 
@@ -49,6 +50,7 @@ gsl_root_bisection (double *root, double (*f) (double),
   if (fu == 0.0)
     {
       *root = *upper_bound;
+      *lower_bound = *upper_bound;
       return GSL_SUCCESS;
     }
 
@@ -72,6 +74,8 @@ gsl_root_bisection (double *root, double (*f) (double),
       if (fm == 0.0)
 	{
 	  *root = midpoint;
+	  *lower_bound = midpoint;
+	  *upper_bound = midpoint;
 	  return GSL_SUCCESS;
 	}
       

@@ -1,3 +1,9 @@
+Mon Oct 26 16:31:21 1998  Brian Gough  <bjg@vvv.lanl.gov>
+
+	* in all routines with upper and lower bounds if a root is found
+ 	exactly then the bracket is collapsed onto the root instead of
+ 	being untouched.
+
 Thu Oct 15 13:59:30 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
 	* bisection.c, falsepos.c, secant.c: reordered the tests so that
