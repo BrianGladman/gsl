@@ -196,7 +196,7 @@ dilogc_series_1(double r, double theta, double * real_result, double * imag_resu
   double rk = r;
   double real_sum = r*ck;
   double imag_sum = r*sk;
-  int kmax = 50 + (int)(10.0/(-log(r)));
+  int kmax = 50 + (int)(20.0/(-log(r)));
   int k;
   for(k=2; k<kmax; k++) {
     double ck_tmp = ck;
@@ -230,7 +230,7 @@ gsl_sf_dilogc_impl(const double r, const double cos_theta, double * result)
     double tmp_result;
     int stat_tmp;
     
-    if(t < 0.75) {
+    if(t < 0.99) {
       double real_tmp_result;
       double imag_tmp_result;
       stat_tmp = dilogc_series_1(t, acos(cos_theta), &real_tmp_result, &imag_tmp_result);
