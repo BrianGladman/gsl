@@ -84,21 +84,20 @@ main (void)
 
   for (s1 = 1; s1 < 4 ; s1++) 
     {
-      for (s2 = 1; s2 < 4 ; s2++) 
-        {
-          test_func (s1,s2);
-          test_float_func (s1,s2);
-          test_long_double_func (s1,s2);
-          
-          test_ulong_func (s1,s2);
-          test_long_func (s1,s2);
-          test_uint_func (s1,s2);
-          test_int_func (s1,s2);
-          test_ushort_func (s1,s2);
-          test_short_func (s1,s2);
-          test_uchar_func (s1,s2);
-          test_char_func (s1,s2);
-        }
+      s2 = (s1 < 3) ? 1 : (s1 - 1) ;
+
+      test_func (s1,s2);
+      test_float_func (s1,s2);
+      test_long_double_func (s1,s2);
+      
+      test_ulong_func (s1,s2);
+      test_long_func (s1,s2);
+      test_uint_func (s1,s2);
+      test_int_func (s1,s2);
+      test_ushort_func (s1,s2);
+      test_short_func (s1,s2);
+      test_uchar_func (s1,s2);
+      test_char_func (s1,s2);
     }
 
   return gsl_test_summary ();

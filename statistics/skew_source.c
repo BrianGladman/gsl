@@ -23,7 +23,7 @@ FUNCTION(gsl_stats,skew_with_mean_and_sd) (const BASE data[],
 
   for (i = 0; i < n; i++)
     {
-      const long double x = (data[i*stride] - mean) / sd;
+      const long double x = (data[i * stride] - mean) / sd;
       skew += (x * x * x - skew) / (i + 1);
     }
 

@@ -17,10 +17,16 @@ FUNCTION (test, func) (const size_t stridea, const size_t strideb)
    .1942, .1079, .1021, .1583, .1673,
    .1675, .1856, .1688, .1512};
 
+  const BASE raww[] = 
+  {.0000, .0000, .0000, 3.000, .0000,
+   1.000, 1.000, 1.000, 0.000, .5000,
+   7.000, 5.000, 4.000, 0.123};
+
   BASE * sorted ;
 
   BASE * groupa = (BASE *) malloc (stridea * na * sizeof(BASE));
   BASE * groupb = (BASE *) malloc (strideb * nb * sizeof(BASE));
+  BASE * w = (BASE *) malloc (strideb * na * sizeof(BASE));
 
 #ifdef BASE_FLOAT
   double rel = 1e-6;
@@ -30,6 +36,9 @@ FUNCTION (test, func) (const size_t stridea, const size_t strideb)
 
   for (i = 0 ; i < na ; i++)
     groupa[i * stridea] = rawa[i] ;
+
+  for (i = 0 ; i < na ; i++)
+    w[i * strideb] = raww[i] ;
 
   for (i = 0 ; i < nb ; i++)
     groupb[i * strideb] = rawb[i] ;
@@ -84,13 +93,61 @@ FUNCTION (test, func) (const size_t stridea, const size_t strideb)
   }
 
   {
-    double pv = FUNCTION(gsl_stats,pvariance) (groupa, groupb, stridea, na, strideb, nb);
+    double wmean = FUNCTION(gsl_stats,wmean) (w, strideb, groupa, stridea, na);
+    double expected = 0.0678111523670601;
+    gsl_test_rel (wmean, expected, rel, NAME(gsl_stats) "_wmean");
+  }
+
+  {
+    double wvar = FUNCTION(gsl_stats,wvariance) (w, strideb, groupa, stridea, na);
+    double expected = 0.000615793060878654;
+    gsl_test_rel (wvar, expected, rel, NAME(gsl_stats) "_wvariance");
+  }
+
+  {
+    double est_wvar = FUNCTION(gsl_stats,est_wvariance) (w, strideb, groupa, stridea, na);
+    double expected = 0.000769562962860317;
+    gsl_test_rel (est_wvar, expected, rel, NAME(gsl_stats) "_est_wvariance");
+  }
+
+  {
+    double wsd = FUNCTION(gsl_stats,wsd) (w, strideb, groupa, stridea, na);
+    double expected = 0.0248151780343937;
+    gsl_test_rel (wsd, expected, rel, NAME(gsl_stats) "_wsd");
+  }
+
+  {
+    double wsd_est = FUNCTION(gsl_stats,est_wsd) (w, strideb, groupa, stridea, na);
+    double expected = 0.0277409978706664;
+    gsl_test_rel (wsd_est, expected, rel, NAME(gsl_stats) "_est_wsd");
+  }
+
+  {
+    double wabsdev = FUNCTION(gsl_stats,wabsdev) (w, strideb, groupa, stridea, na);
+    double expected = 0.0193205027504008;
+    gsl_test_rel (wabsdev, expected, rel, NAME(gsl_stats) "_wabsdev");
+  }
+
+  {
+    double wskew = FUNCTION(gsl_stats,wskew) (w, strideb, groupa, stridea, na);
+    double expected = -0.373631000307076;
+    gsl_test_rel (wskew, expected, rel, NAME(gsl_stats) "_wskew");
+  }
+
+  {
+    double wkurt = FUNCTION(gsl_stats,wkurtosis) (w, strideb, groupa, stridea, na);
+    double expected = -1.48114233353963;
+    gsl_test_rel (wkurt, expected, rel, NAME(gsl_stats) "_wkurtosis");
+  }
+
+  {
+    double pv = FUNCTION(gsl_stats,pvariance) (groupa, stridea, na, groupb, strideb, nb);
     double expected = 0.00123775384615385;
     gsl_test_rel (pv, expected, rel, NAME(gsl_stats) "_pvariance");
   }
 
   {
-    double t = FUNCTION(gsl_stats,ttest) (groupa, groupb, stridea, na, strideb, nb);
+    double t = FUNCTION(gsl_stats,ttest) (groupa, stridea, na, groupb, strideb, nb);
     double expected = -5.67026326985851;
     gsl_test_rel (t, expected, rel, NAME(gsl_stats) "_ttest");
   }
@@ -212,4 +269,5 @@ FUNCTION (test, func) (const size_t stridea, const size_t strideb)
   free (sorted);
   free (groupa);
   free (groupb);
+  free (w);
 }

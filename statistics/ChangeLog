@@ -1,3 +1,16 @@
+Wed Mar  1 11:09:21 2000  Brian Gough  <bjg@network-theory.co.uk>
+
+	* wabsdev.c wabsdev_source.c wkurtosis.c wkurtosis_source.c
+ 	wmean.c wmean_source.c wskew.c wskew_source.c wvariance.c
+ 	wvariance_source.c:  added support for weighted statistics
+
+	* removed source.h (no longer used)
+
+Tue Feb 29 10:35:23 2000  Brian Gough  <bjg@network-theory.co.uk>
+
+	* changed arguments of pvariance and ttest to have consistent form
+ 	(DATA,STRIDE,SIZE)
+
 Mon Feb 28 20:29:08 2000  Brian Gough  <bjg@network-theory.co.uk>
 
 	* removed sort function since this is now available in the sort

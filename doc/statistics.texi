@@ -45,6 +45,7 @@ overflow.
 * Mean and standard deviation and variance::  
 * Absolute deviation::          
 * Higher moments (skewness and kurtosis)::  
+* Weighted Samples::            
 * Maximum and Minimum values::  
 * Median and Percentiles::      
 * Statistical tests::           
@@ -411,6 +412,133 @@ kurtosis = @{1 \over N@}
 @noindent
 These functions are useful if you have already computed the mean and
 standard deviation of @var{data} and want to avoid recomputing them.
+@end deftypefn
+
+
+@node Weighted Samples
+@section Weighted Samples
+
+@deftypefn Statistics double gsl_stats_wmean (const double @var{w[]}, size_t @var{wstride}, const double @var{data[]}, size_t @var{stride}, size_t @var{n})
+@tex
+\beforedisplay
+$$
+{\Hat\mu} =  {{\sum w_i x_i} \over {\sum w_i}}
+$$
+\afterdisplay
+@end tex
+@ifinfo
+@example
+
+@end example
+@end ifinfo
+
+@end deftypefn
+
+@deftypefn Statistics double gsl_stats_wvariance (const double @var{w[]}, size_t @var{wstride}, const double @var{data[]}, size_t @var{stride}, size_t @var{n})
+@tex
+\beforedisplay
+$$
+          =  {{\sum w_i (x_i - xbar)^2} \over {\sum w_i}}
+$$
+\afterdisplay
+@end tex
+@ifinfo
+@example
+
+@end example
+@end ifinfo
+
+@end deftypefn
+
+@deftypefn Statistics double gsl_stats_wsd (const double @var{w[]}, size_t @var{wstride}, const double @var{data[]}, size_t @var{stride}, size_t @var{n})
+@end deftypefn
+
+@deftypefn Statistics double gsl_stats_est_wvariance (const double @var{w[]}, size_t @var{wstride}, const double @var{data[]}, size_t @var{stride}, size_t @var{n})
+@tex
+\beforedisplay
+$$
+     =  {{\sum w_i} \over {(\sum w_i)^2 - \sum w_i^2}} \sum w_i (x_i - xbar)^2
+$$
+\afterdisplay
+@end tex
+@ifinfo
+@example
+
+@end example
+@end ifinfo
+
+@end deftypefn
+
+@deftypefn Statistics double gsl_stats_est_wsd (const double @var{w[]}, size_t @var{wstride}, const double @var{data[]}, size_t @var{stride}, size_t @var{n})
+@end deftypefn
+
+@deftypefn Statistics double gsl_stats_wabsdev (const double @var{w[]}, size_t @var{wstride}, const double @var{data[]}, size_t @var{stride}, size_t @var{n})
+@tex
+\beforedisplay
+$$
+          =  {{\sum w_i |x_i - xbar|} \over {\sum w_i}}
+$$
+\afterdisplay
+@end tex
+@ifinfo
+@example
+
+@end example
+@end ifinfo
+
+@end deftypefn
+
+@deftypefn Statistics double gsl_stats_wskew (const double @var{w[]}, size_t @var{wstride}, const double @var{data[]}, size_t @var{stride}, size_t @var{n})
+@tex
+\beforedisplay
+$$
+          =  {{\sum w_i ((x_i - xbar)/\sigma)^3} \over {\sum w_i}}
+$$
+\afterdisplay
+@end tex
+@ifinfo
+@example
+
+@end example
+@end ifinfo
+
+@end deftypefn
+
+@deftypefn Statistics double gsl_stats_wkurtosis (const double @var{w[]}, size_t @var{wstride}, const double @var{data[]}, size_t @var{stride}, size_t @var{n})
+@tex
+\beforedisplay
+$$
+          =  {{\sum w_i ((x_i - xbar)/sigma)^4} \over {\sum w_i}} - 3
+$$
+\afterdisplay
+@end tex
+@ifinfo
+@example
+
+@end example
+@end ifinfo
+
+@end deftypefn
+
+@deftypefn Statistics double gsl_stats_wvariance_with_mean (const double @var{w[]}, size_t @var{wstride}, const double @var{data[]}, size_t @var{stride}, size_t @var{n}, double @var{wmean})
+@end deftypefn
+
+@deftypefn Statistics double gsl_stats_wsd_with_mean (const double @var{w[]}, size_t @var{wstride}, const double @var{data[]}, size_t @var{stride}, size_t @var{n}, double @var{wmean})
+@end deftypefn
+
+@deftypefn Statistics double gsl_stats_est_wvariance_with_mean (const double @var{w[]}, size_t @var{wstride}, const double @var{data[]}, size_t @var{stride}, size_t @var{n}, double @var{wmean})
+@end deftypefn
+
+@deftypefn Statistics double gsl_stats_est_wsd_with_mean (const double @var{w[]}, size_t @var{wstride}, const double @var{data[]}, size_t @var{stride}, size_t @var{n}, double @var{wmean})
+@end deftypefn
+
+@deftypefn Statistics double gsl_stats_wabsdev_with_mean (const double @var{w[]}, size_t @var{wstride}, const double @var{data[]}, size_t @var{stride}, size_t @var{n}, double @var{wmean})
+@end deftypefn
+
+@deftypefn Statistics double gsl_stats_wskew_with_mean_and_sd (const double @var{w[]}, size_t @var{wstride}, const double @var{data[]}, size_t @var{stride}, size_t @var{n}, double @var{wmean}, double @var{wsd})
+@end deftypefn
+
+@deftypefn Statistics double gsl_stats_wkurtosis_with_mean_and_sd (const double @var{w[]}, size_t @var{wstride}, const double @var{data[]}, size_t @var{stride}, size_t @var{n}, double @var{wmean}, double @var{wsd})
 @end deftypefn
 
 @node Maximum and Minimum values

@@ -1,3 +1,6 @@
+@weight = (.0000, .0000, .0000, 3.000, .0000, 1.000, 1.000, 1.000,
+           0.000, .5000, 7.000, 5.000, 4.000, 0.123) ;
+
 @groupa = ( .0421, .0941, .1064, .0242, .1331, .0773, .0243, .0815,
 	   .1186, .0356, .0728, .0999, .0614, .0479 ) ;
 
@@ -66,7 +69,14 @@ print "pv igroupa igroupb = ", &pv(\@igroupa,\@igroupb), "\n" ;
 print "t groupa groupb = ", &t(\@groupa,\@groupb), "\n" ;
 print "t igroupa igroupb = ", &t(\@igroupa,\@igroupb), "\n" ;
 
-
+print "weighted mean groupa = ", &weighted_mean(\@weight, \@groupa), "\n" ;
+print "weighted variance groupa = ", &weighted_variance(\@weight, \@groupa), "\n" ;
+print "weighted variance_est groupa = ", &weighted_variance_est(\@weight, \@groupa), "\n" ;
+print "weighted sd groupa = ", &weighted_sd(\@weight, \@groupa), "\n" ;
+print "weighted sd_est groupa = ", &weighted_sd_est(\@weight, \@groupa), "\n" ;
+print "weighted absdev groupa = ", &weighted_absdev(\@weight, \@groupa), "\n" ;
+print "weighted skew groupa = ", &weighted_skew(\@weight, \@groupa), "\n" ;
+print "weighted kurt groupa = ", &weighted_kurt(\@weight, \@groupa), "\n" ;
 
 sub mean {
     my @x = @_ ;
@@ -126,6 +136,86 @@ sub kurt {
     my $sd = &sd_est(@x) ;
     for $x (@x) { $d = ($x - $mean)/$sd ; $sum += $d*$d*$d*$d ; } ;
     return $sum / scalar(@x) - 3 ;
+}
+
+sub weighted_mean {
+    my ($w_ref, $x_ref) = @_ ; my @w = @$w_ref ; my @x = @$x_ref ;
+    my $sum; my  $den ;
+    for (my $i = 0 ; $i < @x ; $i++) { 
+        $sum += $w[$i] * $x[$i] ; 
+        $den += $w[$i] ;
+    } ;
+    return $sum / $den ;
+}
+
+sub weighted_variance {
+    my ($w_ref, $x_ref) = @_ ; my @w = @$w_ref ; my @x = @$x_ref ;
+    my $sum ; my $den;
+    my $mean = &weighted_mean(\@w, \@x) ;
+    for (my $i = 0 ; $i < @x ; $i++) { 
+        $sum += $w[$i] * ($x[$i]-$mean)*($x[$i]-$mean) ; 
+        $den += $w[$i] ;
+    } ;
+    return $sum / $den ;
+}
+
+sub weighted_variance_est {
+    my ($w_ref, $x_ref) = @_ ; my @w = @$w_ref ; my @x = @$x_ref ;
+    my $sum ; my $sum_w; my $sum_w2 ;
+    my $mean = &weighted_mean(\@w,\@x) ;
+    for (my $i = 0 ; $i < @x ; $i++) { 
+        $sum += $w[$i] * ($x[$i]-$mean)*($x[$i]-$mean) ; 
+        $sum_w += $w[$i] ;
+        $sum_w2 += $w[$i] * $w[$i] ;
+    } ;
+    
+    return ($sum_w / ($sum_w * $sum_w - $sum_w2)) * $sum ;
+}
+
+sub weighted_sd {
+    my ($w_ref, $x_ref) = @_ ; my @w = @$w_ref ; my @x = @$x_ref ;
+    return sqrt(&weighted_variance(\@w,\@x)) ;
+}   
+
+sub weighted_sd_est {
+    my ($w_ref, $x_ref) = @_ ; my @w = @$w_ref ; my @x = @$x_ref ;
+    return sqrt(&weighted_variance_est(\@w,\@x)) ;
+}   
+
+sub weighted_absdev {
+    my ($w_ref, $x_ref) = @_ ; my @w = @$w_ref ; my @x = @$x_ref ;
+    my $sum ; my $den;
+    my $mean = &weighted_mean(\@w, \@x) ;
+    for (my $i = 0 ; $i < @x ; $i++) { 
+        $sum += $w[$i] * abs($x[$i]-$mean) ; 
+        $den += $w[$i] ;
+    } ;
+    return $sum / $den;
+}
+
+sub weighted_skew {
+    my ($w_ref, $x_ref) = @_ ; my @w = @$w_ref ; my @x = @$x_ref ;
+    my $sum ; my $den ;
+    my $mean = &weighted_mean(\@w, \@x) ;
+    my $sd = &weighted_sd_est(\@w, \@x) ;
+    for (my $i = 0 ; $i < @x ; $i++) { 
+        $d = ($x[$i] - $mean)/$sd ; 
+        $sum += $w[$i] * $d*$d*$d ; 
+        $den += $w[$i] ;
+    } ;
+    return $sum / $den ;
+}
+
+sub weighted_kurt {
+    my ($w_ref, $x_ref) = @_ ; my @w = @$w_ref ; my @x = @$x_ref ;
+    my $sum ; my $den ;
+    my $mean = &weighted_mean(\@w,\@x) ;
+    my $sd = &weighted_sd_est(\@w,\@x) ;
+    for (my $i = 0 ; $i < @x ; $i++) { 
+        $d = ($x[$i] - $mean)/$sd ; 
+        $sum += $w[$i]*$d*$d*$d*$d ; 
+        $den += $w[$i] ;} ;
+    return( $sum / $den) - 3 ;
 }
 
 

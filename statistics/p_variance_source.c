@@ -1,7 +1,8 @@
 
 double 
-FUNCTION(gsl_stats,pvariance) (const BASE data1[], const BASE data2[],
-			       const size_t stride1, const size_t n1, 
+FUNCTION(gsl_stats,pvariance) (const BASE data1[], 
+                               const size_t stride1, const size_t n1, 
+                               const BASE data2[], 
                                const size_t stride2, const size_t n2)
 {
   /* Find the pooled variance of two datasets */

@@ -25,7 +25,7 @@ FUNCTION(gsl_stats,kurtosis_with_mean_and_sd) (const BASE data[],
 
   for (i = 0; i < n; i++)
     {
-      const long double x = (data[i*stride] - mean) / sd;
+      const long double x = (data[i * stride] - mean) / sd;
       avg += (x * x * x * x - avg)/(i + 1);
     }
 

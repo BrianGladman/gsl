@@ -15,11 +15,11 @@ FUNCTION(gsl_stats,quantile_from_sorted_data) (const BASE sorted_data[],
 
   if (lhs == n - 1)
     {
-      result = sorted_data[lhs*stride] ;
+      result = sorted_data[lhs * stride] ;
     }
   else 
     {
-      result = (1 - delta) * sorted_data[lhs*stride] + delta * sorted_data[(lhs + 1)*stride] ;
+      result = (1 - delta) * sorted_data[lhs * stride] + delta * sorted_data[(lhs + 1) * stride] ;
     }
 
   return result ;

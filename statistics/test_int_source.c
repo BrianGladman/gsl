@@ -95,13 +95,13 @@ FUNCTION (test, func) (const size_t stridea, const size_t strideb)
   }
 
   {
-    double pv = FUNCTION(gsl_stats,pvariance) (igroupa, igroupb, stridea, ina, strideb, inb);
+    double pv = FUNCTION(gsl_stats,pvariance) (igroupa, stridea, ina, igroupb, strideb, inb);
     double expected = 18.8421052631579;
     gsl_test_rel (pv, expected, rel, NAME(gsl_stats) "_pvariance");
   }
 
   {
-    double t = FUNCTION(gsl_stats,ttest) (igroupa, igroupb, stridea, ina, strideb, inb);
+    double t = FUNCTION(gsl_stats,ttest) (igroupa, stridea, ina, igroupb, strideb, inb);
     double expected = -1.45701922702927;
     gsl_test_rel (t, expected, rel, NAME(gsl_stats) "_ttest");
   }
