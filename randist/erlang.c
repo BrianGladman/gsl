@@ -11,13 +11,13 @@
    for x = 0 ... +infty */
 
 double
-gsl_ran_erlang (const gsl_rng * r, const double mu, const double n)
+gsl_ran_erlang (const gsl_rng * r, const double a, const double n)
 {
-  return mu * gsl_ran_gamma (r, n);
+  return a * gsl_ran_gamma (r, n);
 }
 
 double
-gsl_ran_erlang_pdf (const double x, const double mu, const double n)
+gsl_ran_erlang_pdf (const double x, const double a, const double n)
 {
   if (x <= 0) 
     {
@@ -26,7 +26,7 @@ gsl_ran_erlang_pdf (const double x, const double mu, const double n)
   else
     {
       double lngamma = gsl_sf_lngamma (n);
-      double p = exp ((n - 1) * log (x/mu) - x/mu - lngamma) / mu;
+      double p = exp ((n - 1) * log (x/a) - x/a - lngamma) / a;
       return p;
     }
 }
