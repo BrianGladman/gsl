@@ -31,7 +31,7 @@ These functions evaluate the Legendre polynomial @c{$P_l(x)$}
 @math{P_l(x)} for a specific value of @var{l},
 @var{x} subject to @c{$l \ge 0$}
 @math{l >= 0}, 
-@c{$|x| <= 1$}
+@c{$|x| \le 1$}
 @math{|x| <= 1}
 @comment Exceptional Return Values: GSL_EDOM
 @end deftypefun
@@ -90,7 +90,7 @@ which uses a similar recursion, but with the normalized functions.
 These routines compute the associated Legendre polynomial
 @math{P_l^m(x)} for @c{$m \ge 0$}
 @math{m >= 0}, @c{$l \ge m$}
-@math{l >= m}, @c{$|x| <= 1$}
+@math{l >= m}, @c{$|x| \le 1$}
 @math{|x| <= 1}. 
 @comment Exceptional Return Values: GSL_EDOM, GSL_EOVRFLW
 @end deftypefun
@@ -99,7 +99,7 @@ These routines compute the associated Legendre polynomial
 This function computes an array of Legendre polynomials
 @math{P_l^m(x)} for @c{$m \ge 0$}
 @math{m >= 0}, @c{$l = |m|, \dots, lmax$}
-@math{l = |m|, ..., lmax}, @c{$|x| <= 1$}
+@math{l = |m|, ..., lmax}, @c{$|x| \le 1$}
 @math{|x| <= 1}.
 @comment Exceptional Return Values: GSL_EDOM, GSL_EOVRFLW
 @end deftypefun
