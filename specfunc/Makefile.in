@@ -61,8 +61,11 @@ host_alias = @host_alias@
 host_triplet = @host@
 CC = @CC@
 CPP = @CPP@
+LD = @LD@
+LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
 MAKEINFO = @MAKEINFO@
+NM = @NM@
 PACKAGE = @PACKAGE@
 RANLIB = @RANLIB@
 VERSION = @VERSION@
@@ -175,7 +178,6 @@ legendre_con.lo legendre_poly.lo log.lo poly.lo pow_int.lo psi.lo \
 shint.lo sig2lamp.lo sinint.lo trig.lo zeta.lo
 test_sf_OBJECTS =  test_sf.o
 test_sf_LDFLAGS = 
-LIBTOOL = @LIBTOOL@
 CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
@@ -229,15 +231,15 @@ install-libLTLIBRARIES: $(lib_LTLIBRARIES)
 	$(mkinstalldirs) $(DESTDIR)$(libdir)
 	@list='$(lib_LTLIBRARIES)'; for p in $$list; do \
 	  if test -f $$p; then \
-	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(libdir)/$$p"; \
-	     $(INSTALL_DATA) $$p $(DESTDIR)$(libdir)/$$p; \
+	    echo "$(LIBTOOL)  --mode=install $(INSTALL_DATA) $$p $(DESTDIR)$(libdir)/$$p"; \
+	    $(LIBTOOL)  --mode=install $(INSTALL_DATA) $$p $(DESTDIR)$(libdir)/$$p; \
 	  else :; fi; \
 	done
 
 uninstall-libLTLIBRARIES:
 	@$(NORMAL_UNINSTALL)
 	list='$(lib_LTLIBRARIES)'; for p in $$list; do \
-	   rm -f $(DESTDIR)$(libdir)/$$p; \
+	  $(LIBTOOL)  --mode=uninstall rm -f $(DESTDIR)$(libdir)/$$p; \
 	done
 
 .s.o:
