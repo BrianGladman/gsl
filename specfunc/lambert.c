@@ -73,19 +73,24 @@ halley_iteration(
 static double
 series_eval(double r)
 {
-  static const double c[9] = {
+  static const double c[12] = {
     -1.0,
-    +2.331643981597124203363536062168,
+     2.331643981597124203363536062168,
     -1.812187885639363490240191647568,
-    +1.936631114492359755363277457668,
+     1.936631114492359755363277457668,
     -2.353551201881614516821543561516,
-    +3.066858901050631912893148922704,
+     3.066858901050631912893148922704,
     -4.175335600258177138854984177460,
-    +5.858023729874774148815053846119,
-    -8.401032217523977370984161688514
+     5.858023729874774148815053846119,
+    -8.401032217523977370984161688514,
+     12.250753501314460424,
+    -18.100697012472442755,
+     27.029044799010561650
   };
-  const double t_5 = c[5] + r*(c[6] + r*(c[7] + r*c[8]));
-  return c[0] + r*(c[1] + r*(c[2] + r*(c[3] + r*(c[4] + r*t_5))));
+  const double t_8 = c[8] + r*(c[9] + r*(c[10] + r*c[11]));
+  const double t_5 = c[5] + r*(c[6] + r*(c[7]  + r*t_8));
+  const double t_1 = c[1] + r*(c[2] + r*(c[3]  + r*(c[4] + r*t_5)));
+  return c[0] + r*t_1;
 }
 
 
@@ -118,11 +123,11 @@ gsl_sf_lambert_W0_e(double x, gsl_sf_result * result)
     result->err =  GSL_DBL_EPSILON; /* cannot error is zero, maybe q == 0 by "accident" */
     return GSL_SUCCESS;
   }
-  else if(q < 1.0e-04) {
+  else if(q < 1.0e-03) {
     /* series near -1/E in sqrt(q) */
     const double r = sqrt(q);
     result->val = series_eval(r);
-    result->err = GSL_DBL_EPSILON * fabs(result->val);
+    result->err = 2.0 * GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
   }
   else {
@@ -166,14 +171,15 @@ gsl_sf_lambert_Wm1_e(double x, gsl_sf_result * result)
     double w;
 
     if (q < 0.0) {
-      /* As above, return some reasonable answer anyway. */
+      /* As in the W0 branch above, return some reasonable answer anyway. */
       result->val = -1.0; 
       result->err =  sqrt(-q);
       return GSL_EDOM;
     }
 
     if(x < -1.0e-6) {
-      /* Obtain initial approximation from series about q = 0;
+      /* Obtain initial approximation from series about q = 0,
+       * as long as we're not very close to x = 0.
        * Use full series and try to bail out if q is too small,
        * since the Halley iteration has bad convergence properties
        * in finite arithmetic for q very small, because the
@@ -181,10 +187,10 @@ gsl_sf_lambert_Wm1_e(double x, gsl_sf_result * result)
        */
       const double r = -sqrt(q);
       w = series_eval(r);
-      if(q < 1.0e-4) {
+      if(q < 3.0e-3) {
         /* this approximation is good enough */
         result->val = w;
-        result->err = 2.0 * GSL_DBL_EPSILON * fabs(w);
+        result->err = 5.0 * GSL_DBL_EPSILON * fabs(w);
         return GSL_SUCCESS;
       }
     }
