@@ -672,7 +672,7 @@ hyperg_1F1_small_a_bgt0(const double a, const double b, const double x, gsl_sf_r
     result->err = 0.0;
     return GSL_SUCCESS;
   }
-  else if(a == 1.0) {
+  else if(a == 1.0 && b >= 1.0) {
     return hyperg_1F1_1(b, x, result);
   }
   else if(a == -1.0) {
