@@ -283,12 +283,12 @@ object and will not be deallocated.
 @cindex Fortran range checking, equivalent in gcc
 
 Unlike @sc{fortran} compilers, C compilers do not usually provide
-support for range checking of vectors and matrices @footnote{Range
-checking is available in the GNU C Compiler extension @code{checkergcc},
-as part of its full memory checking facility}.  However, the functions
-@code{gsl_vector_get} and @code{gsl_vector_set} can perform range
-checking for you and report an error if you attempt to access elements
-outside the allowed range.
+support for range checking of vectors and matrices.  Range checking is
+available in the GNU C Compiler extension @code{checkergcc} but it is
+not available on every platform.  The functions @code{gsl_vector_get}
+and @code{gsl_vector_set} can perform portable range checking for you
+and report an error if you attempt to access elements outside the
+allowed range.
 
 The functions for accessing the elements of a vector or matrix are
 defined in @file{gsl_vector.h} and declared @code{extern inline} to
