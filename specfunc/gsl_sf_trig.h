@@ -52,12 +52,12 @@ int gsl_sf_complex_logsin_impl(double zr, double zi, gsl_sf_result * lszr, gsl_s
 int gsl_sf_complex_logsin_e(double zr, double zi, gsl_sf_result * lszr, gsl_sf_result * lszi);
 
 
-/* Sin(pi x)
+/* Sinc(x) = sin(pi x) / (pi x)
  *
  * exceptions: none
  */
-int gsl_sf_sin_pi_x_impl(double x, gsl_sf_result * result);
-int gsl_sf_sin_pi_x_e(double x, gsl_sf_result * result);
+int gsl_sf_sinc_impl(double x, gsl_sf_result * result);
+int gsl_sf_sinc_e(double x, gsl_sf_result * result);
 
 
 /* Log(Sinh(x)), x > 0

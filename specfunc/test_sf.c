@@ -1297,18 +1297,26 @@ int test_trig(void)
   TEST_SF(s, gsl_sf_sin_impl, (1073741825.5, &r),  0.7410684679436226926,  TEST_SQRT_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_sin_impl, (1099511627776.0, &r), -0.4057050115328287198, TEST_SQRT_TOL0, GSL_SUCCESS);
 
-  TEST_SF(s, gsl_sf_cos_impl, (-10.0, &r),       -0.8390715290764524523,    TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_cos_impl, (-10.0, &r),      -0.8390715290764524523,    TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_cos_impl, (1.0, &r),         0.5403023058681397174,    TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_cos_impl, (1000.0, &r),      0.5623790762907029911,    TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_cos_impl, (1048576.75, &r),  0.4652971620066351799,    TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_cos_impl, (62831853.75, &r), 0.7787006914966116436,    TEST_TOL0, GSL_SUCCESS);
-  TEST_SF(s, gsl_sf_cos_impl, (1073741822.5, &r), -0.5601305436977716102,  TEST_SQRT_TOL0, GSL_SUCCESS);
-  TEST_SF(s, gsl_sf_cos_impl, (1073741824.0, &r),  0.7867071229411881196,  TEST_SQRT_TOL0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_cos_impl, (1073741822.5, &r),   -0.5601305436977716102,  TEST_SQRT_TOL0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_cos_impl, (1073741824.0, &r),    0.7867071229411881196,  TEST_SQRT_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_cos_impl, (1099511627776.0, &r), -0.9140040719915570023, TEST_SQRT_TOL0, GSL_SUCCESS);
 
+  TEST_SF(s, gsl_sf_sinc_impl, (1.0/1024.0, &r), 0.9999984312693665404, TEST_TOL0, GSL_SUCCESS);  
+  TEST_SF(s, gsl_sf_sinc_impl, (1.0/2.0,    &r), 2.0/M_PI,              TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_sinc_impl, (80.5,       &r), 0.0039541600768172754, TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_sinc_impl, (100.5,      &r), 0.0031672625490924445, TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_sinc_impl, (1.0e+06 + 0.5, &r), 3.18309727028927157e-07, TEST_TOL0, GSL_SUCCESS);
+
+  /*
   TEST_SF(s, gsl_sf_sin_pi_x_impl, (1000.5, &r), 1.0, TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_sin_pi_x_impl, (10000.0 + 1.0/65536.0, &r), 0.00004793689960306688455, TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_sin_pi_x_impl, (1099511627776.0 + 1 + 0.125, &r), -0.3826834323650897717, TEST_TOL0, GSL_SUCCESS);
+  */
 
   TEST_SF_2(s, gsl_sf_complex_sin_impl, (1.0, 5.0, &r1, &r2),
             62.44551846769653403, TEST_TOL0,
