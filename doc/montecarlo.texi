@@ -109,7 +109,8 @@ and similarly
 @equation
 Var_g(f; N) = Var(f/g; N)
 @end equation
-It is clear from this that if @math{g = |f|} then the variance vanishes.
+It is clear from this that if @math{g = |f|/I(|f|)} then the variance 
+@math{V_g(f; N)} vanishes.
 This it was what Vegas attempts to do.  It makes several passes,
 histogramming @math{f}, and each time using the histogram to define the
 sampling distribution for the next pass.  This basic idea again has the
