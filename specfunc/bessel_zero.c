@@ -1036,6 +1036,38 @@ gsl_sf_bessel_zero_J0_impl(int s, gsl_sf_result * result)
 
 
 int
+gsl_sf_bessel_zero_J1_impl(int s, gsl_sf_result * result)
+{
+  if(result == 0) {
+    return GSL_EFAULT;
+  }
+  else {
+    /* See [M. Branders et al., J. Comp. Phys. 42, 403 (1981)]. */
+
+    const static double a[] = { -0.362804405737084,
+                                 0.120341279038597,
+				 0.439454547101171e-01,
+				 0.159340088474713e-02
+                              };
+    const static double b[] = {  1.0,
+                                -0.325641790801361,
+				-0.117453445968927,
+				-0.424906902601794e-02
+                              };
+
+    const double beta = (s + 0.25) * M_PI;
+    const double bi2  = 1.0/(beta*beta);
+    const double Rnum = a[3] + bi2 * (a[2] + bi2 * (a[1] + bi2 * a[0]));
+    const double Rden = b[3] + bi2 * (b[2] + bi2 * (b[1] + bi2 * b[0]));
+    const double R = Rnum/Rden;
+    result->val = beta * (1.0 + R*bi2);
+    result->err = fabs(2.0e-14 * result->val);
+    return GSL_SUCCESS;
+  }
+}
+
+
+int
 gsl_sf_bessel_zero_Jnu_impl(double nu, int s, gsl_sf_result * result)
 {
   if(result == 0) {

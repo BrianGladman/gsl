@@ -495,6 +495,14 @@ int gsl_sf_bessel_zero_J0_impl(int s, gsl_sf_result * result);
 int gsl_sf_bessel_zero_J0_e(int s, gsl_sf_result * result);
 
 
+/* s'th positive zero of the Bessel function J_1(x).
+ *
+ * exceptions: 
+ */
+int gsl_sf_bessel_zero_J1_impl(int s, gsl_sf_result * result);
+int gsl_sf_bessel_zero_J1_e(int s, gsl_sf_result * result);
+
+
 /* s'th positive zero of the Bessel function J_nu(x).
  *
  * exceptions: 
