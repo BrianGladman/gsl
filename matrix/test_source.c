@@ -58,6 +58,7 @@ FUNCTION (test, func) (void)
     gsl_test (status, NAME (gsl_matrix) "_get reads from array correctly");
   }
 
+
   FUNCTION (gsl_matrix, free) (m);	/* free whatever is in m */
 
   m = FUNCTION (gsl_matrix, calloc) (N, M);
@@ -72,6 +73,79 @@ FUNCTION (test, func) (void)
 	  FUNCTION (gsl_matrix, set) (m, i, j, (BASE) k);
 	}
     }
+
+  {
+    BASE exp_max = FUNCTION(gsl_matrix, get) (m, 0, 0);
+    BASE exp_min = FUNCTION(gsl_matrix, get) (m, 0, 0);
+    size_t exp_imax = 0, exp_jmax = 0, exp_imin = 0, exp_jmin = 0;
+
+    for (i = 0; i < N; i++)
+      {
+        for (j = 0; j < M; j++)
+          {
+            BASE k = FUNCTION(gsl_matrix, get) (m, i, j);
+            if (k > exp_max) {
+              exp_max = k;
+              exp_imax = i;
+              exp_jmax = j;
+            }
+            if (k < exp_min) {
+              exp_min = k;
+              exp_imin = i;
+              exp_jmin = j;
+            }
+          }
+      }
+
+    {
+      BASE max = FUNCTION(gsl_matrix, max) (m) ;
+
+      gsl_test (max != exp_max, NAME(gsl_matrix) "_max returns correct maximum value");
+    }
+
+    {
+      BASE min = FUNCTION(gsl_matrix, min) (m) ;
+      
+      gsl_test (min != exp_min, NAME(gsl_matrix) "_min returns correct minimum value");
+    }
+
+    {
+      BASE min, max;
+      FUNCTION(gsl_matrix, minmax) (m, &min, &max);
+
+      gsl_test (max != exp_max, NAME(gsl_matrix) "_minmax returns correct maximum value");
+      gsl_test (min != exp_min, NAME(gsl_matrix) "_minmax returns correct minimum value");
+    }
+
+
+    {
+      size_t imax, jmax;
+      FUNCTION(gsl_matrix, max_index) (m, &imax, &jmax) ;
+
+      gsl_test (imax != exp_imax, NAME(gsl_matrix) "_max_index returns correct maximum i");
+      gsl_test (jmax != exp_jmax, NAME(gsl_matrix) "_max_index returns correct maximum j");
+    }
+
+    {
+      size_t imin, jmin;
+      FUNCTION(gsl_matrix, min_index) (m, &imin, &jmin) ;
+
+      gsl_test (imin != exp_imin, NAME(gsl_matrix) "_min_index returns correct minimum i");
+      gsl_test (jmin != exp_jmin, NAME(gsl_matrix) "_min_index returns correct minimum j");
+    }
+
+    {
+      size_t imin, jmin, imax, jmax;
+
+      FUNCTION(gsl_matrix, minmax_index) (m,  &imin, &jmin, &imax, &jmax);
+
+      gsl_test (imax != exp_imax, NAME(gsl_matrix) "_minmax_index returns correct maximum i");
+      gsl_test (jmax != exp_jmax, NAME(gsl_matrix) "_minmax_index returns correct maximum j");
+
+      gsl_test (imin != exp_imin, NAME(gsl_matrix) "_minmax_index returns correct minimum i");
+      gsl_test (jmin != exp_jmin, NAME(gsl_matrix) "_minmax_index returns correct minimum j");
+    }
+  }
 
   {
     status = 0;

@@ -84,9 +84,11 @@ gsl_vector_float gsl_matrix_float_diagonal (gsl_matrix_float * m);
 
 float gsl_matrix_float_max (const gsl_matrix_float * m);
 float gsl_matrix_float_min (const gsl_matrix_float * m);
-void gsl_matrix_float_minmax (const gsl_matrix_float * m,
-                              float * min_out, size_t * imin, size_t * jmin,
-                              float * max_out, size_t * imax, size_t * jmax);
+void gsl_matrix_float_minmax (const gsl_matrix_float * m, float * min_out, float * max_out);
+
+void gsl_matrix_float_max_index (const gsl_matrix_float * m, size_t * imax, size_t *jmax);
+void gsl_matrix_float_min_index (const gsl_matrix_float * m, size_t * imin, size_t *jmin);
+void gsl_matrix_float_minmax_index (const gsl_matrix_float * m, size_t * imin, size_t * jmin, size_t * imax, size_t * jmax);
 
 /***********************************************************************/
 /* The functions below are obsolete                                    */

@@ -84,9 +84,11 @@ gsl_vector_short gsl_matrix_short_diagonal (gsl_matrix_short * m);
 
 short gsl_matrix_short_max (const gsl_matrix_short * m);
 short gsl_matrix_short_min (const gsl_matrix_short * m);
-void gsl_matrix_short_minmax (const gsl_matrix_short * m,
-                              short * min_out, size_t * imin, size_t * jmin,
-                              short * max_out, size_t * imax, size_t * jmax);
+void gsl_matrix_short_minmax (const gsl_matrix_short * m, short * min_out, short * max_out);
+
+void gsl_matrix_short_max_index (const gsl_matrix_short * m, size_t * imax, size_t *jmax);
+void gsl_matrix_short_min_index (const gsl_matrix_short * m, size_t * imin, size_t *jmin);
+void gsl_matrix_short_minmax_index (const gsl_matrix_short * m, size_t * imin, size_t * jmin, size_t * imax, size_t * jmax);
 
 /***********************************************************************/
 /* The functions below are obsolete                                    */

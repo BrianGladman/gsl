@@ -84,9 +84,11 @@ gsl_vector_long_double gsl_matrix_long_double_diagonal (gsl_matrix_long_double *
 
 long double gsl_matrix_long_double_max (const gsl_matrix_long_double * m);
 long double gsl_matrix_long_double_min (const gsl_matrix_long_double * m);
-void gsl_matrix_long_double_minmax (const gsl_matrix_long_double * m,
-                              long double * min_out, size_t * imin, size_t * jmin,
-                              long double * max_out, size_t * imax, size_t * jmax);
+void gsl_matrix_long_double_minmax (const gsl_matrix_long_double * m, long double * min_out, long double * max_out);
+
+void gsl_matrix_long_double_max_index (const gsl_matrix_long_double * m, size_t * imax, size_t *jmax);
+void gsl_matrix_long_double_min_index (const gsl_matrix_long_double * m, size_t * imin, size_t *jmin);
+void gsl_matrix_long_double_minmax_index (const gsl_matrix_long_double * m, size_t * imin, size_t * jmin, size_t * imax, size_t * jmax);
 
 /***********************************************************************/
 /* The functions below are obsolete                                    */

@@ -84,9 +84,11 @@ gsl_vector_ulong gsl_matrix_ulong_diagonal (gsl_matrix_ulong * m);
 
 unsigned long gsl_matrix_ulong_max (const gsl_matrix_ulong * m);
 unsigned long gsl_matrix_ulong_min (const gsl_matrix_ulong * m);
-void gsl_matrix_ulong_minmax (const gsl_matrix_ulong * m,
-                              unsigned long * min_out, size_t * imin, size_t * jmin,
-                              unsigned long * max_out, size_t * imax, size_t * jmax);
+void gsl_matrix_ulong_minmax (const gsl_matrix_ulong * m, unsigned long * min_out, unsigned long * max_out);
+
+void gsl_matrix_ulong_max_index (const gsl_matrix_ulong * m, size_t * imax, size_t *jmax);
+void gsl_matrix_ulong_min_index (const gsl_matrix_ulong * m, size_t * imin, size_t *jmin);
+void gsl_matrix_ulong_minmax_index (const gsl_matrix_ulong * m, size_t * imin, size_t * jmin, size_t * imax, size_t * jmax);
 
 /***********************************************************************/
 /* The functions below are obsolete                                    */

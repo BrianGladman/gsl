@@ -1,3 +1,10 @@
+Tue Apr 18 12:51:49 2000  Brian Gough  <bjg@network-theory.co.uk>
+
+	* minmax_source.c (FUNCTION): fixed bug in minmax where
+ 	coordinates would be incorrect for min or max in the first element
+
+	* test_source.c (FUNCTION): added tests for max/min functions
+
 Thu Apr 13 18:39:27 2000  Brian Gough  <bjg@network-theory.co.uk>
 
 	* minmax.c: added matrix max/min functions
