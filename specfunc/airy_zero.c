@@ -412,7 +412,7 @@ zero_g(double z)
 
 
 int
-gsl_sf_airy_Ai_zero_impl(int s, gsl_sf_result * result)
+gsl_sf_airy_zero_Ai_impl(int s, gsl_sf_result * result)
 {
   if(result == 0) {
     return GSL_EFAULT;
@@ -438,7 +438,7 @@ gsl_sf_airy_Ai_zero_impl(int s, gsl_sf_result * result)
 
 
 int
-gsl_sf_airy_Bi_zero_impl(int s, gsl_sf_result * result)
+gsl_sf_airy_zero_Bi_impl(int s, gsl_sf_result * result)
 {
   if(result == 0) {
     return GSL_EFAULT;
@@ -464,7 +464,7 @@ gsl_sf_airy_Bi_zero_impl(int s, gsl_sf_result * result)
 
 
 int
-gsl_sf_airy_Ai_deriv_zero_impl(int s, gsl_sf_result * result)
+gsl_sf_airy_zero_Ai_deriv_impl(int s, gsl_sf_result * result)
 {
   if(result == 0) {
     return GSL_EFAULT;
@@ -490,7 +490,7 @@ gsl_sf_airy_Ai_deriv_zero_impl(int s, gsl_sf_result * result)
 
 
 int
-gsl_sf_airy_Bi_deriv_zero_impl(int s, gsl_sf_result * result)
+gsl_sf_airy_zero_Bi_deriv_impl(int s, gsl_sf_result * result)
 {
   if(result == 0) {
     return GSL_EFAULT;
@@ -517,9 +517,9 @@ gsl_sf_airy_Bi_deriv_zero_impl(int s, gsl_sf_result * result)
 
 
 int
-gsl_sf_airy_Ai_zero_e(int s, gsl_sf_result * result)
+gsl_sf_airy_zero_Ai_e(int s, gsl_sf_result * result)
 {
-  int status = gsl_sf_airy_Ai_zero_impl(s, result);
+  int status = gsl_sf_airy_zero_Ai_impl(s, result);
   if(status != GSL_SUCCESS) {
     GSL_ERROR("gsl_sf_airy_Ai_zero_e", status);
   }
@@ -527,9 +527,9 @@ gsl_sf_airy_Ai_zero_e(int s, gsl_sf_result * result)
 }
 
 int
-gsl_sf_airy_Bi_zero_e(int s, gsl_sf_result * result)
+gsl_sf_airy_zero_Bi_e(int s, gsl_sf_result * result)
 {
-  int status = gsl_sf_airy_Bi_zero_impl(s, result);
+  int status = gsl_sf_airy_zero_Bi_impl(s, result);
   if(status != GSL_SUCCESS) {
     GSL_ERROR("gsl_sf_airy_Bi_zero_e", status);
   }
@@ -537,9 +537,9 @@ gsl_sf_airy_Bi_zero_e(int s, gsl_sf_result * result)
 }
 
 int
-gsl_sf_airy_Ai_deriv_zero_e(int s, gsl_sf_result * result)
+gsl_sf_airy_zero_Ai_deriv_e(int s, gsl_sf_result * result)
 {
-  int status = gsl_sf_airy_Ai_deriv_zero_impl(s, result);
+  int status = gsl_sf_airy_zero_Ai_deriv_impl(s, result);
   if(status != GSL_SUCCESS) {
     GSL_ERROR("gsl_sf_airy_Ai_deriv_zero_e", status);
   }
@@ -547,9 +547,9 @@ gsl_sf_airy_Ai_deriv_zero_e(int s, gsl_sf_result * result)
 }
 
 int
-gsl_sf_airy_Bi_deriv_zero_e(int s, gsl_sf_result * result)
+gsl_sf_airy_zero_Bi_deriv_e(int s, gsl_sf_result * result)
 {
-  int status = gsl_sf_airy_Bi_deriv_zero_impl(s, result);
+  int status = gsl_sf_airy_zero_Bi_deriv_impl(s, result);
   if(status != GSL_SUCCESS) {
     GSL_ERROR("gsl_sf_airy_Bi_deriv_zero_e", status);
   }
