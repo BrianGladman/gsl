@@ -113,10 +113,10 @@ Hints for Compaq/DEC Alpha
 ==========================
 
 The library should compile successfully with Compaq's C compiler using
-the -std option for ANSI conformance.  Use
+the -std and -ieee options.  Use
 
     CC=cc ./configure    
-    make CFLAGS="-std"
+    make CFLAGS="-std -ieee"
 
 to build the library this way.
 
