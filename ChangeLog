@@ -1,3 +1,8 @@
+Thu Sep  6 21:08:10 2001  Brian Gough  <bjg@network-theory.co.uk>
+
+	* configure.in: added an option to specify an alternative math
+ 	library
+
 Tue Sep  4 09:41:37 2001  Brian Gough  <bjg@network-theory.co.uk>
 
 	* gsl.spec.in: autogenerate gsl.spec from gsl.spec.in

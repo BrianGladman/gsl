@@ -91,15 +91,38 @@ dnl Checks for header files.
 dnl Checks for typedefs, structures, and compiler characteristics.
 
 dnl Checks for library functions.
-AC_CHECK_LIB(m, main)
+
+dnl Use alternate libm if specified by user
+
+AC_ARG_WITH(libm,
+[  --with-libm=LIBM        use the specified math libray [default=-lm] ],
+[LIBM=$withval])
+
+if test "x$LIBM" != "x" ; then
+  LIBS="$LIBM $LIBS"
+  AC_MSG_RESULT([using specified math library: $LIBS])
+else
+  AC_CHECK_LIB(m, main)
+fi
+
 AC_CHECK_FUNCS(hypot)
 AC_CHECK_FUNCS(expm1)
 AC_CHECK_FUNCS(acosh)
 AC_CHECK_FUNCS(asinh)
 AC_CHECK_FUNCS(atanh)
 AC_CHECK_FUNCS(isinf)
-AC_CHECK_FUNCS(isnan)
 AC_CHECK_FUNCS(finite)
+
+case "$host" in
+    *-*-os2_emx)
+       AC_MSG_RESULT([os/2 assuming isnan is a macro])
+       AC_DEFINE(HAVE_ISNAN,1)
+       AC_SUBST(HAVE_ISNAN)
+       ;;
+    *)
+       AC_CHECK_FUNCS(isnan)
+       ;;
+esac
 
 dnl OpenBSD has a broken implementation of log1p.
 case "$host" in
