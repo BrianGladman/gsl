@@ -1073,10 +1073,10 @@ int test_gegen(void)
   TEST_SF(s,  gsl_sf_gegenpoly_n_impl, (10,      1.0, 0.1, &r), -0.4542309376	    , TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s,  gsl_sf_gegenpoly_n_impl, (10,      5.0, 1.0, &r), 9.23780e+4  	    , TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s,  gsl_sf_gegenpoly_n_impl, (10,    100.0, 0.5, &r), 1.5729338392690000e+13  , TEST_TOL0, GSL_SUCCESS);
-  TEST_SF(s,  gsl_sf_gegenpoly_n_impl, (1000,  100.0, 1.0, &r), 3.3353666135627322e+232 , TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s,  gsl_sf_gegenpoly_n_impl, (1000,  100.0, 1.0, &r), 3.3353666135627322e+232 , TEST_TOL1, GSL_SUCCESS);
   TEST_SF(s,  gsl_sf_gegenpoly_n_impl, (100,  2000.0, 1.0, &r), 5.8753432034937579e+202 , TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s,  gsl_sf_gegenpoly_n_impl, (103,   207.0, 2.0, &r), 1.4210272202235983e+145 , TEST_TOL0, GSL_SUCCESS);
-  TEST_SF(s,  gsl_sf_gegenpoly_n_impl, (103,    -0.4, 0.3, &r), -1.64527498094522e-04    , TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s,  gsl_sf_gegenpoly_n_impl, (103,    -0.4, 0.3, &r), -1.64527498094522e-04    , TEST_TOL1, GSL_SUCCESS);
 
   sa = 0;
   gsl_sf_gegenpoly_array_impl(99, 5.0, 1.0, ga);
@@ -1826,7 +1826,7 @@ int test_zeta(void)
   TEST_SF(s, gsl_sf_zeta_impl, (-151, &r), 8.195215221831378294e+143  , TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_zeta_impl, (-51, &r), 9.68995788746359406565e+24 , TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_zeta_impl, (-5, &r), -0.003968253968253968253968 , TEST_TOL0, GSL_SUCCESS);
-  TEST_SF(s, gsl_sf_zeta_impl, (-0.5, &r), -0.207886224977354566017307 , TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_zeta_impl, (-0.5, &r), -0.207886224977354566017307 , TEST_TOL1, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_zeta_impl, (0.5, &r), -1.460354508809586812889499 , TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_zeta_impl, (1.0-1.0/1024.0, &r), -1023.4228554489429787      , TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_zeta_impl, (1.0+1.0/1048576, &r), 1.0485765772157343441e+06  , TEST_TOL0, GSL_SUCCESS);

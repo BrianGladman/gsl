@@ -95,26 +95,32 @@ static gsl_sf_cheb_series zeta_xgt1_cs = {
 #ifdef HAVE_INLINE
 inline
 #endif
-static
-double riemann_zeta_sgt0(double s)
+static int
+riemann_zeta_sgt0(double s, gsl_sf_result * result)
 {
   if(s < 1.0) {
     gsl_sf_result c;
     gsl_sf_cheb_eval_impl(&zeta_xlt1_cs, 2.0*s - 1.0, &c);
-    return c.val / (s - 1.0);
+    result->val = c.val / (s - 1.0);
+    result->err = c.err / fabs(s-1.0) + GSL_DBL_EPSILON * fabs(result->val);
+    return GSL_SUCCESS;
   }
   else if(s <= 20.0) {
     double x = (2.0*s - 21.0)/19.0;
     gsl_sf_result c;
     gsl_sf_cheb_eval_impl(&zeta_xgt1_cs, x, &c);
-    return  c.val / (s - 1.0);
+    result->val = c.val / (s - 1.0);
+    result->err = c.err / (s - 1.0) + GSL_DBL_EPSILON * fabs(result->val);
+    return GSL_SUCCESS;
   }
   else {
     double f2 = 1.0 - pow(2.0,-s);
     double f3 = 1.0 - pow(3.0,-s);
     double f5 = 1.0 - pow(5.0,-s);
     double f7 = 1.0 - pow(7.0,-s);
-    return 1.0/(f2*f3*f5*f7);
+    result->val = 1.0/(f2*f3*f5*f7);
+    result->err = 3.0 * GSL_DBL_EPSILON * fabs(result->val);
+    return GSL_SUCCESS;
   }
 }
 
@@ -546,14 +552,13 @@ int gsl_sf_zeta_impl(const double s, gsl_sf_result * result)
     return GSL_EDOM;
   }
   else if(s >= 0.0) {
-    result->val = riemann_zeta_sgt0(s);
-    result->err = 2.0 * GSL_DBL_EPSILON * fabs(result->val);
-    return GSL_SUCCESS;
+    return riemann_zeta_sgt0(s, result);
   }
   else {
     /* reflection formula, [Abramowitz+Stegun, 23.2.5] */
 
-    const double zeta_one_minus_s = riemann_zeta_sgt0(1.0-s);
+    gsl_sf_result zeta_one_minus_s;
+    const int stat_zoms = riemann_zeta_sgt0(1.0-s, &zeta_one_minus_s);
     const double sin_term = sin(0.5*M_PI*s)/M_PI;
 
     if(sin_term == 0.0) {
@@ -592,10 +597,12 @@ int gsl_sf_zeta_impl(const double s, gsl_sf_result * result)
       const double p = pow(2.0*M_PI, fs) / twopi_pow[n];
 
       gsl_sf_result g;
-      int stat_g = gsl_sf_gamma_impl(1.0-s, &g);
-      result->val = p * g.val * sin_term * zeta_one_minus_s;
-      result->err = 4.0 * GSL_DBL_EPSILON * fabs(result->val);
-      return stat_g;
+      const int stat_g = gsl_sf_gamma_impl(1.0-s, &g);
+      result->val  = p * g.val * sin_term * zeta_one_minus_s.val;
+      result->err  = fabs(p * g.val * sin_term) * zeta_one_minus_s.err;
+      result->err += fabs(p * sin_term * zeta_one_minus_s.val) * g.err;
+      result->err += GSL_DBL_EPSILON * (fabs(s)+2.0) * fabs(result->val);
+      return GSL_ERROR_SELECT_2(stat_g, stat_zoms);
     }
     else {
       /* The actual zeta function may or may not

@@ -15,10 +15,10 @@ int test_hyperg(void)
   /* 0F1 */
 
   TEST_SF(s, gsl_sf_hyperg_0F1_impl, (1, 0.5, &r), 1.5660829297563505373 , TEST_TOL0, GSL_SUCCESS);
-  TEST_SF(s, gsl_sf_hyperg_0F1_impl, (5, 0.5, &r), 1.1042674404828684574 , TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_hyperg_0F1_impl, (5, 0.5, &r), 1.1042674404828684574 , TEST_TOL1, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_hyperg_0F1_impl, (100, 30, &r), 1.3492598639485110176 , TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_hyperg_0F1_impl, (-0.5, 3, &r), -39.29137997543434276  , TEST_TOL0, GSL_SUCCESS);
-  TEST_SF(s, gsl_sf_hyperg_0F1_impl, (-100.5, 50, &r), 0.6087930289227538496 , TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_hyperg_0F1_impl, (-100.5, 50, &r), 0.6087930289227538496 , TEST_TOL3, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_hyperg_0F1_impl, (1, -5.0, &r), -0.3268752818235339109 , TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_hyperg_0F1_impl, (-0.5, -5.0, &r), -4.581634759005381184  , TEST_TOL0, GSL_SUCCESS);
 

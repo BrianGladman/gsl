@@ -684,6 +684,7 @@ lngamma_lanczos(double x, gsl_sf_result * result)
 {
   int k;
   double Ag;
+  double term1, term2;
 
   x -= 1.0; /* Lanczos writes z! instead of Gamma(z) */
 
@@ -691,8 +692,11 @@ lngamma_lanczos(double x, gsl_sf_result * result)
   for(k=1; k<=8; k++) { Ag += lanczos_7_c[k]/(x+k); }
 
   /* (x+0.5)*log(x+7.5) - (x+7.5) + LogRootTwoPi_ + log(Ag(x)) */
-  result->val = (x+0.5)*log((x+7.5)/M_E) + (LogRootTwoPi_ + log(Ag) - 7.0);
-  result->err = 2.0 * GSL_DBL_EPSILON * fabs(result->val);
+  term1 = (x+0.5)*log((x+7.5)/M_E);
+  term2 = LogRootTwoPi_ + log(Ag);
+  result->val  = term1 + (term2 - 7.0);
+  result->err  = 2.0 * GSL_DBL_EPSILON * (fabs(term1) + fabs(term2) + 7.0);
+  result->err += GSL_DBL_EPSILON * fabs(result->val);
 
   return GSL_SUCCESS;
 }
@@ -1049,9 +1053,8 @@ gamma_xgthalf(const double x, gsl_sf_result * result)
      */
     gsl_sf_result lg;
     lngamma_lanczos(x, &lg);
-    result->val  = exp(lg.val);
-    result->err  = GSL_DBL_EPSILON * result->val * fabs(lg.val);
-    result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
+    result->val = exp(lg.val);
+    result->err = result->val * (lg.err + 2.0 * GSL_DBL_EPSILON);
     return GSL_SUCCESS;
   }
   else if(x < 10.0) {
@@ -1065,7 +1068,7 @@ gamma_xgthalf(const double x, gsl_sf_result * result)
     gsl_sf_cheb_eval_impl(&gamma_5_10_cs, t, &c);
     result->val  = exp(c.val) * gamma_8;
     result->err  = result->val * c.err;
-    result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
+    result->err += 2.0 * GSL_DBL_EPSILON * result->val;
     return GSL_SUCCESS;
   }
   else if(x < xmax) {
