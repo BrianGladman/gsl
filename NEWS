@@ -1,5 +1,9 @@
 * What is new in gsl-1.3+:
 
+** Fixed the simulated annealing routine gsl_siman_solve to use the
+parameter iters_fixed_T for the number of iterations at fixed
+temperature instead of n_tries.
+
 ** Added a new function gsl_combination_memcpy()
 
 ** Fixed a bug in gsl_combination_valid which caused it to return the

@@ -44,7 +44,7 @@ gsl_siman_solve (const gsl_rng * r, void *x0_p, gsl_siman_Efunc_t Ef,
   double E, new_E, best_E;
   int i, done;
   double T;
-  int n_evals = 0, n_iter = 0, n_accepts, n_rejects, n_eless;
+  int n_evals = 1, n_iter = 0, n_accepts, n_rejects, n_eless;
 
   /* this function requires that either the dynamic functions (copy,
      copy_constructor and destrcutor) are passed, or that an element
@@ -53,6 +53,7 @@ gsl_siman_solve (const gsl_rng * r, void *x0_p, gsl_siman_Efunc_t Ef,
 	 || (element_size != 0));
 
   distance = 0 ; /* This parameter is not currently used */
+  E = Ef(x0_p);
 
   if (copyfunc) {
     x = copy_constructor(x0_p);
@@ -66,7 +67,7 @@ gsl_siman_solve (const gsl_rng * r, void *x0_p, gsl_siman_Efunc_t Ef,
     memcpy (best_x, x0_p, element_size);
   }
 
-  best_E = Ef(best_x);
+  best_E = E;
 
   T = params.t_initial;
   done = 0;
@@ -76,12 +77,11 @@ gsl_siman_solve (const gsl_rng * r, void *x0_p, gsl_siman_Efunc_t Ef,
   }
 
   while (!done) {
-    E = Ef (x);
 
     n_accepts = 0;
     n_rejects = 0;
     n_eless = 0;
-    for (i = 0; i < params.n_tries - 1; ++i) {
+    for (i = 0; i < params.iters_fixed_T; ++i) {
       if (copyfunc) {
 	copyfunc(x, new_x);
       } else {
@@ -137,7 +137,7 @@ gsl_siman_solve (const gsl_rng * r, void *x0_p, gsl_siman_Efunc_t Ef,
     }
 
     /* apply the cooling schedule to the temperature */
-    /* FIXME: I should also introduce a cooling schedule for the n_tries */
+    /* FIXME: I should also introduce a cooling schedule for the iters */
     T /= params.mu_t;
     ++n_iter;
     if (T < params.t_min) {

@@ -99,7 +99,7 @@ the skewed Levy alpha-stable variates gsl_ran_levy_skew
 
 * Achim Gaedke <achim@zpr.uni-koeln.de> for bug reports and
 suggestions, additional histogram code, PyGSL python interface, 2d
-histogram statistics
+histogram statistics, bug fixes for simulated annealing
 
 * Eric Rose <erose@memot.unibe.ch> for bug report and useful tip on casting
 
