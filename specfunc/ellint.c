@@ -35,57 +35,27 @@ static double locMAX4(double x, double y, double z, double w)
 
 
 /* based on Carlson's algorithms:
-   [B. C. Carlson Numer. Math. 33 (1979)]
+   [B. C. Carlson Numer. Math. 33, 1 (1979)]
    
    see also:
    [B.C. Carlson, Special Functions of Applied Mathematics (1977)]
  */
 
-/*
-      DOUBLE PRECISION FUNCTION RC(X,Y,ERRTOL,IERR)
-C
-C          THIS FUNCTION SUBROUTINE COMPUTES THE ELEMENTARY INTEGRAL
-C          RC(X,Y) = INTEGRAL FROM ZERO TO INFINITY OF
-C
-C                              -1/2     -1
-C                    (1/2)(T+X)    (T+Y)  DT,
-C
-C          WHERE X IS NONNEGATIVE AND Y IS POSITIVE.  THE DUPLICATION
-C          THEOREM IS ITERATED UNTIL THE VARIABLES ARE NEARLY EQUAL,
-C          AND THE FUNCTION IS THEN EXPANDED IN TAYLOR SERIES TO FIFTH
-C          ORDER.  LOGARITHMIC, INVERSE CIRCULAR, AND INVERSE HYPER-
-C          BOLIC FUNCTIONS CAN BE EXPRESSED IN TERMS OF RC.  REFERENCE:
-C          B. C. CARLSON, COMPUTING ELLIPTIC INTEGRALS BY DUPLICATION,
-C          NUMER. MATH. 33 (1979), 1-16.  CODED BY B. C. CARLSON AND
-C          ELAINE M. NOTIS, AMES LABORATORY-DOE, IOWA STATE UNIVERSITY,
-C          AMES, IOWA 50011.  MARCH 1, 1980.
-C
-C          CHECK BY ADDITION THEOREM: RC(X,X+Z) + RC(Y,Y+Z) = RC(0,Z),
-C          WHERE X, Y, AND Z ARE POSITIVE AND  X * Y = Z * Z.
-C
-C          LOLIM AND UPLIM DETERMINE THE RANGE OF VALID ARGUMENTS.
-C          LOLIM IS NOT LESS THAN THE MACHINE MINIMUM MULTIPLIED BY 5.
-C          UPLIM IS NOT GREATER THAN THE MACHINE MAXIMUM DIVIDED BY 5.
-C
-      DATA LOLIM/3.D-78/, UPLIM/1.D+75/
-C
-C          ON INPUT:
-C
-C          X AND Y ARE THE VARIABLES IN THE INTEGRAL RC(X,Y).
-C
-C          ERRTOL IS SET TO THE DESIRED ERROR TOLERANCE.
-C          RELATIVE ERROR DUE TO TRUNCATION IS LESS THAN
-C          16 * ERRTOL ** 6 / (1 - 2 * ERRTOL).
-C
-C          SAMPLE CHOICES:  ERRTOL   RELATIVE TRUNCATION
-C                                    ERROR LESS THAN
-C                           1.D-3    2.D-17
-C                           3.D-3    2.D-14
-C                           1.D-2    2.D-11
-C                           3.D-2    2.D-8
-C                           1.D-1    2.D-5
-C
+/* According to Carlson's algorithm, the errtol parameter
+   typically effects the relative error in the following way:
+
+   relative error < 16 errtol^6 / (1 - 2 errtol)
+
+     errtol     precision
+     ------     ----------
+     0.001       1.0e-17
+     0.003       2.0e-14 
+     0.01        2.0e-11
+     0.03        2.0e-8
+     0.1         2.0e-5
 */
+
+
 int gsl_sf_ellint_RC_impl(double x, double y, double errtol, double * result)
 {
   const double lolim = 5.0 * DBL_MIN;
@@ -123,52 +93,6 @@ int gsl_sf_ellint_RC_impl(double x, double y, double errtol, double * result)
 }
 
 
-/*
-      DOUBLE PRECISION FUNCTION RD(X,Y,Z,ERRTOL,IERR)
-C
-C          THIS FUNCTION SUBROUTINE COMPUTES AN INCOMPLETE ELLIPTIC
-C          INTEGRAL OF THE SECOND KIND,
-C          RD(X,Y,Z) = INTEGRAL FROM ZERO TO INFINITY OF
-C
-C                                -1/2     -1/2     -3/2
-C                      (3/2)(T+X)    (T+Y)    (T+Z)    DT,
-C
-C          WHERE X AND Y ARE NONNEGATIVE, X + Y IS POSITIVE, AND Z IS
-C          POSITIVE.  IF X OR Y IS ZERO, THE INTEGRAL IS COMPLETE.
-C          THE DUPLICATION THEOREM IS ITERATED UNTIL THE VARIABLES ARE
-C          NEARLY EQUAL, AND THE FUNCTION IS THEN EXPANDED IN TAYLOR
-C          SERIES TO FIFTH ORDER.  REFERENCE: B. C. CARLSON, COMPUTING
-C          ELLIPTIC INTEGRALS BY DUPLICATION, NUMER. MATH. 33 (1979),
-C          1-16.  CODED BY B. C. CARLSON AND ELAINE M. NOTIS, AMES
-C          LABORATORY-DOE, IOWA STATE UNIVERSITY, AMES, IOWA 50011.
-C          MARCH 1, 1980..
-C
-C          CHECK: RD(X,Y,Z) + RD(Y,Z,X) + RD(Z,X,Y)
-C          = 3 / DSQRT(X * Y * Z), WHERE X, Y, AND Z ARE POSITIVE.
-C
-C
-C          LOLIM AND UPLIM DETERMINE THE RANGE OF VALID ARGUMENTS.
-C          LOLIM IS NOT LESS THAN 2 / (MACHINE MAXIMUM) ** (2/3).
-C          UPLIM IS NOT GREATER THAN (0.1 * ERRTOL / MACHINE
-C          MINIMUM) ** (2/3), WHERE ERRTOL IS DESCRIBED BELOW.
-C          IN THE FOLLOWING TABLE IT IS ASSUMED THAT ERRTOL WILL
-C          NEVER BE CHOSEN SMALLER THAN 1.D-5.
-C
-      DATA LOLIM/6.D-51/, UPLIM/1.D+48/
-C
-C          ERRTOL IS SET TO THE DESIRED ERROR TOLERANCE.
-C          RELATIVE ERROR DUE TO TRUNCATION IS LESS THAN
-C          3 * ERRTOL ** 6 / (1-ERRTOL) ** 3/2.
-C
-C          SAMPLE CHOICES:  ERRTOL   RELATIVE TRUNCATION
-C                                    ERROR LESS THAN
-C                           1.D-3    4.D-18
-C                           3.D-3    3.D-15
-C                           1.D-2    4.D-12
-C                           3.D-2    3.D-9
-C                           1.D-1    4.D-6
-C
-*/
 int gsl_sf_ellint_RD_impl(double x, double y, double z, double errtol, double * result)
 {
   const double lolim = 2.0/pow(DBL_MAX, 2./3.);
@@ -228,47 +152,6 @@ int gsl_sf_ellint_RD_impl(double x, double y, double z, double errtol, double * 
 }
 
 
-/*
-      DOUBLE PRECISION FUNCTION RF(X,Y,Z,ERRTOL,IERR)
-C
-C          THIS FUNCTION SUBROUTINE COMPUTES THE INCOMPLETE ELLIPTIC
-C          INTEGRAL OF THE FIRST KIND,
-C          RF(X,Y,Z) = INTEGRAL FROM ZERO TO INFINITY OF
-C
-C                                -1/2     -1/2     -1/2
-C                      (1/2)(T+X)    (T+Y)    (T+Z)    DT,
-C
-C          WHERE X, Y, AND Z ARE NONNEGATIVE AND AT MOST ONE OF THEM
-C          IS ZERO.  IF ONE OF THEM IS ZERO, THE INTEGRAL IS COMPLETE.
-C          THE DUPLICATION THEOREM IS ITERATED UNTIL THE VARIABLES ARE
-C          NEARLY EQUAL, AND THE FUNCTION IS THEN EXPANDED IN TAYLOR
-C          SERIES TO FIFTH ORDER.  REFERENCE: B. C. CARLSON, COMPUTING
-C          ELLIPTIC INTEGRALS BY DUPLICATION, NUMER. MATH. 33 (1979),
-C          1-16.  CODED BY B. C. CARLSON AND ELAINE M. NOTIS, AMES
-C          LABORATORY-DOE, IOWA STATE UNIVERSITY, AMES, IOWA 50011.
-C          MARCH 1, 1980.
-C
-C          CHECK BY ADDITION THEOREM: RF(X,X+Z,X+W) + RF(Y,Y+Z,Y+W)
-C          = RF(0,Z,W), WHERE X,Y,Z,W ARE POSITIVE AND X * Y = Z * W.
-C
-C          LOLIM AND UPLIM DETERMINE THE RANGE OF VALID ARGUMENTS.
-C          LOLIM IS NOT LESS THAN THE MACHINE MINIMUM MULTIPLIED BY 5.
-C          UPLIM IS NOT GREATER THAN THE MACHINE MAXIMUM DIVIDED BY 5.
-C
-      DATA LOLIM/3.D-78/, UPLIM/1.D+75/
-C
-C          ERRTOL IS SET TO THE DESIRED ERROR TOLERANCE.
-C          RELATIVE ERROR DUE TO TRUNCATION IS LESS THAN
-C          ERRTOL ** 6 / (4 * (1 - ERRTOL)).
-C
-C          SAMPLE CHOICES:  ERRTOL   RELATIVE TRUNCATION
-C                                    ERROR LESS THAN
-C                           1.D-3    3.D-19
-C                           3.D-3    2.D-16
-C                           1.D-2    3.D-13
-C                           3.D-2    2.D-10
-C                           1.D-1    3.D-7
-*/
 int gsl_sf_ellint_RF_impl(double x, double y, double z, double errtol, double * result)
 {
   const double lolim = 5.0 * DBL_MIN;
@@ -324,58 +207,6 @@ int gsl_sf_ellint_RF_impl(double x, double y, double z, double errtol, double * 
 }
 
 
-/*
-    DOUBLE PRECISION FUNCTION RJ(X,Y,Z,P,ERRTOL,IERR)
-C
-C          THIS FUNCTION SUBROUTINE COMPUTES AN INCOMPLETE ELLIPTIC
-C          INTEGRAL OF THE THIRD KIND,
-C          RJ(X,Y,Z,P) = INTEGRAL FROM ZERO TO INFINITY OF
-C
-C                                  -1/2     -1/2     -1/2     -1
-C                        (3/2)(T+X)    (T+Y)    (T+Z)    (T+P)  DT,
-C
-C          WHERE X, Y, AND Z ARE NONNEGATIVE, AT MOST ONE OF THEM IS
-C          ZERO, AND P IS POSITIVE.  IF X OR Y OR Z IS ZERO, THE
-C          INTEGRAL IS COMPLETE.  THE DUPLICATION THEOREM IS ITERATED
-C          UNTIL THE VARIABLES ARE NEARLY EQUAL, AND THE FUNCTION IS
-C          THEN EXPANDED IN TAYLOR SERIES TO FIFTH ORDER.  REFERENCE:
-C          B. C. CARLSON, COMPUTING ELLIPTIC INTEGRALS BY DUPLICATION,
-C          NUMER. MATH. 33 (1979), 1-16.  CODED BY B. C. CARLSON AND
-C          ELAINE M. NOTIS, AMES LABORATORY-DOE, IOWA STATE UNIVERSITY,
-C          AMES, IOWA 50011.  MARCH 1, 1980.
-C
-C          CHECK BY ADDITION THEOREM: RJ(X,X+Z,X+W,X+P)
-C          + RJ(Y,Y+Z,Y+W,Y+P) + (A-B) * RJ(A,B,B,A) + 3 / DSQRT(A)
-C          = RJ(0,Z,W,P), WHERE X,Y,Z,W,P ARE POSITIVE AND X * Y
-C          = Z * W,  A = P * P * (X+Y+Z+W),  B = P * (P+X) * (P+Y),
-C          AND B - A = P * (P-Z) * (P-W).  THE SUM OF THE THIRD AND
-C          FOURTH TERMS ON THE LEFT SIDE IS 3 * RC(A,B).
-C
-C          RC IS A FUNCTION COMPUTED BY AN EXTERNAL SUBROUTINE.
-C
-C          LOLIM AND UPLIM DETERMINE THE RANGE OF VALID ARGUMENTS.
-C          LOLIM IS NOT LESS THAN THE CUBE ROOT OF THE VALUE
-C          OF LOLIM USED IN THE SUBROUTINE FOR RC.
-C          UPLIM IS NOT GREATER THAN 0.3 TIMES THE CUBE ROOT OF
-C          THE VALUE OF UPLIM USED IN THE SUBROUTINE FOR RC.
-C
-      DATA LOLIM/2.D-26/, UPLIM/3.D+24/
-C
-C          ERRTOL IS SET TO THE DESIRED ERROR TOLERANCE.
-C          RELATIVE ERROR DUE TO TRUNCATION OF THE SERIES FOR RJ
-C          IS LESS THAN 3 * ERRTOL ** 6 / (1 - ERRTOL) ** 3/2.
-C          AN ERROR TOLERANCE (ETOLRC) WILL BE PASSED TO THE SUBROUTINE
-C          FOR RC TO MAKE THE TRUNCATION ERROR FOR RC LESS THAN FOR RJ.
-C
-C          SAMPLE CHOICES:  ERRTOL   RELATIVE TRUNCATION
-C                                    ERROR LESS THAN
-C                           1.D-3    4.D-18
-C                           3.D-3    3.D-15
-C                           1.D-2    4.D-12
-C                           3.D-2    3.D-9
-C                           1.D-1    4.D-6
-C
-*/
 int gsl_sf_ellint_RJ_impl(double x, double y, double z, double p, double errtol, double * result)
 {
   const double lolim =       pow(5.0 * DBL_MIN, 1.0/3.0);
@@ -456,6 +287,7 @@ int gsl_sf_ellint_RJ_impl(double x, double y, double z, double p, double errtol,
   }
 }
 
+
 /* [Carlson, Numer. Math. 33 (1979) 1, (4.1)] */
 int gsl_sf_ellint_F_impl(double phi, double k, double prec, double * result)
 {
@@ -473,6 +305,7 @@ int gsl_sf_ellint_F_impl(double phi, double k, double prec, double * result)
   }
   return status;
 }
+
 
 /* [Carlson, Numer. Math. 33 (1979) 1, (4.2)] */
 int gsl_sf_ellint_E_impl(double phi, double k, double prec, double * result)
@@ -499,6 +332,7 @@ int gsl_sf_ellint_E_impl(double phi, double k, double prec, double * result)
   }
 }
 
+
 /* [Carlson, Numer. Math. 33 (1979) 1, (4.3)] */
 int gsl_sf_ellint_P_impl(double phi, double k, double n, double prec, double * result)
 {
@@ -524,6 +358,7 @@ int gsl_sf_ellint_P_impl(double phi, double k, double n, double prec, double * r
   }
 }
 
+
 /* [Carlson, Numer. Math. 33 (1979) 1, (4.4)] */
 int gsl_sf_ellint_D_impl(double phi, double k, double n, double prec, double * result)
 {
@@ -543,11 +378,13 @@ int gsl_sf_ellint_D_impl(double phi, double k, double n, double prec, double * r
   return status;
 }
 
+
 /* [Carlson, Numer. Math. 33 (1979) 1, (4.5)] */
 int gsl_sf_ellint_Kcomp_impl(double k, double prec, double * result)
 {
   return gsl_sf_ellint_RF_impl(0.0, 1.0 - k*k, 1.0, prec, result);
 }
+
 
 /* [Carlson, Numer. Math. 33 (1979) 1, (4.6)] */
 int gsl_sf_ellint_Ecomp_impl(double k, double prec, double * result)

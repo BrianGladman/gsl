@@ -15,8 +15,6 @@ should be finished before a 1.0 level release.
   can probably wait.
   DONE: Sat Nov  7 15:47:35 MST 1998 [GJ]
 
-* Implement toroidal functions, toroidalP_...().
-
 * Make hyperg_1F1() work right.
 
 * Implement the low-energy regime for the Coulomb
@@ -134,7 +132,7 @@ should be finished before a 1.0 level release.
     OK: Sun Nov  8 19:17:28 MST 1998 [GJ]  *
 
   - coupling.c
-    OK: Sun Nov  8 16:44:09 MST 1998 [GJ]
+    OK: Sun Nov  8 16:44:09 MST 1998 [GJ]  *
 
   - dawson.c
     OK: Sun Nov  8 15:05:33 MST 1998 [GJ]  *
@@ -149,7 +147,7 @@ should be finished before a 1.0 level release.
     OK: Sun Nov  8 15:08:53 MST 1998 [GJ]  *
 
   - ellint.c
-    OK: Sun Nov  8 19:19:49 MST 1998 [GJ]
+    OK: Sun Nov  8 19:19:49 MST 1998 [GJ]  *
 
   - elljac.c
     OK: Sun Nov  8 19:21:05 MST 1998 [GJ]  *
@@ -167,6 +165,7 @@ should be finished before a 1.0 level release.
     OK: Sun Nov  8 14:58:06 MST 1998 [GJ]  *
 
   - fermi_dirac.c
+    OK: Fri Nov 13 01:12:51 MST 1998 [GJ]  *
 
   - gamma.c
     OK: Sun Nov  8 19:43:43 MST 1998 [GJ]  *
@@ -178,17 +177,21 @@ should be finished before a 1.0 level release.
     OK: Sun Nov  8 19:26:31 MST 1998 [GJ]  *
 
   - hyperg.c
+    OK: Thu Nov 12 18:34:31 MST 1998 [GJ]  *
 
   - hyperg_0F1.c
-    
+    OK: Thu Nov 12 18:33:42 MST 1998 [GJ]  *
+
   - hyperg_1F1.c
-    
+
   - hyperg_2F0.c
-    
+    OK: Thu Nov 12 18:32:53 MST 1998 [GJ]  *
+
   - hyperg_2F1.c
-    
+
   - hyperg_U.c
-    
+    OK: Thu Nov 12 18:28:30 MST 1998 [GJ]  *
+
   - laguerre.c
     OK: Sun Nov  8 19:29:02 MST 1998 [GJ]  *
 
@@ -201,7 +204,8 @@ should be finished before a 1.0 level release.
   - legendre_con.c
 
   - legendre_poly.c
-    
+    OK: Thu Nov 12 21:07:18 MST 1998 [GJ]  *
+
   - log.c
     OK: Sun Nov  8 14:48:11 MST 1998 [GJ]  *
 
@@ -224,10 +228,10 @@ should be finished before a 1.0 level release.
     OK: Sun Nov  8 14:35:10 MST 1998 [GJ]  *
 
   - synchrotron.c
-    OK: Sun Nov  8 14:27:33 MST 1998 [GJ]
+    OK: Sun Nov  8 14:27:33 MST 1998 [GJ]  *
 
   - transport.c
-    OK: Sun Nov  8 14:29:12 MST 1998 [GJ]
+    OK: Sun Nov  8 14:29:12 MST 1998 [GJ]  *
 
   - trig.c
     OK: Sun Nov  8 20:03:18 MST 1998 [GJ]  *
@@ -239,9 +243,17 @@ should be finished before a 1.0 level release.
 
 ----------------------------------------------------------------------
 
-The following are important but probably involve
-significant effort, and it is too much to expect
-completion before a 1.0 level release.
+The following are important but probably will
+not see completion before a 1.0 level release.
+
+* Incomplete Fermi-Dirac functions.
+  Other Fermi-Dirac functions, including the
+  generic 1/2-integer case, which was not done.
+
+* General Legendre functions (at least on the cut).
+  This subsumes the toroidal functions, so we need not
+  consider those separately. SLATEC code exists (originally
+  due to Olver+Smith).
 
 * Characterize the algorithms. A significant fraction of
   the code is home-grown and it should be reviewed by

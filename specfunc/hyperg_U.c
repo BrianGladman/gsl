@@ -289,7 +289,6 @@ hyperg_U_finite_sum(int N, double a, double b, double x, double xeps,
 }
 
 
-
 /* Based on SLATEC DCHU() [W. Fullerton]
  * Assumes x > 0.
  * This is just a series summation method, and

@@ -1,12 +1,10 @@
 /* Author:  G. Jungman
  * RCS:     $Id$
  */
-#include <math.h>
 #include <gsl_math.h>
 #include <gsl_errno.h>
 #include "hyperg.h"
 #include "gsl_sf_hyperg.h"
-
 
 
 int

@@ -1,7 +1,6 @@
 /* Author:  G. Jungman
  * RCS:     $Id$
  */
-#include <math.h>
 #include <gsl_math.h>
 #include <gsl_errno.h>
 #include "gsl_sf_chebyshev.h"
@@ -205,21 +204,21 @@ static double fd_2_a_data[21] = {
   0.1784163467613519713,
   0.0208333333333333333,
   0.0012708226459768508,
-  0.e-30,
+  0.0,
  -5.0619314244895e-6,
-  0.e-30,
+  0.0,
   4.32026533989e-8,
-  0.e-30,
+  0.0,
  -4.870544166e-10,
-  0.e-20,
+  0.0,
   6.4203740e-12,
-  0.e-30,
+  0.0,
  -9.37424e-14,
-  0.e-30,
+  0.0,
   1.4715e-15,
-  0.e-30,
+  0.0,
  -2.44e-17,
-  0.e-30,
+  0.0,
   4.e-19
 };
 static struct gsl_sf_cheb_series fd_2_a_cs = {
@@ -417,7 +416,7 @@ static double fd_mhalf_b_data[20] = {
  -4.9587006215e-9,
   7.160432795e-10,
   4.5072219e-12,
- -2.36954250e-11,
+ -2.3695425e-11,
   4.9122208e-12,
  -2.905277e-13,
  -9.59291e-14,
@@ -812,7 +811,9 @@ static struct gsl_sf_cheb_series fd_3half_d_cs = {
 };
 
 
-/* Goano's modification of the Levin-u implementation from TOMS-602.
+/* Goano's modification of the Levin-u implementation.
+ * This is a simplification of the original WHIZ algorithm.
+ * See [Fessler et al., ACM Toms 9, 346 (1983)].
  */
 static
 int
@@ -984,7 +985,6 @@ fd_asymp(const double j, const double x, double * result)
     xgam = xgam * xm2 * (j + 1.0 - (2*n-2)) * (j + 1.0 - (2*n-1));
     add  = eta * xgam;
     if(!j_integer && fabs(add) > fabs(add_previous)) break;
-    if( j_integer && 2*n > j) break;
     if(fabs(add/seqn) < GSL_MACH_EPS) break;
     seqn += add;
   }
@@ -1000,6 +1000,7 @@ fd_asymp(const double j, const double x, double * result)
 /* Series evaluation for small x, generic j.
  * [Goano (8)]
  */
+#if 0
 static
 int
 fd_series(const double j, const double x, double * result)
@@ -1026,23 +1027,23 @@ fd_series(const double j, const double x, double * result)
   *result = sum;
   return GSL_SUCCESS;
 }
+#endif /* 0 */
 
 
-/* Series evaluation for small x, integer j > 0.
+/* Series evaluation for small x > 0, integer j > 0; x < Pi.
  * [Goano (8)]
  */
 static
 int
 fd_series_int(const int j, const double x, double * result)
 {
-  const int nmax = 2000;
   int n;
   double sum = 0.0;
+  double del;
   double pow_factor = 1.0;
   double eta_factor;
-  double del;
   gsl_sf_eta_int_impl(j + 1, &eta_factor);
-  del = pow_factor * eta_factor;
+  del  = pow_factor * eta_factor;
   sum += del;
 
   /* Sum terms where the argument
@@ -1053,26 +1054,43 @@ fd_series_int(const int j, const double x, double * result)
     pow_factor *= x/n;
     del  = pow_factor * eta_factor;
     sum += del;
-    if(fabs(del/sum) < GSL_MACH_EPS) break;
+    if(fabs(del/sum) < 0.1*GSL_MACH_EPS) break;
   }
 
-  /* Explicitly avoid the terms
-   * where eta() is zero.
+  /* Now sum the terms where eta() is negative.
+   * The argument of eta() must be odd as well,
+   * so it is convenient to transform the series
+   * as follows:
+   *
+   * Sum[ eta(j+1-n) x^n / n!, {n,j+4,Infinity}]
+   * = x^j / j! Sum[ eta(1-2m) x^(2m) j! / (2m+j)! , {m,2,Infinity}]
+   *
+   * We do not need to do this sum if j is large enough.
    */
-  for(n=j+4; n<nmax; n += 2) {
-    gsl_sf_eta_int_impl(j+1-n, &eta_factor);
-    pow_factor *= (x/(n-1))*(x/n);
-    del  = pow_factor * eta_factor;
-    sum += del;
-    if(fabs(del/sum) < GSL_MACH_EPS) break;
+  if(j < 32) {
+    int m;
+    double jfact;
+    double sum2;
+    double pre2;
+
+    gsl_sf_fact_impl((unsigned int)j, &jfact);
+    pre2 = gsl_sf_pow_int(x, j) / jfact;
+
+    gsl_sf_eta_int_impl(-3, &eta_factor);
+    pow_factor = x*x*x*x / ((j+4)*(j+3)*(j+2)*(j+1));
+    sum2 = eta_factor * pow_factor;
+
+    for(m=3; m<24; m++) {
+      gsl_sf_eta_int_impl(1-2*m, &eta_factor);
+      pow_factor *= x*x / ((j+2*m)*(j+2*m-1));
+      sum2 += eta_factor * pow_factor;
+    }
+
+    sum += pre2 * sum2;
   }
 
   *result = sum;
-
-  if(n == nmax)
-    return GSL_EMAXITER;
-  else
-    return GSL_SUCCESS;
+  return GSL_SUCCESS;
 }
 
 
@@ -1087,8 +1105,8 @@ fd_UMseries_int(const int j, const double x, double * result)
   double lg;
   double pre;
   double lnpre;
-  double sgn = 1.0;
-  double sum = 1.0;
+  double sum_even = 1.0;
+  double sum_odd  = 0.0;
   int stat_sum;
   int stat_e;
   int stat_h = GSL_SUCCESS;
@@ -1107,7 +1125,9 @@ fd_UMseries_int(const int j, const double x, double * result)
     pre = 1.0;
   }
 
-  for(n=1; n<nmax; n++) {
+  /* Add up the odd terms of the sum.
+   */
+  for(n=1; n<nmax; n+=2) {
     double del;
     double U, M;
     int stat_h_local;
@@ -1130,14 +1150,43 @@ fd_UMseries_int(const int j, const double x, double * result)
       break;
     }
 
-    del  = sgn * ((j+1.0)*U - M);
-    sum += del;
-    sgn  = -sgn;
-    if(fabs(del/sum) < GSL_MACH_EPS) break;
+    del = ((j+1.0)*U - M);
+    sum_odd += del;
+    if(fabs(del/sum_odd) < GSL_MACH_EPS) break;
+  }
+
+  /* Add up the even terms of the sum.
+   */
+  for(n=2; n<nmax; n+=2) {
+    double del;
+    double U, M;
+    int stat_h_local;
+
+    stat_h_local = gsl_sf_hyperg_U_int_impl(1, j+2, n*x, &U);
+    if(stat_h_local == GSL_ELOSS) {
+      stat_h = GSL_ELOSS;
+    }
+    else if(stat_h_local != GSL_SUCCESS) {
+      stat_h = stat_h_local;
+      break;
+    }
+
+    stat_h_local = gsl_sf_hyperg_1F1_int_impl(1, j+2, -n*x, &M);
+    if(stat_h_local == GSL_ELOSS) {
+      stat_h = GSL_ELOSS;
+    }
+    else if(stat_h_local != GSL_SUCCESS) {
+      stat_h = stat_h_local;
+      break;
+    }
+
+    del = ((j+1.0)*U - M);
+    sum_even -= del;
+    if(fabs(del/sum_even) < GSL_MACH_EPS) break;
   }
 
   stat_sum = ( n == nmax ? GSL_EMAXITER : GSL_SUCCESS );
-  stat_e   = gsl_sf_exp_mult_impl(lnpre, pre*sum, result);
+  stat_e   = gsl_sf_exp_mult_impl(lnpre, pre*(sum_even + sum_odd), result);
 
   return GSL_ERROR_SELECT_3(stat_e, stat_h, stat_sum);
 }
@@ -1145,7 +1194,7 @@ fd_UMseries_int(const int j, const double x, double * result)
 
 /*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
 
-/* [Goano, TOMS-745, (4)] */
+/* [Goano (4)] */
 int gsl_sf_fermi_dirac_m1_impl(const double x, double * result)
 {
   if(x < GSL_LOG_DBL_MIN) {
@@ -1164,7 +1213,7 @@ int gsl_sf_fermi_dirac_m1_impl(const double x, double * result)
 }
 
 
-/* [Goano, TOMS-745, (3)] */
+/* [Goano (3)] */
 int gsl_sf_fermi_dirac_0_impl(const double x, double * result)
 {
   if(x < GSL_LOG_DBL_MIN) {
@@ -1491,7 +1540,7 @@ int gsl_sf_fermi_dirac_3half_impl(const double x, double * result)
   }
 }
 
-/* [Goano, TOMS-745, p. 222] */
+/* [Goano p. 222] */
 int gsl_sf_fermi_dirac_inc_0_impl(const double x, const double b, double * result)
 {
   if(b < 0.0) {

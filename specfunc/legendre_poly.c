@@ -39,7 +39,7 @@ gsl_sf_legendre_Pl_impl(const int l, const double x, double * result)
     *result = ( GSL_IS_ODD(l) ? -1.0 : 1.0 );
     return GSL_SUCCESS;
   }
-  else if(l < 1.0e+06) {
+  else if(l < 100000) {
     /* Compute by upward recurrence on l.
      */
     double pmm   = 1.0;     /* P_0(x) */
@@ -58,14 +58,33 @@ gsl_sf_legendre_Pl_impl(const int l, const double x, double * result)
   }
   else {
     /* Asymptotic expansion.
-     * FIXME: need another term or two here
+     * [Olver, p. 473]
      */
-    double th  = acos(x);
-    double pre = sqrt(th/sin(th));
+    double u  = l + 0.5;
+    double th = acos(x);
     double J0;
-    int stat_J0 = gsl_sf_bessel_J0_impl((l+0.5)*th, &J0);
-    *result = pre * J0;
-    return stat_J0;
+    double Jm1;
+    int stat_J0  = gsl_sf_bessel_J0_impl(u*th, &J0);
+    int stat_Jm1 = gsl_sf_bessel_Jn_impl(-1, u*th, &Jm1);
+    double pre;
+    double B00;
+
+    /* B00 = 1/8 (1 - th cot(th) / th^2
+     * pre = sqrt(th/sin(th))
+     */
+    if(th < GSL_ROOT4_MACH_EPS) {
+      B00 = (1.0 + th*th/15.0)/24.0;
+      pre = 1.0 + th*th/12.0;
+    }
+    else {
+      double sin_th = sqrt(1.0 - x*x);
+      double cot_th = x / sin_th;
+      B00 = 1.0/8.0 * (1.0 - th * cot_th) / (th*th);
+      pre = sqrt(th/sin_th);
+    }
+
+    *result = pre * (J0 + th/u * Jm1 * B00);
+    return GSL_ERROR_SELECT_2(stat_J0, stat_Jm1);
   }
 }
 

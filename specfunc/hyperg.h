@@ -4,8 +4,8 @@
 /* Miscellaneous implementations of use
  * for evaluation of hypergeometric functions.
  */
-#ifndef _GSL_SF_HYPERG_H_
-#define _GSL_SF_HYPERG_H_
+#ifndef _HYPERG_H_
+#define _HYPERG_H_
 
 
 /* Direct implementation of 1F1 series.
@@ -55,4 +55,4 @@ gsl_sf_hyperg_2F0_series_impl(double a, double b, double x, int n_trunc,
                               double * result, double * prec);
 
 
-#endif  /* !_GSL_SF_HYPERG_H_ */
+#endif  /* !_HYPERG_H_ */

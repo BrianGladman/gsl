@@ -1720,7 +1720,6 @@ int check_expint(void)
 
 int check_fermidirac(void)
 {
-  double y;
   int status = 0;
   int s;
 
@@ -1822,19 +1821,85 @@ int check_fermidirac(void)
   status += s;
 
   s = 0;
+  s += ( frac_diff(gsl_sf_fermi_dirac_int(3,  -2.0), 0.1342199155038680215 ) > 1.0e-14 );
+  s += ( frac_diff(gsl_sf_fermi_dirac_int(3,   0.0), 0.9470328294972459176 ) > 1.0e-14 );
+  s += ( frac_diff(gsl_sf_fermi_dirac_int(3,   0.1), 1.0414170610956165759 ) > 1.0e-14 );
+  s += ( frac_diff(gsl_sf_fermi_dirac_int(3,   1.0), 2.3982260822489407070 ) > 1.0e-14 );
+  s += ( frac_diff(gsl_sf_fermi_dirac_int(3,   3.0), 12.621635313399690724 ) > 1.0e-14 );
+  s += ( frac_diff(gsl_sf_fermi_dirac_int(3, 100.0), 4.174893231066566793e+06 ) > 1.0e-14 );
+  s += ( frac_diff(gsl_sf_fermi_dirac_int(3, 500.0), 2.604372285319088354e+09 ) > 1.0e-12 );
+  gsl_test(s, "  gsl_sf_fermi_dirac_int(3)");
+  status += s;
+
+  s = 0;
   s += ( frac_diff(gsl_sf_fermi_dirac_int(5,  -2.0), 0.13505242246823676478 ) > 1.0e-14 );
   s += ( frac_diff(gsl_sf_fermi_dirac_int(5,   0.0), 0.9855510912974351041  ) > 1.0e-14 );
   s += ( frac_diff(gsl_sf_fermi_dirac_int(5,   0.1), 1.0876519750101492782  ) > 1.0e-14 );
   s += ( frac_diff(gsl_sf_fermi_dirac_int(5,   1.0), 2.6222337848692390539  ) > 1.0e-14 );
+  s += ( frac_diff(gsl_sf_fermi_dirac_int(5,   3.0), 17.008801618012113022  ) > 1.0e-14 );
+  s += ( frac_diff(gsl_sf_fermi_dirac_int(5, 100.0), 1.3957522531334869874e+09 ) > 1.0e-14 );
+  s += ( frac_diff(gsl_sf_fermi_dirac_int(5, 500.0), 2.1705672808114817955e+13 ) > 1.0e-12 );
   gsl_test(s, "  gsl_sf_fermi_dirac_int(5)");
   status += s;
 
   s = 0;
-  gsl_sf_fermi_dirac_int_impl(5, 3.0, &y);
-  s += ( frac_diff(y, 17.008801618012113022  ) > 1.0e-08 );
-  gsl_sf_fermi_dirac_int_impl(5, 100.0, &y);
-  s += ( frac_diff(y, 1.3957522531334869874e+09 ) > 1.0e-08 );
-  gsl_test(s, "  gsl_sf_fermi_dirac_int_impl(5)");
+  s += ( frac_diff(gsl_sf_fermi_dirac_int(7,  -2.0), 0.1352641105671255851 ) > 1.0e-14 );
+  s += ( frac_diff(gsl_sf_fermi_dirac_int(7,   0.0), 0.9962330018526478992 ) > 1.0e-14 );
+  s += ( frac_diff(gsl_sf_fermi_dirac_int(7,   0.1), 1.1005861815180315485 ) > 1.0e-14 );
+  s += ( frac_diff(gsl_sf_fermi_dirac_int(7,   1.0), 2.6918878172003129203 ) > 1.0e-14 );
+  s += ( frac_diff(gsl_sf_fermi_dirac_int(7,   3.0), 19.033338976999367642 ) > 1.0e-14 );
+  s += ( frac_diff(gsl_sf_fermi_dirac_int(7,  10.0), 5654.530932873610014  ) > 1.0e-14 );
+  s += ( frac_diff(gsl_sf_fermi_dirac_int(7,  50.0), 1.005005069985066278e+09 ) > 1.0e-14 );
+  s += ( frac_diff(gsl_sf_fermi_dirac_int(7, 500.0), 9.691690268341569514e+16 ) > 1.0e-13 );
+  gsl_test(s, "  gsl_sf_fermi_dirac_int(7)");
+  status += s;
+
+  s = 0;
+  s += ( frac_diff(gsl_sf_fermi_dirac_int(9,  -2.0), 0.1353174385330242691 ) > 1.0e-14 );
+  s += ( frac_diff(gsl_sf_fermi_dirac_int(9,   0.0), 0.9990395075982715656 ) > 1.0e-14 );
+  s += ( frac_diff(gsl_sf_fermi_dirac_int(9,   0.1), 1.1039997234712941212 ) > 1.0e-14 );
+  s += ( frac_diff(gsl_sf_fermi_dirac_int(9,   1.0), 2.7113648898129249947 ) > 1.0e-14 );
+  s += ( frac_diff(gsl_sf_fermi_dirac_int(9,   3.0), 19.768544008138602223 ) > 1.0e-14 );
+  s += ( frac_diff(gsl_sf_fermi_dirac_int(9,  10.0), 10388.990167312912478 ) > 1.0e-14 );
+  s += ( frac_diff(gsl_sf_fermi_dirac_int(9,  50.0), 2.85466960802601649e+10 ) > 1.0e-14 );
+  s += ( frac_diff(gsl_sf_fermi_dirac_int(9, 500.0), 2.69273849842695876e+20 ) > 1.0e-14 );
+  gsl_test(s, "  gsl_sf_fermi_dirac_int(9)");
+  status += s;
+
+  s = 0;
+  s += ( frac_diff(gsl_sf_fermi_dirac_int(10,  -2.0), 0.13532635396712288092 ) > 1.0e-14 );
+  s += ( frac_diff(gsl_sf_fermi_dirac_int(10,   0.0), 0.9995171434980607541 ) > 1.0e-14 );
+  s += ( frac_diff(gsl_sf_fermi_dirac_int(10,   0.1), 1.1045818238852612296 ) > 1.0e-14 );
+  s += ( frac_diff(gsl_sf_fermi_dirac_int(10,   1.0), 2.7147765350346120647 ) > 1.0e-14 );
+  s += ( frac_diff(gsl_sf_fermi_dirac_int(10,   3.0), 19.917151938411675171 ) > 1.0e-14 );
+  s += ( frac_diff(gsl_sf_fermi_dirac_int(10,  10.0), 12790.918595516495955 ) > 1.0e-14 );
+  s += ( frac_diff(gsl_sf_fermi_dirac_int(10,  50.0), 1.3147703201869657654e+11 ) > 1.0e-14 );
+  s += ( frac_diff(gsl_sf_fermi_dirac_int(10, 500.0), 1.2241331244469204398e+22 ) > 1.0e-14 );
+  gsl_test(s, "  gsl_sf_fermi_dirac_int(10)");
+  status += s;
+
+  s = 0;
+  s += ( frac_diff(gsl_sf_fermi_dirac_int(11,  -2.0), 0.1353308162894847149 ) > 1.0e-14 );
+  s += ( frac_diff(gsl_sf_fermi_dirac_int(11,   0.0), 0.9997576851438581909 ) > 1.0e-14 );
+  s += ( frac_diff(gsl_sf_fermi_dirac_int(11,   0.1), 1.1048751811565850418 ) > 1.0e-14 );
+  s += ( frac_diff(gsl_sf_fermi_dirac_int(11,   1.0), 2.7165128749007313436 ) > 1.0e-14 );
+  s += ( frac_diff(gsl_sf_fermi_dirac_int(11,   3.0), 19.997483022044603065 ) > 1.0e-14 );
+  s += ( frac_diff(gsl_sf_fermi_dirac_int(11,  10.0), 14987.996005901818036 ) > 1.0e-14 );
+  s += ( frac_diff(gsl_sf_fermi_dirac_int(11,  50.0), 5.558322924078990628e+11 ) > 1.0e-14 );
+  s += ( frac_diff(gsl_sf_fermi_dirac_int(11, 500.0), 5.101293089606198280e+23 ) > 1.0e-14 );
+  gsl_test(s, "  gsl_sf_fermi_dirac_int(11)");
+  status += s;
+
+  s = 0;
+  s += ( frac_diff(gsl_sf_fermi_dirac_int(20,  -2.0), 0.13533527450327238373 ) > 1.0e-14 );
+  s += ( frac_diff(gsl_sf_fermi_dirac_int(20,   0.0), 0.9999995232582155428  ) > 1.0e-14 );
+  s += ( frac_diff(gsl_sf_fermi_dirac_int(20,   0.1), 1.1051703357941368203  ) > 1.0e-14 );
+  s += ( frac_diff(gsl_sf_fermi_dirac_int(20,   1.0), 2.7182783069905721654  ) > 1.0e-14 );
+  s += ( frac_diff(gsl_sf_fermi_dirac_int(20,   3.0), 20.085345296028242734  ) > 1.0e-14 );
+  s += ( frac_diff(gsl_sf_fermi_dirac_int(20,  10.0), 21898.072920149606475  ) > 1.0e-14 );
+  s += ( frac_diff(gsl_sf_fermi_dirac_int(20,  50.0), 1.236873256595717618e+16 ) > 1.0e-14 );
+  s += ( frac_diff(gsl_sf_fermi_dirac_int(20, 500.0), 9.358938204369557277e+36 ) > 1.0e-14 );
+  gsl_test(s, "  gsl_sf_fermi_dirac_int(20)");
   status += s;
 
   return status;
@@ -5593,11 +5658,15 @@ int check_zeta(void)
   status += s;
 
   s = 0;
+  s += ( frac_diff(gsl_sf_eta_int(-91), -4.945598888750002040e+94 ) > 1.0e-14 );
   s += ( frac_diff(gsl_sf_eta_int(-51), -4.363969073121683116e+40 ) > 1.0e-14 );
   s += ( frac_diff(gsl_sf_eta_int(-5),  0.25 ) > 1.0e-14 );
+  s += ( frac_diff(gsl_sf_eta_int(-1),  0.25 ) > 1.0e-14 );
+  s += ( frac_diff(gsl_sf_eta_int( 0),  0.5  ) > 1.0e-14 );
   s += ( frac_diff(gsl_sf_eta_int( 5),  0.9721197704469093059 ) > 1.0e-14 );
   s += ( frac_diff(gsl_sf_eta_int( 6),  0.9855510912974351041 ) > 1.0e-14 );
   s += ( frac_diff(gsl_sf_eta_int( 20), 0.9999990466115815221 ) > 1.0e-14 );
+  s += ( frac_diff(gsl_sf_eta_int( 1000), 1.0 ) > 1.0e-14 );
   gsl_test(s, "  gsl_sf_eta_int");
   status += s;
 

@@ -125,274 +125,22 @@ conicalP_negmu_xgt1_CF1(const double mu, const int ell, const double tau,
 }
 
 
-/* Backward recursion for
- * y_n := 1/Gamma[1+mu+n] P^{mu+n}_{-1/2 + I tau}(x)
- * x > 1
- * mu_min > -1
- * n = N, N-1, ..., 0
- *
- * checked OK: [GJ] Tue Sep 15 19:25:35 MDT 1998 
- */
-static
-int
-backward_recurse_pos_mu_xgt1(const double mu_min, const double tau, const double x,
-                             const int N,
-                             const double y_N, const double y_Np1,
-			     double * result_y_0, double * result_y_1)
-{
-  const double c1 = 1.0/sqrt(x*x-1.0);
-  const double t2 = tau*tau;
-  double y_np1 = y_Np1;
-  double y_n   = y_N;
-  double y_nm1;
-  int n;
-
-  for(n=N; n>=1; n--) {
-    const double mu = mu_min + n;
-    const double d  = (mu - 0.5)*(mu-0.5) + t2;
-    y_nm1 = -mu*(mu+1.0)/d * (y_np1 + 2.0*mu*x*c1*y_n/(mu+1.0));
-    y_np1 = y_n;
-    y_n   = y_nm1;
-    if(fabs(y_nm1) > RECURSE_LARGE) {
-      *result_y_0 = 0.0;
-      *result_y_1 = 0.0;
-      return GSL_EOVRFLW;
-    }
-  }
-  
-  *result_y_0 = y_n;
-  *result_y_1 = y_np1;
-  return GSL_SUCCESS;
-}
-			 
-
-/* Backward recursion for
- * y_n := 1/Gamma[1-mu-n] P^{-mu-n}_{-1/2 + I tau}(x)
- * x > 1
- * mu_max < 0
- * n = N, N-1, ..., 0
- * mu != integer
- *
- * checked OK: Tue Sep 15 19:53:20 MDT 1998 
- */
-static
-int
-backward_recurse_neg_mu_xgt1(const double mu, const double tau, const double x,
-                             const int N,
-                             const double y_N, const double y_Np1,
-			     double * result_y_0, double * result_y_1)
-{ 
-  const double c1 = 1.0/sqrt(x*x-1.0);
-  const double t2 = tau*tau;
-  double y_np1 = y_Np1;
-  double y_n   = y_N;
-  double y_nm1;
-  int n;
-
-  for(n=N; n>=1; n--) {
-    const double mupn = mu + n;
-    const double d = (mupn+0.5)*(mupn+0.5) + t2;
-    y_nm1 = -2.0*mupn*x*c1/(mupn-1.0)*y_n - d/(mupn*(mupn-1.0))*y_np1;
-    y_np1 = y_n;
-    y_n   = y_nm1;
-    if(fabs(y_nm1) > RECURSE_LARGE) {
-      *result_y_0 = 0.0;
-      *result_y_1 = 0.0;
-      return GSL_EOVRFLW;
-    }
-  }
-  
-  *result_y_0 = y_n;
-  *result_y_1 = y_np1;
-  return GSL_SUCCESS;
-}
-
-
-/* Backward recursion for
- * y_n := 1/Gamma[1+mu+n] P^{mu+n}_{-1/2 + I tau}(x)
- * |x| < 1
- * mu_min > -1
- * n = N, N-1, ..., 0
- *
- * Note that this is not stable for x < 0, because it is dominated
- * by the Q part of the solution there. Use this for 0 < x < 1.
- *
- * checked OK: Wed Sep 16 19:14:27 MDT 1998 
- */
-static
-int
-backward_recurse_pos_mu_xlt1(const double mu_min, const double tau, const double x,
-                             const int N,
-                             const double y_N, const double y_Np1,
-			     double * result_y_0, double * result_y_1)
-{
-  const double c1 = 1.0/sqrt(1.0-x*x);
-  const double t2 = tau*tau;
-  double y_np1 = y_Np1;
-  double y_n   = y_N;
-  double y_nm1;
-  int n;
-
-  for(n=N; n>=1; n--) {
-    const double mu = mu_min + n;
-    const double d  = (mu - 0.5)*(mu-0.5) + t2;
-    y_nm1 = mu*(mu+1.0)/d * (y_np1 + 2.0*mu*x*c1*y_n/(mu+1.0));
-    y_np1 = y_n;
-    y_n   = y_nm1;
-    if(fabs(y_nm1) > RECURSE_LARGE) {
-      *result_y_0 = 0.0;
-      *result_y_1 = 0.0;
-      return GSL_EOVRFLW;
-    }
-  }
-  
-  *result_y_0 = y_n;
-  *result_y_1 = y_np1;
-  return GSL_SUCCESS;
-}
-
-
-/* Forward recursion for
- * y_n := 1/Gamma[1+mu+n] P^{mu+n}_{-1/2 + I tau}(x)
- * |x| < 1
- * mu_min > -1
- * n = N, N-1, ..., 0
- *
- * Note that this is not stable for x > 0. Use this for -1 < x < 0.
- *
- * checked OK: Wed Sep 16 19:40:29 MDT 1998 
- */
-static
-int
-forward_recurse_pos_mu_xlt1(const double mu_min, const double tau, const double x,
-                            const int N,
-                            const double y_0, const double y_1,
-			    double * result_yN, double * result_yNp1)
-{
-  const double c1 = 1.0/sqrt(1.0-x*x);
-  const double t2 = tau*tau;
-  double y_nm1 = y_0;
-  double y_n   = y_1;
-  double y_np1;
-  int n;
-
-  for(n=1; n<=N; n++) {
-    const double mu = mu_min + n;
-    const double d  = (mu-0.5)*(mu-0.5) + t2;
-    y_np1 = (d/mu*y_nm1 - 2.0*mu*x*c1*y_n)/(mu+1.0);
-    y_nm1 = y_n;
-    y_n   = y_np1;
-    if(fabs(y_np1) > RECURSE_LARGE) {
-      *result_yN   = 0.0;
-      *result_yNp1 = 0.0;
-      return GSL_EOVRFLW;
-    }
-  }
-
-  *result_yN   = y_nm1;
-  *result_yNp1 = y_n;
-  return GSL_SUCCESS;
-}
-
-
-/* Backward recursion for
- * y_n := 1/Gamma[1-mu-n] P^{-mu-n}_{-1/2 + I tau}(x)
- * |x| < 1
- * mu_max < 0
- * n = N, N-1, ..., 0
- * mu != integer
- *
- * Note that this is not stable for x < 0, because it is dominated
- * by the Q part of the solution there. Use this for 0 < x < 1.
- *
- * checked OK: Wed Sep 16 20:11:21 MDT 1998
- */
-static
-int
-backward_recurse_neg_mu_xlt1(const double mu, const double tau, const double x,
-                             const int N,
-                             const double y_N, const double y_Np1,
-			     double * result_y_0, double * result_y_1)
-{ 
-  const double c1 = 1.0/sqrt(1.0-x*x);
-  const double t2 = tau*tau;
-  double y_np1 = y_Np1;
-  double y_n   = y_N;
-  double y_nm1;
-  int n;
-
-  for(n=N; n>=1; n--) {
-    const double mupn = mu + n;
-    const double d = (mupn+0.5)*(mupn+0.5) + t2;
-    y_nm1 = -2.0*mupn*x*c1/(mupn-1.0)*y_n + d/(mupn*(mupn-1.0))*y_np1;
-    y_np1 = y_n;
-    y_n   = y_nm1;
-    if(fabs(y_nm1) > RECURSE_LARGE) {
-      *result_y_0 = 0.0;
-      *result_y_1 = 0.0;
-      return GSL_EOVRFLW;
-    }
-  }
-  
-  *result_y_0 = y_n;
-  *result_y_1 = y_np1;
-  return GSL_SUCCESS;
-}
-
-
-/* Forward recursion for
- * y_n := 1/Gamma[1-mu-n] P^{-mu-n}_{-1/2 + I tau}(x)
- * |x| < 1
- * mu_min > -1
- * n = N, N-1, ..., 0
- *
- * Note that this is not stable for x > 0. Use this for -1 < x < 0.
- *
- * checked OK: Wed Sep 16 20:32:55 MDT 1998
- */
-static
-int
-forward_recurse_neg_mu_xlt1(const double mu, const double tau, const double x,
-                            const int N,
-                            const double y_0, const double y_1,
-			    double * result_yN, double * result_yNp1)
-{
-  const double c1 = 1.0/sqrt(1.0-x*x);
-  const double t2 = tau*tau;
-  double y_nm1 = y_0;
-  double y_n   = y_1;
-  double y_np1;
-  int n;
-
-  for(n=1; n<=N; n++) {
-    const double mupn = mu + n;
-    const double d = (mupn+0.5)*(mupn+0.5) + t2;
-    y_np1 = (y_nm1 + 2.0*mupn*x*c1/(mupn-1.0)*y_n) * mupn*(mupn-1.0)/d;
-    y_nm1 = y_n;
-    y_n   = y_np1;
-    if(fabs(y_np1) > RECURSE_LARGE) {
-      *result_yN   = 0.0;
-      *result_yNp1 = 0.0;
-      return GSL_EOVRFLW;
-    }
-  }
-
-  *result_yN   = y_nm1;
-  *result_yNp1 = y_n;
-  return GSL_SUCCESS;
-}
-
-
 /* Implementation of large negative mu asymptotic
  * [Dunster, Proc. Roy. Soc. Edinburgh 119A, 311 (1991), p. 326]
  */
 
-static inline double olver_U1(double beta2, double p)
+#ifdef HAVE_INLINE
+inline
+#endif
+static double olver_U1(double beta2, double p)
 {
   return (p-1.0)/(24.0*(1.0+beta2)) * (3.0 + beta2*(2.0 + 5.0*p*(1.0+p)));
 }
 
-static inline double olver_U2(double beta2, double p)
+#ifdef HAVE_INLINE
+inline
+#endif
+static double olver_U2(double beta2, double p)
 {
   double beta4 = beta2*beta2;
   double p2    = p*p;
@@ -415,6 +163,7 @@ static const double U3c5[] = {       9136.0,      22480.0,     12760.0,
 				 92370135.0,   86244015.0, -263678415.0,
 			       -260275015.0, 185910725.0,  185910725.0 };
 
+#if 0
 static double olver_U3(double beta2, double p)
 {
   double beta4 = beta2*beta2;
@@ -432,6 +181,8 @@ static double olver_U3(double beta2, double p)
 		 + beta4*beta4*poly5
 		 ) / den;
 }
+#endif /* 0 */
+
 
 /* Large negative mu asymptotic
  * P^{-mu}_{-1/2 + I tau}, mu -> Inf
@@ -785,6 +536,7 @@ conicalP_xlt1_hyperg_A(double mu, double tau, double x, double * result)
  * effective for x near 1
  *
  */
+#if 0
 static
 int
 conicalP_def_hyperg(double mu, double tau, double x, double * result)
@@ -794,6 +546,7 @@ conicalP_def_hyperg(double mu, double tau, double x, double * result)
   *result = pow((x+1.0)/(x-1.0), 0.5*mu) * F;
   return stat_F;
 }
+#endif /* 0 */
 
 
 /* P^{mu}_{-1/2 + I tau}  second hypergeometric representation
@@ -802,6 +555,7 @@ conicalP_def_hyperg(double mu, double tau, double x, double * result)
  * effective for x near 1
  *
  */
+#if 0
 static
 int
 conicalP_xnear1_hyperg_C(double mu, double tau, double x, double * result)
@@ -822,6 +576,7 @@ conicalP_xnear1_hyperg_C(double mu, double tau, double x, double * result)
   *result = exp(ln_pre) * F;
   return stat_F;
 }
+#endif /* 0 */
 
 
 /* V0, V1 from Kolbig, m = 0
@@ -1256,7 +1011,7 @@ int gsl_sf_conicalP_sph_reg_impl(const int l, const double lambda,
     }
 
     *result = Pell;
-    return GSL_SUCCESS;
+    return stat_P;
   }
   else if(x < 1.0) {
     const double xi = x/(sqrt(1.0-x)*sqrt(1.0+x));
@@ -1288,7 +1043,6 @@ int gsl_sf_conicalP_sph_reg_impl(const int l, const double lambda,
 
     const double xi = x/sqrt((x-1.0)*(x+1.0));
     double rat;
-    double Phf;
     int stat_CF1 = conicalP_negmu_xgt1_CF1(0.5, l, lambda, x, &rat);
     int stat_P;
     double Pellp1 = rat * GSL_SQRT_DBL_MIN;
@@ -1318,6 +1072,104 @@ int gsl_sf_conicalP_sph_reg_impl(const int l, const double lambda,
   }
 }
 
+
+int gsl_sf_conicalP_cyl_reg_impl(const int m, const double lambda,
+                                 const double x,
+                                 double * result
+                                 )
+{
+  if(x <= -1.0 || m < -1) {
+    *result = 0.0;
+    return GSL_EDOM;
+  }
+  else if(m == -1) {
+    return gsl_sf_conicalP_1_impl(lambda, x, result);
+  }
+  else if(m == 0) {
+    return gsl_sf_conicalP_0_impl(lambda, x, result);
+  }
+  else if(x == 1.0) {
+    *result = 0.0;
+    return GSL_SUCCESS;
+  }
+  else if(x < 0.0) {
+    double c = 1.0/sqrt(1.0-x*x);
+    double Pkm1;
+    double Pk;
+    double Pkp1;
+    int k;
+    int stat_0 = gsl_sf_conicalP_1_impl(lambda, x, &Pkm1);  /* P^1 */
+    int stat_1 = gsl_sf_conicalP_0_impl(lambda, x, &Pk);    /* P^0 */
+    int stat_P = GSL_ERROR_SELECT_2(stat_0, stat_1);
+
+    for(k=1; k<m; k++) {
+      double d = (k+0.5)*(k+0.5) + lambda*lambda;
+      Pkp1 = (Pkm1 - 2.0*k*c*x * Pk) / d;
+      Pkm1 = Pk;
+      Pk   = Pkp1;
+    }
+
+    *result = Pk;
+    return stat_P;
+  }
+  else if(x < 1.0) {
+    const double xi = x/(sqrt(1.0-x)*sqrt(1.0+x));
+    double rat;
+    double P0;
+    int stat_CF1 = conicalP_negmu_xlt1_CF1(0.0, m, lambda, x, &rat);
+    int stat_P0  = gsl_sf_conicalP_0_impl(lambda, x, &P0);
+    double Pkp1 = rat * GSL_SQRT_DBL_MIN;
+    double Pk   = GSL_SQRT_DBL_MIN;
+    double Pkm1;
+    int k;
+
+    for(k=m; k>=0; k--) {
+      double d = (k+0.5)*(k+0.5) + lambda*lambda;
+      Pkm1 = 2.0*k*xi * Pk + d * Pkp1;
+      Pkp1 = Pk;
+      Pk   = Pkm1;
+    }
+
+    *result = GSL_SQRT_DBL_MIN * P0 / Pk;
+    return GSL_ERROR_SELECT_2(stat_P0, stat_CF1);
+  }
+  else if(x == 1.0) {
+    *result = 0.0;
+    return GSL_SUCCESS;
+  }
+  else {
+    /* x > 1.0 */
+
+    const double xi = x/sqrt((x-1.0)*(x+1.0));
+    double rat;
+    int stat_CF1 = conicalP_negmu_xgt1_CF1(0.0, m, lambda, x, &rat);
+    int stat_P;
+    double Pkp1 = rat * GSL_SQRT_DBL_MIN;
+    double Pk   = GSL_SQRT_DBL_MIN;
+    double Pkm1;
+    int k;
+
+    for(k=m; k>=-1; k--) {
+      double d = (k+0.5)*(k+0.5) + lambda*lambda;
+      Pkm1 = 2.0*k*xi * Pk - d * Pkp1;
+      Pkp1 = Pk;
+      Pk   = Pkm1;
+    }
+
+    if(fabs(Pk) > fabs(Pkp1)){
+      double P1;
+      stat_P = gsl_sf_conicalP_1_impl(lambda, x, &P1);
+      *result = GSL_SQRT_DBL_MIN * P1 / Pk;
+    }
+    else {
+      double P0;
+      stat_P = gsl_sf_conicalP_0_impl(lambda, x, &P0);
+      *result = GSL_SQRT_DBL_MIN * P0 / Pkp1;
+    }
+
+    return GSL_ERROR_SELECT_2(stat_P, stat_CF1);
+  }
+}
 
 
 /*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/

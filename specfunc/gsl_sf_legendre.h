@@ -188,6 +188,17 @@ int     gsl_sf_conicalP_sph_reg_e(int l, double lambda, double x, double * resul
 double  gsl_sf_conicalP_sph_reg(int l, double lambda, double x);
 
 
+/* Regular (Cylindrical) Conical Function
+ * P^{-m}_{-1/2 + I lambda}(x)
+ *
+ * x > -1.0, m >= -1
+ * exceptions: GSL_EDOM
+ */
+int     gsl_sf_conicalP_cyl_reg_impl(int m, double lambda, double x, double * result);
+int     gsl_sf_conicalP_cyl_reg_e(int m, double lambda, double x, double * result);
+double  gsl_sf_conicalP_cyl_reg(int m, double lambda, double x);
+
+
 /* Regular (Spherical) Conical Function
  * P^{-1/2-l}_{-1/2 + I lambda}(x)
  * l=0,...,lmax

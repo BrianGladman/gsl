@@ -579,7 +579,7 @@ int gsl_sf_eta_int_impl(int n, double * result)
     *result = 1.0;
     return GSL_SUCCESS;
   }
-  else if(n > 0) {
+  else if(n >= 0) {
     *result = eta_pos_int_table[n];
     return GSL_SUCCESS;
   }
