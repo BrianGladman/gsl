@@ -345,13 +345,12 @@ array. The maximum value is defined as the value of the element
 @math{x_i} which satisfies @math{x_i >= x_j} for all @math{j}.
 
 If you want instead to find the element with the largest absolute
-magnitude you will need to apply @code{abs} to your data before calling
-this function.
+magnitude you will need to apply @code{fabs} or @code{abs} to your data
+before calling this function.
 
 @end deftypefn
 @deftypefn Statistics double gsl_stats_min (const double data[], const size_t n)
 @deftypefnx Statistics int gsl_stats_int_min (const int data[], const size_t n)
-@end deftypefn
 
 The function @code{gsl_stats_min} returns the minimun value in
 @var{data}, a double-precision array of length @var{n}.  The function
@@ -360,8 +359,9 @@ array. The minimum value is defined as the value of the element
 @math{x_i} which satisfies @math{x_i <= x_j} for all @math{j}.
 
 If you want instead to find the element with the smallest absolute
-magnitude you will need to apply @code{abs} to your data before calling
-this function.
+magnitude you will need to apply @code{fabs} or @code{abs} to your data
+before calling this function.
+@end deftypefn
 
 @deftypefn Statistics size_t gsl_stats_max_index (const double data[], const size_t n)
 @deftypefnx Statistics size_t gsl_stats_int_max_index (const int data[], const size_t n)
@@ -391,15 +391,89 @@ one is chosen.
 @node Median and Percentiles
 @section Median and Percentiles
 
-The median and percentile functions described in this section operate on 
+The median and percentile functions described in this section operate on
+sorted data. 
 
 @deftypefn Statistics void gsl_stats_sort_data (double data[], const size_t n)
-@deftypefn Statistics int gsl_stats_int_sort_data (int data[], const size_t n)
+@deftypefnx Statistics void gsl_stats_int_sort_data (int data[], const size_t n)
+
+The function @code{gsl_stats_sort_data} sorts the elements of
+@var{data}, a double-precision array of length @var{n}, into ascending
+numerical order in-place (i.e. after sorting, the minimum value of data
+is in @var{data[0]} and the maximum value is in @var{data[n-1]}). The
+system @code{qsort} function is used to perform the sorting.
+
+The function @code{gsl_stats_int_sort_data} sorts an integer array.
+@end deftypefn
+
+@deftypefn Statistics double gsl_stats_median_from_sorted_data (double sorted_data[], const size_t n)
+@deftypefnx Statistics double gsl_stats_int_median_from_sorted_data (int sorted_data[], const size_t n)
+
+The function @code{gsl_stats_median_from_sorted_data} returns the median
+value of @var{sorted_data}, a double-precision array of length @var{n} with its
+elements in ascending numerical order. There are no checks to see
+whether the data are sorted, so the function @code{gsl_stats_sort_data}
+should always be used first.
+
+When the array has an odd number of elements the median is the value of
+element @math{(n-1)/2}. When the array has an even number of elements
+the median is the mean of the two nearest middle values, elements
+@math{(n-1)/2} and @math{n/2}.
+
+The function @code{gsl_stats_int_median_from_sorted_data} returns the
+median of an integer array. Since the median may have to be found by
+interpolation the function @code{gsl_stats_int_median_from_sorted_data}
+always returns a floating-point number.
+@end deftypefn
+
+@deftypefn Statistics double gsl_stats_percentile_from_sorted_data (double sorted_data[], const size_t n, const double f)
+@deftypefnx Statistics double gsl_stats_int_percentile_from_sorted_data (int sorted_data[], const size_t n, const double f)
+
+The function @code{gsl_stats_median_from_sorted_data} returns a
+percentile value of @var{sorted_data}, a double-precision array of
+length @var{n} with its elements in ascending numerical order.  The
+percentile is determined by the @var{f}, a fraction between 0 and 1. For
+example, to compute the value of the 75th percentile @var{f} should have
+the value 0.75.
+
+There are no checks to see whether the data are sorted, so the function
+@code{gsl_stats_sort_data} should always be used first.
+
+The percentile is found by interpolation, using the formula
+
+@equation
+percentile = (1 - \delta) data[i] + \delta data[i+1]
+@end equation
+@noindent
+where @math{i} is @code{floor}(@math{(n - 1)f}) and @math{\delta} is 
+@math{(n-1)f - i}.
+
+Thus the minimum value of the array (@var{data[0]}) is given by @var{f}
+equal to zero, the maximum value (@var{data[n-1]}) is given by @var{f}
+equal to one and the median value is given by @var{f} equal to 0.5.
+
+The function @code{gsl_stats_int_percentile_from_sorted_data} returns a
+percentile of an integer array. Since the percentile is found by
+interpolation the function
+@code{gsl_stats_int_percentile_from_sorted_data} always returns a
+floating-point number.
+@end deftypefn
+
 
 @node Statistical tests
 @section Statistical tests
 
+FIXME, do more work on the statistical tests
 
+@c @deftypefn Statistics double gsl_stats_ttest (const double data1[], const double data2[], const size_t n1, const size_t n2)
+@c @deftypefnx Statistics double gsl_stats_int_ttest (const double data1[], const double data2[], const size_t n1, const size_t n2)
+
+@c The function @code{gsl_stats_ttest} computes the t-test statistic for
+@c the two arrays @var{data1[]} and @var{data2[]}, of lengths @var{n1} and
+@c @var{n2} respectively.
+
+@c The t-test statistic measures the difference between the means of two
+@c datasets.
 
 @node Example programs
 @section Example programs
@@ -425,20 +499,59 @@ int main()
   printf("The sample mean is %g\n", mean) ;
   printf("The estimated variance is %g\n", variance) ;
   printf("The largest value is %g\n", largest) ;
-  printf("The smallest values is %g\n", smallest) ;
+  printf("The smallest value is %g\n", smallest) ;
 @}
 @end example
 
-This program should produce the following output,
+The program should produce the following output,
 
 @example
 The dataset is 17.2, 18.1, 16.5, 18.3, 12.6
 The sample mean is 16.54
 The estimated variance is 4.2984
 The largest value is 18.3
-The smallest values is 12.6
+The smallest value is 12.6
 @end example
 
+
+Here is an example using sorted data,
+
+@example
+#include <stdio.h>
+#include <gsl_statistics.h>
+
+int main()
+@{
+  double data[5] = @{17.2, 18.1, 16.5, 18.3, 12.6@} ;
+  double median, upperq, lowerq;
+
+  printf("The original dataset is %g, %g, %g, %g, %g\n",
+        data[0], data[1], data[2], data[3], data[4]);
+
+  gsl_stats_sort_data(data, 5) ;
+
+  printf("The sorted dataset is %g, %g, %g, %g, %g\n",
+        data[0], data[1], data[2], data[3], data[4]);
+
+  median   = gsl_stats_median_from_sorted_data(data, 5);
+  upperq   = gsl_stats_percentile_from_sorted_data(data, 5, 0.75);
+  lowerq   = gsl_stats_percentile_from_sorted_data(data, 5, 0.25);
+
+  printf("The median is %g\n", median) ;
+  printf("The upper quartile is %g\n", upperq) ;
+  printf("The lower quartile is %g\n", lowerq) ;
+@}
+@end example
+
+This program should produce the following output,
+
+@example
+The original dataset is 17.2, 18.1, 16.5, 18.3, 12.6
+The sorted dataset is 12.6, 16.5, 17.2, 18.1, 18.3
+The median is 17.2
+The upper quartile is 18.1
+The lower quartile is 16.5
+@end example
 
 @node Statistics References and Further Reading
 @section Statistics References and Further Reading
