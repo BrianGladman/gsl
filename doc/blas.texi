@@ -81,30 +81,39 @@ Y} for the vectors @var{X} and @var{Y}, returning the result in
 
 @deftypefun float gsl_blas_snrm2 (const gsl_vector_float * @var{X})
 @deftypefunx double gsl_blas_dnrm2 (const gsl_vector * @var{X})
-These functions compute the euclidean norm @math{||X||_2 = \sqrt \sum
-x_i^2} of the vector @var{X}.
+These functions compute the euclidean norm @math{||X||_2 = \sqrt @{\sum
+x_i^2@}} of the vector @var{X}.
 @end deftypefun
 
 @deftypefun float gsl_blas_scnrm2 (const gsl_vector_complex_float * @var{X})
 @deftypefunx double gsl_blas_dznrm2 (const gsl_vector_complex * @var{X})
-These functions compute the euclidean norm @math{||X||_2 = \sqrt \sum
-|x_i|^2} of the complex vector @var{X}.
+These functions compute the euclidean norm @math{||X||_2 = \sqrt @{\sum 
+(\Re(x_i)^2 + \Im(x_i)^2)@}} of the complex vector @var{X}.
 @end deftypefun
 
 @deftypefun float gsl_blas_sasum (const gsl_vector_float * @var{X})
 @deftypefunx double gsl_blas_dasum (const gsl_vector * @var{X})
+These functions compute the absolute sum @math{\sum |x_i|} of the
+elements of the vector @var{X}.
 @end deftypefun
 
 @deftypefun float gsl_blas_scasum (const gsl_vector_complex_float * @var{X})
 @deftypefunx double gsl_blas_dzasum (const gsl_vector_complex * @var{X})
+These functions compute the absolute sum @math{\sum |\Re(x_i)| +
+|\Im(x_i)|} of the elements of the vector @var{X}.
 @end deftypefun
 
 @deftypefun CBLAS_INDEX_t gsl_blas_isamax (const gsl_vector_float * @var{X})
 @deftypefunx CBLAS_INDEX_t gsl_blas_idamax (const gsl_vector * @var{X})
-@end deftypefun
-
-@deftypefun CBLAS_INDEX_t gsl_blas_icamax (const gsl_vector_complex_float * @var{X})
+@deftypefunx CBLAS_INDEX_t gsl_blas_icamax (const gsl_vector_complex_float * @var{X})
 @deftypefunx CBLAS_INDEX_t gsl_blas_izamax (const gsl_vector_complex * @var{X})
+
+These functions return the index of the largest element of the vector
+@var{X}. The largest element is determined by its absolute magnitude for
+real vector and by the sum of the magnitudes of the real and imaginary
+parts @math{|\Re(x_i)| + |\Im(x_i)|} for complex vectors.  If the
+largest value occurs several times then the index of the first
+occurrence is returned.
 @end deftypefun
 
 @deftypefun int gsl_blas_sswap (gsl_vector_float * @var{X}, gsl_vector_float * @var{Y})
@@ -145,18 +154,17 @@ These functions rescale the vector @var{X} by the multiplicative factor
 @deftypefunx int gsl_blas_drotg (double a[], double b[], double c[], double s[])
 @end deftypefun
 
-@deftypefun int gsl_blas_srotmg (float d1[], float d2[], float b1[], float @var{b2}, float P[])
-@deftypefunx int gsl_blas_drotmg (double d1[], double d2[], double b1[], double @var{b2}, double P[])
-@end deftypefun
-
 @deftypefun int gsl_blas_srot (gsl_vector_float * @var{X}, gsl_vector_float * @var{Y}, float @var{c}, float @var{s})
 @deftypefunx int gsl_blas_drot (gsl_vector * @var{X}, gsl_vector * @var{Y}, const double @var{c}, const double @var{s})
+@end deftypefun
+
+@deftypefun int gsl_blas_srotmg (float d1[], float d2[], float b1[], float @var{b2}, float P[])
+@deftypefunx int gsl_blas_drotmg (double d1[], double d2[], double b1[], double @var{b2}, double P[])
 @end deftypefun
 
 @deftypefun int gsl_blas_srotm (gsl_vector_float * @var{X}, gsl_vector_float * @var{Y}, const float P[])
 @deftypefunx int gsl_blas_drotm (gsl_vector * @var{X}, gsl_vector * @var{Y}, const double P[])
 @end deftypefun
-
 
 @node Level 2 GSL BLAS Interface
 @subsection Level 2 
@@ -166,6 +174,10 @@ These functions rescale the vector @var{X} by the multiplicative factor
 @deftypefunx int gsl_blas_dgemv (CBLAS_TRANSPOSE_t @var{TransA}, double @var{alpha}, const gsl_matrix * @var{A}, const gsl_vector * @var{X}, double @var{beta}, gsl_vector * @var{Y})
 @deftypefunx int gsl_blas_cgemv (CBLAS_TRANSPOSE_t @var{TransA}, const gsl_complex_float @var{alpha}, const gsl_matrix_complex_float * @var{A}, const gsl_vector_complex_float * @var{X}, const gsl_complex_float @var{beta}, gsl_vector_complex_float * @var{Y})
 @deftypefunx int gsl_blas_zgemv (CBLAS_TRANSPOSE_t @var{TransA}, const gsl_complex @var{alpha}, const gsl_matrix_complex * @var{A}, const gsl_vector_complex * @var{X}, const gsl_complex @var{beta}, gsl_vector_complex * @var{Y})
+These functions compute the matrix-vector product and sum @math{Y =
+\alpha op(A) X + \beta Y}, where @math{op(A) = A},
+@math{A^T}, @math{A^H} for @var{TransA} = @code{CblasNoTrans},
+@code{CblasTrans}, @code{CblasConjTrans}.
 @end deftypefun
 
 
@@ -173,6 +185,16 @@ These functions rescale the vector @var{X} by the multiplicative factor
 @deftypefunx int gsl_blas_dtrmv (CBLAS_UPLO_t @var{Uplo}, CBLAS_TRANSPOSE_t @var{TransA}, CBLAS_DIAG_t @var{Diag}, const gsl_matrix * @var{A}, gsl_vector * @var{X})
 @deftypefunx int gsl_blas_ctrmv (CBLAS_UPLO_t @var{Uplo}, CBLAS_TRANSPOSE_t @var{TransA}, CBLAS_DIAG_t @var{Diag}, const gsl_matrix_complex_float * @var{A}, gsl_vector_complex_float * @var{X})
 @deftypefunx int gsl_blas_ztrmv (CBLAS_UPLO_t @var{Uplo}, CBLAS_TRANSPOSE_t @var{TransA}, CBLAS_DIAG_t @var{Diag}, const gsl_matrix_complex * @var{A}, gsl_vector_complex * @var{X})
+These functions compute the matrix-vector product and sum 
+@math{Y =\alpha op(A) X + \beta Y} for the triangluar matrix @var{A}, where
+@math{op(A) = A}, @math{A^T}, @math{A^H} for @var{TransA} =
+@code{CblasNoTrans}, @code{CblasTrans}, @code{CblasConjTrans}.  When
+@var{Uplo} is @code{CblasUpper} then the upper triangle of @var{A} is
+used, and when @var{Uplo} is @code{CblasLower} then the lower triangle
+of @var{A} is used.  If @var{Diag} is @code{CblasNonUnit} then the
+diagonal of the matrix is used, but if @var{Diag} is @code{CblasUnit}
+then the diagonal elements of the matrix @var{A} are taken as unity and
+are not referenced.
 @end deftypefun
 
 
@@ -180,45 +202,96 @@ These functions rescale the vector @var{X} by the multiplicative factor
 @deftypefunx int gsl_blas_dtrsv (CBLAS_UPLO_t @var{Uplo}, CBLAS_TRANSPOSE_t @var{TransA}, CBLAS_DIAG_t @var{Diag}, const gsl_matrix * @var{A}, gsl_vector * @var{X})
 @deftypefunx int gsl_blas_ctrsv (CBLAS_UPLO_t @var{Uplo}, CBLAS_TRANSPOSE_t @var{TransA}, CBLAS_DIAG_t @var{Diag}, const gsl_matrix_complex_float * @var{A}, gsl_vector_complex_float * @var{X})
 @deftypefunx int gsl_blas_ztrsv (CBLAS_UPLO_t @var{Uplo}, CBLAS_TRANSPOSE_t @var{TransA}, CBLAS_DIAG_t @var{Diag}, const gsl_matrix_complex * @var{A}, gsl_vector_complex *@var{X})
+These functions compute @math{inv(op(A)) X} for @var{X}, where
+@math{op(A) = A}, @math{A^T}, @math{A^H} for @var{TransA} =
+@code{CblasNoTrans}, @code{CblasTrans}, @code{CblasConjTrans}.  When
+@var{Uplo} is @code{CblasUpper} then the upper triangle of @var{A} is
+used, and when @var{Uplo} is @code{CblasLower} then the lower triangle
+of @var{A} is used.  If @var{Diag} is @code{CblasNonUnit} then the
+diagonal of the matrix is used, but if @var{Diag} is @code{CblasUnit}
+then the diagonal elements of the matrix @var{A} are taken as unity and
+are not referenced.
 @end deftypefun
-
 
 
 @deftypefun int gsl_blas_ssymv (CBLAS_UPLO_t @var{Uplo}, float @var{alpha}, const gsl_matrix_float * @var{A}, const gsl_vector_float * @var{X}, float @var{beta}, gsl_vector_float * @var{Y})
 @deftypefunx int gsl_blas_dsymv (CBLAS_UPLO_t @var{Uplo}, double @var{alpha}, const gsl_matrix * @var{A}, const gsl_vector * @var{X}, double @var{beta}, gsl_vector * @var{Y})
+These functions compute the matrix-vector product and sum @math{Y =
+\alpha A X + \beta Y} for the symmetric matrix @var{A}.  Since the
+matrix @var{A} is symmetric only its upper half or lower half need to be
+stored.  When @var{Uplo} is @code{CblasUpper} then the upper triangle
+and diagonal of @var{A} are used, and when @var{Uplo} is
+@code{CblasLower} then the lower triangle and diagonal of @var{A} are
+used.
 @end deftypefun
 
 @deftypefun int gsl_blas_chemv (CBLAS_UPLO_t @var{Uplo}, const gsl_complex_float @var{alpha}, const gsl_matrix_complex_float * @var{A}, const gsl_vector_complex_float * @var{X}, const gsl_complex_float @var{beta}, gsl_vector_complex_float * @var{Y})
 @deftypefunx int gsl_blas_zhemv (CBLAS_UPLO_t @var{Uplo}, const gsl_complex @var{alpha}, const gsl_matrix_complex * @var{A}, const gsl_vector_complex * @var{X}, const gsl_complex @var{beta}, gsl_vector_complex * @var{Y})
+These functions compute the matrix-vector product and sum @math{Y =
+\alpha A X + \beta Y} for the hermitian matrix @var{A}.  Since the
+matrix @var{A} is hermitian only its upper half or lower half need to be
+stored.  When @var{Uplo} is @code{CblasUpper} then the upper triangle
+and diagonal of @var{A} are used, and when @var{Uplo} is
+@code{CblasLower} then the lower triangle and diagonal of @var{A} are
+used.  The imaginary elements of the diagonal are automatically assumed
+to be zero and are not referenced.
 @end deftypefun
 
 @deftypefun int gsl_blas_sger (float @var{alpha}, const gsl_vector_float * @var{X}, const gsl_vector_float * @var{Y}, gsl_matrix_float * @var{A})
 @deftypefunx int gsl_blas_dger (double @var{alpha}, const gsl_vector * @var{X}, const gsl_vector * @var{Y}, gsl_matrix * @var{A})
-@end deftypefun
-
-@deftypefun int gsl_blas_cgeru (const gsl_complex_float @var{alpha}, const gsl_vector_complex_float * @var{X}, const gsl_vector_complex_float * @var{Y}, gsl_matrix_complex_float * @var{A})
+@deftypefunx int gsl_blas_cgeru (const gsl_complex_float @var{alpha}, const gsl_vector_complex_float * @var{X}, const gsl_vector_complex_float * @var{Y}, gsl_matrix_complex_float * @var{A})
 @deftypefunx int gsl_blas_zgeru (const gsl_complex @var{alpha}, const gsl_vector_complex * @var{X}, const gsl_vector_complex * @var{Y}, gsl_matrix_complex * @var{A})
+These functions compute the rank-1 update @math{A = \alpha X Y^T + A} of
+the matrix @var{A}.
 @end deftypefun
 
 @deftypefun int gsl_blas_cgerc (const gsl_complex_float @var{alpha}, const gsl_vector_complex_float * @var{X}, const gsl_vector_complex_float * @var{Y}, gsl_matrix_complex_float * @var{A})
 @deftypefunx int gsl_blas_zgerc (const gsl_complex @var{alpha}, const gsl_vector_complex * @var{X}, const gsl_vector_complex * @var{Y}, gsl_matrix_complex * @var{A})
+These functions compute the conjugate rank-1 update @math{A = \alpha X
+Y^H + A} of the matrix @var{A}.
 @end deftypefun
 
 @deftypefun int gsl_blas_ssyr (CBLAS_UPLO_t @var{Uplo}, float @var{alpha}, const gsl_vector_float * @var{X}, gsl_matrix_float * @var{A})
 @deftypefunx int gsl_blas_dsyr (CBLAS_UPLO_t @var{Uplo}, double @var{alpha}, const gsl_vector * @var{X}, gsl_matrix * @var{A})
+These functions compute the symmetric rank-1 update @math{A = \alpha X
+X^T + A} of the symmetric matrix @var{A}.  Since the matrix @var{A} is
+symmetric only its upper half or lower half need to be stored.  When
+@var{Uplo} is @code{CblasUpper} then the upper triangle and diagonal of
+@var{A} are used, and when @var{Uplo} is @code{CblasLower} then the
+lower triangle and diagonal of @var{A} are used.
 @end deftypefun
 
 @deftypefun int gsl_blas_cher (CBLAS_UPLO_t @var{Uplo}, float @var{alpha}, const gsl_vector_complex_float * @var{X}, gsl_matrix_complex_float * @var{A})
 @deftypefunx int gsl_blas_zher (CBLAS_UPLO_t @var{Uplo}, double @var{alpha}, const gsl_vector_complex * @var{X}, gsl_matrix_complex * @var{A})
+These functions compute the hermitian rank-1 update @math{A = \alpha X
+X^H + A} of the hermitian matrix @var{A}.  Since the matrix @var{A} is
+hermitian only its upper half or lower half need to be stored.  When
+@var{Uplo} is @code{CblasUpper} then the upper triangle and diagonal of
+@var{A} are used, and when @var{Uplo} is @code{CblasLower} then the
+lower triangle and diagonal of @var{A} are used.  The imaginary elements
+of the diagonal are automatically set to zero.
 @end deftypefun
-
 
 @deftypefun int gsl_blas_ssyr2 (CBLAS_UPLO_t @var{Uplo}, float @var{alpha}, const gsl_vector_float * @var{X}, const gsl_vector_float * @var{Y}, gsl_matrix_float * @var{A})
 @deftypefunx int gsl_blas_dsyr2 (CBLAS_UPLO_t @var{Uplo}, double @var{alpha}, const gsl_vector * @var{X}, const gsl_vector * @var{Y}, gsl_matrix * @var{A})
+These functions compute the symmetric rank-2 update @math{A = \alpha X
+Y^T + \alpha Y X^T + A} of the symmetric matrix @var{A}.  Since the
+matrix @var{A} is symmetric only its upper half or lower half need to be
+stored.  When @var{Uplo} is @code{CblasUpper} then the upper triangle
+and diagonal of @var{A} are used, and when @var{Uplo} is
+@code{CblasLower} then the lower triangle and diagonal of @var{A} are
+used.
 @end deftypefun
 
 @deftypefun int gsl_blas_cher2 (CBLAS_UPLO_t @var{Uplo}, const gsl_complex_float @var{alpha}, const gsl_vector_complex_float * @var{X}, const gsl_vector_complex_float * @var{Y}, gsl_matrix_complex_float * @var{A})
 @deftypefunx int gsl_blas_zher2 (CBLAS_UPLO_t @var{Uplo}, const gsl_complex @var{alpha}, const gsl_vector_complex * @var{X}, const gsl_vector_complex * @var{Y}, gsl_matrix_complex * @var{A})
+These functions compute the hermitian rank-2 update @math{A = \alpha X
+Y^H + \alpha^* Y X^H A} of the hermitian matrix @var{A}.  Since the
+matrix @var{A} is hermitian only its upper half or lower half need to be
+stored.  When @var{Uplo} is @code{CblasUpper} then the upper triangle
+and diagonal of @var{A} are used, and when @var{Uplo} is
+@code{CblasLower} then the lower triangle and diagonal of @var{A} are
+used.  The imaginary elements of the diagonal are automatically set to zero.
 @end deftypefun
 
 @node Level 3 GSL BLAS Interface
@@ -229,6 +302,10 @@ These functions rescale the vector @var{X} by the multiplicative factor
 @deftypefunx int gsl_blas_dgemm (CBLAS_TRANSPOSE_t @var{TransA}, CBLAS_TRANSPOSE_t @var{TransB}, int @var{K}, double @var{alpha}, const gsl_matrix * @var{A}, const gsl_matrix * @var{B}, double @var{beta}, gsl_matrix * @var{C})
 @deftypefunx int gsl_blas_cgemm (CBLAS_TRANSPOSE_t @var{TransA}, CBLAS_TRANSPOSE_t @var{TransB}, int @var{K}, const gsl_complex_float @var{alpha}, const gsl_matrix_complex_float * @var{A}, const gsl_matrix_complex_float * @var{B}, const gsl_complex_float @var{beta}, gsl_matrix_complex_float * @var{C})
 @deftypefunx int gsl_blas_zgemm (CBLAS_TRANSPOSE_t @var{TransA}, CBLAS_TRANSPOSE_t @var{TransB}, int @var{K}, const gsl_complex @var{alpha}, const gsl_matrix_complex * @var{A}, const gsl_matrix_complex * @var{B}, const gsl_complex @var{beta}, gsl_matrix_complex * @var{C})
+These functions compute the matrix-matrix product and sum @math{C =
+\alpha op(A) op(B) + \beta C} where @math{op(A) = A}, @math{A^T},
+@math{A^H} for @var{TransA} = @code{CblasNoTrans}, @code{CblasTrans},
+@code{CblasConjTrans} and similarly for the parameter @var{TransB}.
 @end deftypefun
 
 
@@ -236,6 +313,7 @@ These functions rescale the vector @var{X} by the multiplicative factor
 @deftypefunx int gsl_blas_dsymm (CBLAS_SIDE_t @var{Side}, CBLAS_UPLO_t @var{Uplo}, double @var{alpha}, const gsl_matrix * @var{A}, const gsl_matrix * @var{B}, double @var{beta}, gsl_matrix * @var{C})
 @deftypefunx int gsl_blas_csymm (CBLAS_SIDE_t @var{Side}, CBLAS_UPLO_t @var{Uplo}, const gsl_complex_float @var{alpha}, const gsl_matrix_complex_float * @var{A}, const gsl_matrix_complex_float * @var{B}, const gsl_complex_float @var{beta}, gsl_matrix_complex_float * @var{C})
 @deftypefunx int gsl_blas_zsymm (CBLAS_SIDE_t @var{Side}, CBLAS_UPLO_t @var{Uplo}, const gsl_complex @var{alpha}, const gsl_matrix_complex * @var{A}, const gsl_matrix_complex * @var{B}, const gsl_complex @var{beta}, gsl_matrix_complex * @var{C})
+
 @end deftypefun
 
 @deftypefun int gsl_blas_chemm (CBLAS_SIDE_t @var{Side}, CBLAS_UPLO_t @var{Uplo}, const gsl_complex_float @var{alpha}, const gsl_matrix_complex_float * @var{A}, const gsl_matrix_complex_float * @var{B}, const gsl_complex_float @var{beta}, gsl_matrix_complex_float * @var{C})
