@@ -64,6 +64,8 @@ AC_ARG_ENABLE(gsltest, [  --disable-gsltest       Do not try to compile and run 
 #include <stdlib.h>
 #include <string.h>
 
+char* my_strdup (const char *str);
+
 char*
 my_strdup (const char *str)
 {
