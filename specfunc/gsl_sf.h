@@ -9,6 +9,7 @@
 #include <gsl_sf_chebyshev.h>
 #include <gsl_sf_coulomb.h>
 #include <gsl_sf_dilog.h>
+#include <gsl_sf_ellint.h>
 #include <gsl_sf_erf.h>
 #include <gsl_sf_expint.h>
 #include <gsl_sf_fermi_dirac.h>
