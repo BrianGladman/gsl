@@ -7,11 +7,12 @@ This chapter describes functions for multidimensional root-finding
 unknowns).  The library provides low level components for a variety of
 iterative solvers and convergence tests.  These can be combined by the
 user to achieve the desired solution, with full access to the
-intermediate steps of the iteration.  Each class of methods uses the same
-framework, so that you can switch between solvers at runtime without
-needing to recompile your program.  Each instance of a solver keeps track
-of its own state, allowing the solvers to be used in multi-threaded
-programs.
+intermediate steps of the iteration.  Each class of methods uses the
+same framework, so that you can switch between solvers at runtime
+without needing to recompile your program.  Each instance of a solver
+keeps track of its own state, allowing the solvers to be used in
+multi-threaded programs.  The solvers are based on the original Fortran
+library @sc{minpack}.
 
 The header file @file{gsl_multiroots.h} contains prototypes for the
 multidimensional root finding functions and related declarations.

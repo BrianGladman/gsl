@@ -33,7 +33,6 @@ a stable way, without large intermediate values that might overflow.
 * Weighted Samples::            
 * Maximum and Minimum values::  
 * Median and Percentiles::      
-* Statistical tests::           
 * Example statistical programs::  
 * Statistics References and Further Reading::  
 @end menu
@@ -626,10 +625,10 @@ for integer data types.
 @end deftypefn
 
 
-@node Statistical tests
-@section Statistical tests
+@comment @node Statistical tests
+@comment @section Statistical tests
 
-FIXME, do more work on the statistical tests
+@comment FIXME, do more work on the statistical tests
 
 @comment -@deftypefn Statistics double gsl_stats_ttest (const double @var{data1}[], double @var{data2}[], size_t @var{n1}, size_t @var{n2})
 @comment -@deftypefnx Statistics double gsl_stats_int_ttest (const double @var{data1}[], double @var{data2}[], size_t @var{n1}, size_t @var{n2})
