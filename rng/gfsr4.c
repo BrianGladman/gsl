@@ -108,7 +108,7 @@ void
 gfsr4_set (void *vstate, unsigned long int s)
 {
   gfsr4_state_t *state = (gfsr4_state_t *) vstate;
-  int i;
+  int i, j;
   /* Masks for turning on the diagonal bit and turning off the
      leftmost bits */
   unsigned long int msb = 0x80000000UL;
@@ -127,12 +127,16 @@ gfsr4_set (void *vstate, unsigned long int s)
   /* Brian Gough suggests this to avoid low-order bit correlations */
   for (i = 0; i <= M; i++)
     {
-      unsigned long t1, t2 ;
-      s = LCG(s) ;
-      t1 = s >> 16 ;
-      s = LCG(s) ;
-      t2 = s >> 16 ;
-      state->ra[i] = ((t1 << 16) | t2) & 0xffffffffUL;
+      unsigned long t = 0 ;
+      unsigned long bit = msb ;
+      for (j = 0; j < 32; j++)
+	{
+	  s = LCG(s) ;
+	  if (s & msb) 
+	    t |= bit ;
+	  bit >>= 1 ;
+	}
+      state->ra[i] = t ;
     }
 
   /* Perform the "orthogonalization" of the matrix */

@@ -1,28 +1,35 @@
-To be written
+@cindex IEEE floating point 
+
+This chapter describes functions for examing the representation of
+floating point numbers and controlling the floating point environment of
+your program.
 
 @c to turn on math exception handling use __setfpucw, see
 @c /usr/include/i386/fpu_control.h
-
 @c e.g.
-
 @c #include <math.h>
 @c #include <stdio.h>
 @c #include <fpu_control.h>
-
 @c double f (double x) ;
-
 @c int main ()
 @c {
 @c   double a = 0 ;
 @c   double y, z ;
-
 @c   __setfpucw(0x1372); 
-
 @c mention extended vs double precision on Pentium, and how to get around
 @c it (-ffloat-store, or selective use of volatile)
 
+@menu
+* Representation of floating point numbers::  
+* Setting up your IEEE environment::  
+@end menu
+
+@node Representation of floating point numbers
+@section Representation of floating point numbers
+
 @deftypefun void gsl_ieee_printf_float (const float * @var{x})
 @deftypefunx void gsl_ieee_printf_double (const double * @var{x})
+
 @end deftypefun
 
 @example
@@ -75,6 +82,7 @@ ld 1.20000000000000000004
 @end example
 
 
+@node Setting up your IEEE environment
 @section Setting up your IEEE environment
 
 The IEEE standard defines several @dfn{modes} for controlling the
@@ -244,6 +252,12 @@ precision accuracy (about 1 part in @math{10^7}). Continuing the
 iterations further does not decrease the error because all the
 subsequent results are rounded to the same value.
 
-David Goldberg: What Every Computer Scientist Should Know About
-Floating-Point Arithmetic. Vol. 23, No. 1 (March 1991) pages 5-48
+@node IEEE References and Further Reading
+@section IEEE References and Further Reading
 
+@itemize @asis
+@item
+David Goldberg: What Every Computer Scientist Should Know About
+Floating-Point Arithmetic. [Comm ACM ??] Vol. 23, No. 1 (March 1991) pages 5-48
+@end itemize
+@noindent
