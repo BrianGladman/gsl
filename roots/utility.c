@@ -26,8 +26,8 @@
 int
 _gsl_root_validate_bfp_args (double *root, double (*f) (double),
 			     double *lower_bound,
-			     double *upper_bound, double rel_epsilon,
-			     double abs_epsilon, unsigned int max_iterations,
+			     double *upper_bound, double epsrel,
+			     double epsabs, unsigned int max_iterations,
 			     double max_deltay)
 {
   /* Is the maximum delta-y too small? */
@@ -40,7 +40,7 @@ _gsl_root_validate_bfp_args (double *root, double (*f) (double),
 
   /* The rest of the arguments are common. */
   return _gsl_root_validate_args (root, f, lower_bound, upper_bound,
-				  rel_epsilon, abs_epsilon, max_iterations);
+				  epsrel, epsabs, max_iterations);
 }
 
 /* Validate arguments commond to gsl_root_secant and gsl_root_newtons. Return
@@ -49,8 +49,8 @@ _gsl_root_validate_bfp_args (double *root, double (*f) (double),
 int
 _gsl_root_validate_sn_args (double *root, double (*f) (double),
 			    double *guess1,
-			    double *guess2, double rel_epsilon,
-			    double abs_epsilon, unsigned int max_iterations,
+			    double *guess2, double epsrel,
+			    double epsabs, unsigned int max_iterations,
 			    double max_step_size)
 {
   /* Is the maximum step size ridiculous? */
@@ -58,8 +58,8 @@ _gsl_root_validate_sn_args (double *root, double (*f) (double),
     GSL_ERROR ("maximum step size <= 0", GSL_EBADTOL);
 
   /* The rest of the arguments are common. */
-  return _gsl_root_validate_args (root, f, guess1, guess2, rel_epsilon,
-				  abs_epsilon, max_iterations);
+  return _gsl_root_validate_args (root, f, guess1, guess2, epsrel,
+				  epsabs, max_iterations);
 }
 
 /* Validate the arguments common to all four low level functions. Return
@@ -72,8 +72,8 @@ _gsl_root_validate_sn_args (double *root, double (*f) (double),
    * The relative error is not too small. */
 int
 _gsl_root_validate_args (double *root, double (*f) (double), double *where1,
-			 double *where2, double rel_epsilon,
-			 double abs_epsilon, unsigned int max_iterations)
+			 double *where2, double epsrel,
+			 double epsabs, unsigned int max_iterations)
 {
   /* Are any pointers null? */
   if ((root == NULL) || (f == NULL) || (where1 == NULL)
@@ -83,10 +83,10 @@ _gsl_root_validate_args (double *root, double (*f) (double), double *where1,
   if (max_iterations == 0)
     GSL_ERROR ("maximum iterations 0", GSL_EINVAL);
   /* Did the user try to pawn a negative tolerance off on us? */
-  if (rel_epsilon < 0.0 || abs_epsilon < 0.0)
+  if (epsrel < 0.0 || epsabs < 0.0)
     GSL_ERROR ("relative or absolute tolerance negative", GSL_EBADTOL);
   /* Is the relative error too small? */
-  if (rel_epsilon < GSL_DBL_EPSILON * GSL_ROOT_EPSILON_BUFFER)
+  if (epsrel < GSL_DBL_EPSILON * GSL_ROOT_EPSILON_BUFFER)
     GSL_ERROR ("relative tolerance too small", GSL_EBADTOL);
 
   /* All is well. */
@@ -125,8 +125,8 @@ _gsl_root_ivt_guar (double (*f) (double), double lower_bound,
    arguments _before_ calling this function). */
 int
 _gsl_root_silly_user (double *root, double (*f) (double), double lower_bound,
-		      double upper_bound, double rel_epsilon,
-		      double abs_epsilon, double max_deltay)
+		      double upper_bound, double epsrel,
+		      double epsabs, double max_deltay)
 {
   double fl, fu;
 
@@ -147,11 +147,11 @@ _gsl_root_silly_user (double *root, double (*f) (double), double lower_bound,
     }
 
   /* Are lower_bound and upper_bound within tolerance? */
-  _BARF_TOLS (lower_bound, upper_bound, 2 * rel_epsilon, 2 * abs_epsilon);
+  _BARF_TOLS (lower_bound, upper_bound, 2 * epsrel, 2 * epsabs);
   if (max_deltay > 0.0)
     _BARF_DELTAY (fl, fu, max_deltay);
-  if (_WITHIN_TOL (lower_bound, upper_bound, 2 * rel_epsilon,
-		   2 * abs_epsilon))
+  if (_WITHIN_TOL (lower_bound, upper_bound, 2 * epsrel,
+		   2 * epsabs))
     {
       *root = (lower_bound + upper_bound) / 2.0;
       return 1;

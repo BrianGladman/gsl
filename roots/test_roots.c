@@ -7,15 +7,15 @@
 #include "test.h"
 
 /* stopping parameters */
-const double REL_EPSILON = (10 * GSL_DBL_EPSILON * GSL_ROOT_EPSILON_BUFFER);
-const double ABS_EPSILON = (10 * GSL_DBL_EPSILON * GSL_ROOT_EPSILON_BUFFER);
+const double EPSREL = (10 * GSL_DBL_EPSILON * GSL_ROOT_EPSILON_BUFFER);
+const double EPSABS = (10 * GSL_DBL_EPSILON * GSL_ROOT_EPSILON_BUFFER);
 const unsigned int MAX_ITERATIONS = 100;
 
 void my_error_handler (const char *reason, const char *file,
 		       int line, int err);
 
-#define WITHIN_TOL(a, b, rel_epsilon, abs_epsilon) \
- (fabs((a) - (b)) < (rel_epsilon) * GSL_MIN(fabs(a), fabs(b)) + (abs_epsilon))
+#define WITHIN_TOL(a, b, epsrel, epsabs) \
+ (fabs((a) - (b)) < (epsrel) * GSL_MIN(fabs(a), fabs(b)) + (epsabs))
 
 void
 test_roots (void)
@@ -117,7 +117,7 @@ test_f (const gsl_root_fsolver_type * T, const char * description, gsl_function 
 {
   int status;
   size_t iterations = 0;
-  double r;
+  double r, a, b;
   gsl_interval x;
   gsl_root_fsolver * s;
 
@@ -129,9 +129,22 @@ test_f (const gsl_root_fsolver_type * T, const char * description, gsl_function 
   do 
     {
       iterations++ ;
+
       gsl_root_fsolver_iterate (s);
-      status = gsl_root_test_interval (gsl_root_fsolver_interval(s), 
-				       REL_EPSILON, ABS_EPSILON);
+
+      r = gsl_root_fsolver_root(s);
+      x = gsl_root_fsolver_interval(s);
+      
+      a = x.lower;
+      b = x.upper;
+
+      if (a > b)
+	gsl_test (GSL_FAILURE, "interval is invalid (%g,%g)", a, b);
+
+      if (r < a || r > b)
+	gsl_test (GSL_FAILURE, "r lies outside interval %g (%g,%g)", r, a, b);
+
+      status = gsl_root_test_interval (x, EPSABS, EPSREL);
     }
   while (status == GSL_CONTINUE && iterations < MAX_ITERATIONS);
 
@@ -141,28 +154,11 @@ test_f (const gsl_root_fsolver_type * T, const char * description, gsl_function 
 
   /* check the validity of the returned result */
 
-  r = gsl_root_fsolver_root(s);
-  x = gsl_root_fsolver_interval(s);
-
-  if (!WITHIN_TOL (r, correct_root, REL_EPSILON, ABS_EPSILON))
+  if (!WITHIN_TOL (r, correct_root, EPSREL, EPSABS))
     {
-      status = 1; /* failed */ ;
-      gsl_test (status, "incorrect precision (%g obs vs %g expected)", 
+      gsl_test (GSL_FAILURE, "incorrect precision (%g obs vs %g expected)", 
 		r, correct_root);
 
-    }
-
-  if (x.lower > x.upper)
-    {
-      status = 1; /* failed */ ;
-      gsl_test (status, "interval is invalid (%g,%g)", x.lower, x.upper);
-    }
-
-  if (r < x.lower || r > x.upper)
-    {
-      status = 1; /* failed */ ;
-      gsl_test (status, "r lies outside interval %g (%g,%g)", 
-		r, x.lower, x.upper);
     }
 }
 
@@ -192,7 +188,7 @@ test_f_e (const gsl_root_fsolver_type * T,
       iterations++ ;
       gsl_root_fsolver_iterate (s);
       status = gsl_root_test_interval (gsl_root_fsolver_interval(s), 
-				      REL_EPSILON, ABS_EPSILON);
+				      EPSABS, EPSREL);
     }
   while (status == GSL_CONTINUE && iterations < MAX_ITERATIONS);
 
@@ -217,7 +213,7 @@ test_fdf (const gsl_root_fdfsolver_type * T, const char * description,
       prev = gsl_root_fdfsolver_root(s);
       gsl_root_fdfsolver_iterate (s);
       status = gsl_root_test_delta(gsl_root_fdfsolver_root(s), prev, 
-				   REL_EPSILON, ABS_EPSILON);
+				   EPSABS, EPSREL);
     }
   while (status == GSL_CONTINUE && iterations < MAX_ITERATIONS);
 
@@ -231,7 +227,7 @@ test_fdf (const gsl_root_fdfsolver_type * T, const char * description,
   /* check the validity of the returned result */
 
   if (!WITHIN_TOL (gsl_root_fdfsolver_root(s), correct_root, 
-		   REL_EPSILON, ABS_EPSILON))
+		   EPSREL, EPSABS))
     {
       status = 1; /* failed */ ;
       gsl_test (status, "incorrect precision (%g obs vs %g expected)", 
@@ -263,7 +259,7 @@ test_fdf_e (const gsl_root_fdfsolver_type * T,
       prev = gsl_root_fdfsolver_root(s);
       gsl_root_fdfsolver_iterate (s);
       status = gsl_root_test_delta(gsl_root_fdfsolver_root(s), prev, 
-				   REL_EPSILON, ABS_EPSILON);
+				   EPSABS, EPSREL);
     }
   while (status == GSL_CONTINUE && iterations < MAX_ITERATIONS);
 

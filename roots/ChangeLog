@@ -1,3 +1,14 @@
+Wed Jul 21 18:47:01 1999  Brian Gough  <bjg@network-theory.co.uk>
+
+	* gsl_roots.h, convergence.c: changed order of relative and
+ 	absolute errors to make them the same as quadpack routines
+ 	(abs,rel)
+
+Wed Jul 21 16:30:56 1999  Brian Gough  <bjg@network-theory.co.uk>
+
+	* brent.c (brent_iterate): fixed bug where bounding interval could
+ 	be incorrect and not include root.
+
 Mon Mar  1 15:38:06 1999  Brian Gough  <bjg@netsci.freeserve.co.uk>
 
 	* moved static class data out of gsl_root_fsolver and

@@ -25,11 +25,9 @@ main ()
   int status;
   int iterations = 0, max_iterations = 100;
   gsl_root_fsolver *s;
-  gsl_interval x =
-  {0.0, 5.0};
+  gsl_interval x = {0.0, 5.0};
   gsl_function F;
-  struct quadratic_params params =
-  {1.0, 0.0, -5.0};
+  struct quadratic_params params = {1.0, 0.0, -5.0};
 
   F.function = &quadratic;
   F.params = &params;
@@ -46,9 +44,10 @@ main ()
     }
   while (status == GSL_CONTINUE && iterations < max_iterations);
 
-  printf ("best estimate of root = %g\n", s->root);
-  printf ("          actual root = %g\n", sqrt (5.0));
-  printf ("interval bounds = [%g,%g]\n", s->interval.lower, s->interval.upper);
+  printf ("best estimate of root = %.7f\n", s->root);
+  printf ("          actual root = %.7f\n", sqrt (5.0));
+  printf ("interval bounds = [%.7f,%.7f]\n", 
+	  s->interval.lower, s->interval.upper);
 
 }
 

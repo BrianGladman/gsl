@@ -74,13 +74,13 @@ const char * gsl_root_fdfsolver_name (const gsl_root_fdfsolver * s);
 double gsl_root_fdfsolver_root (const gsl_root_fdfsolver * s);
 
 int
-gsl_root_test_interval (gsl_interval x, double rel_epsilon, double abs_epsilon);
+gsl_root_test_interval (gsl_interval x, double epsabs, double epsrel);
 
 int
-gsl_root_test_residual (double f, double abs_epsilon);
+gsl_root_test_residual (double f, double epsabs);
 
 int
-gsl_root_test_delta (double x1, double x0, double rel_epsilon, double abs_epsilon);
+gsl_root_test_delta (double x1, double x0, double epsabs, double epsrel);
 
 extern const gsl_root_fsolver_type  * gsl_root_fsolver_bisection;
 extern const gsl_root_fsolver_type  * gsl_root_fsolver_brent;
