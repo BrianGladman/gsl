@@ -585,6 +585,150 @@ cblas_zgbmv (const enum CBLAS_ORDER order, const enum CBLAS_TRANSPOSE TransA,
 #undef BASE
 }
 
+/* HEMV */
+
+void
+cblas_chemv (const enum CBLAS_ORDER order, const enum CBLAS_UPLO Uplo,
+	     const int N, const void *alpha, const void *A, const int lda,
+	     const void *X, const int incX, const void *beta, void *Y,
+	     const int incY)
+{
+#define BASE float
+#include "source_hemv.h"
+#undef BASE
+}
+
+void
+cblas_zhemv (const enum CBLAS_ORDER order, const enum CBLAS_UPLO Uplo,
+	     const int N, const void *alpha, const void *A, const int lda,
+	     const void *X, const int incX, const void *beta, void *Y,
+	     const int incY)
+{
+#define BASE double
+#include "source_hemv.h"
+#undef BASE
+}
+
+
+/* HBMV */
+
+void
+cblas_chbmv (const enum CBLAS_ORDER order, const enum CBLAS_UPLO Uplo,
+	     const int N, const int K, const void *alpha, const void *A,
+	     const int lda, const void *X, const int incX, const void *beta,
+	     void *Y, const int incY)
+{
+#define BASE float
+#include "source_hbmv.h"
+#undef BASE
+}
+
+void
+cblas_zhbmv (const enum CBLAS_ORDER order, const enum CBLAS_UPLO Uplo,
+	     const int N, const int K, const void *alpha, const void *A,
+	     const int lda, const void *X, const int incX, const void *beta,
+	     void *Y, const int incY)
+{
+#define BASE double
+#include "source_hbmv.h"
+#undef BASE
+}
+
+
+/* HPMV */
+
+void
+cblas_chpmv (const enum CBLAS_ORDER order, const enum CBLAS_UPLO Uplo,
+	     const int N, const void *alpha, const void *Ap, const void *X,
+	     const int incX, const void *beta, void *Y, const int incY)
+{
+#define BASE float
+#include "source_hpmv.h"
+#undef BASE
+}
+
+void
+cblas_zhpmv (const enum CBLAS_ORDER order, const enum CBLAS_UPLO Uplo,
+	     const int N, const void *alpha, const void *Ap, const void *X,
+	     const int incX, const void *beta, void *Y, const int incY)
+{
+#define BASE double
+#include "source_hpmv.h"
+#undef BASE
+}
+
+/* SYMV */
+
+void
+cblas_ssymv (const enum CBLAS_ORDER order, const enum CBLAS_UPLO Uplo,
+	     const int N, const float alpha, const float *A, const int lda,
+	     const float *X, const int incX, const float beta, float *Y,
+	     const int incY)
+{
+#define BASE float
+#include "source_symv.h"
+#undef BASE
+}
+
+void
+cblas_dsymv (const enum CBLAS_ORDER order, const enum CBLAS_UPLO Uplo,
+	     const int N, const double alpha, const double *A, const int lda,
+	     const double *X, const int incX, const double beta, double *Y,
+	     const int incY)
+{
+#define BASE double
+#include "source_symv.h"
+#undef BASE
+}
+
+
+/* SBMV */
+
+void
+cblas_ssbmv (const enum CBLAS_ORDER order, const enum CBLAS_UPLO Uplo,
+	     const int N, const int K, const float alpha, const float *A,
+	     const int lda, const float *X, const int incX, const float beta,
+	     float *Y, const int incY)
+{
+#define BASE float
+#include "source_sbmv.h"
+#undef BASE
+}
+
+void
+cblas_dsbmv (const enum CBLAS_ORDER order, const enum CBLAS_UPLO Uplo,
+	     const int N, const int K, const double alpha, const double *A,
+	     const int lda, const double *X, const int incX,
+	     const double beta, double *Y, const int incY)
+{
+#define BASE double
+#include "source_sbmv.h"
+#undef BASE
+}
+
+/* SPMV */
+
+void
+cblas_sspmv (const enum CBLAS_ORDER order, const enum CBLAS_UPLO Uplo,
+	     const int N, const float alpha, const float *Ap, const float *X,
+	     const int incX, const float beta, float *Y, const int incY)
+{
+#define BASE float
+#include "source_spmv.h"
+#undef BASE
+}
+
+void
+cblas_dspmv (const enum CBLAS_ORDER order, const enum CBLAS_UPLO Uplo,
+	     const int N, const double alpha, const double *Ap,
+	     const double *X, const int incX, const double beta, double *Y,
+	     const int incY)
+{
+#define BASE double
+#include "source_spmv.h"
+#undef BASE
+}
+
 
 /* TRMV */
 
@@ -679,7 +823,7 @@ cblas_ztbmv (const enum CBLAS_ORDER order, const enum CBLAS_UPLO Uplo,
 #undef BASE
 }
 
-#ifdef 0
+
 /* TPMV */
 
 void
@@ -722,7 +866,7 @@ cblas_ztpmv (const enum CBLAS_ORDER order, const enum CBLAS_UPLO Uplo,
 #undef BASE
 }
 
-
+#ifdef 0
 /* TRSV */
 
 void
@@ -860,78 +1004,6 @@ cblas_ztpsv (const enum CBLAS_ORDER order, const enum CBLAS_UPLO Uplo,
 }
 
 
-/* SYMV */
-
-void
-cblas_ssymv (const enum CBLAS_ORDER order, const enum CBLAS_UPLO Uplo,
-	     const int N, const float alpha, const float *A, const int lda,
-	     const float *X, const int incX, const float beta, float *Y,
-	     const int incY)
-{
-#define BASE float
-#include "source_symv.h"
-#undef BASE
-}
-
-void
-cblas_dsymv (const enum CBLAS_ORDER order, const enum CBLAS_UPLO Uplo,
-	     const int N, const double alpha, const double *A, const int lda,
-	     const double *X, const int incX, const double beta, double *Y,
-	     const int incY)
-{
-#define BASE double
-#include "source_symv.h"
-#undef BASE
-}
-
-
-/* SBMV */
-
-void
-cblas_ssbmv (const enum CBLAS_ORDER order, const enum CBLAS_UPLO Uplo,
-	     const int N, const int K, const float alpha, const float *A,
-	     const int lda, const float *X, const int incX, const float beta,
-	     float *Y, const int incY)
-{
-#define BASE float
-#include "source_sbmv.h"
-#undef BASE
-}
-
-void
-cblas_dsbmv (const enum CBLAS_ORDER order, const enum CBLAS_UPLO Uplo,
-	     const int N, const int K, const double alpha, const double *A,
-	     const int lda, const double *X, const int incX,
-	     const double beta, double *Y, const int incY)
-{
-#define BASE double
-#include "source_sbmv.h"
-#undef BASE
-}
-
-/* SPMV */
-
-void
-cblas_sspmv (const enum CBLAS_ORDER order, const enum CBLAS_UPLO Uplo,
-	     const int N, const float alpha, const float *Ap, const float *X,
-	     const int incX, const float beta, float *Y, const int incY)
-{
-#define BASE float
-#include "source_spmv.h"
-#undef BASE
-}
-
-void
-cblas_dspmv (const enum CBLAS_ORDER order, const enum CBLAS_UPLO Uplo,
-	     const int N, const double alpha, const double *Ap,
-	     const double *X, const int incX, const double beta, double *Y,
-	     const int incY)
-{
-#define BASE double
-#include "source_spmv.h"
-#undef BASE
-}
-
 
 /* GER */
 
@@ -952,171 +1024,6 @@ cblas_dger (const enum CBLAS_ORDER order, const int M, const int N,
 {
 #define BASE double
 #include "source_ger.h"
-#undef BASE
-}
-
-
-/* SYR */
-
-void
-cblas_ssyr (const enum CBLAS_ORDER order, const enum CBLAS_UPLO Uplo,
-	    const int N, const float alpha, const float *X, const int incX,
-	    float *A, const int lda)
-{
-#define BASE float
-#include "source_syr.h"
-#undef BASE
-}
-
-void
-cblas_dsyr (const enum CBLAS_ORDER order, const enum CBLAS_UPLO Uplo,
-	    const int N, const double alpha, const double *X, const int incX,
-	    double *A, const int lda)
-{
-#define BASE double
-#include "source_syr.h"
-#undef BASE
-}
-
-
-/* SPR */
-
-void
-cblas_sspr (const enum CBLAS_ORDER order, const enum CBLAS_UPLO Uplo,
-	    const int N, const float alpha, const float *X, const int incX,
-	    float *Ap)
-{
-#define BASE float
-#include "source_spr.h"
-#undef BASE
-}
-
-void
-cblas_dspr (const enum CBLAS_ORDER order, const enum CBLAS_UPLO Uplo,
-	    const int N, const double alpha, const double *X, const int incX,
-	    double *Ap)
-{
-#define BASE double
-#include "source_spr.h"
-#undef BASE
-}
-
-
-/* SYR2 */
-
-void
-cblas_ssyr2 (const enum CBLAS_ORDER order, const enum CBLAS_UPLO Uplo,
-	     const int N, const float alpha, const float *X, const int incX,
-	     const float *Y, const int incY, float *A, const int lda)
-{
-#define BASE float
-#include "source_syr2.h"
-#undef BASE
-}
-
-void
-cblas_dsyr2 (const enum CBLAS_ORDER order, const enum CBLAS_UPLO Uplo,
-	     const int N, const double alpha, const double *X, const int incX,
-	     const double *Y, const int incY, double *A, const int lda)
-{
-#define BASE double
-#include "source_syr2.h"
-#undef BASE
-}
-
-
-/* SPR2 */
-
-void
-cblas_sspr2 (const enum CBLAS_ORDER order, const enum CBLAS_UPLO Uplo,
-	     const int N, const float alpha, const float *X, const int incX,
-	     const float *Y, const int incY, float *A)
-{
-#define BASE double
-#include "source_spr2.h"
-#undef BASE
-}
-
-void
-cblas_dspr2 (const enum CBLAS_ORDER order, const enum CBLAS_UPLO Uplo,
-	     const int N, const double alpha, const double *X, const int incX,
-	     const double *Y, const int incY, double *A)
-{
-#define BASE double
-#include "source_spr2.h"
-#undef BASE
-}
-
-
-/* HEMV */
-
-void
-cblas_chemv (const enum CBLAS_ORDER order, const enum CBLAS_UPLO Uplo,
-	     const int N, const void *alpha, const void *A, const int lda,
-	     const void *X, const int incX, const void *beta, void *Y,
-	     const int incY)
-{
-#define BASE float
-#include "source_hemv.h"
-#undef BASE
-}
-
-void
-cblas_zhemv (const enum CBLAS_ORDER order, const enum CBLAS_UPLO Uplo,
-	     const int N, const void *alpha, const void *A, const int lda,
-	     const void *X, const int incX, const void *beta, void *Y,
-	     const int incY)
-{
-#define BASE double
-#include "source_hemv.h"
-#undef BASE
-}
-
-
-/* HBMV */
-
-void
-cblas_chbmv (const enum CBLAS_ORDER order, const enum CBLAS_UPLO Uplo,
-	     const int N, const int K, const void *alpha, const void *A,
-	     const int lda, const void *X, const int incX, const void *beta,
-	     void *Y, const int incY)
-{
-#define BASE float
-#include "source_hbmv.h"
-#undef BASE
-}
-
-void
-cblas_zhbmv (const enum CBLAS_ORDER order, const enum CBLAS_UPLO Uplo,
-	     const int N, const int K, const void *alpha, const void *A,
-	     const int lda, const void *X, const int incX, const void *beta,
-	     void *Y, const int incY)
-{
-#define BASE double
-#include "source_hbmv.h"
-#undef BASE
-}
-
-
-/* HPMV */
-
-void
-cblas_chpmv (const enum CBLAS_ORDER order, const enum CBLAS_UPLO Uplo,
-	     const int N, const void *alpha, const void *Ap, const void *X,
-	     const int incX, const void *beta, void *Y, const int incY)
-{
-#define BASE float
-#include "source_hpmv.h"
-#undef BASE
-}
-
-void
-cblas_zhpmv (const enum CBLAS_ORDER order, const enum CBLAS_UPLO Uplo,
-	     const int N, const void *alpha, const void *Ap, const void *X,
-	     const int incX, const void *beta, void *Y, const int incY)
-{
-#define BASE double
-#include "source_hpmv.h"
 #undef BASE
 }
 
@@ -1257,6 +1164,96 @@ cblas_zhpr2 (const enum CBLAS_ORDER order, const enum CBLAS_UPLO Uplo,
 #undef BASE
 }
 
+/* SYR */
+
+void
+cblas_ssyr (const enum CBLAS_ORDER order, const enum CBLAS_UPLO Uplo,
+	    const int N, const float alpha, const float *X, const int incX,
+	    float *A, const int lda)
+{
+#define BASE float
+#include "source_syr.h"
+#undef BASE
+}
+
+void
+cblas_dsyr (const enum CBLAS_ORDER order, const enum CBLAS_UPLO Uplo,
+	    const int N, const double alpha, const double *X, const int incX,
+	    double *A, const int lda)
+{
+#define BASE double
+#include "source_syr.h"
+#undef BASE
+}
+
+
+/* SPR */
+
+void
+cblas_sspr (const enum CBLAS_ORDER order, const enum CBLAS_UPLO Uplo,
+	    const int N, const float alpha, const float *X, const int incX,
+	    float *Ap)
+{
+#define BASE float
+#include "source_spr.h"
+#undef BASE
+}
+
+void
+cblas_dspr (const enum CBLAS_ORDER order, const enum CBLAS_UPLO Uplo,
+	    const int N, const double alpha, const double *X, const int incX,
+	    double *Ap)
+{
+#define BASE double
+#include "source_spr.h"
+#undef BASE
+}
+
+
+/* SYR2 */
+
+void
+cblas_ssyr2 (const enum CBLAS_ORDER order, const enum CBLAS_UPLO Uplo,
+	     const int N, const float alpha, const float *X, const int incX,
+	     const float *Y, const int incY, float *A, const int lda)
+{
+#define BASE float
+#include "source_syr2.h"
+#undef BASE
+}
+
+void
+cblas_dsyr2 (const enum CBLAS_ORDER order, const enum CBLAS_UPLO Uplo,
+	     const int N, const double alpha, const double *X, const int incX,
+	     const double *Y, const int incY, double *A, const int lda)
+{
+#define BASE double
+#include "source_syr2.h"
+#undef BASE
+}
+
+
+/* SPR2 */
+
+void
+cblas_sspr2 (const enum CBLAS_ORDER order, const enum CBLAS_UPLO Uplo,
+	     const int N, const float alpha, const float *X, const int incX,
+	     const float *Y, const int incY, float *A)
+{
+#define BASE double
+#include "source_spr2.h"
+#undef BASE
+}
+
+void
+cblas_dspr2 (const enum CBLAS_ORDER order, const enum CBLAS_UPLO Uplo,
+	     const int N, const double alpha, const double *X, const int incX,
+	     const double *Y, const int incY, double *A)
+{
+#define BASE double
+#include "source_spr2.h"
+#undef BASE
+}
 
 /*
  * ===========================================================================

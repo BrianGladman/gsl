@@ -22,79 +22,79 @@
  * RCS:     $Id$
  */
 
-#include "matrix_access.h"
-
 {
     size_t i, j;
     size_t ix, jx;
     const int nounit = (Diag == CblasNonUnit);
 
-    if ((order == CblasRowMajor && TransA == CblasNoTrans)
-	|| (order == CblasColMajor && TransA == CblasTrans)) {
+    if ((order == CblasRowMajor && TransA == CblasNoTrans && Uplo == CblasUpper)
+	|| (order == CblasColMajor && TransA == CblasTrans && Uplo == CblasLower)) {
 	/* form  x:= A*x */
 
-	if (Uplo == CblasUpper) {
-	    ix = OFFSET(N, incX);
-	    for (i = 0; i < N; i++) {
-		BASE atmp = Ap[TPUP(N, i, i)];
-		BASE temp = (nounit ? X[ix] * atmp : X[ix]);
-		jx = OFFSET(N, incX) + (i + 1) * incX;
-		for (j = i + 1; j < N; j++) {
-		    atmp = Ap[TPUP(N, i, j)];
-		    temp += atmp * X[jx];
-		    jx += incX;
-		}
-		X[ix] = temp;
-		ix += incX;
-	    }
-	} else {
-	    ix = OFFSET(N, incX) + (N - 1) * incX;
-	    for (i = N; (i--) > 0;) {
-		BASE atmp = Ap[TPLO(N, i, i)];
-		BASE temp = (nounit ? X[ix] * atmp : X[ix]);
-		size_t jx = OFFSET(N, incX);
-		for (j = 0; j < i; j++) {
-		    atmp = Ap[TPLO(N, i, j)];
-		    temp += atmp * X[jx];
-		    jx += incX;
-		}
-		X[ix] = temp;
-		ix -= incX;
-	    }
-	}
+      ix = OFFSET(N, incX);
+      for (i = 0; i < N; i++) {
+        BASE atmp = Ap[TPUP(N, i, i)];
+        BASE temp = (nounit ? X[ix] * atmp : X[ix]);
+        jx = OFFSET(N, incX) + (i + 1) * incX;
+        for (j = i + 1; j < N; j++) {
+          atmp = Ap[TPUP(N, i, j)];
+          temp += atmp * X[jx];
+          jx += incX;
+        }
+        X[ix] = temp;
+        ix += incX;
+      }
+    } else if ((order == CblasRowMajor && TransA == CblasNoTrans && Uplo == CblasLower)
+               || (order == CblasColMajor && TransA == CblasTrans && Uplo == CblasUpper)) {
 
-    } else if ((order == CblasRowMajor && TransA == CblasTrans)
-	       || (order == CblasColMajor && TransA == CblasNoTrans)) {
+      ix = OFFSET(N, incX) + (N - 1) * incX;
+      for (i = N; i > 0 && i--;) {
+        BASE atmp = Ap[TPLO(N, i, i)];
+        BASE temp = (nounit ? X[ix] * atmp : X[ix]);
+        size_t jx = OFFSET(N, incX);
+        for (j = 0; j < i; j++) {
+          atmp = Ap[TPLO(N, i, j)];
+          temp += atmp * X[jx];
+          jx += incX;
+        }
+        X[ix] = temp;
+        ix -= incX;
+      }
+    } else if ((order == CblasRowMajor && TransA == CblasTrans && Uplo == CblasUpper)
+	       || (order == CblasColMajor && TransA == CblasNoTrans && Uplo == CblasLower)) {
 	/* form  x := A'*x */
-
-	if (Uplo == CblasUpper) {
-	    ix = OFFSET(N, incX) + (N - 1) * incX;
-	    for (i = N; (i--) > 0;) {
-		BASE atmp = Ap[TPUP(N, i, i)];
-		BASE temp = (nounit ? X[ix] * atmp : X[ix]);
-		size_t jx = OFFSET(N, incX);
-		for (j = 0; j < i; j++) {
-		    atmp = Ap[TPUP(N j, i)];
-		    temp += atmp * X[jx];
-		    jx += incX;
-		}
-		X[ix] = temp;
-		ix -= incX;
-	    }
-	} else {
-	    ix = OFFSET(N, incX);
-	    for (i = 0; i < N; i++) {
-		BASE atmp = Ap[TPLO(N, i, i)];
-		BASE temp = (nounit ? X[ix] * atmp : X[ix]);
-		jx = OFFSET(N, incX) + (i + 1) * incX;
-		for (j = i + 1; j < N; j++) {
-		    atmp = Ap[TPLO(N, j, i)];
-		    temp += atmp * X[jx];
-		    jx += incX;
-		}
-		X[ix] = temp;
-		ix += incX;
-	    }
-	}
+      
+      ix = OFFSET(N, incX) + (N - 1) * incX;
+      for (i = N; i > 0 && i--;) {
+        BASE atmp = Ap[TPUP(N, i, i)];
+        BASE temp = (nounit ? X[ix] * atmp : X[ix]);
+        size_t jx = OFFSET(N, incX);
+        for (j = 0; j < i; j++) {
+          atmp = Ap[TPUP(N, j, i)];
+          temp += atmp * X[jx];
+          jx += incX;
+        }
+        X[ix] = temp;
+        ix -= incX;
+      }
+    } else if ((order == CblasRowMajor && TransA == CblasTrans && Uplo == CblasLower)
+	       || (order == CblasColMajor && TransA == CblasNoTrans && Uplo == CblasUpper)) {
+      
+      ix = OFFSET(N, incX);
+      for (i = 0; i < N; i++) {
+        BASE atmp = Ap[TPLO(N, i, i)];
+        BASE temp = (nounit ? X[ix] * atmp : X[ix]);
+        jx = OFFSET(N, incX) + (i + 1) * incX;
+        for (j = i + 1; j < N; j++) {
+          atmp = Ap[TPLO(N, j, i)];
+          temp += atmp * X[jx];
+          jx += incX;
+        }
+        X[ix] = temp;
+        ix += incX;
+      }
+    } else {
+      BLAS_ERROR ("unrecognized operation");
     }
 }
+

@@ -152,6 +152,21 @@ function T = test_tbmatvector (S, j)
   endif
 endfunction
 
+function T = test_tpmatvector (S, j)
+  T.n =  1+ fix(j/2);
+  T.s = (-1)**(fix(j/2));
+  T.trans = trans(S);
+  N = T.n * (T.n + 1) / 2;
+
+  if (S.complex == 0)
+    T.A = random_vector(N);
+    T.v = random_vector(T.n);
+  else
+    T.A = random_vector(N)+ I * random_vector(N);
+    T.v = random_vector(T.n) + I * random_vector(T.n);
+  endif
+endfunction
+
 
 function v = random_vector(n)
   v = fix((rand(1,n)-0.5)*2000)/10;
@@ -240,6 +255,44 @@ function m = tbmatrix (order, uplo, Diag, A, lda, N, K)
     m = m - diag(diag(m)) + eye(size(m));
   endif
 endfunction
+
+function m = tpmatrix (order, uplo, Diag, A, N)
+  m = zeros(N,N);
+  if (order == 102) # column major 
+    if (uplo == 121) # upper
+      k = 0;
+      for j = 1:N
+        m(1:j,j) = A(k + (1:j)).';
+        k = k + j;
+      endfor
+    else
+      k = 0;
+      for j = 1:N
+        m(j:N,j) = A(k + (1:(N-j+1))).';
+        k = k + N - j + 1;
+      endfor
+    endif
+  else  # row major
+    if (uplo == 121) # upper
+      k = 0;
+      for j = 1:N
+        m(j,j:N) = A(k + (1:(N-j+1)));
+        k = k + N - j + 1;
+      endfor
+    else
+      k = 0;
+      for j = 1:N
+        m(j,1:j) = A(k + (1:j));
+        k = k + j;
+      endfor
+    endif
+  endif
+  
+  if (Diag == 132)  # unit diag
+    m = m - diag(diag(m)) + eye(size(m));
+  endif
+endfunction
+
 
 function MM = op(M, trans);
   if (trans == 111)
@@ -620,7 +673,18 @@ function XX = blas_tbmv (order, uplo, trans, diag, N, K, A, lda, X, incX)
   
   XX = vout(X, incX, N, y);
 endfunction
- 
+
+function XX = blas_tpmv (order, uplo, trans, diag, N, A, X, incX)
+  a = tpmatrix (order, uplo, diag, A, N);
+  a = op(a, trans);
+  x = vector (X, incX, N);
+a
+x
+  y =  a * x ;
+  
+  XX = vout(X, incX, N, y);
+endfunction
+
 
 ######################################################################
 
@@ -1062,6 +1126,25 @@ function test_tbmv (S, fn, order, uplo, trans, diag, N, K, A, lda, X, incX)
 endfunction
 
 
+function test_tpmv (S, fn, order, uplo, trans, diag, N, A, X, incX)
+  begin_block();
+  define(S, "int", "order", order);
+  define(S, "int", "trans", trans);
+  define(S, "int", "uplo", uplo);
+  define(S, "int", "diag", diag);
+  define(S, "int", "N", N);
+  define(S, "matrix", "A", A);
+  define(S, "vector", "X", X);
+  define(S, "int", "incX", incX);
+
+  XX = feval(strcat("blas_", fn), order, uplo, trans, diag, N, A, X, incX);
+  define(S, "vector", "x_expected", XX);
+  call("cblas_", S.prefix, fn, "(order, uplo, trans, diag, N, A, X, incX)");
+  test(S, "vector", "X", "x_expected", strcat(S.prefix, fn), X);
+  end_block();
+endfunction
+
+
 ######################################################################
 
 s=1;d=2;c=3;z=4;
@@ -1250,38 +1333,46 @@ n=16;
 #   for i = [s,d,c,z]
 #     S = context(i);
 #     T = test_trmatvector(S, j);
-#     for alpha = coeff(S)
-#       for beta = coeff(S)
-#         for order = [101, 102]
-#           for uplo = [121, 122]
-#             for diag = [131, 132]
-#               test_trmv (S, "trmv", order, uplo, T.trans, diag, T.n,
-#                          T.A, T.lda, T.v, T.s);
-#             endfor
-#           endfor
+#     for order = [101, 102]
+#       for uplo = [121, 122]
+#         for diag = [131, 132]
+#           test_trmv (S, "trmv", order, uplo, T.trans, diag, T.n,
+#                      T.A, T.lda, T.v, T.s);
 #         endfor
 #       endfor
 #     endfor
 #   endfor
 # endfor
 
-n=32;
+#n=32;
+
+# for j = 1:n
+#   for i = [s,d,c,z]
+#     S = context(i);
+#     T = test_tbmatvector(S, j);
+#     for order = [101, 102]
+#       for uplo = [121, 122]
+#         for diag = [131, 132]
+#           test_tbmv (S, "tbmv", order, uplo, T.trans, diag, T.n, T.k,
+#                      T.A, T.lda, T.v, T.s);
+#         endfor
+#       endfor
+#     endfor
+#   endfor
+# endfor
 
 for j = 1:n
-  for i = [s,d] #[s,d,c,z]
+  for i = [s,d,c,z]
     S = context(i);
-    T = test_tbmatvector(S, j);
-    for alpha = coeff(S)
-      for beta = coeff(S)
-        for order = [101, 102]
-          for uplo = [121, 122]
-            for diag = [131, 132]
-              test_tbmv (S, "tbmv", order, uplo, T.trans, diag, T.n, T.k,
-                         T.A, T.lda, T.v, T.s);
-            endfor
-          endfor
+    T = test_tpmatvector(S, j);
+    for order = [101, 102]
+      for uplo = [121, 122]
+        for diag = [131, 132]
+          test_tpmv (S, "tpmv", order, uplo, T.trans, diag, T.n, 
+                     T.A, T.v, T.s);
         endfor
       endfor
     endfor
   endfor
 endfor
+

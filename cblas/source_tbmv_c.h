@@ -23,9 +23,9 @@
  */
 
 {
-    int conj = (TransA == CblasConjTrans) ? -1 : 1;
-    int Trans = (TransA != CblasConjTrans) ? TransA : CblasTrans;
-    int nounit = (Diag == CblasNonUnit);
+  const int conj = (TransA == CblasConjTrans) ? -1 : 1;
+  const int Trans = (TransA != CblasConjTrans) ? TransA : CblasTrans;
+  const int nounit = (Diag == CblasNonUnit);
     size_t i, j;
     size_t ix, jx;
 
