@@ -191,6 +191,11 @@ This function returns the inverse, or reciprocal, of the complex number
 @var{z}, @math{1/z = (x - i y)/(x^2 + y^2)}.
 @end deftypefun
 
+@deftypefun gsl_complex gsl_complex_negative (gsl_complex @var{z})
+This function returns the negative of the complex number
+@var{z}, @math{-z = (-x) + i(-y)}.
+@end deftypefun
+
 
 @node Elementary Complex Functions
 @section Elementary Complex Functions

@@ -797,7 +797,7 @@ This function exchanges the @var{i}-th and @var{j}-th rows of the matrix
 @var{m} in-place.
 @end deftypefun
 
-@deftypefun int gsl_matrix_swap_cols (gsl_matrix * @var{m}, size_t @var{i}, size_t @var{j})
+@deftypefun int gsl_matrix_swap_columns (gsl_matrix * @var{m}, size_t @var{i}, size_t @var{j})
 This function exchanges the @var{i}-th and @var{j}-th columns of the
 matrix @var{m} in-place.
 @end deftypefun

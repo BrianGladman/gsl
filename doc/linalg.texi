@@ -10,10 +10,10 @@ representations, and other optimizations. It is the standard package for
 linear algebra.
 
 @menu
-* Singular Value Decomposition::  
 * LU Decomposition::            
 * QR Decomposition::            
 * QR Decomposition with Column Pivoting::  
+* Singular Value Decomposition::  
 * Householder solver for linear systems::  
 * Tridiagonal Systems::         
 * Linear Algebra References and Further Reading::  
@@ -100,6 +100,15 @@ linear algebra.
 @deftypefun int gsl_linalg_QRPT_update (gsl_matrix * @var{q}, gsl_matrix * @var{r}, const gsl_permutation * @var{p}, gsl_vector * @var{u}, const gsl_vector * @var{v})
 @end deftypefun
 
+@node Singular Value Decomposition
+@section Singular Value Decomposition
+
+@deftypefun int gsl_linalg_SV_decomp (gsl_matrix * @var{A}, gsl_matrix * @var{Q}, gsl_vector * @var{S})
+@end deftypefun
+
+@deftypefun int gsl_linalg_SV_solve (gsl_matrix * @var{U}, gsl_matrix * @var{Q}, gsl_vector * @var{S}, const gsl_vector * @var{rhs}, gsl_vector * @var{x})
+@end deftypefun
+
 @node Householder solver for linear systems
 @section Householder solver for linear systems
 
@@ -115,11 +124,6 @@ linear algebra.
 @deftypefun int gsl_linalg_solve_symm_cyc_tridiag (const gsl_vector * @var{diag}, const gsl_vector * @var{offdiag}, const gsl_vector * @var{rhs}, gsl_vector * @var{solution})
 @end deftypefun
 
-@node Singular Value Decomposition
-@section Singular Value Decomposition
-
-@deftypefun int gsl_linalg_decomp_SV (gsl_matrix * @var{A}, gsl_matrix * @var{Q}, gsl_vector * @var{S}, double @var{tolerance})
-@end deftypefun
 
 @node Linear Algebra References and Further Reading
 @section References and Further Reading

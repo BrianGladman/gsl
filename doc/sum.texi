@@ -23,8 +23,7 @@ These functions are declared in the header file @file{gsl_sum.h}.
 @node Acceleration functions
 @section Acceleration functions
 
-@deftypefun int gsl_sum_levin_u (const double * @var{array}, size_t @var{array_size}, double * @var{q_num}, double * @var{q_den}, double * @var{dq_num}, double * @var{dq_den}, double * @var{dsum}, double * @var{sum_accel}, double * @var{sum_plain}, double * @var{precision})
-
+@deftypefun int gsl_sum_levin_u_accel (const double * @var{array}, size_t @var{array_size}, double * @var{q_num}, double * @var{q_den}, double * @var{dq_num}, double * @var{dq_den}, double * @var{dsum}, double * @var{sum_accel}, double * @var{sum_plain}, double * @var{precision})
 This function takes the terms of a series in @var{array} of size
 @var{array_size} and computes the extrapolated limit of the series using
 a Levin u-transform.  The extrapolated sum is stored in @var{sum_accel},
@@ -35,7 +34,6 @@ working space must be provided in the arrays @var{q_num}, @var{q_den},
 @var{dq_den} of size @var{array_size}**2.  The algorithm estimates both
 truncation error and round-off error to choose an optimal number of
 terms for the extrapolation.
-
 @end deftypefun
 
 @node Example of accelerating a series

@@ -300,6 +300,34 @@ This function is useful if you have already computed the mean and
 standard deviation of @var{data} and want to avoid recomputing them.
 @end deftypefn
 
+@node Autocorrelation
+@section Autocorrelation
+
+
+@deftypefun double gsl_stats_lag1_autocorrelation (const double data[], const size_t @var{stride}, const size_t @var{n})
+This function computes the lag-1 autocorrelation of the dataset @var{data}.
+
+@tex
+\beforedisplay
+$$
+a_1 = {\sum_{i = 1}^{n} (x_{i} - \hat\mu) (x_{i-1} - \hat\mu)
+\over
+\sum_{i = 1}^{n} (x_{i} - \hat\mu) (x_{i} - \hat\mu)}
+$$
+\afterdisplay
+@end deftypefun
+@ifinfo
+@example
+a_1 = @{\sum_@{i = 1@}^@{n@} (x_@{i@} - \hat\mu) (x_@{i-1@} - \hat\mu)
+       \over
+       \sum_@{i = 1@}^@{n}@ (x_@{i@} - \hat\mu) (x_@{i@} - \hat\mu)@}
+@end example
+@end ifinfo
+@noindent
+@end deftypefun
+
+@deftypefun double gsl_stats_lag1_autocorrelation_m (const double data[], const size_t @var{stride}, const size_t @var{n}, const double @var{mean})
+@end deftypefun
 
 @node Weighted Samples
 @section Weighted Samples

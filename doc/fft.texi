@@ -51,17 +51,15 @@ transform when functions are sampled at discrete intervals in space or
 time.  The naive evaluation of the discrete fourier transform is a
 matrix-vector multiplication 
 @c{$W\vec{z}$}
-@math{W\vec@{z@}}. A general matrix-vector
-multiplication takes 
-@math{O(N^2)} operations for @math{N}
-data-points.  Fast fourier transform algorithms use a divide-and-conquer
-strategy to factorize the matrix @math{W} into smaller sub-matrices,
-corresponding to the integer factors of the length @math{N}.  If
-@math{N} can be factorized into a product of integers 
+@math{W\vec@{z@}}. A general matrix-vector multiplication takes
+@math{O(N^2)} operations for @math{N} data-points.  Fast fourier
+transform algorithms use a divide-and-conquer strategy to factorize the
+matrix @math{W} into smaller sub-matrices, corresponding to the integer
+factors of the length @math{N}.  If @math{N} can be factorized into a
+product of integers
 @c{$f_1 f_2 \ldots f_n$} 
-@math{f_1 f_2 ... f_n} then the DFT can be computed in 
-@math{O(N \sum f_i)}
-operations.  For a radix-2 FFT this gives an operation count of
+@math{f_1 f_2 ... f_n} then the DFT can be computed in @math{O(N \sum
+f_i)} operations.  For a radix-2 FFT this gives an operation count of
 @math{O(N \log_2 N)}.
 
 All the FFT functions offer three types of transform: forwards, inverse
@@ -369,7 +367,7 @@ scenario, e.g. as found in @math{n=2*3*99991}, and should be avoided
 because their @math{O(n^2)} scaling will dominate the run-time (consult
 @cite{GSL FFT Algorithms} for possible ways around this problem).
 
-The mixed-radix initialization function @code{gsl_fft_complex_init}
+The mixed-radix initialization function @code{gsl_fft_complex_alloc}
 returns the list of factors chosen by the library for a given length
 @math{N}.  It can be used to check how well the length has been
 factorized, and estimate the run-time.  To a first approximation the
@@ -382,7 +380,7 @@ cannot be factorized using the existing small-prime modules consult
 factors.
 
 @comment First, the space for the trigonometric lookup tables and scratch area is
-@comment allocated by a call to one of the @code{wavetable_alloc} functions.  We
+@comment allocated by a call to one of the @code{alloc} functions.  We
 @comment call the combination of factorization, scratch space and trigonometric
 @comment lookup arrays a @dfn{wavetable}.  It contains the sine and cosine
 @comment waveforms for the all the frequencies that will be used in the FFT.
@@ -398,36 +396,17 @@ factors.
 
 All these functions are declared in the header file @file{gsl_fft_complex.h}.
 
-@deftypefun {gsl_fft_complex_wavetable *} gsl_fft_complex_wavetable_alloc (size_t @var{n});
+@deftypefun {gsl_fft_complex_wavetable *} gsl_fft_complex_alloc (size_t @var{n})
 
 This function allocates space for a @code{gsl_fft_complex_wavetable}
 struct, and a scratch area and trigonometric lookup table, both of size
 @var{n} complex elements.  The relevant components of the wavetable are
 initialized to point to the newly allocated memory.
 
-The function returns a pointer to the newly allocated
-@code{gsl_fft_complex_wavetable} if no errors were detected, and 0 in
-the case of error.  The following @code{gsl_errno} conditions are defined
-for this function:
-
-@table @code
-@item GSL_EDOM
-The length of the data @var{n} is not a positive integer (i.e. @var{n} is zero).
-
-@item GSL_ENOMEM
-The requested memory could not be allocated (@code{malloc} returned
-a null pointer).
-@end table
-
-@end deftypefun
-
-@deftypefun int gsl_fft_complex_init (size_t @var{n}, gsl_fft_complex_wavetable * @var{wavetable});
-
-This function initializes @var{wavetable}.  It selects a factorization of
+The function initializes @var{wavetable}.  It selects a factorization of
 the length @var{n} into the implemented subtransforms, storing the
 details of the factorization in @var{wavetable}.  Using this
-factorization it then prepares a trigonometric lookup table in the
-memory previously allocated by @code{gsl_fft_complex_wavetable_alloc}.
+factorization it then prepares a trigonometric lookup table.
 
 The wavetable is computed using direct calls to @code{sin} and
 @code{cos}, for accuracy.  It could be computed faster using recursion
@@ -440,43 +419,47 @@ same length.  The table is not modified by calls to any of the other FFT
 functions.  The same wavetable can be used for both forward and backward
 (or inverse) transforms of a given length.
 
-The function returns a value of @code{0} if no errors were detected,
-and @code{-1} in the case of error.  The following @code{gsl_errno}
-conditions are defined for this function:
+The function returns a pointer to the newly allocated
+@code{gsl_fft_complex_wavetable} if no errors were detected, and 0 in
+the case of error.  The following @code{gsl_errno} conditions are
+defined for this function:
 
 @table @code
+@item GSL_ENOMEM
+The requested memory could not be allocated (@code{malloc} returned
+a null pointer).
+
 @item GSL_EDOM
-The length of the data @var{n} is not a positive integer (i.e. @var{n} is zero).
+The length of the data @var{n} is not a positive integer (i.e. @var{n}
+is zero).
 
 @item GSL_EFACTOR
 The length @var{n} could not be factorized (this shouldn't happen).
 
 @item GSL_EFAILED
-A failure was detected in the wavetable generation.  This could be caused
-by an inconsistency in a user-supplied @var{wavetable} structure.
+A failure was detected in the wavetable generation.
 @end table
 
 @end deftypefun
 
-@deftypefun void gsl_fft_complex_wavetable_free (gsl_fft_complex_wavetable * @var{wavetable});
-
+@deftypefun void gsl_fft_complex_free (gsl_fft_complex_wavetable * @var{wavetable})
 This function frees the blocks of memory previously allocated by
-@code{gsl_fft_complex_wavetable_alloc} and pointed to by the components
+@code{gsl_fft_complex_alloc} and pointed to by the components
 of @var{wavetable}.
 
 The wavetable should be freed if no further FFTs of the same length will
 be needed.
 @end deftypefun
 
-The functions @code{gsl_fft_complex_init},
-@code{gsl_fft_wavetable_alloc} and @code{gsl_fft_wavetable_free} all
-operate on a structure @code{gsl_fft_complex_wavetable}.  This structure
-contains internal parameters for the FFT. 
+The functions @code{gsl_fft_complex_alloc} and
+@code{gsl_fft_complex_free} all operate on a structure
+@code{gsl_fft_complex_wavetable}.  This structure contains internal
+parameters for the FFT.
 
 It is not necessary to set any of the members directly except for
 advanced usage.  However, it can useful to examine the wavetable
-returned by @code{gsl_fft_complex_init}.  For example, the factorization
-chosen by @code{gsl_fft_complex_init} is given and can be used to
+returned by @code{gsl_fft_complex_alloc}.  For example, the factorization
+chosen by @code{gsl_fft_complex_alloc} is given and can be used to
 provide an estimate of the run-time or numerical error.
 
 Here is the wavetable structure.  It is declared in the header file
@@ -528,8 +511,8 @@ These functions compute forward, backward and inverse FFTs of length
 
 The caller must supply a @var{wavetable} containing the chosen
 factorization, trigonometric lookup tables and scratch area.  The
-wavetable can be easily prepared using the functions
-@code{gsl_fft_complex_init} and @code{gsl_fft_complex_alloc}.
+wavetable can be easily prepared using the function
+@code{gsl_fft_complex_alloc}.
 
 There is no restriction on the length @var{n}.  Efficient modules are
 provided for subtransforms of length 2, 3, 4, 5, 6 and 7.  Any remaining
@@ -594,8 +577,7 @@ int main ()
     @}
   printf ("\n");
 
-  wavetable = gsl_fft_complex_wavetable_alloc (n);
-  gsl_fft_complex_init (n, wavetable);
+  wavetable = gsl_fft_complex_alloc (n);
 
   for (i = 0; i < wavetable->nf; i++)
     @{
@@ -609,7 +591,7 @@ int main ()
       printf ("%d: %e %e\n", i, REAL(data,i), IMAG(data,i));
     @}
 
-  gsl_fft_complex_wavetable_free (wavetable);
+  gsl_fft_complex_free (wavetable);
 
 @}
 @end example
@@ -850,44 +832,23 @@ The upper elements of the @var{complex} array, @code{complex[4]} and
 All these functions are declared in the header files
 @file{gsl_fft_real.h} and @file{gsl_fft_halfcomplex.h}.
 
-@deftypefun {gsl_fft_real_wavetable *} gsl_fft_real_wavetable_alloc (size_t @var{n});
-@deftypefunx {gsl_fft_halfcomplex_wavetable *} gsl_fft_halfcomplex_wavetable_alloc (size_t @var{n});
+@deftypefun {gsl_fft_real_wavetable *} gsl_fft_real_alloc (size_t @var{n})
+@deftypefunx {gsl_fft_halfcomplex_wavetable *} gsl_fft_halfcomplex_alloc (size_t @var{n})
 
 These functions allocate space for a wavetable struct, a scratch area of
 size @var{n} real elements and a trigonometric lookup table, of size
 @math{n/2} complex elements.  The relevant components of the wavetable
 are modified to point to the newly allocated memory.
 
-These functions return a pointer to the newly allocated struct if no
-errors were detected, and @code{0} in the case of error.  The following
-@code{gsl_errno} conditions are defined for these functions:
-
-@table @code
-@item GSL_EDOM
-The length of the data @var{n} is not a positive integer (i.e. @var{n}
-is zero).
-
-@item GSL_ENOMEM
-The requested memory could not be allocated (@code{malloc} returned
-a null pointer).
-@end table
-
-@end deftypefun
-
-
-@deftypefun int gsl_fft_real_init (size_t @var{n}, gsl_fft_real_wavetable * @var{wavetable});
-@deftypefunx int gsl_fft_halfcomplex_init (size_t @var{n}, gsl_fft_halfcomplex_wavetable * @var{wavetable});
-
-These functions initialize @var{wavetable}.  They first select a
+The functions initialize @var{wavetable}.  They first select a
 factorization of the length @var{n} into the implemented subtransforms,
 storing the details of the factorization in @var{wavetable}.
 
 Using this factorization they then prepare a trigonometric lookup table
-in the memory previously allocated by
-@code{gsl_fft_real_wavetable_alloc} or
-@code{gsl_fft_halfcomplex_wavetable_alloc}.  The wavetable is computed
-using direct calls to @code{sin} and @code{cos}, for accuracy.  It could
-be computed faster using recursion relations if necessary.  If an
+in the memory previously allocated by @code{gsl_fft_real_alloc} or
+@code{gsl_fft_halfcomplex_alloc}.  The wavetable is computed using
+direct calls to @code{sin} and @code{cos}, for accuracy.  It could be
+computed faster using recursion relations if necessary.  If an
 application performs many FFTs of the same length then computing the
 wavetable is a one-off overhead which does not affect the final
 throughput.
@@ -897,9 +858,15 @@ same length.  The table is not modified by calls to any of the other FFT
 functions.  The same wavetable can be used for both forward and backward
 (or inverse) transforms of a given length.
 
-The functions return a value of @code{0} if no errors were detected,
-and @code{-1} in the case of error.  The following @code{gsl_errno}
-conditions are defined for these functions:
+These functions return a pointer to the newly allocated struct if no
+errors were detected, and @code{0} in the case of error.  The following
+@code{gsl_errno} conditions are defined for these functions:
+
+@table @code
+@item GSL_ENOMEM
+The requested memory could not be allocated (@code{malloc} returned
+a null pointer).
+@end table
 
 @table @code
 @item GSL_EDOM
@@ -916,12 +883,12 @@ by an inconsistency in a user-supplied @var{wavetable} structure.
 
 @end deftypefun
 
-@deftypefun void gsl_fft_real_wavetable_free (gsl_fft_real_wavetable * @var{wavetable});
-@deftypefunx void gsl_fft_halfcomplex_wavetable_free (gsl_fft_halfcomplex_wavetable * @var{wavetable});
+@deftypefun void gsl_fft_real_free (gsl_fft_real_wavetable * @var{wavetable})
+@deftypefunx void gsl_fft_halfcomplex_free (gsl_fft_halfcomplex_wavetable * @var{wavetable})
 
 These functions free the blocks of memory previously allocated by
-@code{gsl_fft_real_wavetable_alloc} or
-@code{gsl_fft_halfcomplex_wavetable_alloc} and pointed to by the
+@code{gsl_fft_real_alloc} or
+@code{gsl_fft_halfcomplex_alloc} and pointed to by the
 components of @var{wavetable}.
 
 The wavetable should be freed if no further FFTs of the same length will
@@ -941,9 +908,8 @@ above.
 
 The caller must supply a @var{wavetable} containing the chosen
 factorization, trigonometric lookup tables and scratch area.  The
-wavetable can be easily prepared using the functions
-@code{gsl_fft_real_alloc} and @code{gsl_fft_real_init} or
-@code{gsl_fft_halfcomplex_alloc} and @code{gsl_fft_halfcomplex_init}.
+wavetable can be easily prepared using the function
+@code{gsl_fft_real_alloc} or @code{gsl_fft_halfcomplex_alloc}.
 
 There is no restriction on the length @var{n}.  Efficient modules are
 provided for subtransforms of length 2, 3, 4 and 5.  Any remaining
@@ -1079,20 +1045,20 @@ int main ()
     @}
   printf ("\n");
 
-  real_wavetable = gsl_fft_real_wavetable_alloc (n);
-  gsl_fft_real_init (n, real_wavetable);
+  real_wavetable = gsl_fft_real_alloc (n);
+
   gsl_fft_real (data, 1, n, real_wavetable);
-  gsl_fft_real_wavetable_free (real_wavetable);
+  gsl_fft_real_free (real_wavetable);
 
   for (i = 11; i < n; i++)
     @{
       data[i] = 0;
     @}
 
-  halfcomplex_wavetable = gsl_fft_halfcomplex_wavetable_alloc (n);
-  gsl_fft_halfcomplex_init (n, halfcomplex_wavetable);
+  halfcomplex_wavetable = gsl_fft_halfcomplex_alloc (n);
+
   gsl_fft_halfcomplex_inverse (data, 1, n, halfcomplex_wavetable);
-  gsl_fft_halfcomplex_wavetable_free (halfcomplex_wavetable);
+  gsl_fft_halfcomplex_free (halfcomplex_wavetable);
 
   for (i = 0; i < n; i++)
     @{

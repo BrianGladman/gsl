@@ -20,6 +20,7 @@ The functions described in this chapter are defined in the header file
 * Accessing permutation elements::  
 * Permutation properties::      
 * Permutation functions::       
+* Applying Permutations::       
 * Reading and writing permutations::  
 * Permutation Examples::        
 * Permutation References and Further Reading::  
@@ -117,12 +118,36 @@ once.
 This function reverses the elements of the permutation @var{p}.
 @end deftypefun
 
-@deftypefun int gsl_permutation_invert (gsl_permutation * @var{inv}, const gsl_permutation * @var{p})
+@deftypefun int gsl_permutation_inverse (gsl_permutation * @var{inv}, const gsl_permutation * @var{p})
 @cindex inverting a permutation
 This function computes the inverse of the permuation @var{p}, storing
 the result in @var{inv}.
 @end deftypefun
 
+@node Applying Permutations
+@section Applying Permutations
+
+@deftypefun int gsl_permute (const size_t * @var{p}, double * @var{data}, size_t @var{stride}, size_t @var{n})
+This function applies the permutation @var{p} to the array @var{data} of
+size @var{n} with stride @var{stride}.
+@end deftypefun
+
+@deftypefun int gsl_permute_inverse (const size_t * @var{p}, double * @var{data}, size_t @var{stride}, size_t @var{n})
+This function applies the inverse of the permutation @var{p} to the
+array @var{data} of size @var{n} with stride @var{stride}.
+@end deftypefun
+
+@deftypefun int gsl_permute_vector (const gsl_permutation * @var{p}, gsl_vector * @var{v})
+This function applies the permutation @var{p} to the elements of the
+vector @var{v}. The permutation @var{p} and the vector @var{v} must have
+the same length.
+@end deftypefun
+
+@deftypefun int gsl_permute_vector_inverse (const gsl_permutation * @var{p}, gsl_vector * @var{v})
+This function applies the inverse of the permutation @var{p} to the
+elements of the vector @var{v}. The permutation @var{p} and the vector
+@var{v} must have
+@end deftypefun
 
 @node Reading and writing permutations
 @section Reading and writing permutations

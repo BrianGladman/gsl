@@ -81,6 +81,9 @@ transformation @math{z = \mu + x} on the numbers returned by
 @math{\mu}.
 @end deftypefn
 
+@deftypefun double gsl_ran_gaussian_ratio_method (const gsl_rng * @var{r}, const double @var{sigma})
+@end deftypefun
+
 @deftypefun double gsl_ran_gaussian_pdf (double @var{x}, double @var{sigma})
 This function computes the probability density @math{p(x)} at @var{x}
 for a Gaussian distribution with standard deviation @var{sigma}, using
@@ -89,6 +92,7 @@ the formula given above.
 
 @deftypefn Random double gsl_ran_ugaussian (const gsl_rng * @var{r})
 @deftypefnx Random double gsl_ran_ugaussian_pdf (double @var{x})
+@deftypefnx Random double gsl_ran_ugaussian_ratio_method (const gsl_rng * @var{r}, const double @var{sigma})
 These functions compute results for the unit Gaussian distribution.  They
 are equivalent to the functions above with a standard deviation of one,
 @var{sigma} = 1.
@@ -452,21 +456,24 @@ p(x) = @{1 \over 2 \pi@} \int_@{-\infty@}^@{+\infty@} dt \exp(it(\mu-x)- |t|^a)
 @end example
 @end ifinfo
 @noindent
-There is no explicit solution for the form of @math{p(x)}.  For @math{a =
-1} the distribution reduces to the Cauchy distribution.  For @math{a = 2}
-it is a Gaussian distribution with @c{$\sigma = \sqrt{2} \mu$}
-@math{\sigma = \sqrt@{2@} \mu}.  For @math{a < 1} the tails of the
+There is no explicit solution for the form of @math{p(x)} and the
+library does not define a corresponding @code{pdf} function.  For
+@math{a = 1} the distribution reduces to the Cauchy distribution.  For
+@math{a = 2} it is a Gaussian distribution with @c{$\sigma = \sqrt{2}
+\mu$} @math{\sigma = \sqrt@{2@} \mu}.  For @math{a < 1} the tails of the
 distribution become extremely wide.
 
 The algorithm only works for @c{$0 < a \le 2$}
 @math{0 < a <= 2}.
 @end deftypefn
 
-@deftypefun double gsl_ran_levy_pdf (double @var{x}, double @var{mu})
-This function computes the probability density @math{p(x)} at @var{x}
-for a symmetric Levy distribution with scale parameter @var{mu} and
-exponent @var{a}, using the formula given above.
-@end deftypefun
+@comment PDF not available because there is no analytic expression for it
+@comment
+@comment @deftypefun double gsl_ran_levy_pdf (double @var{x}, double @var{mu})
+@comment This function computes the probability density @math{p(x)} at @var{x}
+@comment for a symmetric Levy distribution with scale parameter @var{mu} and
+@comment exponent @var{a}, using the formula given above.
+@comment @end deftypefun
 
 @sp 1
 @tex
@@ -897,6 +904,10 @@ interior of a unit circle, and then @math{x=(u^2-v^2)/(u^2+v^2)} and
 @math{y=uv/(u^2+v^2)}.
 @end deftypefn
 
+@deftypefn Random void gsl_ran_dir_2d_trid_method (const gsl_rng * @var{r}, double *@var{x}, double *@var{y})
+@end deftypefn
+
+
 @deftypefn Random void gsl_ran_dir_3d (const gsl_rng * @var{r}, double *@var{x}, double *@var{y}, double * @var{z})
 @cindex 3D random direction vector
 @cindex direction vector, random 3D
@@ -1308,7 +1319,7 @@ p(k) = @{\Gamma(n + k) \over \Gamma(k+1) \Gamma(n) @} p^n (1-p)^k
 Note that @math{n} is not required to be an integer.
 @end deftypefn
 
-@deftypefun double gsl_ran_nbinomial_pdf (unsigned int @var{k}, double @var{p}, double  @var{n})
+@deftypefun double gsl_ran_negative_binomial_pdf (unsigned int @var{k}, double @var{p}, double  @var{n})
 This function computes the probability @math{p(k)} of obtaining @var{k}
 from a negative binomial distribution with parameters @var{p} and
 @var{n}, using the formula given above.
