@@ -123,7 +123,7 @@ gsl_sf_coulomb_CL_list(double lam_min, int kmax, double eta, double * cl)
  */
 static
 int
-coulomb_Phi_series(double lam, double eta, double x,
+coulomb_Phi_series(const double lam, const double eta, const double x,
                    double * result, double * result_star)
 {
   int kmin =   5;
@@ -173,7 +173,7 @@ coulomb_Phi_series(double lam, double eta, double x,
     Akm2 = Akm1;
     Akm1 = Ak;
   }
-  
+
   *result      = sum;
   *result_star = sump;
 
@@ -342,7 +342,7 @@ my_coulomb_CF1(double lam_min, int kmax,
 
 static
 int
-coulomb_CF1(double lam_min, int kmax,
+coulomb_CF1(const double lambda,
             double eta, double x,
             double * fcl_sign,
 	    double * result
@@ -352,10 +352,9 @@ coulomb_CF1(double lam_min, int kmax,
   const double CF1_abort = 1.e5;
   const double CF1_acc   = 10.0*GSL_MACH_EPS;
   const double x_inv     = 1.0/x;
-  const double lam_max   = lam_min + kmax;
-  const double px        = lam_max + 1.0 + CF1_abort;
+  const double px        = lambda + 1.0 + CF1_abort;
   
-  double pk = lam_max + 1.0;
+  double pk = lambda + 1.0;
   
   double D;
   double df;
@@ -422,11 +421,11 @@ coulomb_CF1(double lam_min, int kmax,
 /* Evaluate the second continued fraction to 
  * obtain the ratio
  *    (G' + i F')/(G + i F) := P + i Q
- * at the minimum lambda value.
+ * at the specified lambda value.
  */
 static
 int
-coulomb_CF2(double lam_min, double eta, double x,
+coulomb_CF2(const double lambda, const double eta, const double x,
             double * result_P, double * result_Q
             )
 {
@@ -437,7 +436,7 @@ coulomb_CF2(double lam_min, double eta, double x,
 
   const double wi    = 2.0*eta;
   const double x_inv = 1.0/x;
-  const double e2mm1 = eta*eta + lam_min*(lam_min + 1.0);
+  const double e2mm1 = eta*eta + lambda*(lambda + 1.0);
   
   double ar = -e2mm1;
   double ai =  eta;
@@ -846,7 +845,7 @@ gsl_sf_coulomb_wave_impl(double lam_min, int kmax,
 
     /* Obtain F'/F and sign(F) at the upper lambda value.
      */
-    stat_CF1 = coulomb_CF1(lam_min, kmax, eta, x,
+    stat_CF1 = coulomb_CF1(lam_min + kmax, eta, x,
                            &F_sign_lam_max, &F_ratio_lam_max
                            );
 
@@ -867,7 +866,7 @@ gsl_sf_coulomb_wave_impl(double lam_min, int kmax,
 
     /* Obtain the properly normalized values at the minimum lambda. */
     coulomb_lam_min_values(lam_min, eta, x,
-                           0 /* replace F_lam_min and Fp_lam_min */,
+                           0 /* do not keep F_lam_min and Fp_lam_min */,
                            &F_lam_min,  &G_lam_min,
                            &Fp_lam_min, &Gp_lam_min,
                            F_exponent,  G_exponent);
@@ -956,7 +955,7 @@ gsl_sf_coulomb_wave_sphF_impl(double lam_min, int kmax,
   if(x < 0.0 || lam_min < -0.5) {
     return GSL_EDOM;
   }
-  else if(x < 1.0/DBL_MAX) {
+  else if(x < 10.0/DBL_MAX) {
     for(k=0; k<=kmax; k++) {
       fc[k] = 0.0;
     }
