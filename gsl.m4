@@ -82,14 +82,18 @@ my_strdup (char *str)
 
 int main ()
 {
-  int major, minor, micro;
+  int major = 0, minor = 0, micro = 0;
+  int n;
   char *tmp_version;
 
   system ("touch conf.gsltest");
 
   /* HP/UX 9 (%@#!) writes to sscanf strings */
   tmp_version = my_strdup("$min_gsl_version");
-  if (sscanf(tmp_version, "%d.%d.%d", &major, &minor, &micro) != 3) {
+
+  n = sscanf(tmp_version, "%d.%d.%d", &major, &minor, &micro) ;
+
+  if (n != 2 && n != 3) {
      printf("%s, bad version string\n", "$min_gsl_version");
      exit(1);
    }

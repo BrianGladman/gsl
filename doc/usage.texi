@@ -128,12 +128,14 @@ To use the macros simply add the following line to your @file{configure.in}
 file:
 
 @example
-AM_PATH_GSL(GSL_VERSION,AC_MSG_ERROR(Error message!))
+AM_PATH_GSL(GSL_VERSION,[action-if-found],[action-if-not-found])
 @end example
 @noindent
-where @code{GSL_VERSION} is the GSL Library version you need to compile
-and run your application, and where "Error message" is the warning you
-want to show if the required library is not found.
+where @code{GSL_VERSION} is the two or three digit @sc{major.minor} or
+@sc{major.minor.micro} version number of the GSL Library release you
+require. A suitable choice for @code{action-if-not-found} is
+
+AC_MSG_ERROR(could not find required version of GSL)
 
 Then, you can add the variables @code{GSL_LIBS} and @code{GSL_CFLAGS} to
 your Makefile.am files to obtain the correct compiler flags.
