@@ -171,6 +171,8 @@ Annealing}) and the root finding package (@pxref{One dimensional Root-Finding}).
 * Error handling in GSL::       
 * Random Number Generation::    
 * Random Number Distributions::  
+* Permutations::                
+* Sorting::                     
 * Statistics::                  
 * Fast Fourier Transforms::     
 * Roots of Polynomials::        
@@ -226,12 +228,22 @@ allowing wrappers to be written for very high level languages.
 @chapter Random Number Generation
 @include rng.texi
 
-@node  Random Number Distributions, Statistics, Random Number Generation, Top
+@node  Random Number Distributions, Permutations, Random Number Generation, Top
 @chapter Random Number Distributions
 @include randist.texi
 
+@comment Section on permutations
+@node   Permutations, Sorting, Random Number Distributions, Top
+@chapter Permutations
+@include permutation.texi
+
+@comment Section on sorting
+@node  Sorting, Statistics, Permutations, Top
+@chapter Sorting
+@include sort.texi
+
 @comment Section on statistics
-@node Statistics, Fast Fourier Transforms, Random Number Distributions, Top
+@node Statistics, Fast Fourier Transforms, Sorting, Top
 @chapter Statistics
 @include statistics.texi
 
@@ -258,7 +270,6 @@ allowing wrappers to be written for very high level languages.
 @node   Minimization, Special Functions, Multidimensional Root-Finding, Top
 @chapter Minimization
 @include min.texi
-
 
 @comment Section on special functions
 @node Special Functions, Discrete Hankel Transforms, Minimization, Top

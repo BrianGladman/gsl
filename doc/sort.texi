@@ -1,0 +1,187 @@
+@cindex sorting 
+@cindex heapsort
+This chapter describes functions for sorting data, both directly and
+indirectly (using an index).
+
+All the functions use the @dfn{heapsort} algorithm. Heapsort is an
+@c{$O(N \log N)$}
+@math{O(N \log N)} algorithm which operates
+in-place and does not require any additional storage. It provides
+consistent performance, with a running time for its worst-case (ordered
+data) which is not significantly different from the average and best
+cases.
+
+Note that the heapsort algorithm does not preserve the relative ordering
+of equal elements --- it is an @dfn{unstable} sort. However the
+resulting order of equal elements will be consistent across different
+platforms.
+
+@menu
+* Sorting objects::             
+* Sorting vectors::             
+* Sorting References and Further Reading::  
+@end menu
+
+@node Sorting objects
+@section Sorting objects
+
+The following function provides a simple alternative to the standard
+library function @code{qsort}. It is intended for systems lacking
+@code{qsort}, not as a replacement for it. The function @code{qsort}
+should be used whenever possible, as it will be faster and can provide
+stable ordering of equal elements. Documentation for @code{qsort} is
+available in the @cite{GNU C Library Reference Manual}.
+
+This function is defined in the header file @file{gsl_sort.h}.
+
+@deftypefun void gsl_sort (void * @var{array}, size_t @var{count}, size_t @var{size}, gsl_comparison_fn_t @var{compare})
+
+This function sorts the @var{count} members of the array @var{array},
+each of size @var{size}, into ascending order using the comparision
+function @var{compare}. The type of the comparison function is defined by,
+@cindex comparison functions, definition
+@example
+typedef int (*gsl_comparison_fn_t) (const void * a, const void * b)
+@end example
+@noindent
+A comparison function should return a negative integer if the first
+argument is less than the second argument, @code{0} if the two arguments
+are equal and a positive integer if the first argument is greater than
+the second argument.
+
+For example, the following function can be used to sort doubles into
+ascending numerical order.
+
+@example
+int
+compare_doubles (const double * a, const double * b)
+@{
+    return (int) (*a - *b);
+@}
+@end example
+@noindent
+The appropriate function call to perform the sort is,
+
+@example
+gsl_sort (array, size, sizeof(double), compare_doubles);
+@end example
+
+Note that unlike @code{qsort} the heapsort algorithm cannot be made into
+a stable sort by pointer arithmetic. The trick of comparing pointers for
+equal elements in the comparison function does not work for the heapsort
+algorithm. This is due to the internal rearrangement of data in heapsort
+which destroys the initial ordering.
+@end deftypefun
+
+@cindex indirect sorting
+@deftypefun int gsl_sort_index (gsl_permutation * p, const void * @var{array}, size_t @var{count}, size_t @var{size}, gsl_comparison_fn_t @var{compare})
+
+This function indirectly sorts the @var{count} members of the array
+@var{array}, each of size @var{size}, into ascending order using the
+comparision function @var{compare}. The resulting permutation is stored
+in @var{p}. The elements of @var{p} give the index of the array element
+which would have been stored in that position if the array had been
+sorted in place. The first element of @var{p} gives the index of the
+least element in @var{array}, and the last element of @var{p} gives the
+index of the greatest element in @var{array}. The array itself is not
+changed.
+@end deftypefun
+
+
+@node Sorting vectors
+@section Sorting vectors
+
+The following functions will sort the elements of a vector, either
+directly or indirectly. They are defined for all real and integer vector
+types using the normal suffix rules. For example, the @code{float}
+versions of these functions are @code{gsl_sort_vector_float} and
+@code{gsl_sort_vector_float_index}. Their prototypes are available in
+the header files @file{gsl_sort_vector_float.h}. The complete set of
+prototypes can be included using the header file
+@file{gsl_sort_vector.h}.
+
+There are no functions for sorting complex vectors, since the ordering
+of complex numbers is not uniquely defined. To sort a complex vector by
+magnitude compute a real vector containing the the magnitudes of the
+complex elements, and sort this vector indirectly. The resulting index
+gives the appropriate ordering of the original complex vector.
+
+@cindex sorting vector elements
+@cindex vector, sorting elements of
+@deftypefun void gsl_sort_vector (gsl_vector * @var{v})
+This function sorts the elements of the vector @var{v} into ascending
+numerical order.
+@end deftypefun
+
+@cindex indirect sorting, of vector elements
+@deftypefun int gsl_sort_vector_index (gsl_permutation * @var{p}, const gsl_vector * @var{v})
+
+This function indirectly sorts the elements of the vector @var{v} into
+ascending order, storing the resulting permutation in @var{p}. The
+elements of @var{p} give the index of the vector element which would
+have been stored in that position if the vector had been sorted in
+place. The first element of @var{p} gives the index of the least element
+in @var{v}, and the last element of @var{p} gives the index of the
+greatest element in @var{v}. The vector @var{v} is not changed.
+@end deftypefun
+
+The following example shows how to use the permutation @var{p} to print
+the elements of the vector @var{v} in ascending order,
+
+@example
+for (i = 0; i < v->size; i++)
+@{
+    double vpi = gsl_vector_get(v, p->data[i]);
+    printf("order = %d, value = %g\n", i, vpi);
+@}
+@end example
+
+The @dfn{rank} of an element is its order in the sorted data. The rank
+is the inverse of the index permutation. It can be computed using the
+following algorithm,
+
+@example
+for (i = 0; i < p->size; i++) 
+@{
+    size_t pi = p->data[i];
+    rank->data[pi] = i;
+@}
+@end example
+@noindent
+which is available as the function @code{gsl_permutation_invert(rank,p)}.
+The following example prints the rank of each element of the vector @var{v},
+
+@example
+gsl_permutation * rank = gsl_permutation_alloc(p->size);
+
+gsl_permutation_invert (rank, p);
+
+for (i = 0; i < v->size; i++)
+@{
+    double vi = gsl_vector_get(v, i);
+    printf("element = %d, value = %g, rank = %d\n",
+            i, vi, rank->data[i]);
+@}
+@end example
+
+
+@node Sorting References and Further Reading
+@section References and Further Reading
+
+The subject of sorting is covered extensively in Knuth's
+@cite{Sorting and Searching},
+
+@itemize @asis
+@item
+Donald E. Knuth, @cite{The Art of Computer Programming: Sorting and
+Searching} (Vol 3, 3rd Ed, 1997), Addison-Wesley, ISBN 0201896850.
+@end itemize
+@noindent
+The Heapsort algorithm is described in the following book,
+
+@itemize @asis
+@item Robert Sedgewick, @cite{Algorithms in C}, Addison-Wesley, 
+ISBN 0201514257.
+@end itemize
+
+
