@@ -35,47 +35,6 @@
 
 __BEGIN_DECLS
 
-/* Struct for a polynomial */
-struct gsl_poly_struct {
-
-  double * c;    /* coefficients   */
-  size_t size;   /* allocated size */
-};
-typedef struct gsl_poly_struct gsl_poly;
- 
-/* Allocate polynomial */
-gsl_poly * gsl_poly_alloc (const size_t size);
-
-/* Allocate polynomial and init to zero polynomial*/
-gsl_poly * gsl_poly_calloc (const size_t size);
-
-/* Free polynomial */
-void gsl_poly_free (gsl_poly * p);
-
-/* Operations */
-double gsl_poly_get (const gsl_poly * p, const size_t i);
-void gsl_poly_set (gsl_poly * p, const size_t i, double a);
-int gsl_poly_set_from_array (gsl_poly * p, const double a[], size_t size);
-
-int gsl_poly_set_zero (gsl_poly * p);
-int gsl_poly_set_all (gsl_poly * p, size_t d, double x);
-int gsl_poly_scale (gsl_poly * p, double a);
-
-int gsl_poly_chop (gsl_poly * p, size_t k);
-size_t gsl_poly_find_size (const gsl_poly * p, double tol);
- 
-int gsl_poly_memcpy (gsl_poly * dest, const gsl_poly * src);
-
-int gsl_poly_add (gsl_poly * p1, const gsl_poly * p2);
-int gsl_poly_sub (gsl_poly * p1, const gsl_poly * p2);
-int gsl_poly_mul (gsl_poly * q, const gsl_poly * p1, const gsl_poly * p2);
-int gsl_poly_div (gsl_poly * q, gsl_poly *r, const gsl_poly * u, const gsl_poly * v);
-
-int gsl_poly_diff (gsl_poly * dp, const gsl_poly * p);
-
-double gsl_poly_eval2 (gsl_poly * p, double x);
-
-void gsl_poly_dump (gsl_poly * p);
 
 /* Evaluate polynomial
  *
