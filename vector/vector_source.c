@@ -1,8 +1,9 @@
+#include <config.h>
 #include <gsl_errno.h>
 
 #include "source.h"
 
-BASE
+inline BASE
 FUNCTION(gsl_vector,get)(const TYPE(gsl_vector) * v, const size_t i)
 {
   if (gsl_check_range) 
@@ -16,7 +17,7 @@ FUNCTION(gsl_vector,get)(const TYPE(gsl_vector) * v, const size_t i)
   return v->data[i] ;
 }
 
-void
+inline void
 FUNCTION(gsl_vector,set)(TYPE(gsl_vector) * v, const size_t i, const BASE x)
 {
   if (gsl_check_range) 

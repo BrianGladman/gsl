@@ -16,6 +16,8 @@ void gsl_matrix_float_free (gsl_matrix_float * m);
 float gsl_matrix_float_get(const gsl_matrix_float * m, size_t i, size_t j);
 void gsl_matrix_float_set(gsl_matrix_float * m, size_t i, size_t j, float x);
 
+extern int gsl_check_range ;
+
 /* inline functions if you are using GCC */
 
 #ifndef __STRICT_ANSI__

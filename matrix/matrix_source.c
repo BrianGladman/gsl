@@ -1,11 +1,9 @@
+#include <config.h>
 #include <gsl_errno.h>
 
 #include "source.h"
 
-/* turn off range checking at runtime if zero  (see also vector_source.c) */
-int gsl_check_range = 1; 
-
-BASE
+inline BASE
 FUNCTION(gsl_matrix,get)(const TYPE(gsl_matrix) * m, 
 			 const size_t i, const size_t j)
 {
@@ -23,7 +21,7 @@ FUNCTION(gsl_matrix,get)(const TYPE(gsl_matrix) * m,
   return m->data[i * m->size2 + j] ;
 } 
 
-void
+inline void
 FUNCTION(gsl_matrix,set)(TYPE(gsl_matrix) * m,
 			 const size_t i, const size_t j, 
 			 const BASE x)
