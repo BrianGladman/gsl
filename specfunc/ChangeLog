@@ -1,7 +1,7 @@
 Wed Jun 27 21:20:22 2001  Brian Gough  <bjg@network-theory.co.uk>
 
 	* test_sf.c (test_fermidirac): increased tolerance on test of
- 	gsl_sf_fermi_dirac_int(9,500) 
+ 	gsl_sf_fermi_dirac_int(9,500) by factor of two to allow for MSVC
 
 Tue Jun 26 12:10:17 2001  Brian Gough  <bjg@network-theory.co.uk>
 
