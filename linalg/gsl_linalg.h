@@ -69,7 +69,7 @@ int gsl_linalg_householder_hv (double tau,
 
  * exceptions: 
  */
-int gsl_linalg_decomp_SV (gsl_matrix * A,
+int gsl_linalg_SV_decomp (gsl_matrix * A,
 			  gsl_matrix * Q,
 			  gsl_vector * S,
 			  double tolerance);

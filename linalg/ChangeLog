@@ -1,3 +1,8 @@
+Sun Apr 23 21:18:04 2000  Brian Gough  <bjg@network-theory.co.uk>
+
+	* qr.c (gsl_linalg_QR_unpack): fixed index ranges for rectangular
+ 	case when unpacking R
+
 Sat Apr 22 15:05:21 2000  Brian Gough  <bjg@network-theory.co.uk>
 
 	* matrix.c: removed, equivalent functions now in matrix directory
