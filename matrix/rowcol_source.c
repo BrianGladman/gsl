@@ -196,3 +196,52 @@ FUNCTION (gsl_vector, alloc_col_from_matrix) (TYPE(gsl_matrix) * m,
 
   return v;
 }
+
+int
+FUNCTION (gsl_vector, view_row_from_matrix) (TYPE(gsl_vector) * v,
+                                             TYPE(gsl_matrix) * m,
+                                             const size_t i)
+{
+  const size_t column_length = m->size1;
+
+  if (i >= column_length)
+    {
+      GSL_ERROR ("row index is out of range", GSL_EINVAL);
+    }
+
+  if (v->block != 0)
+    {
+      GSL_ERROR ("vector already has memory allocated to it", GSL_ENOMEM);
+    }
+
+  v->data = m->data + i * m-> dim2 ;
+  v->size = m->size2;
+  v->stride = 1;
+
+  return GSL_SUCCESS;
+}
+
+int
+FUNCTION (gsl_vector, view_col_from_matrix) (TYPE(gsl_vector) * v,
+                                             TYPE(gsl_matrix) * m,
+                                             const size_t j)
+{
+  const size_t row_length = m->size2;
+
+  if (j >= row_length)
+    {
+      GSL_ERROR_RETURN ("column index is out of range", GSL_EINVAL, 0);
+    }
+
+  if (v->block != 0)
+    {
+      GSL_ERROR ("vector already has memory allocated to it", GSL_ENOMEM);
+    }
+
+  v->data = m->data + j ;
+  v->size = m->size1;
+  v->stride = m->dim2;
+
+  return GSL_SUCCESS;
+}
+

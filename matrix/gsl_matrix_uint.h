@@ -61,6 +61,9 @@ int gsl_matrix_uint_swap_rowcol(gsl_matrix_uint * m, size_t i, size_t j);
 
 int gsl_matrix_uint_copy(gsl_matrix_uint * dest, const gsl_matrix_uint * src);
 
+int gsl_vector_uint_view_rol_from_matrix (gsl_vector_uint * v, gsl_matrix_uint * m, size_t i);
+int gsl_vector_uint_view_col_from_matrix (gsl_vector_uint * v, gsl_matrix_uint * m, size_t j);
+
 extern int gsl_check_range ;
 
 /* inline functions if you are using GCC */
