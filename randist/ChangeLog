@@ -1,3 +1,7 @@
+1998-11-06    <bjg@ancho.lanl.gov>
+
+	* test.c: ensured that M_PI is available by #include <gsl_math.h>
+
 Wed Sep 16 14:44:08 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
 	* rayleigh.c: added rayleigh tail distribution
