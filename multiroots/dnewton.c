@@ -97,10 +97,16 @@ dnewton_set (void * vstate, gsl_multiroot_function * function, gsl_vector * x, g
 {
   dnewton_state_t * state = (dnewton_state_t *) vstate;
   size_t i, n = function->n ;
+  int status;
 
-  GSL_MULTIROOT_FN_EVAL (function, x, f);
+  status = GSL_MULTIROOT_FN_EVAL (function, x, f);
+  if (status)
+    return status;
 
-  gsl_multiroot_fdjacobian (function, x, f, GSL_SQRT_DBL_EPSILON, state->J);
+  status = gsl_multiroot_fdjacobian (function, x, f, GSL_SQRT_DBL_EPSILON,
+      state->J);
+  if (status)
+    return status;
 
   for (i = 0; i < n; i++)
     {
@@ -123,9 +129,17 @@ dnewton_iterate (void * vstate, gsl_multiroot_function * function, gsl_vector * 
 
   gsl_matrix_memcpy (state->lu, state->J);
 
-  gsl_linalg_LU_decomp (state->lu, state->permutation, &signum);
+  {
+    int status = gsl_linalg_LU_decomp (state->lu, state->permutation, &signum);
+    if (status)
+      return status;
+  }
   
-  gsl_linalg_LU_solve (state->lu, state->permutation, f, dx);
+  {
+    int status = gsl_linalg_LU_solve (state->lu, state->permutation, f, dx);
+    if (status)
+      return status;
+  }
 
   for (i = 0; i < n; i++)
     {

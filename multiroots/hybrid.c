@@ -357,10 +357,20 @@ set (void *vstate, gsl_multiroot_function * func, gsl_vector * x, gsl_vector * f
   gsl_matrix *r = state->r;
   gsl_vector *tau = state->tau;
   gsl_vector *diag = state->diag;
-  
-  GSL_MULTIROOT_FN_EVAL (func, x, f);
 
-  gsl_multiroot_fdjacobian (func, x, f, GSL_SQRT_DBL_EPSILON, J) ;
+  int status;
+  
+  status = GSL_MULTIROOT_FN_EVAL (func, x, f);
+  if (status)
+    { 
+      return status;
+    }
+
+  status = gsl_multiroot_fdjacobian (func, x, f, GSL_SQRT_DBL_EPSILON, J) ;
+  if (status)
+    { 
+      return status;
+    }
 
   state->iter = 1;
   state->fnorm = enorm (f);
@@ -384,10 +394,15 @@ set (void *vstate, gsl_multiroot_function * func, gsl_vector * x, gsl_vector * f
 
   /* Factorize J into QR decomposition */
 
-  gsl_linalg_QR_decomp (J, tau);
-  gsl_linalg_QR_unpack (J, tau, q, r);
+  status = gsl_linalg_QR_decomp (J, tau);
+  if (status)
+    { 
+      return status;
+    }
+  status = gsl_linalg_QR_unpack (J, tau, q, r);
+  if (status)
 
-  return GSL_SUCCESS;
+  return status;
 }
 
 static int

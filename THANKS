@@ -118,3 +118,6 @@ routines
 fixes for the special functions
 
 *  Szymon Jaroszewicz <sj@cs.umb.edu> for the combinations modules
+
+* Theis Peter Hansen <tph@com.dtu.dk> fixed unchecked status values in
+multiroots

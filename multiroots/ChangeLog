@@ -1,3 +1,8 @@
+Thu Jan 10 19:26:55 2002  Brian Gough  <bjg@network-theory.co.uk>
+
+	* hybrid.c dnewton.c: return status values for user-function
+ 	(Theis Peter Hansen)
+
 Tue Jun 19 23:40:18 2001  Brian Gough  <bjg@network-theory.co.uk>
 
 	* hybrid.c: removed workspace for linalg calls, no longer needed

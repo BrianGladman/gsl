@@ -1,15 +1,18 @@
 * What is new in gsl-1.1:
 
-** Constants now include Bohr Radius and Vacuum Permittivity
+** Internal error checking of user-defined functions has been improved
+in the multiroots functions.
+
+** Constants now include the Bohr Radius and Vacuum Permittivity.
 
 ** Range checking is now turned off when building the library, but is
 still on by default when compiling user applications.
 
-** A combinations directory has been added for generating combinations (n,k)
+** A combinations directory has been added for generating combinations (n,k).
 
-** The gamma function now returns exact values for integer arguments
+** The gamma function now returns exact values for integer arguments.
 
-** Fixed bugs in gsl_sf_hyperg_1F1_int and gsl_sf_hyperg_1F1
+** Fixed bugs in gsl_sf_hyperg_1F1_int and gsl_sf_hyperg_1F1.
 
 ** Fixed internal error handling in gsl_sf_laguerre_n to allow
 recovery from overflow.
@@ -22,7 +25,7 @@ based on divided-differences.
 
 ** Added new random number generators from Knuth's Seminumerical
 Algorithms, 3rd Edition: borosh13, coveyou, fishman18, fishman20,
-fishman2x, knuthran, knuthran2, lecuyer21, waterman14
+fishman2x, knuthran, knuthran2, lecuyer21, waterman14.
 
 ** Changed divisor in random number generator gfsr4 from 2^32-1 to
 2^32 to prevent exact value of 1.0 from being returned, as specified
