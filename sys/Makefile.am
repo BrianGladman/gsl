@@ -1,4 +1,4 @@
-noinst_LIBRARIES = libgslsys.a 
+pkglib_LIBRARIES = libgslsys.a 
 
 libgslsys_a_SOURCES = minmax.c prec.c
 

@@ -1,6 +1,6 @@
-noinst_LIBRARIES = libgslpoly.a 
+pkglib_LIBRARIES = libgslpoly.a 
 
-include_HEADERS = gsl_poly.h
+pkginclude_HEADERS = gsl_poly.h
 
 INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../err
 

@@ -1,8 +1,8 @@
-noinst_LIBRARIES = libgsllinalg.a 
+pkglib_LIBRARIES = libgsllinalg.a 
 
 check_PROGRAMS = test_la
 
-include_HEADERS = \
+pkginclude_HEADERS = \
 	gsl_linalg.h
 
 noinst_HEADERS = 

@@ -1,6 +1,6 @@
-noinst_LIBRARIES = libgslhistogram.a 
+pkglib_LIBRARIES = libgslhistogram.a 
 
-include_HEADERS = gsl_histogram.h gsl_histogram2d.h
+pkginclude_HEADERS = gsl_histogram.h gsl_histogram2d.h
 
 INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../vector -I$(srcdir)/../err
 

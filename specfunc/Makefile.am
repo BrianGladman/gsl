@@ -1,8 +1,8 @@
-noinst_LIBRARIES = libgslspecfunc.a 
+pkglib_LIBRARIES = libgslspecfunc.a 
 
 check_PROGRAMS = test_sf
 
-include_HEADERS = \
+pkginclude_HEADERS = \
 	gsl_sf.h 	    	\
 	gsl_specfunc.h		\
 	gsl_sf_airy.h       	\

@@ -1,8 +1,8 @@
-noinst_LIBRARIES = libgslsum.a 
+pkglib_LIBRARIES = libgslsum.a 
 
 check_PROGRAMS = test
 
-include_HEADERS = \
+pkginclude_HEADERS = \
 	gsl_sum.h
 
 INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../err 

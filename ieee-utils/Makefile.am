@@ -1,6 +1,6 @@
-noinst_LIBRARIES = libgslieeeutils.a 
+pkglib_LIBRARIES = libgslieeeutils.a 
 
-include_HEADERS = gsl_ieee_utils.h
+pkginclude_HEADERS = gsl_ieee_utils.h
 
 libgslieeeutils_a_SOURCES = endian.c print.c standardize.c \
 	make_rep.c gsl_ieee_utils.h ieee_utils.h \

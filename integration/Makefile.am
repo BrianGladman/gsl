@@ -1,4 +1,4 @@
-noinst_LIBRARIES = libgslintegration.a
+pkglib_LIBRARIES = libgslintegration.a
 
 INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../ieee-utils -I$(srcdir)/../err
 
@@ -16,7 +16,7 @@ libgslintegration_a_SOURCES = \
 	qmomo.c qaws.c \
 	qmomof.c qawo.c
 
-include_HEADERS = gsl_integration.h
+pkginclude_HEADERS = gsl_integration.h
 noinst_HEADERS = integration.h qpsrt.c qelg.c  qc25c.c qc25s.c qc25f.c
 
 TESTS = test

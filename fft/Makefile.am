@@ -1,8 +1,8 @@
-noinst_LIBRARIES = libgslfft.a 
+pkglib_LIBRARIES = libgslfft.a 
 
 check_PROGRAMS = test
 
-include_HEADERS = gsl_fft.h gsl_fft_complex.h gsl_fft_halfcomplex.h gsl_fft_real.h gsl_dft_complex.h
+pkginclude_HEADERS = gsl_fft.h gsl_fft_complex.h gsl_fft_halfcomplex.h gsl_fft_real.h gsl_dft_complex.h
 
 noinst_HEADERS = c_pass.h hc_pass.h real_pass.h \
 signals.h signals_source.c \

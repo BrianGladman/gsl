@@ -1,8 +1,8 @@
 # -*-makefile-*-
 
-noinst_LIBRARIES = libgslroots.a 
+pkglib_LIBRARIES = libgslroots.a 
 
-include_HEADERS = gsl_roots.h
+pkginclude_HEADERS = gsl_roots.h
 
 noinst_HEADERS = roots.h
 

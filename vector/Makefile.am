@@ -1,8 +1,8 @@
-noinst_LIBRARIES = libgslvector.a 
+pkglib_LIBRARIES = libgslvector.a 
 
 check_PROGRAMS = test test_static
 
-include_HEADERS = 		\
+pkginclude_HEADERS = 		\
 	gsl_vector.h		\
 	gsl_vector_char.h	\
 	gsl_vector_complex.h	\

@@ -1,11 +1,11 @@
-noinst_LIBRARIES = 			\
+pkglib_LIBRARIES = 			\
 	libgslblas.a 			\
 	libgslblasnative.a		\
 	libgslblascblas.a
 
 # check_PROGRAMS = test_blas
 
-include_HEADERS = 		\
+pkginclude_HEADERS = 		\
 	gsl_blas.h		\
 	gsl_blas_types.h	\
 	gsl_blas_raw.h		\

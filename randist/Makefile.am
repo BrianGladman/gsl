@@ -1,4 +1,4 @@
-noinst_LIBRARIES = libgslrandist.a
+pkglib_LIBRARIES = libgslrandist.a
 libgslrandist_a_SOURCES = \
  bernoulli.c beta.c binomial.c cauchy.c chisq.c discrete.c erlang.c \
  exponential.c exppow.c fdist.c flat.c gamma.c gauss.c geometric.c \
@@ -7,7 +7,7 @@ libgslrandist_a_SOURCES = \
  shuffle.c sphere.c tdist.c weibull.c 
 
 
-include_HEADERS= gsl_randist.h
+pkginclude_HEADERS= gsl_randist.h
 
 INCLUDES= -I$(srcdir)/../rng -I$(srcdir)/../specfunc -I$(srcdir)/../err -I$(top_srcdir)
 

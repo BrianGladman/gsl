@@ -1,6 +1,6 @@
-noinst_LIBRARIES = libgslrng.a 
+pkglib_LIBRARIES = libgslrng.a 
 
-include_HEADERS = gsl_rng.h
+pkginclude_HEADERS = gsl_rng.h
 
 INCLUDES = -I$(srcdir)/..  -I$(srcdir)/../err
 

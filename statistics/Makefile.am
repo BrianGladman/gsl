@@ -1,7 +1,7 @@
 ## Process this file with automake to produce Makefile.in
 
-noinst_LIBRARIES = libgslstatistics.a
-include_HEADERS = gsl_statistics.h \
+pkglib_LIBRARIES = libgslstatistics.a
+pkginclude_HEADERS = gsl_statistics.h \
  gsl_statistics_char.h gsl_statistics_double.h gsl_statistics_float.h \
  gsl_statistics_int.h gsl_statistics_long.h gsl_statistics_long_double.h \
  gsl_statistics_short.h gsl_statistics_uchar.h gsl_statistics_uint.h \

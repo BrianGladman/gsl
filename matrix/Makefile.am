@@ -1,8 +1,8 @@
-noinst_LIBRARIES = libgslmatrix.a 
+pkglib_LIBRARIES = libgslmatrix.a 
 
 check_PROGRAMS = test test_static
 
-include_HEADERS = 			\
+pkginclude_HEADERS = 			\
 	gsl_matrix.h 			\
 	gsl_matrix_char.h		\
 	gsl_matrix_complex_double.h	\

@@ -1,8 +1,8 @@
-noinst_LIBRARIES = libgslinterpolation.a 
+pkglib_LIBRARIES = libgslinterpolation.a 
 
 check_PROGRAMS = test
 
-include_HEADERS = 		\
+pkginclude_HEADERS = 		\
 	gsl_interp.h
 
 noinst_HEADERS = 		\
