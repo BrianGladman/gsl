@@ -148,9 +148,9 @@ associated with it.
 @section Updating and accessing histogram elements
 
 There are two ways to access histogram bins, either by specifying an
-@math{x} coordinate or by using the bin-index directly. The functions for
-accessing the histogram using @math{x} coordinates employ a binary search to
-identify the bin which covers the appropriate range.
+@math{x} coordinate or by using the bin-index directly. The functions
+for accessing the histogram through @math{x} coordinates use a binary
+search to identify the bin which covers the appropriate range.
 
 @deftypefun int gsl_histogram_increment (gsl_histogram * h, double x)
 This function updates the histogram @var{h} by adding one (1.0) to the
@@ -183,14 +183,14 @@ histogram then the error handler is called with an error code of
 @deftypefun int gsl_histogram_get_range (const gsl_histogram * @var{h}, size_t @var{i}, double * @var{lower}, double * @var{upper})
 This function finds the upper and lower range limits of the @var{i}th
 bin of the histogram @var{h}. If the index @var{i} is valid then the
-corresponding range limits are stored in @var{lower} and
-@var{upper}. The lower limit is inclusive (i.e. events with this
-coordinate are included in the bin) and the upper limit is exclusive
-(i.e. events with the coordinate of the upper limit are excluded and
-fall in the neighboring higher bin, if it exists). The function returns
-0 to indicate success. If @var{i} lies outside the valid range of
-indices for the histogram then the error handler is called and the
-function returns and error code of @code{GSL_EDOM}.
+corresponding range limits are stored in @var{lower} and @var{upper}.
+The lower limit is inclusive (i.e. events with this coordinate are
+included in the bin) and the upper limit is exclusive (i.e. events with
+the coordinate of the upper limit are excluded and fall in the
+neighboring higher bin, if it exists). The function returns 0 to
+indicate success. If @var{i} lies outside the valid range of indices for
+the histogram then the error handler is called and the function returns
+an error code of @code{GSL_EDOM}.
 @end deftypefun
 
 @deftypefun double gsl_histogram_max (const gsl_histogram * @var{h})
@@ -541,7 +541,7 @@ associated with it.
 You can access the bins of a two-dimensional histogram either by
 specifying a pair of @math{(x,y)} coordinates or by using the bin
 indices @math{(i,j)} directly. The functions for accessing the histogram
-using @math{(x,y)} coordinates employ binary searches in the x and y
+through @math{(x,y)} coordinates use binary searches in the x and y
 directions to identify the bin which covers the appropriate range.
 
 @deftypefun int gsl_histogram2d_increment (gsl_histogram2d * @var{h}, double @var{x}, double @var{y})
