@@ -203,3 +203,10 @@ int main() {
   printf("%.18e\n", x);
 }
 ----------------------------------------------------------------------
+BUG#29 - missing documentation for gsl_sf_legendre_Pl_deriv_array etc
+
+There is no documentation for the _deriv_ functions in
+specfunc/legendre_poly.c.  They are tested and part of the public API
+so they should be documented.
+
+----------------------------------------------------------------------
