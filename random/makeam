@@ -20,19 +20,16 @@ done
 echo ""
 echo ""
 for i in $list; do
-    echo "gslran${i}_SOURCES= $i.c $i-gen.c gauss.c"
+    echo "gslran${i}_SOURCES= $i.c $i-gen.c gauss.c "
 done
 echo ""
 
-echo -n "gslrandom_SOURCES= switch.c gauss.c "
+echo -n "gslrandom_SOURCES= switch.c shuffle.c "
 for i in $list $auxlist; do
     echo -n "$i.c "
 done
 echo ""
 echo ""
-
-
-
 
 echo -n "test_switch_DEPENDENCIES= gsl_ran_switch.h "
 for i in $list; do
