@@ -4,7 +4,7 @@ Main Todo Items
 Consult the TODO files in each directory first for specific
 requirements.
 
-* Document ode-initval, dht
+* Document dht
 
 * use  GSL_NAN, GSL_POSINF, GSL_NEGINF macros 
 
@@ -16,8 +16,7 @@ jotahtin@cc.hut.fi, still to add (BJG)).
 
 * Reorganize siman interfaces to allow iterative use.
 
-* Finalize error handling scheme and sort out __impl vs _e vs no
-suffix.  Add a GSL_ERROR_MODE environment variable for choosing error
+* Add a GSL_ERROR_MODE environment variable for choosing error
 behavior at runtime.
 
 * Split up workspaces/tables for fft_workspace and integration so that
@@ -31,9 +30,6 @@ working on something here).
 condition.  Use GCOV to improve coverage.
 
 * Annotate the header files with GAMS classifications
-
-* Add a "Related Projects" section to the web page in order to link to
-GSDV
 
 * Use pkg-config from GNOME, preferably the C version when that is
 working.
@@ -126,7 +122,7 @@ explicitly forbid redistribution (natch).
 * Investigate complex support in GCC: Operations like sin(z) silently
 convert argument to double, losing the imaginary part. This is
 mentioned in CEPHES documentation in 1998 with a patch to generate a
-warning.  What happened?
+warning.  What happened? (Does it now work with gcc-3.0?)
 
 * Go through the matrix and vector functions systematically and decide
 what should be provided outside of BLAS.
