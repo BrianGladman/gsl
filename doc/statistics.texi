@@ -1,4 +1,4 @@
-@cindex statistics -- basic
+@cindex statistics
 @cindex mean
 @cindex standard deviation
 @cindex variance
@@ -31,6 +31,7 @@ prefix @code{gsl_stats_int}.
 * Maximum and Minimum values::  
 * Median and Percentiles::      
 * Statistical tests::           
+* Example programs::            
 * Statistics References and Further Reading::  
 @end menu
 
@@ -138,12 +139,13 @@ For a gaussian distribution the variance of @math{\hat \sigma^2} is
 @math{2 \sigma^4/N}. The one standard-deviation error on the variance is
 @math{\sqrt@{2@} \sigma^2/\sqrt@{N@}}.
 
-@end deftypefn
-
 Both these functions compute the mean via a call to
 @code{gsl_stats_mean} or @code{gsl_stats_int_mean}. If you have already
 computed the mean then you can pass it directly to one of the following
-two functions.
+two functions, @code{gsl_stats_est_variance_with_mean} and
+@code{gsl_stats_int_est_variance_with_mean}.
+
+@end deftypefn
 
 @deftypefn Statistics double gsl_stats_est_variance_with_mean (const double data[], const size_t n, const double mean)
 @deftypefnx Statistics double gsl_stats_int_est_variance_with_mean (const int data[], const size_t n, const double mean)
@@ -160,41 +162,49 @@ The functions are computed with @math{\hat \mu} replaced by the value of
 
 @end deftypefn
 
-The standard deviation is defined as the square root of the
-variance. The following functions return the square root of the
-corresponding variance functions above.
-
 @deftypefn Statistics double gsl_stats_est_sd (const double data[], const size_t n)
 @deftypefnx Statistics double gsl_stats_int_est_sd (const int data[], const size_t n)
 @deftypefnx Statistics double gsl_stats_est_sd_with_mean (const double data[], const size_t n, const double mean)
 @deftypefnx Statistics double gsl_stats_int_est_sd_with_mean (const int data[], const size_t n, const double mean)
+
+The standard deviation is defined as the square root of the
+variance. These functions return the square root of the corresponding
+variance functions above.
 @end deftypefn
+
 
 @node Standard deviation and variance (known population mean)
 @section Standard deviation and variance (known population mean)
 
-If the population mean is known a priori then the estimators for the
-variance given above must be modified to make them unbiased.  When the
-mean is known the factor @math{1/(N-1)} should be replaced by
-@math{1/N}, and the mean @math{\hat \mu} replaced by the known
+@deftypefn Statistics double gsl_stats_variance (const double data[], const size_t n)
+@deftypefnx Statistics double gsl_stats_int_variance (const int data[], const const size_t n)
+@deftypefnx Statistics double gsl_stats_variance_with_mean (const double data[], const size_t n, const double mean)
+@deftypefnx Statistics double gsl_stats_int_variance_with_mean (const int data[], const size_t n, const double mean)
+
+These functions compute an unbiased estimate of the variance when the
+population mean of a distribution is known @emph{a priori}.
+
+In this case the estimator for the variance requires a factor @math{1/N}
+and the sample mean @math{\hat \mu} must be replaced by the known
 population mean @math{\mu},
 @c
 @equation
 @{\hat \sigma@}^2 = @{1 \over N@} \sum (x_i - \mu)^2
 @end equation
 @noindent
-The following functions compute the variance and standard deviation
-according to this formula:
+@end deftypefn
 
-@deftypefn Statistics double gsl_stats_variance (const double data[], const size_t n)
-@deftypefnx Statistics double gsl_stats_int_variance (const int data[], const const size_t n)
-@deftypefnx Statistics double gsl_stats_variance_with_mean (const double data[], const size_t n, const double mean)
-@deftypefnx Statistics double gsl_stats_int_variance_with_mean (const int data[], const size_t n, const double mean)
-@deftypefnx Statistics double gsl_stats_sd (const double data[], const size_t n)
+@deftypefn Statistics double gsl_stats_sd (const double data[], const size_t n)
 @deftypefnx Statistics double gsl_stats_int_sd (const int data[], const size_t n)
 @deftypefnx Statistics double gsl_stats_sd_with_mean (const double data[], const size_t n, const double mean)
 @deftypefnx Statistics double gsl_stats_int_sd_with_mean (const int data[], const size_t n, const double mean)
+
+The functions @code{gsl_stats_sd}, @code{gsl_stats_int_sd},
+@code{gsl_stats_sd_with_mean} and @code{gsl_stats_int_sd_with_mean}
+calculate the standard deviation, which is simply the square root of the
+corresponding variance function.
 @end deftypefn
+
 
 @node Absolute deviation
 @section Absolute deviation
@@ -212,14 +222,31 @@ absdev  = @{1 \over N@} \sum |x_i - @{\hat \mu@}|
 @end equation
 @noindent
 where @math{x_i} are the elements of the array @var{data}.
-@end deftypefn
 
-If you have already computed the mean of @var{data}, or wish to compute
-the absolute deviation relative to another value (such as zero, or the
-median) then the following functions allow you to supply
+The absolute deviation from the mean provides a more robust measure of
+the width of a distribution than the variance.
+
+Both these functions compute the mean of @var{data} via a call to
+@code{gsl_stats_mean} or @code{gsl_stats_int_mean}.
+
+@end deftypefn
 
 @deftypefn Statistics double gsl_stats_absdev_with_mean (const double data[], const size_t n, const double mean)
 @deftypefnx Statistics double gsl_stats_int_absdev_with_mean (const int data[], const size_t n, const double mean)
+
+The functions @code{gsl_stats_absdev_with_mean} and
+@code{gsl_stats_int_absdev_with_mean} compute the absolute deviation of
+the array @var{data} relative to the given value of @var{mean}
+@c
+@equation
+absdev  = @{1 \over N@} \sum |x_i - mean|
+@end equation
+@noindent
+These functions are useful if you have already computed the mean of
+@var{data} (and want to avoid recomputing it), or wish to calculate the
+absolute deviation relative to another value (such as zero, or the
+median).
+
 @end deftypefn
 
 @node Higher moments (skewness and kurtosis)
@@ -227,6 +254,8 @@ median) then the following functions allow you to supply
 
 @deftypefn Statistics double gsl_stats_skew (const double data[], const size_t n)
 @deftypefnx Statistics double gsl_stats_int_skew (const int data[], const size_t n, const double mean)
+The functions @code{gsl_stats_skew} and @code{gsl_stats_int_skew}
+compute the skewness of @var{data}, an array of length @var{n}.
 
 The skewness is defined as 
 @c
@@ -237,15 +266,39 @@ skew = @{1 \over N@}
 @noindent
 where @math{x_i} are the elements of the array @var{data}.
 
-@end deftypefn
+The skewness measures the asymmetry of the tails of a distribution.
 
+Both these functions compute the mean and standard deviation of
+@var{data} via calls to @code{gsl_stats_mean} and
+@code{gsl_stats_est_sd} or @code{gsl_stats_int_mean} and
+@code{gsl_stats_int_est_sd}.
+
+@end deftypefn
 
 @deftypefn Statistics double gsl_stats_skew_with_mean_and_sd (const double data[], const size_t n, const double mean, const double sd)
 @deftypefnx Statistics double gsl_stats_int_skew_with_mean_and_sd (const int data[], const size_t n, const double mean, const double sd)
+
+The functions @code{gsl_stats_skew_with_mean_and_sd} and
+@code{gsl_stats_int_skew_with_mean_and_sd} compute the skewness of the
+array @var{data} using the given values of the mean @var{mean} and
+standard deviation @var{sd}.
+
+@equation
+skew = @{1 \over N@}
+     \sum @{\left( x_i - mean \over sd \right)@}^3
+@end equation
+@noindent
+
+These functions are useful if you have already computed the mean and
+standard deviation of @var{data} and want to avoid recomputing them.
 @end deftypefn
 
 @deftypefn Statistics double gsl_stats_kurtosis (const double data[], const size_t n)
 @deftypefnx Statistics double gsl_stats_int_kurtosis (const int data[], const size_t n, const double mean)
+
+The functions @code{gsl_stats_kurtosis} and
+@code{gsl_stats_int_kurtosis} compute the kurtosis of @var{data}, an
+array of length @var{n}.
 
 The kurtosis is defined as 
 @c
@@ -255,14 +308,68 @@ kurtosis = \left( @{1 \over N@}
 @end equation
 @noindent
 
+The kurtosis measures how sharply peaked a distribution is, relative to
+its width. The kurtosis is normalised to zero for a gaussian
+distribution by the -3 in the defintion.
+
 @end deftypefn
 
 @deftypefn Statistics double gsl_stats_kurtosis_with_mean_and_sd (const double data[], const size_t n, const double mean, const double sd)
 @deftypefnx Statistics double gsl_stats_int_kurtosis_with_mean_and_sd (const int data[], const size_t n, const double mean, const double sd)
+
+The functions @code{gsl_stats_kurtosis_with_mean_and_sd} and
+@code{gsl_stats_int_kurtosis_with_mean_and_sd} compute the kurtosis of
+the array @var{data} using the given values of the mean @var{mean} and
+standard deviation @var{sd}.
+
+@equation
+kurtosis = @{1 \over N@}
+  \left( \sum @{\left(x_i - mean \over sd \right)@}^4 \right) - 3
+@end equation
+@noindent
+
+These functions are useful if you have already computed the mean and
+standard deviation of @var{data} and want to avoid recomputing them.
 @end deftypefn
 
 @node Maximum and Minimum values
 @section Maximum and Minimum values
+
+@deftypefn Statistics double gsl_stats_max (const double data[], const size_t n)
+@deftypefnx Statistics int gsl_stats_int_max (const int data[], const size_t n)
+
+The function @code{gsl_stats_max} returns the maximum value in
+@var{data}, a double-precision array of length @var{n}.  The function
+@code{gsl_stats_int_stats_max} returns the maximum value of an integer
+array. The maximum value is defined as the value of the element
+@math{x_i} which satisfies @math{x_i >= x_j} for all @math{j}.
+
+If you want instead to find the element with the largest absolute
+magnitude you will need to apply @code{abs} to your data before calling
+this function.
+
+@end deftypefn
+@deftypefn Statistics double gsl_stats_min (const double data[], const size_t n)
+@deftypefnx Statistics int gsl_stats_int_min (const int data[], const size_t n)
+@end deftypefn
+
+The function @code{gsl_stats_min} returns the minimun value in
+@var{data}, a double-precision array of length @var{n}.  The function
+@code{gsl_stats_int_stats_min} returns the minimum value of an integer
+array. The minimum value is defined as the value of the element
+@math{x_i} which satisfies @math{x_i <= x_j} for all @math{j}.
+
+If you want instead to find the element with the smallest absolute
+magnitude you will need to apply @code{abs} to your data before calling
+this function.
+
+@deftypefn Statistics size_t gsl_stats_max_index (const double data[], const size_t n)
+@deftypefnx Statistics size_t gsl_stats_int_max_index (const int data[], const size_t n)
+@end deftypefn
+
+@deftypefn Statistics size_t gsl_stats_min_index (const double data[], const size_t n)
+@deftypefnx Statistics size_t gsl_stats_int_min_index (const int data[], const size_t n)
+@end deftypefn
 
 @node Median and Percentiles
 @section Median and Percentiles
@@ -270,32 +377,51 @@ kurtosis = \left( @{1 \over N@}
 @node Statistical tests
 @section Statistical tests
 
-Here is a basic example of how to use these functions:
 
-@smallexample
-#include<stdio.h>
+@node Example programs
+@section Example programs
+Here is a basic example of how to use the statistical functions:
 
-#include <gsl_bstats.h>
-
-/* to compile: gcc file_name.c libgslstatistics.a -lm */
+@example
+#include <stdio.h>
+#include <gsl_statistics.h>
 
 int main()
 @{
-  double data[5];
-  double data_variance;
+  double data[5] = @{17.2, 18.1, 16.5, 18.3, 12.6@} ;
+  double mean, variance, largest, smallest;
 
-  data[0] = 17.2 ;
-  data[1] = 18.1 ;
-  data[2] = 16.5 ;
-  data[3] = 18.3 ;
-  data[4] = 12.6 ;
+  mean     = gsl_stats_mean(data, 5);
+  variance = gsl_stats_variance(data, 5);
+  largest  = gsl_stats_max(data, 5);
+  smallest = gsl_stats_min(data, 5);
 
-  data_variance = gsl_stats_dmean(data, 5);
+  printf("The dataset is %g, %g, %g, %g, %g\n",
+        data[0], data[1], data[2], data[3], data[4]);
+
+  printf("The sample mean is %g\n", mean) ;
+  printf("The estimated variance is %g\n", variance) ;
+  printf("The largest value is %g\n", largest) ;
+  printf("The smallest values is %g\n", smallest) ;
 @}
-@end smallexample
+@end example
+
+This program should produce the following output,
+
+@example
+The dataset is 17.2, 18.1, 16.5, 18.3, 12.6
+The sample mean is 16.54
+The estimated variance is 4.2984
+The largest value is 18.3
+The smallest values is 12.6
+@end example
+
 
 @node Statistics References and Further Reading
 @section Statistics References and Further Reading
+@noindent
+The standard reference for almost any topic in statistics is the
+multi-volume @cite{Advanced Theory of Statistics} by Kendall and Stuart.
 
 @itemize @asis
 @item
@@ -303,7 +429,14 @@ Maurice Kendall, Alan Stuart, and J. Keith Ord.
 @cite{The Advanced Theory of Statistics} (multiple volumes)
 reprinted as @cite{Kendall's Advanced Theory of Statistics}.
 Wiley, ISBN 047023380X.
+@end itemize
+@noindent
+Many statistical concepts can be more easily understood by a Bayesian
+approach. The recent book by Gelman, Carlin, Stern and Rubin gives a
+comprehensive coverage of the subject, while Jeffreys' @cite{Theory of
+Probability} gives an older but more pedagogical introduction.
 
+@itemize @asis
 @item
 Andrew Gelman, John B. Carlin, Hal S. Stern, Donald B. Rubin.
 @cite{Bayesian Data Analysis}.
@@ -311,14 +444,21 @@ Chapman & Hall, ISBN 0412039915.
 
 @item
 Sir Harold Jeffreys.
-@cite{Theory of probability}.
+@cite{Theory of Probability}.
 Clarendon Press, ISBN 0198531931
-
-@item 
-The Particle Data Group provides useful reviews of Probability and
-Statistics in the "Mathematical Tools" section of its Annual Review of
-Particle Physics, available online at @url{http://pdg.lbl.gov/}
-
 @end itemize
+@noindent
+For physicists the Particle Data Group provides useful reviews of
+Probability and Statistics in the "Mathematical Tools" section of its
+Annual Review of Particle Physics. 
+
+@itemize @asis
+@item
+@cite{Review of Particle Properties}
+R.M. Barnett et al., Physical Review D54, 1 (1996)
+@end itemize
+@noindent
+The Review of Particle Physics is available online in postscript format
+at @url{http://pdg.lbl.gov/}.
 
 
