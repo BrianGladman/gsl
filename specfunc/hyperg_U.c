@@ -8,13 +8,13 @@
 #include "gsl_sf_exp.h"
 #include "gsl_sf_gamma.h"
 #include "gsl_sf_bessel.h"
+#include "gsl_sf_laguerre.h"
 #include "gsl_sf_pow_int.h"
 #include "gsl_sf_hyperg.h"
 
 #define locEPS       (1000.0*GSL_MACH_EPS)
 #define locMAX(a,b)  ((a) > (b) ? (a) : (b))
 #define locMIN(a,b)  ((a) < (b) ? (a) : (b))
-
 
 
 /* Log[U(a,2a,x)]
@@ -838,9 +838,45 @@ hyperg_U_bge1(const double a, const double b, const double x,
               double * result,
 	      double * ln_multiplier)
 {
+  const double rinta = floor(a+0.5);
+  const int a_neg_integer = (a < 0.0 && fabs(a - rinta) < locEPS);
+
   *ln_multiplier = 0.0;
 
-  if(locMAX(fabs(a),1.0)*locMAX(fabs(1.0+a-b),1.0) < 0.99*fabs(x)) {
+  if(a == 0.0) {
+    *ln_multiplier = 0.0;
+    *result = 1.0;
+    return GSL_SUCCESS;
+  }
+  else if(a_neg_integer && fabs(rinta) < INT_MAX) {
+    /* U(-n,b,x) = (-1)^n n! Laguerre[n,b-1,x]
+     */
+    const int n = -(int)rinta;
+    const double sgn = (GSL_IS_ODD(n) ? -1.0 : 1.0);
+    double lnfact;
+    double L;
+    const int stat_L = gsl_sf_laguerre_n_impl(n, b-1.0, x, &L);
+    gsl_sf_lnfact_impl(n, &lnfact);
+    if(L == 0.0 || stat_L != GSL_SUCCESS) {
+      *ln_multiplier = 0.0;
+      *result = 0.0;
+      return stat_L;
+    }
+    else {
+      const double lnr = lnfact + log(fabs(L));
+      const int stat_e = gsl_sf_exp_sgn_impl(lnr, sgn*L, result);
+      if(stat_e == GSL_SUCCESS) {
+        *ln_multiplier = 0.0;
+	return GSL_SUCCESS;
+      }
+      else {
+        *ln_multiplier = lnr;
+	*result = GSL_SIGN(sgn*L);
+	return GSL_SUCCESS;
+      }
+    }
+  }
+  else if(locMAX(fabs(a),1.0)*locMAX(fabs(1.0+a-b),1.0) < 0.99*fabs(x)) {
     double asymp;
     int stat_asymp = hyperg_zaU_asymp(a, b, x, &asymp);
     *result = asymp;
@@ -851,21 +887,23 @@ hyperg_U_bge1(const double a, const double b, const double x,
     return hyperg_U_small_a_bgt0(a, b, x, result, ln_multiplier);
   }
   else if(fabs(a) < 5.0 && b < 5.0 && x < 2.0) {
+    *ln_multiplier = 0.0;
     return hyperg_U_series(a, b, x, result);
   }
   else if(a < 0.0) {
-    /* Recurse backward.
+    /* Recurse backward on a and then upward on b.
      */
     const double scale_factor = GSL_SQRT_DBL_MAX;
+    const double a0 = a - floor(a) - 1.0;
+    const double b0 = b - floor(b) + 1.0;
     int scale_count = 0;
     double lm_0, lm_1, lm_max;
-    double a0 = a - floor(a) - 1.0;
     double Uap1;
     double Ua;
     double Uam1;
     double ap;
-    int stat_0 = hyperg_U_small_a_bgt0(a0+1.0, b, x, &Uap1, &lm_0);
-    int stat_1 = hyperg_U_small_a_bgt0(a0,     b, x, &Ua,   &lm_1);
+    int stat_0 = hyperg_U_small_a_bgt0(a0+1.0, b0, x, &Uap1, &lm_0);
+    int stat_1 = hyperg_U_small_a_bgt0(a0,     b0, x, &Ua,   &lm_1);
     lm_max = locMAX(lm_0, lm_1);
     Uap1 *= exp(lm_0-lm_max);
     Ua   *= exp(lm_1-lm_max);
@@ -873,14 +911,38 @@ hyperg_U_bge1(const double a, const double b, const double x,
     if(   (stat_0 == GSL_SUCCESS || stat_0 == GSL_ELOSS)
        && (stat_1 == GSL_SUCCESS || stat_1 == GSL_ELOSS)
       ) {
+
+      /* Downward recursion on a.
+       */
       for(ap=a0; ap>a+0.1; ap -= 1.0) {
         Uam1 = ap*(b-ap-1.0)*Uap1 + (x+2.0*ap-b)*Ua;
 	Uap1 = Ua;
 	Ua   = Uam1;
 	RESCALE_2(Ua,Uap1,scale_factor,scale_count);
       }
-      *result = Ua;
-      *ln_multiplier = lm_max + scale_count * log(scale_factor);
+
+      if(b < 2.0) {
+        /* b == b0, so no recursion necessary
+	 */
+	*result = Ua;
+	*ln_multiplier = lm_max + scale_count * log(scale_factor);
+      }
+      else {
+        /* Upward recursion on b.
+         */
+        double Ubm1 = Ua;                                 /* U(a,b0)   */
+        double Ub   = (a*(b0-a-1.0)*Uap1 + (a+x)*Ua)/x;   /* U(a,b0+1) */
+        double Ubp1;
+        double bp;
+        for(bp=b0+1.0; bp<b-0.1; bp += 1.0) {
+          Ubp1 = ((1.0+a-bp)*Ubm1 + (bp+x-1.0)*Ub)/x;
+          Ubm1 = Ub;
+          Ub   = Ubp1;
+	  RESCALE_2(Ub,Ubm1,scale_factor,scale_count);
+        }
+        *result = Ub;
+        *ln_multiplier = lm_max + scale_count * log(scale_factor);
+      }
       if(stat_0 == GSL_ELOSS || stat_1 == GSL_ELOSS)
         return GSL_ELOSS;
       else

@@ -10,7 +10,7 @@
  *            Gamma[c]    x^(1/2(1-c)) I_{c-1}(2 Sqrt[x])
  *            Gamma[c] (-x)^(1/2(1-c)) J_{c-1}(2 Sqrt[-x])
  *
- * exceptions:
+ * exceptions: GSL_EOVRFLW, GSL_EUNDRFLW
  */
 int     gsl_sf_hyperg_0F1_impl(double c, double x, double * result);
 int     gsl_sf_hyperg_0F1_e(double c, double x, double * result);
@@ -20,7 +20,7 @@ double  gsl_sf_hyperg_0F1(double c, double x);
 /* Confluent hypergeometric function  for integer parameters.
  * 1F1[m,n,x] = M(m,n,x)
  *
- * exceptions:
+ * exceptions: 
  */
 int     gsl_sf_hyperg_1F1_int_impl(int m, int n, double x, double * result);
 int     gsl_sf_hyperg_1F1_int_e(int m, int n, double x, double * result);

@@ -528,6 +528,8 @@ static int pow_omx(const double x, const double p, double * result)
 }
 
 
+/*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
+
 int
 gsl_sf_hyperg_2F1_impl(double a, double b, const double c,
                        const double x,
@@ -537,15 +539,11 @@ gsl_sf_hyperg_2F1_impl(double a, double b, const double c,
   const double rinta = floor(a + 0.5);
   const double rintb = floor(b + 0.5);
   const double rintc = floor(c + 0.5);
-  int a_neg_integer;
-  int b_neg_integer;
-  int c_neg_integer;
+  const int a_neg_integer = ( a < 0.0  &&  fabs(a - rinta) < locEPS );
+  const int b_neg_integer = ( b < 0.0  &&  fabs(b - rintb) < locEPS );
+  const int c_neg_integer = ( c < 0.0  &&  fabs(c - rintc) < locEPS );
 
   if(x < -1.0 || 1.0 <= x) return GSL_EDOM;
-
-  a_neg_integer = ( a < 0.0  &&  fabs(a - rinta) < locEPS );
-  b_neg_integer = ( b < 0.0  &&  fabs(b - rintb) < locEPS );
-  c_neg_integer = ( c < 0.0  &&  fabs(c - rintc) < locEPS );
 
   if(c_neg_integer) {
     if(! (a_neg_integer && a > c + 0.1)) return GSL_EDOM;
@@ -554,6 +552,13 @@ gsl_sf_hyperg_2F1_impl(double a, double b, const double c,
 
   if(fabs(c-b) < locEPS || fabs(c-a) < locEPS) {
     return pow_omx(x, d, result);  /* (1-x)^(c-a-b) */
+  }
+
+  if(a >= 0.0 && b >= 0.0 && c >=0.0 && x >= 0.0) {
+    /* Series has all positive definite terms.
+     */
+    double prec;
+    return hyperg_2F1_series(a, b, c, x, result, &prec);
   }
 
   if(fabs(a) < 10.0 && fabs(b) < 10.0) {
@@ -630,18 +635,20 @@ gsl_sf_hyperg_2F1_impl(double a, double b, const double c,
 }
 
 
-int gsl_sf_hyperg_2F1_conj_impl(const double aR, const double aI, const double c,
-                                const double x,
-				double * result)
+int
+gsl_sf_hyperg_2F1_conj_impl(const double aR, const double aI, const double c,
+                            const double x,
+                            double * result)
 {
   const double ax = fabs(x);
   const double rintc = floor(c + 0.5);
   const int c_neg_integer = ( c < 0.0  &&  fabs(c - rintc) < locEPS );
 
-  if(ax >= 1.0) return GSL_EDOM;
-  if(c_neg_integer) return GSL_EDOM;
+  if(ax >= 1.0 || c_neg_integer || c == 0.0) return GSL_EDOM;
 
-  if(ax < 0.25 && fabs(aR) < 20.0 && fabs(aI) < 20.0) {
+  if(   (ax < 0.25 && fabs(aR) < 20.0 && fabs(aI) < 20.0)
+     || (c > 0.0 && x > 0.0)
+    ) {
     double prec;
     int status = hyperg_2F1_conj_series(aR, aI, c, x, result, &prec);
     return status;
@@ -657,7 +664,6 @@ int gsl_sf_hyperg_2F1_conj_impl(const double aR, const double aI, const double c
     }
   }
   else {
-  
     if(x < 0.0) {
       /* What the hell, maybe Luke will converge.
        */
@@ -672,10 +678,11 @@ int gsl_sf_hyperg_2F1_conj_impl(const double aR, const double aI, const double c
 }
 
 
-int gsl_sf_hyperg_2F1_renorm_impl(const double a, const double b, const double c,
-                                  const double x,
-			          double * result
-			          )
+int
+gsl_sf_hyperg_2F1_renorm_impl(const double a, const double b, const double c,
+                              const double x,
+			      double * result
+			      )
 {
   const double rinta = floor(a + 0.5);
   const double rintb = floor(b + 0.5);
@@ -726,31 +733,27 @@ int gsl_sf_hyperg_2F1_renorm_impl(const double a, const double b, const double c
     if(stat_F == GSL_SUCCESS && stat_g == GSL_SUCCESS) {
       double ln_absF   = log(fabs(F));
       double ln_result = ln_absF - lng;
-      if(ln_result < GSL_LOG_DBL_MIN) {
-        *result = 0.0;
-        return GSL_EUNDRFLW;
-      }
-      else {
-        double sgn = (F > 0.0 ? 1.0 : -1.0);
-        *result = sgn * exp(ln_result);
-        return GSL_SUCCESS;
-      }
+      return gsl_sf_exp_sgn_impl(ln_result, F, result);
     }
     else {
       *result = 0.0;
-      return GSL_EFAILED;
+      return GSL_ERROR_SELECT_2(stat_F, stat_g);
     }
   }
 }
 
-int gsl_sf_hyperg_2F1_conj_renorm_impl(const double aR, const double aI, const double c,
-                                       const double x,
-			               double * result
-			               )
+
+int
+gsl_sf_hyperg_2F1_conj_renorm_impl(const double aR, const double aI, const double c,
+                                   const double x,
+			           double * result
+			           )
 {
 /* FIXME: copy above, when it works right */
 }
 
+
+/*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
 
 int
 gsl_sf_hyperg_2F1_e(double a, double b, double c, double x, double * result)
@@ -772,6 +775,29 @@ gsl_sf_hyperg_2F1_conj_e(double aR, double aI, double c, double x, double * resu
   return status;
 }
 
+int
+gsl_sf_hyperg_2F1_renorm_e(double a, double b, double c, double x, double * result)
+{
+  int status = gsl_sf_hyperg_2F1_renorm_impl(a, b, c, x, result);
+  if(status != GSL_SUCCESS) {
+    GSL_ERROR("gsl_sf_hyperg_2F1_renorm_e", status);
+  }
+  return status;
+}
+
+int
+gsl_sf_hyperg_2F1_conj_renorm_e(double aR, double aI, double c, double x, double * result)
+{
+  int status = gsl_sf_hyperg_2F1_conj_renorm_impl(aR, aI, c, x, result);
+  if(status != GSL_SUCCESS) {
+    GSL_ERROR("gsl_sf_hyperg_2F1_conj_renorm_e", status);
+  }
+  return status;
+}
+
+
+/*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*-*/
+
 double
 gsl_sf_hyperg_2F1(double a, double b, double c, double x)
 {
@@ -790,6 +816,28 @@ gsl_sf_hyperg_2F1_conj(double aR, double aI, double c, double x)
   int status = gsl_sf_hyperg_2F1_conj_impl(aR, aI, c, x, &y);
   if(status != GSL_SUCCESS) {
     GSL_WARNING("gsl_sf_hyperg_2F1_conj", status);
+  }
+  return y;
+}
+
+double
+gsl_sf_hyperg_2F1_renorm(double a, double b, double c, double x)
+{
+  double y;
+  int status = gsl_sf_hyperg_2F1_renorm_impl(a, b, c, x, &y);
+  if(status != GSL_SUCCESS) {
+    GSL_WARNING("gsl_sf_hyperg_2F1_renorm", status);
+  }
+  return y;
+}
+
+double
+gsl_sf_hyperg_2F1_conj_renorm(double aR, double aI, double c, double x)
+{
+  double y;
+  int status = gsl_sf_hyperg_2F1_conj_renorm_impl(aR, aI, c, x, &y);
+  if(status != GSL_SUCCESS) {
+    GSL_WARNING("gsl_sf_hyperg_2F1_conj_renorm", status);
   }
   return y;
 }

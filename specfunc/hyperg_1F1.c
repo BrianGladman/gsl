@@ -1547,10 +1547,10 @@ gsl_sf_hyperg_1F1_impl(const double a, const double b, const double x,
                        double * result
                        )
 {
-  const double bma = b-a;
-  const int rinta = floor(a + 0.5);
-  const int rintb = floor(b + 0.5);
-  const int rintbma = floor(bma + 0.5);
+  const double bma = b - a;
+  const double rinta = floor(a + 0.5);
+  const double rintb = floor(b + 0.5);
+  const double rintbma = floor(bma + 0.5);
   const int a_integer   = ( fabs(a - rinta) < locEPS );
   const int b_integer   = ( fabs(b - rintb) < locEPS );
   const int bma_integer = ( fabs(bma - rintbma) < locEPS );
@@ -1631,27 +1631,25 @@ gsl_sf_hyperg_1F1_impl(const double a, const double b, const double x,
       }
     }
   }
-  else if(a_integer && b_integer) {
+  else if(   (a_integer && a > INT_MIN && a < INT_MAX)
+          && (b_integer && b > INT_MIN && b < INT_MAX)
+    ) {
     /* Check for reduction to the integer case.
      * Make the arbitrary "near an integer" test.
      */
-    int inta = floor(a + 0.1);
-    int intb = floor(b + 0.1);
-    return gsl_sf_hyperg_1F1_int_impl(inta, intb, x, result);
+    return gsl_sf_hyperg_1F1_int_impl((int)rinta, (int)rintb, x, result);
   }
-  else if(a_neg_integer && b <= a && x > 0.0) {
+  else if(a_neg_integer && ((b <= a && x > 0.0) || (b > 0.0 && x < 0.0)) && a > INT_MIN) {
     /* The polynomial evaluation is safe since all
      * the terms are positive definite.
      */
-    int inta = floor(a + 0.1);
-    return hyperg_1F1_a_negint_poly(inta, b, x, result);
+    return hyperg_1F1_a_negint_poly((int)rinta, b, x, result);
   }
-  else if(bma_neg_integer && a < 0.0 && b < 0.0 && x < 0.0) {
+  else if(bma_neg_integer && ((a < 0.0 && x < 0.0) || (b > 0.0 && x > 0.0)) && bma > INT_MIN) {
     /* Kummer transformed version of safe polynomial.
      */
     double K;
-    int intbma = floor(bma + 0.1);
-    int stat_K = hyperg_1F1_a_negint_poly(intbma, b, -x, &K);
+    int stat_K = hyperg_1F1_a_negint_poly((int)rintbma, b, -x, &K);
     if(K != 0.0 && stat_K == GSL_SUCCESS) {
       return gsl_sf_exp_sgn_impl(x + log(fabs(K)), K, result);
     }
@@ -1660,11 +1658,11 @@ gsl_sf_hyperg_1F1_impl(const double a, const double b, const double x,
       return stat_K;
     }
   }
-  else if(a_neg_integer && x > 0.0) {
-    /* Combine [Abeamowitz+Stegun, 13.6.9 + 13.6.27]
+  else if(a_neg_integer && a > INT_MIN && x > 0.0) {
+    /* Combine [Abramowitz+Stegun, 13.6.9 + 13.6.27]
      * M(-n,1+y,x) = (-1)^n / (y+1)_n U(-n,1+y,x)
      */
-    int n = -(int)floor(a+0.1);
+    int n = -(int)rinta;
     double sgn = ( GSL_IS_ODD(n) ? -1.0 : 1.0 );
     double lnpoch;
     double sgpoch;
