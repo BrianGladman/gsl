@@ -39,15 +39,9 @@
 
 __BEGIN_DECLS
 
-enum {
-  ESTIMATE_STYLE_NR = -1,  
-  ESTIMATE_STYLE_CORRELATED_MC = 0,  
-  ESTIMATE_STYLE_MC = 1
-};
-
 typedef struct {
-  unsigned long min_calls;
-  unsigned long min_calls_per_bisection;
+  size_t min_calls;
+  size_t min_calls_per_bisection;
   double dither;
   double estimate_frac;
   double alpha;
@@ -69,7 +63,6 @@ typedef struct {
   double * fsum2_r;
   size_t * hits_l;
   size_t * hits_r;
-  gsl_monte_plain_state* plain_state;
 } gsl_monte_miser_state; 
 
 int gsl_monte_miser_integrate(gsl_monte_function * f, 

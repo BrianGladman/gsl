@@ -3,39 +3,37 @@
 This chapter describes routines for multidimensional Monte Carlo
 integration.  These include the traditional Monte Carlo method and
 adaptive algorithms such as @sc{vegas} and @sc{miser}, which use
-importance sampling and stratified sampling.
-
-Each algorithm computes an estimate of a definite integral of the form,
+importance sampling and stratified sampling. Each algorithm computes an
+estimate of a multidimensional definite integral of the form,
 
 @tex
 \beforedisplay
 $$
-I = \int_{xl}^{xu} \int_{yl}^{yu} ... dx\,dy ... f(x,y,...)
+I = \int_{x_l}^{x_u} dx\,\int_{y_l}^{y_u}dy\,... f(x,y,...)
 $$
 \afterdisplay
 @end tex
 @ifinfo
 @example
-I = \int_xl^xu \int_yl^yu ... dx dy ..  f(x, y, ...)
+I = \int_xl^xu dx \int_yl^yu  dy ...  f(x, y, ...)
 @end example
 @end ifinfo
 @noindent
-over a hypercubic region (xl,xu) (yl,yu) ... using a fixed number of
-function calls specified by the user. Each routine also provides an
-estimate of the error on the result.  These error estimates should be
-taken as a guide rather than as a strict error bound, since random
-sampling of the region may not uncover all the important features of the
-function.
+over a hypercubic region @math{((x_l,x_u)}, @math{(y_l,y_u), ...)} using
+a fixed number of function calls.  The routines also provide a
+statistical estimate of the error on the result.  This error estimate
+should be taken as a guide rather than as a strict error bound, because
+random sampling of the region may not uncover all the important features
+of the function, resulting in an undersetimate of the error.
 
 @menu
 * Monte Carlo Interface::       
-* PLAIN (or Simple) Monte Carlo::  
+* PLAIN Monte Carlo::  
 * MISER::                       
 * VEGAS::                       
 * Monte Carlo Examples::        
 * Monte Carlo Integration References and Further Reading::  
 @end menu
-
 
 @node Monte Carlo Interface
 @section Interface
@@ -48,98 +46,133 @@ and returns an estimate of the integral and its standard deviation.  The
 accuracy of the result is determined by the number of function calls
 specified by the user.  If a known level of accuracy is required this
 can be achieved by calling the integrator several times and averaging
-the results, or by estimating the number of calls required from the
-results of an initial run with a small number of calls.
+the individual results until the desired accuracy is obtained.
 
-@node PLAIN (or Simple) Monte Carlo
-@section PLAIN (or Simple) Monte Carlo
+The function to be integrated has its own datatype, defined in the
+header file @file{gsl_monte.h}.
+
+@deftp {Data Type} gsl_monte_function 
+
+This data type defines a general function with parameters for Monte
+Carlo integration.
+
+@table @code
+@item double (* @var{function}) (double * @var{x}, size_t @var{dim}, void * @var{params})
+this function should return the value
+@c{$f(x,\hbox{\it params})$}
+@math{f(x,params)} for argument @var{x} and parameters @var{params},
+where @var{x} is an array of size @var{dim} giving the coordinates of
+the point where the function is to be evaluated.
+
+@item size_t @var{dim}
+the number of dimensions for @var{x}
+
+@item void * @var{params}
+a pointer to the parameters of the function
+@end table
+@end deftp
+@noindent
+Here is an example for a quadratic function in two dimensions,
+
+@tex
+\beforedisplay
+$$
+f(x,y) = a x^2 + b x y + c y^2
+$$
+\afterdisplay
+@end tex
+@ifinfo
+@example
+f(x,y) = a x^2 + b x y + c y^2
+@end example
+@end ifinfo
+@noindent
+with @math{a = 3}, @math{b = 2}, @math{c = 1}.  The following code
+defines a @code{gsl_monte_function} @code{F} which you could pass to an
+integrator:
+
+@example
+struct my_f_params @{ double a ; double b ; double c ; @} ;
+
+double
+my_f (double x, size_t dim, void * p) @{
+   struct my_f_params * fp = (struct my_f_params *)p ;
+
+   if (dim != 2)
+      @{
+        fprintf(stderr, "error: my_f called with dim != 2");
+        abort();
+      @}
+
+   return  fp->a * x[0] * x[0] + fp->b * x[0] * x[1] + fp->c * x[1] * x[1] ;
+@}
+
+gsl_monte_function F ;
+struct my_f_params params = @{ 3.0, 2.0, 1.0 @};
+
+F.function = &my_f ;
+F.dim = 2;
+F.params = &params ;
+@end example
+@noindent
+The function @math{f(x)} can be evaluated using the following macro,
+
+@example
+#define GSL_MONTE_FN_EVAL(F,x) (*((F)->function))(x,(F)->dim,(F)->params)
+@end example
+
+@node PLAIN Monte Carlo
+@section PLAIN Monte Carlo
 @cindex plain monte carlo
-We begin by establishing some notation.  Let @math{I(f)} denote the
-integral of the function @math{f} (for convenience, we take @math{I(1)=1})
-We will write the Monte Carlo estimate of the integral as
-@math{E(f; N)} for the
+The plain Monte Carlo algorithm samples points randomly from the
+integration region to estimate the integral and its error.  Using this
+algorithm the estimate of the integral @math{E(f; N)} for @math{N}
+randomly distributed points @math{x_i} is given by,
 
 @tex
 \beforedisplay
 $$
-E(f; N) = {1 \over N} \sum_i^N f(x_i).
+E(f; N) =  V \langle f \rangle = {V \over N} \sum_i^N f(x_i).
 $$
 \afterdisplay
 @end tex
 @ifinfo
 @example
-E(f; N) = @{1 \over N @} \sum_i^N f(x_i).
+E(f; N) = =  V <f> = (V / N) \sum_i^N f(x_i).
 @end example
 @end ifinfo
 @noindent
-for @math{N} randomly distributed points @math{x_i} Similarly, we will
-denote the variance of @math{f} by
+where @math{V} is the volume of the integration region.  The error on
+this estimate @math{\sigma(E;N)} is calculated from the estimated
+variance of the mean,
 
 @tex
 \beforedisplay
 $$
-\sigma^2(f) = I(f^2) - I(f)^2
+\sigma^2 (E; N) = {V \over \sqrt N } \sum_i^N (f(x_i) - \langle f \rangle)^2
 $$
 \afterdisplay
 @end tex
 @ifinfo
 @example
-\sigma^2(f) = I(f^2) - I(f)^2
+\sigma^2 (E; N) = (V / \sqrt(N)) \sum_i^N (f(x_i) -  <f>)^2
 @end example
 @end ifinfo
 @noindent
-and the variance of the estimate by 
+For large @math{N} this variance should decreases asymptotically as
+@math{Var(f)/N}, where @math{Var(f)} is the true variance of the
+function over the integration region.  The error estimate itself should
+decrease as @math{\sigma^2(f)/\sqrt@{N@}}.  The familiar law of errors
+decreasing as @math{1/\sqrt@{N@}} applies, so to reduce the error by a
+factor of 10 requires a 100-fold increase in the number of sample
+points.
 
-@tex
-\beforedisplay
-$$
-Var(f; N) = E(f^2; N) - (E(f; N))^2.
-$$
-\afterdisplay
-@end tex
-@ifinfo
-@example
-Var(f; N) = E(f^2; N) - (E(f; N))^2.
-@end example
-@end ifinfo
-
-The fundamental point of Monte Carlo integration is that for
-large @math{N}, 
-
-@tex
-\beforedisplay
-$$
-E(f; N) - I(f) \approx {\sigma^2(f)\over N}
-$$
-\afterdisplay
-@end tex
-@ifinfo
-@example
-E(f; N) - I(f) \approx @{\sigma^2(f)\over N @}
-@end example
-@end ifinfo
-@noindent
-and furthermore, by the same argument, 
-
-@tex
-\beforedisplay
-$$
-\sigma^2(f) \approx Var(f; N)
-$$
-\afterdisplay
-@end tex
-@ifinfo
-@example
-\sigma^2(f) \approx Var(f; N)
-@end example
-@end ifinfo
-
-That's all there is to simple Monte Carlo.
+The functions described in this section are declared in the header file
+@file{gsl_monte_plain.h}.
 
 @deftypefun {gsl_monte_plain_state *} gsl_monte_plain_alloc (size_t @var{dim})
 This function allocates and initializes a workspace for Monte Carlo
-integration in @var{dim} dimensions.  The workspace is used to maintain
-the state of the integration.
+integration in @var{dim} dimensions.  
 @end deftypefun
 
 @deftypefun int gsl_monte_plain_init (gsl_monte_plain_state* @var{s})
@@ -169,16 +202,18 @@ This function frees the memory associated with the integrator state
 @cindex MISER monte carlo integration
 @cindex recursive stratified sampling, MISER
 
-The starting point of all stratified sampling techniques is
-the observation that for two disjoint regions @math{a} and @math{b} with
-Monte Carlo estimates of the integral @math{E_a(f)} and @math{E_b(f)} of the 
-integral of f in those regions
-and variances @math{\sigma_a^2(f)} and @math{\sigma_b^2(f)}, 
-the variance @math{Var(f)}
-of the combined estimate 
-@c{$E(f) = {1\over 2} E_a(f) + {1\over 2} E_b(f)$}
-@math{E(f) = @{1\over 2@} E_a(f) + @{1\over 2@} E_b(f)}
-is given by
+The @sc{miser} algorithm of Press and Farrar is based on recursive
+stratified sampling.  This technique aims to reduce the overall error by
+concentrating integration points in the regions of highest variance.
+
+The idea of stratified sampling begins with the observation that for two
+disjoint regions @math{a} and @math{b} with Monte Carlo estimates of the
+integral @math{E_a(f)} and @math{E_b(f)} and variances
+@math{\sigma_a^2(f)} and @math{\sigma_b^2(f)}, the variance
+@math{Var(f)} of the combined estimate 
+@c{$E(f) = {1\over 2} E_a(f) + {1\over 2} E_b(f)$} 
+@math{E(f) = @{1\over 2@} E_a(f) + @{1\over 2@} E_b(f)} 
+is given by,
 
 @tex
 \beforedisplay
@@ -192,9 +227,9 @@ $$
 Var(f) = @{\sigma_a^2(f) \over 4 N_a@} + @{\sigma_b^2(f) \over 4 N_b@}
 @end example
 @end ifinfo
-
-This variance is minimized (subject to the constrain that @math{N_a + N_b} 
-is fixed) by choosing (assuming one can) @math{N_a} s.t.
+@noindent
+It can be shown that this variance is minimized by distributing the
+points such that,
 
 @tex
 \beforedisplay
@@ -208,42 +243,27 @@ $$
 @{N_a \over N_a+N_b @} = @{ \sigma_a \over \sigma_a + \sigma_b @}
 @end example
 @end ifinfo
+@noindent
+Hence the smallest error estimate is obtained by allocating sample
+points in proportion to standard deviation of the function in each
+sub-region.
 
-For such a choice, the variance is given by
+The @sc{miser} algorithm proceeds by bisecting the integration region
+along one coordinate axis at each step.  The direction is chosen by
+examining all @math{d} possible bisections and selecting the one which
+minimises the combined variance.  The variance in the sub-regions is
+estimated using a fraction of the total number of points available.  The
+same procedure is then repeated recursively for each of the two
+half-spaces from the best bisection, choosing @math{N_a} and @math{N_b}
+as described above.  This recursive allocation of integration points
+continues down to a user-specified depth.  When the deepest level of
+recursion is reached each sub-region is integrated using a plain Monte
+Carlo estimate.  These individual values are then combined upwards using
+the formula above to give an overall result and an estimate of its
+error.
 
-@tex
-\beforedisplay
-$$
-Var(f) = {(\sigma_a + \sigma_b)^2 \over 4 N}
-$$
-\afterdisplay
-@end tex
-@ifinfo
-@example
-Var(f) =  @{ (\sigma_a + \sigma_b)^2 \over 4 N @}
-@end example
-@end ifinfo
-
-In words, the variance of the estimate (and hence the error) is
-minimized by concentrating points in regions where the variance of the
-function @math{f} is large.
-
-The most straightforward stratified sampling routine divides a
-hyper-cubic integration region into sub-cubes along the coordinate axes.
-This is simple to do, but gets out of hand for large numbers of
-dimensions @math{d} because the number of sub-cubes grows like 
-@math{K^d} (where @math{K} is the number of sub-divisions along the
-axis).  
-
-What MISER does (and other recursive stratified samplers) is to bisect
-the hypercube along one coordinate axis.  The direction is chosen by
-examining all possible bisections (@math{d} of them) and picking the one
-that gives the best combined variance.  The same procedure is then done
-for each of the two half-spaces (choosing @math{N_a} and @math{N_b} as
-described above), and so on.  Since by assumption one does not know the
-variance @math{Var_L(f)} in the various sub-regions, it is estimated
-using some fraction of the total number of points alloted to the
-estimate.
+The functions described in this section are declared in the header file
+@file{gsl_monte_miser.h}.
 
 @deftypefun {gsl_monte_miser_state *} gsl_monte_miser_alloc (size_t @var{dim})
 This function allocates and initializes a workspace for Monte Carlo
@@ -273,13 +293,42 @@ This function frees the memory associated with the integrator state
 @var{s}.
 @end deftypefun
 
+The following variables can be accessed through the
+@code{gsl_monte_miser_state} struct,
 
-MISER:
-@deftypevr {Control} double alpha
-alpha controls how the variances for the two sub-regions are combined.
-The Numerical Recipes gang argue that for recursive sampling there
-is no reason to expect that the variance should scale like @math{1/N} and
-so they allow the scaling to depend on @math{\alpha}
+@deftypevar double estimate_frac
+This parameter specifies the fraction of the currently available number of
+function calls which are allocated to estimating the variance at each
+recursive step. The default value is 0.1.
+@end deftypevar
+
+@deftypevar size_t min_calls
+This parameter specifies the minimum number of function calls required
+for each estimate of the variance. If the number of function calls
+allocated to estimate using @var{estimate_frac} falls below
+@var{min_calls} then @var{min_calls} are used instead.  This ensures
+that each estimate maintains a reasonable level of accuracy, because an
+inaccurate estimate will affect all subsequent recursions.  The default
+value of @var{min_calls} is @code{16 * dim}.
+@end deftypevar
+
+@deftypevar size_t min_calls_per_bisection
+This parameter specifies the minimum number of function calls required
+to proceed with a bisection step.  When a recursive step has fewer calls
+available than @var{min_calls_per_bisection} it performs a plain
+monte-carlo estimate of the current sub-region and terminates its branch
+of the recursion.  The default value of this parameter is @code{32 *
+min_calls}.
+@end deftypevar
+
+@deftypevar double alpha
+This parameter controls how the estimated variances for the two
+sub-regions of a bisection are combined when allocating points.  With
+recursive sampling the overall variance should scale better @math{1/N},
+since the values from the sub-regions will be obtained using a procedure
+which explicitly minimises their variance.  To accommodate this behavior
+the @sc{miser} algorithm allows the total variance to depend on a
+scaling parameter @math{\alpha},
 
 @tex
 \beforedisplay
@@ -293,28 +342,35 @@ $$
 Var(f) = @{\sigma_a \over N_a^\alpha@} + @{\sigma_b \over N_b^\alpha@}
 @end example
 @end ifinfo
+@noindent
+The authors of the original paper describing @sc{miser} recommend the
+value @math{\alpha = 2} as a good choice, obtained from numerical
+experiments, and this is used as the default value in this
+implementation.
+@end deftypevar
 
-@end deftypevr
-
-@deftypevr {Control} double dither
-Rather than exactly bisection the integration region, dither allows the
-user to introduce a bit of fuzz.  This helps in the case when the
-function to be integrated has some symmetry, say if it is peaked in the
-center of the hypercube.  If needed, dither should be around 0.1.
-@end deftypevr 
-
+@deftypevar double dither
+This parameter introduces a random fractional variation of size
+@var{dither} into each bisection, which can be used to to break the
+symmetry of integrands which are concentrated near the exact center of
+the hypercubic integration region.  The default value of dither is zero,
+so no variation is introduced. If needed, a typical value of
+@var{dither} is around 0.1.
+@end deftypevar
 
 @node VEGAS
 @section VEGAS
 @cindex VEGAS monte carlo integration
 @cindex importance sampling, VEGAS
 
-Vegas takes another approach to obtaining good results, namely it
-tries to sample points from the probability distribution described
-by the function @math{f}.  More precisely, suppose we estimate
-the integral of @math{f} with points distributed according to
-a probability distribution described by the function @math{g}.  If
-we call the new estimate @math{E_g(f; N)} we have
+The @sc{vegas} algorithm of Lepage is based on importance sampling.  It
+samples points from the probability distribution described by the
+function @math{|f|}, so that the points are concentrated in the regions
+that make the largest contribution to the integral.
+
+In general, if the Monte Carlo integral of @math{f} is sampled with
+points distributed according to a probability distribution described by
+the function @math{g}, we obtain an estimate @math{E_g(f; N)},
 
 @tex
 \beforedisplay
@@ -328,8 +384,8 @@ $$
 E_g(f; N) = E(f/g; N)
 @end example
 @end ifinfo
-
-and similarly
+@noindent
+with a corresponding variance,
 
 @tex
 \beforedisplay
@@ -343,43 +399,30 @@ $$
 Var_g(f; N) = Var(f/g; N)
 @end example
 @end ifinfo
+@noindent
+If the probability distribution is chosen as @math{g = |f|/I(|f|)} then
+it can be shown that the variance @math{V_g(f; N)} vanishes, and the
+error in the estimate will be zero.  In practice it is not possible to
+sample from the exact distribution @var{g} for an arbitrary function, so
+importance sampling algorithms aim to produce efficient approximations
+to the desired distribution.
 
-It is clear from this that if @math{g = |f|/I(|f|)} then the variance 
-@math{V_g(f; N)} vanishes.
-This it was what Vegas attempts to do.  It makes several passes,
-histograming @math{f}, and each time using the histogram to define the
-sampling distribution for the next pass.  This basic idea again has the
-problem that the number of histogram bins grows like 
-@math{K^d}.  The
-compromise that Vegas (ie, Peter Lepage) adopts is to assume that
-@math{g} factors: 
-@c{$g(x_1, x_2, \ldots) = g_1(x_1) g_2(x_2) \ldots$}
-@math{g(x_1, x_2, ...) = g_1(x_1) g_2(x_2) ...}
-so that the number of bins required is only 
-@c{$d \cdot K$}
-@math{d.K}.  In this
-case, it is not hard to show that the optimal distribution is 
+The @sc{vegas} algorithm makes a number of passes over the integration
+region while histogramming the function @math{f}, and using this
+histogram to define a sampling distribution for the next pass.  This
+procedure converges to the desired distriution asymptotically.  In order
+to avoid the number of histogram bins growing like @math{K^d} the
+probability distribution is approximated by a separable function:
+@c{$g(x_1, x_2,\ldots) = g_1(x_1) g_2(x_2)\ldots$} 
+@math{g(x_1, x_2, ...) = g_1(x_1) g_2(x_2) ...}  
+so that the number of bins required is only @math{Kd}.
 
-@tex
-\beforedisplay
-$$ 
-g_1(x_1) = [\int dx_1 \ldots dx_n {f^2(x_1,\dots,x_n)\over g_2(x_2)\ldots g_n(x_n) } ]^{(1/2)}
-$$
-\afterdisplay
-@end tex
-@ifinfo
-@example
-g_1(x_1) = [\int dx_1 ... dx_n @{f^2(x_1,...,x_n)\over g_2(x_2)... g_n(x_n) @} ]^@{(1/2)@}
-@end example
-@end ifinfo
-
-Lepage's Vegas is actually a bit fancier than this, combining
-stratified sampling and importance sampling.  The integration
-region is divided into a number of ``boxes'', with each box getting
-in fixed number of points (the goal is 2).  Each box can then have
-a fractional number of bins, but if bins/box is less than two,
-Vegas switches to a kind variance reduction (rather than importance
-sampling). 
+@sc{vegas} incorporates a number of additional features, and combines both
+stratified sampling and importance sampling.  The integration region is
+divided into a number of ``boxes'', with each box getting in fixed
+number of points (the goal is 2).  Each box can then have a fractional
+number of bins, but if bins/box is less than two, Vegas switches to a
+kind variance reduction (rather than importance sampling).
 
 
 @deftypefun {gsl_monte_vegas_state *} gsl_monte_vegas_alloc (size_t @var{dim})
@@ -410,22 +453,24 @@ This function frees the memory associated with the integrator state
 @var{s}.
 @end deftypefun
 
+@deftypevar double result
+@deftypevarx double sigma
+@end deftypevar
 
-VEGAS:
-@deftypevr {Control} double alpha
-For Vegas, @code{alpha} controls the stiffness of the rebinning algorithm:
-@code{alpha = 0} means never rebin.  It is typically set between 
-one and two.
-@end deftypevr
-@deftypevr {Control} double acc
-Setting @code{acc} allows vegas to terminate when the desired accuracy
-has been achieved, rather than after a certain number of function calls.
-Setting it to a negative value disables this feature.
-@end deftypevr
-@deftypevr {Control} {long int} max_it_num
+@deftypevar double chisq
+@end deftypevar
+
+@deftypevar double alpha
+The parameter @code{alpha} controls the stiffness of the rebinning
+algorithm: @code{alpha = 0} means never rebin.  It is typically set
+between one and two. The default value is 1.5.
+@end deftypevar
+
+@deftypevar size_t iterations
 The maximum number of iterations to perform.
-@end deftypevr
-@deftypevr {Control} int stage
+@end deftypevar
+
+@deftypevar int stage
 Setting this determines the "stage" of the calculation.  Normally,
 @code{stage = 0}.  Calling vegas with @code{stage = 1} retains
 the grid (but not the answers) from the previous run, so that one
@@ -434,8 +479,9 @@ then do a large run with @code{stage = 1} on the optimized grid.  Setting
 @code{stage = 2} keeps the grid and the answers from the previous run and
 @code{stage = 3} enters at the main loop, so that nothing is changed -- this
 is like deciding to change @code{max_it_num} during the run.
-@end deftypevr
-@deftypevr {Control} int mode
+@end deftypevar
+
+@deftypevar int mode
 The possible choices are @code{GSL_VEGAS_MODE_IMPORTANCE}, 
         @code{GSL_VEGAS_MODE_STRATIFIED}, 
         @code{GSL_VEGAS_MODE_IMPORTANCE_ONLY}. 
@@ -443,7 +489,11 @@ This determines whether vegas will use importance sampling or stratified
 sampling, or whether it can pick on its own.  In low dimensions Vegas
 uses strict stratified sampling (more precisely, stratified sampling is
 chosen if there are fewer than 2 bins per box).
-@end deftypevr
+@end deftypevar
+
+@deftypevar int verbose
+@deftypevarx {FILE *} ostream
+@end deftypevar
 
 @node Monte Carlo Examples
 @section Examples
@@ -458,7 +508,7 @@ $$
 I = \int_{-\pi}^{+\pi} {dk_x \over 2\pi} 
     \int_{-\pi}^{+\pi} {dk_y \over 2\pi} 
     \int_{-\pi}^{+\pi} {dk_z \over 2\pi} 
-     { 1 \over 1 - \cos(k_x)\cos(k_y)\cos(k_z)}
+     { 1 \over (1 - \cos(k_x)\cos(k_y)\cos(k_z))}
 $$
 \afterdisplay
 @end tex
@@ -557,9 +607,9 @@ main ()
 
     do
       @{
-	gsl_monte_vegas_integrate (&G, xl, xu, 3, calls, r, s, &res, &err);
-	printf ("result = % .6f sigma = % .6f chisq/dof = %.1f\n",
-		res, err, s->chisq);
+        gsl_monte_vegas_integrate (&G, xl, xu, 3, calls, r, s, &res, &err);
+        printf ("result = % .6f sigma = % .6f chisq/dof = %.1f\n",
+                res, err, s->chisq);
       @}
     while (fabs (s->chisq - 1.0) > 0.5);
 
@@ -602,7 +652,6 @@ error  = -0.000247 = 0.5 sigma
 The @sc{miser} algorithm is described in the following article,
 
 @itemize @asis
-@item
 @item
 W.H. Press, G.R. Farrar, @cite{Recursive Stratified Sampling for
 Multidimensional Monte Carlo Integration},

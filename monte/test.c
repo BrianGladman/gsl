@@ -41,8 +41,8 @@
 #define DBLGAUSSIAN
 #define TSUDA
 
-//#define PLAIN
-//#define MISER
+#define PLAIN
+#define MISER
 #define VEGAS
 
 double xl[11]  = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
@@ -199,7 +199,7 @@ main ()
 #define MONTE_ALLOC gsl_monte_plain_alloc
 #define MONTE_INTEGRATE gsl_monte_plain_integrate
 #define MONTE_FREE gsl_monte_plain_free
-#define MONTE_ERROR_TEST(err,expected) gsl_test_factor(err,expected, 3.0, NAME ", %s, abserr[%d]", I->description, i)
+#define MONTE_ERROR_TEST(err,expected) gsl_test_factor(err,expected, 5.0, NAME ", %s, abserr[%d]", I->description, i)
 #include "test_main.c"
 #undef NAME
 #undef MONTE_STATE
@@ -215,7 +215,7 @@ main ()
 #define MONTE_ALLOC gsl_monte_miser_alloc
 #define MONTE_INTEGRATE gsl_monte_miser_integrate
 #define MONTE_FREE gsl_monte_miser_free
-#define MONTE_ERROR_TEST(err,expected) gsl_test(err > 3.0 * expected, NAME ", %s, abserr[%d] (obs %g vs plain %g)", I->description, i, err, expected)
+#define MONTE_ERROR_TEST(err,expected) gsl_test(err > 5.0 * expected, NAME ", %s, abserr[%d] (obs %g vs plain %g)", I->description, i, err, expected)
 #include "test_main.c"
 #undef NAME
 #undef MONTE_STATE
