@@ -17,7 +17,13 @@ and related declarations.
 * Initializing the solver::     
 * Providing the function to solve::  
 * Search Bounds and Guesses::   
+* Root Finding Iteration::      
 * Search Stopping Parameters::  
+* Bisection::                   
+* Brent-Dekker Method::         
+* False Position::              
+* Secant Method::               
+* Newtons Method::              
 @end menu
 
 @node Root Finding Overview
@@ -416,7 +422,7 @@ to the origin.
 
 @deftypefun int gsl_root_test_delta (double @var{x1}, double @var{x0}, double @var{epsrel}, double @var{epsabs})
 
-This function tests for the convergence of the sequence @dots, @var{x0},
+This function tests for the convergence of the sequence @dots{}, @var{x0},
 @var{x1} with absolute error @var{epsabs} and relative error
 @var{epsrel}.  The test returns @code{GSL_SUCCESS} if the following
 condition is achieved,
