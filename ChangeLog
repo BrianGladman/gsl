@@ -1,5 +1,10 @@
 1999-08-05  Mark Galassi  <rosalia@lanl.gov>
 
+	* Makefile.am: put the THANKS file into the distribution.
+
+	* autogen.sh: added the --add-missing option to automake.  I'm
+	surprised it was not already there.
+
 	* configure.in: added a + to the version, indicating that any
 	snapshots made from anonymous CVS in this state should be
 	interpreted as "after 0.4.1 and before the next version", and no
