@@ -1,5 +1,7 @@
-* ?? LCY65 L. A. Lyusternik, O. A. Chervonenkis, and A. R. Yanpol'skii, Handbook for computing elementary functions,
-      International Series of Monographs in Pure and Applied Mathematics, vol. 76, Pergamon Press, Oxford, 1965. 
+* ?? LCY65 L. A. Lyusternik, O. A. Chervonenkis, and
+A. R. Yanpol'skii, Handbook for computing elementary functions,
+International Series of Monographs in Pure and Applied Mathematics,
+vol. 76, Pergamon Press, Oxford, 1965.
 
 * In math.c, what are the relative merits of using sin(R)**2 vs
 sin(2R) in the trigonometric functions. (Guarantee of positivity for

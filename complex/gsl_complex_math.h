@@ -33,10 +33,15 @@ gsl_complex gsl_complex_sub (gsl_complex a, gsl_complex b);  /* r=a-b */
 gsl_complex gsl_complex_mul (gsl_complex a, gsl_complex b);  /* r=a*b */
 gsl_complex gsl_complex_div (gsl_complex a, gsl_complex b);  /* r=a/b */
                                                            
-gsl_complex gsl_complex_add_real (gsl_complex a, double b);  /* r=a+b */
-gsl_complex gsl_complex_sub_real (gsl_complex a, double b);  /* r=a-b */
-gsl_complex gsl_complex_mul_real (gsl_complex a, double b);  /* r=a*b */
-gsl_complex gsl_complex_div_real (gsl_complex a, double b);  /* r=a/b */
+gsl_complex gsl_complex_add_real (gsl_complex a, double x);  /* r=a+x */
+gsl_complex gsl_complex_sub_real (gsl_complex a, double x);  /* r=a-x */
+gsl_complex gsl_complex_mul_real (gsl_complex a, double x);  /* r=a*x */
+gsl_complex gsl_complex_div_real (gsl_complex a, double x);  /* r=a/x */
+
+gsl_complex gsl_complex_add_imag (gsl_complex a, double y);  /* r=a+iy */
+gsl_complex gsl_complex_sub_imag (gsl_complex a, double y);  /* r=a-iy */
+gsl_complex gsl_complex_mul_imag (gsl_complex a, double y);  /* r=a*iy */
+gsl_complex gsl_complex_div_imag (gsl_complex a, double y);  /* r=a/iy */
 
 gsl_complex gsl_complex_conjugate (gsl_complex z);  /* r=conj(z) */
 gsl_complex gsl_complex_inverse (gsl_complex a);    /* r=1/a */

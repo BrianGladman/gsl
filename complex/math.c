@@ -1,5 +1,5 @@
 /* Basic complex arithmetic functions 
- *
+
  * Original version by Jorma Olavi T{htinen <jotahtin@cc.hut.fi> 
  *
  * Modified for GSL by Brian Gough, 3/2000 
@@ -59,24 +59,24 @@ gsl_complex_abs2 (gsl_complex z)
 double
 gsl_complex_logabs (gsl_complex z)
 {				/* return log|z| */
-  double xabs = fabs(GSL_REAL (z));
-  double yabs = fabs(GSL_IMAG (z));
+  double xabs = fabs (GSL_REAL (z));
+  double yabs = fabs (GSL_IMAG (z));
   double max, u;
 
   if (xabs >= yabs)
     {
       max = xabs;
-      u = yabs/xabs;
+      u = yabs / xabs;
     }
   else
     {
       max = yabs;
-      u = xabs/yabs;
+      u = xabs / yabs;
     }
 
   /* Handle underflow when u is close to 0 */
 
-  return log (max) + 0.5 * gsl_log1p(u*u) ;
+  return log (max) + 0.5 * gsl_log1p (u * u);
 }
 
 
@@ -96,12 +96,21 @@ gsl_complex_add (gsl_complex a, gsl_complex b)
 }
 
 gsl_complex
-gsl_complex_add_real (gsl_complex a, double b)
-{				/* z=a+b */
+gsl_complex_add_real (gsl_complex a, double x)
+{				/* z=a+x */
   gsl_complex z;
-  GSL_SET_COMPLEX (&z, GSL_REAL (a) + b, GSL_IMAG (a));
+  GSL_SET_COMPLEX (&z, GSL_REAL (a) + x, GSL_IMAG (a));
   return z;
 }
+
+gsl_complex
+gsl_complex_add_imag (gsl_complex a, double y)
+{				/* z=a+iy */
+  gsl_complex z;
+  GSL_SET_COMPLEX (&z, GSL_REAL (a), GSL_IMAG (a) + y);
+  return z;
+}
+
 
 gsl_complex
 gsl_complex_sub (gsl_complex a, gsl_complex b)
@@ -115,10 +124,18 @@ gsl_complex_sub (gsl_complex a, gsl_complex b)
 }
 
 gsl_complex
-gsl_complex_sub_real (gsl_complex a, double b)
-{				/* z=a-b */
+gsl_complex_sub_real (gsl_complex a, double x)
+{				/* z=a-x */
   gsl_complex z;
-  GSL_SET_COMPLEX (&z, GSL_REAL (a) - b, GSL_IMAG (a));
+  GSL_SET_COMPLEX (&z, GSL_REAL (a) - x, GSL_IMAG (a));
+  return z;
+}
+
+gsl_complex
+gsl_complex_sub_imag (gsl_complex a, double y)
+{				/* z=a-iy */
+  gsl_complex z;
+  GSL_SET_COMPLEX (&z, GSL_REAL (a), GSL_IMAG (a) - y);
   return z;
 }
 
@@ -134,10 +151,18 @@ gsl_complex_mul (gsl_complex a, gsl_complex b)
 }
 
 gsl_complex
-gsl_complex_mul_real (gsl_complex a, double b)
-{				/* z=a*b */
+gsl_complex_mul_real (gsl_complex a, double x)
+{				/* z=a*x */
   gsl_complex z;
-  GSL_SET_COMPLEX (&z, GSL_REAL (a) * b, GSL_IMAG (a) * b);
+  GSL_SET_COMPLEX (&z, x * GSL_REAL (a), x * GSL_IMAG (a));
+  return z;
+}
+
+gsl_complex
+gsl_complex_mul_imag (gsl_complex a, double y)
+{				/* z=a*iy */
+  gsl_complex z;
+  GSL_SET_COMPLEX (&z, -y * GSL_IMAG (a), y * GSL_REAL (a));
   return z;
 }
 
@@ -182,12 +207,13 @@ gsl_complex_inverse (gsl_complex a)
   double s2 = 1.0 / gsl_complex_abs2 (a);
 
   gsl_complex z;
-  GSL_SET_COMPLEX (&z, GSL_REAL(a) * s2, -GSL_IMAG(a) * s2);
+  GSL_SET_COMPLEX (&z, GSL_REAL (a) * s2, -GSL_IMAG (a) * s2);
   return z;
 }
 
-/* Elementary complex functions 
- */
+/**********************************************************************
+ * Elementary complex functions 
+ **********************************************************************/
 
 gsl_complex
 gsl_complex_sqrt (gsl_complex a)
@@ -264,7 +290,7 @@ gsl_complex_pow (gsl_complex a, gsl_complex b)
 {				/* z=a^b */
   gsl_complex z;
 
-  if (GSL_REAL(a) == 0 && GSL_IMAG(a) == 0.0)
+  if (GSL_REAL (a) == 0 && GSL_IMAG (a) == 0.0)
     {
       GSL_SET_COMPLEX (&z, 0.0, 0.0);
     }
@@ -280,7 +306,7 @@ gsl_complex_pow (gsl_complex a, gsl_complex b)
 
       GSL_SET_COMPLEX (&z, rho * cos (beta), rho * sin (beta));
     }
-  
+
   return z;
 }
 
@@ -289,15 +315,15 @@ gsl_complex_pow_real (gsl_complex a, double b)
 {				/* z=a^b */
   gsl_complex z;
 
-  if (GSL_REAL(a) == 0 && GSL_IMAG(a) == 0)
+  if (GSL_REAL (a) == 0 && GSL_IMAG (a) == 0)
     {
       GSL_SET_COMPLEX (&z, 0, 0);
-    } 
-  else 
+    }
+  else
     {
       double logr = gsl_complex_logabs (a);
       double theta = gsl_complex_arg (a);
-      double rho = exp (logr *  b);
+      double rho = exp (logr * b);
       double beta = theta * b;
       GSL_SET_COMPLEX (&z, rho * cos (beta), rho * sin (beta));
     }
@@ -319,13 +345,13 @@ gsl_complex_log (gsl_complex a)
 gsl_complex
 gsl_complex_log10 (gsl_complex a)
 {				/* z = log10(a) */
-  return gsl_complex_mul_real(gsl_complex_log (a), 1/log(10.));
+  return gsl_complex_mul_real (gsl_complex_log (a), 1 / log (10.));
 }
 
 gsl_complex
 gsl_complex_log_b (gsl_complex a, gsl_complex b)
 {
-  return gsl_complex_div (gsl_complex_log(a), gsl_complex_log(b));
+  return gsl_complex_div (gsl_complex_log (a), gsl_complex_log (b));
 }
 
 /***********************************************************************
@@ -336,7 +362,7 @@ gsl_complex
 gsl_complex_sin (gsl_complex a)
 {				/* z = sin(a) */
   double R = GSL_REAL (a), I = GSL_IMAG (a);
-  
+
   gsl_complex z;
   GSL_SET_COMPLEX (&z, sin (R) * cosh (I), cos (R) * sinh (I));
   return z;
@@ -346,7 +372,7 @@ gsl_complex
 gsl_complex_cos (gsl_complex a)
 {				/* z = cos(a) */
   double R = GSL_REAL (a), I = GSL_IMAG (a);
-  
+
   gsl_complex z;
   GSL_SET_COMPLEX (&z, cos (R) * cosh (I), -sin (R) * sinh (I));
   return z;
@@ -359,22 +385,22 @@ gsl_complex_tan (gsl_complex a)
 
   gsl_complex z;
 
-  if (fabs(I) < 1) 
+  if (fabs (I) < 1)
     {
       double D = pow (cos (R), 2.0) + pow (sinh (I), 2.0);
-      
+
       GSL_SET_COMPLEX (&z, 0.5 * sin (2 * R) / D, 0.5 * sinh (2 * I) / D);
     }
   else
     {
-      double u = exp(-I) ;
-      double C = 2 * u / (1 - pow(u, 2.0)) ;
-      double D = 1 + pow(cos(R), 2.0) * pow(C, 2.0);
-      
-      double S = pow(C, 2.0);
-      double T = 1.0 / tanh(I);
+      double u = exp (-I);
+      double C = 2 * u / (1 - pow (u, 2.0));
+      double D = 1 + pow (cos (R), 2.0) * pow (C, 2.0);
 
-      GSL_SET_COMPLEX (&z, 0.5 * sin(2 * R) * S / D , T / D);
+      double S = pow (C, 2.0);
+      double T = 1.0 / tanh (I);
+
+      GSL_SET_COMPLEX (&z, 0.5 * sin (2 * R) * S / D, T / D);
     }
 
   return z;
@@ -386,16 +412,16 @@ gsl_complex_sec (gsl_complex a)
   double R = GSL_REAL (a), I = GSL_IMAG (a);
   gsl_complex z;
 
-  if (fabs(I) > 1)
+  if (fabs (I) > 1)
     {
-      double D = sinh(I) * (1 + pow (cos(R) / sinh(I), 2.0));
-      
-      GSL_SET_COMPLEX (&z, cos (R) / (tanh(I) * D), sin (R) / D);
+      double D = sinh (I) * (1 + pow (cos (R) / sinh (I), 2.0));
+
+      GSL_SET_COMPLEX (&z, cos (R) / (tanh (I) * D), sin (R) / D);
     }
   else
     {
       double D = gsl_hypot (cos (R), sinh (I));
-  
+
       GSL_SET_COMPLEX (&z, (cos (R) / D) * (cosh (I) / D), (sin (R) / D) * (sinh (I) / D));
     }
 
@@ -409,16 +435,16 @@ gsl_complex_csc (gsl_complex a)
 
   gsl_complex z;
 
-  if (fabs(I) > 1)
+  if (fabs (I) > 1)
     {
-      double D = sinh(I) * (1 + pow (sin(R) / sinh(I), 2.0));
-      
-      GSL_SET_COMPLEX (&z, sin (R) / (tanh(I) * D), -cos (R) / D);
+      double D = sinh (I) * (1 + pow (sin (R) / sinh (I), 2.0));
+
+      GSL_SET_COMPLEX (&z, sin (R) / (tanh (I) * D), -cos (R) / D);
     }
   else
     {
       double D = gsl_hypot (sin (R), sinh (I));
-  
+
       GSL_SET_COMPLEX (&z, (sin (R) / D) * (cosh (I) / D), -(cos (R) / D) * (sinh (I) / D));
     }
 
@@ -431,8 +457,8 @@ gsl_complex_cot (gsl_complex a)
 {				/* z = cot(a) */
   double R = GSL_REAL (a), I = GSL_IMAG (a);
   double D = pow (sin (R), 2.0) + pow (sinh (I), 2.0);
-  
-  gsl_complex z ;
+
+  gsl_complex z;
   GSL_SET_COMPLEX (&z, 0.5 * sin (2 * R) / D, -0.5 * sinh (2 * I) / D);
   return z;
 }
@@ -455,58 +481,58 @@ gsl_complex_arcsin (gsl_complex a)
     {
       z = gsl_complex_arcsin_real (R);
     }
-  else 
+  else
     {
-      double x = fabs(R), y = fabs(I);
+      double x = fabs (R), y = fabs (I);
       double r = gsl_hypot (x + 1, y), s = gsl_hypot (x - 1, y);
       double a = 0.5 * (r + s);
       double b = x / a;
-      double y2 = y*y;
+      double y2 = y * y;
 
       double real, imag;
 
-      const double a_crossover = 1.5, b_crossover = 0.6417 ;
-      
+      const double a_crossover = 1.5, b_crossover = 0.6417;
+
       if (b <= b_crossover)
-        {
-          real = asin(b) ;
-        }
+	{
+	  real = asin (b);
+	}
       else
-        {
-          if (x <= 1)
-            {
-              double D = 0.5*(a+x)*(y2/(r+x+1) + (s + (1-x)));
-              real = atan (x/sqrt(D));
-            }
-          else
-            {
-              double apx = a+x ;
-              double D = 0.5*(apx/(r+x+1) + apx/(s+(x-1)));
-              real = atan (x/(y * sqrt(D)));
-            }
-        }
+	{
+	  if (x <= 1)
+	    {
+	      double D = 0.5 * (a + x) * (y2 / (r + x + 1) + (s + (1 - x)));
+	      real = atan (x / sqrt (D));
+	    }
+	  else
+	    {
+	      double apx = a + x;
+	      double D = 0.5 * (apx / (r + x + 1) + apx / (s + (x - 1)));
+	      real = atan (x / (y * sqrt (D)));
+	    }
+	}
 
       if (a <= a_crossover)
-        {
-          double am1;
+	{
+	  double am1;
 
-          if (x < 1)
-            {
-              am1 = 0.5 * (y2/(r+(x+1)) + y2/(s+(1-x)));
-            }
-          else
-            {
-              am1 = 0.5 * (y2/(r+(x+1)) + (s + (x-1)));
-            }
-          
-          imag = gsl_log1p (am1 + sqrt(am1*(a+1)));
-        }
+	  if (x < 1)
+	    {
+	      am1 = 0.5 * (y2 / (r + (x + 1)) + y2 / (s + (1 - x)));
+	    }
+	  else
+	    {
+	      am1 = 0.5 * (y2 / (r + (x + 1)) + (s + (x - 1)));
+	    }
+
+	  imag = gsl_log1p (am1 + sqrt (am1 * (a + 1)));
+	}
       else
-        {
-          imag = log(a + sqrt(a*a - 1)) ;
-        }
+	{
+	  imag = log (a + sqrt (a * a - 1));
+	}
 
-      GSL_SET_COMPLEX(&z, (R >= 0) ? real : -real, (I >= 0) ? imag : -imag);
+      GSL_SET_COMPLEX (&z, (R >= 0) ? real : -real, (I >= 0) ? imag : -imag);
     }
 
   return z;
@@ -546,58 +572,58 @@ gsl_complex_arccos (gsl_complex a)
     {
       z = gsl_complex_arccos_real (R);
     }
-  else 
+  else
     {
-      double x = fabs(R), y = fabs(I);
+      double x = fabs (R), y = fabs (I);
       double r = gsl_hypot (x + 1, y), s = gsl_hypot (x - 1, y);
       double a = 0.5 * (r + s);
       double b = x / a;
-      double y2 = y*y;
+      double y2 = y * y;
 
       double real, imag;
 
-      const double a_crossover = 1.5, b_crossover = 0.6417 ;
-      
+      const double a_crossover = 1.5, b_crossover = 0.6417;
+
       if (b <= b_crossover)
-        {
-          real = acos(b) ;
-        }
+	{
+	  real = acos (b);
+	}
       else
-        {
-          if (x <= 1)
-            {
-              double D = 0.5*(a+x)*(y2/(r+x+1) + (s + (1-x)));
-              real = atan (sqrt(D)/x);
-            }
-          else
-            {
-              double apx = a+x ;
-              double D = 0.5*(apx/(r+x+1) + apx/(s+(x-1)));
-              real = atan ((y * sqrt(D))/x);
-            }
-        }
+	{
+	  if (x <= 1)
+	    {
+	      double D = 0.5 * (a + x) * (y2 / (r + x + 1) + (s + (1 - x)));
+	      real = atan (sqrt (D) / x);
+	    }
+	  else
+	    {
+	      double apx = a + x;
+	      double D = 0.5 * (apx / (r + x + 1) + apx / (s + (x - 1)));
+	      real = atan ((y * sqrt (D)) / x);
+	    }
+	}
 
       if (a <= a_crossover)
-        {
-          double am1;
+	{
+	  double am1;
 
-          if (x < 1)
-            {
-              am1 = 0.5 * (y2/(r+(x+1)) + y2/(s+(1-x)));
-            }
-          else
-            {
-              am1 = 0.5 * (y2/(r+(x+1)) + (s + (x-1)));
-            }
-          
-          imag = gsl_log1p (am1 + sqrt(am1*(a+1)));
-        }
+	  if (x < 1)
+	    {
+	      am1 = 0.5 * (y2 / (r + (x + 1)) + y2 / (s + (1 - x)));
+	    }
+	  else
+	    {
+	      am1 = 0.5 * (y2 / (r + (x + 1)) + (s + (x - 1)));
+	    }
+
+	  imag = gsl_log1p (am1 + sqrt (am1 * (a + 1)));
+	}
       else
-        {
-          imag = log(a + sqrt(a*a - 1)) ;
-        }
+	{
+	  imag = log (a + sqrt (a * a - 1));
+	}
 
-      GSL_SET_COMPLEX(&z, (R >= 0) ? real : M_PI - real, (I >= 0) ? -imag : imag);
+      GSL_SET_COMPLEX (&z, (R >= 0) ? real : M_PI - real, (I >= 0) ? -imag : imag);
     }
 
   return z;
@@ -635,50 +661,50 @@ gsl_complex_arctan (gsl_complex a)
 
   if (I == 0)
     {
-      GSL_SET_COMPLEX (&z, atan(R), 0);
+      GSL_SET_COMPLEX (&z, atan (R), 0);
     }
   else
     {
-      /* FIXME: This is a naive implementation which does not take
-         into account cancellation errors, overflow, underflow etc.
-         It would benefit from the Hull et al treatment. */
+      /* FIXME: This is a naive implementation which does not fully
+         take into account cancellation errors, overflow, underflow
+         etc.  It would benefit from the Hull et al treatment. */
 
-      double r = gsl_hypot(R,I);
+      double r = gsl_hypot (R, I);
 
       double imag;
-      
+
       double u = 2 * I / (1 + r * r);
 
-      if (fabs(u) < 0.1) /* FIXME: this cross-over should be optimized */
-        {
-          imag = 0.25 * (gsl_log1p (u) - gsl_log1p(-u));
-        }
+      if (fabs (u) < 0.1)	/* FIXME: this cross-over should be optimized */
+	{
+	  imag = 0.25 * (gsl_log1p (u) - gsl_log1p (-u));
+	}
       else
-        {
-          double a=  gsl_hypot (R, I+1);
-          double b = gsl_hypot (R, I - 1);
-          imag = 0.5 * log(a/b);
-        }
+	{
+	  double a = gsl_hypot (R, I + 1);
+	  double b = gsl_hypot (R, I - 1);
+	  imag = 0.5 * log (a / b);
+	}
 
       if (R == 0)
-        {
-          if (I > 1)
-            {
-              GSL_SET_COMPLEX(&z, M_PI/2.0, imag);
-            }
-          else if (I < -1)
-            {
-              GSL_SET_COMPLEX(&z, -M_PI/2.0, imag);
-            }
-          else 
-            {
-              GSL_SET_COMPLEX(&z, 0, imag);
-            } ;
-        }
-      else 
-        {
-          GSL_SET_COMPLEX (&z, 0.5 * atan2(2*R,((1+r)*(1-r))), imag);
-        }
+	{
+	  if (I > 1)
+	    {
+	      GSL_SET_COMPLEX (&z, M_PI_2, imag);
+	    }
+	  else if (I < -1)
+	    {
+	      GSL_SET_COMPLEX (&z, -M_PI_2, imag);
+	    }
+	  else
+	    {
+	      GSL_SET_COMPLEX (&z, 0, imag);
+	    };
+	}
+      else
+	{
+	  GSL_SET_COMPLEX (&z, 0.5 * atan2 (2 * R, ((1 + r) * (1 - r))), imag);
+	}
     }
 
   return z;
@@ -689,8 +715,8 @@ gsl_complex_arcsec (gsl_complex a)
 {				/* z = arcsec(a) */
   double R = GSL_REAL (a), I = GSL_IMAG (a);
   double D = pow (R, 2.0) + pow (I, 2.0);
-  double t = sqrt (pow (pow (R, 2.0) - 1, 2.0) 
-                     + pow (I, 2.0) * (2 * (1 + pow (R, 2.0)) + pow (I, 2.0)));
+  double t = sqrt (pow (pow (R, 2.0) - 1, 2.0)
+		   + pow (I, 2.0) * (2 * (1 + pow (R, 2.0)) + pow (I, 2.0)));
   double Phi = sqrt ((1 + D + t) / (2 * D));
   double P = R / D;
   gsl_complex z;
@@ -704,7 +730,7 @@ gsl_complex_arcsec_real (double a)
 
   if (a <= -1.0 || a >= 1.0)
     {
-      GSL_SET_COMPLEX (&z, acos (1/a), 0.0);
+      GSL_SET_COMPLEX (&z, acos (1 / a), 0.0);
     }
   else
     {
@@ -741,7 +767,7 @@ gsl_complex_arccsc_real (double a)
 
   if (a <= -1.0 || a >= 1.0)
     {
-      GSL_SET_COMPLEX (&z, asin (1/a), 0.0);
+      GSL_SET_COMPLEX (&z, asin (1 / a), 0.0);
     }
   else
     {
@@ -802,6 +828,17 @@ gsl_complex_cosh (gsl_complex a)
 }
 
 gsl_complex
+gsl_complex_tanh (gsl_complex a)
+{				/* z = tanh(a) */
+  double R = GSL_REAL (a), I = GSL_IMAG (a);
+  double D = pow (cos (I), 2.0) + pow (sinh (R), 2.0);
+
+  gsl_complex z;
+  GSL_SET_COMPLEX (&z, sinh (R) * cosh (R) / D, 0.5 * sin (2 * I) / D);
+  return z;
+}
+
+gsl_complex
 gsl_complex_sech (gsl_complex a)
 {				/* z = sech(a) */
   double R = GSL_REAL (a), I = GSL_IMAG (a);
@@ -824,17 +861,6 @@ gsl_complex_csch (gsl_complex a)
 }
 
 gsl_complex
-gsl_complex_tanh (gsl_complex a)
-{				/* z = tanh(a) */
-  double R = GSL_REAL (a), I = GSL_IMAG (a);
-  double D = pow (cos (I), 2.0) + pow (sinh (R), 2.0);
-
-  gsl_complex z;
-  GSL_SET_COMPLEX (&z, sinh (R) * cosh (R) / D, 0.5 * sin (2 * I) / D);
-  return z;
-}
-
-gsl_complex
 gsl_complex_coth (gsl_complex a)
 {				/* z = coth(a) */
   double R = GSL_REAL (a), I = GSL_IMAG (a);
@@ -852,25 +878,18 @@ gsl_complex_coth (gsl_complex a)
 gsl_complex
 gsl_complex_arcsinh (gsl_complex a)
 {				/* z = arcsinh(a) */
-  double R = GSL_REAL (a), I = GSL_IMAG (a);
-
-  gsl_complex z;
-  GSL_SET_COMPLEX(&z, (R-I)*(R+I) + 1.0, 2 * R * I);
-  z = gsl_complex_sqrt(z) ;
-  z = gsl_complex_add (z, a);
-  return gsl_complex_log(z);
+  gsl_complex z = gsl_complex_mul_imag(a, 1.0);
+  z = gsl_complex_arcsin (z);
+  z = gsl_complex_mul_imag (z, -1.0);
+  return z;
 }
 
 gsl_complex
 gsl_complex_arccosh (gsl_complex a)
 {				/* z = arccosh(a) */
-  double R = GSL_REAL (a), I = GSL_IMAG (a);
-
-  gsl_complex z;
-  GSL_SET_COMPLEX(&z, (R-I)*(R+I) - 1.0, 2 * R * I);
-  z = gsl_complex_sqrt(z) ;
-  z = gsl_complex_add (z, a);
-  return gsl_complex_log(z);
+  gsl_complex z = gsl_complex_arccos (a);
+  z = gsl_complex_mul_imag (z, GSL_IMAG(z) > 0 ? -1.0 : 1.0);
+  return z;
 }
 
 gsl_complex
@@ -893,37 +912,23 @@ gsl_complex_arccosh_real (double a)
 	  GSL_SET_COMPLEX (&z, acosh (-a), M_PI);
 	}
     }
-  
+
   return z;
-}
-
-gsl_complex
-gsl_complex_arcsech (gsl_complex a)
-{				/* z = arcsech(a); */
-  gsl_complex t = gsl_complex_inverse (a);
-  return gsl_complex_arccosh (t);
-}
-
-gsl_complex
-gsl_complex_arccsch (gsl_complex a)
-{				/* z = arccsch(a) */
-  gsl_complex t = gsl_complex_inverse (a);
-  return gsl_complex_arcsinh (t);
 }
 
 gsl_complex
 gsl_complex_arctanh (gsl_complex a)
 {				/* z = arctanh(a) */
-  if (GSL_IMAG(a) == 0.0)
+  if (GSL_IMAG (a) == 0.0)
     {
-      return gsl_complex_arctanh_real (GSL_REAL(a));
+      return gsl_complex_arctanh_real (GSL_REAL (a));
     }
-  else 
+  else
     {
-      gsl_complex p = gsl_complex_add_real(a, 1.0);
-      gsl_complex m = gsl_complex_add_real(gsl_complex_negative(a), 1.0);
-      gsl_complex r = gsl_complex_div (p, m);
-      return gsl_complex_mul_real(gsl_complex_log(r), 0.5);
+      gsl_complex z = gsl_complex_mul_imag(a, 1.0);
+      z = gsl_complex_arctan (z);
+      z = gsl_complex_mul_imag (z, -1.0);
+      return z;
     }
 }
 
@@ -945,9 +950,22 @@ gsl_complex_arctanh_real (double a)
 }
 
 gsl_complex
+gsl_complex_arcsech (gsl_complex a)
+{				/* z = arcsech(a); */
+  gsl_complex t = gsl_complex_inverse (a);
+  return gsl_complex_arccosh (t);
+}
+
+gsl_complex
+gsl_complex_arccsch (gsl_complex a)
+{				/* z = arccsch(a) */
+  gsl_complex t = gsl_complex_inverse (a);
+  return gsl_complex_arcsinh (t);
+}
+
+gsl_complex
 gsl_complex_arccoth (gsl_complex a)
 {				/* z = arccoth(a) */
   gsl_complex t = gsl_complex_inverse (a);
   return gsl_complex_arctanh (t);
 }
-
