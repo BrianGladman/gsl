@@ -5,11 +5,12 @@ failed you can find out what the precise cause of failure was. You can
 also define your own error handling functions to modify the default
 behavior of the library.
 
-Note: In this context we use the word @dfn{error} to mean something very
+Note: In this context we use the word @dfn{error} to mean something
 different from a bug. An error report from the library just means that
-the library was not able to compute what you asked, to the level of
-precision you specified. In the case of problems caused by bugs,
-@pxref{Debugging Numerical Programs}.
+the library was not able to compute what you asked. For example, if a
+root finding function cannot reach the level of precision you requested
+the library would return an error report. In the case of problems caused
+by real bugs, @pxref{Debugging Numerical Programs}.
 
 @menu
 * Error Reporting ::            
@@ -20,40 +21,52 @@ precision you specified. In the case of problems caused by bugs,
 @node Error Reporting
 @section Error Reporting
 
-GSL follows the error reporting conventions of the C library. Most
-functions in GSL return a status code of @code{-1} to indicate an error
-and @code{0} to indicate success. 
+GSL follows the thread-safe error reporting conventions of the POSIX
+Threads library. Functions in GSL return a non-zero error code to
+indicate an error and @code{0} to indicate success.
+
+@example
+int status = gsl_function(...)
+
+if (status) @{ /* an error occurred */
+  .....       /* the value of status specifies the type of error */
+@}
+@end example
 
 GSL routines report an error whenever they cannot perform the task
-requested of them. For example, a root-finding function would return
-@code{-1} if it could not converge to the requested accuracy, or
+requested of them. For example, a root-finding function would return a
+non-zero error code if could not converge to the requested accuracy, or
 exceeded a limit on the number of iterations. Situations like this are a
 normal occurrence when using any mathematical library and you should
 check the return status of the GSL functions that you call.
 
-Whenever a GSL routine indicates an error it also stores an error code
-in the variable @code{gsl_errno}. The value of @code{gsl_errno}
-specifies the type of error. It is analogous to the variable
-@code{errno} in the C library.
-
-@deftypevar int gsl_errno
-The variable @code{gsl_errno} contains the error code for the GSL
-library. You can change the value of @code{gsl_errno}. The initial value
-of @code{gsl_errno} at program startup is zero. Library functions will
-set it to certain non-zero values when they encounter an error. The
-error conditions are listed for each function. Functions do not change
-@code{gsl_errno} when they succeed; thus the value of @code{gsl_errno}
-after a successful call is not necessarily zero, and you should not use
-@code{gsl_errno} to determine @emph{whether} a call failed. The proper
-way to do that is documented for each function. @emph{If} the call
-failed, you can examine @code{gsl_errno}.
-@end deftypevar
+Whenever a GSL routine reports an error the return value specifies the
+type of error. The return value is analogous to the value of the
+variable @code{errno} in the C library. However, the C library's
+@code{errno} is a global variable, which is not thread-safe (There can
+be only one instance of a global variable per program. Different threads
+of execution may overwrite @code{errno} simultaneously).  By returning
+the error number directly GSL avoids this problem in a simple, portable
+way.
 
 The error code numbers are defined in the file @file{gsl_errno.h}. They
 all have the prefix @code{GSL_} and expand to non-zero constant integer
 values. Many of the error codes use the same base name as a
 corresponding error code in C library. Here are some of the most common
 error codes,
+
+@c @deftypevar int gsl_errno
+@c The variable @code{gsl_errno} contains the error code for the GSL
+@c library. You can change the value of @code{gsl_errno}. The initial value
+@c of @code{gsl_errno} at program startup is zero. Library functions will
+@c set it to certain non-zero values when they encounter an error. The
+@c error conditions are listed for each function. Functions do not change
+@c @code{gsl_errno} when they succeed; thus the value of @code{gsl_errno}
+@c after a successful call is not necessarily zero, and you should not use
+@c @code{gsl_errno} to determine @emph{whether} a call failed. The proper
+@c way to do that is documented for each function. @emph{If} the call
+@c failed, you can examine @code{gsl_errno}.
+@c @end deftypevar
 
 @cindex error codes
 @deftypefn {Macro} int GSL_EDOM
@@ -81,32 +94,39 @@ with passing the wrong argument to a library function (like EINVAL in the C
 library). 
 @end deftypefn
 
-Some mathematical functions in GSL return floating point numbers.  These
-functions use the same error reporting convention as functions such as
-@code{sqrt} and @code{sin} in the C library.  For these functions an
-error is indicated by returning a special numerical value such as
-@code{NaN} or @code{Inf}, in addition to setting @code{gsl_errno}. If
-you want to check for an error without looking at the return value then
-set @code{gsl_errno} to @code{0} before you call the function and test
-@code{gsl_errno} afterwards.
+The caller can examine the return code and decide what action to take,
+including ignoring the error if it is not considered serious.
+
+@c Some mathematical functions in GSL return floating point numbers.  These
+@c functions use the same error reporting convention as functions such as
+@c @code{sqrt} and @code{sin} in the C library.  For these functions an
+@c error is indicated by returning a special numerical value such as
+@c @code{NaN} or @code{Inf}, in addition to setting @code{gsl_errno}. If
+@c you want to check for an error without looking at the return value then
+@c set @code{gsl_errno} to @code{0} before you call the function and test
+@c @code{gsl_errno} afterwards.
 
 @cindex Errors - warnings
 @cindex warnings
-Apart from these mathematical functions, the library functions generally
-restrict their use of the return value to reporting either success or
-failure (such as @code{0} or @code{-1}).  The return value is not used
-to encode warnings, error-counts, error-levels or any other out-of-band
-information.  Information on the cause or severity of an error is
-always reported separately through the variable @code{gsl_errno}.  The
-@code{gsl_errno} error code can be used to specify precisely what
-circumstances have caused the problem.
 
-In a situation where other libraries might return a warning code (such
-as @code{-2}) GSL will always report an error, returning a status of
-@code{-1}. However, the functions will provide additional information in
-the @code{gsl_errno} error code, which will indicate the severity of the
-problem.  The caller can examine @code{gsl_errno} and decide what action
-to take, including ignoring the error if it is not considered serious.
+Some mathematical functions in GSL return floating point numbers or
+other numerical values.  Any functions which do this are guaranteed to
+succeed.  If there is a possibility that a mathematical function may
+need to report an error then it will be provided in a form which accepts
+a pointer for storing the numerical result, so that the status can be
+returned separately.
+
+@example
+double x;
+
+status = gsl_fff(a, b, c, &x)  FIXME, find a function which does this
+@end example
+
+@c In a situation where other libraries might return a warning code (such
+@c as @code{-2}) GSL will always report an error, returning a status of
+@c @code{-1}. However, the functions will provide additional information in
+@c the @code{gsl_errno} error code, which will indicate the severity of the
+@c problem.  
 
 Here is an example of some code which checks the return value of a
 function where an error might be reported,
@@ -115,10 +135,10 @@ function where an error might be reported,
 int status = gsl_fft_complex_radix2_forward (data, length);
 
 if (status) @{
-    if (gsl_errno == GSL_EINVAL) @{
+    if (status == GSL_EINVAL) @{
        fprintf (stderr, "invalid argument, length=%d\n", length); 
     @} else @{
-       fprintf (stderr, "status=%d, gsl_errno=%d\n", status, gsl_errno);
+       fprintf (stderr, "failed, gsl_errno=%d\n", status);
     @}
     abort ();
 @}
@@ -126,9 +146,8 @@ if (status) @{
 @noindent
 The function @code{gsl_fft_complex_radix2} only accepts integer lengths
 which are a power of two. If the variable @code{length} is not a power
-of two then the call to the library function will return a status of
-@code{-1}, and the value of @code{gsl_errno} will be set to
-@code{GSL_EINVAL} indicating that the length argument is invalid.
+of two then the call to the library function will return
+@code{GSL_EINVAL}, indicating that the length argument is invalid.
 
 @node Error Handlers
 @section Error Handlers
@@ -136,8 +155,7 @@ of two then the call to the library function will return a status of
 
 In addition to reporting errors the library also provides a simple error
 handler. The error handler is called by library functions when they are
-about to report an error (for example, before just before they return
-@code{-1}).
+about to report an error (for example, just before they return).
 
 The default behavior of the error handler is to call @code{abort()} when
 any error is reported by the library. If a library routine reports an
@@ -173,7 +191,9 @@ function @code{gsl_set_error_handler} which is also declared in
 
 This functions sets a new error handler, @var{new_handler}, for the GSL
 library routines. The previous handler is returned (so that you can
-restore it later). 
+restore it later).  Note that the pointer to a user defined error
+handler function is stored in a static variable, so there can only be
+one error handler per program.
 
 @example
 old_handler = gsl_set_error_handler (&my_error_handler); 
@@ -256,21 +276,20 @@ If you are writing numerical functions in program which also uses GSL code
 you may find it convenient to adopt the same error reporting conventions
 as in the library.
 
-To report an error you need to set the variable @code{gsl_errno} to the
-appropriate error code, call the function @code{gsl_error} with a string
-describing the error and then return a status code of @code{-1} or a
-special value, such as @code{NaN}. For convenience @file{gsl_errno.h}
-defines two macros to carry out these steps:
+To report an error you need to call the function @code{gsl_error} with a
+string describing the error and then return an appropriate error code
+from @code{gsl_errno.h}, or a special value, such as @code{NaN}. For
+convenience @file{gsl_errno.h} defines two macros to carry out these
+steps:
 
-@deffn {Macro} GSL_ERROR (@var{reason}, @var{errno})
+@deffn {Macro} GSL_ERROR (@var{reason}, @var{gsl_errno})
 
 This macro reports an error using the GSL conventions and returns a
-status value of @code{-1}. It expands to the following code fragment,
+status value of @code{gsl_errno}. It expands to the following code fragment,
 
 @example
-gsl_errno = errno ;
 gsl_error (reason, __FILE__, __LINE__) ;
-return -1 ;
+return gsl_errno ;
 @end example
 @noindent
 The macro definition in @file{gsl_errno.h} actually wraps the code
@@ -280,8 +299,7 @@ parsing problems.
 
 Here is an example of how the macro could be used to report that a
 routine did not achieve a requested tolerance. To report the error the
-routine needs to set the error code @code{gsl_errno} to the fictitious
-error code, @code{GSL_ETOL}, and return @code{-1}.
+routine needs to return the fictitious error code, @code{GSL_ETOL}.
 
 @example
 if (residual > tolerance) 
@@ -290,12 +308,11 @@ if (residual > tolerance)
   @}
 @end example
 
-@deffn {Macro} GSL_ERROR_RETURN (@var{reason}, @var{errno}, @var{value})
+@deffn {Macro} GSL_ERROR_RETURN (@var{reason}, @var{gsl_errno}, @var{value})
 
 This macro is the same as @code{GSL_ERROR} but returns a user-defined
-status value of @var{value} instead of @code{-1}. It can be used for
-mathematical functions that return a floating point value instead of a
-status code.
+status value of @var{value} instead of an error code. It can be used for
+mathematical functions that return a floating point value.
 @end deffn
 
 Here is an example where a function needs to return a @code{NaN} because
