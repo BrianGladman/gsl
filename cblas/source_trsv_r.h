@@ -31,119 +31,108 @@
     if (N == 0)
 	return;
 
-    if (TransA == CblasNoTrans) {
-	/* form  x := inv( A )*x */
+    /* form  x := inv( A )*x */
 
-	if (Uplo == CblasUpper) {
-	    /* backsubstitution */
+    if ((order == CblasRowMajor && TransA == CblasNoTrans && Uplo == CblasUpper)
+        || (order == CblasColMajor && TransA == CblasTrans && Uplo == CblasLower)) {
+      /* backsubstitution */
+      ix = OFFSET(N, incX) + incX * (N - 1);
+      if (nonunit) {
+        X[ix] = X[ix] / A[lda * (N - 1) + (N - 1)];
+      }
+      ix -= incX;
+      for (i = N - 1; i > 0 && i--; ) {
+        BASE tmp = X[ix];
+        jx = ix + incX;
+        for (j = i + 1; j < N; j++) {
+          const BASE Aij = A[lda * i + j];
+          tmp -= Aij * X[jx];
+          jx += incX;
+        }
+        if (nonunit) {
+          X[ix] = tmp / A[lda * i + i];
+        } else {
+          X[ix] = tmp;
+        }
+        ix -= incX;
+      }
+    } else if ((order == CblasRowMajor && TransA == CblasNoTrans && Uplo == CblasLower)
+               || (order == CblasColMajor && TransA == CblasTrans && Uplo == CblasUpper)) {
 
-	    if (nonunit) {
-		const size_t max_ix = incX * (N - 1);
-		X[max_ix] =
-		    X[max_ix] / ACCESS_UP(MATRIX_VAR_NAME, N, LDA, N - 1,
-					  N - 1);
-	    }
+      /* forward substitution */
+      ix = OFFSET(N, incX);
+      if (nonunit) {
+        X[ix] = X[ix] / A[lda * 0 + 0];
+      }
+      ix += incX;
+      for (i = 1; i < N; i++) {
+        BASE tmp = X[ix];
+        jx = OFFSET(N, incX);
+        for (j = 0; j < i; j++) {
+          const BASE Aij = A[lda * i + j];
+          tmp -= Aij * X[jx];
+          jx += incX;
+        }
+        if (nonunit) {
+          X[ix] = tmp / A[lda * i + i];
+        } else {
+          X[ix] = tmp;
+        }
+        ix += incX;
+      }
+    } else if ((order == CblasRowMajor && TransA == CblasTrans && Uplo == CblasUpper)
+               || (order == CblasColMajor && TransA == CblasNoTrans && Uplo == CblasLower)) {
+      
+      /* form  x := inv( A' )*x */
+      
+      /* forward substitution */
+      ix = OFFSET(N, incX);
+      if (nonunit) {
+        X[ix] = X[ix] / A[lda * 0 + 0];
+      }
+      ix += incX;
+      for (i = 1; i < N; i++) {
+        BASE tmp = X[ix];
+        jx = OFFSET(N, incX);
+        for (j = 0; j < i; j++) {
+          const BASE Aji = A[lda * j + i];
+          tmp -= Aji * X[jx];
+          jx += incX;
+        }
+        if (nonunit) {
+          X[ix] = tmp / A[lda * i + i];
+        } else {
+          X[ix] = tmp;
+        }
+        ix += incX;
+      }
+    } else if ((order == CblasRowMajor && TransA == CblasTrans && Uplo == CblasLower)
+               || (order == CblasColMajor && TransA == CblasNoTrans && Uplo == CblasUpper)) {
 
-	    ix = incX * (N - 2);
-	    for (id = 0; id < N - 1; id++) {
-		BASE tmp = X[ix];
-		i = N - 2 - id;
-		jx = ix + incX;
-		for (j = i + 1; j < GSL_MIN(N, i + KBAND + 1); j++) {
-		    const BASE Aij =
-			ACCESS_UP(MATRIX_VAR_NAME, N, LDA, i, j);
-		    tmp -= Aij * X[jx];
-		    jx += incX;
-		}
-		if (nonunit) {
-		    X[ix] = tmp / ACCESS_UP(MATRIX_VAR_NAME, N, LDA, i, i);
-		} else {
-		    X[ix] = tmp;
-		}
-		ix -= incX;
-	    }
-	} else {
-	    /* forward substitution */
-
-	    if (nonunit) {
-		X[0] = X[0] / ACCESS_LO(MATRIX_VAR_NAME, N, LDA, 0, 0);
-	    }
-
-	    ix = incX;
-	    for (i = 1; i < N; i++) {
-		BASE tmp = X[ix];
-		const size_t j0 = (i > KBAND ? i - KBAND : 0);
-		jx = j0 * incX;
-		for (j = j0; j < i; j++) {
-		    const BASE Aij =
-			ACCESS_LO(MATRIX_VAR_NAME, N, LDA, i, j);
-		    tmp -= Aij * X[jx];
-		    jx += incX;
-		}
-		if (nonunit) {
-		    X[ix] = tmp / ACCESS_LO(MATRIX_VAR_NAME, N, LDA, i, i);
-		} else {
-		    X[ix] = tmp;
-		}
-		ix += incX;
-	    }
-	}
+      /* backsubstitution */
+      ix = OFFSET(N, incX) + (N-1) * incX;
+      if (nonunit) {
+        X[ix] = X[ix] / A[lda * (N - 1) + (N - 1)];
+      }
+      ix -= incX;
+      for (i = N-1; i > 0 && i--;) {
+        BASE tmp = X[ix];
+        jx = ix + incX;
+        for (j = i + 1; j < N; j++) {
+          const BASE Aji = A[lda * j + i];
+          tmp -= Aji * X[jx];
+          jx += incX;
+        }
+        if (nonunit) {
+          X[ix] = tmp / A[lda * i + i];
+        } else {
+          X[ix] = tmp;
+        }
+        ix -= incX;
+      }
     } else {
-	/* form  x := inv( A' )*x */
-
-	if (Uplo == CblasUpper) {
-	    /* forward substitution */
-
-	    if (nonunit) {
-		X[0] = X[0] / ACCESS_UP(MATRIX_VAR_NAME, N, LDA, 0, 0);
-	    }
-
-	    ix = incX;
-	    for (i = 1; i < N; i++) {
-		BASE tmp = X[ix];
-		const size_t j0 = (i > KBAND ? i - KBAND : 0);
-		jx = j0 * incX;
-		for (j = j0; j < i; j++) {
-		    const BASE Aji =
-			ACCESS_UP(MATRIX_VAR_NAME, N, LDA, j, i);
-		    tmp -= Aji * X[jx];
-		    jx += incX;
-		}
-		if (nonunit) {
-		    X[ix] = tmp / ACCESS_UP(MATRIX_VAR_NAME, N, LDA, i, i);
-		} else {
-		    X[ix] = tmp;
-		}
-		ix += incX;
-	    }
-	} else {
-	    /* backsubstitution */
-
-	    if (nonunit) {
-		const size_t max_ix = incX * (N - 1);
-		X[max_ix] =
-		    X[max_ix] / ACCESS_LO(MATRIX_VAR_NAME, N, LDA, N - 1,
-					  N - 1);
-	    }
-
-	    ix = incX * (N - 2);
-	    for (id = 0; id < N - 1; id++) {
-		BASE tmp = X[ix];
-		i = N - 2 - id;
-		jx = ix + incX;
-		for (j = i + 1; j < GSL_MIN(N, i + KBAND + 1); j++) {
-		    const BASE Aji =
-			ACCESS_LO(MATRIX_VAR_NAME, N, LDA, j, i);
-		    tmp -= Aji * X[jx];
-		    jx += incX;
-		}
-		if (nonunit) {
-		    X[ix] = tmp / ACCESS_LO(MATRIX_VAR_NAME, N, LDA, i, i);
-		} else {
-		    X[ix] = tmp;
-		}
-		ix -= incX;
-	    }
-	}
+      BLAS_ERROR ("unrecognized operation");
     }
+
 }
+

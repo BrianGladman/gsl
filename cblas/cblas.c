@@ -17,11 +17,6 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-/*
- * Author:  G. Jungman  and  B. Gough
- * RCS:     $Id$
- */
-
 /* 
  * Conforms to cblas_ interface.
  */
@@ -730,7 +725,6 @@ cblas_dspmv (const enum CBLAS_ORDER order, const enum CBLAS_UPLO Uplo,
 #undef BASE
 }
 
-#ifdef 0
 /* TRMV */
 
 void
@@ -892,6 +886,7 @@ cblas_dtrsv (const enum CBLAS_ORDER order, const enum CBLAS_UPLO Uplo,
 #undef BASE
 }
 
+
 void
 cblas_ctrsv (const enum CBLAS_ORDER order, const enum CBLAS_UPLO Uplo,
 	     const enum CBLAS_TRANSPOSE TransA, const enum CBLAS_DIAG Diag,
@@ -914,6 +909,7 @@ cblas_ztrsv (const enum CBLAS_ORDER order, const enum CBLAS_UPLO Uplo,
 #undef BASE
 }
 
+#ifdef 0
 
 /* TBSV */
 

@@ -815,6 +815,15 @@ function YY = blas_spmv (order, uplo, N, alpha, A, X, incX, beta, Y, incY)
   YY = vout(Y, incY, N, y);
 endfunction
 
+function XX = blas_trsv (order, uplo, trans, diag, N, A, lda, X, incX)
+  a = trmatrix (order, uplo, diag, A, lda, N);
+  a = op(a, trans);
+  x = vector (X, incX, N);
+
+  y =  a \ x ;
+  
+  XX = vout(X, incX, N, y);
+endfunction
 
 
 ######################################################################
@@ -1344,6 +1353,8 @@ function test_hpspmv (S, fn, order, uplo, N, alpha, A,  X, incX, \
   end_block();
 endfunction
 
+
+
 ######################################################################
 
 s=1;d=2;c=3;z=4;
@@ -1671,19 +1682,34 @@ n=16;
 #   endfor
 # endfor
 
+# for j = 1:n
+#   for i = [s,d]
+#     S = context(i);
+#     T = test_spmatvectors(S, j);
+#     for alpha = coeff(S)
+#       for beta = coeff(S)
+#         for order = [101, 102]
+#           for uplo = [121, 122]
+#             for diag = [131, 132]
+#               test_hpspmv (S, "spmv", order, uplo, T.n, alpha, T.A, T.v1, \
+#                            T.s1, beta, T.v2, T.s2);
+#             endfor
+#           endfor
+#         endfor
+#       endfor
+#     endfor
+#   endfor
+# endfor
+
 for j = 1:n
-  for i = [s,d]
+  for i = [s,d,c,z]
     S = context(i);
-    T = test_spmatvectors(S, j);
-    for alpha = coeff(S)
-      for beta = coeff(S)
-        for order = [101, 102]
-          for uplo = [121, 122]
-            for diag = [131, 132]
-              test_hpspmv (S, "spmv", order, uplo, T.n, alpha, T.A, T.v1, \
-                           T.s1, beta, T.v2, T.s2);
-            endfor
-          endfor
+    T = test_trmatvector(S, j);
+    for order = [101, 102]
+      for uplo = [121, 122]
+        for diag = [131, 132]
+          test_trmv (S, "trsv", order, uplo, T.trans, diag, T.n,
+                     T.A, T.lda, T.v, T.s);
         endfor
       endfor
     endfor
