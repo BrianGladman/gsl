@@ -19,7 +19,7 @@
       ix = jx;
       iy = jy;
       for(k=kk+1; k<kk+N-j; k++) {
-        BASE_TYPE apk = Ap[k];
+        const BASE_TYPE apk = Ap[k];
         ix += incX;
 	iy += incY;
 	Y[iy] += tmp1 * apk;
@@ -40,7 +40,7 @@
       ix = 0;
       iy = 0;
       for(k=kk; k<kk+j; k++) {
-        BASE_TYPE apk = Ap[k];
+        const BASE_TYPE apk = Ap[k];
         Y[iy] += tmp1 * apk;
         tmp2  += apk * X[ix];
         ix += incX;
