@@ -26,6 +26,12 @@ Please report bugs to the GSL discussion list gsl-discuss@sources.redhat.com
 
 See the NEWS file for recent developments.
 
+The GSL Manual has been published and can be ordered from most
+bookstores. The publication details are,
+
+  GNU Scientific Library Reference Manual, M. Galassi et al, ISBN
+  095416170X (600 pages, paperback).
+
 If you are interested in participating in GSL development, please send
 mail to Mark Galassi -- rosalia@lanl.gov
 
