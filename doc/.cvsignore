@@ -9,6 +9,7 @@
 *.html
 *.info*
 *.ky
+*.la
 *.log
 *.pg
 *.ps
