@@ -1,0 +1,335 @@
+# Makefile.in generated automatically by automake 1.1l from Makefile.am
+
+# Copyright (C) 1994, 1995, 1996 Free Software Foundation, Inc.
+# This Makefile.in is free software; the Free Software Foundation
+# gives unlimited permission to copy, distribute and modify it.
+
+
+SHELL = /bin/sh
+
+srcdir = @srcdir@
+top_srcdir = @top_srcdir@
+VPATH = @srcdir@
+prefix = @prefix@
+exec_prefix = @exec_prefix@
+
+bindir = @bindir@
+sbindir = @sbindir@
+libexecdir = @libexecdir@
+datadir = @datadir@
+sysconfdir = @sysconfdir@
+sharedstatedir = @sharedstatedir@
+localstatedir = @localstatedir@
+libdir = @libdir@
+infodir = @infodir@
+mandir = @mandir@
+includedir = @includedir@
+oldincludedir = /usr/include
+
+pkgdatadir = $(datadir)/@PACKAGE@
+pkglibdir = $(libdir)/@PACKAGE@
+pkgincludedir = $(includedir)/@PACKAGE@
+
+top_builddir = ..
+
+INSTALL = @INSTALL@
+INSTALL_PROGRAM = @INSTALL_PROGRAM@
+INSTALL_DATA = @INSTALL_DATA@
+INSTALL_SCRIPT = @INSTALL_SCRIPT@
+transform = @program_transform_name@
+RANLIB = @RANLIB@
+PACKAGE = @PACKAGE@
+VERSION = @VERSION@
+CC = @CC@
+
+bin_PROGRAMS= gauss test-gauss bench-gauss poisson bench-poisson test-shuffle gamma bench-gamma
+
+include_HEADERS= gsl_randist.h
+
+INCLUDES= -I../ranunif
+LDADD= ../ranunif/libgslrantaus.a
+
+gauss_SOURCES= rungauss.c gauss.c
+test_gauss_SOURCES= test-gauss.c gauss.c
+bench_gauss_SOURCES= bench-gauss.c gauss.c
+
+poisson_SOURCES= runpoisson.c poisson.c 
+poisson_LDADD= exponential.o $(LDADD)
+bench_poisson_SOURCES= bench-poisson.c poisson.c
+bench_poisson_LDADD= $(poisson_LDADD)
+
+gamma_SOURCES= rungamma.c gamma.c
+bench_gamma_SOURCES= bench-gamma.c gamma.c
+
+test_shuffle_SOURCES= test-shuffle.c shuffle.c
+mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
+CONFIG_CLEAN_FILES = 
+PROGRAMS =  $(bin_PROGRAMS)
+
+
+DEFS = @DEFS@ -I. -I$(srcdir) 
+CPPFLAGS = @CPPFLAGS@
+LDFLAGS = @LDFLAGS@
+LIBS = @LIBS@
+gauss_OBJECTS =  rungauss.o gauss.o
+gauss_LDADD = $(LDADD)
+gauss_DEPENDENCIES =  ../ranunif/libgslrantaus.a
+gauss_LDFLAGS = 
+test_gauss_OBJECTS =  test-gauss.o gauss.o
+test_gauss_LDADD = $(LDADD)
+test_gauss_DEPENDENCIES =  ../ranunif/libgslrantaus.a
+test_gauss_LDFLAGS = 
+bench_gauss_OBJECTS =  bench-gauss.o gauss.o
+bench_gauss_LDADD = $(LDADD)
+bench_gauss_DEPENDENCIES =  ../ranunif/libgslrantaus.a
+bench_gauss_LDFLAGS = 
+poisson_OBJECTS =  runpoisson.o poisson.o
+poisson_DEPENDENCIES =  exponential.o ../ranunif/libgslrantaus.a
+poisson_LDFLAGS = 
+bench_poisson_OBJECTS =  bench-poisson.o poisson.o
+bench_poisson_DEPENDENCIES =  exponential.o ../ranunif/libgslrantaus.a
+bench_poisson_LDFLAGS = 
+test_shuffle_OBJECTS =  test-shuffle.o shuffle.o
+test_shuffle_LDADD = $(LDADD)
+test_shuffle_DEPENDENCIES =  ../ranunif/libgslrantaus.a
+test_shuffle_LDFLAGS = 
+gamma_OBJECTS =  rungamma.o gamma.o
+gamma_LDADD = $(LDADD)
+gamma_DEPENDENCIES =  ../ranunif/libgslrantaus.a
+gamma_LDFLAGS = 
+bench_gamma_OBJECTS =  bench-gamma.o gamma.o
+bench_gamma_LDADD = $(LDADD)
+bench_gamma_DEPENDENCIES =  ../ranunif/libgslrantaus.a
+bench_gamma_LDFLAGS = 
+CFLAGS = @CFLAGS@
+COMPILE = $(CC) $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
+LINK = $(CC) $(LDFLAGS) -o $@
+HEADERS =  $(include_HEADERS)
+
+DIST_COMMON =  Makefile.am Makefile.in
+
+
+DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) \
+	$(TEXINFOS) $(MANS) $(EXTRA_DIST)
+
+TAR = tar
+DEP_FILES =  .deps/bench-gamma.P .deps/bench-gauss.P \
+.deps/bench-poisson.P .deps/gamma.P .deps/gauss.P .deps/poisson.P \
+.deps/rungamma.P .deps/rungauss.P .deps/runpoisson.P .deps/shuffle.P \
+.deps/test-gauss.P .deps/test-shuffle.P
+SOURCES = $(gauss_SOURCES) $(test_gauss_SOURCES) $(bench_gauss_SOURCES) $(poisson_SOURCES) $(bench_poisson_SOURCES) $(test_shuffle_SOURCES) $(gamma_SOURCES) $(bench_gamma_SOURCES)
+OBJECTS = $(gauss_OBJECTS) $(test_gauss_OBJECTS) $(bench_gauss_OBJECTS) $(poisson_OBJECTS) $(bench_poisson_OBJECTS) $(test_shuffle_OBJECTS) $(gamma_OBJECTS) $(bench_gamma_OBJECTS)
+
+default: all
+
+.SUFFIXES:
+.SUFFIXES: .c .o
+$(srcdir)/Makefile.in: Makefile.am $(top_srcdir)/configure.in $(ACLOCAL) 
+	cd $(top_srcdir) && automake --gnu randist/Makefile
+
+Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status $(BUILT_SOURCES)
+	cd $(top_builddir) \
+	  && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
+
+
+mostlyclean-binPROGRAMS:
+
+clean-binPROGRAMS:
+	test -z "$(bin_PROGRAMS)" || rm -f $(bin_PROGRAMS)
+
+distclean-binPROGRAMS:
+
+maintainer-clean-binPROGRAMS:
+
+install-binPROGRAMS: $(bin_PROGRAMS)
+	$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(bindir)
+	@list="$(bin_PROGRAMS)"; for p in $$list; do \
+	  if test -f $$p; then \
+	    echo " $(INSTALL_PROGRAM) $$p $(bindir)/`echo $$p|sed '$(transform)'`"; \
+	     $(INSTALL_PROGRAM) $$p $(bindir)/`echo $$p|sed '$(transform)'`; \
+	  else :; fi; \
+	done
+
+uninstall-binPROGRAMS:
+	list="$(bin_PROGRAMS)"; for p in $$list; do \
+	  rm -f $(bindir)/`echo $$p|sed '$(transform)'`; \
+	done
+
+.c.o:
+	$(COMPILE) -c $<
+
+mostlyclean-compile:
+	rm -f *.o core
+
+clean-compile:
+
+distclean-compile:
+	rm -f *.tab.c
+
+maintainer-clean-compile:
+
+gauss: $(gauss_OBJECTS) $(gauss_DEPENDENCIES)
+	$(LINK) $(gauss_LDFLAGS) $(gauss_OBJECTS) $(gauss_LDADD) $(LIBS)
+
+test-gauss: $(test_gauss_OBJECTS) $(test_gauss_DEPENDENCIES)
+	$(LINK) $(test_gauss_LDFLAGS) $(test_gauss_OBJECTS) $(test_gauss_LDADD) $(LIBS)
+
+bench-gauss: $(bench_gauss_OBJECTS) $(bench_gauss_DEPENDENCIES)
+	$(LINK) $(bench_gauss_LDFLAGS) $(bench_gauss_OBJECTS) $(bench_gauss_LDADD) $(LIBS)
+
+poisson: $(poisson_OBJECTS) $(poisson_DEPENDENCIES)
+	$(LINK) $(poisson_LDFLAGS) $(poisson_OBJECTS) $(poisson_LDADD) $(LIBS)
+
+bench-poisson: $(bench_poisson_OBJECTS) $(bench_poisson_DEPENDENCIES)
+	$(LINK) $(bench_poisson_LDFLAGS) $(bench_poisson_OBJECTS) $(bench_poisson_LDADD) $(LIBS)
+
+test-shuffle: $(test_shuffle_OBJECTS) $(test_shuffle_DEPENDENCIES)
+	$(LINK) $(test_shuffle_LDFLAGS) $(test_shuffle_OBJECTS) $(test_shuffle_LDADD) $(LIBS)
+
+gamma: $(gamma_OBJECTS) $(gamma_DEPENDENCIES)
+	$(LINK) $(gamma_LDFLAGS) $(gamma_OBJECTS) $(gamma_LDADD) $(LIBS)
+
+bench-gamma: $(bench_gamma_OBJECTS) $(bench_gamma_DEPENDENCIES)
+	$(LINK) $(bench_gamma_LDFLAGS) $(bench_gamma_OBJECTS) $(bench_gamma_LDADD) $(LIBS)
+
+install-includeHEADERS: $(include_HEADERS)
+	$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(includedir)
+	@list="$(include_HEADERS)"; for p in $$list; do \
+	  echo "$(INSTALL_DATA) $(srcdir)/$$p $(includedir)/$$p"; \
+	  $(INSTALL_DATA) $(srcdir)/$$p $(includedir)/$$p; \
+	done
+
+uninstall-includeHEADERS:
+	list="$(include_HEADERS)"; for p in $$list; do \
+	  rm -f $(includedir)/$$p; \
+	done
+
+tags: TAGS
+
+ID: $(HEADERS) $(SOURCES)
+	here=`pwd` && cd $(srcdir) && mkid -f$$here/ID $(SOURCES) $(HEADERS)
+
+TAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES)
+	tags=; \
+	here=`pwd`; \
+	list="$(SUBDIRS)"; for subdir in $$list; do \
+	  test -f $$subdir/TAGS && tags="$$tags -i $$here/$$subdir/TAGS"; \
+	done; \
+	test -z "$(ETAGS_ARGS)$(SOURCES)$(HEADERS)$$tags" \
+	  || cd $(srcdir) && etags $(ETAGS_ARGS) $$tags  $(SOURCES) $(HEADERS) -o $$here/TAGS
+
+mostlyclean-tags:
+
+clean-tags:
+
+distclean-tags:
+	rm -f TAGS ID
+
+maintainer-clean-tags:
+
+distdir = $(top_builddir)/$(PACKAGE)-$(VERSION)/$(subdir)
+
+subdir = randist
+distdir: $(DISTFILES)
+	@for file in $(DISTFILES); do \
+	  d=$(srcdir); \
+	  test -f $(distdir)/$$file \
+	  || ln $$d/$$file $(distdir)/$$file 2> /dev/null \
+	  || cp -p $$d/$$file $(distdir)/$$file; \
+	done
+
+MKDEP = gcc -M $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
+
+-include .deps/.P
+.deps/.P:
+	test -d .deps || mkdir .deps
+	echo > $@
+
+-include $(DEP_FILES)
+$(DEP_FILES): .deps/.P
+
+mostlyclean-depend:
+
+clean-depend:
+
+distclean-depend:
+
+maintainer-clean-depend:
+	rm -rf .deps
+
+.deps/%.P: $(srcdir)/%.c
+	@echo "Computing dependencies for $<..."
+	@o='o';				\
+	test -n "$o" && o='$$o';	\
+	$(MKDEP) $< | sed "s/^\(.*\)\.o:/\1.$$o \1.l$$o:/" > $@
+info:
+dvi:
+check: all
+	$(MAKE)
+installcheck:
+install-exec: install-binPROGRAMS
+	$(NORMAL_INSTALL)
+
+install-data: install-includeHEADERS
+	$(NORMAL_INSTALL)
+
+install: install-exec install-data all
+	@:
+
+uninstall: uninstall-binPROGRAMS uninstall-includeHEADERS
+
+all: $(PROGRAMS) $(HEADERS) Makefile
+
+install-strip:
+	$(MAKE) INSTALL_PROGRAM='$(INSTALL_PROGRAM) -s' install
+installdirs:
+	$(mkinstalldirs)  $(bindir) $(includedir)
+
+
+mostlyclean-generic:
+	test -z "$(MOSTLYCLEANFILES)" || rm -f $(MOSTLYCLEANFILES)
+
+clean-generic:
+	test -z "$(CLEANFILES)" || rm -f $(CLEANFILES)
+
+distclean-generic:
+	rm -f Makefile $(DISTCLEANFILES)
+	rm -f config.cache config.log stamp-h
+	test -z "$(CONFIG_CLEAN_FILES)" || rm -f $(CONFIG_CLEAN_FILES)
+
+maintainer-clean-generic:
+	test -z "$(MAINTAINERCLEANFILES)" || rm -f $(MAINTAINERCLEANFILES)
+	test -z "$(BUILT_SOURCES)" || rm -f $(BUILT_SOURCES)
+mostlyclean:  mostlyclean-binPROGRAMS mostlyclean-compile \
+		mostlyclean-tags mostlyclean-depend mostlyclean-generic
+
+clean:  clean-binPROGRAMS clean-compile clean-tags clean-depend \
+		clean-generic mostlyclean
+
+distclean:  distclean-binPROGRAMS distclean-compile distclean-tags \
+		distclean-depend distclean-generic clean
+	rm -f config.status
+
+maintainer-clean:  maintainer-clean-binPROGRAMS maintainer-clean-compile \
+		maintainer-clean-tags maintainer-clean-depend \
+		maintainer-clean-generic distclean
+	@echo "This command is intended for maintainers to use;"
+	@echo "it deletes files that may require special tools to rebuild."
+
+.PHONY: default mostlyclean-binPROGRAMS distclean-binPROGRAMS \
+clean-binPROGRAMS maintainer-clean-binPROGRAMS uninstall-binPROGRAMS \
+install-binPROGRAMS mostlyclean-compile distclean-compile clean-compile \
+maintainer-clean-compile uninstall-includeHEADERS \
+install-includeHEADERS tags mostlyclean-tags distclean-tags clean-tags \
+maintainer-clean-tags distdir mostlyclean-depend distclean-depend \
+clean-depend maintainer-clean-depend info dvi installcheck install-exec \
+install-data install uninstall all installdirs mostlyclean-generic \
+distclean-generic clean-generic maintainer-clean-generic clean \
+mostlyclean distclean maintainer-clean
+
+
+# Tell versions [3.59,3.63) of GNU make to not export all variables.
+# Otherwise a system limit (for SysV at least) may be exceeded.
+.NOEXPORT:
