@@ -1410,7 +1410,6 @@ int test_tbsv(void)
   float  tmp_f[32];
   double tmp_d[32];
 
-
   gsl_blas_raw_scopy(4, vector_4_f, 1, tmp_f, 1);
   gsl_blas_raw_stbsv(CblasUpper, CblasNoTrans, CblasNonUnit, 4, 3, matrix_t_4_f, 4, tmp_f, 1);
   s = ( tmp_f[0] != -2.0 || frac_diff(tmp_f[1], -23.0/6.0) > eps_f ||
@@ -1460,6 +1459,58 @@ int test_tbsv(void)
         tmp_f[2] !=  1.5 || tmp_f[3] != 3.0
        );
   gsl_test(s, "gsl_blas_raw_stbsv F");
+  status += s;
+
+
+  gsl_blas_raw_dcopy(4, vector_4_d, 1, tmp_d, 1);
+  gsl_blas_raw_dtbsv(CblasUpper, CblasNoTrans, CblasNonUnit, 4, 3, matrix_t_4_d, 4, tmp_d, 1);
+  s = ( tmp_d[0] != -2.0 || frac_diff(tmp_d[1], -23.0/6.0) > eps ||
+        tmp_d[2] !=  1.5 || tmp_d[3] != 3.0
+       );
+  gsl_test(s, "gsl_blas_raw_dtbsv A");
+  status += s;
+
+  gsl_blas_raw_dcopy(4, vector_4_d, 1, tmp_d, 1);
+  gsl_blas_raw_dtbsv(CblasUpper, CblasNoTrans, CblasNonUnit, 4, 2, matrix_t_4_d, 4, tmp_d, 1);
+  s = ( tmp_d[0] != 1.0 || frac_diff(tmp_d[1], -23.0/6.0) > eps ||
+        tmp_d[2] != 1.5 || tmp_d[3] != 3.0
+       );
+  gsl_test(s, "gsl_blas_raw_dtbsv B");
+  status += s;
+
+  gsl_blas_raw_dcopy(4, vector_4_d, 1, tmp_d, 2);
+  gsl_blas_raw_dtbsv(CblasUpper, CblasNoTrans, CblasNonUnit, 4, 2, matrix_t_4_d, 4, tmp_d, 2);
+  s = ( tmp_d[0] !=  1.0 || frac_diff(tmp_d[2], -23.0/6.0) > eps ||
+        tmp_d[4] !=  1.5 || tmp_d[6] != 3.0
+       );
+  gsl_test(s, "gsl_blas_raw_dtbsv C");
+  status += s;
+
+  gsl_blas_raw_dcopy(4, vector_4_d, 1, tmp_d, 1);
+  gsl_blas_raw_dtbsv(CblasUpper, CblasTrans, CblasNonUnit, 4, 2, matrix_t_4_d, 4, tmp_d, 1);
+  s = ( tmp_d[0] != -2.0 ||
+        frac_diff(tmp_d[1], -1.0/3.0) > eps ||
+	frac_diff(tmp_d[2],  7.0/3.0) > eps ||
+	frac_diff(tmp_d[3], 13.0/6.0) > eps
+       );
+  gsl_test(s, "gsl_blas_raw_dtbsv D");
+  status += s;
+
+  gsl_blas_raw_dcopy(4, vector_4_d, 1, tmp_d, 1);
+  gsl_blas_raw_dtbsv(CblasLower, CblasNoTrans, CblasNonUnit, 4, 2, matrix_t_4_d, 4, tmp_d, 1);
+  s = ( tmp_d[0] != -2.0 || tmp_d[1] != 0.0 ||
+        tmp_d[2] != -4.0 || tmp_d[3] != 5.0
+       );
+  gsl_test(s, "gsl_blas_raw_dtbsv E");
+  status += s;
+
+  gsl_blas_raw_dcopy(4, vector_4_d, 1, tmp_d, 1);
+  gsl_blas_raw_dtbsv(CblasLower, CblasTrans, CblasNonUnit, 4, 2, matrix_t_4_d, 4, tmp_d, 1);
+  s = ( frac_diff(tmp_d[0],-35.0/6.0) > eps ||
+        frac_diff(tmp_d[1],  5.0/3.0) > eps ||
+        tmp_d[2] !=  1.5 || tmp_d[3] != 3.0
+       );
+  gsl_test(s, "gsl_blas_raw_dtbsv F");
   status += s;
 
 
