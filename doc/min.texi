@@ -413,7 +413,7 @@ main ()
       x_lower = gsl_min_fminimizer_x_lower (s);
       x_upper = gsl_min_fminimizer_x_upper (s);
 
-      status = gsl_min_test_interval (x, 0.001, 0.0);
+      status = gsl_min_test_interval (x_lower, x_upper, 0.001, 0.0);
 
       if (status == GSL_SUCCESS)
         printf ("Converged:\n");
