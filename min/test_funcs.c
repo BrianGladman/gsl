@@ -22,27 +22,28 @@
 
 #include "test.h"
 
-gsl_function create_function (simple_function * f) 
+gsl_function create_function (double (*f)(double, void *)) 
 {
   gsl_function F ;
-  F.function = eval_function ;
-  F.params = (void *)f ;
+  F.function = f ;
+  F.params = 0 ;
   return F ;
 }
 
-double eval_function (double x, void * params) 
+double
+f_cos (double x, void * p)
 {
-  simple_function *f = (simple_function *)params ;
-  return (*f)(x) ;
+  p = 0;  /* avoid warning about unused parameter */
+  return cos(x);
 }
-
 
 /* f(x) = x^4 - 1 */
 /* minimum at x = 0 */
 
 double
-func1 (double x)
+func1 (double x, void * p)
 {
+  p = 0;  /* avoid warning about unused parameter */
   return pow (x, 4.0) - 1;
 }
 
@@ -50,8 +51,9 @@ func1 (double x)
 /* minimum at x = 0 */
 
 double
-func2 (double x)
+func2 (double x, void * p)
 {
+  p = 0;  /* avoid warning about unused parameter */
   return sqrt(fabs(x));
 }
 
@@ -60,8 +62,10 @@ func2 (double x)
 /* minimum at x = 1 */
 
 double
-func3 (double x)
+func3 (double x, void * p)
 {
+  p = 0;  /* avoid warning about unused parameter */
+
   if (x < 1)
     return 1 ;
   else

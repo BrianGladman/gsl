@@ -62,8 +62,8 @@ test_roots (void)
   fdfsolver[2] = gsl_root_fdfsolver_steffenson;
   fdfsolver[3] = 0;
 
-  F_sin = create_function (sin) ;
-  F_cos = create_function (cos) ; 
+  F_sin = create_function (sin_f) ;
+  F_cos = create_function (cos_f) ; 
   F_func1 = create_function (func1) ;
   F_func2 = create_function (func2) ;
   F_func3 = create_function (func3) ;
@@ -71,14 +71,14 @@ test_roots (void)
   F_func5 = create_function (func5) ;
   F_func6 = create_function (func6) ;
 
-  FDF_sin = create_fdf (sin_f, sin_df) ;
-  FDF_cos = create_fdf (cos_f, cos_df) ;
-  FDF_func1 = create_fdf (func1, func1_df) ;
-  FDF_func2 = create_fdf (func2, func2_df) ;
-  FDF_func3 = create_fdf (func3, func3_df) ;
-  FDF_func4 = create_fdf (func4, func4_df) ;
-  FDF_func5 = create_fdf (func5, func5_df) ;
-  FDF_func6 = create_fdf (func6, func6_df) ;
+  FDF_sin = create_fdf (sin_f, sin_df, sin_fdf) ;
+  FDF_cos = create_fdf (cos_f, cos_df, cos_fdf) ;
+  FDF_func1 = create_fdf (func1, func1_df, func1_fdf) ;
+  FDF_func2 = create_fdf (func2, func2_df, func2_fdf) ;
+  FDF_func3 = create_fdf (func3, func3_df, func3_fdf) ;
+  FDF_func4 = create_fdf (func4, func4_df, func4_fdf) ;
+  FDF_func5 = create_fdf (func5, func5_df, func5_fdf) ;
+  FDF_func6 = create_fdf (func6, func6_df, func6_fdf) ;
 
   gsl_set_error_handler (&my_error_handler);
 

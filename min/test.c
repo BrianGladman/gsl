@@ -53,7 +53,7 @@ main (void)
   fminimizer[1] = gsl_min_fminimizer_brent;
   fminimizer[2] = 0;
 
-  F_cos = create_function (cos) ;
+  F_cos = create_function (f_cos) ;
   F_func1 = create_function (func1) ;
   F_func2 = create_function (func2) ;
   F_func3 = create_function (func3) ;
@@ -71,10 +71,10 @@ main (void)
       test_f_e (*T, "invalid range check [1, 1]", &F_cos, 1.0, 1.0, 1.0, M_PI);
       test_f_e (*T, "invalid range check [-1, 1]", &F_cos, -1.0, 0.0, 1.0, M_PI);
     }
-  test_bracket("cos(x) [1,2]",&F_cos,1,2,15);
-  test_bracket("sqrt(|x|) [-1,0]",&F_func2,-1,0,15);
-  test_bracket("sqrt(|x|) [-1,-0.6]",&F_func2,-1,-0.6,15);
-  test_bracket("sqrt(|x|) [-1,1]",&F_func2,-1,1,15);
+  test_bracket("cos(x) [1,2]",&F_cos,1.0,2.0,15);
+  test_bracket("sqrt(|x|) [-1,0]",&F_func2,-1.0,0.0,15);
+  test_bracket("sqrt(|x|) [-1,-0.6]",&F_func2,-1.0,-0.6,15);
+  test_bracket("sqrt(|x|) [-1,1]",&F_func2,-1.0,1.0,15);
 
   return gsl_test_summary ();
 }
@@ -190,7 +190,7 @@ my_error_handler (const char *reason, const char *file, int line, int err)
 
 int
 test_bracket (const char * description,gsl_function *f,double lower_bound, 
-	      double upper_bound, int max)
+	      double upper_bound, unsigned int max)
 {
   int status;
   gsl_interval x;

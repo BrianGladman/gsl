@@ -41,56 +41,7 @@ int rng_bin_test (gsl_rng * r, double *sigma);
 int
 main (void)
 {
-  const gsl_rng_type * rngs[] =  { 
-    gsl_rng_cmrg,
-    gsl_rng_gfsr4,
-    gsl_rng_minstd,
-    gsl_rng_mrg,
-    gsl_rng_mt19937,
-    gsl_rng_r250,
-    gsl_rng_ran0,
-    gsl_rng_ran1,
-    gsl_rng_ran2,
-    gsl_rng_ran3,
-    gsl_rng_rand48,
-    gsl_rng_rand,
-    gsl_rng_random128_bsd,
-    gsl_rng_random128_glibc2,
-    gsl_rng_random128_libc5,
-    gsl_rng_random256_bsd,
-    gsl_rng_random256_glibc2,
-    gsl_rng_random256_libc5,
-    gsl_rng_random32_bsd,
-    gsl_rng_random32_glibc2,
-    gsl_rng_random32_libc5,
-    gsl_rng_random64_bsd,
-    gsl_rng_random64_glibc2,
-    gsl_rng_random64_libc5,
-    gsl_rng_random8_bsd,
-    gsl_rng_random8_glibc2,
-    gsl_rng_random8_libc5,
-    gsl_rng_random_bsd,
-    gsl_rng_random_glibc2,
-    gsl_rng_random_libc5,
-    gsl_rng_randu,
-    gsl_rng_ranf,
-    gsl_rng_ranlux389,
-    gsl_rng_ranlux,
-    gsl_rng_ranlxd1,
-    gsl_rng_ranlxd2,
-    gsl_rng_ranlxs0,
-    gsl_rng_ranlxs1,
-    gsl_rng_ranlxs2,
-    gsl_rng_ranmar,
-    gsl_rng_slatec,
-    gsl_rng_taus,
-    gsl_rng_transputer,
-    gsl_rng_tt800,
-    gsl_rng_uni32,
-    gsl_rng_uni,
-    gsl_rng_vax,
-    gsl_rng_zuf,
-    0};
+  const gsl_rng_type ** rngs = gsl_rng_types_setup();  /* get all rng types */
 
   const gsl_rng_type ** r ;
 
@@ -451,7 +402,7 @@ rng_min_test (gsl_rng * r, unsigned long int *kmin,
   unsigned long int actual_uncovered;
   double expect_uncovered;
   int status;
-  unsigned long int min = 1e9;
+  unsigned long int min = 1000000000UL;
   int i;
 
   for (i = 0; i < N2; ++i)

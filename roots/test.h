@@ -20,16 +20,10 @@
 
 /* $Id$ */
 
-typedef double simple_function (double x);
-typedef struct { simple_function * f; simple_function * df; } function_pair ;
-
-gsl_function create_function (simple_function * f) ;
-double eval_function (double x, void * params) ;
-
-gsl_function_fdf create_fdf (simple_function * f, simple_function * df);
-double eval_fdf_f (double x, void * params);
-double eval_fdf_df (double x, void * params);
-void eval_fdf (double x, void * params, double * y1, double * y2);
+gsl_function create_function (double (*f)(double, void *)) ;
+gsl_function_fdf create_fdf (double (*f)(double, void *),
+                             double (*df)(double, void *),
+                             void (*fdf)(double, void *, double *, double *));
 
 void
   test_macros (void);
@@ -66,73 +60,73 @@ void
   error_handler (const char *reason, const char *file, int line);
 
 double
-  func1 (double x);
+  func1 (double x, void * p);
 
 double
-  func1_df (double x);
+  func1_df (double x, void * p);
 
 void
-  func1_fdf (double x, double *y, double *yprime);
+  func1_fdf (double x, void * p, double *y, double *yprime);
 
 double
-  func2 (double x);
+  func2 (double x, void * p);
 
 double
-  func2_df (double x);
+  func2_df (double x, void * p);
 
 void
-  func2_fdf (double x, double *y, double *yprime);
+  func2_fdf (double x, void * p, double *y, double *yprime);
 
 double
-  func3 (double x);
+  func3 (double x, void * p);
 
 double
-  func3_df (double x);
+  func3_df (double x, void * p);
 
 void
-  func3_fdf (double x, double *y, double *yprime);
+  func3_fdf (double x, void * p, double *y, double *yprime);
 
 double
-  func4 (double x);
+  func4 (double x, void * p);
 
 double
-  func4_df (double x);
+  func4_df (double x, void * p);
 
 void
-  func4_fdf (double x, double *y, double *yprime);
+  func4_fdf (double x, void * p, double *y, double *yprime);
 
 double
-  func5 (double x);
+  func5 (double x, void * p);
 
 double
-  func5_df (double x);
+  func5_df (double x, void * p);
 
 void
-  func5_fdf (double x, double *y, double *yprime);
+  func5_fdf (double x, void * p, double *y, double *yprime);
 
 double
-  func6 (double x);
+  func6 (double x, void * p);
 
 double
-  func6_df (double x);
+  func6_df (double x, void * p);
 
 void
-  func6_fdf (double x, double *y, double *yprime);
+  func6_fdf (double x, void * p, double *y, double *yprime);
 
 double
-  sin_f (double x);
+  sin_f (double x, void * p);
 
 double
-  sin_df (double x);
+  sin_df (double x, void * p);
 
 void
-  sin_fdf (double x, double *y, double *yprime);
+  sin_fdf (double x, void * p, double *y, double *yprime);
 
 double
-  cos_f (double x);
+  cos_f (double x, void * p);
 
 double
-  cos_df (double x);
+  cos_df (double x, void * p);
 
 void
-  cos_fdf (double x, double *y, double *yprime);
+  cos_fdf (double x, void * p, double *y, double *yprime);

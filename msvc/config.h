@@ -28,7 +28,7 @@
 #undef HAVE_ATANH
 
 /* Define if you have the clock function.  */
-#undef HAVE_CLOCK
+#define HAVE_CLOCK
 
 /* Define if you have the expm1 function.  */
 #undef HAVE_EXPM1
@@ -70,7 +70,7 @@
 /* #define HAVE_INLINE */
 
 /* Define if you have the ansi CLOCKS_PER_SEC clock rate */
-#undef HAVE_CLOCKS_PER_SEC
+#define HAVE_CLOCKS_PER_SEC
 
 /* Defined if configure has guessed a missing ansi CLOCKS_PER_SEC clock rate */
 #undef HAVE_GUESSED_CLOCKS_PER_SEC

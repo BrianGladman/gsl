@@ -17,11 +17,7 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-typedef double simple_function (double x);
-typedef struct { simple_function * f; simple_function * df; } function_pair ;
-
-gsl_function create_function (simple_function * f) ;
-double eval_function (double x, void * params) ;
+gsl_function create_function (double (*f)(double, void *));
 
 void
 test_f_e (const gsl_min_fminimizer_type * T, 
@@ -37,8 +33,9 @@ test_f (const gsl_min_fminimizer_type * T,
 
 int
 test_bracket (const char * description,gsl_function *f,double lower_bound, 
-	      double upper_bound, int max);
+	      double upper_bound, unsigned int max);
 
-double func1 (double x);
-double func2 (double x);
-double func3 (double x);
+double f_cos (double x, void * p);
+double func1 (double x, void * p);
+double func2 (double x, void * p);
+double func3 (double x, void * p);
