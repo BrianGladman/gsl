@@ -170,8 +170,8 @@ functions are not available the macros @code{GSL_MAX} or @code{GSL_MIN}
 will be automatically substituted.
 @end deftypefun
 
-@deftypefun {extern inline} long double GSL_MAX_LDBL (long double @var{a}, long double @var{b})
-@deftypefunx {extern inline} long double GSL_MIN_LDBL (long double @var{a}, long double @var{b})
+@deftypefun {extern inline long double} GSL_MAX_LDBL (long double @var{a}, long double @var{b})
+@deftypefunx {extern inline long double} GSL_MIN_LDBL (long double @var{a}, long double @var{b})
 These functions return the maximum or minimum of the long doubles @var{a}
 and @var{b} using an inline function.  On platforms where inline
 functions are not available the macros @code{GSL_MAX} or @code{GSL_MIN}

@@ -4,9 +4,9 @@ on the @code{gsl_vector} and @code{gsl_matrix} objects.  These are meant
 for "small" systems where simple algorithms are acceptable.
 
 Anyone interested in large systems will want to use the sophisticated
-routines found in @sc{lapack}. @sc{lapack} is recommended as the
-standard package for linear algebra.  It supports blocked algorithms for
-greater efficiency, specialized data representations, and other
+routines found in @sc{lapack}. The Fortran version of @sc{lapack} is
+recommended as the standard package for linear algebra.  It supports
+blocked algorithms, specialized data representations and other
 optimizations.
 
 @menu
@@ -24,6 +24,7 @@ optimizations.
 
 A general square matrix @math{A} has an @math{LU} decomposition into
 upper and lower triangular matrices,
+
 @tex
 \beforedisplay
 $$
@@ -38,84 +39,85 @@ P A = L U
 @end ifinfo
 @noindent
 where @math{P} is a permutation matrix, @math{L} is unit lower
-triangular matrix and @math{R} is upper triangular matrix.
+triangular matrix and @math{R} is upper triangular matrix. For square
+matrices this decomposition can be used to convert the linear system
+@math{A x = b} into a pair of triangular systems (@math{L y = P b},
+@math{U x = y}), which can be solved by forward and back-substitution.
 
-@deftypefun int gsl_linalg_LU_decomp (gsl_matrix * @var{a}, gsl_permutation * @var{p}, int *@var{signum})
-This function factorizes the square matrix @var{a} into the @math{LU}
-decomposition @math{P A = L U}.  On output the diagonal and upper
-triangular part of the input matrix contains the matrix @math{R}. The
-lower triangular part of the input matrix (excluding the diagonal)
-contains @math{L}.  The diagonal elements of @math{L} are unity, and are
-not stored.
+@deftypefun int gsl_linalg_LU_decomp (gsl_matrix * @var{A}, gsl_permutation * @var{p}, int *@var{signum})
+This function factorizes the square matrix @var{A} into the @math{LU}
+decomposition @math{PA = LU}.  On output the diagonal and upper
+triangular part of the input matrix @var{A} contain the matrix
+@math{R}. The lower triangular part of the input matrix (excluding the
+diagonal) contains @math{L}.  The diagonal elements of @math{L} are
+unity, and are not stored.
 
 The permutation matrix @math{P} is encoded in the permutation
 @var{p}. The @math{j}-th column of the matrix @math{P} is given by the
-@math{k}-th column of the identity matrix, where @code{k =
-permutation->data[j]}.
-
-The sign of the permutation is given by @var{signum}. It has the value
-@math{(-1)^n}, where @math{n} is the number of interchanges in the
-permutation.
+@math{k}-th column of the identity matrix, where @math{k = p_j} the
+@math{j}-th element of the permutation vector. The sign of the
+permutation is given by @var{signum}. It has the value @math{(-1)^n},
+where @math{n} is the number of interchanges in the permutation.
 
 The algorithm used in the decomposition is Gaussian Elimination with
 partial pivoting (Golub & Van Loan, @cite{Matrix Computations},
 Algorithm 3.4.1).
-
 @end deftypefun
 
-@deftypefun int gsl_linalg_LU_solve (const gsl_matrix * @var{lu}, const gsl_permutation * @var{p}, const gsl_vector * @var{b}, gsl_vector * @var{x})
+@deftypefun int gsl_linalg_LU_solve (const gsl_matrix * @var{LU}, const gsl_permutation * @var{p}, const gsl_vector * @var{b}, gsl_vector * @var{x})
 This function solves the system @math{A x = b} using the @math{LU}
-decomposition of @math{A} into (@var{lu}, @var{p}) given by
+decomposition of @math{A} into (@var{LU}, @var{p}) given by
 @code{gsl_linalg_LU_decomp}.
 @end deftypefun
 
-@deftypefun int gsl_linalg_LU_svx (const gsl_matrix * @var{lu}, const gsl_permutation * @var{p}, gsl_vector * @var{x})
+@deftypefun int gsl_linalg_LU_svx (const gsl_matrix * @var{LU}, const gsl_permutation * @var{p}, gsl_vector * @var{x})
 This function solves the system @math{A x = b} in-place using the
-@math{LU} decomposition of @math{A} into (@var{lu},@var{p}). On input,
-@var{x} should contain the right-hand side @math{b} and will be replaced
+@math{LU} decomposition of @math{A} into (@var{LU},@var{p}). On input
+@var{x} should contain the right-hand side @math{b}, which is replaced
 by the solution on output.
 @end deftypefun
 
-@deftypefun int gsl_linalg_LU_refine (const gsl_matrix * @var{a}, const gsl_matrix * @var{lu}, const gsl_permutation * @var{p}, const gsl_vector * @var{b}, gsl_vector * @var{x}, gsl_vector * @var{residual})
+@deftypefun int gsl_linalg_LU_refine (const gsl_matrix * @var{A}, const gsl_matrix * @var{LU}, const gsl_permutation * @var{p}, const gsl_vector * @var{b}, gsl_vector * @var{x}, gsl_vector * @var{residual})
 This function applies an iterative improvement to @var{x}, the solution
-of @math{Ax=b}, using the @math{LU} decomposition of @math{A} into
-(@var{lu},@var{p}). The initial residual @math{r = Ax - b} is also
+of @math{A x = b}, using the @math{LU} decomposition of @math{A} into
+(@var{LU},@var{p}). The initial residual @math{r = A x - b} is also
 computed and stored in @var{residual}.
 @end deftypefun
 
-@deftypefun int gsl_linalg_LU_invert (const gsl_matrix * @var{lu}, const gsl_permutation * @var{p}, gsl_matrix * @var{inverse})
+@deftypefun int gsl_linalg_LU_invert (const gsl_matrix * @var{LU}, const gsl_permutation * @var{p}, gsl_matrix * @var{inverse})
 This function computes the inverse of a matrix @math{A} from its
-@math{LU} decomposition (@var{lu},@var{p}), storing the result in the
+@math{LU} decomposition (@var{LU},@var{p}), storing the result in the
 matrix @var{inverse}. The inverse is computed by solving the system
 @math{A x = b} for each column of the identity matrix.
 @end deftypefun
 
-@deftypefun double gsl_linalg_LU_det (gsl_matrix * @var{lu}, int @var{signum})
+@deftypefun double gsl_linalg_LU_det (gsl_matrix * @var{LU}, int @var{signum})
 This function computes the determinant of a matrix @math{A} from its
-@math{LU} decomposition, @var{lu}. The determinant is computed as the
+@math{LU} decomposition, @var{LU}. The determinant is computed as the
 product of the diagonal elements of @math{U} and the sign of the row
 permutation @var{signum}.
 @end deftypefun
 
-@deftypefun double gsl_linalg_LU_lndet (gsl_matrix * @var{lu})
+@deftypefun double gsl_linalg_LU_lndet (gsl_matrix * @var{LU})
 This function computes the logarithm of the absolute value of the
 determinant of a matrix @math{A}, @math{\ln|det(A)|}, from its @math{LU}
-decomposition, @var{lu}.  This function may be useful if the direct
+decomposition, @var{LU}.  This function may be useful if the direct
 computation of the determinant would overflow or underflow.
 @end deftypefun
 
-@deftypefun int gsl_linalg_LU_sgndet (gsl_matrix * @var{lu}, int @var{signum})
+@deftypefun int gsl_linalg_LU_sgndet (gsl_matrix * @var{LU}, int @var{signum})
 This function computes the sign of the determinant of a matrix @math{A},
-@math{sign(det(A))}, from its @math{LU} decomposition, @var{lu}.
+@math{sign(det(A))}, from its @math{LU} decomposition, @var{LU}.
 @end deftypefun
 
 @node QR Decomposition
 @section QR Decomposition
 
-A general @math{M}-by-@math{N} matrix @math{A} has a @math{QR}
-decomposition into the product of an @math{M}-by-@math{M} orthogonal
-sqaure matrix @math{Q} (where @math{Q^T Q = I}) and an
-@math{M}-by-@math{N} right-triangular matrix @math{R},
+A general rectangular @math{M}-by-@math{N} matrix @math{A} has a
+@math{QR} decomposition into the product of an orthogonal
+@math{M}-by-@math{M} square matrix @math{Q} (where @math{Q^T Q = I}) and
+an @math{M}-by-@math{N} right-triangular matrix @math{R},
+
 @tex
 \beforedisplay
 $$
@@ -129,71 +131,262 @@ A = Q R
 @end example
 @end ifinfo
 @noindent
+This decomposition can be used to convert the linear system @math{A x =
+b} into the triangular system @math{R x = Q^T b}, which can be solved by
+back-substitution. Another use of the @math{QR} decomposition is to
+compute an orthonormal basis for a set of vectors. The first @math{N}
+columns of @math{Q} form an orthonormal basis for the range of @math{A},
+@math{ran(A)}, when @math{A} has full column rank.
 
-@deftypefun int gsl_linalg_QR_decomp (gsl_matrix * @var{a}, gsl_vector * @var{tau})
+@deftypefun int gsl_linalg_QR_decomp (gsl_matrix * @var{A}, gsl_vector * @var{tau})
+This function factorizes the @math{M}-by-@math{N} matrix @var{A} into
+the @math{QR} decomposition @math{A = Q R}.  On output the diagonal and
+upper triangular part of the input matrix contain the matrix
+@math{R}. The vector @var{tau} and the columns of the lower triangular
+part of the matrix @var{A} contain the Householder coefficients and
+Householder vectors which encode the orthogonal matrix @var{Q}.  The
+vector @var{tau} must be of length @math{k=\min(M,N)}. The matrix
+@math{Q} is related to these components by, @math{Q = Q_k ... Q_2 Q_1}
+where @math{Q_i = I - \tau_i v_i v_i^T} and @math{v_i} is the
+Householder vector @math{v_i =
+(0,...,1,A(i+1,i),A(i+2,i),...,A(m,i))}. This is the same storage scheme
+as used by @sc{lapack}.
+
+The algorithm used to perform the decomposition is Householder QR (Golub
+& Van Loan, @cite{Matrix Computations}, Algorithm 5.2.1).
 @end deftypefun
 
-@deftypefun int gsl_linalg_QR_solve (const gsl_matrix * @var{qr}, const gsl_vector * @var{tau}, const gsl_vector * @var{b}, gsl_vector * @var{x})
+@deftypefun int gsl_linalg_QR_solve (const gsl_matrix * @var{QR}, const gsl_vector * @var{tau}, const gsl_vector * @var{b}, gsl_vector * @var{x})
+This function solves the system @math{A x = b} using the @math{QR}
+decomposition of @math{A} into (@var{QR}, @var{tau}) given by
+@code{gsl_linalg_QR_decomp}.
 @end deftypefun
 
-@deftypefun int gsl_linalg_QR_svx (const gsl_matrix * @var{qr}, const gsl_vector * @var{tau}, gsl_vector * @var{x})
+@deftypefun int gsl_linalg_QR_svx (const gsl_matrix * @var{QR}, const gsl_vector * @var{tau}, gsl_vector * @var{x})
+This function solves the system @math{A x = b} in-place using the
+@math{QR} decomposition of @math{A} into (@var{QR},@var{tau}). On input
+@var{x} should contain the right-hand side @math{b}, which is replaced by
+the solution on output.
 @end deftypefun
 
-@deftypefun int gsl_linalg_QR_qrsolve (gsl_matrix * @var{q}, gsl_matrix * @var{r}, gsl_vector * @var{b}, gsl_vector * @var{x})
+@deftypefun int gsl_linalg_QR_QTvec (const gsl_matrix * @var{QR}, const gsl_vector * @var{tau}, gsl_vector * @var{v})
+This function applies the matrix @math{Q^T} encoded in the decomposition
+(@var{QR},@var{tau}) to the vector @var{v}, storing the result @math{Q^T
+v} in @var{v}.  The matrix multiplication is carried out directly using
+the encoding of the Householder vectors without needing to form the full
+matrix @math{Q^T}.
 @end deftypefun
 
-@deftypefun int gsl_linalg_QR_rsolve (const gsl_matrix * @var{qr}, gsl_vector * @var{x})
+@deftypefun int gsl_linalg_QR_rsolve (const gsl_matrix * @var{QR}, const gsl_vector * @var{b}, gsl_vector * @var{x})
+This function solves the triangular system @math{R x = b} for
+@var{x}. It may be useful if the product @math{b' = Q^T b} has already
+been computed using @code{gsl_linalg_QR_QTvec}.
 @end deftypefun
 
-@deftypefun int gsl_linalg_QR_update (gsl_matrix * @var{q}, gsl_matrix * @var{r}, gsl_vector * @var{w}, const gsl_vector * @var{v})
+@deftypefun int gsl_linalg_QR_rsvx (const gsl_matrix * @var{QR}, gsl_vector * @var{x})
+This function solves the triangular system @math{R x = b} for @var{x}
+in-place. On input @var{x} should contain the right-hand side @math{b}
+and is replaced by the solution on output. This function may be useful if
+the product @math{b' = Q^T b} has already been computed using
+@code{gsl_linalg_QR_QTvec}.
 @end deftypefun
 
-@deftypefun int gsl_linalg_QR_QTvec (const gsl_matrix * @var{qr}, const gsl_vector * @var{tau}, gsl_vector * @var{v})
+@deftypefun int gsl_linalg_QR_unpack (const gsl_matrix * @var{QR}, const gsl_vector * @var{tau}, gsl_matrix * @var{Q}, gsl_matrix * @var{R})
+This function unpacks the encoded @math{QR} decomposition
+(@var{QR},@var{tau}) into the matrices @var{Q} and @var{R}, where
+@var{Q} is @math{M}-by-@math{M} and @var{R} is @math{M}-by-@math{N}.
 @end deftypefun
 
-@deftypefun int gsl_linalg_QR_unpack (const gsl_matrix * @var{qr}, const gsl_vector * @var{tau}, gsl_matrix * @var{q}, gsl_matrix * @var{r})
+@deftypefun int gsl_linalg_QR_qrsolve (gsl_matrix * @var{Q}, gsl_matrix * @var{R}, const gsl_vector * @var{b}, gsl_vector * @var{x})
+This function solves the system @math{R x = Q^T b} for @var{x}. It can
+be used when the @math{QR} decomposition of a matrix is available in
+unpacked form as (@var{Q},@var{R}).
 @end deftypefun
 
-@deftypefun int gsl_linalg_R_solve (const gsl_matrix * @var{r}, const gsl_vector * @var{b}, gsl_vector * @var{x})
+@deftypefun int gsl_linalg_QR_update (gsl_matrix * @var{Q}, gsl_matrix * @var{R}, gsl_vector * @var{w}, const gsl_vector * @var{v})
+This function performs a rank-1 update @math{w v^T} of the @math{QR}
+decomposition (@var{Q}, @var{R}). The update is given by @math{Q'R' = Q
+R + w v^T} where the output matrices @math{Q'} and @math{R'} are also
+orthogonal and right triangular. Note that @var{w} is destroyed by the
+update.
 @end deftypefun
 
-@deftypefun int gsl_linalg_R_svx (const gsl_matrix * @var{r}, gsl_vector * @var{x})
+@deftypefun int gsl_linalg_R_solve (const gsl_matrix * @var{R}, const gsl_vector * @var{b}, gsl_vector * @var{x})
+This function solves the triangular system @math{R x = b} for the
+@math{N}-by-@math{N} matrix @var{R}.
+@end deftypefun
+
+@deftypefun int gsl_linalg_R_svx (const gsl_matrix * @var{R}, gsl_vector * @var{x})
+This function solves the triangular system @math{R x = b} in-place. On
+input @var{x} should contain the right-hand side @math{b}, which is
+replaced by the solution on output.
 @end deftypefun
 
 @node QR Decomposition with Column Pivoting
 @section QR Decomposition with Column Pivoting
 
-@deftypefun int gsl_linalg_QRPT_decomp (gsl_matrix * @var{a}, gsl_vector * @var{tau}, gsl_permutation * @var{p}, int *@var{signum})
+The @math{QR} decomposition can be extended to the rank deficient case
+by introducing a column permutation @math{P},
+
+@tex
+\beforedisplay
+$$
+A P = Q R
+$$
+\afterdisplay
+@end tex
+@ifinfo
+@example
+A P = Q R
+@end example
+@end ifinfo
+@noindent
+The first @math{r} columns of this @math{Q} form an orthonormal basis
+for the range of @math{A} for a matrix with column rank @math{r}.  This
+decomposition can also be used to convert the linear system @math{A x =
+b} into the triangular system @math{R y = Q^T b, x = P y}, which can be
+solved by back-substitution and permutation.  We denote the @math{QR}
+decomposition with column pivoting by @math{QRP^T} since @math{A = Q R
+P^T}.
+
+@deftypefun int gsl_linalg_QRPT_decomp (gsl_matrix * @var{A}, gsl_vector * @var{tau}, gsl_permutation * @var{p}, int *@var{signum})
+This function factorizes the @math{M}-by-@math{N} matrix @var{A} into
+the @math{QRP^T} decomposition @math{A = Q R P^T}.  On output the
+diagonal and upper triangular part of the input matrix contain the
+matrix @math{R}. The permutation matrix @math{P} is stored in the
+permutation @var{p}.  The sign of the permutation is given by
+@var{signum}. It has the value @math{(-1)^n}, where @math{n} is the
+number of interchanges in the permutation. The vector @var{tau} and the
+columns of the lower triangular part of the matrix @var{A} contain the
+Householder coefficients and vectors which encode the orthogonal matrix
+@var{Q}.  The vector @var{tau} must be of length @math{k=\min(M,N)}. The
+matrix @math{Q} is related to these components by, @math{Q = Q_k ... Q_2
+Q_1} where @math{Q_i = I - \tau_i v_i v_i^T} and @math{v_i} is the
+Householder vector @math{v_i =
+(0,...,1,A(i+1,i),A(i+2,i),...,A(m,i))}. This is the same storage scheme
+as used by @sc{lapack}.
+
+The algorithm used to perform the decomposition is Householder QR with
+column pivoting (Golub & Van Loan, @cite{Matrix Computations}, Algorithm
+5.4.1).
 @end deftypefun
 
-@deftypefun int gsl_linalg_QRPT_solve (const gsl_matrix * @var{qr}, const gsl_vector * @var{tau}, const gsl_permutation * @var{p}, const gsl_vector * @var{b}, gsl_vector * @var{x})
+@deftypefun int gsl_linalg_QRPT_solve (const gsl_matrix * @var{QR}, const gsl_vector * @var{tau}, const gsl_permutation * @var{p}, const gsl_vector * @var{b}, gsl_vector * @var{x})
+This function solves the system @math{A x = b} using the @math{QRP^T}
+decomposition of @math{A} into (@var{QR}, @var{tau}, @var{p}) given by
+@code{gsl_linalg_QRPT_decomp}.
 @end deftypefun
 
-@deftypefun int gsl_linalg_QRPT_svx (const gsl_matrix * @var{qr}, const gsl_vector * @var{tau}, const gsl_permutation * @var{p}, gsl_vector * @var{x})
+@deftypefun int gsl_linalg_QRPT_svx (const gsl_matrix * @var{QR}, const gsl_vector * @var{tau}, const gsl_permutation * @var{p}, gsl_vector * @var{x})
+This function solves the system @math{A x = b} in-place using the
+@math{QRP^T} decomposition of @math{A} into
+(@var{QR},@var{tau},@var{p}). On input @var{x} should contain the
+right-hand side @math{b}, which is replaced by the solution on output.
 @end deftypefun
 
-@deftypefun int gsl_linalg_QRPT_qrsolve (const gsl_matrix * @var{q}, const gsl_matrix * @var{r}, const gsl_permutation * @var{p}, const gsl_vector * @var{b}, gsl_vector * @var{x})
+@deftypefun int gsl_linalg_QRPT_qrsolve (const gsl_matrix * @var{Q}, const gsl_matrix * @var{R}, const gsl_permutation * @var{p}, const gsl_vector * @var{b}, gsl_vector * @var{x})
+This function solves the system @math{R P^T x = Q^T b} for @var{x}. It can
+be used when the @math{QR} decomposition of a matrix is available in
+unpacked form as (@var{Q},@var{R}).
 @end deftypefun
 
-@deftypefun int gsl_linalg_QRPT_R_solve (const gsl_matrix * @var{qr}, const gsl_permutation * @var{p}, gsl_vector * @var{x})
+@deftypefun int gsl_linalg_QRPT_update (gsl_matrix * @var{Q}, gsl_matrix * @var{R}, const gsl_permutation * @var{p}, gsl_vector * @var{u}, const gsl_vector * @var{v})
+This function performs a rank-1 update @math{w v^T} of the @math{QRP^T}
+decomposition (@var{Q}, @var{R},@var{p}). The update is given by
+@math{Q'R' = Q R + w v^T} where the output matrices @math{Q'} and
+@math{R'} are also orthogonal and right triangular. Note that @var{w} is
+destroyed by the update. The permutation @var{p} is not changed.
 @end deftypefun
 
-@deftypefun int gsl_linalg_QRPT_update (gsl_matrix * @var{q}, gsl_matrix * @var{r}, const gsl_permutation * @var{p}, gsl_vector * @var{u}, const gsl_vector * @var{v})
+@deftypefun int gsl_linalg_QRPT_R_solve (const gsl_matrix * @var{QR}, const gsl_permutation * @var{p}, gsl_vector * @var{x})
+This function solves the triangular system @math{R P^T x = b} for the
+@math{N}-by-@math{N} matrix @var{R}.
 @end deftypefun
+
 
 @node Singular Value Decomposition
 @section Singular Value Decomposition
 
+A general rectangular @math{M}-by-@math{N} matrix @math{A} has a
+singular value decomposition (@sc{svd}) into the product of an
+@math{M}-by-@math{N} orthogonal matrix @math{U}, an @math{N}-by-@math{N}
+diagonal matrix of singular values @math{S} and the transpose of an
+@math{M}-by-@math{M} orthogonal square matrix @math{Q},
+
+@tex
+\beforedisplay
+$$
+A = U S Q^T
+$$
+\afterdisplay
+@end tex
+@ifinfo
+@example
+A = U S Q^T
+@end example
+@end ifinfo
+@noindent
+The singular values
+@c{$\sigma_i = S_{ii}$}
+@math{\sigma_i = S_@{ii@}} are all non-negative and are
+generally chosen to form a non-increasing sequence 
+@c{$\sigma_1 \ge \sigma_2 \ge ... \ge \sigma_N \ge 0$}
+@math{\sigma_1 >= \sigma_2 >= ... >= \sigma_N >= 0}.
+
+The singular value decomposition of a matrix has many practical uses.
+The condition number of the matrix is given by the ratio of the largest
+singular value to the smallest singular value. The presence of a zero
+singular value indicates that the matrix is singular. The number of
+non-zero singular values indicates the rank of the matrix.  In practice
+singular value decomposition of a rank-deficient matrix will not produce
+exact zeroes for singular values, due to finite numerical
+precision. Small singular values should be edited by chosing a suitable
+tolerance.
+
 @deftypefun int gsl_linalg_SV_decomp (gsl_matrix * @var{A}, gsl_matrix * @var{Q}, gsl_vector * @var{S})
+This function factorizes the @math{M}-by-@math{N} matrix @var{A} into
+the singular value decomposition @math{A = U S Q^T}. On output the
+matrix @var{A} is replaced by @math{U}. The diagonal elements of the
+singular value matrix @math{S} are stored in the vector @var{S}. The
+singular values are non-negative and form a non-increasing sequence from
+@math{S_1} to @math{S_N}. The matrix @var{Q} contains the elements of
+@math{Q} in untransposed form. To form the product @math{U S Q^T} it is
+necessary to take the transpose of @var{Q}.
+
+The algorithm used in the decomposition is One-Sided Jacobi
+orthogonalization (see references for details).
 @end deftypefun
 
 @deftypefun int gsl_linalg_SV_solve (gsl_matrix * @var{U}, gsl_matrix * @var{Q}, gsl_vector * @var{S}, const gsl_vector * @var{b}, gsl_vector * @var{x})
+This function solves the system @math{A x = b} using the singular value
+decomposition of @math{A} given by @code{gsl_linalg_SV_decomp},
+(@var{U}, @var{S}, @var{Q}).
+
+Only non-zero singular values are used in computing the solution. The
+parts of the solution corresponding to singular values of zero are
+ignored.  Other singular values can be edited out by setting them to
+zero before calling this function. 
+
+In the over-determined case where @var{A} has more rows than columns the
+system is solved in the least squares sense, returning the solution
+@var{x} which minimizes @math{||A x - b||_2}.
 @end deftypefun
 
 @node Householder solver for linear systems
 @section Householder solver for linear systems
 
-@deftypefun int gsl_linalg_HH_solve (gsl_matrix * @var{x}, gsl_vector * @var{x})
+@deftypefun int gsl_linalg_HH_solve (gsl_matrix * @var{A}, const gsl_vector * @var{b}, gsl_vector * @var{x})
+This function solves the system @math{A x = b} directly using
+Householder transformations. On output the solution is stored in @var{x}
+and @var{b} is not modified. The matrix @var{A} is destroyed by the
+Householder transformations.
+@end deftypefun
+
+@deftypefun int gsl_linalg_HH_svx (gsl_matrix * @var{A}, gsl_vector * @var{x})
+This function solves the system @math{A x = b} in-place using
+Householder transformations.  On input @var{x} should contain the
+right-hand side @math{b}, which is replaced by the solution on output.  The
+matrix @var{A} is destroyed by the Householder transformations.
 @end deftypefun
 
 @node Tridiagonal Systems
@@ -209,8 +402,8 @@ A = Q R
 @node Linear Algebra References and Further Reading
 @section References and Further Reading
 
-For further information on the algorithms described in this section
-consult the following book,
+Further information on the algorithms described in this section can be
+found in the following book,
 
 @itemize @asis
 @item
@@ -226,10 +419,25 @@ The @sc{lapack} library is described in,
 ISBN 0-89871-447-8.
 @end itemize
 @noindent
-@sc{lapack} source code can be found at
+The @sc{lapack} source code can be found at
 @url{http://www.netlib.org/lapack} along with an online copy of the
 users guide.
 
+The Jacobi algorithm for singular value decomposition is described in
+the following papers,
+
+@itemize @asis
+@item
+J.C.Nash, "A one-sided transformation method for the singular value
+decomposition and algebraic eigenproblem", @cite{Computer Journal},
+Volume 18, Number 1 (1973), p 74---76
+
+@item
+James Demmel, Kresimir Veselic, "Jacobi's Method is more accurate than
+QR", @cite{Lapack Working Note 15} (LAWN-15), October 1989. Available
+from netlib, @url{http://www.netlib.org/lapack/} in the @code{lawns} or
+@code{lawnspdf} directories.
+@end itemize
 
 
 

@@ -182,7 +182,7 @@ element bigger than the array of bins @code{double bin[3]}.  Thus the
 range array safely includes extra space for the final upper value,
 @var{range}[3].
 
-@deftypefun gsl_histogram * gsl_histogram_calloc_range (size_t @var{n}, double * @var{range})
+@deftypefun {gsl_histogram *} gsl_histogram_calloc_range (size_t @var{n}, double * @var{range})
 This function allocates a histogram of size @var{n} using the @math{n+1}
 bin ranges specified by the array @var{range}.
 @end deftypefun
@@ -201,7 +201,7 @@ histogram @var{dest}, making @var{dest} into an exact copy of @var{src}.
 The two histograms must be of the same size.
 @end deftypefun
 
-@deftypefun gsl_histogram * gsl_histogram_clone (const gsl_histogram * @var{src})
+@deftypefun {gsl_histogram *} gsl_histogram_clone (const gsl_histogram * @var{src})
 This function returns a pointer to a newly created histogram which is an
 exact copy of the histogram @var{src}.
 @end deftypefun
@@ -708,7 +708,7 @@ error handler is invoked with an error code of @code{GSL_ENOMEM}.
 @deftypefun {gsl_histogram2d *} gsl_histogram2d_calloc_uniform (size_t @var{nx}, size_t @var{ny}, double @var{xmin}, double @var{xmax}, double @var{ymin}, double @var{ymax})
 @end deftypefun
 
-@deftypefun gsl_histogram2d * gsl_histogram2d_calloc_range (size_t @var{nx}, size_t @var{ny}, double * @var{xrange}, double * @var{yrange})
+@deftypefun {gsl_histogram2d *} gsl_histogram2d_calloc_range (size_t @var{nx}, size_t @var{ny}, double * @var{xrange}, double * @var{yrange})
 This function allocates a histogram of size @var{nx}-by-@var{ny} using
 the @math{nx+1} and @math{ny+1} bin ranges specified by the arrays
 @var{xrange} and @var{xyrange}.
@@ -728,7 +728,7 @@ histogram @var{dest}, making @var{dest} into an exact copy of @var{src}.
 The two histograms must be of the same size.
 @end deftypefun
 
-@deftypefun gsl_histogram2d * gsl_histogram2d_clone (const gsl_histogram2d * @var{src})
+@deftypefun {gsl_histogram2d *} gsl_histogram2d_clone (const gsl_histogram2d * @var{src})
 This function returns a pointer to a newly created histogram which is an
 exact copy of the histogram @var{src}.
 @end deftypefun
