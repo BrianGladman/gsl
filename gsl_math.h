@@ -1,4 +1,4 @@
-#ifndef _GSL_MATH_H_
+#ifndef _GSL_MATH_H
 #include <math.h>
 #include <limits.h>
 #include <float.h>
@@ -71,5 +71,12 @@
 #define GSL_IS_EVEN(n) (!(GSL_IS_ODD(n)))
 #define GSL_SIGN(x)    ((x) >= 0.0 ? 1 : -1)
 
+#ifndef MAX
+#define MAX(a,b) ((a) > (b) ? (a) : (b))
+#endif
 
-#endif /* !_GSL_MATH_H_ */
+#ifndef MIN
+#define MIN(a,b) ((a) < (b) ? (a) : (b))
+#endif
+
+#endif /* _GSL_MATH_H */
