@@ -19,7 +19,7 @@
 unsigned long int bsdrand_get (void *vstate);
 void bsdrand_set (void *state, unsigned long int s);
 
-1typedef struct
+typedef struct
   {
     unsigned long int x;
   }
