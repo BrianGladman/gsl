@@ -1,6 +1,6 @@
 /* specfunc/test_legendre.c
  * 
- * Copyright (C) 1996, 1997, 1998, 1999, 2000 Gerard Jungman
+ * Copyright (C) 1996, 1997, 1998, 1999, 2000, 2001, 2002 Gerard Jungman
  * 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -141,7 +141,7 @@ int test_legendre(void)
   gsl_sf_legendre_Plm_deriv_array(100, 2, -1.0 + 1.0/1125899906842624.0, L, DL);
   TEST_SF_VAL(sa, L[0],   +0.0,  5.3290705182007490275e-15, TEST_TOL1);
   TEST_SF_VAL(sa, L[1],   +0.0, -2.6645352591003721471e-14, TEST_TOL1);
-  TEST_SF_VAL(sa, L[98],  +0.0,  2.2646284847349109694e-08, TEST_TOL1);
+  TEST_SF_VAL(sa, L[98],  +0.0,  2.2646284847349109694e-08, TEST_TOL2);
   gsl_test(sa, "gsl_sf_legendre_Plm_deriv_array(100, 2, -1.0 + 2^(-50)");
   s += sa;
 
@@ -150,7 +150,7 @@ int test_legendre(void)
   TEST_SF_VAL(sa, L[0],   +0.0,  5.3290705182007490275e-15, TEST_TOL1);
   TEST_SF_VAL(sa, L[1],   +0.0,  2.6645352591003721471e-14, TEST_TOL1);
   TEST_SF_VAL(sa, L[10],  +0.0,  5.3343995887188313290e-12, TEST_TOL1);
-  TEST_SF_VAL(sa, L[98],  +0.0,  2.2646284847349109694e-08, TEST_TOL1);
+  TEST_SF_VAL(sa, L[98],  +0.0,  2.2646284847349109694e-08, TEST_TOL2);
   gsl_test(sa, "gsl_sf_legendre_Plm_deriv_array(100, 2, 1.0 - 2^(-50)");
   s += sa;
 
@@ -186,7 +186,7 @@ int test_legendre(void)
   TEST_SF_VAL(sa, DL[1],  +0.0,  -29.910045000000000000, TEST_TOL1 );
   TEST_SF_VAL(sa, DL[2],  +0.0,  -89.490629790000000000, TEST_TOL1 );
   TEST_SF_VAL(sa, DL[10], +0.0,  -5703.9461633355291972, TEST_TOL1 );
-  TEST_SF_VAL(sa, DL[95], +0.0,  6.4518473603456858414E+06, TEST_TOL1);
+  TEST_SF_VAL(sa, DL[95], +0.0,  6.4518473603456858414E+06, TEST_TOL3);
   gsl_test(sa, "gsl_sf_legendre_Plm_deriv_array(100, 2, 0.999)");
   s += sa;
 
@@ -196,7 +196,7 @@ int test_legendre(void)
   TEST_SF_VAL(sa, DL[1],  +0.0,  -29.999999999999910000, TEST_TOL1 );
   TEST_SF_VAL(sa, DL[2],  +0.0,  -89.999999999999490000, TEST_TOL1 );
   TEST_SF_VAL(sa, DL[10], +0.0,  -6005.9999999996936940, TEST_TOL1 );
-  TEST_SF_VAL(sa, DL[95], +0.0,  -2.2586255999928454270e+07, TEST_TOL1);
+  TEST_SF_VAL(sa, DL[95], +0.0,  -2.2586255999928454270e+07, TEST_TOL3);
   gsl_test(sa, "gsl_sf_legendre_Plm_deriv_array(100, 2, 1.0 - 1.0e-15)");
   s += sa;
 
@@ -204,7 +204,7 @@ int test_legendre(void)
   gsl_sf_legendre_Plm_deriv_array(100, 2, -1.0 + 1.0e-15, L, DL);
   TEST_SF_VAL(sa, DL[0],  +0.0,   5.9999999999999940000, TEST_TOL1);
   TEST_SF_VAL(sa, DL[1],  +0.0,  -29.999999999999910000, TEST_TOL1 );
-  TEST_SF_VAL(sa, DL[95], +0.0,  -2.2586255999928454270e+07, TEST_TOL1);
+  TEST_SF_VAL(sa, DL[95], +0.0,  -2.2586255999928454270e+07, TEST_TOL3);
   gsl_test(sa, "gsl_sf_legendre_Plm_deriv_array(100, 2, -1.0 + 1.0e-15)");
   s += sa;
 
@@ -214,7 +214,7 @@ int test_legendre(void)
   TEST_SF_VAL(sa, DL[1],  +0.0,  4.6341560284340909936, TEST_TOL1 );
   TEST_SF_VAL(sa, DL[2],  +0.0,  27.759505566959219127, TEST_TOL1 );
   TEST_SF_VAL(sa, DL[10], +0.0,  76051.795860179545484, TEST_TOL1 );
-  TEST_SF_VAL(sa, DL[95], +0.0,  3.0344503083851936814e+12, TEST_TOL1);
+  TEST_SF_VAL(sa, DL[95], +0.0,  3.0344503083851936814e+12, TEST_TOL3);
   gsl_test(sa, "gsl_sf_legendre_Plm_deriv_array(100, 5, 0.999)");
   s += sa;
 
@@ -280,7 +280,7 @@ int test_legendre(void)
   TEST_SF_VAL(sa, DL[0],  +0.0,  8.1973898803378530946e+06, TEST_TOL1);
   TEST_SF_VAL(sa, DL[1],  +0.0,  1.8329921010504257405e+07, TEST_TOL1);
   TEST_SF_VAL(sa, DL[10], +0.0,  1.8439572562895384115e+08, TEST_TOL1);
-  TEST_SF_VAL(sa, DL[99], +0.0,  4.7682463136232210552e+09, TEST_TOL1);
+  TEST_SF_VAL(sa, DL[99], +0.0,  4.7682463136232210552e+09, TEST_TOL3);
   gsl_test(sa, "gsl_sf_legendre_sphPlm_deriv_array(100, 1, 1.0 - 2^(-50))");
   s += sa;
 
