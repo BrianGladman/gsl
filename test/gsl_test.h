@@ -44,6 +44,10 @@ gsl_test_abs (double result, double expected, double absolute_error,
 	      const char *test_description, ...) ;
 
 void
+gsl_test_factor (double result, double expected, double factor,
+                 const char *test_description, ...) ;
+
+void
 gsl_test_int (int result, int expected, const char *test_description, ...) ;
 
 void
