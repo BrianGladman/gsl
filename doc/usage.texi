@@ -69,26 +69,35 @@ The library is installed as a single file, @file{libgsl.a}.  A shared
 version of the library is also installed on systems that support shared
 libraries.  The default location of these files is
 @file{/usr/local/lib}.  To link against the library you need to specify
-both the main library and a supporting @sc{blas} library.  A suitable
-blas implementation is provided in @file{libgslblas} if your system does
-not provide one.  The following example shows how to link an application
-with the library,
+both the main library and a supporting @sc{cblas} library which standard
+basic linear algebra subroutines.  A suitable cblas implementation is
+provided in @file{libgslcblas} if your system does not provide one.  The
+following example shows how to link an application with the library,
 
 @example
-gcc app.o -lgsl -lgslblas -lm
+gcc app.o -lgsl -lgslcblas -lm
 @end example
 @noindent
 The following command line shows how you would link the same application
 with an alternative blas library called @file{libcblas},
 
 @example
-gcc app.o -lgsl -lgslblascblas -lcblas -lm
+gcc app.o -lgsl -lcblas -lm
 @end example
 @noindent
-For the best performance an optimized vendor-supplied blas library (if
-available) should be substituted for @code{-lcblas}. The library must
-conform to the @sc{cblas} standard.  For more information see @ref{BLAS
-Support}.
+For the best performance a platform-specific optimized cblas library (if
+available) should be substituted for @code{-lcblas}.  The library must
+conform to the @sc{cblas} standard.  The @sc{atlas} package provides a
+high-performance tunable blas library.  It is free software and should
+be installed for any work requiring fast vector and matrix operations.
+The following command line will link with the @sc{atlas} library and its
+@sc{cblas} interface,
+
+@example
+gcc app.o -lgsl -lcblas -latlas -lm
+@end example
+@noindent
+For more information see @ref{BLAS Support}.
 
 The program @code{gsl-config} provides information on the local version
 of the library.  For example, the following command shows that the
@@ -116,7 +125,7 @@ To compile a statically linked version of the program instead, use the
 @code{-static} flag in @code{gcc},
 
 @example
-gcc -static app.o -lgsl -lgslblas -lm
+gcc -static app.o -lgsl -lgslcblas -lm
 @end example
 
 @node Automake macros
@@ -148,7 +157,7 @@ command. For example,
 @example
 libgsdv_la_LDFLAGS =    \
         $(GTK_LIBDIR) \
-        $(GTK_LIBS) -lgsdvgsl $(GSL_LIBS) -lgslblas
+        $(GTK_LIBS) -lgsdvgsl $(GSL_LIBS) -lgslcblas
 @end example
 @noindent
 
@@ -221,7 +230,7 @@ reading and writing.
 To help in writing portable applications GSL provides some
 implementations of functions that are found in other libraries, such as
 the BSD math library.  You can write your application to use the native
-versions of these functions, and substitute the GSL versions (with a
+versions of these functions, and substitute the GSL versions (via a
 preprocessor macro) if they are unavailable on another platform.  The
 substitution can be made automatically if you use @code{autoconf}. For
 example, to test whether the BSD function @code{hypot} is available you
@@ -365,10 +374,14 @@ The library header files automatically define functions to have
 @section Aliasing of arrays
 @cindex aliasing of arrays
 The library assumes that arrays, vectors and matrices passed as
-arguments are not aliased and do not overlap. This allows the library to
-use additional optimizations, and removes the need to handle overlapping
-memory regions as a special case.  If overlapping arguments are used
-then the results of such functions will be undefined.
+modifiable arguments are not aliased and do not overlap with each other.
+This removes the need for the library to handle overlapping memory
+regions as a special case, and to use additional optimizations.  If
+overlapping memory regions are passed as modifiable arguments then the
+results of such functions will be undefined.  If the arguments will not
+be modified (for example, if a function prototype declares them as
+@code{const} arguments) then overlapping or aliased memory regions can
+be safely used.
 
 @node Code Reuse
 @section Code Reuse
