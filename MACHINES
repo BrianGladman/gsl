@@ -50,6 +50,16 @@ shared libraries,
     ./configure --disable-shared
     make
 
+If you get the error,
+
+   ld: 0711-781 ERROR: TOC overflow. 
+
+you can try building the library with a larger linker
+table-of-contents by setting LDFLAGS before compilation,
+
+   LDFLAGS="-Wl,-bbigtoc" ./configure
+
+
 * Compaq/DEC Alpha
 ------------------
 
