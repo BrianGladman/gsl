@@ -739,3 +739,209 @@ void asymp_sphbesselj_meissel(double l, double x,
     *jlp = -(s*(8.*x2 + 2.) + 7.*x*c)/ (8.*x2*x);
   }
 }
+
+
+/* Safely evaluate J_nu, Y_nu, J'_nu, Y'_nu at x = 0.
+ * Assumes nu >= 0.
+ */
+int
+gsl_sf_bessel_JnuYnu_zero(const double nu, const double x,
+                          double * Jnu,  double * Ynu,
+                          double * Jpnu, double * Ypnu
+		          )
+{
+  int status = 0;
+
+  if(Jnu != (double *)0) {
+    if(nu == 0.0) *Jnu = 1.0;
+    else *Jnu = 0.0;
+  }
+  if(Jpnu != (double *)0) {
+    if(nu < 1.0) {
+      *Jpnu = 0.0;
+      status += 1;
+    }
+    else if(nu == 1.0) {
+      *Jpnu = 0.5;
+    }
+    else {
+      *Jpnu = 0.0;
+    }
+  }
+  if(Ynu != (double *)0) {
+    *Ynu = 0.0;
+    status += 1;
+  }
+  if(Ypnu != (double *)0) {
+    *Ypnu = 0.0;
+    status += 1;
+  }
+  if(status)
+    return GSL_EDOM;
+  else
+    return GSL_SUCCESS;
+}
+
+
+/* Perform backward recurrence for J_nu(x) and J'_nu(x)
+ *
+ *        J_{nu-1} = nu/x J_nu + J'_nu
+ *       J'_{nu-1} = (nu-1)/x J_{nu-1} - J_nu
+ *
+ * J_array[kmax] = J_{nu + kmax}(x) = J_start
+ *   ...
+ * J_array[0]    = J_nu(x)          = J_end
+ *
+ * and similarly for Jp_array = J'
+ */
+int
+gsl_sf_bessel_J_recur(const double nu_min, const double x, const int kmax,
+                      const double J_start, const double Jp_start,
+	              double * J_end, double * Jp_end,
+	              double * J_array, double * Jp_array)
+{
+  double x_inv  = 1.0/x;
+  double nu_max = nu_min + kmax;
+  double nu     = nu_max;
+  double J_nu  = J_start;
+  double Jp_nu = Jp_start;
+  int k;
+
+  if(J_array  != (double *)0)  J_array[kmax] = J_start;
+  if(Jp_array != (double *)0) Jp_array[kmax] = Jp_start;
+  for(k=kmax-1; k>=0; k--) {
+    double nu_x_inv = nu*x_inv;
+    double J_nu_save = J_nu;
+    J_nu  = nu_x_inv*J_nu + Jp_nu;
+    Jp_nu = (nu_x_inv - x_inv)*J_nu - J_nu_save;
+    if(J_array  != (double *)0)  J_array[k] = J_nu;
+    if(Jp_array != (double *)0) Jp_array[k] = Jp_nu;
+    nu -= 1.0;
+  }
+  *J_end  = J_nu;
+  *Jp_end = Jp_nu;
+  return GSL_SUCCESS;
+}
+
+
+/* Perform forward recurrence for Y_nu(x) and Y'_nu(x)
+ *
+ *        Y_{nu+1} =  nu/x Y_nu - Y'_nu
+ *       Y'_{nu+1} = -nu/x Y_{nu+1} + Y_nu
+ *
+ * Y_array[0]    = Y_nu(x)          = Y_start
+ *   ...
+ * Y_array[kmax] = Y_{nu + kmax}(x) = Y_end
+ *
+ * and similarly for Yp_array = Y'
+ */
+int
+gsl_sf_bessel_Y_recur(const double nu_min, const double x, const int kmax,
+                      const double Y_start, const double Yp_start,
+		      double * Y_end, double * Yp_end,
+                      double * Y_array, double * Yp_array)
+{
+  double x_inv = 1.0/x;
+  double nu = nu_min;
+  double Y_nu  = Y_start;
+  double Yp_nu = Yp_start;
+  int k;
+
+  if(Y_array  != (double *)0)  Y_array[0] = Y_start;
+  if(Yp_array != (double *)0) Yp_array[0] = Yp_start;
+
+  for(k=1; k<=kmax; k++) {
+    double nuox = nu*x_inv;
+    double Y_nu_save = Y_nu;
+    Y_nu  = -Yp_nu + nuox * Y_nu;
+    Yp_nu = Y_nu_save - nuox * Y_nu;
+    if(Y_array  != (double *)0)  Y_array[k] = Y_nu;
+    if(Yp_array != (double *)0) Yp_array[k] = Yp_nu;
+    nu += 1.0;
+  }
+  *Y_end  = Y_nu;
+  *Yp_end = Yp_nu;
+  return GSL_SUCCESS;
+}
+
+
+/* Perform backward recurrence for J_nu(x) and J'_nu(x)
+ *
+ *        I_{nu-1} = nu/x I_nu + I'_nu
+ *       I'_{nu-1} = (nu-1)/x I_{nu-1} + I_nu
+ *
+ * I_array[kmax] = I_{nu + kmax}(x) = I_start
+ *   ...
+ * I_array[0]    = I_nu(x)          = I_end
+ *
+ * and similarly for Ip_array = I'
+ */
+int
+gsl_sf_bessel_I_recur(const double nu_min, const double x, const int kmax,
+                      const double I_start, const double Ip_start,
+	              double * I_end, double * Ip_end,
+	              double * I_array, double * Ip_array
+	              )
+{
+  double x_inv  = 1.0/x;
+  double nu_max = nu_min + kmax;
+  double I_nu  = I_start;
+  double Ip_nu = Ip_start;
+  double nu = nu_max;
+  int k;
+  if(I_array  != (double *)0)  I_array[kmax] = I_start;
+  if(Ip_array != (double *)0) Ip_array[kmax] = Ip_start;
+  for(k=kmax-1; k>=0; k--) {
+    double nuox = nu*x_inv;
+    double I_nu_save = I_nu;
+    I_nu  = nuox*I_nu + Ip_nu;
+    Ip_nu = (nuox - x_inv)*I_nu + I_nu_save;
+    if(I_array  != (double *)0)  I_array[k] = I_nu;
+    if(Ip_array != (double *)0) Ip_array[k] = Ip_nu;
+    nu -= 1.0;
+  }
+  *I_end  = I_nu;
+  *Ip_end = Ip_nu;
+  return GSL_SUCCESS;
+}
+
+
+/* Perform forward recurrence for K_nu(x) and K'_nu(x)
+ *
+ *        K_{nu+1} =  nu/x K_nu - K'_nu
+ *       K'_{nu+1} = -nu/x K_{nu+1} - K_nu
+ *
+ * K_array[0]    = K_nu(x)          = K_start
+ *   ...
+ * K_array[kmax] = K_{nu + kmax}(x) = K_end
+ *
+ * and similarly for Kp_array = K'
+ */
+int
+gsl_sf_bessel_K_recur(const double nu_min, const double x, const int kmax,
+                      const double K_start, const double Kp_start,
+		      double * K_end, double * Kp_end,
+                      double * K_array, double * Kp_array)
+{
+  double x_inv = 1.0/x;
+  double nu = nu_min;
+  double K_nu  = K_start;
+  double Kp_nu = Kp_start;
+  int k;
+
+  if(K_array  != (double *)0)  K_array[0] = K_start;
+  if(Kp_array != (double *)0) Kp_array[0] = Kp_start;
+
+  for(k=1; k<=kmax; k++) {
+    double nuox = nu*x_inv;
+    double K_nu_save = K_nu;
+    K_nu  = -Kp_nu + nuox * K_nu;
+    Kp_nu = -K_nu_save - nuox * K_nu;
+    if(K_array  != (double *)0)  K_array[k] = K_nu;
+    if(Kp_array != (double *)0) Kp_array[k] = Kp_nu;
+    nu += 1.0;
+  }
+  *K_end  = K_nu;
+  *Kp_end = Kp_nu;
+  return GSL_SUCCESS;
+}

@@ -6,9 +6,12 @@
 
 
 int
-gsl_sf_temme_gamma(double nu,
-                   double * g_1pnu, double * g_1mnu,
-                   double * g1, double * g2);
+gsl_sf_bessel_Y_temme(double nu, double x,
+                      double * Y_nu, double * Y_nup1, double * Yp_nu);
+
+int
+gsl_sf_bessel_K_scaled_temme(double nu, double x,
+                             double * K_nu, double * K_nup1, double * Kp_nu);
 
 
 #endif  /* !BESSEL_TEMME_H_ */
