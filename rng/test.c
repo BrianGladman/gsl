@@ -3,6 +3,8 @@
 #include <gsl_rng.h>
 #include <gsl_test.h>
 
+void rng_test (const gsl_rng_type * T, unsigned int seed, unsigned int n, 
+	       unsigned long int result);
 void generic_rng_test (const gsl_rng_type * T);
 
 int
@@ -12,8 +14,8 @@ main (void)
 
   /* specific tests of known results */
 
-  rng_test (gsl_rng_cmrg,0,1,result);
-
+  rng_test (gsl_rng_minstd,1,10000,1043618065);
+  generic_rng_test (gsl_rng_minstd);
 
   /* generic statistical tests */
 
@@ -92,3 +94,28 @@ generic_rng_test (const gsl_rng_type * T)
 
 }
 
+
+void 
+rng_test (const gsl_rng_type * T, unsigned int seed, unsigned int n, 
+	  unsigned long int result)
+{
+  gsl_rng * r = gsl_rng_alloc (T);
+  unsigned int i ;
+  unsigned long int k = 0;
+  int status;
+
+  if (seed) {
+    gsl_rng_set(r,seed) ;
+  }
+  
+  for (i = 0; i < n; i++)
+    {
+      k = gsl_rng_get(r) ;
+    }
+
+  status = (k != result) ;
+  gsl_test(status, "%s gives expected result (%u observed vs %u expected)",
+	   gsl_rng_name(r), k, result) ;
+ 
+  gsl_rng_free(r) ;
+}

@@ -6,6 +6,7 @@ INCLUDES = -I$(srcdir)/..  -I$(srcdir)/../err
 
 libgslrng_a_SOURCES = gsl_rng.h rng.c \
                       cmrg.c mrg.c rand.c taus.c uni.c uni32.c zuf.c \
+		      minstd.c \
                       bad_rand.c bad_randu.c \
                       default.c
 
