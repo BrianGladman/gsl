@@ -74,6 +74,14 @@ double test_poisson (void);
 double test_poisson_pdf (unsigned int x);
 double test_poisson_large (void);
 double test_poisson_large_pdf (unsigned int x);
+double test_dir2d (void);
+double test_dir2d_pdf (double x);
+double test_dir3dxy (void);
+double test_dir3dxy_pdf (double x);
+double test_dir3dyz (void);
+double test_dir3dyz_pdf (double x);
+double test_dir3dzx (void);
+double test_dir3dzx_pdf (double x);
 double test_tdist1 (void);
 double test_tdist1_pdf (double x);
 double test_tdist2 (void);
@@ -93,6 +101,7 @@ main (void)
 
 #define FUNC(x) x, "gsl_ran_" #x
 #define FUNC2(x) x, x ## _pdf, "gsl_ran_" #x
+
 
   test_moments (FUNC (test_ugaussian), 0.0, 100.0, 0.5);
   test_moments (FUNC (test_ugaussian), -1.0, 1.0, 0.68);
@@ -126,6 +135,11 @@ main (void)
   test_pdf (FUNC2(test_tdist2));
   test_pdf (FUNC2(test_laplace));
   test_pdf (FUNC2(test_weibull));
+
+  test_pdf (FUNC2(test_dir2d));
+  test_pdf (FUNC2(test_dir3dxy));
+  test_pdf (FUNC2(test_dir3dyz));
+  test_pdf (FUNC2(test_dir3dzx));
 
   test_discrete_pdf (FUNC2(test_poisson));
   test_discrete_pdf (FUNC2(test_poisson_large));
@@ -328,6 +342,95 @@ double
 test_chisq_pdf (double x)
 {
   return gsl_ran_chisq_pdf (x, 13.0);
+}
+
+double
+test_dir2d (void)
+{
+  double x=0, y=0, theta;
+  gsl_ran_dir_2d (r_global, &x, &y);
+  theta = atan2(x,y);
+  return theta;
+}
+
+double
+test_dir2d_pdf (double x)
+{
+  if (x > -M_PI && x <= M_PI)
+    {
+      return 1 / (2 * M_PI) ;
+    }
+  else
+    {
+      return 0 ;
+    }
+}
+
+
+double
+test_dir3dxy (void)
+{
+  double x=0, y=0, z=0, theta;
+  gsl_ran_dir_3d (r_global, &x, &y, &z);
+  theta = atan2(x,y);
+  return theta;
+}
+
+double
+test_dir3dxy_pdf (double x)
+{
+  if (x > -M_PI && x <= M_PI)
+    {
+      return 1 / (2 * M_PI) ;
+    }
+  else
+    {
+      return 0 ;
+    }
+}
+
+double
+test_dir3dyz (void)
+{
+  double x=0, y=0, z=0, theta;
+  gsl_ran_dir_3d (r_global, &x, &y, &z);
+  theta = atan2(y,z);
+  return theta;
+}
+
+double
+test_dir3dyz_pdf (double x)
+{
+  if (x > -M_PI && x <= M_PI)
+    {
+      return 1 / (2 * M_PI) ;
+    }
+  else
+    {
+      return 0 ;
+    }
+}
+
+double
+test_dir3dzx (void)
+{
+  double x=0, y=0, z=0, theta;
+  gsl_ran_dir_3d (r_global, &x, &y, &z);
+  theta = atan2(z,x);
+  return theta;
+}
+
+double
+test_dir3dzx_pdf (double x)
+{
+  if (x > -M_PI && x <= M_PI)
+    {
+      return 1 / (2 * M_PI) ;
+    }
+  else
+    {
+      return 0 ;
+    }
 }
 
 double
