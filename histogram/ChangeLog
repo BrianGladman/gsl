@@ -1,3 +1,7 @@
+Wed Apr 19 17:27:44 2000  Brian Gough  <bjg@network-theory.co.uk>
+
+	* added numerous extensions from Simone Piccardi
+
 2000-04-01  Mark Galassi  <rosalia@lanl.gov>
 
 	* *.c: changed 0 -> GSL_SUCCESS where appropriate; THANKS to Dave

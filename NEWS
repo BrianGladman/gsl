@@ -35,6 +35,10 @@ instead of ;
 ** The autogen.sh script, mostly for use by developers who use the CVS
 repository, now does not run configure.
 
+** The histogram directory now has additional functions for copying
+and comparing histograms, performing arithmetic on histograms and
+finding maximum and minimum values.
+
 * Was new in gsl-0.5:
 
 ** There is now a KNOWN-PROBLEMS file which lists compilation problems

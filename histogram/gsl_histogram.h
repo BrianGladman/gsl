@@ -49,6 +49,45 @@ size_t gsl_histogram_bins (const gsl_histogram * h);
 
 void gsl_histogram_reset (gsl_histogram * h);
 
+gsl_histogram * gsl_histogram_calloc_range(size_t n, double * range);
+
+int
+gsl_histogram_memcpy(gsl_histogram * dest, const gsl_histogram * source);
+
+gsl_histogram *
+gsl_histogram_clone(const gsl_histogram * source);
+
+double gsl_histogram_max_val (const gsl_histogram * h);
+
+size_t gsl_histogram_max_bin (const gsl_histogram * h);
+
+double gsl_histogram_min_val (const gsl_histogram * h);
+
+size_t gsl_histogram_min_bin (const gsl_histogram * h);
+
+int 
+gsl_histogram_equal_bins_p(const gsl_histogram *h1, const gsl_histogram *h2);
+
+int 
+gsl_histogram_add(gsl_histogram *h1, const gsl_histogram *h2);
+
+int 
+gsl_histogram_sub(gsl_histogram *h1, const gsl_histogram *h2);
+
+int 
+gsl_histogram_mul(gsl_histogram *h1, const gsl_histogram *h2);
+ 
+int 
+gsl_histogram_div(gsl_histogram *h1, const gsl_histogram *h2);
+
+int 
+gsl_histogram_scale(gsl_histogram *h, double scale);
+
+double gsl_histogram_sigma (const gsl_histogram * h);
+
+double gsl_histogram_mean (const gsl_histogram * h);
+
+
 int gsl_histogram_fwrite (FILE * stream, const gsl_histogram * h) ;
 int gsl_histogram_fread (FILE * stream, gsl_histogram * h);
 int gsl_histogram_fprintf (FILE * stream, const gsl_histogram * h, 
