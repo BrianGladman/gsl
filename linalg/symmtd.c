@@ -161,7 +161,7 @@ gsl_linalg_symmtd_unpack (const gsl_matrix * A,
 
           gsl_matrix m = gsl_matrix_submatrix (Q, i + 1, i + 1, N-(i+1), N-(i+1));
 
-          gsl_linalg_householder_hm (ti, &h, &m, diag);
+          gsl_linalg_householder_hm (ti, &h, &m);
         }
 
       /* Copy diagonal into diag */

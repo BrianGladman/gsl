@@ -68,7 +68,7 @@
 #include "gsl_linalg.h"
 
 int 
-gsl_linalg_bidiag_decomp (gsl_matrix * A, gsl_vector * tau_U, gsl_vector * tau_V, gsl_vector * work)  
+gsl_linalg_bidiag_decomp (gsl_matrix * A, gsl_vector * tau_U, gsl_vector * tau_V)  
 {
   if (A->size1 < A->size2)
     {
@@ -81,10 +81,6 @@ gsl_linalg_bidiag_decomp (gsl_matrix * A, gsl_vector * tau_U, gsl_vector * tau_V
   else if (tau_V->size + 1 != A->size2)
     {
       GSL_ERROR ("size of tau_V must be (N - 1)", GSL_EBADLEN);
-    }
-  else if (work->size  != GSL_MAX(A->size1, A->size2))
-    {
-      GSL_ERROR ("size of workspace must be MAX(M,N)", GSL_EBADLEN);
     }
   else
     {
@@ -100,8 +96,6 @@ gsl_linalg_bidiag_decomp (gsl_matrix * A, gsl_vector * tau_U, gsl_vector * tau_V
             gsl_vector c = gsl_matrix_column (A, i);
             gsl_vector v = gsl_vector_subvector (&c, i, M - i);
             double tau_i = gsl_linalg_householder_transform (&v);
-
-            gsl_vector_set (tau_U, i, tau_i);            
             
             /* Apply the transformation to the remaining columns */
             
@@ -109,8 +103,11 @@ gsl_linalg_bidiag_decomp (gsl_matrix * A, gsl_vector * tau_U, gsl_vector * tau_V
               {
                 gsl_matrix m = 
                   gsl_matrix_submatrix (A, i, i + 1, M - i, N - (i + 1));
-                gsl_linalg_householder_hm (tau_i, &v, &m, work);
+                gsl_linalg_householder_hm (tau_i, &v, &m);
               }
+
+            gsl_vector_set (tau_U, i, tau_i);            
+
           }
 
           /* Apply Householder transformation to current row */
@@ -121,16 +118,16 @@ gsl_linalg_bidiag_decomp (gsl_matrix * A, gsl_vector * tau_U, gsl_vector * tau_V
               gsl_vector v = gsl_vector_subvector (&r, i + 1, N - (i + 1));
               double tau_i = gsl_linalg_householder_transform (&v);
               
-              gsl_vector_set (tau_V, i, tau_i);
-              
               /* Apply the transformation to the remaining rows */
               
               if (i + 1 < M)
                 {
                   gsl_matrix m = 
                     gsl_matrix_submatrix (A, i+1, i+1, M - (i+1), N - (i+1));
-                  gsl_linalg_householder_mh (tau_i, &v, &m, work);
+                  gsl_linalg_householder_mh (tau_i, &v, &m);
                 }
+
+              gsl_vector_set (tau_V, i, tau_i);
             }
         }
     }
@@ -148,8 +145,7 @@ gsl_linalg_bidiag_unpack (const gsl_matrix * A,
                           const gsl_vector * tau_V,
                           gsl_matrix * V,
                           gsl_vector * diag, 
-                          gsl_vector * superdiag,
-                          gsl_vector * work)
+                          gsl_vector * superdiag)
 {
   const size_t M = A->size1;
   const size_t N = A->size2;
@@ -184,47 +180,9 @@ gsl_linalg_bidiag_unpack (const gsl_matrix * A,
     {
       GSL_ERROR ("size of subdiagonal must be (diagonal size - 1)", GSL_EBADLEN);
     }
-  else if (work->size != GSL_MAX(M,N))
-    {
-      GSL_ERROR ("size of workspace must be MAX(M,N)", GSL_EBADLEN);
-    }
   else
     {
-      size_t i;
-
-      /* Initialize U and V to the identity */
-
-      gsl_matrix_set_identity (U);
-      gsl_matrix_set_identity (V);
-
-      for (i = N; i > 0 && i--;)
-	{
-          /* Householder column transformation to accumulate U */
-          {
-            const gsl_vector c = gsl_matrix_const_column (A, i);
-            const gsl_vector h = gsl_vector_const_subvector (&c, i, M - i);
-            double ti = gsl_vector_get (tau_U, i);
-            
-            gsl_matrix m = 
-              gsl_matrix_submatrix (U, i, i, M-i, N-i);
-            
-            gsl_linalg_householder_hm (ti, &h, &m, work);
-          }
-
-          if (i + 1 < N)
-            {
-              const gsl_vector r = gsl_matrix_const_row (A, i);
-              const gsl_vector h = 
-                gsl_vector_const_subvector (&r, i + 1, N - (i+1));
-
-              double ti = gsl_vector_get (tau_V, i);
-              
-              gsl_matrix m = 
-                gsl_matrix_submatrix (V, i + 1, i + 1, N-(i+1), N-(i+1));
-              
-              gsl_linalg_householder_hm (ti, &h, &m, work);
-            }
-        }
+      size_t i, j;
 
       /* Copy diagonal into diag */
 
@@ -242,9 +200,122 @@ gsl_linalg_bidiag_unpack (const gsl_matrix * A,
           gsl_vector_set (superdiag, i, Aij);
         }
 
+      /* Initialize V to the identity */
+
+      gsl_matrix_set_identity (V);
+
+      for (i = N - 1; i > 0 && i--;)
+	{
+          /* Householder row transformation to accumulate V */
+          const gsl_vector r = gsl_matrix_const_row (A, i);
+          const gsl_vector h = 
+            gsl_vector_const_subvector (&r, i + 1, N - (i+1));
+          
+          double ti = gsl_vector_get (tau_V, i);
+          
+          gsl_matrix m = 
+            gsl_matrix_submatrix (V, i + 1, i + 1, N-(i+1), N-(i+1));
+          
+          gsl_linalg_householder_hm (ti, &h, &m);
+        }
+
+      /* Initialize U to the identity */
+
+      gsl_matrix_set_identity (U);
+
+      for (j = N; j > 0 && j--;)
+	{
+          /* Householder column transformation to accumulate U */
+          const gsl_vector c = gsl_matrix_const_column (A, j);
+          const gsl_vector h = gsl_vector_const_subvector (&c, j, M - j);
+          double tj = gsl_vector_get (tau_U, j);
+          
+          gsl_matrix m = 
+            gsl_matrix_submatrix (U, j, j, M-j, N-j);
+          
+          gsl_linalg_householder_hm (tj, &h, &m);
+        }
+
       return GSL_SUCCESS;
     }
 }
+
+int
+gsl_linalg_bidiag_unpack2 (gsl_matrix * A, 
+                           gsl_vector * tau_U, 
+                           gsl_vector * tau_V,
+                           gsl_matrix * V)
+{
+  const size_t M = A->size1;
+  const size_t N = A->size2;
+
+  const size_t K = GSL_MIN(M, N);
+
+  if (M < N)
+    {
+      GSL_ERROR ("matrix A must have M >= N", GSL_EBADLEN);
+    }
+  else if (tau_U->size != K)
+    {
+      GSL_ERROR ("size of tau must be MIN(M,N)", GSL_EBADLEN);
+    }
+  else if (tau_V->size + 1 != K)
+    {
+      GSL_ERROR ("size of tau must be MIN(M,N) - 1", GSL_EBADLEN);
+    }
+  else if (V->size1 != N || V->size2 != N)
+    {
+      GSL_ERROR ("size of V must be N x N", GSL_EBADLEN);
+    }
+  else
+    {
+      size_t i, j;
+
+      /* Initialize V to the identity */
+
+      gsl_matrix_set_identity (V);
+
+      for (i = N - 1; i > 0 && i--;)
+	{
+          /* Householder row transformation to accumulate V */
+          const gsl_vector r = gsl_matrix_const_row (A, i);
+          const gsl_vector h = 
+            gsl_vector_const_subvector (&r, i + 1, N - (i+1));
+          
+          double ti = gsl_vector_get (tau_V, i);
+          
+          gsl_matrix m = 
+            gsl_matrix_submatrix (V, i + 1, i + 1, N-(i+1), N-(i+1));
+          
+          gsl_linalg_householder_hm (ti, &h, &m);
+        }
+
+      /* Copy superdiagonal into tau_v */
+
+      for (i = 0; i < N - 1; i++)
+        {
+          double Aij = gsl_matrix_get (A, i, i+1);
+          gsl_vector_set (tau_V, i, Aij);
+        }
+
+      /* Allow U to be unpacked into the same memory as A, copy
+         diagonal into tau_U */
+
+      for (j = N; j > 0 && j--;)
+	{
+          /* Householder column transformation to accumulate U */
+          double tj = gsl_vector_get (tau_U, j);
+          double Ajj = gsl_matrix_get (A, j, j);
+          gsl_matrix m = gsl_matrix_submatrix (A, j, j, M-j, N-j);
+
+          gsl_vector_set (tau_U, j, Ajj);
+          gsl_linalg_householder_hm1 (tj, &m);
+        }
+
+      return GSL_SUCCESS;
+    }
+}
+
 
 int
 gsl_linalg_bidiag_unpack_B (const gsl_matrix * A, 

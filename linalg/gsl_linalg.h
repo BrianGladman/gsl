@@ -80,30 +80,44 @@ gsl_complex gsl_linalg_complex_householder_transform (gsl_vector_complex * v);
 
 int gsl_linalg_householder_hm (double tau, 
                                const gsl_vector * v, 
-                               gsl_matrix * A, 
-                               gsl_vector * work);
+                               gsl_matrix * A);
 
 int gsl_linalg_householder_mh (double tau, 
                                const gsl_vector * v, 
-                               gsl_matrix * A, 
-                               gsl_vector * work);
+                               gsl_matrix * A);
 
 int gsl_linalg_householder_hv (double tau, 
                                const gsl_vector * v, 
                                gsl_vector * w);
 
+int gsl_linalg_householder_hm1 (double tau, 
+                                gsl_matrix * A);
+
 int gsl_linalg_complex_householder_hm (gsl_complex tau, 
                                        const gsl_vector_complex * v, 
-                                       gsl_matrix_complex * A, 
-                                       gsl_vector_complex * work);
+                                       gsl_matrix_complex * A);
 
 /* Singular Value Decomposition
 
  * exceptions: 
  */
-int gsl_linalg_SV_decomp (gsl_matrix * A,
-			  gsl_matrix * Q,
-			  gsl_vector * S);
+
+int
+gsl_linalg_SV_decomp (gsl_matrix * A,
+                      gsl_matrix * V,
+                      gsl_vector * S,
+                      gsl_vector * work);
+
+int
+gsl_linalg_SV_decomp_mod (gsl_matrix * A,
+                          gsl_matrix * X,
+                          gsl_matrix * V,
+                          gsl_vector * S,
+                          gsl_vector * work);
+
+int gsl_linalg_SV_decomp_jacobi (gsl_matrix * A,
+                                 gsl_matrix * Q,
+                                 gsl_vector * S);
 
 int
 gsl_linalg_SV_solve (const gsl_matrix * U,
@@ -145,8 +159,7 @@ int gsl_linalg_LU_sgndet (gsl_matrix * lu, int signum);
 /* QR decomposition */
 
 int gsl_linalg_QR_decomp (gsl_matrix * A,
-			  gsl_vector * tau,
-                          gsl_vector * work);
+			  gsl_vector * tau);
 
 int gsl_linalg_QR_solve (const gsl_matrix * QR,
 			 const gsl_vector * tau,
@@ -192,8 +205,7 @@ int gsl_linalg_QR_Qvec (const gsl_matrix * QR,
 int gsl_linalg_QR_unpack (const gsl_matrix * QR,
 			  const gsl_vector * tau,
 			  gsl_matrix * Q,
-			  gsl_matrix * R,
-                          gsl_vector * work);
+			  gsl_matrix * R);
 
 int gsl_linalg_R_solve (const gsl_matrix * R,
                         const gsl_vector * b,
@@ -209,16 +221,14 @@ int gsl_linalg_QRPT_decomp (gsl_matrix * A,
 			    gsl_vector * tau,
 			    gsl_permutation * p,
 			    int *signum,
-                            gsl_vector * norm,
-                            gsl_vector * work);
+                            gsl_vector * norm);
 
 int gsl_linalg_QRPT_decomp2 (const gsl_matrix * A, 
                              gsl_matrix * q, gsl_matrix * r, 
                              gsl_vector * tau, 
                              gsl_permutation * p, 
                              int *signum,
-                             gsl_vector * norm,
-                             gsl_vector * work);
+                             gsl_vector * norm);
 
 int gsl_linalg_QRPT_solve (const gsl_matrix * QR,
 			   const gsl_vector * tau,
@@ -288,8 +298,7 @@ int gsl_linalg_hermtd_unpack (const gsl_matrix_complex * A,
                               const gsl_vector_complex * tau,
                               gsl_matrix_complex * Q, 
                               gsl_vector * diag, 
-                              gsl_vector * sudiag,
-                              gsl_vector_complex * work);
+                              gsl_vector * sudiag);
 
 int gsl_linalg_hermtd_unpack_T (const gsl_matrix_complex * A, 
                                 gsl_vector * d, 
@@ -340,28 +349,30 @@ int gsl_linalg_solve_symm_cyc_tridiag (const gsl_vector * diag,
 
 int gsl_linalg_bidiag_decomp (gsl_matrix * A, 
                               gsl_vector * tau_U, 
-                              gsl_vector * tau_V, 
-                              gsl_vector * work);
+                              gsl_vector * tau_V);
 
 int gsl_linalg_bidiag_unpack (const gsl_matrix * A, 
                               const gsl_vector * tau_U, 
                               gsl_matrix * U, 
                               const gsl_vector * tau_V,
                               gsl_matrix * V,
-                              gsl_vector * diag, gsl_vector * superdiag,
-                              gsl_vector * work);
+                              gsl_vector * diag, 
+                              gsl_vector * superdiag);
 
-int gsl_linalg_bidiag_unpack (const gsl_matrix * A, 
-                              const gsl_vector * tau_U, 
-                              gsl_matrix * U, 
-                              const gsl_vector * tau_V,
-                              gsl_matrix * V,
-                              gsl_vector * diag, gsl_vector * superdiag,
-                              gsl_vector * work);
+int gsl_linalg_bidiag_unpack2 (gsl_matrix * A, 
+                               gsl_vector * tau_U, 
+                               gsl_vector * tau_V,
+                               gsl_matrix * V);
 
 int gsl_linalg_bidiag_unpack_B (const gsl_matrix * A, 
                                 gsl_vector * diag, 
                                 gsl_vector * superdiag);
+
+/* Balancing */
+
+int
+gsl_linalg_balance_columns (gsl_matrix * A, gsl_vector * D);
+
 
 __END_DECLS
 

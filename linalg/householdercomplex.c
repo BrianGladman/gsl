@@ -89,7 +89,7 @@ gsl_linalg_complex_householder_transform (gsl_vector_complex * v)
 }
 
 int
-gsl_linalg_complex_householder_hm (gsl_complex tau, const gsl_vector_complex * v, gsl_matrix_complex * A, gsl_vector_complex * work)
+gsl_linalg_complex_householder_hm (gsl_complex tau, const gsl_vector_complex * v, gsl_matrix_complex * A)
 {
   /* applies a householder transformation v,tau to matrix m */
 
@@ -100,50 +100,42 @@ gsl_linalg_complex_householder_hm (gsl_complex tau, const gsl_vector_complex * v
       return GSL_SUCCESS;
     }
 
-  /* w =   (v' A)^T */
+  /* w = (v' A)^T */
 
-  for (i = 0; i < A->size2; i++)
+  for (j = 0; j < A->size2; j++)
     {
-      gsl_complex sum = gsl_matrix_complex_get(A,0,i);  
+      gsl_complex tauwj;
+      gsl_complex wj = gsl_matrix_complex_get(A,0,j);  
 
-      for (j = 1; j < A->size1; j++)  /* note, computed for v(0) = 1 above */
+      for (i = 1; i < A->size1; i++)  /* note, computed for v(0) = 1 above */
         {
-          gsl_complex Aji = gsl_matrix_complex_get(A,j,i);
-          gsl_complex vj = gsl_vector_complex_get(v,j);
-          gsl_complex Av = gsl_complex_mul (Aji, gsl_complex_conjugate(vj));
-          sum = gsl_complex_add (sum, Av);
+          gsl_complex Aij = gsl_matrix_complex_get(A,i,j);
+          gsl_complex vi = gsl_vector_complex_get(v,i);
+          gsl_complex Av = gsl_complex_mul (Aij, gsl_complex_conjugate(vi));
+          wj = gsl_complex_add (wj, Av);
         }
 
-      gsl_vector_complex_set(work, i, sum);
-    }
+      tauwj = gsl_complex_mul (tau, wj);
 
-  /* A = A - v w^T */
-
-  for (j = 0; j < A->size2; j++) 
-    {
-      gsl_complex wj = gsl_vector_complex_get (work, j);
-      gsl_complex A0j = gsl_matrix_complex_get (A, 0, j);
-      gsl_complex tauwj = gsl_complex_mul (tau, wj);
-      gsl_complex Atw = gsl_complex_sub (A0j, tauwj);
-      /* store A0j - tau  * wj */
-      gsl_matrix_complex_set (A, 0, j, Atw);
-    }
-
-  for (i = 1; i < A->size1; i++)
-    {
-      gsl_complex vi = gsl_vector_complex_get (v, i);
-
-      for (j = 0; j < A->size2; j++) 
+      /* A = A - v w^T */
+      
+      {
+        gsl_complex A0j = gsl_matrix_complex_get (A, 0, j);
+        gsl_complex Atw = gsl_complex_sub (A0j, tauwj);
+        /* store A0j - tau  * wj */
+        gsl_matrix_complex_set (A, 0, j, Atw);
+      }
+      
+      for (i = 1; i < A->size1; i++)
         {
-          gsl_complex wj = gsl_vector_complex_get (work, j);
+          gsl_complex vi = gsl_vector_complex_get (v, i);
+          gsl_complex tauvw = gsl_complex_mul(vi, tauwj);
           gsl_complex Aij = gsl_matrix_complex_get (A, i, j);
-          gsl_complex vw = gsl_complex_mul(vi, wj);
-          gsl_complex tauvw = gsl_complex_mul(tau, vw);
           gsl_complex Atwv = gsl_complex_sub (Aij, tauvw);
           /* store Aij - tau * vi * wj */
           gsl_matrix_complex_set (A, i, j, Atwv);
         }
     }
-
+      
   return GSL_SUCCESS;
 }

@@ -129,8 +129,7 @@ gsl_linalg_hermtd_unpack (const gsl_matrix_complex * A,
                           const gsl_vector_complex * tau,
                           gsl_matrix_complex * Q, 
                           gsl_vector * diag, 
-                          gsl_vector * sdiag,
-                          gsl_vector_complex * work)
+                          gsl_vector * sdiag)
 {
   if (A->size1 !=  A->size2)
     {
@@ -151,10 +150,6 @@ gsl_linalg_hermtd_unpack (const gsl_matrix_complex * A,
   else if (sdiag->size + 1 != A->size1)
     {
       GSL_ERROR ("size of subdiagonal must be (matrix size - 1)", GSL_EBADLEN);
-    }
-  else if (work->size != A->size1)
-    {
-      GSL_ERROR ("size of workspace must match size of A", GSL_EBADLEN);
     }
   else
     {
@@ -178,7 +173,7 @@ gsl_linalg_hermtd_unpack (const gsl_matrix_complex * A,
           gsl_matrix_complex m = 
             gsl_matrix_complex_submatrix (Q, i + 1, i + 1, N-(i+1), N-(i+1));
 
-          gsl_linalg_complex_householder_hm (ti, &h, &m, work);
+          gsl_linalg_complex_householder_hm (ti, &h, &m);
         }
 
       /* Copy diagonal into diag */

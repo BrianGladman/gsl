@@ -1,3 +1,18 @@
+Tue Jun 19 23:19:49 2001  Brian Gough  <bjg@network-theory.co.uk>
+
+	* svd.c (gsl_linalg_SV_decomp): Golub-Reinsch svd, has more
+ 	deterministic convergence
+	(gsl_linalg_SV_decomp_mod):  Golub-Reinsch with
+ 	Preconditioning, much more efficient for M>>N
+
+	* balance.c (gsl_linalg_balance_columns): balances (or
+ 	"equilibrates") the columns of a matrix
+
+Sun Jun 17 21:49:03 2001  Brian Gough  <bjg@network-theory.co.uk>
+
+	* givens.c: split out apply_givens functions into separate file
+ 	apply_givens.c
+
 Wed Jun 13 23:41:34 2001  Brian Gough  <bjg@network-theory.co.uk>
 
 	* qr.c (gsl_linalg_QR_decomp): simplified reverse loop
