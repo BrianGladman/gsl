@@ -170,24 +170,6 @@ I would suggest to correct the coefficients in rk8pd.c (just put the
 literal constants of rksuite) and to add the reference to the article.
 
 ----------------------------------------------------------------------
-
-BUG#9 -- problem with multimin example 
-
-From: Thomas Kunert <kunert@physik.tu-dresden.de>
-To: gsl-discuss@sources.redhat.com
-Subject: Re: multimin example
-
- The example for multimin doesn't give me the expected output but a much
- worse result. Any idea about the reason? I have gsl 1.2 on Mandrake 8.2.
-
-     1 4.99629 6.99072  687.84780
-     2 4.98886 6.97215  683.55456
-     3 4.97400 6.93501  675.01278
-     4 4.94429 6.86073  658.10798
-
-It's true that there is a problem there, but I don't know why.
-
-----------------------------------------------------------------------
 BUG#10 -- gsl_sf_fermi_dirac_int error estimates 
 
 Some of the error estimates on gsl_sf_fermi_dirac_int are much too
