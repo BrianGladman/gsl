@@ -182,13 +182,15 @@ gsl_matrix_int_const_view_vector_with_tda (const gsl_vector_int * v,
 
 /* Operations */
 
+int   gsl_matrix_int_get(const gsl_matrix_int * m, const size_t i, const size_t j);
+void    gsl_matrix_int_set(gsl_matrix_int * m, const size_t i, const size_t j, const int x);
+
+int * gsl_matrix_int_ptr(gsl_matrix_int * m, const size_t i, const size_t j);
+const int * gsl_matrix_int_const_ptr(const gsl_matrix_int * m, const size_t i, const size_t j);
+
 void gsl_matrix_int_set_zero (gsl_matrix_int * m);
 void gsl_matrix_int_set_identity (gsl_matrix_int * m);
 void gsl_matrix_int_set_all (gsl_matrix_int * m, int x);
-
-int * gsl_matrix_int_ptr(const gsl_matrix_int * m, const size_t i, const size_t j);
-int   gsl_matrix_int_get(const gsl_matrix_int * m, const size_t i, const size_t j);
-void    gsl_matrix_int_set(gsl_matrix_int * m, const size_t i, const size_t j, const int x);
 
 int gsl_matrix_int_fread (FILE * stream, gsl_matrix_int * m) ;
 int gsl_matrix_int_fwrite (FILE * stream, const gsl_matrix_int * m) ;
@@ -267,6 +269,41 @@ gsl_matrix_int_set(gsl_matrix_int * m, const size_t i, const size_t j, const int
 #endif
   m->data[i * m->tda + j] = x ;
 }
+
+extern inline 
+int *
+gsl_matrix_int_ptr(gsl_matrix_int * m, const size_t i, const size_t j)
+{
+#ifndef GSL_RANGE_CHECK_OFF
+  if (i >= m->size1)
+    {
+      GSL_ERROR_NULL("first index out of range", GSL_EINVAL) ;
+    }
+  else if (j >= m->size2)
+    {
+      GSL_ERROR_NULL("second index out of range", GSL_EINVAL) ;
+    }
+#endif
+  return (int *) (m->data + (i * m->tda + j)) ;
+} 
+
+extern inline 
+const int *
+gsl_matrix_int_const_ptr(const gsl_matrix_int * m, const size_t i, const size_t j)
+{
+#ifndef GSL_RANGE_CHECK_OFF
+  if (i >= m->size1)
+    {
+      GSL_ERROR_NULL("first index out of range", GSL_EINVAL) ;
+    }
+  else if (j >= m->size2)
+    {
+      GSL_ERROR_NULL("second index out of range", GSL_EINVAL) ;
+    }
+#endif
+  return (const int *) (m->data + (i * m->tda + j)) ;
+} 
+
 #endif
 
 __END_DECLS

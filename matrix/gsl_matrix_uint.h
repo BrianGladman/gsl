@@ -182,13 +182,15 @@ gsl_matrix_uint_const_view_vector_with_tda (const gsl_vector_uint * v,
 
 /* Operations */
 
+unsigned int   gsl_matrix_uint_get(const gsl_matrix_uint * m, const size_t i, const size_t j);
+void    gsl_matrix_uint_set(gsl_matrix_uint * m, const size_t i, const size_t j, const unsigned int x);
+
+unsigned int * gsl_matrix_uint_ptr(gsl_matrix_uint * m, const size_t i, const size_t j);
+const unsigned int * gsl_matrix_uint_const_ptr(const gsl_matrix_uint * m, const size_t i, const size_t j);
+
 void gsl_matrix_uint_set_zero (gsl_matrix_uint * m);
 void gsl_matrix_uint_set_identity (gsl_matrix_uint * m);
 void gsl_matrix_uint_set_all (gsl_matrix_uint * m, unsigned int x);
-
-unsigned int * gsl_matrix_uint_ptr(const gsl_matrix_uint * m, const size_t i, const size_t j);
-unsigned int   gsl_matrix_uint_get(const gsl_matrix_uint * m, const size_t i, const size_t j);
-void    gsl_matrix_uint_set(gsl_matrix_uint * m, const size_t i, const size_t j, const unsigned int x);
 
 int gsl_matrix_uint_fread (FILE * stream, gsl_matrix_uint * m) ;
 int gsl_matrix_uint_fwrite (FILE * stream, const gsl_matrix_uint * m) ;
@@ -267,6 +269,41 @@ gsl_matrix_uint_set(gsl_matrix_uint * m, const size_t i, const size_t j, const u
 #endif
   m->data[i * m->tda + j] = x ;
 }
+
+extern inline 
+unsigned int *
+gsl_matrix_uint_ptr(gsl_matrix_uint * m, const size_t i, const size_t j)
+{
+#ifndef GSL_RANGE_CHECK_OFF
+  if (i >= m->size1)
+    {
+      GSL_ERROR_NULL("first index out of range", GSL_EINVAL) ;
+    }
+  else if (j >= m->size2)
+    {
+      GSL_ERROR_NULL("second index out of range", GSL_EINVAL) ;
+    }
+#endif
+  return (unsigned int *) (m->data + (i * m->tda + j)) ;
+} 
+
+extern inline 
+const unsigned int *
+gsl_matrix_uint_const_ptr(const gsl_matrix_uint * m, const size_t i, const size_t j)
+{
+#ifndef GSL_RANGE_CHECK_OFF
+  if (i >= m->size1)
+    {
+      GSL_ERROR_NULL("first index out of range", GSL_EINVAL) ;
+    }
+  else if (j >= m->size2)
+    {
+      GSL_ERROR_NULL("second index out of range", GSL_EINVAL) ;
+    }
+#endif
+  return (const unsigned int *) (m->data + (i * m->tda + j)) ;
+} 
+
 #endif
 
 __END_DECLS

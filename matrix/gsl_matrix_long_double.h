@@ -182,13 +182,15 @@ gsl_matrix_long_double_const_view_vector_with_tda (const gsl_vector_long_double 
 
 /* Operations */
 
+long double   gsl_matrix_long_double_get(const gsl_matrix_long_double * m, const size_t i, const size_t j);
+void    gsl_matrix_long_double_set(gsl_matrix_long_double * m, const size_t i, const size_t j, const long double x);
+
+long double * gsl_matrix_long_double_ptr(gsl_matrix_long_double * m, const size_t i, const size_t j);
+const long double * gsl_matrix_long_double_const_ptr(const gsl_matrix_long_double * m, const size_t i, const size_t j);
+
 void gsl_matrix_long_double_set_zero (gsl_matrix_long_double * m);
 void gsl_matrix_long_double_set_identity (gsl_matrix_long_double * m);
 void gsl_matrix_long_double_set_all (gsl_matrix_long_double * m, long double x);
-
-long double * gsl_matrix_long_double_ptr(const gsl_matrix_long_double * m, const size_t i, const size_t j);
-long double   gsl_matrix_long_double_get(const gsl_matrix_long_double * m, const size_t i, const size_t j);
-void    gsl_matrix_long_double_set(gsl_matrix_long_double * m, const size_t i, const size_t j, const long double x);
 
 int gsl_matrix_long_double_fread (FILE * stream, gsl_matrix_long_double * m) ;
 int gsl_matrix_long_double_fwrite (FILE * stream, const gsl_matrix_long_double * m) ;
@@ -267,6 +269,41 @@ gsl_matrix_long_double_set(gsl_matrix_long_double * m, const size_t i, const siz
 #endif
   m->data[i * m->tda + j] = x ;
 }
+
+extern inline 
+long double *
+gsl_matrix_long_double_ptr(gsl_matrix_long_double * m, const size_t i, const size_t j)
+{
+#ifndef GSL_RANGE_CHECK_OFF
+  if (i >= m->size1)
+    {
+      GSL_ERROR_NULL("first index out of range", GSL_EINVAL) ;
+    }
+  else if (j >= m->size2)
+    {
+      GSL_ERROR_NULL("second index out of range", GSL_EINVAL) ;
+    }
+#endif
+  return (long double *) (m->data + (i * m->tda + j)) ;
+} 
+
+extern inline 
+const long double *
+gsl_matrix_long_double_const_ptr(const gsl_matrix_long_double * m, const size_t i, const size_t j)
+{
+#ifndef GSL_RANGE_CHECK_OFF
+  if (i >= m->size1)
+    {
+      GSL_ERROR_NULL("first index out of range", GSL_EINVAL) ;
+    }
+  else if (j >= m->size2)
+    {
+      GSL_ERROR_NULL("second index out of range", GSL_EINVAL) ;
+    }
+#endif
+  return (const long double *) (m->data + (i * m->tda + j)) ;
+} 
+
 #endif
 
 __END_DECLS

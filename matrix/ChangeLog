@@ -1,3 +1,7 @@
+Fri Aug  3 14:11:23 2001  Brian Gough  <bjg@network-theory.co.uk>
+
+	* added gsl_matrix_ptr and gsl_matrix_const_ptr functions
+
 Mon Jul 16 21:28:05 2001  Brian Gough  <bjg@network-theory.co.uk>
 
 	* rowcol_source.c (FUNCTION): initialized view to NULL

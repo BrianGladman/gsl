@@ -314,6 +314,13 @@ This function sets the value of the @var{i}-th element of a vector
 @var{n-1} then the error handler is invoked.
 @end deftypefun
 
+@deftypefun {double *} gsl_vector_ptr (gsl_vector * @var{v}, size_t @var{i})
+@deftypefunx {const double *} gsl_vector_ptr (const gsl_vector * @var{v}, size_t @var{i})
+These functions return a pointer to the @var{i}-th element of a vector
+@var{v}.  If @var{i} lies outside the allowed range of 0 to @var{n-1}
+then the error handler is invoked and a null pointer is returned.
+@end deftypefun
+
 @node Initializing vector elements
 @subsection Initializing vector elements
 @cindex vectors, initializing
@@ -934,17 +941,25 @@ m->data[i * m->tda + j]
 where @var{tda} is the physical row-length of the matrix.
 
 @deftypefun double gsl_matrix_get (const gsl_matrix * @var{m}, size_t @var{i}, size_t @var{j})
-These functions return the (@var{i},@var{j})th element of a matrix
+This function returns the (@var{i},@var{j})th element of a matrix
 @var{m}.  If @var{i} or @var{j} lie outside the allowed range of 0 to
 @var{n1-1} and 0 to @var{n2-1} then the error handler is invoked and 0
 is returned.
 @end deftypefun
 
 @deftypefun void gsl_matrix_set (gsl_matrix * @var{m}, size_t @var{i}, size_t @var{j}, double @var{x})
-These functions set the value of the (@var{i},@var{j})th element of a
+This function sets the value of the (@var{i},@var{j})th element of a
 matrix @var{m} to @var{x}.  If @var{i} or @var{j} lies outside the
 allowed range of 0 to @var{n1-1} and 0 to @var{n2-1} then the error
 handler is invoked.
+@end deftypefun
+
+@deftypefun {double *} gsl_matrix_ptr (gsl_matrix * @var{m}, size_t @var{i}, size_t @var{j})
+@deftypefunx {const double *} gsl_matrix_ptr (const gsl_matrix * @var{m}, size_t @var{i}, size_t @var{j})
+These functions return a pointer to the (@var{i},@var{j})th element of a
+matrix @var{m}.  If @var{i} or @var{j} lie outside the allowed range of
+0 to @var{n1-1} and 0 to @var{n2-1} then the error handler is invoked
+and a null pointer is returned.
 @end deftypefun
 
 @node Initializing matrix elements

@@ -182,13 +182,15 @@ gsl_matrix_char_const_view_vector_with_tda (const gsl_vector_char * v,
 
 /* Operations */
 
+char   gsl_matrix_char_get(const gsl_matrix_char * m, const size_t i, const size_t j);
+void    gsl_matrix_char_set(gsl_matrix_char * m, const size_t i, const size_t j, const char x);
+
+char * gsl_matrix_char_ptr(gsl_matrix_char * m, const size_t i, const size_t j);
+const char * gsl_matrix_char_const_ptr(const gsl_matrix_char * m, const size_t i, const size_t j);
+
 void gsl_matrix_char_set_zero (gsl_matrix_char * m);
 void gsl_matrix_char_set_identity (gsl_matrix_char * m);
 void gsl_matrix_char_set_all (gsl_matrix_char * m, char x);
-
-char * gsl_matrix_char_ptr(const gsl_matrix_char * m, const size_t i, const size_t j);
-char   gsl_matrix_char_get(const gsl_matrix_char * m, const size_t i, const size_t j);
-void    gsl_matrix_char_set(gsl_matrix_char * m, const size_t i, const size_t j, const char x);
 
 int gsl_matrix_char_fread (FILE * stream, gsl_matrix_char * m) ;
 int gsl_matrix_char_fwrite (FILE * stream, const gsl_matrix_char * m) ;
@@ -267,6 +269,41 @@ gsl_matrix_char_set(gsl_matrix_char * m, const size_t i, const size_t j, const c
 #endif
   m->data[i * m->tda + j] = x ;
 }
+
+extern inline 
+char *
+gsl_matrix_char_ptr(gsl_matrix_char * m, const size_t i, const size_t j)
+{
+#ifndef GSL_RANGE_CHECK_OFF
+  if (i >= m->size1)
+    {
+      GSL_ERROR_NULL("first index out of range", GSL_EINVAL) ;
+    }
+  else if (j >= m->size2)
+    {
+      GSL_ERROR_NULL("second index out of range", GSL_EINVAL) ;
+    }
+#endif
+  return (char *) (m->data + (i * m->tda + j)) ;
+} 
+
+extern inline 
+const char *
+gsl_matrix_char_const_ptr(const gsl_matrix_char * m, const size_t i, const size_t j)
+{
+#ifndef GSL_RANGE_CHECK_OFF
+  if (i >= m->size1)
+    {
+      GSL_ERROR_NULL("first index out of range", GSL_EINVAL) ;
+    }
+  else if (j >= m->size2)
+    {
+      GSL_ERROR_NULL("second index out of range", GSL_EINVAL) ;
+    }
+#endif
+  return (const char *) (m->data + (i * m->tda + j)) ;
+} 
+
 #endif
 
 __END_DECLS

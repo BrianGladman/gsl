@@ -138,13 +138,16 @@ gsl_vector_complex_const_imag (const gsl_vector_complex *v);
 /* Operations */
 
 gsl_complex 
-*gsl_vector_complex_ptr (const gsl_vector_complex * v, size_t i);
-
-gsl_complex 
 gsl_vector_complex_get (const gsl_vector_complex * v, const size_t i);
 
 void gsl_vector_complex_set (gsl_vector_complex * v, const size_t i,
                                    gsl_complex z);
+
+gsl_complex 
+*gsl_vector_complex_ptr (gsl_vector_complex * v, size_t i);
+
+const gsl_complex 
+*gsl_vector_complex_const_ptr (const gsl_vector_complex * v, size_t i);
 
 void gsl_vector_complex_set_zero (gsl_vector_complex * v);
 void gsl_vector_complex_set_all (gsl_vector_complex * v,
@@ -202,6 +205,35 @@ gsl_vector_complex_set (gsl_vector_complex * v,
 #endif
   *GSL_COMPLEX_AT (v, i) = z;
 }
+
+extern inline
+gsl_complex *
+gsl_vector_complex_ptr (gsl_vector_complex * v,
+			      const size_t i)
+{
+#ifndef GSL_RANGE_CHECK_OFF
+  if (i >= v->size)
+    {
+      GSL_ERROR_NULL ("index out of range", GSL_EINVAL);
+    }
+#endif
+  return GSL_COMPLEX_AT (v, i);
+}
+
+extern inline
+const gsl_complex *
+gsl_vector_complex_const_ptr (const gsl_vector_complex * v,
+                                    const size_t i)
+{
+#ifndef GSL_RANGE_CHECK_OFF
+  if (i >= v->size)
+    {
+      GSL_ERROR_NULL ("index out of range", GSL_EINVAL);
+    }
+#endif
+  return GSL_COMPLEX_AT (v, i);
+}
+
 
 #endif /* HAVE_INLINE */
 

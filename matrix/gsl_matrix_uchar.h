@@ -182,13 +182,15 @@ gsl_matrix_uchar_const_view_vector_with_tda (const gsl_vector_uchar * v,
 
 /* Operations */
 
+unsigned char   gsl_matrix_uchar_get(const gsl_matrix_uchar * m, const size_t i, const size_t j);
+void    gsl_matrix_uchar_set(gsl_matrix_uchar * m, const size_t i, const size_t j, const unsigned char x);
+
+unsigned char * gsl_matrix_uchar_ptr(gsl_matrix_uchar * m, const size_t i, const size_t j);
+const unsigned char * gsl_matrix_uchar_const_ptr(const gsl_matrix_uchar * m, const size_t i, const size_t j);
+
 void gsl_matrix_uchar_set_zero (gsl_matrix_uchar * m);
 void gsl_matrix_uchar_set_identity (gsl_matrix_uchar * m);
 void gsl_matrix_uchar_set_all (gsl_matrix_uchar * m, unsigned char x);
-
-unsigned char * gsl_matrix_uchar_ptr(const gsl_matrix_uchar * m, const size_t i, const size_t j);
-unsigned char   gsl_matrix_uchar_get(const gsl_matrix_uchar * m, const size_t i, const size_t j);
-void    gsl_matrix_uchar_set(gsl_matrix_uchar * m, const size_t i, const size_t j, const unsigned char x);
 
 int gsl_matrix_uchar_fread (FILE * stream, gsl_matrix_uchar * m) ;
 int gsl_matrix_uchar_fwrite (FILE * stream, const gsl_matrix_uchar * m) ;
@@ -267,6 +269,41 @@ gsl_matrix_uchar_set(gsl_matrix_uchar * m, const size_t i, const size_t j, const
 #endif
   m->data[i * m->tda + j] = x ;
 }
+
+extern inline 
+unsigned char *
+gsl_matrix_uchar_ptr(gsl_matrix_uchar * m, const size_t i, const size_t j)
+{
+#ifndef GSL_RANGE_CHECK_OFF
+  if (i >= m->size1)
+    {
+      GSL_ERROR_NULL("first index out of range", GSL_EINVAL) ;
+    }
+  else if (j >= m->size2)
+    {
+      GSL_ERROR_NULL("second index out of range", GSL_EINVAL) ;
+    }
+#endif
+  return (unsigned char *) (m->data + (i * m->tda + j)) ;
+} 
+
+extern inline 
+const unsigned char *
+gsl_matrix_uchar_const_ptr(const gsl_matrix_uchar * m, const size_t i, const size_t j)
+{
+#ifndef GSL_RANGE_CHECK_OFF
+  if (i >= m->size1)
+    {
+      GSL_ERROR_NULL("first index out of range", GSL_EINVAL) ;
+    }
+  else if (j >= m->size2)
+    {
+      GSL_ERROR_NULL("second index out of range", GSL_EINVAL) ;
+    }
+#endif
+  return (const unsigned char *) (m->data + (i * m->tda + j)) ;
+} 
+
 #endif
 
 __END_DECLS

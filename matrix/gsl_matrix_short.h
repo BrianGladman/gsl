@@ -182,13 +182,15 @@ gsl_matrix_short_const_view_vector_with_tda (const gsl_vector_short * v,
 
 /* Operations */
 
+short   gsl_matrix_short_get(const gsl_matrix_short * m, const size_t i, const size_t j);
+void    gsl_matrix_short_set(gsl_matrix_short * m, const size_t i, const size_t j, const short x);
+
+short * gsl_matrix_short_ptr(gsl_matrix_short * m, const size_t i, const size_t j);
+const short * gsl_matrix_short_const_ptr(const gsl_matrix_short * m, const size_t i, const size_t j);
+
 void gsl_matrix_short_set_zero (gsl_matrix_short * m);
 void gsl_matrix_short_set_identity (gsl_matrix_short * m);
 void gsl_matrix_short_set_all (gsl_matrix_short * m, short x);
-
-short * gsl_matrix_short_ptr(const gsl_matrix_short * m, const size_t i, const size_t j);
-short   gsl_matrix_short_get(const gsl_matrix_short * m, const size_t i, const size_t j);
-void    gsl_matrix_short_set(gsl_matrix_short * m, const size_t i, const size_t j, const short x);
 
 int gsl_matrix_short_fread (FILE * stream, gsl_matrix_short * m) ;
 int gsl_matrix_short_fwrite (FILE * stream, const gsl_matrix_short * m) ;
@@ -267,6 +269,41 @@ gsl_matrix_short_set(gsl_matrix_short * m, const size_t i, const size_t j, const
 #endif
   m->data[i * m->tda + j] = x ;
 }
+
+extern inline 
+short *
+gsl_matrix_short_ptr(gsl_matrix_short * m, const size_t i, const size_t j)
+{
+#ifndef GSL_RANGE_CHECK_OFF
+  if (i >= m->size1)
+    {
+      GSL_ERROR_NULL("first index out of range", GSL_EINVAL) ;
+    }
+  else if (j >= m->size2)
+    {
+      GSL_ERROR_NULL("second index out of range", GSL_EINVAL) ;
+    }
+#endif
+  return (short *) (m->data + (i * m->tda + j)) ;
+} 
+
+extern inline 
+const short *
+gsl_matrix_short_const_ptr(const gsl_matrix_short * m, const size_t i, const size_t j)
+{
+#ifndef GSL_RANGE_CHECK_OFF
+  if (i >= m->size1)
+    {
+      GSL_ERROR_NULL("first index out of range", GSL_EINVAL) ;
+    }
+  else if (j >= m->size2)
+    {
+      GSL_ERROR_NULL("second index out of range", GSL_EINVAL) ;
+    }
+#endif
+  return (const short *) (m->data + (i * m->tda + j)) ;
+} 
+
 #endif
 
 __END_DECLS

@@ -138,13 +138,16 @@ gsl_vector_complex_long_double_const_imag (const gsl_vector_complex_long_double 
 /* Operations */
 
 gsl_complex_long_double 
-*gsl_vector_complex_long_double_ptr (const gsl_vector_complex_long_double * v, size_t i);
-
-gsl_complex_long_double 
 gsl_vector_complex_long_double_get (const gsl_vector_complex_long_double * v, const size_t i);
 
 void gsl_vector_complex_long_double_set (gsl_vector_complex_long_double * v, const size_t i,
                                    gsl_complex_long_double z);
+
+gsl_complex_long_double 
+*gsl_vector_complex_long_double_ptr (gsl_vector_complex_long_double * v, size_t i);
+
+const gsl_complex_long_double 
+*gsl_vector_complex_long_double_const_ptr (const gsl_vector_complex_long_double * v, size_t i);
 
 void gsl_vector_complex_long_double_set_zero (gsl_vector_complex_long_double * v);
 void gsl_vector_complex_long_double_set_all (gsl_vector_complex_long_double * v,
@@ -202,6 +205,35 @@ gsl_vector_complex_long_double_set (gsl_vector_complex_long_double * v,
 #endif
   *GSL_COMPLEX_LONG_DOUBLE_AT (v, i) = z;
 }
+
+extern inline
+gsl_complex_long_double *
+gsl_vector_complex_long_double_ptr (gsl_vector_complex_long_double * v,
+			      const size_t i)
+{
+#ifndef GSL_RANGE_CHECK_OFF
+  if (i >= v->size)
+    {
+      GSL_ERROR_NULL ("index out of range", GSL_EINVAL);
+    }
+#endif
+  return GSL_COMPLEX_LONG_DOUBLE_AT (v, i);
+}
+
+extern inline
+const gsl_complex_long_double *
+gsl_vector_complex_long_double_const_ptr (const gsl_vector_complex_long_double * v,
+                                    const size_t i)
+{
+#ifndef GSL_RANGE_CHECK_OFF
+  if (i >= v->size)
+    {
+      GSL_ERROR_NULL ("index out of range", GSL_EINVAL);
+    }
+#endif
+  return GSL_COMPLEX_LONG_DOUBLE_AT (v, i);
+}
+
 
 #endif /* HAVE_INLINE */
 

@@ -116,9 +116,11 @@ gsl_vector_char_const_subvector_with_stride (const gsl_vector_char *v,
 
 /* Operations */
 
-char *gsl_vector_char_ptr (const gsl_vector_char * v, const size_t i);
 char gsl_vector_char_get (const gsl_vector_char * v, const size_t i);
 void gsl_vector_char_set (gsl_vector_char * v, const size_t i, char x);
+
+char *gsl_vector_char_ptr (gsl_vector_char * v, const size_t i);
+const char *gsl_vector_char_const_ptr (const gsl_vector_char * v, const size_t i);
 
 void gsl_vector_char_set_zero (gsl_vector_char * v);
 void gsl_vector_char_set_all (gsl_vector_char * v, char x);
@@ -183,6 +185,33 @@ gsl_vector_char_set (gsl_vector_char * v, const size_t i, char x)
 #endif
   v->data[i * v->stride] = x;
 }
+
+extern inline
+char *
+gsl_vector_char_ptr (gsl_vector_char * v, const size_t i)
+{
+#ifndef GSL_RANGE_CHECK_OFF
+  if (i >= v->size)
+    {
+      GSL_ERROR_NULL ("index out of range", GSL_EINVAL);
+    }
+#endif
+  return (char *) (v->data + i * v->stride);
+}
+
+extern inline
+const char *
+gsl_vector_char_const_ptr (const gsl_vector_char * v, const size_t i)
+{
+#ifndef GSL_RANGE_CHECK_OFF
+  if (i >= v->size)
+    {
+      GSL_ERROR_NULL ("index out of range", GSL_EINVAL);
+    }
+#endif
+  return (const char *) (v->data + i * v->stride);
+}
+
 
 #endif /* HAVE_INLINE */
 

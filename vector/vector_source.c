@@ -50,3 +50,32 @@ FUNCTION (gsl_vector, set) (TYPE (gsl_vector) * v, const size_t i, BASE x)
   *(BASE *) (v->data + MULTIPLICITY * i * v->stride) = x;
 }
 
+BASE *
+FUNCTION (gsl_vector, ptr) (TYPE (gsl_vector) * v, const size_t i)
+{
+  if (gsl_check_range)
+    {
+      if (i >= v->size)		/* size_t is unsigned, can't be negative */
+	{
+	  GSL_ERROR_NULL ("index out of range", GSL_EINVAL);
+	}
+    }
+
+  return (BASE *) (v->data + MULTIPLICITY * i * v->stride);
+}
+
+const BASE *
+FUNCTION (gsl_vector, const_ptr) (const TYPE (gsl_vector) * v, const size_t i)
+{
+  if (gsl_check_range)
+    {
+      if (i >= v->size)		/* size_t is unsigned, can't be negative */
+	{
+	  GSL_ERROR_NULL ("index out of range", GSL_EINVAL);
+	}
+    }
+
+  /* The following line is a generalization of return v->data[i] */
+
+  return (const BASE *) (v->data + MULTIPLICITY * i * v->stride);
+}

@@ -1,3 +1,7 @@
+Fri Aug  3 14:11:51 2001  Brian Gough  <bjg@network-theory.co.uk>
+
+	* added gsl_vector_ptr and gsl_vector_const_ptr functions
+
 Mon Jul 16 21:28:37 2001  Brian Gough  <bjg@network-theory.co.uk>
 
 	* reim_source.c: initialized views to null

@@ -55,3 +55,42 @@ FUNCTION (gsl_matrix, set) (TYPE (gsl_matrix) * m,
     }
   *(BASE *) (m->data + MULTIPLICITY * (i * m->tda + j)) = x;
 }
+
+
+BASE *
+FUNCTION (gsl_matrix, ptr) (TYPE (gsl_matrix) * m,
+                            const size_t i, const size_t j)
+{
+  if (gsl_check_range)
+    {
+      if (i >= m->size1)	/* size_t is unsigned, can't be negative */
+	{
+	  GSL_ERROR_NULL ("first index out of range", GSL_EINVAL);
+	}
+      else if (j >= m->size2)	/* size_t is unsigned, can't be negative */
+	{
+	  GSL_ERROR_NULL ("second index out of range", GSL_EINVAL);
+	}
+    }
+  return (BASE *) (m->data + MULTIPLICITY * (i * m->tda + j));
+}
+
+
+const BASE *
+FUNCTION (gsl_matrix, const_ptr) (const TYPE (gsl_matrix) * m,
+                                  const size_t i, const size_t j)
+{
+  if (gsl_check_range)
+    {
+      if (i >= m->size1)	/* size_t is unsigned, can't be negative */
+	{
+	  GSL_ERROR_NULL ("first index out of range", GSL_EINVAL);
+	}
+      else if (j >= m->size2)	/* size_t is unsigned, can't be negative */
+	{
+	  GSL_ERROR_NULL ("second index out of range", GSL_EINVAL);
+	}
+    }
+  return (const BASE *) (m->data + MULTIPLICITY * (i * m->tda + j));
+}
+

@@ -178,13 +178,15 @@ gsl_matrix_complex_const_view_vector_with_tda (const gsl_vector_complex * v,
 
 /* Operations */
 
+gsl_complex gsl_matrix_complex_get(const gsl_matrix_complex * m, const size_t i, const size_t j);
+void gsl_matrix_complex_set(gsl_matrix_complex * m, const size_t i, const size_t j, const gsl_complex x);
+
+gsl_complex * gsl_matrix_complex_ptr(gsl_matrix_complex * m, const size_t i, const size_t j);
+const gsl_complex * gsl_matrix_complex_const_ptr(const gsl_matrix_complex * m, const size_t i, const size_t j);
+
 void gsl_matrix_complex_set_zero (gsl_matrix_complex * m);
 void gsl_matrix_complex_set_identity (gsl_matrix_complex * m);
 void gsl_matrix_complex_set_all (gsl_matrix_complex * m, gsl_complex x);
-
-gsl_complex * gsl_matrix_complex_ptr(const gsl_matrix_complex * m, const size_t i, const size_t j);
-gsl_complex gsl_matrix_complex_get(const gsl_matrix_complex * m, const size_t i, const size_t j);
-void gsl_matrix_complex_set(gsl_matrix_complex * m, const size_t i, const size_t j, const gsl_complex x);
 
 int gsl_matrix_complex_fread (FILE * stream, gsl_matrix_complex * m) ;
 int gsl_matrix_complex_fwrite (FILE * stream, const gsl_matrix_complex * m) ;
@@ -252,6 +254,43 @@ gsl_matrix_complex_set(gsl_matrix_complex * m,
 #endif
   *(gsl_complex *)(m->data + 2*(i * m->tda + j)) = x ;
 }
+
+extern inline 
+gsl_complex *
+gsl_matrix_complex_ptr(gsl_matrix_complex * m, 
+                             const size_t i, const size_t j)
+{
+#ifndef GSL_RANGE_CHECK_OFF
+  if (i >= m->size1)
+    {
+      GSL_ERROR_NULL("first index out of range", GSL_EINVAL) ;
+    }
+  else if (j >= m->size2)
+    {
+      GSL_ERROR_NULL("second index out of range", GSL_EINVAL) ;
+    }
+#endif
+  return (gsl_complex *)(m->data + 2*(i * m->tda + j)) ;
+} 
+
+extern inline 
+const gsl_complex *
+gsl_matrix_complex_const_ptr(const gsl_matrix_complex * m, 
+                                   const size_t i, const size_t j)
+{
+#ifndef GSL_RANGE_CHECK_OFF
+  if (i >= m->size1)
+    {
+      GSL_ERROR_NULL("first index out of range", GSL_EINVAL) ;
+    }
+  else if (j >= m->size2)
+    {
+      GSL_ERROR_NULL("second index out of range", GSL_EINVAL) ;
+    }
+#endif
+  return (const gsl_complex *)(m->data + 2*(i * m->tda + j)) ;
+} 
+
 #endif /* HAVE_INLINE */
 
 __END_DECLS
