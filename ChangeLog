@@ -1,3 +1,12 @@
+1999-01-03  Mark Galassi  <rosalia@cygnus.com>
+
+	* autogen.sh: added this simple script which calls aclocal,
+	automake --add-missind and autoconf, followed by ./configure with
+	all the arguments.
+
+	* configure, Makefile.in, */Makefile.in: removed these
+	auto-generated files.
+
 Fri Dec 11 16:50:27 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
 	* AUTHORS: corrected the spelling of Gerard Jungman's name (it's
