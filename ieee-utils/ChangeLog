@@ -1,3 +1,10 @@
+Mon May 18 16:20:17 1998  Brian Gough  <bjg@vvv.lanl.gov>
+
+	* The determination of endianness is now done on each call instead
+ 	of at configure time (autoconf complains about what would happen
+ 	to the test if it were cross compiling). Ok, so it's a bit slower
+	but this isn't a performance critical routine.
+
 Sat May 16 23:10:09 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
 	* This directory contains some routines for examining IEEE format

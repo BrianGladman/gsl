@@ -104,7 +104,10 @@ gsl_ieee_float_to_rep (const float * x, gsl_ieee_float_rep * r)
     } ieee ;
   } u;
   
-  u.f = *x ; make_float_bigendian(&(u.f)) ;
+  u.f = *x ; 
+
+  if (little_endian_p())
+    make_float_bigendian(&(u.f)) ;
   
   r->sign = u.ieee.byte[3]>>7 ;
 
@@ -135,7 +138,10 @@ gsl_ieee_double_to_rep (const double * x, gsl_ieee_double_rep * r)
     } ieee ;
   } u;
 
-  u.d= *x ; make_double_bigendian(&(u.d)) ;
+  u.d= *x ; 
+  
+  if (little_endian_p())
+    make_double_bigendian(&(u.d)) ;
   
   r->sign = u.ieee.byte[7]>>7 ;
 

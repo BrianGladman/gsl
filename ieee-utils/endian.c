@@ -6,7 +6,7 @@
 
 int 
 little_endian_p (void) {
-  /* Are we little or big endian?  From Harbison&Steele.  */
+  /* Are we little or big endian?  From Harbison & Steele.  */
   union
   {
     long l;
