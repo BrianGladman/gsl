@@ -1,3 +1,7 @@
+Fri Nov  5 15:01:55 1999  Brian Gough  <bjg@network-theory.co.uk>
+
+	* fp-sparclinux.c: added support for sparclinux
+
 Thu Oct  7 13:03:00 1999  Brian Gough  <bjg@network-theory.co.uk>
 
 	* make_rep.c: more careful conversion from unsigned to signed integer

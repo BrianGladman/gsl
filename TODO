@@ -72,3 +72,7 @@ language objects instead of compiled C functions.
 construct
  
 * Make the return value EINVAL vs EDOM consistent for invalid parameters
+
+* Constant objects (like gsl_roots_fsolver_brent) ought to have
+constant pointers (const gsl_roots_fsolver_type * const
+gsl_roots_fsolver_brent)??
