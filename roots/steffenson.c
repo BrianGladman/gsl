@@ -6,7 +6,7 @@
 
    x[i+1] = x[i] - f(x[i]) / f'(x[i])
 
-   x_accelerated[i] = x[i] - (x[i+1] - x[i])**2 / (x[i+2] - 2*x[i+1] - x[i])
+   x_accelerated[i] = x[i] - (x[i+1] - x[i])**2 / (x[i+2] - 2*x[i+1] + x[i])
 
    We can only use the accelerated estimate after three iterations,
    and use the unaccelerated value until then.
