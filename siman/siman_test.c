@@ -4,13 +4,14 @@
 #include <gsl_siman.h>
 #include <stdio.h>
 
-#define N_TRIES 800		/* how many points do we try before stepping */
+/* set up parameters for this simulated annealing run */
+#define N_TRIES 200		/* how many points do we try before stepping */
 #define ITERS_FIXED_T 10	/* how many iterations for each T? */
 #define STEP_SIZE 10		/* max step size in random walk */
 #define K 1.0			/* Boltzmann constant */
 #define T_INITIAL 0.002		/* initial temperature */
 #define MU_T 1.005		/* damping factor for temperature */
-#define T_MIN 3.0e-6
+#define T_MIN 2.0e-6
 
 gsl_siman_params_t params = {N_TRIES, ITERS_FIXED_T, STEP_SIZE,
 			     K, T_INITIAL, MU_T, T_MIN};
