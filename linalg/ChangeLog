@@ -1,3 +1,8 @@
+Thu Apr 27 20:31:46 2000  Brian Gough  <bjg@network-theory.co.uk>
+
+	* svd.c (gsl_linalg_SV_decomp): improved the convergence criterion
+ 	for rank deficient case.
+
 Wed Apr 26 19:37:46 2000  Brian Gough  <bjg@network-theory.co.uk>
 
 	* renamed rhs -> b, and solution -> x throughout for consistency

@@ -65,7 +65,6 @@ gsl_linalg_SV_decomp (gsl_matrix * A,
 
       /* Initialize the rotation counter and the sweep counter. */
       int count = 1;
-      int degen = 0;
       int sweep = 0;
       int sweepmax = N;
 
@@ -83,7 +82,6 @@ gsl_linalg_SV_decomp (gsl_matrix * A,
 	{
 	  /* Initialize rotation counter. */
 	  count = N * (N - 1) / 2;
-          degen = 0;
 
 	  for (j = 0; j < N - 1; j++)
 	    {
@@ -113,6 +111,19 @@ gsl_linalg_SV_decomp (gsl_matrix * A,
 		   * But I'm too lazy. This will have to do. [GJ]
 		   */
 
+                  /* This is an adhoc method of testing for a "zero"
+                     singular value. We consider it to be zero if it
+                     is sufficiently small compared with the currently
+                     leading column. Note that b <= a is guaranteed by
+                     the sweeping algorithm. BJG */
+                  
+                  if (b <= tolerance * a) 
+                    {
+                      /* probably |b| = 0 */
+                      count--;
+                      continue;
+                    }
+
 		  if (fabs(p) <= tolerance * a * b)
 		    {
 		      /* columns j,k orthogonal
@@ -121,15 +132,6 @@ gsl_linalg_SV_decomp (gsl_matrix * A,
 		      count--;
 		      continue;
 		    }
-
-                  /* FIXME: this is an adhoc way of catching rank-deficient cases */
-
-                  if (a <= tolerance * b || b <= tolerance * a)
-                    {
-                      /* probably |a| or |b| = 0,  will apply one iteration anyway */
-                      count--;
-                      degen++;  
-                    }
 
 		  /* calculate rotation angles */
 		  if (q < r)
