@@ -1,7 +1,6 @@
-Sun Apr  5 19:49:17 1998  Brian Gough  <bjg@vvv.lanl.gov>
+Mon Apr  6 15:09:08 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
-	* err/errno.c (gsl_error): now takes gsl_errno as an argument
- 	(this is useful for doing conditional breakpoints)
+	* added matrix and vector subdirectories
 
 Wed Mar 18 10:27:27 1998  Brian Gough  <bjg@vvv.lanl.gov>
 

@@ -128,5 +128,5 @@ fi ;
 
 
 
-AC_OUTPUT(err/Makefile fft/Makefile specfunc/Makefile statistics/Makefile roots/Makefile random/Makefile randist/Makefile siman/Makefile integration/Makefile doc/Makefile utils/Makefile vector/Makefile Makefile)
+AC_OUTPUT(err/Makefile fft/Makefile specfunc/Makefile statistics/Makefile roots/Makefile random/Makefile randist/Makefile siman/Makefile integration/Makefile doc/Makefile utils/Makefile vector/Makefile matrix/Makefile Makefile)
 
