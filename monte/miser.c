@@ -15,7 +15,7 @@
 #include <gsl_rng.h>
 
 #include <gsl_monte.h>
-#include <gsl_miser.h>
+#include <gsl_monte_miser.h>
 #include <gsl_monte_plain.h>
 
 #define SQR(a) ((a)*(a))

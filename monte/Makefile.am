@@ -8,7 +8,8 @@ libgslmonte_a_SOURCES = vegas.c vegas-print.c miser.c plain.c gsl_vegas.h gsl_mi
 
 check_PROGRAMS = vegas_test miser_test plain_test
 
-include_HEADERS = gsl_vegas.h gsl_miser.h gsl_monte_plain.h gsl_monte.h
+include_HEADERS = gsl_monte_vegas.h gsl_monte_miser.h gsl_monte_plain.h \
+		  gsl_monte.h
 
 #noinst_HEADERS = vegas.h
 

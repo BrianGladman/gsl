@@ -47,8 +47,8 @@
 
 #define GSL_V_TINY 1.0e-30
 
-#include <gsl_vegas.h>
-#include <gsl_vegas_print.h>
+#include <gsl_monte_vegas.h>
+#include <vegas_print.h>
 
 #define myMAX(a,b) ((a) >= (b) ? (a) : (b))
 

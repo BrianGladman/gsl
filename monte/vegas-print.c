@@ -2,8 +2,8 @@
 /* RCS $Id$ */
 
 #include <stdio.h>
-#include "gsl_vegas.h"
-#include "gsl_vegas_print.h"
+#include <gsl_monte_vegas.h>
+#include <vegas_print.h>
 /* predeclare functions */
 
 /* The following variables are needed for the print functions. */

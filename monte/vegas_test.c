@@ -14,7 +14,7 @@
 #include <gsl_test.h>
 
 #include <gsl_rng.h>
-#include <gsl_vegas.h>
+#include <gsl_monte_vegas.h>
 
 #define SQR(x)  ((x)*(x))
 
