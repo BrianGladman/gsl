@@ -48,6 +48,7 @@ libgslspecfunc_a_SOURCES = 	\
 	bessel_Y1.c		\
 	bessel_Yn.c		\
 	bessel_amp_phase.c	\
+        bessel_amp_phase.h      \
 	bessel_j.c		\
 	chebyshev.c		\
 	coulomb.c		\
@@ -62,6 +63,7 @@ libgslspecfunc_a_SOURCES = 	\
 	log.c			\
 	pow_int.c		\
 	psi.c			\
+        recurse.h               \
 	shint.c			\
 	sig2lamp.c		\
 	sinint.c		\
