@@ -63,6 +63,9 @@ double gsl_ran_logistic_pdf (double x, double mu);
 double gsl_ran_lognormal (const gsl_rng * r);
 double gsl_ran_lognormal_pdf (double x);
 
+unsigned int gsl_ran_logarithmic (const gsl_rng * r, double p);
+double gsl_ran_logarithmic_pdf (unsigned int k, double p);
+
 unsigned int gsl_ran_negative_binomial (const gsl_rng * r, double p, double t);
 double gsl_ran_negative_binomial_pdf (unsigned int n, double p, double t);
 

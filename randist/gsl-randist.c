@@ -199,6 +199,12 @@ main (int argc, char *argv[])
       DBL_ARG(a) ;
       OUTPUT(gsl_ran_levy (r, mu, a));
     }
+  else if (NAME("logarithmic"))
+    {
+      ARGS(1, "p = probability");
+      DBL_ARG(p) ;
+      INT_OUTPUT(gsl_ran_logarithmic (r, p));
+    }
   else if (NAME("logistic"))
     {
       ARGS(1, "mu = scale parameter");

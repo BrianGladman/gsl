@@ -94,6 +94,8 @@ double test_logistic (void);
 double test_logistic_pdf (double x);
 double test_lognormal (void);
 double test_lognormal_pdf (double x);
+double test_logarithmic (void);
+double test_logarithmic_pdf (unsigned int n);
 double test_negative_binomial (void);
 double test_negative_binomial_pdf (unsigned int n);
 double test_pascal (void);
@@ -200,6 +202,7 @@ main (void)
   test_discrete_pdf (FUNC2(test_hypergeometric4));
   test_discrete_pdf (FUNC2(test_hypergeometric5));
   test_discrete_pdf (FUNC2(test_hypergeometric6));
+  test_discrete_pdf (FUNC2(test_logarithmic));
   test_discrete_pdf (FUNC2(test_negative_binomial));
   test_discrete_pdf (FUNC2(test_pascal));
 
@@ -1018,6 +1021,19 @@ test_logistic_pdf (double x)
 {
   return gsl_ran_logistic_pdf (x, 3.1);
 }
+
+double
+test_logarithmic (void)
+{
+  return gsl_ran_logarithmic (r_global, 0.4);
+}
+
+double
+test_logarithmic_pdf (unsigned int n)
+{
+  return gsl_ran_logarithmic_pdf (n, 0.4);
+}
+
 
 double
 test_lognormal (void)
