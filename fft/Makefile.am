@@ -4,13 +4,7 @@ pkginclude_HEADERS = gsl_fft.h gsl_fft_complex.h gsl_fft_halfcomplex.h gsl_fft_r
 
 INCLUDES= -I$(top_builddir) -I$(top_srcdir)
 
-libgslfft_la_SOURCES =  dft.c \
-gsl_dft_complex.h gsl_dft_complex_float.h \
-gsl_fft.h \
-gsl_fft_complex.h gsl_fft_complex_float.h \
-gsl_fft_halfcomplex.h gsl_fft_halfcomplex_float.h \
-gsl_fft_real.h gsl_fft_real_float.h \
-fft.c
+libgslfft_la_SOURCES =  dft.c fft.c
 
 noinst_HEADERS = c_pass.h hc_pass.h real_pass.h \
 signals.h signals_source.c \

@@ -1,3 +1,8 @@
+Tue May  1 14:35:52 2001  Brian Gough  <bjg@network-theory.co.uk>
+
+	* Makefile.am (libgslfft_la_SOURCES): removed spurious headers
+ 	from SOURCES line
+
 2000-10-19  Brian Gough  <bjg@inweb.aethos.co.uk>
 
 	* hc_init.c (FUNCTION): scratch space changed to n elements
