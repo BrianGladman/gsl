@@ -2,8 +2,10 @@
 #include <gsl_rng.h>
 #include <gsl_randist.h>
 
-double
-gsl_ran_gaussian (const gsl_rng * r)
+static inline double gaussian (const gsl_rng * r);
+
+static inline double
+gaussian (const gsl_rng * r)
 {
   double x, y, r2;
 

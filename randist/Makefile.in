@@ -71,8 +71,9 @@ full_top_builddir = @full_top_builddir@
 full_top_srcdir = @full_top_srcdir@
 
 lib_LIBRARIES = libgslrandist.a
-libgslrandist_a_SOURCES = gauss.c poisson.c gamma.c exponential.c laplace.c \
-			  cauchy.c flat.c
+libgslrandist_a_SOURCES = cauchy.c chisq.c erlang.c exponential.c flat.c \
+	gamma.c gauss.c geometric.c laplace.c logistic.c lognormal.c \
+	pareto.c poisson.c shuffle.c weibull.c
 
 include_HEADERS= gsl_randist.h
 
@@ -89,8 +90,9 @@ CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
 libgslrandist_a_LIBADD = 
-libgslrandist_a_OBJECTS =  gauss.o poisson.o gamma.o exponential.o \
-laplace.o cauchy.o flat.o
+libgslrandist_a_OBJECTS =  cauchy.o chisq.o erlang.o exponential.o \
+flat.o gamma.o gauss.o geometric.o laplace.o logistic.o lognormal.o \
+pareto.o poisson.o shuffle.o weibull.o
 AR = ar
 CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
@@ -104,8 +106,10 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 TAR = tar
 GZIP = --best
-DEP_FILES =  .deps/cauchy.P .deps/exponential.P .deps/flat.P \
-.deps/gamma.P .deps/gauss.P .deps/laplace.P .deps/poisson.P
+DEP_FILES =  .deps/cauchy.P .deps/chisq.P .deps/erlang.P \
+.deps/exponential.P .deps/flat.P .deps/gamma.P .deps/gauss.P \
+.deps/geometric.P .deps/laplace.P .deps/logistic.P .deps/lognormal.P \
+.deps/pareto.P .deps/poisson.P .deps/shuffle.P .deps/weibull.P
 SOURCES = $(libgslrandist_a_SOURCES)
 OBJECTS = $(libgslrandist_a_OBJECTS)
 
