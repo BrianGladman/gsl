@@ -30,7 +30,7 @@ integer @var{n}.  The digamma function is also called the Psi function.
 @deftypefunx int gsl_sf_psi_e (double @var{x}, gsl_sf_result * @var{result})
 These routines compute the digamma function @math{\psi(x)} for general
 @math{x}, @math{x \ne 0}.
-@comment Domain: x != 0.0
+@comment Domain: x != 0.0, -1.0, -2.0, ...
 @comment Exceptional Return Values: GSL_EDOM, GSL_ELOSS
 @end deftypefun
 
@@ -55,6 +55,13 @@ positive integer @math{n}.
 @comment Exceptional Return Values: GSL_EDOM
 @end deftypefun
 
+@deftypefun double gsl_sf_psi_1 (double @var{x})
+@deftypefunx int gsl_sf_psi_1_e (double @var{x}, gsl_sf_result * @var{result})
+These routines compute the Trigamma function @math{\psi'(x)} for
+general @math{x}.
+@comment Domain: x != 0.0, -1.0, -2.0, ...
+@comment Exceptional Return Values: GSL_EDOM, GSL_ELOSS
+@end deftypefun
 
 @node Polygamma Function
 @subsection Polygamma Function
@@ -63,7 +70,7 @@ positive integer @math{n}.
 @deftypefunx int gsl_sf_psi_n_e (int @var{m}, double @var{x}, gsl_sf_result * @var{result})
 These routines compute the polygamma function @c{$\psi^{(m)}(x)$}
 @math{\psi^@{(m)@}(x)} for
-@c{$c \ge 0$}
+@c{$m \ge 0$}
 @math{m >= 0}, @math{x > 0}.  
 @comment Domain: m >= 0, x > 0.0
 @comment Exceptional Return Values: GSL_EDOM
