@@ -13,9 +13,9 @@
 
    The period of this generator is 2^32. */
 
-inline unsigned long int vax_get (void *vstate);
-double vax_get_double (void *vstate);
-void vax_set (void *state, unsigned long int s);
+static inline unsigned long int vax_get (void *vstate);
+static double vax_get_double (void *vstate);
+static void vax_set (void *state, unsigned long int s);
 
 typedef struct
   {
@@ -23,7 +23,7 @@ typedef struct
   }
 vax_state_t;
 
-inline unsigned long int
+static inline unsigned long int
 vax_get (void *vstate)
 {
   vax_state_t *state = (vax_state_t *) vstate;
@@ -33,13 +33,13 @@ vax_get (void *vstate)
   return state->x;
 }
 
-double
+static double
 vax_get_double (void *vstate)
 {
   return vax_get (vstate) / 4294967296.0 ;
 }
 
-void
+static void
 vax_set (void *vstate, unsigned long int s)
 {
   vax_state_t *state = (vax_state_t *) vstate;

@@ -10,11 +10,11 @@
 
 */
 
-inline unsigned long int ranlxd_get (void *vstate);
-double ranlxd_get_double (void *vstate);
-void ranlxd_set_impl (void *state, unsigned long int s, unsigned int luxury);
-void ranlxd1_set (void *state, unsigned long int s);
-void ranlxd2_set (void *state, unsigned long int s);
+static inline unsigned long int ranlxd_get (void *vstate);
+static double ranlxd_get_double (void *vstate);
+static void ranlxd_set_impl (void *state, unsigned long int s, unsigned int luxury);
+static void ranlxd1_set (void *state, unsigned long int s);
+static void ranlxd2_set (void *state, unsigned long int s);
 
 static const int next[12] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 0};
 
@@ -127,13 +127,13 @@ increment_state (ranlxd_state_t * state)
   state->carry = carry;
 }
 
-inline unsigned long int
+static inline unsigned long int
 ranlxd_get (void *vstate)
 {
   return ranlxd_get_double (vstate) * 4294967296.0;	/* 2^32 */
 }
 
-double
+static double
 ranlxd_get_double (void *vstate)
 {
   ranlxd_state_t *state = (ranlxd_state_t *) vstate;
@@ -148,7 +148,7 @@ ranlxd_get_double (void *vstate)
   return state->xdbl[state->ir];
 }
 
-void
+static void
 ranlxd_set_impl (void *vstate, unsigned long int s, unsigned int luxury)
 {
   ranlxd_state_t *state = (ranlxd_state_t *) vstate;
@@ -196,13 +196,13 @@ ranlxd_set_impl (void *vstate, unsigned long int s, unsigned int luxury)
   state->pr = luxury;
 }
 
-void
+static void
 ranlxd1_set (void *vstate, unsigned long int s)
 {
   ranlxd_set_impl (vstate, s, 202);
 }
 
-void
+static void
 ranlxd2_set (void *vstate, unsigned long int s)
 {
   ranlxd_set_impl (vstate, s, 397);

@@ -26,11 +26,9 @@
 
    G. Marsaglia, A. Zaman and W.W. Tsang, Stat. Prob. Lett. 9, 35 (1990)  */
 
-inline unsigned long int ranmar_get (void *vstate);
-double ranmar_get_double (void *vstate);
-void ranmar_set_impl (void *state, unsigned long int s, unsigned int luxury);
-void ranmar_set (void *state, unsigned long int s);
-void ranmar389_set (void *state, unsigned long int s);
+static inline unsigned long int ranmar_get (void *vstate);
+static double ranmar_get_double (void *vstate);
+static void ranmar_set (void *state, unsigned long int s);
 
 static const unsigned long int two24 = 16777216;	/* 2^24 */
 
@@ -43,7 +41,7 @@ typedef struct
   }
 ranmar_state_t;
 
-inline unsigned long int
+static inline unsigned long int
 ranmar_get (void *vstate)
 {
   ranmar_state_t *state = (ranmar_state_t *) vstate;
@@ -96,13 +94,13 @@ ranmar_get (void *vstate)
   return delta;
 }
 
-double
+static double
 ranmar_get_double (void *vstate)
 {
   return ranmar_get (vstate) / 16777216.0 ;
 }
 
-void
+static void
 ranmar_set (void *vstate, unsigned long int s)
 {
   ranmar_state_t *state = (ranmar_state_t *) vstate;

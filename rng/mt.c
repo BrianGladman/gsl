@@ -45,9 +45,9 @@
 #include <stdlib.h>
 #include <gsl_rng.h>
 
-inline unsigned long int mt_get (void *vstate);
-double mt_get_double (void *vstate);
-void mt_set (void *state, unsigned long int s);
+static inline unsigned long int mt_get (void *vstate);
+static double mt_get_double (void *vstate);
+static void mt_set (void *state, unsigned long int s);
 
 #define N 624	/* Period parameters */
 #define M 397
@@ -65,7 +65,7 @@ typedef struct
   }
 mt_state_t;
 
-inline unsigned long
+static inline unsigned long
 mt_get (void *vstate)
 {
   mt_state_t *state = (mt_state_t *) vstate;
@@ -111,13 +111,13 @@ mt_get (void *vstate)
   return k;
 }
 
-double
+static double
 mt_get_double (void * vstate)
 {
   return mt_get (vstate) / 4294967296.0 ;
 }
 
-void
+static void
 mt_set (void *vstate, unsigned long int s)
 {
   mt_state_t *state = (mt_state_t *) vstate;

@@ -17,9 +17,9 @@
    The period of this generator is ? FIXME (probably around 2^48). */
 
 static inline void rand48_advance (void *vstate);
-unsigned long int rand48_get (void *vstate);
-double rand48_get_double (void *vstate);
-void rand48_set (void *state, unsigned long int s);
+static unsigned long int rand48_get (void *vstate);
+static double rand48_get_double (void *vstate);
+static void rand48_set (void *state, unsigned long int s);
 
 static const unsigned short int a0 = 0xE66D ;
 static const unsigned short int a1 = 0xDEEC ;
@@ -63,7 +63,7 @@ rand48_advance (void *vstate)
   state->x2 = (a & 0xFFFF) ;
 }
 
-unsigned long int 
+static unsigned long int 
 rand48_get (void *vstate)
 {
   unsigned long int x1, x2;
@@ -77,7 +77,7 @@ rand48_get (void *vstate)
   return (x2 << 16) + x1;
 }
 
-double
+static double
 rand48_get_double (void * vstate)
 {
   rand48_state_t *state = (rand48_state_t *) vstate;
@@ -89,7 +89,7 @@ rand48_get_double (void * vstate)
 	  + ldexp((double) state->x0, -48)) ;
 }
 
-void
+static void
 rand48_set (void *vstate, unsigned long int s)
 {
   rand48_state_t *state = (rand48_state_t *) vstate;

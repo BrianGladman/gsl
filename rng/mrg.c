@@ -31,9 +31,9 @@
    multiple recursive random number generators", ACM Transactions on
    Modeling and Computer Simulation 3, 87-98 (1993). */
 
-inline unsigned long int mrg_get (void *vstate);
-double mrg_get_double (void *vstate);
-void mrg_set (void *state, unsigned long int s);
+static inline unsigned long int mrg_get (void *vstate);
+static double mrg_get_double (void *vstate);
+static void mrg_set (void *state, unsigned long int s);
 
 static const long int m = 2147483647;
 static const long int a1 = 107374182, q1 = 20, r1 = 7;
@@ -45,7 +45,7 @@ typedef struct
   }
 mrg_state_t;
 
-inline unsigned long int
+static inline unsigned long int
 mrg_get (void *vstate)
 {
   mrg_state_t *state = (mrg_state_t *) vstate;
@@ -75,14 +75,14 @@ mrg_get (void *vstate)
   return state->x1;
 }
 
-double
+static double
 mrg_get_double (void *vstate)
 {
   return mrg_get (vstate) / 2147483647.0 ;
 }
 
 
-void
+static void
 mrg_set (void *vstate, unsigned long int s)
 {
   /* An entirely adhoc way of seeding! This does **not** come from

@@ -52,9 +52,9 @@
    http://www.iro.umontreal.ca/~lecuyer/myftp/papers/combmrg.ps
    ftp://ftp.iro.umontreal.ca/pub/simulation/lecuyer/papers/combmrg.ps */
 
-inline unsigned long int cmrg_get (void *vstate);
-double cmrg_get_double (void *vstate);
-void cmrg_set (void *state, unsigned long int s);
+static inline unsigned long int cmrg_get (void *vstate);
+static double cmrg_get_double (void *vstate);
+static void cmrg_set (void *state, unsigned long int s);
 
 static const long int m1 = 2147483647, m2 = 2145483479;
 
@@ -70,7 +70,7 @@ typedef struct
   }
 cmrg_state_t;
 
-inline unsigned long int
+static inline unsigned long int
 cmrg_get (void *vstate)
 {
   cmrg_state_t *state = (cmrg_state_t *) vstate;
@@ -123,14 +123,14 @@ cmrg_get (void *vstate)
     return (state->x1 - state->y1);
 }
 
-double 
+static double 
 cmrg_get_double (void *vstate)
 {
   return cmrg_get (vstate) / 2147483647.0 ;
 }
 
 
-void
+static void
 cmrg_set (void *vstate, unsigned long int s)
 {
   /* An entirely adhoc way of seeding! This does **not** come from

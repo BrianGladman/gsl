@@ -6,9 +6,9 @@
    Recipe's ran1 generator.  It is MINSTD with a 32-element
    shuffle-box. */
 
-inline unsigned long int ran1_get (void *vstate);
-double ran1_get_double (void *vstate);
-void ran1_set (void *state, unsigned long int s);
+static inline unsigned long int ran1_get (void *vstate);
+static double ran1_get_double (void *vstate);
+static void ran1_set (void *state, unsigned long int s);
 
 static const long int m = 2147483647, a = 16807, q = 127773, r = 2836;
 
@@ -23,7 +23,7 @@ typedef struct
   }
 ran1_state_t;
 
-inline unsigned long int
+static inline unsigned long int
 ran1_get (void *vstate)
 {
   ran1_state_t *state = (ran1_state_t *) vstate;
@@ -51,7 +51,7 @@ ran1_get (void *vstate)
   return state->n;
 }
 
-double
+static double
 ran1_get_double (void *vstate)
 {
   float x_max = 1 - 1.2e-7 ; /* Numerical Recipes version of 1-FLT_EPS */
@@ -65,7 +65,7 @@ ran1_get_double (void *vstate)
 }
 
 
-void
+static void
 ran1_set (void *vstate, unsigned long int s)
 {
   ran1_state_t *state = (ran1_state_t *) vstate;

@@ -16,9 +16,9 @@
    The rand() generator is not very good -- the low bits of successive
    numbers are correlated. */
 
-inline unsigned long int rand_get (void *vstate);
-double rand_get_double (void *vstate);
-void rand_set (void *state, unsigned long int s);
+static inline unsigned long int rand_get (void *vstate);
+static double rand_get_double (void *vstate);
+static void rand_set (void *state, unsigned long int s);
 
 typedef struct
   {
@@ -26,7 +26,7 @@ typedef struct
   }
 rand_state_t;
 
-inline unsigned long int
+static inline unsigned long int
 rand_get (void *vstate)
 {
   rand_state_t *state = (rand_state_t *) vstate;
@@ -38,13 +38,13 @@ rand_get (void *vstate)
   return state->x;
 }
 
-double
+static double
 rand_get_double (void *vstate)
 {
   return rand_get (vstate) / 2147483648.0 ;
 }
 
-void
+static void
 rand_set (void *vstate, unsigned long int s)
 {
   rand_state_t *state = (rand_state_t *) vstate;

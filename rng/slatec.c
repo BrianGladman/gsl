@@ -121,9 +121,9 @@ C
 #include <stdlib.h>
 #include <gsl_rng.h>
 
-inline unsigned long int slatec_get (void *vstate);
-double slatec_get_double (void *vstate);
-void slatec_set (void *state, unsigned long int s);
+static inline unsigned long int slatec_get (void *vstate);
+static double slatec_get_double (void *vstate);
+static void slatec_set (void *state, unsigned long int s);
 
 typedef struct
   {
@@ -137,7 +137,7 @@ static const long a0 = 1029;
 static const long a1ma0 = 507;
 static const long c = 1731;
 
-inline unsigned long int
+static inline unsigned long int
 slatec_get (void *vstate)
 {
   long y0, y1;
@@ -153,13 +153,13 @@ slatec_get (void *vstate)
   return state->x1 * 2048 + state->x0;
 }
 
-double 
+static double 
 slatec_get_double (void *vstate)
 {
   return slatec_get (vstate) / 4194304.0 ;
 }
 
-void
+static void
 slatec_set (void *vstate, unsigned long int s)
 {
   slatec_state_t *state = (slatec_state_t *) vstate;

@@ -10,12 +10,12 @@
 
  */
 
-unsigned long int ranlxs_get (void *vstate);
-inline double ranlxs_get_double (void *vstate);
-void ranlxs_set_impl (void *state, unsigned long int s, unsigned int luxury);
-void ranlxs0_set (void *state, unsigned long int s);
-void ranlxs1_set (void *state, unsigned long int s);
-void ranlxs2_set (void *state, unsigned long int s);
+static unsigned long int ranlxs_get (void *vstate);
+static inline double ranlxs_get_double (void *vstate);
+static void ranlxs_set_impl (void *state, unsigned long int s, unsigned int luxury);
+static void ranlxs0_set (void *state, unsigned long int s);
+static void ranlxs1_set (void *state, unsigned long int s);
+static void ranlxs2_set (void *state, unsigned long int s);
 
 static const int next[12] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 0};
 static const int snext[24] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
@@ -162,7 +162,7 @@ increment_state (ranlxs_state_t * state)
 }
 
 
-inline double
+static inline double
 ranlxs_get_double (void *vstate)
 {
   ranlxs_state_t *state = (ranlxs_state_t *) vstate;
@@ -177,13 +177,13 @@ ranlxs_get_double (void *vstate)
   return state->xflt[state->is];
 }
 
-unsigned long int
+static unsigned long int
 ranlxs_get (void *vstate)
 {
   return ranlxs_get_double (vstate) * 16777216.0;	/* 2^24 */
 }
 
-void
+static void
 ranlxs_set_impl (void *vstate, unsigned long int s, unsigned int luxury)
 {
   ranlxs_state_t *state = (ranlxs_state_t *) vstate;
@@ -232,7 +232,7 @@ ranlxs_set_impl (void *vstate, unsigned long int s, unsigned int luxury)
   state->pr = luxury;
 }
 
-void
+static void
 ranlxs0_set (void *vstate, unsigned long int s)
 {
   ranlxs_set_impl (vstate, s, 109);
@@ -244,7 +244,7 @@ ranlxs1_set (void *vstate, unsigned long int s)
   ranlxs_set_impl (vstate, s, 202);
 }
 
-void
+static void
 ranlxs2_set (void *vstate, unsigned long int s)
 {
   ranlxs_set_impl (vstate, s, 397);

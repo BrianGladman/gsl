@@ -47,9 +47,9 @@
    sequence random number generator", Journal of Computational Physics,
    40, 517-526 (1981). */
 
-inline unsigned long int r250_get (void *vstate);
-double r250_get_double (void *vstate);
-void r250_set (void *state, unsigned long int s);
+static inline unsigned long int r250_get (void *vstate);
+static double r250_get_double (void *vstate);
+static void r250_set (void *state, unsigned long int s);
 
 typedef struct
   {
@@ -58,7 +58,7 @@ typedef struct
   }
 r250_state_t;
 
-inline unsigned long int
+static inline unsigned long int
 r250_get (void *vstate)
 {
   r250_state_t *state = (r250_state_t *) vstate;
@@ -91,13 +91,13 @@ r250_get (void *vstate)
   return k;
 }
 
-double 
+static double 
 r250_get_double (void *vstate)
 {
   return r250_get (vstate) /  4294967296.0 ;
 }
 
-void
+static void
 r250_set (void *vstate, unsigned long int s)
 {
   r250_state_t *state = (r250_state_t *) vstate;

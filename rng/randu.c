@@ -20,9 +20,9 @@
    hard to find" Communications of the ACM, October 1988, Volume 31,
    No 10, pages 1192-1201. */
 
-inline unsigned long int randu_get (void *vstate);
-double randu_get_double (void *vstate);
-void randu_set (void *state, unsigned long int s);
+static inline unsigned long int randu_get (void *vstate);
+static double randu_get_double (void *vstate);
+static void randu_set (void *state, unsigned long int s);
 
 static const long int a = 65539;
 static const unsigned long int m = 2147483648UL;
@@ -33,7 +33,7 @@ typedef struct
   }
 randu_state_t;
 
-inline unsigned long int
+static inline unsigned long int
 randu_get (void *vstate)
 {
   randu_state_t *state = (randu_state_t *) vstate;
@@ -45,13 +45,13 @@ randu_get (void *vstate)
   return state->x;
 }
 
-double
+static double
 randu_get_double (void *vstate)
 {
   return randu_get (vstate) / 2147483648.0 ;
 }
 
-void
+static void
 randu_set (void *vstate, unsigned long int s)
 {
   randu_state_t *state = (randu_state_t *) vstate;

@@ -82,9 +82,9 @@ C***END PROLOGUE  UNI
 #include <stdlib.h>
 #include <gsl_rng.h>
 
-inline unsigned long int uni_get (void *vstate);
-double uni_get_double (void *vstate);
-void uni_set (void *state, unsigned long int s);
+static inline unsigned long int uni_get (void *vstate);
+static double uni_get_double (void *vstate);
+static void uni_set (void *state, unsigned long int s);
 
 static const unsigned int MDIG = 16;	/* Machine digits in int */
 static const unsigned int m1 = 32767;	/* 2^(MDIG-1) - 1 */
@@ -97,7 +97,7 @@ typedef struct
   }
 uni_state_t;
 
-inline unsigned long
+static inline unsigned long
 uni_get (void *vstate)
 {
   uni_state_t *state = (uni_state_t *) vstate;
@@ -132,13 +132,13 @@ uni_get (void *vstate)
   return k;
 }
 
-double
+static double
 uni_get_double (void *vstate)
 {
   return uni_get (vstate) / 32767.0 ;
 }
 
-void
+static void
 uni_set (void *vstate, unsigned long int s)
 {
   unsigned int i, seed, k0, k1, j0, j1;

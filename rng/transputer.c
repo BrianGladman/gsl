@@ -13,9 +13,9 @@
 
    The period of this generator is 2^32. */
 
-inline unsigned long int transputer_get (void *vstate);
-double transputer_get_double (void *vstate);
-void transputer_set (void *state, unsigned long int s);
+static inline unsigned long int transputer_get (void *vstate);
+static double transputer_get_double (void *vstate);
+static void transputer_set (void *state, unsigned long int s);
 
 typedef struct
   {
@@ -23,7 +23,7 @@ typedef struct
   }
 transputer_state_t;
 
-unsigned long int
+static unsigned long int
 transputer_get (void *vstate)
 {
   transputer_state_t *state = (transputer_state_t *) vstate;
@@ -33,13 +33,13 @@ transputer_get (void *vstate)
   return state->x;
 }
 
-double
+static double
 transputer_get_double (void *vstate)
 {
   return transputer_get (vstate) / 4294967296.0 ;
 }
 
-void
+static void
 transputer_set (void *vstate, unsigned long int s)
 {
   transputer_state_t *state = (transputer_state_t *) vstate;

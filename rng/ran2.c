@@ -12,9 +12,9 @@
 
    The period of the underlying combined generator is O(2^60). */
 
-inline unsigned long int ran2_get (void *vstate);
-double ran2_get_double (void *vstate);
-void ran2_set (void *state, unsigned long int s);
+static inline unsigned long int ran2_get (void *vstate);
+static double ran2_get_double (void *vstate);
+static void ran2_set (void *state, unsigned long int s);
 
 static const long int m1 = 2147483563, a1 = 40014, q1 = 53668, r1 = 12211;
 static const long int m2 = 2147483399, a2 = 40692, q2 = 52774, r2 = 3791;
@@ -31,7 +31,7 @@ typedef struct
   }
 ran2_state_t;
 
-inline unsigned long int
+static inline unsigned long int
 ran2_get (void *vstate)
 {
   ran2_state_t *state = (ran2_state_t *) vstate;
@@ -66,7 +66,7 @@ ran2_get (void *vstate)
   return state->n;
 }
 
-double
+static double
 ran2_get_double (void *vstate)
 {
   float x_max = 1 - 1.2e-7 ; /* Numerical Recipes version of 1-FLT_EPS */
@@ -79,7 +79,7 @@ ran2_get_double (void *vstate)
   return x ;
 }
 
-void
+static void
 ran2_set (void *vstate, unsigned long int s)
 {
   ran2_state_t *state = (ran2_state_t *) vstate;

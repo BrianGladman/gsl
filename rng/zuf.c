@@ -7,9 +7,9 @@
    Instead is is set in the initializer: note 607-273=334
    Note also that the state.u[607] is not initialized */
 
-inline unsigned long int zuf_get (void *vstate);
-double zuf_get_double (void *vstate);
-void zuf_set (void *state, unsigned long int s);
+static inline unsigned long int zuf_get (void *vstate);
+static double zuf_get_double (void *vstate);
+static void zuf_set (void *state, unsigned long int s);
 
 static const unsigned long int zuf_randmax = 16777216;	/* 2^24 */
 
@@ -24,7 +24,7 @@ zuf_state_t;
    bits of precision.  Since I'm using long's instead, my RANDMAX
    reflects this. */
 
-inline unsigned long int
+static inline unsigned long int
 zuf_get (void *vstate)
 {
   zuf_state_t *state = (zuf_state_t *) vstate;
@@ -49,13 +49,13 @@ zuf_get (void *vstate)
   return t;
 }
 
-double
+static double
 zuf_get_double (void *vstate)
 {
   return zuf_get (vstate) / 16777216.0 ;
 }
 
-void
+static void
 zuf_set (void *vstate, unsigned long int s)
 {
   /* A very elaborate seeding procedure is provided with the

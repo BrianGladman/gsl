@@ -66,9 +66,9 @@
 #include <stdlib.h>
 #include "gsl_rng.h"
 
-inline unsigned long int gfsr4_get (void *vstate);
-double gfsr4_get_double (void *vstate);
-void gfsr4_set (void *state, unsigned long int s);
+static inline unsigned long int gfsr4_get (void *vstate);
+static double gfsr4_get_double (void *vstate);
+static void gfsr4_set (void *state, unsigned long int s);
 
 /* Magic numbers */
 #define A 471
@@ -85,7 +85,7 @@ typedef struct
   }
 gfsr4_state_t;
 
-inline unsigned long
+static inline unsigned long
 gfsr4_get (void *vstate)
 {
   gfsr4_state_t *state = (gfsr4_state_t *) vstate;
@@ -99,13 +99,13 @@ gfsr4_get (void *vstate)
   
 }
 
-double
+static double
 gfsr4_get_double (void * vstate)
 {
   return gfsr4_get (vstate) / 4294967295.0 ;
 }
 
-void
+static void
 gfsr4_set (void *vstate, unsigned long int s)
 {
   gfsr4_state_t *state = (gfsr4_state_t *) vstate;

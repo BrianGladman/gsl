@@ -12,9 +12,9 @@
    Generators II", ACM Transactions on Modelling and Computer
    Simulation, Vol. 4, No. 3, 1994, pages 254-266. */
 
-inline unsigned long int tt_get (void *vstate);
-double tt_get_double (void *vstate);
-void tt_set (void *state, unsigned long int s);
+static inline unsigned long int tt_get (void *vstate);
+static double tt_get_double (void *vstate);
+static void tt_set (void *state, unsigned long int s);
 
 #define N 25
 #define M 7
@@ -26,7 +26,7 @@ typedef struct
   }
 tt_state_t;
 
-inline unsigned long int
+static inline unsigned long int
 tt_get (void *vstate)
 {
   tt_state_t *state = (tt_state_t *) vstate;
@@ -69,13 +69,13 @@ tt_get (void *vstate)
   return y;
 }
 
-double
+static double
 tt_get_double (void * vstate)
 {
   return tt_get (vstate) / 4294967296.0 ;
 }
 
-void
+static void
 tt_set (void *vstate, unsigned long int s)
 {
   tt_state_t *state = (tt_state_t *) vstate;

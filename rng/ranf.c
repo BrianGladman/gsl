@@ -27,9 +27,9 @@
    The period of this generator is 2^{46}. */
 
 static inline void ranf_advance (void *vstate);
-unsigned long int ranf_get (void *vstate);
-double ranf_get_double (void *vstate);
-void ranf_set (void *state, unsigned long int s);
+static unsigned long int ranf_get (void *vstate);
+static double ranf_get_double (void *vstate);
+static void ranf_set (void *state, unsigned long int s);
 
 static const unsigned short int a0 = 0xB175 ;
 static const unsigned short int a1 = 0xA2E7 ;
@@ -64,7 +64,7 @@ ranf_advance (void *vstate)
   state->x2 = (r & 0xFFFF) ;
 }
 
-unsigned long int 
+static unsigned long int 
 ranf_get (void *vstate)
 {
   unsigned long int x1, x2;
@@ -78,7 +78,7 @@ ranf_get (void *vstate)
   return (x2 << 16) + x1;
 }
 
-double
+static double
 ranf_get_double (void * vstate)
 {
   ranf_state_t *state = (ranf_state_t *) vstate;
@@ -90,7 +90,7 @@ ranf_get_double (void * vstate)
 	  + ldexp((double) state->x0, -48)) ;
 }
 
-void
+static void
 ranf_set (void *vstate, unsigned long int s)
 {
   ranf_state_t *state = (ranf_state_t *) vstate;

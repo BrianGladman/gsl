@@ -25,9 +25,9 @@
    hard to find" Communications of the ACM, October 1988, Volume 31,
    No 10, pages 1192-1201. */
 
-inline unsigned long int minstd_get (void *vstate);
-double minstd_get_double (void *vstate);
-void minstd_set (void *state, unsigned long int s);
+static inline unsigned long int minstd_get (void *vstate);
+static double minstd_get_double (void *vstate);
+static void minstd_set (void *state, unsigned long int s);
 
 static const long int m = 2147483647, a = 16807, q = 127773, r = 2836;
 
@@ -37,7 +37,7 @@ typedef struct
   }
 minstd_state_t;
 
-inline unsigned long int
+static inline unsigned long int
 minstd_get (void *vstate)
 {
   minstd_state_t *state = (minstd_state_t *) vstate;
@@ -59,13 +59,13 @@ minstd_get (void *vstate)
   return state->x;
 }
 
-double
+static double
 minstd_get_double (void *vstate)
 {
   return minstd_get (vstate) / 2147483647.0;
 }
 
-void
+static void
 minstd_set (void *vstate, unsigned long int s)
 {
   minstd_state_t *state = (minstd_state_t *) vstate;

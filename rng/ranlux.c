@@ -33,11 +33,11 @@
    Kenneth G. Hamilton, "Assembler RANLUX for PCs", Computer Physics
    Communications, 101 (1997) 249-253  */
 
-inline unsigned long int ranlux_get (void *vstate);
-double ranlux_get_double (void *vstate);
-void ranlux_set_impl (void *state, unsigned long int s, unsigned int luxury);
-void ranlux_set (void *state, unsigned long int s);
-void ranlux389_set (void *state, unsigned long int s);
+static inline unsigned long int ranlux_get (void *vstate);
+static double ranlux_get_double (void *vstate);
+static void ranlux_set_impl (void *state, unsigned long int s, unsigned int luxury);
+static void ranlux_set (void *state, unsigned long int s);
+static void ranlux389_set (void *state, unsigned long int s);
 
 static const unsigned long int mask_lo = 0x00ffffffUL;	/* 2^24 - 1 */
 static const unsigned long int mask_hi = ~0x00ffffffUL;
@@ -100,7 +100,7 @@ increment_state (ranlux_state_t * state)
   return delta;
 }
 
-inline unsigned long int
+static inline unsigned long int
 ranlux_get (void *vstate)
 {
   ranlux_state_t *state = (ranlux_state_t *) vstate;
@@ -120,13 +120,13 @@ ranlux_get (void *vstate)
   return r;
 }
 
-double
+static double
 ranlux_get_double (void *vstate)
 {
   return ranlux_get (vstate) / 16777216.0;
 }
 
-void
+static void
 ranlux_set_impl (void *vstate, unsigned long int s, unsigned int luxury)
 {
   ranlux_state_t *state = (ranlux_state_t *) vstate;
@@ -168,13 +168,13 @@ ranlux_set_impl (void *vstate, unsigned long int s, unsigned int luxury)
     }
 }
 
-void
+static void
 ranlux_set (void *vstate, unsigned long int s)
 {
   ranlux_set_impl (vstate, s, 223);
 }
 
-void
+static void
 ranlux389_set (void *vstate, unsigned long int s)
 {
   ranlux_set_impl (vstate, s, 389);

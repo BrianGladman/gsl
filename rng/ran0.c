@@ -12,9 +12,9 @@
    Note, if you choose a seed of 123459876 it would give a degenerate
    series 0,0,0,0, ...  I've made that into an error. */
 
-inline unsigned long int ran0_get (void *vstate);
-double ran0_get_double (void *vstate);
-void ran0_set (void *state, unsigned long int s);
+static inline unsigned long int ran0_get (void *vstate);
+static double ran0_get_double (void *vstate);
+static void ran0_set (void *state, unsigned long int s);
 
 static const long int m = 2147483647, a = 16807, q = 127773, r = 2836;
 static const unsigned long int mask = 123459876;
@@ -25,7 +25,7 @@ typedef struct
   }
 ran0_state_t;
 
-inline unsigned long int
+static inline unsigned long int
 ran0_get (void *vstate)
 {
   ran0_state_t *state = (ran0_state_t *) vstate;
@@ -47,13 +47,13 @@ ran0_get (void *vstate)
   return state->x;
 }
 
-double
+static double
 ran0_get_double (void *vstate)
 {
   return ran0_get (vstate) / 2147483647.0 ;
 }
 
-void
+static void
 ran0_set (void *vstate, unsigned long int s)
 {
   ran0_state_t *state = (ran0_state_t *) vstate;

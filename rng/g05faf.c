@@ -17,9 +17,9 @@
    The period of this generator is ? FIXME (probably around 2^48). */
 
 static inline void g05faf_advance (void *vstate);
-unsigned long int g05faf_get (void *vstate);
-double g05faf_get_double (void *vstate);
-void g05faf_set (void *state, unsigned long int s);
+static unsigned long int g05faf_get (void *vstate);
+static double g05faf_get_double (void *vstate);
+static void g05faf_set (void *state, unsigned long int s);
 
 static const unsigned short int a0 = 0xFD ;
 static const unsigned short int a1 = 0xC5 ;
@@ -89,7 +89,7 @@ g05faf_advance (void *vstate)
 
 }
 
-unsigned long int 
+static unsigned long int 
 g05faf_get (void *vstate)
 {
   g05faf_state_t *state = (g05faf_state_t *) vstate;
@@ -100,7 +100,7 @@ g05faf_get (void *vstate)
 	  (state->x5 << 13) + (state->x4 << 5) + (state->x3 >> 3));
 }
 
-double
+static double
 g05faf_get_double (void * vstate)
 {
   g05faf_state_t *state = (g05faf_state_t *) vstate;
@@ -117,7 +117,7 @@ g05faf_get_double (void * vstate)
 	  + ldexp((double) state->x0, -59)) ;
 }
 
-void
+static void
 g05faf_set (void *vstate, unsigned long int s)
 {
   g05faf_state_t *state = (g05faf_state_t *) vstate;
