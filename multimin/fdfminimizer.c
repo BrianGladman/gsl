@@ -284,8 +284,10 @@ gsl_multimin_fdf_minimizer_free(gsl_multimin_fdf_minimizer *s)
   free(s);
 }
 
-gsl_vector *
-gsl_multimin_fdf_minimizer_direction_internal(gsl_multimin_fdf_minimizer *s)
+static gsl_vector * direction_internal(gsl_multimin_fdf_minimizer *s);
+
+static gsl_vector *
+direction_internal(gsl_multimin_fdf_minimizer *s)
 {
   return ((gsl_multimin_to_single *)(s->f_directional->params))->direction;
 }
@@ -293,13 +295,13 @@ gsl_multimin_fdf_minimizer_direction_internal(gsl_multimin_fdf_minimizer *s)
 const gsl_vector *
 gsl_multimin_fdf_minimizer_direction(gsl_multimin_fdf_minimizer *s)
 {
-  return gsl_multimin_fdf_minimizer_direction_internal(s);
+  return direction_internal(s);
 }
 
 int
 gsl_multimin_fdf_minimizer_next_direction(gsl_multimin_fdf_minimizer *s)
 {
-  return s->type->direction(s->state,s->history,gsl_multimin_fdf_minimizer_direction_internal(s));
+  return s->type->direction(s->state,s->history,direction_internal(s));
 }
 
 int

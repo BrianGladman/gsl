@@ -91,6 +91,8 @@ gsl_multimin_to_single_set(gsl_multimin_to_single *w,
 			   const gsl_vector * starting_point,
 			   gsl_vector * direction);
 
+double gsl_multimin_to_single_eval(double x, void * oparams);
+
 void
 gsl_multimin_to_single_free(gsl_multimin_to_single *w);
 
@@ -140,6 +142,12 @@ int
 gsl_multimin_fdf_history_set(gsl_multimin_fdf_history *h,
 			     gsl_multimin_function_fdf *fdf,
 			     const gsl_vector * x);
+
+int
+gsl_multimin_fdf_history_set_with_value(gsl_multimin_fdf_history *h,
+					gsl_multimin_function_fdf *fdf,
+					const gsl_vector * x,
+					double fx);
 
 void
 gsl_multimin_fdf_history_free(gsl_multimin_fdf_history *h);

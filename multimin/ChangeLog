@@ -1,3 +1,7 @@
+Sat Apr 28 11:29:08 2001  Brian Gough  <bjg@network-theory.co.uk>
+
+	* diff.c (gsl_multimin_diff): made indices unsigned
+
 Mon Apr 23 13:22:31 2001  Brian Gough  <bjg@network-theory.co.uk>
 
 	* gsl_multimin.h diff.c: made starting_point const throughout to

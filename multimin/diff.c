@@ -27,7 +27,7 @@ gsl_multimin_diff (const gsl_multimin_function * f,
   /* This is nearly identical to gsl_diff_central except that the
      multimin functions are used to restrict a function requiring
      vecor input to a single real valued input. */
-  int i, k, n;
+  size_t i, k, n;
   gsl_vector *direction;
   gsl_multimin_to_single *w;
   double h = GSL_SQRT_DBL_EPSILON;
