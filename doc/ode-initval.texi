@@ -68,11 +68,11 @@ Some of the simpler solver algorithms do not make use of the Jacobian
 matrix, so it is not always strictly necessary to provide it (the
 @code{jacobian} element of the struct can be replaced by a null pointer
 for those algorithms).  However, it is useful to provide the Jacobian to allow
-the solver algorithms to be interchanged -- the best algorithms make use
+the solver algorithms to be interchanged---the best algorithms make use
 of the Jacobian.
 
 @item size_t dimension;
-This is the dimension of the system of equations
+This is the dimension of the system of equations.
 
 @item void * params
 This is a pointer to the arbitrary parameters of the system.
@@ -167,11 +167,11 @@ Embedded Runge-Kutta Prince-Dormand (8,9) method.
 @end deffn
 
 @deffn {Step Type} gsl_odeiv_step_rk2imp  
-Implicit 2nd order Runge-Kutta at Gaussian points
+Implicit 2nd order Runge-Kutta at Gaussian points.
 @end deffn
 
 @deffn {Step Type} gsl_odeiv_step_rk4imp  
-Implicit 4th order Runge-Kutta at Gaussian points
+Implicit 4th order Runge-Kutta at Gaussian points.
 @end deffn
 
 @deffn {Step Type} gsl_odeiv_step_bsimp   
@@ -184,11 +184,11 @@ requires the Jacobian.
 
 @deffn {Step Type} gsl_odeiv_step_gear1 
 @cindex Gear method, differential equations
-M=1 implicit Gear method 
+M=1 implicit Gear method.
 @end deffn
 
 @deffn {Step Type} gsl_odeiv_step_gear2 
-M=2 implicit Gear method
+M=2 implicit Gear method.
 @end deffn
 
 @node Adaptive Step-size Control
@@ -279,7 +279,7 @@ This is equivalent to the standard control object with @var{a_y}=1 and
 This function creates a new control object which will keep the local
 error on each step within an absolute error of @var{eps_abs} and
 relative error of @var{eps_rel} with respect to the derivatives of the
-solution @math{y'_i(t)} .  This is equivalent to the standard control
+solution @math{y'_i(t)}.  This is equivalent to the standard control
 object with @var{a_y}=0 and @var{a_dydt}=1.
 @end deftypefun
 

@@ -203,7 +203,7 @@ N-1      z(t = N-1)      x(f = -1/(N Delta))
 
 @noindent
 When @math{N} is even the location @math{N/2} contains the most positive
-and negative frequencies @math{+1/(2 \Delta)}, @math{-1/(2 \Delta)})
+and negative frequencies (@math{+1/(2 \Delta)}, @math{-1/(2 \Delta)})
 which are equivalent.  If @math{N} is odd then general structure of the
 table above still applies, but @math{N/2} does not appear.
 

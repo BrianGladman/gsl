@@ -924,7 +924,7 @@ x_n = x_@{n-103@} ^^ x_@{n-250@}
 @noindent
 where 
 @c{$\oplus$}
-@math{^^} denote ``exclusive-or'', defined on
+@math{^^} denotes ``exclusive-or'', defined on
 32-bit words.  The period of this generator is about @c{$2^{250}$}
 @math{2^250} and it
 uses 250 words of state per generator.
@@ -1129,7 +1129,7 @@ SX-3", @cite{International Journal of High Speed Computing} (1994).
 @end deffn
 
 @deffn {Generator} gsl_rng_borosh13
-This is the Borosh, Niederreiter random number generator. It is taken
+This is the Borosh-Niederreiter random number generator. It is taken
 from Knuth's @cite{Seminumerical Algorithms}, 3rd Ed., pages
 106-108. Its sequence is,
 

@@ -187,16 +187,16 @@ guess.
 
 @table @code
 @item int n_tries          
-The number of points to try for each step
+The number of points to try for each step.
 
 @item int iters_fixed_T    
-The number of iterations at each temperature
+The number of iterations at each temperature.
 
 @item double step_size     
-The maximum step size in the random walk
+The maximum step size in the random walk.
 
 @item double k, t_initial, mu_t, t_min
-The parameters of the Boltzmann distribution and cooling schedule
+The parameters of the Boltzmann distribution and cooling schedule.
 @end table
 @end deftp
 
@@ -204,7 +204,7 @@ The parameters of the Boltzmann distribution and cooling schedule
 @node Examples with Simulated Annealing,  , Simulated Annealing functions, Simulated Annealing
 @section Examples
 
-The simulated Annealing package is clumsy, and it has to be because it
+The simulated annealing package is clumsy, and it has to be because it
 is written in C, for C callers, and tries to be polymorphic at the same
 time.  But here we provide some examples which can be pasted into your
 application with little change and should make things easier.
@@ -268,7 +268,7 @@ Kilometers long; this is confirmed by an exhaustive search of all
 possible routes with the same initial city.
 
 The full code can be found in @file{siman/siman_tsp.c}, but I include
-here some plots generated with in the following way:
+here some plots generated in the following way:
 @example
 ./siman_tsp > tsp.output
 grep -v "^#" tsp.output  

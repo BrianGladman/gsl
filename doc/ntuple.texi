@@ -55,7 +55,7 @@ This function creates a new write-only ntuple file @var{filename} for
 ntuples of size @var{size} and returns a pointer to the newly created
 ntuple struct.  Any existing file with the same name is truncated to
 zero length and overwritten.  A pointer to memory for the current ntuple
-row @var{ntuple_data} must be supplied -- this is used to copy ntuples
+row @var{ntuple_data} must be supplied---this is used to copy ntuples
 in and out of the file.
 @end deftypefun
 
@@ -66,7 +66,7 @@ in and out of the file.
 This function opens an existing ntuple file @var{filename} for reading
 and returns a pointer to a corresponding ntuple struct. The ntuples in
 the file must have size @var{size}.  A pointer to memory for the current
-ntuple row @var{ntuple_data} must be supplied -- this is used to copy
+ntuple row @var{ntuple_data} must be supplied---this is used to copy
 ntuples in and out of the file.
 @end deftypefun
 

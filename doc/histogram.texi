@@ -860,7 +860,7 @@ This function resets all the bins of the histogram @var{h} to zero.
 @section Searching 2D histogram ranges
 
 The following functions are used by the access and update routines to
-locate the bin which corresponds to a given @math{(x\,y)} coordinate.
+locate the bin which corresponds to a given @math{(x,y)} coordinate.
 
 @deftypefun int gsl_histogram2d_find (const gsl_histogram2d * @var{h}, double @var{x}, double @var{y}, size_t * @var{i}, size_t * @var{j})
 This function finds and sets the indices @var{i} and @var{j} to the to
@@ -1143,12 +1143,12 @@ two-dimensional probability distribution @var{p}.
 @node Example programs for 2D histograms
 @section Example programs for 2D histograms
 This program demonstrates two features of two-dimensional histograms.
-First a 10 by 10 2d-histogram is created with x and y running from 0 to
-1.  Then a few sample points are added to the histogram, at (0.3,0.3)
-with a height of 1, at (0.8,0.1) with a height of 5 and at (0.7,0.9)
-with a height of 0.5.  This histogram with three events is used to
-generate a random sample of 1000 simulated events, which are printed
-out.
+First a 10-by-10 two-dimensional histogram is created with x and y running
+from 0 to 1.  Then a few sample points are added to the histogram, at
+(0.3,0.3) with a height of 1, at (0.8,0.1) with a height of 5 and at
+(0.7,0.9) with a height of 0.5.  This histogram with three events is
+used to generate a random sample of 1000 simulated events, which are
+printed out.
 
 @example
 @verbatiminclude examples/histogram2d.c

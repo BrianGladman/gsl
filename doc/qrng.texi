@@ -85,7 +85,7 @@ of @var{src}.  The two generators must be of the same type.
 
 @deftypefun {gsl_qrng *} gsl_qrng_clone (const gsl_qrng * @var{q})
 This function returns a pointer to a newly created generator which is an
-exact copy of the generator @var{r}.
+exact copy of the generator @var{q}.
 @end deftypefun
 
 @node Quasi-random number generator algorithms

@@ -274,10 +274,10 @@ function cannot be computed.
 
 @item int (* fdf) (const gsl_vector * @var{x}, void * @var{params}, gsl_vector * @var{f}, gsl_matrix * @var{J})
 This function should set the values of the @var{f} and @var{J} as above,
-for arguments @var{x} and parameters @var{params}.  This function provides
-an optimization of the separate functions for @math{f(x)} and @math{J(x)} -- 
-it is always faster to compute the function and its derivative at the
-same time. 
+for arguments @var{x} and parameters @var{params}.  This function
+provides an optimization of the separate functions for @math{f(x)} and
+@math{J(x)}---it is always faster to compute the function and its
+derivative at the same time.
 
 @item size_t n
 the dimension of the system, i.e. the number of components of the
@@ -467,10 +467,10 @@ enough.
 
 The root finding algorithms described in this section make use of both
 the function and its derivative.  They require an initial guess for the
-location of the root, but there is no absolute guarantee of convergence
--- the function must be suitable for this technique and the initial
-guess must be sufficiently close to the root for it to work.  When the
-conditions are satisfied then convergence is quadratic.
+location of the root, but there is no absolute guarantee of
+convergence---the function must be suitable for this technique and the
+initial guess must be sufficiently close to the root for it to work.
+When the conditions are satisfied then convergence is quadratic.
 
 
 @comment ============================================================
@@ -498,18 +498,18 @@ step by solving the system @math{J dx = - f}.  If this step falls inside
 the trust region it is used as a trial step in the next stage.  If not,
 the algorithm uses the linear combination of the Newton and gradient
 directions which is predicted to minimize the norm of the function while
-staying inside the trust region.
+staying inside the trust region,
 
 @tex
 \beforedisplay
 $$
-dx = - \alpha J^{-1} f(x) - \beta \nabla |f(x)|^2
+dx = - \alpha J^{-1} f(x) - \beta \nabla |f(x)|^2.
 $$
 \afterdisplay
 @end tex
 @ifinfo
 @example
-dx = - \alpha J^@{-1@} f(x) - \beta \nabla |f(x)|^2
+dx = - \alpha J^@{-1@} f(x) - \beta \nabla |f(x)|^2.
 @end example
 @end ifinfo
 @noindent

@@ -185,10 +185,10 @@ function cannot be computed.
 
 @item void (* fdf) (const gsl_vector * @var{x}, void * @var{params}, double * f, gsl_vector * @var{g})
 This function should set the values of the @var{f} and @var{g} as above,
-for arguments @var{x} and parameters @var{params}.  This function provides
-an optimization of the separate functions for @math{f(x)} and @math{g(x)} -- 
-it is always faster to compute the function and its derivative at the
-same time. 
+for arguments @var{x} and parameters @var{params}.  This function
+provides an optimization of the separate functions for @math{f(x)} and
+@math{g(x)}---it is always faster to compute the function and its
+derivative at the same time.
 
 @item size_t n
 the dimension of the system, i.e. the number of components of the

@@ -223,7 +223,7 @@ exceptions, such as division by zero.
 Many of these features can now be controlled via standard functions such
 as @code{fpsetround}, which should be used whenever they are available.
 Unfortunately in the past there has been no universal API for
-controlling their behavior -- each system has had its own low-level way
+controlling their behavior---each system has had its own low-level way
 of accessing them.  To help you write portable programs GSL allows you
 to specify modes in a platform-independent way using the environment
 variable @code{GSL_IEEE_MODE}.  The library then takes care of all the

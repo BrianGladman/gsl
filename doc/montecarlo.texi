@@ -77,10 +77,10 @@ where @var{x} is an array of size @var{dim} giving the coordinates of
 the point where the function is to be evaluated.
 
 @item size_t dim
-the number of dimensions for @var{x}
+the number of dimensions for @var{x}.
 
 @item void * params
-a pointer to the parameters of the function
+a pointer to the parameters of the function.
 @end table
 @end deftp
 @noindent
@@ -147,13 +147,13 @@ randomly distributed points @math{x_i} is given by,
 @tex
 \beforedisplay
 $$
-E(f; N) =  V \langle f \rangle = {V \over N} \sum_i^N f(x_i).
+E(f; N) =  V \langle f \rangle = {V \over N} \sum_i^N f(x_i)
 $$
 \afterdisplay
 @end tex
 @ifinfo
 @example
-E(f; N) = =  V <f> = (V / N) \sum_i^N f(x_i).
+E(f; N) = =  V <f> = (V / N) \sum_i^N f(x_i)
 @end example
 @end ifinfo
 @noindent
@@ -164,13 +164,13 @@ variance of the mean,
 @tex
 \beforedisplay
 $$
-\sigma^2 (E; N) = {V \over N } \sum_i^N (f(x_i) - \langle f \rangle)^2
+\sigma^2 (E; N) = {V \over N } \sum_i^N (f(x_i) - \langle f \rangle)^2.
 $$
 \afterdisplay
 @end tex
 @ifinfo
 @example
-\sigma^2 (E; N) = (V / N) \sum_i^N (f(x_i) -  <f>)^2
+\sigma^2 (E; N) = (V / N) \sum_i^N (f(x_i) -  <f>)^2.
 @end example
 @end ifinfo
 @noindent
@@ -236,13 +236,13 @@ is given by,
 @tex
 \beforedisplay
 $$
-Var(f) = {\sigma_a^2(f) \over 4 N_a} + {\sigma_b^2(f) \over 4 N_b}
+Var(f) = {\sigma_a^2(f) \over 4 N_a} + {\sigma_b^2(f) \over 4 N_b}.
 $$
 \afterdisplay
 @end tex
 @ifinfo
 @example
-Var(f) = (\sigma_a^2(f) / 4 N_a) + (\sigma_b^2(f) / 4 N_b)
+Var(f) = (\sigma_a^2(f) / 4 N_a) + (\sigma_b^2(f) / 4 N_b).
 @end example
 @end ifinfo
 @noindent
@@ -252,13 +252,13 @@ points such that,
 @tex
 \beforedisplay
 $$
-{N_a \over N_a+N_b} = {\sigma_a \over \sigma_a + \sigma_b}
+{N_a \over N_a+N_b} = {\sigma_a \over \sigma_a + \sigma_b}.
 $$
 \afterdisplay
 @end tex
 @ifinfo
 @example
-N_a / (N_a + N_b) = \sigma_a / (\sigma_a + \sigma_b)
+N_a / (N_a + N_b) = \sigma_a / (\sigma_a + \sigma_b).
 @end example
 @end ifinfo
 @noindent
@@ -352,13 +352,13 @@ depend on a scaling parameter @math{\alpha},
 @tex
 \beforedisplay
 $$
-Var(f) = {\sigma_a \over N_a^\alpha} + {\sigma_b \over N_b^\alpha}
+Var(f) = {\sigma_a \over N_a^\alpha} + {\sigma_b \over N_b^\alpha}.
 $$
 \afterdisplay
 @end tex
 @ifinfo
 @example
-Var(f) = @{\sigma_a \over N_a^\alpha@} + @{\sigma_b \over N_b^\alpha@}
+Var(f) = @{\sigma_a \over N_a^\alpha@} + @{\sigma_b \over N_b^\alpha@}.
 @end example
 @end ifinfo
 @noindent
@@ -409,13 +409,13 @@ with a corresponding variance,
 @tex
 \beforedisplay
 $$
-Var_g(f; N) = Var(f/g; N)
+Var_g(f; N) = Var(f/g; N).
 $$
 \afterdisplay
 @end tex
 @ifinfo
 @example
-Var_g(f; N) = Var(f/g; N)
+Var_g(f; N) = Var(f/g; N).
 @end example
 @end ifinfo
 @noindent
@@ -492,7 +492,7 @@ estimate with zero error causes the weighted average to break down and
 must be handled separately. In the original Fortran implementations of
 @sc{vegas} the error estimate is made non-zero by substituting a small
 value (typically @code{1e-30}).  The implementation in GSL differs from
-this and avoids the use of an arbitrary constant -- it either assigns
+this and avoids the use of an arbitrary constant---it either assigns
 the value a weight which is the average weight of the preceding
 estimates or discards it according to the following procedure,
 
@@ -588,7 +588,7 @@ $$
 I = \int_{-\pi}^{+\pi} {dk_x \over 2\pi} 
     \int_{-\pi}^{+\pi} {dk_y \over 2\pi} 
     \int_{-\pi}^{+\pi} {dk_z \over 2\pi} 
-     { 1 \over (1 - \cos(k_x)\cos(k_y)\cos(k_z))}
+     { 1 \over (1 - \cos(k_x)\cos(k_y)\cos(k_z))}.
 $$
 \afterdisplay
 @end tex
@@ -597,7 +597,7 @@ $$
 I = \int_@{-pi@}^@{+pi@} @{dk_x/(2 pi)@} 
     \int_@{-pi@}^@{+pi@} @{dk_y/(2 pi)@} 
     \int_@{-pi@}^@{+pi@} @{dk_z/(2 pi)@} 
-     1 / (1 - cos(k_x)cos(k_y)cos(k_z))
+     1 / (1 - cos(k_x)cos(k_y)cos(k_z)).
 @end example
 @end ifinfo
 @noindent

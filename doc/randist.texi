@@ -1227,7 +1227,8 @@ This function returns a random direction vector @math{v} =
 such that @math{|v|^2 = x^2 + y^2 + z^2 = 1}.  The method employed is
 due to Robert E. Knop (CACM 13, 326 (1970)), and explained in Knuth, v2,
 3rd ed, p136.  It uses the surprising fact that the distribution
-projected along any axis is actually uniform (this is only true for 3d).
+projected along any axis is actually uniform (this is only true for 3
+dimensions).
 @end deftypefn
 
 @deftypefn Random void gsl_ran_dir_nd (const gsl_rng * @var{r}, size_t @var{n}, double *@var{x})
@@ -1517,7 +1518,7 @@ out that the optimal preprocessing is combinatorially difficult for
 large @math{K}.
 
 This method can be used to speed up some of the discrete random number
-generators below, such as the binomial distribution.  To use if for
+generators below, such as the binomial distribution.  To use it for
 something like the Poisson Distribution, a modification would have to
 be made, since it only takes a finite set of @math{K} outcomes.
 
@@ -1528,7 +1529,7 @@ This function returns a pointer to a structure that contains the lookup
 table for the discrete random number generator.  The array @var{P}[] contains
 the probabilities of the discrete events; these array elements must all be 
 positive, but they needn't add up to one (so you can think of them more
-generally as "weights") -- the preprocessor will normalize appropriately.
+generally as "weights")---the preprocessor will normalize appropriately.
 This return value is used
 as an argument for the @code{gsl_ran_discrete} function below.
 @end deftypefun
@@ -1922,7 +1923,7 @@ using the formula given above.
 @section Shuffling and Sampling
 
 The following functions allow the shuffling and sampling of a set of
-objects.  The algorithms rely on a random number generator as source of
+objects.  The algorithms rely on a random number generator as a source of
 randomness and a poor quality generator can lead to correlations in the
 output.  In particular it is important to avoid generators with a short
 period.  For more information see Knuth, v2, 3rd ed, Section 3.4.2,

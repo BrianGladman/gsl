@@ -274,10 +274,10 @@ this function should set the values of the function @var{f} to
 and its derivative @var{df} to
 @c{$f'(x,\hbox{\it params})$}
 @math{f'(x,params)} 
-for argument @var{x} and parameters @var{params}.  This function provides
-an optimization of the separate functions for @math{f(x)} and @math{f'(x)} -- 
-it is always faster to compute the function and its derivative at the
-same time. 
+for argument @var{x} and parameters @var{params}.  This function
+provides an optimization of the separate functions for @math{f(x)} and
+@math{f'(x)}---it is always faster to compute the function and its
+derivative at the same time.
 
 @item void * params
 a pointer to the parameters of the function
@@ -342,7 +342,7 @@ can be evaluated at the same time using the following macro,
 @end example
 @noindent
 The macro stores @math{f(x)} in its @var{y} argument and @math{f'(x)} in
-its @var{dy} argument -- both of these should be pointers to
+its @var{dy} argument---both of these should be pointers to
 @code{double}.
 
 @node Search Bounds and Guesses
@@ -528,7 +528,7 @@ unimportant provided a value can be found where the residual,
 @section Root Bracketing Algorithms
 
 The root bracketing algorithms described in this section require an
-initial interval which is guaranteed to contain a root -- if @math{a}
+initial interval which is guaranteed to contain a root---if @math{a}
 and @math{b} are the endpoints of the interval then @math{f(a)} must
 differ in sign from @math{f(b)}.  This ensures that the function crosses
 zero at least once in the interval.  If a valid initial interval is used
@@ -633,7 +633,7 @@ interpolation or bisection.
 
 The root polishing algorithms described in this section require an
 initial guess for the location of the root.  There is no absolute
-guarantee of convergence -- the function must be suitable for this
+guarantee of convergence---the function must be suitable for this
 technique and the initial guess must be sufficiently close to the root
 for it to work.  When these conditions are satisfied then convergence is
 quadratic.
