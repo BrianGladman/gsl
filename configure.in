@@ -16,14 +16,12 @@ AC_SUBST(VERSION)
 PACKAGE=gsl
 AC_SUBST(PACKAGE)
 
-dnl Checks for libraries.
-dnl Replace `main' with a function in -lm:
-AC_CHECK_LIB(m, main)
-
 dnl Checks for header files.
 
 dnl Checks for typedefs, structures, and compiler characteristics.
 
 dnl Checks for library functions.
+dnl Replace `main' with a function in -lm:
+AC_CHECK_LIB(m, main)
 
 AC_OUTPUT(statistics/Makefile roots/Makefile doc/Makefile random/Makefile Makefile)
