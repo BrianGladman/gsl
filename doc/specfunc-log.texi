@@ -4,46 +4,42 @@
 @cindex logarithm
 
 
-
-/* Provide a logarithm function with GSL semantics.
- *
- * exceptions: GSL_EDOM
- */
-int gsl_sf_log_impl(double x, gsl_sf_result * result);
-int gsl_sf_log_e(double x, gsl_sf_result * result);
+@deftypefun  int gsl_sf_log_impl(double x, gsl_sf_result * result)
+@deftypefunx int gsl_sf_log_e(double x, gsl_sf_result * result)
+Domain: x > 0.0 @*
+Exceptional Return Values: GSL_EDOM
+@end deftypefun
 
 
-/* Log(|x|)
- *
- * exceptions: GSL_EDOM
- */
-int gsl_sf_log_abs_impl(double x, gsl_sf_result * result);
-int gsl_sf_log_abs_e(double x, gsl_sf_result * result);
+@deftypefun  int gsl_sf_log_abs_impl(double x, gsl_sf_result * result)
+@deftypefunx int gsl_sf_log_abs_e(double x, gsl_sf_result * result)
+\log(|x|) @*
+Domain: x != 0.0 @*
+Exceptional Return Values: GSL_EDOM
+@end deftypefun
 
 
 /* Complex Logarithm
  *   exp(lnr + I theta) = zr + I zi
  * Returns argument in [-pi,pi].
  *
- * exceptions: GSL_EDOM
- */
-int gsl_sf_complex_log_impl(double zr, double zi, gsl_sf_result * lnr, gsl_sf_result * theta);
-int gsl_sf_complex_log_e(double zr, double zi, gsl_sf_result * lnr, gsl_sf_result * theta);
+@deftypefun  int gsl_sf_complex_log_impl(double zr, double zi, gsl_sf_result * lnr, gsl_sf_result * theta)
+@deftypefunx int gsl_sf_complex_log_e(double zr, double zi, gsl_sf_result * lnr, gsl_sf_result * theta)
+Exceptional Return Values: GSL_EDOM
+@end deftypefun
 
 
-/* Log(1 + x)
- *
- * exceptions: GSL_EDOM
- */
-int gsl_sf_log_1plusx_impl(double x, gsl_sf_result * result);
-int gsl_sf_log_1plusx_e(double x, gsl_sf_result * result);
+@deftypefun  int gsl_sf_log_1plusx_impl(double x, gsl_sf_result * result)
+@deftypefunx int gsl_sf_log_1plusx_e(double x, gsl_sf_result * result)
+\log(1 + x) @*
+Domain: x > -1.0 @*
+Exceptional Return Values: GSL_EDOM
+@end deftypefun
 
 
-/* Log(1 + x) - x
- *
- * exceptions: GSL_EDOM
- */
-int gsl_sf_log_1plusx_mx_impl(double x, gsl_sf_result * result);
-int gsl_sf_log_1plusx_mx_e(double x, gsl_sf_result * result);
-
-
+@deftypefun  int gsl_sf_log_1plusx_mx_impl(double x, gsl_sf_result * result)
+@deftypefunx int gsl_sf_log_1plusx_mx_e(double x, gsl_sf_result * result)
+\log(1 + x) - x  @*
+Domain: x > -1.0 @*
+Exceptional Return Values: GSL_EDOM
+@end deftypefun
