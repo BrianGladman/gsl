@@ -1,3 +1,7 @@
+Mon Sep 14 20:53:09 1998  Brian Gough  <bjg@vvv.lanl.gov>
+
+	* default.c (gsl_rng_env_setup): added gfsr4
+
 1998-09-10  James Theiler  <jt@lanl.gov>
 
 	* gfsr4.c: added new random number generator
