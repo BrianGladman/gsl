@@ -118,15 +118,25 @@ lm_iteration:
 
   if (ratio > p25)
     {
+#ifdef DEBUG
+      printf("ratio > p25\n");
+#endif
       if (state->par == 0 || ratio >= p75)
         {
           state->delta = pnorm / p5;
           state->par *= p5;
+#ifdef DEBUG
+          printf("updated step bounds: delta = %g, par = %g\n", state->delta, state->par);
+#endif
         }
     }
   else
     {
       double temp = (actred >= 0) ? p5 : p5*dirder / (dirder + p5 * actred);
+
+#ifdef DEBUG
+      printf("ratio < p25\n");
+#endif
 
       if (p1 * fnorm1 >= state->fnorm || temp < p1 ) 
         {
@@ -136,11 +146,11 @@ lm_iteration:
       state->delta = temp * GSL_MIN_DBL (state->delta, pnorm/p1);
 
       state->par /= temp;
+#ifdef DEBUG
+      printf("updated step bounds: delta = %g, par = %g\n", state->delta, state->par);
+#endif
     }
 
-#ifdef DEBUG
-  printf("updated step bounds: delta = %g, par = %g\n", state->delta, state->par);
-#endif
 
   /* test for successful iteration, termination and stringent tolerances */
 
