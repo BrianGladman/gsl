@@ -22,8 +22,6 @@
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_combination.h>
 
-extern int gsl_check_range ; /* defined in vector/vector.c */
-
 size_t
 gsl_combination_n (const gsl_combination * c)
 {

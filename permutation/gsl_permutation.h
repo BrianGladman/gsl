@@ -23,6 +23,7 @@
 #include <stdlib.h>
 #include <gsl/gsl_types.h>
 #include <gsl/gsl_errno.h>
+#include <gsl/gsl_check_range.h>
 
 #undef __BEGIN_DECLS
 #undef __END_DECLS
@@ -74,9 +75,6 @@ int gsl_permutation_canonical_to_linear (gsl_permutation * p, const gsl_permutat
 size_t gsl_permutation_inversions (const gsl_permutation * p);
 size_t gsl_permutation_linear_cycles (const gsl_permutation * p);
 size_t gsl_permutation_canonical_cycles (const gsl_permutation * q);
-
-
-GSL_VAR int gsl_check_range;
 
 #if HAVE_INLINE
 

@@ -23,6 +23,7 @@
 #include <stdlib.h>
 #include <gsl/gsl_types.h>
 #include <gsl/gsl_errno.h>
+#include <gsl/gsl_check_range.h>
 #include <gsl/gsl_block_uchar.h>
 
 #undef __BEGIN_DECLS
@@ -160,8 +161,6 @@ int gsl_vector_uchar_scale (gsl_vector_uchar * a, const double x);
 int gsl_vector_uchar_add_constant (gsl_vector_uchar * a, const double x);
 
 int gsl_vector_uchar_isnull (const gsl_vector_uchar * v);
-
-GSL_VAR int gsl_check_range;
 
 #if HAVE_INLINE
 

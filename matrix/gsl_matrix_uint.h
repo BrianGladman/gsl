@@ -23,6 +23,7 @@
 #include <stdlib.h>
 #include <gsl/gsl_types.h>
 #include <gsl/gsl_errno.h>
+#include <gsl/gsl_check_range.h>
 #include <gsl/gsl_vector_uint.h>
 
 #undef __BEGIN_DECLS
@@ -236,8 +237,6 @@ int gsl_matrix_uint_get_row(gsl_vector_uint * v, const gsl_matrix_uint * m, cons
 int gsl_matrix_uint_get_col(gsl_vector_uint * v, const gsl_matrix_uint * m, const size_t j);
 int gsl_matrix_uint_set_row(gsl_matrix_uint * m, const size_t i, const gsl_vector_uint * v);
 int gsl_matrix_uint_set_col(gsl_matrix_uint * m, const size_t j, const gsl_vector_uint * v);
-
-GSL_VAR int gsl_check_range ;
 
 /* inline functions if you are using GCC */
 
