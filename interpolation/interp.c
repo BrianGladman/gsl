@@ -43,22 +43,24 @@ gsl_interp_eval(const gsl_interp_obj * obj,
 }
 
 int
-gsl_interp_eval_noaccel_impl(const gsl_interp_obj * obj,
-                             const double xa[], const double ya[], double x,
-                             double * y
-                             )
+gsl_interp_eval_deriv_impl(const gsl_interp_obj * obj,
+                           const double xa[], const double ya[], double x,
+			   gsl_interp_accel * a,  
+                           double * dydx
+                           )
 {
-  return obj->eval_na_impl(obj, xa, ya, x, y);
+  return obj->eval_d_impl(obj, xa, ya, x, a, dydx);
 }
 
 
 int
-gsl_interp_eval_noaccel_e(const gsl_interp_obj * obj,
-                          const double xa[], const double ya[], double x,
-                          double * y
-                          )
+gsl_interp_eval_deriv_e(const gsl_interp_obj * obj,
+                        const double xa[], const double ya[], double x,
+			gsl_interp_accel * a, 
+                        double * dydx
+                        )
 {
-  int status = obj->eval_na_impl(obj, xa, ya, x, y);
+  int status = obj->eval_d_impl(obj, xa, ya, x, a, dydx);
   if(status != GSL_SUCCESS) {
     GSL_ERROR("gsl_interp_eval_noaccel_e", status);
   }
@@ -66,16 +68,17 @@ gsl_interp_eval_noaccel_e(const gsl_interp_obj * obj,
 }
 
 double
-gsl_interp_eval_noaccel(const gsl_interp_obj * obj,
-                        const double xa[], const double ya[], double x
-                        )
+gsl_interp_eval_deriv(const gsl_interp_obj * obj,
+                      const double xa[], const double ya[], double x,
+		      gsl_interp_accel * a
+                      )
 {
-  double y;
-  int status = obj->eval_na_impl(obj, xa, ya, x, &y);
+  double dydx;
+  int status = obj->eval_d_impl(obj, xa, ya, x, a, &dydx);
   if(status != GSL_SUCCESS) {
     GSL_WARNING("gsl_interp_eval_noaccel_e", status);
   }
-  return y;
+  return dydx;
 }
 
 

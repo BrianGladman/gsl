@@ -1,8 +1,14 @@
+/* Author:  G. Jungman
+ * RCS:     $Id$
+ */
 #include "bsearch.h"
 
 
-int
-bsearch(const double x_array[], double x, int index_lo, int index_hi)
+unsigned long
+interp_bsearch(const double x_array[], double x,
+               unsigned long index_lo,
+               unsigned long index_hi
+               )
 {
   int ilo = index_lo;
   int ihi = index_hi;

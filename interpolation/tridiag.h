@@ -1,3 +1,6 @@
+/* Author:  G. Jungman
+ * RCS:     $Id$
+ */
 #ifndef _TRIDIAG_H_
 #define _TRIDIAG_H_
 

@@ -1,3 +1,7 @@
+/* Author:  G. Jungman
+ * RCS:     $Id$
+ */
+#include <stdlib.h>
 #include <gsl_errno.h>
 #include "tridiag.h"
 
@@ -46,7 +50,7 @@ int solve_tridiag(const double diag[], const double offdiag[], const double b[],
     
     /* backsubstitution */
     x[N-1] = c[N-1];
-    for(i=N-2; i>=0; i++) {
+    for(i=N-2; i>=0; i--) {
       x[i] = c[i] - gamma[i]*x[i+1];
     }
     
@@ -82,6 +86,45 @@ int solve_cyctridiag(const double diag[], const double offdiag[], const double b
   }
   else {
     int i;
+    double sum = 0.0;
+    
+    /* factor */
+    alpha[0] = diag[0];
+    gamma[0] = offdiag[1]/alpha[0];
+    delta[0] = offdiag[0]/alpha[0];
+    for(i=1; i<N-2; i++) {
+      alpha[i] = diag[i] - offdiag[i]*gamma[i-1];
+      gamma[i] = offdiag[i+1]/alpha[i];
+      delta[i] = -delta[i-1]*offdiag[i]/alpha[i];
+    }
+    for(i=0; i<N-2; i++) {
+      sum += alpha[i]*delta[i]*delta[i];
+    }
+    alpha[N-2] = diag[N-2] - offdiag[N-2]*gamma[N-3];
+    gamma[N-2] = (offdiag[N-1] - offdiag[N-2]*delta[N-3])/alpha[N-2];
+    alpha[N-1] = diag[N-1] - sum - offdiag[N-1]*gamma[N-2]*gamma[N-2];
+    
+    /* update */
+    z[0] = b[0];
+    for(i=1; i<N-1; i++) {
+      z[i] = b[i] - z[i-1]*gamma[i-1];
+    }
+    sum = 0.0;
+    for(i=0; i<N-2; i++) {
+      sum += delta[i]*z[i];
+    }
+    z[N-1] = b[N-1] - sum - gamma[N-2]*z[N-2];
+    for(i=0; i<N; i++) {
+      c[i] = z[i]/alpha[i];
+    }
+    
+    /* backsubstitution */
+    x[N-1] = c[N-1];
+    x[N-2] = c[N-2] - gamma[N-2]*x[N-1];
+    for(i=N-3; i>= 0; i--) {
+      x[i] = c[i] - gamma[i]*x[i+1] - delta[i]*x[N-1];
+    }
+    
     status = GSL_SUCCESS;
   }
 

@@ -1,6 +1,6 @@
 lib_LIBRARIES = libgslinterpolation.a 
 
-# check_PROGRAMS = test_interp
+check_PROGRAMS = test_interp
 
 include_HEADERS = 		\
 	gsl_interp.h
@@ -12,14 +12,15 @@ noinst_HEADERS = 		\
 
 INCLUDES = -I$(full_top_srcdir) -I$(full_top_srcdir)/err
 
-#TESTS = test_interp
+TESTS = test_interp
 
-#test_sf_LDADD = libgslinterpolation.a ../err/libgslerr.a ../err/libgsltest.a
-#test_sf_DEPENDENCIES = libgslinterpolation.a
-#test_sf_SOURCES = test_interp.c
+test_interp_LDADD = libgslinterpolation.a ../err/libgslerr.a ../err/libgsltest.a
+test_interp_DEPENDENCIES = libgslinterpolation.a
+test_interp_SOURCES = test_interp.c
 
 libgslinterpolation_a_SOURCES = 	\
 	accel.c				\
+	akima.c				\
 	bsearch.c			\
 	cspline.c			\
 	interp.c			\
