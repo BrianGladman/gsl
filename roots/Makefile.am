@@ -12,6 +12,6 @@ test_LDADD = libroots.a ../err/liberr.a
 
 test_DEPENDENCIES = libroots.a
 
-test_SOURCES = test.c
+test_SOURCES = test.c test.h
 
 libroots_a_SOURCES = bisection.c
