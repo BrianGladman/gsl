@@ -1,3 +1,8 @@
+Thu Mar  8 15:29:32 2001  Brian Gough  <bjg@network-theory.co.uk>
+
+	* lmpar.c (compute_newton_direction): corrected bug that produced
+ 	negative index
+
 Sun Feb 18 16:39:46 2001  Brian Gough  <bjg@network-theory.co.uk>
 
 	* fdfsolver.c (gsl_multifit_fdfsolver_alloc): changed so that the
