@@ -3,7 +3,7 @@
 const char *
 gsl_strerror (const int gsl_errno)
 {
-  switch(gsl_errno)
+  switch (gsl_errno)
     {
     case GSL_EDOM:
       return "input domain error" ;
