@@ -399,6 +399,7 @@ void gsl_blas_raw_cscal  (size_t N, const gsl_complex_packed_float alpha, gsl_co
 #include "source_scal_c.h"
 #undef BASE_TYPE
 }
+
 void gsl_blas_raw_zscal  (size_t N, const gsl_complex_packed alpha, gsl_complex_packed_array X, size_t incX)
 {
 #define BASE_TYPE double
@@ -410,6 +411,7 @@ void gsl_blas_raw_csscal (size_t N, float  alpha, gsl_complex_packed_array_float
 {
 #include "source_scal_c_s.h"
 }
+
 void gsl_blas_raw_zdscal (size_t N, double alpha, gsl_complex_packed_array X, size_t incX)
 {
 #include "source_scal_c_s.h"
@@ -731,21 +733,29 @@ void gsl_blas_raw_ztrsv (CBLAS_UPLO Uplo,
 /* TBSV */
 
 void gsl_blas_raw_stbsv (CBLAS_UPLO Uplo,
-                               CBLAS_TRANSPOSE TransA, CBLAS_DIAG Diag,
-                               size_t N, size_t K,
-                               const float A[], int lda,
-                               float X[], size_t incX)
+                         CBLAS_TRANSPOSE TransA, CBLAS_DIAG Diag,
+                         size_t N, size_t K,
+                         const float A[], int lda,
+                         float X[], size_t incX)
 {
-/* FIXME */
+#define BASE_TYPE float
+#define MATRIX_VAR_NAME A
+#include "source_tbsv_r.h"
+#undef MATRIX_VAR_NAME
+#undef BASE_TYPE
 }
 
 void gsl_blas_raw_dtbsv (CBLAS_UPLO Uplo,
-                               CBLAS_TRANSPOSE TransA, CBLAS_DIAG Diag,
-                               size_t N, size_t K,
-                               const double A[], int lda,
-                               double X[], size_t incX)
+                         CBLAS_TRANSPOSE TransA, CBLAS_DIAG Diag,
+                         size_t N, size_t K,
+                         const double A[], int lda,
+                         double X[], size_t incX)
 {
-/* FIXME */
+#define BASE_TYPE double
+#define MATRIX_VAR_NAME A
+#include "source_tbsv_r.h"
+#undef MATRIX_VAR_NAME
+#undef BASE_TYPE
 }
 
 void gsl_blas_raw_ctbsv (CBLAS_UPLO Uplo,
@@ -754,7 +764,7 @@ void gsl_blas_raw_ctbsv (CBLAS_UPLO Uplo,
                                const gsl_complex_packed_array_float A, int lda,
                                gsl_complex_packed_array_float X, size_t incX)
 {
-/* FIXME */
+/* FIXME: copy above */
 }
 
 void gsl_blas_raw_ztbsv (CBLAS_UPLO Uplo,
@@ -763,26 +773,36 @@ void gsl_blas_raw_ztbsv (CBLAS_UPLO Uplo,
                                const gsl_complex_packed_array A, int lda,
                                gsl_complex_packed_array X, size_t incX)
 {
-/* FIXME */
+/* FIXME: copy above */
 }
 
 
 /* TPSV */
 
 void gsl_blas_raw_stpsv (CBLAS_UPLO Uplo,
-                               CBLAS_TRANSPOSE TransA, CBLAS_DIAG Diag,
-                               size_t N,
-                               const float Ap[],
-                               float X[], size_t incX)
+                         CBLAS_TRANSPOSE TransA, CBLAS_DIAG Diag,
+                         size_t N,
+                         const float Ap[],
+                         float X[], size_t incX)
 {
+#define BASE_TYPE float
+#define MATRIX_VAR_NAME Ap
+#include "source_tpsv_r.h"
+#undef MATRIX_VAR_NAME
+#undef BASE_TYPE
 }
 
 void gsl_blas_raw_dtpsv (CBLAS_UPLO Uplo,
-                               CBLAS_TRANSPOSE TransA, CBLAS_DIAG Diag,
-                               size_t N,
-                               const double Ap[],
-                               double X[], size_t incX)
+                         CBLAS_TRANSPOSE TransA, CBLAS_DIAG Diag,
+                         size_t N,
+                         const double Ap[],
+                         double X[], size_t incX)
 {
+#define BASE_TYPE double
+#define MATRIX_VAR_NAME Ap
+#include "source_tpsv_r.h"
+#undef MATRIX_VAR_NAME
+#undef BASE_TYPE
 }
 
 void gsl_blas_raw_ctpsv (CBLAS_UPLO Uplo,
@@ -791,6 +811,7 @@ void gsl_blas_raw_ctpsv (CBLAS_UPLO Uplo,
                                const gsl_complex_packed_array_float Ap,
                                gsl_complex_packed_array_float X, size_t incX)
 {
+/* FIXME: copy above */
 }
 
 void gsl_blas_raw_ztpsv (CBLAS_UPLO Uplo,
@@ -799,6 +820,7 @@ void gsl_blas_raw_ztpsv (CBLAS_UPLO Uplo,
                                const gsl_complex_packed_array Ap,
                                gsl_complex_packed_array X, size_t incX)
 {
+/* FIXME: copy above */
 }
 
 

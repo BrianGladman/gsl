@@ -1,0 +1,25 @@
+
+native implementations:
+
+ o gsl_blas_raw_srotmg
+ o gsl_blas_raw_drotmg
+ o gsl_blas_raw_srotm
+ o gsl_blas_raw_drotm
+
+ o gsl_blas_raw_ctbmv
+ o gsl_blas_raw_ztbmv
+
+ o gsl_blas_raw_ctpmv
+ o gsl_blas_raw_ztpmv
+
+ X gsl_blas_raw_stbsv
+ X gsl_blas_raw_dtbsv
+ o gsl_blas_raw_ctbsv
+ o gsl_blas_raw_ztbsv
+
+ X gsl_blas_raw_stpsv
+ X gsl_blas_raw_dtpsv
+ o gsl_blas_raw_ctpsv
+ o gsl_blas_raw_ztpsv
+
+
