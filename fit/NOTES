@@ -1,0 +1,16 @@
+
+with no errors, estimate from the fit
+with uncorrelated errors, wi
+with correlated errors, Wij
+
+models  f = b0 1 + b1 x1 + b2 x2
+
+b0  taking the mean!
+
+b0 b1  linear fit
+   b1  linear fit, constrained to pass through the origin
+
+b0 b1 b2 ...  general linear regression model
+   b1 b2 ...
+
+b0 b1 b2 ... polynomial regression model

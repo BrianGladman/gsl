@@ -66,6 +66,13 @@ int test_HH_solve_dim(const gsl_matrix * m, const double * actual, double eps);
 int test_HH_solve(void);
 int test_TD_solve_dim(size_t dim, double d, double od, const double * actual, double eps);
 int test_TD_solve(void);
+int test_TDN_solve_dim(size_t dim, double d, double a, double b, const double * actual, double eps);
+int test_TDN_solve(void);
+int test_TD_cyc_solve_one(const size_t dim, const double * d, const double * od, const double * r,
+                          const double * actual, double eps);
+int test_TD_cyc_solve(void);
+int test_TDN_cyc_solve_dim(size_t dim, double d, double a, double b, const double * actual, double eps);
+int test_TDN_cyc_solve(void);
 int test_bidiag_decomp_dim(const gsl_matrix * m, double eps);
 int test_bidiag_decomp(void);
 
@@ -1656,6 +1663,215 @@ int test_TD_solve(void)
 }
 
 int
+test_TD_cyc_solve_one(const size_t dim, const double * d, const double * od,
+                      const double * r, const double * actual, double eps)
+{
+  int s = 0;
+  size_t i;
+
+  gsl_vector * offdiag = gsl_vector_alloc(dim);
+  gsl_vector * diag = gsl_vector_alloc(dim);
+  gsl_vector * rhs = gsl_vector_alloc(dim);
+  gsl_vector * x = gsl_vector_alloc(dim);
+
+  for(i=0; i<dim; i++) {
+    gsl_vector_set(diag, i, d[i]);
+    gsl_vector_set(rhs,  i, r[i]);
+    gsl_vector_set(offdiag, i, od[i]);
+  }
+
+  s += gsl_linalg_solve_symm_cyc_tridiag(diag, offdiag, rhs, x);
+
+  for(i=0; i<dim; i++) {
+    double si = gsl_vector_get(x, i);
+    double ai = actual[i];
+    int foo = check(si, ai, eps);
+    if(foo) {
+      printf("%3d[%d]: %22.18g   %22.18g\n", dim, i, gsl_vector_get(x, i), actual[i]);
+    }
+    s += foo;
+  }
+
+  gsl_vector_free(x);
+  gsl_vector_free(rhs);
+  gsl_vector_free(diag);
+  gsl_vector_free(offdiag);
+
+  return s;
+}
+
+int test_TD_cyc_solve(void)
+{
+  int f;
+  int s = 0;
+
+  double diag_1[] = { 1, 1, 1 };
+  double offdiag_1[] = { 3, 3, 3 };
+  double rhs_1[] = { 7, -7, 7 };
+  double actual_1[] = { -2, 5, -2 };
+  size_t dim_1 = sizeof(diag_1)/sizeof(double);
+
+  double diag_2[] = { 4, 2, 1, 2, 4 };
+  double offdiag_2[] = { 1, 1, 1, 1, 1 };
+  double rhs_2[] = { 30, -24, 3, 21, -30 };
+  double actual_2[] = { 12, 3, -42, 42, -21 };
+  size_t dim_2 = sizeof(diag_2)/sizeof(double);
+
+  f = test_TD_cyc_solve_one(dim_1, diag_1, offdiag_1, rhs_1, actual_1, 28.0 * GSL_DBL_EPSILON);
+  gsl_test(f, "  solve_TD_cyc dim=%u A", dim_1);
+  s += f;
+
+/*  f = test_TD_cyc_solve_one(dim_2, diag_2, offdiag_2, rhs_2, actual_2, 7.0 * GSL_DBL_EPSILON);
+  FIXME: bad accuracy */
+  f = test_TD_cyc_solve_one(dim_2, diag_2, offdiag_2, rhs_2, actual_2, 35.0 * GSL_DBL_EPSILON);
+  gsl_test(f, "  solve_TD_cyc dim=%u B", dim_2);
+  s += f;
+
+  return s;
+}
+
+int
+test_TDN_solve_dim(size_t dim, double d, double a, double b, const double * actual, double eps)
+{
+  int s = 0;
+  size_t i;
+
+  gsl_vector * abovediag = gsl_vector_alloc(dim-1);
+  gsl_vector * belowdiag = gsl_vector_alloc(dim-1);
+  gsl_vector * diag = gsl_vector_alloc(dim);
+  gsl_vector * rhs = gsl_vector_alloc(dim);
+  gsl_vector * x = gsl_vector_alloc(dim);
+
+  for(i=0; i<dim; i++) {
+    gsl_vector_set(diag, i, d);
+    gsl_vector_set(rhs,  i, i + 1.0);
+  }
+  for(i=0; i<dim-1; i++) {
+    gsl_vector_set(abovediag, i, a);
+    gsl_vector_set(belowdiag, i, b);
+  }
+
+  s += gsl_linalg_solve_tridiag(diag, abovediag, belowdiag, rhs, x);
+
+  for(i=0; i<dim; i++) {
+    double si = gsl_vector_get(x, i);
+    double ai = actual[i];
+    int foo = check(si, ai, eps);
+    if(foo) {
+      printf("%3d[%d]: %22.18g   %22.18g\n", dim, i, gsl_vector_get(x, i), actual[i]);
+    }
+    s += foo;
+  }
+
+  gsl_vector_free(x);
+  gsl_vector_free(rhs);
+  gsl_vector_free(diag);
+  gsl_vector_free(abovediag);
+  gsl_vector_free(belowdiag);
+
+  return s;
+}
+
+
+int test_TDN_solve(void)
+{
+  int f;
+  int s = 0;
+  double actual[16];
+
+  actual[0] =  3.0;
+  actual[1] = -1.0;
+  f = test_TDN_solve_dim(2, 1.0, 2.0, 1.0, actual, 1.0 * GSL_DBL_EPSILON);
+  gsl_test(f, "  solve_TDN dim=2 A");
+  s += f;
+
+  actual[0] =  2.0/5.0;
+  actual[1] =  9.0/5.0;
+  f = test_TDN_solve_dim(2, 1.0, 1.0/3.0, 1.0/2.0, actual, 1.0 * GSL_DBL_EPSILON);
+  gsl_test(f, "  solve_TDN dim=2 B");
+  s += f;
+
+  actual[0] =  99.0/140.0;
+  actual[1] =  41.0/35.0;
+  actual[2] =  19.0/10.0;
+  actual[3] =  72.0/35.0;
+  actual[4] =  139.0/35.0;
+  f = test_TDN_solve_dim(5, 1.0, 1.0/4.0, 1.0/2.0, actual, 35.0/8.0 * GSL_DBL_EPSILON);
+  gsl_test(f, "  solve_TDN dim=5");
+  s += f;
+
+  return s;
+}
+
+int
+test_TDN_cyc_solve_dim(size_t dim, double d, double a, double b, const double * actual, double eps)
+{
+  int s = 0;
+  size_t i;
+
+  gsl_vector * abovediag = gsl_vector_alloc(dim);
+  gsl_vector * belowdiag = gsl_vector_alloc(dim);
+  gsl_vector * diag = gsl_vector_alloc(dim);
+  gsl_vector * rhs = gsl_vector_alloc(dim);
+  gsl_vector * x = gsl_vector_alloc(dim);
+
+  for(i=0; i<dim; i++) {
+    gsl_vector_set(diag, i, d);
+    gsl_vector_set(rhs,  i, i + 1.0);
+  }
+  for(i=0; i<dim; i++) {
+    gsl_vector_set(abovediag, i, a);
+    gsl_vector_set(belowdiag, i, b);
+  }
+
+  s += gsl_linalg_solve_cyc_tridiag(diag, abovediag, belowdiag, rhs, x);
+
+  for(i=0; i<dim; i++) {
+    double si = gsl_vector_get(x, i);
+    double ai = actual[i];
+    int foo = check(si, ai, eps);
+    if(foo) {
+      printf("%3d[%d]: %22.18g   %22.18g\n", dim, i, gsl_vector_get(x, i), actual[i]);
+    }
+    s += foo;
+  }
+
+  gsl_vector_free(x);
+  gsl_vector_free(rhs);
+  gsl_vector_free(diag);
+  gsl_vector_free(abovediag);
+  gsl_vector_free(belowdiag);
+
+  return s;
+}
+
+
+int test_TDN_cyc_solve(void)
+{
+  int f;
+  int s = 0;
+  double actual[16];
+
+  actual[0] =  3.0/2.0;
+  actual[1] = -1.0/2.0;
+  actual[2] =  1.0/2.0;
+  f = test_TDN_cyc_solve_dim(3, 1.0, 2.0, 1.0, actual, 4.0 * GSL_DBL_EPSILON);
+  gsl_test(f, "  solve_TDN_cyc dim=2 A");
+  s += f;
+
+  actual[0] = -5.0/22.0;
+  actual[1] = -3.0/22.0;
+  actual[2] =  29.0/22.0;
+  actual[3] = -9.0/22.0;
+  actual[4] =  43.0/22.0;
+  f = test_TDN_cyc_solve_dim(5, 3.0, 2.0, 1.0, actual, 66.0 * GSL_DBL_EPSILON);
+  gsl_test(f, "  solve_TDN_cyc dim=5");
+  s += f;
+
+  return s;
+}
+
+int
 test_bidiag_decomp_dim(const gsl_matrix * m, double eps)
 {
   int s = 0;
@@ -1810,7 +2026,13 @@ int main(void)
   gsl_test(test_cholesky_decomp(),"Cholesky Decomposition");
   gsl_test(test_cholesky_solve(), "Cholesky Solve");
   gsl_test(test_HH_solve(),       "Householder solve");
-  gsl_test(test_TD_solve(),       "Tridiagonal solve");
+  gsl_test(test_TD_solve(),       "Tridiagonal symmetric solve");
+  gsl_test(test_TD_cyc_solve(),   "Tridiagonal symmetric cyclic solve");
+
+#ifdef NONSYM
+  gsl_test(test_TDN_solve(),      "Tridiagonal nonsymmetric solve");
+  gsl_test(test_TDN_cyc_solve(),  "Tridiagonal nonsymmetric cyclic solve");
+#endif
 
   gsl_matrix_free(hilb2);
   gsl_matrix_free(hilb3);

@@ -22,6 +22,7 @@
 
 #include <config.h>
 #include <stdlib.h>
+#include <math.h>
 #include <gsl/gsl_errno.h>
 #include "tridiag.h"
 #include <gsl/gsl_linalg.h>
@@ -324,6 +325,12 @@ int solve_cyc_tridiag_nonsym(
        */
       zb[0] = rhs[0];
       if (diag[0] != 0) beta = -diag[0]; else beta = 1;
+      {
+        const double q = 1 - abovediag[0]*belowdiag[0]/(diag[0]*diag[d_stride]);
+        if (fabs(q/beta) > 0.5 && fabs(q/beta) < 2) {
+          beta *= (fabs(q/beta) < 1) ? 0.5 : 2;
+        }
+      }
       zu[0] = beta;
       alpha[0] = diag[0] - beta;
 

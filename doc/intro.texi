@@ -62,14 +62,15 @@ Specifically, we want to make sure that you have the right to give away
 copies of any programs related to the GNU Scientific Library, that you
 receive their source code or else can get it if you want it, that you
 can change these programs or use pieces of them in new free programs,
-and that you know you can do these things.  The library should not be
-redistributed in proprietary programs.
+and that you know you can do these things.  
 
 To make sure that everyone has such rights, we have to forbid you to
 deprive anyone else of these rights.  For example, if you distribute
-copies of any related code, you must give the recipients all the rights
-that you have.  You must make sure that they, too, receive or can get
-the source code.  And you must tell them their rights. 
+copies of any related code which uses the GNU Scientific Library, you
+must give the recipients all the rights that you have.  You must make
+sure that they, too, receive or can get the source code.  And you must
+tell them their rights.  This means that the library should not be
+redistributed in proprietary programs.
 
 Also, for our own protection, we must make certain that everyone finds
 out that there is no warranty for the GNU Scientific Library.  If these

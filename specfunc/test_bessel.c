@@ -50,6 +50,11 @@ int test_bessel(void)
   TEST_SF(s, gsl_sf_bessel_Jn_e, (5, 2.0, &r),     0.007039629755871685484,   TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_bessel_Jn_e, (10, 20.0, &r),   0.18648255802394508321,    TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_bessel_Jn_e, (100, 100.0, &r), 0.09636667329586155967,    TEST_TOL0, GSL_SUCCESS);
+#ifdef TEST_LARGE
+  TEST_SF(s, gsl_sf_bessel_Jn_e, (0, 1.0e+10, &r), 2.1755917502468917269e-06, TEST_SQRT_TOL0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_bessel_Jn_e, (1, 1.0e+10, &r), -7.676508175684157103e-06, TEST_TOL4, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_bessel_Jn_e, (0, 20000, &r), -7.676508175684157103e-06, TEST_TOL4, GSL_SUCCESS);
+#endif
 
   TEST_SF(s, gsl_sf_bessel_Y0_e, (0.1, &r),         -1.5342386513503668441,    TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_bessel_Y0_e, (2, &r),            0.5103756726497451196,    TEST_TOL0, GSL_SUCCESS);

@@ -479,7 +479,7 @@ main (void)
     @{
       double y0 = exp(x);
       double sigma = 0.1*y0;
-      double dy = gsl_ran_gaussian(r, sigma)
+      double dy = gsl_ran_gaussian(r, sigma);
 
       printf("%g %g %g\n", x, y0 + dy, sigma);
     @}

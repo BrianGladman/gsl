@@ -18,3 +18,5 @@ libtool
 stamp-h
 stamp-h.in
 typescript.make
+gsl-randist
+gsl-histogram
