@@ -1609,13 +1609,13 @@ main (void)
       gsl_matrix_set (m, i, j, 0.23 + i + j);
 
   @{  
-     FILE * f = fopen ("test.dat", "w");
+     FILE * f = fopen ("test.dat", "wb");
      gsl_matrix_fwrite (f, m);
      fclose (f);
   @}
 
   @{  
-     FILE * f = fopen ("test.dat", "r");
+     FILE * f = fopen ("test.dat", "rb");
      gsl_matrix_fread (f, a);
      fclose (f);
   @}
