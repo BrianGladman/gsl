@@ -92,15 +92,15 @@ steffenson_iterate (void * vstate, gsl_function_fdf * fdf, double * root)
       GSL_ERROR ("function not continuous", GSL_EBADFUNC);
     }
 
-  if (state->count < 10)
+  if (state->count < 3)
     {
       *root = x_new ;
       state->count++ ;
     }
   else 
     {
-      double u = (x_1 - x_2) ;
-      *root = x_2 - u * u / (x - 2 * x_1 + x_2) ;
+      double u = (x - x_1) ;
+      *root = x_1 - u * u / (x_new - 2 * x + x_1) ;
     }
 
   if (!GSL_IS_REAL (df_new))
