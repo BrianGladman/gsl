@@ -1,3 +1,21 @@
+Sat Jul  4 11:14:49 1998  Brian Gough  <bjg@vvv.lanl.gov>
+
+	* ranmar.c: added the RANMAR generator
+
+	* tds.c: added the INMOS Transputer RNG
+
+	* test.c (rng_min_test): added a test for RAND_MIN, to make sure
+ 	none of the generators go below it. Statistically the test is not
+ 	much good since it's very unlikely that an off-by-one error would
+ 	show up unless we ran the test for > 4 billion numbers. However,
+ 	the test might detect a gross error like a typo in RAND_MIN or a
+ 	degeneracy 0,0,0,... for a multiplicative generator.
+
+	* uni.c: fixed RAND_MAX here too
+
+	* uni32.c: fixed RAND_MAX to m1-1, not m1 (since it's modulo m1 so
+ 	m1 can't occur, only m1-1)
+
 Fri Jul  3 15:55:34 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
 	* rng.c (gsl_rng_uniform_gt0_lt1): added a function which returns

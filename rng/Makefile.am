@@ -7,7 +7,7 @@ INCLUDES = -I$(srcdir)/..  -I$(srcdir)/../err
 libgslrng_a_SOURCES = gsl_rng.h rng.c \
                       cmrg.c mrg.c rand.c taus.c uni.c uni32.c zuf.c \
 		      minstd.c mt.c tt.c r250.c ran0.c ran1.c ran2.c ran3.c \
-                      bsdrand.c randu.c vax.c ranlux.c \
+                      bsdrand.c randu.c tds.c ranmar.c vax.c ranlux.c \
                       default.c
 
 test_SOURCES = test.c
