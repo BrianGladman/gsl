@@ -27,17 +27,23 @@ The compiler also gives warnings about certain libraries that are "not
 used for resolving any symbol". This is harmless and the warnings can
 be ignored.
 
+You may get warnings about " /usr/bin/ld: arg list too long" when
+building shared libraries.  If so, the build can be restricted to
+static libraries only,
+
+% ./configure --enable-shared=no
 
 DOS
 ---
 
-When using DJGPP The default stack size of 512k is insufficient for
+When using DJGPP The default stack size of 512k may be insufficient for
 the specfunc tests and will cause them to crash.  To increase the
 stack size by a suitable amount use,
 
   	stubedit test.exe minstack=1536k
 
-on the executable and then rerun it manually.
+on the executable and then rerun it manually.  (5/01: The specfunc
+tests have been rewritten to use less stack space now).
 
 PPC
 ---
