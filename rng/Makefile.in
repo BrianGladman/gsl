@@ -85,9 +85,10 @@ libgslrng_a_SOURCES = gsl_rng.h rng.c \
 test_SOURCES = test.c
 test_LDADD = libgslrng.a ../err/libgslerr.a ../err/libgsltest.a
 TESTS = test
-check_PROGRAMS = test 
+check_PROGRAMS = test benchmark
 
-noinst_HEADERS = seed.c
+benchmark_SOURCES = benchmark.c 
+benchmark_LDADD = libgslrng.a ../err/libgslerr.a
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
 CONFIG_CLEAN_FILES = 
@@ -106,10 +107,13 @@ AR = ar
 test_OBJECTS =  test.o
 test_DEPENDENCIES =  libgslrng.a ../err/libgslerr.a ../err/libgsltest.a
 test_LDFLAGS = 
+benchmark_OBJECTS =  benchmark.o
+benchmark_DEPENDENCIES =  libgslrng.a ../err/libgslerr.a
+benchmark_LDFLAGS = 
 CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
 LINK = $(CC) $(CFLAGS) $(LDFLAGS) -o $@
-HEADERS =  $(include_HEADERS) $(noinst_HEADERS)
+HEADERS =  $(include_HEADERS)
 
 DIST_COMMON =  ChangeLog Makefile.am Makefile.in TODO
 
@@ -118,12 +122,13 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 TAR = tar
 GZIP = --best
-DEP_FILES =  .deps/bad_rand.P .deps/bad_randu.P .deps/cmrg.P \
-.deps/default.P .deps/minstd.P .deps/mrg.P .deps/mt.P .deps/r250.P \
-.deps/rand.P .deps/ranlux.P .deps/rng.P .deps/taus.P .deps/test.P \
-.deps/tt.P .deps/uni.P .deps/uni32.P .deps/vax.P .deps/zuf.P
-SOURCES = $(libgslrng_a_SOURCES) $(test_SOURCES)
-OBJECTS = $(libgslrng_a_OBJECTS) $(test_OBJECTS)
+DEP_FILES =  .deps/bad_rand.P .deps/bad_randu.P .deps/benchmark.P \
+.deps/cmrg.P .deps/default.P .deps/minstd.P .deps/mrg.P .deps/mt.P \
+.deps/r250.P .deps/rand.P .deps/ranlux.P .deps/rng.P .deps/taus.P \
+.deps/test.P .deps/tt.P .deps/uni.P .deps/uni32.P .deps/vax.P \
+.deps/zuf.P
+SOURCES = $(libgslrng_a_SOURCES) $(test_SOURCES) $(benchmark_SOURCES)
+OBJECTS = $(libgslrng_a_OBJECTS) $(test_OBJECTS) $(benchmark_OBJECTS)
 
 all: Makefile $(LIBRARIES) $(HEADERS)
 
@@ -202,6 +207,10 @@ maintainer-clean-checkPROGRAMS:
 test: $(test_OBJECTS) $(test_DEPENDENCIES)
 	@rm -f test
 	$(LINK) $(test_LDFLAGS) $(test_OBJECTS) $(test_LDADD) $(LIBS)
+
+benchmark: $(benchmark_OBJECTS) $(benchmark_DEPENDENCIES)
+	@rm -f benchmark
+	$(LINK) $(benchmark_LDFLAGS) $(benchmark_OBJECTS) $(benchmark_LDADD) $(LIBS)
 
 install-includeHEADERS: $(include_HEADERS)
 	@$(NORMAL_INSTALL)

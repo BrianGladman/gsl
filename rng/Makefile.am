@@ -13,6 +13,7 @@ libgslrng_a_SOURCES = gsl_rng.h rng.c \
 test_SOURCES = test.c
 test_LDADD = libgslrng.a ../err/libgslerr.a ../err/libgsltest.a
 TESTS = test
-check_PROGRAMS = test 
+check_PROGRAMS = test benchmark
 
-noinst_HEADERS = seed.c
+benchmark_SOURCES = benchmark.c 
+benchmark_LDADD = libgslrng.a ../err/libgslerr.a
