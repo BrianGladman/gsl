@@ -1,33 +1,110 @@
+@cindex interpolation
+@cindex spline
+
+@section Introduction
+
 This chapter describes functions for performing interpolation.
+All the interpolation methods conform to a model which tries
+to factor out the various subtasks for creation, lookup and
+evaluation. The state of an interpolation object is stored
+in a @code{gsl_interp_obj}; these are created by special purpose
+factories, one for each interpolation method. State for searches
+is stored in a @code{gsl_interp_accel}, which is a kind of iterator
+for interpolation lookups.
+
+The interpolation library provides five interpolation object factories:
+@multitable {gsl_interp_factory_cspline_periodic  } { nyaknyaknyaknyaknyaknyak }
+@item @code{gsl_interp_factory_linear} @tab linear interpolation
+@item @code{gsl_interp_factory_cspline_natural} @tab cubic spline with natural BC
+@item @code{gsl_interp_factory_cspline_periodic} @tab cubic spline with periodic BC
+@item @code{gsl_interp_factory_akima_natural} @tab Akima spline with natural BC
+@item @code{gsl_interp_factory_akima_periodic} @tab Akima spline with periodic BC
+@end multitable
+
+The interpolation object (@code{gsl_interp_obj}) does not copy the
+data arrays but stores all static state computed from the data.
+The "x" data array is always assumed to be strictly ordered;
+the behaviour for other arrangements is not defined.
+
+
+@section Functions
 
 @deftypefun gsl_interp_accel * gsl_interp_accel_new(void)
+Create an accelerator object, which is a kind of iterator
+for interpolation lookups. It tracks the state of lookups,
+thus allowing for application of various acceleration
+strategies.
 @end deftypefun
 
 @deftypefun size_t gsl_interp_accel_find(gsl_interp_accel * @var{a}, const double x_array[], size_t @var{size}, double @var{x})
+Perform a lookup action on a data array, using the given accelerator.
+This is how lookups are performed during evaluation of an interpolation.
+Returns an index such that @code{xarray[index] <= x < xarray[index+1]}.
 @end deftypefun
 
-@deftypefun int gsl_interp_eval_impl(const gsl_interp_obj * @var{obj}, const double xa[], const double ya[], double @var{x}, gsl_interp_accel * @var{a}, double * @var{y})
+@deftypefun  int gsl_interp_eval_impl(const gsl_interp_obj * @var{obj}, const double xa[], const double ya[], double @var{x}, gsl_interp_accel * @var{a}, double * @var{y})
 @deftypefunx int gsl_interp_eval_e(const gsl_interp_obj * @var{obj}, const double xa[], const double ya[], double @var{x}, gsl_interp_accel * @var{a}, double * @var{y})
+@deftypefunx double gsl_interp_eval(const gsl_interp_obj * @var{obj}, const double xa[], const double ya[], double @var{x}, gsl_interp_accel * @var{a})
+Evaluate an interpolation at a given point, doing lookup with
+the given accelerator state.
 @end deftypefun
 
-@deftypefun double gsl_interp_eval(const gsl_interp_obj * @var{obj}, const double xa[], const double ya[], double @var{x}, gsl_interp_accel * @var{a})
-@end deftypefun
-
-@deftypefun int gsl_interp_eval_deriv_impl(const gsl_interp_obj * @var{obj}, const double xa[], const double ya[], double @var{x}, gsl_interp_accel * @var{a}, double * @var{y})
-@end deftypefun
-
-@deftypefun int gsl_interp_eval_deriv_e(const gsl_interp_obj * @var{obj}, const double xa[], const double ya[], double @var{x}, gsl_interp_accel * @var{a}, double * @var{y})
-@end deftypefun
-
-@deftypefun double gsl_interp_eval_deriv(const gsl_interp_obj * @var{obj}, const double xa[], const double ya[], double @var{x}, gsl_interp_accel * @var{a})
+@deftypefun  int gsl_interp_eval_deriv_impl(const gsl_interp_obj * @var{obj}, const double xa[], const double ya[], double @var{x}, gsl_interp_accel * @var{a}, double * @var{y})
+@deftypefunx int gsl_interp_eval_deriv_e(const gsl_interp_obj * @var{obj}, const double xa[], const double ya[], double @var{x}, gsl_interp_accel * @var{a}, double * @var{y})
+@deftypefunx double gsl_interp_eval_deriv(const gsl_interp_obj * @var{obj}, const double xa[], const double ya[], double @var{x}, gsl_interp_accel * @var{a})
+Evaluate the derivative of an interpolation at a given point.
 @end deftypefun
 
 @deftypefun void gsl_interp_obj_free(gsl_interp_obj * @var{interp_obj})
+Free an interpolation object.
+@end deftypefun
+
+@deftypefun void gsl_interp_accel_free(gsl_interp_accel* @var{a})
+Free an accelerator object.
 @end deftypefun
 
 
+@section Examples
+
+@subsection Creating and Using a Linear Interpolation
+
+The steps are to obtain a factory reference, create an interpolation
+object from given data, create an accelerator object (iterator),
+use the interpolation object and accelerator, and finally free resources.
+
+@example
+  double x[64];
+  double y[64];
+  double x0;
+  double y0;
+  ...
+  gsl_interp_factory f = gsl_interp_factory_linear;
+  gsl_interp_obj * interp = f.create(x, y, 64);
+  gsl_interp_accel * a = gsl_interp_accel_new ();
+  ...
+  x0 = 5.7;
+  gsl_interp_eval_impl(interp, x, y, x0, a, &y0);
+  ...
+  gsl_interp_accel_free (a);
+  gsl_interp_obj_free (interp);
+@end example
 
 
+@subsection Creating and Using Other Interpolations
 
+To change the above code to use, say cubic splines with
+periodic boundary conditions, the only statement that
+would be changed is the one which obtains the reference
+to the factory. We would do
 
+@example
+  ...
+  /* gsl_interp_factory f = gsl_interp_factory_linear; */
+  gsl_interp_factory f = gsl_interp_factory_cspline_periodic
+  ...
+@end example
+
+With this design, the interplation method can be changed
+dynamically, at runtime if desired, since the main block of code
+is unchanging and will work with any valid factory reference.
 
