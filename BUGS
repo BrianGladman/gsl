@@ -344,3 +344,10 @@ for large negative values of lnpre.
   }
 
 ----------------------------------------------------------------------
+BUG#27 - handling of zero leading coefficients in poly/*solve routines
+
+The poly/solve_ and poly/zsolve_ routines should handle the case of
+leading coefficients being zero more gracefully.  Currently the
+leading coefficient is assumed to be non-zero.
+
+----------------------------------------------------------------------
