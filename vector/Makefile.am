@@ -1,6 +1,6 @@
 lib_LIBRARIES = libgslvector.a 
 
-check_PROGRAMS = test test_float test_int test_complex test_trap 
+check_PROGRAMS = test test_static test_trap 
 
 include_HEADERS = 		\
 	gsl_vector.h		\
@@ -21,21 +21,18 @@ include_HEADERS = 		\
 
 INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../err
 
-TESTS = test test_float test_int test_complex test_trap
+TESTS = test test_static test_trap
 
 test_LDADD = libgslvector.a ../err/libgslerr.a ../err/libgsltest.a
-test_float_LDADD = libgslvector.a ../err/libgslerr.a ../err/libgsltest.a
-test_int_LDADD = libgslvector.a ../err/libgslerr.a ../err/libgsltest.a
-test_complex_LDADD = libgslvector.a ../err/libgslerr.a ../err/libgsltest.a
+test_static_LDADD = libgslvector.a ../err/libgslerr.a ../err/libgsltest.a
 test_trap_LDADD = libgslvector.a ../err/libgslerr.a ../err/libgsltest.a
 
 test_DEPENDENCIES = libgslvector.a
+test_static_DEPENDENCIES = libgslvector.a
 test_trap_DEPENDENCIES = libgslvector.a
 
 test_SOURCES = test.c
-test_float_SOURCES = test_float.c
-test_int_SOURCES = test_int.c
-test_int_SOURCES = test_complex.c
+test_static_SOURCES = test_static.c
 test_trap_SOURCES = test_trap.c
 
 CLEANFILES = test.txt test.dat

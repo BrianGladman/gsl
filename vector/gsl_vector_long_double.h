@@ -1,38 +1,38 @@
-#ifndef GSL_VECTOR_LONG_DOUBLE_H 
-#define GSL_VECTOR_LONG_DOUBLE_H 
+#ifndef GSL_VECTOR_LONG_DOUBLE_H
+#define GSL_VECTOR_LONG_DOUBLE_H
 
 #include <stdlib.h>
 #include <gsl_errno.h>
 #include <gsl_config.h>
 
 typedef struct
-{
-  size_t size;
-  size_t stride;
-  long double * data;
-} 
-gsl_vector_long_double ;
+  {
+    size_t size;
+    size_t stride;
+    long double *data;
+  }
+gsl_vector_long_double;
 
-gsl_vector_long_double * gsl_vector_long_double_alloc (size_t n);
-gsl_vector_long_double * gsl_vector_long_double_calloc (size_t n);
+gsl_vector_long_double *gsl_vector_long_double_alloc (size_t n);
+gsl_vector_long_double *gsl_vector_long_double_calloc (size_t n);
 void gsl_vector_long_double_free (gsl_vector_long_double * v);
 
-long double * gsl_vector_long_double_ptr(const gsl_vector_long_double * v, const size_t i);
-long double   gsl_vector_long_double_get(const gsl_vector_long_double * v, const size_t i);
-void          gsl_vector_long_double_set(gsl_vector_long_double * v, const size_t i, long double x);
+long double *gsl_vector_long_double_ptr (const gsl_vector_long_double * v, const size_t i);
+long double gsl_vector_long_double_get (const gsl_vector_long_double * v, const size_t i);
+void gsl_vector_long_double_set (gsl_vector_long_double * v, const size_t i, long double x);
 
-int gsl_vector_long_double_fread (FILE * stream, gsl_vector_long_double * v) ;
-int gsl_vector_long_double_fwrite (FILE * stream, const gsl_vector_long_double * v) ;
+int gsl_vector_long_double_fread (FILE * stream, gsl_vector_long_double * v);
+int gsl_vector_long_double_fwrite (FILE * stream, const gsl_vector_long_double * v);
 int gsl_vector_long_double_fscanf (FILE * stream, gsl_vector_long_double * v);
-int gsl_vector_long_double_fprintf (FILE * stream, const gsl_vector_long_double * v, const char * format);
+int gsl_vector_long_double_fprintf (FILE * stream, const gsl_vector_long_double * v, const char *format);
 
-int gsl_block_long_double_fread (FILE * stream, long double * data, size_t n, size_t stride) ;
-int gsl_block_long_double_fwrite (FILE * stream, const long double * data, size_t n, size_t stride) ;
-int gsl_block_long_double_fscanf (FILE * stream, long double * data, size_t n, size_t stride);
-int gsl_block_long_double_fprintf (FILE * stream, const long double * data, size_t n, size_t stride,
-		       const char * format);
+int gsl_block_long_double_fread (FILE * stream, long double *data, size_t n, size_t stride);
+int gsl_block_long_double_fwrite (FILE * stream, const long double *data, size_t n, size_t stride);
+int gsl_block_long_double_fscanf (FILE * stream, long double *data, size_t n, size_t stride);
+int gsl_block_long_double_fprintf (FILE * stream, const long double *data, size_t n, size_t stride,
+				   const char *format);
 
-extern int gsl_check_range ;
+extern int gsl_check_range;
 
 
 
@@ -40,25 +40,25 @@ extern int gsl_check_range ;
 
 extern inline
 long double *
-gsl_vector_long_double_ptr(const gsl_vector_long_double * v, const size_t i)
+gsl_vector_long_double_ptr (const gsl_vector_long_double * v, const size_t i)
 {
 #ifndef GSL_RANGE_CHECK_OFF
-  if (i >= v->size) /* size_t is unsigned, can't be negative */
+  if (i >= v->size)		/* size_t is unsigned, can't be negative */
     {
-      GSL_ERROR_RETURN("index out of range", GSL_EINVAL, 0) ;
+      GSL_ERROR_RETURN ("index out of range", GSL_EINVAL, 0);
     }
 #endif
-  return (long double *) (v->data + i) ;
-} 
+  return (long double *) (v->data + i);
+}
 
 extern inline
 long double
-gsl_vector_long_double_get(const gsl_vector_long_double * v, const size_t i)
+gsl_vector_long_double_get (const gsl_vector_long_double * v, const size_t i)
 {
 #ifndef GSL_RANGE_CHECK_OFF
-  if (i >= v->size) /* size_t is unsigned, can't be negative */
+  if (i >= v->size)		/* size_t is unsigned, can't be negative */
     {
-      GSL_ERROR_RETURN("index out of range", GSL_EINVAL, 0) ;
+      GSL_ERROR_RETURN ("index out of range", GSL_EINVAL, 0);
     }
 #endif
   return v->data[i];
@@ -66,12 +66,12 @@ gsl_vector_long_double_get(const gsl_vector_long_double * v, const size_t i)
 
 extern inline
 void
-gsl_vector_long_double_set(gsl_vector_long_double * v, const size_t i, long double x)
+gsl_vector_long_double_set (gsl_vector_long_double * v, const size_t i, long double x)
 {
 #ifndef GSL_RANGE_CHECK_OFF
-  if (i >= v->size) /* size_t is unsigned, can't be negative */
+  if (i >= v->size)		/* size_t is unsigned, can't be negative */
     {
-      GSL_ERROR_RETURN_NOTHING("index out of range", GSL_EINVAL) ;
+      GSL_ERROR_RETURN_NOTHING ("index out of range", GSL_EINVAL);
     }
 #endif
   v->data[i] = x;

@@ -72,7 +72,7 @@ full_top_srcdir = @full_top_srcdir@
 
 lib_LIBRARIES = libgslvector.a 
 
-check_PROGRAMS = test test_float test_int test_complex test_trap 
+check_PROGRAMS = test test_static test_trap 
 
 include_HEADERS = 		\
 	gsl_vector.h		\
@@ -93,21 +93,18 @@ include_HEADERS = 		\
 
 INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../err
 
-TESTS = test test_float test_int test_complex test_trap
+TESTS = test test_static test_trap
 
 test_LDADD = libgslvector.a ../err/libgslerr.a ../err/libgsltest.a
-test_float_LDADD = libgslvector.a ../err/libgslerr.a ../err/libgsltest.a
-test_int_LDADD = libgslvector.a ../err/libgslerr.a ../err/libgsltest.a
-test_complex_LDADD = libgslvector.a ../err/libgslerr.a ../err/libgsltest.a
+test_static_LDADD = libgslvector.a ../err/libgslerr.a ../err/libgsltest.a
 test_trap_LDADD = libgslvector.a ../err/libgslerr.a ../err/libgsltest.a
 
 test_DEPENDENCIES = libgslvector.a
+test_static_DEPENDENCIES = libgslvector.a
 test_trap_DEPENDENCIES = libgslvector.a
 
 test_SOURCES = test.c
-test_float_SOURCES = test_float.c
-test_int_SOURCES = test_int.c
-test_int_SOURCES = test_complex.c
+test_static_SOURCES = test_static.c
 test_trap_SOURCES = test_trap.c
 
 CLEANFILES = test.txt test.dat
@@ -130,19 +127,8 @@ libgslvector_a_OBJECTS =  init.o file.o vector.o
 AR = ar
 test_OBJECTS =  test.o
 test_LDFLAGS = 
-test_float_OBJECTS =  test_float.o
-test_float_DEPENDENCIES =  libgslvector.a ../err/libgslerr.a \
-../err/libgsltest.a
-test_float_LDFLAGS = 
-test_int_OBJECTS =  test_complex.o
-test_int_DEPENDENCIES =  libgslvector.a ../err/libgslerr.a \
-../err/libgsltest.a
-test_int_LDFLAGS = 
-test_complex_SOURCES = test_complex.c
-test_complex_OBJECTS =  test_complex.o
-test_complex_DEPENDENCIES =  libgslvector.a ../err/libgslerr.a \
-../err/libgsltest.a
-test_complex_LDFLAGS = 
+test_static_OBJECTS =  test_static.o
+test_static_LDFLAGS = 
 test_trap_OBJECTS =  test_trap.o
 test_trap_LDFLAGS = 
 CFLAGS = @CFLAGS@
@@ -157,10 +143,10 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 TAR = tar
 GZIP = --best
-DEP_FILES =  .deps/file.P .deps/init.P .deps/test.P .deps/test_complex.P \
-.deps/test_float.P .deps/test_trap.P .deps/vector.P
-SOURCES = $(libgslvector_a_SOURCES) $(test_SOURCES) $(test_float_SOURCES) $(test_int_SOURCES) test_complex.c $(test_trap_SOURCES)
-OBJECTS = $(libgslvector_a_OBJECTS) $(test_OBJECTS) $(test_float_OBJECTS) $(test_int_OBJECTS) test_complex.o $(test_trap_OBJECTS)
+DEP_FILES =  .deps/file.P .deps/init.P .deps/test.P .deps/test_static.P \
+.deps/test_trap.P .deps/vector.P
+SOURCES = $(libgslvector_a_SOURCES) $(test_SOURCES) $(test_static_SOURCES) $(test_trap_SOURCES)
+OBJECTS = $(libgslvector_a_OBJECTS) $(test_OBJECTS) $(test_static_OBJECTS) $(test_trap_OBJECTS)
 
 all: Makefile $(LIBRARIES) $(HEADERS)
 
@@ -240,17 +226,9 @@ test: $(test_OBJECTS) $(test_DEPENDENCIES)
 	@rm -f test
 	$(LINK) $(test_LDFLAGS) $(test_OBJECTS) $(test_LDADD) $(LIBS)
 
-test_float: $(test_float_OBJECTS) $(test_float_DEPENDENCIES)
-	@rm -f test_float
-	$(LINK) $(test_float_LDFLAGS) $(test_float_OBJECTS) $(test_float_LDADD) $(LIBS)
-
-test_int: $(test_int_OBJECTS) $(test_int_DEPENDENCIES)
-	@rm -f test_int
-	$(LINK) $(test_int_LDFLAGS) $(test_int_OBJECTS) $(test_int_LDADD) $(LIBS)
-
-test_complex: $(test_complex_OBJECTS) $(test_complex_DEPENDENCIES)
-	@rm -f test_complex
-	$(LINK) $(test_complex_LDFLAGS) $(test_complex_OBJECTS) $(test_complex_LDADD) $(LIBS)
+test_static: $(test_static_OBJECTS) $(test_static_DEPENDENCIES)
+	@rm -f test_static
+	$(LINK) $(test_static_LDFLAGS) $(test_static_OBJECTS) $(test_static_LDADD) $(LIBS)
 
 test_trap: $(test_trap_OBJECTS) $(test_trap_DEPENDENCIES)
 	@rm -f test_trap
