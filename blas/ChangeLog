@@ -1,3 +1,10 @@
+Tue Mar 21 14:22:30 2000  Brian Gough  <bjg@network-theory.co.uk>
+
+	* test_blas_raw.c (test_L1): test norms for zero vectors
+
+	* source_nrm2_r.h, source_nrm2_r.h: skip zero elements of array,
+ 	as in original BLAS, fixes bug for vectors with leading zeros.
+
 Tue Mar  7 19:05:43 2000  Brian Gough  <bjg@network-theory.co.uk>
 
 	* Makefile.am (noinst_LTLIBRARIES): with libtool blasnative and

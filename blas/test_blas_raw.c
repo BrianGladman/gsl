@@ -157,6 +157,16 @@ int test_L1(void)
   gsl_test(s, "gsl_blas_raw_snrm2 B");
   status += s;
 
+  x_f = gsl_blas_raw_snrm2(4, vector_4_zero_f, 1);
+  s = (x_f != 0);
+  gsl_test(s, "gsl_blas_raw_snrm2 A zero");
+  status += s;
+
+  x_f = gsl_blas_raw_snrm2(2, vector_4_zero_f, 3);
+  s = (x_f != 0);
+  gsl_test(s, "gsl_blas_raw_snrm2 B zero");
+  status += s;
+
 
   /* dnrm2 */
 
@@ -170,6 +180,17 @@ int test_L1(void)
   gsl_test(s, "gsl_blas_raw_dnrm2 B");
   status += s;
 
+  x_f = gsl_blas_raw_dnrm2(4, vector_4_zero_d, 1);
+  s = (x_f != 0);
+  gsl_test(s, "gsl_blas_raw_dnrm2 A zero");
+  status += s;
+
+  x_f = gsl_blas_raw_dnrm2(2, vector_4_zero_d, 3);
+  s = (x_f != 0);
+  gsl_test(s, "gsl_blas_raw_dnrm2 B zero");
+  status += s;
+
+
   /* scnrm2 */
 
   x_f = gsl_blas_raw_scnrm2(4, vector_4_c, 1);
@@ -180,6 +201,16 @@ int test_L1(void)
   x_f = gsl_blas_raw_scnrm2(2, vector_4_c, 3);
   s = ( frac_diff(x_f, sqrt(39.0)) > eps_f );
   gsl_test(s, "gsl_blas_raw_scnrm2 B");
+  status += s;
+
+  x_f = gsl_blas_raw_scnrm2(4, vector_4_zero_c, 1);
+  s = (x_f != 0);
+  gsl_test(s, "gsl_blas_raw_scnrm2 A zero");
+  status += s;
+
+  x_f = gsl_blas_raw_scnrm2(2, vector_4_zero_c, 3);
+  s = (x_f != 0);
+  gsl_test(s, "gsl_blas_raw_scnrm2 B zero");
   status += s;
 
 
@@ -194,6 +225,16 @@ int test_L1(void)
   s = ( frac_diff(x_d, sqrt(39.0)) > eps );
   gsl_test(s, "gsl_blas_raw_zdnrm2 B");
   status += s;  
+
+  x_f = gsl_blas_raw_dznrm2(4, vector_4_zero_z, 1);
+  s = (x_f != 0);
+  gsl_test(s, "gsl_blas_raw_dznrm2 A zero");
+  status += s;
+
+  x_f = gsl_blas_raw_dznrm2(2, vector_4_zero_z, 3);
+  s = (x_f != 0);
+  gsl_test(s, "gsl_blas_raw_dznrm2 B zero");
+  status += s;
 
 
   /* sasum */
