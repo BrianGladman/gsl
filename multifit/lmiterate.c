@@ -40,12 +40,6 @@ iterate (void *vstate, gsl_multifit_function_fdf * fdf, gsl_vector * x, gsl_vect
     gnorm = fabs(gsl_vector_get (gradient, iamax) / fnorm);
   }
 
-  /* Test for convergence of the gradient norm */
-  /* WILL PUT OUTSIDE ITERATION */
-  /* Rescale if necessary ????*/
-  /* if (scale)
-    update_diag (J, diag) */
-    
   /* Determine the levenberg-marquardt parameter */
 
 lm_iteration:
@@ -76,13 +70,13 @@ lm_iteration:
 
   actred = compute_actual_reduction (fnorm, fnorm1);
 
-  /* Compute rptdx = R P^T dx */
+  /* Compute rptdx = R P^T dx, noting that |J dx| = |R P^T dx| */
 
   compute_rptdx (r, perm, dx, rptdx);
 
-  /* Compute the scaled predicted reduction phi1p = |Q^T f + R P^T dx| */
+  fnorm1p = enorm (rptdx);
 
-  fnorm1p = enorm_sum (qtf, rptdx);
+  /* Compute the scaled predicted reduction = |J dx|^2 + 2 par |D dx|^2 */
 
   { 
     double t1 = fnorm1p / fnorm;
@@ -122,45 +116,46 @@ lm_iteration:
       par /= temp;
     }
 
-  /* test for successful iteration */
+  /* test for successful iteration, termination and stringent tolerances */
 
   if (ratio >= p0001)
     {
       gsl_vector_memcpy (x, x_trial);
       gsl_vector_memcpy (f, f_trial);
 
+      GSL_MULTIFIT_FN_EVAL_DF (fdf, x_trial, J);
+
       /* wa2_j  = diag_j * x_j */
       state->xnorm = enorm(x);
       state->fnorm = fnorm1;
       state->iter++;
+
+      /* Rescale if necessary */
+
+      if (scale)
+        {
+          update_diag (J, diag);
+        }
     }
-
-  /* tests for convergence */
-
-  /* OMITTED */
-  
-  /* tests for termination and stringent tolerances */
-
-  if (fabs(actred) <= GSL_DBL_EPSILON  && prered <= GSL_DBL_EPSILON 
-      && p5 * ratio <= 1.0)
+  else if (fabs(actred) <= GSL_DBL_EPSILON  && prered <= GSL_DBL_EPSILON 
+           && p5 * ratio <= 1.0)
     {
       return GSL_ETOLF ;
     }
-
-  if (delta <= GSL_DBL_EPSILON * state->xnorm)
+  else if (delta <= GSL_DBL_EPSILON * state->xnorm)
     {
       return GSL_ETOLX;
     }
-
-  if (gnorm <= GSL_DBL_EPSILON)
+  else if (gnorm <= GSL_DBL_EPSILON)
     {
       return GSL_ETOLG;
     }
-
-  /* Repeat inner loop if unsuccessful */
-
-  if (ratio < p0001) 
-    goto lm_iteration;
+  else 
+    {
+      /* Repeat inner loop if unsuccessful */
+      
+      goto lm_iteration;
+    }
 
   return GSL_SUCCESS;
 }

@@ -22,17 +22,10 @@
 static int
 lmpar (gsl_matrix * r, const gsl_vector * qtf,
        const gsl_vector * diag, double delta,
-       gsl_vector * newton, gsl_vector * gradient, gsl_vector * p);
-
-
-static int
-lmpar (gsl_matrix * r, const gsl_vector * qtf,
-       const gsl_vector * diag, double delta,
        gsl_vector * newton, gsl_vector * gradient, gsl_vector * p)
 {
-
   double qnorm, gnorm, sgnorm, bnorm, temp, fp, fp_old, par_lower,
-    par_upper, dxnorm;
+    par_upper, par_c, dxnorm, wnorm;
 
   compute_newton_direction (r, qtf, newton);
 
@@ -96,8 +89,10 @@ iteration:
   /* Compute wa1 = sqrt(par) diag */
 
   {
+    size_t n = r->size2;
+    size_t i;  
+
     double sqrt_par = sqrt (par);
-    size_t i;
 
     for (i = 0; i < n; i++)
       {
@@ -199,7 +194,7 @@ compute_newton_direction (const gsl_matrix * r, const gsl_permutation * perm,
      Jacobian is rank-deficient then obtain a least squares
      solution. */
 
-  const size_t N = r->size2;
+  const size_t n = r->size2;
   size_t i, j, nsing;
 
   gsl_vector_memcpy (x, qtf);
@@ -214,7 +209,8 @@ compute_newton_direction (const gsl_matrix * r, const gsl_permutation * perm,
   for (j = nsing - 1; j > 0; j--)
     {
       double rjj = gsl_matrix_get (r, j, j);
-      temp = gsl_vector_get (x, j) / rjj;
+      double temp = gsl_vector_get (x, j) / rjj;
+
       gsl_vector_set (x, j, temp);
 
       for (i = 0; i < j; j++)
@@ -231,8 +227,12 @@ compute_newton_direction (const gsl_matrix * r, const gsl_permutation * perm,
 static void
 compute_newton_correction (const gsl_matrix * r, const gsl_vector * sdiag,
 			   const gsl_permutation * p, const gsl_vector * x,
+                           double dxnorm,
 			   const gsl_vector * diag, const gsl_vector * w)
 {
+  size_t n = r->size2;
+  size_t i, j;
+
   for (i = 0; i < n; i++)
     {
       size_t pi = gsl_permutation_get (p, i);
@@ -285,10 +285,10 @@ compute_phider (gsl_matrix * r, gsl_vector * x, double dxnorm,
     {
       size_t pi = gsl_permutation_get (perm, i);
 
-      double di = gsl_vector_get (d, i);
-      double xi = gsl_vector_get (x, i);
+      double dpi = gsl_vector_get (diag, pi);
+      double xpi = gsl_vector_get (x, pi);
 
-      gsl_vector_set (w, i, di * (di * xi / dxnorm));
+      gsl_vector_set (w, i, dpi * (dpi * xpi / dxnorm));
     }
 
   for (j = 0; j < n; j++)
@@ -320,12 +320,11 @@ compute_gradient_direction (const gsl_matrix * r, const gsl_permutation * p,
 			    const gsl_vector * qtf, const gsl_vector * diag,
 			    gsl_vector * g)
 {
-  const size_t M = r->size1;
-  const size_t N = r->size2;
+  const size_t n = r->size2;
 
   size_t i, j;
 
-  for (j = 0; j < M; j++)
+  for (j = 0; j < n; j++)
     {
       double sum = 0;
 
