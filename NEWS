@@ -1,6 +1,9 @@
-Time to start keeping a NEWS file.
+We need to do a better job with the NEWS file!
 
 This covers changes made *after* the gsl-0.2 snapshot
+
+* Added several new modules: histogram, integration, matrix, specfunc
+  and vectors.
 
 * Changed libgsl_statisctics.a to libgslstatistics.a and
   libgsl_siman.a to libgslsiman.a, since most of the packages don't
