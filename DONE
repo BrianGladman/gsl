@@ -1,0 +1,17 @@
+* Upgrade to texinfo-4.0.  
+
+* Definitions of macros which are negative numbers should use
+parentheses, e.g. in gsl_machine.h we need #define GSL_LOG_DBL_EPSILON
+(-3.6043653389117154e+01) instead of -3.604...
+
+* Fix texinfo files so that sentences consistently use a double space
+after the preceding period (n.b. do this by hand, because there are
+names in the references which need only a single space,
+e.g. D. E. Knuth).
+
+* In matrix struct change dim2 to tda, otherwise the distinction of
+size2 vs dim2 is totally confusing.
+
+* Should doc/mdate-sh be in CVS? Automake needs it unless you supply --missing
+
+No. The automake command in autogen.sh has --missing.
