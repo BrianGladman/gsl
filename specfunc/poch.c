@@ -163,24 +163,41 @@ pochrel_smallx(const double a, const double x, gsl_sf_result * result)
 }
 
 
+/* Assumes a>0 and a+x>0.
+ */
 static
 int
 lnpoch_pos(const double a, const double x, gsl_sf_result * result)
 {
   double absx = fabs(x);
 
-  if(result == 0) {
-    return GSL_EFAULT;
-  }
-  else if(absx > 0.1*a || absx*log(GSL_MAX(a,2.0)) > 0.1) {
-    gsl_sf_result g1;
-    gsl_sf_result g2;
-    gsl_sf_gammainv_impl(a,   &g1);
-    gsl_sf_gammainv_impl(a+x, &g2);
-    result->val  = -log(g2.val/g1.val);
-    result->err  = g1.err/fabs(g1.val) + g2.err/fabs(g2.val);
-    result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
-    return GSL_SUCCESS;
+  if(absx > 0.1*a || absx*log(GSL_MAX_DBL(a,2.0)) > 0.1) {
+    if(a < GSL_SF_GAMMA_XMAX && a+x < GSL_SF_GAMMA_XMAX) {
+      /* If we can do it by calculating the gamma functions
+       * directly, then that will be more accurate than
+       * doing the subtraction of the logs.
+       */
+      gsl_sf_result g1;
+      gsl_sf_result g2;
+      gsl_sf_gammainv_impl(a,   &g1);
+      gsl_sf_gammainv_impl(a+x, &g2);
+      result->val  = -log(g2.val/g1.val);
+      result->err  = g1.err/fabs(g1.val) + g2.err/fabs(g2.val);
+      result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
+      return GSL_SUCCESS;
+    }
+    else {
+      /* Otherwise we must do the subtraction.
+       */
+      gsl_sf_result lg1;
+      gsl_sf_result lg2;
+      int stat_1 = gsl_sf_lngamma_impl(a,   &lg1);
+      int stat_2 = gsl_sf_lngamma_impl(a+x, &lg2);
+      result->val  = lg2.val - lg1.val;
+      result->err  = lg2.err + lg1.err;
+      result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
+      return GSL_ERROR_SELECT_2(stat_1, stat_2);
+    }
   }
   else if(absx < 0.1*a && a > 15.0) {
     /* Be careful about the implied subtraction.

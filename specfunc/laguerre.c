@@ -59,46 +59,34 @@ laguerre_n_cp(const int n, const double a, const double x, gsl_sf_result * resul
   gsl_sf_result lnpoch;
   int stat_f = gsl_sf_lnfact_impl(n, &lnfact);
   int stat_p = gsl_sf_lnpoch_impl(a+1.0, n, &lnpoch);
-  double pre_correct;
-  double lnpre;
-  double poly_1F1 = 1.0;
+  double poly_1F1_val = 1.0;
+  double poly_1F1_err = 0.0;
+  int stat_e;
   int k;
 
-  if(fabs(lnpoch.val - lnfact.val) < 0.1*fabs(lnpoch.val + lnfact.val)) {
-    lnpre = (lnpoch.val - M_LN2) - lnfact.val;
-    pre_correct = 2.0;
-  }
-  else {
-    lnpre = lnpoch.val - lnfact.val;
-    pre_correct = 1.0;
-  }
+  double lnpre_val = lnpoch.val - lnfact.val;
+  double lnpre_err = lnpoch.err + lnfact.err + GSL_DBL_EPSILON * fabs(lnpre_val);
 
   for(k=n-1; k>=0; k--) {
     double t = (-n+k)/(a+1.0+k) * (x/(k+1));
-    double r = t + 1.0/poly_1F1;
-    if(r > 0.9*GSL_DBL_MAX/poly_1F1) {
+    double r = t + 1.0/poly_1F1_val;
+    if(r > 0.9*GSL_DBL_MAX/poly_1F1_val) {
       result->val = 0.0; /* FIXME: should be Inf */
       result->err = 0.0;
       return GSL_EOVRFLW;
     }
     else {
       /* Collect the Horner terms. */
-      poly_1F1 = 1.0 + t * poly_1F1;
+      poly_1F1_val  = 1.0 + t * poly_1F1_val;
+      poly_1F1_err += GSL_DBL_EPSILON + fabs(t) * poly_1F1_err;
     }
   }
 
-  if(poly_1F1 == 0.0) {
-    result->val = 0.0;
-    result->err = 0.0;
-    return GSL_SUCCESS;
-  }
-  else {
-    int stat_e = gsl_sf_exp_mult_impl(lnpre, poly_1F1, result);
-    result->val *= pre_correct;
-    result->err  = exp(fabs(lnpoch.err) + fabs(lnfact.err));
-    result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
-    return GSL_ERROR_SELECT_3(stat_e, stat_f, stat_p);
-  }
+  stat_e = gsl_sf_exp_mult_err_impl(lnpre_val, lnpre_err,
+                                    poly_1F1_val, poly_1F1_err,
+                                    result);
+
+  return GSL_ERROR_SELECT_3(stat_e, stat_f, stat_p);
 }
 
 
@@ -173,7 +161,7 @@ int gsl_sf_laguerre_n_impl(const int n, const double a, const double x,
   }
   else if(n == 1) {
     result->val = 1.0 + a - x;
-    result->err = 2.0 * GSL_DBL_EPSILON * fabs(result->val);
+    result->err = 2.0 * GSL_DBL_EPSILON * (1.0 + fabs(a) + fabs(x));
     return GSL_SUCCESS;
   }
   else if(x < 0.0 || n < 5) {

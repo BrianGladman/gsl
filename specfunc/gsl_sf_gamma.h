@@ -223,4 +223,10 @@ int gsl_sf_beta_impl(double a, double b, gsl_sf_result * result);
 int gsl_sf_beta_e(double a, double b, gsl_sf_result * result);
 
 
+/* The maximum x such that gamma(x) is not
+ * considered an overflow.
+ */
+#define GSL_SF_GAMMA_XMAX  171.0
+
+
 #endif /* !GSL_GAMMAFUNCTION_H_ */
