@@ -8,7 +8,8 @@
 #define SWAP(a,b) do { double tmp = b ; b = a ; a = tmp ; } while(0)
 
 int 
-gsl_poly_solve_cubic (double a, double b, double c, double x[])
+gsl_poly_solve_cubic (double a, double b, double c, 
+                      double *x0, double *x1, double *x2)
 {
   double Q = (a * a - 3 * b) / 9;
   double R = (2 * a * a * a - 9 * a * b + 27 * c) / 54;
@@ -17,9 +18,9 @@ gsl_poly_solve_cubic (double a, double b, double c, double x[])
 
   if (R == 0 && Q == 0)
     {
-      x[0] = - a / 3 ;
-      x[1] = - a / 3 ;
-      x[2] = - a / 3 ;
+      *x0 = - a / 3 ;
+      *x1 = - a / 3 ;
+      *x2 = - a / 3 ;
       return 3 ;
     }
   else if (R2 == Q3)
@@ -32,15 +33,15 @@ gsl_poly_solve_cubic (double a, double b, double c, double x[])
       double sqrtQ = sqrt (Q);
       if (R > 0)
 	{
-	  x[0] = -2 * sqrtQ  - a / 3;
-	  x[1] = sqrtQ - a / 3;
-	  x[2] = sqrtQ - a / 3;
+	  *x0 = -2 * sqrtQ  - a / 3;
+	  *x1 = sqrtQ - a / 3;
+	  *x2 = sqrtQ - a / 3;
 	}
       else
 	{
-	  x[0] = - sqrtQ  - a / 3;
-	  x[1] = - sqrtQ - a / 3;
-	  x[2] = 2 * sqrtQ - a / 3;
+	  *x0 = - sqrtQ  - a / 3;
+	  *x1 = - sqrtQ - a / 3;
+	  *x2 = 2 * sqrtQ - a / 3;
 	}
       return 3 ;
     }
@@ -50,21 +51,21 @@ gsl_poly_solve_cubic (double a, double b, double c, double x[])
       double sqrtQ3 = sqrtQ * sqrtQ * sqrtQ;
       double theta = acos (R / sqrtQ3);
       double norm = -2 * sqrtQ;
-      x[0] = norm * cos (theta / 3) - a / 3;
-      x[1] = norm * cos ((theta + 2.0 * M_PI) / 3) - a / 3;
-      x[2] = norm * cos ((theta - 2.0 * M_PI) / 3) - a / 3;
+      *x0 = norm * cos (theta / 3) - a / 3;
+      *x1 = norm * cos ((theta + 2.0 * M_PI) / 3) - a / 3;
+      *x2 = norm * cos ((theta - 2.0 * M_PI) / 3) - a / 3;
       
-      /* Sort x[0], x[1], x[2] into increasing order */
+      /* Sort *x0, *x1, *x2 into increasing order */
 
-      if (x[0] > x[1])
-	SWAP(x[0], x[1]) ;
+      if (*x0 > *x1)
+	SWAP(*x0, *x1) ;
       
-      if (x[1] > x[2])
+      if (*x1 > *x2)
 	{
-	  SWAP(x[1], x[2]) ;
+	  SWAP(*x1, *x2) ;
 	  
-	  if (x[0] > x[1])
-	    SWAP(x[0], x[1]) ;
+	  if (*x0 > *x1)
+	    SWAP(*x0, *x1) ;
 	}
       
       return 3;
@@ -74,7 +75,7 @@ gsl_poly_solve_cubic (double a, double b, double c, double x[])
       double sgnR = (R >= 0 ? 1 : -1);
       double A = -sgnR * pow (fabs (R) + sqrt (R2 - Q3), 1.0/3.0);
       double B = Q / A ;
-      x[0] = A + B - a / 3;
+      *x0 = A + B - a / 3;
       return 1;
     }
 }

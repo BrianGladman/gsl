@@ -6,7 +6,8 @@
 #include <gsl_poly.h>
 
 int 
-gsl_poly_solve_quadratic (double a, double b, double c, double x[])
+gsl_poly_solve_quadratic (double a, double b, double c, 
+                          double *x0, double *x1)
 {
   double disc = b * b - 4 * a * c;
 
@@ -14,8 +15,9 @@ gsl_poly_solve_quadratic (double a, double b, double c, double x[])
     {
       if (b == 0)
 	{
-	  x[0] = -fabs (0.5 * sqrt (disc) / a);
-	  x[1] = -x[0];
+          double r = fabs (0.5 * sqrt (disc) / a);
+	  *x0 = -r;
+	  *x1 =  r;
 	}
       else
 	{
@@ -26,20 +28,20 @@ gsl_poly_solve_quadratic (double a, double b, double c, double x[])
 
 	  if (r1 < r2) 
 	    {
-	      x[0] = r1 ;
-	      x[1] = r2 ;
+	      *x0 = r1 ;
+	      *x1 = r2 ;
 	    } 
 	  else 
 	    {
-	      x[0] = r2 ;
-	      x[1] = r1 ;
+	      *x0 = r2 ;
+	      *x1 = r1 ;
 	    }
 	}
       return 2;
     }
   else if (disc == 0) 
     {
-      x[0] = -0.5 * b / a ;
+      *x0 = -0.5 * b / a ;
       return 1 ;
     }
   else

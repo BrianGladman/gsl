@@ -1,3 +1,8 @@
+Tue Aug  3 19:36:26 1999  Brian Gough  <bjg@network-theory.co.uk>
+
+	* gsl_poly.h: changed all functions to take separate variables for
+ 	roots (z0, z1, z2) of variable-length arrays
+
 Sat Feb 20 12:13:46 1999  Brian Gough  <bjg@netsci.freeserve.co.uk>
 
 	* split out polynomial root finding algorithms into a new poly/

@@ -9,7 +9,9 @@
 #define SWAP(a,b) do { double tmp = b ; b = a ; a = tmp ; } while(0)
 
 int
-gsl_poly_complex_solve_cubic (double a, double b, double c, gsl_complex z[])
+gsl_poly_complex_solve_cubic (double a, double b, double c, 
+                              gsl_complex *z0, gsl_complex *z1, 
+                              gsl_complex *z2)
 {
   double Q = (a * a - 3 * b) / 9;
   double R = (2 * a * a * a - 9 * a * b + 27 * c) / 54;
@@ -18,12 +20,12 @@ gsl_poly_complex_solve_cubic (double a, double b, double c, gsl_complex z[])
 
   if (R == 0 && Q == 0)
     {
-      GSL_REAL (z[0]) = -a / 3;
-      GSL_IMAG (z[0]) = 0;
-      GSL_REAL (z[1]) = -a / 3;
-      GSL_IMAG (z[1]) = 0;
-      GSL_REAL (z[2]) = -a / 3;
-      GSL_IMAG (z[2]) = 0;
+      GSL_REAL (*z0) = -a / 3;
+      GSL_IMAG (*z0) = 0;
+      GSL_REAL (*z1) = -a / 3;
+      GSL_IMAG (*z1) = 0;
+      GSL_REAL (*z2) = -a / 3;
+      GSL_IMAG (*z2) = 0;
       return 3;
     }
   else if (R2 == Q3)
@@ -36,21 +38,21 @@ gsl_poly_complex_solve_cubic (double a, double b, double c, gsl_complex z[])
       double sqrtQ = sqrt (Q);
       if (R > 0)
 	{
-	  GSL_REAL (z[0]) = -2 * sqrtQ - a / 3;
-	  GSL_IMAG (z[0]) = 0;
-	  GSL_REAL (z[1]) = sqrtQ - a / 3;
-	  GSL_IMAG (z[1]) = 0;
-	  GSL_REAL (z[2]) = sqrtQ - a / 3;
-	  GSL_IMAG (z[2]) = 0;
+	  GSL_REAL (*z0) = -2 * sqrtQ - a / 3;
+	  GSL_IMAG (*z0) = 0;
+	  GSL_REAL (*z1) = sqrtQ - a / 3;
+	  GSL_IMAG (*z1) = 0;
+	  GSL_REAL (*z2) = sqrtQ - a / 3;
+	  GSL_IMAG (*z2) = 0;
 	}
       else
 	{
-	  GSL_REAL (z[0]) = -sqrtQ - a / 3;
-	  GSL_IMAG (z[0]) = 0;
-	  GSL_REAL (z[1]) = -sqrtQ - a / 3;
-	  GSL_IMAG (z[1]) = 0;
-	  GSL_REAL (z[2]) = 2 * sqrtQ - a / 3;
-	  GSL_IMAG (z[2]) = 0;
+	  GSL_REAL (*z0) = -sqrtQ - a / 3;
+	  GSL_IMAG (*z0) = 0;
+	  GSL_REAL (*z1) = -sqrtQ - a / 3;
+	  GSL_IMAG (*z1) = 0;
+	  GSL_REAL (*z2) = 2 * sqrtQ - a / 3;
+	  GSL_IMAG (*z2) = 0;
 	}
       return 3;
     }
@@ -77,14 +79,14 @@ gsl_poly_complex_solve_cubic (double a, double b, double c, gsl_complex z[])
 	    SWAP (r0, r1);
 	}
 
-      GSL_REAL (z[0]) = r0;
-      GSL_IMAG (z[0]) = 0;
+      GSL_REAL (*z0) = r0;
+      GSL_IMAG (*z0) = 0;
 
-      GSL_REAL (z[1]) = r1;
-      GSL_IMAG (z[1]) = 0;
+      GSL_REAL (*z1) = r1;
+      GSL_IMAG (*z1) = 0;
 
-      GSL_REAL (z[2]) = r2;
-      GSL_IMAG (z[2]) = 0;
+      GSL_REAL (*z2) = r2;
+      GSL_IMAG (*z2) = 0;
 
       return 3;
     }
@@ -96,25 +98,25 @@ gsl_poly_complex_solve_cubic (double a, double b, double c, gsl_complex z[])
 
       if (A + B < 0)
 	{
-	  GSL_REAL (z[0]) = A + B - a / 3;
-	  GSL_IMAG (z[0]) = 0;
+	  GSL_REAL (*z0) = A + B - a / 3;
+	  GSL_IMAG (*z0) = 0;
 
-	  GSL_REAL (z[1]) = -0.5 * (A + B) - a / 3;
-	  GSL_IMAG (z[1]) = -(sqrt (3.0) / 2.0) * fabs(A - B);
+	  GSL_REAL (*z1) = -0.5 * (A + B) - a / 3;
+	  GSL_IMAG (*z1) = -(sqrt (3.0) / 2.0) * fabs(A - B);
 
-	  GSL_REAL (z[2]) = -0.5 * (A + B) - a / 3;
-	  GSL_IMAG (z[2]) = (sqrt (3.0) / 2.0) * fabs(A - B);
+	  GSL_REAL (*z2) = -0.5 * (A + B) - a / 3;
+	  GSL_IMAG (*z2) = (sqrt (3.0) / 2.0) * fabs(A - B);
 	}
       else
 	{
-	  GSL_REAL (z[0]) = -0.5 * (A + B) - a / 3;
-	  GSL_IMAG (z[0]) = -(sqrt (3.0) / 2.0) * fabs(A - B);
+	  GSL_REAL (*z0) = -0.5 * (A + B) - a / 3;
+	  GSL_IMAG (*z0) = -(sqrt (3.0) / 2.0) * fabs(A - B);
 
-	  GSL_REAL (z[1]) = -0.5 * (A + B) - a / 3;
-	  GSL_IMAG (z[1]) = (sqrt (3.0) / 2.0) * fabs(A - B);
+	  GSL_REAL (*z1) = -0.5 * (A + B) - a / 3;
+	  GSL_IMAG (*z1) = (sqrt (3.0) / 2.0) * fabs(A - B);
 
-	  GSL_REAL (z[2]) = A + B - a / 3;
-	  GSL_IMAG (z[2]) = 0;
+	  GSL_REAL (*z2) = A + B - a / 3;
+	  GSL_IMAG (*z2) = 0;
 	}
 
       return 3;
