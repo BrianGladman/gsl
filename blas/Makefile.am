@@ -1,4 +1,4 @@
-lib_LTLIBRARIES = libgslblas.la libgslblascblas.la
+noinst_LTLIBRARIES = libgslblas.la
 
 pkginclude_HEADERS = gsl_blas.h gsl_blas_types.h
 

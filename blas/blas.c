@@ -1762,7 +1762,7 @@ int  gsl_blas_cgeru (const gsl_complex_float * alpha,
                      const gsl_vector_complex_float * Y,
                      gsl_matrix_complex_float * A)
 {
-  cblas_cgeru (A->size1, A->size2, alpha->dat,
+  cblas_cgeru (CblasRowMajor, A->size1, A->size2, alpha->dat,
                       X->data, X->stride,
                       Y->data, Y->stride,
                       A->data, A->tda);
@@ -1775,7 +1775,7 @@ int  gsl_blas_zgeru (const gsl_complex * alpha,
                      const gsl_vector_complex * Y,
                      gsl_matrix_complex * A)
 {
-  cblas_zgeru (A->size1, A->size2, alpha->dat,
+  cblas_zgeru (CblasRowMajor, A->size1, A->size2, alpha->dat,
                       X->data, X->stride,
                       Y->data, Y->stride,
                       A->data, A->tda);
@@ -1790,7 +1790,7 @@ int  gsl_blas_cgerc (const gsl_complex_float * alpha,
                      const gsl_vector_complex_float * Y,
                      gsl_matrix_complex_float * A)
 {
-  cblas_cgerc (A->size1, A->size2, alpha->dat,
+  cblas_cgerc (CblasRowMajor, A->size1, A->size2, alpha->dat,
                       X->data, X->stride,
                       Y->data, Y->stride,
                       A->data, A->tda);
@@ -1803,7 +1803,7 @@ int  gsl_blas_zgerc (const gsl_complex * alpha,
                      const gsl_vector_complex * Y,
                      gsl_matrix_complex * A)
 {
-  cblas_zgerc (A->size1, A->size2, alpha->dat,
+  cblas_zgerc (CblasRowMajor, A->size1, A->size2, alpha->dat,
                       X->data, X->stride,
                       Y->data, Y->stride,
                       A->data, A->tda);
