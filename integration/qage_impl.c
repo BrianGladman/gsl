@@ -225,6 +225,8 @@ gsl_integration_qage_impl (double (*f) (double x),
       GSL_ERROR ("maximum number of subdivisions reached", GSL_EMAXITER);
     }
 
+  /* FIXME: find the logic which can lead to this and fix it */
+
   GSL_ERROR ("fell past end of qage_impl.c SHOULDN'T HAPPEN", GSL_ESANITY);
 
 }
