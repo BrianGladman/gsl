@@ -37,17 +37,23 @@ INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_DATA = @INSTALL_DATA@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
 transform = @program_transform_name@
+host_triplet = @host@
+host_alias = @host_alias@
 RANLIB = @RANLIB@
 PACKAGE = @PACKAGE@
 VERSION = @VERSION@
 CC = @CC@
 
 SUBDIRS = random randist fft roots statistics siman doc
+ACLOCAL = $(top_srcdir)/aclocal.m4
+CONFIG_HEADER_IN = config.h.in
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
+CONFIG_HEADER = config.h
 CONFIG_CLEAN_FILES = 
 DIST_COMMON =  README AUTHORS COPYING ChangeLog INSTALL Makefile.am \
-Makefile.in NEWS README configure configure.in install-sh mdate-sh \
-mkinstalldirs texinfo.tex
+Makefile.in NEWS README acconfig.h aclocal.m4 config.guess config.h.in \
+config.sub configure configure.in install-sh mdate-sh mkinstalldirs \
+stamp-h.in texinfo.tex
 
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) \
@@ -64,11 +70,33 @@ Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status $(BUILT_SOURCES)
 	cd $(top_builddir) \
 	  && CONFIG_FILES=$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
+$(srcdir)/aclocal.m4: configure.in
+	cd $(srcdir) && aclocal
 
 config.status: configure
 	$(SHELL) ./config.status --recheck
 $(srcdir)/configure: configure.in $(ACLOCAL) $(CONFIGURE_DEPENDENCIES)
 	cd $(srcdir) && autoconf
+
+$(CONFIG_HEADER): stamp-h
+stamp-h: $(CONFIG_HEADER_IN) $(top_builddir)/config.status
+	cd $(top_builddir) \
+	  && CONFIG_FILES= CONFIG_HEADERS=$(CONFIG_HEADER) \
+	     $(SHELL) ./config.status
+	@echo timestamp > stamp-h
+$(srcdir)/$(CONFIG_HEADER_IN): stamp-h.in
+$(srcdir)/stamp-h.in: $(top_srcdir)/configure.in $(ACLOCAL) acconfig.h
+	cd $(top_srcdir) && autoheader
+	echo timestamp > $(srcdir)/stamp-h.in
+
+mostlyclean-hdr:
+
+clean-hdr:
+
+distclean-hdr:
+	rm -f $(CONFIG_HEADER)
+
+maintainer-clean-hdr:
 
 # This directory's subdirectories are mostly independent; you can cd
 # into them and run `make' without going through this Makefile.
@@ -154,7 +182,10 @@ dvi: dvi-recursive
 check: all-am
 	$(MAKE) check-recursive
 installcheck: installcheck-recursive
-all-am: Makefile
+all-recursive-am: $(CONFIG_HEADER)
+	$(MAKE) all-recursive
+
+all-am: Makefile config.h
 
 install-exec: install-exec-recursive
 	$(NORMAL_INSTALL)
@@ -167,7 +198,7 @@ install: install-recursive
 
 uninstall: uninstall-recursive
 
-all: all-recursive all-am
+all: all-recursive-am all-am
 
 install-strip:
 	$(MAKE) INSTALL_PROGRAM='$(INSTALL_PROGRAM) -s' install
@@ -188,13 +219,14 @@ distclean-generic:
 maintainer-clean-generic:
 	test -z "$(MAINTAINERCLEANFILES)" || rm -f $(MAINTAINERCLEANFILES)
 	test -z "$(BUILT_SOURCES)" || rm -f $(BUILT_SOURCES)
-mostlyclean-am:  mostlyclean-generic
+mostlyclean-am:  mostlyclean-hdr mostlyclean-generic
 
-clean-am:  clean-generic mostlyclean-am
+clean-am:  clean-hdr clean-generic mostlyclean-am
 
-distclean-am:  distclean-generic clean-am
+distclean-am:  distclean-hdr distclean-generic clean-am
 
-maintainer-clean-am:  maintainer-clean-generic distclean-am
+maintainer-clean-am:  maintainer-clean-hdr maintainer-clean-generic \
+		distclean-am
 
 mostlyclean:  mostlyclean-am mostlyclean-recursive
 
@@ -208,15 +240,17 @@ maintainer-clean:  maintainer-clean-am maintainer-clean-recursive
 	@echo "it deletes files that may require special tools to rebuild."
 	rm -f config.status
 
-.PHONY: default install-data-recursive uninstall-data-recursive \
+.PHONY: default mostlyclean-hdr distclean-hdr clean-hdr \
+maintainer-clean-hdr install-data-recursive uninstall-data-recursive \
 install-exec-recursive uninstall-exec-recursive installdirs-recursive \
 uninstalldirs-recursive all-recursive check-recursive \
 installcheck-recursive info-recursive dvi-recursive \
 mostlyclean-recursive distclean-recursive clean-recursive \
 maintainer-clean-recursive tags tags-recursive distdir info dvi \
-installcheck all-am install-exec install-data install uninstall all \
-installdirs mostlyclean-generic distclean-generic clean-generic \
-maintainer-clean-generic clean mostlyclean distclean maintainer-clean
+installcheck all-recursive-am all-am install-exec install-data install \
+uninstall all installdirs mostlyclean-generic distclean-generic \
+clean-generic maintainer-clean-generic clean mostlyclean distclean \
+maintainer-clean
 
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.

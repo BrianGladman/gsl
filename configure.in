@@ -1,12 +1,17 @@
 dnl Process this file with autoconf to produce a configure script.
 AC_INIT(statistics/jtest.c)
+AM_CONFIG_HEADER(config.h)
 
 dnl things required by automake
 AC_ARG_PROGRAM
 AC_PROG_MAKE_SET
 
+dnl Check for which system.
+AC_CANONICAL_HOST
+
 dnl Checks for programs.
 AC_PROG_CC
+AC_PROG_CPP
 AC_PROG_INSTALL
 AC_PROG_LN_S
 AC_PROG_RANLIB
@@ -23,5 +28,70 @@ dnl Checks for typedefs, structures, and compiler characteristics.
 dnl Checks for library functions.
 dnl Replace `main' with a function in -lm:
 AC_CHECK_LIB(m, main)
+
+
+AC_CHECK_FUNCS(clock)
+
+AC_CACHE_CHECK(for CLOCKS_PER_SEC,
+ac_cv_decl_clocks_per_sec,
+AC_EGREP_CPP(yes,
+[
+#include <time.h>
+#ifdef CLOCKS_PER_SEC
+yes
+#endif
+], 
+ac_cv_decl_clocks_per_sec=yes,
+ac_cv_decl_clocks_per_sec=no)
+)
+
+if test "$ac_cv_decl_clocks_per_sec" = yes ; then
+  AC_DEFINE(HAVE_CLOCKS_PER_SEC)
+else
+AC_MSG_CHECKING(whether CLOCKS_PER_SEC is known for $host_os)
+  case "$host" in
+    *-*-sunos4.*) 
+        AC_DEFINE(HAVE_GUESSED_CLOCKS_PER_SEC,1000000)
+	AC_MSG_RESULT([yes (microseconds)]) 
+        ;;
+    *) 
+        AC_DEFINE(HAVE_GUESSED_CLOCKS_PER_SEC,1000000)
+        AC_MSG_RESULT([no, assuming microseconds]) 
+        ;;
+  esac
+fi
+
+AC_CHECK_FUNCS(rand)
+
+AC_CACHE_CHECK(for RAND_MAX,
+ac_cv_decl_rand_max,
+AC_EGREP_CPP(yes,
+[
+#include <stdlib.h>
+#include <math.h>
+#ifdef RAND_MAX
+yes
+#endif
+],
+ac_cv_decl_rand_max=yes,
+ac_cv_decl_rand_max=no)
+)
+
+if test "$ac_cv_decl_rand_max" = yes ; then
+  AC_DEFINE(HAVE_RAND_MAX)
+else
+AC_MSG_CHECKING(whether RAND_MAX is known for $host_os)
+  case "$host" in
+    *-*-sunos4.*) 
+        AC_DEFINE(HAVE_GUESSED_RAND_MAX,2147483647)
+	AC_MSG_RESULT([yes (2^{31}-1)]) 
+        ;;
+    *) 
+        AC_DEFINE(HAVE_GUESSED_RAND_MAX,32767)
+        AC_MSG_RESULT([no, assuming 32767]) 
+        ;;
+  esac
+fi
+
 
 AC_OUTPUT(fft/Makefile statistics/Makefile roots/Makefile random/Makefile randist/Makefile siman/Makefile doc/Makefile Makefile)
