@@ -345,7 +345,7 @@ int gsl_monte_miser_init(gsl_monte_miser_state* state)
 {
 
   if (state == (gsl_monte_miser_state*) NULL) {
-    GSL_ERROR("Allocate state structure before calling!", GSL_EINVAL);
+    GSL_ERROR("Allocate state structure before calling!", GSL_EFAULT);
   }
 
   state->min_calls = 15;
@@ -365,5 +365,8 @@ int gsl_monte_miser_init(gsl_monte_miser_state* state)
 
 void gsl_monte_miser_free (gsl_monte_miser_state* s)
 {
+  if (s == (gsl_monte_miser_state*) NULL )
+    GSL_ERROR_RETURN_NOTHING("Attempt to free null pointer", GSL_EFAULT);
+
   free (s);
 }

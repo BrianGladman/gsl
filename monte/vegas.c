@@ -427,7 +427,7 @@ int gsl_monte_vegas_init(gsl_monte_vegas_state* state)
 {
 
   if (state == (gsl_monte_vegas_state*) NULL) {
-    GSL_ERROR("Allocate state structure before calling!", GSL_EINVAL);
+    GSL_ERROR("Allocate state structure before calling!", GSL_EFAULT);
   }
 
   state->stage = 0;

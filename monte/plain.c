@@ -110,7 +110,7 @@ int gsl_monte_plain_init(gsl_monte_plain_state* state)
 {
 
   if (state == (gsl_monte_plain_state*) NULL) {
-    GSL_ERROR("Allocate state structure before calling!", GSL_EINVAL);
+    GSL_ERROR("Allocate state structure before calling!", GSL_EFAULT);
   }
 
   state->ranf = gsl_rng_alloc(gsl_rng_env_setup());
@@ -122,5 +122,8 @@ int gsl_monte_plain_init(gsl_monte_plain_state* state)
 
 void gsl_monte_plain_free (gsl_monte_plain_state* s)
 {
+  if (s == (gsl_monte_plain_state*) NULL )
+    GSL_ERROR_RETURN_NOTHING("Attempt to free null pointer", GSL_EFAULT);
+
   free (s);
 }
