@@ -265,8 +265,14 @@ gsl_sf_legendre_H3d_impl(const int ell, const double lambda, const double eta, d
       return stat_P;
     }
     else {
+      double lnN, lnsh;
+      double lnpre;
       double lnP = log(fabs(P));
-      int stat_e = gsl_sf_exp_sgn_impl(lnP + lm, P, result);
+      int stat_e;
+      gsl_sf_lnsinh_impl(eta, &lnsh);
+      legendre_H3d_lnnorm(ell, lambda, &lnN);
+      lnpre = 0.5*(M_LNPI + lnN - M_LN2 - lnsh) - log(abs_lam);
+      stat_e = gsl_sf_exp_sgn_impl(lnP + lm, P, result);
       if(stat_e == GSL_SUCCESS)
         return stat_P;
       else
@@ -289,16 +295,16 @@ gsl_sf_legendre_H3d_impl(const int ell, const double lambda, const double eta, d
       Hl   = Hlm1;
     }
 
-    if(fabs(Hlm1) > fabs(Hl)) {
+    if(fabs(Hl) > fabs(Hlp1)) {
       double H0;
       int stat_H0 = gsl_sf_legendre_H3d_0_impl(lambda, eta, &H0);
-      *result = GSL_SQRT_DBL_MIN/Hlm1 * H0;
+      *result = GSL_SQRT_DBL_MIN/Hl * H0;
       return GSL_SUCCESS;
     }
     else {
       double H1;
       int stat_H1 = gsl_sf_legendre_H3d_1_impl(lambda, eta, &H1);
-      *result = rH*GSL_SQRT_DBL_MIN/Hl * H1;
+      *result = GSL_SQRT_DBL_MIN/Hlp1 * H1;
       return GSL_SUCCESS;
     }
   }
