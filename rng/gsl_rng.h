@@ -48,7 +48,7 @@ extern const gsl_rng_type *gsl_rng_default;
 extern unsigned long int gsl_rng_default_seed;
 
 unsigned long int gsl_rng_get (const gsl_rng * r);
-double gsl_rng_get_uni (const gsl_rng * r);
+double gsl_rng_uniform (const gsl_rng * r);
 
 gsl_rng *gsl_rng_alloc (const gsl_rng_type * T);
 gsl_rng *gsl_rng_cpy (gsl_rng * dest, const gsl_rng * src);
@@ -61,7 +61,7 @@ unsigned long int gsl_rng_max (const gsl_rng * r);
 const char *gsl_rng_name (const gsl_rng * r);
 void gsl_rng_print_state (const gsl_rng * r);
 
-int gsl_rng_env_setup (void);
+const gsl_rng_type * gsl_rng_env_setup (void);
 
 #ifdef HAVE_INLINE
 extern inline unsigned long int
@@ -71,7 +71,7 @@ gsl_rng_get (const gsl_rng * r)
 }
 
 extern inline double
-gsl_rng_get_uni (const gsl_rng * r)
+gsl_rng_uniform (const gsl_rng * r)
 {
   unsigned long int k = (r->get) (r->state);
   unsigned long int max = r->max;

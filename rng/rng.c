@@ -109,7 +109,7 @@ gsl_rng_get (const gsl_rng * r)
 }
 
 double
-gsl_rng_get_uni (const gsl_rng * r)
+gsl_rng_uniform (const gsl_rng * r)
 {
   unsigned long int k = (r->get) (r->state);
   unsigned long int max = r->max;

@@ -300,7 +300,7 @@ rng_sum_test (gsl_rng * r, double *sigma)
 
   for (i = 0; i < N2; ++i)
     {
-      double x = gsl_rng_get_uni (r) - 0.5;
+      double x = gsl_rng_uniform (r) - 0.5;
       sum += x;
     }
 

@@ -11,7 +11,7 @@ const gsl_rng_type *gsl_rng_default;
 static void
   check (const gsl_rng_type ** def, const gsl_rng_type * test, const char *p);
 
-int
+const gsl_rng_type *
 gsl_rng_env_setup (void)
 {
   unsigned long int seed = 0;
@@ -42,7 +42,7 @@ gsl_rng_env_setup (void)
 
       if (gsl_rng_default == 0)
 	{
-	  GSL_ERROR ("unknown generator", GSL_EINVAL);
+	  GSL_ERROR_RETURN ("unknown generator", GSL_EINVAL, 0);
 	}
 
       printf ("GSL_RNG_TYPE=%s\n", gsl_rng_default->name);
@@ -62,7 +62,7 @@ gsl_rng_env_setup (void)
 
   gsl_rng_default_seed = seed;
 
-  return GSL_SUCCESS;
+  return gsl_rng_default;
 }
 
 
