@@ -1984,7 +1984,7 @@ sub print_toplevel_footer {
     &print_ruler;
     print FILE <<EOT;
 This document was generated on $TODAY using the
-<A HREF=\"$HOMEPAGE\">texi2html</A>
+<!-- <A HREF=\"$HOMEPAGE\">, this link is broken --> texi2html <!-- </A> -->
 translator version 1.54.</P>
 EOT
     &print_footer;
