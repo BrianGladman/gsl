@@ -101,15 +101,15 @@ plot a=1.0, p(x) title "$a=1$", \
       a=3.0, p(x) title "$a=3$"
 
 set xrange [0:1]
-set yrange [0:3]
+set yrange [0:4]
 set xtics 0.25
 set ytics 1
 set output "rand-beta.tex"
 set title "Beta Distribution"
 p(x)= gamma(a+b)/(gamma(a)*gamma(b))*x**(a-1)*(1-x)**(b-1)
 plot a=2.0, b=2.0, p(x) title "$a=2,b=2$", \
-      a=2.0, b=1.0, p(x) title "$a=2,b=1$", \
-      a=1.0, b=3.0, p(x) title "$a=1,b=3$"
+      a=4.0, b=1.0, p(x) title "$a=4,b=1$", \
+      a=1.0, b=4.0, p(x) title "$a=1,b=4$"
 
 
 set xrange [-5:5]
@@ -118,8 +118,9 @@ set ytics 0.1
 set xtics 1
 set output "rand-logistic.tex"
 set title "Logistic Distribution"
-p(x)= exp(-x)/(1+exp(-x))**2
-plot  p(x) title ""
+p(x)= exp(-x/mu)/mu/(1+exp(-x/mu))**2
+plot mu=1.0, p(x) title "$\mu=1$", \
+	mu=2.0, p(x) title "$\mu=2$"
 
 set xrange [0:3]
 set yrange [0:0.7]
@@ -127,18 +128,19 @@ set xtics 1
 set ytics 0.1
 set output "rand-lognormal.tex"
 set title "Lognormal Distribution"
-p(x)= exp(-log(x)**2/2)/sqrt(2*pi)/x
-plot p(x) title ""
+p(x)= exp(-(log(x)-zeta)**2/2/sigma**2)/sqrt(2*pi*sigma**2)/x
+plot zeta=0.0, sigma=1.0, p(x) title "$\zeta=0, \sigma=1$", \
+	zeta=1.0, sigma=1.0, p(x) title "$\zeta=1, \sigma=1$"
 
-set xrange [1:5]
-set yrange [0:1]
+set xrange [0:5]
+set yrange [0:2]
 set ytics 0.5
 set xtics 1
 set output "rand-pareto.tex"
 set title "Pareto Distribution"
-p(x)= a/x**(a+1)
-plot a=1.0, p(x) title "$a=1$", \
-	a=5.0, p(x) title "$a=5$"
+p(x)= x>b ? a*b**a/x**(a+1) : 0
+plot a=1.0, b=1, p(x) title "$a=1, b=1$", \
+	a=3.0, b=2, p(x) title "$a=3, b=2 $"
 
 set xrange [0:4]
 set yrange [0:0.4]
@@ -159,23 +161,23 @@ plot mu=1.0, p(x) title "$\mu=1$", \
 	mu=2.0, p(x) title "$\mu=2$"
 
 set xrange [-5:5]
-set yrange [0:0.55]
+set yrange [0:0.8]
 set ytics 0.1
 set output "rand-exppow.tex"
 set title "Exponential Power Distribution"
 p(x)=exp(-(abs(x/mu))**a)/2/mu/gamma(1.0+1.0/a)
-plot mu=1.0, a=2.5 p(x) title "$\mu=1, a=2.5$", \
-	mu=2.0, a=0.5 p(x) title "$\mu=2, a=0.5$"
+plot mu=1.0, a=2.5, p(x) title "$\mu=1, a=2.5$", \
+	mu=1.0, a=0.5, p(x) title "$\mu=2, a=0.5$"
 
 set xrange [-5:5]
-set yrange [0:0.55]
+set yrange [0:0.45]
 set ytics 0.1
 set output "rand-levy.tex"
 set title "Levy Distribution"
 p1(x)=1/(pi*mu*(1+(x/mu)**2))
-FIXME #p2(x)=1/sqrt(2*pi*sigma**2)*exp(-x**2/(2*sigma**2)) 
-plot mu=1.0, a=1 p1(x) title "$\mu=1, a=1.0$", \
-	mu=1.0, a=2 p2(x) title "$\mu=1, a=2.0$"
+p2(x)=1/sqrt(2*pi*2*mu**2)*exp(-x**2/(4*mu**2)) 
+plot mu=1.0, a=1, p1(x) title "$\mu=1, a=1.0$", \
+	mu=1.0, a=2, p2(x) title "$\mu=1, a=2.0$"
 
 set xrange [0:2]
 set yrange [0:1.5]
@@ -189,8 +191,8 @@ plot a=1.0, p(x) title "$a=1$", \
 	 a=3.0, p(x) title "$a=3$"
 
 set xrange [0:2]
-set yrange [0:1.5]
-set ytics 0.5
+set yrange [0:0.7]
+set ytics 0.1
 set xtics 0.5
 set output "rand-gumbel.tex"
 set title "Gumbel Distributions"

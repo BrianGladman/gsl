@@ -859,6 +859,7 @@ transputer -----------------------
           Millions of random numbers per second
 @end smallexample
 
+@page
 @node Random Number Distributions
 @section Random Number Distributions
 @cindex random number distributions
@@ -874,7 +875,6 @@ More complicated distributions are created by the
 @dfn{acceptance-rejection} method, which compares the desired
 distribution against a distribution which is similar and known
 analytically. This usually requires several samples from the generator.
-
 
 @subsection Continuous distributions
 
@@ -998,7 +998,7 @@ Useful integral:
 
 @end itemize
 
-@c----------------------------------------------------------------------
+@c ----------------------------------------------------------------------
 @page
 @deftypefn Random double gsl_ran_laplace (const gsl_rng * @var{r}, double @var{mu})
 @cindex two-sided exponential random numbers
@@ -1053,7 +1053,7 @@ p(x) dx = @{1 \over 2 \mu \Gamma(1+1/a)@} \exp(-|x/\mu|^a) dx
 @noindent
 for @math{x \ge 0}. For @math{a = 1} this reduces to the laplace
 distribution. For @math{a = 2} it has the same form as a gaussian
-distribution, but with @math{\mu = \sqrt{2} \sigma}.
+distribution, but with @math{\mu = \sqrt@{2@} \sigma}.
 @end deftypefn
 @tex
 \centerline{\input rand-exppow.tex}
@@ -1129,13 +1129,13 @@ scale @var{mu} and exponent @var{a}. The Levy probability distribution
 is defined by a fourier transform,
 @c
 @equation
-p(x) = @{1 \over 2 \pi)@} \int_@{-\infty@}^@{+\infty@} dt \exp(it(\mu-x)- |t|^a) 
+p(x) = @{1 \over 2 \pi@} \int_@{-\infty@}^@{+\infty@} dt \exp(it(\mu-x)- |t|^a) 
 @end equation
 @noindent
-There is no simple analytic form for @math{p(x)}. For @math{a = 1} it
-reduces to the Cauchy distribution. For @math{a = 2} it has the same
-form as a Gaussian distribution, but with @math{\mu = \sqrt{2} \sigma
-FIXME: check}. For @math{a < 1} we get very large tails.
+There is no explicit solution for the form of @math{p(x)}. For @math{a =
+1} the distribution reduces to the Cauchy distribution. For @math{a = 2}
+it has is Gaussian distribution with @math{\sigma = \sqrt@{2@} \mu}. For
+@math{a < 1} the tails of the distribution become extremely wide.
 
 The algorithm only works for @math{0 < a \le 2}.
 @end deftypefn
@@ -1235,7 +1235,7 @@ if @math{a \le x < b} and 0 otherwise.
 @itemize @asis
 @item
 Mean = @math{(a+b)/2}, Variance = @math{(b-a)^2/12}, Skewness =
-@math{0}, Excess = @math{-1.2} @c FIXME, is this exact?
+@math{0}, Excess = @math{-6/5} 
 
 @item
 Cumulants, @math{\kappa_1=(a+b)/2}, @math{\kappa_@{2n+1@}=0},
@@ -1474,7 +1474,7 @@ order @var{a}.  The distribution function is,
 @equation
 p(x) dx = a b^a / x^@{a+1@} dx
 @end equation
-for @math{x \ge 1}
+for @math{x \ge b}
 @end deftypefn
 @tex
 \centerline{\input rand-pareto.tex}
@@ -1556,7 +1556,7 @@ Cumulative distribution function,
 @c ----------------------------------------------------------------------
 @page
 @deftypefn Random double gsl_ran_gumbel1 (const gsl_rng * @var{r}, double @var{a}, double @var{b})
-@deftypefn Random double gsl_ran_gumbel2 (const gsl_rng * @var{r}, double @var{a}, double @var{b})
+@deftypefnx Random double gsl_ran_gumbel2 (const gsl_rng * @var{r}, double @var{a}, double @var{b})
 @cindex Gumbel distribution, random numbers
 These functions return random numbers from the Type-1 and Type-2 Gumbel
 distributions. The Type-1 Gumbel distribution is,
@@ -1621,6 +1621,7 @@ Characteristic function, @math{\phi(t) = \exp(m(e^@{it@}-1))}
 @end itemize
 
 @c ----------------------------------------------------------------------
+@page
 @deftypefn Random {unsigned int} gsl_ran_bernoulli (const gsl_rng * @var{r}, double @var{p})
 @cindex Bernoulli trial, random numbers
 This function returns the result either 0 or 1, the result of a
@@ -1810,14 +1811,14 @@ where @math{a = -1/\log(1-p)}
 @c @var{p}.
 @c @end deftypefn
 
+@page
 @node Shuffling and Sampling
 @section Shuffling and Sampling
 
 @deftypefn Random void gsl_ran_shuffle (const gsl_rng * @var{r}, void * @var{base}, size_t @var{n}, size_t @var{size})
 
-@code{gsl_ran_shuffle} takes an array of @var{n} objects
-@var{base}[0..@var{n}-1], each of size @var{size}, and randomly shuffles
-their order. The array @code{base} is altered.
+This function randomly shuff;es the order of @var{n} objects, each of
+size @var{size}, stored in the array @var{base}[0..@var{n}-1].
 
 The following code shows how to shuffle the numbers from 0 to 51,
 
@@ -1834,17 +1835,18 @@ gsl_ran_shuffle (r, a, 52, sizeof (int));
 
 @end deftypefn
 
-@deftypefn Random void * gsl_ran_choose (const gsl_rng * @var{r}, void * @var{dest}, size_t @var{k}, void * @var{src}, size_t @var{n}, size_t @var{size})
-@code{gsl_ran_choose} fills the array @var{dest[k]} with @var{k} objects
-taken randomly from @var{n} elements of the array @var{src[n]}. The
-objects are each of size @var{size}. It is required that @var{k} be less
-than or equal to @code{n}. The objects in @var{dest} will be in the same
-relative order as those in @var{src}. You will need to call
-@code{gsl_ran_shuffle(r, dest, n, size)} if you want to randomize the
-order.
+@deftypefn Random {void *} gsl_ran_choose (const gsl_rng * @var{r}, void * @var{dest}, size_t @var{k}, void * @var{src}, size_t @var{n}, size_t @var{size})
+This function fills the array @var{dest[k]} with @var{k} objects taken
+randomly from the @var{n} elements of the array @var{src[n]}. The
+objects are each of size @var{size}. The objects are sampled without
+replacement, thus each object can only appear once in @var{dest[k]}.  It
+is required that @var{k} be less than or equal to @code{n}. The objects
+in @var{dest} will be in the same relative order as those in @var{src}.
+You will need to call @code{gsl_ran_shuffle(r, dest, n, size)} if you
+want to randomize the order.
 
-The following code shows how to choose three random numbers from 0 to 99
-(without replacement),
+The following code shows how to select a random sample of three unique
+numbers from the set 0 to 99,
 
 @example
 double a[3], b[100];
@@ -1854,7 +1856,7 @@ for (i = 0; i < 100; i++)
     b[i] = (double) i ;
   @}
 
-gsl_ran_choose (r, b, 3, a, 100, sizeof (double));
+gsl_ran_choose (r, a, 3, b, 100, sizeof (double));
 @end example
 
 
