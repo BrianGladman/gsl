@@ -115,5 +115,16 @@ GSL_MIN_LDBL (long double a, long double b)
 #define GSL_MIN_LDBL(a,b)  GSL_MIN(a,b)
 #endif /* HAVE_INLINE */
 
+/* Definition of an arbitrary function with parameters */
+
+struct gsl_function_struct 
+{
+  double (* function) (double x, void * params);
+  void * params;
+};
+
+typedef struct gsl_function_struct gsl_function ;
+
+#define GSL_FN_EVAL(F,x) (*((F).function))(x,(F).params)
 
 #endif /* !_GSL_MATH_H */
