@@ -6,6 +6,8 @@
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_vector.h>
 #include <gsl/gsl_matrix.h>
+#include <gsl/gsl_blas.h>
+
 #include "gsl_linalg.h"
 
 #define REAL double
@@ -25,7 +27,7 @@
  * The diagonal matrix D is stored in the vector S,  D_ii = S_i
  *
  * The one-sided Jacobi algorithm is used (see Algorithm 4.1 in the
- * following paper).
+ * following paper). 
  *
  * See James Demmel, Kresimir Veselic, "Jacobi's Method is more
  * accurate than QR", Lapack Working Note 15 (LAWN15), October 1989.
@@ -35,20 +37,25 @@
 int
 gsl_linalg_SV_decomp (gsl_matrix * A,
                       gsl_matrix * Q,
-                      gsl_vector * S,
-                      double tolerance)
+                      gsl_vector * S)
 {
-  if (Q->size1 != A->size2)
+  if (Q->size1 < Q->size2)
     {
-      GSL_ERROR ("", GSL_EBADLEN);
+      /* FIXME: only implemented  M>=N case so far */
+
+      GSL_ERROR ("svd of MxN matrix, M<N, is not implemented", GSL_EUNIMPL);
+    }
+  else if (Q->size1 != A->size2)
+    {
+      GSL_ERROR ("square matrix Q must match second dimension of matrix A", GSL_EBADLEN);
     }
   else if (Q->size1 != Q->size2)
     {
-      GSL_ERROR ("", GSL_ENOTSQR);
+      GSL_ERROR ("matrix Q must be square", GSL_ENOTSQR);
     }
   else if (S->size != A->size2)
     {
-      GSL_ERROR ("", GSL_EBADLEN);
+      GSL_ERROR ("length of vector S must match second dimension of matrix A", GSL_EBADLEN);
     }
   else
     {
@@ -58,8 +65,11 @@ gsl_linalg_SV_decomp (gsl_matrix * A,
 
       /* Initialize the rotation counter and the sweep counter. */
       int count = 1;
+      int degen = 0;
       int sweep = 0;
       int sweepmax = N;
+
+      double tolerance = 10 * GSL_DBL_EPSILON ;
 
       /* Always do at least 12 sweeps. */
       sweepmax = GSL_MAX (sweepmax, 12);
@@ -68,55 +78,42 @@ gsl_linalg_SV_decomp (gsl_matrix * A,
       gsl_matrix_set_identity (Q);
 
       /* Orthogonalize A by plane rotations. */
+
       while (count > 0 && sweep <= sweepmax)
 	{
-
 	  /* Initialize rotation counter. */
 	  count = N * (N - 1) / 2;
+          degen = 0;
 
 	  for (j = 0; j < N - 1; j++)
 	    {
 	      for (k = j + 1; k < N; k++)
 		{
+                  double a = 0.0;
+                  double b = 0.0;
 		  double p = 0.0;
 		  double q = 0.0;
 		  double r = 0.0;
 		  double cosine, sine;
 		  double v;
 
-		  for (i = 0; i < M; i++)
-		    {
-		      /* quantities in rotation angles */
-		      const REAL Aij = gsl_matrix_get (A, i, j);
-		      const REAL Aik = gsl_matrix_get (A, i, k);
-		      p += Aij * Aik;
-		      q += Aij * Aij;
-		      r += Aik * Aik;
-		    }
+                  gsl_vector cj = gsl_matrix_column (A, j);
+                  gsl_vector ck = gsl_matrix_column (A, k);
+
+                  gsl_blas_ddot (&cj, &ck, &p);
+                  
+                  a = gsl_blas_dnrm2 (&cj);
+                  b = gsl_blas_dnrm2 (&ck);
+
+                  q = a * a ;
+                  r = b * b ;
 
 		  /* NOTE: this could be handled better by scaling
 		   * the calculation of the inner products above.
 		   * But I'm too lazy. This will have to do. [GJ]
 		   */
-		  if (!(q * r < GSL_DBL_MAX))
-		    {
-		      /* overflow occured or will occur */
-		      return GSL_EOVRFLW;
-		    }
-		  if (!(q * r > GSL_DBL_MIN))
-		    {
-		      /* underflow occured or will occur */
-		      return GSL_EUNDRFLW;
-		    }
 
-		  if (q * r == 0.0)
-		    {
-		      /* column elements of A are vanishingly small */
-		      count--;
-		      continue;
-		    }
-
-		  if ((double) (p * p) / (double) (q * r) < tolerance)
+		  if (fabs(p) <= tolerance * a * b)
 		    {
 		      /* columns j,k orthogonal
 		       * note that p*p/(q*r) is automatically <= 1.0
@@ -124,6 +121,15 @@ gsl_linalg_SV_decomp (gsl_matrix * A,
 		      count--;
 		      continue;
 		    }
+
+                  /* FIXME: this is an adhoc way of catching rank-deficient cases */
+
+                  if (a <= tolerance * b || b <= tolerance * a)
+                    {
+                      /* probably |a| or |b| = 0,  will apply one iteration anyway */
+                      count--;
+                      degen++;  
+                    }
 
 		  /* calculate rotation angles */
 		  if (q < r)
@@ -134,7 +140,7 @@ gsl_linalg_SV_decomp (gsl_matrix * A,
 		  else
 		    {
 		      q -= r;
-		      v = sqrt (4.0 * p * p + q * q);
+		      v = gsl_hypot (2.0 * p, q);
 		      cosine = sqrt ((v + q) / (2.0 * v));
 		      sine = p / (v * cosine);
 		    }
@@ -167,23 +173,14 @@ gsl_linalg_SV_decomp (gsl_matrix * A,
        * Orthogonalization complete. Compute singular values.
        */
 
-      if (count > 0)
-	{
-	  /* reached sweep limit */
-	}
-
       for (j = 0; j < N; j++)
 	{
-	  double q = 0.0;
-
 	  /* Calculate singular values. */
 
-	  for (i = 0; i < M; i++)
-	    {
-	      const REAL Aij = gsl_matrix_get (A, i, j);
-	      q += Aij * Aij;
-	    }
-	  gsl_vector_set (S, j, sqrt (q));
+          gsl_vector column = gsl_matrix_column (A, j);
+          double norm = gsl_blas_dnrm2 (&column);
+
+	  gsl_vector_set (S, j, norm);
 
 	  /* Normalize vectors. */
 
@@ -194,6 +191,72 @@ gsl_linalg_SV_decomp (gsl_matrix * A,
 	      gsl_matrix_set (A, i, j, Aij / Sj);
 	    }
 	}
+
+      if (count > 0)
+	{
+	  /* reached sweep limit */
+          GSL_ERROR ("Jacobi iterations did not reach desired tolerance", GSL_ETOL);
+	}
+
+      return GSL_SUCCESS;
+    }
+}
+
+/*  Solves the system A x = rhs using the SVD factorization
+ *
+ *  A = U S Q^T
+ *
+ *  to obtain x. For M x N systems it finds the solution in the least
+ *  squares sense.  
+ */
+
+int
+gsl_linalg_SV_solve (const gsl_matrix * U,
+                     const gsl_matrix * Q,
+                     const gsl_vector * S,
+                     const gsl_vector * rhs,
+                     gsl_vector * x)
+{
+  if (U->size1 != rhs->size)
+    {
+      GSL_ERROR ("first dimension of matrix Q must size of vector rhs", GSL_EBADLEN);
+    }
+  else if (U->size2 != S->size)
+    {
+      GSL_ERROR ("length of vector S must match second dimension of matrix U", GSL_EBADLEN);
+    }
+  else if (Q->size1 != Q->size2)
+    {
+      GSL_ERROR ("matrix Q must be square", GSL_ENOTSQR);
+    }
+  else if (S->size != Q->size1)
+    {
+      GSL_ERROR ("length of vector S must match size of matrix Q", GSL_EBADLEN);
+    }
+  else if (Q->size2 != x->size)
+    {
+      GSL_ERROR ("size of matrix Q must match size of vector x", GSL_EBADLEN);
+    }
+  else
+    {
+      const size_t N = U->size2;
+      size_t i;
+
+      gsl_vector * w = gsl_vector_calloc (N);
+      
+      gsl_blas_dgemv (CblasTrans, 1.0, U, rhs, 0.0, w) ;
+      
+      for (i = 0 ; i < N ; i++)
+        {
+          double wi = gsl_vector_get (w, i);
+          double alpha = gsl_vector_get (S, i);
+          if (alpha != 0) alpha = 1.0 / alpha;
+          gsl_vector_set (w, i, alpha * wi);
+        }
+
+      gsl_blas_dgemv (CblasNoTrans, 1.0, Q, w, 0.0, x);
+        
+      gsl_vector_free (w);
 
       return GSL_SUCCESS;
     }

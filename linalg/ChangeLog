@@ -1,4 +1,18 @@
+Mon Apr 24 17:04:52 2000  Brian Gough  <bjg@network-theory.co.uk>
+
+	* test_la.c (main): added tests for MxN matrices
+	
+	* test_la.c (main): added tests for SV decomposition and solve.
+
+	* svd.c (gsl_linalg_SV_decomp): made use of vector row/column
+ 	functions, tidied up the algorithm a bit. Use a standard tolerance
+ 	of 10*GSL_DBL_EPSILON.
+	(gsl_linalg_SV_solve): added a least squares solver
+
 Sun Apr 23 21:18:04 2000  Brian Gough  <bjg@network-theory.co.uk>
+
+	* gsl_linalg.h, svd.c (gsl_linalg_SV_decomp): changed function
+ 	name to new naming convention
 
 	* qr.c (gsl_linalg_QR_unpack): fixed index ranges for rectangular
  	case when unpacking R

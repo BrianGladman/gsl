@@ -80,7 +80,7 @@ gsl_linalg_QRPT_decomp (gsl_matrix * a, gsl_vector * tau, gsl_permutation * p, i
 	{
 	  /* Bring the column of largest norm into the pivot position */
 
-	  double max_norm = 0;
+	  double max_norm = gsl_vector_get(norm, i);
 	  size_t j, kmax = i;
 
 	  for (j = i + 1; j < N; j++)
@@ -98,7 +98,6 @@ gsl_linalg_QRPT_decomp (gsl_matrix * a, gsl_vector * tau, gsl_permutation * p, i
 	    {
 	      gsl_matrix_swap_columns (a, i, kmax);
 	      gsl_permutation_swap (p, i, kmax);
-	      gsl_vector_set (tau, kmax, gsl_vector_get (tau, i));
 	      gsl_vector_set (norm, kmax, gsl_vector_get (norm, i));
 	      (*signum) = -(*signum);
 	    }
@@ -125,27 +124,30 @@ gsl_linalg_QRPT_decomp (gsl_matrix * a, gsl_vector * tau, gsl_permutation * p, i
 
 	  /* Update the norms of the remaining columns too */
 
-	  for (j = i + 1; j < N; j++)
-	    {
-	      double y = 0;
-	      double x = gsl_vector_get (norm, j);
-	      double temp = gsl_matrix_get (a, i, j) / x;
-
-	      if (fabs (temp) >= 1)
-		y = 0.0;
-	      else
-		y = y * sqrt (1 - temp * temp);
-
-	      if (fabs (y / x) < sqrt (20.0) * GSL_SQRT_DBL_EPSILON)
-		{
-		  gsl_vector c_full = gsl_matrix_column (a, j);
-                  gsl_vector c = gsl_vector_subvector(&c_full, i+1, M - (i+1));
-		  y = gsl_blas_dnrm2 (&c);
-		}
-
-	      gsl_vector_set (norm, j, y);
-	    }
-	}
+          if (i + 1 < M) 
+            {
+              for (j = i + 1; j < N; j++)
+                {
+                  double y = 0;
+                  double x = gsl_vector_get (norm, j);
+                  double temp = gsl_matrix_get (a, i, j) / x;
+                  
+                  if (fabs (temp) >= 1)
+                    y = 0.0;
+                  else
+                    y = y * sqrt (1 - temp * temp);
+                  
+                  if (fabs (y / x) < sqrt (20.0) * GSL_SQRT_DBL_EPSILON)
+                    {
+                      gsl_vector c_full = gsl_matrix_column (a, j);
+                      gsl_vector c = gsl_vector_subvector(&c_full, i+1, M - (i+1));
+                      y = gsl_blas_dnrm2 (&c);
+                    }
+                  
+                  gsl_vector_set (norm, j, y);
+                }
+            }
+        }
 
       gsl_vector_free (work);
       gsl_vector_free (norm);

@@ -71,8 +71,15 @@ int gsl_linalg_householder_hv (double tau,
  */
 int gsl_linalg_SV_decomp (gsl_matrix * A,
 			  gsl_matrix * Q,
-			  gsl_vector * S,
-			  double tolerance);
+			  gsl_vector * S);
+
+int
+gsl_linalg_SV_solve (const gsl_matrix * U,
+                     const gsl_matrix * Q,
+                     const gsl_vector * S,
+                     const gsl_vector * rhs,
+                     gsl_vector * x);
+
 
 /* LU Decomposition, Gaussian elimination with partial pivoting
  */
