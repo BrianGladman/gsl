@@ -198,7 +198,8 @@ main (void)
 
     gsl_ieee_float_rep r;
 
-    float x = 2 * f;
+    float x;
+    x = 2 * f;
     gsl_ieee_float_to_rep (&x, &r);
 
     gsl_test_int (r.sign, 0, "float x = 2*FLT_MAX, sign is +");
@@ -215,7 +216,8 @@ main (void)
 
     gsl_ieee_float_rep r;
 
-    float x = -2 * f;
+    float x;
+    x = -2 * f;
     gsl_ieee_float_to_rep (&x, &r);
 
     gsl_test_int (r.sign, 1, "float x = -2*FLT_MAX, sign is -");
@@ -228,10 +230,10 @@ main (void)
 
   {
     gsl_ieee_float_rep r;
-    float x, y, z;
+    float x = 1.0f, y = 2.0f, z = zerof;
 
-    x = 1.0f / zerof;
-    y = 2.0f / zerof;
+    x = x / z;
+    y = y / z;
     z = y - x;
 
     gsl_ieee_float_to_rep (&z, &r);
@@ -262,10 +264,14 @@ main (void)
   /* Check for -ZERO */
 
   {
-    double d = zero * minus_one;
+    double d =  minus_one;
     const char mantissa[]
       = "0000000000000000000000000000000000000000000000000000";
     gsl_ieee_double_rep r;
+
+    while (d < 0) {
+      d *= 0.1;
+    }
 
     gsl_ieee_double_to_rep (&d, &r);
 
@@ -407,7 +413,8 @@ main (void)
       = "0000000000000000000000000000000000000000000000000000";
     gsl_ieee_double_rep r;
 
-    double x = 2 * d;
+    double x;
+    x = 2.0 * d;
     gsl_ieee_double_to_rep (&x, &r);
 
     gsl_test_int (r.sign, 0, "double x = 2*DBL_MAX, sign is +");
@@ -424,7 +431,8 @@ main (void)
       = "0000000000000000000000000000000000000000000000000000";
     gsl_ieee_double_rep r;
 
-    double x = -2 * d;
+    double x;
+    x = -2.0 * d;
     gsl_ieee_double_to_rep (&x, &r);
 
     gsl_test_int (r.sign, 1, "double x = -2*DBL_MAX, sign is -");
@@ -437,10 +445,10 @@ main (void)
 
   {
     gsl_ieee_double_rep r;
-    double x, y, z;
+    double x = 1.0, y = 2.0, z = zero;
 
-    x = 1.0 / zero;
-    y = 2.0 / zero;
+    x = x / z;
+    y = y / z;
     z = y - x;
 
     gsl_ieee_double_to_rep (&z, &r);
