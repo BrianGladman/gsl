@@ -23,11 +23,13 @@
 #include <config.h>
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_errno.h>
-#include "bessel_olver.h"
 #include "gsl_sf_airy.h"
 #include "gsl_sf_pow_int.h"
 #include "gsl_sf_bessel.h"
 
+#include "error.h"
+
+#include "bessel_olver.h"
 
 /* For Chebyshev expansions of the roots as functions of nu,
  * see [G. Nemeth, Mathematical Approximation of Special Functions].
@@ -1097,20 +1099,21 @@ gsl_sf_bessel_zero_Jnu_e(double nu, unsigned int s, gsl_sf_result * result)
   /* CHECK_POINTER(result) */
 
   if(nu <= -1.0) {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EDOM);
+    DOMAIN_ERROR(result);
   }
   else if(s == 0) {
     result->val = 0.0;
     result->err = 0.0;
-    return ( nu == 0.0 ? GSL_EINVAL : GSL_SUCCESS );
+    if (nu == 0.0) {
+      GSL_ERROR ("no zero-th root for nu = 0.0", GSL_EINVAL);
+    }
+    return GSL_SUCCESS;
   }
   else if(nu < 0.0) {
     /* This can be done, I'm just lazy now. */
     result->val = 0.0;
     result->err = 0.0;
-    GSL_ERROR ("error", GSL_EDOM);
+    GSL_ERROR("unimplemented", GSL_EUNIMPL);
   }
   else if(s == 1) {
     /* Chebyshev fits for the first positive zero.

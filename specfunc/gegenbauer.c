@@ -25,6 +25,7 @@
 #include <gsl/gsl_errno.h>
 #include "gsl_sf_gegenbauer.h"
 
+#include "error.h"
 
 /* See: [Thompson, Atlas for Computing Mathematical Functions] */
 
@@ -90,9 +91,7 @@ gsl_sf_gegenpoly_n_e(int n, double lambda, double x, gsl_sf_result * result)
   /* CHECK_POINTER(result) */
 
   if(lambda <= -0.5 || n < 0) {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EDOM);
+    DOMAIN_ERROR(result);
   }
   else if(n == 0) {
     result->val = 1.0;
@@ -147,7 +146,7 @@ gsl_sf_gegenpoly_array(int nmax, double lambda, double x, double * result_array)
   /* CHECK_POINTER(result_array) */
 
   if(lambda <= -0.5 || nmax < 0) {
-    GSL_ERROR ("error", GSL_EDOM);
+    GSL_ERROR("domain error", GSL_EDOM);
   }
 
   /* n == 0 */

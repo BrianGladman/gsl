@@ -23,9 +23,12 @@
 #include <config.h>
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_errno.h>
-#include "bessel.h"
 #include "gsl_sf_pow_int.h"
 #include "gsl_sf_bessel.h"
+
+#include "error.h"
+
+#include "bessel.h"
 
 
 /* i_{l+1}/i_l
@@ -96,9 +99,7 @@ int gsl_sf_bessel_i1_scaled_e(const double x, gsl_sf_result * result)
   /* CHECK_POINTER(result) */
 
   if(ax < 3.0*GSL_DBL_MIN) {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EUNDRFLW);
+    UNDERFLOW_ERROR(result);
   }
   else if(ax < 0.25) {
     const double eax = exp(-ax);
@@ -130,9 +131,7 @@ int gsl_sf_bessel_i2_scaled_e(const double x, gsl_sf_result * result)
   /* CHECK_POINTER(result) */
 
   if(ax < 4.0*GSL_SQRT_DBL_MIN) {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EUNDRFLW);
+    UNDERFLOW_ERROR(result);
   }
   else if(ax < 0.25) {
     const double y = x*x;
@@ -169,9 +168,7 @@ int gsl_sf_bessel_il_scaled_e(const int l, double x, gsl_sf_result * result)
   }
 
   if(l < 0) {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EDOM);
+    DOMAIN_ERROR(result);
   }
   else if(x == 0.0) {
     result->val = 0.0;

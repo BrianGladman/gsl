@@ -28,6 +28,8 @@
 #include <gsl/gsl_errno.h>
 #include "gsl_sf_exp.h"
 #include "gsl_sf_gamma.h"
+
+#include "error.h"
 #include "hyperg.h"
 
 #define SUM_LARGE  (1.0e-5*GSL_DBL_MAX)
@@ -51,9 +53,7 @@ gsl_sf_hyperg_1F1_series_e(const double a, const double b, const double x,
     double u, abs_u;
 
     if(bn == 0.0) {
-      result->val = 0.0;
-      result->err = 0.0;
-      GSL_ERROR ("error", GSL_EDOM);
+      DOMAIN_ERROR(result);
     }
     if(an == 0.0 || n > 1000.0) {
       result->val  = sum_val;
@@ -67,14 +67,14 @@ gsl_sf_hyperg_1F1_series_e(const double a, const double b, const double x,
     if(abs_u > 1.0 && max_abs_del > GSL_DBL_MAX/abs_u) {
       result->val = sum_val;
       result->err = fabs(sum_val);
-      GSL_ERROR ("error", GSL_EOVRFLW);
+      GSL_ERROR ("overflow", GSL_EOVRFLW);
     }
     del *= u;
     sum_val += del;
     if(fabs(sum_val) > SUM_LARGE) {
       result->val = sum_val;
       result->err = fabs(sum_val);
-      GSL_ERROR ("error", GSL_EOVRFLW);
+      GSL_ERROR ("overflow", GSL_EOVRFLW);
     }
 
     abs_del = fabs(del);
@@ -114,9 +114,7 @@ gsl_sf_hyperg_1F1_large_b_e(const double a, const double b, const double x, gsl_
     return GSL_SUCCESS;
   }
   else {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EDOM);
+    DOMAIN_ERROR(result);
   }
 }
 
@@ -158,7 +156,7 @@ gsl_sf_hyperg_U_large_b_e(const double a, const double b, const double x,
       result->val  = M.val;
       result->err  = M.err;
       *ln_multiplier = lnpre_val;
-      GSL_ERROR ("error", GSL_EOVRFLW);
+      GSL_ERROR ("overflow", GSL_EOVRFLW);
     }
     else {
       gsl_sf_result epre;
@@ -208,7 +206,7 @@ gsl_sf_hyperg_U_large_b_e(const double a, const double b, const double x,
       result->err += GSL_DBL_EPSILON * exp(max_lnpre_err) * (fabs(t1*M1.val) + fabs(t2*M2.val));
       result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
       *ln_multiplier = max_lnpre_val;
-      GSL_ERROR ("error", GSL_EOVRFLW);
+      GSL_ERROR ("overflow", GSL_EOVRFLW);
     }
     else {
       double t1 = sgpre1*exp(lnpre1_val);
@@ -256,7 +254,7 @@ gsl_sf_hyperg_2F0_series_e(const double a, const double b, const double x,
     if(abs_u > 1.0 && (max_abs_del > GSL_DBL_MAX/abs_u)) {
       result->val = sum;
       result->err = fabs(sum);
-      GSL_ERROR ("error", GSL_EOVRFLW);
+      GSL_ERROR ("overflow", GSL_EOVRFLW);
     }
 
     del *= u;

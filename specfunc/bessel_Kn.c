@@ -23,11 +23,13 @@
 #include <config.h>
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_errno.h>
-#include "bessel.h"
 #include "gsl_sf_gamma.h"
 #include "gsl_sf_psi.h"
 #include "gsl_sf_bessel.h"
 
+#include "error.h"
+
+#include "bessel.h"
 
 /*-*-*-*-*-*-*-*-*-*-*-* Private Section *-*-*-*-*-*-*-*-*-*-*-*/
 
@@ -105,7 +107,7 @@ int gsl_sf_bessel_Kn_scaled_e(int n, const double x, gsl_sf_result * result)
   /* CHECK_POINTER(result) */
 
   if(x <= 0.0) {
-    GSL_ERROR ("error", GSL_EDOM);
+    DOMAIN_ERROR(result);
   }
   else if(n == 0) {
     return gsl_sf_bessel_K0_scaled_e(x, result);
@@ -167,7 +169,7 @@ int gsl_sf_bessel_Kn_scaled_array(const int nmin, const int nmax, const double x
   if(nmin < 0 || nmax < nmin || x <= 0.0) {
     int j;
     for(j=0; j<=nmax-nmin; j++) result_array[j] = 0.0;
-    GSL_ERROR ("error", GSL_EDOM);
+    GSL_ERROR ("domain error", GSL_EDOM);
   }
   else if(nmax == 0) {
     gsl_sf_result b;
@@ -204,7 +206,7 @@ int gsl_sf_bessel_Kn_scaled_array(const int nmin, const int nmax, const double x
 	 */
         int j;
 	for(j=n; j<=nmax+1; j++) result_array[j-1-nmin] = 0.0;
-        GSL_ERROR ("error", GSL_EOVRFLW);
+        GSL_ERROR ("overflow", GSL_EOVRFLW);
       }
     }
 

@@ -25,6 +25,8 @@
 #include <gsl/gsl_errno.h>
 #include "gsl_sf_bessel.h"
 
+#include "error.h"
+
 #include "chebyshev.h"
 #include "cheb_eval.c"
 
@@ -154,9 +156,7 @@ int gsl_sf_bessel_I1_scaled_e(const double x, gsl_sf_result * result)
     return GSL_SUCCESS;
   }
   else if(y < xmin) {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EUNDRFLW);
+    UNDERFLOW_ERROR(result);
   }
   else if(y < x_small) {
     result->val = 0.5*x;
@@ -215,9 +215,7 @@ int gsl_sf_bessel_I1_e(const double x, gsl_sf_result * result)
     return GSL_SUCCESS;
   }
   else if(y < xmin) {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EUNDRFLW);
+    UNDERFLOW_ERROR(result);
   }
   else if(y < x_small) {
     result->val = 0.5*x;
@@ -242,9 +240,7 @@ int gsl_sf_bessel_I1_e(const double x, gsl_sf_result * result)
     return GSL_SUCCESS;
   }
   else {
-    result->val = 0.0; /* FIXME: should be Inf */
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EOVRFLW);
+    OVERFLOW_ERROR(result);
   }
 }
 

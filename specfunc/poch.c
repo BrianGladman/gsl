@@ -29,6 +29,7 @@
 #include "gsl_sf_psi.h"
 #include "gsl_sf_gamma.h"
 
+#include "error.h"
 
 static const double bern[21] = {
    0.0   /* no element 0 */,  
@@ -283,9 +284,7 @@ gsl_sf_lnpoch_e(const double a, const double x, gsl_sf_result * result)
   /* CHECK_POINTER(result) */
 
   if(a <= 0.0 || a+x <= 0.0) {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EDOM);
+    DOMAIN_ERROR(result);
   }
   else if(x == 0.0) {
     result->val = 1.0;
@@ -304,9 +303,7 @@ gsl_sf_lnpoch_sgn_e(const double a, const double x,
 {
   if(a == 0.0 || a+x == 0.0) {
     *sgn = 0.0;
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EDOM);
+    DOMAIN_ERROR(result);
   }
   else if(x == 0.0) {
     *sgn = 1.0;
@@ -324,10 +321,8 @@ gsl_sf_lnpoch_sgn_e(const double a, const double x,
     double sin_1 = sin(M_PI * (1.0 - a));
     double sin_2 = sin(M_PI * (1.0 - a - x));
     if(sin_1 == 0.0 || sin_2 == 0.0) {
-      result->val = 0.0;
-      result->err = 0.0;
       *sgn = 0.0;
-      GSL_ERROR ("error", GSL_EDOM);
+      DOMAIN_ERROR(result);
     }
     else {
       gsl_sf_result lnp_pos;
@@ -357,10 +352,8 @@ gsl_sf_lnpoch_sgn_e(const double a, const double x,
       return GSL_SUCCESS;
     }
     else if(stat_apn == GSL_EDOM || stat_a == GSL_EDOM){
-      result->val = 0.0;
-      result->err = 0.0;
       *sgn = 0.0;
-      GSL_ERROR ("error", GSL_EDOM);
+      DOMAIN_ERROR(result);
     }
     else {
       result->val = 0.0;
@@ -407,9 +400,7 @@ gsl_sf_pochrel_e(const double a, const double x, gsl_sf_result * result)
     double sgn;
     int stat_poch = gsl_sf_lnpoch_sgn_e(a, x, &lnpoch, &sgn);
     if(lnpoch.val > GSL_LOG_DBL_MAX) {
-      result->val = 0.0;
-      result->err = 0.0;
-      GSL_ERROR ("error", GSL_EOVRFLW);
+      OVERFLOW_ERROR(result);
     }
     else {
       const double el = exp(lnpoch.val);

@@ -26,6 +26,7 @@
 #include <gsl/gsl_precision.h>
 #include "gsl_sf_ellint.h"
 
+#include "error.h"
 
 /*-*-*-*-*-*-*-*-*-*-*-* Private Section *-*-*-*-*-*-*-*-*-*-*-*/
 
@@ -80,9 +81,7 @@ gsl_sf_ellint_RC_e(double x, double y, gsl_mode_t mode, gsl_sf_result * result)
   const double prec   = gsl_prec_eps[goal];
 
   if(x < 0.0 || y < 0.0 || x + y < lolim) {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EDOM);
+    DOMAIN_ERROR(result);
   }
   else if(GSL_MAX(x, y) < uplim) { 
     const double c1 = 1.0 / 7.0;
@@ -104,9 +103,7 @@ gsl_sf_ellint_RC_e(double x, double y, gsl_mode_t mode, gsl_sf_result * result)
     return GSL_SUCCESS;
   }
   else {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EDOM);
+    DOMAIN_ERROR(result);
   }
 }
 
@@ -121,9 +118,7 @@ gsl_sf_ellint_RD_e(double x, double y, double z, gsl_mode_t mode, gsl_sf_result 
   const double uplim = pow(0.1*errtol/GSL_DBL_MIN, 2.0/3.0);
 
   if(GSL_MIN(x,y) < 0.0 || GSL_MIN(x+y,z) < lolim) {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EDOM);
+    DOMAIN_ERROR(result);
   }
   else if(locMAX3(x,y,z) < uplim) {
     const double c1 = 3.0 / 14.0;
@@ -168,9 +163,7 @@ gsl_sf_ellint_RD_e(double x, double y, double z, gsl_mode_t mode, gsl_sf_result 
     return GSL_SUCCESS;
   }
   else {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EDOM);
+    DOMAIN_ERROR(result);
   }
 }
 
@@ -185,14 +178,10 @@ gsl_sf_ellint_RF_e(double x, double y, double z, gsl_mode_t mode, gsl_sf_result 
   const double prec   = gsl_prec_eps[goal];
 
   if(x < 0.0 || y < 0.0 || z < 0.0) {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EDOM);
+    DOMAIN_ERROR(result);
   }
   else if(x+y < lolim || x+z < lolim || y+z < lolim) {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EDOM);
+    DOMAIN_ERROR(result);
   }
   else if(locMAX3(x,y,z) < uplim) { 
     const double c1 = 1.0 / 24.0;
@@ -227,9 +216,7 @@ gsl_sf_ellint_RF_e(double x, double y, double z, gsl_mode_t mode, gsl_sf_result 
     return GSL_SUCCESS;
   }
   else {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EDOM);
+    DOMAIN_ERROR(result);
   }
 }
 
@@ -244,14 +231,10 @@ gsl_sf_ellint_RJ_e(double x, double y, double z, double p, gsl_mode_t mode, gsl_
   const double uplim = 0.3 * pow(0.2 * GSL_DBL_MAX, 1.0/3.0);
 
   if(x < 0.0 || y < 0.0 || z < 0.0) {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EDOM);
+    DOMAIN_ERROR(result);
   }
   else if(x + y < lolim || x + z < lolim || y + z < lolim || p < lolim) {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EDOM);
+    DOMAIN_ERROR(result);
   }
   else if(locMAX4(x,y,z,p) < uplim) {
     const double c1 = 3.0 / 14.0;
@@ -313,9 +296,7 @@ gsl_sf_ellint_RJ_e(double x, double y, double z, double p, gsl_mode_t mode, gsl_
     return GSL_SUCCESS;
   }
   else {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EDOM);
+    DOMAIN_ERROR(result);
   }
 }
 
@@ -405,9 +386,7 @@ int
 gsl_sf_ellint_Kcomp_e(double k, gsl_mode_t mode, gsl_sf_result * result)
 {
   if(k*k >= 1.0) {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EDOM);
+    DOMAIN_ERROR(result);
   }
   else if(k*k >= 1.0 - GSL_SQRT_DBL_EPSILON) {
     /* [Abramowitz+Stegun, 17.3.33] */
@@ -431,9 +410,7 @@ int
 gsl_sf_ellint_Ecomp_e(double k, gsl_mode_t mode, gsl_sf_result * result)
 {
   if(k*k >= 1.0) {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EDOM);
+    DOMAIN_ERROR(result);
   }
   else if(k*k >= 1.0 - GSL_SQRT_DBL_EPSILON) {
     /* [Abramowitz+Stegun, 17.3.36] */

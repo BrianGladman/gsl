@@ -23,13 +23,15 @@
 #include <config.h>
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_errno.h>
-#include "hyperg.h"
 #include "gsl_sf_elementary.h"
 #include "gsl_sf_exp.h"
 #include "gsl_sf_bessel.h"
 #include "gsl_sf_gamma.h"
 #include "gsl_sf_laguerre.h"
 #include "gsl_sf_hyperg.h"
+
+#include "error.h"
+#include "hyperg.h"
 
 #define _1F1_INT_THRESHOLD (100.0*GSL_DBL_EPSILON)
 
@@ -70,9 +72,7 @@ hyperg_1F1_asymp_negx(const double a, const double b, const double x,
     }
   }
   else {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EDOM);
+    DOMAIN_ERROR(result);
   }
 }
 
@@ -115,9 +115,7 @@ hyperg_1F1_asymp_posx(const double a, const double b, const double x,
     }
   }
   else {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EDOM);
+    DOMAIN_ERROR(result);
   }
 }
 
@@ -276,9 +274,7 @@ int
 hyperg_1F1_1_int(const int b, const double x, gsl_sf_result * result)
 {
   if(b < 1) {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EDOM);
+    DOMAIN_ERROR(result);
   }
   else if(b == 1) {
     return gsl_sf_exp_e(x, result);
@@ -308,9 +304,7 @@ hyperg_1F1_1(const double b, const double x, gsl_sf_result * result)
   double ib = floor(b + 0.1);
 
   if(b < 1.0) {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EDOM);
+    DOMAIN_ERROR(result);
   }
   else if(b == 1.0) {
     return gsl_sf_exp_e(x, result);
@@ -1007,9 +1001,7 @@ hyperg_1F1_ab_posint(const int a, const int b, const double x, gsl_sf_result * r
         return GSL_SUCCESS;
       }
       else {
-    	result->val = 0.0;
-	result->err = 0.0;
-    	GSL_ERROR ("error", GSL_EOVRFLW);
+        OVERFLOW_ERROR(result);
       }
     }
     else {
@@ -1130,9 +1122,7 @@ hyperg_1F1_a_negint_poly(const int a, const double b, const double x, gsl_sf_res
       double t = (a+k)/(b+k) * (x/(k+1));
       double r = t + 1.0/poly;
       if(r > 0.9*GSL_DBL_MAX/poly) {
-        result->val = 0.0; /* FIXME: should be Inf */
-	result->err = 0.0;
-	GSL_ERROR ("error", GSL_EOVRFLW);
+        OVERFLOW_ERROR(result);
       }
       else {
         poly *= r;  /* P_n = 1 + t_n P_{n-1} */
@@ -1708,9 +1698,7 @@ gsl_sf_hyperg_1F1_int_e(const int a, const int b, const double x, gsl_sf_result 
     return gsl_sf_exp_e(x, result);
   }
   else if(b == 0) {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EDOM);
+    DOMAIN_ERROR(result);
   }
   else if(a == 0) {
     result->val = 1.0;
@@ -1719,9 +1707,7 @@ gsl_sf_hyperg_1F1_int_e(const int a, const int b, const double x, gsl_sf_result 
   }
   else if(b < 0 && (a < b || a > 0)) {
     /* Standard domain error due to singularity. */
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EDOM);
+    DOMAIN_ERROR(result);
   }
   else if(x > 100.0  && GSL_MAX_DBL(1.0,fabs(b-a))*GSL_MAX_DBL(1.0,fabs(1-a)) < 0.5 * x) {
     /* x -> +Inf asymptotic */
@@ -1780,9 +1766,7 @@ gsl_sf_hyperg_1F1_e(const double a, const double b, const double x,
     return GSL_SUCCESS;
   }
   else if(b == 0.0) {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EDOM);
+    DOMAIN_ERROR(result);
   }
   else if(a == 0.0) {
     result->val = 1.0;
@@ -1838,9 +1822,7 @@ gsl_sf_hyperg_1F1_e(const double a, const double b, const double x,
     /* Standard domain error due to
      * uncancelled singularity.
      */
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EDOM);
+    DOMAIN_ERROR(result);
   }
   else if(a_neg_integer) {
     return hyperg_1F1_a_negint_lag((int)rinta, b, x, result);
@@ -1949,8 +1931,8 @@ gsl_sf_hyperg_1F1_e(const double a, const double b, const double x,
 	return GSL_SUCCESS;
       }
       else {
-        *result = 0.0;  /* FIXME: should be Inf */
-	GSL_ERROR ("error", GSL_EOVRFLW);
+        *result = GSL_POSINF; 
+	GSL_ERROR ("overflow", GSL_EOVRFLW);
       }
     }
     else if(stat_F != GSL_SUCCESS) {

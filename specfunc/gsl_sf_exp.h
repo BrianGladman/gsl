@@ -141,14 +141,14 @@ extern inline
 int gsl_sf_exp_e(const double x, gsl_sf_result * result)
 {
   if(x > GSL_LOG_DBL_MAX) {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EOVRFLW);
+    result->val = GSL_POSINF;
+    result->err = GSL_POSINF;
+    GSL_ERROR ("overflow", GSL_EOVRFLW);
   }
   else if(x < GSL_LOG_DBL_MIN) {
     result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EUNDRFLW);
+    result->err = GSL_DBL_MIN;
+    GSL_ERROR ("underflow", GSL_EUNDRFLW);
   }
   else {
     result->val = exp(x);

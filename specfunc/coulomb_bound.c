@@ -29,6 +29,7 @@
 #include "gsl_sf_laguerre.h"
 #include "gsl_sf_coulomb.h"
 
+#include "error.h"
 #include "check.h"
 
 /* normalization for hydrogenic wave functions */
@@ -67,9 +68,7 @@ gsl_sf_hydrogenicR_1_e(const double Z, const double r, gsl_sf_result * result)
     return GSL_SUCCESS;
   }
   else {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EDOM);
+    DOMAIN_ERROR(result);
   }
 }
 
@@ -80,9 +79,7 @@ gsl_sf_hydrogenicR_e(const int n, const int l,
                         gsl_sf_result * result)
 {
   if(n < 1 || l > n-1 || Z <= 0.0 || r < 0.0) {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EDOM);
+    DOMAIN_ERROR(result);
   }
   else {
     double A = 2.0*Z/n;

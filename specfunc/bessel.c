@@ -30,6 +30,9 @@
 #include "gsl_sf_exp.h"
 #include "gsl_sf_gamma.h"
 #include "gsl_sf_trig.h"
+
+#include "error.h"
+
 #include "bessel_amp_phase.h"
 #include "bessel_temme.h"
 #include "bessel.h"
@@ -98,9 +101,7 @@ gsl_sf_bessel_IJ_taylor_e(const double nu, const double x,
   /* CHECK_POINTER(result) */
 
   if(nu < 0.0 || x < 0.0) {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EDOM);
+    DOMAIN_ERROR(result);
   }
   else if(x == 0.0) {
     if(nu == 0.0) {

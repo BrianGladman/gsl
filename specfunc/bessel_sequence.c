@@ -60,7 +60,7 @@ gsl_sf_bessel_sequence_Jnu_e(double nu, gsl_mode_t mode, size_t size, double * v
   /* CHECK_POINTER(v) */
 
   if(nu < 0.0) {
-    GSL_ERROR ("error", GSL_EDOM);
+    GSL_ERROR ("domain error", GSL_EDOM);
   }
   else if(size == 0) {
     GSL_ERROR ("error", GSL_EINVAL);

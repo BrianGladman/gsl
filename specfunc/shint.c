@@ -25,6 +25,8 @@
 #include <gsl/gsl_errno.h>
 #include "gsl_sf_expint.h"
 
+#include "error.h"
+
 #include "chebyshev.h"
 #include "cheb_eval.c"
 
@@ -84,10 +86,10 @@ int gsl_sf_Shi_e(const double x, gsl_sf_result * result)
     result->err  = 0.5*(result_Ei.err + result_E1.err);
     result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
     if(status_Ei == GSL_EUNDRFLW && status_E1 == GSL_EUNDRFLW) {
-      GSL_ERROR ("error", GSL_EUNDRFLW);
+      GSL_ERROR ("underflow", GSL_EUNDRFLW);
     }
     else if(status_Ei == GSL_EOVRFLW || status_E1 == GSL_EOVRFLW) {
-      GSL_ERROR ("error", GSL_EOVRFLW);
+      GSL_ERROR ("overflow", GSL_EOVRFLW);
     }
     else {
       return GSL_SUCCESS;
@@ -103,19 +105,13 @@ int gsl_sf_Chi_e(const double x, gsl_sf_result * result)
   int status_Ei = gsl_sf_expint_Ei_e(x, &result_Ei);
   int status_E1 = gsl_sf_expint_E1_e(x, &result_E1);
   if(status_Ei == GSL_EDOM || status_E1 == GSL_EDOM) {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EDOM);
+    DOMAIN_ERROR(result);
   }
   else if(status_Ei == GSL_EUNDRFLW && status_E1 == GSL_EUNDRFLW) {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EUNDRFLW);
+    UNDERFLOW_ERROR(result);
   }
   else if(status_Ei == GSL_EOVRFLW || status_E1 == GSL_EOVRFLW) {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EOVRFLW);
+    OVERFLOW_ERROR(result);
   }
   else {
     result->val  = 0.5 * (result_Ei.val - result_E1.val);

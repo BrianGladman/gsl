@@ -23,12 +23,14 @@
 #include <config.h>
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_errno.h>
-#include "bessel.h"
 #include "gsl_sf_pow_int.h"
 #include "gsl_sf_gamma.h"
 #include "gsl_sf_bessel.h"
 
+#include "error.h"
 #include "check.h"
+
+#include "bessel.h"
 
 /*-*-*-*-*-*-*-*-*-*-*-* Private Section *-*-*-*-*-*-*-*-*-*-*-*/
 
@@ -44,9 +46,7 @@ static int bessel_kl_scaled_small_x(int l, const double x, gsl_sf_result * resul
   int stat_df = gsl_sf_doublefact_e((unsigned int) (2*l-1), &num_fact);
 
   if(stat_df != GSL_SUCCESS || den == 0.0) {
-    result->val = 0.0; /* FIXME: should be Inf */
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EOVRFLW);
+    OVERFLOW_ERROR(result);
   }
   else {
     const int lmax = 50;
@@ -87,9 +87,7 @@ int gsl_sf_bessel_k0_scaled_e(const double x, gsl_sf_result * result)
   /* CHECK_POINTER(result) */
 
   if(x <= 0.0) {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EDOM);
+    DOMAIN_ERROR(result);
   }
   else {
     result->val = M_PI/(2.0*x);
@@ -105,14 +103,10 @@ int gsl_sf_bessel_k1_scaled_e(const double x, gsl_sf_result * result)
   /* CHECK_POINTER(result) */
 
   if(x <= 0.0) {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EDOM);
+    DOMAIN_ERROR(result);
   }
   else if(x < (M_SQRTPI+1.0)/(M_SQRT2*GSL_SQRT_DBL_MAX)) {
-    result->val = 0.0;  /* FIXME: should be Inf */
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EOVRFLW);
+    OVERFLOW_ERROR(result);
   }
   else {
     result->val = M_PI/(2.0*x) * (1.0 + 1.0/x);
@@ -128,14 +122,10 @@ int gsl_sf_bessel_k2_scaled_e(const double x, gsl_sf_result * result)
   /* CHECK_POINTER(result) */
 
   if(x <= 0.0) {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EDOM);
+    DOMAIN_ERROR(result);
   }
   else if(x < 2.0/GSL_ROOT3_DBL_MAX) {
-    result->val = 0.0; /* FIXME: should be Inf */
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EOVRFLW);
+    OVERFLOW_ERROR(result);
   }
   else {
     result->val = M_PI/(2.0*x) * (1.0 + 3.0/x * (1.0 + 1.0/x));
@@ -149,7 +139,7 @@ int gsl_sf_bessel_k2_scaled_e(const double x, gsl_sf_result * result)
 int gsl_sf_bessel_kl_scaled_e(int l, const double x, gsl_sf_result * result)
 {
   if(l < 0 || x <= 0.0) {
-    GSL_ERROR ("error", GSL_EDOM);
+    DOMAIN_ERROR(result);
   }
   else if(l == 0) {
     return gsl_sf_bessel_k0_scaled_e(x, result);
@@ -203,7 +193,7 @@ int gsl_sf_bessel_kl_scaled_e(int l, const double x, gsl_sf_result * result)
 int gsl_sf_bessel_kl_scaled_array(const int lmax, const double x, double * result_array)
 {
   if(lmax < 1 || x <= 0.0) {
-    GSL_ERROR ("error", GSL_EDOM);
+    GSL_ERROR("domain error", GSL_EDOM);
   }
   else {
     int ell;

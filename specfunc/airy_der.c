@@ -26,6 +26,8 @@
 #include "gsl_sf_exp.h"
 #include "gsl_sf_airy.h"
 
+#include "error.h"
+
 #include "chebyshev.h"
 #include "cheb_eval_mode.c"
 
@@ -730,9 +732,7 @@ gsl_sf_airy_Ai_deriv_e(const double x, gsl_mode_t mode, gsl_sf_result * result)
     return GSL_ERROR_SELECT_2(stat_e, stat_a);
   }
   else {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EUNDRFLW);
+    UNDERFLOW_ERROR(result);
   }
 }
 
@@ -860,9 +860,7 @@ gsl_sf_airy_Bi_deriv_e(const double x, gsl_mode_t mode, gsl_sf_result * result)
     return GSL_ERROR_SELECT_2(stat_e, stat_b);
   }
   else {
-    result->val = 0.0; /* FIXME: should be Inf */
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EOVRFLW);
+    OVERFLOW_ERROR(result);
   }
 }
 

@@ -23,9 +23,10 @@
 #include <config.h>
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_errno.h>
-#include "hyperg.h"
 #include "gsl_sf_hyperg.h"
 
+#include "error.h"
+#include "hyperg.h"
 
 int
 gsl_sf_hyperg_2F0_e(const double a, const double b, const double x, gsl_sf_result * result)
@@ -49,9 +50,7 @@ gsl_sf_hyperg_2F0_e(const double a, const double b, const double x, gsl_sf_resul
     /* Use asymptotic series. ??
      */
     /* return hyperg_2F0_series(a, b, x, -1, result, &prec); */
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EDOM);
+    DOMAIN_ERROR(result);
   }
 }
 

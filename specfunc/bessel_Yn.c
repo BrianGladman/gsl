@@ -23,13 +23,15 @@
 #include <config.h>
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_errno.h>
-#include "bessel.h"
-#include "bessel_amp_phase.h"
-#include "bessel_olver.h"
 #include "gsl_sf_gamma.h"
 #include "gsl_sf_psi.h"
 #include "gsl_sf_bessel.h"
 
+#include "error.h"
+
+#include "bessel.h"
+#include "bessel_amp_phase.h"
+#include "bessel_olver.h"
 
 /*-*-*-*-*-*-*-*-*-*-*-* Private Section *-*-*-*-*-*-*-*-*-*-*-*/
 
@@ -121,9 +123,7 @@ gsl_sf_bessel_Yn_e(int n, const double x, gsl_sf_result * result)
   }
   else {
     if(x <= 0.0) {
-      result->val = 0.0;
-      result->err = 0.0;
-      GSL_ERROR ("error", GSL_EDOM);
+      DOMAIN_ERROR(result);
     }
     if(x < 5.0) {
       int status = bessel_Yn_small_x(n, x, result);

@@ -26,6 +26,8 @@
 #include "gsl_sf_log.h"
 #include "gsl_sf_trig.h"
 
+#include "error.h"
+
 #include "chebyshev.h"
 #include "cheb_eval.c"
 
@@ -331,9 +333,7 @@ gsl_sf_hypot_e(const double x, const double y, gsl_sf_result * result)
       return GSL_SUCCESS;
     }
     else {
-      result->val = 0.0; /* FIXME: should be Inf */
-      result->err = 0.0;
-      GSL_ERROR ("error", GSL_EOVRFLW);
+      OVERFLOW_ERROR(result);
     }
   }
 }
@@ -367,11 +367,7 @@ gsl_sf_complex_sin_e(const double zr, const double zi,
     return GSL_SUCCESS;
   }
   else {
-    szr->val = 0.0;
-    szi->val = 0.0;
-    szr->err = 0.0;
-    szi->err = 0.0;
-    GSL_ERROR ("error", GSL_EOVRFLW);
+    OVERFLOW_ERROR_2(szr, szi);
   }
 }
 
@@ -404,11 +400,7 @@ gsl_sf_complex_cos_e(const double zr, const double zi,
     return GSL_SUCCESS;
   }
   else {
-    czr->val = 0.0;
-    czi->val = 0.0;
-    czr->err = 0.0;
-    czi->err = 0.0;
-    GSL_ERROR ("error", GSL_EOVRFLW);
+    OVERFLOW_ERROR_2(czr,czi);
   }
 }
 
@@ -438,11 +430,7 @@ gsl_sf_complex_logsin_e(const double zr, const double zi,
     gsl_sf_complex_sin_e(zr, zi, &sin_r, &sin_i); /* ok by construction */
     status = gsl_sf_complex_log_e(sin_r.val, sin_i.val, lszr, lszi);
     if(status == GSL_EDOM) {
-      lszr->val = 0.0;
-      lszi->val = 0.0;
-      lszr->err = 0.0;
-      lszi->err = 0.0;
-      GSL_ERROR ("error", GSL_EDOM);
+      DOMAIN_ERROR_2(lszr, lszi);
     }
   }
   return gsl_sf_angle_restrict_symm_e(&(lszi->val));
@@ -455,9 +443,7 @@ gsl_sf_lnsinh_e(const double x, gsl_sf_result * result)
   /* CHECK_POINTER(result) */
 
   if(x <= 0.0) {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EDOM);
+    DOMAIN_ERROR(result);
   }
   else if(fabs(x) < 1.0) {
     double eps;
@@ -540,9 +526,7 @@ gsl_sf_rect_to_polar(const double x, const double y,
     return stat_h;
   }
   else {
-    theta->val = 0.0;
-    theta->err = 0.0;
-    GSL_ERROR ("error", GSL_EDOM);
+    DOMAIN_ERROR(theta);
   }
 }
 

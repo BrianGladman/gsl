@@ -141,7 +141,7 @@ gsl_sf_bessel_Jn_array(int nmin, int nmax, double x, double * result_array)
     for(n=nmax; n>=nmin; n--) {
       result_array[n-nmin] = 0.0;
     }
-    GSL_ERROR ("error", GSL_EDOM);
+    GSL_ERROR ("domain error", GSL_EDOM);
   }
   else if(x == 0.0) {
     int n;

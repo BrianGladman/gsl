@@ -26,6 +26,7 @@
 #include "gsl_sf_trig.h"
 #include "gsl_sf_airy.h"
 
+#include "error.h"
 #include "check.h"
 
 #include "chebyshev.h"
@@ -777,9 +778,7 @@ int gsl_sf_airy_Bi_e(const double x, gsl_mode_t mode, gsl_sf_result * result)
     const double s = exp(y);
 
     if(y > GSL_LOG_DBL_MAX - 1.0) {
-      result->val = 0.0; /* FIXME: should be Inf */
-      result->err = 0.0;
-      GSL_ERROR ("error", GSL_EOVRFLW);
+      OVERFLOW_ERROR(result);
     }
     else {
       gsl_sf_result result_bie;

@@ -25,6 +25,8 @@
 #include <gsl/gsl_errno.h>
 #include "gsl_sf_expint.h"
 
+#include "error.h"
+
 #include "chebyshev.h"
 #include "cheb_eval.c"
 
@@ -291,9 +293,7 @@ int gsl_sf_expint_E1_e(const double x, gsl_sf_result * result)
   /* CHECK_POINTER(result) */
 
   if(x < -xmax) {
-    result->val = 0.0; /* FIXME: should be Inf */
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EOVRFLW);
+    OVERFLOW_ERROR(result);
   }
   else if(x <= -10.0) {
     const double s = exp(-x)/x;
@@ -323,9 +323,7 @@ int gsl_sf_expint_E1_e(const double x, gsl_sf_result * result)
     return GSL_SUCCESS;
   }
   else if(x == 0.0) {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EDOM);
+    DOMAIN_ERROR(result);
   }
   else if(x <= 1.0) {
     const double ln_term = -log(fabs(x));
@@ -355,9 +353,7 @@ int gsl_sf_expint_E1_e(const double x, gsl_sf_result * result)
     return GSL_SUCCESS;
   }
   else {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EUNDRFLW);
+    UNDERFLOW_ERROR(result);
   }
 }
 
@@ -370,9 +366,7 @@ int gsl_sf_expint_E2_e(const double x, gsl_sf_result * result)
   /* CHECK_POINTER(result) */
 
   if(x < -xmax) {
-    result->val = 0.0; /* FIXME: should be Inf */
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EOVRFLW);
+    OVERFLOW_ERROR(result);
   }
   else if(x < 100.0) {
     const double ex = exp(-x);
@@ -405,9 +399,7 @@ int gsl_sf_expint_E2_e(const double x, gsl_sf_result * result)
     return GSL_SUCCESS;
   }
   else {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EUNDRFLW);
+    UNDERFLOW_ERROR(result);
   }
 }
 

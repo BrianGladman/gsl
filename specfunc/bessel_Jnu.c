@@ -23,11 +23,13 @@
 #include <config.h>
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_errno.h>
+#include "gsl_sf_bessel.h"
+
+#include "error.h"
+
 #include "bessel.h"
 #include "bessel_olver.h"
 #include "bessel_temme.h"
-#include "gsl_sf_bessel.h"
-
 
 
 /* Evaluate at large enough nu to apply asymptotic
@@ -78,9 +80,7 @@ gsl_sf_bessel_Jnu_e(const double nu, const double x, gsl_sf_result * result)
   /* CHECK_POINTER(result) */
 
   if(x < 0.0 || nu < 0.0) {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EDOM);
+    DOMAIN_ERROR(result);
   }
   else if(x == 0.0) {
     if(nu == 0.0) {

@@ -25,6 +25,7 @@
 #include <gsl/gsl_errno.h>
 #include "gsl_sf_dawson.h"
 
+#include "error.h"
 #include "chebyshev.h"
 #include "cheb_eval.c"
 
@@ -266,9 +267,7 @@ gsl_sf_dawson_e(double x, gsl_sf_result * result)
     return GSL_SUCCESS;
   }
   else {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EUNDRFLW);
+    UNDERFLOW_ERROR(result);
   }
 }
 

@@ -23,11 +23,14 @@
 #include <config.h>
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_errno.h>
-#include "bessel.h"
-#include "bessel_temme.h"
 #include "gsl_sf_exp.h"
 #include "gsl_sf_gamma.h"
 #include "gsl_sf_bessel.h"
+
+#include "error.h"
+
+#include "bessel.h"
+#include "bessel_temme.h"
 
 
 /*-*-*-*-*-*-*-*-*-*-*-* Functions with Error Codes *-*-*-*-*-*-*-*-*-*-*-*/
@@ -38,9 +41,7 @@ gsl_sf_bessel_Inu_scaled_e(double nu, double x, gsl_sf_result * result)
   /* CHECK_POINTER(result) */
 
   if(x < 0.0 || nu < 0.0) {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EDOM);
+    DOMAIN_ERROR(result);
   }
   else if(x*x < 10.0*(nu+1.0)) {
     gsl_sf_result b;

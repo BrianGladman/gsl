@@ -23,11 +23,13 @@
 #include <config.h>
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_errno.h>
-#include "bessel.h"
-#include "bessel_amp_phase.h"
 #include "gsl_sf_trig.h"
 #include "gsl_sf_bessel.h"
 
+#include "error.h"
+
+#include "bessel.h"
+#include "bessel_amp_phase.h"
 #include "cheb_eval.c"
 
 /*-*-*-*-*-*-*-*-*-*-*-* Private Section *-*-*-*-*-*-*-*-*-*-*-*/
@@ -79,14 +81,10 @@ int gsl_sf_bessel_Y1_e(const double x, gsl_sf_result * result)
   /* CHECK_POINTER(result) */
 
   if(x <= 0.0) {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EDOM);
+    DOMAIN_ERROR(result);
   }
   else if(x < xmin) {
-    result->val = 0.0; /* FIXME: should be Inf */
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EOVRFLW);
+    OVERFLOW_ERROR(result);
   }
   else if(x < x_small) {
     const double lnterm = log(0.5*x);
@@ -125,9 +123,7 @@ int gsl_sf_bessel_Y1_e(const double x, gsl_sf_result * result)
     return GSL_ERROR_SELECT_3(stat_ca, stat_ct, stat_cp);
   }
   else {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EUNDRFLW);
+    UNDERFLOW_ERROR(result);
   }
 }
 

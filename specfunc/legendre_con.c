@@ -24,7 +24,6 @@
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_poly.h>
-#include "legendre.h"
 #include "gsl_sf_exp.h"
 #include "gsl_sf_trig.h"
 #include "gsl_sf_gamma.h"
@@ -33,6 +32,9 @@
 #include "gsl_sf_bessel.h"
 #include "gsl_sf_hyperg.h"
 #include "gsl_sf_legendre.h"
+
+#include "error.h"
+#include "legendre.h"
 
 #define Root_2OverPi_  0.797884560802865355879892
 #define locEPS         (1000.0*GSL_DBL_EPSILON)
@@ -766,9 +768,7 @@ gsl_sf_conicalP_0_e(const double lambda, const double x, gsl_sf_result * result)
   /* CHECK_POINTER(result) */
 
   if(x <= -1.0) {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EDOM);
+    DOMAIN_ERROR(result);
   }
   else if(x == 1.0) {
     result->val = 1.0;
@@ -869,9 +869,7 @@ gsl_sf_conicalP_1_e(const double lambda, const double x, gsl_sf_result * result)
   /* CHECK_POINTER(result) */
 
   if(x <= -1.0) {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EDOM);
+    DOMAIN_ERROR(result);
   }
   else if(lambda == 0.0) {
     gsl_sf_result K, E;
@@ -1016,9 +1014,7 @@ int gsl_sf_conicalP_half_e(const double lambda, const double x,
   /* CHECK_POINTER(result) */
 
   if(x <= -1.0) {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EDOM);
+    DOMAIN_ERROR(result);
   }
   else if(x < 1.0) {
     double err_amp = 1.0 + 1.0/(GSL_DBL_EPSILON + fabs(1.0-fabs(x)));
@@ -1061,9 +1057,7 @@ int gsl_sf_conicalP_mhalf_e(const double lambda, const double x, gsl_sf_result *
   /* CHECK_POINTER(result) */
 
   if(x <= -1.0) {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EDOM);
+    DOMAIN_ERROR(result);
   }
   else if(x < 1.0) {
     double ac  = acos(x);
@@ -1120,9 +1114,7 @@ int gsl_sf_conicalP_sph_reg_e(const int l, const double lambda,
   /* CHECK_POINTER(result) */
 
   if(x <= -1.0 || l < -1) {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EDOM);
+    DOMAIN_ERROR(result);
   }
   else if(l == -1) {
     return gsl_sf_conicalP_half_e(lambda, x, result);
@@ -1238,9 +1230,7 @@ int gsl_sf_conicalP_cyl_reg_e(const int m, const double lambda,
   /* CHECK_POINTER(result) */
 
   if(x <= -1.0 || m < -1) {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EDOM);
+    DOMAIN_ERROR(result);
   }
   else if(m == -1) {
     return gsl_sf_conicalP_1_e(lambda, x, result);

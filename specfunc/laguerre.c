@@ -27,6 +27,7 @@
 #include "gsl_sf_gamma.h"
 #include "gsl_sf_laguerre.h"
 
+#include "error.h"
 
 /*-*-*-*-*-*-*-*-*-*-*-* Private Section *-*-*-*-*-*-*-*-*-*-*-*/
 
@@ -93,9 +94,7 @@ laguerre_n_cp(const int n, const double a, const double x, gsl_sf_result * resul
     double t = (-n+k)/(a+1.0+k) * (x/(k+1));
     double r = t + 1.0/poly_1F1_val;
     if(r > 0.9*GSL_DBL_MAX/poly_1F1_val) {
-      result->val = 0.0; /* FIXME: should be Inf */
-      result->err = 0.0;
-      GSL_ERROR ("error", GSL_EOVRFLW);
+      OVERFLOW_ERROR(result);
     }
     else {
       /* Collect the Horner terms. */
@@ -228,9 +227,7 @@ int gsl_sf_laguerre_n_e(const int n, const double a, const double x,
   /* CHECK_POINTER(result) */
 
   if(n < 0) {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EDOM);
+    DOMAIN_ERROR(result);
   }
   else if(n == 0) {
     result->val = 1.0;

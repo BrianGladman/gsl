@@ -25,6 +25,7 @@
 #include <gsl/gsl_errno.h>
 #include "gsl_sf_transport.h"
 
+#include "error.h"
 #include "check.h"
 
 #include "chebyshev.h"
@@ -175,9 +176,7 @@ gsl_sf_transport_2_e(const double x, gsl_sf_result * result)
   /* CHECK_POINTER(result) */
 
   if(x < 0.0) {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EDOM);
+    DOMAIN_ERROR(result);
   }
   else if(x < 3.0*GSL_SQRT_DBL_EPSILON) {
     result->val = x;
@@ -247,9 +246,7 @@ gsl_sf_transport_3_e(const double x, gsl_sf_result * result)
   /* CHECK_POINTER(result) */
 
   if(x < 0.0) {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EDOM);
+    DOMAIN_ERROR(result);
   }
   else if(x == 0.0) {
     result->val = 0.0;
@@ -326,9 +323,7 @@ gsl_sf_transport_4_e(const double x, gsl_sf_result * result)
   /* CHECK_POINTER(result) */
 
   if(x < 0.0) {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EDOM);
+    DOMAIN_ERROR(result);
   }
   else if(x == 0.0) {
     result->val = 0.0;
@@ -405,9 +400,7 @@ gsl_sf_transport_5_e(const double x, gsl_sf_result * result)
   /* CHECK_POINTER(result) */
 
   if(x < 0.0) {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EDOM);
+    DOMAIN_ERROR(result);
   }
   else if(x == 0.0) {
     result->val = 0.0;

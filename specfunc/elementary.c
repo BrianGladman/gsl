@@ -25,6 +25,7 @@
 #include <gsl/gsl_errno.h>
 #include "gsl_sf_elementary.h"
 
+#include "error.h"
 #include "check.h"
 
 int
@@ -58,9 +59,7 @@ gsl_sf_multiply_e(const double x, const double y, gsl_sf_result * result)
       return GSL_SUCCESS;
     }
     else {
-      result->val = 0.0; /* FIXME: should be Inf */
-      result->err = 0.0;
-      GSL_ERROR ("error", GSL_EOVRFLW);
+      OVERFLOW_ERROR(result);
     }
   }
 }

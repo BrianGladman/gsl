@@ -23,11 +23,13 @@
 #include <config.h>
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_errno.h>
-#include "bessel.h"
-#include "bessel_amp_phase.h"
 #include "gsl_sf_trig.h"
 #include "gsl_sf_bessel.h"
 
+#include "error.h"
+
+#include "bessel.h"
+#include "bessel_amp_phase.h"
 #include "cheb_eval.c"
 
 #define ROOT_EIGHT (2.0*M_SQRT2)
@@ -82,9 +84,7 @@ int gsl_sf_bessel_J1_e(const double x, gsl_sf_result * result)
     return GSL_SUCCESS;
   }
   else if(y < 2.0*GSL_DBL_MIN) {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EUNDRFLW);
+    UNDERFLOW_ERROR(result);
   }
   else if(y < ROOT_EIGHT * GSL_SQRT_DBL_EPSILON) {
     result->val = 0.5*x;

@@ -23,12 +23,14 @@
 #include <config.h>
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_errno.h>
-#include "legendre.h"
 #include "gsl_sf_exp.h"
 #include "gsl_sf_gamma.h"
 #include "gsl_sf_trig.h"
 #include "gsl_sf_legendre.h"
 
+#include "error.h"
+
+#include "legendre.h"
 
 /* See [Abbott+Schaefer, Ap.J. 308, 546 (1986)] for
  * enough details to follow what is happening here.
@@ -249,9 +251,7 @@ gsl_sf_legendre_H3d_0_e(const double lambda, const double eta, gsl_sf_result * r
   /* CHECK_POINTER(result) */
 
   if(eta < 0.0) {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EDOM);
+    DOMAIN_ERROR(result);
   }
   else if(eta == 0.0 || lambda == 0.0) {
     result->val = 1.0;
@@ -291,9 +291,7 @@ gsl_sf_legendre_H3d_1_e(const double lambda, const double eta, gsl_sf_result * r
   /* CHECK_POINTER(result) */
 
   if(eta < 0.0) {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EDOM);
+    DOMAIN_ERROR(result);
   }
   else if(eta == 0.0 || lambda == 0.0) {
     result->val = 0.0;
@@ -375,15 +373,11 @@ gsl_sf_legendre_H3d_e(const int ell, const double lambda, const double eta,
   /* CHECK_POINTER(result) */
 
   if(eta < 0.0) {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EDOM);
+    DOMAIN_ERROR(result);
   }
   else if(eta > GSL_LOG_DBL_MAX) {
     /* cosh(eta) is too big. */
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EOVRFLW);
+    OVERFLOW_ERROR(result);
   }
   else if(ell == 0) {
     return gsl_sf_legendre_H3d_0_e(lambda, eta, result);
@@ -507,13 +501,13 @@ gsl_sf_legendre_H3d_array(const int lmax, const double lambda, const double eta,
  if(eta < 0.0 || lmax < 0) {
     int ell;
     for(ell=0; ell<=lmax; ell++) result_array[ell] = 0.0;
-    GSL_ERROR ("error", GSL_EDOM);
+    GSL_ERROR ("domain error", GSL_EDOM);
   }
   else if(eta > GSL_LOG_DBL_MAX) {
     /* cosh(eta) is too big. */
     int ell;
     for(ell=0; ell<=lmax; ell++) result_array[ell] = 0.0;
-    GSL_ERROR ("error", GSL_EOVRFLW);
+    GSL_ERROR ("overflow", GSL_EOVRFLW);
   }
   else if(lmax == 0) {
     gsl_sf_result H0;

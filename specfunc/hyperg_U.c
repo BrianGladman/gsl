@@ -23,13 +23,15 @@
 #include <config.h>
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_errno.h>
-#include "hyperg.h"
 #include "gsl_sf_exp.h"
 #include "gsl_sf_gamma.h"
 #include "gsl_sf_bessel.h"
 #include "gsl_sf_laguerre.h"
 #include "gsl_sf_pow_int.h"
 #include "gsl_sf_hyperg.h"
+
+#include "error.h"
+#include "hyperg.h"
 
 #define INT_THRESHOLD (1000.0*GSL_DBL_EPSILON)
 
@@ -955,10 +957,7 @@ hyperg_U_int_bge1(const int a, const int b, const double x,
       }
       else if(Ua1_for_val == 0.0) {
         /* Should never happen. */
-        result->val = 0.0;
-	result->err = 0.0;
-	result->e10 = 0;
-	GSL_ERROR ("error", GSL_EUNDRFLW);
+        UNDERFLOW_ERROR_E10(result);
       }
       else {
         double lns = (scale_count_for - scale_count_bck)*log(scale_factor);
@@ -1296,10 +1295,7 @@ gsl_sf_hyperg_U_int_e10_e(const int a, const int b, const double x,
   /* CHECK_POINTER(result) */
 
   if(x <= 0.0) {
-    result->val = 0.0;
-    result->err = 0.0;
-    result->e10 = 0;
-    GSL_ERROR ("error", GSL_EDOM);
+    DOMAIN_ERROR_E10(result);
   }
   else {
     if(b >= 1) {
@@ -1339,10 +1335,7 @@ gsl_sf_hyperg_U_e10_e(const double a, const double b, const double x,
   /* CHECK_POINTER(result) */
 
   if(x <= 0.0) {
-    result->val = 0.0;
-    result->err = 0.0;
-    result->e10 = 0;
-    GSL_ERROR ("error", GSL_EDOM);
+    DOMAIN_ERROR_E10(result);
   }
   else if(a == 0.0) {
     result->val = 1.0;

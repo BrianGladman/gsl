@@ -27,6 +27,8 @@
 #include "gsl_sf_pow_int.h"
 #include "gsl_sf_synchrotron.h"
 
+#include "error.h"
+
 #include "chebyshev.h"
 #include "cheb_eval.c"
 
@@ -183,9 +185,7 @@ int gsl_sf_synchrotron_1_e(const double x, gsl_sf_result * result)
   /* CHECK_POINTER(result) */
 
   if(x < 0.0) {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EDOM);
+    DOMAIN_ERROR(result);
   }
   else if(x < 2.0*M_SQRT2 * GSL_SQRT_DBL_EPSILON) {
     result->val = 2.14952824153447863671 * pow(x, 1.0/3.0);
@@ -216,9 +216,7 @@ int gsl_sf_synchrotron_1_e(const double x, gsl_sf_result * result)
     return GSL_SUCCESS;
   }
   else {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EUNDRFLW);
+    UNDERFLOW_ERROR(result);
   }
 }
 
@@ -228,9 +226,7 @@ int gsl_sf_synchrotron_2_e(const double x, gsl_sf_result * result)
   /* CHECK_POINTER(result) */
 
   if(x < 0.0) {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EDOM);
+    DOMAIN_ERROR(result);
   }
   else if(x < 2.0*M_SQRT2*GSL_SQRT_DBL_EPSILON) {
     result->val = 1.07476412076723931836 * pow(x, 1.0/3.0);
@@ -260,9 +256,7 @@ int gsl_sf_synchrotron_2_e(const double x, gsl_sf_result * result)
     return GSL_SUCCESS;
   }
   else {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EUNDRFLW);
+    UNDERFLOW_ERROR(result);
   }
 }
 

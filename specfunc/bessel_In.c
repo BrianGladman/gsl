@@ -23,9 +23,11 @@
 #include <config.h>
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_errno.h>
-#include "bessel.h"
 #include "gsl_sf_bessel.h"
 
+#include "error.h"
+
+#include "bessel.h"
 
 /*-*-*-*-*-*-*-*-*-*-*-* Functions with Error Codes *-*-*-*-*-*-*-*-*-*-*-*/
 
@@ -116,7 +118,7 @@ gsl_sf_bessel_In_scaled_array(const int nmin, const int nmax, const double x, do
   if(nmax < nmin || nmin < 0) {
     int j;
     for(j=0; j<=nmax-nmin; j++) result_array[j] = 0.0;
-    GSL_ERROR ("error", GSL_EDOM);
+    GSL_ERROR ("domain error", GSL_EDOM);
   }
   else if(x == 0.0) {
     int j;
@@ -175,9 +177,7 @@ gsl_sf_bessel_In_e(const int n_in, const double x, gsl_sf_result * result)
    * so this overflow check is conservative.
    */
   if(ax > GSL_LOG_DBL_MAX - 1.0) {
-    result->val = 0.0; /* FIXME: should be Inf */
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EOVRFLW);
+    OVERFLOW_ERROR(result);
   }
   else {
     const double ex = exp(ax);
@@ -200,7 +200,7 @@ gsl_sf_bessel_In_array(const int nmin, const int nmax, const double x, double * 
   if(ax > GSL_LOG_DBL_MAX - 1.0) {
     int j;
     for(j=0; j<=nmax-nmin; j++) result_array[j] = 0.0; /* FIXME: should be Inf */
-    GSL_ERROR ("error", GSL_EOVRFLW);
+    GSL_ERROR ("overflow", GSL_EOVRFLW);
   }
   else {
     int j;

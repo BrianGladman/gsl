@@ -26,6 +26,8 @@
 #include "gsl_sf_exp.h"
 #include "gsl_sf_bessel.h"
 
+#include "error.h"
+
 #include "chebyshev.h"
 #include "cheb_eval.c"
 
@@ -132,14 +134,10 @@ int gsl_sf_bessel_K1_scaled_e(const double x, gsl_sf_result * result)
   /* CHECK_POINTER(result) */
 
   if(x <= 0.0) {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EDOM);
+    DOMAIN_ERROR(result);
   }
   else if(x < 2.0*GSL_DBL_MIN) {
-    result->val = 0.0;  /* FIXME: should be Inf */
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EOVRFLW);
+    OVERFLOW_ERROR(result);
   }
   else if(x <= 2.0) {
     const double lx = log(x);
@@ -180,14 +178,10 @@ int gsl_sf_bessel_K1_e(const double x, gsl_sf_result * result)
   /* CHECK_POINTER(result) */
 
   if(x <= 0.0) {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EDOM);
+    DOMAIN_ERROR(result);
   }
   else if(x < 2.0*GSL_DBL_MIN) {
-    result->val = 0.0; /* FIXME: should be Inf */
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EOVRFLW);
+    OVERFLOW_ERROR(result);
   }
   else if(x <= 2.0) {
     const double lx = log(x);

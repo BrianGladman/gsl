@@ -25,6 +25,7 @@
 #include <gsl/gsl_errno.h>
 #include "gsl_sf_airy.h"
 
+#include "error.h"
 
 static const double zero_Ai[] = {
   0,
@@ -436,9 +437,7 @@ gsl_sf_airy_zero_Ai_e(unsigned int s, gsl_sf_result * result)
   /* CHECK_POINTER(result) */
 
   if(s < 1) {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("s is less than 1", GSL_EDOM);
+    DOMAIN_ERROR_MSG("s is less than 1", result);
   }
   else if(s < size_zero_Ai) {
     result->val = zero_Ai[s];
@@ -461,9 +460,7 @@ gsl_sf_airy_zero_Bi_e(unsigned int s, gsl_sf_result * result)
   /* CHECK_POINTER(result) */
 
   if(s < 1) {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("s is less than 1", GSL_EDOM);
+    DOMAIN_ERROR_MSG("s is less than 1", result);
   }
   else if(s < size_zero_Bi) {
     result->val = zero_Bi[s];
@@ -486,9 +483,7 @@ gsl_sf_airy_zero_Ai_deriv_e(unsigned int s, gsl_sf_result * result)
   /* CHECK_POINTER(result) */
 
   if(s < 1) {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("s is less than 1", GSL_EDOM);
+    DOMAIN_ERROR_MSG("s is less than 1", result);
   }
   else if(s < size_zero_Aip) {
     result->val = zero_Aip[s];
@@ -511,9 +506,7 @@ gsl_sf_airy_zero_Bi_deriv_e(unsigned int s, gsl_sf_result * result)
   /* CHECK_POINTER(result) */
 
   if(s < 1) {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("s is less than 1", GSL_EDOM);
+    DOMAIN_ERROR_MSG("s is less than 1", result);
   }
   else if(s < size_zero_Bip) {
     result->val = zero_Bip[s];

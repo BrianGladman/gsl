@@ -30,6 +30,7 @@
 #include "gsl_sf_pow_int.h"
 #include "gsl_sf_legendre.h"
 
+#include "error.h"
 
 /*-*-*-*-*-*-*-*-*-*-*-* Functions with Error Codes *-*-*-*-*-*-*-*-*-*-*-*/
 
@@ -76,9 +77,7 @@ gsl_sf_legendre_Pl_e(const int l, const double x, gsl_sf_result * result)
   /* CHECK_POINTER(result) */
 
   if(l < 0 || x < -1.0 || x > 1.0) {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EDOM);
+    DOMAIN_ERROR(result);
   }
   else if(l == 0) {
     result->val = 1.0;
@@ -168,7 +167,7 @@ gsl_sf_legendre_Pl_array(const int lmax, const double x, double * result_array)
   /* CHECK_POINTER(result_array) */
 
   if(lmax < 0 || x < -1.0 || x > 1.0) {
-    GSL_ERROR ("error", GSL_EDOM);
+    GSL_ERROR ("domain error", GSL_EDOM);
   }
   else if(lmax == 0) {
     result_array[0] = 1.0;
@@ -216,15 +215,11 @@ gsl_sf_legendre_Plm_e(const int l, const int m, const double x, gsl_sf_result * 
   /* CHECK_POINTER(result) */
 
   if(m < 0 || l < m || x < -1.0 || x > 1.0) {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EDOM);
+    DOMAIN_ERROR(result);
   }
   else if(exp_check < GSL_LOG_DBL_MIN + 10.0){
     /* Bail out. */
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EOVRFLW);
+    OVERFLOW_ERROR(result);
   }
   else {
     /* Account for the error due to the
@@ -367,9 +362,7 @@ gsl_sf_legendre_sphPlm_e(const int l, int m, const double x, gsl_sf_result * res
   /* CHECK_POINTER(result) */
 
   if(m < 0 || l < m || x < -1.0 || x > 1.0) {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EDOM);
+    DOMAIN_ERROR(result);
   }
   else if(m == 0) {
     gsl_sf_result P;

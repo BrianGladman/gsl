@@ -23,12 +23,14 @@
 #include <config.h>
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_errno.h>
-#include "bessel.h"
-#include "bessel_olver.h"
 #include "gsl_sf_pow_int.h"
 #include "gsl_sf_trig.h"
 #include "gsl_sf_bessel.h"
 
+#include "error.h"
+
+#include "bessel.h"
+#include "bessel_olver.h"
 
 /*-*-*-*-*-*-*-*-*-*-*-* Functions with Error Codes *-*-*-*-*-*-*-*-*-*-*-*/
 
@@ -73,9 +75,7 @@ int gsl_sf_bessel_j1_e(const double x, gsl_sf_result * result)
     return GSL_SUCCESS;
   }
   else if(ax < 3.1*GSL_DBL_MIN) {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EUNDRFLW);
+    UNDERFLOW_ERROR(result);
   }
   else if(ax < 0.25) {
     const double y = x*x;
@@ -117,9 +117,7 @@ int gsl_sf_bessel_j2_e(const double x, gsl_sf_result * result)
     return GSL_SUCCESS;
   }
   else if(ax < 4.0*GSL_SQRT_DBL_MIN) {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EUNDRFLW);
+    UNDERFLOW_ERROR(result);
   }
   else if(ax < 1.3) {
     const double y  = x*x;
@@ -158,9 +156,7 @@ int
 gsl_sf_bessel_jl_e(const int l, const double x, gsl_sf_result * result)
 {
   if(l < 0 || x < 0.0) {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EDOM);
+    DOMAIN_ERROR(result);
   }
   else if(x == 0.0) {
     result->val = ( l > 0 ? 0.0 : 1.0 );

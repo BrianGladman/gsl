@@ -41,6 +41,7 @@
 #include "gsl_sf_gamma.h"
 #include "gsl_sf_coulomb.h"
 
+#include "error.h"
 
 /* the L=0 normalization constant
  * [Abramowitz+Stegun 14.1.8]
@@ -107,9 +108,7 @@ gsl_sf_coulomb_CL_e(double lam, double eta, gsl_sf_result * result)
   /* CHECK_POINTER(result) */
 
   if(lam <= -1.0) {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EDOM);
+    DOMAIN_ERROR(result);
   }
   else if(fabs(lam) < GSL_DBL_EPSILON) {
     /* saves a calculation of complex_lngamma(), otherwise not necessary */
@@ -305,11 +304,9 @@ coulomb_FG_series(const double lam, const double eta, const double x,
   int stat_conn = coulomb_connection(lam, eta, &cos_phi_lam, &sin_phi_lam);
 
   if(stat_conn == GSL_EUNDRFLW) {
-    F->val = 0.0;
+    F->val = 0.0;  /* FIXME: should this be set to Inf too like G? */
     F->err = 0.0;
-    G->val = 0.0; /* FIXME: should be Inf */
-    G->err = 0.0;
-    GSL_ERROR ("error", GSL_EOVRFLW);
+    OVERFLOW_ERROR(G);
   }
 
   while(m < max_iter) {
@@ -717,7 +714,6 @@ old_coulomb_CF1(const double lambda,
     df = df*(D*tk - 1.0);
     F  = F + df;
     if( pk > px ) {
-      printf("OH NO.....\n");
       GSL_ERROR ("error", GSL_ERUNAWAY);
     }
   }
@@ -914,7 +910,7 @@ gsl_sf_coulomb_wave_FG_e(const double eta, const double x,
     GSL_SF_RESULT_SET(Gp, 0.0, 0.0);
     *exp_F = 0.0;
     *exp_G = 0.0;
-    GSL_ERROR ("error", GSL_EDOM);
+    GSL_ERROR ("domain error", GSL_EDOM);
   }
   else if(x == 0.0) {
     gsl_sf_result C0;
@@ -931,7 +927,7 @@ gsl_sf_coulomb_wave_FG_e(const double eta, const double x,
     if(lam_G == 0.0) {
       GSL_SF_RESULT_SET(Gp, 1.0/C0.val, fabs(C0.err/C0.val)/fabs(C0.val));
     }
-    GSL_ERROR ("error", GSL_EDOM);
+    GSL_ERROR ("domain error", GSL_EDOM);
     /* After all, since we are asking for G, this is a domain error... */
   }
   else if(x < 1.2 && 2.0*M_PI*eta < 0.9*(-GSL_LOG_DBL_MIN) && fabs(eta*x) < 10.0) {
@@ -1109,7 +1105,7 @@ gsl_sf_coulomb_wave_FG_e(const double eta, const double x,
     *exp_G = exp_lam_G;
 
     if(stat_lam_F == GSL_EOVRFLW || stat_lam_G == GSL_EOVRFLW) {
-      GSL_ERROR ("error", GSL_EOVRFLW);
+      GSL_ERROR ("overflow", GSL_EOVRFLW);
     }
     else {
       return GSL_ERROR_SELECT_2(stat_lam_F, stat_lam_G);
@@ -1388,7 +1384,7 @@ gsl_sf_coulomb_wave_sphF_array(double lam_min, int kmax,
   int k;
 
   if(x < 0.0 || lam_min < -0.5) {
-    GSL_ERROR ("error", GSL_EDOM);
+    GSL_ERROR ("domain error", GSL_EDOM);
   }
   else if(x < 10.0/GSL_DBL_MAX) {
     for(k=0; k<=kmax; k++) {
@@ -1401,7 +1397,7 @@ gsl_sf_coulomb_wave_sphF_array(double lam_min, int kmax,
     if(x == 0.0)
       return GSL_SUCCESS;
     else
-      GSL_ERROR ("error", GSL_EUNDRFLW);
+      GSL_ERROR ("underflow", GSL_EUNDRFLW);
   }
   else {
     int k;

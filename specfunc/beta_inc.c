@@ -27,6 +27,7 @@
 #include <gsl/gsl_sf_exp.h>
 #include "gsl_sf_gamma.h"
 
+#include "error.h"
 #include "check.h"
 
 static
@@ -104,9 +105,7 @@ gsl_sf_beta_inc_e(
   )
 {
   if(a <= 0.0 || b <= 0.0 || x < 0.0 || x > 1.0) {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EDOM);
+    DOMAIN_ERROR(result);
   }
   else if(x == 0.0) {
     result->val = 0.0;

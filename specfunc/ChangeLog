@@ -1,3 +1,8 @@
+Wed Jul 11 16:06:45 2001  Brian Gough  <bjg@network-theory.co.uk>
+
+	* error.h: moved domain, overflow and underflow errors into
+ 	macros, return Nan for domain error, Inf for overflow.
+
 Tue Jul 10 22:00:55 2001  Brian Gough  <bjg@network-theory.co.uk>
 
 	* erfc.c (gsl_sf_log_erfc_e): introduce an additional log(erfc)

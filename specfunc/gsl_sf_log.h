@@ -87,9 +87,9 @@ gsl_sf_log_e(const double x, gsl_sf_result * result)
   /* CHECK_POINTER(result) */
 
   if(x <= 0.0) {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EDOM);
+    result->val = GSL_NAN;
+    result->err = GSL_NAN;
+    GSL_ERROR ("domain error", GSL_EDOM);
   }
   else {
     result->val = log(x);
@@ -104,9 +104,9 @@ gsl_sf_log_abs_e(const double x, gsl_sf_result * result)
   /* CHECK_POINTER(result) */
 
   if(x == 0.0) {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EDOM);
+    result->val = GSL_NAN;
+    result->err = GSL_NAN;
+    GSL_ERROR ("domain error", GSL_EDOM);
   }
   else {
     result->val = log(fabs(x));

@@ -25,6 +25,8 @@
 #include <gsl/gsl_errno.h>
 #include "gsl_sf_expint.h"
 
+#include "error.h"
+
 #include "chebyshev.h"
 #include "cheb_eval.c"
 
@@ -103,9 +105,7 @@ int gsl_sf_expint_3_e(const double x, gsl_sf_result * result)
   /* CHECK_POINTER(result) */
 
   if(x < 0.0) {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EDOM);
+    DOMAIN_ERROR(result);
   }
   else if(x < 1.6*GSL_ROOT3_DBL_EPSILON) {
     result->val = x;

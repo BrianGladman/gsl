@@ -29,6 +29,8 @@
 #include "gsl_sf_psi.h"
 #include "gsl_sf_hyperg.h"
 
+#include "error.h"
+
 #define locEPS (1000.0*GSL_DBL_EPSILON)
 
 
@@ -423,9 +425,7 @@ hyperg_2F1_reflect(const double a, const double b, const double c,
 	                                  sum1, GSL_DBL_EPSILON*fabs(sum1),
 					  &F1);
 	if(stat_e == GSL_EOVRFLW) {
-          result->val = 0.0; /* FIXME: should be Inf */
-	  result->err = 0.0;
-          GSL_ERROR ("error", GSL_EOVRFLW);
+          OVERFLOW_ERROR(result);
         }
       }
       else {
@@ -551,9 +551,7 @@ hyperg_2F1_reflect(const double a, const double b, const double c,
         pre2.val *= sgn2;
       }
       else {
-   	result->val = 0.0; /* FIXME: should be Inf */
-	result->err = 0.0;
-   	GSL_ERROR ("error", GSL_EOVRFLW);
+        OVERFLOW_ERROR(result);
       }
     }
     else if(ok1 && !ok2) {
@@ -566,9 +564,7 @@ hyperg_2F1_reflect(const double a, const double b, const double c,
 	pre2.err = 0.0;
       }
       else {
-        result->val = 0.0; /* FIXME: should be Inf */
-	result->err = 0.0;
-   	GSL_ERROR ("error", GSL_EOVRFLW);
+        OVERFLOW_ERROR(result);
       }
     }
     else if(!ok1 && ok2) {
@@ -581,17 +577,13 @@ hyperg_2F1_reflect(const double a, const double b, const double c,
         pre2.val *= sgn2;
       }
       else {
-        result->val = 0.0; /* FIXME: should be Inf */
-	result->err = 0.0;
-        GSL_ERROR ("error", GSL_EOVRFLW);
+        OVERFLOW_ERROR(result);
       }
     }
     else {
       pre1.val = 0.0;
       pre2.val = 0.0;
-      result->val = 0.0;
-      result->err = 0.0;
-      GSL_ERROR ("error", GSL_EUNDRFLW);
+      UNDERFLOW_ERROR(result);
     }
 
     status_F1 = hyperg_2F1_series(  a,   b, 1.0-d, 1.0-x, &F1);
@@ -642,12 +634,12 @@ gsl_sf_hyperg_2F1_e(double a, double b, const double c,
   result->err = 0.0;
 
   if(x < -1.0 || 1.0 <= x) {
-    GSL_ERROR ("error", GSL_EDOM);
+    DOMAIN_ERROR(result);
   }
 
   if(c_neg_integer) {
-    if(! (a_neg_integer && a > c + 0.1)) GSL_ERROR ("error", GSL_EDOM);
-    if(! (b_neg_integer && b > c + 0.1)) GSL_ERROR ("error", GSL_EDOM);
+    if(! (a_neg_integer && a > c + 0.1)) DOMAIN_ERROR(result);
+    if(! (b_neg_integer && b > c + 0.1)) DOMAIN_ERROR(result);
   }
 
   if(fabs(c-b) < locEPS || fabs(c-a) < locEPS) {
@@ -743,7 +735,7 @@ gsl_sf_hyperg_2F1_conj_e(const double aR, const double aI, const double c,
   result->err = 0.0;
 
   if(ax >= 1.0 || c_neg_integer || c == 0.0) {
-    GSL_ERROR ("error", GSL_EDOM);
+    DOMAIN_ERROR(result);
   }
 
   if(   (ax < 0.25 && fabs(aR) < 20.0 && fabs(aI) < 20.0)
@@ -806,9 +798,7 @@ gsl_sf_hyperg_2F1_renorm_e(const double a, const double b, const double c,
       stat += gsl_sf_lngamma_sgn_e(b, &g4, &s4);
       stat += gsl_sf_lngamma_sgn_e(-c+2, &g5, &s5);
       if(stat != 0) {
-        result->val = 0.0;
-	result->err = 0.0;
-        GSL_ERROR ("error", GSL_EDOM);
+        DOMAIN_ERROR(result);
       }
       else {
         gsl_sf_result F;
@@ -867,9 +857,7 @@ gsl_sf_hyperg_2F1_conj_renorm_e(const double aR, const double aI, const double c
       stat += gsl_sf_lngamma_complex_e(aR, aI, &g2, &a2);
       stat += gsl_sf_lngamma_e(-c+2.0, &g3);
       if(stat != 0) {
-        result->val = 0.0;
-        result->err = 0.0;
-        GSL_ERROR ("error", GSL_EDOM);
+        DOMAIN_ERROR(result);
       }
       else {
         gsl_sf_result F;

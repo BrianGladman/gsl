@@ -25,6 +25,7 @@
 #include <gsl/gsl_errno.h>
 #include "gsl_sf_debye.h"
 
+#include "error.h"
 #include "check.h"
 
 #include "chebyshev.h"
@@ -146,9 +147,7 @@ int gsl_sf_debye_1_e(const double x, gsl_sf_result * result)
   /* CHECK_POINTER(result) */
 
   if(x < 0.0) {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EDOM);
+    DOMAIN_ERROR(result);
   }
   else if(x < 2.0*GSL_SQRT_DBL_EPSILON) {
     result->val = 1.0 - 0.25*x + x*x/36.0;
@@ -201,9 +200,7 @@ int gsl_sf_debye_2_e(const double x, gsl_sf_result * result)
   /* CHECK_POINTER(result) */
 
   if(x < 0.0) {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EDOM);
+    DOMAIN_ERROR(result);
   }
   else if(x < 2.0*M_SQRT2*GSL_SQRT_DBL_EPSILON) {
     result->val = 1.0 - x/3.0 + x*x/24.0;
@@ -259,9 +256,7 @@ int gsl_sf_debye_3_e(const double x, gsl_sf_result * result)
   /* CHECK_POINTER(result) */
 
   if(x < 0.0) {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EDOM);
+    DOMAIN_ERROR(result);
   }
   else if(x < 2.0*M_SQRT2*GSL_SQRT_DBL_EPSILON) {
     result->val = 1.0 - 3.0*x/8.0 + x*x/20.0;
@@ -318,9 +313,7 @@ int gsl_sf_debye_4_e(const double x, gsl_sf_result * result)
   /* CHECK_POINTER(result) */
 
   if(x < 0.0) {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EDOM);
+    DOMAIN_ERROR(result);
   }
   else if(x < 2.0*M_SQRT2*GSL_SQRT_DBL_EPSILON) {
     result->val = 1.0 - 2.0*x/5.0 + x*x/18.0;

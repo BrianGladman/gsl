@@ -28,6 +28,8 @@
 #include "gsl_sf_zeta.h"
 #include "gsl_sf_psi.h"
 
+#include "error.h"
+
 #include "chebyshev.h"
 #include "cheb_eval.c"
 
@@ -374,9 +376,7 @@ int gsl_sf_psi_int_e(const int n, gsl_sf_result * result)
   /* CHECK_POINTER(result) */
 
   if(n <= 0) {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EDOM);
+    DOMAIN_ERROR(result);
   }
   else if(n <= PSI_TABLE_NMAX) {
     result->val = psi_table[n];
@@ -406,9 +406,7 @@ int gsl_sf_psi_e(const double x, gsl_sf_result * result)
   /* CHECK_POINTER(result) */
 
   if(x == 0.0 || x == -1.0 || x == -2.0) {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EDOM);
+    DOMAIN_ERROR(result);
   }
   else if(y >= 2.0) {
     const double t = 8.0/(y*y)-1.0;
@@ -418,9 +416,7 @@ int gsl_sf_psi_e(const double x, gsl_sf_result * result)
       const double s = sin(M_PI*x);
       const double c = cos(M_PI*x);
       if(fabs(s) < 2.0*GSL_SQRT_DBL_MIN) {
-        result->val = 0.0;
-	result->err = 0.0;
-	GSL_ERROR ("error", GSL_EDOM);
+        DOMAIN_ERROR(result);
       }
       else {
         result->val  = log(y) - 0.5/x + result_c.val - M_PI * c/s;
@@ -565,9 +561,7 @@ int gsl_sf_psi_1_int_e(const int n, gsl_sf_result * result)
 {
   /* CHECK_POINTER(result) */
   if(n <= 0) {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EDOM);
+    DOMAIN_ERROR(result);
   }
   else if(n <= PSI_1_TABLE_NMAX) {
     result->val = psi_1_table[n];
@@ -595,9 +589,7 @@ int gsl_sf_psi_n_e(const int n, const double x, gsl_sf_result * result)
   /* CHECK_POINTER(result) */
 
   if(n < 0 || x <= 0.0) {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EDOM);
+    DOMAIN_ERROR(result);
   }
   else if(n == 0) {
     return gsl_sf_psi_e(x, result);

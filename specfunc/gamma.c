@@ -29,6 +29,7 @@
 #include "gsl_sf_trig.h"
 #include "gsl_sf_gamma.h"
 
+#include "error.h"
 #include "check.h"
 
 #include "chebyshev.h"
@@ -1103,9 +1104,7 @@ gamma_xgthalf(const double x, gsl_sf_result * result)
     return stat_gs;
   }
   else {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EOVRFLW);
+    OVERFLOW_ERROR(result);
   }
 }
 
@@ -1137,9 +1136,7 @@ int gsl_sf_lngamma_e(double x, gsl_sf_result * result)
     return lngamma_lanczos(x, result);
   }
   else if(x == 0.0) {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EDOM);
+    DOMAIN_ERROR(result);
   }
   else if(fabs(x) < 0.02) {
     double sgn;
@@ -1153,9 +1150,7 @@ int gsl_sf_lngamma_e(double x, gsl_sf_result * result)
     double s  = sin(M_PI*z);
     double as = fabs(s);
     if(s == 0.0) {
-      result->val = 0.0;
-      result->err = 0.0;
-      GSL_ERROR ("error", GSL_EDOM);
+      DOMAIN_ERROR(result);
     }
     else if(as < M_PI*0.015) {
       /* x is near a negative integer, -N */
@@ -1203,10 +1198,8 @@ int gsl_sf_lngamma_sgn_e(double x, gsl_sf_result * result_lg, double * sgn)
     return lngamma_lanczos(x, result_lg);
   }
   else if(x == 0.0) {
-    result_lg->val = 0.0;
-    result_lg->err = 0.0;
     *sgn = 0.0;
-    GSL_ERROR ("error", GSL_EDOM);
+    DOMAIN_ERROR(result_lg);
   }
   else if(fabs(x) < 0.02) {
     return lngamma_sgn_0(x, result_lg, sgn);
@@ -1217,9 +1210,7 @@ int gsl_sf_lngamma_sgn_e(double x, gsl_sf_result * result_lg, double * sgn)
     double as = fabs(s);
     if(s == 0.0) {
       *sgn = 0.0;
-      result_lg->val = 0.0;
-      result_lg->err = 0.0;
-      GSL_ERROR ("error", GSL_EDOM);
+      DOMAIN_ERROR(result_lg);
     }
     else if(as < M_PI*0.015) {
       /* x is near a negative integer, -N */
@@ -1264,9 +1255,7 @@ gsl_sf_gamma_e(const double x, gsl_sf_result * result)
     double sin_term = sgn * sin(M_PI * f_x) / M_PI;
 
     if(sin_term == 0.0) {
-      result->val = 0.0;
-      result->err = 0.0;
-      GSL_ERROR ("error", GSL_EDOM);
+      DOMAIN_ERROR(result);
     }
     else if(x > -169.0) {
       gsl_sf_result g;
@@ -1278,9 +1267,7 @@ gsl_sf_gamma_e(const double x, gsl_sf_result * result)
         return GSL_SUCCESS;
       }
       else {
-        result->val = 0.0;
-	result->err = 0.0;
-	GSL_ERROR ("error", GSL_EUNDRFLW);
+        UNDERFLOW_ERROR(result);
       }
     }
     else {
@@ -1308,9 +1295,7 @@ gsl_sf_gammastar_e(const double x, gsl_sf_result * result)
   /* CHECK_POINTER(result) */
 
   if(x <= 0.0) {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EDOM);
+    DOMAIN_ERROR(result);
   }
   else if(x < 0.5) {
     gsl_sf_result lg;
@@ -1381,9 +1366,7 @@ gsl_sf_gammainv_e(const double x, gsl_sf_result * result)
     gsl_sf_result g;
     int stat_g = gamma_xgthalf(x, &g);
     if(stat_g == GSL_EOVRFLW) {
-      result->val = 0.0;
-      result->err = 0.0;
-      GSL_ERROR ("error", GSL_EUNDRFLW);
+      UNDERFLOW_ERROR(result);
     }
     else {
       result->val  = 1.0/g.val;
@@ -1421,11 +1404,7 @@ gsl_sf_lngamma_complex_e(double zr, double zi, gsl_sf_result * lnr, gsl_sf_resul
       return GSL_ERROR_SELECT_2(stat_r, stat_l);
     }
     else {
-      lnr->val = 0.0;
-      lnr->err = 0.0;
-      arg->val = 0.0;
-      arg->err = 0.0;
-      GSL_ERROR ("error", GSL_EDOM);
+      DOMAIN_ERROR_2(lnr,arg);
     }
   }
   else {
@@ -1440,9 +1419,7 @@ int gsl_sf_taylorcoeff_e(const int n, const double x, gsl_sf_result * result)
   /* CHECK_POINTER(result) */
 
   if(x < 0.0 || n < 0) {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EDOM);
+    DOMAIN_ERROR(result);
   }
   else if(n == 0) {
     result->val = 1.0;
@@ -1464,14 +1441,10 @@ int gsl_sf_taylorcoeff_e(const int n, const double x, gsl_sf_result * result)
     const double ln_test = n*(log(x)+1.0) + 1.0 - (n+0.5)*log(n+1.0) + 0.5*log2pi;
 
     if(ln_test < GSL_LOG_DBL_MIN+1.0) {
-      result->val = 0.0;
-      result->err = 0.0;
-      GSL_ERROR ("error", GSL_EUNDRFLW);
+      UNDERFLOW_ERROR(result);
     }
     else if(ln_test > GSL_LOG_DBL_MAX-1.0) {
-      result->val = 0.0; /* FIXME: should be Inf */
-      result->err = 0.0;
-      GSL_ERROR ("error", GSL_EOVRFLW);
+      OVERFLOW_ERROR(result);
     }
     else {
       double product = 1.0;
@@ -1503,9 +1476,7 @@ int gsl_sf_fact_e(const unsigned int n, gsl_sf_result * result)
     return GSL_SUCCESS;
   }
   else {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EOVRFLW);
+    OVERFLOW_ERROR(result);
   }
 }
 
@@ -1525,9 +1496,7 @@ int gsl_sf_doublefact_e(const unsigned int n, gsl_sf_result * result)
     return GSL_SUCCESS;
   }
   else {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EOVRFLW);
+    OVERFLOW_ERROR(result);
   }
 }
 
@@ -1579,9 +1548,7 @@ int gsl_sf_lnchoose_e(unsigned int n, unsigned int m, gsl_sf_result * result)
   /* CHECK_POINTER(result) */
 
   if(m > n) {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EDOM);
+    DOMAIN_ERROR(result);
   }
   else if(m == n || m == 0) {
     result->val = 0.0;
@@ -1607,9 +1574,7 @@ int gsl_sf_lnchoose_e(unsigned int n, unsigned int m, gsl_sf_result * result)
 int gsl_sf_choose_e(unsigned int n, unsigned int m, gsl_sf_result * result)
 {
   if(m > n) {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EDOM);
+    DOMAIN_ERROR(result);
   }
   else if(m == n || m == 0) {
     result->val = 1.0;
@@ -1622,9 +1587,7 @@ int gsl_sf_choose_e(unsigned int n, unsigned int m, gsl_sf_result * result)
     for(k=n; k>=m+1; k--) {
       double tk = (double)k / (double)(k-m);
       if(tk > GSL_DBL_MAX/prod) {
-        result->val = 0.0;
-	result->err = 0.0;
-	GSL_ERROR ("error", GSL_EOVRFLW);
+        OVERFLOW_ERROR(result);
       }
       prod *= tk;
     }

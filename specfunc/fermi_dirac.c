@@ -30,6 +30,8 @@
 #include "gsl_sf_zeta.h"
 #include "gsl_sf_fermi_dirac.h"
 
+#include "error.h"
+
 #include "chebyshev.h"
 #include "cheb_eval.c"
 
@@ -1214,9 +1216,7 @@ fd_UMseries_int(const int j, const double x, gsl_sf_result * result)
 int gsl_sf_fermi_dirac_m1_e(const double x, gsl_sf_result * result)
 {
   if(x < GSL_LOG_DBL_MIN) {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EUNDRFLW);
+    UNDERFLOW_ERROR(result);
   }
   else if(x < 0.0) {
     const double ex = exp(x);
@@ -1237,9 +1237,7 @@ int gsl_sf_fermi_dirac_m1_e(const double x, gsl_sf_result * result)
 int gsl_sf_fermi_dirac_0_e(const double x, gsl_sf_result * result)
 {
   if(x < GSL_LOG_DBL_MIN) {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EUNDRFLW);
+    UNDERFLOW_ERROR(result);
   }
   else if(x < -5.0) {
     double ex  = exp(x);
@@ -1265,9 +1263,7 @@ int gsl_sf_fermi_dirac_0_e(const double x, gsl_sf_result * result)
 int gsl_sf_fermi_dirac_1_e(const double x, gsl_sf_result * result)
 {
   if(x < GSL_LOG_DBL_MIN) {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EUNDRFLW);
+    UNDERFLOW_ERROR(result);
   }
   else if(x < -1.0) {
     /* series [Goano (6)]
@@ -1319,9 +1315,7 @@ int gsl_sf_fermi_dirac_1_e(const double x, gsl_sf_result * result)
     return GSL_SUCCESS;
   }
   else {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EOVRFLW);
+    OVERFLOW_ERROR(result);
   }
 }
 
@@ -1329,9 +1323,7 @@ int gsl_sf_fermi_dirac_1_e(const double x, gsl_sf_result * result)
 int gsl_sf_fermi_dirac_2_e(const double x, gsl_sf_result * result)
 {
   if(x < GSL_LOG_DBL_MIN) {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EUNDRFLW);
+    UNDERFLOW_ERROR(result);
   }
   else if(x < -1.0) {
     /* series [Goano (6)]
@@ -1383,9 +1375,7 @@ int gsl_sf_fermi_dirac_2_e(const double x, gsl_sf_result * result)
     return GSL_SUCCESS;
   }
   else {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EOVRFLW);
+    OVERFLOW_ERROR(result);
   }
 }
 
@@ -1436,9 +1426,7 @@ int gsl_sf_fermi_dirac_int_e(const int j, const double x, gsl_sf_result * result
 int gsl_sf_fermi_dirac_mhalf_e(const double x, gsl_sf_result * result)
 {
   if(x < GSL_LOG_DBL_MIN) {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EUNDRFLW);
+    UNDERFLOW_ERROR(result);
   }
   else if(x < -1.0) {
     /* series [Goano (6)]
@@ -1486,9 +1474,7 @@ int gsl_sf_fermi_dirac_mhalf_e(const double x, gsl_sf_result * result)
 int gsl_sf_fermi_dirac_half_e(const double x, gsl_sf_result * result)
 {
   if(x < GSL_LOG_DBL_MIN) {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EUNDRFLW);
+    UNDERFLOW_ERROR(result);
   }
   else if(x < -1.0) {
     /* series [Goano (6)]
@@ -1536,9 +1522,7 @@ int gsl_sf_fermi_dirac_half_e(const double x, gsl_sf_result * result)
 int gsl_sf_fermi_dirac_3half_e(const double x, gsl_sf_result * result)
 {
   if(x < GSL_LOG_DBL_MIN) {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EUNDRFLW);
+    UNDERFLOW_ERROR(result);
   }
   else if(x < -1.0) {
     /* series [Goano (6)]
@@ -1586,9 +1570,7 @@ int gsl_sf_fermi_dirac_3half_e(const double x, gsl_sf_result * result)
 int gsl_sf_fermi_dirac_inc_0_e(const double x, const double b, gsl_sf_result * result)
 {
   if(b < 0.0) {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EDOM);
+    DOMAIN_ERROR(result);
   }
   else {
     double arg = b - x;

@@ -28,6 +28,7 @@
 #include "gsl_sf_log.h"
 #include "gsl_sf_gamma.h"
 
+#include "error.h"
 
 /* The dominant part,
  * D(a,x) := x^a e^(-x) / Gamma(a+1)
@@ -371,9 +372,7 @@ int
 gsl_sf_gamma_inc_Q_e(const double a, const double x, gsl_sf_result * result)
 {
   if(a <= 0.0 || x < 0.0) {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EDOM);
+    DOMAIN_ERROR(result);
   }
   else if(x == 0.0) {
     result->val = 1.0;
@@ -448,9 +447,7 @@ int
 gsl_sf_gamma_inc_P_e(const double a, const double x, gsl_sf_result * result)
 {
   if(a <= 0.0 || x < 0.0) {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EDOM);
+    DOMAIN_ERROR(result);
   }
   else if(x == 0.0) {
     result->val = 0.0;

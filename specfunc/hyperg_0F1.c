@@ -28,6 +28,8 @@
 #include "gsl_sf_bessel.h"
 #include "gsl_sf_hyperg.h"
 
+#include "error.h"
+
 #define locEPS  (1000.0*GSL_DBL_EPSILON)
 
 
@@ -41,9 +43,7 @@ int
 hyperg_0F1_bessel_I(const double nu, const double x, gsl_sf_result * result)
 {
   if(x > GSL_LOG_DBL_MAX) {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EOVRFLW);
+    OVERFLOW_ERROR(result);
   }
 
   if(nu < 0.0) { 
@@ -109,9 +109,7 @@ gsl_sf_hyperg_0F1_e(double c, double x, gsl_sf_result * result)
   /* CHECK_POINTER(result) */
 
   if(c == 0.0 || c_neg_integer) {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EDOM);
+    DOMAIN_ERROR(result);
   }
   else if(x < 0.0) {
     gsl_sf_result Jcm1;

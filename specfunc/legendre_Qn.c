@@ -29,6 +29,7 @@
 #include "gsl_sf_pow_int.h"
 #include "gsl_sf_legendre.h"
 
+#include "error.h"
 
 /* Evaluate f_{ell+1}/f_ell
  * f_ell := Q^{b}_{a+ell}(x)
@@ -182,9 +183,7 @@ gsl_sf_legendre_Q0_e(const double x, gsl_sf_result * result)
   /* CHECK_POINTER(result) */
 
   if(x <= -1.0 || x == 1.0) {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EDOM);
+    DOMAIN_ERROR(result);
   }
   else if(x < 1.0){
     result->val = 0.5 * (log1p(x) - log1p(-x));
@@ -213,9 +212,7 @@ gsl_sf_legendre_Q0_e(const double x, gsl_sf_result * result)
     return GSL_SUCCESS;
   }
   else {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EUNDRFLW);
+    UNDERFLOW_ERROR(result);
   }
 }
 
@@ -226,9 +223,7 @@ gsl_sf_legendre_Q1_e(const double x, gsl_sf_result * result)
   /* CHECK_POINTER(result) */
 
   if(x <= -1.0 || x == 1.0) {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EDOM);
+    DOMAIN_ERROR(result);
   }
   else if(x < 1.0){
     result->val = 0.5 * x * (log1p(x) - log1p(-x)) - 1.0;
@@ -259,9 +254,7 @@ gsl_sf_legendre_Q1_e(const double x, gsl_sf_result * result)
     return GSL_SUCCESS;
   }
   else {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EUNDRFLW);
+    UNDERFLOW_ERROR(result);
   }
 }
 
@@ -272,9 +265,7 @@ gsl_sf_legendre_Ql_e(const int l, const double x, gsl_sf_result * result)
   /* CHECK_POINTER(result) */
 
   if(x <= -1.0 || x == 1.0 || l < 0) {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EDOM);
+    DOMAIN_ERROR(result);
   }
   else if(l == 0) {
     return gsl_sf_legendre_Q0_e(x, result);

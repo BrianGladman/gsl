@@ -23,8 +23,11 @@
 #include <config.h>
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_errno.h>
-#include "bessel.h"
 #include "gsl_sf_airy.h"
+
+#include "error.h"
+
+#include "bessel.h"
 #include "bessel_olver.h"
 
 #include "chebyshev.h"
@@ -842,9 +845,7 @@ int gsl_sf_bessel_Jnu_asymp_Olver_e(double nu, double x, gsl_sf_result * result)
   /* CHECK_POINTER(result) */
 
   if(x <= 0.0 || nu <= 0.0) {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EDOM);
+    DOMAIN_ERROR(result);
   }  
   else {
     double zeta, abs_zeta;
@@ -919,9 +920,7 @@ int gsl_sf_bessel_Ynu_asymp_Olver_e(double nu, double x, gsl_sf_result * result)
   /* CHECK_POINTER(result) */
 
   if(x <= 0.0 || nu <= 0.0) {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EDOM);
+    DOMAIN_ERROR(result);
   }  
   else {
     double zeta, abs_zeta;

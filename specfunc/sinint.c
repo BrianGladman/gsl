@@ -26,6 +26,8 @@
 #include "gsl_sf_trig.h"
 #include "gsl_sf_expint.h"
 
+#include "error.h"
+
 #include "chebyshev.h"
 #include "cheb_eval.c"
 
@@ -355,9 +357,7 @@ int gsl_sf_Ci_e(const double x, gsl_sf_result * result)
   /* CHECK_POINTER(result) */
 
   if(x <= 0.0) {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EDOM);
+    DOMAIN_ERROR(result);
   }
   else if(x <= 4.0) {
     const double lx = log(x);

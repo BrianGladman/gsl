@@ -28,6 +28,7 @@
 #include "gsl_sf_psi.h"
 #include "gsl_sf_gamma.h"
 
+#include "error.h"
 
 int
 gsl_sf_lnbeta_e(const double x, const double y, gsl_sf_result * result)
@@ -35,9 +36,7 @@ gsl_sf_lnbeta_e(const double x, const double y, gsl_sf_result * result)
   /* CHECK_POINTER(result) */
 
   if(x <= 0.0 || y <= 0.0) {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EDOM);
+    DOMAIN_ERROR(result);
   }
   else {
     const double max = GSL_MAX(x,y);

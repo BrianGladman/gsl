@@ -25,6 +25,8 @@
 #include <gsl/gsl_errno.h>
 #include "gsl_sf_log.h"
 
+#include "error.h"
+
 #include "chebyshev.h"
 #include "cheb_eval.c"
 
@@ -112,9 +114,7 @@ gsl_sf_log_e(const double x, gsl_sf_result * result)
   /* CHECK_POINTER(result) */
 
   if(x <= 0.0) {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EDOM);
+    DOMAIN_ERROR(result);
   }
   else {
     result->val = log(x);
@@ -130,9 +130,7 @@ gsl_sf_log_abs_e(const double x, gsl_sf_result * result)
   /* CHECK_POINTER(result) */
 
   if(x == 0.0) {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EDOM);
+    DOMAIN_ERROR(result);
   }
   else {
     result->val = log(fabs(x));
@@ -160,11 +158,7 @@ gsl_sf_complex_log_e(const double zr, const double zi, gsl_sf_result * lnr, gsl_
     return GSL_SUCCESS;
   }
   else {
-    lnr->val = 0.0;
-    lnr->err = 0.0;
-    theta->val = 0.0;
-    theta->err = 0.0;
-    GSL_ERROR ("error", GSL_EDOM);
+    DOMAIN_ERROR_2(lnr, theta);
   }
 }
 
@@ -175,9 +169,7 @@ gsl_sf_log_1plusx_e(const double x, gsl_sf_result * result)
   /* CHECK_POINTER(result) */
 
   if(x <= -1.0) {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EDOM);
+    DOMAIN_ERROR(result);
   }
   else if(fabs(x) < GSL_ROOT6_DBL_EPSILON) {
     const double c1 = -0.5;
@@ -216,9 +208,7 @@ gsl_sf_log_1plusx_mx_e(const double x, gsl_sf_result * result)
   /* CHECK_POINTER(result) */
 
   if(x <= -1.0) {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EDOM);
+    DOMAIN_ERROR(result);
   }
   else if(fabs(x) < GSL_ROOT5_DBL_EPSILON) {
     const double c1 = -0.5;

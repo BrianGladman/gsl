@@ -29,6 +29,8 @@
 #include "gsl_sf_pow_int.h"
 #include "gsl_sf_zeta.h"
 
+#include "error.h"
+
 #include "chebyshev.h"
 #include "cheb_eval.c"
 
@@ -514,23 +516,17 @@ int gsl_sf_hzeta_e(const double s, const double q, gsl_sf_result * result)
   /* CHECK_POINTER(result) */
 
   if(s <= 1.0 || q <= 0.0) {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EDOM);
+    DOMAIN_ERROR(result);
   }
   else {
     const double max_bits = 54.0;
     const double ln_term0 = -s * log(q);  
 
     if(ln_term0 < GSL_LOG_DBL_MIN + 1.0) {
-      result->val = 0.0;
-      result->err = 0.0;
-      GSL_ERROR ("error", GSL_EUNDRFLW);
+      UNDERFLOW_ERROR(result);
     }
     else if(ln_term0 > GSL_LOG_DBL_MAX - 1.0) {
-      result->val = 0.0; /* FIXME: should be Inf */
-      result->err = 0.0;
-      GSL_ERROR ("error", GSL_EOVRFLW);
+      OVERFLOW_ERROR (result);
     }
     else if((s > max_bits && q < 1.0) || (s > 0.5*max_bits && q < 0.25)) {
       result->val = pow(q, -s);
@@ -582,9 +578,7 @@ int gsl_sf_zeta_e(const double s, gsl_sf_result * result)
   /* CHECK_POINTER(result) */
 
   if(s == 1.0) {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EDOM);
+    DOMAIN_ERROR(result);
   }
   else if(s >= 0.0) {
     return riemann_zeta_sgt0(s, result);
@@ -650,9 +644,7 @@ int gsl_sf_zeta_e(const double s, gsl_sf_result * result)
        * we can implement something here. Until
        * then just give up.
        */
-      result->val = 0.0;
-      result->err = 0.0;
-      GSL_ERROR ("error", GSL_EOVRFLW);
+      OVERFLOW_ERROR(result);
     }
   }
 }
@@ -678,9 +670,7 @@ int gsl_sf_zeta_int_e(const int n, gsl_sf_result * result)
     }
   }
   else if(n == 1){
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EDOM);
+    DOMAIN_ERROR(result);
   }
   else if(n <= ZETA_POS_TABLE_NMAX){
     result->val = zeta_pos_int_table[n];

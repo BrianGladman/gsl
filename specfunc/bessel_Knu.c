@@ -23,11 +23,14 @@
 #include <config.h>
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_errno.h>
-#include "bessel.h"
-#include "bessel_temme.h"
 #include "gsl_sf_exp.h"
 #include "gsl_sf_gamma.h"
 #include "gsl_sf_bessel.h"
+
+#include "error.h"
+
+#include "bessel.h"
+#include "bessel_temme.h"
 
 /*-*-*-*-*-*-*-*-*-*-*-* Functions with Error Codes *-*-*-*-*-*-*-*-*-*-*-*/
 
@@ -37,9 +40,7 @@ gsl_sf_bessel_Knu_scaled_e(const double nu, const double x, gsl_sf_result * resu
   /* CHECK_POINTER(result) */
 
   if(x <= 0.0 || nu < 0.0) {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EDOM);
+    DOMAIN_ERROR(result);
   }
   else {
     int N = (int)(nu + 0.5);
@@ -88,9 +89,7 @@ gsl_sf_bessel_lnKnu_e(const double nu, const double x, gsl_sf_result * result)
   /* CHECK_POINTER(result) */
 
   if(x <= 0.0 || nu < 0.0) {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EDOM);
+    DOMAIN_ERROR(result);
   }
   else if(nu == 0.0) {
     gsl_sf_result K_scaled;

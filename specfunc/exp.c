@@ -26,6 +26,7 @@
 #include "gsl_sf_gamma.h"
 #include "gsl_sf_exp.h"
 
+#include "error.h"
 
 /* Evaluate the continued fraction for exprel.
  * [Abramowitz+Stegun, 4.2.41]
@@ -107,14 +108,10 @@ exprel_n_CF(const int N, const double x, gsl_sf_result * result)
 int gsl_sf_exp_e(const double x, gsl_sf_result * result)
 {
   if(x > GSL_LOG_DBL_MAX) {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EOVRFLW);
+    OVERFLOW_ERROR(result);
   }
   else if(x < GSL_LOG_DBL_MIN) {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EUNDRFLW);
+    UNDERFLOW_ERROR(result);
   }
   else {
     result->val = exp(x);
@@ -127,16 +124,10 @@ int gsl_sf_exp_e(const double x, gsl_sf_result * result)
 int gsl_sf_exp_e10_e(const double x, gsl_sf_result_e10 * result)
 {
   if(x > INT_MAX-1) {
-    result->val = 0.0; /* FIXME: should be Inf */
-    result->err = 0.0;
-    result->e10 = 0;
-    GSL_ERROR ("error", GSL_EOVRFLW);
+    OVERFLOW_ERROR_E10(result);
   }
   else if(x < INT_MIN+1) {
-    result->val = 0.0;
-    result->err = 0.0;
-    result->e10 = 0;
-    GSL_ERROR ("error", GSL_EUNDRFLW);
+    UNDERFLOW_ERROR_E10(result);
   }
   else {
     const int N = (int) floor(x/M_LN10);
@@ -170,14 +161,10 @@ int gsl_sf_exp_mult_e(const double x, const double y, gsl_sf_result * result)
     const double lnr = x + ly;
 
     if(lnr > GSL_LOG_DBL_MAX - 0.01) {
-      result->val = 0.0; /* FIXME: should be Inf */
-      result->err = 0.0;
-      GSL_ERROR ("error", GSL_EOVRFLW);
+      OVERFLOW_ERROR(result);
     }
     else if(lnr < GSL_LOG_DBL_MIN + 0.01) {
-      result->val = 0.0;
-      result->err = 0.0;
-      GSL_ERROR ("error", GSL_EUNDRFLW);
+      UNDERFLOW_ERROR(result);
     }
     else {
       const double sy   = GSL_SIGN(y);
@@ -219,16 +206,10 @@ int gsl_sf_exp_mult_e10_e(const double x, const double y, gsl_sf_result_e10 * re
     const double l10_val = (x + ly)/M_LN10;
 
     if(l10_val > INT_MAX-1) {
-      result->val = 0.0; /* FIXME: should be Inf */
-      result->err = 0.0;
-      result->e10 = 0;
-      GSL_ERROR ("error", GSL_EOVRFLW);
+      OVERFLOW_ERROR_E10(result);
     }
     else if(l10_val < INT_MIN+1) {
-      result->val = 0.0;
-      result->err = 0.0;
-      result->e10 = 0;
-      GSL_ERROR ("error", GSL_EUNDRFLW);
+      UNDERFLOW_ERROR_E10(result);
     }
     else {
       const double sy  = GSL_SIGN(y);
@@ -272,14 +253,10 @@ int gsl_sf_exp_mult_err_e(const double x, const double dx,
     const double lnr = x + ly;
 
     if(lnr > GSL_LOG_DBL_MAX - 0.01) {
-      result->val = 0.0; /* FIXME: should be Inf */
-      result->err = 0.0;
-      GSL_ERROR ("error", GSL_EOVRFLW);
+      OVERFLOW_ERROR(result);
     }
     else if(lnr < GSL_LOG_DBL_MIN + 0.01) {
-      result->val = 0.0;
-      result->err = 0.0;
-      GSL_ERROR ("error", GSL_EUNDRFLW);
+      UNDERFLOW_ERROR(result);
     }
     else {
       const double sy  = GSL_SIGN(y);
@@ -326,16 +303,10 @@ int gsl_sf_exp_mult_err_e10_e(const double x, const double dx,
     const double l10_val = (x + ly)/M_LN10;
 
     if(l10_val > INT_MAX-1) {
-      result->val = 0.0; /* FIXME: should be Inf */
-      result->err = 0.0;
-      result->e10 = 0;
-      GSL_ERROR ("error", GSL_EOVRFLW);
+      OVERFLOW_ERROR_E10(result);
     }
     else if(l10_val < INT_MIN+1) {
-      result->val = 0.0;
-      result->err = 0.0;
-      result->e10 = 0;
-      GSL_ERROR ("error", GSL_EUNDRFLW);
+      UNDERFLOW_ERROR_E10(result);
     }
     else {
       const double sy  = GSL_SIGN(y);
@@ -379,9 +350,7 @@ int gsl_sf_expm1_e(const double x, gsl_sf_result * result)
     return GSL_SUCCESS;
   }
   else {
-    result->val = 0.0; /* FIXME: should be Inf */
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EOVRFLW);
+    OVERFLOW_ERROR(result);
   }
 }
 
@@ -411,9 +380,7 @@ int gsl_sf_exprel_e(const double x, gsl_sf_result * result)
     return GSL_SUCCESS;
   }
   else {
-    result->val = 0.0; /* FIXME: should be Inf */
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EOVRFLW);
+    OVERFLOW_ERROR(result);
   }
 }
 
@@ -443,9 +410,7 @@ int gsl_sf_exprel_2_e(double x, gsl_sf_result * result)
     return GSL_SUCCESS;
   }
   else {
-    result->val = 0.0; /* FIXME: should be Inf */
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EOVRFLW);
+    OVERFLOW_ERROR(result);
   }
 }
 
@@ -454,9 +419,7 @@ int
 gsl_sf_exprel_n_e(const int N, const double x, gsl_sf_result * result)
 {
   if(N < 0) {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EDOM);
+    DOMAIN_ERROR(result);
   }
   else if(x == 0.0) {
     result->val = 1.0;
@@ -538,9 +501,7 @@ gsl_sf_exprel_n_e(const int N, const double x, gsl_sf_result * result)
 	}
       }
       else {
-	result->val = 0.0;
-	result->err = 0.0;
-	GSL_ERROR ("error", GSL_EOVRFLW);
+        OVERFLOW_ERROR(result);
       }
     }
     else if(x > -10.0*N) {
@@ -574,14 +535,10 @@ gsl_sf_exp_err_e(const double x, const double dx, gsl_sf_result * result)
   /* CHECK_POINTER(result) */
 
   if(x + adx > GSL_LOG_DBL_MAX) {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EOVRFLW);
+    OVERFLOW_ERROR(result);
   }
   else if(x - adx < GSL_LOG_DBL_MIN) {
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EUNDRFLW);
+    UNDERFLOW_ERROR(result);
   }
   else {
     const double ex  = exp(x);
@@ -602,16 +559,10 @@ gsl_sf_exp_err_e10_e(const double x, const double dx, gsl_sf_result_e10 * result
   /* CHECK_POINTER(result) */
 
   if(x + adx > INT_MAX - 1) {
-    result->val = 0.0;
-    result->err = 0.0;
-    result->e10 = 0;
-    GSL_ERROR ("error", GSL_EOVRFLW);
+    OVERFLOW_ERROR_E10(result);
   }
   else if(x - adx < INT_MIN + 1) {
-    result->val = 0.0;
-    result->err = 0.0;
-    result->e10 = 0;
-    GSL_ERROR ("error", GSL_EUNDRFLW);
+    UNDERFLOW_ERROR_E10(result);
   }
   else {
     const int    N  = (int)floor(x/M_LN10);
