@@ -48,7 +48,7 @@ brent_init (void *vstate, gsl_function * f, double minimum, double f_minimum, gs
 {
   brent_state_t *state = (brent_state_t *) vstate;
 
-  const double golden = 0.318966;	/* golden = (3 - sqrt(5))/2 */
+  const double golden = 0.3819660;	/* golden = (3 - sqrt(5))/2 */
 
   double x_lower = x.lower;
   double x_upper = x.upper;
@@ -95,7 +95,7 @@ brent_iterate (void *vstate, gsl_function * f, double *minimum, double * f_minim
   const double f_w = state->f_w;
   const double f_z = *f_minimum;
 
-  const double golden = 0.318966;	/* golden = (3 - sqrt(5))/2 */
+  const double golden = 0.3819660;	/* golden = (3 - sqrt(5))/2 */
 
   const double w_lower = (z - x_lower);
   const double w_upper = (x_upper - z);

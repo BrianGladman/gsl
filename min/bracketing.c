@@ -45,7 +45,7 @@ gsl_min_find_bracket(gsl_function *f,double *minimum,double * f_minimum,
   double x_left = x->lower;
   double x_right= x->upper; 
   double x_center;
-  const double golden = 0.318966;	/* golden = (3 - sqrt(5))/2 */
+  const double golden = 0.3819660;	/* golden = (3 - sqrt(5))/2 */
   size_t nb_eval = 0;
   
   

@@ -73,7 +73,7 @@ goldensection_iterate (void * vstate, gsl_function * f, double * minimum, double
 
   const double f_min = *f_minimum;
 
-  const double golden = 0.318966 ; /* golden = (3 - sqrt(5))/2 */
+  const double golden = 0.3819660; /* golden = (3 - sqrt(5))/2 */
   
   const double w_lower = (x_minimum - x_lower);
   const double w_upper = (x_upper - x_minimum);

@@ -1,3 +1,14 @@
+Mon Apr  2 14:54:33 2001  Brian Gough  <bjg@network-theory.co.uk>
+
+	* brent.c (brent_init): fixed incorrect value for golden ratio
+	(brent_iterate): fixed incorrect value for golden ratio
+
+	* golden.c (goldensection_iterate): fixed incorrect value for
+ 	golden ratio
+
+	* bracketing.c (gsl_min_find_bracket): fixed incorrect value for
+ 	golden ratio
+
 Sun Feb 18 11:43:04 2001  Brian Gough  <bjg@network-theory.co.uk>
 
 	* fsolver.c: changed so that the solver _alloc function no longer
