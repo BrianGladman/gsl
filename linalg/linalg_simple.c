@@ -76,14 +76,29 @@ gsl_la_decomp_SV_impl(gsl_matrix * A,
             r += Aik * Aik;
           }
 
-          if(q*r < GSL_DBL_MIN) {
-            /* column elements of A small */
+          /* NOTE: this could be handled better by scaling
+	   * the calculation of the inner products above.
+	   * But I'm too lazy. This will have to do. [GJ]
+	   */
+          if(! (q*r < GSL_DBL_MAX)) {
+	    /* overflow occured or will occur */
+	    return GSL_EOVRFLW;
+	  }
+	  if(! (q*r > GSL_DBL_MIN)) {
+	    /* underflow occured or will occur */
+	    return GSL_EUNDRFLW;
+	  }
+
+          if(q*r == 0.0) {
+            /* column elements of A are vanishingly small */
             count--;
             continue;
           }
 
-          if(p*p/(q*r) < tolerance) {
-            /* columns j,k orthogonal */
+          if((double)(p*p)/(double)(q*r) < tolerance) {
+            /* columns j,k orthogonal
+	     * note that p*p/(q*r) is automatically <= 1.0
+	     */
             count--;
             continue;
           }
@@ -102,16 +117,16 @@ gsl_la_decomp_SV_impl(gsl_matrix * A,
 
           /* apply rotation to A */
           for(i=0; i<nrow; i++) {
-	    REAL Aik = gsl_matrix_get(A, i, k);
-            REAL Aij = gsl_matrix_get(A, i, j);
+	    const REAL Aik = gsl_matrix_get(A, i, k);
+            const REAL Aij = gsl_matrix_get(A, i, j);
             gsl_matrix_set(A, i, j, Aij*cosine + Aik*sine);
             gsl_matrix_set(A, i, k,  -Aij*sine + Aik*cosine);
           }
 
 	  /* apply rotation to Q */
           for(i=0; i<ncol; i++){
-            REAL Qij = gsl_matrix_get(Q, i, j);
-            REAL Qik = gsl_matrix_get(Q, i, k);
+            const REAL Qij = gsl_matrix_get(Q, i, j);
+            const REAL Qik = gsl_matrix_get(Q, i, k);
             gsl_matrix_set(Q, i, j, Qij*cosine + Qik*sine);
             gsl_matrix_set(Q, i, k,  -Qij*sine + Qik*cosine);
           }
@@ -135,15 +150,15 @@ gsl_la_decomp_SV_impl(gsl_matrix * A,
 
       /* Calculate singular values. */
       for(i=0; i<nrow; i++){
-        REAL Aij = gsl_matrix_get(A, i, j);
+        const REAL Aij = gsl_matrix_get(A, i, j);
         q += Aij * Aij;
       }
       gsl_vector_set(S, j, sqrt(q));
 
       /* Normalize vectors. */
       for(i=0; i<nrow; i++){
-        REAL Aij = gsl_matrix_get(A, i, j);
-        REAL Sj  = gsl_vector_get(S, j);
+        const REAL Aij = gsl_matrix_get(A, i, j);
+        const REAL Sj  = gsl_vector_get(S, j);
         gsl_matrix_set(A, i, j, Aij / Sj);
       }
     }

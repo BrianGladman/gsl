@@ -53,8 +53,8 @@ gsl_la_eigen_sort_impl(gsl_vector * eval,
         eval->data[i] = tmp;
 
         /* swap eigenvectors */ /* matrix should probably export row/col swap ops */
-        gsl_matrix_copy_col(evec, i, tmp_vec_1);
-	gsl_matrix_copy_col(evec, k, tmp_vec_2);
+        gsl_matrix_copy_col(tmp_vec_1, evec, i);
+	gsl_matrix_copy_col(tmp_vec_2, evec, k);
 	gsl_matrix_set_col(evec, i, tmp_vec_2);
 	gsl_matrix_set_col(evec, k, tmp_vec_1);
       }
