@@ -1,3 +1,8 @@
+Wed Apr 25 17:28:48 2001  Brian Gough  <bjg@network-theory.co.uk>
+
+	* trig.c (gsl_sf_polar_to_rect): dropped _e from polar/rect
+ 	conversion functions
+
 Tue Apr 24 17:05:22 2001  Brian Gough  <bjg@network-theory.co.uk>
 
 	* split out chebyshev functions into their own cheb/ directory,

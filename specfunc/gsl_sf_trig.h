@@ -108,14 +108,14 @@ double gsl_sf_lncosh(const double x);
  *
  * exceptions: GSL_ELOSS
  */
-int gsl_sf_polar_to_rect_e(const double r, const double theta, gsl_sf_result * x, gsl_sf_result * y);
+int gsl_sf_polar_to_rect(const double r, const double theta, gsl_sf_result * x, gsl_sf_result * y);
 
 /* Convert rectilinear to polar coordinates.
  * return argument in range [-pi, pi]
  *
  * exceptions: GSL_EDOM
  */
-int gsl_sf_rect_to_polar_e(const double x, const double y, gsl_sf_result * r, gsl_sf_result * theta);
+int gsl_sf_rect_to_polar(const double x, const double y, gsl_sf_result * r, gsl_sf_result * theta);
 
 /* Sin(x) for quantity with an associated error.
  */
