@@ -1,20 +1,26 @@
-* What will be new in gsl-1.6:
+* What is new in gsl-1.6:
 
-** Improved the reliability of the gsl_sf_gamma_inc family of
-functions.
+** Added a new wavelet directory, with 1-dimensional and 2-dimensional
+discrete wavelet transforms.
 
-** Corrected the error estimate for gsl_cheb_eval_n_err to use
-evaluation order instead of the approximation order.
+** Added support for LQ and P^T LQ decompositions.  To find the QR
+decomposition of large systems (M>>N) use the LQ decomposition,
+solving the transpose of the original system.  This allows more
+efficient memory access, and is useful for solving large least-squares
+problems.
 
 ** Fixed a bug in the SYRK and HERK blas functions gsl_blas_{s,d,c,z}syrk 
 and gsl_blas_{c,z}herk which caused invalid memory access for non-square 
 matrices.
 
-** The Jacobi eigensolvers gsl_eigen_jacobi and gsl_eigen_jacobi_invert 
-have new implementations from Golub and Van Loan.
+** Fixed a bug in gsl_swap_vectors which caused it to return incorrect
+results when swapping vectors with different strides.
 
-** Differential equation solvers now handle error codes returned from
-user-defined functions.
+** Corrected the error estimate for gsl_cheb_eval_n_err to use
+evaluation order instead of the approximation order.
+
+** Improved the reliability of the gsl_sf_gamma_inc family of
+functions.
 
 ** Equal abscissae are now handled gracefully in the cspline and
 periodic cspline interpolations.
@@ -25,33 +31,27 @@ histogram ranges.
 ** Improved numerical stability of integration for akima and cspline
 interpolation.
 
+** Differential equation solvers now handle error codes returned from
+user-defined functions.
+
 ** Improved error estimates in ode-initval solvers, and provide exact
 derivatives on output.  Added new semi-implicit ode-initval solver,
 gsl_odeiv_step_rk2simp.
 
 ** Added missing function definition for gsl_sf_psi_1.
 
+** Fixed the function gsl_sf_expint_Ei_scaled to call
+gsl_sf_expint_Ei_scaled_e instead of gsl_sf_expint_Ei_e.
+
 ** Added cumulative distribution function for exponential power
 distribution.
-
-** Fixed the function gsl_sf_expint_scaled to call
-gsl_sf_expint_scaled_e instead of gsl_sf_expint_scaled_e.
 
 ** The functions gsl_cdf_beta_P and gsl_cdf_beta_Q now return
 consistent results of 0 or 1 for out of range values, x<0 and x>1,
 rather than 0 for left and right tails simultaneously.
 
-** Added support for LQ and P^T LQ decompositions.  To find the QR
-decomposition of large systems (M>>N) use the LQ decomposition,
-solving the transpose of the original system.  This allows more
-efficient memory access, and is useful for solving large least-squares
-problems.
-
-** Fixed a bug in gsl_swap_vectors which caused it to return incorrect
-results when swapping vectors with different strides.
-
-** Added a new wavelet directory, with 1-dimensional and 2-dimensional
-discrete wavelet transforms.
+** The Jacobi eigensolvers gsl_eigen_jacobi and gsl_eigen_jacobi_invert 
+have new implementations from Golub and Van Loan.
 
 ** The standard output and standard error streams are now flushed by
 the default error handler before the program aborts, in order to

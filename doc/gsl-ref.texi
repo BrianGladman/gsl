@@ -483,6 +483,12 @@ Wrote the initial routines for canonical permutations.
 @comment (jason@sakla.net) 
 Wrote the major cumulative distribution functions.
 
+@item Ivo Alxneit
+Wrote the routines for wavelet transforms.
+
+@item Tuomo Keskitalo
+Improved the implementation of the ODE solvers.
+
 @end table
 
 Thanks to Nigel Lowry for help in proofreading the manual.
