@@ -75,19 +75,10 @@ include_HEADERS = gsl_statistics.h gsl_statistics_int.h
 
 INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../err
 
-noinst_HEADERS = mean_source.c \
-variance_source.c  \
-absdev_source.c \
-skew_source.c \
-kurtosis_source.c \
-lag1_source.c \
-p_variance_source.c \
-minmax_source.c \
-ttest_source.c \
-sort_source.c \
-median_source.c \
-percentiles_source.c \
-source.h
+noinst_HEADERS = mean_source.c variance_source.c absdev_source.c \
+ skew_source.c kurtosis_source.c lag1_source.c p_variance_source.c \
+ minmax_source.c ttest_source.c sort_source.c median_source.c \
+ percentiles_source.c source.h
 
 check_PROGRAMS = test test_int test_nist
 TESTS = test test_int test_nist
@@ -104,31 +95,9 @@ test_nist_SOURCES = test_nist.c test.h
 test_nist_LDADD = libgslstatistics.a ../err/libgsltest.a
 test_nist_DEPENDENCIES = libgslstatistics.a
 
-libgslstatistics_a_SOURCES = \
-mean.c \
-variance.c  \
-absdev.c \
-skew.c \
-kurtosis.c \
-lag1.c \
-p_variance.c \
-minmax.c \
-ttest.c \
-sort.c \
-median.c \
-percentiles.c \
-mean_int.c \
-variance_int.c  \
-absdev_int.c \
-skew_int.c \
-kurtosis_int.c \
-lag1_int.c \
-p_variance_int.c \
-minmax_int.c \
-ttest_int.c \
-sort_int.c \
-median_int.c \
-percentiles_int.c
+libgslstatistics_a_SOURCES =  mean.c variance.c absdev.c skew.c \
+ kurtosis.c lag1.c p_variance.c minmax.c ttest.c sort.c median.c \
+ percentiles.c
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
 CONFIG_CLEAN_FILES = 
@@ -142,9 +111,7 @@ LIBS = @LIBS@
 libgslstatistics_a_LIBADD = 
 libgslstatistics_a_OBJECTS =  mean.o variance.o absdev.o skew.o \
 kurtosis.o lag1.o p_variance.o minmax.o ttest.o sort.o median.o \
-percentiles.o mean_int.o variance_int.o absdev_int.o skew_int.o \
-kurtosis_int.o lag1_int.o p_variance_int.o minmax_int.o ttest_int.o \
-sort_int.o median_int.o percentiles_int.o
+percentiles.o
 AR = ar
 test_OBJECTS =  test.o
 test_LDFLAGS = 
@@ -164,14 +131,10 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 TAR = tar
 GZIP = --best
-DEP_FILES =  .deps/absdev.P .deps/absdev_int.P .deps/kurtosis.P \
-.deps/kurtosis_int.P .deps/lag1.P .deps/lag1_int.P .deps/mean.P \
-.deps/mean_int.P .deps/median.P .deps/median_int.P .deps/minmax.P \
-.deps/minmax_int.P .deps/p_variance.P .deps/p_variance_int.P \
-.deps/percentiles.P .deps/percentiles_int.P .deps/skew.P \
-.deps/skew_int.P .deps/sort.P .deps/sort_int.P .deps/test.P \
-.deps/test_int.P .deps/test_nist.P .deps/ttest.P .deps/ttest_int.P \
-.deps/variance.P .deps/variance_int.P
+DEP_FILES =  .deps/absdev.P .deps/kurtosis.P .deps/lag1.P .deps/mean.P \
+.deps/median.P .deps/minmax.P .deps/p_variance.P .deps/percentiles.P \
+.deps/skew.P .deps/sort.P .deps/test.P .deps/test_int.P \
+.deps/test_nist.P .deps/ttest.P .deps/variance.P
 SOURCES = $(libgslstatistics_a_SOURCES) $(test_SOURCES) $(test_int_SOURCES) $(test_nist_SOURCES)
 OBJECTS = $(libgslstatistics_a_OBJECTS) $(test_OBJECTS) $(test_int_OBJECTS) $(test_nist_OBJECTS)
 
