@@ -266,13 +266,13 @@ function T = test_matmat (S, j, order, transA, transB)
     T.ldc = T.m;
   endif
 
-  if ((order == 101 && transA == 111) || (order == 102 && transA == 112))
+  if ((order == 101 && transA == 111) || (order == 102 && transA != 111))
     T.lda = T.k;
   else
     T.lda = T.m;
   endif
 
-  if ((order == 101 && transB == 111) || (order == 102 && transB == 112))
+  if ((order == 101 && transB == 111) || (order == 102 && transB != 111))
     T.ldb = T.n;
   else
     T.ldb = T.k;
@@ -2459,7 +2459,7 @@ n=16;
 # endfor
 
 for j = 1:n
-  for i = [s,d] #,c,z]
+  for i = [s,d,c,z]
     S = context(i);
     for transA = trans(S)
       for transB = trans(S)

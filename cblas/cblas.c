@@ -1251,7 +1251,6 @@ cblas_dspr2 (const enum CBLAS_ORDER order, const enum CBLAS_UPLO Uplo,
 #undef BASE
 }
 
-#ifdef 0
 /*
  * ===========================================================================
  * level 3 BLAS
@@ -1308,7 +1307,7 @@ cblas_zgemm (const enum CBLAS_ORDER Order, const enum CBLAS_TRANSPOSE TransA,
 #undef BASE
 }
 
-
+#ifdef 0
 /* SYMM */
 
 void
