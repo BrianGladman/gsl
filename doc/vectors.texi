@@ -3,11 +3,12 @@
 @cindex matrices
 
 The functions described in this chapter provide a simple vector and
-matrix interface to ordinary C arrays.  By writing your functions in
-terms of vectors and matrices you can pass a single structure containing
-both data and dimensions without needing additional function arguments.
-The structures are compatible with the vector and matrix formats used by
-BLAS routines.
+matrix interface to ordinary C arrays. The memory management of these
+arrays is simplified by use of a single type, known as a block. By
+writing your functions in terms of vectors and matrices you can pass a
+single structure containing both data and dimensions without needing
+additional function arguments.  The structures are compatible with the
+vector and matrix formats used by BLAS routines.
 
 @menu
 * Data types::                  
@@ -18,24 +19,28 @@ BLAS routines.
 * The vector struct::           
 * Vector allocation::           
 * Accessing vector elements::   
+* Initializing vector elements::  
 * Reading and writing vectors::  
-* Slicing vectors::             
+* Creating subvector views::    
 * Copying vectors::             
 * Exchanging elements::         
 * Vector operations::           
+* Finding maximum and minimum elements of vectors::  
 * Vector properties::           
 * Example programs for vectors::  
 * The matrix struct::           
 * Matrix allocation::           
 * Accessing matrix elements::   
+* Initializing matrix elements::  
 * Reading and writing matrices::  
-* Slicing matrices::            
-* Slicing rows and columns::    
+* Creating submatrix views::    
+* Creating row and column views::  
 * Copying matrices::            
 * Copying rows and columns::    
 * Exchanging rows and columns::  
 * Matrix operations::           
-* Matrix Properties::           
+* Finding maximum and minimum elements of matrices::  
+* Matrix properties::           
 * Example programs for matrices::  
 * Vector and Matrix References and Further Reading::  
 @end menu
@@ -43,12 +48,13 @@ BLAS routines.
 @node Data types
 @section Data types
 
-All the functions are available in versions for each of the standard
-data-types.  The versions for @code{double} have the prefix
-@code{gsl_block}, @code{gsl_vector} and @code{gsl_matrix}.  Similarly the
-versions for single-precision have the prefix @code{gsl_block_float},
-@code{gsl_vector_float} and @code{gsl_matrix_float}.  The full list of
-available types is given below,
+All the functions are available for each of the standard data-types.
+The versions for @code{double} have the prefix @code{gsl_block},
+@code{gsl_vector} and @code{gsl_matrix}.  Similarly the versions for
+single-precision @code{float} arrays have the prefix
+@code{gsl_block_float}, @code{gsl_vector_float} and
+@code{gsl_matrix_float}.  The full list of available types is given
+below,
 
 @example
 gsl_block                       double         
@@ -88,7 +94,11 @@ typedef struct
 @end example
 @comment
 @noindent
-Vectors and matrices are made by @dfn{slicing} an underlying block.
+Vectors and matrices are made by @dfn{slicing} an underlying block. A
+slice is a set of elements formed from an initial offset and a
+combination of indices and step-sizes. In the case of a matrix the
+step-size for the column index represents the row-length.  The step-size
+for a vector is known as a @dfn{stride}.
 
 The functions for allocating and deallocating blocks are defined in
 @file{gsl_block.h}
@@ -226,8 +236,9 @@ typedef struct
 @noindent
 The @var{size} is simply the number of vector elements.  The range of
 valid indices runs from 0 to @code{size-1}.  The @var{stride} is the
-step-size from one element to the next.  The pointer @var{data} gives
-the location of the first element of the vector in memory.  The pointer
+step-size from one element to the next in physical memory, measured in
+units of the appropriate datatype.  The pointer @var{data} gives the
+location of the first element of the vector in memory.  The pointer
 @var{block} stores the location of the memory block owned by the vector
 (if any).  This block will be deallocated when the vector is freed.  If
 the vector is only a view of another object then the pointer @var{block}
@@ -303,6 +314,11 @@ This function sets the value of the @var{i}-th element of a vector
 @var{n-1} then the error handler is invoked.
 @end deftypefun
 
+@node Initializing vector elements
+@section Initializing vector elements
+@cindex vectors, initializing
+@cindex initializing vectors
+
 @deftypefun void gsl_vector_set_all (gsl_vector * @var{v}, double @var{x})
 This function sets all the elements of the vector @var{v} to the value
 @var{x}.
@@ -359,15 +375,41 @@ numbers to read.  The function returns 0 for success and
 @code{GSL_EFAILED} if there was a problem reading from the file.
 @end deftypefun
 
-@node Slicing vectors
-@section Slicing vectors
+@node Creating subvector views
+@section Creating subvector views
 
 @deftypefun gsl_vector gsl_vector_subvector (gsl_vector *@var{v}, size_t @var{i}, size_t @var{n})
-This function creates a vector as a subvector of another vector @var{v},
-returning a newly initialized vector struct.  The start of
-the new vector is offset by @var{offset} elements from the start of the
-original vector.  The new vector has @var{n} elements, with a step-size
-of @var{stride} from one element to the next in the original vector.
+This function returns a @code{gsl_vector} struct which is a view of a
+subvector of another vector @var{v}.  The start of the new vector is
+offset by @var{offset} elements from the start of the original vector.
+The new vector has @var{n} elements.  Mathematically, the @var{i}-th
+element of the new vector @var{v'} is given by,
+
+@example
+v'(i) = v->data[(offset + i)*v->stride]
+@end example
+@noindent
+where the index @var{i} runs from 0 to @code{n-1}.
+
+The @code{data} pointer of the returned vector struct is set to null if
+the combined parameters (@var{offset},@var{n}) overrun the end of the
+original vector.
+
+The new vector is only a view of the block underlying the original
+vector, @var{v}.  The block containing the elements of @var{v} is not
+owned by the new vector.  When the new vector goes out of scope the
+original vector @var{v} and its block will continue to exist.  The
+original memory can only be deallocated by freeing the original vector.
+Of course, the original vector should not be deallocated while the new
+vector is still in use.
+@end deftypefun
+
+@deftypefun gsl_vector gsl_vector_subvector_with_stride (gsl_vector *@var{v}, size_t @var{i}, size_t @var{n}, size_t @var{stride})
+This function returns a @code{gsl_vector} struct which is a view of a
+subvector of another vector @var{v}. The subvector is formed in the same
+way as for @code{gsl_vector_subvector} but with an additional stride
+argument. The new vector has @var{n} elements, with a step-size of
+@var{stride} from one element to the next in the original vector.
 Mathematically, the @var{i}-th element of the new vector @var{v'} is
 given by,
 
@@ -376,21 +418,27 @@ v'(i) = v->data[(offset + i*stride)*v->stride]
 @end example
 @noindent
 where the index @var{i} runs from 0 to @code{n-1}.
-
-A null pointer is returned if the combined parameters
-(@var{offset},@var{n},@var{stride}) overrun the end of the original
-vector or if insufficient memory is available store the new vector.
-
-The new vector is only a view of the block underlying the original
-vector, @var{v}.  The block is not owned by the new vector.  When the new
-vector is deallocated the original vector @var{v} and its block will
-continue to exist.  The original memory can only be deallocated by
-freeing the original vector.  Of course, the original vector should not
-be deallocated while the new vector is still in use.
 @end deftypefun
 
-@deftypefun gsl_vector gsl_vector_subvector_with_stride (gsl_vector *@var{v}, size_t @var{i}, size_t @var{n}, size_t @var{stride})
-@end deftypefun
+Note that subvector views give direct access to the underlying elements
+of the original vector. For example, the following code will zero the
+even elements of the vector @code{v} of length @code{n}, while leaving the
+odd elements untouched,
+
+@example
+gsl_vector v_even = gsl_vector_subvector_with_stride (v, 0, n/2, 2);
+gsl_vector_set_zero (&v_even);
+@end example
+@noindent
+Any vector view can be passed to any subroutine which takes a vector
+argument, using the @code{&} operator, just as for any directly
+allocated vector.  The following code computes the norm of odd elements
+of @code{v} using the @sc{blas} routine @sc{dnrm2},
+
+@example
+gsl_vector v_odd = gsl_vector_subvector_with_stride (v, 1, n/2, 2);
+double r = gsl_blas_dnrm2 (&v_odd);
+@end example
 
 @comment @deftypefun {gsl_vector *} gsl_vector_alloc_from_block (gsl_block * @var{b}, size_t @var{offset}, size_t @var{n}, size_t @var{stride})
 @comment This function creates a vector as a slice of an existing block @var{b},
@@ -451,7 +499,7 @@ Common operations on vectors such as addition and multiplication are
 available in the BLAS part of the library (@pxref{BLAS
 Support}).  However, it is useful to have a small number of utility
 functions which do not require the full BLAS code.  The following
-function falls into this category.
+functions fall into this category.
 
 @deftypefun int gsl_vector_memcpy (gsl_vector * @var{dest}, const gsl_vector * @var{src})
 This function copies the elements of the vector @var{src} into the
@@ -517,8 +565,8 @@ This function adds the constant value @var{x} to the elements of the
 vector @var{a}, @math{a'_i = a_i + x}.
 @end deftypefun
 
-@node Vector properties
-@section Vector properties
+@node Finding maximum and minimum elements of vectors
+@section Finding maximum and minimum elements of vectors
 
 @deftypefun double gsl_vector_max (const gsl_vector * @var{v})
 This function returns the maximum value in the vector @var{v}.
@@ -540,7 +588,7 @@ returned.
 @end deftypefun
 
 @deftypefun size_t gsl_vector_min_index (const gsl_vector * @var{v})
-This function returns the index of the mimimum value in the vector @var{v}.
+This function returns the index of the minimum value in the vector @var{v}.
 When there are several equal minimum elements then the lowest index is
 returned.
 @end deftypefun
@@ -551,6 +599,9 @@ the vector @var{v}, storing them in @var{imin} and @var{imax}. When
 there are several equal minimum or maximum elements then the lowest
 indices are returned.
 @end deftypefun
+
+@node Vector properties
+@section Vector properties
 
 @deftypefun int gsl_vector_isnull (const gsl_vector * @var{v})
 This function returns 1 if all the elements of the vector @var{v} are
@@ -661,12 +712,14 @@ typedef struct
 @comment
 @noindent
 Matrices are stored in row-major order, meaning that each row of
-elements forms a contiguous block in memory.  The number of rows is
-@var{size1}.  The range of valid row indices runs from 0 to
-@code{size1-1}.  Similarly @var{size2} is the number of columns.  The
-range of valid column indices runs from 0 to @code{size2-1}.  The
-physical row dimension @var{tda}, or @dfn{trailing dimension}, specifies
-the size of a row of the matrix as laid out in memory.
+elements forms a contiguous block in memory.  This is the standard
+"C-ordering" of two-dimensional arrays. Note that @sc{Fortran} stores
+arrays in column-major order. The number of rows is @var{size1}.  The
+range of valid row indices runs from 0 to @code{size1-1}.  Similarly
+@var{size2} is the number of columns.  The range of valid column indices
+runs from 0 to @code{size2-1}.  The physical row dimension @var{tda}, or
+@dfn{trailing dimension}, specifies the size of a row of the matrix as
+laid out in memory.
 
 For example, in the following matrix @var{size1} is 3, @var{size2} is 4,
 and @var{tda} is 8.  The physical memory layout of the matrix begins in
@@ -757,11 +810,15 @@ allowed range of 0 to @var{n1-1} and 0 to @var{n2-1} then the error
 handler is invoked.
 @end deftypefun
 
+@node Initializing matrix elements
+@section Initializing matrix elements
+@cindex matrices, initializing
+@cindex initializing matrices
+
 @deftypefun void gsl_matrix_set_all (gsl_matrix * @var{m}, double @var{x})
 This function sets all the elements of the matrix @var{m} to the value
 @var{x}.
 @end deftypefun
-
 
 @deftypefun void gsl_matrix_set_zero (gsl_matrix * @var{m})
 This function sets all the elements of the matrix @var{m} to zero.
@@ -771,6 +828,7 @@ This function sets all the elements of the matrix @var{m} to zero.
 This function sets the elements of the matrix @var{m} to the
 corresponding elements of the identity matrix, @math{m(i,j) =
 \delta(i,j)}, i.e. a unit diagonal with all off-diagonal elements zero.
+This applies to both square and rectangular matrices.
 @end deftypefun
 
 @node Reading and writing matrices
@@ -814,17 +872,17 @@ numbers to read.  The function returns 0 for success and
 @code{GSL_EFAILED} if there was a problem reading from the file.
 @end deftypefun
 
-@node Slicing matrices
-@section Slicing matrices
+@node Creating submatrix views
+@section Creating submatrix views
 
 @deftypefun gsl_matrix gsl_matrix_submatrix (gsl_matrix * @var{m}, size_t @var{i}, size_t @var{j}, size_t @var{n1}, size_t @var{n2})
-This function creates a matrix as a submatrix of the matrix @var{m},
-returning a pointer to a newly initialized matrix struct.  The upper-left
-element of the submatrix is the element (@var{k1},@var{k2}) of the
-original matrix.  The submatrix has @var{n1} rows and @var{n2} columns.
-The physical number of columns in memory given by @var{tda} is
-unchanged.  Mathematically, the (@var{i},@var{j})-th element of the
-new matrix is given by,
+This function returns a @code{gsl_matrix} struct which is a view of a
+submatrix of the matrix @var{m}.  The upper-left element of the
+submatrix is the element (@var{k1},@var{k2}) of the original matrix.
+The submatrix has @var{n1} rows and @var{n2} columns.  The physical
+number of columns in memory given by @var{tda} is unchanged.
+Mathematically, the (@var{i},@var{j})-th element of the new matrix is
+given by,
 
 @example
 m'(i,j) = m->data[(k1*m->tda + k2) + i*m->tda + j]
@@ -833,18 +891,18 @@ m'(i,j) = m->data[(k1*m->tda + k2) + i*m->tda + j]
 where the index @var{i} runs from 0 to @code{n1-1} and the index @var{j}
 runs from 0 to @code{n2-1}.
 
-A null pointer is returned if the combined parameters
-(@var{k1},@var{k2},@var{n1},@var{n2},@var{tda}) overrun the end of the
-original matrix or if insufficient memory is available to store the matrix.
+The @code{data} pointer of the returned matrix struct is set to null if
+the combined parameters (@var{k1},@var{k2},@var{n1},@var{n2},@var{tda})
+overrun the ends of the original matrix.
 
 The new matrix is only a view of the block underlying the existing
-matrix, @var{m}.  The block is not owned by the new matrix.  When the new
-matrix is deallocated the original matrix @var{m} and its block will
-continue to exist.  The original memory can only be deallocated by
-freeing the original matrix.  Of course, the original matrix should not
-be deallocated while the new matrix is still in use.
+matrix, @var{m}.  The block containing the elements of @var{m} is not
+owned by the new matrix.  When the new matrix goes out of scope the
+original matrix @var{m} and its block will continue to exist.  The
+original memory can only be deallocated by freeing the original matrix.
+Of course, the original matrix should not be deallocated while the new
+matrix is still in use.
 @end deftypefun
-
 
 @comment @deftypefun {gsl_matrix *} gsl_matrix_alloc_from_block (gsl_block * @var{b}, size_t @var{offset}, size_t @var{n1}, size_t @var{n2}, size_t @var{tda})
 @comment This function creates a matrix as a slice of the block @var{b},
@@ -901,8 +959,8 @@ be deallocated while the new matrix is still in use.
 @comment be deallocated while the new matrix is still in use.
 @comment @end deftypefun
 
-@node Slicing rows and columns
-@section Slicing rows and columns
+@node Creating row and column views
+@section Creating row and column views
 
 In general there are two ways to access an object, by reference or by
 copying.  The functions described in this section create vectors which
@@ -911,16 +969,22 @@ elements of the vector is equivalent to modifying the matrix, since both
 the vector and the matrix point to the same memory block.
 
 @deftypefun gsl_vector gsl_matrix_row (gsl_matrix * @var{m}, size_t @var{i})
-This function allocates a new @code{gsl_vector} struct which points to
-the @var{i}-th row of the matrix @var{m}.
+This function returns @code{gsl_vector} struct which is a view of the
+@var{i}-th row of the matrix @var{m}.  The @code{data} pointer of the
+new vector is set to null if @var{i} is out of range.
 @end deftypefun
 
 @deftypefun gsl_vector gsl_matrix_column (gsl_matrix * @var{m}, size_t @var{j})
-This function allocates a new @code{gsl_vector} struct which points to
-the @var{j}-th column of the matrix @var{m}.
+This function returns a @code{gsl_vector} struct which is a view of the
+@var{j}-th column of the matrix @var{m}.  The @code{data} pointer of the
+new vector is set to null if @var{j} is out of range.
 @end deftypefun
 
 @deftypefun gsl_vector gsl_matrix_diagonal (gsl_matrix * @var{m})
+This function returns a @code{gsl_vector} struct which is a view of the
+diagonal of the matrix @var{m}. The matrix @var{m} must be square, and
+the @code{data} pointer of the new vector is set to null if this is not
+the case.
 @end deftypefun
 
 @comment @deftypefun {gsl_vector *} gsl_vector_alloc_row_from_matrix (gsl_matrix * @var{m}, size_t @var{i})
@@ -1043,9 +1107,9 @@ This function adds the constant value @var{x} to the elements of the
 matrix @var{a}, @math{a'(i,j) = a(i,j) + x}.
 @end deftypefun
 
+@node  Finding maximum and minimum elements of matrices
+@section Finding maximum and minimum elements of matrices
 
-@node Matrix Properties
-@section Matrix Properties
 
 @deftypefun double gsl_matrix_max (const gsl_matrix * @var{m})
 This function returns the maximum value in the matrix @var{m}.
@@ -1067,7 +1131,7 @@ several equal maximum elements then the first element found is returned.
 @end deftypefun
 
 @deftypefun void gsl_matrix_min_index (const gsl_matrix * @var{m}, size_t * @var{imax}, size_t * @var{jmax})
-This function returns the indices of the mimimum value in the matrix
+This function returns the indices of the minimum value in the matrix
 @var{m}, storing them in @var{imax} and @var{jmax}.  When there are
 several equal minimum elements then the first element found is returned.
 @end deftypefun
@@ -1078,6 +1142,9 @@ the matrix @var{m}, storing them in (@var{imin},@var{jmin}) and
 (@var{imax},@var{jmax}. When there are several equal minimum or maximum
 elements then the first elements found are returned.
 @end deftypefun
+
+@node Matrix properties
+@section Matrix properties
 
 @deftypefun int gsl_matrix_isnull (const gsl_matrix * @var{m})
 This function returns 1 if all the elements of the matrix @var{m} are
@@ -1177,8 +1244,9 @@ equal to the original matrix.
 @node Vector and Matrix References and Further Reading
 @section References and Further Reading
 
-Descriptions of the corresponding vector and matrix objects in the C++
-standard library can be found in the following reference,
+The block, vector and matrix objects in GSL follow the @code{valarray}
+model of C++.  A description of this model can be found in the following
+reference,
 
 @itemize @asis
 @item
