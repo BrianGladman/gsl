@@ -32,6 +32,8 @@ gsl_integration_qagse_impl (double (*f)(double x),
 
   double res3la[3], rlist2[52] ;
 
+  {int k ; for (k=0;k<52;k++) rlist2[k] = 0 ; } ;
+  
   alist[0] = a ;
   blist[0] = b ;
   rlist[0] = 0 ;
@@ -304,6 +306,7 @@ gsl_integration_qagse_impl (double (*f)(double x),
 	  int id = nrmax ;
 	  int jupbnd ;
 	  if(i > (2+limit/2)) {   /* FIXME */
+	    abort () ;
 	    jupbnd = limit+3-i ;
 	  } else {
 	    jupbnd = i ;

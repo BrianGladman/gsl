@@ -1,0 +1,46 @@
+This is a reimplementation of the double precision version of QUADPACK.
+
+Testing:
+
+The results of these functions should agree almost exactly with the
+results from the original QUADPACK versions. I have been able to get
+agreement up to the last digit (i.e. the last digit differs but the
+other are ok).
+
+If you want to compile the fortran versions to compare them with the
+GSL versions you need to bear in mind the following points to get full
+agreement:
+
+-- Make sure you compile everything in double precision.  i.e. use -r8,
+   otherwise some float values may enter the calculation and wipe out
+   your full double precision accuracy
+
+-- Make sure you enter double precision numbers as 1.0d-23 and not 1.0e-23 
+   if you are using f2c.
+
+   If you type 1.0e-23 as an argument then f2c may cast it from (float *)
+   to (double *) which gives a completely bogus result.  Since there are
+   no header files in f2c's Fortran you can't catch this error.
+
+This problem caused me to waste a lot of time, here is an example:
+
+bjg|zeke> cat main.f
+
+    program main
+    call foo(1.23e0)
+    end
+
+bjg|zeke> cat foo.f 
+    subroutine foo(x)
+    double precision x
+    print *,"x = ",x
+    return
+    end 
+
+bjg|zeke> fort77 main.f foo.f       (fort77 is an f2c front end)
+    MAIN main:
+    foo:
+
+bjg|zeke> ./a.out 
+ x =   1.96252698E-313        (Agggh. We have to use 1.23d0 to make it work!)
+

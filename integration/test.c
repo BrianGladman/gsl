@@ -52,7 +52,7 @@ int main (void)
     size_t iord[1000] ;
     size_t last;
     result = 0 ; abserr=0; neval=0  ;
-    gsl_integration_qage(f, 0.0, 1.0, 0.0, 1e-10, 6, 1000,
+    gsl_integration_qage(f, 0.0, 1.0, 0, 1e-10, 6, 1000,
 			 alist, blist, rlist, elist, iord, &last,
 			 &result, &abserr, &neval) ;
     printf("qage: result = %.18g, abserr = %.18g, neval = %d\n",
@@ -65,7 +65,7 @@ int main (void)
     size_t iord[1000] ;
     size_t last;
     result = 0 ; abserr=0; neval=0  ;
-    status = gsl_integration_qagse(f, 0.0, 1.0, 0.0, 1e-2, 1000,
+    status = gsl_integration_qagse(f, 0.0, 1.0, 1e-20, 1e-17, 10,
 			 alist, blist, rlist, elist, iord, &last,
 			 &result, &abserr, &neval) ;
     printf("qagse: result = %.18g, abserr = %.18g, neval = %d\n",

@@ -17,6 +17,7 @@ libgslintegration_a_SOURCES = integration.c \
 
 include_HEADERS = gsl_integration.h
 
+TESTS = test
 check_PROGRAMS = test
 
 test_SOURCES = test.c

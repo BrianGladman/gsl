@@ -25,6 +25,11 @@ gsl_integration_qelg (size_t * n, double epstab[],
   *result = current ;
   *nres = (*nres) + 1 ;
   *abserr = DBL_MAX ;
+
+  for (i= 0; i<32; i++) {
+    printf("QELG: TAB i = %d, epstab[i] = %g\n",i,epstab[i])  ;
+  } ;
+
   if ((*n) < 2) 
     {
       *result = current ;
@@ -186,11 +191,7 @@ gsl_integration_qelg (size_t * n, double epstab[],
 
   *abserr = max(*abserr, 5 * DBL_EPSILON * fabs(*result)) ;
 
-#ifdef JUN
-  for (i= 0; i<32; i++) {
-    printf("QELG: TAB i = %d, epstab[i] = %g\n",i,epstab[i])  ;
-  } ;
-#endif
+
   return ;
 }
     
