@@ -4,6 +4,8 @@
 
 #include <stdio.h>
 
+#include "err.h"
+
 int
 gsl_integration_qk (const int n,
 			 const double xgk[], const double wg[], 
@@ -17,20 +19,21 @@ gsl_integration_qk (const int n,
 
   const double center = 0.5 * (a + b);
   const double half_length = 0.5 * (b - a);
-  const double fc = (*f) (center);
+  const double abs_half_length = fabs (half_length);
+  const double f_center = (*f) (center);
 
   double result_gauss = 0;
-  double result_kronrod = fc * wgk[n - 1];
+  double result_kronrod = f_center * wgk[n - 1];
 
   double result_abs = fabs (result_kronrod);
   double result_asc = 0 ;
-  double mean = 0 ;
+  double mean = 0, err = 0 ;
   
   int j ;
 
   if (n % 2 == 0) 
     {
-      result_gauss = fc * wg[n/2 - 1];	
+      result_gauss = f_center * wg[n/2 - 1];	
     }
 
   for (j = 0; j < (n-1)/2 ; j++)
@@ -61,57 +64,24 @@ gsl_integration_qk (const int n,
 
   mean = result_kronrod * 0.5;
 
-  result_asc = wgk[n-1] * fabs (fc - mean);
+  result_asc = wgk[n-1] * fabs (f_center - mean);
 
   for (j = 0; j < n - 1 ; j++)
     {
       result_asc += wgk[j] * (fabs (fv1[j] - mean) + fabs (fv2[j] - mean));
     }
 
-  *result = result_kronrod * half_length;
+  /* scale by the width of the integration region */
 
-  {
-      const double abs_half_length = fabs (half_length);
-      result_abs *= abs_half_length;
-      result_asc *= abs_half_length;
-  }
+  err = (result_kronrod - result_gauss) * half_length ;
+  result_kronrod *= half_length ;
+  result_abs *= abs_half_length ;
+  result_asc *= abs_half_length ;
 
+  *result = result_kronrod ;
   *resabs = result_abs ;
   *resasc = result_asc ;
+  *abserr = rescale_error (err, result_abs, result_asc) ;
 
-  {
-    double err = fabs ((result_kronrod - result_gauss) * half_length);
-
-    printf("result_gauss   = %.18g\n",result_gauss) ;
-    printf("result_kronrod = %.18g\n",result_kronrod) ;
-    printf("err = %g\n",err) ;
-
-    if (result_asc != 0 && err != 0)
-      {
-	double scale = pow((200 * err / result_asc), 1.5) ;
-
-	if (scale < 1)
-	  {
-	    err = result_asc * scale ;
-	  }
-	else 
-	  {
-	    err = result_asc ;
-	  }
-      }
-    if (result_abs > DBL_MIN / (50 * DBL_EPSILON))
-      {
-	double min_err = (DBL_EPSILON * 50) * result_abs ;
-	if (min_err > err) 
-	  {
-	    printf("min_err = %g, err = %g\n",min_err,err) ;
-	    err = min_err ;
-	  }
-      }
-    
-    printf("err = %g\n",err) ;
-
-    *abserr = err ;
-  }
   return 0 ;
 }

@@ -7,6 +7,7 @@ double f (double x) ;
 int main (void)
 {
   double result, abserr, resabs, resasc ;
+  int neval ;
 
   gsl_integration_qk15(f,0.0,1.0,&result,&abserr,&resabs,&resasc) ;
 
@@ -40,10 +41,16 @@ int main (void)
 	 result, abserr, resabs, resasc) ;
 
 
+  gsl_integration_qng(f,0.0,1.0,0.0,1e-5,&result,&abserr,&neval) ;
+
+  printf("qnd: result = %.18g, abserr = %.18g, neval = %d\n",
+	 result, abserr, neval) ;
+
+
 
   return 0 ;
 } 
 
 double f (double x) {
-  return  x*x ;
+  return  sin(60*M_PI*x) ;
 }

@@ -51,8 +51,6 @@ int gsl_integration_qk61 (double (*f) (double x),
 			  double * result, double * abserr,
 			  double * resabs, double * resasc);
 
-
-
 int gsl_integration_qk (const int n,
 			const double xgk[], const double wg[], const double wgk[],
 			double fv1[], double fv2[],
@@ -60,5 +58,12 @@ int gsl_integration_qk (const int n,
 			double a, double b,
 			double * result, double * abserr,
 			double * resabs, double * resasc) ;
+
+int gsl_integration_qng (double (*f) (double x),
+			 double a, double b,
+			 double epsabs, double epsrel,
+			 double * result, double * abserr,
+			 int * neval);
+
 
 #endif /* GSL_INTEGRATION_H */
