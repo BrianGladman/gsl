@@ -1,3 +1,8 @@
+Tue Aug  4 19:51:57 1998  Brian Gough  <bjg@vvv.lanl.gov>
+
+	* default.c (gsl_rng_env_setup): send default/enviroment output to
+ 	stderr
+
 Mon Aug  3 18:25:52 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
 	* mt.c: made constants static since they shouldn't be exported,

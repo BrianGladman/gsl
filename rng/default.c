@@ -71,7 +71,7 @@ gsl_rng_env_setup (void)
 	  GSL_ERROR_RETURN ("unknown generator", GSL_EINVAL, 0);
 	}
 
-      printf ("GSL_RNG_TYPE=%s\n", gsl_rng_default->name);
+      fprintf (stderr, "GSL_RNG_TYPE=%s\n", gsl_rng_default->name);
     }
   else
     {
@@ -83,7 +83,7 @@ gsl_rng_env_setup (void)
   if (p)
     {
       seed = strtoul (p, 0, 0);
-      printf ("GSL_RNG_SEED=%lu\n", seed);
+      fprintf (stderr, "GSL_RNG_SEED=%lu\n", seed);
     };
 
   gsl_rng_default_seed = seed;
