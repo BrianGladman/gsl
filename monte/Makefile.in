@@ -78,7 +78,7 @@ libgslmonte_a_SOURCES = vegas.c vegas-print.c miser.c gsl_vegas.h gsl_miser.h
 
 check_PROGRAMS = vegas_test miser_test
 
-include_HEADERS = gsl_vegas.h gsl_miser.h
+include_HEADERS = gsl_vegas.h gsl_miser.h gsl_vegas_print.h
 
 #noinst_HEADERS = vegas.h
 
@@ -126,7 +126,7 @@ COMPILE = $(CC) $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
 LINK = $(CC) $(CFLAGS) $(LDFLAGS) -o $@
 HEADERS =  $(include_HEADERS)
 
-DIST_COMMON =  Makefile.am Makefile.in
+DIST_COMMON =  ChangeLog Makefile.am Makefile.in
 
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
