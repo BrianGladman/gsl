@@ -35,11 +35,23 @@ AC_ARG_ENABLE(gsltest, [  --disable-gsltest       Do not try to compile and run 
     GSL_LIBS=`$GSL_CONFIG $gslconf_args --libs`
 
     gsl_major_version=`$GSL_CONFIG $gsl_args --version | \
-           sed 's/\([[0-9]]*\).\([[0-9]]*\).\([[0-9]]*\)/\1/'`
+           sed 's/^\([[0-9]]*\).*/\1/'`
+    if test "x${gsl_major_version}" = "x" ; then
+       gsl_major_version=0
+    fi
+
     gsl_minor_version=`$GSL_CONFIG $gsl_args --version | \
-           sed 's/\([[0-9]]*\).\([[0-9]]*\).\([[0-9]]*\)/\2/'`
+           sed 's/^\([[0-9]]*\)\.\?\([[0-9]]*\).*/\2/'`
+    if test "x${gsl_minor_version}" = "x" ; then
+       gsl_minor_version=0
+    fi
+
     gsl_micro_version=`$GSL_CONFIG $gsl_config_args --version | \
-           sed 's/\([[0-9]]*\).\([[0-9]]*\).\([[0-9]]*\)/\3/'`
+           sed 's/^\([[0-9]]*\)\.\?\([[0-9]]*\)\.\?\([[0-9]]*\).*/\3/'`
+    if test "x${gsl_micro_version}" = "x" ; then
+       gsl_micro_version=0
+    fi
+
     if test "x$enable_gsltest" = "xyes" ; then
       ac_save_CFLAGS="$CFLAGS"
       ac_save_LIBS="$LIBS"
