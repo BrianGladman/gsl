@@ -1195,6 +1195,54 @@ int check_gamma(void)
   gsl_test(s, "  gsl_sf_lngamma_complex_impl(-1000 - I)");
   status += s;
 
+  s = 0;
+  s += ( frac_diff(  gsl_sf_fact(7), 5040.0 ) > 1.0e-14 );
+  s += ( frac_diff( gsl_sf_fact(33), 8.683317618811886496e+36 ) > 1.0e-14 );
+  gsl_test(s, "  gsl_sf_fact");
+  status += s;
+
+  s = 0;
+  s += ( frac_diff(  gsl_sf_doublefact(7), 105.0 ) > 1.0e-14 );
+  s += ( frac_diff( gsl_sf_doublefact(33), 6.332659870762850625e+18 ) > 1.0e-14 );
+  gsl_test(s, "  gsl_sf_doublefact");
+  status += s;
+
+  s = 0;
+  s += ( frac_diff(  gsl_sf_lnfact(7), 8.525161361065414300 ) > 1.0e-14 );
+  s += ( frac_diff( gsl_sf_lnfact(33), 85.05446701758151741 ) > 1.0e-14 );
+  gsl_test(s, "  gsl_sf_lnfact");
+  status += s;
+
+  s = 0;
+  s += ( frac_diff( gsl_sf_lnchoose(7,3), 3.555348061489413680 ) > 1.0e-14 );
+  s += ( frac_diff( gsl_sf_lnchoose(5,2), 2.302585092994045684 ) > 1.0e-14 );
+  gsl_test(s, "  gsl_sf_lnchoose");
+  status += s;
+
+  s = 0;
+  s += ( frac_diff( gsl_sf_choose(7,3), 35.0 ) > 1.0e-14 );
+  s += ( frac_diff( gsl_sf_choose(5,2), 10.0 ) > 1.0e-14 );
+  s += ( frac_diff( gsl_sf_choose(500,200), 5.054949849935532221e+144 ) > 1.0e-11 );
+  gsl_test(s, "  gsl_sf_choose");
+  status += s;
+
+  s = 0;
+  s += ( frac_diff( gsl_sf_lnpoch(7,3), 6.222576268071368616 ) > 1.0e-14 );
+  s += ( frac_diff( gsl_sf_lnpoch(5,2), 3.401197381662155375 ) > 1.0e-14 );
+  s += ( frac_diff( gsl_sf_lnpoch(5,0.01), 0.015072234709399379065 ) > 1.0e-10 );
+  gsl_test(s, "  gsl_sf_lnpoch");
+  status += s;
+
+  s = 0;
+  s += ( frac_diff( gsl_sf_pochrel(7,3), 503.0/3.0 ) > 1.0e-14 );
+  s += ( frac_diff( gsl_sf_pochrel(5,2),  29.0/2.0 ) > 1.0e-14 );
+  s += ( frac_diff( gsl_sf_pochrel(5,0.01),  1.5186393661368275330 ) > 1.0e-14 );
+  s += ( frac_diff( gsl_sf_pochrel(-5.5,0.01),  1.8584945633829063516  ) > 1.0e-14 );
+  s += ( frac_diff( gsl_sf_pochrel(-5.5,-0.01), 1.7292598184510393273  ) > 1.0e-14 );
+  s += ( frac_diff( gsl_sf_pochrel(-5.5,-11.0), 0.09090909090939652475 ) > 1.0e-14 );
+  gsl_test(s, "  gsl_sf_pochrel");
+  status += s;
+
   return status;
 }
 

@@ -759,26 +759,6 @@ int gsl_sf_choose_impl(unsigned int n, unsigned int m, double * result)
 }
 
 
-int
-gsl_sf_lnpoch_impl(double a, int n, double * result)
-{
-  double lg_apn, lg_a;
-  int stat_apn = gsl_sf_lngamma_impl(a+n, &lg_apn);
-  int stat_a   = gsl_sf_lngamma_impl(a,   &lg_a);
-  if(stat_apn == GSL_SUCCESS && stat_a == GSL_SUCCESS) {
-    *result = lg_apn - lg_a;
-    return GSL_SUCCESS;
-  }
-  else if(stat_apn == GSL_EDOM || stat_a == GSL_EDOM){
-    *result = 0.0;
-    return GSL_EDOM;
-  }
-  else {
-    *result = 0.0;
-    return GSL_FAILURE;
-  }
-}
-
 
 /*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
 
@@ -845,14 +825,6 @@ int gsl_sf_lnchoose_e(unsigned int n, unsigned int m, double * r)
   return status;
 }
 
-int gsl_sf_lnpoch_e(double a, int n, double * result)
-{
-  int status = gsl_sf_lnpoch_impl(a, n, result);
-  if(status != GSL_SUCCESS) {
-    GSL_ERROR("gsl_sf_lnpoch_e", status);
-  }
-  return status;
-}
 
 
 /*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*-*-*/
@@ -877,6 +849,27 @@ double gsl_sf_lnfact(const unsigned int n)
   return y;
 }
 
+double gsl_sf_fact(const unsigned int n)
+{
+  double y;
+  int status = gsl_sf_fact_impl(n, &y);
+  if(status != GSL_SUCCESS) {
+    GSL_WARNING("gsl_sf_fact", status);
+  }
+  return y;
+}
+
+double gsl_sf_doublefact(const unsigned int n)
+{
+  double y;
+  int status = gsl_sf_doublefact_impl(n, &y);
+  if(status != GSL_SUCCESS) {
+    GSL_WARNING("gsl_sf_doublefact", status);
+  }
+  return y;
+}
+
+
 double gsl_sf_lnchoose(unsigned int n, unsigned int m)
 {
   double y;
@@ -893,16 +886,6 @@ double gsl_sf_choose(unsigned int n, unsigned int m)
   int status = gsl_sf_choose_impl(n, m, &y);
   if(status != GSL_SUCCESS) {
     GSL_WARNING("gsl_sf_choose", status);
-  }
-  return y;
-}
-
-double gsl_sf_lnpoch(double a, int n)
-{
-  double y;
-  int status = gsl_sf_lnpoch_impl(a, n, &y);
-  if(status != GSL_SUCCESS) {
-    GSL_WARNING("gsl_sf_lnpoch", status);
   }
   return y;
 }

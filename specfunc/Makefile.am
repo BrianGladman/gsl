@@ -104,6 +104,7 @@ libgslspecfunc_a_SOURCES = 	\
 	legendre_con.c		\
 	legendre_poly.c		\
 	log.c			\
+	poch.c			\
 	poly.c			\
 	pow_int.c		\
 	psi.c			\

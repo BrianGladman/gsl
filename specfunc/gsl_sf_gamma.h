@@ -45,16 +45,18 @@ int gsl_sf_lngamma_complex_e(double zr, double zi, double * lnr, double * arg);
  *
  * exceptions: GSL_EDOM, GSL_OVRFLW
  */
-int gsl_sf_fact_impl(unsigned int n, double * result);
-int gsl_sf_fact_e(unsigned int n, double * result);
+int     gsl_sf_fact_impl(unsigned int n, double * result);
+int     gsl_sf_fact_e(unsigned int n, double * result);
+double  gsl_sf_fact(unsigned int n);
 
 
 /* n!! = n(n-2)(n-4) ... 
  *
  * exceptions: GSL_EDOM, GSL_OVRFLW
  */
-int gsl_sf_doublefact_impl(unsigned int n, double * result);
-int gsl_sf_doublefact_e(unsigned int n, double * result);
+int     gsl_sf_doublefact_impl(unsigned int n, double * result);
+int     gsl_sf_doublefact_e(unsigned int n, double * result);
+double  gsl_sf_doublefact(unsigned int n);
 
 
 /* log(n!) 
@@ -89,11 +91,38 @@ double  gsl_sf_choose(unsigned int n, unsigned int m);
  *   log( (a)_n )
  *   where (a)_n := Gamma[a + n]/Gamma[a]
  *
+ * a > 0, a+x > 0
+ *
  * exceptions:  GSL_EDOM
  */
-int     gsl_sf_lnpoch_impl(double a, int n, double * result);
-int     gsl_sf_lnpoch_e(double a, int n, double * result);
-double  gsl_sf_lnpoch(double a, int n);
- 
- 
+int     gsl_sf_lnpoch_impl(double a, double x, double * result);
+int     gsl_sf_lnpoch_e(double a, double x, double * result);
+double  gsl_sf_lnpoch(double a, double x);
+
+
+/* Logarithm of Pochammer (Apell) symbol, with sign information.
+ *   result = log( |(a)_n| )
+ *   sgn    = sgn( (a)_n )
+ *   where (a)_n := Gamma[a + n]/Gamma[a]
+ *
+ * a != neg integer, a+x != neg integer
+ *
+ * exceptions:  GSL_EDOM
+ */
+int     gsl_sf_lnpoch_sgn_impl(double a, double x, double * result, double * sgn);
+int     gsl_sf_lnpoch_sgn_e(double a, double x, double * result, double * sgn);
+
+
+/* Relative Pochammer (Apell) symbol
+ *   ((a,x) - 1)/x
+ *   where (a,x) = (a)_x := Gamma[a + x]/Gamma[a]
+ *
+ * exceptions:  GSL_EDOM
+ */
+int     gsl_sf_pochrel_impl(double a, double x, double * result);
+int     gsl_sf_pochrel_e(double a, double x, double * result);
+double  gsl_sf_pochrel(double a, double x);
+
+
+
 #endif /* !GSL_GAMMAFUNCTION_H_ */
