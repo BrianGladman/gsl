@@ -1459,7 +1459,7 @@ operation to be possible.
 @node Matrix operations
 @subsection Matrix operations
 
-The following operations are only defined for real matrices.
+The following operations are defined for real and complex matrices.
 
 @deftypefun int gsl_matrix_add (gsl_matrix * @var{a}, const gsl_matrix * @var{b})
 This function adds the elements of matrix @var{b} to the elements of
@@ -1498,6 +1498,7 @@ matrix @var{a}, @math{a'(i,j) = a(i,j) + x}.
 @node  Finding maximum and minimum elements of matrices
 @subsection Finding maximum and minimum elements of matrices
 
+The following operations are only defined for real matrices.
 
 @deftypefun double gsl_matrix_max (const gsl_matrix * @var{m})
 This function returns the maximum value in the matrix @var{m}.
