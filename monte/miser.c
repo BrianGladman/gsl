@@ -22,7 +22,7 @@
 #define myMAX(a,b) ((a) >= (b) ? (a) : (b))
 #define myMIN(a,b) ((a) <= (b) ? (a) : (b))
 
-int gsl_monte_miser(gsl_monte_miser_state* state,
+int gsl_monte_miser_integrate(gsl_monte_miser_state* state,
 		    gsl_monte_f_T func, double xl[], double xu[], 
 		    unsigned long num_dim, unsigned long calls, 
 		    double *res, double *err)
@@ -56,7 +56,8 @@ int gsl_monte_miser(gsl_monte_miser_state* state,
   x = gsl_vector_alloc(num_dim);
 
   if (calls < state->min_calls_per_bisection) {
-    status = gsl_monte_plain(r, func, xl, xu, num_dim, calls, res, err);
+    status = gsl_monte_plain_integrate(state->plain_state, 
+			     func, xl, xu, num_dim, calls, res, err);
   }
   else {
     /* FIXME: This is bad when the estimate_calls come out less than
@@ -261,11 +262,11 @@ int gsl_monte_miser(gsl_monte_miser_state* state,
     }
 
     xu_tmp->data[i_bisect] = x_mid->data[i_bisect];
-    status = gsl_monte_miser(state, func, xl_tmp->data, xu_tmp->data, 
+    status = gsl_monte_miser_integrate(state, func, xl_tmp->data, xu_tmp->data, 
 			     num_dim, calls_l, &res_l, &err_l);
     xl_tmp->data[i_bisect] = x_mid->data[i_bisect];
     xu_tmp->data[i_bisect] = xu[i_bisect];
-    status = gsl_monte_miser(state, func, xl_tmp->data, xu_tmp->data, 
+    status = gsl_monte_miser_integrate(state, func, xl_tmp->data, xu_tmp->data, 
 			     num_dim, calls_r, res, err);
 
     *res += res_l;
@@ -354,6 +355,9 @@ int gsl_monte_miser_init(gsl_monte_miser_state* state)
   state->dither = 0.0;
   state->estimate_style = ESTIMATE_STYLE_NR;
   state->ranf = gsl_rng_alloc(gsl_rng_env_setup());
+
+  state->plain_state = gsl_monte_plain_alloc();
+  gsl_monte_plain_init(state->plain_state);
 
   state->init_done = 1;
   return GSL_SUCCESS;

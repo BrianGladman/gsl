@@ -76,7 +76,8 @@ int main()
 
   printf("Testing product function\n");
   for (num_dim = 1; num_dim < 10; num_dim++) {
-    gsl_monte_vegas(s, f0, xl, xu, num_dim, calls, &res, &err, &chisq);
+    status = gsl_monte_vegas_integrate(s, f0, xl, xu, num_dim, calls, 
+				       &res, &err, &chisq);
     gsl_test_rel(res, 1.0, tol, "vegas(f0), dim=%d, err=%.4f, chisq=%.4f", 
 		 num_dim, err, chisq); 
   }
@@ -94,7 +95,8 @@ int main()
       s->alpha -= 0.2; /* Lepage has=1 for n=9 so we step toward that. */
     if (num_dim > 8)
       calls = 15000;
-    status = gsl_monte_vegas(s, f1, xl, xu, num_dim, calls, &res, &err, &chisq);
+    status = gsl_monte_vegas_integrate(s, f1, xl, xu, num_dim, calls, 
+				       &res, &err, &chisq);
     gsl_test_rel(res, 1.0, tol, "vegas(f1), dim=%d, err=%.4f, chisq=%.4f", 
 		 num_dim, err, chisq); 
   }
@@ -131,7 +133,8 @@ int main()
     /* let's try same trick of stepping alpha */
     if (num_dim > 4) 
       s->alpha -= (double) step/10.0; 
-    status = gsl_monte_vegas(s, f2, xl, xu, num_dim, calls, &res, &err, &chisq);
+    status = gsl_monte_vegas_integrate(s, f2, xl, xu, num_dim, calls, 
+				       &res, &err, &chisq);
     gsl_test_rel(res, 1.0, tol, "vegas(f2), dim=%d, err=%.4f, chisq=%.4f", 
 		 num_dim, err, chisq); 
   }
@@ -145,7 +148,8 @@ int main()
 
   printf("Testing Tsuda's function\n");
   for (num_dim = 1; num_dim < 10; num_dim++) {
-    status = gsl_monte_vegas(s, f3, xl, xu, num_dim, calls, &res, &err, &chisq);
+    status = gsl_monte_vegas_integrate(s, f3, xl, xu, num_dim, calls, 
+				       &res, &err, &chisq);
     gsl_test_rel(res, 1.0, tol, "vegas(f3), dim=%d, err=%.4f, chisq=%.4f", 
 		 num_dim, err, chisq); 
   }

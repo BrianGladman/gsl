@@ -14,7 +14,7 @@
 #include <gsl_monte_plain.h>
 #include <gsl_rng.h>
 
-int gsl_monte_plain(const gsl_monte_plain_state *state, 
+int gsl_monte_plain_integrate(const gsl_monte_plain_state *state, 
 		    const gsl_monte_f_T fun, 
 		    const double* xl, const double* xu, const size_t num_dim, 
 		    const size_t calls, double* res, double* err)

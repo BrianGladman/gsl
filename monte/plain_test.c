@@ -75,7 +75,8 @@ int main()
   printf("Testing constant function and normalization\n");
   for (num_dim = 1; num_dim < 10; num_dim++) {
     calls *= 1.2;
-    gsl_monte_plain(s, fconst, xl, xu2, num_dim, calls, &res, &err);
+    status = gsl_monte_plain_integrate(s, fconst, xl, xu2, num_dim, calls, 
+				       &res, &err);
     gsl_test_rel(res, pow(2, num_dim), tol, 
 		 "plain(fconst), calls=%d, dim=%d, err=%.4f", 
 		 calls, num_dim, err); 
@@ -85,7 +86,8 @@ int main()
   printf("Testing product function\n");
   for (num_dim = 1; num_dim < 10; num_dim++) {
     calls *= 1.8;
-    gsl_monte_plain(s, f0, xl, xu, num_dim, calls, &res, &err);
+    status = gsl_monte_plain_integrate(s, f0, xl, xu, num_dim, calls, 
+				       &res, &err);
     gsl_test_rel(res, 1.0, tol, "plain(f0), calls=%d, dim=%d, err=%.4f", 
 		 calls, num_dim, err); 
   }
@@ -109,7 +111,8 @@ int main()
     if ( num_dim == 9) {
       tol = 0.14;
     }
-    status = gsl_monte_plain(s, f1, xl, xu, num_dim, calls, &res, &err);
+    status = gsl_monte_plain_integrate(s, f1, xl, xu, num_dim, calls, 
+				       &res, &err);
     gsl_test_rel(res, 1.0, tol, "plain(f1), calls=%d, dim=%d, err=%.4f", 
 		 calls, num_dim, err); 
   }
@@ -136,7 +139,8 @@ int main()
       calls = 210000;
       break;
     }
-    status = gsl_monte_plain(s, f2, xl, xu, num_dim, calls, &res, &err);
+    status = gsl_monte_plain_integrate(s, f2, xl, xu, num_dim, calls, 
+				       &res, &err);
     gsl_test_rel(res, 1.0, tol, "plain(f2), calls=%d, dim=%d, err=%.4f", 
 		 calls, num_dim, err); 
   }
@@ -150,7 +154,8 @@ int main()
     calls *= 1.2;
     if ( num_dim == 6 )
       tol *= 3;
-    status = gsl_monte_plain(s, f3, xl, xu, num_dim, calls, &res, &err);
+    status = gsl_monte_plain_integrate(s, f3, xl, xu, num_dim, calls, 
+				       &res, &err);
     gsl_test_rel(res, 1.0, tol, "plain(f3), calls=%d, dim=%d, err=%.4f", 
 		 calls, num_dim, err); 
   }

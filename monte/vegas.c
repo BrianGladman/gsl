@@ -75,7 +75,7 @@ inline void init_array(double array[GSL_V_BINS_MAX+1][GSL_V_MAX_DIM],
 		       int imax, unsigned long jmax);
 
 
-int gsl_monte_vegas(gsl_monte_vegas_state *state,
+int gsl_monte_vegas_integrate(gsl_monte_vegas_state *state,
 		    gsl_monte_f_T fxn, double xl[], double xu[], 
 		    unsigned long num_dim, unsigned long calls,
 		    double* tot_int, double* tot_sig, double* chi_sq_ptr)
