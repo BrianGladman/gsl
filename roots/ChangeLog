@@ -1,3 +1,9 @@
+Wed Nov  4 16:08:32 1998  Brian Gough  <bjg@vvv.lanl.gov>
+
+	* brent.c (gsl_root_brent): on each iteration keep track of
+ 	current best estimates of the root and the bounds so that they are
+ 	returned to the user if the function exits prematurely.
+
 Mon Oct 26 16:31:21 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
 	* in all routines with upper and lower bounds if a root is found

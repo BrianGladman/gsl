@@ -164,10 +164,13 @@ gsl_root_brent (double *root, double (*f) (double),
 
       SAFE_FUNC_CALL (f, b, fb);
 
-    }
+      /* Update the best estimate of the root and bounds on each
+         iteration */
 
-  *lower_bound = b;
-  *upper_bound = c;
+      *root = b;
+      *lower_bound = b;
+      *upper_bound = c;
+    }
 
   GSL_ERROR ("exceeded maximum number of iterations", GSL_EMAXITER);
 
