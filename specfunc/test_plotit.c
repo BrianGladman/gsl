@@ -19,17 +19,20 @@ int main(int argc, char * argv[])
   double nu = 100.;
   int n = 2;
 
-  for(n=1; n<=1000; n++) {
-    x = 50.0 * n;
-    gsl_sf_bessel_Inu_scaled_asymp_unif_impl((double)n, x, &y);
-    printf("%3d    %22.17g   %22.17g    %22.17g\n",
-	    n,
-	    x,
-	    y,
-	    (n - pow(n, 0.34))/n
-	    );
+  struct gsl_sf_ChebSeries * cs = gsl_sf_cheb_new(sin, -M_PI, M_PI, 15);
+  
+  for(x=-M_PI; x<M_PI; x += 0.1) {
+    printf("%20.16g    %20.16g %20.16g     %20.16g %20.16g    %20.16g %20.16g\n",
+           x,
+	   gsl_sf_cheb_eval(x, cs),
+	   sin(x),
+	   gsl_sf_cheb_eval_deriv(x, cs),
+	   cos(x),
+	   gsl_sf_cheb_eval_integ(x, cs),
+	   -cos(x)
+	   );
   }
-
+  exit(0);
 
 /*
   for(x=xmin; x<xmax; x += dx) {

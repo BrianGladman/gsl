@@ -89,12 +89,16 @@ static double debye_u5(double * tpow)
 void plotto(void)
 {
   double x;
-  for(x=1.; x<=2.; x += 0.01) {
+  for(x=1.; x<=2.; x += 0.02) {
     int j;
     double xpow[16];
     xpow[0] = 1.;
     for(j=1; j<16; j++) xpow[j] = x * xpow[j-1];
-    printf("%6.4g  %6.4g %6.4g %6.4g %6.4g %6.4g\n", x, debye_u1(xpow), debye_u2(xpow), debye_u3(xpow), debye_u4(xpow), debye_u5(xpow));
+    printf("%6.4g  %6.4g    %6.4g %6.4g %6.4g %6.4g %6.4g\n",
+           x, 10.*xpow[5]*xpow[5]*xpow[5],
+           debye_u1(xpow), debye_u2(xpow), debye_u3(xpow),
+	   debye_u4(xpow), debye_u5(xpow)
+	   );
   }
 }
 
@@ -232,17 +236,38 @@ int gsl_sf_bessel_Knu_scaled_asympx_impl(const double nu, const double x, double
 
 /* nu -> Inf; x < nu   [Abramowitz+Stegun, 9.3.7]
  *
- * Error depends on coth_a = 1/sqrt(1-(x/nu)^2); we are going up to coth_a^{15},
- * ie debye_u5(), so we want coth_a to be near enough to 1 that this polynomial
- * does not start to dominate. Roughly then, we want 1 + 15/2 (x/nu)^2 ~ 1,
- * so just x < C nu, with C << sqrt(2/15) = 0.365.
+ * error:
+ *   In the discussion below of the error in the Inu uniform expansion,
+ *   we see how the error of the form u_N(t)/nu^N behaves. The difference
+ *   here is that t > 1, so the polynomials are not well controlled. We
+ *   must restrict ourselves to regions with x < nu since
+ *   t = coth_a = 1/sqrt(1-(x/nu)^2). We can make some rough observations
+ *   as follows.
+ *
+ *   We are going up to coth_a^{15}, ie debye_u5(), so we want coth_a to be
+ *   near enough to 1 that this polynomial does not start to dominate.
+ *   Roughly then, we want 1 + 15/2 (x/nu)^2 ~ 1, so then x << C nu,
+ *   with C = sqrt(2/15) = 0.365.
+ *
+ *   Let's say that we only allow x < 0.5 nu. Then |u_6(t)| < 40, empirically.
+ *   So the error is less than 40/nu^6. However, we are in a nonlinear
+ *   regime already for x = 0.5nu, so we need to check things numerically.
+ *   We will choose a condition valid for x < 0.5 nu, with an educated guess.
  *
  * empirical error analysis, assuming 14 digit requirement:
+ *   choose  x < 0.500 nu   ==>  nu > 340
  *   choose  x < 0.365 nu   ==>  nu > 200
  *   choose  x < 0.250 nu   ==>  nu > 125
- *   choose  x < 0.100 nu   ==>  nu >  80
+ *   choose  x < 0.100 nu   ==>  nu >  85
  *
- * The dependence on the required precision is not obvious to me.
+ *   Our educated guess for the condition is, with x < 0.5 nu,
+ *      0.4 / (nu^2 (1-(x/nu)^2)^6) < MACH_EPS^{1/3}
+ *   or
+ *      0.63 / (nu (1-(x/nu)^2)^3)  < MACH_EPS^{1/6}
+ *
+ *   The various powers here make sense since they correspond to the
+ *   correct power of t appearing in the highest order term in u_6(t),
+ *   which is t^{18}.
  */
 int gsl_sf_bessel_Jnu_asymp_Debye_impl(const double nu, const double x, double * result)
 {
@@ -265,11 +290,9 @@ int gsl_sf_bessel_Jnu_asymp_Debye_impl(const double nu, const double x, double *
 }
 
 /* nu -> Inf; x < nu   [Abramowitz+Stegun, 9.3.7]
- * 
- * empirical error analysis, assuming 14 digit requirement:
- *   choose  x < 0.365 nu   ==>  nu > 200
- *   choose  x < 0.250 nu   ==>  nu > 125
- *   choose  x < 0.100 nu   ==>  nu >  80
+ *
+ * error:
+ *   same as discussion above for Jnu
  */
 int gsl_sf_bessel_Ynu_asymp_Debye_impl(const double nu, const double x, double * result)
 {
@@ -293,13 +316,33 @@ int gsl_sf_bessel_Ynu_asymp_Debye_impl(const double nu, const double x, double *
 
 /* nu -> Inf; uniform in x > 0  [Abramowitz+Stegun, 9.7.7]
  *
+ * error:
+ *   The error has the form u_N(t)/nu^N  where  0 <= t <= 1.
+ *   It is not hard to show that |u_N(t)| is small for such t.
+ *   We have N=6 here, and |u_6(t)| < 0.025, so the error is clearly
+ *   bounded by 0.025/nu^6. This gives the asymptotic bound on nu
+ *   seen below as nu ~ 100. For general MACH_EPS it will be 
+ *                     nu > 0.5 / MACH_EPS^(1/6)
+ *   When t is small, the bound is even better because |u_N(t)| vanishes
+ *   as t->0. In fact u_N(t) ~ C t^N as t->0, with C ~= 0.1.
+ *   We write
+ *                     err_N <= min(0.025, C(1/(1+(x/nu)^2))^3) / nu^6
+ *   therefore
+ *                     min(0.29/nu^2, 0.5/(nu^2+x^2)) < MACH_EPS^{1/3}
+ *   and this is the general form.
+ *
  * empirical error analysis, assuming 14 digit requirement:
  *   choose   x > 50.000 nu   ==>  nu >   3
  *   choose   x > 10.000 nu   ==>  nu >  15
  *   choose   x >  2.000 nu   ==>  nu >  50
  *   choose   x >  1.000 nu   ==>  nu >  75
  *   choose   x >  0.500 nu   ==>  nu >  80
- *   choose   x >  0.100 nu   ==>  nu >  80
+ *   choose   x >  0.100 nu   ==>  nu >  83
+ *
+ * This makes sense. For x << nu, the error will be of the form u_N(1)/nu^N,
+ * since the polynomial term will be evaluated near t=1, so the bound
+ * on nu will become constant for small x. Furthermore, decreasing x with
+ * nu fixed will decrease the error.
  */
 int gsl_sf_bessel_Inu_scaled_asymp_unif_impl(const double nu, const double x, double * result)
 {
@@ -320,7 +363,11 @@ int gsl_sf_bessel_Inu_scaled_asymp_unif_impl(const double nu, const double x, do
   return GSL_SUCCESS;
 }
 
-/* nu -> Inf; uniform in x > 0  [Abramowitz+Stegun, 9.7.8] */
+/* nu -> Inf; uniform in x > 0  [Abramowitz+Stegun, 9.7.8]
+ *
+ * error:
+ *   identical to that above for Inu_scaled
+ */
 int gsl_sf_bessel_Knu_scaled_asymp_unif_impl(const double nu, const double x, double * result)
 {
   int i;
@@ -339,7 +386,10 @@ int gsl_sf_bessel_Knu_scaled_asymp_unif_impl(const double nu, const double x, do
   return GSL_SUCCESS;
 }
 
-
+int gsl_sf_bessel_Jnu_asymp_trans_impl(const double nu, const double x, double * result)
+{
+  
+}
 
 
 /************************************************************************

@@ -1,7 +1,6 @@
 /* Author:  G. Jungman
  * RCS:     $Id$ 
  */
-#include <stdio.h>
 #include <math.h>
 #include <gsl_errno.h>
 #include <gsl_math.h>
@@ -198,25 +197,33 @@ static double ath2_data[32] = {
 static struct gsl_sf_ChebSeries am21_cs = {
   am21_data,
   39,
-  -1, 1
+  -1, 1,
+  (double *) 0,
+  (double *) 0
 };
 
 static struct gsl_sf_ChebSeries ath1_cs = {
   ath1_data,
   35,
-  -1, 1
+  -1, 1,
+  (double *) 0,
+  (double *) 0
 };
 
 static struct gsl_sf_ChebSeries am22_cs = {
   am22_data,
   32,
-  -1, 1
+  -1, 1,
+  (double *) 0,
+  (double *) 0
 };
 
 static struct gsl_sf_ChebSeries ath2_cs = {
   ath2_data,
   31,
-  -1, 1
+  -1, 1,
+  (double *) 0,
+  (double *) 0
 };
 
 
@@ -291,13 +298,17 @@ static double ai_data_g[8] = {
 static struct gsl_sf_ChebSeries aif_cs = {
   ai_data_f,
   8,
-  -1, 1
+  -1, 1,
+  (double *) 0,
+  (double *) 0
 };
 
 static struct gsl_sf_ChebSeries aig_cs = {
   ai_data_g,
   7,
-  -1, 1
+  -1, 1,
+  (double *) 0,
+  (double *) 0
 };
 
 
@@ -370,23 +381,31 @@ static double data_big2[10] = {
 static struct gsl_sf_ChebSeries bif_cs = {
   data_bif,
   8,
-  -1, 1
+  -1, 1,
+  (double *) 0,
+  (double *) 0
 };
 static struct gsl_sf_ChebSeries big_cs = {
   data_big,
   7,
-  -1, 1
+  -1, 1,
+  (double *) 0,
+  (double *) 0
 };
 
 static struct gsl_sf_ChebSeries bif2_cs = {
   data_bif2,
   9,
-  -1, 1
+  -1, 1,
+  (double *) 0,
+  (double *) 0
 };
 static struct gsl_sf_ChebSeries big2_cs = {
   data_big2,
   9,
-  -1, 1
+  -1, 1,
+  (double *) 0,
+  (double *) 0
 };
 
 
@@ -511,31 +530,37 @@ static double data_bip2[29] = {
 };
 
 
-static struct gsl_sf_ChebSeries cs_aip = {
+static struct gsl_sf_ChebSeries aip_cs = {
   data_aip,
   33,
-  -1, 1
+  -1, 1,
+  (double *) 0,
+  (double *) 0
 };
 
-static struct gsl_sf_ChebSeries cs_bip = {
+static struct gsl_sf_ChebSeries bip_cs = {
   data_bip,
   23,
-  -1, 1
+  -1, 1,
+  (double *) 0,
+  (double *) 0
 };
 
-static struct gsl_sf_ChebSeries cs_bip2 = {
+static struct gsl_sf_ChebSeries bip2_cs = {
   data_bip2,
   28,
-  -1, 1
+  -1, 1,
+  (double *) 0,
+  (double *) 0
 };
-   
+
 
 /* should only be called for x >= 1.0 */
 static double airy_aie(const double x)
 {
   double sqx = sqrt(x);
   double z = 2.0/(x*sqx) - 1.0;
-  return (.28125 + gsl_sf_cheb_eval(z, &cs_aip))/sqrt(sqx);
+  return (.28125 + gsl_sf_cheb_eval(z, &aip_cs))/sqrt(sqx);
 }
 
 /* should only be called for x >= 2.0 */
@@ -547,12 +572,12 @@ static double airy_bie(const double x)
   if(x < 4.0) {
     double sqx = sqrt(x);
     double z   = ATR/(x*sqx) + BTR;
-    return (0.625 + gsl_sf_cheb_eval(z, &cs_bip))/sqrt(sqx);
+    return (0.625 + gsl_sf_cheb_eval(z, &bip_cs))/sqrt(sqx);
   }
   else {
     double sqx = sqrt(x);
     double z = 16.0/(x*sqx) - 1.0;
-    return (0.625 + gsl_sf_cheb_eval(z, &cs_bip2))/sqrt(sqx);
+    return (0.625 + gsl_sf_cheb_eval(z, &bip2_cs))/sqrt(sqx);
   }
 }
 
