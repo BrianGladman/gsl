@@ -8,7 +8,7 @@ noinst_HEADERS = enorm.c
 
 INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../linalg -I$(srcdir)/../matrix -I$(srcdir)/../vector -I$(srcdir)/../block -I$(srcdir)/../ieee-utils -I$(srcdir)/../err
 
-libgslmultiroots_a_SOURCES = fdjac.c fsolver.c fdfsolver.c convergence.c  newton.c gnewton.c dnewton.c broyden.c
+libgslmultiroots_a_SOURCES = fdjac.c fsolver.c fdfsolver.c convergence.c  newton.c gnewton.c dnewton.c broyden.c hybrid.c hybridj.c
 
 
 check_PROGRAMS = test

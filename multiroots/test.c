@@ -13,21 +13,23 @@ int test_f (const char * desc, gsl_multiroot_function_fdf * fdf, initpt_function
 int 
 main (void)
 {
-  const gsl_multiroot_fsolver_type * fsolvers[3] ;
+  const gsl_multiroot_fsolver_type * fsolvers[4] ;
   const gsl_multiroot_fsolver_type ** T1 ;
 
-  const gsl_multiroot_fdfsolver_type * fdfsolvers[3] ;
+  const gsl_multiroot_fdfsolver_type * fdfsolvers[4] ;
   const gsl_multiroot_fdfsolver_type ** T2 ;
 
   double f;
 
   fsolvers[0] = gsl_multiroot_fsolver_dnewton;
   fsolvers[1] = gsl_multiroot_fsolver_broyden;
-  fsolvers[2] = 0;
+  fsolvers[2] = gsl_multiroot_fsolver_hybrid;
+  fsolvers[3] = 0;
 
   fdfsolvers[0] = gsl_multiroot_fdfsolver_newton;
   fdfsolvers[1] = gsl_multiroot_fdfsolver_gnewton;
-  fdfsolvers[2] = 0 ;
+  fdfsolvers[2] = gsl_multiroot_fdfsolver_hybridj;
+  fdfsolvers[3] = 0 ;
 
   gsl_ieee_env_setup();
 
@@ -165,7 +167,7 @@ test_fdf (const char * desc, gsl_multiroot_function_fdf * function,
   gsl_matrix_free(J);
   gsl_vector_free(x);
 
-  gsl_test(status, "%s with %s (%g), %u iterations, residual = %.2g", desc, T->name, factor, iter, residual);
+  gsl_test(status, "%s on %s (%g), %u iterations, residual = %.2g", T->name, desc, factor, iter, residual);
 
   return status;
 }
@@ -221,7 +223,7 @@ test_f (const char * desc, gsl_multiroot_function_fdf * fdf,
   gsl_multiroot_fsolver_free (s);
   gsl_vector_free(x);
 
-  gsl_test(status, "%s with %s (%g), %u iterations, residual = %.2g", desc, T->name, factor, iter, residual);
+  gsl_test(status, "%s on %s (%g), %u iterations, residual = %.2g", T->name, desc, factor, iter, residual);
 
   return status;
 }
