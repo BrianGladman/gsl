@@ -26,7 +26,7 @@
 #include <gsl/gsl_test.h>
 
 #define CHECK(x) errors[n].number = x ; errors[n].name = #x ; n++ ;
-#define MAX_ERRS 32
+#define MAX_ERRS 64
 
 int verbose = 0 ;
 
