@@ -243,7 +243,7 @@ test_choose (void)
 	}
     }
   
-  gsl_test (status, "gsl_ran_choose on {0, 1, 2, 3, 4, 5, 6, 7, 8, 9}") ;
+  gsl_test (status, "gsl_ran_choose (3) on {0, 1, 2, 3, 4, 5, 6, 7, 8, 9}") ;
 
 }
 
