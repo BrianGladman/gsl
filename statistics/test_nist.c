@@ -17,6 +17,10 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+/* These tests are based on the NIST Statistical Reference Datasets
+   See http://www.nist.gov/itl/div898/strd/index.html for more
+   information. */
+
 #include <config.h>
 #include <stdlib.h>
 #include <math.h>
