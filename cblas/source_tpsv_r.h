@@ -26,14 +26,15 @@
     const int nonunit = (Diag == CblasNonUnit);
     size_t ix, jx;
     size_t i, j;
+    const int Trans = (TransA != CblasConjTrans) ? TransA : CblasTrans;
 
     if (N == 0)
 	return;
 
     /* form  x := inv( A )*x */
 
-    if ((order == CblasRowMajor && TransA == CblasNoTrans && Uplo == CblasUpper)
-        || (order == CblasColMajor && TransA == CblasTrans && Uplo == CblasLower)) {
+    if ((order == CblasRowMajor && Trans == CblasNoTrans && Uplo == CblasUpper)
+        || (order == CblasColMajor && Trans == CblasTrans && Uplo == CblasLower)) {
       /* backsubstitution */
       ix = OFFSET(N, incX) + incX * (N - 1);
       if (nonunit) {
@@ -55,8 +56,8 @@
         }
         ix -= incX;
       }
-    } else if ((order == CblasRowMajor && TransA == CblasNoTrans && Uplo == CblasLower)
-               || (order == CblasColMajor && TransA == CblasTrans && Uplo == CblasUpper)) {
+    } else if ((order == CblasRowMajor && Trans == CblasNoTrans && Uplo == CblasLower)
+               || (order == CblasColMajor && Trans == CblasTrans && Uplo == CblasUpper)) {
 
       /* forward substitution */
       ix = OFFSET(N, incX);
@@ -79,8 +80,8 @@
         }
         ix += incX;
       }
-    } else if ((order == CblasRowMajor && TransA == CblasTrans && Uplo == CblasUpper)
-               || (order == CblasColMajor && TransA == CblasNoTrans && Uplo == CblasLower)) {
+    } else if ((order == CblasRowMajor && Trans == CblasTrans && Uplo == CblasUpper)
+               || (order == CblasColMajor && Trans == CblasNoTrans && Uplo == CblasLower)) {
       
       /* form  x := inv( A' )*x */
       
@@ -105,8 +106,8 @@
         }
         ix += incX;
       }
-    } else if ((order == CblasRowMajor && TransA == CblasTrans && Uplo == CblasLower)
-               || (order == CblasColMajor && TransA == CblasNoTrans && Uplo == CblasUpper)) {
+    } else if ((order == CblasRowMajor && Trans == CblasTrans && Uplo == CblasLower)
+               || (order == CblasColMajor && Trans == CblasNoTrans && Uplo == CblasUpper)) {
 
       /* backsubstitution */
       ix = OFFSET(N, incX) + (N-1) * incX;

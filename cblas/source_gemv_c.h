@@ -30,6 +30,9 @@
     const BASE alpha_real = REAL0(alpha), alpha_imag = IMAG0(alpha);
     const BASE beta_real = REAL0(beta), beta_imag = IMAG0(beta);
 
+    if (M == 0 || N == 0)
+      return;
+
     if ((alpha_real == 0.0 && alpha_imag == 0.0)
 	&& (beta_real == 1.0 && beta_imag == 0.0))
 	return;

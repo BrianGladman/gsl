@@ -26,9 +26,13 @@
     size_t i, j;
     size_t ix, jx;
     const int nounit = (Diag == CblasNonUnit);
+    const int Trans = (TransA != CblasConjTrans) ? TransA : CblasTrans;
 
-    if ((order == CblasRowMajor && TransA == CblasNoTrans && Uplo == CblasUpper)
-	|| (order == CblasColMajor && TransA == CblasTrans && Uplo == CblasLower)) {
+    if (N == 0)
+      return;
+
+    if ((order == CblasRowMajor && Trans == CblasNoTrans && Uplo == CblasUpper)
+	|| (order == CblasColMajor && Trans == CblasTrans && Uplo == CblasLower)) {
 	/* form  x:= A*x */
 
       ix = OFFSET(N, incX);
@@ -44,8 +48,8 @@
         X[ix] = temp;
         ix += incX;
       }
-    } else if ((order == CblasRowMajor && TransA == CblasNoTrans && Uplo == CblasLower)
-               || (order == CblasColMajor && TransA == CblasTrans && Uplo == CblasUpper)) {
+    } else if ((order == CblasRowMajor && Trans == CblasNoTrans && Uplo == CblasLower)
+               || (order == CblasColMajor && Trans == CblasTrans && Uplo == CblasUpper)) {
 
       ix = OFFSET(N, incX) + (N - 1) * incX;
       for (i = N; i > 0 && i--;) {
@@ -60,8 +64,8 @@
         X[ix] = temp;
         ix -= incX;
       }
-    } else if ((order == CblasRowMajor && TransA == CblasTrans && Uplo == CblasUpper)
-	       || (order == CblasColMajor && TransA == CblasNoTrans && Uplo == CblasLower)) {
+    } else if ((order == CblasRowMajor && Trans == CblasTrans && Uplo == CblasUpper)
+	       || (order == CblasColMajor && Trans == CblasNoTrans && Uplo == CblasLower)) {
 	/* form  x := A'*x */
       
       ix = OFFSET(N, incX) + (N - 1) * incX;
@@ -77,8 +81,8 @@
         X[ix] = temp;
         ix -= incX;
       }
-    } else if ((order == CblasRowMajor && TransA == CblasTrans && Uplo == CblasLower)
-	       || (order == CblasColMajor && TransA == CblasNoTrans && Uplo == CblasUpper)) {
+    } else if ((order == CblasRowMajor && Trans == CblasTrans && Uplo == CblasLower)
+	       || (order == CblasColMajor && Trans == CblasNoTrans && Uplo == CblasUpper)) {
       
       ix = OFFSET(N, incX);
       for (i = 0; i < N; i++) {

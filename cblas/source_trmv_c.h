@@ -27,16 +27,14 @@
   const int Trans = (TransA != CblasConjTrans) ? TransA : CblasTrans;
   const int nounit = (Diag == CblasNonUnit);
   
-  size_t i;
-  size_t j;
-  size_t ix, jx;
+  size_t i, j;
 
-  if ((order == CblasRowMajor && TransA == CblasNoTrans && Uplo == CblasUpper)
-      || (order == CblasColMajor && TransA == CblasTrans && Uplo == CblasLower))
+  if ((order == CblasRowMajor && Trans == CblasNoTrans && Uplo == CblasUpper)
+      || (order == CblasColMajor && Trans == CblasTrans && Uplo == CblasLower))
     {
 
       /* form  x := A*x */
-      ix = OFFSET (N, incX);
+      size_t ix = OFFSET (N, incX);
       for (i = 0; i < N; i++)
 	{
 	  BASE temp_r = 0.0;
@@ -74,18 +72,18 @@
 	}
     }
   else
-    if ((order == CblasRowMajor && TransA == CblasNoTrans && Uplo == CblasLower) 
-        || (order == CblasColMajor && TransA == CblasTrans && Uplo == CblasUpper))
+    if ((order == CblasRowMajor && Trans == CblasNoTrans && Uplo == CblasLower) 
+        || (order == CblasColMajor && Trans == CblasTrans && Uplo == CblasUpper))
     {
 
-      ix = OFFSET (N, incX) + (N - 1) * incX;
+      size_t ix = OFFSET (N, incX) + (N - 1) * incX;
 
       for (i = N; i > 0 && i--;)
 	{
 	  BASE temp_r = 0.0;
 	  BASE temp_i = 0.0;
 	  const size_t j_max = i;
-	  jx = OFFSET (N, incX);
+	  size_t jx = OFFSET (N, incX);
 	  for (j = 0; j < j_max; j++)
 	    {
 	      const BASE x_real = REAL (X, jx);
@@ -117,19 +115,19 @@
 	}
     }
   else
-    if ((order == CblasRowMajor && TransA == CblasTrans && Uplo == CblasUpper)
-	|| (order == CblasColMajor && TransA == CblasNoTrans && Uplo == CblasLower))
+    if ((order == CblasRowMajor && Trans == CblasTrans && Uplo == CblasUpper)
+	|| (order == CblasColMajor && Trans == CblasNoTrans && Uplo == CblasLower))
     {
       /* form  x := A'*x */
 
-      ix = OFFSET (N, incX) + (N - 1) * incX;
+      size_t ix = OFFSET (N, incX) + (N - 1) * incX;
       for (i = N; i > 0 && i--;)
 	{
 	  BASE temp_r = 0.0;
 	  BASE temp_i = 0.0;
 	  const size_t j_max = i;
-	  jx = OFFSET (N, incX);
-	  for (j = 0; j < i; j++)
+	  size_t jx = OFFSET (N, incX);
+	  for (j = 0; j < j_max; j++)
 	    {
 	      const BASE x_real = REAL (X, jx);
 	      const BASE x_imag = IMAG (X, jx);
@@ -161,16 +159,16 @@
 
     }
   else
-    if ((order == CblasRowMajor && TransA == CblasTrans && Uplo == CblasLower)
-	|| (order == CblasColMajor && TransA == CblasNoTrans && Uplo == CblasUpper))
+    if ((order == CblasRowMajor && Trans == CblasTrans && Uplo == CblasLower)
+	|| (order == CblasColMajor && Trans == CblasNoTrans && Uplo == CblasUpper))
     {
-      ix = OFFSET (N, incX);
+      size_t ix = OFFSET (N, incX);
       for (i = 0; i < N; i++)
 	{
 	  BASE temp_r = 0.0;
 	  BASE temp_i = 0.0;
 	  const size_t j_min = i + 1;
-	  jx = OFFSET (N, incX) + j_min * incX;
+	  size_t jx = OFFSET (N, incX) + j_min * incX;
 	  for (j = j_min; j < N; j++)
 	    {
 	      const BASE x_real = REAL (X, jx);

@@ -41,6 +41,8 @@
 	h22 = P[4];
     } else if (P[0] == -2.0) {
 	return;
+    } else {
+      BLAS_ERROR ("unrecognized value of P[0]");
     }
 
     for (n = 0; n < N; n++) {

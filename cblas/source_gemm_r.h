@@ -33,10 +33,10 @@
         n2 = N;
         F = A;
         ldf = lda;
-        TransF = TransA;
+        TransF = (TransA == CblasConjTrans) ? CblasTrans : TransA;
         G = B;
         ldg = ldb;
-        TransG = TransB;
+        TransG = (TransB == CblasConjTrans) ? CblasTrans : TransB;
       }
     else
       {
@@ -44,10 +44,10 @@
         n2 = M;
         F = B;
         ldf = ldb;
-        TransF = TransB;
+        TransF = (TransB == CblasConjTrans) ? CblasTrans : TransB;
         G = A;
         ldg = lda;
-        TransG = TransA;
+        TransG = (TransA == CblasConjTrans) ? CblasTrans : TransA;
       }
 
     /* form  y := beta*y */

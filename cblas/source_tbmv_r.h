@@ -25,68 +25,59 @@
 {
   int nounit = (Diag == CblasNonUnit);
   size_t i, j;
-  size_t ix, jx;
+  const int Trans = (TransA != CblasConjTrans) ? TransA : CblasTrans;
 
-  if ((order == CblasRowMajor && TransA == CblasNoTrans && Uplo == CblasUpper)
-      || (order == CblasColMajor && TransA == CblasTrans && Uplo == CblasLower))
+  if (N == 0)
+    return;
+
+  if ((order == CblasRowMajor && Trans == CblasNoTrans && Uplo == CblasUpper)
+      || (order == CblasColMajor && Trans == CblasTrans && Uplo == CblasLower))
     {
       /* form  x := A*x */
 
       size_t ix = OFFSET (N, incX);
       for (i = 0; i < N; i++)
 	{
-	  BASE temp = 0.0;
+	  BASE temp = (nounit ? A[lda * i + 0] : 1.0) * X[ix];
 	  const size_t j_min = i + 1;
 	  const size_t j_max = GSL_MIN (N, i + K + 1);
 	  size_t jx = OFFSET (N, incX) + j_min * incX;
+
 	  for (j = j_min; j < j_max; j++)
 	    {
-	      temp += X[jx] * A[lda * (K + i - j) + j];
+	      temp += X[jx] * A[lda * i + (j - i)];
 	      jx += incX;
 	    }
-	  if (nounit)
-	    {
-	      X[ix] = temp + X[ix] * A[lda * K + i];
-	    }
-	  else
-	    {
-	      X[ix] += temp;
-	    }
+          
+          X[ix] = temp;
 	  ix += incX;
 	}
     }
   else
-    if ((order == CblasRowMajor && TransA == CblasNoTrans && Uplo == CblasLower) 
-        || (order == CblasColMajor && TransA == CblasTrans && Uplo == CblasUpper))
+    if ((order == CblasRowMajor && Trans == CblasNoTrans && Uplo == CblasLower) 
+        || (order == CblasColMajor && Trans == CblasTrans && Uplo == CblasUpper))
     {
 
       size_t ix = OFFSET (N, incX) + (N - 1) * incX;
       for (i = N; i > 0 && i--;)
 	{
-	  BASE temp = 0.0;
-	  const size_t j_min = (K > i ? 0 : i - K);
+	  BASE temp = (nounit ? A[lda * i + K] : 1.0) * X[ix];
+	  const size_t j_min = (i > K ? i - K : 0);
 	  const size_t j_max = i;
 	  size_t jx = OFFSET (N, incX) + j_min * incX;
 	  for (j = j_min; j < j_max; j++)
 	    {
-	      temp += X[jx] * A[lda * (i - j) + j];
+	      temp += X[jx] * A[lda * i + (K-i+j)];
 	      jx += incX;
 	    }
-	  if (nounit)
-	    {
-	      X[ix] = temp + X[ix] * A[lda * 0 + i];
-	    }
-	  else
-	    {
-	      X[ix] += temp;
-	    }
+          X[ix] = temp;
 	  ix -= incX;
 	}
 
     }
   else
-    if ((order == CblasRowMajor && TransA == CblasTrans && Uplo == CblasUpper) 
-        || (order == CblasColMajor && TransA == CblasNoTrans && Uplo == CblasLower))
+    if ((order == CblasRowMajor && Trans == CblasTrans && Uplo == CblasUpper) 
+        || (order == CblasColMajor && Trans == CblasNoTrans && Uplo == CblasLower))
     {
       /* form  x := A'*x */
       size_t ix = OFFSET (N, incX) + (N - 1) * incX;
@@ -114,8 +105,8 @@
 	}
     }
   else
-    if ((order == CblasRowMajor && TransA == CblasTrans && Uplo == CblasLower) 
-        || (order == CblasColMajor && TransA == CblasNoTrans && Uplo == CblasUpper))
+    if ((order == CblasRowMajor && Trans == CblasTrans && Uplo == CblasLower) 
+        || (order == CblasColMajor && Trans == CblasNoTrans && Uplo == CblasUpper))
     {
 
       size_t ix = OFFSET (N, incX);

@@ -26,9 +26,10 @@
     int nounit = (Diag == CblasNonUnit);
     size_t i;
     size_t j;
+    const int Trans = (TransA != CblasConjTrans) ? TransA : CblasTrans;
 
-    if ((order == CblasRowMajor && TransA == CblasNoTrans && Uplo == CblasUpper)
-        || (order == CblasColMajor && TransA == CblasTrans && Uplo == CblasLower)) {
+    if ((order == CblasRowMajor && Trans == CblasNoTrans && Uplo == CblasUpper)
+        || (order == CblasColMajor && Trans == CblasTrans && Uplo == CblasLower)) {
 	/* form  x := A*x */
       
       size_t ix = OFFSET(N, incX);
@@ -48,8 +49,8 @@
         }
         ix += incX;
       }
-    } else if ((order == CblasRowMajor && TransA == CblasNoTrans && Uplo == CblasLower)
-               || (order == CblasColMajor && TransA == CblasTrans && Uplo == CblasUpper)) {
+    } else if ((order == CblasRowMajor && Trans == CblasNoTrans && Uplo == CblasLower)
+               || (order == CblasColMajor && Trans == CblasTrans && Uplo == CblasUpper)) {
       size_t ix = OFFSET(N, incX) + (N - 1) * incX;
       for (i = N; i > 0 && i--;) {
         BASE temp = 0.0;
@@ -68,8 +69,8 @@
         }
         ix -= incX;
       }
-    } else if ((order == CblasRowMajor && TransA == CblasTrans && Uplo == CblasUpper)
-               || (order == CblasColMajor && TransA == CblasNoTrans && Uplo == CblasLower)) {
+    } else if ((order == CblasRowMajor && Trans == CblasTrans && Uplo == CblasUpper)
+               || (order == CblasColMajor && Trans == CblasNoTrans && Uplo == CblasLower)) {
 	/* form  x := A'*x */
       size_t ix = OFFSET(N, incX) + (N - 1) * incX;
       for (i = N; i > 0 && i--;) {
@@ -90,8 +91,8 @@
         ix -= incX;
       }
     }
-    else if ((order == CblasRowMajor && TransA == CblasTrans && Uplo == CblasLower)
-             || (order == CblasColMajor && TransA == CblasNoTrans && Uplo == CblasUpper)) {
+    else if ((order == CblasRowMajor && Trans == CblasTrans && Uplo == CblasLower)
+             || (order == CblasColMajor && Trans == CblasNoTrans && Uplo == CblasUpper)) {
       size_t ix = OFFSET(N, incX);
       for (i = 0; i < N; i++) {
         BASE temp = 0.0;

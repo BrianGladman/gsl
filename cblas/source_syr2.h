@@ -19,8 +19,9 @@
 
 {
     size_t i, j;
-    size_t ix, jx;
-    size_t iy, jy;
+
+    if (N == 0)
+      return;
 
     if (alpha == 0.0)
       return;

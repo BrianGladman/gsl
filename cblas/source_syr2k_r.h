@@ -27,12 +27,17 @@
     if (Order == CblasRowMajor)
       {
         uplo = Uplo;
-        trans = Trans;
+        trans = (Trans == CblasConjTrans) ? CblasTrans : Trans;
       }
     else
       {
         uplo = (Uplo == CblasUpper) ? CblasLower : CblasUpper;
-        trans = (Trans == CblasNoTrans) ? CblasTrans : CblasNoTrans;
+
+        if (Trans == CblasTrans || Trans == CblasConjTrans) {
+          trans = CblasNoTrans;
+        } else {
+          trans = CblasTrans;
+        }
       }
 
     /* form  C := beta*C */

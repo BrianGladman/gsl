@@ -22,10 +22,15 @@
     size_t ix, iy;
     size_t lenX, lenY;
 
+    const int Trans = (TransA != CblasConjTrans) ? TransA : CblasTrans;
+
+    if (M == 0 || N == 0)
+      return;
+
     if (alpha == 0.0 && beta == 1.0)
 	return;
 
-    if (TransA == CblasNoTrans) {
+    if (Trans == CblasNoTrans) {
 	lenX = N;
 	lenY = M;
     } else {
@@ -51,8 +56,8 @@
     if (alpha == 0.0)
 	return;
 
-    if ((order == CblasRowMajor && TransA == CblasNoTrans)
-	|| (order == CblasColMajor && TransA == CblasTrans)) {
+    if ((order == CblasRowMajor && Trans == CblasNoTrans)
+	|| (order == CblasColMajor && Trans == CblasTrans)) {
 	/* form  y := alpha*A*x + y */
 	iy = OFFSET(lenY, incY);
 	for (i = 0; i < lenY; i++) {
@@ -65,8 +70,8 @@
 	    Y[iy] += alpha * temp;
 	    iy += incY;
 	}
-    } else if ((order == CblasRowMajor && TransA == CblasTrans)
-	       || (order == CblasColMajor && TransA == CblasNoTrans)) {
+    } else if ((order == CblasRowMajor && Trans == CblasTrans)
+	       || (order == CblasColMajor && Trans == CblasNoTrans)) {
 	/* form  y := alpha*A'*x + y */
 	ix = OFFSET(lenX, incX);
 	for (j = 0; j < lenX; j++) {

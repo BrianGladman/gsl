@@ -24,8 +24,7 @@
 
 {
   int conj = (order == CblasColMajor) ? -1 : 1;
-    size_t i, j, k;
-    size_t kk = 0;
+    size_t i, j;
 
     const double alpha_real = REAL0(alpha), alpha_imag = IMAG0(alpha);
     const double beta_real = REAL0(beta), beta_imag = IMAG0(beta);

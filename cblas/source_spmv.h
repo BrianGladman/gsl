@@ -23,9 +23,8 @@
  */
 
 {
-    size_t i, j, k;
-    size_t ix, iy, jx, jy;
-    size_t kk = 0;
+    size_t i, j;
+
 
     if (alpha == 0.0 && beta == 1.0)
 	return;

@@ -31,6 +31,9 @@
     const double alpha_real = REAL0(alpha), alpha_imag = IMAG0(alpha);
     const double beta_real = REAL0(beta), beta_imag = IMAG0(beta);
 
+    if (M == 0 || N == 0)
+      return;
+
     if ((alpha_real == 0.0 && alpha_imag == 0.0)
 	&& (beta_real == 1.0 && beta_imag == 0.0))
 	return;
@@ -84,8 +87,8 @@
           for (j = j_min; j < j_max; j++) {
             const BASE x_real = REAL(X, ix);
             const BASE x_imag = IMAG(X, ix);
-            const BASE A_real = REAL(A, lda * (U+i-j) + j);
-            const BASE A_imag = IMAG(A, lda * (U+i-j) + j);
+            const BASE A_real = REAL(A, lda * i + (L+j-i));
+            const BASE A_imag = IMAG(A, lda * i + (L+j-i));
             
             dotR += A_real * x_real - A_imag * x_imag;
             dotI += A_real * x_imag + A_imag * x_real;
@@ -153,8 +156,8 @@
           for (j = j_min; j < j_max; j++) {
             const BASE x_real = REAL(X, ix);
             const BASE x_imag = IMAG(X, ix);
-            const BASE A_real = REAL(A, lda * (U+i-j) + j);
-            const BASE A_imag = IMAG(A, lda * (U+i-j) + j);
+            const BASE A_real = REAL(A, lda * i + (L+j-i));
+            const BASE A_imag = IMAG(A, lda * i + (L+j-i));
             
             dotR += A_real * x_real - (-1.0) * A_imag * x_imag;
             dotI += A_real * x_imag + (-1.0) * A_imag * x_real;

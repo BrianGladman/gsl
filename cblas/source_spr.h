@@ -24,7 +24,9 @@
 
 {
     size_t i, j;
-    size_t ix, jx;
+
+    if (N == 0)
+      return;
 
     if (alpha == 0.0)
       return;

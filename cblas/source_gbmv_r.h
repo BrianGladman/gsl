@@ -24,13 +24,17 @@
 
 {
     size_t i, j;
-    size_t ix, iy;
     size_t lenX, lenY, L, U;
+
+    const int Trans = (TransA != CblasConjTrans) ? TransA : CblasTrans;
+
+    if (M == 0 || N == 0)
+      return;
 
     if (alpha == 0.0 && beta == 1.0)
 	return;
 
-    if (TransA == CblasNoTrans) {
+    if (Trans == CblasNoTrans) {
 	lenX = N;
 	lenY = M;
         L = KL;
@@ -44,13 +48,13 @@
 
     /* form  y := beta*y */
     if (beta == 0.0) {
-      iy = OFFSET(lenY, incY);
+      size_t iy = OFFSET(lenY, incY);
       for (i = 0; i < lenY; i++) {
         Y[iy] = 0;
         iy += incY;
       }
     } else if (beta != 1.0) {
-	iy = OFFSET(lenY, incY);
+        size_t iy = OFFSET(lenY, incY);
 	for (i = 0; i < lenY; i++) {
 	    Y[iy] *= beta;
 	    iy += incY;
@@ -60,38 +64,38 @@
     if (alpha == 0.0)
 	return;
 
-    if ((order == CblasRowMajor && TransA == CblasNoTrans)
-        || (order == CblasColMajor && TransA == CblasTrans)) {
+    if ((order == CblasRowMajor && Trans == CblasNoTrans)
+        || (order == CblasColMajor && Trans == CblasTrans)) {
 	/* form  y := alpha*A*x + y */
-	iy = OFFSET(lenY, incY);
+        size_t iy = OFFSET(lenY, incY);
 	for (i = 0; i < lenY; i++) {
 	    BASE temp = 0.0;
 	    const size_t j_min = (i > L ? i - L : 0);
 	    const size_t j_max = GSL_MIN(lenX, i + U + 1);
-	    ix = OFFSET(lenX, incX) + j_min * incX;
+	    size_t jx = OFFSET(lenX, incX) + j_min * incX;
 	    for (j = j_min; j < j_max; j++) {
-		temp += X[ix] * A[lda * (U+i-j) + j];
-		ix += incX;
+		temp += X[jx] * A[(L-i+j) + i * lda];
+		jx += incX;
 	    }
 	    Y[iy] += alpha * temp;
 	    iy += incY;
 	}
-    } else if ((order == CblasRowMajor && TransA == CblasTrans)
-               || (order == CblasColMajor && TransA == CblasNoTrans)){
+    } else if ((order == CblasRowMajor && Trans == CblasTrans)
+               || (order == CblasColMajor && Trans == CblasNoTrans)){
 	/* form  y := alpha*A'*x + y */
-	ix = OFFSET(lenX, incX);
+        size_t jx = OFFSET(lenX, incX);
 	for (j = 0; j < lenX; j++) {
-	    const BASE temp = alpha * X[ix];
+	    const BASE temp = alpha * X[jx];
 	    if (temp != 0.0) {
 		const size_t i_min = (j > U  ? j - U : 0);
 		const size_t i_max = GSL_MIN(lenY, j + L + 1);
-		iy = OFFSET(lenY, incY) + i_min * incY;
+		size_t iy = OFFSET(lenY, incY) + i_min * incY;
 		for (i = i_min; i < i_max; i++) {
 		    Y[iy] += temp * A[lda * j + (U+i-j)];
 		    iy += incY;
 		}
 	    }
-	    ix += incX;
+            jx += incX;
 	}
     } else {
       BLAS_ERROR ("unrecognized operation");

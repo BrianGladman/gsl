@@ -44,8 +44,8 @@
 	    for (j = j_min; j < j_max; j++) {
 		const BASE x_real = REAL(X, jx);
 		const BASE x_imag = IMAG(X, jx);
-		const BASE A_real = REAL(A, lda * (K + i - j) + j);
-		const BASE A_imag = conj * IMAG(A, lda * (K + i - j) + j);
+		const BASE A_real = REAL(A, lda * i + (j - i));
+		const BASE A_imag = conj * IMAG(A, lda * i + (j - i));
 
 		temp_r += A_real * x_real - A_imag * x_imag;
 		temp_i += A_real * x_imag + A_imag * x_real;
@@ -55,8 +55,8 @@
 	    if (nounit) {
 		const BASE x_real = REAL(X, ix);
 		const BASE x_imag = IMAG(X, ix);
-		const BASE A_real = REAL(A, lda * K + i);
-		const BASE A_imag = conj * IMAG(A, lda * K + i);
+		const BASE A_real = REAL(A, lda * i + 0);
+		const BASE A_imag = conj * IMAG(A, lda * i + 0);
 
 		REAL(X, ix) = temp_r + (A_real * x_real - A_imag * x_imag);
 		IMAG(X, ix) = temp_i + (A_real * x_imag + A_imag * x_real);
@@ -79,8 +79,8 @@
 	    for (j = j_min; j < j_max; j++) {
 		const BASE x_real = REAL(X, jx);
 		const BASE x_imag = IMAG(X, jx);
-		const BASE A_real = REAL(A, lda * (i - j) + j);
-		const BASE A_imag = conj * IMAG(A, lda * (i - j) + j);
+		const BASE A_real = REAL(A, lda * i + (K-i+j));
+		const BASE A_imag = conj * IMAG(A, lda * i + (K-i+j));
 
 		temp_r += A_real * x_real - A_imag * x_imag;
 		temp_i += A_real * x_imag + A_imag * x_real;
@@ -90,8 +90,8 @@
 	    if (nounit) {
 		const BASE x_real = REAL(X, ix);
 		const BASE x_imag = IMAG(X, ix);
-		const BASE A_real = REAL(A, lda * 0 + i);
-		const BASE A_imag = conj * IMAG(A, lda * 0 + i);
+		const BASE A_real = REAL(A, lda * i + K);
+		const BASE A_imag = conj * IMAG(A, lda * i + K);
 
 		REAL(X, ix) = temp_r + (A_real * x_real - A_imag * x_imag);
 		IMAG(X, ix) = temp_i + (A_real * x_imag + A_imag * x_real);

@@ -1,0 +1,8 @@
+Thu Apr 12 16:46:16 2001  Brian Gough  <bjg@network-theory.co.uk>
+
+	* all routines now included for Level 1, 2, 3-- passes blas test
+ 	suite for numerical results, but no error handling yet
+
+	* split out from blas directory to make an independent blas
+ 	library
+

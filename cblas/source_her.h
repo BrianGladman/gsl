@@ -20,7 +20,6 @@
 {
   const int conj = (order == CblasColMajor) ? -1 : 1;
     size_t i, j;
-    size_t ix, jx;
 
     if (alpha == 0.0)
       return;

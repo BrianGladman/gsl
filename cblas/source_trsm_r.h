@@ -29,7 +29,7 @@
         n2 = N;
         side = Side;
         uplo = Uplo;
-        trans = TransA;
+        trans = (TransA == CblasConjTrans) ? CblasTrans : TransA;
       }
     else
       {
@@ -37,7 +37,7 @@
         n2 = M;
         side = (Side == CblasLeft) ? CblasRight : CblasLeft;
         uplo = (Uplo == CblasUpper) ? CblasLower : CblasUpper;
-        trans = TransA;
+        trans = (TransA == CblasConjTrans) ? CblasTrans : TransA;
       }
 
     if (side == CblasLeft && uplo == CblasUpper && trans == CblasNoTrans) {

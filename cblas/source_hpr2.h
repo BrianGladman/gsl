@@ -25,7 +25,6 @@
 {
   const int conj = (order == CblasColMajor) ? -1 : 1;
     size_t i, j;
-    size_t ix, jx;
 
     const BASE alpha_real = REAL0(alpha), alpha_imag = IMAG0(alpha);
 

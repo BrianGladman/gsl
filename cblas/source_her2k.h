@@ -92,7 +92,7 @@
         /* Cii += alpha Aik conj(Bik) + conj(alpha) Bik conj(Aik) */
         {
           BASE temp_real = 0.0;
-          BASE temp_imag = 0.0;
+          /* BASE temp_imag = 0.0; */
           for (k = 0 ; k < K; k++) {
             const BASE Aik_real = REAL(A,i * lda + k);
             const BASE Aik_imag = IMAG(A,i * lda + k);
@@ -216,7 +216,7 @@
         /* Cii += alpha Aik conj(Bik) + conj(alpha) Bik conj(Aik) */
         {
           BASE temp_real = 0.0;
-          BASE temp_imag = 0.0;
+          /* BASE temp_imag = 0.0; */
           for (k = 0 ; k < K; k++) {
             const BASE Aik_real = REAL(A,i * lda + k);
             const BASE Aik_imag = IMAG(A,i * lda + k);
