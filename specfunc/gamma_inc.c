@@ -47,11 +47,17 @@ gamma_inc_D(const double a, const double x, gsl_sf_result * result)
     return GSL_SUCCESS;
   }
   else {
-    double mu = (x-a)/a;
-    double term1;
     gsl_sf_result gstar;
     gsl_sf_result ln_term;
-    gsl_sf_log_1plusx_mx_e(mu, &ln_term);  /* log(1+mu) - mu */
+    double term1;
+    if (x < a) {
+      double u = x/a;
+      ln_term.val = log(u) - u + 1.0;
+      ln_term.err = ln_term.val * GSL_DBL_EPSILON;
+    } else {
+      double mu = (x-a)/a;
+      gsl_sf_log_1plusx_mx_e(mu, &ln_term);  /* log(1+mu) - mu */
+    };
     gsl_sf_gammastar_e(a, &gstar);
     term1 = exp(a*ln_term.val)/sqrt(2.0*M_PI*a);
     result->val  = term1/gstar.val;
@@ -59,6 +65,7 @@ gamma_inc_D(const double a, const double x, gsl_sf_result * result)
     result->err += gstar.err/fabs(gstar.val) * fabs(result->val);
     return GSL_SUCCESS;
   }
+    
 }
 
 

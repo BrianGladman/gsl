@@ -1,5 +1,8 @@
 * What is new in gsl-1.3+:
 
+** Improved gsl_sf_gamma_inc_P(a,x) to avoid a domain error for x<<a
+when a>10.
+
 ** Fixed bugs in the random number generators gsl_rng_fishman18,
 gsl_rng_fishman2x, and gsl_rng_knuthran2 which caused them to return
 incorrect results.  Minor corrections were made to the parameters in
