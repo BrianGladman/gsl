@@ -455,6 +455,7 @@ gsl_sf_legendre_Plm_deriv_array(
             result_deriv_array[ell-m] = -0.25 * sgn * x * (ell - 1.0)*ell*(ell+1.0)*(ell+2.0);
           }
         }
+        return GSL_SUCCESS;
       }
       else 
       {
@@ -462,6 +463,7 @@ gsl_sf_legendre_Plm_deriv_array(
         if(1.0 - fabs(x) < GSL_DBL_EPSILON)
         {
           for(ell = m; ell <= lmax; ell++) result_deriv_array[ell-m] = 0.0;
+          return GSL_SUCCESS;
         }
         else
         {
@@ -693,6 +695,7 @@ gsl_sf_legendre_sphPlm_deriv_array(
       if(1.0 - fabs(x) < GSL_DBL_EPSILON)
       {
         for(ell = m; ell <= lmax; ell++) result_deriv_array[ell-m] = 0.0;
+        return GSL_SUCCESS;
       }
       else
       {
