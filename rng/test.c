@@ -238,7 +238,7 @@ rng_float_test (const gsl_rng_type * T)
 	}
     }
 
-  gsl_test (status, "%s, ratio of int vs double (%g observed vs %g expected)",
+  gsl_test (status, "%s, ratio of int to double (%g observed vs %g expected)",
 	    gsl_rng_name (ri), c, k/u);
 
   gsl_rng_free (ri);
