@@ -1,3 +1,8 @@
+2004-05-26  Brian Gough  <bjg@network-theory.co.uk>
+
+	* test.c (test_SV_decomp_dim): skip NaNs in test
+	(test_SV_decomp_mod_dim): skip NaNs in test
+
 2004-04-26  Brian Gough  <bjg@network-theory.co.uk>
 
 	* test.c (test_TDN_solve): increased tolerance for tests

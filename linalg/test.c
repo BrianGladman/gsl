@@ -1441,6 +1441,11 @@ test_SV_decomp_dim(const gsl_matrix * m, double eps)
     {
       double di = gsl_vector_get (d, i);
 
+      if (gsl_isnan (di))
+        {
+          continue;  /* skip NaNs */
+        }
+
       if (di < 0) {
         s++;
         printf("singular value %d = %22.18g < 0\n", i, di);
@@ -1681,6 +1686,11 @@ test_SV_decomp_mod_dim(const gsl_matrix * m, double eps)
   for (i = 0; i < N; i++)
     {
       double di = gsl_vector_get (d, i);
+
+      if (gsl_isnan (di))
+        {
+          continue;  /* skip NaNs */
+        }
 
       if (di < 0) {
         s++;
