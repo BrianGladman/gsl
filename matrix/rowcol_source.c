@@ -245,3 +245,38 @@ FUNCTION (gsl_vector, view_col_from_matrix) (TYPE(gsl_vector) * v,
   return GSL_SUCCESS;
 }
 
+int
+FUNCTION(gsl_matrix, view_from_vector) (TYPE(gsl_matrix) * m,
+                                        TYPE(gsl_vector) * base,
+                                        size_t offset, 
+                                        size_t n1, size_t n2, size_t d2)
+{
+  if (n1 == 0)
+    {
+      GSL_ERROR ("matrix dimension n1 must be positive integer", GSL_EDOM);
+    }
+  else if (n2 == 0)
+    {
+      GSL_ERROR ("matrix dimension n2 must be positive integer", GSL_EDOM);
+    }
+  else if (d2 < n2)
+    {
+      GSL_ERROR ("matrix dimension d2 must be greater than n2",	GSL_EDOM);
+    }
+  else if (base->size < offset + n1 * d2)
+    {
+      GSL_ERROR ("matrix size exceeds available vector size", GSL_EDOM);
+    }
+
+  if (m->block != 0)
+    {
+      GSL_ERROR ("matrix already has memory allocated to it", GSL_ENOMEM);
+    }
+
+  m->data = base->data + offset;
+  m->size1 = n1;
+  m->size2 = n2;
+  m->dim2 = d2;
+  
+  return GSL_SUCCESS;
+}

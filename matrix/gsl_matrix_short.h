@@ -64,6 +64,11 @@ int gsl_matrix_short_copy(gsl_matrix_short * dest, const gsl_matrix_short * src)
 int gsl_vector_short_view_row_from_matrix (gsl_vector_short * v, gsl_matrix_short * m, size_t i);
 int gsl_vector_short_view_col_from_matrix (gsl_vector_short * v, gsl_matrix_short * m, size_t j);
 
+int gsl_matrix_short_view_from_vector (gsl_matrix_short * m, 
+                                       gsl_vector_short * base,
+                                       size_t offset, 
+                                       size_t n1, size_t n2, size_t d2);
+
 extern int gsl_check_range ;
 
 /* inline functions if you are using GCC */

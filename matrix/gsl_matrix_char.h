@@ -64,6 +64,11 @@ int gsl_matrix_char_copy(gsl_matrix_char * dest, const gsl_matrix_char * src);
 int gsl_vector_char_view_row_from_matrix (gsl_vector_char * v, gsl_matrix_char * m, size_t i);
 int gsl_vector_char_view_col_from_matrix (gsl_vector_char * v, gsl_matrix_char * m, size_t j);
 
+int gsl_matrix_char_view_from_vector (gsl_matrix_char * m, 
+                                       gsl_vector_char * base,
+                                       size_t offset, 
+                                       size_t n1, size_t n2, size_t d2);
+
 extern int gsl_check_range ;
 
 /* inline functions if you are using GCC */

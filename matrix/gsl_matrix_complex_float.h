@@ -68,6 +68,10 @@ int gsl_matrix_complex_float_copy(gsl_matrix_complex_float * dest, const gsl_mat
 int gsl_vector_complex_float_view_row_from_matrix (gsl_vector_complex_float * v, gsl_matrix_complex_float * m, size_t i);
 int gsl_vector_complex_float_view_col_from_matrix (gsl_vector_complex_float * v, gsl_matrix_complex_float * m, size_t j);
 
+int gsl_matrix_complex_float_view_from_vector (gsl_matrix_complex_float * m, 
+                                               gsl_vector_complex_float * base,
+                                               size_t offset, 
+                                               size_t n1, size_t n2, size_t d2);
 
 extern int gsl_check_range ;
 
