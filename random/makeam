@@ -22,10 +22,19 @@ auxbin="test-switch"
 
 progs=""
 for i in $list; do
-    progs="$progs $i test-$i bench-$i"
+    progs="$progs $i"
 done
 progs="$progs $auxbin"
 echo "bin_PROGRAMS=$progs"
+echo ""
+echo ""
+
+tests=""
+for i in $list; do
+    tests="$tests test-$i bench-$i"
+done
+progs="$progs $auxbin"
+echo "check_PROGRAMS=$tests"
 echo ""
 echo ""
 
