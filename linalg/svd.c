@@ -99,7 +99,9 @@ gsl_linalg_SV_decomp (gsl_matrix * A, gsl_matrix * V, gsl_vector * S,
     
     while (b > 0)
       {
-        if (gsl_vector_get (&f.vector, b - 1) == 0.0)
+        double fbm1 = gsl_vector_get (&f.vector, b - 1);
+
+        if (fbm1 == 0.0 || gsl_isnan(fbm1))
           {
             b--;
             continue;
@@ -112,7 +114,9 @@ gsl_linalg_SV_decomp (gsl_matrix * A, gsl_matrix * V, gsl_vector * S,
         
         while (a > 0)
           {
-            if (gsl_vector_get (&f.vector, a - 1) == 0.0)
+            double fam1 = gsl_vector_get (&f.vector, a - 1);
+
+            if (fam1 == 0.0 || gsl_isnan(fam1))
               {
                 break;
               }

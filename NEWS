@@ -1,3 +1,11 @@
+* What is new in gsl-1.4:
+
+** Fixed gsl_linalg_SV_decomp() to avoid an infinite loop when
+computing the SVD of matrices containing Inf and Nan.
+
+** Fixed gsl_linalg_balance_columns() to avoid an infinite loop when
+rescaling matrices containing Inf and NaN.
+
 ** Fixed header file <gsl/gsl_sf_log.h> to include declarations for 
 error codes in inline versions of gsl_sf_log functions
 

@@ -54,7 +54,7 @@ gsl_linalg_balance_columns (gsl_matrix * A, gsl_vector * D)
       
       double f = 1.0;
       
-      if (s == 0.0)
+      if (s == 0.0 || !gsl_finite(s))
         {
           gsl_vector_set (D, j, f);
           continue;

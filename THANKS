@@ -266,3 +266,5 @@ minimisers.
 * Grant Lythe <grant@maths.leeds.ac.uk> documentation bug report
 
 * Jussi Piitulainen <jpiitula@ling.helsinki.fi> documentation bug report
+
+* Aaron Schweiger <aschweig@bu.edu> bug report for SVD/column balancing

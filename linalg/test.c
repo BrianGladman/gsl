@@ -36,6 +36,8 @@ gsl_matrix * create_vandermonde_matrix(size_t size);
 gsl_matrix * create_moler_matrix(size_t size);
 gsl_matrix * create_row_matrix(size_t size1, size_t size2);
 gsl_matrix * create_2x2_matrix(double a11, double a12, double a21, double a22);
+gsl_matrix * create_diagonal_matrix(double a[], size_t size);
+
 int test_matmult(void);
 int test_matmult_mod(void);
 int test_LU_solve_dim(const gsl_matrix * m, const double * actual, double eps);
@@ -83,10 +85,18 @@ int test_bidiag_decomp(void);
 int 
 check (double x, double actual, double eps)
 {
-  if (actual == 0)
-    return fabs(x) > eps;
+  if (x == actual)
+    {
+      return 0;
+    }
+  else if (actual == 0)
+    {
+      return fabs(x) > eps;
+    }
   else
-    return (fabs(x - actual)/fabs(actual)) > eps;
+    {
+      return (fabs(x - actual)/fabs(actual)) > eps;
+    }
 }
 
 gsl_matrix *
@@ -197,6 +207,18 @@ create_2x2_matrix(double a11, double a12, double a21, double a22)
   return m;
 }
 
+gsl_matrix *
+create_diagonal_matrix(double a[], size_t size)
+{
+  size_t i;
+  gsl_matrix * m = gsl_matrix_calloc(size, size);
+  for(i=0; i<size; i++) {
+      gsl_matrix_set(m, i, i, a[i]);
+  }
+
+  return m;
+}
+
 gsl_matrix * m35;
 gsl_matrix * m53;
 gsl_matrix * m97;
@@ -218,6 +240,9 @@ gsl_matrix * A33;
 gsl_matrix * A44;
 
 gsl_matrix_complex * c7;
+
+gsl_matrix * inf5; double inf5_data[] = {1.0, 0.0, -3.0, 0.0, -5.0};
+gsl_matrix * nan5;
 
 double m53_lssolution[] = {52.5992295702070, -337.7263113752073, 
                            351.8823436427604};
@@ -1524,6 +1549,15 @@ int test_SV_decomp(void)
   gsl_test(f, "  SV_decomp row12");
   s += f;
 
+  f = test_SV_decomp_dim(inf5, 1024 * GSL_DBL_EPSILON);
+  gsl_test(f, "  SV_decomp inf5");
+  s += f;
+
+  f = test_SV_decomp_dim(nan5, 1024 * GSL_DBL_EPSILON);
+  gsl_test(f, "  SV_decomp nan5");
+  s += f;
+
+
   {
     double i1, i2, i3, i4;
     double lower = -2, upper = 2;
@@ -2219,6 +2253,13 @@ int main(void)
   A22 = create_2x2_matrix (0.0, 0.0, 0.0, 0.0);
   A33 = gsl_matrix_alloc(3,3);
   A44 = gsl_matrix_alloc(4,4);
+
+  inf5 = create_diagonal_matrix (inf5_data, 5);
+  gsl_matrix_set(inf5, 3, 3, GSL_POSINF);
+
+  nan5 = create_diagonal_matrix (inf5_data, 5);
+  gsl_matrix_set(nan5, 3, 3, GSL_NAN);
+
 
   /* Matmult now obsolete */
 #ifdef MATMULT

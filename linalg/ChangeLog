@@ -1,3 +1,11 @@
+2004-03-05  Brian Gough  <bjg@network-theory.co.uk>
+
+	* test.c (test_SV_decomp): add tests with inf/nan
+
+	* svd.c (gsl_linalg_SV_decomp): handle nans in block reduction
+
+	* balance.c: handle infinity/nan when scaling input matrix
+
 2003-07-24  Brian Gough  <bjg@network-theory.co.uk>
 
 	* tridiag.c (solve_cyc_tridiag_nonsym): fixed declarations of i so
