@@ -418,12 +418,12 @@ The library header files automatically define functions to have
 The library assumes that arrays, vectors and matrices passed as
 modifiable arguments are not aliased and do not overlap with each other.
 This removes the need for the library to handle overlapping memory
-regions as a special case, and to use additional optimizations.  If
-overlapping memory regions are passed as modifiable arguments then the
-results of such functions will be undefined.  If the arguments will not
-be modified (for example, if a function prototype declares them as
-@code{const} arguments) then overlapping or aliased memory regions can
-be safely used.
+regions as a special case, and allows additional optimizations to be
+used.  If overlapping memory regions are passed as modifiable arguments
+then the results of such functions will be undefined.  If the arguments
+will not be modified (for example, if a function prototype declares them
+as @code{const} arguments) then overlapping or aliased memory regions
+can be safely used.
 
 @node Code Reuse
 @section Code Reuse
