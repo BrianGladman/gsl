@@ -99,7 +99,7 @@ int gsl_monte_vegas_integrate(gsl_monte_vegas_state *state,
     vegas_open_log();
     prn_lim(xl, xu, num_dim);
   }
-  status = gsl_monte_vegas1(state, fxn, xl, xu, num_dim, calls, 
+  status |= gsl_monte_vegas1(state, fxn, xl, xu, num_dim, calls, 
 			    tot_int, tot_sig, chi_sq_ptr);
 
   if (state->verbose >= 0 ) {
@@ -208,9 +208,9 @@ int gsl_monte_vegas2(gsl_monte_vegas_state *state,
     prn_head(state, num_dim, calls, state->it_num, state->bins, state->boxes);
   }
 
-  
-  status = gsl_monte_vegas3(state, fxn, xl, xu, num_dim, calls, 
-			    tot_int, tot_sig, chi_sq_ptr);
+ 
+  status |= gsl_monte_vegas3(state, fxn, xl, xu, num_dim, calls, 
+			     tot_int, tot_sig, chi_sq_ptr);
   return status;
 }
 
