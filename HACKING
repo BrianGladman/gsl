@@ -101,6 +101,17 @@ top-level dir where gsl_math.h and gsl_complex.h are located.
 
 The SUBDIRS and SUBLIBS variables have to be updated manually.
 
+----------- Pre-release checks
+
+* Make all internal functions static, and have all exported functions
+& variables prefixed with gsl_ or GSL_. Useful command for checking this: nm -A -g -P */*.a  | perl -a -n -e 'print if $F[1] !~ /gsl_/ && $F[2] ne "U"'
+
+* Make sure config.h is used consistently. This is especially relevant
+for HAVE_INLINE use in installed headers.  
+
+ grep config.h gsl/*.h    --- shouldn't match anything
+ grep -L config.h */*.c m| grep -v _source  --- gives files not using config.h
+
 ----------- Notes on making a release
 
 * Edit the version number in configure.in. 

@@ -3,14 +3,31 @@ Main Todo Items
 
 We are looking for volunteers to do the following tasks,
 
-* [Consult the TODO files in each directory first for specific
-requirements.]
+* Consult the TODO files in each directory first for specific
+requirements
 
-* Make a web page at www.gnu.org
-
-* Arrange for RPMs to be uploaded to Redhat's contrib area
-
-* Document dht
+    blas/TODO
+    cblas/TODO
+    complex/TODO
+    eigen/TODO
+    fft/TODO
+    ieee-utils/TODO
+    integration/TODO
+    interpolation/TODO
+    linalg/TODO
+    matrix/TODO
+    monte/TODO
+    multifit/TODO
+    ode-initval/TODO
+    poly/TODO
+    randist/TODO
+    rng/TODO
+    roots/TODO
+    siman/TODO
+    sort/TODO
+    specfunc/TODO
+    statistics/TODO
+    vector/TODO
 
 * Switch to library interface versioning for libtool (eventually),
 provide better GSL_VERSION_MAJOR, GSL_VERSION_MINOR macros.
@@ -28,7 +45,7 @@ jotahtin@cc.hut.fi, still to add (BJG)).
 * Reorganize siman interfaces to allow iterative use.
 
 * Add a GSL_ERROR_MODE environment variable for choosing error
-behavior at runtime.
+behavior at runtime (???).
 
 * Implement N-d histograms (Simone Piccardi <piccardi@fi.infn.it> is
 working on something here).
@@ -41,22 +58,16 @@ condition.  Use GCOV to improve coverage.
 * Use pkg-config from GNOME, preferably the C version when that is
 working.
 
-* Provide g-wrap wrappers for guile
+* Make the return value EINVAL vs EDOM consistent for invalid
+parameters. EDOM means a domain error (i.e. float or mathematically
+undefined), EINVAL means invalid (i.e. zero length)
 
-* Provide a run-time expression evaluator for interactive programs
-where the user can provide formulas as strings.  Keith Briggs
-recommended formulc2.22 which he had found useful in several projects.
-http://www.cs.brandeis.edu/~hhelf/formu/formulc.html. It is LGPL.
-Alternatively, the source code for GDB contains yacc grammars and
-evaluators for expressions in various languages, so that would be
-another way to go.  It would have the advantage of following the
-language standards.  If I was going to write something from scratch I
-would think about using that as a base, as the full set of operators
-are already included with the correct precedence rules. Being able to
-evaluate C and Fortran expressions could be useful.
-
-Before Each Release
-===================
+* Change return 0 to return GSL_SUCCESS, and return -1 to GSL_FAILURE
+throughout, where appropriate. Similarly change any if(...) checks of
+return values to use == GSL_SUCCESS, if they are checking for zero.
+N.B. want to be careful about accidentally omitting error conditions
+if using something like == GSL_FAILURE when function returns a
+different error code.
 
 * Make sure that all #defines are fully wrapped in ()'s, especially
 the outermost layer which may have been missed. Everything should be
@@ -70,25 +81,6 @@ do that.  Files with strict target are
 
     specfunc/Makefile.am
 
-* Make all internal functions static, and have all exported functions
-& variables prefixed with gsl_ or GSL_. Useful command for checking this: nm -A -g -P */*.a  | perl -a -n -e 'print if $F[1] !~ /gsl_/ && $F[2] ne "U"'
-
-* Make sure config.h is used consistently. This is especially relevant
-for HAVE_INLINE use in installed headers.  
-
- grep config.h gsl/*.h    --- shouldn't match anything
- grep -L config.h */*.c m| grep -v _source  --- gives files not using config.h
-
-* Make the return value EINVAL vs EDOM consistent for invalid
-parameters. EDOM means a domain error (i.e. float or mathematically
-undefined), EINVAL means invalid (i.e. zero length)
-
-* Change return 0 to return GSL_SUCCESS, and return -1 to GSL_FAILURE
-throughout, where appropriate. Similarly change any if(...) checks of
-return values to use == GSL_SUCCESS, if they are checking for zero.
-N.B. want to be careful about accidentally omitting error conditions
-if using something like == GSL_FAILURE when function returns a
-different error code.
 
 Wishlist or vague ideas
 =======================
@@ -142,8 +134,6 @@ in place vs use of workspace (e.g linalg_solve functions).
 Also, put under dir section "Math" (which seems to be the appropriate
 one for Debian, as Octave, Gnuplot etc are in that)
 
-* Use GNU Free Documentation License for reference manual?
-
 * Remove error stream stuff?? It is hardly used.
 
 * Extend histogram routines as described in recent discussion
@@ -164,13 +154,22 @@ rounding.
 constant pointers (const gsl_roots_fsolver_type * const
 gsl_roots_fsolver_brent)??
 
+* Provide g-wrap wrappers for guile
+
 * Add swig.i files and swig demos so that swig can be run more easily
 
-* Redesign the interface to iterative functions to use an init/do-while
-construct (Mostly done).
+* Add a vector layer to statistics and ffts maybe
 
-* Add a vector layer to statistics and ffts, sometime in the future.
-
-* Look at www.vsipl.org
+* Provide a run-time expression evaluator for interactive programs
+where the user can provide formulas as strings.  Keith Briggs
+recommended formulc2.22 which he had found useful in several projects.
+http://www.cs.brandeis.edu/~hhelf/formu/formulc.html. It is LGPL.
+Alternatively, the source code for GDB contains yacc grammars and
+evaluators for expressions in various languages, so that would be
+another way to go.  It would have the advantage of following the
+language standards.  If I was going to write something from scratch I
+would think about using that as a base, as the full set of operators
+are already included with the correct precedence rules. Being able to
+evaluate C and Fortran expressions could be useful.
 
 
