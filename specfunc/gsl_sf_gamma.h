@@ -257,8 +257,8 @@ double gsl_sf_beta(const double a, const double b);
  * a > 0, b > 0, 0 <= x <= 1
  * exceptions: GSL_EDOM, GSL_EUNDRFLW
  */
-int gsl_sf_beta_inc_e(const double a, const double b, double x, gsl_sf_result * result);
-double gsl_sf_beta_inc(const double a, const double b, double x);
+int gsl_sf_beta_inc_e(const double a, const double b, const double x, gsl_sf_result * result);
+double gsl_sf_beta_inc(const double a, const double b, const double x);
 
 
 /* The maximum x such that gamma(x) is not
