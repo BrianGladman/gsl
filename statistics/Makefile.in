@@ -12,6 +12,8 @@
 
 #AUTOMAKE_OPTIONS=no-dependencies
 
+#CFLAGS=-g -Wall
+
 
 SHELL = /bin/sh
 
@@ -67,16 +69,14 @@ PACKAGE = @PACKAGE@
 RANLIB = @RANLIB@
 VERSION = @VERSION@
 
-CFLAGS=-g -Wall
-
 noinst_PROGRAMS = jtest
-lib_LIBRARIES = libgsl_statistics.a
+lib_LIBRARIES = libgslstatistics.a
 
 jtest_SOURCES = jtest.c
-jtest_LDADD = libgsl_statistics.a
-jtest_DEPENDENCIES = libgsl_statistics.a
+jtest_LDADD = libgslstatistics.a
+jtest_DEPENDENCIES = libgslstatistics.a
 
-libgsl_statistics_a_SOURCES = mean.c variance.c test.c
+libgslstatistics_a_SOURCES = mean.c variance.c test.c
 
 #include_HEADERS = mean.h test.h variance.h
 include_HEADERS = gsl_bstats.h
@@ -90,13 +90,14 @@ DEFS = @DEFS@ -I. -I$(srcdir) -I..
 CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
-libgsl_statistics_a_LIBADD = 
-libgsl_statistics_a_OBJECTS =  mean.o variance.o test.o
+libgslstatistics_a_LIBADD = 
+libgslstatistics_a_OBJECTS =  mean.o variance.o test.o
 AR = ar
 PROGRAMS =  $(noinst_PROGRAMS)
 
 jtest_OBJECTS =  jtest.o
 jtest_LDFLAGS = 
+CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
 LINK = $(CC) $(CFLAGS) $(LDFLAGS) -o $@
 HEADERS =  $(include_HEADERS)
@@ -109,8 +110,8 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 TAR = tar
 GZIP = --best
 DEP_FILES =  .deps/jtest.P .deps/mean.P .deps/test.P .deps/variance.P
-SOURCES = $(libgsl_statistics_a_SOURCES) $(jtest_SOURCES)
-OBJECTS = $(libgsl_statistics_a_OBJECTS) $(jtest_OBJECTS)
+SOURCES = $(libgslstatistics_a_SOURCES) $(jtest_SOURCES)
+OBJECTS = $(libgslstatistics_a_OBJECTS) $(jtest_OBJECTS)
 
 default: all
 
@@ -169,10 +170,10 @@ distclean-compile:
 
 maintainer-clean-compile:
 
-libgsl_statistics.a: $(libgsl_statistics_a_OBJECTS) $(libgsl_statistics_a_DEPENDENCIES)
-	-rm -f libgsl_statistics.a
-	$(AR) cru libgsl_statistics.a $(libgsl_statistics_a_OBJECTS) $(libgsl_statistics_a_LIBADD)
-	$(RANLIB) libgsl_statistics.a
+libgslstatistics.a: $(libgslstatistics_a_OBJECTS) $(libgslstatistics_a_DEPENDENCIES)
+	-rm -f libgslstatistics.a
+	$(AR) cru libgslstatistics.a $(libgslstatistics_a_OBJECTS) $(libgslstatistics_a_LIBADD)
+	$(RANLIB) libgslstatistics.a
 
 mostlyclean-noinstPROGRAMS:
 
