@@ -206,3 +206,32 @@ updated of your progress.  Make patches available somewhere for people
 to try out.  Code goes into GSL when it is stable and well-tested, and
 has documentation.
 
+----------------------------------------------------------------------
+
+Savannah CVS Information
+========================
+
+Developer CVS Access via SSH (Version 1, RSA)
+
+Only project developers can access the CVS tree via this method. SSH1
+must be installed on your client machine. If you have SSH version two,
+add
+
+  Host subversions.gnu.org
+     Protocol 1
+
+in your ~/.ssh/config file, even if you think that your SSH will
+switch to protocol 1 automatically. Substitute developername with the
+proper value. Your savannah password is useless for cvs. You have to
+register a CVS/SSH Shared key in the Account Maintenance page for the
+machine from which you run cvs.
+
+Source tree:
+
+  export CVS_RSH=ssh
+  cvs -z3 -ddevelopername@subversions.gnu.org:/cvsroot/gsl/ co gsl
+
+HTML tree:
+
+  export CVS_RSH=ssh
+  cvs -z3 -ddevelopername@subversions.gnu.org:/webcvs co software/gsl
