@@ -1,5 +1,8 @@
 * What is new in gsl-1.4:
 
+** Fixed a bug in gsl_complex_arccsc_real which caused it to return 
+the incorrect sign for the imaginary part when -1<x<0.
+
 ** Fixed a bug in the QAWC Cauchy integration routine which could
 allow the singularity to fall on an interval boundary, leading to
 division by zero.

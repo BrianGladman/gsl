@@ -813,7 +813,7 @@ gsl_complex_arccsc_real (double a)
 	}
       else
 	{
-	  GSL_SET_COMPLEX (&z, -M_PI_2, -acosh (-1 / a));
+	  GSL_SET_COMPLEX (&z, -M_PI_2, acosh (-1 / a));
 	}
     }
 

@@ -295,3 +295,43 @@ int main()
 }
 
 ----------------------------------------------------------------------
+
+BUG#12 -- domain error in gsl_sf_gamma_inc_P
+
+From: Martin Jansche <jansche@ling.ohio-state.edu>
+Sender: bug-gsl-bounces+bjg=network-theory.co.uk@gnu.org
+To: <bug-gsl@gnu.org>
+Subject: [Bug-gsl]gamma_inc_P
+Date: Sun, 12 Jan 2003 05:41:51 -0500 (EST)
+
+> I've run into trouble caused either by gsl_sf_gamma_inc_P() or by my
+> lack of understanding of how it is supposed to behave.  I'm using GSL
+> 1.3 on Debian "Sid" x86.  Here's a program that illustrates the
+> problem:
+> 
+> #include <stdio.h>
+> #include <gsl/gsl_sf_gamma.h>
+> 
+> int main(void) {
+>   double x = 2.77556e-16;
+>   double b = 2.17;
+>   double y = x / b;
+>   double d;
+>   printf("%.16g\n", y);
+>   d = gsl_sf_gamma_inc_P(10.0, y);
+>   return 0;
+> }
+> 
+> $ ./a.out
+> 1.279059907834101e-16
+> gsl: log.c:211: ERROR: domain error
+> Default GSL error handler invoked.
+> Aborted
+> $
+> 
+> The code in specfunc/gamma_inc.c and the documentation agree on what
+> the domain is (a > 0, x >= 0), so the propagated domain error comes as
+> a surprise to me.  What am I missing?
+
+In the function gamma_inc_D (a,x,result) the term mu=(x-a)/a is zero.
+A different branch should be taken for x<<a.

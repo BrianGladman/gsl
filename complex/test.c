@@ -46,6 +46,16 @@ struct fz
   double fy;
 };
 
+struct freal
+{
+  char *name;
+  gsl_complex (*f) (double x);
+  double x;
+  double fx;
+  double fy;
+};
+
+
 #define FN(x) "gsl_complex_" #x, gsl_complex_ ## x
 #define ARG(x,y) x, y
 #define RES(x,y) x, y
@@ -62,6 +72,13 @@ struct fz listz[] =
 #include "results.h"
   {"", 0, 0, 0, 0, 0}
 };
+
+struct freal listreal[] =
+{
+#include "results_real.h"
+  {"", 0, 0, 0, 0}
+};
+
 
 int
 main (void)
@@ -113,6 +130,28 @@ main (void)
 
       gsl_test_rel (fx, t.fx, 10 * GSL_DBL_EPSILON, "%s real part at (%g,%g)", t.name, t.x, t.y);
       gsl_test_rel (fy, t.fy, 10 * GSL_DBL_EPSILON, "%s imag part at (%g,%g)", t.name, t.x, t.y);
+      i++;
+    }
+
+
+  i = 0;
+
+  while (listreal[i].f)
+    {
+      struct freal t = listreal[i];
+      gsl_complex fz = (t.f) (t.x);
+      double fx = GSL_REAL (fz), fy = GSL_IMAG (fz);
+
+#ifdef DEBUG
+      printf("x = "); gsl_ieee_fprintf_double (stdout, &t.x); printf("\n");
+      printf("fx = "); gsl_ieee_fprintf_double (stdout, &fx); printf("\n");
+      printf("ex = "); gsl_ieee_fprintf_double (stdout, &t.fx); printf("\n");
+      printf("fy = "); gsl_ieee_fprintf_double (stdout, &fy); printf("\n");
+      printf("ey = "); gsl_ieee_fprintf_double (stdout, &t.fy); printf("\n");
+#endif
+
+      gsl_test_rel (fx, t.fx, 10 * GSL_DBL_EPSILON, "%s real part at (%g,0)", t.name, t.x);
+      gsl_test_rel (fy, t.fy, 10 * GSL_DBL_EPSILON, "%s imag part at (%g,0)", t.name, t.x);
       i++;
     }
 

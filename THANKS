@@ -219,3 +219,8 @@ memory allocation
 * Martin Jansche <jansche@ling.ohio-state.edu> bug reports
 
 * Gregory Soyez <g.soyez@ulg.ac.be> documentation bug report
+
+* Attilio Rivoldini <rivoldini@oma.be> bug report for CBLAS tests
+
+* W.M. Vissers" <vissers@theochem.kun.nl> bug report for
+gsl_complex_arccsc_real

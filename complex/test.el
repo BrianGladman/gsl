@@ -20,7 +20,27 @@
 (setq calc-float-format '(sci 20))
 ;;(setq calc-full-float-format '(sci 0))
 
-(calc-eval '(setq var-EvalRules '(vec (calcFunc-assign (calcFunc-sec (var x var-x)) (/ 1 (calcFunc-cos (var x var-x)))) (calcFunc-assign (calcFunc-csc (var x var-x)) (/ 1 (calcFunc-sin (var x var-x)))) (calcFunc-assign (calcFunc-cot (var x var-x)) (/ 1 (calcFunc-tan (var x var-x)))) (calcFunc-assign (calcFunc-sech (var x var-x)) (/ 1 (calcFunc-cosh (var x var-x)))) (calcFunc-assign (calcFunc-csch (var x var-x)) (/ 1 (calcFunc-sinh (var x var-x)))) (calcFunc-assign (calcFunc-coth (var x var-x)) (/ 1 (calcFunc-tanh (var x var-x)))) (calcFunc-assign (calcFunc-arcsec (var x var-x)) (calcFunc-arccos (/ 1 (var x var-x)))) (calcFunc-assign (calcFunc-arccsc (var x var-x)) (calcFunc-arcsin (/ 1 (var x var-x)))) (calcFunc-assign (calcFunc-arccot (var x var-x)) (calcFunc-arctan (/ 1 (var x var-x)))) (calcFunc-assign (calcFunc-arcsech (var x var-x)) (calcFunc-arccosh (/ 1 (var x var-x)))) (calcFunc-assign (calcFunc-arccsch (var x var-x)) (calcFunc-arcsinh (/ 1 (var x var-x)))) (calcFunc-assign (calcFunc-arccoth (var x var-x)) (calcFunc-arctanh (/ 1 (var x var-x)))) (calcFunc-assign (calcFunc-abs2 (var x var-x)) (* (var x var-x) (calcFunc-conj (var x var-x)))) (calcFunc-assign (calcFunc-logabs (var x var-x)) (calcFunc-log (calcFunc-abs (var x var-x)))))) 'eval)
+(setq var-EvalRules (calc-eval "[ sec(x) := 1 / cos(x),
+  csc(x) := 1 / sin(x),
+  cot(x) := 1 / tan(x),
+  sech(x) := 1 / cosh(x),
+  csch(x) := 1 / sinh(x),
+  coth(x) := 1 / tanh(x),
+  arcsec(x) := arccos(1 / x),
+  arccsc(x) := arcsin(1 / x),
+  arccot(x) := arctan(1 / x),
+  arcsech(x) := arccosh(1 / x),
+  arccsch(x) := arcsinh(1 / x),
+  arccoth(x) := arctanh(1 / x),
+  abs2(x) := x * conj(x),
+  logabs(x) := log(abs(x)),
+  sqrtreal(x) := sqrt(x),
+  arcsinreal(x) := arcsin(x),
+  arccosreal(x) := arccos(x),
+  arccoshreal(x) := arccosh(x),
+  arctanhreal(x) := arctanh(x),
+  arccscreal(x) := arccsc(x),
+  arcsecreal(x) := arcsec(x) ]" 'raw))
 
 ;; Convert floating point numbers into exact binary representation
 
@@ -85,12 +105,15 @@
 (defun combine (a b)
   (trim (permute 'reflections a b)))
 
+
+
 (defun evaltest (function arg)
   (let* ((x (nth 0 arg))
          (y (nth 1 arg))
          (z (format "(%s,%s)" (binary x) (binary y)))
          (v (concat "clean(0.0 + clean(" function "(" z "),60))"))
          (result (calc-eval v)))
+
     (message "%s (%g %g) = %s" function x y result)
     (if (string-match "clean(\\(.*\\))" result)
         (setq result (replace-match "\\1" nil nil result)))
@@ -105,6 +128,31 @@
         (princ (format "  {FN (%s), ARG(%.20e,%.20e), RES(%s)},\n" function x y result))
       )))
 
+
+(defun evaltestreal (function arg)
+  (let* ((x arg)
+         (z (format "(%s)" (binary x)))
+         (fn (if (string-match "_" function)
+                 (replace-match "" nil nil function)
+               function))
+         (v (concat "clean(0.0 + clean(" fn "(" z "),60))"))
+         (result (calc-eval v)))
+
+    (message "%s (%g) = %s" function x result)
+    (if (string-match "clean(\\(.*\\))" result)
+        (setq result (replace-match "\\1" nil nil result)))
+    (if (string-match "clean(\\(.*\\), *[0-9]*)" result)
+        (setq result (replace-match "\\1" nil nil result)))
+    (if (string-match "(\\(.*\\),\\(.*\\))" result)
+        (setq result (replace-match "\\1,\\2" nil nil result)))
+    (if (string-match "^\\([^,]*\\)$" result)
+        (setq result (replace-match "\\1, 0.0" nil nil result)))
+    (if (not (or (string-match "(" result) ;; skip any unsimplified results
+                 (string-match "inf" result)))  
+        (princ (format "  {FN (%s), %.20e, RES(%s)},\n" function x result))
+      )))
+
+
 ;;(evaltest "sin" "10" "0")
 
 ;; loop over all possible combinations of a,b,c
@@ -113,7 +161,9 @@
   (let ((b1 b))
     (while b1
       (progn
-        (evaltest a (car b1))
+        (let* ((z (car b1)))
+          (if (listp z) (evaltest a z)
+            (evaltestreal a z)))
         (setq b1 (cdr b1))
         )
       )
@@ -129,10 +179,14 @@
 (setq eps (list flteps))
 (setq zero (list 0.0))
 (setq simple (list 0.5  1.0  2.0))
-(setq real (list 0.0 0.125 0.5 0.75  1.0  2.0  10.0))
 (setq inf  (list (/ 1.0 flteps)))
 (setq finite (append eps simple))
 (setq zfinite (append zero eps simple))
+
+(setq realpos (list flteps delta  0.125 0.5 0.75  1.0  2.0  10.0))
+(setq real (append (reverse (mapcar '- realpos)) 
+                   zero 
+                   realpos))
 
 (setq circ (list (- 0 delta)
                  (+ 0 delta)
@@ -215,7 +269,21 @@
   (test "arccoth" z0)
 )
 
+(defun test3 ()
+  (test "sqrt_real" real)
+
+  (test "arcsin_real" real)
+  (test "arccos_real" real)
+
+  (test "arccosh_real" real)
+  (test "arctanh_real" real)
+
+  (test "arccsc_real" real)
+  (test "arcsec_real" real)
+)
+
+
 ;;(test1)
 ;;(test-all)
-
+;;(test3)
 
