@@ -46,6 +46,13 @@ done
 echo ""
 echo ""
 
+echo -n "TESTS="
+for i in $list; do
+    echo -n " test-$i"
+done
+echo ""
+echo ""
+
 echo -n "test_switch_DEPENDENCIES= gsl_ran_switch.h "
 for i in $list; do
     echo -n "$i.h $i.o "
