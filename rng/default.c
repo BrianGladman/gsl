@@ -35,9 +35,9 @@ gsl_rng_env_setup (void)
       check (&gsl_rng_default, gsl_rng_ran3, p);
       check (&gsl_rng_default, gsl_rng_rand, p);
       check (&gsl_rng_default, gsl_rng_rand48, p);
-      check (&gsl_rng_default, gsl_rng_random0_bsd, p);
-      check (&gsl_rng_default, gsl_rng_random0_glibc2, p);
-      check (&gsl_rng_default, gsl_rng_random0_libc5, p);
+      check (&gsl_rng_default, gsl_rng_random8_bsd, p);
+      check (&gsl_rng_default, gsl_rng_random8_glibc2, p);
+      check (&gsl_rng_default, gsl_rng_random8_libc5, p);
       check (&gsl_rng_default, gsl_rng_random128_bsd, p);
       check (&gsl_rng_default, gsl_rng_random128_glibc2, p);
       check (&gsl_rng_default, gsl_rng_random128_libc5, p);
@@ -59,7 +59,7 @@ gsl_rng_env_setup (void)
       check (&gsl_rng_default, gsl_rng_ranlux389, p);
       check (&gsl_rng_default, gsl_rng_ranmar, p);
       check (&gsl_rng_default, gsl_rng_taus, p);
-      check (&gsl_rng_default, gsl_rng_tds, p);
+      check (&gsl_rng_default, gsl_rng_transputer, p);
       check (&gsl_rng_default, gsl_rng_tt800, p);
       check (&gsl_rng_default, gsl_rng_uni, p);
       check (&gsl_rng_default, gsl_rng_uni32, p);
@@ -75,7 +75,7 @@ gsl_rng_env_setup (void)
     }
   else
     {
-      gsl_rng_default = gsl_rng_cmrg;
+      gsl_rng_default = gsl_rng_mt19937;
     }
 
   p = getenv ("GSL_RNG_SEED");

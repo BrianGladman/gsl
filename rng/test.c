@@ -29,7 +29,7 @@ main (void)
   rng_test (gsl_rng_minstd, 1, 10000, 1043618065);
   rng_test (gsl_rng_mrg, 1, 10000, 2064828650);
   rng_test (gsl_rng_taus, 1, 10000, 2733957125UL);
-  rng_test (gsl_rng_tds, 1, 10000, 1244127297UL);
+  rng_test (gsl_rng_transputer, 1, 10000, 1244127297UL);
   rng_test (gsl_rng_vax, 1, 10000, 3051034865UL);
 
   /* FIXME: the ranlux tests below were made by running the fortran code and
@@ -67,21 +67,21 @@ main (void)
   rng_test (gsl_rng_rand48, 1, 10000, 0xEDA54977UL);
 
   rng_test (gsl_rng_random_glibc2, 0, 10000, 1908609430);
-  rng_test (gsl_rng_random0_glibc2, 0, 10000, 1910041713);
+  rng_test (gsl_rng_random8_glibc2, 0, 10000, 1910041713);
   rng_test (gsl_rng_random32_glibc2, 0, 10000, 1587395585);
   rng_test (gsl_rng_random64_glibc2, 0, 10000, 52848624);
   rng_test (gsl_rng_random128_glibc2, 0, 10000, 1908609430);
   rng_test (gsl_rng_random256_glibc2, 0, 10000, 179943260);
 
   rng_test (gsl_rng_random_bsd, 0, 10000, 1457025928);
-  rng_test (gsl_rng_random0_bsd, 0, 10000, 1910041713);
+  rng_test (gsl_rng_random8_bsd, 0, 10000, 1910041713);
   rng_test (gsl_rng_random32_bsd, 0, 10000, 1663114331);
   rng_test (gsl_rng_random64_bsd, 0, 10000, 864469165);
   rng_test (gsl_rng_random128_bsd, 0, 10000, 1457025928);
   rng_test (gsl_rng_random256_bsd, 0, 10000, 1216357476);
 
   rng_test (gsl_rng_random_libc5, 0, 10000, 428084942);
-  rng_test (gsl_rng_random0_libc5, 0, 10000, 1910041713);
+  rng_test (gsl_rng_random8_libc5, 0, 10000, 1910041713);
   rng_test (gsl_rng_random32_libc5, 0, 10000, 1967452027);
   rng_test (gsl_rng_random64_libc5, 0, 10000, 2106639801);
   rng_test (gsl_rng_random128_libc5, 0, 10000, 428084942);
@@ -104,9 +104,9 @@ main (void)
   rng_float_test (gsl_rng_ran3);
   rng_float_test (gsl_rng_rand);
   rng_float_test (gsl_rng_rand48);
-  rng_float_test (gsl_rng_random0_bsd);
-  rng_float_test (gsl_rng_random0_glibc2);
-  rng_float_test (gsl_rng_random0_libc5);
+  rng_float_test (gsl_rng_random8_bsd);
+  rng_float_test (gsl_rng_random8_glibc2);
+  rng_float_test (gsl_rng_random8_libc5);
   rng_float_test (gsl_rng_random128_bsd);
   rng_float_test (gsl_rng_random128_glibc2);
   rng_float_test (gsl_rng_random128_libc5);
@@ -128,7 +128,7 @@ main (void)
   rng_float_test (gsl_rng_ranlux389);
   rng_float_test (gsl_rng_ranmar);
   rng_float_test (gsl_rng_taus);
-  rng_float_test (gsl_rng_tds);
+  rng_float_test (gsl_rng_transputer);
   rng_float_test (gsl_rng_tt800);
   rng_float_test (gsl_rng_uni);
   rng_float_test (gsl_rng_uni32);
@@ -149,9 +149,9 @@ main (void)
   rng_state_test (gsl_rng_ran3);
   rng_state_test (gsl_rng_rand);
   rng_state_test (gsl_rng_rand48);
-  rng_state_test (gsl_rng_random0_bsd);
-  rng_state_test (gsl_rng_random0_glibc2);
-  rng_state_test (gsl_rng_random0_libc5);
+  rng_state_test (gsl_rng_random8_bsd);
+  rng_state_test (gsl_rng_random8_glibc2);
+  rng_state_test (gsl_rng_random8_libc5);
   rng_state_test (gsl_rng_random128_bsd);
   rng_state_test (gsl_rng_random128_glibc2);
   rng_state_test (gsl_rng_random128_libc5);
@@ -173,7 +173,7 @@ main (void)
   rng_state_test (gsl_rng_ranlux389);
   rng_state_test (gsl_rng_ranmar);
   rng_state_test (gsl_rng_taus);
-  rng_state_test (gsl_rng_tds);
+  rng_state_test (gsl_rng_transputer);
   rng_state_test (gsl_rng_tt800);
   rng_state_test (gsl_rng_uni);
   rng_state_test (gsl_rng_uni32);
@@ -192,9 +192,9 @@ main (void)
   rng_parallel_state_test (gsl_rng_ran3);
   rng_parallel_state_test (gsl_rng_rand);
   rng_parallel_state_test (gsl_rng_rand48);
-  rng_parallel_state_test (gsl_rng_random0_bsd);
-  rng_parallel_state_test (gsl_rng_random0_glibc2);
-  rng_parallel_state_test (gsl_rng_random0_libc5);
+  rng_parallel_state_test (gsl_rng_random8_bsd);
+  rng_parallel_state_test (gsl_rng_random8_glibc2);
+  rng_parallel_state_test (gsl_rng_random8_libc5);
   rng_parallel_state_test (gsl_rng_random128_bsd);
   rng_parallel_state_test (gsl_rng_random128_glibc2);
   rng_parallel_state_test (gsl_rng_random128_libc5);
@@ -216,7 +216,7 @@ main (void)
   rng_parallel_state_test (gsl_rng_ranlux389);
   rng_parallel_state_test (gsl_rng_ranmar);
   rng_parallel_state_test (gsl_rng_taus);
-  rng_parallel_state_test (gsl_rng_tds);
+  rng_parallel_state_test (gsl_rng_transputer);
   rng_parallel_state_test (gsl_rng_tt800);
   rng_parallel_state_test (gsl_rng_uni);
   rng_parallel_state_test (gsl_rng_uni32);
@@ -239,9 +239,9 @@ main (void)
   generic_rng_test (gsl_rng_ran3);
   generic_rng_test (gsl_rng_rand);
   generic_rng_test (gsl_rng_rand48);
-  generic_rng_test (gsl_rng_random0_bsd);
-  generic_rng_test (gsl_rng_random0_glibc2);
-  generic_rng_test (gsl_rng_random0_libc5);
+  generic_rng_test (gsl_rng_random8_bsd);
+  generic_rng_test (gsl_rng_random8_glibc2);
+  generic_rng_test (gsl_rng_random8_libc5);
   generic_rng_test (gsl_rng_random128_bsd);
   generic_rng_test (gsl_rng_random128_glibc2);
   generic_rng_test (gsl_rng_random128_libc5);
@@ -263,7 +263,7 @@ main (void)
   generic_rng_test (gsl_rng_ranlux389);
   generic_rng_test (gsl_rng_ranmar);
   generic_rng_test (gsl_rng_taus);
-  generic_rng_test (gsl_rng_tds);
+  generic_rng_test (gsl_rng_transputer);
   generic_rng_test (gsl_rng_tt800);
   generic_rng_test (gsl_rng_uni);
   generic_rng_test (gsl_rng_uni32);

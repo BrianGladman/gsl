@@ -24,7 +24,7 @@ main (void)
   benchmark (gsl_rng_ranmar);
   benchmark (gsl_rng_r250);
   benchmark (gsl_rng_taus);
-  benchmark (gsl_rng_tds);
+  benchmark (gsl_rng_transputer);
   benchmark (gsl_rng_tt800);
   benchmark (gsl_rng_uni);
   benchmark (gsl_rng_uni32);

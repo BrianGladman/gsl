@@ -23,31 +23,31 @@
 
 inline long int random_get_impl (int * i, int * j, int n, long int * x);
 
-inline unsigned long int random0_get (void *vstate);
+inline unsigned long int random8_get (void *vstate);
 inline unsigned long int random32_get (void *vstate);
 inline unsigned long int random64_get (void *vstate);
 inline unsigned long int random128_get (void *vstate);
 inline unsigned long int random256_get (void *vstate);
 
-double random0_get_double (void *vstate);
+double random8_get_double (void *vstate);
 double random32_get_double (void *vstate);
 double random64_get_double (void *vstate);
 double random128_get_double (void *vstate);
 double random256_get_double (void *vstate);
 
-void random0_glibc2_set (void *state, unsigned long int s);
+void random8_glibc2_set (void *state, unsigned long int s);
 void random32_glibc2_set (void *state, unsigned long int s);
 void random64_glibc2_set (void *state, unsigned long int s);
 void random128_glibc2_set (void *state, unsigned long int s);
 void random256_glibc2_set (void *state, unsigned long int s);
 
-void random0_libc5_set (void *state, unsigned long int s);
+void random8_libc5_set (void *state, unsigned long int s);
 void random32_libc5_set (void *state, unsigned long int s);
 void random64_libc5_set (void *state, unsigned long int s);
 void random128_libc5_set (void *state, unsigned long int s);
 void random256_libc5_set (void *state, unsigned long int s);
 
-void random0_bsd_set (void *state, unsigned long int s);
+void random8_bsd_set (void *state, unsigned long int s);
 void random32_bsd_set (void *state, unsigned long int s);
 void random64_bsd_set (void *state, unsigned long int s);
 void random128_bsd_set (void *state, unsigned long int s);
@@ -61,7 +61,7 @@ typedef struct
   {
     long int x;
   }
-random0_state_t;
+random8_state_t;
 
 typedef struct
   {
@@ -92,9 +92,9 @@ typedef struct
 random256_state_t;
 
 inline unsigned long int
-random0_get (void *vstate)
+random8_get (void *vstate)
 {
-  random0_state_t *state = (random0_state_t *) vstate;
+  random8_state_t *state = (random8_state_t *) vstate;
 
   state->x = (1103515245 * state->x + 12345) & 0x7fffffffUL;
   return state->x;
@@ -152,9 +152,9 @@ random256_get (void *vstate)
 }
 
 double
-random0_get_double (void *vstate)
+random8_get_double (void *vstate)
 {
-  return random0_get (vstate) / 2147483648.0 ;
+  return random8_get (vstate) / 2147483648.0 ;
 }
 
 double
@@ -182,9 +182,9 @@ random256_get_double (void *vstate)
 }
 
 void
-random0_bsd_set (void *vstate, unsigned long int s)
+random8_bsd_set (void *vstate, unsigned long int s)
 {
-  random0_state_t *state = (random0_state_t *) vstate;
+  random8_state_t *state = (random8_state_t *) vstate;
   
   if (s == 0) 
     s = 1;
@@ -308,9 +308,9 @@ glibc2_initialize (long int * x, int n, unsigned long int s)
 }
 
 void
-random0_glibc2_set (void *vstate, unsigned long int s)
+random8_glibc2_set (void *vstate, unsigned long int s)
 {
-  random0_state_t *state = (random0_state_t *) vstate;
+  random8_state_t *state = (random8_state_t *) vstate;
   
   if (s == 0) 
     s = 1;
@@ -380,9 +380,9 @@ random256_glibc2_set (void *vstate, unsigned long int s)
 
 
 void
-random0_libc5_set (void *vstate, unsigned long int s)
+random8_libc5_set (void *vstate, unsigned long int s)
 {
-  random0_state_t *state = (random0_state_t *) vstate;
+  random8_state_t *state = (random8_state_t *) vstate;
   
   if (s == 0) 
     s = 1;
@@ -459,14 +459,14 @@ static const gsl_rng_type random_glibc2_type =
  &random128_get,
  &random128_get_double};
 
-static const gsl_rng_type random0_glibc2_type =
-{"random0-glibc2",			/* name */
+static const gsl_rng_type random8_glibc2_type =
+{"random8-glibc2",			/* name */
  0x7fffffffUL,			/* RAND_MAX */
  0,				/* RAND_MIN */
- sizeof (random0_state_t),
- &random0_glibc2_set,
- &random0_get,
- &random0_get_double};
+ sizeof (random8_state_t),
+ &random8_glibc2_set,
+ &random8_get,
+ &random8_get_double};
 
 static const gsl_rng_type random32_glibc2_type =
 {"random32-glibc2",			/* name */
@@ -513,14 +513,14 @@ static const gsl_rng_type random_libc5_type =
  &random128_get,
  &random128_get_double};
 
-static const gsl_rng_type random0_libc5_type =
-{"random0-libc5",			/* name */
+static const gsl_rng_type random8_libc5_type =
+{"random8-libc5",			/* name */
  0x7fffffffUL,			/* RAND_MAX */
  0,				/* RAND_MIN */
- sizeof (random0_state_t),
- &random0_libc5_set,
- &random0_get,
- &random0_get_double};
+ sizeof (random8_state_t),
+ &random8_libc5_set,
+ &random8_get,
+ &random8_get_double};
 
 static const gsl_rng_type random32_libc5_type =
 {"random32-libc5",			/* name */
@@ -567,14 +567,14 @@ static const gsl_rng_type random_bsd_type =
  &random128_get,
  &random128_get_double};
 
-static const gsl_rng_type random0_bsd_type =
-{"random0-bsd",			/* name */
+static const gsl_rng_type random8_bsd_type =
+{"random8-bsd",			/* name */
  0x7fffffffUL,			/* RAND_MAX */
  0,				/* RAND_MIN */
- sizeof (random0_state_t),
- &random0_bsd_set,
- &random0_get,
- &random0_get_double};
+ sizeof (random8_state_t),
+ &random8_bsd_set,
+ &random8_get,
+ &random8_get_double};
 
 static const gsl_rng_type random32_bsd_type =
 {"random32-bsd",			/* name */
@@ -613,21 +613,21 @@ static const gsl_rng_type random256_bsd_type =
  &random256_get_double};
 
 const gsl_rng_type *gsl_rng_random_libc5    = &random_libc5_type;
-const gsl_rng_type *gsl_rng_random0_libc5   = &random0_libc5_type;
+const gsl_rng_type *gsl_rng_random8_libc5   = &random8_libc5_type;
 const gsl_rng_type *gsl_rng_random32_libc5  = &random32_libc5_type;
 const gsl_rng_type *gsl_rng_random64_libc5  = &random64_libc5_type;
 const gsl_rng_type *gsl_rng_random128_libc5 = &random128_libc5_type;
 const gsl_rng_type *gsl_rng_random256_libc5 = &random256_libc5_type;
 
 const gsl_rng_type *gsl_rng_random_glibc2    = &random_glibc2_type;
-const gsl_rng_type *gsl_rng_random0_glibc2   = &random0_glibc2_type;
+const gsl_rng_type *gsl_rng_random8_glibc2   = &random8_glibc2_type;
 const gsl_rng_type *gsl_rng_random32_glibc2  = &random32_glibc2_type;
 const gsl_rng_type *gsl_rng_random64_glibc2  = &random64_glibc2_type;
 const gsl_rng_type *gsl_rng_random128_glibc2 = &random128_glibc2_type;
 const gsl_rng_type *gsl_rng_random256_glibc2 = &random256_glibc2_type;
 
 const gsl_rng_type *gsl_rng_random_bsd    = &random_bsd_type;
-const gsl_rng_type *gsl_rng_random0_bsd   = &random0_bsd_type;
+const gsl_rng_type *gsl_rng_random8_bsd   = &random8_bsd_type;
 const gsl_rng_type *gsl_rng_random32_bsd  = &random32_bsd_type;
 const gsl_rng_type *gsl_rng_random64_bsd  = &random64_bsd_type;
 const gsl_rng_type *gsl_rng_random128_bsd = &random128_bsd_type;

@@ -1,3 +1,14 @@
+Thu Jul  9 13:56:20 1998  Brian Gough  <bjg@vvv.lanl.gov>
+
+	* transputer.c: renamed tds.c to transputer.c so the name is a bit
+ 	more obvious
+
+	* random.c: renamed random0 functions to random8, since obviously
+ 	we can't have 0 bytes of state
+	
+	* default.c (gsl_rng_env_setup): made gsl_rng_mt19937 the default
+ 	generator
+
 Wed Jul  8 17:06:54 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
 	* added random() functions. There are three(!) versions: the
