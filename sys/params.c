@@ -7,6 +7,9 @@
 #define rt5(x) pow((x), 1.0 / 5.0)
 #define rt6(x) pow((x), 1.0 / 6.0)
 
+#define SFLT_EPSILON 0.00048828125  /* 2^(-11) */
+
+
 int
 main (void)
 {
@@ -62,6 +65,15 @@ main (void)
   printf ("#define GSL_ROOT5_FLT_MAX % .16e\n", rt5 (FLT_MAX));
   printf ("#define GSL_ROOT6_FLT_MAX % .16e\n", rt6 (FLT_MAX));
   printf ("#define GSL_LOG_FLT_MAX   % .16e\n", log (FLT_MAX));
+  printf ("\n");
+
+  printf ("#define GSL_SFLT_EPSILON       % .16e\n", SFLT_EPSILON);
+  printf ("#define GSL_SQRT_SFLT_EPSILON  % .16e\n", sqrt (SFLT_EPSILON));
+  printf ("#define GSL_ROOT3_SFLT_EPSILON % .16e\n", rt3 (SFLT_EPSILON));
+  printf ("#define GSL_ROOT4_SFLT_EPSILON % .16e\n", rt4 (SFLT_EPSILON));
+  printf ("#define GSL_ROOT5_SFLT_EPSILON % .16e\n", rt5 (SFLT_EPSILON));
+  printf ("#define GSL_ROOT6_SFLT_EPSILON % .16e\n", rt6 (SFLT_EPSILON));
+  printf ("#define GSL_LOG_SFLT_EPSILON   % .16e\n", log (SFLT_EPSILON));
   printf ("\n");
 
   return 0;
