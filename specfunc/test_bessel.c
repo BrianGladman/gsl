@@ -362,5 +362,9 @@ int test_bessel(void)
   gsl_test(sa, "  gsl_sf_bessel_kl_scaled_array_impl");
   s += sa;
 
+  TEST_SF(s, gsl_sf_bessel_zero_J0_impl, ( 1, &r),  2.404825557695771, TEST_TOL1, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_bessel_zero_J0_impl, ( 2, &r),  5.520078110286304, TEST_TOL1, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_bessel_zero_J0_impl, (20, &r), 62.048469190227081, TEST_TOL1, GSL_SUCCESS);
+
   return s;
 }

@@ -486,4 +486,13 @@ int gsl_sf_bessel_lnKnu_impl(double nu, double x, gsl_sf_result * result);
 int gsl_sf_bessel_lnKnu_e(double nu, double x, gsl_sf_result * result);
 
 
+
+/* s'th positive zero of the Bessel function J_0(x).
+ *
+ * exceptions: 
+ */
+int gsl_sf_bessel_zero_J0_impl(int s, gsl_sf_result * result);
+int gsl_sf_bessel_zero_J0_e(int s, gsl_sf_result * result);
+
+
 #endif /* !GSL_SF_BESSEL_H_ */
