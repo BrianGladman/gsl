@@ -11,9 +11,9 @@ typedef struct
     unsigned int n;
     unsigned int nf;
     unsigned int factor[64];
-    gsl_complex *twiddle[64];
-    gsl_complex *trig;
-    gsl_complex *scratch;
+    gsl_complex * twiddle[64];
+    gsl_complex * trig;
+    gsl_complex * scratch;
   }
 gsl_fft_complex_wavetable;
 
@@ -94,5 +94,9 @@ int
 
 int
   gsl_fft_complex_wavetable_free (gsl_fft_complex_wavetable * wavetable);
+
+int
+gsl_fft_complex_wavetable_cpy (gsl_fft_complex_wavetable * dest,
+			       gsl_fft_complex_wavetable * src) ;
 
 #endif /* _GSL_FFT_COMPLEX_H */
