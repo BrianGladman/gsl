@@ -78,10 +78,32 @@ gsl_vector_long_alloc_col_from_matrix (gsl_matrix_long * m,
 
 void gsl_matrix_long_free (gsl_matrix_long * m);
 
+int gsl_matrix_long_view_from_matrix (gsl_matrix_long * m, 
+                                       gsl_matrix_long * mm,
+                                       const size_t k1,
+                                       const size_t k2,
+                                       const size_t n1, 
+                                       const size_t n2);
+
+int gsl_matrix_long_view_from_vector (gsl_matrix_long * m, 
+                                       gsl_vector_long * v,
+                                       const size_t offset,
+                                       const size_t n1, 
+                                       const size_t n2);
+
+
+int gsl_matrix_long_view_from_array (gsl_matrix_long * m, 
+                                      long * base,
+                                      const size_t offset,
+                                      const size_t n1, 
+                                      const size_t n2);
+
 gsl_matrix_long gsl_matrix_long_view (long * m, 
                                         const size_t n1, 
                                         const size_t n2);
 
+int gsl_vector_long_view_row_from_matrix (gsl_vector_long * v, gsl_matrix_long * m, const size_t i);
+int gsl_vector_long_view_col_from_matrix (gsl_vector_long * v, gsl_matrix_long * m, const size_t j);
 
 void gsl_matrix_long_set_zero (gsl_matrix_long * m);
 void gsl_matrix_long_set_identity (gsl_matrix_long * m);
@@ -106,7 +128,6 @@ int gsl_matrix_long_transpose (gsl_matrix_long * m);
 int gsl_matrix_long_transpose_memcpy (gsl_matrix_long * dest, const gsl_matrix_long * src);
 
 
-gsl_matrix_long gsl_matrix_long_view (long * m, size_t n1, size_t n2);
 gsl_matrix_long gsl_matrix_long_submatrix (gsl_matrix_long * m, size_t i, size_t j, size_t n1, size_t n2);
 gsl_vector_long gsl_matrix_long_row (gsl_matrix_long * m, size_t i);
 gsl_vector_long gsl_matrix_long_column (gsl_matrix_long * m, size_t j);
@@ -140,13 +161,6 @@ int gsl_matrix_long_get_row(gsl_vector_long * v, const gsl_matrix_long * m, cons
 int gsl_matrix_long_get_col(gsl_vector_long * v, const gsl_matrix_long * m, const size_t j);
 int gsl_matrix_long_set_row(gsl_matrix_long * m, const size_t i, const gsl_vector_long * v);
 int gsl_matrix_long_set_col(gsl_matrix_long * m, const size_t j, const gsl_vector_long * v);
-
-int gsl_vector_long_view_row_from_matrix (gsl_vector_long * v, gsl_matrix_long * m, const size_t i);
-int gsl_vector_long_view_col_from_matrix (gsl_vector_long * v, gsl_matrix_long * m, const size_t j);
-
-int gsl_matrix_long_view_from_vector (gsl_matrix_long * m, gsl_vector_long * base, const size_t offset, const size_t n1, const size_t n2, const size_t d2);
-
-
 
 extern int gsl_check_range ;
 

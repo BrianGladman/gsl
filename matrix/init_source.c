@@ -189,7 +189,6 @@ FUNCTION (gsl_matrix, free) (TYPE (gsl_matrix) * m)
 
   free (m);
 }
-
 void
 FUNCTION (gsl_matrix, set_identity) (TYPE (gsl_matrix) * m)
 {
@@ -243,29 +242,3 @@ FUNCTION (gsl_matrix, set_all) (TYPE (gsl_matrix) * m, BASE x)
     }
 }
 
-
-TYPE (gsl_matrix)
-FUNCTION (gsl_matrix, view) (ATOMIC * array, const size_t n1, const size_t n2)
-{
-  TYPE(gsl_matrix) m = {0, 0, 0, 0, 0, 0};
-
-  if (n1 == 0)
-    {
-      GSL_ERROR_VAL ("matrix dimension n1 must be positive integer",
-                     GSL_EINVAL, m);
-    }
-  else if (n2 == 0)
-    {
-      GSL_ERROR_VAL ("matrix dimension n2 must be positive integer",
-                     GSL_EINVAL, m);
-    }
-
-  m.data = array;
-  m.size1 = n1;
-  m.size2 = n2;
-  m.tda = n2; 
-  m.block = 0;
-  m.owner = 0;
-
-  return m;
-}
