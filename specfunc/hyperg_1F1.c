@@ -1165,20 +1165,21 @@ hyperg_1F1_a_negint_lag(const int a, const double b, const double x, gsl_sf_resu
 
   gsl_sf_result lag;
   const int stat_l = gsl_sf_laguerre_n_impl(n, b-1.0, x, &lag);
-  if(stat_l != GSL_SUCCESS || lag.val == 0.0) {
-    result->val = 0.0;
-    result->err = 0.0;
-    return stat_l;
-  }
-  else if(b < 0.0) {
+  if(b < 0.0) {
     gsl_sf_result lnfact;
-    gsl_sf_result lnpoch;
-    const int stat_f = gsl_sf_lnfact_impl(n, &lnfact);
-    const int stat_p = gsl_sf_lnpoch_impl(b, n, &lnpoch);
-    const double lnpre_val = lnfact.val - lnpoch.val;
-    const double lnpre_err = lnfact.err + lnpoch.err + 2.0 * GSL_DBL_EPSILON * fabs(lnpre_val);
-    const int stat_e = gsl_sf_exp_mult_err_impl(lnpre_val, lnpre_err, lag.val, lag.err, result);
-    return GSL_ERROR_SELECT_4(stat_e, stat_l, stat_p, stat_f);
+    gsl_sf_result lng1;
+    gsl_sf_result lng2;
+    double s1, s2;
+    const int stat_f  = gsl_sf_lnfact_impl(n, &lnfact);
+    const int stat_g1 = gsl_sf_lngamma_sgn_impl(b + n, &lng1, &s1);
+    const int stat_g2 = gsl_sf_lngamma_sgn_impl(b, &lng2, &s2);
+    const double lnpre_val = lnfact.val - (lng1.val - lng2.val);
+    const double lnpre_err = lnfact.err + lng1.err + lng2.err
+      + 2.0 * GSL_DBL_EPSILON * fabs(lnpre_val);
+    const int stat_e = gsl_sf_exp_mult_err_impl(lnpre_val, lnpre_err,
+                                                s1*s2*lag.val, lag.err,
+                                                result);
+    return GSL_ERROR_SELECT_5(stat_e, stat_l, stat_g1, stat_g2, stat_f);
   }
   else {
     gsl_sf_result lnbeta;
@@ -1197,7 +1198,7 @@ hyperg_1F1_a_negint_lag(const int a, const double b, const double x, gsl_sf_resu
                                             result);
       result->val *= beta.val/1.25;
       result->err *= beta.val/1.25;
-      return GSL_ERROR_SELECT_2(stat_e, stat_b);
+      return GSL_ERROR_SELECT_3(stat_e, stat_l, stat_b);
     }
     else {
       /* B(x,y) was not near 1, so it is safe to use
@@ -1207,9 +1208,10 @@ hyperg_1F1_a_negint_lag(const int a, const double b, const double x, gsl_sf_resu
       const double ln_term_val = lnbeta.val + ln_n;
       const double ln_term_err = lnbeta.err
         + 2.0 * GSL_DBL_EPSILON * (fabs(lnbeta.val) + fabs(ln_n));
-      return gsl_sf_exp_mult_err_impl(ln_term_val, ln_term_err,
-                                      lag.val, lag.err,
-                                      result);
+      int stat_e = gsl_sf_exp_mult_err_impl(ln_term_val, ln_term_err,
+                                            lag.val, lag.err,
+                                            result);
+      return GSL_ERROR_SELECT_2(stat_e, stat_l);
     }
   }
 }
