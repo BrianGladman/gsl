@@ -150,7 +150,7 @@ responsibility to check the return values of the GSL routines.
 All GSL error handlers have the type @code{gsl_errhandler_t}, which is
 defined in @file{gsl_errno.h},
 
-@deftp {Data Type} {void gsl_errhandler_t (const char *reason, const char *file, int line)}
+@deftp {Data Type} void gsl_errhandler_t
 
 This is the type of GSL error handler functions. An error handler will
 be passed three arguments, specifying the reason for the error, the
