@@ -225,11 +225,14 @@ working on any major new functionality.
 
 The main emphasis is now on ensuring the stability of the existing
 functions, improving consistency, tidying up a few problem areas and
-fixing any bugs that are reported.  Adding large amounts of new code is
-difficult because it leads to differences in the maturity of different
-parts of the library.
+fixing any bugs that are reported.  Potential contributors are
+encouraged to gain familiarity with the library by investigating and
+fixing known problems listed in the @file{BUGS} file in the CVS
+repository.
 
-To maintain stability, any new functionality is encouraged as
+Adding large amounts of new code is difficult because it leads to
+differences in the maturity of different parts of the library.  To
+maintain stability, any new functionality is encouraged as
 @dfn{packages}, built on top of GSL and maintained independently by the
 author, as in other free software projects (such as the Perl CPAN
 archive and TeX CTAN archive, etc).

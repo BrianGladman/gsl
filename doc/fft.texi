@@ -163,15 +163,25 @@ data[5] = Im(z[2])
 @end example
 
 @noindent
+The array indices for the data have the same ordering as those
+in the definition of the DFT---i.e. there are no index transformations
+or permutations of the data.
+
 A @dfn{stride} parameter allows the user to perform transforms on the
 elements @code{z[stride*i]} instead of @code{z[i]}.  A stride greater
 than 1 can be used to take an in-place FFT of the column of a matrix. A
 stride of 1 accesses the array without any additional spacing between
-elements.
+elements.  
 
-The array indices have the same ordering as those in the definition of
-the DFT --- i.e. there are no index transformations or permutations of
-the data.
+To perform an FFT on a vector argument, such as @code{gsl_complex_vector
+* v}, use the following definitions (or their equivalents) when calling
+the functions described in this chapter:
+
+@example
+gsl_complex_packed_array data = v->data;
+size_t stride = v->stride;
+size_t n = v->size;
+@end example
 
 For physical applications it is important to remember that the index
 appearing in the DFT does not correspond directly to a physical
