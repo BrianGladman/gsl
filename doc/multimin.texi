@@ -255,9 +255,9 @@ The minimizer maintains a current best estimate of the minimum at all
 times.  This information can be accessed with the following auxiliary
 functions,
 
-@deftypefun {gsl_vector *} gsl_multimin_fdfsolver_x (const gsl_multimin_fdfsolver * @var{s})
-@deftypefunx double gsl_multimin_fdfsolver_minimum (const gsl_multimin_fdfsolver * @var{s})
-@deftypefunx {gsl_vector *} gsl_multimin_fdfsolver_gradient (const gsl_multimin_fdfsolver * @var{s})
+@deftypefun {gsl_vector *} gsl_multimin_fdfminimizer_x (const gsl_multimin_fdfminimizer * @var{s})
+@deftypefunx double gsl_multimin_fdfminimizer_minimum (const gsl_multimin_fdfminimizer * @var{s})
+@deftypefunx {gsl_vector *} gsl_multimin_fdfminimizer_gradient (const gsl_multimin_fdfminimizer * @var{s})
 These functions return the current best estimate of the location of the
 minimum, the value of the function at that point and its gradient, for
 the minimizer @var{s}.
