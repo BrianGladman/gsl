@@ -60,6 +60,9 @@ by the Foundation.
 @author
 @author Reid Priedhorsky @footnote{Mathematical Modeling and Analysis group, Los Alamos National Laboratory}
 @author @email{rp@@lanl.gov}
+@author
+@author Gerard Jungman @footnote{Theoretical Particle Physics group, Los Alamos National Laboratory}
+@author @email{jungman@@nnn.lanl.gov}
 
 @page
 @vskip 0pt plus 1filll
@@ -89,7 +92,7 @@ by the Foundation.
 This file documents the the @value{GSL}, a collection of numerical
 routines for scientific computing.
 
-As of @value{UPDATED}, thecomplete packages are the random number suite
+As of @value{UPDATED}, the complete packages are the random number suite
 (@pxref{Random number generation}), the FFT package (@pxref{FFTs}), the
 simulated annealing package (@pxref{Simulated Annealing}) and the root
 finding package (@pxref{Root finding}).  Work is under way on a special
@@ -148,6 +151,11 @@ allowing wrappers to be written for very high level languages.
 @node Root finding, Simulated Annealing, FFTs, Top
 @chapter Root finding
 @include roots.texi
+
+@c Section on special functions
+@node Special Functions
+@chapter Special Functions
+@include specfunc.texi
 
 @c Section on simulated annealing
 @node Simulated Annealing, Debugging Numerical Programs, Root finding, Top

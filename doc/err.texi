@@ -193,7 +193,7 @@ old_handler = gsl_set_error_handler (NULL);
 To turn off error handling use,
 
 @example
-old_handler = gsl_set_error_handler (&gsl_no_error_handler);
+old_handler = gsl_set_error_handler (&gsl_empty_error_handler);
 @end example
 @noindent
 The function @code{gsl_no_error_handler} is predefined by the library
