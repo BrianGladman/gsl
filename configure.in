@@ -15,6 +15,8 @@ AC_PROG_CC
 AC_PROG_CPP
 AC_PROG_INSTALL
 AC_PROG_LN_S
+AC_CHECK_TOOL(RANLIB, ranlib, :)
+AC_CHECK_TOOL(AR, ar, :)
 AC_PROG_RANLIB
 #AM_PROG_LIBTOOL
 
@@ -42,8 +44,8 @@ dnl Checks for header files.
 dnl Checks for typedefs, structures, and compiler characteristics.
 
 dnl Checks for library functions.
-dnl Replace `main' with a function in -lm:
 AC_CHECK_LIB(m, main)
+AC_CHECK_FUNCS(hypot)
 AC_CHECK_FUNCS(isinf)
 dnl AC_FUNC_ALLOCA
 AC_FUNC_VPRINTF

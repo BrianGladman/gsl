@@ -1,5 +1,28 @@
 #We need to do a better job with the NEWS file!
 
+** Two changes not making their way into the documentation
+A couple of things are not getting into the docs, so here are the
+errata:
+*** The FFT routines now take a stride parameter.  Passing 1 for the
+stride will make them behave as documented.
+*** The complex numbers are now an opaque type, and no assumptions can
+be made about the format in which they are stored (they are not stored
+as a simple structure anymore, since that is not portable).  The type
+is now gsl_complex (or gsl_complex_long_double or gsl_complex_float),
+and the macros to access them are
+    GSL_REAL(z)
+    GSL_IMAG(z)
+    GSL_SET_REAL(zp, x)
+    GSL_SET_IMAG(zp, y)
+    GSL_COMPLEX_P_REAL(zp)       /* pointer versions of the above */
+    GSL_COMPLEX_P_IMAG(zp)
+    GSL_COMPLEX_EQ(z1, z2)       /* comparison */
+    GSL_COMPLEX_SET(z, x, y)     /* create */
+
+** 0.4.1 is being released in occasion of the Red Hat 6.0 release.
+The specfunc module is still in an alpha state; if you run "make
+check" in the specfunc directory you will see what tests still fail.
+
 ** Most Alpha specific problems have been fixed. In particular the
 random number generators rand48 and ranf now work on the Alpha
 

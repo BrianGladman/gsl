@@ -1,3 +1,7 @@
+1999-02-06  Mark Galassi  <rosalia@cygnus.com>
+
+	* NEWS: udpated in occasion of the imminent 0.4.1 release.
+
 Sun Feb 14 20:47:07 1999  Brian Gough  <bjg@netsci.freeserve.co.uk>
 
 	* Makefile.am: added gsl_mode.h to include_HEADERS
@@ -11,6 +15,16 @@ Mon Feb  8 18:39:35 1999  Brian Gough  <bjg@netsci.freeserve.co.uk>
 
 	* gsl_complex.h: added GSL_SET_REAL(&z,x) and GSL_SET_IMAG(&z,y),
  	changed GSL_COMPLEX_SET(z,x,y) to GSL_SET_COMPLEX(&z,x,y) to match.
+
+1999-01-03  Mark Galassi  <rosalia@cygnus.com>
+
+	* Makefile.am, autogen.sh: improved autogen.sh, based on the gtk+
+	autogen.sh.  Added it to Makefile.am's EXTRA_DIST list.
+
+1999-01-02  Mark Galassi  <rosalia@cygnus.com>
+
+	* configure.in: introduced a test for hypot(), in case a system
+	does not have it.
 
 1999-01-03  Mark Galassi  <rosalia@cygnus.com>
 

@@ -21,6 +21,9 @@
 /* Define if you have the clock function.  */
 #undef HAVE_CLOCK
 
+/* Define if you have the hypot function.  */
+#undef HAVE_HYPOT
+
 /* Define if you have the isinf function.  */
 #undef HAVE_ISINF
 
@@ -44,6 +47,13 @@
 
 /* Define if you have the m library (-lm).  */
 #undef HAVE_LIBM
+
+/* Name of package */
+#undef PACKAGE
+
+/* Version number of package */
+#undef VERSION
+
 
 /* Define if you have inline */
 #undef HAVE_INLINE

@@ -8,6 +8,7 @@ SUBDIRS = err sys utils ieee-utils vector matrix linalg blas specfunc rng randis
 
 include_HEADERS = gsl_complex.h gsl_math.h gsl_machine.h gsl_mode.h gsl_precision.h
 noinst_HEADERS = complex_internal.h templates_on.h templates_off.h
+EXTRA_DIST = autogen.sh
 
 strict:
 	$(MAKE) CFLAGS="-ansi -pedantic -Werror -W -Wall -Wtraditional -Wconversion -Wshadow -Wpointer-arith -Wcast-qual -Wcast-align -Wwrite-strings -Waggregate-return -Wstrict-prototypes -fshort-enums -fno-common -Wmissing-prototypes -Wnested-externs -Dinline='' -g -O4"
