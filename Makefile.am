@@ -2,6 +2,8 @@
 
 SUBDIRS = utils err random vector matrix randist fft roots specfunc statistics siman integration histogram doc
 
+lib_LIBRARIES = libgsl.a
+
 include_HEADERS = gsl_complex.h gsl_math.h
 
 strict:
@@ -9,13 +11,13 @@ strict:
 
 # a flaky attempt to build a single libgsl.a file (can someone improve on it?)
 
-libgsl.a:
+libgsl.a: 
 	for dir in $(SUBDIRS) ;\
 	do \
 	(cd $$dir ; \
 	for lib in lib*.a ; \
 	do \
-	test -e $$lib && ar r ../libgsl.a `ar t $$lib` || true ; \
+	test -f $$lib && ar r ../libgsl.a `ar t $$lib` || true ; \
 	done ) ;\
 	done
 
