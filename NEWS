@@ -1,15 +1,17 @@
-* What is new in gsl-1.3+:
-
-** Added new functions gsl_rng_fwrite and gsl_rnd_fread for storing
-the state of random number generators in a file.
+* What is new in gsl-1.4:
 
 ** Added cumulative distribution functions and their inverses for the
 continuous random distributions including: gaussian, lognormal, gamma,
 beta, cauchy, laplace, chisq, exponential, gumbel, weibull,
 F-distribution, t-distribution, logistic, pareto and rayleigh.
 
-** IEEE modes now use the C99 fenv.h functions when platform spectific
-functions are not available.
+** Added faster binomial random variates using the TPE rejection
+algorithm, in the function gsl_randist_binomial_tpe.
+
+** Added new functions gsl_rng_fwrite and gsl_rnd_fread for storing
+the state of random number generators in a file.
+
+** Added a new function gsl_combination_memcpy()
 
 ** Corrected values of electrical constants in CGS units.  To take
 account of different electrical systems of units the values are now
@@ -20,19 +22,11 @@ strength).  The previous GSL_CONST_MKS and GSL_CONST_CGS prefixes have
 been removed, as have the permeability and permittivity constants in
 the CGS system since this uses different defining equations.
 
-** Improved gsl_sf_gamma_inc_P(a,x) to avoid a domain error for x<<a
-when a>10.
-
 ** Fixed bugs in the random number generators gsl_rng_fishman18,
 gsl_rng_fishman2x, and gsl_rng_knuthran2 which caused them to return
 incorrect results.  Minor corrections were made to the parameters in
 the other Knuth generators borosh13, coveyou, fishman20, lecuyer21,
 and waterman14.
-
-** gsl_linalg_householder_hv now uses BLAS routines internally
-
-** Added faster binomial random variates using the TPE rejection
-algorithm, in the function gsl_randist_binomial_tpe.
 
 ** Fixed a missing transpose bug in the gsl_linalg_QR_QRsolve
 and gsl_linalg_QRPT_QRsolve routines which were computing the
@@ -56,14 +50,8 @@ return the incorrect sign for psi(1,1).
 parameter iters_fixed_T for the number of iterations at fixed
 temperature instead of n_tries.
 
-** Added a new function gsl_combination_memcpy()
-
 ** Fixed a bug in gsl_combination_valid which caused it to return the
 incorrect status.
-
-** Reduced the memory usage of the multifit algorithms from MxM to MxN
-for large M by performing the QR decomposition of the Jacobian
-in-place.
 
 ** Fixed a bug in gsl_permutation_canonical_to_linear which caused the
 output to always be zero, and the input permutation to be incorrectly
@@ -71,9 +59,6 @@ replaced by the output.
 
 ** Fixed a bug is gsl_ran_discrete which could cause uninitialised
 data to be returned for some distributions.
-
-** The script configure.in is now compatible with autoconf-2.50 and
-later.
 
 ** Fixed the dependencies for gsl_chebyshev.h to include gsl_math.h.
 
@@ -84,9 +69,29 @@ the incorrect sign for the imaginary part when -1<x<0.
 allow the singularity to fall on an interval boundary, leading to
 division by zero.
 
+** Improved gsl_sf_gamma_inc_P(a,x) to avoid a domain error for x<<a
+when a>10.
+
+** Improved the accuracy of gsl_sf_coupling_3j for large arguments.
+
+** Improved the performance of gsl_sf_choose(m,n) by separating the
+calculations for small and large arguments.
+
 ** On platforms without IEEE comparisons gsl_{isnan,isinf,finite} will
 fall back to the system versions of isnan, isinf and finite if
 available.
+
+** gsl_linalg_householder_hv now uses BLAS routines internally
+
+** The script configure.in is now compatible with autoconf-2.50 and
+later.
+
+** Reduced the memory usage of the multifit algorithms from MxM to MxN
+for large M by performing the QR decomposition of the Jacobian
+in-place.
+
+** IEEE modes now use the C99 fenv.h functions when platform spectific
+functions are not available.
 
 * What was new in gsl-1.3:
 
