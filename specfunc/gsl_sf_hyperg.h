@@ -84,7 +84,6 @@ double  gsl_sf_hyperg_2F1_conj_renorm(double aR, double aI, double c, double x);
  *
  * exceptions: GSL_EDOM
  */
-int     gsl_sf_hyperg_2F0_series_impl(double a, double b, double x, int n_trunc, double * result);
 int     gsl_sf_hyperg_2F0_impl(double a, double b, double x, double * result);
 int     gsl_sf_hyperg_2F0_e(double a, double b, double x, double * result);
 double  gsl_sf_hyperg_2F0(double a, double b, double x);

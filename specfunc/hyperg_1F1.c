@@ -6,6 +6,7 @@
 #include <gsl_errno.h>
 #include "hyperg.h"
 #include "gsl_sf_exp.h"
+#include "gsl_sf_gamma.h"
 #include "gsl_sf_hyperg.h"
 
 #define locMAX(a,b)     ((a) > (b) ? (a) : (b))
@@ -92,27 +93,118 @@ hyperg_1F1_recurse_a(double a, double b, double x,
 }
 
 
+/* Assumes b != a and b != 0
+ */
 static
 int
-hyperg_1F1_asymp(const double a, const double b, const double x,
-                 double * result, double * prec
-                 )
+hyperg_1F1_asymp_negx(const double a, const double b, const double x,
+                      double * result, double * prec
+                      )
 {
-  double pre, ln_pre, F;
+  double lg_b, sgn_b;
+  double lg_bma, sgn_bma;
+  double ln_pre;
+  double ln_F;
+  double prec_F;
+  double F;
+  gsl_sf_lngamma_sgn_impl(b, &lg_b, &sgn_b);
+  gsl_sf_lngamma_sgn_impl(b-a, &lg_bma, &sgn_bma);
+  
+  gsl_sf_hyperg_2F0_series_impl(a, 1.0+a-b, -1.0/x, -1, &F, &prec_F);
 
-  if(x == 0.0) {
-    *prec   = 1.0;
-    *result = 0.0; /* FIXME: ?? */
-    return GSL_ELOSS;
-  }
-  else if(x < 0.0) {
-    ln_pre = gsl_sf_lngamma(b) - a*log(-x) - gsl_sf_lngamma(b-a);
+  ln_pre = lg_b - a*log(-x) - lg_bma;
+  ln_F = log(fabs(F));
+  
+  if(ln_pre + ln_F  <  GSL_LOG_DBL_MAX-1.0) {
+    *result = sgn_b * sgn_bma * exp(ln_pre) * F;
+    return GSL_SUCCESS;
   }
   else {
-    ln_pre = gsl_sf_lngamma(b) + x + (a-b)*log(x) - gsl_sf_lngamma(a);
+    *result = 0.0;
+    return GSL_EOVRFLW;
   }
-  
-  
+}
+
+
+/* Assumes b != 0 and a != 0
+ */
+static
+int
+hyperg_1F1_asymp_posx(const double a, const double b, const double x,
+                      double * result, double * prec
+                      )
+{
+  double lg_b, sgn_b;
+  double lg_a, sgn_a;
+  double ln_pre;
+  double ln_F;
+  double prec_F;
+  double F;
+
+  gsl_sf_lngamma_sgn_impl(b, &lg_b, &sgn_b);
+  gsl_sf_lngamma_sgn_impl(a, &lg_a, &sgn_a);
+
+  gsl_sf_hyperg_2F0_series_impl(b-a, 1.0-a, 1.0/x, -1, &F, &prec_F);
+
+  ln_pre = lg_b - lg_a + x + (a-b)*log(x);
+
+  if(ln_pre + ln_F  <  GSL_LOG_DBL_MAX) {
+    *result = sgn_b * sgn_a * exp(ln_pre) * F;
+    return GSL_SUCCESS;
+  }
+  else {
+    *result = 0.0;
+    return GSL_EOVRFLW;
+  }
+}
+
+
+/* Use this as it is used below. Basically, it assumes
+ * that a is small and that either x or b is large since,
+ * if they were all small, the series would have been
+ * evaluated directly.
+ */
+static
+int
+hyperg_1F1_small_a(const double a, const double b, const double x, double * result)
+{
+  double bma = b-a;
+  double oma = 1.0-a;
+  double ap1mb = 1.0+a-b;
+  double abs_a = fabs(a);
+  double abs_b = fabs(b);
+  double abs_x = fabs(x);
+  double abs_bma = fabs(bma);
+  double abs_oma = fabs(oma);
+  double abs_ap1mb = fabs(ap1mb);
+
+  if(b > 0.0 && abs_x < 0.7 * abs_b) {
+    /* Series is dominated and safe, though
+     * it is a little slow to converge, being
+     * like Sum[(x/b)^n] in the worst case.
+     */
+    double prec;
+    return gsl_sf_hyperg_1F1_series_impl(a, b, x, result, &prec);
+  }
+  else if(x < 0.0 && locMAX(abs_a,1.0)*locMAX(abs_ap1mb,1.0) < 0.99*abs_x) {
+    double prec;
+    return hyperg_1F1_asymp_negx(a, b, x, result, &prec);
+  }
+  else if(x > 0.0 && locMAX(abs_bma,1.0)*locMAX(abs_oma,1.0) < 0.99*abs_x) {
+    double prec;
+    return hyperg_1F1_asymp_posx(a, b, x, result, &prec);
+  }
+  else if(   (abs_b > 1000.0 && abs_x < 0.9 * abs_b)
+          || (abs_b >  500.0 && abs_x < 0.6 * abs_b)
+    ) {
+    return gsl_sf_hyperg_1F1_large_b_impl(a, b, x, result);
+  }
+  else {
+    /* We are left with small wedges around b=|x|, and
+     * somewhat larger wedges around b=-|x|, as well as
+     * a chunk for -500<b<0.
+     */
+  }
 }
 
 
@@ -134,8 +226,13 @@ gsl_sf_hyperg_1F1_impl(const double a, const double b, const double x,
   bma_neg_integer = ( bma < 0.0  &&  fabs(bma - rint(bma)) < locEPS );
   amb_neg_integer = ( amb < 0.0  &&  fabs(amb - rint(amb)) < locEPS );
   
+  if(x == 0.0) {
+    *result = 1.0;
+    return GSL_SUCCESS;
+  }
+
   /* case: a==b,  exp(x) */
-  if(fabs(b-a) < locEPS) {
+  if(fabs(bma) < locEPS) {
     return gsl_sf_exp_impl(x, result);
   }
 
@@ -149,6 +246,9 @@ gsl_sf_hyperg_1F1_impl(const double a, const double b, const double x,
    * series truncates to a polynomial.
    * We do not have to worry about negative integer 'b',
    * since that error condition is trapped above.
+   *
+   * FIXME: Don't we have to worry about the magnitudes
+   * of the arguments??
    */
   if(a_neg_integer) {
     double prec;
@@ -163,6 +263,9 @@ gsl_sf_hyperg_1F1_impl(const double a, const double b, const double x,
    * in that case we would not have gotten this far unless 'a' was
    * a negative integer as well, in which case the above code block
    * handled the situation.
+   *
+   * FIXME: Don't we also have to be careful about the
+   * magnitude of the arguments??
    */
   if(bma_neg_integer) {
     double prec;
@@ -197,31 +300,53 @@ gsl_sf_hyperg_1F1_impl(const double a, const double b, const double x,
    */
 
   if(fabs(x) < 20.0) {
-    if(b > fabs(a) || fabs(a) < 20.0) {
+    if( (fabs(a) < 20.0 && fabs(b) < 20.0) || (b >= fabs(a)) ) {
+      /* Arguments small enough to evaluate series directly
+       * or series is dominated and safe.
+       */
       double prec;
       return gsl_sf_hyperg_1F1_series_impl(a, b, x, result, &prec);
     }
-    else if(b > fabs(b-a) || fabs(b-a) < 20.0) {
+    
+    if( (fabs(bma) < 20.0 && fabs(b) < 20.0) || (b >= fabs(bma)) ) {
+      /* Use Kummer transformation to render series safe.
+       * We do not have to worry about overflow in
+       * exp(x) * Kummer_1F1, because neither term can be very large.
+       */
       double prec;
-      double Ex = exp(x);
       double Kummer_1F1;
-      int stat_Kummer = gsl_sf_hyperg_1F1_series_impl(b-a, b, x, &Kummer_1F1, &prec);
+      double Ex = exp(x);
+      int stat_K = gsl_sf_hyperg_1F1_series_impl(bma, b, x, &Kummer_1F1, &prec);
       *result = Ex * Kummer_1F1;
-      return stat_Kummer;
+      return stat_K;
     }
-    else {
-      /* |a| >> |b|  && (|a| > 30 || |b| > 30) */
-      
-      if(a < 0.0) {
-        /* apply Kummer transformation to */
-      }
-      else {
-      }
-    }
-  }
-  else {
   }
 
+  if(x < 0.0 && locMAX(fabs(a),1.0)*locMAX(fabs(1.0+a-b),1.0) < 1.2*fabs(x)) {
+    /* Large negative x asymptotic.
+     */
+    double prec;
+    return hyperg_1F1_asymp_negx(a, b, x, result, &prec);
+  }
+
+  if(x > 0.0 && locMAX(fabs(bma),1.0)*locMAX(fabs(1.0-a),1.0) < 1.2*fabs(x)) {
+    /* Large positive x asymptotic.
+     */
+    double prec;
+    return hyperg_1F1_asymp_posx(a, b, x, result, &prec);
+  }
+
+  /* At this point we have no more tricks. Instead we must
+   * proceed systematically. If a>0 we reduce it to 0<a<1
+   * by backward recursion, then use the small-a evaluation
+   * to normalize. If a<0, we can recurse backward directly.
+   * See [Temme, Numer. Math. 41, 63 (1983)].
+   *
+   * Huh? I thought forward on 'a' was stable?? That's what
+   * Temme says... p.65
+   */
+  *result = 0.0;
+  return GSL_EUNSUP;
 }
 
 

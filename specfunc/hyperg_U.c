@@ -4,6 +4,7 @@
 #include <math.h>
 #include <gsl_math.h>
 #include <gsl_errno.h>
+#include "hyperg.h"
 #include "gsl_sf_exp.h"
 #include "gsl_sf_gamma.h"
 #include "gsl_sf_pow_int.h"
@@ -121,12 +122,12 @@ hyperg_zaU_asymp(const double a, const double b, const double x, double *result)
     double tn  = 1.0;
     double sum = 1.0;
     double n   = 1.0;
-    while(n < nmax) {
+    while(n <= nmax) {
       double apn = (ap+n-1.0);
       double bpn = (bp+n-1.0);
       tn  *= ((apn/n)*mxi)*bpn;
       sum += tn;
-      n++;
+      n += 1.0;
     }
     *result = sum;
     return GSL_SUCCESS;
@@ -217,18 +218,21 @@ hyperg_U_finite_sum(int N, double a, double b, double x, double xeps,
  */
 static
 int
-hyperg_U(const double a, const double b, const double x, double * result)
+hyperg_U_series(const double a, const double b, const double x, double * result)
 {
   const double EPS      = 2.0 * GSL_MACH_EPS;  /* EPS = D1MACH(3) */
   const double SQRT_EPS = M_SQRT2 * GSL_SQRT_MACH_EPS;
 
+/*
   if(locMAX(fabs(a),1.0)*locMAX(fabs(1.0+a-b),1.0) < 0.99 * fabs(x)) {
     double asymp;
     int stat_asymp = hyperg_zaU_asymp(a, b, x, &asymp);
     *result = asymp * pow(x, -a);
     return stat_asymp;
   }  
-  else if(fabs(1.0 + a - b) < SQRT_EPS) {
+  else 
+  */
+  if(fabs(1.0 + a - b) < SQRT_EPS) {
     /* ALGORITHM IS BAD WHEN 1+A-B IS NEAR ZERO FOR SMALL X
      */
     /* We can however do the following:
@@ -359,6 +363,21 @@ hyperg_U(const double a, const double b, const double x, double * result)
 }
 
 
+static
+int
+hyperg_U_small_a(const double a, const double b, const double x, double * result)
+{
+  if(   (fabs(b) > 400.0 && fabs(x) < 0.95 * fabs(b))
+     || (fabs(b) > 50.0  && fabs(x) < 0.70 * fabs(b))
+     ) {
+    return gsl_sf_hyperg_U_large_b_impl(a, b, x, result);
+  }
+  else {
+    return hyperg_U_series(a, b, x, result);
+  }
+}
+
+
 int
 gsl_sf_hyperg_U_impl(const double a, const double b, const double x, double * result)
 {
@@ -366,14 +385,19 @@ gsl_sf_hyperg_U_impl(const double a, const double b, const double x, double * re
     *result = 0.0;
     return GSL_EDOM;
   }
-  else if(locMAX(fabs(a),1.0)*locMAX(fabs(1.0+a-b),1.0) < fabs(x)) {
+
+  if(locMAX(fabs(a),1.0)*locMAX(fabs(1.0+a-b),1.0) < fabs(x)) {
     double asymp;
     int stat_asymp = hyperg_zaU_asymp(a, b, x, &asymp);
     *result = asymp * pow(x, -a);
     return stat_asymp;
   }
+
+
+  return hyperg_U_small_a(a, b, x, result);
+
 #if 0
-  else if(b <= 0.0) {
+  if(b <= 0.0) {
     /* Use the reflection formula
      * U(a,b,x) = x^(1-b) U(1+a-b,2-b,x)
      */
@@ -397,9 +421,6 @@ gsl_sf_hyperg_U_impl(const double a, const double b, const double x, double * re
     }
   }
 #endif
-  else {
-    return hyperg_U(a, b, x, result);
-  }
 }
 
 
