@@ -169,6 +169,12 @@ conjugate_fr_iterate (void *vstate, gsl_multimin_function_fdf * fdf,
   double g1norm;
   double pg;
 
+  if (pnorm == 0.0 || g0norm == 0.0)
+    {
+      gsl_vector_set_zero (dx);
+      return GSL_ENOPROG;
+    }
+  
   /* Determine which direction is downhill, +p or -p */
 
   gsl_blas_ddot (p, gradient, &pg);
@@ -191,6 +197,7 @@ conjugate_fr_iterate (void *vstate, gsl_multimin_function_fdf * fdf,
       *f = fc;
       gsl_vector_memcpy (x, x1);
       GSL_MULTIMIN_FN_EVAL_DF (fdf, x1, gradient);
+      state->g0norm = gsl_blas_dnrm2 (gradient);
       return GSL_SUCCESS;
     }
 

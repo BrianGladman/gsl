@@ -116,6 +116,12 @@ steepest_descent_iterate (void *vstate, gsl_multimin_function_fdf * fdf,
 
   double gnorm = gsl_blas_dnrm2 (gradient);
 
+  if (gnorm == 0.0)
+    {
+      gsl_vector_set_zero (dx);
+      return GSL_ENOPROG;
+    }
+
 trial:
   gsl_vector_set_zero (dx);
   gsl_blas_daxpy (-step / gnorm, gradient, dx);

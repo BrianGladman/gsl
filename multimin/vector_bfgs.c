@@ -37,6 +37,7 @@ typedef struct
   gsl_vector *x1;
   gsl_vector *dx1;
   gsl_vector *x2;
+  double g0norm;
   double pnorm;
   gsl_vector *p;
   gsl_vector *x0;
@@ -154,13 +155,14 @@ vector_bfgs_set (void *vstate, gsl_multimin_function_fdf * fdf,
 
   /* Use the gradient as the initial direction */
 
-  gsl_vector_memcpy (state->p, gradient);
   gsl_vector_memcpy (state->x0, x);
+  gsl_vector_memcpy (state->p, gradient);
   gsl_vector_memcpy (state->g0, gradient);
 
   {
-    double pnorm = gsl_blas_dnrm2 (state->p);
-    state->pnorm = pnorm;
+    double gnorm = gsl_blas_dnrm2 (gradient);
+    state->pnorm = gnorm;
+    state->g0norm = gnorm;
   }
 
   return GSL_SUCCESS;
@@ -205,6 +207,7 @@ vector_bfgs_iterate (void *vstate, gsl_multimin_function_fdf * fdf,
   gsl_vector *x0 = state->x0;
 
   double pnorm = state->pnorm;
+  double g0norm = state->g0norm;
 
   double fa = *f, fb, fc;
   double dir;
@@ -212,6 +215,12 @@ vector_bfgs_iterate (void *vstate, gsl_multimin_function_fdf * fdf,
 
   double g1norm;
   double pg;
+
+  if (pnorm == 0.0 || g0norm == 0.0)
+    {
+      gsl_vector_set_zero (dx);
+      return GSL_ENOPROG;
+    }
 
   /* Determine which direction is downhill, +p or -p */
 
@@ -235,6 +244,7 @@ vector_bfgs_iterate (void *vstate, gsl_multimin_function_fdf * fdf,
       *f = fc;
       gsl_vector_memcpy (x, x1);
       GSL_MULTIMIN_FN_EVAL_DF (fdf, x1, gradient);
+      state->g0norm = gsl_blas_dnrm2 (gradient);
       return GSL_SUCCESS;
     }
 
@@ -302,6 +312,7 @@ vector_bfgs_iterate (void *vstate, gsl_multimin_function_fdf * fdf,
 
   gsl_vector_memcpy (g0, gradient);
   gsl_vector_memcpy (x0, x);
+  state->g0norm = gsl_blas_dnrm2 (g0);
 
 #ifdef DEBUG
   printf ("updated conjugate directions\n");
