@@ -13,15 +13,15 @@ behavior of the library.
 @c by real bugs, @pxref{Debugging Numerical Programs}.
 
 @menu
-* Error Reporting::             
-* Error Handlers::              
-* Error Streams::               
-* Manipulating the Error Stream::  
-* Using GSL Error Reporting in your own functions::  
+* Error reporting::             
+* Error handlers::              
+* Error streams::               
+* Manipulating the error stream::  
+* Using GSL error reporting in your own functions::  
 @end menu
 
-@node Error Reporting
-@section Error Reporting
+@node Error reporting
+@section Error reporting
 
 GSL follows the thread-safe error reporting conventions of the POSIX
 Threads library. Functions in GSL return a non-zero error code to
@@ -108,8 +108,8 @@ of two then the call to the library function will return
 @code{GSL_EINVAL}, indicating that the length argument is invalid. The
 @code{else} clause catches any other possible errors.
 
-@node Error Handlers
-@section Error Handlers
+@node Error handlers
+@section Error handlers
 @cindex Error handlers
 
 In addition to reporting errors the library also provides a simple error
@@ -222,8 +222,8 @@ reported by GSL. The new error handler prints the cause of the error
 main loop. This would allow the user to fix the command which
 caused the error and try again.
 
-@node Error Streams
-@section Error Streams
+@node Error streams
+@section Error streams
 
 GSL supports the concert of an error stream, which is a place where
 errors are logged as they occur. An error stream allows the library to
@@ -267,8 +267,8 @@ suited to a given application. For a truly robust program the standard
 error checking versions of the functions should be used, since they
 don't rely on the user examining the error stream.
 
-@node  Manipulating the Error Stream
-@section Manipulating the Error Stream
+@node Manipulating the error stream
+@section Manipulating the error stream
 
 By default the error stream is sent to @code{stderr}, and you can
 redirect it to a file on the command line. There are also two ways to
@@ -332,8 +332,8 @@ old_handler = gsl_set_stream_handler (NULL);
 @noindent
 @end deftypefun
 
-@node Using GSL Error Reporting in your own functions
-@section Using GSL Error Reporting in your own functions
+@node Using GSL error reporting in your own functions
+@section Using GSL error reporting in your own functions
 @cindex error handling macros
 If you are writing numerical functions in program which also uses GSL code
 you may find it convenient to adopt the same error reporting conventions
