@@ -1,7 +1,6 @@
 /* Author:  G. Jungman
  * RCS:     $Id$
  */
-#include <math.h>
 #include <gsl_math.h>
 #include <gsl_errno.h>
 #include "gsl_sf_gamma.h"
@@ -45,7 +44,6 @@ int locMin5(const int a, const int b, const int c, const int d, const int e)
 
 /* See: [Thompson, Atlas for Computing Mathematical Functions] */
 
-
 static
 int
 delta(int ta, int tb, int tc, double * d)
@@ -86,6 +84,9 @@ m_selection_fails(int two_ja, int two_jb, int two_jc,
 	  || GSL_IS_ODD(two_jc + two_mc)
 	  );
 }
+
+
+/*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
 
 int
 gsl_sf_coupling_3j_impl(int two_ja, int two_jb, int two_jc,
@@ -302,8 +303,10 @@ gsl_sf_coupling_9j_impl(int two_ja, int two_jb, int two_jc,
     return GSL_SUCCESS;
   }
 }
-			
-			
+
+
+/*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
+
 int gsl_sf_coupling_3j_e(int two_ja, int two_jb, int two_jc,
                          int two_ma, int two_mb, int two_mc,
 		         double * result)
@@ -347,6 +350,8 @@ int gsl_sf_coupling_9j_e(int two_ja, int two_jb, int two_jc,
   return status;
 }
 
+
+/*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*/
 
 double gsl_sf_coupling_3j(int two_ja, int two_jb, int two_jc,
                           int two_ma, int two_mb, int two_mc)

@@ -1,7 +1,6 @@
 /* Author: G. Jungman
  * RCS: $Id$
  */
-#include <math.h>
 #include <gsl_math.h>
 #include <gsl_errno.h>
 #include "gsl_sf_chebyshev.h"
@@ -82,7 +81,10 @@ static struct gsl_sf_cheb_series aexp3a_cs = {
   (double *)0,
   (double *)0
 };
-      
+
+
+/*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
+
 int gsl_sf_expint_3_impl(const double x, double * result)
 {
   const double FUNINF = 0.89297951156924921122;
@@ -116,6 +118,8 @@ int gsl_sf_expint_3_impl(const double x, double * result)
 }
 
 
+/*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
+
 int gsl_sf_expint_3_e(double x, double * result)
 {
   int status = gsl_sf_expint_3_impl(x, result);
@@ -125,6 +129,8 @@ int gsl_sf_expint_3_e(double x, double * result)
   return status;
 }
 
+
+/*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*/
 
 double gsl_sf_expint_3(double x)
 {

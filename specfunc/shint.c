@@ -1,4 +1,6 @@
-#include <math.h>
+/* Author:  G. Jungman
+ * RCS:     $Id$
+ */
 #include <gsl_math.h>
 #include <gsl_errno.h>
 #include "gsl_sf_chebyshev.h"
@@ -32,7 +34,9 @@ static struct gsl_sf_cheb_series shi_cs = {
   (double *)0
 };
 
-/* checked OK [GJ] */
+
+/*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
+
 int gsl_sf_Shi_impl(const double x, double * result)
 {
   const double xsml = GSL_SQRT_MACH_EPS;  /* sqrt (r1mach(3)) */
@@ -64,22 +68,21 @@ int gsl_sf_Shi_impl(const double x, double * result)
 }
 
 
-/*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
-
-/* checked OK [GJ] */
 int gsl_sf_Chi_impl(const double x, double * result)
 {
   double Ei, E1;
   int status_Ei = gsl_sf_expint_Ei_impl(x, &Ei);
   int status_E1 = gsl_sf_expint_E1_impl(x, &E1);
   if(status_Ei == GSL_EDOM || status_E1 == GSL_EDOM) {
+    *result = 0.0;
     return GSL_EDOM;
   }
   else if(status_Ei == GSL_EUNDRFLW && status_E1 == GSL_EUNDRFLW) {
-    *result = 0.;
+    *result = 0.0;
     return GSL_EUNDRFLW;
   }
   else if(status_Ei == GSL_EOVRFLW || status_E1 == GSL_EOVRFLW) {
+    *result = 0.0;
     return GSL_EOVRFLW;
   }
   else {
@@ -91,7 +94,7 @@ int gsl_sf_Chi_impl(const double x, double * result)
 
 /*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
 
-int gsl_sf_Shi_e(double x, double * result)
+int gsl_sf_Shi_e(const double x, double * result)
 {
   int status = gsl_sf_Shi_impl(x, result);
   if(status != GSL_SUCCESS) {
@@ -100,7 +103,7 @@ int gsl_sf_Shi_e(double x, double * result)
   return status;
 }
 
-int gsl_sf_Chi_e(double x, double * result)
+int gsl_sf_Chi_e(const double x, double * result)
 {
   int status = gsl_sf_Chi_impl(x, result);
   if(status != GSL_SUCCESS) {
@@ -112,7 +115,7 @@ int gsl_sf_Chi_e(double x, double * result)
 
 /*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*-*-*/
 
-double gsl_sf_Shi(double x)
+double gsl_sf_Shi(const double x)
 {
   double y;
   int status = gsl_sf_Shi_impl(x, &y);
@@ -122,7 +125,7 @@ double gsl_sf_Shi(double x)
   return y;
 }
 
-double gsl_sf_Chi(double x)
+double gsl_sf_Chi(const double x)
 {
   double y;
   int status = gsl_sf_Chi_impl(x, &y);

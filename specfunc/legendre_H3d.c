@@ -1,7 +1,6 @@
 /* Author:  G. Jungman
  * RCS:     $Id$
  */
-#include <math.h>
 #include <gsl_math.h>
 #include <gsl_errno.h>
 #include "legendre.h"
@@ -325,6 +324,8 @@ gsl_sf_legendre_H3d_impl(const int ell, const double lambda, const double eta, d
     return legendre_H3d_series(ell, lambda, eta, result);
   }
   else if((ell*ell+lsq)/sqrt(1.0+lsq)/(cosh_eta*cosh_eta) < 5.0*GSL_ROOT3_MACH_EPS) {
+    /* Large argument.
+     */
     double P;
     double lm;
     int stat_P = gsl_sf_conicalP_large_x_impl(-ell-0.5, lambda, cosh_eta, &P, &lm);
@@ -344,6 +345,8 @@ gsl_sf_legendre_H3d_impl(const int ell, const double lambda, const double eta, d
     }
   }
   else if(abs_lam > 1000.0*ell*ell) {
+    /* Large degree.
+     */
     double P;
     double lm;
     int stat_P = gsl_sf_conicalP_xgt1_neg_mu_largetau_impl(ell+0.5,
@@ -366,6 +369,8 @@ gsl_sf_legendre_H3d_impl(const int ell, const double lambda, const double eta, d
     }
   }
   else {
+    /* Backward recurrence.
+     */
     const double coth_eta = 1.0/tanh(eta);
     double rH;
     int stat_CF1 = legendre_H3d_CF1_ser(ell, lambda, coth_eta, &rH);
@@ -461,7 +466,7 @@ gsl_sf_legendre_H3d(const int l, const double lambda, const double eta)
   double y;
   int status = gsl_sf_legendre_H3d_impl(l, lambda, eta, &y);
   if(status != GSL_SUCCESS) {
-    GSL_WARNING("gsl_sf_legendre_H3d_1", status);
+    GSL_WARNING("gsl_sf_legendre_H3d", status);
   }
   return y;
 }

@@ -1,7 +1,6 @@
 /* Author:  G. Jungman
  * RCS:     $Id$
  */
-#include <math.h>
 #include <gsl_math.h>
 #include <gsl_errno.h>
 #include "gsl_sf_chebyshev.h"
@@ -175,6 +174,8 @@ static struct gsl_sf_cheb_series asyn2a_cs = {
 };
 
 
+/*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
+
 int gsl_sf_synchrotron_1_impl(const double x, double * result)
 {
   const double CONLOW = 2.14952824153447863671;
@@ -259,6 +260,8 @@ int gsl_sf_synchrotron_2_impl(const double x, double * result)
 }
 
 
+/*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
+
 int gsl_sf_synchrotron_1_e(const double x, double * result)
 {
   int status = gsl_sf_synchrotron_1_impl(x, result);
@@ -277,6 +280,8 @@ int gsl_sf_synchrotron_2_e(const double x, double * result)
   return status;
 }
 
+
+/*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*-*/
 
 double gsl_sf_synchrotron_1(const double x)
 {

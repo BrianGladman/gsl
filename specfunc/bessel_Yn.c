@@ -1,7 +1,6 @@
 /* Author:  G. Jungman
  * RCS:     $Id$
  */
-
 #include <gsl_math.h>
 #include <gsl_errno.h>
 #include "bessel.h"
@@ -97,29 +96,29 @@ gsl_sf_bessel_Yn_impl(int n, const double x, double * result)
     return status;
   }
   else {
-    if(x <= 0.) {
+    if(x <= 0.0) {
       return GSL_EDOM;
     }
     if(x < 5.0) {
-      double b = 0.;
+      double b = 0.0;
       int status = bessel_Yn_small_x(n, x, &b);
       *result = sign * b;
       return status;
     }
     else if(GSL_ROOT3_MACH_EPS * x > (n*n + 1)) {
-      double b = 0.;
+      double b = 0.0;
       int status = gsl_sf_bessel_Ynu_asympx_impl(n, x, &b);
       *result = sign * b;
       return status;
     }
-    else if(x > 700.*n) {
+    else if(x > 700.0*n) {
       double ampl  = gsl_sf_bessel_asymp_Mnu(n, x);
       double theta = gsl_sf_bessel_asymp_thetanu(n, x);
       *result = sign * ampl * sin(theta);
       return GSL_SUCCESS;
     }
     else if(n > 30) {
-      double b0 = 0.;
+      double b0 = 0.0;
       int status = gsl_sf_bessel_Ynu_asymp_Olver_impl(n, x, &b0);
       *result = sign * b0;
       return status;

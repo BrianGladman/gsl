@@ -1,12 +1,86 @@
 /* Author:  G. Jungman
  * RCS:     $Id$
  */
-#include <math.h>
 #include <gsl_math.h>
 #include <gsl_errno.h>
 #include "gsl_sf_gamma.h"
 #include "gsl_sf_exp.h"
 
+
+/* Evaluate the continued fraction for exprel.
+ * [Abramowitz+Stegun, 4.2.41]
+ */
+static
+int
+exprel_n_CF(const int N, const double x, double * result)
+{
+  const double RECUR_BIG = GSL_SQRT_DBL_MAX;
+  const int maxiter = 5000;
+  int n = 1;
+  double Anm2 = 1.0;
+  double Bnm2 = 0.0;
+  double Anm1 = 0.0;
+  double Bnm1 = 1.0;
+  double a1 = 1.0;
+  double b1 = 1.0;
+  double a2 = -x;
+  double b2 = N+1;
+  double an, bn;
+
+  double fn;
+
+  double An = b1*Anm1 + a1*Anm2;   /* A1 */
+  double Bn = b1*Bnm1 + a1*Bnm2;   /* B1 */
+  
+  /* One explicit step, before we get to the main pattern. */
+  n++;
+  Anm2 = Anm1;
+  Bnm2 = Bnm1;
+  Anm1 = An;
+  Bnm1 = Bn;
+  An = b2*Anm1 + a2*Anm2;   /* A2 */
+  Bn = b2*Bnm1 + a2*Bnm2;   /* B2 */
+
+  fn = An/Bn;
+
+  while(n < maxiter) {
+    double old_fn;
+    double del;
+    n++;
+    Anm2 = Anm1;
+    Bnm2 = Bnm1;
+    Anm1 = An;
+    Bnm1 = Bn;
+    an = ( GSL_IS_ODD(n) ? ((n-1)/2)*x : -(N+(n/2)-1)*x );
+    bn = N + n - 1;
+    An = bn*Anm1 + an*Anm2;
+    Bn = bn*Bnm1 + an*Bnm2;
+
+    if(fabs(An) > RECUR_BIG || fabs(Bn) > RECUR_BIG) {
+      An /= RECUR_BIG;
+      Bn /= RECUR_BIG;
+      Anm1 /= RECUR_BIG;
+      Bnm1 /= RECUR_BIG;
+      Anm2 /= RECUR_BIG;
+      Bnm2 /= RECUR_BIG;
+    }
+
+    old_fn = fn;
+    fn = An/Bn;
+    del = old_fn/fn;
+    
+    if(fabs(del - 1.0) < 10.0*GSL_MACH_EPS) break;
+  }
+
+  *result = fn;
+  if(n == maxiter)
+    return GSL_EMAXITER;
+  else
+    return GSL_SUCCESS;
+}
+
+
+/*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
 
 int gsl_sf_exp_impl(const double x, double * result)
 {
@@ -156,79 +230,6 @@ int gsl_sf_exprel_2_impl(double x, double * result)
     *result = 0.0; /* FIXME: should be Inf */
     return GSL_EOVRFLW;
   }
-}
-
-
-/* Evaluate the continued fraction for exprel.
- * [Abramowitz+Stegun, 4.2.41]
- */
-static
-int
-exprel_n_CF(const int N, const double x, double * result)
-{
-  const double RECUR_BIG = GSL_SQRT_DBL_MAX;
-  const int maxiter = 5000;
-  int n = 1;
-  double Anm2 = 1.0;
-  double Bnm2 = 0.0;
-  double Anm1 = 0.0;
-  double Bnm1 = 1.0;
-  double a1 = 1.0;
-  double b1 = 1.0;
-  double a2 = -x;
-  double b2 = N+1;
-  double an, bn;
-
-  double fn;
-
-  double An = b1*Anm1 + a1*Anm2;   /* A1 */
-  double Bn = b1*Bnm1 + a1*Bnm2;   /* B1 */
-  
-  /* One explicit step, before we get to the main pattern. */
-  n++;
-  Anm2 = Anm1;
-  Bnm2 = Bnm1;
-  Anm1 = An;
-  Bnm1 = Bn;
-  An = b2*Anm1 + a2*Anm2;   /* A2 */
-  Bn = b2*Bnm1 + a2*Bnm2;   /* B2 */
-
-  fn = An/Bn;
-
-  while(n < maxiter) {
-    double old_fn;
-    double del;
-    n++;
-    Anm2 = Anm1;
-    Bnm2 = Bnm1;
-    Anm1 = An;
-    Bnm1 = Bn;
-    an = ( GSL_IS_ODD(n) ? ((n-1)/2)*x : -(N+(n/2)-1)*x );
-    bn = N + n - 1;
-    An = bn*Anm1 + an*Anm2;
-    Bn = bn*Bnm1 + an*Bnm2;
-
-    if(fabs(An) > RECUR_BIG || fabs(Bn) > RECUR_BIG) {
-      An /= RECUR_BIG;
-      Bn /= RECUR_BIG;
-      Anm1 /= RECUR_BIG;
-      Bnm1 /= RECUR_BIG;
-      Anm2 /= RECUR_BIG;
-      Bnm2 /= RECUR_BIG;
-    }
-
-    old_fn = fn;
-    fn = An/Bn;
-    del = old_fn/fn;
-    
-    if(fabs(del - 1.0) < 10.0*GSL_MACH_EPS) break;
-  }
-
-  *result = fn;
-  if(n == maxiter)
-    return GSL_EMAXITER;
-  else
-    return GSL_SUCCESS;
 }
 
 

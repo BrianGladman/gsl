@@ -33,7 +33,7 @@ double gsl_sf_erf_Q(double x);
 
 
 /* Asymptotic expansion of erfc(x) for x -> +infinity.
- *
+ * Abramowitz+Stegun 7.2.14
  */
 double gsl_sf_erfc_asymptotic(double x);
 double gsl_sf_log_erfc_asymptotic(double x);

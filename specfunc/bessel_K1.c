@@ -1,7 +1,6 @@
 /* Author:  G. Jungman
  * RCS:     $Id$
  */
-#include <math.h>
 #include <gsl_math.h>
 #include <gsl_errno.h>
 #include "gsl_sf_chebyshev.h"
@@ -116,27 +115,28 @@ int gsl_sf_bessel_K1_scaled_impl(const double x, double * result)
   const double xmin    = 2.0*DBL_MIN;
   const double x_small = 2.0*GSL_SQRT_MACH_EPS; 
 
-  if(x <= 0.) {
+  if(x <= 0.0) {
+    *result = 0.0;
     return GSL_EDOM;
   }
   else if(x < xmin) {
-    *result = 0.;
+    *result = 0.0;
     return GSL_EUNDRFLW;
   }
   else if(x < x_small) {
-    *result = exp(x) * (log(0.5*x)*gsl_sf_bessel_I1(x) +
-      	      	        (0.75 + gsl_sf_cheb_eval(&bk1_cs, -1.0))/x
-      	      	       );
-    return GSL_SUCCESS;
+    double I1;
+    int stat_I1 = gsl_sf_bessel_I1_impl(x, &I1);
+    *result = exp(x) * (log(0.5*x)*I1 + (0.75 + gsl_sf_cheb_eval(&bk1_cs, -1.0))/x);
+    return stat_I1;
   }
-  else if(x <= 2.) {
+  else if(x <= 2.0) {
     double y = x*x;
-    *result = exp(x) * (log(0.5*x)*gsl_sf_bessel_I1(x) +
-      	      	        (0.75 + gsl_sf_cheb_eval(&bk1_cs, 0.5*y-1.0))/x
-      	      	       );
-    return GSL_SUCCESS;
+    double I1;
+    int stat_I1 = gsl_sf_bessel_I1_impl(x, &I1);
+    *result = exp(x) * (log(0.5*x)*I1 + (0.75 + gsl_sf_cheb_eval(&bk1_cs, 0.5*y-1.0))/x);
+    return stat_I1;
   }
-  else if(x <= 8.) {
+  else if(x <= 8.0) {
     *result = (1.25 + gsl_sf_cheb_eval(&ak1_cs, (16.0/x-5.0)/3.0)) / sqrt(x);
     return GSL_SUCCESS;
   }
@@ -150,31 +150,39 @@ int gsl_sf_bessel_K1_impl(const double x, double * result)
 {
   const double xmin    = 2.0*DBL_MIN;
   const double x_small = 2.0*GSL_SQRT_MACH_EPS;
-  const double xmax    = GSL_LOG_DBL_MAX - 0.5 * 6.9 /* FIXME: ?? */  - 0.01;
+  const double xmax    = GSL_LOG_DBL_MAX
+                         - 0.5 * GSL_LOG_DBL_MAX*log(GSL_LOG_DBL_MAX)/(GSL_LOG_DBL_MAX+0.5)
+			 - 0.01;
   /*
     xmax = -alog(r1mach(1))
     xmax = xmax - 0.5*xmax*alog(xmax)/(xmax+0.5) - 0.01
   */
 
-  if(x <= 0.) {
+  if(x <= 0.0) {
     return GSL_EDOM;
   }
   else if(x < xmin) {
-    *result = 0.; /* FIXME: should be Inf */
+    *result = 0.0; /* FIXME: should be Inf */
     return GSL_EOVRFLW;
   }
   else if(x < x_small) {
-    *result = log(0.5*x)*gsl_sf_bessel_I1(x) + (0.75 + gsl_sf_cheb_eval(&bk1_cs, -1.0))/x; 
-    return GSL_SUCCESS;
+    double I1;
+    int stat_I1 = gsl_sf_bessel_I1_impl(x, &I1);
+    *result = log(0.5*x)*I1 + (0.75 + gsl_sf_cheb_eval(&bk1_cs, -1.0))/x; 
+    return stat_I1;
   }
-  else if(x <= 2.) {
+  else if(x <= 2.0) {
     double y = x*x;
-    *result = log(0.5*x)*gsl_sf_bessel_I1(x) + (0.75 + gsl_sf_cheb_eval(&bk1_cs, 0.5*y-1.0))/x; 
-    return GSL_SUCCESS;
+    double I1;
+    int stat_I1 = gsl_sf_bessel_I1_impl(x, &I1);
+    *result = log(0.5*x)*I1 + (0.75 + gsl_sf_cheb_eval(&bk1_cs, 0.5*y-1.0))/x; 
+    return stat_I1;
   }
-  else if(x < xmax) { 
-    *result = exp(-x) * gsl_sf_bessel_K1_scaled(x);
-    return GSL_SUCCESS;
+  else if(x < xmax) {
+    double K1_scaled;
+    int stat_K1 = gsl_sf_bessel_K1_scaled_impl(x, &K1_scaled);
+    *result = exp(-x) * K1_scaled;
+    return stat_K1;
   }
   else {
     *result = 0.0;

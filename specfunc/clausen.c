@@ -1,7 +1,6 @@
 /* Author:  G. Jungman
  * RCS:     $Id$
  */
-#include <math.h>
 #include <gsl_math.h>
 #include <gsl_errno.h>
 #include "gsl_sf_trig.h"
@@ -39,6 +38,8 @@ static struct gsl_sf_cheb_series aclaus_cs = {
   (double *)0
 };
 
+
+/*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
 
 int gsl_sf_clausen_impl(double x, double *result)
 {
@@ -89,7 +90,9 @@ int gsl_sf_clausen_impl(double x, double *result)
 }
 
 
-int gsl_sf_clausen_e(double x, double * result)
+/*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
+
+int gsl_sf_clausen_e(const double x, double * result)
 {
   int status = gsl_sf_clausen_impl(x, result);
   if(status != GSL_SUCCESS) {
@@ -98,12 +101,15 @@ int gsl_sf_clausen_e(double x, double * result)
   return status;
 }
 
-double gsl_sf_clausen(double x)
+
+/*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*/
+
+double gsl_sf_clausen(const double x)
 {
   double y;
   int status = gsl_sf_clausen_impl(x, &y);
   if(status != GSL_SUCCESS) {
-    GSL_WARNING("gsl_sf_clausen_e", status);
+    GSL_WARNING("gsl_sf_clausen", status);
   }
   return y;
 }

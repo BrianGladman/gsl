@@ -13,7 +13,8 @@ double gsl_sf_poly_eval(const double c[], const int len, const double x);
 
 
 #ifdef HAVE_INLINE
-extern inline double gsl_sf_poly_eval(const double c[], const int len, const double x)
+extern inline
+double gsl_sf_poly_eval(const double c[], const int len, const double x)
 {
   int i;
   double ans = c[len-1];

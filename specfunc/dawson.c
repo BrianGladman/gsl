@@ -201,6 +201,8 @@ static struct gsl_sf_cheb_series dawa_cs = {
 };
 
 
+/*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
+
 int
 gsl_sf_dawson_impl(double x, double * result)
 {
@@ -238,6 +240,8 @@ gsl_sf_dawson_impl(double x, double * result)
 }
 
 
+/*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
+
 int
 gsl_sf_dawson_e(double x, double * result)
 {
@@ -248,6 +252,8 @@ gsl_sf_dawson_e(double x, double * result)
   return status;
 }
 
+
+/*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*/
 
 double
 gsl_sf_dawson(double x)

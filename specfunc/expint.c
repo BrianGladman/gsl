@@ -1,7 +1,6 @@
 /* Author: G. Jungman
  * RCS: $Id$
  */
-#include <math.h>
 #include <gsl_math.h>
 #include <gsl_errno.h>
 #include "gsl_sf_chebyshev.h"
@@ -282,7 +281,7 @@ static struct gsl_sf_cheb_series AE14_cs = {
 
 /*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
 
-/* checked OK [GJ] */
+
 int gsl_sf_expint_E1_impl(const double x, double * result)
 {
   const double xmaxt = -GSL_LOG_DBL_MIN;      /* XMAXT = -LOG (R1MACH(1)) */
@@ -292,26 +291,26 @@ int gsl_sf_expint_E1_impl(const double x, double * result)
     *result = 0.0; /* FIXME: should be Inf */
     return GSL_EOVRFLW;
   }
-  else if(x <= -10.) {
+  else if(x <= -10.0) {
     *result = exp(-x)/x * (1. + gsl_sf_cheb_eval(&AE11_cs, 20.0/x+1.0));
     return GSL_SUCCESS;
   }
-  else if(x <= -4.) {
+  else if(x <= -4.0) {
     *result = exp(-x)/x * (1. + gsl_sf_cheb_eval(&AE12_cs, (40.0/x+7.0)/3.0));
     return GSL_SUCCESS;
   }
-  else if(x <= -1.) {
+  else if(x <= -1.0) {
     *result = -log(fabs(x)) + gsl_sf_cheb_eval(&E11_cs, (2.0*x+5.0)/3.0);
     return GSL_SUCCESS;
   }
-  else if(x == 0.) {
+  else if(x == 0.0) {
     return GSL_EDOM;
   }
-  else if(x <= 1.) {
+  else if(x <= 1.0) {
     *result = -log(fabs(x)) - 0.6875 + x + gsl_sf_cheb_eval(&E12_cs, x);
     return GSL_SUCCESS;
   }
-  else if(x <= 4.) {
+  else if(x <= 4.0) {
     *result = exp(-x)/x * (1. + gsl_sf_cheb_eval(&AE13_cs, (8.0/x-5.0)/3.0));
     return GSL_SUCCESS;
   }
@@ -324,6 +323,7 @@ int gsl_sf_expint_E1_impl(const double x, double * result)
     return GSL_EUNDRFLW;
   }
 }
+
 
 int gsl_sf_expint_E2_impl(const double x, double * result)
 {
@@ -347,13 +347,10 @@ int gsl_sf_expint_E2_impl(const double x, double * result)
 }
 
 
-/* checked OK [GJ] */
 int gsl_sf_expint_Ei_impl(const double x, double * result)
 {
   int status = gsl_sf_expint_E1_impl(-x, result);
-  if(status == GSL_SUCCESS) {
-    *result = - *result;
-  }
+  *result = - *result;
   return status;
 }
 

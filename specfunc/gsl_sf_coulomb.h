@@ -5,16 +5,20 @@
 #define GSL_COULOMB_H_
 
 
-/* Normalized hydrogenic bound states, radial dependence.
+/* Normalized hydrogenic bound states, radial dependence. */
+
+/* R_1 := 2Z sqrt(Z) exp(-Z r)
  */
 int    gsl_sf_hydrogenicR_1_impl(double Z, double r, double * result);
-int    gsl_sf_hydrogenicR_2_impl(int l, double Z, double r, double * result);
-int    gsl_sf_hydrogenicR_impl(int n, int l, double Z, double r, double * result);
 int    gsl_sf_hydrogenicR_1_e(double Z, double r, double * result);
-int    gsl_sf_hydrogenicR_2_e(int l, double Z, double r, double * result);
-int    gsl_sf_hydrogenicR_e(int n, int l, double Z, double r, double * result);
 double gsl_sf_hydrogenicR_1(double Z, double r);
-double gsl_sf_hydrogenicR_2(int l, double Z, double r);
+
+/* R_n := norm exp(-Z r/n) (2Z/n)^l Laguerre[n-l-1, 2l+1, 2Z/n r]
+ *
+ * normalization such that psi(n,l,r) = R_n Y_{lm}
+ */
+int    gsl_sf_hydrogenicR_impl(int n, int l, double Z, double r, double * result);
+int    gsl_sf_hydrogenicR_e(int n, int l, double Z, double r, double * result);
 double gsl_sf_hydrogenicR(int n, int l, double Z, double r);
 
 

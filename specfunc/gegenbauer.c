@@ -1,7 +1,7 @@
 /* Author:  G. Jungman
  * RCS:     $Id$
  */
-#include <math.h>
+#include <gsl_math.h>
 #include <gsl_errno.h>
 #include "gsl_sf_gegenbauer.h"
 

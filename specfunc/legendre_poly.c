@@ -1,7 +1,6 @@
 /* Author:  G. Jungman
  * RCS:     $Id$
  */
-#include <math.h>
 #include <gsl_math.h>
 #include <gsl_errno.h>
 #include "gsl_sf_bessel.h"
@@ -9,7 +8,6 @@
 #include "gsl_sf_log.h"
 #include "gsl_sf_pow_int.h"
 #include "gsl_sf_legendre.h"
-
 
 
 /*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
@@ -448,14 +446,7 @@ int gsl_sf_legendre_sphPlm_array_e(const int lmax, const int m, const double x, 
 /*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*-*-*/
 
 
-inline double gsl_sf_legendre_P1(double x) { return x; }
-inline double gsl_sf_legendre_P2(double x) { return 0.5*(3.0*x*x - 1.0); }
-inline double gsl_sf_legendre_P3(double x) { return 0.5*x*(5.0*x*x - 3.0); }
-inline double gsl_sf_legendre_P4(double x) { double x2 = x*x; return (35.0*x2*x2 -30.0*x2 + 3.0)/8.0; }
-inline double gsl_sf_legendre_P5(double x) { double x2 = x*x; return x*(63.0*x2*x2 -70.0*x2 + 15.0)/8.0; }
-
-
-inline int gsl_sf_legendre_array_size(const int lmax, const int m)
+int gsl_sf_legendre_array_size(const int lmax, const int m)
 {
   return lmax-m+1;
 }
@@ -489,3 +480,10 @@ double gsl_sf_legendre_sphPlm(const int l, const int m, const double x)
   }
   return y;
 }
+
+
+double gsl_sf_legendre_P1(double x) { return x; }
+double gsl_sf_legendre_P2(double x) { return 0.5*(3.0*x*x - 1.0); }
+double gsl_sf_legendre_P3(double x) { return 0.5*x*(5.0*x*x - 3.0); }
+double gsl_sf_legendre_P4(double x) { double x2 = x*x; return (35.0*x2*x2 -30.0*x2 + 3.0)/8.0; }
+double gsl_sf_legendre_P5(double x) { double x2 = x*x; return x*(63.0*x2*x2 -70.0*x2 + 15.0)/8.0; }

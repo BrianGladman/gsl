@@ -2,9 +2,8 @@
  * RCS:     $Id$
  */
 #include <stdlib.h>
-#include <math.h>
-#include <gsl_errno.h>
 #include <gsl_math.h>
+#include <gsl_errno.h>
 #include "gsl_sf_chebyshev.h"
 
 #define gslMAX(a,b) ((a) > (b) ? (a) : (b))

@@ -1,7 +1,6 @@
 /* Author:  G. Jungman
  * RCS:     $Id$
  */
-#include <math.h>
 #include <gsl_math.h>
 #include <gsl_errno.h>
 #include "gsl_sf_chebyshev.h"
@@ -253,32 +252,6 @@ static struct gsl_sf_cheb_series si_cs = {
   (double *)0
 };
 
-
-/*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
-
-/* checked OK [GJ] */
-int gsl_sf_Si_impl(const double x, double * result)
-{
-  double ax   = fabs(x);
-  
-  if(ax < GSL_SQRT_MACH_EPS) {
-    *result = x;
-    return GSL_SUCCESS;
-  }
-  else if(ax <= 4.0) {
-    *result = x * (0.75 + gsl_sf_cheb_eval(&si_cs, (x*x-8.0)*0.125));
-    return GSL_SUCCESS;
-  }
-  else {
-    double f, g;
-    fg_asymp(ax, &f, &g);
-    *result = 0.5 * M_PI - f*cos(ax) - g*sin(ax);
-    if(x < 0.) *result = - *result;
-    return GSL_SUCCESS;
-  }
-}
-
-
 /*
  series for ci   on the interval  0.00000e+00 to  1.60000e+01
 					with weighted error   1.94e-18
@@ -309,7 +282,31 @@ static struct gsl_sf_cheb_series ci_cs = {
   (double *)0
 };
 
-/* checked OK [GJ] */
+
+/*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
+
+int gsl_sf_Si_impl(const double x, double * result)
+{
+  double ax   = fabs(x);
+  
+  if(ax < GSL_SQRT_MACH_EPS) {
+    *result = x;
+    return GSL_SUCCESS;
+  }
+  else if(ax <= 4.0) {
+    *result = x * (0.75 + gsl_sf_cheb_eval(&si_cs, (x*x-8.0)*0.125));
+    return GSL_SUCCESS;
+  }
+  else {
+    double f, g;
+    fg_asymp(ax, &f, &g);
+    *result = 0.5 * M_PI - f*cos(ax) - g*sin(ax);
+    if(x < 0.) *result = - *result;
+    return GSL_SUCCESS;
+  }
+}
+
+
 int gsl_sf_Ci_impl(const double x, double * result)
 {
   const double xsml = GSL_SQRT_DBL_MIN;
@@ -357,7 +354,7 @@ int gsl_sf_Ci_e(const double x, double * result)
 
 /*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*-*-*/
 
-double gsl_sf_Si(double x)
+double gsl_sf_Si(const double x)
 {
   double y;
   int status = gsl_sf_Si_impl(x, &y);
@@ -367,7 +364,7 @@ double gsl_sf_Si(double x)
   return y;
 }
 
-double gsl_sf_Ci(double x)
+double gsl_sf_Ci(const double x)
 {
   double y;
   int status = gsl_sf_Ci_impl(x, &y);

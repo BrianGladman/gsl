@@ -7,7 +7,6 @@
 #include "gsl_sf_transport.h"
 
 
-
 /* based on TRANS0n(X) from MISCFUN   by ALLAN J. MACLEOD  [TOMS 757] */
 
 /* transport(n,x) := Integral[ t^n e^t /(e^t - 1)^2, {t,0,x}]  */

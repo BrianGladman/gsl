@@ -1,7 +1,6 @@
 /* Author:  G. Jungman
  * RCS:     $Id$
  */
-#include <math.h>
 #include <gsl_math.h>
 #include <gsl_errno.h>
 #include "bessel.h"
@@ -51,6 +50,8 @@ bessel_I_CF1(const double nu, const double x, double * result)
 }
 #endif /* 0 */
 
+
+/*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
 
 int
 gsl_sf_bessel_Inu_scaled_impl(double nu, double x, double * result)
@@ -109,6 +110,8 @@ gsl_sf_bessel_Inu_impl(double nu, double x, double * result)
 }
 
 
+/*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
+
 int
 gsl_sf_bessel_Inu_scaled_e(double nu, double x, double * result)
 {
@@ -130,6 +133,8 @@ gsl_sf_bessel_Inu_e(double nu, double x, double * result)
   return status;
 }
 
+
+/*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*/
 
 double
 gsl_sf_bessel_Inu_scaled(double nu, double x)

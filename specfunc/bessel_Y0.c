@@ -1,7 +1,6 @@
 /* Author:  G. Jungman
  * RCS:     $Id$
  */
-#include <math.h>
 #include <gsl_math.h>
 #include <gsl_errno.h>
 #include "bessel_amp_phase.h"
@@ -51,23 +50,28 @@ static struct gsl_sf_cheb_series by0_cs = {
 
 int gsl_sf_bessel_Y0_impl(const double x, double * result)
 {
-  const double two_over_pi = 2./M_PI;
+  const double two_over_pi = 2.0/M_PI;
   const double ln_half     = -M_LN2;
-  const double x_small     = 2. * GSL_SQRT_MACH_EPS;
-  const double xmax        = 1./GSL_MACH_EPS;
+  const double x_small     = 2.0 * GSL_SQRT_MACH_EPS;
+  const double xmax        = 1.0/GSL_MACH_EPS;
 
-  if (x <= 0.) {
+  if (x <= 0.0) {
+    *result = 0.0;
     return GSL_EDOM;
   }
   else if(x < x_small){
-    *result = two_over_pi*(ln_half + log(x))*gsl_sf_bessel_J0(x)
-	      + .375 + gsl_sf_cheb_eval(&by0_cs, -1.0);
-    return GSL_SUCCESS;
+    double J0;
+    int stat_J0 = gsl_sf_bessel_J0_impl(x, &J0);
+    *result = two_over_pi*(ln_half + log(x))*J0
+	      + 0.375 + gsl_sf_cheb_eval(&by0_cs, -1.0);
+    return stat_J0;
   }
   else if(x < 4.0) {
-    *result = two_over_pi*(ln_half + log(x))*gsl_sf_bessel_J0(x)
-	      + .375 + gsl_sf_cheb_eval(&by0_cs, 0.125*x*x-1.0);
-    return GSL_SUCCESS;
+    double J0;
+    int stat_J0 = gsl_sf_bessel_J0_impl(x, &J0);
+    *result = two_over_pi*(ln_half + log(x))*J0
+	      + 0.375 + gsl_sf_cheb_eval(&by0_cs, 0.125*x*x-1.0);
+    return stat_J0;
   }
   else if(x < xmax) {
     double z     = 32.0/(x*x) - 1.0;
@@ -77,7 +81,7 @@ int gsl_sf_bessel_Y0_impl(const double x, double * result)
     return GSL_SUCCESS;
   }
   else {
-    *result = 0.;
+    *result = 0.0;
     return GSL_EUNDRFLW;
   }
 }

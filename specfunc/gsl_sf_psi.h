@@ -5,7 +5,7 @@
 #define GSL_SF_PSI_H_
 
 
-/* Psi(n)
+/* Psi(n), n > 0
  *
  * exceptions: GSL_EDOM
  */
@@ -14,9 +14,9 @@ int     gsl_sf_psi_int_e(int n, double * result);
 double  gsl_sf_psi_int(int n);
 
 
-/* Psi(x)
+/* Psi(x), x != 0.0
  *
- * exceptions: GSL_EDOM
+ * exceptions: GSL_EDOM, GSL_ELOSS
  */
 int     gsl_sf_psi_impl(double x, double * result);
 int     gsl_sf_psi_e(double x, double * result);

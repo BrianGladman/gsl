@@ -1,7 +1,6 @@
 /* Author:  G. Jungman
  * RCS:     $Id$
  */
-#include <math.h>
 #include <gsl_math.h>
 #include <gsl_errno.h>
 #include "gsl_sf_pow_int.h"
@@ -140,6 +139,8 @@ gsl_sf_legendre_Ql_impl(const int l, const double x, double * result)
     return gsl_sf_legendre_Q1_impl(x, result);
   }
   else if(x < 1.0){
+    /* Forward recurrence.
+     */
     double Q0, Q1;
     int stat_Q0 = gsl_sf_legendre_Q0_impl(x, &Q0);
     int stat_Q1 = gsl_sf_legendre_Q1_impl(x, &Q1);
@@ -160,6 +161,7 @@ gsl_sf_legendre_Ql_impl(const int l, const double x, double * result)
 
     if(l > 10000) {
       /* uniform asymptotic */
+      /* FIXME */
       return GSL_EUNIMPL;
     }
     else {

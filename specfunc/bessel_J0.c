@@ -1,7 +1,6 @@
 /* Author:  G. Jungman
  * RCS:     $Id$
  */
-#include <math.h>
 #include <gsl_math.h>
 #include <gsl_errno.h>
 #include "bessel_amp_phase.h"
@@ -52,12 +51,12 @@ static struct gsl_sf_cheb_series bj0_cs = {
 
 int gsl_sf_bessel_J0_impl(const double x, double * result)
 {
-  const double xmin = 2. * GSL_SQRT_MACH_EPS;
-  const double xmax = 1./GSL_SQRT_MACH_EPS;
+  const double xmin = 2.0 * GSL_SQRT_MACH_EPS;
+  const double xmax = 1.0/GSL_SQRT_MACH_EPS;
   double y = fabs(x);
 
   if(y < xmin) {
-    *result = 1.;
+    *result = 1.0;
   }
   else if(y <= 4.0) {
     *result = gsl_sf_cheb_eval(&bj0_cs, 0.125*y*y - 1.0);

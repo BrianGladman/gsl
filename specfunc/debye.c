@@ -1,7 +1,6 @@
 /* Author:  G. Jungman
  * RCS:     $Id$
  */
-#include <math.h>
 #include <gsl_math.h>
 #include <gsl_errno.h>
 #include "gsl_sf_chebyshev.h"
@@ -127,6 +126,8 @@ static struct gsl_sf_cheb_series adeb4_cs = {
   (double *)0
 };
 
+
+/*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
 
 int gsl_sf_debye_1_impl(const double x, double * result)
 {
@@ -334,4 +335,94 @@ int gsl_sf_debye_4_impl(const double x, double * result)
     *result = 0.0;
     return GSL_EUNDRFLW;
   }
+}
+
+
+/*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
+
+int
+gsl_sf_debye_1_e(const double x, double * result)
+{
+  int status = gsl_sf_debye_1_impl(x, result);
+  if(status != GSL_SUCCESS) {
+    GSL_ERROR("gsl_sf_debye_1_e", status);
+  }
+  return status;
+}
+
+int
+gsl_sf_debye_2_e(const double x, double * result)
+{
+  int status = gsl_sf_debye_2_impl(x, result);
+  if(status != GSL_SUCCESS) {
+    GSL_ERROR("gsl_sf_debye_2_e", status);
+  }
+  return status;
+}
+
+int
+gsl_sf_debye_3_e(const double x, double * result)
+{
+  int status = gsl_sf_debye_3_impl(x, result);
+  if(status != GSL_SUCCESS) {
+    GSL_ERROR("gsl_sf_debye_3_e", status);
+  }
+  return status;
+}
+
+int
+gsl_sf_debye_4_e(const double x, double * result)
+{
+  int status = gsl_sf_debye_4_impl(x, result);
+  if(status != GSL_SUCCESS) {
+    GSL_ERROR("gsl_sf_debye_4_e", status);
+  }
+  return status;
+}
+
+
+/*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*/
+
+double
+gsl_sf_debye_1(const double x)
+{
+  double y;
+  int status = gsl_sf_debye_1_impl(x, &y);
+  if(status != GSL_SUCCESS) {
+    GSL_WARNING("gsl_sf_debye_1", status);
+  }
+  return y;
+}
+
+double
+gsl_sf_debye_2(const double x)
+{
+  double y;
+  int status = gsl_sf_debye_2_impl(x, &y);
+  if(status != GSL_SUCCESS) {
+    GSL_WARNING("gsl_sf_debye_2", status);
+  }
+  return y;
+}
+
+double
+gsl_sf_debye_3(const double x)
+{
+  double y;
+  int status = gsl_sf_debye_3_impl(x, &y);
+  if(status != GSL_SUCCESS) {
+    GSL_WARNING("gsl_sf_debye_3", status);
+  }
+  return y;
+}
+
+double
+gsl_sf_debye_4(const double x)
+{
+  double y;
+  int status = gsl_sf_debye_4_impl(x, &y);
+  if(status != GSL_SUCCESS) {
+    GSL_WARNING("gsl_sf_debye_4", status);
+  }
+  return y;
 }

@@ -5,6 +5,9 @@
 #define GSL_SF_LAGUERRE_H_
 
 
+/* L^a_n(x) = (a+1)_n / n! 1F1(-n,a+1,x) */
+
+
 /* Evaluate generalized Laguerre polynomials
  * using explicit representations.
  *
@@ -17,11 +20,7 @@ double gsl_sf_laguerre_4(double a, double x);
 double gsl_sf_laguerre_5(double a, double x);
 
 
-/* Evaluate generalized Laguerre polynomials
- * using continued product representation.
- * For n<=5 it is better to use the explicit
- * functions, which are faster by approximately
- * a factor of 2--3.
+/* Evaluate generalized Laguerre polynomials.
  *
  * a > -1.0
  * n >= 0

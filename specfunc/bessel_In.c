@@ -1,12 +1,10 @@
 /* Author:  G. Jungman
  * RCS:     $Id$
  */
-#include <math.h>
 #include <gsl_math.h>
 #include <gsl_errno.h>
-#include "gsl_sf_bessel.h"
-
 #include "bessel.h"
+#include "gsl_sf_bessel.h"
 
 #define locMAX(a,b) ((a) > (b) ? (a) : (b))
 #define locMIN(a,b) ((a) < (b) ? (a) : (b))

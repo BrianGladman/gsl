@@ -1,7 +1,6 @@
 /* Author:  G. Jungman
  * RCS:     $Id$
  */
-#include <math.h>
 #include <gsl_math.h>
 #include <gsl_errno.h>
 #include "bessel_amp_phase.h"
@@ -52,26 +51,27 @@ static struct gsl_sf_cheb_series by1_cs = {
 
 int gsl_sf_bessel_Y1_impl(const double x, double * result)
 {
-  const double two_over_pi = 2./M_PI;
+  const double two_over_pi = 2.0/M_PI;
   const double xmin = 1.571*DBL_MIN; /*exp ( amax1(alog(r1mach(1)), -alog(r1mach(2)))+.01) */
-  const double x_small = 2. * GSL_SQRT_MACH_EPS;
-  const double xmax    = 1./GSL_MACH_EPS;
+  const double x_small = 2.0 * GSL_SQRT_MACH_EPS;
+  const double xmax    = 1.0/GSL_MACH_EPS;
   
-  if(x <= 0.) {
+  if(x <= 0.0) {
+    *result = 0.0;
     return GSL_EDOM;
   }
   else if(x < xmin) {
-    *result = 0.; /* FIXME: should be Inf */
+    *result = 0.0; /* FIXME: should be Inf */
     return GSL_EOVRFLW;
   }
   else if(x < x_small) {
-    double J1 = 0.;
+    double J1 = 0.0;
     int status = gsl_sf_bessel_J1_impl(x, &J1);
     *result = two_over_pi * log(0.5*x) * J1 + (0.5 + gsl_sf_cheb_eval(&by1_cs, -1.0))/x;
     return status;
   }
   else if(x < 4.0) {
-    double J1 = 0.;
+    double J1 = 0.0;
     int status = gsl_sf_bessel_J1_impl(x, &J1);
     *result = two_over_pi * log(0.5*x) * J1 + (0.5 + gsl_sf_cheb_eval(&by1_cs, 0.125*x*x-1.0))/x;
     if(status == GSL_EUNDRFLW)
@@ -87,7 +87,7 @@ int gsl_sf_bessel_Y1_impl(const double x, double * result)
     return GSL_SUCCESS;
   }
   else {
-    *result = 0.;
+    *result = 0.0;
     return GSL_EUNDRFLW;
   }
 }
