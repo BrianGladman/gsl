@@ -83,5 +83,5 @@ gsl_rng_types_setup (void)
   ADD(0);
 
   return gsl_rng_generator_types;
-};
+}
 
