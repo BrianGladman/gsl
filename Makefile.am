@@ -2,7 +2,7 @@
 
 # AUTOMAKE_OPTIONS = readme-alpha
 
-SUBDIRS = err sys utils block vector matrix ieee-utils min linalg blas specfunc dht rng randist fft poly roots statistics siman sum integration interpolation histogram monte ode-initval doc
+SUBDIRS = err sys utils block vector matrix ieee-utils min linalg eigen blas specfunc dht rng randist fft poly roots statistics siman sum integration interpolation histogram monte ode-initval doc
 
 bin_SCRIPTS = gsl-config
 
