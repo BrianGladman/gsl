@@ -28,8 +28,8 @@ int gsl_histogram_find_impl (size_t n, const double range[],
 			     double x, size_t * i);
 
 double gsl_histogram_get (const gsl_histogram * h, size_t i);
-double gsl_histogram_get_lowerlimit (const gsl_histogram * h, size_t i);
-double gsl_histogram_get_upperlimit (const gsl_histogram * h, size_t i);
+int gsl_histogram_get_range (const gsl_histogram * h, size_t i, 
+			     double * lower, double * upper);
 				     
 double gsl_histogram_max (const gsl_histogram * h);
 double gsl_histogram_min (const gsl_histogram * h);

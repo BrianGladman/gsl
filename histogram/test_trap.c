@@ -14,7 +14,7 @@ int status = 0 ;
 int main (void) 
 {
   gsl_histogram * h;
-  double result ;
+  double result, lower, upper ;
   size_t i;
 
   gsl_set_error_handler (&my_error_handler);
@@ -74,17 +74,14 @@ int main (void)
   result = gsl_histogram_get (h, N+1) ;
   gsl_test(result != 0, "gsl_histogram_get traps index above nbins") ;
 
-  result = gsl_histogram_get_lowerlimit (h, N) ;
-  gsl_test(result != 0, "gsl_histogram_get_lowerlimit traps index at nbins") ;
+  status = gsl_histogram_get_range (h, N, &lower, &upper) ;
+  gsl_test(status != GSL_EDOM, 
+	   "gsl_histogram_get_range traps index at nbins") ;
 
-  result = gsl_histogram_get_upperlimit (h, N) ;
-  gsl_test(result != 0, "gsl_histogram_get_upperlimit traps index at nbins") ;
+  status = gsl_histogram_get_range (h, N + 1, &lower, &upper) ;
+  gsl_test(status != GSL_EDOM, 
+	   "gsl_histogram_get_range traps index above nbins") ;
 
-  result = gsl_histogram_get_lowerlimit (h, N + 1) ;
-  gsl_test(result != 0, "gsl_histogram_get_lowerlimit traps index above nbins") ;
-
-  result = gsl_histogram_get_upperlimit (h, N + 1) ;
-  gsl_test(result != 0, "gsl_histogram_get_upperlimit traps index above nbins") ;
 
   status = 0;
   gsl_histogram_find (h, -0.01, &i) ;

@@ -86,8 +86,9 @@ int main (void)
     int status = 0 ;
     for (i = 0; i < N; i++)
       {
-	double x0 = gsl_histogram_get_lowerlimit (h, i);
-	double x1 = gsl_histogram_get_upperlimit (h, i);
+	double x0 = 0, x1 = 0 ;
+
+	gsl_histogram_get_range (h, i, &x0, &x1);
 
 	if (x0 != i || x1 != i + 1)
 	  {

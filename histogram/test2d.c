@@ -111,8 +111,8 @@ int main (void)
     int status = 0 ;
     for (i = 0; i < N; i++)
       {
-	double x0 = gsl_histogram2d_get_xlowerlimit (h, i);
-	double x1 = gsl_histogram2d_get_xupperlimit (h, i);
+	double x0 = 0, x1 = 0 ;
+	gsl_histogram2d_get_xrange (h, i, &x0, &x1);
 
 	if (x0 != i || x1 != i + 1)
 	  {
@@ -127,8 +127,8 @@ int main (void)
     int status = 0 ;
     for (i = 0; i < M; i++)
       {
-	double y0 = gsl_histogram2d_get_ylowerlimit (h, i);
-	double y1 = gsl_histogram2d_get_yupperlimit (h, i);
+	double y0 = 0, y1 = 0 ;
+	gsl_histogram2d_get_yrange (h, i, &y0, &y1);
 
 	if (y0 != i || y1 != i + 1)
 	  {

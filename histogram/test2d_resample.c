@@ -39,9 +39,11 @@ int main (void)
 	for (j = 0; j < 20; j++)
 	  {
 	    double z = gsl_histogram2d_get (hh, i, j) / (100000.0 / 16.0)  ;
-	    double x = gsl_histogram2d_get_xlowerlimit (hh, i) ;
-	    double y = gsl_histogram2d_get_ylowerlimit (hh, j) ;
 	    size_t k1, k2 ; double ya ;
+	    double x, xmax, y, ymax;
+
+	    gsl_histogram2d_get_xrange (hh, i, &x, &xmax) ;
+	    gsl_histogram2d_get_yrange (hh, j, &y, &ymax) ;
 	    
 	    gsl_histogram2d_find (h, x, y, &k1, &k2) ;
 	    ya = gsl_histogram2d_get (h, k1, k2) ;

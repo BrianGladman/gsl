@@ -30,8 +30,10 @@ int main (void)
     for (i = 0 ; i < 100 ; i++)
       {
 	double y = gsl_histogram_get (hh, i) /  2500  ;
-	double x = gsl_histogram_get_lowerlimit (hh, i) ;
+	double x, xmax ;
 	size_t k ; double ya ;
+
+	gsl_histogram_get_range (hh, i, &x, &xmax) ;
 
 	gsl_histogram_find (h, x, &k) ;
 	ya = gsl_histogram_get (h, k) ;

@@ -34,10 +34,11 @@ int gsl_histogram2d_find_impl (const gsl_histogram2d * h,
 			       double x, double y, size_t * i, size_t * j);
 
 double gsl_histogram2d_get (const gsl_histogram2d * h, size_t i, size_t j);
-double gsl_histogram2d_get_xlowerlimit (const gsl_histogram2d * h, size_t i);
-double gsl_histogram2d_get_xupperlimit (const gsl_histogram2d * h, size_t i);
-double gsl_histogram2d_get_ylowerlimit (const gsl_histogram2d * h, size_t j);
-double gsl_histogram2d_get_yupperlimit (const gsl_histogram2d * h, size_t j);
+int gsl_histogram2d_get_xrange (const gsl_histogram2d * h, size_t i,
+				double * xlower, double * xupper);
+int gsl_histogram2d_get_yrange (const gsl_histogram2d * h, size_t j,
+				double * ylower, double * yupper);
+
 				     
 double gsl_histogram2d_xmax (const gsl_histogram2d * h);
 double gsl_histogram2d_xmin (const gsl_histogram2d * h);

@@ -15,7 +15,7 @@ int status = 0 ;
 int main (void) 
 {
   gsl_histogram2d * h;
-  double result ;
+  double result, lower, upper ;
   size_t i, j;
 
   gsl_set_error_handler (&my_error_handler);
@@ -134,30 +134,17 @@ int main (void)
   gsl_test(result != 0, "gsl_histogram2d_get traps y index above ny") ;
 
 
-  result = gsl_histogram2d_get_xlowerlimit (h, N) ;
-  gsl_test(result != 0, "gsl_histogram2d_get_xlowerlimit traps index at nx") ;
+  status = gsl_histogram2d_get_xrange (h, N, &lower, &upper) ;
+  gsl_test(status != GSL_EDOM, "gsl_histogram2d_get_xrange traps index at nx");
 
-  result = gsl_histogram2d_get_xupperlimit (h, N) ;
-  gsl_test(result != 0, "gsl_histogram2d_get_xupperlimit traps index at nx") ;
+  status = gsl_histogram2d_get_xrange (h, N+1, &lower, &upper) ;
+  gsl_test(status != GSL_EDOM, "gsl_histogram2d_get_xrange traps index above nx");
 
-  result = gsl_histogram2d_get_xlowerlimit (h, N + 1) ;
-  gsl_test(result != 0, "gsl_histogram2d_get_xlowerlimit traps index above nx") ;
+  status = gsl_histogram2d_get_yrange (h, M, &lower, &upper) ;
+  gsl_test(status != GSL_EDOM, "gsl_histogram2d_get_yrange traps index at ny");
 
-  result = gsl_histogram2d_get_xupperlimit (h, N + 1) ;
-  gsl_test(result != 0, "gsl_histogram2d_get_xupperlimit traps index above nx") ;
-
-
-  result = gsl_histogram2d_get_ylowerlimit (h, M) ;
-  gsl_test(result != 0, "gsl_histogram2d_get_ylowerlimit traps index at ny") ;
-
-  result = gsl_histogram2d_get_yupperlimit (h, M) ;
-  gsl_test(result != 0, "gsl_histogram2d_get_yupperlimit traps index at ny") ;
-
-  result = gsl_histogram2d_get_ylowerlimit (h, M + 1) ;
-  gsl_test(result != 0, "gsl_histogram2d_get_ylowerlimit traps index above ny") ;
-
-  result = gsl_histogram2d_get_yupperlimit (h, M + 1) ;
-  gsl_test(result != 0, "gsl_histogram2d_get_yupperlimit traps index above ny") ;
+  status = gsl_histogram2d_get_yrange (h, M+1, &lower, &upper) ;
+  gsl_test(status != GSL_EDOM, "gsl_histogram2d_get_yrange traps index above ny");
 
   status = 0;
   gsl_histogram2d_find (h, -0.01, 0.0, &i, &j) ;
