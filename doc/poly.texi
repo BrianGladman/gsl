@@ -21,7 +21,7 @@ file @code{gsl_poly.h}.
 @cindex polynomial evaluation
 @cindex evaluation of polynomials
 
-@deftypefun double gsl_sf_poly_eval (const double c[], const int @var{len}, const double @var{x})
+@deftypefun double gsl_poly_eval (const double c[], const int @var{len}, const double @var{x})
 This function evaluates the polynomial 
 @c{$c[0] + c[1] x + c[2] x^2 + \dots + c[len-1] x^{len-1}$}
 @math{c[0] + c[1] x + c[2] x^2 + \dots + c[len-1] x^@{len-1@}}.  
