@@ -106,7 +106,8 @@ void gsl_blas_raw_dcopy (int N,
                          const double X[], int incX,
                          double Y[], int incY);
 
-void gsl_blas_raw_daxpy (int N, double alpha,
+void gsl_blas_raw_daxpy (int N,
+                         double alpha,
                          const double X[], int incX, 
                          double Y[], int incY);
 
@@ -118,7 +119,8 @@ void gsl_blas_raw_ccopy (int N,
                          const void * X, int incX,
                          void * Y, int incY);
 
-void gsl_blas_raw_caxpy (int N, const void * alpha,
+void gsl_blas_raw_caxpy (int N,
+                         const void * alpha,
                          const void * X, int incX,
                          void * Y, int incY);
 
@@ -130,7 +132,8 @@ void gsl_blas_raw_zcopy (int N,
                          const void * X, int incX,
                          void * Y, int incY);
 
-void gsl_blas_raw_zaxpy (int N, const void * alpha,
+void gsl_blas_raw_zaxpy (int N,
+                         const void * alpha,
                          const void * X, int incX,
                          void * Y, int incY);
 
@@ -173,8 +176,8 @@ void gsl_blas_raw_sscal  (int N, float  alpha, float  X[], int incX);
 void gsl_blas_raw_dscal  (int N, double alpha, double X[], int incX);
 void gsl_blas_raw_cscal  (int N, const void * alpha, void * X, int incX);
 void gsl_blas_raw_zscal  (int N, const void * alpha, void * X, int incX);
-void gsl_blas_raw_csscal (int N, const float  alpha, void * X, int incX);
-void gsl_blas_raw_zdscal (int N, const double alpha, void * X, int incX);
+void gsl_blas_raw_csscal (int N, float  alpha, void * X, int incX);
+void gsl_blas_raw_zdscal (int N, double alpha, void * X, int incX);
 
 
 /*
@@ -188,18 +191,18 @@ void gsl_blas_raw_zdscal (int N, const double alpha, void * X, int incX);
  */
 void gsl_blas_raw_sgemv (CBLAS_ORDER order, CBLAS_TRANSPOSE TransA,
                          int M, int N,
-                         const float alpha,
+                         float alpha,
                          const float A[], int lda,
                          const float X[], int incX,
-                         const float beta,
+                         float beta,
                          float Y[], int incY);
 
 void gsl_blas_raw_sgbmv (CBLAS_ORDER order, CBLAS_TRANSPOSE TransA,
-                         int M, int N,
-                         int KL, int KU, const float alpha,
+                         int M, int N, int KL, int KU,
+			 float alpha,
                          const float A[], int lda,
                          const float X[], int incX,
-                         const float beta,
+                         float beta,
                          float Y[], int incY);
 
 void gsl_blas_raw_strmv (CBLAS_ORDER order, CBLAS_UPLO Uplo,
@@ -240,18 +243,18 @@ void gsl_blas_raw_stpsv (CBLAS_ORDER order, CBLAS_UPLO Uplo,
 
 void gsl_blas_raw_dgemv (CBLAS_ORDER order, CBLAS_TRANSPOSE TransA,
 			 int M, int N,
-                         const double alpha,
+                         double alpha,
 			 const double A[], int lda,
                          const double X[], int incX,
-			 const double beta,
+			 double beta,
                          double Y[], int incY);
 
 void gsl_blas_raw_dgbmv (CBLAS_ORDER order, CBLAS_TRANSPOSE TransA,
 			 int M, int N, int KL, int KU,
-			 const double alpha,
+			 double alpha,
                          const double A[], int lda,
 			 const double X[], int incX,
-			 const double beta,
+			 double beta,
 			 double Y[], int incY);
 
 void gsl_blas_raw_dtrmv (CBLAS_ORDER order, CBLAS_UPLO Uplo,
@@ -400,114 +403,114 @@ void gsl_blas_raw_ztpsv (CBLAS_ORDER order, CBLAS_UPLO Uplo,
  */
 void gsl_blas_raw_ssymv (CBLAS_ORDER order, CBLAS_UPLO Uplo,
                          int N,
-			 const float alpha,
+			 float alpha,
 			 const float A[], int lda,
 			 const float X[], int incX,
-                         const float beta,
+                         float beta,
 			 float Y[], int incY);
 
 void gsl_blas_raw_ssbmv (CBLAS_ORDER order, CBLAS_UPLO Uplo,
                          int N, int K,
-			 const float alpha,
+			 float alpha,
 			 const float A[], int lda, 
 			 const float X[], int incX,
-                         const float beta,
+                         float beta,
 			 float Y[], int incY);
 
 void gsl_blas_raw_sspmv (CBLAS_ORDER order, CBLAS_UPLO Uplo,
                          int N,
-			 const float alpha,
+			 float alpha,
 			 const float Ap[],
                          const float X[], int incX,
-                         const float beta,
+                         float beta,
 			 float Y[], int incY);
 
 void gsl_blas_raw_sger (CBLAS_ORDER order,
                         int M, int N,
-                        const float alpha,
+                        float alpha,
 			const float X[], int incX,
                         const float Y[], int incY,
 			float A[], int lda);
 
 void gsl_blas_raw_ssyr (CBLAS_ORDER order, CBLAS_UPLO Uplo,
                         int N,
-			const float alpha,
+			float alpha,
 			const float X[], int incX,
 			float A[], int lda);
 
 void gsl_blas_raw_sspr (CBLAS_ORDER order, CBLAS_UPLO Uplo,
                         int N,
-			const float alpha,
+			float alpha,
 			const float X[], int incX,
 			float Ap[]);
 
 void gsl_blas_raw_ssyr2 (CBLAS_ORDER order, CBLAS_UPLO Uplo,
                          int N,
-			 const float alpha,
+			 float alpha,
 			 const float X[], int incX, 
 			 const float Y[], int incY,
 			 float A[], int lda);
 
 void gsl_blas_raw_sspr2 (CBLAS_ORDER order, CBLAS_UPLO Uplo,
                          int N,
-			 const float alpha,
+			 float alpha,
 			 const float X[], int incX,
 			 const float Y[], int incY,
 			 float A[]);
 
 void gsl_blas_raw_dsymv (CBLAS_ORDER order, CBLAS_UPLO Uplo,
                          int N,
-			 const double alpha,
+			 double alpha,
 			 const double A[], int lda,
 			 const double X[], int incX,
-                         const double beta,
+                         double beta,
 			 double Y[], int incY);
 
 void gsl_blas_raw_dsbmv (CBLAS_ORDER order, CBLAS_UPLO Uplo,
                          int N, int K,
-			 const double alpha,
+			 double alpha,
 			 const double A[], int lda,
 			 const double X[], int incX,
-                         const double beta,
+                         double beta,
 			 double Y[], int incY);
 
 void gsl_blas_raw_dspmv (CBLAS_ORDER order, CBLAS_UPLO Uplo,
                          int N,
-			 const double alpha,
+			 double alpha,
 			 const double Ap[],
                          const double X[], int incX,
-                         const double beta,
+                         double beta,
 			 double Y[], int incY);
 
 void gsl_blas_raw_dger (CBLAS_ORDER order,
                         int M, int N,
-                        const double alpha,
+                        double alpha,
 			const double X[], int incX,
                         const double Y[], int incY,
 			double A[], int lda);
 
 void gsl_blas_raw_dsyr (CBLAS_ORDER order, CBLAS_UPLO Uplo,
                         int N,
-			const double alpha,
+			double alpha,
 			const double X[], int incX,
 			double A[], int lda);
 
 void gsl_blas_raw_dspr (CBLAS_ORDER order, CBLAS_UPLO Uplo,
                         int N,
-			const double alpha,
+			double alpha,
 			const double X[], int incX,
 			double Ap[]);
 
 void gsl_blas_raw_dsyr2 (CBLAS_ORDER order, CBLAS_UPLO Uplo,
                          int N,
-			 const double alpha,
+			 double alpha,
 			 const double X[], int incX,
 			 const double Y[], int incY,
 			 double A[], int lda);
 
 void gsl_blas_raw_dspr2 (CBLAS_ORDER order, CBLAS_UPLO Uplo,
                          int N,
-			 const double alpha,
+			 double alpha,
 			 const double X[], int incX,
 			 const double Y[], int incY,
 			 double A[]);
@@ -554,13 +557,13 @@ void gsl_blas_raw_cgerc (CBLAS_ORDER order,
 
 void gsl_blas_raw_cher (CBLAS_ORDER order, CBLAS_UPLO Uplo,
                         int N,
-			const float alpha,
+			float alpha,
 			const void * X, int incX,
                         void * A, int lda);
 
 void gsl_blas_raw_chpr (CBLAS_ORDER order, CBLAS_UPLO Uplo,
                         int N,
-			const float alpha[],
+			float alpha,
 			const void * X, int incX,
 			void * A);
 
@@ -618,13 +621,13 @@ void gsl_blas_raw_zgerc (CBLAS_ORDER order,
 
 void gsl_blas_raw_zher (CBLAS_ORDER order, CBLAS_UPLO Uplo,
                         int N,
-			const double alpha,
+			double alpha,
 			const void * X, int incX,
                         void * A, int lda);
 
 void gsl_blas_raw_zhpr (CBLAS_ORDER order, CBLAS_UPLO Uplo,
                         int N,
-			const double alpha[],
+			double alpha,
 			const void * X, int incX,
 			void * A);
 
@@ -654,40 +657,40 @@ void gsl_blas_raw_zhpr2 (CBLAS_ORDER order, CBLAS_UPLO Uplo,
 void gsl_blas_raw_sgemm (CBLAS_ORDER Order, CBLAS_TRANSPOSE TransA,
                          CBLAS_TRANSPOSE TransB,
 			 int M, int N, int K,
-			 const float alpha,
+			 float alpha,
 			 const float A[], int lda,
 			 const float B[], int ldb,
-                         const float beta,
+                         float beta,
 			 float C[], int ldc);
 
 void gsl_blas_raw_ssymm (CBLAS_ORDER Order, CBLAS_SIDE Side, CBLAS_UPLO Uplo,
 			 int M, int N,
-                         const float alpha,
+                         float alpha,
 			 const float A[], int lda,
                          const float B[], int ldb,
-			 const float beta,
+			 float beta,
                          float C[], int ldc);
 
 void gsl_blas_raw_ssyrk (CBLAS_ORDER Order, CBLAS_UPLO Uplo, CBLAS_TRANSPOSE Trans,
 			 int N, int K,
-                         const float alpha,
+                         float alpha,
 			 const float A[], int lda,
-                         const float beta,
+                         float beta,
 			 float C[], int ldc);
 
 void gsl_blas_raw_ssyr2k (CBLAS_ORDER Order, CBLAS_UPLO Uplo, CBLAS_TRANSPOSE Trans,
 			  int N, int K,
-                          const float alpha,
+                          float alpha,
 			  const float A[], int lda,
                           const float B[], int ldb,
-			  const float beta,
+			  float beta,
                           float C[], int ldc);
 
 void gsl_blas_raw_strmm (CBLAS_ORDER Order, CBLAS_SIDE Side,
                          CBLAS_UPLO Uplo, CBLAS_TRANSPOSE TransA,
                          CBLAS_DIAG Diag,
 			 int M, int N,
-                         const float alpha,
+                         float alpha,
 			 const float A[], int lda,
                          float B[], int ldb);
 
@@ -695,50 +698,50 @@ void gsl_blas_raw_strsm (CBLAS_ORDER Order, CBLAS_SIDE Side,
                          CBLAS_UPLO Uplo, CBLAS_TRANSPOSE TransA,
                          CBLAS_DIAG Diag,
 			 int M, int N,
-                         const float alpha,
+                         float alpha,
 			 const float A[], int lda,
                          float B[], int ldb);
 
 void gsl_blas_raw_dgemm (CBLAS_ORDER Order, CBLAS_TRANSPOSE TransA,
                          CBLAS_TRANSPOSE TransB,
 			 int M, int N, int K,
-			 const double alpha,
+			 double alpha,
 			 const double A[], int lda,
 			 const double B[], int ldb,
-                         const double beta,
+                         double beta,
 			 double C[], int ldc);
 
 void gsl_blas_raw_dsymm (CBLAS_ORDER Order, CBLAS_SIDE Side,
                          CBLAS_UPLO Uplo,
 			 int M, int N,
-                         const double alpha,
+                         double alpha,
 			 const double A[], int lda,
                          const double B[], int ldb,
-			 const double beta,
+			 double beta,
                          double C[], int ldc);
 
 void gsl_blas_raw_dsyrk (CBLAS_ORDER Order, CBLAS_UPLO Uplo,
                          CBLAS_TRANSPOSE Trans,
 			 int N, int K,
-                         const double alpha,
+                         double alpha,
 			 const double A[], int lda,
-                         const double beta,
+                         double beta,
 			 double C[], int ldc);
 
 void gsl_blas_raw_dsyr2k (CBLAS_ORDER Order, CBLAS_UPLO Uplo,
                           CBLAS_TRANSPOSE Trans,
 			  int N, int K,
-                          const double alpha,
+                          double alpha,
 			  const double A[], int lda,
                           const double B[], int ldb,
-			  const double beta,
+			  double beta,
                           double C[], int ldc);
 
 void gsl_blas_raw_dtrmm (CBLAS_ORDER Order, CBLAS_SIDE Side,
                          CBLAS_UPLO Uplo, CBLAS_TRANSPOSE TransA,
                          CBLAS_DIAG Diag,
 			 int M, int N,
-                         const double alpha,
+                         double alpha,
 			 const double A[], int lda,
                          double B[], int ldb);
 
@@ -746,7 +749,7 @@ void gsl_blas_raw_dtrsm (CBLAS_ORDER Order, CBLAS_SIDE Side,
                          CBLAS_UPLO Uplo, CBLAS_TRANSPOSE TransA,
                          CBLAS_DIAG Diag,
 			 int M, int N,
-                         const double alpha,
+                         double alpha,
 			 const double A[], int lda,
                          double B[], int ldb);
 
@@ -867,9 +870,9 @@ void gsl_blas_raw_chemm (CBLAS_ORDER Order, CBLAS_SIDE Side,
 void gsl_blas_raw_cherk (CBLAS_ORDER Order, CBLAS_UPLO Uplo,
                          CBLAS_TRANSPOSE Trans,
 			 int N, int K,
-                         const float alpha,
+                         float alpha,
 			 const void * A, int lda,
-                         const float beta,
+                         float beta,
 			 void * C, int ldc);
 
 void gsl_blas_raw_cher2k (CBLAS_ORDER Order, CBLAS_UPLO Uplo,
@@ -878,7 +881,7 @@ void gsl_blas_raw_cher2k (CBLAS_ORDER Order, CBLAS_UPLO Uplo,
                           const void * alpha,
 			  const void * A, int lda,
                           const void * B, int ldb,
-			  const float beta,
+			  float beta,
                           void * C, int ldc);
 
 void gsl_blas_raw_zhemm (CBLAS_ORDER Order, CBLAS_SIDE Side,
@@ -893,9 +896,9 @@ void gsl_blas_raw_zhemm (CBLAS_ORDER Order, CBLAS_SIDE Side,
 void gsl_blas_raw_zherk (CBLAS_ORDER Order, CBLAS_UPLO Uplo,
                          CBLAS_TRANSPOSE Trans,
 			 int N, int K,
-                         const double alpha,
+                         double alpha,
 			 const void * A, int lda,
-                         const double beta,
+                         double beta,
 			 void * C, int ldc);
 
 void gsl_blas_raw_zher2k (CBLAS_ORDER Order, CBLAS_UPLO Uplo,
@@ -904,11 +907,12 @@ void gsl_blas_raw_zher2k (CBLAS_ORDER Order, CBLAS_UPLO Uplo,
                           const void * alpha,
 			  const void * A, int lda,
                           const void * B, int ldb,
-			  const double beta,
+			  double beta,
                           void * C, int ldc);
 
 
 #if defined(HAVE_INLINE) && defined(HAVE_CBLAS)
+#include <cblas.h>
 
 /* insert inline cblas implementation of above here */
 
