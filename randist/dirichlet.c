@@ -50,19 +50,32 @@ gsl_ran_dirichlet (const gsl_rng * r, const size_t K,
   double norm = 0.0;
 
   for (i = 0; i < K; i++)
-    theta[i] = gsl_ran_gamma (r, alpha[i], 1.0);
+    {
+      theta[i] = gsl_ran_gamma (r, alpha[i], 1.0);
+    }
 
   for (i = 0; i < K; i++)
-    norm += theta[i];
+    {
+      norm += theta[i];
+    }
 
   for (i = 0; i < K; i++)
-    theta[i] /= norm;
+    {
+      theta[i] /= norm;
+    }
 }
 
 
 double
 gsl_ran_dirichlet_pdf (const size_t K,
-		       const double alpha[], const double theta[])
+                       const double alpha[], const double theta[])
+{
+  return exp (gsl_ran_dirichlet_lnpdf (K, alpha, theta));
+}
+
+double
+gsl_ran_dirichlet_lnpdf (const size_t K,
+			 const double alpha[], const double theta[])
 {
   /*We calculate the log of the pdf to minimize the possibility of overflow */
   size_t i;
@@ -70,17 +83,21 @@ gsl_ran_dirichlet_pdf (const size_t K,
   double sum_alpha = 0.0;
 
   for (i = 0; i < K; i++)
-    log_p += (alpha[i] - 1.0) * log (theta[i]);
+    {
+      log_p += (alpha[i] - 1.0) * log (theta[i]);
+    }
 
   for (i = 0; i < K; i++)
-    sum_alpha += alpha[i];
+    {
+      sum_alpha += alpha[i];
+    }
 
   log_p += gsl_sf_lngamma (sum_alpha);
 
-
   for (i = 0; i < K; i++)
-    log_p -= gsl_sf_lngamma (alpha[i]);
+    {
+      log_p -= gsl_sf_lngamma (alpha[i]);
+    }
 
-
-  return exp (log_p);
+  return log_p;
 }
