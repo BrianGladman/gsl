@@ -12,8 +12,8 @@ which exchanges the last two elements of a four element vector.
 The corresponding identity permutation is @math{(0,1,2,3)}.   
 
 Note that the permutations produced by the linear algebra routines
-correspond to exchanges of matrix columns, and so should be considered
-as applying to row-vectors in the form @math{v' = v P}, rather than
+correspond to the exchange of matrix columns, and so should be considered
+as applying to row-vectors in the form @math{v' = v P} rather than
 column-vectors, when permuting the elements of a vector.
 
 The functions described in this chapter are defined in the header file
@@ -234,10 +234,15 @@ int
 main (void) 
 @{
   const size_t N = 10;
-  gsl_rng * r = gsl_rng_alloc (gsl_rng_env_setup());
+  const gsl_rng_type * T;
+  gsl_rng * r;
 
   gsl_permutation * p = gsl_permutation_alloc (N);
   gsl_permutation * p_inv = gsl_permutation_alloc (N);
+
+  gsl_rng_env_setup();
+  T = gsl_rng_default;
+  r = gsl_rng_alloc (T);
 
   printf("initial permutation:");  
   gsl_permutation_init (p);

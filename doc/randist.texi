@@ -1700,7 +1700,13 @@ The following program generates a random walk in two dimensions.
 
 main ()
 @{
-  gsl_rng * r = gsl_rng_alloc (gsl_rng_env_setup());
+  const gsl_rng_type * T;
+  gsl_rng * r;
+
+  gsl_rng_env_setup();
+  T = gsl_rng_default;
+  r = gsl_rng_alloc (T);
+
   int i;
   double x = 0, y = 0, dx, dy;
 

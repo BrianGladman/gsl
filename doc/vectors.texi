@@ -6,9 +6,10 @@ The functions described in this chapter provide a simple vector and
 matrix interface to ordinary C arrays. The memory management of these
 arrays is implemented using a single underlying type, known as a
 block. By writing your functions in terms of vectors and matrices you
-can pass a single structure containing both data and dimensions without
-needing additional function arguments.  The structures are compatible
-with the vector and matrix formats used by BLAS routines.
+can pass a single structure containing both data and dimensions as an
+argument without needing additional function parameters.  The structures
+are compatible with the vector and matrix formats used by @sc{blas}
+routines.
 
 @menu
 * Data types::                  
@@ -196,10 +197,11 @@ slice of a block.  Different vectors can be created which point to the
 same block.  A vector slice is a set of equally-spaced elements of an
 area of memory.
 
-The @code{gsl_vector} structure contains four components, the @dfn{size},
-the @dfn{stride}, a pointer to the memory where the elements are stored,
-@var{data}, and a pointer to the block owned by the vector, @var{block},
-if any.  The structure is very simple and looks like this,
+The @code{gsl_vector} structure contains five components, the
+@dfn{size}, the @dfn{stride}, a pointer to the memory where the elements
+are stored, @var{data}, a pointer to the block owned by the vector,
+@var{block}, if any, and an ownership flag, @var{owner}.  The structure
+is very simple and looks like this,
 
 @example
 typedef struct
@@ -220,9 +222,9 @@ units of the appropriate datatype.  The pointer @var{data} gives the
 location of the first element of the vector in memory.  The pointer
 @var{block} stores the location of the memory block in which the vector
 elements are located (if any).  If the vector owns this block then the
-owner field is set to one and the block will be deallocated when the
+@var{owner} field is set to one and the block will be deallocated when the
 vector is freed.  If the vector points to a block owned by another
-object then the owner field is zero and any underlying block will not be
+object then the @var{owner} field is zero and any underlying block will not be
 deallocated.
 
 The functions for allocating and accessing vectors are defined in
@@ -422,11 +424,11 @@ original vector.
 
 The new vector is only a view of the block underlying the original
 vector, @var{v}.  The block containing the elements of @var{v} is not
-owned by the new vector.  When the new vector goes out of scope the
-original vector @var{v} and its block will continue to exist.  The
-original memory can only be deallocated by freeing the original vector.
-Of course, the original vector should not be deallocated while the new
-vector is still in use.
+owned by the new vector.  When the view goes out of scope the original
+vector @var{v} and its block will continue to exist.  The original
+memory can only be deallocated by freeing the original vector.  Of
+course, the original vector should not be deallocated while the view is
+still in use.
 
 The function @code{gsl_vector_const_subvector} is equivalent to
 @code{gsl_vector_subvector} but can be used for vectors which are
@@ -516,7 +518,7 @@ freeing the original pointer @var{base}.  Of course, the original array
 should not be deallocated while the view is still in use.
 
 The function @code{gsl_vector_const_view_array} is equivalent to
-@code{gsl_vector_view_array} but can be used for vectors which are
+@code{gsl_vector_view_array} but can be used for arrays which are
 declared @code{const}.
 @end deftypefun
 
@@ -619,9 +621,9 @@ for arrays which are declared @code{const}.
 @subsection Copying vectors
 
 Common operations on vectors such as addition and multiplication are
-available in the BLAS part of the library (@pxref{BLAS
+available in the @sc{blas} part of the library (@pxref{BLAS
 Support}).  However, it is useful to have a small number of utility
-functions which do not require the full BLAS code.  The following
+functions which do not require the full @sc{blas} code.  The following
 functions fall into this category.
 
 @deftypefun int gsl_vector_memcpy (gsl_vector * @var{dest}, const gsl_vector * @var{src})
@@ -816,13 +818,14 @@ Matrices are defined by a @code{gsl_matrix} structure which describes a
 generalized slice of a block.  Like a vector it represents a set of
 elements in an area of memory, but uses two indices instead of one.
 
-The @code{gsl_matrix} structure contains five components, the two
+The @code{gsl_matrix} structure contains six components, the two
 dimensions of the matrix, a physical dimension, a pointer to the memory
-where the elements of the matrix are stored, @var{data}, and a pointer
-to the block owned by the matrix @var{block}, if any.  The physical
-dimension determines the memory layout and can differ from the matrix
-dimension to allow the use of submatrices.  The @code{gsl_matrix}
-structure is very simple and looks like this,
+where the elements of the matrix are stored, @var{data}, a pointer to
+the block owned by the matrix @var{block}, if any, and an ownership
+flag, @var{owner}.  The physical dimension determines the memory layout
+and can differ from the matrix dimension to allow the use of
+submatrices.  The @code{gsl_matrix} structure is very simple and looks
+like this,
 
 @example
 typedef struct
@@ -864,10 +867,10 @@ Each unused memory location is represented by ``@code{XX}''.  The
 pointer @var{data} gives the location of the first element of the matrix
 in memory.  The pointer @var{block} stores the location of the memory
 block in which the elements of the matrix are located (if any).  If the
-matrix owns this block then the owner field is set to one and the block
-will be deallocated when the matrix is freed.  If the matrix is only a
-slice of a block owned by another object then the owner field is zero
-and any underlying block will not be freed.
+matrix owns this block then the @var{owner} field is set to one and the
+block will be deallocated when the matrix is freed.  If the matrix is
+only a slice of a block owned by another object then the @var{owner} field is
+zero and any underlying block will not be freed.
 
 The functions for allocating and accessing matrices are defined in
 @file{gsl_matrix.h}
@@ -1506,7 +1509,7 @@ zero, and 0 otherwise.
 @node Example programs for matrices
 @subsection Example programs for matrices
 
-This program shows how to allocate, initialize and read from a matrix
+The program below shows how to allocate, initialize and read from a matrix
 using the functions @code{gsl_matrix_alloc}, @code{gsl_matrix_set} and
 @code{gsl_matrix_get}.
 

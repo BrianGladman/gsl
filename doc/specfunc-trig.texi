@@ -135,14 +135,16 @@ These routines force the angle @var{theta} to lie in the range @math{[0,
 
 @deftypefun double gsl_sf_sin_err (double @var{x}, double @var{dx})
 @deftypefunx int gsl_sf_sin_err_e (double @var{x}, double @var{dx}, gsl_sf_result * @var{result})
-These routines compute the sine of an angle with an associated error,
+These routines compute the sine of an angle @var{x} with an associated 
+absolute error @var{dx},
 @c{$\sin(x \pm dx)$}
 @math{\sin(x \pm dx)}.
 @end deftypefun
 
 @deftypefun double gsl_sf_cos_err (double @var{x}, double @var{dx})
 @deftypefunx int gsl_sf_cos_err_e (double @var{x}, double @var{dx}, gsl_sf_result * @var{result})
-These routines compute the cosine of an angle with an associated error,
+These routines compute the cosine of an angle @var{x} with an associated
+absolute error @var{dx},
 @c{$\cos(x \pm dx)$}
 @math{\cos(x \pm dx)}.
 @end deftypefun

@@ -6,7 +6,7 @@ without eigenvectors.  The algorithms used are symmetric
 bidiagonalization followed by QR reduction.
 
 @cindex LAPACK, recommended for linear algebra
-These routines are meant for "small" systems where simple algorithms are
+These routines are intended for "small" systems where simple algorithms are
 acceptable.  Anyone interested finding eigenvalues and eigenvectors of
 large matrices will want to use the sophisticated routines found in
 @sc{lapack}. The Fortran version of @sc{lapack} is recommended as the
@@ -174,6 +174,7 @@ according to the value of the parameter @var{sort_type} as shown above.
 The following program computes the eigenvalues and eigenvectors of the 4-th order Hilbert matrix, @math{H(i,j) = 1/(i + j + 1)}.
 
 @example
+#include <stdio.h>
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_eigen.h>
 
@@ -199,18 +200,22 @@ main ()
   gsl_eigen_symmv_free(w);
 
   gsl_eigen_symmv_sort (eval, evec, 
-                        GSL_EIGEN_SORT_ABS_DESC);
+                        GSL_EIGEN_SORT_ABS_ASC);
   
   @{
     int i;
 
     for (i = 0; i < 4; i++)
       @{
-        double eval_i = gsl_vector_get(eval, i);
-        gsl_vector v = gsl_matrix_column(evec, i);
+        double eval_i 
+           = gsl_vector_get(eval, i);
+        gsl_vector_view evec_i 
+           = gsl_matrix_column(evec, i);
+
         printf("eigenvalue = %g\n", eval_i);
         printf("eigenvector = \n");
-        gsl_vector_fprintf(stdout, &v, "%g");
+        gsl_vector_fprintf(stdout, 
+                           &evec_i.vector, "%g");
       @}
   @}
 @}
@@ -219,15 +224,39 @@ main ()
 Here is the beginning of the output from the program,
 
 @example
-eigenvalue = 1.50021
+bjg|debian> ./a.out 
+eigenvalue = 9.67023e-05
 eigenvector = 
-0.792608
-0.451923
-0.322416
-0.252161
+-0.0291933
+0.328712
+-0.791411
+0.514553
 ...
 @end example
+@noindent
+This can be compared with the corresponding output from @sc{gnu octave},
 
+@example
+octave> [v,d] = eig(hilb(4));
+octave> diag(d)  
+ans =
+
+   9.6702e-05
+   6.7383e-03
+   1.6914e-01
+   1.5002e+00
+
+octave> v 
+v =
+
+   0.029193   0.179186  -0.582076   0.792608
+  -0.328712  -0.741918   0.370502   0.451923
+   0.791411   0.100228   0.509579   0.322416
+  -0.514553   0.638283   0.514048   0.252161
+@end example
+@noindent
+Note that the eigenvectors can differ by a change of sign, since the
+sign of an eigenvector is arbitrary.
 
 @node Eigenvalue and Eigenvector References
 @section References and Further Reading
@@ -247,8 +276,9 @@ The @sc{lapack} library is described in,
 @item
 @cite{LAPACK Users' Guide} (Third Edition, 1999), Published by SIAM,
 ISBN 0-89871-447-8.
+
+@url{http://www.netlib.org/lapack} 
 @end itemize
 @noindent
-The @sc{lapack} source code can be found at
-@url{http://www.netlib.org/lapack} along with an online copy of the
-users guide.
+The @sc{lapack} source code can be found at the website above along with
+an online copy of the users guide.

@@ -24,10 +24,21 @@ state radial wavefunction @c{$R_1 := 2Z \sqrt{Z} \exp(-Z r)$}
 @deftypefun double gsl_sf_hydrogenicR (int @var{n}, int @var{l}, double @var{Z}, double @var{r})
 @deftypefunx int gsl_sf_hydrogenicR_e (int @var{n}, int @var{l}, double @var{Z}, double @var{r}, gsl_sf_result * @var{result})
 These routines compute the @var{n}-th normalized hydrogenic bound state
-radial wavefunction 
-@c{$R_n := 2 (Z^{3/2}/n^2) \sqrt{(n-l-1)!/(n+l)!} \exp(-Z r/n) (2Z/n)^l L^{2l+1}_{n-l-1}(2Z/n r)$}
-@math{R_n := 2 (Z^@{3/2@}/n^2) \sqrt@{(n-l-1)!/(n+l)!@} \exp(-Z r/n) (2Z/n)^l
-L^@{2l+1@}_@{n-l-1@}(2Z/n r)}.  
+radial wavefunction,
+@tex
+\beforedisplay
+$$
+R_n := {2 Z^{3/2} \over n^2}  \left({2Z \over n}\right)^l  \sqrt{(n-l-1)! \over (n+l)!} \exp(-Z r/n) L^{2l+1}_{n-l-1}(2Z/n r).
+$$
+\afterdisplay
+@end tex
+@ifinfo
+@example
+R_n := 2 (Z^@{3/2@}/n^2) \sqrt@{(n-l-1)!/(n+l)!@} \exp(-Z r/n) (2Z/n)^l
+          L^@{2l+1@}_@{n-l-1@}(2Z/n r).  
+@end example
+@end ifinfo
+@noindent
 The normalization is chosen such that the wavefunction @math{\psi} is
 given by 
 @c{$\psi(n,l,r) = R_n Y_{lm}$}
@@ -97,12 +108,13 @@ results in @var{fc_array} and @var{gc_array}.  In the case of overflow the
 exponents are stored in @var{F_exponent} and @var{G_exponent}.
 @end deftypefun
 
-@deftypefun int gsl_sf_coulomb_wave_FGp_array (double @var{L_min}, int @var{kmax}, double @var{eta}, double @var{x}, gsl_sf_result * @var{fc}, gsl_sf_result * @var{fcp}, gsl_sf_result * @var{gc}, gsl_sf_result * @var{gcp}, double * @var{F_exponent}, double * @var{G_exponent})
+@deftypefun int gsl_sf_coulomb_wave_FGp_array (double @var{L_min}, int @var{kmax}, double @var{eta}, double @var{x}, double @var{fc_array}[], double @var{fcp_array}[], double @var{gc_array}[], double @var{gcp_array}[], double * @var{F_exponent}, double * @var{G_exponent})
 This function computes the functions @math{F_L(\eta,x)},
 @math{G_L(\eta,x)} and their derivatives @math{F'_L(\eta,x)},
 @math{G'_L(\eta,x)} for @math{L = Lmin \dots Lmin + kmax} storing the
-results in @var{fc}, @var{gc}, @var{fcp} and @var{gcp}.  In the case
-of overflow the exponents are stored in @var{F_exponent} and @var{G_exponent}.
+results in @var{fc_array}, @var{gc_array}, @var{fcp_array} and @var{gcp_array}.
+In the case of overflow the exponents are stored in @var{F_exponent} 
+and @var{G_exponent}.
 @end deftypefun
 
 @deftypefun int gsl_sf_coulomb_wave_sphF_array (double @var{L_min}, int @var{kmax}, double @var{eta}, double @var{x}, double @var{fc_array}[], double @var{F_exponent}[])
@@ -113,19 +125,18 @@ stored in @var{F_exponent}. This function reduces to spherical Bessel
 functions in the limit @math{\eta \to 0}.
 @end deftypefun
 
-
 @node Coulomb Wave Function Normalization Constant
 @subsection Coulomb Wave Function Normalization Constant
 
-The coulomb wave function normalization constant is defined in
+The Coulomb wave function normalization constant is defined in
 Abramowitz 14.1.7.
 
 @deftypefun int gsl_sf_coulomb_CL_e (double @var{L}, double @var{eta}, gsl_sf_result * @var{result})
-This function computes the coulomb wave function normalization constant
+This function computes the Coulomb wave function normalization constant
 @math{C_L(\eta)} for @math{L > -1}.
 @end deftypefun
 
-@deftypefun int gsl_sf_coulomb_CL_list (double @var{Lmin}, int @var{kmax}, double @var{eta}, double * @var{cl})
+@deftypefun int gsl_sf_coulomb_CL_array (double @var{Lmin}, int @var{kmax}, double @var{eta}, double @var{cl}[])
 This function computes the coulomb wave function normalization constant
 @math{C_L(\eta)} for @math{L = Lmin \dots Lmin + kmax}, @math{Lmin > -1}.
 @end deftypefun

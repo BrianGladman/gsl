@@ -111,7 +111,8 @@ F_j(x,b)   := (1/\Gamma(j+1)) \int_b^\infty (t^j / (\Exp(t-x) + 1))
 
 @deftypefun double gsl_sf_fermi_dirac_inc_0 (double @var{x}, double @var{b})
 @deftypefunx int gsl_sf_fermi_dirac_inc_0_e (double @var{x}, double @var{b}, gsl_sf_result * @var{result})
-These routines compute the incomplete Fermi-Dirac integral
+These routines compute the incomplete Fermi-Dirac integral with an index
+of zero,
 @c{$F_0(x,b) = \ln(1 + e^{b-x}) - (b-x)$}
 @math{F_0(x,b) = \ln(1 + e^@{b-x@}) - (b-x)}.
 @comment Exceptional Return Values: GSL_EUNDRFLW, GSL_EDOM

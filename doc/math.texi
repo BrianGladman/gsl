@@ -6,7 +6,8 @@ functions are present in system libraries, but the alternative versions
 given here can be used as a substitute when the system functions are not
 available.
 
-The functions and macros are defined in the header file @file{gsl_math.h}.
+The functions and macros described in this chapter are defined in the
+header file @file{gsl_math.h}.
 
 @menu
 * Mathematical Constants::      
@@ -115,8 +116,8 @@ This function returns 1 if @var{x} is not-a-number.
 @end deftypefun
 
 @deftypefun int gsl_isinf (const double @var{x})
-This function returns +1 if @var{x} is positive infinity, -1 if @var{x}
-is negative infinity and 0 otherwise.
+This function returns @math{+1} if @var{x} is positive infinity,
+@math{-1} if @var{x} is negative infinity and 0 otherwise.
 @end deftypefun
 
 @deftypefun int gsl_finite (const double @var{x})
@@ -132,7 +133,7 @@ The following routines provide portable implementations of functions
 found in the BSD math library.  When native versions are not available
 the functions described here can be used instead.  The substitution can
 be made automatically if you use @code{autoconf} to compile your
-application @pxref{Portability functions}.
+application (@pxref{Portability functions}).
 
 @deftypefun double gsl_log1p (const double @var{x})
 @cindex log1p

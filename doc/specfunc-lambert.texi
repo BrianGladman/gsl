@@ -8,7 +8,8 @@ two real-valued branches. We define @math{W_0(x)} to be the
 principal branch, where @math{W > -1} for @math{x < 0}, and 
 @c{$W_{-1}(x)$}
 @math{W_@{-1@}(x)} to be the other real branch, where
-@math{W < -1} for @math{x < 0}.
+@math{W < -1} for @math{x < 0}.  The Lambert functions are
+declared in the header file @file{gsl_sf_lambert.h}.
 
 
 @deftypefun double gsl_sf_lambert_W0 (double @var{x})

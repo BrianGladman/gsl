@@ -136,11 +136,14 @@ The following precision levels are available for the mode argument,
 
 @table @code
 @item GSL_PREC_DOUBLE
-Double-precision, a relative accuracy of approximately 2.0e-16
+Double-precision, a relative accuracy of approximately @c{$2 \times 10^{-16}$}
+@math{2 * 10^-16}.
 @item GSL_PREC_SINGLE
-Single-precision, a relative accuracy of approximately 1.0e-07
+Single-precision, a relative accuracy of approximately @c{$1 \ times 10^{-7}$}
+@math{10^-7}.
 @item GSL_PREC_APPROX
-Approximate values, a relative accuracy of approximately 5.0e-04
+Approximate values, a relative accuracy of approximately @c{$5 \times 10^{-4}$}
+@math{5 * 10^-4}.
 @end table
 @noindent
 The approximate mode provides the fastest evaluation at the lowest

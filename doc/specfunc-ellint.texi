@@ -21,20 +21,20 @@ The Legendre forms of elliptic integrals @math{F(\phi,k)},
 \beforedisplay
 $$
 \eqalign{
-F(\phi,k)   &= \int_0^\phi dt {1 \over \sqrt{(1 - k^2 \sin(t)^2)}}\cr
-E(\phi,k)   &= \int_0^\phi dt   \sqrt{(1 - k^2 \sin(t)^2)}\cr
-P(\phi,k,n) &= \int_0^\phi dt {1 \over (1 + n \sin(t)^2) \sqrt{1 - k^2 \sin(t)^2}}
+F(\phi,k)   &= \int_0^\phi dt {1 \over \sqrt{(1 - k^2 \sin^2(t))}}\cr
+E(\phi,k)   &= \int_0^\phi dt   \sqrt{(1 - k^2 \sin^2(t))}\cr
+P(\phi,k,n) &= \int_0^\phi dt {1 \over (1 + n \sin^2(t)) \sqrt{1 - k^2 \sin^2(t)}}
 }
 $$
 \afterdisplay
 @end tex
 @ifinfo
 @example
-  F(\phi,k) = \int_0^\phi dt 1/\sqrt((1 - k^2 \sin(t)^2))
+  F(\phi,k) = \int_0^\phi dt 1/\sqrt((1 - k^2 \sin^2(t)))
 
-  E(\phi,k) = \int_0^\phi dt   \sqrt((1 - k^2 \sin(t)^2))
+  E(\phi,k) = \int_0^\phi dt   \sqrt((1 - k^2 \sin^2(t)))
 
-P(\phi,k,n) = \int_0^\phi dt 1/((1 + n \sin(t)^2)\sqrt(1 - k^2 \sin(t)^2))
+P(\phi,k,n) = \int_0^\phi dt 1/((1 + n \sin^2(t))\sqrt(1 - k^2 \sin^2(t)))
 @end example
 @end ifinfo
 @noindent
@@ -122,8 +122,20 @@ to the accuracy specified by the mode variable @var{mode}.
 @deftypefunx int gsl_sf_ellint_D_e (double @var{phi}, double @var{k}, double @var{n}, gsl_mode_t @var{mode}, gsl_sf_result * @var{result})
 These functions compute the incomplete elliptic integral
 @math{D(\phi,k,n)} which is defined through the Carlson form @math{RD(x,y,z)}
-by the following relation, @math{D(\phi,k,n) = RD (1-\sin^2(\phi),
-1-k^2 \sin^2(\phi), 1.0)}
+by the following relation, 
+@tex
+\beforedisplay
+$$
+D(\phi,k,n) = RD (1-\sin^2(\phi), 1-k^2 \sin^2(\phi), 1).
+$$
+\afterdisplay
+@end tex
+@ifinfo
+@example
+D(\phi,k,n) = RD (1-\sin^2(\phi), 1-k^2 \sin^2(\phi), 1).
+@end example
+@end ifinfo
+
 @comment Exceptional Return Values: GSL_EDOM
 @end deftypefun
 

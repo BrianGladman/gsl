@@ -41,8 +41,8 @@ each of size @var{size}, into ascending order using the comparison
 function @var{compare}.  The type of the comparison function is defined by,
 
 @example
-int 
-(*gsl_comparison_fn_t) (const void * a, const void * b)
+int (*gsl_comparison_fn_t) (const void * a,
+                            const void * b)
 @end example
 @noindent
 A comparison function should return a negative integer if the first
@@ -55,7 +55,8 @@ ascending numerical order.
 
 @example
 int
-compare_doubles (const double * a, const double * b)
+compare_doubles (const double * a,
+                 const double * b)
 @{
     return (int) (*a - *b);
 @}
@@ -234,16 +235,17 @@ void
 print_rank (gsl_vector * v)
 @{
   size_t i;
-  gsl_permutation * perm = gsl_permutation_alloc(v->size);
-  gsl_permutation * rank = gsl_permutation_alloc(v->size);
+  size_t n = v->size;
+  gsl_permutation * perm = gsl_permutation_alloc(n);
+  gsl_permutation * rank = gsl_permutation_alloc(n);
 
   gsl_sort_vector_index (perm, v);
   gsl_permutation_invert (rank, perm);
 
-  for (i = 0; i < v->size; i++)
+  for (i = 0; i < n; i++)
    @{
     double vi = gsl_vector_get(v, i);
-    printf("element = %d, value = % .5f, rank = %d\n",
+    printf("element = %d, value = %g, rank = %d\n",
             i, vi, rank->data[i]);
    @}
 

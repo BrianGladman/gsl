@@ -156,12 +156,12 @@ This function returns the difference of the complex number @var{a} and the
 real number @var{x}, @math{z=a-x}.
 @end deftypefun
 
-@deftypefun gsl_complex gsl_complex_mul_real (gsl_complex @var{a}, double @var{b})
+@deftypefun gsl_complex gsl_complex_mul_real (gsl_complex @var{a}, double @var{x})
 This function returns the product of the complex number @var{a} and the
 real number @var{x}, @math{z=ax}.
 @end deftypefun
 
-@deftypefun gsl_complex gsl_complex_div_real (gsl_complex @var{a}, double @var{b})
+@deftypefun gsl_complex gsl_complex_div_real (gsl_complex @var{a}, double @var{x})
 This function returns the quotient of the complex number @var{a} and the
 real number @var{x}, @math{z=a/x}.
 @end deftypefun
@@ -227,9 +227,9 @@ power @var{a}, @math{z^a}. This is computed as @math{\exp(\log(z)*a)}
 using complex logarithms and complex exponentials.
 @end deftypefun
 
-@deftypefun gsl_complex gsl_complex_pow_real (gsl_complex @var{z}, double @var{a})
+@deftypefun gsl_complex gsl_complex_pow_real (gsl_complex @var{z}, double @var{x})
 This function returns the complex number @var{z} raised to the real
-power @var{b}, @math{z^b}.
+power @var{x}, @math{z^x}.
 @end deftypefun
 
 

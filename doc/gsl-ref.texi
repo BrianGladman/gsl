@@ -23,14 +23,16 @@
 @end tex
 @c @cropmarks
 @c @afourpaper
-@c @paperbackbook
-@c @set publish
+@paperbackbook
+@set publish
 @raggedbottom
 @c %**start of header
 @setfilename gsl-ref.info
 @settitle GNU Scientific Library -- Reference Manual
 @finalout
-@c @setchapternewpage odd
+@ifset publish
+@setchapternewpage odd
+@end ifset
 @c %**end of header
 
 @dircategory Scientific software
@@ -174,7 +176,7 @@ by the GSL Team.
 @subtitle @value{UPDATED}
 
 @author Mark Galassi 
-Cygnus Solutions and Los Alamos National Laboratory
+Los Alamos National Laboratory
 @comment @email{rosalia@@lanl.gov}
 @sp 1
 
@@ -251,9 +253,7 @@ by the GSL Team.
 @end titlepage
 
 @ifset publish
-@setchapternewpage odd
 @contents
-@setchapternewpage on
 @end ifset
 
 @ifinfo
@@ -325,15 +325,15 @@ More information about GSL can be found at the project homepage,
 @chapter Introduction
 
 The GNU Scientific Library (GSL) is a collection of routines for
-numerical computing.  The routines are written from scratch by the GSL
-team (@pxref{Contributors to GSL}) in C, and are meant to present a
-modern Applications Programming Interface (API) for C programmers, while
-allowing wrappers to be written for very high level languages.  The
-source code is distributed under the GNU General Public License.
+numerical computing.  The routines have been written from scratch in C,
+and are meant to present a modern Applications Programming Interface
+(API) for C programmers, while allowing wrappers to be written for very
+high level languages.  The source code is distributed under the GNU
+General Public License.
 
-GSL is currently in beta-test release, for people who want to test the
-library itself. When the library is complete and fully tested it will be
-announced for general use.
+@comment GSL is currently in beta-test release, for people who want to test the
+@comment library itself. When the library is complete and fully tested it will be
+@comment announced for general use.
 
 @menu
 * Routines available in GSL::   
@@ -378,8 +378,7 @@ based.
 
 The subroutines in the GNU Scientific Library are ``free software'';
 this means that everyone is free to use them, and to redistribute them
-in other free programs.  The library should not be redistributed in
-proprietary programs.  The library is not in the public domain; it is
+in other free programs.  The library is not in the public domain; it is
 copyrighted and there are conditions on its distribution.  These
 conditions are designed to permit everything that a good cooperating
 citizen would want to do.  What is not allowed is to try to prevent
@@ -390,7 +389,8 @@ Specifically, we want to make sure that you have the right to give away
 copies of any programs related to the GNU Scientific Library, that you
 receive their source code or else can get it if you want it, that you
 can change these programs or use pieces of them in new free programs,
-and that you know you can do these things. 
+and that you know you can do these things.  The library should not be
+redistributed in proprietary programs.
 
 To make sure that everyone has such rights, we have to forbid you to
 deprive anyone else of these rights.  For example, if you distribute
@@ -419,7 +419,7 @@ The source code for the library can be downloaded from the development
 website, @url{http://sources.redhat.com/gsl/}.  It compiles on most Unix
 platforms, and is also available for Microsoft Windows.
 
-Announcements of new releases, updates and other important events are
+Announcements of new releases, updates and other relevant events are
 made on the @code{gsl-announce} mailing list.  To subscribe to this
 low-volume list, send an email of the following form,
 
@@ -439,15 +439,15 @@ Precompiled versions of the library can be obtained from
 @node   An Example Program, No Warranty, Obtaining GSL, Introduction
 @section An Example Program
 
-The following short program demonstrates the use of GSL by computing the
-value of the Bessel function @math{J_0(x)} for @math{x=5},
+The following short program demonstrates the use of the library by
+computing the value of the Bessel function @math{J_0(x)} for @math{x=5},
 
 @example
 #include <stdio.h>
 #include <gsl/gsl_sf_bessel.h>
 
 int
-main ()
+main (void)
 @{
   double x = 5.0;
 
@@ -687,7 +687,7 @@ Multidimensional minimization.
 @end table
 
 @node  Autoconf Macros, GNU General Public License, Contributors to GSL, Top
-@unnumbered Autoconf Macros
+@appendix Autoconf Macros
 
 @noindent
 The following autoconf test will check for extern inline,
@@ -711,6 +711,9 @@ if test "$ac_cv_c_extern_inline" != no ; then
 fi
 @end smallexample
 
+@node GSL CBLAS Library
+@appendix GSL CBLAS Library
+@include cblas.texi
 
 @comment @node  Copyright, GNU General Public License, Contributors to GSL, Top
 @comment @unnumbered Copyright
@@ -755,7 +758,6 @@ fi
 @comment on an odd page so that it can always be moved to the front when 
 @comment printing two-up.
 @setchapternewpage odd
-@comment -@shortcontents
 @contents
 @end ifclear
 

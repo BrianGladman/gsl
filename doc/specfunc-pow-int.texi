@@ -2,7 +2,7 @@
 @cindex integer powers
 
 The following functions are equivalent to the function @code{gsl_pow_int}
-@pxref{Small integer powers} with an error estimate.  These functions are
+(@pxref{Small integer powers}) with an error estimate.  These functions are
 declared in the header file @file{gsl_sf_pow_int.h}.
 
 @deftypefun double gsl_sf_pow_int (double @var{x}, int @var{n})

@@ -1,8 +1,8 @@
 @cindex Zeta functions
 
-For more information see Abramowitz & Stegun, Section 23.2.  The
-functions described in this section are declared in the header file
-@file{gsl_sf_zeta.h}.
+The Riemann zeta function is defined in Abramowitz & Stegun, Section
+23.2.  The functions described in this section are declared in the
+header file @file{gsl_sf_zeta.h}.
 
 @menu
 * Riemann Zeta Function::       
@@ -13,13 +13,14 @@ functions described in this section are declared in the header file
 @node Riemann Zeta Function
 @subsection Riemann Zeta Function
 
-The Riemann zeta function is defined by 
+The Riemann zeta function is defined by the infinite sum 
 @c{$\zeta(s) = \sum_{k=1}^\infty k^{-s}$}
 @math{\zeta(s) = \sum_@{k=1@}^\infty k^@{-s@}}.  
 
 @deftypefun double gsl_sf_zeta_int (int @var{n})
 @deftypefunx int gsl_sf_zeta_int_e (int @var{n}, gsl_sf_result * @var{result})
-These routines compute the zeta function @math{\zeta(n)} for integer @var{n},
+These routines compute the Riemann zeta function @math{\zeta(n)} 
+for integer @var{n},
 @math{n \ne 1}.
 @comment Domain: n integer, n != 1
 @comment Exceptional Return Values: GSL_EDOM, GSL_EOVRFLW
@@ -27,7 +28,8 @@ These routines compute the zeta function @math{\zeta(n)} for integer @var{n},
 
 @deftypefun double gsl_sf_zeta (double @var{s})
 @deftypefunx int gsl_sf_zeta_e (double @var{s}, gsl_sf_result * @var{result})
-These routines compute the zeta function @math{\zeta(s)} for arbitrary @var{s},
+These routines compute the Riemann zeta function @math{\zeta(s)}
+for arbitrary @var{s},
 @math{s \ne 1}.
 @comment Domain: s != 1.0
 @comment Exceptional Return Values: GSL_EDOM, GSL_EOVRFLW

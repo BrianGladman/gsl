@@ -4,7 +4,7 @@ The routines described in this section compute the Cylindrical Bessel
 functions @math{J_n(x)}, @math{Y_n(x)}, Modified cylindrical Bessel
 functions @math{I_n(x)}, @math{K_n(x)}, Spherical Bessel functions
 @math{j_l(x)}, @math{y_l(x)}, and Modified Spherical Bessel functions
-@math{i_l(x)}, @math{k_l(x)}.  For information see Abramowitz & Stegun,
+@math{i_l(x)}, @math{k_l(x)}.  For more information see Abramowitz & Stegun,
 Chapters 9 and 10.  The Bessel functions are defined in the header file
 @file{gsl_sf_bessel.h}.
 
@@ -262,14 +262,14 @@ order, @math{j_0(x) = \sin(x)/x}.
 @deftypefun double gsl_sf_bessel_j1 (double @var{x})
 @deftypefunx int gsl_sf_bessel_j1_e (double @var{x}, gsl_sf_result * @var{result})
 These routines compute the regular spherical Bessel function of first
-order, @math{j_1(x) = (\sin(x)/x - \cos(x))/x} .
+order, @math{j_1(x) = (\sin(x)/x - \cos(x))/x}.
 @comment Exceptional Return Values: GSL_EUNDRFLW
 @end deftypefun
 
 @deftypefun double gsl_sf_bessel_j2 (double @var{x})
 @deftypefunx int gsl_sf_bessel_j2_e (double @var{x}, gsl_sf_result * @var{result})
 These routines compute the regular spherical Bessel function of second
-order, @math{j_2(x) = ((3/x^2 - 1)\sin(x) - 3\cos(x)/x)/x} .
+order, @math{j_2(x) = ((3/x^2 - 1)\sin(x) - 3\cos(x)/x)/x}.
 @comment Exceptional Return Values: GSL_EUNDRFLW
 @end deftypefun
 
@@ -305,7 +305,7 @@ spherical Bessel functions @math{j_l(x)} for @math{l} from 0 to
 @var{result_array}.
 The Steed/Barnett algorithm is described in @cite{Comp. Phys. Comm.} 21,
 297 (1981).  Steed's method is more stable than the
-recurrence used in the other functions but slower.
+recurrence used in the other functions but is also slower.
 @comment Domain: lmax >= 0 
 @comment Conditions: l=0,1,...,lmax 
 @comment Exceptional Return Values: GSL_EDOM, GSL_EUNDRFLW
@@ -333,7 +333,7 @@ order, @math{y_1(x) = -(\cos(x)/x + \sin(x))/x}.
 @deftypefun double gsl_sf_bessel_y2 (double @var{x})
 @deftypefunx int gsl_sf_bessel_y2_e (double @var{x}, gsl_sf_result * @var{result})
 These routines compute the irregular spherical Bessel function of second
-order, @math{y_2(x) = (-3/x^2 + 1/x)\cos(x) - (3/x^2)\sin(x)} .
+order, @math{y_2(x) = (-3/x^2 + 1/x)\cos(x) - (3/x^2)\sin(x)}.
 @comment Exceptional Return Values: GSL_EUNDRFLW
 @end deftypefun
 
@@ -363,8 +363,8 @@ efficiency, and therefore may differ slightly from the exact values.
 @cindex Modified Spherical Bessel Functions
 @cindex Regular Modified Spherical Bessel Functions
 
-The regular modified spherical bessel functions are related to the
-modified bessel functions of fractional order,
+The regular modified spherical Bessel functions @math{i_l(x)} 
+are related to the modified Bessel functions of fractional order,
 @c{$i_l(x) = \sqrt{\pi/(2x)} I_{l+1/2}(x)$}
 @math{i_l(x) = \sqrt@{\pi/(2x)@} I_@{l+1/2@}(x)}
 
@@ -415,8 +415,8 @@ efficiency, and therefore may differ slightly from the exact values.
 @subsection Irregular Modified Spherical Bessel Functions
 @cindex Irregular Modified Spherical Bessel Functions
 
-The irregular modified spherical bessel functions are related to the
-irregular modified bessel functions of fractional order,
+The irregular modified spherical Bessel functions @math{k_l(x)}
+are related to the irregular modified Bessel functions of fractional order,
 @c{$k_l(x) = \sqrt{\pi/(2x)} K_{l+1/2}(x)$}
 @math{k_l(x) = \sqrt@{\pi/(2x)@} K_@{l+1/2@}(x)}.
 
@@ -479,7 +479,7 @@ fractional order @math{nu}, @math{J_\nu(x)}.
 @comment Exceptional Return Values: GSL_EDOM, GSL_EUNDRFLW
 @end deftypefun
 
-@deftypefun int gsl_sf_bessel_sequence_Jnu_e (double @var{nu}, gsl_mode_t @var{mode}, size_t @var{size}, double * @var{v})
+@deftypefun int gsl_sf_bessel_sequence_Jnu_e (double @var{nu}, gsl_mode_t @var{mode}, size_t @var{size}, double @var{v}[])
 This function computes the regular cylindrical Bessel function of
 fractional order @math{\nu}, @math{J_\nu(x)}, evaluated at a series of
 @math{x} values.  The array @var{v} of length @var{size} contains the

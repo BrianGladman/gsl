@@ -1,10 +1,10 @@
 @cindex polynomials, roots of 
 
-This chapter describes functions for evaluation and solving polynomials.
+This chapter describes functions for evaluating and solving polynomials.
 There are routines for finding real and complex roots of quadratic and
 cubic equations using analytic methods.  An iterative polynomial solver
 is also available for finding the roots of general polynomials with real
-coefficients (of any order).  The functions are defined in the header
+coefficients (of any order).  The functions are declared in the header
 file @code{gsl_poly.h}.
 
 @menu
@@ -167,8 +167,8 @@ struct and a workspace suitable for solving a polynomial with @var{n}
 coefficients using the routine @code{gsl_poly_complex_solve}.
 
 The function returns a pointer to the newly allocated
-@code{gsl_poly_complex_workspace} if no errors were detected, and 0 in
-the case of error.
+@code{gsl_poly_complex_workspace} if no errors were detected, and a null
+pointer in the case of error.
 @end deftypefun
 
 @deftypefun void gsl_poly_complex_workspace_free (gsl_poly_complex_workspace * @var{w})
@@ -187,7 +187,7 @@ highest order term must be non-zero.  The function requires a workspace
 the packed complex array @var{z} of length @math{2(n-1)}, alternating
 real and imaginary parts.
 
-The functions returns @code{GSL_SUCCESS} if all the roots are found and
+The function returns @code{GSL_SUCCESS} if all the roots are found and
 @code{GSL_EFAILED} if the QR reduction does not converge.
 @end deftypefun
 
@@ -241,7 +241,7 @@ main ()
 @end example
 
 @noindent
-The results of running the program are,
+The output of the program is,
 
 @example
 bash$ ./a.out 
@@ -251,9 +251,8 @@ z2 = +0.309016994374947451 +0.951056516295153642
 z3 = +0.309016994374947451 -0.951056516295153642
 z4 = +1.000000000000000000 +0.000000000000000000
 @end example
-
 @noindent
-
+which agrees with the analytic result, @math{z_n = \exp(2 \pi n i/5)}.
 
 @node Roots of Polynomials References and Further Reading
 @section References and Further Reading

@@ -2,8 +2,9 @@
 @cindex erf(x)
 @cindex erfc(x)
 
-The error function is described in Abramowitz & Stegun, Chapter 7.
-These functions are declared in the header file @file{gsl_sf_erf.h}.
+The error function is described in Abramowitz & Stegun, Chapter 7.  The
+functions in this section are declared in the header file
+@file{gsl_sf_erf.h}.
 
 @menu
 * Error Function::              
@@ -18,8 +19,8 @@ These functions are declared in the header file @file{gsl_sf_erf.h}.
 @deftypefun double gsl_sf_erf (double @var{x})
 @deftypefunx int gsl_sf_erf_e (double @var{x}, gsl_sf_result * @var{result})
 These routines compute the error function
-@c{$\erf(x) = 2/\sqrt{\pi} \int_0^x dt \exp(-t^2)$}
-@math{erf(x) = 2/\sqrt(\pi) \int_0^x dt \exp(-t^2)}.
+@c{$\erf(x) = (2/\sqrt{\pi}) \int_0^x dt \exp(-t^2)$}
+@math{erf(x) = (2/\sqrt(\pi)) \int_0^x dt \exp(-t^2)}.
 
 @comment Exceptional Return Values: none
 @end deftypefun
@@ -30,8 +31,8 @@ These routines compute the error function
 @deftypefun double gsl_sf_erfc (double @var{x})
 @deftypefunx int gsl_sf_erfc_e (double @var{x}, gsl_sf_result * @var{result})
 These routines compute the complementary error function
-@c{$\erfc(x) = 1 - \erf(x) = 2/\sqrt{\pi}) \int_x^\infty \exp(-t^2)$}
-@math{erfc(x) = 1 - erf(x) = 2/\sqrt(\pi) \int_x^\infty \exp(-t^2)}.
+@c{$\erfc(x) = 1 - \erf(x) = (2/\sqrt{\pi}) \int_x^\infty \exp(-t^2)$}
+@math{erfc(x) = 1 - erf(x) = (2/\sqrt(\pi)) \int_x^\infty \exp(-t^2)}.
 
 @comment Exceptional Return Values: none
 @end deftypefun

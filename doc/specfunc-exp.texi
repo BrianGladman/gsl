@@ -67,7 +67,7 @@ x^2/(2*3) + x^3/(2*3*4) + \dots}.
 @deftypefunx int gsl_sf_exprel_2_e (double @var{x}, gsl_sf_result * @var{result})
 These routines compute the quantity @math{2(\exp(x)-1-x)/x^2} using an
 algorithm that is accurate for small @math{x}.  For small @math{x} the
-algorithm is based on the expansion @math{2(\exp(x)-1)/x^2 = 
+algorithm is based on the expansion @math{2(\exp(x)-1-x)/x^2 = 
 1 + x/3 + x^2/(3*4) + x^3/(3*4*5) + \dots}.
 @comment Exceptional Return Values:  GSL_EOVRFLW
 @end deftypefun
@@ -83,7 +83,7 @@ These routines compute the @math{N}-relative exponential, which is the
 $$
 \eqalign{
 \hbox{exprel}_N(x)
-            &= N!/x^N (\exp(x) - \sum_{k=0}^{N-1} x^k/k!)\cr
+            &= N!/x^N \left(\exp(x) - \sum_{k=0}^{N-1} x^k/k!\right)\cr
             &= 1 + x/(N+1) + x^2/((N+1)(N+2)) + \dots\cr
             &= {}_1F_1(1,1+N,x)\cr
 }
@@ -113,22 +113,22 @@ This function exponentiates @var{x} with an associated absolute error
 @end deftypefun
 
 @deftypefun int gsl_sf_exp_err_e10_e (double @var{x}, double @var{dx}, gsl_sf_result_e10 * @var{result})
-This functions exponentiate a quantity @var{x} with an associated error
-@var{dx} using the @code{gsl_sf_result_e10} type to return a result with
+This functions exponentiate a quantity @var{x} with an associated absolute 
+error @var{dx} using the @code{gsl_sf_result_e10} type to return a result with
 extended range.
 @comment Exceptional Return Values: 
 @end deftypefun
 
 @deftypefun int gsl_sf_exp_mult_err_e (double @var{x}, double @var{dx}, double @var{y}, double @var{dy}, gsl_sf_result * @var{result})
 This routine computes the product @math{y \exp(x)} for the quantities
-@var{x}, @var{y} with associated errors @var{dx}, @var{dy}.
+@var{x}, @var{y} with associated absolute errors @var{dx}, @var{dy}.
 @comment Exceptional Return Values: GSL_EOVRFLW, GSL_EUNDRFLW
 @end deftypefun
 
 
 @deftypefun int gsl_sf_exp_mult_err_e10_e (double @var{x}, double @var{dx}, double @var{y}, double @var{dy}, gsl_sf_result_e10 * @var{result})
 This routine computes the product @math{y \exp(x)} for the quantities
-@var{x}, @var{y} with associated errors @var{dx}, @var{dy} using the
+@var{x}, @var{y} with associated absolute errors @var{dx}, @var{dy} using the
 @code{gsl_sf_result_e10} type to return a result with extended range.
 @comment Exceptional Return Values: GSL_EOVRFLW, GSL_EUNDRFLW
 @end deftypefun

@@ -16,14 +16,14 @@ $$
 @end ifinfo
 @noindent
 Further information on the Gamma function can be found in Abramowitz &
-Stegun, Chapter 6.  These functions are declared in the header file 
-@file{gsl_sf_gamma.h}.
+Stegun, Chapter 6.  The  functions described in this section are declared
+in the header file @file{gsl_sf_gamma.h}.
 
 @deftypefun double gsl_sf_gamma (double @var{x})
 @deftypefunx int gsl_sf_gamma_e (double @var{x}, gsl_sf_result * @var{result})
 These routines compute the Gamma function @math{\Gamma(x)}, subject to x
 not being a negative integer.  The function is computed using the real
-Lanczos method. The maximum @math{x} such that @math{\Gamma(x)} is not
+Lanczos method. The maximum value of @math{x} such that @math{\Gamma(x)} is not
 considered an overflow is given by the macro @code{GSL_SF_GAMMA_XMAX}
 and is 171.0.
 @comment exceptions: GSL_EDOM, GSL_EOVRFLW, GSL_EROUND
@@ -93,7 +93,7 @@ method.  The returned parameters are @math{lnr = \log|\Gamma(z)|} and
 @math{arg = \arg(\Gamma(z))} in @math{(-\pi,\pi]}.  Note that the phase
 part (@var{arg}) is not well-determined when @math{|z|} is very large,
 due to inevitable roundoff in restricting to @math{(-\pi,\pi]}.  This
-will raise the @code{GSL_ELOSS} exception when it occurs.  The absolute
+will result in a @code{GSL_ELOSS} error when it occurs.  The absolute
 value part (@var{lnr}), however, never suffers from loss of precision.
 @comment exceptions: GSL_EDOM, GSL_ELOSS
 @end deftypefun
