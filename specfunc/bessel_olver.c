@@ -10,6 +10,57 @@
 #include "bessel_olver.h"
 
 
+/* fit for f(x) = zofmzeta((x+1)/2), 0 <= zofmzeta <= 1 */
+static double zofmzeta_01_data[20] = {
+  2.9332563730829348990,
+  0.4896518224847036624,
+  0.0228637617355380860,
+ -0.0001715731377284693,
+ -0.0000105927538148751,
+  1.0595602530419e-6,
+ -4.68016051691e-8,
+  5.8310020e-12,
+  1.766537581e-10,
+ -1.45034640e-11,
+  4.357772e-13,
+  4.60971e-14,
+ -2.57571e-14,
+  2.26468e-14,
+ -2.22053e-14,
+  2.08593e-14,
+ -1.84454e-14,
+  1.50150e-14,
+ -1.06506e-14,
+  5.5375e-15
+};
+static gsl_sf_cheb_series zofmzeta_01_cs = {
+  zofmzeta_01_data,
+  29,
+  -1,1,
+  (double *)0,
+  (double *)0,
+  8
+};
+
+
+
+/* Invert [Abramowitz+Stegun, 9.3.39].
+ * Assumes minus_zeta >= 0.
+ */
+double
+gsl_sf_bessel_Olver_zofmzeta(double minus_zeta)
+{
+  if(minus_zeta < 1.0) {
+    gsl_sf_result c;
+    gsl_sf_cheb_eval_impl(&zofmzeta_01_cs, minus_zeta, &c);
+    return c.val;
+  }
+  else {
+    /* FIXME */
+  }
+}
+
+
 /* Chebyshev fit for f(x) = z(x)^6 A_3(z(x)),  z(x) = 22/(10(x+1)) */
 static double A3_gt1_data[31] = {
   -0.123783199829515294670493131190,
@@ -400,20 +451,20 @@ static double olver_B0(double z, double abs_zeta)
   }
   else if(z < 1.02) {
     const double a = 1.0-z;
-    const double c0 = 0.0179988721413553309252458658183;
-    const double c1 = 0.0111992982212877614645974276203;
-    const double c2 = 0.0059404069786014304317781160605;
-    const double c3 = 0.0028676724516390040844556450173;
-    const double c4 = 0.0012339189052567271708525111185;
-    const double c5 = 0.0004169250674535178764734660248;
-    const double c6 = 0.00003301733850859498069527773655;
-    const double c7 = -0.00013180762385782030099901064251;
-    const double c8 = -0.00019068703700508472398139456474;
+    const double c0 =  0.0179988721413553309252458658183;
+    const double c1 =  0.0111992982212877614645974276203;
+    const double c2 =  0.0059404069786014304317781160605;
+    const double c3 =  0.0028676724516390040844556450173;
+    const double c4 =  0.0012339189052567271708525111185;
+    const double c5 =  0.0004169250674535178764734660248;
+    const double c6 =  0.0000330173385085949806952777365;
+    const double c7 = -0.0001318076238578203009990106425;
+    const double c8 = -0.0001906870370050847239813945647;
     return c0 + a*(c1 + a*(c2 + a*(c3 + a*(c4 + a*(c5 + a*(c6 + a*(c7 + a*c8)))))));
   }
   else {
     const double t = 1.0/(z*sqrt(1.0 - 1.0/(z*z)));
-    return -5.0/(48.0*abs_zeta*abs_zeta) + t*( 3.0 + 5.0*t*t)/(24.0*sqrt(abs_zeta));
+    return -5.0/(48.0*abs_zeta*abs_zeta) + t*(3.0 + 5.0*t*t)/(24.0*sqrt(abs_zeta));
   }
 }
 
