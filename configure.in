@@ -117,25 +117,25 @@ else
 fi
 
 AC_TRY_COMPILE([#define hypot /* */
-#include <math.h>],[{}],[],AC_CHECK_FUNCS(hypot))
+#include <math.h>],[{}],[],[AC_CHECK_FUNCS(hypot)])
 
 AC_TRY_COMPILE([#define expm1 /* */
-#include <math.h>],[{}],[],AC_CHECK_FUNCS(expm1))
+#include <math.h>],[{}],[],[AC_CHECK_FUNCS(expm1)])
 
 AC_TRY_COMPILE([#define acosh /* */
-#include <math.h>],[{}],[],AC_CHECK_FUNCS(acosh))
+#include <math.h>],[{}],[],[AC_CHECK_FUNCS(acosh)])
 
 AC_TRY_COMPILE([#define asinh /* */
-#include <math.h>],[{}],[],AC_CHECK_FUNCS(asinh))
+#include <math.h>],[{}],[],[AC_CHECK_FUNCS(asinh)])
 
 AC_TRY_COMPILE([#define atanh /* */
-#include <math.h>],[{}],[],AC_CHECK_FUNCS(atanh))
+#include <math.h>],[{}],[],[AC_CHECK_FUNCS(atanh)])
 
 AC_TRY_COMPILE([#define ldexp /* */
-#include <math.h>],[{}],[],AC_CHECK_FUNCS(ldexp))
+#include <math.h>],[{}],[],[AC_CHECK_FUNCS(ldexp)])
 
 AC_TRY_COMPILE([#define frexp /* */
-#include <math.h>],[{}],[],AC_CHECK_FUNCS(frexp))
+#include <math.h>],[{}],[],[AC_CHECK_FUNCS(frexp)])
 
 AC_TRY_COMPILE([#define isinf /* */
 #include <math.h>],[{}],[],[ 
@@ -183,8 +183,7 @@ case "$host" in
        ;;
     *)
         AC_TRY_COMPILE([#define log1p /* */
-#include <math.h>],[{}],[],[ 
-               AC_CHECK_FUNCS(log1p)])
+#include <math.h>],[{}],[],[AC_CHECK_FUNCS(log1p)])
        ;;
 esac
 
