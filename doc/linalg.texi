@@ -87,14 +87,14 @@ Algorithm 3.4.1).
 @cindex linear systems, solution of
 @deftypefun int gsl_linalg_LU_solve (const gsl_matrix * @var{LU}, const gsl_permutation * @var{p}, const gsl_vector * @var{b}, gsl_vector * @var{x})
 @deftypefunx int gsl_linalg_complex_LU_solve (const gsl_matrix_complex * @var{LU}, const gsl_permutation * @var{p}, const gsl_vector_complex * @var{b}, gsl_vector_complex * @var{x})
-These functions solve the system @math{A x = b} using the @math{LU}
+These functions solve the square system @math{A x = b} using the @math{LU}
 decomposition of @math{A} into (@var{LU}, @var{p}) given by
 @code{gsl_linalg_LU_decomp} or @code{gsl_linalg_complex_LU_decomp}.
 @end deftypefun
 
 @deftypefun int gsl_linalg_LU_svx (const gsl_matrix * @var{LU}, const gsl_permutation * @var{p}, gsl_vector * @var{x})
 @deftypefunx int gsl_linalg_complex_LU_svx (const gsl_matrix_complex * @var{LU}, const gsl_permutation * @var{p}, gsl_vector_complex * @var{x})
-These functions solve the system @math{A x = b} in-place using the
+These functions solve the square system @math{A x = b} in-place using the
 @math{LU} decomposition of @math{A} into (@var{LU},@var{p}). On input
 @var{x} should contain the right-hand side @math{b}, which is replaced
 by the solution on output.
@@ -197,13 +197,13 @@ The algorithm used to perform the decomposition is Householder QR (Golub
 @end deftypefun
 
 @deftypefun int gsl_linalg_QR_solve (const gsl_matrix * @var{QR}, const gsl_vector * @var{tau}, const gsl_vector * @var{b}, gsl_vector * @var{x})
-This function solves the system @math{A x = b} using the @math{QR}
+This function solves the square system @math{A x = b} using the @math{QR}
 decomposition of @math{A} into (@var{QR}, @var{tau}) given by
-@code{gsl_linalg_QR_decomp}.
+@code{gsl_linalg_QR_decomp}. 
 @end deftypefun
 
 @deftypefun int gsl_linalg_QR_svx (const gsl_matrix * @var{QR}, const gsl_vector * @var{tau}, gsl_vector * @var{x})
-This function solves the system @math{A x = b} in-place using the
+This function solves the square system @math{A x = b} in-place using the
 @math{QR} decomposition of @math{A} into (@var{QR},@var{tau}) given by
 @code{gsl_linalg_QR_decomp}. On input @var{x} should contain the
 right-hand side @math{b}, which is replaced by the solution on output.
@@ -338,22 +338,22 @@ output in the separate matrices @var{q} and @var{r}.
 @end deftypefun
 
 @deftypefun int gsl_linalg_QRPT_solve (const gsl_matrix * @var{QR}, const gsl_vector * @var{tau}, const gsl_permutation * @var{p}, const gsl_vector * @var{b}, gsl_vector * @var{x})
-This function solves the system @math{A x = b} using the @math{QRP^T}
+This function solves the square system @math{A x = b} using the @math{QRP^T}
 decomposition of @math{A} into (@var{QR}, @var{tau}, @var{p}) given by
 @code{gsl_linalg_QRPT_decomp}.
 @end deftypefun
 
 @deftypefun int gsl_linalg_QRPT_svx (const gsl_matrix * @var{QR}, const gsl_vector * @var{tau}, const gsl_permutation * @var{p}, gsl_vector * @var{x})
-This function solves the system @math{A x = b} in-place using the
+This function solves the square system @math{A x = b} in-place using the
 @math{QRP^T} decomposition of @math{A} into
 (@var{QR},@var{tau},@var{p}). On input @var{x} should contain the
 right-hand side @math{b}, which is replaced by the solution on output.
 @end deftypefun
 
 @deftypefun int gsl_linalg_QRPT_QRsolve (const gsl_matrix * @var{Q}, const gsl_matrix * @var{R}, const gsl_permutation * @var{p}, const gsl_vector * @var{b}, gsl_vector * @var{x})
-This function solves the system @math{R P^T x = Q^T b} for @var{x}. It can
-be used when the @math{QR} decomposition of a matrix is available in
-unpacked form as (@var{Q}, @var{R}).
+This function solves the square system @math{R P^T x = Q^T b} for
+@var{x}. It can be used when the @math{QR} decomposition of a matrix is
+available in unpacked form as (@var{Q}, @var{R}).
 @end deftypefun
 
 @deftypefun int gsl_linalg_QRPT_update (gsl_matrix * @var{Q}, gsl_matrix * @var{R}, const gsl_permutation * @var{p}, gsl_vector * @var{u}, const gsl_vector * @var{v})
