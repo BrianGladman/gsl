@@ -1,6 +1,8 @@
 #include <gsl_errno.h>
 #include <gsl_fft_complex.h>
 
+#include "factorize.h"
+
 int
 gsl_fft_complex_factorize (const unsigned int n,
 			   unsigned int *nf,

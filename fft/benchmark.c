@@ -13,6 +13,8 @@
 
 #include <gsl_errno.h>
 
+#include "bitreverse.h"
+
 void my_error_handler (const char *reason, const char *file, int line);
 
 int

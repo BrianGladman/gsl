@@ -6,6 +6,8 @@
 #include <gsl_complex.h>
 #include <gsl_fft_real.h>
 
+#include "factorize.h"
+
 int
 gsl_fft_real_init (unsigned int n,
 		   gsl_fft_real_wavetable * wavetable)

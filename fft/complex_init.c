@@ -5,6 +5,8 @@
 #include <gsl_complex.h>
 #include <gsl_fft_complex.h>
 
+#include "factorize.h"
+
 int
 gsl_fft_complex_init (unsigned int n,
 		      gsl_fft_complex_wavetable * wavetable)

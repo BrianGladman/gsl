@@ -1,5 +1,7 @@
 #include <gsl_fft.h>
 
+#include "bitreverse.h"
+
 int gsl_fft_complex_bitreverse_order (complex data[], 
 				      const unsigned int n,
 				      const unsigned int logn)

@@ -2,6 +2,9 @@
 #include <gsl_errno.h>
 #include <gsl_fft_real.h>
 
+#include "factorize.h"
+#include "bitreverse.h"
+
 int
 gsl_fft_real_radix2 (double data[],
 		     const unsigned int n)
