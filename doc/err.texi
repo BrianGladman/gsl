@@ -278,7 +278,7 @@ can set up an error stream handler, which is a function that accepts
 error message strings. By using an error stream handler function you
 have complete control over where the messages are stored.
 
-@deftypefun FILE * gsl_set_stream (FILE * @var{new_stream})
+@deftypefun {FILE *} gsl_set_stream (FILE * @var{new_stream})
 This function selects the stream used for GSL error messages. After
 calling @code{gsl_set_stream} any further messages sent to the default
 stream handler will be printed on @var{new_stream}. The previous stream
