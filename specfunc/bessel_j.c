@@ -62,9 +62,18 @@ int gsl_sf_bessel_j2_impl(const double x, double * result)
     *result = 0.0;
     return GSL_EUNDRFLW;
   }
-  else if(ax < 0.05) {
-    double x2 = x*x;
-    *result = x2/15.0 * (1.0 - x2/14.0 * (1.0 - x2/36.0 * (1.0 - x2/66.0)));
+  else if(ax < 1.3) {
+    const double y  = x*x;
+    const double c1 = -1.0/14.0;
+    const double c2 =  1.0/504.0;
+    const double c3 = -1.0/33264.0;
+    const double c4 =  1.0/3459456.0;
+    const double c5 = -1.0/518918400;
+    const double c6 =  1.0/105859353600.0;
+    const double c7 = -1.0/28158588057600.0;
+    const double c8 =  1.0/9461285587353600.0;
+    const double c9 = -1.0/3916972233164390400.0;
+    *result = y/15.0*(1.0+y*(c1+y*(c2+y*(c3+y*(c4+y*(c5+y*(c6+y*(c7+y*(c8+y*c9)))))))));
     return GSL_SUCCESS;
   }
   else {

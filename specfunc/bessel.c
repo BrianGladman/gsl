@@ -495,11 +495,11 @@ int gsl_sf_bessel_Inu_scaled_asymp_unif_impl(const double nu, const double x, do
   double root_term = sqrt(1.0 + z*z);
   double pre = 1.0/sqrt(2.0*M_PI*nu * root_term);
   double eta = root_term + log(z/(1.0+root_term));
-  double ex  = ( z < 1.0/GSL_ROOT3_MACH_EPS ? exp(nu*(-z + eta)) : exp(-0.5*nu/z*(1.0 + 1.0/(12.0*z*z))) );
+  double ex  = ( z < 1.0/GSL_ROOT3_MACH_EPS ? exp(nu*(-z + eta)) : exp(-0.5*nu/z*(1.0 - 1.0/(12.0*z*z))) );
   double t = 1.0/root_term;
   double sum;
   double tpow[16];
-  tpow[0] = 1.;
+  tpow[0] = 1.0;
   for(i=1; i<16; i++) tpow[i] = t * tpow[i-1];
   sum = 1.0 + debye_u1(tpow)/nu + debye_u2(tpow)/(nu*nu) + debye_u3(tpow)/(nu*nu*nu)
         + debye_u4(tpow)/(nu*nu*nu*nu) + debye_u5(tpow)/(nu*nu*nu*nu*nu);

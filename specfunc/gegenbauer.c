@@ -46,7 +46,7 @@ gsl_sf_gegenpoly_3(double lambda, double x)
 int
 gsl_sf_gegenpoly_n_impl(int n, double lambda, double x, double * result)
 {
-  if(lambda <= -0.5 || n < 0 || x < -1.0 || x > 1.0) {
+  if(lambda <= -0.5 || n < 0) {
     *result = 0.0;
     return GSL_EDOM;
   }
@@ -68,7 +68,7 @@ gsl_sf_gegenpoly_n_impl(int n, double lambda, double x, double * result)
     return GSL_SUCCESS;
   }
   else {
-    if(lambda == 0.0) {
+    if(lambda == 0.0 && (x >= -1.0 || x <= 1.0)) {
       /* 2 T_n(x)/n */
       *result = 2.0 * cos(n * acos(x)) / n;
       return GSL_SUCCESS;
@@ -95,7 +95,7 @@ gsl_sf_gegenpoly_array_impl(int nmax, double lambda, double x, double * result_a
 {
   int k;
 
-  if(lambda <= -0.5 || nmax < 0 || x < -1.0 || x > 1.0) {
+  if(lambda <= -0.5 || nmax < 0) {
     return GSL_EDOM;
   }
 

@@ -70,8 +70,8 @@ int gsl_sf_bessel_J0_impl(const double x, double * result)
     *result = ampl * cos(theta);
   }
   else {
-    double M     = gsl_sf_bessel_asymp_Mnu(0., y);
-    double theta = gsl_sf_bessel_asymp_thetanu(0., y);
+    double M     = gsl_sf_bessel_asymp_Mnu(0.0, y);
+    double theta = gsl_sf_bessel_asymp_thetanu(0.0, y);
     *result = M * cos(theta);
   }
   return GSL_SUCCESS;
