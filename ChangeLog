@@ -1,3 +1,8 @@
+2005-01-13  Brian Gough  <bjg@network-theory.co.uk>
+
+	* configure.ac: added case for 86_64 in IEEE arithmetic interface
+	detection
+
 2004-10-26  Brian Gough  <bjg@network-theory.co.uk>
 
 	* test_gsl_histogram.sh: trim \r from test output for

@@ -557,10 +557,15 @@ Here is the output from the program,
 @node Physical Constant References and Further Reading
 @section References and Further Reading
 
-Further information on the values of physical constants is available
-from the NIST website,
+The authoritative sources for physical constanst are the 2002 CODATA
+recommended values, published in the articles below. Further information
+on the values of physical constants is also available from the cited
+articles and the NIST website. 
 
 @itemize @asis
-@item
-@uref{http://www.physics.nist.gov/cuu/Constants/index.html}
+@item Journal of Physical and Chemical Reference Data, 28(6), 1713-1852, 1999
+@item Reviews of Modern Physics, 72(2), 351-495, 2000
+@item @uref{http://www.physics.nist.gov/cuu/Constants/index.html}
+@item @uref{http://physics.nist.gov/Pubs/SP811/appenB9.html}
 @end itemize
+
