@@ -201,6 +201,7 @@ gsl_fit_linear_est (double x,
 {
   *y = c0 + c1 * x;
   *y_err = sqrt (c00 + x * (2 * c01 + c11 * x));
+  return GSL_SUCCESS;
 }
 
 
@@ -337,4 +338,5 @@ gsl_fit_mul_est (double x, double c1, double c11, double *y, double *y_err)
 {
   *y = c1 * x;
   *y_err = sqrt (c11) * fabs (x);
+  return GSL_SUCCESS;
 }
