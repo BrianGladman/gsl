@@ -10,11 +10,15 @@ struct gsl_vector_char_struct
   size_t size;
   size_t stride;
   char *data;
+  gsl_block_char *block;
 };
 
 typedef struct gsl_vector_char_struct gsl_vector_char;
 
-gsl_vector_char *gsl_vector_char_alloc (gsl_block_char * b,
+gsl_vector_char *gsl_vector_char_alloc (size_t n);
+
+
+gsl_vector_char *gsl_vector_char_alloc_from_block (gsl_block_char * b,
                                                      size_t offset, 
                                                      size_t n, 
                                                      size_t stride);

@@ -10,11 +10,15 @@ struct gsl_vector_uchar_struct
   size_t size;
   size_t stride;
   unsigned char *data;
+  gsl_block_uchar *block;
 };
 
 typedef struct gsl_vector_uchar_struct gsl_vector_uchar;
 
-gsl_vector_uchar *gsl_vector_uchar_alloc (gsl_block_uchar * b,
+gsl_vector_uchar *gsl_vector_uchar_alloc (size_t n);
+
+
+gsl_vector_uchar *gsl_vector_uchar_alloc_from_block (gsl_block_uchar * b,
                                                      size_t offset, 
                                                      size_t n, 
                                                      size_t stride);

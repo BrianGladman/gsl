@@ -7,15 +7,13 @@ void FUNCTION (test, binary) (void);
 void
 FUNCTION (test, func) (void)
 {
-  TYPE (gsl_block) * bv;
   TYPE (gsl_vector) * v;
   size_t i, j;
   int k = 0;
 
-  TYPE (gsl_block) * b = FUNCTION (gsl_block, alloc) (N * M);
-  TYPE (gsl_matrix) * m = FUNCTION (gsl_matrix, alloc) (b, 0, N, M, M);
+  TYPE (gsl_matrix) * m = FUNCTION (gsl_matrix, alloc) (N, M);
 
-  gsl_test (m->data != b->data, NAME (gsl_matrix) "_alloc returns valid pointer");
+  gsl_test (m->data == 0, NAME (gsl_matrix) "_alloc returns valid pointer");
   gsl_test (m->size1 != N, NAME (gsl_matrix) "_alloc returns valid size1");
   gsl_test (m->size2 != M, NAME (gsl_matrix) "_alloc returns valid size2");
   gsl_test (m->dim2 != M, NAME (gsl_matrix) "_alloc returns valid dim2");
@@ -61,12 +59,9 @@ FUNCTION (test, func) (void)
   }
 
   FUNCTION (gsl_matrix, free) (m);	/* free whatever is in m */
-  FUNCTION (gsl_block, free) (b);
 
-  b = FUNCTION (gsl_block, alloc) (N * M);
-  bv = FUNCTION (gsl_block, alloc) (M);
-  m = FUNCTION (gsl_matrix, alloc) (b, 0, N, M, M);
-  v = FUNCTION (gsl_vector, alloc) (bv, 0, M, 1);
+  m = FUNCTION (gsl_matrix, alloc) (N, M);
+  v = FUNCTION (gsl_vector, alloc) (M);
 
   k = 0;
   for (i = 0; i < N; i++)
@@ -98,16 +93,13 @@ FUNCTION (test, func) (void)
 
  FUNCTION (gsl_matrix, free) (m);
  FUNCTION (gsl_vector, free) (v);
- FUNCTION (gsl_block, free) (b);
- FUNCTION (gsl_block, free) (bv);
 }
 
 #if !(defined(USES_LONGDOUBLE) && !defined(HAVE_PRINTF_LONGDOUBLE))
 void
 FUNCTION (test, text) (void)
 {
-  TYPE (gsl_block) * b = FUNCTION (gsl_block, alloc) (N * M);
-  TYPE (gsl_matrix) * m = FUNCTION (gsl_matrix, alloc) (b, 0, N, M, M);
+  TYPE (gsl_matrix) * m = FUNCTION (gsl_matrix, alloc) (N, M);
 
   size_t i, j;
   int k = 0;
@@ -130,8 +122,7 @@ FUNCTION (test, text) (void)
 
   {
     FILE *f = fopen ("test.txt", "r");
-    TYPE (gsl_block) * bb = FUNCTION (gsl_block, alloc) (N * M);
-    TYPE (gsl_matrix) * mm = FUNCTION (gsl_matrix, alloc) (b, 0, N, M, M);
+    TYPE (gsl_matrix) * mm = FUNCTION (gsl_matrix, alloc) (N, M);
     status = 0;
 
     FUNCTION (gsl_matrix, fscanf) (f, mm);
@@ -150,19 +141,16 @@ FUNCTION (test, text) (void)
 
     fclose (f);
     FUNCTION (gsl_matrix, free) (mm);
-    FUNCTION (gsl_block, free) (bb);
   }
 
   FUNCTION (gsl_matrix, free) (m);
-  FUNCTION (gsl_block, free) (b);
 }
 #endif
 
 void
 FUNCTION (test, binary) (void)
 {
-  TYPE (gsl_block) * b = FUNCTION (gsl_block, alloc) (N * M);
-  TYPE (gsl_matrix) * m = FUNCTION (gsl_matrix, alloc) (b, 0, N, M, M);
+  TYPE (gsl_matrix) * m = FUNCTION (gsl_matrix, alloc) (N, M);
 
   size_t i, j;
   int k = 0;
@@ -185,8 +173,7 @@ FUNCTION (test, binary) (void)
 
   {
     FILE *f = fopen ("test.dat", "r");
-    TYPE (gsl_block) * bb = FUNCTION (gsl_block, alloc) (N * M);
-    TYPE (gsl_matrix) * mm = FUNCTION (gsl_matrix, alloc) (b, 0, N, M, M);
+    TYPE (gsl_matrix) * mm = FUNCTION (gsl_matrix, alloc) (N, M);
     status = 0;
 
     FUNCTION (gsl_matrix, fread) (f, mm);
@@ -205,18 +192,15 @@ FUNCTION (test, binary) (void)
 
     fclose (f);
     FUNCTION (gsl_matrix, free) (mm);
-    FUNCTION (gsl_block, free) (bb);
   }
 
   FUNCTION (gsl_matrix, free) (m);
-  FUNCTION (gsl_block, free) (b);
 }
 
 void
 FUNCTION (test, trap) (void)
 {
-  TYPE (gsl_block) * b = FUNCTION (gsl_block, alloc) (N * M);
-  TYPE (gsl_matrix) * m = FUNCTION (gsl_matrix, alloc) (b, 0, N, M, M);
+  TYPE (gsl_matrix) * m = FUNCTION (gsl_matrix, alloc) (N, M);
 
   size_t i = 0, j = 0;
   double x;
@@ -284,5 +268,4 @@ FUNCTION (test, trap) (void)
 	NAME (gsl_matrix) "_get returns zero for 2nd index at upper bound");
 
   FUNCTION (gsl_matrix, free) (m);
-  FUNCTION (gsl_block, free) (b);
 }

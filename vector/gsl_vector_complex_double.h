@@ -12,12 +12,15 @@ struct gsl_vector_complex_struct
   size_t size;
   size_t stride;
   double *data;
+  gsl_block_complex *block;
 };
 
 typedef struct gsl_vector_complex_struct gsl_vector_complex;
 
+gsl_vector_complex *gsl_vector_complex_alloc (size_t n);
+
 gsl_vector_complex 
-*gsl_vector_complex_alloc (gsl_block_complex * b, 
+*gsl_vector_complex_alloc_from_block (gsl_block_complex * b, 
                                             size_t offset, 
                                             size_t n, 
                                             size_t stride);

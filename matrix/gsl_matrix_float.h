@@ -13,10 +13,14 @@ struct gsl_matrix_float_struct
   size_t size2;
   size_t dim2;
   float * data;
+  gsl_block_float * block;
 } ;
 
 gsl_matrix_float * 
-gsl_matrix_float_alloc (gsl_block_float * b, size_t offset, 
+gsl_matrix_float_alloc (size_t n1, size_t n2);
+
+gsl_matrix_float * 
+gsl_matrix_float_alloc_from_block (gsl_block_float * b, size_t offset, 
                                    size_t n1, size_t n2, size_t d2);
 
 gsl_matrix_float * 

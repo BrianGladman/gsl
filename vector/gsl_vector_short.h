@@ -10,11 +10,15 @@ struct gsl_vector_short_struct
   size_t size;
   size_t stride;
   short *data;
+  gsl_block_short *block;
 };
 
 typedef struct gsl_vector_short_struct gsl_vector_short;
 
-gsl_vector_short *gsl_vector_short_alloc (gsl_block_short * b,
+gsl_vector_short *gsl_vector_short_alloc (size_t n);
+
+
+gsl_vector_short *gsl_vector_short_alloc_from_block (gsl_block_short * b,
                                                      size_t offset, 
                                                      size_t n, 
                                                      size_t stride);

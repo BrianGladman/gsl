@@ -30,11 +30,8 @@ struct gsl_odeiv_step_bsimp_struct
   gsl_odeiv_step parent;  /* inherits from gsl_odeiv_step */
 
   gsl_matrix      *  d;      /* workspace for extrapolation         */
-  gsl_block       *  block_d;
   gsl_matrix      *  a_mat;  /* workspace for linear system matrix  */
-  gsl_block       *  block_a_mat;
   gsl_vector_int  *  p_vec;  /* workspace for LU permutation vector */
-  gsl_block_int   *  block_p_vec;
 
   double x[KMAXX];  /* workspace for extrapolation */
 
@@ -49,17 +46,11 @@ struct gsl_odeiv_step_bsimp_struct
   double * yp;
   double * extr_work;
   double * dfdt;
-
-  gsl_block * block_dfdy;
   gsl_matrix * dfdy;
 
   /* workspace for the basic stepper */
   gsl_vector * rhs_temp_vec;
-  gsl_block * block_rhs_temp_vec;
-
   gsl_vector * delta_temp_vec;
-  gsl_block * block_delta_temp_vec;
-
   double * delta;
 };
 
@@ -114,16 +105,9 @@ static int bsimp_step(void * self, double t, double h, double y[], double yerr[]
 static void
 bsimp_alloc(gsl_odeiv_step_bsimp * self, size_t dim)
 {
-  self->block_d = gsl_block_alloc(KMAXX * dim);
-  self->block_a_mat = gsl_block_alloc(dim * dim);
-  self->block_p_vec = gsl_block_int_alloc(dim);
-
-  self->d     = 
-    gsl_matrix_alloc(self->block_d, 0, KMAXX, dim, dim);
-  self->a_mat = 
-    gsl_matrix_alloc(self->block_a_mat, 0, dim, dim, dim);
-  self->p_vec = 
-    gsl_vector_int_alloc(self->block_p_vec, 0, dim, 1);
+  self->d     = gsl_matrix_alloc(KMAXX, dim);
+  self->a_mat = gsl_matrix_alloc(dim, dim);
+  self->p_vec = gsl_vector_int_alloc(dim);
 
   self->ysav = (double *) malloc(dim * sizeof(double));
   self->yseq = (double *) malloc(dim * sizeof(double));
@@ -131,16 +115,10 @@ bsimp_alloc(gsl_odeiv_step_bsimp * self, size_t dim)
   self->yp   = (double *) malloc(dim * sizeof(double));
   self->extr_work = (double *) malloc(dim * sizeof(double));
 
-  self->block_dfdy = gsl_block_alloc(dim * dim);
-  self->dfdy = gsl_matrix_alloc(self->block_dfdy, 0, dim, dim, dim);
+  self->dfdy = gsl_matrix_alloc(dim, dim);
 
-  self->block_delta_temp_vec = gsl_block_alloc(dim);
-  self->delta_temp_vec = 
-    gsl_vector_alloc(self->block_delta_temp_vec, 0, dim, 1);
-
-  self->block_rhs_temp_vec = gsl_block_alloc(dim);
-  self->rhs_temp_vec = 
-    gsl_vector_alloc(self->block_rhs_temp_vec, 0, dim, 1);
+  self->delta_temp_vec = gsl_vector_alloc(dim);
+  self->rhs_temp_vec = gsl_vector_alloc(dim);
 
   self->delta = (double *) malloc(dim * sizeof(double));
 }
@@ -153,15 +131,9 @@ bsimp_dealloc(gsl_odeiv_step_bsimp * self)
 {
   if(self->delta != 0) free(self->delta);
 
-  if(self->block_rhs_temp_vec != 0) 
-    gsl_block_free(self->block_rhs_temp_vec);
-  if(self->block_delta_temp_vec != 0) 
-    gsl_block_free(self->block_delta_temp_vec);
-  if(self->block_dfdy != 0) 
-    gsl_block_free(self->block_dfdy);
-
   if(self->rhs_temp_vec != 0) gsl_vector_free(self->rhs_temp_vec);
   if(self->delta_temp_vec != 0) gsl_vector_free(self->delta_temp_vec);
+
   if(self->dfdy != 0) gsl_matrix_free(self->dfdy);
 
   if(self->extr_work != 0) free(self->extr_work);
@@ -169,10 +141,6 @@ bsimp_dealloc(gsl_odeiv_step_bsimp * self)
   if(self->dfdt != 0) free(self->dfdt);
   if(self->yseq != 0) free(self->yseq);
   if(self->ysav != 0) free(self->ysav);
-
-  if(self->block_p_vec != 0) gsl_block_int_free(self->block_p_vec);
-  if(self->block_a_mat != 0) gsl_block_free(self->block_a_mat);
-  if(self->block_d != 0) gsl_block_free(self->block_d);
 
   if(self->p_vec != 0) gsl_vector_int_free(self->p_vec);
   if(self->a_mat != 0) gsl_matrix_free(self->a_mat);
@@ -410,6 +378,7 @@ bsimp_step_local(
   gsl_vector ytemp_vec;
   ytemp_vec.data = ytemp;
   ytemp_vec.size = step->parent.dimension;
+  ytemp_vec.block = 0;
   ytemp_vec.stride = 1;
 
   /* Calculate the matrix for the linear system. */

@@ -5,12 +5,10 @@ void FUNCTION (test, trap) (void);
 void
 FUNCTION (test, func) (void)
 {
-  TYPE (gsl_block) * b;
   TYPE (gsl_vector) * v;
   size_t i;
 
-  b = FUNCTION (gsl_block, alloc) (N);
-  v = FUNCTION (gsl_vector, alloc) (b, 0, N, 1);
+  v = FUNCTION (gsl_vector, alloc) (N);
 
   gsl_test (v->data == 0, NAME (gsl_vector) "_alloc returns valid pointer");
   gsl_test (v->size != N, NAME (gsl_vector) "_alloc returns valid size");
@@ -71,7 +69,6 @@ FUNCTION (test, func) (void)
   gsl_test (status, NAME (gsl_vector) "_set" DESC " writes correctly with stride");
 
   FUNCTION (gsl_vector, free) (v);	/* free whatever is in v */
-  FUNCTION (gsl_block, free) (b);
 
 }
 
@@ -79,11 +76,8 @@ FUNCTION (test, func) (void)
 void
 FUNCTION (test, binary) (void)
 {
-  TYPE (gsl_block) * bv = FUNCTION (gsl_block, alloc) (N);
-  TYPE (gsl_block) * bw = FUNCTION (gsl_block, alloc) (N);
-
-  TYPE (gsl_vector) * v = FUNCTION (gsl_vector, alloc) (bv,0,N,1);
-  TYPE (gsl_vector) * w = FUNCTION (gsl_vector, alloc) (bw,0,N,1);
+  TYPE (gsl_vector) * v = FUNCTION (gsl_vector, alloc) (N);
+  TYPE (gsl_vector) * w = FUNCTION (gsl_vector, alloc) (N);
 
   size_t i;
 
@@ -119,15 +113,12 @@ FUNCTION (test, binary) (void)
 
   FUNCTION (gsl_vector, free) (v);	/* free whatever is in v */
   FUNCTION (gsl_vector, free) (w);	/* free whatever is in w */
-  FUNCTION (gsl_block, free) (bv);
-  FUNCTION (gsl_block, free) (bw);
 }
 
 void
 FUNCTION (test, trap) (void)
 {
-  TYPE (gsl_block) * b = FUNCTION (gsl_block, alloc) (N);
-  TYPE (gsl_vector) * v = FUNCTION (gsl_vector, alloc) (b,0,N,1);
+  TYPE (gsl_vector) * v = FUNCTION (gsl_vector, alloc) (N);
 
   size_t j = 0;
   double x;
@@ -163,7 +154,6 @@ FUNCTION (test, trap) (void)
 	    NAME (gsl_vector) "_get returns zero for index at upper bound");
 
   FUNCTION (gsl_vector, free) (v);	/* free whatever is in v */
-  FUNCTION (gsl_block, free) (b);
 }
 
 

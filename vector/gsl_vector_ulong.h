@@ -10,11 +10,15 @@ struct gsl_vector_ulong_struct
   size_t size;
   size_t stride;
   unsigned long *data;
+  gsl_block_ulong *block;
 };
 
 typedef struct gsl_vector_ulong_struct gsl_vector_ulong;
 
-gsl_vector_ulong *gsl_vector_ulong_alloc (gsl_block_ulong * b,
+gsl_vector_ulong *gsl_vector_ulong_alloc (size_t n);
+
+
+gsl_vector_ulong *gsl_vector_ulong_alloc_from_block (gsl_block_ulong * b,
                                                      size_t offset, 
                                                      size_t n, 
                                                      size_t stride);

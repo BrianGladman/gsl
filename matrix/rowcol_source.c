@@ -163,6 +163,7 @@ FUNCTION (gsl_vector, alloc_row_from_matrix) (TYPE(gsl_matrix) * m,
   v->data = m->data + i * m-> dim2 ;
   v->size = m->size2;
   v->stride = 1;
+  v->block = 0;
 
   return v;
 }
@@ -191,6 +192,7 @@ FUNCTION (gsl_vector, alloc_col_from_matrix) (TYPE(gsl_matrix) * m,
   v->data = m->data + j ;
   v->size = m->size1;
   v->stride = m->dim2;
+  v->block = 0;
 
   return v;
 }

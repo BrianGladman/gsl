@@ -10,11 +10,15 @@ struct gsl_vector_uint_struct
   size_t size;
   size_t stride;
   unsigned int *data;
+  gsl_block_uint *block;
 };
 
 typedef struct gsl_vector_uint_struct gsl_vector_uint;
 
-gsl_vector_uint *gsl_vector_uint_alloc (gsl_block_uint * b,
+gsl_vector_uint *gsl_vector_uint_alloc (size_t n);
+
+
+gsl_vector_uint *gsl_vector_uint_alloc_from_block (gsl_block_uint * b,
                                                      size_t offset, 
                                                      size_t n, 
                                                      size_t stride);

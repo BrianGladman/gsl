@@ -10,11 +10,15 @@ struct gsl_vector_long_double_struct
   size_t size;
   size_t stride;
   long double *data;
+  gsl_block_long_double *block;
 };
 
 typedef struct gsl_vector_long_double_struct gsl_vector_long_double;
 
-gsl_vector_long_double *gsl_vector_long_double_alloc (gsl_block_long_double * b,
+gsl_vector_long_double *gsl_vector_long_double_alloc (size_t n);
+
+
+gsl_vector_long_double *gsl_vector_long_double_alloc_from_block (gsl_block_long_double * b,
                                                      size_t offset, 
                                                      size_t n, 
                                                      size_t stride);

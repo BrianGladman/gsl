@@ -14,10 +14,15 @@ struct gsl_matrix_complex_struct
   size_t size2;
   size_t dim2;
   double * data;
+  gsl_block_complex * block;
 } ;
 
+
 gsl_matrix_complex * 
-gsl_matrix_complex_alloc (gsl_block_complex * b, 
+gsl_matrix_complex_alloc (size_t n1, size_t n2);
+
+gsl_matrix_complex * 
+gsl_matrix_complex_alloc_from_block (gsl_block_complex * b, 
                                            size_t offset, 
                                            size_t n1, size_t n2, size_t d2);
 

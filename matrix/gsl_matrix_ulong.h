@@ -13,10 +13,14 @@ struct gsl_matrix_ulong_struct
   size_t size2;
   size_t dim2;
   unsigned long * data;
+  gsl_block_ulong * block;
 } ;
 
 gsl_matrix_ulong * 
-gsl_matrix_ulong_alloc (gsl_block_ulong * b, size_t offset, 
+gsl_matrix_ulong_alloc (size_t n1, size_t n2);
+
+gsl_matrix_ulong * 
+gsl_matrix_ulong_alloc_from_block (gsl_block_ulong * b, size_t offset, 
                                    size_t n1, size_t n2, size_t d2);
 
 gsl_matrix_ulong * 

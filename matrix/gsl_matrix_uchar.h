@@ -13,10 +13,14 @@ struct gsl_matrix_uchar_struct
   size_t size2;
   size_t dim2;
   unsigned char * data;
+  gsl_block_uchar * block;
 } ;
 
 gsl_matrix_uchar * 
-gsl_matrix_uchar_alloc (gsl_block_uchar * b, size_t offset, 
+gsl_matrix_uchar_alloc (size_t n1, size_t n2);
+
+gsl_matrix_uchar * 
+gsl_matrix_uchar_alloc_from_block (gsl_block_uchar * b, size_t offset, 
                                    size_t n1, size_t n2, size_t d2);
 
 gsl_matrix_uchar * 

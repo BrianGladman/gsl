@@ -13,10 +13,14 @@ struct gsl_matrix_long_double_struct
   size_t size2;
   size_t dim2;
   long double * data;
+  gsl_block_long_double * block;
 } ;
 
 gsl_matrix_long_double * 
-gsl_matrix_long_double_alloc (gsl_block_long_double * b, size_t offset, 
+gsl_matrix_long_double_alloc (size_t n1, size_t n2);
+
+gsl_matrix_long_double * 
+gsl_matrix_long_double_alloc_from_block (gsl_block_long_double * b, size_t offset, 
                                    size_t n1, size_t n2, size_t d2);
 
 gsl_matrix_long_double * 

@@ -3,10 +3,8 @@ void FUNCTION (test, text) (void);
 void
 FUNCTION (test, text) (void)
 {
-  TYPE (gsl_block) * bv = FUNCTION (gsl_block, alloc) (N);
-  TYPE (gsl_block) * bw = FUNCTION (gsl_block, alloc) (N);
-  TYPE (gsl_vector) * v = FUNCTION (gsl_vector, alloc) (bv,0,N,1);
-  TYPE (gsl_vector) * w = FUNCTION (gsl_vector, alloc) (bw,0,N,1);
+  TYPE (gsl_vector) * v = FUNCTION (gsl_vector, alloc) (N);
+  TYPE (gsl_vector) * w = FUNCTION (gsl_vector, alloc) (N);
 
   size_t i;
 
@@ -42,8 +40,6 @@ FUNCTION (test, text) (void)
 
   FUNCTION (gsl_vector, free) (v);
   FUNCTION (gsl_vector, free) (w);
-  FUNCTION (gsl_block, free) (bv);
-  FUNCTION (gsl_block, free) (bw);
 }
 
 

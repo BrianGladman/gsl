@@ -8,6 +8,7 @@ The structures are compatible with the vector and matrix formats used by
 BLAS routines.
 
 @menu
+* Data types::                  
 * The block struct::            
 * Block allocation::            
 * Reading and writing blocks::  
@@ -26,6 +27,36 @@ BLAS routines.
 * Copying rows and columns::    
 * Example programs for matrices::  
 @end menu
+
+@node Data types
+@section Data types
+
+All the functions are available in versions for each of the standard
+data-types. The versions for @code{double} have the prefix
+@code{gsl_block}, @code{gsl_vector} and @code{gsl_matrix}. Similarly the
+versions for single-precision have the prefix @code{gsl_block_float},
+@code{gsl_vector_float} and @code{gsl_matrix_float}. The full list of
+available types is given below,
+
+@example
+gsl_block                       double         
+gsl_block_float                 float         
+gsl_block_long_double           long double   
+gsl_block_int                   int           
+gsl_block_uint                  unsigned int  
+gsl_block_long                  long          
+gsl_block_ulong                 unsigned long 
+gsl_block_short                 short         
+gsl_block_ushort                unsigned short
+gsl_block_char                  char          
+gsl_block_uchar                 unsigned char 
+gsl_block_complex               complex double        
+gsl_block_complex_float         complex float         
+gsl_block_complex_long_double   complex long double   
+@end example
+@noindent
+Corresponding types exist for the @code{gsl_vector} and
+@code{gsl_matrix} functions.
 
 @node The block struct
 @section The block struct
@@ -611,8 +642,7 @@ the @var{j}-th column of the matrix @var{m}.
 The functions described in this section copy a row or column of a matrix
 into a vector. This allows the elements of the vector and the matrix to
 be modified independently. Note that if the matrix and the vector point
-to overlapping regions of memory then the results of the copying are
-undefined.
+to overlapping regions of memory then the result will be undefined.
 
 @deftypefun int gsl_matrix_copy_row (gsl_vector * @var{v}, const gsl_matrix * @var{m}, size_t @var{i})
 This function copies the elements of the @var{i}-th row of the matrix
