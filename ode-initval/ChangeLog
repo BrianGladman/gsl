@@ -1,3 +1,8 @@
+2004-11-25  Brian Gough  <bjg@network-theory.co.uk>
+
+	* gear2.c (gear2_alloc): added check for non-allocation of primer,
+	and two-step error estimation
+
 2004-11-23  Brian Gough  <bjg@network-theory.co.uk>
 
 	* gear1.c (gear1_apply): use 90% error bound

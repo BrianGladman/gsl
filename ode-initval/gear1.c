@@ -100,7 +100,7 @@ gear1_alloc (size_t dim)
 int
 gear1_step (double *y, gear1_state_t *state, 
 	    const double h, const double t, 
-	    const size_t dim, int *status, const gsl_odeiv_system *sys)
+	    const size_t dim, const gsl_odeiv_system *sys)
 {
   /* Makes an implicit Euler advance with step size h.
      y0 is the initial values of variables y. 
@@ -127,7 +127,6 @@ gear1_step (double *y, gear1_state_t *state,
   for (nu = 0; nu < iter_steps; nu++) 
     {
       int s = GSL_ODEIV_FN_EVAL(sys, t + h, y, k);
-      GSL_STATUS_UPDATE(status, s);
 
       if (s != GSL_SUCCESS)
 	{
@@ -176,7 +175,7 @@ gear1_apply(void * vstate,
 
   DBL_MEMCPY (y_onestep, y, dim);
 
-  s = gear1_step (y_onestep, state, h, t, dim, &status, sys);
+  s = gear1_step (y_onestep, state, h, t, dim, sys);
 
   if (s != GSL_SUCCESS) 
     {
@@ -185,7 +184,7 @@ gear1_apply(void * vstate,
 
  /* Then with two steps with half step length (save to y) */ 
   
-  s = gear1_step (y, state, h / 2.0, t, dim, &status, sys);
+  s = gear1_step (y, state, h / 2.0, t, dim, sys);
 
   if (s != GSL_SUCCESS) 
     {
@@ -197,7 +196,7 @@ gear1_apply(void * vstate,
 
   DBL_MEMCPY (y0, y, dim);
 
-  s = gear1_step (y, state, h / 2.0, t + h / 2.0, dim, &status, sys);
+  s = gear1_step (y, state, h / 2.0, t + h / 2.0, dim, sys);
 
   if (s != GSL_SUCCESS) 
     {
@@ -212,7 +211,6 @@ gear1_apply(void * vstate,
   if (dydt_out != NULL) {
     
     s = GSL_ODEIV_FN_EVAL (sys, t + h, y, dydt_out);
-    GSL_STATUS_UPDATE (&status, s);
 
     if (s != GSL_SUCCESS)
       {
@@ -230,7 +228,7 @@ gear1_apply(void * vstate,
       yerr[i] = 4.0 * (y[i] - y_onestep[i]);
     }
 
-  return status;
+  return 0;
 }
 
 static int
