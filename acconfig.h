@@ -38,3 +38,10 @@
 #define EXIT_SUCCESS 0
 #define EXIT_FAILURE 1
 #endif
+
+/* Define one of these if you have a known IEEE arithmetic interface */
+#undef HAVE_LINUX_IEEE_INTERFACE
+#undef HAVE_SUNOS_IEEE_INTERFACE
+#undef HAVE_SOLARIS_IEEE_INTERFACE
+#undef HAVE_HPUX_IEEE_INTERFACE
+

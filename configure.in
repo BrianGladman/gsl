@@ -127,6 +127,28 @@ if test "$ac_cv_decl_exit_success_and_failure" = yes ; then
   AC_DEFINE(HAVE_EXIT_SUCCESS_AND_FAILURE)
 fi ;
 
+
+AC_MSG_CHECKING(for IEEE arithmetic interface type)
+case "$host" in
+    *-*-linux*) 
+	AC_DEFINE(HAVE_LINUX_IEEE_INTERFACE)
+	AC_MSG_RESULT([linux]) 
+        ;;
+    *-*-sunos4.*) 
+        AC_DEFINE(HAVE_SUNOS_IEEE_INTERFACE)
+	AC_MSG_RESULT([sunos]) 
+        ;;
+    *-*-sunos5.*) 
+        AC_DEFINE(HAVE_SOLARIS_IEEE_INTERFACE)
+        AC_MSG_RESULT([solaris]) 
+        ;;
+    *-*-hpux*) 
+        AC_DEFINE(HAVE_HPUX_IEEE_INTERFACE)
+        AC_MSG_RESULT([hpux]) 
+        ;;
+esac
+
+
 #
 # FIXME: on Solaris we will need a prototype for hypot, since it is 
 # missing from their math.h according to Jerry.

@@ -44,19 +44,17 @@ enum {
 } ;
 
 enum {
-  GSL_IEEE_MASK_INVALID_OPERAND = 1,
-  GSL_IEEE_MASK_DENORMALIZED_OPERAND = 2,
-  GSL_IEEE_MASK_DIVISION_BY_ZERO = 3,
-  GSL_IEEE_MASK_OVERFLOW = 4,
-  GSL_IEEE_MASK_UNDERFLOW = 5,
-  GSL_IEEE_MASK_INEXACT = 6
+  GSL_IEEE_MASK_INVALID = 1,
+  GSL_IEEE_MASK_DENORMALIZED = 2,
+  GSL_IEEE_MASK_DIVISION_BY_ZERO = 4,
+  GSL_IEEE_MASK_OVERFLOW = 8,
+  GSL_IEEE_MASK_UNDERFLOW = 16,
+  GSL_IEEE_CATCH_INEXACT = 32
 } ;
 
-int gsl_ieee_set_mode (const char * description) ;
-
-void gsl_ieee_set_precision (int precision_mode) ;
-void gsl_ieee_set_rounding_mode (int rounding_mode) ;
-void gsl_ieee_set_exception_mask (int exception_mask) ;
+void gsl_ieee_env_setup (void) ;
+int gsl_ieee_read_mode_string (const char * description) ;
+void gsl_ieee_set_mode (int precision, int rounding, int exception_mask) ;
 
 #endif /* GSL_IEEE_UTILS_H */
 

@@ -2208,6 +2208,41 @@ EOF
 
 fi ;
 
+
+echo $ac_n "checking for IEEE arithmetic interface type""... $ac_c" 1>&6
+echo "configure:2214: checking for IEEE arithmetic interface type" >&5
+case "$host" in
+    *-*-linux*) 
+	cat >> confdefs.h <<\EOF
+#define HAVE_LINUX_IEEE_INTERFACE 1
+EOF
+
+	echo "$ac_t""linux" 1>&6 
+        ;;
+    *-*-sunos4.*) 
+        cat >> confdefs.h <<\EOF
+#define HAVE_SUNOS_IEEE_INTERFACE 1
+EOF
+
+	echo "$ac_t""sunos" 1>&6 
+        ;;
+    *-*-sunos5.*) 
+        cat >> confdefs.h <<\EOF
+#define HAVE_SOLARIS_IEEE_INTERFACE 1
+EOF
+
+        echo "$ac_t""solaris" 1>&6 
+        ;;
+    *-*-hpux*) 
+        cat >> confdefs.h <<\EOF
+#define HAVE_HPUX_IEEE_INTERFACE 1
+EOF
+
+        echo "$ac_t""hpux" 1>&6 
+        ;;
+esac
+
+
 #
 # FIXME: on Solaris we will need a prototype for hypot, since it is 
 # missing from their math.h according to Jerry.

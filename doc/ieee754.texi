@@ -54,8 +54,9 @@ float vs double vs long double (how many digits are available for each)
 
 importance of using 1.234L in long double calculations
 
+@example
 int main (void)
-{
+@{
   long double x = 1.0, y = 1.0 ;
   
   x = x + 0.2 ;
@@ -65,10 +66,11 @@ int main (void)
   printf("ld %.20Lf\n",y) ;
 
   return 1;
-}
+@}
 
  d 1.20000000000000001110
 ld 1.20000000000000000004
+@end example
 
 
 
@@ -78,3 +80,4 @@ control of rounding mode, precision, exception masks.
 long double   1.4142135623730950488
      double   1.414213562373095
       float   1.4142135
+
