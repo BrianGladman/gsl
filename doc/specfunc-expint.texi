@@ -66,13 +66,13 @@ These routines compute the exponential integral @math{E_i(x)},
 @tex
 \beforedisplay
 $$
-Ei(x) := PV(\int_{-x}^\infty dt \exp(-t)/t)
+Ei(x) := - PV(\int_{-x}^\infty dt \exp(-t)/t)
 $$
 \afterdisplay
 @end tex
 @ifinfo
 @example
-Ei(x) := PV(\int_@{-x@}^\infty dt \exp(-t)/t)
+Ei(x) := - PV(\int_@{-x@}^\infty dt \exp(-t)/t)
 @end example
 @end ifinfo
 @noindent

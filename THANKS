@@ -196,3 +196,6 @@ Compaq cc, doc bug fix
 
 * David Favis-Mortlock <d.favis-mortlock@dial.pipex.com> bug report for
 gsl_rng_taus2 seeding
+
+* Alexander Babansky <babansky@mail.ru> documentation bug report for Ei(x)
+
