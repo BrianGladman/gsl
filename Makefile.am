@@ -2,9 +2,9 @@
 
 # AUTOMAKE_OPTIONS = readme-alpha
 
-SUBDIRS = gsl utils sys test err const complex block vector matrix permutation sort ieee-utils blas linalg eigen specfunc dht qrng rng randist fft poly fit multifit statistics siman sum integration interpolation histogram ode-initval roots multiroots min multimin monte ntuple diff doc
+SUBDIRS = gsl utils sys test err const complex block vector matrix permutation sort ieee-utils cblas blas linalg eigen specfunc dht qrng rng randist fft poly fit multifit statistics siman sum integration interpolation histogram ode-initval roots multiroots min multimin monte ntuple diff doc
 
-SUBLIBS = block/libgslblock.la complex/libgslcomplex.la dht/libgsldht.la diff/libgsldiff.la eigen/libgsleigen.la err/libgslerr.la fft/libgslfft.la fit/libgslfit.la histogram/libgslhistogram.la ieee-utils/libgslieeeutils.la integration/libgslintegration.la interpolation/libgslinterpolation.la linalg/libgsllinalg.la matrix/libgslmatrix.la min/libgslmin.la monte/libgslmonte.la multifit/libgslmultifit.la multimin/libgslmultimin.la multiroots/libgslmultiroots.la ntuple/libgslntuple.la ode-initval/libgslodeiv.la permutation/libgslpermutation.la poly/libgslpoly.la qrng/libgslqrng.la randist/libgslrandist.la rng/libgslrng.la roots/libgslroots.la siman/libgslsiman.la sort/libgslsort.la specfunc/libgslspecfunc.la statistics/libgslstatistics.la sum/libgslsum.la sys/libgslsys.la test/libgsltest.la utils/libutils.la vector/libgslvector.la
+SUBLIBS = block/libgslblock.la blas/libgslblas.la complex/libgslcomplex.la dht/libgsldht.la diff/libgsldiff.la eigen/libgsleigen.la err/libgslerr.la fft/libgslfft.la fit/libgslfit.la histogram/libgslhistogram.la ieee-utils/libgslieeeutils.la integration/libgslintegration.la interpolation/libgslinterpolation.la linalg/libgsllinalg.la matrix/libgslmatrix.la min/libgslmin.la monte/libgslmonte.la multifit/libgslmultifit.la multimin/libgslmultimin.la multiroots/libgslmultiroots.la ntuple/libgslntuple.la ode-initval/libgslodeiv.la permutation/libgslpermutation.la poly/libgslpoly.la qrng/libgslqrng.la randist/libgslrandist.la rng/libgslrng.la roots/libgslroots.la siman/libgslsiman.la sort/libgslsort.la specfunc/libgslspecfunc.la statistics/libgslstatistics.la sum/libgslsum.la sys/libgslsys.la test/libgsltest.la utils/libutils.la vector/libgslvector.la
 
 bin_SCRIPTS = gsl-config
 
