@@ -3,7 +3,6 @@
 
 #include <config.h>
 
-#ifdef HAVE_VPRINTF
 void
   gsl_test (int status, const char *test_description, ...);
 
@@ -17,7 +16,6 @@ gsl_test_int (int result, int expected, const char *test_description, ...) ;
 void
 gsl_test_str (const char * result, const char * expected, 
 	      const char *test_description, ...) ;
-#endif 
 
 void
   gsl_test_verbose (int verbose) ;
