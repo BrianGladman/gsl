@@ -773,8 +773,3 @@ double gsl_sf_sinc(const double x)
 {
   EVAL_RESULT(gsl_sf_sinc_e(x, &result));
 }
-
-double gsl_sf_exp_cos(const double x, const double dx)
-{
-  EVAL_RESULT(gsl_sf_cos_err_e(x, dx, &result));
-}
