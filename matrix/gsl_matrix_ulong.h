@@ -72,10 +72,13 @@ int gsl_matrix_ulong_fscanf (FILE * stream, gsl_matrix_ulong * m);
 int gsl_matrix_ulong_fprintf (FILE * stream, const gsl_matrix_ulong * m, const char * format);
  
 int gsl_matrix_ulong_memcpy(gsl_matrix_ulong * dest, const gsl_matrix_ulong * src);
+int gsl_matrix_ulong_swap(gsl_matrix_ulong * m1, const gsl_matrix_ulong * m2);
 
 int gsl_matrix_ulong_swap_rows(gsl_matrix_ulong * m, const size_t i, const size_t j);
 int gsl_matrix_ulong_swap_columns(gsl_matrix_ulong * m, const size_t i, const size_t j);
 int gsl_matrix_ulong_swap_rowcol(gsl_matrix_ulong * m, const size_t i, const size_t j);
+int gsl_matrix_ulong_transpose (gsl_matrix_ulong * m);
+
 
 gsl_matrix_ulong gsl_matrix_ulong_submatrix (gsl_matrix_ulong * m, size_t i, size_t j, size_t n1, size_t n2);
 gsl_vector_ulong gsl_matrix_ulong_row (gsl_matrix_ulong * m, size_t i);
@@ -89,6 +92,8 @@ void gsl_matrix_ulong_minmax (const gsl_matrix_ulong * m, unsigned long * min_ou
 void gsl_matrix_ulong_max_index (const gsl_matrix_ulong * m, size_t * imax, size_t *jmax);
 void gsl_matrix_ulong_min_index (const gsl_matrix_ulong * m, size_t * imin, size_t *jmin);
 void gsl_matrix_ulong_minmax_index (const gsl_matrix_ulong * m, size_t * imin, size_t * jmin, size_t * imax, size_t * jmax);
+
+int gsl_matrix_ulong_isnull (const gsl_matrix_ulong * m);
 
 /***********************************************************************/
 /* The functions below are obsolete                                    */

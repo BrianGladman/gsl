@@ -1,3 +1,7 @@
+Wed Apr 26 15:04:22 2000  Brian Gough  <bjg@network-theory.co.uk>
+
+	* prop_source.c (FUNCTION): added function gsl_matrix_isnull
+
 Tue Apr 18 12:51:49 2000  Brian Gough  <bjg@network-theory.co.uk>
 
 	* minmax_source.c (FUNCTION): fixed bug in minmax where

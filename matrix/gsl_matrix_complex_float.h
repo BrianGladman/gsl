@@ -71,16 +71,20 @@ int gsl_matrix_complex_float_fscanf (FILE * stream, gsl_matrix_complex_float * m
 int gsl_matrix_complex_float_fprintf (FILE * stream, const gsl_matrix_complex_float * m, const char * format);
 
 int gsl_matrix_complex_float_memcpy(gsl_matrix_complex_float * dest, const gsl_matrix_complex_float * src);
+int gsl_matrix_complex_float_swap(gsl_matrix_complex_float * m1, const gsl_matrix_complex_float * m2);
 
 int gsl_matrix_complex_float_swap_rows(gsl_matrix_complex_float * m, const size_t i, const size_t j);
 int gsl_matrix_complex_float_swap_columns(gsl_matrix_complex_float * m, const size_t i, const size_t j);
 int gsl_matrix_complex_float_swap_rowcol(gsl_matrix_complex_float * m, const size_t i, const size_t j);
 
+int gsl_matrix_complex_float_transpose (gsl_matrix_complex_float * m);
 
 gsl_matrix_complex_float gsl_matrix_complex_float_submatrix (gsl_matrix_complex_float * m, size_t i, size_t j, size_t n1, size_t n2);
 gsl_vector_complex_float gsl_matrix_complex_float_row (gsl_matrix_complex_float * m, size_t i);
 gsl_vector_complex_float gsl_matrix_complex_float_column (gsl_matrix_complex_float * m, size_t j);
 gsl_vector_complex_float gsl_matrix_complex_float_diagonal (gsl_matrix_complex_float * m);
+
+int gsl_matrix_complex_float_isnull (const gsl_matrix_complex_float * m);
 
 /***********************************************************************/
 /* The functions below are obsolete                                    */

@@ -72,10 +72,13 @@ int gsl_matrix_long_double_fscanf (FILE * stream, gsl_matrix_long_double * m);
 int gsl_matrix_long_double_fprintf (FILE * stream, const gsl_matrix_long_double * m, const char * format);
  
 int gsl_matrix_long_double_memcpy(gsl_matrix_long_double * dest, const gsl_matrix_long_double * src);
+int gsl_matrix_long_double_swap(gsl_matrix_long_double * m1, const gsl_matrix_long_double * m2);
 
 int gsl_matrix_long_double_swap_rows(gsl_matrix_long_double * m, const size_t i, const size_t j);
 int gsl_matrix_long_double_swap_columns(gsl_matrix_long_double * m, const size_t i, const size_t j);
 int gsl_matrix_long_double_swap_rowcol(gsl_matrix_long_double * m, const size_t i, const size_t j);
+int gsl_matrix_long_double_transpose (gsl_matrix_long_double * m);
+
 
 gsl_matrix_long_double gsl_matrix_long_double_submatrix (gsl_matrix_long_double * m, size_t i, size_t j, size_t n1, size_t n2);
 gsl_vector_long_double gsl_matrix_long_double_row (gsl_matrix_long_double * m, size_t i);
@@ -89,6 +92,8 @@ void gsl_matrix_long_double_minmax (const gsl_matrix_long_double * m, long doubl
 void gsl_matrix_long_double_max_index (const gsl_matrix_long_double * m, size_t * imax, size_t *jmax);
 void gsl_matrix_long_double_min_index (const gsl_matrix_long_double * m, size_t * imin, size_t *jmin);
 void gsl_matrix_long_double_minmax_index (const gsl_matrix_long_double * m, size_t * imin, size_t * jmin, size_t * imax, size_t * jmax);
+
+int gsl_matrix_long_double_isnull (const gsl_matrix_long_double * m);
 
 /***********************************************************************/
 /* The functions below are obsolete                                    */

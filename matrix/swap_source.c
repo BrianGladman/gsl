@@ -122,3 +122,36 @@ FUNCTION (gsl_matrix, swap_rowcol) (TYPE (gsl_matrix) * m,
   return GSL_SUCCESS;
 }
 
+
+int
+FUNCTION (gsl_matrix, transpose) (TYPE (gsl_matrix) * m)
+{
+  const size_t size1 = m->size1;
+  const size_t size2 = m->size2;
+  size_t i, j, k;
+
+  if (size1 != size2)
+    {
+      GSL_ERROR ("matrix must be square to take transpose", GSL_ENOTSQR);
+    }
+
+  for (i = 0; i < size1; i++)
+    {
+      for (j = i + 1 ; j < size2 ; j++) 
+        {
+          for (k = 0; k < MULTIPLICITY; k++)
+            {
+              size_t e1 = (i *  m->tda + j) * MULTIPLICITY + k ;
+              size_t e2 = (j *  m->tda + i) * MULTIPLICITY + k ;
+              {
+                ATOMIC tmp = m->data[e1] ;
+                m->data[e1] = m->data[e2] ;
+                m->data[e2] = tmp ;
+              }
+            }
+        }
+    }
+
+  return GSL_SUCCESS;
+}
+

@@ -72,10 +72,13 @@ int gsl_matrix_fscanf (FILE * stream, gsl_matrix * m);
 int gsl_matrix_fprintf (FILE * stream, const gsl_matrix * m, const char * format);
  
 int gsl_matrix_memcpy(gsl_matrix * dest, const gsl_matrix * src);
+int gsl_matrix_swap(gsl_matrix * m1, const gsl_matrix * m2);
 
 int gsl_matrix_swap_rows(gsl_matrix * m, const size_t i, const size_t j);
 int gsl_matrix_swap_columns(gsl_matrix * m, const size_t i, const size_t j);
 int gsl_matrix_swap_rowcol(gsl_matrix * m, const size_t i, const size_t j);
+int gsl_matrix_transpose (gsl_matrix * m);
+
 
 gsl_matrix gsl_matrix_submatrix (gsl_matrix * m, size_t i, size_t j, size_t n1, size_t n2);
 gsl_vector gsl_matrix_row (gsl_matrix * m, size_t i);
@@ -89,6 +92,8 @@ void gsl_matrix_minmax (const gsl_matrix * m, double * min_out, double * max_out
 void gsl_matrix_max_index (const gsl_matrix * m, size_t * imax, size_t *jmax);
 void gsl_matrix_min_index (const gsl_matrix * m, size_t * imin, size_t *jmin);
 void gsl_matrix_minmax_index (const gsl_matrix * m, size_t * imin, size_t * jmin, size_t * imax, size_t * jmax);
+
+int gsl_matrix_isnull (const gsl_matrix * m);
 
 /***********************************************************************/
 /* The functions below are obsolete                                    */
