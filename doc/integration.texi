@@ -1,36 +1,59 @@
+This chapter describes functions for performing quadrature or numerical
+integration. The library reimplements algorithms from the QUADPACK
+library by Piessens, Doncker-Kapenga, Uberhuber and Kahaner. Fortran
+code for QUADPACK is available on Netlib.
 
 @menu
-* QNG - non-adaptive Gauss-Kronrod integration::  
-* QAG - adaptive Gauss-Kronrod integration::  
-* QAGS - adaptive Gauss-Kronrod integration with extrapolation::  
-* QAGP - adaptive Gauss-Kronrod integration with extrapolation allowing for discontinuities::  
-* QAGI - adaptive Gauss-Kronrod integration with extrapolation on infinite intervals::  
+* QNG non-adaptive Gauss-Kronrod integration::  
+* QAG adaptive integration::  
+* QAGS adaptive integration with end-point singularities::  
+* QAGP adaptive integration with singular points::  
+* QAGI adaptive integration on infinite intervals::  
+* QAWC adaptive integration for Cauchy principal value::  
+* QAWS adaptive integration for singular functions::  
+* QAWO adaptive integration for oscillatory functions::  
+* QAWF adaptive integration for Fourier integrals::  
 * Numerical integration References and Further Reading::  
 @end menu
 
-@node QNG - non-adaptive Gauss-Kronrod integration
-@section QNG - non-adaptive Gauss-Kronrod integration
+@node QNG non-adaptive Gauss-Kronrod integration
+@section QNG non-adaptive Gauss-Kronrod integration
 
-@node QAG - adaptive Gauss-Kronrod integration
-@section QAG - adaptive Gauss-Kronrod integration
+@node QAG adaptive integration
+@section QAG adaptive integration
 
-@node QAGS - adaptive Gauss-Kronrod integration with extrapolation
-@section QAGS - adaptive Gauss-Kronrod integration with extrapolation
+@node QAGS adaptive integration with end-point singularities
+@section QAGS adaptive integration with end-point singularities
 
-@node QAGP - adaptive Gauss-Kronrod integration with extrapolation allowing for discontinuities
-@section QAGP - adaptive Gauss-Kronrod integration with extrapolation allowing for discontinuities
+@node QAGP adaptive integration with singular points
+@section QAGP adaptive integration with singular points
 
-@node QAGI - adaptive Gauss-Kronrod integration with extrapolation on infinite intervals
-@section QAGI - adaptive Gauss-Kronrod integration with extrapolation on infinite intervals
+@node QAGI adaptive integration on infinite intervals
+@section QAGI adaptive integration on infinite intervals
+
+@node  QAWC adaptive integration for Cauchy principal value
+@section QAWC adaptive integration for Cauchy principal value
+
+@node  QAWS adaptive integration for singular functions
+@section QAWS adaptive integration for singular functions
+
+@node  QAWO adaptive integration for oscillatory functions
+@section QAWO adaptive integration for oscillatory functions
+
+@node  QAWF adaptive integration for Fourier integrals
+@section QAWF adaptive integration for Fourier integrals
+
+
 
 @node Numerical integration References and Further Reading
 @section Numerical integration  References and Further Reading
 
 @noindent
-The definitive reference for QUADPACK is the book written by the
-original developers. It describes the algorithms and includes test
-programs, examples and useful advice on numerical integration. It also
-has many references to the numerical integration literature.
+The following book is the definitive reference for QUADPACK, being
+written by the original developers. It describes the algorithms and
+includes test programs, examples and useful advice on numerical
+integration. It also has many references to the numerical integration
+literature.
 
 @itemize @asis
 @item
