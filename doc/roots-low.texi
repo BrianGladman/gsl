@@ -297,7 +297,7 @@ The maximum allowed number of iterations. @xref{Search Stopping
 Parameters}.
 @item max_deltay
 The maximum allowed difference between @w{@code{f(*lower_bound)}} and
-@w{@code{f(*upper_bound)}}. @xref{Search Stopping Parameters.}
+@w{@code{f(*upper_bound)}}. @xref{Search Stopping Parameters}.
 @end table
 
 @end deftypefun
@@ -381,7 +381,7 @@ The maximum allowed number of iterations. @xref{Search Stopping
 Parameters}.
 @item max_deltay
 The maximum allowed difference between @w{@code{f(*lower_bound)}} and
-@w{@code{f(*upper_bound)}}. @xref{Search Stopping Parameters.}
+@w{@code{f(*upper_bound)}}. @xref{Search Stopping Parameters}.
 @end table
 
 @end deftypefun

@@ -93,8 +93,7 @@ my_df (double x) @{
 
 @end deftypevr
 
-@deftypevr {Function Argument} void {@t{(*} fdf@t{)(double *, double *,
-double, int, int)}}
+@deftypevr {Function Argument} void {@t{(*} fdf@t{)(double *, double *, double, int, int)}}
 A pointer to a function which calculates both the value of the function
 under search and the value of its first derivative. Because many terms
 of a function and its derivative are the same, it is often faster to use
