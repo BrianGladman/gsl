@@ -289,14 +289,28 @@ static double hzeta_c[15] = {
 
 /*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
 
+/* checked OK [GJ] Wed May  6 11:33:23 MDT 1998 */
 int gsl_sf_hzeta_impl(const double s, const double q, double * result)
 {
+  double ln_term0;
+
   if(s <= 1.0 || q <= 0.0) {
     return GSL_EDOM;
   }
-  else if(-s * log(q) < GSL_LOG_DBL_MIN) {
-    *result = 0.;
+  
+  ln_term0 = -s * log(q);  
+  if(ln_term0 < GSL_LOG_DBL_MIN + 1.0) {
+    *result = 0.0;
     return GSL_EUNDRFLW;
+  }
+  else if(ln_term0 > GSL_LOG_DBL_MAX - 1.0) {
+    *result = 0.0; /* FIXME: should be Inf */
+    return GSL_EOVRFLW;
+  }
+  
+  if(s > 50.0 && q < 0.25) {
+    *result = pow(q, -s) + pow(q + 1.0, -s) + pow(q + 2.0, -s);
+    return GSL_SUCCESS;
   }
   else {
     /* Euler-Maclaurin summation formula 
@@ -308,17 +322,16 @@ int gsl_sf_hzeta_impl(const double s, const double q, double * result)
     const double pmax  = pow(kmax + q, -s);
     double scp = s;
     double pcp = pmax / (kmax + q);
-    double ans = pmax*((kmax+q)/(s-1) - 0.5);
+    double ans = pmax*((kmax+q)/(s-1) + 0.5);
     
     for(k=0; k<kmax; k++) {
       ans += pow(k + q, -s);
     }
-    ans += pmax; /* avoids one unnecessary call to pow() */
 
     for(j=0; j<=jmax; j++) {
-      double delta = hzeta_c[j] * scp * pcp;
+      double delta = hzeta_c[j+1] * scp * pcp;
       ans += delta;
-      if(fabs(delta/ans) < GSL_MACH_EPS) break;
+      if(fabs(delta/ans) < 0.5*GSL_MACH_EPS) break;
       scp *= (s+2*j+1)*(s+2*j+2);
       pcp /= (kmax + q)*(kmax + q);
     }
@@ -385,19 +398,6 @@ int gsl_sf_zeta_int_impl(const int n, double * result)
     *result = 1.0;
     return GSL_SUCCESS;
   }
-}
-
-void testy(void)
-{
-  double x;
-  double q = 1.1;
-  int n;
-  for(x = 1.0; x <= 30; x += 0.1 ) {
-    double y;
-    int status = gsl_sf_hzeta_impl(x, q, &y);
-    printf("%24.18g  %8.5g   %24.18g  %2d\n", x, q, y, status);
-  }
-  exit(0);
 }
 
 
