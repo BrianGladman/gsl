@@ -1,3 +1,16 @@
+Sun Apr  7 15:22:11 2002  Brian Gough  <bjg@network-theory.co.uk>
+
+	* fsolver.c (gsl_min_fminimizer_x_minimum): new function,
+ 	obsoletes gsl_min_fminimizer_minimum.
+	(gsl_min_fminimizer_f_minimum): new function for accessing
+ 	function values
+	(gsl_min_fminimizer_f_lower): new function for accessing function
+ 	values
+	(gsl_min_fminimizer_f_upper): new function for accessing function
+ 	values
+
+	* renamed minimum to x_minimum throughout
+
 Wed Oct  3 11:35:45 2001  Brian Gough  <bjg@network-theory.co.uk>
 
 	* test.c (main): added an extra test

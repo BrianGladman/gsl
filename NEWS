@@ -1,5 +1,11 @@
 * What is new in gsl-1.2:
 
+** The function gsl_min_fminimizer_minimum has been renamed to
+gsl_min_fminimizer_x_minimum for consistency (the old function name is
+still available but is deprecated).  Additional functions have been
+added for accessing the function values at the minimum and endpoints
+of the bounding interval.
+
 ** Added new physical constants, newton, dyne, joule, erg and 
 power-of-ten prefixes, Mega, Giga, Tera, etc.
 

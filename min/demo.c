@@ -41,7 +41,7 @@ main ()
       iter++;
       status = gsl_min_fminimizer_iterate (s);
 
-      m = gsl_min_fminimizer_minimum (s);
+      m = gsl_min_fminimizer_x_minimum (s);
       x_lower = gsl_min_fminimizer_x_lower (s);
       x_upper = gsl_min_fminimizer_x_upper (s);
 

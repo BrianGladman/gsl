@@ -36,7 +36,8 @@ algorithms to find the maximum of a function simply invert its sign.
 
 The minimization algorithms begin with a bounded region known to contain
 a minimum.  The region is described by an lower bound @math{a} and an
-upper bound @math{b}, with an estimate of the minimum @math{x}.
+upper bound @math{b}, with an estimate of the location of the minimum
+@math{x}.
 
 @iftex
 @sp 1
@@ -150,20 +151,20 @@ returns a null pointer and the error handler is invoked with an error
 code of @code{GSL_ENOMEM}.
 @end deftypefun
 
-@deftypefun int gsl_min_fminimizer_set (gsl_min_fminimizer * @var{s}, gsl_function * @var{f}, double @var{minimum}, double @var{x_lower}, double @var{x_upper})
+@deftypefun int gsl_min_fminimizer_set (gsl_min_fminimizer * @var{s}, gsl_function * @var{f}, double @var{x_minimum}, double @var{x_lower}, double @var{x_upper})
 This function sets, or resets, an existing minimizer @var{s} to use the
 function @var{f} and the initial search interval [@var{x_lower},
 @var{x_upper}], with a guess for the location of the minimum
-@var{minimum}.
+@var{x_minimum}.
 
 If the interval given does not contain a minimum, then the function
 returns an error code of @code{GSL_FAILURE}.
 @end deftypefun
 
-@deftypefun int gsl_min_fminimizer_set_with_values (gsl_min_fminimizer * @var{s}, gsl_function * @var{f}, double @var{minimum}, double @var{f_minimum}, double @var{x_lower}, double @var{f_lower}, double @var{x_upper}, double @var{f_upper})
+@deftypefun int gsl_min_fminimizer_set_with_values (gsl_min_fminimizer * @var{s}, gsl_function * @var{f}, double @var{x_minimum}, double @var{f_minimum}, double @var{x_lower}, double @var{f_lower}, double @var{x_upper}, double @var{f_upper})
 This function is equivalent to @code{gsl_min_fminimizer_set} but uses
 the values @var{f_minimum}, @var{f_lower} and @var{f_upper} instead of
-computing @code{f(minimum)}, @code{f(x_lower)} and @code{f(x_upper)}.
+computing @code{f(x_minimum)}, @code{f(x_lower)} and @code{f(x_upper)}.
 @end deftypefun
 
 
@@ -218,19 +219,27 @@ bounding interval.
 @end table
 @end deftypefun
 
-The minimizer maintains a current best estimate of the minimum at all
-times, and the current interval bounding the minimum.  This information
-can be accessed with the following auxiliary functions,
+The minimizer maintains a current best estimate of the position of the
+minimum at all times, and the current interval bounding the minimum.
+This information can be accessed with the following auxiliary functions,
 
-@deftypefun double gsl_min_fminimizer_minimum (const gsl_min_fminimizer * @var{s})
-This function returns the current estimate of the minimum for the minimizer
-@var{s}.
+@deftypefun double gsl_min_fminimizer_x_minimum (const gsl_min_fminimizer * @var{s})
+This function returns the current estimate of the position of the
+minimum for the minimizer @var{s}.
 @end deftypefun
 
 @deftypefun double gsl_min_fminimizer_x_upper (const gsl_min_fminimizer * @var{s})
 @deftypefunx double gsl_min_fminimizer_x_lower (const gsl_min_fminimizer * @var{s})
 These functions return the current upper and lower bound of the interval
 for the minimizer @var{s}.
+@end deftypefun
+
+@deftypefun double gsl_min_fminimizer_f_minimum (const gsl_min_fminimizer *@var{s})
+@deftypefunx double gsl_min_fminimizer_f_upper (const gsl_min_fminimizer *@var{s})
+@deftypefunx double gsl_min_fminimizer_f_lower (const gsl_min_fminimizer *@var{s})
+These functions return the value of the function at the current estimate
+of the minimum and at the upper and lower bounds of interval for the
+minimizer @var{s}.
 @end deftypefun
 
 @node Minimization Stopping Parameters
@@ -412,7 +421,7 @@ main (void)
       iter++;
       status = gsl_min_fminimizer_iterate (s);
 
-      m = gsl_min_fminimizer_minimum (s);
+      m = gsl_min_fminimizer_x_minimum (s);
       a = gsl_min_fminimizer_x_lower (s);
       b = gsl_min_fminimizer_x_upper (s);
 

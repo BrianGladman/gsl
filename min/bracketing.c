@@ -28,7 +28,7 @@
 #include "min.h"
 
 int 
-gsl_min_find_bracket(gsl_function *f,double *minimum,double * f_minimum,
+gsl_min_find_bracket(gsl_function *f,double *x_minimum,double * f_minimum,
 		     double * x_lower, double * f_lower, 
                      double * x_upper, double * f_upper,
 		     size_t eval_max)
@@ -74,7 +74,7 @@ gsl_min_find_bracket(gsl_function *f,double *minimum,double * f_minimum,
 	    {
 	      *x_lower = x_left;
 	      *x_upper = x_right;
-	      *minimum = x_center;
+	      *x_minimum = x_center;
 	      *f_lower = f_left;
 	      *f_upper = f_right;
 	      *f_minimum = f_center;
@@ -116,7 +116,7 @@ gsl_min_find_bracket(gsl_function *f,double *minimum,double * f_minimum,
 	 && (x_right - x_left) > GSL_SQRT_DBL_EPSILON * ( (x_right + x_left) * 0.5 ) + GSL_SQRT_DBL_EPSILON);
   *x_lower = x_left;
   *x_upper = x_right;
-  *minimum = x_center;
+  *x_minimum = x_center;
   *f_lower = f_left;
   *f_upper = f_right;
   *f_minimum = f_center;

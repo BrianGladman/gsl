@@ -40,11 +40,11 @@ typedef struct
   }
 brent_state_t;
 
-static int brent_init (void *vstate, gsl_function * f, double minimum, double f_minimum, double x_lower, double f_lower, double x_upper, double f_upper);
-static int brent_iterate (void *vstate, gsl_function * f, double *minimum, double * f_minimum, double * x_lower, double * f_lower, double * x_upper, double * f_upper);
+static int brent_init (void *vstate, gsl_function * f, double x_minimum, double f_minimum, double x_lower, double f_lower, double x_upper, double f_upper);
+static int brent_iterate (void *vstate, gsl_function * f, double *x_minimum, double * f_minimum, double * x_lower, double * f_lower, double * x_upper, double * f_upper);
 
 static int
-brent_init (void *vstate, gsl_function * f, double minimum, double f_minimum, double x_lower, double f_lower, double x_upper, double f_upper)
+brent_init (void *vstate, gsl_function * f, double x_minimum, double f_minimum, double x_lower, double f_lower, double x_upper, double f_upper)
 {
   brent_state_t *state = (brent_state_t *) vstate;
 
@@ -55,7 +55,7 @@ brent_init (void *vstate, gsl_function * f, double minimum, double f_minimum, do
 
   double f_vw;
 
-  minimum = 0 ;  /* avoid warnings about unused varibles */
+  x_minimum = 0 ;  /* avoid warnings about unused varibles */
   f_minimum = 0 ;
   f_lower = 0 ;
   f_upper = 0 ;
@@ -75,14 +75,14 @@ brent_init (void *vstate, gsl_function * f, double minimum, double f_minimum, do
 }
 
 static int
-brent_iterate (void *vstate, gsl_function * f, double *minimum, double * f_minimum, double * x_lower, double * f_lower, double * x_upper, double * f_upper)
+brent_iterate (void *vstate, gsl_function * f, double *x_minimum, double * f_minimum, double * x_lower, double * f_lower, double * x_upper, double * f_upper)
 {
   brent_state_t *state = (brent_state_t *) vstate;
 
   const double x_left = *x_lower;
   const double x_right = *x_upper;
 
-  const double z = *minimum;
+  const double z = *x_minimum;
   double d = state->e;
   double e = state->d;
   double u, f_u;
@@ -190,7 +190,7 @@ brent_iterate (void *vstate, gsl_function * f, double *minimum, double * f_minim
       state->f_v = f_w;
       state->w = z;
       state->f_w = f_z;
-      *minimum = u;
+      *x_minimum = u;
       *f_minimum = f_u;
       return GSL_SUCCESS;
     }

@@ -106,7 +106,7 @@ test_f (const gsl_min_fminimizer_type * T,
 
       status = gsl_min_fminimizer_iterate (s);
 
-      m = gsl_min_fminimizer_minimum(s);
+      m = gsl_min_fminimizer_x_minimum(s);
       a = gsl_min_fminimizer_x_lower(s);
       b = gsl_min_fminimizer_x_upper(s);
 
@@ -129,7 +129,7 @@ test_f (const gsl_min_fminimizer_type * T,
 
   gsl_test (status, "%s, %s (%g obs vs %g expected) ", 
 	    gsl_min_fminimizer_name(s), description, 
-	    gsl_min_fminimizer_minimum(s), correct_minimum);
+	    gsl_min_fminimizer_x_minimum(s), correct_minimum);
 
   /* check the validity of the returned result */
 
@@ -180,7 +180,7 @@ test_f_e (const gsl_min_fminimizer_type * T,
   while (status == GSL_CONTINUE && iterations < MAX_ITERATIONS);
 
   gsl_test (!status, "%s, %s", gsl_min_fminimizer_name(s), description, 
-	    gsl_min_fminimizer_minimum(s) - correct_minimum);
+	    gsl_min_fminimizer_x_minimum(s) - correct_minimum);
 
   gsl_min_fminimizer_free (s);
 }
@@ -199,15 +199,15 @@ test_bracket (const char * description,gsl_function *f,double lower_bound,
   int status;
   double x_lower, x_upper;
   double f_upper,f_lower,f_minimum;
-  double minimum;
+  double x_minimum;
 
   x_lower=lower_bound;
   x_upper=upper_bound;
   SAFE_FUNC_CALL (f,x_lower,&f_lower);
   SAFE_FUNC_CALL (f,x_upper,&f_upper);
-  status=gsl_min_find_bracket(f,&minimum,&f_minimum,&x_lower,&f_lower,&x_upper,&f_upper,max);
+  status=gsl_min_find_bracket(f,&x_minimum,&f_minimum,&x_lower,&f_lower,&x_upper,&f_upper,max);
   gsl_test (status,"%s, interval: [%g,%g], values: (%g,%g), minimum at: %g, value: %g",
-	    description,x_lower,x_upper,f_lower,f_upper,minimum,f_minimum);
+	    description,x_lower,x_upper,f_lower,f_upper,x_minimum,f_minimum);
   return status;
 }
 
