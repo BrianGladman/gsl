@@ -47,12 +47,8 @@ FUNCTION (my, downheap) (BASE * data, const size_t stride, const size_t N, size_
 }
 
 void
-TYPE (gsl_sort_vector) (TYPE (gsl_vector) * v)
+TYPE (gsl_sort) (BASE * data, const size_t stride, const size_t n)
 {
-  BASE *data = v->data;
-  const size_t n = v->size;
-  const size_t stride = v->stride;
-
   size_t N;
   size_t k;
 
@@ -87,4 +83,10 @@ TYPE (gsl_sort_vector) (TYPE (gsl_vector) * v)
 
       FUNCTION (my, downheap) (data, stride, N, 0);
     }
+}
+
+void
+TYPE (gsl_sort_vector) (TYPE (gsl_vector) * v)
+{
+  TYPE (gsl_sort) (v->data, v->stride, v->size) ;
 }

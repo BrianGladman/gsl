@@ -20,6 +20,7 @@
 #include <config.h>
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_vector.h>
+#include <gsl/gsl_sort.h>
 #include <gsl/gsl_sort_vector.h>
 
 #define BASE_LONG_DOUBLE

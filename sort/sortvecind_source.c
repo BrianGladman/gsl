@@ -47,28 +47,22 @@ FUNCTION (index, downheap) (size_t * p, const BASE * data, const size_t stride, 
 }
 
 int
-FUNCTION (gsl_sort_vector, index) (gsl_permutation * permutation, const TYPE (gsl_vector) * v)
+FUNCTION (gsl_sort, index) (size_t * p, const BASE * data, const size_t stride, const size_t n)
 {
-  const BASE *data = v->data;
-  const size_t n = v->size;
-  const size_t stride = v->stride;
-
-  size_t *p = permutation->data;
-
   size_t N;
-  size_t k;
-
-  if (permutation->size != n)
-    {
-      GSL_ERROR ("permutation and vector lengths are not equal", GSL_EBADLEN);
-    }
+  size_t i, k;
 
   if (n == 0)
     {
       return GSL_SUCCESS;	/* No data to sort */
     }
 
-  gsl_permutation_init (permutation);	/* set permutation to identity */
+  /* set permutation to identity */
+
+  for (i = 0 ; i < n ; i++)
+    {
+      p[i] = i ;
+    }
 
   /* We have n_data elements, last element is at 'n_data-1', first at
      '0' Set N to the last element number. */
@@ -98,4 +92,19 @@ FUNCTION (gsl_sort_vector, index) (gsl_permutation * permutation, const TYPE (gs
     }
 
   return GSL_SUCCESS;
+}
+
+int
+FUNCTION (gsl_sort_vector, index) (gsl_permutation * permutation, const TYPE (gsl_vector) * v)
+{
+  int status ;
+
+  if (permutation->size != v->size)
+    {
+      GSL_ERROR ("permutation and vector lengths are not equal", GSL_EBADLEN);
+    }
+
+  status = FUNCTION (gsl_sort, index) (permutation->data, v->data, v->stride, v->size) ;
+
+  return status ;
 }

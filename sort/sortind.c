@@ -20,7 +20,7 @@
 
 #include <config.h>
 #include <stdlib.h>
-#include <gsl_sort.h>
+#include <gsl_heapsort.h>
 
 static inline void downheap (size_t * p, const void *data, const size_t size, const size_t N, size_t k, gsl_comparison_fn_t compare);
 
@@ -54,7 +54,7 @@ downheap (size_t * p, const void *data, const size_t size, const size_t N, size_
 }
 
 int
-gsl_sort_index (gsl_permutation * permutation, const void *data, size_t count, size_t size, gsl_comparison_fn_t compare)
+gsl_heapsort_index (gsl_permutation * permutation, const void *data, size_t count, size_t size, gsl_comparison_fn_t compare)
 {
   /* Sort the array in ascending order. This is a true inplace
      algorithm with N log N operations. Worst case (an already sorted

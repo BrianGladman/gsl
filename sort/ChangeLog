@@ -1,3 +1,13 @@
+Mon Feb 28 20:30:06 2000  Brian Gough  <bjg@network-theory.co.uk>
+
+	* renamed gsl_sort to gsl_heapsort, since this is more meaningful
+ 	and gsl_sort, gsl_sort_float, ... is now used for sorting of
+ 	arrays.
+
+	* added support for sorting of arrays, without going through a
+ 	gsl_vector object (gsl_sort_vector is now implemented in terms of
+ 	these functions)
+
 Sat Feb 26 14:47:36 2000  Brian Gough  <bjg@network-theory.co.uk>
 
 	* added support for indirect sorting of objects
