@@ -55,7 +55,7 @@ do { \
 
 /* Return nonzero if a and b are within tolerance of each other. */
 #define _WITHIN_TOL(a, b, rel_epsilon, abs_epsilon) \
-     (fabs((a) - (b)) < rel_epsilon * _MINA(a, b) + abs_epsilon)
+     (fabs((a) - (b)) < (rel_epsilon) * _MINA(a, b) + abs_epsilon)
 
 /* Barf if a and b are not within delta of each other; used to protect against
    finding a discontinouity. FIXME.3: This has problems if delta is too small,
