@@ -48,10 +48,10 @@ int main()
 
   c = (1.0 + sqrt(10.0))/9.0 ;
 
-  mode = 1;
+  s->mode = 1;
   /*  verbose = 1; */
   calls = 1000;
-  max_it_num = 10;
+  s->max_it_num = 10;
 
   gsl_test_verbose(1);
 
@@ -81,17 +81,17 @@ int main()
 		 num_dim, err, chisq); 
   }
 
-  mode = 1;
+  s->mode = 1;
   /*  verbose = 1;*/
   calls = 10000;
-  alpha = 2.0;
-  max_it_num = 10;
+  s->alpha = 2.0;
+  s->max_it_num = 10;
   tol = 1e-2;
 
   printf("Testing single gaussian\n");
   for (num_dim = 1; num_dim < 10; num_dim++) {
     if (num_dim > 4) 
-      alpha -= 0.2; /* Lepage has=1 for n=9 so we step toward that. */
+      s->alpha -= 0.2; /* Lepage has=1 for n=9 so we step toward that. */
     if (num_dim > 8)
       calls = 15000;
     status = gsl_monte_vegas(s, f1, xl, xu, num_dim, calls, &res, &err, &chisq);
@@ -99,11 +99,11 @@ int main()
 		 num_dim, err, chisq); 
   }
 
-  mode = 1;
+  s->mode = 1;
   /*  verbose = 1; */
   calls = 20000;
-  alpha = 2.0;
-  max_it_num = 5;
+  s->alpha = 2.0;
+  s->max_it_num = 5;
   tol = 2e-2;
   
   step = 2;
@@ -117,30 +117,30 @@ int main()
       calls = 50000;
       break;
     case 7:
-      max_it_num = 10;
+      s->max_it_num = 10;
       tol = 0.08;
       calls = 70000;
       break;
     case 9:
       calls = 100000;
-      max_it_num = 20;
+      s->max_it_num = 20;
       tol = 0.04;
-      alpha = 1.0;
+      s->alpha = 1.0;
       break;
     }
     /* let's try same trick of stepping alpha */
     if (num_dim > 4) 
-      alpha -= (double) step/10.0; 
+      s->alpha -= (double) step/10.0; 
     status = gsl_monte_vegas(s, f2, xl, xu, num_dim, calls, &res, &err, &chisq);
     gsl_test_rel(res, 1.0, tol, "vegas(f2), dim=%d, err=%.4f, chisq=%.4f", 
 		 num_dim, err, chisq); 
   }
 
-  mode = 1;
+  s->mode = 1;
   /*  verbose = 1; */
   calls = 10000;
-  alpha = 1.5;
-  max_it_num = 10;
+  s->alpha = 1.5;
+  s->max_it_num = 10;
   tol = 1e-2;
 
   printf("Testing Tsuda's function\n");

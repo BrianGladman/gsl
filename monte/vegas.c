@@ -62,16 +62,10 @@
 
 enum {MODE_IMPORTANCE = 1, MODE_IMPORTANCE_ONLY = 0, MODE_STRATIFIED = -1};
 
-double acc = -1, alpha = 1.5;
-int    mode, verbose = -1, max_it_num = 5;
 
-static int    it_start, bins_prev, calls_per_box, it_num, bins, boxes;
-
-static double delx[GSL_V_MAX_DIM], grid_sum[GSL_V_BINS_MAX+1][GSL_V_MAX_DIM];
+static double grid_sum[GSL_V_BINS_MAX+1][GSL_V_MAX_DIM];
 static double bin_sum[GSL_V_BINS_MAX+1][GSL_V_MAX_DIM];
 static double y_bin[GSL_V_BINS_MAX+1][GSL_V_MAX_DIM];
-
-static double jac, wtd_int_sum, sum_wgts, chi_sum, vol;
 
 /* predeclare functions */
 
@@ -96,21 +90,21 @@ int gsl_monte_vegas(gsl_monte_vegas_state *state,
   init_array(y_bin, GSL_V_BINS_MAX, num_dim);
   for (j = 0; j < num_dim; ++j)
     y_bin[1][j] = 1.;
-  bins_prev = 1;
-  vol = 1;
+  state->bins_prev = 1;
+  state->vol = 1;
   for (j = 0; j < num_dim; ++j) {
-    delx[j] = xu[j] - xl[j];
-    vol *= delx[j];
+    state->delx[j] = xu[j] - xl[j];
+    state->vol *= state->delx[j];
   }
 
-  if (verbose >= 0 ) {
+  if (state->verbose >= 0 ) {
     vegas_open_log();
     prn_lim(xl, xu, num_dim);
   }
   status = gsl_monte_vegas1(state, fxn, xl, xu, num_dim, calls, 
 			    tot_int, tot_sig, chi_sq_ptr);
 
-  if (verbose >= 0 ) {
+  if (state->verbose >= 0 ) {
     vegas_close_log();
   }
 
@@ -124,10 +118,10 @@ int gsl_monte_vegas1(gsl_monte_vegas_state *state,
 {
   int status;
 
-  wtd_int_sum = 0;
-  sum_wgts = 0;
-  chi_sum = 0;
-  it_num = 1;
+  state->wtd_int_sum = 0;
+  state->sum_wgts = 0;
+  state->chi_sum = 0;
+  state->it_num = 1;
 
   status = gsl_monte_vegas_validate(state, xl, xu, num_dim, calls);
 
@@ -166,57 +160,56 @@ int gsl_monte_vegas2(gsl_monte_vegas_state *state,
      dimension is smaller (because of the above-mentioned
      restriction).  Thus, each box contains several (not necessarily
      an integral number) bins.  For MODE_STRATIFIED, bins is an
-     integer multiple of boxes, and bins is smaller than GSL_V_BINS_MAX.  */
+     integer multiple of boxes, and bins is smaller than GSL_V_BINS_MAX.  
+*/
 
   int    i, j, k;
   int status;
 
   status = gsl_monte_vegas_validate(state, xl, xu, num_dim, calls);
 
-  bins = GSL_V_BINS_MAX;
-  boxes = 1;
-  if (mode != MODE_IMPORTANCE_ONLY) {
-    boxes = floor( pow(calls/2.0, 1.0/num_dim) ); 
-    mode = MODE_IMPORTANCE;
-    if ((2 * boxes - GSL_V_BINS_MAX) >= 0) {
-      mode = MODE_STRATIFIED;
-      i = boxes / GSL_V_BINS_MAX;
-      if ( boxes % GSL_V_BINS_MAX ) 
+  state->bins = GSL_V_BINS_MAX;
+  state->boxes = 1;
+  if (state->mode != MODE_IMPORTANCE_ONLY) {
+    state->boxes = floor( pow(calls/2.0, 1.0/num_dim) ); 
+    state->mode = MODE_IMPORTANCE;
+    if ((2 * state->boxes - GSL_V_BINS_MAX) >= 0) {
+      state->mode = MODE_STRATIFIED;
+      i = state->boxes / GSL_V_BINS_MAX;
+      if ( state->boxes % GSL_V_BINS_MAX ) 
 	++i;
-      bins = boxes / i;
-      boxes = i * bins;
+      state->bins = state->boxes / i;
+      state->boxes = i * state->bins;
     }
   }
 
-  k = floor( pow( (double) boxes, (double) num_dim) );
-  calls_per_box = myMAX(calls/k, 2);
-  calls = calls_per_box * k;
-  /*  fprintf(stderr, "mode=%d, calls_per_box=%d, bins=%d, boxes=%d\n", 
-	  mode, calls_per_box, bins, boxes);
-  */
-  /* bins_per_box = (double) bins / boxes; */
+  k = floor( pow( (double) state->boxes, (double) num_dim) );
+  state->calls_per_box = myMAX(calls/k, 2);
+  calls = state->calls_per_box * k;
 
   /* total volume of x-space/(avg num of calls/bin) */
-  jac = vol * pow( (double) bins, (double) num_dim) / calls;
+  state->jac = state->vol * pow( (double) state->bins, (double) num_dim) / calls;
 
   /* If the number of bins changes from the previous invocation, bins
      are expanded or contracted accordingly, while preserving bin
      density */
 
-  if (bins != bins_prev) {
+  if (state->bins != state->bins_prev) {
     double weight[GSL_V_BINS_MAX+1], tot_weight;
 
-    tot_weight = (double) bins_prev / bins;	/* ratio of bin sizes */
-    for (i = 1; i <= bins_prev; ++i)
+    /* weight is ratio of bin sizes */
+    tot_weight = (double) state->bins_prev / state->bins;
+    for (i = 1; i <= state->bins_prev; ++i)
       weight[i] = 1;
     for (j = 0; j < num_dim; ++j)
-      adjust_bins(y_bin, weight, tot_weight, j, bins_prev, bins);
-    bins_prev = bins;
+      adjust_bins(y_bin, weight, tot_weight, j, state->bins_prev, state->bins);
+    state->bins_prev = state->bins;
   }
-  if (verbose >= 0) {
-    prn_head(num_dim, calls, it_num, max_it_num, acc, verbose, alpha, mode, 
-	     bins, boxes);
+  if (state->verbose >= 0) {
+    prn_head(state, num_dim, calls, state->it_num, state->bins, state->boxes);
   }
+
+  
   status = gsl_monte_vegas3(state, fxn, xl, xu, num_dim, calls, 
 			    tot_int, tot_sig, chi_sq_ptr);
   return status;
@@ -240,27 +233,29 @@ int gsl_monte_vegas3(gsl_monte_vegas_state *state,
   status = gsl_monte_vegas_validate(state, xl, xu, num_dim, calls);
   r = state->ranf;
 
-  it_start = it_num;
+  state->it_start = state->it_num;
   cum_int = 1.;
   cum_sig = 1.;
-  for (; it_num <= max_it_num && acc*fabs(cum_int) < cum_sig; ++it_num) {
+  for (; state->it_num <= state->max_it_num && 
+	 state->acc*fabs(cum_int) < cum_sig; 
+       ++state->it_num) {
     double intgrl, intgrl_sq, sig;
     double wgt, x[GSL_V_MAX_DIM];
     int    box_cord[GSL_V_MAX_DIM];
     for (j = 0; j < num_dim; ++j)
       box_cord[j] = 0;
-    init_array(grid_sum, bins, num_dim);
-    init_array(bin_sum, bins, num_dim);
+    init_array(grid_sum, state->bins, num_dim);
+    init_array(bin_sum, state->bins, num_dim);
     intgrl = 0.;
     sig = 0.;
     do {
       int    bin_cord[GSL_V_MAX_DIM];
       double f, f_sq, f_sum, f_sq_sum;
 
-      for (k = 1, f_sum = 0., f_sq_sum = 0.; k <= calls_per_box; ++k) {
+      for (k = 1, f_sum = 0., f_sq_sum = 0.; k <= state->calls_per_box; ++k) {
 	double jacbin, y, z;
 
-	jacbin = jac;
+	jacbin = state->jac;
 	for (j = 0; j < num_dim; ++j) {
 	  double binwdth;
 
@@ -268,7 +263,7 @@ int gsl_monte_vegas3(gsl_monte_vegas_state *state,
 	     z is the position in bin units.
 	  */
 	  /*	  z = (box_cord[j] + gsl_rng_uniform(r) ) * bins_per_box; */
-	  z = (box_cord[j] + gsl_rng_uniform(r) ) * bins / boxes; 
+	  z = (box_cord[j] + gsl_rng_uniform(r) ) * state->bins / state->boxes; 
 	  bin_cord[j] = z;
 	  if (bin_cord[j] == 0) {
 	    binwdth = y_bin[1][j];
@@ -278,7 +273,7 @@ int gsl_monte_vegas3(gsl_monte_vegas_state *state,
 	    binwdth = y_bin[bin_cord[j] + 1][j] - y_bin[bin_cord[j]][j];
 	    y = y_bin[bin_cord[j]][j] + (z - bin_cord[j]) * binwdth;
 	  }
-	  x[j] = xl[j] + y * delx[j];
+	  x[j] = xl[j] + y * state->delx[j];
 	  if (j > 2) {
 	    /* fprintf(stderr, "z=%f,x[%d]=%f\n", z,j, x[j]);*/
 	  }
@@ -295,41 +290,42 @@ int gsl_monte_vegas3(gsl_monte_vegas_state *state,
 	f_sq_sum += f_sq;
 	for (j = 0; j < num_dim; ++j) {
 	  bin_sum[bin_cord[j] + 1][j] += f;
-	  if (mode != MODE_STRATIFIED)
+	  if (state->mode != MODE_STRATIFIED)
 	    grid_sum[bin_cord[j] + 1][j] += f_sq;
 	}
       } /* end of k loop */
 
-      f_sq_sum = sqrt(f_sq_sum * calls_per_box);
+      f_sq_sum = sqrt(f_sq_sum * state->calls_per_box);
       f_sq_sum = (f_sq_sum - f_sum) * (f_sq_sum + f_sum);
       intgrl += f_sum;
       if (f_sq_sum <= 0.0) f_sq_sum = GSL_V_TINY;
       sig += f_sq_sum;
-      if (mode == MODE_STRATIFIED) {
+      if (state->mode == MODE_STRATIFIED) {
 	for (j = 0; j < num_dim; ++j)
 	  grid_sum[bin_cord[j] + 1][j] += f_sq_sum;
       }
-    } while ( change_box_cord ( box_cord, boxes, num_dim-1) );
+    } while ( change_box_cord ( box_cord, state->boxes, num_dim-1) );
     /* end of box_cord loop */
 
     /* Compute final results for this iteration   */
 
-    sig = sig / (calls_per_box - 1);
+    sig = sig / (state->calls_per_box - 1);
     intgrl_sq = intgrl * intgrl;
     wgt = 1. / sig;
-    wtd_int_sum += intgrl * wgt;
-    sum_wgts += wgt;
-    chi_sum += intgrl_sq * wgt;
-    cum_int = wtd_int_sum / sum_wgts;
+    state->wtd_int_sum += intgrl * wgt;
+    state->sum_wgts += wgt;
+    state->chi_sum += intgrl_sq * wgt;
+    cum_int = state->wtd_int_sum / state->sum_wgts;
     chi_sq = 0.;
-    if (it_num != 1)
-      chi_sq = (chi_sum - wtd_int_sum * cum_int) / (it_num - 1.);
-    cum_sig = sqrt(1 / sum_wgts);
+    if (state->it_num != 1)
+      chi_sq = (state->chi_sum - state->wtd_int_sum * cum_int) / 
+	(state->it_num - 1.);
+    cum_sig = sqrt(1 / state->sum_wgts);
 
-    if (verbose >= 0) {
-      prn_res(it_num, intgrl, sqrt(sig), cum_int, cum_sig, chi_sq);
-      if (it_num == max_it_num && verbose > 0)
-	prn_grid(y_bin, bin_sum, num_dim, bins, verbose);
+    if (state->verbose >= 0) {
+      prn_res(state->it_num, intgrl, sqrt(sig), cum_int, cum_sig, chi_sq);
+      if (state->it_num == state->max_it_num && state->verbose > 0)
+	prn_grid(y_bin, bin_sum, num_dim, state->bins, state->verbose);
     }
 
     /* Adjust the grid  */
@@ -342,26 +338,27 @@ int gsl_monte_vegas3(gsl_monte_vegas_state *state,
       grid_tot_j = grid_sum[1][j];
 
       /* This implements gs[i][j] = (gs[i-1][j]+gs[i][j]+gs[i+1][j])/3 */
-      for (i = 2; i < bins; ++i) {
+      for (i = 2; i < state->bins; ++i) {
 	grid_sum[i][j] = oldg + newg;
 	oldg = newg;
 	newg = grid_sum[i + 1][j];
 	grid_sum[i][j] = (grid_sum[i][j] + newg) / 3;
 	grid_tot_j += grid_sum[i][j];
       }
-      grid_sum[bins][j] = (newg + oldg) / 2;
+      grid_sum[state->bins][j] = (newg + oldg) / 2;
 
-      grid_tot_j += grid_sum[bins][j];
-      for (i = 1, tot_weight = 0; i <= bins; ++i) {
+      grid_tot_j += grid_sum[state->bins][j];
+      for (i = 1, tot_weight = 0; i <= state->bins; ++i) {
 	weight[i] = 0;
 	if (grid_sum[i][j] > 0) {
 	  oldg = grid_tot_j / grid_sum[i][j];
 	  /* damped change */
-	  weight[i] = pow(((oldg - 1) / oldg / log(oldg)), alpha);
+	  weight[i] = pow(((oldg - 1) / oldg / log(oldg)), state->alpha);
 	}
 	tot_weight += weight[i];
       }
-      adjust_bins(y_bin, weight, tot_weight/bins, j, bins, bins);
+      adjust_bins(y_bin, weight, tot_weight/state->bins, j, 
+		  state->bins, state->bins);
     }
   } /* for it_num */
 
@@ -369,7 +366,8 @@ int gsl_monte_vegas3(gsl_monte_vegas_state *state,
   *tot_sig = cum_sig;
   *chi_sq_ptr = chi_sq;
 
-  if ( (it_num > max_it_num) || (acc*fabs(cum_int) > cum_sig) ) {
+  if ( (state->it_num > state->max_it_num) || 
+       (state->acc*fabs(cum_int) > cum_sig) ) {
     /* should throw an error of some kind */
   }
   return status;

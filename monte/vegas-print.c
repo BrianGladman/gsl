@@ -30,14 +30,13 @@ void prn_lim(double a[], double b[], int m)
   fprintf(o_file, "\n");
   fflush(o_file);
 }
-
-void prn_head(int a, int b, int c, int d, double e, int f, double g, 
-	 int h, int i, int j)
+void prn_head(gsl_monte_vegas_state* state, 
+	      int num_dim, int calls, int it_num, int bins, int boxes)
 {
   fprintf(o_file, "\nnum_dim=%d, calls=%d, it_num=%d, max_it_num=%d, acc=%.3f, ",
-	  a, b, c, d, e);
-  fprintf(o_file, "prn=%d, alph=%.2f,\nmode=%d, bins=%d, boxes=%d\n",
-	  f, g, h, i, j);
+	  num_dim, calls, it_num, state->max_it_num, state->acc);
+  fprintf(o_file, "verb=%d, alph=%.2f,\nmode=%d, bins=%d, boxes=%d\n",
+	  state->verbose, state->alpha, state->mode, bins, boxes);
   fprintf(o_file, "\n       single.......iteration                   ");
   fprintf(o_file, "accumulated......results   \n");
 

@@ -11,11 +11,6 @@
 #define GSL_V_BINS_MAX 50  /* even integer because will be divided by two. */
 #define GSL_V_MAX_DIM 10
 
-/* control variables */
-extern double acc, alpha;
-extern int    mode, verbose;
-extern int    max_it_num;
-
 typedef struct {
   /* control variables */
   double acc;
