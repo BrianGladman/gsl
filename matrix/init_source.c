@@ -1,6 +1,5 @@
 #include <stdlib.h>
 
-#include "source.h"
 
 TYPE(gsl_matrix) * 
 FUNCTION(gsl_matrix,alloc) (const size_t n1, const size_t n2)

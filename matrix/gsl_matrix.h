@@ -1,67 +1,29 @@
 #ifndef GSL_MATRIX_H
 #define GSL_MATRIX_H
 
-#include <stdlib.h>
-#include <gsl_errno.h>
-#include <gsl_config.h>
+#include <gsl_matrix_complex_long_double.h>
+#include <gsl_matrix_complex_double.h>
+#include <gsl_matrix_complex_float.h>
 
-typedef struct
-{
-  size_t size1;
-  size_t size2;
-  double * data;
-} gsl_matrix ;
+#include <gsl_matrix_complex_long_double.h>
+#include <gsl_matrix_complex.h>
+#include <gsl_matrix_complex_float.h>
 
-gsl_matrix * gsl_matrix_alloc (size_t n1, size_t n2);
-gsl_matrix * gsl_matrix_calloc (size_t n1, size_t n2);
-void gsl_matrix_free (gsl_matrix * m);
+#include <gsl_matrix_long_double.h>
+#include <gsl_matrix_double.h>
+#include <gsl_matrix_float.h>
 
-double gsl_matrix_get(const gsl_matrix * m, size_t i, size_t j);
-void gsl_matrix_set(gsl_matrix * m, size_t i,  size_t j, double x);
+#include <gsl_matrix_ulong.h>
+#include <gsl_matrix_long.h>
 
-int gsl_matrix_fread (FILE * stream, gsl_matrix * m) ;
-int gsl_matrix_fwrite (FILE * stream, const gsl_matrix * m) ;
-int gsl_matrix_fscanf (FILE * stream, gsl_matrix * m);
-int gsl_matrix_fprintf (FILE * stream, const gsl_matrix * m, const char * format);
+#include <gsl_matrix_uint.h>
+#include <gsl_matrix_int.h>
 
-extern int gsl_check_range ;
+#include <gsl_matrix_ushort.h>
+#include <gsl_matrix_short.h>
 
-/* inline functions if you are using GCC */
+#include <gsl_matrix_uchar.h>
+#include <gsl_matrix_char.h>
 
-#ifdef HAVE_INLINE
-extern inline 
-double
-gsl_matrix_get(const gsl_matrix * m, const size_t i, const size_t j)
-{
-#ifndef GSL_RANGE_CHECK_OFF
-  if (i >= m->size1)  /* size_t is unsigned, can't be negative */
-    {
-      GSL_ERROR_RETURN("first index out of range", GSL_EINVAL, 0) ;
-    }
-  else if (j >= m->size2) /* size_t is unsigned, can't be negative */
-    {
-      GSL_ERROR_RETURN("second index out of range", GSL_EINVAL, 0) ;
-    }
-#endif
-  return m->data[i * m->size2 + j] ;
-} 
 
-extern inline 
-void
-gsl_matrix_set(gsl_matrix * m, const size_t i, const size_t j, const double x)
-{
-#ifndef GSL_RANGE_CHECK_OFF
-  if (i >= m->size1) /* size_t is unsigned, can't be negative */
-    {
-      GSL_ERROR_RETURN_NOTHING("first index out of range", GSL_EINVAL) ;
-    }
-  else if (j >= m->size2) /* size_t is unsigned, can't be negative */
-    {
-      GSL_ERROR_RETURN_NOTHING("second index out of range", GSL_EINVAL) ;
-    }
-#endif
-  m->data[i * m->size2 + j] = x ;
-}
-#endif
-
-#endif /* GSL_MATRIX_H */
+#endif /* !GSL_MATRIX_H */
