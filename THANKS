@@ -270,3 +270,6 @@ minimisers.
 * Aaron Schweiger <aschweig@bu.edu> bug report for SVD/column balancing
 
 * Carlo Ferrigno <ferrigno@pa.iasf.cnr.it> bug report about const problems
+
+* Jussi Piitulainen <jpiitula@ling.helsinki.fi> documenation bug report for
+gsl_ran_hypergeometric_pdf

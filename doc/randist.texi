@@ -1841,6 +1841,7 @@ the formula given above.
 @page
 @node The Hypergeometric Distribution
 @section The Hypergeometric Distribution
+@cindex hypergeometric random variates
 @deftypefn Random {unsigned int} gsl_ran_hypergeometric (const gsl_rng * @var{r}, unsigned int @var{n1}, unsigned int @var{n2}, unsigned int @var{t})
 @cindex Geometric random variates
 This function returns a random integer from the hypergeometric
@@ -1850,25 +1851,26 @@ random variates is,
 @tex
 \beforedisplay
 $$
-p(k) =  C(n_1,k) C(n_2, t-k) / C(n_1+n_2,k)
+p(k) =  C(n_1, k) C(n_2, t - k) / C(n_1 + n_2, t)
 $$
 \afterdisplay
 @end tex
 @ifinfo
 @example
-p(k) =  C(n_1,k) C(n_2, t-k) / C(n_1 + n_2,k)
+p(k) =  C(n_1, k) C(n_2, t - k) / C(n_1 + n_2, t)
 @end example
 @end ifinfo
 @noindent
-where @math{C(a,b) = a!/(b!(a-b)!)}.  The domain of @math{k} is
-@c{$\hbox{max}(0\,t-n_2), \ldots, \hbox{max}(t,n_1)$}
-@math{max(0,t-n_2), ..., max(t,n_1)}.
+where @math{C(a,b) = a!/(b!(a-b)!)} and @math{t < n_1 + n_2}.  The
+domain of @math{k} is 
+@c{$0, \ldots, \hbox{min}(t,n_1)$} 
+@math{0, ..., min(t,n_1)}.
 @end deftypefn
 
 @deftypefun double gsl_ran_hypergeometric_pdf (unsigned int @var{k}, unsigned int @var{n1}, unsigned int @var{n2}, unsigned int @var{t})
 This function computes the probability @math{p(k)} of obtaining @var{k}
 from a hypergeometric distribution with parameters @var{n1}, @var{n2},
-@var{n3}, using the formula given above.
+@var{t}, using the formula given above.
 @end deftypefun
 
 @sp 1
