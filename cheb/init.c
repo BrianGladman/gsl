@@ -55,6 +55,7 @@ gsl_cheb_alloc(const size_t order)
 
 void gsl_cheb_free(gsl_cheb_series * cs)
 {
+  free(cs->f);
   free(cs->c);
   free(cs);
 }
