@@ -1,3 +1,3 @@
 ## Process this file with automake to produce Makefile.in
 
-SUBDIRS = random statistics doc
+info_TEXINFOS = gsl.texi
