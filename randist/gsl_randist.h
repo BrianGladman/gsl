@@ -116,15 +116,15 @@ void * gsl_ran_sample (const gsl_rng * r, void * dest, size_t k, void * src, siz
 
 
 typedef struct {                /* struct for Walker algorithm */
-    int K;
-    int *A;
+    size_t K;
+    size_t *A;
     double *F;
 } gsl_ran_discrete_t;
 
-gsl_ran_discrete_t * gsl_ran_discrete_preproc (int K, const double *P);
+gsl_ran_discrete_t * gsl_ran_discrete_preproc (size_t K, const double *P);
 void gsl_ran_discrete_free(gsl_ran_discrete_t *g);
-int gsl_ran_discrete (const gsl_rng *r, const gsl_ran_discrete_t *g);
-double gsl_ran_discrete_pdf (unsigned int k, const gsl_ran_discrete_t *g);
+size_t gsl_ran_discrete (const gsl_rng *r, const gsl_ran_discrete_t *g);
+double gsl_ran_discrete_pdf (size_t k, const gsl_ran_discrete_t *g);
 
 
 

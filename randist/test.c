@@ -664,7 +664,7 @@ test_discrete1 (void)
 }
 double test_discrete1_pdf (unsigned int n)
 {
-    return gsl_ran_discrete_pdf((int)n,g1);
+    return gsl_ran_discrete_pdf((size_t)n,g1);
 }
 
 double
@@ -678,7 +678,7 @@ test_discrete2 (void)
 }
 double test_discrete2_pdf (unsigned int n)
 {
-    return gsl_ran_discrete_pdf((int)n,g2);
+    return gsl_ran_discrete_pdf((size_t)n,g2);
 }
 
     

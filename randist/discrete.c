@@ -134,60 +134,69 @@
 
 /*** Begin Stack (this code is used just in this file) ***/
 
+/* Stack code converted to use unsigned indices (i.e. s->i == 0 now
+   means an empty stack, instead of -1), for consistency and to give a
+   bigger allowable range. BJG */
+
 typedef struct {
-    int N;                      /* max number of elts on stack */
-    int *v;                     /* array of values on the stack */
-    int i;                      /* index of top of stack */
+    size_t N;                      /* max number of elts on stack */
+    size_t *v;                     /* array of values on the stack */
+    size_t i;                      /* index of top of stack */
 } gsl_stack_t;
 
 static gsl_stack_t *
-new_stack(int N) {
+new_stack(size_t N) {
     gsl_stack_t *s;
     s = (gsl_stack_t *)malloc(sizeof(gsl_stack_t));
     s->N = N;
-    s->i = -1;                  /* indicates stack is empty */
-    s->v = (int *)malloc(sizeof(int)*N);
+    s->i = 0;                  /* indicates stack is empty */
+    s->v = (size_t *)malloc(sizeof(size_t)*N);
     return s;
 }
+
 static void
-push_stack(gsl_stack_t *s, int v)
+push_stack(gsl_stack_t *s, size_t v)
 {
-    s->i += 1;
     if ((s->i) >= (s->N)) {
         fprintf(stderr,"Cannot push stack!\n");
         abort();                /* fatal!! */
     }
     (s->v)[s->i] = v;
+    s->i += 1;
 }
-static int pop_stack(gsl_stack_t *s)
+
+static size_t pop_stack(gsl_stack_t *s)
 {
-    if ((s->i) < 0) {
+    if ((s->i) == 0) {
         fprintf(stderr,"Cannot pop stack!\n");
         abort();
     }
     s->i -= 1;
-    return ((s->v)[s->i + 1]);
+    return ((s->v)[s->i]);
 }
-static inline int size_stack(const gsl_stack_t *s)
+
+static inline size_t size_stack(const gsl_stack_t *s)
 {
-    return s->i + 1;
+    return s->i;
 }
+
 static void free_stack(gsl_stack_t *s)
 {
     free((char *)(s->v));
     free((char *)s);
 }
+
 /*** End Stack ***/
 
 
 /*** Begin Walker's Algorithm ***/
 
 gsl_ran_discrete_t *
-gsl_ran_discrete_preproc(int Kevents, const double *ProbArray)
+gsl_ran_discrete_preproc(size_t Kevents, const double *ProbArray)
 {
-    int k,s,b;
+    size_t k,b,s;
     gsl_ran_discrete_t *g;
-    int nBigs, nSmalls;
+    size_t nBigs, nSmalls;
     gsl_stack_t *Bigs;
     gsl_stack_t *Smalls;
     double *E;
@@ -216,7 +225,7 @@ gsl_ran_discrete_preproc(int Kevents, const double *ProbArray)
     g = (gsl_ran_discrete_t *)malloc(sizeof(gsl_ran_discrete_t));
     g->K = Kevents;
     g->F = (double *)malloc(sizeof(double)*Kevents);
-    g->A = (int *)malloc(sizeof(int)*Kevents);
+    g->A = (size_t *)malloc(sizeof(size_t)*Kevents);
 
     E = (double *)malloc(sizeof(double)*Kevents);
 
@@ -311,17 +320,18 @@ gsl_ran_discrete_preproc(int Kevents, const double *ProbArray)
 
     return g;
 }
-int
+
+size_t
 gsl_ran_discrete(const gsl_rng *r, const gsl_ran_discrete_t *g)
 {
-    int c=0;
+    size_t c=0;
     double u,f;
     u = gsl_rng_uniform(r);
 #if KNUTH_CONVENTION
-    c = (int)(u*(g->K));
+    c = (u*(g->K));
 #else
     u *= g->K;
-    c = (int)u;
+    c = u;
     u -= c;
 #endif
     f = (g->F)[c];
@@ -335,23 +345,25 @@ gsl_ran_discrete(const gsl_rng *r, const gsl_ran_discrete_t *g)
         return (g->A)[c];
     }
 }
+
 void gsl_ran_discrete_free(gsl_ran_discrete_t *g)
 {
     free((char *)(g->A));
     free((char *)(g->F));
     free((char *)g);
 }
+
 double
-gsl_ran_discrete_pdf(unsigned int k, const gsl_ran_discrete_t *g)
+gsl_ran_discrete_pdf(size_t k, const gsl_ran_discrete_t *g)
 {
-    int i,K;
+    size_t i,K;
     double f,p=0;
     K= g->K;
-    if (k>(g->K)) return 0;
-    for (i=0; i<(g->K); ++i) {
+    if (k>K) return 0;
+    for (i=0; i<K; ++i) {
         f = (g->F)[i];
 #if KNUTH_CONVENTION
-        f = (g->K)*f-i;
+        f = K*f-i;
 #endif        
         if (i==k) {
             p += f;
@@ -359,5 +371,5 @@ gsl_ran_discrete_pdf(unsigned int k, const gsl_ran_discrete_t *g)
             p += 1.0 - f;
         }
     }
-    return p/(g->K);
+    return p/K;
 }
