@@ -165,3 +165,5 @@ memory leak
 
 * Hiroshi Imamura <hima@cmt.is.tohoku.ac.jp> extension to psi(1+iy)
 
+* Taliver Heath <taliver@paul.rutgers.edu> keep track of best solution
+in siman_solve.

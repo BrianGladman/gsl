@@ -106,9 +106,9 @@ The @var{params} structure (described below) controls the run by
 providing the temperature schedule and other tunable parameters to the
 algorithm.
 
-On exit the final result is placed in @code{*@var{x0_p}}.  If the
-annealing process has been successful this should be a good
-approximation to the optimal point in the space.
+On exit the best result achieved during the search is placed in
+@code{*@var{x0_p}}.  If the annealing process has been successful this
+should be a good approximation to the optimal point in the space.
 
 If the function pointer @var{print_position} is not null, a debugging
 log will be printed to @code{stdout} with the following columns:

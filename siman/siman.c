@@ -40,8 +40,8 @@ gsl_siman_solve (const gsl_rng * r, void *x0_p, gsl_siman_Efunc_t Ef,
 		 size_t element_size,
 		 gsl_siman_params_t params)
 {
-  void *x, *new_x;
-  double E, new_E;
+  void *x, *new_x, *best_x;
+  double E, new_E, best_E;
   int i, done;
   double T;
   int n_evals = 0, n_iter = 0, n_accepts, n_rejects, n_eless;
@@ -57,11 +57,16 @@ gsl_siman_solve (const gsl_rng * r, void *x0_p, gsl_siman_Efunc_t Ef,
   if (copyfunc) {
     x = copy_constructor(x0_p);
     new_x = copy_constructor(x0_p);
+    best_x = copy_constructor(x0_p);
   } else {
     x = (void *) malloc (element_size);
     memcpy (x, x0_p, element_size);
     new_x = (void *) malloc (element_size);
+    best_x =  (void *) malloc (element_size);
+    memcpy (best_x, x0_p, element_size);
   }
+
+  best_E = Ef(best_x);
 
   T = params.t_initial;
   done = 0;
@@ -72,6 +77,7 @@ gsl_siman_solve (const gsl_rng * r, void *x0_p, gsl_siman_Efunc_t Ef,
 
   while (!done) {
     E = Ef (x);
+
     n_accepts = 0;
     n_rejects = 0;
     n_eless = 0;
@@ -84,6 +90,16 @@ gsl_siman_solve (const gsl_rng * r, void *x0_p, gsl_siman_Efunc_t Ef,
 
       take_step (r, new_x, params.step_size);
       new_E = Ef (new_x);
+
+      if(new_E <= best_E){
+        if (copyfunc) {
+          copyfunc(new_x,best_x);
+        } else {
+          memcpy (best_x, new_x, element_size);
+        }
+        best_E=new_E;
+      }
+
       ++n_evals;		/* keep track of Ef() evaluations */
       /* now take the crucial step: see if the new point is accepted
 	 or not, as determined by the boltzman probability */
@@ -133,17 +149,19 @@ gsl_siman_solve (const gsl_rng * r, void *x0_p, gsl_siman_Efunc_t Ef,
   /* at the end, copy the result onto the initial point, so we pass it
      back to the caller */
   if (copyfunc) {
-    copyfunc(x, x0_p);
+    copyfunc(best_x, x0_p);
   } else {
-    memcpy (x0_p, x, element_size);
+    memcpy (x0_p, best_x, element_size);
   }
 
   if (copyfunc) {
     destructor(x);
     destructor(new_x);
+    destructor(best_x);
   } else {
     free (x);
     free (new_x);
+    free (best_x);
   }
 }
 

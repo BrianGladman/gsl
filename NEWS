@@ -1,5 +1,8 @@
 * What is new in gsl-1.2:
 
+** The simulated annealing routine gsl_siman_solve now keeps track of
+the best solution so far.
+
 ** The values of the physical constants have been updated to the
 CODATA 1998 recommendations.
 
