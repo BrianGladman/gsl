@@ -4,8 +4,7 @@ It is still in early stages of development, but it is being placed on
 ftp://alpha.gnu.org/gnu/ in hopes that others might be interested in
 joining the project.
 
-The random, fft, siman, roots, statistics and specfunc are reasonably
-well developed.  All but the later are documented in gsl-ref.texi.
+See the NEWS file for recent developments.
 
 A test suite is available for most of the libraries.  It can be
 invoked with "make check" in each directory.  All tests can be run

@@ -1,3 +1,8 @@
+1998-08-30  Mark Galassi  <rosalia@cygnus.com>
+
+	* configure.in: upped release number to 0.4; about to tag and make
+	the release.
+
 1998-08-20  Mark Galassi  <rosalia@cygnus.com>
 
 	* configure.in: upped version to 0.4-interim as we prepare for a
