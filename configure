@@ -2221,10 +2221,10 @@ EOF
         ;;
     *-*-sunos4.*) 
         cat >> confdefs.h <<\EOF
-#define HAVE_SUNOS_IEEE_INTERFACE 1
+#define HAVE_SUNOS4_IEEE_INTERFACE 1
 EOF
 
-	echo "$ac_t""sunos" 1>&6 
+	echo "$ac_t""sunos4" 1>&6 
         ;;
     *-*-sunos5.*) 
         cat >> confdefs.h <<\EOF

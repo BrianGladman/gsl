@@ -135,8 +135,8 @@ case "$host" in
 	AC_MSG_RESULT([linux]) 
         ;;
     *-*-sunos4.*) 
-        AC_DEFINE(HAVE_SUNOS_IEEE_INTERFACE)
-	AC_MSG_RESULT([sunos]) 
+        AC_DEFINE(HAVE_SUNOS4_IEEE_INTERFACE)
+	AC_MSG_RESULT([sunos4]) 
         ;;
     *-*-sunos5.*) 
         AC_DEFINE(HAVE_SOLARIS_IEEE_INTERFACE)

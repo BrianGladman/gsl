@@ -41,7 +41,7 @@
 
 /* Define one of these if you have a known IEEE arithmetic interface */
 #undef HAVE_LINUX_IEEE_INTERFACE
-#undef HAVE_SUNOS_IEEE_INTERFACE
+#undef HAVE_SUNOS4_IEEE_INTERFACE
 #undef HAVE_SOLARIS_IEEE_INTERFACE
 #undef HAVE_HPUX_IEEE_INTERFACE
 
