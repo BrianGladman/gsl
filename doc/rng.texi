@@ -1199,7 +1199,7 @@ Algorithms} (Vol 2, 3rd Ed, 1997), Addison-Wesley, ISBN 0201896842.
 @noindent
 Further information is available in the review paper written by Pierre
 L'Ecuyer, available at
-@url{ftp://ftp.iro.umontreal.ca/pub/simulation/lecuyer/papers/handsim.ps}.
+@url{http://www.iro.umontreal.ca/~lecuyer/myftp/papers/handsim.ps}.
 
 On the World Wide Web, see the pLab home page
 (@url{http://random.mat.sbg.ac.at/}) for a lot of information on the
