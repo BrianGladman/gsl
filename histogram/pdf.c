@@ -4,14 +4,17 @@
 #include <gsl_histogram.h>
 
 double
-gsl_histogram_pdf_sample (const gsl_histogram_pdf * p, const double r)
+gsl_histogram_pdf_sample (const gsl_histogram_pdf * p, double r)
 {
   size_t i ;
   int status ;
 
-  if (r == 1.0) {  /* special case prob = 1 */
-    const size_t n = p->nbins ;
-    return p->range[n] ;
+/* Wrap the exclusive top of the bin down to the inclusive bottom of
+   the bin. Since this is a single point it should not affect the
+   distribution. */
+
+  if (r == 1.0) { 
+    r = 0.0 ;
   }
 
   status = gsl_histogram_find_impl (p->nbins, p->sum, r, &i) ;

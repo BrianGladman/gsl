@@ -6,18 +6,21 @@
 
 int
 gsl_histogram2d_pdf_sample (const gsl_histogram2d_pdf * p, 
-			    const double r1, const double r2, 
+			    double r1, double r2, 
 			    double * x, double * y)
 {
   size_t k ;
   int status ;
 
-  if (r1 == 1.0) {  /* special case prob = 1 */
-    const size_t nx = p->nx ;
-    const size_t ny = p->ny ;
-    *x = p->xrange[nx] ;
-    *y = p->yrange[ny-1] + r2 * (p->yrange[ny] - p->yrange[ny-1]) ;
-    return 0 ;
+/* Wrap the exclusive top of the bin down to the inclusive bottom of
+   the bin. Since this is a single point it should not affect the
+   distribution. */
+
+  if (r2 == 1.0) {  
+    r2 = 0.0 ;
+  }                 
+  if (r1 == 1.0) {  
+    r1 = 0.0 ;
   }
 
   status = gsl_histogram_find_impl (p->nx * p->ny, p->sum, r1, &k) ;

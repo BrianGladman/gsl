@@ -7,27 +7,31 @@ int main (void)
 {
   size_t i, j;
   int status = 0 ;
+  double total = 0 ;
+  size_t N = 200000 ;
 
   gsl_histogram2d * h = gsl_histogram2d_calloc_uniform (10, 10,
 						       0.0, 1.0, 
 						       0.0, 1.0) ;
-  
-  gsl_histogram2d_increment (h, 0.1, 0.1) ;
-  gsl_histogram2d_increment (h, 0.2, 0.2) ;
-  gsl_histogram2d_increment (h, 0.2, 0.2) ;
-  gsl_histogram2d_increment (h, 0.3, 0.3) ;
+  for (i = 0; i < 10; i++) {
+    for (j = 0; j < 10; j++) {
+      double w = 10.0*i + j ;
+      total += w ;
+      gsl_histogram2d_accumulate (h, 0.1*i, 0.1*i, w) ;
+    }
+  }
   
   { 
     gsl_histogram2d_pdf * p = gsl_histogram2d_pdf_alloc (h) ;
 
     gsl_histogram2d * hh = gsl_histogram2d_calloc_uniform (20, 20, 
-							  0.0, 1.0,
-							  0.0, 1.0) ;
+							   0.0, 1.0,
+							   0.0, 1.0) ;
     
-    for (i = 0; i < 100000 ; i++)
+    for (i = 0; i < N ; i++)
       {
-	double u = ((double) rand ()) / (1.0 + RAND_MAX);
-	double v = ((double) rand ()) / (1.0 + RAND_MAX);
+	double u = ((double) rand ()) / RAND_MAX;
+	double v = ((double) rand ()) / RAND_MAX;
 	double x, y ;
 	status = gsl_histogram2d_pdf_sample (p, u, v, &x, &y) ;
 	status = gsl_histogram2d_increment (hh, x, y) ;
@@ -38,7 +42,7 @@ int main (void)
       {
 	for (j = 0; j < 20; j++)
 	  {
-	    double z = gsl_histogram2d_get (hh, i, j) / (100000.0 / 16.0)  ;
+	    double z = 4 * total * gsl_histogram2d_get (hh, i, j) / (double)N;
 	    size_t k1, k2 ; double ya ;
 	    double x, xmax, y, ymax;
 
