@@ -124,7 +124,10 @@ g_1(x_1) = [\int dx_1 \ldots dx_n
         @{f^2(x_1,\dots,x_n)\over g_2(x_2)\ldots g_n(x_n) @} ]^(1/2)
 @end equation
 
-FIXME: There is more to say, but it will have to wait.
+Lepage's Vegas is actually a bit fancier than this, combining
+stratified sampling and importance sampling.  The integration
+region is divided into a number of ``boxes'', with each box getting
+in fixed number of points (
 
 @node Interface
 @section Interface
@@ -136,18 +139,13 @@ the integrator itself, and of course a function to free the space
 when done.  For an integrator algorithm, call it COOL
 (substitute any of the currently existing algorithms) we then 
 have
-(FIXME: why does this look like crap?)
 @deftypefun gsl_monte_COOL_state* gsl_monte_COOL_alloc(size_t @var{dim})
-@end deftypefun
-@deftypefun int gsl_monte_COOL_init(gsl_monte_COOL_state* @var{s})
-@end deftypefun
-@deftypefun int gsl_monte_COOL_free(gsl_monte_COOL_state* @var{s}), 
-@end deftypefun
-@deftypefun int gsl_monte_COOL_validate(gsl_monte_COOL_state* @var{s}, 
-        double* @var{x_lower}, double* @var{x_upper}, 
+@deftypefunx int gsl_monte_COOL_init(gsl_monte_COOL_state* @var{s})
+@deftypefunx int gsl_monte_COOL_free(gsl_monte_COOL_state* @var{s}), 
+@deftypefunx int gsl_monte_COOL_validate(gsl_monte_COOL_state* @var{s}, 
+        double *@var{x_lower}, double *@var{x_upper}, 
         unsigned long @var{dimension}, unsigned long @var{function_calls})
-@end deftypefun
-@deftypefun int gsl_monte_COOL_integrate(gsl_monte_COOL_state* @var{s}, 
+@deftypefunx int gsl_monte_COOL_integrate(gsl_monte_COOL_state* @var{s}, 
         double* @var{x_lower}, double* @var{x_upper}, 
         unsigned long @var{dimension}, unsigned long @var{function_calls}, 
         double* @var{result}, double* @var{error},
@@ -166,9 +164,12 @@ which determines which random number generator will be used.
 @end deftypevr
 and
 @deftypevr {Control} int verbose
-which says Whether to print information about the calculation (though
+which says whether to print information about the calculation (though
 the actual use depends on the algorithm).
 @end deftypevr
+In the near future, we expect that there will be a common interface
+for selecting a ``log'' stream for reporting various information
+about the performance of the particular algorithm.  
 
 
 We describe the algorithm-specific variables.  
@@ -210,14 +211,22 @@ The maximum number of iterations to perform.
 @end deftypevr
 @deftypevr {Control} int stage
 Setting this determines the "stage" of the calculation.  Normally,
-@code{stage = 0}.  Calling vegas @code{stage = 1} skips ... FIXME
+@code{stage = 0}.  Calling vegas with @code{stage = 1} retains
+the grid (but not the answers) from the previous run, so that one
+can ``tune'' the grid using a relatively small number of points and 
+then do a large run with @code{stage = 1} on the optimized grid.  Setting
+@code{stage = 2} keeps the grid and the answers from the previous run and
+@code{stage = 3} enters at the main loop, so that nothing is changed -- this
+is like deciding to change @code{max_it_num} during the run.
 @end deftypevr
 @deftypevr {Control} int mode
 The possible choices are @code{GSL_VEGAS_MODE_IMPORTANCE}, 
         @code{GSL_VEGAS_MODE_STRATIFIED}, 
         @code{GSL_VEGAS_MODE_IMPORTANCE_ONLY}. 
 This determines whether vegas will use importance sampling or stratified
-sampling, or whether it can pick on its own.  The p
+sampling, or whether it can pick on its own.  In low dimensions Vegas
+uses strict stratified sampling (more precisely, stratified sampling is
+chosen if there are fewer than 2 bins per box).
 @end deftypevr
 
 
