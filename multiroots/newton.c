@@ -96,7 +96,7 @@ newton_iterate (void * vstate, gsl_multiroot_function_fdf * fdf, gsl_vector * x,
 {
   newton_state_t * state = (newton_state_t *) vstate;
   
-  int signum ;
+  int signum;
 
   size_t i;
 
@@ -116,7 +116,14 @@ newton_iterate (void * vstate, gsl_multiroot_function_fdf * fdf, gsl_vector * x,
       gsl_vector_set (x, i, y - e);
     }
 
-  GSL_MULTIROOT_FN_EVAL_F_DF (fdf, x, f, J);
+  {
+    int status = GSL_MULTIROOT_FN_EVAL_F_DF (fdf, x, f, J);
+    
+    if (status != GSL_SUCCESS) 
+      {
+        return GSL_EBADFUNC;
+      }
+  }
 
   return GSL_SUCCESS;
 }

@@ -117,6 +117,8 @@ dnewton_iterate (void * vstate, gsl_multiroot_function * function, gsl_vector * 
   
   int signum ;
 
+  int status;
+
   size_t i;
 
   size_t n = function->n ;
@@ -135,8 +137,15 @@ dnewton_iterate (void * vstate, gsl_multiroot_function * function, gsl_vector * 
       gsl_vector_set (x, i, y - e);
     }
   
-  GSL_MULTIROOT_FN_EVAL (function, x, f);
-  
+  {
+    int status = GSL_MULTIROOT_FN_EVAL (function, x, f);
+
+    if (status != GSL_SUCCESS) 
+      {
+        return GSL_EBADFUNC;
+      }
+  }
+ 
   gsl_multiroot_fdjacobian (function, x, f, GSL_SQRT_DBL_EPSILON, state->J);
 
   return GSL_SUCCESS;

@@ -273,7 +273,14 @@ new_step:
       gsl_vector_set (x_trial, i, xi + t * pi);
     }
 
-  GSL_MULTIROOT_FN_EVAL (function, x_trial, fnew);
+  { 
+    int status = GSL_MULTIROOT_FN_EVAL (function, x_trial, fnew);
+
+    if (status != GSL_SUCCESS) 
+      {
+        return GSL_EBADFUNC;
+      }
+  }
 
   phi1 = enorm (fnew);
 
@@ -313,7 +320,14 @@ new_step:
           gsl_vector_set (x_trial, i, xi + t * pi);
         }
       
-      GSL_MULTIROOT_FN_EVAL (function, x_trial, fnew);
+      {
+        int status = GSL_MULTIROOT_FN_EVAL (function, x_trial, fnew);
+        
+        if (status != GSL_SUCCESS) 
+          {
+            return GSL_EBADFUNC;
+          }
+      }
       
       phi1 = enorm (fnew);
     }

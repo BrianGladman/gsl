@@ -155,7 +155,14 @@ new_step:
       gsl_vector_set (state->x_trial, i, xi - t*di);
     }
   
-  GSL_MULTIROOT_FN_EVAL_F (fdf, state->x_trial, f);
+  { 
+    int status = GSL_MULTIROOT_FN_EVAL_F (fdf, state->x_trial, f);
+    
+    if (status != GSL_SUCCESS)
+      {
+        return GSL_EBADFUNC;
+      }
+  }
   
   phi1 = enorm (f);
 
@@ -181,7 +188,14 @@ new_step:
       gsl_vector_set (dx, i, -t*di);
     }
 
-  GSL_MULTIROOT_FN_EVAL_DF (fdf, x, J);
+  { 
+    int status = GSL_MULTIROOT_FN_EVAL_DF (fdf, x, J);
+    
+    if (status != GSL_SUCCESS)
+      {
+        return GSL_EBADFUNC;
+      }
+  }
 
   state->phi = phi1;
 

@@ -68,7 +68,16 @@ gsl_multiroot_fdjacobian (gsl_multiroot_function * F,
 	  }
 
 	gsl_vector_set (x1, j, xj + dx);
-	GSL_MULTIROOT_FN_EVAL (F, x1, f1);
+        
+        {
+          int status = GSL_MULTIROOT_FN_EVAL (F, x1, f1);
+
+          if (status != GSL_SUCCESS) 
+            {
+              return GSL_EBADFUNC;
+            }
+        }
+
 	gsl_vector_set (x1, j, xj);
 
 	for (i = 0; i < m; i++)

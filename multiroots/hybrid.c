@@ -454,8 +454,15 @@ iterate (void *vstate, gsl_multiroot_function * func, gsl_vector * x, gsl_vector
 
   /* Evaluate function at x + p */
 
-  GSL_MULTIROOT_FN_EVAL (func, x_trial, f_trial);
+  {
+    int status = GSL_MULTIROOT_FN_EVAL (func, x_trial, f_trial);
 
+    if (status != GSL_SUCCESS) 
+      {
+        return GSL_EBADFUNC;
+      }
+  }
+  
   /* Set df = f_trial - f */
 
   compute_df (f_trial, f, df);

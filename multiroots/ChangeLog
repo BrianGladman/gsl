@@ -1,3 +1,26 @@
+Thu Nov 30 21:48:39 2000  Brian Gough  <bjg@network-theory.co.uk>
+
+	* newton.c (newton_iterate): return GSL_EBADFUNC if error in
+ 	function evaluation
+
+	* hybridj.c (iterate): return GSL_EBADFUNC if error in
+ 	function evaluation
+
+	* hybrid.c (iterate): return GSL_EBADFUNC if error in function
+ 	evaluation
+
+	* gnewton.c (gnewton_iterate): return GSL_EBADFUNC if error in
+ 	function evaluation
+
+	* fdjac.c (gsl_multiroot_fdjacobian): return GSL_EBADFUNC if error
+ 	in function evaluation
+
+	* dnewton.c (dnewton_iterate): return GSL_EBADFUNC if error in
+ 	function evaluation
+
+	* broyden.c (broyden_iterate): return GSL_EBADFUNC if error in
+ 	function evaluation
+
 Sun Aug 27 13:43:13 2000  Brian Gough  <bjg@network-theory.co.uk>
 
 	* hybridj.c hybrid.c dogleg.c: begin comments with a capital

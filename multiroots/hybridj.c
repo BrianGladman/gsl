@@ -425,7 +425,14 @@ iterate (void *vstate, gsl_multiroot_function_fdf * fdf, gsl_vector * x, gsl_vec
 
   /* Evaluate function at x + p */
 
-  GSL_MULTIROOT_FN_EVAL_F (fdf, x_trial, f_trial);
+  {
+    int status = GSL_MULTIROOT_FN_EVAL_F (fdf, x_trial, f_trial);
+
+    if (status != GSL_SUCCESS) 
+      {
+        return GSL_EBADFUNC;
+      }
+  }
 
   /* Set df = f_trial - f */
 
@@ -498,7 +505,14 @@ iterate (void *vstate, gsl_multiroot_function_fdf * fdf, gsl_vector * x, gsl_vec
 
   if (state->ncfail == 2)
     {
-      GSL_MULTIROOT_FN_EVAL_DF (fdf, x, J);
+      {
+        int status = GSL_MULTIROOT_FN_EVAL_DF (fdf, x, J);
+        
+        if (status != GSL_SUCCESS) 
+          {
+            return GSL_EBADFUNC;
+          }
+      }
 
       state->nslow2++;
 
