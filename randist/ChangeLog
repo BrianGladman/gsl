@@ -1,5 +1,10 @@
 Tue Jul 14 12:39:30 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
+	* poisson.c (gsl_ran_poisson): fixed a serious bug in the unrolled
+ 	recursion which led to an incorrect result being returned for the
+ 	large t case. This shows the importance of tests that cover all
+ 	possible branches!!!
+
 	* erlang.c (gsl_ran_erlang_pdf): renamed mu to a for consistency
 
 Thu Jul  2 15:47:05 1998  Brian Gough  <bjg@vvv.lanl.gov>

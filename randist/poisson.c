@@ -25,12 +25,12 @@ gsl_ran_poisson (const gsl_rng * r, double mu)
 
       if (X >= mu)
 	{
-	  return gsl_ran_binomial (r, mu / X, m - 1);
+	  return n + gsl_ran_binomial (r, mu / X, m - 1);
 	}
       else
 	{
 	  n += m;
-	  mu -= X;
+	  mu -= X; 
 	}
     }
 
