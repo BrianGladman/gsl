@@ -15,6 +15,7 @@ include_HEADERS = \
 	gsl_sf_expint.h        	\
 	gsl_sf_fermi_dirac.h	\
 	gsl_sf_gamma.h      	\
+	gsl_sf_hyperg.h		\
 	gsl_sf_laguerre.h   	\
 	gsl_sf_legendre.h	\
 	gsl_sf_log.h 		\
@@ -70,6 +71,7 @@ libgslspecfunc_la_SOURCES = 	\
 	expint.c		\
 	fermi_dirac.c		\
 	gamma.c			\
+	hyperg_2F1.c		\
 	laguerre.c		\
 	legendre_con.c		\
 	legendre_poly.c		\

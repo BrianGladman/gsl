@@ -69,7 +69,7 @@ VERSION = @VERSION@
 full_top_builddir = @full_top_builddir@
 full_top_srcdir = @full_top_srcdir@
 
-lib_LIBRARIES = libgslspecfunc.a 
+lib_LTLIBRARIES = libgslspecfunc.la 
 
 check_PROGRAMS = test_sf
 
@@ -86,6 +86,7 @@ include_HEADERS = \
 	gsl_sf_expint.h        	\
 	gsl_sf_fermi_dirac.h	\
 	gsl_sf_gamma.h      	\
+	gsl_sf_hyperg.h		\
 	gsl_sf_laguerre.h   	\
 	gsl_sf_legendre.h	\
 	gsl_sf_log.h 		\
@@ -103,11 +104,11 @@ INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../err -I$(srcdir)/../integration
 
 TESTS = test_sf
 
-test_sf_LDADD = libgslspecfunc.a ../err/libgslerr.a ../err/libgsltest.a ../utils/libutils.a
-test_sf_DEPENDENCIES = libgslspecfunc.a
+test_sf_LDADD = libgslspecfunc.la ../err/libgslerr.la ../err/libgsltest.la ../utils/libutils.a
+test_sf_DEPENDENCIES = libgslspecfunc.la
 test_sf_SOURCES = test_sf.c
 
-libgslspecfunc_a_SOURCES = 	\
+libgslspecfunc_la_SOURCES = 	\
 	airy.c			\
 	airy_der.c		\
 	bessel.c		\
@@ -138,6 +139,7 @@ libgslspecfunc_a_SOURCES = 	\
 	expint.c		\
 	fermi_dirac.c		\
 	gamma.c			\
+	hyperg_2F1.c		\
 	laguerre.c		\
 	legendre_con.c		\
 	legendre_poly.c		\
@@ -149,33 +151,35 @@ libgslspecfunc_a_SOURCES = 	\
 	shint.c			\
 	sig2lamp.c		\
 	sinint.c		\
-	t-erf.c			\
 	trig.c			\
 	zeta.c
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
 CONFIG_CLEAN_FILES = 
-LIBRARIES =  $(lib_LIBRARIES)
+LTLIBRARIES =  $(lib_LTLIBRARIES)
 
 
 DEFS = @DEFS@ -I. -I$(srcdir) -I..
 CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
-libgslspecfunc_a_LIBADD = 
-libgslspecfunc_a_OBJECTS =  airy.o airy_der.o bessel.o bessel_I0.o \
-bessel_I1.o bessel_In.o bessel_J0.o bessel_J1.o bessel_Jn.o bessel_K0.o \
-bessel_K1.o bessel_Kn.o bessel_Y0.o bessel_Y1.o bessel_Yn.o \
-bessel_amp_phase.o bessel_i.o bessel_j.o bessel_k.o bessel_olver.o \
-bessel_y.o chebyshev.o dilog.o ellint.o erfc.o expint.o fermi_dirac.o \
-gamma.o laguerre.o legendre_con.o legendre_poly.o log.o poly.o \
-pow_int.o psi.o shint.o sig2lamp.o sinint.o t-erf.o trig.o zeta.o
-AR = ar
+libgslspecfunc_la_LDFLAGS = 
+libgslspecfunc_la_LIBADD = 
+libgslspecfunc_la_OBJECTS =  airy.lo airy_der.lo bessel.lo bessel_I0.lo \
+bessel_I1.lo bessel_In.lo bessel_J0.lo bessel_J1.lo bessel_Jn.lo \
+bessel_K0.lo bessel_K1.lo bessel_Kn.lo bessel_Y0.lo bessel_Y1.lo \
+bessel_Yn.lo bessel_amp_phase.lo bessel_i.lo bessel_j.lo bessel_k.lo \
+bessel_olver.lo bessel_y.lo chebyshev.lo dilog.lo ellint.lo erfc.lo \
+expint.lo fermi_dirac.lo gamma.lo hyperg_2F1.lo laguerre.lo \
+legendre_con.lo legendre_poly.lo log.lo poly.lo pow_int.lo psi.lo \
+shint.lo sig2lamp.lo sinint.lo trig.lo zeta.lo
 test_sf_OBJECTS =  test_sf.o
 test_sf_LDFLAGS = 
+LIBTOOL = @LIBTOOL@
 CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
-LINK = $(CC) $(CFLAGS) $(LDFLAGS) -o $@
+LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
+LINK = $(LIBTOOL) --mode=link $(CC) $(CFLAGS) $(LDFLAGS) -o $@
 HEADERS =  $(include_HEADERS) $(noinst_HEADERS)
 
 DIST_COMMON =  ChangeLog Makefile.am Makefile.in
@@ -192,17 +196,17 @@ DEP_FILES =  .deps/airy.P .deps/airy_der.P .deps/bessel.P \
 .deps/bessel_amp_phase.P .deps/bessel_i.P .deps/bessel_j.P \
 .deps/bessel_k.P .deps/bessel_olver.P .deps/bessel_y.P \
 .deps/chebyshev.P .deps/dilog.P .deps/ellint.P .deps/erfc.P \
-.deps/expint.P .deps/fermi_dirac.P .deps/gamma.P .deps/laguerre.P \
-.deps/legendre_con.P .deps/legendre_poly.P .deps/log.P .deps/poly.P \
-.deps/pow_int.P .deps/psi.P .deps/shint.P .deps/sig2lamp.P \
-.deps/sinint.P .deps/t-erf.P .deps/test_sf.P .deps/trig.P .deps/zeta.P
-SOURCES = $(libgslspecfunc_a_SOURCES) $(test_sf_SOURCES)
-OBJECTS = $(libgslspecfunc_a_OBJECTS) $(test_sf_OBJECTS)
+.deps/expint.P .deps/fermi_dirac.P .deps/gamma.P .deps/hyperg_2F1.P \
+.deps/laguerre.P .deps/legendre_con.P .deps/legendre_poly.P .deps/log.P \
+.deps/poly.P .deps/pow_int.P .deps/psi.P .deps/shint.P .deps/sig2lamp.P \
+.deps/sinint.P .deps/test_sf.P .deps/trig.P .deps/zeta.P
+SOURCES = $(libgslspecfunc_la_SOURCES) $(test_sf_SOURCES)
+OBJECTS = $(libgslspecfunc_la_OBJECTS) $(test_sf_OBJECTS)
 
-all: Makefile $(LIBRARIES) $(HEADERS)
+all: Makefile $(LTLIBRARIES) $(HEADERS)
 
 .SUFFIXES:
-.SUFFIXES: .S .c .o .s
+.SUFFIXES: .S .c .lo .o .s
 $(srcdir)/Makefile.in: Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4)
 	cd $(top_srcdir) && $(AUTOMAKE) --gnu specfunc/Makefile
 
@@ -211,36 +215,29 @@ Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status $(BUILT_SOURCES)
 	  && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
 
-mostlyclean-libLIBRARIES:
+mostlyclean-libLTLIBRARIES:
 
-clean-libLIBRARIES:
-	-test -z "$(lib_LIBRARIES)" || rm -f $(lib_LIBRARIES)
+clean-libLTLIBRARIES:
+	-test -z "$(lib_LTLIBRARIES)" || rm -f $(lib_LTLIBRARIES)
 
-distclean-libLIBRARIES:
+distclean-libLTLIBRARIES:
 
-maintainer-clean-libLIBRARIES:
+maintainer-clean-libLTLIBRARIES:
 
-install-libLIBRARIES: $(lib_LIBRARIES)
+install-libLTLIBRARIES: $(lib_LTLIBRARIES)
 	@$(NORMAL_INSTALL)
 	$(mkinstalldirs) $(DESTDIR)$(libdir)
-	list='$(lib_LIBRARIES)'; for p in $$list; do \
+	@list='$(lib_LTLIBRARIES)'; for p in $$list; do \
 	  if test -f $$p; then \
 	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(libdir)/$$p"; \
-	    $(INSTALL_DATA) $$p $(DESTDIR)$(libdir)/$$p; \
-	  else :; fi; \
-	done
-	@$(POST_INSTALL)
-	@list='$(lib_LIBRARIES)'; for p in $$list; do \
-	  if test -f $$p; then \
-	    echo " $(RANLIB) $(DESTDIR)$(libdir)/$$p"; \
-	    $(RANLIB) $(DESTDIR)$(libdir)/$$p; \
+	     $(INSTALL_DATA) $$p $(DESTDIR)$(libdir)/$$p; \
 	  else :; fi; \
 	done
 
-uninstall-libLIBRARIES:
+uninstall-libLTLIBRARIES:
 	@$(NORMAL_UNINSTALL)
-	list='$(lib_LIBRARIES)'; for p in $$list; do \
-	  rm -f $(DESTDIR)$(libdir)/$$p; \
+	list='$(lib_LTLIBRARIES)'; for p in $$list; do \
+	   rm -f $(DESTDIR)$(libdir)/$$p; \
 	done
 
 .s.o:
@@ -259,10 +256,24 @@ distclean-compile:
 
 maintainer-clean-compile:
 
-libgslspecfunc.a: $(libgslspecfunc_a_OBJECTS) $(libgslspecfunc_a_DEPENDENCIES)
-	-rm -f libgslspecfunc.a
-	$(AR) cru libgslspecfunc.a $(libgslspecfunc_a_OBJECTS) $(libgslspecfunc_a_LIBADD)
-	$(RANLIB) libgslspecfunc.a
+.s.lo:
+	$(LIBTOOL) --mode=compile $(COMPILE) -c $<
+
+.S.lo:
+	$(LIBTOOL) --mode=compile $(COMPILE) -c $<
+
+mostlyclean-libtool:
+	-rm -f *.lo
+
+clean-libtool:
+	-rm -rf .libs _libs
+
+distclean-libtool:
+
+maintainer-clean-libtool:
+
+libgslspecfunc.la: $(libgslspecfunc_la_OBJECTS) $(libgslspecfunc_la_DEPENDENCIES)
+	$(LINK) -rpath $(libdir) $(libgslspecfunc_la_LDFLAGS) $(libgslspecfunc_la_OBJECTS) $(libgslspecfunc_la_LIBADD) $(LIBS)
 
 mostlyclean-checkPROGRAMS:
 
@@ -387,7 +398,7 @@ dvi:
 check: all $(check_PROGRAMS)
 	$(MAKE) check-TESTS
 installcheck:
-install-exec: install-libLIBRARIES
+install-exec: install-libLTLIBRARIES
 	@$(NORMAL_INSTALL)
 
 install-data: install-includeHEADERS
@@ -396,7 +407,7 @@ install-data: install-includeHEADERS
 install: install-exec install-data all
 	@:
 
-uninstall: uninstall-libLIBRARIES uninstall-includeHEADERS
+uninstall: uninstall-libLTLIBRARIES uninstall-includeHEADERS
 
 install-strip:
 	$(MAKE) INSTALL_PROGRAM='$(INSTALL_PROGRAM) -s' INSTALL_SCRIPT='$(INSTALL_PROGRAM)' install
@@ -418,29 +429,34 @@ distclean-generic:
 maintainer-clean-generic:
 	-test -z "$(MAINTAINERCLEANFILES)" || rm -f $(MAINTAINERCLEANFILES)
 	-test -z "$(BUILT_SOURCES)" || rm -f $(BUILT_SOURCES)
-mostlyclean:  mostlyclean-libLIBRARIES mostlyclean-compile \
-		mostlyclean-checkPROGRAMS mostlyclean-tags \
-		mostlyclean-depend mostlyclean-generic
+mostlyclean:  mostlyclean-libLTLIBRARIES mostlyclean-compile \
+		mostlyclean-libtool mostlyclean-checkPROGRAMS \
+		mostlyclean-tags mostlyclean-depend mostlyclean-generic
 
-clean:  clean-libLIBRARIES clean-compile clean-checkPROGRAMS clean-tags \
-		clean-depend clean-generic mostlyclean
+clean:  clean-libLTLIBRARIES clean-compile clean-libtool \
+		clean-checkPROGRAMS clean-tags clean-depend \
+		clean-generic mostlyclean
 
-distclean:  distclean-libLIBRARIES distclean-compile \
+distclean:  distclean-libLTLIBRARIES distclean-compile distclean-libtool \
 		distclean-checkPROGRAMS distclean-tags distclean-depend \
 		distclean-generic clean
 	-rm -f config.status
+	-rm -f libtool
 
-maintainer-clean:  maintainer-clean-libLIBRARIES \
-		maintainer-clean-compile maintainer-clean-checkPROGRAMS \
-		maintainer-clean-tags maintainer-clean-depend \
-		maintainer-clean-generic distclean
+maintainer-clean:  maintainer-clean-libLTLIBRARIES \
+		maintainer-clean-compile maintainer-clean-libtool \
+		maintainer-clean-checkPROGRAMS maintainer-clean-tags \
+		maintainer-clean-depend maintainer-clean-generic \
+		distclean
 	@echo "This command is intended for maintainers to use;"
 	@echo "it deletes files that may require special tools to rebuild."
 
-.PHONY: mostlyclean-libLIBRARIES distclean-libLIBRARIES \
-clean-libLIBRARIES maintainer-clean-libLIBRARIES uninstall-libLIBRARIES \
-install-libLIBRARIES mostlyclean-compile distclean-compile \
-clean-compile maintainer-clean-compile mostlyclean-checkPROGRAMS \
+.PHONY: mostlyclean-libLTLIBRARIES distclean-libLTLIBRARIES \
+clean-libLTLIBRARIES maintainer-clean-libLTLIBRARIES \
+uninstall-libLTLIBRARIES install-libLTLIBRARIES mostlyclean-compile \
+distclean-compile clean-compile maintainer-clean-compile \
+mostlyclean-libtool distclean-libtool clean-libtool \
+maintainer-clean-libtool mostlyclean-checkPROGRAMS \
 distclean-checkPROGRAMS clean-checkPROGRAMS \
 maintainer-clean-checkPROGRAMS uninstall-includeHEADERS \
 install-includeHEADERS tags mostlyclean-tags distclean-tags clean-tags \
@@ -451,6 +467,7 @@ mostlyclean-generic distclean-generic clean-generic \
 maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 
 #	coulomb.c		\ doesn't work yet
+#	t-erf.c			\
 
 strict:
 	$(MAKE) CFLAGS="-ansi -pedantic -W -Wall -Wtraditional -Wconversion -Wshadow -Wpointer-arith -Wcast-qual -Wcast-align -Wwrite-strings -Waggregate-return -Wstrict-prototypes -fshort-enums -fno-common -Wmissing-prototypes -Wnested-externs -g -O4 -Dinline=''"
