@@ -17,6 +17,8 @@ main (void)
   rng_test (gsl_rng_minstd,1,10000,1043618065);
   generic_rng_test (gsl_rng_minstd);
 
+  rng_test (gsl_rng_bad_randu,1,10000,1623524161);
+
   /* generic statistical tests */
 
   generic_rng_test (gsl_rng_cmrg);
@@ -114,8 +116,8 @@ rng_test (const gsl_rng_type * T, unsigned int seed, unsigned int n,
     }
 
   status = (k != result) ;
-  gsl_test(status, "%s gives expected result (%u observed vs %u expected)",
-	   gsl_rng_name(r), k, result) ;
+  gsl_test(status, "%s, %u iterations (%u observed vs %u expected)",
+	   gsl_rng_name(r), n, k, result) ;
  
   gsl_rng_free(r) ;
 }

@@ -2,11 +2,19 @@
 #include <stdlib.h>
 #include <gsl_rng.h>
 
-/* This is a reincarnation of the infamously bad RANDU generator,
+/* This is a reincarnation of the infamously bad RANDU generator.
+   The sequence is,
+   
+         x_{n+1} = (a x_n) mod m
 
-   y -> (65539 * y) mod 2^31
+   with a = 65539 and m = 2^31 = 2147483648. The seed specifies
+   the initial value, x_0.
 
-   Knuth describes it as "really horrible".  */
+   Knuth describes this generator as "really horrible". 
+
+   From: Park and Miller, "Random Number Generators: Good ones are
+   hard to find" Communications of the ACM, October 1988, Volume 31,
+   No 10, pages 1192-1201. */
 
 unsigned long int bad_randu_get (void * vstate);
 void bad_randu_set (void * state, unsigned int s);
@@ -14,7 +22,7 @@ void bad_randu_set_with_state (void * vstate, const void * vinit_state,
 			 unsigned int s);
 
 static const int a = 65539 ;
-static const unsigned int m = 2147483648UL ;
+static const unsigned long int m = 2147483648UL ;
 static const int q = 32766 ;
 static const int r = 32774 ;
 
@@ -25,14 +33,21 @@ typedef struct {
 unsigned long int bad_randu_get (void *vstate)
 {
     bad_randu_state_t * state = (bad_randu_state_t *)vstate;
-    int x = state->x ;
 
-    unsigned int h = x / q ;
-    x = q * (x - h * q) - h * r ;
-    if (x < 0) x += m ;
+    const unsigned int x = state->x ;
 
-    state->x = x ;
+    const int h = x / q ;
+    const int t = a * (x - h * q) - h * r ;
 
+    if (t < 0) 
+      {
+	state->x = t + m;
+      }
+    else
+      {
+	state->x = t ;
+      }
+    
     return state->x;
 }
 
