@@ -38,7 +38,7 @@ double gsl_complex_float_imag(const gsl_complex_float * z);
 
 #ifdef HAVE_INLINE
 
-inline
+extern inline
 void
 gsl_complex_set(gsl_complex * z, double re, double im)
 {
@@ -46,14 +46,14 @@ gsl_complex_set(gsl_complex * z, double re, double im)
   GSL_COMPLEX_P_IMAG(z) = im;
 }
 
-inline
+extern inline
 double
 gsl_complex_real(const gsl_complex * z)
 {
   return GSL_COMPLEX_P_REAL(z);
 }
 
-inline
+extern inline
 double
 gsl_complex_imag(const gsl_complex * z)
 {
