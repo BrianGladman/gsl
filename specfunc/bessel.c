@@ -32,24 +32,19 @@ static int Inu_Jnu_taylorsum(const double nu, const double x,
 {
   int k;
   double y = sign * 0.25 * x*x;
-  
-  double kfact  = 1.;
-  double nuprod = 1.;
-  double yprod  = 1.;
-  double ans    = 1.;
-  double delta;
- 
+
+  double sum  = 1.0;
+  double term = 1.0;
+
   for(k=1; k<=kmax; k++) {
-    nuprod *= (nu + k);
-    kfact  *= k;
-    yprod  *= y;
-    delta = yprod / (kfact * nuprod);
-    ans += delta;
+    term *= y/(nu+k)/k;
+    sum  += term;
+    if(fabs(term/sum) < GSL_MACH_EPS) break;
   }
-  
-  *result = ans;
-  
-  if(fabs(delta) > 10. * GSL_MACH_EPS) {
+
+  *result = sum;
+
+  if(fabs(term) > 10.0 * GSL_MACH_EPS) {
     return GSL_ELOSS;
   }
   else {
@@ -201,39 +196,38 @@ int gsl_sf_bessel_Inu_Jnu_taylor_impl(const double nu, const double x,
   if(nu < 0.0 || x < 0.0) {
     return GSL_EDOM;
   }
-  
-  if(nu > 0. && x > 0.) {
-    double g;
-    int status = gsl_sf_lngamma_impl(nu+1., &g);  /* ok by construction */
-    double ln_pre = nu*log(0.5*x) - g;
-    if(ln_pre > GSL_LOG_DBL_MIN + 1.) {
+  else if(x == 0.0) {
+    if(nu == 0.0) {
+      *result = 1.0;
+    }
+    else {
+      *result = 0.0;
+    }
+    return GSL_SUCCESS;
+  }
+  else if(nu == 0.0) {
+    int status = Inu_Jnu_taylorsum(nu, x, sign, kmax, result);
+    return status;
+  }
+  else if(nu > 0.0 && x > 0.0) {
+    double lg;
+    double ln_pre;
+    gsl_sf_lngamma_impl(nu+1.0, &lg);  /* ok by construction */
+    ln_pre = nu*log(0.5*x) - lg;
+    if(ln_pre > GSL_LOG_DBL_MIN + 1.0) {
       double pre = exp(ln_pre);
       double ts;
-      status = Inu_Jnu_taylorsum(nu, x, sign, kmax, &ts);
+      int status = Inu_Jnu_taylorsum(nu, x, sign, kmax, &ts);
       *result = pre * ts;
       return status;
     }
     else {
-      *result = 0.;
+      *result = 0.0;
       return GSL_EUNDRFLW;
     }
   }
   
-  if(x == 0. && nu == 0.) {
-    *result= 1.;
-    return GSL_SUCCESS;
-  }
-  else if(x == 0.) {
-    *result = 0.;
-    return GSL_SUCCESS;
-  }
-  else if(nu == 0.) {
-    int status = Inu_Jnu_taylorsum(nu, x, sign, kmax, result);
-    return status;
-  }
-  else {
-    return GSL_SUCCESS; /* NOT REACHED */
-  }
+
 }
 
 

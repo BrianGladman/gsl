@@ -34,7 +34,7 @@ double  gsl_sf_bessel_Jn(int n, double x);
 
 /* Regular Bessel Function J_n(x),  nmin <= n <= nmax
  *
- * exceptions: GSL_EUNDRFLW
+ * exceptions: GSL_EDOM, GSL_EUNDRFLW
  */
 int gsl_sf_bessel_Jn_array_impl(int nmin, int nmax, double x, double * result_array);
 int gsl_sf_bessel_Jn_array_e(int nmin, int nmax, double x, double * result_array);
@@ -106,6 +106,15 @@ int     gsl_sf_bessel_In_e(int n, double x, double * result);
 double  gsl_sf_bessel_In(int n, double x);
 
 
+/* Regular modified Bessel function  I_n(x) for n=nmin,...,nmax
+ *
+ * nmin >=0, nmax >= nmin
+ * exceptions: GSL_EDOM, GSL_EOVRFLW, GSL_EUNDRFLW
+ */
+int gsl_sf_bessel_In_array_impl(int nmin, int nmax, double x, double * result_array);
+int gsl_sf_bessel_In_array_e(int nmin, int nmax, double x, double * result_array);
+
+
 /* Scaled regular modified Bessel function
  *  exp(-|x|) I_0(x)
  *
@@ -137,12 +146,13 @@ double  gsl_sf_bessel_In_scaled(int n, double x);
 
 
 /* Scaled regular modified Bessel function
- *  exp(-|x|) I_k(x)  for k=0,1,...,n
+ *  exp(-|x|) I_n(x)  for n=nmin,...,nmax
  *
+ * nmin >=0, nmax >= nmin
  * exceptions: GSL_EUNDRFLW
  */
-int  gsl_sf_bessel_In_scaled_array_impl(int n, double x, double * result_array);
-int  gsl_sf_bessel_In_scaled_array_e(int n, double x, double * result_array);
+int gsl_sf_bessel_In_scaled_array_impl(int nmin, int nmax, double x, double * result_array);
+int gsl_sf_bessel_In_scaled_array_e(int nmin, int nmax, double x, double * result_array);
 
 
 /* Irregular modified Bessel function K_0(x)
@@ -173,6 +183,15 @@ double  gsl_sf_bessel_K1(double x);
 int     gsl_sf_bessel_Kn_impl(int n, double x, double * result);
 int     gsl_sf_bessel_Kn_e(int n, double x, double * result);
 double  gsl_sf_bessel_Kn(int n, double x);
+
+
+/* Irregular modified Bessel function  K_n(x)  for n=nmin,...,nmax
+ *
+ * x > 0.0, nmin >=0, nmax >= nmin
+ * exceptions: GSL_EDOM, GSL_EOVRFLW, GSL_EUNDRFLW
+ */
+int gsl_sf_bessel_Kn_array_impl(int nmin, int nmax, double x, double * result_array);
+int gsl_sf_bessel_Kn_array_e(int nmin, int nmax, double x, double * result_array);
 
 
 /* Scaled irregular modified Bessel function
@@ -208,7 +227,16 @@ int     gsl_sf_bessel_Kn_scaled_e(int n, double x, double * result);
 double  gsl_sf_bessel_Kn_scaled(int n, double x);
 
 
-/* Regular spherical Bessel function j_0(x)
+/* Scaled irregular modified Bessel function  exp(x) K_n(x)  for n=nmin,...,nmax
+ *
+ * x > 0.0, nmin >=0, nmax >= nmin
+ * exceptions: GSL_EDOM, GSL_EUNDRFLW
+ */
+int gsl_sf_bessel_Kn_scaled_array_impl(int nmin, int nmax, double x, double * result_array);
+int gsl_sf_bessel_Kn_scaled_array_e(int nmin, int nmax, double x, double * result_array);
+
+
+/* Regular spherical Bessel function j_0(x) = sin(x)/x
  *
  * exceptions: none
  */
@@ -217,7 +245,7 @@ int     gsl_sf_bessel_j0_e(double x, double * result);
 double  gsl_sf_bessel_j0(double x);
 
 
-/* Regular spherical Bessel function j_1(x)
+/* Regular spherical Bessel function j_1(x) = (sin(x)/x - cos(x))/x
  *
  * exceptions: GSL_EUNDRFLW
  */
@@ -226,7 +254,7 @@ int     gsl_sf_bessel_j1_e(double x, double * result);
 double  gsl_sf_bessel_j1(double x);
 
 
-/* Regular spherical Bessel function j_2(x)
+/* Regular spherical Bessel function j_2(x) = ((3/x^2 - 1)sin(x) - 3cos(x)/x)/x
  *
  * exceptions: GSL_EUNDRFLW
  */
@@ -237,7 +265,8 @@ double  gsl_sf_bessel_j2(double x);
 
 /* Regular spherical Bessel function j_l(x)
  *
- * exceptions: GSL_EUNDRFLW
+ * l >= 0, x >= 0.0
+ * exceptions: GSL_EDOM, GSL_EUNDRFLW
  */
 int     gsl_sf_bessel_jl_impl(int l, double x, double * result);
 int     gsl_sf_bessel_jl_e(int l, double x, double * result);
@@ -246,11 +275,18 @@ double  gsl_sf_bessel_jl(int l, double x);
 
 /* Regular spherical Bessel function j_l(x) for l=0,1,...,lmax
  *
- * exceptions: GSL_EUNDRFLW
+ * exceptions: GSL_EDOM, GSL_EUNDRFLW
  */
 int gsl_sf_bessel_jl_array_impl(int lmax, double x, double * result_array);
 int gsl_sf_bessel_jl_array_e(int lmax, double x, double * result_array);
-int gsl_sf_bessel_j_steed_array_impl(int lmax, double x, double * jl_x);
+
+
+/* Regular spherical Bessel function j_l(x) for l=0,1,...,lmax
+ * Uses Steed's method.
+ *
+ * exceptions: GSL_EDOM, GSL_EUNDRFLW
+ */
+int gsl_sf_bessel_jl_steed_array_impl(int lmax, double x, double * jl_x_array);
 
 
 /* Irregular spherical Bessel function y_0(x)

@@ -145,7 +145,9 @@ gsl_sf_bessel_Yn_impl(int n, const double x, double * result)
 int
 gsl_sf_bessel_Yn_array_impl(const int nmin, const int nmax, const double x, double * result_array)
 {
-  if(x <= 0.0) {
+  if(nmin < 0 || nmax < nmin || x <= 0.0) {
+    int j;
+    for(j=0; j<=nmax-nmin; j++) result_array[j] = 0.0;
     return GSL_EDOM;
   }
   else {

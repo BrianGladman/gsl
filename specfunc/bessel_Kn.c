@@ -9,7 +9,7 @@
 #include "gsl_sf_psi.h"
 #include "gsl_sf_bessel.h"
 
-#define Min(a,b) ((a) < (b) ? (a) : (b))
+#define locMIN(a,b) ((a) < (b) ? (a) : (b))
 
 
 /*-*-*-*-*-*-*-*-*-*-*-* Private Section *-*-*-*-*-*-*-*-*-*-*-*/
@@ -93,7 +93,7 @@ int gsl_sf_bessel_Kn_scaled_impl(int n, const double x, double * result)
   else if(GSL_ROOT3_MACH_EPS * x > 0.25 * (n*n + 1)) {
     return gsl_sf_bessel_Knu_scaled_asympx_impl((double)n, x, result);
   }
-  else if(Min( 0.29/(n*n), 0.5/(n*n + x*x) ) < GSL_ROOT3_MACH_EPS) {
+  else if(locMIN( 0.29/(n*n), 0.5/(n*n + x*x) ) < GSL_ROOT3_MACH_EPS) {
     return gsl_sf_bessel_Knu_scaled_asymp_unif_impl((double)n, x, result);
   }
   else {
@@ -118,46 +118,61 @@ int gsl_sf_bessel_Kn_scaled_impl(int n, const double x, double * result)
 }
 
 /* checked OK [GJ] Sun May  3 21:50:17 EDT 1998 */
-int gsl_sf_bessel_Kn_scaled_array_impl(int n, const double x, double * result_array)
+int gsl_sf_bessel_Kn_scaled_array_impl(const int nmin, const int nmax, const double x, double * result_array)
 {
-  n = abs(n); /* K(-n, z) = K(n, z) */
-  
-  if(x <= 0.) return GSL_EDOM;
-
-  if(n == 0) {
+  if(nmin < 0 || nmax < nmin || x <= 0.0) {
+    int j;
+    for(j=0; j<=nmax-nmin; j++) result_array[j] = 0.0;
+    return GSL_EDOM;
+  }
+  else if(nmax == 0) {
     return gsl_sf_bessel_K0_scaled_impl(x, &(result_array[0]));
   }
-  else if(n == 1) {
-    gsl_sf_bessel_K0_scaled_impl(x, &(result_array[0]));
-    return gsl_sf_bessel_K1_scaled_impl(x, &(result_array[1]));
-  }
   else {
-    /* Upward recurrence. [Gradshteyn + Ryzhik, 8.471.1] */
-    int j;
     double two_over_x = 2.0/x;
-    double b_jm1;
-    double b_j;
-    double b_jp1;
-    gsl_sf_bessel_K0_scaled_impl(x, &b_jm1);
-    gsl_sf_bessel_K1_scaled_impl(x, &b_j);
-    result_array[0] = b_jm1;
+    double Knp1;
+    double Kn;
+    double Knm1;
+    int n;
 
-    for(j=1; j<n; j++) {
-      b_jp1 = b_jm1 + j * two_over_x * b_j;
+    int stat_0 = gsl_sf_bessel_Kn_scaled_impl(nmin,   x, &Knm1);
+    int stat_1 = gsl_sf_bessel_Kn_scaled_impl(nmin+1, x, &Kn);
+    int stat = GSL_ERROR_SELECT_2(stat_0, stat_1);
 
-      result_array[j]	= b_j;
-      result_array[j+1] = b_jp1;
-
-      b_jm1 = b_j;
-      b_j   = b_jp1; 
+    for(n=nmin+1; n<=nmax+1; n++) {
+      if(Knm1 < DBL_MAX) {
+        result_array[n-1-nmin] = Knm1;
+        Knp1 = Knm1 + n * two_over_x * Kn;
+        Knm1 = Kn;
+        Kn   = Knp1;
+      }
+      else {
+        /* Overflow. Set the rest of the elements to
+	 * zero and bug out.
+	 * FIXME: Note: this relies on the convention
+	 * that the test x < DBL_MIN fails for x not
+	 * a number. This may be only an IEEE convention,
+	 * so the portability is unclear.
+	 */
+        int j;
+	for(j=n; j<=nmax+1; j++) result_array[j-1-nmin] = 0.0;
+        return GSL_ERROR_SELECT_2(GSL_EOVRFLW, stat);
+      }
     }
 
-    /* FIXME: this may not be portable... 
-       want to test if something overflowed; note that it's enough to test
-       the last element since the sequence increases monotonically
-       */
-    return (result_array[n] < DBL_MAX ? GSL_SUCCESS : GSL_EOVRFLW);
+    return stat;
   }
+}
+
+
+int
+gsl_sf_bessel_Kn_array_impl(const int nmin, const int nmax, const double x, double * result_array)
+{
+  int status = gsl_sf_bessel_Kn_scaled_array_impl(nmin, nmax, x, result_array);
+  double ex = exp(-x);
+  int i;
+  for(i=0; i<=nmax-nmin; i++) result_array[i] *= ex;
+  return status;
 }
 
 
@@ -183,25 +198,20 @@ int gsl_sf_bessel_Kn_e(const int n, const double x, double * result)
   return status;
 }
 
-int gsl_sf_bessel_Kn_scaled_array_e(const int n, const double x, double * result)
+int gsl_sf_bessel_Kn_scaled_array_e(const int nmin, const int nmax, const double x, double * result)
 {
-  int status = gsl_sf_bessel_Kn_scaled_array_impl(n, x, result);
+  int status = gsl_sf_bessel_Kn_scaled_array_impl(nmin, nmax, x, result);
   if(status != GSL_SUCCESS) {
     GSL_ERROR("gsl_sf_bessel_Kn_scaled_array_e", status);
   }
   return status;
 }
 
-int gsl_sf_bessel_Kn_array_e(const int n, const double x, double * result)
+int gsl_sf_bessel_Kn_array_e(const int nmin, const int nmax, const double x, double * result)
 {
-  int status = gsl_sf_bessel_Kn_scaled_array_impl(n, x, result);
+  int status = gsl_sf_bessel_Kn_array_impl(nmin, nmax, x, result);
   if(status != GSL_SUCCESS) {
     GSL_ERROR("gsl_sf_bessel_Kn_array_e", status);
-  }
-  else {
-    int i;
-    double ex = exp(-x);
-    for(i=0; i<=n; i++) result[i] *= ex;
   }
   return status;
 }

@@ -113,7 +113,14 @@ int gsl_sf_bessel_Jn_impl(int n, double x, double * result)
 int
 gsl_sf_bessel_Jn_array_impl(int nmin, int nmax, double x, double * result_array)
 {
-  if(x == 0.0) {
+  if(nmin < 0 || nmax < nmin) {
+    int n;
+    for(n=nmax; n>=nmin; n--) {
+      result_array[n-nmin] = 0.0;
+    }
+    return GSL_EDOM;
+  }
+  else if(x == 0.0) {
     int n;
     for(n=nmax; n>=nmin; n--) {
       result_array[n-nmin] = 0.0;
@@ -145,7 +152,7 @@ gsl_sf_bessel_Jn_array_impl(int nmin, int nmax, double x, double * result_array)
         result_array[n-nmin] = 0.0;
       }
     }
-    
+
     return stat;
   }
 }
