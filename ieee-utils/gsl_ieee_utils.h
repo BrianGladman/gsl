@@ -1,5 +1,6 @@
 #ifndef GSL_IEEE_UTILS_H
 #define GSL_IEEE_UTILS_H
+#include <stdio.h>
 
 enum {
   GSL_IEEE_TYPE_NAN = 1,
@@ -26,6 +27,9 @@ typedef struct  {
 
 void gsl_ieee_printf_float (const float * x) ;
 void gsl_ieee_printf_double (const double * x) ;
+
+void gsl_ieee_fprintf_float (FILE * stream, const float * x) ;
+void gsl_ieee_fprintf_double (FILE * stream, const double * x) ;
 
 void gsl_ieee_float_to_rep (const float * x, gsl_ieee_float_rep * r) ;
 void gsl_ieee_double_to_rep (const double * x, gsl_ieee_double_rep * r) ;

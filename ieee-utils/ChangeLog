@@ -1,3 +1,19 @@
+Fri Jul 23 19:00:51 1999  Brian Gough  <bjg@network-theory.co.uk>
+
+	* print.c: added fprintf versions of the printf functions
+
+Sat May  8 20:39:28 1999  Brian Gough  <bjg@network-theory.co.uk>
+
+	* fp-linux.c (gsl_ieee_set_mode): changed from using the function
+ 	__fput_setcw() to the macro _FPU_SETCW() since Khimenko Victor
+ 	<khim@sch57.msk.ru> reports that __setfpucw() is not in the shared
+ 	lib version of glibc-2.1.1
+
+Fri Apr  2 20:52:59 1999  Brian Gough  <bjg@netsci.freeserve.co.uk>
+
+	* endian.c (setup_dynamic_endianness): removed useless test,
+ 	u.c[i]<0 for unsigned
+
 Fri Aug 21 15:36:22 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
 	* fp-unknown.c (gsl_ieee_set_mode): made return type int, as it
