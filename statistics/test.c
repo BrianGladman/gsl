@@ -1,10 +1,11 @@
+#include <stdlib.h>
 #include <math.h>
 #include <gsl_test.h>
 #include <gsl_statistics.h>
 
-/* Test program for mean.c.  JimDavies 7.96 */
+#include "test.h"
 
-int within_fuzz (double x, double y);	/* approximate comparison function */
+/* Test program for mean.c.  JimDavies 7.96 */
 
 int
 main (void)
@@ -24,21 +25,7 @@ main (void)
    .1942, .1079, .1021, .1583, .1673,
    .1675, .1856, .1688, .1512};
 
-  /* sample sets of integers */
-
-  const unsigned int ina = 20, inb = 20;
-
-  const int igroupa[] =
-  {17, 18, 16, 18, 12,
-   20, 18, 20, 20, 22,
-   20, 10, 8, 12, 16,
-   16, 18, 20, 18, 21};
-
-  const int igroupb[] =
-  {19, 20, 22, 24, 10,
-   25, 20, 22, 21, 23,
-   20, 10, 12, 14, 12,
-   20, 22, 24, 23, 17};
+  double * sorted ;
 
   {
     double mean = gsl_stats_mean (groupa, na);
@@ -65,19 +52,43 @@ main (void)
   }
 
   {
-    double sd = gsl_stats_stddev (groupa, na);
+    double sd = gsl_stats_sd (groupa, na);
     double expected = 0.0337398026922845;
     gsl_test (!within_fuzz (sd, expected),
-	      "gsl_stats_stddev (%g observed vs %g expected)",
+	      "gsl_stats_sd (%g observed vs %g expected)",
 	      sd, expected);
   }
 
   {
-    double sd_est = gsl_stats_est_stddev (groupa, na);
+    double sd_est = gsl_stats_est_sd (groupa, na);
     double expected = 0.0350134479659107;
     gsl_test (!within_fuzz (sd_est, expected),
-	      "gsl_stats_est_stddev (%g observed vs %g expected)",
+	      "gsl_stats_est_sd (%g observed vs %g expected)",
 	      sd_est, expected);
+  }
+
+  {
+    double absdev = gsl_stats_absdev (groupa, na);
+    double expected = 0.0287571428571429;
+    gsl_test (!within_fuzz (absdev, expected),
+	      "gsl_stats_absdev (%g observed vs %g expected)",
+	      absdev, expected);
+  }
+
+  {
+    double skew = gsl_stats_skew (groupa, na);
+    double expected = 0.0954642051479004;
+    gsl_test (!within_fuzz (skew, expected),
+	      "gsl_stats_skew (%g observed vs %g expected)",
+	      skew, expected);
+  }
+
+  {
+    double kurt = gsl_stats_kurtosis (groupa, na);
+    double expected = -1.38583851548909 ;
+    gsl_test (!within_fuzz (kurt, expected),
+	      "gsl_stats_kurtosis (%g observed vs %g expected)",
+	      kurt, expected);
   }
 
   {
@@ -110,84 +121,76 @@ main (void)
 	      "gsl_stats_min (%g observed vs %g expected)", min, expected);
   }
 
-  /* integer tests */
-
   {
-    double mean = gsl_stats_imean (igroupa, ina);
-    double expected = 17;
-    gsl_test (mean != expected,
-	      "gsl_stats_imean (%g observed vs %g expected)",
-	      mean, expected);
+    int max_index = gsl_stats_max_index (groupa, na);
+    int expected = 4;
+    gsl_test (max_index != expected,
+	      "gsl_stats_max_index (%d observed vs %d expected)",
+	      max_index, expected);
   }
 
   {
-    double var = gsl_stats_ivariance (igroupa, ina);
-    double expected = 13.7;
-    gsl_test (!within_fuzz (var, expected),
-	      "gsl_stats_ivariance (%g observed vs %g expected)",
-	      var, expected);
+    int min_index = gsl_stats_min_index (groupa, na);
+    int expected = 3;
+    gsl_test (min_index != expected,
+	      "gsl_stats_min_index (%d observed vs %d expected)",
+	      min_index, expected);
+  }
+
+  sorted = (double *) malloc(na * sizeof(double)) ;
+  memcpy(sorted, groupa, na * sizeof(double)) ;
+  
+  gsl_stats_sort_data(sorted, na) ;
+
+  {
+    double median = gsl_stats_median_from_sorted_data(sorted, na) ;
+    double expected = 0.07505;
+    gsl_test (!within_fuzz(median,expected),
+	      "gsl_stats_median_from_sorted_data (even) (%g obs vs %g exp)",
+	      median, expected);
   }
 
   {
-    double var = gsl_stats_iest_variance (igroupa, ina);
-    double expected = 14.4210526315789;
-    gsl_test (!within_fuzz (var, expected),
-	      "gsl_stats_iest_variance (%g observed vs %g expected)",
-	      var, expected);
+    double median = gsl_stats_median_from_sorted_data(sorted, na - 1) ;
+    double expected = 0.0728;
+    gsl_test (!within_fuzz(median,expected),
+	      "gsl_stats_median_from_sorted_data (odd) (%g obs vs %g exp)",
+	      median, expected);
+  }
+
+
+  {
+    double zeroth = gsl_stats_percentile_from_sorted_data(sorted, na, 0.0) ;
+    double expected = 0.0242;
+    gsl_test (!within_fuzz(zeroth,expected),
+	      "gsl_stats_percentile_from_sorted_data (0) (%g obs vs %g exp)",
+	      zeroth, expected);
   }
 
   {
-    double sd = gsl_stats_istddev (igroupa, ina);
-    double expected = 3.70135110466435;
-    gsl_test (!within_fuzz (sd, expected),
-	      "gsl_stats_istddev (%g observed vs %g expected)",
-	      sd, expected);
+    double top = gsl_stats_percentile_from_sorted_data(sorted, na, 1.0) ;
+    double expected = 0.1331;
+    gsl_test (!within_fuzz(top,expected),
+	      "gsl_stats_percentile_from_sorted_data (100) (%g obs vs %g exp)",
+	      top, expected);
   }
 
   {
-    double sd_est = gsl_stats_iest_stddev (igroupa, ina);
-    double expected = 3.79750610685209;
-    gsl_test (!within_fuzz (sd_est, expected),
-	      "gsl_stats_iest_stddev (%g observed vs %g expected)",
-	      sd_est, expected);
+    double median = gsl_stats_percentile_from_sorted_data(sorted, na, 0.5) ;
+    double expected = 0.07505;
+    gsl_test (!within_fuzz(median,expected),
+	      "gsl_stats_percentile_from_sorted_data (50even) (%g ob vs %g ex)",
+	      median, expected);
   }
 
   {
-    double pv = gsl_stats_ipvariance (igroupa, igroupb, ina, inb);
-    double expected = 18.8421052631579;
-    gsl_test (!within_fuzz (pv, expected),
-	      "gsl_stats_ipvariance (%g observed vs %g expected)",
-	      pv, expected);
-  }
-
-  {
-    double t = gsl_stats_ittest (igroupa, igroupb, ina, inb);
-    double expected = -1.45701922702927;
-    gsl_test (!within_fuzz (t, expected),
-	      "gsl_stats_ittest (%g observed vs %g expected)",
-	      t, expected);
-  }
-
-  {
-    int max = gsl_stats_imax (igroupa, ina);
-    int expected = 22;
-    gsl_test (max != expected,
-	      "gsl_stats_imax (%d observed vs %d expected)", max, expected);
-  }
-
-  {
-    int min = gsl_stats_imin (igroupa, inb);
-    int expected = 8;
-    gsl_test (min != expected,
-	      "gsl_stats_imin (%d observed vs %d expected)", min, expected);
+    double median = gsl_stats_percentile_from_sorted_data(sorted, na - 1, 0.5);
+    double expected = 0.0728;
+    gsl_test (!within_fuzz(median,expected),
+	      "gsl_stats_percentile_from_sorted_data (50odd) (%g obs vs %g exp)",
+	      median, expected);
   }
 
   return gsl_test_summary ();
 }
 
-
-int 
-within_fuzz (double x, double y)
-{
-  return fabs (x - y) < 0.00001;
-}

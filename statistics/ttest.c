@@ -17,8 +17,8 @@ gsl_stats_ttest (const double data1[], const double data2[],
   /* find means and standard deviations for the two samples */
   mean1 = gsl_stats_mean (data1, n1);
   mean2 = gsl_stats_mean (data2, n2);
-  sd1 = gsl_stats_est_stddev (data1, n1);
-  sd2 = gsl_stats_est_stddev (data2, n2);
+  sd1 = gsl_stats_est_sd (data1, n1);
+  sd2 = gsl_stats_est_sd (data2, n2);
   pv = gsl_stats_pvariance (data1, data2, n1, n2);
 
   /* calculate the t statistic */

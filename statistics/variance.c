@@ -1,7 +1,7 @@
 #include <math.h>
 #include <gsl_statistics.h>
 
-#include "variance.h"
+double sum_of_squares (const double data[], unsigned int n, double mean);
 
 double 
 gsl_stats_variance (const double data[], unsigned int n)
@@ -19,17 +19,17 @@ gsl_stats_est_variance (const double data[], unsigned int n)
 }
 
 double 
-gsl_stats_stddev (const double data[], unsigned int n)
+gsl_stats_sd (const double data[], unsigned int n)
 {
   double mean = gsl_stats_mean (data, n);
-  return gsl_stats_stddev_with_mean (data, n, mean) ;
+  return gsl_stats_sd_with_mean (data, n, mean) ;
 }
 
 double 
-gsl_stats_est_stddev (const double data[], unsigned int n)
+gsl_stats_est_sd (const double data[], unsigned int n)
 {
   double mean = gsl_stats_mean (data, n);
-  return gsl_stats_est_stddev_with_mean (data, n, mean) ;
+  return gsl_stats_est_sd_with_mean (data, n, mean) ;
 }
 
 
@@ -53,22 +53,22 @@ gsl_stats_est_variance_with_mean (const double data[], unsigned int n,
 }
 
 double 
-gsl_stats_stddev_with_mean (const double data[], unsigned int n, double mean)
+gsl_stats_sd_with_mean (const double data[], unsigned int n, double mean)
 {
   double sum = sum_of_squares (data, n, mean);
-  double stddev = sqrt (sum / n);
+  double sd = sqrt (sum / n);
 
-  return stddev;
+  return sd;
 }
 
 double 
-gsl_stats_est_stddev_with_mean (const double data[], unsigned int n,
+gsl_stats_est_sd_with_mean (const double data[], unsigned int n,
 				double mean)
 {
   double sum = sum_of_squares (data, n, mean);
-  double est_stddev = sqrt (sum / (n - 1));
+  double est_sd = sqrt (sum / (n - 1));
 
-  return est_stddev;
+  return est_sd;
 }
 
 double 

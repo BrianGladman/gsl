@@ -68,20 +68,45 @@ full_top_builddir = @full_top_builddir@
 full_top_srcdir = @full_top_srcdir@
 
 lib_LIBRARIES = libgslstatistics.a
-include_HEADERS = gsl_statistics.h
+include_HEADERS = gsl_statistics.h gsl_statistics_int.h
 
-noinst_PROGRAMS = test
+INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../err
 
-TESTS = test
+noinst_PROGRAMS = test test_int
 
-test_SOURCES = test.c test.h
+TESTS = test test_int
+
+test_SOURCES = test.c
 test_LDADD = libgslstatistics.a ../err/libgsltest.a
 test_DEPENDENCIES = libgslstatistics.a
 
+test_int_SOURCES = test_int.c
+test_int_LDADD = libgslstatistics.a ../err/libgsltest.a
+test_int_DEPENDENCIES = libgslstatistics.a
+
 libgslstatistics_a_SOURCES = \
-mean.c variance.c \
-mean.h variance.h \
-minmax.c
+mean.c \
+variance.c  \
+absdev.c \
+skew.c \
+kurtosis.c \
+pooled_variance.c \
+minmax.c \
+ttest.c \
+sort.c \
+median.c \
+percentiles.c \
+int_mean.c \
+int_variance.c  \
+int_absdev.c \
+int_skew.c \
+int_kurtosis.c \
+int_pooled_variance.c \
+int_minmax.c \
+int_ttest.c \
+int_sort.c \
+int_median.c \
+int_percentiles.c
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
 CONFIG_CLEAN_FILES = 
@@ -93,12 +118,18 @@ CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
 libgslstatistics_a_LIBADD = 
-libgslstatistics_a_OBJECTS =  mean.o variance.o minmax.o
+libgslstatistics_a_OBJECTS =  mean.o variance.o absdev.o skew.o \
+kurtosis.o pooled_variance.o minmax.o ttest.o sort.o median.o \
+percentiles.o int_mean.o int_variance.o int_absdev.o int_skew.o \
+int_kurtosis.o int_pooled_variance.o int_minmax.o int_ttest.o \
+int_sort.o int_median.o int_percentiles.o
 AR = ar
 PROGRAMS =  $(noinst_PROGRAMS)
 
 test_OBJECTS =  test.o
 test_LDFLAGS = 
+test_int_OBJECTS =  test_int.o
+test_int_LDFLAGS = 
 CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
 LINK = $(CC) $(CFLAGS) $(LDFLAGS) -o $@
@@ -111,9 +142,15 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 TAR = tar
 GZIP = --best
-DEP_FILES =  .deps/mean.P .deps/minmax.P .deps/test.P .deps/variance.P
-SOURCES = $(libgslstatistics_a_SOURCES) $(test_SOURCES)
-OBJECTS = $(libgslstatistics_a_OBJECTS) $(test_OBJECTS)
+DEP_FILES =  .deps/absdev.P .deps/int_absdev.P .deps/int_kurtosis.P \
+.deps/int_mean.P .deps/int_median.P .deps/int_minmax.P \
+.deps/int_percentiles.P .deps/int_pooled_variance.P .deps/int_skew.P \
+.deps/int_sort.P .deps/int_ttest.P .deps/int_variance.P \
+.deps/kurtosis.P .deps/mean.P .deps/median.P .deps/minmax.P \
+.deps/percentiles.P .deps/pooled_variance.P .deps/skew.P .deps/sort.P \
+.deps/test.P .deps/test_int.P .deps/ttest.P .deps/variance.P
+SOURCES = $(libgslstatistics_a_SOURCES) $(test_SOURCES) $(test_int_SOURCES)
+OBJECTS = $(libgslstatistics_a_OBJECTS) $(test_OBJECTS) $(test_int_OBJECTS)
 
 default: all
 
@@ -189,6 +226,10 @@ maintainer-clean-noinstPROGRAMS:
 test: $(test_OBJECTS) $(test_DEPENDENCIES)
 	@rm -f test
 	$(LINK) $(test_LDFLAGS) $(test_OBJECTS) $(test_LDADD) $(LIBS)
+
+test_int: $(test_int_OBJECTS) $(test_int_DEPENDENCIES)
+	@rm -f test_int
+	$(LINK) $(test_int_LDFLAGS) $(test_int_OBJECTS) $(test_int_LDADD) $(LIBS)
 
 install-includeHEADERS: $(include_HEADERS)
 	@$(NORMAL_INSTALL)
@@ -362,6 +403,20 @@ install-exec install-data install uninstall all installdirs \
 mostlyclean-generic distclean-generic clean-generic \
 maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 
+
+int:
+	perl convert_double_to_int.pl gsl_statistics.h > gsl_statistics_int.h 
+	perl convert_double_to_int.pl mean.c > int_mean.c
+	perl convert_double_to_int.pl variance.c > int_variance.c
+	perl convert_double_to_int.pl absdev.c > int_absdev.c
+	perl convert_double_to_int.pl minmax.c > int_minmax.c
+	perl convert_double_to_int.pl pooled_variance.c > int_pooled_variance.c
+	perl convert_double_to_int.pl ttest.c > int_ttest.c
+	perl convert_double_to_int.pl skew.c > int_skew.c
+	perl convert_double_to_int.pl kurtosis.c > int_kurtosis.c
+	perl convert_double_to_int.pl sort.c > int_sort.c
+	perl convert_double_to_int.pl median.c > int_median.c
+	perl convert_double_to_int.pl percentiles.c > int_percentiles.c
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
