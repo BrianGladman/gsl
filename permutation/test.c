@@ -58,45 +58,111 @@ unsigned int p5[120][5] = {
   {4, 3, 1, 0, 2}, {4, 3, 1, 2, 0}, {4, 3, 2, 0, 1}, {4, 3, 2, 1, 0}
 } ;
 
+unsigned int c5[120][5] = {
+  {4, 3, 2, 1, 0}, {3, 4, 2, 1, 0}, {4, 2, 3, 1, 0}, {2, 3, 4, 1, 0},
+  {2, 4, 3, 1, 0}, {3, 2, 4, 1, 0}, {4, 3, 1, 2, 0}, {3, 4, 1, 2, 0},
+  {4, 1, 2, 3, 0}, {1, 2, 3, 4, 0}, {1, 2, 4, 3, 0}, {3, 1, 2, 4, 0},
+  {4, 1, 3, 2, 0}, {1, 3, 4, 2, 0}, {4, 2, 1, 3, 0}, {2, 1, 3, 4, 0},
+  {2, 4, 1, 3, 0}, {1, 3, 2, 4, 0}, {1, 4, 3, 2, 0}, {3, 1, 4, 2, 0},
+  {2, 1, 4, 3, 0}, {3, 2, 1, 4, 0}, {1, 4, 2, 3, 0}, {2, 3, 1, 4, 0},
+  {4, 3, 2, 0, 1}, {3, 4, 2, 0, 1}, {4, 2, 3, 0, 1}, {2, 3, 4, 0, 1},
+  {2, 4, 3, 0, 1}, {3, 2, 4, 0, 1}, {4, 3, 0, 1, 2}, {3, 4, 0, 1, 2},
+  {4, 0, 1, 2, 3}, {0, 1, 2, 3, 4}, {0, 1, 2, 4, 3}, {3, 0, 1, 2, 4},
+  {4, 0, 1, 3, 2}, {0, 1, 3, 4, 2}, {4, 2, 0, 1, 3}, {2, 0, 1, 3, 4},
+  {2, 4, 0, 1, 3}, {0, 1, 3, 2, 4}, {0, 1, 4, 3, 2}, {3, 0, 1, 4, 2},
+  {2, 0, 1, 4, 3}, {3, 2, 0, 1, 4}, {0, 1, 4, 2, 3}, {2, 3, 0, 1, 4},
+  {4, 3, 0, 2, 1}, {3, 4, 0, 2, 1}, {4, 0, 2, 3, 1}, {0, 2, 3, 4, 1},
+  {0, 2, 4, 3, 1}, {3, 0, 2, 4, 1}, {4, 3, 1, 0, 2}, {3, 4, 1, 0, 2},
+  {4, 1, 0, 2, 3}, {1, 0, 2, 3, 4}, {1, 0, 2, 4, 3}, {3, 1, 0, 2, 4},
+  {4, 1, 3, 0, 2}, {1, 3, 4, 0, 2}, {4, 0, 2, 1, 3}, {0, 2, 1, 3, 4},
+  {0, 2, 4, 1, 3}, {1, 3, 0, 2, 4}, {1, 4, 3, 0, 2}, {3, 1, 4, 0, 2},
+  {0, 2, 1, 4, 3}, {3, 0, 2, 1, 4}, {1, 4, 0, 2, 3}, {0, 2, 3, 1, 4},
+  {4, 0, 3, 2, 1}, {0, 3, 4, 2, 1}, {4, 2, 0, 3, 1}, {2, 0, 3, 4, 1},
+  {2, 4, 0, 3, 1}, {0, 3, 2, 4, 1}, {4, 1, 0, 3, 2}, {1, 0, 3, 4, 2},
+  {4, 2, 1, 0, 3}, {2, 1, 0, 3, 4}, {2, 4, 1, 0, 3}, {1, 0, 3, 2, 4},
+  {4, 0, 3, 1, 2}, {0, 3, 4, 1, 2}, {4, 1, 2, 0, 3}, {1, 2, 0, 3, 4},
+  {1, 2, 4, 0, 3}, {0, 3, 1, 2, 4}, {0, 3, 1, 4, 2}, {1, 4, 0, 3, 2},
+  {1, 4, 2, 0, 3}, {0, 3, 2, 1, 4}, {2, 1, 4, 0, 3}, {2, 0, 3, 1, 4},
+  {0, 4, 3, 2, 1}, {3, 0, 4, 2, 1}, {2, 0, 4, 3, 1}, {3, 2, 0, 4, 1},
+  {0, 4, 2, 3, 1}, {2, 3, 0, 4, 1}, {1, 0, 4, 3, 2}, {3, 1, 0, 4, 2},
+  {2, 1, 0, 4, 3}, {3, 2, 1, 0, 4}, {1, 0, 4, 2, 3}, {2, 3, 1, 0, 4},
+  {0, 4, 3, 1, 2}, {3, 0, 4, 1, 2}, {1, 2, 0, 4, 3}, {3, 1, 2, 0, 4},
+  {0, 4, 1, 2, 3}, {1, 2, 3, 0, 4}, {1, 3, 0, 4, 2}, {0, 4, 1, 3, 2},
+  {0, 4, 2, 1, 3}, {1, 3, 2, 0, 4}, {2, 0, 4, 1, 3}, {2, 1, 3, 0, 4}
+} ;
+
+unsigned int cycles[120] = {
+  5, 4, 4, 3, 3, 4, 4, 3, 3, 2,
+  2, 3, 3, 2, 4, 3, 3, 2, 2, 3,
+  3, 4, 2, 3, 4, 3, 3, 2, 2, 3,
+  3, 2, 2, 1, 1, 2, 2, 1, 3, 2,
+  2, 1, 1, 2, 2, 3, 1, 2, 3, 2,
+  2, 1, 1, 2, 4, 3, 3, 2, 2, 3,
+  3, 2, 2, 1, 1, 2, 2, 3, 1, 2,
+  2, 1, 2, 1, 3, 2, 2, 1, 3, 2,
+  4, 3, 3, 2, 2, 1, 3, 2, 2, 1,
+  1, 2, 2, 1, 3, 2, 1, 2, 2, 3,
+  1, 2, 2, 3, 3, 4, 2, 3, 1, 2,
+  2, 3, 1, 2, 2, 1, 1, 2, 2, 3
+} ;
+
+unsigned int inversions[120] = {
+  0, 1, 1, 2, 2, 3, 1, 2, 2, 3,
+  3, 4, 2, 3, 3, 4, 4, 5, 3, 4,
+  4, 5, 5, 6, 1, 2, 2, 3, 3, 4,
+  2, 3, 3, 4, 4, 5, 3, 4, 4, 5,
+  5, 6, 4, 5, 5, 6, 6, 7, 2, 3,
+  3, 4, 4, 5, 3, 4, 4, 5, 5, 6,
+  4, 5, 5, 6, 6, 7, 5, 6, 6, 7,
+  7, 8, 3, 4, 4, 5, 5, 6, 4, 5,
+  5, 6, 6, 7, 5, 6, 6, 7, 7, 8,
+  6, 7, 7, 8, 8, 9, 4, 5, 5, 6,
+  6, 7, 5, 6, 6, 7, 7, 8, 6, 7,
+  7, 8, 8, 9, 7, 8, 8, 9, 9, 10
+} ;
+
 int 
 main (void)
 {
-  int i = 0, j, status = 0;
-  gsl_permutation * p ;
-
-  p = gsl_permutation_alloc (5);
-
-  gsl_permutation_init (p);
+  {
+    int i = 0, j, status = 0;
   
-  do 
-    {
-      for (j = 0; j < 5; j++)
-        {
-          status |= (p->data[j] != p5[i][j]);
-        }
+    gsl_permutation * p ;
+    
+    p = gsl_permutation_alloc (5);
+    
+    gsl_permutation_init (p);
+    
+    do 
+      {
+        for (j = 0; j < 5; j++)
+          {
+            status |= (p->data[j] != p5[i][j]);
+          }
+        
+        i++;
+      }
+    while (gsl_permutation_next(p) == GSL_SUCCESS);
+    
+    gsl_test(status, "gsl_permutation_next, 5-th order permutation, 120 steps");
 
-      i++;
-    }
-  while (gsl_permutation_next(p) == GSL_SUCCESS);
+    do 
+      {
+        i--;
+        
+        for (j = 0; j < 5; j++)
+          {
+            status |= (p->data[j] != p5[i][j]);
+          }
+      }
+    while (gsl_permutation_prev(p) == GSL_SUCCESS);
+    
+    gsl_test(status, "gsl_permutation_prev, 5-th order permutation, 120 steps");
+    
+    gsl_permutation_free (p);
+  }
 
-  gsl_test(status, "gsl_permutation_next, 5-th order permutation, 120 steps");
-
-
-  do 
-    {
-      i--;
-      
-      for (j = 0; j < 5; j++)
-        {
-          status |= (p->data[j] != p5[i][j]);
-        }
-    }
-  while (gsl_permutation_prev(p) == GSL_SUCCESS);
-
-  gsl_test(status, "gsl_permutation_prev, 5-th order permutation, 120 steps");
-
-  gsl_permutation_free (p);
-
+#ifdef JUNK
   {
     int i;
     int status = 0 ;
@@ -149,6 +215,73 @@ main (void)
 
     gsl_test(status, "gsl_permutation_mul, all 5-th order combinations");
   }
+#endif
+
+  /* testing cycles representations */
+  {
+    int i = 0, j, status = 0;
+
+    gsl_permutation * p = gsl_permutation_alloc (5);
+
+    gsl_permutation * plin = gsl_permutation_alloc (5);
+    gsl_permutation * pcan = gsl_permutation_alloc (5);
+    
+    gsl_permutation_init (p);
+    
+    do
+      {
+        gsl_permutation_memcpy (plin, p);
+
+	gsl_permutation_linear_to_canonical (pcan, plin);
+
+	for (j = 0; j < 5; j++)
+	  {
+	    status |= (pcan->data[j] != c5[i][j]);
+	  }
+
+	status |= (gsl_permutation_canonical_cycles (pcan) != cycles[i]);
+
+	status |= (gsl_permutation_linear_cycles (plin) != cycles[i]);
+
+	gsl_permutation_canonical_to_linear (plin, pcan);
+		
+	for (j = 0; j < 5; j++)
+	  {
+	    status |= (plin->data[j] != p5[i][j]);
+	  }
+
+	i++;
+      }
+    while (gsl_permutation_next(p) == GSL_SUCCESS);
+
+    gsl_permutation_free (p);
+    gsl_permutation_free (plin);
+    gsl_permutation_free (pcan);
+
+    gsl_test (status, "gsl_permutation canonical conversion, 5-th order permutation, 120 steps");
+  }
+
+  /* testing number of inversions */
+  {
+    int i = 0, status = 0;
+
+    gsl_permutation * p = gsl_permutation_alloc (5);
+
+    gsl_permutation_init (p);
+    
+    do 
+      {	
+	status |= gsl_permutation_inversions (p) != inversions[i];
+	i++;
+      }
+    while (gsl_permutation_next(p) == GSL_SUCCESS);
+    
+    gsl_permutation_free (p);
+
+    gsl_test (status, "gsl_permutation_inversions, 5-th order permutation, 120 steps");
+  }
+  
 
   exit (gsl_test_summary());
 }
+

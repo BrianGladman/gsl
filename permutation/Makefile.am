@@ -4,7 +4,7 @@ pkginclude_HEADERS = gsl_permutation.h gsl_permute.h gsl_permute_char.h gsl_perm
 
 INCLUDES= -I$(top_builddir) -I$(top_srcdir)
 
-libgslpermutation_la_SOURCES = init.c file.c permutation.c permute.c
+libgslpermutation_la_SOURCES = init.c file.c permutation.c permute.c canonical.c
 
 noinst_HEADERS = permute_source.c
 
