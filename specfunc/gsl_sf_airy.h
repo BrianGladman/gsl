@@ -1,8 +1,8 @@
 /* Author:  G. Jungman
  * RCS:     $Id$
  */
-#ifndef GSL_SF_AIRY_H_
-#define GSL_SF_AIRY_H_
+#ifndef __GSL_SF_AIRY_H__
+#define __GSL_SF_AIRY_H__
 
 #include <gsl/gsl_mode.h>
 #include <gsl/gsl_sf_result.h>
@@ -105,4 +105,4 @@ int gsl_sf_airy_zero_Bi_deriv_e(int s, gsl_sf_result * result);
 
 
 
-#endif /* GSL_SF_AIRY_H_ */
+#endif /* __GSL_SF_AIRY_H__ */

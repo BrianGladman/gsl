@@ -1,5 +1,5 @@
-#ifndef GSL_FFT_H
-#define GSL_FFT_H
+#ifndef __GSL_FFT_H__
+#define __GSL_FFT_H__
 
 #include <gsl/gsl_complex.h>
 
@@ -15,4 +15,4 @@ gsl_fft_direction;
        
    where - is the forward transform direction and + the inverse direction */
 
-#endif /* GSL_FFT_H */
+#endif /* __GSL_FFT_H__ */

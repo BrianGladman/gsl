@@ -1,5 +1,5 @@
-#ifndef GSL_BLOCK_USHORT_H
-#define GSL_BLOCK_USHORT_H
+#ifndef __GSL_BLOCK_USHORT_H__
+#define __GSL_BLOCK_USHORT_H__
 
 #include <stdlib.h>
 #include <gsl/gsl_errno.h>
@@ -29,4 +29,4 @@ int gsl_block_ushort_raw_fprintf (FILE * stream, const unsigned short * b, size_
 size_t gsl_block_ushort_size (const gsl_block_ushort * b);
 unsigned short * gsl_block_ushort_data (const gsl_block_ushort * b);
 
-#endif /* GSL_BLOCK_USHORT_H */
+#endif /* __GSL_BLOCK_USHORT_H__ */

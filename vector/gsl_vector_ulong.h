@@ -1,5 +1,5 @@
-#ifndef GSL_VECTOR_ULONG_H
-#define GSL_VECTOR_ULONG_H
+#ifndef __GSL_VECTOR_ULONG_H__
+#define __GSL_VECTOR_ULONG_H__
 
 #include <stdlib.h>
 #include <gsl/gsl_errno.h>
@@ -86,7 +86,7 @@ gsl_vector_ulong_set (gsl_vector_ulong * v, const size_t i, unsigned long x)
 
 #endif /* HAVE_INLINE */
 
-#endif /* GSL_VECTOR_ULONG_H */
+#endif /* __GSL_VECTOR_ULONG_H__ */
 
 
 

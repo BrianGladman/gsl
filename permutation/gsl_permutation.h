@@ -1,5 +1,5 @@
-#ifndef GSL_PERMUTATION_H
-#define GSL_PERMUTATION_H
+#ifndef __GSL_PERMUTATION_H__
+#define __GSL_PERMUTATION_H__
 
 #include <stdlib.h>
 #include <gsl/gsl_errno.h>
@@ -51,4 +51,4 @@ gsl_permutation_get (const gsl_permutation * p, const size_t i)
 
 #endif /* HAVE_INLINE */
 
-#endif /* GSL_PERMUTATION_H */
+#endif /* __GSL_PERMUTATION_H__ */

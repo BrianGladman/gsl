@@ -1,5 +1,5 @@
-#ifndef GSL_BLOCK_COMPLEX_DOUBLE_H
-#define GSL_BLOCK_COMPLEX_DOUBLE_H
+#ifndef __GSL_BLOCK_COMPLEX_DOUBLE_H__
+#define __GSL_BLOCK_COMPLEX_DOUBLE_H__
 
 #include <stdlib.h>
 #include <gsl/gsl_errno.h>
@@ -29,4 +29,4 @@ int gsl_block_complex_raw_fprintf (FILE * stream, const double * b, size_t n, si
 size_t gsl_block_complex_size (const gsl_block_complex * b);
 double * gsl_block_complex_data (const gsl_block_complex * b);
 
-#endif /* GSL_BLOCK_COMPLEX_DOUBLE_H */
+#endif /* __GSL_BLOCK_COMPLEX_DOUBLE_H__ */

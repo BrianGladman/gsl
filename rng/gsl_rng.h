@@ -1,5 +1,5 @@
-#ifndef GSL_RNG_H
-#define GSL_RNG_H
+#ifndef __GSL_RNG_H__
+#define __GSL_RNG_H__
 #include <stdlib.h>
 #include <gsl/gsl_errno.h>
 
@@ -159,4 +159,4 @@ gsl_rng_uniform_int (const gsl_rng * r, unsigned long int n)
 }
 #endif /* HAVE_INLINE */
 
-#endif /* GSL_RNG_H */
+#endif /* __GSL_RNG_H__ */

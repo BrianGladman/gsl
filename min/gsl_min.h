@@ -1,5 +1,5 @@
-#ifndef GSL_MIN_H
-#define GSL_MIN_H
+#ifndef __GSL_MIN_H__
+#define __GSL_MIN_H__
 
 #include <stdlib.h>
 #include <gsl/gsl_math.h>
@@ -70,4 +70,4 @@ gsl_min_find_bracket(gsl_function *f,double *minimum,double * f_minimum,
 		     gsl_interval *x, double * f_lower,double * f_upper,
 		     size_t eval_max);
 
-#endif /* GSL_MIN_H */
+#endif /* __GSL_MIN_H__ */

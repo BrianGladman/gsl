@@ -1,8 +1,8 @@
 /* Author:  G. Jungman
  * RCS:     $Id$
  */
-#ifndef GSL_SF_FERMI_DIRAC_H_
-#define GSL_SF_FERMI_DIRAC_H_
+#ifndef __GSL_SF_FERMI_DIRAC_H__
+#define __GSL_SF_FERMI_DIRAC_H__
 
 #include <gsl/gsl_sf_result.h>
 
@@ -91,4 +91,4 @@ int     gsl_sf_fermi_dirac_inc_0_impl(double x, double b, gsl_sf_result * result
 int     gsl_sf_fermi_dirac_inc_0_e(double x, double b, gsl_sf_result * result);
 
 
-#endif /* !GSL_SF_FERMI_DIRAC_H_ */
+#endif /* __GSL_SF_FERMI_DIRAC_H__ */

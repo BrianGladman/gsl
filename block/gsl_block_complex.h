@@ -1,4 +1,5 @@
-#ifndef GSL_BLOCK_COMPLEX
+#ifndef __GSL_BLOCK_COMPLEX_H__
+#define __GSL_BLOCK_COMPLEX__
 
 #define  GSL_BLOCK_REAL(z, i)  ((z)->data[2*(i)])
 #define  GSL_BLOCK_IMAG(z, i)  ((z)->data[2*(i) + 1])
@@ -13,4 +14,4 @@
 #define GSL_COMPLEX_FLOAT_AT(zv,i) ((gsl_complex_float*)&((zv)->data[2*(i)]))
 #define GSL_COMPLEX_LONG_DOUBLE_AT(zv,i) ((gsl_complex_long_double*)&((zv)->data[2*(i)]))
 
-#endif /* GSL_BLOCK_COMPLEX */
+#endif /* __GSL_BLOCK_COMPLEX__ */

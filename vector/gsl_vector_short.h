@@ -1,5 +1,5 @@
-#ifndef GSL_VECTOR_SHORT_H
-#define GSL_VECTOR_SHORT_H
+#ifndef __GSL_VECTOR_SHORT_H__
+#define __GSL_VECTOR_SHORT_H__
 
 #include <stdlib.h>
 #include <gsl/gsl_errno.h>
@@ -86,7 +86,7 @@ gsl_vector_short_set (gsl_vector_short * v, const size_t i, short x)
 
 #endif /* HAVE_INLINE */
 
-#endif /* GSL_VECTOR_SHORT_H */
+#endif /* __GSL_VECTOR_SHORT_H__ */
 
 
 

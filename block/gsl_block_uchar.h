@@ -1,5 +1,5 @@
-#ifndef GSL_BLOCK_UCHAR_H
-#define GSL_BLOCK_UCHAR_H
+#ifndef __GSL_BLOCK_UCHAR_H__
+#define __GSL_BLOCK_UCHAR_H__
 
 #include <stdlib.h>
 #include <gsl/gsl_errno.h>
@@ -29,4 +29,4 @@ int gsl_block_uchar_raw_fprintf (FILE * stream, const unsigned char * b, size_t 
 size_t gsl_block_uchar_size (const gsl_block_uchar * b);
 unsigned char * gsl_block_uchar_data (const gsl_block_uchar * b);
 
-#endif /* GSL_BLOCK_UCHAR_H */
+#endif /* __GSL_BLOCK_UCHAR_H__ */

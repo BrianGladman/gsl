@@ -1,8 +1,8 @@
 /* Author:  G. Jungman
  * RCS:     $Id$
  */
-#ifndef GSL_SF_CHEBYSHEV_H_
-#define GSL_SF_CHEBYSHEV_H_
+#ifndef __GSL_SF_CHEBYSHEV_H__
+#define __GSL_SF_CHEBYSHEV_H__
 
 #include <gsl/gsl_mode.h>
 #include <gsl/gsl_sf_result.h>
@@ -97,4 +97,4 @@ int gsl_sf_cheb_eval_integ_e(gsl_sf_cheb_series * cs, double x, gsl_sf_result * 
 void gsl_sf_cheb_free(gsl_sf_cheb_series * cs);
 
 
-#endif /* GSL_SF_CHEBYSHEV_H_ */
+#endif /* __GSL_SF_CHEBYSHEV_H__ */

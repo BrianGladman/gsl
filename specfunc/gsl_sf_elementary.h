@@ -3,8 +3,8 @@
  */
 /* Miscellaneous elementary functions and operations.
  */
-#ifndef GSL_SF_ELEMENTARY_H_
-#define GSL_SF_ELEMENTARY_H_
+#ifndef __GSL_SF_ELEMENTARY_H__
+#define __GSL_SF_ELEMENTARY_H__
 
 #include <gsl/gsl_sf_result.h>
 
@@ -23,4 +23,4 @@ int gsl_sf_multiply_err_impl(double x, double dx, double y, double dy, gsl_sf_re
 int gsl_sf_multiply_err_e(double x, double dx, double y, double dy, gsl_sf_result * result);
 
 
-#endif /* !GSL_SF_ELEMENTARY_H_ */
+#endif /* __GSL_SF_ELEMENTARY_H__ */

@@ -1,5 +1,5 @@
-#ifndef GSL_MATRIX_H
-#define GSL_MATRIX_H
+#ifndef __GSL_MATRIX_H__
+#define __GSL_MATRIX_H__
 
 #include <gsl/gsl_matrix_complex_long_double.h>
 #include <gsl/gsl_matrix_complex_double.h>
@@ -22,4 +22,4 @@
 #include <gsl/gsl_matrix_char.h>
 
 
-#endif /* !GSL_MATRIX_H */
+#endif /* __GSL_MATRIX_H__ */

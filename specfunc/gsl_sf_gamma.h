@@ -1,8 +1,8 @@
 /* Author:  G. Jungman
  * RCS:     $Id$
  */
-#ifndef GSL_GAMMAFUNCTION_H_
-#define GSL_GAMMAFUNCTION_H_
+#ifndef __GSL_GAMMAFUNCTION_H__
+#define __GSL_GAMMAFUNCTION_H__
 
 #include <gsl/gsl_sf_result.h>
 
@@ -229,4 +229,4 @@ int gsl_sf_beta_e(double a, double b, gsl_sf_result * result);
 #define GSL_SF_GAMMA_XMAX  171.0
 
 
-#endif /* !GSL_GAMMAFUNCTION_H_ */
+#endif /* __GSL_GAMMAFUNCTION_H__ */

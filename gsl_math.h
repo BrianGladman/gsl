@@ -1,5 +1,5 @@
-#ifndef _GSL_MATH_H
-#define _GSL_MATH_H
+#ifndef __GSL_MATH_H__
+#define __GSL_MATH_H__
 #include <math.h>
 
 #ifndef M_E
@@ -170,4 +170,4 @@ struct gsl_interval_struct
 
 typedef struct gsl_interval_struct gsl_interval;
 
-#endif /* !_GSL_MATH_H */
+#endif /* __GSL_MATH_H__ */

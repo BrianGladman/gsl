@@ -1,5 +1,5 @@
-#ifndef GSL_FFT_HALFCOMPLEX_FLOAT_H
-#define GSL_FFT_HALFCOMPLEX_FLOAT_H
+#ifndef __GSL_FFT_HALFCOMPLEX_FLOAT_H__
+#define __GSL_FFT_HALFCOMPLEX_FLOAT_H__
 
 #include <stddef.h>
 
@@ -46,4 +46,4 @@ gsl_fft_halfcomplex_float_radix2_unpack (const float halfcomplex_coefficient[],
 					 float complex_coefficient[],
 					 size_t stride, size_t n);
 
-#endif /* GSL_FFT_HALFCOMPLEX_FLOAT_H */
+#endif /* __GSL_FFT_HALFCOMPLEX_FLOAT_H__ */

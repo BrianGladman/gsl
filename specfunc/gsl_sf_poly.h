@@ -1,8 +1,8 @@
 /* Author:  G. Jungman
  * RCS:     $Id$
  */
-#ifndef GSL_SF_POLY_H_
-#define GSL_SF_POLY_H_
+#ifndef __GSL_SF_POLY_H__
+#define __GSL_SF_POLY_H__
 
 
 /* c[0] + c[1] x + c[2] x^2 + ... + c[len-1] x^(len-1)
@@ -24,4 +24,4 @@ double gsl_sf_poly_eval(const double c[], const int len, const double x)
 #endif /* HAVE_INLINE */
 
 
-#endif  /* !GSL_SF_POLY_H_ */
+#endif /* __GSL_SF_POLY_H__ */

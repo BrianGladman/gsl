@@ -1,5 +1,5 @@
-#ifndef GSL_MESSAGE_H
-#define GSL_MESSAGE_H
+#ifndef __GSL_MESSAGE_H__
+#define __GSL_MESSAGE_H__
 
 /* Provide a general messaging service for client use.  Messages can
  * be selectively turned off at compile time by defining an
@@ -41,6 +41,6 @@ enum {
        } while (0)
 #endif
 
-#endif /* GSL_MESSAGE_H */
+#endif /* __GSL_MESSAGE_H__ */
 
 

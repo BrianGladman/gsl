@@ -1,8 +1,8 @@
 /* Author: MJB */
 /* RCS: $Id$ */
 
-#ifndef GSL_MONTE_MISER_H
-#define GSL_MONTE_MISER_H
+#ifndef __GSL_MONTE_MISER_H__
+#define __GSL_MONTE_MISER_H__
 
 #include <gsl/gsl_rng.h>
 #include <gsl/gsl_monte.h>
@@ -45,4 +45,4 @@ int gsl_monte_miser_init(gsl_monte_miser_state* state);
 void gsl_monte_miser_free(gsl_monte_miser_state* state);
 
 
-#endif /* GSL_MONTE_MISER_H */
+#endif /* __GSL_MONTE_MISER_H__ */

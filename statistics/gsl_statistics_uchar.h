@@ -1,5 +1,5 @@
-#ifndef GSL_STATISTICS_UCHAR_H
-#define GSL_STATISTICS_UCHAR_H
+#ifndef __GSL_STATISTICS_UCHAR_H__
+#define __GSL_STATISTICS_UCHAR_H__
 
 #include <stddef.h>
 
@@ -35,4 +35,4 @@ void gsl_stats_uchar_minmax_index (size_t * min_index, size_t * max_index, const
 double gsl_stats_uchar_median_from_sorted_data (const unsigned char sorted_data[], size_t stride, size_t n) ;
 double gsl_stats_uchar_quantile_from_sorted_data (const unsigned char sorted_data[], size_t stride, size_t n, const double f) ;
 
-#endif /* GSL_STATISTICS_UCHAR_H */
+#endif /* __GSL_STATISTICS_UCHAR_H__ */

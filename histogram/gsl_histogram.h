@@ -1,5 +1,5 @@
-#ifndef GSL_HISTOGRAM_H 
-#define GSL_HISTOGRAM_H 
+#ifndef __GSL_HISTOGRAM_H__ 
+#define __GSL_HISTOGRAM_H__ 
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -47,5 +47,5 @@ gsl_histogram_pdf * gsl_histogram_pdf_alloc (const gsl_histogram * h);
 void gsl_histogram_pdf_free (gsl_histogram_pdf * p);
 double gsl_histogram_pdf_sample (const gsl_histogram_pdf * p, double r);
 
-#endif /* GSL_HISTOGRAM_H */
+#endif /* __GSL_HISTOGRAM_H__ */
 

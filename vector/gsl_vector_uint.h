@@ -1,5 +1,5 @@
-#ifndef GSL_VECTOR_UINT_H
-#define GSL_VECTOR_UINT_H
+#ifndef __GSL_VECTOR_UINT_H__
+#define __GSL_VECTOR_UINT_H__
 
 #include <stdlib.h>
 #include <gsl/gsl_errno.h>
@@ -86,7 +86,7 @@ gsl_vector_uint_set (gsl_vector_uint * v, const size_t i, unsigned int x)
 
 #endif /* HAVE_INLINE */
 
-#endif /* GSL_VECTOR_UINT_H */
+#endif /* __GSL_VECTOR_UINT_H__ */
 
 
 

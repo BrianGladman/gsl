@@ -1,8 +1,8 @@
 /* Author: G. Jungman
  * RCS: $Id$
  */
-#ifndef GSL_ELLINT_H_
-#define GSL_ELLINT_H_
+#ifndef __GSL_ELLINT_H__
+#define __GSL_ELLINT_H__
 
 #include <gsl/gsl_mode.h>
 #include <gsl/gsl_sf_result.h>
@@ -65,4 +65,4 @@ int gsl_sf_ellint_RJ_impl(double x, double y, double z, double p, gsl_mode_t mod
 int gsl_sf_ellint_RJ_e(double x, double y, double z, double p, gsl_mode_t mode, gsl_sf_result * result);
 
 
-#endif  /* !GSL_ELLINT_H_ */
+#endif /* __GSL_ELLINT_H__ */

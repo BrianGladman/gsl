@@ -4,8 +4,8 @@
  */
 /* Based on draft BLAST C interface specification  [Jul 7 1998]
  */
-#ifndef GSL_BLAS_TYPES_H_
-#define GSL_BLAS_TYPES_H_
+#ifndef __GSL_BLAS_TYPES_H__
+#define __GSL_BLAS_TYPES_H__
 
 #include <sys/types.h>
 #include <gsl/gsl_complex.h>
@@ -28,4 +28,4 @@ typedef  enum CBLAS_SIDE        CBLAS_SIDE_t;
 typedef  gsl_complex  COMPLEX;
 
 
-#endif  /* !GSL_BLAS_TYPES_H_ */
+#endif /* __GSL_BLAS_TYPES_H__ */

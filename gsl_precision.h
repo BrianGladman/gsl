@@ -1,8 +1,8 @@
 /* Author:  B. Gough and G. Jungman
  * RCS:     $Id$
  */
-#ifndef GSL_PRECISION_H
-#define GSL_PRECISION_H
+#ifndef __GSL_PRECISION_H__
+#define __GSL_PRECISION_H__
 
 
 /* A type for the precision indicator.
@@ -30,4 +30,4 @@ extern const double gsl_root5_prec_eps[];
 extern const double gsl_root6_prec_eps[];
 
 
-#endif /* !GSL_PRECISION_H */
+#endif /* __GSL_PRECISION_H__ */

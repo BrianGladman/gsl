@@ -1,8 +1,8 @@
 /* Author:  G. Jungman
  * RCS:     $Id$
  */
-#ifndef GSL_LINALG_H
-#define GSL_LINALG_H
+#ifndef __GSL_LINALG_H__
+#define __GSL_LINALG_H__
 
 #include <gsl/gsl_permutation.h>
 #include <gsl/gsl_vector.h>
@@ -53,9 +53,9 @@ gsl_la_decomp_SV_impl(gsl_matrix * A,
  * exceptions: 
  */
 int
-gsl_la_decomp_LU_impl(gsl_matrix * matrix,
-                      gsl_permutation * permutation,
-                      int * signum);
+gsl_la_decomp_LU(gsl_matrix * matrix,
+                 gsl_permutation * permutation,
+                 int * signum);
 
 
 /* Linear Solve Using LU Decomposition
@@ -191,4 +191,4 @@ gsl_la_solve_symm_cyc_tridiag_impl(const gsl_vector * diag,
                                    gsl_vector * solution);
 
 
-#endif  /* !GSL_LINALG_H */
+#endif /* __GSL_LINALG_H__ */

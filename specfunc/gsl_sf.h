@@ -1,8 +1,8 @@
 /* Author:  G. Jungman
  * RCS:     $Id$
  */
-#ifndef GSL_SF_H_
-#define GSL_SF_H_
+#ifndef __GSL_SF_H__
+#define __GSL_SF_H__
 
 #include <gsl/gsl_sf_result.h>
 
@@ -37,4 +37,4 @@
 #include <gsl/gsl_sf_zeta.h>
 
 
-#endif /* !GSL_SF_H_ */
+#endif /* __GSL_SF_H__ */

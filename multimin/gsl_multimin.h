@@ -1,5 +1,5 @@
-#ifndef GSL_MULTIMIN_H
-#define GSL_MULTIMIN_H
+#ifndef __GSL_MULTIMIN_H__
+#define __GSL_MULTIMIN_H__
 
 #include <stdlib.h>
 #include <gsl/gsl_math.h>
@@ -191,4 +191,4 @@ extern const gsl_multimin_fdf_minimizer_type *gsl_multimin_fdf_minimizer_vector_
 int
 gsl_multimin_test_gradient_sqr_norm(gsl_multimin_fdf_history *h,double epsabs);
 
-#endif /* GSL_MULTIMIN_H */
+#endif /* __GSL_MULTIMIN_H__ */

@@ -1,8 +1,8 @@
 /* Author:  G. Jungman
  * RCS:     $Id$
  */
-#ifndef GSL_ODEIV_H
-#define GSL_ODEIV_H
+#ifndef __GSL_ODEIV_H__
+#define __GSL_ODEIV_H__
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -228,4 +228,4 @@ int gsl_odeiv_evolve_impl(gsl_odeiv_evolve *, gsl_odeiv_evolve_mon * mon, gsl_od
 void gsl_odeiv_evolve_free(gsl_odeiv_evolve *);
 
 
-#endif  /* !GSL_ODEIV_H */
+#endif /* __GSL_ODEIV_H__ */

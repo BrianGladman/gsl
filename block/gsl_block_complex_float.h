@@ -1,5 +1,5 @@
-#ifndef GSL_BLOCK_COMPLEX_FLOAT_H
-#define GSL_BLOCK_COMPLEX_FLOAT_H
+#ifndef __GSL_BLOCK_COMPLEX_FLOAT_H__
+#define __GSL_BLOCK_COMPLEX_FLOAT_H__
 
 #include <stdlib.h>
 #include <gsl/gsl_errno.h>
@@ -29,4 +29,4 @@ int gsl_block_complex_float_raw_fprintf (FILE * stream, const float * b, size_t 
 size_t gsl_block_complex_float_size (const gsl_block_complex_float * b);
 float * gsl_block_complex_float_data (const gsl_block_complex_float * b);
 
-#endif /* GSL_BLOCK_COMPLEX_FLOAT_H */
+#endif /* __GSL_BLOCK_COMPLEX_FLOAT_H__ */

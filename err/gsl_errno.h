@@ -1,5 +1,5 @@
-#ifndef GSL_ERRNO_H
-#define GSL_ERRNO_H
+#ifndef __GSL_ERRNO_H__
+#define __GSL_ERRNO_H__
 
 #include <stdio.h>
 #include <errno.h>
@@ -140,4 +140,4 @@ extern int gsl_warnings_off ;
 #define GSL_ERROR_SELECT_5(a,b,c,d,e) ((a) != GSL_SUCCESS ? (a) : GSL_ERROR_SELECT_4(b,c,d,e))
 
 
-#endif /* GSL_ERRNO_H */
+#endif /* __GSL_ERRNO_H__ */

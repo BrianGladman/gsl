@@ -1,5 +1,5 @@
-#ifndef GSL_DFT_COMPLEX_H
-#define GSL_DFT_COMPLEX_H
+#ifndef __GSL_DFT_COMPLEX_H__
+#define __GSL_DFT_COMPLEX_H__
 
 #include <stddef.h>
 
@@ -19,4 +19,4 @@ int gsl_dft_complex_inverse (const double data[], size_t stride, size_t n,
 int gsl_dft_complex_transform (const double data[], size_t stride, size_t n,
 		     double result[], const gsl_fft_direction sign);
 
-#endif /* GSL_DFT_COMPLEX_H */
+#endif /* __GSL_DFT_COMPLEX_H__ */

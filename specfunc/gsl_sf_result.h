@@ -1,8 +1,8 @@
 /* Author:  G. Jungman
  * RCS:     $Id$
  */
-#ifndef GSL_SF_RESULT_H_
-#define GSL_SF_RESULT_H_
+#ifndef __GSL_SF_RESULT_H__
+#define __GSL_SF_RESULT_H__
 
 struct gsl_sf_result_struct {
   double val;
@@ -25,4 +25,4 @@ int gsl_sf_result_smash_impl(const gsl_sf_result_e10 * re, gsl_sf_result * r);
 int gsl_sf_result_smash_e(const gsl_sf_result_e10 * re, gsl_sf_result * r);
 
 
-#endif /* GSL_SF_RESULT_H_ */
+#endif /* __GSL_SF_RESULT_H__ */

@@ -1,5 +1,5 @@
-#ifndef GSL_SIMAN_H
-#define GSL_SIMAN_H
+#ifndef __GSL_SIMAN_H__
+#define __GSL_SIMAN_H__
 #include <stdlib.h>
 
 /* types for the function pointers passed to gsl_siman_solve */
@@ -58,4 +58,4 @@ gsl_siman_solve_many (const gsl_rng * r, void *x0_p, gsl_Efunc_t Ef,
 		      size_t element_size,
 		      gsl_siman_params_t params);
 
-#endif /* GSL_SIMAN_H */
+#endif /* __GSL_SIMAN_H__ */

@@ -1,8 +1,8 @@
 /* Author:  G. Jungman
  * RCS:     $Id$
  */
-#ifndef GSL_SF_HYPERG_H_
-#define GSL_SF_HYPERG_H_
+#ifndef __GSL_SF_HYPERG_H__
+#define __GSL_SF_HYPERG_H__
 
 #include <gsl/gsl_sf_result.h>
 
@@ -122,4 +122,4 @@ int     gsl_sf_hyperg_2F0_impl(double a, double b, double x, gsl_sf_result * res
 int     gsl_sf_hyperg_2F0_e(double a, double b, double x, gsl_sf_result * result);
 
 
-#endif  /* !GSL_SF_HYPERG_H_ */
+#endif /* __GSL_SF_HYPERG_H__ */

@@ -1,8 +1,8 @@
 /* Author: G. Jungman
  * RCS: $Id$
  */
-#ifndef GSL_EXPINT_H_
-#define GSL_EXPINT_H_
+#ifndef __GSL_EXPINT_H__
+#define __GSL_EXPINT_H__
 
 #include <gsl/gsl_sf_result.h>
 
@@ -86,4 +86,4 @@ int gsl_sf_atanint_impl(double x, gsl_sf_result * result);
 int gsl_sf_atanint_e(double x, gsl_sf_result * result);
 
 
-#endif /* !GSL_EXPINT_H_ */
+#endif /* __GSL_EXPINT_H__ */

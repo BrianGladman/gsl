@@ -1,5 +1,5 @@
-#ifndef GSL_IEEE_UTILS_H
-#define GSL_IEEE_UTILS_H
+#ifndef __GSL_IEEE_UTILS_H__
+#define __GSL_IEEE_UTILS_H__
 #include <stdio.h>
 
 enum {
@@ -62,5 +62,5 @@ int gsl_ieee_read_mode_string (const char * description, int * precision,
 			       int * rounding, int * exception_mask) ;
 int gsl_ieee_set_mode (int precision, int rounding, int exception_mask) ;
 
-#endif /* GSL_IEEE_UTILS_H */
+#endif /* __GSL_IEEE_UTILS_H__ */
 

@@ -1,8 +1,8 @@
 /* Author:  G. Jungman
  * RCS:     $Id$
  */
-#ifndef GSL_EIGEN_H
-#define GSL_EIGEN_H
+#ifndef __GSL_EIGEN_H__
+#define __GSL_EIGEN_H__
 
 #include <gsl/gsl_vector.h>
 #include <gsl/gsl_matrix.h>
@@ -50,4 +50,4 @@ gsl_eigen_sort_impl(gsl_vector * eval,
                     gsl_eigen_sort_t sort_type);
 
 
-#endif  /* !GSL_EIGEN_H */
+#endif /* __GSL_EIGEN_H__ */

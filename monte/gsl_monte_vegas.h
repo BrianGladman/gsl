@@ -1,8 +1,8 @@
 /* header for the gsl "vegas" routines.  Mike Booth, May 1998 */
 /* RCS $Id$ */
 
-#ifndef GSL_MONTE_VEGAS_H
-#define GSL_MONTE_VEGAS_H
+#ifndef __GSL_MONTE_VEGAS_H__
+#define __GSL_MONTE_VEGAS_H__
 
 #include <gsl/gsl_rng.h>
 #include <gsl/gsl_monte.h>
@@ -69,5 +69,5 @@ int gsl_monte_vegas_init(gsl_monte_vegas_state* state);
 
 void gsl_monte_vegas_free (gsl_monte_vegas_state* s);
 
-#endif /* !GSL_MONTE_VEGAS_H */
+#endif /* __GSL_MONTE_VEGAS_H__ */
 

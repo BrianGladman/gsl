@@ -1,8 +1,8 @@
 /* Author:  G. Jungman
  * RCS:     $Id$
  */
-#ifndef GSL_DHT_H
-#define GSL_DHT_H
+#ifndef __GSL_DHT_H__
+#define __GSL_DHT_H__
 
 
 struct gsl_dht_transform_struct {
@@ -54,4 +54,4 @@ void gsl_dht_transform_free(gsl_dht_transform * t);
 int gsl_dht_transform_apply(const gsl_dht_transform * t, double * f_in, double * f_out);
 
 
-#endif  /* !GSL_DHT_H */
+#endif /* __GSL_DHT_H__ */

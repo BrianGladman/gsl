@@ -1,8 +1,8 @@
 /* Author:  G. Jungman
  * RCS:     $Id$
  */
-#ifndef GSL_SF_BESSEL_H_
-#define GSL_SF_BESSEL_H_
+#ifndef __GSL_SF_BESSEL_H__
+#define __GSL_SF_BESSEL_H__
 
 #include <stdlib.h>
 #include <gsl/gsl_mode.h>
@@ -526,4 +526,4 @@ int gsl_sf_bessel_zero_Jnu_e(double nu, int s, gsl_sf_result * result);
 
 
 
-#endif /* !GSL_SF_BESSEL_H_ */
+#endif /* __GSL_SF_BESSEL_H__ */

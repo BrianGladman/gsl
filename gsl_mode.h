@@ -1,8 +1,8 @@
 /* Author:  B. Gough and G. Jungman
  * RCS:     $Id$
  */
-#ifndef GSL_MODE_H
-#define GSL_MODE_H
+#ifndef __GSL_MODE_H__
+#define __GSL_MODE_H__
 
 
 /* Some functions can take a mode argument. This
@@ -53,4 +53,4 @@ GSL_MODE_PREC(gsl_mode_t mt)
 #define GSL_MODE_DEFAULT  0
 
 
-#endif /* !GSL_MODE_H */
+#endif /* __GSL_MODE_H__ */

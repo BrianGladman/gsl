@@ -1,5 +1,5 @@
-#ifndef _GSL_COMPLEX_H
-#define _GSL_COMPLEX_H
+#ifndef __GSL_COMPLEX_H__
+#define __GSL_COMPLEX_H__
 
 
 /* two consecutive built-in types as a complex number */
@@ -67,4 +67,4 @@ gsl_complex_float;
 
 #define GSL_SET_COMPLEX_PACKED(zp,n,x,y) do {*((zp)+2*(n))=(x); *((zp)+(2*(n)+1))=(y);} while(0)
 
-#endif /* _GSL_COMPLEX_H */
+#endif /* __GSL_COMPLEX_H__ */

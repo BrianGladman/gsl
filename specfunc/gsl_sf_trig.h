@@ -1,8 +1,8 @@
 /* Author:  G. Jungman
  * RCS:     $Id$
  */
-#ifndef GSL_SF_TRIG_H
-#define GSL_SF_TRIG_H
+#ifndef __GSL_SF_TRIG_H__
+#define __GSL_SF_TRIG_H__
 
 #include <gsl/gsl_sf_result.h>
 
@@ -126,4 +126,4 @@ int gsl_sf_angle_restrict_symm_err_impl(double theta, gsl_sf_result * result);
 int gsl_sf_angle_restrict_pos_err_impl(double theta, gsl_sf_result * result);
 
 
-#endif /* !GSL_SF_TRIG_H */
+#endif /* __GSL_SF_TRIG_H__ */

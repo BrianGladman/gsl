@@ -1,8 +1,8 @@
 /* Author:  G. Jungman
  * RCS:     $Id$
  */
-#ifndef GSL_SUM_H
-#define GSL_SUM_H
+#ifndef __GSL_SUM_H__
+#define __GSL_SUM_H__
 
 /* Basic Levin-u acceleration method.
  *
@@ -119,7 +119,7 @@ int gsl_sum_levin_u_trunc_step(double term,
 			       double * sum_accel,
 			       double * sum_plain);
 
-#endif  /* GSL_SUM_H */
+#endif /* __GSL_SUM_H__ */
 
 
 

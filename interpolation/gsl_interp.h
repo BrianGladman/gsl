@@ -1,8 +1,8 @@
 /* Author:  G. Jungman
  * RCS:     $Id$
  */
-#ifndef GSL_INTERP_H_
-#define GSL_INTERP_H_
+#ifndef __GSL_INTERP_H__
+#define __GSL_INTERP_H__
 #include <stdlib.h>
 
 /* evaluation accelerator */
@@ -169,4 +169,4 @@ gsl_interp_accel_find(gsl_interp_accel * a, const double xa[], size_t len, doubl
 #endif /* HAVE_INLINE */
 
 
-#endif  /* !GSL_INTERP_H_ */
+#endif /* __GSL_INTERP_H__ */

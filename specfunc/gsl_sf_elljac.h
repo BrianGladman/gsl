@@ -1,8 +1,8 @@
 /* Author:  G. Jungman
  * RCS:     $Id$
  */
-#ifndef GSL_SF_ELLJAC_H_
-#define GSL_SF_ELLJAC_H_
+#ifndef __GSL_SF_ELLJAC_H__
+#define __GSL_SF_ELLJAC_H__
 
 
 /* Jacobian elliptic functions sn, dn, cn,
@@ -14,4 +14,4 @@ int gsl_sf_elljac_impl(double u, double m, double * sn, double * cn, double * dn
 int gsl_sf_elljac_e(double u, double m, double * sn, double * cn, double * dn);
 
 
-#endif  /* !GSL_SF_ELLJAC_H_ */
+#endif /* __GSL_SF_ELLJAC_H__ */

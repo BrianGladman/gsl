@@ -1,5 +1,5 @@
-#ifndef GSL_MATRIX_COMPLEX_DOUBLE_H
-#define GSL_MATRIX_COMPLEX_DOUBLE_H
+#ifndef __GSL_MATRIX_COMPLEX_DOUBLE_H__
+#define __GSL_MATRIX_COMPLEX_DOUBLE_H__
 
 #include <stdlib.h>
 #include <gsl/gsl_errno.h>
@@ -119,4 +119,4 @@ gsl_matrix_complex_set(gsl_matrix_complex * m,
 }
 #endif /* HAVE_INLINE */
 
-#endif /* !GSL_MATRIX_COMPLEX_DOUBLE_H */
+#endif /* __GSL_MATRIX_COMPLEX_DOUBLE_H__ */

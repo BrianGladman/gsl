@@ -1,8 +1,8 @@
 /* Author:  G. Jungman
  * RCS:     $Id$
  */
-#ifndef GSL_SF_SYNCHROTRON_H_
-#define GSL_SF_SYNCHROTRON_H_
+#ifndef __GSL_SF_SYNCHROTRON_H__
+#define __GSL_SF_SYNCHROTRON_H__
 
 #include <gsl/gsl_sf_result.h>
 
@@ -25,4 +25,4 @@ int     gsl_sf_synchrotron_2_impl(double x, gsl_sf_result * result);
 int     gsl_sf_synchrotron_2_e(double x, gsl_sf_result * result);
 
 
-#endif  /* !GSL_SF_SYNCHROTRON_H_ */
+#endif /* __GSL_SF_SYNCHROTRON_H__ */

@@ -1,8 +1,8 @@
 /* Author:  G. Jungman
  * RCS:     $Id$
  */
-#ifndef GSL_SF_EXP_H_
-#define GSL_SF_EXP_H_
+#ifndef __GSL_SF_EXP_H__
+#define __GSL_SF_EXP_H__
 
 #include <gsl/gsl_sf_result.h>
 #include <gsl/gsl_precision.h>
@@ -129,10 +129,10 @@ int gsl_sf_exp_impl(const double x, gsl_sf_result * result)
     return GSL_SUCCESS;
   }  
 }
-#endif  /* HAVE_INLINE */
+#endif /* HAVE_INLINE */
 
 
-#endif  /* !GSL_SF_EXP_H_ */
+#endif /* __GSL_SF_EXP_H__ */
 
 
 

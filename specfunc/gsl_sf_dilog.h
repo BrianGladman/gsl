@@ -1,8 +1,8 @@
 /* Author:  G. Jungman
  * RCS:     $Id$
  */
-#ifndef GSL_SF_DILOG_H_
-#define GSL_SF_DILOG_H_
+#ifndef __GSL_SF_DILOG_H__
+#define __GSL_SF_DILOG_H__
 
 #include <gsl/gsl_sf_result.h>
 
@@ -24,4 +24,4 @@ int gsl_sf_complex_dilog_impl(double r, double theta, gsl_sf_result * result_re,
 int gsl_sf_complex_dilog_e(double r, double theta, gsl_sf_result * result_re, gsl_sf_result * result_im);
 
 
-#endif /* !GSL_SF_DILOG_H_ */
+#endif /* __GSL_SF_DILOG_H__ */

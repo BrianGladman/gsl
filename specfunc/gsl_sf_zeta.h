@@ -1,8 +1,8 @@
 /* Author:  G. Jungman
  * RCS:     $Id$
  */
-#ifndef GSL_SF_ZETA_H_
-#define GSL_SF_ZETA_H_
+#ifndef __GSL_SF_ZETA_H__
+#define __GSL_SF_ZETA_H__
 
 #include <gsl/gsl_sf_result.h>
 
@@ -55,4 +55,4 @@ int gsl_sf_eta_impl(double s, gsl_sf_result * result);
 int gsl_sf_eta_e(double s, gsl_sf_result * result);
 
 
-#endif  /* !GSL_SF_ZETA_H_ */
+#endif /* __GSL_SF_ZETA_H__ */

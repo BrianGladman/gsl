@@ -1,5 +1,5 @@
-#ifndef GSL_FFT_REAL_FLOAT_H
-#define GSL_FFT_REAL_FLOAT_H
+#ifndef __GSL_FFT_REAL_FLOAT_H__
+#define __GSL_FFT_REAL_FLOAT_H__
 
 #include <stddef.h>
 
@@ -31,4 +31,4 @@ int gsl_fft_real_float_unpack (const float real_float_coefficient[],
 			       float complex_coefficient[],
 			       size_t stride, size_t n);
 
-#endif /* GSL_FFT_REAL_FLOAT_H */
+#endif /* __GSL_FFT_REAL_FLOAT_H__ */

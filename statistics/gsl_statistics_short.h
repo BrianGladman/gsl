@@ -1,5 +1,5 @@
-#ifndef GSL_STATISTICS_SHORT_H
-#define GSL_STATISTICS_SHORT_H
+#ifndef __GSL_STATISTICS_SHORT_H__
+#define __GSL_STATISTICS_SHORT_H__
 
 #include <stddef.h>
 
@@ -35,4 +35,4 @@ void gsl_stats_short_minmax_index (size_t * min_index, size_t * max_index, const
 double gsl_stats_short_median_from_sorted_data (const short sorted_data[], size_t stride, size_t n) ;
 double gsl_stats_short_quantile_from_sorted_data (const short sorted_data[], size_t stride, size_t n, const double f) ;
 
-#endif /* GSL_STATISTICS_SHORT_H */
+#endif /* __GSL_STATISTICS_SHORT_H__ */

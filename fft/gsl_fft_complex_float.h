@@ -1,5 +1,5 @@
-#ifndef GSL_FFT_COMPLEX_FLOAT_H
-#define GSL_FFT_COMPLEX_FLOAT_H
+#ifndef __GSL_FFT_COMPLEX_FLOAT_H__
+#define __GSL_FFT_COMPLEX_FLOAT_H__
 
 #include <stddef.h>
 
@@ -91,7 +91,7 @@ int gsl_fft_complex_float_transform (gsl_complex_packed_array_float data,
                                      const gsl_fft_wavetable_complex_float * wavetable,
                                      gsl_fft_direction sign);
 
-#endif /* GSL_FFT_COMPLEX_FLOAT_H */
+#endif /* __GSL_FFT_COMPLEX_FLOAT_H__ */
 
 
 

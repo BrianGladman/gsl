@@ -1,5 +1,5 @@
-#ifndef GSL_STATISTICS_ULONG_H
-#define GSL_STATISTICS_ULONG_H
+#ifndef __GSL_STATISTICS_ULONG_H__
+#define __GSL_STATISTICS_ULONG_H__
 
 #include <stddef.h>
 
@@ -35,4 +35,4 @@ void gsl_stats_ulong_minmax_index (size_t * min_index, size_t * max_index, const
 double gsl_stats_ulong_median_from_sorted_data (const unsigned long sorted_data[], size_t stride, size_t n) ;
 double gsl_stats_ulong_quantile_from_sorted_data (const unsigned long sorted_data[], size_t stride, size_t n, const double f) ;
 
-#endif /* GSL_STATISTICS_ULONG_H */
+#endif /* __GSL_STATISTICS_ULONG_H__ */

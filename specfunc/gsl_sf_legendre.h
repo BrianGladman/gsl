@@ -1,8 +1,8 @@
 /* Author:  G. Jungman
  * RCS:     $Id$
  */
-#ifndef GSL_SF_LEGENDRE_H
-#define GSL_SF_LEGENDRE_H
+#ifndef __GSL_SF_LEGENDRE_H__
+#define __GSL_SF_LEGENDRE_H__
 
 
 /* P_l(x)   l >= 0; |x| <= 1
@@ -247,4 +247,4 @@ gsl_sf_legendre_array_size(const int lmax, const int m)
 #endif /* HAVE_INLINE */
 
 
-#endif /* !GSL_SF_LEGENDRE_H */
+#endif /* __GSL_SF_LEGENDRE_H__ */

@@ -1,5 +1,5 @@
-#ifndef GSL_MULTIROOTS_H
-#define GSL_MULTIROOTS_H
+#ifndef __GSL_MULTIROOTS_H__
+#define __GSL_MULTIROOTS_H__
 
 #include <stdlib.h>
 #include <gsl/gsl_math.h>
@@ -136,4 +136,4 @@ extern const gsl_multiroot_fdfsolver_type * gsl_multiroot_fdfsolver_hybridj;
 extern const gsl_multiroot_fdfsolver_type * gsl_multiroot_fdfsolver_hybridsj;
 
 
-#endif /* GSL_MULTIROOTS_H */
+#endif /* __GSL_MULTIROOTS_H__ */

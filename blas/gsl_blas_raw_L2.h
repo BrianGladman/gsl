@@ -5,8 +5,8 @@
 /* Prototypes for level 2 BLAS functions.
  * Based on draft BLAST C interface specification  [Jul 7 1998]
  */
-#ifndef GSL_BLAS_RAW_L2_H
-#define GSL_BLAS_RAW_L2_H
+#ifndef __GSL_BLAS_RAW_L2_H__
+#define __GSL_BLAS_RAW_L2_H__
 
 #include <gsl/gsl_complex.h>
 #include <gsl/gsl_blas_types.h>
@@ -526,4 +526,4 @@ void gsl_blas_raw_zhpr2 (CBLAS_UPLO_t Uplo,
 			 gsl_complex_packed_array Ap);
 
 
-#endif /* !GSL_BLAS_RAW_L2_H */
+#endif /* __GSL_BLAS_RAW_L2_H__ */

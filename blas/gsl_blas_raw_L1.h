@@ -5,8 +5,8 @@
 /* Prototypes for level 1 BLAS functions
  * Based on draft BLAST C interface specification  [Jul 7 1998]
  */
-#ifndef GSL_BLAS_RAW_L1_H_
-#define GSL_BLAS_RAW_L1_H_
+#ifndef __GSL_BLAS_RAW_L1_H__
+#define __GSL_BLAS_RAW_L1_H__
 
 #include <gsl/gsl_complex.h>
 #include <gsl/gsl_blas_types.h>
@@ -151,4 +151,4 @@ void gsl_blas_raw_zscal  (size_t N, const gsl_const_complex_packed alpha, gsl_co
 void gsl_blas_raw_csscal (size_t N, float  alpha, gsl_complex_packed_array_float X, size_t incX);
 void gsl_blas_raw_zdscal (size_t N, double alpha, gsl_complex_packed_array X, size_t incX);
 
-#endif  /* !GSL_BLAS_RAW_L1_H_ */
+#endif /* __GSL_BLAS_RAW_L1_H__ */

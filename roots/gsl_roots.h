@@ -1,5 +1,5 @@
-#ifndef GSL_ROOTS_H
-#define GSL_ROOTS_H
+#ifndef __GSL_ROOTS_H__
+#define __GSL_ROOTS_H__
 
 #include <stdlib.h>
 #include <gsl/gsl_math.h>
@@ -89,4 +89,4 @@ extern const gsl_root_fdfsolver_type  * gsl_root_fdfsolver_newton;
 extern const gsl_root_fdfsolver_type  * gsl_root_fdfsolver_secant;
 extern const gsl_root_fdfsolver_type  * gsl_root_fdfsolver_steffenson;
 
-#endif /* GSL_ROOTS_H */
+#endif /* __GSL_ROOTS_H__ */

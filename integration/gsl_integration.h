@@ -1,5 +1,5 @@
-#ifndef GSL_INTEGRATION_H
-#define GSL_INTEGRATION_H
+#ifndef __GSL_INTEGRATION_H__
+#define __GSL_INTEGRATION_H__
 #include <stdlib.h>
 #include <gsl/gsl_math.h>
 
@@ -206,4 +206,4 @@ int gsl_integration_qawf (gsl_function * f,
 			  gsl_integration_qawo_table * wf,
 			  double *result, double *abserr);
 
-#endif /* GSL_INTEGRATION_H */
+#endif /* __GSL_INTEGRATION_H__ */

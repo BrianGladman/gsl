@@ -1,8 +1,8 @@
 /* Author:  G. Jungman
  * RCS:     $Id$
  */
-#ifndef GSL_SF_GEGENBAUER_H
-#define GSL_SF_GEGENBAUER_H
+#ifndef __GSL_SF_GEGENBAUER_H__
+#define __GSL_SF_GEGENBAUER_H__
 
 #include <gsl/gsl_sf_result.h>
 
@@ -39,4 +39,4 @@ int gsl_sf_gegenpoly_array_impl(int nmax, double lambda, double x, double * resu
 int gsl_sf_gegenpoly_array_e(int nmax, double lambda, double x, double * result_array);
 
 
-#endif  /* !GSL_SF_GEGENBAUER_H */
+#endif /* __GSL_SF_GEGENBAUER_H__ */

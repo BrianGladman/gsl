@@ -1,5 +1,5 @@
-#ifndef GSL_POLY_H
-#define GSL_POLY_H
+#ifndef __GSL_POLY_H__
+#define __GSL_POLY_H__
 
 #include <stdlib.h>
 #include <gsl/gsl_complex.h>
@@ -49,4 +49,4 @@ gsl_poly_complex_solve (const double * a, size_t n,
                         gsl_poly_complex_workspace * w,
                         gsl_complex_packed_ptr z);
 
-#endif /* GSL_POLY_H */
+#endif /* __GSL_POLY_H__ */

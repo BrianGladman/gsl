@@ -5,8 +5,8 @@
 /* Prototypes for level 3 BLAS functions.
  * Based on draft BLAST C interface specification  [Jul 7 1998]
  */
-#ifndef GSL_BLAS_RAW_L3_H
-#define GSL_BLAS_RAW_L3_H
+#ifndef __GSL_BLAS_RAW_L3_H__
+#define __GSL_BLAS_RAW_L3_H__
 
 #include <gsl/gsl_complex.h>
 #include <gsl/gsl_blas_types.h>
@@ -293,4 +293,4 @@ void gsl_blas_raw_zher2k (CBLAS_UPLO_t Uplo,
                           gsl_complex_packed_array C, int ldc);
 
 
-#endif /* !GSL_BLAS_RAW_L3_H */
+#endif /* __GSL_BLAS_RAW_L3_H__ */

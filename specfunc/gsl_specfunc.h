@@ -3,9 +3,9 @@
  */
 	
 /* Convenience header */
-#ifndef _GSL_SPECFUNC_H_
-#define _GSL_SPECFUNC_H_
+#ifndef __GSL_SPECFUNC_H__
+#define __GSL_SPECFUNC_H__
 
 #include <gsl/gsl_sf.h>
 
-#endif /* !_GSL_SPECFUNC_H_ */
+#endif /* __GSL_SPECFUNC_H__ */

@@ -1,5 +1,5 @@
-#ifndef GSL_HISTOGRAM2D_H 
-#define GSL_HISTOGRAM2D_H 
+#ifndef __GSL_HISTOGRAM2D_H__ 
+#define __GSL_HISTOGRAM2D_H__ 
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -63,5 +63,5 @@ int gsl_histogram2d_pdf_sample (const gsl_histogram2d_pdf * p,
 				   double r1, double r2, 
 				   double * x, double * y);
 
-#endif /* GSL_HISTOGRAM2D_H */
+#endif /* __GSL_HISTOGRAM2D_H__ */
 

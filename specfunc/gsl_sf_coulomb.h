@@ -1,8 +1,8 @@
 /* Author:  G. Jungman
  * RCS:     $Id$
  */
-#ifndef GSL_COULOMB_H_
-#define GSL_COULOMB_H_
+#ifndef __GSL_COULOMB_H__
+#define __GSL_COULOMB_H__
 
 #include <gsl/gsl_mode.h>
 #include <gsl/gsl_sf_result.h>
@@ -115,4 +115,4 @@ int gsl_sf_coulomb_CL_impl(double L, double eta, gsl_sf_result * result);
 int gsl_sf_coulomb_CL_list(double Lmin, int kmax, double eta, double * cl);
 
 
-#endif  /* !GSL_COULOMB_H_ */
+#endif /* __GSL_COULOMB_H__ */

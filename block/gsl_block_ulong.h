@@ -1,5 +1,5 @@
-#ifndef GSL_BLOCK_ULONG_H
-#define GSL_BLOCK_ULONG_H
+#ifndef __GSL_BLOCK_ULONG_H__
+#define __GSL_BLOCK_ULONG_H__
 
 #include <stdlib.h>
 #include <gsl/gsl_errno.h>
@@ -29,4 +29,4 @@ int gsl_block_ulong_raw_fprintf (FILE * stream, const unsigned long * b, size_t 
 size_t gsl_block_ulong_size (const gsl_block_ulong * b);
 unsigned long * gsl_block_ulong_data (const gsl_block_ulong * b);
 
-#endif /* GSL_BLOCK_ULONG_H */
+#endif /* __GSL_BLOCK_ULONG_H__ */

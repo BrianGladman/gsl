@@ -1,5 +1,5 @@
-#ifndef GSL_RANDIST_H
-#define GSL_RANDIST_H
+#ifndef __GSL_RANDIST_H__
+#define __GSL_RANDIST_H__
 #include <gsl/gsl_rng.h>
 
 unsigned int gsl_ran_bernoulli (const gsl_rng * r, double p);
@@ -129,4 +129,4 @@ double gsl_ran_discrete_pdf (size_t k, const gsl_ran_discrete_t *g);
 
 
 
-#endif /* GSL_RANDIST_H */
+#endif /* __GSL_RANDIST_H__ */

@@ -1,5 +1,5 @@
-#ifndef GSL_FFT_REAL_H
-#define GSL_FFT_REAL_H
+#ifndef __GSL_FFT_REAL_H__
+#define __GSL_FFT_REAL_H__
 
 #include <stddef.h>
 
@@ -31,4 +31,4 @@ int gsl_fft_real_unpack (const double real_coefficient[],
 			 double complex_coefficient[],
 			 size_t stride, size_t n);
 
-#endif /* GSL_FFT_REAL_H */
+#endif /* __GSL_FFT_REAL_H__ */

@@ -1,5 +1,5 @@
-#ifndef GSL_TEST_H
-#define GSL_TEST_H
+#ifndef __GSL_TEST_H__
+#define __GSL_TEST_H__
 
 void
   gsl_test (int status, const char *test_description, ...);
@@ -26,4 +26,4 @@ int
   gsl_test_summary (void) ;
 
 
-#endif /* GSL_TEST_H */
+#endif /* __GSL_TEST_H__ */

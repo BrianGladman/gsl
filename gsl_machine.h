@@ -1,8 +1,8 @@
 /* Author:  B. Gough and G. Jungman
  * RCS:     $Id$
  */
-#ifndef GSL_MACHINE_H
-#define GSL_MACHINE_H
+#ifndef __GSL_MACHINE_H__
+#define __GSL_MACHINE_H__
 
 #include <limits.h>
 #include <float.h>
@@ -101,4 +101,4 @@
 #define GSL_LOG_MACH_EPS       -34.54
 
 
-#endif  /* !GSL_MACHINE_H */
+#endif /* __GSL_MACHINE_H__ */

@@ -1,8 +1,8 @@
 /* Author:  G. Jungman
  * RCS:     $Id$
  */
-#ifndef GSL_SF_POW_INT_H_
-#define GSL_SF_POW_INT_H_
+#ifndef __GSL_SF_POW_INT_H__
+#define __GSL_SF_POW_INT_H__
 
 #include <gsl/gsl_sf_result.h>
 
@@ -63,4 +63,4 @@ double gsl_sf_pow_int(double x, int n)
 #endif /* HAVE_INLINE */
 
 
-#endif /* !GSL_SF_POW_INT_H_ */
+#endif /* __GSL_SF_POW_INT_H__ */

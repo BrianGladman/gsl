@@ -1,8 +1,8 @@
 /* Author:  G. Jungman
  * RCS:     $Id$
  */
-#ifndef GSL_SF_DAWSON_H_
-#define GSL_SF_DAWSON_H_
+#ifndef __GSL_SF_DAWSON_H__
+#define __GSL_SF_DAWSON_H__
 
 
 /* Dawson's integral:
@@ -15,4 +15,4 @@ int     gsl_sf_dawson_impl(double x, gsl_sf_result * result);
 int     gsl_sf_dawson_e(double x, gsl_sf_result * result);
 
 
-#endif  /* !GSL_SF_DAWSON_H_ */
+#endif /* __GSL_SF_DAWSON_H__ */

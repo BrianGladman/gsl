@@ -1,5 +1,5 @@
-#ifndef GSL_BLOCK_LONG_H
-#define GSL_BLOCK_LONG_H
+#ifndef __GSL_BLOCK_LONG_H__
+#define __GSL_BLOCK_LONG_H__
 
 #include <stdlib.h>
 #include <gsl/gsl_errno.h>
@@ -29,4 +29,4 @@ int gsl_block_long_raw_fprintf (FILE * stream, const long * b, size_t n, size_t 
 size_t gsl_block_long_size (const gsl_block_long * b);
 long * gsl_block_long_data (const gsl_block_long * b);
 
-#endif /* GSL_BLOCK_LONG_H */
+#endif /* __GSL_BLOCK_LONG_H__ */

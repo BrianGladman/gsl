@@ -2,8 +2,8 @@
  * Author:  G. Jungman
  * RCS:     $Id$
  */
-#ifndef GSL_BLAS_H_
-#define GSL_BLAS_H_
+#ifndef __GSL_BLAS_H__
+#define __GSL_BLAS_H__
 
 #include <gsl/gsl_vector.h>
 #include <gsl/gsl_matrix.h>
@@ -805,4 +805,4 @@ int  gsl_blas_zher2k (CBLAS_UPLO_t Uplo,
                       gsl_matrix_complex * C);
 
 
-#endif /* !GSL_BLAS_H_ */
+#endif /* __GSL_BLAS_H__ */

@@ -1,5 +1,5 @@
-#ifndef GSL_BLOCK_INT_H
-#define GSL_BLOCK_INT_H
+#ifndef __GSL_BLOCK_INT_H__
+#define __GSL_BLOCK_INT_H__
 
 #include <stdlib.h>
 #include <gsl/gsl_errno.h>
@@ -29,4 +29,4 @@ int gsl_block_int_raw_fprintf (FILE * stream, const int * b, size_t n, size_t st
 size_t gsl_block_int_size (const gsl_block_int * b);
 int * gsl_block_int_data (const gsl_block_int * b);
 
-#endif /* GSL_BLOCK_INT_H */
+#endif /* __GSL_BLOCK_INT_H__ */
