@@ -302,3 +302,5 @@ conditions
 division by zero
 
 * Ewald Stamp <stamp@math.hu-berlin.de> bugfix for vector/swap_source.c
+
+* Joerg Wensch <wensch@informatik.uni-halle.de>  LQ decompositions

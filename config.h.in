@@ -271,5 +271,5 @@
 #endif
 
 #if defined(GSL_RANGE_CHECK_OFF) || !defined(GSL_RANGE_CHECK)
-#define GSL_RANGE_CHECK 0  /* turn off range checking by default internally */
+#define GSL_RANGE_CHECK 0  /* turn off range checking by default */
 #endif

@@ -1,6 +1,7 @@
 /* linalg/apply_givens.c
  * 
  * Copyright (C) 1996, 1997, 1998, 1999, 2000, 2001 Gerard Jungman, Brian Gough
+ * Copyright (C) 2004 Joerg Wensch, modifications for LQ.
  * 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -46,6 +47,34 @@ apply_givens_qr (size_t M, size_t N, gsl_matrix * Q, gsl_matrix * R,
 }
 
 inline static void
+apply_givens_lq (size_t M, size_t N, gsl_matrix * Q, gsl_matrix * L,
+                 size_t i, size_t j, double c, double s)
+{
+  size_t k;
+
+  /* Apply rotation to matrix Q,  Q' = G Q */
+
+  for (k = 0; k < M; k++)
+    {
+      double qik = gsl_matrix_get (Q, i, k);
+      double qjk = gsl_matrix_get (Q, j, k);
+      gsl_matrix_set (Q, i, k, qik * c - qjk * s);
+      gsl_matrix_set (Q, j, k, qik * s + qjk * c);
+    }
+
+  /* Apply rotation to matrix L, L' = L G^T (note: lower triangular so
+     zero for column > row) */
+
+  for (k = GSL_MIN (i, j); k < N; k++)
+    {
+      double lki = gsl_matrix_get (L, k, i);
+      double lkj = gsl_matrix_get (L, k, j);
+      gsl_matrix_set (L, k, i, c * lki - s * lkj);
+      gsl_matrix_set (L, k, j, s * lki + c * lkj);
+    }
+}
+
+inline static void
 apply_givens_vec (gsl_vector * v, size_t i, size_t j, double c, double s)
 {
   /* Apply rotation to vector v' = G^T v */
@@ -55,3 +84,4 @@ apply_givens_vec (gsl_vector * v, size_t i, size_t j, double c, double s)
   gsl_vector_set (v, i, c * vi - s * vj);
   gsl_vector_set (v, j, s * vi + c * vj);
 }
+

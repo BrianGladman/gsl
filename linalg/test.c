@@ -1343,6 +1343,163 @@ int test_QR_update(void)
 
 
 int
+test_LQ_solve_dim(const gsl_matrix * m, const double * actual, double eps)
+{
+  int s = 0;
+  size_t i, dim = m->size1;
+
+  gsl_vector * rhs = gsl_vector_alloc(dim);
+  gsl_matrix * lq  = gsl_matrix_alloc(dim,dim);
+  gsl_matrix * lqt  = gsl_matrix_alloc(dim,dim);
+  gsl_vector * d = gsl_vector_alloc(dim);
+  gsl_vector * x = gsl_vector_alloc(dim);
+
+  gsl_matrix_memcpy(lq,m);
+  gsl_matrix_transpose_memcpy(lqt, lq);
+
+  for(i=0; i<dim; i++) gsl_vector_set(rhs, i, i+1.0);
+  s += gsl_linalg_LQ_decomp(lqt, d);
+  s += gsl_linalg_LQ_solve_T(lqt, d, rhs, x);
+  for(i=0; i<dim; i++) {
+    int foo = check(gsl_vector_get(x, i), actual[i], eps);
+    if(foo) {
+      printf("%3d[%d]: %22.18g   %22.18g\n", dim, i, gsl_vector_get(x, i), actual[i]);
+    }
+    s += foo;
+  }
+
+  gsl_vector_free(x);
+  gsl_vector_free(d);
+  gsl_matrix_free(lq);
+  gsl_matrix_free(lqt);
+  gsl_vector_free(rhs);
+
+  return s;
+}
+
+int test_LQ_solve(void)
+{
+  int f;
+  int s = 0;
+
+  f = test_LQ_solve_dim(hilb2, hilb2_solution, 2 * 8.0 * GSL_DBL_EPSILON);
+  gsl_test(f, "  LQ_solve hilbert(2)");
+  s += f;
+
+  f = test_LQ_solve_dim(hilb3, hilb3_solution, 2 * 64.0 * GSL_DBL_EPSILON);
+  gsl_test(f, "  LQ_solve hilbert(3)");
+  s += f;
+
+  f = test_LQ_solve_dim(hilb4, hilb4_solution, 2 * 1024.0 * GSL_DBL_EPSILON);
+  gsl_test(f, "  LQ_solve hilbert(4)");
+  s += f;
+
+  f = test_LQ_solve_dim(hilb12, hilb12_solution, 0.5);
+  gsl_test(f, "  LQ_solve hilbert(12)");
+  s += f;
+
+  f = test_LQ_solve_dim(vander2, vander2_solution, 8.0 * GSL_DBL_EPSILON);
+  gsl_test(f, "  LQ_solve vander(2)");
+  s += f;
+
+  f = test_LQ_solve_dim(vander3, vander3_solution, 64.0 * GSL_DBL_EPSILON);
+  gsl_test(f, "  LQ_solve vander(3)");
+  s += f;
+
+  f = test_LQ_solve_dim(vander4, vander4_solution, 1024.0 * GSL_DBL_EPSILON);
+  gsl_test(f, "  LQ_solve vander(4)");
+  s += f;
+
+  f = test_LQ_solve_dim(vander12, vander12_solution, 0.05);
+  gsl_test(f, "  LQ_solve vander(12)");
+  s += f;
+
+  return s;
+}
+
+int
+test_PTLQ_solve_dim(const gsl_matrix * m, const double * actual, double eps)
+{
+  int s = 0;
+  int signum;
+  size_t i, dim = m->size1;
+
+  gsl_permutation * perm = gsl_permutation_alloc(dim);
+  gsl_vector * rhs = gsl_vector_alloc(dim);
+  gsl_matrix * lq  = gsl_matrix_alloc(dim,dim);
+  gsl_matrix * lqt  = gsl_matrix_alloc(dim,dim);
+  gsl_vector * d = gsl_vector_alloc(dim);
+  gsl_vector * x = gsl_vector_alloc(dim);
+  gsl_vector * norm = gsl_vector_alloc(dim);
+
+  gsl_matrix_memcpy(lq,m);
+  gsl_matrix_transpose_memcpy(lqt, lq);
+
+  for(i=0; i<dim; i++) gsl_vector_set(rhs, i, i+1.0);
+  s += gsl_linalg_PTLQ_decomp(lqt, d, perm, &signum, norm);
+  s += gsl_linalg_PTLQ_solve_T(lqt, d, perm, rhs, x);
+  for(i=0; i<dim; i++) {
+    int foo = check(gsl_vector_get(x, i), actual[i], eps);
+    if(foo) {
+      printf("%3d[%d]: %22.18g   %22.18g\n", dim, i, gsl_vector_get(x, i), actual[i]);
+    }
+    s += foo;
+  }
+
+  gsl_vector_free(norm);
+  gsl_vector_free(x);
+  gsl_vector_free(d);
+  gsl_matrix_free(lq);
+  gsl_matrix_free(lqt);
+  gsl_vector_free(rhs);
+  gsl_permutation_free(perm);
+
+  return s;
+}
+
+int test_PTLQ_solve(void)
+{
+  int f;
+  int s = 0;
+
+  f = test_PTLQ_solve_dim(hilb2, hilb2_solution, 2 * 8.0 * GSL_DBL_EPSILON);
+  gsl_test(f, "  PTLQ_solve hilbert(2)");
+  s += f;
+
+  f = test_PTLQ_solve_dim(hilb3, hilb3_solution, 2 * 64.0 * GSL_DBL_EPSILON);
+  gsl_test(f, "  PTLQ_solve hilbert(3)");
+  s += f;
+
+  f = test_PTLQ_solve_dim(hilb4, hilb4_solution, 2 * 2048.0 * GSL_DBL_EPSILON);
+  gsl_test(f, "  PTLQ_solve hilbert(4)");
+  s += f;
+
+  f = test_PTLQ_solve_dim(hilb12, hilb12_solution, 0.5);
+  gsl_test(f, "  PTLQ_solve hilbert(12)");
+  s += f;
+
+  f = test_PTLQ_solve_dim(vander2, vander2_solution, 8.0 * GSL_DBL_EPSILON);
+  gsl_test(f, "  PTLQ_solve vander(2)");
+  s += f;
+
+  f = test_PTLQ_solve_dim(vander3, vander3_solution, 64.0 * GSL_DBL_EPSILON);
+  gsl_test(f, "  PTLQ_solve vander(3)");
+  s += f;
+
+  f = test_PTLQ_solve_dim(vander4, vander4_solution, 1024.0 * GSL_DBL_EPSILON);
+  gsl_test(f, "  PTLQ_solve vander(4)");
+  s += f;
+
+  f = test_PTLQ_solve_dim(vander12, vander12_solution, 0.05);
+  gsl_test(f, "  PTLQ_solve vander(12)");
+  s += f;
+
+  return s;
+}
+
+
+
+int
 test_SV_solve_dim(const gsl_matrix * m, const double * actual, double eps)
 {
   int s = 0;
@@ -2568,6 +2725,8 @@ int main(void)
   gsl_test(test_LUc_solve(),      "Complex LU Decomposition and Solve");
   gsl_test(test_QR_decomp(),      "QR Decomposition");
   gsl_test(test_QR_solve(),       "QR Solve");
+  gsl_test(test_LQ_solve(),       "LQ Solve");
+  gsl_test(test_PTLQ_solve(),     "PTLQ Solve");
   gsl_test(test_QR_QRsolve(),     "QR QR Solve");
   gsl_test(test_QR_lssolve(),     "QR LS Solve");
   gsl_test(test_QR_update(),      "QR Rank-1 Update");
