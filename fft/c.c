@@ -9,37 +9,38 @@
 #include "fft_complex.h"
 
 int
-gsl_fft_complex_forward (gsl_complex data[],
-			 const size_t n,
+gsl_fft_complex_forward (gsl_vector_complex * data,
 			 const gsl_fft_complex_wavetable * wavetable)
 {
   gsl_fft_direction sign = forward;
-  int status = gsl_fft_complex (data, n, wavetable, sign);
+  int status = gsl_fft_complex (data, wavetable, sign);
   return status;
 }
 
 int
-gsl_fft_complex_backward (gsl_complex data[],
-			  const size_t n,
+gsl_fft_complex_backward (gsl_vector_complex * data,
 			  const gsl_fft_complex_wavetable * wavetable)
 {
   gsl_fft_direction sign = backward;
-  int status = gsl_fft_complex (data, n, wavetable, sign);
+  int status = gsl_fft_complex (data, wavetable, sign);
   return status;
 }
 
 int
-gsl_fft_complex_inverse (gsl_complex data[],
-			 const size_t n,
+gsl_fft_complex_inverse (gsl_vector_complex * data,
 			 const gsl_fft_complex_wavetable * wavetable)
 {
   gsl_fft_direction sign = backward;
-  int status = gsl_fft_complex (data, n, wavetable, sign);
+  int status = gsl_fft_complex (data, wavetable, sign);
 
   if (status)
     {
       return status;
     }
+
+  const size_t n = data->size ;
+  const size_t stride = data->stride ;
+  double * const v = data->data ;
 
   /* normalize inverse fft with 1/n */
 
@@ -48,16 +49,15 @@ gsl_fft_complex_inverse (gsl_complex data[],
     size_t i;
     for (i = 0; i < n; i++)
       {
-	data[i].real *= norm;
-	data[i].imag *= norm;
+	REAL(data,stride,i) *= norm;
+	IMAG(data,stride,i) *= norm;
       }
   }
   return status;
 }
 
 int
-gsl_fft_complex (gsl_complex data[],
-		 const size_t n,
+gsl_fft_complex (gsl_vector_complex * data,
 		 const gsl_fft_complex_wavetable * wavetable,
 		 const gsl_fft_direction sign)
 {
@@ -72,8 +72,14 @@ gsl_fft_complex (gsl_complex data[],
   gsl_complex *twiddle1, *twiddle2, *twiddle3, *twiddle4, *twiddle5, *twiddle6;
 
   size_t state = 0;
-  gsl_complex *from = data;
-  gsl_complex *to = scratch;
+
+  const size_t n = data->size ;
+
+  double * const a = data->data;
+  double * const b = scratch;
+
+  const size_t astride = data->stride ;
+  const size_t bstride = 1 ;
 
   if (n == 0)
     {
@@ -99,36 +105,41 @@ gsl_fft_complex (gsl_complex data[],
 
       if (state == 0)
 	{
-	  from = data;
-	  to = scratch;
+	  in = a;
+	  istride = astride;
+	  out = b;
+	  ostrid = bstride;
 	  state = 1;
 	}
       else
 	{
-	  from = scratch;
-	  to = data;
+	  in = b;
+	  istride = bstride;
+	  out = a;
+	  ostride = astride;
 	  state = 0;
 	}
 
       if (factor == 2)
 	{
 	  twiddle1 = wavetable->twiddle[i];
-	  gsl_fft_complex_pass_2 (from, to, sign, product, n, twiddle1);
+	  gsl_fft_complex_pass_2 (in, istride, out, ostride, sign, 
+				  product, n, twiddle1);
 	}
       else if (factor == 3)
 	{
 	  twiddle1 = wavetable->twiddle[i];
 	  twiddle2 = twiddle1 + q;
-	  gsl_fft_complex_pass_3 (from, to, sign, product, n, twiddle1,
-				  twiddle2);
+	  gsl_fft_complex_pass_3 (in, istride, out, ostride, sign, 
+				  product, n, twiddle1, twiddle2);
 	}
       else if (factor == 4)
 	{
 	  twiddle1 = wavetable->twiddle[i];
 	  twiddle2 = twiddle1 + q;
 	  twiddle3 = twiddle2 + q;
-	  gsl_fft_complex_pass_4 (from, to, sign, product, n, twiddle1,
-				  twiddle2, twiddle3);
+	  gsl_fft_complex_pass_4 (in, istride, out, ostride, sign, 
+				  product, n, twiddle1, twiddle2, twiddle3);
 	}
       else if (factor == 5)
 	{
@@ -136,8 +147,9 @@ gsl_fft_complex (gsl_complex data[],
 	  twiddle2 = twiddle1 + q;
 	  twiddle3 = twiddle2 + q;
 	  twiddle4 = twiddle3 + q;
-	  gsl_fft_complex_pass_5 (from, to, sign, product, n, twiddle1,
-				  twiddle2, twiddle3, twiddle4);
+	  gsl_fft_complex_pass_5 (in, istride, out, ostride, sign, 
+				  product, n, twiddle1, twiddle2, twiddle3, 
+				  twiddle4);
 	}
       else if (factor == 6)
 	{
@@ -146,8 +158,9 @@ gsl_fft_complex (gsl_complex data[],
 	  twiddle3 = twiddle2 + q;
 	  twiddle4 = twiddle3 + q;
 	  twiddle5 = twiddle4 + q;
-	  gsl_fft_complex_pass_6 (from, to, sign, product, n, twiddle1,
-				  twiddle2, twiddle3, twiddle4, twiddle5);
+	  gsl_fft_complex_pass_6 (in, istride, out, ostride, sign, 
+				  product, n, twiddle1, twiddle2, twiddle3, 
+				  twiddle4, twiddle5);
 	}
       else if (factor == 7)
 	{
@@ -157,20 +170,25 @@ gsl_fft_complex (gsl_complex data[],
 	  twiddle4 = twiddle3 + q;
 	  twiddle5 = twiddle4 + q;
 	  twiddle6 = twiddle5 + q;
-	  gsl_fft_complex_pass_7 (from, to, sign, product, n, twiddle1,
-				  twiddle2, twiddle3, twiddle4, twiddle5, twiddle6);
+	  gsl_fft_complex_pass_7 (in, istride, out, ostride, sign, 
+				  product, n, twiddle1, twiddle2, twiddle3, 
+				  twiddle4, twiddle5, twiddle6);
 	}
       else
 	{
 	  twiddle1 = wavetable->twiddle[i];
-	  gsl_fft_complex_pass_n (from, to, sign, factor, product, n,
-				  twiddle1);
+	  gsl_fft_complex_pass_n (in, istride, out, ostride, sign, 
+				  factor, product, n, twiddle1);
 	}
     }
 
   if (state == 1)		/* copy results back from scratch to data */
     {
-      memcpy (data, scratch, n * sizeof (gsl_complex));
+      for (i = 0; i < n; i++)
+	{
+	  REAL(a,istride,i) = REAL(b,ostride,i) ;
+	  IMAG(a,istride,i) = IMAG(b,ostride,i) ;
+	}
     }
 
   return 0;

@@ -78,7 +78,7 @@ include_HEADERS = gsl_fft.h gsl_fft_complex.h gsl_fft_halfcomplex.h gsl_fft_real
 
 noinst_HEADERS = fft_complex.h fft_halfcomplex.h fft_real.h
 
-INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../err
+INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../vector -I$(srcdir)/../err
 
 TESTS = test_trap test_radix2 test
 
@@ -105,7 +105,7 @@ gsl_dft_complex.h \
  \
 gsl_fft.h \
  \
-complex.c \
+c.c \
 gsl_fft_complex.h \
 c_init.c \
 c_pass_2.c \
@@ -156,13 +156,12 @@ CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
 libgslfft_a_LIBADD = 
-libgslfft_a_OBJECTS =  compare.o dft_complex.o complex.o c_init.o \
-c_pass_2.o c_pass_3.o c_pass_4.o c_pass_5.o c_pass_6.o c_pass_7.o \
-c_pass_n.o c_radix2.o factorize.o bitreverse.o hc.o hc_init.o \
-hc_pass_2.o hc_pass_3.o hc_pass_4.o hc_pass_5.o hc_pass_n.o hc_radix2.o \
-hc_unpack.o real.o real_init.o real_pass_2.o real_pass_3.o \
-real_pass_4.o real_pass_5.o real_pass_n.o real_radix2.o real_unpack.o \
-signals.o
+libgslfft_a_OBJECTS =  compare.o dft_complex.o c.o c_init.o c_pass_2.o \
+c_pass_3.o c_pass_4.o c_pass_5.o c_pass_6.o c_pass_7.o c_pass_n.o \
+c_radix2.o factorize.o bitreverse.o hc.o hc_init.o hc_pass_2.o \
+hc_pass_3.o hc_pass_4.o hc_pass_5.o hc_pass_n.o hc_radix2.o hc_unpack.o \
+real.o real_init.o real_pass_2.o real_pass_3.o real_pass_4.o \
+real_pass_5.o real_pass_n.o real_radix2.o real_unpack.o signals.o
 AR = ar
 test_trap_OBJECTS =  test_trap.o
 test_trap_LDFLAGS = 
@@ -188,10 +187,10 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 TAR = tar
 GZIP = --best
-DEP_FILES =  .deps/benchmark.P .deps/bitreverse.P .deps/c_init.P \
-.deps/c_pass_2.P .deps/c_pass_3.P .deps/c_pass_4.P .deps/c_pass_5.P \
-.deps/c_pass_6.P .deps/c_pass_7.P .deps/c_pass_n.P .deps/c_radix2.P \
-.deps/compare.P .deps/complex.P .deps/dft_complex.P .deps/errs.P \
+DEP_FILES =  .deps/benchmark.P .deps/bitreverse.P .deps/c.P \
+.deps/c_init.P .deps/c_pass_2.P .deps/c_pass_3.P .deps/c_pass_4.P \
+.deps/c_pass_5.P .deps/c_pass_6.P .deps/c_pass_7.P .deps/c_pass_n.P \
+.deps/c_radix2.P .deps/compare.P .deps/dft_complex.P .deps/errs.P \
 .deps/factorize.P .deps/hc.P .deps/hc_init.P .deps/hc_pass_2.P \
 .deps/hc_pass_3.P .deps/hc_pass_4.P .deps/hc_pass_5.P .deps/hc_pass_n.P \
 .deps/hc_radix2.P .deps/hc_unpack.P .deps/real.P .deps/real_init.P \
