@@ -1,13 +1,13 @@
 ## Process this file with automake to produce Makefile.in
 
-SUBDIRS = utils err vector matrix random randist fft roots specfunc statistics siman integration doc
+SUBDIRS = utils err random vector matrix randist fft roots specfunc statistics siman integration doc
 
 include_HEADERS = gsl_complex.h gsl_math.h
 
 strict:
 	$(MAKE) CFLAGS="-ansi -pedantic -Werror -W -Wall -Wtraditional -Wconversion -Wshadow -Wpointer-arith -Wcast-qual -Wcast-align -Wwrite-strings -Waggregate-return -Wstrict-prototypes -fshort-enums -fno-common -Wmissing-prototypes -Wnested-externs -g -O4"
 
-# a flaky attempt to build a single libgsl.a file
+# a flaky attempt to build a single libgsl.a file (can someone improve on it?)
 
 libgsl.a:
 	for dir in $(SUBDIRS) ;\

@@ -69,7 +69,7 @@ VERSION = @VERSION@
 full_top_builddir = @full_top_builddir@
 full_top_srcdir = @full_top_srcdir@
 
-SUBDIRS = utils err vector matrix random randist fft roots specfunc statistics siman integration doc
+SUBDIRS = utils err random vector matrix randist fft roots specfunc statistics siman integration doc
 
 include_HEADERS = gsl_complex.h gsl_math.h
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
