@@ -1,6 +1,3 @@
-@comment
-@node Gamma Function
-@section Gamma Function
 @cindex gamma function
 
 The Gamma function is defined by the following integral,

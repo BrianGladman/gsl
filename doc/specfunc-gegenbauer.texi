@@ -1,6 +1,3 @@
-@comment
-@node Gegenbauer Functions
-@section Gegenbauer Functions
 @cindex Gegenbauer functions
 
 The Gegenbauer polynomials are defined in Abramowitz & Stegun, Chapter

@@ -1,6 +1,3 @@
-@comment
-@node Bessel Functions
-@section Bessel Functions
 @cindex Bessel functions
 
 The routines described in this section compute the Cylindrical Bessel
@@ -11,6 +8,23 @@ functions @math{I_n(x)}, @math{K_n(x)}, Spherical Bessel functions
 Chapters 9 and 10.  The Bessel functions are defined in the header file
 @file{gsl_sf_bessel.h}.
 
+@menu
+* Regular Cylindrical Bessel Functions::  
+* Irregular Cylindrical Bessel Functions::  
+* Regular Modified Cylindrical Bessel Functions::  
+* Irregular Modified Cylindrical Bessel Functions::  
+* Regular Spherical Bessel Functions::  
+* Irregular Spherical Bessel Functions::  
+* Regular Modified Spherical Bessel Functions::  
+* Irregular Modified Spherical Bessel Functions::  
+* Regular Bessel Function - Fractional Order::  
+* Irregular Bessel Functions - Fractional Order::  
+* Regular Modified Bessel Functions - Fractional Order::  
+* Irregular Modified Bessel Functions - Fractional Order::  
+* Zeros of Regular Bessel Functions::  
+@end menu
+
+@node Regular Cylindrical Bessel Functions
 @subsection Regular Cylindrical Bessel Functions
 @cindex Cylindrical Bessel Functions
 @cindex Regular Cylindrical Bessel Functions
@@ -46,6 +60,7 @@ therefore may differ slightly from the exact values.
 @end deftypefun
 
 
+@node Irregular Cylindrical Bessel Functions
 @subsection Irregular Cylindrical Bessel Functions
 @cindex Irregular Cylindrical Bessel Functions
 
@@ -81,6 +96,7 @@ from the exact values.
 @end deftypefun
 
 
+@node Regular Modified Cylindrical Bessel Functions
 @subsection Regular Modified Cylindrical Bessel Functions
 @cindex Modified Cylindrical Bessel Functions
 @cindex Regular Modified Cylindrical Bessel Functions
@@ -152,6 +168,7 @@ efficiency, and therefore may differ slightly from the exact values.
 @end deftypefun
 
 
+@node Irregular Modified Cylindrical Bessel Functions
 @subsection Irregular Modified Cylindrical Bessel Functions
 @cindex Irregular Modified Cylindrical Bessel Functions
 
@@ -230,6 +247,7 @@ may differ slightly from the exact values.
 @end deftypefun
 
 
+@node Regular Spherical Bessel Functions
 @subsection Regular Spherical Bessel Functions
 @cindex Spherical Bessel Functions
 @cindex Regular Spherical Bessel Functions
@@ -294,6 +312,7 @@ recurrence used in the other functions but slower.
 @end deftypefun
 
 
+@node Irregular Spherical Bessel Functions
 @subsection Irregular Spherical Bessel Functions
 @cindex Irregular Spherical Bessel Functions
 
@@ -339,6 +358,7 @@ efficiency, and therefore may differ slightly from the exact values.
 @end deftypefun
 
 
+@node Regular Modified Spherical Bessel Functions
 @subsection Regular Modified Spherical Bessel Functions
 @cindex Modified Spherical Bessel Functions
 @cindex Regular Modified Spherical Bessel Functions
@@ -391,6 +411,7 @@ efficiency, and therefore may differ slightly from the exact values.
 @end deftypefun
 
 
+@node Irregular Modified Spherical Bessel Functions
 @subsection Irregular Modified Spherical Bessel Functions
 @cindex Irregular Modified Spherical Bessel Functions
 
@@ -445,6 +466,7 @@ efficiency, and therefore may differ slightly from the exact values.
 @end deftypefun
 
 
+@node Regular Bessel Function - Fractional Order
 @subsection Regular Bessel Function - Fractional Order
 @cindex Fractional Order Bessel Functions
 @cindex Bessel Functions, Fractional Order
@@ -467,6 +489,7 @@ The array is over-written with the values of @math{J_\nu(x_i)}.
 @end deftypefun
 
 
+@node Irregular Bessel Functions - Fractional Order
 @subsection Irregular Bessel Functions - Fractional Order
 
 @deftypefun double gsl_sf_bessel_Ynu (double @var{nu}, double @var{x})
@@ -477,6 +500,7 @@ fractional order @math{nu}, @math{Y_\nu(x)}.
 @end deftypefun
 
 
+@node Regular Modified Bessel Functions - Fractional Order
 @subsection Regular Modified Bessel Functions - Fractional Order
 @cindex Modified Bessel Functions, Fractional Order
 @cindex Regular Modified Bessel Functions - Fractional Order
@@ -501,6 +525,7 @@ fractional order @math{nu}, @math{\exp(-|x|)I_\nu(x)} for @math{x>0},
 @end deftypefun
 
 
+@node Irregular Modified Bessel Functions - Fractional Order
 @subsection Irregular Modified Bessel Functions - Fractional Order
 @cindex Irregular Modified Bessel Functions, Fractional Order
 
@@ -531,6 +556,7 @@ fractional order @math{nu}, @math{\exp(+|x|) K_\nu(x)} for @math{x>0},
 @comment Exceptional Return Values: GSL_EDOM
 @end deftypefun
 
+@node Zeros of Regular Bessel Functions
 @subsection Zeros of Regular Bessel Functions
 @cindex Zeros of Regular Bessel Functions
 @cindex Regular Bessel Functions, Zeros of 

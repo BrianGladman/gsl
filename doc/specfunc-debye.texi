@@ -1,6 +1,3 @@
-@comment
-@node Debye Functions
-@section Debye Functions
 @cindex Debye functions
 
 The Debye functions are defined by the integral @math{D_n(x) = n/x^n

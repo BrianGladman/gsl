@@ -1,14 +1,21 @@
-@comment
-@node Exponential Integrals
-@section Exponential Integrals
 @cindex exponential integrals
-
-
-@subsection Exponential Integrals
 
 Information on the exponential integrals can be found in Abramowitz &
 Stegun, Chapter 5.  These functions are declared in the header file
 @file{gsl_sf_expint.h}.
+
+@menu
+* Exponential Integral::        
+* Ei(x)::                       
+* Hyperbolic Integrals::        
+* Ei_3(x)::                     
+* Trigonometric Integrals::     
+* Arctangent Integral::         
+@end menu
+
+@node Exponential Integral
+@subsection Exponential Integral
+
 
 @deftypefun double gsl_sf_expint_E1 (double @var{x})
 @deftypefunx int gsl_sf_expint_E1_e (double @var{x}, gsl_sf_result * @var{result})
@@ -28,6 +35,7 @@ These routines compute the second-order exponential integral
 @end deftypefun
 
 
+@node Ei(x)
 @subsection Ei(x)
 
 
@@ -42,6 +50,7 @@ denotes the principal value of the integral.
 @end deftypefun
 
 
+@node Hyperbolic Integrals
 @subsection Hyperbolic Integrals
 
 @deftypefun double gsl_sf_Shi (double @var{x})
@@ -59,6 +68,7 @@ These routines compute the integral @math{ Chi(x) := Re[ \gamma_E + \log(x) + \i
 @end deftypefun
 
 
+@node Ei_3(x)
 @subsection Ei_3(x)
 
 @deftypefun double gsl_sf_expint_3 (double @var{x})
@@ -69,6 +79,7 @@ dt \exp(-t^3)} for @c{$x \ge 0$}
 @comment Exceptional Return Values: GSL_EDOM
 @end deftypefun
 
+@node Trigonometric Integrals
 @subsection Trigonometric Integrals
 
 @deftypefun double gsl_sf_Si (const double @var{x})
@@ -88,6 +99,7 @@ These routines compute the Cosine integral @math{Ci(x) = -\int_x^\infty dt
 @end deftypefun
 
 
+@node Arctangent Integral
 @subsection Arctangent Integral
 
 @deftypefun double gsl_sf_atanint (double @var{x})

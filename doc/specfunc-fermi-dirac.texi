@@ -1,11 +1,14 @@
-@comment
-@node Fermi-Dirac Function
-@section Fermi-Dirac Function
 @cindex Fermi-Dirac function
 
 The functions described in this section are declared in the header file
 @file{gsl_sf_fermi_dirac.h}.
 
+@menu
+* Complete Fermi-Dirac Integrals::  
+* Incomplete Fermi-Dirac Integrals::  
+@end menu
+
+@node Complete Fermi-Dirac Integrals
 @subsection Complete Fermi-Dirac Integrals
 
 The complete Fermi-Dirac integral @math{F_j(x)} is given by,
@@ -88,7 +91,8 @@ These routines compute the complete Fermi-Dirac integral
 @end deftypefun
 
 
-@subsection Incomplete Fermi-Dirac Integrals:
+@node Incomplete Fermi-Dirac Integrals
+@subsection Incomplete Fermi-Dirac Integrals
 
 The incomplete Fermi-Dirac integral @math{F_j(x,b)} is given by,
 

@@ -1,12 +1,16 @@
-@comment
-@node Exponential Function
-@section Exponential Function
 @cindex exponential function
 @cindex exp
 
 The functions described in this section are declared in the header file
 @file{gsl_sf_exp.h}.
 
+@menu
+* Exponential Function::        
+* Relative Exponential Functions::  
+* Exponentiation With Error Estimate::  
+@end menu
+
+@node Exponential Function
 @subsection Exponential Function
 
 @deftypefun double gsl_sf_exp (double @var{x})
@@ -40,6 +44,7 @@ range.
 
 
 
+@node Relative Exponential Functions
 @subsection Relative Exponential Functions
 
 @deftypefun double gsl_sf_expm1 (double @var{x})
@@ -97,6 +102,7 @@ exprel_N(x) = N!/x^N (\exp(x) - \sum_@{k=0@}^@{N-1@} x^k/k!)
 
 
 
+@node Exponentiation With Error Estimate
 @subsection Exponentiation With Error Estimate
 
 

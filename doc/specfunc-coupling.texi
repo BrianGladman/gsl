@@ -1,6 +1,4 @@
-@comment
-@node Coupling Coefficients
-@section Coupling Coefficients
+@cindex coupling coefficients
 @cindex 3-j symbols
 @cindex 6-j symbols
 @cindex 9-j symbols
@@ -15,6 +13,13 @@ to twice the actual spin value.  For information on the 3-j coefficients
 see Abramowitz & Stegun, Section 27.9.  The functions described in this
 section are declared in the header file @file{gsl_sf_coupling.h}.
 
+@menu
+* 3-j Symbols::                 
+* 6-j Symbols::                 
+* 9-j Symbols::                 
+@end menu
+
+@node 3-j Symbols
 @subsection 3-j Symbols
 
 @deftypefun double gsl_sf_coupling_3j (int @var{two_ja}, int @var{two_jb}, int @var{two_jc}, int @var{two_ma}, int @var{two_mb}, int @var{two_mc})
@@ -42,6 +47,7 @@ where the arguments are given in half-integer units, @math{ja} =
 @end deftypefun
 
 
+@node 6-j Symbols
 @subsection 6-j Symbols
 
 @deftypefun double gsl_sf_coupling_6j (int @var{two_ja}, int @var{two_jb}, int @var{two_jc}, int @var{two_jd}, int @var{two_je}, int @var{two_jf})
@@ -69,6 +75,7 @@ where the arguments are given in half-integer units, @math{ja} =
 @end deftypefun
 
 
+@node 9-j Symbols
 @subsection 9-j Symbols
 
 @deftypefun double gsl_sf_coupling_9j (int @var{two_ja}, int @var{two_jb}, int @var{two_jc}, int @var{two_jd}, int @var{two_je}, int @var{two_jf}, int @var{two_jg}, int @var{two_jh}, int @var{two_ji})

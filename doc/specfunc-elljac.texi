@@ -1,6 +1,4 @@
-@comment
-@node Elliptic Functions (Jacobi)
-@section Elliptic Functions (Jacobi)
+@cindex Jacobi elliptic functions
 @cindex elliptic functions (Jacobi)
 
 The Jacobian Elliptic functions are defined in Abramowitz & Stegun,

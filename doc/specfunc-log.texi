@@ -1,7 +1,4 @@
-@comment
-@node Logarithm and Related Functions
-@section Logarithm and Related Functions
-@cindex logarithm
+@cindex logarithm and related functions
 
 Information on the properties of the Logarithm function can be found in
 Abramowitz & Stegun, Chapter 4.  The functions described in this section

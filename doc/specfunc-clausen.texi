@@ -1,6 +1,3 @@
-@comment
-@node Clausen Functions
-@section Clausen Functions
 @cindex Clausen functions
 
 The Clausen integral is defined to be

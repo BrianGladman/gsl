@@ -1,6 +1,3 @@
-@comment
-@node Synchrotron Functions
-@section Synchrotron Functions
 @cindex Synchrotron functions
 
 The functions described in this section are declared in the header file

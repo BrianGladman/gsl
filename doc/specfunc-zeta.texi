@@ -1,15 +1,21 @@
-@comment
-@node Zeta Functions
-@section Zeta Functions
 @cindex Zeta functions
 
+For more information see Abramowitz & Stegun, Section 23.2.  The
+functions described in this section are declared in the header file
+@file{gsl_sf_zeta.h}.
+
+@menu
+* Riemann Zeta Function::       
+* Hurwitz Zeta Function::       
+* Eta Function::                
+@end menu
+
+@node Riemann Zeta Function
 @subsection Riemann Zeta Function
 
 The Riemann zeta function is defined by 
 @c{$\zeta(s) = \sum_{k=1}^\infty k^{-s}$}
-@math{\zeta(s) = \sum_@{k=1@}^\infty k^@{-s@}}.  For more information
-see Abramowitz & Stegun, Section 23.2.  The functions described
-in this section are declared in the header file @file{gsl_sf_zeta.h}.
+@math{\zeta(s) = \sum_@{k=1@}^\infty k^@{-s@}}.  
 
 @deftypefun double gsl_sf_zeta_int (int @var{n})
 @deftypefunx int gsl_sf_zeta_int_e (int @var{n}, gsl_sf_result * @var{result})
@@ -27,6 +33,7 @@ These routines compute the zeta function @math{\zeta(s)} for arbitrary @var{s},
 @comment Exceptional Return Values: GSL_EDOM, GSL_EOVRFLW
 @end deftypefun
 
+@node Hurwitz Zeta Function
 @subsection Hurwitz Zeta Function
 
 The Hurwitz zeta function is defined by
@@ -42,6 +49,7 @@ These routines compute the Hurwitz zeta function @math{\zeta(s,q)} for
 @end deftypefun
 
 
+@node Eta Function
 @subsection Eta Function
 
 The eta function is defined by

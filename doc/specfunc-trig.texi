@@ -1,13 +1,20 @@
-@comment
-@node Trigonometric Functions
-@section Trigonometric Functions
 @cindex Trigonometric functions
-
-@subsection Trigonometric Functions
 
 The library includes its own trigonometric functions in order to provide
 consistency across platforms and reliable error estimates.  These
 functions are declared in the header file @file{gsl_sf_trig.h}.
+
+@menu
+* Circular Trigonometric Functions::  
+* Trigonometric Functions for Complex Arguments::  
+* Hyperbolic Trigonometric Functions::  
+* Conversion Functions::        
+* Restriction Functions::       
+* Trigonometric Functions With Error Estimates::  
+@end menu
+
+@node Circular Trigonometric Functions
+@subsection Circular Trigonometric Functions
 
 @deftypefun double gsl_sf_sin (double @var{x})
 @deftypefunx int gsl_sf_sin_e (double @var{x}, gsl_sf_result * @var{result})
@@ -31,6 +38,17 @@ These routines compute the hypotenuse function @c{$\sqrt{x^2 + y^2}$}
 @comment Exceptional Return Values:
 @end deftypefun
 
+@deftypefun double gsl_sf_sinc (double @var{x})
+@deftypefunx int gsl_sf_sinc_e (double @var{x}, gsl_sf_result * @var{result})
+@cindex complex sinc function, special functions
+These routines compute @math{\sinc(x) = \sin(\pi x) / (\pi x)} for any
+value of @var{x}.
+@comment Exceptional Return Values: none
+@end deftypefun
+
+@node Trigonometric Functions for Complex Arguments
+@subsection Trigonometric Functions for Complex Arguments
+
 @deftypefun int gsl_sf_complex_sin_e (double @var{zr}, double @var{zi}, gsl_sf_result * @var{szr}, gsl_sf_result * @var{szi})
 @cindex complex sine function, special functions
 This function computes the complex sine, @math{\sin(z_r + i z_i)} storing
@@ -45,7 +63,6 @@ the real and imaginary parts in @var{szr}, @var{szi}.
 @comment Exceptional Return Values: GSL_EOVRFLW
 @end deftypefun
 
-
 @deftypefun int gsl_sf_complex_logsin_e (double @var{zr}, double @var{zi}, gsl_sf_result * @var{lszr}, gsl_sf_result * @var{lszi})
 @cindex complex log sine function, special functions
 This function computes the logarithm of the complex sine,
@@ -54,13 +71,8 @@ This function computes the logarithm of the complex sine,
 @comment Exceptional Return Values: GSL_EDOM, GSL_ELOSS
 @end deftypefun
 
-@deftypefun double gsl_sf_sinc (double @var{x})
-@deftypefunx int gsl_sf_sinc_e (double @var{x}, gsl_sf_result * @var{result})
-@cindex complex sinc function, special functions
-These routines compute @math{\sinc(x) = \sin(\pi x) / (\pi x)} for any
-value of @var{x}.
-@comment Exceptional Return Values: none
-@end deftypefun
+@node Hyperbolic Trigonometric Functions
+@subsection Hyperbolic Trigonometric Functions
 
 @deftypefun double gsl_sf_lnsinh (double @var{x})
 @deftypefunx int gsl_sf_lnsinh_e (double @var{x}, gsl_sf_result * @var{result})
@@ -78,6 +90,7 @@ These routines compute @math{\log(\cosh(x))} for any @var{x}.
 @end deftypefun
 
 
+@node Conversion Functions
 @subsection Conversion Functions
 @cindex polar to rectangular conversion
 @cindex rectangular to polar conversion
@@ -97,6 +110,7 @@ lies in the range @math{[-\pi, \pi]}.
 @comment Exceptional Return Values: GSL_EDOM
 @end deftypefun
 
+@node Restriction Functions
 @subsection Restriction Functions
 @cindex angular reduction
 @cindex reduction of angular variables
@@ -116,7 +130,8 @@ These routines force the angle @var{theta} to lie in the range @math{[0,
 @end deftypefun
 
 
-@subsection Trigonometric Functions With Error Estimate
+@node Trigonometric Functions With Error Estimates
+@subsection Trigonometric Functions With Error Estimates
 
 @deftypefun double gsl_sf_sin_err (double @var{x}, double @var{dx})
 @deftypefunx int gsl_sf_sin_err_e (double @var{x}, double @var{dx}, gsl_sf_result * @var{result})

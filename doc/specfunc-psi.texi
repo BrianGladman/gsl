@@ -1,6 +1,3 @@
-@comment
-@node Psi (Digamma) Function
-@section Psi (Digamma) Function
 @cindex psi function
 @cindex digamma function
 @cindex polygamma functions
@@ -11,6 +8,13 @@ The polygamma functions of order @math{m} defined by
 where @math{\psi(x) = \Gamma'(x)/\Gamma(x)} is known as the digamma function.
 These functions are declared in the header file @file{gsl_sf_psi.h}.
 
+@menu
+* Digamma Function::            
+* Trigamma Function::           
+* Polygamma Function::          
+@end menu
+
+@node Digamma Function
 @subsection Digamma Function
 
 @deftypefun double gsl_sf_psi_int (int @var{n})
@@ -40,6 +44,7 @@ These routines compute the real part of the digamma function on the line
 @end deftypefun
 
 
+@node Trigamma Function
 @subsection Trigamma Function
 
 @deftypefun double gsl_sf_psi_1_int (int @var{n})
@@ -51,6 +56,7 @@ positive integer @math{n}.
 @end deftypefun
 
 
+@node Polygamma Function
 @subsection Polygamma Function
 
 @deftypefun double gsl_sf_psi_n (int @var{m}, double @var{x})

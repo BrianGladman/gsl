@@ -1,6 +1,3 @@
-@comment
-@node Transport Functions
-@section Transport Functions
 @cindex Transport functions
 
 The transport functions @math{J(n,x)} are defined by the integral 

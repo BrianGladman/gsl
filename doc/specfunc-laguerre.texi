@@ -1,6 +1,3 @@
-@comment
-@node Laguerre Functions
-@section Laguerre Functions
 @cindex Laguerre functions
 @cindex confluent hypergeometric function
 

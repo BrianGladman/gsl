@@ -1,6 +1,3 @@
-@comment
-@node Dawson Function
-@section Dawson Function
 @cindex Dawson function
 
 The Dawson integral is defined by @math{\exp(-x^2) \int_0^x dt

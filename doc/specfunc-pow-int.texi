@@ -1,6 +1,3 @@
-@comment
-@node Power Function
-@section Power Function
 @cindex power function
 @cindex integer powers
 

@@ -1,6 +1,3 @@
-@comment
-@node Coulomb Wave Functions
-@section Coulomb Wave Functions
 @cindex Coulomb wave functions
 @cindex hydrogen atom
 
@@ -8,6 +5,13 @@ The Coulomb functions are declared in the header file
 @file{gsl_sf_coulomb.h}.  Both bound state and scattering solutions are
 available.
 
+@menu
+* Normalized Hydrogenic Bound States::  
+* Coulomb Wave Functions::      
+* Coulomb Wave Function Normalization Constant::  
+@end menu
+
+@node Normalized Hydrogenic Bound States
 @subsection Normalized Hydrogenic Bound States
 
 @deftypefun double gsl_sf_hydrogenicR_1 (double @var{Z}, double @var{r})
@@ -30,6 +34,7 @@ given by
 @math{\psi(n,l,r) = R_n Y_@{lm@}}.
 @end deftypefun
 
+@node Coulomb Wave Functions
 @subsection Coulomb Wave Functions
 
 The Coulomb wave functions @math{F_L(\eta,x)}, @math{G_L(\eta,x)} are
@@ -109,6 +114,7 @@ functions in the limit @math{\eta \to 0}.
 @end deftypefun
 
 
+@node Coulomb Wave Function Normalization Constant
 @subsection Coulomb Wave Function Normalization Constant
 
 The coulomb wave function normalization constant is defined in
