@@ -983,61 +983,98 @@ where each line of input produces a line of output.}
 % should be, according to the definition of Texinfo).  So we must use a
 % control sequence to switch into and out of math mode.
 %
-% This isn't quite enough for @math to work properly in indices, but it
-% seems unlikely it will ever be needed there.
-%
 \let\implicitmath = $
-%\def\math#1{\implicitmath #1\implicitmath}
+%
+\gdef\recatmath{%
+\catcode 92=0  % 92  = `\\ 
+\catcode 123=1 % 123 = `\{
+\catcode 125=2 % 125 = `\}
+\catcode 36=3  % 36  = `\$
+\catcode 38=4  % 38  = `\&
+\catcode 35=6  % 35  = `\#
+\catcode 94=7  % 94  = `\^
+\catcode 95=8  % 95  = `\_
+\catcode 126=13 % 126 = `\~
+\catcode 37=14  % 37  = `\%
+\catcode 43=12  % plus
+\catcode 34=12  % 34  = `\"
+\catcode 61=12  % 61  = `\=
+\catcode 124=12 % 124 = `\|
+\catcode 60=12  % 60  = `\< 
+\catcode 62=12  % 62  = `\>
+}
+%
+\def\executemath#1{%
+\ifx\recatmath#1
+\relax\else%
+$\def\hat{\mathaccent "705E}
+\def\dots{\ldots}
+\def\equiv{\mathchar"3211}
+\let\{={
+\let\}=}
+\let\lbrace=\mylbrace%  type @lbrace for \{
+\let\rbrace=\myrbrace%  type @rbrace for \}
+\let~=\tie
+#1$\fi}
 %
 \def\writtenmath{\noexpand\math}
-\def\executemath#1{\relax$#1$}
-\def\math{{\catcode`\^=7 \catcode`\_=8 \catcode`\\=0 \catcode`\@=9
-             \catcode13=9
-             \let\writtenmath=\executemath\relax
-             \expandafter}\writtenmath}
-% @math enhancements by Tanmoy Bhattacharya:
+\def\math{{\let\writtenmath=\executemath\recatmath\expandafter}\writtenmath}
+%
+% @math enhancements (work in table of contents and index)
 %
 % When written out, \math{x} writes out the tokens
-%  {\catcode`\^=7 \catcode`\_=8 \let\math\relax$\relax$}\math{x}
+%  {\let\math=\relax}\math{x}
 % and as the first part is essentially {...}, it does nothing: and we 
-% get back \math{x}.
-% When executed, it does \relax$x$ with the catcodes properly set when reading
-% x.
+% get back \math{x}. 
+% When executed, it does $x$ with the catcodes properly set when 
+% reading x. 
+% Original idea by Tanmoy Bhattacharya. Implemented by Brian Gough (any 
+% mistakes are due to the latter).
+%
+% On it's own, the @math command above won't work properly as an argument to
+% commands like @chapter or @section.  These commands get their
+% arguments by eating an entire line with \parsearg. Consequently the
+% catcodes of characters in the argument (e.g. ^ and _) are fixed when read, 
+% before they reach the @math command and aren't recognised as math-math
+% commands.
+%
+% To work around this place @mathcodes ... @mathcodesoff around any
+% command which needs to use @math{...} in its argument.  The @mathcode
+% command reverts to TeX catcodes for dealing with mathematics.  This
+% means you can't use both the texinfo form and the TeX form in the same
+% line but that is usually not a problem.
+%
+\def\mathcodes{\begingroup\recatmath}
+\def\mathcodesoff{\endgroup}
+%
+% @mathcodes also needs to be used for the @contents or @print index
+% if any of the entries need to use @math.
+% We don't use an environment for @mathcodes because it often needs to cross
+% section boundaries, e.g. when used around an @chapter command.
 
+% @equation: typeset in $$ ... $$ with an equation number 
+%
 \newcount\equationno \equationno=0
 %
 \def\equation{\global\advance \equationno by 1 \parsearg\equationxxx}
 \def\equationxxx#1{%
-\def\temp{#1}%
-\ifx\temp\empty \relax% do nothing if no label
+\def\label{#1}% optional label
+\def\eqnoxxx{\eqnoprefix\the\equationno}
+\ifx\label\empty
+  \relax%  do nothing if no label
 \else 
-  \expandafter\ifx\csname SET#1\endcsname\relax
-        \relax%
-  \else%
-        \errmessage{equation label `\temp' redefined}%
-  \fi
-  \expandafter\gdef\csname SET#1\endcsname{\eqnoprefix\the\equationno}%
+  \expandafter\xdef\csname SET#1\endcsname{\eqnoxxx}
 \fi
-\def\eqnoxxx{{\rm (\eqnoprefix\the\equationno)}}
-\begingroup 
-\catcode `\\=0 \catcode `\{=1 \catcode `\}=2
-\catcode `\$=3 \catcode `\&=4 \catcode `\#=6
-\catcode `\^=7 \catcode `\_=8 \catcode `\~=13 \let~=\tie
-\catcode `\%=14
-\catcode 43=12 % plus
-\catcode`\"=12
-\catcode`\==12
-\catcode`\|=12
-\catcode`\<=12
-\catcode`\>=12
-\let\{={
-\let\}=}
-\let\lbrace=\mylbrace
-\let\rbrace=\myrbrace
-\escapechar=`\\
-\def\Eequation{\eqno{\eqnoxxx}$$\endgroup}
+\tex% switch into TeX mode
+\def\hat{\mathaccent "705E}%
+\def\dots{\ldots}%
+\def\equiv{\mathchar"3211}%
+\let\{={%
+\let\}=}%
+\let\lbrace=\mylbrace%
+\let\rbrace=\myrbrace%
+\def\Eequation{\eqno{\rm (\eqnoxxx)}$$\endgroup}%
 $$}
-
 
 % @bullet and @minus need the same treatment as @math, just above.
 \def\bullet{\implicitmath\ptexbullet\implicitmath}
@@ -1153,9 +1190,14 @@ $$}
 \let\mainmagstep=\magstep1
 \setfont\textrm\rmshape{12}{1000}
 \setfont\texttt\ttshape{12}{1000}
+\setfont\textrmscript\rmshape{7}{\magstep1}
+\setfont\textrmscriptscript\rmshape{6}{1000}
 \else
 \setfont\textrm\rmshape{10}{\mainmagstep}
 \setfont\texttt\ttshape{10}{\mainmagstep}
+% Subscripts and subsubscripts
+\setfont\textrmscript\rmshape{7}{\mainmagstep}
+\setfont\textrmscriptscript\rmshape{5}{\mainmagstep}
 \fi
 % Instead of cmb10, you many want to use cmbx10.
 % cmbx10 is a prettier font on its own, but cmb10
@@ -1168,30 +1210,24 @@ $$}
 \setfont\textttsl\ttslshape{10}{\mainmagstep}
 \font\texti=cmmi10 scaled \mainmagstep
 \font\textsy=cmsy10 scaled \mainmagstep
+% Subscripts  (7 pt)
+\setfont\textbfscript\bxshape{7}{\mainmagstep}
+\setfont\textitscript\itshape{7}{\mainmagstep}
+\font\textiscript=cmmi7 scaled \mainmagstep
+\font\textsyscript=cmsy7 scaled \mainmagstep
+% Subsubscripts (5 pt, except \it whose smallest available size is 7pt)
+\setfont\textbfscriptscript\bxshape{5}{\mainmagstep}
+\setfont\textitscriptscript\itshape{7}{\mainmagstep}
+\font\textiscriptscript=cmmi5 scaled \mainmagstep
+\font\textsyscriptscript=cmsy5 scaled \mainmagstep
+%
 
 % A few fonts for @defun, etc.
 \setfont\defbf\bxshape{10}{\magstep1} %was 1314
 \setfont\deftt\ttshape{10}{\magstep1}
 \def\df{\let\tentt=\deftt \let\tenbf = \defbf \bf}
 
-% Fonts for indices and small examples (9pt).
-% We actually use the slanted font rather than the italic,
-% because texinfo normally uses the slanted fonts for that.
-% Do not make many font distinctions in general in the index, since they
-% aren't very useful.
-\setfont\ninett\ttshape{9}{1000}
-\setfont\indrm\rmshape{9}{1000}
-\setfont\indit\slshape{9}{1000}
-\let\indsl=\indit
-\let\indtt=\ninett
-\let\indttsl=\ninett
-\let\indsf=\indrm
-\let\indbf=\indrm
-\setfont\indsc\scshape{10}{900}
-\font\indi=cmmi9
-\font\indsy=cmsy9
-
-% Fonts for title page:
+% Fonts for title page: (20.73pt)
 \setfont\titlerm\rmbshape{12}{\magstep3}
 \setfont\titleit\itbshape{10}{\magstep4}
 \setfont\titlesl\slbshape{10}{\magstep4}
@@ -1200,9 +1236,23 @@ $$}
 \setfont\titlesf\sfbshape{17}{\magstep1}
 \let\titlebf=\titlerm
 \setfont\titlesc\scbshape{10}{\magstep4}
-\font\titlei=cmmi12 scaled \magstep3
-\font\titlesy=cmsy10 scaled \magstep4
+\font\titlei=cmmib10 scaled \magstep4
+\font\titlesy=cmbsy10 scaled \magstep4
 \def\authorrm{\secrm}
+
+% Subscript fonts for title page: (14.4pt)
+\setfont\titlermscript\rmbshape{10}{\magstep2}
+\setfont\titleitscript\itbshape{10}{\magstep2}
+\let\titlebfscript=\titlermscript
+\font\titleiscript=cmmib10 scaled \magstep2
+\font\titlesyscript=cmbsy10 scaled \magstep2
+
+% Subsubscript fonts for title page: (10pt)
+\setfont\titlermscriptscript\rmbshape{10}{1000}
+\setfont\titleitscriptscript\itbshape{10}{1000}
+\let\titlebfscriptscript=\titlermscriptscript
+\font\titleiscriptscript=cmmib10
+\font\titlesyscriptscript=cmbsy10
 
 % Chapter (and unnumbered) fonts (17.28pt).
 \setfont\chaprm\rmbshape{12}{\magstep2}
@@ -1213,8 +1263,22 @@ $$}
 \setfont\chapsf\sfbshape{17}{1000}
 \let\chapbf=\chaprm
 \setfont\chapsc\scbshape{10}{\magstep3}
-\font\chapi=cmmi12 scaled \magstep2
-\font\chapsy=cmsy10 scaled \magstep3
+\font\chapi=cmmib10 scaled \magstep3
+\font\chapsy=cmbsy10 scaled \magstep3
+
+% Chapter (and unnumbered) subscript fonts (12pt).
+\setfont\chaprmscript\rmbshape{12}{1000}
+\setfont\chapitscript\itbshape{10}{\magstep1}
+\let\chapbfscript=\chaprmscript
+\font\chapiscript=cmmib10 scaled \magstep1
+\font\chapsyscript=cmbsy10 scaled \magstep1
+
+% Chapter (and unnumbered) subsubscript fonts (8.64pt).
+\setfont\chaprmscriptscript\rmbshape{6}{\magstep2}
+\setfont\chapitscriptscript\itbshape{10}{864}
+\let\chapbfscriptscript=\chaprmscriptscript
+\font\chapiscriptscript=cmmib10 scaled 864
+\font\chapsyscriptscript=cmbsy10 scaled 864
 
 % Section fonts (14.4pt).
 \setfont\secrm\rmbshape{12}{\magstep1}
@@ -1225,8 +1289,22 @@ $$}
 \setfont\secsf\sfbshape{12}{\magstep1}
 \let\secbf\secrm
 \setfont\secsc\scbshape{10}{\magstep2}
-\font\seci=cmmi12 scaled \magstep1
-\font\secsy=cmsy10 scaled \magstep2
+\font\seci=cmmib10 scaled \magstep2
+\font\secsy=cmbsy10 scaled \magstep2
+
+% Section subscript fonts (10pt).
+\setfont\secrmscript\rmbshape{10}{1000}
+\setfont\secitscript\itbshape{10}{1000}
+\let\secbfscript\secrmscript
+\font\seciscript=cmmib10
+\font\secsyscript=cmbsy10
+
+% Section subsubscript fonts (7.2pt).
+\setfont\secrmscriptscript\rmbshape{5}{\magstep2}
+\setfont\secitscriptscript\itbshape{10}{720}
+\let\secbfscriptscript\secrmscriptscript
+\font\seciscriptscript=cmmib10 scaled 720
+\font\secsyscriptscript=cmbsy10 scaled 720
 
 % \setfont\ssecrm\bxshape{10}{\magstep1}    % This size an font looked bad.
 % \setfont\ssecit\itshape{10}{\magstep1}    % The letters were too crowded.
@@ -1251,8 +1329,80 @@ $$}
 \setfont\ssecsf\sfbshape{12}{\magstephalf}
 \let\ssecbf\ssecrm
 \setfont\ssecsc\scbshape{10}{\magstep1}
-\font\sseci=cmmi12 scaled \magstephalf
-\font\ssecsy=cmsy10 scaled 1315
+\font\sseci=cmmib10 scaled 1315
+\font\ssecsy=cmbsy10 scaled 1315
+
+% Subsection subscript fonts (9.2pt).
+\setfont\ssecrmscript\rmbshape{9}{1022}
+\setfont\ssecitscript\itbshape{10}{920}
+\let\ssecbfscript\ssecrmscript
+\font\sseciscript=cmmib10 scaled 920
+\font\ssecsyscript=cmbsy10 scaled 920
+
+% Subsection subsubscript fonts (6.57pt).
+\setfont\ssecrmscriptscript\rmbshape{6}{\magstephalf}
+\setfont\ssecitscriptscript\itbshape{10}{657}
+\let\ssecbfscriptscript\ssecrmscriptscript
+\font\sseciscriptscript=cmmib10 scaled 657
+\font\ssecsyscriptscript=cmbsy10 scaled 657
+
+% Fonts for short table of contents (12pt).
+\setfont\shortcontrm\rmshape{12}{1000}
+\setfont\shortcontbf\bxshape{12}{1000}
+\setfont\shortcontsl\slshape{12}{1000}
+\setfont\shortcontit\itshape{12}{1000}
+\setfont\shortconttt\ttshape{12}{1000}
+\setfont\shortcontttsl\ttslshape{10}{\magstep1}
+\setfont\shortcontsf\sfshape{12}{1000}
+\setfont\shortcontsc\scshape{10}{\magstep1}
+\font\shortconti=cmmi10 scaled \magstep 1
+\font\shortcontsy=cmsy10 scaled \magstep 1
+
+% Subscript fonts for short table of contents (8.4pt).
+\setfont\shortcontrmscript\rmshape{7}{\magstep1}
+\setfont\shortcontitscript\itshape{7}{\magstep1}
+\setfont\shortcontbfscript\bxshape{7}{\magstep1}
+\font\shortcontiscript=cmmi7 scaled \magstep1
+\font\shortcontsyscript=cmsy7 scaled \magstep1
+
+% Subsubscript fonts for short table of contents (6pt).
+\setfont\shortcontrmscriptscript\rmshape{5}{\magstep1}
+\setfont\shortcontitscriptscript\itshape{7}{\magstep1}
+\setfont\shortcontbfscriptscript\bxshape{5}{\magstep1}
+\font\shortcontiscriptscript=cmmi5 scaled \magstep1
+\font\shortcontsyscriptscript=cmsy5 scaled \magstep1
+
+% Fonts for indices and small examples (9pt).
+% We actually use the slanted font rather than the italic,
+% because texinfo normally uses the slanted fonts for that.
+% Do not make many font distinctions in general in the index, since they
+% aren't very useful.
+\setfont\ninett\ttshape{9}{1000}
+\setfont\indrm\rmshape{9}{1000}
+\setfont\indit\slshape{9}{1000}
+\let\indsl=\indit
+\let\indtt=\ninett
+\let\indttsl=\ninett
+\let\indsf=\indrm
+\let\indbf=\indrm
+\setfont\indsc\scshape{10}{900}
+\font\indi=cmmi9
+\font\indsy=cmsy9
+
+% Subscript Fonts for indices and small examples (6.3pt).
+\setfont\indrmscript\rmshape{6}{1050}
+\setfont\indbfscript\bxshape{6}{1050}
+\setfont\inditscript\itshape{7}{900}
+\font\indiscript=cmmi6 scaled 1050
+\font\indsyscript=cmsy6 scaled 1050
+
+% Subsubscript Fonts for indices and small examples (4.5pt).
+\setfont\indrmscriptscript\rmshape{5}{900}
+\setfont\indbfscriptscript\bxshape{5}{900}
+\setfont\inditscriptscript\itshape{7}{643}
+\font\indiscriptscript=cmmi5 scaled 900
+\font\indsyscriptscript=cmsy5 scaled 900
+
 % The smallcaps and symbol fonts should actually be scaled \magstep1.5,
 % but that is not a standard magnification.
 
@@ -1263,11 +1413,32 @@ $$}
 % also require loading a lot more fonts).
 %
 \def\resetmathfonts{%
-  \textfont0 = \tenrm \textfont1 = \teni \textfont2 = \tensy
-  \textfont\itfam = \tenit \textfont\slfam = \tensl \textfont\bffam = \tenbf
-  \textfont\ttfam = \tentt \textfont\sffam = \tensf
-}
+  \textfont0 = \tenrm \textfont1 = \teni 
+  \textfont2 = \tensy
+  \textfont\itfam = \tenit \textfont\slfam = \tensl 
+  \textfont\bffam = \tenbf \textfont\ttfam = \tentt 
+  \textfont\sffam = \tensf
 
+  % Subscripts and subsubscripts
+  % 
+  % The fonts above define script and scriptscript fonts in the 
+  % standard size ratio 10:7:5, the same as plain TeX,
+  %
+  %   normal 10 : script 7 : scriptscript 5
+  %
+  % We only support script and scriptscript sizes for the rm, bf, it, i, sy
+  % fonts
+
+  \scriptfont0 = \sevenrm \scriptfont1 = \seveni 
+  \scriptfont2 = \sevensy 
+  \scriptfont\itfam = \sevenit 
+  \scriptfont\bffam = \sevenbf
+
+  \scriptscriptfont0 = \fiverm \scriptscriptfont1 = \fivei
+  \scriptscriptfont2 = \fivesy
+  \scriptscriptfont\itfam = \fiveit 
+  \scriptscriptfont\bffam = \fivebf 
+}
 
 % The font-changing commands redefine the meanings of \tenSTYLE, instead
 % of just \STYLE.  We do this so that font changes will continue to work
@@ -1279,35 +1450,92 @@ $$}
   \let\tenrm=\textrm \let\tenit=\textit \let\tensl=\textsl
   \let\tenbf=\textbf \let\tentt=\texttt \let\smallcaps=\textsc
   \let\tensf=\textsf \let\teni=\texti \let\tensy=\textsy \let\tenttsl=\textttsl
+  \let\sevenrm=\textrmscript \let\sevenit=\textitscript 
+  \let\sevenbf=\textbfscript \let\seveni=\textiscript 
+  \let\sevensy=\textsyscript
+  \let\fiverm=\textrmscriptscript \let\fiveit=\textitscriptscript 
+  \let\fivebf=\textbfscriptscript \let\fivei=\textiscriptscript 
+  \let\fivesy=\textsyscriptscript
   \resetmathfonts}
+%
 \def\titlefonts{%
   \let\tenrm=\titlerm \let\tenit=\titleit \let\tensl=\titlesl
   \let\tenbf=\titlebf \let\tentt=\titlett \let\smallcaps=\titlesc
   \let\tensf=\titlesf \let\teni=\titlei \let\tensy=\titlesy
   \let\tenttsl=\titlettsl
+  \let\sevenrm=\titlermscript \let\sevenit=\titleitscript 
+  \let\sevenbf=\titlebfscript \let\seveni=\titleiscript 
+  \let\sevensy=\titlesyscript
+  \let\fiverm=\titlermscriptscript \let\fiveit=\titleitscriptscript 
+  \let\fivebf=\titlebfscriptscript \let\fivei=\titleiscriptscript 
+  \let\fivesy=\titlesyscriptscript
   \resetmathfonts \setleading{25pt}}
+%
 \def\titlefont#1{{\titlefonts #1}}
+%
 \def\chapfonts{%
   \let\tenrm=\chaprm \let\tenit=\chapit \let\tensl=\chapsl
   \let\tenbf=\chapbf \let\tentt=\chaptt \let\smallcaps=\chapsc
   \let\tensf=\chapsf \let\teni=\chapi \let\tensy=\chapsy \let\tenttsl=\chapttsl
+  \let\sevenrm=\chaprmscript \let\sevenit=\chapitscript
+  \let\sevenbf=\chapbfscript \let\seveni=\chapiscript 
+  \let\sevensy=\chapsyscript
+  \let\fiverm=\chaprmscriptscript \let\fiveit=\chapitscriptscript 
+  \let\fivebf=\chapbfscriptscript \let\fivei=\chapiscriptscript 
+  \let\fivesy=\chapsyscriptscript
   \resetmathfonts \setleading{19pt}}
+%
 \def\secfonts{%
   \let\tenrm=\secrm \let\tenit=\secit \let\tensl=\secsl
   \let\tenbf=\secbf \let\tentt=\sectt \let\smallcaps=\secsc
   \let\tensf=\secsf \let\teni=\seci \let\tensy=\secsy \let\tenttsl=\secttsl
+  \let\sevenrm=\secrmscript \let\sevenit=\secitscript 
+  \let\sevenbf=\secbfscript \let\seveni=\seciscript 
+  \let\sevensy=\secsyscript
+  \let\fiverm=\secrmscriptscript \let\fiveit=\secitscriptscript 
+  \let\fivebf=\secbfscriptscript \let\fivei=\seciscriptscript 
+  \let\fivesy=\secsyscriptscript
   \resetmathfonts \setleading{16pt}}
+%
 \def\subsecfonts{%
   \let\tenrm=\ssecrm \let\tenit=\ssecit \let\tensl=\ssecsl
   \let\tenbf=\ssecbf \let\tentt=\ssectt \let\smallcaps=\ssecsc
   \let\tensf=\ssecsf \let\teni=\sseci \let\tensy=\ssecsy \let\tenttsl=\ssecttsl
+  \let\sevenrm=\ssecrmscript \let\sevenit=\ssecitscript 
+  \let\sevenbf=\ssecbfscript \let\seveni=\sseciscript 
+  \let\sevensy=\ssecsyscript
+  \let\fiverm=\ssecrmscriptscript \let\fiveit=\ssecitscriptscript 
+  \let\fivebf=\ssecbfscriptscript \let\fivei=\sseciscriptscript 
+  \let\fivesy=\ssecsyscriptscript
   \resetmathfonts \setleading{15pt}}
+%
 \let\subsubsecfonts = \subsecfonts % Maybe make sssec fonts scaled magstephalf?
+%
 \def\indexfonts{%
   \let\tenrm=\indrm \let\tenit=\indit \let\tensl=\indsl
   \let\tenbf=\indbf \let\tentt=\indtt \let\smallcaps=\indsc
   \let\tensf=\indsf \let\teni=\indi \let\tensy=\indsy \let\tenttsl=\indttsl
+  \let\sevenrm=\indrmscript \let\sevenit=\inditscript 
+  \let\sevenbf=\indbfscript \let\seveni=\indiscript 
+  \let\sevensy=\indsyscript
+  \let\fiverm=\indrmscriptscript \let\fiveit=\inditscriptscript 
+  \let\fivebf=\indbfscriptscript \let\fivei=\indiscriptscript 
+  \let\fivesy=\indsyscriptscript
   \resetmathfonts \setleading{12pt}}
+%
+\def\shortcontfonts{
+  \let\tenrm=\shortcontrm \let\tenit=\shortcontit \let\telsl=\shortcontsl
+  \let\tenbf=\shortcontbf \let\tentt=\shortconttt \let\smallcaps=\shortcontsc
+  \let\tensf=\shortcontsf \let\teni=\shortconti \let\tensy=\shortcontsy 
+  \let\tenttsl=\shortcontttsl
+  \let\sevenrm=\shortcontrmscript \let\sevenit=\shortcontitscript 
+  \let\sevenbf=\shortcontbfscript \let\seveni=\shortcontiscript 
+  \let\sevensy=\shortcontsyscript
+  \let\fiverm=\shortcontrmscriptscript \let\fiveit=\shortcontitscriptscript 
+  \let\fivebf=\shortcontbfscriptscript \let\fivei=\shortcontiscriptscript 
+  \let\fivesy=\shortcontsyscriptscript
+  \resetmathfonts}
+%
 
 % Set up the default fonts, so we can use them for creating boxes.
 %
@@ -1315,11 +1543,6 @@ $$}
 
 % Count depth in font-changes, for error checks
 \newcount\fontdepth \fontdepth=0
-
-% Fonts for short table of contents.
-\setfont\shortcontrm\rmshape{12}{1000}
-\setfont\shortcontbf\bxshape{12}{1000}
-\setfont\shortcontsl\slshape{12}{1000}
 
 %% Add scribe-like font environments, plus @l for inline lisp (usually sans
 %% serif) and @ii for TeX italic
@@ -1452,14 +1675,12 @@ $$}
 \else{\tclose{\kbdfont\look}}\fi
 \else{\tclose{\kbdfont\look}}\fi}
 
-% @url, @email.  Quotes do not seem necessary.
-\let\url=\code % perhaps include a hypertex \special eventually
-% rms does not like the angle brackets --karl, 17may97.
-%\def\email#1{$\langle${\tt #1}$\rangle$}
-\let\email=\code
+% @url.  Quotes do not seem necessary, so use \code.
+\let\url=\code
 
 % @uref (abbreviation for `urlref') takes an optional second argument
 % specifying the text to display.  First (mandatory) arg is the url.
+% Perhaps eventually put in a hypertex \special here.
 % 
 \def\uref#1{\urefxxx #1,,\finish}
 \def\urefxxx#1,#2,#3\finish{%
@@ -1470,6 +1691,11 @@ $$}
     \code{#1}%
   \fi
 }
+
+% rms does not like the angle brackets --karl, 17may97.
+% So now @email is just like @uref.
+%\def\email#1{$\langle${\tt #1}$\rangle$}
+\let\email=\uref
 
 % Check if we are currently using a typewriter font.  Since all the
 % Computer Modern typewriter fonts have zero interword stretch (and
@@ -2377,6 +2603,7 @@ width0pt\relax} \fi
 \def\key##1{\realbackslash key {##1}}%
 \def\file##1{\realbackslash file {##1}}%
 \def\var##1{\realbackslash var {##1}}%
+\def\math##1{\realbackslash math {##1}}%
 \def\kbd##1{\realbackslash kbd {##1}}%
 \def\dfn##1{\realbackslash dfn {##1}}%
 \def\emph##1{\realbackslash emph {##1}}%
@@ -2443,6 +2670,7 @@ width0pt\relax} \fi
 \let\kbd=\indexdummyfont
 \let\key=\indexdummyfont
 \let\var=\indexdummyfont
+\let\math=\indexdummyfont
 \let\TeX=\indexdummytex
 \let\dots=\indexdummydots
 \def\@{@}%
@@ -2843,6 +3071,7 @@ width0pt\relax} \fi
   \def\var##1{\realbackslash var{##1}}%
   \def\emph##1{\realbackslash emph{##1}}%
   \def\dfn##1{\realbackslash dfn{##1}}%
+  \def\math##1{\realbackslash math{##1}}%
 }
 
 \newcount\absseclevel % used to calculate proper heading level
@@ -3372,7 +3601,7 @@ width0pt\relax} \fi
       \let\chapentry = \shortchapentry
       \let\unnumbchapentry = \shortunnumberedentry
       % We want a true roman here for the page numbers.
-      \secfonts
+      \shortcontfonts
       \let\rm=\shortcontrm \let\bf=\shortcontbf \let\sl=\shortcontsl
       \rm
       \hyphenpenalty = 10000
