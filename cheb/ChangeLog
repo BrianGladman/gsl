@@ -1,0 +1,7 @@
+Tue Apr 24 17:08:29 2001  Brian Gough  <bjg@network-theory.co.uk>
+
+	* made deriv/integ functions thread safe
+
+	* split out from specfunc directory
+	
+

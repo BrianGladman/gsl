@@ -104,7 +104,8 @@ int gsl_cheb_eval_n_err(const gsl_cheb_series * cs, const size_t order,
  * No errors can occur for a struct obtained from gsl_cheb_new().
  */
 double gsl_cheb_eval_mode(const gsl_cheb_series * cs, double x, gsl_mode_t mode);
-int gsl_cheb_eval_mode_err(const gsl_cheb_series * cs, const double x, gsl_mode_t mode, double * result, double * abserr);
+int gsl_cheb_eval_mode_e(const gsl_cheb_series * cs, const double x, gsl_mode_t mode, double * result, double * abserr);
+
 
 
 /* Compute the derivative of a Chebyshev series.

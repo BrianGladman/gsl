@@ -25,7 +25,7 @@
 
 int gsl_cheb_calc_integ(gsl_cheb_series * integ, const gsl_cheb_series * f)
 {
-  const int n = f->order + 1;
+  const size_t n = f->order + 1;
   const double con = 0.25 * (f->b - f->a);
 
   if(integ->order != f->order) 
