@@ -55,6 +55,12 @@
  *
  * Based on code by Arthur Kosowsky, Rutgers University
  *                  kosowsky@physics.rutgers.edu  
+ *
+ * Another relevant paper is, P.P.M. De Rijk, "A One-Sided Jacobi
+ * Algorithm for computing the singular value decomposition on a
+ * vector computer", SIAM Journal of Scientific and Statistical
+ * Computing, Vol 10, No 2, pp 359-371, March 1989.
+ * 
  */
 
 int
