@@ -20,19 +20,19 @@ int gsl_sf_lngamma_complex_e(double zr, double zi, double * lnr, double * arg); 
 
 
 /* n! */
-int gsl_sf_fact_e(int n, double * result);   /* GSL_EDOM, GSL_OVRFLW */
+int gsl_sf_fact_e(unsigned int n, double * result); /* GSL_EDOM, GSL_OVRFLW */
 
 
 /* n!! = n(n-2)(n-4) ...  */
-int gsl_sf_doublefact_e(int n, double * result);
+int gsl_sf_doublefact_e(unsigned int n, double * result);
 
 
 /* log(n!) 
  * Faster then ln(Gamma(n+1)) for n < 170; defers for larger n.
  */
-int gsl_sf_lnfact_e(int n, double * result);  /* GSL_EDOM */
+int gsl_sf_lnfact_e(unsigned int n, double * result);  /* GSL_EDOM */
 
-double gsl_sf_lnfact(int n);  /* domain */
+double gsl_sf_lnfact(unsigned int n);  /* domain */
 
 
 /* n choose m */
@@ -46,10 +46,10 @@ double gsl_sf_choose(unsigned int n, unsigned int m);    /* domain, overflow */
 int gsl_sf_lngamma_impl(double x, double * result);
 int gsl_sf_lngamma_complex_impl(double zr, double zi, double * lnr, double * arg);
 
-int gsl_sf_fact_impl(int n, double * result);
-int gsl_sf_lnfact_impl(int n, double * result);
+int gsl_sf_fact_impl(unsigned int n, double * result);
+int gsl_sf_lnfact_impl(unsigned int n, double * result);
 
-int gsl_sf_doublefact_impl(int n, double * result);
+int gsl_sf_doublefact_impl(unsigned int n, double * result);
 
 int gsl_sf_choose_impl(unsigned int n, unsigned int m, double * result);
 int gsl_sf_lnchoose_impl(unsigned int n, unsigned int m, double * result);

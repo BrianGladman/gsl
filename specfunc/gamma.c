@@ -636,12 +636,9 @@ int gsl_sf_lngamma_complex_impl(double zr, double zi, double * lnr, double * arg
   }
 }
 
-int gsl_sf_fact_impl(const int n, double * result)
+int gsl_sf_fact_impl(const unsigned int n, double * result)
 {
- if(n < 0) {
-    return GSL_EDOM;
-  }
-  else if(n <= FACT_TABLE_MAX){
+  if(n <= FACT_TABLE_MAX){
     *result = fact_table[n].f;
     return GSL_SUCCESS;
   }
@@ -650,12 +647,9 @@ int gsl_sf_fact_impl(const int n, double * result)
   }
 }
 
-int gsl_sf_doublefact_impl(const int n, double * result)
+int gsl_sf_doublefact_impl(const unsigned int n, double * result)
 {
- if(n < 0) {
-    return GSL_EDOM;
-  }
-  else if(n <= DOUB_FACT_TABLE_MAX){
+  if(n <= DOUB_FACT_TABLE_MAX){
     *result = doub_fact_table[n].f;
     return GSL_SUCCESS;
   }
@@ -663,12 +657,9 @@ int gsl_sf_doublefact_impl(const int n, double * result)
     return GSL_EOVRFLW;
   }
 }
-int gsl_sf_lnfact_impl(const int n, double * result)
+int gsl_sf_lnfact_impl(const unsigned int n, double * result)
 {
-  if(n < 0) {
-    return GSL_EDOM;
-  }
-  else if(n <= FACT_TABLE_MAX){
+  if(n <= FACT_TABLE_MAX){
     *result = log(fact_table[n].f);
     return GSL_SUCCESS;
   }
@@ -717,7 +708,7 @@ int gsl_sf_choose_impl(unsigned int n, unsigned int m, double * result)
 
 /*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
 
-int gsl_sf_fact_e(const int n, double * result)
+int gsl_sf_fact_e(const unsigned int n, double * result)
 {
   int status = gsl_sf_fact_impl(n, result);
   if(status != GSL_SUCCESS) {
@@ -726,7 +717,7 @@ int gsl_sf_fact_e(const int n, double * result)
   return status;
 }
 
-int gsl_sf_lnfact_e(const int n, double * result)
+int gsl_sf_lnfact_e(const unsigned int n, double * result)
 {
   int status = gsl_sf_lnfact_impl(n, result);
   if(status != GSL_SUCCESS) {
@@ -735,7 +726,7 @@ int gsl_sf_lnfact_e(const int n, double * result)
   return status;
 }
 
-int gsl_sf_doublefact_e(const int n, double * result)
+int gsl_sf_doublefact_e(const unsigned int n, double * result)
 {
   int status = gsl_sf_doublefact_impl(n, result);
   if(status != GSL_SUCCESS) {
@@ -793,7 +784,7 @@ double gsl_sf_lngamma(const double x)
   return y;
 }
 
-double gsl_sf_lnfact(const int n)
+double gsl_sf_lnfact(const unsigned int n)
 {
   double y;
   int status = gsl_sf_lnfact_impl(n, &y);
