@@ -13,8 +13,7 @@ ftp://ftp.gnu.org/gnu/libtool/
 
 A known working combination is automake 1.7.5 autoconf 2.57 libtool 1.4.3
 
-* you must have a recent CVS (at least 1.9) from
-ftp://prep.ai.mit.edu/u2/emacs/
+* you must have a recent CVS (at least 1.9)
 
 * you must have texinfo (4.0 or later) from
 ftp://ftp.gnu.org/gnu/texinfo/
@@ -24,16 +23,20 @@ working from your own machine.  To do the initial checkout of the
 repository try (bash syntax):
 
 # PEOPLE WITH CVS WRITE ACCESS:
+
 export CVS_RSH=ssh
 cvs -d sources.redhat.com:/cvs/gsl checkout gsl
+
 [from now on you can just do "cvs update" in the gsl directory]
 
 # ANONYMOUS CVS USERS
+
 cvs -d :pserver:anoncvs@sources.redhat.com:/cvs/gsl login
      (password is ``anoncvs'')
 cvs -d :pserver:anoncvs@sources.redhat.com:/cvs/gsl checkout gsl
 cd gsl ; ./autogen.sh   (to create auto-generated files)
 ./configure --enable-maintainer-mode
+
 [from now on you can just do "cvs update" in the gsl directory]
 
 # PEOPLE WHO JUST WANT TO BROWSE THE CVS REPOSITORY
@@ -132,8 +135,6 @@ configure, make, make check.  Try running make check under ulimit -v
 65536 to be sure that excessive memory is not required to do the
 compilation.
 
-* Make a KNOWN-PROBLEMS file. Run scripts/mkknownproblems.sh.
-
 * Make html docs using texi2html in cvs, 
 
     cd doc ; mkdir html ; cd html
@@ -222,6 +223,9 @@ Savannah CVS Information
 ========================
 
 Developer CVS Access via SSH.
+
+Savannah is used for experimental projects, the main repository is
+sources.redhat.com (as described above).
 
 Only project developers can access the CVS tree via this method. SSH2
 must be installed on your client machine.  Put the following 
