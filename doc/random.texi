@@ -846,6 +846,7 @@ from the generator.
 
 @subsection Continuous distributions
 @page
+@unnumberedsubsec The Gaussian Distribution
 @deftypefn Random double gsl_ran_gaussian (const gsl_rng * @var{r})
 @cindex Gaussian random numbers
 This function returns a gaussian random number, with mean zero and
@@ -856,17 +857,56 @@ is,
 p(x) dx = @{1 \over \sqrt@{2 \pi@}@} \exp (-x^2 / 2) dx
 @end equation
 @noindent
-for @math{x} in the range @math{-\infty} to @math{+\infty}.
+for @math{x} in the range @math{-\infty} to @math{+\infty}. Use the
+transformation @math{z = \mu + \sigma x} on the numbers returned by
+@code{gsl_ran_gaussian} to obtain the general normal distribution,
+@c
+@equation
+p(z) dz = @{1 \over \sqrt@{2 \pi \sigma^2@}@} \exp (-(z-\mu)^2 / 2\sigma^2) dz
+@end equation
+@noindent
 @end deftypefn
 @tex
 \centerline{\input rand-gaussian.tex}
 @end tex
 
+@unnumberedsubsubsec Properties
+@itemize @asis
+@item
+Mean = @math{\mu}, Variance = @math{\sigma^2}, Skewness = 0, Excess = 0
+
+@item
+Cumulants, @math{\kappa_1=\mu}, @math{\kappa_2=\sigma^2},
+@math{\kappa_n=0} for @math{n>2}
+
+@item
+Characteristic function, @math{\phi(t) = \exp(-i\mu t - \sigma^2 t^2/2)}
+
+@item
+Cumulative distribution function, 
+@math{CDF(x) = \int_@{-\infty@}^x p(x') dx' = @{1 \over 2 @}(1 - \hbox@{erf@}((x-m)/\sqrt@{2\sigma^2@}))}
+@item
+Confidence limits:
+
+@math{p(|x-\mu| < \sigma) = 0.683},
+@math{p(|x-\mu| < 2\sigma) = 0.954},
+@math{p(|x-\mu| < 3\sigma) = 0.9973}
+
+@item
+Useful integral:
+@equation
+\int_@{-\infty@}^@{+\infty@} x^@{2n@} p(x) dx 
+= 2^n \sigma^@{2n@} \Gamma(n+ @{1 \over 2@}) / \sqrt\pi
+@end equation
+
+@end itemize
+
 @page
+@subsection The Cauchy Distribution
 @deftypefn Random double gsl_ran_cauchy (const gsl_rng * @var{r}, double @var{mu})
 @cindex Cauchy random numbers
 This function returns a random number from the Cauchy distribution with
-width parameter @var{mu}. The probability distribution for Cauchy
+scale parameter @var{mu}. The probability distribution for Cauchy
 random numbers is,
 @c
 @equation
@@ -874,12 +914,33 @@ p(x) dx = @{1 \over \mu\pi (1 + (x/\mu)^2) @} dx
 @end equation
 @noindent
 for @math{x} in the range @math{-\infty} to @math{+\infty}.  The Cauchy
-distribution is sometimes also known as the Lorentz distribution or
-Breit-Wigner distribution.
+distribution is also known as the Lorentz distribution.
 @end deftypefn
 @tex
 \centerline{\input rand-cauchy.tex}
 @end tex
+
+@unnumberedsubsubsec Properties
+@itemize @asis
+@item
+The Cauchy distribution has an infinite variance so the mean, variance,
+skewness, excess and cumulants are all undefined.
+
+@item
+Characteristic function, @math{\phi(t) = \exp(-i\alpha t - \beta |t|)}
+
+@item
+Cumulative distribution function, 
+@math{CDF(x) = \int_@{-\infty@}^x p(x') dx' = @{1 \over 2 @} + @{\arctan(x/\mu)\over \pi@}}
+
+@item
+Confidence limits:
+
+@math{p(|x| < \mu) = 0.5},
+@math{p(|x| < 2\mu) = 0.705},
+@math{p(|x| < 3\mu) = 0.795}
+
+@end itemize
 
 @page
 @deftypefn Random double gsl_ran_exponential (const gsl_rng * @var{r}, double @var{mu})
@@ -896,6 +957,38 @@ for @math{x \ge 0}.
 @tex
 \centerline{\input rand-exponential.tex}
 @end tex
+
+@unnumberedsubsubsec Properties
+@itemize @asis
+@item
+Mean = @math{\mu}, Variance = @math{\mu^2}, Skewness = 2, Excess = 6
+
+@item
+Cumulants, @math{\kappa_1=\mu}, @math{\kappa_n=\mu^n \Gamma(n)},
+for @math{n>1}
+
+@item
+Characteristic function, @math{\phi(t) = 1/(1-i\mu t)}
+
+@item
+Cumulative distribution function, 
+@math{CDF(x) = \int_0^x p(x') dx' = 1 - \exp(-x/\mu)}
+@item
+Confidence limits:
+
+@math{p(x < \mu) = 0.632},
+@math{p(x < 2\mu) = 0.865},
+@math{p(x < 3\mu) = 0.950}
+
+@item
+Useful integral:
+@equation
+\int_0^\infty x^n p(x) dx 
+= n! \mu^(n+1)
+@end equation
+
+@end itemize
+
 
 @page
 @deftypefn Random double gsl_ran_chisq (const gsl_rng * @var{r}, double @var{nu})

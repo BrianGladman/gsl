@@ -2,16 +2,23 @@
 set term pstex monochrome
 set samples 300
 set size 1,1.1
+
+# Continuous distributions
+
+set xlabel "$x$"
+set ylabel "$p(x)$"
+
 set xrange [-5:5]
 set yrange [0:0.5]
 set ytics 0.1
-
+set xtics 1
 set output "rand-gaussian.tex"
 set title "Gaussian Distribution"
 p(x)=1/sqrt(2*pi*sigma**2)*exp(-x**2/(2*sigma**2))
 plot sigma=1.0, p(x) title "$\sigma=1$", \
 	sigma=2.0, p(x) title "$\sigma=2$"
 
+set xrange [-5:5]
 set yrange [0:0.4]
 set output "rand-cauchy.tex"
 set title "Cauchy Distribution"
@@ -21,13 +28,15 @@ plot mu=1.0, p(x) title "$\mu=1$", \
 
 set ytics 0.5
 set yrange [0:1]
-set xrange [0:5]
+set xrange [0:3]
 set output "rand-exponential.tex"
 set title "Exponential Distribution"
 p(x)=exp(-x/mu)/mu
 plot mu=1.0, p(x) title "$\mu=1$", \
 	mu=2.0, p(x) title "$\mu=2$"
 
+set yrange [0:1]
+set xrange [0:3]
 set output "rand-chisq.tex"
 set title "Chi-squared Distribution"
 p(x)=x**(nu/2.0-1.0) *exp(-x)/ gamma(nu/2.0)
@@ -35,6 +44,8 @@ plot nu=1.0, p(x) title "$\nu=1$", \
       nu=2.0, p(x) title "$\nu=2$", \
 	nu=3.0, p(x) title "$\nu=3$"
 
+set yrange [0:1]
+set xrange [0:5]
 set output "rand-erlang.tex"
 set title "Erlang Distribution"
 p(x)=x**(n-1) *exp(-x/a)/ (gamma(n)*a**n)
@@ -56,7 +67,7 @@ set xrange [0:5]
 set output "rand-flat.tex"
 set title "Flat Distribution"
 p(x)= (x<b && x>a) ? 1/(b-a) : 0
-plot a=0.5, b=2.5, p(x) title "$a=1.5,b=3.5$" with step, \
+plot a=0.5, b=2.5, p(x) title "$a=0.5,b=2.5$" with step, \
       a=1.2, b=4.8, p(x) title "$a=1.2,b=4.8$" with step
 
 set xrange [0:5]
@@ -71,6 +82,8 @@ plot a=1.0, p(x) title "$a=1$", \
 
 set xrange [0:1]
 set yrange [0:3]
+set xtics 0.25
+set ytics 1
 set output "rand-beta.tex"
 set title "Beta Distribution"
 p(x)= gamma(a+b)/(gamma(a)*gamma(b))*x**(a-1)*(1-x)**(b-1)
@@ -108,7 +121,7 @@ plot a=1.0, p(x) title "$a=1$", \
 	a=5.0, p(x) title "$a=5$"
 
 set xrange [0:4]
-set yrange [0:0.5]
+set yrange [0:0.4]
 set ytics 0.1
 set output "rand-tdist.tex"
 set title "Student's t distribution"
@@ -117,7 +130,7 @@ plot v=1.0, p(x) title "$\nu_1=1$", \
       v=5.0, p(x) title "$\nu_1=5$"
 
 set xrange [-5:5]
-set yrange [0:0.6]
+set yrange [0:0.55]
 set ytics 0.1
 set output "rand-laplace.tex"
 set title "Two-sided Exponential (Laplace) Distribution"
@@ -128,6 +141,7 @@ plot mu=1.0, p(x) title "$\mu=1$", \
 set xrange [0:2]
 set yrange [0:1.5]
 set ytics 0.5
+set xtics 0.5
 set output "rand-weibull.tex"
 set title "Weibull Distribution"
 p(x)=a * x**(a-1) * exp(-x**a)
@@ -135,9 +149,16 @@ plot a=1.0, p(x) title "$a=1$", \
 	a=2.0, p(x) title "$a=2$", \
 	 a=3.0, p(x) title "$a=3$"
 
+
+# Discrete distributions
+
+set xlabel "$n$ (n covers the range $[n,n+1]$)"
+set ylabel "$p(n)$"
+
 set xrange [0:10]
 set yrange [0:0.3]
 set ytics 0.1
+set xtics 1
 set function style step
 set output "rand-poisson.tex"
 set title "Poisson Distribution"
@@ -156,6 +177,7 @@ plot P=0.5,n=24.99999999, p(x) title "$p=0.5,n=25$"
 set xrange [0:5]
 set yrange [0:0.7]
 set ytics 0.1
+set xtics 1
 set output "rand-geometric.tex"
 set title "Geometric Distribution"
 p(x)=P*(1-P)**int(x)
