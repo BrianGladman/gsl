@@ -142,18 +142,23 @@ static
 int
 hyperg_1F1_CF1_p_ser(const double a, const double b, const double x, double * result)
 {
+  const int maxiter = 5000;
   double sum  = 1.0;
   double pk   = 1.0;
   double rhok = 0.0;
   int k;
-  for(k=1; k<1000; k++) {
+  for(k=1; k<maxiter; k++) {
     double ak = (a + k)*x/((b-x+k-1.0)*(b-x+k));
     rhok = -ak*(1.0 + rhok)/(1.0 + ak*(1.0+rhok));
     pk  *= rhok;
     sum += pk;
+    if(fabs(pk/sum) < 2.0*GSL_MACH_EPS) break;
   }
   *result = a/(b-x) * sum;
-  return GSL_SUCCESS;
+  if(k == maxiter)
+    return GSL_EMAXITER;
+  else
+    return GSL_SUCCESS;
 }
 
 
@@ -972,6 +977,9 @@ hyperg_1F1_beq2a_pos(const double a, const double x, double * result)
  * given:  M(a,b)      and  M(a+1,b+2)
  * get:    M(a+1,b+1)  and  M(a,b+1)
  */
+#ifdef HAVE_INLINE
+inline
+#endif
 static
 int
 hyperg_1F1_diag_step(const double a, const double b, const double x,
@@ -995,6 +1003,9 @@ hyperg_1F1_diag_step(const double a, const double b, const double x,
  * given:  M(a,b)    and  M(a+1,b+2)
  * get:    M(a+1,b)  and  M(a+1,b+1)
  */
+#ifdef HAVE_INLINE
+inline
+#endif
 static
 int
 hyperg_1F1_diag_end_step(const double a, const double b, const double x,
@@ -1017,10 +1028,10 @@ hyperg_1F1_ab_posint(const int a, const int b, const double x, double * result)
   double ax = fabs(x);
 
   if(a == b) {
-    return gsl_sf_exp_impl(x, result);
+    return gsl_sf_exp_impl(x, result);             /* 1F1(a,a,x) */
   }
   else if(a == 1) {
-    return gsl_sf_exprel_n_impl(b-1, x, result);
+    return gsl_sf_exprel_n_impl(b-1, x, result);   /* 1F1(1,b,x) */
   }
   else if(b == a + 1) {
     double K;
@@ -1047,6 +1058,9 @@ hyperg_1F1_ab_posint(const int a, const int b, const double x, double * result)
     *result = exp(x) * (1.0 + x/b*(2.0 + x/(b+1)));
     return GSL_SUCCESS;
   }
+  else if(b == 2*a) {
+    return hyperg_1F1_beq2a_pos(a, x, result);  /* 1F1(a,2a,x) */
+  }
   else if(   ( b < 10 && a < 10 && ax < 5.0 )
           || ( b > a*ax )
 	  || ( b > a && ax < 5.0 )
@@ -1054,14 +1068,11 @@ hyperg_1F1_ab_posint(const int a, const int b, const double x, double * result)
     double prec;
     return gsl_sf_hyperg_1F1_series_impl(a, b, x, result, &prec);
   }
-  else if(b == 2*a) {
-    return hyperg_1F1_beq2a_pos(a, x, result);
-  }
   else if(a > b) {
     /* Forward recursion from a=b.
      * Note that a > b + 1 as well, since we already tried a = b + 1.
      */
-    if(x + log(fabs(x/b)) < GSL_LOG_DBL_MAX-1.0) {
+    if(x + log(fabs(x/b)) < GSL_LOG_DBL_MAX-2.0) {
       double ex = exp(x);
       int n;
       double Mnm1 = ex; 		/* 1F1(b,b,x)   */
@@ -1080,27 +1091,49 @@ hyperg_1F1_ab_posint(const int a, const int b, const double x, double * result)
       return GSL_EOVRFLW;
     }
   }
-  else if(2*a > b && GSL_IS_EVEN(b)){
-    /* Forward recursion from a = b/2.
-     */
+  else if(2*a > b){
     double Mnm1;
     double Mn;
     double Mnp1;
+    int a_start;
     int s = 0;
-    if(b == 2) {
-      s += gsl_sf_exprel_impl(x, &Mnm1); /* 1F1(b/2,b,x)   = 1F1(1,2,x) =(e^x-1)/x */
-      s += gsl_sf_exp_impl(x, &Mn);      /* 1F1(b/2+1,b,x) = 1F1(2,2,x) = e^x      */
+
+    if(GSL_IS_EVEN(b)) {
+      /* Forward recursion from b/2+1 and b/2.
+       */
+      a_start = b/2 + 1;
+
+      if(b == 2) {
+        s += gsl_sf_exprel_impl(x, &Mnm1);  /* 1F1(1,2,x) =(e^x-1)/x */
+        s += gsl_sf_exp_impl(x, &Mn);       /* 1F1(2,2,x) = e^x      */
+      }
+      else {
+        double M12, M11;
+        s += hyperg_1F1_beq2a_pos(b/2,   x, &Mnm1);  /* 1F1(b/2,b,x)     */
+        s += hyperg_1F1_beq2a_pos(b/2+1, x, &M12);   /* 1F1(b/2+1,b+2,x) */
+        s += hyperg_1F1_diag_end_step(b/2, b, x, Mnm1, M12, &Mn, &M11);
+      }
     }
     else {
-      double M12, M11;
-      s += hyperg_1F1_beq2a_pos(b/2,   x, &Mnm1);  /* 1F1(b/2,b,x)     */
-      s += hyperg_1F1_beq2a_pos(b/2+1, x, &M12);   /* 1F1(b/2+1,b+2,x) */
-      s += hyperg_1F1_diag_end_step(b/2, b, x, Mnm1, M12, &Mn, &M11);
+      /* Forward recursion from (b+1)/2 and (b-1)/2.
+       */
+      a_start = (b+1)/2;
+
+      if(b == 1) {
+        Mnm1 = 0.0;                     /* 1F1(0,1,x) */
+        s += gsl_sf_exp_impl(x, &Mn);   /* 1F1(1,1,x) */
+      }
+      else {
+        double M00, M12;
+        s += hyperg_1F1_beq2a_pos((b-1)/2, x, &M00);
+        s += hyperg_1F1_beq2a_pos((b+1)/2, x, &M12);
+        s += hyperg_1F1_diag_step((b-1)/2, b-1, x, M00, M12, &Mnm1, &Mn);
+      }
     }
 
     if(s == 0) {
       int n;
-      for(n=b/2+1; n<a; n++) {
+      for(n=a_start; n<a; n++) {
         Mnp1 = ((b-n)*Mnm1 + (2*n-b+x)*Mn)/n;
 	Mnm1 = Mn;
 	Mn   = Mnp1;
@@ -1113,139 +1146,20 @@ hyperg_1F1_ab_posint(const int a, const int b, const double x, double * result)
       return GSL_EFAILED;
     }
   }
-  else if(2*a > b && GSL_IS_ODD(b)){
-    /* Forward recursion from a = (b-1)/2.
+  else if(b > 2*a + x) {
+    /* b > x, so use Gautschi series representation of
+     * continued fraction. Then recurse backward since
+     * we are in the stable region for that as well.
      */
-    double M00, M12;
-    double Mnm1;
-    double Mn;
-    double Mnp1;
-    int s = 0;
-
-    /* Determine 1F1((b-1)/2,b,x) and 1F1((b+1)/2,b,x).
-     */
-    if(b == 1) {
-      Mnm1 = 0.0;                     /* 1F1(0,1,x) */
-      s += gsl_sf_exp_impl(x, &Mn);   /* 1F1(1,1,x) */
-    }
-    else {
-      s += hyperg_1F1_beq2a_pos((b-1)/2, x, &M00);
-      s += hyperg_1F1_beq2a_pos((b+1)/2, x, &M12);
-      s += hyperg_1F1_diag_step((b-1)/2, b-1, x, M00, M12, &Mnm1, &Mn);
-    }
-
-    if(s == 0) {
-      int n;
-      for(n=(b+1)/2; n<a; n++) {
-        Mnp1 = ((b-n)*Mnm1 + (2*n-b+x)*Mn)/n;
-	Mnm1 = Mn;
-	Mn   = Mnp1;
-      }
-      *result = Mn;
-      return GSL_SUCCESS;
-    }
-    else {
-      *result = 0.0;
-      return GSL_EFAILED;
-    }
-  }
-  else if(b > 2*a) {
     double rap;
     int stat_CF1 = hyperg_1F1_CF1_p_ser(a, b, x, &rap);
     double ra = 1.0 + x/a * rap;
-    /*
-    double ra;
-    int stat_CF1 = hyperg_1F1_CF1(a, b, x, &ra);
-    */
-    double Ma   = GSL_SQRT_DBL_MIN;
-    double Map1 = ra * Ma;
-    double Mnp1 = Map1;
-    double Mn   = Ma;
-    double Mnm1;
-    int n;
-    for(n=a; n>0; n--) {
-        Mnm1 = (n * Mnp1 - (2*n-b+x) * Mn) / (b-n);
-        Mnp1 = Mn;
-        Mn   = Mnm1;
-    }
-    *result = Ma/Mn;
-    return GSL_SUCCESS;
 
-    /* Recurse down in b, using a CF1 continued fraction
-     * at the starting point. Normalize by the value
-     * at (a,a)
-     */
-     /*
-    double rb;
-    int stat_CF1_b = hyperg_1F1_CF1_b(a, b, x, &rb);  1F1(a,b+1,x)/1F1(a,b,x) 
-    double Mab   = GSL_SQRT_DBL_MIN;
-    double Mabp1 = rb * Mab;
-    double Maa;
-    double Mnp1 = Mabp1;
-    double Mn   = Mab;
-    double Mnm1;
-    int stat_aa;
-    int n;
-    for(n=b; n>a; n--) {
-      Mnm1 = -(n*(1.0-n-x)*Mn + x*(n-a)*Mnp1)/(n*(n-1.0));
-      Mnp1 = Mn;
-      Mn   = Mnm1;
-    }
-    stat_aa = gsl_sf_exp_impl(x, &Maa);   1F1(a,a,x) 
-    if(stat_aa == GSL_SUCCESS) {
-      Mab *= (Maa/Mn);
-      *result = Mab;
-      return GSL_SUCCESS;
-    }
-    else {
-      *result = 0.0;
-      return stat_aa;
-    }
-    */
-  }
-  else if(x > 0.0 && 2*a + x > b) {
-    const double a0 = (b-x)/2.0;
-    const int ia0   = (int)floor(locMAX(a0,0.0));
-    double r;
-    int stat_CF1 = hyperg_1F1_CF1(ia0, b, x, &r);
-    double M0 = GSL_SQRT_DBL_MIN;
-    double Mnm1  = M0;        /* 1F1(ia0,b,x)   */
-    double Mn    = r * M0;    /* 1F1(ia0+1,b,x) */
-    double Mnp1;
-    int n;
-    for(n=ia0+1; n<a; n++) {
-      Mnp1 = ((b-n)*Mnm1 + (2*n-b+x)*Mn)/n;
-      Mnm1 = Mn;
-      Mn   = Mnp1;
-    }
-    
-    /* FIXME ??? */
-    
-    *result = Mn;
-    return GSL_SUCCESS;
-  }
-  else if(x > 0.0 && 2*a + x <= b) {
-    /*
-    double Mnm1 = 1.0;
-    double Mn;
-    double Mnp1;
-    int n;
-    gsl_sf_exprel_n_impl(b-1, x, &Mn);
-    for(n=1; n<a; n++) {
-      Mnp1 = ((b-n)*Mnm1 + (2*n-b+x)*Mn)/n;
-      Mnm1 = Mn;
-      Mn   = Mnp1;
-    }
-    *result = Mn;
-    return GSL_SUCCESS;
-    */
-    double r;
-    int stat_CF1 = hyperg_1F1_CF1(a, b, x, &r);
-    /* r = 1.1096587924011110925; */
-    if(stat_CF1 == GSL_SUCCESS) {
-      double Mnp1 = GSL_SQRT_DBL_MIN;
-      double Mn   = Mnp1 / r;
-      double Ma   = Mn;
+    if(stat_CF1 == GSL_SUCCESS || stat_CF1 == GSL_EMAXITER) {
+      double Ma   = GSL_SQRT_DBL_MIN;
+      double Map1 = ra * Ma;
+      double Mnp1 = Map1;
+      double Mn   = Ma;
       double Mnm1;
       int n;
       for(n=a; n>0; n--) {
@@ -1254,89 +1168,66 @@ hyperg_1F1_ab_posint(const int a, const int b, const double x, double * result)
         Mn   = Mnm1;
       }
       *result = Ma/Mn;
-      return GSL_SUCCESS;
+      return stat_CF1;
     }
     else {
       *result = 0.0;
       return stat_CF1;
     }
   }
-  else if(2*a < b && GSL_IS_EVEN(b)){
-    /* Backward recursion from a = b/2.
-     */
-    double Mnm1;
-    double Mn;
-    double Mnp1;
-    int s = 0;
-    if(b == 2) {
-      s += gsl_sf_exprel_impl(x, &Mn); /* 1F1(b/2,b,x)   = 1F1(1,2,x) =(e^x-1)/x */
-      s += gsl_sf_exp_impl(x, &Mnp1);  /* 1F1(b/2+1,b,x) = 1F1(2,2,x) = e^x      */
-    }
-    else {
-      double M11, M12;
-      s += hyperg_1F1_beq2a_pos(b/2,   x, &Mn);  /* 1F1(b/2,b,x)     */
-      s += hyperg_1F1_beq2a_pos(b/2+1, x, &M12); /* 1F1(b/2+1,b+2,x) */
-      s += hyperg_1F1_diag_end_step(b/2, b, x, Mn, M12, &Mnp1, &M11);
-    }
-
-    if(s == 0) {
-      int n;
-      for(n=b/2; n>a; n--) {
-        Mnm1 = (n * Mnp1 - (2*n-b+x) * Mn) / (b-n);
-	Mnp1 = Mn;
-	Mn   = Mnm1;
-      }
-      *result = Mn;
-      return GSL_SUCCESS;
-    }
-    else {
-      *result = 0.0;
-      return GSL_EFAILED;
-    }
-  }
-  else if(2*a < b && GSL_IS_ODD(b)){
-    /* Backward recursion from a = (b-1)/2.
-     */
-    double M00, M12;
-    double Mnm1;
-    double Mn;
-    double Mnp1;
-    int s = 0;
-
-    /* Determine 1F1((b-1)/2,b,x) and 1F1((b+1)/2,b,x).
-     */
-    if(b == 1) {
-      Mn = 0.0;                        /* 1F1(0,1,x) */
-      s += gsl_sf_exp_impl(x, &Mnp1);  /* 1F1(1,1,x) */
-    }
-    else {
-      s += hyperg_1F1_beq2a_pos((b-1)/2, x, &M00);
-      s += hyperg_1F1_beq2a_pos((b+1)/2, x, &M12);
-      s += hyperg_1F1_diag_step((b-1)/2, b-1, x, M00, M12, &Mn, &Mnp1);
-    }
-
-    if(s == 0) {
-      int n;
-      for(n=(b-1)/2; n>a; n--) {
-        Mnm1 = (n * Mnp1 - (2*n-b+x) * Mn) / (b-n);
-	Mnp1 = Mn;
-	Mn   = Mnm1;
-      }
-      *result = Mn;
-      return GSL_SUCCESS;
-    }
-    else {
-      *result = 0.0;
-      return GSL_EFAILED;
-    }
-  }
   else {
-    /* NOT REACHED */
-    *result = 0.0;
-    return GSL_ESANITY;
+    /* 2a + x > b > 2a
+     */
+    double ra;
+    int stat_CF1;
+    int n;
+    double Ma;
+    double Mnm1;
+    double Mn;
+    double Mnp1;
+
+    if(b > x) {
+      /* Gautschi stable region for continued fraction.
+       */
+      double rap;
+      stat_CF1 = hyperg_1F1_CF1_p_ser(a, b, x, &rap);
+      ra = 1.0 + x/a * rap;
+    }
+    else {
+      /* This is the "anomalous convergence" region.
+       * Direct application of any method related
+       * to the continued fraction will not work.
+       * However, we can make use of the relation
+       *
+       * M(a+1,b,x)/M(a,b,x) = M(b-a-1,b,-x)/M(b-a,b,-x),
+       *
+       * and the second ratio is in the Gautschi stable
+       * region and can be evaluated. [The Kummer transform
+       * is a reflection about b=2a].
+       */
+      double rap_Kummer;
+      double ra_Kummer;
+      stat_CF1 = hyperg_1F1_CF1_p_ser(b-a-1, b, -x, &rap_Kummer);
+      ra_Kummer = 1.0 + (-x/(b-a-1)) * rap_Kummer;
+      ra = 1.0/ra_Kummer;
+    }
+
+    /* Recurse forward to a=b to determine normalization.
+     * Since b < 2a + x, this is stable.
+     */
+    Ma   = GSL_SQRT_DBL_MIN;
+    Mnm1 = Ma;
+    Mn   = ra * Mnm1;
+
+    for(n=a+1; n<b; n++) {
+      Mnp1 = ((b-n)*Mnm1 + (2*n-b+x)*Mn)/n;
+      Mnm1 = Mn;
+      Mn   = Mnp1;
+    }
+    *result = Ma/Mn * exp(x);
+    return GSL_SUCCESS;
   }
 }
-
 
 
 static
