@@ -1,5 +1,13 @@
 /* $Id$ */
-/* Boilerplate: this is meant to be included in PNRG's */
+/* This file is generated automatically from the template file:
+ * x.x.x-state.xc
+ *
+ * It defines functions gsl_ran_xxx_
+ *   seed(),random(),uniform(),copyState(),getState(),setState()
+ * in terms of the routines defined by the human programmer in xxx.c
+ *
+ * It is #include'd in file xxx.c
+ */
 
 void gsl_ran_xxx_seed(int s)
 {
@@ -15,6 +23,12 @@ inline double gsl_ran_xxx_uniform(void)
 }
 
 /* get/set randomState */
+/* get/set randomState */
+static inline void gsl_ran_xxx_copyState(void *tState,void *fState)
+{
+    bcopy((char *)fState,(char*)tState,sizeof(gsl_ran_xxx_randomState));
+}
+
 void *gsl_ran_xxx_getRandomState(void)
 {
     gsl_ran_xxx_randomState *theState;
