@@ -16,6 +16,7 @@ include_HEADERS = \
 	gsl_sf_ellint.h        	\
 	gsl_sf_elljac.h        	\
 	gsl_sf_erf.h        	\
+	gsl_sf_exp.h        	\
 	gsl_sf_expint.h        	\
 	gsl_sf_fermi_dirac.h	\
 	gsl_sf_gegenbauer.h	\
@@ -79,6 +80,7 @@ libgslspecfunc_a_SOURCES = 	\
 	ellint.c		\
 	elljac.c		\
 	erfc.c			\
+	exp.c			\
 	expint.c		\
 	expint3.c		\
 	fermi_dirac.c		\

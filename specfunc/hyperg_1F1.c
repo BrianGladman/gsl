@@ -3,7 +3,12 @@
  */
 #include <math.h>
 #include <gsl_math.h>
+#include "gsl_sf_exp.h"
 #include "gsl_sf_hyperg.h"
+
+#define locMAX(a,b)     ((a) > (b) ? (a) : (b))
+#define locEPS          (1000.0*GSL_MACH_EPS)
+
 
 
 static int hyperg_1F1_series(const double a, const double b, const double x,
@@ -82,6 +87,92 @@ static int hyperg_1F1_asymp(const double a, const double b, const double x,
   else {
     ln_pre = gsl_sf_lngamma(b) + x + (a-b)*log(x) - gsl_sf_lngamma(a);
   }
+  
+  
+}
+
+
+int gsl_sf_hyperg_1F1_impl(const double a, const double b, const double x,
+                           double * result
+                           )
+{
+  int a_neg_integer;    /*  a   negative integer  */
+  int b_neg_integer;    /*  b   negative integer  */
+  int bma_neg_integer;  /*  b-a negative integer  */
+
+  double bma = b - a;
+  double prec;
+
+  a_neg_integer = ( a < 0.0  &&  fabs(a - rint(a)) < locEPS );
+  b_neg_integer = ( b < 0.0  &&  fabs(b - rint(b)) < locEPS );
+  bma_neg_integer = ( bma < 0.0  &&  fabs(bma - rint(bma)) < locEPS );
+
+  if(fabs(b-a) < locEPS) {
+    *result = 
+  }
+
+  /* If a is a negative integer, then the series truncates
+   * to a polynomial.
+   */
+  if(a_neg_integer) {
+
+    if(b_neg_integer && !(a > b + 0.1)) {
+      /* denominator has zero before numerator ! */
+      return GSL_EDOM;
+    }
+    else {
+      double prec;
+      int stat = hyperg_1F1_series(a, b, x, result, &prec);
+      if(prec > locEPS)
+        return GSL_ELOSS;
+      else
+        return stat;
+    }
+  }
+  
+
+  /* If b-a is a negative integer, use the Kummer transformation
+   *    1F1(a,b,x) = Exp(x) 1F1(b-a,b,x)
+   * to reduce it to a polynomial times an exponential.
+   */
+  if(bma_neg_integer) {
+
+    if(b_neg_integer && !(bma > b + 0.1)) {
+      /* denominator has zero before numerator ! */
+      return GSL_EDOM;
+    }
+    else {
+      double Ex;
+
+      if(x > GSL_LOG_DBL_MAX) {
+        *result = 0.0; /* FIXME: probably indeterminate */
+	return GSL_EOVRFLW;
+      }
+      else if(x < GSL_LOG_DBL_MIN) {
+        *result = 0.0; /* FIXME: probably indeterminate */
+	return GSL_EUNDRFLW;
+      }
+      else {
+        double Kummer_1F1;
+        int stat = hyperg_1F1_series(bma, b, -x, &Kummer_1F1, &prec);
+        Ex = exp(x);
+        *result = Ex * Kummer_1F1;
+        if(prec > locEPS)
+          return GSL_ELOSS;
+        else
+          return stat;
+      }
+    }
+  }
+    
+  
+  /* Now we have dealt with any special negative integer cases,
+   * including the error cases, so we are left with a well-behaved
+   * series evaluation.
+   */
+   
+
+  
   
   
 }

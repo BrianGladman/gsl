@@ -88,6 +88,7 @@ include_HEADERS = \
 	gsl_sf_ellint.h        	\
 	gsl_sf_elljac.h        	\
 	gsl_sf_erf.h        	\
+	gsl_sf_exp.h        	\
 	gsl_sf_expint.h        	\
 	gsl_sf_fermi_dirac.h	\
 	gsl_sf_gegenbauer.h	\
@@ -148,6 +149,7 @@ libgslspecfunc_a_SOURCES = 	\
 	ellint.c		\
 	elljac.c		\
 	erfc.c			\
+	exp.c			\
 	expint.c		\
 	expint3.c		\
 	fermi_dirac.c		\
@@ -185,10 +187,10 @@ bessel_I1.o bessel_In.o bessel_J0.o bessel_J1.o bessel_Jn.o bessel_K0.o \
 bessel_K1.o bessel_Kn.o bessel_Y0.o bessel_Y1.o bessel_Yn.o \
 bessel_amp_phase.o bessel_i.o bessel_j.o bessel_k.o bessel_olver.o \
 bessel_y.o chebyshev.o clausen.o coupling.o debye.o dilog.o ellint.o \
-elljac.o erfc.o expint.o expint3.o fermi_dirac.o gegenbauer.o gamma.o \
-hyperg_2F1.o laguerre.o legendre_con.o legendre_poly.o log.o poly.o \
-pow_int.o psi.o shint.o sig2lamp.o sinint.o synchrotron.o transport.o \
-trig.o zeta.o
+elljac.o erfc.o exp.o expint.o expint3.o fermi_dirac.o gegenbauer.o \
+gamma.o hyperg_2F1.o laguerre.o legendre_con.o legendre_poly.o log.o \
+poly.o pow_int.o psi.o shint.o sig2lamp.o sinint.o synchrotron.o \
+transport.o trig.o zeta.o
 AR = ar
 test_sf_OBJECTS =  test_sf.o
 test_sf_LDFLAGS = 
@@ -211,13 +213,13 @@ DEP_FILES =  .deps/airy.P .deps/airy_der.P .deps/bessel.P \
 .deps/bessel_amp_phase.P .deps/bessel_i.P .deps/bessel_j.P \
 .deps/bessel_k.P .deps/bessel_olver.P .deps/bessel_y.P \
 .deps/chebyshev.P .deps/clausen.P .deps/coupling.P .deps/debye.P \
-.deps/dilog.P .deps/ellint.P .deps/elljac.P .deps/erfc.P .deps/expint.P \
-.deps/expint3.P .deps/fermi_dirac.P .deps/gamma.P .deps/gegenbauer.P \
-.deps/hyperg_2F1.P .deps/laguerre.P .deps/legendre_con.P \
-.deps/legendre_poly.P .deps/log.P .deps/poly.P .deps/pow_int.P \
-.deps/psi.P .deps/shint.P .deps/sig2lamp.P .deps/sinint.P \
-.deps/synchrotron.P .deps/test_sf.P .deps/transport.P .deps/trig.P \
-.deps/zeta.P
+.deps/dilog.P .deps/ellint.P .deps/elljac.P .deps/erfc.P .deps/exp.P \
+.deps/expint.P .deps/expint3.P .deps/fermi_dirac.P .deps/gamma.P \
+.deps/gegenbauer.P .deps/hyperg_2F1.P .deps/laguerre.P \
+.deps/legendre_con.P .deps/legendre_poly.P .deps/log.P .deps/poly.P \
+.deps/pow_int.P .deps/psi.P .deps/shint.P .deps/sig2lamp.P \
+.deps/sinint.P .deps/synchrotron.P .deps/test_sf.P .deps/transport.P \
+.deps/trig.P .deps/zeta.P
 SOURCES = $(libgslspecfunc_a_SOURCES) $(test_sf_SOURCES)
 OBJECTS = $(libgslspecfunc_a_OBJECTS) $(test_sf_OBJECTS)
 

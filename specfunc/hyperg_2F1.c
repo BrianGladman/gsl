@@ -183,7 +183,7 @@ static void do_it(double a, double b, double c, double x)
 {
   double y;
   double prec;
-  int stat = hyperg_2F1_luke(a, b, c, x, &y, &prec);
+  int stat = gsl_hyperg_2F1_impl(a, b, c, x, &y);
   printf("%5.3g  %5.3g  %5.3g   %10.6g", a, b, c, x);
   printf("   ");
   printf("%24.18g  %8.4g  %s", y, prec, gsl_strerror(stat));
