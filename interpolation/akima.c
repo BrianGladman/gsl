@@ -20,6 +20,10 @@ typedef struct
 			const double xa[], const double ya[],
 			double x,
 			gsl_interp_accel *, double *dydx);
+    int (*eval_d2_impl) (const gsl_interp_obj *,
+			 const double xa[], const double ya[],
+			 double x,
+			 gsl_interp_accel *, double *y_pp);
     int (*eval_i_impl) (const gsl_interp_obj *,
 			const double xa[], const double ya[],
 			gsl_interp_accel *, double a, double b, double * result);
@@ -53,7 +57,11 @@ akima_eval_impl (const gsl_interp_obj *, const double xa[], const double ya[], d
 
 static
 int
-akima_eval_d_impl (const gsl_interp_obj *, const double xa[], const double ya[], double x, gsl_interp_accel *, double *dydx);
+akima_eval_d_impl (const gsl_interp_obj *, const double xa[], const double ya[], double x, gsl_interp_accel *, double *y_p);
+
+static
+int
+akima_eval_d2_impl (const gsl_interp_obj *, const double xa[], const double ya[], double x, gsl_interp_accel *, double *y_pp);
 
 static
 int
@@ -88,6 +96,7 @@ interp_akima_new (const double x_array[], const double y_array[], size_t size)
 	{
 	  interp->eval_impl = akima_eval_impl;
 	  interp->eval_d_impl = akima_eval_d_impl;
+	  interp->eval_d2_impl = akima_eval_d2_impl;
 	  interp->eval_i_impl = akima_eval_i_impl;
 	  interp->free = akima_free;
 	  interp->xmin = x_array[0];
@@ -337,6 +346,54 @@ akima_eval_d_impl (const gsl_interp_obj * akima_interp,
 	double c = interp->c[index];
 	double d = interp->d[index];
 	*dydx = b + delx * (2.0 * c + 3.0 * d * delx);
+	return GSL_SUCCESS;
+      }
+    }
+}
+
+
+static
+int
+akima_eval_d2_impl (const gsl_interp_obj * akima_interp,
+		    const double x_array[], const double y_array[],
+		    double x,
+		    gsl_interp_accel * a,
+		    double *y_pp)
+{
+  const gsl_interp_akima *interp = (const gsl_interp_akima *) akima_interp;
+
+  y_array = 0;			/* prevent warning about unused parameter */
+
+  if (x < interp->xmin)
+    {
+      *y_pp = 0.0;
+      return GSL_EDOM;
+    }
+  else if (x > interp->xmax)
+    {
+      *y_pp = 0.0;
+      return GSL_EDOM;
+    }
+  else
+    {
+      size_t index;
+
+      if (a != 0)
+	{
+	  index = gsl_interp_accel_find (a, x_array, interp->size, x);
+	}
+      else
+	{
+	  index = gsl_interp_bsearch (x_array, x, 0, interp->size - 1);
+	}
+
+      /* evaluate */
+      {
+	const double x_lo = x_array[index];
+	const double delx = x - x_lo;
+	const double c = interp->c[index];
+	const double d = interp->d[index];
+	*y_pp = 2.0 * c + 6.0 * d * delx;
 	return GSL_SUCCESS;
       }
     }

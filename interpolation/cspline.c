@@ -15,6 +15,7 @@ typedef struct
   {
     int (*eval_impl) (const gsl_interp_obj *, const double xa[], const double ya[], double x, gsl_interp_accel *, double *y);
     int (*eval_d_impl) (const gsl_interp_obj *, const double xa[], const double ya[], double x, gsl_interp_accel *, double *dydx);
+    int (*eval_d2_impl) (const gsl_interp_obj *, const double xa[], const double ya[], double x, gsl_interp_accel *, double *dydx);
     int (*eval_i_impl) (const struct _gsl_interp_obj_struct *, const double xa[], const double ya[], gsl_interp_accel *, double a, double b, double * result);
     void (*free) (gsl_interp_obj *);
     double xmin;
@@ -46,6 +47,10 @@ cspline_eval_d_impl (const gsl_interp_obj *, const double xa[], const double ya[
 
 static
 int
+cspline_eval_d2_impl (const gsl_interp_obj *, const double xa[], const double ya[], double x, gsl_interp_accel *, double *dydx);
+
+static
+int
 cspline_eval_i_impl (const gsl_interp_obj *, const double xa[], const double ya[], gsl_interp_accel *, double a, double b, double * result);
 
 
@@ -74,6 +79,7 @@ cspline_new (const double xa[], size_t size)
       interp->eval_impl = cspline_eval_impl;
       interp->eval_d_impl = cspline_eval_d_impl;
       interp->eval_i_impl = cspline_eval_i_impl;
+      interp->eval_d2_impl = cspline_eval_d2_impl;
       interp->free = cspline_free;
       interp->xmin = xa[0];
       interp->xmax = xa[size - 1];
@@ -392,6 +398,65 @@ cspline_eval_d_impl (const gsl_interp_obj * cspline_interp,
       else
 	{
 	  *dydx = 0.0;
+	  return GSL_FAILURE;
+	}
+    }
+}
+
+
+static
+int
+cspline_eval_d2_impl (const gsl_interp_obj * cspline_interp,
+		      const double x_array[], const double y_array[],
+		      double x,
+		      gsl_interp_accel * a,
+		      double * y_pp)
+{
+  const gsl_interp_cspline *interp = (const gsl_interp_cspline *) cspline_interp;
+
+  if (x > interp->xmax)
+    {
+      *y_pp = 0.0;
+      return GSL_EDOM;
+    }
+  else if (x < interp->xmin)
+    {
+      *y_pp = 0.0;
+      return GSL_EDOM;
+    }
+  else
+    {
+      double x_lo, x_hi;
+      double dx;
+      size_t index;
+
+      if (a != 0)
+	{
+	  index = gsl_interp_accel_find (a, x_array, interp->size, x);
+	}
+      else
+	{
+	  index = gsl_interp_bsearch (x_array, x, 0, interp->size - 1);
+	}
+
+      /* evaluate */
+      x_hi = x_array[index + 1];
+      x_lo = x_array[index];
+      dx = x_hi - x_lo;
+      if (dx > 0.0)
+	{
+	  const double y_lo = y_array[index];
+	  const double y_hi = y_array[index + 1];
+	  const double dy = y_hi - y_lo;
+	  double delx = x - x_lo;
+	  double b_i, c_i, d_i;
+	  COEFF_CALC(interp->c, dy, dx, index,  b_i, c_i, d_i);
+	  *y_pp = 2.0 * c_i + 6.0 * d_i * delx;
+	  return GSL_SUCCESS;
+	}
+      else
+	{
+	  *y_pp = 0.0;
 	  return GSL_FAILURE;
 	}
     }

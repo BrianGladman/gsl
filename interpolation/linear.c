@@ -11,7 +11,8 @@
 typedef struct
   {
     int (*eval_impl) (const gsl_interp_obj *, const double xa[], const double ya[], double x, gsl_interp_accel *, double *y);
-    int (*eval_d_impl) (const gsl_interp_obj *, const double xa[], const double ya[], double x, gsl_interp_accel *, double *dydx);
+    int (*eval_d_impl) (const gsl_interp_obj *, const double xa[], const double ya[], double x, gsl_interp_accel *, double *y_p);
+    int (*eval_d2_impl) (const gsl_interp_obj *, const double xa[], const double ya[], double x, gsl_interp_accel *, double *y_pp);
     int (*eval_i_impl) (const struct _gsl_interp_obj_struct *, const double xa[], const double ya[], gsl_interp_accel *, double a, double b, double * result);    
     void (*free) (gsl_interp_obj *);
     double xmin;
@@ -36,6 +37,10 @@ linear_eval_impl (const gsl_interp_obj *, const double xa[], const double ya[], 
 static
 int
 linear_eval_d_impl (const gsl_interp_obj *, const double xa[], const double ya[], double x, gsl_interp_accel *, double *dydx);
+
+static
+int
+linear_eval_d2_impl (const gsl_interp_obj *, const double xa[], const double ya[], double x, gsl_interp_accel *, double *y_pp);
 
 static
 int
@@ -65,6 +70,7 @@ linear_create (const double x_array[], const double y_array[], size_t size)
 	{
 	  interp->eval_impl = linear_eval_impl;
 	  interp->eval_d_impl = linear_eval_d_impl;
+	  interp->eval_d2_impl = linear_eval_d2_impl;
 	  interp->eval_i_impl = linear_eval_i_impl;
 	  interp->free = linear_free;
 	  interp->xmin = x_array[0];
@@ -151,12 +157,7 @@ linear_eval_d_impl (const gsl_interp_obj * linear_interp,
 {
   const gsl_interp_linear *interp = (const gsl_interp_linear *) linear_interp;
 
-  if (x < interp->xmin)
-    {
-      *dydx = 0.0;
-      return GSL_EDOM;
-    }
-  else if (x > interp->xmax)
+  if (x < interp->xmin || x > interp->xmax)
     {
       *dydx = 0.0;
       return GSL_EDOM;
@@ -195,6 +196,28 @@ linear_eval_d_impl (const gsl_interp_obj * linear_interp,
 	  *dydx = 0.0;
 	  return GSL_EINVAL;
 	}
+    }
+}
+
+
+static
+int
+linear_eval_d2_impl (const gsl_interp_obj * linear_interp,
+		     const double x_array[], const double y_array[],
+		     double x,
+		     gsl_interp_accel * a,
+		     double *y_pp)
+{
+  const gsl_interp_linear *interp = (const gsl_interp_linear *) linear_interp;
+  *y_pp = 0.0;
+
+  if (x < interp->xmin || x > interp->xmax)
+    {
+      return GSL_EDOM;
+    }
+  else
+    {
+      return GSL_SUCCESS;
     }
 }
 

@@ -81,6 +81,44 @@ gsl_interp_eval_deriv (const gsl_interp_obj * obj,
 
 
 int
+gsl_interp_eval_deriv2_impl (const gsl_interp_obj * obj,
+			     const double xa[], const double ya[], double x,
+			     gsl_interp_accel * a,
+			     double * d2)
+{
+  return obj->eval_d2_impl (obj, xa, ya, x, a, d2);
+}
+
+int
+gsl_interp_eval_deriv2_e (const gsl_interp_obj * obj,
+			  const double xa[], const double ya[], double x,
+			  gsl_interp_accel * a,
+			  double *d2)
+{
+  int status = obj->eval_d2_impl (obj, xa, ya, x, a, d2);
+  if (status != GSL_SUCCESS)
+    {
+      GSL_ERROR ("gsl_interp_eval_deriv2_e", status);
+    }
+  return status;
+}
+
+double
+gsl_interp_eval_deriv2 (const gsl_interp_obj * obj,
+		        const double xa[], const double ya[], double x,
+		        gsl_interp_accel * a)
+{
+  double d2;
+  int status = obj->eval_d2_impl (obj, xa, ya, x, a, &d2);
+  if (status != GSL_SUCCESS)
+    {
+      GSL_WARNING ("gsl_interp_eval_deriv2", status);
+    }
+  return d2;
+}
+
+
+int
 gsl_interp_eval_integ_impl (const gsl_interp_obj * obj,
 			    const double xa[], const double ya[],
                             double a, double b,
