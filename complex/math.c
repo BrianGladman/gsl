@@ -224,6 +224,22 @@ gsl_complex_div (gsl_complex a, gsl_complex b)
 }
 
 gsl_complex
+gsl_complex_div_real (gsl_complex a, double x)
+{				/* z=a/x */
+  gsl_complex z;
+  GSL_SET_COMPLEX (&z, GSL_REAL (a) / x, GSL_IMAG (a) / x);
+  return z;
+}
+
+gsl_complex
+gsl_complex_div_imag (gsl_complex a, double y)
+{				/* z=a/(iy) */
+  gsl_complex z;
+  GSL_SET_COMPLEX (&z, GSL_IMAG (a) / y,  - GSL_REAL (a) / y);
+  return z;
+}
+
+gsl_complex
 gsl_complex_conjugate (gsl_complex a)
 {				/* z=conj(a) */
   gsl_complex z;
