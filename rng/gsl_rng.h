@@ -1,6 +1,6 @@
-
 #ifndef GSL_RNG_H
 #define GSL_RNG_H
+
 #include <stdlib.h>
 
 typedef struct
@@ -62,5 +62,22 @@ const char *gsl_rng_name (const gsl_rng * r);
 void gsl_rng_print_state (const gsl_rng * r);
 
 int gsl_rng_env_setup (void);
+
+#ifdef HAVE_INLINE
+extern inline unsigned long int
+gsl_rng_get (const gsl_rng * r)
+{
+  return (r->get) (r->state);
+}
+
+extern inline double
+gsl_rng_get_uni (const gsl_rng * r)
+{
+  unsigned long int k = (r->get) (r->state);
+  unsigned long int max = r->max;
+
+  return k / (1.0 + max);
+}
+#endif /* HAVE_INLINE */
 
 #endif /* GSL_RNG_H */

@@ -1,5 +1,8 @@
 Wed Jun 24 12:10:23 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
+	* gsl_rng.h: added inline versions of gsl_rng_get and
+ 	gsl_rng_get_uni
+
 	* benchmark.c: added a simple benchmark program to measure rng's
  	per second
 
