@@ -323,14 +323,14 @@ interval @math{(0,1]} using the transformation @math{x = a + (1-t)/t},
 \beforedisplay
 $$
 \int_{a}^{+\infty} dx \, f(x) 
-  = \int_0^1 dt \, (f(a + (1-t)/t)/t^2
+  = \int_0^1 dt \, f(a + (1-t)/t)/t^2
 $$
 \afterdisplay
 @end tex
 @ifinfo
 @example
 \int_@{a@}^@{+\infty@} dx f(x) = 
-     \int_0^1 dt (f(a + (1-t)/t)/t^2
+     \int_0^1 dt f(a + (1-t)/t)/t^2
 @end example
 @end ifinfo
 
@@ -347,14 +347,14 @@ region @math{(0,1]} using the transformation @math{x = b - (1-t)/t},
 \beforedisplay
 $$
 \int_{-\infty}^{b} dx \, f(x) 
-  = \int_0^1 dt \, (f(b - (1-t)/t)/t^2
+  = \int_0^1 dt \, f(b - (1-t)/t)/t^2
 $$
 \afterdisplay
 @end tex
 @ifinfo
 @example
 \int_@{+\infty@}^@{b@} dx f(x) = 
-     \int_0^1 dt (f(b - (1-t)/t)/t^2
+     \int_0^1 dt f(b - (1-t)/t)/t^2
 @end example
 @end ifinfo
 

@@ -184,6 +184,7 @@ Equations}).  Work is under way on a special function library.
 * Histograms::                  
 * Numerical Integration::       
 * Monte Carlo Integration::     
+* Ordinary Differential Equations (ODEs)::  
 * The IEEE standard for floating-point arithmetic::  
 * Debugging Numerical Programs::  
 * Contributors to GSL::         
@@ -299,11 +300,15 @@ allowing wrappers to be written for very high level languages.
 @chapter Numerical Integration
 @include integration.texi
 
-@node Monte Carlo Integration, The IEEE standard for floating-point arithmetic, Numerical Integration, Top
+@node Monte Carlo Integration, Ordinary Differential Equations (ODEs), Numerical Integration, Top
 @chapter Monte Carlo Integration
 @include montecarlo.texi
 
-@node  The IEEE standard for floating-point arithmetic, Debugging Numerical Programs, Monte Carlo Integration, Top
+@node Ordinary Differential Equations (ODEs), The IEEE standard for floating-point arithmetic, Monte Carlo Integration, Top
+@chapter Ordinary Differential Equations (ODEs)
+@include ode-initval.texi
+
+@node  The IEEE standard for floating-point arithmetic, Debugging Numerical Programs, Ordinary Differential Equations (ODEs), Top
 @chapter The IEEE standard for floating-point arithmetic
 @include ieee754.texi
 
