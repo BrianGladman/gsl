@@ -96,15 +96,6 @@ the extrapolation algorithm, which should probably be tweaked to avoid
 this undesirable behavior.
 
 ----------------------------------------------------------------------
-BUG#17 -- ode failures
-
-When an ODE function returns an error code the higher level ode
-functions should recover transparently and not modify the state, so
-that the step can be retried cleanly with a different value of h.
-Currently the solver may partially modify the state, if the error
-occurs in the middle of an RK step calculation for example.
-
-----------------------------------------------------------------------
 BUG#18 -- R250 discrepancy, and initialisation in R250 / GSFR4
 
 This bug report is correct. The original paper has the same discrepancy.
