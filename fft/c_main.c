@@ -17,6 +17,8 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#include "c_pass.h"
+
 int
 FUNCTION(gsl_fft_complex,forward) (TYPE(gsl_complex_packed_array) data, 
 				   const size_t stride, 

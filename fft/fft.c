@@ -26,7 +26,6 @@
 
 #define BASE_DOUBLE
 #include "templates_on.h"
-#include "c_pass.h"
 #include "c_init.c"
 #include "c_main.c"
 #include "c_pass_2.c"
@@ -42,7 +41,6 @@
 
 #define BASE_FLOAT
 #include "templates_on.h"
-#include "c_pass.h"
 #include "c_init.c"
 #include "c_main.c"
 #include "c_pass_2.c"
@@ -61,7 +59,6 @@
 
 #define BASE_DOUBLE
 #include "templates_on.h"
-#include "hc_pass.h"
 #include "hc_init.c"
 #include "hc_main.c"
 #include "hc_pass_2.c"
@@ -76,7 +73,6 @@
 
 #define BASE_FLOAT
 #include "templates_on.h"
-#include "hc_pass.h"
 #include "hc_init.c"
 #include "hc_main.c"
 #include "hc_pass_2.c"
@@ -94,7 +90,6 @@
 
 #define BASE_DOUBLE
 #include "templates_on.h"
-#include "real_pass.h"
 #include "real_init.c"
 #include "real_main.c"
 #include "real_pass_2.c"
@@ -109,7 +104,6 @@
 
 #define BASE_FLOAT
 #include "templates_on.h"
-#include "real_pass.h"
 #include "real_init.c"
 #include "real_main.c"
 #include "real_pass_2.c"
