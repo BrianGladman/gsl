@@ -1,0 +1,36 @@
+1/ could simplify the basic tasks required of the writer of
+   new random number generators by
+   a/ rewriting zuf() using integers, and then having the
+      uniform() function defined in the xxx-state.xc file
+   b/ using an if(inityet) scheme to ensure that calls to
+      gsl_ran_randomInt() first call the seed() function with
+      a seed of 1.  It is hard to imagine that this will slow
+      down the speed at all.
+
+2/ some routines, like 'fortune' want to use a different seed
+   each time it is run.  we could provide a scheme to set the
+   seed with the clock, or the pid, in order to achieve this 
+   effect more easily.
+
+3/ **FIXED**
+   by the way, i had trouble linking against libgslrandom.a
+   should make sure that it includes the appropriate default
+   generator
+
+4/ what about efficient ways of generating random integers
+   from 1 to N, where N is something like 7?  is there a
+   better way than 1+floor(7*uniform()) ?  
+
+4a/similarly, what about efficient random bits?
+
+5/ should have a standard policy of whether gsl_ran_random()
+   ever returns a zero.  probably safest to assume that it
+   can, and in the special cases where it cannot, return one
+   less than what would have been returned, and also decrement
+   max by one in that case.
+
+6/ is there any good reason gsl_ran_max() is a double even
+   though gsl_ran_random() is an unsigned long ??
+   i was thinking about max=2^32 even though true max is
+   2^32-1
+
