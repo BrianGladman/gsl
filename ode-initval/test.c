@@ -126,6 +126,65 @@ gsl_odeiv_system rhs_func_sin = {
   0
 };
 
+/*  Sine/cosine with random failures */
+
+int
+rhs_xsin (double t, const double y[], double f[], void *params)
+{
+  static int n = 0;
+
+  n++; 
+
+  if (n > 40 && n < 65) {
+    f[0] = GSL_NAN;
+    f[1] = GSL_NAN;
+    return GSL_EFAILED;
+  }
+
+  f[0] = -y[1];
+  f[1] = y[0];
+
+  return GSL_SUCCESS;
+}
+
+int
+jac_xsin (double t, const double y[], double *dfdy, double dfdt[],
+         void *params)
+{
+  static int n = 0;
+
+  n++; 
+
+  if (n > 50 && n < 55) {
+    dfdy[0] = GSL_NAN;
+    dfdy[1] = GSL_NAN;
+    dfdy[2] = GSL_NAN;
+    dfdy[3] = GSL_NAN;
+    
+    dfdt[0] = GSL_NAN;
+    dfdt[1] = GSL_NAN;
+    return GSL_EFAILED;
+  }
+
+  dfdy[0] = 0.0;
+  dfdy[1] = -1.0;
+  dfdy[2] = 1.0;
+  dfdy[3] = 0.0;
+
+  dfdt[0] = 0.0;
+  dfdt[1] = 0.0;
+
+  return GSL_SUCCESS;
+}
+
+gsl_odeiv_system rhs_func_xsin = {
+  rhs_xsin,
+  jac_xsin,
+  2,
+  0
+};
+
+
 /* RHS for classic stiff example
    dy0 / dt =  998 * y0 + 1998 * y1    y0(0) = 1.0
    dy1 / dt = -999 * y0 - 1999 * y1    y1(0) = 0.0
@@ -510,7 +569,6 @@ test_evolve_system (const gsl_odeiv_step_type * T,
      error estimation from the stepper.
   */     
   
-  int s = 0;
   int steps = 0;
   size_t i;
 
@@ -529,9 +587,9 @@ test_evolve_system (const gsl_odeiv_step_type * T,
 
   while (t < t1)
     {
-      s = gsl_odeiv_evolve_apply (e, c, step, sys, &t, t1, &h, y);
+      int s = gsl_odeiv_evolve_apply (e, c, step, sys, &t, t1, &h, y);
 
-      if (s != GSL_SUCCESS) 
+      if (s != GSL_SUCCESS && sys != &rhs_func_xsin) 
 	{
 	  gsl_test(s, "%s evolve_apply returned %d",
 		   gsl_odeiv_step_name (step), s);
@@ -859,6 +917,21 @@ test_evolve_sin (const gsl_odeiv_step_type * T, double h, double err)
 }
 
 void
+test_evolve_xsin (const gsl_odeiv_step_type * T, double h, double err)
+{
+  double y[2];
+  double yfin[2];
+
+  y[0] = 1.0;
+  y[1] = 0.0;
+  yfin[0] = cos (2.0);
+  yfin[1] = sin (2.0);
+  test_evolve_system (T, &rhs_func_xsin, 0.0, 2.0, h, y, yfin, err,
+		      "sine[0,2] w/failures");
+}
+
+
+void
 test_evolve_stiff1 (const gsl_odeiv_step_type * T, double h, double err)
 {
   double y[2];
@@ -945,6 +1018,7 @@ main (void)
       test_evolve_linear (p[i].type, p[i].h, 1e-10);
       test_evolve_exp (p[i].type, p[i].h, 1e-6);
       test_evolve_sin (p[i].type, p[i].h, 1e-8);
+      test_evolve_xsin (p[i].type, p[i].h, 1e-8);
       test_evolve_stiff1 (p[i].type, p[i].h, 1e-7);
       test_evolve_stiff5 (p[i].type, p[i].h, 1e-7);
     }

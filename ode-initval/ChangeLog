@@ -1,3 +1,11 @@
+2004-12-01  Brian Gough  <bjg@network-theory.co.uk>
+
+	* updated all solvers to ensure correct handling of error codes
+	from user defined functions
+
+	* test.c (rhs_xsin): added a test which includes failures of the
+	function itself and jacobian
+
 2004-11-25  Brian Gough  <bjg@network-theory.co.uk>
 
 	* gear2.c (gear2_alloc): added check for non-allocation of primer,

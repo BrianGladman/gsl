@@ -114,7 +114,7 @@ rk2imp_alloc (size_t dim)
 int
 rk2imp_step (double *y, rk2imp_state_t *state, 
 	     const double h, const double t, 
-	     const size_t dim, int *status, const gsl_odeiv_system *sys)
+	     const size_t dim, const gsl_odeiv_system *sys)
 {
   /* Makes a Runge-Kutta 2nd order implicit advance with step size h.
      y0 is initial values of variables y. 
@@ -149,7 +149,6 @@ rk2imp_step (double *y, rk2imp_state_t *state,
 
       {
 	int s = GSL_ODEIV_FN_EVAL (sys, t + 0.5 * h, ytmp, Y1);
-	GSL_STATUS_UPDATE (status, s);
 	
 	if (s != GSL_SUCCESS)
 	  {
@@ -180,7 +179,6 @@ rk2imp_apply (void *vstate,
 {
   rk2imp_state_t *state = (rk2imp_state_t *) vstate;
 
-  int status = 0;
   size_t i;
 
   double *Y1 = state->Y1;
@@ -205,7 +203,6 @@ rk2imp_apply (void *vstate,
   else
     {
       int s = GSL_ODEIV_FN_EVAL (sys, t, y, Y1);
-      GSL_STATUS_UPDATE (&status, s);
       
       if (s != GSL_SUCCESS)
 	{
@@ -218,7 +215,7 @@ rk2imp_apply (void *vstate,
   DBL_MEMCPY (y_onestep, y, dim);
 
   {
-    int s = rk2imp_step (y_onestep, state, h, t, dim, &status, sys);
+    int s = rk2imp_step (y_onestep, state, h, t, dim, sys);
 
     if (s != GSL_SUCCESS) 
       {
@@ -229,7 +226,7 @@ rk2imp_apply (void *vstate,
  /* Then with two steps with half step length (save to y) */ 
 
   {  
-    int s = rk2imp_step (y, state, h / 2.0, t, dim, &status, sys);
+    int s = rk2imp_step (y, state, h / 2.0, t, dim, sys);
 
     if (s != GSL_SUCCESS)
       {
@@ -244,7 +241,6 @@ rk2imp_apply (void *vstate,
 
   {
     int s = GSL_ODEIV_FN_EVAL (sys, t + h / 2.0, y, Y1);
-    GSL_STATUS_UPDATE (&status, s);
       
     if (s != GSL_SUCCESS)
       {
@@ -256,7 +252,7 @@ rk2imp_apply (void *vstate,
   }
 
   {
-    int s = rk2imp_step (y, state, h / 2.0, t + h / 2.0, dim, &status, sys);
+    int s = rk2imp_step (y, state, h / 2.0, t + h / 2.0, dim, sys);
 
     if (s != GSL_SUCCESS)
       {
@@ -272,7 +268,6 @@ rk2imp_apply (void *vstate,
   if (dydt_out != NULL) 
     {
       int s = GSL_ODEIV_FN_EVAL (sys, t + h, y, dydt_out);
-      GSL_STATUS_UPDATE (&status, s);
       
       if (s != GSL_SUCCESS)
 	{
@@ -290,7 +285,7 @@ rk2imp_apply (void *vstate,
       yerr[i] = 4.0 * (y[i] - y_onestep[i]) / 3.0;
     }
 
-  return status;
+  return GSL_SUCCESS;
 }
 
 static int

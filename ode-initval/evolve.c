@@ -143,7 +143,12 @@ gsl_odeiv_evolve_apply (gsl_odeiv_evolve * e,
 
   if (step->type->can_use_dydt_in)
     {
-      GSL_ODEIV_FN_EVAL (dydt, t0, y, e->dydt_in);
+      int status = GSL_ODEIV_FN_EVAL (dydt, t0, y, e->dydt_in);
+
+      if (status) 
+        {
+          return GSL_EBADFUNC;
+        }
     }
 
 try_step:

@@ -155,71 +155,68 @@ gear1_apply(void * vstate,
 {
   gear1_state_t *state = (gear1_state_t *) vstate;
 
-  int status = 0;
   size_t i;
-  int s = 0;
 
   double *y0 = state->y0;
   double *y0_orig = state->y0_orig;
   double *y_onestep = state->y_onestep;
 
   /* initialization */
-
   DBL_MEMCPY(y0, y, dim);
 
   /* Save initial values for possible failures */
-
   DBL_MEMCPY (y0_orig, y, dim);
 
   /* First traverse h with one step (save to y_onestep) */
-
   DBL_MEMCPY (y_onestep, y, dim);
 
-  s = gear1_step (y_onestep, state, h, t, dim, sys);
+  {
+    int s = gear1_step (y_onestep, state, h, t, dim, sys);
 
-  if (s != GSL_SUCCESS) 
-    {
-      return s;
-    }
+    if (s != GSL_SUCCESS) 
+      {
+        return s;
+      }
+  }    
 
  /* Then with two steps with half step length (save to y) */ 
-  
-  s = gear1_step (y, state, h / 2.0, t, dim, sys);
+  {
+    int s = gear1_step (y, state, h / 2.0, t, dim, sys);
 
-  if (s != GSL_SUCCESS) 
-    {
-      /* Restore original y vector */
-      DBL_MEMCPY (y, y0_orig, dim);
-      
-      return s;
-    }
+    if (s != GSL_SUCCESS) 
+      {
+        /* Restore original y vector */
+        DBL_MEMCPY (y, y0_orig, dim);
+        return s;
+      }
+  }
 
   DBL_MEMCPY (y0, y, dim);
 
-  s = gear1_step (y, state, h / 2.0, t + h / 2.0, dim, sys);
+  {
+    int s = gear1_step (y, state, h / 2.0, t + h / 2.0, dim, sys);
 
-  if (s != GSL_SUCCESS) 
-    {
-      /* Restore original y vector */
-      DBL_MEMCPY (y, y0_orig, dim);
-      
-      return s;
-    }
+    if (s != GSL_SUCCESS) 
+      {
+        /* Restore original y vector */
+        DBL_MEMCPY (y, y0_orig, dim);
+        return s;
+      }
+  }
   
   /* Cleanup update */
 
-  if (dydt_out != NULL) {
-    
-    s = GSL_ODEIV_FN_EVAL (sys, t + h, y, dydt_out);
-
-    if (s != GSL_SUCCESS)
-      {
-	/* Restore original y vector */
-	DBL_MEMCPY (y, y0_orig, dim);
-	
-	return GSL_EBADFUNC;
-      } 
-  }
+  if (dydt_out != NULL) 
+    {
+      int s = GSL_ODEIV_FN_EVAL (sys, t + h, y, dydt_out);
+      
+      if (s != GSL_SUCCESS)
+        {
+          /* Restore original y vector */
+          DBL_MEMCPY (y, y0_orig, dim);
+          return s;
+        } 
+    }
   
   /* Error estimation */
 
@@ -228,7 +225,7 @@ gear1_apply(void * vstate,
       yerr[i] = 4.0 * (y[i] - y_onestep[i]);
     }
 
-  return 0;
+  return GSL_SUCCESS;
 }
 
 static int

@@ -233,7 +233,6 @@ rk8pd_apply (void *vstate,
   rk8pd_state_t *state = (rk8pd_state_t *) vstate;
 
   size_t i;
-  int status = 0;
 
   double *const ytmp = state->ytmp;
   double *const y0 = state->y0;
@@ -262,7 +261,6 @@ rk8pd_apply (void *vstate,
   else
     {
       int s = GSL_ODEIV_FN_EVAL (sys, t, y, k1);
-      GSL_STATUS_UPDATE (&status, s);
 
       if (s != GSL_SUCCESS)
 	{
@@ -276,7 +274,6 @@ rk8pd_apply (void *vstate,
   /* k2 step */
   {
     int s = GSL_ODEIV_FN_EVAL (sys, t + ah[0] * h, ytmp, k2);
-    GSL_STATUS_UPDATE (&status, s);
 
     if (s != GSL_SUCCESS)
       {
@@ -290,7 +287,6 @@ rk8pd_apply (void *vstate,
   /* k3 step */
   {
     int s = GSL_ODEIV_FN_EVAL (sys, t + ah[1] * h, ytmp, k3);
-    GSL_STATUS_UPDATE (&status, s);
 
     if (s != GSL_SUCCESS)
       {
@@ -304,7 +300,6 @@ rk8pd_apply (void *vstate,
   /* k4 step */
   {
     int s = GSL_ODEIV_FN_EVAL (sys, t + ah[2] * h, ytmp, k4);
-    GSL_STATUS_UPDATE (&status, s);
 
     if (s != GSL_SUCCESS)
       {
@@ -318,7 +313,6 @@ rk8pd_apply (void *vstate,
   /* k5 step */
   {
     int s = GSL_ODEIV_FN_EVAL (sys, t + ah[3] * h, ytmp, k5);
-    GSL_STATUS_UPDATE (&status, s);
 
     if (s != GSL_SUCCESS)
       {
@@ -332,7 +326,6 @@ rk8pd_apply (void *vstate,
   /* k6 step */
   {
     int s = GSL_ODEIV_FN_EVAL (sys, t + ah[4] * h, ytmp, k6);
-    GSL_STATUS_UPDATE (&status, s);
 
     if (s != GSL_SUCCESS)
       {
@@ -348,7 +341,6 @@ rk8pd_apply (void *vstate,
   /* k7 step */
   {
     int s = GSL_ODEIV_FN_EVAL (sys, t + ah[5] * h, ytmp, k7);
-    GSL_STATUS_UPDATE (&status, s);
 
     if (s != GSL_SUCCESS)
       {
@@ -364,7 +356,6 @@ rk8pd_apply (void *vstate,
   /* k8 step */
   {
     int s = GSL_ODEIV_FN_EVAL (sys, t + ah[6] * h, ytmp, k8);
-    GSL_STATUS_UPDATE (&status, s);
 
     if (s != GSL_SUCCESS)
       {
@@ -380,7 +371,6 @@ rk8pd_apply (void *vstate,
   /* k9 step */
   {
     int s = GSL_ODEIV_FN_EVAL (sys, t + ah[7] * h, ytmp, k9);
-    GSL_STATUS_UPDATE (&status, s);
 
     if (s != GSL_SUCCESS)
       {
@@ -397,7 +387,6 @@ rk8pd_apply (void *vstate,
   /* k10 step */
   {
     int s = GSL_ODEIV_FN_EVAL (sys, t + ah[8] * h, ytmp, k10);
-    GSL_STATUS_UPDATE (&status, s);
 
     if (s != GSL_SUCCESS)
       {
@@ -414,7 +403,6 @@ rk8pd_apply (void *vstate,
   /* k11 step */
   {
     int s = GSL_ODEIV_FN_EVAL (sys, t + ah[9] * h, ytmp, k11);
-    GSL_STATUS_UPDATE (&status, s);
 
     if (s != GSL_SUCCESS)
       {
@@ -431,7 +419,6 @@ rk8pd_apply (void *vstate,
   /* k12 step */
   {
     int s = GSL_ODEIV_FN_EVAL (sys, t + h, ytmp, k12);
-    GSL_STATUS_UPDATE (&status, s);
 
     if (s != GSL_SUCCESS)
       {
@@ -449,7 +436,6 @@ rk8pd_apply (void *vstate,
   /* k13 step */
   {
     int s = GSL_ODEIV_FN_EVAL (sys, t + h, ytmp, k13);
-    GSL_STATUS_UPDATE (&status, s);
 
     if (s != GSL_SUCCESS)
       {
@@ -472,13 +458,11 @@ rk8pd_apply (void *vstate,
   if (dydt_out != NULL)
     {
       int s = GSL_ODEIV_FN_EVAL (sys, t + h, y, dydt_out);
-      GSL_STATUS_UPDATE (&status, s);
       
       if (s != GSL_SUCCESS)
 	{
 	  /* Restore initial values */
 	  DBL_MEMCPY (y, y0, dim);
-	  
 	  return GSL_EBADFUNC;
 	}
     }
@@ -496,7 +480,7 @@ rk8pd_apply (void *vstate,
       yerr[i] = h * (ksum7 - ksum8);
     }
 
-  return status;
+  return GSL_SUCCESS;
 }
 
 static int

@@ -57,6 +57,8 @@ typedef struct
 
   /* workspace for extrapolation step */
   double *yp;
+  double *y_save;
+  double *yerr_save;
   double *y_extrap_save;
   double *y_extrap_sequence;
   double *extrap_work;
@@ -229,7 +231,7 @@ bsimp_step_local (void *vstate,
 
   const double max_sum = 100.0 * dim;
 
-  int signum;
+  int signum, status;
   size_t i, j;
   size_t n_inter;
 
@@ -277,7 +279,12 @@ bsimp_step_local (void *vstate,
 
   /* Intermediate steps. */
 
-  GSL_ODEIV_FN_EVAL (sys, t, y_temp, y_out);
+  status = GSL_ODEIV_FN_EVAL (sys, t, y_temp, y_out);
+
+  if (status)
+    {
+      return GSL_EBADFUNC;
+    }
 
   for (n_inter = 1; n_inter < n_step; n_inter++)
     {
@@ -304,7 +311,12 @@ bsimp_step_local (void *vstate,
 
       t += h;
 
-      GSL_ODEIV_FN_EVAL (sys, t, y_temp, y_out);
+      status = GSL_ODEIV_FN_EVAL (sys, t, y_temp, y_out);
+
+      if (status)
+        {
+          return GSL_EBADFUNC;
+        }
     }
 
 
@@ -344,6 +356,8 @@ bsimp_alloc (size_t dim)
   state->p_vec = gsl_permutation_alloc (dim);
 
   state->yp = (double *) malloc (dim * sizeof (double));
+  state->y_save = (double *) malloc (dim * sizeof (double));
+  state->yerr_save = (double *) malloc (dim * sizeof (double));
   state->y_extrap_save = (double *) malloc (dim * sizeof (double));
   state->y_extrap_sequence = (double *) malloc (dim * sizeof (double));
   state->extrap_work = (double *) malloc (dim * sizeof (double));
@@ -387,6 +401,8 @@ bsimp_apply (void *vstate,
 
   double *const x = state->x;
   double *const yp = state->yp;
+  double *const y_save = state->y_save;
+  double *const yerr_save = state->yerr_save;
   double *const y_extrap_sequence = state->y_extrap_sequence;
   double *const y_extrap_save = state->y_extrap_save;
   double *const extrap_work = state->extrap_work;
@@ -395,7 +411,6 @@ bsimp_apply (void *vstate,
   gsl_matrix *dfdy = state->dfdy;
 
   const double t_local = t;
-
   size_t i, k;
 
   if (h + t_local == t_local)
@@ -404,6 +419,10 @@ bsimp_apply (void *vstate,
     }
 
   DBL_MEMCPY (y_extrap_save, y, dim);
+
+  /* Save inputs */
+  DBL_MEMCPY (y_save, y, dim);
+  DBL_MEMCPY (yerr_save, yerr, dim);
   
   /* Evaluate the derivative. */
   if (dydt_in != NULL)
@@ -412,11 +431,23 @@ bsimp_apply (void *vstate,
     }
   else
     {
-      GSL_ODEIV_FN_EVAL (sys, t_local, y, yp);
+      int s = GSL_ODEIV_FN_EVAL (sys, t_local, y, yp);
+
+      if (s != GSL_SUCCESS)
+	{
+          return GSL_EBADFUNC;
+	}
     }
 
   /* Evaluate the Jacobian for the system. */
-  GSL_ODEIV_JA_EVAL (sys, t_local, y, dfdy->data, dfdt);
+  {
+    int s = GSL_ODEIV_JA_EVAL (sys, t_local, y, dfdy->data, dfdt);
+  
+    if (s != GSL_SUCCESS)
+      {
+        return GSL_EBADFUNC;
+      }
+  }
 
   /* Make a series of refined extrapolations,
    * up to the specified maximum order, which
@@ -435,7 +466,12 @@ bsimp_apply (void *vstate,
                                      y_extrap_sequence, 
                                      sys);
 
-      if (status != GSL_SUCCESS)
+      if (status == GSL_EBADFUNC) 
+        {
+          return GSL_EBADFUNC;
+        }
+
+      if (status == GSL_EFAILED)
         {
           /* If the local step fails, set the error to infinity in
              order to force a reduction in the step size */
@@ -457,7 +493,14 @@ bsimp_apply (void *vstate,
 
   if (dydt_out != NULL)
     {
-      GSL_ODEIV_FN_EVAL (sys, t + h, y, dydt_out);
+      int s = GSL_ODEIV_FN_EVAL (sys, t + h, y, dydt_out);
+
+      if (s != GSL_SUCCESS)
+        {
+          DBL_MEMCPY (y, y_save, dim);
+          DBL_MEMCPY (yerr, yerr_save, dim);
+          return GSL_EBADFUNC;
+        }
     }
 
   return GSL_SUCCESS;
@@ -500,6 +543,8 @@ bsimp_free (void * vstate)
   free (state->extrap_work);
   free (state->y_extrap_sequence);
   free (state->y_extrap_save);
+  free (state->y_save);
+  free (state->yerr_save);
   free (state->yp);
 
   gsl_permutation_free (state->p_vec);

@@ -190,7 +190,6 @@ rkf45_apply (void *vstate,
   rkf45_state_t *state = (rkf45_state_t *) vstate;
 
   size_t i;
-  int status = 0;
 
   double *const k1 = state->k1;
   double *const k2 = state->k2;
@@ -211,7 +210,6 @@ rkf45_apply (void *vstate,
   else
     {
       int s = GSL_ODEIV_FN_EVAL (sys, t, y, k1);
-      GSL_STATUS_UPDATE (&status, s);
       
       if (s != GSL_SUCCESS)
 	{
@@ -225,7 +223,6 @@ rkf45_apply (void *vstate,
   /* k2 step */
   {
     int s = GSL_ODEIV_FN_EVAL (sys, t + ah[0] * h, ytmp, k2);
-    GSL_STATUS_UPDATE (&status, s);
 
     if (s != GSL_SUCCESS)
       {
@@ -239,7 +236,6 @@ rkf45_apply (void *vstate,
   /* k3 step */
   {
     int s = GSL_ODEIV_FN_EVAL (sys, t + ah[1] * h, ytmp, k3);
-    GSL_STATUS_UPDATE (&status, s);
     
     if (s != GSL_SUCCESS)
       {
@@ -253,7 +249,6 @@ rkf45_apply (void *vstate,
   /* k4 step */
   {
     int s = GSL_ODEIV_FN_EVAL (sys, t + ah[2] * h, ytmp, k4);
-    GSL_STATUS_UPDATE (&status, s);
 
     if (s != GSL_SUCCESS)
       {
@@ -269,7 +264,6 @@ rkf45_apply (void *vstate,
   /* k5 step */
   {
     int s = GSL_ODEIV_FN_EVAL (sys, t + ah[3] * h, ytmp, k5);
-    GSL_STATUS_UPDATE (&status, s);
 
     if (s != GSL_SUCCESS)
       {
@@ -285,7 +279,6 @@ rkf45_apply (void *vstate,
   /* k6 step and final sum */
   {
     int s = GSL_ODEIV_FN_EVAL (sys, t + ah[4] * h, ytmp, k6);
-    GSL_STATUS_UPDATE (&status, s);
 
     if (s != GSL_SUCCESS)
       {
@@ -304,7 +297,6 @@ rkf45_apply (void *vstate,
   if (dydt_out != NULL)
     {
       int s = GSL_ODEIV_FN_EVAL (sys, t + h, y, dydt_out);
-      GSL_STATUS_UPDATE (&status, s);
       
       if (s != GSL_SUCCESS)
 	{
@@ -322,7 +314,7 @@ rkf45_apply (void *vstate,
                      + ec[5] * k5[i] + ec[6] * k6[i]);
     }
      
-  return status;
+  return GSL_SUCCESS;
 }
 
 

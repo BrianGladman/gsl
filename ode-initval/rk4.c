@@ -113,7 +113,7 @@ rk4_alloc (size_t dim)
 int
 rk4_step (double *y, const rk4_state_t *state,
 	  const double h, const double t, const size_t dim,
-	  int *status, const gsl_odeiv_system *sys)
+	  const gsl_odeiv_system *sys)
 {
   /* Makes a Runge-Kutta 4th order advance with step size h. */
   
@@ -141,7 +141,6 @@ rk4_step (double *y, const rk4_state_t *state,
   /* k2 step */
   {
     int s = GSL_ODEIV_FN_EVAL (sys, t + 0.5 * h, ytmp, k);
-    GSL_STATUS_UPDATE (status, s);
 
     if (s != GSL_SUCCESS)
       {
@@ -158,7 +157,6 @@ rk4_step (double *y, const rk4_state_t *state,
   /* k3 step */
   {
     int s = GSL_ODEIV_FN_EVAL (sys, t + 0.5 * h, ytmp, k);
-    GSL_STATUS_UPDATE (status, s);
 
     if (s != GSL_SUCCESS)
       {
@@ -175,7 +173,6 @@ rk4_step (double *y, const rk4_state_t *state,
   /* k4 step */
   {
     int s = GSL_ODEIV_FN_EVAL (sys, t + h, ytmp, k);
-    GSL_STATUS_UPDATE (status, s);
 
     if (s != GSL_SUCCESS)
       {
@@ -188,7 +185,7 @@ rk4_step (double *y, const rk4_state_t *state,
       y[i] += h / 6.0 * k[i];
     }
 
-  return *status;
+  return GSL_SUCCESS;
 }
 
 
@@ -206,12 +203,10 @@ rk4_apply (void *vstate,
   rk4_state_t *state = (rk4_state_t *) vstate;
 
   size_t i;
-  int status = 0;
 
   double *const k = state->k;
   double *const k1 = state->k1;
   double *const y0 = state->y0;
-  double *const ytmp = state->ytmp;
   double *const y_onestep = state->y_onestep;
 
   DBL_MEMCPY (y0, y, dim);
@@ -223,7 +218,6 @@ rk4_apply (void *vstate,
   else
     {
       int s = GSL_ODEIV_FN_EVAL (sys, t, y0, k);
-      GSL_STATUS_UPDATE (&status, s);
 
       if (s != GSL_SUCCESS)
 	{
@@ -242,10 +236,12 @@ rk4_apply (void *vstate,
   DBL_MEMCPY (y_onestep, y, dim);
 
   {
-    int s = rk4_step (y_onestep, state, h, t, dim, &status, sys);
-    if (s != GSL_SUCCESS) {
-      return s;
-    }
+    int s = rk4_step (y_onestep, state, h, t, dim, sys);
+
+    if (s != GSL_SUCCESS) 
+      {
+        return s;
+      }
   }
 
   /* Then with two steps with half step length (save to y) */ 
@@ -253,12 +249,12 @@ rk4_apply (void *vstate,
   DBL_MEMCPY (k, k1, dim);
 
   {
-    int s = rk4_step (y, state, h/2.0, t, dim, &status, sys);
+    int s = rk4_step (y, state, h/2.0, t, dim, sys);
+
     if (s != GSL_SUCCESS)
       {
 	/* Restore original values */
 	DBL_MEMCPY (y, y0, dim);
-	
 	return s;
     }
   }
@@ -266,13 +262,11 @@ rk4_apply (void *vstate,
   /* Update before second step */
   {
     int s = GSL_ODEIV_FN_EVAL (sys, t + h/2.0, y, k);
-    GSL_STATUS_UPDATE (&status, s);
 
     if (s != GSL_SUCCESS)
       {
 	/* Restore original values */
 	DBL_MEMCPY (y, y0, dim);
-
 	return GSL_EBADFUNC;
       }
   }
@@ -284,12 +278,12 @@ rk4_apply (void *vstate,
   DBL_MEMCPY (y0, y, dim);
 
   {
-    int s = rk4_step (y, state, h/2.0, t + h/2.0, dim, &status, sys);
+    int s = rk4_step (y, state, h/2.0, t + h/2.0, dim, sys);
+
     if (s != GSL_SUCCESS)
       {
 	/* Restore original values */
 	DBL_MEMCPY (y, k1, dim);
-	
 	return s;
       }
   }
@@ -298,13 +292,11 @@ rk4_apply (void *vstate,
 
   if (dydt_out != NULL) {
     int s = GSL_ODEIV_FN_EVAL (sys, t + h, y, dydt_out);
-    GSL_STATUS_UPDATE (&status, s);
 
     if (s != GSL_SUCCESS)
       {
 	/* Restore original values */
 	DBL_MEMCPY (y, k1, dim);
-
 	return GSL_EBADFUNC;
       }
   }
@@ -323,7 +315,7 @@ rk4_apply (void *vstate,
       yerr[i] = 4.0 * (y[i] - y_onestep[i]) / 15.0;
     }
 
-  return status;
+  return GSL_SUCCESS;
 }
 
 static int

@@ -268,7 +268,6 @@ gear2_apply (void *vstate,
 
       if (dydt_out != NULL)
         {
-
           s = GSL_ODEIV_FN_EVAL (sys, t + h, y, dydt_out);
 
           if (s != GSL_SUCCESS)

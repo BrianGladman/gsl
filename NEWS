@@ -1,5 +1,8 @@
 * What will be new in gsl-1.6:
 
+** Differential equation solvers now handle error codes returned from
+user-defined functions.
+
 ** Equal abscissae are now handled gracefully in the cspline and
 periodic cspline interpolations.
 

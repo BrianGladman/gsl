@@ -160,7 +160,7 @@ rk2simp_alloc (size_t dim)
 int
 rk2simp_step (double *y, rk2simp_state_t * state,
               const double h, const double t,
-              const size_t dim, int *status, const gsl_odeiv_system * sys)
+              const size_t dim, const gsl_odeiv_system * sys)
 {
   /* Makes a Runge-Kutta 2nd order semi-implicit advance with step size h.
      y0 is initial values of variables y. 
@@ -175,9 +175,8 @@ rk2simp_step (double *y, rk2simp_state_t * state,
   const double *y0 = state->y0;
   double *Y1 = state->Y1;
   double *ytmp = state->ytmp;
-  gsl_permutation *p = state->p;
 
-  size_t i, j;
+  size_t i;
   int s, ps;
 
   gsl_matrix_view J = gsl_matrix_view_array (state->dfdy, dim, dim);
@@ -189,7 +188,6 @@ rk2simp_step (double *y, rk2simp_state_t * state,
   /* Create matrix to J */
 
   s = GSL_ODEIV_JA_EVAL (sys, t, y0, state->dfdy, state->dfdt);
-  GSL_STATUS_UPDATE (status, s);
 
   if (s != GSL_SUCCESS)
     {
@@ -211,7 +209,6 @@ rk2simp_step (double *y, rk2simp_state_t * state,
   /* Evaluate f(t + h/2, y0) */
 
   s = GSL_ODEIV_FN_EVAL (sys, t + 0.5 * h, y0, ytmp);
-  GSL_STATUS_UPDATE (status, s);
 
   if (s != GSL_SUCCESS)
     {
@@ -235,7 +232,6 @@ rk2simp_step (double *y, rk2simp_state_t * state,
   /* And finally evaluation of f(t + h/2, Y1) and calculation of y */
 
   s = GSL_ODEIV_FN_EVAL (sys, t + 0.5 * h, Y1, ytmp);
-  GSL_STATUS_UPDATE (status, s);
 
   if (s != GSL_SUCCESS)
     {
@@ -257,13 +253,10 @@ rk2simp_apply (void *vstate, size_t dim, double t, double h,
 {
   rk2simp_state_t *state = (rk2simp_state_t *) vstate;
 
-  int status = 0;
-  int nu;
   size_t i;
 
   double *y0 = state->y0;
   double *y0_orig = state->y0_orig;
-  double *ytmp = state->ytmp;
   double *y_onestep = state->y_onestep;
 
   /* Error estimation is done by step doubling procedure */
@@ -277,7 +270,8 @@ rk2simp_apply (void *vstate, size_t dim, double t, double h,
   DBL_MEMCPY (y_onestep, y, dim);
 
   {
-    int s = rk2simp_step (y_onestep, state, h, t, dim, &status, sys);
+    int s = rk2simp_step (y_onestep, state, h, t, dim, sys);
+
     if (s != GSL_SUCCESS)
       {
         return s;
@@ -287,12 +281,12 @@ rk2simp_apply (void *vstate, size_t dim, double t, double h,
   /* Then with two steps with half step length (save to y) */
 
   {
-    int s = rk2simp_step (y, state, h / 2.0, t, dim, &status, sys);
+    int s = rk2simp_step (y, state, h / 2.0, t, dim, sys);
+
     if (s != GSL_SUCCESS)
       {
         /* Restore original y vector */
         DBL_MEMCPY (y, y0_orig, dim);
-
         return s;
       }
   }
@@ -300,12 +294,12 @@ rk2simp_apply (void *vstate, size_t dim, double t, double h,
   DBL_MEMCPY (y0, y, dim);
 
   {
-    int s = rk2simp_step (y, state, h / 2.0, t + h / 2.0, dim, &status, sys);
+    int s = rk2simp_step (y, state, h / 2.0, t + h / 2.0, dim, sys);
+
     if (s != GSL_SUCCESS)
       {
         /* Restore original y vector */
         DBL_MEMCPY (y, y0_orig, dim);
-
         return s;
       }
   }
@@ -315,13 +309,11 @@ rk2simp_apply (void *vstate, size_t dim, double t, double h,
   if (dydt_out != NULL)
     {
       int s = GSL_ODEIV_FN_EVAL (sys, t + h, y, dydt_out);
-      GSL_STATUS_UPDATE (&status, s);
 
       if (s != GSL_SUCCESS)
         {
           /* Restore original y vector */
           DBL_MEMCPY (y, y0_orig, dim);
-
           return GSL_EBADFUNC;
         }
     }
@@ -333,7 +325,7 @@ rk2simp_apply (void *vstate, size_t dim, double t, double h,
       yerr[i] = 4.0 * (y[i] - y_onestep[i]) / 3.0;
     }
 
-  return status;
+  return GSL_SUCCESS;
 }
 
 

@@ -108,7 +108,6 @@ rk2_apply (void *vstate,
   rk2_state_t *state = (rk2_state_t *) vstate;
 
   size_t i;
-  int status = 0;
 
   double *const k1 = state->k1;
   double *const k2 = state->k2;
@@ -125,7 +124,6 @@ rk2_apply (void *vstate,
   else
     {
       int s = GSL_ODEIV_FN_EVAL (sys, t, y, k1);
-      GSL_STATUS_UPDATE (&status, s);
 
       if (s != GSL_SUCCESS)
 	{
@@ -143,7 +141,6 @@ rk2_apply (void *vstate,
 
   {
     int s = GSL_ODEIV_FN_EVAL (sys, t + 0.5 * h, ytmp, k2);
-    GSL_STATUS_UPDATE (&status, s);
 
     if (s != GSL_SUCCESS)
       {
@@ -162,7 +159,6 @@ rk2_apply (void *vstate,
 
   {
     int s = GSL_ODEIV_FN_EVAL (sys, t + h, ytmp, k3);
-    GSL_STATUS_UPDATE (&status, s);
 
     if (s != GSL_SUCCESS)
       {
@@ -188,7 +184,6 @@ rk2_apply (void *vstate,
   if (dydt_out != NULL)
     {
       int s = GSL_ODEIV_FN_EVAL (sys, t + h, y, dydt_out);
-      GSL_STATUS_UPDATE (&status, s);
       
       if (s != GSL_SUCCESS)
 	{
@@ -207,7 +202,7 @@ rk2_apply (void *vstate,
       yerr[i] = h * (k2[i] - ksum3);
     }
   
-  return status;
+  return GSL_SUCCESS;
 }
 
 static int
