@@ -24,6 +24,7 @@ libgslodeiv_a_SOURCES = \
 	control.c	\
 	evolve.c	\
 	monitor.c	\
+	bsimp.c		\
 	gear1.c		\
 	gear2.c		\
 	odeiv.c		\

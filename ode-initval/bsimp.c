@@ -34,6 +34,7 @@ struct gsl_odeiv_step_bsimp_struct
 
   double x[KMAXX];  /* workspace for extrapolation */
 
+  /* state info */
   size_t kchoice;
   double hnext;
   double eps;
@@ -46,8 +47,10 @@ struct gsl_odeiv_step_bsimp_struct
   double * dfdt;
   gsl_matrix * dfdy;
 
-  gsl_vector rhs_temp_vec;
-  gsl_vector delta_temp_vec;
+  /* workspace for the basic stepper */
+  gsl_vector * rhs_temp_vec;
+  gsl_vector * delta_temp_vec;
+  double * delta;
 };
 
 
@@ -112,6 +115,11 @@ bsimp_alloc(gsl_odeiv_step_bsimp * self, size_t dim)
   self->extr_work = (double *) malloc(dim * sizeof(double));
 
   self->dfdy = gsl_matrix_alloc(dim, dim);
+
+  self->delta_temp_vec = gsl_vector_alloc(dim);
+  self->rhs_temp_vec = gsl_vector_alloc(dim);
+
+  self->delta = (double *) malloc(dim * sizeof(double));
 }
 
 
@@ -120,6 +128,11 @@ bsimp_alloc(gsl_odeiv_step_bsimp * self, size_t dim)
 static void
 bsimp_dealloc(gsl_odeiv_step_bsimp * self)
 {
+  if(self->delta != 0) free(self->delta);
+
+  if(self->rhs_temp_vec != 0) gsl_vector_free(self->rhs_temp_vec);
+  if(self->delta_temp_vec != 0) gsl_vector_free(self->delta_temp_vec);
+
   if(self->dfdy != 0) gsl_matrix_free(self->dfdy);
 
   if(self->extr_work != 0) free(self->extr_work);
@@ -131,6 +144,11 @@ bsimp_dealloc(gsl_odeiv_step_bsimp * self)
   if(self->p_vec != 0) gsl_vector_int_free(self->p_vec);
   if(self->a_mat != 0) gsl_matrix_free(self->a_mat);
   if(self->d != 0) gsl_matrix_free(self->d);
+
+  self->delta = 0;
+
+  self->rhs_temp_vec = 0;
+  self->delta_temp_vec = 0;
 
   self->dfdy = 0;
 
@@ -146,7 +164,7 @@ bsimp_dealloc(gsl_odeiv_step_bsimp * self)
 }
 
 
-static void
+static int
 bsimp_reset(void * self)
 {
   if(self != 0) {
@@ -158,6 +176,8 @@ bsimp_reset(void * self)
       my->parent.order = 2 * my->kchoice;
     }
   }
+
+  return GSL_SUCCESS;
 }
 
 
@@ -194,10 +214,12 @@ gsl_odeiv_step_bsimp_new(double eps)
       s->dfdt = 0;
       s->dfdy = 0;
       s->eps = eps;
+      s->rhs_temp_vec = 0;
+      s->delta_temp_vec = 0;
+      s->delta = 0;
   }
   return (gsl_odeiv_step *) s;
 }
-
 
 
 
@@ -258,6 +280,7 @@ pzextr(
 }
 
 
+#if 0
 /*
    Exact substitute for pzextr, but uses diagonal rational function extrapolation instead of poly-
    nomial extrapolation.
@@ -319,6 +342,7 @@ rzextr(
     }
   }
 }
+#endif /* 0 */
 
 
 /* Basic implicit Bulirsch-Stoer step.
@@ -348,16 +372,13 @@ bsimp_step_local(
   unsigned int i, j;
   unsigned int n_inter;
 
-  /* shameless confusion... use these for temp space */
-  double * ytemp = step->ysav;
-  double * delta_temp = step->yseq;
-  double * delta = step->dfdt;
+  /* shameless use of somebody else's temp work space */
+  double * ytemp = step->extr_work;
+  gsl_vector ytemp_vec;
+  ytemp_vec.data = ytemp;
+  ytemp_vec.size = step->parent.dimension;
 
-  step->delta_temp_vec.data = delta_temp;
-  step->delta_temp_vec.size = dim;
-  step->rhs_temp_vec.data = 0 /* FIXME */;
-  step->rhs_temp_vec.size = dim;
-
+  /* Calculate the matric for the linear system. */
   for(i=0; i<dim; i++) {
     for(j=0; j<dim; j++) {
       gsl_matrix_set(step->a_mat, i, j, -h * gsl_matrix_get(dfdy, i, j));
@@ -375,11 +396,12 @@ bsimp_step_local(
     ytemp[i] = h * (yp[i] + h * dfdt[i]);
   }
 
-  gsl_la_solve_LU_impl(step->a_mat, step->p_vec, ytemp, &step->delta_temp_vec);
+  gsl_la_solve_LU_impl(step->a_mat, step->p_vec, &ytemp_vec, step->delta_temp_vec);
 
   for (i=0; i<dim; i++) {
-    delta[i] = delta_temp[i];
-    ytemp[i] = y[i] + delta_temp[i];
+    const double di = gsl_vector_get(step->delta_temp_vec, i);
+    step->delta[i] = di;
+    ytemp[i] = y[i] + di;
   }
 
 
@@ -390,14 +412,14 @@ bsimp_step_local(
   for (n_inter=1; n_inter<nstep; n_inter++) {
 
     for (i=0; i<dim; i++) {
-      step->rhs_temp_vec.data[i] = h * yout[i] - delta[i];
+      gsl_vector_set(step->rhs_temp_vec, i, h * yout[i] - step->delta[i]);
     }
 
-    gsl_la_solve_LU_impl(step->a_mat, step->p_vec, &step->rhs_temp_vec, &step->delta_temp_vec);
+    gsl_la_solve_LU_impl(step->a_mat, step->p_vec, step->rhs_temp_vec, step->delta_temp_vec);
 
     for(i=0; i<dim; i++) {
-      delta[i] += 2.0 * delta_temp[i];
-      ytemp[i] += delta[i];
+      step->delta[i] += 2.0 * gsl_vector_get(step->delta_temp_vec, i);
+      ytemp[i] += step->delta[i];
     }
 
     t += h;
@@ -409,13 +431,13 @@ bsimp_step_local(
   /* Final step. */
 
   for(i=0; i<dim; i++) {
-    step->rhs_temp_vec.data[i] = h * yout[i] - delta[i];
+    gsl_vector_set(step->rhs_temp_vec, i, h * yout[i] - step->delta[i]);
   }
 
-  gsl_la_solve_LU_impl(step->a_mat, step->p_vec, &step->rhs_temp_vec, &step->delta_temp_vec);
+  gsl_la_solve_LU_impl(step->a_mat, step->p_vec, step->rhs_temp_vec, step->delta_temp_vec);
 
   for(i=0; i<dim; i++) {
-    yout[i] = ytemp[i] + delta_temp[i];
+    yout[i] = ytemp[i] + gsl_vector_get(step->delta_temp_vec, i);
   }
 
   return GSL_SUCCESS;
@@ -474,7 +496,7 @@ bsimp_step(
   }
 
   /* Evaluate the Jacobian for the system. */
-  GSL_ODEIV_JA_EVAL(sys, t_local, y, my->dfdy, my->dfdt);
+  GSL_ODEIV_JA_EVAL(sys, t_local, y, my->dfdy->data, my->dfdt);
 
   /* Make a series of refined extrapolations,
    * up the specified maximum order, which
