@@ -1,3 +1,8 @@
+2003-03-09  Brian Gough  <bjg@network-theory.co.uk>
+
+	* gsl_sf_legendre.h: added missing const to formal parameter on
+	gsl_sf_legendre_sphPlm_deriv_array
+
 2003-01-25  Brian Gough  <brian.gough@network-theory.co.uk>
 
 	* test_gamma.c (test_gamma): added a test for

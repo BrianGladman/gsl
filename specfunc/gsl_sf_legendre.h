@@ -181,7 +181,7 @@ int gsl_sf_legendre_sphPlm_array(
  * exceptions: GSL_EDOM
  */
 int gsl_sf_legendre_sphPlm_deriv_array(
-  const int lmax, int m, const double x,
+  const int lmax, const int m, const double x,
   double * result_array,
   double * result_deriv_array
   );
