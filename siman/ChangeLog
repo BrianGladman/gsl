@@ -1,3 +1,8 @@
+1998-02-09  Mark Galassi  <rosalia@nis.lanl.gov>
+
+	* siman_test_driver.sh (LAST_ENERGY): fixed a typo; the tests now
+	report well when they converge.
+
 1998-01-30  Mark Galassi  <rosalia@cygnus.com>
 
 	* siman_test_driver.sh, Makefile.am (TESTS): added a test driver
