@@ -30,7 +30,7 @@ The library header files are installed in their own @code{gsl}
 directory. To include them you should write,
 
 @example
-#include <gsl_math.h>
+#include <gsl/gsl_math.h>
 @end example
 
 @noindent
@@ -40,7 +40,7 @@ the gsl directory is installed in its default location of
 appropriate,
 
 @example
-gcc -I/usr/local/include/gsl -c file.c
+gcc -I/usr/local/include -c file.c
 @end example
 
 @cindex compiling programs, library paths

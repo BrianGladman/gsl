@@ -578,7 +578,7 @@ Here is a basic example of how to use the statistical functions:
 
 @example
 #include <stdio.h>
-#include <gsl_statistics.h>
+#include <gsl/gsl_statistics.h>
 
 int main()
 @{
@@ -615,7 +615,7 @@ Here is an example using sorted data,
 
 @example
 #include <stdio.h>
-#include <gsl_statistics.h>
+#include <gsl/gsl_statistics.h>
 
 int main()
 @{

@@ -382,8 +382,8 @@ was chosen at random.
 #include <math.h>
 #include <stdio.h>
 
-#include <gsl_math.h>
-#include <gsl_monte_vegas.h>
+#include <gsl/gsl_math.h>
+#include <gsl/gsl_monte_vegas.h>
 
 double f0(double x[]) 
 @{

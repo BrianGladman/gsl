@@ -775,7 +775,7 @@ The program below computes this integral to a relative accuracy bound of
 @example
 #include <stdio.h>
 #include <math.h>
-#include <gsl_integration.h>
+#include <gsl/gsl_integration.h>
 
 double f (double x, void * params) @{
   double alpha = *(double *) params ;

@@ -182,7 +182,7 @@ library routines with user-supplied arguments,
 
 @example
 #include <setjmp.h>
-#include <gsl_errno.h>
+#include <gsl/gsl_errno.h>
 
 jmp_buf main_loop;
 void my_error_handler (const char *reason, const char *file, int line);

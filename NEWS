@@ -1,4 +1,7 @@
-* Will be new in gsl-0.5:
+** All header files are now in installed as pkginclude headers in a
+gsl/ subdirectory.
+
+* Was new in gsl-0.5:
 
 ** There is now a KNOWN-PROBLEMS file which lists compilation problems
 and test failures which are known to the developers.

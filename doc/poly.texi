@@ -200,7 +200,7 @@ The following program will find these roots.
 
 @example
 #include <stdio.h>
-#include <gsl_poly.h>
+#include <gsl/gsl_poly.h>
 
 int
 main ()

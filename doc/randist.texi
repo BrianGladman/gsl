@@ -1203,8 +1203,8 @@ The following program generates a random walk in two dimensions.
 
 @example
 #include <stdio.h>
-#include <gsl_rng.h>
-#include <gsl_randist.h>
+#include <gsl/gsl_rng.h>
+#include <gsl/gsl_randist.h>
 
 main ()
 @{
@@ -1892,8 +1892,8 @@ Poisson distribution with a mean of 3.
 
 @example
 #include <stdio.h>
-#include <gsl_rng.h>
-#include <gsl_randist.h>
+#include <gsl/gsl_rng.h>
+#include <gsl/gsl_randist.h>
 
 int
 main ()
@@ -1929,7 +1929,7 @@ If the library and header files are installed under @file{/usr/local}
 options,
 
 @example
-gcc -I/usr/local/include/gsl -L/usr/local/lib/gsl demo.c -lgslrandist 
+gcc -L/usr/local/lib/gsl demo.c -lgslrandist 
   -lgslrng -lgslspecfunc -lgslerr -lm
 @end example
 

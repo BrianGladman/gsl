@@ -25,6 +25,6 @@ double gsl_sf_pow_8(const double x);
 double gsl_sf_pow_9(const double x);
 
 @example
-#include <gsl_sf_pow_int.h>
+#include <gsl/gsl_sf_pow_int.h>
 double y = gsl_sf_pow_int(3.0, 12)
 @end example

@@ -455,7 +455,7 @@ read it prints out the accumulated histogram using
 @example
 #include <stdio.h>
 #include <stdlib.h>
-#include <gsl_histogram.h>
+#include <gsl/gsl_histogram.h>
 
 int
 main (int argc, char **argv)
@@ -872,7 +872,7 @@ out.
 
 @example
 #include <stdio.h>
-#include <gsl_histogram2d.h>
+#include <gsl/gsl_histogram2d.h>
 
 int
 main ()

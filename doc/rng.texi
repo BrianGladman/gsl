@@ -269,7 +269,7 @@ generator using the environment variables @code{GSL_RNG_TYPE} and
 
 @example
 #include <stdio.h>
-#include <gsl_rng.h>
+#include <gsl/gsl_rng.h>
 
 gsl_rng * r ;  /* global generator */
 
