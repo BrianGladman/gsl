@@ -1,8 +1,3 @@
-Wed Sep 16 15:08:59 1998  Brian Gough  <bjg@vvv.lanl.gov>
-
-	* histogram/gsl-histogram.c (main): made the number of bins
- 	optional. If you don't specify it then it uses bins of width 1.
-
 1998-08-31  James Theiler  <jt@lanl.gov>
 
 	* Makefile.am (SUBDIRS): added utils directory

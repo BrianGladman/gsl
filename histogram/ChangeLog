@@ -3,3 +3,9 @@
 	* used a cast of (int) when attempting to print size_t variables
 	with %d
 
+Wed Sep 16 15:08:59 1998  Brian Gough  <bjg@vvv.lanl.gov>
+
+	* gsl-histogram.c (main): made the number of bins
+ 	optional. If you don't specify it then it uses bins of width 1.
+
+
