@@ -1,3 +1,7 @@
+* New 64 bit generators in "Tables of 64-bit Mersenne Twisters",
+Takuji Nishimura, ACM Transactions on Modeling and Computer
+Simulation, Volumen 10, No 4, October 2000, p 348--357
+
 * Need to run tests over the space of seeds, in addition to serial
 tests (DIEHARD) for the default seed.  The congruences used for
 seeding will give poor initial vectors for some seed values, e.g. 2^n.
