@@ -41,8 +41,8 @@ gsl_histogram_pdf_alloc (const gsl_histogram * h)
   for (i = 0; i < n; i++)
     {
       if (h->bin[i] < 0) {
-	GSL_ERROR_RETURN ("histogram bins must be positive to compute"
-			  "probabilities", 
+	GSL_ERROR_RETURN ("histogram bins must be non-negative to compute"
+			  "a probability distribution", 
 			  GSL_EDOM, 0) ;
       }
     }
