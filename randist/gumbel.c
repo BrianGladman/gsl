@@ -42,7 +42,17 @@ gsl_ran_gumbel2 (const gsl_rng * r, const double a, const double b)
 double
 gsl_ran_gumbel2_pdf (const double x, const double a, const double b)
 {
-  double p = b * a *  pow(x,-(a+1)) * exp (-b * pow(x, -a));
-  return p;
+  if (x <= 0)
+    {
+      return 0 ;
+    }
+  else
+    {
+      double p = b * a *  pow(x,-(a+1)) * exp (-b * pow(x, -a));
+      return p;
+    }
 }
+
+
+
 
