@@ -6,7 +6,9 @@
 ## automake/configure routines
 
 ## Include here the list of algorithms for random number generation
-ALLRAN= mrg cmrg taus uni uni32 zuf rand
+## The first one should be the "favorite" (ie, default)
+
+ALLRAN= taus mrg cmrg uni uni32 zuf rand
 FAVORITERAN= taus
 
 include_HEADERS= gsl_ran.h gsl_ran_switch.h

@@ -26,6 +26,8 @@ main(int argc, char **argv)
         randseed = atoi(argv[2]);
     }
 
+    printf("----- Using default: --\n");
+    doran(n,randseed);
     printf("----- Using cmrg: -----\n");
     gsl_ran_use_cmrg();
     doran(n,randseed);

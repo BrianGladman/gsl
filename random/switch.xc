@@ -4,7 +4,9 @@
    returns the name of the algorithm currently in use.
    */
 
-#include "gsl_ran.h"         /* defines gsl_ran_ prototypes */
+#include <stdio.h>              /* defines NULL */
+#include "gsl_ran.h"            /* defines gsl_ran_ prototypes */
+#include "gsl_ran_switch.h"
 
 #define MAXALGNAMELEN 10        /* only short algorithm names allowed */
 typedef struct {
@@ -20,38 +22,66 @@ typedef struct {
     void (*setRandomState)(void *);    
 } AlgorithmSwitch;
 
-AlgorithmSwitch A;
+AlgorithmSwitch *A=NULL;
+
+inline void
+gsl_ran_newAlgorithm()
+{
+    if (A == NULL) {
+        A = (AlgorithmSwitch *)malloc(sizeof(AlgorithmSwitch));
+    }
+    gsl_ran_use_default();
+}
 
 char *gsl_ran_name() {
-    return A.name;
+    if (A==NULL) gsl_ran_newAlgorithm();
+    return A->name;
 }
 
 inline unsigned long gsl_ran_random_wstate(void *vState) {
-    return A.random_wstate(vState);
+    if (A==NULL) gsl_ran_newAlgorithm();
+    return A->random_wstate(vState);
 }
 inline double gsl_ran_uniform_wstate(void *vState) {
-    return A.uniform_wstate(vState);
+    if (A==NULL) gsl_ran_newAlgorithm();
+    return A->uniform_wstate(vState);
 }
 inline double gsl_ran_max() {
-    return A.max();
+    if (A==NULL) gsl_ran_newAlgorithm();
+    return A->max();
 }
 inline void gsl_ran_seed_wstate(void *vState, int seed) {
-    A.seed_wstate(vState,seed);
+    if (A==NULL) gsl_ran_newAlgorithm();
+    A->seed_wstate(vState,seed);
 }
 inline unsigned long gsl_ran_random() {
-    return A.random();
+    if (A==NULL) gsl_ran_newAlgorithm();
+    return A->random();
 }
 inline double gsl_ran_uniform() {
-    return A.uniform();
+    if (A==NULL) gsl_ran_newAlgorithm();
+    return A->uniform();
 }
 inline void gsl_ran_seed(int seed) {
-    A.seed(seed);
+    if (A==NULL) gsl_ran_newAlgorithm();
+    A->seed(seed);
 }
 inline void *gsl_ran_getRandomState() {
-    return A.getRandomState();
+    if (A==NULL) gsl_ran_newAlgorithm();
+    return A->getRandomState();
 }
 inline void gsl_ran_setRandomState(void *vState) {
-    A.setRandomState(vState);
+    if (A==NULL) gsl_ran_newAlgorithm();
+    A->setRandomState(vState);
+}
+
+/*
+ * This function is a template in which the shell script will
+ * expand 'yyy' into the favorite 'xxx'
+ */
+
+void gsl_ran_use_default() {
+    gsl_ran_use_yyy();
 }
 
 /*
@@ -60,14 +90,16 @@ inline void gsl_ran_setRandomState(void *vState) {
  */
 #include "xxx.h"
 void gsl_ran_use_xxx() {
-    strncpy(A.name,"xxx",MAXALGNAMELEN);
-    A.random_wstate = gsl_ran_xxx_random_wstate;
-    A.uniform_wstate = gsl_ran_xxx_uniform_wstate;
-    A.max = gsl_ran_xxx_max;
-    A.random = gsl_ran_xxx_random;
-    A.uniform = gsl_ran_xxx_uniform;
-    A.seed = gsl_ran_xxx_seed;
-    A.getRandomState = gsl_ran_xxx_getRandomState;
-    A.setRandomState = gsl_ran_xxx_setRandomState;
+    if (A==NULL) gsl_ran_newAlgorithm();
+    
+    strncpy(A->name,"xxx",MAXALGNAMELEN);
+    A->random_wstate = gsl_ran_xxx_random_wstate;
+    A->uniform_wstate = gsl_ran_xxx_uniform_wstate;
+    A->max = gsl_ran_xxx_max;
+    A->random = gsl_ran_xxx_random;
+    A->uniform = gsl_ran_xxx_uniform;
+    A->seed = gsl_ran_xxx_seed;
+    A->getRandomState = gsl_ran_xxx_getRandomState;
+    A->setRandomState = gsl_ran_xxx_setRandomState;
 }
 

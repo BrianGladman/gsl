@@ -6,7 +6,9 @@
 ## automake/configure routines
 
 ## Include here the list of algorithms for random number generation
-ALLRAN= mrg cmrg taus uni uni32 zuf rand
+## The first one should be the "favorite" (ie, default)
+
+ALLRAN= taus mrg cmrg uni uni32 zuf rand
 FAVORITERAN= taus
 
 include_HEADERS= gsl_ran.h gsl_ran_switch.h
@@ -57,15 +59,15 @@ bin_PROGRAMS= mrg test-mrg bench-mrg cmrg test-cmrg bench-cmrg taus test-taus be
 
 lib_LIBRARIES= gslrandom gslranmrg gslrancmrg gslrantaus gslranuni gslranuni32 gslranzuf gslranrand 
 
-gslranmrg_SOURCES= mrg.c mrg-gen.c gauss.c
-gslrancmrg_SOURCES= cmrg.c cmrg-gen.c gauss.c
-gslrantaus_SOURCES= taus.c taus-gen.c gauss.c
-gslranuni_SOURCES= uni.c uni-gen.c gauss.c
-gslranuni32_SOURCES= uni32.c uni32-gen.c gauss.c
-gslranzuf_SOURCES= zuf.c zuf-gen.c gauss.c
-gslranrand_SOURCES= rand.c rand-gen.c gauss.c
+gslranmrg_SOURCES= mrg.c mrg-gen.c gauss.c 
+gslrancmrg_SOURCES= cmrg.c cmrg-gen.c gauss.c 
+gslrantaus_SOURCES= taus.c taus-gen.c gauss.c 
+gslranuni_SOURCES= uni.c uni-gen.c gauss.c 
+gslranuni32_SOURCES= uni32.c uni32-gen.c gauss.c 
+gslranzuf_SOURCES= zuf.c zuf-gen.c gauss.c 
+gslranrand_SOURCES= rand.c rand-gen.c gauss.c 
 
-gslrandom_SOURCES= switch.c gauss.c shuffle.c  mrg.c cmrg.c taus.c uni.c uni32.c zuf.c rand.c gauss.c 
+gslrandom_SOURCES= switch.c shuffle.c mrg.c cmrg.c taus.c uni.c uni32.c zuf.c rand.c gauss.c 
 
 test_switch_DEPENDENCIES= gsl_ran_switch.h mrg.o cmrg.o taus.o uni.o uni32.o zuf.o rand.o 
 test_switch_LDADD= mrg.o cmrg.o taus.o uni.o uni32.o zuf.o rand.o 
