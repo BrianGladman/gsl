@@ -55,6 +55,5 @@ transform (double t, void *params)
   gsl_function * f = p->f;
   double x = a + (1 - t) / t;
   double y = GSL_FN_EVAL (f, x);
-  double weight = t * t;
-  return y / weight;
+  return (y / t) / t;
 }

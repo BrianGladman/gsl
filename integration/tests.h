@@ -21,4 +21,5 @@ double f17 (double x, void * params);
 
 double f455 (double x, void * params);
 
-
+double myfn1 (double x, void * params);
+double myfn2 (double x, void * params);

@@ -836,7 +836,7 @@ int main (void)
 
   }
 
-  /* Test f11 using an absolute error bound */
+  /* Test infinite range integral f455 using a relative error bound */
 
   {
     int status = 0, i; size_t last = 0,  neval = 0;
@@ -885,14 +885,14 @@ int main (void)
     double e[10] = { 2.395037249893453013E-02,
 		     2.161214992172538524E-04,
 		     5.720644840858777846E-14,
-		     1.091466087843516782E-17,
+		     3.325474514168701167E-17,
 		     3.147380432198176412E-14,
-		     2.576959039041310205E-17,
-		     8.833965040117939002E-16,
-		     1.367912092338271854E-17,
-		     4.620599841818525952E-16,
-		     6.672586818503247492E-18 } ;
-    int iord[10] = { 1, 2, 3, 5, 7, 9, 6, 8, 4, 10 } ;
+		     3.092399597147240624E-17,
+		     9.607595030230581153E-16,
+		     1.927589382528252344E-17,
+		     9.324480826368044019E-16,
+		     1.156507325466566521E-17 } ;
+    int iord[10] = { 1, 2, 3, 5, 7, 9, 4, 6, 8, 10 } ;
 
     gsl_function f = { &f455, 0 } ;
 
@@ -900,8 +900,8 @@ int main (void)
 				    w, &last, 
 				    &result, &abserr, &neval) ;
     
-    gsl_test_rel(result,exp_result,1e-15,"qagiu(f455) smooth result") ;
-    gsl_test_rel(abserr,exp_abserr,1e-3,"qagiu(f455) smooth abserr") ;
+    gsl_test_rel(result,exp_result,1e-14,"qagiu(f455) smooth result") ;
+    gsl_test_rel(abserr,exp_abserr,1e-5,"qagiu(f455) smooth abserr") ;
     gsl_test_int((int)neval,exp_neval,"qagiu(f455) smooth neval") ;  
     gsl_test_int((int)last,exp_last,"qagiu(f455) smooth last") ;  
     gsl_test_int(status,exp_ier,"qagiu(f455) smooth status") ;
@@ -924,6 +924,312 @@ int main (void)
     gsl_integration_workspace_free (w) ;
 
   }
+
+  /* Test infinite range integral f15 using a relative error bound */
+
+  {
+    int status = 0, i; size_t last = 0,  neval = 0;
+    double result = 0, abserr=0;
+
+    gsl_integration_workspace * w = gsl_integration_workspace_alloc (1000) ;
+
+    /* All results are for GSL_IEEE_MODE=double-precision */
+
+    double exp_result = 6.553600000000024738E+04;
+    double exp_abserr = 7.121667111456009280E-04;
+    int exp_neval  =      285;
+    int exp_ier    =        0;
+    int exp_last   =       10;
+
+    double a[10] = { 0.000000000000000000E+00,
+		     5.000000000000000000E-01,
+		     2.500000000000000000E-01,
+		     1.250000000000000000E-01,
+		     6.250000000000000000E-02,
+		     3.125000000000000000E-02,
+		     1.562500000000000000E-02,
+		     7.812500000000000000E-03,
+		     3.906250000000000000E-03,
+		     1.953125000000000000E-03 } ;
+    double b[10] = { 1.953125000000000000E-03,
+		     1.000000000000000000E+00,
+		     5.000000000000000000E-01,
+		     2.500000000000000000E-01,
+		     1.250000000000000000E-01,
+		     6.250000000000000000E-02,
+		     3.125000000000000000E-02,
+		     1.562500000000000000E-02,
+		     7.812500000000000000E-03,
+		     3.906250000000000000E-03 } ;
+    double r[10] = { 1.099297665754340292E+00,
+		     3.256176475185617591E-01,
+		     8.064694554185326325E+00,
+		     8.873128656118993263E+01,
+		     6.977679035845269482E+02,
+		     4.096981198511257389E+03,
+		     1.574317583220441520E+04,
+		     2.899418134793237914E+04,
+		     1.498314766425578091E+04,
+		     9.225251570832365360E+02 } ;
+    double e[10] = { 7.101865971621337814E-04,
+		     1.912660677170175771E-08,
+		     9.167763417119923333E-08,
+		     3.769501719163865578E-07,
+		     6.973493131275552509E-07,
+		     1.205653952340679711E-07,
+		     1.380003928453846583E-07,
+		     1.934652413547325474E-07,
+		     3.408933028357320364E-07,
+		     2.132473175465897029E-09 } ;
+    int iord[10] = { 1, 5, 4, 9, 8, 7, 6, 3, 2, 10 } ;
+
+    double alpha = 5.0;
+
+    gsl_function f = { &f15, &alpha } ;
+
+    status = gsl_integration_qagiu (&f, 0.0, 0.0, 1.0e-7, 
+				    w, &last, 
+				    &result, &abserr, &neval) ;
+    
+    gsl_test_rel(result,exp_result,1e-14,"qagiu(f15) smooth result") ;
+    gsl_test_rel(abserr,exp_abserr,1e-5,"qagiu(f15) smooth abserr") ;
+    gsl_test_int((int)neval,exp_neval,"qagiu(f15) smooth neval") ;  
+    gsl_test_int((int)last,exp_last,"qagiu(f15) smooth last") ;  
+    gsl_test_int(status,exp_ier,"qagiu(f15) smooth status") ;
+
+    for (i = 0; i < 10 ; i++) 
+	gsl_test_rel(w->alist[i],a[i],1e-15,"qagiu(f15) smooth alist") ;
+
+    for (i = 0; i < 10 ; i++) 
+	gsl_test_rel(w->blist[i],b[i],1e-15,"qagiu(f15) smooth blist") ;
+
+    for (i = 0; i < 10 ; i++) 
+	gsl_test_rel(w->rlist[i],r[i],1e-15,"qagiu(f15) smooth rlist") ;
+
+    for (i = 0; i < 10 ; i++) 
+	gsl_test_rel(w->elist[i],e[i],1e-4,"qagiu(f15) smooth elist") ;
+
+    for (i = 0; i < 10 ; i++) 
+	gsl_test_int((int)w->iord[i],iord[i]-1,"qagiu(f15) smooth iord");
+
+    gsl_integration_workspace_free (w) ;
+
+  }
+
+  /* Test infinite range integral f16 using an absolute error bound */
+
+  {
+    int status = 0, i; size_t last = 0,  neval = 0;
+    double result = 0, abserr=0;
+
+    gsl_integration_workspace * w = gsl_integration_workspace_alloc (1000) ;
+
+    /* All results are for GSL_IEEE_MODE=double-precision */
+
+    double exp_result = 1.000000000006713292E-04;
+    double exp_abserr = 3.084062020905636316E-09;
+    int exp_neval  =      165;
+    int exp_ier    =        0;
+    int exp_last   =        6;
+
+    double a[6] = { 0.000000000000000000E+00,
+		    5.000000000000000000E-01,
+		    2.500000000000000000E-01,
+		    1.250000000000000000E-01,
+		    6.250000000000000000E-02,
+		    3.125000000000000000E-02 } ;
+    double b[6] = { 3.125000000000000000E-02,
+		    1.000000000000000000E+00,
+		    5.000000000000000000E-01,
+		    2.500000000000000000E-01,
+		    1.250000000000000000E-01,
+		    6.250000000000000000E-02 } ;
+    double r[6] = { 7.633587786326674618E-05,
+		    9.900990099009899620E-07,
+		    1.922522349322310737E-06,
+		    3.629434715543053753E-06,
+		    6.501422186103209199E-06,
+		    1.062064387653501389E-05 } ;
+    double e[6] = { 3.084061858351569051E-09,
+		    3.112064814755089674E-17,
+		    4.543453652226561245E-17,
+		    4.908618166361344548E-17,
+		    3.014338672269481784E-17,
+		    6.795996738013555461E-18 } ;
+    int iord[6] = { 1, 4, 3, 2, 5, 6 } ;
+
+    double alpha = 1.0;
+
+    gsl_function f = { &f16, &alpha } ;
+
+    status = gsl_integration_qagiu (&f, 99.9, 1.0e-7, 0.0,
+				    w, &last, 
+				    &result, &abserr, &neval) ;
+    
+    gsl_test_rel(result,exp_result,1e-14,"qagiu(f16) smooth result") ;
+    gsl_test_rel(abserr,exp_abserr,1e-5,"qagiu(f16) smooth abserr") ;
+    gsl_test_int((int)neval,exp_neval,"qagiu(f16) smooth neval") ;  
+    gsl_test_int((int)last,exp_last,"qagiu(f16) smooth last") ;  
+    gsl_test_int(status,exp_ier,"qagiu(f16) smooth status") ;
+
+    for (i = 0; i < 6 ; i++) 
+	gsl_test_rel(w->alist[i],a[i],1e-15,"qagiu(f16) smooth alist") ;
+
+    for (i = 0; i < 6 ; i++) 
+	gsl_test_rel(w->blist[i],b[i],1e-15,"qagiu(f16) smooth blist") ;
+
+    for (i = 0; i < 6 ; i++) 
+	gsl_test_rel(w->rlist[i],r[i],1e-15,"qagiu(f16) smooth rlist") ;
+
+    for (i = 0; i < 6 ; i++) 
+	gsl_test_rel(w->elist[i],e[i],1e-4,"qagiu(f16) smooth elist") ;
+
+    for (i = 0; i < 6 ; i++) 
+	gsl_test_int((int)w->iord[i],iord[i]-1,"qagiu(f16) smooth iord");
+
+    gsl_integration_workspace_free (w) ;
+
+  }
+
+  /* Test infinite range integral myfn1 using an absolute error bound */
+
+  {
+    int status = 0, i; size_t last = 0,  neval = 0;
+    double result = 0, abserr=0;
+
+    gsl_integration_workspace * w = gsl_integration_workspace_alloc (1000) ;
+
+    /* All results are for GSL_IEEE_MODE=double-precision */
+
+    double exp_result = 2.275875794468747770E+00;
+    double exp_abserr = 7.436490118267390744E-09;
+    int exp_neval  =      270;
+    int exp_ier    =        0;
+    int exp_last   =        5;
+
+    double a[5] = { 1.250000000000000000E-01,
+		    5.000000000000000000E-01,
+		    2.500000000000000000E-01,
+		    0.000000000000000000E+00,
+		    3.750000000000000000E-01 } ;
+    double b[5] = { 2.500000000000000000E-01,
+		    1.000000000000000000E+00,
+		    3.750000000000000000E-01,
+		    1.250000000000000000E-01,
+		    5.000000000000000000E-01 } ;
+    double r[5] = { 4.639317228058405717E-04,
+		    1.691664195356748834E+00,
+		    1.146307471900291086E-01,
+		    4.379392477350953574E-20,
+		    4.691169201991640669E-01 } ;
+    double e[5] = { 3.169263960393051137E-09,
+		    4.265988974874425043E-09,
+		    1.231954072964969637E-12,
+		    8.360902986775307673E-20,
+		    5.208244060463541433E-15 } ;
+    int iord[5] = { 2, 1, 3, 5, 4 } ;
+
+    gsl_function f = { &myfn1, 0 } ;
+
+    status = gsl_integration_qagi (&f, 1.0e-7, 0.0,
+				   w, &last, 
+				   &result, &abserr, &neval) ;
+    
+    gsl_test_rel(result,exp_result,1e-14,"qagiu(myfn1) smooth result") ;
+    gsl_test_rel(abserr,exp_abserr,1e-5,"qagiu(myfn1) smooth abserr") ;
+    gsl_test_int((int)neval,exp_neval,"qagiu(myfn1) smooth neval") ;  
+    gsl_test_int((int)last,exp_last,"qagiu(myfn1) smooth last") ;  
+    gsl_test_int(status,exp_ier,"qagiu(myfn1) smooth status") ;
+
+    for (i = 0; i < 5 ; i++) 
+	gsl_test_rel(w->alist[i],a[i],1e-15,"qagiu(myfn1) smooth alist") ;
+
+    for (i = 0; i < 5 ; i++) 
+	gsl_test_rel(w->blist[i],b[i],1e-15,"qagiu(myfn1) smooth blist") ;
+
+    for (i = 0; i < 5 ; i++) 
+	gsl_test_rel(w->rlist[i],r[i],1e-15,"qagiu(myfn1) smooth rlist") ;
+
+    for (i = 0; i < 5 ; i++) 
+	gsl_test_rel(w->elist[i],e[i],1e-4,"qagiu(myfn1) smooth elist") ;
+
+    for (i = 0; i < 5 ; i++) 
+	gsl_test_int((int)w->iord[i],iord[i]-1,"qagiu(myfn1) smooth iord");
+
+    gsl_integration_workspace_free (w) ;
+
+  }
+
+  /* Test infinite range integral myfn1 using an absolute error bound */
+
+  {
+    int status = 0, i; size_t last = 0,  neval = 0;
+    double result = 0, abserr=0;
+
+    gsl_integration_workspace * w = gsl_integration_workspace_alloc (1000) ;
+
+    /* All results are for GSL_IEEE_MODE=double-precision */
+
+    double exp_result = 2.718281828459044647E+00;
+    double exp_abserr = 1.588185109253204805E-10;
+    int exp_neval  =      135;
+    int exp_ier    =        0;
+    int exp_last   =        5;
+
+    double a[5] = { 0.000000000000000000E+00,
+		    5.000000000000000000E-01,
+		    2.500000000000000000E-01,
+		    1.250000000000000000E-01,
+		    6.250000000000000000E-02 } ;
+    double b[5] = { 6.250000000000000000E-02,
+		    1.000000000000000000E+00,
+		    5.000000000000000000E-01,
+		    2.500000000000000000E-01,
+		    1.250000000000000000E-01 } ;
+    double r[5] = { 8.315287189746029816E-07,
+		    1.718281828459045091E+00,
+		    8.646647167633871867E-01,
+		    1.328565310599463256E-01,
+		    2.477920647947255521E-03 } ;
+    double e[5] = { 1.533437090413525935E-10,
+		    4.117868247943567505E-12,
+		    7.802455785301941044E-13,
+		    5.395586026138397182E-13,
+		    3.713312434866150125E-14 } ;
+    int iord[5] = { 1, 2, 3, 4, 5 } ;
+
+    double alpha = 1.0 ;
+    gsl_function f = { &myfn2, &alpha } ;
+
+    status = gsl_integration_qagil (&f, 1.0, 1.0e-7, 0.0,
+				    w, &last, 
+				    &result, &abserr, &neval) ;
+    
+    gsl_test_rel(result,exp_result,1e-14,"qagiu(myfn2) smooth result") ;
+    gsl_test_rel(abserr,exp_abserr,1e-5,"qagiu(myfn2) smooth abserr") ;
+    gsl_test_int((int)neval,exp_neval,"qagiu(myfn2) smooth neval") ;  
+    gsl_test_int((int)last,exp_last,"qagiu(myfn2) smooth last") ;  
+    gsl_test_int(status,exp_ier,"qagiu(myfn2) smooth status") ;
+
+    for (i = 0; i < 5 ; i++) 
+	gsl_test_rel(w->alist[i],a[i],1e-15,"qagiu(myfn2) smooth alist") ;
+
+    for (i = 0; i < 5 ; i++) 
+	gsl_test_rel(w->blist[i],b[i],1e-15,"qagiu(myfn2) smooth blist") ;
+
+    for (i = 0; i < 5 ; i++) 
+	gsl_test_rel(w->rlist[i],r[i],1e-14,"qagiu(myfn2) smooth rlist") ;
+
+    for (i = 0; i < 5 ; i++) 
+	gsl_test_rel(w->elist[i],e[i],1e-4,"qagiu(myfn2) smooth elist") ;
+
+    for (i = 0; i < 5 ; i++) 
+	gsl_test_int((int)w->iord[i],iord[i]-1,"qagiu(myfn2) smooth iord");
+
+    gsl_integration_workspace_free (w) ;
+
+  }
+
 
   return gsl_test_summary() ;
 } 

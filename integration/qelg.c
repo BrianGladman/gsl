@@ -178,7 +178,9 @@ gsl_integration_qelg (size_t * n, double epstab[],
     }
 
   if (n_orig != n_final) {
+#ifdef DEBUG
     printf ("n_orig = %d, n_final = %d\n",n_orig,n_final) ;
+#endif
     for (i = 0 ; i <= n_final ; i++)
       {
 #ifdef DEBUG  

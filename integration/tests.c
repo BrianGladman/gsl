@@ -120,3 +120,19 @@ double f455 (double x, void * params) {
   params = 0 ;
   return log(x) / (1.0 + 100.0 * x * x) ;
 }
+
+/* myfn1(x) = exp(-x - x^2) */
+/* integ(myfn1,x,-inf,inf) = sqrt(pi) exp(-1/4) */
+
+double myfn1 (double x, void * params) {
+  params = 0;
+  return exp(-x - x*x) ;
+}
+
+/* myfn2(x) = exp(alpha*x) */
+/* integ(myfn2,x,-inf,b) = exp(alpha*b)/alpha */
+
+double myfn2 (double x, void * params) {
+  double alpha = *(double *) params ;
+  return exp(alpha*x) ;
+}

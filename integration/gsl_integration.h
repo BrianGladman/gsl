@@ -109,6 +109,20 @@ gsl_integration_qagil (gsl_function *f,
 		       double * result, double * abserr, size_t * neval) ;
 
 
+void gsl_integration_qki (const int n,
+			 const double xgk[], const double wg[], const double wgk[],
+			 double fv1[], double fv2[],
+			 const gsl_function *f,
+			 double a, double b,
+			 double * result, double * abserr,
+			 double * resabs, double * resasc) ;
+
+void gsl_integration_qk15i (const gsl_function *f,
+			  const double a, const double b,
+			  double * result, double * abserr,
+			  double * resabs, double * resasc) ;
+
+
 /* The low-level integration rules in QUADPACK are identified by small
    integers (1-6). We'll use symbolic constants to refer to them. 
 

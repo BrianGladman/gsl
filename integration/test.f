@@ -1,14 +1,15 @@
       program main
       double precision a,b,result,abserr,resabs,resasc
-      double precision book1,book3,book11,book16,book455
+      double precision book1,book3,book11,book15,book16,book455
+      double precision myfn1,myfn2
       double precision alpha
       double precision alist(1000),blist(1000),rlist(1000)
       double precision elist(1000)
       integer iord(1000)
       integer inf
       common /ALPHA/alpha
-      external book1,book3,book11,book16,book455
-
+      external book1,book3,book11,book15,book16,book455,myfn1
+      external myfn2
       call gsl_ieee_env_setup
 
       a = 0.0
@@ -217,19 +218,76 @@ c      do i=1,10
 c         write(6,4) i,alist(i),blist(i),rlist(i),elist(i),iord(i)
 c      enddo
 
-      alpha = 2.0
-      a = 0.0
-      inf = 1
-      epsabs = 0.0
-      epsrel = 1.0d-3
+c      alpha = 2.0
+c      a = 0.0
+c      inf = 1
+c      epsabs = 0.0
+c      epsrel = 1.0d-3
+c      limit = 1000
+c      print *, 'DQAGI abs'
+c      call dqagie(book455,a,inf,epsabs,epsrel,limit,result,abserr,
+c     $     neval,ier,alist,blist,rlist,elist,iord,last)
+c      write(6,3) result, abserr, neval, ier, last
+c      do i=1,20
+c         write(6,4) i,alist(i),blist(i),rlist(i),elist(i),iord(i)
+c      enddo
+
+c      alpha = 5.0
+c      a = 0.0
+c      inf = 1
+c      epsabs = 0.0
+c      epsrel = 1.0d-7
+c      limit = 1000
+c      print *, 'DQAGI abs'
+c      call dqagie(book15,a,inf,epsabs,epsrel,limit,result,abserr,
+c     $     neval,ier,alist,blist,rlist,elist,iord,last)
+c      write(6,3) result, abserr, neval, ier, last
+c      do i=1,20
+c         write(6,4) i,alist(i),blist(i),rlist(i),elist(i),iord(i)
+c      enddo
+
+c      alpha = 1.0
+c      a = 99.9
+c      inf = 1
+c      epsabs = 1.0d-7
+c      epsrel = 0.0
+c      limit = 1000
+c      print *, 'DQAGI abs'
+c      call dqagie(book16,a,inf,epsabs,epsrel,limit,result,abserr,
+c     $     neval,ier,alist,blist,rlist,elist,iord,last)
+c      write(6,3) result, abserr, neval, ier, last
+c      do i=1,20
+c        write(6,4) i,alist(i),blist(i),rlist(i),elist(i),iord(i)
+c      enddo
+
+c      alpha = 1.0
+c      a = 0.0
+c      inf = 2
+c      epsabs = 1.0d-7
+c      epsrel = 0.0
+c      limit = 1000
+c      print *, 'DQAGI abs'
+c      call dqagie(myfn1,a,inf,epsabs,epsrel,limit,result,abserr,
+c     $     neval,ier,alist,blist,rlist,elist,iord,last)
+c      write(6,3) result, abserr, neval, ier, last
+c      do i=1,20
+c         write(6,4) i,alist(i),blist(i),rlist(i),elist(i),iord(i)
+c      enddo
+
+      alpha = 1.0
+      b = 1.0
+      inf = -1
+      epsabs = 1.0d-7
+      epsrel = 0.0
       limit = 1000
-      print *, 'DQAGSI abs'
-      call dqagie(book455,a,inf,epsabs,epsrel,limit,result,abserr,
+      print *, 'DQAGI abs'
+      call dqagie(myfn2,b,inf,epsabs,epsrel,limit,result,abserr,
      $     neval,ier,alist,blist,rlist,elist,iord,last)
       write(6,3) result, abserr, neval, ier, last
       do i=1,20
          write(6,4) i,alist(i),blist(i),rlist(i),elist(i),iord(i)
       enddo
+
 
 
  1    format(
@@ -276,6 +334,12 @@ c      enddo
       book11=(log(1/x))**(alpha-1.0)
       end
 
+      double precision function book15(x)
+      double precision alpha,x
+      common /ALPHA/alpha
+      book15=(x**2.0)*exp(-x*(2.0**-alpha))
+      end
+
       double precision function book16(x)
       double precision alpha,x
       common /ALPHA/alpha
@@ -286,6 +350,20 @@ c      enddo
       double precision alpha,x
       common /ALPHA/alpha
       book455=log(x)/(1.0 + 100.0*x*x)
+      write(6,6661) x, book455
+ 6661 format("FF x = ", 1pe25.18, " book455 = ", 1pe25.18)
+      end
+
+      double precision function myfn1(x)
+      double precision alpha,x
+      common /ALPHA/alpha
+      myfn1=exp(-x - x**2.0)
+      end
+
+      double precision function myfn2(x)
+      double precision alpha,x
+      common /ALPHA/alpha
+      myfn2=exp(alpha*x)
       end
 
 
