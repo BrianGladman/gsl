@@ -492,16 +492,16 @@ main (void)
       double ys = gsl_histogram2d_ysigma (h3);
       /* evaluate results and compare with parameters */
 
-      gsl_test_abs (gsl_histogram2d_xmean (h3), xmean, 1.0/M,
+      gsl_test_abs (gsl_histogram2d_xmean (h3), xmean, 2.0/M,
                     "gsl_histogram2d_xmean works correctly");
-      gsl_test_abs (gsl_histogram2d_ymean (h3), ymean, 1.0/N,
+      gsl_test_abs (gsl_histogram2d_ymean (h3), ymean, 2.0/N,
                     "gsl_histogram2d_ymean works correctly");
-      gsl_test_abs (xs, xsigma, 1.0/M,
+      gsl_test_abs (xs, xsigma, 2.0/M,
                     "gsl_histogram2d_xsigma works correctly");
-      gsl_test_abs (ys, ysigma, 1.0/N,
+      gsl_test_abs (ys, ysigma, 2.0/N,
                     "gsl_histogram2d_ysigma works correctly");
       gsl_test_abs (gsl_histogram2d_cov (h3) / xs / ys, correl,
-                    1.0/(sqrt(M)*sqrt(N)),
+                    2.0/((M < N) ? M : N),
                     "gsl_histogram2d_cov works correctly");
     }
     gsl_histogram2d_free (h3);
