@@ -9,84 +9,112 @@
 #define SHORT complex_long_double
 #define ATOMIC long double
 #define MULTIPLICITY 2
+#define IN_FORMAT "%Lg"
+#define WANT_GET_PROTO 0
 
 #elif defined(BASE_GSL_COMPLEX)
 #define BASE gsl_complex
 #define SHORT complex
 #define ATOMIC double
 #define MULTIPLICITY 2
+#define IN_FORMAT "%lg"
+#define WANT_GET_PROTO 0
 
 #elif defined(BASE_GSL_COMPLEX_FLOAT)
 #define BASE gsl_complex_float
 #define SHORT complex_float
 #define ATOMIC float
 #define MULTIPLICITY 2
+#define IN_FORMAT "%g"
+#define WANT_GET_PROTO 0
 
 #elif defined(BASE_LONG_DOUBLE)
 #define BASE long double
 #define SHORT long_double
 #define ATOMIC long double
 #define MULTIPLICITY 1
+#define IN_FORMAT "%Lg"
+#define WANT_GET_PROTO 1
 
 #elif defined(BASE_DOUBLE)
 #define BASE double
 #define SHORT
 #define ATOMIC double
 #define MULTIPLICITY 1
+#define IN_FORMAT "%lg"
+#define WANT_GET_PROTO 1
 
 #elif defined(BASE_FLOAT)
 #define BASE float
 #define SHORT float
 #define ATOMIC float
 #define MULTIPLICITY 1
+#define IN_FORMAT "%g"
+#define WANT_GET_PROTO 1
 
 #elif defined(BASE_ULONG)
 #define BASE unsigned long
 #define SHORT ulong
 #define ATOMIC unsigned long
 #define MULTIPLICITY 1
+#define IN_FORMAT "%lu"
+#define WANT_GET_PROTO 1
 
 #elif defined(BASE_LONG)
 #define BASE long
 #define SHORT long
 #define ATOMIC long
 #define MULTIPLICITY 1
+#define IN_FORMAT "%ld"
+#define WANT_GET_PROTO 1
 
 #elif defined(BASE_UINT)
 #define BASE unsigned int
 #define SHORT uint
 #define ATOMIC unsigned int
 #define MULTIPLICITY 1
+#define IN_FORMAT "%u"
+#define WANT_GET_PROTO 1
 
 #elif defined(BASE_INT)
 #define BASE int
 #define SHORT int
 #define ATOMIC int
 #define MULTIPLICITY 1
+#define IN_FORMAT "%d"
+#define WANT_GET_PROTO 1
 
 #elif defined(BASE_USHORT)
 #define BASE unsigned short
 #define SHORT ushort
 #define ATOMIC unsigned short
 #define MULTIPLICITY 1
+#define IN_FORMAT "%hu"
+#define WANT_GET_PROTO 1
 
 #elif defined(BASE_SHORT)
 #define BASE short
 #define SHORT short
 #define ATOMIC short
 #define MULTIPLICITY 1
+#define IN_FORMAT "%hd"
+#define WANT_GET_PROTO 1
 
 #elif defined(BASE_UCHAR)
 #define BASE unsigned char
 #define SHORT uchar
 #define ATOMIC unsigned char
 #define MULTIPLICITY 1
+#define IN_FORMAT "%c"
+#define WANT_GET_PROTO 1
 
 #elif defined(BASE_CHAR)
 #define BASE char
 #define SHORT char
 #define ATOMIC char
 #define MULTIPLICITY 1
+#define IN_FORMAT "%c"
+#define WANT_GET_PROTO 1
 
 #else
 #error unknown BASE_ directive in source.h

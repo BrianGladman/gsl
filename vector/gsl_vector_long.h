@@ -17,8 +17,8 @@ gsl_vector_long * gsl_vector_long_alloc (size_t n);
 gsl_vector_long * gsl_vector_long_calloc (size_t n);
 void gsl_vector_long_free (gsl_vector_long * v);
 
-long gsl_vector_long_get(const gsl_vector_long * v, const size_t i);
-void gsl_vector_long_set(gsl_vector_long * v, const size_t i, const long x);
+long * gsl_vector_long_ptr(const gsl_vector_long * v, const size_t i);
+long   gsl_vector_long_get(const gsl_vector_long * v, const size_t i);
 
 int gsl_vector_long_fread (FILE * stream, gsl_vector_long * v) ;
 int gsl_vector_long_fwrite (FILE * stream, const gsl_vector_long * v) ;
@@ -34,9 +34,23 @@ int gsl_block_long_fprintf (FILE * stream, const long * data, size_t n,
 
 extern int gsl_check_range ;
 
-/* inline functions if you are using GCC */
+
 
 #ifdef HAVE_INLINE
+
+extern inline 
+long *
+gsl_vector_long_ptr(const gsl_vector_long * v, const size_t i)
+{
+#ifndef GSL_RANGE_CHECK_OFF
+  if (i >= v->size)  /* size_t is unsigned, can't be negative */
+    {
+      GSL_ERROR_RETURN("index out of range", GSL_EINVAL, 0) ;
+    }
+#endif
+  return (long *) (v->data + i) ;
+} 
+
 extern inline 
 long
 gsl_vector_long_get(const gsl_vector_long * v, const size_t i)
@@ -47,21 +61,9 @@ gsl_vector_long_get(const gsl_vector_long * v, const size_t i)
       GSL_ERROR_RETURN("index out of range", GSL_EINVAL, 0) ;
     }
 #endif
-  return v->data[i] ;
+  return v->data[i];
 } 
 
-extern inline 
-void
-gsl_vector_long_set(gsl_vector_long * v, const size_t i, const long x)
-{
-#ifndef GSL_RANGE_CHECK_OFF
-  if (i >= v->size) /* size_t is unsigned, can't be negative */
-    {
-      GSL_ERROR_RETURN_NOTHING("index out of range", GSL_EINVAL) ;
-    }
-#endif
-  v->data[i] = x ;
-}
-#endif
+#endif /* HAVE_INLINE */
 
-#endif /* GSL_VECTOR_LONG_H */
+#endif /* !GSL_VECTOR_LONG_H */
