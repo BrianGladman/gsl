@@ -65,7 +65,7 @@ int gsl_monte_plain_integrate(gsl_monte_plain_state *state,
   }
   *res = vol * sum/calls;
   if ( calls > 1) {
-    *err = vol * sqrt(GSL_MAX(TINY, (sum2-sum*sum/calls)/(calls*(calls-1))));
+    *err = vol * sqrt(GSL_MAX(TINY, (sum2-sum*sum/calls)/(calls*(calls-1.0))));
   }
   else {
     /* should't happen, validate should catch */

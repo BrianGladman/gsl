@@ -1,3 +1,9 @@
+Thu Oct 26 20:06:36 2000  Brian Gough  <bjg@network-theory.co.uk>
+
+	* plain.c (gsl_monte_plain_integrate): integer factor
+ 	calls*(calls-1) used in numerical expression can easily overflow,
+ 	changed to calls*(calls-1.0).
+	
 Sat Oct 21 20:36:06 2000  Brian Gough  <bjg@network-theory.co.uk>
  
         * miser.c (gsl_monte_miser_integrate): fixed bug where hits_l was
