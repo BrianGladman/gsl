@@ -463,8 +463,6 @@ main (void)
   double h = 1e-6;
   double y[2] = @{ 1.0, 0.0 @};
 
-  gsl_ieee_env_setup();
-
   while (t < t1)
     @{
       int status = gsl_odeiv_evolve_apply (e, c, s,
@@ -521,7 +519,57 @@ following main loop prints the solution at the fixed points @math{t = 0,
       printf("%.5e %.5e %.5e\n", t, y[0], y[1]);
     @}
 @end example
+@noindent
+It is also possible to work with a non-adaptive integrator, using only
+the stepping function itself.  The following program uses the @code{rk4}
+fourth-order Runge-Kutta stepping function with a fixed stepsize of
+0.01,
 
+@example
+int
+main (void)
+@{
+  const gsl_odeiv_step_type * T 
+    = gsl_odeiv_step_rk4;
+
+  gsl_odeiv_step * s 
+    = gsl_odeiv_step_alloc (T, 2);
+
+  double mu = 10;
+  gsl_odeiv_system sys = @{func, jac, 2, &mu@};
+
+  double t = 0.0, t1 = 100.0;
+  double h = 1e-2;
+  double y[2] = @{ 1.0, 0.0 @}, y_err[2], dfdy[4], dydt_in[2], dydt_out[2];
+
+  /* initialise dydt_in */
+  GSL_ODEIV_JA_EVAL(&sys, t, y, dfdy, dydt_in);
+
+  while (t < t1)
+    @{
+      int status = gsl_odeiv_step_apply (s, t, h, y, y_err, 
+                                         dydt_in, dydt_out, &sys);
+
+      if (status != GSL_SUCCESS)
+          break;
+
+      dydt_in[0] = dydt_out[0];
+      dydt_in[1] = dydt_out[1];
+
+      t += h;
+
+      printf("%.5e %.5e %.5e\n", t, y[0], y[1]);
+    @}
+
+  gsl_odeiv_step_free(s);
+  return 0;
+@}
+@end example
+@noindent
+The derivatives and jacobian must be initialised for the starting point
+@math{t=0} before the first step is taken.  Subsequent steps use the
+output derivatives @var{dydt_out} as inputs to the next step by copying
+their values into @var{dydt_in}.
 
 @node ODE References and Further Reading
 @section References and Further Reading
