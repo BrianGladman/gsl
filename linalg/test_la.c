@@ -50,6 +50,10 @@ test_matmult(void)
   s += ( fabs(gsl_matrix_get(C, 1, 1) -  65.0) > GSL_DBL_EPSILON );
   s += ( fabs(gsl_matrix_get(C, 1, 2) -  42.0) > GSL_DBL_EPSILON );
 
+  gsl_matrix_free(A);
+  gsl_matrix_free(B);
+  gsl_matrix_free(C);
+
   return s;
 }
 
@@ -126,6 +130,10 @@ test_matmult_mod(void)
   s += ( fabs(gsl_matrix_get(C, 2, 0) -  49.0) > GSL_DBL_EPSILON );
   s += ( fabs(gsl_matrix_get(C, 2, 1) -  30.0) > GSL_DBL_EPSILON );
   s += ( fabs(gsl_matrix_get(C, 2, 2) -  30.0) > GSL_DBL_EPSILON );
+
+  gsl_matrix_free(A);
+  gsl_matrix_free(B);
+  gsl_matrix_free(C);
 
   return s;
 }

@@ -13,7 +13,7 @@
 
 #include "enorm.c"
 
-/* Broyden's method, not the most efficient or modern algorithm but
+/* Broyden's method. It is not an efficient or modern algorithm but
    gives an example of a rank-1 update.
 
    C.G. Broyden, "A Class of Methods for Solving Nonlinear
@@ -37,20 +37,19 @@ typedef struct
   }
 broyden_state_t;
 
-int broyden_init (void *vstate, gsl_multiroot_function * function, gsl_vector * x, gsl_vector * f, gsl_vector * dx);
+int broyden_alloc (void *vstate, size_t n);
+int broyden_set (void *vstate, gsl_multiroot_function * function, gsl_vector * x, gsl_vector * f, gsl_vector * dx);
 int broyden_iterate (void *vstate, gsl_multiroot_function * function, gsl_vector * x, gsl_vector * f, gsl_vector * dx);
 void broyden_free (void *vstate);
 
 
 int
-broyden_init (void *vstate, gsl_multiroot_function * function, gsl_vector * x, gsl_vector * f, gsl_vector * dx)
+broyden_alloc (void *vstate, size_t n)
 {
   broyden_state_t *state = (broyden_state_t *) vstate;
-  size_t i, j, n = function->n;
   gsl_vector *v, *w, *y, *fnew, *x_trial, *p;
   gsl_vector_int *perm;
   gsl_matrix *m, *H;
-  int signum = 0;
 
   m = gsl_matrix_calloc (n, n);
 
@@ -177,15 +176,25 @@ broyden_init (void *vstate, gsl_multiroot_function * function, gsl_vector * x, g
 
   state->p = p;
 
+  return GSL_SUCCESS;
+}
+
+int
+broyden_set (void *vstate, gsl_multiroot_function * function, gsl_vector * x, gsl_vector * f, gsl_vector * dx)
+{
+  broyden_state_t *state = (broyden_state_t *) vstate;
+  size_t i, j, n = function->n;
+  int signum = 0;
+
   GSL_MULTIROOT_FN_EVAL (function, x, f);
 
-  gsl_multiroot_fdjacobian (function, x, f, GSL_SQRT_DBL_EPSILON, m);
-  gsl_la_decomp_LU_impl (m, perm, &signum);
-  gsl_la_invert_LU (m, perm, H);
+  gsl_multiroot_fdjacobian (function, x, f, GSL_SQRT_DBL_EPSILON, state->lu);
+  gsl_la_decomp_LU_impl (state->lu, state->permutation, &signum);
+  gsl_la_invert_LU (state->lu, state->permutation, state->H);
 
   for (i = 0; i < n; i++)
     for (j = 0; j < n; j++)
-      gsl_matrix_set(H,i,j,-gsl_matrix_get(H,i,j));
+      gsl_matrix_set(state->H,i,j,-gsl_matrix_get(state->H,i,j));
 
   for (i = 0; i < n; i++)
     {
@@ -196,9 +205,6 @@ broyden_init (void *vstate, gsl_multiroot_function * function, gsl_vector * x, g
 
   return GSL_SUCCESS;
 }
-
-
-
 
 int
 broyden_iterate (void *vstate, gsl_multiroot_function * function, gsl_vector * x, gsl_vector * f, gsl_vector * dx)
@@ -217,7 +223,7 @@ broyden_iterate (void *vstate, gsl_multiroot_function * function, gsl_vector * x
   gsl_matrix *lu = state->lu;
   gsl_vector_int *perm = state->permutation;
 
-  size_t i, j;
+  size_t i, j, iter;
 
   size_t n = function->n;
 
@@ -237,6 +243,7 @@ restart:
     }
 
   t = 1;
+  iter = 0;
 
   phi0 = state->phi;
 
@@ -253,11 +260,33 @@ new_step:
 
   phi1 = enorm (fnew);
 
-  if (phi1 > phi0 && t > 0.01)   /* full step goes uphill, take a reduced step instead */
+  iter++ ;
+
+  if (phi1 > phi0 && iter < 10)
     {
-      double theta = phi1 / phi0;
-      t *= (sqrt (1.0 + 6.0 * theta) - 1.0) / (3.0 * theta);
-      goto new_step;
+      /* full step goes uphill, take a reduced step instead */
+      
+      if (t > 0.1)
+        {
+          double theta = phi1 / phi0;
+          t *= (sqrt (1.0 + 6.0 * theta) - 1.0) / (3.0 * theta);
+          goto new_step;
+        }
+      else
+        {
+          /* need to recompute Jacobian */
+          int signum = 0;
+          
+          gsl_multiroot_fdjacobian (function, x, f, GSL_SQRT_DBL_EPSILON, lu);
+          gsl_la_decomp_LU_impl (lu, perm, &signum);
+          gsl_la_invert_LU (lu, perm, H);
+          
+          for (i = 0; i < n; i++)
+            for (j = 0; j < n; j++)
+              gsl_matrix_set(H,i,j,-gsl_matrix_get(H,i,j));
+
+          goto restart;
+        }
     }
 
   /* y = f' - f */
@@ -293,19 +322,6 @@ new_step:
 
   if (lambda == 0)
     {
-      /* need to recompute Jacobian */
-      int signum = 0;
-
-      gsl_multiroot_fdjacobian (function, x, f, GSL_SQRT_DBL_EPSILON, lu);
-      gsl_la_decomp_LU_impl (lu, perm, &signum);
-      gsl_la_invert_LU (lu, perm, H);
-      
-      for (i = 0; i < n; i++)
-        for (j = 0; j < n; j++)
-          gsl_matrix_set(H,i,j,-gsl_matrix_get(H,i,j));
-      printf("restart\n");  /* FIXME: poor convergence */
-      goto restart;
-
       GSL_ERROR ("approximation to Jacobian has collapsed", GSL_EZERODIV) ;
     }
 
@@ -389,7 +405,8 @@ broyden_free (void *vstate)
 static const gsl_multiroot_fsolver_type broyden_type =
 {"broyden",			/* name */
  sizeof (broyden_state_t),
- &broyden_init,
+ &broyden_alloc,
+ &broyden_set,
  &broyden_iterate,
  &broyden_free};
 

@@ -67,7 +67,6 @@ gsl_multiroot_fdfsolver_alloc (const gsl_multiroot_fdfsolver_type * T,
       GSL_ERROR_RETURN ("failed to allocate space for dx", GSL_ENOMEM, 0);
     }
 
-
   s->state = malloc (T->size);
 
   if (s->state == 0)
@@ -83,11 +82,26 @@ gsl_multiroot_fdfsolver_alloc (const gsl_multiroot_fdfsolver_type * T,
     }
 
   s->type = T ;
+
+  status = (s->type->alloc)(s->state, n);
+
+  if (status != GSL_SUCCESS)
+    {
+      free (s->state);
+      gsl_vector_free (s->dx);
+      gsl_vector_free (s->x);
+      gsl_vector_free (s->f);
+      gsl_matrix_free (s->J);
+      free (s);		/* exception in constructor, avoid memory leak */
+      
+      GSL_ERROR_RETURN ("failed to set solver", status, 0);
+    }
   
   status = gsl_multiroot_fdfsolver_set (s, f, x); /* seed the generator */
   
   if (status != GSL_SUCCESS)
     {
+      (s->type->free)(s->state);
       free (s->state);
       gsl_vector_free (s->dx);
       gsl_vector_free (s->x);

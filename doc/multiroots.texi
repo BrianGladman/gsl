@@ -1,4 +1,95 @@
 This chapter describes functions for solving multidimensional nonlinear
-equations.
+equations (with @math{n} equations in @math{n} unknowns). The library
+provides low level components for a variety of iterative solvers and
+convergence tests. These can be combined by the user to achieve the
+desired solution, with full access to the intermediate steps of the
+iteration. Each class of methods uses the same framework, so that you
+can switch between solvers at runtime without needing to recompile your
+program. Each instance of a solver keeps track of its own state,
+allowing the solvers to be used in multi-threaded programs.
 
+The header file @file{gsl_multiroots.h} contains prototypes for the
+multidimensional root finding functions and related declarations.
 
+@menu
+* Multidimensional Root Finding Overview::  
+* Multidimensional Root Finding References and Further Reading::  
+@end menu
+
+@node Multidimensional Root Finding Overview
+@section Overview
+@cindex multidimensional root finding, overview
+
+The problem of multidimensional root finding requires the simultaneous
+solution of @math{n} equations, @math{f_i}, in @math{n} variables,
+@math{x_i},
+
+@tex
+\beforedisplay
+$$
+f_i (x_1, \dots, x_n) = 0 \qquad\hbox{for}~i = 1 \dots n.
+$$
+\afterdisplay
+@end tex
+@ifinfo
+@example
+f_i (x_1, ..., x_n) = 0    for i = 1 ... n.
+@end example
+@end ifinfo
+@noindent
+In general there are no bracketing methods available for @math{n}
+dimensional systems, and no way of knowing whether any solutions
+exist. All algorithms proceed from an initial guess using a variant of
+the Newton iteration,
+
+@tex
+\beforedisplay
+$$
+x \to x - J^{-1} F(x)
+$$
+\afterdisplay
+@end tex
+@ifinfo
+@example
+x -> x - J^@{-1@} F(x)
+@end example
+@end ifinfo
+@noindent
+where @math{x}, @math{F} are vector quantities and @math{J} is the
+Hessian matrix @c{$J_{ij} = \partial F_i / \partial x_j$} 
+@math{J_@{ij@} = d F_i / d x_j}.
+Additional strategies are also used to enlarge the region of
+convergence. These include requiring a decrease the norm @math{|F|} on
+each iteration proposed by Newton's method, or taking downwards steps in
+the direction of the negative gradient of @math{|F|}.
+
+The evaluation of the Hessian matrix can be problematic, either because
+the function is sufficiently complicated for programming of the
+derivatives to be intractable or because the repeated computation of the
+@math{n^2} terms of the matrix becomes too expensive. For these reasons
+the algorithms provided by the library fall into two classes according
+to whether the derivatives are available or not.
+
+The state for solvers with an analytic Hessian matrix is held in a
+@code{gsl_multiroot_fdfsolver} struct. The updating procedure requires
+both the function and its derivatives to be supplied by the user.
+
+The state for solvers which do not use an analytic Hessian matrix is
+held in a @code{gsl_multiroot_fsolver} struct. The updating procedure
+uses only function evaluations (not derivatives).  The algorithms
+estimate the matrix @math{J} or @c{$J^@{-1@}$} 
+@math{J^@{-1@}} by approximate methods.
+
+@node Multidimensional Root Finding References and Further Reading
+@section References and Further Reading
+
+@itemize @asis
+@item
+C.G. Broyden, "A Class of Methods for Solving Nonlinear
+Simultaneous Equations", @cite{Mathematics of Computation}, vol 19 (1965),
+p 577-593
+
+@item
+J.J. Mor@'e, M.Y. Cosnard, "Numerical Solution of Nonlinear Equations",
+@cite{ACM Transactions on Mathematical Software}, Vol 5, No 1, (1979), p 64-85
+@end itemize

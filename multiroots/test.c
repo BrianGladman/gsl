@@ -30,8 +30,8 @@ main (void)
 
   while (*T1 != 0) 
     {
-      test_f ("Rosenbrock", &rosenbrock, rosenbrock_initpt, *T1);
-      test_f ("Powell singular", &powellsing, powellsing_initpt, *T1); 
+      test_f ("Rosenbrock", &rosenbrock, rosenbrock_initpt, *T1); 
+      test_f ("Powell singular", &powellsing, powellsing_initpt, *T1);  
       test_f ("Powell badly scaled", &powellscal, powellscal_initpt, *T1); 
       test_f ("Wood", &wood, wood_initpt, *T1); 
       test_f ("Helical", &helical, helical_initpt, *T1); 
@@ -128,8 +128,8 @@ test_f (const char * desc, gsl_multiroot_function_fdf * fdf,
       status = gsl_multiroot_fsolver_iterate (s);
       status = gsl_multiroot_test_residual (s->f, 0.0000001);
 
-/*    printf("x "); gsl_vector_fprintf (stdout, s->x, "%g"); printf("\n");  */
-/*    printf("f "); gsl_vector_fprintf (stdout, s->f, "%g"); printf("\n");  */
+/*     printf("x "); gsl_vector_fprintf (stdout, s->x, "%g"); printf("\n");  */
+/*     printf("f "); gsl_vector_fprintf (stdout, s->f, "%g"); printf("\n");   */
 
     }
   while (status == GSL_CONTINUE);

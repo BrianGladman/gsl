@@ -69,6 +69,20 @@ gsl_multiroot_fsolver_alloc (const gsl_multiroot_fsolver_type * T,
     }
 
   s->type = T ;
+
+  status = (s->type->alloc)(s->state, n);
+
+  if (status != GSL_SUCCESS)
+    {
+      (s->type->free)(s->state);
+      free (s->state);
+      gsl_vector_free (s->dx);
+      gsl_vector_free (s->x);
+      gsl_vector_free (s->f);
+      free (s);		/* exception in constructor, avoid memory leak */
+      
+      GSL_ERROR_RETURN ("failed to set solver", status, 0);
+    }
   
   status = gsl_multiroot_fsolver_set (s, f, x); /* seed the generator */
   

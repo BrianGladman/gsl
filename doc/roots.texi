@@ -34,12 +34,12 @@ finding functions and related declarations.
 @end menu
 
 @node Root Finding Overview
-@section Root Finding Overview
+@section Overview
 @cindex root finding, overview
 
-Root finding algorithms can be divided into two classes, @dfn{root
-bracketing} and @dfn{root polishing}. Algorithms which proceed by
-bracketing a root are guaranteed to converge. Bracketing algorithms
+One-dimensional root finding algorithms can be divided into two classes,
+@dfn{root bracketing} and @dfn{root polishing}. Algorithms which proceed
+by bracketing a root are guaranteed to converge. Bracketing algorithms
 begin with a bounded region known to contain a root. The size of this
 bounded region is reduced, iteratively, until it encloses the root to a
 desired tolerance. This provides a rigorous error estimate for the
@@ -79,7 +79,7 @@ and its derivative (hence the name @code{fdf}) to be supplied by the
 user.
 
 @node Root Finding Caveats
-@section Root Finding Caveats
+@section Caveats
 @cindex root finding, caveats
 
 Note that root finding functions can only search for one root at a time.
@@ -371,7 +371,7 @@ depends on the context in which the interval is used.
 @end deftp
 
 @node Root Finding Iteration
-@section Root Finding Iteration
+@section Iteration
 
 The following functions drive the iteration of each algorithm. Each
 function performs one iteration to update the state of any solver of the
@@ -792,7 +792,7 @@ the function is not well-behaved.
 @end deffn
 
 @node Root Finding Examples
-@section Root Finding Examples
+@section Examples
 
 For any root finding algorithm we need to prepare the function to be
 solved.  For this example we will use the general quadratic equation
@@ -1035,7 +1035,7 @@ The other derivative solvers can be investigated by changing
 @code{gsl_root_fdfsolver_steffenson}.
 
 @node Root Finding References and Further Reading
-@section Root Finding References and Further Reading
+@section References and Further Reading
 
 For information on the Brent-Dekker algorithm see the following two
 papers,

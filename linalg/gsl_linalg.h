@@ -72,7 +72,7 @@ int gsl_la_invert_LU (const gsl_matrix     * lu_matrix,
                       gsl_matrix           * inverse);
 
 double gsl_la_det_LU (gsl_matrix * lu_matrix, int signum);
-int gsl_la_lndet_LU (gsl_matrix * lu_matrix);
+double gsl_la_lndet_LU (gsl_matrix * lu_matrix);
 int gsl_la_sgndet_LU (gsl_matrix * lu_matrix, int signum);
 
 

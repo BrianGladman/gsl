@@ -18,15 +18,15 @@ typedef struct
   }
 newton_state_t;
 
-int newton_init (void * vstate, gsl_multiroot_function_fdf * fdf, gsl_vector * x, gsl_vector * f, gsl_matrix * J, gsl_vector * dx);
+int newton_alloc (void * vstate, size_t n);
+int newton_set (void * vstate, gsl_multiroot_function_fdf * fdf, gsl_vector * x, gsl_vector * f, gsl_matrix * J, gsl_vector * dx);
 int newton_iterate (void * vstate, gsl_multiroot_function_fdf * fdf, gsl_vector * x, gsl_vector * f, gsl_matrix * J, gsl_vector * dx);
 void newton_free (void * vstate);
 
 int
-newton_init (void * vstate, gsl_multiroot_function_fdf * FDF, gsl_vector * x, gsl_vector * f, gsl_matrix * J, gsl_vector * dx)
+newton_alloc (void * vstate, size_t n)
 {
   newton_state_t * state = (newton_state_t *) vstate;
-  size_t i, n = FDF->n ;
   gsl_vector_int * p;
   gsl_matrix * m;
 
@@ -49,6 +49,18 @@ newton_init (void * vstate, gsl_multiroot_function_fdf * FDF, gsl_vector * x, gs
     }
 
   state->permutation = p ;
+
+  return GSL_SUCCESS;
+}
+
+int 
+newton_set (void * vstate, gsl_multiroot_function_fdf * FDF, gsl_vector * x, gsl_vector * f, gsl_matrix * J, gsl_vector * dx)
+{
+  newton_state_t * state = (newton_state_t *) vstate;
+
+  size_t i, n = FDF->n ;
+
+  state = 0 ; /* avoid warnings about unused parameters */
 
   GSL_MULTIROOT_FN_EVAL_F_DF (FDF, x, f, J);
 
@@ -105,7 +117,8 @@ newton_free (void * vstate)
 static const gsl_multiroot_fdfsolver_type newton_type =
 {"newton",				/* name */
  sizeof (newton_state_t),
- &newton_init,
+ &newton_alloc,
+ &newton_set,
  &newton_iterate,
  &newton_free};
 

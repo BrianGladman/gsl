@@ -26,15 +26,15 @@ typedef struct
   }
 dnewton_state_t;
 
-int dnewton_init (void * vstate, gsl_multiroot_function * function, gsl_vector * x, gsl_vector * f, gsl_vector * dx);
+int dnewton_alloc (void * vstate, size_t n);
+int dnewton_set (void * vstate, gsl_multiroot_function * function, gsl_vector * x, gsl_vector * f, gsl_vector * dx);
 int dnewton_iterate (void * vstate, gsl_multiroot_function * function, gsl_vector * x, gsl_vector * f, gsl_vector * dx);
 void dnewton_free (void * vstate);
 
 int
-dnewton_init (void * vstate, gsl_multiroot_function * function, gsl_vector * x, gsl_vector * f, gsl_vector * dx)
+dnewton_alloc (void * vstate, size_t n)
 {
   dnewton_state_t * state = (dnewton_state_t *) vstate;
-  size_t i, n = function->n ;
   gsl_vector_int * p;
   gsl_matrix * m, * J;
 
@@ -69,6 +69,15 @@ dnewton_init (void * vstate, gsl_multiroot_function * function, gsl_vector * x, 
     }
 
   state->J = J;
+
+  return GSL_SUCCESS;
+}
+
+int
+dnewton_set (void * vstate, gsl_multiroot_function * function, gsl_vector * x, gsl_vector * f, gsl_vector * dx)
+{
+  dnewton_state_t * state = (dnewton_state_t *) vstate;
+  size_t i, n = function->n ;
 
   GSL_MULTIROOT_FN_EVAL (function, x, f);
 
@@ -129,7 +138,8 @@ dnewton_free (void * vstate)
 static const gsl_multiroot_fsolver_type dnewton_type =
 {"dnewton",				/* name */
  sizeof (dnewton_state_t),
- &dnewton_init,
+ &dnewton_alloc,
+ &dnewton_set,
  &dnewton_iterate,
  &dnewton_free};
 

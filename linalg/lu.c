@@ -39,7 +39,7 @@ gsl_la_decomp_LU_impl(gsl_matrix * matrix,
   else {
     const size_t N = matrix->size1;
     size_t i, j, k;
-    size_t i_pivot;
+    size_t i_pivot = 0;
     REAL * scale = (REAL *) malloc(N * sizeof(REAL));
 
     if(scale == 0) {
@@ -231,10 +231,19 @@ gsl_la_invert_LU (const gsl_matrix     * lu_matrix,
 
   for (i = 0; i < n ; i++)
     {
+      int status;
+
       gsl_vector w = {0, 0, 0, 0};
       gsl_vector_view_col_from_matrix(&w, inverse, i);
-      gsl_la_solve_LU_impl(lu_matrix,permutation,&w,&w);
+      status = gsl_la_solve_LU_impl(lu_matrix,permutation,&w,&w);
+
+      if (status)
+        {
+          GSL_ERROR ("failed to solve for column", status);
+        }
     }
+
+  return GSL_SUCCESS;
 }
 
 double
@@ -253,7 +262,7 @@ gsl_la_det_LU (gsl_matrix * lu_matrix, int signum)
 }
 
 
-int
+double
 gsl_la_lndet_LU (gsl_matrix * lu_matrix)
 {
   size_t i, n = lu_matrix->size1;
