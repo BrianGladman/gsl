@@ -1,6 +1,7 @@
 /* blas/blas.c
  * 
- * Copyright (C) 1996, 1997, 1998, 1999, 2000 Gerard Jungman
+ * Copyright (C) 1996, 1997, 1998, 1999, 2000, 2001 Gerard Jungman & Brian 
+ * Gough
  * 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -220,26 +221,22 @@ gsl_blas_dzasum (const gsl_vector_complex * X)
 
 /* Maximum elements of vectors */
 
-CBLAS_INDEX_t
-gsl_blas_isamax (const gsl_vector_float * X)
+CBLAS_INDEX_t gsl_blas_isamax (const gsl_vector_float * X)
 {
   return cblas_isamax (X->size, X->data, X->stride);
 }
 
-CBLAS_INDEX_t
-gsl_blas_idamax (const gsl_vector * X)
+CBLAS_INDEX_t gsl_blas_idamax (const gsl_vector * X)
 {
   return cblas_idamax (X->size, X->data, X->stride);
 }
 
-CBLAS_INDEX_t
-gsl_blas_icamax (const gsl_vector_complex_float * X)
+CBLAS_INDEX_t gsl_blas_icamax (const gsl_vector_complex_float * X)
 {
   return cblas_icamax (X->size, X->data, X->stride);
 }
 
-CBLAS_INDEX_t
-gsl_blas_izamax (const gsl_vector_complex * X)
+CBLAS_INDEX_t gsl_blas_izamax (const gsl_vector_complex * X)
 {
   return cblas_izamax (X->size, X->data, X->stride);
 }
@@ -1612,16 +1609,15 @@ gsl_blas_ssyrk (CBLAS_UPLO_t Uplo, CBLAS_TRANSPOSE_t Trans, float alpha,
       GSL_ERROR ("invalid length", GSL_EBADLEN);
     }
 
-  cblas_ssyrk (CblasRowMajor, Uplo, Trans, N, K, alpha, A->data, A->tda, beta, C->data,
-	       C->tda);
+  cblas_ssyrk (CblasRowMajor, Uplo, Trans, N, K, alpha, A->data, A->tda, beta,
+	       C->data, C->tda);
   return GSL_SUCCESS;
 }
 
 
 int
-gsl_blas_dsyrk (CBLAS_UPLO_t Uplo, CBLAS_TRANSPOSE_t Trans,
-		double alpha, const gsl_matrix * A, double beta,
-		gsl_matrix * C)
+gsl_blas_dsyrk (CBLAS_UPLO_t Uplo, CBLAS_TRANSPOSE_t Trans, double alpha,
+		const gsl_matrix * A, double beta, gsl_matrix * C)
 {
   const size_t M = C->size1;
   const size_t N = C->size2;
@@ -1636,8 +1632,8 @@ gsl_blas_dsyrk (CBLAS_UPLO_t Uplo, CBLAS_TRANSPOSE_t Trans,
       GSL_ERROR ("invalid length", GSL_EBADLEN);
     }
 
-  cblas_dsyrk (CblasRowMajor, Uplo, Trans, N, K, alpha, A->data, A->tda, beta, C->data,
-	       C->tda);
+  cblas_dsyrk (CblasRowMajor, Uplo, Trans, N, K, alpha, A->data, A->tda, beta,
+	       C->data, C->tda);
   return GSL_SUCCESS;
 
 }
@@ -1662,8 +1658,8 @@ gsl_blas_csyrk (CBLAS_UPLO_t Uplo, CBLAS_TRANSPOSE_t Trans,
       GSL_ERROR ("invalid length", GSL_EBADLEN);
     }
 
-  cblas_csyrk (CblasRowMajor, Uplo, Trans, N, MA, GSL_COMPLEX_P (alpha), A->data, A->tda,
-	       GSL_COMPLEX_P (beta), C->data, C->tda);
+  cblas_csyrk (CblasRowMajor, Uplo, Trans, N, MA, GSL_COMPLEX_P (alpha),
+	       A->data, A->tda, GSL_COMPLEX_P (beta), C->data, C->tda);
   return GSL_SUCCESS;
 }
 
@@ -1686,16 +1682,16 @@ gsl_blas_zsyrk (CBLAS_UPLO_t Uplo, CBLAS_TRANSPOSE_t Trans,
       GSL_ERROR ("invalid length", GSL_EBADLEN);
     }
 
-  cblas_zsyrk (CblasRowMajor, Uplo, Trans, N, K, GSL_COMPLEX_P (alpha), A->data, A->tda,
-	       GSL_COMPLEX_P (beta), C->data, C->tda);
+  cblas_zsyrk (CblasRowMajor, Uplo, Trans, N, K, GSL_COMPLEX_P (alpha),
+	       A->data, A->tda, GSL_COMPLEX_P (beta), C->data, C->tda);
   return GSL_SUCCESS;
 }
 
 /* HERK */
 
 int
-gsl_blas_cherk (CBLAS_UPLO_t Uplo, CBLAS_TRANSPOSE_t Trans,
-		float alpha, const gsl_matrix_complex_float * A, float beta,
+gsl_blas_cherk (CBLAS_UPLO_t Uplo, CBLAS_TRANSPOSE_t Trans, float alpha,
+		const gsl_matrix_complex_float * A, float beta,
 		gsl_matrix_complex_float * C)
 {
   const size_t M = C->size1;
@@ -1711,15 +1707,15 @@ gsl_blas_cherk (CBLAS_UPLO_t Uplo, CBLAS_TRANSPOSE_t Trans,
       GSL_ERROR ("invalid length", GSL_EBADLEN);
     }
 
-  cblas_cherk (CblasRowMajor, Uplo, Trans, N, K, alpha, A->data, A->tda,
-	       beta, C->data, C->tda);
+  cblas_cherk (CblasRowMajor, Uplo, Trans, N, K, alpha, A->data, A->tda, beta,
+	       C->data, C->tda);
   return GSL_SUCCESS;
 }
 
 
 int
-gsl_blas_zherk (CBLAS_UPLO_t Uplo, CBLAS_TRANSPOSE_t Trans,
-		double alpha, const gsl_matrix_complex * A, double beta,
+gsl_blas_zherk (CBLAS_UPLO_t Uplo, CBLAS_TRANSPOSE_t Trans, double alpha,
+		const gsl_matrix_complex * A, double beta,
 		gsl_matrix_complex * C)
 {
   const size_t M = C->size1;
@@ -1735,8 +1731,8 @@ gsl_blas_zherk (CBLAS_UPLO_t Uplo, CBLAS_TRANSPOSE_t Trans,
       GSL_ERROR ("invalid length", GSL_EBADLEN);
     }
 
-  cblas_zherk (CblasRowMajor, Uplo, Trans, N, K, alpha, A->data, A->tda,
-	       beta, C->data, C->tda);
+  cblas_zherk (CblasRowMajor, Uplo, Trans, N, K, alpha, A->data, A->tda, beta,
+	       C->data, C->tda);
   return GSL_SUCCESS;
 }
 
@@ -1763,16 +1759,16 @@ gsl_blas_ssyr2k (CBLAS_UPLO_t Uplo, CBLAS_TRANSPOSE_t Trans, float alpha,
       GSL_ERROR ("invalid length", GSL_EBADLEN);
     }
 
-  cblas_ssyr2k (CblasRowMajor, Uplo, Trans, N, NA, alpha, A->data, A->tda, B->data, B->tda,
-		beta, C->data, C->tda);
+  cblas_ssyr2k (CblasRowMajor, Uplo, Trans, N, NA, alpha, A->data, A->tda,
+		B->data, B->tda, beta, C->data, C->tda);
   return GSL_SUCCESS;
 }
 
 
 int
-gsl_blas_dsyr2k (CBLAS_UPLO_t Uplo, CBLAS_TRANSPOSE_t Trans,
-		 double alpha, const gsl_matrix * A, const gsl_matrix * B,
-		 double beta, gsl_matrix * C)
+gsl_blas_dsyr2k (CBLAS_UPLO_t Uplo, CBLAS_TRANSPOSE_t Trans, double alpha,
+		 const gsl_matrix * A, const gsl_matrix * B, double beta,
+		 gsl_matrix * C)
 {
   const size_t M = C->size1;
   const size_t N = C->size2;
@@ -1790,14 +1786,14 @@ gsl_blas_dsyr2k (CBLAS_UPLO_t Uplo, CBLAS_TRANSPOSE_t Trans,
       GSL_ERROR ("invalid length", GSL_EBADLEN);
     }
 
-  cblas_dsyr2k (CblasRowMajor, Uplo, Trans, N, NA, alpha, A->data, A->tda, B->data, B->tda,
-		beta, C->data, C->tda);
+  cblas_dsyr2k (CblasRowMajor, Uplo, Trans, N, NA, alpha, A->data, A->tda,
+		B->data, B->tda, beta, C->data, C->tda);
   return GSL_SUCCESS;
 }
 
 
 int
-gsl_blas_csyr2k (CBLAS_UPLO_t Uplo, CBLAS_TRANSPOSE_t Trans, 
+gsl_blas_csyr2k (CBLAS_UPLO_t Uplo, CBLAS_TRANSPOSE_t Trans,
 		 const gsl_complex_float * alpha,
 		 const gsl_matrix_complex_float * A,
 		 const gsl_matrix_complex_float * B,
@@ -1819,8 +1815,9 @@ gsl_blas_csyr2k (CBLAS_UPLO_t Uplo, CBLAS_TRANSPOSE_t Trans,
       GSL_ERROR ("invalid length", GSL_EBADLEN);
     }
 
-  cblas_csyr2k (CblasRowMajor, Uplo, Trans, N, NA, GSL_COMPLEX_P (alpha), A->data, A->tda,
-		B->data, B->tda, GSL_COMPLEX_P (beta), C->data, C->tda);
+  cblas_csyr2k (CblasRowMajor, Uplo, Trans, N, NA, GSL_COMPLEX_P (alpha),
+		A->data, A->tda, B->data, B->tda, GSL_COMPLEX_P (beta),
+		C->data, C->tda);
   return GSL_SUCCESS;
 }
 
@@ -1848,8 +1845,9 @@ gsl_blas_zsyr2k (CBLAS_UPLO_t Uplo, CBLAS_TRANSPOSE_t Trans,
       GSL_ERROR ("invalid length", GSL_EBADLEN);
     }
 
-  cblas_zsyr2k (CblasRowMajor, Uplo, Trans, N, NA, GSL_COMPLEX_P (alpha), A->data, A->tda,
-		B->data, B->tda, GSL_COMPLEX_P (beta), C->data, C->tda);
+  cblas_zsyr2k (CblasRowMajor, Uplo, Trans, N, NA, GSL_COMPLEX_P (alpha),
+		A->data, A->tda, B->data, B->tda, GSL_COMPLEX_P (beta),
+		C->data, C->tda);
   return GSL_SUCCESS;
 }
 
@@ -1859,8 +1857,7 @@ int
 gsl_blas_cher2k (CBLAS_UPLO_t Uplo, CBLAS_TRANSPOSE_t Trans,
 		 const gsl_complex_float * alpha,
 		 const gsl_matrix_complex_float * A,
-		 const gsl_matrix_complex_float * B, 
-                 float beta,
+		 const gsl_matrix_complex_float * B, float beta,
 		 gsl_matrix_complex_float * C)
 {
   const size_t M = C->size1;
@@ -1879,8 +1876,8 @@ gsl_blas_cher2k (CBLAS_UPLO_t Uplo, CBLAS_TRANSPOSE_t Trans,
       GSL_ERROR ("invalid length", GSL_EBADLEN);
     }
 
-  cblas_cher2k (CblasRowMajor, Uplo, Trans, N, NA, GSL_COMPLEX_P (alpha), A->data, A->tda,
-		B->data, B->tda, beta, C->data, C->tda);
+  cblas_cher2k (CblasRowMajor, Uplo, Trans, N, NA, GSL_COMPLEX_P (alpha),
+		A->data, A->tda, B->data, B->tda, beta, C->data, C->tda);
   return GSL_SUCCESS;
 
 }
@@ -1889,8 +1886,7 @@ gsl_blas_cher2k (CBLAS_UPLO_t Uplo, CBLAS_TRANSPOSE_t Trans,
 int
 gsl_blas_zher2k (CBLAS_UPLO_t Uplo, CBLAS_TRANSPOSE_t Trans,
 		 const gsl_complex * alpha, const gsl_matrix_complex * A,
-		 const gsl_matrix_complex * B, 
-                 double beta,
+		 const gsl_matrix_complex * B, double beta,
 		 gsl_matrix_complex * C)
 {
   const size_t M = C->size1;
@@ -1909,8 +1905,8 @@ gsl_blas_zher2k (CBLAS_UPLO_t Uplo, CBLAS_TRANSPOSE_t Trans,
       GSL_ERROR ("invalid length", GSL_EBADLEN);
     }
 
-  cblas_zher2k (CblasRowMajor, Uplo, Trans, N, NA, GSL_COMPLEX_P (alpha), A->data, A->tda,
-		B->data, B->tda, beta, C->data, C->tda);
+  cblas_zher2k (CblasRowMajor, Uplo, Trans, N, NA, GSL_COMPLEX_P (alpha),
+		A->data, A->tda, B->data, B->tda, beta, C->data, C->tda);
   return GSL_SUCCESS;
 
 }
@@ -1934,8 +1930,8 @@ gsl_blas_strmm (CBLAS_SIDE_t Side, CBLAS_UPLO_t Uplo,
 
   if ((Side == CblasLeft && M == MA) || (Side == CblasRight && N == MA))
     {
-      cblas_strmm (CblasRowMajor, Side, Uplo, TransA, Diag, M, N, alpha, A->data, A->tda,
-		   B->data, B->tda);
+      cblas_strmm (CblasRowMajor, Side, Uplo, TransA, Diag, M, N, alpha,
+		   A->data, A->tda, B->data, B->tda);
       return GSL_SUCCESS;
     }
   else
@@ -1962,8 +1958,8 @@ gsl_blas_dtrmm (CBLAS_SIDE_t Side, CBLAS_UPLO_t Uplo,
 
   if ((Side == CblasLeft && M == MA) || (Side == CblasRight && N == MA))
     {
-      cblas_dtrmm (CblasRowMajor, Side, Uplo, TransA, Diag, M, N, alpha, A->data, A->tda,
-		   B->data, B->tda);
+      cblas_dtrmm (CblasRowMajor, Side, Uplo, TransA, Diag, M, N, alpha,
+		   A->data, A->tda, B->data, B->tda);
       return GSL_SUCCESS;
     }
   else
@@ -1992,8 +1988,8 @@ gsl_blas_ctrmm (CBLAS_SIDE_t Side, CBLAS_UPLO_t Uplo,
 
   if ((Side == CblasLeft && M == MA) || (Side == CblasRight && N == MA))
     {
-      cblas_ctrmm (CblasRowMajor, Side, Uplo, TransA, Diag, M, N, GSL_COMPLEX_P (alpha),
-		   A->data, A->tda, B->data, B->tda);
+      cblas_ctrmm (CblasRowMajor, Side, Uplo, TransA, Diag, M, N,
+		   GSL_COMPLEX_P (alpha), A->data, A->tda, B->data, B->tda);
       return GSL_SUCCESS;
     }
   else
@@ -2021,8 +2017,8 @@ gsl_blas_ztrmm (CBLAS_SIDE_t Side, CBLAS_UPLO_t Uplo,
 
   if ((Side == CblasLeft && M == MA) || (Side == CblasRight && N == MA))
     {
-      cblas_ztrmm (CblasRowMajor, Side, Uplo, TransA, Diag, M, N, GSL_COMPLEX_P (alpha),
-		   A->data, A->tda, B->data, B->tda);
+      cblas_ztrmm (CblasRowMajor, Side, Uplo, TransA, Diag, M, N,
+		   GSL_COMPLEX_P (alpha), A->data, A->tda, B->data, B->tda);
       return GSL_SUCCESS;
     }
   else
@@ -2051,8 +2047,8 @@ gsl_blas_strsm (CBLAS_SIDE_t Side, CBLAS_UPLO_t Uplo,
 
   if ((Side == CblasLeft && M == MA) || (Side == CblasRight && N == MA))
     {
-      cblas_strsm (CblasRowMajor, Side, Uplo, TransA, Diag, M, N, alpha, A->data, A->tda,
-		   B->data, B->tda);
+      cblas_strsm (CblasRowMajor, Side, Uplo, TransA, Diag, M, N, alpha,
+		   A->data, A->tda, B->data, B->tda);
       return GSL_SUCCESS;
     }
   else
@@ -2079,8 +2075,8 @@ gsl_blas_dtrsm (CBLAS_SIDE_t Side, CBLAS_UPLO_t Uplo,
 
   if ((Side == CblasLeft && M == MA) || (Side == CblasRight && N == MA))
     {
-      cblas_dtrsm (CblasRowMajor, Side, Uplo, TransA, Diag, M, N, alpha, A->data, A->tda,
-		   B->data, B->tda);
+      cblas_dtrsm (CblasRowMajor, Side, Uplo, TransA, Diag, M, N, alpha,
+		   A->data, A->tda, B->data, B->tda);
       return GSL_SUCCESS;
     }
   else
@@ -2109,8 +2105,8 @@ gsl_blas_ctrsm (CBLAS_SIDE_t Side, CBLAS_UPLO_t Uplo,
 
   if ((Side == CblasLeft && M == MA) || (Side == CblasRight && N == MA))
     {
-      cblas_ctrsm (CblasRowMajor, Side, Uplo, TransA, Diag, M, N, GSL_COMPLEX_P (alpha),
-		   A->data, A->tda, B->data, B->tda);
+      cblas_ctrsm (CblasRowMajor, Side, Uplo, TransA, Diag, M, N,
+		   GSL_COMPLEX_P (alpha), A->data, A->tda, B->data, B->tda);
       return GSL_SUCCESS;
     }
   else
@@ -2138,8 +2134,8 @@ gsl_blas_ztrsm (CBLAS_SIDE_t Side, CBLAS_UPLO_t Uplo,
 
   if ((Side == CblasLeft && M == MA) || (Side == CblasRight && N == MA))
     {
-      cblas_ztrsm (CblasRowMajor, Side, Uplo, TransA, Diag, M, N, GSL_COMPLEX_P (alpha),
-		   A->data, A->tda, B->data, B->tda);
+      cblas_ztrsm (CblasRowMajor, Side, Uplo, TransA, Diag, M, N,
+		   GSL_COMPLEX_P (alpha), A->data, A->tda, B->data, B->tda);
       return GSL_SUCCESS;
     }
   else
@@ -2147,5 +2143,3 @@ gsl_blas_ztrsm (CBLAS_SIDE_t Side, CBLAS_UPLO_t Uplo,
       GSL_ERROR ("invalid length", GSL_EBADLEN);
     }
 }
-
-
