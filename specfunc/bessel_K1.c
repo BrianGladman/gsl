@@ -103,7 +103,7 @@ static struct gsl_sf_ChebSeries ak12_cs = {
 };
 
 
-int gsl_sf_bessel_K1_scaled_impl(double x, double * result)
+int gsl_sf_bessel_K1_scaled_impl(const double x, double * result)
 {
   const double xmin    = 2.0*DBL_MIN;
   const double x_small = 2.0*GSL_SQRT_MACH_EPS; 
@@ -138,7 +138,7 @@ int gsl_sf_bessel_K1_scaled_impl(double x, double * result)
   }
 }
 
-int gsl_sf_bessel_K1_impl(double x, double * result)
+int gsl_sf_bessel_K1_impl(const double x, double * result)
 {
   const double xmin    = 2.0*DBL_MIN;
   const double x_small = 2.*GSL_SQRT_MACH_EPS;
@@ -177,7 +177,7 @@ int gsl_sf_bessel_K1_impl(double x, double * result)
 
 /*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
 
-int gsl_sf_bessel_K1_scaled_e(double x, double * result)
+int gsl_sf_bessel_K1_scaled_e(const double x, double * result)
 {
   int status = gsl_sf_bessel_K1_scaled_impl(x, result);
   if(status != GSL_SUCCESS) {
@@ -186,7 +186,7 @@ int gsl_sf_bessel_K1_scaled_e(double x, double * result)
   return status;
 }
 
-int gsl_sf_bessel_K1_e(double x, double * result)
+int gsl_sf_bessel_K1_e(const double x, double * result)
 {
   int status = gsl_sf_bessel_K1_impl(x, result);
   if(status != GSL_SUCCESS) {
@@ -198,7 +198,7 @@ int gsl_sf_bessel_K1_e(double x, double * result)
 
 /*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*-*-*/
 
-double gsl_sf_bessel_K1_scaled(double x)
+double gsl_sf_bessel_K1_scaled(const double x)
 {
   double y;
   int status = gsl_sf_bessel_K1_scaled_impl(x, &y);
@@ -208,7 +208,7 @@ double gsl_sf_bessel_K1_scaled(double x)
   return y;
 }
 
-double gsl_sf_bessel_K1(double x)
+double gsl_sf_bessel_K1(const double x)
 {
   double y;
   int status = gsl_sf_bessel_K1_impl(x, &y);

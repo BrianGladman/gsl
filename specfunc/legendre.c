@@ -12,7 +12,7 @@
 /*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
 
 /* l >= m >= 0; |x| <= 1; l >= 0 */
-int gsl_sf_legendre_Plm_impl(int l, int m, double x, double * result, double * harvest)
+int gsl_sf_legendre_Plm_impl(const int l, const int m, const double x, double * result, double * harvest)
 {
   int i;
   double pmm;  /* Starting value for recursion, P_m^m(x) */
@@ -94,7 +94,7 @@ int gsl_sf_legendre_Plm_impl(int l, int m, double x, double * result, double * h
 }
 
 /* l >= |m| >= 0; |x| <= 1; l >= 0 */
-int gsl_sf_legendre_sphPlm_impl(int l, int m, double x, double * result, double * harvest)
+int gsl_sf_legendre_sphPlm_impl(const int l, int m, const double x, double * result, double * harvest)
 {
   int i;
   double sgn_factor;
@@ -180,15 +180,10 @@ int gsl_sf_legendre_sphPlm_impl(int l, int m, double x, double * result, double 
   }
 }
 
-int gsl_sf_legendre_Pnumu_recurs_impl(double nu_nup1, double mu, double x)
-{
-  
-}
-
 
 /*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
 
-int gsl_sf_legendre_Plm_e(int l, int m, double x, double * result)
+int gsl_sf_legendre_Plm_e(const int l, const int m, const double x, double * result)
 {
   int status = gsl_sf_legendre_Plm_impl(l, m, x, result, (double *)0);
   if(status != GSL_SUCCESS) {
@@ -197,7 +192,7 @@ int gsl_sf_legendre_Plm_e(int l, int m, double x, double * result)
   return status;
 }
 
-int gsl_sf_legendre_sphPlm_e(int l, int m, double x, double * result)
+int gsl_sf_legendre_sphPlm_e(const int l, const int m, const double x, double * result)
 {
   int status = gsl_sf_legendre_sphPlm_impl(l, m, x, result, (double *)0);
   if(status != GSL_SUCCESS) {
@@ -206,7 +201,7 @@ int gsl_sf_legendre_sphPlm_e(int l, int m, double x, double * result)
   return status;
 }
 
-int gsl_sf_legendre_Plm_array_e(int lmax, int m, double x, double * result_array)
+int gsl_sf_legendre_Plm_array_e(const int lmax, const int m, const double x, double * result_array)
 {
   double y;
   int status = gsl_sf_legendre_Plm_impl(lmax, m, x, &y, result_array);
@@ -216,7 +211,7 @@ int gsl_sf_legendre_Plm_array_e(int lmax, int m, double x, double * result_array
   return status;
 }
 
-int gsl_sf_legendre_sphPlm_array_e(int lmax, int m, double x, double * result_array)
+int gsl_sf_legendre_sphPlm_array_e(const int lmax, const int m, const double x, double * result_array)
 {
   double y;
   int status = gsl_sf_legendre_sphPlm_impl(lmax, m, x, &y, result_array);
@@ -229,12 +224,12 @@ int gsl_sf_legendre_sphPlm_array_e(int lmax, int m, double x, double * result_ar
 
 /*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*-*-*/
 
-int gsl_sf_legendre_array_size(int lmax, int m)
+int gsl_sf_legendre_array_size(const int lmax, const int m)
 {
   return lmax-m+1;
 }
 
-double gsl_sf_legendre_Plm(int l, int m, double x)
+double gsl_sf_legendre_Plm(const int l, const int m, const double x)
 {
   double y;
   int status = gsl_sf_legendre_Plm_impl(l, m, x, &y, (double *)0);
@@ -244,7 +239,7 @@ double gsl_sf_legendre_Plm(int l, int m, double x)
   return y;
 }
 
-double gsl_sf_legendre_sphPlm(int l, int m, double x)
+double gsl_sf_legendre_sphPlm(const int l, const int m, const double x)
 {
   double y;
   int status = gsl_sf_legendre_sphPlm_impl(l, m, x, &y, (double *)0);

@@ -7,12 +7,13 @@
 #include <gsl_errno.h>
 #include "gsl_sf_trig.h"
 
-extern int gsl_sf_complex_log_impl(double, double, double *, double *);
+extern int gsl_sf_complex_log_impl(const double, const double, double *, double *);
+extern int gsl_sf_complex_sin_impl(const double, const double, double *, double *);
 
 
 /*-*-*-*-*-*-*-*-*-*-*-* Implementations *-*-*-*-*-*-*-*-*-*-*-*/
 
-int gsl_sf_complex_sin_impl(double zr, double zi, double * szr, double * szi)
+int gsl_sf_complex_sin_impl(const double zr, const double zi, double * szr, double * szi)
 {
   if(fabs(zi) < GSL_LOG_DBL_MAX) {
     double ex = exp(zi);
@@ -27,7 +28,7 @@ int gsl_sf_complex_sin_impl(double zr, double zi, double * szr, double * szi)
   }
 }
 
-int gsl_sf_complex_logsin_impl(double zr, double zi, double * lszr, double * lszi)
+int gsl_sf_complex_logsin_impl(const double zr, const double zi, double * lszr, double * lszi)
 {
   if(zi > 60.) {
     *lszr = -M_LN2 + zi;
@@ -40,18 +41,18 @@ int gsl_sf_complex_logsin_impl(double zr, double zi, double * lszr, double * lsz
   else {
     double sin_r, sin_i;
     int status;
-    gsl_sf_complex_sin(zr, zi, &sin_r, &sin_i);
-    status = gsl_sf_complex_log(sin_r, sin_i, lszr, lszi);
+    gsl_sf_complex_sin_impl(zr, zi, &sin_r, &sin_i);
+    status = gsl_sf_complex_log_impl(sin_r, sin_i, lszr, lszi);
     if(status == GSL_EDOM) {
       return GSL_EDOM;
     }
   }
-  gsl_sf_angle_restrict_symm(lszi);
+  gsl_sf_angle_restrict_symm_impl(lszi);
   return GSL_SUCCESS;
 }
 
 
-int gsl_sf_complex_cos_impl(double zr, double zi, double * czr, double * czi)
+int gsl_sf_complex_cos_impl(const double zr, const double zi, double * czr, double * czi)
 {
   if(fabs(zi) < GSL_LOG_DBL_MAX) {
     double ex = exp(zi);
@@ -67,7 +68,7 @@ int gsl_sf_complex_cos_impl(double zr, double zi, double * czr, double * czi)
 }
 
 
-int gsl_sf_polar_to_rect_impl(double r, double theta, double * x, double * y)
+int gsl_sf_polar_to_rect_impl(const double r, const double theta, double * x, double * y)
 {
   if(fabs(theta) == M_PI) {
     *x = r;
@@ -84,7 +85,7 @@ int gsl_sf_polar_to_rect_impl(double r, double theta, double * x, double * y)
   return GSL_SUCCESS;
 }
 
-int gsl_sf_rect_to_polar_impl(double x, double y, double * r, double * theta)
+int gsl_sf_rect_to_polar_impl(const double x, const double y, double * r, double * theta)
 {
   *r = hypot(x, y);
   if(*r > 0.) {
@@ -96,7 +97,7 @@ int gsl_sf_rect_to_polar_impl(double x, double y, double * r, double * theta)
   return GSL_SUCCESS;
 }
 
-int gsl_sf_angle_restrict_symm_impl(double * theta, double precision)
+int gsl_sf_angle_restrict_symm_impl(double * theta, const double precision)
 {
   int status;
   double x;
@@ -114,7 +115,7 @@ int gsl_sf_angle_restrict_symm_impl(double * theta, double precision)
   return status;
 }
 
-int gsl_sf_angle_restrict_pos_impl(double * theta, double precision)
+int gsl_sf_angle_restrict_pos_impl(double * theta, const double precision)
 {
   int status;
   double x;
@@ -134,7 +135,7 @@ int gsl_sf_angle_restrict_pos_impl(double * theta, double precision)
 
 /*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
 
-int gsl_sf_complex_sin_e(double zr, double zi, double * szr, double * szi)
+int gsl_sf_complex_sin_e(const double zr, const double zi, double * szr, double * szi)
 {
   int status = gsl_sf_complex_sin_impl(zr, zi, szr, szi);
   if(status != GSL_SUCCESS) {
@@ -143,7 +144,7 @@ int gsl_sf_complex_sin_e(double zr, double zi, double * szr, double * szi)
   return status;
 }
 
-int gsl_sf_complex_logsin_e(double zr, double zi, double * lszr, double * lszi)
+int gsl_sf_complex_logsin_e(const double zr, const double zi, double * lszr, double * lszi)
 {
   int status = gsl_sf_complex_logsin_impl(zr, zi, lszr, lszi);
   if(status != GSL_SUCCESS) {
@@ -152,7 +153,7 @@ int gsl_sf_complex_logsin_e(double zr, double zi, double * lszr, double * lszi)
   return status;
 }
 
-int gsl_sf_complex_cos_e(double zr, double zi, double * czr, double * czi)
+int gsl_sf_complex_cos_e(const double zr, const double zi, double * czr, double * czi)
 {
   int status = gsl_sf_complex_cos_impl(zr, zi, czr, czi);
   if(status != GSL_SUCCESS) {
@@ -162,7 +163,7 @@ int gsl_sf_complex_cos_e(double zr, double zi, double * czr, double * czi)
 }
 
 
-int gsl_sf_polar_to_rect_e(double r, double theta, double * x, double * y)
+int gsl_sf_polar_to_rect_e(const double r, const double theta, double * x, double * y)
 {
   int status = gsl_sf_polar_to_rect_impl(r, theta, x, y);
   if(status != GSL_SUCCESS) {
@@ -171,7 +172,7 @@ int gsl_sf_polar_to_rect_e(double r, double theta, double * x, double * y)
   return status;
 }
 
-int gsl_sf_rect_to_polar_e(double x, double y, double * r, double * theta)
+int gsl_sf_rect_to_polar_e(const double x, const double y, double * r, double * theta)
 {
   int status = gsl_sf_rect_to_polar_impl(x, y, r, theta);
   if(status != GSL_SUCCESS) {
@@ -180,7 +181,7 @@ int gsl_sf_rect_to_polar_e(double x, double y, double * r, double * theta)
   return status;
 }
 
-int gsl_sf_angle_restrict_symm_e(double * theta, double precision)
+int gsl_sf_angle_restrict_symm_e(double * theta, const double precision)
 {
   int status = gsl_sf_angle_restrict_symm_impl(theta, precision);
   if(status != GSL_SUCCESS) {
@@ -189,7 +190,7 @@ int gsl_sf_angle_restrict_symm_e(double * theta, double precision)
   return status;
 }
 
-int gsl_sf_angle_restrict_pos_e(double * theta, double precision)
+int gsl_sf_angle_restrict_pos_e(double * theta, const double precision)
 {
   int status = gsl_sf_angle_restrict_pos_impl(theta, precision);
   if(status != GSL_SUCCESS) {

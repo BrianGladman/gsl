@@ -18,7 +18,7 @@ struct gsl_sf_ChebSeries {
    a specified interval, for a given function.
    Return 0 on failure.
  */
-struct gsl_sf_ChebSeries * gsl_sf_cheb_new(double (*func)(double),
+struct gsl_sf_ChebSeries * gsl_sf_cheb_new(const double (*func)(double),
 				           double a, double b,
 				           int order
                                            );

@@ -86,7 +86,7 @@ static double F2_c_integrand(double y, double A)
 
 /*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
 
-int gsl_sf_fermi_integral_1_impl(double A, double * result)
+int gsl_sf_fermi_integral_1_impl(const double A, double * result)
 {
   if(A <= 0.) {
     return GSL_EDOM;
@@ -140,7 +140,7 @@ int gsl_sf_fermi_integral_1_impl(double A, double * result)
   }
 }
 
-int gsl_sf_fermi_integral_2_impl(double A, double * result)
+int gsl_sf_fermi_integral_2_impl(const double A, double * result)
 {
   if(A <= 0.) {
     return GSL_EDOM;
@@ -200,7 +200,7 @@ int gsl_sf_fermi_integral_2_impl(double A, double * result)
 
 /*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
 
-int gsl_sf_fermi_integral_1_e(double A, double * result)
+int gsl_sf_fermi_integral_1_e(const double A, double * result)
 {
   int status = gsl_sf_fermi_integral_1_impl(A, result);
   if(status != GSL_SUCCESS){
@@ -209,7 +209,7 @@ int gsl_sf_fermi_integral_1_e(double A, double * result)
   return status;
 }
 
-int gsl_sf_fermi_integral_2_e(double A, double * result)
+int gsl_sf_fermi_integral_2_e(const double A, double * result)
 {
   int status = gsl_sf_fermi_integral_2_impl(A, result);
   if(status != GSL_SUCCESS){
@@ -221,7 +221,7 @@ int gsl_sf_fermi_integral_2_e(double A, double * result)
 
 /*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*-*-*/
 
-double gsl_sf_fermi_integral_1(double A)
+double gsl_sf_fermi_integral_1(const double A)
 {
   double y;
   int status = gsl_sf_fermi_integral_1_impl(A, &y);
@@ -231,7 +231,7 @@ double gsl_sf_fermi_integral_1(double A)
   return y;
 }
 
-double gsl_sf_fermi_integral_2(double A)
+double gsl_sf_fermi_integral_2(const double A)
 {
   double y;
   int status = gsl_sf_fermi_integral_2_impl(A, &y);
@@ -241,7 +241,7 @@ double gsl_sf_fermi_integral_2(double A)
   return y;
 }
 
-double gsl_sf_fermi_zeta_inverse(double dbar, double g, double prec)
+double gsl_sf_fermi_zeta_inverse(const double dbar, const double g, const double prec)
 {
   double coeff = g / (4. * M_PI * M_PI);
   double zeta_inverse_0 = 1.;
@@ -281,7 +281,7 @@ double gsl_sf_fermi_zeta_inverse(double dbar, double g, double prec)
   }
 }
 
-double gsl_sf_fermi_dirac(double beta, double zeta_inverse, double E)
+double gsl_sf_fermi_dirac(const double beta, const double zeta_inverse, const double E)
 {
   return 1./(zeta_inverse*exp(beta*E)+1.);
 }

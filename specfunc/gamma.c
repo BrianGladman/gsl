@@ -13,7 +13,9 @@
 #define LogPi_         1.1447298858494001741
 #define Max(a,b) ((a) > (b) ? (a) : (b))
 
-extern int gsl_sf_angle_restrict_symm_impl(double *, double);
+extern int gsl_sf_angle_restrict_symm_impl(double *, const double);
+extern int gsl_sf_complex_log_impl(const double, const double, double *, double *);
+extern int gsl_sf_complex_logsin_impl(const double, const double, double *, double *);
 
 
 /*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
@@ -76,8 +78,8 @@ static void lngamma_lanczos_complex(double zr, double zi, double * yr, double * 
     Ag_i -=  a * I;
   }
 
-  gsl_sf_complex_log(zr + 7.5, zi, &log1_r,  &log1_i);
-  gsl_sf_complex_log(Ag_r, Ag_i,   &logAg_r, &logAg_i);
+  gsl_sf_complex_log_impl(zr + 7.5, zi, &log1_r,  &log1_i);
+  gsl_sf_complex_log_impl(Ag_r, Ag_i,   &logAg_r, &logAg_i);
 
   /* (z+0.5)*log(z+7.5) - (z+7.5) + LogRootTwoPi_ + log(Ag(z)) */
   *yr = (zr+0.5)*log1_r - zi*log1_i - (zr+7.5) + LogRootTwoPi_ + logAg_r;
@@ -99,12 +101,12 @@ int gsl_sf_lngamma_complex_impl(double zr, double zi, double * lnr, double * arg
     double lnsin_r, lnsin_i;
     
     lngamma_lanczos_complex(x, y, &a, &b);
-    status = gsl_sf_complex_logsin(M_PI*zr, M_PI*zi, &lnsin_r, &lnsin_i);
+    status = gsl_sf_complex_logsin_impl(M_PI*zr, M_PI*zi, &lnsin_r, &lnsin_i);
     
     if(status == GSL_SUCCESS) {
       *lnr = LogPi_ - lnsin_r - a;
       *arg =        - lnsin_i - b;
-      gsl_sf_angle_restrict_symm(arg);
+      gsl_sf_angle_restrict_symm_impl(arg, 10.*GSL_MACH_EPS);
       return GSL_SUCCESS;
     }
     else {
@@ -331,7 +333,7 @@ static struct {int n; double f; long i; } fact_table[FACT_TABLE_SIZE] = {
 };
 
 
-int gsl_sf_fact_impl(int n, double * result)
+int gsl_sf_fact_impl(const int n, double * result)
 {
  if(n <= 0) {
     return GSL_EDOM;
@@ -348,7 +350,7 @@ int gsl_sf_fact_impl(int n, double * result)
 
 /*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
 
-int gsl_sf_fact_e(int n, double * result)
+int gsl_sf_fact_e(const int n, double * result)
 {
   int status = gsl_sf_fact_impl(n, result);
   if(status != GSL_SUCCESS) {
@@ -357,7 +359,7 @@ int gsl_sf_fact_e(int n, double * result)
   return status;
 }
 
-int gsl_sf_lngamma_e(double x, double * result)
+int gsl_sf_lngamma_e(const double x, double * result)
 {
   int status = gsl_sf_lngamma_impl(x, result);
   if(status != GSL_SUCCESS) {
@@ -378,7 +380,7 @@ int gsl_sf_lngamma_complex_e(double zr, double zi, double * lnr, double * arg)
 
 /*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*-*-*/
 
-double gsl_sf_lngamma(double x)
+double gsl_sf_lngamma(const double x)
 {
   double y;
   int status = gsl_sf_lngamma_impl(x, &y);

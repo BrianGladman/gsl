@@ -46,7 +46,7 @@ static struct gsl_sf_ChebSeries by1_cs = {
   -1, 1
 };
 
-int gsl_sf_bessel_Y1_impl(double x, double * result)
+int gsl_sf_bessel_Y1_impl(const double x, double * result)
 {
   const double two_over_pi = 2./M_PI;
   const double xmin = 1.571*DBL_MIN; /*exp ( amax1(alog(r1mach(1)), -alog(r1mach(2)))+.01) */
@@ -86,7 +86,7 @@ int gsl_sf_bessel_Y1_impl(double x, double * result)
 
 /*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
 
-int gsl_sf_bessel_Y1_e(double x, double * result)
+int gsl_sf_bessel_Y1_e(const double x, double * result)
 {
   int status = gsl_sf_bessel_Y1_impl(x, result);
   if(status != GSL_SUCCESS) {
@@ -98,7 +98,7 @@ int gsl_sf_bessel_Y1_e(double x, double * result)
 
 /*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*-*-*/
 
-double gsl_sf_bessel_Y1(double x)
+double gsl_sf_bessel_Y1(const double x)
 {
   double y;
   int status = gsl_sf_bessel_Y1_impl(x, &y);

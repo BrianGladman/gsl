@@ -8,7 +8,7 @@
 
 /*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
 
-int gsl_sf_complex_log_impl(double zr, double zi, double * lnr, double * theta)
+int gsl_sf_complex_log_impl(const double zr, const double zi, double * lnr, double * theta)
 {
   if(zr != 0.0 || zi != 0.0) {
     double r2 = zr*zr + zi*zi;
@@ -24,7 +24,7 @@ int gsl_sf_complex_log_impl(double zr, double zi, double * lnr, double * theta)
 
 /*-*-*-*-*-*-*-*-*-*-*-* Error Handling Versions *-*-*-*-*-*-*-*-*-*-*-*/
 
-int gsl_sf_complex_log_e(double zr, double zi, double * lnr, double * theta)
+int gsl_sf_complex_log_e(const double zr, const double zi, double * lnr, double * theta)
 {
   int status = gsl_sf_complex_log_impl(zr, zi, lnr, theta);
   if(status != GSL_SUCCESS) {

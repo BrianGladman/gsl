@@ -7,14 +7,53 @@
 #include "gsl_sf_pow_int.h"
 #include "gsl_sf_bessel.h"
 
-#define ACC GSL_SQRT_MACH_EPS
-#define RootPiOver2_  0.886226925453
-#define Gamma1pt5_    RootPiOver2_
+#define RootPi_Over2_  0.886226925453
+#define Gamma1pt5_    RootPi_Over2_
 
 
 /*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
 
-int gsl_sf_bessel_j_steed_array_impl(double x, int lmax, double * jl_x)
+int gsl_sf_bessel_j1_impl(const double x, double * result)
+{
+  if(fabs(x) < 3.*DBL_MIN) {
+    *result = 0.;
+    return GSL_EUNDRFLW;
+  }
+  else if(fabs(x) < 2.*GSL_ROOT4_MACH_EPS) {
+    *result = x/3. * (1. - x*x/10.);
+    return GSL_SUCCESS;
+  }
+  else {
+    double tan_half = tan(0.5 * x);
+    double den = 1. + tan_half*tan_half;
+    double cos_x = (tan_half*tan_half - 1.) / den;
+    double sin_x = 2. * tan_half / den;
+    *result = sin_x/(x*x) - cos_x/x;
+    return GSL_SUCCESS;
+  }
+}
+
+int gsl_sf_bessel_j2_impl(const double x, double * result)
+{
+  if(fabs(x) < GSL_SQRT_DBL_MIN) {
+    *result = 0.;
+    return GSL_EUNDRFLW;
+  }
+  else if(fabs(x) < 2.*GSL_ROOT4_MACH_EPS) {
+    *result = x*x/15. * (1. - x*x/14.);
+    return GSL_SUCCESS;
+  }
+  else {
+    double tan_half = tan(0.5 * x);
+    double den = 1. + tan_half*tan_half;
+    double cos_x = (tan_half*tan_half - 1.) / den;
+    double sin_x = 2. * tan_half / den;
+    *result =  (3./x - 1.) * sin_x/x - 3.*cos_x/(x*x);
+    return GSL_SUCCESS;
+  }
+}  
+
+int gsl_sf_bessel_j_steed_array_impl(const int lmax, const double x, double * jl_x)
 {
   if(lmax < 0 || x < 0.) {
     return GSL_EDOM;
@@ -63,7 +102,7 @@ int gsl_sf_bessel_j_steed_array_impl(double x, int lmax, double * jl_x)
 	return GSL_ETIMEOUT;
       }
     }
-    while(fabs(del) >= fabs(FP) * ACC);
+    while(fabs(del) >= fabs(FP) * GSL_MACH_EPS);
     
     FP *= F;
     
@@ -100,11 +139,62 @@ int gsl_sf_bessel_j_steed_array_impl(double x, int lmax, double * jl_x)
 
 /*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
 
-int gsl_sf_bessel_j_steed_array_e(double x, int lmax, double * jl_x)
+int gsl_sf_bessel_j1_e(const double x, double * result)
 {
-  int status = gsl_sf_bessel_j_steed_array_impl(x, lmax, jl_x);
+  int status = gsl_sf_bessel_j1_impl(x, result);
+  if(status != GSL_SUCCESS) {
+    GSL_ERROR("gsl_sf_bessel_j1_e", status);
+  }
+  return status;
+}
+
+int gsl_sf_bessel_j2_e(const double x, double * result)
+{
+  int status = gsl_sf_bessel_j2_impl(x, result);
+  if(status != GSL_SUCCESS) {
+    GSL_ERROR("gsl_sf_bessel_j2_e", status);
+  }
+  return status;
+}
+
+int gsl_sf_bessel_j_steed_array_e(const int lmax, const double x, double * jl_x)
+{
+  int status = gsl_sf_bessel_j_steed_array_impl(lmax, x, jl_x);
   if(status != GSL_SUCCESS) {
     GSL_ERROR("gsl_sf_bessel_j_steed_array_e", status);
   }
   return status;
+}
+
+
+/*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*-*-*/
+
+double gsl_sf_bessel_j0(const double x)
+{
+  if(fabs(x) < GSL_ROOT4_MACH_EPS) {
+    return 1. - x*x/6.;
+  }
+  else {
+    return sin(x)/x;
+  }
+}
+
+double gsl_sf_bessel_j1(const double x)
+{
+  double y;
+  int status = gsl_sf_bessel_j1_impl(x, &y);
+  if(status != GSL_SUCCESS) {
+    GSL_WARNING("gsl_sf_bessel_j1");
+  }
+  return y;
+}
+
+double gsl_sf_bessel_j2(const double x)
+{
+  double y;
+  int status = gsl_sf_bessel_j2_impl(x, &y);
+  if(status != GSL_SUCCESS) {
+    GSL_WARNING("gsl_sf_bessel_j2");
+  }
+  return y;
 }

@@ -22,7 +22,7 @@ static double CC[30] = {
 };
 
 /* summation loop used by most cases in dilog() */
-static double do_sum(double y, double by, double dl)
+static double do_sum(const double y, const double by, double dl)
 {
   int i;
   double a, test;
@@ -46,7 +46,7 @@ static double do_sum(double y, double by, double dl)
 
    I checked this with Mathematica Re[PolyLog[2,x]]; it works. [GJ]
 */
-double gsl_sf_dilog(double x)
+double gsl_sf_dilog(const double x)
 {
   if(x > 12.6) {
     double log_x = log(x);
@@ -153,7 +153,7 @@ double gsl_sf_dilog(double x)
 
 
 /* dilog_c() for small modulus */
-static double dilog_c_smallr(double r, double cos_theta)
+static double dilog_c_smallr(const double r, const double cos_theta)
 {
   return cos_theta * r + 0.25 * (2.*cos_theta*cos_theta - 1.) * r*r;
 }
@@ -176,7 +176,7 @@ static double dilog_c_integral(double a, double b, double cos_theta, double eps)
 }
 
 
-double gsl_sf_dilog_c(double r, double cos_theta)
+double gsl_sf_dilog_c(const double r, const double cos_theta)
 {
   if(r < 0.) {
     GSL_ERROR_RETURN("dilog_c: r < 0", GSL_EDOM, 0.);

@@ -6,7 +6,7 @@
 
 
 /* polynomial based on confluent hypergeometric representation */
-static int laguerre_n_cp(int n, double a, double x, double * result)
+static int laguerre_n_cp(const int n, const double a, const double x, double * result)
 {
   double * c = (double *)malloc((n+1) * sizeof(double));
   if(c == 0) {
@@ -38,7 +38,7 @@ static int laguerre_n_cp(int n, double a, double x, double * result)
 
 /*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
 
-int gsl_sf_laguerre_n_impl(int n, double a, double x, double * result)
+int gsl_sf_laguerre_n_impl(const int n, const double a, const double x, double * result)
 {
   if(n < 0 || a <= -1. || x < 0.) {
     return GSL_EDOM;
@@ -60,12 +60,12 @@ int gsl_sf_laguerre_n_impl(int n, double a, double x, double * result)
 
 /*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*-*-*/
 
-double gsl_sf_laguerre_1(double a, double x)
+double gsl_sf_laguerre_1(const double a, const double x)
 {
   return 1. + a - x;
 }
 
-double gsl_sf_laguerre_2(double a, double x)
+double gsl_sf_laguerre_2(const double a, const double x)
 {
   double c0 = 0.5 * (2.+a)*(1.+a);
   double c1 = -(2.+a);
@@ -73,7 +73,7 @@ double gsl_sf_laguerre_2(double a, double x)
   return c0 + c1*x*(1. + c2*x);
 }
 
-double gsl_sf_laguerre_3(double a, double x)
+double gsl_sf_laguerre_3(const double a, const double x)
 {
   double c0 = (3.+a)*(2.+a)*(1.+a) / 6.;
   double c1 = -c0 * 3. / (1.+a);
@@ -82,7 +82,7 @@ double gsl_sf_laguerre_3(double a, double x)
   return c0 + c1*x*(1. + c2*x*(1. + c3*x));
 }
 
-double gsl_sf_laguerre_4(double a, double x)
+double gsl_sf_laguerre_4(const double a, const double x)
 {
   double c0 = (4.+a)*(3.+a)*(2.+a)*(1.+a) / 24.;
   double c1 = -c0 * 4. / (1.+a);
@@ -92,7 +92,7 @@ double gsl_sf_laguerre_4(double a, double x)
   return c0 + c1*x*(1. + c2*x*(1. + c3*x*(1. + c4*x)));
 }
 
-double gsl_sf_laguerre_5(double a, double x)
+double gsl_sf_laguerre_5(const double a, const double x)
 {
   double c0 = (5.+a)*(4.+a)*(3.+a)*(2.+a)*(1.+a) / 120.;
   double c1 = -c0 * 5. / (1.+a);

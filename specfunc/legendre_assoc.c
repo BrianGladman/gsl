@@ -5,6 +5,7 @@
 #include <math.h>
 #include <gsl_math.h>
 #include <gsl_errno.h>
+#include "gsl_sf_gamma.h"
 #include "gsl_sf_pow_int.h"
 #include "gsl_sf_legendre.h"
 
@@ -13,13 +14,13 @@
 #define Root_2OverPi_  0.797884560802865355879892
 
 
-/* P_{-1/2 + I lambda}^{1/2}
- *
+/* P_{-1/2 + I lambda}^{1/2} (x)
+ * [Abramowitz+Stegun 8.6.8, 8.6.12]
  * checked OK [GJ]
  */
-int gsl_sf_conical_sph_irr_1_impl(double lambda,
-                                  double one_minus_x,
-                                  double one_plus_x,
+int gsl_sf_conical_sph_irr_1_impl(const double lambda,
+                                  const double one_minus_x,
+                                  const double one_plus_x,
                                   double * result
                                   )
 {
@@ -44,13 +45,13 @@ int gsl_sf_conical_sph_irr_1_impl(double lambda,
 }
 
 
-/* P_{-1/2 + I lambda}{-1/2} (x)
- *
+/* P_{-1/2 + I lambda}^{-1/2} (x)
+ * [Abramowitz+Stegun 8.6.9, 8.6.14]
  * checked OK [GJ] 
  */
-int gsl_sf_conical_sph_reg_0_impl(double lambda,
-                                  double one_minus_x,
-                                  double one_plus_x,
+int gsl_sf_conical_sph_reg_0_impl(const double lambda,
+                                  const double one_minus_x,
+                                  const double one_plus_x,
                                   double * result
                                   )
 {
@@ -90,8 +91,26 @@ int gsl_sf_conical_sph_reg_0_impl(double lambda,
   }
 }
 
+/* P_{-1/2 + I lambda}^mu (x)     mu <= 1/2, lambda >= 0, |1-x| < 2
+ * [Abramowitz+Stegun, 8.1.2]
+ */
+static double conical_reg_series(const int N, const double mu, const double lambda, const double x)
+{
+  int i;
+  const double mu_term = 1. - mu;
+  const double lam2    = lambda*lambda;
+  const double arg     = 0.5 * (1-x);
+  double term      = (0.25 + lam2)/mu_term * arg;
+  double F_series  = 1. + term;
+  for(i=2; i<=N; i++) {
+    int odd = 2*i+1;
+    term     *= (0.25*odd*odd + lam2)/(mu_term + 1.) * arg;
+    F_series += term;
+  }
+  return exp(-gsl_sf_lngamma(mu_term)) * pow((x-1)/(x+1),-0.5*mu) * F_series;
+}
 
-/* P_{-1/2 + I lambda}^{-1/2-n} (x)
+/* P_{-1/2 + I lambda}^{-1/2 - n} (x)    x > 1
  *
  * p[0] = lambda^2
  * p[1] = x/Sqrt(x^2 - 1)
@@ -102,26 +121,54 @@ GEN_RECURSE_BACKWARD_MINIMAL_SIMPLE(conical_sph_reg)
 #undef REC_COEFF_A
 #undef REC_COEFF_B
 
+/* P_{-1/2 + I lambda}^{-1/2 - n} (x)    -1 < x < 1
+ *
+ * p[0] = lambda^2
+ * p[1] = x/Sqrt(1 - x^2)
+ */
+#define REC_COEFF_A(n,p) ((2.*n+1.)*p[1]/((n+1)*(n+1)+p[0]))
+#define REC_COEFF_B(n,p) (-1./((n+1)*(n+1)+p[0]))
+GEN_RECURSE_FORWARD_SIMPLE(conical_sph_reg)
+#undef REC_COEFF_A
+#undef REC_COEFF_B
 
-int gsl_sf_conical_sph_reg_array_impl(int lmax, double lambda, double x, double * result, double * harvest)
+
+int gsl_sf_conical_sph_reg_array_impl(const int lmax, const double lambda, const double x,
+                                      double * result, double * harvest
+				      )
 {
-  double f0;
-  double p[2];
-  p[0] = lambda*lambda;
-  p[1] = x/sqrt(x*x-1.);
-  gsl_sf_conical_sph_reg_0_impl(lambda, 1-x, 1+x, &f0);
-  recurse_backward_minimal_simple_conical_sph_reg(lmax+30, lmax, 0, p, f0, harvest, result);
+  if(fabs(x) < 1.) {
+    double f0, f1;
+    double p[2];
+    p[0] = lambda*lambda;
+    p[1] = x/sqrt(1.-x*x);
+    gsl_sf_conical_sph_irr_1_impl(lambda, 1-x, 1+x, &f0);  /* l = -1  */
+    gsl_sf_conical_sph_reg_0_impl(lambda, 1-x, 1+x, &f1);  /* l =  0  */
+    recurse_forward_simple_conical_sph_reg(lmax, -1, p, f0, f1, harvest, result);
+  }
+  else if(x > 1.) {
+    double f0;
+    double p[2];
+    p[0] = lambda*lambda;
+    p[1] = x/sqrt(x*x-1.);
+    gsl_sf_conical_sph_reg_0_impl(lambda, 1-x, 1+x, &f0);
+    recurse_backward_minimal_simple_conical_sph_reg(lmax+30, lmax, 0, p, f0, harvest, result);
+  }
+  else {
+    return GSL_EDOM;
+  }
 }
 
 
 
 
-int gsl_sf_hyper_0_impl(double lambda, double x, double * result)
+
+int gsl_sf_hyper_0_impl(const double lambda, const double x, double * result)
 {
   *result = sin(lambda*x)/(lambda*sinh(x));
 }
 
-int gsl_sf_hyper_1_impl(double lambda, double x, double * result)
+int gsl_sf_hyper_1_impl(const double lambda, const double x, double * result)
 {
   *result = sin(lambda*x)/(lambda*sinh(x)) 
 	  /sqrt(lambda*lambda+1.) * (1./tanh(x) - lambda/tan(lambda*x));

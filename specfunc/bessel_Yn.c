@@ -6,13 +6,13 @@
 #include <gsl_errno.h>
 #include "gsl_sf_bessel.h"
 
-extern int gsl_sf_bessel_Y0_impl(double, double *);
-extern int gsl_sf_bessel_Y1_impl(double, double *);
+extern int gsl_sf_bessel_Y0_impl(const double, double *);
+extern int gsl_sf_bessel_Y1_impl(const double, double *);
 
 
 /*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
 
-int gsl_sf_bessel_Yn_impl(int n, double x, double * result)
+int gsl_sf_bessel_Yn_impl(int n, const double x, double * result)
 {
   int sign = 1;
   const double xmax = n * 500.;
@@ -71,7 +71,7 @@ int gsl_sf_bessel_Yn_impl(int n, double x, double * result)
 
 /*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
 
-int gsl_sf_bessel_Yn_e(int n, double x, double * result)
+int gsl_sf_bessel_Yn_e(const int n, const double x, double * result)
 {
   int status = gsl_sf_bessel_Yn_impl(n, x, result);
   if(status != GSL_SUCCESS) {
@@ -83,7 +83,7 @@ int gsl_sf_bessel_Yn_e(int n, double x, double * result)
 
 /*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*-*-*/
 
-double gsl_sf_bessel_Yn(int n, double x)
+double gsl_sf_bessel_Yn(const int n, const double x)
 {
   double y;
   int status = gsl_sf_bessel_Yn_impl(n, x, &y);

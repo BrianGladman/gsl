@@ -17,7 +17,7 @@ extern int gsl_sf_lngamma_impl(double, double *);
 /* sum which occurs in Taylor series for J_nu(x) * Gamma(nu+1)/((x/2)^nu)
  * [Abramowitz+Stegun, 9.1.10]
  */
-static int Jnu_taylorsum(double nu, double x, int kmax, double * result)
+static int Jnu_taylorsum(const double nu, const double x, const int kmax, double * result)
 {
   int k;
   double y = -0.25 * x*x;
@@ -50,7 +50,7 @@ static int Jnu_taylorsum(double nu, double x, int kmax, double * result)
 /* Taylor expansion for J_nu(x)
  * nu >= 0.0 and x >= 0.0
  */
-int gsl_sf_bessel_Jnu_taylor_impl(double nu, double x, int kmax, double * result)
+int gsl_sf_bessel_Jnu_taylor_impl(const double nu, const double x, const int kmax, double * result)
 {
   if(nu < 0.0 || x < 0.0) {
     return GSL_EDOM;
@@ -84,7 +84,7 @@ int gsl_sf_bessel_Jnu_taylor_impl(double nu, double x, int kmax, double * result
   }
 }
 
-int gsl_sf_bessel_Jn_taylor_impl(int n, double x, int kmax, double * result)
+int gsl_sf_bessel_Jn_taylor_impl(const int n, const double x, const int kmax, double * result)
 {
   if(n < 0 || x < 0.0) {
     return GSL_EDOM;

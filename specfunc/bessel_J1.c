@@ -47,7 +47,7 @@ static struct gsl_sf_ChebSeries bj1_cs = {
   
 #define ROOT_EIGHT 2.82842712474619
 
-double gsl_sf_bessel_J1(double x)
+double gsl_sf_bessel_J1(const double x)
 { 
   const double xmin = ROOT_EIGHT * GSL_SQRT_MACH_EPS;
   const double xmax = 1./GSL_SQRT_MACH_EPS;

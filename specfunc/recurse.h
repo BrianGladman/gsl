@@ -1,11 +1,59 @@
 /* Author: G. Jungman
  * RCS: $Id$
  */
+#ifndef _RECURSE_H_
+#define _RECURSE_H_
 
 #define CONCAT(a,b) a ## _ ## b
 
+
+/* n_max >= n_min + 2
+ * f[n+1] + a[n] f[n] + b[n] f[n-1] = 0
+ *
+ * Trivial forward recurrence.
+ */
+#define GEN_RECURSE_FORWARD_SIMPLE(func)                                      \
+int CONCAT(recurse_forward_simple, func) (                                    \
+                               const int n_max, const int n_min,              \
+                               const double parameters[],                     \
+                               const double f_n_min,                          \
+			       const double f_n_min_p1,                       \
+                               double * f,                                    \
+			       double * f_n_max                               \
+                               )                                              \
+{                                                                             \
+  int n;                                                                      \
+                                                                              \
+  if(f == 0) {                                                                \
+    double f2 = f_n_min;                                                      \
+    double f1 = f_n_min_p1;                                                   \
+    double f0;                                                                \
+    for(n=n_min+2; n<=n_max; n++) {                                           \
+      f0 = -REC_COEFF_A(n-1,parameters) * f1 - REC_COEFF_B(n-1, parameters) * f2; \
+      f2 = f1;                                                                \
+      f1 = f0;                                                                \
+    }                                                                         \
+    *f_n_max = f0;                                                            \
+  }                                                                           \
+  else {                                                                      \
+    f[n_min]     = f_n_min;                                                   \
+    f[n_min + 1] = f_n_min_p1;                                                \
+    for(n=n_min+2; n<=n_max; n++) {                                           \
+      f[n] = -REC_COEFF_A(n-1,parameters) * f[n-1] -REC_COEFF_B(n-1, parameters) * f[n-2]; \
+    }                                                                         \
+    *f_n_max = f[n_max];                                                      \
+  }                                                                           \
+                                                                              \
+  return GSL_SUCCESS;                                                         \
+}                                                                             \
+
+
 /* n_start >= n_max >= n_min 
  * f[n+1] + a[n] f[n] + b[n] f[n-1] = 0
+ *
+ * Generate the minimal solution of the above recursion relation,
+ * with the simplest form of the normalization condition, f[n_min] given.
+ * [Gautschi, SIAM Rev. 9, 24 (1967); (3.9) with s[n]=0]
  */
 #define GEN_RECURSE_BACKWARD_MINIMAL_SIMPLE(func)                             \
 int CONCAT(recurse_backward_minimal_simple, func) (                           \
@@ -55,3 +103,5 @@ int CONCAT(recurse_backward_minimal_simple, func) (                           \
   return GSL_SUCCESS;                                                         \
 }                                                                             \
 
+
+#endif /* !_RECURSE_H_ */

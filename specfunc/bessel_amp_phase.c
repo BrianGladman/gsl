@@ -140,7 +140,7 @@ const struct gsl_sf_ChebSeries _bessel_amp_phase_bth1_cs = {
   -1, 1
 };
 
-double gsl_sf_bessel_asymp_Mnu(double nu, double x)
+double gsl_sf_bessel_asymp_Mnu(const double nu, const double x)
 {
   double x_inv  = 1./x;
   double x_inv2 = x_inv*x_inv;
@@ -151,7 +151,7 @@ double gsl_sf_bessel_asymp_Mnu(double nu, double x)
   return sqrt(Mnu2_c)/sqrt(x); /* do it this way so we can never underflow */
 }
 
-double gsl_sf_bessel_asymp_thetanu(double nu, double x)
+double gsl_sf_bessel_asymp_thetanu(const double nu, const double x)
 {
   double x_inv  = 1./x;
   double x_inv2 = x_inv*x_inv;

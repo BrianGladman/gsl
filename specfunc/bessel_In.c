@@ -6,12 +6,12 @@
 #include <gsl_errno.h>
 #include "gsl_sf_bessel.h"
 
-extern int gsl_sf_bessel_I1_scaled_impl(double, double *);
+extern int gsl_sf_bessel_I1_scaled_impl(const double, double *);
 
 
 /*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
 
-int gsl_sf_bessel_I_scaled_impl(int n, double x, double * result)
+int gsl_sf_bessel_I_scaled_impl(int n, const double x, double * result)
 {
   n = abs(n);  /* I(-n, z) = I(n, z) */
  
@@ -65,7 +65,7 @@ int gsl_sf_bessel_I_scaled_impl(int n, double x, double * result)
   }
 }
 
-int gsl_sf_bessel_I_impl(int n, double x, double * result)
+int gsl_sf_bessel_I_impl(const int n, const double x, double * result)
 {
   double ax = fabs(x);
   
@@ -83,7 +83,7 @@ int gsl_sf_bessel_I_impl(int n, double x, double * result)
 
 /*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
 
-int gsl_sf_bessel_I_scaled_e(int n, double x, double * result)
+int gsl_sf_bessel_I_scaled_e(const int n, const double x, double * result)
 {
   int status = gsl_sf_bessel_I_scaled_impl(n, x, result);
   if(status != GSL_SUCCESS) {
@@ -92,7 +92,7 @@ int gsl_sf_bessel_I_scaled_e(int n, double x, double * result)
   return status;
 }
 
-int gsl_sf_bessel_I_e(int n, double x, double * result)
+int gsl_sf_bessel_I_e(const int n, const double x, double * result)
 {
   int status = gsl_sf_bessel_I_impl(n, x, result);
   if(status != GSL_SUCCESS) {
@@ -104,7 +104,7 @@ int gsl_sf_bessel_I_e(int n, double x, double * result)
 
 /*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*-*-*/
 
-double gsl_sf_bessel_I_scaled(int n, double x)
+double gsl_sf_bessel_I_scaled(const int n, const double x)
 {
   double y;
   int status = gsl_sf_bessel_I_scaled_impl(n, x, &y);
@@ -114,7 +114,7 @@ double gsl_sf_bessel_I_scaled(int n, double x)
   return y;
 }
 
-double gsl_sf_bessel_I(int n, double x)
+double gsl_sf_bessel_I(const int n, const double x)
 {
   double y;
   int status = gsl_sf_bessel_I_impl(n, x, &y);

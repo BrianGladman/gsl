@@ -34,7 +34,7 @@ int main(int argc, char * argv[])
 */
 
 
-  gsl_sf_conical_sph_reg_array_impl(100, lambda, 2., &y, y_array);
+  gsl_sf_conical_sph_reg_array_impl(100, lambda, 0.5, &y, y_array);
   
   for(i=0; i<=100; i++) {
   printf("%3d   %22.17g    %22.17g\n",

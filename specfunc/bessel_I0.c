@@ -118,7 +118,7 @@ static struct gsl_sf_ChebSeries ai02_cs = {
 
 double gsl_sf_bessel_I0_scaled(double);
 
-int gsl_sf_bessel_I0_impl(double x, double * result)
+int gsl_sf_bessel_I0_impl(const double x, double * result)
 {
   const double x_small = 2. * GSL_SQRT_MACH_EPS;
   const double xmax    = GSL_LOG_DBL_MAX - 1.;   /* alog (r1mach(2)) */
@@ -145,7 +145,7 @@ int gsl_sf_bessel_I0_impl(double x, double * result)
 
 /*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
 
-int gsl_sf_bessel_I0_e(double x, double * result)
+int gsl_sf_bessel_I0_e(const double x, double * result)
 {
   int status = gsl_sf_bessel_I0_impl(x, result);  
   if(status != GSL_SUCCESS) {
@@ -157,12 +157,11 @@ int gsl_sf_bessel_I0_e(double x, double * result)
 
 /*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*-*-*/
 
-double gsl_sf_bessel_I0_scaled(double x)
+double gsl_sf_bessel_I0_scaled(const double x)
 {
-  const double x_small = 2.0 * GSL_SQRT_MACH_EPS; 
   double y = fabs(x);
 
-  if(y < x_small) {
+  if(y < 2.0 * GSL_SQRT_MACH_EPS) {
     return 1.;
   }
   else if(y <= 3.0) {
@@ -177,7 +176,7 @@ double gsl_sf_bessel_I0_scaled(double x)
 }
 
 
-double gsl_sf_bessel_I0(double x)
+double gsl_sf_bessel_I0(const double x)
 {
   double y;
   int status = gsl_sf_bessel_I0_impl(x, &y);

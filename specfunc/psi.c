@@ -11,7 +11,7 @@
 /*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
 
 /* simple implementation for integer argument */
-int gsl_sf_psi_int_impl(int n, double * result)
+int gsl_sf_psi_int_impl(const int n, double * result)
 {
   if(n == 1) {
     *result = -M_EULER;
@@ -105,7 +105,7 @@ static struct gsl_sf_ChebSeries apsi_cs = {
 };
 
 
-int gsl_sf_psi_impl(double x, double * result)
+int gsl_sf_psi_impl(const double x, double * result)
 {
   double y = fabs(x);
   double xbig  = 1./GSL_SQRT_MACH_EPS;       /* XBIG  = 1.0/SQRT(R1MACH(3)) */
@@ -167,7 +167,7 @@ int gsl_sf_psi_impl(double x, double * result)
 
 /*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
 
-int gsl_sf_psi_int_e(int n, double * result)
+int gsl_sf_psi_int_e(const int n, double * result)
 {
   int status = gsl_sf_psi_int_impl(n, result);
   if(status != GSL_SUCCESS){
@@ -176,7 +176,7 @@ int gsl_sf_psi_int_e(int n, double * result)
   return status;
 }
 
-int gsl_sf_psi_e(double x, double * result)
+int gsl_sf_psi_e(const double x, double * result)
 {
   int status = gsl_sf_psi_impl(x, result);
   if(status != GSL_SUCCESS){
@@ -188,7 +188,7 @@ int gsl_sf_psi_e(double x, double * result)
 
 /*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*-*-*/
 
-double gsl_sf_psi_int(int n)
+double gsl_sf_psi_int(const int n)
 {
   double y;
   int status = gsl_sf_psi_int_impl(n, &y);
@@ -198,7 +198,7 @@ double gsl_sf_psi_int(int n)
   return y;
 }
 
-double gsl_sf_psi(double x)
+double gsl_sf_psi(const double x)
 {
   double y;
   int status = gsl_sf_psi_impl(x, &y);

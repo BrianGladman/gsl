@@ -222,7 +222,7 @@ static struct gsl_sf_ChebSeries ath2_cs = {
 
 
 /* Airy modulus and phase for x < -1 */
-static int airy_mod_phase(double x, double * mod, double * phase)
+static int airy_mod_phase(const double x, double * mod, double * phase)
 {
   double sqx;
 
@@ -531,7 +531,7 @@ static struct gsl_sf_ChebSeries cs_bip2 = {
    
 
 /* should only be called for x >= 1.0 */
-static double airy_aie(double x)
+static double airy_aie(const double x)
 {
   double sqx = sqrt(x);
   double z = 2.0/(x*sqx) - 1.0;
@@ -539,7 +539,7 @@ static double airy_aie(double x)
 }
 
 /* should only be called for x >= 2.0 */
-static double airy_bie(double x)
+static double airy_bie(const double x)
 {
   const double ATR =  8.7506905708484345;
   const double BTR = -2.093836321356054;
@@ -556,7 +556,7 @@ static double airy_bie(double x)
   }
 }
 
-int gsl_sf_airy_Bi_impl(double x, double * result)
+int gsl_sf_airy_Bi_impl(const double x, double * result)
 {
   if(x < -1.0) {
     double mod, theta;
@@ -590,7 +590,7 @@ int gsl_sf_airy_Bi_impl(double x, double * result)
 
 /*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
 
-int gsl_sf_airy_Bi_e(double x, double * result)
+int gsl_sf_airy_Bi_e(const double x, double * result)
 {
   int status = gsl_sf_airy_Bi_impl(x, result);
   if(status != GSL_SUCCESS) {
@@ -602,7 +602,7 @@ int gsl_sf_airy_Bi_e(double x, double * result)
 
 /*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*-*-*/
 
-double gsl_sf_airy_Bi(double x)
+double gsl_sf_airy_Bi(const double x)
 {
   double y;
   int status = gsl_sf_airy_Bi_impl(x, &y);
@@ -612,7 +612,7 @@ double gsl_sf_airy_Bi(double x)
   return y;
 }
 
-double gsl_sf_airy_Ai(double x)
+double gsl_sf_airy_Ai(const double x)
 {
   if(x < -1.0) {
     double mod, theta;
@@ -628,7 +628,7 @@ double gsl_sf_airy_Ai(double x)
   }
 }
 
-double gsl_sf_airy_Bi_scaled(double x)
+double gsl_sf_airy_Bi_scaled(const double x)
 {
   if(x <= 0.) {
     return gsl_sf_airy_Bi(x);

@@ -32,15 +32,16 @@
 #define GSL_ROOT3_MACH_EPS      2.154e-5
 #define GSL_ROOT4_MACH_EPS      0.0003162
 
+#define GSL_SQRT_DBL_MIN        2.e-154
 #define GSL_LOG_DBL_MIN       	(DBL_MIN_10_EXP * M_LN10)
 #define GSL_LOG_DBL_MAX       	(DBL_MAX_10_EXP * M_LN10)
 
 
 /* other needlessly compulsive abstractions */
 
-#define GSL_IS_ODD(n) ((n) & 1)
-#define GSL_IS_EVN(n) (!(GSL_IS_ODD(n)))
-#define GSL_SIGN(x)   ((x) >= 0.0 ? 1 : -1)
+#define GSL_IS_ODD(n)  ((n) & 1)
+#define GSL_IS_EVEN(n) (!(GSL_IS_ODD(n)))
+#define GSL_SIGN(x)    ((x) >= 0.0 ? 1 : -1)
 
 
 #endif /* !_GSL_MATH_H_ */

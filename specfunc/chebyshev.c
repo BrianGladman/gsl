@@ -7,14 +7,14 @@
 #include <gsl_math.h>
 #include "gsl_sf_chebyshev.h"
 
-int gsl_sf_cheb_calc_impl(struct gsl_sf_ChebSeries *, double (*)(double));
+int gsl_sf_cheb_calc_impl(struct gsl_sf_ChebSeries *, const double (*)(double));
 
 
 /*-*-*-*-*-*-*-*-*-*-*-* Allocators *-*-*-*-*-*-*-*-*-*-*-*/
 
-struct gsl_sf_ChebSeries * gsl_sf_cheb_new(double (*func)(double),
-    	    	    	    	    	   double a, double b,
-			      	    	   int order)
+struct gsl_sf_ChebSeries * gsl_sf_cheb_new(const double (*func)(double),
+    	    	    	    	    	   const double a, const double b,
+			      	    	   const int order)
 {
   if(order < 0) {
     GSL_ERROR_RETURN("gsl_sf_cheb_new: order < 0", GSL_EDOM, 0);
@@ -51,7 +51,7 @@ struct gsl_sf_ChebSeries * gsl_sf_cheb_new(double (*func)(double),
 
 /*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
 
-int gsl_sf_cheb_calc_impl(struct gsl_sf_ChebSeries * cs, double (*func)(double))
+int gsl_sf_cheb_calc_impl(struct gsl_sf_ChebSeries * cs, const double (*func)(double))
 {
   if(cs == 0) {
     return GSL_EFAILED;
@@ -86,7 +86,7 @@ int gsl_sf_cheb_calc_impl(struct gsl_sf_ChebSeries * cs, double (*func)(double))
 
 /*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
 
-int gsl_sf_cheb_calc_e(struct gsl_sf_ChebSeries * cs, double (*func)(double))
+int gsl_sf_cheb_calc_e(struct gsl_sf_ChebSeries * cs, const double (*func)(double))
 {
   int status = gsl_sf_cheb_calc_impl(cs, func);
   if(status != GSL_SUCCESS) {
@@ -99,7 +99,7 @@ int gsl_sf_cheb_calc_e(struct gsl_sf_ChebSeries * cs, double (*func)(double))
 /*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*-*-*/
 
 
-double gsl_sf_cheb_eval_n(double x, int n, const struct gsl_sf_ChebSeries * cs)
+double gsl_sf_cheb_eval_n(const double x, const int n, const struct gsl_sf_ChebSeries * cs)
 {
   int j;
   double d  = 0.;
@@ -119,7 +119,7 @@ double gsl_sf_cheb_eval_n(double x, int n, const struct gsl_sf_ChebSeries * cs)
 }
 
 
-double gsl_sf_cheb_eval(double x, const struct gsl_sf_ChebSeries * cs)
+double gsl_sf_cheb_eval(const double x, const struct gsl_sf_ChebSeries * cs)
 {
   int j;
   double d  = 0.;
