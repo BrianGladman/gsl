@@ -22,7 +22,7 @@
 #include <config.h>
 #include <stdlib.h>
 #include <gsl/gsl_math.h>
-#include "gsl_eigen.h"
+#include <gsl/gsl_eigen.h>
 
 /* The eigen_sort below is not very good, but it is simple and
  * self-contained. We can always implement an improved sort later.  */

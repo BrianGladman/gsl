@@ -1609,7 +1609,7 @@ function begin_file(name,decls)
   fprintf(FILE,"#include <gsl/gsl_test.h>\n");
   fprintf(FILE,"#include <gsl/gsl_ieee_utils.h>\n");
   fprintf(FILE,"#include <gsl/gsl_math.h>\n");
-  fprintf(FILE,"#include \"gsl_cblas.h\"\n");
+  fprintf(FILE,"#include <gsl/gsl_cblas.h>\n");
   fprintf(FILE,"\n");
   fprintf(FILE,"#include \"tests.h\"\n");
   fprintf(FILE,"\n");

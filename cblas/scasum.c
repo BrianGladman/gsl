@@ -1,5 +1,5 @@
 #include <gsl/gsl_math.h>
-#include "gsl_cblas.h"
+#include <gsl/gsl_cblas.h>
 #include "cblas.h"
 
 float

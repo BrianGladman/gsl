@@ -23,7 +23,7 @@
 #include <gsl/gsl_vector.h>
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_linalg.h>
-#include "gsl_eigen.h"
+#include <gsl/gsl_eigen.h>
 
 /* Compute eigenvalues/eigenvectors of real symmetric matrix using
    reduction to tridiagonal form, followed by QR iteration with

@@ -1,3 +1,9 @@
+Mon Nov 19 21:40:30 2001  Brian Gough  <bjg@network-theory.co.uk>
+
+	* standardised all files to #include <gsl/...> for exported header
+ 	files rather than having some as #include "...", to simplify build
+ 	procedure
+
 Fri Oct 19 15:19:45 2001  Brian Gough  <bjg@network-theory.co.uk>
 
 	* gsl-histogram.c (main): use gsl_histogram_alloc instead of

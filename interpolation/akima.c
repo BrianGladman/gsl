@@ -24,7 +24,7 @@
 #include <math.h>
 #include <gsl/gsl_errno.h>
 #include "integ_eval.h"
-#include "gsl_interp.h"
+#include <gsl/gsl_interp.h>
 
 typedef struct
 {

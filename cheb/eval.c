@@ -21,7 +21,7 @@
 #include <stdlib.h>
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_errno.h>
-#include "gsl_chebyshev.h"
+#include <gsl/gsl_chebyshev.h>
 
 /* For efficiency there are separate implementations of each of these
    functions */

@@ -28,7 +28,7 @@
 #include <gsl/gsl_permute_vector.h>
 #include <gsl/gsl_blas.h>
 
-#include "gsl_linalg.h"
+#include <gsl/gsl_linalg.h>
 
 #define REAL double
 

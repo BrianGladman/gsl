@@ -23,7 +23,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <gsl/gsl_errno.h>
-#include "gsl_odeiv.h"
+#include <gsl/gsl_odeiv.h>
 
 #include "odeiv_util.h"
 

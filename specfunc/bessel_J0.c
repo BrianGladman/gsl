@@ -25,8 +25,8 @@
 #include <gsl/gsl_mode.h>
 #include "bessel.h"
 #include "bessel_amp_phase.h"
-#include "gsl_sf_trig.h"
-#include "gsl_sf_bessel.h"
+#include <gsl/gsl_sf_trig.h>
+#include <gsl/gsl_sf_bessel.h>
 
 #include "cheb_eval.c"
 

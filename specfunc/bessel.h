@@ -22,7 +22,7 @@
 #ifndef _BESSEL_H_
 #define _BESSEL_H_
 
-#include "gsl_sf_result.h"
+#include <gsl/gsl_sf_result.h>
 
 
 /* Taylor expansion for J_nu(x) or I_nu(x)

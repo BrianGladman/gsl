@@ -27,7 +27,7 @@
 #include <gsl/gsl_blas.h>
 #include <gsl/gsl_ieee_utils.h>
 #include <gsl/gsl_complex_math.h>
-#include "gsl_eigen.h"
+#include <gsl/gsl_eigen.h>
 
 gsl_matrix *
 create_hilbert_matrix(int size)

@@ -22,7 +22,7 @@
 #include <config.h>
 #include <stdlib.h>
 #include <gsl/gsl_errno.h>
-#include "gsl_interp.h"
+#include <gsl/gsl_interp.h>
 
 gsl_interp_accel *
 gsl_interp_accel_alloc (void)

@@ -22,7 +22,7 @@
 #include <config.h>
 #include <stdlib.h>
 #include <gsl/gsl_errno.h>
-#include "gsl_interp.h"
+#include <gsl/gsl_interp.h>
 
 static int
 linear_init (void * vstate,

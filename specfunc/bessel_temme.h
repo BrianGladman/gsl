@@ -22,7 +22,7 @@
 #ifndef BESSEL_TEMME_H_
 #define BESSEL_TEMME_H_
 
-#include "gsl_sf_result.h"
+#include <gsl/gsl_sf_result.h>
 
 
 int

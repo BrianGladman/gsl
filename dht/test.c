@@ -25,7 +25,7 @@
 #include <math.h>
 #include <gsl/gsl_ieee_utils.h>
 #include <gsl/gsl_test.h>
-#include "gsl_dht.h"
+#include <gsl/gsl_dht.h>
 
 
 /* Test exact small transform.

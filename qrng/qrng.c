@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <gsl/gsl_errno.h>
-#include "gsl_qrng.h"
+#include <gsl/gsl_qrng.h>
 
 
 gsl_qrng *

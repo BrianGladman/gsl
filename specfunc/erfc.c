@@ -29,7 +29,7 @@
 #include <config.h>
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_errno.h>
-#include "gsl_sf_erf.h"
+#include <gsl/gsl_sf_erf.h>
 
 #include "check.h"
 

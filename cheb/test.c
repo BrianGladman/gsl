@@ -23,7 +23,7 @@
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_test.h>
 #include <gsl/gsl_ieee_utils.h>
-#include "gsl_chebyshev.h"
+#include <gsl/gsl_chebyshev.h>
 
 double f_sin (double x, void * p) {
   p = 0;

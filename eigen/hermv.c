@@ -24,7 +24,7 @@
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_complex_math.h>
 #include <gsl/gsl_linalg.h>
-#include "gsl_eigen.h"
+#include <gsl/gsl_eigen.h>
 
 /* Compute eigenvalues/eigenvectors of complex hermitian matrix using
    reduction to real symmetric tridiagonal form, followed by QR

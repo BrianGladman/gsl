@@ -25,7 +25,7 @@
 #include <gsl/gsl_linalg.h>
 #include <gsl/gsl_vector.h>
 #include "integ_eval.h"
-#include "gsl_interp.h"
+#include <gsl/gsl_interp.h>
 
 typedef struct
 {

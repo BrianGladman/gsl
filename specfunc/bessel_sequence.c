@@ -22,7 +22,7 @@
 #include <config.h>
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_errno.h>
-#include "gsl_sf_bessel.h"
+#include <gsl/gsl_sf_bessel.h>
 
 
 #define DYDX_p(p,u,x) (-(p)/(x) + (((nu)*(nu))/((x)*(x))-1.0)*(u))

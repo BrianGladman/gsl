@@ -22,11 +22,11 @@
 #include <config.h>
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_errno.h>
-#include "gsl_sf_exp.h"
-#include "gsl_sf_pow_int.h"
-#include "gsl_sf_gamma.h"
-#include "gsl_sf_psi.h"
-#include "gsl_sf_hyperg.h"
+#include <gsl/gsl_sf_exp.h>
+#include <gsl/gsl_sf_pow_int.h>
+#include <gsl/gsl_sf_gamma.h>
+#include <gsl/gsl_sf_psi.h>
+#include <gsl/gsl_sf_hyperg.h>
 
 #include "error.h"
 

@@ -26,7 +26,7 @@
 #include <math.h>
 #include <gsl/gsl_errno.h>
 /* #include "interpolation.h" */
-#include "gsl_integration.h"
+#include <gsl/gsl_integration.h>
 #if 0
 
 

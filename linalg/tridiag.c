@@ -23,7 +23,7 @@
 #include <stdlib.h>
 #include <gsl/gsl_errno.h>
 #include "tridiag.h"
-#include "gsl_linalg.h"
+#include <gsl/gsl_linalg.h>
 
 /* for description of method see [Engeln-Mullges + Uhlig, p. 92]
  *

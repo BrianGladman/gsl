@@ -22,7 +22,7 @@
 #include <config.h>
 #include <stdlib.h>
 #include <gsl/gsl_errno.h>
-#include "gsl_odeiv.h"
+#include <gsl/gsl_odeiv.h>
 
 gsl_odeiv_step * 
 gsl_odeiv_step_alloc(const gsl_odeiv_step_type * T, size_t dim)

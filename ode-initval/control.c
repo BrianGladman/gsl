@@ -23,7 +23,7 @@
 #include <stdlib.h>
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_errno.h>
-#include "gsl_odeiv.h"
+#include <gsl/gsl_odeiv.h>
 
 gsl_odeiv_control *
 gsl_odeiv_control_alloc(const gsl_odeiv_control_type * T)

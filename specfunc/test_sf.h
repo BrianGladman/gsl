@@ -25,7 +25,7 @@
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_machine.h>
-#include "gsl_sf_result.h"
+#include <gsl/gsl_sf_result.h>
 
 double test_sf_frac_diff(double x1, double x2);
 int test_sf_check_result(char * message_buff, gsl_sf_result r, double val, double tol);

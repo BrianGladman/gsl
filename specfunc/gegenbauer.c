@@ -22,7 +22,7 @@
 #include <config.h>
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_errno.h>
-#include "gsl_sf_gegenbauer.h"
+#include <gsl/gsl_sf_gegenbauer.h>
 
 #include "error.h"
 

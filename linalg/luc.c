@@ -29,7 +29,7 @@
 #include <gsl/gsl_blas.h>
 #include <gsl/gsl_complex_math.h>
 
-#include "gsl_linalg.h"
+#include <gsl/gsl_linalg.h>
 
 /* Factorise a general N x N complex matrix A into,
  *

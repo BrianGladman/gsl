@@ -23,7 +23,7 @@
 #include <math.h>
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_errno.h>
-#include "gsl_sf_lambert.h"
+#include <gsl/gsl_sf_lambert.h>
 
 /* Started with code donated by K. Briggs; added
  * error estimates, GSL foo, and minor tweaks.

@@ -18,7 +18,7 @@
  */
 
 #include <config.h>
-#include "gsl_poly.h"
+#include <gsl/gsl_poly.h>
 
 /*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*-*-*/
 

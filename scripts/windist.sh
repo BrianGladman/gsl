@@ -14,14 +14,17 @@ ver=${tarfile%%.tar.gz}
 tar xvfz $tarfile
 ( cd $ver;
   ./configure;
- (cd gsl ; make)
- (cd doc ; mkdir html ; 
+ (cd gsl ; make LN_S=mv )
+ (cd doc ; 
+  test -e gsl-ref.info && rm -f *.info *.info-* ; 
+  mkdir html ; 
   cd html ; 
   ../../../doc/texi2html -htmlhelp -verbose ../gsl-ref.texi ; )
  cp -a ../msvc .
  (cd msvc ; make ; cp -a gsl-ref.hhp ../doc/html; )
 )
 
+test -e $ver.zip && mv -b $ver.zip $ver.zip.old
 zip -l -r $ver.zip $ver -x '*~' -x '*/CVS/*' -x '*/.*'
 rm -r $ver
 

@@ -5,7 +5,7 @@
  *   Bratley, Fox, Niederreiter, ACM Trans. Model. Comp. Sim. 2, 195 (1992)
  */
 #include <config.h>
-#include "gsl_qrng.h"
+#include <gsl/gsl_qrng.h>
 
 
 #define NIED2_CHARACTERISTIC 2

@@ -22,7 +22,7 @@
 #include <config.h>
 #include <stdlib.h>
 #include <gsl/gsl_math.h>
-#include "gsl_linalg.h"
+#include <gsl/gsl_linalg.h>
 
 #define SWAP_SIZE_T(a, b)  do { size_t swap_tmp = a; a = b; b = swap_tmp; } while(0)
 

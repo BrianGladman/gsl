@@ -20,7 +20,7 @@
 #include <stdio.h>
 #include <math.h>
 #include <gsl/gsl_math.h>
-#include "gsl_sf.h"
+#include <gsl/gsl_sf.h>
 
 int test_coulomb(void);
 int test_hyperg0F1_stuff(void);

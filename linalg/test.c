@@ -27,7 +27,7 @@
 #include <gsl/gsl_permute_vector.h>
 #include <gsl/gsl_blas.h>
 #include <gsl/gsl_complex_math.h>
-#include "gsl_linalg.h"
+#include <gsl/gsl_linalg.h>
 
 int check (double x, double actual, double eps);
 gsl_matrix * create_hilbert_matrix(size_t size);

@@ -23,7 +23,7 @@
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_precision.h>
-#include "gsl_sf_ellint.h"
+#include <gsl/gsl_sf_ellint.h>
 
 #include "error.h"
 

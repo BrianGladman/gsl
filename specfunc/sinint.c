@@ -22,8 +22,8 @@
 #include <config.h>
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_errno.h>
-#include "gsl_sf_trig.h"
-#include "gsl_sf_expint.h"
+#include <gsl/gsl_sf_trig.h>
+#include <gsl/gsl_sf_expint.h>
 
 #include "error.h"
 

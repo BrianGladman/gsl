@@ -21,7 +21,7 @@
 #include <stdlib.h>
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_errno.h>
-#include "gsl_chebyshev.h"
+#include <gsl/gsl_chebyshev.h>
 
 int gsl_cheb_calc_integ(gsl_cheb_series * integ, const gsl_cheb_series * f)
 {

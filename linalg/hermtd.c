@@ -55,7 +55,7 @@
 #include <gsl/gsl_blas.h>
 #include <gsl/gsl_complex_math.h>
 
-#include "gsl_linalg.h"
+#include <gsl/gsl_linalg.h>
 
 int 
 gsl_linalg_hermtd_decomp (gsl_matrix_complex * A, gsl_vector_complex * tau)  

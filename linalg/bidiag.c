@@ -65,7 +65,7 @@
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_blas.h>
 
-#include "gsl_linalg.h"
+#include <gsl/gsl_linalg.h>
 
 int 
 gsl_linalg_bidiag_decomp (gsl_matrix * A, gsl_vector * tau_U, gsl_vector * tau_V)  

@@ -18,9 +18,7 @@
  */
 
 #include <config.h>
-#include <gsl_version.h>  /* this has to be kept in the top-level
-                             directory due to the way the gsl/ 
-                             subdirectory is build */
+#include <gsl/gsl_version.h>
 
 const char * gsl_version = GSL_VERSION;
 

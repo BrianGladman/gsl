@@ -22,8 +22,8 @@
 #include <config.h>
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_errno.h>
-#include "gsl_sf_pow_int.h"
-#include "gsl_sf_elljac.h"
+#include <gsl/gsl_sf_pow_int.h>
+#include <gsl/gsl_sf_elljac.h>
 
 
 /* See [Thompson, Atlas for Computing Mathematical Functions] */

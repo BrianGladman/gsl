@@ -6,7 +6,7 @@
  *   [Antonov+Saleev, USSR Comput. Maths. Math. Phys. 19, 252 (1980)]
  */
 #include <config.h>
-#include "gsl_qrng.h"
+#include <gsl/gsl_qrng.h>
 
 
 /* maximum allowed space dimension */

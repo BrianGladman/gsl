@@ -29,7 +29,7 @@
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_linalg.h>
 #include <gsl/gsl_ieee_utils.h>
-#include "gsl_odeiv.h"
+#include <gsl/gsl_odeiv.h>
 
 int rhs_linear (double t, const double y[], double f[], void *params);
 int jac_linear (double t, const double y[], double *dfdy, double dfdt[],
