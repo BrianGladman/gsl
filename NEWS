@@ -1,5 +1,8 @@
 * What is new in gsl-1.5:
 
+** Fixed a small discrepancy in the tolerance calculation of the
+one-dimensional brent minimiser.
+
 ** Numerical derivatives should now be calculated using the
 gsl_deriv_forward, gsl_deriv_central and gsl_deriv_backward functions,
 which accept a step-size argument in addition to the position x.  The

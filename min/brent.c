@@ -132,7 +132,7 @@ brent_iterate (void *vstate, gsl_function * f, double *x_minimum, double * f_min
       d = p / q;
       u = z + d;
 
-      if ((u - x_left) < t2 || (x_right - z) < t2)
+      if ((u - x_left) < t2 || (x_right - u) < t2)
         {
           d = (z < midpoint) ? tolerance : -tolerance ;
         }

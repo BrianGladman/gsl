@@ -276,3 +276,5 @@ minimisers.
 gsl_ran_hypergeometric_pdf
 
 * Bas Zoetekouw <bas@debian.org> documentation bug report
+
+* Paul Sydney <sydney@maui.net> bug report and patch for min/brent.c
