@@ -5,43 +5,52 @@
 #define GSL_SF_COUPLING_H_
 
 
-int gsl_sf_coupling_3j_e(double ja, double jb, double jc,
-                         double ma, double mb, double mc,
-		         double * result);
-
-int gsl_sf_coupling_6j_e(double ja, double jb, double jc,
-                         double jd, double je, double jf,
-			 double * result);
-
-int gsl_sf_coupling_9j_e(double ja, double jb, double jc,
-                         double jd, double je, double jf,
-			 double jg, double jh, double ji,
-			 double * result);
-
-
-double gsl_sf_coupling_3j(double ja, double jb, double jc,
-                          double ma, double mb, double mc);
-
-double gsl_sf_coupling_6j(double ja, double jb, double jc,
-                          double jd, double je, double jf);
-
-double gsl_sf_coupling_9j(double ja, double jb, double jc,
-                          double jd, double je, double jf,
-			  double jg, double jh, double ji);
+/* Wigner coefficients: (ja jb ma mb | ja jb jc mc) 
+ */
+int gsl_sf_coupling_3j_impl(int two_ja, int two_jb, int two_jc,
+                            int two_ma, int two_mb, int two_mc,
+			    double * result
+			    );
+int gsl_sf_coupling_3j_e(int two_ja, int two_jb, int two_jc,
+                         int two_ma, int two_mb, int two_mc,
+		         double * result
+			 );
+double gsl_sf_coupling_3j(int two_ja, int two_jb, int two_jc,
+                          int two_ma, int two_mb, int two_mc
+			  );
 
 
-int gsl_sf_coupling_3j_impl(double ja, double jb, double jc,
-                            double ma, double mb, double mc,
-			    double * result);
+/* 6j Coefficients: (ja jb jc | jd je jf)
+ */
+int gsl_sf_coupling_6j_impl(int two_ja, int two_jb, int two_jc,
+                            int two_jd, int two_je, int two_jf,
+			    double * result
+			    );
+int gsl_sf_coupling_6j_e(int two_ja, int two_jb, int two_jc,
+                         int two_jd, int two_je, int two_jf,
+			 double * result
+			 );
+double gsl_sf_coupling_6j(int two_ja, int two_jb, int two_jc,
+                          int two_jd, int two_je, int two_jf
+			  );
 
-int gsl_sf_coupling_6j_impl(double ja, double jb, double jc,
-                            double jd, double je, double jf,
-			    double * result);
 
-int gsl_sf_coupling_9j_impl(double ja, double jb, double jc,
-                            double jd, double je, double jf,
-			    double jg, double jh, double ji,
-			    double * result);
+/* 9j Coefficients: ( )
+ */
+int gsl_sf_coupling_9j_impl(int two_ja, int two_jb, int two_jc,
+                            int two_jd, int two_je, int two_jf,
+			    int two_jg, int two_jh, int two_ji,
+			    double * result
+			    );
+int gsl_sf_coupling_9j_e(int two_ja, int two_jb, int two_jc,
+                         int two_jd, int two_je, int two_jf,
+			 int two_jg, int two_jh, int two_ji,
+			 double * result
+			 );
+double gsl_sf_coupling_9j(int two_ja, int two_jb, int two_jc,
+                          int two_jd, int two_je, int two_jf,
+			  int two_jg, int two_jh, int two_ji
+			  );
 
 
 #endif  /* !GSL_SF_COUPLING_H_ */

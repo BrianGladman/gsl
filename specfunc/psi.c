@@ -103,7 +103,7 @@ int gsl_sf_psi_int_impl(const int n, double * result)
     double ans;
     ans = -M_EULER;
     for(k=1; k<n; k++) {
-      ans += 1./k;
+      ans += 1.0/k;
     }
     *result = ans;
     return GSL_SUCCESS;
@@ -115,30 +115,30 @@ int gsl_sf_psi_int_impl(const int n, double * result)
 int gsl_sf_psi_impl(const double x, double * result)
 {
   double y = fabs(x);
-  double xbig  = 1./GSL_SQRT_MACH_EPS;       /* XBIG  = 1.0/SQRT(R1MACH(3)) */
-  double dxrel = 10. * GSL_SQRT_MACH_EPS;    /* DXREL = SQRT (R1MACH(4))    */
+  double xbig  = 1.0  / GSL_SQRT_MACH_EPS;    /* XBIG  = 1.0/SQRT(R1MACH(3)) */
+  double dxrel = 10.0 * GSL_SQRT_MACH_EPS;    /* DXREL = SQRT (R1MACH(4))    */
   
   if(y >= 2.0) {
     double aux = 0.;
     if(y < xbig) aux = gsl_sf_cheb_eval(8./(y*y)-1., &apsi_cs);
-    if(x < 0.) {
+    if(x < 0.0) {
       /* *result = log(y) - 0.5/x + aux - M_PI * cot(M_PI*x); */
       *result = log(y) - 0.5/x + aux - M_PI * cos(M_PI*x)/sin(M_PI*x);
     }
     else {
-      *result = log(y) - 0.5/x + aux;  /* note: x > 0 by construction */
+      *result = log(y) - 0.5/x + aux;
     }
     return GSL_SUCCESS;
   }
   else { /* y < 2.0 */
-    if(x == 0.) {
-      *result = 0.; /* FIXME: should be Inf */
+    if(x == 0.0) {
+      *result = 0.0; /* FIXME: should be Inf */
       return GSL_EDOM;
     }
     else {
       double ans;
       int n = x;
-      if(x < 0.) --n;
+      if(x < 0.0) --n;
       y = x - n;
       --n;
       ans = gsl_sf_cheb_eval(2.*y-1., &psi_cs);
@@ -149,7 +149,7 @@ int gsl_sf_psi_impl(const double x, double * result)
 
       n = -n;
 
-      if(x < 0. && x+n-2 == 0.) {
+      if(x < 0.0 && x+n-2 == 0.) {
       	/* x is a negative integer */
 	*result = 0.; /* FIXME: should be Inf */
 	return GSL_EDOM;
@@ -173,7 +173,10 @@ int gsl_sf_psi_impl(const double x, double * result)
 }
 
 
-/*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
+/*-*-*-*-*-*-*-*s = 0;
+  s += ( frac_diff(gsl_sf_psi(5000.0), 8.517093188082904107) > 1.0e-14 );
+  gsl_test(s, "  gsl_sf_psi(5000.0)");
+  status += s;-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
 
 int gsl_sf_psi_int_e(const int n, double * result)
 {

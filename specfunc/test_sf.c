@@ -309,6 +309,72 @@ int check_coulomb(void)
   return status;
 }
 
+int check_coupling(void)
+{
+  double y;
+  int status = 0;
+  int s;
+  
+  gsl_sf_coupling_3j_impl(1, 1, 2, 1, -1, 0, &y);
+  s = 0;
+  s += ( frac_diff( y, sqrt(0.5) ) > 1.0e-14 );
+  gsl_test(s, "  3j(1/2, 1/2, 1, 1/2, -1/2, 0)");
+  printf("%20.16g\n", y);
+  status += s;
+  
+  return status;
+}
+
+int check_gamma(void)
+{
+  double zr, zi, lg_r, lg_i;
+  int status = 0;
+  int s;
+  
+  s = 0;
+  s += ( frac_diff( gsl_sf_lngamma(0.1),    2.252712651734205 ) > 1.e-14 );
+  s += ( frac_diff( gsl_sf_lngamma(100.0),  359.1342053695753 ) > 1.e-14 );
+  gsl_test(s, "  gsl_sf_lngamma");
+  status += s;
+  
+  s = 0;
+  zr = 5.0;
+  zi = 2.0;
+  gsl_sf_lngamma_complex_impl(zr, zi, &lg_r, &lg_i);
+  s += ( frac_diff( lg_r, 2.7487017561338026749 ) > 1.0e-14 );
+  s += ( frac_diff( lg_i, 3.0738434100497007915 ) > 1.0e-14 );
+  gsl_test(s, "  gsl_sf_lngamma_complex_impl(5 + 2 I)");
+  status += s;
+  
+  s = 0;
+  zr = 100.0;
+  zi = 100.0;
+  gsl_sf_lngamma_complex_impl(zr, zi, &lg_r, &lg_i);
+  s += ( frac_diff( lg_r, 315.07804459949331323 ) > 1.0e-14 );
+  s += ( frac_diff( lg_i, 2.0821801804113110099 ) > 1.0e-14 );
+  gsl_test(s, "  gsl_sf_lngamma_complex_impl(100 + 100 I)");
+  status += s;
+  
+  s = 0;
+  zr =   100.0;
+  zi = -1000.0;
+  gsl_sf_lngamma_complex_impl(zr, zi, &lg_r, &lg_i);
+  s += ( frac_diff( lg_r, -882.3920483010362817000 ) > 1.0e-14 );
+  s += ( frac_diff( lg_i,   -2.1169293725678813270 ) > 1.0e-12 );
+  gsl_test(s, "  gsl_sf_lngamma_complex_impl(100 - 1000 I)");
+  status += s;
+
+  s = 0;
+  zr = -100.0;
+  zi =   -1.0;
+  gsl_sf_lngamma_complex_impl(zr, zi, &lg_r, &lg_i);
+  s += ( frac_diff( lg_r, -365.0362469529239516000 ) > 1.0e-14 );
+  s += ( frac_diff( lg_i,   -3.0393820262864361140 ) > 1.0e-12 );
+  gsl_test(s, "  gsl_sf_lngamma_complex_impl(-1000 - I)");
+  status += s;
+
+  return status;
+}
 
 int check_gegen(void)
 {
@@ -402,6 +468,72 @@ int check_hyperg(void)
   s += ( frac_diff(gsl_sf_hyperg_2F0(8,   8, -0.02),   0.3299059284994299    ) > 1.e-14 );
   s += ( frac_diff(gsl_sf_hyperg_2F0(50, 50, -0.02),   2.688995263773233e-13 ) > 1.e-14 );
   gsl_test(s, "  gsl_sf_hyperg_2F0");
+  status += s;
+
+  return status;
+}
+
+int check_pow_int(void)
+{
+  int status = 0;
+  int s;
+  
+  s = 0;
+  s += ( frac_diff( gsl_sf_pow_int(2.0, 3), 8.0 ) > 1.0e-14 );
+  gsl_test(s, "  gsl_sf_pow_int(2.0, 3)");
+  status += s;
+  
+  s = 0;
+  s += ( frac_diff( gsl_sf_pow_int(-2.0, 3), -8.0 ) > 1.0e-14 );
+  gsl_test(s, "  gsl_sf_pow_int(-2.0, 3)");
+  status += s;
+  
+  s = 0;
+  s += ( frac_diff( gsl_sf_pow_int(2.0, -3), 1.0/8.0 ) > 1.0e-14 );
+  gsl_test(s, "  gsl_sf_pow_int(2.0, -3)");
+  status += s;
+  
+  s = 0;
+  s += ( frac_diff( gsl_sf_pow_int(-2.0, -3), -1.0/8.0 ) > 1.0e-14 );
+  gsl_test(s, "  gsl_sf_pow_int(-2.0, -3)");
+  status += s;
+  
+  return status;
+}
+
+int check_psi(void)
+{
+  int status = 0;
+  int s;
+  
+  s = 0;
+  s += ( frac_diff(gsl_sf_psi_int(5), 1.5061176684318004727 ) > 1.0e-14 );
+  gsl_test(s, "  gsl_sf_psi_int(5)");
+  status += s;
+  
+  s = 0;
+  s += ( frac_diff(gsl_sf_psi_int(5000), 8.517093188082904107 ) > 1.0e-14 );
+  gsl_test(s, "  gsl_sf_psi_int(5000)");
+  status += s;
+  
+  s = 0;
+  s += ( frac_diff(gsl_sf_psi(5.0), 1.5061176684318004727 ) > 1.0e-14 );
+  gsl_test(s, "  gsl_sf_psi(5.0)");
+  status += s;
+  
+  s = 0;
+  s += ( frac_diff(gsl_sf_psi(5000.0), 8.517093188082904107 ) > 1.0e-14 );
+  gsl_test(s, "  gsl_sf_psi(5000.0)");
+  status += s;
+
+  s = 0;
+  s += ( frac_diff(gsl_sf_psi(-100.5), 4.615124601338064117 ) > 1.0e-14 );
+  gsl_test(s, "  gsl_sf_psi(-100.5)");
+  status += s;
+
+  s = 0;
+  s += ( frac_diff(gsl_sf_psi(-1.0e+5-0.5), 11.512935464924395337 ) > 1.0e-10 );
+  gsl_test(s, "  gsl_sf_psi(-1.0e+5-0.5)");
   status += s;
 
   return status;
@@ -514,10 +646,14 @@ int main(int argc, char * argv[])
   gsl_test(check_bessel(),     "Bessel Functions");
   gsl_test(check_clausen(),    "Clausen Integral");
   gsl_test(check_coulomb(),    "Coulomb Wave Functions");
+  gsl_test(check_coupling(),   "Coupling Coefficients");
 
+  gsl_test(check_gamma(),      "Gamma Functions");
   gsl_test(check_gegen(),      "Gegenbauer Polynomials");
   gsl_test(check_hyperg(),     "Hypergeometric Functions");
 
+  gsl_test(check_pow_int(),    "Integer Powers");
+  gsl_test(check_psi(),        "Psi Functions");
   gsl_test(check_trig(),       "Trigonometric and Related Functions");
   gsl_test(check_zeta(),       "Zeta Functions");
 
