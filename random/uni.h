@@ -5,7 +5,7 @@ double gsl_ran_uni_uniform(void);
 void gsl_ran_uni_seed(int);
 
 unsigned long gsl_ran_uni_random(void);
-double gsl_ran_uni_max();
+double gsl_ran_uni_max(void);
 
 void *gsl_ran_uni_getRandomState(void);
 void gsl_ran_uni_setRandomState(void *);

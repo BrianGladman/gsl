@@ -5,7 +5,7 @@ double gsl_ran_zuf_uniform(void);
 void gsl_ran_zuf_seed(int);
 
 unsigned long gsl_ran_zuf_random(void);
-double gsl_ran_zuf_max();
+double gsl_ran_zuf_max(void);
 
 void *gsl_ran_zuf_getRandomState(void);
 void gsl_ran_zuf_setRandomState(void *);

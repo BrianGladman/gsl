@@ -5,7 +5,7 @@ double gsl_ran_taus_uniform(void);
 void gsl_ran_taus_seed(int);
 
 unsigned long gsl_ran_taus_random(void);
-double gsl_ran_taus_max();
+double gsl_ran_taus_max(void);
 
 void *gsl_ran_taus_getRandomState(void);
 void gsl_ran_taus_setRandomState(void *);

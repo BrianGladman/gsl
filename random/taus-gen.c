@@ -1,3 +1,4 @@
+/* $Id$ */
 /* File xxx-gen.xc is a template file
  *
  * This is either the template file xxx-gen.xc or else is generated
@@ -8,7 +9,7 @@
  * arguments, it makes all built-sources
  */
 
-
+#include <config.h>
 #include "taus.h"             /* defines gsl_ran_taus_ prototypes */
 #include "gsl_ran.h"         /* defines gsl_ran_ prototypes */
 
