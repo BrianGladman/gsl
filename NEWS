@@ -1,3 +1,6 @@
+** Fixed header file <gsl/gsl_const.h> to include new MKSA and CGSM
+header files.
+
 * What was new in gsl-1.4:
 
 ** Added cumulative distribution functions and their inverses for the
