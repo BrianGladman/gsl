@@ -43,7 +43,7 @@ gsl_odeiv_system;
  */
 typedef struct {
   char * _name;
-  int  (*_step)  (void * _state, void * _work, unsigned int dim, double t, double h, double y[], double yerr[], const double dydt_in[], double dydt_out[], const gsl_odeiv_system * dydt);
+  int  (*_step)  (void * self, double t, double h, double y[], double yerr[], const double dydt_in[], double dydt_out[], const gsl_odeiv_system * dydt);
   int  (*_reset) (void * _state);
   void (*_free)  (void * _state, void * _work);
   void * _state;
@@ -51,6 +51,7 @@ typedef struct {
   int can_use_dydt;
   size_t dimension;
   unsigned int order;
+  int stutter;
 }
 gsl_odeiv_step;
 
@@ -73,6 +74,7 @@ gsl_odeiv_step_factory;
  * rk4    : 4th order (classical) Runge-Kutta
  * rkck   : embedded 4th(5th) Runge-Kutta, Cash-Karp
  * rk8pd  : embedded 8th(9th) Runge-Kutta, Prince-Dormand
+ * rk2imp : implicit 2nd order Runge-Kutta at Gaussian points
  * rk4imp : implicit 4th order Runge-Kutta at Gaussian points
  * gear1  : M=1 implicit Gear method
  * gear2  : M=2 implicit Gear method
@@ -81,6 +83,7 @@ extern const gsl_odeiv_step_factory  gsl_odeiv_step_factory_rk2;
 extern const gsl_odeiv_step_factory  gsl_odeiv_step_factory_rk4;
 extern const gsl_odeiv_step_factory  gsl_odeiv_step_factory_rkck;
 extern const gsl_odeiv_step_factory  gsl_odeiv_step_factory_rk8pd;
+extern const gsl_odeiv_step_factory  gsl_odeiv_step_factory_rk2imp;
 extern const gsl_odeiv_step_factory  gsl_odeiv_step_factory_rk4imp;
 extern const gsl_odeiv_step_factory  gsl_odeiv_step_factory_gear1;
 extern const gsl_odeiv_step_factory  gsl_odeiv_step_factory_gear2;
@@ -101,8 +104,9 @@ void gsl_odeiv_step_free(gsl_odeiv_step * s);
  * callback mechanism.
  */
 typedef struct {
-  int (*pre_step)  (double t, const double y[]);
-  int (*post_step) (double t, const double y[], const double yerr[]);
+  int (*pre_step)  (void * self, double t, unsigned int dim, const double y[]);
+  int (*post_step) (void * self, double t, unsigned int dim, const double y[], const double yerr[]);
+  FILE * f;
   void * params;
 }
 gsl_odeiv_evolve_mon;
@@ -110,8 +114,9 @@ gsl_odeiv_evolve_mon;
 
 /* Specialized monitor constructors.
  */
-gsl_odeiv_evolve_mon * gsl_odeiv_evolve_mon_stream_new(const FILE *);
+gsl_odeiv_evolve_mon * gsl_odeiv_evolve_mon_stream_new(FILE *);
 
+void gsl_odeiv_evolve_mon_free(gsl_odeiv_evolve_mon *);
 
 
 /* General step size control object.
@@ -177,6 +182,7 @@ typedef struct {
   double * dydt_out;
   size_t dimension;
   unsigned int count;
+  unsigned int count_stutter;
 }
 gsl_odeiv_evolve;
 

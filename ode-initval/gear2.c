@@ -21,7 +21,7 @@ gear2_state;
 
 
 static gsl_odeiv_step * gear2_create(unsigned int dimension);
-static int  gear2_step(void * state, void * work, unsigned int dim, double t, double h, double y[], double yerr[], const double dydt_in[], double dydt_out[], const gsl_odeiv_system * dydt);
+static int  gear2_step(void * self, double t, double h, double y[], double yerr[], const double dydt_in[], double dydt_out[], const gsl_odeiv_system * dydt);
 static int  gear2_reset(void * state);
 static void gear2_free(void * state, void * work);
 
@@ -39,13 +39,14 @@ gear2_create(unsigned int dimension)
 {
   gear2_state * state;
 
-  gsl_odeiv_step * step = gsl_odeiv_step_new(gsl_odeiv_step_factory_gear2.name, dimension, 2 /* FIXME: ?? */, sizeof(gear2_state), 2*dimension * sizeof(double));
+  gsl_odeiv_step * step = gsl_odeiv_step_new(gsl_odeiv_step_factory_gear2.name, dimension, 3, sizeof(gear2_state), 2*dimension * sizeof(double));
   if(step == 0) return 0;
 
   step->_step  = gear2_step;
   step->_reset = gear2_reset;
   step->_free  = gear2_free;
   step->can_use_dydt = 0;
+  step->stutter = 0;
 
   state = (gear2_state *) step->_state;
   state->primed = 0;
@@ -64,9 +65,15 @@ gear2_create(unsigned int dimension)
 
 static
 int
-gear2_step(void * state, void * work, unsigned int dim, double t, double h, double y[], double yerr[], const double dydt_in[], double dydt_out[], const gsl_odeiv_system * dydt)
+gear2_step(void * self, double t, double h, double y[], double yerr[], const double dydt_in[], double dydt_out[], const gsl_odeiv_system * dydt)
 {
-  gear2_state * s = (gear2_state *) state;
+  gsl_odeiv_step * my = (gsl_odeiv_step *) self;
+
+  gear2_state * s = (gear2_state *) my->_state;
+
+  const unsigned int dim = my->dimension;
+
+  my->stutter = 0;
 
   if(s->primed && fabs((s->last_h - h)/h) < 8.0 * GSL_DBL_EPSILON) {
     /* We have a previous y value in the buffer, and the step
@@ -74,7 +81,7 @@ gear2_step(void * state, void * work, unsigned int dim, double t, double h, doub
      */
 
     /* divide up the workspace */
-    double * w  = (double *) work;
+    double * w  = (double *) my->_work;
     double * k  = w;
     double * y0 = w + dim;
 
@@ -98,7 +105,7 @@ gear2_step(void * state, void * work, unsigned int dim, double t, double h, doub
 
     /* Estimate error and update the state buffer. */
     for(i=0; i<dim; i++) {
-      yerr[i]    = h * (y[i] - y0[i]);
+      yerr[i]    = h * h * (y[i] - y0[i]); /* error is third order */
       s->yim1[i] = y0[i];
     }
 
@@ -120,6 +127,7 @@ gear2_step(void * state, void * work, unsigned int dim, double t, double h, doub
     /* Make note of step size and indicate readiness for a Gear step. */
     s->last_h = h;
     s->primed = 1;
+    my->stutter = 1;
 
     return status;
   }

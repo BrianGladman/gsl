@@ -17,6 +17,7 @@ gsl_odeiv_evolve_new(void)
     e->yerr = 0;
     e->count = 0;
     e->dimension = 0;
+    e->count_stutter = 0;
   }
   return e;
 }
@@ -66,6 +67,7 @@ gsl_odeiv_evolve_impl(
   }
 
   e->count = 0;
+  e->count_stutter = 0;
 
   while(t < t1) {
 
@@ -77,7 +79,7 @@ gsl_odeiv_evolve_impl(
       GSL_ODEIV_FN_EVAL(dydt, t, y, e->dydt_in);
     }
 
-    if(mon != 0 && mon->pre_step != 0) mon->pre_step(t, y);
+    if(mon != 0 && mon->pre_step != 0) mon->pre_step(mon, t, e->dimension, y);
 
     while(1) {
       const double t_save = t;
@@ -94,6 +96,9 @@ gsl_odeiv_evolve_impl(
       }
       t += h;
 
+      ++e->count;
+      if(step->stutter) ++e->count_stutter;
+
       if(con == 0) {
         /* We do not have the ability to adjust the step.
          * Continue with prescribed evolution.
@@ -109,14 +114,13 @@ gsl_odeiv_evolve_impl(
 	}
         else if(hadj_stat == GSL_ODEIV_HADJ_DEC) {
 	  /* Step was decreased. Undo and go back to try again. */
-          memcpy(y, y0, dydt->dimension * sizeof(double));
+          memcpy(y, e->y0, dydt->dimension * sizeof(double));
 	  t = t_save;
 	}
       }
     }
-
-    ++e->count;
-    if(mon != 0 && mon->post_step != 0) mon->post_step(t, y, e->yerr);
+ 
+    if(mon != 0 && mon->post_step != 0) mon->post_step(mon, t, e->dimension, y, e->yerr);
   }
 
   return GSL_SUCCESS;

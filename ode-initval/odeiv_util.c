@@ -35,6 +35,7 @@ gsl_odeiv_step_new(
     if(work_size > 0) s->_work = malloc(work_size);
 
     if((s->_state == 0 && state_size > 0) || (s->_work == 0 && work_size > 0) || s->_name == 0) {
+      if(s->_name != 0) free(s->_name);
       if(s->_state != 0) free(s->_state);
       if(s->_work != 0) free(s->_work);
       free(s);

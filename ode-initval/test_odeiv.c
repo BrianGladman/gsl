@@ -23,6 +23,7 @@ int rhs_linear(double t, const double y[], double f[], void * params)
 gsl_odeiv_system rhs_func_lin = {
   rhs_linear,
   0,
+  2,
   0
 };
 
@@ -39,6 +40,7 @@ int rhs_sin(double t, const double y[], double f[], void * params)
 gsl_odeiv_system rhs_func_sin = {
   rhs_sin,
   0,
+  2,
   0
 };
 
@@ -55,6 +57,7 @@ int rhs_exp(double t, const double y[], double f[], void * params)
 gsl_odeiv_system rhs_func_exp = {
   rhs_exp,
   0,
+  2,
   0
 };
 
@@ -71,6 +74,7 @@ int rhs_stiff(double t, const double y[], double f[], void * params)
 gsl_odeiv_system rhs_func_stiff = {
   rhs_stiff,
   0,
+  2,
   0
 };
 
@@ -337,6 +341,37 @@ int test_stepper_rk8pd(void)
 }
 
 
+int test_stepper_rk2imp(void)
+{
+  gsl_odeiv_step * stepper = gsl_odeiv_step_factory_rk2imp.create(2);
+  int stat = 0;
+  int s;
+
+  s = test_stepper_linear(stepper, 1.0e-02, GSL_SQRT_DBL_EPSILON);
+  gsl_test(s, "  LINEAR");
+  stat += s;
+  gsl_odeiv_step_reset(stepper);
+
+  s = test_stepper_sin(stepper, 3.0e-04, GSL_SQRT_DBL_EPSILON);
+  gsl_test(s, "  SIN");
+  stat += s;
+  gsl_odeiv_step_reset(stepper);
+
+  s = test_stepper_exp(stepper, 5.0e-03, GSL_SQRT_DBL_EPSILON);
+  gsl_test(s, "  EXP");
+  stat += s;
+  gsl_odeiv_step_reset(stepper);
+
+  s = test_stepper_stiff(stepper, 1.0e-03, GSL_SQRT_DBL_EPSILON);
+  gsl_test(s, "  STIFF");
+  stat += s;
+
+  gsl_odeiv_step_free(stepper);
+
+  return stat;
+}
+
+
 int test_stepper_rk4imp(void)
 {
   gsl_odeiv_step * stepper = gsl_odeiv_step_factory_rk4imp.create(2);
@@ -441,6 +476,208 @@ int test_stepper_gear2(void)
 }
 
 
+int test_evolve_system_flat(
+  gsl_odeiv_step * step, 
+  gsl_odeiv_evolve_mon * mon,
+  const gsl_odeiv_system * sys,
+  double t0, double t1, double hstart,
+  double y[], double yfin[],
+  double err_target)
+{
+  int s = 0;
+  double frac;
+
+  gsl_odeiv_evolve * e = gsl_odeiv_evolve_new();
+
+  gsl_odeiv_evolve_impl(e, mon, 0, step, sys, t0, t1, hstart, y);
+
+  frac = fabs((y[1] - yfin[1])/y[1]) + fabs((y[0] - yfin[0])/y[0]);
+  if(frac > 2.0 * e->count * err_target) {
+    s++;
+  }
+
+  gsl_odeiv_evolve_free(e);
+
+  return s;
+}
+
+
+int test_evolve_system(
+  gsl_odeiv_step * step, 
+  gsl_odeiv_evolve_mon * mon,
+  const gsl_odeiv_system * sys,
+  double t0, double t1, double hstart,
+  double y[], double yfin[],
+  double err_target)
+{
+  int s = 0;
+  double frac;
+
+  gsl_odeiv_evolve_control * c = gsl_odeiv_evolve_control_standard_new(err_target, 0.0, 1.0, 1.0);
+  gsl_odeiv_evolve * e = gsl_odeiv_evolve_new();
+
+  gsl_odeiv_evolve_impl(e, mon, c, step, sys, t0, t1, hstart, y);
+
+  frac = fabs((y[1] - yfin[1])/y[1]) + fabs((y[0] - yfin[0])/y[0]);
+  if(frac > 2.0 * e->count * err_target) {
+    s++;
+  }
+
+printf(" COUNT= %d    STUT= %d\n", e->count, e->count_stutter);
+
+  gsl_odeiv_evolve_free(e);
+  gsl_odeiv_evolve_control_free(c);
+  
+  return s;
+}
+
+
+int test_evolve(void)
+{
+  int s;
+  int status = 0;
+  double y[2];
+  double yfin[2];
+
+  gsl_odeiv_evolve_mon * mon = 0 /* gsl_odeiv_evolve_mon_stream_new(stdout) */;
+  
+
+  gsl_odeiv_step * step = gsl_odeiv_step_factory_rkck.create(2);
+  y[0] = 1.0;
+  y[1] = 1.0;
+  yfin[0] = exp(10.0);
+  yfin[1] = yfin[0];
+  s = test_evolve_system(step, mon, &rhs_func_exp, 0.0, 10.0, 1.0e-03, y, yfin, GSL_SQRT_DBL_EPSILON);
+  gsl_test(s, "  Evolve: exp, rkck");
+  status += s;
+  gsl_odeiv_step_free(step);
+
+
+  step = gsl_odeiv_step_factory_rk8pd.create(2);
+  y[0] = 1.0;
+  y[1] = 1.0;
+  yfin[0] = exp(10.0);
+  yfin[1] = yfin[0];
+  s = test_evolve_system(step, mon, &rhs_func_exp, 0.0, 10.0, 1.0e-03, y, yfin, GSL_SQRT_DBL_EPSILON);
+  gsl_test(s, "  Evolve: exp, rk8pd");
+  status += s;
+  gsl_odeiv_step_free(step);
+
+
+  step = gsl_odeiv_step_factory_rk8pd.create(2);
+  y[0] = 1.0;
+  y[1] = 0.0;
+  yfin[0] = cos(2.0);
+  yfin[1] = sin(2.0);
+  s = test_evolve_system(step, mon, &rhs_func_sin, 0.0, 2.0, 1.0e-03, y, yfin, GSL_SQRT_DBL_EPSILON);
+  gsl_test(s, "  Evolve: sin, rk8pd");
+  status += s;
+  gsl_odeiv_step_free(step);
+
+
+  step = gsl_odeiv_step_factory_rk2imp.create(2);
+  y[0] = 1.0;
+  y[1] = 0.0;
+  {
+    double arg = 5.0;
+    double e1 = exp(-arg);
+    double e2 = exp(-1000.0*arg);
+    yfin[0] = 2.0*e1 - e2;
+    yfin[1] = -e1 + e2;
+  }
+  s = test_evolve_system(step, mon, &rhs_func_stiff, 0.0, 5.0, 2.0e-03, y, yfin, 1.0e-05);
+  gsl_test(s, "  Evolve: stiff, rk2imp");
+  status += s;
+  gsl_odeiv_step_free(step);
+
+
+  step = gsl_odeiv_step_factory_rk4imp.create(2);
+  y[0] = 1.0;
+  y[1] = 0.0;
+  {
+    double arg = 5.0;
+    double e1 = exp(-arg);
+    double e2 = exp(-1000.0*arg);
+    yfin[0] = 2.0*e1 - e2;
+    yfin[1] = -e1 + e2;
+  }
+  s = test_evolve_system(step, mon, &rhs_func_stiff, 0.0, 5.0, 2.0e-03, y, yfin, 1.0e-05);
+  gsl_test(s, "  Evolve: stiff, rk4imp");
+  status += s;
+  gsl_odeiv_step_free(step);
+
+
+  step = gsl_odeiv_step_factory_gear1.create(2);
+  y[0] = 1.0;
+  y[1] = 0.0;
+  {
+    double arg = 1.0;
+    double e1 = exp(-arg);
+    double e2 = exp(-1000.0*arg);
+    yfin[0] = 2.0*e1 - e2;
+    yfin[1] = -e1 + e2;
+  }
+  s = test_evolve_system_flat(step, mon, &rhs_func_stiff, 0.0, 1.0, 5.0e-03, y, yfin, 1.0e-04);
+  gsl_test(s, "  Evolve Flat: stiff, gear1");
+  status += s;
+  gsl_odeiv_step_free(step);
+
+
+  step = gsl_odeiv_step_factory_gear1.create(2);
+  y[0] = 1.0;
+  y[1] = 0.0;
+  {
+    double arg = 5.0;
+    double e1 = exp(-arg);
+    double e2 = exp(-1000.0*arg);
+    yfin[0] = 2.0*e1 - e2;
+    yfin[1] = -e1 + e2;
+  }
+  s = test_evolve_system(step, mon, &rhs_func_stiff, 0.0, 5.0, 5.0e-03, y, yfin, 1.0e-04);
+  gsl_test(s, "  Evolve: stiff, gear1");
+  status += s;
+  gsl_odeiv_step_free(step);
+
+
+  step = gsl_odeiv_step_factory_gear2.create(2);
+  y[0] = 1.0;
+  y[1] = 0.0;
+  {
+    double arg = 1.0;
+    double e1 = exp(-arg);
+    double e2 = exp(-1000.0*arg);
+    yfin[0] = 2.0*e1 - e2;
+    yfin[1] = -e1 + e2;
+  }
+  s = test_evolve_system_flat(step, mon, &rhs_func_stiff, 0.0, 1.0, 5.0e-04, y, yfin, 1.0e-06);
+  gsl_test(s, "  Evolve Flat: stiff, gear2");
+  status += s;
+  gsl_odeiv_step_free(step);
+
+
+  step = gsl_odeiv_step_factory_gear2.create(2);
+  y[0] = 1.0;
+  y[1] = 0.0;
+  {
+    double arg = 5.0;
+    double e1 = exp(-arg);
+    double e2 = exp(-1000.0*arg);
+    yfin[0] = 2.0*e1 - e2;
+    yfin[1] = -e1 + e2;
+  }
+  s = test_evolve_system(step, mon, &rhs_func_stiff, 0.0, 5.0, 2.0e-03, y, yfin, 1.0e-05);
+  gsl_test(s, "  Evolve: stiff, gear2");
+  status += s;
+  gsl_odeiv_step_free(step);
+
+
+  gsl_odeiv_evolve_mon_free(mon);
+
+  return status;
+}
+
+
+
 int main()
 {
   gsl_ieee_env_setup();
@@ -449,9 +686,12 @@ int main()
   gsl_test(test_stepper_rk4(),     "Runge-Kutta 4, Classical");
   gsl_test(test_stepper_rkck(),    "Runge-Kutta 4(5), Cash-Karp");
   gsl_test(test_stepper_rk8pd(),   "Runge-Kutta 8(9), Prince-Dormand");
+  gsl_test(test_stepper_rk2imp(),  "Runge-Kutta 2, Gaussian implicit");
   gsl_test(test_stepper_rk4imp(),  "Runge-Kutta 4, Gaussian implicit");
   gsl_test(test_stepper_gear1(),   "Gear 1");
   gsl_test(test_stepper_gear2(),   "Gear 2");
+
+  gsl_test(test_evolve(),  "Evolution");
 
   return gsl_test_summary();
 }

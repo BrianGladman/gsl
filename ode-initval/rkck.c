@@ -9,7 +9,7 @@
 
 
 static gsl_odeiv_step * rkck_create(unsigned int dimension);
-static int  rkck_step(void * state, void * work, unsigned int dim, double t, double h, double y[], double yerr[], const double dydt_in[], double dydt_out[], const gsl_odeiv_system * dydt);
+static int  rkck_step(void * self, double t, double h, double y[], double yerr[], const double dydt_in[], double dydt_out[], const gsl_odeiv_system * dydt);
 
 const gsl_odeiv_step_factory gsl_odeiv_step_factory_rkck = 
 {
@@ -25,14 +25,19 @@ rkck_create(unsigned int dimension)
   gsl_odeiv_step * step = gsl_odeiv_step_new(gsl_odeiv_step_factory_rkck.name, dimension, 4, 0, 7 * dimension * sizeof(double));
   step->_step = rkck_step;
   step->can_use_dydt = 1;
+  step->stutter = 0;
   return step;
 }
 
 
 static
 int
-rkck_step(void * state, void * work, unsigned int dim, double t, double h, double y[], double yerr[], const double dydt_in[], double dydt_out[], const gsl_odeiv_system * dydt)
+rkck_step(void * self, double t, double h, double y[], double yerr[], const double dydt_in[], double dydt_out[], const gsl_odeiv_system * dydt)
 {
+  gsl_odeiv_step * my = (gsl_odeiv_step *) self;
+
+  const unsigned int dim = my->dimension;
+
   /* Cash-Karp constants */
   const double ah[] = { 1.0/5.0, 0.3, 3.0/5.0, 1.0, 7.0/8.0 };
   const double b21  = 1.0/5.0;
@@ -54,7 +59,7 @@ rkck_step(void * state, void * work, unsigned int dim, double t, double h, doubl
   int status = 0;
 
   /* divide up the work space */
-  double * w  = (double *) work;
+  double * w  = (double *) my->_work;
   double * k1 = w;
   double * k2 = w + dim;
   double * k3 = w + 2*dim;

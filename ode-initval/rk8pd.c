@@ -9,7 +9,7 @@
 
 
 static gsl_odeiv_step * rk8pd_create(unsigned int dimension);
-static int rk8pd_step(void * state, void * work, unsigned int dim, double t, double h, double y[], double yerr[], const double dydt_in[], double dydt_out[], const gsl_odeiv_system * dydt);
+static int rk8pd_step(void * self, double t, double h, double y[], double yerr[], const double dydt_in[], double dydt_out[], const gsl_odeiv_system * dydt);
 
 
 const gsl_odeiv_step_factory gsl_odeiv_step_factory_rk8pd = 
@@ -26,13 +26,14 @@ rk8pd_create(unsigned int dimension)
   gsl_odeiv_step * step = gsl_odeiv_step_new(gsl_odeiv_step_factory_rk8pd.name, dimension, 8, 0, 14 * dimension * sizeof(double));
   step->_step = rk8pd_step;
   step->can_use_dydt = 1;
+  step->stutter = 0;
   return step;
 }
 
 
 static
 int
-rk8pd_step(void * state, void * work, unsigned int dim, double t, double h, double y[], double yerr[], const double dydt_in[], double dydt_out[], const gsl_odeiv_system * dydt)
+rk8pd_step(void * self, double t, double h, double y[], double yerr[], const double dydt_in[], double dydt_out[], const gsl_odeiv_system * dydt)
 {
   /* Prince-Dormand constants */
   static const double Abar[] = {
@@ -159,11 +160,15 @@ rk8pd_step(void * state, void * work, unsigned int dim, double t, double h, doub
     0.0
   };
 
+  gsl_odeiv_step * my = (gsl_odeiv_step *) self;
+
+  const unsigned int dim = my->dimension;
+
   int i;
   int status = 0;
 
   /* divide up the work space */
-  double * w  = (double *) work;
+  double * w  = (double *) my->_work;
   double * k1 = w;
   double * k2 = w + dim;
   double * k3 = w + 2*dim;

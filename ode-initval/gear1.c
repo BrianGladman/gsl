@@ -11,7 +11,7 @@
 
 
 static gsl_odeiv_step * gear1_create(unsigned int dimension);
-static int gear1_step(void *, void *, unsigned int dim, double t, double h, double y[], double yerr[], const double dydt_in[], double dydt_out[], const gsl_odeiv_system * dydt);
+static int gear1_step(void *, double t, double h, double y[], double yerr[], const double dydt_in[], double dydt_out[], const gsl_odeiv_system * dydt);
 
 
 const gsl_odeiv_step_factory gsl_odeiv_step_factory_gear1 = 
@@ -25,19 +25,24 @@ static
 gsl_odeiv_step *
 gear1_create(unsigned int dimension)
 {
-  gsl_odeiv_step * step = gsl_odeiv_step_new(gsl_odeiv_step_factory_gear1.name, dimension, 1 /* FIXME: ?? */, 0, 2*dimension * sizeof(double));
+  gsl_odeiv_step * step = gsl_odeiv_step_new(gsl_odeiv_step_factory_gear1.name, dimension, 2, 0, 2*dimension * sizeof(double));
   step->_step = gear1_step;
   step->can_use_dydt = 0;
+  step->stutter = 0;
   return step;
 }
 
 
 static
 int
-gear1_step(void * state, void * work, unsigned int dim, double t, double h, double y[], double yerr[], const double dydt_in[], double dydt_out[], const gsl_odeiv_system * dydt)
+gear1_step(void * self, double t, double h, double y[], double yerr[], const double dydt_in[], double dydt_out[], const gsl_odeiv_system * dydt)
 {
+  gsl_odeiv_step * my = (gsl_odeiv_step *) self;
+
+  const unsigned int dim = my->dimension;
+
   /* divide up the workspace */
-  double * w  = (double *) work;
+  double * w  = (double *) my->_work;
   double * k  = w;
   double * y0 = w + dim;
 

@@ -23,12 +23,14 @@ test_odeiv_SOURCES = test_odeiv.c
 libgslodeiv_a_SOURCES = \
 	control.c	\
 	evolve.c	\
+	monitor.c	\
 	gear1.c		\
 	gear2.c		\
 	odeiv.c		\
 	odeiv_util.c	\
 	rk2.c		\
 	rk4.c		\
+	rk2imp.c	\
 	rk4imp.c	\
 	rk8pd.c		\
 	rkck.c

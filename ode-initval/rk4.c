@@ -10,7 +10,7 @@
 
 
 static gsl_odeiv_step * rk4_create(unsigned int dimension);
-static int rk4_step(void * state, void * work, unsigned int dim, double t, double h, double y[], double yerr[], const double dydt_in[], double dydt_out[], const gsl_odeiv_system * dydt);
+static int rk4_step(void * self, double t, double h, double y[], double yerr[], const double dydt_in[], double dydt_out[], const gsl_odeiv_system * dydt);
 
 
 const gsl_odeiv_step_factory gsl_odeiv_step_factory_rk4 = 
@@ -27,16 +27,21 @@ rk4_create(unsigned int dimension)
   gsl_odeiv_step * step = gsl_odeiv_step_new(gsl_odeiv_step_factory_rk4.name, dimension, 4, 0, 3*dimension * sizeof(double));
   step->_step = rk4_step;
   step->can_use_dydt = 1;
+  step->stutter = 0;
   return step;
 }
 
 
 static
 int
-rk4_step(void * state, void * work, unsigned int dim, double t, double h, double y[], double yerr[], const double dydt_in[], double dydt_out[], const gsl_odeiv_system * dydt)
+rk4_step(void * self, double t, double h, double y[], double yerr[], const double dydt_in[], double dydt_out[], const gsl_odeiv_system * dydt)
 {
+  gsl_odeiv_step * my = (gsl_odeiv_step *) self;
+  
+  const unsigned int dim = my->dimension;
+
   /* divide up the workspace */
-  double * w    = (double *) work;
+  double * w    = (double *) my->_work;
   double * k    = w;
   double * y0   = w + dim;
   double * ytmp = w + 2*dim;

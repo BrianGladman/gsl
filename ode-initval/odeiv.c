@@ -16,7 +16,7 @@ gsl_odeiv_step_name(const gsl_odeiv_step * s)
 
 int
 gsl_odeiv_step_impl(
-  gsl_odeiv_step * s,
+  gsl_odeiv_step * step,
   double t,
   double h,
   double y[],
@@ -25,7 +25,7 @@ gsl_odeiv_step_impl(
   double dydt_out[],
   const gsl_odeiv_system * dydt)
 {
-  return s->_step(s->_state, s->_work, s->dimension, t, h, y, yerr, dydt_in, dydt_out, dydt);
+  return step->_step(step, t, h, y, yerr, dydt_in, dydt_out, dydt);
 }
 
 

@@ -20,8 +20,8 @@ static int
 hadjust(void * data, size_t dim, unsigned int ord, const double y[], const double yerr[], const double yp[], double * h)
 {
   const double * d = (double *) data;
-  const double eps_rel = d[0];
-  const double eps_abs = d[1];
+  const double eps_abs = d[0];
+  const double eps_rel = d[1];
   const double a_y     = d[2];
   const double a_dydt  = d[3];
   const double S = 0.9;
@@ -94,4 +94,14 @@ gsl_odeiv_evolve_control_yp_new(double eps_rel, double eps_abs)
 {
   return gsl_odeiv_evolve_control_standard_new(eps_rel, eps_abs, 0.0, 1.0);
 
+}
+
+
+void
+gsl_odeiv_evolve_control_free(gsl_odeiv_evolve_control * c)
+{
+  if(c != 0) {
+    if(c->_free != 0) c->_free(c->_data);
+    free(c);
+  }
 }
