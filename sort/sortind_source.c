@@ -18,41 +18,43 @@
  * for more details.
  */
 
-static inline void FUNCTION(my,downheap) (BASE *data, const size_t stride, const size_t N, size_t k);
+static inline void FUNCTION(index,downheap) (size_t * p, const BASE *data, const size_t stride, const size_t N, size_t k);
 
 static inline void
-FUNCTION(my,downheap) (BASE *data, const size_t stride, const size_t N, size_t k)
+FUNCTION(index,downheap) (size_t * p, const BASE *data, const size_t stride, const size_t N, size_t k)
 {
-  BASE v = data[k*stride] ;
+  const size_t pki = p[k] ;
 
   while (k <= N / 2)
     {
       size_t j = 2 * k;
 
-      if (j < N && data[j*stride] < data[(j+1)*stride])
+      if (j < N && data[p[j]*stride] < data[p[j+1]*stride])
         {
           j++;
         }
       
-      if (v >= data[j*stride])
+      if (data[pki*stride] >= data[p[j]*stride])
         {
           break ;
         }
 
-      data[k*stride] = data[j*stride] ;
+      p[k] = p[j] ;
 
       k = j;
     }
 
-  data[k*stride] = v;
+  p[k] = pki;
 }
 
 void
-TYPE (gsl_sort_vector) (TYPE (gsl_vector) * v)
+FUNCTION (gsl_sort_vector,index) (gsl_permutation * permutation, const TYPE (gsl_vector) * v)
 {
-  BASE * data = v->data ;
+  const BASE * data = v->data ;
   const size_t n = v->size;
   const size_t stride = v->stride ;
+
+  size_t * p = permutation->data ;
   
   size_t N;
   size_t k;
@@ -61,6 +63,8 @@ TYPE (gsl_sort_vector) (TYPE (gsl_vector) * v)
     {
       return ; /* No data to sort */
     }
+
+  gsl_permutation_init (permutation) ;  /* set permutation to identity */
 
   /* We have n_data elements, last element is at 'n_data-1', first at
      '0' Set N to the last element number. */
@@ -72,21 +76,21 @@ TYPE (gsl_sort_vector) (TYPE (gsl_vector) * v)
   do
     {
       k--;
-      FUNCTION(my,downheap) (data, stride, N, k);
+      FUNCTION(index,downheap) (p, data, stride, N, k);
     }
   while (k > 0);
 
   while (N > 0)
     {
       /* first swap the elements */
-      BASE tmp = data[0*stride] ;
-      data[0*stride] = data[N*stride] ;
-      data[N*stride] = tmp ;
+      BASE tmp = p[0] ;
+      p[0] = p[N] ;
+      p[N] = tmp ;
 
       /* then process the heap */
       N--;
 
-      FUNCTION(my,downheap) (data, stride, N, 0);
+      FUNCTION(index,downheap) (p, data, stride, N, 0);
     }
 }
 
