@@ -40,9 +40,10 @@ gsl_complex
 gsl_vector_complex_get(const gsl_vector_complex * v, const size_t i)
 {
 #ifndef GSL_RANGE_CHECK_OFF
+  static const gsl_complex gsl_complex_zero = {0, 0} ;
   if (i >= v->size) /* size_t is unsigned, can't be negative */
     {
-      GSL_ERROR_RETURN("index out of range", GSL_EINVAL, ((gsl_complex){0,0}));
+      GSL_ERROR_RETURN("index out of range", GSL_EINVAL, gsl_complex_zero);
     }
 #endif
   return v->data[i] ;
@@ -63,3 +64,5 @@ gsl_vector_complex_set(gsl_vector_complex * v, const size_t i, const gsl_complex
 #endif
 
 #endif /* GSL_VECTOR_COMPLEX_H */
+
+
