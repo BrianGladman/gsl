@@ -77,7 +77,7 @@ regime.
 @node Initializing the Nonlinear Solver
 @section Initializing the Solver
 
-@deftypefun {gsl_multifit_fsolver *} gsl_multifit_fsolver_alloc (const gsl_multifit_fsolver_type * @var{T}, size_t * @var{n}, size_t * @var{p})
+@deftypefun {gsl_multifit_fsolver *} gsl_multifit_fsolver_alloc (const gsl_multifit_fsolver_type * @var{T}, size_t @var{n}, size_t @var{p})
 This function returns a pointer to a a newly allocated instance of a
 solver of type @var{T} for @var{n} observations and @var{p} parameters.
 
@@ -86,7 +86,7 @@ returns a null pointer and the error handler is invoked with an error
 code of @code{GSL_ENOMEM}.
 @end deftypefun
 
-@deftypefun {gsl_multifit_fdfsolver *} gsl_multifit_fdfsolver_alloc (const gsl_multifit_fdfsolver_type * @var{T})
+@deftypefun {gsl_multifit_fdfsolver *} gsl_multifit_fdfsolver_alloc (const gsl_multifit_fdfsolver_type * @var{T}, size_t @var{n}, size_t @var{p})
 This function returns a pointer to a a newly allocated instance of a
 derivative solver of type @var{T} for @var{n} observations and @var{p}
 parameters. For example, the following code creates an instance of a
@@ -147,8 +147,12 @@ this function should store the vector result
 returning an appropriate error code if the function cannot be computed.
 
 @item size_t @var{n}
-the dimension of the system, i.e. the number of components of the
-vectors @var{x} and @var{f}
+the number of functions, i.e. the number of components of the
+vector @var{f}
+
+@item size_t @var{p}
+the number of independent variables, i.e. the number of components of
+the vectors @var{x}
 
 @item void * @var{params}
 a pointer to the parameters of the function
@@ -181,8 +185,12 @@ it is always faster to compute the function and its derivative at the
 same time. 
 
 @item size_t @var{n}
-the dimension of the system, i.e. the number of components of the
-vectors @var{x} and @var{f}
+the number of functions, i.e. the number of components of the
+vector @var{f}
+
+@item size_t @var{p}
+the number of independent variables, i.e. the number of components of
+the vectors @var{x}
 
 @item void * @var{params}
 a pointer to the parameters of the function
