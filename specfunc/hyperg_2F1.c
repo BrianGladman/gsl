@@ -421,8 +421,8 @@ hyperg_2F1_reflect(const double a, const double b, const double c,
         }
         
         stat_e = gsl_sf_exp_mult_err_e(ln_pre1_val, ln_pre1_err,
-                                          sum1, GSL_DBL_EPSILON*fabs(sum1),
-                                          &F1);
+                                       sum1, GSL_DBL_EPSILON*fabs(sum1),
+                                       &F1);
         if(stat_e == GSL_EOVRFLW) {
           OVERFLOW_ERROR(result);
         }
@@ -443,8 +443,7 @@ hyperg_2F1_reflect(const double a, const double b, const double c,
       /* Gamma functions in the denominator are ok.
        * Proceed with evaluation.
        */
-      const int maxiter = 1000;
-      int i;
+      const int maxiter = 2000;
       double psi_1 = -M_EULER;
       gsl_sf_result psi_1pd; 
       gsl_sf_result psi_apd1;
@@ -455,28 +454,33 @@ hyperg_2F1_reflect(const double a, const double b, const double c,
       int stat_dall = GSL_ERROR_SELECT_3(stat_1pd, stat_apd1, stat_bpd1);
 
       double psi_val = psi_1 + psi_1pd.val - psi_apd1.val - psi_bpd1.val - ln_omx;
-      double psi_err = psi_1pd.err + psi_apd1.err + psi_bpd1.err;
+      double psi_err = psi_1pd.err + psi_apd1.err + psi_bpd1.err + GSL_DBL_EPSILON*fabs(psi_val);
       double fact = 1.0;
       double sum2_val = psi_val;
       double sum2_err = psi_err;
       double ln_pre2_val = lng_c.val + d1*ln_omx - lng_ad2.val - lng_bd2.val;
-      double ln_pre2_err = lng_c.val + lng_ad2.val + lng_bd2.val + GSL_DBL_EPSILON * fabs(ln_pre2_val);
+      double ln_pre2_err = lng_c.err + lng_ad2.err + lng_bd2.err + GSL_DBL_EPSILON * fabs(ln_pre2_val);
       int stat_e;
+
+      int j;
 
       /* Do F2 sum.
        */
-      for(i=1; i<maxiter; i++) {
-        int j = i-1;
-        double term1 = 1.0/(1.0+j)  + 1.0/(1.0+ad+j);
-        double term2 = 1.0/(a+d1+j) + 1.0/(b+d1+j);
+      for(j=1; j<maxiter; j++) {
+        /* values for psi functions use recurrence; Abramowitz+Stegun 6.3.5 */
+        double term1 = 1.0/(double)j  + 1.0/(ad+j);
+        double term2 = 1.0/(a+d1+j-1.0) + 1.0/(b+d1+j-1.0);
+        double delta = 0.0;
         psi_val += term1 - term2;
         psi_err += GSL_DBL_EPSILON * (fabs(term1) + fabs(term2));
-        fact *= (a+d1+j)*(b+d1+j)/(ad+j)/i * (1.0-x);
-        sum2_val += fact * psi_val;
-        sum2_err += fabs(fact * psi_err);
+        fact *= (a+d1+j-1.0)*(b+d1+j-1.0)/((ad+j)*j) * (1.0-x);
+        delta = fact * psi_val;
+        sum2_val += delta;
+        sum2_err += fabs(fact * psi_err) + GSL_DBL_EPSILON*fabs(delta);
+        if(fabs(delta) < GSL_DBL_EPSILON * fabs(sum2_val)) break;
       }
 
-      if(i == maxiter) stat_F2 = GSL_EMAXITER;
+      if(j == maxiter) stat_F2 = GSL_EMAXITER;
 
       if(sum2_val == 0.0) {
         F2.val = 0.0;
@@ -484,8 +488,8 @@ hyperg_2F1_reflect(const double a, const double b, const double c,
       }
       else {
         stat_e = gsl_sf_exp_mult_err_e(ln_pre2_val, ln_pre2_err,
-                                          sum2_val, sum2_err,
-                                          &F2);
+                                       sum2_val, sum2_err,
+                                       &F2);
         if(stat_e == GSL_EOVRFLW) {
           result->val = 0.0;
           result->err = 0.0;
@@ -645,8 +649,9 @@ gsl_sf_hyperg_2F1_e(double a, double b, const double c,
     return pow_omx(x, d, result);  /* (1-x)^(c-a-b) */
   }
 
-  if(a >= 0.0 && b >= 0.0 && c >=0.0 && x >= 0.0) {
-    /* Series has all positive definite terms.
+  if(a >= 0.0 && b >= 0.0 && c >=0.0 && x >= 0.0 && x < 0.995) {
+    /* Series has all positive definite
+     * terms and x is not close to 1.
      */
     return hyperg_2F1_series(a, b, c, x, result);
   }
