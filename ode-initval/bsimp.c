@@ -258,9 +258,9 @@ pzextr(
     memcpy(work, yest, dim * sizeof(double));
 
     for(k=0; k<iest; k++) {
-      double delta = 1.0/(x[iest-k] - xest);
+      double delta = 1.0/(x[iest-k-1] - xest);
       const double f1 = delta * xest;
-      const double f2 = delta * x[iest - k];
+      const double f2 = delta * x[iest-k-1];
 
       /* Propagate another diagonal. */
       for(j=0; j<dim; j++) {
@@ -380,7 +380,7 @@ bsimp_step_local(
   ytemp_vec.parent = 0;
   ytemp_vec.stride = 1;
 
-  /* Calculate the matric for the linear system. */
+  /* Calculate the matrix for the linear system. */
   for(i=0; i<dim; i++) {
     for(j=0; j<dim; j++) {
       gsl_matrix_set(step->a_mat, i, j, -h * gsl_matrix_get(dfdy, i, j));
