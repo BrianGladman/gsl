@@ -47,6 +47,7 @@ gsl_permutation *gsl_permutation_alloc (const size_t n);
 gsl_permutation *gsl_permutation_calloc (const size_t n);
 void gsl_permutation_init (gsl_permutation * p);
 void gsl_permutation_free (gsl_permutation * p);
+int gsl_permutation_memcpy (gsl_permutation * dest, const gsl_permutation * src);
 
 int gsl_permutation_fread (FILE * stream, gsl_permutation * p);
 int gsl_permutation_fwrite (FILE * stream, const gsl_permutation * p);

@@ -245,4 +245,26 @@ gsl_permutation_prev (gsl_permutation * p)
   return GSL_SUCCESS;
 }
 
+int
+gsl_permutation_memcpy (gsl_permutation * dest,
+                        const gsl_permutation * src)
+{
+  const size_t src_size = src->size;
+  const size_t dest_size = dest->size;
 
+  if (src_size != dest_size)
+    {
+      GSL_ERROR ("permutation lengths are not equal", GSL_EBADLEN);
+    }
+
+  {
+    size_t j;
+
+    for (j = 0; j < src_size; j++)
+      {
+        dest->data[j] = src->data[j];
+      }
+  }
+
+  return GSL_SUCCESS;
+}

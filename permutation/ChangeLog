@@ -1,3 +1,7 @@
+Sat Feb  9 18:17:53 2002  Brian Gough  <bjg@network-theory.co.uk>
+
+	* permutation.c (gsl_permutation_memcpy): added memcpy function
+
 Tue Sep  4 17:22:06 2001  Brian Gough  <bjg@network-theory.co.uk>
 
 	* added permutations of complex arrays and vectors

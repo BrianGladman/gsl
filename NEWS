@@ -1,5 +1,8 @@
 * What is new in gsl-1.1:
 
+** The permutation module now includes a copy function
+gsl_permutation_memcpy
+
 ** The implementation of gsl_sf_gamma_inc has been improved and now
 avoids problems caused by internal singularities which occurred in the
 series expansion for some combinations of parameters.
