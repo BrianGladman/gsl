@@ -1,6 +1,4 @@
 
-
-
 void
   msg_checking (const char *test_description);
 
@@ -17,5 +15,5 @@ void
 void
   msg_error (const char *error_description);
 
-void
+int
   msg_summary (unsigned int tests, unsigned int passed, unsigned int failed);

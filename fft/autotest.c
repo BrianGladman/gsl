@@ -51,7 +51,7 @@ msg_error (const char *error_description)
   printf ("%s\n", error_description);
 }
 
-void
+int
 msg_summary (unsigned int total_tests,
 	     unsigned int total_passed,
 	     unsigned int total_failed)
@@ -63,17 +63,21 @@ msg_summary (unsigned int total_tests,
   if (total_failed != 0)
     {
       printf ("%d TEST(S) FAILED.\n", total_failed);
+      return -1 ;
     }
 
   if (total_tests != total_passed + total_failed)
     {
       printf ("Test results do not add up %d != %d + %d\n",
 	      total_tests, total_passed, total_failed);
+      return -1 ;
     }
 
   if (total_passed == total_tests)
     {
       printf ("All tests passed successfully\n");
+      return 0 ;
     }
 
+  return -1;
 }

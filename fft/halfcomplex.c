@@ -1,10 +1,43 @@
-
 #include <stdlib.h>
 #include <math.h>
 
 #include <gsl_errno.h>
 #include <gsl_complex.h>
 #include <gsl_fft_halfcomplex.h>
+
+int
+gsl_fft_halfcomplex_backward (double *data,
+			      const unsigned int n,
+			      const gsl_fft_halfcomplex_wavetable * wavetable)
+{
+  int status = gsl_fft_halfcomplex (data, n, wavetable) ;
+  return status ;
+}
+
+int
+gsl_fft_halfcomplex_inverse (double * data,
+			     const unsigned int n,
+			     const gsl_fft_halfcomplex_wavetable * wavetable)
+{
+  int status = gsl_fft_halfcomplex (data, n, wavetable);
+
+  if (status)
+    {
+      return status;
+    }
+
+  /* normalize inverse fft with 1/n */
+
+  {
+    const double norm = 1.0 / n;
+    unsigned int i;
+    for (i = 0; i < n; i++)
+      {
+	data[i] *= norm;
+      }
+  }
+  return status;
+}
 
 int
 gsl_fft_halfcomplex (double *data,

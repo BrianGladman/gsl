@@ -36,7 +36,7 @@ compare_complex_results (const char *name_a, const complex a[],
       return 0;
     }
 
-  printf ("\n%s vs %s : max_ticks = %f ", name_a, name_b, max_ticks);
+  printf ("\n%s vs %s : max_ticks = %f\n", name_a, name_b, max_ticks);
 
   for (i = 0; i < n; i++)
     {

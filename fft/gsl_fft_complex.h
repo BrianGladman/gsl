@@ -36,6 +36,19 @@ gsl_fft_complex_radix2 (complex data[],
 			const unsigned int n,
 			const gsl_fft_direction sign);
 
+
+int
+gsl_fft_complex_radix2_dif_forward (complex data[],
+				    const unsigned int n);
+
+int
+gsl_fft_complex_radix2_dif_backward (complex data[],
+				     const unsigned int n);
+
+int
+gsl_fft_complex_radix2_dif_inverse (complex data[],
+				    const unsigned int n);
+
 int
 gsl_fft_complex_radix2_dif (complex data[],
 			    const unsigned int n,

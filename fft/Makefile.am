@@ -1,18 +1,24 @@
 noinst_LIBRARIES = libfft.a
 
-bin_PROGRAMS = test benchmark errs
+bin_PROGRAMS = test_trap test_radix2 test benchmark errs
 
 include_HEADERS = gsl_errno.h gsl_fft.h gsl_fft_complex.h gsl_fft_halfcomplex.h gsl_fft_real.h gsl_fft_test.h gsl_dft_complex.h gsl_complex.h gsl_math.h
 
+
 test_LDADD = libfft.a
+test_trap_LDADD = libfft.a
+test_radix2_LDADD = libfft.a
 errs_LDADD = libfft.a
 benchmark_LDADD = libfft.a
 
 test_DEPENDENCIES = libfft.a
+test_trap_DEPENDENCIES = libfft.a
+test_radix2_DEPENDENCIES = libfft.a
 benchmark_DEPENDENCIES = libfft.a
 
-# test_SOURCES = test.c test.h 
 test_SOURCES = test.c gsl_fft_test.h
+test_trap_SOURCES = test_trap.c gsl_fft_test.h
+test_radix2_SOURCES = test_radix2.c gsl_fft_test.h
 benchmark_SOURCES = benchmark.c 
 
 

@@ -1,3 +1,4 @@
+#include <config.h>
 #include <math.h>
 #include <stdlib.h>
 #include <gsl_math.h>
@@ -33,11 +34,11 @@ gsl_fft_test_signal_complex_pulse (const unsigned int k,
   data[k % n].real = z_real;
   data[k % n].imag = z_imag;
 
-  /* fourier transform, fft[j] = z * exp(2 pi i j k / n) */
+  /* fourier transform, fft[j] = z * exp(-2 pi i j k / n) */
 
   for (j = 0; j < n; j++)
     {
-      const double arg = 2 * M_PI * ((double) ((j * k) % n)) / ((double) n);
+      const double arg = -2 * M_PI * ((double) ((j * k) % n)) / ((double) n);
       const double w_real = cos (arg);
       const double w_imag = sin (arg);
       fft[j].real = w_real * z_real - w_imag * z_imag;
@@ -113,7 +114,7 @@ gsl_fft_test_signal_complex_exp (const int k,
       data[j].imag = w_real * z_imag + w_imag * z_real;
     }
 
-  /* fourier transform, fft[j] = z * delta{(j + k),0} */
+  /* fourier transform, fft[j] = z * delta{(j - k),0} */
 
   for (j = 0; j < n; j++)
     {
@@ -126,11 +127,11 @@ gsl_fft_test_signal_complex_exp (const int k,
 
     if (k <= 0)
       {
-	freq = (-k) % n;
+	freq = (n-k) % n ;
       }
     else
       {
-	freq = n - (k % n);
+	freq = (k % n);
       };
 
     fft[freq].real = ((double) n) * z_real;
@@ -176,8 +177,8 @@ gsl_fft_test_signal_complex_exppair (const int k1,
       data[j].imag += w2_real * z2_imag + w2_imag * z2_real;
     }
 
-  /* fourier transform, fft[j] = z1 * delta{(j + k1),0} + z2 *
-     delta{(j + k2,0)} */
+  /* fourier transform, fft[j] = z1 * delta{(j - k1),0} + z2 *
+     delta{(j - k2,0)} */
 
   for (j = 0; j < n; j++)
     {
@@ -190,20 +191,20 @@ gsl_fft_test_signal_complex_exppair (const int k1,
 
     if (k1 <= 0)
       {
-	freq1 = (-k1) % n;
+	freq1 = (n - k1) % n;
       }
     else
       {
-	freq1 = n - (k1 % n);
+	freq1 = (k1 % n);
       };
 
     if (k2 <= 0)
       {
-	freq2 = (-k2) % n;
+	freq2 = (n - k2) % n;
       }
     else
       {
-	freq2 = n - (k2 % n);
+	freq2 = (k2 % n);
       };
 
     fft[freq1].real += ((double) n) * z1_real;
@@ -265,3 +266,4 @@ gsl_fft_test_signal_real_noise (const unsigned int n,
 
   return status;
 }
+

@@ -1,3 +1,4 @@
+#include <stddef.h>
 #include <stdlib.h>
 #include <math.h>
 #include <gsl_errno.h>
@@ -55,7 +56,7 @@ gsl_fft_complex_generate_wavetable (unsigned int n,
       GSL_ERROR ("wavetable does not match length of data", GSL_EINVAL);
     }
 
-  d_theta = 2.0 * M_PI / ((double) n);
+  d_theta = -2.0 * M_PI / ((double) n);
 
   t = 0;
   product = 1;

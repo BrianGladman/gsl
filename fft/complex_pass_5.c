@@ -1,4 +1,3 @@
-
 #include <math.h>
 #include <gsl_complex.h>
 #include <gsl_fft_complex.h>

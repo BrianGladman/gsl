@@ -49,6 +49,51 @@ gsl_fft_complex_radix2_inverse (complex data[],
 
 
 int
+gsl_fft_complex_radix2_dif_forward (complex data[],
+				const unsigned int n)
+{
+  gsl_fft_direction sign = forward;
+  int status = gsl_fft_complex_radix2_dif (data, n, sign);
+  return status;
+}
+
+int
+gsl_fft_complex_radix2_dif_backward (complex data[],
+				 const unsigned int n)
+{
+  gsl_fft_direction sign = backward;
+  int status = gsl_fft_complex_radix2_dif (data, n, sign);
+  return status;
+}
+
+int
+gsl_fft_complex_radix2_dif_inverse (complex data[],
+				const unsigned int n)
+{
+  gsl_fft_direction sign = backward;
+  int status = gsl_fft_complex_radix2_dif (data, n, sign);
+
+  if (status)
+    {
+      return status;
+    }
+
+  /* normalize inverse fft with 1/n */
+
+  {
+    const double norm = 1.0 / n;
+    unsigned int i;
+    for (i = 0; i < n; i++)
+      {
+	data[i].real *= norm;
+	data[i].imag *= norm;
+      }
+  }
+  return status;
+}
+
+
+int
 gsl_fft_complex_radix2 (complex data[],
 			const unsigned int n,
 			const gsl_fft_direction sign)
