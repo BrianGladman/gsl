@@ -10,7 +10,7 @@ variance_source.c  \
 absdev_source.c \
 skew_source.c \
 kurtosis_source.c \
-pooled_variance_source.c \
+p_variance_source.c \
 minmax_source.c \
 ttest_source.c \
 sort_source.c \
@@ -35,7 +35,7 @@ variance.c  \
 absdev.c \
 skew.c \
 kurtosis.c \
-pooled_variance.c \
+p_variance.c \
 minmax.c \
 ttest.c \
 sort.c \
@@ -46,7 +46,7 @@ variance_int.c  \
 absdev_int.c \
 skew_int.c \
 kurtosis_int.c \
-pooled_variance_int.c \
+p_variance_int.c \
 minmax_int.c \
 ttest_int.c \
 sort_int.c \

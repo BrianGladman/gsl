@@ -1,3 +1,8 @@
+Fri Apr 10 15:11:51 1998  Brian Gough  <bjg@vvv.lanl.gov>
+
+	* renamed pooled_variance.c, etc to p_variance to avoid linker
+ 	complaints about long filenames on some platforms
+
 Wed Apr  8 18:11:48 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
 	* Added a new recurrence algorithm for the mean, variance, skew

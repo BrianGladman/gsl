@@ -79,7 +79,7 @@ variance_source.c  \
 absdev_source.c \
 skew_source.c \
 kurtosis_source.c \
-pooled_variance_source.c \
+p_variance_source.c \
 minmax_source.c \
 ttest_source.c \
 sort_source.c \
@@ -104,7 +104,7 @@ variance.c  \
 absdev.c \
 skew.c \
 kurtosis.c \
-pooled_variance.c \
+p_variance.c \
 minmax.c \
 ttest.c \
 sort.c \
@@ -115,7 +115,7 @@ variance_int.c  \
 absdev_int.c \
 skew_int.c \
 kurtosis_int.c \
-pooled_variance_int.c \
+p_variance_int.c \
 minmax_int.c \
 ttest_int.c \
 sort_int.c \
@@ -133,10 +133,10 @@ LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
 libgslstatistics_a_LIBADD = 
 libgslstatistics_a_OBJECTS =  mean.o variance.o absdev.o skew.o \
-kurtosis.o pooled_variance.o minmax.o ttest.o sort.o median.o \
-percentiles.o mean_int.o variance_int.o absdev_int.o skew_int.o \
-kurtosis_int.o pooled_variance_int.o minmax_int.o ttest_int.o \
-sort_int.o median_int.o percentiles_int.o
+kurtosis.o p_variance.o minmax.o ttest.o sort.o median.o percentiles.o \
+mean_int.o variance_int.o absdev_int.o skew_int.o kurtosis_int.o \
+p_variance_int.o minmax_int.o ttest_int.o sort_int.o median_int.o \
+percentiles_int.o
 AR = ar
 test_OBJECTS =  test.o
 test_LDFLAGS = 
@@ -156,11 +156,11 @@ TAR = tar
 GZIP = --best
 DEP_FILES =  .deps/absdev.P .deps/absdev_int.P .deps/kurtosis.P \
 .deps/kurtosis_int.P .deps/mean.P .deps/mean_int.P .deps/median.P \
-.deps/median_int.P .deps/minmax.P .deps/minmax_int.P \
-.deps/percentiles.P .deps/percentiles_int.P .deps/pooled_variance.P \
-.deps/pooled_variance_int.P .deps/skew.P .deps/skew_int.P .deps/sort.P \
-.deps/sort_int.P .deps/test.P .deps/test_int.P .deps/ttest.P \
-.deps/ttest_int.P .deps/variance.P .deps/variance_int.P
+.deps/median_int.P .deps/minmax.P .deps/minmax_int.P .deps/p_variance.P \
+.deps/p_variance_int.P .deps/percentiles.P .deps/percentiles_int.P \
+.deps/skew.P .deps/skew_int.P .deps/sort.P .deps/sort_int.P \
+.deps/test.P .deps/test_int.P .deps/ttest.P .deps/ttest_int.P \
+.deps/variance.P .deps/variance_int.P
 SOURCES = $(libgslstatistics_a_SOURCES) $(test_SOURCES) $(test_int_SOURCES)
 OBJECTS = $(libgslstatistics_a_OBJECTS) $(test_OBJECTS) $(test_int_OBJECTS)
 

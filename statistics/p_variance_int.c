@@ -2,5 +2,5 @@
 #include <gsl_statistics_int.h>
 
 #define BASE int
-#include "pooled_variance_source.c"
+#include "p_variance_source.c"
 
