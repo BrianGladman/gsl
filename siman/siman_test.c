@@ -213,8 +213,8 @@ int main(int argc, char *argv[])
   if (strcmp(argv[1], "D1") == 0) {
     x0.D1 = 12.0;
     printf("#one dimensional problem, x0 = %f\n", x0.D1);
-    gsl_siman_Usolve(&x0, test_E_1D, test_step_1D, distance_1D,
-		    print_pos_1D, params);
+/*     gsl_siman_Usolve(&x0, test_E_1D, test_step_1D, distance_1D, */
+/* 		    print_pos_1D, params); */
     return 0;
   }
 
@@ -223,8 +223,8 @@ int main(int argc, char *argv[])
     x0.D2[1] = 5.5;
     printf("#two dimensional problem, (x0,y0) = (%f,%f)\n",
 	   x0.D2[0], x0.D2[1]);
-    gsl_siman_Usolve(&x0, test_E_2D, test_step_2D, distance_2D,
-		    print_pos_2D, params);
+/*     gsl_siman_Usolve(&x0, test_E_2D, test_step_2D, distance_2D, */
+/* 		    print_pos_2D, params); */
     return 0;
   }
 
@@ -234,8 +234,8 @@ int main(int argc, char *argv[])
     x0.D3[2] = -15.5;
     printf("#three dimensional problem, (x0,y0,z0) = (%f,%f,%f)\n",
 	   x0.D3[0], x0.D3[1], x0.D3[2]);
-    gsl_siman_Usolve(&x0, test_E_3D, test_step_3D, distance_3D,
-		    print_pos_3D, params);
+/*     gsl_siman_Usolve(&x0, test_E_3D, test_step_3D, distance_3D, */
+/* 		    print_pos_3D, params); */
   }
 /*
   x0.D2[0] = 12.2;

@@ -5,3 +5,4 @@ noinst_TEXINFOS = gsl-design.texi
 gsl_ref_TEXINFOS = fft.texi random.texi
 
 noinst_DATA = siman-test.eps
+EXTRA_DIST = siman-test.eps

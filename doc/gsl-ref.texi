@@ -450,16 +450,25 @@ int main(int argc, char *argv[])
 
 @tex
 \input epsf
+% nine, eight and six point fonts
+\font\ninerm=cmr9   \font\eightrm=cmr8   \font\sixrm=cmr6
+\font\ninei=cmmi9   \font\eighti=cmmi8   \font\sixi=cmmi6
+\font\ninesy=cmsy9  \font\eightsy=cmsy8  \font\sixsy=cmsy6
+\font\ninebf=cmbx9  \font\eightbf=cmbx8  \font\sixbf=cmbx6
+\font\ninett=cmtt9  \font\eighttt=cmtt8
+\font\nineit=cmti9  \font\eightit=cmti8
+\font\ninesl=cmsl9  \font\eightsl=cmsl8
+
 \centerline{\epsfxsize=5in\epsfbox{siman-test.eps}}
 \nobreak
-%\centerline{\captfont Fig.~2.1: A 0--simplex (point), 1--simplex
-%(segment), 2--simplex (triangle),}
-%\centerline{\captfont 3--simplex (tetrahedron) and 4--simplex,
-%respectively.}
-\centerline{Example of a simulated annealing run.}
+\centerline{\nineit Example of a simulated annealing run: at higher
+temperatures}
+\centerline{\nineit the optimal solution is can fluctuate, but at lower
+temperatures it converges.}
+\centerline{\nineit This was generated with the simple instruction}
+\centerline{\ninett gnuplot> plot '<../siman/siman\_test | grep -v "\^{}\#"' using 1:3 with lines}
 \smallskip
 @end tex
-
 
 
 @node Contributors to GSL

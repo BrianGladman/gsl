@@ -14,3 +14,4 @@ libgsl_siman_a_SOURCES = siman.c
 include_HEADERS = gsl_siman.h
 
 INCLUDES = -I. -I../random
+check_INCLUDES = -I. -I../random
