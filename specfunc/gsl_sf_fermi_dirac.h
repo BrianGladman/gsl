@@ -7,7 +7,8 @@
 
 /* Complete Fermi-Dirac Integrals:
  *
- *  F_j(x) := 1/Gamma[j+1] Integral[ t^j /(Exp[t-x] + 1), {t,0,Infinity}]
+ *  F_j(x)   := 1/Gamma[j+1] Integral[ t^j /(Exp[t-x] + 1), {t,0,Infinity}]
+ *
  *
  * Incomplete Fermi-Dirac Integrals:
  *
@@ -33,10 +34,19 @@ int     gsl_sf_fermi_dirac_0_e(double x, double * result);
 double  gsl_sf_fermi_dirac_0(double x);
 
 
+/* Complete integral F_1(x)
+ *
+ * exceptions: GSL_EUNDRFLW, GSL_EOVRFLW
+ */
+int     gsl_sf_fermi_dirac_1_impl(double x, double * result);
+int     gsl_sf_fermi_dirac_1_e(double x, double * result);
+double  gsl_sf_fermi_dirac_1(double x);
+
+
 /* Complete integral F_j(x)
  * for integer j
  *
- * exceptions: GSL_EUNDRFLW
+ * exceptions: GSL_EUNDRFLW, GSL_EOVRFLW
  */
 int     gsl_sf_fermi_dirac_int_impl(int j, double x, double * result);
 int     gsl_sf_fermi_dirac_int_e(int j, double x, double * result);
@@ -45,11 +55,20 @@ double  gsl_sf_fermi_dirac_int(int j, double x);
 
 /* Complete integral F_{1/2}(x)
  *
- * exceptions: GSL_EUNDRFLW
+ * exceptions: GSL_EUNDRFLW, GSL_EOVRFLW
  */
 int     gsl_sf_fermi_dirac_half_impl(double x, double * result);
 int     gsl_sf_fermi_dirac_half_e(double x, double * result);
 double  gsl_sf_fermi_dirac_half(double x);
+
+
+/* Complete integral F_{3/2}(x)
+ *
+ * exceptions: GSL_EUNDRFLW, GSL_EOVRFLW
+ */
+int     gsl_sf_fermi_dirac_3half_impl(double x, double * result);
+int     gsl_sf_fermi_dirac_3half_e(double x, double * result);
+double  gsl_sf_fermi_dirac_3half(double x);
 
 
 /* Incomplete integral F_0(x,b) = ln(1 + e^(b-x)) - (b-x)
