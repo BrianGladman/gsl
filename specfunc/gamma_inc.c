@@ -136,7 +136,6 @@ gamma_inc_Q_large_x(const double a, const double x, gsl_sf_result * result)
 
 /* Uniform asymptotic for x near a, a and x large.
  * See [Temme, p. 285]
- * FIXME: need c1 coefficient
  */
 static
 int
@@ -162,13 +161,13 @@ gamma_inc_Q_asymp_unif(const double a, const double x, gsl_sf_result * result)
 
   if(fabs(eps) < GSL_ROOT5_DBL_EPSILON) {
     c0 = -1.0/3.0 + eps*(1.0/12.0 - eps*(23.0/540.0 - eps*(353.0/12960.0 - eps*589.0/30240.0)));
-    c1 = 0.0;
+    c1 = -1.0/540.0 - eps/288.0;
   }
   else {
-    double rt_term;
-    rt_term = sqrt(-2.0 * ln_term.val/(eps*eps));
+    const double rt_term = sqrt(-2.0 * ln_term.val/(eps*eps));
+    const double lam = x/a;
     c0 = (1.0 - 1.0/rt_term)/eps;
-    c1 = 0.0;
+    c1 = -(eta*eta*eta * (lam*lam + 10.0*lam + 1.0) - 12.0 * eps*eps*eps) / (12.0 * eta*eta*eta*eps*eps*eps);
   }
 
   R = exp(-0.5*a*eta*eta)/(M_SQRT2*M_SQRTPI*rta) * (c0 + c1/a);
@@ -176,9 +175,6 @@ gamma_inc_Q_asymp_unif(const double a, const double x, gsl_sf_result * result)
   result->val  = 0.5 * erfc.val + R;
   result->err  = GSL_DBL_EPSILON * fabs(R * 0.5 * a*eta*eta) + 0.5 * erfc.err;
   result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
-
-  /* FIXME: This can be removed when we implement c1. */
-  result->err += fabs(2.0*R/a);
 
   return stat_ln;
 }
