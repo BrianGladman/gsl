@@ -15,6 +15,19 @@ cosine transforms but these are currently not available in GSL).  For
 details and derivations of the underlying algorithms consult the
 document @cite{GSL FFT Algorithms} (@pxref{FFT References and Further Reading})
 
+
+@menu
+* Mathematical Definitions::    
+* FFTs of complex data::        
+* FFTs of real data::           
+* Test Signals::                
+* FFT References and Further Reading::  
+@end menu
+
+@node Mathematical Definitions
+@section Mathematical Definitions 
+@cindex FFT mathematical definition
+
 Fast Fourier Transforms are efficient algorithms for
 calculating the discrete fourier transform (DFT),
 
@@ -34,18 +47,6 @@ corresponding to the integer factors of the length @math{N}.  If
 \ldots f_n} then the DFT can be computed in @math{O(N \sum f_i)}
 operations. For a radix-2 FFT this gives an operation count of
 @math{O(N\log_2 N)}.
-
-@menu
-* Mathematical Definitions::    
-* FFTs of complex data::        
-* FFTs of real data::           
-* Test Signals::                
-* FFT References and Further Reading::  
-@end menu
-
-@node Mathematical Definitions
-@section Mathematical Definitions 
-@cindex FFT mathematical definition
 
 All the FFT functions offer three types of transform: forwards, inverse
 and backwards, based on the same mathematical definitions. The
