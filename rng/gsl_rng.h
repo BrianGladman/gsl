@@ -176,7 +176,7 @@ gsl_rng_uniform_int (const gsl_rng * r, unsigned long int n)
 
   if (n > range) 
     {
-      GSL_ERROR_RETURN ("n exceeds maximum value of generator",
+      GSL_ERROR_VAL ("n exceeds maximum value of generator",
 			GSL_EINVAL, 0) ;
     }
 

@@ -24,7 +24,7 @@ FUNCTION(gsl_monte_vector,alloc) (const size_t n)
 
   if (n == 0)
     {
-      GSL_ERROR_RETURN ("vector length n must be positive integer", 
+      GSL_ERROR_VAL ("vector length n must be positive integer", 
 			GSL_EDOM, 0) ;
     }
 
@@ -32,7 +32,7 @@ FUNCTION(gsl_monte_vector,alloc) (const size_t n)
 
   if (v == 0) 
     {
-      GSL_ERROR_RETURN ("failed to allocate space for vector data", 
+      GSL_ERROR_VAL ("failed to allocate space for vector data", 
 			GSL_ENOMEM, 0);
     }
   return v ;

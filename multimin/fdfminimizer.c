@@ -29,14 +29,14 @@ gsl_multimin_fdf_history_alloc(gsl_multimin_function_fdf *fdf,
   int status;
 
   if (x->size != n) {
-      GSL_ERROR_RETURN ("vector length not compatible with function", 
+      GSL_ERROR_VAL ("vector length not compatible with function", 
                         GSL_EBADLEN, 0);
   }
   
   h = (gsl_multimin_fdf_history *) malloc(sizeof(gsl_multimin_fdf_history));
 
   if (h == 0) {
-    GSL_ERROR_RETURN ("failed to allocate space for multimin history struct",
+    GSL_ERROR_VAL ("failed to allocate space for multimin history struct",
 		      GSL_ENOMEM, 0);
   }
 
@@ -44,7 +44,7 @@ gsl_multimin_fdf_history_alloc(gsl_multimin_function_fdf *fdf,
   
   if (h->x == 0) {
     free (h);
-    GSL_ERROR_RETURN ("failed to allocate space for x", GSL_ENOMEM, 0);
+    GSL_ERROR_VAL ("failed to allocate space for x", GSL_ENOMEM, 0);
   }
   
   h->x1 = gsl_vector_calloc (n);
@@ -52,7 +52,7 @@ gsl_multimin_fdf_history_alloc(gsl_multimin_function_fdf *fdf,
   if (h->x1 == 0) {
     free (h);
     gsl_vector_free(h->x);
-    GSL_ERROR_RETURN ("failed to allocate space for x1", GSL_ENOMEM, 0);
+    GSL_ERROR_VAL ("failed to allocate space for x1", GSL_ENOMEM, 0);
   }
   
   h->g = gsl_vector_calloc (n);
@@ -61,7 +61,7 @@ gsl_multimin_fdf_history_alloc(gsl_multimin_function_fdf *fdf,
     free (h);
     gsl_vector_free(h->x);
     gsl_vector_free(h->x1);
-    GSL_ERROR_RETURN ("failed to allocate space for g", GSL_ENOMEM, 0);
+    GSL_ERROR_VAL ("failed to allocate space for g", GSL_ENOMEM, 0);
   }
   
   h->g1 = gsl_vector_calloc (n);
@@ -71,7 +71,7 @@ gsl_multimin_fdf_history_alloc(gsl_multimin_function_fdf *fdf,
     gsl_vector_free(h->x);
     gsl_vector_free(h->x1);
     gsl_vector_free(h->g);
-    GSL_ERROR_RETURN ("failed to allocate space for g1", GSL_ENOMEM, 0);
+    GSL_ERROR_VAL ("failed to allocate space for g1", GSL_ENOMEM, 0);
   }
  
   status=gsl_multimin_fdf_history_set(h,fdf,x);
@@ -81,7 +81,7 @@ gsl_multimin_fdf_history_alloc(gsl_multimin_function_fdf *fdf,
     gsl_vector_free(h->x1);
     gsl_vector_free(h->g);
     gsl_vector_free(h->g1);
-    GSL_ERROR_RETURN ("failed to set history", GSL_ENOMEM, 0);
+    GSL_ERROR_VAL ("failed to set history", GSL_ENOMEM, 0);
   }
   return h;
 }
@@ -168,7 +168,7 @@ gsl_multimin_fdf_minimizer_alloc(const gsl_multimin_fdf_minimizer_type *T,
   s = (gsl_multimin_fdf_minimizer *)malloc(sizeof(gsl_multimin_fdf_minimizer));
   if (s == 0) 
     {
-      GSL_ERROR_RETURN ("failed to allocate space for minimizer struct",
+      GSL_ERROR_VAL ("failed to allocate space for minimizer struct",
 			GSL_ENOMEM, 0);
     }
 
@@ -177,7 +177,7 @@ gsl_multimin_fdf_minimizer_alloc(const gsl_multimin_fdf_minimizer_type *T,
   if (s->state == 0)
     {
       free(s);
-      GSL_ERROR_RETURN ("failed to allocate space for minimizer state",
+      GSL_ERROR_VAL ("failed to allocate space for minimizer state",
 			GSL_ENOMEM, 0);
     }
 
@@ -188,7 +188,7 @@ gsl_multimin_fdf_minimizer_alloc(const gsl_multimin_fdf_minimizer_type *T,
       free(s->state);
       free(s);
     
-      GSL_ERROR_RETURN ("failed to initialize minimizer state",
+      GSL_ERROR_VAL ("failed to initialize minimizer state",
 			GSL_ENOMEM, 0);
     }
   
@@ -201,7 +201,7 @@ gsl_multimin_fdf_minimizer_alloc(const gsl_multimin_fdf_minimizer_type *T,
       (T->free)(s->state);
       free(s->state);
       free(s);
-      GSL_ERROR_RETURN ("failed to allocate history",
+      GSL_ERROR_VAL ("failed to allocate history",
 			GSL_ENOMEM, 0);
     }
 
@@ -214,7 +214,7 @@ gsl_multimin_fdf_minimizer_alloc(const gsl_multimin_fdf_minimizer_type *T,
       free(s->state);
       free(s);
       
-      GSL_ERROR_RETURN ("failed to allocate direction vector",
+      GSL_ERROR_VAL ("failed to allocate direction vector",
 			GSL_ENOMEM, 0);
     }
 
@@ -228,7 +228,7 @@ gsl_multimin_fdf_minimizer_alloc(const gsl_multimin_fdf_minimizer_type *T,
       free(s->state);
       free(s);
       
-      GSL_ERROR_RETURN ("failed to allocate gsl_multimin_to_single_fdf struct",
+      GSL_ERROR_VAL ("failed to allocate gsl_multimin_to_single_fdf struct",
 			GSL_ENOMEM, 0);
     }
   
@@ -243,7 +243,7 @@ gsl_multimin_fdf_minimizer_alloc(const gsl_multimin_fdf_minimizer_type *T,
       free(s->state);
       free(s);
 
-      GSL_ERROR_RETURN ("failed to allocate one dimensional representation",
+      GSL_ERROR_VAL ("failed to allocate one dimensional representation",
 			GSL_ENOMEM, 0);     
     }
 
@@ -264,7 +264,7 @@ gsl_multimin_fdf_minimizer_alloc(const gsl_multimin_fdf_minimizer_type *T,
       free(s->state);
       free(s);
 
-      GSL_ERROR_RETURN ("failed to allocate one dimensional minimization algorithm",
+      GSL_ERROR_VAL ("failed to allocate one dimensional minimization algorithm",
 			GSL_ENOMEM, 0);     
     }
   

@@ -464,6 +464,14 @@ int test_L1(void)
   gsl_test(s, "gsl_blas_raw_saxpy B");
   status += s;
 
+  gsl_blas_raw_scopy(7, vector_7_f, 1, tmp_a_f, 1);
+  gsl_blas_raw_saxpy(7, 2.0, vector_7_f, 1, tmp_a_f, 1);
+  s = (   tmp_a_f[0] != 3.0 * vector_7_f[0]
+       || tmp_a_f[1] != 3.0 * vector_7_f[1]
+       || tmp_a_f[2] != 3.0 * vector_7_f[2]
+       );
+  gsl_test(s, "gsl_blas_raw_saxpy C");
+  status += s;
 
   /* daxpy */
 

@@ -43,7 +43,7 @@ gsl_histogram_calloc_range (size_t n, double *range)
 
   if (n == 0)
     {
-      GSL_ERROR_RETURN ("histogram length n must be positive integer",
+      GSL_ERROR_VAL ("histogram length n must be positive integer",
 			GSL_EDOM, 0);
     }
 
@@ -53,7 +53,7 @@ gsl_histogram_calloc_range (size_t n, double *range)
     {
       if (range[i] >= range[i + 1])
 	{
-	  GSL_ERROR_RETURN ("histogram bin extremes  must be "
+	  GSL_ERROR_VAL ("histogram bin extremes  must be "
 			    "in increasing order", GSL_EDOM, 0);
 	}
     }
@@ -64,7 +64,7 @@ gsl_histogram_calloc_range (size_t n, double *range)
 
   if (h == 0)
     {
-      GSL_ERROR_RETURN ("failed to allocate space for histogram struct",
+      GSL_ERROR_VAL ("failed to allocate space for histogram struct",
 			GSL_ENOMEM, 0);
     }
 
@@ -74,7 +74,7 @@ gsl_histogram_calloc_range (size_t n, double *range)
     {
       /* exception in constructor, avoid memory leak */
       free (h);
-      GSL_ERROR_RETURN ("failed to allocate space for histogram ranges",
+      GSL_ERROR_VAL ("failed to allocate space for histogram ranges",
 			GSL_ENOMEM, 0);
     }
 
@@ -85,7 +85,7 @@ gsl_histogram_calloc_range (size_t n, double *range)
       /* exception in constructor, avoid memory leak */
       free (h->range);
       free (h);
-      GSL_ERROR_RETURN ("failed to allocate space for histogram bins",
+      GSL_ERROR_VAL ("failed to allocate space for histogram bins",
 			GSL_ENOMEM, 0);
     }
 

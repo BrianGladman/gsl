@@ -75,7 +75,7 @@ FUNCTION (test, binary) (void)
   {
     TYPE (gsl_block) * v = FUNCTION (gsl_block, calloc) (N);
 
-    FILE *f = fopen ("test.dat", "w");
+    FILE *f = fopen ("test.dat", "wb");
 
     for (i = 0; i < N; i++)
       {
@@ -92,7 +92,7 @@ FUNCTION (test, binary) (void)
   {
     TYPE (gsl_block) * w = FUNCTION (gsl_block, calloc) (N);
 
-    FILE *f = fopen ("test.dat", "r");
+    FILE *f = fopen ("test.dat", "rb");
 
     FUNCTION (gsl_block, fread) (f, w);
 

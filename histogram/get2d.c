@@ -29,13 +29,13 @@ gsl_histogram2d_get (const gsl_histogram2d * h, const size_t i, const size_t j)
 
   if (i >= nx)
     {
-      GSL_ERROR_RETURN ("index i lies outside valid range of 0 .. nx - 1",
+      GSL_ERROR_VAL ("index i lies outside valid range of 0 .. nx - 1",
 			GSL_EDOM, 0);
     }
 
   if (j >= ny)
     {
-      GSL_ERROR_RETURN ("index j lies outside valid range of 0 .. ny - 1",
+      GSL_ERROR_VAL ("index j lies outside valid range of 0 .. ny - 1",
 			GSL_EDOM, 0);
     }
 

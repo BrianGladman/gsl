@@ -1,5 +1,4 @@
-noinst_LTLIBRARIES = libgslblas.la
-lib_LTLIBRARIES = libgslblasnative.la libgslblascblas.la
+lib_LTLIBRARIES = libgslblas.la libgslblascblas.la
 
 check_PROGRAMS = test
 
@@ -71,17 +70,16 @@ INCLUDES= -I$(top_srcdir)
 
 TESTS = test
 
-test_LDADD = libgslblasnative.la ../ieee-utils/libgslieeeutils.la ../err/libgslerr.la ../test/libgsltest.la ../sys/libgslsys.la
+test_LDADD = libgslblas.la ../ieee-utils/libgslieeeutils.la ../err/libgslerr.la ../test/libgsltest.la ../sys/libgslsys.la
 test_SOURCES = test_blas_raw.c test_cases.c test_cases.h
 
-libgslblas_la_SOURCES = 		\
-	blas.c
-
-libgslblasnative_la_SOURCES = 	\
+libgslblas_la_SOURCES = 	\
+	blas.c                  \
 	blas_raw_native.c	\
 	blas_raw_native_cm.c
 
 libgslblascblas_la_SOURCES =	\
+	blas.c                  \
 	blas_raw_cblas.c	\
 	blas_raw_cblas_cm.c
 

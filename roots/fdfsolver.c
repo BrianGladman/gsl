@@ -32,7 +32,7 @@ gsl_root_fdfsolver_alloc (const gsl_root_fdfsolver_type * T,
 
   if (s == 0)
     {
-      GSL_ERROR_RETURN ("failed to allocate space for root solver struct",
+      GSL_ERROR_VAL ("failed to allocate space for root solver struct",
 			GSL_ENOMEM, 0);
     };
 
@@ -42,7 +42,7 @@ gsl_root_fdfsolver_alloc (const gsl_root_fdfsolver_type * T,
     {
       free (s);		/* exception in constructor, avoid memory leak */
 
-      GSL_ERROR_RETURN ("failed to allocate space for root solver state",
+      GSL_ERROR_VAL ("failed to allocate space for root solver state",
 			GSL_ENOMEM, 0);
     };
 

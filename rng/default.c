@@ -90,7 +90,7 @@ gsl_rng_env_setup (void)
 
       if (gsl_rng_default == 0)
 	{
-	  GSL_ERROR_RETURN ("unknown generator", GSL_EINVAL, 0);
+	  GSL_ERROR_VAL ("unknown generator", GSL_EINVAL, 0);
 	}
 
       fprintf (stderr, "GSL_RNG_TYPE=%s\n", gsl_rng_default->name);

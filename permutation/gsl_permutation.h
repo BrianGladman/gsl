@@ -74,7 +74,7 @@ gsl_permutation_get (const gsl_permutation * p, const size_t i)
 #ifndef GSL_RANGE_CHECK_OFF
   if (i >= p->size)
     {
-      GSL_ERROR_RETURN ("index out of range", GSL_EINVAL, 0);
+      GSL_ERROR_VAL ("index out of range", GSL_EINVAL, 0);
     }
 #endif
   return p->data[i];

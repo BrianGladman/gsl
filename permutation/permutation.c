@@ -40,7 +40,7 @@ gsl_permutation_get (const gsl_permutation * p, const size_t i)
     {
       if (i >= p->size)		/* size_t is unsigned, can't be negative */
 	{
-	  GSL_ERROR_RETURN ("index out of range", GSL_EINVAL, 0);
+	  GSL_ERROR_VAL ("index out of range", GSL_EINVAL, 0);
 	}
     }
 

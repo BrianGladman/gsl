@@ -72,6 +72,9 @@ int gsl_vector_complex_float_view_from_vector (gsl_vector_complex_float *v,
 gsl_vector_complex_float gsl_vector_complex_float_subvector (gsl_vector_complex_float *v, size_t i, size_t n);
 gsl_vector_complex_float gsl_vector_complex_float_subvector_with_stride (gsl_vector_complex_float *v, size_t i, size_t n, size_t stride);
 
+const gsl_vector_complex_float gsl_vector_complex_float_const_subvector (const gsl_vector_complex_float *v, size_t i, size_t n);
+const gsl_vector_complex_float gsl_vector_complex_float_const_subvector_with_stride (const gsl_vector_complex_float *v, size_t i, size_t n, size_t stride);
+
 
 gsl_complex_float 
 *gsl_vector_complex_float_ptr (const gsl_vector_complex_float * v, size_t i);
@@ -119,7 +122,7 @@ gsl_vector_complex_float_get (const gsl_vector_complex_float * v,
   if (i >= v->size)
     {
       const gsl_complex_float zero = {{0, 0}};
-      GSL_ERROR_RETURN ("index out of range", GSL_EINVAL, zero);
+      GSL_ERROR_VAL ("index out of range", GSL_EINVAL, zero);
     }
 #endif
   return *GSL_COMPLEX_FLOAT_AT (v, i);
@@ -133,7 +136,7 @@ gsl_vector_complex_float_set (gsl_vector_complex_float * v,
 #ifndef GSL_RANGE_CHECK_OFF
   if (i >= v->size)
     {
-      GSL_ERROR_RETURN_NOTHING ("index out of range", GSL_EINVAL);
+      GSL_ERROR_VOID ("index out of range", GSL_EINVAL);
     }
 #endif
   *GSL_COMPLEX_FLOAT_AT (v, i) = z;

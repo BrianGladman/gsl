@@ -91,14 +91,14 @@ conjugate_alloc(void *vstate, size_t n)
   state->last_direction = gsl_vector_calloc(n);
   if (state->last_direction == 0) 
     {
-      GSL_ERROR_RETURN ("failed to allocate PR conjugate gradient internal struct",
+      GSL_ERROR_VAL ("failed to allocate PR conjugate gradient internal struct",
 			GSL_ENOMEM, 0);     
     }
   /*      state->delta_gradient = gsl_vector_calloc(n);
 	  if (state->delta_gradient == 0) 
 	  {
 	  gsl_vector_free(state->last_direction);
-	  GSL_ERROR_RETURN ("failed to allocate PR conjugate gradient internal struct",
+	  GSL_ERROR_VAL ("failed to allocate PR conjugate gradient internal struct",
 	  GSL_ENOMEM, 0);     
 	  }*/
   return GSL_SUCCESS;

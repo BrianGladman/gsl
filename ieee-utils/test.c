@@ -24,6 +24,12 @@
 #include <gsl/gsl_ieee_utils.h>
 #include <gsl/gsl_test.h>
 
+#if defined(HAVE_IRIX_IEEE_INTERFACE)
+/* don't test denormals on IRIX */
+#else
+#define TEST_DENORMAL 1
+#endif
+
 int
 main (void)
 {
@@ -154,8 +160,10 @@ main (void)
     gsl_test_int (r.type, GSL_IEEE_TYPE_NORMAL, "float x = FLT_MAX, type is NORMAL");
   }
 
+
   /* Check for DENORMAL numbers (e.g. FLT_MIN/2^n) */
 
+#ifdef TEST_DENORMAL
   {
     float f = 1.17549435e-38;	/* FLT_MIN */
     char mantissa[] = "10000000000000000000000";
@@ -179,6 +187,7 @@ main (void)
 	mantissa[i] = '0';
       }
   }
+#endif
 
   /* Check for positive INFINITY (e.g. 2*FLT_MAX) */
 
@@ -363,6 +372,7 @@ main (void)
 
   /* Check for DENORMAL numbers (e.g. DBL_MIN/2^n) */
 
+#ifdef TEST_DENORMAL
   {
     double d = 2.2250738585072014e-308;		/* DBL_MIN */
     char mantissa[]
@@ -386,6 +396,7 @@ main (void)
 	mantissa[i] = '0';
       }
   }
+#endif
 
   /* Check for positive INFINITY (e.g. 2*DBL_MAX) */
 

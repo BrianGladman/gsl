@@ -68,3 +68,4 @@ extern const double  matrix_her_4_zpu[];
 extern const float   matrix_her_4_cpl[];
 extern const double  matrix_her_4_zpl[];
 
+extern const float   vector_7_f[];

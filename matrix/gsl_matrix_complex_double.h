@@ -132,11 +132,11 @@ gsl_matrix_complex_get(const gsl_matrix_complex * m,
 #ifndef GSL_RANGE_CHECK_OFF
   if (i >= m->size1)
     {
-      GSL_ERROR_RETURN("first index out of range", GSL_EINVAL, zero) ;
+      GSL_ERROR_VAL("first index out of range", GSL_EINVAL, zero) ;
     }
   else if (j >= m->size2)
     {
-      GSL_ERROR_RETURN("second index out of range", GSL_EINVAL, zero) ;
+      GSL_ERROR_VAL("second index out of range", GSL_EINVAL, zero) ;
     }
 #endif
   return *(gsl_complex *)(m->data + 2*(i * m->tda + j)) ;
@@ -150,11 +150,11 @@ gsl_matrix_complex_set(gsl_matrix_complex * m,
 #ifndef GSL_RANGE_CHECK_OFF
   if (i >= m->size1)
     {
-      GSL_ERROR_RETURN_NOTHING("first index out of range", GSL_EINVAL) ;
+      GSL_ERROR_VOID("first index out of range", GSL_EINVAL) ;
     }
   else if (j >= m->size2)
     {
-      GSL_ERROR_RETURN_NOTHING("second index out of range", GSL_EINVAL) ;
+      GSL_ERROR_VOID("second index out of range", GSL_EINVAL) ;
     }
 #endif
   *(gsl_complex *)(m->data + 2*(i * m->tda + j)) = x ;

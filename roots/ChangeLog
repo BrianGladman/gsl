@@ -1,3 +1,8 @@
+Wed May 17 11:37:15 2000  Brian Gough  <bjg@network-theory.co.uk>
+
+	* test_macros.c (test_macros): use GSL_POSINF and GSL_NAN macros
+ 	instead of 1/0 and 0/0
+
 Mon Feb 14 13:05:30 2000  Brian Gough  <bjg@network-theory.co.uk>
 
 	* removed definition of isinf macro (no longer needed)

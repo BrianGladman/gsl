@@ -291,7 +291,7 @@ FUNCTION (test, binary) (void)
   size_t i;
 
   {
-    FILE *f = fopen ("test.dat", "w");
+    FILE *f = fopen ("test.dat", "wb");
 
     for (i = 0; i < N; i++)
       {
@@ -304,7 +304,7 @@ FUNCTION (test, binary) (void)
   }
 
   {
-    FILE *f = fopen ("test.dat", "r");
+    FILE *f = fopen ("test.dat", "rb");
 
     FUNCTION (gsl_vector, fread) (f, w);
 

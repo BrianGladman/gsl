@@ -85,7 +85,7 @@ gsl_monte_plain_state* gsl_monte_plain_alloc(size_t num_dim)
     (gsl_monte_plain_state *) malloc(sizeof (gsl_monte_plain_state));
   
   if ( s == (gsl_monte_plain_state*) NULL) {
-    GSL_ERROR_RETURN ("failed to allocate space for state struct",
+    GSL_ERROR_VAL ("failed to allocate space for state struct",
                         GSL_ENOMEM, 0);
   }
 
@@ -163,7 +163,7 @@ int gsl_monte_plain_init(gsl_monte_plain_state* state)
 void gsl_monte_plain_free (gsl_monte_plain_state* s)
 {
   if (s == (gsl_monte_plain_state*) NULL )
-    GSL_ERROR_RETURN_NOTHING("Attempt to free null pointer", GSL_EFAULT);
+    GSL_ERROR_VOID("Attempt to free null pointer", GSL_EFAULT);
 
   free (s);
 }

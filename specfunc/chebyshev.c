@@ -36,15 +36,15 @@ gsl_sf_cheb_series * gsl_sf_cheb_new(double (*func)(double),
   int status;
 
   if(order < 0) {
-    GSL_ERROR_RETURN("gsl_sf_cheb_new: order < 0", GSL_EDOM, 0);
+    GSL_ERROR_VAL("gsl_sf_cheb_new: order < 0", GSL_EDOM, 0);
   }
   else if(a >= b) {
-    GSL_ERROR_RETURN("gsl_sf_cheb_new: null interval, a>=b", GSL_EDOM, 0);
+    GSL_ERROR_VAL("gsl_sf_cheb_new: null interval, a>=b", GSL_EDOM, 0);
   }
 #if 0
   else if(fabs(b-a) < 1.0e+6 * GSL_DBL_EPSILON) {
     /* FIXME: arbitrary nonsense */
-    GSL_ERROR_RETURN("gsl_sf_cheb_new: interval close to null", GSL_EFAILED, 0);
+    GSL_ERROR_VAL("gsl_sf_cheb_new: interval close to null", GSL_EFAILED, 0);
   }
 #endif
   else {
@@ -52,7 +52,7 @@ gsl_sf_cheb_series * gsl_sf_cheb_new(double (*func)(double),
       malloc(sizeof(gsl_sf_cheb_series));
   
     if(cs == 0) {
-      GSL_ERROR_RETURN("gsl_sf_cheb_new: out of memory", GSL_ENOMEM, 0);
+      GSL_ERROR_VAL("gsl_sf_cheb_new: out of memory", GSL_ENOMEM, 0);
     }
 
     cs->cp = (double *)0;
@@ -64,13 +64,13 @@ gsl_sf_cheb_series * gsl_sf_cheb_new(double (*func)(double),
     cs->b = b;
     cs->c = (double *) malloc((order+1) * sizeof(double));
     if(cs->c == 0) {
-      GSL_ERROR_RETURN("gsl_sf_cheb_new: out of memory", GSL_ENOMEM, 0);
+      GSL_ERROR_VAL("gsl_sf_cheb_new: out of memory", GSL_ENOMEM, 0);
     }
 
     status = gsl_sf_cheb_calc_impl(cs, func);
     if(status != GSL_SUCCESS) {
       free(cs);
-      GSL_ERROR_RETURN("gsl_sf_cheb_new: calc failed", status, 0);
+      GSL_ERROR_VAL("gsl_sf_cheb_new: calc failed", status, 0);
     }
     else {
       return cs;

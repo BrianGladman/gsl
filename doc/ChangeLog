@@ -1,3 +1,9 @@
+Thu May 18 12:11:24 2000  Brian Gough  <bjg@network-theory.co.uk>
+
+	* gsl-ref.texi (Preliminaries): changed the phrase "collection of
+ 	routines for numerical analysis" to "... numerical computing", as
+ 	on the web page. 
+	
 Wed Apr 26 17:46:48 2000  Brian Gough  <bjg@network-theory.co.uk>
 
 	* math.texi: added a chapter on the elementary functions and

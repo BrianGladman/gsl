@@ -224,7 +224,7 @@ gsl_ran_discrete_preproc(size_t Kevents, const double *ProbArray)
     if (Kevents < 1) {
       /* Could probably treat Kevents=1 as a special case */
 
-      GSL_ERROR_RETURN ("number of events must be a positive integer", 
+      GSL_ERROR_VAL ("number of events must be a positive integer", 
 			GSL_EINVAL, 0);
     }
 
@@ -234,7 +234,7 @@ gsl_ran_discrete_preproc(size_t Kevents, const double *ProbArray)
 
     for (k=0; k<Kevents; ++k) {
         if (ProbArray[k] < 0) {
-	  GSL_ERROR_RETURN ("probabilities must be non-negative",
+	  GSL_ERROR_VAL ("probabilities must be non-negative",
 			    GSL_EINVAL, 0) ;
         }
         pTotal += ProbArray[k];
@@ -249,7 +249,7 @@ gsl_ran_discrete_preproc(size_t Kevents, const double *ProbArray)
     E = (double *)malloc(sizeof(double)*Kevents);
 
     if (E==NULL) {
-      GSL_ERROR_RETURN ("Cannot allocate memory for randevent", ENOMEM, 0);
+      GSL_ERROR_VAL ("Cannot allocate memory for randevent", ENOMEM, 0);
     }
 
     for (k=0; k<Kevents; ++k) {

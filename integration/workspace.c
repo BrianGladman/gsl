@@ -29,7 +29,7 @@ gsl_integration_workspace_alloc (const size_t n)
   
   if (n == 0)
     {
-      GSL_ERROR_RETURN ("workspace length n must be positive integer",
+      GSL_ERROR_VAL ("workspace length n must be positive integer",
 			GSL_EDOM, 0);
     }
 
@@ -38,7 +38,7 @@ gsl_integration_workspace_alloc (const size_t n)
 
   if (w == 0)
     {
-      GSL_ERROR_RETURN ("failed to allocate space for workspace struct",
+      GSL_ERROR_VAL ("failed to allocate space for workspace struct",
 			GSL_ENOMEM, 0);
     }
 
@@ -48,7 +48,7 @@ gsl_integration_workspace_alloc (const size_t n)
     {
       free (w);		/* exception in constructor, avoid memory leak */
 
-      GSL_ERROR_RETURN ("failed to allocate space for alist ranges",
+      GSL_ERROR_VAL ("failed to allocate space for alist ranges",
 			GSL_ENOMEM, 0);
     }
 
@@ -59,7 +59,7 @@ gsl_integration_workspace_alloc (const size_t n)
       free (w->alist);
       free (w);		/* exception in constructor, avoid memory leak */
 
-      GSL_ERROR_RETURN ("failed to allocate space for blist ranges",
+      GSL_ERROR_VAL ("failed to allocate space for blist ranges",
 			GSL_ENOMEM, 0);
     }
 
@@ -71,7 +71,7 @@ gsl_integration_workspace_alloc (const size_t n)
       free (w->alist);
       free (w);		/* exception in constructor, avoid memory leak */
 
-      GSL_ERROR_RETURN ("failed to allocate space for rlist ranges",
+      GSL_ERROR_VAL ("failed to allocate space for rlist ranges",
 			GSL_ENOMEM, 0);
     }
 
@@ -85,7 +85,7 @@ gsl_integration_workspace_alloc (const size_t n)
       free (w->alist);
       free (w);		/* exception in constructor, avoid memory leak */
 
-      GSL_ERROR_RETURN ("failed to allocate space for elist ranges",
+      GSL_ERROR_VAL ("failed to allocate space for elist ranges",
 			GSL_ENOMEM, 0);
     }
 
@@ -99,7 +99,7 @@ gsl_integration_workspace_alloc (const size_t n)
       free (w->alist);
       free (w);		/* exception in constructor, avoid memory leak */
 
-      GSL_ERROR_RETURN ("failed to allocate space for order ranges",
+      GSL_ERROR_VAL ("failed to allocate space for order ranges",
 			GSL_ENOMEM, 0);
     }
 
@@ -114,7 +114,7 @@ gsl_integration_workspace_alloc (const size_t n)
       free (w->alist);
       free (w);		/* exception in constructor, avoid memory leak */
 
-      GSL_ERROR_RETURN ("failed to allocate space for order ranges",
+      GSL_ERROR_VAL ("failed to allocate space for order ranges",
 			GSL_ENOMEM, 0);
     }
 

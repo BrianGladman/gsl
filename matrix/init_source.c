@@ -25,12 +25,12 @@ FUNCTION (gsl_matrix, alloc) (const size_t n1, const size_t n2)
 
   if (n1 == 0)
     {
-      GSL_ERROR_RETURN ("matrix dimension n1 must be positive integer",
+      GSL_ERROR_VAL ("matrix dimension n1 must be positive integer",
 			GSL_EDOM, 0);
     }
   else if (n2 == 0)
     {
-      GSL_ERROR_RETURN ("matrix dimension n2 must be positive integer",
+      GSL_ERROR_VAL ("matrix dimension n2 must be positive integer",
 			GSL_EDOM, 0);
     }
 
@@ -38,7 +38,7 @@ FUNCTION (gsl_matrix, alloc) (const size_t n1, const size_t n2)
 
   if (m == 0)
     {
-      GSL_ERROR_RETURN ("failed to allocate space for matrix struct",
+      GSL_ERROR_VAL ("failed to allocate space for matrix struct",
 			GSL_ENOMEM, 0);
     }
 
@@ -48,7 +48,7 @@ FUNCTION (gsl_matrix, alloc) (const size_t n1, const size_t n2)
 
   if (block == 0)
     {
-      GSL_ERROR_RETURN ("failed to allocate space for block",
+      GSL_ERROR_VAL ("failed to allocate space for block",
 			GSL_ENOMEM, 0);
     }
 
@@ -92,22 +92,22 @@ FUNCTION (gsl_matrix, alloc_from_block) (TYPE(gsl_block) * block,
 
   if (n1 == 0)
     {
-      GSL_ERROR_RETURN ("matrix dimension n1 must be positive integer",
+      GSL_ERROR_VAL ("matrix dimension n1 must be positive integer",
 			GSL_EDOM, 0);
     }
   else if (n2 == 0)
     {
-      GSL_ERROR_RETURN ("matrix dimension n2 must be positive integer",
+      GSL_ERROR_VAL ("matrix dimension n2 must be positive integer",
 			GSL_EDOM, 0);
     }
   else if (d2 < n2)
     {
-      GSL_ERROR_RETURN ("matrix dimension d2 must be greater than n2",
+      GSL_ERROR_VAL ("matrix dimension d2 must be greater than n2",
 			GSL_EDOM, 0);
     }
   else if (block->size < offset + n1 * d2)
     {
-      GSL_ERROR_RETURN ("matrix size exceeds available block size",
+      GSL_ERROR_VAL ("matrix size exceeds available block size",
 			GSL_EDOM, 0);
     }
 
@@ -115,7 +115,7 @@ FUNCTION (gsl_matrix, alloc_from_block) (TYPE(gsl_block) * block,
 
   if (m == 0)
     {
-      GSL_ERROR_RETURN ("failed to allocate space for matrix struct",
+      GSL_ERROR_VAL ("failed to allocate space for matrix struct",
 			GSL_ENOMEM, 0);
     }
 
@@ -140,22 +140,22 @@ FUNCTION (gsl_matrix, alloc_from_matrix) (TYPE(gsl_matrix) * mm,
 
   if (n1 == 0)
     {
-      GSL_ERROR_RETURN ("matrix dimension n1 must be positive integer",
+      GSL_ERROR_VAL ("matrix dimension n1 must be positive integer",
 			GSL_EDOM, 0);
     }
   else if (n2 == 0)
     {
-      GSL_ERROR_RETURN ("matrix dimension n2 must be positive integer",
+      GSL_ERROR_VAL ("matrix dimension n2 must be positive integer",
 			GSL_EDOM, 0);
     }
   else if (k1 + n1 > mm->size1)
     {
-      GSL_ERROR_RETURN ("submatrix dimension 1 exceeds size of original",
+      GSL_ERROR_VAL ("submatrix dimension 1 exceeds size of original",
 			GSL_EDOM, 0);
     }
   else if (k2 + n2 > mm->size2)
     {
-      GSL_ERROR_RETURN ("submatrix dimension 2 exceeds size of original",
+      GSL_ERROR_VAL ("submatrix dimension 2 exceeds size of original",
 			GSL_EDOM, 0);
     }
 
@@ -163,7 +163,7 @@ FUNCTION (gsl_matrix, alloc_from_matrix) (TYPE(gsl_matrix) * mm,
 
   if (m == 0)
     {
-      GSL_ERROR_RETURN ("failed to allocate space for matrix struct",
+      GSL_ERROR_VAL ("failed to allocate space for matrix struct",
 			GSL_ENOMEM, 0);
     }
 

@@ -61,7 +61,7 @@ dnewton_alloc (void * vstate, size_t n)
   
   if (m == 0) 
     {
-      GSL_ERROR_RETURN ("failed to allocate space for lu", GSL_ENOMEM, 0);
+      GSL_ERROR_VAL ("failed to allocate space for lu", GSL_ENOMEM, 0);
     }
 
   state->lu = m ;
@@ -72,7 +72,7 @@ dnewton_alloc (void * vstate, size_t n)
     {
       gsl_matrix_free(m);
 
-      GSL_ERROR_RETURN ("failed to allocate space for permutation", GSL_ENOMEM, 0);
+      GSL_ERROR_VAL ("failed to allocate space for permutation", GSL_ENOMEM, 0);
     }
 
   state->permutation = p ;
@@ -84,7 +84,7 @@ dnewton_alloc (void * vstate, size_t n)
       gsl_permutation_free(p);
       gsl_matrix_free(m);
 
-      GSL_ERROR_RETURN ("failed to allocate space for d", GSL_ENOMEM, 0);
+      GSL_ERROR_VAL ("failed to allocate space for d", GSL_ENOMEM, 0);
     }
 
   state->J = J;

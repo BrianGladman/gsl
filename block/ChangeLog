@@ -1,3 +1,11 @@
+Sun May 28 12:22:26 2000  Brian Gough  <bjg@network-theory.co.uk>
+
+	* test_complex_source.c (FUNCTION): use binary mode "b" when
+ 	reading and writing binary files
+
+	* test_source.c (FUNCTION): use binary mode "b" when reading and
+ 	writing binary files
+
 Thu Mar  2 20:51:23 2000  Brian Gough  <bjg@network-theory.co.uk>
 
 	* fprintf_source.c: all input is now done through an ATOMIC_IO

@@ -91,7 +91,7 @@ gsl_ran_choose (const gsl_rng * r, void * dest, size_t k, void * src,
 
   if (k > n)
     {
-      GSL_ERROR_RETURN ("k is greater than n, cannot sample more than n items",
+      GSL_ERROR_VAL ("k is greater than n, cannot sample more than n items",
 			GSL_EINVAL, 0) ;
     }
 

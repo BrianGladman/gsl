@@ -11,7 +11,7 @@ INCLUDES= -I$(top_builddir)
 
 TESTS = test
 
-test_LDADD = libgslinterpolation.la ../linalg/libgsllinalg.la ../blas/libgslblas.la ../blas/libgslblasnative.la ../vector/libgslvector.la ../block/libgslblock.la ../err/libgslerr.la ../test/libgsltest.la ../utils/libutils.la
+test_LDADD = libgslinterpolation.la ../linalg/libgsllinalg.la ../blas/libgslblas.la ../vector/libgslvector.la ../block/libgslblock.la ../err/libgslerr.la ../test/libgsltest.la ../utils/libutils.la
 
 test_DEPENDENCIES = libgslinterpolation.la
 test_SOURCES = test.c

@@ -33,22 +33,22 @@ gsl_integration_qaws_table_alloc (double alpha, double beta, int mu, int nu)
 
   if (alpha < -1.0)
     {
-      GSL_ERROR_RETURN ("alpha must be greater than -1.0", GSL_EINVAL, 0);
+      GSL_ERROR_VAL ("alpha must be greater than -1.0", GSL_EINVAL, 0);
     }
 
   if (beta < -1.0)
     {
-      GSL_ERROR_RETURN ("beta must be greater than -1.0", GSL_EINVAL, 0);
+      GSL_ERROR_VAL ("beta must be greater than -1.0", GSL_EINVAL, 0);
     }
 
   if (mu != 0 && mu != 1)
     {
-      GSL_ERROR_RETURN ("mu must be 0 or 1", GSL_EINVAL, 0);
+      GSL_ERROR_VAL ("mu must be 0 or 1", GSL_EINVAL, 0);
     }
 
   if (nu != 0 && nu != 1)
     {
-      GSL_ERROR_RETURN ("nu must be 0 or 1", GSL_EINVAL, 0);
+      GSL_ERROR_VAL ("nu must be 0 or 1", GSL_EINVAL, 0);
     }
 
   t = (gsl_integration_qaws_table *) 
@@ -56,7 +56,7 @@ gsl_integration_qaws_table_alloc (double alpha, double beta, int mu, int nu)
 
   if (t == 0)
     {
-      GSL_ERROR_RETURN ("failed to allocate space for qaws_table struct",
+      GSL_ERROR_VAL ("failed to allocate space for qaws_table struct",
 			GSL_ENOMEM, 0);
     }
 

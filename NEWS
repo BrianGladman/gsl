@@ -1,3 +1,8 @@
+** The blas library libgslblasnative has been renamed libgslblas to avoid
+confusion with system blas library
+
+* What was new in gsl-0.6:
+
 ** The library is now installed as a single shared or static libgsl
 file using libtool.
 

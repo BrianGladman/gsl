@@ -10,6 +10,7 @@ The functions and macros are defined in the header file @file{gsl_math.h}.
 
 @menu
 * Mathematical Constants::      
+* Infinities and Not-a-number::  
 * Elementary Functions::        
 * Testing the Sign of Numbers::  
 * Testing for Odd and Even Numbers::  
@@ -84,6 +85,29 @@ Euler's constant, @math{\gamma}
 
 @end table
 
+@node Infinities and Not-a-number
+@section Infinities and Not-a-number
+
+@cindex infinity, defined as a macro
+@cindex IEEE infinity, defined as a macro
+@cindex NaN, defined as a macro
+@cindex Not-a-number, defined as a macro
+@cindex IEEE NaN, defined as a macro
+
+@defmac GSL_POSINF
+This macro contains the IEEE representation of positive infinity,
+@math{+\infty}. It is computed from the expression @code{+1.0/0.0}
+@end defmac
+
+@defmac GSL_NEGINF
+This macro contains the IEEE representation of negative infinity,
+@math{-\infty}. It is computed from the expression @code{-1.0/0.0}
+@end defmac
+
+@defmac GSL_NAN
+This macro contains the IEEE representation of the Not-a-Number symbol,
+@code{NaN}. It is computed from the ratio @code{0.0/0.0}.
+@end defmac
 
 @node Elementary Functions
 @section Elementary Functions

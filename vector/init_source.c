@@ -25,7 +25,7 @@ FUNCTION (gsl_vector, alloc) (const size_t n)
 
   if (n == 0)
     {
-      GSL_ERROR_RETURN ("vector length n must be positive integer",
+      GSL_ERROR_VAL ("vector length n must be positive integer",
 			GSL_EDOM, 0);
     }
 
@@ -33,7 +33,7 @@ FUNCTION (gsl_vector, alloc) (const size_t n)
 
   if (v == 0)
     {
-      GSL_ERROR_RETURN ("failed to allocate space for vector struct",
+      GSL_ERROR_VAL ("failed to allocate space for vector struct",
 			GSL_ENOMEM, 0);
     }
 
@@ -43,7 +43,7 @@ FUNCTION (gsl_vector, alloc) (const size_t n)
     {
       free (v) ;
 
-      GSL_ERROR_RETURN ("failed to allocate space for block",
+      GSL_ERROR_VAL ("failed to allocate space for block",
 			GSL_ENOMEM, 0);
     }
       
@@ -85,25 +85,25 @@ FUNCTION (gsl_vector, alloc_from_block) (TYPE(gsl_block) * block,
 
   if (n == 0)
     {
-      GSL_ERROR_RETURN ("vector length n must be positive integer",
+      GSL_ERROR_VAL ("vector length n must be positive integer",
 			GSL_EDOM, 0);
     }
 
   if (stride == 0)
     {
-      GSL_ERROR_RETURN ("stride must be positive integer", GSL_EDOM, 0);
+      GSL_ERROR_VAL ("stride must be positive integer", GSL_EDOM, 0);
     }
 
   if (block->size <= offset + (n - 1) * stride)
     {
-      GSL_ERROR_RETURN ("vector would extend past end of block", GSL_EDOM, 0);
+      GSL_ERROR_VAL ("vector would extend past end of block", GSL_EDOM, 0);
     }
 
   v = (TYPE (gsl_vector) *) malloc (sizeof (TYPE (gsl_vector)));
 
   if (v == 0)
     {
-      GSL_ERROR_RETURN ("failed to allocate space for vector struct",
+      GSL_ERROR_VAL ("failed to allocate space for vector struct",
 			GSL_ENOMEM, 0);
     }
 
@@ -125,25 +125,25 @@ FUNCTION (gsl_vector, alloc_from_vector) (TYPE(gsl_vector) * w,
 
   if (n == 0)
     {
-      GSL_ERROR_RETURN ("vector length n must be positive integer",
+      GSL_ERROR_VAL ("vector length n must be positive integer",
 			GSL_EDOM, 0);
     }
 
   if (stride == 0)
     {
-      GSL_ERROR_RETURN ("stride must be positive integer", GSL_EDOM, 0);
+      GSL_ERROR_VAL ("stride must be positive integer", GSL_EDOM, 0);
     }
 
   if (offset + (n - 1) * stride >= w->size)
     {
-      GSL_ERROR_RETURN ("vector would extend past end of block", GSL_EDOM, 0);
+      GSL_ERROR_VAL ("vector would extend past end of block", GSL_EDOM, 0);
     }
 
   v = (TYPE (gsl_vector) *) malloc (sizeof (TYPE (gsl_vector)));
 
   if (v == 0)
     {
-      GSL_ERROR_RETURN ("failed to allocate space for vector struct",
+      GSL_ERROR_VAL ("failed to allocate space for vector struct",
 			GSL_ENOMEM, 0);
     }
 
@@ -197,57 +197,6 @@ FUNCTION(gsl_vector, view_from_vector) (TYPE(gsl_vector) * v,
 
   return GSL_SUCCESS;
 }
-
-
-TYPE(gsl_vector)
-FUNCTION(gsl_vector, subvector) (TYPE(gsl_vector) * v, size_t offset, size_t n)
-{
-  TYPE(gsl_vector) s = {0, 0, 0, 0};
-
-  if (n == 0)
-    {
-      GSL_ERROR_RETURN ("vector length n must be positive integer", GSL_EDOM, s);
-    }
-
-  if (offset + (n - 1) >= v->size)
-    {
-      GSL_ERROR_RETURN ("vector would extend past end of vector", GSL_EDOM, s);
-    }
-
-  s.data = v->data +  v->stride * offset ;
-  s.size = n;
-  s.stride = v->stride;
-
-  return s;
-}
-
-TYPE(gsl_vector)
-FUNCTION(gsl_vector, subvector_with_stride) (TYPE(gsl_vector) * v, size_t offset, size_t n, size_t stride)
-{
-  TYPE(gsl_vector) s = {0, 0, 0, 0};
-
-  if (n == 0)
-    {
-      GSL_ERROR_RETURN ("vector length n must be positive integer", GSL_EDOM, s);
-    }
-
-  if (stride == 0)
-    {
-      GSL_ERROR_RETURN ("stride must be positive integer", GSL_EDOM, s);
-    }
-
-  if (offset + (n - 1) * stride >= v->size)
-    {
-      GSL_ERROR_RETURN ("vector would extend past end of vector", GSL_EDOM, s);
-    }
-
-  s.data = v->data + v->stride * offset ;
-  s.size = n;
-  s.stride = v->stride * stride;
-
-  return s;
-}
-
 
 void
 FUNCTION (gsl_vector, set_all) (TYPE (gsl_vector) * v, BASE x)

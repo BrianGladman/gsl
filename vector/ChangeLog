@@ -1,3 +1,11 @@
+Sun May 28 12:25:31 2000  Brian Gough  <bjg@network-theory.co.uk>
+
+	* test_complex_source.c (FUNCTION): use binary mode "b" when
+ 	reading and writing binary files
+
+	* test_source.c (FUNCTION): use binary mode "b" when reading and
+ 	writing binary files
+
 Fri May  5 10:57:16 2000  Brian Gough  <bjg@network-theory.co.uk>
 
 	* oper_source.c (FUNCTION): changed functions

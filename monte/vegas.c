@@ -386,7 +386,7 @@ gsl_monte_vegas_state* gsl_monte_vegas_alloc(size_t num_dim)
     (gsl_monte_vegas_state *) malloc(sizeof (gsl_monte_vegas_state));
   
   if ( s == (gsl_monte_vegas_state*) NULL) {
-    GSL_ERROR_RETURN ("failed to allocate space for miser state struct",
+    GSL_ERROR_VAL ("failed to allocate space for miser state struct",
                         GSL_ENOMEM, 0);
   }
   s->num_dim = num_dim;
@@ -469,7 +469,7 @@ int gsl_monte_vegas_init(gsl_monte_vegas_state* state)
 void gsl_monte_vegas_free (gsl_monte_vegas_state* s)
 {
   if (s == (gsl_monte_vegas_state*) NULL )
-    GSL_ERROR_RETURN_NOTHING("Attempt to free null pointer", GSL_EFAULT);
+    GSL_ERROR_VOID("Attempt to free null pointer", GSL_EFAULT);
 
   free (s);
 }

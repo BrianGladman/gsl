@@ -13,6 +13,11 @@
 	to 0.6.  Also: gsl.spec now installes files like MACHINES,
 	KNOWN-PROBLEMS, NEWS,... into the package's %doc file list.
 
+Sun May 28 12:03:36 2000  Brian Gough  <bjg@network-theory.co.uk>
+
+	* gsl/Makefile.am (header-links): use configurable macro variable
+ 	$(LN_S) instead of explicit "ln -s"
+
 Mon May 15 19:16:31 2000  Brian Gough  <bjg@network-theory.co.uk>
 
 	* added ieee mode setting to all tests, so that they can be run in
@@ -24,6 +29,13 @@ Mon May 15 19:16:31 2000  Brian Gough  <bjg@network-theory.co.uk>
 	* configure.in: look in both <float.h> and /usr/include/float.h,
 	to find FP_RND_RN, as some versions of GCC don't copy these
 	symbols into the `fixed' header.
+
+Thu May 11 12:47:19 2000  Brian Gough  <bjg@network-theory.co.uk>
+
+	* gsl_math.h (GSL_POSZERO): added macros for IEEE signed zeros, +0
+ 	and -0. They don't do anything useful yet, but use the macro so
+ 	that will be possible to work around compilers that don't
+ 	understand the difference between the constants -0 and +0.
 
 Wed May 10 11:30:15 2000  Brian Gough  <bjg@network-theory.co.uk>
 

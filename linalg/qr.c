@@ -271,8 +271,8 @@ gsl_linalg_QR_QTvec (const gsl_matrix * QR, const gsl_vector * tau, gsl_vector *
 
       for (i = 0; i < GSL_MIN (M, N); i++)
 	{
-	  gsl_vector c = gsl_matrix_column (QR, i);
-          gsl_vector h = gsl_vector_subvector (&c, i, M - i);
+	  const gsl_vector c = gsl_matrix_const_column (QR, i);
+          const gsl_vector h = gsl_vector_const_subvector (&c, i, M - i);
 	  gsl_vector w = gsl_vector_subvector (v, i, M - i);
 	  double ti = gsl_vector_get (tau, i);
 	  gsl_linalg_householder_hv (ti, &h, &w);
@@ -315,8 +315,8 @@ gsl_linalg_QR_unpack (const gsl_matrix * QR, const gsl_vector * tau, gsl_matrix 
 	{
 	  i = k - 1;
 	  {
-            gsl_vector c = gsl_matrix_column (QR, i);
-            gsl_vector h = gsl_vector_subvector (&c, i, M - i);
+            const gsl_vector c = gsl_matrix_const_column (QR, i);
+            const gsl_vector h = gsl_vector_const_subvector (&c, i, M - i);
 	    gsl_matrix m = gsl_matrix_submatrix (Q, i, i, M - i, M - i);
 	    double ti = gsl_vector_get (tau, i);
 	    gsl_linalg_householder_hm (ti, &h, &m, work);

@@ -41,7 +41,7 @@ gsl_histogram_pdf_sample (const gsl_histogram_pdf * p, double r)
 
   if (status)
     {
-      GSL_ERROR_RETURN ("cannot find r in cumulative pdf", GSL_EDOM, 0);
+      GSL_ERROR_VAL ("cannot find r in cumulative pdf", GSL_EDOM, 0);
     }
   else
     {
@@ -60,7 +60,7 @@ gsl_histogram_pdf_alloc (const gsl_histogram * h)
 
   if (n == 0)
     {
-      GSL_ERROR_RETURN ("histogram length n must be positive integer",
+      GSL_ERROR_VAL ("histogram length n must be positive integer",
 			GSL_EDOM, 0);
     }
 
@@ -68,7 +68,7 @@ gsl_histogram_pdf_alloc (const gsl_histogram * h)
     {
       if (h->bin[i] < 0)
 	{
-	  GSL_ERROR_RETURN ("histogram bins must be non-negative to compute"
+	  GSL_ERROR_VAL ("histogram bins must be non-negative to compute"
 			    "a probability distribution",
 			    GSL_EDOM, 0);
 	}
@@ -78,7 +78,7 @@ gsl_histogram_pdf_alloc (const gsl_histogram * h)
 
   if (p == 0)
     {
-      GSL_ERROR_RETURN ("failed to allocate space for histogram pdf struct",
+      GSL_ERROR_VAL ("failed to allocate space for histogram pdf struct",
 			GSL_ENOMEM, 0);
     }
 
@@ -88,7 +88,7 @@ gsl_histogram_pdf_alloc (const gsl_histogram * h)
     {
       free (p);		/* exception in constructor, avoid memory leak */
 
-      GSL_ERROR_RETURN ("failed to allocate space for histogram pdf ranges",
+      GSL_ERROR_VAL ("failed to allocate space for histogram pdf ranges",
 			GSL_ENOMEM, 0);
     }
 
@@ -99,7 +99,7 @@ gsl_histogram_pdf_alloc (const gsl_histogram * h)
       free (p->range);
       free (p);		/* exception in constructor, avoid memory leak */
 
-      GSL_ERROR_RETURN ("failed to allocate space for histogram pdf sums",
+      GSL_ERROR_VAL ("failed to allocate space for histogram pdf sums",
 			GSL_ENOMEM, 0);
     }
 

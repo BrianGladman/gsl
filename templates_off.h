@@ -22,8 +22,8 @@
 #undef TYPE
 #endif
 
-#ifdef TYPE2
-#undef TYPE2
+#ifdef QUALIFIED_TYPE
+#undef QUALIFIED_TYPE
 #endif
 
 #ifdef USES_LONGDOUBLE

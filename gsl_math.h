@@ -237,10 +237,14 @@ typedef struct gsl_interval_struct gsl_interval;
 #define GSL_NAN NAN
 #define GSL_POSINF HUGE_VAL
 #define GSL_NEGINF (-HUGE_VAL)
+#define GSL_POSZERO (+0)
+#define GSL_NEGZERO (-0)
 #else
 #define GSL_NAN (0.0/0.0)
 #define GSL_POSINF (+1.0/0.0)
 #define GSL_NEGINF (-1.0/0.0)
+#define GSL_POSZERO (+0)
+#define GSL_NEGZERO (-0)
 #endif
 
 __END_DECLS

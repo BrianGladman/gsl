@@ -35,7 +35,7 @@ gsl_multiroot_fsolver_alloc (const gsl_multiroot_fsolver_type * T,
 
   if (x->size != n) 
     {
-      GSL_ERROR_RETURN ("vector length not compatible with function", 
+      GSL_ERROR_VAL ("vector length not compatible with function", 
                         GSL_EBADLEN, 0);
     }
 
@@ -43,7 +43,7 @@ gsl_multiroot_fsolver_alloc (const gsl_multiroot_fsolver_type * T,
 
   if (s == 0)
     {
-      GSL_ERROR_RETURN ("failed to allocate space for multiroot solver struct",
+      GSL_ERROR_VAL ("failed to allocate space for multiroot solver struct",
 			GSL_ENOMEM, 0);
     }
 
@@ -52,7 +52,7 @@ gsl_multiroot_fsolver_alloc (const gsl_multiroot_fsolver_type * T,
   if (s->x == 0) 
     {
       free (s);
-      GSL_ERROR_RETURN ("failed to allocate space for x", GSL_ENOMEM, 0);
+      GSL_ERROR_VAL ("failed to allocate space for x", GSL_ENOMEM, 0);
     }
 
   s->f = gsl_vector_calloc (n);
@@ -61,7 +61,7 @@ gsl_multiroot_fsolver_alloc (const gsl_multiroot_fsolver_type * T,
     {
       gsl_vector_free (s->x);
       free (s);
-      GSL_ERROR_RETURN ("failed to allocate space for f", GSL_ENOMEM, 0);
+      GSL_ERROR_VAL ("failed to allocate space for f", GSL_ENOMEM, 0);
     }
 
   s->dx = gsl_vector_calloc (n);
@@ -71,7 +71,7 @@ gsl_multiroot_fsolver_alloc (const gsl_multiroot_fsolver_type * T,
       gsl_vector_free (s->x);
       gsl_vector_free (s->f);
       free (s);
-      GSL_ERROR_RETURN ("failed to allocate space for dx", GSL_ENOMEM, 0);
+      GSL_ERROR_VAL ("failed to allocate space for dx", GSL_ENOMEM, 0);
     }
 
   s->state = malloc (T->size);
@@ -83,7 +83,7 @@ gsl_multiroot_fsolver_alloc (const gsl_multiroot_fsolver_type * T,
       gsl_vector_free (s->f);
       free (s);		/* exception in constructor, avoid memory leak */
       
-      GSL_ERROR_RETURN ("failed to allocate space for multiroot solver state",
+      GSL_ERROR_VAL ("failed to allocate space for multiroot solver state",
 			GSL_ENOMEM, 0);
     }
 
@@ -100,7 +100,7 @@ gsl_multiroot_fsolver_alloc (const gsl_multiroot_fsolver_type * T,
       gsl_vector_free (s->f);
       free (s);		/* exception in constructor, avoid memory leak */
       
-      GSL_ERROR_RETURN ("failed to set solver", status, 0);
+      GSL_ERROR_VAL ("failed to set solver", status, 0);
     }
   
   status = gsl_multiroot_fsolver_set (s, f, x); /* seed the generator */
@@ -113,7 +113,7 @@ gsl_multiroot_fsolver_alloc (const gsl_multiroot_fsolver_type * T,
       gsl_vector_free (s->f);
       free (s);		/* exception in constructor, avoid memory leak */
       
-      GSL_ERROR_RETURN ("failed to set solver", status, 0);
+      GSL_ERROR_VAL ("failed to set solver", status, 0);
     }
 
   return s;

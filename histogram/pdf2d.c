@@ -73,7 +73,7 @@ gsl_histogram2d_pdf_alloc (const gsl_histogram2d * h)
 
   if (n == 0)
     {
-      GSL_ERROR_RETURN ("histogram2d length n must be positive integer",
+      GSL_ERROR_VAL ("histogram2d length n must be positive integer",
 			GSL_EDOM, 0);
     }
 
@@ -81,7 +81,7 @@ gsl_histogram2d_pdf_alloc (const gsl_histogram2d * h)
     {
       if (h->bin[i] < 0)
 	{
-	  GSL_ERROR_RETURN ("histogram bins must be non-negative to compute"
+	  GSL_ERROR_VAL ("histogram bins must be non-negative to compute"
 			    "a probability distribution",
 			    GSL_EDOM, 0);
 	}
@@ -91,7 +91,7 @@ gsl_histogram2d_pdf_alloc (const gsl_histogram2d * h)
 
   if (p == 0)
     {
-      GSL_ERROR_RETURN ("failed to allocate space for histogram2d pdf struct",
+      GSL_ERROR_VAL ("failed to allocate space for histogram2d pdf struct",
 			GSL_ENOMEM, 0);
     }
 
@@ -101,7 +101,7 @@ gsl_histogram2d_pdf_alloc (const gsl_histogram2d * h)
     {
       free (p);		/* exception in constructor, avoid memory leak */
 
-      GSL_ERROR_RETURN ("failed to allocate space for histogram2d pdf xranges",
+      GSL_ERROR_VAL ("failed to allocate space for histogram2d pdf xranges",
 			GSL_ENOMEM, 0);
     }
 
@@ -112,7 +112,7 @@ gsl_histogram2d_pdf_alloc (const gsl_histogram2d * h)
       free (p->xrange);
       free (p);		/* exception in constructor, avoid memory leak */
 
-      GSL_ERROR_RETURN ("failed to allocate space for histogram2d pdf yranges",
+      GSL_ERROR_VAL ("failed to allocate space for histogram2d pdf yranges",
 			GSL_ENOMEM, 0);
     }
 
@@ -124,7 +124,7 @@ gsl_histogram2d_pdf_alloc (const gsl_histogram2d * h)
       free (p->xrange);
       free (p);		/* exception in constructor, avoid memory leak */
 
-      GSL_ERROR_RETURN ("failed to allocate space for histogram2d pdf sums",
+      GSL_ERROR_VAL ("failed to allocate space for histogram2d pdf sums",
 			GSL_ENOMEM, 0);
     }
 

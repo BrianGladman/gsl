@@ -100,14 +100,14 @@ vector_bfgs_alloc(void *vstate, size_t n)
   state->v = gsl_vector_calloc(n);
   if (state->v == 0) 
     {
-      GSL_ERROR_RETURN ("failed to allocate PR conjugate gradient internal struct",
+      GSL_ERROR_VAL ("failed to allocate PR conjugate gradient internal struct",
 			GSL_ENOMEM, 0);     
     }
   state->p = gsl_vector_calloc(n);
   if (state->p == 0) 
     {
       gsl_vector_free(state->v);
-      GSL_ERROR_RETURN ("failed to allocate PR conjugate gradient internal struct",
+      GSL_ERROR_VAL ("failed to allocate PR conjugate gradient internal struct",
 			GSL_ENOMEM, 0);     
     }
   return GSL_SUCCESS;

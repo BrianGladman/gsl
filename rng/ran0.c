@@ -79,7 +79,7 @@ ran0_set (void *vstate, unsigned long int s)
 
   if (s == mask)
     {
-      GSL_ERROR_RETURN_NOTHING ("ran0 should not use seed == mask", 
+      GSL_ERROR_VOID ("ran0 should not use seed == mask", 
 				GSL_EINVAL);
     }
 

@@ -68,23 +68,25 @@ version of the library is also installed on systems that support shared
 libraries.  The default location of these files is
 @file{/usr/local/lib}.  To link against the library you need to specify
 both the main library and a supporting @sc{blas} library.  A suitable
-blas implementation is provided in @file{libgslblasnative} if your
-system does not provide one.  The following example shows how to link an
-application with the library,
+blas implementation is provided in @file{libgslblas} if your system does
+not provide one.  The following example shows how to link an application
+with the library,
 
 @example
-gcc app.o -lgsl -lgslblasnative -lm
+gcc app.o -lgsl -lgslblas -lm
 @end example
 @noindent
-The following command line shows how to link the same application with
-an alternative blas library @file{libmycblas},
+The following command line shows how you would link the same application
+with an alternative blas library called @file{libcblas},
 
 @example
-gcc app.o -lgsl -lgslblascblas -lmycblas -lm
+gcc app.o -lgsl -lgslblascblas -lcblas -lm
 @end example
 @noindent
-The library must conform to the @sc{cblas} standard.  For more
-information see @ref{BLAS Support}.
+For the best performance an optimized vendor-supplied blas library (if
+available) should be substituted for @code{-lcblas}. The library must
+conform to the @sc{cblas} standard.  For more information see @ref{BLAS
+Support}.
 
 The program @code{gsl-config} provides information on the local version
 of the library.  For example, the following command shows that the
@@ -112,7 +114,7 @@ To compile a statically linked version of the program instead, use the
 @code{-static} flag in @code{gcc},
 
 @example
-gcc -static app.o -lgsl -lgslblasnative -lm
+gcc -static app.o -lgsl -lgslblas -lm
 @end example
 
 @node Automake macros
@@ -142,7 +144,7 @@ command. For example,
 @example
 libgsdv_la_LDFLAGS =    \
         $(GTK_LIBDIR) \
-        $(GTK_LIBS) -lgsdvgsl $(GSL_LIBS) -lgslblasnative
+        $(GTK_LIBS) -lgsdvgsl $(GSL_LIBS) -lgslblas
 @end example
 @noindent
 

@@ -119,7 +119,7 @@ gsl_vector_complex_long_double_get (const gsl_vector_complex_long_double * v,
   if (i >= v->size)
     {
       const gsl_complex_long_double zero = {{0, 0}};
-      GSL_ERROR_RETURN ("index out of range", GSL_EINVAL, zero);
+      GSL_ERROR_VAL ("index out of range", GSL_EINVAL, zero);
     }
 #endif
   return *GSL_COMPLEX_LONG_DOUBLE_AT (v, i);
@@ -133,7 +133,7 @@ gsl_vector_complex_long_double_set (gsl_vector_complex_long_double * v,
 #ifndef GSL_RANGE_CHECK_OFF
   if (i >= v->size)
     {
-      GSL_ERROR_RETURN_NOTHING ("index out of range", GSL_EINVAL);
+      GSL_ERROR_VOID ("index out of range", GSL_EINVAL);
     }
 #endif
   *GSL_COMPLEX_LONG_DOUBLE_AT (v, i) = z;

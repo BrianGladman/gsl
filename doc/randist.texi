@@ -1600,7 +1600,7 @@ If the library and header files are installed under @file{/usr/local}
 options,
 
 @example
-gcc demo.c -lgsl -lgslblasnative -lm
+gcc demo.c -lgsl -lgslblas -lm
 @end example
 
 @noindent

@@ -1,5 +1,8 @@
 Thu May 18 11:53:13 2000  Brian Gough  <bjg@network-theory.co.uk>
 
+	* test.c: turned off tests for denormals on irix, since they are
+ 	supported
+
 	* fp.c: added IRIX and AIX to the top-level fp.c file -- somehow
  	they had been forgotten!
 

@@ -81,25 +81,25 @@ gsl_dht_transform *
 gsl_dht_transform_new(size_t size, double nu, double xmax)
 {
   if(size == 0) {
-    GSL_ERROR_RETURN("gsl_dht_transform_new: size == 0", GSL_EDOM, 0);
+    GSL_ERROR_VAL("gsl_dht_transform_new: size == 0", GSL_EDOM, 0);
   }
   else if(nu < 0.0) {
-    GSL_ERROR_RETURN("gsl_dht_transform_new: nu < 0.0", GSL_EDOM, 0);
+    GSL_ERROR_VAL("gsl_dht_transform_new: nu < 0.0", GSL_EDOM, 0);
   }
   else if(xmax <= 0.0) {
-    GSL_ERROR_RETURN("gsl_dht_transform_new: xmax <= 0.0", GSL_EDOM, 0);
+    GSL_ERROR_VAL("gsl_dht_transform_new: xmax <= 0.0", GSL_EDOM, 0);
   }
   else {
     gsl_dht_transform * t = (gsl_dht_transform *)malloc(sizeof(gsl_dht_transform));
     if(t == 0) {
-      GSL_ERROR_RETURN("gsl_dht_transform_new: out of memory", GSL_ENOMEM, 0);
+      GSL_ERROR_VAL("gsl_dht_transform_new: out of memory", GSL_ENOMEM, 0);
     }
     else {
       t->nu   = -1.0; /* Make it clear that this needs to be calculated. */
       t->size = size;
       if(dht_transform_allocator(t, size) != GSL_SUCCESS) {
         free(t);
-	GSL_ERROR_RETURN("gsl_dht_transform_new: alloc failed", GSL_ENOMEM, 0);
+	GSL_ERROR_VAL("gsl_dht_transform_new: alloc failed", GSL_ENOMEM, 0);
       }
       else {
         if(gsl_dht_transform_recalc_impl(t, nu, xmax) != GSL_SUCCESS) {
@@ -107,7 +107,7 @@ gsl_dht_transform_new(size_t size, double nu, double xmax)
 	  free(t->Jjj);
 	  free(t->j);
           free(t);
-          GSL_ERROR_RETURN("gsl_dht_transform_new: recalc failed", GSL_EFAILED, 0);
+          GSL_ERROR_VAL("gsl_dht_transform_new: recalc failed", GSL_EFAILED, 0);
         }
       }
       return t;

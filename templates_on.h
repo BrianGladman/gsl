@@ -166,19 +166,33 @@
 #error unknown BASE_ directive in source.h
 #endif
 
-#if defined(BASE_DOUBLE)
-#define CONCAT2(a,b) a ## _ ## b 
-#define FUNCTION(dir,name) CONCAT2(dir,name)
-#define TYPE2(dir,name) CONCAT2(dir,name)
-#define TYPE(dir) dir
-#else
 #define CONCAT2x(a,b) a ## _ ## b 
 #define CONCAT2(a,b) CONCAT2x(a,b)
 #define CONCAT3x(a,b,c) a ## _ ## b ## _ ## c
 #define CONCAT3(a,b,c) CONCAT3x(a,b,c)
-#define FUNCTION(a,c) CONCAT3(a,SHORT,c)
-#define TYPE2(a,c) CONCAT3(a,SHORT,c)
+#define CONCAT4x(a,b,c,d) a ## _ ## b ## _ ## c ## _ ## d
+#define CONCAT4(a,b,c,d) CONCAT4x(a,b,c,d)
+
+#ifdef USE_QUALIFIER
+#if defined(BASE_DOUBLE)
+#define FUNCTION(dir,name) CONCAT3(dir,QUALIFIER,name)
+#define TYPE(dir) dir
+#define QUALIFIED_TYPE(dir) QUALIFIER dir
+#else
+#define FUNCTION(a,c) CONCAT4(a,SHORT,QUALIFIER,c)
 #define TYPE(dir) CONCAT2(dir,SHORT)
+#define QUALIFIED_TYPE(dir) QUALIFIER CONCAT2(dir,SHORT)
+#endif
+#else
+#if defined(BASE_DOUBLE)
+#define FUNCTION(dir,name) CONCAT2(dir,name)
+#define TYPE(dir) dir
+#define QUALIFIED_TYPE(dir) TYPE(dir)
+#else
+#define FUNCTION(a,c) CONCAT3(a,SHORT,c)
+#define TYPE(dir) CONCAT2(dir,SHORT)
+#define QUALIFIED_TYPE(dir) TYPE(dir)
+#endif
 #endif
 
 #define STRING(x) #x

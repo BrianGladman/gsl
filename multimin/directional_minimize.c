@@ -66,13 +66,13 @@ gsl_multimin_to_single_alloc(const gsl_multimin_function *f,
   int status;
 
   if (starting_point->size != n || direction->size != n) {
-    GSL_ERROR_RETURN ("vector length not compatible with function", 
+    GSL_ERROR_VAL ("vector length not compatible with function", 
 		      GSL_EBADLEN, 0);
   }
   wrapper = (gsl_multimin_to_single *)malloc (sizeof (gsl_multimin_to_single));
 
   if (wrapper == 0) {
-    GSL_ERROR_RETURN ("failed to allocate space for multimin wrapper struct",
+    GSL_ERROR_VAL ("failed to allocate space for multimin wrapper struct",
 		      GSL_ENOMEM, 0);
   }
 
@@ -81,7 +81,7 @@ gsl_multimin_to_single_alloc(const gsl_multimin_function *f,
   if (wrapper->evaluation_point == 0) {
     free(wrapper);
 
-    GSL_ERROR_RETURN ("failed to allocate space for evaluation_point", GSL_ENOMEM, 0);
+    GSL_ERROR_VAL ("failed to allocate space for evaluation_point", GSL_ENOMEM, 0);
   }
 
   status = gsl_multimin_to_single_set(wrapper,f,starting_point,direction);
@@ -90,7 +90,7 @@ gsl_multimin_to_single_alloc(const gsl_multimin_function *f,
     free(wrapper);
     gsl_vector_free (wrapper->evaluation_point);
     
-    GSL_ERROR_RETURN ("failed to set multimin wrapper params", status, 0);
+    GSL_ERROR_VAL ("failed to set multimin wrapper params", status, 0);
   }
 
   return wrapper;
@@ -104,7 +104,7 @@ gsl_multimin_to_single_set(gsl_multimin_to_single *w,
   if (w->evaluation_point->size != starting_point->size 
       || w->evaluation_point->size != direction->size) {
       
-    GSL_ERROR_RETURN ("vector length not compatible with function", 
+    GSL_ERROR_VAL ("vector length not compatible with function", 
 		      GSL_EBADLEN, 0);
   }
   w->starting_point = starting_point;
@@ -127,7 +127,7 @@ gsl_multimin_to_single_function_alloc(gsl_multimin_to_single *w) {
   
   f = (gsl_function*)malloc (sizeof (gsl_function));
   if (f == 0) {
-     GSL_ERROR_RETURN ("failed to allocate space for function struct",
+     GSL_ERROR_VAL ("failed to allocate space for function struct",
 		       GSL_ENOMEM, 0);
   }
   f->params = (void *)w;

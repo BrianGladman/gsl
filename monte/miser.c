@@ -312,7 +312,7 @@ gsl_monte_miser_state* gsl_monte_miser_alloc(size_t num_dim)
     (gsl_monte_miser_state *) malloc(sizeof (gsl_monte_miser_state));
   
   if ( s == (gsl_monte_miser_state*) NULL) {
-    GSL_ERROR_RETURN ("failed to allocate space for miser state struct",
+    GSL_ERROR_VAL ("failed to allocate space for miser state struct",
                         GSL_ENOMEM, 0);
   }
   s->num_dim = num_dim;
@@ -405,7 +405,7 @@ int gsl_monte_miser_init(gsl_monte_miser_state* state)
 void gsl_monte_miser_free (gsl_monte_miser_state* s)
 {
   if (s == (gsl_monte_miser_state*) NULL )
-    GSL_ERROR_RETURN_NOTHING("Attempt to free null pointer", GSL_EFAULT);
+    GSL_ERROR_VOID("Attempt to free null pointer", GSL_EFAULT);
 
   free (s);
 }

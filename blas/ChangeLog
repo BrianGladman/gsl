@@ -1,3 +1,12 @@
+Mon May 22 12:27:47 2000  Brian Gough  <bjg@network-theory.co.uk>
+
+	* Makefile.am (lib_LTLIBRARIES): renamed libgslblasnative.la to
+ 	libgslblas.la since "native" is ambiguous (suggests
+ 	system-supplied blas).
+
+	* test_blas_raw.c (test_L1): added test to cover for initial
+ 	run-in of odd lengths on loop unrolling in saxpy.
+
 Tue Mar 21 14:22:30 2000  Brian Gough  <bjg@network-theory.co.uk>
 
 	* test_blas_raw.c (test_L1): test norms for zero vectors

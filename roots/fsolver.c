@@ -33,7 +33,7 @@ gsl_root_fsolver_alloc (const gsl_root_fsolver_type * T,
 
   if (s == 0)
     {
-      GSL_ERROR_RETURN ("failed to allocate space for root solver struct",
+      GSL_ERROR_VAL ("failed to allocate space for root solver struct",
 			GSL_ENOMEM, 0);
     };
 
@@ -43,7 +43,7 @@ gsl_root_fsolver_alloc (const gsl_root_fsolver_type * T,
     {
       free (s);		/* exception in constructor, avoid memory leak */
 
-      GSL_ERROR_RETURN ("failed to allocate space for root solver state",
+      GSL_ERROR_VAL ("failed to allocate space for root solver state",
 			GSL_ENOMEM, 0);
     };
 
@@ -56,7 +56,7 @@ gsl_root_fsolver_alloc (const gsl_root_fsolver_type * T,
       free (s->state);
       free (s);		/* exception in constructor, avoid memory leak */
 
-      GSL_ERROR_RETURN ("failed to set solver", status, 0);
+      GSL_ERROR_VAL ("failed to set solver", status, 0);
     };
 
   return s;

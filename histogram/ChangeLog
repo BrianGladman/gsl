@@ -1,3 +1,11 @@
+Sun May 28 12:23:46 2000  Brian Gough  <bjg@network-theory.co.uk>
+
+	* test2d.c (main): use binary mode "b" when reading and writing
+ 	binary files
+
+	* test.c (main): use binary mode "b" when reading and writing
+ 	binary files
+
 Wed Apr 26 15:09:22 2000  Brian Gough  <bjg@network-theory.co.uk>
 
 	* oper2d.c (gsl_histogram2d_shift): added function for shifting

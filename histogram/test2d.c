@@ -570,13 +570,13 @@ main (void)
   }
 
   {
-    FILE *f = fopen ("test.dat", "w");
+    FILE *f = fopen ("test.dat", "wb");
     gsl_histogram2d_fwrite (f, h);
     fclose (f);
   }
 
   {
-    FILE *f = fopen ("test.dat", "r");
+    FILE *f = fopen ("test.dat", "rb");
     gsl_histogram2d *hh = gsl_histogram2d_calloc (M1, N1);
     int status = 0;
 

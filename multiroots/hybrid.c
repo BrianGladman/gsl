@@ -79,7 +79,7 @@ hybrid_alloc (void *vstate, size_t n)
 
   if (J == 0)
     {
-      GSL_ERROR_RETURN ("failed to allocate space for J", GSL_ENOMEM, 0);
+      GSL_ERROR_VAL ("failed to allocate space for J", GSL_ENOMEM, 0);
     }
 
   state->J = J;
@@ -90,7 +90,7 @@ hybrid_alloc (void *vstate, size_t n)
     {
       gsl_matrix_free (J);
 
-      GSL_ERROR_RETURN ("failed to allocate space for q", GSL_ENOMEM, 0);
+      GSL_ERROR_VAL ("failed to allocate space for q", GSL_ENOMEM, 0);
     }
 
   state->q = q;
@@ -102,7 +102,7 @@ hybrid_alloc (void *vstate, size_t n)
       gsl_matrix_free (J);
       gsl_matrix_free (q);
 
-      GSL_ERROR_RETURN ("failed to allocate space for r", GSL_ENOMEM, 0);
+      GSL_ERROR_VAL ("failed to allocate space for r", GSL_ENOMEM, 0);
     }
 
   state->r = r;
@@ -115,7 +115,7 @@ hybrid_alloc (void *vstate, size_t n)
       gsl_matrix_free (q);
       gsl_matrix_free (r);
 
-      GSL_ERROR_RETURN ("failed to allocate space for rdiag", GSL_ENOMEM, 0);
+      GSL_ERROR_VAL ("failed to allocate space for rdiag", GSL_ENOMEM, 0);
     }
 
   state->rdiag = rdiag;
@@ -129,7 +129,7 @@ hybrid_alloc (void *vstate, size_t n)
       gsl_matrix_free (r);
       gsl_vector_free (rdiag);
 
-      GSL_ERROR_RETURN ("failed to allocate space for diag", GSL_ENOMEM, 0);
+      GSL_ERROR_VAL ("failed to allocate space for diag", GSL_ENOMEM, 0);
     }
 
   state->diag = diag;
@@ -144,7 +144,7 @@ hybrid_alloc (void *vstate, size_t n)
       gsl_vector_free (rdiag);
       gsl_vector_free (diag);
 
-      GSL_ERROR_RETURN ("failed to allocate space for qtf", GSL_ENOMEM, 0);
+      GSL_ERROR_VAL ("failed to allocate space for qtf", GSL_ENOMEM, 0);
     }
 
   state->qtf = qtf;
@@ -160,7 +160,7 @@ hybrid_alloc (void *vstate, size_t n)
       gsl_vector_free (diag);
       gsl_vector_free (qtf);
 
-      GSL_ERROR_RETURN ("failed to allocate space for newton", GSL_ENOMEM, 0);
+      GSL_ERROR_VAL ("failed to allocate space for newton", GSL_ENOMEM, 0);
     }
 
   state->newton = newton;
@@ -177,7 +177,7 @@ hybrid_alloc (void *vstate, size_t n)
       gsl_vector_free (qtf);
       gsl_vector_free (newton);
 
-      GSL_ERROR_RETURN ("failed to allocate space for gradient", GSL_ENOMEM, 0);
+      GSL_ERROR_VAL ("failed to allocate space for gradient", GSL_ENOMEM, 0);
     }
 
   state->gradient = gradient;
@@ -195,7 +195,7 @@ hybrid_alloc (void *vstate, size_t n)
       gsl_vector_free (newton);
       gsl_vector_free (gradient);
 
-      GSL_ERROR_RETURN ("failed to allocate space for x_trial", GSL_ENOMEM, 0);
+      GSL_ERROR_VAL ("failed to allocate space for x_trial", GSL_ENOMEM, 0);
     }
 
   state->x_trial = x_trial;
@@ -214,7 +214,7 @@ hybrid_alloc (void *vstate, size_t n)
       gsl_vector_free (gradient);
       gsl_vector_free (x_trial);
 
-      GSL_ERROR_RETURN ("failed to allocate space for f_trial", GSL_ENOMEM, 0);
+      GSL_ERROR_VAL ("failed to allocate space for f_trial", GSL_ENOMEM, 0);
     }
 
   state->f_trial = f_trial;
@@ -234,7 +234,7 @@ hybrid_alloc (void *vstate, size_t n)
       gsl_vector_free (x_trial);
       gsl_vector_free (f_trial);
 
-      GSL_ERROR_RETURN ("failed to allocate space for df", GSL_ENOMEM, 0);
+      GSL_ERROR_VAL ("failed to allocate space for df", GSL_ENOMEM, 0);
     }
 
   state->df = df;
@@ -255,7 +255,7 @@ hybrid_alloc (void *vstate, size_t n)
       gsl_vector_free (f_trial);
       gsl_vector_free (df);
 
-      GSL_ERROR_RETURN ("failed to allocate space for qtdf", GSL_ENOMEM, 0);
+      GSL_ERROR_VAL ("failed to allocate space for qtdf", GSL_ENOMEM, 0);
     }
 
   state->qtdf = qtdf;
@@ -278,7 +278,7 @@ hybrid_alloc (void *vstate, size_t n)
       gsl_vector_free (df);
       gsl_vector_free (qtdf);
 
-      GSL_ERROR_RETURN ("failed to allocate space for rdx", GSL_ENOMEM, 0);
+      GSL_ERROR_VAL ("failed to allocate space for rdx", GSL_ENOMEM, 0);
     }
 
   state->rdx = rdx;
@@ -301,7 +301,7 @@ hybrid_alloc (void *vstate, size_t n)
       gsl_vector_free (qtdf);
       gsl_vector_free (rdx);
 
-      GSL_ERROR_RETURN ("failed to allocate space for w", GSL_ENOMEM, 0);
+      GSL_ERROR_VAL ("failed to allocate space for w", GSL_ENOMEM, 0);
     }
 
   state->w = w;
@@ -325,7 +325,7 @@ hybrid_alloc (void *vstate, size_t n)
       gsl_vector_free (rdx);
       gsl_vector_free (w);
 
-      GSL_ERROR_RETURN ("failed to allocate space for v", GSL_ENOMEM, 0);
+      GSL_ERROR_VAL ("failed to allocate space for v", GSL_ENOMEM, 0);
     }
 
   state->v = v;

@@ -146,7 +146,7 @@ FUNCTION (test, binary) (void)
   int k = 0;
 
   {
-    FILE *f = fopen ("test.dat", "w");
+    FILE *f = fopen ("test.dat", "wb");
     k = 0;
     for (i = 0; i < M; i++)
       {
@@ -166,7 +166,7 @@ FUNCTION (test, binary) (void)
   }
 
   {
-    FILE *f = fopen ("test.dat", "r");
+    FILE *f = fopen ("test.dat", "rb");
     TYPE (gsl_matrix) * mm = FUNCTION (gsl_matrix, alloc) (M, N);
     status = 0;
 

@@ -48,13 +48,13 @@ gsl_histogram2d_calloc_range (size_t nx, size_t ny,
 
   if (nx == 0)
     {
-      GSL_ERROR_RETURN ("histogram length nx must be positive integer",
+      GSL_ERROR_VAL ("histogram length nx must be positive integer",
 			GSL_EDOM, 0);
     }
 
   if (ny == 0)
     {
-      GSL_ERROR_RETURN ("histogram length ny must be positive integer",
+      GSL_ERROR_VAL ("histogram length ny must be positive integer",
 			GSL_EDOM, 0);
     }
 
@@ -64,7 +64,7 @@ gsl_histogram2d_calloc_range (size_t nx, size_t ny,
     {
       if (xrange[i] >= xrange[i + 1])
 	{
-	  GSL_ERROR_RETURN ("histogram xrange not in increasing order",
+	  GSL_ERROR_VAL ("histogram xrange not in increasing order",
 			    GSL_EDOM, 0);
 	}
     }
@@ -73,7 +73,7 @@ gsl_histogram2d_calloc_range (size_t nx, size_t ny,
     {
       if (yrange[j] >= yrange[j + 1])
 	{
-	  GSL_ERROR_RETURN ("histogram yrange not in increasing order"
+	  GSL_ERROR_VAL ("histogram yrange not in increasing order"
 			    ,GSL_EDOM, 0);
 	}
     }
@@ -84,7 +84,7 @@ gsl_histogram2d_calloc_range (size_t nx, size_t ny,
 
   if (h == 0)
     {
-      GSL_ERROR_RETURN ("failed to allocate space for histogram struct",
+      GSL_ERROR_VAL ("failed to allocate space for histogram struct",
 			GSL_ENOMEM, 0);
     }
 
@@ -95,7 +95,7 @@ gsl_histogram2d_calloc_range (size_t nx, size_t ny,
       /* exception in constructor, avoid memory leak */
       free (h);
 
-      GSL_ERROR_RETURN ("failed to allocate space for histogram xrange",
+      GSL_ERROR_VAL ("failed to allocate space for histogram xrange",
 			GSL_ENOMEM, 0);
     }
 
@@ -106,7 +106,7 @@ gsl_histogram2d_calloc_range (size_t nx, size_t ny,
       /* exception in constructor, avoid memory leak */
       free (h);
 
-      GSL_ERROR_RETURN ("failed to allocate space for histogram yrange",
+      GSL_ERROR_VAL ("failed to allocate space for histogram yrange",
 			GSL_ENOMEM, 0);
     }
 
@@ -119,7 +119,7 @@ gsl_histogram2d_calloc_range (size_t nx, size_t ny,
       free (h->yrange);
       free (h);
 
-      GSL_ERROR_RETURN ("failed to allocate space for histogram bins",
+      GSL_ERROR_VAL ("failed to allocate space for histogram bins",
 			GSL_ENOMEM, 0);
     }
 

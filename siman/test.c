@@ -21,6 +21,7 @@
 #include <string.h>
 #include <math.h>
 #include <gsl/gsl_test.h>
+#include <gsl/gsl_ieee_utils.h>
 #include <gsl/gsl_rng.h>
 #include <gsl/gsl_siman.h>
 #include <gsl/gsl_ieee_utils.h>
@@ -77,6 +78,12 @@ void print_pos_1D(Element x)
 {
   printf("%12g", x.D1);
 }
+
+void debug_pos_1D(void * x)
+{
+  printf("%12g", ((Element *)x)->D1);
+}
+
 
 /* a metric for the 2D space */
 double distance_1D(Element x, Element y)
@@ -218,6 +225,8 @@ void S1(const gsl_rng * r, void *xp, double step_size)
 /*   new_x = new_x*2*step_size; */
 /*   new_x = new_x - step_size + old_x; */
 
+  printf("test step from old_x = %g to new_x = %g\n", old_x, new_x);
+
   memcpy(xp, &new_x, sizeof(new_x));
 }
 
@@ -239,8 +248,10 @@ int main(void)
      The global minimum is at    x = 1.36312999, (f = -0.87287)
      There is a local minimum at x = 0.60146196, (f = -0.84893) */
 
+  gsl_ieee_env_setup ();
+
   x = -10.0 ;
-  gsl_siman_solve(r, &x, E1, S1, M1, 0, sizeof(double), params);
+  gsl_siman_solve(r, &x, E1, S1, M1, &debug_pos_1D, sizeof(double), params);
   gsl_test_rel(x, x_min, 1e-3, "f(x)= exp(-(x-1)^2) sin(8x), x0=-10") ;
 
   x = +10.0 ;

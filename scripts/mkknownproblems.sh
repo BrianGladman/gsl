@@ -1,6 +1,8 @@
 #! /bin/bash
-mkdir =gsl.build
-cd =gsl.build
+DIR=/tmp/gsl.build
+echo building in $DIR 
+mkdir $DIR
+cd $DIR
 #../configure --disable-shared
 ../configure
 make clean

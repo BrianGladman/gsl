@@ -1,21 +1,5 @@
 This file documents problems installing GSL on specific platforms.
 
-Digital Unix
-------------
-
-Problems have been reported with the "fixed" float.h header file
-installed with gcc-2.95. It lacks some of the definitions in the
-system float.h. The symptoms are errors like: 
-
-  `FP_RND_RN' undeclared
-
-To work around this it may be necessary to include the system float.h
-in ieee-utils/fp-tru64.c before the gcc version, e.g.
-
-  #include "/usr/include/float.h"
-  #include <float.h>
- 
-
 IRIX
 ----
 
@@ -31,3 +15,15 @@ or
 The compiler also gives warnings about certain libraries that are "not
 used for resolving any symbol". This is harmless and the warnings can
 be ignored.
+
+
+DOS
+---
+
+When using DJGPP The default stack size of 512k is insufficient for
+the specfunc tests and will cause them to crash.  To increase the
+stack size by a suitable amount use,
+
+  	stubedit test.exe minstack=1536k
+
+on the executable and then rerun it manually.

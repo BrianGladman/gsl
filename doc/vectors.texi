@@ -445,6 +445,17 @@ gsl_vector v_odd = gsl_vector_subvector_with_stride (v, 1, n/2, 2);
 double r = gsl_blas_dnrm2 (&v_odd);
 @end example
 
+
+@deftypefun {const gsl_vector} gsl_vector_const_subvector (const gsl_vector * @var{v}, size_t @var{i}, size_t @var{n})
+This function is equivalent to @code{gsl_vector_subvector} but can be used for
+vectors which are declared @code{const}.
+@end deftypefun
+
+@deftypefun {const gsl_vector} gsl_vector_const_subvector_with_stride (const gsl_vector * @var{v}, size_t @var{i}, size_t @var{n}, size_t @var{stride})
+This function is equivalent to @code{gsl_vector_subvector_with_stride}
+but can be used for vectors which are declared @code{const}.
+@end deftypefun
+
 @comment @deftypefun {gsl_vector *} gsl_vector_alloc_from_block (gsl_block * @var{b}, size_t @var{offset}, size_t @var{n}, size_t @var{stride})
 @comment This function creates a vector as a slice of an existing block @var{b},
 @comment returning a pointer to a newly initialized vector struct.  The start of
@@ -979,10 +990,20 @@ This function returns @code{gsl_vector} struct which is a view of the
 new vector is set to null if @var{i} is out of range.
 @end deftypefun
 
+@deftypefun {const gsl_vector} gsl_matrix_const_row (const gsl_matrix * @var{m}, size_t @var{i})
+This function is equivalent to @code{gsl_matrix_row} but can be used for
+matrices which are declared @code{const}.
+@end deftypefun
+
 @deftypefun gsl_vector gsl_matrix_column (gsl_matrix * @var{m}, size_t @var{j})
 This function returns a @code{gsl_vector} struct which is a view of the
 @var{j}-th column of the matrix @var{m}.  The @code{data} pointer of the
 new vector is set to null if @var{j} is out of range.
+@end deftypefun
+
+@deftypefun {const gsl_vector} gsl_matrix_const_column (const gsl_matrix * @var{m}, size_t @var{j})
+This function is equivalent to @code{gsl_matrix_column} but can be used for
+matrices which are declared @code{const}.
 @end deftypefun
 
 @deftypefun gsl_vector gsl_matrix_diagonal (gsl_matrix * @var{m})
@@ -990,6 +1011,11 @@ This function returns a @code{gsl_vector} struct which is a view of the
 diagonal of the matrix @var{m}. The matrix @var{m} is not required to be
 square. For a rectangular matrix the length of the diagonal is the same
 as the smaller dimension of the matrix.
+@end deftypefun
+
+@deftypefun {const gsl_vector} gsl_matrix_const_diagonal (const gsl_matrix * @var{m})
+This function is equivalent to @code{gsl_matrix_diagonal} but can be
+used for matrices which are declared @code{const}.
 @end deftypefun
 
 @comment @deftypefun {gsl_vector *} gsl_vector_alloc_row_from_matrix (gsl_matrix * @var{m}, size_t @var{i})

@@ -24,7 +24,7 @@ FUNCTION (gsl_block, alloc) (const size_t n)
 
   if (n == 0)
     {
-      GSL_ERROR_RETURN ("block length n must be positive integer",
+      GSL_ERROR_VAL ("block length n must be positive integer",
 			GSL_EDOM, 0);
     }
 
@@ -32,7 +32,7 @@ FUNCTION (gsl_block, alloc) (const size_t n)
 
   if (b == 0)
     {
-      GSL_ERROR_RETURN ("failed to allocate space for block struct",
+      GSL_ERROR_VAL ("failed to allocate space for block struct",
 			GSL_ENOMEM, 0);
     }
 
@@ -42,7 +42,7 @@ FUNCTION (gsl_block, alloc) (const size_t n)
     {
       free (b);		/* exception in constructor, avoid memory leak */
 
-      GSL_ERROR_RETURN ("failed to allocate space for block data",
+      GSL_ERROR_VAL ("failed to allocate space for block data",
 			GSL_ENOMEM, 0);
     }
 

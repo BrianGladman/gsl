@@ -101,30 +101,22 @@ FILE * gsl_set_stream (FILE * new_stream);
        return gsl_errno ; \
        } while (0)
 
-/* GSL_ERROR_RETURN: call the error handler, and return the given value */
+/* GSL_ERROR_VAL: call the error handler, and return the given value */
 
-#define GSL_ERROR_RETURN(reason, gsl_errno, value) \
+#define GSL_ERROR_VAL(reason, gsl_errno, value) \
        do { \
        gsl_error (reason, __FILE__, __LINE__, gsl_errno) ; \
        return value ; \
        } while (0)
 
-/* GSL_ERROR_RETURN_NOTHING: call the error handler, and then return
+/* GSL_ERROR_VOID: call the error handler, and then return
    (for void functions which still need to generate an error) */
 
-#define GSL_ERROR_RETURN_NOTHING(reason, gsl_errno) \
+#define GSL_ERROR_VOID(reason, gsl_errno) \
        do { \
        gsl_error (reason, __FILE__, __LINE__, gsl_errno) ; \
        return ; \
        } while (0)
-
-/* GSL_ERROR_CONTINUE: call the error handler, and continue */
-
-#define GSL_ERROR_CONTINUE(reason, gsl_errno) \
-       do { \
-       gsl_error (reason, __FILE__, __LINE__, gsl_errno) ; \
-       } while (0)
-
 
 /* GSL library code can occasionally generate warnings, which are not
    intended to be fatal. You can compile a version of the library with

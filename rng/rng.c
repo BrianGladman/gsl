@@ -32,7 +32,7 @@ gsl_rng_alloc (const gsl_rng_type * T)
 
   if (r == 0)
     {
-      GSL_ERROR_RETURN ("failed to allocate space for rng struct",
+      GSL_ERROR_VAL ("failed to allocate space for rng struct",
 			GSL_ENOMEM, 0);
     };
 
@@ -42,7 +42,7 @@ gsl_rng_alloc (const gsl_rng_type * T)
     {
       free (r);		/* exception in constructor, avoid memory leak */
 
-      GSL_ERROR_RETURN ("failed to allocate space for rng state",
+      GSL_ERROR_VAL ("failed to allocate space for rng state",
 			GSL_ENOMEM, 0);
     };
 
@@ -73,7 +73,7 @@ gsl_rng_clone (const gsl_rng * q)
 
   if (r == 0)
     {
-      GSL_ERROR_RETURN ("failed to allocate space for rng struct",
+      GSL_ERROR_VAL ("failed to allocate space for rng struct",
 			GSL_ENOMEM, 0);
     };
 
@@ -83,7 +83,7 @@ gsl_rng_clone (const gsl_rng * q)
     {
       free (r);		/* exception in constructor, avoid memory leak */
 
-      GSL_ERROR_RETURN ("failed to allocate space for rng state",
+      GSL_ERROR_VAL ("failed to allocate space for rng state",
 			GSL_ENOMEM, 0);
     };
 
@@ -135,7 +135,7 @@ gsl_rng_uniform_int (const gsl_rng * r, unsigned long int n)
 
   if (n > range) 
     {
-      GSL_ERROR_RETURN ("n exceeds maximum value of generator",
+      GSL_ERROR_VAL ("n exceeds maximum value of generator",
 			GSL_EINVAL, 0) ;
     }
 

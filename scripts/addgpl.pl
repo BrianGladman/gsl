@@ -14,6 +14,8 @@ for $file (@ARGV) {
     next if !grep(/^\s*[a-z]/, @lines) ;  # doesn't contain any code
     
     print "$file $authors\n" ;
+    next if $authors =~ /--test/i;
+
     $header = &notice($authors, $file) ;
     rename("$file", "$file.bak") if ! -e "$file.bak" ;
     open(OUT,">$file");

@@ -33,7 +33,7 @@ gsl_poly_complex_workspace_alloc (size_t n)
   
   if (n == 0)
     {
-      GSL_ERROR_RETURN ("matrix size n must be positive integer", GSL_EDOM, 0);
+      GSL_ERROR_VAL ("matrix size n must be positive integer", GSL_EDOM, 0);
     }
 
   w = (gsl_poly_complex_workspace *) 
@@ -41,7 +41,7 @@ gsl_poly_complex_workspace_alloc (size_t n)
 
   if (w == 0)
     {
-      GSL_ERROR_RETURN ("failed to allocate space for struct", GSL_ENOMEM, 0);
+      GSL_ERROR_VAL ("failed to allocate space for struct", GSL_ENOMEM, 0);
     }
 
   nc = n - 1;
@@ -54,7 +54,7 @@ gsl_poly_complex_workspace_alloc (size_t n)
     {
       free (w) ;       /* error in constructor, avoid memory leak */
       
-      GSL_ERROR_RETURN ("failed to allocate space for workspace matrix", 
+      GSL_ERROR_VAL ("failed to allocate space for workspace matrix", 
                         GSL_ENOMEM, 0);
     }
 

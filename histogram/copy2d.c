@@ -84,7 +84,7 @@ gsl_histogram2d_clone (const gsl_histogram2d * src)
 
   if (h == 0)
     {
-      GSL_ERROR_RETURN ("failed to allocate space for histogram struct",
+      GSL_ERROR_VAL ("failed to allocate space for histogram struct",
 			GSL_ENOMEM, 0);
     }
 

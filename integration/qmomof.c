@@ -32,7 +32,7 @@ gsl_integration_qawo_table_alloc (double omega, double L,
 
   if (n == 0)
     {
-      GSL_ERROR_RETURN ("cache length n must be positive integer",
+      GSL_ERROR_VAL ("cache length n must be positive integer",
 			GSL_EDOM, 0);
     }
 
@@ -41,7 +41,7 @@ gsl_integration_qawo_table_alloc (double omega, double L,
 
   if (t == 0)
     {
-      GSL_ERROR_RETURN ("failed to allocate space for qawo_table struct",
+      GSL_ERROR_VAL ("failed to allocate space for qawo_table struct",
 			GSL_ENOMEM, 0);
     }
 
@@ -50,7 +50,7 @@ gsl_integration_qawo_table_alloc (double omega, double L,
   if (chebmo == 0)
     {
       free (t);
-      GSL_ERROR_RETURN ("failed to allocate space for chebmo cache block",
+      GSL_ERROR_VAL ("failed to allocate space for chebmo cache block",
 			GSL_ENOMEM, 0);
     }
 

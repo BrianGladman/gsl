@@ -373,7 +373,7 @@ if (residual > tolerance)
   @}
 @end example
 
-@deffn {Macro} GSL_ERROR_RETURN (@var{reason}, @var{gsl_errno}, @var{value})
+@deffn {Macro} GSL_ERROR_VAL (@var{reason}, @var{gsl_errno}, @var{value})
 
 This macro is the same as @code{GSL_ERROR} but returns a user-defined
 status value of @var{value} instead of an error code.  It can be used for
@@ -386,6 +386,6 @@ of a mathematical singularity,
 @example
 if (x == 0) 
   @{
-    GSL_ERROR_RETURN("argument lies on singularity", GSL_ERANGE, NAN) ;
+    GSL_ERROR_VAL("argument lies on singularity", GSL_ERANGE, GSL_NAN) ;
   @}
 @end example

@@ -450,9 +450,10 @@ Installed header files should be idempotent, i.e. surround them by the
 preprocessor conditionals like the following,
 
 @example
-#ifndef GSL_HISTOGRAM_H
+#ifndef __GSL_HISTOGRAM_H__
+#define __GSL_HISTOGRAM_H__
 ...
-#endif /* GSL_HISTOGRAM_H */
+#endif /* __GSL_HISTOGRAM_H__ */
 @end example
 
 @node Target system
@@ -609,6 +610,25 @@ There are some pseudo-template macros available in @file{templates_on.h}
 and @file{templates_off.h}.  See a directory link @file{block} for
 details on how to use them.  Use sparingly, they are a bit of a
 nightmare, but unavoidable in places.
+
+In particular, the convention is: templates are used for operations on
+"data" only (vectors, matrices, statistics, sorting).  This is intended
+to cover the case where the program must interface with an external
+datasource which produces a fixed type. e.g. a big array of char's
+produced by an 8-bit counter.
+
+All other functions can use double, for floating point, or the
+appropriate integer type for integers (e.g. unsigned long int for random
+numbers).  It is not the intention to provide a fully templated version
+of the library. 
+
+That would be "putting a quart into a pint pot". To summarise, almost
+everything should be in a "natural type" which is appropriate for
+typical usage, and templates are there to handle a few cases where it is
+unavoidable that other datatypes will be encountered.
+
+For floating point work "double" is considered a "natural type".  This
+sort of idea is a part of the C language.
 
 @node Test programs
 @section Test programs

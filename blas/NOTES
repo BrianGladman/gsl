@@ -1,16 +1,16 @@
 
-This directory defines a GSL interface to BLAS functionality. GSL exports
-an interface with functions of the form gsl_blas_sdsdot(...), etc, defined
-in gsl_blas.h. Because some users will have a third party implementation of
-BLAS and some will not, GSL allows for accessing these different possibilities
-through the same interface. In order to achieve this, two separate
-libraries are built, each conforming to the gsl_blas.h interface.
-These libraries are libgslblasnative and libgslblascblas. The first
-is a native gsl implementation and the second is a wrapper around
-a conformant cblas implmentation.
+This directory defines a GSL interface to BLAS functionality. GSL
+exports an interface with functions of the form gsl_blas_sdsdot(...),
+etc, defined in gsl_blas.h. Because some users will have a third party
+implementation of BLAS and some will not, GSL allows for accessing
+these different possibilities through the same interface. In order to
+achieve this, two separate libraries are built, each conforming to the
+gsl_blas.h interface.  These libraries are libgslblas and
+libgslblascblas. The first is a gsl implementation and the second is a
+wrapper around a conformant cblas implmentation.
 
-Users wanting to use the native GSL implementation will link as
-  ld ... -lgsl -lgslblasnative
+Users wanting to use the GSL implementation will link as
+  ld ... -lgsl -lgslblas
 
 Users wanting to use a conformant CBLAS implementation, libcblasfoo,
 will link as
