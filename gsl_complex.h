@@ -1,6 +1,10 @@
 #ifndef _GSL_COMPLEX_H
 #define _GSL_COMPLEX_H
 
+typedef double * gsl_complex_packed_array ;
+typedef float * gsl_complex_packed_array_float  ;
+typedef long double * gsl_complex_packed_array_long_double ;
+
 typedef struct
   {
     long double dat[2];
