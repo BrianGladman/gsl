@@ -31,10 +31,10 @@ Exceptional Return Values: GSL_EDOM, GSL_EOVRFLW
 
 
 
-@subsection Hurwicz Zeta Function
+@subsection Hurwitz Zeta Function
 
 
-The Hurwicz zeta function is defined by
+The Hurwitz zeta function is defined by
 @math{ zeta(s,q) = \sum_0^\infty (k+q)^(-s) }.
 
 @deftypefun  int gsl_sf_hzeta_impl (double s, double q, gsl_sf_result * result)
