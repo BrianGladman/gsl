@@ -8,8 +8,8 @@ INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../err -I$(srcdir)/../utils
 
 TESTS = test test_trap
 
-test_LDADD = libgslmatrix.a ../err/libgslerr.a ../err/libgsltest.a ../utils/libutils.a
-test_trap_LDADD = libgslmatrix.a ../err/libgslerr.a ../err/libgsltest.a ../utils/libutils.a
+test_LDADD = libgslmatrix.a ../vector/libgslvector.a ../err/libgslerr.a ../err/libgsltest.a ../utils/libutils.a
+test_trap_LDADD = libgslmatrix.a ../vector/libgslvector.a ../err/libgslerr.a ../err/libgsltest.a ../utils/libutils.a
 
 test_DEPENDENCIES = libgslmatrix.a
 test_trap_DEPENDENCIES = libgslmatrix.a
