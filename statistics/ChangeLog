@@ -1,3 +1,7 @@
+1998-11-06    <bjg@ancho.lanl.gov>
+
+	* test.c: added prototype for memcpy using #include <string.h>
+
 Wed Aug 12 12:34:24 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
 	* quantiles.c: Renamed percentile to quantile throughout. This is

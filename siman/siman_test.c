@@ -1,5 +1,5 @@
 #include <math.h>
-
+#include <string.h>
 #include <gsl_rng.h>
 #include <gsl_siman.h>
 #include <stdio.h>
