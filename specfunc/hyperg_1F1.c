@@ -1595,13 +1595,29 @@ hyperg_1F1_ab_pos(const double a, const double b,
 	stat_a0 = GSL_ERROR_SELECT_2(stat_0, stat_1);
       }
 
-      Mnm1 = Ma0b;
-      Mn   = Ma0p1b;
-      for(n=a0+1.0; n<a-0.1; n += 1.0) {
-    	Mnp1 = ((b-n)*Mnm1 + (2*n-b+x)*Mn)/n;
-    	Mnm1 = Mn;
-    	Mn   = Mnp1;
-      }
+          
+      /* Initialise the recurrence correctly BJG */
+
+      if (a0 >= a - 0.1)
+        { 
+          Mn = Ma0b;
+        }
+      else if (a0 + 1>= a - 0.1)
+        {
+          Mn = Ma0p1b;
+        }
+      else
+        {
+          Mnm1 = Ma0b;
+          Mn   = Ma0p1b;
+
+          for(n=a0+1.0; n<a-0.1; n += 1.0) {
+            Mnp1 = ((b-n)*Mnm1 + (2*n-b+x)*Mn)/n;
+            Mnm1 = Mn;
+            Mn   = Mnp1;
+          }
+        }
+
       result->val = Mn;
       result->err = (err_rat + GSL_DBL_EPSILON) * (fabs(b-a)+1.0) * fabs(Mn);
       return stat_a0;
@@ -1674,10 +1690,23 @@ hyperg_1F1_ab_neg(const double a, const double b, const double x,
     return hyperg_1F1_U(a, b, x, result);
   }
   else {
+    /* FIXME:  if all else fails, try the series... BJG */
+    if (x < 0.0) {
+      /* Apply Kummer Transformation */
+      int status = gsl_sf_hyperg_1F1_series_e(b-a, b, -x, result);
+      double K_factor = exp(x);
+      result->val *= K_factor;
+      result->err *= K_factor;
+      return status;
+    } else {
+      int status = gsl_sf_hyperg_1F1_series_e(a, b, x, result);
+      return status;
+    }
+
     /* Sadness... */
-    result->val = 0.0;
-    result->err = 0.0;
-    GSL_ERROR ("error", GSL_EUNIMPL);
+    /* result->val = 0.0; */
+    /* result->err = 0.0; */
+    /* GSL_ERROR ("error", GSL_EUNIMPL); */
   }
 }
 

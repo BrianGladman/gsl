@@ -1,3 +1,9 @@
+Wed Aug 15 20:18:43 2001  Brian Gough  <bjg@network-theory.co.uk>
+
+	* hyperg_1F1.c (hyperg_1F1_ab_pos): fix bug in recurrence
+ 	initialisation
+	(hyperg_1F1_ab_neg): if all else fails, try the series.
+
 Wed Aug  8 19:55:34 2001  Brian Gough  <bjg@network-theory.co.uk>
 
 	* test_sf.c (test_coupling): used analytic expressions for the
