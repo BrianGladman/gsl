@@ -10,6 +10,7 @@ basis of polynomials on the interval @math{[-1,1]} with the weight
 function @c{$1 / \sqrt{1-x^2}$} 
 @math{1 / \sqrt@{1-x^2@}}.  The first few Chebyshev polynomials are,
 @math{T_0(x) = 1}, @math{T_1(x) = x}, @math{T_2(x) = 2 x^2 - 1}.
+For further information see Abramowitz & Stegun, Chapter 22. 
 
 The functions described in this chapter are declared in the header file
 @file{gsl_chebyshev.h}.
@@ -38,8 +39,24 @@ typedef struct
 @} gsl_cheb_struct
 @end example
 @noindent
-The approximation is made over the range @math{[a,b]} using @var{order}+1
-terms, including the coefficient @math{c[0]}.  
+The approximation is made over the range @math{[a,b]} using
+@var{order}+1 terms, including the coefficient @math{c[0]}.  The series
+is computed using the following convention,
+
+@tex
+\beforedisplay
+$$
+f(x) = {c_0 \over 2} + \sum_{n=1} c_n T_n(x)
+$$
+\afterdisplay
+@end tex
+@ifinfo
+@example
+f(x) = (c_0 / 2) + \sum_@{n=1@} c_n T_n(x)
+@end example
+@end ifinfo
+@noindent
+which is needed when accessing the coefficients directly.
 
 @node Creation and Calculation of Chebyshev Series
 @section Creation and Calculation of Chebyshev Series
