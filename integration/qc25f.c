@@ -58,7 +58,7 @@ qc25f (gsl_function * f, double a, double b,
   else
     {
       double *moment;
-      double cheb12[13], cheb24[25];
+      double cheb12[13], cheb24[25], chebmo[25];
       double result_abs, res12_cos, res12_sin, res24_cos, res24_sin;
       double est_cos, est_sin;
       double c, s;
@@ -66,17 +66,38 @@ qc25f (gsl_function * f, double a, double b,
 
       gsl_integration_qcheb (f, a, b, cheb12, cheb24);
 
-      /* FIXME: check for overflowing the table here (size n) */
-
-      if (level >= wf->i)
+      if (level < wf->i)
 	{
-	  for (i = wf->i ; i <= level; i++)
+	  /* already in the cache */
+
+	  moment = wf->chebmo + 25 * level;
+	}
+      else
+	{
+	  compute_moments (par, chebmo);
+	  
+	  moment = chebmo;
+
+	  /* check for overflowing the table here (size n) */
+
+	  if (level < wf->n)
 	    {
-	      compute_moments (par, wf->chebmo + 25*i);
+	      /* fill in any intervening moments */
+
+	      for (i = wf->i ; i < level; i++)
+		{
+		  compute_moments (par, wf->chebmo + 25*i);
+		}
+	      
+	      /* copy the moments for the current level into the cache too */
+
+	      for (i = 0; i < 25; i++)
+		{
+		  wf->chebmo[25 * level + i] = moment[i];
+		}
 	    }
 	}
-      
-      moment = wf->chebmo + 25 * level;
+
 
       res12_cos = cheb12[12] * moment[12];
       res12_sin = 0 ;
