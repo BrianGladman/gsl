@@ -198,7 +198,7 @@ main(int argc, char ** argv)
     test_newton("gsl_root_newton, x^{20} - 1 {1.1}",
 		test_hairy_1_fdf, 1.1, 1.0); 
     test_newton("gsl_root_newton, sqrt(|x|)*sgn(x) {1.001}",
-		test_hairy_2_fdf, 1.001, 0.0);
+		test_hairy_2_fdf, 0.001, 0.0);
     test_newton("gsl_root_newton, x^2 - 1e-8 {1}",
 		test_hairy_3_fdf, 1.0, sqrt(1e-8));
     test_newton("gsl_root_newton, x exp(-x) {-2}",
@@ -404,7 +404,7 @@ test_newton (const char * description,
   if (!_WITHIN_TOL(root, correct_root, REL_EPSILON, ABS_EPSILON)) 
     {
       status = 1 ; /* failed */ ;
-      gsl_test (status, "precision incorrectly reported");
+      gsl_test (status, "precision incorrectly reported (%g obs vs %g expected)",root, correct_root);
     }
 
   return status ;
@@ -560,5 +560,5 @@ cos_fdf(double * y, double * yprime, double x, int y_wanted,
 void
 my_error_handler (const char *reason, const char *file, int line, int err)
 {
-  if (0) printf ("(caught [%s:%d: %s (%d)])\n", file, line, reason, err) ;
+  if(0) printf ("(caught [%s:%d: %s (%d)])\n", file, line, reason, err) ;
 }

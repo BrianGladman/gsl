@@ -2207,8 +2207,14 @@ EOF
 
 fi ;
 
+#
+# FIXME: on Solaris we will need a prototype for hypot, since it is 
+# missing from their math.h according to Jerry.
+#
+# extern double hypot(double, double);
+#
 
-
+#
 trap '' 1 2 15
 cat > confcache <<\EOF
 # This file is a shell script that caches the results of configure

@@ -1,3 +1,8 @@
+Fri Apr 10 15:12:37 1998  Brian Gough  <bjg@vvv.lanl.gov>
+
+	* renamed complex_*.c and halfcomplex_*.c to c_*.c and hc_*.c to
+ 	avoid linker complaints about long filenames on some platforms
+
 Sun Mar 29 15:56:34 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
 	* To be compatible with other architectures use size_t everywhere

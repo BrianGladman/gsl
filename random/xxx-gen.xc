@@ -9,7 +9,7 @@
  * arguments, it makes all built-sources
  */
 
-
+#include <config.h>
 #include "XXX.h"             /* defines gsl_ran_XXX_ prototypes */
 #include "gsl_ran.h"         /* defines gsl_ran_ prototypes */
 

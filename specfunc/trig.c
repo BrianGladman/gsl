@@ -84,12 +84,6 @@ int gsl_sf_polar_to_rect_impl(double r, double theta, double * x, double * y)
   return GSL_SUCCESS;
 }
 
-#ifdef NeXT 
-extern double __const__ hypot(double, double);
-#else
-extern double hypot(double, double);
-#endif
-
 int gsl_sf_rect_to_polar_impl(double x, double y, double * r, double * theta)
 {
   *r = hypot(x, y);

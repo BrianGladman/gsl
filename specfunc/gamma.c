@@ -9,12 +9,6 @@
 #include "gsl_sf_trig.h"
 #include "gsl_sf_gamma.h"
 
-#ifdef NeXT 
-extern double __const__ hypot(double, double);
-#else
-extern double hypot(double, double);
-#endif
-
 #define LogRootTwoPi_  0.9189385332046727418
 #define LogPi_         1.1447298858494001741
 #define Max(a,b) ((a) > (b) ? (a) : (b))

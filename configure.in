@@ -126,7 +126,13 @@ if test "$ac_cv_decl_exit_success_and_failure" = yes ; then
   AC_DEFINE(HAVE_EXIT_SUCCESS_AND_FAILURE)
 fi ;
 
+#
+# FIXME: on Solaris we will need a prototype for hypot, since it is 
+# missing from their math.h according to Jerry.
+#
+# extern double hypot(double, double);
+#
 
-
+#
 AC_OUTPUT(err/Makefile fft/Makefile specfunc/Makefile statistics/Makefile roots/Makefile random/Makefile randist/Makefile siman/Makefile integration/Makefile doc/Makefile utils/Makefile vector/Makefile matrix/Makefile Makefile)
 

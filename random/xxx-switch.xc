@@ -4,6 +4,7 @@
    returns the name of the algorithm currently in use.
    */
 
+#include <config.h>
 #include <stdio.h>              /* defines NULL */
 #include <string.h>             /* for strdup() */
 #include "gsl_ran.h"            /* defines gsl_ran_ prototypes */
