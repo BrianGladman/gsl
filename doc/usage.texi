@@ -267,7 +267,7 @@ preprocessor macro) if they are unavailable on another platform.  The
 substitution can be made automatically if you use @code{autoconf}. For
 example, to test whether the BSD function @code{hypot} is available you
 can include the following line in the configure file @file{configure.in}
-for your application ,
+for your application,
 
 @example
 AC_CHECK_FUNCS(hypot)

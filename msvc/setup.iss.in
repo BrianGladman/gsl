@@ -31,12 +31,12 @@ Source: "Release\libgslcblas.lib"; DestDir: "{app}\lib";
 Source: "Debug\libgsl.lib"; DestDir: "{app}\lib";  DestName: "libgsld.lib"
 Source: "Debug\libgslcblas.lib"; DestDir: "{app}\lib"; DestName: "libgslcblasd.lib"
 ;
-Source: "..\doc\html\*.html"; DestDir: "{app}\doc"; 
+Source: "..\doc\html\*.chm"; DestDir: "{app}\doc"; 
 ;
 Source: "demo\*.*"; DestDir: "{app}\demo";
 
 [Icons]
-Name: "{group}\GNU Scientific Library Reference Manual"; Filename: "{app}\doc\gsl-ref_toc.html"
+Name: "{group}\GNU Scientific Library Reference Manual"; Filename: "{app}\doc\gsl-ref.chm"
 Name: "{group}\README"; Filename: "{app}\README.txt"
 Name: "{group}\NEWS"; Filename: "{app}\NEWS.txt"
 Name: "{group}\LICENSE"; Filename: "{app}\COPYING.txt"
