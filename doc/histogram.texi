@@ -599,16 +599,16 @@ main (int argc, char **argv)
 
 @noindent
 Here is an example of the program in use.  We generate 10000 random
-samples from a lorentz distribution with a width of 30 and histogram
+samples from a Cauchy distribution with a width of 30 and histogram
 them over the range -100 to 100, using 200 bins.
 
 @example
-gsl-lorentz 30 10000 | gsl-histogram -100 100 200 > histogram.dat
+gsl-randist 0 10000 cauchy 30 | gsl-histogram -100 100 200 > histogram.dat
 @end example
 
 @noindent
 A plot of the resulting histogram shows the familiar shape of the
-lorentz distribution and the fluctuations caused by the finite sample
+Cauchy distribution and the fluctuations caused by the finite sample
 size.
 
 @example
