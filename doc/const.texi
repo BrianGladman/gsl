@@ -46,7 +46,7 @@ library.
 @item GSL_CONST_MKS_SPEED_OF_LIGHT
 The speed of light in vacuum, @math{c}.
 
-@item GSL_CONST_NUM_AVAGADRO
+@item GSL_CONST_NUM_AVOGADRO
 Avogadro's number, @math{N_a}.
 
 @item GSL_CONST_MKS_FARADAY
@@ -401,7 +401,7 @@ The following program demonstrates the use of the physical constants in
 a calculation.  In this case, the goal is to calculate the range of
 light-travel times from Earth to Mars knowing the average distance of
 each planet from the Sun in astronomical units (the eccentricities of
-the orbit will be neglected for the purposes of this calculation).  The
+the orbits will be neglected for the purposes of this calculation).  The
 average radius of the orbit of Mars is 1.52 astronomical units, and for
 the orbit of Earth it is 1 astronomical unit (by definition).  These
 values are combined with the MKS values of the constants for the speed

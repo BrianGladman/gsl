@@ -13,7 +13,7 @@
 
 (setq  gsl-dimensionless-constants
        '(("fsc"           "FINE_STRUCTURE")
-         ("Nav"           "AVAGADRO")
+         ("Nav"           "AVOGADRO")
          )
        )
 
