@@ -65,7 +65,7 @@ bin_PROGRAMS= taus mrg cmrg uni uni32 zuf rand test-switch
 check_PROGRAMS= test-taus bench-taus test-mrg bench-mrg test-cmrg bench-cmrg test-uni bench-uni test-uni32 bench-uni32 test-zuf bench-zuf test-rand bench-rand
 
 
-lib_LIBRARIES= libgslrandom.a  libgslrantaus.a libgslranmrg.a libgslrancmrg.a libgslranuni.a libgslranuni32.a libgslranzuf.a libgslranrand.a
+noinst_LIBRARIES= libgslrandom.a  libgslrantaus.a libgslranmrg.a libgslrancmrg.a libgslranuni.a libgslranuni32.a libgslranzuf.a libgslranrand.a
 
 
 libgslrantaus_a_SOURCES= taus.c taus-gen.c 

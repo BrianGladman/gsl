@@ -1,4 +1,4 @@
-lib_LIBRARIES = libgslhistogram.a 
+noinst_LIBRARIES = libgslhistogram.a 
 
 include_HEADERS = gsl_histogram.h gsl_histogram2d.h
 

@@ -1,4 +1,4 @@
-lib_LIBRARIES = libgslfft.a 
+noinst_LIBRARIES = libgslfft.a 
 
 check_PROGRAMS = test_trap test_radix2 test benchmark errs
 

@@ -1,4 +1,4 @@
-lib_LIBRARIES = libgslrandist.a
+noinst_LIBRARIES = libgslrandist.a
 libgslrandist_a_SOURCES = \
         beta.c bernoulli.c binomial.c cauchy.c chisq.c erlang.c \
         exponential.c fdist.c flat.c \

@@ -1,7 +1,7 @@
 ## Process this file with automake to produce Makefile.in
 
 check_PROGRAMS = siman_test siman_tsp
-lib_LIBRARIES = libgslsiman.a
+noinst_LIBRARIES = libgslsiman.a
 
 TESTS = siman_test_driver.sh
 EXTRA_DIST = siman_test_driver.sh

@@ -1,4 +1,4 @@
-lib_LIBRARIES = libgslerr.a libgsltest.a
+noinst_LIBRARIES = libgslerr.a libgsltest.a
 
 include_HEADERS = gsl_errno.h gsl_message.h gsl_test.h
 

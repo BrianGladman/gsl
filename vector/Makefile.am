@@ -1,4 +1,4 @@
-lib_LIBRARIES = libgslvector.a 
+noinst_LIBRARIES = libgslvector.a 
 
 check_PROGRAMS = test test_static
 

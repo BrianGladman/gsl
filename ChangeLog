@@ -1,3 +1,7 @@
+Tue Jul 28 23:07:04 1998  Brian Gough  <bjg@vvv.lanl.gov>
+
+	* Makefile.am: new style single build of libgsl.a
+
 Fri Jul 10 19:57:49 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
 	* configure.in: removed AC_FUNC_ALLOCA since we don't use alloca

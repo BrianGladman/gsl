@@ -1,4 +1,4 @@
-lib_LIBRARIES = libgslspecfunc.a 
+noinst_LIBRARIES = libgslspecfunc.a 
 
 check_PROGRAMS = test_sf
 

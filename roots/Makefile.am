@@ -1,6 +1,6 @@
 # -*-makefile-*-
 
-lib_LIBRARIES = libgslroots.a 
+noinst_LIBRARIES = libgslroots.a 
 
 check_PROGRAMS = test
 

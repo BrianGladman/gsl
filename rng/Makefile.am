@@ -1,4 +1,4 @@
-lib_LIBRARIES = libgslrng.a 
+noinst_LIBRARIES = libgslrng.a 
 
 include_HEADERS = gsl_rng.h
 

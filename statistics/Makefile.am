@@ -1,6 +1,6 @@
 ## Process this file with automake to produce Makefile.in
 
-lib_LIBRARIES = libgslstatistics.a
+noinst_LIBRARIES = libgslstatistics.a
 include_HEADERS = gsl_statistics.h gsl_statistics_int.h
 
 INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../err

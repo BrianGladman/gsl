@@ -1,4 +1,4 @@
-lib_LIBRARIES = libgslieeeutils.a 
+noinst_LIBRARIES = libgslieeeutils.a 
 
 include_HEADERS = gsl_ieee_utils.h
 

@@ -1,4 +1,4 @@
-lib_LIBRARIES = libgslmatrix.a 
+noinst_LIBRARIES = libgslmatrix.a 
 
 check_PROGRAMS = test test_static
 

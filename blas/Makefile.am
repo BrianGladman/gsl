@@ -1,4 +1,4 @@
-lib_LIBRARIES = 			\
+noinst_LIBRARIES = 			\
 	libgslblas.a 			\
 	libgslblasnative.a		\
 	libgslblascblas.a

@@ -1,4 +1,4 @@
-lib_LIBRARIES = libgslinterpolation.a 
+noinst_LIBRARIES = libgslinterpolation.a 
 
 check_PROGRAMS = test_interp
 

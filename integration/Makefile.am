@@ -1,4 +1,4 @@
-lib_LIBRARIES = libgslintegration.a
+noinst_LIBRARIES = libgslintegration.a
 
 INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../err
 
