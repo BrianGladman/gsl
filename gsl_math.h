@@ -54,6 +54,9 @@
 #define GSL_IS_EVEN(n) (!(GSL_IS_ODD(n)))
 #define GSL_SIGN(x)    ((x) >= 0.0 ? 1 : -1)
 
+/* Return nonzero if x is a real number, i.e. non NaN or infinite. */
+/* FIXME: Is this correct way to check if something is real? */
+#define GSL_IS_REAL(x) (0 * (x) == 0)
 
 /* Define MAX and MIN macros/functions if they don't exist. */
 
@@ -125,6 +128,35 @@ struct gsl_function_struct
 
 typedef struct gsl_function_struct gsl_function ;
 
-#define GSL_FN_EVAL(F,x) (*((F).function))(x,(F).params)
+#define GSL_FN_EVAL(F,x) (*((F)->function))(x,(F)->params)
+
+/* Definition of an arbitrary function returning two values, r1, r2 */
+
+struct gsl_fdf_struct 
+{
+  double (* f) (double x, void * params);
+  double (* df) (double x, void * params);
+  void (* fdf) (double x, void * params, double * f, double * df);
+  void * params;
+};
+
+typedef struct gsl_fdf_struct gsl_fdf ;
+
+#define GSL_FDF_F_EVAL(FDF,x) (*((FDF)->f))(x,(FDF)->params)
+#define GSL_FDF_DF_EVAL(FDF,x) (*((FDF)->df))(x,(FDF)->params)
+#define GSL_FDF_EVAL(FDF,x,y,dy) (*((FDF)->fdf))(x,(FDF)->params,(y),(dy))
+
+/* Definition of an interval */
+
+struct gsl_interval_struct 
+{
+  double lower;
+  double upper;
+};
+
+typedef struct gsl_interval_struct gsl_interval;
+
+
+
 
 #endif /* !_GSL_MATH_H */
