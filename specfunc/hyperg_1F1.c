@@ -199,7 +199,7 @@ gsl_sf_hyperg_1F1(double a, double b, double x)
 
 
 int
-test_hypergstuff(void)
+test_hyperg1F1_stuff(void)
 {
   double a = 100.0;
   double b = -3.0000000001;

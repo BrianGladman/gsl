@@ -66,14 +66,13 @@ hyperg_2F0_series(const double a, const double b, const double x,
     return GSL_SUCCESS;
 }
 
+
 int
 gsl_sf_hyperg_2F0_impl(const double a, const double b, const double x,
                        double * result
                        )
 {
-  const double small_x = 0.05;
-
-  if(fabs(x) < small_x) {
+  if(fabs(x) < 0.1 && fabs(a) < 1.0 && fabs(b) < 1.0) {
     double prec;
     return hyperg_2F0_series(a, b, x, result, &prec);
   }
@@ -83,6 +82,7 @@ gsl_sf_hyperg_2F0_impl(const double a, const double b, const double x,
     return GSL_EDOM;
   }
 }
+
 
 int
 gsl_sf_hyperg_2F0_e(const double a, const double b, const double x, double * result)
@@ -103,4 +103,21 @@ gsl_sf_hyperg_2F0(const double a, const double b, const double x)
     GSL_WARNING("gsl_sf_hyperg_2F0", status);
   }
   return y;
+}
+
+
+int
+test_hyperg2F0_stuff(void)
+{
+  double x = -0.1;
+  double a = 1.0;
+  double b = 1.0;
+  double p;
+  double r;
+  
+  hyperg_2F0_series(a, b, x, &r, &p);
+  
+  printf("%9.6g  %9.6g  %9.6g    %20.16g  %20.16g\n", a, b, x, r, p);
+  
+  return 0;
 }
