@@ -22,6 +22,7 @@ double gsl_sf_pow_9(const double x) { double x3 = x*x*x; return x3*x3*x3; }
 int gsl_sf_pow_int_impl(double x, int n, gsl_sf_result * result)
 {
   double value = 1.0;
+  int count = 0;
 
   if(result == 0) {
     return GSL_EFAULT;
@@ -40,10 +41,11 @@ int gsl_sf_pow_int_impl(double x, int n, gsl_sf_result * result)
      if(GSL_IS_ODD(n)) value *= x;
      n >>= 1;
      x *= x;
+     ++count;
   } while (n);
 
   result->val = value;
-  result->err = GSL_DBL_EPSILON * fabs(value); 
+  result->err = 2.0 * GSL_DBL_EPSILON * (count + 1.0) * fabs(value); 
 
   return GSL_SUCCESS;
 }

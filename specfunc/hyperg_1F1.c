@@ -1141,7 +1141,7 @@ hyperg_1F1_a_negint_poly(const int a, const double b, const double x, gsl_sf_res
       }
     }
     result->val = poly;
-    result->err = GSL_DBL_EPSILON * fabs(poly);
+    result->err = 2.0 * (sqrt(N) + 1.0) * GSL_DBL_EPSILON * fabs(poly);
     return GSL_SUCCESS;
   }
 }
@@ -1202,12 +1202,24 @@ hyperg_1F1_a_negint_lag(const int a, const double b, const double x, gsl_sf_resu
  * generic b.
  *
  * Combine [Abramowitz+Stegun, 13.6.9 + 13.6.27]
- * M(-n,b,x) = (-1)^n / (b)_n U(-n,b,x)
+ * M(-n,b,x) = (-1)^n / (b)_n U(-n,b,x) = n! / (b)_n Laguerre^(b-1)_n(x)
  */
 static
 int
 hyperg_1F1_a_negint_U(const int a, const double b, const double x, gsl_sf_result * result)
 {
+  const int n = -a;
+  gsl_sf_result lnfact;
+  gsl_sf_result lnpoch;
+  gsl_sf_result lag;
+  const int stat_f = gsl_sf_lnfact_impl(n, &lnfact);
+  const int stat_p = gsl_sf_lnpoch_impl(b, n, &lnpoch);
+  const int stat_l = gsl_sf_laguerre_n_impl(n, b-1.0, x, &lag);
+  const double lnpre_val = lnfact.val - lnpoch.val;
+  const double lnpre_err = lnfact.err + lnpoch.err + 2.0 * GSL_DBL_EPSILON * fabs(lnpre_val);
+  const int stat_e = gsl_sf_exp_mult_err_impl(lnpre_val, lnpre_err, lag.val, lag.err, result);
+  return GSL_ERROR_SELECT_4(stat_e, stat_l, stat_p, stat_f);  
+/*
   const int n = -a;
   const double sgn = ( GSL_IS_ODD(n) ? -1.0 : 1.0 );
   gsl_sf_result lnpoch;
@@ -1233,6 +1245,7 @@ hyperg_1F1_a_negint_U(const int a, const double b, const double x, gsl_sf_result
     result->err = 0.0;
     return stat_p;
   }
+*/
 }
 
 
@@ -1484,10 +1497,9 @@ hyperg_1F1_ab_pos(const double a, const double b,
         }
 	pair_ratio = start_pair/minim_pair;
         result->val  = Ma;
-	result->err  = rat_0 * fabs(Ma);
-	result->err += rat_1 * fabs(Ma);
-	result->err += 2.0 * GSL_DBL_EPSILON * (fabs(b-a)+1.0) * fabs(Ma);
+	result->err  = 2.0 * (rat_0 + rat_1 + GSL_DBL_EPSILON) * (fabs(b-a)+1.0) * fabs(Ma);
 	result->err += 2.0 * (rat_0 + rat_1) * pair_ratio*pair_ratio * fabs(Ma);
+	result->err += 2.0 * GSL_DBL_EPSILON * fabs(Ma);
 	if(stat_0 == GSL_ELOSS || stat_1 == GSL_ELOSS)
 	  return GSL_ELOSS;
 	else
@@ -1530,9 +1542,9 @@ hyperg_1F1_ab_pos(const double a, const double b,
         }
 	pair_ratio = start_pair/minim_pair;
         result->val  = Mn;
-	result->err  = (rat_0 + rat_1) * fabs(Mn);
-	result->err += 2.0 * GSL_DBL_EPSILON * (fabs(a)+1.0) * fabs(Mn);
+	result->err  = 2.0 * (rat_0 + rat_1 + GSL_DBL_EPSILON) * (fabs(a)+1.0) * fabs(Mn);
 	result->err += 2.0 * (rat_0 + rat_1) * pair_ratio*pair_ratio * fabs(Mn);
+	result->err += 2.0 * GSL_DBL_EPSILON * fabs(Mn);
         return GSL_SUCCESS;
       }
       else {
@@ -1576,9 +1588,9 @@ hyperg_1F1_ab_pos(const double a, const double b,
         }
 	pair_ratio = start_pair/minim_pair;
         result->val  = Man;
-	result->err  = (rat_0 + rat_1) * fabs(Man);
-	result->err += 2.0 * GSL_DBL_EPSILON * (fabs(b-a)+1.0) * fabs(Man);
+	result->err  = 2.0 * (rat_0 + rat_1 + GSL_DBL_EPSILON) * (fabs(b-a)+1.0) * fabs(Man);
 	result->err += 2.0 * (rat_0 + rat_1) * pair_ratio*pair_ratio * fabs(Man);
+	result->err += 2.0 * GSL_DBL_EPSILON * fabs(Man);
 	return GSL_ERROR_SELECT_2(stat_0, stat_1);
       }
       else {
@@ -1983,7 +1995,8 @@ gsl_sf_hyperg_1F1_impl(const double a, const double b, const double x,
       /* Handle this now to prevent problems
        * in the generic evaluation.
        */
-      return hyperg_1F1_a_negint_U(a, b, x, result);
+      /* return hyperg_1F1_a_negint_U(a, b, x, result); */
+      return hyperg_1F1_a_negint_lag(a, b, x, result);
     }
     else if(bma_neg_integer && x < 0.0) {
       /* Handle this now to prevent problems
