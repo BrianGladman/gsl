@@ -1,5 +1,10 @@
 1998-02-09  Mark Galassi  <rosalia@cygnus.com>
 
+	* configure.in: 0.3b is now released, so I upped the version
+	number to 0.3c-interim.
+
+1998-02-09  Mark Galassi  <rosalia@cygnus.com>
+
 	* configure.in: upped version number to 0.3b
 
 1998-01-30  Mark Galassi  <rosalia@cygnus.com>
