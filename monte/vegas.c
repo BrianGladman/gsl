@@ -169,7 +169,9 @@ int gsl_monte_vegas2(const gsl_rng * r,
     mode = MODE_IMPORTANCE;
     if ((2 * boxes - GSL_V_BINS_MAX) >= 0) {
       mode = MODE_STRATIFIED;
-      i = boxes / GSL_V_BINS_MAX + 1;
+      i = boxes / GSL_V_BINS_MAX;
+      if ( boxes % GSL_V_BINS_MAX ) 
+	++i;
       bins = boxes / i;
       boxes = i * bins;
     }
