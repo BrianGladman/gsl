@@ -31,8 +31,40 @@ main (int argc, char *argv[])
 "Generates n samples from the distribution DIST with parameters param1,\n"
 "param2, etc. Valid distributions are,\n"
 "\n"
+"  beta\n"
+"  binomial\n"
+"  cauchy\n"
+"  beta\n"
+"  binomial\n"
+"  cauchy\n"
+"  chisq\n"
+"  erlang\n"
 "  exponential\n"
-"  levy\n") ;
+"  exppow\n"
+"  fdist\n"
+"  flat\n"
+"  gamma\n"
+"  gaussian\n"
+"  bivariate-gaussian\n"
+"  dir-2d\n"
+"  dir-3d\n"
+"  geometric\n"
+"  gumbel1\n"
+"  gumbel2\n"
+"  hypergeometric\n"
+"  laplace\n"
+"  levy\n"
+"  logarithmic\n"
+"  logistic\n"
+"  lognormal\n"
+"  negative-binomial\n"
+"  pareto\n"
+"  pascal\n"
+"  poisson\n"
+"  rayleigh\n"
+"  rayleigh-tail\n"
+"  tdist\n"
+"  weibull\n") ;
       exit (0);
     }
 
@@ -250,6 +282,13 @@ main (int argc, char *argv[])
       ARGS(1, "sigma = scale parameter");
       DBL_ARG(sigma) ;
       OUTPUT(gsl_ran_rayleigh (r, sigma));
+    }
+  else if (NAME("rayleigh-tail"))
+    {
+      ARGS(2, "a = lower limit, sigma = scale parameter");
+      DBL_ARG(a) ;
+      DBL_ARG(sigma) ;
+      OUTPUT(gsl_ran_rayleigh_tail (r, a, sigma));
     }
   else if (NAME("tdist"))
     {

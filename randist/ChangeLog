@@ -1,3 +1,7 @@
+Wed Sep 16 14:44:08 1998  Brian Gough  <bjg@vvv.lanl.gov>
+
+	* rayleigh.c: added rayleigh tail distribution
+
 Sat Sep 12 13:03:19 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
 	* rayleigh.c: added rayleigh distribution
