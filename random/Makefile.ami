@@ -1,0 +1,17 @@
+ALLRAN= mrg cmrg taus uni uni32 zuf
+FAVORITERAN= taus
+
+include_HEADERS = gsl_random.h ranstate.c
+
+gauss_SOURCES= rungauss.c gauss.c
+test_gauss_SOURCES= test-gauss.c gauss.c
+bench_gauss_SOURCES= bench-gauss.c gauss.c
+
+gauss_LDADD=       $(FAVORITERAN).o
+test_gauss_LDADD=  $(FAVORITERAN).o
+bench_gauss_LDADD= $(FAVORITERAN).o
+
+Makefile.am: Makefile.ami makeam
+	cat Makefile.ami    > Makefile.am
+	./makeam $(ALLRAN) >> Makefile.am
+
