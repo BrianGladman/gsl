@@ -398,6 +398,7 @@ int gsl_sf_hyperg_2F1_impl(double a, double b, const double c,
   }
   
   if(x > 0.75 && d_integer) {
+#if 0
     double ad = fabs(d);
     double ln_pre1, ln_pre2, pre1, pre2;
     double F1, F2;
@@ -420,6 +421,11 @@ int gsl_sf_hyperg_2F1_impl(double a, double b, const double c,
     pre2 = exp(ln_pre2);
     
     /* FIXME: F1= ...  F2= ... */
+#endif
+    {
+      double prec;
+      return hyperg_2F1_luke(a, b, c, x, result, &prec);
+    }
   }
   
 
