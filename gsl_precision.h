@@ -3,24 +3,18 @@
  */
 #ifndef GSL_PRECISION_H
 #define GSL_PRECISION_H
-#include <gsl_machine.h>
 
-/* Here are the constants which control the
- * precision/error system. These should be
- * expressed in terms of the underlying
- * machine constants, so this file is
- * platform-independent.
- */
 
-/* Users can specify the desired precision
- * by passing one of the following. This
- * provides a simple and easily maintained
- * way to overload the functions for various
- * desired precisions.
+/* A type for the precision indicator.
+ * This is mainly for pedagogy.
  */
-typedef
-enum { GSL_APPROX_PREC=0, GSL_SINGLE_PREC=1, GSL_DOUBLE_PREC=2 }
-gsl_prec_t;
+typedef  unsigned int  gsl_prec_t;
+
+
+/* The number of precision types.
+ * Remember that precision-mode
+ * can index an array.
+ */
 #define _GSL_PREC_T_NUM 3
 
 
