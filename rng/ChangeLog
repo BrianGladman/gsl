@@ -1,3 +1,8 @@
+Thu Jun 18 12:17:16 1998  Brian Gough  <bjg@vvv.lanl.gov>
+
+	* rng.c: eliminated the gsl_rng_internal struct since it was not
+ 	really necessary
+
 Wed Jun 17 17:31:27 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
 	* minstd.c: added Park and Millers MINSTD generator

@@ -2,8 +2,15 @@
 #include <stdlib.h>
 #include <gsl_rng.h>
 
-/* This is the example generator given in the ANSI C standard. It is
-   not very good. */
+/* This is the old BSD rand() generator. The sequence is
+
+         x_{n+1} = (a x_n + c) mod m 
+
+   with a = 1103515245, c = 12345 and m = 2^31 = 2147483648. The seed
+   specifies the initial value, x_0.
+
+   It is not very good. The low bits of successive numbers are
+   correlated. */
 
 unsigned long int bad_rand_get (void * vstate);
 void bad_rand_set (void * state, unsigned int s);

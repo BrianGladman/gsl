@@ -3,17 +3,17 @@
 #include <stdlib.h>
 
 typedef struct {
-  const char * const name ;
-  const unsigned long int max ;
+  const char * name ;
+  unsigned long int max ;
   size_t size ;
-  void * const state ;
-  void (* const set)(void * state, unsigned int seed) ;
-  unsigned long int (* const get)(void * state) ;
+  void * state ;
+  void (* set)(void * state, unsigned int seed) ;
+  unsigned long int (* get)(void * state) ;
 } gsl_rng ;
 
 typedef struct { 
   const char * name ;
-  const unsigned long int max ;
+  unsigned long int max ;
   size_t size ;
   void (* set)(void * state, unsigned int seed) ;
   unsigned long int (* get)(void * state) ;
