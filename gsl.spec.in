@@ -58,7 +58,7 @@ cd %{name}-%{version}; make install prefix=%{mybuildroot}/usr
 %postun
 
 %files
-%doc %{name}-%{version}/{NEWS,ChangeLog,INSTALL,README,AUTHORS,THANKS}
+%doc %{name}-%{version}/{NEWS,ChangeLog,INSTALL,README,AUTHORS,THANKS,BUGS}
 %doc /usr/info/gsl-ref*
 /usr/bin/gsl-config
 /usr/bin/gsl-histogram
