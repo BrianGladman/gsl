@@ -1,0 +1,8 @@
+Unlike @sc{FORTRAN}, the C language does not provide support for vectors
+or matrices with range checking. The functions described in this chapter
+provide a simple vector and matrix interface to 
+
+The functions for accessing the elements of a vector or matrix are
+declared @code{extern inline} so there is no overhead in calling them.
+If necessary you can turn off range checking completely by recompiling
+your program.
