@@ -105,6 +105,7 @@ double f15 (double x, void * params) {
 double f16 (double x, void * params) {
   double alpha = *(double *) params ;
   if (x==0 && alpha == 1) return 1 ;  /* make the function continuous in x */
+  if (x==0 && alpha > 1) return 0 ;   /* avoid problems with pow(0,1) */
   return pow(x,alpha-1)/pow((1+10*x),2.0) ;
 }
 

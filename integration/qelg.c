@@ -64,9 +64,6 @@ qelg (struct extrapolation_table *table, double *result, double *abserr)
   const size_t nres_orig = table->nres;
 
   *result = current;
-
-  table->nres = nres_orig + 1;
-
   *abserr = GSL_DBL_MAX;
 
   if (n < 2)
@@ -202,6 +199,14 @@ qelg (struct extrapolation_table *table, double *result, double *abserr)
       res3la[1] = res3la[2];
       res3la[2] = *result;
     }
+
+  /* In QUADPACK the variable table->nres is incremented at the top of
+     qelg, so it increases on every call. This leads to the array
+     res3la being accessed when its elements are still undefined, so I
+     have moved the update to this point so that its value more
+     useful. */
+
+  table->nres = nres_orig + 1;  
 
   *abserr = GSL_MAX_DBL (*abserr, 5 * GSL_DBL_EPSILON * fabs (*result));
 

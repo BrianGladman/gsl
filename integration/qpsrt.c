@@ -58,7 +58,10 @@ void qpsrt (gsl_integration_workspace * workspace)
   
   i = i_nrmax + 1 ;
   
-  while (errmax < elist[order[i]] && i < top)
+  /* The order of the tests in the following line is important to
+     prevent a segmentation fault */
+
+  while (i < top && errmax < elist[order[i]])
     {
       order[i-1] = order[i] ;
       i++ ;
@@ -72,7 +75,7 @@ void qpsrt (gsl_integration_workspace * workspace)
   
   k = top - 1 ;
   
-  while (errmin >= elist[order[k]] && k > i - 2)
+  while (k > i - 2 && errmin >= elist[order[k]])
     {
       order[k+1] = order[k] ;
       k-- ;

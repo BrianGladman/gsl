@@ -23,4 +23,4 @@ TESTS = test
 check_PROGRAMS = test
 
 test_SOURCES = test.c tests.c tests.h
-test_LDADD = libgslintegration.a ../ieee-utils/libgslieeeutils.a ../err/libgslerr.a ../err/libgsltest.a ../utils/libutils.a
+test_LDADD = libgslintegration.a ../ieee-utils/libgslieeeutils.a ../err/libgslerr.a ../err/libgsltest.a ../sys/libgslsys.a ../utils/libutils.a

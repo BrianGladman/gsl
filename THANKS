@@ -24,3 +24,4 @@ Fabrice Rossi <rossi@ufrmd.dauphine.fr> bug reports and suggestions
 
 Paul Walmsley <pwalmsley@iee.org> for bug report and patch for fixing matmult 
 Dave Morrison <dave@bnl.gov> for advice on build procedure
+Brett Viren <bviren@superk.physics.sunysb.edu> for debugging qpsrt.c.

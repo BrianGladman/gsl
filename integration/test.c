@@ -1876,6 +1876,7 @@ int main (void)
     gsl_test_rel(abserr,exp_abserr,1e-6,"qaws(f458) AB ln(x-a)ln(b-x) abserr") ;
 
     gsl_integration_workspace_free (w) ;
+    gsl_integration_qaws_table_free (t) ;
 
   }
 

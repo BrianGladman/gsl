@@ -1,3 +1,16 @@
+Wed Feb 23 14:35:31 2000  Brian Gough  <bjg@network-theory.co.uk>
+
+	* qpsrt.c (qpsrt): changed ordering of while conditions to avoid
+ 	segmentation faults due to accessing values before testing end of
+ 	loop condition. Thanks to Brett Viren
+ 	<bviren@superk.physics.sunysb.edu> for pointing this out.
+
+	* qelg.c (qelg): changed update of nres from the original quadpack
+ 	so that uninitialized elements of the res3la array are never
+ 	accessed.
+
+	* test.c (main): eliminate small memory leak from test
+
 Mon Feb 14 13:45:04 2000  Brian Gough  <bjg@network-theory.co.uk>
 
 	* qk.c: renamed function qk to gsl_integration_qk since it is
