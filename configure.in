@@ -300,7 +300,7 @@ case "$host" in
 esac
 # Now restore our (possibly augmented) CFLAGS.
 CFLAGS="$save_cflags"
-GSL_CFLAGS="$CFLAGS -I$includedir"
+GSL_CFLAGS="-I$includedir"
 GSL_LIBS="-L$libdir -lgsl"
 
 AC_SUBST(GSL_CFLAGS)
