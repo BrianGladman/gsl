@@ -53,6 +53,10 @@ int test_eigen_jacobi(void)
 
 /* FIXME: must check eigenvectors as well */
 
+  gsl_matrix_free(hm);
+  gsl_matrix_free(evec);
+  gsl_vector_free(eval);
+
   return s;
 }
 
@@ -77,6 +81,10 @@ int test_invert_jacobi(void)
       s += rs;
     }
   }
+
+  gsl_matrix_free(hm);
+  gsl_matrix_free(hminv);
+  gsl_matrix_free(id);
 
   return s;
 }

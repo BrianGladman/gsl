@@ -9,6 +9,12 @@ This chapter describes functions for solving linear systems.
 @deftypefun int gsl_la_solve_LU_impl (const gsl_matrix * @var{lu_matrix}, const gsl_vector_int * @var{permutation}, const gsl_vector * @var{rhs}, gsl_vector * @var{solution})
 @end deftypefun
 
+@deftypefun int gsl_la_decomp_QR_impl (gsl_matrix * @var{matrix}, gsl_vector * @var{rdiag}, gsl_vector_int * @var{permutation}, int * @var{signum})
+@end deftypefun
+
+@deftypefun int gsl_la_solve_QR_impl (const gsl_matrix * @var{qr_matrix}, const gsl_vector * @var{rdiag}, const gsl_vector_int * @var{permutation}, const gsl_vector * @var{rhs}, gsl_vector * @var{solution})
+@end deftypefun
+
 @deftypefun int gsl_la_solve_HH_impl (gsl_matrix * @var{matrix}, gsl_vector * @var{vec})
 @end deftypefun
 
@@ -17,6 +23,18 @@ This chapter describes functions for solving linear systems.
 
 @deftypefun int gsl_la_solve_symm_cyc_tridiag_impl (const gsl_vector * @var{diag}, const gsl_vector * @var{offdiag}, const gsl_vector * @var{rhs}, gsl_vector * @var{solution})
 @end deftypefun
+
+@node Linear Algebra References and Further Reading
+@section References and Further Reading
+
+For further information on the algorithms described in this section
+consult the following book,
+
+@itemize @asis
+@item
+G. H. Golub, C. F. Van Loan, @cite{Matrix Computations} (3rd Ed, 1996),
+Johns Hopkins University Press, ISBN 0-8018-5414-8.
+@end itemize
 
 
 
