@@ -3,7 +3,10 @@ programs which use GSL.
 
 @menu
 * Using gdb::                   
+* Examining floating point registers::  
+* Handling floating point exceptions::  
 * GCC warning options for numerical programs::  
+* Debugging References::        
 @end menu
 
 @node Using gdb
@@ -22,13 +25,14 @@ break gsl_error
 @comment 
 @noindent
 into your @file{.gdbinit} file in the directory where your program is
-started.  If the breakpoint catches an error then you can use a backtrace
-(@code{bt}) to see the call-tree, and the arguments which possibly
-caused the error.  By moving into the caller (@code{up}, @code{up}) you
-can investigate the values of variable at that point.
+started.  
 
-Here is an example from the program @code{fft/test_trap}, which contains
-the following line,
+If the breakpoint catches an error then you can use a backtrace
+(@code{bt}) to see the call-tree, and the arguments which possibly
+caused the error.  By moving up into the calling function you can
+investigate the values of variable at that point.  Here is an example
+from the program @code{fft/test_trap}, which contains the following
+line,
 
 @example
 status = gsl_fft_complex_wavetable_alloc (0, &complex_wavetable);
@@ -101,6 +105,74 @@ caused the error,
 Thus we have found the line that caused the problem.  From this point we
 could also print out the values of other variables such as
 @code{complex_wavetable}.
+
+@node Examining floating point registers
+@section Examinining floating point registers
+
+The contents of floating point registers can be examined using the
+command @code{info float} (not available on all platforms).
+
+@example
+(gdb) info float
+     st0: 0xc4018b895aa17a945000  Valid Normal -7.838871203780989910922e+308
+     st1: 0x3ff9ea3f50e4d7275000  Valid Normal 0.02859464454261210347719
+     st2: 0x3fe790c64ce27dad4800  Valid Normal 6.74159315730817141355e-08
+     st3: 0x3ffaa3ef0df6607d7800  Spec  Normal 0.04002290205065094780279
+     st4: 0x3c028000000000000000  Valid Normal 4.45014771701440276618e-308
+     st5: 0x3ffef5412c22219d9000  Zero  Normal 0.9580257018402476010266
+     st6: 0x3fff8000000000000000  Valid Normal 1
+     st7: 0xc4028b65a1f6d243c800  Valid Normal -1.56620646651544179506e+309
+   fctrl:     0x0272 53 bit; NEAR; mask DENOR UNDER LOS;
+   fstat:     0xb9ba flags 0001; top 7; excep DENOR OVERF UNDER LOS
+    ftag:     0x3fff
+     fip: 0x08048b5c
+     fcs: 0x051a0023
+  fopoff: 0x08086820
+  fopsel:     0x002b
+@end example
+@noindent
+Individual registers can be examined using the variables @var{$reg},
+where @var{reg} is the register name.
+
+@example
+(gdb) p $st1 
+$1 = 0.02859464454261210347719
+@end example
+
+@node Handling floating point exceptions
+@section Handling floating point exceptions
+
+It is possible to stop the program whenever a @code{SIGFPE} floating
+point exception occurs.  This can be useful for finding the cause of an
+unexpected infinity or @code{NaN}.  The current handler settings can be
+shown with the command @code{info signal SIGFPE}.
+
+@example
+(gdb) info signal SIGFPE
+Signal        Stop      Print   Pass to program Description
+SIGFPE        Yes       Yes     Yes             Arithmetic exception
+@end example
+@noindent
+Unless the program uses a signal handler the default setting should be
+changed so that SIGFPE is not passed to the program, as this would cause
+it to exit.  The command @code{handle SIGFPE stop nopass} prevents this.
+
+@example
+(gdb) handle SIGFPE stop nopass
+Signal        Stop      Print   Pass to program Description
+SIGFPE        Yes       Yes     No              Arithmetic exception
+@end example
+@noindent
+Depending on the platform it may be necessary to instruct the kernel to
+generate signals for floating point exceptions.  For programs using GSL
+this can be achieved using the @code{GSL_IEEE_MODE} environment variable
+in conjuction with the function @code{gsl_ieee_env_setup()} as described
+in @pxref{IEEE floating-point arithmetic}.
+
+@example
+(gdb) set env GSL_IEEE_MODE=double-precision
+@end example
+
 
 @node GCC warning options for numerical programs
 @section GCC warning options for numerical programs
@@ -273,10 +345,18 @@ command to remove them later if necessary.
 @comment defined main as @code{int main (void)} in ANSI C. Clearly there is some
 @comment work to do before this program is ready to run.
 
+@node Debugging References
+@section References and Further Reading
+@noindent
+The following books are essential reading for anyone writing and
+debugging numerical programs with @sc{gcc} and @sc{gdb}.
 
+@itemize @asis
+@item
+R.M. Stallman, @cite{Using and Porting GNU CC}, Free Software
+Foundation, ISBN 1882114388
 
-
-
-
-
-
+@item
+R.M. Stallman, R.H. Pesch, @cite{Debugging with GDB: The GNU
+Source-Level Debugger}, Free Software Foundation, ISBN 1882114779
+@end itemize

@@ -537,8 +537,9 @@ diagonal are automatically set to zero.
 @section CBLAS Library
 
 The prototypes for the low-level @sc{cblas} functions are specified in
-the file @code{gsl_cblas.h}.  For the full definition of the functions
-consult the papers listed in the references.
+the file @code{gsl_cblas.h}.  For the definition of the functions
+consult the papers listed in the references or the documentation
+available from Netlib.
 
 @menu
 * Level 1 CBLAS Functions::     
