@@ -1,0 +1,5 @@
+Thu Jun 11 18:08:40 1998  Brian Gough  <bjg@vvv.lanl.gov>
+
+	* this will be an alternate, thread-safe interface to the random
+ 	number generators.
+
