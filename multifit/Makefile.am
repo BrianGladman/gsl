@@ -1,12 +1,12 @@
 noinst_LTLIBRARIES = libgslmultifit.la 
 
-pkginclude_HEADERS = gsl_multifit.h
+pkginclude_HEADERS = gsl_multifit.h gsl_multifit_nlin.h
 
 INCLUDES= -I$(top_builddir)
 
 libgslmultifit_la_SOURCES = multilinear.c work.c lmder.c fdfsolver.c convergence.c gradient.c
 
-noinst_HEADERS = test_filip.c test_fn.c test_longley.c test_pontius.c
+noinst_HEADERS = lmutil.c lmpar.c lmset.c lmiterate.c qrsolv.c test_filip.c test_fn.c test_longley.c test_pontius.c test_fn.c
 
 check_PROGRAMS = test
 

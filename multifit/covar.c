@@ -149,4 +149,6 @@ gsl_multifit_covar (const gsl_matrix * J, double epsrel, const gsl_matrix * cova
       
       gsl_vector_set (r, j, j, wj);
     }
+
+  return GSL_SUCCESS;
 };
