@@ -54,11 +54,11 @@ typedef  unsigned int  gsl_prec_t;
  * different precision levels.
  */
 extern const double gsl_prec_eps[];
-extern const double gsl_sqrt_prec_eps[];
-extern const double gsl_root3_prec_eps[];
-extern const double gsl_root4_prec_eps[];
-extern const double gsl_root5_prec_eps[];
-extern const double gsl_root6_prec_eps[];
+extern const double gsl_prec_sqrt_eps[];
+extern const double gsl_prec_root3_eps[];
+extern const double gsl_prec_root4_eps[];
+extern const double gsl_prec_root5_eps[];
+extern const double gsl_prec_root6_eps[];
 
 
 __END_DECLS
