@@ -1,5 +1,8 @@
 To be written
 
+@menu
+* Numerical integration References and Further Reading::  
+@end menu
 
 @node Numerical integration References and Further Reading
 @section Numerical integration  References and Further Reading
