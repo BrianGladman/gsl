@@ -35,6 +35,21 @@ main problem. The case c=a+b is special and needs to be computed
 differently.  There is a special formula given for it in Abramowitz &
 Stegun 15.3.10
 
+As reported by Lee Warren <warren@atom.chem.utk.edu> another set of
+arguments which fail are:
+
+#include <gsl/gsl_sf.h>
+#include <stdio.h>
+
+int main (void)
+{
+  gsl_sf_result r;
+  gsl_sf_hyperg_2F1_e (-1, -1, -0.5, 1.5, &r);
+  printf("r = %g %g\n", r.val, r.err);
+}
+
+The correct value is -2.
+
 ----------------------------------------------------------------------
 BUG#4 -- gsl_linalg_solve_symm_cyc_tridiag() crashes 
 
@@ -283,3 +298,10 @@ each individual term in the sequence is positive and increasing (!).
 This is a feature of the original quadpack and appears to be due to
 the extrapolation algorithm, which should probably be tweaked to avoid
 this undesirable behavior.
+
+----------------------------------------------------------------------
+BUG#15 -- gsl_const
+
+The gsl_const directory is broken in gsl-1.4 (the include file doesn't
+include the right files) and is not backwards compatible.
+
