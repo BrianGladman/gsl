@@ -1,7 +1,5 @@
 ## Process this file with automake to produce Makefile.in
 
-CFLAGS=-g -Wall
-
 check_PROGRAMS = siman_test siman_tsp
 lib_LIBRARIES = libgslsiman.a
 

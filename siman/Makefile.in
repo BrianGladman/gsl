@@ -69,8 +69,6 @@ VERSION = @VERSION@
 full_top_builddir = @full_top_builddir@
 full_top_srcdir = @full_top_srcdir@
 
-CFLAGS=-g -Wall
-
 check_PROGRAMS = siman_test siman_tsp
 lib_LIBRARIES = libgslsiman.a
 
@@ -110,6 +108,7 @@ siman_test_OBJECTS =  siman_test.o
 siman_test_LDFLAGS = 
 siman_tsp_OBJECTS =  siman_tsp.o
 siman_tsp_LDFLAGS = 
+CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
 LINK = $(CC) $(CFLAGS) $(LDFLAGS) -o $@
 HEADERS =  $(include_HEADERS)
