@@ -196,6 +196,7 @@ this function should return the value
 @item void * @var{params}
 a pointer to the parameters of the function
 @end table
+@end deftp
 
 Here is an example for the general quadratic function,
 
@@ -243,7 +244,6 @@ The function @math{f(x)} can be evaluated using the following macro,
 #define GSL_FN_EVAL(F,x) (*((F)->function))(x,(F)->params)
 @end example
 
-@end deftp
 
 @deftp {Data Type} gsl_function_fdf
 This data type defines a general function with parameters and its first
@@ -276,6 +276,7 @@ same time.
 @item void * @var{params}
 a pointer to the parameters of the function
 @end table
+@end deftp
 
 Here is an example where 
 @c{$f(x) = \exp(2x)$}
@@ -336,8 +337,6 @@ can be evaluated at the same time using the following macro,
 The macro stores @math{f(x)} in its @var{y} argument and @math{f'(x)} in
 its @var{dy} argument -- both of these should be pointers to
 @code{double}.
-
-@end deftp
 
 @node Search Bounds and Guesses
 @section Search Bounds and Guesses

@@ -15,6 +15,10 @@ multidimensional root finding functions and related declarations.
 * Multidimensional Root Finding Overview::  
 * Multidimensional Root Finding - Initializing the Solver::  
 * Multidimensional Root Finding - Providing the function to solve::  
+* Multidimensional Root Finding - Iteration::  
+* Multidimensional Root Finding - Search Stopping Parameters::  
+* Root Finding Algorithms without derivatives::  
+* Multidimensional Root Finding Algorithms using Derivatives::  
 * Multidimensional Root Finding References and Further Reading::  
 @end menu
 
@@ -168,8 +172,10 @@ vectors @var{x} and @var{f}
 @item void * @var{params}
 a pointer to the parameters of the function
 @end table
+@end deftp
 
-Here is an example for Powell's test function,
+@noindent
+Here is an example using Powell's test function,
 
 @tex
 \beforedisplay
@@ -213,91 +219,410 @@ F.n = 2 ;
 F.params = &params ;
 @end example
 
-
-@end deftp
-
 @deftp {Data Type} gsl_multiroot_function_fdf
 This data type defines a general system of functions with parameters and
-their Hessian matrix of derivatives.
+the corresponding Hessian matrix of derivatives,
 
 @table @code
 @item int (* f) (const gsl_vector * @var{x}, void * @var{params}, gsl_vector * @var{f})
-this function should return the value of
+this function should store the vector result
 @c{$f(x,\hbox{\it params})$}
-@math{f(x,params)} for argument @var{x} and parameters @var{params}
+@math{f(x,params)} in @var{f} for argument @var{x} and parameters @var{params},
+returning an appropriate error code if the function cannot be computed.
 
 @item int (* df) (const gsl_vector * @var{x}, void * @var{params}, gsl_matrix * @var{J})
+this function should store the @var{n}-by-@var{n} matrix result
+@c{$J_{ij} = \partial f_i(x,\hbox{\it params}) / \partial x_j$}
+@math{J_ij = d f_i(x,params) / d x_j} in @var{J} for argument @var{x} 
+and parameters @var{params},returning an appropriate error code if the
+function cannot be computed.
+
 @item int (* fdf) (const gsl_vector * @var{x}, void * @var{params}, gsl_vector * @var{f}, gsl_matrix * @var{J})
-
-@item double (* @var{df}) (double @var{x}, void * @var{params})
-this function should return the value of the derivative of @var{f} with
-respect to @var{x},
-@c{$f'(x,\hbox{\it params})$}
-@math{f'(x,params)}, for argument @var{x} and parameters @var{params}
-
-@item void (* @var{fdf}) (double @var{x}, void * @var{params}, double * @var{f}, double * @var{d}f)
-this function should set the values of the function @var{f} to 
-@c{$f(x,\hbox{\it params})$}
-@math{f(x,params)}
-and its derivative @var{df} to
-@c{$f'(x,\hbox{\it params})$}
-@math{f'(x,params)} 
-for argument @var{x} and parameters @var{params}. This function provides
-an optimization of the separate functions for @math{f(x)} and @math{f'(x)} -- 
+This function should set the values of the @var{f} and @var{J} as above,
+for arguments @var{x} and parameters @var{params}. This function provides
+an optimization of the separate functions for @math{f(x)} and @math{J(x)} -- 
 it is always faster to compute the function and its derivative at the
 same time. 
+
+@item size_t @var{n}
+the dimension of the system, i.e. the number of components of the
+vectors @var{x} and @var{f}
 
 @item void * @var{params}
 a pointer to the parameters of the function
 @end table
+@end deftp
 
-Here is an example where 
-@c{$f(x) = \exp(2x)$}
-@math{f(x) = 2\exp(2x)}:
+@noindent
+The example of Powell's test function defined above can be extended to
+include analytic derivatives using the following code,
 
 @example
-double
-my_f (double x, void * params)
-@{
-   return exp (2 * x);
+int
+powell_df (gsl_vector * x, void * p, gsl_matrix * J) @{
+   struct powell_params * params = *(struct powell_params *)p ;
+   double A = (params->A) ;
+   double x0 = gsl_vector_get(x,0);
+   double x1 = gsl_vector_get(x,1);
+   gsl_vector_set (df, 0, 0, A * x1)
+   gsl_vector_set (df, 0, 1, A * x0)
+   gsl_vector_set (df, 1, 0, -exp(-x0))
+   gsl_vector_set (df, 1, 1, -exp(-x1))
+   return GSL_SUCCESS
 @}
 
-double
-my_df (double x, void * params)
-@{
-   return 2 * exp (2 * x);
+int
+powell_fdf (gsl_vector * x, void * p, gsl_matrix * f, gsl_matrix * J) @{
+   struct powell_params * params = *(struct powell_params *)p ;
+   double A = (params->A) ;
+   double x0 = gsl_vector_get(x,0);
+   double x1 = gsl_vector_get(x,1);
+
+   double u0 = exp(-x0);
+   double u1 = exp(-x1);
+
+   gsl_vector_set (f, 0, A * x0 * x1 - 1)
+   gsl_vector_set (f, 1, u0 + u1 - (1 + 1/A))
+
+   gsl_vector_set (J, 0, 0, A * x1)
+   gsl_vector_set (J, 0, 1, A * x0)
+   gsl_vector_set (J, 1, 0, -u0)
+   gsl_vector_set (J, 1, 1, -u1)
+   return GSL_SUCCESS
 @}
 
-void
-my_fdf (double x, void * params, double * f, double * df)
-@{
-   double t = exp (2 * x) ;
+gsl_multiroot_function_fdf FDF ;
 
-   *f = t;
-   *df = 2 * t;   /* computing using existing values */
-@}
-
-gsl_function_fdf FDF ;
-
-FDF.f = &my_f ;
-FDF.df = &my_df ;
-FDF.fdf = &my_fdf ;
+FDF.f = &powell_f ;
+FDF.df = &powell_df ;
+FDF.fdf = &powell_fdf ;
+FDF.n = 2;
 FDF.params = 0 ;
 @end example
 
-@end deftp
+@node Multidimensional Root Finding - Iteration
+@section Iteration
 
+The following functions drive the iteration of each algorithm. Each
+function performs one iteration to update the state of any solver of the
+corresponding type. The same functions work for all solvers so that
+different methods can be substituted at runtime without modifications to
+the code.
+
+@deftypefun int gsl_multiroot_fsolver_iterate (gsl_multiroot_fsolver * @var{s})
+@deftypefunx int gsl_multiroot_fdfsolver_iterate (gsl_multiroot_fdfsolver * @var{s})
+These functions perform a single iteration of the solver @var{s}. If the
+iteration encounters an unexpected problem then an error code will be
+returned,
+
+@table @code
+@item GSL_EBADFUNC
+the iteration encountered a singular point where the function or its
+derivative evaluated to @code{Inf} or @code{NaN}.
+
+@item GSL_EZERODIV
+the derivative of the function vanished at the iteration point,
+preventing the algorithm from continuing without a division by zero.
+@end table
+@end deftypefun
+
+The solver maintains a current best estimate of the root at all
+times. The bracketing solvers also keep track of the current best
+interval bounding the root. This information can be accessed with the
+following auxiliary functions,
+
+@deftypefun gsl_vector * gsl_multiroot_fsolver_root (const gsl_multiroot_fsolver * @var{s})
+@deftypefunx gsl_vector * gsl_multiroot_fdfsolver_root (const gsl_multiroot_fdfsolver * @var{s})
+These functions return the current estimate of the root for the solver @var{s}.
+@end deftypefun
+
+@node Multidimensional Root Finding - Search Stopping Parameters
+@section Search Stopping Parameters
+@cindex root finding, stopping parameters
+
+A root finding procedure should stop when one of the following conditions is
+true:
+
+@itemize @bullet
+@item
+A multidimensial root has been found to within the user-specified precision.
+
+@item
+A user-specified maximum number of iterations has executed.
+
+@item
+An error has occurred.
+@end itemize
+
+@noindent
+In the multidimensional root finding framework of GSL the handling of
+these conditions is under user control.  The functions below allow the
+user to test the precision of the current result in several standard
+ways.
+
+@deftypefun int gsl_multiroot_test_delta (const gsl_vector * @var{dx}, const gsl_vector * @var{x}, double @var{epsabs}, double @var{epsrel})
+
+This function tests for the convergence of the sequence by comparing the
+last step @var{dx} with the absolute error @var{epsabs} and relative
+error @var{epsrel} to the current position @var{x}.  The test returns
+@code{GSL_SUCCESS} if the following condition is achieved,
+
+@tex
+\beforedisplay
+$$
+|dx_i| < \hbox{\it epsabs} + \hbox{\it epsrel\/}\, |x_i|
+$$
+\afterdisplay
+@end tex
+@ifinfo
+@example
+|dx_i| < epsabs + epsrel |x_i|
+@end example
+@end ifinfo
+@noindent
+for each component of @var{x} and returns @code{GSL_CONTINUE} otherwise.
+@end deftypefun
+
+@deftypefun int gsl_multiroot_test_residual (const gsl_vector * @var{f}, double @var{epsabs})
+This function tests the residual value @var{f} against the absolute
+error bound @var{epsabs}. The test returns @code{GSL_SUCCESS} if the
+following condition is achieved,
+
+@tex
+\beforedisplay
+$$
+\sum_i |f_i| < \hbox{\it epsabs}
+$$
+\afterdisplay
+@end tex
+@ifinfo
+@example
+\sum_i |f_i| < epsabs
+@end example
+@end ifinfo
+
+@noindent
+and returns @code{GSL_CONTINUE} otherwise. This criterion is suitable
+for situations where the the precise location of the root, @math{x}, is
+unimportant provided a value can be found where the residual is small
+enough.
+@end deftypefun
+
+@comment ============================================================
+
+@node Root Finding Algorithms without derivatives
+@section Root Finding Algorithms without derivatives
+
+The algorithms described in this section do not require any derivative
+information to be supplied by the user. Any information needed about the
+derivatives is approximated from function values.
+
+@deffn {Solver} gsl_multiroot_fsolver_dnewton
+
+@cindex Discrete newton algorithm for multidimension roots
+@cindex Newton algorithm, discrete
+@cindex multidimensional root finding, Discrete Newton algorithm
+
+The @dfn{discrete Newton algorithm} is the simplest method of solving a
+multidimensional system. It uses the Newton iteration
+
+@tex
+\beforedisplay
+$$
+x \to x - J^{-1} F(x)
+$$
+\afterdisplay
+@end tex
+@ifinfo
+@example
+x -> x - J^@{-1@} F(x)
+@end example
+@end ifinfo
+@noindent
+where the Hessian matrix @math{J} is approximated by taking finite
+differences of the function @var{F}. The approximation scheme used by
+this implementation is,
+
+@tex
+\beforedisplay
+$$
+J_{ij} = (F_i(x + \delta_j) - F_i(x)) /  \delta_j
+$$
+\afterdisplay
+@end tex
+@ifinfo
+@example
+J_@{ij@} = (F_i(x + \delta_j) - F_i(x)) /  \delta_j
+@end example
+@end ifinfo
+@noindent
+where @math{\delta_j} is a step of size @math{(\sqrt\epsilon)x_j} with
+@math{\epsilon} being the machine precision 
+(@c{$\epsilon \approx 2.22 \times 10^{-16}$}
+@math{\epsilon \approx 2.22 \times 10^-16}).
+The order of convergence of Newton's algorithm is quadratic, but the
+finite differences require @math{n^2} function evaluations on each
+iteration. The algorithm may become unstable if the finite differences
+are not a good approximation to the true derivatives.
+@end deffn
+
+@comment ============================================================
+
+@deffn {Solver} gsl_multiroot_fsolver_broyden
+@cindex Broyden algorithm for multidimensional roots
+@cindex multidimensional root finding, Broyden algorithm
+
+The @dfn{Broyden algorithm} is a version of the discrete Newton
+algorithm which attempts to avoids the expensive update of the Hessian
+matrix on each iteration. The changes to the Hessian are also
+approximated, using a rank-1 update,
+
+@tex
+\beforedisplay
+$$
+J^{-1} \to J^{-1} - (J^{-1} df - dx) dx^T J^{-1} / dx^T J^{-1} df
+$$
+\afterdisplay
+@end tex
+@ifinfo
+@example
+J^@{-1@} \to J^@{-1@} - (J^@{-1@} df - dx) dx^T J^@{-1@} / dx^T J^@{-1@} df
+@end example
+@end ifinfo
+@noindent
+where the vectors @math{dx} and @math{df} are the changes in @math{x}
+and @math{f}.  On the first iteration the inverse Hessian is estimated
+using finite differences, as for the discrete Newton algorithm.
+ 
+This approximation gives a fast update but is unreliable if the changes
+are not small, and the estimate of the inverse Hessian becomes worse as
+time passes.  The algorithm has a tendency to become unstable unless it
+starts close to the root.  The Hessian is refreshed if this instability
+is detected (consult the source for details).
+
+This algorithm is not recommended for real work and is included only for
+pedagogical purposes.
+@end deffn
+
+@comment ============================================================
+
+@deffn {Solver} gsl_multiroot_fsolver_brent
+@cindex brent's method for finding roots
+@cindex root finding, brent's method
+
+@end deffn
+
+@comment ============================================================
+
+@node Multidimensional Root Finding Algorithms using Derivatives
+@section Multidimensional Root Finding Algorithms using Derivatives
+
+The root polishing algorithms described in this section require an
+initial guess for the location of the root. There is no absolute
+guarantee of convergence -- the function must be suitable for this
+technique and the initial guess must be sufficiently close to the root
+for it to work.  When the conditions are satisfied then convergence is
+quadratic.
+
+These algorithms make use of both the function and its derivative. 
+
+@deffn {Derivative Solver} gsl_multiroot_fdfsolver_newton
+@cindex Newton's Method algorithm for finding roots
+@cindex root finding, Newton's Method algorithm
+
+Newton's Method is the standard root-polishing algorithm.  The algorithm
+begins with an initial guess for the location of the root. On each
+iteration a linear approximation to the function @math{F} is used to
+estimate the step which will zero all the components of the
+residual. The iteration is defined by the following sequence,
+
+@tex
+\beforedisplay
+$$
+x \to x - J^{-1} F(x)
+$$
+\afterdisplay
+@end tex
+@ifinfo
+@example
+x -> x - J^@{-1@} F(x)
+@end example
+@end ifinfo
+@noindent
+where the Hessian matrix @math{J} is computed from the derivate
+functions provided by @var{F}. The step @math{dx} is obtained numerically
+by solving the linear system,
+
+@tex
+\beforedisplay
+$$
+J \,dx = - F(x)
+$$
+\afterdisplay
+@end tex
+@ifinfo
+@example
+J dx = - F(x)
+@end example
+@end ifinfo
+@noindent
+for @math{dx} using LU decomposition.
+@end deffn
+
+@comment ============================================================
+
+@deffn {Derivative Solver} gsl_multiroot_fdfsolver_gnewton
+@cindex Newton's Method algorithm for finding roots
+@cindex root finding, Newton's Method algorithm
+
+This is a modified version of Newtons method which attempts to improve
+global convergence by requiring every step to reduce the Euclidean norm
+of the residual @math{F^2(x)}. If the Newton step leads to an increase
+in the norm then a reduced step of relative size
+
+@tex
+\beforedisplay
+$$
+t = (\sqrt{1 + 6 r} - 1) / (3 r)
+$$
+\afterdisplay
+@end tex
+@ifinfo
+@example
+t = (\sqrt(1 + 6 r) - 1) / (3 r)
+@end example
+@end ifinfo
+@noindent
+is proposed, with @math{r} being the ratio of norms
+@math{F^2(x')/F^2(x)}. This procedure is repeated until a suitable step
+size is found. 
+@end deffn
+
+@comment ============================================================
+
+@deffn {Derivative Solver} gsl_multiroot_fdfsolver_brent
+@cindex Steffenson's Method for finding roots
+@cindex root finding, Steffenson's Method
+
+
+@end deffn
 
 @node Multidimensional Root Finding References and Further Reading
 @section References and Further Reading
 
 @itemize @asis
 @item
-C.G. Broyden, "A Class of Methods for Solving Nonlinear
-Simultaneous Equations", @cite{Mathematics of Computation}, vol 19 (1965),
-p 577-593
-
-@item
 J.J. Mor@'e, M.Y. Cosnard, "Numerical Solution of Nonlinear Equations",
 @cite{ACM Transactions on Mathematical Software}, Vol 5, No 1, (1979), p 64-85
+
+@item
+C.G. Broyden, "A Class of Methods for Solving Nonlinear
+Simultaneous Equations", @cite{Mathematics of Computation}, Vol 19 (1965),
+p 577-593
+
+@item 
+J.J. Mor@'e, B.S. Garbow, K.E. Hillstrom, "Testing Unconstrained
+Optimization Software", ACM Transactions on Mathematical Software, Vol
+7, No 1 (1981), p 17-41
 @end itemize
+

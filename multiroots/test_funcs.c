@@ -87,8 +87,8 @@ gsl_multiroot_function_fdf roth =
 void
 roth_initpt (gsl_vector * x)
 {
-  gsl_vector_set (x, 0, 0.5);  /* changed from the value in the paper */
-  gsl_vector_set (x, 1, 2.0);  /* otherwise the problem is too hard */
+  gsl_vector_set (x, 0, 4.5);  /* changed from the value in the paper */
+  gsl_vector_set (x, 1, 3.5);  /* otherwise the problem is too hard */
 }
 
 int
