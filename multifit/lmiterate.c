@@ -3,7 +3,6 @@ iterate (void *vstate, gsl_multifit_function_fdf * fdf, gsl_vector * x, gsl_vect
 {
   lmder_state_t *state = (lmder_state_t *) vstate;
 
-  gsl_matrix *q = state->q;
   gsl_matrix *r = state->r;
   gsl_vector *tau = state->tau;
   gsl_vector *diag = state->diag;
@@ -29,7 +28,8 @@ iterate (void *vstate, gsl_multifit_function_fdf * fdf, gsl_vector * x, gsl_vect
 
   /* Compute qtf = Q^T f */
 
-  compute_qtf (q, f, qtf);
+  gsl_vector_memcpy (qtf, f);
+  gsl_linalg_QR_QTvec (r, tau, qtf);
 
   /* Compute norm of scaled gradient */
 
@@ -184,7 +184,8 @@ lm_iteration:
 
       {
         int signum;
-        gsl_linalg_QRPT_decomp2 (J, q, r, tau, perm, &signum, work1);
+ 	gsl_matrix_memcpy (r, J);
+ 	gsl_linalg_QRPT_decomp (r, tau, perm, &signum, work1);
       }
       
       return GSL_SUCCESS;

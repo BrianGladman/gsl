@@ -238,4 +238,5 @@ for random number generators
 
 * Vincent Sacksteder <vincent@sacksteder.com> bug reports for MSVC7
 
-
+* Peter Verveer <verveer@embl-heidelberg.de> improvement to memory
+usage of MINPACK routines

@@ -98,21 +98,6 @@ update_diag (const gsl_matrix * J, gsl_vector * diag)
 }
 
 static void
-compute_qtf (const gsl_matrix * q, const gsl_vector * f, gsl_vector * qtf)
-{
-  size_t i, j, N = f->size;
-
-  for (j = 0; j < N; j++)
-    {
-      double sum = 0;
-      for (i = 0; i < N; i++)
-	sum += gsl_matrix_get (q, i, j) * gsl_vector_get (f, i);
-
-      gsl_vector_set (qtf, j, sum);
-    }
-}
-
-static void
 compute_rptdx (const gsl_matrix * r, const gsl_permutation * p,
 	       const gsl_vector * dx, gsl_vector * rptdx)
 {

@@ -40,7 +40,6 @@ typedef struct
     double fnorm;
     double delta;
     double par;
-    gsl_matrix *q;
     gsl_matrix *r;
     gsl_vector *tau;
     gsl_vector *diag;
@@ -76,26 +75,15 @@ static int
 lmder_alloc (void *vstate, size_t n, size_t p)
 {
   lmder_state_t *state = (lmder_state_t *) vstate;
-  gsl_matrix *q, *r;
+  gsl_matrix *r;
   gsl_vector *tau, *diag, *qtf, *newton, *gradient, *x_trial, *f_trial,
    *df, *sdiag, *rptdx, *w, *work1;
   gsl_permutation *perm;
-
-  q = gsl_matrix_calloc (n, n);
-
-  if (q == 0)
-    {
-      GSL_ERROR ("failed to allocate space for q", GSL_ENOMEM);
-    }
-
-  state->q = q;
 
   r = gsl_matrix_calloc (n, p);
 
   if (r == 0)
     {
-      gsl_matrix_free (q);
-
       GSL_ERROR ("failed to allocate space for r", GSL_ENOMEM);
     }
 
@@ -105,7 +93,6 @@ lmder_alloc (void *vstate, size_t n, size_t p)
 
   if (tau == 0)
     {
-      gsl_matrix_free (q);
       gsl_matrix_free (r);
 
       GSL_ERROR ("failed to allocate space for tau", GSL_ENOMEM);
@@ -117,7 +104,6 @@ lmder_alloc (void *vstate, size_t n, size_t p)
 
   if (diag == 0)
     {
-      gsl_matrix_free (q);
       gsl_matrix_free (r);
       gsl_vector_free (tau);
 
@@ -130,7 +116,6 @@ lmder_alloc (void *vstate, size_t n, size_t p)
 
   if (qtf == 0)
     {
-      gsl_matrix_free (q);
       gsl_matrix_free (r);
       gsl_vector_free (tau);
       gsl_vector_free (diag);
@@ -144,7 +129,6 @@ lmder_alloc (void *vstate, size_t n, size_t p)
 
   if (newton == 0)
     {
-      gsl_matrix_free (q);
       gsl_matrix_free (r);
       gsl_vector_free (tau);
       gsl_vector_free (diag);
@@ -159,7 +143,6 @@ lmder_alloc (void *vstate, size_t n, size_t p)
 
   if (gradient == 0)
     {
-      gsl_matrix_free (q);
       gsl_matrix_free (r);
       gsl_vector_free (tau);
       gsl_vector_free (diag);
@@ -175,7 +158,6 @@ lmder_alloc (void *vstate, size_t n, size_t p)
 
   if (x_trial == 0)
     {
-      gsl_matrix_free (q);
       gsl_matrix_free (r);
       gsl_vector_free (tau);
       gsl_vector_free (diag);
@@ -192,7 +174,6 @@ lmder_alloc (void *vstate, size_t n, size_t p)
 
   if (f_trial == 0)
     {
-      gsl_matrix_free (q);
       gsl_matrix_free (r);
       gsl_vector_free (tau);
       gsl_vector_free (diag);
@@ -210,7 +191,6 @@ lmder_alloc (void *vstate, size_t n, size_t p)
 
   if (df == 0)
     {
-      gsl_matrix_free (q);
       gsl_matrix_free (r);
       gsl_vector_free (tau);
       gsl_vector_free (diag);
@@ -229,7 +209,6 @@ lmder_alloc (void *vstate, size_t n, size_t p)
 
   if (sdiag == 0)
     {
-      gsl_matrix_free (q);
       gsl_matrix_free (r);
       gsl_vector_free (tau);
       gsl_vector_free (diag);
@@ -250,7 +229,6 @@ lmder_alloc (void *vstate, size_t n, size_t p)
 
   if (rptdx == 0)
     {
-      gsl_matrix_free (q);
       gsl_matrix_free (r);
       gsl_vector_free (tau);
       gsl_vector_free (diag);
@@ -271,7 +249,6 @@ lmder_alloc (void *vstate, size_t n, size_t p)
 
   if (w == 0)
     {
-      gsl_matrix_free (q);
       gsl_matrix_free (r);
       gsl_vector_free (tau);
       gsl_vector_free (diag);
@@ -293,7 +270,6 @@ lmder_alloc (void *vstate, size_t n, size_t p)
 
   if (work1 == 0)
     {
-      gsl_matrix_free (q);
       gsl_matrix_free (r);
       gsl_vector_free (tau);
       gsl_vector_free (diag);
@@ -316,7 +292,6 @@ lmder_alloc (void *vstate, size_t n, size_t p)
 
   if (perm == 0)
     {
-      gsl_matrix_free (q);
       gsl_matrix_free (r);
       gsl_vector_free (tau);
       gsl_vector_free (diag);
@@ -386,7 +361,6 @@ lmder_free (void *vstate)
   gsl_vector_free (state->diag);
   gsl_vector_free (state->tau);
   gsl_matrix_free (state->r);
-  gsl_matrix_free (state->q);
 }
 
 static const gsl_multifit_fdfsolver_type lmder_type =

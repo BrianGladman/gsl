@@ -1,5 +1,9 @@
 * What is new in gsl-1.3+:
 
+** Reduced the memory usage of the multifit algorithms from MxM to MxN
+for large M by performing the QR decomposition of the Jacobian
+in-place.
+
 ** Fixed a bug in gsl_permutation_canonical_to_linear which caused the
 output to always be zero, and the input permutation to be incorrectly
 replaced by the output.
