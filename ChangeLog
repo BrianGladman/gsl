@@ -1,3 +1,8 @@
+Mon Mar  1 15:41:25 1999  Brian Gough  <bjg@netsci.freeserve.co.uk>
+
+	* gsl_math.h: renamed gsl_fdf to gsl_function_fdf, so that it will
+ 	be more obvious what it is
+
 Sun Feb 28 20:37:31 1999  Brian Gough  <bjg@netsci.freeserve.co.uk>
 
 	* gsl_mode.h: added prototype for GSL_MODE_PREC(mt)
