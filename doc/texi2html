@@ -208,6 +208,12 @@ $html2_doctype = '<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0 Strict Level 2//E
 					# enclose in angles like makeinfo now does
 	      'r', '',			# unsupported
 	      'samp', '"SAMP',		# will put quotes, cf. &apply_style
+
+	      'option', 'CODE',	
+	      'env', 'CODE',
+	      'command', 'CODE',
+
+
 	      'sc', '&do_sc',		# special case
 	      'strong', 'STRONG',
 	      't', 'TT',
