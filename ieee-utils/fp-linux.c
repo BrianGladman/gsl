@@ -6,7 +6,7 @@
 int
 gsl_ieee_set_mode (int precision, int rounding, int exception_mask)
 {
-  int mode = 0 ;
+  unsigned short mode = 0 ;
 
   switch (precision)
     {

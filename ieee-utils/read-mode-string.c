@@ -60,13 +60,15 @@ gsl_ieee_read_mode_string (const char * description,
     status = lookup_string (p, &new_precision, &new_rounding, &new_exception) ;
 
     if (status)
-      GSL_ERROR ("unrecognized IEEE mode. Valid settings are:\n\n" 
+      GSL_ERROR ("unrecognized GSL_IEEE_MODE string.\nValid settings are:\n\n" 
 		 "  single-precision double-precision extended-precision\n"
 		 "  round-to-nearest round-down round-up round-to-zero\n"
 		 "  mask-invalid mask-denormalized mask-overflow "
-		 "mask-underflow trap-inexact\n"
+		 "mask-underflow\n"
+		 "  trap-inexact\n"
+		 "  mask-all\n"
 		 "\nseparated by semicolons. "
-		 "(default is GSL_IEEE_MODE=\"extended;round-to-nearest\")",
+		 "(e.g. GSL_IEEE_MODE=\"extended;round-to-nearest\")",
 		 GSL_EINVAL) ;
 
     if (new_precision) 
@@ -131,6 +133,10 @@ lookup_string (const char * p, int * precision, int * rounding,
   else if (strcmp(p,"round-to-zero") == 0) 
     {
       *rounding = GSL_IEEE_ROUND_TO_ZERO ;
+    }
+  else if (strcmp(p,"mask-all") == 0) 
+    {
+      *exception_mask = GSL_IEEE_MASK_ALL ;
     }
   else if (strcmp(p,"mask-invalid") == 0) 
     {

@@ -11,8 +11,13 @@ gsl_ieee_env_setup (void)
 
   int precision = 0, rounding = 0, exception_mask = 0 ;
 
-  if (p)
-    gsl_ieee_read_mode_string (p, &precision, &rounding, &exception_mask) ;
+  if (p == 0)  /* GSL_IEEE_MODE environment variable is not set */
+    return ;
+
+  if (strlen(p) == 0) /* GSL_IEEE_MODE environment variable is empty */
+    return ;
+
+  gsl_ieee_read_mode_string (p, &precision, &rounding, &exception_mask) ;
 
   gsl_ieee_set_mode (precision, rounding, exception_mask) ;
   
@@ -27,47 +32,50 @@ gsl_ieee_env_setup (void)
       printf("double-precision;") ;
       break ;
     case GSL_IEEE_EXTENDED_PRECISION:
-      printf("extended-precision") ;
+      printf("extended-precision;") ;
       break ;
-    default:
-      printf("default-precision") ;
     }
 
   switch (rounding) 
     {
     case GSL_IEEE_ROUND_TO_NEAREST:
-      printf(";round-to-nearest") ;
+      printf("round-to-nearest;") ;
       break ;
     case GSL_IEEE_ROUND_DOWN:
-      printf(";round-down") ;
+      printf("round-down;") ;
       break ;
     case GSL_IEEE_ROUND_UP:
-      printf(";round-up") ;
+      printf("round-up;") ;
       break ;
     case GSL_IEEE_ROUND_TO_ZERO:
-      printf(";round-to-zero") ;
+      printf("round-to-zero;") ;
       break ;
-    default:
-      printf(";default-rounding") ;
     }
 
-  if (exception_mask & GSL_IEEE_MASK_INVALID)
-    printf(";mask-invalid") ;
-
-  if (exception_mask & GSL_IEEE_MASK_DENORMALIZED)
-    printf(";mask-denormalized") ;
-
-  if (exception_mask & GSL_IEEE_MASK_DIVISION_BY_ZERO)
-    printf(";mask-division-by-zero") ;
-
-  if (exception_mask & GSL_IEEE_MASK_OVERFLOW)
-    printf(";mask-overflow") ;
-
-  if (exception_mask & GSL_IEEE_MASK_UNDERFLOW)
-    printf(";mask-underflow") ;
+  if ((exception_mask & GSL_IEEE_MASK_ALL) == GSL_IEEE_MASK_ALL)
+    {
+      printf("mask-all;") ;
+    }
+  else 
+    {
+      if (exception_mask & GSL_IEEE_MASK_INVALID)
+	printf("mask-invalid;") ;
+      
+      if (exception_mask & GSL_IEEE_MASK_DENORMALIZED)
+	printf("mask-denormalized;") ;
+      
+      if (exception_mask & GSL_IEEE_MASK_DIVISION_BY_ZERO)
+	printf("mask-division-by-zero;") ;
+      
+      if (exception_mask & GSL_IEEE_MASK_OVERFLOW)
+	printf("mask-overflow;") ;
+      
+      if (exception_mask & GSL_IEEE_MASK_UNDERFLOW)
+	printf("mask-underflow;") ;
+    }
 
   if (exception_mask & GSL_IEEE_TRAP_INEXACT)
-    printf(";trap-inexact") ;
+    printf("trap-inexact;") ;
   
   printf("\"\n") ;
 }
