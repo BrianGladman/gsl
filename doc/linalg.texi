@@ -65,7 +65,7 @@ matrices this decomposition can be used to convert the linear system
 This function factorizes the square matrix @var{A} into the @math{LU}
 decomposition @math{PA = LU}.  On output the diagonal and upper
 triangular part of the input matrix @var{A} contain the matrix
-@math{R}. The lower triangular part of the input matrix (excluding the
+@math{U}. The lower triangular part of the input matrix (excluding the
 diagonal) contains @math{L}.  The diagonal elements of @math{L} are
 unity, and are not stored.
 
