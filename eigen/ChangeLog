@@ -1,0 +1,5 @@
+Fri Apr 13 20:33:18 2001  Brian Gough  <bjg@network-theory.co.uk>
+
+	* eigen/test.c (test_invert_jacobi): removed matmult and replaced
+ 	by gsl_blas_dgemm
+
