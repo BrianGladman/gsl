@@ -113,6 +113,7 @@ function library and numerical integration.
 
 @menu
 * Preliminaries::               
+* Using the library::           
 * Error handling in GSL::       
 * Random number generation::    
 * Statistics::                  
@@ -135,7 +136,7 @@ function library and numerical integration.
 * Type Index::                  
 @end menu
 
-@node Preliminaries, Error handling in GSL, Top, Top
+@node Preliminaries, Using the library, Top, Top
 @chapter Preliminaries
 
 The GNU Scientific Library (GSL) is a collection of routines for
@@ -144,8 +145,14 @@ team (@pxref{Contributors to GSL}) in C, and are meant to present a
 modern Applications Programming Interface (API) for C programmers, while
 allowing wrappers to be written for very high level languages.
 
+@c Section on using the library
+@node Using the library, Error handling in GSL, Preliminaries, Top
+@chapter Using the library
+@cindex usage, compiling application programs
+@include usage.texi
+
 @c Section on error handling
-@node Error handling in GSL, Random number generation, Preliminaries, Top
+@node Error handling in GSL, Random number generation, Using the library, Top
 @chapter Error handling in GSL
 @cindex Errors
 @include err.texi
