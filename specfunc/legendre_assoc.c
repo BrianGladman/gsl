@@ -18,7 +18,7 @@
 
 /* P_{-1/2 + I lambda}^{1/2} (x)
  * [Abramowitz+Stegun 8.6.8, 8.6.12]
- * checked OK [GJ]
+ * checked OK [GJ] Fri May  8 12:24:36 MDT 1998 
  */
 int gsl_sf_conical_sph_irr_1_impl(const double lambda,
                                   const double one_minus_x,
@@ -49,7 +49,7 @@ int gsl_sf_conical_sph_irr_1_impl(const double lambda,
 
 /* P_{-1/2 + I lambda}^{-1/2} (x)
  * [Abramowitz+Stegun 8.6.9, 8.6.14]
- * checked OK [GJ] 
+ * checked OK [GJ] Fri May  8 12:24:43 MDT 1998 
  */
 int gsl_sf_conical_sph_reg_0_impl(const double lambda,
                                   const double one_minus_x,

@@ -68,6 +68,7 @@ libgslspecfunc_a_SOURCES = 	\
 	laguerre.c		\
 	legendre.c		\
 	legendre_assoc.c	\
+	legendre_con.c		\
 	legendre_poly.c		\
 	log.c			\
 	poly.c			\
