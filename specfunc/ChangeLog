@@ -1,3 +1,8 @@
+Tue Nov 17 17:29:31 1998  Brian Gough  <bjg@vvv.lanl.gov>
+
+	* chebyshev.c (gsl_sf_cheb_eval_n): changed local gslMIN and
+ 	gslMAX to the standard GSL_MIN and GSL_MAX macros
+
 Tue Aug 18 13:36:15 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
 	* coulomb.c (C0sq): changed to using gsl_sf_expm1_impl instead of
