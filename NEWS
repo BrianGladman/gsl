@@ -1,6 +1,7 @@
 * What is new in gsl-0.7+:
 
-** IEEE support for HPUX-11, NetBSD and OS/2 are now included
+** IEEE support for HPUX-11, NetBSD, Apple Darwin and OS/2 are now
+included
 
 ** The library now includes implementations of log1p, expm1, hypot,
 acosh, asinh, atanh for platforms which do not provide them.

@@ -183,6 +183,10 @@ case "$host" in
         AC_DEFINE(HAVE_IRIX_IEEE_INTERFACE)
         AC_MSG_RESULT([irix]) 
         ;;
+    *-*-*darwin*) 
+        AC_DEFINE(HAVE_DARWIN_IEEE_INTERFACE)
+        AC_MSG_RESULT([darwin]) 
+        ;;
     *-*-*netbsd*) 
         AC_DEFINE(HAVE_NETBSD_IEEE_INTERFACE)
         AC_MSG_RESULT([netbsd]) 
