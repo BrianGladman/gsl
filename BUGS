@@ -349,3 +349,12 @@ for large arguments due to loss of precision.
 > 
 > }
 
+----------------------------------------------------------------------
+BUG#14 -- qagil
+
+The extrapolation used in qags gives negative results when integrating
+the small tails of probability distributions using qagil, even though
+each individual term in the sequence is positive and increasing (!).
+This is a feature of the original quadpack and appears to be due to
+the extrapolation algorithm, which should probably be tweaked to avoid
+this undesirable behavior.
