@@ -169,8 +169,8 @@ rand_set (void *vstate, unsigned long int s)
 
 static const gsl_rng_type rand_type =
 {"rand",			/* name */
- 4194304,			/* RAND_MAX */
- 0,       			/* RAND_MIN */
+ 4194303,			/* RAND_MAX */
+ 0,				/* RAND_MIN */
  sizeof (rand_state_t),
  &rand_set,
  &rand_get};
