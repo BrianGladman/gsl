@@ -1,3 +1,8 @@
+1999-08-05  Mark Galassi  <rosalia@lanl.gov>
+
+	* gsl-histogram.c (main): fixed a simple logic bug.  Thanks to
+	Barak Pearlmutter (bap@cs.unm.edu) for the patch.
+
 1998-11-06    <bjg@ancho.lanl.gov>
 
 	* used a cast of (int) when attempting to print size_t variables

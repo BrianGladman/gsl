@@ -33,16 +33,12 @@ main (int argc, char **argv)
   {
     gsl_histogram *h = gsl_histogram_calloc_uniform (n, a, b);
     int status;
+    double x;
 
-    do
+    while (fscanf(stdin, "%lg", &x) == 1)
       {
-	double x;
-	status = fscanf (stdin, "%lg", &x);
-
-	gsl_histogram_increment (h, x);
-
+	gsl_histogram_increment(h, x);
       }
-    while (status == 1);
 
     gsl_histogram_fprintf (stdout, h, "%g", "%g");
   }
