@@ -103,10 +103,10 @@ down the program significantly.  For most programs this is not
 required and can be turned off with /Op-.
 
 The library is built with the /LD or /LDd option.  This is compatible
-with the default link option /ML for single-threaded applications.
-To use GSL in a multi-threaded application you may need to recompile
-the library with another option, such as /MD.  See the Microsoft
-Visual C++ Manual for details on link options.
+with the default link option /ML for single-threaded applications.  To
+use GSL in a multi-threaded application you may need to recompile the
+library with another option, such as /MT or /MTd (for debugging).  See
+the Microsoft Visual C++ Manual for details on link options.
 
 The initial scripts were provided by José Miguel Buenaposada
 (jmbuena@dia.fi.upm.es) and subsequently modified by Brian Gough
