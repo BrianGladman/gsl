@@ -212,7 +212,7 @@ These functions exchange the elements of the vectors @var{x} and @var{y}.
 @deftypefunx int gsl_blas_dcopy (const gsl_vector * @var{x}, gsl_vector * @var{y})
 @deftypefunx int gsl_blas_ccopy (const gsl_vector_complex_float * @var{x}, gsl_vector_complex_float * @var{y})
 @deftypefunx int gsl_blas_zcopy (const gsl_vector_complex * @var{x}, gsl_vector_complex * @var{y})
-@cindex COPy, Level-1 BLAS
+@cindex COPY, Level-1 BLAS
 These functions copy the elements of the vector @var{x} into the vector
 @var{y}.
 @end deftypefun
@@ -222,7 +222,7 @@ These functions copy the elements of the vector @var{x} into the vector
 @deftypefunx int gsl_blas_daxpy (double @var{alpha}, const gsl_vector * @var{x}, gsl_vector * @var{y})
 @deftypefunx int gsl_blas_caxpy (const gsl_complex_float @var{alpha}, const gsl_vector_complex_float * @var{x}, gsl_vector_complex_float * @var{y})
 @deftypefunx int gsl_blas_zaxpy (const gsl_complex @var{alpha}, const gsl_vector_complex * @var{x}, gsl_vector_complex * @var{y})
-@cindex AXPy, Level-1 BLAS
+@cindex AXPY, Level-1 BLAS
 These functions compute the sum @math{y = \alpha x + y} for the vectors
 @var{x} and @var{y}.
 @end deftypefun
