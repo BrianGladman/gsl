@@ -34,3 +34,7 @@ differently.  There is a special formula given for it in Abramowitz &
 Stegun 15.3.10
 
 ----------------------------------------------------------------------
+
+In QAWO the expressions center-half_length and center+half_length should
+be replaced by a and b to avoid cancellation errors which occur for 
+ranges like [1e-30, 1]

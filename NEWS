@@ -1,4 +1,15 @@
-* What is new in gsl-1.1:
+* What is new in gsl-1.1.1:
+
+** Fixes to histogram2d stat functions
+
+** Added missing prototypes for complex LU determinant functions
+
+** Improved error handling in multifit routines
+
+** Added check to avoid division by zero for rank-deficient matrix in
+multifit iteration
+
+* What was new in gsl-1.1:
 
 ** The permutation module now includes a copy function
 gsl_permutation_memcpy
