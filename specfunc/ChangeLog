@@ -1,3 +1,10 @@
+2001-06-28  Brian Gough  <bjg@hppav.local>
+
+	* elementary.c (gsl_sf_multiply_e): use GSL_COERCE_DBL macro to
+	deal with extended register problem
+
+	* coupling.c: include stdlib.h for prototype of abs()
+
 Wed Jun 27 21:20:22 2001  Brian Gough  <bjg@network-theory.co.uk>
 
 	* test_sf.c (test_fermidirac): increased tolerance on test of
