@@ -22,16 +22,18 @@ done
 }
 
 if [ "$1" = "--switch" -o "$1" = "-switch" ]; then
-    echo '### $Id$'                     > gsl_ran_switch.h
-    echo '### '                            >> gsl_ran_switch.h
+
+    echo '### '                             > gsl_ran_switch.h
     echo "void gsl_ran_use_default(void);" >> gsl_ran_switch.h
+    list=`egrep '^ALLRAN=' Makefile.ami | sed s/ALLRAN=//`
     for i in $list; do
-	echo "void gsl_ran_use_$i(void);" >> gsl_ran_switch.h
+	if [ -z "$fave" ]; then fave=$i; fi
+	echo "void gsl_ran_use_$i(void);"  >> gsl_ran_switch.h
     done
     
     sed -n -e '/include..XXX.h./,$p' < xxx-switch.xc > tmp.xxx
     sed    -e '/include..XXX.h./,$d' \
-    -e s/YYY/$fave/           < xxx-switch.xc > switch.c
+           -e s/YYY/$fave/           < xxx-switch.xc > switch.c
 
     for xxx in $list; do
 	sed s/XXX/$xxx/g tmp.xxx >> switch.c
