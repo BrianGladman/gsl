@@ -13,7 +13,7 @@ by the integral representations
 $$
 \eqalign{
 Ai(x) & = {1\over\pi} \int_0^\infty \cos( {1\over 3} t^3 + xt ) dt, \cr
-Bi(x) & = {1\over\pi} \int_0^\infty (e^{-t^3/3} + \sin({1\over 3} t^3 + xt) dt.
+Bi(x) & = {1\over\pi} \int_0^\infty (e^{-t^3/3} + \sin({1\over 3} t^3 + xt)) dt.
 }
 $$
 \afterdisplay
