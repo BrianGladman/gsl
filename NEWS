@@ -1,6 +1,6 @@
-We need to do a better job with the NEWS file!
+#We need to do a better job with the NEWS file!
 
-* Will be new in gsl-0.3g:
+* Will be new in gsl-0.4:
 
 ** A single libgsl.a file is built in the top level directory and
 installed, instead of multiple .a files for each subdirectory.
@@ -35,7 +35,7 @@ implementation hasn't been finished for all the cases yet, The FFT
 allocation functions now return a pointer to a newly allocated
 wavetable struct, instead of taking the pointer to an existing struct
 as an argument.
-   
+
    e.g. status = gsl_fft_wavetable_alloc(n, w)
    is now    w = gsl_fft_wavetable_alloc(n) in accordance with usual practice
 

@@ -1,3 +1,19 @@
+1998-08-20  Mark Galassi  <rosalia@cygnus.com>
+
+	* configure.in: upped version to 0.4-interim as we prepare for a
+	0.4 snapshot.
+
+	* NEWS: now refers to 0.4 instead of 0.3g.  Also "commented out"
+	(smile) the note that says "we need to do a better job with the
+	news file", since it looks quite good now!
+
+1998-08-19  Mark Galassi  <rosalia@cygnus.com>
+
+	* doc/Makefile.am (EXTRA_DIST): added ran-exppow.tex,
+	rand-levy.tex, rand-gumbel.tex and rand-bernoulli.tex to
+	EXTRA_DIST.  Now they are included in the distribution and a "make
+	distcheck" goes further.
+
 Thu Jul 30 16:12:05 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
 	* Makefile.am: now using a script to write the AR commands
