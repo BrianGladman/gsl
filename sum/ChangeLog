@@ -1,5 +1,9 @@
 Thu Oct 28 12:05:47 1999  Brian Gough  <bjg@network-theory.co.uk>
 
+	* test.c: cleaned up tests, now find that everything works in
+ 	double-precision but not extended-precision where there are two
+ 	failures depending on the optimization level
+
 	* levin_uerr.c (gsl_sum_levin_u_accel_minmax): changed loop
  	maximum from <=n to <n to avoid access of uninitialized memory,
  	need further correctness checks on algorithm though.

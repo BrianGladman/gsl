@@ -115,7 +115,7 @@ gsl_sum_levin_u_accel_minmax (const double *array,
 
 	  for (i = 0; i <= n; i++)
 	    {
-	      double dn = dsum[i] * GSL_MACH_EPS * array[i];
+	      double dn = dsum[i] * GSL_MACH_EPS * array[i]; 
 	      variance += dn * dn;
 	    }
 
@@ -154,7 +154,7 @@ gsl_sum_levin_u_accel_minmax (const double *array,
 	     error estimate.  */
 
 	  *sum_accel = least_trunc_result;
-	  *precision = (GSL_MAX (least_trunc, least_trunc_noise)
+	  *precision = (GSL_MAX_DBL (least_trunc, least_trunc_noise)
 			/ fabs (*sum_accel));
 	  *n_used = n ;
 	  return GSL_SUCCESS;
@@ -165,7 +165,7 @@ gsl_sum_levin_u_accel_minmax (const double *array,
 	     calculated values.  */
 
 	  *sum_accel = result_n;
-	  *precision = GSL_MAX (trunc_n, noise_n) / fabs (result_n);
+	  *precision = GSL_MAX_DBL (trunc_n, noise_n) / fabs (result_n);
 	  *n_used = n ;
 	  return GSL_SUCCESS;
 	}
@@ -186,7 +186,7 @@ gsl_sum_levin_u_step (const double term,
 		      double *sum_plain)
 {
 
-#define I(i,j) ((i)*(nmax+1) + j)
+#define I(i,j) ((i)*(nmax+1) + (j))
 
   if (n == 0)
     {
@@ -205,6 +205,7 @@ gsl_sum_levin_u_step (const double term,
     }
   else
     {
+      double result;
       double factor = 1.0;
       double ratio = (double) n / (n + 1.0);
       unsigned int i;
@@ -241,12 +242,13 @@ gsl_sum_levin_u_step (const double term,
 	  dq_num[I (n, j)] = dq_num[I (n, j + 1)];
 	}
 
-      *sum_accel = q_num[0] / q_den[0];
+      result = q_num[0] / q_den[0];
+
+      *sum_accel = result;
 
       for (i = 0; i <= n; i++)
 	{
-	  dsum[i] = (dq_num[I (i, 0)] / q_den[0]
-		     - q_num[0] * dq_den[I (i, 0)] / (q_den[0] * q_den[0]));
+	  dsum[i] = (dq_num[I (i, 0)] - result * dq_den[I (i, 0)]) / q_den[0];
 	}
 
       return GSL_SUCCESS;

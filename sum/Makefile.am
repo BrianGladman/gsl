@@ -5,11 +5,11 @@ check_PROGRAMS = test
 pkginclude_HEADERS = \
 	gsl_sum.h
 
-INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../err 
+INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../ieee-utils/ -I$(srcdir)/../err 
 
 TESTS = test
 
-test_LDADD = libgslsum.a ../err/libgslerr.a ../err/libgsltest.a ../utils/libutils.a
+test_LDADD = libgslsum.a ../ieee-utils/libgslieeeutils.a ../sys/libgslsys.a ../err/libgslerr.a ../err/libgsltest.a ../utils/libutils.a
 test_DEPENDENCIES = libgslsum.a
 test_SOURCES = test.c
 
