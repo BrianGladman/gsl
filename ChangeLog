@@ -1,3 +1,8 @@
+2004-05-28  Brian Gough  <bjg@network-theory.co.uk>
+
+	* configure.ac: ran configure script through Autoconf's autoupdate
+	to use latest macro names
+
 2004-05-17  Brian Gough  <bjg@network-theory.co.uk>
 
 	* gsl.m4: fix m4 quoting of first argument to AC_DEFUN

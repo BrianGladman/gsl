@@ -1,10 +1,10 @@
 dnl Process this file with autoconf to produce a configure script.
 
-AC_INIT(gsl,1.4+)
+AC_INIT([gsl],[1.4+])
 AC_CONFIG_SRCDIR(gsl_math.h)
 
 AM_INIT_AUTOMAKE([gnu no-dependencies])
-AM_CONFIG_HEADER(config.h)
+AC_CONFIG_HEADERS([config.h])
 AM_MAINTAINER_MODE
 
 dnl Library versioning (current:revision:age)
@@ -67,11 +67,9 @@ dnl for AC_C_INLINE from acspecific.mt
 dnl
 AC_CACHE_CHECK([for extern inline], ac_cv_c_extern_inline,
 [ac_cv_c_extern_inline=no
-AC_TRY_COMPILE([extern $ac_cv_c_inline double foo(double x);
+AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[extern $ac_cv_c_inline double foo(double x);
 extern $ac_cv_c_inline double foo(double x) { return x + 1.0 ; } ;
-double foo (double x) { return x + 1.0 ; };], 
-[  foo(1.0)  ],
-[ac_cv_c_extern_inline="yes"])
+double foo (double x) { return x + 1.0 ; };]], [[  foo(1.0)  ]])],[ac_cv_c_extern_inline="yes"],[])
 ])
 
 if test "$ac_cv_c_extern_inline" != no ; then
@@ -146,7 +144,7 @@ case "$host" in
 esac
 
 AC_CACHE_CHECK([for long double stdio], ac_cv_func_printf_longdouble,
-[AC_TRY_RUN([
+[AC_RUN_IFELSE([AC_LANG_SOURCE([[
 #include <stdlib.h>
 #include <stdio.h>
 int main (void) 
@@ -155,10 +153,7 @@ const char * s = "5678"; long double x = 1.234 ;
 fprintf(stderr,"%Lg\n",x) ; 
 sscanf(s, "%Lg", &x);
 if (x == 5678) {exit (0);} else {exit(1); };
-}],
-ac_cv_func_printf_longdouble="yes", 
-ac_cv_func_printf_longdouble="no", 
-ac_cv_func_printf_longdouble="no")])
+}]])],[ac_cv_func_printf_longdouble="yes"],[ac_cv_func_printf_longdouble="no"],[ac_cv_func_printf_longdouble="no"])])
 
 if test "$ac_cv_func_printf_longdouble" != no; then
   AC_DEFINE(HAVE_PRINTF_LONGDOUBLE,1)
@@ -258,13 +253,12 @@ esac
 if test "$ac_cv_c_ieee_interface" = "gnux86" ; then
     AC_CACHE_CHECK([for FPU_SETCW], ac_cv_c_fpu_setcw,
     [ac_cv_c_fpu_setcw=no
-    AC_TRY_COMPILE([#include <fpu_control.h>
+    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#include <fpu_control.h>
 #ifndef _FPU_SETCW
 #include <i386/fpu_control.h>
 #define _FPU_SETCW(cw) __setfpucw(cw)
 #endif
-],  [ unsigned short mode = 0 ; _FPU_SETCW(mode); ],
-    [ac_cv_c_fpu_setcw="yes"],[ac_cv_c_ieee_interface=unknown])
+]], [[ unsigned short mode = 0 ; _FPU_SETCW(mode); ]])],[ac_cv_c_fpu_setcw="yes"],[ac_cv_c_ieee_interface=unknown])
     ])
 fi
 
@@ -307,9 +301,7 @@ case "$host" in
 esac
 if test X"$ieee_flags" != X ; then
   CFLAGS="$ieee_flags $CFLAGS"
-  AC_TRY_COMPILE(,[int foo;],
-  ac_cv_c_ieee_flags="$ieee_flags",
-  ac_cv_c_ieee_flags="none")
+  AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[]], [[int foo;]])],[ac_cv_c_ieee_flags="$ieee_flags"],[ac_cv_c_ieee_flags="none"])
 else
   ac_cv_c_ieee_flags="none"
 fi])
@@ -323,7 +315,7 @@ fi
 dnl Check IEEE comparisons, whether "x != x" is true for NaNs
 dnl
 AC_CACHE_CHECK([for IEEE comparisons], ac_cv_c_ieee_comparisons,
-[AC_TRY_RUN([
+[AC_RUN_IFELSE([AC_LANG_SOURCE([[
 #include <math.h>
 int main (void) 
 { 
@@ -332,10 +324,7 @@ int main (void)
    nan = inf / inf ;
    status = (nan == nan);
    exit (status);
-}],
-ac_cv_c_ieee_comparisons="yes",
-ac_cv_c_ieee_comparisons="no",
-ac_cv_c_ieee_comparisons="yes")
+}]])],[ac_cv_c_ieee_comparisons="yes"],[ac_cv_c_ieee_comparisons="no"],[ac_cv_c_ieee_comparisons="yes"])
 ])
 
 if test "$ac_cv_c_ieee_comparisons" != no ; then
@@ -346,7 +335,7 @@ fi
 dnl Check for IEEE denormalized arithmetic
 dnl
 AC_CACHE_CHECK([for IEEE denormalized values], ac_cv_c_ieee_denormals,
-[AC_TRY_RUN([
+[AC_RUN_IFELSE([AC_LANG_SOURCE([[
 #include <math.h> 
 int main (void) 
 { 
@@ -356,10 +345,7 @@ int main (void)
    for (i = 0; i < 5; i++) { z = z * 10.0 ; };
    status = (z == 0.0);
    exit (status);
-}],
-ac_cv_c_ieee_denormals="yes",
-ac_cv_c_ieee_denormals="no",
-ac_cv_c_ieee_denormals="yes")
+}]])],[ac_cv_c_ieee_denormals="yes"],[ac_cv_c_ieee_denormals="no"],[ac_cv_c_ieee_denormals="yes"])
 ])
 
 if test "$ac_cv_c_ieee_denormals" != no ; then
@@ -368,4 +354,5 @@ if test "$ac_cv_c_ieee_denormals" != no ; then
 fi
 
 dnl
-AC_OUTPUT(gsl-config gsl.pc gsl_version.h gsl.spec gsl/Makefile test/Makefile err/Makefile sys/Makefile utils/Makefile const/Makefile min/Makefile multimin/Makefile ieee-utils/Makefile fft/Makefile specfunc/Makefile dht/Makefile fit/Makefile multifit/Makefile statistics/Makefile sum/Makefile roots/Makefile multiroots/Makefile ntuple/Makefile poly/Makefile qrng/Makefile rng/Makefile randist/Makefile siman/Makefile integration/Makefile interpolation/Makefile doc/Makefile block/Makefile vector/Makefile matrix/Makefile histogram/Makefile monte/Makefile ode-initval/Makefile cblas/Makefile blas/Makefile linalg/Makefile eigen/Makefile permutation/Makefile combination/Makefile sort/Makefile complex/Makefile diff/Makefile deriv/Makefile cheb/Makefile cdf/Makefile Makefile)
+AC_CONFIG_FILES([gsl-config gsl.pc gsl_version.h gsl.spec gsl/Makefile test/Makefile err/Makefile sys/Makefile utils/Makefile const/Makefile min/Makefile multimin/Makefile ieee-utils/Makefile fft/Makefile specfunc/Makefile dht/Makefile fit/Makefile multifit/Makefile statistics/Makefile sum/Makefile roots/Makefile multiroots/Makefile ntuple/Makefile poly/Makefile qrng/Makefile rng/Makefile randist/Makefile siman/Makefile integration/Makefile interpolation/Makefile doc/Makefile block/Makefile vector/Makefile matrix/Makefile histogram/Makefile monte/Makefile ode-initval/Makefile cblas/Makefile blas/Makefile linalg/Makefile eigen/Makefile permutation/Makefile combination/Makefile sort/Makefile complex/Makefile diff/Makefile deriv/Makefile cheb/Makefile cdf/Makefile Makefile])
+AC_OUTPUT
