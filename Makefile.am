@@ -26,7 +26,7 @@ libgsl.a.c:
 # are newer It has to be kept up to date manually, using the fixmk.pl
 # script.
 
-libgsl.a: err/libgslerr.a err/libgsltest.a ieee-utils/libgslieeeutils.a vector/libgslvector.a matrix/libgslmatrix.a blas/libgslblas.a blas/libgslblasnative.a blas/libgslblascblas.a specfunc/libgslspecfunc.a rng/libgslrng.a randist/libgslrandist.a fft/libgslfft.a roots/libgslroots.a statistics/libgslstatistics.a siman/libgslsiman.a integration/libgslintegration.a interpolation/libgslinterpolation.a histogram/libgslhistogram.a monte/libgslmonte.a
+libgsl.a: all-recursive err/libgslerr.a err/libgsltest.a ieee-utils/libgslieeeutils.a vector/libgslvector.a matrix/libgslmatrix.a blas/libgslblas.a blas/libgslblasnative.a blas/libgslblascblas.a specfunc/libgslspecfunc.a rng/libgslrng.a randist/libgslrandist.a fft/libgslfft.a roots/libgslroots.a statistics/libgslstatistics.a siman/libgslsiman.a integration/libgslintegration.a interpolation/libgslinterpolation.a histogram/libgslhistogram.a monte/libgslmonte.a
 	@rm -f libgsl.a
 	$(AR) q libgsl.a err/error.o err/stream.o err/message.o err/strerror.o err/warn.o
 	$(AR) q libgsl.a err/test_results.o
