@@ -38,6 +38,7 @@ typedef    struct gsl_interp_obj_struct   gsl_interp_obj;
 
 /* interpolation object factory */
 typedef struct {
+  const char * name;
   gsl_interp_obj *  (*create) (const double x_array[], const double y_array[], int size);
 }
 gsl_interp_obj_factory;

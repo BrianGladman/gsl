@@ -36,6 +36,7 @@ gsl_interp_linear_eval_d_impl(const gsl_interp_obj *, const double xa[], const d
 
 
 const gsl_interp_obj_factory gsl_interp_linear_factory = {
+  "linear",
   gsl_interp_linear_create
 };
 

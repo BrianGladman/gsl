@@ -40,9 +40,11 @@ gsl_interp_cspline_eval_d_impl(const gsl_interp_obj *, const double xa[], const 
 
 /* global cubic spline factory objects */
 const gsl_interp_obj_factory gsl_interp_cspline_factory = {
+  "cspline",
   gsl_interp_cspline_create
 };
 const gsl_interp_obj_factory gsl_interp_cspline_fixed_factory = {
+  "cspline_fixed",
   gsl_interp_cspline_fixed_create
 };
 
