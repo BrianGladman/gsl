@@ -135,7 +135,9 @@
         iy += incY;
       }
 
-    }
+} else {
+      BLAS_ERROR ("unrecognized operation");
+}
 }
 
 

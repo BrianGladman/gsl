@@ -803,6 +803,18 @@ function YY = blas_hpmv (order, uplo, N, alpha, A, X, incX, beta, Y, incY)
   YY = vout(Y, incY, N, y);
 endfunction
 
+function YY = blas_spmv (order, uplo, N, alpha, A, X, incX, beta, Y, incY)
+  a = tpmatrix (order, uplo, 131, A, N); # nounit
+  t = triu(a,1) + tril(a,-1);
+  a = diag(real(diag(a))) + t + t';  # make symmetric
+  x = vector (X, incX, N);
+  y = vector (Y, incY, N);
+  
+  y = alpha * a * x + beta * y;
+  
+  YY = vout(Y, incY, N, y);
+endfunction
+
 
 
 ######################################################################
@@ -1620,24 +1632,24 @@ n=16;
 #   endfor
 # endfor
 
-for j = 1:16
-  for i = [s,d]
-    S = context(i);
-    T = test_sbmatvectors(S, j);
-    for alpha = coeff(S)
-      for beta = coeff(S)
-        for order = [101, 102]
-          for uplo = [121, 122]
-            for diag = [131, 132]
-              test_hbsbmv (S, "sbmv", order, uplo, T.n, T.k, alpha, T.A, T.lda, T.v1, \
-                           T.s1, beta, T.v2, T.s2);
-            endfor
-          endfor
-        endfor
-      endfor
-    endfor
-  endfor
-endfor
+# for j = 1:16
+#   for i = [s,d]
+#     S = context(i);
+#     T = test_sbmatvectors(S, j);
+#     for alpha = coeff(S)
+#       for beta = coeff(S)
+#         for order = [101, 102]
+#           for uplo = [121, 122]
+#             for diag = [131, 132]
+#               test_hbsbmv (S, "sbmv", order, uplo, T.n, T.k, alpha, T.A, T.lda, T.v1, \
+#                            T.s1, beta, T.v2, T.s2);
+#             endfor
+#           endfor
+#         endfor
+#       endfor
+#     endfor
+#   endfor
+# endfor
 
 
 # for j = 1:n
@@ -1658,3 +1670,22 @@ endfor
 #     endfor
 #   endfor
 # endfor
+
+for j = 1:n
+  for i = [s,d]
+    S = context(i);
+    T = test_spmatvectors(S, j);
+    for alpha = coeff(S)
+      for beta = coeff(S)
+        for order = [101, 102]
+          for uplo = [121, 122]
+            for diag = [131, 132]
+              test_hpspmv (S, "spmv", order, uplo, T.n, alpha, T.A, T.v1, \
+                           T.s1, beta, T.v2, T.s2);
+            endfor
+          endfor
+        endfor
+      endfor
+    endfor
+  endfor
+endfor
