@@ -29,8 +29,6 @@ seeding is usually a one-off cost at program initialization, and the
 results of all subsequent calls to the generator depend on it.  The
 GSFR4 generator is particularly likely to benefit from this procedure.
 
-* Add read/write functions for saving the state
-
 * Add SWNS generator Phys.Rev.E 50 (2) p. 1607-1615 (1994), Phys.Rev.E
 60 (6), p.7626-7628 (1999)
 
