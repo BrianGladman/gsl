@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include <gsl_errno.h>
 #include <gsl_test.h>
 #include <gsl_sf.h>
 
@@ -128,6 +129,30 @@ int check_bessel(void)
   gsl_test(s, "  gsl_sf_bessel_Jnu");
   status += s;
 
+
+  return status;
+}
+
+
+int check_clausen(void)
+{
+  double y;
+  int status = 0;
+  int s;
+
+  s = 0;
+  s += ( frac_diff( gsl_sf_clausen(M_PI/20.0), 0.4478882448133546 ) > 1.e-14 );
+  s += ( frac_diff( gsl_sf_clausen(M_PI/6.0),  0.8643791310538927 ) > 1.e-14 );
+  s += ( frac_diff( gsl_sf_clausen(M_PI/3.0),  1.0149416064096535 ) > 1.e-14 );
+  s += ( frac_diff( gsl_sf_clausen(  2.0*M_PI + M_PI/3.0),  1.0149416064096535 ) > 1.e-14 );
+  s += ( frac_diff( gsl_sf_clausen(100.0*M_PI + M_PI/3.0),  1.0149416064096535 ) > 1.e-14 );
+  gsl_test(s, "  gsl_sf_clausen");
+  status += s;
+  
+  s = 0;
+  s += ( gsl_sf_clausen_impl(1.0e+6*M_PI + M_PI/3.0, &y) != GSL_ELOSS);
+  gsl_test(s, "  gsl_sf_clausen: trap accuracy loss from large argument");
+  status += s;
 
   return status;
 }
@@ -284,6 +309,70 @@ int check_coulomb(void)
 }
 
 
+int check_gegen(void)
+{
+  double y;
+  int status = 0;
+  int s;
+
+  s = 0;
+  s += ( frac_diff( gsl_sf_gegenpoly_1(-0.2,   1.0),  -0.4 ) > 1.e-14 );
+  s += ( frac_diff( gsl_sf_gegenpoly_1( 0.0,   1.0),   2.0 ) > 1.e-14 );
+  s += ( frac_diff( gsl_sf_gegenpoly_1( 1.0,   1.0),   2.0 ) > 1.e-14 );
+  s += ( frac_diff( gsl_sf_gegenpoly_1( 1.0,   0.5),   1.0 ) > 1.e-14 );
+  s += ( frac_diff( gsl_sf_gegenpoly_1( 5.0,   1.0),  10.0 ) > 1.e-14 );
+  s += ( frac_diff( gsl_sf_gegenpoly_1( 100.0, 0.5), 100.0 ) > 1.e-14 );
+  gsl_test(s, "  gsl_sf_gegenpoly_1");
+  status += s;
+  
+  s = 0;
+  s += ( frac_diff( gsl_sf_gegenpoly_2(-0.2,   0.5),   0.12 ) > 1.e-14 );
+  s += ( frac_diff( gsl_sf_gegenpoly_2( 0.0,   1.0),   1.00 ) > 1.e-14 );
+  s += ( frac_diff( gsl_sf_gegenpoly_2( 1.0,   1.0),   3.00 ) > 1.e-14 );
+  s += ( frac_diff( gsl_sf_gegenpoly_2( 1.0,   0.1),  -0.96 ) > 1.e-14 );
+  s += ( frac_diff( gsl_sf_gegenpoly_2( 5.0,   1.0),   55.0 ) > 1.e-14 );
+  s += ( frac_diff( gsl_sf_gegenpoly_2( 100.0, 0.5), 4950.0 ) > 1.e-14 );
+  gsl_test(s, "  gsl_sf_gegenpoly_2");
+  status += s;
+  
+  s = 0;
+  s += ( frac_diff( gsl_sf_gegenpoly_3(-0.2,   0.5),      0.112 ) > 1.e-14 );
+  s += ( frac_diff( gsl_sf_gegenpoly_3( 0.0,   1.0),   -2.0/3.0 ) > 1.e-14 );
+  s += ( frac_diff( gsl_sf_gegenpoly_3( 1.0,   1.0),      4.000 ) > 1.e-14 );
+  s += ( frac_diff( gsl_sf_gegenpoly_3( 1.0,   0.1),     -0.392 ) > 1.e-14 );
+  s += ( frac_diff( gsl_sf_gegenpoly_3( 5.0,   1.0),    220.000 ) > 1.e-14 );
+  s += ( frac_diff( gsl_sf_gegenpoly_3( 100.0, 0.5), 161600.000 ) > 1.e-14 );
+  gsl_test(s, "  gsl_sf_gegenpoly_3");
+  status += s;
+
+  s = 0;
+  s += ( frac_diff( gsl_sf_gegenpoly_n(1,       1.0, 1.0),  2.000		    ) > 1.e-14 );
+  s += ( frac_diff( gsl_sf_gegenpoly_n(10,      1.0, 1.0), 11.000		    ) > 1.e-14 );
+  s += ( frac_diff( gsl_sf_gegenpoly_n(10,      1.0, 0.1), -0.4542309376	    ) > 1.e-14 );
+  s += ( frac_diff( gsl_sf_gegenpoly_n(10,      5.0, 1.0),  9.23780e+4  	    ) > 1.e-14 );
+  s += ( frac_diff( gsl_sf_gegenpoly_n(10,    100.0, 0.5),  1.5729338392690000e+13  ) > 1.e-14 );
+  s += ( frac_diff( gsl_sf_gegenpoly_n(1000,  100.0, 1.0),  3.3353666135627322e+232 ) > 1.e-14 );
+  s += ( frac_diff( gsl_sf_gegenpoly_n(100,  2000.0, 1.0),  5.8753432034937579e+202 ) > 1.e-14 );
+  s += ( frac_diff( gsl_sf_gegenpoly_n(103,   207.0, 2.0),  1.4210272202235983e+145 ) > 1.e-14 );
+  s += ( frac_diff( gsl_sf_gegenpoly_n(103,    -0.4, 0.3), -1.64527498094522e-04    ) > 1.e-14 );
+  gsl_test(s, "  gsl_sf_gegenpoly_n");
+  status += s;
+  
+  s += 0;
+  s += (gsl_sf_gegenpoly_n_impl(103, -0.5,  1.0, &y) != GSL_EDOM);
+  s += (gsl_sf_gegenpoly_n_impl(103, -0.51, 1.0, &y) != GSL_EDOM);
+  gsl_test(s, "  gsl_sf_gegenpoly_n_impl: trap lambda <= -1/2");
+  status += s;
+
+  s += 0;
+  s += (gsl_sf_gegenpoly_n_impl(-2, 0.0,  1.0, &y) != GSL_EDOM);
+  gsl_test(s, "  gsl_sf_gegenpoly_n_impl: trap n < 0");
+  status += s;
+  
+  return status;
+}
+
+
 int check_hyperg(void)
 {
   int status = 0;
@@ -357,14 +446,16 @@ int check_zeta(void)
 
 int main(int argc, char * argv[])
 {
-  gsl_test(check_airy(),       "Airy functions");
-  gsl_test(check_bessel(),     "Bessel functions");
+  gsl_test(check_airy(),       "Airy Functions");
+  gsl_test(check_bessel(),     "Bessel Functions");
+  gsl_test(check_clausen(),    "Clausen Integral");
   gsl_test(check_coulomb(),    "Coulomb Wave Functions");
 
+  gsl_test(check_gegen(),      "Gegenbauer Polynomials");
   gsl_test(check_hyperg(),     "Hypergeometric Functions");
-  
-  gsl_test(check_zeta(),       "Zeta functions");
-  
+
+  gsl_test(check_zeta(),       "Zeta Functions");
+
   gsl_test_summary();
 
   return 0;  

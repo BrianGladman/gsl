@@ -18,6 +18,7 @@
 #include <gsl_sf_expint.h>
 #include <gsl_sf_fermi_dirac.h>
 #include <gsl_sf_gamma.h>
+#include <gsl_sf_gegenbauer.h>
 #include <gsl_sf_hyperg.h>
 #include <gsl_sf_laguerre.h>
 #include <gsl_sf_legendre.h>

@@ -76,6 +76,8 @@ gsl_sf_gegenpoly_n_impl(int n, double lambda, double x, double * result)
       double gk;
       for(k=4; k<=n; k++) {
         gk = (2.0*(k+lambda-1.0)*x*gkm1 - (k+2.0*lambda-2.0)*gkm2) / k;
+	gkm2 = gkm1;
+	gkm1 = gk;
       }
       *result = gk;
       return GSL_SUCCESS;

@@ -50,6 +50,7 @@ int gsl_sf_clausen_impl(double x, double *result)
   double xlo = M_PI * GSL_SQRT_MACH_EPS;
   double sgn = 1.0;
   int status_red;
+  int status = GSL_SUCCESS;
 
   if(x < 0.0) {
     x   = -x;
@@ -57,11 +58,8 @@ int gsl_sf_clausen_impl(double x, double *result)
   }
 
   /* Argument reduction to [0, 2pi) */
-  status_red = gsl_sf_angle_restrict_pos_impl(&x, 100.0*GSL_MACH_EPS);
-  if(status_red != GSL_SUCCESS) {
-    *result = 0.0;
-    return status_red;
-  }
+  status_red = gsl_sf_angle_restrict_pos_impl(&x, 1000.0*GSL_MACH_EPS);
+  status = status_red;
 
   /* Further reduction to [0,pi) */
   if(x > M_PI) {
@@ -72,20 +70,22 @@ int gsl_sf_clausen_impl(double x, double *result)
   /* Set result to zero if X multiple of PI */
   if(x == 0.0) {
     *result = 0.0;
-    return GSL_SUCCESS;
+    return status;
   }
 
   if(x < xlo) {
     *result = x * (1.0 - log(x));
   }
-  else { /* xlo <= x < PI */
+  else {
+    /* xlo <= x < PI
+     */
     double t = 2.0*(x*x / PISQ - 0.5);
     if(t > 1.0) t = 1.0;
     *result = x * gsl_sf_cheb_eval(t, &aclaus_cs) - x * log(x);
   }
   
   *result *= sgn;
-  return GSL_SUCCESS;
+  return status;
 }
 
 

@@ -17,20 +17,17 @@ double gsl_sf_gegenpoly_3(double lambda, double x);
  * by recurrence on n.
  */
 
-int gsl_sf_gegenpoly_n_e(int n, double lambda, double x, double * result);
-
+int    gsl_sf_gegenpoly_n_impl(int n, double lambda, double x, double * result);
+int    gsl_sf_gegenpoly_n_e(int n, double lambda, double x, double * result);
 double gsl_sf_gegenpoly_n(int n, double lambda, double x);
-
-int gsl_sf_gegenpoly_n_impl(int n, double lambda, double x, double * result);
 
 
 /* Calculate array of Gegenbauer polynomials
- * for a n = (0, 1, 2, ... nmax)
+ * for n = (0, 1, 2, ... nmax)
  */
 
-int gsl_sf_gegenpoly_array_e(int nmax, double lambda, double x, double * result_array);
-
 int gsl_sf_gegenpoly_array_impl(int nmax, double lambda, double x, double * result_array);
+int gsl_sf_gegenpoly_array_e(int nmax, double lambda, double x, double * result_array);
 
 
 #endif  /* !GSL_SF_GEGENBAUER_H_ */
