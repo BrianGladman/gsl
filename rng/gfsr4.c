@@ -102,7 +102,7 @@ gfsr4_get (void *vstate)
 static double
 gfsr4_get_double (void * vstate)
 {
-  return gfsr4_get (vstate) / 4294967295.0 ;
+  return gfsr4_get (vstate) / 4294967296.0 ;
 }
 
 static void

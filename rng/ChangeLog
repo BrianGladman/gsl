@@ -1,3 +1,9 @@
+Sun Dec  2 15:45:24 2001  Brian Gough  <bjg@network-theory.co.uk>
+
+	* gfsr4.c (gfsr4_get_double): increased divisor for double to
+ 	2^32, avoids generating exact result of 1.0 as specified in the
+ 	documentation
+
 Mon Sep  3 10:32:01 2001  Brian Gough  <bjg@network-theory.co.uk>
 
 	* mt.c (mt_1998_set): renamed macro to avoid duplicate definition

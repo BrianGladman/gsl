@@ -1,4 +1,10 @@
-* What is new is gsl-1.0:
+* What will be new in gsl-1.1:
+
+** Changed divisor in random number generator gfsr4 from 2^32-1 to
+2^32 to prevent exact value of 1.0 from being returned, as specified
+in the documentation.
+
+* What was new in gsl-1.0:
 
 ** First general release.
 
