@@ -81,7 +81,7 @@ gsl_ran_dir_3d (const gsl_rng * r, double *x, double *y, double *z)
       *y = -1 + 2 * gsl_rng_uniform (r);
       s = (*x) * (*x) + (*y) * (*y);
     }
-  while (s > 1.0 || s == 0.0);
+  while (s > 1.0);
 
   *z = -1 + 2 * s;              /* z uniformly distributed from -1 to 1 */
   a = 2 * sqrt (1 - s);         /* factor to adjust x,y so that x^2+y^2
