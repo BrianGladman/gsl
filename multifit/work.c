@@ -114,5 +114,5 @@ gsl_multifit_linear_free (gsl_multifit_linear_workspace * work)
   gsl_vector_free (work->t);
   gsl_vector_free (work->xt);
   free (work);
-};
+}
 
