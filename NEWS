@@ -1,14 +1,25 @@
 * What is new in gsl-1.2:
 
-** The error estimate for the elliptic function gsl_sf_ellint_Kcomp_e
-has been improved to take account of numerical cancellation for small
-arguments.
+** Added new functions for combining permutations, converting between
+cyclic and linear representations, and counting cycles and inversions.
+
+** New multiroot functions now allow access to the current values of f
+and dx.
+
+** The default error handler now outputs a explanatory message before
+aborting.
 
 ** Extended gsl_linalg_SV_decomp to handle exact zeroes in the
 singular values, and added tests for 3x3 matrices.
 
 ** Fixed a bug in gsl_linalg_SV_decomp which caused singular values to
 be sorted incorrectly.
+
+** Fixed a bug in gsl_linalg_solv_symm_cyc_tridiag which caused it to
+produce incorrect results.
+
+** Added nonsymmetric tridiagonal solvers gsl_linalg_solve_tridiag and
+gsl_linalg_solve_cyc_tridiag.
 
 ** The declarations used to export static objects can now be
 controlled through a macro GSL_VAR and the header file
@@ -20,6 +31,13 @@ the best solution so far.
 ** The values of the physical constants have been updated to the
 CODATA 1998 recommendations.
 
+** Added new physical constants, newton, dyne, joule, erg and 
+power-of-ten prefixes, Mega, Giga, Tera, etc.
+
+** The error estimate for the elliptic function gsl_sf_ellint_Kcomp_e
+has been improved to take account of numerical cancellation for small
+arguments.
+
 ** The domain of gsl_sf_psi_1piy has been extended to negative y.
 
 ** Fixed memory leak in the Chebyshev module.
@@ -29,35 +47,19 @@ version from Makoto Matsumoto and Takuji Nishimura (Jan 2002). The
 original seeding procedure is available through the generator
 gsl_rng_mt19937_1999.
 
-** New multiroot functions now allow access to the current values of f
-and dx.
-
-** Removed unnecessary endpoint subtraction in chebyshev-based
-QUADPACK routines to avoid possible loss of precision.
-
-** The default error handler now outputs a explanatory message before
-aborting.
-
-** Fixed bug in gsl_interp_cspline_periodic which caused a
-discontinuity in the derivative near the boundary.
-
 ** A new random number generator gsl_rng_taus2 has been added to
 correct flaws in the seeding procedure of gsl_rng_taus, as described
 in an erratum to the original paper of P. L'Ecuyer.
 
-** The KNOWN-PROBLEMS file of "make check" failures has been replaced
-by a BUGS file, since we now require "make check" to work correctly
-for stable releases.
+** Added missing declaration for the generator gsl_rng_mt_19937_1998.
 
 ** Added missing quasi-random number generator function gsl_qrng_init.
 
-** Added nonsymmetric tridiagonal solvers gsl_linalg_solve_tridiag and
-gsl_linalg_solve_cyc_tridiag.
+** Removed unnecessary endpoint subtraction in chebyshev-based
+QUADPACK routines to avoid possible loss of precision.
 
-** Added missing declaration for the generator gsl_rng_mt_19937_1998.
-
-** Fixed a bug in gsl_linalg_solv_symm_cyc_tridiag which caused it to
-produce incorrect results.
+** Fixed bug in gsl_interp_cspline_periodic which caused a
+discontinuity in the derivative near the boundary.
 
 ** The function gsl_min_fminimizer_minimum has been renamed to
 gsl_min_fminimizer_x_minimum for consistency (the old function name is
@@ -65,11 +67,9 @@ still available but is deprecated).  Additional functions have been
 added for accessing the function values at the minimum and endpoints
 of the bounding interval.
 
-** Added new physical constants, newton, dyne, joule, erg and 
-power-of-ten prefixes, Mega, Giga, Tera, etc.
-
-** Added new functions for combining permutations, converting between
-cyclic and linear representations, and counting cycles and inversions.
+** The KNOWN-PROBLEMS file of "make check" failures has been replaced
+by a BUGS file, since we now require "make check" to work correctly
+for stable releases.
 
 * What was new in gsl-1.1.1:
 

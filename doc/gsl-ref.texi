@@ -242,7 +242,7 @@ December 2001
 
 @ifinfo
 This file documents the @value{GSL} (GSL), a collection of numerical
-routines for scientific computing, and corresponds to release
+routines for scientific computing.  It corresponds to release
 @value{VERSION} of the library.
 
 More information about GSL can be found at the project homepage,
