@@ -27,22 +27,16 @@ printf("%g %f %lg\n", (double)M_PI, M_PI, (double)M_PI);
 exit(0);
 */
 
-
-plotto();
-exit(0);
-
-
-/*
-  for(nu=2; nu < 1000; nu += 1) {
-    x = 100.*nu;
-    gsl_sf_bessel_Jnu_asymp_Debye_osc_impl(nu,x,&y);
+  nu = 10.;
+  for(x=8.33; x < 30.; x += .1) {
+    gsl_sf_bessel_Ynu_asymp_Olver_impl(nu,x,&y);
     printf("%20.16g  %20.16g    %20.16g\n",
            nu,
 	   x,
 	   y);
   }
   exit(0);
-*/
+
 
 /*
   struct gsl_sf_ChebSeries * cs = gsl_sf_cheb_new(sin, -M_PI, M_PI, 15);
