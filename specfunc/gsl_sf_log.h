@@ -79,6 +79,9 @@ double gsl_sf_log_1plusx_mx(const double x);
 
 
 #if HAVE_INLINE
+#include <gsl/gsl_math.h>
+#include <gsl/gsl_errno.h>
+
 extern inline
 int
 gsl_sf_log_e(const double x, gsl_sf_result * result)

@@ -1,3 +1,6 @@
+** Fixed header file <gsl/gsl_sf_log.h> to include declarations for 
+error codes in inline versions of gsl_sf_log functions
+
 ** Fixed header file <gsl/gsl_const.h> to include new MKSA and CGSM
 header files.
 
