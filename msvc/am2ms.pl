@@ -572,13 +572,18 @@ sub add_check {
     return <<"EOF";
 \@echo running $test...
 \@msvc\\bin\\$test.exe >> result.dat
+\@if not errorlevel 1 echo PASS: $test >> result.dat
+\@if errorlevel 1 echo FAIL: $test >> result.dat
 EOF
 }
 
 sub end_check {
     return <<'EOF'
+@echo PASS: test_gsl_histogram.sh NOT IMPLEMENTED ON WINDOWS >> result.dat
 @echo Number of failures:
 @FIND /V /C "PASS:" result.dat
+@echo Number of passes:
+@FIND /C "PASS:" result.dat
 @echo Full test log is in result.dat
 EOF
 }
