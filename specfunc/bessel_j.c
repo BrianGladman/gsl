@@ -147,7 +147,7 @@ gsl_sf_bessel_jl_impl(const int l, const double x, gsl_sf_result * result)
     return GSL_EDOM;
   }
   else if(x == 0.0) {
-    result->val = 0.0;
+    result->val = ( l > 0 ? 0.0 : 1.0 );
     result->err = 0.0;
     return GSL_SUCCESS;
   }
@@ -232,6 +232,12 @@ gsl_sf_bessel_jl_array_impl(const int lmax, const double x, double * result_arra
     for(j=0; j<=lmax; j++) result_array[j] = 0.0;
     return GSL_EDOM;
   }
+  else if(x == 0.0) {
+    int j;
+    for(j=1; j<=lmax; j++) result_array[j] = 0.0;
+    result_array[0] = 1.0;
+    return GSL_SUCCESS;
+  }
   else {
     gsl_sf_result r_jellp1;
     gsl_sf_result r_jell;
@@ -264,6 +270,12 @@ int gsl_sf_bessel_jl_steed_array_impl(const int lmax, const double x, double * j
     int j;
     for(j=0; j<=lmax; j++) jl_x[j] = 0.0;
     return GSL_EDOM;
+  }
+  else if(x == 0.0) {
+    int j;
+    for(j=1; j<=lmax; j++) jl_x[j] = 0.0;
+    jl_x[0] = 1.0;
+    return GSL_SUCCESS;
   }
   else if(x < 2.0*GSL_ROOT4_DBL_EPSILON) {
     /* first two terms of Taylor series */

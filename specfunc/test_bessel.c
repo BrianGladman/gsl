@@ -122,6 +122,8 @@ int test_bessel(void)
   TEST_SF(s,  gsl_sf_bessel_j2_impl, (100.0, &r), 0.004803441652487953480, TEST_TOL1, GSL_SUCCESS);
   TEST_SF(s,  gsl_sf_bessel_j2_impl, (1048576.0, &r), -3.1518539455252413111e-07, TEST_TOL2, GSL_SUCCESS);
 
+  TEST_SF(s,  gsl_sf_bessel_jl_impl, (0, 0.0, &r), 1.0, TEST_TOL0, GSL_SUCCESS);
+
   TEST_SF(s,  gsl_sf_bessel_jl_impl, (1,       10.0, &r),   0.07846694179875154709000, TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s,  gsl_sf_bessel_jl_impl, (5,        1.0, &r),   0.00009256115861125816357, TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s,  gsl_sf_bessel_jl_impl, (10,      10.0, &r),   0.06460515449256426427,    TEST_TOL0, GSL_SUCCESS);
