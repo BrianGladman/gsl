@@ -64,6 +64,12 @@ compute_newton_direction (const gsl_matrix * r, const gsl_permutation * perm,
 
   nsing = count_nsing (r);
 
+#ifdef DEBUG
+  printf("nsing = %d\n", nsing);
+  printf("r = "); gsl_matrix_fprintf(stdout, r, "%g"); printf("\n");
+  printf("qtf = "); gsl_vector_fprintf(stdout, x, "%g"); printf("\n");
+#endif
+
   for (i = nsing; i < n; i++)
     {
       gsl_vector_set (x, i, 0.0);
@@ -83,6 +89,13 @@ compute_newton_direction (const gsl_matrix * r, const gsl_permutation * perm,
 	  gsl_vector_set (x, i, xi - rij * temp);
 	}
     }
+
+  {
+    double r00 = gsl_matrix_get (r, 0, 0);
+    double temp = gsl_vector_get (x, 0) / r00;
+    
+    gsl_vector_set (x, j, temp);
+  }
 
   gsl_permute_vector (perm, x);
 }
@@ -219,6 +232,10 @@ lmpar (gsl_matrix * r, const gsl_permutation * perm, const gsl_vector * qtf,
 #ifdef DEBUG
   printf ("newton = ");
   gsl_vector_fprintf (stdout, newton, "%g");
+  printf ("\n");
+
+  printf ("diag = ");
+  gsl_vector_fprintf (stdout, diag, "%g");
   printf ("\n");
 #endif
 
