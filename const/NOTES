@@ -3,6 +3,9 @@ using data from the Particle Data Book. (e.g. gsl_physics.h, could
 also have gsl_chemistry.h, gsl_astro.h, etc). See "astroconst" for
 ideas, http://apps.freshmeat.net/homepage/953508686/
 
+* NIST Site http://physics.nist.gov/cuu/Constants/index.html
+http://physics.nist.gov/PhysRefData/codata86/codata86.html
+
 ----------------------------------------------------------------------
 
 Plan is to make a master file containing the values of the constants
