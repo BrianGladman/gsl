@@ -179,7 +179,7 @@ FUNCTION (my, randomize) (TYPE (gsl_vector) * v)
 
   for (i = 0; i < v->size; i++)
     {
-      size_t j = urand () * v->size;
+      size_t j = urand (v->size);
       FUNCTION (gsl_vector, swap_elements) (v, i, j);
     }
 }

@@ -26,7 +26,8 @@
 void benchmark (const gsl_rng_type * T);
 
 #define N  1000000
-int sum;
+int isum;
+double dsum;
 
 int
 main (void)
@@ -98,7 +99,7 @@ benchmark (const gsl_rng_type * T)
     {
       int j;
       for (j = 0; j < N; j++)
-	sum += gsl_rng_get (r);
+	isum += gsl_rng_get (r);
 
       i += N;
       end = clock ();
@@ -112,7 +113,7 @@ benchmark (const gsl_rng_type * T)
     {
       int j;
       for (j = 0; j < N; j++)
-	sum += gsl_rng_uniform (r);
+	dsum += gsl_rng_uniform (r);
 
       d += N;
       end = clock ();

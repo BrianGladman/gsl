@@ -111,7 +111,7 @@ randomize (double *data, size_t N)
 
   for (i = 0; i < N; i++)
     {
-      size_t j = urand () * N;
+      size_t j = urand (N);
       double tmp = data[i];
       data[i] = data[j];
       data[j] = tmp;

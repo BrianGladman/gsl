@@ -26,17 +26,17 @@ FUNCTION (test, func) (const size_t stridea, const size_t strideb)
   size_t i;
   const size_t na = 14, nb = 14;
 
-  const BASE rawa[] =
+  const double rawa[] =
   {.0421, .0941, .1064, .0242, .1331,
    .0773, .0243, .0815, .1186, .0356,
    .0728, .0999, .0614, .0479};
 
-  const BASE rawb[] =
+  const double rawb[] =
   {.1081, .0986, .1566, .1961, .1125,
    .1942, .1079, .1021, .1583, .1673,
    .1675, .1856, .1688, .1512};
 
-  const BASE raww[] = 
+  const double raww[] = 
   {.0000, .0000, .0000, 3.000, .0000,
    1.000, 1.000, 1.000, 0.000, .5000,
    7.000, 5.000, 4.000, 0.123};
@@ -54,13 +54,13 @@ FUNCTION (test, func) (const size_t stridea, const size_t strideb)
 #endif
 
   for (i = 0 ; i < na ; i++)
-    groupa[i * stridea] = rawa[i] ;
+    groupa[i * stridea] = (BASE) rawa[i] ;
 
   for (i = 0 ; i < na ; i++)
-    w[i * strideb] = raww[i] ;
+    w[i * strideb] = (BASE) raww[i] ;
 
   for (i = 0 ; i < nb ; i++)
-    groupb[i * strideb] = rawb[i] ;
+    groupb[i * strideb] = (BASE) rawb[i] ;
 
 
   {

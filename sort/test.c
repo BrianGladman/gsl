@@ -28,7 +28,7 @@
 #include <gsl/gsl_sort_vector.h>
 #include <gsl/gsl_ieee_utils.h>
 
-double urand (void);
+size_t urand (size_t);
 
 #include "test_heapsort.c"
 
@@ -131,10 +131,10 @@ main (void)
   return gsl_test_summary ();
 }
 
-double 
-urand (void)
+size_t 
+urand (size_t N)
 {
   static unsigned long int x = 1;
   x = (1103515245 * x + 12345) & 0x7fffffffUL;
-  return x / 2147483648.0;
+  return (size_t) ((x / 2147483648.0) * N);
 }

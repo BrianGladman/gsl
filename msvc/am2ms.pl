@@ -27,7 +27,7 @@ for $file (@ARGV) {
 
     @lines = split("\n",$in);
     for (@lines) {
-        next if /^\s*#/;
+        s/#.*//g;
         ($var,$data) = split(/\s*=\s*/, $_, 2);
         $AM{$var} = $data;
 #    print "$var IS $data\n";
