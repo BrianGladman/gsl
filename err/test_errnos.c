@@ -6,42 +6,38 @@
 #include <gsl_errno.h>
 #include <gsl_test.h>
 
-#define CHECK(x) {x,#x}
-#define MAX_ERRS 16
+#define CHECK(x) errors[n].number = x ; errors[n].name = #x ; n++ ;
+#define MAX_ERRS 32
 
 int verbose = 0 ;
 
 int
 main (void)
 {
+  int i, j, n = 0 ;
+  int status ;
 
   struct { 
     int number; 
     const char * name; 
-  } errors[MAX_ERRS] = {
-    CHECK(GSL_EDOM),
-    CHECK(GSL_ERANGE),
-    CHECK(GSL_EFAULT),
-    CHECK(GSL_EINVAL),
-    CHECK(GSL_EFAILED),
-    CHECK(GSL_EFACTOR),
-    CHECK(GSL_ESANITY),
-    CHECK(GSL_ENOMEM),
-    CHECK(GSL_EBADFUNC),
-    CHECK(GSL_ERUNAWAY),
-    CHECK(GSL_ETIMEOUT),
-    CHECK(GSL_EZERODIV),
-    CHECK(GSL_ETOL),
-    {-1, "end"}
-  } ;
-  
-  int i, j, n ;
-  int status ;
+  } errors[MAX_ERRS] ;
 
-  for (n = MAX_ERRS - 1 ; n > 0 ; n--) 
-    {
-      if (errors[n].number == -1) break ;
-    }
+  CHECK(GSL_EDOM);
+  CHECK(GSL_ERANGE);
+  CHECK(GSL_EFAULT);
+  CHECK(GSL_EINVAL);
+  CHECK(GSL_EFAILED);
+  CHECK(GSL_EFACTOR);
+  CHECK(GSL_ESANITY);
+  CHECK(GSL_ENOMEM);
+  CHECK(GSL_EBADFUNC);
+  CHECK(GSL_ERUNAWAY);
+  CHECK(GSL_ETIMEOUT);
+  CHECK(GSL_EZERODIV);
+  CHECK(GSL_ETOL);
+  CHECK(GSL_EUNDRFLW);
+  CHECK(GSL_EOVRFLW);
+  CHECK(GSL_ELOSS);
 
   for (i = 0 ; i < n ; i++) 
     {
