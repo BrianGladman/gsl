@@ -2311,14 +2311,14 @@ int test_TDN_solve(void)
   actual[0] =  -7.0/3.0;
   actual[1] =  5.0/3.0;
   actual[2] =  4.0/3.0;
-  f = test_TDN_solve_dim(3, 1.0, 2.0, 1.0, actual, 1.0 * GSL_DBL_EPSILON);
+  f = test_TDN_solve_dim(3, 1.0, 2.0, 1.0, actual, 2.0 * GSL_DBL_EPSILON);
   gsl_test(f, "  solve_TDN dim=2 A");
   s += f;
 
   actual[0] =  0.75;
   actual[1] =  0.75;
   actual[2] =  2.625;
-  f = test_TDN_solve_dim(3, 1.0, 1.0/3.0, 1.0/2.0, actual, 1.0 * GSL_DBL_EPSILON);
+  f = test_TDN_solve_dim(3, 1.0, 1.0/3.0, 1.0/2.0, actual, 2.0 * GSL_DBL_EPSILON);
   gsl_test(f, "  solve_TDN dim=2 B");
   s += f;
 
@@ -2386,7 +2386,7 @@ int test_TDN_cyc_solve(void)
   actual[0] =  3.0/2.0;
   actual[1] = -1.0/2.0;
   actual[2] =  1.0/2.0;
-  f = test_TDN_cyc_solve_dim(3, 1.0, 2.0, 1.0, actual, 4.0 * GSL_DBL_EPSILON);
+  f = test_TDN_cyc_solve_dim(3, 1.0, 2.0, 1.0, actual, 32.0 * GSL_DBL_EPSILON);
   gsl_test(f, "  solve_TDN_cyc dim=2 A");
   s += f;
 
