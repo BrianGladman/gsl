@@ -227,11 +227,24 @@ gsl_sf_bessel_Ynu_asympx_impl(const double nu, const double x, gsl_sf_result * r
   double beta  = -0.5*nu*M_PI;
   int stat_a = gsl_sf_bessel_asymp_Mnu_impl(nu, x, &ampl);
   int stat_t = gsl_sf_bessel_asymp_thetanu_corr_impl(nu, x, &theta);
-  int stat_red1 = gsl_sf_angle_restrict_pos_impl(&alpha);
-  int stat_red2 = gsl_sf_angle_restrict_pos_impl(&beta);
-  result->val = ampl * sin(alpha+beta+theta);
-  result->err = ampl * GSL_DBL_EPSILON;
-  return GSL_ERROR_SELECT_4(stat_red1, stat_red2, stat_t, stat_a);
+  double sin_alpha = sin(alpha);
+  double cos_alpha = cos(alpha);
+  double sin_chi   = sin(beta + theta);
+  double cos_chi   = cos(beta + theta);
+  double sin_term     = sin_alpha * cos_chi + sin_chi * cos_alpha;
+  double sin_term_mag = fabs(sin_alpha * cos_chi) + fabs(sin_chi * cos_alpha);
+  result->val  = ampl * sin_term;
+  result->err  = fabs(ampl) * GSL_DBL_EPSILON * sin_term_mag;
+  result->err += fabs(result->val) * 2.0 * GSL_DBL_EPSILON;
+
+  if(fabs(alpha) > 1.0/GSL_DBL_EPSILON) {
+    result->err *= 0.5 * fabs(alpha);
+  }
+  else if(fabs(alpha) > 1.0/GSL_SQRT_DBL_EPSILON) {
+    result->err *= 256.0 * fabs(alpha) * GSL_SQRT_DBL_EPSILON;
+  }
+
+  return GSL_ERROR_SELECT_2(stat_t, stat_a);
 }
 
 
@@ -520,7 +533,7 @@ int gsl_sf_bessel_cos_pi4_impl(double y, double eps, gsl_sf_result * result)
   double ceps;
   if(fabs(eps) < GSL_ROOT5_DBL_EPSILON) {
     const double e2 = eps*eps;
-    seps = eps * (1.0 + e2/6.0 * (1.0 + e2/20.0));
+    seps = eps * (1.0 - e2/6.0 * (1.0 - e2/20.0));
     ceps = 1.0 - e2/2.0 * (1.0 - e2/12.0);
   }
   else {
@@ -558,7 +571,7 @@ int gsl_sf_bessel_sin_pi4_impl(double y, double eps, gsl_sf_result * result)
   double ceps;
   if(fabs(eps) < GSL_ROOT5_DBL_EPSILON) {
     const double e2 = eps*eps;
-    seps = eps * (1.0 + e2/6.0 * (1.0 + e2/20.0));
+    seps = eps * (1.0 - e2/6.0 * (1.0 - e2/20.0));
     ceps = 1.0 - e2/2.0 * (1.0 - e2/12.0);
   }
   else {

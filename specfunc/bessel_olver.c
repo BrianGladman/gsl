@@ -765,8 +765,9 @@ int gsl_sf_bessel_Jnu_asymp_Olver_impl(double nu, double x, gsl_sf_result * resu
     gsl_sf_airy_Ai_deriv_impl(arg, GSL_MODE_DEFAULT, &aip);
 
     result->val  = pre * (ai.val*asum/crnu + aip.val*bsum/(nu*crnu*crnu));
-    result->err  = pre / (crnu*nu11);
-    result->err += 10.0 * 2.0 * GSL_DBL_EPSILON * fabs(result->val);
+    result->err  = pre * (ai.err * fabs(asum/crnu));
+    result->err += pre / (crnu*nu11);
+    result->err += 8.0 * GSL_DBL_EPSILON * fabs(result->val);
 
     return stat_a;
   }
@@ -801,7 +802,7 @@ int gsl_sf_bessel_Ynu_asymp_Olver_impl(double nu, double x, gsl_sf_result * resu
     double crnu = pow(nu, 1.0/3.0);
     double nu3  = nu*nu*nu;
     double nu11 = nu3*nu3*nu3*nu*nu;
-    int stat_b;
+    int stat_b, stat_d;
 
     if(fabs(1.0-z) < 0.02) {
       const double a = 1.0-z;
@@ -827,9 +828,10 @@ int gsl_sf_bessel_Ynu_asymp_Olver_impl(double nu, double x, gsl_sf_result * resu
     else {
       /* z > 1 */
       double rt = z * sqrt(1.0 - 1.0/(z*z));
-      abs_zeta = pow(1.5*(rt - acos(1.0/z)), 2.0/3.0);
+      double ac = acos(1.0/z);
+      abs_zeta = pow(1.5*(rt - ac), 2.0/3.0);
       zeta = -abs_zeta;
-      pre  = sqrt(2.0*sqrt(abs_zeta/(rt*rt)));
+      pre  = sqrt(2.0*sqrt(abs_zeta)/rt);
     }
 
     asum = olver_Asum(nu, z, abs_zeta);
@@ -837,12 +839,13 @@ int gsl_sf_bessel_Ynu_asymp_Olver_impl(double nu, double x, gsl_sf_result * resu
 
     arg  = crnu*crnu * zeta;
     stat_b = gsl_sf_airy_Bi_impl(arg, GSL_MODE_DEFAULT, &bi);
-    gsl_sf_airy_Bi_deriv_impl(arg, GSL_MODE_DEFAULT, &bip);
+    stat_d = gsl_sf_airy_Bi_deriv_impl(arg, GSL_MODE_DEFAULT, &bip);
 
     result->val  = -pre * (bi.val*asum/crnu + bip.val*bsum/(nu*crnu*crnu));
-    result->err  = pre / (crnu*nu11);
-    result->err += 10.0 * 2.0 * GSL_DBL_EPSILON * fabs(result->val);
+    result->err  =  pre * (bi.err * fabs(asum/crnu));
+    result->err +=  pre / (crnu*nu11);
+    result->err +=  8.0 * GSL_DBL_EPSILON * fabs(result->val);
 
-    return stat_b;
+    return GSL_ERROR_SELECT_2(stat_b, stat_d);
   }
 }

@@ -4,6 +4,7 @@
 #include <config.h>
 #include <gsl_math.h>
 #include <gsl_errno.h>
+#include "gsl_sf_chebyshev.h"
 #include "gsl_sf_log.h"
 #include "gsl_sf_trig.h"
 
@@ -57,8 +58,44 @@ cosh_m1_series(const double x, double * result)
 }
 
 
+/* Chebyshev expansion for sine function
+
+ */
+static double sin_data[11] = {
+  -0.3749911549558731758399,
+  -0.1816031552372502018638,
+   0.0058047092745986335594,
+  -0.0000869543117793407571,
+   0.0000007543701480888515,
+  -0.0000000042671296650560,
+   0.0000000000169804229455,
+  -0.0000000000000501205789,
+   0.0000000000000001141010,
+  -0.0000000000000000002064,
+   0.0000000000000000000003
+};
+static gsl_sf_cheb_series sin_cs = {
+  sin_data,
+  10,
+  -1, 1,
+  (double *)0,
+  (double *)0,
+  10
+};
+
+const static double pihi = 3.140625;
+const static double pilo = 9.6765358979323846264e-04;
+const static double pirec  = 0.3183098861837906715377675;
+const static double pi2rec = 0.6366197723675813430755351;
+
+
 /*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
 
+/* I would have prefered just using the library sin() function.
+ * But after some experimentation I decided that there was
+ * no good way to understand the error; library sin() is just a black box.
+ * So we have to roll our own. SLATEC is a reasonable place to start...
+ */
 int
 gsl_sf_sin_impl(double x, gsl_sf_result * result)
 {
@@ -66,19 +103,42 @@ gsl_sf_sin_impl(double x, gsl_sf_result * result)
     return GSL_EFAULT;
   }
   else {
-    double frac_err;
-    if(x > 1.0/GSL_DBL_EPSILON) {
-      frac_err = 1.0;
-    }
-    else if(x > 10.0/GSL_SQRT_DBL_EPSILON) {
-      frac_err = GSL_SQRT_DBL_EPSILON;
+    const double y = fabs(x);
+
+    if(y < GSL_SQRT_DBL_EPSILON) {
+      result->val = x;
+      result->err = fabs(x*x*x);
+      return GSL_SUCCESS;
     }
     else {
-      frac_err = 2.0 * GSL_DBL_EPSILON;
+      double xn  = dint (y*pirec+0.5);
+      int    n2  = dmod (xn, 2.0) + 0.5;
+      double sgn = GSL_SIGN(x);
+      double f   = (y-xn*pihi) - xn*pilo;
+      gsl_sf_result cs_result;
+
+      const int stat_cs = gsl_sf_cheb_eval_impl(&sin_cs, 2.0* (f*pi2rec)*(f*pi2rec)-1.0, &cs_result);
+      if (n2 != 0) sgn = -sgn;
+
+      result->val  = f + f*cs_result.val;
+      result->val *= sgn;
+      if(result->val > 1.0) {
+      	result->val = 1.0;
+      }
+      if(result->val < -1.0) {
+        result->val = -1.0;
+      }
+
+      result->err = 2.0 * GSL_DBL_EPSILON * fabs(result->val);
+      if(y > 1.0/GSL_DBL_EPSILON) {
+        result->err *= 1.0/GSL_DBL_EPSILON;
+      }
+      else if(y > 1.0/GSL_SQRT_DBL_EPSILON) {
+        result->err *= 1.0/GSL_SQRT_DBL_EPSILON;
+      }
+
+      return stat_cs;
     }
-    result->val = sin(x);
-    result->err = frac_err * fabs(result->val);
-    return GSL_SUCCESS;
   }
 }
 
@@ -89,19 +149,45 @@ gsl_sf_cos_impl(double x, gsl_sf_result * result)
     return GSL_EFAULT;
   }
   else {
-    double frac_err;
-    if(x > 1.0/GSL_DBL_EPSILON) {
-      frac_err = 1.0;
-    }
-    else if(x > 10.0/GSL_SQRT_DBL_EPSILON) {
-      frac_err = GSL_SQRT_DBL_EPSILON;
+    const double absx = fabs(x);
+    const double y    = absx + 0.5*M_PI;
+
+    if(y < GSL_SQRT_DBL_EPSILON) {
+      result->val = 1.0;
+      result->err = fabs(x*x);
+      return GSL_SUCCESS;
     }
     else {
-      frac_err = 2.0 * GSL_DBL_EPSILON;
+      int stat_cs;
+      gsl_sf_result cs_result;
+      double xn  = dint (y*pirec+0.5);
+      int    n2  = dmod (xn, 2.0) + 0.5;
+      double f;
+      xn -= 0.5;
+      f   = (absx-xn*pihi) - xn*pilo;
+
+      stat_cs = gsl_sf_cheb_eval_impl(&sin_cs, 2.0* (f*pi2rec)*(f*pi2rec)-1.0, &cs_result);
+
+      result->val = f + f*cs_result.val;
+      if (n2 != 0) result->val = -result->val;
+
+      if(result->val > 1.0) {
+        result->val = 1.0;
+      }
+      if(result->val < -1.0) {
+        result->val = -1.0;
+      }
+
+      result->err = 2.0 * GSL_DBL_EPSILON * fabs(result->val);
+      if(y > 1.0/GSL_DBL_EPSILON) {
+        result->err *= 1.0/GSL_DBL_EPSILON;
+      }
+      else if(y > 1.0/GSL_SQRT_DBL_EPSILON) {
+        result->err *= 1.0/GSL_SQRT_DBL_EPSILON;
+      }
+
+      return stat_cs;
     }
-    result->val = cos(x);
-    result->err = frac_err * fabs(result->val);
-    return GSL_SUCCESS;
   }
 }
 
