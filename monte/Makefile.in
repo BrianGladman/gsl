@@ -74,34 +74,41 @@ full_top_srcdir = @full_top_srcdir@
 
 lib_LIBRARIES = libgslmonte.a 
 
-libgslmonte_a_SOURCES = vegas.c vegas-print.c miser.c gsl_vegas.h gsl_miser.h
+libgslmonte_a_SOURCES = vegas.c vegas-print.c miser.c plain.c gsl_vegas.h gsl_miser.h gsl_monte_plain.h gsl_monte.h
 
-check_PROGRAMS = vegas_test miser_test
+check_PROGRAMS = vegas_test miser_test plain_test
 
-include_HEADERS = gsl_vegas.h gsl_miser.h gsl_vegas_print.h
+include_HEADERS = gsl_vegas.h gsl_miser.h gsl_monte_plain.h gsl_monte.h
 
 #noinst_HEADERS = vegas.h
 
 INCLUDES = -I$(srcdir)/../ -I$(srcdir)/../err -I$(srcdir)/../rng/ \
 		-I$(srcdir)/../vector/
 
-TESTS = vegas_test miser_test
+TESTS = vegas_test miser_test plain_test
 
 TESTS_ENVIRONMENT = #BUILDDIR=@full_top_builddir@/roots SRCDIR=@full_top_srcdir@ $(SHELL) -x
 
-vegas_test_SOURCES = vegas_test.c gsl_vegas.h
+vegas_test_SOURCES = vegas_test.c gsl_vegas.h gsl_monte.h
 
 vegas_test_LDADD = libgslmonte.a ../rng/libgslrng.a ../vector/libgslvector.a \
 		../err/libgslerr.a ../err/libgsltest.a
 
 vegas_test_LDFLAGS = -static
 
-miser_test_SOURCES = miser_test.c gsl_miser.h
+miser_test_SOURCES = miser_test.c gsl_miser.h gsl_monte.h
 
 miser_test_LDADD = libgslmonte.a ../rng/libgslrng.a ../vector/libgslvector.a \
 		../err/libgslerr.a ../err/libgsltest.a 
 
 miser_test_LDFLAGS = -static
+
+plain_test_SOURCES = plain_test.c gsl_plain.h gsl_monte.h
+
+plain_test_LDADD = libgslmonte.a ../rng/libgslrng.a ../vector/libgslvector.a \
+		../err/libgslerr.a ../err/libgsltest.a 
+
+plain_test_LDFLAGS = -static
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
 CONFIG_CLEAN_FILES = 
@@ -113,13 +120,16 @@ CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
 libgslmonte_a_LIBADD = 
-libgslmonte_a_OBJECTS =  vegas.o vegas-print.o miser.o
+libgslmonte_a_OBJECTS =  vegas.o vegas-print.o miser.o plain.o
 AR = ar
 vegas_test_OBJECTS =  vegas_test.o
 vegas_test_DEPENDENCIES =  libgslmonte.a ../rng/libgslrng.a \
 ../vector/libgslvector.a ../err/libgslerr.a ../err/libgsltest.a
 miser_test_OBJECTS =  miser_test.o
 miser_test_DEPENDENCIES =  libgslmonte.a ../rng/libgslrng.a \
+../vector/libgslvector.a ../err/libgslerr.a ../err/libgsltest.a
+plain_test_OBJECTS =  plain_test.o
+plain_test_DEPENDENCIES =  libgslmonte.a ../rng/libgslrng.a \
 ../vector/libgslvector.a ../err/libgslerr.a ../err/libgsltest.a
 CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
@@ -133,10 +143,10 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 TAR = tar
 GZIP = --best
-DEP_FILES =  .deps/miser.P .deps/miser_test.P .deps/vegas-print.P \
-.deps/vegas.P .deps/vegas_test.P
-SOURCES = $(libgslmonte_a_SOURCES) $(vegas_test_SOURCES) $(miser_test_SOURCES)
-OBJECTS = $(libgslmonte_a_OBJECTS) $(vegas_test_OBJECTS) $(miser_test_OBJECTS)
+DEP_FILES =  .deps/miser.P .deps/miser_test.P .deps/plain.P \
+.deps/plain_test.P .deps/vegas-print.P .deps/vegas.P .deps/vegas_test.P
+SOURCES = $(libgslmonte_a_SOURCES) $(vegas_test_SOURCES) $(miser_test_SOURCES) $(plain_test_SOURCES)
+OBJECTS = $(libgslmonte_a_OBJECTS) $(vegas_test_OBJECTS) $(miser_test_OBJECTS) $(plain_test_OBJECTS)
 
 all: Makefile $(LIBRARIES) $(HEADERS)
 
@@ -219,6 +229,10 @@ vegas_test: $(vegas_test_OBJECTS) $(vegas_test_DEPENDENCIES)
 miser_test: $(miser_test_OBJECTS) $(miser_test_DEPENDENCIES)
 	@rm -f miser_test
 	$(LINK) $(miser_test_LDFLAGS) $(miser_test_OBJECTS) $(miser_test_LDADD) $(LIBS)
+
+plain_test: $(plain_test_OBJECTS) $(plain_test_DEPENDENCIES)
+	@rm -f plain_test
+	$(LINK) $(plain_test_LDFLAGS) $(plain_test_OBJECTS) $(plain_test_LDADD) $(LIBS)
 
 install-includeHEADERS: $(include_HEADERS)
 	@$(NORMAL_INSTALL)
