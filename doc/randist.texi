@@ -99,17 +99,17 @@ The cumulative distribution function for the upper tail is defined by,
 @tex
 \beforedisplay
 $$
-Q(x) = \int_{x}^{-\infty} dx' p(x')
+Q(x) = \int_{x}^{+\infty} dx' p(x')
 $$
 \afterdisplay
 @end tex
 @ifinfo
 @example
-P(x) = \int_@{x@}^@{-\infty@} dx' p(x')
+Q(x) = \int_@{x@}^@{+\infty@} dx' p(x')
 @end example
 @end ifinfo
 @noindent
-and gives the probability of a variate taking a greater than @math{x}.
+and gives the probability of a variate taking a value greater than @math{x}.
 The upper and lower cumulative distribution functions are related by
 @math{P(x) + Q(x) = 1} and satisfy @c{$0 \le P(x) \le 1$}
 @math{0 <= P(x) <= 1}, @c{$0 \le Q(x) \le 1$}
