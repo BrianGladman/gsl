@@ -1,7 +1,7 @@
 Summary: GNU Scientific Library (GSL)
 name: gsl
 Packager: rosalia@lanl.gov
-%define version 0.5+
+%define version 0.6
 %define release 0
 version: %{version}
 release: %{release}
@@ -39,6 +39,7 @@ cd %{name}-%{version}; make install prefix=%{mybuildroot}/usr
 %postun
 
 %files
+%doc NEWS ChangeLog KNOWN-PROBLEMS MACHINES README AUTHORS THANKS
 %doc /usr/info/gsl-ref.info
 %doc /usr/info/gsl-ref.info-1
 %doc /usr/info/gsl-ref.info-2
@@ -53,6 +54,10 @@ cd %{name}-%{version}; make install prefix=%{mybuildroot}/usr
 %doc /usr/info/gsl-ref.info-11
 %doc /usr/info/gsl-ref.info-12
 %doc /usr/info/gsl-ref.info-13
+%doc /usr/info/gsl-ref.info-14
+%doc /usr/info/gsl-ref.info-15
+%doc /usr/info/gsl-ref.info-16
+%doc /usr/info/gsl-ref.info-17
 /usr/bin/gsl-config
 /usr/bin/gsl-histogram
 /usr/bin/gsl-randist

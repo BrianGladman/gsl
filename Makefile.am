@@ -9,7 +9,7 @@ SUBLIBS = blas/libgslblas.la block/libgslblock.la dht/libgsldht.la eigen/libgsle
 bin_SCRIPTS = gsl-config
 
 pkginclude_HEADERS = gsl_math.h gsl_machine.h gsl_mode.h gsl_precision.h
-EXTRA_DIST = autogen.sh gsl-config.in configure.in THANKS KNOWN-PROBLEMS gsl.spec gsl.m4
+EXTRA_DIST = autogen.sh gsl-config.in configure.in THANKS KNOWN-PROBLEMS gsl.spec gsl.m4 MACHINES
 
 lib_LTLIBRARIES = libgsl.la
 libgsl_la_SOURCES = version.c
