@@ -36,6 +36,7 @@
 #include <gsl/gsl_vector.h>
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_blas.h>
+#include <gsl/gsl_linalg.h>
 
 int
 gsl_linalg_cholesky_decomp (gsl_matrix * A)

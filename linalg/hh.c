@@ -71,9 +71,9 @@ gsl_linalg_HH_svx (gsl_matrix * A, gsl_vector * x)
     }
   else
     {
-      const int N = A->size1;
-      const int M = A->size2;
-      int i, j, k;
+      const size_t N = A->size1;
+      const size_t M = A->size2;
+      size_t i, j, k;
       REAL *d = (REAL *) malloc (N * sizeof (REAL));
 
       if (d == 0)
@@ -160,7 +160,7 @@ gsl_linalg_HH_svx (gsl_matrix * A, gsl_vector * x)
 
       /* Perform back-substitution. */
 
-      for (i = N - 1; i >= 0; i--)
+      for (i = N; i > 0 && i--;)
 	{
 	  REAL xi = gsl_vector_get (x, i);
 	  REAL sum = 0.0;

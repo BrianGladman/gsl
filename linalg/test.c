@@ -27,7 +27,39 @@
 #include <gsl/gsl_blas.h>
 #include "gsl_linalg.h"
 
-static int 
+int check (double x, double actual, double eps);
+gsl_matrix * create_hilbert_matrix(size_t size);
+gsl_matrix * create_general_matrix(size_t size1, size_t size2);
+gsl_matrix * create_vandermonde_matrix(size_t size);
+gsl_matrix * create_moler_matrix(size_t size);
+int test_matmult(void);
+int test_matmult_mod(void);
+int test_LU_solve_dim(const gsl_matrix * m, const double * actual, double eps);
+int test_LU_solve(void);
+int test_QR_solve_dim(const gsl_matrix * m, const double * actual, double eps);
+int test_QR_solve(void);
+int test_QR_decomp_dim(const gsl_matrix * m, double eps);
+int test_QR_decomp(void);
+int test_QRPT_solve_dim(const gsl_matrix * m, const double * actual, double eps);
+int test_QRPT_solve(void);
+int test_QRPT_decomp_dim(const gsl_matrix * m, double eps);
+int test_QRPT_decomp(void);
+int test_QR_update_dim(const gsl_matrix * m, double eps);
+int test_QR_update(void);
+int test_SV_solve_dim(const gsl_matrix * m, const double * actual, double eps);
+int test_SV_solve(void);
+int test_SV_decomp_dim(const gsl_matrix * m, double eps);
+int test_SV_decomp(void);
+int test_cholesky_solve_dim(const gsl_matrix * m, const double * actual, double eps);
+int test_cholesky_solve(void);
+int test_cholesky_decomp_dim(const gsl_matrix * m, double eps);
+int test_cholesky_decomp(void);
+int test_HH_solve_dim(const gsl_matrix * m, const double * actual, double eps);
+int test_HH_solve(void);
+int test_TD_solve_dim(size_t dim, double d, double od, const double * actual, double eps);
+int test_TD_solve(void);
+
+int 
 check (double x, double actual, double eps)
 {
   if (actual == 0)
@@ -37,9 +69,9 @@ check (double x, double actual, double eps)
 }
 
 gsl_matrix *
-create_hilbert_matrix(int size)
+create_hilbert_matrix(size_t size)
 {
-  int i, j;
+  size_t i, j;
   gsl_matrix * m = gsl_matrix_alloc(size, size);
   for(i=0; i<size; i++) {
     for(j=0; j<size; j++) {
@@ -50,9 +82,9 @@ create_hilbert_matrix(int size)
 }
 
 gsl_matrix *
-create_general_matrix(int size1, int size2)
+create_general_matrix(size_t size1, size_t size2)
 {
-  int i, j;
+  size_t i, j;
   gsl_matrix * m = gsl_matrix_alloc(size1, size2);
   for(i=0; i<size1; i++) {
     for(j=0; j<size2; j++) {
@@ -63,26 +95,26 @@ create_general_matrix(int size1, int size2)
 }
 
 gsl_matrix *
-create_vandermonde_matrix(int size)
+create_vandermonde_matrix(size_t size)
 {
-  int i, j;
+  size_t i, j;
   gsl_matrix * m = gsl_matrix_alloc(size, size);
   for(i=0; i<size; i++) {
     for(j=0; j<size; j++) {
-      gsl_matrix_set(m, i, j, pow(i + 1.0, size - j - 1));
+      gsl_matrix_set(m, i, j, pow(i + 1.0, size - j - 1.0));
     }
   }
   return m;
 }
 
 gsl_matrix *
-create_moler_matrix(int size)
+create_moler_matrix(size_t size)
 {
-  int i, j;
+  size_t i, j;
   gsl_matrix * m = gsl_matrix_alloc(size, size);
   for(i=0; i<size; i++) {
     for(j=0; j<size; j++) {
-      gsl_matrix_set(m, i, j, GSL_MIN(i+1,j+1)-2);
+      gsl_matrix_set(m, i, j, GSL_MIN(i+1,j+1)-2.0);
     }
   }
   return m;
@@ -281,7 +313,7 @@ test_matmult_mod(void)
 }
 #endif
 
-static int
+int
 test_LU_solve_dim(const gsl_matrix * m, const double * actual, double eps)
 {
   int s = 0;
@@ -366,7 +398,7 @@ int test_LU_solve(void)
   return s;
 }
 
-static int
+int
 test_QR_solve_dim(const gsl_matrix * m, const double * actual, double eps)
 {
   int s = 0;
@@ -435,7 +467,7 @@ int test_QR_solve(void)
   return s;
 }
 
-static int
+int
 test_QR_decomp_dim(const gsl_matrix * m, double eps)
 {
   int s = 0;
@@ -523,7 +555,7 @@ int test_QR_decomp(void)
   return s;
 }
 
-static int
+int
 test_QRPT_solve_dim(const gsl_matrix * m, const double * actual, double eps)
 {
   int s = 0;
@@ -596,7 +628,7 @@ int test_QRPT_solve(void)
 }
 
 
-static int
+int
 test_QRPT_decomp_dim(const gsl_matrix * m, double eps)
 {
   int s = 0, signum;
@@ -695,7 +727,7 @@ int test_QRPT_decomp(void)
 }
 
 
-static int
+int
 test_QR_update_dim(const gsl_matrix * m, double eps)
 {
   int s = 0;
@@ -842,7 +874,7 @@ int test_QR_update(void)
 }
 
 
-static int
+int
 test_SV_solve_dim(const gsl_matrix * m, const double * actual, double eps)
 {
   int s = 0;
@@ -914,7 +946,7 @@ int test_SV_solve(void)
 }
 
 
-static int
+int
 test_SV_decomp_dim(const gsl_matrix * m, double eps)
 {
   int s = 0;
@@ -1021,7 +1053,7 @@ int test_SV_decomp(void)
 }
 
 
-static int
+int
 test_cholesky_solve_dim(const gsl_matrix * m, const double * actual, double eps)
 {
   int s = 0;
@@ -1073,7 +1105,7 @@ int test_cholesky_solve(void)
 }
 
 
-static int
+int
 test_cholesky_decomp_dim(const gsl_matrix * m, double eps)
 {
   int s = 0;
@@ -1148,7 +1180,7 @@ int test_cholesky_decomp(void)
 }
 
 
-static int
+int
 test_HH_solve_dim(const gsl_matrix * m, const double * actual, double eps)
 {
   int s = 0;
@@ -1217,7 +1249,7 @@ int test_HH_solve(void)
 }
 
 
-static int
+int
 test_TD_solve_dim(size_t dim, double d, double od, const double * actual, double eps)
 {
   int s = 0;
@@ -1291,7 +1323,7 @@ int test_TD_solve(void)
 
 
 
-int main()
+int main(void)
 {
   gsl_ieee_env_setup ();
 

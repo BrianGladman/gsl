@@ -26,8 +26,9 @@
 
 #define TRCOUNT(N,i) ((((i)+1)*(2*(N)-(i)))/2)
 
-#define TBUP(N,i,j) 
-#define TBLO(N,i,j) 
+/* #define TBUP(N,i,j) */
+/* #define TBLO(N,i,j) */
 
 #define TPUP(N,i,j) (TRCOUNT(N,(i)-1)+(j)-(i))
 #define TPLO(N,i,j) (((i)*((i)+1))/2 + (j))
+

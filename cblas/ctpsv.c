@@ -2,6 +2,8 @@
 #include "gsl_cblas.h"
 #include "cblas.h"
 
+#include "hypot.c"
+
 void
 cblas_ctpsv (const enum CBLAS_ORDER order, const enum CBLAS_UPLO Uplo,
 	     const enum CBLAS_TRANSPOSE TransA, const enum CBLAS_DIAG Diag,

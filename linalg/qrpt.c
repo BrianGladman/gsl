@@ -447,7 +447,7 @@ gsl_linalg_QRPT_update (gsl_matrix * Q, gsl_matrix * R,
       for (j = 0; j < N; j++)
 	{
 	  double r0j = gsl_matrix_get (R, 0, j);
-	  int p_j = gsl_permutation_get (p, j);
+	  size_t p_j = gsl_permutation_get (p, j);
 	  double vj = gsl_vector_get (v, p_j);
 	  gsl_matrix_set (R, 0, j, r0j + w0 * vj);
 	}

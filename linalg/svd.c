@@ -88,9 +88,9 @@ gsl_linalg_SV_decomp (gsl_matrix * A,
     }
   else
     {
-      const int M = A->size1;
-      const int N = A->size2;
-      int i, j, k;
+      const size_t M = A->size1;
+      const size_t N = A->size2;
+      size_t i, j, k;
 
       /* Initialize the rotation counter and the sweep counter. */
       int count = 1;
