@@ -17,10 +17,11 @@ enum {
   GSL_ERUNAWAY = 10,  /* iterative process is out of control */
   GSL_EMAXITER = 11,  /* exceeded max number of iterations */
   GSL_EZERODIV = 12,  /* tried to divide by zero */
-  GSL_ETOL     = 13,  /* user specified an invalid tolerance */
-  GSL_EUNDRFLW = 14,  /* underflow */
-  GSL_EOVRFLW  = 15,  /* overflow  */
-  GSL_ELOSS    = 16   /* loss of accuracy */
+  GSL_EBADTOL  = 13,  /* user specified an invalid tolerance */
+  GSL_ETOL     = 14,  /* failed to reach the specified tolerance */
+  GSL_EUNDRFLW = 15,  /* underflow */
+  GSL_EOVRFLW  = 16,  /* overflow  */
+  GSL_ELOSS    = 17   /* loss of accuracy */
 } ;
 
 /* just to make things slightly clearer */

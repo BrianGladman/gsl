@@ -29,8 +29,10 @@ gsl_strerror (const int gsl_errno)
       return "exceeded max number of iterations" ;
     case GSL_EZERODIV:
       return "tried to divide by zero" ;
+    case GSL_EBADTOL:
+      return "specified tolerance is invalid or theoretically unattainable" ;
     case GSL_ETOL:
-      return "invalid tolerance or failed to reach tolerance" ;
+      return "failed to reach the specified tolerance" ;
     case GSL_EUNDRFLW:
       return "underflow" ;
     case GSL_EOVRFLW:
