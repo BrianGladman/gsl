@@ -17,9 +17,9 @@ double gsl_sf_bessel_I(int n, double x);
 /* As above, with POSIX-ish error status return.
  * Return GSL_EOVRFLW on overflow, GSL_SUCCESS on success.
  */
-int gsl_sf_bessel_I0_pe(double x, double * result);
-int gsl_sf_bessel_I1_pe(double x, double * result);
-int gsl_sf_bessel_I_pe(int n, double x, double * result);
+int gsl_sf_bessel_I0_e(double x, double * result);
+int gsl_sf_bessel_I1_e(double x, double * result);
+int gsl_sf_bessel_I_e(int n, double x, double * result);
 
 /* Evaluate scaled regular modified cylindrical Bessel funcions
    exp(-|x|) I_0(x)

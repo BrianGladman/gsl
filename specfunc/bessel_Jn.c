@@ -69,10 +69,15 @@ double gsl_sf_bessel_Jn(int n, double x )
       result = sign * (2.0 * gsl_sf_bessel_J1(x) / x  -  gsl_sf_bessel_J0(x));
     }    
   }
-  else {  
-    if(x < GSL_MACH_EPS) {
-      /* underflow */
+  else {
+    if(x == 0.) {
       result = 0.;
+    }
+    else if(x < GSL_MACH_EPS) {
+      result = gsl_sf_pow_int(0.5*x, n);
+      if(result == 0.) {
+        /* underflow */
+      }
     }
     else {
       double pkm2, pkm1, r;
@@ -87,7 +92,7 @@ double gsl_sf_bessel_Jn(int n, double x )
 	pk -= 2.0;
 	result = pk - (xk/result);
       }
-      while( --k > 0 );
+      while(--k > 0);
 
       result = x/result;
 

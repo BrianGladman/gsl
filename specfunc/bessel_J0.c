@@ -48,7 +48,6 @@ static struct gsl_sf_ChebSeries bj0_cs = {
 
 double gsl_sf_bessel_J0(double x)
 {
-  const double prec = GSL_MACH_EPS;
   const double x_small = 2. * GSL_SQRT_MACH_EPS;
   const double xmax = 1./GSL_MACH_EPS;
 

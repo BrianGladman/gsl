@@ -10,9 +10,9 @@
 double gsl_sf_airy_Ai(double x);
 
 /* Airy function Bi(x) with POSIX-ish error status return.
- * Returns GSL_OVRFLW on overflow, GSL_SUCCESS on success.
+ * Returns GSL_EOVRFLW on overflow, GSL_SUCCESS on success.
  */
-int gsl_sf_airy_Bi_pe(double x, double *result);
+int gsl_sf_airy_Bi_e(double x, double *result);
 
 /* Airy function Bi(x). Overflow can occur.
  */
