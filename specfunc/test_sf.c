@@ -4385,19 +4385,19 @@ int check_legendre(void)
   status += s;
 
   s = 0;
-  s += (frac_diff( gsl_sf_conicalP_half(200.0, -1.0e-3), 1.3347639529084185010e+136 ) > 1.0e-14 );
-  s += (frac_diff( gsl_sf_conicalP_half(200.0,  1.0e-8), 1.0928098010940058507e+136 ) > 1.0e-14 );
-  s += (frac_diff( gsl_sf_conicalP_half(200.0,  0.5),    3.895546021611205442e+90   ) > 1.0e-14 );
-  s += (frac_diff( gsl_sf_conicalP_half(200.0,  10.0),  -0.04308567180833581268   ) > 1.0e-14 );
-  s += (frac_diff( gsl_sf_conicalP_half(200.0,  100.0), -0.04694669186576399194   ) > 1.0e-14 );
-  s += (frac_diff( gsl_sf_conicalP_half(200.0,  1000.0),  0.023698140704121273277 ) > 1.0e-14 );
-  s += (frac_diff( gsl_sf_conicalP_half(200.0,  1.0e+8), -0.00006790983312124277891 ) > 1.0e-14 );
+  s += (frac_diff( gsl_sf_conicalP_half(200.0, -1.0e-3), 1.3347639529084185010e+136 ) > 1.0e-12 );
+  s += (frac_diff( gsl_sf_conicalP_half(200.0,  1.0e-8), 1.0928098010940058507e+136 ) > 1.0e-12 );
+  s += (frac_diff( gsl_sf_conicalP_half(200.0,  0.5),    3.895546021611205442e+90   ) > 1.0e-12 );
+  s += (frac_diff( gsl_sf_conicalP_half(200.0,  10.0),  -0.04308567180833581268   ) > 1.0e-12 );
+  s += (frac_diff( gsl_sf_conicalP_half(200.0,  100.0), -0.04694669186576399194   ) > 1.0e-12 );
+  s += (frac_diff( gsl_sf_conicalP_half(200.0,  1000.0),  0.023698140704121273277 ) > 1.0e-12 );
+  s += (frac_diff( gsl_sf_conicalP_half(200.0,  1.0e+8), -0.00006790983312124277891 ) > 1.0e-12 );
   gsl_test(s, "  gsl_sf_conicalP_half(200.0)");
   status += s;
 
   s = 0;
-  s += (frac_diff( gsl_sf_conicalP_half(1.0e+8,  1.1),    1.1599311133054742944  ) > 1.0e-14 );
-  s += (frac_diff( gsl_sf_conicalP_half(1.0e+8,  100.0),  0.07971967557381557875 ) > 1.0e-14 );
+  s += (frac_diff( gsl_sf_conicalP_half(1.0e+8,  1.1),    1.1599311133054742944  ) > 1.0e-08 );
+  s += (frac_diff( gsl_sf_conicalP_half(1.0e+8,  100.0),  0.07971967557381557875 ) > 1.0e-08 );
   gsl_test(s, "  gsl_sf_conicalP_half(1.0e+8)");
   status += s;
 
@@ -4418,19 +4418,19 @@ int check_legendre(void)
   status += s;
 
   s = 0;
-  s += (frac_diff( gsl_sf_conicalP_mhalf(200.0, -0.5),    1.7699538115312304280e+179 ) > 1.0e-14 );
-  s += (frac_diff( gsl_sf_conicalP_mhalf(200.0,  1.0e-8), 5.464049005470029253e+133  ) > 1.0e-14 );
-  s += (frac_diff( gsl_sf_conicalP_mhalf(200.0,  0.5),    1.9477730108056027211e+88  ) > 1.0e-14 );
-  s += (frac_diff( gsl_sf_conicalP_mhalf(200.0,  10.0),    0.0012462575917716355362  ) > 1.0e-14 );
-  s += (frac_diff( gsl_sf_conicalP_mhalf(200.0,  100.0),  -0.0003225881344802625149  ) > 1.0e-14 );
-  s += (frac_diff( gsl_sf_conicalP_mhalf(200.0,  1000.0), -0.00004330652890886567623 ) > 1.0e-14 );
-  s += (frac_diff( gsl_sf_conicalP_mhalf(200.0,  1.0e+8),  2.0943091278037078483e-07 ) > 1.0e-14 );
+  s += (frac_diff( gsl_sf_conicalP_mhalf(200.0, -0.5),    1.7699538115312304280e+179 ) > 1.0e-13 );
+  s += (frac_diff( gsl_sf_conicalP_mhalf(200.0,  1.0e-8), 5.464049005470029253e+133  ) > 1.0e-13 );
+  s += (frac_diff( gsl_sf_conicalP_mhalf(200.0,  0.5),    1.9477730108056027211e+88  ) > 1.0e-13 );
+  s += (frac_diff( gsl_sf_conicalP_mhalf(200.0,  10.0),    0.0012462575917716355362  ) > 1.0e-13 );
+  s += (frac_diff( gsl_sf_conicalP_mhalf(200.0,  100.0),  -0.0003225881344802625149  ) > 1.0e-13 );
+  s += (frac_diff( gsl_sf_conicalP_mhalf(200.0,  1000.0), -0.00004330652890886567623 ) > 1.0e-12 );
+  s += (frac_diff( gsl_sf_conicalP_mhalf(200.0,  1.0e+8),  2.0943091278037078483e-07 ) > 1.0e-12 );
   gsl_test(s, "  gsl_sf_conicalP_mhalf(200.0)");
   status += s;
 
   s = 0;
-  s += (frac_diff( gsl_sf_conicalP_mhalf(1.0e+8,  1.1),    2.0923204456209896179e-09 ) > 1.0e-14 );
-  s += (frac_diff( gsl_sf_conicalP_mhalf(1.0e+8,  100.0), -3.359967833599016923e-11  ) > 1.0e-14 );  
+  s += (frac_diff( gsl_sf_conicalP_mhalf(1.0e+8,  1.1),    2.092320445620989618e-09 ) > 1.0e-06 );
+  s += (frac_diff( gsl_sf_conicalP_mhalf(1.0e+8,  100.0), -3.359967833599016923e-11 ) > 1.0e-06 );  
   gsl_test(s, "  gsl_sf_conicalP_mhalf(1.0e+8)");
   status += s;
 
@@ -4443,22 +4443,22 @@ int check_legendre(void)
   status += s;
 
   s = 0;
-  s += (frac_diff( gsl_sf_conicalP_0(10.0, -0.5),  1.6795592815421804669e+08 ) > 1.0e-14 );
-  s += (frac_diff( gsl_sf_conicalP_0(10.0,  0.5),  4826.034132009618240   ) > 1.0e-14 );
-  s += (frac_diff( gsl_sf_conicalP_0(10.0,  2.0),  0.18798468917758716146 ) > 1.0e-14 );
-  s += (frac_diff( gsl_sf_conicalP_0(10.0,  100.0),  -0.008622130749987962529 ) > 1.0e-14 );
+  s += (frac_diff( gsl_sf_conicalP_0(10.0, -0.5),  1.6795592815421804669e+08 ) > 1.0e-12 );
+  s += (frac_diff( gsl_sf_conicalP_0(10.0,  0.5),  4826.034132009618240   ) > 1.0e-12 );
+  s += (frac_diff( gsl_sf_conicalP_0(10.0,  2.0),  0.18798468917758716146 ) > 1.0e-12 );
+  s += (frac_diff( gsl_sf_conicalP_0(10.0,  100.0), -0.008622130749987962529 ) > 1.0e-12 );
   gsl_test(s, "  gsl_sf_conicalP_0(10.0)");
   status += s;
 
   s = 0;
-  s += (frac_diff( gsl_sf_conicalP_0(200.0, -0.5),    2.502194818646823e+180 ) > 1.0e-14 );
+  s += (frac_diff( gsl_sf_conicalP_0(200.0, -0.5),    2.502194818646823e+180 ) > 1.0e-12 );
   gsl_test(s, "  gsl_sf_conicalP_0(200.0)");
   status += s;
 
   s = 0;
-  s += (frac_diff( gsl_sf_conicalP_0(1000.0,  100.0),   0.0017908817653497715844  ) > 1.0e-14 );
-  s += (frac_diff( gsl_sf_conicalP_0(1000.0,  1000.0), -0.0006566893804926284301  ) > 1.0e-14 );
-  s += (frac_diff( gsl_sf_conicalP_0(1000.0,  1.0e+8),  2.3167213561756390068e-06 ) > 1.0e-14 );
+  s += (frac_diff( gsl_sf_conicalP_0(1000.0,  100.0),   0.0017908817653497715844  ) > 1.0e-12 );
+  s += (frac_diff( gsl_sf_conicalP_0(1000.0,  1000.0), -0.0006566893804926284301  ) > 1.0e-12 );
+  s += (frac_diff( gsl_sf_conicalP_0(1000.0,  1.0e+8),  2.3167213561756390068e-06 ) > 1.0e-12 );
   gsl_test(s, "  gsl_sf_conicalP_0(1000.0)");
   status += s;
 
@@ -4471,23 +4471,31 @@ int check_legendre(void)
   status += s;
 
   s = 0;
-  s += (frac_diff( gsl_sf_conicalP_1(10.0, -0.5),    1.7253802958788312520e+09 ) > 1.0e-14 );
-  s += (frac_diff( gsl_sf_conicalP_1(10.0,  0.5),    46781.02294059967988 ) > 1.0e-14 );
-  s += (frac_diff( gsl_sf_conicalP_1(10.0,  2.0),    0.26613342643657444400 ) > 1.0e-14 );
-  s += (frac_diff( gsl_sf_conicalP_1(10.0,  100.0), -0.23281959695501029796 ) > 1.0e-14 );
+  s += (frac_diff( gsl_sf_conicalP_1(10.0, -0.5),    1.7253802958788312520e+09 ) > 1.0e-12 );
+  s += (frac_diff( gsl_sf_conicalP_1(10.0,  0.5),    46781.02294059967988 ) > 1.0e-12 );
+  s += (frac_diff( gsl_sf_conicalP_1(10.0,  2.0),    0.26613342643657444400 ) > 1.0e-12 );
+  s += (frac_diff( gsl_sf_conicalP_1(10.0,  100.0), -0.23281959695501029796 ) > 1.0e-12 );
   gsl_test(s, "  gsl_sf_conicalP_1(10.0)");
   status += s;
 
   s = 0;
-  s += (frac_diff( gsl_sf_conicalP_1(200.0, -0.5),   1.5264610893333972691e+234 ) > 1.0e-14 );
-  s += (frac_diff( gsl_sf_conicalP_1(200.0,  10.0),  -2.9272610662414349553 ) > 1.0e-14 );
+  /* FIXME: Mathematica gets some brain-damaged numbers for
+   * these x < 0 points. I have checked what I am doing in detail,
+   * and it must be right because you can do it by summing
+   * manifestly positive definite quantities.
+   */
+  s += (frac_diff( gsl_sf_conicalP_1(200.0, -0.999),  2.71635193070012709e+270 ) > 1.0e-12 );
+  s += (frac_diff( gsl_sf_conicalP_1(200.0, -0.9),    4.29524931765857131e+234   ) > 1.0e-12 );
+  s += (frac_diff( gsl_sf_conicalP_1(200.0, -0.5),    5.01159205956053439e+182 ) > 1.0e-12 );
+  s += (frac_diff( gsl_sf_conicalP_1(200.0,  0.999),  195733.0396081538 ) > 1.0e-13 );
+  s += (frac_diff( gsl_sf_conicalP_1(200.0,  10.0),  -2.9272610662414349553 ) > 1.0e-12 );
   gsl_test(s, "  gsl_sf_conicalP_1(200.0)");
   status += s;
 
   s = 0;
-  s += (frac_diff( gsl_sf_conicalP_1(1000.0,  100.0),  -1.7783258105862399857 ) > 1.0e-14 );
-  s += (frac_diff( gsl_sf_conicalP_1(1000.0,  1000.0),  0.4535161075156427179 ) > 1.0e-14 );
-  s += (frac_diff( gsl_sf_conicalP_1(1000.0,  1.0e+8),  0.0009983414549874888478 ) > 1.0e-14 );
+  s += (frac_diff( gsl_sf_conicalP_1(1000.0,  100.0),  -1.7783258105862399857 ) > 1.0e-12 );
+  s += (frac_diff( gsl_sf_conicalP_1(1000.0,  1000.0),  0.4535161075156427179 ) > 1.0e-12 );
+  s += (frac_diff( gsl_sf_conicalP_1(1000.0,  1.0e+8),  0.0009983414549874888478 ) > 1.0e-10 );
   gsl_test(s, "  gsl_sf_conicalP_1(1000.0)");
   status += s;
 

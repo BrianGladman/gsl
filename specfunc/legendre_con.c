@@ -540,10 +540,10 @@ gsl_sf_conicalP_xlt1_neg_mu_largetau_impl(const double mu, const double tau,
 }
 
 
-/* Hypergeometric function to fixed order, which appears
- * in the large x expansion below. We write it as
+/* Hypergeometric function which appears in the
+ * large x expansion below:
  *
- * 1 + (A + iB)y + (A + iB)(C + iD)y^2 / 2
+ *   2F1(1/4 - mu/2 - I tau/2, 3/4 - mu/2 - I tau/2, 1 - I tau, y)
  *
  * Note that for the usage below y = 1/x^2;
  */
@@ -552,19 +552,47 @@ int
 conicalP_hyperg_large_x(const double mu, const double tau, const double y,
                         double * reF, double * imF)
 {
-  const double d1 = (1.0 + tau*tau);
-  const double d2 = (4.0 + tau*tau);
-  const double A = (3.0/16.0 - mu*(0.5 - 0.25*mu) + 0.25*tau*tau*(1.0 - 2.0*mu))/d1;
-  const double B = tau*(5.0/16.0 - 0.25*mu*mu + 0.25*tau*tau)/d1;
-  const double C = (35.0/8.0 - mu *(3.0 - 0.5*mu) + tau*tau*(1.0 - 0.5*mu))/d2;
-  const double D = tau*(13.0/16.0 + mu*(0.5 - 0.25*mu) + 0.25*tau*tau)/d2;
+  const int kmax = 1000;
+  const double re_a = 0.25 - 0.5*mu;
+  const double re_b = 0.75 - 0.5*mu;
+  const double re_c = 1.0;
+  const double im_a = -0.5*tau;
+  const double im_b = -0.5*tau;
+  const double im_c = -tau;
 
-  const double re2 = A*C - B*D;
-  const double im2 = B*C + A*D;
+  double re_sum = 1.0;
+  double im_sum = 0.0;
+  double re_term = 1.0;
+  double im_term = 0.0;
+  int k;
 
-  *reF = 1.0 + A*y + 0.5*re2*y*y;
-  *imF = y*(B + 0.5*im2*y);
-  return GSL_SUCCESS;
+  for(k=1; k<=kmax; k++) {
+    double re_ak = re_a + k - 1.0;
+    double re_bk = re_b + k - 1.0;
+    double re_ck = re_c + k - 1.0;
+    double im_ak = im_a;
+    double im_bk = im_b;
+    double im_ck = im_c;
+    double den = re_ck*re_ck + im_ck*im_ck;
+    double re_multiplier = ((re_ak*re_bk - im_ak*im_bk)*re_ck + im_ck*(im_ak*re_bk + re_ak*im_bk)) / den;
+    double im_multiplier = ((im_ak*re_bk + re_ak*im_bk)*re_ck - im_ck*(re_ak*re_bk - im_ak*im_bk)) / den;
+    double re_tmp = re_multiplier*re_term - im_multiplier*im_term;
+    double im_tmp = im_multiplier*re_term + re_multiplier*im_term;
+    double asum = fabs(re_sum) + fabs(im_sum);
+    re_term = y/k * re_tmp;
+    im_term = y/k * im_tmp;
+    if(fabs(re_term/asum) < GSL_MACH_EPS && fabs(im_term/asum) < GSL_MACH_EPS) break;
+    re_sum += re_term;
+    im_sum += im_term;
+  }
+
+  *reF = re_sum;
+  *imF = im_sum;
+
+  if(k == kmax)
+    return GSL_EMAXITER;
+  else  
+    return GSL_SUCCESS;
 }
 
 
@@ -581,13 +609,13 @@ gsl_sf_conicalP_large_x_impl(const double mu, const double tau, const double x,
   double reF, imF;
   int stat_F = conicalP_hyperg_large_x(mu, tau, y, &reF, &imF);
 
-  /* f = Gamma(-i tau)/Gamma(1/2 - mu - i tau)
+  /* f = Gamma(+i tau)/Gamma(1/2 - mu + i tau)
    * FIXME: shift so it's better for tau-> 0
    */
   double lgr_num, lgth_num;
   double lgr_den, lgth_den;
-  int stat_gn = gsl_sf_lngamma_complex_impl(0.0,-tau,&lgr_num,&lgth_num);
-  int stat_gd = gsl_sf_lngamma_complex_impl(0.5-mu,-tau,&lgr_den,&lgth_den);
+  int stat_gn = gsl_sf_lngamma_complex_impl(0.0,tau,&lgr_num,&lgth_num);
+  int stat_gd = gsl_sf_lngamma_complex_impl(0.5-mu,tau,&lgr_den,&lgth_den);
 
   double angle = lgth_num - lgth_den + atan2(imF,reF);
 
@@ -596,7 +624,7 @@ gsl_sf_conicalP_large_x_impl(const double mu, const double tau, const double x,
 
   /*  result = pre*|F|*|f| * cos(angle - tau * (log(x)+M_LN2))
    */
-  double c = cos(angle - tau*(log(x) + M_LN2));
+  double c = cos(angle + tau*(log(x) + M_LN2));
   int status = GSL_ERROR_SELECT_3(stat_gd, stat_gn, stat_F);
   if(c == 0.0) {
     *result = 0.0;
@@ -620,7 +648,9 @@ gsl_sf_conicalP_large_x_impl(const double mu, const double tau, const double x,
 
 /* P^{mu}_{-1/2 + I tau}  first hypergeometric representation
  * -1 < x < 1
- * more effective for |x| small
+ * This is more effective for |x| small, however it will work w/o
+ * reservation for any x < 0 because everything is positive
+ * definite in that case.
  *
  * [Kolbig,   (3)] (note typo in args of gamma functions)
  * [Bateman, (22)] (correct form)
@@ -633,20 +663,10 @@ conicalP_xlt1_hyperg_A(double mu, double tau, double x, double * result)
   double pre  = M_SQRTPI / pow(0.5*sqrt(1-x2), mu);
   double ln_g1, ln_g2, arg_g1, arg_g2;
   double pre1, pre2, F1, F2;
-  int status;
 
   int stat_F1 = gsl_sf_hyperg_2F1_conj_impl(0.25 - 0.5*mu, 0.5*tau, 0.5, x2, &F1);
   int stat_F2 = gsl_sf_hyperg_2F1_conj_impl(0.75 - 0.5*mu, 0.5*tau, 1.5, x2, &F2);
-
-  if(stat_F1 == GSL_SUCCESS && stat_F2 == GSL_SUCCESS) {
-    status = GSL_SUCCESS;
-  }
-  else if(stat_F1 == GSL_ELOSS || stat_F2 == GSL_ELOSS) {
-    status = GSL_ELOSS;
-  }
-  else {
-    status = GSL_EFAILED;
-  }
+  int status = GSL_ERROR_SELECT_2(stat_F1, stat_F2);
 
   gsl_sf_lngamma_complex_impl(0.75 - 0.5*mu, -0.5*tau, &ln_g1, &arg_g1);
   gsl_sf_lngamma_complex_impl(0.25 - 0.5*mu, -0.5*tau, &ln_g2, &arg_g2);
@@ -805,6 +825,7 @@ conicalP_1_V(const double t, const double f, const double tau, const double sgn,
 	             + 17297280.0*H[1] + 5405400.0 + 323072.0*T[4]
 		     )
           ) / (4194304.0*T[6]);
+  C[6] = 0.0;
 
   *V0 = C[0] + (-4.0*C[3]/T[1]+C[4])/V[4]
              + (-192.0*C[5]/T[3]+144.0*C[6]/T[2])/V[8]
@@ -813,7 +834,7 @@ conicalP_1_V(const double t, const double f, const double tau, const double sgn,
 		      );
   *V1 = C[1]/V[1] + (8.0*(C[3]/T[2]-C[4]/T[1])+C[5])/V[5]
                   + (384.0*C[5]/T[4] - 768.0*C[6]/T[3])/V[9]
-                  + sgn * (Cm1*T[1] + (2.0*C[2]/T[1]-C[3])/V[3]
+                  + sgn * (Cm1*V[1] + (2.0*C[2]/T[1]-C[3])/V[3]
 		           + (48.0*C[4]/T[3]-72.0*C[5]/T[2] + 18.0*C[6]/T[1])/V[7]
 		           );
 
@@ -856,9 +877,9 @@ gsl_sf_conicalP_0_impl(const double lambda, const double x, double * result)
       return stat_K;
     }
   }
-  else if(    x <= 0.0
-          || (x < 0.1 && lambda < 17.0)
-	  || (x < 0.2 && lambda < 5.0 )
+  else if(   (x <= 0.0 && lambda < 1000.0)
+          || (x <  0.1 && lambda < 17.0)
+	  || (x <  0.2 && lambda < 5.0 )
     ) {
     return conicalP_xlt1_hyperg_A(0.0, lambda, x, result);
   }
@@ -893,7 +914,7 @@ gsl_sf_conicalP_0_impl(const double lambda, const double x, double * result)
       int stat_I  = GSL_ERROR_SELECT_2(stat_I0, stat_I1);
       int stat_V  = conicalP_0_V(th, x/sth, lambda, -1.0, &V0, &V1);
       double bessterm = V0 * I0 + V1 * I1;
-      int stat_e = gsl_sf_exp_mult_impl(x, sqrt(th/sth) * bessterm, result);
+      int stat_e = gsl_sf_exp_mult_impl(th * lambda, sqrt(th/sth) * bessterm, result);
       return GSL_ERROR_SELECT_3(stat_e, stat_V, stat_I);
     }
     else {
@@ -924,44 +945,57 @@ gsl_sf_conicalP_1_impl(const double lambda, const double x, double * result)
   else if(lambda == 0.0) {
     double K, E;
     int stat_K, stat_E;
-    if(fabs(x-1.0) < 10.0*GSL_MACH_EPS) {
-      /* FIXME */
+    if(x == 1.0) {
+      *result = 0.0;
+      return GSL_SUCCESS;
     }
     else if(x < 1.0) {
-      const double th = acos(x);
-      const double s  = sin(0.5*th);
-      const double c2 = 1.0 - s*s;
-      const double sth = sin(th);
-      stat_K = gsl_sf_ellint_Kcomp_impl(s, locEPS, &K);
-      stat_E = gsl_sf_ellint_Ecomp_impl(s, locEPS, &E);
-      *result = 2.0/(M_PI*sth) * (E - c2 * K);
-      return stat_K;
+      if(1.0-x < GSL_SQRT_MACH_EPS) {
+        *result = 0.25/M_SQRT2 * sqrt(1.0-x) * (1.0 + 5.0/16.0 * (1.0-x));
+	return GSL_SUCCESS;
+      }
+      else {
+        const double th = acos(x);
+        const double s  = sin(0.5*th);
+        const double c2 = 1.0 - s*s;
+        const double sth = sin(th);
+        stat_K = gsl_sf_ellint_Kcomp_impl(s, locEPS, &K);
+        stat_E = gsl_sf_ellint_Ecomp_impl(s, locEPS, &E);
+        *result = 2.0/(M_PI*sth) * (E - c2 * K);
+        return stat_K;
+      }
     }
     else {
-      const double xi = acosh(x);
-      const double c  = cosh(0.5*xi);
-      const double t  = tanh(0.5*xi);
-      const double sxi = sinh(xi);
-      stat_K = gsl_sf_ellint_Kcomp_impl(t, locEPS, &K);
-      stat_E = gsl_sf_ellint_Ecomp_impl(t, locEPS, &E);
-      *result = 2.0/(M_PI*sxi) * c * (E - K);
-      return stat_K;
+      if(x-1.0 < GSL_SQRT_MACH_EPS) {
+        *result = -0.25/M_SQRT2 * sqrt(x-1.0) * (1.0 - 5.0/16.0 * (x-1.0));
+	return GSL_SUCCESS;
+      }
+      else {
+        const double xi = acosh(x);
+        const double c  = cosh(0.5*xi);
+        const double t  = tanh(0.5*xi);
+        const double sxi = sinh(xi);
+        stat_K = gsl_sf_ellint_Kcomp_impl(t, locEPS, &K);
+        stat_E = gsl_sf_ellint_Ecomp_impl(t, locEPS, &E);
+        *result = 2.0/(M_PI*sxi) * c * (E - K);
+        return stat_K;
+      }
     }
   }
-  else if(    x <= 0.0
-          || (x < 0.1 && lambda < 17.0)
-	  || (x < 0.2 && lambda < 5.0 )
+  else if(   (x <= 0.0 && lambda < 1000.0)
+          || (x <  0.1 && lambda < 17.0)
+	  || (x <  0.2 && lambda < 5.0 )
     ) {
     return conicalP_xlt1_hyperg_A(1.0, lambda, x, result);
   }
   else if(   (x <= 0.2 && lambda < 17.0)
-          || (x < 1.5  && lambda < 20.0)
+          || (x <  1.5 && lambda < 20.0)
     ) {
     const double arg = fabs(x*x - 1.0);
     const double sgn = GSL_SIGN(1.0 - x);
     const double pre = 0.5*(lambda*lambda + 0.25) * sgn * sqrt(arg);
     double F;
-    int stat_F = gsl_sf_hyperg_2F1_conj_impl(0.5, lambda, 1.0, (1.0-x)/2, &F);
+    int stat_F = gsl_sf_hyperg_2F1_conj_impl(1.5, lambda, 2.0, (1.0-x)/2, &F);
     *result = pre * F;
     return stat_F;
   }
@@ -991,7 +1025,7 @@ gsl_sf_conicalP_1_impl(const double lambda, const double x, double * result)
       int stat_I  = GSL_ERROR_SELECT_2(stat_I0, stat_I1);
       int stat_V  = conicalP_1_V(th, x/sth, lambda, -1.0, &V0, &V1);
       double bessterm = V0 * I0 + V1 * I1;
-      int stat_e = gsl_sf_exp_mult_impl(x, sqrt(th/sth) * bessterm, result);
+      int stat_e = gsl_sf_exp_mult_impl(th * lambda, sqrt(th/sth) * bessterm, result);
       return GSL_ERROR_SELECT_3(stat_e, stat_V, stat_I);
     }
     else {
