@@ -131,7 +131,7 @@ int gsl_sf_bessel_j2_impl(const double x, gsl_sf_result * result)
     const double f = (3.0/(x*x) - 1.0);
     result->val  = (f * sin_x - 3.0*cos_x/x)/x;
     result->err  = fabs(f * sin_result.err/x) + fabs((3.0*cos_result.err/x)/x);
-    result->err += GSL_DBL_EPSILON * (fabs(sin_x/x) + 3.0*fabs(cos_x/(x*x)));
+    result->err += GSL_DBL_EPSILON * (fabs(f*sin_x/x) + 3.0*fabs(cos_x/(x*x)));
     result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
     return GSL_ERROR_SELECT_2(stat_cos, stat_sin);
   }

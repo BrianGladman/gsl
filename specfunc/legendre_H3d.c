@@ -276,10 +276,10 @@ gsl_sf_legendre_H3d_1_impl(const double lambda, const double eta, gsl_sf_result 
     return GSL_SUCCESS;
   }
   else {
-    double sin_term;     /*  sin(xi)/xi     */
-    double cos_term;     /*  cos(xi)        */
-    double coth_term;    /*  eta/tanh(eta)  */
-    double sinh_term;    /*  eta/sinh(eta)  */
+    double sin_term;     /*  Sin(xi)/xi     */
+    double cos_term;     /*  Cos(xi)        */
+    double coth_term;    /*  eta/Tanh(eta)  */
+    double sinh_term;    /*  eta/Sinh(eta)  */
     double sin_term_err;
     double cos_term_err;
     double pre = sinh_term/sqrt(lsqp1) / eta;
@@ -292,10 +292,14 @@ gsl_sf_legendre_H3d_1_impl(const double lambda, const double eta, gsl_sf_result 
       cos_term_err = GSL_DBL_EPSILON;
     }
     else {
-      sin_term = sin(xi)/xi;
-      cos_term = cos(xi);
-      sin_term_err = 2.0 * fabs(cos_term * GSL_DBL_EPSILON);
-      cos_term_err = 2.0 * fabs((sin_term * xi) * (xi * GSL_DBL_EPSILON));
+      gsl_sf_result sin_xi_result;
+      gsl_sf_result cos_xi_result;
+      gsl_sf_sin_impl(xi, &sin_xi_result);
+      gsl_sf_cos_impl(xi, &cos_xi_result);
+      sin_term = sin_xi_result.val/xi;
+      cos_term = cos_xi_result.val;
+      sin_term_err = sin_xi_result.err/fabs(xi);
+      cos_term_err = cos_xi_result.err;
     }
     if(eta < GSL_ROOT5_DBL_EPSILON) {
       coth_term = 1.0 + eta*eta/3.0 * (1.0 - eta*eta/15.0);
