@@ -173,12 +173,36 @@ that you are allowed to release GPL software -- otherwise the work
 will be wasted.
 
 3) Tell Brian Gough (bjg@network-theory.co.uk) what you plan to do
-(I'll make sure nobody else starts on it)
+(I'll make sure nobody else starts on it).  Subscribe to the
+gsl-discuss@sources.redhat.com mailing list (a digest version is
+available to avoid too many messages)
 
 4) Literature search (this is discussed in the Design document).
 
-5) Post on gsl-discuss@sources.redhat.com to keep us updated of your
-progress.  Make patches available somewhere for people to try out.
-Code goes into GSL when it is stable and well-tested, and has
-documentation.
+5) If you have good internet access register an for account on
+http://savannah.gnu.org/ and upload your an SSH public key so that you
+can be given access to the development cvs repository.  Send your
+savannah username to Brian Gough to get onto the list of developers.
+
+Then make a per-project private branch against the current release for your
+work.   For example, for a project called 'myproject' as an
+extension to gsl-1.2 use:
+
+  cvs rtag -r release-1-2 -b myproject gsl
+  cvs checkout -r myproject
+
+You can then use cvs add to add new files, etc.  
+
+Always remember the to use '-r myproject' on any checkouts so you end
+up working on the main branch, only on your own private branch!
+
+To verify your patch you should make a new temporary directory and do,
+
+  cvs checkout -r myproject
+  cd gsl ; ./configure ; make distcheck
+
+6) Post on gsl-discuss@sources.redhat.com periodically to keep us
+updated of your progress.  Make patches available somewhere for people
+to try out.  Code goes into GSL when it is stable and well-tested, and
+has documentation.
 
