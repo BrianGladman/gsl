@@ -84,8 +84,6 @@ C***END PROLOGUE  UNI
 
 unsigned long int uni_get (void * vstate);
 void uni_set (void * state, unsigned int s);
-void uni_set_with_state (void * vstate, const void * vinit_state,
-			  unsigned int s);
 
 static const unsigned int MDIG=16;                /* Machine digits in int */
 static const unsigned int m1 = 32767;             /* 2^(MDIG-1) - 1 */
@@ -129,39 +127,17 @@ unsigned long uni_get (void * vstate)
     return k;
 }
 
-static const uni_state_t init_state = {
-  4, 16,  { 27207, 30011, 31519, 10547, 951,
-	    6635, 10767, 30051, 1063, 6555,
-	    6143, 5267, 23447, 9291, 13551,
-	    14019, 31239 }
-  /* The numbers below were provided in the version that came
-     over the net.  I have used the numbers above following the
-     convention that the default initializer is the same as you
-     would get if you used seed=1
-   4, 16, { 30788, 23052,  2053, 19346, 10646, 19427, 23975,
-            19049, 10949, 19693, 29746, 26748, 2796,  23890,
-	    29168, 31924, 16499 } */
-};
-
-void uni_set(void * state, unsigned int s)
-{
-  uni_set_with_state (state, &init_state, s) ;
-}
-
-void uni_set_with_state (void * vstate, const void * vinit_state, 
-			 unsigned int s)
+void uni_set(void * vstate, unsigned int s)
 {
   unsigned int i, seed, k0, k1, j0, j1;
   
   uni_state_t * state = (uni_state_t *) vstate;
   
-  *state = *(const uni_state_t *) vinit_state ;
-    
   /* For this routine, the seeding is very elaborate! */
   /* A flaw in this approach is that seeds 1,2 give exactly the
      same random number sequence!  */
   
-  s = 2*s+1;                    /* enforce seed be odd */
+  s = 2*s+1;                   /* enforce seed be odd */
   seed = (s < m1 ? s : m1);    /* seed should be less than m1 */
   
   k0 = 9069%m2;

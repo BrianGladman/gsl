@@ -129,26 +129,12 @@ unsigned long uni32_get (void * vstate)
     return k;
 }
 
-static const uni32_state_t init_state = {
-  4, 16,  { 30788, 23052,  2053, 19346, 10646, 19427, 23975,
-	    19049, 10949, 19693, 29746, 26748, 2796,  23890,
-	    29168, 31924, 16499 }
-};
-
-void uni32_set(void * state, unsigned int s)
-{
-  uni32_set_with_state (state, &init_state, s) ;
-}
-
-void uni32_set_with_state (void * vstate, const void * vinit_state, 
-			 unsigned int s)
+void uni32_set(void * vstate, unsigned int s)
 {
   unsigned int i, seed, k0, k1, j0, j1;
   
   uni32_state_t * state = (uni32_state_t *) vstate;
   
-  *state = *(const uni32_state_t *) vinit_state ;
-    
   /* For this routine, the seeding is very elaborate! */
   /* A flaw in this approach is that seeds 1,2 give exactly the
      same random number sequence!  */

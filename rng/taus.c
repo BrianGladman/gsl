@@ -10,8 +10,6 @@
 
 unsigned long int taus_get (void * vstate);
 void taus_set (void * state, unsigned int s);
-void taus_set_with_state (void * vstate, const void * vinit_state,
-			  unsigned int s);
 
 typedef struct {
     unsigned long int s1, s2, s3;
@@ -32,30 +30,19 @@ unsigned long taus_get(void * vstate)
     return (state->s1 ^ state->s2 ^ state->s3) ;
 }
 
-static const taus_state_t init_state = { 
-    956008634UL, 2013275612UL, 4211549042UL
-};
-
-void taus_set(void * state, unsigned int s)
-{
-  taus_set_with_state(state, &init_state, s) ;
-}
-
-void taus_set_with_state(void * vstate, const void * vinit_state, 
-			 unsigned int s)
-{
-    /* An entirely adhoc way of seeding!
-       L'Ecuyer suggests: s1,s2,s3 >= 2,8,16, and says
-       "In practice, it is better to take larger (random) initial seeds" */
-
-  taus_state_t * state = (taus_state_t *) vstate;
-
-  *state = *(const taus_state_t *) vinit_state ;
-
-    /* LCG is a "quick and dirty" (Press et al, p284) generator */ 
+/* LCG is a "quick and dirty" (Press et al, p284) generator */ 
 #define LCG(n) ((n)*8121+28411)%134456
+
+void taus_set(void * vstate, unsigned int s)
+{
+  /* An entirely adhoc way of seeding!  L'Ecuyer suggests: s1,s2,s3 >=
+     2,8,16, and says "In practice, it is better to take larger
+     (random) initial seeds" */
+  
+  taus_state_t * state = (taus_state_t *) vstate;
     
-  if (s==0) s=1;
+  if (s == 0) s = 1;
+
   state->s1 = LCG(s);
   state->s2 = LCG(state->s1);
   state->s3 = LCG(state->s2);

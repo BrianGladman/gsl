@@ -11,8 +11,6 @@
 
 unsigned long int cmrg_get (void * vstate);
 void cmrg_set (void * state, unsigned int s);
-void cmrg_set_with_state (void * vstate, const void * vinit_state,
-			  unsigned int s);
 
 static const int m1 = 2147483647, m2 = 2145483479;
 
@@ -59,25 +57,12 @@ unsigned long int cmrg_get (void * vstate)
     return (state->x12 - state->x22);
 }
 
-static const cmrg_state_t init_state = {
-  511515612L, 1645048169L, 1860274777L,
-   55882945L, 1225790668L, 2055528708L
-};
-
-void cmrg_set(void * state, unsigned int s)
+void cmrg_set(void * vstate, unsigned int s)
 {
-  cmrg_set_with_state(state, &init_state, s) ;
-}
-
-void cmrg_set_with_state(void * vstate, const void * vinit_state, 
-			 unsigned int s)
-{
-  /* An entirely adhoc way of seeding! This does **not** come
-     from L'Ecuyer et al */
+  /* An entirely adhoc way of seeding! This does **not** come from
+     L'Ecuyer et al */
   
   cmrg_state_t * state = (cmrg_state_t *) vstate;
-  
-  *state = *(const cmrg_state_t *) vinit_state ;
   
   if (s == 0) s = 1;
   

@@ -18,8 +18,6 @@
 
 unsigned long int minstd_get (void * vstate);
 void minstd_set (void * state, unsigned int s);
-void minstd_set_with_state (void * vstate, const void * vinit_state,
-			 unsigned int s);
 
 static const int m = 2147483647, a = 16807, q = 127773, r = 2836 ;
 
@@ -47,11 +45,6 @@ unsigned long int minstd_get (void *vstate)
 
     return state->x;
 }
-
-
-static const minstd_state_t init_state = {
-    1
-};
 
 void 
 minstd_set(void * vstate, unsigned int s)

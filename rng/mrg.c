@@ -9,13 +9,10 @@
 
 unsigned long int mrg_get (void * vstate);
 void mrg_set (void * state, unsigned int s);
-void mrg_set_with_state (void * vstate, const void * vinit_state,
-			 unsigned int s);
 
 static const int m = 2147483647,
   a1 = 107374182,   q1 = 20,      r1 = 7,
   a5 = 104480,      q5 = 20554,   r5 = 1727;
-
 
 typedef struct {
   long int x1, x2, x3, x4, x5;
@@ -43,25 +40,14 @@ unsigned long int mrg_get (void *vstate)
     return state->x1;
 }
 
-
-static const mrg_state_t init_state = {
-    1436981205L, 651435938L, 1374493895L, 1070522304L, 1168302460L
-};
-
-void mrg_set(void * state, unsigned int s)
-{
-  mrg_set_with_state (state, &init_state, s) ;
-}
-
 #define LCG(n) ((n)*8121+28411)%134456
-void mrg_set_with_state (void * vstate, const void * vinit_state, unsigned int s)
+
+void mrg_set(void * vstate, unsigned int s)
 {
-  /* An entirely adhoc way of seeding! This does **not** come
-     from L'Ecuyer et al */
+  /* An entirely adhoc way of seeding! This does **not** come from
+     L'Ecuyer et al */
   
   mrg_state_t * state = (mrg_state_t *) vstate;
-  
-  *state = *(const mrg_state_t *) vinit_state ;
   
   if (s == 0) s = 1;
   

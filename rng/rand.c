@@ -123,8 +123,6 @@ C
 
 unsigned long int rand_get (void * vstate);
 void rand_set (void * state, unsigned int s);
-void rand_set_with_state (void * vstate, const void * vinit_state,
-			  unsigned int s);
 
 typedef struct {
     long int x0, x1;
@@ -151,20 +149,10 @@ unsigned long int rand_get (void *vstate)
     return state->x1 * 2048 + state->x0;
 }
 
-static const rand_state_t init_state = { 0L, 256L };
-
-void rand_set(void * state, unsigned int s)
-{
-  rand_set_with_state(state, &init_state, s) ;
-}
-
-void rand_set_with_state(void * vstate, const void * vinit_state, 
-			 unsigned int s)
+void rand_set(void * vstate, unsigned int s)
 {
   rand_state_t * state = (rand_state_t *) vstate;
   
-  *state = *(const rand_state_t *) vinit_state ;
-    
   /* Only eight seeds are permitted.  This is pretty limiting, but
      at least we are guaranteed that the eight sequences are different */
 
@@ -182,3 +170,5 @@ static const gsl_rng_type rand_type = { "gsl-rand",  /* name */
 					&rand_get } ;
 
 const gsl_rng_type * gsl_rng_rand = &rand_type ;
+
+

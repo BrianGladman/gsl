@@ -1,5 +1,9 @@
 Thu Jun 18 12:17:16 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
+	* got rid of init_state values. It's simpler to generate them
+ 	directly from the seed, the cost of creating an rng is not usually
+ 	a big deal.
+	
 	* rng.c: eliminated the gsl_rng_internal struct since it was not
  	really necessary
 
