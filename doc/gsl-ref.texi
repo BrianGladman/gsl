@@ -236,6 +236,7 @@ at @uref{http://www.network-theory.co.uk/gsl/manual/}.
 * Numerical Differentiation::   
 * Chebyshev Approximations::    
 * Series Acceleration::         
+* Wavelet Transforms::          
 * Discrete Hankel Transforms::  
 * One dimensional Root-Finding::  
 * One dimensional Minimization::  
@@ -372,11 +373,15 @@ at @uref{http://www.network-theory.co.uk/gsl/manual/}.
 @chapter Chebyshev Approximations
 @include cheb.texi
 
-@node Series Acceleration, Discrete Hankel Transforms, Chebyshev Approximations, Top
+@node Series Acceleration, Wavelet Transforms, Chebyshev Approximations, Top
 @chapter Series Acceleration
 @include sum.texi
 
-@node  Discrete Hankel Transforms, One dimensional Root-Finding, Series Acceleration, Top
+@node  Wavelet Transforms, Discrete Hankel Transforms, Series Acceleration, Top
+@chapter Wavelet Transforms
+@include dwt.texi
+
+@node  Discrete Hankel Transforms, One dimensional Root-Finding, Wavelet Transforms, Top
 @chapter Discrete Hankel Transforms
 @include dht.texi
 

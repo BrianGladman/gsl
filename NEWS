@@ -1,5 +1,8 @@
 * What will be new in gsl-1.6:
 
+** Added a new wavelet directory, with 1-dimensional and 2-dimensional
+discrete wavelet transforms.
+
 ** The standard output and standard error streams are now flushed by
 the default error handler before the program aborts, in order to
 ensure that error messages are properly displayed on some platforms.
