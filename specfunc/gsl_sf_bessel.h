@@ -315,7 +315,9 @@ double  gsl_sf_bessel_i2_scaled(double x);
 
 /* Regular scaled modified spherical Bessel functions
  *
- * i_l(x) = Exp[-|x|] Sqrt[Pi/(2x)] BesselI[l+1/2,x]
+ * Exp[-|x|] i_l(x)
+ *
+ * i_l(x) = Sqrt[Pi/(2x)] BesselI[l+1/2,x]
  *
  * exceptions: GSL_EUNDRFLW
  */
@@ -326,8 +328,9 @@ double  gsl_sf_bessel_il_scaled(int l, double x);
 
 /* Regular scaled modified spherical Bessel functions
  *
- * i_l(x) = Exp[-|x|] Sqrt[Pi/(2x)] BesselI[l+1/2,x]
+ * i_l(x)
  * for l=0,1,...,lmax
+ *
  * exceptions: GSL_EUNDRFLW
  */
 int gsl_sf_bessel_il_scaled_array_impl(int lmax, double x, double * result_array);
@@ -364,6 +367,7 @@ double  gsl_sf_bessel_k2_scaled(double x);
 /* Irregular modified spherical Bessel function
  *
  * k_l(x) = Sqrt[Pi/(2x)] BesselK[l+1/2,x]
+ *
  * exceptions: GSL_EUNDRFLW
  */
 int     gsl_sf_bessel_kl_scaled_impl(int l, double x, double * result);
@@ -373,7 +377,7 @@ double  gsl_sf_bessel_kl_scaled(int l, double x);
 
 /* Irregular modified spherical Bessel function
  *
- * k_l(x) = Sqrt[Pi/(2x)] BesselK[l+1/2,x]
+ * k_l(x)
  * for l=0,1,...,lmax
  * exceptions: GSL_EUNDRFLW
  */
@@ -400,7 +404,8 @@ double  gsl_sf_bessel_Ynu(double nu, double x);
 
 
 /* Scaled modified cylindrical Bessel functions
- *   Exp[-|x|] BesselI[nu, x]
+ *
+ * Exp[-|x|] BesselI[nu, x]
  *
  * exceptions: GSL_EDOM
  */
@@ -410,7 +415,8 @@ double  gsl_sf_bessel_Inu_scaled(double nu, double x);
 
 
 /* Modified cylindrical Bessel functions
- *  BesselI[nu, x]
+ *
+ * BesselI[nu, x]
  *
  * exceptions: GSL_EDOM, GSL_EOVRFLW
  */
@@ -421,7 +427,8 @@ double  gsl_sf_bessel_Inu(double nu, double x);
 
 
 /* Scaled modified cylindrical Bessel functions
- *   Exp[+|x|] BesselK[nu, x]
+ *
+ * Exp[+|x|] BesselK[nu, x]
  *
  * exceptions: GSL_EDOM
  */
@@ -431,7 +438,8 @@ double  gsl_sf_bessel_Knu_scaled(double nu, double x);
 
 
 /* Modified cylindrical Bessel functions
- *   BesselK[nu, x]
+ *
+ * BesselK[nu, x]
  *
  * exceptions: GSL_EDOM, GSL_EUNDRFLW
  */

@@ -66,9 +66,17 @@ int gsl_sf_bessel_i2_scaled_impl(const double x, double * result)
   }
 }  
 
-int gsl_sf_bessel_il_scaled_impl(const int l, const double x, double * result)
+int gsl_sf_bessel_il_scaled_impl(const int l, double x, double * result)
 {
-  if(l < 0 || x < 0.0) {
+  double sgn = 1.0;
+
+  if(x < 0.0) {
+    /* i_l(-x) = (-1)^l i_l(x) */
+    sgn = ( GSL_IS_ODD(l) ? -1.0 : 1.0 );
+    x = -x;
+  }
+
+  if(l < 0) {
     return GSL_EDOM;
   }
   else if(x == 0.0) {
@@ -78,29 +86,38 @@ int gsl_sf_bessel_il_scaled_impl(const int l, const double x, double * result)
   else if(x*x < 10.*(l+1.5)*GSL_ROOT5_MACH_EPS) {
     double b = 0.0;
     int status = gsl_sf_bessel_Inu_Jnu_taylor_impl(l+0.5, x, 1, 4, &b);
-    *result = exp(-fabs(x)) * sqrt(M_PI/(2.0*x)) * b;
+    *result = sgn * exp(-x) * sqrt(M_PI/(2.0*x)) * b;
     return status;
   }
   else if(GSL_ROOT3_MACH_EPS * x > (l*l + l + 1)) {
     double b = 0.0;
     int status = gsl_sf_bessel_Inu_scaled_asympx_impl(l + 0.5, x, &b);
-    *result = sqrt(M_PI/(2.0*x)) * b;
+    *result = sgn * sqrt(M_PI/(2.0*x)) * b;
     return status;
   }
   else if(locMin(0.29/(l*l+1.), 0.5/(l*l+1.+x*x)) < GSL_ROOT3_MACH_EPS) {
     double b = 0.0;
     int status = gsl_sf_bessel_Inu_scaled_asymp_unif_impl(l + 0.5, x, &b);
-    *result = sqrt(M_PI/(2.0*x)) * b;
+    *result = sgn * sqrt(M_PI/(2.0*x)) * b;
     return status;
   }
   else if(l == 0) {
-    return gsl_sf_bessel_i0_scaled_impl(x, result);
+    double il;
+    int stat_il = gsl_sf_bessel_i0_scaled_impl(x, &il);
+    *result = sgn * il;
+    return stat_il;
   }
   else if(l == 1) {
-    return gsl_sf_bessel_i1_scaled_impl(x, result);
+    double il;
+    int stat_il = gsl_sf_bessel_i1_scaled_impl(x, &il);
+    *result = sgn * il;
+    return stat_il;
   }
   else if(l == 2) {
-    return gsl_sf_bessel_i2_scaled_impl(x, result);
+    double il;
+    int stat_il = gsl_sf_bessel_i2_scaled_impl(x, &il);
+    *result = sgn * il;
+    return stat_il;
   }
   else {
     /* recurse down from safe values */
@@ -118,7 +135,7 @@ int gsl_sf_bessel_il_scaled_impl(const int l, const double x, double * result)
       iellp1 = iell;
       iell   = iellm1;
     }
-    *result = iellm1;
+    *result = sgn * iellm1;
     return GSL_SUCCESS;
   }
 }

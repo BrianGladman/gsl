@@ -59,6 +59,64 @@ hyperg_1F1_renorm_b0(const double a, const double x, double * result)
 }
 
 
+/* 1F1(a+N+1,b,x)/1F1(a+N,b,x)
+ */
+static
+int
+hyperg_1F1_CF1(const double a, const double b, const int N, const double x, double * result)
+{
+  const double RECUR_BIG = GSL_SQRT_DBL_MAX;
+  const int maxiter = 5000;
+  int n = 1;
+  double Anm2 = 1.0;
+  double Bnm2 = 0.0;
+  double Anm1 = 0.0;
+  double Bnm1 = 1.0;
+  double a1 =  2.0*(a+N+1.0) - b + x;
+  double b1 = -(b - a - N - 1.0);
+  double An = b1*Anm1 + a1*Anm2;
+  double Bn = b1*Bnm1 + a1*Bnm2;
+  double an, bn;
+  double fn = An/Bn;
+
+  while(n < maxiter) {
+    double old_fn;
+    double del;
+    n++;
+    Anm2 = Anm1;
+    Bnm2 = Bnm1;
+    Anm1 = An;
+    Bnm1 = Bn;
+    an = 2.0*(a + N + n) - b + x;
+    bn = (a + N + n - 1.0) * (b - a- N - n);
+    An = bn*Anm1 + an*Anm2;
+    Bn = bn*Bnm1 + an*Bnm2;
+
+    if(fabs(An) > RECUR_BIG || fabs(Bn) > RECUR_BIG) {
+      An /= RECUR_BIG;
+      Bn /= RECUR_BIG;
+      Anm1 /= RECUR_BIG;
+      Bnm1 /= RECUR_BIG;
+      Anm2 /= RECUR_BIG;
+      Bnm2 /= RECUR_BIG;
+    }
+
+    old_fn = fn;
+    fn = An/Bn;
+    del = old_fn/fn;
+    
+    if(fabs(del - 1.0) < 10.0*GSL_MACH_EPS) break;
+  }
+
+  *result = fn;
+  if(n == maxiter)
+    return GSL_EMAXITER;
+  else
+    return GSL_SUCCESS;
+}
+
+
+
 /* We define two scaled functions for general use.
  * One is used for a > 0, the other for a < 0.
  *
@@ -715,6 +773,80 @@ hyperg_1F1_recurse_nega(double a, double b, double x, int N, double * FN, double
 }
 
 
+/* 1F1(a,2a,x) = Gamma(a + 1/2) E(x) (|x|/4)^(-a+1/2) scaled_I(a-1/2,|x|/2)
+ *
+ * E(x) = exp(x) x > 0
+ *      = 1      x < 0
+ *
+ * a >= 1/2
+ */
+static
+int
+hyperg_1F1_beq2a_pos(const double a, const double x, double * result)
+{
+  if(x == 0.0) {
+    *result = 1.0;
+    return GSL_SUCCESS;
+  }
+  else {
+    double I;
+    int stat_I = gsl_sf_bessel_Inu_scaled_impl(a-0.5, 0.5*fabs(x), &I);
+    if(stat_I == GSL_SUCCESS) {
+      double lg;
+      double lr;
+      gsl_sf_lngamma_impl(a + 0.5, &lg);
+      lr = lg + locMAX(x,0.0) + (0.5-a)*log(0.25*fabs(x)) + log(fabs(I));
+      return gsl_sf_exp_impl(lr, result);
+    }
+    else {
+      *result = 0.0;
+      return stat_I;
+    }
+  }
+}
+
+
+/* Determine middle parts of diagonal recursion along b=2a
+ * from two endpoints, i.e.
+ *
+ * given:  M(a,b)      and  M(a+1,b+2)
+ * get:    M(a+1,b+1)  and  M(a,b+1)
+ */
+static
+int
+hyperg_1F1_diag_step(const double a, const double b, const double x,
+                     const double Mab, const double Map1bp2,
+                     double * Map1bp1, double * Mabp1)
+{
+  if(a == b) {
+    *Map1bp1 = Mab;
+    *Mabp1   = Mab - x/(b+1.0) * Map1bp2;
+  }
+  else {
+    *Map1bp1 = Mab - x * (a-b)/(b*(b+1.0)) * Map1bp2;
+    *Mabp1   = (a * *Map1bp1 - b * Mab)/(a-b);
+  }
+  return GSL_SUCCESS;
+}
+
+
+/* Determine endpoint of diagonal recursion.
+ *
+ * given:  M(a,b)    and  M(a+1,b+2)
+ * get:    M(a+1,b)  and  M(a+1,b+1)
+ */
+static
+int
+hyperg_1F1_diag_end_step(const double a, const double b, const double x,
+                         const double Mab, const double Map1bp2,
+                         double * Map1b, double * Map1bp1)
+{
+  *Map1bp1 = Mab - x * (a-b)/(b*(b+1.0)) * Map1bp2;
+  *Map1b   = Mab + x/b * *Map1bp1;
+  return GSL_SUCCESS;
+}
+
+
 /* Handle the case of a and b both positive integers.
  * Assumes a > 0 and b > 0.
  */
@@ -762,85 +894,176 @@ hyperg_1F1_ab_posint(const int a, const int b, const double x, double * result)
     double prec;
     return gsl_sf_hyperg_1F1_series_impl(a, b, x, result, &prec);
   }
-  else {
-    /* Forward recursion. */
-    double M0 = 1.0;
-    double M1;
-    
+  else if(b == 2*a) {
+    return hyperg_1F1_beq2a_pos(a, x, result);
   }
-}
-
-
-static
-int
-hyperg_1F1_ab_int(const int a, const int b, const double x, double * result)
-{
-  if(x == 0.0) {
-    *result = 1.0;
-    return GSL_SUCCESS;
-  }
-  else if(a == b) {
-    return gsl_sf_exp_impl(x, result);
-  }
-  else if(b == 0) {
-    *result = 0.0;
-    return GSL_EDOM;
-  }
-  else if(a == 0) {
-    *result = 1.0;
-    return GSL_SUCCESS;
-  }
-  else if(b < 0 && (a < b || a > 0)) {
-    *result = 0.0;
-    return GSL_EDOM;
-  }
-  else if(a == -1) {
-    *result = 1.0 + (double)a/b * x;
-    return GSL_SUCCESS;
-  }
-  else if(a == -2) {
-    *result = 1.0 + (double)a/b*x * (1.0 + 0.5*(a+1.0)/(b+1.0)*x);
-  }
-  else if(a < 0 && b < 0) {
-    /* Safe to recurse backward with Z function.
+  else if(a > b) {
+    /* Forward recursion from a=b.
+     * Note that a > b + 1 as well, since we already tried a = b + 1.
      */
-    double Z0 = 1.0;           /* Z(0,0,b,x) */
-    double Z1 = 1.0 + a*x/b;   /* Z(0,1,b,x) */
-    double ZN, ZNp1;
-  }
-  else if(a < 0 && b > 0) {
-    /* Use Kummer to reduce it to the positive integer case.
-     */
-    double Kummer_1F1;
-    int stat_K = hyperg_1F1_ab_posint(b-a, b, -x, &Kummer_1F1);
-    if(stat_K == GSL_SUCCESS) {
-      if(Kummer_1F1 == 0.0) {
-        *result = 0.0;
-	return GSL_SUCCESS;
+    if(x + log(fabs(x/b)) < GSL_LOG_DBL_MAX-1.0) {
+      double ex = exp(x);
+      int n;
+      double Mnm1 = ex; 		/* 1F1(b,b,x)   */
+      double Mn   = ex * (1.0 + x/b);   /* 1F1(b+1,b,x) */
+      double Mnp1;
+      for(n=b+1; n<a; n++) {
+        Mnp1 = ((b-n)*Mnm1 + (2*n-b+x)*Mn)/n;
+	Mnm1 = Mn;
+	Mn   = Mnp1;
       }
-      else {
-        double sK  = ( Kummer_1F1 > 0.0 ? 1.0 : -1.0 );
-        double lnr = log(fabs(Kummer_1F1)) + x;
-	if(lnr < GSL_LOG_DBL_MAX) {
-	  *result = sK * exp(lnr);
-	  return GSL_SUCCESS;
-	}
-	else {
-	  *result = 0.0; /* FIXME: should be Inf */
-	  return GSL_EOVRFLW;
-	}
-      }
+      *result = Mn;
+      return GSL_SUCCESS;
     }
     else {
       *result = 0.0;
-      return stat_K;
+      return GSL_EOVRFLW;
+    }
+  }
+  else if(2*a > b && GSL_IS_EVEN(b)){
+    /* Forward recursion from a = b/2.
+     */
+    double Mnm1;
+    double Mn;
+    double Mnp1;
+    int s = 0;
+    if(b == 2) {
+      s += gsl_sf_exprel_impl(x, &Mnm1); /* 1F1(b/2,b,x)   = 1F1(1,2,x) =(e^x-1)/x */
+      s += gsl_sf_exp_impl(x, &Mn);      /* 1F1(b/2+1,b,x) = 1F1(2,2,x) = e^x      */
+    }
+    else {
+      double M12, M11;
+      s += hyperg_1F1_beq2a_pos(b/2,   x, &Mnm1);  /* 1F1(b/2,b,x)     */
+      s += hyperg_1F1_beq2a_pos(b/2+1, x, &M12);   /* 1F1(b/2+1,b+2,x) */
+      s += hyperg_1F1_diag_end_step(b/2, b, x, Mnm1, M12, &Mn, &M11);
+    }
+
+    if(s == 0) {
+      int n;
+      for(n=b/2+1; n<a; n++) {
+        Mnp1 = ((b-n)*Mnm1 + (2*n-b+x)*Mn)/n;
+	Mnm1 = Mn;
+	Mn   = Mnp1;
+      }
+      *result = Mn;
+      return GSL_SUCCESS;
+    }
+    else {
+      *result = 0.0;
+      return GSL_EFAILED;
+    }
+  }
+  else if(2*a > b && GSL_IS_ODD(b)){
+    /* Forward recursion from a = (b-1)/2.
+     */
+    double M00, M12;
+    double Mnm1;
+    double Mn;
+    double Mnp1;
+    int s = 0;
+
+    /* Determine 1F1((b-1)/2,b,x) and 1F1((b+1)/2,b,x).
+     */
+    if(b == 1) {
+      Mnm1 = 0.0;                     /* 1F1(0,1,x) */
+      s += gsl_sf_exp_impl(x, &Mn);   /* 1F1(1,1,x) */
+    }
+    else {
+      s += hyperg_1F1_beq2a_pos((b-1)/2, x, &M00);
+      s += hyperg_1F1_beq2a_pos((b+1)/2, x, &M12);
+      s += hyperg_1F1_diag_step((b-1)/2, b-1, x, M00, M12, &Mnm1, &Mn);
+    }
+
+    if(s == 0) {
+      int n;
+      for(n=b/2+1; n<a; n++) {
+        Mnp1 = ((b-n)*Mnm1 + (2*n-b+x)*Mn)/n;
+	Mnm1 = Mn;
+	Mn   = Mnp1;
+      }
+      *result = Mn;
+      return GSL_SUCCESS;
+    }
+    else {
+      *result = 0.0;
+      return GSL_EFAILED;
+    }
+  }
+  else if(2*a < b && GSL_IS_EVEN(b)){
+    /* Backward recursion from a = b/2.
+     */
+    double Mnm1;
+    double Mn;
+    double Mnp1;
+    int s = 0;
+    if(b == 2) {
+      s += gsl_sf_exprel_impl(x, &Mn); /* 1F1(b/2,b,x)   = 1F1(1,2,x) =(e^x-1)/x */
+      s += gsl_sf_exp_impl(x, &Mnp1);  /* 1F1(b/2+1,b,x) = 1F1(2,2,x) = e^x      */
+    }
+    else {
+      double M11, M12;
+      s += hyperg_1F1_beq2a_pos(b/2,   x, &Mn);  /* 1F1(b/2,b,x)     */
+      s += hyperg_1F1_beq2a_pos(b/2+1, x, &M12); /* 1F1(b/2+1,b+2,x) */
+      s += hyperg_1F1_diag_end_step(b/2, b, x, Mn, M12, &Mnp1, &M11);
+    }
+
+    if(s == 0) {
+      int n;
+      for(n=b/2; n>a; n--) {
+        Mnm1 = (n * Mnp1 - (2*n-b+x) * Mn) / (b-n);
+	Mnp1 = Mn;
+	Mn   = Mnm1;
+      }
+      *result = Mn;
+      return GSL_SUCCESS;
+    }
+    else {
+      *result = 0.0;
+      return GSL_EFAILED;
+    }
+  }
+  else if(2*a < b && GSL_IS_ODD(b)){
+    /* Backward recursion from a = (b-1)/2.
+     */
+    double M00, M12;
+    double Mnm1;
+    double Mn;
+    double Mnp1;
+    int s = 0;
+
+    /* Determine 1F1((b-1)/2,b,x) and 1F1((b+1)/2,b,x).
+     */
+    if(b == 1) {
+      Mn = 0.0;                        /* 1F1(0,1,x) */
+      s += gsl_sf_exp_impl(x, &Mnp1);  /* 1F1(1,1,x) */
+    }
+    else {
+      s += hyperg_1F1_beq2a_pos((b-1)/2, x, &M00);
+      s += hyperg_1F1_beq2a_pos((b+1)/2, x, &M12);
+      s += hyperg_1F1_diag_step((b-1)/2, b-1, x, M00, M12, &Mn, &Mnp1);
+    }
+
+    if(s == 0) {
+      int n;
+      for(n=(b-1)/2; n>a; n--) {
+        Mnm1 = (n * Mnp1 - (2*n-b+x) * Mn) / (b-n);
+	Mnp1 = Mn;
+	Mn   = Mnm1;
+      }
+      *result = Mn;
+      return GSL_SUCCESS;
+    }
+    else {
+      *result = 0.0;
+      return GSL_EFAILED;
     }
   }
   else {
-    /* a > 0 and b > 0 */
-    return hyperg_1F1_ab_posint(a, b, x, result);
+    /* NOT REACHED */
   }
 }
+
+
 
 
 /* Handle a = positive integer cases.
@@ -969,8 +1192,89 @@ hyperg_1F1_Y_agt0_blt2a_recurse(const double a, const double b, const double x,
   else
     return GSL_SUCCESS;
 }
-			      
-			      
+
+
+int
+gsl_sf_hyperg_1F1_int_impl(const int a, const int b, const double x, double * result)
+{
+  if(x == 0.0) {
+    *result = 1.0;
+    return GSL_SUCCESS;
+  }
+  else if(a == b) {
+    return gsl_sf_exp_impl(x, result);
+  }
+  else if(b == 0) {
+    *result = 0.0;
+    return GSL_EDOM;
+  }
+  else if(a == 0) {
+    *result = 1.0;
+    return GSL_SUCCESS;
+  }
+  else if(b < 0 && (a < b || a > 0)) {
+    *result = 0.0;
+    return GSL_EDOM;
+  }
+  else if(a == -1) {
+    *result = 1.0 + (double)a/b * x;
+    return GSL_SUCCESS;
+  }
+  else if(a == -2) {
+    *result = 1.0 + (double)a/b*x * (1.0 + 0.5*(a+1.0)/(b+1.0)*x);
+  }
+  else if(a < 0 && b < 0) {
+    /* Safe to recurse backward with Z function.
+     * Z(ap,N,b,x) := 1/Gamma(1+ap-N-b) 1F1(ap-N,b,x)
+     * Z[n+1] + (b-2a-x+2n) Z[n] + (a-n)(1+a-n-b) Z[n-1] = 0
+     */
+    double Znm1 = 1.0;         /* Z(0,0,b,x) */
+    double Zn   = 1.0 - x/b;   /* Z(0,1,b,x) */
+    double Znp1;
+    int n;
+    for(n=2; n<a; n++) {
+      Znp1 = -(b-x-2*n) * Zn + n*(1-n-b) * Znm1;
+      Znm1 = Zn;
+      Zn   = Znp1;
+    }
+    if(Zn == 0.0) {
+      *result = 0.0;
+      return GSL_SUCCESS;
+    }
+    else {
+      double lg_ab;
+      gsl_sf_lngamma_impl(1.0+a-b, &lg_ab);  /* 1+a-b > 0  here */
+      return gsl_sf_exp_sgn_impl(lg_ab + log(fabs(Zn)), Zn, result);
+    }
+  }
+  else if(a < 0 && b > 0) {
+    /* Use Kummer to reduce it to the positive integer case.
+     * Note that b > a, strictly, since we already trapped b = a.
+     */
+    double Kummer_1F1;
+    int stat_K = hyperg_1F1_ab_posint(b-a, b, -x, &Kummer_1F1);
+    if(stat_K == GSL_SUCCESS) {
+      if(Kummer_1F1 == 0.0) {
+        *result = 0.0;
+	return GSL_SUCCESS;
+      }
+      else {
+        double lnr = log(fabs(Kummer_1F1)) + x;
+        return gsl_sf_exp_sgn_impl(lnr, Kummer_1F1, result); 
+      }
+    }
+    else {
+      *result = 0.0;
+      return stat_K;
+    }
+  }
+  else {
+    /* a > 0 and b > 0 */
+    return hyperg_1F1_ab_posint(a, b, x, result);
+  }
+}
+
+
 int
 gsl_sf_hyperg_1F1_impl(const double a, const double b, const double x,
                        double * result
@@ -1052,13 +1356,15 @@ gsl_sf_hyperg_1F1_impl(const double a, const double b, const double x,
       double sb = ( b > 0.0 ? 1.0 : -1.0 );
       double se = ( expm1 > 0.0 ? 1.0 : -1.0 );
       double lnr = log(fabs(a)) - log(fabs(b)) + log(fabs(expm1));
-      if(lnr < GSL_LOG_DBL_MAX-1.0) {
-        *result = 1.0 + sa * sb * se * exp(lnr);
+      double hx;
+      int stat_hx = gsl_sf_exp_sgn_impl(lnr, sa * sb * se, &hx);
+      if(stat_hx == GSL_SUCCESS) {
+        *result = 1.0 + hx;
 	return GSL_SUCCESS;
       }
       else {
-        *result = 0.0; /* FIXME: should be Inf */
-	return GSL_EOVRFLW;
+        *result = 0.0;
+        return stat_hx;
       }
     }
     else {
@@ -1068,7 +1374,7 @@ gsl_sf_hyperg_1F1_impl(const double a, const double b, const double x,
   }
 
   /* case: b very small
-   * (and a not very small, since we passed the above test)
+   * (and a not very small, since we did not trigger the above test)
    */
   if(fabs(b) < 10.0*locEPS) {
     double F_renorm;
@@ -1078,21 +1384,26 @@ gsl_sf_hyperg_1F1_impl(const double a, const double b, const double x,
        * hit a zero of the Bessel function.
        */
       *result = 0.0;
-      return GSL_SUCCESS;
+      return stat_F;
     }
     else {
       double sF = ( F_renorm > 0.0 ? 1.0 : -1.0 );
       double sb = ( b > 0.0 ? 1.0 : -1.0 );
       double lnr = log(fabs(F_renorm)) - log(fabs(b));
-      if(lnr < GSL_LOG_DBL_MAX) {
-        *result = sF * sb * exp(lnr);
-	return stat_F;
-      }
-      else {
-        *result = 0.0; /* FIXME: should be Inf */
-        return GSL_EOVRFLW;
-      }
+      return gsl_sf_exp_sgn_impl(lnr, sF * sb, result);
     }
+  }
+
+  /* Now we make the arbitrary "near an integer" test.
+   * Note that we deal not only with the negative
+   * integers, but all the integers. Basically, the
+   * integer cases are always a problem for the
+   * recursions in terms of the Y() or Z() functions.
+   */
+  if(a_integer && b_integer) {
+    int inta = floor(a + 0.1);
+    int intb = floor(b + 0.1);
+    return gsl_sf_hyperg_1F1_int_impl(inta, intb, x, result);
   }
 
   /* case: approximate a==b;
@@ -1371,6 +1682,17 @@ gsl_sf_hyperg_1F1_impl(const double a, const double b, const double x,
 
 
 int
+gsl_sf_hyperg_1F1_int_e(const int m, const int n, double x, double * result)
+{
+  int status = gsl_sf_hyperg_1F1_int_impl(m, n, x, result);
+  if(status != GSL_SUCCESS) {
+    GSL_ERROR("gsl_sf_hyperg_1F1_int_e", status);
+  }
+  return status;
+}
+
+
+int
 gsl_sf_hyperg_1F1_e(double a, double b, double x, double * result)
 {
   int status = gsl_sf_hyperg_1F1_impl(a, b, x, result);
@@ -1379,6 +1701,19 @@ gsl_sf_hyperg_1F1_e(double a, double b, double x, double * result)
   }
   return status;
 }
+
+
+double
+gsl_sf_hyperg_1F1_int(int m, int n, double x)
+{
+  double y;
+  int status = gsl_sf_hyperg_1F1_int_impl(m, n, x, &y);
+  if(status != GSL_SUCCESS) {
+    GSL_WARNING("gsl_sf_hyperg_1F1_int", status);
+  }
+  return y;
+}
+
 
 double
 gsl_sf_hyperg_1F1(double a, double b, double x)

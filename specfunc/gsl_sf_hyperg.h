@@ -17,6 +17,16 @@ int     gsl_sf_hyperg_0F1_e(double c, double x, double * result);
 double  gsl_sf_hyperg_0F1(double c, double x);
 
 
+/* Confluent hypergeometric function  for integer parameters.
+ * 1F1[m,n,x] = M(m,n,x)
+ *
+ * exceptions:
+ */
+int     gsl_sf_hyperg_1F1_int_impl(int m, int n, double x, double * result);
+int     gsl_sf_hyperg_1F1_int_e(int m, int n, double x, double * result);
+double  gsl_sf_hyperg_1F1_int(int m, int n, double x);
+
+
 /* Confluent hypergeometric function  1F1[a,b,x] = M(a,b,x)
  *
  * exceptions:
