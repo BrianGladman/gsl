@@ -485,15 +485,16 @@ static double olver_B3(double z, double abs_zeta)
   }
 }
 
+/* checked OK {GJ] Wed Apr 29 15:30:17 MDT 1998 */
 static double olver_A1(double z, double abs_zeta)
 {
   if(fabs(1.-z) < GSL_ROOT4_MACH_EPS) {
     double a = 1.-z;
-    return -1./255.
-           - 71./38500.             * a 
-           + 25591./45045000.       * a*a
-	   + 2982172./1773646875.   * a*a*a
-	   + 25025359./13400887500. * a*a*a*a
+    return -1./225.
+           -71./38500.             * a 
+           +25591./45045000.       * a*a
+	   +2982172./1773646875.   * a*a*a
+	   +25025359./13400887500. * a*a*a*a
 	   ;
   }
   else if(z < 1.){
@@ -536,11 +537,11 @@ static double olver_A2(double z, double abs_zeta)
     double z3 = abs_zeta*abs_zeta*abs_zeta;
     double z32 = rz*rz*rz;
     double z92 = z3*z32;
-    double term1 = t4*(4465125. - 94121676.*t2 + 349922430.*t4 - 446185740.*t6  + 185910725.* t8)/39813120.;
+    double term1 = t4*(4465125. - 94121676.*t2 + 349922430.*t4 - 446185740.*t6  + 185910725.*t8)/39813120.;
     double term2 = -40415375./(127401984.*z3*z3);
     double term3 = -95095./15925248.*t*(3.-5.*t2)/z92;
     double term4 = -455./5308416. *t2*(81. - 462.*t2 + 385.*t4)/z3;
-    double term5 = -7./19906560.*(30375. - 369603.*t2  + 765765.*t4  - 425425.*t6)/z32;
+    double term5 = -7./19906560.*t*t2*(30375. - 369603.*t2  + 765765.*t4  - 425425.*t6)/z32;
     return term1 + term2 + term3 + term4 + term5;
   }
   else {
@@ -551,7 +552,7 @@ static double olver_A2(double z, double abs_zeta)
 
 static double olver_A3(double z, double abs_zeta)
 {
-  if(fabs(1.-z) < GSL_ROOT4_MACH_EPS) {
+  if(fabs(1.-z) < GSL_ROOT5_MACH_EPS) {
     double a = 1.-z;
     return -0.00035421197145774384077112575920
            -0.000312322527890318832782774881353 * a
@@ -592,6 +593,45 @@ static double olver_A4(double z, double abs_zeta)
     double x = 2./z -1.;
     double f = (1+x)*(1+x)*(1+x);
     return f*f * gsl_sf_cheb_eval(x, &A4_gt1_cs);
+  }
+}
+
+
+void plot_it(void)
+{
+  double z;
+  double abs_zeta, zeta;
+
+  for(z=0.; z<10.; z += .001) {
+    double rt = sqrt(fabs(1-z)*(1+z));
+    if(fabs(1-z) < GSL_ROOT3_MACH_EPS) {
+      /* z near 1 */
+      double a = 1.-z;
+      zeta = CubeRoot2_*a*(1. + 3./10.*a + 32./175.*a*a);
+      abs_zeta = fabs(zeta);
+    }
+    else if(z < 1.) {
+      /* z < 1 */
+      abs_zeta = pow(1.5*(log((1+rt)/z) - rt), 2./3.);
+      zeta = abs_zeta;
+    }
+    else {
+      /* z > 1 */
+      abs_zeta = pow(1.5*(rt - acos(1./z)), 2./3.);
+      zeta = -abs_zeta;
+    }
+    
+    printf("%20.14g %20.14g %20.14g   %20.14g  %20.14g  %20.14g  %20.14g  %20.14g  %20.14g  %20.14g  %20.14g\n",
+           z, zeta, abs_zeta,
+           olver_A1(z, abs_zeta),
+	   olver_A2(z, abs_zeta),
+	   olver_A3(z, abs_zeta),
+	   olver_A4(z, abs_zeta),
+           olver_B0(z, abs_zeta),
+	   olver_B1(z, abs_zeta),
+	   olver_B2(z, abs_zeta),
+	   olver_B3(z, abs_zeta)
+	   );
   }
 }
 

@@ -36,6 +36,7 @@
 #define GSL_ROOT3_MACH_EPS      2.154e-5
 #define GSL_ROOT4_MACH_EPS      0.0003162
 #define GSL_ROOT5_MACH_EPS      0.00158489
+#define GSL_ROOT6_MACH_EPS      0.00464159
 
 #define GSL_SQRT_DBL_MIN        2.e-154
 #define GSL_SQRT_DBL_MAX        5.e+153
