@@ -72,7 +72,7 @@ full_top_srcdir = @full_top_srcdir@
 
 noinst_LIBRARIES = libgslinterpolation.a 
 
-check_PROGRAMS = test_interp
+check_PROGRAMS = test
 
 include_HEADERS = 		\
 	gsl_interp.h
@@ -83,11 +83,11 @@ noinst_HEADERS = 		\
 
 INCLUDES = -I$(full_top_srcdir) -I$(full_top_srcdir)/err
 
-TESTS = test_interp
+TESTS = test
 
-test_interp_LDADD = libgslinterpolation.a ../err/libgslerr.a ../err/libgsltest.a
-test_interp_DEPENDENCIES = libgslinterpolation.a
-test_interp_SOURCES = test_interp.c
+test_LDADD = libgslinterpolation.a ../err/libgslerr.a ../err/libgsltest.a
+test_DEPENDENCIES = libgslinterpolation.a
+test_SOURCES = test.c
 
 libgslinterpolation_a_SOURCES = 	\
 	accel.c				\
@@ -111,8 +111,8 @@ libgslinterpolation_a_LIBADD =
 libgslinterpolation_a_OBJECTS =  accel.o akima.o bsearch.o cspline.o \
 interp.o linear.o tridiag.o
 AR = ar
-test_interp_OBJECTS =  test_interp.o
-test_interp_LDFLAGS = 
+test_OBJECTS =  test.o
+test_LDFLAGS = 
 CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
 LINK = $(CC) $(CFLAGS) $(LDFLAGS) -o $@
@@ -126,9 +126,9 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 TAR = tar
 GZIP = --best
 DEP_FILES =  .deps/accel.P .deps/akima.P .deps/bsearch.P .deps/cspline.P \
-.deps/interp.P .deps/linear.P .deps/test_interp.P .deps/tridiag.P
-SOURCES = $(libgslinterpolation_a_SOURCES) $(test_interp_SOURCES)
-OBJECTS = $(libgslinterpolation_a_OBJECTS) $(test_interp_OBJECTS)
+.deps/interp.P .deps/linear.P .deps/test.P .deps/tridiag.P
+SOURCES = $(libgslinterpolation_a_SOURCES) $(test_SOURCES)
+OBJECTS = $(libgslinterpolation_a_OBJECTS) $(test_OBJECTS)
 
 all: Makefile $(LIBRARIES) $(HEADERS)
 
@@ -181,9 +181,9 @@ distclean-checkPROGRAMS:
 
 maintainer-clean-checkPROGRAMS:
 
-test_interp: $(test_interp_OBJECTS) $(test_interp_DEPENDENCIES)
-	@rm -f test_interp
-	$(LINK) $(test_interp_LDFLAGS) $(test_interp_OBJECTS) $(test_interp_LDADD) $(LIBS)
+test: $(test_OBJECTS) $(test_DEPENDENCIES)
+	@rm -f test
+	$(LINK) $(test_LDFLAGS) $(test_OBJECTS) $(test_LDADD) $(LIBS)
 
 install-includeHEADERS: $(include_HEADERS)
 	@$(NORMAL_INSTALL)
@@ -358,9 +358,6 @@ install-exec install-data install uninstall all installdirs \
 mostlyclean-generic distclean-generic clean-generic \
 maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 
-
-strict:
-	$(MAKE) CFLAGS="-ansi -pedantic -W -Wall -Wtraditional -Wconversion -Wshadow -Wpointer-arith -Wcast-qual -Wcast-align -Wwrite-strings -Waggregate-return -Wstrict-prototypes -fshort-enums -fno-common -Wmissing-prototypes -Wnested-externs -g -O4 -Dinline=''"
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
