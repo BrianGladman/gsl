@@ -102,8 +102,8 @@ int gsl_monte_miser_integrate(gsl_monte_miser_state* state,
       fmin_r = gsl_monte_vector_alloc(num_dim);
 
       for (i = 0; i < num_dim; i++) {
-	fmin_l[i] = fmin_r[i] = DBL_MAX;
-	fmax_l[i] = fmax_r[i] = -DBL_MAX;
+	fmin_l[i] = fmin_r[i] = GSL_DBL_MAX;
+	fmax_l[i] = fmax_r[i] = -GSL_DBL_MAX;
       }
 
       for (n = 1; n <= estimate_calls; n++) {
@@ -210,7 +210,7 @@ int gsl_monte_miser_integrate(gsl_monte_miser_state* state,
 
     /* Now find direction with the smallest total "variance" */
     var = 0;
-    best_var = DBL_MAX;
+    best_var = GSL_DBL_MAX;
     i_bisect = -1;
     weight_l = weight_r = 1.0;
     
@@ -334,7 +334,7 @@ int gsl_monte_miser_validate(gsl_monte_miser_state* state,
       sprintf(warning, "xu[%lu] must be greater than xu[%lu]", i, i);
     GSL_ERROR(warning, GSL_EINVAL);
     }
-    if (xu[i] - xl[i] > DBL_MAX) {
+    if (xu[i] - xl[i] > GSL_DBL_MAX) {
       sprintf(warning, 
 	      "Range of integration is too large for cord %lu, please rescale", 
 	      i);

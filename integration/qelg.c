@@ -14,8 +14,8 @@ gsl_integration_qelg (size_t * n, double epstab[],
 {
   const double current = epstab[*n] ;
 
-  double absolute = DBL_MAX ;
-  double relative = 5 * DBL_EPSILON * fabs(current) ;
+  double absolute = GSL_DBL_MAX ;
+  double relative = 5 * GSL_DBL_EPSILON * fabs(current) ;
 
   const size_t newelm = (*n)/2 ;
   const size_t n_orig = (*n) ;
@@ -24,7 +24,7 @@ gsl_integration_qelg (size_t * n, double epstab[],
   const size_t nres_orig = *nres ;
   *result = current ;
   *nres = (*nres) + 1 ;
-  *abserr = DBL_MAX ;
+  *abserr = GSL_DBL_MAX ;
 
 #ifdef DEBUG
   for (i= 0; i<32; i++) {
@@ -40,7 +40,7 @@ gsl_integration_qelg (size_t * n, double epstab[],
     }
   
   epstab[(*n)+2] = epstab[(*n)] ;
-  epstab[(*n)] = DBL_MAX ;
+  epstab[(*n)] = GSL_DBL_MAX ;
 
 #ifdef DEBUG  
   printf("QELG: outside loop, newelm = %d, n_orig = %d\n", newelm, n_orig) ;
@@ -56,10 +56,10 @@ gsl_integration_qelg (size_t * n, double epstab[],
       double e1abs = fabs(e1) ;
       double delta2 = e2 - e1 ;
       double err2 = fabs(delta2) ;
-      double tol2 = max(fabs(e2),e1abs)*DBL_EPSILON ;
+      double tol2 = max(fabs(e2),e1abs)*GSL_DBL_EPSILON ;
       double delta3 = e1 - e0 ;
       double err3 = fabs(delta3) ;
-      double tol3 = max(e1abs,fabs(e0))*DBL_EPSILON ;
+      double tol3 = max(e1abs,fabs(e0))*GSL_DBL_EPSILON ;
       
       double e3, delta1, err1, tol1, ss ;
 
@@ -76,7 +76,7 @@ gsl_integration_qelg (size_t * n, double epstab[],
 #endif
           *result = res ;
           absolute = err2 + err3 ;
-          relative = 5 * DBL_EPSILON * fabs(res) ;
+          relative = 5 * GSL_DBL_EPSILON * fabs(res) ;
 	  *abserr = max(absolute, relative) ;
           return ;
         }
@@ -85,7 +85,7 @@ gsl_integration_qelg (size_t * n, double epstab[],
       epstab[(*n) - 2*i] = e1 ;
       delta1 = e1 - e3 ;
       err1 = fabs(delta1) ;
-      tol1 = max(e1abs, fabs(e3)) * DBL_EPSILON ;
+      tol1 = max(e1abs, fabs(e3)) * GSL_DBL_EPSILON ;
       
       /* If two elements are very close to each other, omit a part of
          the table by adjusting the value of n */
@@ -197,7 +197,7 @@ gsl_integration_qelg (size_t * n, double epstab[],
       printf("QELG: setting term %d to %g\n",nres_orig, *result) ;
 #endif
       res3la[nres_orig] = *result ;
-      *abserr = DBL_MAX ;
+      *abserr = GSL_DBL_MAX ;
     } 
   else 
     {  /* Compute error estimate */
@@ -215,7 +215,7 @@ gsl_integration_qelg (size_t * n, double epstab[],
       res3la[2] = *result ;
     }
 
-  *abserr = max(*abserr, 5 * DBL_EPSILON * fabs(*result)) ;
+  *abserr = max(*abserr, 5 * GSL_DBL_EPSILON * fabs(*result)) ;
 
   return ;
 }

@@ -23,9 +23,9 @@ double rescale_error (double err,
 	    err = result_asc ;
 	  }
       }
-  if (result_abs > DBL_MIN / (50 * DBL_EPSILON))
+  if (result_abs > GSL_DBL_MIN / (50 * GSL_DBL_EPSILON))
     {
-      double min_err = 50 * DBL_EPSILON * result_abs ;
+      double min_err = 50 * GSL_DBL_EPSILON * result_abs ;
 
       if (min_err > err) 
 	{

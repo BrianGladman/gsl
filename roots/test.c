@@ -25,8 +25,8 @@
 #include <gsl_test.h>
 
 /* stopping parameters */
-const double REL_EPSILON = (10 * DBL_EPSILON * GSL_ROOT_EPSILON_BUFFER);
-const double ABS_EPSILON = (10 * DBL_EPSILON * GSL_ROOT_EPSILON_BUFFER);
+const double REL_EPSILON = (10 * GSL_DBL_EPSILON * GSL_ROOT_EPSILON_BUFFER);
+const double ABS_EPSILON = (10 * GSL_DBL_EPSILON * GSL_ROOT_EPSILON_BUFFER);
 const unsigned int MAX_ITERATIONS = 100;
 
 void my_error_handler (const char *reason, const char *file,

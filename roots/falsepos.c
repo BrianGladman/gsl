@@ -35,7 +35,7 @@ gsl_root_falsepos (double *root, double (*f) (double),
   if (rel_epsilon < 0.0 || abs_epsilon < 0.0)
     GSL_ERROR ("relative or absolute tolerance negative", GSL_EBADTOL);
 
- if (rel_epsilon < DBL_EPSILON * GSL_ROOT_EPSILON_BUFFER)
+ if (rel_epsilon < GSL_DBL_EPSILON * GSL_ROOT_EPSILON_BUFFER)
     GSL_ERROR ("relative tolerance too small", GSL_EBADTOL);
 
   SAFE_FUNC_CALL (f, *lower_bound, fl);

@@ -46,7 +46,7 @@ gsl_integration_qagse_impl (double (*f) (double x),
 
   /* Test on accuracy */
 
-  if (epsabs <= 0 && (epsrel < 50 * DBL_EPSILON || epsrel < 0.5e-28))
+  if (epsabs <= 0 && (epsrel < 50 * GSL_DBL_EPSILON || epsrel < 0.5e-28))
     {
       *result = 0;
       *abserr = 0;
@@ -65,7 +65,7 @@ gsl_integration_qagse_impl (double (*f) (double x),
 
   tolerance = max (epsabs, epsrel * fabs (q_result));
 
-  if (q_abserr <= 100 * DBL_EPSILON * q_defabs && q_abserr > tolerance)
+  if (q_abserr <= 100 * GSL_DBL_EPSILON * q_defabs && q_abserr > tolerance)
     {
       *result = q_result;
       *abserr = q_abserr;
@@ -99,12 +99,12 @@ gsl_integration_qagse_impl (double (*f) (double x),
   maxerr_index = 0;
   area = q_result;
   errsum = q_abserr;
-  *abserr = DBL_MAX;
+  *abserr = GSL_DBL_MAX;
 
   /* Compare the integral of f(x) with the integral of |f(x)|
      to determine if f(x) covers both positive and negative values */
 
-  if (fabs (q_result) >= (1 - 50 * DBL_EPSILON) * q_defabs)
+  if (fabs (q_result) >= (1 - 50 * GSL_DBL_EPSILON) * q_defabs)
     {
       positive_integrand = 1;
     }
@@ -182,7 +182,8 @@ gsl_integration_qagse_impl (double (*f) (double x),
          a point of the integration range */
 
       {
-	double tmp = (1 + 100 * DBL_EPSILON) * (fabs (a2) + 1000 * DBL_MIN);
+	double tmp = ((1 + 100 * GSL_DBL_EPSILON) 
+		      * (fabs (a2) + 1000 * GSL_DBL_MIN));
 	if (fabs (a1) <= tmp && fabs (b2) <= tmp)
 	  {
 	    error_type = 4;
@@ -351,7 +352,7 @@ gsl_integration_qagse_impl (double (*f) (double x),
     }
   while (i < limit);
 
-  if (*abserr == DBL_MAX)
+  if (*abserr == GSL_DBL_MAX)
     goto compute_result;
 
   if (error_type == 0 && error_type2 == 0)

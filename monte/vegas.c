@@ -408,7 +408,7 @@ int gsl_monte_vegas_validate(gsl_monte_vegas_state* state,
       sprintf(warning, "xu[%lu] must be greater than xu[%lu]", i, i);
     GSL_ERROR(warning, GSL_EINVAL);
     }
-    if (xu[i] - xl[i] > DBL_MAX) {
+    if (xu[i] - xl[i] > GSL_DBL_MAX) {
       sprintf(warning, 
 	      "Range of integration is too large for coord %lu, please rescale", 
 	      i);

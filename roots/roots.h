@@ -31,7 +31,7 @@ do { \
 #define CHECK_TOL(a, b, rel_epsilon, abs_epsilon) \
 do { \
   if (rel_epsilon * GSL_MIN(fabs(a), fabs(b)) + abs_epsilon \
-      < GSL_MAX(fabs(a), fabs(b)) * DBL_EPSILON * GSL_ROOT_EPSILON_BUFFER) \
+      < GSL_MAX(fabs(a), fabs(b)) * GSL_DBL_EPSILON * GSL_ROOT_EPSILON_BUFFER)\
     GSL_ERROR("tolerances too small for this context", GSL_EBADTOL); \
 } while (0)
 

@@ -25,7 +25,7 @@ main ()
     printf("\n") ;
   }
 
-  x = 10 * x * DBL_MAX ;
+  x = 10 * x * GSL_DBL_MAX ;
 
   printf("%.18g ",x) ; gsl_ieee_printf_double(&x) ; printf("\n") ;
 

@@ -3,7 +3,7 @@
 /* Author: MJB */
 /* RCS: $Id$ */
 
-#define TINY DBL_MIN
+#define TINY GSL_DBL_MIN
 
 #include <config.h>
 #include <math.h>
@@ -107,7 +107,7 @@ int gsl_monte_plain_validate(gsl_monte_plain_state* state,
       sprintf(warning, "xu[%lu] must be greater than xu[%lu]", i, i);
     GSL_ERROR(warning, GSL_EINVAL);
     }
-    if (xu[i] - xl[i] > DBL_MAX) {
+    if (xu[i] - xl[i] > GSL_DBL_MAX) {
       sprintf(warning, 
 	      "Range of integration is too large for cord %lu, please rescale", 
 	      i);

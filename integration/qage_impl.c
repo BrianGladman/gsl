@@ -37,7 +37,7 @@ gsl_integration_qage_impl (double (*f) (double x),
   elist[0] = 0;
   iord[0] = 0;
 
-  if (epsabs <= 0 && (epsrel < 50 * DBL_EPSILON || epsrel < 0.5e-28))
+  if (epsabs <= 0 && (epsrel < 50 * GSL_DBL_EPSILON || epsrel < 0.5e-28))
     {
       *result = 0;
       *abserr = 0;
@@ -58,7 +58,7 @@ gsl_integration_qage_impl (double (*f) (double x),
 
   tolerance = max (epsabs, epsrel * fabs (q_result));
 
-  round_off = 50 * DBL_EPSILON * q_defabs ;
+  round_off = 50 * GSL_DBL_EPSILON * q_defabs ;
 
   if (q_abserr <= round_off && q_abserr > tolerance)
     {
@@ -147,8 +147,8 @@ gsl_integration_qage_impl (double (*f) (double x),
 	     a point of the integration range */
 
 	  {
-	    volatile double tmp = ((1 + 100 * DBL_EPSILON) 
-				   * (fabs (a2) + 1000 * DBL_MIN));
+	    volatile double tmp = ((1 + 100 * GSL_DBL_EPSILON) 
+				   * (fabs (a2) + 1000 * GSL_DBL_MIN));
 	    if (fabs (a1) <= tmp && fabs (b2) <= tmp)
 	      {
 		error_type = 3;

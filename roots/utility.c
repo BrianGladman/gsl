@@ -86,7 +86,7 @@ _gsl_root_validate_args (double *root, double (*f) (double), double *where1,
   if (rel_epsilon < 0.0 || abs_epsilon < 0.0)
     GSL_ERROR ("relative or absolute tolerance negative", GSL_EBADTOL);
   /* Is the relative error too small? */
-  if (rel_epsilon < DBL_EPSILON * GSL_ROOT_EPSILON_BUFFER)
+  if (rel_epsilon < GSL_DBL_EPSILON * GSL_ROOT_EPSILON_BUFFER)
     GSL_ERROR ("relative tolerance too small", GSL_EBADTOL);
 
   /* All is well. */

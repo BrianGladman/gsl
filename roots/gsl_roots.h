@@ -5,7 +5,7 @@
 
 #include <gsl_complex.h>
 
-/* Requested epsilon must be this many times greater than DBL_EPSILON to
+/* Requested epsilon must be this many times greater than GSL_DBL_EPSILON to
    protect against roundoff problems. */
 
 #define GSL_ROOT_EPSILON_BUFFER 10.0

@@ -27,7 +27,7 @@ gsl_integration_qng (double (*f) (double x),
 
   int k ;
 
-  if (epsabs <= 0 && (epsrel < 50 * DBL_EPSILON || epsrel < 0.5e-28))
+  if (epsabs <= 0 && (epsrel < 50 * GSL_DBL_EPSILON || epsrel < 0.5e-28))
     {
       * result = 0;
       * abserr = 0;

@@ -25,7 +25,7 @@ int num_dim = 1;
 double xl[11] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 double xu[11] = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
 double xu2[11] = {2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2};
-double xu3[2] = {DBL_MAX, DBL_MAX};
+double xu3[2] = {GSL_DBL_MAX, GSL_DBL_MAX};
 
 double fconst(double x[]);
 double f0(double x[]);
