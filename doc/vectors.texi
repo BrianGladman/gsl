@@ -18,6 +18,7 @@ BLAS routines.
 * Accessing vector elements::   
 * Reading and writing vectors::  
 * Copying vectors::             
+* Exchanging elements::         
 * Example programs for vectors::  
 * The matrix struct::           
 * Matrix allocation::           
@@ -25,6 +26,7 @@ BLAS routines.
 * Reading and writing matrices::  
 * Slicing rows and columns::    
 * Copying rows and columns::    
+* Exchanging rows and columns::  
 * Example programs for matrices::  
 @end menu
 
@@ -392,10 +394,22 @@ Support}). However, it is useful to have a small number of utility
 functions which do not require the full BLAS code. The following
 function falls into this category.
 
-@deftypefun int gsl_vector_copy (gsl_vector_float * @var{dest}, const gsl_vector * @var{src})
+@deftypefun int gsl_vector_copy (gsl_vector * @var{dest}, const gsl_vector * @var{src})
 This function copies the elements of the vector @var{src} into the
 vector @var{dest}. The two vectors must be the same length.
 @end deftypefun
+
+@node Exchanging elements
+@section Exchanging elements
+
+The following function can be used to exchange, or permute, the elements
+of a vector.
+
+@deftypefun int gsl_vector_swap (gsl_vector * @var{v}, size_t i, size_t j)
+This function exchanges the @var{i}-th and @var{j}-th elements of the
+vector @var{v} in-place.
+@end deftypefun
+
 
 @node Example programs for vectors
 @section Example programs for vectors
@@ -740,6 +754,28 @@ the same as the length of the row.
 This function copies the elements of the vector @var{v} into the
 @var{i}-th column of the matrix @var{m}. The length of the vector must be
 the same as the length of the column.
+@end deftypefun
+
+@node Exchanging rows and columns
+@section Exchanging rows and columns
+
+The following functions can be used to exchange the rows and columns of
+a matrix.
+
+@deftypefun int gsl_matrix_swap_rows (gsl_matrix * @var{m}, size_t @var{i}, size_t @var{j})
+This function exchanges the @var{i}-th and @var{j}-th rows of the matrix
+@var{m} in-place.
+@end deftypefun
+
+@deftypefun int gsl_matrix_swap_cols (gsl_matrix * @var{m}, size_t @var{i}, size_t @var{j})
+This function exchanges the @var{i}-th and @var{j}-th columns of the
+matrix @var{m} in-place.
+@end deftypefun
+
+@deftypefun int gsl_matrix_swap_rowcol (gsl_matrix * @var{m}, size_t @var{i}, size_t @var{j})
+This function exchanges the @var{i}-th row and @var{j}-th column of the
+matrix @var{m} in-place. The matrix must be square for this operation to
+be possible.
 @end deftypefun
 
 @node Example programs for matrices

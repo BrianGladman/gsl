@@ -1,3 +1,7 @@
+Tue Oct 19 14:13:35 1999  Brian Gough  <bjg@network-theory.co.uk>
+
+	* added gsl_matrix_swap_row/col to exchange rows and columns
+
 Fri Oct  1 15:48:07 1999  Brian Gough  <bjg@network-theory.co.uk>
 
 	* the matrix struct now supports a separate 'trailing dimension'

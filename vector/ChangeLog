@@ -1,3 +1,7 @@
+Tue Oct 19 14:13:14 1999  Brian Gough  <bjg@network-theory.co.uk>
+
+	* added gsl_vector_swap function to exchange elements
+
 Fri Oct  1 15:47:45 1999  Brian Gough  <bjg@network-theory.co.uk>
 
 	* removed support for gsl_vector_ptr. Use set/get instead.

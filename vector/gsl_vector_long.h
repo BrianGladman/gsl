@@ -42,6 +42,8 @@ int gsl_vector_long_fprintf (FILE * stream, const gsl_vector_long * v,
 
 int gsl_vector_long_copy (gsl_vector_long * dest, const gsl_vector_long * src);
 
+int gsl_vector_long_swap (gsl_vector_long * v, size_t i, size_t j);
+
 extern int gsl_check_range;
 
 #ifdef HAVE_INLINE

@@ -55,6 +55,10 @@ int gsl_matrix_char_copy_col(gsl_vector_char * v, const gsl_matrix_char * m, siz
 int gsl_matrix_char_set_row(gsl_matrix_char * m, size_t i, const gsl_vector_char * v);
 int gsl_matrix_char_set_col(gsl_matrix_char * m, size_t j, const gsl_vector_char * v);
 
+int gsl_matrix_char_swap_rows(gsl_matrix_char * m, size_t i, size_t j);
+int gsl_matrix_char_swap_cols(gsl_matrix_char * m, size_t i, size_t j);
+int gsl_matrix_char_swap_rowcol(gsl_matrix_char * m, size_t i, size_t j);
+
 extern int gsl_check_range ;
 
 /* inline functions if you are using GCC */

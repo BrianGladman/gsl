@@ -59,6 +59,10 @@ int gsl_matrix_complex_copy_col(gsl_vector_complex * v, const gsl_matrix_complex
 int gsl_matrix_complex_set_row(gsl_matrix_complex * m, size_t i, const gsl_vector_complex * v);
 int gsl_matrix_complex_set_col(gsl_matrix_complex * m, size_t j, const gsl_vector_complex * v);
 
+int gsl_matrix_complex_swap_rows(gsl_matrix_complex * m, size_t i, size_t j);
+int gsl_matrix_complex_swap_cols(gsl_matrix_complex * m, size_t i, size_t j);
+int gsl_matrix_complex_swap_rowcol(gsl_matrix_complex * m, size_t i, size_t j);
+
 extern int gsl_check_range ;
 
 #ifdef HAVE_INLINE

@@ -55,6 +55,8 @@ int gsl_vector_complex_float_fprintf (FILE * stream,
 
 int gsl_vector_complex_float_copy (gsl_vector_complex_float * dest, const gsl_vector_complex_float * src);
 
+int gsl_vector_complex_float_swap (gsl_vector_complex_float * v, size_t i, size_t j);
+
 extern int gsl_check_range;
 
 #ifdef HAVE_INLINE
