@@ -38,7 +38,7 @@
  *
  * where Q is orthogonal (M x M) and R is upper triangular (M x N).
  * When A is rank deficient, r = rank(A) < n, then the permutation is
- * used to ensure that the lower n - rrows of R are zero and the first
+ * used to ensure that the lower n - r rows of R are zero and the first
  * r columns of Q form an orthonormal basis for A.
  *
  * Q is stored as a packed set of Householder transformations in the
