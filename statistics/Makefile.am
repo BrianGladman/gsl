@@ -13,4 +13,4 @@ jtest_DEPENDENCIES = libgsl_statistics.a
 
 gsl_statistics_SOURCES = mean.c variance.c test.c
 
-include_HEADERS = mean.h variance.c test.c
+include_HEADERS = mean.h test.h variance.h
