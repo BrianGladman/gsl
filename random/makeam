@@ -13,6 +13,9 @@ list=`egrep '^ALLRAN=' $ami | sed s/ALLRAN=//`
 ##################################################
 ## Start writing the Makefile.am
 ##
+## First line is to get a $_Id_$ string without having
+## RCS expand it here!
+echo '### $xIxdx:x$' | sed s/x//g
 cat Makefile.ami   | egrep -v '^### '
     
 auxbin="test-switch"
@@ -61,7 +64,7 @@ echo ""
     echo "${i}_LDADD=               $i-gen.o"
     echo "test_${i}_SOURCES=        testran.c"
     echo "test_${i}_DEPENDENCIES=   $i.o $i-gen.o $i.h"
-    echo "test_${i}_LDADD=          $i.o $i-gen.o"
+    echo "test_${i}_LDADD=          $i.o $i-gen.o ../err/libgsltest.a ../utils/libutils.a"
     echo "bench_${i}_SOURCES=       benchran.c"
     echo "bench_${i}_DEPENDENCIES=  $i.o $i-gen.o $i.h"
     echo "bench_${i}_LDADD=         $i.o $i-gen.o"
