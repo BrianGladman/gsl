@@ -191,7 +191,7 @@ main()
 @end example
 
 @node Multimin Iteration
-@section Multimin Iteration
+@section Iteration
 
 Multidimensional minimization in GSL proceeds as a pair of nested
 iterations.  An outer loop iterates over successive estimates of the
@@ -203,7 +203,7 @@ in calculating this new direction.  Whatever the method employed, the
 inner loop hunts for a minimum along that direction.
 
 @node Multimin Stopping Criteria
-@section Multimin Stopping Criteria
+@section Stopping Criteria
 
 The norm of the gradient of a multidimensional function goes to zero
 at a minimum, in the same way as the magnitude of the first derivative
@@ -220,7 +220,7 @@ estimate of the location of the minimum on successive iterations
 differ by more than some minimum distance.
 
 @node Multimin Algorithms
-@section Multimin Algorithms
+@section Algorithms
 
 There are several minimization algorithms available in the multimin
 package.  Each of the algorithms relies on knowing the value of the
@@ -258,7 +258,7 @@ descent algorithm and switching to one of the conjugate gradient
 methods as the estimate of the minimum improves.
 
 @node Multimin Examples
-@section Multimin Examples
+@section Examples
 
 This example attempts to find the minimum of a paraboloid.  The
 location of the minimum is offset from the origin in @code{x} and
@@ -447,5 +447,5 @@ main()
 @end example  
 
 @node Multimin References and Further Reading
-@section Multimin References and Further Reading
+@section References and Further Reading
 

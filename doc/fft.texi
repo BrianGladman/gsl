@@ -754,7 +754,7 @@ algorithms as FFTPACK.
 
 The functions use the FFTPACK storage convention for half-complex
 sequences.  In this convention the half-complex transform of a real
-sequence is stored in with frequencies in increasing order, starting at
+sequence is stored with frequencies in increasing order, starting at
 zero, with the real and imaginary parts of each frequency in neighboring
 locations.  When a value is known to be real the imaginary part is not
 stored.  The imaginary part of the zero-frequency component is never

@@ -14,7 +14,29 @@ QUADPACK, a numerical integration package written by Piessens,
 Doncker-Kapenga, Uberhuber and Kahaner.  Fortran code for QUADPACK is
 available on Netlib.
 
-These functions are declared in the header file @file{gsl_integration.h}.
+These functions are declared in the header file
+@file{gsl_integration.h}.
+
+
+
+@menu
+* Numerical Integration Introduction::  
+* QNG non-adaptive Gauss-Kronrod integration::  
+* QAG adaptive integration::    
+* QAGS adaptive integration with singularities::  
+* QAGP adaptive integration with known singular points::  
+* QAGI adaptive integration on infinite intervals::  
+* QAWC adaptive integration for Cauchy principal values::  
+* QAWS adaptive integration for singular functions::  
+* QAWO adaptive integration for oscillatory functions::  
+* QAWF adaptive integration for Fourier integrals::  
+* Numerical integration error codes::  
+* Numerical integration examples::  
+* Numerical integration References and Further Reading::  
+@end menu
+
+@node Numerical Integration Introduction
+@section Introduction
 
 Each algorithm computes an approximation to a definite integral of the
 form,
@@ -135,20 +157,6 @@ integral.  The use of analytic integration for the singular part of the
 function allows exact cancellations and substantially improves the
 overall convergence behavior of the integration.
 
-@menu
-* QNG non-adaptive Gauss-Kronrod integration::  
-* QAG adaptive integration::    
-* QAGS adaptive integration with singularities::  
-* QAGP adaptive integration with known singular points::  
-* QAGI adaptive integration on infinite intervals::  
-* QAWC adaptive integration for Cauchy principal values::  
-* QAWS adaptive integration for singular functions::  
-* QAWO adaptive integration for oscillatory functions::  
-* QAWF adaptive integration for Fourier integrals::  
-* Numerical integration error codes::  
-* Numerical integration examples::  
-* Numerical integration References and Further Reading::  
-@end menu
 
 @node QNG non-adaptive Gauss-Kronrod integration
 @section QNG non-adaptive Gauss-Kronrod integration

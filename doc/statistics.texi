@@ -13,16 +13,17 @@ This chapter describes the statistical functions in the library.  The
 basic statistical functions include routines to compute the mean,
 variance and standard deviation.  More advanced functions allow you to
 calculate absolute deviations, skewness, and kurtosis as well as the
-median and arbitrary percentiles.  Statistical tests for comparing
-different datasets, such as the t-test, are also included.
+median and arbitrary percentiles.  The algorithms use recurrence
+relations to compute average quantities in a stable way, without large
+intermediate values that might overflow.  Statistical tests for
+comparing different datasets, such as the t-test, are also included.
 
 The functions are available in versions for datasets in the standard
 floating-point and integer types.  The versions for double precision
-floating-point data have the prefix @code{gsl_stats} and the versions
-for integer data have the prefix @code{gsl_stats_int}.
-
-The algorithms use recurrence relations to compute average quantities in
-a stable way, without large intermediate values that might overflow.
+floating-point data have the prefix @code{gsl_stats} and are declared in
+the header file @file{gsl_stats_double.h}.  The versions for integer
+data have the prefix @code{gsl_stats_int} and are declared in the header
+files @file{gsl_stats_int.h}. 
 
 @menu
 * Mean and standard deviation and variance::  

@@ -15,6 +15,9 @@ routines for selecting random samples from probability
 distributions.  This can be useful for generating simulations based real
 data.
 
+The functions are declared in the header files @file{gsl_histogram.h}
+and @file{gsl_histogram2d.h}.
+
 @menu
 * The histogram struct::        
 * Histogram allocation::        

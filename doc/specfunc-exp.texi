@@ -62,7 +62,7 @@ x^2/(2*3) + x^3/(2*3*4) + \dots}.
 @deftypefunx int gsl_sf_exprel_2_e (double @var{x}, gsl_sf_result * @var{result})
 These routines compute the quantity @math{2(\exp(x)-1-x)/x^2} using an
 algorithm that is accurate for small @math{x}.  For small @math{x} the
-algorithm is based on the expansion @math{2(\exp(x)-1)/x^ = 
+algorithm is based on the expansion @math{2(\exp(x)-1)/x^2 = 
 1 + x/3 + x^2/(3*4) + x^3/(3*4*5) + \dots}.
 @comment Exceptional Return Values:  GSL_EOVRFLW
 @end deftypefun
@@ -123,7 +123,7 @@ This routine computes the product @math{y \exp(x)} for the quantities
 @deftypefun int gsl_sf_exp_mult_err_e10_e (double @var{x}, double @var{dx}, double @var{y}, double @var{dy}, gsl_sf_result_e10 * @var{result})
 This routine computes the product @math{y \exp(x)} for the quantities
 @var{x}, @var{y} with associated errors @var{dx}, @var{dy} using the
-@code{gsl_sf_result_e10} type to return a result with extended range..
+@code{gsl_sf_result_e10} type to return a result with extended range.
 @comment Exceptional Return Values: GSL_EOVRFLW, GSL_EUNDRFLW
 @end deftypefun
 

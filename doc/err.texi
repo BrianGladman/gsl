@@ -5,7 +5,10 @@ errors.  By examining the status information returned by every GSL
 function you can determine whether it succeeded or failed, and if it
 failed you can find out what the precise cause of failure was.  You can
 also define your own error handling functions to modify the default
-behavior of the library.
+behavior of the library.  
+
+The functions described in this section are declared in the header file
+@file{gsl_errno.h}.
 
 @comment Note: In this context we use the word @dfn{error} to mean something
 @comment different from a bug.  An error report from the library just means that
@@ -15,13 +18,13 @@ behavior of the library.
 @comment by real bugs, @pxref{Debugging Numerical Programs}.
 
 @menu
-* Error reporting::             
-* Error handlers::              
+* Error Reporting::             
+* Error Handlers::              
 * Using GSL error reporting in your own functions::  
 @end menu
 
-@node Error reporting
-@section Error reporting
+@node Error Reporting
+@section Error Reporting
 
 GSL follows the thread-safe error reporting conventions of the @sc{posix}
 Threads library.  Functions in GSL return a non-zero error code to
@@ -122,8 +125,8 @@ would print an error message like @code{error: output range error} for a
 status value of @code{GSL_ERANGE}.
 @end deftypefun
 
-@node Error handlers
-@section Error handlers
+@node Error Handlers
+@section Error Handlers
 @cindex Error handlers
 
 In addition to reporting errors the library also provides an optional

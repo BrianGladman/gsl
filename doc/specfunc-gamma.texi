@@ -97,7 +97,7 @@ method.  The returned parameters are @math{lnr = \log|\Gamma(z)|} and
 part (@var{arg}) is not well-determined when @math{|z|} is very large,
 due to inevitable roundoff in restricting to @math{(-\pi,\pi]}.  This
 will raise the @code{GSL_ELOSS} exception when it occurs.  The absolute
-value part (@var{lnr}), however, never suffers from loss of precision..
+value part (@var{lnr}), however, never suffers from loss of precision.
 @comment exceptions: GSL_EDOM, GSL_ELOSS
 @end deftypefun
 

@@ -153,8 +153,8 @@ data in the same histogram.
 The following example programs demonstrate the use of ntuples in
 managing a large dataset.  The first program creates a set of 100,000
 simulated "events", each with 3 associated values @math{(x,y,z)}.  These
-are generated from gaussian variates with unit variance, for demonstration
-purposes,  and written to the ntuple file @file{test.dat}.
+are generated from a gaussian distribution with unit variance, for
+demonstration purposes, and written to the ntuple file @file{test.dat}.
 
 @example
 #include <config.h>

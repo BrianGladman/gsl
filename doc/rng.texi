@@ -10,6 +10,8 @@ Additional functions are available for transforming uniform random
 numbers into samples from continuous or discrete probability
 distributions such as the Gaussian, log-normal or Poisson distributions.
 
+These functions are declared in the header file @file{gsl_rng.h}.
+
 @comment Need to explain the difference between SERIAL and PARALLEL random 
 @comment number generators here
 
@@ -91,7 +93,7 @@ The functions described in this section are declared in the header file
 @node Random number generator initialization
 @section Random number generator initialization
 
-@deftypefn Random {gsl_rng *} gsl_rng_alloc (gsl_rng_type * @var{T})
+@deftypefn Random {gsl_rng *} gsl_rng_alloc (const gsl_rng_type * @var{T})
 This function returns a pointer to a newly-created
 instance of a random number generator of type @var{T}.
 For example, the following code creates an instance of the Tausworthe
@@ -395,6 +397,8 @@ particularly on 64-bit architectures.  The period of the generator is
 about @c{$10^{171}$} 
 @math{10^171}.  The algorithm has mathematically proven properties and
 can provide truly decorrelated numbers at a known level of randomness.
+The higher luxury levels provide additional decorrelation between samples
+as an additional safety margin.
 @end deffn
 
 @deffn {Generator} gsl_rng_ranlxd1

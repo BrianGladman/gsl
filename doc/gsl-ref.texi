@@ -84,7 +84,7 @@
 @ifinfo
 This file documents the @value{GSL}.
 
-Copyright (C) 1996, 1997, 1998, 1999 The GSL Project.
+Copyright (C) 1996, 1997, 1998, 1999 The GSL Team.
 
 Permission is granted to make and distribute verbatim copies of
 this manual provided the copyright notice and this permission notice
@@ -105,7 +105,7 @@ notice identical to this one.
 Permission is granted to copy and distribute translations of this manual
 into another language, under the above conditions for modified versions,
 except that this permission notice may be stated in a translation approved
-by the Foundation.
+by the GSL Team.
 @end ifinfo
 
 @titlepage
@@ -169,7 +169,7 @@ notice identical to this one.
 Permission is granted to copy and distribute translations of this manual
 into another language, under the above conditions for modified versions,
 except that this permission notice may be stated in a translation approved
-by the Foundation.
+by the GSL Team.
 @end titlepage
 
 @ifinfo
@@ -188,7 +188,7 @@ not recommended for general use.
 @menu
 * Preliminaries::               
 * Using the library::           
-* Error handling::              
+* Error Handling::              
 * Mathematical Functions::      
 * Complex Numbers::             
 * Roots of Polynomials::        
@@ -281,17 +281,17 @@ license is available from the GNU Project webpage @cite{Frequently Asked
 Questions about the GNU GPL},
 @url{http://www.gnu.org/copyleft/gpl-faq.html}.
 
-@node Using the library, Error handling, Preliminaries, Top
+@node Using the library, Error Handling, Preliminaries, Top
 @chapter Using the library
 @cindex usage, compiling application programs
 @include usage.texi
 
-@node Error handling, Mathematical Functions, Using the library, Top
-@chapter Error handling
+@node Error Handling, Mathematical Functions, Using the library, Top
+@chapter Error Handling
 @cindex Errors
 @include err.texi
 
-@node  Mathematical Functions, Complex Numbers, Error handling, Top
+@node  Mathematical Functions, Complex Numbers, Error Handling, Top
 @chapter Mathematical Functions
 @include math.texi
 
