@@ -61,6 +61,8 @@ int test_HH_solve_dim(const gsl_matrix * m, const double * actual, double eps);
 int test_HH_solve(void);
 int test_TD_solve_dim(size_t dim, double d, double od, const double * actual, double eps);
 int test_TD_solve(void);
+int test_bidiag_decomp_dim(const gsl_matrix * m, double eps);
+int test_bidiag_decomp(void);
 
 int 
 check (double x, double actual, double eps)
@@ -126,6 +128,7 @@ create_moler_matrix(size_t size)
 
 gsl_matrix * m35;
 gsl_matrix * m53;
+gsl_matrix * m97;
 
 gsl_matrix * hilb2;
 gsl_matrix * hilb3;
@@ -787,6 +790,7 @@ test_QRPT_decomp_dim(const gsl_matrix * m, double eps)
   }
   gsl_permutation_free (perm);
   gsl_vector_free(norm);
+  gsl_vector_free(work);
   gsl_vector_free(w);
   gsl_vector_free(d);
   gsl_matrix_free(qr);
@@ -1440,8 +1444,112 @@ int test_TD_solve(void)
   return s;
 }
 
+int
+test_bidiag_decomp_dim(const gsl_matrix * m, double eps)
+{
+  int s = 0;
+  size_t i,j,k,r, M = m->size1, N = m->size2;
 
+  gsl_matrix * A  = gsl_matrix_alloc(M,N);
+  gsl_matrix * a  = gsl_matrix_alloc(M,N);
+  gsl_matrix * b  = gsl_matrix_alloc(N,N);
 
+  gsl_matrix * u  = gsl_matrix_alloc(M,N);
+  gsl_matrix * v  = gsl_matrix_alloc(N,N);
+
+  gsl_vector * tau1  = gsl_vector_alloc(N);
+  gsl_vector * tau2  = gsl_vector_alloc(N-1);
+  gsl_vector * d  = gsl_vector_alloc(N);
+  gsl_vector * sd  = gsl_vector_alloc(N-1);
+
+  gsl_vector * work  = gsl_vector_alloc(M);
+
+  gsl_matrix_memcpy(A,m);
+
+  s += gsl_linalg_bidiag_decomp(A, tau1, tau2, work);
+  s += gsl_linalg_bidiag_unpack(A, tau1, u, tau2, v, d, sd, work);
+
+  gsl_matrix_set_zero(b);
+  for (i = 0; i < N; i++) gsl_matrix_set(b, i,i, gsl_vector_get(d,i));
+  for (i = 0; i < N-1; i++) gsl_matrix_set(b, i,i+1, gsl_vector_get(sd,i));
+  
+  /* Compute A = U B V^T */
+  
+  for (i = 0; i < M ; i++)
+    {
+      for (j = 0; j < N; j++)
+        {
+          double sum = 0;
+
+          for (k = 0; k < N; k++)
+            {
+              for (r = 0; r < N; r++)
+                {
+                  sum += gsl_matrix_get(u, i, k) * gsl_matrix_get (b, k, r)
+                    * gsl_matrix_get(v, j, r);
+                }
+            }
+          gsl_matrix_set (a, i, j, sum);
+        }
+    }
+
+  for(i=0; i<M; i++) {
+    for(j=0; j<N; j++) {
+      double aij = gsl_matrix_get(a, i, j);
+      double mij = gsl_matrix_get(m, i, j);
+      int foo = check(aij, mij, eps);
+      if(foo) {
+        printf("(%3d,%3d)[%d,%d]: %22.18g   %22.18g\n", M, N, i,j, aij, mij);
+      }
+      s += foo;
+    }
+  }
+
+  gsl_matrix_free(A);
+  gsl_matrix_free(a);
+  gsl_matrix_free(u);
+  gsl_matrix_free(v);
+  gsl_matrix_free(b);
+  gsl_vector_free(tau1);
+  gsl_vector_free(tau2);
+  gsl_vector_free(d);
+  gsl_vector_free(sd);
+  gsl_vector_free(work);
+
+  return s;
+}
+
+int test_bidiag_decomp(void)
+{
+  int f;
+  int s = 0;
+
+  f = test_bidiag_decomp_dim(m53, 2 * 64.0 * GSL_DBL_EPSILON);
+  gsl_test(f, "  bidiag_decomp m(5,3)");
+  s += f;
+
+  f = test_bidiag_decomp_dim(m97, 2 * 64.0 * GSL_DBL_EPSILON);
+  gsl_test(f, "  bidiag_decomp m(9,7)");
+  s += f;
+
+  f = test_bidiag_decomp_dim(hilb2, 2 * 8.0 * GSL_DBL_EPSILON);
+  gsl_test(f, "  bidiag_decomp hilbert(2)");
+  s += f;
+
+  f = test_bidiag_decomp_dim(hilb3, 2 * 64.0 * GSL_DBL_EPSILON);
+  gsl_test(f, "  bidiag_decomp hilbert(3)");
+  s += f;
+
+  f = test_bidiag_decomp_dim(hilb4, 2 * 1024.0 * GSL_DBL_EPSILON);
+  gsl_test(f, "  bidiag_decomp hilbert(4)");
+  s += f;
+
+  f = test_bidiag_decomp_dim(hilb12, 2 * 1024.0 * GSL_DBL_EPSILON);
+  gsl_test(f, "  bidiag_decomp hilbert(12)");
+  s += f;
+
+  return s;
+}
 
 
 int main(void)
@@ -1450,6 +1558,7 @@ int main(void)
 
   m35 = create_general_matrix(3,5);
   m53 = create_general_matrix(5,3);
+  m97 = create_general_matrix(9,7);
 
   hilb2 = create_hilbert_matrix(2);
   hilb3 = create_hilbert_matrix(3);
@@ -1468,6 +1577,7 @@ int main(void)
   gsl_test(test_matmult(),        "Matrix Multiply"); 
   gsl_test(test_matmult_mod(),    "Matrix Multiply with Modification"); 
 #endif
+  gsl_test(test_bidiag_decomp(),  "Bidiagonal Decomposition");
   gsl_test(test_LU_solve(),       "LU Decomposition and Solve");
   gsl_test(test_QR_decomp(),      "QR Decomposition");
   gsl_test(test_QR_solve(),       "QR Solve");

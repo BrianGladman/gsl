@@ -4,7 +4,7 @@ pkginclude_HEADERS = gsl_linalg.h
 
 INCLUDES= -I$(top_builddir)
 
-libgsllinalg_la_SOURCES = multiply.c tridiag.c tridiag.h lu.c hh.c qr.c qrpt.c svd.c householder.c householdercomplex.c cholesky.c symmtd.c hermtd.c
+libgsllinalg_la_SOURCES = multiply.c tridiag.c tridiag.h lu.c hh.c qr.c qrpt.c svd.c householder.c householdercomplex.c cholesky.c symmtd.c hermtd.c bidiag.c
 
 noinst_HEADERS =  givens.c tridiag.h
 

@@ -1,3 +1,10 @@
+Wed Jun 13 23:41:34 2001  Brian Gough  <bjg@network-theory.co.uk>
+
+	* qr.c (gsl_linalg_QR_decomp): simplified reverse loop
+
+	* bidiag.c: bidiagonalisation of a matrix (needed for
+ 	Golub-Reinsch SVD)
+
 Wed Jun  6 12:36:58 2001  Brian Gough  <bjg@network-theory.co.uk>
 
 	* householdercomplex.c: split out complex functions into a

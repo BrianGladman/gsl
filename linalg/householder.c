@@ -83,9 +83,10 @@ gsl_linalg_householder_hm (double tau, const gsl_vector * v, gsl_matrix * A, gsl
           sum += gsl_matrix_get(A,j,i) * gsl_vector_get(v,j);
         }
       gsl_vector_set(work, i, sum);
+      /* printf("w(%d) = %g\n", i, sum);*/
     }
 
-  /* A = A - v w' */
+  /* A = A - tau v w' */
 
   for (j = 0; j < A->size2; j++) 
     {
@@ -103,6 +104,52 @@ gsl_linalg_householder_hm (double tau, const gsl_vector * v, gsl_matrix * A, gsl
           double wj = gsl_vector_get (work, j);
           double Aij = gsl_matrix_get (A, i, j);
           gsl_matrix_set (A, i, j, Aij - tau * vi * wj);
+        }
+    }
+
+  return GSL_SUCCESS;
+}
+
+int
+gsl_linalg_householder_mh (double tau, const gsl_vector * v, gsl_matrix * A, gsl_vector * work)
+{
+  /* applies a householder transformation v,tau to matrix m from the
+     right hand side in order to zero out rows */
+
+  size_t i, j;
+
+  if (tau == 0)
+    return GSL_SUCCESS;
+
+  /* w = A v */
+
+  for (i = 0; i < A->size1; i++)
+    {
+      double sum = gsl_matrix_get(A,i,0);  
+
+      for (j = 1; j < A->size2; j++)  /* note, computed for v(0) = 1 above */
+        {
+          sum += gsl_matrix_get(A,i,j) * gsl_vector_get(v,j);
+        }
+      gsl_vector_set(work, i, sum);
+    }
+
+  /* A = A - tau w v' */
+
+  for (i = 0; i < A->size1; i++)
+    {
+      double wi = gsl_vector_get (work, i);
+      
+      {
+        double Ai0 = gsl_matrix_get (A, i, 0);
+        gsl_matrix_set (A, i, 0, Ai0 - tau *  wi);
+      }
+
+      for (j = 1; j < A->size2; j++) 
+        {
+          double vj = gsl_vector_get (v, j);
+          double Aij = gsl_matrix_get (A, i, j);
+          gsl_matrix_set (A, i, j, Aij - tau * wi * vj);
         }
     }
 
