@@ -4,7 +4,6 @@
 #include <gsl_randist.h>
 
 #define GSL_LOGINFINITY 300.0
-static double gamma_int (const gsl_rng * r, int a);
 static double gamma_large (const gsl_rng * r, double a);
 static double gamma_frac (const gsl_rng * r, double a);
 
@@ -22,11 +21,11 @@ double
 gsl_ran_gamma (const gsl_rng * r, double a)
 {
   /* assume a > 0 */
-  int na = floor (a);
+  unsigned int na = floor (a);
 
   if (a == na)
     {
-      return gamma_int (r, na);
+      return gsl_ran_gamma_int (r, na);
     }
   else if (na == 0)
     {
@@ -34,19 +33,19 @@ gsl_ran_gamma (const gsl_rng * r, double a)
     }
   else
     {
-      return gamma_int (r, na) + gamma_frac (r, a - na);
+      return gsl_ran_gamma_int (r, na) + gamma_frac (r, a - na);
     }
 }
 
-static double
-gamma_int (const gsl_rng * r, int a)
+double
+gsl_ran_gamma_int (const gsl_rng * r, unsigned int a)
 {
   if (a < 12)
     {
-      int i;
+      unsigned int i;
       double prod = 1.0;
 
-      for (i = 0; i < a; ++i)
+      for (i = 0; i < a; i++)
 	prod *= gsl_rng_uniform (r);
 
       if (prod == 0)
