@@ -10,6 +10,8 @@ pkginclude_HEADERS = 		\
 	gsl_blas_types.h	\
 	gsl_blas_raw.h		\
 	gsl_blas_raw_L1.h	\
+	gsl_blas_raw_L2.h	\
+	gsl_blas_raw_L3.h	\
 	gsl_blas_raw_cm.h
 
 noinst_HEADERS = \

@@ -8,6 +8,7 @@
 #ifndef GSL_BLAS_RAW_L1_H_
 #define GSL_BLAS_RAW_L1_H_
 
+#include <gsl_complex.h>
 #include <gsl_blas_types.h>
 
 

@@ -13,7 +13,7 @@
 
       if(nonunit) {
         const size_t max_ix = incX * (N-1);
-        X[max_ix] = X[max_ix]/ACCESS(MATRIX_VAR_NAME,N,0,N-1,N-1);
+        X[max_ix] = X[max_ix]/ACCESS_UP(MATRIX_VAR_NAME,N,0,N-1,N-1);
       }
 
       ix = incX*(N-2);
@@ -21,10 +21,10 @@
         BASE_TYPE tmp = X[ix];
 	jx = ix + incX;
 	for(j=i+1; j<GSL_MIN(N,i+KBAND+1); j++) {
-	  tmp -= ACCESS(MATRIX_VAR_NAME,N,0,i,j) * X[jx];
+	  tmp -= ACCESS_UP(MATRIX_VAR_NAME,N,0,i,j) * X[jx];
 	  jx += incX;
 	}
-        X[ix] = tmp/ACCESS(MATRIX_VAR_NAME,N,0,i,i);
+        X[ix] = tmp/ACCESS_UP(MATRIX_VAR_NAME,N,0,i,i);
 	ix -= incX;
       }
     }
@@ -32,7 +32,7 @@
       /* forward substitution */
 
       if(nonunit) {
-        X[0] = X[0]/ACCESS(MATRIX_VAR_NAME,N,0,0,0);
+        X[0] = X[0]/ACCESS_LO(MATRIX_VAR_NAME,N,0,0,0);
       }
 
       ix = incX;
@@ -40,10 +40,10 @@
         BASE_TYPE tmp = X[ix];
 	jx = 0;
 	for(j=GSL_MAX(0,i-KBAND); j<i; j++) {
-	  tmp -= ACCESS(MATRIX_VAR_NAME,N,0,i,j) * X[jx];
+	  tmp -= ACCESS_LO(MATRIX_VAR_NAME,N,0,i,j) * X[jx];
 	  jx += incX;
 	}
-        X[ix] = tmp/ACCESS(MATRIX_VAR_NAME,N,0,i,i);
+        X[ix] = tmp/ACCESS_LO(MATRIX_VAR_NAME,N,0,i,i);
 	ix += incX;
       }
     }
@@ -55,7 +55,7 @@
       /* forward substitution */
 
       if(nonunit) {
-        X[0] = X[0]/ACCESS(MATRIX_VAR_NAME,N,0,0,0);
+        X[0] = X[0]/ACCESS_UP(MATRIX_VAR_NAME,N,0,0,0);
       }
 
       ix = incX;
@@ -63,10 +63,10 @@
         BASE_TYPE tmp = X[ix];
 	jx = 0;
 	for(j=GSL_MAX(0,i-KBAND); j<i; j++) {
-	  tmp -= ACCESS(MATRIX_VAR_NAME,N,0,j,i) * X[jx];
+	  tmp -= ACCESS_UP(MATRIX_VAR_NAME,N,0,j,i) * X[jx];
 	  jx += incX;
 	}
-        X[ix] = tmp/ACCESS(MATRIX_VAR_NAME,N,0,i,i);
+        X[ix] = tmp/ACCESS_UP(MATRIX_VAR_NAME,N,0,i,i);
 	ix += incX;
       }
     }
@@ -75,7 +75,7 @@
 
       if(nonunit) {
         const size_t max_ix = incX * (N-1);
-        X[max_ix] = X[max_ix]/ACCESS(MATRIX_VAR_NAME,N,0,N-1,N-1);
+        X[max_ix] = X[max_ix]/ACCESS_LO(MATRIX_VAR_NAME,N,0,N-1,N-1);
       }
 
       ix = incX*(N-2);
@@ -83,10 +83,10 @@
         BASE_TYPE tmp = X[ix];
 	jx = ix + incX;
 	for(j=i+1; j<GSL_MIN(N,i+KBAND+1); j++) {
-	  tmp -= ACCESS(MATRIX_VAR_NAME,N,0,j,i) * X[jx];
+	  tmp -= ACCESS_LO(MATRIX_VAR_NAME,N,0,j,i) * X[jx];
 	  jx += incX;
 	}
-        X[ix] = tmp/ACCESS(MATRIX_VAR_NAME,N,0,i,i);
+        X[ix] = tmp/ACCESS_LO(MATRIX_VAR_NAME,N,0,i,i);
 	ix -= incX;
       }
     }

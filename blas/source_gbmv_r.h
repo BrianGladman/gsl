@@ -31,8 +31,10 @@
     for(i=0; i<lenY; i++) {
       BASE_TYPE temp = 0.0;
       const size_t j_min = ( KL > i ? 0 : i-KL );
+      ix = j_min * incX;
       for(j=j_min; j<GSL_MIN(lenX, i+KU+1); j++) {
-        temp += X[incX * j] * A[lda*i + j];
+        temp += X[ix] * A[lda*i + j];
+	ix += incX;
       }
       Y[iy] += alpha * temp;
       iy += incY;
@@ -45,8 +47,10 @@
       const BASE_TYPE temp = alpha * X[ix];
       if(temp != 0.0) {
         const size_t i_min = ( KU > j ? 0 : j-KU );
+	iy = i_min * incY;
         for(i=i_min; i<GSL_MIN(lenY, j+KL+1); i++) {
-          Y[incY * i] += temp * A[lda*j + i];
+          Y[iy] += temp * A[lda*j + i];
+	  iy += incY;
         }
       }
       ix += incX;

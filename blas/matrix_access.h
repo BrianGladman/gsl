@@ -14,7 +14,10 @@
 #define M_STANDARD_ACCESS(A, N, lda, i, j)   (A[(lda)*(i) + (j)])
 
 /* access packed triangular format */
-#define M_PACKEDTR_ACCESS(A, N, lda, i, j)   (A[PACKED_TR_COUNT(N,(i)-1) + (j)])
+#define M_PACKEDTRUP_ACCESS(A, N, lda, i, j)   (A[PACKED_TR_COUNT(N,(i)-1) + (j)-(i)])
+
+/* access packed triangular format */
+#define M_PACKEDTRLO_ACCESS(A, N, lda, i, j)   (A[((i)*((i)+1))/2 + (j)])
 
 
 #endif  /* !_MATRIX_ACCESS_H */

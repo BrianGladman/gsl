@@ -1,6 +1,8 @@
 #include "matrix_access.h"
-#define ACCESS M_PACKEDTR_ACCESS
+#define ACCESS_UP M_PACKEDTRUP_ACCESS
+#define ACCESS_LO M_PACKEDTRLO_ACCESS
 #define KBAND (N-1)
 #include "source_tXsv_r.h"
-#undef ACCESS
+#undef ACCESS_UP
+#undef ACCESS_LO
 #undef KBAND

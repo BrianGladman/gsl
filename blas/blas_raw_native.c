@@ -620,7 +620,9 @@ void gsl_blas_raw_ctbmv (CBLAS_UPLO Uplo,
                          const gsl_complex_packed_array_float A, int lda,
                          gsl_complex_packed_array_float X, size_t incX)
 {
-/* FIXME: copy above when debugged */
+#define BASE_TYPE float
+#include "source_tbmv_c.h"
+#undef BASE_TYPE
 }
 
 void gsl_blas_raw_ztbmv (CBLAS_UPLO Uplo,
@@ -629,7 +631,9 @@ void gsl_blas_raw_ztbmv (CBLAS_UPLO Uplo,
                          const gsl_complex_packed_array A, int lda,
                          gsl_complex_packed_array X, size_t incX)
 {
-/* FIXME: copy above when debugged */
+#define BASE_TYPE double
+#include "source_tbmv_c.h"
+#undef BASE_TYPE
 }
 
 
