@@ -24,6 +24,8 @@
 #include <gsl/gsl_errno.h>
 #include "gsl_interp.h"
 
+#define DISCARD_STATUS (s) if ((s) != GSL_SUCCESS) { GSL_ERROR_VAL("interpolation error", (s),  GSL_NAN); }
+
 gsl_interp *
 gsl_interp_alloc (const gsl_interp_type * T, size_t size)
 {
@@ -128,10 +130,9 @@ gsl_interp_eval (const gsl_interp * interp,
 {
   double y;
   int status = interp->type->eval (interp->state, xa, ya, interp->size, x, a, &y);
-  if (status != GSL_SUCCESS)
-    {
-      GSL_WARNING ("gsl_interp_eval", status);
-    }
+
+  DISCARD_STATUS(status);
+
   return y;
 }
 
@@ -163,10 +164,9 @@ gsl_interp_eval_deriv (const gsl_interp * interp,
 {
   double dydx;
   int status = interp->type->eval_deriv (interp->state, xa, ya, interp->size, x, a, &dydx);
-  if (status != GSL_SUCCESS)
-    {
-      GSL_WARNING ("gsl_interp_eval_deriv", status);
-    }
+
+  DISCARD_STATUS(status);
+
   return dydx;
 }
 
@@ -198,10 +198,9 @@ gsl_interp_eval_deriv2 (const gsl_interp * interp,
 {
   double d2;
   int status = interp->type->eval_deriv2 (interp->state, xa, ya, interp->size, x, a, &d2);
-  if (status != GSL_SUCCESS)
-    {
-      GSL_WARNING ("gsl_interp_eval_deriv2", status);
-    }
+
+  DISCARD_STATUS(status);
+
   return d2;
 }
 
@@ -236,10 +235,9 @@ gsl_interp_eval_integ (const gsl_interp * interp,
 {
   double result;
   int status = interp->type->eval_integ (interp->state, xa, ya, interp->size, acc, a, b, &result);
-  if (status != GSL_SUCCESS)
-    {
-      GSL_WARNING ("gsl_interp_eval_integ", status);
-    }
+
+  DISCARD_STATUS(status);
+
   return result;
 }
 
