@@ -1,3 +1,8 @@
+Fri May  5 16:09:11 2000  Brian Gough  <bjg@network-theory.co.uk>
+
+	* test.c (test_bracket): fixed warning about "control reaches end
+ 	of non-void function" by changing return type to void
+
 Tue Feb 15 16:32:55 2000  Brian Gough  <bjg@network-theory.co.uk>
 
 	* bracketing.c (gsl_min_find_bracket): changed counter nb_eval

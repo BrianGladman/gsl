@@ -36,7 +36,7 @@ const unsigned int MAX_ITERATIONS_LINE = 100;
 const unsigned int MAX_ITERATIONS = 100000;
 
 
-int
+void
 test_fdf(const char * desc, gsl_multimin_function_fdf *f,
 	 initpt_function initpt,
 	 const gsl_multimin_fdf_minimizer_type *T,

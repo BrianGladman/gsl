@@ -182,7 +182,7 @@ my_error_handler (const char *reason, const char *file, int line, int err)
     printf ("(caught [%s:%d: %s (%d)])\n", file, line, reason, err);
 }
 
-int
+void
 test_bracket (const char * description,gsl_function *f,double lower_bound, 
 	      double upper_bound, int max)
 {
