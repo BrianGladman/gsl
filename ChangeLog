@@ -1,3 +1,7 @@
+2004-05-17  Brian Gough  <bjg@network-theory.co.uk>
+
+	* gsl.m4: fix m4 quoting of first argument to AC_DEFUN
+
 2004-03-17  Brian Gough  <bjg@network-theory.co.uk>
 
 	* gsl/Makefile.am (header-links): use test -r instead of test -e

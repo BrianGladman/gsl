@@ -286,3 +286,5 @@ gsl_ran_hypergeometric_pdf
 * Brad Bell <brad@apl.washington.edu> documentation bug report
 
 * Andreas Schneider <1@c07.de> bug report for R250
+
+*  Luigi Ballabio <luigi.ballabio@fastwebnet.it> fix m4 quoting in gsl.m4
