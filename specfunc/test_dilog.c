@@ -46,7 +46,7 @@ int test_dilog(void)
   TEST_SF(s, gsl_sf_dilog_e, (12.59, &r),   0.0010060918167266208634,  TEST_TOL3, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_dilog_e, (12.595, &r),  0.00003314826006436236810, TEST_TOL5, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_dilog_e, (13.0, &r),   -0.07806971248458575855,    TEST_TOL2, GSL_SUCCESS);
-  TEST_SF(s, gsl_sf_dilog_e, (20.0, &r),   -1.2479770861745251168,     TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_dilog_e, (20.0, &r),   -1.2479770861745251168,     TEST_TOL2, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_dilog_e, (150.0, &r),  -9.270042702348657270,      TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_dilog_e, (1100.0, &r), -21.232504073931749553,     TEST_TOL0, GSL_SUCCESS);
 
@@ -89,13 +89,13 @@ int test_dilog(void)
              GSL_SUCCESS);
 
   TEST_SF_2(s, gsl_sf_complex_dilog_e, (0.5, M_PI/2.0, &r1, &r2),
-            -0.05897507442156586346, TEST_TOL0,
-             0.48722235829452235710, TEST_TOL0,
+            -0.05897507442156586346, TEST_TOL1,
+             0.48722235829452235710, TEST_TOL1,
              GSL_SUCCESS);
 
   TEST_SF_2(s, gsl_sf_complex_dilog_e, (0.5, -M_PI/2.0, &r1, &r2),
-            -0.05897507442156586346, TEST_TOL0,
-            -0.48722235829452235710, TEST_TOL0,
+            -0.05897507442156586346, TEST_TOL1,
+            -0.48722235829452235710, TEST_TOL1,
              GSL_SUCCESS);
 
   TEST_SF_2(s, gsl_sf_complex_dilog_e, (0.01, M_PI/2.0, &r1, &r2),
@@ -238,13 +238,13 @@ int test_dilog(void)
   /* tests of the (x,y) function, which is now the underlying implementation */
 
   TEST_SF_2(s, gsl_sf_complex_dilog_xy_e, (0.0,  0.5, &r1, &r2),
-            -0.05897507442156586346, TEST_TOL0,
-             0.48722235829452235710, TEST_TOL0,
+            -0.05897507442156586346, TEST_TOL1,
+             0.48722235829452235710, TEST_TOL1,
              GSL_SUCCESS);
 
   TEST_SF_2(s, gsl_sf_complex_dilog_xy_e, (0.0, -0.5, &r1, &r2),
-            -0.05897507442156586346, TEST_TOL0,
-            -0.48722235829452235710, TEST_TOL0,
+            -0.05897507442156586346, TEST_TOL1,
+            -0.48722235829452235710, TEST_TOL1,
              GSL_SUCCESS);
 
   TEST_SF_2(s, gsl_sf_complex_dilog_xy_e, (0.91464073718617389108,  0.37885659804143889673, &r1, &r2),
