@@ -97,7 +97,7 @@ gsl_rng_uniform_pos (const gsl_rng * r)
     {
       k = (r->get) (r->state);
     }
-  while (k == 0) 
+  while (k == 0) ;
     
   return k / ((double) max);
 }
