@@ -59,8 +59,8 @@ void gsl_blas_raw_zdotc (int N,
 /*
  * Functions having prefixes S D SC DZ
  */
-float  gsl_blas_raw_snrm2  (int N, const float X[], int incX);
-float  gsl_blas_raw_sasum  (int N, const float X[], int incX);
+float  gsl_blas_raw_snrm2  (int N, const float  X[], int incX);
+float  gsl_blas_raw_sasum  (int N, const float  X[], int incX);
 double gsl_blas_raw_dnrm2  (int N, const double X[], int incX);
 double gsl_blas_raw_dasum  (int N, const double X[], int incX);
 float  gsl_blas_raw_scnrm2 (int N, const void * X, int incX);
@@ -94,7 +94,8 @@ void gsl_blas_raw_scopy (int N,
                          const float X[], int incX,
                          float Y[], int incY);
 
-void gsl_blas_raw_saxpy (int N, float alpha,
+void gsl_blas_raw_saxpy (int N,
+                         float alpha,
                          const float X[], int incX,
                          float Y[], int incY);
 
