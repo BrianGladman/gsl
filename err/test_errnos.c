@@ -4,11 +4,16 @@
 #include <stdlib.h>
 
 #include <gsl_errno.h>
+#include <gsl_test.h>
 
 #define CHECK(x) {x,#x}
 #define MAX_ERRS 16
 
-int main (void) {
+int verbose = 0 ;
+
+int
+main (void)
+{
 
   struct { 
     int number; 
@@ -30,45 +35,33 @@ int main (void) {
     {-1, "end"}
   } ;
   
-  int errs, i, j ;
-  int failed = 0 ;
+  int i, j, n ;
+  int status ;
 
-  for (errs = MAX_ERRS - 1 ; errs > 0 ; errs--) 
+  for (n = MAX_ERRS - 1 ; n > 0 ; n--) 
     {
-      if (errors[errs].number == -1) break ;
+      if (errors[n].number == -1) break ;
     }
 
-  for (i = 0 ; i < errs ; i++) 
+  for (i = 0 ; i < n ; i++) 
     {
-      printf ("%s = %d\n", errors[i].name, errors[i].number) ;
+      if (verbose) printf ("%s = %d\n", errors[i].name, errors[i].number) ;
     }
   
-  for (i = 0 ; i < errs ; i++) 
+  for (i = 0 ; i < n ; i++) 
     {
-      if (errors[i].number == 0) 
-	{
-	  printf ("Error: %s is 0\n", errors[i].name) ;
-	  failed++ ;
-	}
+      status = (errors[i].number == 0)  ;
+      gsl_test (status, "%s is non-zero", errors[i].name) ;
+
       for (j = 0 ; j < i ; j++) 
 	{
-	  if (errors[i].number == errors[j].number) {
-	    printf ("Error: %s is ambiguous with %s (both = %d)\n", 
-		    errors[j].name, errors[i].name, errors[i].number) ;
-	    failed++ ;
-	  }
+	  status = (errors[i].number == errors[j].number) ;
+	  gsl_test (status, "%s is distinct from %s", 
+		    errors[j].name, errors[i].name) ;
 	}
     }
 
-  if (failed) 
-    {
-      exit(EXIT_FAILURE) ;
-    } 
-  else 
-    {
-      printf("Error codes are unique and non-zero\n"); 
-      exit (EXIT_SUCCESS) ;
-    }
+  return gsl_test_summary ();
 
 }
 

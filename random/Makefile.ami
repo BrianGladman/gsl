@@ -12,6 +12,7 @@
 ALLRAN= taus mrg cmrg uni uni32 zuf rand
 FAVORITERAN= taus
 
+INCLUDES = -I$(srcdir)/../err -I$(srcdir)/../utils
 include_HEADERS= gsl_ran.h gsl_ran_switch.h
 
 test_switch_SOURCES= test-switch.c switch.c 

@@ -22,7 +22,7 @@ typedef struct {
 static void
 gsl_ran_mrg_printState_p(gsl_ran_mrg_randomState *s)
 {
-    printf("%ldL, %ldL, %ldL, %ldL, %ldL\n",
+  printf("%ldL, %ldL, %ldL, %ldL, %ldL\n",
 	   s->x1,s->x2,s->x3,s->x4,s->x5);
 }
 

@@ -13,29 +13,79 @@
 #include <gsl_fft_real.h>
 #include <gsl_fft_halfcomplex.h>
 #include <gsl_fft_signals.h>
+#include <gsl_test.h>
 
-#include <autotest.h>
+#include <getopt.h>
 #include <compare.h>
 
-int verbose = 0;
-
-unsigned int tests = 0;
-unsigned int passed = 0;
-unsigned int failed = 0;
-
+void usage (void);
 void check_complex_bitreverse_order (unsigned int n) ;
 void check_complex_radix2 (unsigned int n) ;
 void check_real_radix2 (unsigned int n) ;
 
+void
+usage (void)
+{
+  printf("Usage: test_radix2 [OPTION]\n"
+"Exercise the radix-2 fft routines for length n. By default n runs\n"
+"through small powers of two: 1, 2, 4, 8, ... , 1024.\n"
+"\n"
+"  -n, --number=NUM       tests on length n\n"
+"  -v, --verbose          verbosely list tests\n"
+"\n"
+"Without the -v option the test is quiet. The exit status indicates\n"
+"success or failure.\n"
+) ; 
+  exit(0) ;
+}
+
+
 int
 main (int argc, char *argv[])
 {
-  unsigned int i, n;
-  int status ;
+  unsigned int i ;
+  unsigned int n = 0;
 
-  if (argc == 2)
+  while (1) {
+
+    static struct option long_options[] = 
     {
-      n = strtol (argv[1], NULL, 0);
+      {"verbose", 0, 0, 'v'},
+      {"number", 1, 0, 'n'},
+      {"help", 0, 0, 'h'},
+      {0, 0, 0, 0}
+    } ;
+
+    int option_index = 0 ;
+
+    int c = getopt_long (argc, argv, "hn:v",
+			 long_options, &option_index) ;
+   
+    if (c == -1)   /* end of options */
+      break ;   
+
+    if (c == 0 && long_options[option_index].flag == 0)
+      c = long_options[option_index].val;
+
+    switch (c) 
+      {
+      case 'v':
+	/* gsl_test_verbose () ; */
+	break ;
+      case 'n':
+	if (optarg) 
+	  n = strtol (optarg, NULL, 0);
+	else 
+	  usage () ;
+	break ;
+      case 'h':
+      default:
+	usage () ;
+      }
+  }
+
+  if (n)
+    {
       check_complex_bitreverse_order (n) ;
       check_complex_radix2 (n) ;
       check_real_radix2 (n) ;
@@ -50,12 +100,9 @@ main (int argc, char *argv[])
 	}
     }
 
-  status = msg_summary (tests, passed, failed);
+  return gsl_test_summary ();
 
-  return status ;
 }
-
-
 
 
 void check_complex_bitreverse_order (unsigned int n) 
@@ -65,13 +112,9 @@ void check_complex_bitreverse_order (unsigned int n)
   unsigned int logn, i ;
   complex *complex_data, *complex_tmp, *complex_reversed_data;
 
-  char length[256];
-
   complex_tmp = malloc (n * sizeof (complex));
   complex_data = malloc (n * sizeof (complex));
   complex_reversed_data = malloc (n * sizeof (complex));
-  
-  sprintf (length, "n = %d", n);
   
   for (i = 0; i < n; i++) 
     {
@@ -108,56 +151,36 @@ void check_complex_bitreverse_order (unsigned int n)
       complex_reversed_data[j] = complex_data[i] ;
     }
 
-  msg_checking_params (length, "gsl_fft_complex_bitreverse_order");
-
   gsl_fft_complex_bitreverse_order (complex_data, n, logn);
-
   status = compare_complex_results ("naive bit reverse", 
 				    complex_reversed_data,
 				    "gsl_fft_complex_bitreverse_order", 
 				    complex_data,
 				    n, 1e6);
-  msg_result_status (status);
 
-
-
-  msg_checking_params (length, "gsl_fft_complex_goldrader_bitreverse_order");
+  gsl_test (status, "gsl_fft_complex_bitreverse_order, n = %d", n);
 
   memcpy (complex_data, complex_tmp, n * sizeof(complex)) ;
-
   gsl_fft_complex_goldrader_bitreverse_order (complex_data, n);
-
   status = compare_complex_results ("naive bit reverse", 
 				    complex_reversed_data,
 				    "gsl_fft_complex_goldrader_bitreverse_order", 
 				    complex_data,
 				    n, 1e6);
-  msg_result_status (status);
-
-
-  msg_checking_params (length, "gsl_fft_complex_rodriguez_bitreverse_order");
+  gsl_test (status, "gsl_fft_complex_goldrader_bitreverse_order, n = %d", n);
 
   memcpy (complex_data, complex_tmp, n * sizeof(complex)) ;
-
   gsl_fft_complex_rodriguez_bitreverse_order (complex_data, n, logn);
-
   status = compare_complex_results ("naive bit reverse", 
 				    complex_reversed_data,
 				    "gsl_fft_complex_rodriguez_bit_reverse", 
 				    complex_data, 
 				    n, 1e6);
-  msg_result_status (status);
+  gsl_test (status, "gsl_fft_complex_rodriguez_bitreverse_order, n = %d", n);
 
-  
   free (complex_data) ;
   free (complex_tmp) ;
-  
 }
-
-
-
-
-
 
 void check_complex_radix2 (unsigned int n) 
 {
@@ -166,44 +189,34 @@ void check_complex_radix2 (unsigned int n)
   complex *complex_data, *complex_tmp;
   complex *fft_complex_data, *fft_complex_tmp;
 
-  char length[256];
-
   complex_data = malloc (n * sizeof (complex));
   complex_tmp = malloc (n * sizeof (complex));
   fft_complex_data = malloc (n * sizeof (complex));
   fft_complex_tmp = malloc (n * sizeof (complex));
   
-  sprintf (length, "n = %d", n);
-  
-  msg_checking_params (length, 
-		       "gsl_fft_complex_radix2_dif with signal_noise");
   gsl_fft_signal_complex_noise (n, complex_data, fft_complex_data);
   memcpy (complex_tmp, complex_data, n * sizeof (complex));
   gsl_fft_complex_radix2_dif_forward (complex_data, n);
   status = compare_complex_results ("dft", fft_complex_data,
 				    "fft of noise", complex_data,
 				    n, 1e6);
-  msg_result_status (status);
+  gsl_test (status, "gsl_fft_complex_radix2_dif with signal_noise, n = %d", n);
 
 
-  msg_checking_params (length, 
-		       "gsl_fft_complex_radix2_forward with signal_noise");
   gsl_fft_signal_complex_noise (n, complex_data, fft_complex_data);
   memcpy (complex_tmp, complex_data, n * sizeof (complex));
   gsl_fft_complex_radix2_forward (complex_data, n);
   status = compare_complex_results ("dft", fft_complex_data,
 				    "fft of noise", complex_data,
 				    n, 1e6);
-  msg_result_status (status);
+  gsl_test (status, "gsl_fft_complex_radix2_forward with signal_noise, n = %d", n);
   
   /* compute the inverse fft */
-  msg_checking_params (length, 
-		       "gsl_fft_complex_radix2_inverse with signal_noise");
   status = gsl_fft_complex_radix2_inverse (complex_data, n);
   status = compare_complex_results ("orig", complex_tmp,
 				    "fft_real", complex_data,
 				    n, 1e6);
-  msg_result_status (status);
+  gsl_test (status, "gsl_fft_complex_radix2_inverse with signal_noise, n = %d", n);
 
   free (complex_data) ;
   free (complex_tmp) ;
@@ -211,8 +224,6 @@ void check_complex_radix2 (unsigned int n)
   free (fft_complex_tmp) ;
   
 }
-
-
 
 void check_real_radix2 (unsigned int n) 
 {
@@ -242,8 +253,6 @@ void check_real_radix2 (unsigned int n)
   
   sprintf (length, "n = %d", n);
   
-  msg_checking_params (length, "gsl_fft_real_radix2 with signal_noise");
-
   gsl_fft_signal_real_noise (n, complex_data, fft_complex_data);
   memcpy (complex_tmp, complex_data, n * sizeof (complex));
 
@@ -268,9 +277,8 @@ void check_real_radix2 (unsigned int n)
   status = compare_complex_results ("dft", fft_complex_data,
 				    "fft of noise", complex_data,
 				    n, 1e6);
-  msg_result_status (status);
+  gsl_test (status, "gsl_fft_real_radix2 with signal_noise, n = %d", n);
 
-  msg_checking_params (length, "gsl_fft_halfcomplex_radix2 with signal_noise");
   status = gsl_fft_halfcomplex_radix2 (real_data, n) ;
 
    for (i = 0; i < n ; i++) { 
@@ -282,7 +290,7 @@ void check_real_radix2 (unsigned int n)
   status = compare_complex_results ("orig", complex_tmp,
 				    "fft inverse", complex_data,
 				    n, 1e6);
-  msg_result_status (status);
+  gsl_test (status, "gsl_fft_halfcomplex_radix2 with signal_noise, n = %d", n);
 
   free (complex_data) ;
   free (complex_tmp) ;
@@ -290,9 +298,3 @@ void check_real_radix2 (unsigned int n)
   free (fft_complex_tmp) ;
   
 }
-
-
-
-
-
-

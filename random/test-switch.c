@@ -13,13 +13,19 @@ main(int argc, char **argv)
     int randseed=17;
 
     if (argc == 1) {
-        printf("Usage: %s <n> [seed]\n",argv[0]);
-        printf("          Tests random number generator\n");
-        printf("          usiing <n> trials, and\n");
-        printf("          optionally using <seed>\n");
-        exit(0);
+      n = 1000000 ;  /* default test samples 1 million random numbers */
+    } else if (argc > 1) { 
+      n = atoi(argv[1]);
     }
-    if (argc > 1) n = atoi(argv[1]);
+    
+    if (!n) {
+      printf("Usage: %s <n> [seed]\n",argv[0]);
+      printf("          Tests random number generator\n");
+      printf("          usiing <n> trials, and\n");
+      printf("          optionally using <seed>\n");
+      exit(0);
+    }
+
     if (argc > 2) {
         /* these algorithms should work even if the seed is
          * not initially set! */

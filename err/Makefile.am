@@ -1,12 +1,14 @@
-noinst_LIBRARIES = liberr.a
+noinst_LIBRARIES = libgslerr.a libgsltest.a
 
-include_HEADERS = gsl_errno.h
+include_HEADERS = gsl_errno.h gsl_test.h
 
-liberr_a_SOURCES = errno.c 
+libgslerr_a_SOURCES = errno.c 
+libgsltest_a_SOURCES = test.c
 
 bin_PROGRAMS = test_errnos
 
 TESTS = test_errnos
 
-test_errnos_LDADD = liberr.a
+test_errnos_LDADD = libgslerr.a libgsltest.a
+
 

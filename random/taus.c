@@ -7,6 +7,7 @@
   [*** insert URL ***]
   **/
 
+#include <stdio.h>
 #include <stdlib.h>             /* calloc() */
 #include "gsl_ran.h"
 #define gsl_ran_taus_RANDMAX 4294967295.0 /* = 2^32  */

@@ -8,7 +8,7 @@ list="$*"
 auxlist=""
 auxbin="test-switch"
 
-echo -n "bin_PROGRAMS= "
+echo -n "noinst_PROGRAMS= "     # don't want to install tests globally
 for i in $list $auxlist; do
     echo -n "$i test-$i bench-$i "
 done
@@ -59,7 +59,7 @@ for i in $list; do
     echo "${i}_LDADD=               $i-gen.o"
     echo "test_${i}_SOURCES=        testran.c"
     echo "test_${i}_DEPENDENCIES=   $i.o $i-gen.o $i.h"
-    echo "test_${i}_LDADD=          $i.o $i-gen.o"
+    echo "test_${i}_LDADD=          $i.o $i-gen.o ../err/libgsltest.a ../utils/libutils.a"
     echo "bench_${i}_SOURCES=       benchran.c"
     echo "bench_${i}_DEPENDENCIES=  $i.o $i-gen.o $i.h"
     echo "bench_${i}_LDADD=         $i.o $i-gen.o"

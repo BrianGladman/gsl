@@ -6,7 +6,7 @@
 #include <gsl_fft.h>
 
 int
-gsl_fft_halfcomplex_radix2_backwards (double data[],
+gsl_fft_halfcomplex_radix2_backward (double data[],
 				      const unsigned int n) ;
 
 int

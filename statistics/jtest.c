@@ -4,7 +4,8 @@
 
 /* Test program for mean.c.  JimDavies 7.96 */
 
-int main()
+int 
+main (void)
 {
   
   int groupone[20];

@@ -3,7 +3,9 @@ B:1,$
 ## Assumes that ../random/gsl_ran.h and ../random/libgslran.a exist
 ## ...and are built!
 
-bin_PROGRAMS= gauss test-gauss bench-gauss exponential poisson bench-poisson test-shuffle gamma bench-gamma
+bin_PROGRAMS=exponential gamma gauss poisson 
+noinst_PROGRAMS=bench-gamma bench-gauss bench-poisson  \
+   test-gauss test-shuffle
 
 include_HEADERS= gsl_randist.h
 

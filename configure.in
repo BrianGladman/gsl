@@ -29,6 +29,10 @@ dnl Checks for typedefs, structures, and compiler characteristics.
 dnl Checks for library functions.
 dnl Replace `main' with a function in -lm:
 AC_CHECK_LIB(m, main)
+AC_FUNC_ALLOCA
+AC_FUNC_VPRINTF
+dnl strcasecmp, strerror, xmalloc, xrealloc, probably others should be added.
+AC_REPLACE_FUNCS(memcpy memmove strdup strerror)
 
 
 AC_CHECK_FUNCS(clock)
@@ -114,4 +118,4 @@ fi ;
 
 
 
-AC_OUTPUT(err/Makefile fft/Makefile statistics/Makefile roots/Makefile random/Makefile randist/Makefile siman/Makefile doc/Makefile Makefile)
+AC_OUTPUT(err/Makefile fft/Makefile statistics/Makefile roots/Makefile random/Makefile randist/Makefile siman/Makefile doc/Makefile utils/Makefile Makefile)

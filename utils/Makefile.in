@@ -59,18 +59,14 @@ PACKAGE = @PACKAGE@
 RANLIB = @RANLIB@
 VERSION = @VERSION@
 
-noinst_LIBRARIES = libgslerr.a libgsltest.a
+noinst_LIBRARIES = libutils.a
 
-include_HEADERS = gsl_errno.h gsl_test.h
+# Don't need to list alloca.c, etc., Automake includes them.
+libutils_a_SOURCES = getopt.c getopt.h getopt1.c system.h xmalloc.c xstrdup.c
+libutils_a_LIBADD = @LIBOBJS@ @ALLOCA@
+libutils_a_DEPENDENCIES = $(libutils_a_LIBADD)
 
-libgslerr_a_SOURCES = errno.c 
-libgsltest_a_SOURCES = test.c
-
-bin_PROGRAMS = test_errnos
-
-TESTS = test_errnos
-
-test_errnos_LDADD = libgslerr.a libgsltest.a
+EXTRA_DIST = README
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
 CONFIG_CLEAN_FILES = 
@@ -81,39 +77,31 @@ DEFS = @DEFS@ -I. -I$(srcdir) -I..
 CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
-libgslerr_a_LIBADD = 
-libgslerr_a_OBJECTS =  errno.o
-libgsltest_a_LIBADD = 
-libgsltest_a_OBJECTS =  test.o
+libutils_a_OBJECTS =  getopt.o getopt1.o xmalloc.o xstrdup.o
 AR = ar
-PROGRAMS =  $(bin_PROGRAMS)
-
-test_errnos_SOURCES = test_errnos.c
-test_errnos_OBJECTS =  test_errnos.o
-test_errnos_DEPENDENCIES =  libgslerr.a libgsltest.a
-test_errnos_LDFLAGS = 
 CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
 LINK = $(CC) $(CFLAGS) $(LDFLAGS) -o $@
-HEADERS =  $(include_HEADERS)
-
-DIST_COMMON =  Makefile.am Makefile.in
+DIST_COMMON =  README Makefile.am Makefile.in alloca.c memcpy.c \
+memmove.c strdup.c strerror.c
 
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 TAR = tar
 GZIP = --best
-DEP_FILES =  .deps/errno.P .deps/test.P .deps/test_errnos.P
-SOURCES = $(libgslerr_a_SOURCES) $(libgsltest_a_SOURCES) test_errnos.c
-OBJECTS = $(libgslerr_a_OBJECTS) $(libgsltest_a_OBJECTS) test_errnos.o
+DEP_FILES =  .deps/alloca.P .deps/getopt.P .deps/getopt1.P \
+.deps/memcpy.P .deps/memmove.P .deps/strdup.P .deps/strerror.P \
+.deps/xmalloc.P .deps/xstrdup.P
+SOURCES = $(libutils_a_SOURCES)
+OBJECTS = $(libutils_a_OBJECTS)
 
 default: all
 
 .SUFFIXES:
 .SUFFIXES: .c .o
 $(srcdir)/Makefile.in: Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
-	cd $(top_srcdir) && $(AUTOMAKE) --gnu err/Makefile
+	cd $(top_srcdir) && $(AUTOMAKE) --gnu utils/Makefile
 
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status $(BUILT_SOURCES)
 	cd $(top_builddir) \
@@ -142,58 +130,10 @@ distclean-compile:
 
 maintainer-clean-compile:
 
-libgslerr.a: $(libgslerr_a_OBJECTS) $(libgslerr_a_DEPENDENCIES)
-	rm -f libgslerr.a
-	$(AR) cru libgslerr.a $(libgslerr_a_OBJECTS) $(libgslerr_a_LIBADD)
-	$(RANLIB) libgslerr.a
-
-libgsltest.a: $(libgsltest_a_OBJECTS) $(libgsltest_a_DEPENDENCIES)
-	rm -f libgsltest.a
-	$(AR) cru libgsltest.a $(libgsltest_a_OBJECTS) $(libgsltest_a_LIBADD)
-	$(RANLIB) libgsltest.a
-
-mostlyclean-binPROGRAMS:
-
-clean-binPROGRAMS:
-	test -z "$(bin_PROGRAMS)" || rm -f $(bin_PROGRAMS)
-
-distclean-binPROGRAMS:
-
-maintainer-clean-binPROGRAMS:
-
-install-binPROGRAMS: $(bin_PROGRAMS)
-	@$(NORMAL_INSTALL)
-	$(mkinstalldirs) $(bindir)
-	@list='$(bin_PROGRAMS)'; for p in $$list; do \
-	  if test -f $$p; then \
-	    echo "  $(INSTALL_PROGRAM) $$p $(bindir)/`echo $$p|sed '$(transform)'`"; \
-	     $(INSTALL_PROGRAM) $$p $(bindir)/`echo $$p|sed '$(transform)'`; \
-	  else :; fi; \
-	done
-
-uninstall-binPROGRAMS:
-	$(NORMAL_UNINSTALL)
-	list='$(bin_PROGRAMS)'; for p in $$list; do \
-	  rm -f $(bindir)/`echo $$p|sed '$(transform)'`; \
-	done
-
-test_errnos: $(test_errnos_OBJECTS) $(test_errnos_DEPENDENCIES)
-	@rm -f test_errnos
-	$(LINK) $(test_errnos_LDFLAGS) $(test_errnos_OBJECTS) $(test_errnos_LDADD) $(LIBS)
-
-install-includeHEADERS: $(include_HEADERS)
-	@$(NORMAL_INSTALL)
-	$(mkinstalldirs) $(includedir)
-	@list='$(include_HEADERS)'; for p in $$list; do \
-	  echo " $(INSTALL_DATA) $(srcdir)/$$p $(includedir)/$$p"; \
-	  $(INSTALL_DATA) $(srcdir)/$$p $(includedir)/$$p; \
-	done
-
-uninstall-includeHEADERS:
-	$(NORMAL_UNINSTALL)
-	list='$(include_HEADERS)'; for p in $$list; do \
-	  rm -f $(includedir)/$$p; \
-	done
+libutils.a: $(libutils_a_OBJECTS) $(libutils_a_DEPENDENCIES)
+	rm -f libutils.a
+	$(AR) cru libutils.a $(libutils_a_OBJECTS) $(libutils_a_LIBADD)
+	$(RANLIB) libutils.a
 
 tags: TAGS
 
@@ -217,13 +157,13 @@ maintainer-clean-tags:
 
 distdir = $(top_builddir)/$(PACKAGE)-$(VERSION)/$(subdir)
 
-subdir = err
+subdir = utils
 
 distdir: $(DISTFILES)
 	here=`cd $(top_builddir) && pwd`; \
 	top_distdir=`cd $(top_distdir) && pwd`; \
 	cd $(top_srcdir) \
-	  && $(AUTOMAKE) --include-deps --build-dir=$$here --srcdir-name=$(top_srcdir) --output-dir=$$top_distdir --gnu err/Makefile
+	  && $(AUTOMAKE) --include-deps --build-dir=$$here --srcdir-name=$(top_srcdir) --output-dir=$$top_distdir --gnu utils/Makefile
 	@for file in $(DISTFILES); do \
 	  d=$(srcdir); \
 	  test -f $(distdir)/$$file \
@@ -256,53 +196,27 @@ maintainer-clean-depend:
 	$(MKDEP) $< >$@.tmp \
 	  && sed "s,^\(.*\)\.o:,\1.$$o \1.l$$o $@:," < $@.tmp > $@ \
 	  && rm -f $@.tmp
-check-TESTS: $(TESTS)
-	@failed=0; all=0; \
-	srcdir=$(srcdir); export srcdir; \
-	for tst in $(TESTS); do \
-	  if test -f $$tst; then dir=.; \
-	  else dir="$(srcdir)"; fi; \
-	  if $(TESTS_ENVIRONMENT) $$dir/$$tst; then \
-	    all=`expr $$all + 1`; \
-	    echo "PASS: $$tst"; \
-	  elif test $$? -ne 77; then \
-	    all=`expr $$all + 1`; \
-	    failed=`expr $$failed + 1`; \
-	    echo "FAIL: $$tst"; \
-	  fi; \
-	done; \
-	if test "$$failed" -eq 0; then \
-	  banner="All $$all tests passed"; \
-	else \
-	  banner="$$failed of $$all tests failed"; \
-	fi; \
-	dashes=`echo "$$banner" | sed s/./=/g`; \
-	echo "$$dashes"; \
-	echo "$$banner"; \
-	echo "$$dashes"; \
-	test "$$failed" -eq 0
 info:
 dvi:
 check: all
-	$(MAKE) check-TESTS
+	$(MAKE)
 installcheck:
-install-exec: install-binPROGRAMS
+install-exec: 
 	@$(NORMAL_INSTALL)
 
-install-data: install-includeHEADERS
+install-data: 
 	@$(NORMAL_INSTALL)
 
 install: install-exec install-data all
 	@:
 
-uninstall: uninstall-binPROGRAMS uninstall-includeHEADERS
+uninstall: 
 
-all: Makefile $(LIBRARIES) $(PROGRAMS) $(HEADERS)
+all: Makefile $(LIBRARIES)
 
 install-strip:
 	$(MAKE) INSTALL_PROGRAM='$(INSTALL_PROGRAM) -s' INSTALL_SCRIPT='$(INSTALL_PROGRAM)' install
 installdirs:
-	$(mkinstalldirs)  $(bindir) $(includedir)
 
 
 mostlyclean-generic:
@@ -320,36 +234,31 @@ maintainer-clean-generic:
 	test -z "$(MAINTAINERCLEANFILES)" || rm -f $(MAINTAINERCLEANFILES)
 	test -z "$(BUILT_SOURCES)" || rm -f $(BUILT_SOURCES)
 mostlyclean:  mostlyclean-noinstLIBRARIES mostlyclean-compile \
-		mostlyclean-binPROGRAMS mostlyclean-tags \
-		mostlyclean-depend mostlyclean-generic
+		mostlyclean-tags mostlyclean-depend mostlyclean-generic
 
-clean:  clean-noinstLIBRARIES clean-compile clean-binPROGRAMS clean-tags \
-		clean-depend clean-generic mostlyclean
+clean:  clean-noinstLIBRARIES clean-compile clean-tags clean-depend \
+		clean-generic mostlyclean
 
-distclean:  distclean-noinstLIBRARIES distclean-compile \
-		distclean-binPROGRAMS distclean-tags distclean-depend \
-		distclean-generic clean
+distclean:  distclean-noinstLIBRARIES distclean-compile distclean-tags \
+		distclean-depend distclean-generic clean
 	rm -f config.status
 
 maintainer-clean:  maintainer-clean-noinstLIBRARIES \
-		maintainer-clean-compile maintainer-clean-binPROGRAMS \
-		maintainer-clean-tags maintainer-clean-depend \
-		maintainer-clean-generic distclean
+		maintainer-clean-compile maintainer-clean-tags \
+		maintainer-clean-depend maintainer-clean-generic \
+		distclean
 	@echo "This command is intended for maintainers to use;"
 	@echo "it deletes files that may require special tools to rebuild."
 
 .PHONY: default mostlyclean-noinstLIBRARIES distclean-noinstLIBRARIES \
 clean-noinstLIBRARIES maintainer-clean-noinstLIBRARIES \
 mostlyclean-compile distclean-compile clean-compile \
-maintainer-clean-compile mostlyclean-binPROGRAMS distclean-binPROGRAMS \
-clean-binPROGRAMS maintainer-clean-binPROGRAMS uninstall-binPROGRAMS \
-install-binPROGRAMS uninstall-includeHEADERS install-includeHEADERS \
-tags mostlyclean-tags distclean-tags clean-tags maintainer-clean-tags \
-distdir mostlyclean-depend distclean-depend clean-depend \
-maintainer-clean-depend check-TESTS info dvi installcheck install-exec \
-install-data install uninstall all installdirs mostlyclean-generic \
-distclean-generic clean-generic maintainer-clean-generic clean \
-mostlyclean distclean maintainer-clean
+maintainer-clean-compile tags mostlyclean-tags distclean-tags \
+clean-tags maintainer-clean-tags distdir mostlyclean-depend \
+distclean-depend clean-depend maintainer-clean-depend info dvi \
+installcheck install-exec install-data install uninstall all \
+installdirs mostlyclean-generic distclean-generic clean-generic \
+maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.

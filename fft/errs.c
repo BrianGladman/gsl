@@ -12,7 +12,7 @@
 #include <gsl_fft_halfcomplex.h>
 #include <gsl_fft_signals.h>
 
-#include <autotest.h>
+#include <gsl_test.h>
 #include <compare.h>
 
 int verbose = 0;

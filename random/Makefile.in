@@ -62,6 +62,7 @@ VERSION = @VERSION@
 ALLRAN= taus mrg cmrg uni uni32 zuf rand
 FAVORITERAN= taus
 
+INCLUDES = -I$(srcdir)/../err -I$(srcdir)/../utils
 include_HEADERS= gsl_ran.h gsl_ran_switch.h
 
 test_switch_SOURCES= test-switch.c switch.c 
@@ -71,7 +72,7 @@ EXTRA_DIST= xxx-switch.xc makeswitch xxx-gen.xc xxx-state.xc \
 
 CLEANFILES= tmp.out tmp.in
 
-bin_PROGRAMS= taus test-taus bench-taus mrg test-mrg bench-mrg cmrg test-cmrg bench-cmrg uni test-uni bench-uni uni32 test-uni32 bench-uni32 zuf test-zuf bench-zuf rand test-rand bench-rand test-switch 
+noinst_PROGRAMS= taus test-taus bench-taus mrg test-mrg bench-mrg cmrg test-cmrg bench-cmrg uni test-uni bench-uni uni32 test-uni32 bench-uni32 zuf test-zuf bench-zuf rand test-rand bench-rand test-switch 
 
 TESTS = test-taus test-mrg test-cmrg test-uni test-uni32 test-zuf test-rand 
 
@@ -94,7 +95,7 @@ taus_DEPENDENCIES=        taus-state.c taus.h taus-gen.o
 taus_LDADD=               taus-gen.o
 test_taus_SOURCES=        testran.c
 test_taus_DEPENDENCIES=   taus.o taus-gen.o taus.h
-test_taus_LDADD=          taus.o taus-gen.o
+test_taus_LDADD=          taus.o taus-gen.o ../err/libgsltest.a ../utils/libutils.a
 bench_taus_SOURCES=       benchran.c
 bench_taus_DEPENDENCIES=  taus.o taus-gen.o taus.h
 bench_taus_LDADD=         taus.o taus-gen.o
@@ -103,7 +104,7 @@ mrg_DEPENDENCIES=        mrg-state.c mrg.h mrg-gen.o
 mrg_LDADD=               mrg-gen.o
 test_mrg_SOURCES=        testran.c
 test_mrg_DEPENDENCIES=   mrg.o mrg-gen.o mrg.h
-test_mrg_LDADD=          mrg.o mrg-gen.o
+test_mrg_LDADD=          mrg.o mrg-gen.o ../err/libgsltest.a ../utils/libutils.a
 bench_mrg_SOURCES=       benchran.c
 bench_mrg_DEPENDENCIES=  mrg.o mrg-gen.o mrg.h
 bench_mrg_LDADD=         mrg.o mrg-gen.o
@@ -112,7 +113,7 @@ cmrg_DEPENDENCIES=        cmrg-state.c cmrg.h cmrg-gen.o
 cmrg_LDADD=               cmrg-gen.o
 test_cmrg_SOURCES=        testran.c
 test_cmrg_DEPENDENCIES=   cmrg.o cmrg-gen.o cmrg.h
-test_cmrg_LDADD=          cmrg.o cmrg-gen.o
+test_cmrg_LDADD=          cmrg.o cmrg-gen.o ../err/libgsltest.a ../utils/libutils.a
 bench_cmrg_SOURCES=       benchran.c
 bench_cmrg_DEPENDENCIES=  cmrg.o cmrg-gen.o cmrg.h
 bench_cmrg_LDADD=         cmrg.o cmrg-gen.o
@@ -121,7 +122,7 @@ uni_DEPENDENCIES=        uni-state.c uni.h uni-gen.o
 uni_LDADD=               uni-gen.o
 test_uni_SOURCES=        testran.c
 test_uni_DEPENDENCIES=   uni.o uni-gen.o uni.h
-test_uni_LDADD=          uni.o uni-gen.o
+test_uni_LDADD=          uni.o uni-gen.o ../err/libgsltest.a ../utils/libutils.a
 bench_uni_SOURCES=       benchran.c
 bench_uni_DEPENDENCIES=  uni.o uni-gen.o uni.h
 bench_uni_LDADD=         uni.o uni-gen.o
@@ -130,7 +131,7 @@ uni32_DEPENDENCIES=        uni32-state.c uni32.h uni32-gen.o
 uni32_LDADD=               uni32-gen.o
 test_uni32_SOURCES=        testran.c
 test_uni32_DEPENDENCIES=   uni32.o uni32-gen.o uni32.h
-test_uni32_LDADD=          uni32.o uni32-gen.o
+test_uni32_LDADD=          uni32.o uni32-gen.o ../err/libgsltest.a ../utils/libutils.a
 bench_uni32_SOURCES=       benchran.c
 bench_uni32_DEPENDENCIES=  uni32.o uni32-gen.o uni32.h
 bench_uni32_LDADD=         uni32.o uni32-gen.o
@@ -139,7 +140,7 @@ zuf_DEPENDENCIES=        zuf-state.c zuf.h zuf-gen.o
 zuf_LDADD=               zuf-gen.o
 test_zuf_SOURCES=        testran.c
 test_zuf_DEPENDENCIES=   zuf.o zuf-gen.o zuf.h
-test_zuf_LDADD=          zuf.o zuf-gen.o
+test_zuf_LDADD=          zuf.o zuf-gen.o ../err/libgsltest.a ../utils/libutils.a
 bench_zuf_SOURCES=       benchran.c
 bench_zuf_DEPENDENCIES=  zuf.o zuf-gen.o zuf.h
 bench_zuf_LDADD=         zuf.o zuf-gen.o
@@ -148,7 +149,7 @@ rand_DEPENDENCIES=        rand-state.c rand.h rand-gen.o
 rand_LDADD=               rand-gen.o
 test_rand_SOURCES=        testran.c
 test_rand_DEPENDENCIES=   rand.o rand-gen.o rand.h
-test_rand_LDADD=          rand.o rand-gen.o
+test_rand_LDADD=          rand.o rand-gen.o ../err/libgsltest.a ../utils/libutils.a
 bench_rand_SOURCES=       benchran.c
 bench_rand_DEPENDENCIES=  rand.o rand-gen.o rand.h
 bench_rand_LDADD=         rand.o rand-gen.o
@@ -182,7 +183,7 @@ libgslranzuf_a_OBJECTS =  zuf.o zuf-gen.o
 libgslranrand_a_LIBADD = 
 libgslranrand_a_OBJECTS =  rand.o rand-gen.o
 AR = ar
-PROGRAMS =  $(bin_PROGRAMS)
+PROGRAMS =  $(noinst_PROGRAMS)
 
 taus_OBJECTS =  ran.o taus.o
 taus_LDFLAGS = 
@@ -347,30 +348,14 @@ libgslranrand.a: $(libgslranrand_a_OBJECTS) $(libgslranrand_a_DEPENDENCIES)
 	$(AR) cru libgslranrand.a $(libgslranrand_a_OBJECTS) $(libgslranrand_a_LIBADD)
 	$(RANLIB) libgslranrand.a
 
-mostlyclean-binPROGRAMS:
+mostlyclean-noinstPROGRAMS:
 
-clean-binPROGRAMS:
-	test -z "$(bin_PROGRAMS)" || rm -f $(bin_PROGRAMS)
+clean-noinstPROGRAMS:
+	test -z "$(noinst_PROGRAMS)" || rm -f $(noinst_PROGRAMS)
 
-distclean-binPROGRAMS:
+distclean-noinstPROGRAMS:
 
-maintainer-clean-binPROGRAMS:
-
-install-binPROGRAMS: $(bin_PROGRAMS)
-	@$(NORMAL_INSTALL)
-	$(mkinstalldirs) $(bindir)
-	@list='$(bin_PROGRAMS)'; for p in $$list; do \
-	  if test -f $$p; then \
-	    echo "  $(INSTALL_PROGRAM) $$p $(bindir)/`echo $$p|sed '$(transform)'`"; \
-	     $(INSTALL_PROGRAM) $$p $(bindir)/`echo $$p|sed '$(transform)'`; \
-	  else :; fi; \
-	done
-
-uninstall-binPROGRAMS:
-	$(NORMAL_UNINSTALL)
-	list='$(bin_PROGRAMS)'; for p in $$list; do \
-	  rm -f $(bindir)/`echo $$p|sed '$(transform)'`; \
-	done
+maintainer-clean-noinstPROGRAMS:
 
 taus: $(taus_OBJECTS) $(taus_DEPENDENCIES)
 	@rm -f taus
@@ -565,7 +550,7 @@ dvi:
 check: all
 	$(MAKE) check-TESTS
 installcheck:
-install-exec: install-libLIBRARIES install-binPROGRAMS
+install-exec: install-libLIBRARIES
 	@$(NORMAL_INSTALL)
 
 install-data: install-includeHEADERS
@@ -574,14 +559,14 @@ install-data: install-includeHEADERS
 install: install-exec install-data all
 	@:
 
-uninstall: uninstall-libLIBRARIES uninstall-binPROGRAMS uninstall-includeHEADERS
+uninstall: uninstall-libLIBRARIES uninstall-includeHEADERS
 
 all: Makefile $(LIBRARIES) $(PROGRAMS) $(HEADERS)
 
 install-strip:
 	$(MAKE) INSTALL_PROGRAM='$(INSTALL_PROGRAM) -s' INSTALL_SCRIPT='$(INSTALL_PROGRAM)' install
 installdirs:
-	$(mkinstalldirs)  $(libdir) $(bindir) $(includedir)
+	$(mkinstalldirs)  $(libdir) $(includedir)
 
 
 mostlyclean-generic:
@@ -599,30 +584,31 @@ maintainer-clean-generic:
 	test -z "$(MAINTAINERCLEANFILES)" || rm -f $(MAINTAINERCLEANFILES)
 	test -z "$(BUILT_SOURCES)" || rm -f $(BUILT_SOURCES)
 mostlyclean:  mostlyclean-libLIBRARIES mostlyclean-compile \
-		mostlyclean-binPROGRAMS mostlyclean-tags \
+		mostlyclean-noinstPROGRAMS mostlyclean-tags \
 		mostlyclean-depend mostlyclean-generic
 
-clean:  clean-libLIBRARIES clean-compile clean-binPROGRAMS clean-tags \
+clean:  clean-libLIBRARIES clean-compile clean-noinstPROGRAMS clean-tags \
 		clean-depend clean-generic mostlyclean
 
 distclean:  distclean-libLIBRARIES distclean-compile \
-		distclean-binPROGRAMS distclean-tags distclean-depend \
-		distclean-generic clean
+		distclean-noinstPROGRAMS distclean-tags \
+		distclean-depend distclean-generic clean
 	rm -f config.status
 
 maintainer-clean:  maintainer-clean-libLIBRARIES \
-		maintainer-clean-compile maintainer-clean-binPROGRAMS \
-		maintainer-clean-tags maintainer-clean-depend \
-		maintainer-clean-generic distclean
+		maintainer-clean-compile \
+		maintainer-clean-noinstPROGRAMS maintainer-clean-tags \
+		maintainer-clean-depend maintainer-clean-generic \
+		distclean
 	@echo "This command is intended for maintainers to use;"
 	@echo "it deletes files that may require special tools to rebuild."
 
 .PHONY: default mostlyclean-libLIBRARIES distclean-libLIBRARIES \
 clean-libLIBRARIES maintainer-clean-libLIBRARIES uninstall-libLIBRARIES \
 install-libLIBRARIES mostlyclean-compile distclean-compile \
-clean-compile maintainer-clean-compile mostlyclean-binPROGRAMS \
-distclean-binPROGRAMS clean-binPROGRAMS maintainer-clean-binPROGRAMS \
-uninstall-binPROGRAMS install-binPROGRAMS uninstall-includeHEADERS \
+clean-compile maintainer-clean-compile mostlyclean-noinstPROGRAMS \
+distclean-noinstPROGRAMS clean-noinstPROGRAMS \
+maintainer-clean-noinstPROGRAMS uninstall-includeHEADERS \
 install-includeHEADERS tags mostlyclean-tags distclean-tags clean-tags \
 maintainer-clean-tags distdir mostlyclean-depend distclean-depend \
 clean-depend maintainer-clean-depend check-TESTS info dvi installcheck \
