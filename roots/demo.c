@@ -3,21 +3,8 @@
 #include <gsl_math.h>
 #include <gsl_roots.h>
 
-/* Compile with:
-
-   gcc -I. -I.. -I../err demo.c libgslroots.a ../err/libgslerr.a  -lm 
-
- */
-
-
-struct quadratic_params
-  {
-    double a, b, c;
-  };
-
-double quadratic (double x, void *params);
-double quadratic_deriv (double x, void *params);
-void quadratic_fdf (double x, void *params, double *y, double *dy);
+#include "demof.h"
+#include "demof.c"
 
 int
 main ()
@@ -25,66 +12,38 @@ main ()
   int status;
   int iterations = 0, max_iterations = 100;
   gsl_root_fsolver *s;
-  gsl_interval x = {0.0, 5.0};
+  double r = 0, r_expected = sqrt (5.0);
+  gsl_interval x =
+  {0.0, 5.0};
   gsl_function F;
-  struct quadratic_params params = {1.0, 0.0, -5.0};
+  struct quadratic_params params =
+  {1.0, 0.0, -5.0};
 
   F.function = &quadratic;
   F.params = &params;
 
-  s = gsl_root_fsolver_alloc (gsl_root_fsolver_brent, &F, x);
+  s = gsl_root_fsolver_alloc (gsl_root_fsolver_bisection, &F, x);
+
+  printf ("using %s method\n", gsl_root_fsolver_name (s));
+
+  printf ("%5s [%9s, %9s] %9s %9s %10s %9s\n",
+	  "iter", "lower", "upper", "root", "actual", "err", "err(est)");
 
   do
     {
       iterations++;
-      gsl_root_fsolver_iterate (s);
-      status = gsl_root_test_interval (s->interval, 0.001, 0.001);
-      printf ("%5d  %.7f [%.7f,%.7f]\n",
-	      iterations, s->root, s->interval.lower, s->interval.upper);
+      status = gsl_root_fsolver_iterate (s);
+      r = gsl_root_fsolver_root (s);
+      x = gsl_root_fsolver_interval (s);
+      status = gsl_root_test_interval (x, 0, 0.001);
+
+      if (status == GSL_SUCCESS)
+	printf ("Converged:\n");
+
+      printf ("%5d [%.7f, %.7f] %.7f %.7f %+.7f %.7f\n",
+	      iterations, x.lower, x.upper,
+	      r, r_expected, r - r_expected, x.upper - x.lower);
     }
   while (status == GSL_CONTINUE && iterations < max_iterations);
 
-  printf ("best estimate of root = %.7f\n", s->root);
-  printf ("          actual root = %.7f\n", sqrt (5.0));
-  printf ("interval bounds = [%.7f,%.7f]\n", 
-	  s->interval.lower, s->interval.upper);
-
-}
-
-
-double
-quadratic (double x, void *params)
-{
-  struct quadratic_params *p = (struct quadratic_params *) params;
-
-  double a = p->a;
-  double b = p->b;
-  double c = p->c;
-
-  return (a * x + b) * x + c;
-}
-
-double
-quadratic_deriv (double x, void *params)
-{
-  struct quadratic_params *p = (struct quadratic_params *) params;
-
-  double a = p->a;
-  double b = p->b;
-  double c = p->c;
-
-  return 2.0 * a * x + b;
-}
-
-void
-quadratic_fdf (double x, void *params, double *y, double *dy)
-{
-  struct quadratic_params *p = (struct quadratic_params *) params;
-
-  double a = p->a;
-  double b = p->b;
-  double c = p->c;
-
-  *y = (a * x + b) * x + c;
-  *dy = 2.0 * a * x + b;
 }
