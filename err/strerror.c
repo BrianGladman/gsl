@@ -1,5 +1,5 @@
 #include <config.h>
-#include <gsl_errno.h>
+#include <gsl/gsl_errno.h>
 
 const char *
 gsl_strerror (const int gsl_errno)

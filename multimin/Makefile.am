@@ -4,7 +4,7 @@ pkginclude_HEADERS = gsl_multimin.h
 
 noinst_HEADERS = 
 
-INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../linalg -I$(srcdir)/../matrix -I$(srcdir)/../vector -I$(srcdir)/../block -I$(srcdir)/../blas -I$(srcdir)/../err -I$(srcdir)/../min
+INCLUDES= -I$(top_builddir)
 
 libgslmultimin_a_SOURCES = directional_minimize.c fdfminimizer.c steepest_descent.c conjugate.c convergence.c vector_bfgs.c
 

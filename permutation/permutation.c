@@ -1,6 +1,6 @@
 #include <config.h>
-#include <gsl_errno.h>
-#include <gsl_permutation.h>
+#include <gsl/gsl_errno.h>
+#include <gsl/gsl_permutation.h>
 
 size_t
 gsl_permutation_size (const gsl_permutation * p)

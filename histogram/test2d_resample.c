@@ -1,7 +1,7 @@
 #include <config.h>
 #include <math.h>
-#include <gsl_histogram2d.h>
-#include <gsl_test.h>
+#include <gsl/gsl_histogram2d.h>
+#include <gsl/gsl_test.h>
 
 #include "urand.c"
 

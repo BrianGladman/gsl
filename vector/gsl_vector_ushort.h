@@ -2,8 +2,8 @@
 #define GSL_VECTOR_USHORT_H
 
 #include <stdlib.h>
-#include <gsl_errno.h>
-#include <gsl_block_ushort.h>
+#include <gsl/gsl_errno.h>
+#include <gsl/gsl_block_ushort.h>
 
 struct gsl_vector_ushort_struct
 {

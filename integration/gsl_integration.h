@@ -1,7 +1,7 @@
 #ifndef GSL_INTEGRATION_H
 #define GSL_INTEGRATION_H
 #include <stdlib.h>
-#include <gsl_math.h>
+#include <gsl/gsl_math.h>
 
 /* Workspace for adaptive integrators */
 

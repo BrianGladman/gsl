@@ -4,7 +4,7 @@
 #ifndef GSL_GAMMAFUNCTION_H_
 #define GSL_GAMMAFUNCTION_H_
 
-#include <gsl_sf_result.h>
+#include <gsl/gsl_sf_result.h>
 
 
 /* Log[Gamma(x)], x not a negative integer

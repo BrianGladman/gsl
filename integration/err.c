@@ -1,8 +1,8 @@
 #include <config.h>
 #include <math.h>
 #include <float.h>
-#include <gsl_math.h>
-#include <gsl_integration.h>
+#include <gsl/gsl_math.h>
+#include <gsl/gsl_integration.h>
 
 static double rescale_error (double err, double result_abs, double result_asc) ;
 

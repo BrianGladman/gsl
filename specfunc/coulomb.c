@@ -13,8 +13,8 @@
  *  [Abad+Sesma, CPC 71, 110 (1992)]
  */
 #include <config.h>
-#include <gsl_math.h>
-#include <gsl_errno.h>
+#include <gsl/gsl_math.h>
+#include <gsl/gsl_errno.h>
 #include "gsl_sf_exp.h"
 #include "gsl_sf_psi.h"
 #include "gsl_sf_airy.h"

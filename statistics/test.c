@@ -3,8 +3,8 @@
 #include <stdlib.h>
 #include <math.h>
 
-#include <gsl_test.h>
-#include <gsl_statistics.h>
+#include <gsl/gsl_test.h>
+#include <gsl/gsl_statistics.h>
 
 /* Test program for mean.c.  JimDavies 7.96 */
 

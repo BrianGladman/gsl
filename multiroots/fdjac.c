@@ -1,5 +1,5 @@
 #include <config.h>
-#include <gsl_multiroots.h>
+#include <gsl/gsl_multiroots.h>
 
 int
 gsl_multiroot_fdjacobian (gsl_multiroot_function * F,

@@ -2,7 +2,7 @@
 #define GSL_BLOCK_UCHAR_H
 
 #include <stdlib.h>
-#include <gsl_errno.h>
+#include <gsl/gsl_errno.h>
 
 struct gsl_block_uchar_struct
 {

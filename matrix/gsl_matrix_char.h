@@ -2,8 +2,8 @@
 #define GSL_MATRIX_CHAR_H
 
 #include <stdlib.h>
-#include <gsl_errno.h>
-#include <gsl_vector_char.h>
+#include <gsl/gsl_errno.h>
+#include <gsl/gsl_vector_char.h>
 
 typedef struct gsl_matrix_char_struct gsl_matrix_char;
 

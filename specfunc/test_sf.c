@@ -5,11 +5,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <gsl_math.h>
-#include <gsl_errno.h>
-#include <gsl_ieee_utils.h>
-#include <gsl_test.h>
-#include <gsl_sf.h>
+#include <gsl/gsl_math.h>
+#include <gsl/gsl_errno.h>
+#include <gsl/gsl_ieee_utils.h>
+#include <gsl/gsl_test.h>
+#include <gsl/gsl_sf.h>
 #include "test_sf.h"
 
 

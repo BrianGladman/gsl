@@ -2,8 +2,8 @@
 #define GSL_MATRIX_INT_H
 
 #include <stdlib.h>
-#include <gsl_errno.h>
-#include <gsl_vector_int.h>
+#include <gsl/gsl_errno.h>
+#include <gsl/gsl_vector_int.h>
 
 typedef struct gsl_matrix_int_struct gsl_matrix_int;
 

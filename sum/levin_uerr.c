@@ -1,8 +1,8 @@
 #include <config.h>
-#include <gsl_math.h>
-#include <gsl_test.h>
-#include <gsl_errno.h>
-#include <gsl_sum.h>
+#include <gsl/gsl_math.h>
+#include <gsl/gsl_test.h>
+#include <gsl/gsl_errno.h>
+#include <gsl/gsl_sum.h>
 
 int
 gsl_sum_levin_u_accel (const double *array,

@@ -8,8 +8,8 @@
 #ifndef GSL_BLAS_RAW_L2_H
 #define GSL_BLAS_RAW_L2_H
 
-#include <gsl_complex.h>
-#include <gsl_blas_types.h>
+#include <gsl/gsl_complex.h>
+#include <gsl/gsl_blas_types.h>
 
 
 /* GEMV */

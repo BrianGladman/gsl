@@ -1,6 +1,6 @@
 #include <config.h>
 #include <stdlib.h>
-#include <gsl_rng.h>
+#include <gsl/gsl_rng.h>
 
 /* This file provides support for random() generators. There are three
    versions in widespread use today,

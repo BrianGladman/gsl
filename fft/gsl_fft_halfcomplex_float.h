@@ -3,9 +3,9 @@
 
 #include <stddef.h>
 
-#include <gsl_math.h>
-#include <gsl_complex.h>
-#include <gsl_fft.h>
+#include <gsl/gsl_math.h>
+#include <gsl/gsl_complex.h>
+#include <gsl/gsl_fft.h>
 
 int gsl_fft_halfcomplex_float_radix2_backward (float data[], size_t stride, size_t n);
 int gsl_fft_halfcomplex_float_radix2_inverse (float data[], size_t stride, size_t n);

@@ -4,10 +4,10 @@
 #include <string.h>
 #include <math.h>
 
-#include <gsl_errno.h>
-#include <gsl_complex.h>
+#include <gsl/gsl_errno.h>
+#include <gsl/gsl_complex.h>
 
-#include <gsl_fft_complex_float.h>
+#include <gsl/gsl_fft_complex_float.h>
 
 #define BASE_FLOAT
 #include "templates_on.h"

@@ -4,7 +4,7 @@
 #ifndef GSL_EXPINT_H_
 #define GSL_EXPINT_H_
 
-#include <gsl_sf_result.h>
+#include <gsl/gsl_sf_result.h>
 
 
 /* E_1(x) := Re[ Integrate[ Exp[-xt]/t, {t,1,Infinity}] ]

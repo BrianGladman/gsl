@@ -1,6 +1,6 @@
 #include <stdio.h>
-#include <gsl_math.h>
-#include <gsl_sum.h>
+#include <gsl/gsl_math.h>
+#include <gsl/gsl_sum.h>
 
 #define N 20
 

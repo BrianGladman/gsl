@@ -44,8 +44,8 @@
 
 
 /* magic constants; mostly for the benefit of the implementation */
-#include <gsl_machine.h>
-#include <gsl_precision.h>
+#include <gsl/gsl_machine.h>
+#include <gsl/gsl_precision.h>
 
 
 /* other needlessly compulsive abstractions */

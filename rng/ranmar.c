@@ -1,6 +1,6 @@
 #include <config.h>
 #include <stdlib.h>
-#include <gsl_rng.h>
+#include <gsl/gsl_rng.h>
 
 /* This is the RANMAR lagged fibonacci generator of Marsaglia, Zaman
    and Tsang.  The sequence is a series of 24-bit integers, x_n,

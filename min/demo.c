@@ -1,7 +1,7 @@
 #include <stdio.h>
-#include <gsl_errno.h>
-#include <gsl_math.h>
-#include <gsl_min.h>
+#include <gsl/gsl_errno.h>
+#include <gsl/gsl_math.h>
+#include <gsl/gsl_min.h>
 
 double fn1 (double x, void * params);
 

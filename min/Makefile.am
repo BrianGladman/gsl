@@ -4,7 +4,7 @@ pkginclude_HEADERS = gsl_min.h
 
 noinst_HEADERS = min.h
 
-INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../err
+INCLUDES= -I$(top_builddir)
 
 libgslmin_a_SOURCES = fsolver.c golden.c brent.c convergence.c bracketing.c
 

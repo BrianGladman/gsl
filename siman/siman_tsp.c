@@ -1,9 +1,9 @@
 #include <config.h>
 #include <math.h>
 #include <stdio.h>
-#include <gsl_math.h>
-#include <gsl_rng.h>
-#include <gsl_siman.h>
+#include <gsl/gsl_math.h>
+#include <gsl/gsl_rng.h>
+#include <gsl/gsl_siman.h>
 
 /* set up parameters for this simulated annealing run */
 

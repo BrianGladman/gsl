@@ -1,8 +1,8 @@
 #include <config.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <gsl_matrix.h>
-#include <gsl_test.h>
+#include <gsl/gsl_matrix.h>
+#include <gsl/gsl_test.h>
 
 #define N 107
 #define M 53

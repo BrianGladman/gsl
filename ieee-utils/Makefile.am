@@ -9,7 +9,7 @@ libgslieeeutils_a_SOURCES =  print.c \
 noinst_HEADERS = fp-hpux.c fp-linux.c fp-sunos4.c fp-solaris.c fp-tru64.c \
         fp-sparclinux.c fp-unknown.c endian.c standardize.c
 
-INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../err
+INCLUDES= -I$(top_builddir)
 
 TESTS = test
 check_PROGRAMS = test

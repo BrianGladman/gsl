@@ -4,9 +4,9 @@
 #ifndef GSL_LINALG_H
 #define GSL_LINALG_H
 
-#include <gsl_permutation.h>
-#include <gsl_vector.h>
-#include <gsl_matrix.h>
+#include <gsl/gsl_permutation.h>
+#include <gsl/gsl_vector.h>
+#include <gsl/gsl_matrix.h>
 
 typedef enum {
   GSL_LA_MOD_NONE=0,

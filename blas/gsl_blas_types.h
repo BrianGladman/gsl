@@ -8,7 +8,7 @@
 #define GSL_BLAS_TYPES_H_
 
 #include <sys/types.h>
-#include <gsl_complex.h>
+#include <gsl/gsl_complex.h>
 
 typedef  size_t  CBLAS_INDEX;
 typedef  size_t  CBLAS_INDEX_t;

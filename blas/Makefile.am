@@ -68,7 +68,7 @@ noinst_HEADERS = matrix_access.h \
 	source_tpsv_r.h
 
 
-INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../err -I$(srcdir)/../matrix -I$(srcdir)/../vector -I$(srcdir)/../block
+INCLUDES= -I$(top_builddir) -I$(top_srcdir)
 
 TESTS = test_blas_raw
 

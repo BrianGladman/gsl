@@ -1,7 +1,7 @@
 #include <config.h>
 #include <stdio.h>
-#include <gsl_histogram.h>
-#include <gsl_test.h>
+#include <gsl/gsl_histogram.h>
+#include <gsl/gsl_test.h>
 
 #define N 397
 

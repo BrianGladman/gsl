@@ -1,7 +1,7 @@
 #include <stdio.h>
-#include <gsl_errno.h>
-#include <gsl_math.h>
-#include <gsl_roots.h>
+#include <gsl/gsl_errno.h>
+#include <gsl/gsl_math.h>
+#include <gsl/gsl_roots.h>
 
 #include "demof.h"
 #include "demof.c"

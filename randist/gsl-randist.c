@@ -4,9 +4,9 @@
 #include <math.h>
 #include <string.h>
 
-#include <gsl_randist.h>
-#include <gsl_rng.h>
-#include <gsl_test.h>
+#include <gsl/gsl_randist.h>
+#include <gsl/gsl_rng.h>
+#include <gsl/gsl_test.h>
 
 void error (const char * s);
 

@@ -7,8 +7,8 @@
 #define GSL_MONTE_PLAIN_H
 
 #include <stdio.h>
-#include <gsl_monte.h>
-#include <gsl_rng.h>
+#include <gsl/gsl_monte.h>
+#include <gsl/gsl_rng.h>
 
 typedef struct {
   /* control variables */

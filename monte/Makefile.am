@@ -18,8 +18,8 @@ pkginclude_HEADERS = gsl_monte_vegas.h gsl_monte_miser.h gsl_monte_plain.h \
 #noinst_HEADERS = vegas.h
 noinst_HEADERS = utils.h init_source.c vegas_print.h
 
-INCLUDES = -I$(srcdir)/../ -I$(srcdir)/../err -I$(srcdir)/../rng/ \
-		-I$(srcdir)/../vector/ -I$(srcdir)/../block/
+INCLUDES= -I$(top_builddir) -I$(top_srcdir)
+
 
 TESTS = vegas_test miser_test plain_test
 

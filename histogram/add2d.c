@@ -1,7 +1,7 @@
 #include <config.h>
-#include <gsl_errno.h>
-#include <gsl_histogram.h>
-#include <gsl_histogram2d.h>
+#include <gsl/gsl_errno.h>
+#include <gsl/gsl_histogram.h>
+#include <gsl/gsl_histogram2d.h>
 
 int
 gsl_histogram2d_increment (gsl_histogram2d * h, double x, double y)

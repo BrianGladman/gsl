@@ -1,10 +1,10 @@
 #include <math.h>
 #include <float.h>
 
-#include <gsl_errno.h>
-#include <gsl_math.h>
-#include <gsl_poly.h>
-#include <gsl_test.h>
+#include <gsl/gsl_errno.h>
+#include <gsl/gsl_math.h>
+#include <gsl/gsl_poly.h>
+#include <gsl/gsl_test.h>
 
 #include "test.h"
 

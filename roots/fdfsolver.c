@@ -1,8 +1,8 @@
 #include <config.h>
 #include <stdlib.h>
 #include <string.h>
-#include <gsl_errno.h>
-#include <gsl_roots.h>
+#include <gsl/gsl_errno.h>
+#include <gsl/gsl_roots.h>
 
 gsl_root_fdfsolver *
 gsl_root_fdfsolver_alloc (const gsl_root_fdfsolver_type * T, 

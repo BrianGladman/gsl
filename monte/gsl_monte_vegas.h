@@ -4,8 +4,8 @@
 #ifndef GSL_MONTE_VEGAS_H
 #define GSL_MONTE_VEGAS_H
 
-#include <gsl_rng.h>
-#include <gsl_monte.h>
+#include <gsl/gsl_rng.h>
+#include <gsl/gsl_monte.h>
 #include <stdio.h>
 
 /* This will go away soon. */

@@ -4,7 +4,7 @@
 #ifndef GSL_SF_GEGENBAUER_H
 #define GSL_SF_GEGENBAUER_H
 
-#include <gsl_sf_result.h>
+#include <gsl/gsl_sf_result.h>
 
 
 /* Evaluate Gegenbauer polynomials

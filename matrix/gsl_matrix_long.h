@@ -2,8 +2,8 @@
 #define GSL_MATRIX_LONG_H
 
 #include <stdlib.h>
-#include <gsl_errno.h>
-#include <gsl_vector_long.h>
+#include <gsl/gsl_errno.h>
+#include <gsl/gsl_vector_long.h>
 
 typedef struct gsl_matrix_long_struct gsl_matrix_long;
 

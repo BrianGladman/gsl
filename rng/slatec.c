@@ -119,7 +119,7 @@ C
 
 #include <config.h>
 #include <stdlib.h>
-#include <gsl_rng.h>
+#include <gsl/gsl_rng.h>
 
 static inline unsigned long int slatec_get (void *vstate);
 static double slatec_get_double (void *vstate);

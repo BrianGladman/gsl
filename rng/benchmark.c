@@ -1,8 +1,8 @@
 #include <config.h>
 #include <time.h>
 #include <stdio.h>
-#include <gsl_rng.h>
-#include <gsl_errno.h>
+#include <gsl/gsl_rng.h>
+#include <gsl/gsl_errno.h>
 
 void benchmark (const gsl_rng_type * T);
 

@@ -4,7 +4,7 @@
 #include <config.h>
 #include <stdio.h>
 #include <math.h>
-#include <gsl_test.h>
+#include <gsl/gsl_test.h>
 #include "gsl_dht.h"
 
 

@@ -20,7 +20,7 @@ pkginclude_HEADERS = 		\
 	gsl_block_ulong.h	\
 	gsl_block_ushort.h
 
-INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../err
+INCLUDES= -I$(top_builddir) -I$(top_srcdir)
 
 TESTS = test
 

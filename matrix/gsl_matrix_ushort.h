@@ -2,8 +2,8 @@
 #define GSL_MATRIX_USHORT_H
 
 #include <stdlib.h>
-#include <gsl_errno.h>
-#include <gsl_vector_ushort.h>
+#include <gsl/gsl_errno.h>
+#include <gsl/gsl_vector_ushort.h>
 
 typedef struct gsl_matrix_ushort_struct gsl_matrix_ushort;
 

@@ -1,6 +1,6 @@
 #include <config.h> 
 #include <stdlib.h>
-#include <gsl_errno.h>
+#include <gsl/gsl_errno.h>
 
 #include "utils.h"
 

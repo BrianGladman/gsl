@@ -6,16 +6,16 @@
 #include <math.h>
 #include <float.h>
 
-#include <gsl_complex.h>
-#include <gsl_errno.h>
-#include <gsl_dft_complex.h>
-#include <gsl_fft_complex.h>
-#include <gsl_fft_complex_float.h>
-#include <gsl_fft_real.h>
-#include <gsl_fft_real_float.h>
-#include <gsl_fft_halfcomplex.h>
-#include <gsl_fft_halfcomplex_float.h>
-#include <gsl_test.h>
+#include <gsl/gsl_complex.h>
+#include <gsl/gsl_errno.h>
+#include <gsl/gsl_dft_complex.h>
+#include <gsl/gsl_fft_complex.h>
+#include <gsl/gsl_fft_complex_float.h>
+#include <gsl/gsl_fft_real.h>
+#include <gsl/gsl_fft_real_float.h>
+#include <gsl/gsl_fft_halfcomplex.h>
+#include <gsl/gsl_fft_halfcomplex_float.h>
+#include <gsl/gsl_test.h>
 
 void my_error_handler (const char *reason, const char *file,
 		       int line, int err);

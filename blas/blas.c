@@ -7,8 +7,8 @@
  * Note that GSL native storage is row-major, so
  * we implement in terms of gsl_blas_raw.
  */
-#include <gsl_math.h>
-#include <gsl_errno.h>
+#include <gsl/gsl_math.h>
+#include <gsl/gsl_errno.h>
 #include "gsl_blas_types.h"
 #include "gsl_blas_raw.h"
 #include "gsl_blas.h"

@@ -1,7 +1,7 @@
 #include <config.h>
 #include <stdlib.h>
-#include <gsl_ieee_utils.h>
-#include <gsl_errno.h>
+#include <gsl/gsl_ieee_utils.h>
+#include <gsl/gsl_errno.h>
 
 void
 gsl_ieee_env_setup (void)

@@ -2,7 +2,7 @@ pkglib_LIBRARIES = libgslsys.a
 
 libgslsys_a_SOURCES = minmax.c prec.c
 
-INCLUDES = -I$(srcdir)/.. 
+INCLUDES = -I$(top_builddir)
 
 #check_PROGRAMS = test_errnos
 #TESTS = test_errnos

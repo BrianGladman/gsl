@@ -1,7 +1,7 @@
 #ifndef GSL_RNG_H
 #define GSL_RNG_H
 #include <stdlib.h>
-#include <gsl_errno.h>
+#include <gsl/gsl_errno.h>
 
 typedef struct
   {

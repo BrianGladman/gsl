@@ -4,7 +4,7 @@
 #include <config.h>
 #include <stdlib.h>
 
-#include <gsl_interp.h>
+#include <gsl/gsl_interp.h>
 
 size_t
 gsl_interp_bsearch (const double x_array[], double x,

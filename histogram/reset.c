@@ -1,6 +1,6 @@
 #include <config.h>
-#include <gsl_errno.h>
-#include <gsl_histogram.h>
+#include <gsl/gsl_errno.h>
+#include <gsl/gsl_histogram.h>
 
 void
 gsl_histogram_reset (gsl_histogram * h)

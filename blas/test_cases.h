@@ -1,7 +1,7 @@
 
 /* set of constant objects for use in tests */
 
-#include <gsl_complex.h>
+#include <gsl/gsl_complex.h>
 
 extern const float  c_2[];
 extern const float  c_3[];

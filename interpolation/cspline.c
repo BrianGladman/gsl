@@ -3,9 +3,9 @@
  */
 #include <config.h>
 #include <stdlib.h>
-#include <gsl_errno.h>
-#include <gsl_linalg.h>
-#include <gsl_vector.h>
+#include <gsl/gsl_errno.h>
+#include <gsl/gsl_linalg.h>
+#include <gsl/gsl_vector.h>
 #include "integ_eval_macro.h"
 #include "gsl_interp.h"
 

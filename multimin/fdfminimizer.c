@@ -1,5 +1,5 @@
-#include <gsl_errno.h>
-#include <gsl_multimin.h>
+#include <gsl/gsl_errno.h>
+#include <gsl/gsl_multimin.h>
 
 gsl_multimin_fdf_history *
 gsl_multimin_fdf_history_alloc(gsl_multimin_function_fdf *fdf,

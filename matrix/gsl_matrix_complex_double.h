@@ -2,9 +2,9 @@
 #define GSL_MATRIX_COMPLEX_DOUBLE_H
 
 #include <stdlib.h>
-#include <gsl_errno.h>
-#include <gsl_complex.h>
-#include <gsl_vector_complex_double.h>
+#include <gsl/gsl_errno.h>
+#include <gsl/gsl_complex.h>
+#include <gsl/gsl_vector_complex_double.h>
 
 typedef struct gsl_matrix_complex_struct gsl_matrix_complex;
 

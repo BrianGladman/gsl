@@ -4,8 +4,8 @@
 #ifndef GSL_COULOMB_H_
 #define GSL_COULOMB_H_
 
-#include <gsl_mode.h>
-#include <gsl_sf_result.h>
+#include <gsl/gsl_mode.h>
+#include <gsl/gsl_sf_result.h>
 
 
 /* Normalized hydrogenic bound states, radial dependence. */

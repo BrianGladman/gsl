@@ -2,8 +2,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include <gsl_errno.h>
-#include <gsl_rng.h>
+#include <gsl/gsl_errno.h>
+#include <gsl/gsl_rng.h>
 
 gsl_rng *
 gsl_rng_alloc (const gsl_rng_type * T)

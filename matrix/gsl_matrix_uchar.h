@@ -2,8 +2,8 @@
 #define GSL_MATRIX_UCHAR_H
 
 #include <stdlib.h>
-#include <gsl_errno.h>
-#include <gsl_vector_uchar.h>
+#include <gsl/gsl_errno.h>
+#include <gsl/gsl_vector_uchar.h>
 
 typedef struct gsl_matrix_uchar_struct gsl_matrix_uchar;
 

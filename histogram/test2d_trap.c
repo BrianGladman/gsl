@@ -1,8 +1,8 @@
 #include <config.h>
 #include <stdio.h>
-#include <gsl_histogram2d.h>
-#include <gsl_test.h>
-#include <gsl_errno.h>
+#include <gsl/gsl_histogram2d.h>
+#include <gsl/gsl_test.h>
+#include <gsl/gsl_errno.h>
 
 #define N 107
 #define M 239

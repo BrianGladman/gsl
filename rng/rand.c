@@ -1,6 +1,6 @@
 #include <config.h>
 #include <stdlib.h>
-#include <gsl_rng.h>
+#include <gsl/gsl_rng.h>
 
 /* This is the old BSD rand() generator. The sequence is
 

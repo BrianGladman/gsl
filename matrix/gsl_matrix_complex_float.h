@@ -2,9 +2,9 @@
 #define GSL_MATRIX_COMPLEX_FLOAT_H
 
 #include <stdlib.h>
-#include <gsl_errno.h>
-#include <gsl_complex.h>
-#include <gsl_vector_complex_float.h>
+#include <gsl/gsl_errno.h>
+#include <gsl/gsl_complex.h>
+#include <gsl/gsl_vector_complex_float.h>
 
 typedef struct gsl_matrix_complex_float_struct gsl_matrix_complex_float;
 

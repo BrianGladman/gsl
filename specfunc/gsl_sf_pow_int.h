@@ -4,7 +4,7 @@
 #ifndef GSL_SF_POW_INT_H_
 #define GSL_SF_POW_INT_H_
 
-#include <gsl_sf_result.h>
+#include <gsl/gsl_sf_result.h>
 
 
 /* Calculate small integer powers.

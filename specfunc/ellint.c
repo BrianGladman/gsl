@@ -2,9 +2,9 @@
  * RCS: $Id$
  */
 #include <config.h>
-#include <gsl_math.h>
-#include <gsl_errno.h>
-#include <gsl_precision.h>
+#include <gsl/gsl_math.h>
+#include <gsl/gsl_errno.h>
+#include <gsl/gsl_precision.h>
 #include "gsl_sf_ellint.h"
 
 

@@ -6,8 +6,7 @@ pkginclude_HEADERS = gsl_linalg.h
 
 noinst_HEADERS = tridiag.h
 
-
-INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../err -I$(srcdir)/../matrix -I$(srcdir)/../vector -I$(srcdir)/../block -I$(srcdir)/../permutation
+INCLUDES= -I$(top_builddir)
 
 TESTS = test_la
 

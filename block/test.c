@@ -1,8 +1,8 @@
 #include <config.h>
 #include <fcntl.h>
 #include <stdio.h>
-#include <gsl_block.h>
-#include <gsl_test.h>
+#include <gsl/gsl_block.h>
+#include <gsl/gsl_test.h>
 
 int status = 0;
 

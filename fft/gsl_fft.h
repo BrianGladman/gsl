@@ -1,7 +1,7 @@
 #ifndef GSL_FFT_H
 #define GSL_FFT_H
 
-#include <gsl_complex.h>
+#include <gsl/gsl_complex.h>
 
 typedef enum
   {

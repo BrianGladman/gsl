@@ -4,7 +4,7 @@
 #ifndef GSL_SF_LOG_H_
 #define GSL_SF_LOG_H_
 
-#include <gsl_sf_result.h>
+#include <gsl/gsl_sf_result.h>
 
 
 /* Provide a logarithm function with GSL semantics.

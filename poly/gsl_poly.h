@@ -2,7 +2,7 @@
 #define GSL_POLY_H
 
 #include <stdlib.h>
-#include <gsl_complex.h>
+#include <gsl/gsl_complex.h>
 
 /* Solve for real or complex roots of the standard quadratic equation,
  * returning the number of real roots.

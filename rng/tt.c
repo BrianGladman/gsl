@@ -1,6 +1,6 @@
 #include <config.h>
 #include <stdlib.h>
-#include <gsl_rng.h>
+#include <gsl/gsl_rng.h>
 
 /* This is the TT800 twisted GSFR generator for 32 bit integers. It
    has been superceded by MT19937 (mt.c). The period is 2^800.

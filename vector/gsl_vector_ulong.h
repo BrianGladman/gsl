@@ -2,8 +2,8 @@
 #define GSL_VECTOR_ULONG_H
 
 #include <stdlib.h>
-#include <gsl_errno.h>
-#include <gsl_block_ulong.h>
+#include <gsl/gsl_errno.h>
+#include <gsl/gsl_block_ulong.h>
 
 struct gsl_vector_ulong_struct
 {

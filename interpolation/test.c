@@ -7,9 +7,9 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
-#include <gsl_test.h>
-#include <gsl_errno.h>
-#include <gsl_interp.h>
+#include <gsl/gsl_test.h>
+#include <gsl/gsl_errno.h>
+#include <gsl/gsl_interp.h>
 
 typedef double TEST_FUNC (double);
 typedef struct _xy_table xy_table;

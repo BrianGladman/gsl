@@ -1,7 +1,7 @@
 #include <config.h>
 #include <stdlib.h>
-#include <gsl_errno.h>
-#include <gsl_histogram.h>
+#include <gsl/gsl_errno.h>
+#include <gsl/gsl_histogram.h>
 
 double
 gsl_histogram_pdf_sample (const gsl_histogram_pdf * p, double r)

@@ -2,8 +2,8 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <stdio.h>
-#include <gsl_errno.h>
-#include <gsl_block.h>
+#include <gsl/gsl_errno.h>
+#include <gsl/gsl_block.h>
 
 #define BASE_GSL_COMPLEX_LONG
 #include "templates_on.h"

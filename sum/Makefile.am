@@ -5,7 +5,7 @@ check_PROGRAMS = test
 pkginclude_HEADERS = \
 	gsl_sum.h
 
-INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../ieee-utils/ -I$(srcdir)/../err 
+INCLUDES= -I$(top_builddir)
 
 TESTS = test
 

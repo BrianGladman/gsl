@@ -6,7 +6,7 @@ pkginclude_HEADERS = gsl_roots.h
 
 noinst_HEADERS = roots.h
 
-INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../ieee-utils -I$(srcdir)/../err
+INCLUDES= -I$(top_builddir)
 
 libgslroots_a_SOURCES = bisection.c brent.c falsepos.c \
 			newton.c  secant.c steffenson.c \

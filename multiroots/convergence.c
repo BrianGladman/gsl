@@ -1,7 +1,7 @@
 #include <config.h>
-#include <gsl_math.h>
-#include <gsl_errno.h>
-#include <gsl_multiroots.h>
+#include <gsl/gsl_math.h>
+#include <gsl/gsl_errno.h>
+#include <gsl/gsl_multiroots.h>
 
 int
 gsl_multiroot_test_delta (const gsl_vector * dx, const gsl_vector * x, 

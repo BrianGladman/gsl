@@ -7,10 +7,10 @@
 
 #include <time.h>
 
-#include <gsl_complex.h>
-#include <gsl_fft_complex.h>
+#include <gsl/gsl_complex.h>
+#include <gsl/gsl_fft_complex.h>
 
-#include <gsl_errno.h>
+#include <gsl/gsl_errno.h>
 
 #include "complex_internal.h"
 #include "bitreverse.h"

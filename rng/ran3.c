@@ -1,6 +1,6 @@
 #include <config.h>
 #include <stdlib.h>
-#include <gsl_rng.h>
+#include <gsl/gsl_rng.h>
 
 /* This is an implementation of the algorithm used in Knuths's
    subtractive generator, with the Numerical Recipe's ran3 paramters.

@@ -2,8 +2,8 @@
 #include <stdlib.h>
 #include <math.h>
 
-#include <gsl_test.h>
-#include <gsl_statistics_int.h>
+#include <gsl/gsl_test.h>
+#include <gsl/gsl_statistics_int.h>
 
 #include "test.h"
 

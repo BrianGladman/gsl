@@ -2,10 +2,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
-#include <gsl_math.h>
-#include <gsl_randist.h>
-#include <gsl_rng.h>
-#include <gsl_test.h>
+#include <gsl/gsl_math.h>
+#include <gsl/gsl_randist.h>
+#include <gsl/gsl_rng.h>
+#include <gsl/gsl_test.h>
 
 #define N 100000
 void testMoments (double (*f) (void), const char *name,

@@ -2,7 +2,7 @@ pkglib_LIBRARIES = libgslrng.a
 
 pkginclude_HEADERS = gsl_rng.h
 
-INCLUDES = -I$(srcdir)/..  -I$(srcdir)/../err
+INCLUDES= -I$(top_builddir)
 
 libgslrng_a_SOURCES = gsl_rng.h rng.c default.c \
 cmrg.c gfsr4.c slatec.c minstd.c mrg.c mt.c r250.c ran0.c \

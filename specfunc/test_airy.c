@@ -2,8 +2,8 @@
  * RCS:     $Id$
  */
 #include <config.h>
-#include <gsl_test.h>
-#include <gsl_sf.h>
+#include <gsl/gsl_test.h>
+#include <gsl/gsl_sf.h>
 #include "test_sf.h"
 
 

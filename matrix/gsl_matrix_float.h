@@ -2,8 +2,8 @@
 #define GSL_MATRIX_FLOAT_H
 
 #include <stdlib.h>
-#include <gsl_errno.h>
-#include <gsl_vector_float.h>
+#include <gsl/gsl_errno.h>
+#include <gsl/gsl_vector_float.h>
 
 typedef struct gsl_matrix_float_struct gsl_matrix_float;
 

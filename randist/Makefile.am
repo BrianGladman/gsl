@@ -9,8 +9,7 @@ libgslrandist_a_SOURCES = \
 
 pkginclude_HEADERS= gsl_randist.h
 
-INCLUDES= -I$(srcdir)/../rng -I$(srcdir)/../specfunc -I$(srcdir)/../err -I$(top_srcdir)
-
+INCLUDES= -I$(top_builddir)
 
 bin_PROGRAMS = gsl-randist
 

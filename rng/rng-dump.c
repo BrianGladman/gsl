@@ -1,7 +1,7 @@
 #include <config.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <gsl_rng.h>
+#include <gsl/gsl_rng.h>
 
 int
 main (int argc, char **argv)

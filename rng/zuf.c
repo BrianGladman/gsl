@@ -1,6 +1,6 @@
 #include <config.h>
 #include <stdlib.h>
-#include <gsl_rng.h>
+#include <gsl/gsl_rng.h>
 
 /* It is crucial that m == n-273 mod 607 at all times;
    For speed of execution, however, this is never enforced.

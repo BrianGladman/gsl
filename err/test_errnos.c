@@ -3,8 +3,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include <gsl_errno.h>
-#include <gsl_test.h>
+#include <gsl/gsl_errno.h>
+#include <gsl/gsl_test.h>
 
 #define CHECK(x) errors[n].number = x ; errors[n].name = #x ; n++ ;
 #define MAX_ERRS 32

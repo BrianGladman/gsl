@@ -1,9 +1,9 @@
 #include <config.h>
 #include <math.h>
-#include <gsl_math.h>
-#include <gsl_complex.h>
-#include <gsl_poly.h>
-#include <gsl_errno.h>
+#include <gsl/gsl_math.h>
+#include <gsl/gsl_complex.h>
+#include <gsl/gsl_poly.h>
+#include <gsl/gsl_errno.h>
 
 gsl_poly_complex_workspace * 
 gsl_poly_complex_workspace_alloc (size_t n)

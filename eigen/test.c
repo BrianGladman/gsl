@@ -1,9 +1,9 @@
 /* Author:  G. Jungman
  * RCS:     $Id$
  */
-#include <gsl_test.h>
-#include <gsl_math.h>
-#include <gsl_linalg.h>
+#include <gsl/gsl_test.h>
+#include <gsl/gsl_math.h>
+#include <gsl/gsl_linalg.h>
 #include "gsl_eigen.h"
 
 gsl_matrix *

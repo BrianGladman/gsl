@@ -1,6 +1,6 @@
 #ifndef GSL_RANDIST_H
 #define GSL_RANDIST_H
-#include <gsl_rng.h>
+#include <gsl/gsl_rng.h>
 
 unsigned int gsl_ran_bernoulli (const gsl_rng * r, double p);
 double gsl_ran_bernoulli_pdf (unsigned int k, double p);

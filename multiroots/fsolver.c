@@ -1,8 +1,8 @@
 #include <config.h>
 #include <stdlib.h>
 #include <string.h>
-#include <gsl_errno.h>
-#include <gsl_multiroots.h>
+#include <gsl/gsl_errno.h>
+#include <gsl/gsl_multiroots.h>
 
 gsl_multiroot_fsolver *
 gsl_multiroot_fsolver_alloc (const gsl_multiroot_fsolver_type * T, 

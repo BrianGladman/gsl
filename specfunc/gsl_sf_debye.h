@@ -4,7 +4,7 @@
 #ifndef GSL_SF_DEBYE_H_
 #define GSL_SF_DEBYE_H_
 
-#include <gsl_sf_result.h>
+#include <gsl/gsl_sf_result.h>
 
 
 /* D_n(x) := n/x^n Integrate[t^n/(e^t - 1), {t,0,x}] */

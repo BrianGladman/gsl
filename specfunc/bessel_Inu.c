@@ -2,8 +2,8 @@
  * RCS:     $Id$
  */
 #include <config.h>
-#include <gsl_math.h>
-#include <gsl_errno.h>
+#include <gsl/gsl_math.h>
+#include <gsl/gsl_errno.h>
 #include "bessel.h"
 #include "bessel_temme.h"
 #include "gsl_sf_exp.h"

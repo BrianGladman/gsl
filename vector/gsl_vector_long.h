@@ -2,8 +2,8 @@
 #define GSL_VECTOR_LONG_H
 
 #include <stdlib.h>
-#include <gsl_errno.h>
-#include <gsl_block_long.h>
+#include <gsl/gsl_errno.h>
+#include <gsl/gsl_block_long.h>
 
 struct gsl_vector_long_struct
 {

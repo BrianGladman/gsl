@@ -8,8 +8,8 @@
 #ifndef GSL_BLAS_RAW_H_
 #define GSL_BLAS_RAW_H_
 
-#include <gsl_blas_raw_L1.h>
-#include <gsl_blas_types.h>
+#include <gsl/gsl_blas_raw_L1.h>
+#include <gsl/gsl_blas_types.h>
 
 
 /*

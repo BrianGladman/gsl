@@ -1,8 +1,8 @@
 #include <config.h>
 #include <stdlib.h>
-#include <gsl_errno.h>
-#include <gsl_histogram.h>
-#include <gsl_histogram2d.h>
+#include <gsl/gsl_errno.h>
+#include <gsl/gsl_histogram.h>
+#include <gsl/gsl_histogram2d.h>
 
 int
 gsl_histogram2d_pdf_sample (const gsl_histogram2d_pdf * p,

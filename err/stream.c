@@ -3,8 +3,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#include <gsl_errno.h>
-#include <gsl_message.h>
+#include <gsl/gsl_errno.h>
+#include <gsl/gsl_message.h>
 
 FILE * gsl_stream = NULL ;
 gsl_stream_handler_t * gsl_stream_handler = NULL;

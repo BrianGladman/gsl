@@ -1,11 +1,11 @@
 #include <config.h>
 #include <stdio.h>
 #include <math.h>
-#include <gsl_math.h>
-#include <gsl_integration.h>
-#include <gsl_errno.h>
-#include <gsl_test.h>
-#include <gsl_ieee_utils.h>
+#include <gsl/gsl_math.h>
+#include <gsl/gsl_integration.h>
+#include <gsl/gsl_errno.h>
+#include <gsl/gsl_test.h>
+#include <gsl/gsl_ieee_utils.h>
 
 #include "tests.h"
 

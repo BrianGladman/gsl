@@ -1,8 +1,8 @@
 #include <config.h>
 #include <stdio.h>
-#include <gsl_errno.h>
-#include <gsl_block.h>
-#include <gsl_histogram.h>
+#include <gsl/gsl_errno.h>
+#include <gsl/gsl_block.h>
+#include <gsl/gsl_histogram.h>
 
 int
 gsl_histogram_fread (FILE * stream, gsl_histogram * h)

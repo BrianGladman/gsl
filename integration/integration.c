@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
-#include <gsl_errno.h>
+#include <gsl/gsl_errno.h>
 /* #include "interpolation.h" */
 #include "gsl_integration.h"
 #if 0

@@ -1,6 +1,6 @@
 #include <config.h>
 #include <stdlib.h>
-#include <gsl_rng.h>
+#include <gsl/gsl_rng.h>
 #include <stdio.h>
 
 /* This is a maximally equidistributed combined Tausworthe

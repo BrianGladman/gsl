@@ -4,8 +4,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <gsl_rng.h>
-#include <gsl_siman.h>
+#include <gsl/gsl_rng.h>
+#include <gsl/gsl_siman.h>
 
 /* implementation of a basic simulated annealing algorithm */
 

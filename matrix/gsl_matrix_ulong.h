@@ -2,8 +2,8 @@
 #define GSL_MATRIX_ULONG_H
 
 #include <stdlib.h>
-#include <gsl_errno.h>
-#include <gsl_vector_ulong.h>
+#include <gsl/gsl_errno.h>
+#include <gsl/gsl_vector_ulong.h>
 
 typedef struct gsl_matrix_ulong_struct gsl_matrix_ulong;
 

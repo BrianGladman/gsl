@@ -1,6 +1,6 @@
 #include <config.h>
 #include <stdlib.h>
-#include <gsl_block.h>
+#include <gsl/gsl_block.h>
 
 #define BASE_GSL_COMPLEX_LONG
 #include "templates_on.h"

@@ -1,8 +1,8 @@
 #include <config.h>
 #include <stdlib.h>
 #include <string.h>
-#include <gsl_errno.h>
-#include <gsl_ieee_utils.h>
+#include <gsl/gsl_errno.h>
+#include <gsl/gsl_ieee_utils.h>
 
 static int 
 lookup_string (const char * p, int * precision, int * rounding, 

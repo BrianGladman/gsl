@@ -2,8 +2,8 @@
 #define GSL_VECTOR_UINT_H
 
 #include <stdlib.h>
-#include <gsl_errno.h>
-#include <gsl_block_uint.h>
+#include <gsl/gsl_errno.h>
+#include <gsl/gsl_block_uint.h>
 
 struct gsl_vector_uint_struct
 {

@@ -1,8 +1,8 @@
 /* Author:  G. Jungman
  * RCS:     $Id$
  */
-#include <gsl_math.h>
-#include <gsl_errno.h>
+#include <gsl/gsl_math.h>
+#include <gsl/gsl_errno.h>
 #include "gsl_sf_bessel.h"
 
 

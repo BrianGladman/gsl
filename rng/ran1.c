@@ -1,6 +1,6 @@
 #include <config.h>
 #include <stdlib.h>
-#include <gsl_rng.h>
+#include <gsl/gsl_rng.h>
 
 /* This is an implementation of the algorithm used in Numerical
    Recipe's ran1 generator.  It is MINSTD with a 32-element

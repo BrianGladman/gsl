@@ -1,8 +1,8 @@
 #include <config.h>
 #include <stdlib.h>
-#include <gsl_math.h>
-#include <gsl_errno.h>
-#include <gsl_integration.h>
+#include <gsl/gsl_math.h>
+#include <gsl/gsl_errno.h>
+#include <gsl/gsl_integration.h>
 
 #include "integration.h"
 

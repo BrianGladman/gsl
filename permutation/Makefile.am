@@ -4,7 +4,7 @@ check_PROGRAMS = test
 
 pkginclude_HEADERS = gsl_permutation.h
 
-INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../err
+INCLUDES= -I$(top_builddir)
 
 TESTS = test
 

@@ -12,7 +12,7 @@
 #endif
 #endif
 
-#include <gsl_test.h>
+#include <gsl/gsl_test.h>
 
 static unsigned int tests = 0;
 static unsigned int passed = 0;

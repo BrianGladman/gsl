@@ -1,5 +1,5 @@
-#include <gsl_math.h>
-#include <gsl_min.h>
+#include <gsl/gsl_math.h>
+#include <gsl/gsl_min.h>
 
 #include "test.h"
 

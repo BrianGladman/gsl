@@ -2,7 +2,7 @@ pkglib_LIBRARIES = libgslhistogram.a
 
 pkginclude_HEADERS = gsl_histogram.h gsl_histogram2d.h
 
-INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../block -I$(srcdir)/../err
+INCLUDES= -I$(top_builddir)
 
 bin_PROGRAMS = gsl-histogram
 check_PROGRAMS = test test2d test_resample test2d_resample test_trap test2d_trap

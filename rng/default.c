@@ -2,8 +2,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include <gsl_rng.h>
-#include <gsl_errno.h>
+#include <gsl/gsl_rng.h>
+#include <gsl/gsl_errno.h>
 
 /* The initial defaults are defined in the file mt.c, so we can get
    access to the static parts of the default generator. */

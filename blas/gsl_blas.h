@@ -5,8 +5,8 @@
 #ifndef GSL_BLAS_H_
 #define GSL_BLAS_H_
 
-#include <gsl_vector.h>
-#include <gsl_matrix.h>
+#include <gsl/gsl_vector.h>
+#include <gsl/gsl_matrix.h>
 
 
 /* ========================================================================

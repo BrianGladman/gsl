@@ -4,9 +4,9 @@
 #ifndef GSL_MONTE_MISER_H
 #define GSL_MONTE_MISER_H
 
-#include <gsl_rng.h>
-#include <gsl_monte.h>
-#include <gsl_monte_plain.h>
+#include <gsl/gsl_rng.h>
+#include <gsl/gsl_monte.h>
+#include <gsl/gsl_monte_plain.h>
 
 enum {ESTIMATE_STYLE_NR = -1,  ESTIMATE_STYLE_CORRELATED_MC = 0,  
       ESTIMATE_STYLE_MC = 1};

@@ -2,8 +2,8 @@
 #define GSL_VECTOR_FLOAT_H
 
 #include <stdlib.h>
-#include <gsl_errno.h>
-#include <gsl_block_float.h>
+#include <gsl/gsl_errno.h>
+#include <gsl/gsl_block_float.h>
 
 struct gsl_vector_float_struct
 {

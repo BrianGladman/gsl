@@ -3,8 +3,8 @@
  * RCS:     $Id$
  */
 
-#include <gsl_test.h>
-#include <gsl_math.h>
+#include <gsl/gsl_test.h>
+#include <gsl/gsl_math.h>
 #include "test_cases.h"
 #include "gsl_blas_raw.h"
 

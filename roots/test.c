@@ -1,8 +1,8 @@
-#include <gsl_math.h>
-#include <gsl_test.h>
-#include <gsl_roots.h>
+#include <gsl/gsl_math.h>
+#include <gsl/gsl_test.h>
+#include <gsl/gsl_roots.h>
 
-#include <gsl_ieee_utils.h>
+#include <gsl/gsl_ieee_utils.h>
 
 #include "test.h"
 

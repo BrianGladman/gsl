@@ -15,7 +15,7 @@ real_pass_4.c real_pass_5.c real_pass_n.c real_radix2.c real_unpack.c \
 compare.h compare_source.c dft_source.c hc_main.c real_main.c \
 test_complex.c test_real.c test_trap.c urand.c
 
-INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../err
+INCLUDES= -I$(top_builddir) -I$(top_srcdir)
 
 TESTS = test
 

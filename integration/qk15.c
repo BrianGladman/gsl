@@ -1,5 +1,5 @@
 #include <config.h>
-#include <gsl_integration.h>
+#include <gsl/gsl_integration.h>
 #include "integration.h"
 
 /* Gauss quadrature weights and kronrod quadrature abscissae and

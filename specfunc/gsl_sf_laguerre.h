@@ -4,7 +4,7 @@
 #ifndef GSL_SF_LAGUERRE_H_
 #define GSL_SF_LAGUERRE_H_
 
-#include <gsl_sf_result.h>
+#include <gsl/gsl_sf_result.h>
 
 
 /* L^a_n(x) = (a+1)_n / n! 1F1(-n,a+1,x) */

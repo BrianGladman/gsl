@@ -1,8 +1,8 @@
 #include <config.h>
 #include <stdio.h>
 #include <math.h>
-#include <gsl_rng.h>
-#include <gsl_test.h>
+#include <gsl/gsl_rng.h>
+#include <gsl/gsl_test.h>
 
 void rng_test (const gsl_rng_type * T, unsigned long int seed, unsigned int n,
 	       unsigned long int result);

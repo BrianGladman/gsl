@@ -45,8 +45,7 @@ noinst_HEADERS = \
 	hyperg.h		\
 	legendre.h
 
-
-INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../ieee-utils -I$(srcdir)/../err 
+INCLUDES= -I$(top_builddir)
 
 TESTS = test_sf
 

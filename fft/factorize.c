@@ -1,6 +1,6 @@
 #include <config.h>
-#include <gsl_errno.h>
-#include <gsl_fft_complex.h>
+#include <gsl/gsl_errno.h>
+#include <gsl/gsl_fft_complex.h>
 
 #include "factorize.h"
 

@@ -4,9 +4,9 @@
 #ifndef TEST_SF_H
 #define TEST_SF_H
 
-#include <gsl_math.h>
-#include <gsl_errno.h>
-#include <gsl_machine.h>
+#include <gsl/gsl_math.h>
+#include <gsl/gsl_errno.h>
+#include <gsl/gsl_machine.h>
 #include "gsl_sf_result.h"
 
 double test_sf_frac_diff(double x1, double x2);

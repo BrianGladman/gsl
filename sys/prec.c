@@ -2,8 +2,8 @@
  * RCS:     $Id$
  */
 #include <config.h>
-#include <gsl_machine.h>
-#include <gsl_precision.h>
+#include <gsl/gsl_machine.h>
+#include <gsl/gsl_precision.h>
 
 const double gsl_prec_eps[_GSL_PREC_T_NUM] = {
   GSL_DBL_EPSILON,

@@ -1,7 +1,7 @@
 #include <config.h>
 #include <stdlib.h>
-#include <gsl_errno.h>
-#include <gsl_histogram.h>
+#include <gsl/gsl_errno.h>
+#include <gsl/gsl_histogram.h>
 
 typedef int cmp_fn_t (const void *, const void *);
 static int compare_range (const double *x, const double *range);

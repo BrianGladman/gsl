@@ -8,8 +8,8 @@
 #ifndef GSL_BLAS_RAW_L1_H_
 #define GSL_BLAS_RAW_L1_H_
 
-#include <gsl_complex.h>
-#include <gsl_blas_types.h>
+#include <gsl/gsl_complex.h>
+#include <gsl/gsl_blas_types.h>
 
 
 float  gsl_blas_raw_sdsdot (size_t N,

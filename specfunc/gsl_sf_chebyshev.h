@@ -4,8 +4,8 @@
 #ifndef GSL_SF_CHEBYSHEV_H_
 #define GSL_SF_CHEBYSHEV_H_
 
-#include <gsl_mode.h>
-#include <gsl_sf_result.h>
+#include <gsl/gsl_mode.h>
+#include <gsl/gsl_sf_result.h>
 
 
 /* data for a Chebyshev series over a given interval */

@@ -7,7 +7,7 @@ pkginclude_HEADERS = gsl_statistics.h \
  gsl_statistics_short.h gsl_statistics_uchar.h gsl_statistics_uint.h \
  gsl_statistics_ulong.h gsl_statistics_ushort.h
 
-INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../err
+INCLUDES= -I$(top_builddir) -I$(top_srcdir)
 
 noinst_HEADERS = mean_source.c variance_source.c absdev_source.c \
  skew_source.c kurtosis_source.c lag1_source.c p_variance_source.c \

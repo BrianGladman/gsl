@@ -2,10 +2,10 @@
 #define GSL_VECTOR_COMPLEX_LONG_DOUBLE_H
 
 #include <stdlib.h>
-#include <gsl_errno.h>
-#include <gsl_complex.h>
-#include <gsl_vector_complex.h>
-#include <gsl_block_complex_long_double.h>
+#include <gsl/gsl_errno.h>
+#include <gsl/gsl_complex.h>
+#include <gsl/gsl_vector_complex.h>
+#include <gsl/gsl_block_complex_long_double.h>
 
 struct gsl_vector_complex_long_double_struct
 {

@@ -1,6 +1,6 @@
 #include <config.h>
-#include <gsl_errno.h>
-#include <gsl_histogram2d.h>
+#include <gsl/gsl_errno.h>
+#include <gsl/gsl_histogram2d.h>
 
 double
 gsl_histogram2d_xmax (const gsl_histogram2d * h)

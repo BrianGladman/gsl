@@ -4,12 +4,12 @@
 #include <config.h>
 #include <stdio.h>
 #include <math.h>
-#include <gsl_test.h>
-#include <gsl_errno.h>
-#include <gsl_math.h>
-#include <gsl_matrix.h>
-#include <gsl_linalg.h>
-#include <gsl_ieee_utils.h>
+#include <gsl/gsl_test.h>
+#include <gsl/gsl_errno.h>
+#include <gsl/gsl_math.h>
+#include <gsl/gsl_matrix.h>
+#include <gsl/gsl_linalg.h>
+#include <gsl/gsl_ieee_utils.h>
 #include "gsl_odeiv.h"
 
 

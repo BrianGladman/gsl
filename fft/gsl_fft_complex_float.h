@@ -3,9 +3,9 @@
 
 #include <stddef.h>
 
-#include <gsl_math.h>
-#include <gsl_complex.h>
-#include <gsl_fft.h>
+#include <gsl/gsl_math.h>
+#include <gsl/gsl_complex.h>
+#include <gsl/gsl_fft.h>
 
 /*  Power of 2 routines  */
 

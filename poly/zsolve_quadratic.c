@@ -2,8 +2,8 @@
 
 #include <config.h>
 #include <math.h>
-#include <gsl_complex.h>
-#include <gsl_poly.h>
+#include <gsl/gsl_complex.h>
+#include <gsl/gsl_poly.h>
 
 int
 gsl_poly_complex_solve_quadratic (double a, double b, double c,

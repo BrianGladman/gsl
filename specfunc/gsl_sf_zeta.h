@@ -4,7 +4,7 @@
 #ifndef GSL_SF_ZETA_H_
 #define GSL_SF_ZETA_H_
 
-#include <gsl_sf_result.h>
+#include <gsl/gsl_sf_result.h>
 
 
 /* Riemann Zeta Function

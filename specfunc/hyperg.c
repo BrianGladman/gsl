@@ -5,8 +5,8 @@
  * for evaluation of hypergeometric functions.
  */
 #include <config.h>
-#include <gsl_math.h>
-#include <gsl_errno.h>
+#include <gsl/gsl_math.h>
+#include <gsl/gsl_errno.h>
 #include "gsl_sf_exp.h"
 #include "gsl_sf_gamma.h"
 #include "hyperg.h"

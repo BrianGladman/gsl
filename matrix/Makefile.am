@@ -19,7 +19,7 @@ pkginclude_HEADERS = 			\
 	gsl_matrix_ulong.h		\
 	gsl_matrix_ushort.h
 
-INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../vector -I$(srcdir)/../block -I$(srcdir)/../err
+INCLUDES= -I$(top_builddir) -I$(top_srcdir)
 
 TESTS = test test_static 
 

@@ -2,7 +2,7 @@
 #define GSL_PERMUTATION_H
 
 #include <stdlib.h>
-#include <gsl_errno.h>
+#include <gsl/gsl_errno.h>
 
 struct gsl_permutation_struct
 {

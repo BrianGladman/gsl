@@ -3,9 +3,9 @@
 
 #include <stddef.h>
 
-#include <gsl_math.h>
-#include <gsl_complex.h>
-#include <gsl_fft.h>
+#include <gsl/gsl_math.h>
+#include <gsl/gsl_complex.h>
+#include <gsl/gsl_fft.h>
 
 int gsl_fft_real_float_radix2_transform (float data[], size_t stride, size_t n) ;
 

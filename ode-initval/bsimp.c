@@ -7,9 +7,9 @@
 #include <config.h>
 #include <stdlib.h>
 #include <string.h>
-#include <gsl_math.h>
-#include <gsl_errno.h>
-#include <gsl_linalg.h>
+#include <gsl/gsl_math.h>
+#include <gsl/gsl_errno.h>
+#include <gsl/gsl_linalg.h>
 #include "odeiv_util.h"
 #include "gsl_odeiv.h"
 
@@ -30,7 +30,7 @@ struct gsl_odeiv_step_bsimp_struct
 
   gsl_matrix      *  d;      /* workspace for extrapolation         */
   gsl_matrix      *  a_mat;  /* workspace for linear system matrix  */
-  gsl_vector_int  *  p_vec;  /* workspace for LU permutation vector */
+  gsl_permutation *  p_vec;  /* workspace for LU permutation        */
 
   double x[SEQUENCE_MAX];    /* workspace for extrapolation */
 
@@ -108,7 +108,7 @@ bsimp_alloc(gsl_odeiv_step_bsimp * self, size_t dim)
 {
   self->d     = gsl_matrix_alloc(SEQUENCE_MAX, dim);
   self->a_mat = gsl_matrix_alloc(dim, dim);
-  self->p_vec = gsl_vector_int_alloc(dim);
+  self->p_vec = gsl_permutation_alloc(dim);
 
   self->y_extrap_save = (double *) malloc(dim * sizeof(double));
   self->y_extrap_sequence = (double *) malloc(dim * sizeof(double));
@@ -143,7 +143,7 @@ bsimp_dealloc(gsl_odeiv_step_bsimp * self)
   if(self->y_extrap_sequence != 0) free(self->y_extrap_sequence);
   if(self->y_extrap_save != 0) free(self->y_extrap_save);
 
-  if(self->p_vec != 0) gsl_vector_int_free(self->p_vec);
+  if(self->p_vec != 0) gsl_permutation_free(self->p_vec);
   if(self->a_mat != 0) gsl_matrix_free(self->a_mat);
   if(self->d != 0) gsl_matrix_free(self->d);
 

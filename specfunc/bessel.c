@@ -4,8 +4,8 @@
 /* Miscellaneous support functions for Bessel function evaluations.
  */
 #include <config.h>
-#include <gsl_math.h>
-#include <gsl_errno.h>
+#include <gsl/gsl_math.h>
+#include <gsl/gsl_errno.h>
 #include "gsl_sf_airy.h"
 #include "gsl_sf_elementary.h"
 #include "gsl_sf_exp.h"

@@ -2,7 +2,7 @@
 #define GSL_BLOCK_COMPLEX_LONG_DOUBLE_H
 
 #include <stdlib.h>
-#include <gsl_errno.h>
+#include <gsl/gsl_errno.h>
 
 struct gsl_block_complex_long_double_struct
 {

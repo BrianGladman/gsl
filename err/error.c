@@ -3,8 +3,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#include <gsl_errno.h>
-#include <gsl_message.h>
+#include <gsl/gsl_errno.h>
+#include <gsl/gsl_message.h>
 
 gsl_error_handler_t * gsl_error_handler = NULL;
 

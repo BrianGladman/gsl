@@ -2,8 +2,8 @@
 #include <math.h>
 #include <stdio.h>
 #include <string.h>
-#include <gsl_rng.h>
-#include <gsl_siman.h>
+#include <gsl/gsl_rng.h>
+#include <gsl/gsl_siman.h>
 
 /* A cute example of this program to then look at stuff would be:
    ./siman_test D3 | grep -v "^#" | awk '{print $3}' | sed 's/::/ /gp' > output

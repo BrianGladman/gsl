@@ -8,15 +8,15 @@
 #include <stdlib.h>
 
 /* gsl headers */
-#include <gsl_math.h>
-/* #include <gsl_vector.h> */
-/* #include <gsl_vector_int.h> */
-#include <gsl_errno.h>
-#include <gsl_rng.h>
+#include <gsl/gsl_math.h>
+/* #include <gsl/gsl_vector.h> */
+/* #include <gsl/gsl_vector_int.h> */
+#include <gsl/gsl_errno.h>
+#include <gsl/gsl_rng.h>
 
-#include <gsl_monte.h>
-#include <gsl_monte_miser.h>
-#include <gsl_monte_plain.h>
+#include <gsl/gsl_monte.h>
+#include <gsl/gsl_monte_miser.h>
+#include <gsl/gsl_monte_plain.h>
 #include <utils.h>
 
 #define SQR(a) ((a)*(a))

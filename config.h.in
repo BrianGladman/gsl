@@ -51,6 +51,7 @@
 /* Version number of package */
 #undef VERSION
 
+
 /* Define if you have inline */
 #undef HAVE_INLINE
 

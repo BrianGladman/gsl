@@ -80,7 +80,7 @@ C***END PROLOGUE  UNI
 
 #include <config.h>
 #include <stdlib.h>
-#include <gsl_rng.h>
+#include <gsl/gsl_rng.h>
 
 static inline unsigned long int uni_get (void *vstate);
 static double uni_get_double (void *vstate);

@@ -1,4 +1,4 @@
-#include <gsl_multimin.h>
+#include <gsl/gsl_multimin.h>
 
 #include "test_funcs.h"
 

@@ -1,6 +1,6 @@
 #include <config.h>
-#include <gsl_errno.h>
-#include <gsl_histogram.h>
+#include <gsl/gsl_errno.h>
+#include <gsl/gsl_histogram.h>
 
 int
 gsl_histogram_increment (gsl_histogram * h, double x)

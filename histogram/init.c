@@ -1,7 +1,7 @@
 #include <config.h>
 #include <stdlib.h>
-#include <gsl_errno.h>
-#include <gsl_histogram.h>
+#include <gsl/gsl_errno.h>
+#include <gsl/gsl_histogram.h>
 
 gsl_histogram *
 gsl_histogram_calloc_uniform (const size_t n, const double xmin,

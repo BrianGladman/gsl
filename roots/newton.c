@@ -14,9 +14,9 @@
 #include <math.h>
 #include <float.h>
 
-#include <gsl_math.h>
-#include <gsl_errno.h>
-#include <gsl_roots.h>
+#include <gsl/gsl_math.h>
+#include <gsl/gsl_errno.h>
+#include <gsl/gsl_roots.h>
 
 #include "roots.h"
 

@@ -5,7 +5,7 @@ check_PROGRAMS = test_dht
 pkginclude_HEADERS = \
 	gsl_dht.h
 
-INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../err  -I$(srcdir)/../specfunc
+INCLUDES= -I$(top_builddir)
 
 TESTS = test_dht
 

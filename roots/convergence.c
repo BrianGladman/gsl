@@ -1,7 +1,7 @@
 #include <config.h>
-#include <gsl_math.h>
-#include <gsl_errno.h>
-#include <gsl_roots.h>
+#include <gsl/gsl_math.h>
+#include <gsl/gsl_errno.h>
+#include <gsl/gsl_roots.h>
 
 int
 gsl_root_test_interval (const gsl_interval x, double epsabs, double epsrel)

@@ -6,8 +6,8 @@
  * These functions assume x > 0.
  */
 #include <config.h>
-#include <gsl_math.h>
-#include <gsl_errno.h>
+#include <gsl/gsl_math.h>
+#include <gsl/gsl_errno.h>
 #include "gsl_sf_chebyshev.h"
 #include "bessel_temme.h"
 

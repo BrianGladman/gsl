@@ -4,8 +4,8 @@
 #ifndef GSL_ELLINT_H_
 #define GSL_ELLINT_H_
 
-#include <gsl_mode.h>
-#include <gsl_sf_result.h>
+#include <gsl/gsl_mode.h>
+#include <gsl/gsl_sf_result.h>
 
 
 /* Legendre form of complete elliptic integrals

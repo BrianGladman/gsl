@@ -1,7 +1,7 @@
-#include <gsl_math.h>
-#include <gsl_roots.h>
-#include <gsl_errno.h>
-#include <gsl_test.h>
+#include <gsl/gsl_math.h>
+#include <gsl/gsl_roots.h>
+#include <gsl/gsl_errno.h>
+#include <gsl/gsl_test.h>
 
 #include "roots.h"
 #include "test.h"

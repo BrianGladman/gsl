@@ -9,8 +9,8 @@
  *  more precise than the original approximations. [GJ])
  */
 #include <config.h>
-#include <gsl_math.h>
-#include <gsl_errno.h>
+#include <gsl/gsl_math.h>
+#include <gsl/gsl_errno.h>
 #include "gsl_sf_chebyshev.h"
 #include "gsl_sf_erf.h"
 

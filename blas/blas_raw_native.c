@@ -6,7 +6,7 @@
  * Conforms to gsl_blas_raw interface.
  *
  */
-#include <gsl_math.h>
+#include <gsl/gsl_math.h>
 #include "complex_internal.h"
 #include "gsl_blas_raw.h"
 

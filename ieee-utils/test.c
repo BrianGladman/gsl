@@ -2,8 +2,8 @@
 #include <math.h>
 #include <float.h>
 #include <string.h>
-#include <gsl_ieee_utils.h>
-#include <gsl_test.h>
+#include <gsl/gsl_ieee_utils.h>
+#include <gsl/gsl_test.h>
 
 int
 main (void)

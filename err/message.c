@@ -3,8 +3,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#include <gsl_errno.h>
-#include <gsl_message.h>
+#include <gsl/gsl_errno.h>
+#include <gsl/gsl_message.h>
 
 unsigned int gsl_message_mask = GSL_MESSAGE_MASK;
 

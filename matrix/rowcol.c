@@ -1,7 +1,7 @@
 #include <config.h>
-#include <gsl_matrix.h>
-#include <gsl_vector.h>
-#include <gsl_errno.h>
+#include <gsl/gsl_matrix.h>
+#include <gsl/gsl_vector.h>
+#include <gsl/gsl_errno.h>
 
 #define BASE_GSL_COMPLEX_LONG
 #include "templates_on.h"

@@ -1,9 +1,9 @@
 /* directional_minimize.c -- wrapper for calling the one dimensional
    minimization algorithm for vector functions */
 
-#include <gsl_multimin.h>
-#include <gsl_blas_types.h>
-#include <gsl_blas.h>
+#include <gsl/gsl_multimin.h>
+#include <gsl/gsl_blas_types.h>
+#include <gsl/gsl_blas.h>
 
 void
 gsl_multimin_compute_evaluation_point(gsl_vector *evaluation_point,

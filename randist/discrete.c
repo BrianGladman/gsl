@@ -125,8 +125,8 @@
 #include <stdio.h>              /* used for NULL, also fprintf(stderr,...) */
 #include <stdlib.h>             /* used for malloc's */
 #include <math.h>
-#include <gsl_rng.h>
-#include <gsl_randist.h>
+#include <gsl/gsl_rng.h>
+#include <gsl/gsl_randist.h>
 #define DEBUG 0
 #define KNUTH_CONVENTION 1      /* Saves a few steps of arithmetic
                                  * in the call to gsl_ran_discrete()

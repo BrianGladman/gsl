@@ -3,10 +3,10 @@
 #include <config.h>
 #include <math.h>
 #include <stdlib.h>
-#include <gsl_math.h>
-#include <gsl_errno.h>
-#include <gsl_complex.h>
-#include <gsl_poly.h>
+#include <gsl/gsl_math.h>
+#include <gsl/gsl_errno.h>
+#include <gsl/gsl_complex.h>
+#include <gsl/gsl_poly.h>
 
 /* C-style matrix elements */
 #define MAT(m,i,j,n) ((m)[(i)*(n) + (j)])

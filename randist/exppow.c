@@ -1,9 +1,9 @@
 #include <config.h>
 #include <math.h>
-#include <gsl_math.h>
-#include <gsl_sf_gamma.h>
-#include <gsl_rng.h>
-#include <gsl_randist.h>
+#include <gsl/gsl_math.h>
+#include <gsl/gsl_sf_gamma.h>
+#include <gsl/gsl_rng.h>
+#include <gsl/gsl_randist.h>
 
 /* The exponential power probability distribution is  
 

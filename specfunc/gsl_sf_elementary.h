@@ -6,7 +6,7 @@
 #ifndef GSL_SF_ELEMENTARY_H_
 #define GSL_SF_ELEMENTARY_H_
 
-#include <gsl_sf_result.h>
+#include <gsl/gsl_sf_result.h>
 
 
 /* Multiplication.

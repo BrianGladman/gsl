@@ -4,8 +4,8 @@
 #ifndef GSL_SF_EXP_H_
 #define GSL_SF_EXP_H_
 
-#include <gsl_sf_result.h>
-#include <gsl_precision.h>
+#include <gsl/gsl_sf_result.h>
+#include <gsl/gsl_precision.h>
 
 
 /* Provide an exp() function with GSL semantics,
@@ -108,8 +108,8 @@ int gsl_sf_exp_mult_err_e10_e(double x, double dx, double y, double dy, gsl_sf_r
 
 
 #ifdef HAVE_INLINE
-#include <gsl_math.h>
-#include <gsl_errno.h>
+#include <gsl/gsl_math.h>
+#include <gsl/gsl_errno.h>
 extern inline
 int gsl_sf_exp_impl(const double x, gsl_sf_result * result)
 {

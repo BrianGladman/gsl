@@ -7,9 +7,9 @@
 
 #include <config.h>
 #include <math.h>
-#include <gsl_math.h>
-#include <gsl_monte_plain.h>
-#include <gsl_rng.h>
+#include <gsl/gsl_math.h>
+#include <gsl/gsl_monte_plain.h>
+#include <gsl/gsl_rng.h>
 #include <utils.h>
 
 int gsl_monte_plain_integrate(gsl_monte_plain_state *state, 

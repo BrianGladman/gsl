@@ -1,6 +1,6 @@
 #include <config.h>
 #include <math.h>
-#include <gsl_math.h>
+#include <gsl/gsl_math.h>
 
 #include "tests.h"
 

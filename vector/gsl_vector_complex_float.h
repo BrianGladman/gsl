@@ -2,10 +2,10 @@
 #define GSL_VECTOR_COMPLEX_FLOAT_H
 
 #include <stdlib.h>
-#include <gsl_errno.h>
-#include <gsl_complex.h>
-#include <gsl_vector_complex.h>
-#include <gsl_block_complex_float.h>
+#include <gsl/gsl_errno.h>
+#include <gsl/gsl_complex.h>
+#include <gsl/gsl_vector_complex.h>
+#include <gsl/gsl_block_complex_float.h>
 
 struct gsl_vector_complex_float_struct
 {

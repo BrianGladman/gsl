@@ -5,10 +5,10 @@
 #include <float.h>
 #include <stdio.h>
 
-#include <gsl_errno.h>
-#include <gsl_complex.h>
+#include <gsl/gsl_errno.h>
+#include <gsl/gsl_complex.h>
 
-#include <gsl_fft_complex.h>
+#include <gsl/gsl_fft_complex.h>
 
 #define BASE_DOUBLE
 #include "templates_on.h"

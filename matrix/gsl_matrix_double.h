@@ -2,8 +2,8 @@
 #define GSL_MATRIX_DOUBLE_H
 
 #include <stdlib.h>
-#include <gsl_errno.h>
-#include <gsl_vector_double.h>
+#include <gsl/gsl_errno.h>
+#include <gsl/gsl_vector_double.h>
 
 typedef struct gsl_matrix_struct gsl_matrix;
 

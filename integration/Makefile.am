@@ -1,6 +1,6 @@
 pkglib_LIBRARIES = libgslintegration.a
 
-INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../ieee-utils -I$(srcdir)/../err
+INCLUDES= -I$(top_builddir)
 
 libgslintegration_a_SOURCES = \
 	qk15.c qk21.c qk31.c qk41.c qk51.c qk61.c \

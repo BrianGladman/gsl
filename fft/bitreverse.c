@@ -1,5 +1,5 @@
 #include <config.h>
-#include <gsl_fft.h>
+#include <gsl/gsl_fft.h>
 
 #include "complex_internal.h"
 #include "bitreverse.h"

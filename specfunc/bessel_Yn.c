@@ -2,8 +2,8 @@
  * RCS:     $Id$
  */
 #include <config.h>
-#include <gsl_math.h>
-#include <gsl_errno.h>
+#include <gsl/gsl_math.h>
+#include <gsl/gsl_errno.h>
 #include "bessel.h"
 #include "bessel_amp_phase.h"
 #include "bessel_olver.h"

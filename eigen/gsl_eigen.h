@@ -4,8 +4,8 @@
 #ifndef GSL_EIGEN_H
 #define GSL_EIGEN_H
 
-#include <gsl_vector.h>
-#include <gsl_matrix.h>
+#include <gsl/gsl_vector.h>
+#include <gsl/gsl_matrix.h>
 
 typedef enum {
   GSL_EIGEN_SORT_VALUE,

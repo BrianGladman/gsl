@@ -1,9 +1,9 @@
 #include <stdio.h>
-#include <gsl_vector.h>
-#include <gsl_test.h>
-#include <gsl_multiroots.h>
+#include <gsl/gsl_vector.h>
+#include <gsl/gsl_test.h>
+#include <gsl/gsl_multiroots.h>
 
-#include <gsl_ieee_utils.h>
+#include <gsl/gsl_ieee_utils.h>
 
 #include "test_funcs.h"
 int test_fdf (const char * desc, gsl_multiroot_function_fdf * function, initpt_function initpt, double factor, const gsl_multiroot_fdfsolver_type * T);

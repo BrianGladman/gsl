@@ -6,10 +6,10 @@
 #include <math.h>
 #include <float.h>
 
-#include <gsl_math.h>
-#include <gsl_errno.h>
-#include <gsl_multiroots.h>
-#include <gsl_linalg.h>
+#include <gsl/gsl_math.h>
+#include <gsl/gsl_errno.h>
+#include <gsl/gsl_multiroots.h>
+#include <gsl/gsl_linalg.h>
 
 /* Newton method using a finite difference approximation to the jacobian.
    The derivatives are estimated using a step size of 

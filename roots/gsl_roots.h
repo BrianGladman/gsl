@@ -2,7 +2,7 @@
 #define GSL_ROOTS_H
 
 #include <stdlib.h>
-#include <gsl_math.h>
+#include <gsl/gsl_math.h>
 
 typedef struct
   {

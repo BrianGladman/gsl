@@ -2,7 +2,7 @@
  * RCS:     $Id$
  */
 #include <config.h>
-#include <gsl_errno.h>
+#include <gsl/gsl_errno.h>
 #include "gsl_interp.h"
 
 

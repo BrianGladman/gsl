@@ -1,6 +1,6 @@
 #include <config.h>
 #include <stdlib.h>
-#include <gsl_ieee_utils.h>
+#include <gsl/gsl_ieee_utils.h>
 
 static int little_endian_p (void) ;
 

@@ -9,12 +9,12 @@
 #include <math.h>
 #include <stdio.h>
 
-#include <gsl_math.h>
-#include <gsl_errno.h>
-#include <gsl_test.h>
+#include <gsl/gsl_math.h>
+#include <gsl/gsl_errno.h>
+#include <gsl/gsl_test.h>
 
-#include <gsl_rng.h>
-#include <gsl_monte_plain.h>
+#include <gsl/gsl_rng.h>
+#include <gsl/gsl_monte_plain.h>
 
 #define SQR(x)  ((x)*(x))
 

@@ -5,7 +5,7 @@
  * used in various Legendre function evaluations.
  */
 
-#include <gsl_sf_result.h>
+#include <gsl/gsl_sf_result.h>
 
 
 /* Large negative mu asymptotic

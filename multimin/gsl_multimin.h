@@ -2,10 +2,10 @@
 #define GSL_MULTIMIN_H
 
 #include <stdlib.h>
-#include <gsl_math.h>
-#include <gsl_vector.h>
-#include <gsl_matrix.h>
-#include <gsl_min.h>
+#include <gsl/gsl_math.h>
+#include <gsl/gsl_vector.h>
+#include <gsl/gsl_matrix.h>
+#include <gsl/gsl_min.h>
 
 /* Definition of an arbitrary real-valued function with gsl_vector input and */
 /* parameters */
