@@ -7,7 +7,7 @@
 #include "gsl_sf_airy.h"
 
 
-const static double zero_Ai[] = {
+static const double zero_Ai[] = {
   0,
   -2.338107410459767039,
   -4.087949444130970617,
@@ -110,10 +110,10 @@ const static double zero_Ai[] = {
   -60.05083255860419805,
   -60.45555727411669871
 };
-const static size_t size_zero_Ai = sizeof(zero_Ai)/sizeof(double);
+static const size_t size_zero_Ai = sizeof(zero_Ai)/sizeof(double);
 
 
-const static double zero_Bi[] = {
+static const double zero_Bi[] = {
   0,
   -1.173713222709127925,
   -3.271093302836352716,
@@ -216,10 +216,10 @@ const static double zero_Bi[] = {
   -59.84795817643466996,
   -60.25336482580837088
 };
-const static size_t size_zero_Bi = sizeof(zero_Bi)/sizeof(double);
+static const size_t size_zero_Bi = sizeof(zero_Bi)/sizeof(double);
 
 
-const static double zero_Aip[] = {
+static const double zero_Aip[] = {
   0,
   -1.018792971647471089,
   -3.248197582179836738,
@@ -322,10 +322,10 @@ const static double zero_Aip[] = {
   -59.84788837897058171,
   -60.25329596442479317
 };
-const static size_t size_zero_Aip = sizeof(zero_Aip)/sizeof(double);
+static const size_t size_zero_Aip = sizeof(zero_Aip)/sizeof(double);
 
 
-const static double zero_Bip[] = {
+static const double zero_Bip[] = {
   0,
   -2.294439682614123247,
   -4.073155089071828216,
@@ -378,7 +378,7 @@ const static double zero_Bip[] = {
   -37.50961740986809593,
   -38.02083574095788210
 };
-const static size_t size_zero_Bip = sizeof(zero_Bip)/sizeof(double);
+static const size_t size_zero_Bip = sizeof(zero_Bip)/sizeof(double);
 
 
 

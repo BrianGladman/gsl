@@ -11,7 +11,7 @@
 #include "gsl_sf_gamma.h"
 
 
-const static double bern[21] = {
+static const double bern[21] = {
    0.0   /* no element 0 */,  
   +0.833333333333333333333333333333333e-01,
   -0.138888888888888888888888888888888e-02,

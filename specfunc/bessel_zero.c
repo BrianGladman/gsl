@@ -17,7 +17,7 @@
  */
 
 /* Chebyshev expansion: j_{nu,1} = c_k T_k*(nu/2), nu <= 2 */
-const static double coef_jnu1_a[] = {
+static const double coef_jnu1_a[] = {
   3.801775243633476,
   1.360704737511120,
  -0.030707710261106,
@@ -46,7 +46,7 @@ const static double coef_jnu1_a[] = {
 
 
 /* Chebyshev expansion: j_{nu,1} = nu c_k T_k*((2/nu)^(2/3)), nu >= 2 */
-const static double coef_jnu1_b[] = {
+static const double coef_jnu1_b[] = {
   1.735063412537096,
   0.784478100951978,
   0.048881473180370,
@@ -66,7 +66,7 @@ const static double coef_jnu1_b[] = {
 
 
 /* Chebyshev expansion: j_{nu,2} = c_k T_k*(nu/2), nu <= 2 */
-const static double coef_jnu2_a[] = {
+static const double coef_jnu2_a[] = {
   6.992370244046161,
   1.446379282056534,
  -0.023458616207293,
@@ -90,7 +90,7 @@ const static double coef_jnu2_a[] = {
 
 
 /* Chebyshev expansion: j_{nu,2} = nu c_k T_k*((2/nu)^(2/3)), nu >= 2 */
-const static double coef_jnu2_b[] = {
+static const double coef_jnu2_b[] = {
   2.465611864263400,
   1.607952988471069,
   0.138758034431497,
@@ -114,7 +114,7 @@ const static double coef_jnu2_b[] = {
 
 
 /* Chebyshev expansion: j_{nu,3} = c_k T_k*(nu/3), nu <= 3 */
-const static double coef_jnu3_a[] = {
+static const double coef_jnu3_a[] = {
   10.869647065239236,
    2.177524286141710,
   -0.034822817125293,
@@ -138,7 +138,7 @@ const static double coef_jnu3_a[] = {
 
 
 /* Chebyshev expansion: j_{nu,3} = nu c_k T_k*((3/nu)^(2/3)), nu >= 3 */
-const static double coef_jnu3_b[] = {
+static const double coef_jnu3_b[] = {
   2.522816775173244,
   1.673199424973720,
   0.146431617506314,
@@ -162,7 +162,7 @@ const static double coef_jnu3_b[] = {
 
 
 /* Chebyshev expansion: j_{nu,4} = c_k T_k*(nu/4), nu <= 4 */
-const static double coef_jnu4_a[] = {
+static const double coef_jnu4_a[] = {
   14.750310252773009,
    2.908010932941708,
   -0.046093293420315,
@@ -186,7 +186,7 @@ const static double coef_jnu4_a[] = {
 
 
 /* Chebyshev expansion: j_{nu,4} = nu c_k T_k*((4/nu)^(2/3)), nu >= 4 */
-const static double coef_jnu4_b[] = {
+static const double coef_jnu4_b[] = {
   2.551681323117914,
   1.706177978336572,
   0.150357658406131,
@@ -211,7 +211,7 @@ const static double coef_jnu4_b[] = {
 
 
 /* Chebyshev expansion: j_{nu,5} = c_k T_k*(nu/5), nu <= 5 */
-const static double coef_jnu5_a[] = {
+static const double coef_jnu5_a[] = {
   18.632261081028211,
    3.638249012596966,
   -0.057329705998828,
@@ -238,7 +238,7 @@ const static double coef_jnu5_a[] = {
 /* FIXME: There is something wrong with this fit, in about the
  * 9th or 10th decimal place.
  */
-const static double coef_jnu5_b[] = {
+static const double coef_jnu5_b[] = {
   2.569079487591442,
   1.726073360882134,
   0.152740776809531,
@@ -262,7 +262,7 @@ const static double coef_jnu5_b[] = {
 
 
 /* Chebyshev expansion: j_{nu,6} = c_k T_k*(nu/6), nu <= 6 */
-const static double coef_jnu6_a[] = {
+static const double coef_jnu6_a[] = {
   22.514836143374042,
    4.368367257557198,
   -0.068550155285562,
@@ -286,7 +286,7 @@ const static double coef_jnu6_a[] = {
 
 
 /* Chebyshev expansion: j_{nu,6} = nu c_k T_k*((6/nu)^(2/3)), nu >= 6 */
-const static double coef_jnu6_b[] = {
+static const double coef_jnu6_b[] = {
   2.580710285494837,
   1.739380728566154,
   0.154340696401691,
@@ -310,7 +310,7 @@ const static double coef_jnu6_b[] = {
 
 
 /* Chebyshev expansion: j_{nu,7} = c_k T_k*(nu/7), nu <= 7 */
-const static double coef_jnu7_a[] = {
+static const double coef_jnu7_a[] = {
   26.397760539730869,
    5.098418721711790,
   -0.079761896398948,
@@ -334,7 +334,7 @@ const static double coef_jnu7_a[] = {
 
 
 /* Chebyshev expansion: j_{nu,7} = nu c_k T_k*((7/nu)^(2/3)), nu >= 7 */
-const static double coef_jnu7_b[] = {
+static const double coef_jnu7_b[] = {
   2.589033335856773,
   1.748907007612678,
   0.155488900387653,
@@ -358,7 +358,7 @@ const static double coef_jnu7_b[] = {
 
 
 /* Chebyshev expansion: j_{nu,8} = c_k T_k*(nu/8), nu <= 8 */
-const static double coef_jnu8_a[] = {
+static const double coef_jnu8_a[] = {
   30.280900001606662,
    5.828429205461221,
   -0.090968381181069,
@@ -382,7 +382,7 @@ const static double coef_jnu8_a[] = {
 
 
 /* Chebyshev expansion: j_{nu,8} = nu c_k T_k*((8/nu)^(2/3)), nu >= 8 */
-const static double coef_jnu8_b[] = {
+static const double coef_jnu8_b[] = {
   2.595283877150078,
   1.756063044986928,
   0.156352972371030,
@@ -406,7 +406,7 @@ const static double coef_jnu8_b[] = {
 
 
 /* Chebyshev expansion: j_{nu,9} = c_k T_k*(nu/9), nu <= 9 */
-const static double coef_jnu9_a[] = {
+static const double coef_jnu9_a[] = {
   34.164181213238386,
    6.558412747925228,
   -0.102171455365016,
@@ -430,7 +430,7 @@ const static double coef_jnu9_a[] = {
 
 
 /* Chebyshev expansion: j_{nu,9} = nu c_k T_k*((9/nu)^(2/3)), nu >= 9 */
-const static double coef_jnu9_b[] = {
+static const double coef_jnu9_b[] = {
   2.600150240905079,
   1.761635491694032,
   0.157026743724010,
@@ -454,7 +454,7 @@ const static double coef_jnu9_b[] = {
 
 
 /* Chebyshev expansion: j_{nu,10} = c_k T_k*(nu/10), nu <= 10 */
-const static double coef_jnu10_a[] = {
+static const double coef_jnu10_a[] = {
   38.047560766184647,
    7.288377637926008,
   -0.113372193277897,
@@ -479,7 +479,7 @@ const static double coef_jnu10_a[] = {
 
 
 /* Chebyshev expansion: j_{nu,10} = nu c_k T_k*((10/nu)^(2/3)), nu >= 10 */
-const static double coef_jnu10_b[] = {
+static const double coef_jnu10_b[] = {
   2.604046346867949,
   1.766097596481182,
   0.157566834446511,
@@ -503,7 +503,7 @@ const static double coef_jnu10_b[] = {
 
 
 /* Chebyshev expansion: j_{nu,11} = c_k T_k*(nu/22), nu <= 22 */
-const static double coef_jnu11_a[] = {
+static const double coef_jnu11_a[] = {
   49.5054081076848637,
   15.33692279367165101,
  -0.33677234163517130,
@@ -535,7 +535,7 @@ const static double coef_jnu11_a[] = {
 
 
 /* Chebyshev expansion: j_{nu,12} = c_k T_k*(nu/24), nu <= 24 */
-const static double coef_jnu12_a[] = {
+static const double coef_jnu12_a[] = {
   54.0787833216641519,
   16.7336367772863598,
  -0.36718411124537953,
@@ -567,7 +567,7 @@ const static double coef_jnu12_a[] = {
 
 
 /* Chebyshev expansion: j_{nu,13} = c_k T_k*(nu/26), nu <= 26 */
-const static double coef_jnu13_a[] = {
+static const double coef_jnu13_a[] = {
   58.6521941921708890,
   18.1303398137970284,
  -0.39759381380126650,
@@ -602,7 +602,7 @@ const static double coef_jnu13_a[] = {
 
 
 /* Chebyshev expansion: j_{nu,14} = c_k T_k*(nu/28), nu <= 28 */
-const static double coef_jnu14_a[] = {
+static const double coef_jnu14_a[] = {
   63.2256329577315566,
   19.5270342832914901,
  -0.42800190567884337,
@@ -633,7 +633,7 @@ const static double coef_jnu14_a[] = {
 
 
 /* Chebyshev expansion: j_{nu,15} = c_k T_k*(nu/30), nu <= 30 */
-const static double coef_jnu15_a[] = {
+static const double coef_jnu15_a[] = {
   67.7990939565631635,
   20.9237219226859859,
  -0.45840871823085836,
@@ -664,7 +664,7 @@ const static double coef_jnu15_a[] = {
 
 
 /* Chebyshev expansion: j_{nu,16} = c_k T_k*(nu/32), nu <= 32 */
-const static double coef_jnu16_a[] = {
+static const double coef_jnu16_a[] = {
   72.3725729616724770,
   22.32040402918608585,
  -0.48881449782358690,
@@ -695,7 +695,7 @@ const static double coef_jnu16_a[] = {
 
 
 /* Chebyshev expansion: j_{nu,17} = c_k T_k*(nu/34), nu <= 34 */
-const static double coef_jnu17_a[] = {
+static const double coef_jnu17_a[] = {
   76.9460667535209549,
   23.71708159112252670,
  -0.51921943142405352,
@@ -726,7 +726,7 @@ const static double coef_jnu17_a[] = {
 
 
 /* Chebyshev expansion: j_{nu,18} = c_k T_k*(nu/36), nu <= 36 */
-const static double coef_jnu18_a[] = {
+static const double coef_jnu18_a[] = {
   81.5195728368096659,
   25.11375537470259305,
  -0.54962366347317668,
@@ -757,7 +757,7 @@ const static double coef_jnu18_a[] = {
 
 
 /* Chebyshev expansion: j_{nu,19} = c_k T_k*(nu/38), nu <= 38 */
-const static double coef_jnu19_a[] = {
+static const double coef_jnu19_a[] = {
   86.0930892477047512,
   26.51042598308271729,
  -0.58002730731948358,
@@ -788,7 +788,7 @@ const static double coef_jnu19_a[] = {
 
 
 /* Chebyshev expansion: j_{nu,20} = c_k T_k*(nu/40), nu <= 40 */
-const static double coef_jnu20_a[] = {
+static const double coef_jnu20_a[] = {
   90.6666144195163770,
   27.9070938975436823,
  -0.61043045315390591,
@@ -819,7 +819,7 @@ const static double coef_jnu20_a[] = {
 };
 
 
-const static double * coef_jnu_a[] = {
+static const double * coef_jnu_a[] = {
   0,
   coef_jnu1_a,
   coef_jnu2_a,
@@ -843,7 +843,7 @@ const static double * coef_jnu_a[] = {
   coef_jnu20_a
 };
 
-const static size_t size_jnu_a[] = {
+static const size_t size_jnu_a[] = {
   0,
   sizeof(coef_jnu1_a)/sizeof(double),
   sizeof(coef_jnu2_a)/sizeof(double),
@@ -868,7 +868,7 @@ const static size_t size_jnu_a[] = {
 };
 
 
-const static double * coef_jnu_b[] = {
+static const double * coef_jnu_b[] = {
   0,
   coef_jnu1_b,
   coef_jnu2_b,
@@ -882,7 +882,7 @@ const static double * coef_jnu_b[] = {
   coef_jnu10_b
 };
 
-const static size_t size_jnu_b[] = {
+static const size_t size_jnu_b[] = {
   0,
   sizeof(coef_jnu1_b)/sizeof(double),
   sizeof(coef_jnu2_b)/sizeof(double),
@@ -1012,12 +1012,12 @@ gsl_sf_bessel_zero_J0_impl(int s, gsl_sf_result * result)
   else {
     /* See [F. Lether, J. Comp. Appl .Math. 67, 167 (1996)]. */
 
-    const static double P[] = { 1567450796.0/12539606369.0,
+    static const double P[] = { 1567450796.0/12539606369.0,
                                 8903660.0/2365861.0,
                                 10747040.0/536751.0,
                                 17590991.0/1696654.0
                               };
-    const static double Q[] = { 1.0,
+    static const double Q[] = { 1.0,
                                 29354255.0/954518.0,
                                 76900001.0/431847.0,
                                 67237052.0/442411.0
@@ -1044,12 +1044,12 @@ gsl_sf_bessel_zero_J1_impl(int s, gsl_sf_result * result)
   else {
     /* See [M. Branders et al., J. Comp. Phys. 42, 403 (1981)]. */
 
-    const static double a[] = { -0.362804405737084,
+    static const double a[] = { -0.362804405737084,
                                  0.120341279038597,
 				 0.439454547101171e-01,
 				 0.159340088474713e-02
                               };
-    const static double b[] = {  1.0,
+    static const double b[] = {  1.0,
                                 -0.325641790801361,
 				-0.117453445968927,
 				-0.424906902601794e-02
