@@ -14,6 +14,7 @@
 /* Evaluate at large enough nu to apply asymptotic
  * results and apply backward recurrence.
  */
+#if 0
 static
 int
 bessel_J_recur_asymp(const double nu, const double x,
@@ -47,6 +48,7 @@ bessel_J_recur_asymp(const double nu, const double x,
 
   return GSL_ERROR_SELECT_2(stat_O1, stat_O2);
 }
+#endif
 
 
 /*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
