@@ -1,6 +1,6 @@
 /* $Id$ */
 /* This file was generated automatically from the template file
- * xxx-gen.xc (either that or it _is_ the template file)
+ * x-gen.xc (either that or it _is_ the template file)
  */
 
 #include "xxx.h"             /* defines gsl_ran_xxx_ prototypes */
@@ -26,9 +26,6 @@ inline double gsl_ran_uniform() {
 }
 inline void gsl_ran_seed(int seed) {
     gsl_ran_xxx_seed(seed);
-}
-inline void gsl_ran_copyState(void *t, void *f) {
-    gsl_ran_xxx_copyState(t,f);
 }
 inline void *gsl_ran_getRandomState() {
     return gsl_ran_xxx_getRandomState();

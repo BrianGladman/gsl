@@ -16,7 +16,6 @@ typedef struct {
     unsigned long (*random)();
     double (*uniform)();
     void (*seed)();
-    void (*copyState)(void *,void *);
     void *(*getRandomState)();
     void (*setRandomState)(void *);    
 } AlgorithmSwitch;
@@ -48,9 +47,6 @@ inline double gsl_ran_uniform() {
 inline void gsl_ran_seed(int seed) {
     A.seed(seed);
 }
-inline void gsl_ran_copyState(void *t, void *f) {
-    A.copyState(t,f);
-}
 inline void *gsl_ran_getRandomState() {
     return A.getRandomState();
 }
@@ -71,7 +67,6 @@ void gsl_ran_use_xxx() {
     A.random = gsl_ran_xxx_random;
     A.uniform = gsl_ran_xxx_uniform;
     A.seed = gsl_ran_xxx_seed;
-    A.copyState = gsl_ran_xxx_copyState;
     A.getRandomState = gsl_ran_xxx_getRandomState;
     A.setRandomState = gsl_ran_xxx_setRandomState;
 }
