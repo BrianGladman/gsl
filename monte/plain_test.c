@@ -46,7 +46,7 @@ int main()
   int step = 1;
   size_t calls = 1000;
 
-  gsl_monte_plain_state* s = gsl_monte_plain_alloc();
+  gsl_monte_plain_state* s = gsl_monte_plain_alloc(10);
 
   c = (1.0 + sqrt(10.0))/9.0 ;
 

@@ -46,7 +46,7 @@ int main()
   int step = 1;
   size_t calls = 1000;
 
-  gsl_monte_miser_state* s = gsl_monte_miser_alloc();
+  gsl_monte_miser_state* s = gsl_monte_miser_alloc(10);
   s->dither = 0.0;
 
   c = (1.0 + sqrt(10.0))/9.0 ;

@@ -44,7 +44,7 @@ int main()
   int step = 1;
   int calls;
 
-  gsl_monte_vegas_state* s = gsl_monte_vegas_alloc();
+  gsl_monte_vegas_state* s = gsl_monte_vegas_alloc(10);
 
   c = (1.0 + sqrt(10.0))/9.0 ;
 

@@ -17,6 +17,7 @@ typedef struct {
   double dither;
   double estimate_frac;
   double alpha;
+  size_t num_dim;
   int estimate_style;
   int depth;
   int verbose;
@@ -32,7 +33,7 @@ int gsl_monte_miser_integrate(gsl_monte_miser_state* state,
 		    double *ave, double *var);
 
 
-gsl_monte_miser_state* gsl_monte_miser_alloc(void);
+gsl_monte_miser_state* gsl_monte_miser_alloc(size_t num_dim);
 
 int gsl_monte_miser_validate(gsl_monte_miser_state* state,
 			     double xl[], double xu[], 

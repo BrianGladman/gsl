@@ -25,6 +25,7 @@ typedef struct {
   int bins_prev;
   int calls_per_box;
   int it_num;
+  int num_dim;
   int bins;
   int boxes;
   int init_done;
@@ -52,7 +53,7 @@ int gsl_monte_vegas_integrate(gsl_monte_vegas_state *state,
 		    unsigned long num_dim, unsigned long calls,
 		    double* tot_int, double* tot_sig, double* chi_sq);
 
-gsl_monte_vegas_state* gsl_monte_vegas_alloc(void);
+gsl_monte_vegas_state* gsl_monte_vegas_alloc(size_t num_dim);
 
 int gsl_monte_vegas_validate(gsl_monte_vegas_state* state,
 			     double xl[], double xu[], 

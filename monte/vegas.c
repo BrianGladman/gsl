@@ -366,7 +366,7 @@ inline void init_array(double array[GSL_V_BINS_MAX+1][GSL_V_MAX_DIM],
   }
 }
 
-gsl_monte_vegas_state* gsl_monte_vegas_alloc(void)
+gsl_monte_vegas_state* gsl_monte_vegas_alloc(size_t num_dim)
 {
   gsl_monte_vegas_state *s =  
     (gsl_monte_vegas_state *) malloc(sizeof (gsl_monte_vegas_state));
@@ -375,6 +375,7 @@ gsl_monte_vegas_state* gsl_monte_vegas_alloc(void)
     GSL_ERROR_RETURN ("failed to allocate space for miser state struct",
                         GSL_ENOMEM, 0);
   }
+  s->num_dim = num_dim;
 
   return s;
 }
@@ -397,6 +398,13 @@ int gsl_monte_vegas_validate(gsl_monte_vegas_state* state,
   if (num_dim <= 0) {
     sprintf(warning, "number of dimensions must be greater than zero, not %lu",
 	    num_dim);
+    GSL_ERROR(warning, GSL_EINVAL);
+  }
+
+  if (num_dim > state->num_dim) {
+    sprintf(warning, 
+	    "number of dimensions (%lu) greater than allocated size (%lu)",
+	    num_dim, state->num_dim);
     GSL_ERROR(warning, GSL_EINVAL);
   }
   

@@ -17,6 +17,8 @@ typedef struct {
   int check_done;
   int verbose;
 
+  size_t num_dim;
+
   gsl_rng* ranf;
 
 } gsl_monte_plain_state;
@@ -26,7 +28,7 @@ int gsl_monte_plain_integrate(const gsl_monte_plain_state *state,
 		    const double* xl, const double* xu, const size_t num_dim, 
 		    const size_t calls, double* res, double* err);
 
-gsl_monte_plain_state* gsl_monte_plain_alloc(void);
+gsl_monte_plain_state* gsl_monte_plain_alloc(size_t num_dim);
 
 int gsl_monte_plain_validate(gsl_monte_plain_state* state,
                              double xl[], double xu[], 

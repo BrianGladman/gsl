@@ -5,14 +5,13 @@
 
 #define TINY DBL_MIN
 
-#define GSL_MONTE_MAX_DIM 10
-
 #define myMAX(a,b) ((a) >= (b) ? (a) : (b))
 
 #include <math.h>
 #include <gsl_math.h>
 #include <gsl_monte_plain.h>
 #include <gsl_rng.h>
+#include <utils.h>
 
 int gsl_monte_plain_integrate(const gsl_monte_plain_state *state, 
 		    const gsl_monte_f_T fun, 
@@ -22,9 +21,13 @@ int gsl_monte_plain_integrate(const gsl_monte_plain_state *state,
   int status = 0;
   double sum, sum2;
   double fval;
-  double x[GSL_MONTE_MAX_DIM];
+  /*  double x[GSL_MONTE_MAX_DIM]; */
+  /*   double* x = state->x; */ /* save some typing */
+  double* x; 
   double vol;
   size_t n, i;
+
+  x = gsl_monte_vector_alloc(num_dim);
 
   status = gsl_monte_plain_validate(state, xl, xu, num_dim, calls);
 
@@ -50,21 +53,24 @@ int gsl_monte_plain_integrate(const gsl_monte_plain_state *state,
     *err = -1;
     status = 1;
   }
+  gsl_monte_vector_free(x);
+
   return status;
 }
 
 
 
-gsl_monte_plain_state* gsl_monte_plain_alloc(void)
+gsl_monte_plain_state* gsl_monte_plain_alloc(size_t num_dim)
 {
   gsl_monte_plain_state *s =  
     (gsl_monte_plain_state *) malloc(sizeof (gsl_monte_plain_state));
   
   if ( s == (gsl_monte_plain_state*) NULL) {
-    GSL_ERROR_RETURN ("failed to allocate space for miser state struct",
+    GSL_ERROR_RETURN ("failed to allocate space for state struct",
                         GSL_ENOMEM, 0);
   }
 
+  s->num_dim = num_dim;
   return s;
 }
 
@@ -86,6 +92,13 @@ int gsl_monte_plain_validate(gsl_monte_plain_state* state,
   if (num_dim <= 0) {
     sprintf(warning, "number of dimensions must be greater than zero, not %lu",
 	    num_dim);
+    GSL_ERROR(warning, GSL_EINVAL);
+  }
+
+  if (num_dim > state->num_dim) {
+    sprintf(warning, 
+	    "number of dimensions (%lu) greater than allocated size (%lu)",
+	    num_dim, state->num_dim);
     GSL_ERROR(warning, GSL_EINVAL);
   }
   
