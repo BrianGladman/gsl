@@ -19,6 +19,7 @@
 #define       	      	0.69314718055994530942	    /* ln(2) */
 #endif
 
+
 /* need to determine this stuff at configure time, just use placeholder
    values for now */
 
@@ -27,6 +28,12 @@
 
 #define GSL_LOG_DBL_MIN       	(DBL_MIN_10_EXP * M_LN10)
 #define GSL_LOG_DBL_MAX       	(DBL_MAX_10_EXP * M_LN10)
+
+
+/* other needlessly compulsive abstractions */
+
+#define GSL_IS_ODD(n) ((n) & 1)
+#define GSL_IS_EVN(n) (!(GSL_IS_ODD(n))
 
 
 #endif /* !_GSL_MATH_H_ */

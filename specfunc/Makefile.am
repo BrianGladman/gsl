@@ -1,6 +1,6 @@
 lib_LIBRARIES = libgslspecfunc.a 
 
-# noinst_PROGRAMS = 
+noinst_PROGRAMS = test_sf
 
 include_HEADERS = \
 	gsl_sf.h 	    	\
@@ -24,23 +24,11 @@ noinst_HEADERS = bessel_amp_phase.h
 
 INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../err -I$(srcdir)/../integration 
 
-#TESTS = test_trap test_radix2 test
+TESTS = test_sf
 
-#test_LDADD = libgslfft.a ../err/libgslerr.a ../err/libgsltest.a ../utils/libutils.a
-#test_trap_LDADD = libgslfft.a ../err/libgslerr.a ../err/libgsltest.a ../utils/libutils.a
-#test_radix2_LDADD = libgslfft.a ../err/libgslerr.a ../err/libgsltest.a ../utils/libutils.a
-#errs_LDADD = libgslfft.a ../err/libgslerr.a ../err/libgsltest.a ../utils/libutils.a
-#benchmark_LDADD = libgslfft.a ../err/libgslerr.a ../err/libgsltest.a ../utils/libutils.a
-
-#test_DEPENDENCIES = libgslfft.a
-#test_trap_DEPENDENCIES = libgslfft.a
-#test_radix2_DEPENDENCIES = libgslfft.a
-#benchmark_DEPENDENCIES = libgslfft.a
-
-#test_SOURCES = test.c
-#test_trap_SOURCES = test_trap.c
-#test_radix2_SOURCES = test_radix2.c
-#benchmark_SOURCES = benchmark.c 
+test_sf_LDADD = libgslspecfunc.a ../err/libgslerr.a ../err/libgsltest.a ../utils/libutils.a
+test_sf_DEPENDENCIES = libgslspecfunc.a
+test_sf_SOURCES = test_sf.c
 
 libgslspecfunc_a_SOURCES = 	\
 	airy.c			\
@@ -49,6 +37,7 @@ libgslspecfunc_a_SOURCES = 	\
 	bessel_I1.c		\
 	bessel_J0.c		\
 	bessel_J1.c		\
+	bessel_Jn.c		\
 	bessel_K0.c		\
 	bessel_K1.c		\
 	bessel_Y0.c		\
