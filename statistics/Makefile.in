@@ -82,7 +82,7 @@ INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../err
 noinst_HEADERS = mean_source.c variance_source.c absdev_source.c \
  skew_source.c kurtosis_source.c lag1_source.c p_variance_source.c \
  minmax_source.c ttest_source.c sort_source.c median_source.c \
- percentiles_source.c source.h \
+ quantiles_source.c source.h \
  test_float_source.c test_int_source.c
 
 check_PROGRAMS = test test_nist
@@ -98,7 +98,7 @@ test_nist_DEPENDENCIES = libgslstatistics.a
 
 libgslstatistics_a_SOURCES =  mean.c variance.c absdev.c skew.c \
  kurtosis.c lag1.c p_variance.c minmax.c ttest.c sort.c median.c \
- percentiles.c
+ quantiles.c
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
 CONFIG_CLEAN_FILES = 
@@ -112,7 +112,7 @@ LIBS = @LIBS@
 libgslstatistics_a_LIBADD = 
 libgslstatistics_a_OBJECTS =  mean.o variance.o absdev.o skew.o \
 kurtosis.o lag1.o p_variance.o minmax.o ttest.o sort.o median.o \
-percentiles.o
+quantiles.o
 AR = ar
 test_OBJECTS =  test.o
 test_LDFLAGS = 
@@ -123,7 +123,7 @@ COMPILE = $(CC) $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
 LINK = $(CC) $(CFLAGS) $(LDFLAGS) -o $@
 HEADERS =  $(include_HEADERS) $(noinst_HEADERS)
 
-DIST_COMMON =  ChangeLog Makefile.am Makefile.in
+DIST_COMMON =  ChangeLog Makefile.am Makefile.in TODO
 
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
@@ -131,7 +131,7 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 TAR = tar
 GZIP = --best
 DEP_FILES =  .deps/absdev.P .deps/kurtosis.P .deps/lag1.P .deps/mean.P \
-.deps/median.P .deps/minmax.P .deps/p_variance.P .deps/percentiles.P \
+.deps/median.P .deps/minmax.P .deps/p_variance.P .deps/quantiles.P \
 .deps/skew.P .deps/sort.P .deps/test.P .deps/test_nist.P .deps/ttest.P \
 .deps/variance.P
 SOURCES = $(libgslstatistics_a_SOURCES) $(test_SOURCES) $(test_nist_SOURCES)

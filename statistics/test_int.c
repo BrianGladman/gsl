@@ -172,34 +172,34 @@ main (void)
 
 
   {
-    double zeroth = gsl_stats_int_percentile_from_sorted_data(sorted, ina, 0.0) ;
+    double zeroth = gsl_stats_int_quantile_from_sorted_data(sorted, ina, 0.0) ;
     double expected = 8;
     gsl_test (!within_fuzz(zeroth,expected),
-	      "gsl_stats_percentile_from_sorted_data (0) (%g observed vs %g expected)",
+	      "gsl_stats_quantile_from_sorted_data (0) (%g observed vs %g expected)",
 	      zeroth, expected);
   }
 
   {
-    double top = gsl_stats_int_percentile_from_sorted_data(sorted, ina, 1.0) ;
+    double top = gsl_stats_int_quantile_from_sorted_data(sorted, ina, 1.0) ;
     double expected = 22;
     gsl_test (!within_fuzz(top,expected),
-	      "gsl_stats_int_percentile_from_sorted_data (100) (%g obs vs %g exp)",
+	      "gsl_stats_int_quantile_from_sorted_data (100) (%g obs vs %g exp)",
 	      top, expected);
   }
 
   {
-    double median = gsl_stats_int_percentile_from_sorted_data(sorted, ina, 0.5) ;
+    double median = gsl_stats_int_quantile_from_sorted_data(sorted, ina, 0.5) ;
     double expected = 18;
     gsl_test (!within_fuzz(median,expected),
-	      "gsl_stats_int_percentile_from_sorted_data (50, even) (%g obs vs %g exp)",
+	      "gsl_stats_int_quantile_from_sorted_data (50, even) (%g obs vs %g exp)",
 	      median, expected);
   }
 
   {
-    double median = gsl_stats_int_percentile_from_sorted_data(sorted, ina - 1, 0.5);
+    double median = gsl_stats_int_quantile_from_sorted_data(sorted, ina - 1, 0.5);
     double expected = 18;
     gsl_test (!within_fuzz(median,expected),
-	      "gsl_stats_int_percentile_from_sorted_data (50, odd) (%g obs vs %g exp)",
+	      "gsl_stats_int_quantile_from_sorted_data (50, odd) (%g obs vs %g exp)",
 	      median, expected);
   }
 

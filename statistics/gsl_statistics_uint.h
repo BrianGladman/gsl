@@ -43,7 +43,7 @@ void gsl_stats_uint_sort_data (unsigned int data[], size_t n) ;
 
 double gsl_stats_uint_median_from_sorted_data (const unsigned int sorted_data[],
 					      size_t n) ;
-double gsl_stats_uint_percentile_from_sorted_data (const unsigned int sorted_data[],
+double gsl_stats_uint_quantile_from_sorted_data (const unsigned int sorted_data[],
 						  size_t n, const double f) ;
 
 #endif /* GSL_STATISTICS_UINT_H */

@@ -43,7 +43,7 @@ void gsl_stats_long_sort_data (long data[], size_t n) ;
 
 double gsl_stats_long_median_from_sorted_data (const long sorted_data[],
 					      size_t n) ;
-double gsl_stats_long_percentile_from_sorted_data (const long sorted_data[],
+double gsl_stats_long_quantile_from_sorted_data (const long sorted_data[],
 						  size_t n, const double f) ;
 
 #endif /* GSL_STATISTICS_LONG_H */

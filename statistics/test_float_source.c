@@ -138,30 +138,30 @@ FUNCTION (test, func) (void)
 
 
   {
-    double zeroth = FUNCTION(gsl_stats,percentile_from_sorted_data)(sorted, na, 0.0) ;
+    double zeroth = FUNCTION(gsl_stats,quantile_from_sorted_data)(sorted, na, 0.0) ;
     double expected = 0.0242;
     gsl_test_rel  (zeroth,expected, rel,
-		   NAME(gsl_stats) "_percentile_from_sorted_data (0)");
+		   NAME(gsl_stats) "_quantile_from_sorted_data (0)");
   }
 
   {
-    double top = FUNCTION(gsl_stats,percentile_from_sorted_data)(sorted, na, 1.0) ;
+    double top = FUNCTION(gsl_stats,quantile_from_sorted_data)(sorted, na, 1.0) ;
     double expected = 0.1331;
     gsl_test_rel  (top,expected, rel,
-		   NAME(gsl_stats) "_percentile_from_sorted_data (100)");
+		   NAME(gsl_stats) "_quantile_from_sorted_data (100)");
   }
 
   {
-    double median = FUNCTION(gsl_stats,percentile_from_sorted_data)(sorted, na, 0.5) ;
+    double median = FUNCTION(gsl_stats,quantile_from_sorted_data)(sorted, na, 0.5) ;
     double expected = 0.07505;
     gsl_test_rel  (median,expected, rel,
-		   NAME(gsl_stats) "_percentile_from_sorted_data (50even)");
+		   NAME(gsl_stats) "_quantile_from_sorted_data (50even)");
   }
 
   {
-    double median = FUNCTION(gsl_stats,percentile_from_sorted_data)(sorted, na - 1, 0.5);
+    double median = FUNCTION(gsl_stats,quantile_from_sorted_data)(sorted, na - 1, 0.5);
     double expected = 0.0728;
     gsl_test_rel  (median,expected, rel,
-		   NAME(gsl_stats) "_percentile_from_sorted_data (50odd)");
+		   NAME(gsl_stats) "_quantile_from_sorted_data (50odd)");
   }
 }

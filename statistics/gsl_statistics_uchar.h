@@ -43,7 +43,7 @@ void gsl_stats_uchar_sort_data (unsigned char data[], size_t n) ;
 
 double gsl_stats_uchar_median_from_sorted_data (const unsigned char sorted_data[],
 					      size_t n) ;
-double gsl_stats_uchar_percentile_from_sorted_data (const unsigned char sorted_data[],
+double gsl_stats_uchar_quantile_from_sorted_data (const unsigned char sorted_data[],
 						  size_t n, const double f) ;
 
 #endif /* GSL_STATISTICS_UCHAR_H */

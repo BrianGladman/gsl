@@ -1,6 +1,6 @@
 
 double
-FUNCTION(gsl_stats,percentile_from_sorted_data) (const BASE sorted_data[], 
+FUNCTION(gsl_stats,quantile_from_sorted_data) (const BASE sorted_data[], 
 						 const size_t n,
 						 const double f)
 {

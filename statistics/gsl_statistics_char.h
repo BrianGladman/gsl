@@ -43,7 +43,7 @@ void gsl_stats_char_sort_data (char data[], size_t n) ;
 
 double gsl_stats_char_median_from_sorted_data (const char sorted_data[],
 					      size_t n) ;
-double gsl_stats_char_percentile_from_sorted_data (const char sorted_data[],
+double gsl_stats_char_quantile_from_sorted_data (const char sorted_data[],
 						  size_t n, const double f) ;
 
 #endif /* GSL_STATISTICS_CHAR_H */

@@ -1,3 +1,8 @@
+Wed Aug 12 12:34:24 1998  Brian Gough  <bjg@vvv.lanl.gov>
+
+	* quantiles.c: Renamed percentile to quantile throughout. This is
+ 	the correct name for the quantity, mathematically speaking.
+
 Wed Aug  5 12:34:58 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
 	* mkheaders.pl: script to generate all the headers from

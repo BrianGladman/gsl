@@ -43,7 +43,7 @@ void gsl_stats_short_sort_data (short data[], size_t n) ;
 
 double gsl_stats_short_median_from_sorted_data (const short sorted_data[],
 					      size_t n) ;
-double gsl_stats_short_percentile_from_sorted_data (const short sorted_data[],
+double gsl_stats_short_quantile_from_sorted_data (const short sorted_data[],
 						  size_t n, const double f) ;
 
 #endif /* GSL_STATISTICS_SHORT_H */
