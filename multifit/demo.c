@@ -73,7 +73,7 @@ main (void)
 
   gsl_multifit_function_fdf f = {&brown_f, &brown_df, &brown_fdf, n, p, 0};
 
-  double x_init[4] = {25, 5, -5, 1};
+  double x_init[4] = {25, 5, -5, -1};
   gsl_vector x = gsl_vector_view (x_init, p);
 
   T = gsl_multifit_fdfsolver_lmsder;

@@ -116,7 +116,7 @@ compute_newton_correction (const gsl_matrix * r, const gsl_vector * sdiag,
       double dpi = gsl_vector_get (diag, pi);
       double xpi = gsl_vector_get (x, pi);
 
-      gsl_vector_set (w, i, dpi * xpi / dxnorm);
+      gsl_vector_set (w, i, dpi * (dpi * xpi) / dxnorm);
     }
 
   for (j = 0; j < n; j++)
@@ -200,7 +200,7 @@ compute_gradient_direction (const gsl_matrix * r, const gsl_permutation * p,
     {
       double sum = 0;
 
-      for (i = 0; i < j; i++)
+      for (i = 0; i <= j; i++)
 	{
 	  sum += gsl_matrix_get (r, i, j) * gsl_vector_get (qtf, i);
 	}
@@ -278,10 +278,16 @@ lmpar (gsl_matrix * r, const gsl_permutation * perm, const gsl_vector * qtf,
   gnorm = enorm (gradient);
 
 #ifdef DEBUG
+  printf("gradient = "); gsl_vector_fprintf(stdout, gradient, "%g"); printf("\n");
   printf("gnorm = %g\n", gnorm);
 #endif
 
   par_upper =  gnorm / delta;
+
+  if (par_upper == 0)
+    {
+      par_upper = GSL_DBL_MIN / GSL_MIN_DBL(delta, 0.1);
+    }
 
 #ifdef DEBUG
   printf("par_upper = %g\n", par_upper);
@@ -364,6 +370,9 @@ iteration:
 
 #ifdef DEBUG
   printf ("After qrsolv dxnorm = %g, delta = %g, fp = %g\n", dxnorm, delta, fp);
+  printf ("sdiag = ") ; gsl_vector_fprintf(stdout, sdiag, "%g"); printf("\n");
+  printf ("x = ") ; gsl_vector_fprintf(stdout, x, "%g"); printf("\n");
+  printf ("r = ") ; gsl_matrix_fprintf(stdout, r, "%g"); printf("\nXXX\n");
 #endif
 
   /* If the function is small enough, accept the current value of par */
@@ -382,6 +391,11 @@ iteration:
   /* Compute the Newton correction */
 
   compute_newton_correction (r, sdiag, perm, x, dxnorm, diag, w);
+
+#ifdef DEBUG
+  printf ("newton_correction = ");
+  gsl_vector_fprintf(stdout, w, "%g"); printf("\n");
+#endif
 
   wnorm = enorm (w);
 
@@ -422,11 +436,14 @@ iteration:
   /* Compute an improved estimate for par */
 
 #ifdef DEBUG
-      printf("improved estimate par = %g = MAX(%g, %g) \n", par, par_lower, par+par_c);
+      printf("improved estimate par = MAX(%g, %g) \n", par_lower, par+par_c);
 #endif
 
   par = GSL_MAX_DBL (par_lower, par + par_c);
 
+#ifdef DEBUG
+      printf("improved estimate par = %g \n", par);
+#endif
 
 
   goto iteration;
