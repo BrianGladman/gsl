@@ -354,6 +354,46 @@ function T = test_syrkmatmat (S, j, order, trans)
 endfunction
 
 
+function T = test_syr2kmatmat (S, j, order, trans)
+  T.n = fix(j/4)+1;
+  T.k = fix(j/2)+1;
+
+  T.ldc = T.n;
+
+  if (trans == 111)
+    size1 = T.n;
+    size2 = T.k;
+  else
+    size1 = T.k;
+    size2 = T.n;
+  endif
+
+  if (order == 101)
+    T.lda = size2;
+  else
+    T.lda = size1;
+  endif
+
+  if (order == 101)
+    T.ldb = size2;
+  else
+    T.ldb = size1;
+  endif
+
+  if (S.complex == 0)
+    T.C = random_matrix(T.n, T.n);
+
+    T.A = random_matrix(T.n, T.k);
+    T.B = random_matrix(T.n, T.k);
+  else
+    T.C = random_matrix(T.n, T.n) + I * random_matrix(T.n, T.n);
+
+    T.A = random_matrix(T.n, T.k) + I * random_matrix(T.n, T.k);
+    T.B = random_matrix(T.n, T.k) + I * random_matrix(T.n, T.k);
+  endif
+endfunction
+
+
 function v = random_vector(n)
   v = fix((rand(1,n)-0.5)*2000)/1000;
 endfunction
@@ -384,11 +424,11 @@ function v = vout (X, incX, N, x)
 endfunction
 
 function m = matrix (order, A, lda, M, N)
-#   order
-#   A
-#  lda
-#   M
-#   N
+#    order
+#    A
+#   lda
+#    M
+#    N
   if (order == 102)   # column major
     tmp = reshape(A,lda,length(A)/lda);
     m = tmp(1:M,1:N);
@@ -1385,6 +1425,27 @@ function CC = blas_herk (order, uplo, trans, N, K,  alpha, \
   CC = trmatout(order, uplo, 131, C, ldc, N, c);
 endfunction
 
+function CC = blas_syr2k (order, uplo, trans, N, K, alpha, \
+                         A, lda, B, ldb, beta, C, ldc)
+  c = trmatrix (order, uplo, 131, C, ldc, N);
+
+  t = triu(c,1) + tril(c,-1);
+  c = t + t' + diag(diag(c));  # make symmetric
+
+  if (trans == 111)
+    a = matrix (order, A, lda, N, K);
+    b = matrix (order, B, ldb, N, K);
+    c = alpha * (a * b' + b * a') + beta * c;
+  else
+    a = matrix (order, A, lda, K, N);
+    b = matrix (order, B, ldb, K, N);
+    c = alpha * (a' * b + b' * a) + beta * c;
+  endif
+
+  CC = trmatout(order, uplo, 131, C, ldc, N, c);
+endfunction
+
+
 ######################################################################
 
                                 # testing functions
@@ -2146,6 +2207,32 @@ function test_syrk (S, fn, order, uplo, trans, N, K, alpha, A, \
 endfunction
 
 
+function test_syr2k (S, fn, order, uplo, trans,  N, K, alpha, A, \
+                    lda, B, ldb, beta, C, ldc)
+  begin_block();
+  define(S, "int", "order", order);
+  define(S, "int", "uplo", uplo);
+  define(S, "int", "trans", trans);
+  define(S, "int", "N", N);
+  define(S, "int", "K", K);
+  define(S, "scalar", "alpha", alpha);
+  define(S, "scalar", "beta", beta);
+  define(S, "matrix", "A", A);
+  define(S, "int", "lda", lda);
+  define(S, "matrix", "B", B);
+  define(S, "int", "ldb", ldb);
+  define(S, "matrix", "C", C);
+  define(S, "int", "ldc", ldc);
+
+  CC = feval(strcat("blas_", fn), order, uplo, trans, N, K, \
+             alpha, A, lda, B, ldb, beta, C, ldc);
+  define(S, "matrix", "C_expected", CC);
+  call("cblas_", S.prefix, fn, "(order, uplo, trans, N, K, alpha, A, lda, B, ldb, beta, C, ldc)");
+  test(S, "matrix", "C", "C_expected", strcat(S.prefix, fn), C);
+  end_block();
+endfunction
+
+
 ######################################################################
 
 s=1;d=2;c=3;z=4;
@@ -2775,18 +2862,37 @@ n=16;
 #   endfor
 # endfor
 
+# for j = 1:n
+#   for i = [c,z] #[s,d] #c,z]
+#     S = context(i);
+#     for uplo = [121, 122]
+#       for trans = Trans(S)
+#         T = S ; T.complex = 0;
+#         for alpha = coeff(T)
+#           for beta = coeff(T)
+#             for order = [101, 102]
+#               T = test_syrkmatmat(S, j, order, trans);
+#               test_syrk (S, "herk", order, uplo, trans, T.n, T.k,
+#                          alpha, T.A, T.lda, beta, T.C, T.ldc);
+#             endfor
+#           endfor
+#         endfor
+#       endfor
+#     endfor
+#   endfor
+# endfor
+
 for j = 1:n
-  for i = [c,z] #[s,d] #c,z]
+  for i = [s,d] #,c,z]
     S = context(i);
-    for uplo = [121, 122]
-      for trans = Trans(S)
-        T = S ; T.complex = 0;
-        for alpha = coeff(T)
-          for beta = coeff(T)
-            for order = [101, 102]
-              T = test_syrkmatmat(S, j, order, trans);
-              test_syrk (S, "herk", order, uplo, trans, T.n, T.k,
-                         alpha, T.A, T.lda, beta, T.C, T.ldc);
+    for trans = Trans(S)
+      for alpha = coeff(S)
+        for beta = coeff(S)
+          for order = [101, 102]
+            for uplo = [121, 122]
+              T = test_syr2kmatmat(S, j, order, trans);
+              test_syr2k (S, "syr2k", order, uplo, trans, T.n, T.k, alpha, 
+                          T.A, T.lda, T.B, T.ldb, beta, T.C, T.ldc);
             endfor
           endfor
         endfor
