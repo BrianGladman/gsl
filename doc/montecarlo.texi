@@ -22,27 +22,30 @@ well as the code) is still evolving - the code at a faster rate.
 
 @subsection PLAIN (or Simple) Monte Carlo
 
-We begin by establishing some notation.  Let @math{E_\mu(f)} denote the
-expactation value (or average) of the function @math{f} with respect
-to some measure @math{\mu}.  We will write @math{E_L(f)} for the
-normal (or Lebesgue) integral and simple @math{E(f)} for a Monte Carlo
-estimate.  Specifically then,
+We begin by establishing some notation.  Let @math{I(f)} denote the
+integral of the function @math{f} (for convenience, we take @math{I(1)=1})
+We will write the montecarlo estimate of the integral as
+@math{E(f; N)} for the
 @equation
-  E(f) = @{1 \over N @} \sum_i^N f(x_i).
+  E(f; N) = @{1 \over N @} \sum_i^N f(x_i).
 @end equation
-Similarly, we will denote the variance of the expactation value
-as @math{Var_@{\mu@}(f)}, defined as 
+for @math{N} randomly distributed points @math{x_i} 
+Similarly, we will denote the variance of @math{f} by 
 @equation
-  Var_\mu(f) = E_\mu(f^2) - (E_\mu(f))^2.
+  \sigma^2(f) = I(f^2) - I(f)^2
+@end equation
+and the variance of the estimate by 
+@equation
+  Var(f; N) = E(f^2; N) - (E(f; N))^2.
 @end equation
 The fundamental point of Monte Carlo integration is that for
 large @math{N}, 
 @equation
-  E_L(f) - E(f) \approx @{Var_L(f)\over N @}
+  E(f; N) - I(f) \approx @{\sigma^2(f)\over N @}
 @end equation
-and furthermore, 
+and furthermore, by the same argument, 
 @equation
-  Var(f) \approx @{ Var(f) \over N@}
+   \sigma^2(f) \approx Var(f; N)
 @end equation
 That's all there is to simple Monte Carlo.
 
@@ -53,11 +56,12 @@ The starting point of all stratified sampling techniques is
 the observation that for two disjoint regions @math{a} and @math{b} with
 Monte Carlo estimates of the integral @math{E_a(f)} and @math{E_b(f)} of the 
 integral of f in those regions
-and variances @math{Var_a(f)} and @math{Var_b(f)}, the variance @math{Var(f)}
-of the combined estimate @math{E(f) = 1/2 E_a(f) + 1/2 E_b(f)}
+and variances @math{\sigma_a^2(f)} and @math{\sigma_b^2(f)}, 
+the variance @math{Var(f)}
+of the combined estimate @math{E(f) = @{1\over 2@} E_a(f) + @{1\over 2@} E_b(f)}
 is given by
 @equation
-  Var(f) = @{Var_@{L,a@}(f) \over 4 N_a@} + @{Var_@{L,b@}(f) \over 4 N_b@}
+  Var(f) = @{\sigma_a^2(f) \over 4 N_a@} + \sigma_b^2(f) \over 4 N_b@}
 @end equation
 This variance 
 is minimized (subject to the constrain that @math{N_a + N_b} is fixed) 
@@ -65,7 +69,6 @@ by choosing (assuming one can) @math{N_a} s.t.
 @equation
   @{N_a \over N_a+N_b @} = @{ \sigma_a \over \sigma_a + \sigma_b @}
 @end equation
-(where we have written @math{\sigma} for @math{Var_L(f)}).  
 For such a choice, the variance is given by
 @equation
   Var(f) =  @{ (\sigma_a + \sigma_b)^2 \over 4 N @}
@@ -76,24 +79,47 @@ concentrating points in regions where the variance of the function
 @math{f} is large.
 
 The most straightforward stratified sampling routine divides a
-hypercubic integration region into sub-cubss along the coordinate axes.
+hyper-cubic integration region into sub-cubes along the coordinate axes.
 This is simple to do, but gets out of hand for large numbers of
 dimensions @math{d} because the number of sub-cubes grows like 
-@math{K^d} where @math{K} is the number of sub-divisions along the
-axis.  
+@math{K^d} (where @math{K} is the number of sub-divisions along the
+axis).  
 
-What MISER does (and other recursive strafied samplers) is to bisect
+What MISER does (and other recursive stratified samplers) is to bisect
 the hypercube along one coordinate axis.  The direction is chosen
 by examining all possible bisections (@math{d} of them) and picking
 the one that gives the best combined variance.  The same procedure
-is then done for each of the two half-spaces (chosing @math{N_a} and
+is then done for each of the two half-spaces (choosing @math{N_a} and
 @math{N_b} as described above), and so on. 
 Since by assumption one does not know the variance @math{Var_L(f)} in
 the various sub-regions, it is estimated using some fraction of
 the total number of points alloted to the estimate.  
 
 @subsection VEGAS
+Vegas takes another approach to obtaining good results, namely it
+tries to sample points from the probabilty distribution described
+by the function @math{f}.  More precisely, suppose we estimate
+the integral of @math{f} with points distributed according to
+a probabilty distribution described by the function @math{g}.  If
+we call the new estimate @math{E_g(f; N)} we have
+@equation
+E_g(f; N) = E(f/g; N)
+@end equation
+and similarly
+@equation
+Var_g(f; N) = Var(f/g; N)
+@end equation
+It is clear from this that if @math{g = |f|} then the variance
+vanishes.  This then it was what vegas attempts to do.  It
+makes several passes, histogramming @math{f}, and each time
+using the histogram to define the sampling distribution.  Since
+this basic idea again has the problem that the number of histogram
+bins grows like @math{K^d}.  The compromise that Vegas 
+(ie, Peter Lepage) is to assume that @math{g} factorizes: 
+@math{g(x_1, x_2, \ldots) = g_1(x_1) g_2(x_2) \ldots}
+so that the number of bins required is only @math{d K}.  
 
+FIXME: There is more to say, but it will have to wait.
 
 @node Interface
 @section Interface
@@ -105,6 +131,7 @@ the integrator itself, and of course a function to free the space
 when done.  For an integrator algorithm, call it COOL
 (substitute any of the currently existing algorithms) we then 
 have
+(FIXME: why does this look like crap?)
 @deftypefun gsl_monte_COOL_state* gsl_monte_COOL_alloc()
 @end deftypefun
 @deftypefun int gsl_monte_COOL_init(gsl_monte_COOL_state* @var{s})
@@ -124,14 +151,20 @@ have
 
 Notice the ellipses in last argument to the actual integration routine.
 This is because the vegas algorithm (and perhaps others in the future)
-return extra information -- in the case of vegas, it is the "chisq"
+return extra information -- in the case of vegas, it is the @math{\chi^2}
 of the result.  
 
 In addition to the common function interface, the routines also share
-the state variable 
+the state variables 
 @deftypevr {Control} gsl_rng* ranf
 which determines which random number generator will be used.
 @end deftypevr
+and
+@deftypevr {Control} int verbose
+which says Whether to print information about the calculation (though
+the actual use depends on the algorithm).
+@end deftypevr
+
 
 We describe the algorithm-specific variables.  
 
@@ -165,12 +198,10 @@ one and two.
 @deftypevr {Control} double acc
 Setting @code{acc} allows vegas to terminate when the desired accuracy
 has been achieved, rather than after a certain number of function calls.
+Setting it to a negative value disables this feature.
 @end deftypevr
 @deftypevr {Control} {long int} max_it_num
 The maximum number of iterations to perform.
-@end deftypevr
-@deftypevr {Control} int verbose
-Whether to print information about the calculation.
 @end deftypevr
 @deftypevr {Control} int stage
 Setting this determines the "stage" of the calculation.  Normally,
@@ -225,6 +256,12 @@ main ()
   gsl_monte_vegas_state* s = gsl_monte_vegas_alloc();
   gsl_monte_plain_init(s);
 
+  s->alpha = 1.5; /* default */
+  s->verbose = 0; /* default, we prefer to remain ignorant! */
+  s->stage = 0; /* default.  Start at the beginning */
+  s->acc = -1.0 /* default. don't terminate when accuracy is reached */
+  s->max_it_num = 5 /* default.  Do five iterations before quiting */
+  
   status = gsl_monte_vegas_integrat(s, f0, xl, xu, dimension, calls,
                                     &res, &err, &chisq);
   if (status)
