@@ -1,3 +1,13 @@
+Tue May  7 22:34:52 2002  Brian Gough  <bjg@network-theory.co.uk>
+
+	* mt.c (mt_1999_set): updated seeding procedure according to new
+ 	release of MT19937 from the original authors.
+
+Fri Apr 26 21:17:05 2002  Brian Gough  <bjg@network-theory.co.uk>
+
+	* taus.c (taus2_set): added alternate seeding procedure as
+ 	described in erratum to P.L'Ecuyer's paper.
+
 Wed Apr 17 19:37:49 2002  Brian Gough  <bjg@network-theory.co.uk>
 
 	* test.c (main): added missing test for gsl_rng_mt19937_1998

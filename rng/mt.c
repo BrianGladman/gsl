@@ -21,8 +21,15 @@
    implementation was changed from LGPL to GPL, following paragraph 3
    of the LGPL, version 2.
 
+   Update:
+
    The seeding procedure has been updated to match the 10/99 release
    of MT19937.
+
+   Update:
+
+   The seeding procedure has been updated again to match the 2002
+   release of MT19937
 
    The original code included the comment: "When you use this, send an
    email to: matumoto@math.keio.ac.jp with an appropriate reference to
@@ -129,6 +136,29 @@ mt_set (void *vstate, unsigned long int s)
   if (s == 0)
     s = 4357;	/* the default seed is 4357 */
 
+  state->mt[0]= s & 0xffffffffUL;
+
+  for (i = 1; i < N; i++)
+    {
+      /* See Knuth's "Art of Computer Programming" Vol. 2, 3rd
+         Ed. p.106 for multiplier. */
+
+      state->mt[i] =
+        (1812433253UL * (state->mt[i-1] ^ (state->mt[i-1] >> 30)) + i);
+      
+      state->mt[i] &= 0xffffffffUL;
+    }
+}
+
+static void
+mt_1999_set (void *vstate, unsigned long int s)
+{
+  mt_state_t *state = (mt_state_t *) vstate;
+  int i;
+
+  if (s == 0)
+    s = 4357;	/* the default seed is 4357 */
+
   /* This is the October 1999 version of the seeding procedure. It
      was updated by the original developers to avoid the periodicity
      in the simple congruence originally used.
@@ -181,6 +211,15 @@ static const gsl_rng_type mt_type =
  &mt_get,
  &mt_get_double};
 
+static const gsl_rng_type mt_1999_type =
+{"mt19937_1999",		/* name */
+ 0xffffffffUL,			/* RAND_MAX  */
+ 0,			        /* RAND_MIN  */
+ sizeof (mt_state_t),
+ &mt_1999_set,
+ &mt_get,
+ &mt_get_double};
+
 static const gsl_rng_type mt_1998_type =
 {"mt19937_1998",		/* name */
  0xffffffffUL,			/* RAND_MAX  */
@@ -191,6 +230,7 @@ static const gsl_rng_type mt_1998_type =
  &mt_get_double};
 
 const gsl_rng_type *gsl_rng_mt19937 = &mt_type;
+const gsl_rng_type *gsl_rng_mt19937_1999 = &mt_1999_type;
 const gsl_rng_type *gsl_rng_mt19937_1998 = &mt_1998_type;
 
 /* MT19937 is the default generator, so define that here too */
