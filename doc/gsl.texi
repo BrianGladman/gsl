@@ -18,7 +18,7 @@ END-INFO-DIR-ENTRY
 @set GSL @emph{GNU Scientific Library}
 
 @ifinfo
-This file documents the @emph{GNU Scientific Library}.
+This file documents the @value{GSL}.
 
 Copyright (C) 1996 The GSL Project.
 
@@ -72,7 +72,7 @@ by the Foundation.
 @node Top, Motivation, (dir), (dir)
 
 @ifinfo
-This file documents the the @emph{GNU Scientific Library}, a collection
+This file documents the the @value{GSL}, a collection
 of numerical routines for scientific computing.
 @end ifinfo
 
@@ -129,8 +129,8 @@ their quality and their level of documentation.
 @emph{Numerical Recipies} (http://www.nr.com, http://cfata2.harvard.edu/nr/)
 is an excellent book: it explains
 the algorithms in a very clear way.  Unfortunately the authors released
-the source code under a bizarre license which allows you to use it, but
-makes you nervous about re-distributing it.  Thus Numerical Recipes is
+the source code under a license which allows you to use it, but
+prevents you from re-distributing it.  Thus Numerical Recipes is
 not @emph{free} in the sense of @emph{freedom}.  On top of that, the
 implementation suffers from @emph{fortranitis} and other
 limitations. [http://www.lysator.liu.se/c/num-recipes-in-c.html]
@@ -366,6 +366,10 @@ spline
 
 @subsection Genetic algorithms
 
+We need to think about what kinds of algorithms are basic generally
+useful numerical algorithms, and which ones are special purpose
+research projects.  We should concentrate on supplying the former.
+
 @subsection Cellular automata
 
 @subsection Parallel libraries
@@ -393,6 +397,10 @@ Documentation: the project leaders should give examples of how things
 are to be documented.  High quality documentation is absolutely
 mandatory, so documentation should introduce the topic, and give careful
 reference for the provided functions.
+
+I (-jt) recommend using gsl_xxx_functionName() for functions that
+we supply, where xxx is the 'category'.  Categories are 'ran' (random
+number generators), 'sf' (special functions), 'stat' (statistics), etc.
 
 @end itemize
 
@@ -528,28 +536,35 @@ coffee machine and back.
 A very nice review of random number generators was written by 
 Pierre L'Ecuyer, as Chapter 4 of the book: Handbook on Simulation, 
 Jerry Banks, ed. (Wiley, 1997).  The chapter is available in postscript
-from from L'Ecuyer's ftp site: (ftp://ftp.iro.umontreal.ca/pub/simulation/lecuyer/papers/handsim.ps).  
+from from L'Ecuyer's ftp site:
+(ftp://ftp.iro.umontreal.ca/pub/simulation/lecuyer/papers/handsim.ps).
+Volume 2 of Knuth's SemiNumerical Algorithms series (originally
+published in 1968) devotes 170 pages to random number genertors,
+and is only now starting to show its age.  Nonetheless,
+it is brilliant, a classic.  If you don't own it, you should stop
+reading right now, run to the nearest bookstore, and buy it.
 
 See the pLab home page (http://random.mat.sbg.ac.at/) for a lot of information
 on the state-of-the-art in random number generation, and for numerous links
 to various "random" WWW sites.  
 
-A good random number generator will satisfy both theoretical and statistical
-properties.  Theoretical properties are often hard to obtain (they require
-real math!), but one prefers a random number generator with a long period, 
-low serial correlation, and a tendency @emph{not} to lie mainly on the planes.
-Statistical tests are performed with numerical simulations.  Generally, a
-random number generator is used to estimate some quantity for which the
-Probability provides an exact answer.  Comparison to this exact answer 
-provides a measure of "randomness".
+A good random number generator will satisfy both theoretical and
+statistical properties.  Theoretical properties are often hard to obtain
+(they require real math!), but one prefers a random number generator
+with a long period, low serial correlation, and a tendency @emph{not} to
+``fall mainly on the planes.''  Statistical tests are performed with
+numerical simulations.  Generally, a random number generator is used to
+estimate some quantity for which the Theory of Probability provides an
+exact answer.  Comparison to this exact answer provides a measure of
+"randomness".
 
-The GSL Software Library provides a collection of generators, of varying
+The @value{GSL} provides a collection of generators, of varying
 quality.  My favorite is 'taus', which is based on a combined Tausworthe
 generator.  The 'mrg' and 'cmrg' (a multiple recursive generator, and a
 combined mrg) algorithms are of high quality, but are computationally
 more expensive than some of the others.  The 'uni' and 'zuf' algorithms
 are both based on a Fibonacci scheme; the former involves a lag of only
-17 and is not recommended, while the second has a lag of over 200 and
+17 and is not recommended, while the second has a lag of over 600 and
 seems to have good statistical properties.  More details for each of
 the algorithms are available in the source code.
 
@@ -559,9 +574,11 @@ the algorithms are available in the source code.
 @deftypefn Random void gsl_ran_seed(int s)
 @code{gsl_ran_seed} initializes (or `seeds') the random number
 generator.  In general, it is recommended that
-this routine be called before any random numbers are generated. Although we have
+this routine be called before any random numbers are generated. We have
 tried to set up the generators so that they will still produce sensible
-random numbers even if the seed has not been explicitly set, you should
+random numbers even if the seed has not been explicitly set (in
+particular, we have default initialized them as if the seed was
+set with @code{s=1}), but you should
 not trust us.  What we do guarantee is: If the
 random number generator is seeded with the same value of @code{s} on two
 different runs, the same stream of random numbers should be generated (by
@@ -597,6 +614,22 @@ where @code{dx} is @code{1./gsl_ran_max()}.
 @deftypefn Random double gsl_ran_gaussian()
 @code{gsl_ran_gaussian} returns a gaussian random number, with mean zero and
 variance one.
+@end deftypefn
+
+@deftypefn Random {int *} gsl_ran_shuffle(int N, int *x)
+@code{gsl_ran_shuffle} takes an array of N integers x[0..N-1] and 
+randomly shuffles their order.  @code{x} is altered and is returned.
+if @code{x} is supplied as NULL, then memory is allocated for
+@code{x[]}, and it is filled with a random permutation of the 
+numbers 0,...,N-1.  
+@end deftypefn
+
+@deftypefn Random {int *} gsl_ran_choose(int K, int N, int *x)
+@code{gsl_ran_choose} fills the array @code{x[K]} with @code{K}
+integers taken randomly from 0,...,N-1.  It is required that 
+@code{K} be less than or equal to @code{N}. The numbers will be
+in numerical order.  You will need to call @code{gsl_ran_shuffle(K,x)}
+if you want them in random order.
 @end deftypefn
 
 @node Somewhat more advanced functions, Algorithm-specific random number generators, Routines for the casual user, Random number generation
@@ -654,6 +687,14 @@ and returns the uniformly distributed real random number
 resulting from that update.
 @end deftypefn
 
+@deftypefn Random void gsl_ran_printState(void *vState)
+@code{gsl_ran_printState} writes the current state of the random number
+generator to @code{stdout}.  Depending on the random number generator,
+this can may be an integer or two, or a list with hundreds of
+twenty-four digit floating point numbers.  It's only conceivable use is
+for debugging.
+@end deftypefn
+
 @node Algorithm-specific random number generators, How to link, Somewhat more advanced functions, Random number generation
 @subsection Algorithm-specific random number generators
 
@@ -674,7 +715,8 @@ uni       Fibonacci subtraction
 
 uni32     32 bit version of uni
 
-zuf       Another Fibonacci subtraction method
+zuf       Another Fibonacci subtraction method, but with a much longer
+lag than uni.
 
 rand      Linear congruental 
 
@@ -735,7 +777,8 @@ Create a @code{static} realization of this state called @code{state}.
 
 Write functions @code{unsigned long gsl_ran_cool_random_wstate(void *vState)}, 
 @code{void gsl_ran_cool_seed_wstate(void *vState,int)}, 
-and @code{double gsl_ran_cool_uniform_wstate(void *vState)},
+@code{double gsl_ran_cool_uniform_wstate(void *vState)}, and
+@code{static void gsl_ran_cool_printState_p(gsl_ran_cool_randomState *rState)},
 and include them in the @code{cool.c} file.   Add the line 
 `@code{#include "cool-state.c"}' as the last line of the @code{cool.c}
 file.  The file @code{cool-state.c} will be automatically generated,
@@ -753,6 +796,14 @@ Now you can `@code{make cool}', or `@code{make test-cool}', or
 `@code{make bench-cool}', to get executable files for using/testing your
 cool new random number generator.
 
+Having made 'test-cool', you have done everything that is necessary.
+But it is recommended that you run it with a random seed of 1, and record
+the state in a temporary file.  Update the @code{cool.c} code by
+initializing the static random state with these values.  Then you'll
+have to remake routines that depend on @code{cool.c}.  This way, you'll
+maintain the convention in the GSL random number package that not
+initializing a random number generator is equivalent to initializing
+with a seed of 1.
 
 @node Statistics, Root finding, Random number generation, Reference manual
 @section Statistics
