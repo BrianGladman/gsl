@@ -12,38 +12,9 @@ with the vector and matrix formats used by BLAS routines.
 
 @menu
 * Data types::                  
-* The block struct::            
-* Block allocation::            
-* Reading and writing blocks::  
-* Example programs for blocks::  
-* The vector struct::           
-* Vector allocation::           
-* Accessing vector elements::   
-* Initializing vector elements::  
-* Reading and writing vectors::  
-* Creating subvector views::    
-* Modifying subvector views::   
-* Copying vectors::             
-* Exchanging elements::         
-* Vector operations::           
-* Finding maximum and minimum elements of vectors::  
-* Vector properties::           
-* Example programs for vectors::  
-* The matrix struct::           
-* Matrix allocation::           
-* Accessing matrix elements::   
-* Initializing matrix elements::  
-* Reading and writing matrices::  
-* Creating submatrix views::    
-* Modifying matrix views::      
-* Creating row and column views::  
-* Copying matrices::            
-* Copying rows and columns::    
-* Exchanging rows and columns::  
-* Matrix operations::           
-* Finding maximum and minimum elements of matrices::  
-* Matrix properties::           
-* Example programs for matrices::  
+* Blocks::                      
+* Vectors::                     
+* Matrices::                    
 * Vector and Matrix References and Further Reading::  
 @end menu
 
@@ -79,8 +50,9 @@ Corresponding types exist for the @code{gsl_vector} and
 @code{gsl_matrix} functions.
 
 
-@node The block struct
-@section The block struct
+
+@node Blocks
+@section Blocks
 
 For consistency all memory is allocated through a @code{gsl_block}
 structure.  The structure contains two members, the size of an area of
@@ -105,8 +77,14 @@ for a vector is known as the @dfn{stride}.
 The functions for allocating and deallocating blocks are defined in
 @file{gsl_block.h}
 
+@menu
+* Block allocation::            
+* Reading and writing blocks::  
+* Example programs for blocks::  
+@end menu
+
 @node Block allocation
-@section Block allocation
+@subsection Block allocation
 
 The functions for allocating memory to a block follow the style of
 @code{malloc} and @code{free}.  In addition they also perform their own
@@ -138,7 +116,7 @@ allocated with @code{gsl_block_alloc} or @code{gsl_block_calloc}.
 @end deftypefun
 
 @node Reading and writing blocks
-@section Reading and writing blocks
+@subsection Reading and writing blocks
 
 The library provides functions for reading and writing blocks to a file
 as binary data or formatted text.
@@ -180,7 +158,7 @@ numbers to read.  The function returns 0 for success and
 @comment
 
 @node Example programs for blocks
-@section Example programs for blocks
+@subsection Example programs for blocks
 
 The following program shows how to allocate a block,
 
@@ -208,8 +186,8 @@ block data address = 0x804b0d8
 @end example
 @comment
 
-@node The vector struct
-@section The vector struct
+@node Vectors
+@section Vectors
 @cindex vectors
 @cindex stride, of vector index
 
@@ -252,8 +230,23 @@ deallocated.
 The functions for allocating and accessing vectors are defined in
 @file{gsl_vector.h}
 
+@menu
+* Vector allocation::           
+* Accessing vector elements::   
+* Initializing vector elements::  
+* Reading and writing vectors::  
+* Creating subvector views::    
+* Modifying subvector views::   
+* Copying vectors::             
+* Exchanging elements::         
+* Vector operations::           
+* Finding maximum and minimum elements of vectors::  
+* Vector properties::           
+* Example programs for vectors::  
+@end menu
+
 @node Vector allocation
-@section Vector allocation
+@subsection Vector allocation
 
 The functions for allocating memory to a vector follow the style of
 @code{malloc} and @code{free}.  In addition they also perform their own
@@ -285,7 +278,7 @@ object and will not be deallocated.
 @end deftypefun
 
 @node Accessing vector elements
-@section Accessing vector elements
+@subsection Accessing vector elements
 @cindex vectors, range-checking
 @cindex range-checking for vectors
 @cindex Checkergcc
@@ -325,7 +318,7 @@ This function sets the value of the @var{i}-th element of a vector
 @end deftypefun
 
 @node Initializing vector elements
-@section Initializing vector elements
+@subsection Initializing vector elements
 @cindex vectors, initializing
 @cindex initializing vectors
 
@@ -345,7 +338,7 @@ one.
 @end deftypefun
 
 @node Reading and writing vectors
-@section Reading and writing vectors
+@subsection Reading and writing vectors
 
 The library provides functions for reading and writing vectors to a file
 as binary data or formatted text.
@@ -386,7 +379,7 @@ numbers to read.  The function returns 0 for success and
 @end deftypefun
 
 @node Creating subvector views
-@section Creating subvector views
+@subsection Creating subvector views
 
 @deftypefun gsl_vector gsl_vector_subvector (gsl_vector *@var{v}, size_t @var{offset}, size_t @var{n})
 This function returns a @code{gsl_vector} struct which is a view of a
@@ -462,7 +455,7 @@ but can be used for vectors which are declared @code{const}.
 @end deftypefun
 
 @node Modifying subvector views
-@section Modifying subvector views
+@subsection Modifying subvector views
 
 @deftypefun int gsl_vector_view_from_vector (gsl_vector *@var{v}, gsl_vector *@var{base}, size_t @var{offset}, size_t @var{n}, size_t @var{stride})
 This function modifies and existing vector view @var{v} to form a new
@@ -532,7 +525,7 @@ existing view in @var{v} will be lost as a result of this function.
 @comment @end deftypefun
 
 @node Copying vectors
-@section Copying vectors
+@subsection Copying vectors
 
 Common operations on vectors such as addition and multiplication are
 available in the BLAS part of the library (@pxref{BLAS
@@ -552,7 +545,7 @@ by copying.
 
 
 @node Exchanging elements
-@section Exchanging elements
+@subsection Exchanging elements
 
 The following function can be used to exchange, or permute, the elements
 of a vector.
@@ -568,7 +561,7 @@ This function reverses the order of the elements of the vector @var{v}.
 
 
 @node Vector operations
-@section Vector operations
+@subsection Vector operations
 
 @deftypefun int gsl_vector_add (gsl_vector * @var{a}, const gsl_vector * @var{b})
 This function adds the elements of vector @var{b} to the elements of
@@ -605,7 +598,7 @@ vector @var{a}, @math{a'_i = a_i + x}.
 @end deftypefun
 
 @node Finding maximum and minimum elements of vectors
-@section Finding maximum and minimum elements of vectors
+@subsection Finding maximum and minimum elements of vectors
 
 @deftypefun double gsl_vector_max (const gsl_vector * @var{v})
 This function returns the maximum value in the vector @var{v}.
@@ -640,7 +633,7 @@ indices are returned.
 @end deftypefun
 
 @node Vector properties
-@section Vector properties
+@subsection Vector properties
 
 @deftypefun int gsl_vector_isnull (const gsl_vector * @var{v})
 This function returns 1 if all the elements of the vector @var{v} are
@@ -648,7 +641,7 @@ zero, and 0 otherwise.
 @end deftypefun
 
 @node Example programs for vectors
-@section Example programs for vectors
+@subsection Example programs for vectors
 
 This program shows how to allocate, initialize and read from a vector
 using the functions @code{gsl_vector_alloc}, @code{gsl_vector_set} and
@@ -719,8 +712,8 @@ elements of @code{v}, written using the format specifier
 @code{%.5g}.  The vector could then be read back in using the function
 @code{gsl_vector_fscanf (f, v)}.
 
-@node The matrix struct
-@section The matrix struct
+@node Matrices
+@section Matrices
 @cindex matrices
 @cindex physical dimension, matrices
 @cindex trailing dimension, matrices
@@ -784,8 +777,25 @@ block will not be freed.
 The functions for allocating and accessing matrices are defined in
 @file{gsl_matrix.h}
 
+@menu
+* Matrix allocation::           
+* Accessing matrix elements::   
+* Initializing matrix elements::  
+* Reading and writing matrices::  
+* Creating submatrix views::    
+* Modifying matrix views::      
+* Creating row and column views::  
+* Copying matrices::            
+* Copying rows and columns::    
+* Exchanging rows and columns::  
+* Matrix operations::           
+* Finding maximum and minimum elements of matrices::  
+* Matrix properties::           
+* Example programs for matrices::  
+@end menu
+
 @node Matrix allocation
-@section Matrix allocation
+@subsection Matrix allocation
 
 The functions for allocating memory to a matrix follow the style of
 @code{malloc} and @code{free}.  They also perform their own error
@@ -817,7 +827,7 @@ object and will not be deallocated.
 @end deftypefun
 
 @node Accessing matrix elements
-@section Accessing matrix elements
+@subsection Accessing matrix elements
 @cindex matrices, range-checking
 @cindex range-checking for matrices
 
@@ -853,7 +863,7 @@ handler is invoked.
 @end deftypefun
 
 @node Initializing matrix elements
-@section Initializing matrix elements
+@subsection Initializing matrix elements
 @cindex matrices, initializing
 @cindex initializing matrices
 
@@ -874,7 +884,7 @@ This applies to both square and rectangular matrices.
 @end deftypefun
 
 @node Reading and writing matrices
-@section Reading and writing matrices
+@subsection Reading and writing matrices
 
 The library provides functions for reading and writing matrices to a file
 as binary data or formatted text.
@@ -915,7 +925,7 @@ numbers to read.  The function returns 0 for success and
 @end deftypefun
 
 @node Creating submatrix views
-@section Creating submatrix views
+@subsection Creating submatrix views
 
 @deftypefun gsl_matrix gsl_matrix_submatrix (gsl_matrix * @var{m}, size_t @var{i}, size_t @var{j}, size_t @var{n1}, size_t @var{n2})
 This function returns a @code{gsl_matrix} struct which is a view of a
@@ -947,7 +957,7 @@ matrix is still in use.
 @end deftypefun
 
 @node Modifying matrix views
-@section Modifying matrix views
+@subsection Modifying matrix views
 
 @deftypefun int gsl_matrix_view_from_matrix (gsl_matrix * @var{m}, gsl_matrix * @var{mm}, const size_t @var{k1}, const size_t @var{k2}, const size_t @var{n1}, const size_t @var{n2})
 This function modifies and existing matrix view @var{m} to form a new
@@ -1026,7 +1036,7 @@ existing view in @var{m} will be lost as a result of this function.
 @comment @end deftypefun
 
 @node Creating row and column views
-@section Creating row and column views
+@subsection Creating row and column views
 
 In general there are two ways to access an object, by reference or by
 copying.  The functions described in this section create vectors which
@@ -1079,7 +1089,7 @@ used for matrices which are declared @code{const}.
 @comment @end deftypefun
 
 @node Copying matrices
-@section Copying matrices
+@subsection Copying matrices
 
 @deftypefun int gsl_matrix_memcpy (gsl_matrix * @var{dest}, const gsl_matrix * @var{src})
 This function copies the elements of the matrix @var{src} into the
@@ -1092,7 +1102,7 @@ This function exchanges the elements of the matrices @var{m1} and
 @end deftypefun
 
 @node Copying rows and columns
-@section Copying rows and columns
+@subsection Copying rows and columns
 
 The functions described in this section copy a row or column of a matrix
 into a vector.  This allows the elements of the vector and the matrix to
@@ -1124,7 +1134,7 @@ the same as the length of the column.
 @end deftypefun
 
 @node Exchanging rows and columns
-@section Exchanging rows and columns
+@subsection Exchanging rows and columns
 
 The following functions can be used to exchange the rows and columns of
 a matrix.
@@ -1159,7 +1169,7 @@ operation to be possible.
 @end deftypefun
 
 @node Matrix operations
-@section Matrix operations
+@subsection Matrix operations
 
 @deftypefun int gsl_matrix_add (gsl_matrix * @var{a}, const gsl_matrix * @var{b})
 This function adds the elements of matrix @var{b} to the elements of
@@ -1196,7 +1206,7 @@ matrix @var{a}, @math{a'(i,j) = a(i,j) + x}.
 @end deftypefun
 
 @node  Finding maximum and minimum elements of matrices
-@section Finding maximum and minimum elements of matrices
+@subsection Finding maximum and minimum elements of matrices
 
 
 @deftypefun double gsl_matrix_max (const gsl_matrix * @var{m})
@@ -1232,7 +1242,7 @@ elements then the first elements found are returned.
 @end deftypefun
 
 @node Matrix properties
-@section Matrix properties
+@subsection Matrix properties
 
 @deftypefun int gsl_matrix_isnull (const gsl_matrix * @var{m})
 This function returns 1 if all the elements of the matrix @var{m} are
@@ -1240,7 +1250,7 @@ zero, and 0 otherwise.
 @end deftypefun
 
 @node Example programs for matrices
-@section Example programs for matrices
+@subsection Example programs for matrices
 
 This program shows how to allocate, initialize and read from a matrix
 using the functions @code{gsl_matrix_alloc}, @code{gsl_matrix_set} and
@@ -1327,7 +1337,6 @@ After running this program the file @file{test.dat} should contain the
 elements of @code{m}, written in binary format.  The matrix which is read
 back in using the function @code{gsl_matrix_fread} should be exactly
 equal to the original matrix.
-
 
 @node Vector and Matrix References and Further Reading
 @section References and Further Reading

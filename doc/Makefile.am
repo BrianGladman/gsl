@@ -15,7 +15,7 @@ noinst_DATA = siman-test.eps siman-energy.eps 12-cities.eps \
 	histogram.eps histogram2d.eps min-interval.eps \
         fit-wlinear.eps fit-exp.eps ntuple.eps
 
-EXTRA_DIST = gsl-design.texi \
+EXTRA_DIST = $(man_MANS) gsl-design.texi \
         siman-test.eps siman-energy.eps 12-cities.eps \
 	initial-route.eps final-route.eps \
 	fftalgorithms.tex fftalgorithms.bib \

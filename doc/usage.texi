@@ -392,6 +392,6 @@ dependencies between modules and files.  This should make it possible to
 extract individual functions for use in your own applications, without
 needing to have the whole library installed.  You may need to define
 certain macros such as @code{GSL_ERROR} and remove some @code{#include}
-statements in order to compile the files as standalone units. Reuse the
-library code in this way is encouraged, subject to the terms of the GNU
-General Public License.
+statements in order to compile the files as standalone units. Reuse of
+the library code in this way is encouraged, subject to the terms of the
+GNU General Public License.
