@@ -171,7 +171,7 @@ this function should store the vector result
 returning an appropriate error code if the function cannot be computed.
 
 @item int (* df) (const gsl_vector * @var{x}, void * @var{params}, gsl_matrix * @var{J})
-this function should store the @var{n}-by-@var{n} matrix result
+this function should store the @var{n}-by-@var{p} matrix result
 @c{$J_{ij} = \partial f_i(x,\hbox{\it params}) / \partial x_j$}
 @math{J_ij = d f_i(x,params) / d x_j} in @var{J} for argument @var{x} 
 and parameters @var{params}, returning an appropriate error code if the
