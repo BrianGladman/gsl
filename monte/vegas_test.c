@@ -24,8 +24,10 @@ int num_dim = 1;
 
 double xl[11] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 double xu[11] = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
+double xu2[11] = {2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2};
 double xu3[2] = {DBL_MAX, DBL_MAX};
 
+double fconst(double x[]);
 double f0(double x[]);
 double f1(double x[]);
 double f2(double x[]);
@@ -58,7 +60,7 @@ int main()
   gsl_set_error_handler (&my_error_handler);
 
   
-  printf("testing allocation/innput checks\n");
+  printf("testing allocation/input checks\n");
 
   status = gsl_monte_vegas_validate(s, xl, xu, 4, 10);
   gsl_test(status != 0,  "error if not initialized");
@@ -73,6 +75,18 @@ int main()
   status = gsl_monte_vegas_validate(s, xu, xl, 1, 10);
   gsl_test(status != 0,  "error if xu < xl");
 
+
+  printf("Testing constant function and normalization\n");
+  gsl_monte_vegas_validate(s, xl, xu2, num_dim, calls);
+
+  for (num_dim = 1; num_dim < 10; num_dim++) {
+    calls *= 1.2;
+    gsl_monte_vegas_validate(s, xl, xu2, num_dim, calls);
+    status = gsl_monte_vegas_integrate(s, fconst, xl, xu2, num_dim, calls, 
+				       &res, &err, &chisq);
+    gsl_test_rel(res, pow(2, num_dim), tol, "vegas(fconst), dim=%d, err=%.4f", 
+		 num_dim, err); 
+  }
 
   printf("Testing product function\n");
   for (num_dim = 1; num_dim < 10; num_dim++) {
@@ -93,8 +107,8 @@ int main()
   for (num_dim = 1; num_dim < 10; num_dim++) {
     if (num_dim > 4) 
       s->alpha -= 0.2; /* Lepage has=1 for n=9 so we step toward that. */
-    if (num_dim > 8)
-      calls = 15000;
+    if (num_dim >= 8)
+      calls = 17000;
     status = gsl_monte_vegas_integrate(s, f1, xl, xu, num_dim, calls, 
 				       &res, &err, &chisq);
     gsl_test_rel(res, 1.0, tol, "vegas(f1), dim=%d, err=%.4f, chisq=%.4f", 
@@ -111,6 +125,24 @@ int main()
   step = 2;
   printf("Testing double gaussian\n");
   for (num_dim = 1; num_dim < 10; num_dim += step) {
+
+    /* let's try same trick of stepping alpha */
+    if (num_dim > 4) 
+      s->alpha = (double) num_dim*step/10.0; 
+
+    /* precondition */
+    s->max_it_num = 10;
+    s->stage = 0;
+    s->alpha = 1;
+    calls = 10000;
+    if ( num_dim > 6) {
+      s->alpha = 0.5;
+      calls = 20000;
+    }
+    status = gsl_monte_vegas_integrate(s, f2, xl, xu, num_dim, calls, 
+				       &res, &err, &chisq);
+    fprintf(stdout, "dim=%lu, res=%.4f, err=%.4f, chisq=%.4f\n",
+	    num_dim, res, err, chisq);
     switch (num_dim) {
     case 5:
       calls = 40000;
@@ -130,9 +162,8 @@ int main()
       s->alpha = 1.0;
       break;
     }
-    /* let's try same trick of stepping alpha */
-    if (num_dim > 4) 
-      s->alpha -= (double) step/10.0; 
+    s->stage=1;
+    s->max_it_num = 10;
     status = gsl_monte_vegas_integrate(s, f2, xl, xu, num_dim, calls, 
 				       &res, &err, &chisq);
     gsl_test_rel(res, 1.0, tol, "vegas(f2), dim=%d, err=%.4f, chisq=%.4f", 
@@ -144,6 +175,7 @@ int main()
   calls = 10000;
   s->alpha = 1.5;
   s->max_it_num = 10;
+  s->stage = 0;
   tol = 1e-2;
 
   printf("Testing Tsuda's function\n");
@@ -157,7 +189,16 @@ int main()
   return gsl_test_summary();
 }
 
-/* Simple product integral */
+/* Simple constant function */
+double fconst(double x[])
+{
+  double prod = 1.0;
+  int i;
+
+  return  1;
+}
+
+/* Simple product function */
 double f0(double x[])
 {
   double prod = 1.0;
