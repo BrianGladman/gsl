@@ -34,7 +34,8 @@
     for(i=0; i<lenY; i++) {
       BASE_TYPE tmpR = 0.0;
       BASE_TYPE tmpI = 0.0;
-      for(j=GSL_MAX(0,i-KL); j<GSL_MIN(lenX, i+KU+1); j++) {
+      const size_t j0 = ( i > KL ? i-KL : 0 );
+      for(j=j0; j<GSL_MIN(lenX, i+KU+1); j++) {
         tmpR += REAL(X, incX, j) * REAL(A, 1, lda*i + j) - IMAG(X, incX, j) * IMAG(A, 1, lda*i + j);
 	tmpI += REAL(X, incX, j) * IMAG(A, 1, lda*i + j) + IMAG(X, incX, j) * REAL(A, 1, lda*i + j);
       }
@@ -47,7 +48,8 @@
     for(j=0; j<lenX; j++) {
       BASE_TYPE tmpR = REAL0(alpha) * REAL(X, incX, j) - IMAG0(alpha) * IMAG(X, incX, j);
       BASE_TYPE tmpI = REAL0(alpha) * IMAG(X, incX, j) + IMAG0(alpha) * REAL(X, incX, j);
-      for(i = GSL_MAX(0, j-KU); i<GSL_MIN(lenY, j+KL+1); i++) {
+      const size_t i0 = ( j > KU ? j-KU : 0 );
+      for(i=i0; i<GSL_MIN(lenY, j+KL+1); i++) {
         REAL(Y, incY, i) += tmpR * REAL(A, 1, lda*i+j) - tmpI * IMAG(A, 1, lda*i+j);
 	IMAG(Y, incY, i) += tmpR * IMAG(A, 1, lda*i+j) + tmpI * REAL(A, 1, lda*i+j);
       }

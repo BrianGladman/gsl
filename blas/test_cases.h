@@ -23,8 +23,23 @@ extern const double  vector_4_z[];
 extern const float   matrix_gen_4_f[];
 extern const double  matrix_gen_4_d[];
 
+extern const float   matrix_t_4_f[];
+extern const double  matrix_t_4_d[];
+
+extern const float   matrix_t_4_fpu[];
+extern const double  matrix_t_4_dpu[];
+extern const float   matrix_t_4_fpl[];
+extern const double  matrix_t_4_dpl[];
+
+
 extern const float   matrix_gen_4_c[];
 extern const double  matrix_gen_4_z[];
+
+extern const float   matrix_gen_4_cpu[];
+extern const double  matrix_gen_4_zpu[];
+extern const float   matrix_gen_4_cpl[];
+extern const double  matrix_gen_4_zpl[];
+
 
 extern const float   matrix_her_4_c[];
 extern const double  matrix_her_4_z[];

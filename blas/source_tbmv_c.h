@@ -6,6 +6,7 @@
   int nounit = ( Diag == CblasNonUnit );
   size_t i;
   size_t j;
+  size_t id;
 
   if(TransA == CblasNoTrans) {
     /* form  x := A*x */
@@ -31,10 +32,11 @@
       }
     }
     else {
-      for(i=N-1; i+1>=1; i--) {
+      for(id=0; id<N; id++) {
         BASE_TYPE temp_r = 0.0;
 	BASE_TYPE temp_i = 0.0;
-	const size_t j_min = ( K>i ? 0 : i-K );
+	const size_t j_min = ( K>N-1-id ? 0 : N-1-id-K );
+	i = N-1-id;
         for(j=j_min; j<i; j++) {
 	  temp_r += REAL(X,incX,j)*REAL(A,1,lda * i + j) - IMAG(X,incX,j)*IMAG(A,1,lda * i + j);
 	  temp_i += REAL(X,incX,j)*IMAG(A,1,lda * i + j) + IMAG(X,incX,j)*REAL(A,1,lda * i + j);
@@ -56,10 +58,11 @@
     /* form  x := A'*x */
 
     if(Uplo == CblasUpper) {
-      for(i=N-1; i+1>=1; i--) {
+      for(id=0; id<N; id++) {
         BASE_TYPE temp_r = 0.0;
 	BASE_TYPE temp_i = 0.0;
-	const size_t j_min = ( K>i ? 0 : i-K );
+	const size_t j_min = ( K>N-1-id ? 0 : N-1-id-K );
+	i = N-1-id;
         for(j=j_min; j<i; j++) {
 	  temp_r += REAL(X,incX,j)*REAL(A,1,lda * j + i) - IMAG(X,incX,j)*IMAG(A,1,lda * j + i);
 	  temp_i += REAL(X,incX,j)*IMAG(A,1,lda * j + i) + IMAG(X,incX,j)*REAL(A,1,lda * j + i);
