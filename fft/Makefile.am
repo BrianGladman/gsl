@@ -9,7 +9,8 @@ benchmark_LDADD = libfft.a
 test_DEPENDENCIES = libfft.a
 benchmark_DEPENDENCIES = libfft.a
 
-test_SOURCES = test.c test.h 
+# test_SOURCES = test.c test.h 
+test_SOURCES = test.c
 benchmark_SOURCES = benchmark.c 
 
 

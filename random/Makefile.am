@@ -136,46 +136,46 @@ bench_rand_DEPENDENCIES=  rand.o rand-gen.o rand.h
 bench_rand_LDADD=         rand.o rand-gen.o
 
 mrg-state.c: xxx-state.xc
-	sed s/gsl_ran_xxx_/gsl_ran_mrg_/g xxx-state.xc > $@
+	sed s/gsl_ran_xxx_/gsl_ran_mrg_/g $(srcdir)/xxx-state.xc > $@
 mrg.h: gsl_ran.h
-	sed s/gsl_ran_/gsl_ran_mrg_/g gsl_ran.h > $@
+	sed s/gsl_ran_/gsl_ran_mrg_/g $(srcdir)/gsl_ran.h > $@
 mrg-gen.c: xxx-gen.xc
-	sed s/xxx/mrg/g xxx-gen.xc > $@
+	sed s/xxx/mrg/g $(srcdir)/xxx-gen.xc > $@
 cmrg-state.c: xxx-state.xc
-	sed s/gsl_ran_xxx_/gsl_ran_cmrg_/g xxx-state.xc > $@
+	sed s/gsl_ran_xxx_/gsl_ran_cmrg_/g $(srcdir)/xxx-state.xc > $@
 cmrg.h: gsl_ran.h
-	sed s/gsl_ran_/gsl_ran_cmrg_/g gsl_ran.h > $@
+	sed s/gsl_ran_/gsl_ran_cmrg_/g $(srcdir)/gsl_ran.h > $@
 cmrg-gen.c: xxx-gen.xc
-	sed s/xxx/cmrg/g xxx-gen.xc > $@
+	sed s/xxx/cmrg/g $(srcdir)/xxx-gen.xc > $@
 taus-state.c: xxx-state.xc
-	sed s/gsl_ran_xxx_/gsl_ran_taus_/g xxx-state.xc > $@
+	sed s/gsl_ran_xxx_/gsl_ran_taus_/g $(srcdir)/xxx-state.xc > $@
 taus.h: gsl_ran.h
-	sed s/gsl_ran_/gsl_ran_taus_/g gsl_ran.h > $@
+	sed s/gsl_ran_/gsl_ran_taus_/g $(srcdir)/gsl_ran.h > $@
 taus-gen.c: xxx-gen.xc
-	sed s/xxx/taus/g xxx-gen.xc > $@
+	sed s/xxx/taus/g $(srcdir)/xxx-gen.xc > $@
 uni-state.c: xxx-state.xc
-	sed s/gsl_ran_xxx_/gsl_ran_uni_/g xxx-state.xc > $@
+	sed s/gsl_ran_xxx_/gsl_ran_uni_/g $(srcdir)/xxx-state.xc > $@
 uni.h: gsl_ran.h
-	sed s/gsl_ran_/gsl_ran_uni_/g gsl_ran.h > $@
+	sed s/gsl_ran_/gsl_ran_uni_/g $(srcdir)/gsl_ran.h > $@
 uni-gen.c: xxx-gen.xc
-	sed s/xxx/uni/g xxx-gen.xc > $@
+	sed s/xxx/uni/g $(srcdir)/xxx-gen.xc > $@
 uni32-state.c: xxx-state.xc
-	sed s/gsl_ran_xxx_/gsl_ran_uni32_/g xxx-state.xc > $@
+	sed s/gsl_ran_xxx_/gsl_ran_uni32_/g $(srcdir)/xxx-state.xc > $@
 uni32.h: gsl_ran.h
-	sed s/gsl_ran_/gsl_ran_uni32_/g gsl_ran.h > $@
+	sed s/gsl_ran_/gsl_ran_uni32_/g $(srcdir)/gsl_ran.h > $@
 uni32-gen.c: xxx-gen.xc
-	sed s/xxx/uni32/g xxx-gen.xc > $@
+	sed s/xxx/uni32/g $(srcdir)/xxx-gen.xc > $@
 zuf-state.c: xxx-state.xc
-	sed s/gsl_ran_xxx_/gsl_ran_zuf_/g xxx-state.xc > $@
+	sed s/gsl_ran_xxx_/gsl_ran_zuf_/g $(srcdir)/xxx-state.xc > $@
 zuf.h: gsl_ran.h
-	sed s/gsl_ran_/gsl_ran_zuf_/g gsl_ran.h > $@
+	sed s/gsl_ran_/gsl_ran_zuf_/g $(srcdir)/gsl_ran.h > $@
 zuf-gen.c: xxx-gen.xc
-	sed s/xxx/zuf/g xxx-gen.xc > $@
+	sed s/xxx/zuf/g $(srcdir)/xxx-gen.xc > $@
 rand-state.c: xxx-state.xc
-	sed s/gsl_ran_xxx_/gsl_ran_rand_/g xxx-state.xc > $@
+	sed s/gsl_ran_xxx_/gsl_ran_rand_/g $(srcdir)/xxx-state.xc > $@
 rand.h: gsl_ran.h
-	sed s/gsl_ran_/gsl_ran_rand_/g gsl_ran.h > $@
+	sed s/gsl_ran_/gsl_ran_rand_/g $(srcdir)/gsl_ran.h > $@
 rand-gen.c: xxx-gen.xc
-	sed s/xxx/rand/g xxx-gen.xc > $@
+	sed s/xxx/rand/g $(srcdir)/xxx-gen.xc > $@
 
 BUILT_SOURCES= switch.c gsl_ran_switch.h mrg-state.c mrg.h mrg-gen.c cmrg-state.c cmrg.h cmrg-gen.c taus-state.c taus.h taus-gen.c uni-state.c uni.h uni-gen.c uni32-state.c uni32.h uni32-gen.c zuf-state.c zuf.h zuf-gen.c rand-state.c rand.h rand-gen.c 
