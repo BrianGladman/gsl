@@ -4,6 +4,8 @@
 #include <gsl/gsl_vector.h>
 #include <gsl/gsl_errno.h>
 
+#include "view.h"
+
 #define BASE_GSL_COMPLEX_LONG
 #include "templates_on.h"
 #include "submatrix_source.c"

@@ -22,7 +22,7 @@ FUNCTION (gsl_matrix, submatrix) (QUALIFIED_TYPE(gsl_matrix) * m,
                                   const size_t i, const size_t j,
                                   const size_t n1, const size_t n2)
 {
-  QUALIFIED_VIEW(gsl_matrix,view) view; 
+  QUALIFIED_VIEW(gsl_matrix,view) view = NULL_MATRIX_VIEW; 
 
   if (i >= m->size1)
     {
@@ -50,7 +50,7 @@ FUNCTION (gsl_matrix, submatrix) (QUALIFIED_TYPE(gsl_matrix) * m,
     }
 
   {
-     TYPE(gsl_matrix) s = {0, 0, 0, 0, 0};
+     TYPE(gsl_matrix) s = NULL_MATRIX;
 
      s.data = m->data + MULTIPLICITY * (i * m->tda + j);
      s.size1 = n1;
@@ -63,3 +63,4 @@ FUNCTION (gsl_matrix, submatrix) (QUALIFIED_TYPE(gsl_matrix) * m,
      return view;
   }
 }
+

@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <gsl/gsl_vector.h>
 
+#include "view.h"
+
 #define BASE_GSL_COMPLEX_LONG
 #include "templates_on.h"
 #include "view_source.c"

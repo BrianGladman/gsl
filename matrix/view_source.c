@@ -17,13 +17,11 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-
-
 QUALIFIED_VIEW (gsl_matrix,view)
 FUNCTION (gsl_matrix, view_array) (QUALIFIER ATOMIC * array, 
                                    const size_t n1, const size_t n2)
 {
-  QUALIFIED_VIEW (gsl_matrix,view) view;
+  QUALIFIED_VIEW (gsl_matrix,view) view = NULL_MATRIX_VIEW;
 
   if (n1 == 0)
     {
@@ -37,7 +35,7 @@ FUNCTION (gsl_matrix, view_array) (QUALIFIER ATOMIC * array,
     }
 
   {
-    TYPE(gsl_matrix) m = {0, 0, 0, 0, 0, 0};
+    TYPE(gsl_matrix) m = NULL_MATRIX;
 
     m.data = array;
     m.size1 = n1;
@@ -57,7 +55,7 @@ FUNCTION(gsl_matrix, view_array_with_tda) (QUALIFIER ATOMIC * base,
                                            const size_t n2,
                                            const size_t tda)
 {
-  QUALIFIED_VIEW (gsl_matrix,view) view;
+  QUALIFIED_VIEW (gsl_matrix,view) view = NULL_MATRIX_VIEW;
 
   if (n1 == 0)
     {
@@ -77,7 +75,7 @@ FUNCTION(gsl_matrix, view_array_with_tda) (QUALIFIER ATOMIC * base,
 
 
   {
-    TYPE(gsl_matrix) m = {0, 0, 0, 0, 0, 0};
+    TYPE(gsl_matrix) m = NULL_MATRIX;
 
     m.data = base;
     m.size1 = n1;
@@ -96,7 +94,7 @@ FUNCTION(gsl_matrix, view_vector) (QUALIFIED_TYPE(gsl_vector) * v,
                                    const size_t n1, 
                                    const size_t n2)
 {
-  QUALIFIED_VIEW (gsl_matrix,view) view;
+  QUALIFIED_VIEW (gsl_matrix,view) view = NULL_MATRIX_VIEW;
 
   if (n1 == 0)
     {
@@ -115,7 +113,7 @@ FUNCTION(gsl_matrix, view_vector) (QUALIFIED_TYPE(gsl_vector) * v,
     }
 
   {
-    TYPE(gsl_matrix) m = {0, 0, 0, 0, 0, 0};
+    TYPE(gsl_matrix) m = NULL_MATRIX;
 
     m.data = v->data;
     m.size1 = n1;
@@ -136,7 +134,7 @@ FUNCTION(gsl_matrix, view_vector_with_tda) (QUALIFIED_TYPE(gsl_vector) * v,
                                             const size_t n2,
                                             const size_t tda)
 {
-  QUALIFIED_VIEW (gsl_matrix,view) view;
+  QUALIFIED_VIEW (gsl_matrix,view) view = NULL_MATRIX_VIEW;
 
   if (n1 == 0)
     {
@@ -160,7 +158,7 @@ FUNCTION(gsl_matrix, view_vector_with_tda) (QUALIFIED_TYPE(gsl_vector) * v,
     }
 
   {
-    TYPE(gsl_matrix) m = {0, 0, 0, 0, 0, 0};
+    TYPE(gsl_matrix) m = NULL_MATRIX;
 
     m.data = v->data;
     m.size1 = n1;

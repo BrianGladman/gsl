@@ -20,7 +20,7 @@
 QUALIFIED_VIEW(gsl_vector,view)
 FUNCTION(gsl_vector, view_array) (QUALIFIER ATOMIC * base, size_t n)
 {
-  QUALIFIED_VIEW(gsl_vector,view) view;
+  QUALIFIED_VIEW(gsl_vector,view) view = NULL_VECTOR_VIEW;
 
   if (n == 0)
     {
@@ -29,7 +29,7 @@ FUNCTION(gsl_vector, view_array) (QUALIFIER ATOMIC * base, size_t n)
     }
 
   {
-    TYPE(gsl_vector) v = {0, 0, 0, 0, 0};
+    TYPE(gsl_vector) v = NULL_VECTOR;
 
     v.data = base  ;
     v.size = n;
@@ -47,7 +47,7 @@ FUNCTION(gsl_vector, view_array_with_stride) (QUALIFIER ATOMIC * base,
                                               size_t stride,
                                               size_t n)
 {
-  QUALIFIED_VIEW(gsl_vector,view) view;
+  QUALIFIED_VIEW(gsl_vector,view) view = NULL_VECTOR_VIEW;
 
   if (n == 0)
     {
@@ -62,7 +62,7 @@ FUNCTION(gsl_vector, view_array_with_stride) (QUALIFIER ATOMIC * base,
     }
 
   {
-    TYPE(gsl_vector) v = {0, 0, 0, 0, 0};
+    TYPE(gsl_vector) v = NULL_VECTOR;
     
     v.data = base ;
     v.size = n;

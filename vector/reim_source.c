@@ -20,7 +20,7 @@
 QUALIFIED_REAL_VIEW(gsl_vector, view)
 FUNCTION(gsl_vector, real) (QUALIFIED_TYPE(gsl_vector) * v)
 {
-  REAL_TYPE(gsl_vector) s = {0, 0, 0, 0, 0};
+  REAL_TYPE(gsl_vector) s = NULL_VECTOR;
 
   s.data = v->data;
   s.size = v->size;
@@ -39,7 +39,7 @@ FUNCTION(gsl_vector, real) (QUALIFIED_TYPE(gsl_vector) * v)
 QUALIFIED_REAL_VIEW(gsl_vector, view)
 FUNCTION(gsl_vector, imag) (QUALIFIED_TYPE(gsl_vector) * v)
 {
-  REAL_TYPE(gsl_vector) s = {0, 0, 0, 0, 0};
+  REAL_TYPE(gsl_vector) s = NULL_VECTOR;
 
   s.data = v->data + 1;
   s.size = v->size;

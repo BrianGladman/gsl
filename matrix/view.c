@@ -2,6 +2,8 @@
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_matrix.h>
 
+#include "view.h"
+
 #define BASE_GSL_COMPLEX_LONG
 #include "templates_on.h"
 #include "view_source.c"

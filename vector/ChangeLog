@@ -1,3 +1,7 @@
+Mon Jul  2 12:34:43 2001  Brian Gough  <bjg@network-theory.co.uk>
+
+	* view.h: provide macros for initializing null vectors and views
+
 Sun Jul  1 22:38:30 2001  Brian Gough  <bjg@network-theory.co.uk>
 
 	* introduction of new-style vector views

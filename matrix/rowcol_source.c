@@ -20,7 +20,7 @@
 QUALIFIED_VIEW(gsl_vector,view)
 FUNCTION (gsl_matrix, row) (QUALIFIED_TYPE(gsl_matrix) * m, const size_t i)
 {
-  QUALIFIED_VIEW(gsl_vector,view) view;
+  QUALIFIED_VIEW(gsl_vector,view) view = NULL_VECTOR_VIEW;
   
   if (i >= m->size1)
     {
@@ -28,7 +28,7 @@ FUNCTION (gsl_matrix, row) (QUALIFIED_TYPE(gsl_matrix) * m, const size_t i)
     }
   
   {
-    TYPE(gsl_vector) v = {0, 0, 0, 0};
+    TYPE(gsl_vector) v = NULL_VECTOR;
     
     v.data = m->data + i * MULTIPLICITY * m->tda;
     v.size = m->size2;
@@ -44,7 +44,7 @@ FUNCTION (gsl_matrix, row) (QUALIFIED_TYPE(gsl_matrix) * m, const size_t i)
 QUALIFIED_VIEW(gsl_vector,view)
 FUNCTION (gsl_matrix, column) (QUALIFIED_TYPE(gsl_matrix) * m, const size_t j)
 {
-  QUALIFIED_VIEW(gsl_vector,view) view;
+  QUALIFIED_VIEW(gsl_vector,view) view = NULL_VECTOR_VIEW;
   
   if (j >= m->size2)
     {
@@ -52,7 +52,7 @@ FUNCTION (gsl_matrix, column) (QUALIFIED_TYPE(gsl_matrix) * m, const size_t j)
     }
 
   {
-    TYPE(gsl_vector) v = {0, 0, 0, 0};
+    TYPE(gsl_vector) v = NULL_VECTOR;
     
     v.data = m->data + j * MULTIPLICITY;
     v.size = m->size1;
@@ -70,7 +70,7 @@ FUNCTION (gsl_matrix, diagonal) (QUALIFIED_TYPE(gsl_matrix) * m)
 {
   QUALIFIED_VIEW(gsl_vector,view) view;
 
-  TYPE(gsl_vector) v = {0, 0, 0, 0};
+  TYPE(gsl_vector) v = NULL_VECTOR;
   v.data = m->data;
   v.size = GSL_MIN(m->size1,m->size2);
   v.stride = m->tda + 1;
@@ -85,7 +85,7 @@ QUALIFIED_VIEW(gsl_vector,view)
 FUNCTION (gsl_matrix, subdiagonal) (QUALIFIED_TYPE(gsl_matrix) * m,
                                     const size_t k)
 {
-  QUALIFIED_VIEW(gsl_vector,view) view;
+  QUALIFIED_VIEW(gsl_vector,view) view = NULL_VECTOR_VIEW;
   
   if (k >= m->size1)
     {
@@ -93,7 +93,7 @@ FUNCTION (gsl_matrix, subdiagonal) (QUALIFIED_TYPE(gsl_matrix) * m,
     }
 
   {
-    TYPE(gsl_vector) v = {0, 0, 0, 0};
+    TYPE(gsl_vector) v = NULL_VECTOR;
     
     v.data = m->data + k * MULTIPLICITY * m->tda;
     v.size = GSL_MIN(m->size1 - k, m->size2);
@@ -110,7 +110,7 @@ QUALIFIED_VIEW(gsl_vector,view)
 FUNCTION (gsl_matrix, superdiagonal) (QUALIFIED_TYPE(gsl_matrix) * m,
                                       const size_t k)
 {
-  QUALIFIED_VIEW(gsl_vector,view) view;
+  QUALIFIED_VIEW(gsl_vector,view) view = NULL_VECTOR_VIEW;
 
 
   if (k >= m->size2)
@@ -119,7 +119,7 @@ FUNCTION (gsl_matrix, superdiagonal) (QUALIFIED_TYPE(gsl_matrix) * m,
     }
 
   {
-    TYPE(gsl_vector) v = {0, 0, 0, 0};
+    TYPE(gsl_vector) v = NULL_VECTOR;
     
     v.data = m->data + k * MULTIPLICITY;
     v.size = GSL_MIN(m->size1, m->size2 - k);

@@ -20,7 +20,7 @@
 QUALIFIED_VIEW(gsl_vector, view)
 FUNCTION(gsl_vector, subvector) (QUALIFIED_TYPE(gsl_vector) * v, size_t offset, size_t n)
 {
-  QUALIFIED_VIEW(gsl_vector,view) view;
+  QUALIFIED_VIEW(gsl_vector,view) view = NULL_VECTOR_VIEW;
 
   if (n == 0)
     {
@@ -35,7 +35,7 @@ FUNCTION(gsl_vector, subvector) (QUALIFIED_TYPE(gsl_vector) * v, size_t offset, 
     }
 
   {
-    TYPE(gsl_vector) s = {0, 0, 0, 0, 0};
+    TYPE(gsl_vector) s = NULL_VECTOR;
 
     s.data = v->data +  MULTIPLICITY * v->stride * offset ;
     s.size = n;
@@ -51,7 +51,7 @@ FUNCTION(gsl_vector, subvector) (QUALIFIED_TYPE(gsl_vector) * v, size_t offset, 
 QUALIFIED_VIEW(gsl_vector, view)
 FUNCTION(gsl_vector, subvector_with_stride) (QUALIFIED_TYPE(gsl_vector) * v, size_t offset, size_t stride, size_t n)
 {
-  QUALIFIED_VIEW(gsl_vector,view) view;
+  QUALIFIED_VIEW(gsl_vector,view) view = NULL_VECTOR_VIEW;
 
   if (n == 0)
     {
@@ -72,7 +72,7 @@ FUNCTION(gsl_vector, subvector_with_stride) (QUALIFIED_TYPE(gsl_vector) * v, siz
     }
 
   {
-    TYPE(gsl_vector) s = {0, 0, 0, 0, 0};
+    TYPE(gsl_vector) s = NULL_VECTOR;
 
     s.data = v->data + MULTIPLICITY * v->stride * offset ;
     s.size = n;
