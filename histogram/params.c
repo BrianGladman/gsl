@@ -5,7 +5,7 @@
 double
 gsl_histogram_max (const gsl_histogram * h)
 {
-  const int n = h->nbins;
+  const int n = h->n;
 
   return h->range[n];
 }
@@ -17,7 +17,7 @@ gsl_histogram_min (const gsl_histogram * h)
 }
 
 size_t
-gsl_histogram_nbins (const gsl_histogram * h)
+gsl_histogram_bins (const gsl_histogram * h)
 {
-  return h->nbins;
+  return h->n;
 }

@@ -5,13 +5,13 @@
 #include <stdio.h>
 
 typedef struct {
-  size_t nbins ;
+  size_t n ;
   double * range ;
   double * bin ;
 } gsl_histogram ;
 
 typedef struct {
-  size_t nbins ;
+  size_t n ;
   double * range ;
   double * sum ;
 } gsl_histogram_pdf ;
@@ -33,7 +33,7 @@ int gsl_histogram_get_range (const gsl_histogram * h, size_t i,
 				     
 double gsl_histogram_max (const gsl_histogram * h);
 double gsl_histogram_min (const gsl_histogram * h);
-size_t gsl_histogram_nbins (const gsl_histogram * h);
+size_t gsl_histogram_bins (const gsl_histogram * h);
 
 void gsl_histogram_reset (gsl_histogram * h);
 

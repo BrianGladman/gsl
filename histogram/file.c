@@ -7,24 +7,24 @@
 int
 gsl_histogram_fread (FILE * stream, gsl_histogram * h)
 {
-  int status = gsl_block_fread (stream, h->range, h->nbins + 1);
+  int status = gsl_block_fread (stream, h->range, h->n + 1);
 
   if (status)
     return status;
 
-  status = gsl_block_fread (stream, h->bin, h->nbins);
+  status = gsl_block_fread (stream, h->bin, h->n);
   return status;
 }
 
 int
 gsl_histogram_fwrite (FILE * stream, const gsl_histogram * h)
 {
-  int status = gsl_block_fwrite (stream, h->range, h->nbins + 1);
+  int status = gsl_block_fwrite (stream, h->range, h->n + 1);
 
   if (status)
     return status;
 
-  status = gsl_block_fwrite (stream, h->bin, h->nbins);
+  status = gsl_block_fwrite (stream, h->bin, h->n);
   return status;
 }
 
@@ -33,7 +33,7 @@ gsl_histogram_fprintf (FILE * stream, const gsl_histogram * h,
 		       const char *range_format, const char *bin_format)
 {
   size_t i;
-  const size_t n = h->nbins;
+  const size_t n = h->n;
 
   for (i = 0; i < n; i++)
     {
@@ -87,7 +87,7 @@ int
 gsl_histogram_fscanf (FILE * stream, gsl_histogram * h)
 {
   size_t i;
-  const size_t n = h->nbins;
+  const size_t n = h->n;
   double upper;
 
   for (i = 0; i < n; i++)

@@ -69,18 +69,18 @@ main (void)
 
 
   result = gsl_histogram_get (h, N);
-  gsl_test (result != 0, "gsl_histogram_get traps index at nbins");
+  gsl_test (result != 0, "gsl_histogram_get traps index at n");
 
   result = gsl_histogram_get (h, N + 1);
-  gsl_test (result != 0, "gsl_histogram_get traps index above nbins");
+  gsl_test (result != 0, "gsl_histogram_get traps index above n");
 
   status = gsl_histogram_get_range (h, N, &lower, &upper);
   gsl_test (status != GSL_EDOM,
-	    "gsl_histogram_get_range traps index at nbins");
+	    "gsl_histogram_get_range traps index at n");
 
   status = gsl_histogram_get_range (h, N + 1, &lower, &upper);
   gsl_test (status != GSL_EDOM,
-	    "gsl_histogram_get_range traps index above nbins");
+	    "gsl_histogram_get_range traps index above n");
 
 
   status = 0;

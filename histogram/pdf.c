@@ -18,7 +18,7 @@ gsl_histogram_pdf_sample (const gsl_histogram_pdf * p, double r)
       r = 0.0;
     }
 
-  status = gsl_histogram_find_impl (p->nbins, p->sum, r, &i);
+  status = gsl_histogram_find_impl (p->n, p->sum, r, &i);
 
   if (status)
     {
@@ -36,7 +36,7 @@ gsl_histogram_pdf *
 gsl_histogram_pdf_alloc (const gsl_histogram * h)
 {
   size_t i;
-  size_t n = h->nbins;
+  size_t n = h->n;
   gsl_histogram_pdf *p;
 
   if (n == 0)
@@ -106,7 +106,7 @@ gsl_histogram_pdf_alloc (const gsl_histogram * h)
       }
   }
 
-  p->nbins = n;
+  p->n = n;
 
   return p;
 }

@@ -15,7 +15,7 @@ main (void)
 
   gsl_test (h->range == 0, "gsl_histogram_calloc returns valid range pointer");
   gsl_test (h->bin == 0, "gsl_histogram_calloc returns valid bin pointer");
-  gsl_test (h->nbins != N, "gsl_histogram_calloc returns valid size");
+  gsl_test (h->n != N, "gsl_histogram_calloc returns valid size");
 
   for (i = 0; i < N; i++)
     {
@@ -121,9 +121,9 @@ main (void)
 
   {
     int status = 0;
-    if (gsl_histogram_nbins (h) != N)
+    if (gsl_histogram_bins (h) != N)
       status = 1;
-    gsl_test (status, "gsl_histogram_nbins works correctly");
+    gsl_test (status, "gsl_histogram_bins works correctly");
   }
 
   gsl_histogram_free (h);	/* free whatever is in h */
@@ -134,7 +134,7 @@ main (void)
 	    "gsl_histogram_calloc_uniform returns valid range pointer");
   gsl_test (h->bin == 0,
 	    "gsl_histogram_calloc_uniform returns valid bin pointer");
-  gsl_test (h->nbins != N,
+  gsl_test (h->n != N,
 	    "gsl_histogram_calloc_uniform returns valid size");
 
   gsl_histogram_accumulate (h, 0.0, 1.0);

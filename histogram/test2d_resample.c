@@ -76,7 +76,7 @@ main (void)
 	      }
 	  }
       }
-    gsl_test (status, "gsl_histogram2d_pdf_sample works");
+    gsl_test (status, "gsl_histogram2d_pdf_sample within statistical errors");
   }
   return gsl_test_summary ();
 }

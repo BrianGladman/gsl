@@ -10,7 +10,7 @@ int
 gsl_histogram_find (const gsl_histogram * h,
 		    const double x, size_t * i)
 {
-  int status = gsl_histogram_find_impl (h->nbins, h->range, x, i);
+  int status = gsl_histogram_find_impl (h->n, h->range, x, i);
 
   if (status)
     {

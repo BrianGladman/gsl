@@ -6,7 +6,7 @@ void
 gsl_histogram_reset (gsl_histogram * h)
 {
   size_t i;
-  const size_t n = h->nbins;
+  const size_t n = h->n;
 
   for (i = 0; i < n; i++)
     {

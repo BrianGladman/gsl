@@ -87,7 +87,7 @@ gsl_histogram_calloc (size_t n)
       }
   }
 
-  h->nbins = n;
+  h->n = n;
 
   return h;
 }
