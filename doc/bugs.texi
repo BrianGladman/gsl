@@ -1,7 +1,7 @@
 
 A list of known bugs can be found in the @file{BUGS} file included in
 the GSL distribution.  Details of compilation problems can be found in
-the @file{MACHINES} file.
+the @file{INSTALL} file.
 
 If you find a bug which is not listed in these files please report it
 to the mailing list @email{gsl-discuss@@sources.redhat.com}.

@@ -28,8 +28,8 @@ Installation
 GSL follows the standard GNU installation procedure.  Please consult
 the INSTALL file in this distribution for more detailed instructions.
 
-For notes about problems with specific platforms and compilers see the
-MACHINES file.
+For information about specific platforms and compilers see the
+"Compilation Notes" section in the INSTALL file.
 
 More information about GSL
 ==========================
@@ -55,7 +55,7 @@ Reporting Bugs
 ==============
 
 A list of known bugs can be found in the BUGS file.  
-Details of compilation problems can be found in the MACHINES file.
+Details of compilation problems can be found in the INSTALL file.
 
 If you find a bug which is not listed in these files please report it
 to the mailing list gsl-discuss@sources.redhat.com.
