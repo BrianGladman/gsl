@@ -1,0 +1,4 @@
+This chapter describes functions for solving multidimensional nonlinear
+equations.
+
+

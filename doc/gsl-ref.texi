@@ -171,6 +171,7 @@ Equations}).  Work is under way on a special function library.
 * Fast Fourier Transforms::     
 * Roots of Polynomials::        
 * Solutions of Nonlinear Equations::  
+* Solutions of Multidimensional Nonlinear Equations::  
 * Minimization::                
 * Special Functions::           
 * Discrete Hankel Transforms::  
@@ -241,12 +242,16 @@ allowing wrappers to be written for very high level languages.
 @include poly.texi
 
 @comment Section on root finding
-@node  Solutions of Nonlinear Equations, Minimization, Roots of Polynomials, Top
+@node  Solutions of Nonlinear Equations, Solutions of Multidimensional Nonlinear Equations, Roots of Polynomials, Top
 @chapter Solutions of Nonlinear Equations
 @include roots.texi
 
+@node  Solutions of Multidimensional Nonlinear Equations, Minimization, Solutions of Nonlinear Equations, Top
+@chapter Solutions of Multidimensional Nonlinear Equations
+@include multiroots.texi
+
 @comment Section on minimization
-@node   Minimization, Special Functions, Solutions of Nonlinear Equations, Top
+@node   Minimization, Special Functions, Solutions of Multidimensional Nonlinear Equations, Top
 @chapter Minimization
 @include min.texi
 
