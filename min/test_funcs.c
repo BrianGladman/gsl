@@ -37,3 +37,16 @@ func2 (double x)
 }
 
 
+/* f(x) = 1 for x < 1 and -exp(-x) for x >= 1 */
+/* minimum at x = 1 */
+
+double
+func3 (double x)
+{
+  if (x < 1)
+    return 1 ;
+  else
+    return - exp(-x) ;
+}
+
+

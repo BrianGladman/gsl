@@ -55,9 +55,10 @@ gsl_min_fsolver_set (gsl_min_fsolver * s, gsl_function * f, double minimum, gsl_
       GSL_ERROR ("invalid interval (lower > upper)", GSL_EINVAL);
     }
 
-  if (minimum > x.upper || minimum < x.lower) 
+  if (minimum >= x.upper || minimum <= x.lower) 
     {
-      GSL_ERROR ("minimum must lie inside interval", GSL_EINVAL);
+      GSL_ERROR ("minimum must lie inside interval (lower < x < upper)",
+                 GSL_EINVAL);
     }
 
   return (s->type->set) (s->state, s->function, &(s->minimum), &(s->interval));

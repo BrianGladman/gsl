@@ -21,7 +21,7 @@ void my_error_handler (const char *reason, const char *file,
 int
 main (void)
 {
-  gsl_function F_cos, F_func1, F_func2;
+  gsl_function F_cos, F_func1, F_func2, F_func3;
   
   const gsl_min_fsolver_type * fsolver[4] ;
   const gsl_min_fsolver_type ** T;
@@ -33,6 +33,7 @@ main (void)
   F_cos = create_function (cos) ;
   F_func1 = create_function (func1) ;
   F_func2 = create_function (func2) ;
+  F_func3 = create_function (func3) ;
 
   gsl_set_error_handler (&my_error_handler);
 
@@ -41,12 +42,11 @@ main (void)
       test_f (*T, "cos(x) [0 (3) 6]", &F_cos, 0.0, 3.0, 6.0, M_PI);
       test_f (*T, "x^4 - 1 [-3 (-1) 17]", &F_func1, -3.0, -1.0, 17.0, 0.0);
       test_f (*T, "sqrt(|x|) [-2 (-1) 1.5]", &F_func2, -2.0, -1.0, 1.5, 0.0);
+      test_f (*T, "func3(x) [-2 (3) 4]", &F_func3, -2.0, 3.0, 4.0, 1.0);
 
-#ifdef JUNK
-      test_f_e (*T, "invalid range check [4, 0]", &F_sin, 4.0, 0.0, M_PI);
-      test_f_e (*T, "invalid range check [1, 1]", &F_sin, 1.0, 1.0, M_PI);
-      test_f_e (*T, "invalid range check [0.1, 0.2]", &F_sin, 0.1, 0.2, M_PI);
-#endif
+      test_f_e (*T, "invalid range check [4, 0]", &F_cos, 4.0, 3.0, 0.0, M_PI);
+      test_f_e (*T, "invalid range check [1, 1]", &F_cos, 1.0, 1.0, 1.0, M_PI);
+      test_f_e (*T, "invalid range check [-1, 1]", &F_cos, -1.0, 0.0, 1.0, M_PI);
     }
 
   return gsl_test_summary ();
@@ -111,11 +111,11 @@ test_f (const gsl_min_fsolver_type * T,
     }
 }
 
-#ifdef JUNK
 void
 test_f_e (const gsl_min_fsolver_type * T, 
 	  const char * description, gsl_function *f,
-	  double lower_bound, double upper_bound, double correct_root)
+	  double lower_bound, double middle, double upper_bound, 
+          double correct_minimum)
 {
   int status;
   size_t iterations = 0;
@@ -125,7 +125,7 @@ test_f_e (const gsl_min_fsolver_type * T,
   x.lower = lower_bound;
   x.upper = upper_bound;
 
-  s = gsl_min_fsolver_alloc(T, f, x) ;
+  s = gsl_min_fsolver_alloc(T, f, middle, x) ;
 
   if (s == 0) 
     {
@@ -143,10 +143,9 @@ test_f_e (const gsl_min_fsolver_type * T,
   while (status == GSL_CONTINUE && iterations < MAX_ITERATIONS);
 
   gsl_test (!status, "%s, %s", gsl_min_fsolver_name(s), description, 
-	    gsl_min_fsolver_root(s) - correct_root);
+	    gsl_min_fsolver_minimum(s) - correct_minimum);
 
 }
-#endif
 
 void
 my_error_handler (const char *reason, const char *file, int line, int err)

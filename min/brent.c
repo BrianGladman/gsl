@@ -93,7 +93,7 @@ brent_iterate (void *vstate, gsl_function * f, double *minimum, gsl_interval * x
 
   double p = 0, q = 0, r = 0;
 
-  const double zm = 0.5 * (x_lower + x_upper);
+  const double midpoint = 0.5 * (x_lower + x_upper);
 
   if (fabs (e) > tolerance)
     {
@@ -126,12 +126,12 @@ brent_iterate (void *vstate, gsl_function * f, double *minimum, gsl_interval * x
 
       if ((u - x_lower) < t2 || (x_upper - z) < t2)
 	{
-	  d = (z < zm) ? tolerance : -tolerance ;
+	  d = (z < midpoint) ? tolerance : -tolerance ;
 	}
     }
   else
     {
-      e = (z < zm) ? x_upper - z : -(z - x_lower) ;
+      e = (z < midpoint) ? x_upper - z : -(z - x_lower) ;
       d = golden * e;
     }
 
@@ -145,6 +145,9 @@ brent_iterate (void *vstate, gsl_function * f, double *minimum, gsl_interval * x
       u = z + ((d > 0) ? tolerance : -tolerance) ;
     }
 
+  state->e = e;
+  state->d = d;
+
   SAFE_FUNC_CALL(f, u, &f_u);
 
   if (f_u > f_z)
@@ -153,14 +156,16 @@ brent_iterate (void *vstate, gsl_function * f, double *minimum, gsl_interval * x
 	{
 	  x->lower = u;
           state->f_lower = f_u;
+          return GSL_SUCCESS;
 	}
       else
 	{
 	  x->upper = u;
           state->f_upper = f_u;
+          return GSL_SUCCESS;
 	}
     }
-  else if (f_u <= f_z)
+  else if (f_u < f_z)
     {
       if (u < z)
 	{
@@ -179,6 +184,7 @@ brent_iterate (void *vstate, gsl_function * f, double *minimum, gsl_interval * x
       state->f_w = f_z;
       *minimum = u;
       state->f_minimum = f_u;
+      return GSL_SUCCESS;
     }
   else if (f_u <= f_w || w == z)
     {
@@ -186,17 +192,18 @@ brent_iterate (void *vstate, gsl_function * f, double *minimum, gsl_interval * x
       state->f_v = f_w;
       state->w = u;
       state->f_w = f_u;
+      return GSL_SUCCESS;
     }
   else if (f_u <= f_v || v == z || v == w)
     {
       state->v = u;
       state->f_v = f_u;
+      return GSL_SUCCESS;
     }
-
-  state->e = e;
-  state->d = d;
-
-  return GSL_SUCCESS;
+  else
+    {
+      return GSL_FAILURE;
+    }
 }
 
 

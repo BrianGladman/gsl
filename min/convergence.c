@@ -40,19 +40,3 @@ gsl_min_test_interval (const gsl_interval x, double epsabs, double epsrel)
   return GSL_CONTINUE ;
 }
 
-int
-gsl_min_test_delta (double x1, double x0, double epsabs, double epsrel)
-{
-  const double tolerance = epsabs + epsrel * fabs(x1)  ;
-
-  if (epsrel < 0.0)
-    GSL_ERROR ("relative tolerance is negative", GSL_EBADTOL);
-  
-  if (epsabs < 0.0)
-    GSL_ERROR ("absolute tolerance is negative", GSL_EBADTOL);
-  
-  if (fabs(x1 - x0) < tolerance)
-    return GSL_SUCCESS;
-  
-  return GSL_CONTINUE ;
-}
