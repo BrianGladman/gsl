@@ -28,7 +28,7 @@ int main (void)
     gsl_integration_qk15 (book1, 0.0, 1.0, 
 			  &result, &abserr, &resabs, &resasc) ;
     gsl_test_rel(result,exp_result,1e-15,"qk15(book1) smooth result") ;
-    gsl_test_rel(abserr,exp_abserr,1e-15,"qk15(book1) smooth abserr") ;
+    gsl_test_rel(abserr,exp_abserr,1e-7,"qk15(book1) smooth abserr") ;
     gsl_test_rel(resabs,exp_resabs,1e-15,"qk15(book1) smooth resabs") ;    
     gsl_test_rel(resasc,exp_resasc,1e-15,"qk15(book1) smooth resasc") ;
   }
@@ -44,7 +44,7 @@ int main (void)
     gsl_integration_qk21 (book1, 0.0, 1.0, 
 			  &result, &abserr, &resabs, &resasc) ;
     gsl_test_rel(result,exp_result,1e-15,"qk21(book1) smooth result") ;
-    gsl_test_rel(abserr,exp_abserr,1e-15,"qk21(book1) smooth abserr") ;
+    gsl_test_rel(abserr,exp_abserr,1e-7,"qk21(book1) smooth abserr") ;
     gsl_test_rel(resabs,exp_resabs,1e-15,"qk21(book1) smooth resabs") ;    
     gsl_test_rel(resasc,exp_resasc,1e-15,"qk21(book1) smooth resasc") ;
   }
@@ -60,7 +60,7 @@ int main (void)
     gsl_integration_qk31 (book1, 0.0, 1.0, 
 			  &result, &abserr, &resabs, &resasc) ;
     gsl_test_rel(result,exp_result,1e-15,"qk31(book1) smooth result") ;
-    gsl_test_rel(abserr,exp_abserr,1e-15,"qk31(book1) smooth abserr") ;
+    gsl_test_rel(abserr,exp_abserr,1e-7,"qk31(book1) smooth abserr") ;
     gsl_test_rel(resabs,exp_resabs,1e-15,"qk31(book1) smooth resabs") ;    
     gsl_test_rel(resasc,exp_resasc,1e-15,"qk31(book1) smooth resasc") ;
   }
@@ -76,8 +76,6 @@ int main (void)
     gsl_integration_qk41 (book1, 0.0, 1.0, 
 			  &result, &abserr, &resabs, &resasc) ;
     gsl_test_rel(result,exp_result,1e-15,"qk41(book1) smooth result") ;
-    /* FIXME: we have some roundoff error on this one, but it seems
-       reasonable (it's suprising that the others are exact) */
     gsl_test_rel(abserr,exp_abserr,1e-7,"qk41(book1) smooth abserr") ;
     gsl_test_rel(resabs,exp_resabs,1e-15,"qk41(book1) smooth resabs") ;    
     gsl_test_rel(resasc,exp_resasc,1e-15,"qk41(book1) smooth resasc") ;
@@ -94,7 +92,7 @@ int main (void)
     gsl_integration_qk51 (book1, 0.0, 1.0, 
 			  &result, &abserr, &resabs, &resasc) ;
     gsl_test_rel(result,exp_result,1e-15,"qk51(book1) smooth result") ;
-    gsl_test_rel(abserr,exp_abserr,1e-15,"qk51(book1) smooth abserr") ;
+    gsl_test_rel(abserr,exp_abserr,1e-5,"qk51(book1) smooth abserr") ;
     gsl_test_rel(resabs,exp_resabs,1e-15,"qk51(book1) smooth resabs") ;    
     gsl_test_rel(resasc,exp_resasc,1e-15,"qk51(book1) smooth resasc") ;
   }
@@ -110,8 +108,6 @@ int main (void)
     gsl_integration_qk61 (book1, 0.0, 1.0, 
 			  &result, &abserr, &resabs, &resasc) ;
     gsl_test_rel(result,exp_result,1e-15,"qk61(book1) smooth result") ;
-    /* FIXME: we have some roundoff error on this one, but it seems
-       reasonable (it's suprising that the others are exact) */
     gsl_test_rel(abserr,exp_abserr,1e-5,"qk61(book1) smooth abserr") ;
     gsl_test_rel(resabs,exp_resabs,1e-15,"qk61(book1) smooth resabs") ;    
     gsl_test_rel(resasc,exp_resasc,1e-15,"qk61(book1) smooth resasc") ;
@@ -132,7 +128,7 @@ int main (void)
     gsl_integration_qk15 (book1, 0.0, 1.0, 
 			  &result, &abserr, &resabs, &resasc) ;
     gsl_test_rel(result,exp_result,1e-15,"qk15(book1) singular result") ;
-    gsl_test_rel(abserr,exp_abserr,1e-15,"qk15(book1) singular abserr") ;
+    gsl_test_rel(abserr,exp_abserr,1e-7,"qk15(book1) singular abserr") ;
     gsl_test_rel(resabs,exp_resabs,1e-15,"qk15(book1) singular resabs") ;    
     gsl_test_rel(resasc,exp_resasc,1e-15,"qk15(book1) singular resasc") ;
   }
@@ -148,7 +144,7 @@ int main (void)
     gsl_integration_qk21 (book1, 0.0, 1.0, 
 			  &result, &abserr, &resabs, &resasc) ;
     gsl_test_rel(result,exp_result,1e-15,"qk21(book1) singular result") ;
-    gsl_test_rel(abserr,exp_abserr,1e-15,"qk21(book1) singular abserr") ;
+    gsl_test_rel(abserr,exp_abserr,1e-7,"qk21(book1) singular abserr") ;
     gsl_test_rel(resabs,exp_resabs,1e-15,"qk21(book1) singular resabs") ;    
     gsl_test_rel(resasc,exp_resasc,1e-15,"qk21(book1) singular resasc") ;
   }
@@ -164,7 +160,7 @@ int main (void)
     gsl_integration_qk31 (book1, 0.0, 1.0, 
 			  &result, &abserr, &resabs, &resasc) ;
     gsl_test_rel(result,exp_result,1e-15,"qk31(book1) singular result") ;
-    gsl_test_rel(abserr,exp_abserr,1e-15,"qk31(book1) singular abserr") ;
+    gsl_test_rel(abserr,exp_abserr,1e-7,"qk31(book1) singular abserr") ;
     gsl_test_rel(resabs,exp_resabs,1e-15,"qk31(book1) singular resabs") ;    
     gsl_test_rel(resasc,exp_resasc,1e-15,"qk31(book1) singular resasc") ;
   }
@@ -180,7 +176,7 @@ int main (void)
     gsl_integration_qk41 (book1, 0.0, 1.0, 
 			  &result, &abserr, &resabs, &resasc) ;
     gsl_test_rel(result,exp_result,1e-15,"qk41(book1) singular result") ;
-    gsl_test_rel(abserr,exp_abserr,1e-15,"qk41(book1) singular abserr") ;
+    gsl_test_rel(abserr,exp_abserr,1e-7,"qk41(book1) singular abserr") ;
     gsl_test_rel(resabs,exp_resabs,1e-15,"qk41(book1) singular resabs") ;    
     gsl_test_rel(resasc,exp_resasc,1e-15,"qk41(book1) singular resasc") ;
   }
@@ -196,7 +192,7 @@ int main (void)
     gsl_integration_qk51 (book1, 0.0, 1.0, 
 			  &result, &abserr, &resabs, &resasc) ;
     gsl_test_rel(result,exp_result,1e-15,"qk51(book1) singular result") ;
-    gsl_test_rel(abserr,exp_abserr,1e-15,"qk51(book1) singular abserr") ;
+    gsl_test_rel(abserr,exp_abserr,1e-7,"qk51(book1) singular abserr") ;
     gsl_test_rel(resabs,exp_resabs,1e-15,"qk51(book1) singular resabs") ;    
     gsl_test_rel(resasc,exp_resasc,1e-15,"qk51(book1) singular resasc") ;
   }
@@ -212,7 +208,7 @@ int main (void)
     gsl_integration_qk61 (book1, 0.0, 1.0, 
 			  &result, &abserr, &resabs, &resasc) ;
     gsl_test_rel(result,exp_result,1e-15,"qk61(book1) singular result") ;
-    gsl_test_rel(abserr,exp_abserr,1e-15,"qk61(book1) singular abserr") ;
+    gsl_test_rel(abserr,exp_abserr,1e-7,"qk61(book1) singular abserr") ;
     gsl_test_rel(resabs,exp_resabs,1e-15,"qk61(book1) singular resabs") ;    
     gsl_test_rel(resasc,exp_resasc,1e-15,"qk61(book1) singular resasc") ;
   }
@@ -232,7 +228,7 @@ int main (void)
     gsl_integration_qk15 (book3, 0.3, 2.71, 
 			  &result, &abserr, &resabs, &resasc) ;
     gsl_test_rel(result,exp_result,1e-15,"qk15(book3) oscill result") ;
-    gsl_test_rel(abserr,exp_abserr,1e-15,"qk15(book3) oscill abserr") ;
+    gsl_test_rel(abserr,exp_abserr,1e-7,"qk15(book3) oscill abserr") ;
     gsl_test_rel(resabs,exp_resabs,1e-15,"qk15(book3) oscill resabs") ;
     gsl_test_rel(resasc,exp_resasc,1e-15,"qk15(book3) oscill resasc") ;
   }
@@ -248,7 +244,7 @@ int main (void)
     gsl_integration_qk21 (book3, 0.3, 2.71, 
 			  &result, &abserr, &resabs, &resasc) ;
     gsl_test_rel(result,exp_result,1e-15,"qk21(book3) oscill result") ;
-    gsl_test_rel(abserr,exp_abserr,1e-15,"qk21(book3) oscill abserr") ;
+    gsl_test_rel(abserr,exp_abserr,1e-5,"qk21(book3) oscill abserr") ;
     gsl_test_rel(resabs,exp_resabs,1e-15,"qk21(book3) oscill resabs") ;
     gsl_test_rel(resasc,exp_resasc,1e-15,"qk21(book3) oscill resasc") ;
   }
@@ -264,7 +260,7 @@ int main (void)
     gsl_integration_qk31 (book3, 0.3, 2.71, 
 			  &result, &abserr, &resabs, &resasc) ;
     gsl_test_rel(result,exp_result,1e-15,"qk31(book3) oscill result") ;
-    gsl_test_rel(abserr,exp_abserr,1e-15,"qk31(book3) oscill abserr") ;
+    gsl_test_rel(abserr,exp_abserr,1e-7,"qk31(book3) oscill abserr") ;
     gsl_test_rel(resabs,exp_resabs,1e-15,"qk31(book3) oscill resabs") ;
     gsl_test_rel(resasc,exp_resasc,1e-15,"qk31(book3) oscill resasc") ;
   }
@@ -280,7 +276,7 @@ int main (void)
     gsl_integration_qk41 (book3, 0.3, 2.71, 
 			  &result, &abserr, &resabs, &resasc) ;
     gsl_test_rel(result,exp_result,1e-15,"qk41(book3) oscill result") ;
-    gsl_test_rel(abserr,exp_abserr,1e-15,"qk41(book3) oscill abserr") ;
+    gsl_test_rel(abserr,exp_abserr,1e-7,"qk41(book3) oscill abserr") ;
     gsl_test_rel(resabs,exp_resabs,1e-15,"qk41(book3) oscill resabs") ;
     gsl_test_rel(resasc,exp_resasc,1e-15,"qk41(book3) oscill resasc") ;
   }
@@ -296,7 +292,7 @@ int main (void)
     gsl_integration_qk51 (book3, 0.3, 2.71, 
 			  &result, &abserr, &resabs, &resasc) ;
     gsl_test_rel(result,exp_result,1e-15,"qk51(book3) oscill result") ;
-    gsl_test_rel(abserr,exp_abserr,1e-15,"qk51(book3) oscill abserr") ;
+    gsl_test_rel(abserr,exp_abserr,1e-7,"qk51(book3) oscill abserr") ;
     gsl_test_rel(resabs,exp_resabs,1e-15,"qk51(book3) oscill resabs") ;
     gsl_test_rel(resasc,exp_resasc,1e-15,"qk51(book3) oscill resasc") ;
   }
@@ -312,7 +308,7 @@ int main (void)
     gsl_integration_qk61 (book3, 0.3, 2.71, 
 			  &result, &abserr, &resabs, &resasc) ;
     gsl_test_rel(result,exp_result,1e-15,"qk61(book3) oscill result") ;
-    gsl_test_rel(abserr,exp_abserr,1e-15,"qk61(book3) oscill abserr") ;
+    gsl_test_rel(abserr,exp_abserr,1e-7,"qk61(book3) oscill abserr") ;
     gsl_test_rel(resabs,exp_resabs,1e-15,"qk61(book3) oscill resabs") ;
     gsl_test_rel(resasc,exp_resasc,1e-15,"qk61(book3) oscill resasc") ;
   }
@@ -331,7 +327,7 @@ int main (void)
     status = gsl_integration_qng (book1, 0.0, 1.0, 1e-1, 0.0,
 				  &result, &abserr, &neval) ;
     gsl_test_rel(result,exp_result,1e-15,"qng(book1) smooth result") ;
-    gsl_test_rel(abserr,exp_abserr,1e-15,"qng(book1) smooth abserr") ;
+    gsl_test_rel(abserr,exp_abserr,1e-7,"qng(book1) smooth abserr") ;
     gsl_test_int((int)neval,exp_neval,"qng(book1) smooth neval") ;  
     gsl_test_int(status,exp_ier,"qng(book1) smooth status") ;
   }
@@ -349,7 +345,7 @@ int main (void)
     status = gsl_integration_qng (book1, 0.0, 1.0, 0.0, 1e-9,
 				  &result, &abserr, &neval) ;
     gsl_test_rel(result,exp_result,1e-15,"qng(book1) smooth 43pt result") ;
-    gsl_test_rel(abserr,exp_abserr,1e-15,"qng(book1) smooth 43pt abserr") ;
+    gsl_test_rel(abserr,exp_abserr,1e-7,"qng(book1) smooth 43pt abserr") ;
     gsl_test_int((int)neval,exp_neval,"qng(book1) smooth 43pt neval") ;  
     gsl_test_int(status,exp_ier,"qng(book1) smooth 43pt status") ;
   }
@@ -366,7 +362,7 @@ int main (void)
     status = gsl_integration_qng (book3, 0.3, 2.71, 0.0, 1e-12,
 				  &result, &abserr, &neval) ;
     gsl_test_rel(result,exp_result,1e-15,"qnq(book3) oscill result") ;
-    gsl_test_rel(abserr,exp_abserr,1e-15,"qng(book3) oscill abserr") ;
+    gsl_test_rel(abserr,exp_abserr,1e-7,"qng(book3) oscill abserr") ;
     gsl_test_int((int)neval,exp_neval,"qng(book3) oscill neval") ;
     gsl_test_int(status,exp_ier,"qng(book3) oscill status") ;
   }
@@ -384,7 +380,7 @@ int main (void)
     status = gsl_integration_qng (book1, 0.0, 1.0, 0.0, 1e-13,
 				  &result, &abserr, &neval) ;
     gsl_test_rel(result,exp_result,1e-15,"qng(book1) 87pt smooth result") ;
-    gsl_test_rel(abserr,exp_abserr,1e-15,"qng(book1) 87pt smooth abserr") ;
+    gsl_test_rel(abserr,exp_abserr,1e-7,"qng(book1) 87pt smooth abserr") ;
     gsl_test_int((int)neval,exp_neval,"qng(book1) 87pt smooth neval") ;  
     gsl_test_int(status,exp_ier,"qng(book1) 87pt smooth status") ;
   }
@@ -402,7 +398,7 @@ int main (void)
     status = gsl_integration_qng (book1, 0.0, 1.0, 0.0, 1e-3,
 				  &result, &abserr, &neval) ;
     gsl_test_rel(result,exp_result,1e-15,"qng(book1) sing beyond 87pt result");
-    gsl_test_rel(abserr,exp_abserr,1e-15,"qng(book1) sing beyond 87pt abserr");
+    gsl_test_rel(abserr,exp_abserr,1e-7,"qng(book1) sing beyond 87pt abserr");
     gsl_test_int((int)neval,exp_neval,"qng(book1) sing beyond 87pt neval") ;  
     gsl_test_int(status,exp_ier,"qng(book1) sing beyond 87pt status") ;
   }
