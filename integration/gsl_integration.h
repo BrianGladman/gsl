@@ -91,8 +91,6 @@ gsl_integration_qage_impl (double (*f)(double x),
 			   double * result, double * abserr, size_t * nqeval,
 			   gsl_integration_rule_t * const q) ;
 
-
-
 /* The low-level integration rules in QUADPACK are identified by small
    integers (1-6). We'll use symbolic constants to refer to them. 
 
@@ -107,5 +105,9 @@ enum {
   GSL_INTEG_GAUSS51 = 5,  /* 51 point Gauss-Kronrod rule */
   GSL_INTEG_GAUSS61 = 6   /* 61 point Gauss-Kronrod rule */
 } ;
+
+void
+qelg (size_t * n, double epstab[], double * result, double * abserr,
+       double res3la[], size_t * nres) ;
 
 #endif /* GSL_INTEGRATION_H */
