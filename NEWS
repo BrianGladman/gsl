@@ -7,6 +7,10 @@ the documentation. The new versions calculate < {a,b,c}, {d,e,f} >,
 as stated in the documentation. The old versions are still available
 as gsl_sf_coupling_6j_INCORRECT...(...), though they are deprecated
 and will be removed at some point in the future.
+
+** Added new functions for computing Em(x)=exp(-x)*Ei(x), the modified
+(scaled) form of the exponential integral, gsl_sf_expint_E1_scaled,
+gsl_sf_expint_E2_scaled, gsl_sf_expint_Ei_scaled.
    
 ** Fixed compilation problems with gcc -ansi and other ANSI compilers.
 
@@ -45,6 +49,8 @@ incorrect results for the superdiagonal.
 
 ** Ordinary differential equations can now be solved using a different
 absolute error for each component with gsl_odeiv_control_scaled_new().
+
+** Upgraded to libtool-1.4.3
 
 * What was new in gsl-1.2:
 
