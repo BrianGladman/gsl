@@ -59,6 +59,7 @@ main (void)
   rng_state_test (gsl_rng_rand);
   rng_state_test (gsl_rng_ranlux);
   rng_state_test (gsl_rng_ranlux389);
+  rng_state_test (gsl_rng_r250);
   rng_state_test (gsl_rng_taus);
   rng_state_test (gsl_rng_tt800);
   rng_state_test (gsl_rng_uni);
@@ -75,6 +76,7 @@ main (void)
   rng_parallel_state_test (gsl_rng_rand);
   rng_parallel_state_test (gsl_rng_ranlux);
   rng_parallel_state_test (gsl_rng_ranlux389);
+  rng_parallel_state_test (gsl_rng_r250);
   rng_parallel_state_test (gsl_rng_taus);
   rng_parallel_state_test (gsl_rng_tt800);
   rng_parallel_state_test (gsl_rng_uni);
@@ -95,6 +97,7 @@ main (void)
   generic_rng_test (gsl_rng_rand);
   generic_rng_test (gsl_rng_ranlux);
   generic_rng_test (gsl_rng_ranlux389);
+  generic_rng_test (gsl_rng_r250);
   generic_rng_test (gsl_rng_taus);
   generic_rng_test (gsl_rng_tt800);
   generic_rng_test (gsl_rng_uni);

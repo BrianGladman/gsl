@@ -31,6 +31,7 @@ extern const gsl_rng_type * gsl_rng_mt19937 ;
 extern const gsl_rng_type * gsl_rng_rand ;
 extern const gsl_rng_type * gsl_rng_ranlux ;
 extern const gsl_rng_type * gsl_rng_ranlux389 ;
+extern const gsl_rng_type * gsl_rng_r250 ;
 extern const gsl_rng_type * gsl_rng_taus ;
 extern const gsl_rng_type * gsl_rng_tt800 ;
 extern const gsl_rng_type * gsl_rng_uni ;

@@ -32,6 +32,7 @@ gsl_rng_env_setup (void)
       check(&gsl_rng_default, gsl_rng_rand, p) ;
       check(&gsl_rng_default, gsl_rng_ranlux, p) ;
       check(&gsl_rng_default, gsl_rng_ranlux389, p) ;
+      check(&gsl_rng_default, gsl_rng_r250, p) ;
       check(&gsl_rng_default, gsl_rng_taus, p) ;
       check(&gsl_rng_default, gsl_rng_tt800, p) ;
       check(&gsl_rng_default, gsl_rng_uni, p) ;
