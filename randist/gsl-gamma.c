@@ -1,28 +1,29 @@
 
 
 /* $Id$ */
-/* Driver routine for the uniform random number generators */
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 #include "gsl_ran.h"
+#include "gsl_randist.h"
 
 int
 main (int argc, char **argv)
 {
-  int i, n = 1;
-  double mu = 1.0;
-  double rmax;
+  int i;
+  double a = 1.0;
+  int n = 1;
   int randseed = 17;
   if (argc == 1)
     {
-      printf ("Usage: %s <mu> <n> [seed]\n", argv[0]);
+      printf ("Usage: %s <a> <n> [seed]\n", argv[0]);
       printf ("          Writes <n> random numbers\n");
-      printf ("          Poisson distributed wiht mean <mu>,\n");
+      printf ("          Gamma distributed with mean <a>,\n");
       printf ("          optionally using <seed>\n");
       exit (0);
     }
   if (argc > 1)
-    mu = atof (argv[1]);
+    a = atof (argv[1]);
   if (argc > 2)
     n = atoi (argv[2]);
   if (argc > 3)
@@ -33,7 +34,7 @@ main (int argc, char **argv)
 
   for (i = 0; i < n; ++i)
     {
-      printf ("%d\n", gsl_ran_poisson (mu));
+      printf ("%g\n", gsl_ran_gamma (a));
     }
   return 0;
 }

@@ -1,23 +1,22 @@
-
-
 /* $Id$ */
 /* Driver routine for the uniform random number generators */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include "gsl_ran.h"
+#include "gsl_randist.h"
 
 int
 main (int argc, char **argv)
 {
   int i, n = 1;
   double mu = 1.0;
-  double rmax;
   int randseed = 17;
   if (argc == 1)
     {
       printf ("Usage: %s <mu> <n> [seed]\n", argv[0]);
       printf ("          Writes <n> random numbers\n");
-      printf ("          Poisson distributed wiht mean <mu>,\n");
+      printf ("          from the Laplace distribution with width <mu>,\n");
       printf ("          optionally using <seed>\n");
       exit (0);
     }
@@ -33,7 +32,7 @@ main (int argc, char **argv)
 
   for (i = 0; i < n; ++i)
     {
-      printf ("%d\n", gsl_ran_poisson (mu));
+      printf ("%g\n", gsl_ran_laplace (mu));
     }
   return 0;
 }

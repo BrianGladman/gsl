@@ -1,8 +1,14 @@
-# Makefile.in generated automatically by automake 1.2 from Makefile.am
+# Makefile.in generated automatically by automake 1.2h from Makefile.am
 
-# Copyright (C) 1994, 1995, 1996, 1997 Free Software Foundation, Inc.
+# Copyright (C) 1994, 1995, 1996, 1997, 1998 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
-# gives unlimited permission to copy, distribute and modify it.
+# gives unlimited permission to copy and/or distribute it,
+# with or without modifications, as long as this notice is preserved.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY, to the extent permitted by law; without
+# even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+# PARTICULAR PURPOSE.
 
 
 SHELL = /bin/sh
@@ -26,6 +32,8 @@ mandir = @mandir@
 includedir = @includedir@
 oldincludedir = /usr/include
 
+DISTDIR =
+
 pkgdatadir = $(datadir)/@PACKAGE@
 pkglibdir = $(libdir)/@PACKAGE@
 pkgincludedir = $(includedir)/@PACKAGE@
@@ -43,12 +51,12 @@ INSTALL_DATA = @INSTALL_DATA@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
 transform = @program_transform_name@
 
-NORMAL_INSTALL = true
-PRE_INSTALL = true
-POST_INSTALL = true
-NORMAL_UNINSTALL = true
-PRE_UNINSTALL = true
-POST_UNINSTALL = true
+NORMAL_INSTALL = :
+PRE_INSTALL = :
+POST_INSTALL = :
+NORMAL_UNINSTALL = :
+PRE_UNINSTALL = :
+POST_UNINSTALL = :
 host_alias = @host_alias@
 host_triplet = @host@
 CC = @CC@
@@ -61,9 +69,9 @@ VERSION = @VERSION@
 full_top_builddir = @full_top_builddir@
 full_top_srcdir = @full_top_srcdir@
 
-bin_PROGRAMS=exponential gamma gauss poisson lorentz laplace
-noinst_PROGRAMS=bench-gamma bench-gauss bench-poisson  \
-   test-gauss test-shuffle
+bin_PROGRAMS=gsl-exponential gsl-gamma gsl-gauss gsl-poisson \
+	gsl-lorentz gsl-laplace
+noinst_PROGRAMS= test-gauss test-shuffle
 
 lib_LIBRARIES = libgslrandist.a #libutils.a
 libgslrandist_a_SOURCES = gauss.c poisson.c gamma.c exponential.c lorentz.c \
@@ -74,22 +82,15 @@ include_HEADERS= gsl_randist.h
 INCLUDES= -I$(srcdir)/../random
 LDADD= ../random/libgslrandom.a ../utils/libutils.a
 
-gauss_SOURCES= rungauss.c gauss.c
+gsl_gauss_SOURCES= gsl-gauss.c gauss.c
+gsl_exponential_SOURCES= gsl-exponential.c exponential.c
+gsl_lorentz_SOURCES = gsl-lorentz.c lorentz.c
+gsl_laplace_SOURCES = gsl-laplace.c laplace.c
+gsl_poisson_SOURCES= gsl-poisson.c poisson.c 
+gsl_poisson_LDADD= exponential.o $(LDADD)
+gsl_gamma_SOURCES= gsl-gamma.c gamma.c
+
 test_gauss_SOURCES= test-gauss.c gauss.c
-bench_gauss_SOURCES= bench-gauss.c gauss.c
-
-exponential_SOURCES= runexponential.c exponential.c
-lorentz_SOURCES = runlorentz.c lorentz.c
-laplace_SOURCES = runlaplace.c laplace.c
-
-poisson_SOURCES= runpoisson.c poisson.c 
-poisson_LDADD= exponential.o $(LDADD)
-bench_poisson_SOURCES= bench-poisson.c poisson.c
-bench_poisson_LDADD= $(poisson_LDADD)
-
-gamma_SOURCES= rungamma.c gamma.c
-bench_gamma_SOURCES= bench-gamma.c gamma.c
-
 test_shuffle_SOURCES= test-shuffle.c shuffle.c
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
@@ -107,42 +108,31 @@ lorentz.o laplace.o
 AR = ar
 PROGRAMS =  $(bin_PROGRAMS) $(noinst_PROGRAMS)
 
-exponential_OBJECTS =  runexponential.o exponential.o
-exponential_LDADD = $(LDADD)
-exponential_DEPENDENCIES =  ../random/libgslrandom.a ../utils/libutils.a
-exponential_LDFLAGS = 
-gamma_OBJECTS =  rungamma.o gamma.o
-gamma_LDADD = $(LDADD)
-gamma_DEPENDENCIES =  ../random/libgslrandom.a ../utils/libutils.a
-gamma_LDFLAGS = 
-gauss_OBJECTS =  rungauss.o gauss.o
-gauss_LDADD = $(LDADD)
-gauss_DEPENDENCIES =  ../random/libgslrandom.a ../utils/libutils.a
-gauss_LDFLAGS = 
-poisson_OBJECTS =  runpoisson.o poisson.o
-poisson_DEPENDENCIES =  exponential.o ../random/libgslrandom.a \
+gsl_exponential_OBJECTS =  gsl-exponential.o exponential.o
+gsl_exponential_LDADD = $(LDADD)
+gsl_exponential_DEPENDENCIES =  ../random/libgslrandom.a \
 ../utils/libutils.a
-poisson_LDFLAGS = 
-lorentz_OBJECTS =  runlorentz.o lorentz.o
-lorentz_LDADD = $(LDADD)
-lorentz_DEPENDENCIES =  ../random/libgslrandom.a ../utils/libutils.a
-lorentz_LDFLAGS = 
-laplace_OBJECTS =  runlaplace.o laplace.o
-laplace_LDADD = $(LDADD)
-laplace_DEPENDENCIES =  ../random/libgslrandom.a ../utils/libutils.a
-laplace_LDFLAGS = 
-bench_gamma_OBJECTS =  bench-gamma.o gamma.o
-bench_gamma_LDADD = $(LDADD)
-bench_gamma_DEPENDENCIES =  ../random/libgslrandom.a ../utils/libutils.a
-bench_gamma_LDFLAGS = 
-bench_gauss_OBJECTS =  bench-gauss.o gauss.o
-bench_gauss_LDADD = $(LDADD)
-bench_gauss_DEPENDENCIES =  ../random/libgslrandom.a ../utils/libutils.a
-bench_gauss_LDFLAGS = 
-bench_poisson_OBJECTS =  bench-poisson.o poisson.o
-bench_poisson_DEPENDENCIES =  exponential.o ../random/libgslrandom.a \
+gsl_exponential_LDFLAGS = 
+gsl_gamma_OBJECTS =  gsl-gamma.o gamma.o
+gsl_gamma_LDADD = $(LDADD)
+gsl_gamma_DEPENDENCIES =  ../random/libgslrandom.a ../utils/libutils.a
+gsl_gamma_LDFLAGS = 
+gsl_gauss_OBJECTS =  gsl-gauss.o gauss.o
+gsl_gauss_LDADD = $(LDADD)
+gsl_gauss_DEPENDENCIES =  ../random/libgslrandom.a ../utils/libutils.a
+gsl_gauss_LDFLAGS = 
+gsl_poisson_OBJECTS =  gsl-poisson.o poisson.o
+gsl_poisson_DEPENDENCIES =  exponential.o ../random/libgslrandom.a \
 ../utils/libutils.a
-bench_poisson_LDFLAGS = 
+gsl_poisson_LDFLAGS = 
+gsl_lorentz_OBJECTS =  gsl-lorentz.o lorentz.o
+gsl_lorentz_LDADD = $(LDADD)
+gsl_lorentz_DEPENDENCIES =  ../random/libgslrandom.a ../utils/libutils.a
+gsl_lorentz_LDFLAGS = 
+gsl_laplace_OBJECTS =  gsl-laplace.o laplace.o
+gsl_laplace_LDADD = $(LDADD)
+gsl_laplace_DEPENDENCIES =  ../random/libgslrandom.a ../utils/libutils.a
+gsl_laplace_LDFLAGS = 
 test_gauss_OBJECTS =  test-gauss.o gauss.o
 test_gauss_LDADD = $(LDADD)
 test_gauss_DEPENDENCIES =  ../random/libgslrandom.a ../utils/libutils.a
@@ -164,23 +154,22 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 TAR = tar
 GZIP = --best
-DEP_FILES =  .deps/bench-gamma.P .deps/bench-gauss.P \
-.deps/bench-poisson.P .deps/exponential.P .deps/gamma.P .deps/gauss.P \
-.deps/laplace.P .deps/lorentz.P .deps/poisson.P .deps/runexponential.P \
-.deps/rungamma.P .deps/rungauss.P .deps/runlaplace.P .deps/runlorentz.P \
-.deps/runpoisson.P .deps/shuffle.P .deps/test-gauss.P \
-.deps/test-shuffle.P
-SOURCES = $(libgslrandist_a_SOURCES) $(exponential_SOURCES) $(gamma_SOURCES) $(gauss_SOURCES) $(poisson_SOURCES) $(lorentz_SOURCES) $(laplace_SOURCES) $(bench_gamma_SOURCES) $(bench_gauss_SOURCES) $(bench_poisson_SOURCES) $(test_gauss_SOURCES) $(test_shuffle_SOURCES)
-OBJECTS = $(libgslrandist_a_OBJECTS) $(exponential_OBJECTS) $(gamma_OBJECTS) $(gauss_OBJECTS) $(poisson_OBJECTS) $(lorentz_OBJECTS) $(laplace_OBJECTS) $(bench_gamma_OBJECTS) $(bench_gauss_OBJECTS) $(bench_poisson_OBJECTS) $(test_gauss_OBJECTS) $(test_shuffle_OBJECTS)
+DEP_FILES =  .deps/exponential.P .deps/gamma.P .deps/gauss.P \
+.deps/gsl-exponential.P .deps/gsl-gamma.P .deps/gsl-gauss.P \
+.deps/gsl-laplace.P .deps/gsl-lorentz.P .deps/gsl-poisson.P \
+.deps/laplace.P .deps/lorentz.P .deps/poisson.P .deps/shuffle.P \
+.deps/test-gauss.P .deps/test-shuffle.P
+SOURCES = $(libgslrandist_a_SOURCES) $(gsl_exponential_SOURCES) $(gsl_gamma_SOURCES) $(gsl_gauss_SOURCES) $(gsl_poisson_SOURCES) $(gsl_lorentz_SOURCES) $(gsl_laplace_SOURCES) $(test_gauss_SOURCES) $(test_shuffle_SOURCES)
+OBJECTS = $(libgslrandist_a_OBJECTS) $(gsl_exponential_OBJECTS) $(gsl_gamma_OBJECTS) $(gsl_gauss_OBJECTS) $(gsl_poisson_OBJECTS) $(gsl_lorentz_OBJECTS) $(gsl_laplace_OBJECTS) $(test_gauss_OBJECTS) $(test_shuffle_OBJECTS)
 
-default: all
+all: Makefile $(LIBRARIES) $(PROGRAMS) $(HEADERS)
 
 .SUFFIXES:
-.SUFFIXES: .c .o
-$(srcdir)/Makefile.in: Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
+.SUFFIXES: .S .c .o .s
+$(srcdir)/Makefile.in: Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4)
 	cd $(top_srcdir) && $(AUTOMAKE) --gnu randist/Makefile
 
-Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status $(BUILT_SOURCES)
+Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status $(BUILT_SOURCES)
 	cd $(top_builddir) \
 	  && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
@@ -188,7 +177,7 @@ Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status $(BUILT_SOURCES)
 mostlyclean-libLIBRARIES:
 
 clean-libLIBRARIES:
-	test -z "$(lib_LIBRARIES)" || rm -f $(lib_LIBRARIES)
+	-test -z "$(lib_LIBRARIES)" || rm -f $(lib_LIBRARIES)
 
 distclean-libLIBRARIES:
 
@@ -196,49 +185,52 @@ maintainer-clean-libLIBRARIES:
 
 install-libLIBRARIES: $(lib_LIBRARIES)
 	@$(NORMAL_INSTALL)
-	$(mkinstalldirs) $(libdir)
+	$(mkinstalldirs) $(DESTDIR)$(libdir)
 	list='$(lib_LIBRARIES)'; for p in $$list; do \
 	  if test -f $$p; then \
-	    echo " $(INSTALL_DATA) $$p $(libdir)/$$p"; \
-	    $(INSTALL_DATA) $$p $(libdir)/$$p; \
+	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(libdir)/$$p"; \
+	    $(INSTALL_DATA) $$p $(DESTDIR)$(libdir)/$$p; \
 	  else :; fi; \
 	done
 	@$(POST_INSTALL)
 	@list='$(lib_LIBRARIES)'; for p in $$list; do \
 	  if test -f $$p; then \
-	    echo " $(RANLIB) $(libdir)/$$p"; \
-	    $(RANLIB) $(libdir)/$$p; \
+	    echo " $(RANLIB) $(DESTDIR)$(libdir)/$$p"; \
+	    $(RANLIB) $(DESTDIR)$(libdir)/$$p; \
 	  else :; fi; \
 	done
 
 uninstall-libLIBRARIES:
-	$(NORMAL_UNINSTALL)
+	@$(NORMAL_UNINSTALL)
 	list='$(lib_LIBRARIES)'; for p in $$list; do \
-	  rm -f $(libdir)/$$p; \
+	  rm -f $(DESTDIR)$(libdir)/$$p; \
 	done
 
-.c.o:
+.s.o:
+	$(COMPILE) -c $<
+
+.S.o:
 	$(COMPILE) -c $<
 
 mostlyclean-compile:
-	rm -f *.o core
+	-rm -f *.o core *.core
 
 clean-compile:
 
 distclean-compile:
-	rm -f *.tab.c
+	-rm -f *.tab.c
 
 maintainer-clean-compile:
 
 libgslrandist.a: $(libgslrandist_a_OBJECTS) $(libgslrandist_a_DEPENDENCIES)
-	rm -f libgslrandist.a
+	-rm -f libgslrandist.a
 	$(AR) cru libgslrandist.a $(libgslrandist_a_OBJECTS) $(libgslrandist_a_LIBADD)
 	$(RANLIB) libgslrandist.a
 
 mostlyclean-binPROGRAMS:
 
 clean-binPROGRAMS:
-	test -z "$(bin_PROGRAMS)" || rm -f $(bin_PROGRAMS)
+	-test -z "$(bin_PROGRAMS)" || rm -f $(bin_PROGRAMS)
 
 distclean-binPROGRAMS:
 
@@ -246,64 +238,52 @@ maintainer-clean-binPROGRAMS:
 
 install-binPROGRAMS: $(bin_PROGRAMS)
 	@$(NORMAL_INSTALL)
-	$(mkinstalldirs) $(bindir)
+	$(mkinstalldirs) $(DESTDIR)$(bindir)
 	@list='$(bin_PROGRAMS)'; for p in $$list; do \
 	  if test -f $$p; then \
-	    echo "  $(INSTALL_PROGRAM) $$p $(bindir)/`echo $$p|sed '$(transform)'`"; \
-	     $(INSTALL_PROGRAM) $$p $(bindir)/`echo $$p|sed '$(transform)'`; \
+	    echo "  $(INSTALL_PROGRAM) $$p $(DESTDIR)$(bindir)/`echo $$p|sed '$(transform)'`"; \
+	     $(INSTALL_PROGRAM) $$p $(DESTDIR)$(bindir)/`echo $$p|sed '$(transform)'`; \
 	  else :; fi; \
 	done
 
 uninstall-binPROGRAMS:
-	$(NORMAL_UNINSTALL)
+	@$(NORMAL_UNINSTALL)
 	list='$(bin_PROGRAMS)'; for p in $$list; do \
-	  rm -f $(bindir)/`echo $$p|sed '$(transform)'`; \
+	  rm -f $(DESTDIR)$(bindir)/`echo $$p|sed '$(transform)'`; \
 	done
 
 mostlyclean-noinstPROGRAMS:
 
 clean-noinstPROGRAMS:
-	test -z "$(noinst_PROGRAMS)" || rm -f $(noinst_PROGRAMS)
+	-test -z "$(noinst_PROGRAMS)" || rm -f $(noinst_PROGRAMS)
 
 distclean-noinstPROGRAMS:
 
 maintainer-clean-noinstPROGRAMS:
 
-exponential: $(exponential_OBJECTS) $(exponential_DEPENDENCIES)
-	@rm -f exponential
-	$(LINK) $(exponential_LDFLAGS) $(exponential_OBJECTS) $(exponential_LDADD) $(LIBS)
+gsl-exponential: $(gsl_exponential_OBJECTS) $(gsl_exponential_DEPENDENCIES)
+	@rm -f gsl-exponential
+	$(LINK) $(gsl_exponential_LDFLAGS) $(gsl_exponential_OBJECTS) $(gsl_exponential_LDADD) $(LIBS)
 
-gamma: $(gamma_OBJECTS) $(gamma_DEPENDENCIES)
-	@rm -f gamma
-	$(LINK) $(gamma_LDFLAGS) $(gamma_OBJECTS) $(gamma_LDADD) $(LIBS)
+gsl-gamma: $(gsl_gamma_OBJECTS) $(gsl_gamma_DEPENDENCIES)
+	@rm -f gsl-gamma
+	$(LINK) $(gsl_gamma_LDFLAGS) $(gsl_gamma_OBJECTS) $(gsl_gamma_LDADD) $(LIBS)
 
-gauss: $(gauss_OBJECTS) $(gauss_DEPENDENCIES)
-	@rm -f gauss
-	$(LINK) $(gauss_LDFLAGS) $(gauss_OBJECTS) $(gauss_LDADD) $(LIBS)
+gsl-gauss: $(gsl_gauss_OBJECTS) $(gsl_gauss_DEPENDENCIES)
+	@rm -f gsl-gauss
+	$(LINK) $(gsl_gauss_LDFLAGS) $(gsl_gauss_OBJECTS) $(gsl_gauss_LDADD) $(LIBS)
 
-poisson: $(poisson_OBJECTS) $(poisson_DEPENDENCIES)
-	@rm -f poisson
-	$(LINK) $(poisson_LDFLAGS) $(poisson_OBJECTS) $(poisson_LDADD) $(LIBS)
+gsl-poisson: $(gsl_poisson_OBJECTS) $(gsl_poisson_DEPENDENCIES)
+	@rm -f gsl-poisson
+	$(LINK) $(gsl_poisson_LDFLAGS) $(gsl_poisson_OBJECTS) $(gsl_poisson_LDADD) $(LIBS)
 
-lorentz: $(lorentz_OBJECTS) $(lorentz_DEPENDENCIES)
-	@rm -f lorentz
-	$(LINK) $(lorentz_LDFLAGS) $(lorentz_OBJECTS) $(lorentz_LDADD) $(LIBS)
+gsl-lorentz: $(gsl_lorentz_OBJECTS) $(gsl_lorentz_DEPENDENCIES)
+	@rm -f gsl-lorentz
+	$(LINK) $(gsl_lorentz_LDFLAGS) $(gsl_lorentz_OBJECTS) $(gsl_lorentz_LDADD) $(LIBS)
 
-laplace: $(laplace_OBJECTS) $(laplace_DEPENDENCIES)
-	@rm -f laplace
-	$(LINK) $(laplace_LDFLAGS) $(laplace_OBJECTS) $(laplace_LDADD) $(LIBS)
-
-bench-gamma: $(bench_gamma_OBJECTS) $(bench_gamma_DEPENDENCIES)
-	@rm -f bench-gamma
-	$(LINK) $(bench_gamma_LDFLAGS) $(bench_gamma_OBJECTS) $(bench_gamma_LDADD) $(LIBS)
-
-bench-gauss: $(bench_gauss_OBJECTS) $(bench_gauss_DEPENDENCIES)
-	@rm -f bench-gauss
-	$(LINK) $(bench_gauss_LDFLAGS) $(bench_gauss_OBJECTS) $(bench_gauss_LDADD) $(LIBS)
-
-bench-poisson: $(bench_poisson_OBJECTS) $(bench_poisson_DEPENDENCIES)
-	@rm -f bench-poisson
-	$(LINK) $(bench_poisson_LDFLAGS) $(bench_poisson_OBJECTS) $(bench_poisson_LDADD) $(LIBS)
+gsl-laplace: $(gsl_laplace_OBJECTS) $(gsl_laplace_DEPENDENCIES)
+	@rm -f gsl-laplace
+	$(LINK) $(gsl_laplace_LDFLAGS) $(gsl_laplace_OBJECTS) $(gsl_laplace_LDADD) $(LIBS)
 
 test-gauss: $(test_gauss_OBJECTS) $(test_gauss_DEPENDENCIES)
 	@rm -f test-gauss
@@ -315,35 +295,41 @@ test-shuffle: $(test_shuffle_OBJECTS) $(test_shuffle_DEPENDENCIES)
 
 install-includeHEADERS: $(include_HEADERS)
 	@$(NORMAL_INSTALL)
-	$(mkinstalldirs) $(includedir)
+	$(mkinstalldirs) $(DESTDIR)$(includedir)
 	@list='$(include_HEADERS)'; for p in $$list; do \
-	  echo " $(INSTALL_DATA) $(srcdir)/$$p $(includedir)/$$p"; \
-	  $(INSTALL_DATA) $(srcdir)/$$p $(includedir)/$$p; \
+	  if test -f "$$p"; then d= ; else d="$(srcdir)/"; fi; \
+	  echo " $(INSTALL_DATA) $$d$$p $(DESTDIR)$(includedir)/$$p"; \
+	  $(INSTALL_DATA) $$d$$p $(DESTDIR)$(includedir)/$$p; \
 	done
 
 uninstall-includeHEADERS:
-	$(NORMAL_UNINSTALL)
+	@$(NORMAL_UNINSTALL)
 	list='$(include_HEADERS)'; for p in $$list; do \
-	  rm -f $(includedir)/$$p; \
+	  rm -f $(DESTDIR)$(includedir)/$$p; \
 	done
 
 tags: TAGS
 
-ID: $(HEADERS) $(SOURCES)
-	here=`pwd` && cd $(srcdir) && mkid -f$$here/ID $(SOURCES) $(HEADERS)
+ID: $(HEADERS) $(SOURCES) $(LISP)
+	here=`pwd` && cd $(srcdir) \
+	  && mkid -f$$here/ID $(SOURCES) $(HEADERS) $(LISP)
 
-TAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES)
+TAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) $(LISP)
 	tags=; \
 	here=`pwd`; \
-	test -z "$(ETAGS_ARGS)$(SOURCES)$(HEADERS)$$tags" \
-	  || (cd $(srcdir) && etags $(ETAGS_ARGS) $$tags  $(SOURCES) $(HEADERS) -o $$here/TAGS)
+	list='$(SOURCES) $(HEADERS)'; \
+	unique=`for i in $$list; do echo $$i; done | \
+	  awk '    { files[$$0] = 1; } \
+	       END { for (i in files) print i; }'`; \
+	test -z "$(ETAGS_ARGS)$$unique$(LISP)$$tags" \
+	  || (cd $(srcdir) && etags $(ETAGS_ARGS) $$tags  $$unique $(LISP) -o $$here/TAGS)
 
 mostlyclean-tags:
 
 clean-tags:
 
 distclean-tags:
-	rm -f TAGS ID
+	-rm -f TAGS ID
 
 maintainer-clean-tags:
 
@@ -354,6 +340,7 @@ subdir = randist
 distdir: $(DISTFILES)
 	here=`cd $(top_builddir) && pwd`; \
 	top_distdir=`cd $(top_distdir) && pwd`; \
+	distdir=`cd $(distdir) && pwd`; \
 	cd $(top_srcdir) \
 	  && $(AUTOMAKE) --include-deps --build-dir=$$here --srcdir-name=$(top_srcdir) --output-dir=$$top_distdir --gnu randist/Makefile
 	@for file in $(DISTFILES); do \
@@ -363,12 +350,7 @@ distdir: $(DISTFILES)
 	  || cp -p $$d/$$file $(distdir)/$$file; \
 	done
 
-MKDEP = gcc -M $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
-
 DEPS_MAGIC := $(shell mkdir .deps > /dev/null 2>&1 || :)
--include .deps/.P
-.deps/.P: $(BUILT_SOURCES)
-	echo > $@
 
 -include $(DEP_FILES)
 
@@ -379,15 +361,18 @@ clean-depend:
 distclean-depend:
 
 maintainer-clean-depend:
-	rm -rf .deps
+	-rm -rf .deps
 
-.deps/%.P: %.c
-	@echo "Computing dependencies for $<..."
-	@o='o'; \
-	test -n "$o" && o='$$o'; \
-	$(MKDEP) $< >$@.tmp \
-	  && sed "s,^\(.*\)\.o:,\1.$$o \1.l$$o $@:," < $@.tmp > $@ \
-	  && rm -f $@.tmp
+%.o: %.c
+	@echo '$(COMPILE) -c $<'; \
+	$(COMPILE) -Wp,-MD,.deps/$(*F).P -c $<
+
+%.lo: %.c
+	@echo '$(LTCOMPILE) -c $<'; \
+	$(LTCOMPILE) -Wp,-MD,.deps/$(*F).p -c $<
+	@-sed -e 's/^\([^:]*\)\.o:/\1.lo \1.o:/' \
+	  < .deps/$(*F).p > .deps/$(*F).P
+	@-rm -f .deps/$(*F).p
 info:
 dvi:
 check: all
@@ -404,28 +389,27 @@ install: install-exec install-data all
 
 uninstall: uninstall-libLIBRARIES uninstall-binPROGRAMS uninstall-includeHEADERS
 
-all: Makefile $(LIBRARIES) $(PROGRAMS) $(HEADERS)
-
 install-strip:
 	$(MAKE) INSTALL_PROGRAM='$(INSTALL_PROGRAM) -s' INSTALL_SCRIPT='$(INSTALL_PROGRAM)' install
 installdirs:
-	$(mkinstalldirs)  $(libdir) $(bindir) $(includedir)
+	$(mkinstalldirs)  $(DATADIR)$(libdir) $(DATADIR)$(bindir) \
+		$(DATADIR)$(includedir)
 
 
 mostlyclean-generic:
-	test -z "$(MOSTLYCLEANFILES)" || rm -f $(MOSTLYCLEANFILES)
+	-test -z "$(MOSTLYCLEANFILES)" || rm -f $(MOSTLYCLEANFILES)
 
 clean-generic:
-	test -z "$(CLEANFILES)" || rm -f $(CLEANFILES)
+	-test -z "$(CLEANFILES)" || rm -f $(CLEANFILES)
 
 distclean-generic:
-	rm -f Makefile $(DISTCLEANFILES)
-	rm -f config.cache config.log stamp-h stamp-h[0-9]*
-	test -z "$(CONFIG_CLEAN_FILES)" || rm -f $(CONFIG_CLEAN_FILES)
+	-rm -f Makefile $(DISTCLEANFILES)
+	-rm -f config.cache config.log stamp-h stamp-h[0-9]*
+	-test -z "$(CONFIG_CLEAN_FILES)" || rm -f $(CONFIG_CLEAN_FILES)
 
 maintainer-clean-generic:
-	test -z "$(MAINTAINERCLEANFILES)" || rm -f $(MAINTAINERCLEANFILES)
-	test -z "$(BUILT_SOURCES)" || rm -f $(BUILT_SOURCES)
+	-test -z "$(MAINTAINERCLEANFILES)" || rm -f $(MAINTAINERCLEANFILES)
+	-test -z "$(BUILT_SOURCES)" || rm -f $(BUILT_SOURCES)
 mostlyclean:  mostlyclean-libLIBRARIES mostlyclean-compile \
 		mostlyclean-binPROGRAMS mostlyclean-noinstPROGRAMS \
 		mostlyclean-tags mostlyclean-depend mostlyclean-generic
@@ -437,7 +421,7 @@ clean:  clean-libLIBRARIES clean-compile clean-binPROGRAMS \
 distclean:  distclean-libLIBRARIES distclean-compile \
 		distclean-binPROGRAMS distclean-noinstPROGRAMS \
 		distclean-tags distclean-depend distclean-generic clean
-	rm -f config.status
+	-rm -f config.status
 
 maintainer-clean:  maintainer-clean-libLIBRARIES \
 		maintainer-clean-compile maintainer-clean-binPROGRAMS \
@@ -447,7 +431,7 @@ maintainer-clean:  maintainer-clean-libLIBRARIES \
 	@echo "This command is intended for maintainers to use;"
 	@echo "it deletes files that may require special tools to rebuild."
 
-.PHONY: default mostlyclean-libLIBRARIES distclean-libLIBRARIES \
+.PHONY: mostlyclean-libLIBRARIES distclean-libLIBRARIES \
 clean-libLIBRARIES maintainer-clean-libLIBRARIES uninstall-libLIBRARIES \
 install-libLIBRARIES mostlyclean-compile distclean-compile \
 clean-compile maintainer-clean-compile mostlyclean-binPROGRAMS \

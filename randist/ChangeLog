@@ -1,3 +1,17 @@
+Sun Apr 19 19:06:59 1998  Brian Gough  <bjg@vvv.lanl.gov>
+
+	* made the 'gsl-dist' programs just output a single column of
+ 	their random numbers (previously some of the programs printed both
+ 	the uniform variate and the transformed number)
+
+	* got rid of the 'bench-' programs. We will have a full testing
+ 	suite soon.
+
+	* renamed the installed programs from 'dist' to 'gsl-dist' so that
+ 	they don't overwrite anything, e.g. it's possible the user might
+ 	have other programs called 'gauss' or 'gamma' installed in
+ 	/usr/local
+
 Sat Mar 21 16:09:16 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
 	* laplace.c (gsl_ran_laplace): added a Laplace distribution
