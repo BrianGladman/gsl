@@ -139,3 +139,35 @@ gsl_multimin_fdfminimizer_restart (gsl_multimin_fdfminimizer * s)
 {
   return (s->type->restart) (s->state);
 }
+
+const char * 
+gsl_multimin_fdfminimizer_name (const gsl_multimin_fdfminimizer * s)
+{
+  return s->type->name;
+}
+
+
+gsl_vector * 
+gsl_multimin_fdfminimizer_x (gsl_multimin_fdfminimizer * s)
+{
+  return s->x;
+}
+
+gsl_vector * 
+gsl_multimin_fdfminimizer_dx (gsl_multimin_fdfminimizer * s)
+{
+  return s->dx;
+}
+
+gsl_vector * 
+gsl_multimin_fdfminimizer_gradient (gsl_multimin_fdfminimizer * s)
+{
+  return s->gradient;
+}
+
+double 
+gsl_multimin_fdfminimizer_minimum (gsl_multimin_fdfminimizer * s)
+{
+  return s->f;
+}
+

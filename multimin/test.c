@@ -115,7 +115,7 @@ test_fdf(const char * desc,
   status |= (fabs(s->f) > 1e-5);
 
   gsl_test(status, "%s, on %s: %i iterations, f(x)=%g",
-	   T->name,desc, iter, s->f);
+	   gsl_multimin_fdfminimizer_name(s),desc, iter, s->f);
 
   gsl_multimin_fdfminimizer_free(s);
   gsl_vector_free(x);

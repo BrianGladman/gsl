@@ -117,6 +117,9 @@ gsl_multimin_fdfminimizer_set (gsl_multimin_fdfminimizer * s,
 void
 gsl_multimin_fdfminimizer_free(gsl_multimin_fdfminimizer *s);
 
+const char * 
+gsl_multimin_fdfminimizer_name (const gsl_multimin_fdfminimizer * s);
+
 int
 gsl_multimin_fdfminimizer_iterate(gsl_multimin_fdfminimizer *s);
 
@@ -125,6 +128,18 @@ gsl_multimin_fdfminimizer_restart(gsl_multimin_fdfminimizer *s);
 
 int
 gsl_multimin_test_gradient(const gsl_vector * g,double epsabs);
+
+gsl_vector * 
+gsl_multimin_fdfminimizer_x (gsl_multimin_fdfminimizer * s);
+
+gsl_vector * 
+gsl_multimin_fdfminimizer_dx (gsl_multimin_fdfminimizer * s);
+
+gsl_vector * 
+gsl_multimin_fdfminimizer_gradient (gsl_multimin_fdfminimizer * s);
+
+double 
+gsl_multimin_fdfminimizer_minimum (gsl_multimin_fdfminimizer * s);
 
 extern const 
 gsl_multimin_fdfminimizer_type *gsl_multimin_fdfminimizer_steepest_descent;
