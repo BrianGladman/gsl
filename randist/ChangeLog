@@ -1,3 +1,8 @@
+Tue Mar 14 21:31:46 2000  Brian Gough  <bjg@network-theory.co.uk>
+
+	* logistic.c (gsl_ran_logistic_pdf): prevent overflow in
+ 	computation of pdf for x < 0
+
 Thu Oct  7 12:55:40 1999  Brian Gough  <bjg@network-theory.co.uk>
 
 	* discrete.c (gsl_ran_discrete_free): removed unreachable code
