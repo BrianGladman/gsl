@@ -1,5 +1,9 @@
 * What is new in gsl-1.2:
 
+** The KNOWN-PROBLEMS file of "make check" failures has been replaced
+by a BUGS file, since we now require "make check" to work correctly
+for stable releases.
+
 ** Added missing quasi-random number generator function gsl_qrng_init.
 
 ** Added nonsymmetric tridiagonal solvers gsl_linalg_solve_tridiag and

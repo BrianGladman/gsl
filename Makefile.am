@@ -13,7 +13,7 @@ bin_SCRIPTS = gsl-config
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA= gsl.pc
 
-EXTRA_DIST = autogen.sh gsl-config.in gsl.pc.in configure.in THANKS KNOWN-PROBLEMS BUGS gsl.spec.in gsl.m4 MACHINES test_gsl_histogram.sh
+EXTRA_DIST = autogen.sh gsl-config.in gsl.pc.in configure.in THANKS BUGS gsl.spec.in gsl.m4 MACHINES test_gsl_histogram.sh
 
 lib_LTLIBRARIES = libgsl.la
 libgsl_la_SOURCES = version.c

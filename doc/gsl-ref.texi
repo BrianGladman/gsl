@@ -343,6 +343,7 @@ More information about GSL can be found at the project homepage,
 * Contributors to GSL::         
 * Autoconf Macros::             
 * GSL CBLAS Library::           
+* Reporting Bugs::              
 * GNU General Public License::  
 * GNU Free Documentation License::  
 * Function Index::              
@@ -591,15 +592,19 @@ if test "$ac_cv_c_extern_inline" != no ; then
 fi
 @end smallexample
 
-@node GSL CBLAS Library, GNU General Public License, Autoconf Macros, Top
+@node GSL CBLAS Library, Reporting Bugs, Autoconf Macros, Top
 @appendix GSL CBLAS Library
 @include cblas.texi
+
+@node  Reporting Bugs, GNU General Public License, GSL CBLAS Library, Top
+@appendix Reporting Bugs
+@include bugs.texi
 
 @comment @node  Copyright, GNU General Public License, Contributors to GSL, Top
 @comment @unnumbered Copyright
 @comment @include science.texi
 
-@node  GNU General Public License, GNU Free Documentation License, GSL CBLAS Library, Top
+@node  GNU General Public License, GNU Free Documentation License, Reporting Bugs, Top
 @unnumbered GNU General Public License
 @include gpl.texi
 

@@ -56,10 +56,8 @@ rather than a terminal, with the command,
 
 since it is several megabytes in size.
 
-If you run "make check" and get some failures, please see the
-KNOWN-PROBLEMS file.  This file lists failures we already know about.
-If you get failures that are not mentioned in the KNOWN-PROBLEMS file,
-please report them.
+If you run "make check" and get some failures, please see the MACHINES
+file. If you find failures that are not mentioned, please report them.
 
 The library can be installed using the command,
 
@@ -88,3 +86,22 @@ bookstores. The publication details are,
 
 If you are interested in participating in GSL development, please send
 mail to Mark Galassi -- rosalia@lanl.gov
+
+Reporting Bugs
+==============
+
+A list of known bugs can be found in the BUGS file.  
+Details of compilation problems can be found in the MACHINES file.
+
+If you find a bug which is not listed in these files please report it
+to the mailing list gsl-discuss@sources.redhat.com.
+
+All bug reports should include:
+
+       The version number of GSL
+       The hardware and operating system
+       The compiler used, including version number and compilation options
+       A description of the bug behaviour
+       A short program which exercises the bug
+
+Thank you.

@@ -1,0 +1,24 @@
+
+A list of known bugs can be found in the @file{BUGS} file included in
+the GSL distribution.  Details of compilation problems can be found in
+the @file{MACHINES} file.
+
+If you find a bug which is not listed in these files please report it
+to the mailing list @email{gsl-discuss@@sources.redhat.com}.
+
+All bug reports should include:
+
+@itemize @bullet
+@item
+The version number of GSL
+@item
+The hardware and operating system
+@item
+The compiler used, including version number and compilation options
+@item
+A description of the bug behaviour
+@item
+A short program which exercises the bug
+@end itemize
+@noindent
+Thank you.
