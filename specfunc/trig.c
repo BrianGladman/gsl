@@ -7,8 +7,9 @@
 #include <gsl_errno.h>
 #include "gsl_sf_trig.h"
 
-extern int gsl_sf_complex_log_impl(const double, const double, double *, double *);
-extern int gsl_sf_complex_sin_impl(const double, const double, double *, double *);
+#include "log_impl.h"
+
+#include "trig_impl.h"
 
 
 /*-*-*-*-*-*-*-*-*-*-*-* Implementations *-*-*-*-*-*-*-*-*-*-*-*/
@@ -32,7 +33,7 @@ int gsl_sf_complex_logsin_impl(const double zr, const double zi, double * lszr, 
 {
   if(zi > 60.) {
     *lszr = -M_LN2 + zi;
-    *lszi =  M_PI*0.5 - zr;
+    *lszi =  0.5*M_PI - zr;
   }
   else if(zi < -60.) {
     *lszr = -M_LN2 - zi;
@@ -47,8 +48,7 @@ int gsl_sf_complex_logsin_impl(const double zr, const double zi, double * lszr, 
       return GSL_EDOM;
     }
   }
-  gsl_sf_angle_restrict_symm_impl(lszi);
-  return GSL_SUCCESS;
+  return gsl_sf_angle_restrict_symm_impl(lszi, GSL_MACH_EPS * 1.e5);
 }
 
 
@@ -90,11 +90,12 @@ int gsl_sf_rect_to_polar_impl(const double x, const double y, double * r, double
   *r = hypot(x, y);
   if(*r > 0.) {
     *theta = atan2(y, x);
+    return GSL_SUCCESS;
   }
   else {
     *theta = 0.;
+    return GSL_EDOM;
   }
-  return GSL_SUCCESS;
 }
 
 int gsl_sf_angle_restrict_symm_impl(double * theta, const double precision)
@@ -102,7 +103,7 @@ int gsl_sf_angle_restrict_symm_impl(double * theta, const double precision)
   int status;
   double x;
   
-  if(fabs(*theta) >  precision/GSL_MACH_EPS) {
+  if(fabs(*theta) * GSL_MACH_EPS >  precision) {
     status = GSL_ELOSS;
   }
   else {
@@ -120,7 +121,7 @@ int gsl_sf_angle_restrict_pos_impl(double * theta, const double precision)
   int status;
   double x;
 
-  if(fabs(*theta) >  precision/GSL_MACH_EPS) {
+  if(fabs(*theta) * GSL_MACH_EPS >  precision) {
     status = GSL_ELOSS;
   }
   else {

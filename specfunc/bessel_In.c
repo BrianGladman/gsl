@@ -12,10 +12,99 @@
 
 #include "bessel_In_impl.h"
 
+#define Max(a,b) ((a) > (b) ? (a) : (b))
 #define Min(a,b) ((a) < (b) ? (a) : (b))
 
 
-/* n >= 2; x > 0
+/* standard backward recursion with arbitrary starting values
+ * assumes: n >= 2, x > 0
+ * checked OK [GJ] Sun May  3 09:09:40 EDT 1998 
+ */
+static void recurse_In(const int n, const double x, double I0, double * b_n, double * b_nm1)
+{
+  int j;
+  const int jmax = 2 * (n + (int) sqrt(50.*n));
+  const double renorm	  = 1.e+8;
+  const double renorm_inv = 1.e-8;
+  const double two_over_x = 2./x;
+  double ratio;
+  double b_jp1 = 0.;
+  double b_j   = 1.;
+  double b_jm1;
+  double local_b_n   = 0.;
+  double local_b_nm1 = 0.;
+
+  /* backward recursion [Gradshteyn + Ryzhik, 8.471.1] */
+  for(j=jmax; j>0; j--){
+    b_jm1 = b_jp1 + j * two_over_x * b_j;
+  
+    /* Renormalize to prevent overflow. */
+    if(fabs(b_jm1) > renorm){
+      local_b_nm1 *= renorm_inv;
+      local_b_n   *= renorm_inv;
+      b_j   *= renorm_inv;
+      b_jm1 *= renorm_inv;
+    }
+  
+    /* Grab the values that we want on the way down. */
+    if(j == n) {
+      local_b_n   = b_j;
+      local_b_nm1 = b_jm1;
+    }
+
+    b_jp1 = b_j;
+    b_j   = b_jm1;
+  }
+
+  /* Normalize using I0(x); j=0 here. */
+  ratio  = I0 / b_j;
+  *b_n   = local_b_n   * ratio;
+  *b_nm1 = local_b_nm1 * ratio;
+}
+
+
+/* backward recursion using asymptotic starting values
+ * assumes: n >= 2, x > 0
+ * checked OK [GJ] Sun May  3 09:15:06 EDT 1998 
+ */
+static void asymp_recurse_In_scaled(const int n, const double x, double * b_n, double * b_nm1)
+{
+  int j;
+  double b_jp1, b_j, b_jm1;
+  double two_over_x = 2./x;
+  
+  /* go high enough to apply asymptotic result */
+  int big_nu = 2 + Max(n, (int)sqrt(Max(0., 0.5/GSL_ROOT3_MACH_EPS - x*x)));
+
+  gsl_sf_bessel_Inu_scaled_asymp_unif_impl(big_nu  , x, &b_jp1);
+  gsl_sf_bessel_Inu_scaled_asymp_unif_impl(big_nu-1, x, &b_j);
+
+  for(j=big_nu-1; j>=n; j--){
+    b_jm1 = b_jp1 + j * two_over_x * b_j;
+    b_jp1 = b_j;
+    b_j   = b_jm1;
+  }
+  
+  *b_n   = b_jp1;
+  *b_nm1 = b_j;
+}
+
+static inline int taylor_In_scaled_4(const int n, const double x, double * b_n, double * b_nm1)
+{
+  double ex = exp(-x);
+  int status1 = gsl_sf_bessel_Inu_Jnu_taylor_impl(n, x, 1, 4, b_n);
+  int status2 = GSL_SUCCESS;
+  *b_n *= ex;
+  if(b_nm1 != (double *)0) {
+    status2 = gsl_sf_bessel_Inu_Jnu_taylor_impl(n-1, x, 1, 4, b_nm1);
+    *b_nm1 *= ex;
+  }
+  if(status1 == GSL_EUNDRFLW || status2 == GSL_EUNDRFLW) return GSL_EUNDRFLW;
+  else return GSL_SUCCESS;
+}
+
+/* convenience function for I_n and I_{n-1}
+ * assumes n >= 2; x > 0
  * checked OK [GJ]
  */
 static int bessel_In_scaled(const int n, const double x, double * b_n, double * b_nm1)
@@ -23,28 +112,10 @@ static int bessel_In_scaled(const int n, const double x, double * b_n, double * 
   *b_n = 0.;
   *b_nm1 = 0.;
 
-  if(x*x < 4.*(n+1)*GSL_SQRT_MACH_EPS) {
-  
-    /* Taylor expansion */
-    
-    double ex = exp(-x);
-    gsl_sf_bessel_Inu_Jnu_taylor_impl(n, x, 1, 4, b_n);
-    *b_n *= ex;
-    if(b_nm1 != (double *)0) {
-      gsl_sf_bessel_Inu_Jnu_taylor_impl(n-1, x, 1, 4, b_nm1);
-      *b_nm1 *= ex;
-    }
-    if(*b_n == 0.)
-      return GSL_EUNDRFLW;
-    else if(b_nm1 != (double *)0 && *b_nm1 == 0.)
-      return GSL_EUNDRFLW;
-    else
-      return GSL_SUCCESS;
+  if(x*x < 10.*(n+1)*GSL_ROOT5_MACH_EPS) {
+    return taylor_In_scaled_4(n, x, b_n, b_nm1);
   }
-  else if( Min( 0.29/(n*n), 0.5/(n*n +x*x) ) < GSL_ROOT3_MACH_EPS) {
-  
-    /* uniform asymptotic */
-    
+  else if( Min( 0.29/(n*n), 0.5/(n*n + x*x) ) < GSL_ROOT3_MACH_EPS) {
     gsl_sf_bessel_Inu_scaled_asymp_unif_impl(n, x, b_n);
     if(b_nm1 != (double *)0) {
       gsl_sf_bessel_Inu_scaled_asymp_unif_impl(n-1, x, b_nm1);
@@ -52,53 +123,35 @@ static int bessel_In_scaled(const int n, const double x, double * b_n, double * 
     return GSL_SUCCESS;
   }
   else {
-    
-    /* recurrence */
-
-    int j;
-    const int jmax = 2 * (n + (int) sqrt(50.*n));
-    const double renorm     = 1.e+8;
-    const double renorm_inv = 1.e-8;
-    const double two_over_x = 2./fabs(x);
-    double ratio;
-    double b_jp1 = 0.;
-    double b_j   = 1.;
-    double b_jm1;
-    double local_b_n   = 0.;
-    double local_b_nm1 = 0.;
-    double i0_scaled = 0.;
-    gsl_sf_bessel_I0_scaled_impl(x, &i0_scaled);
-  
-    /* backward recursion [Gradshteyn + Ryzhik, 8.471.1] */
-    for(j=jmax; j>0; j--){
-      b_jm1 = b_jp1 + j * two_over_x * b_j;
-    
-      /* Renormalize to prevent overflow. */
-      if(fabs(b_jm1) > renorm){
-        local_b_nm1 *= renorm_inv;
-        local_b_n   *= renorm_inv;
-        b_j   *= renorm_inv;
-        b_jm1 *= renorm_inv;
-      }
-    
-      /* Grab the values that we want on the way down. */
-      if(j == n) {
-        local_b_n   = b_j;
-	local_b_nm1 = b_jm1;
-      }
-
-      b_jp1 = b_j;
-      b_j   = b_jm1;
-    }
-
-    /* Normalize using I0(x); j=0 here. */
-    ratio = i0_scaled / b_j;
-    *b_n   = local_b_n   * ratio;
-    if(b_nm1 != (double *) 0) *b_nm1 = local_b_nm1 * ratio;
+    double local_b_n;
+    double local_b_nm1;
+    asymp_recurse_In_scaled(n, x, &local_b_n, &local_b_nm1);
+    *b_n = local_b_n;
+    if(b_nm1 != (double *) 0) *b_nm1 = local_b_nm1;
     return GSL_SUCCESS;
   }
 }
 
+void testy(void)
+{
+  double x = 10.;
+  double I0_scaled;
+  double b_n, b_nm1;
+  int i, N;
+  
+  for(i=2; i<100; i++) {
+    double b_i, b_im1;
+    bessel_In_scaled(i, x, &b_i, &b_im1);
+    printf("%3d  %26.16g  %26.16g\n", i, x, b_i);
+    
+    /*
+    gsl_sf_bessel_I0_scaled_impl(x, &I0);
+    recurse_In(i, x, I0, &b_i, &b_im1);
+    */
+  }
+
+  exit(0);
+}
 
 /*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
 

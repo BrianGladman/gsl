@@ -39,8 +39,11 @@ noinst_HEADERS = \
 	bessel_Y1_impl.h	\
 	bessel_Yn_impl.h	\
 	expint_impl.h		\
+	gamma_impl.h		\
+	log_impl.h		\
 	shint_impl.h		\
-	sinint_impl.h
+	sinint_impl.h		\
+	trig_impl.h
 	
 
 INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../err -I$(srcdir)/../integration 
@@ -93,6 +96,7 @@ libgslspecfunc_a_SOURCES = 	\
 	laguerre.c		\
 	legendre.c		\
 	legendre_assoc.c	\
+	legendre_poly.c		\
 	log.c			\
 	pow_int.c		\
 	psi.c			\

@@ -9,13 +9,13 @@
 #include "gsl_sf_trig.h"
 #include "gsl_sf_gamma.h"
 
+#include "trig_impl.h"
+
+#include "gamma_impl.h"
+
 #define LogRootTwoPi_  0.9189385332046727418
 #define LogPi_         1.1447298858494001741
 #define Max(a,b) ((a) > (b) ? (a) : (b))
-
-extern int gsl_sf_angle_restrict_symm_impl(double *, const double);
-extern int gsl_sf_complex_log_impl(const double, const double, double *, double *);
-extern int gsl_sf_complex_logsin_impl(const double, const double, double *, double *);
 
 
 /*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
@@ -349,7 +349,7 @@ int gsl_sf_fact_impl(const int n, double * result)
 
 int gsl_sf_lnfact_impl(const int n, double * result)
 {
- if(n < 0) {
+  if(n < 0) {
     return GSL_EDOM;
   }
   else if(n <= FACT_TABLE_MAX){

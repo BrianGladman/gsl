@@ -8,13 +8,11 @@
 #include "gsl_sf_pow_int.h"
 #include "gsl_sf_bessel.h"
 
+#include "gamma_impl.h"
+
 #include "bessel.h"
 
-#define Root_2Pi_   2.50662827463100050241576528481
 #define CubeRoot2_  1.25992104989487316476721060728
-
-
-extern int gsl_sf_lngamma_impl(double, double *);
 
 
 /* sum which occurs in Taylor series for J_nu(x) * Gamma(nu+1)/((x/2)^nu)
@@ -62,30 +60,30 @@ static int Inu_Jnu_taylorsum(const double nu, const double x,
 
 /* Debye functions [Abramowitz+Stegun, 9.3.9-10] */
 
-static double debye_u1(const double * tpow)
+static inline double debye_u1(const double * tpow)
 {
   return (3*tpow[1] - 5*tpow[3])/24.;
 }
-static double debye_u2(const double * tpow)
+static inline double debye_u2(const double * tpow)
 {
   return (81*tpow[2] - 462*tpow[4] + 385*tpow[6])/1152.;
 }
-static double debye_u3(const double * tpow)
+static inline double debye_u3(const double * tpow)
 {
   return (30375.*tpow[3] - 369603.*tpow[5] + 765765.*tpow[7] - 425425.*tpow[9])/414720.;
 }
-static double debye_u4(const double * tpow)
+static inline double debye_u4(const double * tpow)
 {
   return (4465125.*tpow[4] - 94121676.*tpow[6] + 349922430.*tpow[8] - 
           446185740.*tpow[10] + 185910725.*tpow[12])/39813120.;
 }
-static double debye_u5(const double * tpow)
+static inline double debye_u5(const double * tpow)
 {
   return (1519035525.*tpow[5]     - 49286948607.*tpow[7] + 
           284499769554.*tpow[9]   - 614135872350.*tpow[11] + 
           566098157625.*tpow[13]  - 188699385875.*tpow[15])/6688604160.;
 }
-static double debye_u6(const double * tpow)
+static inline double debye_u6(const double * tpow)
 {
   return (2757049477875.*tpow[6] - 127577298354750.*tpow[8] + 
           1050760774457901.*tpow[10] - 3369032068261860.*tpow[12] + 
@@ -95,30 +93,30 @@ static double debye_u6(const double * tpow)
 
 /* and Debye functions for imaginary argument */
 
-static double debye_u1_im(const double * tpow)  /* u_1(i t)/i */
+static inline double debye_u1_im(const double * tpow)  /* u_1(i t)/i */
 {
   return (3*tpow[1] + 5*tpow[3])/24.;
 }
-static double debye_u2_im(const double * tpow)  /* u_2(i t)   */
+static inline double debye_u2_im(const double * tpow)  /* u_2(i t)   */
 {
   return (-81*tpow[2] - 462*tpow[4] - 385*tpow[6])/1152.;
 }
-static double debye_u3_im(const double * tpow)  /* u_3(i t)/i */
+static inline double debye_u3_im(const double * tpow)  /* u_3(i t)/i */
 {
   return (-30375.*tpow[3] - 369603.*tpow[5] - 765765.*tpow[7] - 425425.*tpow[9])/414720.;
 }
-static double debye_u4_im(const double * tpow)  /* u_4(i t)   */
+static inline double debye_u4_im(const double * tpow)  /* u_4(i t)   */
 {
   return (4465125.*tpow[4] + 94121676.*tpow[6] + 349922430.*tpow[8] + 
           446185740.*tpow[10] + 185910725.*tpow[12])/39813120.;
 }
-static double debye_u5_im(const double * tpow)  /* u_5(i t)/i */
+static inline double debye_u5_im(const double * tpow)  /* u_5(i t)/i */
 {
   return (1519035525.*tpow[5]     + 49286948607.*tpow[7] + 
           284499769554.*tpow[9]   + 614135872350.*tpow[11] + 
           566098157625.*tpow[13]  + 188699385875.*tpow[15])/6688604160.;
 }
-static double debye_u6_im(const double * tpow)
+static inline double debye_u6_im(const double * tpow)
 {
   return (-2757049477875.*tpow[6] - 127577298354750.*tpow[8] -
            1050760774457901.*tpow[10] - 3369032068261860.*tpow[12] -
@@ -176,32 +174,6 @@ static double trans_g2(const double * zpow)
 static double trans_g3(const double * zpow)
 {
   return 549./28000.*zpow[8] - 110767./693000.*zpow[5] + 79./12375.*zpow[2];
-}
-
-
-/* FIXME: flotsam */
-void plotto(void)
-{
-  double x;
-  for(x=0.; x<=3.; x += 0.02) {
-    int j;
-    double xpow[16];
-    xpow[0] = 1.;
-    for(j=1; j<16; j++) xpow[j] = x * xpow[j-1];
-    printf("%6.4g   %8.4g %8.4g %8.4g %8.4g   %8.4g %8.4g %8.4g %8.4g\n",
-           x,
-	   /*
-           trans_f1(xpow), trans_f2(xpow), trans_f3(xpow),
-	   trans_f4(xpow),
-	   trans_g0(xpow), trans_g1(xpow), trans_g2(xpow),
-	   trans_g3(xpow)
-	   */
-	   fabs(debye_u1(xpow))/xpow[1], fabs(debye_u2(xpow))/xpow[2],
-	   fabs(debye_u3(xpow))/xpow[3], fabs(debye_u4(xpow))/xpow[4],
-	   fabs(debye_u5(xpow))/xpow[5], fabs(debye_u6(xpow))/xpow[6],
-	   2200*pow(x,18)
-	   );
-  }
 }
 
 
