@@ -27,7 +27,3 @@ gamma_SOURCES= rungamma.c gamma.c
 bench_gamma_SOURCES= bench-gamma.c gamma.c
 
 test_shuffle_SOURCES= test-shuffle.c shuffle.c
-
-
-
-

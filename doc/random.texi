@@ -108,6 +108,22 @@ where @code{dx} is @code{1./gsl_ran_max()}.
 variance one.
 @end deftypefn
 
+@deftypefn Random double gsl_ran_poisson (double @var{mu})
+@code{gsl_ran_poisson} returns a poisson--distributed random number,
+with mean @var{mu}.
+@end deftypefn
+
+@deftypefn Random void gsl_ran_poisson_array (double @var{mu}, int @var{N}, int *@var{p})
+@code{gsl_ran_poisson_array} places an array of @var{N}
+poisson--distributed random numbers with mean @var{mu} into the array
+@var{p}.
+@end deftypefn
+
+@deftypefn Random double gsl_ran_exponential (double @var{mu})
+@code{gsl_ran_exponential} returns a poisson--distributed random number,
+with mean @var{mu}.  This is calculated with @math{-mu*log(x)}.
+@end deftypefn
+
 @deftypefn Random {int *} gsl_ran_shuffle(int N, int *x)
 @code{gsl_ran_shuffle} takes an array of N integers x[0..N-1] and 
 randomly shuffles their order.  @code{x} is altered and is returned.

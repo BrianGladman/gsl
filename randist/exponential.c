@@ -11,5 +11,3 @@ double gsl_ran_exponential(double mu)
     } while (u<=0.0);
     return -mu*log(u);
 }
-    
-    

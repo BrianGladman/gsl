@@ -1,8 +1,14 @@
-# Makefile.in generated automatically by automake 1.2 from Makefile.am
+# Makefile.in generated automatically by automake 1.2c from Makefile.am
 
 # Copyright (C) 1994, 1995, 1996, 1997 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
-# gives unlimited permission to copy, distribute and modify it.
+# gives unlimited permission to copy and/or distribute it,
+# with or without modifications, as long as this notice is preserved.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY, to the extent permitted by law; without
+# even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+# PARTICULAR PURPOSE.
 
 
 SHELL = /bin/sh
@@ -61,19 +67,23 @@ VERSION = @VERSION@
 
 info_TEXINFOS = gsl-ref.texi
 noinst_TEXINFOS = gsl-design.texi
-gsl_ref_TEXINFOS = err.texi fft.texi random.texi roots.texi
+gsl_ref_TEXINFOS = err.texi fft.texi random.texi roots.texi roots-high.texi roots-low.texi
 
 noinst_DATA = siman-test.eps siman-energy.eps 12-cities.eps \
 	initial-route.eps final-route.eps \
 	fft-complex-radix2-f.eps fft-complex-radix2-t.eps \
-	fft-complex-radix2.eps fft-real-mixedradix.eps
+	fft-complex-radix2.eps fft-real-mixedradix.eps \
+	roots-bisection.eps roots-false-position.eps \
+	roots-newtons-method.eps roots-secant-method.eps
 
 EXTRA_DIST = siman-test.eps siman-energy.eps 12-cities.eps \
 	initial-route.eps final-route.eps \
 	fftalgorithms.tex fftalgorithms.bib \
 	algorithm.sty algorithmic.sty calc.sty \
 	fft-complex-radix2-f.eps fft-complex-radix2-t.eps \
-	fft-complex-radix2.eps fft-real-mixedradix.eps
+	fft-complex-radix2.eps fft-real-mixedradix.eps \
+	roots-bisection.eps roots-false-position.eps \
+	roots-newtons-method.eps roots-secant-method.eps
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
 CONFIG_CLEAN_FILES = 
@@ -115,17 +125,17 @@ stamp-vti: gsl-ref.texi $(top_srcdir)/configure.in
 	@cmp -s vti.tmp $(srcdir)/stamp-vti \
 	  || (echo "Updating $(srcdir)/stamp-vti"; \
 	      cp vti.tmp $(srcdir)/stamp-vti)
-	@rm -f vti.tmp
+	-@rm -f vti.tmp
 
 mostlyclean-vti:
-	rm -f vti.tmp
+	-rm -f vti.tmp
 
 clean-vti:
 
 distclean-vti:
 
 maintainer-clean-vti:
-	rm -f stamp-vti version-ref.texi
+	-rm -f stamp-vti version-ref.texi
 
 gsl-ref.info: gsl-ref.texi version-ref.texi $(gsl_ref_TEXINFOS)
 gsl-ref.dvi: gsl-ref.texi version-ref.texi $(gsl_ref_TEXINFOS)
@@ -207,17 +217,22 @@ dist-info: $(INFO_DEPS)
 	done
 
 mostlyclean-aminfo:
-	rm -f gsl-ref.aux gsl-ref.cp gsl-ref.cps gsl-ref.dvi gsl-ref.fn \
-	  gsl-ref.fns gsl-ref.ky gsl-ref.log gsl-ref.pg gsl-ref.toc \
-	  gsl-ref.tp gsl-ref.tps gsl-ref.vr gsl-ref.vrs gsl-ref.op \
-	  gsl-ref.tr gsl-ref.cv
+	-rm -f gsl-ref.aux gsl-ref.cp gsl-ref.cps gsl-ref.dvi gsl-ref.fn \
+	  gsl-ref.fns gsl-ref.ky gsl-ref.kys gsl-ref.ps gsl-ref.log \
+	  gsl-ref.pg gsl-ref.toc gsl-ref.tp gsl-ref.tps gsl-ref.vr \
+	  gsl-ref.vrs gsl-ref.op gsl-ref.tr gsl-ref.cv gsl-ref.cn
 
 clean-aminfo:
 
 distclean-aminfo:
 
 maintainer-clean-aminfo:
-	for i in $(INFO_DEPS); do rm -f `eval echo $$i*`; done
+	for i in $(INFO_DEPS); do \
+	  rm -f $$i; \
+	  if test "`echo $$i-[0-9]*`" != "$$i-[0-9]*"; then \
+	    rm -f $$i-[0-9]*; \
+	  fi; \
+	done
 tags: TAGS
 TAGS:
 
@@ -229,6 +244,7 @@ subdir = doc
 distdir: $(DISTFILES)
 	here=`cd $(top_builddir) && pwd`; \
 	top_distdir=`cd $(top_distdir) && pwd`; \
+	distdir=`cd $(distdir) && pwd`; \
 	cd $(top_srcdir) \
 	  && $(AUTOMAKE) --include-deps --build-dir=$$here --srcdir-name=$(top_srcdir) --output-dir=$$top_distdir --gnu doc/Makefile
 	@for file in $(DISTFILES); do \
@@ -263,25 +279,25 @@ installdirs:
 
 
 mostlyclean-generic:
-	test -z "$(MOSTLYCLEANFILES)" || rm -f $(MOSTLYCLEANFILES)
+	-test -z "$(MOSTLYCLEANFILES)" || rm -f $(MOSTLYCLEANFILES)
 
 clean-generic:
-	test -z "$(CLEANFILES)" || rm -f $(CLEANFILES)
+	-test -z "$(CLEANFILES)" || rm -f $(CLEANFILES)
 
 distclean-generic:
-	rm -f Makefile $(DISTCLEANFILES)
-	rm -f config.cache config.log stamp-h stamp-h[0-9]*
-	test -z "$(CONFIG_CLEAN_FILES)" || rm -f $(CONFIG_CLEAN_FILES)
+	-rm -f Makefile $(DISTCLEANFILES)
+	-rm -f config.cache config.log stamp-h stamp-h[0-9]*
+	-test -z "$(CONFIG_CLEAN_FILES)" || rm -f $(CONFIG_CLEAN_FILES)
 
 maintainer-clean-generic:
-	test -z "$(MAINTAINERCLEANFILES)" || rm -f $(MAINTAINERCLEANFILES)
-	test -z "$(BUILT_SOURCES)" || rm -f $(BUILT_SOURCES)
+	-test -z "$(MAINTAINERCLEANFILES)" || rm -f $(MAINTAINERCLEANFILES)
+	-test -z "$(BUILT_SOURCES)" || rm -f $(BUILT_SOURCES)
 mostlyclean:  mostlyclean-vti mostlyclean-aminfo mostlyclean-generic
 
 clean:  clean-vti clean-aminfo clean-generic mostlyclean
 
 distclean:  distclean-vti distclean-aminfo distclean-generic clean
-	rm -f config.status
+	-rm -f config.status
 
 maintainer-clean:  maintainer-clean-vti maintainer-clean-aminfo \
 		maintainer-clean-generic distclean

@@ -95,4 +95,3 @@ gsl_test_summary ()
   
   return EXIT_FAILURE;
 }
-
