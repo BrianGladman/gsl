@@ -312,7 +312,7 @@ defaults, an @code{mt19937} generator with a seed of 0,
 bash$ ./a.out 
 generator type: mt19937
 seed = 0
-first value = 2867219139
+first value = 4293858116
 @end example
 
 @noindent
@@ -1420,16 +1420,16 @@ Here is the output of the program,
 
 @example
 $ ./a.out 
-0.66758
-0.36908
-0.72483
-0.68776
-0.57365
-0.81078
-0.27108
-0.83777
-0.13736
-0.95745
+0.99974
+0.16291
+0.28262
+0.94720
+0.23166
+0.48497
+0.95748
+0.74431
+0.54004
+0.73995
 @end example
 @noindent
 The numbers depend on the seed used by the generator.  The default seed
