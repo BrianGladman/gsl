@@ -50,4 +50,12 @@ void gsl_siman_solve(const gsl_rng * r,
 		     size_t element_size,
 		     gsl_siman_params_t params);
 
+void 
+gsl_siman_solve_many (const gsl_rng * r, void *x0_p, gsl_Efunc_t Ef,
+		      gsl_siman_step_t take_step,
+		      gsl_siman_metric_t distance,
+		      gsl_siman_print_t print_position,
+		      size_t element_size,
+		      gsl_siman_params_t params);
+
 #endif /* GSL_SIMAN_H */
