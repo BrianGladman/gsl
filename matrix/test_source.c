@@ -275,7 +275,7 @@ FUNCTION (test, func) (void)
               BASE x = FUNCTION(gsl_matrix,get) (a,i,j);
               BASE y = FUNCTION(gsl_matrix,get) (b,i,j);
               BASE z = x / y;
-              if (fabs(r - z) > 2 * GSL_DBL_EPSILON * fabs(z))
+              if (fabs(r - z) > 2 * GSL_FLT_EPSILON * fabs(z))
                 status = 1;
             }
         }
