@@ -188,12 +188,15 @@ gsl_sf_legendre_Q0_e(const double x, gsl_sf_result * result)
   }
   else if(x < 1.0){
     result->val = 0.5 * (log1p(x) - log1p(-x));
-    result->err = 2.0 * GSL_DBL_EPSILON * fabs(result->val);
+    result->err = 2.0 * GSL_DBL_EPSILON * (fabs(result->val) + 
+					   1.0 / fabs(1.0 - x) 
+					   + 1.0 / fabs(1.0 + x));
     return GSL_SUCCESS;
   }
   else if(x < 10.0) {
     result->val = 0.5 * log((x+1.0)/(x-1.0));
-    result->err = 2.0 * GSL_DBL_EPSILON * fabs(result->val);
+    result->err = 2.0 * GSL_DBL_EPSILON * (fabs(result->val) +
+					   1.0 / fabs(x - 1.0));
     return GSL_SUCCESS;
   }
   else if(x*GSL_DBL_MIN < 2.0) {
@@ -205,7 +208,7 @@ gsl_sf_legendre_Q0_e(const double x, gsl_sf_result * result)
     const double c5 = 1.0/11.0;
     const double c6 = 1.0/13.0;
     const double c7 = 1.0/15.0;
-    result->val = 2.0/x * (1.0 + y*(c1 + y*(c2 + y*(c3 + y*(c4 + y*(c5 + y*(c6 + y*c7)))))));
+    result->val = (1.0/x) * (1.0 + y*(c1 + y*(c2 + y*(c3 + y*(c4 + y*(c5 + y*(c6 + y*c7)))))));
     result->err = 2.0 * GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
   }
@@ -229,16 +232,19 @@ gsl_sf_legendre_Q1_e(const double x, gsl_sf_result * result)
   }
   else if(x < 1.0){
     result->val = 0.5 * x * (log1p(x) - log1p(-x)) - 1.0;
-    result->err = 2.0 * GSL_DBL_EPSILON * fabs(result->val);
+    result->err = 2.0 * GSL_DBL_EPSILON * (fabs(result->val)
+					   + 1.0 / fabs(1.0 - x)
+					   + 1.0 / fabs(1.0 + x));
     return GSL_SUCCESS;
   }
   else if(x < 6.0) {
     result->val = 0.5 * x * log((x+1.0)/(x-1.0)) - 1.0;
-    result->err = 2.0 * GSL_DBL_EPSILON * fabs(result->val);
+    result->err = 2.0 * GSL_DBL_EPSILON * (fabs(result->val) 
+					   + 1.0 / fabs(x - 1.0));
     return GSL_SUCCESS;
   }
   else if(x*GSL_SQRT_DBL_MIN < 0.99/M_SQRT3) {
-    const double y = x*x;
+    const double y = 1/(x*x);
     const double c1 = 3.0/5.0;
     const double c2 = 3.0/7.0;
     const double c3 = 3.0/9.0;

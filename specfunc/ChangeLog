@@ -2,8 +2,14 @@
 
 	* legendre_Qn.c (gsl_sf_legendre_Q0_e): use (log1p(x) - log1p(-x))
 	instead of log((1+x)/(1-x)), for accuracy
-	(gsl_sf_legendre_Q1_e):  use (log1p(x) - log1p(-x))
-	instead of log((1+x)/(1-x)), for accuracy
+	(gsl_sf_legendre_Q1_e): use (log1p(x) - log1p(-x)) instead of
+	log((1+x)/(1-x)), for accuracy
+	(gsl_sf_legendre_Q0_e): improve error estimate near singular
+	points
+	(gsl_sf_legendre_Q1_e): improve error estimate near singular
+	points
+	(gsl_sf_legendre_Q0_e): fixed incorrect factor of 2 in asymptotic
+	expansion
 
 	* check.h (CHECK_UNDERFLOW): provide macro for checking results
 	for underflow
