@@ -1019,12 +1019,16 @@ olver_f1(double z, double minus_zeta)
 }
 
 
-
 int
 gsl_sf_bessel_zero_J0_impl(int s, gsl_sf_result * result)
 {
   if(result == 0) {
     return GSL_EFAULT;
+  }
+  else if(s == 0){
+    result->val = 0.0;
+    result->err = 0.0;
+    return GSL_EINVAL;
   }
   else {
     /* See [F. Lether, J. Comp. Appl .Math. 67, 167 (1996)]. */
@@ -1058,6 +1062,11 @@ gsl_sf_bessel_zero_J1_impl(int s, gsl_sf_result * result)
   if(result == 0) {
     return GSL_EFAULT;
   }
+  else if(s == 0) {
+    result->val = 0.0;
+    result->err = 0.0;
+    return GSL_SUCCESS;
+  }
   else {
     /* See [M. Branders et al., J. Comp. Phys. 42, 403 (1981)]. */
 
@@ -1090,10 +1099,15 @@ gsl_sf_bessel_zero_Jnu_impl(double nu, int s, gsl_sf_result * result)
   if(result == 0) {
     return GSL_EFAULT;
   }
-  else if(nu <= -1.0 || s < 1) {
+  else if(nu <= -1.0 || s < 0) {
     result->val = 0.0;
     result->err = 0.0;
     return GSL_EDOM;
+  }
+  else if(s == 0) {
+    result->val = 0.0;
+    result->err = 0.0;
+    return ( nu == 0.0 ? GSL_EINVAL : GSL_SUCCESS );
   }
   else if(nu < 0.0) {
     /* This can be done, I'm just lazy now. */
@@ -1197,6 +1211,15 @@ gsl_sf_bessel_zero_J0_e(int s, gsl_sf_result * result)
   return status;
 }
 
+int
+gsl_sf_bessel_zero_J1_e(int s, gsl_sf_result * result)
+{
+  int status = gsl_sf_bessel_zero_J1_impl(s, result);
+  if(status != GSL_SUCCESS) {
+    GSL_ERROR("gsl_sf_bessel_zero_J1_e", status);
+  }
+  return status;
+}
 
 int
 gsl_sf_bessel_zero_Jnu_e(double nu, int s, gsl_sf_result * result)
