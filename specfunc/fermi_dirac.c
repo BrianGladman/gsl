@@ -128,7 +128,7 @@ int gsl_sf_fermi_dirac_0_impl(const double x, double * result)
 }
 
 /* [Goano, TOMS-745, p. 222] */
-int gsl_sf_fermi_integral_inc_0_impl(const double x, const double b, double * result)
+int gsl_sf_fermi_dirac_inc_0_impl(const double x, const double b, double * result)
 {
   if(b < 0.0) {
     *result = 0.0;
@@ -260,7 +260,7 @@ int gsl_sf_fermi_integral_2_impl(const double A, double * result)
 
 /*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
 
-int gsl_sf_fermi_dirac_0_e(double x, double * result)
+int gsl_sf_fermi_dirac_0_e(const double x, double * result)
 {
   int status = gsl_sf_fermi_dirac_0_impl(x, result);
   if(status != GSL_SUCCESS){
@@ -269,11 +269,22 @@ int gsl_sf_fermi_dirac_0_e(double x, double * result)
   return status;
 }
 
-int gsl_sf_fermi_dirac_m1_e(double x, double * result)
+int gsl_sf_fermi_dirac_m1_e(const double x, double * result)
 {
   int status = gsl_sf_fermi_dirac_m1_impl(x, result);
   if(status != GSL_SUCCESS){
     GSL_ERROR("gsl_sf_fermi_dirac_m1_e", status);
+  }
+  return status;
+}
+
+
+int 
+gsl_sf_fermi_dirac_inc_0_e(const double x, const double b, double * result)
+{
+  int status = gsl_sf_fermi_dirac_inc_0_impl(x, b, result);
+  if(status != GSL_SUCCESS){
+    GSL_ERROR("gsl_sf_fermi_dirac_inc_0_e", status);
   }
   return status;
 }
@@ -300,7 +311,7 @@ int gsl_sf_fermi_integral_2_e(const double A, double * result)
 
 /*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*-*-*/
 
-double gsl_sf_fermi_dirac_0(double x)
+double gsl_sf_fermi_dirac_0(const double x)
 {
   double y;
   int status = gsl_sf_fermi_dirac_0_impl(x, &y);
@@ -310,7 +321,7 @@ double gsl_sf_fermi_dirac_0(double x)
   return y;
 }
 
-double gsl_sf_fermi_dirac_m1(double x)
+double gsl_sf_fermi_dirac_m1(const double x)
 {
   double y;
   int status = gsl_sf_fermi_dirac_m1_impl(x, &y);
@@ -319,6 +330,18 @@ double gsl_sf_fermi_dirac_m1(double x)
   }
   return y;
 }
+
+
+double gsl_sf_fermi_dirac_inc_0(const double x, const double b)
+{
+  double y;
+  int status = gsl_sf_fermi_dirac_inc_0_impl(x, b, &y);
+  if(status != GSL_SUCCESS){
+    GSL_WARNING("gsl_sf_fermi_dirac_inc_0", status);
+  }
+  return y;
+}
+
 
 double gsl_sf_fermi_integral_1(const double A)
 {
