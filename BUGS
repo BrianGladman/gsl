@@ -96,47 +96,6 @@ implemented.
 
 ----------------------------------------------------------------------
 
-BUG#7 -- gsl_sf_coupling_3j loses accuracy for large arguments 
-
-From: Filip Floegel <floegel@itp.uni-hannover.de>
-Subject: gsl_sf_coupling_3j
-Date: Wed, 2 Oct 2002 17:45:52 +0200
-
-gsl_sf_coupling_3j doesn't work properly for large
-angular mementa like j1=j2=j3=40 m1=m2=m3=0 !!!
-
-gsl_sf_coupling_3j_e(80,80,80,0,0,0,&result)
-
-which correspond to j1=j2=j3=40 m1=m2=m3=0
-
-gives me:
-
-      result.val = 0.0625
-      result.err = 0.172766
-
-mathematica gives me:
-
-      N[ThreeJSymbol[{40,0},{40,0},{40,0}]] = 0.0149685
-
-my guess is that gamma.c which is used for calculating fractional
-numbers probably diverges for large integers. 
-
-Note from Serge Winitzki <serge@cosmos.phy.tufts.edu>:
-
-The package "matpack" (www.matpack.de) includes many special functions, 
-also the 3j symbols. They refer to some quite complicated numerical 
-methods using recursion relations to get the right answers for large 
-momenta, and to 1975-1976 papers by Schulten and Gordon for the 
-description of the algorithms. The papers can be downloaded for free at
-http://www.ks.uiuc.edu/Publications/Papers/ 
-
-http://www.ks.uiuc.edu/Publications/Papers/abstract.cgi?tbcode=SCHU76B
-http://www.ks.uiuc.edu/Publications/Papers/abstract.cgi?tbcode=SCHU75A
-http://www.ks.uiuc.edu/Publications/Papers/abstract.cgi?tbcode=SCHU75
-
-
-----------------------------------------------------------------------
-
 BUG#8 -- inexact coefficients in rk8pd.c 
 
 From: Luc Maisonobe <Luc.Maisonobe@c-s.fr>
