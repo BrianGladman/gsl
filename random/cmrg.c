@@ -21,6 +21,15 @@ typedef struct {
     long x20,x21,x22;           /* second component */
 } gsl_ran_cmrg_randomState;
 
+static void
+gsl_ran_cmrg_printState_p(gsl_ran_cmrg_randomState *s)
+{
+    printf("%ldL, %ldL, %ldL,\n%ldL, %ldL, %ldL\n",
+	   s->x10,s->x11,s->x12,
+	   s->x20,s->x21,s->x22);
+}
+
+
 static const double Invmp1 = 4.656612873077393e-10;
 
 #define POSITIVE(x,m) if (x<0) x += m
@@ -66,23 +75,38 @@ inline double gsl_ran_cmrg_uniform_wstate(void *vState)
 
 double gsl_ran_cmrg_max() { return (double)m1; }
 
+#define LCG(n) ((n)*8121+28411)%134456
 void gsl_ran_cmrg_seed_wstate(void *vState, int s)
 {
-    gsl_ran_cmrg_randomState *theState;
-    theState = (gsl_ran_cmrg_randomState *)vState;
-
-    /* An entirely adhoc way of seeding! This does not come
+    /* An entirely adhoc way of seeding! This does **not** come
        from L'Ecuyer et al */
-    theState->x10 = s;
-    theState->x11 = 128+theState->x10;
-    theState->x12 = 128+theState->x11;
-    theState->x20 = 128+theState->x12;
-    theState->x21 = 128+theState->x20;
-    theState->x22 = 128+theState->x21;
+    gsl_ran_cmrg_randomState *rState;
+    rState = (gsl_ran_cmrg_randomState *)vState;
+
+    s = (s<0 ? -s : s);
+    if (s==0) s=1;
+    rState->x10 = LCG(s);
+    rState->x11 = LCG(rState->x10);
+    rState->x12 = LCG(rState->x11);
+    rState->x20 = LCG(rState->x12);
+    rState->x21 = LCG(rState->x20);
+    rState->x22 = LCG(rState->x21);
+
+    /* "warm it up" */
+    gsl_ran_cmrg_random_wstate(rState);
+    gsl_ran_cmrg_random_wstate(rState);
+    gsl_ran_cmrg_random_wstate(rState);
+    gsl_ran_cmrg_random_wstate(rState);
+    gsl_ran_cmrg_random_wstate(rState);
+    gsl_ran_cmrg_random_wstate(rState);
+    gsl_ran_cmrg_random_wstate(rState);
     return;
 }
 
-static gsl_ran_cmrg_randomState state = { 10, 20, 30, 40, 50 , 60};
+static gsl_ran_cmrg_randomState state = {
+    511515612L, 1645048169L, 1860274777L,
+     55882945L, 1225790668L, 2055528708L
+};
 #include "cmrg-state.c"
 
     

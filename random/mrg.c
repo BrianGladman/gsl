@@ -19,13 +19,21 @@ typedef struct {
     long x1,x2,x3,x4,x5;
 } gsl_ran_mrg_randomState;
 
-inline unsigned long gsl_ran_mrg_random_wstate(void *vState)
+static void
+gsl_ran_mrg_printState_p(gsl_ran_mrg_randomState *s)
+{
+    printf("%ldL, %ldL, %ldL, %ldL, %ldL\n",
+	   s->x1,s->x2,s->x3,s->x4,s->x5);
+}
+
+unsigned long gsl_ran_mrg_random_wstate(void *vState)
 {
     long h, p1, p5;
     gsl_ran_mrg_randomState *theState;
     theState = (void *)vState;
     
-    h  = theState->x5 / q5;    p5 = a5 * (theState->x5 - h * q5) - h * r5;
+    h  = theState->x5 / q5;    
+    p5 = a5 * (theState->x5 - h * q5) - h * r5;
     theState->x5 = theState->x4;
     theState->x4 = theState->x3;
     theState->x3 = theState->x2;
@@ -51,22 +59,39 @@ inline double gsl_ran_mrg_max(void)
 {
     return (double)m;
 }
+/* LCG is a "quick and dirty" (Press et al, p284) generator 
+ */ 
+#define LCG(n) ((n)*8121+28411)%134456
 void gsl_ran_mrg_seed_wstate(void *vState, int s)
 {
-    
     /* An entirely adhoc way of seeding! This does **not** come
        from L'Ecuyer et al */
-    s -= 1;
-    ((gsl_ran_mrg_randomState *)vState)->x1 = 12345 + s;
-    ((gsl_ran_mrg_randomState *)vState)->x2 = 23456 + 2*s;
-    ((gsl_ran_mrg_randomState *)vState)->x3 = 34567 + 3*s;
-    ((gsl_ran_mrg_randomState *)vState)->x4 = 45678 + 5*s;
-    ((gsl_ran_mrg_randomState *)vState)->x5 = 56789 + 7*s;
+    gsl_ran_mrg_randomState *rState;
+    rState = (gsl_ran_mrg_randomState *)vState;
+
+    s = (s<0 ? -s : s);
+    if (s==0) s=1;
+    rState->x1 = LCG(s);
+    rState->x2 = LCG(rState->x1);
+    rState->x3 = LCG(rState->x2);
+    rState->x4 = LCG(rState->x3);
+    rState->x5 = LCG(rState->x4);
+    /* "warm it up" with at least 5 calls to go through
+     * all the x values */
+    gsl_ran_mrg_random_wstate(rState);
+    gsl_ran_mrg_random_wstate(rState);
+    gsl_ran_mrg_random_wstate(rState);
+    gsl_ran_mrg_random_wstate(rState);
+    gsl_ran_mrg_random_wstate(rState);
+    gsl_ran_mrg_random_wstate(rState);
     return;
 }
 
 
-static gsl_ran_mrg_randomState state = { 12345, 23456, 34567, 45678, 56789 };
+static gsl_ran_mrg_randomState state = {
+    1436981205L, 651435938L, 1374493895L, 1070522304L, 1168302460L
+};
+
 
 
 #include "mrg-state.c"

@@ -61,6 +61,8 @@ C            LARGEST POSSIBLE VALUE.
 C     B. THE SEQUENCE OF NUMBERS GENERATED DEPENDS ON THE INITIAL
 C          INPUT 'JD' AS WELL AS THE VALUE OF 'MDIG'.
 C          IF MDIG=16 ONE SHOULD FIND THAT
+   Editors Note: set the seed using 152 in order to get uni(305)
+   -jt
 C            THE FIRST EVALUATION
 C              Z=UNI(305) GIVES Z=.027832881...
 C            THE SECOND EVALUATION
@@ -86,9 +88,21 @@ static const int m2 = 256;               /* 2^(MDIG/2) */
 
 
 typedef struct {
-    unsigned long m[17];
     int i,j;
+    unsigned long m[17];
 } gsl_ran_uni_randomState;
+
+static void
+gsl_ran_uni_printState_p(gsl_ran_uni_randomState *s)
+{
+    int n;
+    printf("%d, %d,  {\n",s->i,s->j);
+    for (n=0; n<16; ++n) {
+	printf("%lu,%c",s->m[n],(n%5==4 ? '\n' : ' '));
+    }
+    printf("%lu }\n",s->m[16]);
+}
+
 
 inline unsigned long gsl_ran_uni_random_wstate(void *vState)
 {
@@ -126,10 +140,9 @@ void gsl_ran_uni_seed_wstate(void *vState, int jd)
        same random number sequence!  */
 
     jd = (jd > 0 ? jd : -jd);       /* absolute value */
+    jd = 2*jd+1;                    /* enforce seed be odd */
     jseed = (jd < m1 ? jd : m1);    /* seed should be less than m1 */
-                                    /* and odd */
-    jseed -= (jseed % 2 == 0 ? 1 : 0);
-
+                                    
     k0 = 9069%m2;
     k1 = 9069/m2;
     j0 = jseed%m2;
@@ -149,10 +162,20 @@ void gsl_ran_uni_seed_wstate(void *vState, int jd)
 
 
 static gsl_ran_uni_randomState state = {
-    { 30788, 23052,  2053, 19346, 10646, 19427, 23975,
-      19049, 10949, 19693, 29746, 26748, 2796,  23890,
-      29168, 31924, 16499 },
-    4, 16
+    4, 16,  {
+	27207, 30011, 31519, 10547, 951,
+	6635, 10767, 30051, 1063, 6555,
+	6143, 5267, 23447, 9291, 13551,
+	14019, 31239 }
+/* The numbers below were provided in the version that came
+ * over the net.  I have used the numbers above following the
+ * convention that the default initializer is the same as you
+ * would get if you used seed=1
+    4, 16, {
+	30788, 23052,  2053, 19346, 10646, 19427, 23975,
+	19049, 10949, 19693, 29746, 26748, 2796,  23890,
+	29168, 31924, 16499 }
+ */
 };
 #include "uni-state.c"
 

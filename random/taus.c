@@ -16,7 +16,14 @@ typedef struct {
     unsigned long s1,s2,s3;
 } gsl_ran_taus_randomState;
 
-inline unsigned long gsl_ran_taus_random_wstate(void *vState)
+static void
+gsl_ran_taus_printState_p(gsl_ran_taus_randomState *s)
+{
+    printf("%luUL, %luUL, %luUL\n",
+	   s->s1,s->s2,s->s3);
+}
+
+unsigned long gsl_ran_taus_random_wstate(void *vState)
 {
     gsl_ran_taus_randomState *newState;
     newState = (gsl_ran_taus_randomState *)vState;
@@ -36,19 +43,37 @@ double gsl_ran_taus_max()
     return 4294967296.0;          /* = 2^32 */
 }
 
-void gsl_ran_taus_seed_wstate(void *vState,int s)
+/* LCG is a "quick and dirty" (Press et al, p284) generator 
+ */ 
+#define LCG(n) ((n)*8121+28411)%134456
+void gsl_ran_taus_seed_wstate(void *vState, int s)
 {
     /* An entirely adhoc way of seeding!
        L'Ecuyer suggests: s1,s2,s3 >= 2,8,16, and says
        "In practice, it is better to take larger (random) initial seeds"
        */
-    s -= 1;
-    ((gsl_ran_taus_randomState *)vState)->s1 = 12345 + s;
-    ((gsl_ran_taus_randomState *)vState)->s2 = 23456 + 2*s;
-    ((gsl_ran_taus_randomState *)vState)->s3 = 34567 + 3*s;
+    gsl_ran_taus_randomState *rState;
+    rState = (gsl_ran_taus_randomState *)vState;
+
+    s = (s<0 ? -s : s);
+    if (s==0) s=1;
+    rState->s1 = LCG(s);
+    rState->s2 = LCG(rState->s1);
+    rState->s3 = LCG(rState->s2);
+
+    /* "warm it up" */
+    gsl_ran_taus_random_wstate(rState);
+    gsl_ran_taus_random_wstate(rState);
+    gsl_ran_taus_random_wstate(rState);
+    gsl_ran_taus_random_wstate(rState);
+    gsl_ran_taus_random_wstate(rState);
+    gsl_ran_taus_random_wstate(rState);
+    return;
 }
 
-static gsl_ran_taus_randomState state = { 12345, 54321, 98765 };
+static gsl_ran_taus_randomState state = { 
+    956008634UL, 2013275612UL, 4211549042UL
+};
 #include "taus-state.c"
 
 

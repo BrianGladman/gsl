@@ -1,3 +1,4 @@
+
 /* $Id$ */
 /* Test routine for the uniform random number generators */
 #include <stdio.h>
@@ -28,6 +29,9 @@ main(int argc, char **argv)
         randseed = atoi(argv[2]);
         gsl_ran_seed(randseed);
     }
+
+    printf("Random State:\n");
+    gsl_ran_printState(gsl_ran_getRandomState());
 
     printf("Nominal Maximum random  = %g\n",gsl_ran_max());
     rmax=0;

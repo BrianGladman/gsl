@@ -125,6 +125,14 @@ typedef struct {
     long x0,x1;
 } gsl_ran_rand_randomState;
 
+static void
+gsl_ran_rand_printState_p(gsl_ran_rand_randomState *s)
+{
+    printf("%ldL, %ldL\n",
+	   s->x0,s->x1);
+}
+
+
 const long P=4194304;
 const long a1=1536;
 const long a0=1029;
@@ -171,7 +179,7 @@ void gsl_ran_rand_seed_wstate(void *vState, int jd)
 }
 
 
-static gsl_ran_rand_randomState state = { 0,0 };
+static gsl_ran_rand_randomState state = { 0L, 256L };
 
 #include "rand-state.c"
 

@@ -90,6 +90,17 @@ typedef struct {
     int i,j;
 } gsl_ran_uni32_randomState;
 
+static void
+gsl_ran_uni32_printState_p(gsl_ran_uni32_randomState *s)
+{
+    int n;
+    printf("%d, %d,  {\n",s->i,s->j);
+    for (n=0; n<16; ++n) {
+	printf("%lu,%c",s->m[n],(n%5==4 ? '\n' : ' '));
+    }
+    printf("%lu }\n",s->m[16]);
+}
+
 inline unsigned long gsl_ran_uni32_random_wstate(void *vState)
 {
     long k;                     /* important k not be unsigned */
