@@ -4,8 +4,7 @@ RCS: $Id$
 
 ----------------------------------------------------------------------
 
-The following constitute the set of things which
-should be finished before a 1.0 level release.
+The following should be finished before a 1.0 level release.
 
 * Implement the conicalP_sph_reg() functions.
   DONE: Fri Nov  6 23:33:53 MST 1998 [GJ]

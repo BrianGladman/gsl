@@ -693,9 +693,41 @@ lngamma_lanczos(double x, double * result)
 }
 
 
+/* x = eps near zero
+ * gives double-precision for |eps| < 0.02
+ */
+static
+int
+lngamma_sgn_0(double eps, double * lng, double * sgn)
+{
+  /* calculate series for g(eps) = Gamma(eps) eps - 1/(1+eps) - eps/2 */
+  const double c1  = -0.07721566490153286061;
+  const double c2  = -0.01094400467202744461;
+  const double c3  =  0.09252092391911371098;
+  const double c4  = -0.01827191316559981266;
+  const double c5  =  0.01800493109685479790;
+  const double c6  = -0.00685088537872380685;
+  const double c7  =  0.00399823955756846603;
+  const double c8  = -0.00189430621687107802;
+  const double c9  =  0.00097473237804513221;
+  const double c10 = -0.00048434392722255893;
+  const double g6  = c6+eps*(c7+eps*(c8 + eps*(c9 + eps*c10)));
+  const double g   = eps*(c1+eps*(c2+eps*(c3+eps*(c4+eps*(c5+eps*g6)))));
+
+  /* calculate Gamma(eps) eps, a positive quantity */
+  const double gee = g + 1.0/(1.0+eps) + 0.5*eps;
+
+  *lng = log(gee) - log(fabs(eps));
+  *sgn = GSL_SIGN(eps);
+
+  return GSL_SUCCESS;
+}
+
+
 /* x near a negative integer
  * Calculates sign as well as log(|gamma(x)|).
  * x = -N + eps
+ * assumes N >= 1
  */
 static
 int
@@ -706,27 +738,84 @@ lngamma_sgn_sing(int N, double eps, double * lng, double * sgn)
     *sgn = 0.0;
     return GSL_EDOM;
   }
-  else if(N == 0) {
-    /* x is near zero, which requires special treatment
-     * because of the way we handle the generic case.
+  else if(N == 1) {
+    /* calculate series for
+     * g = eps gamma(-1+eps) + 1 + eps/2 (1+3eps)/(1-eps^2)
+     * double-precision for |eps| < 0.02
      */
-    const double c2 = (6.0*M_EULER*M_EULER + M_PI*M_PI)/12.0;
-    const double g1 = eps*(-M_EULER + c2*eps);
-    double lng1;
-    gsl_sf_log_1plusx_impl(g1, &lng1);  /* log(1 + c1 eps + c2 eps) */
-    *lng = lng1 - log(fabs(eps));
-    *sgn = GSL_SIGN(eps);
+    const double c0 =  0.07721566490153286061;
+    const double c1 =  0.08815966957356030521;
+    const double c2 = -0.00436125434555340577;
+    const double c3 =  0.01391065882004640689;
+    const double c4 = -0.00409427227680839100;
+    const double c5 =  0.00275661310191541584;
+    const double c6 = -0.00124162645565305019;
+    const double c7 =  0.00065267976121802783;
+    const double c8 = -0.00032205261682710437;
+    const double c9 =  0.00016229131039545456;
+    const double g5 = c5 + eps*(c6 + eps*(c7 + eps*(c8 + eps*c9)));
+    const double g  = eps*(c0 + eps*(c1 + eps*(c2 + eps*(c3 + eps*(c4 + eps*g5)))));
+
+    /* calculate eps gamma(-1+eps), a negative quantity */
+    const double gam_e = g - 1.0 - 0.5*eps*(1.0+3.0*eps)/(1.0 - eps*eps);
+
+    *lng = log(fabs(gam_e)) - log(fabs(eps));
+    *sgn = ( eps > 0.0 ? -1.0 : 1.0 );
     return GSL_SUCCESS;
   }
   else {
-    double psi_N;
-    double psi_Np1;
-    double lng_Np1;
-    gsl_sf_psi_int_impl(N, &psi_N);  /* not N+1, in case N = MAX_INT */
-    lngamma_lanczos(N+1.0, &lng_Np1);
-    psi_Np1 = psi_N + 1.0/N;
-    *lng = -log(fabs(eps)) - lng_Np1 + eps*psi_Np1;
+    double g;
+
+    /* series for sin(Pi(N+1-eps))/(Pi eps) modulo the sign
+     * double-precision for |eps| < 0.02
+     */
+    const double cs1 = -1.6449340668482264365;
+    const double cs2 =  0.8117424252833536436;
+    const double cs3 = -0.1907518241220842137;
+    const double cs4 =  0.0261478478176548005;
+    const double cs5 = -0.0023460810354558236;
+    const double e2  = eps*eps;
+    const double sin_ser = 1.0 + e2*(cs1+e2*(cs2+e2*(cs3+e2*(cs4+e2*cs5))));
+
+    /* calculate series for ln(gamma(1+N-eps))
+     * double-precision for |eps| < 0.02
+     */
+    double aeps = fabs(eps);
+    double c0, c1, c2, c3, c4, c5, c6, c7;
+    double psi_0;
+    double psi_1;
+    double psi_2 = 0.0;
+    double psi_3 = 0.0;
+    double psi_4 = 0.0;
+    double psi_5 = 0.0;
+    double psi_6 = 0.0;
+    double lng_ser;
+    gsl_sf_lnfact_impl(N, &c0);
+    gsl_sf_psi_int_impl(N+1, &psi_0);
+    gsl_sf_psi_1_int_impl(N+1, &psi_1);
+    if(aeps > 0.00001) gsl_sf_psi_n_impl(2, N+1.0, &psi_2);
+    if(aeps > 0.0002)  gsl_sf_psi_n_impl(3, N+1.0, &psi_3);
+    if(aeps > 0.001)   gsl_sf_psi_n_impl(4, N+1.0, &psi_4);
+    if(aeps > 0.005)   gsl_sf_psi_n_impl(5, N+1.0, &psi_5);
+    if(aeps > 0.01)    gsl_sf_psi_n_impl(6, N+1.0, &psi_6);
+    c1 = psi_0;
+    c2 = psi_1/2.0;
+    c3 = psi_2/6.0;
+    c4 = psi_3/24.0;
+    c5 = psi_4/120.0;
+    c6 = psi_5/720.0;
+    c7 = psi_6/5040.0;
+    lng_ser = c0-eps*(c1-eps*(c2-eps*(c3-eps*(c4-eps*(c5-eps*(c6-eps*c7))))));
+
+    /* calculate
+     * g = ln(|eps gamma(-N+eps)|)
+     *   = -ln(gamma(1+N-eps)) + ln(|eps Pi/sin(Pi(N+1+eps))|)
+     */
+    g = -lng_ser - log(sin_ser);
+
+    *lng = g - log(fabs(eps));
     *sgn = ( GSL_IS_ODD(N) ? -1.0 : 1.0 ) * ( eps > 0.0 ? 1.0 : -1.0 );
+
     return GSL_SUCCESS;
   }
 }
@@ -771,6 +860,7 @@ int
 lngamma_1_pade(const double eps, double * result)
 {
   /* Use (2,2) Pade for Log[Gamma[1+eps]]/eps
+   * plus a correction series.
    */
   const double n1 = -1.0017419282349508699871138440;
   const double n2 =  1.7364839209922879823280541733;
@@ -778,7 +868,15 @@ lngamma_1_pade(const double eps, double * result)
   const double d2 =  5.0456274100274010152489597514;
   const double num = (eps + n1) * (eps + n2);
   const double den = (eps + d1) * (eps + d2);
-  *result = 2.0816265188662692474880210318 * eps * num / den;
+  const double pade = 2.0816265188662692474880210318 * num / den;
+  const double c0 =  0.004785324257581753;
+  const double c1 = -0.01192457083645441;
+  const double c2 =  0.01931961413960498;
+  const double c3 = -0.02594027398725020;
+  const double c4 =  0.03141928755021455;
+  const double eps5 = eps*eps*eps*eps*eps;
+  const double corr = eps5 * (c0 + eps*(c1 + eps*(c2 + eps*(c3 + c4*eps))));
+  *result = eps * (pade + corr);
   return GSL_SUCCESS;
 }
 
@@ -790,6 +888,7 @@ int
 lngamma_2_pade(const double eps, double * result)
 {
   /* Use (2,2) Pade for Log[Gamma[2+eps]]/eps
+   * plus a correction series.
    */
   const double n1 = 1.000895834786669227164446568;
   const double n2 = 4.209376735287755081642901277;
@@ -797,7 +896,15 @@ lngamma_2_pade(const double eps, double * result)
   const double d2 = 10.85766559900983515322922936;
   const double num = (eps + n1) * (eps + n2);
   const double den = (eps + d1) * (eps + d2);
-  *result = 2.85337998765781918463568869 * eps * num/den;
+  const double pade = 2.85337998765781918463568869 * num/den;
+  const double c0 =  0.0001139406357036744;
+  const double c1 = -0.0001365435269792533;
+  const double c2 =  0.0001067287169183665;
+  const double c3 = -0.0000693271800931282;
+  const double c4 =  0.0000407220927867950;
+  const double eps5 = eps*eps*eps*eps*eps;
+  const double corr = eps5 * (c0 + eps*(c1 + eps*(c2 + eps*(c3 + c4*eps))));
+  *result = eps * (pade + corr);
   return GSL_SUCCESS;
 }
 
@@ -805,18 +912,25 @@ lngamma_2_pade(const double eps, double * result)
 /*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
 
 
-int gsl_sf_lngamma_impl(double x, double * result)
+int gsl_sf_lngamma_impl(double x, double * result /*, gsl_prec_t goal, unsigned int err_bits */)
 {
+gsl_prec_t goal = GSL_DOUBLE_PREC;
+unsigned int err_bits = 0;
+
   if(fabs(x - 1.0) < 0.01) {
-    return lngamma_1_pade(x-1.0, result);
+    return lngamma_1_pade(x - 1.0, result);
   }
   else if(fabs(x - 2.0) < 0.01) {
-    return lngamma_2_pade(x-2.0, result);
+    return lngamma_2_pade(x - 2.0, result);
   }
   else if(x >= 0.5) {
     return lngamma_lanczos(x, result);
   }
-  else {
+  else if(fabs(x) < 0.02) {
+    double sgn;
+    return lngamma_sgn_0(x, result, &sgn);
+  }
+  else if(x > -0.5/(GSL_DBL_EPSILON*M_PI)) {
     double z  = 1.0 - x;
     double s  = sin(M_PI*z);
     double as = fabs(s);
@@ -824,25 +938,30 @@ int gsl_sf_lngamma_impl(double x, double * result)
       *result = 0.0;
       return GSL_EDOM;
     }
-    else if(as < 10.0*GSL_SQRT_DBL_EPSILON) {
+    else if(as < M_PI*0.015) {
       /* x is near a negative integer, -N */
       if(x < INT_MIN + 2.0) {
         *result = 0.0;
-	return GSL_EROUND;
+        return GSL_EROUND;
       }
       else {
         int N = -(int)(x - 0.5);
-	double eps = x + N;
-	double sgn;
+        double eps = x + N;
+        double sgn;
         return lngamma_sgn_sing(N, eps, result, &sgn);
       }
     }
     else {
       double lg_z;
       lngamma_lanczos(z, &lg_z);
-      *result = log(M_PI/as) - lg_z;
+      *result = M_LNPI - (log(as) + lg_z);
       return GSL_SUCCESS;
     }
+  }
+  else {
+    /* |x| was too large to extract any fractional part */
+    *result = 0.0;
+    return GSL_EROUND;
   }
 }
 
@@ -861,7 +980,10 @@ int gsl_sf_lngamma_sgn_impl(double x, double * result_lg, double * sgn)
     *sgn = 1.0;
     return lngamma_lanczos(x, result_lg);
   }
-  else {
+  else if(fabs(x) < 0.02) {
+    return lngamma_sgn_0(x, result_lg, sgn);
+  }
+  else if(x > -0.5/(GSL_DBL_EPSILON*M_PI)) {
     double z = 1.0 - x;
     double s = sin(M_PI*x);
     double as = fabs(s);
@@ -870,7 +992,7 @@ int gsl_sf_lngamma_sgn_impl(double x, double * result_lg, double * sgn)
       *result_lg = 0.0;
       return GSL_EDOM;
     }
-    else if(as < 10.0*GSL_SQRT_DBL_EPSILON) {
+    else if(as < M_PI*0.015) {
       /* x is near a negative integer, -N */
       if(x < INT_MIN + 2.0) {
         *result_lg = 0.0;
@@ -887,9 +1009,15 @@ int gsl_sf_lngamma_sgn_impl(double x, double * result_lg, double * sgn)
       double lg_z;
       lngamma_lanczos(z, &lg_z);
       *sgn = (s > 0.0 ? 1.0 : -1.0);
-      *result_lg = log(M_PI/as) - lg_z;
+      *result_lg = M_LNPI - (log(as) + lg_z);
       return GSL_SUCCESS;
     }
+  }
+  else {
+    /* |x| was too large to extract any fractional part */
+    *result_lg = 0.0;
+    *sgn = 0.0;
+    return GSL_EROUND;
   }
 }
 
