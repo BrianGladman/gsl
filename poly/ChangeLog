@@ -1,3 +1,8 @@
+Thu Jun 28 11:24:51 2001  Brian Gough  <bjg@network-theory.co.uk>
+
+	* test.c (main): fixed a subtle bug in the test where the array
+ 	for the complex results was too small by a factor of two
+
 Mon Apr 30 12:36:08 2001  Brian Gough  <bjg@network-theory.co.uk>
 
 	* eval.c (gsl_poly_eval): added eval function  from specfunc

@@ -360,7 +360,7 @@ main (void)
     /* Wilkinson polynomial: y = (x-1)(x-2)(x-3)(x-4)(x-5) */
 
     double a[6] = { -120, 274, -225, 85, -15, 1 };
-    double z[5];
+    double z[6*2];
 
     gsl_poly_complex_workspace *w = gsl_poly_complex_workspace_alloc (6);
 
@@ -386,7 +386,7 @@ main (void)
     /* : 8-th order polynomial y = x^8 + x^4 + 1 */
 
     double a[9] = { 1, 0, 0, 0, 1, 0, 0, 0, 1 };
-    double z[16];
+    double z[8*2];
 
     double C = 0.5;
     double S = sqrt (3.0) / 2.0;
