@@ -220,19 +220,6 @@ executables in TESTS.  This is an automake problem, but can be worked
 around by adding the extensions $(EXEEXT) manually to each executable
 in the TEST= lines in */Makefile.am.  He supplied a patch to do this.
 ----------------------------------------------------------------------
-BUG#25 - ungraceful handling of equal abscissae in cspline
-
-From: Daniel Webb <lists@danielwebb.us>
-To: bug-gsl@gnu.org
-Subject: [Bug-gsl] Cspline interpolation problem
-Date: Sun, 5 Sep 2004 20:17:49 -0600 (MDT)
-
-cspline_init has a division by zero when two x-coordinates are the
-same. This case could be handled more gracefully, or an error
-signalled in the initialisation.  For example, akima interpolation
-does not have this problem.
-
-----------------------------------------------------------------------
 BUG#26 - underflow in gsl_sf_legendre_sphPlm_array
 
 there is a potential underflow in legendre_poly.c in the lines

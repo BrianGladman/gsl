@@ -1,5 +1,8 @@
 2004-11-28  Brian Gough  <bjg@network-theory.co.uk>
 
+	* cspline.c (cspline_init): support case of degenerate x[i] values
+	(cspline_init_periodic): support case of degenerate x[i] values
+
 	* integ_eval.h (integ_eval): improve numerical stability of
 	integration formula
 

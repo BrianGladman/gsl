@@ -112,9 +112,11 @@ cspline_init (void * vstate, const double xa[], const double ya[],
       const double h_ip1 = xa[i + 2] - xa[i + 1];
       const double ydiff_i   = ya[i + 1] - ya[i];
       const double ydiff_ip1 = ya[i + 2] - ya[i + 1];
+      const double g_i = (h_i != 0.0) ? 1.0 / h_i : 0.0;
+      const double g_ip1 = (h_ip1 != 0.0) ? 1.0 / h_ip1 : 0.0;
       state->offdiag[i] = h_ip1;
       state->diag[i] = 2.0 * (h_ip1 + h_i);
-      state->g[i] = 3.0 * (ydiff_ip1 / h_ip1  -  ydiff_i / h_i);
+      state->g[i] = 3.0 * (ydiff_ip1 * g_ip1 -  ydiff_i * g_i);
     }
 
   if (sys_size == 1)
@@ -179,9 +181,11 @@ cspline_init_periodic (void * vstate, const double xa[], const double ya[],
       const double h_ip1     = xa[i + 2] - xa[i + 1];
       const double ydiff_i   = ya[i + 1] - ya[i];
       const double ydiff_ip1 = ya[i + 2] - ya[i + 1];
+      const double g_i = (h_i != 0.0) ? 1.0 / h_i : 0.0;
+      const double g_ip1 = (h_ip1 != 0.0) ? 1.0 / h_ip1 : 0.0;
       state->offdiag[i] = h_ip1;
       state->diag[i] = 2.0 * (h_ip1 + h_i);
-      state->g[i] = 3.0 * (ydiff_ip1 / h_ip1 - ydiff_i / h_i);
+      state->g[i] = 3.0 * (ydiff_ip1 * g_ip1 - ydiff_i * g_i);
     }
 
     i = sys_size - 1;
@@ -191,9 +195,11 @@ cspline_init_periodic (void * vstate, const double xa[], const double ya[],
       const double h_ip1     = xa[1] - xa[0];
       const double ydiff_i   = ya[i + 1] - ya[i];
       const double ydiff_ip1 = ya[1] - ya[0];
+      const double g_i = (h_i != 0.0) ? 1.0 / h_i : 0.0;
+      const double g_ip1 = (h_ip1 != 0.0) ? 1.0 / h_ip1 : 0.0;
       state->offdiag[i] = h_ip1;
       state->diag[i] = 2.0 * (h_ip1 + h_i);
-      state->g[i] = 3.0 * (ydiff_ip1 / h_ip1 - ydiff_i / h_i);
+      state->g[i] = 3.0 * (ydiff_ip1 * g_ip1 - ydiff_i * g_i);
     }
     
     {

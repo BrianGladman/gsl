@@ -1,5 +1,8 @@
 * What will be new in gsl-1.6:
 
+** Equal abscissae are now handled gracefully in the cspline and
+periodic cspline interpolations.
+
 ** Removed potential cancellation error in calculation of uniform
 histogram ranges.
 
