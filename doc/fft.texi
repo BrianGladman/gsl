@@ -311,7 +311,7 @@ Swarztrauber.  The theory is explained in the review article
 @cite{Self-sorting Mixed-radix FFTs} by Clive Temperton.  The routines
 here use the same indexing scheme and basic algorithms as @sc{fftpack}.
 
-The mixed-radix algorithm is based on sub-transform modules -- highly
+The mixed-radix algorithm is based on sub-transform modules---highly
 optimized small length FFTs which are combined to create larger FFTs.
 There are efficient modules for factors of 2, 3, 4, 5, 6 and 7.  The
 modules for the composite factors of 4 and 6 are faster than combining
