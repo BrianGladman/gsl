@@ -1,3 +1,7 @@
+Tue Apr 17 22:15:37 2001  Brian Gough  <bjg@network-theory.co.uk>
+
+	* gsl_multimin.h: added missing prototype for gsl_multimin_compute_ep
+
 Sun Feb 18 16:35:21 2001  Brian Gough  <bjg@network-theory.co.uk>
 
 	* fdfminimizer.c (gsl_multimin_fdf_minimizer_alloc): modified to

@@ -112,6 +112,9 @@ gsl_multimin_to_single_set_fdf(gsl_multimin_to_single *w,
 			       gsl_vector * direction);
 
 void
+gsl_multimin_compute_ep(gsl_multimin_to_single *params,double x);
+
+void
 gsl_multimin_compute_evaluation_point(gsl_vector *evaluation_point,
 				      const gsl_vector *starting_point,
 				      double x,
