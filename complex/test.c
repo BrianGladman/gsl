@@ -101,6 +101,16 @@ main (void)
       gsl_complex z = gsl_complex_rect (t.x, t.y);
       gsl_complex fz = (t.f) (z);
       double fx = GSL_REAL (fz), fy = GSL_IMAG (fz);
+
+#ifdef DEBUG
+      printf("x = "); gsl_ieee_fprintf_double (stdout, &t.x); printf("\n");
+      printf("y = "); gsl_ieee_fprintf_double (stdout, &t.y); printf("\n");
+      printf("fx = "); gsl_ieee_fprintf_double (stdout, &fx); printf("\n");
+      printf("ex = "); gsl_ieee_fprintf_double (stdout, &t.fx); printf("\n");
+      printf("fy = "); gsl_ieee_fprintf_double (stdout, &fy); printf("\n");
+      printf("ey = "); gsl_ieee_fprintf_double (stdout, &t.fy); printf("\n");
+#endif
+
       gsl_test_rel (fx, t.fx, 10 * GSL_DBL_EPSILON, "%s real part at (%g,%g)", t.name, t.x, t.y);
       gsl_test_rel (fy, t.fy, 10 * GSL_DBL_EPSILON, "%s imag part at (%g,%g)", t.name, t.x, t.y);
       i++;
