@@ -158,15 +158,3 @@ double iittest (int *array1, int *array2, int size1, int size2, double alpha, in
   t = (mean1-mean2)/(sqrt(pv*((1/size1)+(1/size2))));
 
 }
-
-
-
-
-
-
-
-
-
-
-
-

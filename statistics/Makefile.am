@@ -1,10 +1,14 @@
 ## Process this file with automake to produce Makefile.in
+
+#AUTOMAKE_OPTIONS=no-dependencies
+
 CFLAGS=-g -Wall
 
-noinst_PROGRAMS = jtest
 lib_LIBRARIES = gsl_statistics
+noinst_PROGRAMS = jtest
 
-LDADD = libgsl_statistics.a -lm
+jtest_LDADD = libgsl_statistics.a
+jtest_DEPENDENCIES = libgsl_statistics.a
 
 gsl_statistics_SOURCES = mean.c ttest.c
 
