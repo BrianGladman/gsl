@@ -43,7 +43,7 @@ int test_eigen_jacobi(void)
 {
   int s = 0;
 
-  int nrot;
+  unsigned int nrot;
   gsl_matrix * evec = gsl_matrix_alloc(10, 10);
   gsl_vector * eval = gsl_vector_alloc(10);
 

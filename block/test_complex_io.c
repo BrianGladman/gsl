@@ -31,8 +31,8 @@ FUNCTION (test, text) (void)
 
     for (i = 0; i < N; i++)
       {
-	v->data[2*i] = i ;
-        v->data[2*i + 1] = 10*i + 1 ;
+	v->data[2*i] = (ATOMIC)i ;
+        v->data[2*i + 1] = (ATOMIC)(10*i + 1) ;
       };
 
     FUNCTION (gsl_block, fprintf) (f, v, OUT_FORMAT);

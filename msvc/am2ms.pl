@@ -1,7 +1,12 @@
 #!/usr/bin/perl
 
-print &begin_project("libgsl");
-print &begin_target("libgsl");
+open(LIBGSL, ">gsl.dsp");
+print LIBGSL &begin_project("libgsl");
+print LIBGSL &begin_target("libgsl");
+
+open(TEST, ">test.dsp");
+print TEST &begin_project("test");
+print TEST &begin_target("test");
 
 for $file (@ARGV) {
 
@@ -38,12 +43,13 @@ for $file (@ARGV) {
     #print "== dir $dir ==\n" ;
 
     for $lib (@instlibs, @noinstlibs) {
-        #print "adding to libgsl ", base($lib), "\n";
-        print &begin_group(base($lib));
-        print &add_files($dir, base($lib), 'inc', &list_sources($lib));
-        print &add_files($dir, base($lib), 'exclude', grep(!/^test_/,@int_headers));
-        print &add_files($dir, base($lib), 'exclude', @ext_headers);
-        print &end_group();
+        my $name = base($lib);
+        #print "adding to libgsl ", $name, "\n";
+        print LIBGSL &begin_group($name);
+        print LIBGSL &add_files("libgsl",$dir, $name, 'inc', &list_sources($lib));
+        print LIBGSL &add_files("libgsl",$dir, $name, 'exclude', grep(!/^test_/,@int_headers));
+        print LIBGSL &add_files("libgsl",$dir, $name, 'exclude', @ext_headers);
+        print LIBGSL &end_group();
     }
 
     
@@ -55,11 +61,21 @@ for $file (@ARGV) {
         #print "put in tests $prog\n";
         @sources = &list_sources($prog);
         @ldadds = &list_ldadds($prog);
+        my $name = $dir; $name =~ s/.*\///; $name = "test-$name";
+        print TEST &begin_group($name);
+        print TEST &add_files("test", $dir, $name, 'inc', &list_sources($prog));
+        print TEST &add_files("test", $dir, $name, 'exclude', grep(/^test_/,@int_headers));
+        #print TEST &add_files("test", $dir, $name, 'exclude', @ext_headers);
+        print TEST &end_group();
     }
 }
 
-print &end_target();
-print &end_project();
+print LIBGSL &end_target();
+print LIBGSL &end_project();
+
+print TEST &end_target();
+print TEST &end_project();
+
 
 # libraries are noinst_LTLIBRARIES lib_LTLIBRARIES
 # installed headers are pkginclude_HEADERS
@@ -241,7 +257,7 @@ EOF
 #----------------------------------------------------------------------
 
 sub add_files {
-    my ($dir, $name, $flag, @files) = @_;
+    my ($proj, $dir, $name, $flag, @files) = @_;
     my $file;
     my $y;
     $dir =~ s/\//\\/g; # convert to dos style path with \'s
@@ -255,11 +271,11 @@ SOURCE=$dir\\$file
 
 $prop
 
-!IF  \"\$(CFG)\" == \"libgsl - Win32 Release\"
+!IF  \"\$(CFG)\" == \"$proj - Win32 Release\"
 
 # PROP Intermediate_Dir \"Release\\$name\"
 
-!ELSEIF  \"\$(CFG)\" == \"libgsl - Win32 Debug\"
+!ELSEIF  \"\$(CFG)\" == \"$proj - Win32 Debug\"
 
 # PROP Intermediate_Dir \"Debug\\$name\"
 

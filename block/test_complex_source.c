@@ -77,8 +77,8 @@ FUNCTION (test, binary) (void)
 
     for (i = 0; i < N; i++)
       {
-	v->data[2*i] = N - i;
-        v->data[2*i + 1] = 10*(N-i) + 1;
+	v->data[2*i] = (ATOMIC)(N - i);
+        v->data[2*i + 1] = (ATOMIC)(10*(N-i) + 1);
       };
 
     FUNCTION (gsl_block, fwrite) (f, v);

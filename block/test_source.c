@@ -79,7 +79,7 @@ FUNCTION (test, binary) (void)
 
     for (i = 0; i < N; i++)
       {
-	v->data[i] = N - i;
+	v->data[i] = (ATOMIC)(N - i);
       };
 
     FUNCTION (gsl_block, fwrite) (f, v);
