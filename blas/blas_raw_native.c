@@ -101,7 +101,7 @@ void gsl_blas_raw_zdotu (size_t N,
                          gsl_complex_packed result)
 {
 #define BASE_TYPE double
-#define CONJ_SIGN (-1.0)
+#define CONJ_SIGN 1.0
 #include "source_dot_c.h"
 #undef CONJ_SIGN
 #undef BASE_TYPE
@@ -618,6 +618,7 @@ void gsl_blas_raw_ctbmv (CBLAS_UPLO Uplo,
                          const gsl_complex_packed_array_float A, int lda,
                          gsl_complex_packed_array_float X, size_t incX)
 {
+/* FIXME: copy above when debugged */
 }
 
 void gsl_blas_raw_ztbmv (CBLAS_UPLO Uplo,
@@ -626,6 +627,7 @@ void gsl_blas_raw_ztbmv (CBLAS_UPLO Uplo,
                          const gsl_complex_packed_array A, int lda,
                          gsl_complex_packed_array X, size_t incX)
 {
+/* FIXME: copy above when debugged */
 }
 
 
@@ -637,14 +639,20 @@ void gsl_blas_raw_stpmv (CBLAS_UPLO Uplo,
                          const float Ap[],
                          float X[], size_t incX)
 {
+#define BASE_TYPE float
+#include "source_tpmv_r.h"
+#undef BASE_TYPE
 }
 
 void gsl_blas_raw_dtpmv (CBLAS_UPLO Uplo,
-                               CBLAS_TRANSPOSE TransA, CBLAS_DIAG Diag,
-                               size_t N,
-                               const double Ap[],
-                               double X[], size_t incX)
+                         CBLAS_TRANSPOSE TransA, CBLAS_DIAG Diag,
+                         size_t N,
+                         const double Ap[],
+                         double X[], size_t incX)
 {
+#define BASE_TYPE double
+#include "source_tpmv_r.h"
+#undef BASE_TYPE
 }
 
 void gsl_blas_raw_ctpmv (CBLAS_UPLO Uplo,
@@ -653,6 +661,7 @@ void gsl_blas_raw_ctpmv (CBLAS_UPLO Uplo,
                                const gsl_complex_packed_array_float Ap,
                                gsl_complex_packed_array_float X, size_t incX)
 {
+/* FIXME: copy above when debugged */
 }
 
 void gsl_blas_raw_ztpmv (CBLAS_UPLO Uplo,
@@ -661,6 +670,7 @@ void gsl_blas_raw_ztpmv (CBLAS_UPLO Uplo,
                                const gsl_complex_packed_array Ap,
                                gsl_complex_packed_array X, size_t incX)
 {
+/* FIXME: copy above when debugged */
 }
 
 /* TRSV */
@@ -726,6 +736,7 @@ void gsl_blas_raw_stbsv (CBLAS_UPLO Uplo,
                                const float A[], int lda,
                                float X[], size_t incX)
 {
+/* FIXME */
 }
 
 void gsl_blas_raw_dtbsv (CBLAS_UPLO Uplo,
@@ -734,6 +745,7 @@ void gsl_blas_raw_dtbsv (CBLAS_UPLO Uplo,
                                const double A[], int lda,
                                double X[], size_t incX)
 {
+/* FIXME */
 }
 
 void gsl_blas_raw_ctbsv (CBLAS_UPLO Uplo,
@@ -742,6 +754,7 @@ void gsl_blas_raw_ctbsv (CBLAS_UPLO Uplo,
                                const gsl_complex_packed_array_float A, int lda,
                                gsl_complex_packed_array_float X, size_t incX)
 {
+/* FIXME */
 }
 
 void gsl_blas_raw_ztbsv (CBLAS_UPLO Uplo,
@@ -750,6 +763,7 @@ void gsl_blas_raw_ztbsv (CBLAS_UPLO Uplo,
                                const gsl_complex_packed_array A, int lda,
                                gsl_complex_packed_array X, size_t incX)
 {
+/* FIXME */
 }
 
 
@@ -979,11 +993,11 @@ void gsl_blas_raw_dsyr2 (CBLAS_UPLO Uplo,
 /* SPR2 */
 
 void gsl_blas_raw_sspr2 (CBLAS_UPLO Uplo,
-                               size_t N,
-                               float alpha,
-                               const float X[], size_t incX,
-                               const float Y[], size_t incY,
-                               float A[])
+                         size_t N,
+                         float alpha,
+                         const float X[], size_t incX,
+                         const float Y[], size_t incY,
+                         float A[])
 {
 #define BASE_TYPE double
 #include "source_spr2.h"
@@ -991,11 +1005,11 @@ void gsl_blas_raw_sspr2 (CBLAS_UPLO Uplo,
 }
 
 void gsl_blas_raw_dspr2 (CBLAS_UPLO Uplo,
-                               size_t N,
-                               double alpha,
-                               const double X[], size_t incX,
-                               const double Y[], size_t incY,
-                               double A[])
+                         size_t N,
+                         double alpha,
+                         const double X[], size_t incX,
+                         const double Y[], size_t incY,
+                         double A[])
 {
 #define BASE_TYPE double
 #include "source_spr2.h"
@@ -1006,12 +1020,12 @@ void gsl_blas_raw_dspr2 (CBLAS_UPLO Uplo,
 /* HEMV */
 
 void gsl_blas_raw_chemv (CBLAS_UPLO Uplo,
-                               size_t N,
-                               const gsl_complex_packed_float alpha,
-                               const gsl_complex_packed_array_float A, int lda,
-                               const gsl_complex_packed_array_float X, size_t incX,
-                               const gsl_complex_packed_float beta,
-                               gsl_complex_packed_array_float Y, size_t incY)
+                         size_t N,
+                         const gsl_complex_packed_float alpha,
+                         const gsl_complex_packed_array_float A, int lda,
+                         const gsl_complex_packed_array_float X, size_t incX,
+                         const gsl_complex_packed_float beta,
+                         gsl_complex_packed_array_float Y, size_t incY)
 {
   gsl_blas_raw_chbmv (Uplo,
                       N, N-1,

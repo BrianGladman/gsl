@@ -1,9 +1,5 @@
 
   size_t i, j;
-  size_t ix, iy;
-  size_t kx = 0;
-  size_t ky = 0;
-  size_t kup1 = KU + 1;
   size_t lenX, lenY;
 
   if(REAL0(alpha) == 0.0 && IMAG0(alpha) == 0.0 && REAL0(beta) == 1.0 && IMAG0(beta) == 0.0) return;  

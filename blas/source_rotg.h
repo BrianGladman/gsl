@@ -7,7 +7,7 @@
     BASE_TYPE aos = *a/scale;
     BASE_TYPE bos = *b/scale;
     r = scale * sqrt(aos*aos + bos*bos);
-    r = sign(1.0,roe)*r;
+    r = GSL_SIGN(roe) * r;
     *c = *a/r;
     *s = *b/r;
     z = 1.0;

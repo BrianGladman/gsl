@@ -1,6 +1,5 @@
 
   int nounit = ( Diag == CblasNonUnit );
-  size_t kx = 0;
   size_t i;
   size_t j;
 

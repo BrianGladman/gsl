@@ -1,6 +1,6 @@
 
-  size_t i, j, k;
-  size_t ix, iy, jx, jy, kk;
+  size_t j, k;
+  size_t ix, jx, kk;
   
   kk = 0;
 

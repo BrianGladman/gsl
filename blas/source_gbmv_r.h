@@ -1,9 +1,6 @@
 
   size_t i, j;
-  size_t ix, iy;
-  size_t kx = 0;
-  size_t ky = 0;
-  size_t kup1 = KU + 1;
+  size_t iy;
   size_t lenX, lenY;
 
   if(alpha == 0.0 && beta == 1.0) return;  

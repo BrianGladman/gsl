@@ -1,6 +1,5 @@
 
   size_t i, j, k;
-  size_t ix, iy;
   size_t kk = 0;
   const BASE_TYPE conj = -1.0;
 
@@ -24,7 +23,7 @@
 	REAL(Y, incY, i) += tmp1R * apkR - tmp1I * apkI;
 	IMAG(Y, incY, i) += tmp1R * apkI + tmp1I * apkR;
 	tmp2R += apkR * REAL(X, incX, i) - conj * apkI * IMAG(X, incX, i);
-	tmp2R += apkR * IMAG(X, incX, i) + conj * apkI * REAL(X, incX, i);
+	tmp2I += apkR * IMAG(X, incX, i) + conj * apkI * REAL(X, incX, i);
         i++;
       }
       REAL(Y, incY, j) += tmp1R * REAL(Ap, 1, kk + j - 1) - tmp1I * IMAG(Ap, 1, kk + j - 1);
