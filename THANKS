@@ -147,3 +147,5 @@ constants
 for linear algebra, additional tridiagonal solvers
 
 * <zunda@24i.net> for bug report
+
+* "Christian T. Steigies" <cts@debian.org> for documentation bug report

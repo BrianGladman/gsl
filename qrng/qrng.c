@@ -37,6 +37,11 @@ gsl_qrng_alloc (const gsl_qrng_type * T, unsigned int dimension)
   return r;
 }
 
+void
+gsl_qrng_init (gsl_qrng * r)
+{
+  (r->type->init_state) (r->state, r->dimension);
+}
 
 int
 gsl_qrng_memcpy (gsl_qrng * dest, const gsl_qrng * src)

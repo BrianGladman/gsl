@@ -1,5 +1,7 @@
 * What is new in gsl-1.2:
 
+** Added missing quasi-random number generator function gsl_qrng_init.
+
 ** Added nonsymmetric tridiagonal solvers gsl_linalg_solve_tridiag and
 gsl_linalg_solve_cyc_tridiag.
 

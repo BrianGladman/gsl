@@ -73,7 +73,7 @@ void gsl_qrng_free (gsl_qrng * r);
 
 
 /* Intialize a generator. */
-void gsl_qrng_init (const gsl_qrng * r);
+void gsl_qrng_init (gsl_qrng * r);
 
 
 /* Get the standardized name of the generator. */

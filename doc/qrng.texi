@@ -38,7 +38,7 @@ This function frees all the memory associated with the generator
 @var{q}.
 @end deftypefun
 
-@deftypefun void gsl_qrng_init (const gsl_qrng * @var{q})
+@deftypefun void gsl_qrng_init (gsl_qrng * @var{q})
 This function reinitializes the generator @var{q} to its starting point.
 @end deftypefun
 
