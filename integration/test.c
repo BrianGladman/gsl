@@ -28,6 +28,18 @@
 
 #include "tests.h"
 
+gsl_function make_function (double (* f) (double, void *), double * p);
+
+gsl_function make_function (double (* f) (double, void *), double * p)
+{
+  gsl_function f_new;
+
+  f_new.function = f ;
+  f_new.params = p ;
+
+  return f_new;
+}
+
 struct counter_params {
   gsl_function * f;
   int neval;
@@ -75,7 +87,7 @@ int main (void)
     double exp_resasc = 4.434273814139995384E-02;
 
     double alpha = 2.6 ;
-    gsl_function f = { &f1, &alpha } ;
+    gsl_function f = make_function(&f1, &alpha) ;
 
     gsl_integration_qk15 (&f, 0.0, 1.0, 
 				  &result, &abserr, &resabs, &resasc) ;
@@ -101,7 +113,7 @@ int main (void)
     double exp_resasc = 4.434311425038358484E-02;
 
     double alpha = 2.6 ;
-    gsl_function f = { &f1, &alpha } ;
+    gsl_function f = make_function(&f1, &alpha);
 
     gsl_integration_qk21 (&f, 0.0, 1.0, 
 				  &result, &abserr, &resabs, &resasc) ;
@@ -126,7 +138,7 @@ int main (void)
     double exp_resasc = 4.427995051868838933E-02;
 
     double alpha = 2.6 ;
-    gsl_function f = { &f1, &alpha } ;
+    gsl_function f = make_function(&f1, &alpha);
 
     gsl_integration_qk31 (&f, 0.0, 1.0, 
 				  &result, &abserr, &resabs, &resasc) ;
@@ -151,7 +163,7 @@ int main (void)
     double exp_resasc = 4.421521169637691873E-02;
 
     double alpha = 2.6 ;
-    gsl_function f = { &f1, &alpha } ;
+    gsl_function f = make_function(&f1, &alpha);
 
     gsl_integration_qk41 (&f, 0.0, 1.0, 
 				  &result, &abserr, &resabs, &resasc) ;
@@ -176,7 +188,7 @@ int main (void)
     double exp_resasc = 4.416474291216854892E-02;
 
     double alpha = 2.6 ;
-    gsl_function f = { &f1, &alpha } ;
+    gsl_function f = make_function(&f1, &alpha);
 
     gsl_integration_qk51 (&f, 0.0, 1.0, 
 				  &result, &abserr, &resabs, &resasc) ;
@@ -201,7 +213,7 @@ int main (void)
     double exp_resasc = 4.419287685934316506E-02;
 
     double alpha = 2.6 ;
-    gsl_function f = { &f1, &alpha } ;
+    gsl_function f = make_function(&f1, &alpha);
 
     gsl_integration_qk61 (&f, 0.0, 1.0, 
 				  &result, &abserr, &resabs, &resasc) ;
@@ -230,7 +242,7 @@ int main (void)
     double exp_resasc = 2.350164577239293706E+01;
 
     double alpha = -0.9 ;
-    gsl_function f = { &f1, &alpha } ;
+    gsl_function f = make_function(&f1, &alpha);
 
     gsl_integration_qk15 (&f, 0.0, 1.0, 
 				  &result, &abserr, &resabs, &resasc) ;
@@ -255,7 +267,7 @@ int main (void)
     double exp_resasc = 2.782360287710622515E+01;
 
     double alpha = -0.9 ;
-    gsl_function f = { &f1, &alpha } ;
+    gsl_function f = make_function(&f1, &alpha);
 
     gsl_integration_qk21 (&f, 0.0, 1.0, 
 				  &result, &abserr, &resabs, &resasc) ;
@@ -280,7 +292,7 @@ int main (void)
     double exp_resasc = 3.296500137482590276E+01;
 
     double alpha = -0.9 ;
-    gsl_function f = { &f1, &alpha } ;
+    gsl_function f = make_function(&f1, &alpha);
 
     gsl_integration_qk31 (&f, 0.0, 1.0, 
 				  &result, &abserr, &resabs, &resasc) ;
@@ -305,7 +317,7 @@ int main (void)
     double exp_resasc = 3.671538820274916048E+01;
 
     double alpha = -0.9 ;
-    gsl_function f = { &f1, &alpha } ;
+    gsl_function f = make_function(&f1, &alpha);
 
     gsl_integration_qk41 (&f, 0.0, 1.0, 
 				  &result, &abserr, &resabs, &resasc) ;
@@ -330,7 +342,7 @@ int main (void)
     double exp_resasc = 3.967771249391228849E+01;
 
     double alpha = -0.9 ;
-    gsl_function f = { &f1, &alpha } ;
+    gsl_function f = make_function(&f1, &alpha);
 
     gsl_integration_qk51 (&f, 0.0, 1.0, 
 				  &result, &abserr, &resabs, &resasc) ;
@@ -355,7 +367,7 @@ int main (void)
     double exp_resasc = 4.213750493076978643E+01;
 
     double alpha = -0.9 ;
-    gsl_function f = { &f1, &alpha } ;
+    gsl_function f = make_function(&f1, &alpha);
 
     gsl_integration_qk61 (&f, 0.0, 1.0, 
 				  &result, &abserr, &resabs, &resasc) ;
@@ -384,7 +396,7 @@ int main (void)
     double exp_resasc = 9.334560307787327371E-01;
 
     double alpha = 1.3 ;
-    gsl_function f = { &f3, &alpha } ;
+    gsl_function f = make_function(&f3, &alpha);
 
     gsl_integration_qk15 (&f, 0.3, 2.71, 
 				  &result, &abserr, &resabs, &resasc) ;
@@ -409,7 +421,7 @@ int main (void)
     double exp_resasc = 9.297591249133687619E-01;
 
     double alpha = 1.3 ;
-    gsl_function f = { &f3, &alpha } ;
+    gsl_function f = make_function(&f3, &alpha);
     
     gsl_integration_qk21 (&f, 0.3, 2.71, 
 				  &result, &abserr, &resabs, &resasc) ;
@@ -434,7 +446,7 @@ int main (void)
     double exp_resasc = 9.277828092501518853E-01;
 
     double alpha = 1.3 ;
-    gsl_function f = { &f3, &alpha } ;
+    gsl_function f = make_function(&f3, &alpha);
 
     gsl_integration_qk31 (&f, 0.3, 2.71, 
 				  &result, &abserr, &resabs, &resasc) ;
@@ -459,7 +471,7 @@ int main (void)
     double exp_resasc = 9.264382258645686985E-01;
 
     double alpha = 1.3 ;
-    gsl_function f = { &f3, &alpha } ;
+    gsl_function f = make_function(&f3, &alpha);
 
     gsl_integration_qk41 (&f, 0.3, 2.71, 
 				  &result, &abserr, &resabs, &resasc) ;
@@ -484,7 +496,7 @@ int main (void)
     double exp_resasc = 9.264666884071264263E-01;
 
     double alpha = 1.3 ;
-    gsl_function f = { &f3, &alpha } ;
+    gsl_function f = make_function(&f3, &alpha);
 
     gsl_integration_qk51 (&f, 0.3, 2.71, 
 				  &result, &abserr, &resabs, &resasc) ;
@@ -509,7 +521,7 @@ int main (void)
     double exp_resasc = 9.270469641771273972E-01;
 
     double alpha = 1.3 ;
-    gsl_function f = { &f3, &alpha } ;
+    gsl_function f = make_function(&f3, &alpha);
 
     gsl_integration_qk61 (&f, 0.3, 2.71, 
 				  &result, &abserr, &resabs, &resasc) ;
@@ -537,7 +549,7 @@ int main (void)
     int exp_ier    =   0;
 
     double alpha = 2.6 ;
-    gsl_function f = { &f1, &alpha } ;
+    gsl_function f = make_function(&f1, &alpha);
     
     status = gsl_integration_qng (&f, 0.0, 1.0, 1e-1, 0.0,
 				  &result, &abserr, &neval) ;
@@ -564,7 +576,7 @@ int main (void)
     int exp_ier    =   0;
 
     double alpha = 2.6 ;
-    gsl_function f = { &f1, &alpha } ;
+    gsl_function f = make_function(&f1, &alpha);
 
     status = gsl_integration_qng (&f, 0.0, 1.0, 0.0, 1e-9,
 				  &result, &abserr, &neval) ;
@@ -590,7 +602,7 @@ int main (void)
     int exp_ier    =   0;
 
     double alpha = 1.3 ;
-    gsl_function f = { &f3, &alpha } ;
+    gsl_function f = make_function(&f3, &alpha);
 
     status = gsl_integration_qng (&f, 0.3, 2.71, 0.0, 1e-12,
 				  &result, &abserr, &neval) ;
@@ -617,7 +629,7 @@ int main (void)
     int exp_ier    =   0;
 
     double alpha = 2.6 ;
-    gsl_function f = { &f1, &alpha } ;
+    gsl_function f = make_function(&f1, &alpha);
 
     status = gsl_integration_qng (&f, 0.0, 1.0, 0.0, 1e-13,
 				  &result, &abserr, &neval) ;
@@ -644,7 +656,7 @@ int main (void)
     int exp_ier    =  GSL_ETOL;
 
     double alpha = -0.9 ;
-    gsl_function f = { &f1, &alpha } ;
+    gsl_function f = make_function(&f1, &alpha);
 
     status = gsl_integration_qng (&f, 0.0, 1.0, 0.0, 1e-3,
 				  &result, &abserr, &neval) ;
@@ -686,7 +698,7 @@ int main (void)
     int order[6] = { 1, 2, 3, 4, 5, 6 } ;
 
     double alpha = 2.6 ;
-    gsl_function f = { &f1, &alpha } ;
+    gsl_function f = make_function(&f1, &alpha) ;
 
     gsl_function fc = make_counter(&f, &p) ;
 
@@ -761,7 +773,7 @@ int main (void)
     int order[8] = { 1, 2, 3, 4, 5, 6, 7, 8 } ;
 
     double alpha = 2.6 ;
-    gsl_function f = { &f1, &alpha } ;
+    gsl_function f = make_function(&f1, &alpha);
 
     gsl_function fc = make_counter(&f, &p) ;
 
@@ -822,7 +834,7 @@ int main (void)
     int exp_last    =     1;
 
     double alpha = 1.3 ;
-    gsl_function f = { &f3, &alpha } ;
+    gsl_function f = make_function(&f3, &alpha);
 
     gsl_function fc = make_counter(&f, &p) ;
 
@@ -864,7 +876,7 @@ int main (void)
     int exp_last   =     51;
 
     double alpha = 2.0 ;
-    gsl_function f = { &f16, &alpha } ;
+    gsl_function f = make_function(&f16, &alpha);
 
     gsl_function fc = make_counter(&f, &p) ;
 
@@ -922,7 +934,7 @@ int main (void)
     int order[3] = { 1, 2, 3 } ;
 
     double alpha = 1.0 ;
-    gsl_function f = { &f16, &alpha } ;
+    gsl_function f = make_function(&f16, &alpha);
     gsl_function fc = make_counter(&f, &p) ;
 
     status = gsl_integration_qag (&fc, -1.0, 1.0, 1e-14, 0.0, w->limit, 
@@ -994,7 +1006,7 @@ int main (void)
     int order[5] = { 1, 2, 3, 4, 5 } ;
 
     double alpha = 2.6 ;
-    gsl_function f = { &f1, &alpha } ;
+    gsl_function f = make_function(&f1, &alpha);
     gsl_function fc = make_counter(&f, &p) ;
 
     status = gsl_integration_qags (&fc, 0.0, 1.0, 0.0, 1e-10, w->limit,
@@ -1092,7 +1104,7 @@ int main (void)
     int order[9] = { 1, 2, 3, 4, 5, 6, 7, 8, 9 } ;
 
     double alpha = 2.0 ;
-    gsl_function f = { &f11, &alpha } ;
+    gsl_function f = make_function(&f11, &alpha);
     gsl_function fc = make_counter(&f, &p) ;
 
     status = gsl_integration_qags (&fc, 1.0, 1000.0, 1e-7, 0.0, w->limit,
@@ -1193,7 +1205,7 @@ int main (void)
 		     1.156507325466566521E-17 } ;
     int order[10] = { 1, 2, 3, 5, 7, 9, 4, 6, 8, 10 } ;
 
-    gsl_function f = { &f455, 0 } ;
+    gsl_function f = make_function(&f455, 0);
     gsl_function fc = make_counter(&f, &p) ;
 
     status = gsl_integration_qagiu (&fc, 0.0, 0.0, 1.0e-3, w->limit,
@@ -1285,7 +1297,7 @@ int main (void)
 
     double alpha = 5.0;
 
-    gsl_function f = { &f15, &alpha } ;
+    gsl_function f = make_function(&f15, &alpha);
     gsl_function fc = make_counter(&f, &p) ;
 
     status = gsl_integration_qagiu (&fc, 0.0, 0.0, 1.0e-7, w->limit,
@@ -1361,7 +1373,7 @@ int main (void)
 
     double alpha = 1.0;
 
-    gsl_function f = { &f16, &alpha } ;
+    gsl_function f = make_function(&f16, &alpha);
     gsl_function fc = make_counter(&f, &p) ;
 
     status = gsl_integration_qagiu (&fc, 99.9, 1.0e-7, 0.0, w->limit,
@@ -1431,7 +1443,7 @@ int main (void)
 		    5.208244060463541433E-15 } ;
     int order[5] = { 2, 1, 3, 5, 4 } ;
 
-    gsl_function f = { &myfn1, 0 } ;
+    gsl_function f = make_function(&myfn1, 0);
     gsl_function fc = make_counter(&f, &p) ;
 
     status = gsl_integration_qagi (&fc, 1.0e-7, 0.0, w->limit,
@@ -1502,7 +1514,7 @@ int main (void)
     int order[5] = { 1, 2, 3, 4, 5 } ;
 
     double alpha = 1.0 ;
-    gsl_function f = { &myfn2, &alpha } ;
+    gsl_function f = make_function(&myfn2, &alpha);
     gsl_function fc = make_counter(&f, &p) ;
 
     status = gsl_integration_qagil (&fc, 1.0, 1.0e-7, 0.0, w->limit,
@@ -1633,7 +1645,7 @@ int main (void)
     int order[20] = { 3, 4, 2, 1, 6, 7, 11, 8, 10, 12, 18,
 		     15, 16, 14, 19, 17, 20, 13, 9, 5 } ;
 
-    gsl_function f = { &f454, 0 } ;
+    gsl_function f = make_function(&f454, 0);
     gsl_function fc = make_counter(&f, &p) ;
 
     double pts[4] ;
@@ -1717,7 +1729,7 @@ int main (void)
     int order[6] = { 1, 5, 3, 2, 4, 6 } ;
 
     double alpha = 1.0 ;
-    gsl_function f = { &f459, &alpha } ;
+    gsl_function f = make_function(&f459, &alpha);
     gsl_function fc = make_counter(&f, &p) ;
 
     status = gsl_integration_qawc (&fc, -1.0, 5.0, 0.0, 0.0, 1.0e-3, w->limit,
@@ -1814,7 +1826,7 @@ int main (void)
     int order[8] = { 1, 2, 3, 4, 5, 6, 7, 8 } ;
 
     double alpha = 1.0 ;
-    gsl_function f = { &f458, &alpha } ;
+    gsl_function f = make_function(&f458, &alpha);
     gsl_function fc = make_counter(&f, &p) ;
 
     status = gsl_integration_qaws (&fc, 0.0, 1.0, t, 0.0, 1.0e-7, w->limit,
@@ -1958,7 +1970,7 @@ int main (void)
     int order[9] = { 1, 2, 4, 3, 6, 5, 7, 8, 9 } ;
 
     double alpha = 1.0 ;
-    gsl_function f = { &f456, &alpha } ;
+    gsl_function f = make_function(&f456, &alpha);
     gsl_function fc = make_counter(&f, &p) ;
 
     status = gsl_integration_qawo (&fc, 0.0, 0.0, 1e-7, w->limit,
@@ -2052,7 +2064,7 @@ int main (void)
 		    2.130457268934021451E-17 } ;
 
     double alpha = 1.0 ;
-    gsl_function f = { &f457, &alpha } ;
+    gsl_function f = make_function(&f457, &alpha);
     gsl_function fc = make_counter(&f, &p) ;
 
     status = gsl_integration_qawf (&fc, 0.0, 1e-7, w->limit,
