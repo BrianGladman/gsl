@@ -1,4 +1,4 @@
-/* Little routine to test miser integration. */
+/* Little routine to test plain MC integration. */
 
 /* Author: M.J. Booth */
 /* RCS: $Id$ */
@@ -13,7 +13,7 @@
 #include <gsl_test.h>
 
 #include <gsl_rng.h>
-#include <gsl_miser.h>
+#include <gsl_monte_plain.h>
 
 #define SQR(x)  ((x)*(x))
 
@@ -42,7 +42,6 @@ int main()
   size_t calls = 1000;
   gsl_rng * r = gsl_rng_alloc(gsl_rng_env_setup()) ;
 
-  dither = 0.0;
   c = (1.0 + sqrt(10.0))/9.0 ;
 
   /*  verbose = 1; */
@@ -52,7 +51,7 @@ int main()
   printf("Testing constant function and normalization\n");
   for (num_dim = 1; num_dim < 10; num_dim++) {
     calls *= 1.8;
-    gsl_monte_miser(r, fconst, xl, xu2, num_dim, calls, &res, &err);
+    gsl_monte_plain(r, fconst, xl, xu2, num_dim, calls, &res, &err);
     gsl_test_rel(res, pow(2, num_dim), tol, "miser(f0), dim=%d, err=%.4f", 
 		 num_dim, err); 
   }
@@ -60,14 +59,13 @@ int main()
   printf("Testing product function\n");
   for (num_dim = 1; num_dim < 10; num_dim++) {
     calls *= 1.8;
-    gsl_monte_miser(r, f0, xl, xu, num_dim, calls, &res, &err);
+    gsl_monte_plain(r, f0, xl, xu, num_dim, calls, &res, &err);
     gsl_test_rel(res, 1.0, tol, "miser(f0), dim=%d, err=%.4f", 
 		 num_dim, err); 
   }
 
   /*  verbose = 1;*/
   calls =  10000;
-  dither = 0.15;
   tol = 0.04;
 
   printf("Testing single gaussian\n");
@@ -85,7 +83,7 @@ int main()
     if ( num_dim == 9) {
       tol = 0.14;
     }
-    status = gsl_monte_miser(r, f1, xl, xu, num_dim, calls, &res, &err);
+    status = gsl_monte_plain(r, f1, xl, xu, num_dim, calls, &res, &err);
     gsl_test_rel(res, 1.0, tol, "miser(f1), dim=%d, err=%.4f", 
 		 num_dim, err); 
   }
@@ -93,7 +91,6 @@ int main()
   /*  verbose = 1; */
   calls = 20000;
   tol = 2e-2;
-  dither = 0.0;
   step = 2;
 
   printf("Testing double gaussian\n");
@@ -107,15 +104,13 @@ int main()
       calls = 50000;
       break;
     case 7:
-      dither = 0.1;
       calls = 120000;
       break;
     case 9:
-      dither = 0.1;
       calls = 210000;
       break;
     }
-    status = gsl_monte_miser(r, f2, xl, xu, num_dim, calls, &res, &err);
+    status = gsl_monte_plain(r, f2, xl, xu, num_dim, calls, &res, &err);
     gsl_test_rel(res, 1.0, tol, "miser(f2), dim=%d, err=%.4f", 
 		 num_dim, err); 
   }
@@ -129,7 +124,7 @@ int main()
     calls *= 1.2;
     if ( num_dim == 6 )
       tol *= 3;
-    status = gsl_monte_miser(r, f3, xl, xu, num_dim, calls, &res, &err);
+    status = gsl_monte_plain(r, f3, xl, xu, num_dim, calls, &res, &err);
     gsl_test_rel(res, 1.0, tol, "miser(f3), dim=%d, err=%.4f", 
 		 num_dim, err); 
   }
@@ -145,7 +140,6 @@ double fconst(double x[])
 
   return  1;
 }
-
 
 /* Simple product function */
 double f0(double x[])

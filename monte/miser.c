@@ -1,6 +1,10 @@
-/* Inspired by a version in Numerical recipes, but we make a few changes.
+/* Based on the algorithm described in Numerical recipes, 
+   but we make a few changes.  
+
+   
    Seperate vectors of the upper and lower limits are used, 
    as in our version of vegas.  Also, arrays are zero based.
+
    */
 /* Author: MJB */
 /* RCS: $Id$ */
@@ -15,23 +19,16 @@
 #include <gsl_errno.h>
 #include <gsl_rng.h>
 
+#include <gsl_monte.h>
 #include <gsl_miser.h>
+#include <gsl_monte_plain.h>
 
 #define PFAC 0.1
 #define TINY 1.0e-30
 #define BIG 1.0e30
 
-static double maxarg1,maxarg2;
-#define FMAX(a,b) (maxarg1=(a),maxarg2=(b),(maxarg1) > (maxarg2) ?\
-        (maxarg1) : (maxarg2))
-
-static double minarg1,minarg2;
-#define FMIN(a,b) (minarg1=(a),minarg2=(b),(minarg1) < (minarg2) ?\
-        (minarg1) : (minarg2))
-
-static long lmaxarg1,lmaxarg2;
-#define LMAX(a,b) (lmaxarg1=(a),lmaxarg2=(b),(lmaxarg1) > (lmaxarg2) ?\
-        (lmaxarg1) : (lmaxarg2))
+#define myMAX(a,b) ((a) >= (b) ? (a) : (b))
+#define myMIN(a,b) ((a) <= (b) ? (a) : (b))
 
 #define COPYSIGN(a,b) ((b) >= 0.0 ? fabs(a) : -fabs(a))
 
@@ -68,7 +65,7 @@ int gsl_monte_miser(const gsl_rng * r,
   double avg_l, var_l;
   double frac_l, fval;
   double rgn_l, rgn_m, rgn_r, s, sig_l, sig_l_bisect, sig_r, sig_r_bisect;
-  double sum, sum_bisect, sum2;
+  double sum, sum_bisect;
 
   gsl_vector *fmax_l, *fmax_r, *fmin_l, *fmin_r;
   gsl_vector *pt, *rmid;
@@ -76,21 +73,12 @@ int gsl_monte_miser(const gsl_rng * r,
   pt = gsl_vector_alloc(num_dim);
 
   if (calls < min_calls_per_bisection) {
-    /* compute the integral by normal montecarlo */
-    sum = sum2 = 0.0;
-    for (n = 1; n <= calls; n++) {
-      ranpt(r, pt, xl, xh, num_dim);
-      fval = (*func)(pt->data);
-      sum += fval;
-      sum2 += fval * fval;
-    }
-    *avg = sum/calls;
-    *var = FMAX(TINY, (sum2-sum*sum/calls)/(calls*calls));
+    status = gsl_monte_plain(r, func, xl, xh, num_dim, calls, avg, var);
   }
   else {
     rmid = gsl_vector_alloc(num_dim);
 
-    npre = LMAX((size_t)(calls*PFAC), min_calls);
+    npre = myMAX((size_t)(calls*PFAC), min_calls);
 
     fmax_l = gsl_vector_alloc(num_dim);
     fmax_r = gsl_vector_alloc(num_dim);
@@ -115,12 +103,12 @@ int gsl_monte_miser(const gsl_rng * r,
       fval=(*func)(pt->data);
       for (j = 0; j < num_dim; j++) {
 	if (pt->data[j] <= rmid->data[j]) {
-	  fmin_l->data[j] = FMIN(fmin_l->data[j], fval);
-	  fmax_l->data[j] = FMAX(fmax_l->data[j], fval);
+	  fmin_l->data[j] = myMIN(fmin_l->data[j], fval);
+	  fmax_l->data[j] = myMAX(fmax_l->data[j], fval);
 	}
 	else {
-	  fmin_r->data[j] = FMIN(fmin_r->data[j], fval);
-	  fmax_r->data[j] = FMAX(fmax_r->data[j], fval);
+	  fmin_r->data[j] = myMIN(fmin_r->data[j], fval);
+	  fmax_r->data[j] = myMAX(fmax_r->data[j], fval);
 	}
       }
     }
@@ -131,8 +119,8 @@ int gsl_monte_miser(const gsl_rng * r,
     for (j = 0; j < num_dim;j++) {
       if (fmax_l->data[j] > fmin_l->data[j] && 
 	  fmax_r->data[j] > fmin_r->data[j]) {
-	sig_l = FMAX(TINY, pow(fmax_l->data[j]-fmin_l->data[j], 2.0/3.0));
-	sig_r = FMAX(TINY, pow(fmax_r->data[j]-fmin_r->data[j], 2.0/3.0));
+	sig_l = myMAX(TINY, pow(fmax_l->data[j]-fmin_l->data[j], 2.0/3.0));
+	sig_r = myMAX(TINY, pow(fmax_r->data[j]-fmin_r->data[j], 2.0/3.0));
 	sum = sig_l+sig_r;
 	if (sum <= sum_bisect) {
 	  sum_bisect = sum;
@@ -189,6 +177,3 @@ int gsl_monte_miser(const gsl_rng * r,
 
   return status;
 }
-
-
-

@@ -41,14 +41,14 @@
 /* gsl headers */
 #include <gsl_math.h>
 #include <gsl_errno.h>
-#include <gsl_rng.h>
+#include <gsl_rng.h> 
 
 /* lib-specific headers */
 
 #define GSL_V_TINY 1.0e-30
 
-#include "gsl_vegas.h"
-#include "gsl_vegas_print.h"
+#include <gsl_vegas.h>
+#include <gsl_vegas_print.h>
 
 #define myMAX(a,b) ((a) >= (b) ? (a) : (b))
 
