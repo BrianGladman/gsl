@@ -1,14 +1,5 @@
-/* Author:  G. Jungman
- * RCS:     $Id$
- */
-/* Simple linear algebra operations, operating directly
- * on the gsl_vector and gsl_matrix objects. These are
- * meant for "generic" and "small" systems. Anyone
- * interested in large systems will want to use more
- * sophisticated methods, presumably involving native
- * BLAS operations, specialized data representations,
- * or other optimizations.
- */
+/* Author:  G. Jungman */
+
 #include <config.h>
 #include <stdlib.h>
 #include <string.h>
@@ -20,7 +11,7 @@
 #define REAL double
 
 int
-gsl_la_decomp_SV_impl(gsl_matrix * A,
+gsl_linalg_decomp_SV(gsl_matrix * A,
                          gsl_matrix * Q,
                          gsl_vector * S,
                          double tolerance)

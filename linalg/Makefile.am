@@ -15,9 +15,9 @@ test_la_LDADD = libgsllinalg.la ../blas/libgslblas.la ../blas/libgslblasnative.l
 test_la_DEPENDENCIES = libgsllinalg.la
 test_la_SOURCES = test_la.c
 
-libgsllinalg_la_SOURCES = multiply.c tridiag.c tridiag.h lu.c hh.c qr.c qrpt.c svd.c
+libgsllinalg_la_SOURCES = multiply.c tridiag.c tridiag.h lu.c hh.c qr.c qrpt.c svd.c householder.c
 
-noinst_HEADERS = norm.c permut.c givens.c
+noinst_HEADERS =  givens.c
 
 strict:
 	$(MAKE) CFLAGS="-ansi -pedantic -W -Wall -Wtraditional -Wconversion -Wshadow -Wpointer-arith -Wcast-qual -Wcast-align -Wwrite-strings -Waggregate-return -Wstrict-prototypes -fshort-enums -fno-common -Wmissing-prototypes -Wnested-externs -g -O4 -Dinline=''"

@@ -1,13 +1,10 @@
-/* Author: G. Jungman
- * RCS:    $Id$
- */
+/* Author: G. Jungman */
+
 #include <config.h>
 #include <stdlib.h>
 #include <gsl/gsl_errno.h>
 #include "tridiag.h"
 #include "gsl_linalg.h"
-
-
 
 /* for description of method see [Engeln-Mullges + Uhlig, p. 92]
  *
@@ -192,7 +189,7 @@ solve_cyc_tridiag(
 
 
 int
-gsl_la_solve_symm_tridiag_impl(
+gsl_linalg_solve_symm_tridiag(
   const gsl_vector * diag,
   const gsl_vector * offdiag,
   const gsl_vector * rhs,
@@ -218,7 +215,7 @@ gsl_la_solve_symm_tridiag_impl(
 
 
 int
-gsl_la_solve_symm_cyc_tridiag_impl(
+gsl_linalg_solve_symm_cyc_tridiag(
   const gsl_vector * diag,
   const gsl_vector * offdiag,
   const gsl_vector * rhs,

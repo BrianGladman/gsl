@@ -22,14 +22,3 @@ precisely there is a big difference when optimization is switched on
  12[9]: -7.68742511878438236e-16  |   12[9]: 4.85121346376069841e-05
  12[11]: -1.03963268321917673e-16 |   12[11]:  1.304008127082465e-05   <****
 FAIL:   solve_LU vander(12)       |  FAIL:   solve_LU vander(12)
-
-
-* Regarding  
-
-  else if (qr->size1 == 0)
-    {
-      return GSL_SUCCESS;	/* FIXME: what to do with this idiot case ? */
-    }
-
-This should be impossible because all the matrix creation functions
-reject matrices with size == 0.

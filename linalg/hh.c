@@ -1,14 +1,5 @@
-/* Author:  G. Jungman
- * RCS:     $Id$
- */
-/* Simple linear algebra operations, operating directly
- * on the gsl_vector and gsl_matrix objects. These are
- * meant for "generic" and "small" systems. Anyone
- * interested in large systems will want to use more
- * sophisticated methods, presumably involving native
- * BLAS operations, specialized data representations,
- * or other optimizations.
- */
+/* Author:  G. Jungman */
+
 #include <config.h>
 #include <stdlib.h>
 #include <gsl/gsl_math.h>
@@ -21,22 +12,22 @@
 /* [Engeln-Mullges + Uhlig, Alg. 4.42]
  */
 int
-gsl_la_solve_HH (gsl_matrix * matrix, gsl_vector * vec)
+gsl_linalg_HH_solve (gsl_matrix * a, gsl_vector * x)
 {
-  if (matrix->size1 > matrix->size2)
+  if (a->size1 > a->size2)
     {
       /* System is underdetermined. */
 
       GSL_ERROR ("System is underdetermined", GSL_EINVAL);
     }
-  else if (matrix->size2 != vec->size)
+  else if (a->size2 != x->size)
     {
       GSL_ERROR ("matrix and vector sizes must be equal", GSL_EBADLEN);
     }
   else
     {
-      const int N = matrix->size1;
-      const int M = matrix->size2;
+      const int N = a->size1;
+      const int M = a->size2;
       int i, j, k;
       REAL *d = (REAL *) malloc (N * sizeof (REAL));
 
@@ -49,7 +40,7 @@ gsl_la_solve_HH (gsl_matrix * matrix, gsl_vector * vec)
 
       for (i = 0; i < N; i++)
 	{
-	  const REAL elem_ii = gsl_matrix_get (matrix, i, i);
+	  const REAL aii = gsl_matrix_get (a, i, i);
 	  REAL alpha;
 	  REAL f;
 	  REAL ak;
@@ -58,8 +49,8 @@ gsl_la_solve_HH (gsl_matrix * matrix, gsl_vector * vec)
 
 	  for (k = i; k < M; k++)
 	    {
-	      REAL elem_ki = gsl_matrix_get (matrix, k, i);
-	      r += elem_ki * elem_ki;
+	      REAL aki = gsl_matrix_get (a, k, i);
+	      r += aki * aki;
 	    }
 
 	  if (r == 0.0)
@@ -69,10 +60,10 @@ gsl_la_solve_HH (gsl_matrix * matrix, gsl_vector * vec)
               GSL_ERROR ("matrix is rank deficient", GSL_ESING);
 	    }
 
-	  alpha = sqrt (r) * GSL_SIGN (elem_ii);
+	  alpha = sqrt (r) * GSL_SIGN (aii);
 
-	  ak = 1.0 / (r + alpha * elem_ii);
-	  gsl_matrix_set (matrix, i, i, elem_ii + alpha);
+	  ak = 1.0 / (r + alpha * aii);
+	  gsl_matrix_set (a, i, i, aii + alpha);
 
 	  d[i] = -alpha;
 
@@ -82,10 +73,10 @@ gsl_la_solve_HH (gsl_matrix * matrix, gsl_vector * vec)
 	      f = 0.0;
 	      for (j = i; j < M; j++)
 		{
-		  REAL elem_jk = gsl_matrix_get (matrix, j, k);
-		  REAL elem_ji = gsl_matrix_get (matrix, j, i);
-		  norm += elem_jk * elem_jk;
-		  f += elem_jk * elem_ji;
+		  REAL ajk = gsl_matrix_get (a, j, k);
+		  REAL aji = gsl_matrix_get (a, j, i);
+		  norm += ajk * ajk;
+		  f += ajk * aji;
 		}
 	      max_norm = GSL_MAX (max_norm, norm);
 
@@ -93,9 +84,9 @@ gsl_la_solve_HH (gsl_matrix * matrix, gsl_vector * vec)
 
 	      for (j = i; j < M; j++)
 		{
-		  REAL elem_jk = gsl_matrix_get (matrix, j, k);
-		  REAL elem_ji = gsl_matrix_get (matrix, j, i);
-		  gsl_matrix_set (matrix, j, k, elem_jk - f * elem_ji);
+		  REAL ajk = gsl_matrix_get (a, j, k);
+		  REAL aji = gsl_matrix_get (a, j, i);
+		  gsl_matrix_set (a, j, k, ajk - f * aji);
 		}
 	    }
 
@@ -111,14 +102,14 @@ gsl_la_solve_HH (gsl_matrix * matrix, gsl_vector * vec)
 	  f = 0.0;
 	  for (j = i; j < M; j++)
 	    {
-	      f += gsl_vector_get (vec, j) * gsl_matrix_get (matrix, j, i);
+	      f += gsl_vector_get (x, j) * gsl_matrix_get (a, j, i);
 	    }
 	  f *= ak;
 	  for (j = i; j < M; j++)
 	    {
-	      REAL vec_j = gsl_vector_get (vec, j);
-              REAL mat_ji = gsl_matrix_get (matrix, j, i);
-	      gsl_vector_set (vec, j, vec_j - f * mat_ji);
+	      REAL xj = gsl_vector_get (x, j);
+              REAL aji = gsl_matrix_get (a, j, i);
+	      gsl_vector_set (x, j, xj - f * aji);
 	    }
 	}
 
@@ -126,14 +117,14 @@ gsl_la_solve_HH (gsl_matrix * matrix, gsl_vector * vec)
 
       for (i = N - 1; i >= 0; i--)
 	{
-	  REAL vec_i = gsl_vector_get (vec, i);
+	  REAL xi = gsl_vector_get (x, i);
 	  REAL sum = 0.0;
 	  for (k = i + 1; k < N; k++)
 	    {
-	      sum += gsl_matrix_get (matrix, i, k) * gsl_vector_get (vec, k);
+	      sum += gsl_matrix_get (a, i, k) * gsl_vector_get (x, k);
 	    }
 
-	  gsl_vector_set (vec, i, (vec_i - sum) / d[i]);
+	  gsl_vector_set (x, i, (xi - sum) / d[i]);
 	}
 
       free (d);

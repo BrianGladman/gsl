@@ -1,5 +1,5 @@
 static inline gsl_matrix
-submatrix (gsl_matrix * m, size_t i1, size_t j1, size_t i2, size_t j2)
+submatrix (const gsl_matrix * m, size_t i1, size_t j1, size_t i2, size_t j2)
 {
   gsl_matrix subm = {0,0,0,0,0} ;
 
@@ -35,7 +35,7 @@ subvector (gsl_vector * v, size_t i1, size_t i2)
 }
 
 static inline gsl_vector
-col (gsl_matrix *m, size_t i1, size_t j1, size_t i2) 
+col (const gsl_matrix *m, size_t i1, size_t j1, size_t i2) 
 {
   gsl_vector v = {0,0,0,0} ;
 
