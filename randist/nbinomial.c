@@ -5,7 +5,7 @@
 
 /* The negative binomial distribution has the form,
 
-   prob(k) =  Gamma(n + k)/(Gamma(n+1) Gamma(k - 1))  p^n (1-p)^k 
+   prob(k) =  Gamma(n + k)/(Gamma(n) Gamma(k + 1))  p^n (1-p)^k 
 
    for k = 0, 1, ... . Note that n does not have to be an integer.
 

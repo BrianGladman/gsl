@@ -17,6 +17,8 @@ main (int argc, char *argv[])
   size_t i;
   size_t n = 0;
   double mu = 0, nu = 0, nu1 = 0, nu2 = 0, sigma = 0, a = 0, b = 0, p = 0;
+  double sigmax = 0, sigmay = 0, rho = 0;
+  double x = 0, y =0, z=0  ;
   unsigned int N = 0, t = 0, n1 = 0, n2 = 0 ;
   unsigned long int seed = 0 ;
   const char * name ;
@@ -53,6 +55,8 @@ main (int argc, char *argv[])
 
 #define NAME(x) !strcmp(name,(x))
 #define OUTPUT(x) for (i = 0; i < n; i++) { printf("%g\n", (x)) ; }
+#define OUTPUT2(a,x,y) for(i = 0; i < n; i++) { a ; printf("%g %g\n", x, y) ; }
+#define OUTPUT3(a,x,y,z) for(i = 0; i < n; i++) { a ; printf("%g %g %g\n", x, y, z) ; }
 #define INT_OUTPUT(x) for (i = 0; i < n; i++) { printf("%d\n", (x)) ; }
 #define ARGS(x,y) if (argc != x) error(y) ;
 #define DBL_ARG(x) if (argc) { x=atof((++argv)[0]);argc--;} else {error( #x);};
@@ -136,6 +140,23 @@ main (int argc, char *argv[])
       ARGS(1, "sigma = standard deviation");
       DBL_ARG(sigma) ;
       OUTPUT(gsl_ran_gaussian (r, sigma));
+    }
+  else if (NAME("bivariate-gaussian"))
+    {
+      ARGS(3, "sigmax = x std.dev., sigmay = y std.dev., rho = correlation");
+      DBL_ARG(sigmax) ;
+      DBL_ARG(sigmay) ;
+      DBL_ARG(rho) ;
+      OUTPUT2(gsl_ran_bivariate_gaussian (r, sigmax, sigmay, rho, &x, &y), 
+	      x, y);
+    }
+  else if (NAME("dir-2d"))
+    {
+      OUTPUT2(gsl_ran_dir_2d (r, &x, &y), x, y);
+    }
+  else if (NAME("dir-3d"))
+    {
+      OUTPUT3(gsl_ran_dir_3d (r, &x, &y, &z), x, y, z);
     }
   else if (NAME("geometric"))
     {

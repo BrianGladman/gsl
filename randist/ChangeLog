@@ -1,5 +1,7 @@
 Mon Aug 10 14:41:15 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
+	* gsl-randist.c: added random direction functions
+
 	* gamma.c: added the scale paramter for  the gamma distribution
 
 Thu Aug  6 12:19:59 1998  Brian Gough  <bjg@vvv.lanl.gov>
