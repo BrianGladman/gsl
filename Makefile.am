@@ -4,7 +4,7 @@ lib_LIBRARIES = libgsl.a
 
 DEP_FILES=""
 
-SUBDIRS = err ieee-utils vector matrix blas specfunc rng randist fft roots statistics siman integration interpolation histogram monte doc
+SUBDIRS = err utils ieee-utils vector matrix blas specfunc rng randist fft roots statistics siman integration interpolation histogram monte doc
 
 include_HEADERS = gsl_config.h gsl_complex.h gsl_math.h templates_on.h templates_off.h
 noinst_HEADERS = complex_internal.h

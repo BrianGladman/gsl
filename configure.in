@@ -47,8 +47,12 @@ AC_CHECK_LIB(m, main)
 AC_CHECK_FUNCS(isinf)
 dnl AC_FUNC_ALLOCA
 AC_FUNC_VPRINTF
+
 dnl strcasecmp, strerror, xmalloc, xrealloc, probably others should be added.
-AC_REPLACE_FUNCS(memcpy memmove strdup strerror)
+dnl removed strerror from this list, it's hardcoded in the err/ directory
+dnl Any functions which appear in this list of functions should be provided
+dnl in the utils/ directory
+AC_REPLACE_FUNCS(memcpy memmove strdup strtol strtoul)
 
 
 AC_CHECK_FUNCS(clock)
@@ -193,4 +197,4 @@ else
 fi
 
 dnl
-AC_OUTPUT(err/Makefile ieee-utils/Makefile fft/Makefile specfunc/Makefile statistics/Makefile roots/Makefile rng/Makefile randist/Makefile siman/Makefile integration/Makefile interpolation/Makefile doc/Makefile vector/Makefile matrix/Makefile histogram/Makefile monte/Makefile blas/Makefile Makefile)
+AC_OUTPUT(err/Makefile utils/Makefile ieee-utils/Makefile fft/Makefile specfunc/Makefile statistics/Makefile roots/Makefile rng/Makefile randist/Makefile siman/Makefile integration/Makefile interpolation/Makefile doc/Makefile vector/Makefile matrix/Makefile histogram/Makefile monte/Makefile blas/Makefile Makefile)
