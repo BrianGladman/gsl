@@ -102,8 +102,8 @@ int gsl_monte_vegas_integrate(gsl_monte_vegas_state *state,
     }
     
     if (state->verbose >= 0 ) {
-      vegas_open_log();
-      prn_lim(xl, xu, num_dim);
+      vegas_open_log(state);
+      print_lim(state, xl, xu, num_dim);
     }
   } /* stage == 0 */
   
@@ -156,7 +156,8 @@ int gsl_monte_vegas_integrate(gsl_monte_vegas_state *state,
     }
 
     if (state->verbose >= 0) {
-      prn_head(state, num_dim, calls, state->it_num, state->bins, state->boxes);
+      print_head(state, 
+		 num_dim, calls, state->it_num, state->bins, state->boxes);
     }
   } /* stage <= 2 */
 
@@ -251,9 +252,10 @@ int gsl_monte_vegas_integrate(gsl_monte_vegas_state *state,
     cum_sig = sqrt(1 / state->sum_wgts);
 
     if (state->verbose >= 0) {
-      prn_res(state->it_num, intgrl, sqrt(sig), cum_int, cum_sig, *chi_sq);
+      print_res(state, 
+	      state->it_num, intgrl, sqrt(sig), cum_int, cum_sig, *chi_sq);
       if (state->it_num == state->max_it_num && state->verbose > 0)
-	prn_grid(state, num_dim);
+	print_grid(state, num_dim);
     }
 
     /* Adjust the grid  */
@@ -301,7 +303,7 @@ int gsl_monte_vegas_integrate(gsl_monte_vegas_state *state,
 
   /* final stuff */
   if (state->verbose >= 0 ) {
-    vegas_close_log();
+    vegas_close_log(state);
   }
 
   return status;

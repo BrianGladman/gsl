@@ -10,17 +10,18 @@
 
 FILE               *o_file;
 
-void vegas_open_log(void)
+void vegas_open_log(gsl_monte_vegas_state* state)
 {
   o_file = fopen("vegas.out", "a+");
 }
 
-void vegas_close_log(void)
+void vegas_close_log(gsl_monte_vegas_state* state)
 {
   fclose(o_file);
 }
 
-void prn_lim(double xl[], double xu[], unsigned long dim)
+void print_lim(gsl_monte_vegas_state* state, 
+	     double xl[], double xu[], unsigned long dim)
 {
   int j;
 
@@ -31,7 +32,7 @@ void prn_lim(double xl[], double xu[], unsigned long dim)
   fflush(o_file);
 }
 
-void prn_head(gsl_monte_vegas_state* state, 
+void print_head(gsl_monte_vegas_state* state, 
 	      unsigned long num_dim, unsigned long calls, 
 	      int it_num, int bins, int boxes)
 {
@@ -48,7 +49,8 @@ void prn_head(gsl_monte_vegas_state* state,
 
 }
 
-void prn_res(int itr, double res, double err, double cum_res, double cum_err, 
+void print_res(gsl_monte_vegas_state* state, 
+	     int itr, double res, double err, double cum_res, double cum_err, 
 	     double chi_sq)
 {
   fprintf(o_file, "%4d        %6.4e %10.2e          %6.4e      %8.2e  %10.2e\n",
@@ -56,7 +58,7 @@ void prn_res(int itr, double res, double err, double cum_res, double cum_err,
   fflush(o_file);
 }
 
-void prn_grid(gsl_monte_vegas_state* state, unsigned long dim)
+void print_grid(gsl_monte_vegas_state* state, unsigned long dim)
 {
   int mod, i, j;
   int p = state->verbose;
