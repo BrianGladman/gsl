@@ -24,25 +24,47 @@
 
 {
     size_t i, j;
-    size_t k = 0;
+    size_t ix, jx;
+    size_t iy, jy;
 
-    if (Uplo == CblasUpper) {
-	for (i = 0; i < N; i++) {
-	    for (j = i; j < N; j++) {
-		A[k] +=
-		    alpha * (X[incX * i] * Y[incY * j] +
-			     X[incX * j] * Y[incY * i]);
-		k++;
-	    }
+    if (alpha == 0.0)
+      return;
+
+    if ((order == CblasRowMajor && Uplo == CblasUpper)
+        || (order == CblasColMajor && Uplo == CblasLower)) {
+      size_t ix = OFFSET(N, incX);
+      size_t iy = OFFSET(N, incY);
+      for (i = 0; i < N; i++) {
+	const BASE tmp1 = alpha * X[ix];
+	const BASE tmp2 = alpha * Y[iy];
+	size_t jx = ix;
+	size_t jy = iy;
+	for (j = i ; j < N; j++) {
+          Ap[TPUP(N,i,j)] += tmp1 * Y[jy] + tmp2 * X[jx];
+          jx += incX;
+          jy += incY;
 	}
+	ix += incX;
+	iy += incY;
+      }
+    } else if ((order == CblasRowMajor && Uplo == CblasLower)
+               || (order == CblasColMajor && Uplo == CblasUpper)) {
+      size_t ix = OFFSET(N, incX);
+      size_t iy = OFFSET(N, incY);
+      for (i = 0; i < N; i++) {
+	const BASE tmp1 = alpha * X[ix];
+	const BASE tmp2 = alpha * Y[iy];
+	size_t jx = OFFSET(N, incX);
+	size_t jy = OFFSET(N, incY);
+	for (j = 0 ; j <= i; j++) {
+          Ap[TPLO(N,i,j)] += tmp1 * Y[jy] + tmp2 * X[jx];
+          jx += incX;
+          jy += incY;
+	}
+	ix += incX;
+	iy += incY;
+      }
     } else {
-	for (i = 0; i < N; i++) {
-	    for (j = 0; j <= i; j++) {
-		A[k] +=
-		    alpha * (X[incX * i] * Y[incY * j] +
-			     X[incX * j] * Y[incY * i]);
-		k++;
-	    }
-	}
+      BLAS_ERROR("unrecognized operation");
     }
 }

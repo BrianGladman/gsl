@@ -26,6 +26,9 @@
     size_t i, j;
     size_t ix, jx;
 
+    if (alpha == 0.0)
+      return;
+
     if ((order == CblasRowMajor && Uplo == CblasUpper)
         || (order == CblasColMajor && Uplo == CblasLower)) {
       size_t ix = OFFSET(N, incX);

@@ -101,6 +101,23 @@ function T = test_trmatvector (S, j)
   endif
 endfunction
 
+function T = test_trmatvectors (S, j)
+  T.n = fix(j/4)+1;
+  T.lda = fix(j/4)+1;
+  T.s1 = (-1)**(rem(fix(j/2),2));
+  T.s2 = (-1)**(rem(j,2)) ;
+  T.trans = trans(S);
+  if (S.complex == 0)
+    T.A = random_matrix(T.n, T.n);
+    T.v1 = random_vector(T.n);
+    T.v2 = random_vector(T.n);
+  else
+    T.A = random_matrix(T.n, T.n) + I * random_matrix(T.n, T.n);
+    T.v1 = random_vector(T.n) + I * random_vector(T.n);
+    T.v2 = random_vector(T.n) + I * random_vector(T.n);
+  endif
+endfunction
+
 
 function T = test_bmatvectors (S, j)
   T.kl = fix(j/4)+1;
@@ -166,6 +183,26 @@ function T = test_tpmatvector (S, j)
     T.v = random_vector(T.n) + I * random_vector(T.n);
   endif
 endfunction
+
+function T = test_tpmatvectors (S, j)
+  T.n =  1+ fix(j/2);
+  T.s1 = (-1)**(rem(fix(j/2),2));
+  T.s2 = (-1)**(rem(j,2)) ;
+  T.trans = trans(S);
+  N = T.n * (T.n + 1) / 2;
+
+  if (S.complex == 0)
+    T.A = random_vector(N);
+    T.v1 = random_vector(T.n);
+    T.v2 = random_vector(T.n);
+  else
+    T.A = random_vector(N) + I * random_vector(N);
+    T.v1 = random_vector(T.n) + I * random_vector(T.n);
+    T.v2 = random_vector(T.n) + I * random_vector(T.n);
+  endif
+endfunction
+
+
 
 function T = test_symatvectors (S, j)
   T.n = fix(j/4)+1;
@@ -384,6 +421,44 @@ function m = tpmatrix (order, uplo, Diag, A, N)
     m = m - diag(diag(m)) + eye(size(m));
   endif
 endfunction
+
+function m = tpmatout (order, uplo, Diag, A, N, a)
+  if (order == 102) # column major 
+    if (uplo == 121) # upper
+      k = 0;
+      for j = 1:N
+        A(k + (1:j)) = a(1:j,j).';
+        k = k + j;
+      endfor
+    else
+      k = 0;
+      for j = 1:N
+        A(k + (1:(N-j+1))) = a(j:N,j).';
+        k = k + N - j + 1;
+      endfor
+    endif
+  else  # row major
+    if (uplo == 121) # upper
+      k = 0;
+      for j = 1:N
+        A(k + (1:(N-j+1))) = a(j,j:N);
+        k = k + N - j + 1;
+      endfor
+    else
+      k = 0;
+      for j = 1:N
+        A(k + (1:j)) = a(j,1:j);
+        k = k + j;
+      endfor
+    endif
+  endif
+  
+  m = A;
+  if (Diag == 132)  # unit diag
+    #m = m - diag(diag(m)) + eye(size(m));
+  endif
+endfunction
+
 
 
 function MM = op(M, trans);
@@ -926,6 +1001,78 @@ function AA = blas_syr (order, uplo, N, alpha, X, incX, A, lda)
   AA = trmatout(order, uplo, 131, A, lda, N, a);
 endfunction
 
+function AA = blas_spr (order, uplo, N, alpha, X, incX, A)
+  a = tpmatrix (order, uplo, 131, A, N); #nounit
+  x = vector (X, incX, N);
+  t = triu(a,1) + tril(a,-1);
+  a = diag(real(diag(a))) + t + t';  # make symmetric
+
+  a = alpha * x * x' + a;
+  
+  AA = tpmatout(order, uplo, 131, A, N, a);
+endfunction
+
+function AA = blas_syr2 (order, uplo, N, alpha, X, incX, Y, incY, A, lda)
+  a = trmatrix (order, uplo, 131, A, lda, N); #nounit
+  x = vector (X, incX, N);
+  y = vector (Y, incY, N);
+  t = triu(a,1) + tril(a,-1);
+  a = diag(real(diag(a))) + t + t';  # make symmetric
+
+  a = alpha * x * y' + alpha * y * x' + a;
+  
+  AA = trmatout(order, uplo, 131, A, lda, N, a);
+endfunction
+
+function AA = blas_spr2 (order, uplo, N, alpha, X, incX, Y, incY, A)
+  a = tpmatrix (order, uplo, 131, A, N); #nounit
+  x = vector (X, incX, N);
+  y = vector (Y, incY, N);
+  t = triu(a,1) + tril(a,-1);
+  a = diag(real(diag(a))) + t + t';  # make symmetric
+
+  a = alpha * x * y' + alpha * y * x' + a;
+  
+  AA = tpmatout(order, uplo, 131, A, N, a);
+endfunction
+
+function AA = blas_her (order, uplo, N, alpha, X, incX, A, lda)
+  a = trmatrix (order, uplo, 131, A, lda, N); #nounit
+  x = vector (X, incX, N);
+  t = triu(a,1) + tril(a,-1);
+  a = diag(real(diag(a))) + t + t';  # make symmetric
+
+  if (alpha == 0)
+    AA = A;
+    return;
+  endif
+
+  a = alpha * x * x' + a;
+  for i = 1:N
+    a(i,i) = real(a(i,i));
+  endfor
+
+  AA = trmatout(order, uplo, 131, A, lda, N, a);
+endfunction
+
+function AA = blas_hpr (order, uplo, N, alpha, X, incX, A)
+  a = tpmatrix (order, uplo, 131, A, N); #nounit
+  x = vector (X, incX, N);
+  t = triu(a,1) + tril(a,-1);
+  a = diag(real(diag(a))) + t + t';  # make symmetric
+
+  if (alpha == 0)
+    AA = A;
+    return;
+  endif
+
+  a = alpha * x * x' + a;
+  for i = 1:N
+    a(i,i) = real(a(i,i));
+  endfor
+  
+  AA = tpmatout(order, uplo, 131, A, N, a);
+endfunction
 
 
 ######################################################################
@@ -1498,6 +1645,95 @@ function test_syr (S, fn, order, uplo, N, alpha, X, incX, A, lda)
   end_block();
 endfunction
 
+function test_spr (S, fn, order, uplo, N, alpha, X, incX, Ap)
+  begin_block();
+  define(S, "int", "order", order);
+  define(S, "int", "uplo", uplo);
+  define(S, "int", "N", N);
+  define(S, "scalar", "alpha", alpha);
+  define(S, "matrix", "Ap", Ap);
+  define(S, "vector", "X", X);
+  define(S, "int", "incX", incX);
+  AA = feval(strcat("blas_", fn), order, uplo, N, alpha, X, incX, Ap);
+  define(S, "matrix", "Ap_expected", AA);
+  call("cblas_", S.prefix, fn, "(order, uplo, N, alpha, X, incX, Ap)");
+  test(S, "vector", "Ap", "Ap_expected", strcat(S.prefix, fn), Ap);
+  end_block();
+endfunction
+
+function test_syr2 (S, fn, order, uplo, N, alpha, X, incX, Y, incY, A, lda)
+  begin_block();
+  define(S, "int", "order", order);
+  define(S, "int", "uplo", uplo);
+  define(S, "int", "N", N);
+  define(S, "int", "lda", lda);
+  define(S, "scalar", "alpha", alpha);
+  define(S, "matrix", "A", A);
+  define(S, "vector", "X", X);
+  define(S, "int", "incX", incX);
+  define(S, "vector", "Y", Y);
+  define(S, "int", "incY", incY);
+  AA = feval(strcat("blas_", fn), order, uplo, N, alpha, X, incX, Y, incY, A, lda);
+  define(S, "matrix", "A_expected", AA);
+  call("cblas_", S.prefix, fn, "(order, uplo, N, alpha, X, incX, Y, incY, A, lda)");
+  test(S, "vector", "A", "A_expected", strcat(S.prefix, fn), A);
+  end_block();
+endfunction
+
+function test_spr2 (S, fn, order, uplo, N, alpha, X, incX, Y, incY, Ap)
+  begin_block();
+  define(S, "int", "order", order);
+  define(S, "int", "uplo", uplo);
+  define(S, "int", "N", N);
+  define(S, "scalar", "alpha", alpha);
+  define(S, "matrix", "Ap", Ap);
+  define(S, "vector", "X", X);
+  define(S, "int", "incX", incX);
+  define(S, "vector", "Y", Y);
+  define(S, "int", "incY", incY);
+  AA = feval(strcat("blas_", fn), order, uplo, N, alpha, X, incX, Y, \
+             incY, Ap);
+  define(S, "matrix", "Ap_expected", AA);
+  call("cblas_", S.prefix, fn, "(order, uplo, N, alpha, X, incX, Y, incY, Ap)");
+  test(S, "vector", "Ap", "Ap_expected", strcat(S.prefix, fn), Ap);
+  end_block();
+endfunction
+
+
+function test_her (S, fn, order, uplo, N, alpha, X, incX, A, lda)
+  begin_block();
+  define(S, "int", "order", order);
+  define(S, "int", "uplo", uplo);
+  define(S, "int", "N", N);
+  define(S, "int", "lda", lda);
+  T = S ; T.complex = 0;
+  define(T, "scalar", "alpha", alpha);
+  define(S, "matrix", "A", A);
+  define(S, "vector", "X", X);
+  define(S, "int", "incX", incX);
+  AA = feval(strcat("blas_", fn), order, uplo, N, alpha, X, incX, A, lda);
+  define(S, "matrix", "A_expected", AA);
+  call("cblas_", S.prefix, fn, "(order, uplo, N, alpha, X, incX, A, lda)");
+  test(S, "vector", "A", "A_expected", strcat(S.prefix, fn), A);
+  end_block();
+endfunction
+
+function test_hpr (S, fn, order, uplo, N, alpha, X, incX, Ap)
+  begin_block();
+  define(S, "int", "order", order);
+  define(S, "int", "uplo", uplo);
+  define(S, "int", "N", N);
+  T = S ; T.complex = 0;
+  define(T, "scalar", "alpha", alpha);
+  define(S, "matrix", "Ap", Ap);
+  define(S, "vector", "X", X);
+  define(S, "int", "incX", incX);
+  AA = feval(strcat("blas_", fn), order, uplo, N, alpha, X, incX, Ap);
+  define(S, "matrix", "Ap_expected", AA);
+  call("cblas_", S.prefix, fn, "(order, uplo, N, alpha, X, incX, Ap)");
+  test(S, "vector", "Ap", "Ap_expected", strcat(S.prefix, fn), Ap);
+  end_block();
+endfunction
 
 
 ######################################################################
@@ -1912,18 +2148,98 @@ n=16;
 #   endfor
 # endfor
 
+# for j = 1:n
+#   for i = [s,d];
+#     S = context(i);
+#     T = test_trmatvector(S, j);
+#     for alpha = coeff(S)
+#       for order = [101, 102]
+#         for uplo = [121, 122]
+#           test_syr (S, "syr", order, uplo, T.n, alpha, T.v, T.s, \
+#                     T.A, T.lda);
+#           else
+#           endif
+#         endfor
+#       endfor
+#     endfor
+#   endfor
+# endfor
+
+# for j = 1:n
+#   for i = [c,z];
+#     S = context(i);
+#     T = test_trmatvector(S, j);
+#     R = S ; R.complex = 0;
+#     for alpha = coeff(R)
+#       for order = [101, 102]
+#         for uplo = [121, 122]
+#           test_her (S, "her", order, uplo, T.n, alpha, T.v, T.s, \
+#                       T.A, T.lda);
+#         endfor
+#       endfor
+#     endfor
+#   endfor
+# endfor
+
 for j = 1:n
-  for i = [s,d];
+  for i = [c,z];
     S = context(i);
-    T = test_trmatvector(S, j);
-    for alpha = coeff(S)
+    T = test_tpmatvector(S, j);
+    R = S ; R.complex = 0;
+    for alpha = coeff(R)
       for order = [101, 102]
         for uplo = [121, 122]
-          test_syr (S, "syr", order, uplo, T.n, alpha, T.v, T.s, T.A, T.lda);
+          test_hpr (S, "hpr", order, uplo, T.n, alpha, T.v, T.s, T.A);
         endfor
       endfor
     endfor
   endfor
 endfor
+
+
+
+# for j = 1:n
+#   for i = [s,d];
+#     S = context(i);
+#     T = test_tpmatvector(S, j);
+#     for alpha = coeff(S)
+#       for order = [101, 102]
+#         for uplo = [121, 122]
+#           test_spr (S, "spr", order, uplo, T.n, alpha, T.v, T.s, T.A);
+#         endfor
+#       endfor
+#     endfor
+#   endfor
+# endfor
+
   
-  
+# for j = 1:n
+#   for i = [s,d];
+#     S = context(i);
+#     T = test_trmatvectors(S, j);
+#     for alpha = coeff(S)
+#       for order = [101, 102]
+#         for uplo = [121, 122]
+#           test_syr2 (S, "syr2", order, uplo, T.n, alpha, T.v1, T.s1, \
+#                      T.v2, T.s2, T.A, T.lda);
+#         endfor
+#       endfor
+#     endfor
+#   endfor
+# endfor
+
+# for j = 1:n
+#   for i = [s,d];
+#     S = context(i);
+#     T = test_tpmatvectors(S, j);
+#     for alpha = coeff(S)
+#       for order = [101, 102]
+#         for uplo = [121, 122]
+#           test_spr2 (S, "spr2", order, uplo, T.n, alpha, T.v1, T.s1, \
+#                      T.v2, T.s2, T.A);
+#         endfor
+#       endfor
+#     endfor
+#   endfor
+# endfor
+

@@ -17,40 +17,66 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-/*
- * Author:  G. Jungman
- * RCS:     $Id$
- */
-
 {
+  const int conj = (order == CblasColMajor) ? -1 : 1;
     size_t i, j;
-    const BASE conj = -1.0;
+    size_t ix, jx;
 
-    if (Uplo == CblasUpper) {
-	for (j = 0; j < N; j++) {
-	    const BASE tmpR = alpha * REAL(X, incX, j);
-	    const BASE tmpI = alpha * IMAG(X, incX, j);
-	    for (i = j; i < N; i++) {
-		REAL(A, 1, lda * j + i) +=
-		    REAL(X, incX, i) * tmpR - conj * IMAG(X, incX,
-							  i) * tmpI;
-		IMAG(A, 1, lda * j + i) +=
-		    REAL(X, incX, i) * tmpI + conj * IMAG(X, incX,
-							  i) * tmpR;
-	    }
+    if (alpha == 0.0)
+      return;
+
+    if ((order == CblasRowMajor && Uplo == CblasUpper)
+        || (order == CblasColMajor && Uplo == CblasLower)) {
+      size_t ix = OFFSET(N, incX);
+      for (i = 0; i < N; i++) {
+	const BASE tmp_real = alpha * REAL(X, ix);
+	const BASE tmp_imag = alpha * conj * IMAG(X, ix);
+	size_t jx = ix;
+
+        {
+          const BASE X_real = REAL(X, jx);
+          const BASE X_imag = -conj * IMAG(X, jx);
+          REAL(A, lda * i + i) += X_real * tmp_real - X_imag * tmp_imag;
+          IMAG(A, lda * i + i) = 0;
+          jx += incX;
+        }
+
+	for (j = i+1 ; j < N; j++) {
+          const BASE X_real = REAL(X, jx);
+          const BASE X_imag = -conj * IMAG(X, jx);
+          REAL(A, lda * i + j) += X_real * tmp_real - X_imag * tmp_imag;
+          IMAG(A, lda * i + j) += X_imag * tmp_real + X_real * tmp_imag;
+          jx += incX;
 	}
+	ix += incX;
+      }
+    } else if ((order == CblasRowMajor && Uplo == CblasLower)
+               || (order == CblasColMajor && Uplo == CblasUpper)) {
+      size_t ix = OFFSET(N, incX);
+      for (i = 0; i < N; i++) {
+	const BASE tmp_real = alpha * REAL(X,ix);
+	const BASE tmp_imag = alpha * conj * IMAG(X,ix);
+	size_t jx = OFFSET(N, incX);
+	for (j = 0 ; j < i; j++) {
+          const BASE X_real = REAL(X, jx);
+          const BASE X_imag = -conj * IMAG(X, jx);
+          REAL(A, lda * i + j) += X_real * tmp_real - X_imag * tmp_imag;
+          IMAG(A, lda * i + j) += X_imag * tmp_real + X_real * tmp_imag;
+          jx += incX;
+	}
+
+        {
+          const BASE X_real = REAL(X, jx);
+          const BASE X_imag = -conj * IMAG(X, jx);
+          REAL(A, lda * i + i) += X_real * tmp_real - X_imag * tmp_imag;
+          IMAG(A, lda * i + i) = 0;
+          jx += incX;
+        }
+
+	ix += incX;
+      }
     } else {
-	for (j = 0; j < N; j++) {
-	    const BASE tmpR = alpha * REAL(X, incX, j);
-	    const BASE tmpI = alpha * IMAG(X, incX, j);
-	    for (i = 0; i <= j; i++) {
-		REAL(A, 1, lda * j + i) +=
-		    REAL(X, incX, i) * tmpR - conj * IMAG(X, incX,
-							  i) * tmpI;
-		IMAG(A, 1, lda * j + i) +=
-		    REAL(X, incX, i) * tmpI + conj * IMAG(X, incX,
-							  i) * tmpR;
-	    }
-	}
+      BLAS_ERROR("unrecognized operation");
     }
 }
+

@@ -1071,7 +1071,7 @@ cblas_zgerc (const enum CBLAS_ORDER order, const int M, const int N,
 }
 
 /* HER */
-#ifdef 0
+
 
 void
 cblas_cher (const enum CBLAS_ORDER order, const enum CBLAS_UPLO Uplo,
@@ -1116,7 +1116,7 @@ cblas_zhpr (const enum CBLAS_ORDER order, const enum CBLAS_UPLO Uplo,
 #undef BASE
 }
 
-
+#ifdef 0
 /* HER2 */
 
 void
@@ -1184,7 +1184,7 @@ cblas_dsyr (const enum CBLAS_ORDER order, const enum CBLAS_UPLO Uplo,
 #undef BASE
 }
 
-#ifdef 0
+
 /* SPR */
 
 void
@@ -1206,7 +1206,6 @@ cblas_dspr (const enum CBLAS_ORDER order, const enum CBLAS_UPLO Uplo,
 #include "source_spr.h"
 #undef BASE
 }
-
 
 /* SYR2 */
 
@@ -1230,13 +1229,12 @@ cblas_dsyr2 (const enum CBLAS_ORDER order, const enum CBLAS_UPLO Uplo,
 #undef BASE
 }
 
-
 /* SPR2 */
 
 void
 cblas_sspr2 (const enum CBLAS_ORDER order, const enum CBLAS_UPLO Uplo,
 	     const int N, const float alpha, const float *X, const int incX,
-	     const float *Y, const int incY, float *A)
+	     const float *Y, const int incY, float *Ap)
 {
 #define BASE double
 #include "source_spr2.h"
@@ -1246,13 +1244,14 @@ cblas_sspr2 (const enum CBLAS_ORDER order, const enum CBLAS_UPLO Uplo,
 void
 cblas_dspr2 (const enum CBLAS_ORDER order, const enum CBLAS_UPLO Uplo,
 	     const int N, const double alpha, const double *X, const int incX,
-	     const double *Y, const int incY, double *A)
+	     const double *Y, const int incY, double *Ap)
 {
 #define BASE double
 #include "source_spr2.h"
 #undef BASE
 }
 
+#ifdef 0
 /*
  * ===========================================================================
  * level 3 BLAS
