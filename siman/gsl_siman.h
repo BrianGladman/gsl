@@ -20,6 +20,7 @@
 #ifndef __GSL_SIMAN_H__
 #define __GSL_SIMAN_H__
 #include <stdlib.h>
+#include <gsl/gsl_rng.h>
 
 #undef __BEGIN_DECLS
 #undef __END_DECLS
@@ -55,26 +56,7 @@ typedef struct {
   double k, t_initial, mu_t, t_min;
 } gsl_siman_params_t;
 
-struct CA_rule {
-  char *str;
-  int k, n, length;
-};
-
-typedef union u_Element {
-  double D1;
-  double D2[2];
-  double D3[3];
-  struct CA_rule rule;
-} Element ;
-
 /* prototype for the workhorse function */
-
-void gsl_siman_Usolve(const gsl_rng * r, 
-		      Element *x0_p, double (*Efunc)(Element x),
-		      void (*take_step)(Element *x_p, double step_size),
-		      double distance(Element x, Element y),
-		      void print_position(Element x),
-		      gsl_siman_params_t params);
 
 void gsl_siman_solve(const gsl_rng * r, 
 		     void *x0_p, gsl_siman_Efunc_t Ef,

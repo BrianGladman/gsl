@@ -1,24 +1,19 @@
 @cindex simulated annealing
 @cindex combinatorial searches
-
+@cindex combinatorial optimization
+@cindex optimization -- combinatorial
+@cindex energy function
+@cindex cost function
 Stochastic search techniques are used when the structure of a space is
 not well understood or is not smooth, so that techniques like Newton's
 method (which requires calculating Jacobian derivative matrices) cannot
-be used.
+be used. In particular, these techniques are frequently used to solve
+combinatorial optimization problems, such as the traveling salesman
+problem.
 
-In particular, these techniques are frequently used to solve
-@emph{combinatorial optimization} problems, such as the traveling
-salesman problem.
-@cindex combinatorial optimization
-@cindex optimization -- combinatorial
-
-The basic problem layout is that we are looking for a point in the space
-at which a real valued @emph{energy function} (or @emph{cost function})
-is minimized.
-@cindex energy function
-@cindex cost function
-
-Simulated annealing is a technique which has given good results in
+The goal is to find a point in the space at which a real valued
+@dfn{energy function} (or @dfn{cost function}) is minimized.  Simulated
+annealing is a minimization technique which has given good results in
 avoiding local minima; it is based on the idea of taking a random walk
 through the space at successively lower temperatures, where the
 probability of taking a step is given by a Boltzmann distribution.
@@ -35,10 +30,9 @@ The functions described in this chapter are declared in the header file
 @node Simulated Annealing algorithm, Simulated Annealing functions, Simulated Annealing, Simulated Annealing
 @section Simulated Annealing algorithm
 
-
-We take random walks through the problem space, looking for points with
-low energies; in these random walks, the probability of taking a step is
-determined by the Boltzmann distribution
+The simulated annealing algorithm takes random walks through the problem
+space, looking for points with low energies; in these random walks, the
+probability of taking a step is determined by the Boltzmann distribution,
 
 @tex
 \beforedisplay
@@ -61,7 +55,7 @@ if
 @c{$E_{i+1} \le E_i$}
 @math{E_@{i+1@} <= E_i}.
 
-In other words, a step @emph{will} occur if the new energy is lower.  If
+In other words, a step will occur if the new energy is lower.  If
 the new energy is higher, the transition can still occur, and its
 likelihood is proportional to the temperature @math{T} and inversely
 proportional to the energy difference 
@@ -70,17 +64,17 @@ proportional to the energy difference
 
 The temperature @math{T} is initially set to a high value, and a random
 walk is carried out at that temperature.  Then the temperature is
-lowered very slightly (according to a @emph{cooling schedule}) and
+lowered very slightly (according to a @dfn{cooling schedule}) and
 another random walk is taken.
 @cindex cooling schedule
 @cindex schedule - cooling
 
-This slight probability of taking a step that gives @emph{higher} energy
+This slight probability of taking a step that gives higher energy
 is what allows simulated annealing to frequently get out of local
 minima.
 
 An initial guess is supplied.  At each step, a point is chosen at a
-random distance from the current one, where the random distance @emph{r}
+random distance from the current one, where the random distance @math{r}
 is distributed according to a Boltzmann distribution
 @tex
 $r = \exp^{-E/kT}$.
@@ -89,7 +83,7 @@ $r = \exp^{-E/kT}$.
 r = e^(-E/kT).
 @end ifinfo
 After a few search steps using this distribution, the temperature
-@emph{T} is lowered according to some scheme, for example
+@math{T} is lowered according to some scheme, for example
 @tex
 $T \rightarrow T/\mu_T$
 @end tex
@@ -102,85 +96,128 @@ where @math{\mu_T} is slightly greater than 1.
 @node Simulated Annealing functions, Examples with Simulated Annealing, Simulated Annealing algorithm, Simulated Annealing
 @section Simulated Annealing functions
 
-@deftp {Simulated annealing} gsl_siman_Efunc_t
-@example
-double (*gsl_siman_Efunc_t) (void *xp);
-@end example
-@end deftp
+@deftypefun void gsl_siman_solve (const gsl_rng * @var{r}, void *@var{x0_p}, gsl_siman_Efunc_t @var{Ef}, gsl_siman_step_t @var{take_step}, gsl_siman_metric_t @var{distance}, gsl_siman_print_t @var{print_position}, gsl_siman_copy_t @var{copyfunc}, gsl_siman_copy_construct_t @var{copy_constructor}, gsl_siman_destroy_t @var{destructor}, size_t @var{element_size}, gsl_siman_params_t @var{params})
 
-@deftp {Simulated annealing} gsl_siman_step_t
-@example
-void (*gsl_siman_step_t) (void *xp, double step_size);
-@end example
-@end deftp
+This function performs a simulated annealing search through a given
+space.  The space is specified by providing the functions @var{Ef} and
+@var{distance}.  The simulated annealing steps are generated using the
+random number generator @var{r} and the function @var{take_step}.
 
-@deftp {Simulated annealing} gsl_siman_metric_t
-@example
-double (*gsl_siman_metric_t) (void *xp, void *yp);
-@end example
-@end deftp
+The starting configuration of the system should be given by @var{x0_p}.
+The routine offers two modes for updating configurations, a fixed-size
+mode and a variable-size mode.  In the fixed-size mode the configuration
+is stored as a single block of memory of size @var{element_size}.
+Copies of this configuration are created, copied and destroyed
+internally using the standard library functions @code{malloc},
+@code{memcpy} and @code{free}.  The function pointers @var{copyfunc},
+@var{copy_constructor} and @var{destructor} should be null pointers in
+fixed-size mode.  In the variable-size mode the functions @var{copyfunc}
+, @var{copy_constructor} and @var{destructor} are used to create, copy
+and destroy configurations internally.  The variable @var{element_size}
+should be zero in the variable-size mode.
 
-@deftp {Simulated annealing} gsl_siman_print_t
-@example
-void (*gsl_siman_print_t) (void *xp);
-@end example
-@end deftp
-
-@deftp {Simulated annealing} gsl_siman_params_t
-These are the parameters that control a run of @code{gsl_siman_solve}.
-
-@example
-/* this structure contains all the information 
-   needed to structure the search, beyond the 
-   energy function, the step function and the 
-   initial guess. */
-
-struct s_siman_params @{
-  /* how many points to try for each step */
-  int n_tries;          
-
-  /* how many iterations at each temperature? */
-  int iters_fixed_T;    
-
-  /* max step size in the random walk */
-  double step_size;     
-
-  /* the following parameters are for the 
-     Boltzmann distribution */
-  double k, t_initial, mu_t, t_min;
-@};
-
-typedef struct s_siman_params gsl_siman_params_t;
-@end example
-@end deftp
-
-
-@deftypefn {Simulated annealing} void gsl_siman_solve (void *@var{x0_p}, gsl_siman_Efunc_t @var{Ef}, gsl_siman_metric_t @var{distance}, gsl_siman_print_t @var{print_position}, size_t @var{element_size}, gsl_siman_params_t params)
-Does a @emph{simulated annealing} search through a given space.  The
-space is specified by providing the functions @var{Ef}, @var{distance},
-@var{print_position}, @var{element_size}.
-
-The @var{params} structure (described above) controls the run by
+The @var{params} structure (described below) controls the run by
 providing the temperature schedule and other tunable parameters to the
-algorithm (@pxref{Simulated Annealing algorithm}).
-p
-The result (optimal point in the space) is placed in @code{*@var{x0_p}}.
+algorithm.
 
-If @var{print_position} is not null, a log will be printed to the screen
-with the following columns:
+On exit the final result is placed in @code{*@var{x0_p}}.  If the
+annealing process has been successful this should be a good
+approximation to the optimal point in the space.
+
+If the function pointer @var{print_position} is not null, a debugging
+log will be printed to @code{stdout} with the following columns:
 
 @example
 number_of_iterations temperature x x-(*x0_p) Ef(x)
 @end example
 
-If @var{print_position} is null, no information is printed to the
-screen.
-@end deftypefn
+and the output of the function @var{print_position} itself.  If
+@var{print_position} is null then no information is printed.
+@end deftypefun
+@noindent
+The simulated annealing routines require several user-specified
+functions to define the configuration space and energy function.  The
+prototypes for these functions are given below.
+
+@deftp {Data Type} gsl_siman_Efunc_t
+This function type should return the energy of a configuration @var{xp}.
+@example
+double (*gsl_siman_Efunc_t) (void *xp)
+@end example
+@end deftp
+
+@deftp {Data Type} gsl_siman_step_t
+This function type should modify the configuration @var{xp} using a random step
+taken from the generator @var{r}, up to a maximium distance of
+@var{step_size}.
+@example
+void (*gsl_siman_step_t) (const gsl_rng *r, void *xp, double step_size)
+@end example
+@end deftp
+
+@deftp {Data Type} gsl_siman_metric_t
+This function type should return the distance between two configurations
+@var{xp} and @var{yp}.
+@example
+double (*gsl_siman_metric_t) (void *xp, void *yp)
+@end example
+@end deftp
+
+@deftp {Data Type} gsl_siman_print_t
+This function type should print the contents of the configuration @var{xp}.
+@example
+void (*gsl_siman_print_t) (void *xp)
+@end example
+@end deftp
+
+@deftp {Data Type} gsl_siman_copy_t
+This function type should copy the configuration @var{dest} into @var{source}.
+@example
+void (*gsl_siman_copy_t) (void *source, void *dest)
+@end example
+@end deftp
+
+@deftp {Data Type} gsl_siman_copy_construct_t
+This function type should create a new copy of the configuration @var{xp}.
+@example
+void * (*gsl_siman_copy_construct_t) (void *xp)
+@end example
+@end deftp
+
+@deftp {Data Type} gsl_siman_destroy_t
+This function type should destroy the configuration @var{xp}, freeing its
+memory.
+@example
+void (*gsl_siman_destroy_t) (void *xp)
+@end example
+@end deftp
+
+@deftp {Data Type} gsl_siman_params_t
+These are the parameters that control a run of @code{gsl_siman_solve}.
+This structure contains all the information needed to control the
+search, beyond the energy function, the step function and the initial
+guess.
+
+@table @code
+@item int n_tries          
+The number of points to try for each step
+
+@item int iters_fixed_T    
+The number of iterations at each temperature
+
+@item double step_size     
+The maximum step size in the random walk
+
+@item double k, t_initial, mu_t, t_min
+The parameters of the Boltzmann distribution and cooling schedule
+@end table
+@end deftp
+
 
 @node Examples with Simulated Annealing,  , Simulated Annealing functions, Simulated Annealing
 @section Examples with Simulated Annealing
 
-GSL's Simulated Annealing package is clumsy, and it has to be because it
+The simulated Annealing package is clumsy, and it has to be because it
 is written in C, for C callers, and tries to be polymorphic at the same
 time.  But here we provide some examples which can be pasted into your
 application with little change and should make things easier.
@@ -200,6 +237,10 @@ guess given is 15.5, which is several local minima away from the global
 minimum.
 
 @smallexample
+#include <math.h>
+#include <stdlib.h>
+#include <gsl/gsl_siman.h>
+
 /* set up parameters for this simulated annealing run */
 
 /* how many points do we try before stepping */
@@ -230,7 +271,7 @@ double E1(void *xp)
 @{
   double x = * ((double *) xp);
 
-  return exp(-square(x-1))*sin(8*x);
+  return exp(-pow((x-1.0),2.0))*sin(8*x);
 @}
 
 double M1(void *xp, void *yp)
@@ -241,14 +282,13 @@ double M1(void *xp, void *yp)
   return fabs(x - y);
 @}
 
-void S1(void *xp, double step_size)
+void S1(const gsl_rng * r, void *xp, double step_size)
 @{
-  double r;
   double old_x = *((double *) xp);
   double new_x;
 
-  r = gsl_ran_uniform();
-  new_x = r*2*step_size - step_size + old_x;
+  double u = gsl_rng_uniform(r);
+  new_x = u * 2 * step_size - step_size + old_x;
 
   memcpy(xp, &new_x, sizeof(new_x));
 @}
@@ -261,11 +301,18 @@ void P1(void *xp)
 int
 main(int argc, char *argv[])
 @{
-  Element x0; /* initial guess for search */
+  gsl_rng_type * T;
+  gsl_rng * r;
 
   double x_initial = 15.5;
 
-  gsl_siman_solve(&x_initial, E1, S1, M1, P1,
+  gsl_rng_env_setup();
+
+  T = gsl_rng_default;
+  r = gsl_rng_alloc(T);
+
+  gsl_siman_solve(r, &x_initial, E1, S1, M1, P1,
+                  NULL, NULL, NULL, 
                   sizeof(double), params);
   return 0;
 @}
@@ -299,10 +346,10 @@ temperatures it converges.
 @cindex TSP
 @cindex Traveling Salesman Problem
 
-The TSP (@emph{Traveling Salesman Problem}) is the classic combinatorial
+The TSP (@dfn{Traveling Salesman Problem}) is the classic combinatorial
 optimization problem.  I have provided a very simple version of it,
 based on the coordinates of twelve cities in the southwestern United
-States.  This should maybe be called the @emph{Flying Salesman Problem},
+States.  This should maybe be called the @dfn{Flying Salesman Problem},
 since I am using the great-circle distance between cities, rather than
 the driving distance.  Also: I assume the earth is a sphere, so I don't
 use geoid distances.
