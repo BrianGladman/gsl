@@ -141,12 +141,12 @@ int gsl_sf_bessel_I1_scaled_impl(const double x, double * result)
   }
   else if(y <= 8.0) {
     double b = (.375 + gsl_sf_cheb_eval((48./y-11.)/5., &ai1_cs)) / sqrt(y);
-    *result = fortran_sign(b, x);
+    *result = ( x > 0. ? b : -b) /* fortran_sign(b, x) */;
     return GSL_SUCCESS;
   }
   else {
     double b = (.375 + gsl_sf_cheb_eval(16./y-1.0, &ai12_cs)) / sqrt(y);
-    *result = fortran_sign(b, x);
+    *result = ( x > 0. ? b : -b) /* fortran_sign(b, x) */;
     return GSL_SUCCESS;
   }
 }

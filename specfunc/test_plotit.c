@@ -1,12 +1,6 @@
 #include <stdio.h>
 #include "gsl_sf.h"
 
-extern double gsl_sf_lngamma_test(double);
-extern int gsl_sf_conical_sph_reg_0_impl(double, double, double, double*);
-extern int gsl_sf_conical_sph_reg_array_impl(int, double, double, double *, double *);
-
-extern int gsl_sf_conical_sph_reg_array_impl(int, double, double, double *, double *);
-
 extern double R_norm(int, int, double);
 extern double R_norm_2(int, int, double);
 extern double gsl_sf_hydrogenicR_2(int, double, double);
@@ -20,7 +14,7 @@ int main(int argc, char * argv[])
   double dx   = 0.1;
   double lambda = 0.5;
   double y;
-  double y_array[1024];
+  double y_array[4096];
   int i;
 
   double nu = 100.;
@@ -70,16 +64,32 @@ int main(int argc, char * argv[])
   }
 */
 
-  gsl_sf_legendre_Pl_array_e(1000, 0.51324, y_array);
+/*
+  gsl_sf_conical_sph_reg_array_e(100, 1., 50., y_array);
   
-  for(i=0; i<=1000; i++) {
+  for(i=0; i<=100; i++) {
   printf("%3d   %22.17g    %22.17g\n",
 	    i,
 	    x,
 	    y_array[i]
 	    );
   }
+*/
 
+/*
+  gsl_sf_bessel_In_scaled_array_e(100, 1., y_array);
   
+  for(i=0; i<=100; i++) {
+  printf("%3d   %22.17g    %22.17g\n",
+	    i,
+	    x,
+	    y_array[i]
+	    );
+  }
+*/
+
+  bessel_In_scaled(10, 3., &y, y_array);
+  printf("%d  %22.17g     %22.17g   %22.17g\n", 10, 3., y, y_array[0]);
+
   exit(0);
 }

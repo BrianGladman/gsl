@@ -32,6 +32,7 @@ double gsl_sf_bessel_In(int n, double x);  /* overflow, underflow */
 
 int gsl_sf_bessel_I1_scaled_e(double x, double * result);        /* GSL_EUNDRFLW */
 int gsl_sf_bessel_In_scaled_e(int n, double x, double * result); /* GSL_EUNDRFLW */
+int gsl_sf_bessel_In_scaled_array_e(int n, double x, double * result_array); /* GSL_EUNDRFLW */
 
 double gsl_sf_bessel_I0_scaled(double x);        /* no error   */
 double gsl_sf_bessel_I1_scaled(double x);        /* underflow  */

@@ -130,17 +130,6 @@ GEN_RECURSE_BACKWARD_MINIMAL_SIMPLE(conical_sph_reg_xgt1)
  */
 #define REC_COEFF_A(n,p) ((2.*(n)+1.)*p[1]/(((n)+1)*((n)+1)+p[0]))
 #define REC_COEFF_B(n,p) (-1./(((n)+1)*((n)+1)+p[0]))
-GEN_RECURSE_FORWARD_SIMPLE(conical_sph_reg)
-#undef REC_COEFF_A
-#undef REC_COEFF_B
-
-/* P_{-1/2 + I lambda}^{-1/2 - n} (x)    -1 < x < 1
- *
- * p[0] = lambda^2
- * p[1] = x/Sqrt(1 - x^2)
- */
-#define REC_COEFF_A(n,p) ((2.*(n)+1.)*p[1]/(((n)+1)*((n)+1)+p[0]))
-#define REC_COEFF_B(n,p) (-1./(((n)+1)*((n)+1)+p[0]))
 GEN_RECURSE_BACKWARD_MINIMAL_SIMPLE(conical_sph_reg_xlt1)
 #undef REC_COEFF_A
 #undef REC_COEFF_B
@@ -156,19 +145,21 @@ int gsl_sf_conical_sph_reg_impl(const int lmax, const double lambda,
   if(fabs(x) < 1.) {
     double f0;
     double p[2];
+    int l_start = 20 + (int) ceil(lmax * (1. + (0.14 + 0.026*lambda)));
     p[0] = lambda*lambda;
     p[1] = x/sqrt(one_m_x*one_p_x);
     gsl_sf_conical_sph_reg_0_impl(lambda, one_m_x, one_p_x, &f0);  /* l =  0  */ 
-    recurse_backward_minimal_simple_conical_sph_reg_xlt1(lmax+30, lmax, 0, p, f0, harvest, result);
+    recurse_backward_minimal_simple_conical_sph_reg_xlt1(l_start, lmax, 0, p, f0, harvest, result);
     
   }
   else if(x > 1.) {
     double f0;
     double p[2];
+    int l_start = 10 + (int) ceil(lmax * (1. + (0.14 + 0.026*lambda)*(x-1.)));
     p[0] = lambda*lambda;
     p[1] = x/sqrt(-one_m_x*one_p_x);
     gsl_sf_conical_sph_reg_0_impl(lambda, one_m_x, one_p_x, &f0);
-    recurse_backward_minimal_simple_conical_sph_reg_xgt1(lmax+30, lmax, 0, p, f0, harvest, result);
+    recurse_backward_minimal_simple_conical_sph_reg_xgt1(l_start, lmax, 0, p, f0, harvest, result);
   }
   else {
     return GSL_EDOM;

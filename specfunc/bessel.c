@@ -8,19 +8,29 @@
 #include "gsl_sf_pow_int.h"
 #include "gsl_sf_bessel.h"
 
+#define Root_2Pi_  2.50662827463100050241576528481
+
 extern int gsl_sf_fact_impl(int, double *);
 extern int gsl_sf_lngamma_impl(double, double *);
 
 
-/*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
-
 /* sum which occurs in Taylor series for J_nu(x) * Gamma(nu+1)/((x/2)^nu)
+ * or for I_nu(x) * Gamma(nu+1)/((x/2)^nu)
+ *  sign = -1  ==> Jnu
+ *  sign = +1  ==> Inu
  * [Abramowitz+Stegun, 9.1.10]
+ * [Abramowitz+Stegun, 9.6.7]
+ *
+ * Assumes: nu >= 0 
  */
-static int Jnu_taylorsum(const double nu, const double x, const int kmax, double * result)
+static int Inu_Jnu_taylorsum(const double nu, const double x,
+                             const int sign,
+                             const int kmax,
+                             double * result
+                             )
 {
   int k;
-  double y = -0.25 * x*x;
+  double y = sign * 0.25 * x*x;
   
   double kfact  = 1.;
   double nuprod = 1.;
@@ -38,7 +48,7 @@ static int Jnu_taylorsum(const double nu, const double x, const int kmax, double
   
   *result = ans;
   
-  if(delta > 10. * GSL_MACH_EPS) {
+  if(fabs(delta) > 10. * GSL_MACH_EPS) {
     return GSL_ELOSS;
   }
   else {
@@ -47,83 +57,84 @@ static int Jnu_taylorsum(const double nu, const double x, const int kmax, double
 }
 
 
-/* Taylor expansion for J_nu(x)
- * nu >= 0.0 and x >= 0.0
+/*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
+
+/* Taylor expansion for J_nu(x) or I_nu(x)
+ *   sign = -1  ==> Jnu
+ *   sign = +1  ==> Inu
+ *
+ * error ~ o( (z/2)^(2kmax) / kmax! / (nu+1)^kmax )
+ *
+ * Checks: nu >= 0; x >= 0
  */
-int gsl_sf_bessel_Jnu_taylor_impl(const double nu, const double x, const int kmax, double * result)
+int gsl_sf_bessel_Inu_Jnu_taylor_impl(const double nu, const double x,
+                                      const int sign,
+                                      const int kmax,
+                                      double * result
+                                      )
 {
   if(nu < 0.0 || x < 0.0) {
     return GSL_EDOM;
   }
-  else {
-    if(x == 0.) {
-      if(nu == 0.) {
-	*result= 1.;
-	return GSL_SUCCESS;
-      }
-      else {
-	*result = 0.;
-	return GSL_SUCCESS;
-      }
+  
+  if(nu > 0. && x > 0.) {
+    double g;
+    int status = gsl_sf_lngamma_impl(nu+1., &g);  /* ok by construction */
+    double pre = exp(nu*log(0.5*x) - g);
+    if(pre > 0.) {
+      double ts;
+      status = Inu_Jnu_taylorsum(nu, x, sign, kmax, &ts);
+      *result = pre * ts;
+      return status;
     }
     else {
-      double ts;
-      double g;
-      int status = gsl_sf_lngamma_impl(nu+1., &g);  /* ok by construction */
-      double pre = (nu == 0. ? 1. :  pow(0.5*x, nu)) / exp(g);
-      if(pre > 0.) {
-        status = Jnu_taylorsum(nu, x, kmax, &ts);
-        *result = pre * ts;
-        return status;
-      }
-      else {
-	*result = 0.;
-	return GSL_EUNDRFLW;
-      }
+      *result = 0.;
+      return GSL_EUNDRFLW;
     }
+  }
+  
+  if(x == 0. && nu == 0.) {
+    *result= 1.;
+    return GSL_SUCCESS;
+  }
+  
+  if(x == 0.) {
+    *result = 0.;
+    return GSL_SUCCESS;
+  }
+  
+  if(nu == 0.) {
+    int status = Jnu_taylorsum(nu, x, kmax, result);
+    return status;
   }
 }
 
-int gsl_sf_bessel_Jn_taylor_impl(const int n, const double x, const int kmax, double * result)
+/* x >> nu*nu+1; error ~ O( ((nu*nu+1)/x)^3 ) */
+int gsl_sf_bessel_Jnu_asympx_impl(const double nu, const double x, double * result)
 {
-  if(n < 0 || x < 0.0) {
-    return GSL_EDOM;
-  }  
-  else {
-    if(x == 0.) {
-      if(n == 0) {
-	*result= 1.;
-	return GSL_SUCCESS;
-      }
-      else {
-	*result = 0.;
-	return GSL_SUCCESS;
-      }
-    }
-    else {
-      double ts;
-      double pre;
-      double nfact;
-      int status = gsl_sf_fact_impl(n, &nfact);
-      if(status == GSL_SUCCESS) {
-        pre = gsl_sf_pow_int(0.5*x, n) / nfact;
-	if(pre > 0.) {
-          status = Jnu_taylorsum_e(n, x, kmax, &ts);
-          *result = pre * ts;
-          return status;
-	}
-	else {
-	  *result = 0.;
-	  return GSL_EUNDRFLW;
-	}
-      }
-      else {
-        *result = 0.;
-        return GSL_EUNDRFLW;
-      }
-    }
-  }
+  double mu   = 4.*nu*nu;
+  double mum1 = mu-1.;
+  double mum9 = mu-9.;
+  double chi = x - (0.5*nu + 0.25)*M_PI;
+  double P   = 1. - mum1*mum9/(128.*x*x);
+  double Q   = mum1/(8.*x);
+  *result = 2./(Root_2Pi_* sqrt(x)) * (cos(chi)*P - sin(chi)*Q);
+  return GSL_SUCCESS;
 }
+
+/* x >> nu*nu+1; error ~ O( ((nu*nu+1)/x)^3 ) */
+int gsl_sf_bessel_Inu_scaled_asympx_impl(const double nu, const double x, double * result)
+{
+  double mu   = 4.*nu*nu;
+  double mum1 = mu-1.;
+  double mum9 = mu-9.;
+  *result = 1./(Root_2Pi_* sqrt(x)) * (1. - mum1/(8.*x) + mum1*mum9/(128.*x*x));
+  if(*result == 0.)
+    return GSL_EUNDRFLW;
+  else 
+    return GSL_SUCCESS;
+}
+
 
 /************************************************************************
  *                                                                      *
