@@ -1,3 +1,8 @@
+Mon Sep 10 14:23:52 2001  Brian Gough  <bjg@network-theory.co.uk>
+
+	* fp-netbsd.c fp-openbsd.c (gsl_ieee_set_mode): tried to correct
+ 	the logic for the denormalized exception.
+
 Tue Jul 10 13:10:12 2001  Brian Gough  <bjg@network-theory.co.uk>
 
 	* env.c (gsl_ieee_env_setup): send GSL_IEEE_MODE output to stderr

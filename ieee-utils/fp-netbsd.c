@@ -78,13 +78,19 @@ gsl_ieee_set_mode (int precision, int rounding, int exception_mask)
     mode &= ~ FP_X_INV;
 
   if (exception_mask & GSL_IEEE_MASK_DENORMALIZED)
+    {
 #ifdef FP_X_DNML
-    mode &= ~ FP_X_DNML;
-#else
-  GSL_ERROR ("NetBSD does not support the denormalized operand exception on this platform. "
-	     "Use 'mask-denormalized' to work around this.",
-	     GSL_EUNSUP);
+      mode &= ~ FP_X_DNML;
 #endif
+    }
+  else
+    {
+#ifndef FP_X_DNML
+      GSL_ERROR ("NetBSD does not support the denormalized operand exception on this platform. "
+                 "Use 'mask-denormalized' to work around this.",
+                 GSL_EUNSUP);
+#endif
+    }
 
   if (exception_mask & GSL_IEEE_MASK_DIVISION_BY_ZERO)
     mode &= ~ FP_X_DZ;
