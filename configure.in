@@ -165,6 +165,14 @@ case "$host" in
         AC_DEFINE(HAVE_TRU64_IEEE_INTERFACE)
         AC_MSG_RESULT([osf/tru64]) 
         ;;
+    *-*-aix*) 
+        AC_DEFINE(HAVE_AIX_IEEE_INTERFACE)
+        AC_MSG_RESULT([aix]) 
+        ;;
+    *-*-irix*) 
+        AC_DEFINE(HAVE_IRIX_IEEE_INTERFACE)
+        AC_MSG_RESULT([irix]) 
+        ;;
     *)
         AC_MSG_RESULT([unknown])
         ;;

@@ -2,7 +2,7 @@
 
 ** Roots of general polynomials can now be found using gsl_poly_complex_solve
 
-** IEEE modes support on Tru64
+** IEEE modes support on Tru64, AIX and IRIX
 
 ** We have added the second generation RANLUX generators RANLXS and RANLXD
 

@@ -3,6 +3,7 @@
  */
 #include <config.h>
 #include <stdlib.h>
+#include <string.h>
 #include <gsl_errno.h>
 #include "odeiv_util.h"
 #include "gsl_odeiv.h"
@@ -63,11 +64,19 @@ rkck_step(
   static const double c3 = 250.0/621.0;
   static const double c4 = 125.0/594.0;
   static const double c6 = 512.0/1771.0;
-  const double ec[] = {
-    0.0, c1 - 2825.0/27648.0, 0.0,
-    c3 - 18575.0/48384.0, c4 - 13525.0/55296.0,
-    -277.00/14336.0, c6 - 0.25
-    };
+  const double ec[] = { 0.0,
+    /* the first value is the same as c1, above */
+    37.0/378.0 - 2825.0/27648.0,
+    0.0,
+    /* the first value is the same as c3, above */
+    250.0/621.0 - 18575.0/48384.0,
+    /* the first value is the same as c4, above */
+    125.0/594.0 - 13525.0/55296.0,
+    -277.00/14336.0,
+    /* the first value is the same as c6, above */
+    512.0/1771.0 - 0.25
+  };
+
 
   int i;
   int status = 0;

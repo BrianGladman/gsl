@@ -2,6 +2,7 @@
  * RCS:     $Id$
  */
 #include <config.h>
+#include <string.h>
 #include <stdlib.h>
 #include <gsl_math.h>
 #include <gsl_errno.h>
