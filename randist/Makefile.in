@@ -61,8 +61,11 @@ host_alias = @host_alias@
 host_triplet = @host@
 CC = @CC@
 CPP = @CPP@
+LD = @LD@
+LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
 MAKEINFO = @MAKEINFO@
+NM = @NM@
 PACKAGE = @PACKAGE@
 RANLIB = @RANLIB@
 VERSION = @VERSION@
@@ -73,21 +76,21 @@ bin_PROGRAMS=gsl-exponential gsl-gamma gsl-gauss gsl-poisson \
 	gsl-lorentz gsl-laplace
 noinst_PROGRAMS= test-gauss test-shuffle
 
-lib_LIBRARIES = libgslrandist.a #libutils.a
-libgslrandist_a_SOURCES = gauss.c poisson.c gamma.c exponential.c lorentz.c \
+lib_LTLIBRARIES = libgslrandist.la #libutils.a
+libgslrandist_la_SOURCES = gauss.c poisson.c gamma.c exponential.c lorentz.c \
 	laplace.c
 
 include_HEADERS= gsl_randist.h
 
 INCLUDES= -I$(srcdir)/../random
-LDADD= ../random/libgslrandom.a ../utils/libutils.a
+LDADD= ../random/libgslrandom.la ../utils/libutils.a
 
 gsl_gauss_SOURCES= gsl-gauss.c gauss.c
 gsl_exponential_SOURCES= gsl-exponential.c exponential.c
 gsl_lorentz_SOURCES = gsl-lorentz.c lorentz.c
 gsl_laplace_SOURCES = gsl-laplace.c laplace.c
 gsl_poisson_SOURCES= gsl-poisson.c poisson.c 
-gsl_poisson_LDADD= exponential.o $(LDADD)
+gsl_poisson_LDADD= exponential.lo $(LDADD)
 gsl_gamma_SOURCES= gsl-gamma.c gamma.c
 
 test_gauss_SOURCES= test-gauss.c gauss.c
@@ -95,56 +98,59 @@ test_shuffle_SOURCES= test-shuffle.c shuffle.c
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
 CONFIG_CLEAN_FILES = 
-LIBRARIES =  $(lib_LIBRARIES)
+LTLIBRARIES =  $(lib_LTLIBRARIES)
 
 
 DEFS = @DEFS@ -I. -I$(srcdir) -I..
 CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
-libgslrandist_a_LIBADD = 
-libgslrandist_a_OBJECTS =  gauss.o poisson.o gamma.o exponential.o \
-lorentz.o laplace.o
-AR = ar
+libgslrandist_la_LDFLAGS = 
+libgslrandist_la_LIBADD = 
+libgslrandist_la_OBJECTS =  gauss.lo poisson.lo gamma.lo exponential.lo \
+lorentz.lo laplace.lo
 PROGRAMS =  $(bin_PROGRAMS) $(noinst_PROGRAMS)
 
 gsl_exponential_OBJECTS =  gsl-exponential.o exponential.o
 gsl_exponential_LDADD = $(LDADD)
-gsl_exponential_DEPENDENCIES =  ../random/libgslrandom.a \
+gsl_exponential_DEPENDENCIES =  ../random/libgslrandom.la \
 ../utils/libutils.a
 gsl_exponential_LDFLAGS = 
 gsl_gamma_OBJECTS =  gsl-gamma.o gamma.o
 gsl_gamma_LDADD = $(LDADD)
-gsl_gamma_DEPENDENCIES =  ../random/libgslrandom.a ../utils/libutils.a
+gsl_gamma_DEPENDENCIES =  ../random/libgslrandom.la ../utils/libutils.a
 gsl_gamma_LDFLAGS = 
 gsl_gauss_OBJECTS =  gsl-gauss.o gauss.o
 gsl_gauss_LDADD = $(LDADD)
-gsl_gauss_DEPENDENCIES =  ../random/libgslrandom.a ../utils/libutils.a
+gsl_gauss_DEPENDENCIES =  ../random/libgslrandom.la ../utils/libutils.a
 gsl_gauss_LDFLAGS = 
 gsl_poisson_OBJECTS =  gsl-poisson.o poisson.o
-gsl_poisson_DEPENDENCIES =  exponential.o ../random/libgslrandom.a \
+gsl_poisson_DEPENDENCIES =  exponential.lo ../random/libgslrandom.la \
 ../utils/libutils.a
 gsl_poisson_LDFLAGS = 
 gsl_lorentz_OBJECTS =  gsl-lorentz.o lorentz.o
 gsl_lorentz_LDADD = $(LDADD)
-gsl_lorentz_DEPENDENCIES =  ../random/libgslrandom.a ../utils/libutils.a
+gsl_lorentz_DEPENDENCIES =  ../random/libgslrandom.la \
+../utils/libutils.a
 gsl_lorentz_LDFLAGS = 
 gsl_laplace_OBJECTS =  gsl-laplace.o laplace.o
 gsl_laplace_LDADD = $(LDADD)
-gsl_laplace_DEPENDENCIES =  ../random/libgslrandom.a ../utils/libutils.a
+gsl_laplace_DEPENDENCIES =  ../random/libgslrandom.la \
+../utils/libutils.a
 gsl_laplace_LDFLAGS = 
 test_gauss_OBJECTS =  test-gauss.o gauss.o
 test_gauss_LDADD = $(LDADD)
-test_gauss_DEPENDENCIES =  ../random/libgslrandom.a ../utils/libutils.a
+test_gauss_DEPENDENCIES =  ../random/libgslrandom.la ../utils/libutils.a
 test_gauss_LDFLAGS = 
 test_shuffle_OBJECTS =  test-shuffle.o shuffle.o
 test_shuffle_LDADD = $(LDADD)
-test_shuffle_DEPENDENCIES =  ../random/libgslrandom.a \
+test_shuffle_DEPENDENCIES =  ../random/libgslrandom.la \
 ../utils/libutils.a
 test_shuffle_LDFLAGS = 
 CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
-LINK = $(CC) $(CFLAGS) $(LDFLAGS) -o $@
+LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
+LINK = $(LIBTOOL) --mode=link $(CC) $(CFLAGS) $(LDFLAGS) -o $@
 HEADERS =  $(include_HEADERS)
 
 DIST_COMMON =  ChangeLog Makefile.am Makefile.in
@@ -159,13 +165,13 @@ DEP_FILES =  .deps/exponential.P .deps/gamma.P .deps/gauss.P \
 .deps/gsl-laplace.P .deps/gsl-lorentz.P .deps/gsl-poisson.P \
 .deps/laplace.P .deps/lorentz.P .deps/poisson.P .deps/shuffle.P \
 .deps/test-gauss.P .deps/test-shuffle.P
-SOURCES = $(libgslrandist_a_SOURCES) $(gsl_exponential_SOURCES) $(gsl_gamma_SOURCES) $(gsl_gauss_SOURCES) $(gsl_poisson_SOURCES) $(gsl_lorentz_SOURCES) $(gsl_laplace_SOURCES) $(test_gauss_SOURCES) $(test_shuffle_SOURCES)
-OBJECTS = $(libgslrandist_a_OBJECTS) $(gsl_exponential_OBJECTS) $(gsl_gamma_OBJECTS) $(gsl_gauss_OBJECTS) $(gsl_poisson_OBJECTS) $(gsl_lorentz_OBJECTS) $(gsl_laplace_OBJECTS) $(test_gauss_OBJECTS) $(test_shuffle_OBJECTS)
+SOURCES = $(libgslrandist_la_SOURCES) $(gsl_exponential_SOURCES) $(gsl_gamma_SOURCES) $(gsl_gauss_SOURCES) $(gsl_poisson_SOURCES) $(gsl_lorentz_SOURCES) $(gsl_laplace_SOURCES) $(test_gauss_SOURCES) $(test_shuffle_SOURCES)
+OBJECTS = $(libgslrandist_la_OBJECTS) $(gsl_exponential_OBJECTS) $(gsl_gamma_OBJECTS) $(gsl_gauss_OBJECTS) $(gsl_poisson_OBJECTS) $(gsl_lorentz_OBJECTS) $(gsl_laplace_OBJECTS) $(test_gauss_OBJECTS) $(test_shuffle_OBJECTS)
 
-all: Makefile $(LIBRARIES) $(PROGRAMS) $(HEADERS)
+all: Makefile $(LTLIBRARIES) $(PROGRAMS) $(HEADERS)
 
 .SUFFIXES:
-.SUFFIXES: .S .c .o .s
+.SUFFIXES: .S .c .lo .o .s
 $(srcdir)/Makefile.in: Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4)
 	cd $(top_srcdir) && $(AUTOMAKE) --gnu randist/Makefile
 
@@ -174,36 +180,29 @@ Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status $(BUILT_SOURCES)
 	  && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
 
-mostlyclean-libLIBRARIES:
+mostlyclean-libLTLIBRARIES:
 
-clean-libLIBRARIES:
-	-test -z "$(lib_LIBRARIES)" || rm -f $(lib_LIBRARIES)
+clean-libLTLIBRARIES:
+	-test -z "$(lib_LTLIBRARIES)" || rm -f $(lib_LTLIBRARIES)
 
-distclean-libLIBRARIES:
+distclean-libLTLIBRARIES:
 
-maintainer-clean-libLIBRARIES:
+maintainer-clean-libLTLIBRARIES:
 
-install-libLIBRARIES: $(lib_LIBRARIES)
+install-libLTLIBRARIES: $(lib_LTLIBRARIES)
 	@$(NORMAL_INSTALL)
 	$(mkinstalldirs) $(DESTDIR)$(libdir)
-	list='$(lib_LIBRARIES)'; for p in $$list; do \
+	@list='$(lib_LTLIBRARIES)'; for p in $$list; do \
 	  if test -f $$p; then \
-	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(libdir)/$$p"; \
-	    $(INSTALL_DATA) $$p $(DESTDIR)$(libdir)/$$p; \
-	  else :; fi; \
-	done
-	@$(POST_INSTALL)
-	@list='$(lib_LIBRARIES)'; for p in $$list; do \
-	  if test -f $$p; then \
-	    echo " $(RANLIB) $(DESTDIR)$(libdir)/$$p"; \
-	    $(RANLIB) $(DESTDIR)$(libdir)/$$p; \
+	    echo "$(LIBTOOL)  --mode=install $(INSTALL_DATA) $$p $(DESTDIR)$(libdir)/$$p"; \
+	    $(LIBTOOL)  --mode=install $(INSTALL_DATA) $$p $(DESTDIR)$(libdir)/$$p; \
 	  else :; fi; \
 	done
 
-uninstall-libLIBRARIES:
+uninstall-libLTLIBRARIES:
 	@$(NORMAL_UNINSTALL)
-	list='$(lib_LIBRARIES)'; for p in $$list; do \
-	  rm -f $(DESTDIR)$(libdir)/$$p; \
+	list='$(lib_LTLIBRARIES)'; for p in $$list; do \
+	  $(LIBTOOL)  --mode=uninstall rm -f $(DESTDIR)$(libdir)/$$p; \
 	done
 
 .s.o:
@@ -222,10 +221,24 @@ distclean-compile:
 
 maintainer-clean-compile:
 
-libgslrandist.a: $(libgslrandist_a_OBJECTS) $(libgslrandist_a_DEPENDENCIES)
-	-rm -f libgslrandist.a
-	$(AR) cru libgslrandist.a $(libgslrandist_a_OBJECTS) $(libgslrandist_a_LIBADD)
-	$(RANLIB) libgslrandist.a
+.s.lo:
+	$(LIBTOOL) --mode=compile $(COMPILE) -c $<
+
+.S.lo:
+	$(LIBTOOL) --mode=compile $(COMPILE) -c $<
+
+mostlyclean-libtool:
+	-rm -f *.lo
+
+clean-libtool:
+	-rm -rf .libs _libs
+
+distclean-libtool:
+
+maintainer-clean-libtool:
+
+libgslrandist.la: $(libgslrandist_la_OBJECTS) $(libgslrandist_la_DEPENDENCIES)
+	$(LINK) -rpath $(libdir) $(libgslrandist_la_LDFLAGS) $(libgslrandist_la_OBJECTS) $(libgslrandist_la_LIBADD) $(LIBS)
 
 mostlyclean-binPROGRAMS:
 
@@ -241,8 +254,8 @@ install-binPROGRAMS: $(bin_PROGRAMS)
 	$(mkinstalldirs) $(DESTDIR)$(bindir)
 	@list='$(bin_PROGRAMS)'; for p in $$list; do \
 	  if test -f $$p; then \
-	    echo "  $(INSTALL_PROGRAM) $$p $(DESTDIR)$(bindir)/`echo $$p|sed '$(transform)'`"; \
-	     $(INSTALL_PROGRAM) $$p $(DESTDIR)$(bindir)/`echo $$p|sed '$(transform)'`; \
+	    echo " $(LIBTOOL)  --mode=install $(INSTALL_PROGRAM) $$p $(DESTDIR)$(bindir)/`echo $$p|sed '$(transform)'`"; \
+	    $(LIBTOOL)  --mode=install $(INSTALL_PROGRAM) $$p $(DESTDIR)$(bindir)/`echo $$p|sed '$(transform)'`; \
 	  else :; fi; \
 	done
 
@@ -378,7 +391,7 @@ dvi:
 check: all
 	$(MAKE)
 installcheck:
-install-exec: install-libLIBRARIES install-binPROGRAMS
+install-exec: install-libLTLIBRARIES install-binPROGRAMS
 	@$(NORMAL_INSTALL)
 
 install-data: install-includeHEADERS
@@ -387,7 +400,7 @@ install-data: install-includeHEADERS
 install: install-exec install-data all
 	@:
 
-uninstall: uninstall-libLIBRARIES uninstall-binPROGRAMS uninstall-includeHEADERS
+uninstall: uninstall-libLTLIBRARIES uninstall-binPROGRAMS uninstall-includeHEADERS
 
 install-strip:
 	$(MAKE) INSTALL_PROGRAM='$(INSTALL_PROGRAM) -s' INSTALL_SCRIPT='$(INSTALL_PROGRAM)' install
@@ -410,41 +423,46 @@ distclean-generic:
 maintainer-clean-generic:
 	-test -z "$(MAINTAINERCLEANFILES)" || rm -f $(MAINTAINERCLEANFILES)
 	-test -z "$(BUILT_SOURCES)" || rm -f $(BUILT_SOURCES)
-mostlyclean:  mostlyclean-libLIBRARIES mostlyclean-compile \
-		mostlyclean-binPROGRAMS mostlyclean-noinstPROGRAMS \
-		mostlyclean-tags mostlyclean-depend mostlyclean-generic
+mostlyclean:  mostlyclean-libLTLIBRARIES mostlyclean-compile \
+		mostlyclean-libtool mostlyclean-binPROGRAMS \
+		mostlyclean-noinstPROGRAMS mostlyclean-tags \
+		mostlyclean-depend mostlyclean-generic
 
-clean:  clean-libLIBRARIES clean-compile clean-binPROGRAMS \
-		clean-noinstPROGRAMS clean-tags clean-depend \
-		clean-generic mostlyclean
+clean:  clean-libLTLIBRARIES clean-compile clean-libtool \
+		clean-binPROGRAMS clean-noinstPROGRAMS clean-tags \
+		clean-depend clean-generic mostlyclean
 
-distclean:  distclean-libLIBRARIES distclean-compile \
+distclean:  distclean-libLTLIBRARIES distclean-compile distclean-libtool \
 		distclean-binPROGRAMS distclean-noinstPROGRAMS \
 		distclean-tags distclean-depend distclean-generic clean
 	-rm -f config.status
+	-rm -f libtool
 
-maintainer-clean:  maintainer-clean-libLIBRARIES \
-		maintainer-clean-compile maintainer-clean-binPROGRAMS \
+maintainer-clean:  maintainer-clean-libLTLIBRARIES \
+		maintainer-clean-compile maintainer-clean-libtool \
+		maintainer-clean-binPROGRAMS \
 		maintainer-clean-noinstPROGRAMS maintainer-clean-tags \
 		maintainer-clean-depend maintainer-clean-generic \
 		distclean
 	@echo "This command is intended for maintainers to use;"
 	@echo "it deletes files that may require special tools to rebuild."
 
-.PHONY: mostlyclean-libLIBRARIES distclean-libLIBRARIES \
-clean-libLIBRARIES maintainer-clean-libLIBRARIES uninstall-libLIBRARIES \
-install-libLIBRARIES mostlyclean-compile distclean-compile \
-clean-compile maintainer-clean-compile mostlyclean-binPROGRAMS \
-distclean-binPROGRAMS clean-binPROGRAMS maintainer-clean-binPROGRAMS \
-uninstall-binPROGRAMS install-binPROGRAMS mostlyclean-noinstPROGRAMS \
-distclean-noinstPROGRAMS clean-noinstPROGRAMS \
-maintainer-clean-noinstPROGRAMS uninstall-includeHEADERS \
-install-includeHEADERS tags mostlyclean-tags distclean-tags clean-tags \
-maintainer-clean-tags distdir mostlyclean-depend distclean-depend \
-clean-depend maintainer-clean-depend info dvi installcheck install-exec \
-install-data install uninstall all installdirs mostlyclean-generic \
-distclean-generic clean-generic maintainer-clean-generic clean \
-mostlyclean distclean maintainer-clean
+.PHONY: mostlyclean-libLTLIBRARIES distclean-libLTLIBRARIES \
+clean-libLTLIBRARIES maintainer-clean-libLTLIBRARIES \
+uninstall-libLTLIBRARIES install-libLTLIBRARIES mostlyclean-compile \
+distclean-compile clean-compile maintainer-clean-compile \
+mostlyclean-libtool distclean-libtool clean-libtool \
+maintainer-clean-libtool mostlyclean-binPROGRAMS distclean-binPROGRAMS \
+clean-binPROGRAMS maintainer-clean-binPROGRAMS uninstall-binPROGRAMS \
+install-binPROGRAMS mostlyclean-noinstPROGRAMS distclean-noinstPROGRAMS \
+clean-noinstPROGRAMS maintainer-clean-noinstPROGRAMS \
+uninstall-includeHEADERS install-includeHEADERS tags mostlyclean-tags \
+distclean-tags clean-tags maintainer-clean-tags distdir \
+mostlyclean-depend distclean-depend clean-depend \
+maintainer-clean-depend info dvi installcheck install-exec install-data \
+install uninstall all installdirs mostlyclean-generic distclean-generic \
+clean-generic maintainer-clean-generic clean mostlyclean distclean \
+maintainer-clean
 
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.

@@ -37,11 +37,14 @@
 #define GSL_ROOT4_MACH_EPS      0.0003162
 #define GSL_ROOT5_MACH_EPS      0.00158489
 #define GSL_ROOT6_MACH_EPS      0.00464159
+#define GSL_LOG_MACH_EPS      	-32.2362
 
 #define GSL_SQRT_DBL_MIN        2.e-154
 #define GSL_SQRT_DBL_MAX        5.e+153
 #define GSL_ROOT3_DBL_MIN       3.42e-103
 #define GSL_ROOT3_DBL_MAX       2.92e+102
+#define GSL_ROOT4_DBL_MIN       1.414213e-77
+#define GSL_ROOT4_DBL_MAX       7.071067e+76
 #define GSL_LOG_DBL_MIN       	(DBL_MIN_10_EXP * M_LN10)
 #define GSL_LOG_DBL_MAX       	(DBL_MAX_10_EXP * M_LN10)
 

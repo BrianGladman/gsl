@@ -61,15 +61,18 @@ host_alias = @host_alias@
 host_triplet = @host@
 CC = @CC@
 CPP = @CPP@
+LD = @LD@
+LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
 MAKEINFO = @MAKEINFO@
+NM = @NM@
 PACKAGE = @PACKAGE@
 RANLIB = @RANLIB@
 VERSION = @VERSION@
 full_top_builddir = @full_top_builddir@
 full_top_srcdir = @full_top_srcdir@
 
-lib_LIBRARIES = libgslvector.a 
+lib_LTLIBRARIES = libgslvector.la 
 
 check_PROGRAMS = test test_float test_int test_complex test_trap 
 
@@ -80,14 +83,14 @@ INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../err -I$(srcdir)/../utils
 
 TESTS = test test_float test_int test_complex test_trap
 
-test_LDADD = libgslvector.a ../err/libgslerr.a ../err/libgsltest.a ../utils/libutils.a
-test_float_LDADD = libgslvector.a ../err/libgslerr.a ../err/libgsltest.a ../utils/libutils.a
-test_int_LDADD = libgslvector.a ../err/libgslerr.a ../err/libgsltest.a ../utils/libutils.a
-test_complex_LDADD = libgslvector.a ../err/libgslerr.a ../err/libgsltest.a ../utils/libutils.a
-test_trap_LDADD = libgslvector.a ../err/libgslerr.a ../err/libgsltest.a ../utils/libutils.a
+test_LDADD = libgslvector.la ../err/libgslerr.la ../err/libgsltest.la ../utils/libutils.a
+test_float_LDADD = libgslvector.la ../err/libgslerr.la ../err/libgsltest.la ../utils/libutils.a
+test_int_LDADD = libgslvector.la ../err/libgslerr.la ../err/libgsltest.la ../utils/libutils.a
+test_complex_LDADD = libgslvector.la ../err/libgslerr.la ../err/libgsltest.la ../utils/libutils.a
+test_trap_LDADD = libgslvector.la ../err/libgslerr.la ../err/libgsltest.la ../utils/libutils.a
 
-test_DEPENDENCIES = libgslvector.a
-test_trap_DEPENDENCIES = libgslvector.a
+test_DEPENDENCIES = libgslvector.la
+test_trap_DEPENDENCIES = libgslvector.la
 
 test_SOURCES = test.c
 test_float_SOURCES = test_float.c
@@ -99,7 +102,7 @@ CLEANFILES = test.txt test.dat
 
 noinst_HEADERS = vector_source.c init_source.c file_source.c fprintf_block.c
 
-libgslvector_a_SOURCES = \
+libgslvector_la_SOURCES = \
 source.h \
 init.c \
 vector.c \
@@ -120,38 +123,39 @@ gsl_vector_complex.h
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
 CONFIG_CLEAN_FILES = 
-LIBRARIES =  $(lib_LIBRARIES)
+LTLIBRARIES =  $(lib_LTLIBRARIES)
 
 
 DEFS = @DEFS@ -I. -I$(srcdir) -I..
 CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
-libgslvector_a_LIBADD = 
-libgslvector_a_OBJECTS =  init.o vector.o file.o init_int.o vector_int.o \
-file_int.o init_float.o vector_float.o file_float.o init_complex.o \
-vector_complex.o file_complex.o
-AR = ar
+libgslvector_la_LDFLAGS = 
+libgslvector_la_LIBADD = 
+libgslvector_la_OBJECTS =  init.lo vector.lo file.lo init_int.lo \
+vector_int.lo file_int.lo init_float.lo vector_float.lo file_float.lo \
+init_complex.lo vector_complex.lo file_complex.lo
 test_OBJECTS =  test.o
 test_LDFLAGS = 
 test_float_OBJECTS =  test_float.o
-test_float_DEPENDENCIES =  libgslvector.a ../err/libgslerr.a \
-../err/libgsltest.a ../utils/libutils.a
+test_float_DEPENDENCIES =  libgslvector.la ../err/libgslerr.la \
+../err/libgsltest.la ../utils/libutils.a
 test_float_LDFLAGS = 
 test_int_OBJECTS =  test_complex.o
-test_int_DEPENDENCIES =  libgslvector.a ../err/libgslerr.a \
-../err/libgsltest.a ../utils/libutils.a
+test_int_DEPENDENCIES =  libgslvector.la ../err/libgslerr.la \
+../err/libgsltest.la ../utils/libutils.a
 test_int_LDFLAGS = 
 test_complex_SOURCES = test_complex.c
 test_complex_OBJECTS =  test_complex.o
-test_complex_DEPENDENCIES =  libgslvector.a ../err/libgslerr.a \
-../err/libgsltest.a ../utils/libutils.a
+test_complex_DEPENDENCIES =  libgslvector.la ../err/libgslerr.la \
+../err/libgsltest.la ../utils/libutils.a
 test_complex_LDFLAGS = 
 test_trap_OBJECTS =  test_trap.o
 test_trap_LDFLAGS = 
 CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
-LINK = $(CC) $(CFLAGS) $(LDFLAGS) -o $@
+LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
+LINK = $(LIBTOOL) --mode=link $(CC) $(CFLAGS) $(LDFLAGS) -o $@
 HEADERS =  $(include_HEADERS) $(noinst_HEADERS)
 
 DIST_COMMON =  ChangeLog Makefile.am Makefile.in
@@ -166,13 +170,13 @@ DEP_FILES =  .deps/file.P .deps/file_complex.P .deps/file_float.P \
 .deps/init_int.P .deps/test.P .deps/test_complex.P .deps/test_float.P \
 .deps/test_trap.P .deps/vector.P .deps/vector_complex.P \
 .deps/vector_float.P .deps/vector_int.P
-SOURCES = $(libgslvector_a_SOURCES) $(test_SOURCES) $(test_float_SOURCES) $(test_int_SOURCES) test_complex.c $(test_trap_SOURCES)
-OBJECTS = $(libgslvector_a_OBJECTS) $(test_OBJECTS) $(test_float_OBJECTS) $(test_int_OBJECTS) test_complex.o $(test_trap_OBJECTS)
+SOURCES = $(libgslvector_la_SOURCES) $(test_SOURCES) $(test_float_SOURCES) $(test_int_SOURCES) test_complex.c $(test_trap_SOURCES)
+OBJECTS = $(libgslvector_la_OBJECTS) $(test_OBJECTS) $(test_float_OBJECTS) $(test_int_OBJECTS) test_complex.o $(test_trap_OBJECTS)
 
-all: Makefile $(LIBRARIES) $(HEADERS)
+all: Makefile $(LTLIBRARIES) $(HEADERS)
 
 .SUFFIXES:
-.SUFFIXES: .S .c .o .s
+.SUFFIXES: .S .c .lo .o .s
 $(srcdir)/Makefile.in: Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4)
 	cd $(top_srcdir) && $(AUTOMAKE) --gnu vector/Makefile
 
@@ -181,36 +185,29 @@ Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status $(BUILT_SOURCES)
 	  && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
 
-mostlyclean-libLIBRARIES:
+mostlyclean-libLTLIBRARIES:
 
-clean-libLIBRARIES:
-	-test -z "$(lib_LIBRARIES)" || rm -f $(lib_LIBRARIES)
+clean-libLTLIBRARIES:
+	-test -z "$(lib_LTLIBRARIES)" || rm -f $(lib_LTLIBRARIES)
 
-distclean-libLIBRARIES:
+distclean-libLTLIBRARIES:
 
-maintainer-clean-libLIBRARIES:
+maintainer-clean-libLTLIBRARIES:
 
-install-libLIBRARIES: $(lib_LIBRARIES)
+install-libLTLIBRARIES: $(lib_LTLIBRARIES)
 	@$(NORMAL_INSTALL)
 	$(mkinstalldirs) $(DESTDIR)$(libdir)
-	list='$(lib_LIBRARIES)'; for p in $$list; do \
+	@list='$(lib_LTLIBRARIES)'; for p in $$list; do \
 	  if test -f $$p; then \
-	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(libdir)/$$p"; \
-	    $(INSTALL_DATA) $$p $(DESTDIR)$(libdir)/$$p; \
-	  else :; fi; \
-	done
-	@$(POST_INSTALL)
-	@list='$(lib_LIBRARIES)'; for p in $$list; do \
-	  if test -f $$p; then \
-	    echo " $(RANLIB) $(DESTDIR)$(libdir)/$$p"; \
-	    $(RANLIB) $(DESTDIR)$(libdir)/$$p; \
+	    echo "$(LIBTOOL)  --mode=install $(INSTALL_DATA) $$p $(DESTDIR)$(libdir)/$$p"; \
+	    $(LIBTOOL)  --mode=install $(INSTALL_DATA) $$p $(DESTDIR)$(libdir)/$$p; \
 	  else :; fi; \
 	done
 
-uninstall-libLIBRARIES:
+uninstall-libLTLIBRARIES:
 	@$(NORMAL_UNINSTALL)
-	list='$(lib_LIBRARIES)'; for p in $$list; do \
-	  rm -f $(DESTDIR)$(libdir)/$$p; \
+	list='$(lib_LTLIBRARIES)'; for p in $$list; do \
+	  $(LIBTOOL)  --mode=uninstall rm -f $(DESTDIR)$(libdir)/$$p; \
 	done
 
 .s.o:
@@ -229,10 +226,24 @@ distclean-compile:
 
 maintainer-clean-compile:
 
-libgslvector.a: $(libgslvector_a_OBJECTS) $(libgslvector_a_DEPENDENCIES)
-	-rm -f libgslvector.a
-	$(AR) cru libgslvector.a $(libgslvector_a_OBJECTS) $(libgslvector_a_LIBADD)
-	$(RANLIB) libgslvector.a
+.s.lo:
+	$(LIBTOOL) --mode=compile $(COMPILE) -c $<
+
+.S.lo:
+	$(LIBTOOL) --mode=compile $(COMPILE) -c $<
+
+mostlyclean-libtool:
+	-rm -f *.lo
+
+clean-libtool:
+	-rm -rf .libs _libs
+
+distclean-libtool:
+
+maintainer-clean-libtool:
+
+libgslvector.la: $(libgslvector_la_OBJECTS) $(libgslvector_la_DEPENDENCIES)
+	$(LINK) -rpath $(libdir) $(libgslvector_la_LDFLAGS) $(libgslvector_la_OBJECTS) $(libgslvector_la_LIBADD) $(LIBS)
 
 mostlyclean-checkPROGRAMS:
 
@@ -373,7 +384,7 @@ dvi:
 check: all $(check_PROGRAMS)
 	$(MAKE) check-TESTS
 installcheck:
-install-exec: install-libLIBRARIES
+install-exec: install-libLTLIBRARIES
 	@$(NORMAL_INSTALL)
 
 install-data: install-includeHEADERS
@@ -382,7 +393,7 @@ install-data: install-includeHEADERS
 install: install-exec install-data all
 	@:
 
-uninstall: uninstall-libLIBRARIES uninstall-includeHEADERS
+uninstall: uninstall-libLTLIBRARIES uninstall-includeHEADERS
 
 install-strip:
 	$(MAKE) INSTALL_PROGRAM='$(INSTALL_PROGRAM) -s' INSTALL_SCRIPT='$(INSTALL_PROGRAM)' install
@@ -404,29 +415,34 @@ distclean-generic:
 maintainer-clean-generic:
 	-test -z "$(MAINTAINERCLEANFILES)" || rm -f $(MAINTAINERCLEANFILES)
 	-test -z "$(BUILT_SOURCES)" || rm -f $(BUILT_SOURCES)
-mostlyclean:  mostlyclean-libLIBRARIES mostlyclean-compile \
-		mostlyclean-checkPROGRAMS mostlyclean-tags \
-		mostlyclean-depend mostlyclean-generic
+mostlyclean:  mostlyclean-libLTLIBRARIES mostlyclean-compile \
+		mostlyclean-libtool mostlyclean-checkPROGRAMS \
+		mostlyclean-tags mostlyclean-depend mostlyclean-generic
 
-clean:  clean-libLIBRARIES clean-compile clean-checkPROGRAMS clean-tags \
-		clean-depend clean-generic mostlyclean
+clean:  clean-libLTLIBRARIES clean-compile clean-libtool \
+		clean-checkPROGRAMS clean-tags clean-depend \
+		clean-generic mostlyclean
 
-distclean:  distclean-libLIBRARIES distclean-compile \
+distclean:  distclean-libLTLIBRARIES distclean-compile distclean-libtool \
 		distclean-checkPROGRAMS distclean-tags distclean-depend \
 		distclean-generic clean
 	-rm -f config.status
+	-rm -f libtool
 
-maintainer-clean:  maintainer-clean-libLIBRARIES \
-		maintainer-clean-compile maintainer-clean-checkPROGRAMS \
-		maintainer-clean-tags maintainer-clean-depend \
-		maintainer-clean-generic distclean
+maintainer-clean:  maintainer-clean-libLTLIBRARIES \
+		maintainer-clean-compile maintainer-clean-libtool \
+		maintainer-clean-checkPROGRAMS maintainer-clean-tags \
+		maintainer-clean-depend maintainer-clean-generic \
+		distclean
 	@echo "This command is intended for maintainers to use;"
 	@echo "it deletes files that may require special tools to rebuild."
 
-.PHONY: mostlyclean-libLIBRARIES distclean-libLIBRARIES \
-clean-libLIBRARIES maintainer-clean-libLIBRARIES uninstall-libLIBRARIES \
-install-libLIBRARIES mostlyclean-compile distclean-compile \
-clean-compile maintainer-clean-compile mostlyclean-checkPROGRAMS \
+.PHONY: mostlyclean-libLTLIBRARIES distclean-libLTLIBRARIES \
+clean-libLTLIBRARIES maintainer-clean-libLTLIBRARIES \
+uninstall-libLTLIBRARIES install-libLTLIBRARIES mostlyclean-compile \
+distclean-compile clean-compile maintainer-clean-compile \
+mostlyclean-libtool distclean-libtool clean-libtool \
+maintainer-clean-libtool mostlyclean-checkPROGRAMS \
 distclean-checkPROGRAMS clean-checkPROGRAMS \
 maintainer-clean-checkPROGRAMS uninstall-includeHEADERS \
 install-includeHEADERS tags mostlyclean-tags distclean-tags clean-tags \

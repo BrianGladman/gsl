@@ -61,15 +61,18 @@ host_alias = @host_alias@
 host_triplet = @host@
 CC = @CC@
 CPP = @CPP@
+LD = @LD@
+LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
 MAKEINFO = @MAKEINFO@
+NM = @NM@
 PACKAGE = @PACKAGE@
 RANLIB = @RANLIB@
 VERSION = @VERSION@
 full_top_builddir = @full_top_builddir@
 full_top_srcdir = @full_top_srcdir@
 
-lib_LIBRARIES = libgslstatistics.a
+lib_LTLIBRARIES = libgslstatistics.la
 include_HEADERS = gsl_statistics.h gsl_statistics_int.h
 
 INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../err
@@ -91,14 +94,14 @@ check_PROGRAMS = test test_int
 TESTS = test test_int
 
 test_SOURCES = test.c test.h
-test_LDADD = libgslstatistics.a ../err/libgsltest.a
-test_DEPENDENCIES = libgslstatistics.a
+test_LDADD = libgslstatistics.la ../err/libgsltest.la
+test_DEPENDENCIES = libgslstatistics.la
 
 test_int_SOURCES = test_int.c test.h
-test_int_LDADD = libgslstatistics.a ../err/libgsltest.a
-test_int_DEPENDENCIES = libgslstatistics.a
+test_int_LDADD = libgslstatistics.la ../err/libgsltest.la
+test_int_DEPENDENCIES = libgslstatistics.la
 
-libgslstatistics_a_SOURCES = \
+libgslstatistics_la_SOURCES = \
 mean.c \
 variance.c  \
 absdev.c \
@@ -124,27 +127,28 @@ percentiles_int.c
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
 CONFIG_CLEAN_FILES = 
-LIBRARIES =  $(lib_LIBRARIES)
+LTLIBRARIES =  $(lib_LTLIBRARIES)
 
 
 DEFS = @DEFS@ -I. -I$(srcdir) -I..
 CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
-libgslstatistics_a_LIBADD = 
-libgslstatistics_a_OBJECTS =  mean.o variance.o absdev.o skew.o \
-kurtosis.o p_variance.o minmax.o ttest.o sort.o median.o percentiles.o \
-mean_int.o variance_int.o absdev_int.o skew_int.o kurtosis_int.o \
-p_variance_int.o minmax_int.o ttest_int.o sort_int.o median_int.o \
-percentiles_int.o
-AR = ar
+libgslstatistics_la_LDFLAGS = 
+libgslstatistics_la_LIBADD = 
+libgslstatistics_la_OBJECTS =  mean.lo variance.lo absdev.lo skew.lo \
+kurtosis.lo p_variance.lo minmax.lo ttest.lo sort.lo median.lo \
+percentiles.lo mean_int.lo variance_int.lo absdev_int.lo skew_int.lo \
+kurtosis_int.lo p_variance_int.lo minmax_int.lo ttest_int.lo \
+sort_int.lo median_int.lo percentiles_int.lo
 test_OBJECTS =  test.o
 test_LDFLAGS = 
 test_int_OBJECTS =  test_int.o
 test_int_LDFLAGS = 
 CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
-LINK = $(CC) $(CFLAGS) $(LDFLAGS) -o $@
+LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
+LINK = $(LIBTOOL) --mode=link $(CC) $(CFLAGS) $(LDFLAGS) -o $@
 HEADERS =  $(include_HEADERS) $(noinst_HEADERS)
 
 DIST_COMMON =  ChangeLog Makefile.am Makefile.in
@@ -161,13 +165,13 @@ DEP_FILES =  .deps/absdev.P .deps/absdev_int.P .deps/kurtosis.P \
 .deps/skew.P .deps/skew_int.P .deps/sort.P .deps/sort_int.P \
 .deps/test.P .deps/test_int.P .deps/ttest.P .deps/ttest_int.P \
 .deps/variance.P .deps/variance_int.P
-SOURCES = $(libgslstatistics_a_SOURCES) $(test_SOURCES) $(test_int_SOURCES)
-OBJECTS = $(libgslstatistics_a_OBJECTS) $(test_OBJECTS) $(test_int_OBJECTS)
+SOURCES = $(libgslstatistics_la_SOURCES) $(test_SOURCES) $(test_int_SOURCES)
+OBJECTS = $(libgslstatistics_la_OBJECTS) $(test_OBJECTS) $(test_int_OBJECTS)
 
-all: Makefile $(LIBRARIES) $(HEADERS)
+all: Makefile $(LTLIBRARIES) $(HEADERS)
 
 .SUFFIXES:
-.SUFFIXES: .S .c .o .s
+.SUFFIXES: .S .c .lo .o .s
 $(srcdir)/Makefile.in: Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4)
 	cd $(top_srcdir) && $(AUTOMAKE) --gnu statistics/Makefile
 
@@ -176,36 +180,29 @@ Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status $(BUILT_SOURCES)
 	  && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
 
-mostlyclean-libLIBRARIES:
+mostlyclean-libLTLIBRARIES:
 
-clean-libLIBRARIES:
-	-test -z "$(lib_LIBRARIES)" || rm -f $(lib_LIBRARIES)
+clean-libLTLIBRARIES:
+	-test -z "$(lib_LTLIBRARIES)" || rm -f $(lib_LTLIBRARIES)
 
-distclean-libLIBRARIES:
+distclean-libLTLIBRARIES:
 
-maintainer-clean-libLIBRARIES:
+maintainer-clean-libLTLIBRARIES:
 
-install-libLIBRARIES: $(lib_LIBRARIES)
+install-libLTLIBRARIES: $(lib_LTLIBRARIES)
 	@$(NORMAL_INSTALL)
 	$(mkinstalldirs) $(DESTDIR)$(libdir)
-	list='$(lib_LIBRARIES)'; for p in $$list; do \
+	@list='$(lib_LTLIBRARIES)'; for p in $$list; do \
 	  if test -f $$p; then \
-	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(libdir)/$$p"; \
-	    $(INSTALL_DATA) $$p $(DESTDIR)$(libdir)/$$p; \
-	  else :; fi; \
-	done
-	@$(POST_INSTALL)
-	@list='$(lib_LIBRARIES)'; for p in $$list; do \
-	  if test -f $$p; then \
-	    echo " $(RANLIB) $(DESTDIR)$(libdir)/$$p"; \
-	    $(RANLIB) $(DESTDIR)$(libdir)/$$p; \
+	    echo "$(LIBTOOL)  --mode=install $(INSTALL_DATA) $$p $(DESTDIR)$(libdir)/$$p"; \
+	    $(LIBTOOL)  --mode=install $(INSTALL_DATA) $$p $(DESTDIR)$(libdir)/$$p; \
 	  else :; fi; \
 	done
 
-uninstall-libLIBRARIES:
+uninstall-libLTLIBRARIES:
 	@$(NORMAL_UNINSTALL)
-	list='$(lib_LIBRARIES)'; for p in $$list; do \
-	  rm -f $(DESTDIR)$(libdir)/$$p; \
+	list='$(lib_LTLIBRARIES)'; for p in $$list; do \
+	  $(LIBTOOL)  --mode=uninstall rm -f $(DESTDIR)$(libdir)/$$p; \
 	done
 
 .s.o:
@@ -224,10 +221,24 @@ distclean-compile:
 
 maintainer-clean-compile:
 
-libgslstatistics.a: $(libgslstatistics_a_OBJECTS) $(libgslstatistics_a_DEPENDENCIES)
-	-rm -f libgslstatistics.a
-	$(AR) cru libgslstatistics.a $(libgslstatistics_a_OBJECTS) $(libgslstatistics_a_LIBADD)
-	$(RANLIB) libgslstatistics.a
+.s.lo:
+	$(LIBTOOL) --mode=compile $(COMPILE) -c $<
+
+.S.lo:
+	$(LIBTOOL) --mode=compile $(COMPILE) -c $<
+
+mostlyclean-libtool:
+	-rm -f *.lo
+
+clean-libtool:
+	-rm -rf .libs _libs
+
+distclean-libtool:
+
+maintainer-clean-libtool:
+
+libgslstatistics.la: $(libgslstatistics_la_OBJECTS) $(libgslstatistics_la_DEPENDENCIES)
+	$(LINK) -rpath $(libdir) $(libgslstatistics_la_LDFLAGS) $(libgslstatistics_la_OBJECTS) $(libgslstatistics_la_LIBADD) $(LIBS)
 
 mostlyclean-checkPROGRAMS:
 
@@ -356,7 +367,7 @@ dvi:
 check: all $(check_PROGRAMS)
 	$(MAKE) check-TESTS
 installcheck:
-install-exec: install-libLIBRARIES
+install-exec: install-libLTLIBRARIES
 	@$(NORMAL_INSTALL)
 
 install-data: install-includeHEADERS
@@ -365,7 +376,7 @@ install-data: install-includeHEADERS
 install: install-exec install-data all
 	@:
 
-uninstall: uninstall-libLIBRARIES uninstall-includeHEADERS
+uninstall: uninstall-libLTLIBRARIES uninstall-includeHEADERS
 
 install-strip:
 	$(MAKE) INSTALL_PROGRAM='$(INSTALL_PROGRAM) -s' INSTALL_SCRIPT='$(INSTALL_PROGRAM)' install
@@ -387,29 +398,34 @@ distclean-generic:
 maintainer-clean-generic:
 	-test -z "$(MAINTAINERCLEANFILES)" || rm -f $(MAINTAINERCLEANFILES)
 	-test -z "$(BUILT_SOURCES)" || rm -f $(BUILT_SOURCES)
-mostlyclean:  mostlyclean-libLIBRARIES mostlyclean-compile \
-		mostlyclean-checkPROGRAMS mostlyclean-tags \
-		mostlyclean-depend mostlyclean-generic
+mostlyclean:  mostlyclean-libLTLIBRARIES mostlyclean-compile \
+		mostlyclean-libtool mostlyclean-checkPROGRAMS \
+		mostlyclean-tags mostlyclean-depend mostlyclean-generic
 
-clean:  clean-libLIBRARIES clean-compile clean-checkPROGRAMS clean-tags \
-		clean-depend clean-generic mostlyclean
+clean:  clean-libLTLIBRARIES clean-compile clean-libtool \
+		clean-checkPROGRAMS clean-tags clean-depend \
+		clean-generic mostlyclean
 
-distclean:  distclean-libLIBRARIES distclean-compile \
+distclean:  distclean-libLTLIBRARIES distclean-compile distclean-libtool \
 		distclean-checkPROGRAMS distclean-tags distclean-depend \
 		distclean-generic clean
 	-rm -f config.status
+	-rm -f libtool
 
-maintainer-clean:  maintainer-clean-libLIBRARIES \
-		maintainer-clean-compile maintainer-clean-checkPROGRAMS \
-		maintainer-clean-tags maintainer-clean-depend \
-		maintainer-clean-generic distclean
+maintainer-clean:  maintainer-clean-libLTLIBRARIES \
+		maintainer-clean-compile maintainer-clean-libtool \
+		maintainer-clean-checkPROGRAMS maintainer-clean-tags \
+		maintainer-clean-depend maintainer-clean-generic \
+		distclean
 	@echo "This command is intended for maintainers to use;"
 	@echo "it deletes files that may require special tools to rebuild."
 
-.PHONY: mostlyclean-libLIBRARIES distclean-libLIBRARIES \
-clean-libLIBRARIES maintainer-clean-libLIBRARIES uninstall-libLIBRARIES \
-install-libLIBRARIES mostlyclean-compile distclean-compile \
-clean-compile maintainer-clean-compile mostlyclean-checkPROGRAMS \
+.PHONY: mostlyclean-libLTLIBRARIES distclean-libLTLIBRARIES \
+clean-libLTLIBRARIES maintainer-clean-libLTLIBRARIES \
+uninstall-libLTLIBRARIES install-libLTLIBRARIES mostlyclean-compile \
+distclean-compile clean-compile maintainer-clean-compile \
+mostlyclean-libtool distclean-libtool clean-libtool \
+maintainer-clean-libtool mostlyclean-checkPROGRAMS \
 distclean-checkPROGRAMS clean-checkPROGRAMS \
 maintainer-clean-checkPROGRAMS uninstall-includeHEADERS \
 install-includeHEADERS tags mostlyclean-tags distclean-tags clean-tags \
