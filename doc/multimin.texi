@@ -1,19 +1,18 @@
 @cindex minimization, multidimensional
 
-This chapter describes functions for finding minima of arbitrary
+This chapter describes routines for finding minima of arbitrary
 multidimensional functions.  The library provides low level components
-for a variety of iterative minimizers and convergence tests.  These
-can be combined by the user to achieve the desired solution, while
-providing full access to the intermediate steps of the algorithms.
-Each class of methods uses the same framework, so that you can switch
-between minimizers at runtime without needing to recompile your
-program.  Each instance of a minimizer keeps track of its own state,
-allowing the minimizers to be used in multi-threaded programs.
+for a variety of iterative minimizers and convergence tests.  These can
+be combined by the user to achieve the desired solution, while providing
+full access to the intermediate steps of the algorithms.  Each class of
+methods uses the same framework, so that you can switch between
+minimizers at runtime without needing to recompile your program.  Each
+instance of a minimizer keeps track of its own state, allowing the
+minimizers to be used in multi-threaded programs. The minimization
+algorithms can be used to maximize a function by reversing its sign.
 
 The header file @file{gsl_multimin.h} contains prototypes for the
-minimization functions and related declarations.  To use the
-minimization algorithms to find the maximum of a function simply
-invert its sign.
+minimization functions and related declarations.  
 
 @menu
 * Multimin Overview::       
@@ -30,25 +29,34 @@ invert its sign.
 @node Multimin Overview
 @section Overview
 
-The multidimensional minimization routines build on the one-dimensional
-minimization algorithms to create a flexible framework for finding local
-minima.  The library minimizes functions in @math{N} dimensions using a
-variety of gradient search algorithms.  In these algorithms, the
-gradient of the function to be minimized is first calculated at the
-current best estimate of the minimum of the function. The gradient is
-used to determine a downhill search direction for the next iteration of
-the minimizer.  A line search is made along this direction to hunt for
-an improved minimum and the best estimate is updated to that point. This
-process is repeated until the location of the minimum is determined to
-sufficient accuracy.  There are other algorithms that can be used for
-finding local minima of @math{N}-dimensional functions and these may be
-added in future.
+The problem of multidimensional minimization requires finding a point
+@math{x} such that the scalar function,
 
-A variety of one-dimensional algorithms are available within the
-minimization framework.  The user provides a high-level driver for the
-algorithms, and the library provides the individual functions necessary
-for each of the steps.  There are three main phases of the iteration.
-The steps are,
+@tex
+\beforedisplay
+$$
+f(x_1, \dots, x_n)
+$$
+\afterdisplay
+@end tex
+@ifinfo
+@example
+f(x_1, @dots{}, x_n)
+@end example
+@end ifinfo
+@noindent
+takes a value which is lower than at any neighboring point. For smooth
+functions the gradient @math{g = \nabla f} vanishes at the minimum. In
+general there are no bracketing methods available for the minimization
+of @math{n}-dimensional functions.  All algorithms proceed from an
+initial guess using a search algorithm which attempts to move in a
+downhill direction.  The search direction is updated with local
+information from the function and its derivatives.
+
+Several minimization algorithms are available within a single
+framework. The user provides a high-level driver for the algorithms, and
+the library provides the individual functions necessary for each of the
+steps.  There are three main phases of the iteration.  The steps are,
 
 @itemize @bullet
 @item
@@ -62,20 +70,19 @@ test @var{s} for convergence, and repeat iteration if necessary
 @end itemize
 
 @noindent
-The state for the minimizers is held in a @code{gsl_min_fminimizer}
-struct.  The updating procedure uses only function evaluations (not
-derivatives).
+The state for the minimizers is held in a
+@code{gsl_multimin_fdfminimizer} struct.
 
 @node Multimin Caveats
 @section Caveats
 @cindex Multimin, caveats
 
-Note that minimization functions can only search for one local minimum
-at a time.  When there are several local minima in the search area, the
-first minimum to be found will be returned; however it is difficult to
-predict which of the minima this will be.  In most cases, no error will
-be reported if you try to find a local minimum in an area where there is
-more than one.
+Note that the minimization algorithms can only search for one local
+minimum at a time.  When there are several local minima in the search
+area, the first minimum to be found will be returned; however it is
+difficult to predict which of the minima this will be.  In most cases,
+no error will be reported if you try to find a local minimum in an area
+where there is more than one.
 
 It is also important to note that the minimization algorithms find local
 minima; there is no way to determine whether a minimum is a global
@@ -84,42 +91,42 @@ minimum of the function in question.
 @node Initializing the Multidimensional Minimizer
 @section Initializing the Multidimensional Minimizer
 
-@deftypefun {gsl_multimin_fdfminimizer *} gsl_multimin_fdfminimizer_alloc (const gsl_multimin_fdf_function * @var{fdf}, const gsl_vector * @var{x}, gsl_min_bracketing_function @var{bracket}, const gsl_multimin_fdfminimizer_type * @var{T})
+The following function initializes a multidimensional minimizer.  The
+minimizer itself depends only on the dimension of the problem and the
+algorithm and can be reused for different problems.
 
+@deftypefun {gsl_multimin_fdfminimizer *} gsl_multimin_fdfminimizer_alloc (const gsl_multimin_fdfminimizer_type *@var{T}, size_t @var{n})
 This function returns a pointer to a a newly allocated instance of a
-minimizer of type @var{T} for the function @var{fdf}.  For example,
-the following code creates an instance of a steepest descent
-minimizer using a Brent minimizer for the line search.
-
-@example
-s = gsl_multimin_fdfminimizer_alloc(
-        gsl_multimin_fdfminimizer_steepest_descent, 
-        &fdf, 
-        x,                         
-        gsl_min_find_bracket,         
-        gsl_min_fminimizer_brent);
-@end example
-
-If there is insufficient memory to create the minimizer then the function
-returns a null pointer and the error handler is invoked with an error
-code of @code{GSL_ENOMEM}.
+minimizer of type @var{T} for an @var{n}-dimension function.  If there
+is insufficient memory to create the minimizer then the function returns
+a null pointer and the error handler is invoked with an error code of
+@code{GSL_ENOMEM}.
 @end deftypefun
 
-@deftypefun void gsl_multimin_fdfminimizer_free (gsl_multimin_fdfminimizer * @var{s})
+@deftypefun int gsl_multimin_fdfminimizer_set (gsl_multimin_fdfminimizer * @var{s}, gsl_multimin_function_fdf *@var{fdf}, const gsl_vector * @var{x}, double @var{step_size}, double @var{tol})
+This function initializes the minimizer @var{s} to minimize the function
+@var{fdf} starting from the initial point @var{x}.  The size of the
+first trial step is given by @var{step_size}.  The accuracy of the line
+minimization is specified by @var{tol}.  The precise meaning of this
+parameter depends on the method used.  Typically the line minimization
+is considered successful if the gradient of the function @math{g} is
+orthogonal to the current search direction @math{p} to a relative
+accuracy of @var{tol}, @c{$p\cdot g < tol |p| |g|$} 
+@math{dot(p,g) < tol |p| |g|}.
+@end deftypefun
 
+@deftypefun void gsl_multimin_fdfminimizer_free (gsl_multimin_fdfminimizer *@var{s})
 This function frees all the memory associated with the minimizer
 @var{s}.
 @end deftypefun
 
 @deftypefun {const char *} gsl_multimin_fdfminimizer_name (const gsl_multimin_fdfminimizer * @var{s})
-
 This function returns a pointer to the name of the minimizer.  For example,
 
 @example
 printf("s is a '%s' minimizer\n", 
        gsl_multimin_fdfminimizer_name (s));
 @end example
-
 @noindent
 would print something like @code{s is a 'conjugate_pr' minimizer}.
 @end deftypefun
@@ -127,17 +134,53 @@ would print something like @code{s is a 'conjugate_pr' minimizer}.
 @node Providing a function to minimize
 @section Providing a function to minimize
 
-You must provide a parametric function of @math{N} variables for the
+You must provide a parametric function of @math{n} variables for the
 minimizers to operate on.  You also need to provide a routine which
-calculates the gradient of the function, a third routine which
-calculates both the function value and the gradient, the dimensionality
-of the function domain and an array of parameters.  The
-@code{gsl_multimin_function_fdf} type encapsulates these objects in a
-single struct.  The following example defines a function suitable for
-the case of a simple paraboloid,
+calculates the gradient of the function and a third routine which
+calculates both the function value and the gradient together.  In order
+to allow for general parameters the functions are defined by the
+following data type:
+
+@deftp {Data Type} gsl_multimin_function_fdf
+This data type defines a general function of @math{n} variables with
+parameters and the corresponding gradient vector of derivatives,
+
+@table @code
+@item double (* f) (const gsl_vector * @var{x}, void * @var{params})
+this function should return the result
+@c{$f(x,\hbox{\it params})$}
+@math{f(x,params)} for argument @var{x} and parameters @var{params}.
+
+@item int (* df) (const gsl_vector * @var{x}, void * @var{params}, gsl_vector * @var{g})
+this function should store the @var{n}-dimensional gradient
+@c{$g_i = \partial f(x,\hbox{\it params}) / \partial x_i$}
+@math{g_i = d f(x,params) / d x_i} in the vector @var{g} for argument @var{x} 
+and parameters @var{params}, returning an appropriate error code if the
+function cannot be computed.
+
+@item int (* fdf) (const gsl_vector * @var{x}, void * @var{params}, double * f, gsl_vector * @var{g})
+This function should set the values of the @var{f} and @var{g} as above,
+for arguments @var{x} and parameters @var{params}.  This function provides
+an optimization of the separate functions for @math{f(x)} and @math{g(x)} -- 
+it is always faster to compute the function and its derivative at the
+same time. 
+
+@item size_t @var{n}
+the dimension of the system, i.e. the number of components of the
+vectors @var{x}.
+
+@item void * @var{params}
+a pointer to the parameters of the function.
+@end table
+@end deftp
+@noindent
+The following example function defines a simple paraboloid with two
+parameters,
 
 @example
-static double
+/* Paraboloid centered on (dp[0],dp[1]) */
+
+double
 my_f (const gsl_vector *v, void *params)
 @{
   double x, y;
@@ -146,12 +189,12 @@ my_f (const gsl_vector *v, void *params)
   x = gsl_vector_get(v, 0);
   y = gsl_vector_get(v, 1);
  
-  return (x - *dp) * (x - *dp) +
-         (y - *(dp + 1)) * (y - *(dp + 1)); 
+  return 10.0 * (x - dp[0]) * (x - dp[0]) +
+           20.0 * (y - dp[1]) * (y - dp[1]) + 30.0; 
 @}
 
 /* The gradient of f, df = (df/dx, df/dy). */
-static void 
+void 
 my_df (const gsl_vector *v, void *params, 
        gsl_vector *df)
 @{
@@ -161,181 +204,184 @@ my_df (const gsl_vector *v, void *params,
   x = gsl_vector_get(v, 0);
   y = gsl_vector_get(v, 1);
  
-  gsl_vector_set(df, 0, 20.0 * (x - *dp));
-  gsl_vector_set(df, 1, 40.0 * (y - *(dp+1)));
+  gsl_vector_set(df, 0, 20.0 * (x - dp[0]));
+  gsl_vector_set(df, 1, 40.0 * (y - dp[1]));
 @}
 
-/* Now both f and df together. */
-static void 
+/* Compute both f and df together. */
+void 
 my_fdf (const gsl_vector *x, void *params, 
         double *f, gsl_vector *df) 
 @{
   *f = my_f(x, params); 
   my_df(x, params, df);
 @}
+@end example
+@noindent
+The function can be initialized using the following code,
 
-int
-main(void)
-@{
-  gsl_multimin_function_fdf my_func;
+@example
+gsl_multimin_function_fdf my_func;
 
-  my_func.f = &my_f;
-  my_func.df = &my_df;
-  my_func.fdf = &my_fdf;
-  my_func.n = 2;
-  my_func.params = NULL;
-@}
+double p[2] = @{ 1.0, 2.0 @}; /* center at (1,2) */
+
+my_func.f = &my_f;
+my_func.df = &my_df;
+my_func.fdf = &my_fdf;
+my_func.n = 2;
+my_func.params = (void *)p;
 @end example
 
 @node Multimin Iteration
 @section Iteration
 
-Multidimensional minimization proceeds as a pair of nested iterations.
-An outer loop iterates over successive estimates of the location of the
-minimum of the objective function; at each new point the gradient of the
-objective function is calculated.  The gradient is used to determine a
-new direction along which to move.  The different algorithms in the
-multimin package use the gradient in different ways in calculating this
-new direction.  Whatever the method employed, the inner loop hunts for a
-minimum along that direction.
+The following function drives the iteration of each algorithm.  The
+function performs one iteration to update the state of the minimizer.
+The same function works for all minimizers so that different methods can
+be substituted at runtime without modifications to the code.
+
+@deftypefun int gsl_multimin_fdfminimizer_iterate (gsl_multimin_fdfminimizer *@var{s})
+These functions perform a single iteration of the minimizer @var{s}.  If
+the iteration encounters an unexpected problem then an error code will
+be returned.
+@end deftypefun
+@noindent
+The minimizer maintains a current best estimate of the minimum at all
+times.  This information can be accessed with the following auxiliary
+functions,
+
+@deftypefun double gsl_multiroot_fdfsolver_minimum (const gsl_multiroot_fdfsolver * @var{s})
+@deftypefunx {gsl_vector *} gsl_multiroot_fdfsolver_x (const gsl_multiroot_fdfsolver * @var{s})
+@deftypefunx {gsl_vector *} gsl_multiroot_fdfsolver_gradient (const gsl_multiroot_fdfsolver * @var{s})
+These functions return the current best estimate of the location of the
+minimum, the value of the function at that point and the gradient for
+the minimizer @var{s}.
+@end deftypefun
+
+@deftypefun int gsl_multimin_fdfminimizer_restart (gsl_multimin_fdfminimizer *@var{s})
+This function resets the minimizer @var{s} to use the current point as a
+new starting point.
+@end deftypefun
 
 @node Multimin Stopping Criteria
 @section Stopping Criteria
 
-The gradient of a multidimensional function goes to zero at a minimum,
-in the same way that the first derivative of a one dimensional function
-goes to zero at a minimum.  In exact arithmetic, finding the point at
-which the norm of the gradient is zero would be a sufficient condition
-for locating an extremum (or an inflection point).  In practical
-numerical calculations, additional criteria are often necessary.  If the
-function is particularly shallow in the neighborhood of the minimum, or
-if the round-off error in the function evaluation is large, it is not
-always possible to rely solely on the norm of the gradient as a stopping
-criterion.  An additional requirement which can make the stopping
-criteria more robust is to demand that the estimate of the location of
-the minimum on successive iterations differ by more than some minimum
-distance.
+A minimization procedure should stop when one of the following
+conditions is true:
+
+@itemize @bullet
+@item
+A minimum has been found to within the user-specified precision.
+
+@item
+A user-specified maximum number of iterations has executed.
+
+@item
+An error has occurred.
+@end itemize
+
+@noindent
+The handling of these conditions is under user control.  The functions
+below allow the user to test the precision of the current result.
+
+@deftypefun int gsl_multimin_test_gradient (const gsl_vector * @var{g},double @var{epsabs})
+This function tests the norm of the gradient @var{g} against the
+absolute tolerance @var{epsabs}. The gradient of a multidimensional
+function goes to zero at a minimum. The test returns @code{GSL_SUCCESS}
+if the following condition is achieved,
+
+@tex
+\beforedisplay
+$$
+|g| < \hbox{\it epsabs}
+$$
+\afterdisplay
+@end tex
+@ifinfo
+@example
+|g| < epsabs
+@end example
+@end ifinfo
+@noindent
+and returns @code{GSL_CONTINUE} otherwise.  A suitable choice of
+@var{epsabs} can be made from the desired accuracy in the function for
+small variations in @math{x}.  The relationship between these quantities
+is given by @c{$\delta f = g\,\delta x$}
+@math{\delta f = g \delta x}.
+@end deftypefun
 
 @node Multimin Algorithms
 @section Algorithms
 
-There are several minimization methods available in the multimin
-package.  Each of the algorithms relies on knowing the value of the
-function and its gradient at each evaluation point. The choice of which
-algorithm is the best to use depends on the details of the problem.  It
-is sometimes the case that the best approach is to start out with one
-algorithm and switch to another when the estimate of the minimum
-approaches the true minimum.
-
-@deffn {Minimizer} gsl_multimin_fdfminimizer_steepest_descent
-The steepest descent method is the most straightforward of the
-available algorithms.  When a point is examined during the hunt for
-the minimum, the gradient is calculated at that point and the next
-line search proceeds along the direction of the gradient.  After the
-line search has found a minimum, the process is repeated.  Since the
-new point will be at a minimum of the function as it is varied along
-the direction of the old gradient, the new direction of steepest
-descent will be orthogonal to the old direction.  While this method is
-robust and does not depend in detail on the shape of the function in
-the neighborhood of the minimum, it can sometimes be slow to converge.
-@end deffn
-
-The remaining methods use the conjugate gradient algorithm.  The
-conjugate gradient algorithm uses information from previous iterations
-to build up a more complete picture of the curvature of the function in
-the neighborhood of the minimum.  During each iteration, the gradient at
-the current evaluation point and a scaled gradient from the previous
-iteration are combined to produce the new search direction.
-
-@deffn {Minimizer} gsl_multimin_fdfminimizer_conjugate_pr
-The Polak-Ribiere conjugate gradient algorithm.
-@end deffn
+There are several minimization methods available. The best choice of
+algorithm depends on the problem.  Each of the algorithms uses the value
+of the function and its gradient at each evaluation point.
 
 @deffn {Minimizer} gsl_multimin_fdfminimizer_conjugate_fr
-The Fletcher-Reeves conjugate gradient algorithm.
+This is the Fletcher-Reeves conjugate gradient algorithm. The conjugate
+gradient algorithm proceeds as a succession of line minimizations. The
+sequence of search directions to build up an approximation to the
+curvature of the function in the neighborhood of the minimum.  An
+initial search direction @var{p} is chosen using the gradient and line
+minimization is carried out in that direction.  The accuracy of the line
+minimization is specified by the parameter @var{tol}.  At the minimum
+along this line the function gradient @var{g} and the search direction
+@var{p} are orthogonal.  The line minimization terminates when
+@c{$p\cdot g < tol |p| |g|$} 
+@math{dot(p,g) < tol |p| |g|}.  The
+search direction is updated  using the Fletcher-Reeves formula
+@math{p' = g' - \beta g} where @math{\beta=-|g'|^2/|g|^2}, and
+the line minimization is then repeated for the new search
+direction.
 @end deffn
 
-The Polak-Ribiere method and the Fletcher-Reeves method differ in the
-way in which they calculate the scaling coefficient.  Both work well
-when the evaluation point is close enough to the minimum of the
-objective function that it is well approximated by a quadratic
-hypersurface.  Some references suggest starting out with the steepest
-descent algorithm and switching to one of the conjugate gradient
-methods as the estimate of the minimum improves.
+@deffn {Minimizer} gsl_multimin_fdfminimizer_conjugate_pr
+This is the Polak-Ribiere conjugate gradient algorithm.  It is similar
+to the Fletcher-Reeves method, differing in the choice of the
+coefficient @math{\beta}. Both methods work well when the evaluation
+point is close enough to the minimum of the objective function that it
+is well approximated by a quadratic hypersurface.
+@end deffn
 
 @deffn {Minimizer} gsl_multimin_fdfminimizer_vector_bfgs
-The Broyden-Fletcher-Goldfarb-Shanno conjugate gradient method.
+This is the vector Broyden-Fletcher-Goldfarb-Shanno conjugate gradient
+algorithm.  It is a quasi-Newton method which builds up an approximation
+to the second derivatives of the function @math{f} using the difference
+between successive gradient vectors.  By combining the first and second
+derivatives the algorithm is able to take Newton-type steps towards the
+function minimum, assuming quadratic behavior in that region.
+@end deffn
+
+@deffn {Minimizer} gsl_multimin_fdfminimizer_steepest_descent
+The steepest descent algorithm follows the downhill gradient of the
+function at each step. When a downhill step is successful the step-size
+is increased by factor of two.  If the downhill step leads to a higher
+function value then the algorithm backtracks and the step size is
+decreased using the parameter @var{tol}.  A suitable value of @var{tol}
+for most applications is 0.1.  The steepest descent method is
+inefficient and is included only for demonstration purposes.
 @end deffn
 
 @node Multimin Examples
 @section Examples
 
-This example attempts to find the minimum of a paraboloid.  The location
-of the minimum is offset from the origin in @code{x} and @code{y}, and
-the function value at the minimum is non-zero.  The example shows the
-typical nested iteration of a multidimensional minimization routine.
-The first part of the program defines the function to be minimized,
+This example program finds the minimum of the paraboloid function
+defined earlier.  The location of the minimum is offset from the origin
+in @math{x} and @math{y}, and the function value at the minimum is
+non-zero. The main program is given below, it requires the example
+function given earlier in this chapter.
 
 @smallexample
-/* The function we want to minimize.  It has a minimum at
-   f(dp[0],dp[1]) = 30.0 */
-static double
-my_f (const gsl_vector * v, void *params)
-@{
-  double x, y;
-  double * dp = (double *) params;
-
-  x = gsl_vector_get (v, 0);
-  y = gsl_vector_get (v, 1);
-
-  return 10.0 * (x - dp[0]) * (x - dp[0])
-    + 20.0 * (y - dp[1]) * (y - dp[1]) + 30.0;
-@}
-
-/* The gradient of f, df = (df/dx, df/dy). */
-static void
-my_df (const gsl_vector * v, void *params, gsl_vector * df)
-@{
-  double x, y;
-  double *dp = (double *) params;
-
-  x = gsl_vector_get (v, 0);
-  y = gsl_vector_get (v, 1);
-
-  gsl_vector_set (df, 0, 20.0 * (x - dp[0]));
-  gsl_vector_set (df, 1, 40.0 * (y - dp[1]));
-@}
-
-/* Calculate both f and df. */
-static void
-my_fdf (const gsl_vector * x, void *params, 
-        double *f, gsl_vector * df)
-@{
-  *f = my_f (x, params);
-  my_df (x, params, df);
-@}
-@end smallexample
-@noindent
-The main program is given below,
-@smallexample
-#include <stdio.h>
-#include <gsl/gsl_min.h>
-#include <gsl/gsl_multimin.h>
-
-const double EPSABS = 1e-4;
-const double EPSREL = 1e-4;
-const unsigned int MAX_ITER = 10000;
-
 int
 main (void)
 @{
-  size_t i = 0, j = 0;
+  size_t iter = 0;
   int status;
-  double minimum, a, b;
+
   const gsl_multimin_fdfminimizer_type *T;
   gsl_multimin_fdfminimizer *s;
 
-  /* Set position of the minimum, v = (1,2). */
+  /* Position of the minimum (1,2). */
   double par[2] = @{ 1.0, 2.0 @};
 
   gsl_vector *x;
@@ -347,55 +393,37 @@ main (void)
   my_func.n = 2;
   my_func.params = &par;
 
-  /* Initial guess for the location of the minimum, x = (10,10) */
+  /* Starting point, x = (5,7) */
 
   x = gsl_vector_alloc (2);
-  gsl_vector_set (x, 0, 10.0);
-  gsl_vector_set (x, 1, 10.0);
+  gsl_vector_set (x, 0, 5.0);
+  gsl_vector_set (x, 1, 7.0);
 
-  /* Allocate a multidimensional minimizer. */
   T = gsl_multimin_fdfminimizer_conjugate_fr;
-  s = gsl_multimin_fdfminimizer_alloc (T, &my_func, x,
-                                       gsl_min_find_bracket,
-                                       gsl_min_fminimizer_brent);
+  s = gsl_multimin_fdfminimizer_alloc (T, 2);
+
+  gsl_multimin_fdfminimizer_set (s, &my_func, x, 0.01, 1e-4);
+
   do
     @{
-      i++;
+      iter++;
+      status = gsl_multimin_fdfminimizer_iterate (s);
 
-      gsl_multimin_fdfminimizer_next_direction (s);
+      if (status)
+        break;
 
-      status = gsl_multimin_fdfminimizer_bracket (s, 10.0, 50);
-
-      if (status == GSL_FAILURE)
-	break;
-
-      j = 0;
-
-      do
-	@{
-	  j++;
-	  status = gsl_multimin_fdfminimizer_iterate (s);
-
-	  minimum = gsl_min_fminimizer_minimum (s->line_search);
-	  a = gsl_min_fminimizer_x_lower (s->line_search);
-	  b = gsl_min_fminimizer_x_upper (s->line_search);
-
-	  status = gsl_min_test_interval (a, b, EPSABS, EPSREL);
-	@}
-      while (status == GSL_CONTINUE && j < MAX_ITER);
-
-      gsl_multimin_fdfminimizer_best_step (s);
-
-      status = gsl_multimin_test_gradient_sqr_norm (s->history, EPSABS);
+      status = gsl_multimin_test_gradient (s->gradient, 1e-3);
 
       if (status == GSL_SUCCESS)
         printf ("Minimum found at:\n");
 
-      printf (" f(%8.5f,%8.5f) = %8.5f\n",
-	      gsl_vector_get (s->history->x, 0),
-	      gsl_vector_get (s->history->x, 1), s->history->f);
+      printf ("%5d %.5f %.5f %10.5f\n", iter,
+              gsl_vector_get (s->x, 0), 
+              gsl_vector_get (s->x, 1), 
+              s->f);
+
     @}
-  while (i < MAX_ITER && status == GSL_CONTINUE);
+  while (status == GSL_CONTINUE && iter < 100);
 
   gsl_multimin_fdfminimizer_free (s);
   gsl_vector_free (x);
@@ -403,10 +431,43 @@ main (void)
   return 0;
 @}
 @end smallexample  
+@noindent
+The initial step-size is chosen as 0.01, a conservative estimate in this
+case, and the line minimization parameter is set at 0.0001.  The program
+terminates when the norm of the gradient has been reduced below
+0.001. The output of the program is shown below,
+
+@example
+         x       y         f
+    1 4.99629 6.99072  687.84780
+    2 4.98886 6.97215  683.55456
+    3 4.97400 6.93501  675.01278
+    4 4.94429 6.86073  658.10798
+    5 4.88487 6.71217  625.01340
+    6 4.76602 6.41506  561.68440
+    7 4.52833 5.82083  446.46694
+    8 4.05295 4.63238  261.79422
+    9 3.10219 2.25548   75.49762
+   10 2.85185 1.62963   67.03704
+   11 2.19088 1.76182   45.31640
+   12 0.86892 2.02622   30.18555
+Minimum found at:
+   13 1.00000 2.00000   30.00000
+@end example
+@noindent
+Note that the algorithm gradually increases the step size as it
+successfully moves downhill, as can be seen by plotting the successive
+points.
+
+@center @image{multimin,4in}
+@noindent
+The conjugate gradient algorithm finds the minimum on its second
+direction because the function is purely quadratic. Additional
+iterations would be needed for a more complicated function.
 
 @node Multimin References and Further Reading
 @section References and Further Reading
-
+@noindent
 A brief description of multidimensional minimization algorithms and
 further references can be found in the following book,
 
