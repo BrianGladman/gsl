@@ -1,5 +1,5 @@
-#ifndef _GSL_DFT_COMPLEX_H
-#define _GSL_DFT_COMPLEX_H
+#ifndef GSL_DFT_COMPLEX_H
+#define GSL_DFT_COMPLEX_H
 
 #include <stddef.h>
 
@@ -29,4 +29,4 @@ int
 		   const gsl_fft_direction sign);
 
 
-#endif /* _GSL_DFT_COMPLEX_H */
+#endif /* GSL_DFT_COMPLEX_H */
