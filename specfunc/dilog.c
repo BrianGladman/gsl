@@ -460,23 +460,24 @@ gsl_sf_complex_dilog_e(const double r, double theta,
      * term in [Lewin A.2.5 (1)].
      */
     if(r > 1.0) {
+      double theta_restricted = theta;
+      const int stat_reduct = gsl_sf_angle_restrict_pos_e(&theta_restricted);
       const double zeta2 = M_PI*M_PI/6.0;
-      double x = r * cos(theta);
-      double y = r * sin(theta);
-      double omega = atan2(y, 1.0-x);
-      double lnr = log(r);
-      double pmt = M_PI - theta;
+      const double x = r * cos(theta);
+      const double y = r * sin(theta);
+      const double omega = atan2(y, 1.0-x);
+      const double lnr = log(r);
+      const double pmt = M_PI - theta_restricted;
       gsl_sf_result Cl_a, Cl_b, Cl_c;
-      double r1, r2, r3, r4, r5;
-      int stat_c1 = gsl_sf_clausen_e(2.0*omega, &Cl_a);
-      int stat_c2 = gsl_sf_clausen_e(2.0*theta, &Cl_b);
-      int stat_c3 = gsl_sf_clausen_e(2.0*(omega+theta), &Cl_c);
-      int stat_c  = GSL_ERROR_SELECT_3(stat_c1, stat_c2, stat_c3);
-      r1 = -result_re_tmp.val;
-      r2 = -0.5*lnr*lnr;
-      r3 =  0.5*pmt*pmt;
-      r4 = -zeta2;
-      r5 =  omega*lnr;
+      const int stat_c1 = gsl_sf_clausen_e(2.0*omega, &Cl_a);
+      const int stat_c2 = gsl_sf_clausen_e(2.0*theta, &Cl_b);
+      const int stat_c3 = gsl_sf_clausen_e(2.0*(omega+theta), &Cl_c);
+      const int stat_c  = GSL_ERROR_SELECT_3(stat_c1, stat_c2, stat_c3);
+      const double r1 = -result_re_tmp.val;
+      const double r2 = -0.5*lnr*lnr;
+      const double r3 =  0.5*pmt*pmt;
+      const double r4 = -zeta2;
+      const double r5 =  omega*lnr;
       real_dl->val  = r1 + r2 + r3 + r4;
       real_dl->err  = result_re_tmp.err;
       real_dl->err += GSL_DBL_EPSILON * (fabs(r1) + fabs(r2) + fabs(r3) + fabs(r4));
@@ -486,7 +487,7 @@ gsl_sf_complex_dilog_e(const double r, double theta,
       imag_dl->err += GSL_DBL_EPSILON * 0.5*(fabs(Cl_a.val) + fabs(Cl_b.val) + fabs(Cl_c.val));
       imag_dl->err += 0.5*(Cl_a.err + Cl_b.err + Cl_c.err);
       imag_dl->err += 2.0*GSL_DBL_EPSILON * fabs(imag_dl->val);
-      return GSL_ERROR_SELECT_2(stat_dilog, stat_c);
+      return GSL_ERROR_SELECT_3(stat_dilog, stat_c, stat_reduct);
     }
     else {
       real_dl->val = result_re_tmp.val;

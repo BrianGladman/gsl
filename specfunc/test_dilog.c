@@ -123,5 +123,28 @@ int test_dilog(void)
              0.4836632833122775721, TEST_TOL1,
             GSL_SUCCESS);
 
+
+  /** Tests brought up by Jim McElwaine bug report. */
+
+  TEST_SF_2(s, gsl_sf_complex_dilog_e, (1.1, -M_PI/2.0, &r1, &r2),
+            -0.24099184177382733037, TEST_TOL1,
+            -0.99309132538137822631, TEST_TOL1,
+             GSL_SUCCESS);
+
+  TEST_SF_2(s, gsl_sf_complex_dilog_e, (1.1, 3.0*M_PI/2.0, &r1, &r2),
+            -0.24099184177382733037, TEST_TOL1,
+            -0.99309132538137822631, TEST_TOL1,
+             GSL_SUCCESS);
+
+  TEST_SF_2(s, gsl_sf_complex_dilog_e, (1.1, -3.0*M_PI/2.0, &r1, &r2),
+            -0.24099184177382733037, TEST_TOL1,
+             0.99309132538137822631, TEST_TOL1,
+             GSL_SUCCESS);
+
+  TEST_SF_2(s, gsl_sf_complex_dilog_e, (1.1, 2.0*M_PI + 3.0*M_PI/2.0, &r1, &r2),
+            -0.24099184177382733037, TEST_TOL1,
+            -0.99309132538137822631, TEST_TOL1,
+             GSL_SUCCESS);
+
   return s;
 }
