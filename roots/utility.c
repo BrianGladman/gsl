@@ -31,7 +31,7 @@ _gsl_root_validate_bfp_args(void * root, void * f, double * lower_bound,
 {
   /* Is the maximum delta-y too small? */
   if (max_deltay < GSL_ROOT_MIN_MAX_DELTAY)
-    GSL_ERROR("maximum delta-y negative, zero, or too small", GSL_ETOL);
+    GSL_ERROR("maximum delta-y negative, zero, or too small", GSL_EBADTOL);
 
   /* Did the user give a lower bound that not less than the upper bound? */
   if (*lower_bound >= *upper_bound)
@@ -53,7 +53,7 @@ _gsl_root_validate_sn_args(void * root, void * f, double * guess1,
 {
   /* Is the maximum step size ridiculous? */
   if (max_step_size <= 0.0)
-    GSL_ERROR("maximum step size <= 0", GSL_ETOL);
+    GSL_ERROR("maximum step size <= 0", GSL_EBADTOL);
 
   /* The rest of the arguments are common. */
   return _gsl_root_validate_args(root, f, guess1, guess2, rel_epsilon,
@@ -82,10 +82,10 @@ _gsl_root_validate_args(void * root, void * f, double * where1,
     GSL_ERROR("maximum iterations 0", GSL_EINVAL);
   /* Did the user try to pawn a negative tolerance off on us? */
   if (rel_epsilon < 0.0 || abs_epsilon < 0.0)
-    GSL_ERROR("relative or absolute tolerance negative", GSL_ETOL);
+    GSL_ERROR("relative or absolute tolerance negative", GSL_EBADTOL);
   /* Is the relative error too small? */
   if (rel_epsilon < DBL_EPSILON * GSL_ROOT_EPSILON_BUFFER)
-    GSL_ERROR("relative tolerance too small", GSL_ETOL);
+    GSL_ERROR("relative tolerance too small", GSL_EBADTOL);
 
   /* All is well. */
   return GSL_SUCCESS;

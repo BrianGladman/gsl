@@ -50,7 +50,7 @@ do { \
 do { \
   if (rel_epsilon * _MINA(a, b) + abs_epsilon \
       < _MAXA(a, b) * DBL_EPSILON * GSL_ROOT_EPSILON_BUFFER) \
-    GSL_ERROR("tolerances too small for this context", GSL_ETOL); \
+    GSL_ERROR("tolerances too small for this context", GSL_EBADTOL); \
 } while (0)
 
 /* Return nonzero if a and b are within tolerance of each other. */
@@ -75,7 +75,7 @@ do { \
 #define _BARF_DELTAX(a, b, delta) \
 do { \
   if (delta < _MINA((a), (b)) * DBL_EPSILON * GSL_ROOT_EPSILON_BUFFER) \
-    GSL_ERROR("maximum step size too small for this context", GSL_ETOL); \
+    GSL_ERROR("maximum step size too small for this context", GSL_EBADTOL); \
   if (fabs((a) - (b)) > delta) \
     GSL_ERROR("next extrapolation step too large", GSL_ERUNAWAY); \
 } while (0)

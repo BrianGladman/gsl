@@ -133,7 +133,7 @@ derivative is too small.
 The number of iterations executed exceeded @w{@code{max_iterations}}
 (@pxref{Search Stopping Parameters}).
 
-@item GSL_ETOL
+@item GSL_EBADTOL
 @value{llo} You specified an invalid error tolerance in one or more of
 the following ways (@pxref{Search Stopping Parameters}):
 
