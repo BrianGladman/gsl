@@ -18,6 +18,11 @@
  */
 
 #include <config.h>
+
+#ifdef GSL_RANGE_CHECK_OFF
+#undef GSL_RANGE_CHECK_OFF
+#endif
+
 #include <stdlib.h>
 #include <fcntl.h>
 #include <stdio.h>

@@ -1,3 +1,8 @@
+Sun Jan 27 22:29:37 2002  Brian Gough  <bjg@network-theory.co.uk>
+
+	* test.c: ensure that range check is working when running the
+ 	tests
+
 Fri Sep 14 18:56:34 2001  Brian Gough  <bjg@network-theory.co.uk>
 
 	* view_source.c: fixed cast for array type
