@@ -61,6 +61,8 @@ gsl_vector_long *gsl_vector_long_alloc_from_vector (gsl_vector_long * v,
 
 void gsl_vector_long_free (gsl_vector_long * v);
 
+gsl_vector_long gsl_vector_long_view (long *v, size_t n);
+
 int gsl_vector_long_view_from_vector (gsl_vector_long *v, 
                                        gsl_vector_long *base,
                                        size_t offset, size_t n, size_t stride);

@@ -26,12 +26,12 @@ FUNCTION (gsl_matrix, alloc) (const size_t n1, const size_t n2)
   if (n1 == 0)
     {
       GSL_ERROR_VAL ("matrix dimension n1 must be positive integer",
-			GSL_EDOM, 0);
+			GSL_EINVAL, 0);
     }
   else if (n2 == 0)
     {
       GSL_ERROR_VAL ("matrix dimension n2 must be positive integer",
-			GSL_EDOM, 0);
+			GSL_EINVAL, 0);
     }
 
   m = (TYPE (gsl_matrix) *) malloc (sizeof (TYPE (gsl_matrix)));
@@ -93,22 +93,22 @@ FUNCTION (gsl_matrix, alloc_from_block) (TYPE(gsl_block) * block,
   if (n1 == 0)
     {
       GSL_ERROR_VAL ("matrix dimension n1 must be positive integer",
-			GSL_EDOM, 0);
+			GSL_EINVAL, 0);
     }
   else if (n2 == 0)
     {
       GSL_ERROR_VAL ("matrix dimension n2 must be positive integer",
-			GSL_EDOM, 0);
+			GSL_EINVAL, 0);
     }
   else if (d2 < n2)
     {
       GSL_ERROR_VAL ("matrix dimension d2 must be greater than n2",
-			GSL_EDOM, 0);
+			GSL_EINVAL, 0);
     }
   else if (block->size < offset + n1 * d2)
     {
       GSL_ERROR_VAL ("matrix size exceeds available block size",
-			GSL_EDOM, 0);
+			GSL_EINVAL, 0);
     }
 
   m = (TYPE (gsl_matrix) *) malloc (sizeof (TYPE (gsl_matrix)));
@@ -141,22 +141,22 @@ FUNCTION (gsl_matrix, alloc_from_matrix) (TYPE(gsl_matrix) * mm,
   if (n1 == 0)
     {
       GSL_ERROR_VAL ("matrix dimension n1 must be positive integer",
-			GSL_EDOM, 0);
+			GSL_EINVAL, 0);
     }
   else if (n2 == 0)
     {
       GSL_ERROR_VAL ("matrix dimension n2 must be positive integer",
-			GSL_EDOM, 0);
+			GSL_EINVAL, 0);
     }
   else if (k1 + n1 > mm->size1)
     {
       GSL_ERROR_VAL ("submatrix dimension 1 exceeds size of original",
-			GSL_EDOM, 0);
+			GSL_EINVAL, 0);
     }
   else if (k2 + n2 > mm->size2)
     {
       GSL_ERROR_VAL ("submatrix dimension 2 exceeds size of original",
-			GSL_EDOM, 0);
+			GSL_EINVAL, 0);
     }
 
   m = (TYPE (gsl_matrix) *) malloc (sizeof (TYPE (gsl_matrix)));
@@ -240,3 +240,28 @@ FUNCTION (gsl_matrix, set_all) (TYPE (gsl_matrix) * m, BASE x)
     }
 }
 
+
+TYPE (gsl_matrix)
+FUNCTION (gsl_matrix, view) (ATOMIC * array, const size_t n1, const size_t n2)
+{
+  TYPE(gsl_matrix) m = {0, 0, 0, 0, 0};
+
+  if (n1 == 0)
+    {
+      GSL_ERROR_VAL ("matrix dimension n1 must be positive integer",
+                     GSL_EINVAL, m);
+    }
+  else if (n2 == 0)
+    {
+      GSL_ERROR_VAL ("matrix dimension n2 must be positive integer",
+                     GSL_EINVAL, m);
+    }
+
+  m.data = array;
+  m.size1 = n1;
+  m.size2 = n2;
+  m.tda = n2; 
+  m.block = 0;
+
+  return m;
+}

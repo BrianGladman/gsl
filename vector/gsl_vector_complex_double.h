@@ -51,6 +51,8 @@ typedef struct gsl_vector_complex_struct gsl_vector_complex;
 gsl_vector_complex *gsl_vector_complex_alloc (const size_t n);
 gsl_vector_complex *gsl_vector_complex_calloc (const size_t n);
 
+gsl_vector_complex gsl_vector_complex_view (double * v, size_t n);
+
 gsl_vector_complex 
 *gsl_vector_complex_alloc_from_block (gsl_block_complex * b, 
                                             const size_t offset, 
@@ -71,6 +73,9 @@ int gsl_vector_complex_view_from_vector (gsl_vector_complex *v,
 
 gsl_vector_complex gsl_vector_complex_subvector (gsl_vector_complex *v, size_t i, size_t n);
 gsl_vector_complex gsl_vector_complex_subvector_with_stride (gsl_vector_complex *v, size_t i, size_t n, size_t stride);
+
+const gsl_vector_complex gsl_vector_complex_const_subvector (const gsl_vector_complex *v, size_t i, size_t n);
+const gsl_vector_complex gsl_vector_complex_const_subvector_with_stride (const gsl_vector_complex *v, size_t i, size_t n, size_t stride);
 
 
 gsl_complex 

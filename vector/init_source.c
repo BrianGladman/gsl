@@ -26,7 +26,7 @@ FUNCTION (gsl_vector, alloc) (const size_t n)
   if (n == 0)
     {
       GSL_ERROR_VAL ("vector length n must be positive integer",
-			GSL_EDOM, 0);
+			GSL_EINVAL, 0);
     }
 
   v = (TYPE (gsl_vector) *) malloc (sizeof (TYPE (gsl_vector)));
@@ -86,17 +86,17 @@ FUNCTION (gsl_vector, alloc_from_block) (TYPE(gsl_block) * block,
   if (n == 0)
     {
       GSL_ERROR_VAL ("vector length n must be positive integer",
-			GSL_EDOM, 0);
+			GSL_EINVAL, 0);
     }
 
   if (stride == 0)
     {
-      GSL_ERROR_VAL ("stride must be positive integer", GSL_EDOM, 0);
+      GSL_ERROR_VAL ("stride must be positive integer", GSL_EINVAL, 0);
     }
 
   if (block->size <= offset + (n - 1) * stride)
     {
-      GSL_ERROR_VAL ("vector would extend past end of block", GSL_EDOM, 0);
+      GSL_ERROR_VAL ("vector would extend past end of block", GSL_EINVAL, 0);
     }
 
   v = (TYPE (gsl_vector) *) malloc (sizeof (TYPE (gsl_vector)));
@@ -126,17 +126,17 @@ FUNCTION (gsl_vector, alloc_from_vector) (TYPE(gsl_vector) * w,
   if (n == 0)
     {
       GSL_ERROR_VAL ("vector length n must be positive integer",
-			GSL_EDOM, 0);
+			GSL_EINVAL, 0);
     }
 
   if (stride == 0)
     {
-      GSL_ERROR_VAL ("stride must be positive integer", GSL_EDOM, 0);
+      GSL_ERROR_VAL ("stride must be positive integer", GSL_EINVAL, 0);
     }
 
   if (offset + (n - 1) * stride >= w->size)
     {
-      GSL_ERROR_VAL ("vector would extend past end of block", GSL_EDOM, 0);
+      GSL_ERROR_VAL ("vector would extend past end of block", GSL_EINVAL, 0);
     }
 
   v = (TYPE (gsl_vector) *) malloc (sizeof (TYPE (gsl_vector)));
@@ -166,6 +166,8 @@ FUNCTION (gsl_vector, free) (TYPE (gsl_vector) * v)
   free (v);
 }
 
+
+
 int
 FUNCTION(gsl_vector, view_from_vector) (TYPE(gsl_vector) * v,
                                         TYPE(gsl_vector) * base,
@@ -173,17 +175,17 @@ FUNCTION(gsl_vector, view_from_vector) (TYPE(gsl_vector) * v,
 {
   if (n == 0)
     {
-      GSL_ERROR ("vector length n must be positive integer", GSL_EDOM);
+      GSL_ERROR ("vector length n must be positive integer", GSL_EINVAL);
     }
 
   if (stride == 0)
     {
-      GSL_ERROR ("stride must be positive integer", GSL_EDOM);
+      GSL_ERROR ("stride must be positive integer", GSL_EINVAL);
     }
 
   if (base->size <= offset + (n - 1) * stride)
     {
-      GSL_ERROR ("vector would extend past end of vector", GSL_EDOM);
+      GSL_ERROR ("vector would extend past end of vector", GSL_EINVAL);
     }
 
   if (v->block != 0)
@@ -197,6 +199,28 @@ FUNCTION(gsl_vector, view_from_vector) (TYPE(gsl_vector) * v,
 
   return GSL_SUCCESS;
 }
+
+
+TYPE(gsl_vector)
+FUNCTION(gsl_vector, view) (ATOMIC * base, size_t n)
+{
+  TYPE(gsl_vector) v = {0, 0, 0, 0};
+
+  if (n == 0)
+    {
+      GSL_ERROR_VAL ("vector length n must be positive integer", 
+                     GSL_EINVAL, v);
+    }
+
+  v.data = base  ;
+  v.size = n;
+  v.stride = 1;
+  v.block = 0;
+
+  return v;
+}
+
+
 
 void
 FUNCTION (gsl_vector, set_all) (TYPE (gsl_vector) * v, BASE x)

@@ -51,6 +51,8 @@ typedef struct gsl_vector_complex_float_struct gsl_vector_complex_float;
 gsl_vector_complex_float *gsl_vector_complex_float_alloc (const size_t n);
 gsl_vector_complex_float *gsl_vector_complex_float_calloc (const size_t n);
 
+gsl_vector_complex_float gsl_vector_complex_float_view (float * v, size_t n);
+
 gsl_vector_complex_float 
 *gsl_vector_complex_float_alloc_from_block (gsl_block_complex_float * b, 
                                             const size_t offset, 

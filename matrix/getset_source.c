@@ -257,23 +257,23 @@ FUNCTION(gsl_matrix, view_from_vector) (TYPE(gsl_matrix) * m,
 {
   if (n1 == 0)
     {
-      GSL_ERROR ("matrix dimension n1 must be positive integer", GSL_EDOM);
+      GSL_ERROR ("matrix dimension n1 must be positive integer", GSL_EINVAL);
     }
   else if (n2 == 0)
     {
-      GSL_ERROR ("matrix dimension n2 must be positive integer", GSL_EDOM);
+      GSL_ERROR ("matrix dimension n2 must be positive integer", GSL_EINVAL);
     }
   else if (d2 < n2)
     {
-      GSL_ERROR ("matrix dimension d2 must be greater than n2",	GSL_EDOM);
+      GSL_ERROR ("matrix dimension d2 must be greater than n2",	GSL_EINVAL);
     }
   else if (base->size < offset + n1 * d2)
     {
-      GSL_ERROR ("matrix size exceeds available vector size", GSL_EDOM);
+      GSL_ERROR ("matrix size exceeds available vector size", GSL_EINVAL);
     }
   else if (base->stride != 1) 
     {
-      GSL_ERROR ("matrix view requires a vector with unit stride", GSL_EDOM);
+      GSL_ERROR ("matrix view requires a vector with unit stride", GSL_EINVAL);
     }
 
   if (m->block != 0)

@@ -77,6 +77,11 @@ gsl_vector_uchar_alloc_col_from_matrix (gsl_matrix_uchar * m,
 
 void gsl_matrix_uchar_free (gsl_matrix_uchar * m);
 
+gsl_matrix_uchar gsl_matrix_uchar_view (unsigned char * m, 
+                                        const size_t n1, 
+                                        const size_t n2);
+
+
 void gsl_matrix_uchar_set_zero (gsl_matrix_uchar * m);
 void gsl_matrix_uchar_set_identity (gsl_matrix_uchar * m);
 void gsl_matrix_uchar_set_all (gsl_matrix_uchar * m, unsigned char x);
@@ -99,6 +104,7 @@ int gsl_matrix_uchar_swap_rowcol(gsl_matrix_uchar * m, const size_t i, const siz
 int gsl_matrix_uchar_transpose (gsl_matrix_uchar * m);
 
 
+gsl_matrix_uchar gsl_matrix_uchar_view (unsigned char * m, size_t n1, size_t n2);
 gsl_matrix_uchar gsl_matrix_uchar_submatrix (gsl_matrix_uchar * m, size_t i, size_t j, size_t n1, size_t n2);
 gsl_vector_uchar gsl_matrix_uchar_row (gsl_matrix_uchar * m, size_t i);
 gsl_vector_uchar gsl_matrix_uchar_column (gsl_matrix_uchar * m, size_t j);

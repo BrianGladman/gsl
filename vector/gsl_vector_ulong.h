@@ -61,6 +61,8 @@ gsl_vector_ulong *gsl_vector_ulong_alloc_from_vector (gsl_vector_ulong * v,
 
 void gsl_vector_ulong_free (gsl_vector_ulong * v);
 
+gsl_vector_ulong gsl_vector_ulong_view (unsigned long *v, size_t n);
+
 int gsl_vector_ulong_view_from_vector (gsl_vector_ulong *v, 
                                        gsl_vector_ulong *base,
                                        size_t offset, size_t n, size_t stride);

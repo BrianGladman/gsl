@@ -51,6 +51,8 @@ typedef struct gsl_vector_complex_long_double_struct gsl_vector_complex_long_dou
 gsl_vector_complex_long_double *gsl_vector_complex_long_double_alloc (const size_t n);
 gsl_vector_complex_long_double *gsl_vector_complex_long_double_calloc (const size_t n);
 
+gsl_vector_complex_long_double gsl_vector_complex_long_double_view (long double * v, size_t n);
+
 gsl_vector_complex_long_double 
 *gsl_vector_complex_long_double_alloc_from_block (gsl_block_complex_long_double * b, 
                                             const size_t offset, 
@@ -71,6 +73,9 @@ int gsl_vector_complex_long_double_view_from_vector (gsl_vector_complex_long_dou
 
 gsl_vector_complex_long_double gsl_vector_complex_long_double_subvector (gsl_vector_complex_long_double *v, size_t i, size_t n);
 gsl_vector_complex_long_double gsl_vector_complex_long_double_subvector_with_stride (gsl_vector_complex_long_double *v, size_t i, size_t n, size_t stride);
+
+const gsl_vector_complex_long_double gsl_vector_complex_long_double_const_subvector (const gsl_vector_complex_long_double *v, size_t i, size_t n);
+const gsl_vector_complex_long_double gsl_vector_complex_long_double_const_subvector_with_stride (const gsl_vector_complex_long_double *v, size_t i, size_t n, size_t stride);
 
 
 gsl_complex_long_double 

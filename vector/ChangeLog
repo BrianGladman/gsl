@@ -1,3 +1,12 @@
+Sun Jul 16 10:39:39 2000  Brian Gough  <bjg@network-theory.co.uk>
+
+	* init_source.c (FUNCTION): added gsl_vector_view function for
+ 	creating a vector view of an ordinary C array
+
+Sat Jul 15 21:44:49 2000  Brian Gough  <bjg@network-theory.co.uk>
+
+	* changed GSL_EDOM to GSL_EINVAL for invalid vector size arguments
+
 Sat Jun 17 15:37:57 2000  Brian Gough  <bjg@network-theory.co.uk>
 
 	* fixed up missing MULTIPLICITY factors in various functions 

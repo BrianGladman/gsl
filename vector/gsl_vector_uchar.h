@@ -61,6 +61,8 @@ gsl_vector_uchar *gsl_vector_uchar_alloc_from_vector (gsl_vector_uchar * v,
 
 void gsl_vector_uchar_free (gsl_vector_uchar * v);
 
+gsl_vector_uchar gsl_vector_uchar_view (unsigned char *v, size_t n);
+
 int gsl_vector_uchar_view_from_vector (gsl_vector_uchar *v, 
                                        gsl_vector_uchar *base,
                                        size_t offset, size_t n, size_t stride);

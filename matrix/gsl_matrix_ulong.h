@@ -77,6 +77,11 @@ gsl_vector_ulong_alloc_col_from_matrix (gsl_matrix_ulong * m,
 
 void gsl_matrix_ulong_free (gsl_matrix_ulong * m);
 
+gsl_matrix_ulong gsl_matrix_ulong_view (unsigned long * m, 
+                                        const size_t n1, 
+                                        const size_t n2);
+
+
 void gsl_matrix_ulong_set_zero (gsl_matrix_ulong * m);
 void gsl_matrix_ulong_set_identity (gsl_matrix_ulong * m);
 void gsl_matrix_ulong_set_all (gsl_matrix_ulong * m, unsigned long x);
@@ -99,6 +104,7 @@ int gsl_matrix_ulong_swap_rowcol(gsl_matrix_ulong * m, const size_t i, const siz
 int gsl_matrix_ulong_transpose (gsl_matrix_ulong * m);
 
 
+gsl_matrix_ulong gsl_matrix_ulong_view (unsigned long * m, size_t n1, size_t n2);
 gsl_matrix_ulong gsl_matrix_ulong_submatrix (gsl_matrix_ulong * m, size_t i, size_t j, size_t n1, size_t n2);
 gsl_vector_ulong gsl_matrix_ulong_row (gsl_matrix_ulong * m, size_t i);
 gsl_vector_ulong gsl_matrix_ulong_column (gsl_matrix_ulong * m, size_t j);

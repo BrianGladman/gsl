@@ -61,6 +61,8 @@ gsl_vector_ushort *gsl_vector_ushort_alloc_from_vector (gsl_vector_ushort * v,
 
 void gsl_vector_ushort_free (gsl_vector_ushort * v);
 
+gsl_vector_ushort gsl_vector_ushort_view (unsigned short *v, size_t n);
+
 int gsl_vector_ushort_view_from_vector (gsl_vector_ushort *v, 
                                        gsl_vector_ushort *base,
                                        size_t offset, size_t n, size_t stride);

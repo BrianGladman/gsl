@@ -61,6 +61,8 @@ gsl_vector_char *gsl_vector_char_alloc_from_vector (gsl_vector_char * v,
 
 void gsl_vector_char_free (gsl_vector_char * v);
 
+gsl_vector_char gsl_vector_char_view (char *v, size_t n);
+
 int gsl_vector_char_view_from_vector (gsl_vector_char *v, 
                                        gsl_vector_char *base,
                                        size_t offset, size_t n, size_t stride);

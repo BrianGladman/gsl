@@ -76,6 +76,10 @@ gsl_vector_complex_long_double_alloc_col_from_matrix (gsl_matrix_complex_long_do
 
 void gsl_matrix_complex_long_double_free (gsl_matrix_complex_long_double * m);
 
+gsl_matrix_complex_long_double gsl_matrix_complex_long_double_view (long double * m, 
+                                                        const size_t n1, 
+                                                        const size_t n2);
+
 void gsl_matrix_complex_long_double_set_zero (gsl_matrix_complex_long_double * m);
 void gsl_matrix_complex_long_double_set_identity (gsl_matrix_complex_long_double * m);
 void gsl_matrix_complex_long_double_set_all (gsl_matrix_complex_long_double * m, gsl_complex_long_double x);

@@ -24,12 +24,12 @@ FUNCTION(gsl_vector, subvector) (QUALIFIED_TYPE(gsl_vector) * v, size_t offset, 
 
   if (n == 0)
     {
-      GSL_ERROR_VAL ("vector length n must be positive integer", GSL_EDOM, s);
+      GSL_ERROR_VAL ("vector length n must be positive integer", GSL_EINVAL, s);
     }
 
   if (offset + (n - 1) >= v->size)
     {
-      GSL_ERROR_VAL ("vector would extend past end of vector", GSL_EDOM, s);
+      GSL_ERROR_VAL ("vector would extend past end of vector", GSL_EINVAL, s);
     }
 
   s.data = v->data +  MULTIPLICITY * v->stride * offset ;
@@ -46,17 +46,17 @@ FUNCTION(gsl_vector, subvector_with_stride) (QUALIFIED_TYPE(gsl_vector) * v, siz
 
   if (n == 0)
     {
-      GSL_ERROR_VAL ("vector length n must be positive integer", GSL_EDOM, s);
+      GSL_ERROR_VAL ("vector length n must be positive integer", GSL_EINVAL, s);
     }
 
   if (stride == 0)
     {
-      GSL_ERROR_VAL ("stride must be positive integer", GSL_EDOM, s);
+      GSL_ERROR_VAL ("stride must be positive integer", GSL_EINVAL, s);
     }
 
   if (offset + (n - 1) * stride >= v->size)
     {
-      GSL_ERROR_VAL ("vector would extend past end of vector", GSL_EDOM, s);
+      GSL_ERROR_VAL ("vector would extend past end of vector", GSL_EINVAL, s);
     }
 
   s.data = v->data + MULTIPLICITY * v->stride * offset ;

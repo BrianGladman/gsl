@@ -1,3 +1,12 @@
+Sun Jul 16 10:40:15 2000  Brian Gough  <bjg@network-theory.co.uk>
+
+	* init_source.c (FUNCTION):  added gsl_matrix_view function for
+ 	creating a matrix view of an ordinary C array
+
+Sat Jul 15 21:44:22 2000  Brian Gough  <bjg@network-theory.co.uk>
+
+	* changed GSL_EDOM to GSL_EINVAL for invalid matrix size arguments
+
 Sat Jun 17 15:38:30 2000  Brian Gough  <bjg@network-theory.co.uk>
 
         * fixed up missing MULTIPLICITY factors in various functions 
