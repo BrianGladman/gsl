@@ -81,6 +81,7 @@ typedef struct
     size_t size;
     int (*set) (void *state, gsl_multiroot_function_fdf * fdf, gsl_vector * x, gsl_vector * f, gsl_matrix * J, gsl_vector * dx);
     int (*iterate) (void *state, gsl_multiroot_function_fdf * fdf, gsl_vector * x, gsl_vector * f, gsl_matrix * J, gsl_vector * dx);
+    void (*free) (void *state);
   }
 gsl_multiroot_fdfsolver_type;
 
@@ -116,16 +117,13 @@ gsl_multiroot_fdfsolver_free (gsl_multiroot_fdfsolver * s);
 const char * gsl_multiroot_fdfsolver_name (const gsl_multiroot_fdfsolver * s);
 gsl_vector * gsl_multiroot_fdfsolver_root (const gsl_multiroot_fdfsolver * s);
 
-int
-gsl_multiroot_test_interval (gsl_interval x, double epsabs, double epsrel);
+int gsl_multiroot_test_delta (const gsl_vector * dx, const gsl_vector * x, 
+                              double epsabs, double epsrel);
 
-int
-gsl_multiroot_test_residual (double f, double epsabs);
-
-int
-gsl_multiroot_test_delta (double x1, double x0, double epsabs, double epsrel);
+int gsl_multiroot_test_residual (const gsl_vector * f, double epsabs);
 
 extern const gsl_multiroot_fsolver_type  * gsl_multiroot_fsolver_bisection;
 extern const gsl_multiroot_fdfsolver_type  * gsl_multiroot_fdfsolver_newton;
+extern const gsl_multiroot_fdfsolver_type  * gsl_multiroot_fdfsolver_mtrnewton;
 
 #endif /* GSL_MULTIROOTS_H */

@@ -11,21 +11,23 @@
 #include <gsl_multiroots.h>
 #include <gsl_linalg.h>
 
+/* Newton method with Model Trust Region modification */
+
 typedef struct
   {
     gsl_matrix * lu;
     gsl_vector_int * permutation;
   }
-newton_state_t;
+mtrnewton_state_t;
 
-int newton_init (void * vstate, gsl_multiroot_function_fdf * fdf, gsl_vector * x, gsl_vector * f, gsl_matrix * J, gsl_vector * dx);
-int newton_iterate (void * vstate, gsl_multiroot_function_fdf * fdf, gsl_vector * x, gsl_vector * f, gsl_matrix * J, gsl_vector * dx);
-void newton_free (void * vstate);
+int mtrnewton_init (void * vstate, gsl_multiroot_function_fdf * fdf, gsl_vector * x, gsl_vector * f, gsl_matrix * J, gsl_vector * dx);
+int mtrnewton_iterate (void * vstate, gsl_multiroot_function_fdf * fdf, gsl_vector * x, gsl_vector * f, gsl_matrix * J, gsl_vector * dx);
+void mtrnewton_free (void * vstate);
 
 int
-newton_init (void * vstate, gsl_multiroot_function_fdf * FDF, gsl_vector * x, gsl_vector * f, gsl_matrix * J, gsl_vector * dx)
+mtrnewton_init (void * vstate, gsl_multiroot_function_fdf * FDF, gsl_vector * x, gsl_vector * f, gsl_matrix * J, gsl_vector * dx)
 {
-  newton_state_t * state = (newton_state_t *) vstate;
+  mtrnewton_state_t * state = (mtrnewton_state_t *) vstate;
   size_t i, n = FDF->n ;
   gsl_vector_int * p;
   gsl_matrix * m;
@@ -61,9 +63,9 @@ newton_init (void * vstate, gsl_multiroot_function_fdf * FDF, gsl_vector * x, gs
 }
 
 int
-newton_iterate (void * vstate, gsl_multiroot_function_fdf * fdf, gsl_vector * x, gsl_vector * f, gsl_matrix * J, gsl_vector * dx)
+mtrnewton_iterate (void * vstate, gsl_multiroot_function_fdf * fdf, gsl_vector * x, gsl_vector * f, gsl_matrix * J, gsl_vector * dx)
 {
-  newton_state_t * state = (newton_state_t *) vstate;
+  mtrnewton_state_t * state = (mtrnewton_state_t *) vstate;
   
   int signum ;
 
@@ -92,9 +94,9 @@ newton_iterate (void * vstate, gsl_multiroot_function_fdf * fdf, gsl_vector * x,
 
 
 void
-newton_free (void * vstate)
+mtrnewton_free (void * vstate)
 {
-  newton_state_t * state = (newton_state_t *) vstate;
+  mtrnewton_state_t * state = (mtrnewton_state_t *) vstate;
 
   gsl_matrix_free(state->lu);
 
@@ -102,11 +104,11 @@ newton_free (void * vstate)
 }
 
 
-static const gsl_multiroot_fdfsolver_type newton_type =
-{"newton",				/* name */
- sizeof (newton_state_t),
- &newton_init,
- &newton_iterate,
- &newton_free};
+static const gsl_multiroot_fdfsolver_type mtrnewton_type =
+{"mtrnewton",				/* name */
+ sizeof (mtrnewton_state_t),
+ &mtrnewton_init,
+ &mtrnewton_iterate,
+ &mtrnewton_free};
 
-const gsl_multiroot_fdfsolver_type  * gsl_multiroot_fdfsolver_newton = &newton_type;
+const gsl_multiroot_fdfsolver_type  * gsl_multiroot_fdfsolver_mtrnewton = &mtrnewton_type;
