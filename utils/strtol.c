@@ -143,7 +143,9 @@ strtol (nptr, endptr, base)
 
   if (overflow)
     {
-      errno = ERANGE;
+        /* Commented out by jt since GSL doesn't have errno:
+           errno = ERANGE;
+        */
 #if	UNSIGNED
       return ULONG_MAX;
 #else
