@@ -28,7 +28,8 @@ gsl_histogram_fwrite (FILE * stream, const gsl_histogram * h)
 }
 
 int
-gsl_histogram_fprintf (FILE * stream, gsl_histogram * h, const char * format)
+gsl_histogram_fprintf (FILE * stream, const gsl_histogram * h, 
+		       const char * format)
 {
   size_t i ;
   const size_t n = h->nbins ;
