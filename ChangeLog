@@ -1,4 +1,10 @@
+Mon Jul  8 15:39:45 1996  Mark Galassi  <rosalia@sarastro.lanl.gov>
+
+	* Got Jim Davies involved, and put gsl in a proper CVS development
+	tree.  There are now three subdirectories: random, statistics and
+	doc, and "make dist" works well.
+
 Tue May  7 16:06:11 1996  Mark Galassi  <rosalia@edipus>
 
 	* For now this entire distribution is just a stub as I work on the
- 	design (in GR.texi).
+ 	design (in gsl.texi).
