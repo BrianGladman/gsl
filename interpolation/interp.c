@@ -24,7 +24,7 @@
 #include <gsl/gsl_errno.h>
 #include "gsl_interp.h"
 
-#define DISCARD_STATUS (s) if ((s) != GSL_SUCCESS) { GSL_ERROR_VAL("interpolation error", (s),  GSL_NAN); }
+#define DISCARD_STATUS(s) if ((s) != GSL_SUCCESS) { GSL_ERROR_VAL("interpolation error", (s),  GSL_NAN); }
 
 gsl_interp *
 gsl_interp_alloc (const gsl_interp_type * T, size_t size)
