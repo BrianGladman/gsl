@@ -1,3 +1,7 @@
+Mon Jul 16 21:28:37 2001  Brian Gough  <bjg@network-theory.co.uk>
+
+	* reim_source.c: initialized views to null
+
 Fri Jul 13 21:29:06 2001  Brian Gough  <bjg@network-theory.co.uk>
 
 	* changed views to be structs and used casts to initialize them

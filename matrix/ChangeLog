@@ -1,3 +1,7 @@
+Mon Jul 16 21:28:05 2001  Brian Gough  <bjg@network-theory.co.uk>
+
+	* rowcol_source.c (FUNCTION): initialized view to NULL
+
 Fri Jul 13 21:29:27 2001  Brian Gough  <bjg@network-theory.co.uk>
 
 	* changed views to be structs and used casts to initialize them

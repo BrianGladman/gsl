@@ -68,7 +68,7 @@ FUNCTION (gsl_matrix, column) (QUALIFIED_TYPE(gsl_matrix) * m, const size_t j)
 QUALIFIED_VIEW(gsl_vector,view)
 FUNCTION (gsl_matrix, diagonal) (QUALIFIED_TYPE(gsl_matrix) * m)
 {
-  QUALIFIED_VIEW(gsl_vector,view) view;
+  QUALIFIED_VIEW(gsl_vector,view) view = NULL_VECTOR_VIEW;
 
   TYPE(gsl_vector) v = NULL_VECTOR;
   v.data = m->data;

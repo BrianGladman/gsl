@@ -30,7 +30,7 @@ FUNCTION(gsl_vector, real) (QUALIFIED_TYPE(gsl_vector) * v)
   s.owner = 0;
 
   {
-    QUALIFIED_REAL_VIEW(gsl_vector,view) view;
+    QUALIFIED_REAL_VIEW(gsl_vector,view) view = NULL_VECTOR_VIEW;
     ((REAL_VIEW(gsl_vector,view) *)(&view))->vector = s;
     return view;
   }
@@ -48,7 +48,7 @@ FUNCTION(gsl_vector, imag) (QUALIFIED_TYPE(gsl_vector) * v)
   s.owner = 0;
 
   {
-    QUALIFIED_REAL_VIEW(gsl_vector,view) view;
+    QUALIFIED_REAL_VIEW(gsl_vector,view) view = NULL_VECTOR_VIEW;
     ((REAL_VIEW(gsl_vector,view) *)(&view))->vector = s;
     return view;
   }
