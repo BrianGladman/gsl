@@ -104,7 +104,8 @@ As of @value{UPDATED}, the complete packages are the random number suite
 (@pxref{Random number generation}), the FFT package (@pxref{FFTs}), the
 simulated annealing package (@pxref{Simulated Annealing}) and the root
 finding package (@pxref{Root finding}).  Work is under way on a special
-function library.
+function library, statistics, histograms, vectors and matrices
+(including BLAS).
 @end ifinfo
 
 
@@ -112,7 +113,7 @@ function library.
 * Preliminaries::               
 * Error handling in GSL::       
 * Random number generation::    
-* Basic statistics::            
+* Statistics::                  
 * FFTs::                        
 * Root finding::                
 * Special Functions::           
@@ -142,17 +143,17 @@ allowing wrappers to be written for very high level languages.
 @include err.texi
 
 @c Section on random number generation
-@node Random number generation, Basic statistics, Error handling in GSL, Top
+@node Random number generation, Statistics, Error handling in GSL, Top
 @chapter Random number generation
 @include random.texi
 
 @c Section on statistics
-@node Basic statistics, FFTs, Random number generation, Top
-@chapter Basic statistics
+@node Statistics, FFTs, Random number generation, Top
+@chapter Statistics
 @include statistics.texi
 
 @c Section on FFTs
-@node FFTs, Root finding, Basic statistics, Top
+@node FFTs, Root finding, Statistics, Top
 @chapter FFTs
 @include fft.texi
 
@@ -188,7 +189,7 @@ Conceived GSL (with Mark Galassi).  Wrote the random number generators
 and the relevant chapter in this manual.
 
 @item Jim Davies
-Wrote the basic statistical routines and the relevant chapter in this
+Wrote the statistical routines and the relevant chapter in this
 manual.
 
 @item Brian Gough
