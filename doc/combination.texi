@@ -182,7 +182,7 @@ determine how many numbers to read.  The function returns
 @node Combination Examples
 @section Examples
 The example program below prints all subsets of the set
-@math{@{1,2,3,4@}} ordered by size.  Subsets of the same size are
+@math{@{0,1,2,3@}} ordered by size.  Subsets of the same size are
 ordered lexicographically.
 
 @example
