@@ -427,13 +427,14 @@ single precision output (24 bits) at three luxury levels @code{ranlxs0},
 @code{ranlxs1} and @code{ranlxs2}.
 @end deffn
 
-@deffnx {Generator} gsl_rng_ranlxd1
+@deffn {Generator} gsl_rng_ranlxd1
 @deffnx {Generator} gsl_rng_ranlxd2
 @cindex RANLXD random number generator
 
 These generators produce double precision output (48 bits) from the
 RANLXS generator. The library provides two luxury levels @code{ranlxd1}
 and @code{ranlxd2}.
+@end deffn
 
 @deffn {Generator} gsl_rng_cmrg
 @cindex CMRG, combined multiple recursive random number generator
