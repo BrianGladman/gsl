@@ -41,7 +41,7 @@ gsl_ieee_read_mode_string (const char * description,
     int status ;
     int new_precision, new_rounding, new_exception ;
 
-    end = strchr (p,';') ;
+    end = strchr (p,',') ;
 
     if (end) 
       {
@@ -50,7 +50,7 @@ gsl_ieee_read_mode_string (const char * description,
 	  {
 	    end++ ;  /* skip over trailing whitespace */
 	  } 
-	while (*end == ' ' || *end == ';') ;
+	while (*end == ' ' || *end == ',') ;
       }
 	
     new_precision = 0 ; 
@@ -65,10 +65,10 @@ gsl_ieee_read_mode_string (const char * description,
 		 "  round-to-nearest round-down round-up round-to-zero\n"
 		 "  mask-invalid mask-denormalized mask-overflow "
 		 "mask-underflow\n"
-		 "  mask-all trap-common  trap-inexact\n"
+		 "  mask-all trap-common trap-inexact\n"
 		 "\n"
-		 "separated by semicolons. "
-		 "(e.g. GSL_IEEE_MODE=\"round-down;mask-underflow\")",
+		 "separated by commas. "
+		 "(e.g. GSL_IEEE_MODE=\"round-down,mask-underflow\")",
 		 GSL_EINVAL) ;
 
     if (new_precision) 

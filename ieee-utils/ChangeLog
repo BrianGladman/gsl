@@ -1,3 +1,8 @@
+Thu Mar 16 15:34:08 2000  Brian Gough  <bjg@network-theory.co.uk>
+
+	* read.c (gsl_ieee_read_mode_string): changed token separator to ,
+ 	instead of ;
+
 Thu Feb 24 19:20:50 2000  Brian Gough  <bjg@network-theory.co.uk>
 
 	* fp-tru64.c (gsl_ieee_set_mode): added an #ifdef for
