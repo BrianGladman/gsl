@@ -70,12 +70,15 @@ VERSION = @VERSION@
 full_top_builddir = @full_top_builddir@
 full_top_srcdir = @full_top_srcdir@
 
-lib_LIBRARIES = libgslspecfunc.a
+lib_LIBRARIES = 			\
+	libgslblas.a 			\
+	libgslblas_native_generic.a
 
 # check_PROGRAMS = test_blas
 
-include_HEADERS = \
+include_HEADERS = 		\
 	gsl_blas.h		\
+	gsl_blas_native.h	\
 	gsl_blas_types.h	\
 	gsl_blas_raw.h
 
@@ -89,9 +92,12 @@ INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../err -I$(srcdir)/../vector -I$(srcdir)/.
 #test_blas_DEPENDENCIES = libgslblas.a
 #test_blas_SOURCES = test_blas.c
 
-libgslspecfunc_a_SOURCES = 	\
+libgslblas_a_SOURCES = 		\
 	blas.c			\
 	blas_raw_generic.c
+
+libgslblas_native_generic_a_SOURCES = 	\
+	blas_native_generic.c
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
 CONFIG_CLEAN_FILES = 
@@ -102,8 +108,10 @@ DEFS = @DEFS@ -I. -I$(srcdir) -I..
 CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
-libgslspecfunc_a_LIBADD = 
-libgslspecfunc_a_OBJECTS =  blas.o blas_raw_generic.o
+libgslblas_a_LIBADD = 
+libgslblas_a_OBJECTS =  blas.o blas_raw_generic.o
+libgslblas_native_generic_a_LIBADD = 
+libgslblas_native_generic_a_OBJECTS =  blas_native_generic.o
 AR = ar
 CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
@@ -117,9 +125,10 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 TAR = tar
 GZIP = --best
-DEP_FILES =  .deps/blas.P .deps/blas_raw_generic.P
-SOURCES = $(libgslspecfunc_a_SOURCES)
-OBJECTS = $(libgslspecfunc_a_OBJECTS)
+DEP_FILES =  .deps/blas.P .deps/blas_native_generic.P \
+.deps/blas_raw_generic.P
+SOURCES = $(libgslblas_a_SOURCES) $(libgslblas_native_generic_a_SOURCES)
+OBJECTS = $(libgslblas_a_OBJECTS) $(libgslblas_native_generic_a_OBJECTS)
 
 all: Makefile $(LIBRARIES) $(HEADERS)
 
@@ -181,10 +190,15 @@ distclean-compile:
 
 maintainer-clean-compile:
 
-libgslspecfunc.a: $(libgslspecfunc_a_OBJECTS) $(libgslspecfunc_a_DEPENDENCIES)
-	-rm -f libgslspecfunc.a
-	$(AR) cru libgslspecfunc.a $(libgslspecfunc_a_OBJECTS) $(libgslspecfunc_a_LIBADD)
-	$(RANLIB) libgslspecfunc.a
+libgslblas.a: $(libgslblas_a_OBJECTS) $(libgslblas_a_DEPENDENCIES)
+	-rm -f libgslblas.a
+	$(AR) cru libgslblas.a $(libgslblas_a_OBJECTS) $(libgslblas_a_LIBADD)
+	$(RANLIB) libgslblas.a
+
+libgslblas_native_generic.a: $(libgslblas_native_generic_a_OBJECTS) $(libgslblas_native_generic_a_DEPENDENCIES)
+	-rm -f libgslblas_native_generic.a
+	$(AR) cru libgslblas_native_generic.a $(libgslblas_native_generic_a_OBJECTS) $(libgslblas_native_generic_a_LIBADD)
+	$(RANLIB) libgslblas_native_generic.a
 
 install-includeHEADERS: $(include_HEADERS)
 	@$(NORMAL_INSTALL)

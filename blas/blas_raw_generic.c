@@ -3,9 +3,7 @@
  * RCS:     $Id$
  */
 #include <math.h>
-#include "gsl_blas_types.h"
 #include "gsl_blas_raw.h"
-
 
 
 /*
