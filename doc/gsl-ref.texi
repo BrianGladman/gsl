@@ -310,6 +310,7 @@ More information about GSL can be found at the project homepage,
 * Special Functions::           
 * Vectors and Matrices::        
 * Permutations::                
+* Combinations::                
 * Sorting::                     
 * BLAS Support::                
 * Linear Algebra::              
@@ -384,11 +385,15 @@ More information about GSL can be found at the project homepage,
 @chapter Vectors and Matrices
 @include vectors.texi
 
-@node   Permutations, Sorting, Vectors and Matrices, Top
+@node   Permutations, Combinations, Vectors and Matrices, Top
 @chapter Permutations
 @include permutation.texi
 
-@node  Sorting, BLAS Support, Permutations, Top
+@node   Combinations, Sorting, Permutations, Top
+@chapter Combinations
+@include combination.texi
+
+@node  Sorting, BLAS Support, Combinations, Top
 @chapter Sorting
 @include sort.texi
 
@@ -554,6 +559,10 @@ Multidimensional minimization.
 @item Carlo Perassi
 Implementation of the random number generators in Knuth's
 @cite{Seminumerical Algorithms}, 3rd Ed.
+
+@item Szymon Jaroszewicz 
+@comment <sj@cs.umb.edu>
+Write the routines for generating combinations
 
 @end table
 

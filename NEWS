@@ -1,5 +1,7 @@
 * What will be new in gsl-1.1:
 
+** A combinations directory has been added for generating combinations (n,k)
+
 ** The gamma function now returns exact values for integer arguments
 
 ** Fixed bug in gsl_sf_hyperg_1F1_int

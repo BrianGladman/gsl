@@ -25,19 +25,20 @@ Routines are available for the following areas,
 @multitable @columnfractions 0.05 0.45 0.45 0.05
 @item @tab Complex Numbers            @tab Roots of Polynomials        
 @item @tab Special Functions          @tab Vectors and Matrices        
-@item @tab Permutations               @tab Sorting                    
-@item @tab BLAS Support               @tab Linear Algebra              
-@item @tab Eigensystems               @tab Fast Fourier Transforms    
-@item @tab Quadrature                 @tab Random Numbers    
-@item @tab Quasi-Random Sequences     @tab Random Distributions 
-@item @tab Statistics                 @tab Histograms                  
-@item @tab N-Tuples                   @tab Monte Carlo Integration     
-@item @tab Simulated Annealing        @tab Differential Equations  
-@item @tab Interpolation              @tab Numerical Differentiation   
-@item @tab Chebyshev Approximations   @tab Series Acceleration         
-@item @tab Discrete Hankel Transforms @tab Root-Finding   
-@item @tab Minimization               @tab Least-Squares Fitting          
-@item @tab Physical Constants         @tab IEEE Floating-Point 
+@item @tab Permutations               @tab Combinations              
+@item @tab Sorting                    @tab BLAS Support               
+@item @tab Linear Algebra             @tab BLAS Support               
+@item @tab Fast Fourier Transforms    @tab Eigensystems               
+@item @tab Random Numbers             @tab Quadrature                 
+@item @tab Random Distributions       @tab Quasi-Random Sequences     
+@item @tab Histograms                 @tab Statistics                 
+@item @tab Monte Carlo Integration    @tab N-Tuples                   
+@item @tab Differential Equations     @tab Simulated Annealing        
+@item @tab Numerical Differentiation  @tab Interpolation              
+@item @tab Series Acceleration        @tab Chebyshev Approximations   
+@item @tab Root-Finding               @tab Discrete Hankel Transforms 
+@item @tab Least-Squares Fitting      @tab Minimization               
+@item @tab IEEE Floating-Point        @tab Physical Constants         
 @end multitable
 @noindent
 The use of these routines is described in this manual.  Each chapter
