@@ -187,6 +187,95 @@ FUNCTION (test, func) (void)
   }
 
 
+  {
+    TYPE (gsl_vector) * a = FUNCTION (gsl_vector, calloc) (N);
+    TYPE (gsl_vector) * b = FUNCTION (gsl_vector, calloc) (N);
+    
+    for (i = 0; i < N; i++)
+      {
+        FUNCTION (gsl_vector, set) (a, i, (BASE)(3 + i));
+        FUNCTION (gsl_vector, set) (b, i, (BASE)(3 + 2 * i));
+      }
+    
+    FUNCTION(gsl_vector, memcpy) (v, a);
+    FUNCTION(gsl_vector, add) (v, b);
+    
+    {
+      int status = 0;
+      
+      for (i = 0; i < N; i++)
+        {
+          BASE r = FUNCTION(gsl_vector,get) (v,i);
+          BASE x = FUNCTION(gsl_vector,get) (a,i);
+          BASE y = FUNCTION(gsl_vector,get) (b,i);
+          BASE z = x + y;
+          if (r != z)
+            status = 1;
+        }
+      gsl_test (status, NAME (gsl_vector) "_add adds correctly");
+    }
+
+
+    FUNCTION(gsl_vector, memcpy) (v, a);
+    FUNCTION(gsl_vector, sub) (v, b);
+    
+    {
+      int status = 0;
+      
+      for (i = 0; i < N; i++)
+        {
+          BASE r = FUNCTION(gsl_vector,get) (v,i);
+          BASE x = FUNCTION(gsl_vector,get) (a,i);
+          BASE y = FUNCTION(gsl_vector,get) (b,i);
+          BASE z = x - y;
+          if (r != z)
+            status = 1;
+        }
+      gsl_test (status, NAME (gsl_vector) "_sub subtracts correctly");
+    }
+
+    FUNCTION(gsl_vector, memcpy) (v, a);
+    FUNCTION(gsl_vector, mul_elements) (v, b);
+    
+    {
+      int status = 0;
+      
+      for (i = 0; i < N; i++)
+        {
+          BASE r = FUNCTION(gsl_vector,get) (v,i);
+          BASE x = FUNCTION(gsl_vector,get) (a,i);
+          BASE y = FUNCTION(gsl_vector,get) (b,i);
+          BASE z = x * y;
+          if (r != z)
+            status = 1;
+        }
+      gsl_test (status, NAME (gsl_vector) "_mul_elements multiplies correctly");
+    }
+
+    FUNCTION(gsl_vector, memcpy) (v, a);
+    FUNCTION(gsl_vector, div_elements) (v, b);
+    
+    {
+      int status = 0;
+      
+      for (i = 0; i < N; i++)
+        {
+          BASE r = FUNCTION(gsl_vector,get) (v,i);
+          BASE x = FUNCTION(gsl_vector,get) (a,i);
+          BASE y = FUNCTION(gsl_vector,get) (b,i);
+          BASE z = x / y;
+          if (fabs(r - z) > 2 * GSL_DBL_EPSILON * fabs(z))
+            status = 1;
+        }
+      gsl_test (status, NAME (gsl_vector) "_div_elements divides correctly");
+    }
+
+
+    FUNCTION(gsl_vector, free) (a);
+    FUNCTION(gsl_vector, free) (b);
+  }
+
+
 
 
   FUNCTION (gsl_vector, free) (v);	/* free whatever is in v */

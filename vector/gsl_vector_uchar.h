@@ -97,6 +97,13 @@ size_t gsl_vector_uchar_max_index (const gsl_vector_uchar * v);
 size_t gsl_vector_uchar_min_index (const gsl_vector_uchar * v);
 void gsl_vector_uchar_minmax_index (const gsl_vector_uchar * v, size_t * imin, size_t * imax);
 
+int gsl_vector_uchar_add (gsl_vector_uchar * a, const gsl_vector_uchar * b);
+int gsl_vector_uchar_sub (gsl_vector_uchar * a, const gsl_vector_uchar * b);
+int gsl_vector_uchar_mul_elements (gsl_vector_uchar * a, const gsl_vector_uchar * b);
+int gsl_vector_uchar_div_elements (gsl_vector_uchar * a, const gsl_vector_uchar * b);
+int gsl_vector_uchar_scale (gsl_vector_uchar * a, const double x);
+int gsl_vector_uchar_add_constant (gsl_vector_uchar * a, const double x);
+
 
 int gsl_vector_uchar_isnull (const gsl_vector_uchar * v);
 

@@ -97,6 +97,13 @@ size_t gsl_vector_long_double_max_index (const gsl_vector_long_double * v);
 size_t gsl_vector_long_double_min_index (const gsl_vector_long_double * v);
 void gsl_vector_long_double_minmax_index (const gsl_vector_long_double * v, size_t * imin, size_t * imax);
 
+int gsl_vector_long_double_add (gsl_vector_long_double * a, const gsl_vector_long_double * b);
+int gsl_vector_long_double_sub (gsl_vector_long_double * a, const gsl_vector_long_double * b);
+int gsl_vector_long_double_mul_elements (gsl_vector_long_double * a, const gsl_vector_long_double * b);
+int gsl_vector_long_double_div_elements (gsl_vector_long_double * a, const gsl_vector_long_double * b);
+int gsl_vector_long_double_scale (gsl_vector_long_double * a, const double x);
+int gsl_vector_long_double_add_constant (gsl_vector_long_double * a, const double x);
+
 
 int gsl_vector_long_double_isnull (const gsl_vector_long_double * v);
 

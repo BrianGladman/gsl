@@ -97,6 +97,13 @@ size_t gsl_vector_ulong_max_index (const gsl_vector_ulong * v);
 size_t gsl_vector_ulong_min_index (const gsl_vector_ulong * v);
 void gsl_vector_ulong_minmax_index (const gsl_vector_ulong * v, size_t * imin, size_t * imax);
 
+int gsl_vector_ulong_add (gsl_vector_ulong * a, const gsl_vector_ulong * b);
+int gsl_vector_ulong_sub (gsl_vector_ulong * a, const gsl_vector_ulong * b);
+int gsl_vector_ulong_mul_elements (gsl_vector_ulong * a, const gsl_vector_ulong * b);
+int gsl_vector_ulong_div_elements (gsl_vector_ulong * a, const gsl_vector_ulong * b);
+int gsl_vector_ulong_scale (gsl_vector_ulong * a, const double x);
+int gsl_vector_ulong_add_constant (gsl_vector_ulong * a, const double x);
+
 
 int gsl_vector_ulong_isnull (const gsl_vector_ulong * v);
 

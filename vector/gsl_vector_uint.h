@@ -97,6 +97,13 @@ size_t gsl_vector_uint_max_index (const gsl_vector_uint * v);
 size_t gsl_vector_uint_min_index (const gsl_vector_uint * v);
 void gsl_vector_uint_minmax_index (const gsl_vector_uint * v, size_t * imin, size_t * imax);
 
+int gsl_vector_uint_add (gsl_vector_uint * a, const gsl_vector_uint * b);
+int gsl_vector_uint_sub (gsl_vector_uint * a, const gsl_vector_uint * b);
+int gsl_vector_uint_mul_elements (gsl_vector_uint * a, const gsl_vector_uint * b);
+int gsl_vector_uint_div_elements (gsl_vector_uint * a, const gsl_vector_uint * b);
+int gsl_vector_uint_scale (gsl_vector_uint * a, const double x);
+int gsl_vector_uint_add_constant (gsl_vector_uint * a, const double x);
+
 
 int gsl_vector_uint_isnull (const gsl_vector_uint * v);
 

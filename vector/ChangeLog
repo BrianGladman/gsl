@@ -1,3 +1,7 @@
+Fri May  5 10:57:16 2000  Brian Gough  <bjg@network-theory.co.uk>
+
+	* oper.c: added simple arithmetic operations (+,-,*,/,scale,+const)
+
 Wed Apr 26 14:17:14 2000  Brian Gough  <bjg@network-theory.co.uk>
 
 	* prop_source.c (FUNCTION): added const to argument of

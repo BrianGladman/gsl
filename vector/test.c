@@ -20,6 +20,7 @@
 #include <config.h>
 #include <fcntl.h>
 #include <stdio.h>
+#include <gsl/gsl_math.h>
 #include <gsl/gsl_vector.h>
 #include <gsl/gsl_test.h>
 
