@@ -21,8 +21,8 @@ CODATA 1998 recommendations.
 ** Fixed memory leak in the Chebyshev module.
 
 ** The seeding procedure of mt19937 has been updated to the latest
-version from Makoto Matsumoto and Takuji Nishimura. The original
-seeding procedure is available through the generator
+version from Makoto Matsumoto and Takuji Nishimura (Jan 2002). The
+original seeding procedure is available through the generator
 gsl_rng_mt19937_1999.
 
 ** New multiroot functions now allow access to the current values of f

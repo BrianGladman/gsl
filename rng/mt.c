@@ -148,6 +148,8 @@ mt_set (void *vstate, unsigned long int s)
       
       state->mt[i] &= 0xffffffffUL;
     }
+
+  state->mti = i;
 }
 
 static void

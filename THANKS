@@ -169,4 +169,4 @@ memory leak
 in siman_solve.
 
 * Trevor Blackwell <tlb@trevorblackwell.com> bug report test case for
-SVD d_n = 0
+SVD d_n = 0, bug fix to mt19937 generator

@@ -1,3 +1,8 @@
+Mon Jun 17 21:04:10 2002  Brian Gough  <bjg@network-theory.co.uk>
+
+	* mt.c (mt_set): ensure state counter mti is initialised by
+ 	seeding routine
+
 Wed May 29 21:52:11 2002  Brian Gough  <bjg@network-theory.co.uk>
 
 	* randu.c: removed unused variable m
