@@ -17,45 +17,40 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-/*
- * Author:  G. Jungman
- * RCS:     $Id$
- */
-
 {
-    size_t i, j;
+  size_t i, j;
 
-    if (N == 0)
-      return;
+  if (N == 0)
+    return;
 
-    if (alpha == 0.0)
-      return;
+  if (alpha == 0.0)
+    return;
 
-    if ((order == CblasRowMajor && Uplo == CblasUpper)
-        || (order == CblasColMajor && Uplo == CblasLower)) {
-      size_t ix = OFFSET(N, incX);
-      for (i = 0; i < N; i++) {
-	const BASE tmp = alpha * X[ix];
-	size_t jx = ix;
-	for (j = i ; j < N; j++) {
-          Ap[TPUP(N,i,j)] += X[jx] * tmp;
-          jx += incX;
-	}
-	ix += incX;
+  if ((order == CblasRowMajor && Uplo == CblasUpper)
+      || (order == CblasColMajor && Uplo == CblasLower)) {
+    size_t ix = OFFSET(N, incX);
+    for (i = 0; i < N; i++) {
+      const BASE tmp = alpha * X[ix];
+      size_t jx = ix;
+      for (j = i; j < N; j++) {
+	Ap[TPUP(N, i, j)] += X[jx] * tmp;
+	jx += incX;
       }
-    } else if ((order == CblasRowMajor && Uplo == CblasLower)
-               || (order == CblasColMajor && Uplo == CblasUpper)) {
-      size_t ix = OFFSET(N, incX);
-      for (i = 0; i < N; i++) {
-	const BASE tmp = alpha * X[ix];
-	size_t jx = OFFSET(N, incX);
-	for (j = 0 ; j <= i; j++) {
-          Ap[TPLO(N,i,j)] += X[jx] * tmp;
-          jx += incX;
-	}
-	ix += incX;
-      }
-    } else {
-      BLAS_ERROR("unrecognized operation");
+      ix += incX;
     }
+  } else if ((order == CblasRowMajor && Uplo == CblasLower)
+	     || (order == CblasColMajor && Uplo == CblasUpper)) {
+    size_t ix = OFFSET(N, incX);
+    for (i = 0; i < N; i++) {
+      const BASE tmp = alpha * X[ix];
+      size_t jx = OFFSET(N, incX);
+      for (j = 0; j <= i; j++) {
+	Ap[TPLO(N, i, j)] += X[jx] * tmp;
+	jx += incX;
+      }
+      ix += incX;
+    }
+  } else {
+    BLAS_ERROR("unrecognized operation");
+  }
 }

@@ -18,74 +18,73 @@
  */
 
 {
-    size_t i, j;
-    size_t ix, iy;
-    size_t lenX, lenY;
+  size_t i, j;
+  size_t lenX, lenY;
 
-    const int Trans = (TransA != CblasConjTrans) ? TransA : CblasTrans;
+  const int Trans = (TransA != CblasConjTrans) ? TransA : CblasTrans;
 
-    if (M == 0 || N == 0)
-      return;
+  if (M == 0 || N == 0)
+    return;
 
-    if (alpha == 0.0 && beta == 1.0)
-	return;
+  if (alpha == 0.0 && beta == 1.0)
+    return;
 
-    if (Trans == CblasNoTrans) {
-	lenX = N;
-	lenY = M;
-    } else {
-	lenX = M;
-	lenY = N;
+  if (Trans == CblasNoTrans) {
+    lenX = N;
+    lenY = M;
+  } else {
+    lenX = M;
+    lenY = N;
+  }
+
+  /* form  y := beta*y */
+  if (beta == 0.0) {
+    size_t iy = OFFSET(lenY, incY);
+    for (i = 0; i < lenY; i++) {
+      Y[iy] = 0.0;
+      iy += incY;
     }
-
-    /* form  y := beta*y */
-    if (beta == 0.0) {
-	iy = OFFSET(lenY, incY);
-	for (i = 0; i < lenY; i++) {
-	    Y[iy] = 0.0;
-	    iy += incY;
-	}
-    } else if (beta != 1.0) {
-	iy = OFFSET(lenY, incY);
-	for (i = 0; i < lenY; i++) {
-	    Y[iy] *= beta;
-	    iy += incY;
-	}
+  } else if (beta != 1.0) {
+    size_t iy = OFFSET(lenY, incY);
+    for (i = 0; i < lenY; i++) {
+      Y[iy] *= beta;
+      iy += incY;
     }
+  }
 
-    if (alpha == 0.0)
-	return;
+  if (alpha == 0.0)
+    return;
 
-    if ((order == CblasRowMajor && Trans == CblasNoTrans)
-	|| (order == CblasColMajor && Trans == CblasTrans)) {
-	/* form  y := alpha*A*x + y */
-	iy = OFFSET(lenY, incY);
-	for (i = 0; i < lenY; i++) {
-	    BASE temp = 0.0;
-	    ix = OFFSET(lenX, incX);
-	    for (j = 0; j < lenX; j++) {
-		temp += X[ix] * A[lda * i + j];
-		ix += incX;
-	    }
-	    Y[iy] += alpha * temp;
-	    iy += incY;
-	}
-    } else if ((order == CblasRowMajor && Trans == CblasTrans)
-	       || (order == CblasColMajor && Trans == CblasNoTrans)) {
-	/* form  y := alpha*A'*x + y */
-	ix = OFFSET(lenX, incX);
-	for (j = 0; j < lenX; j++) {
-	    const BASE temp = alpha * X[ix];
-	    if (temp != 0.0) {
-		iy = OFFSET(lenY, incY);
-		for (i = 0; i < lenY; i++) {
-		    Y[iy] += temp * A[lda * j + i];
-		    iy += incY;
-		}
-	    }
-	    ix += incX;
-	}
-    } else {
-	BLAS_ERROR("unrecognized operation");
+  if ((order == CblasRowMajor && Trans == CblasNoTrans)
+      || (order == CblasColMajor && Trans == CblasTrans)) {
+    /* form  y := alpha*A*x + y */
+    size_t iy = OFFSET(lenY, incY);
+    for (i = 0; i < lenY; i++) {
+      BASE temp = 0.0;
+      size_t ix = OFFSET(lenX, incX);
+      for (j = 0; j < lenX; j++) {
+	temp += X[ix] * A[lda * i + j];
+	ix += incX;
+      }
+      Y[iy] += alpha * temp;
+      iy += incY;
     }
+  } else if ((order == CblasRowMajor && Trans == CblasTrans)
+	     || (order == CblasColMajor && Trans == CblasNoTrans)) {
+    /* form  y := alpha*A'*x + y */
+    size_t ix = OFFSET(lenX, incX);
+    for (j = 0; j < lenX; j++) {
+      const BASE temp = alpha * X[ix];
+      if (temp != 0.0) {
+	size_t iy = OFFSET(lenY, incY);
+	for (i = 0; i < lenY; i++) {
+	  Y[iy] += temp * A[lda * j + i];
+	  iy += incY;
+	}
+      }
+      ix += incX;
+    }
+  } else {
+    BLAS_ERROR("unrecognized operation");
+  }
 }

@@ -19,63 +19,62 @@
 
 {
   const int conj = (order == CblasColMajor) ? -1 : 1;
-    size_t i, j;
+  size_t i, j;
 
-    if (alpha == 0.0)
-      return;
+  if (alpha == 0.0)
+    return;
 
-    if ((order == CblasRowMajor && Uplo == CblasUpper)
-        || (order == CblasColMajor && Uplo == CblasLower)) {
-      size_t ix = OFFSET(N, incX);
-      for (i = 0; i < N; i++) {
-	const BASE tmp_real = alpha * REAL(X, ix);
-	const BASE tmp_imag = alpha * conj * IMAG(X, ix);
-	size_t jx = ix;
+  if ((order == CblasRowMajor && Uplo == CblasUpper)
+      || (order == CblasColMajor && Uplo == CblasLower)) {
+    size_t ix = OFFSET(N, incX);
+    for (i = 0; i < N; i++) {
+      const BASE tmp_real = alpha * REAL(X, ix);
+      const BASE tmp_imag = alpha * conj * IMAG(X, ix);
+      size_t jx = ix;
 
-        {
-          const BASE X_real = REAL(X, jx);
-          const BASE X_imag = -conj * IMAG(X, jx);
-          REAL(A, lda * i + i) += X_real * tmp_real - X_imag * tmp_imag;
-          IMAG(A, lda * i + i) = 0;
-          jx += incX;
-        }
-
-	for (j = i+1 ; j < N; j++) {
-          const BASE X_real = REAL(X, jx);
-          const BASE X_imag = -conj * IMAG(X, jx);
-          REAL(A, lda * i + j) += X_real * tmp_real - X_imag * tmp_imag;
-          IMAG(A, lda * i + j) += X_imag * tmp_real + X_real * tmp_imag;
-          jx += incX;
-	}
-	ix += incX;
+      {
+	const BASE X_real = REAL(X, jx);
+	const BASE X_imag = -conj * IMAG(X, jx);
+	REAL(A, lda * i + i) += X_real * tmp_real - X_imag * tmp_imag;
+	IMAG(A, lda * i + i) = 0;
+	jx += incX;
       }
-    } else if ((order == CblasRowMajor && Uplo == CblasLower)
-               || (order == CblasColMajor && Uplo == CblasUpper)) {
-      size_t ix = OFFSET(N, incX);
-      for (i = 0; i < N; i++) {
-	const BASE tmp_real = alpha * REAL(X,ix);
-	const BASE tmp_imag = alpha * conj * IMAG(X,ix);
-	size_t jx = OFFSET(N, incX);
-	for (j = 0 ; j < i; j++) {
-          const BASE X_real = REAL(X, jx);
-          const BASE X_imag = -conj * IMAG(X, jx);
-          REAL(A, lda * i + j) += X_real * tmp_real - X_imag * tmp_imag;
-          IMAG(A, lda * i + j) += X_imag * tmp_real + X_real * tmp_imag;
-          jx += incX;
-	}
 
-        {
-          const BASE X_real = REAL(X, jx);
-          const BASE X_imag = -conj * IMAG(X, jx);
-          REAL(A, lda * i + i) += X_real * tmp_real - X_imag * tmp_imag;
-          IMAG(A, lda * i + i) = 0;
-          jx += incX;
-        }
-
-	ix += incX;
+      for (j = i + 1; j < N; j++) {
+	const BASE X_real = REAL(X, jx);
+	const BASE X_imag = -conj * IMAG(X, jx);
+	REAL(A, lda * i + j) += X_real * tmp_real - X_imag * tmp_imag;
+	IMAG(A, lda * i + j) += X_imag * tmp_real + X_real * tmp_imag;
+	jx += incX;
       }
-    } else {
-      BLAS_ERROR("unrecognized operation");
+      ix += incX;
     }
-}
+  } else if ((order == CblasRowMajor && Uplo == CblasLower)
+	     || (order == CblasColMajor && Uplo == CblasUpper)) {
+    size_t ix = OFFSET(N, incX);
+    for (i = 0; i < N; i++) {
+      const BASE tmp_real = alpha * REAL(X, ix);
+      const BASE tmp_imag = alpha * conj * IMAG(X, ix);
+      size_t jx = OFFSET(N, incX);
+      for (j = 0; j < i; j++) {
+	const BASE X_real = REAL(X, jx);
+	const BASE X_imag = -conj * IMAG(X, jx);
+	REAL(A, lda * i + j) += X_real * tmp_real - X_imag * tmp_imag;
+	IMAG(A, lda * i + j) += X_imag * tmp_real + X_real * tmp_imag;
+	jx += incX;
+      }
 
+      {
+	const BASE X_real = REAL(X, jx);
+	const BASE X_imag = -conj * IMAG(X, jx);
+	REAL(A, lda * i + i) += X_real * tmp_real - X_imag * tmp_imag;
+	IMAG(A, lda * i + i) = 0;
+	jx += incX;
+      }
+
+      ix += incX;
+    }
+  } else {
+    BLAS_ERROR("unrecognized operation");
+  }
+}

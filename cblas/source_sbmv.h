@@ -17,90 +17,84 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-/*
- * Author:  G. Jungman
- * RCS:     $Id$
- */
-
 {
-    size_t i, j;
+  size_t i, j;
 
-    if (N == 0)
-      return;
+  if (N == 0)
+    return;
 
-    if (alpha == 0.0 && beta == 1.0)
-	return;
+  if (alpha == 0.0 && beta == 1.0)
+    return;
 
-    /* form  y := beta*y */
-    if (beta == 0.0) {
-        size_t iy = OFFSET(N, incY);
-	for (i = 0; i < N; i++) {
-	    Y[iy] = 0.0;
-	    iy += incY;
-	}
-    } else if (beta != 1.0) {
-	size_t iy = OFFSET(N, incY);
-	for (i = 0; i < N; i++) {
-	    Y[iy] *= beta;
-	    iy += incY;
-	}
+  /* form  y := beta*y */
+  if (beta == 0.0) {
+    size_t iy = OFFSET(N, incY);
+    for (i = 0; i < N; i++) {
+      Y[iy] = 0.0;
+      iy += incY;
     }
-
-    if (alpha == 0.0)
-	return;
-
-    /* form  y := alpha*A*x + y */
-
-    if ((order == CblasRowMajor && Uplo == CblasUpper)
-       || (order == CblasColMajor && Uplo == CblasLower)){
-      size_t ix = OFFSET(N, incX);
-      size_t iy = OFFSET(N, incY);
-
-      for (i = 0; i < N; i++) {
-	    BASE tmp1 = alpha * X[ix];
-	    BASE tmp2 = 0.0;
-            const size_t j_min = i + 1;
-            const size_t j_max = GSL_MIN(N, i + K + 1);
-            size_t jx = OFFSET(N, incX) + j_min * incX;
-            size_t jy = OFFSET(N, incY) + j_min * incY;
-	    Y[iy] += tmp1 * A[0 + i * lda];
-	    for (j = j_min; j < j_max; j++) {
-                BASE Aij = A[(j-i) + i * lda];
-                Y[jy] += tmp1 * Aij;
-		tmp2 += Aij * X[jx];
-                jx += incX;
-                jy += incY;
-	    }
-	    Y[iy] += alpha * tmp2;
-	    ix += incX;
-	    iy += incY;
-	}
-    }  else if ((order == CblasRowMajor && Uplo == CblasLower)
-                || (order == CblasColMajor && Uplo == CblasUpper)) {
-      size_t ix = OFFSET(N, incX);
-      size_t iy = OFFSET(N, incY);
-
-      for (i = 0; i < N; i++) {
-	    BASE tmp1 = alpha * X[ix];
-	    BASE tmp2 = 0.0;
-            const size_t j_min = (i > K) ? i - K : 0;
-            const size_t j_max = i;
-            size_t jx = OFFSET(N, incX) + j_min * incX;
-            size_t jy = OFFSET(N, incY) + j_min * incY;
-	    for (j = j_min; j < j_max; j++) {
-              BASE Aij = A[(K-i+j) + i*lda];
-		Y[jy] += tmp1 * Aij;
-		tmp2 += Aij * X[jx];
-                jx += incX;
-                jy += incY;
-	    }
-	    Y[iy] += tmp1 * A[K +  i * lda] + alpha * tmp2;
-	    ix += incX;
-	    iy += incY;
-	}
-    } else {
-      BLAS_ERROR ("unrecognized operation");
+  } else if (beta != 1.0) {
+    size_t iy = OFFSET(N, incY);
+    for (i = 0; i < N; i++) {
+      Y[iy] *= beta;
+      iy += incY;
     }
+  }
+
+  if (alpha == 0.0)
+    return;
+
+  /* form  y := alpha*A*x + y */
+
+  if ((order == CblasRowMajor && Uplo == CblasUpper)
+      || (order == CblasColMajor && Uplo == CblasLower)) {
+    size_t ix = OFFSET(N, incX);
+    size_t iy = OFFSET(N, incY);
+
+    for (i = 0; i < N; i++) {
+      BASE tmp1 = alpha * X[ix];
+      BASE tmp2 = 0.0;
+      const size_t j_min = i + 1;
+      const size_t j_max = GSL_MIN(N, i + K + 1);
+      size_t jx = OFFSET(N, incX) + j_min * incX;
+      size_t jy = OFFSET(N, incY) + j_min * incY;
+      Y[iy] += tmp1 * A[0 + i * lda];
+      for (j = j_min; j < j_max; j++) {
+	BASE Aij = A[(j - i) + i * lda];
+	Y[jy] += tmp1 * Aij;
+	tmp2 += Aij * X[jx];
+	jx += incX;
+	jy += incY;
+      }
+      Y[iy] += alpha * tmp2;
+      ix += incX;
+      iy += incY;
+    }
+  } else if ((order == CblasRowMajor && Uplo == CblasLower)
+	     || (order == CblasColMajor && Uplo == CblasUpper)) {
+    size_t ix = OFFSET(N, incX);
+    size_t iy = OFFSET(N, incY);
+
+    for (i = 0; i < N; i++) {
+      BASE tmp1 = alpha * X[ix];
+      BASE tmp2 = 0.0;
+      const size_t j_min = (i > K) ? i - K : 0;
+      const size_t j_max = i;
+      size_t jx = OFFSET(N, incX) + j_min * incX;
+      size_t jy = OFFSET(N, incY) + j_min * incY;
+      for (j = j_min; j < j_max; j++) {
+	BASE Aij = A[(K - i + j) + i * lda];
+	Y[jy] += tmp1 * Aij;
+	tmp2 += Aij * X[jx];
+	jx += incX;
+	jy += incY;
+      }
+      Y[iy] += tmp1 * A[K + i * lda] + alpha * tmp2;
+      ix += incX;
+      iy += incY;
+    }
+  } else {
+    BLAS_ERROR("unrecognized operation");
+  }
 
 }
-

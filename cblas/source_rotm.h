@@ -18,40 +18,40 @@
  */
 
 {
-    size_t n;
-    size_t i = OFFSET(N, incX);
-    size_t j = OFFSET(N, incY);
+  size_t n;
+  size_t i = OFFSET(N, incX);
+  size_t j = OFFSET(N, incY);
 
-    BASE h11, h21, h12, h22;
+  BASE h11, h21, h12, h22;
 
-    if (P[0] == -1.0) {
-	h11 = P[1];
-	h21 = P[2];
-	h12 = P[3];
-	h22 = P[4];
-    } else if (P[0] == 0.0) {
-	h11 = 1.0;
-	h21 = P[2];
-	h12 = P[3];
-	h22 = 1.0;
-    } else if (P[0] == 1.0) {
-	h11 = P[1];
-	h21 = -1.0;
-	h12 = 1.0;
-	h22 = P[4];
-    } else if (P[0] == -2.0) {
-	return;
-    } else {
-      BLAS_ERROR ("unrecognized value of P[0]");
-    }
+  if (P[0] == -1.0) {
+    h11 = P[1];
+    h21 = P[2];
+    h12 = P[3];
+    h22 = P[4];
+  } else if (P[0] == 0.0) {
+    h11 = 1.0;
+    h21 = P[2];
+    h12 = P[3];
+    h22 = 1.0;
+  } else if (P[0] == 1.0) {
+    h11 = P[1];
+    h21 = -1.0;
+    h12 = 1.0;
+    h22 = P[4];
+  } else if (P[0] == -2.0) {
+    return;
+  } else {
+    BLAS_ERROR("unrecognized value of P[0]");
+  }
 
-    for (n = 0; n < N; n++) {
-	const BASE w = X[i];
-        const BASE z = Y[j];
-	X[i] = h11 * w + h12 * z;
-	Y[j] = h21 * w + h22 * z;
-	i += incX;
-	j += incY;
-    }
+  for (n = 0; n < N; n++) {
+    const BASE w = X[i];
+    const BASE z = Y[j];
+    X[i] = h11 * w + h12 * z;
+    Y[j] = h21 * w + h22 * z;
+    i += incX;
+    j += incY;
+  }
 
 }

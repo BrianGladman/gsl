@@ -17,88 +17,82 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-/*
- * Author:  G. Jungman
- * RCS:     $Id$
- */
-
 {
-    size_t i, j;
-    size_t ix, jx;
-    const int nounit = (Diag == CblasNonUnit);
-    const int Trans = (TransA != CblasConjTrans) ? TransA : CblasTrans;
+  size_t i, j;
+  size_t ix, jx;
+  const int nonunit = (Diag == CblasNonUnit);
+  const int Trans = (TransA != CblasConjTrans) ? TransA : CblasTrans;
 
-    if (N == 0)
-      return;
+  if (N == 0)
+    return;
 
-    if ((order == CblasRowMajor && Trans == CblasNoTrans && Uplo == CblasUpper)
-	|| (order == CblasColMajor && Trans == CblasTrans && Uplo == CblasLower)) {
-	/* form  x:= A*x */
+  if ((order == CblasRowMajor && Trans == CblasNoTrans && Uplo == CblasUpper)
+      || (order == CblasColMajor && Trans == CblasTrans && Uplo == CblasLower)) {
+    /* form  x:= A*x */
 
-      ix = OFFSET(N, incX);
-      for (i = 0; i < N; i++) {
-        BASE atmp = Ap[TPUP(N, i, i)];
-        BASE temp = (nounit ? X[ix] * atmp : X[ix]);
-        jx = OFFSET(N, incX) + (i + 1) * incX;
-        for (j = i + 1; j < N; j++) {
-          atmp = Ap[TPUP(N, i, j)];
-          temp += atmp * X[jx];
-          jx += incX;
-        }
-        X[ix] = temp;
-        ix += incX;
+    ix = OFFSET(N, incX);
+    for (i = 0; i < N; i++) {
+      BASE atmp = Ap[TPUP(N, i, i)];
+      BASE temp = (nonunit ? X[ix] * atmp : X[ix]);
+      jx = OFFSET(N, incX) + (i + 1) * incX;
+      for (j = i + 1; j < N; j++) {
+	atmp = Ap[TPUP(N, i, j)];
+	temp += atmp * X[jx];
+	jx += incX;
       }
-    } else if ((order == CblasRowMajor && Trans == CblasNoTrans && Uplo == CblasLower)
-               || (order == CblasColMajor && Trans == CblasTrans && Uplo == CblasUpper)) {
-
-      ix = OFFSET(N, incX) + (N - 1) * incX;
-      for (i = N; i > 0 && i--;) {
-        BASE atmp = Ap[TPLO(N, i, i)];
-        BASE temp = (nounit ? X[ix] * atmp : X[ix]);
-        size_t jx = OFFSET(N, incX);
-        for (j = 0; j < i; j++) {
-          atmp = Ap[TPLO(N, i, j)];
-          temp += atmp * X[jx];
-          jx += incX;
-        }
-        X[ix] = temp;
-        ix -= incX;
-      }
-    } else if ((order == CblasRowMajor && Trans == CblasTrans && Uplo == CblasUpper)
-	       || (order == CblasColMajor && Trans == CblasNoTrans && Uplo == CblasLower)) {
-	/* form  x := A'*x */
-      
-      ix = OFFSET(N, incX) + (N - 1) * incX;
-      for (i = N; i > 0 && i--;) {
-        BASE atmp = Ap[TPUP(N, i, i)];
-        BASE temp = (nounit ? X[ix] * atmp : X[ix]);
-        size_t jx = OFFSET(N, incX);
-        for (j = 0; j < i; j++) {
-          atmp = Ap[TPUP(N, j, i)];
-          temp += atmp * X[jx];
-          jx += incX;
-        }
-        X[ix] = temp;
-        ix -= incX;
-      }
-    } else if ((order == CblasRowMajor && Trans == CblasTrans && Uplo == CblasLower)
-	       || (order == CblasColMajor && Trans == CblasNoTrans && Uplo == CblasUpper)) {
-      
-      ix = OFFSET(N, incX);
-      for (i = 0; i < N; i++) {
-        BASE atmp = Ap[TPLO(N, i, i)];
-        BASE temp = (nounit ? X[ix] * atmp : X[ix]);
-        jx = OFFSET(N, incX) + (i + 1) * incX;
-        for (j = i + 1; j < N; j++) {
-          atmp = Ap[TPLO(N, j, i)];
-          temp += atmp * X[jx];
-          jx += incX;
-        }
-        X[ix] = temp;
-        ix += incX;
-      }
-    } else {
-      BLAS_ERROR ("unrecognized operation");
+      X[ix] = temp;
+      ix += incX;
     }
-}
+  } else if ((order == CblasRowMajor && Trans == CblasNoTrans && Uplo == CblasLower)
+	     || (order == CblasColMajor && Trans == CblasTrans && Uplo == CblasUpper)) {
 
+    ix = OFFSET(N, incX) + (N - 1) * incX;
+    for (i = N; i > 0 && i--;) {
+      BASE atmp = Ap[TPLO(N, i, i)];
+      BASE temp = (nonunit ? X[ix] * atmp : X[ix]);
+      size_t jx = OFFSET(N, incX);
+      for (j = 0; j < i; j++) {
+	atmp = Ap[TPLO(N, i, j)];
+	temp += atmp * X[jx];
+	jx += incX;
+      }
+      X[ix] = temp;
+      ix -= incX;
+    }
+  } else if ((order == CblasRowMajor && Trans == CblasTrans && Uplo == CblasUpper)
+	     || (order == CblasColMajor && Trans == CblasNoTrans && Uplo == CblasLower)) {
+    /* form  x := A'*x */
+
+    ix = OFFSET(N, incX) + (N - 1) * incX;
+    for (i = N; i > 0 && i--;) {
+      BASE atmp = Ap[TPUP(N, i, i)];
+      BASE temp = (nonunit ? X[ix] * atmp : X[ix]);
+      size_t jx = OFFSET(N, incX);
+      for (j = 0; j < i; j++) {
+	atmp = Ap[TPUP(N, j, i)];
+	temp += atmp * X[jx];
+	jx += incX;
+      }
+      X[ix] = temp;
+      ix -= incX;
+    }
+  } else if ((order == CblasRowMajor && Trans == CblasTrans && Uplo == CblasLower)
+	     || (order == CblasColMajor && Trans == CblasNoTrans && Uplo == CblasUpper)) {
+
+    ix = OFFSET(N, incX);
+    for (i = 0; i < N; i++) {
+      BASE atmp = Ap[TPLO(N, i, i)];
+      BASE temp = (nonunit ? X[ix] * atmp : X[ix]);
+      jx = OFFSET(N, incX) + (i + 1) * incX;
+      for (j = i + 1; j < N; j++) {
+	atmp = Ap[TPLO(N, j, i)];
+	temp += atmp * X[jx];
+	jx += incX;
+      }
+      X[ix] = temp;
+      ix += incX;
+    }
+  } else {
+    BLAS_ERROR("unrecognized operation");
+  }
+}

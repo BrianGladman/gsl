@@ -1,4 +1,4 @@
-/* blas/source_tXsv_r.h
+/* blas/source_trsv_r.h
  * 
  * Copyright (C) 1996, 1997, 1998, 1999, 2000 Gerard Jungman
  * 
@@ -17,122 +17,116 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-/*
- * Author:  G. Jungman
- * RCS:     $Id$
- */
-
 {
-    const int nonunit = (Diag == CblasNonUnit);
-    size_t ix, jx;
-    size_t i, j;
-    const int Trans = (TransA != CblasConjTrans) ? TransA : CblasTrans;
+  const int nonunit = (Diag == CblasNonUnit);
+  size_t ix, jx;
+  size_t i, j;
+  const int Trans = (TransA != CblasConjTrans) ? TransA : CblasTrans;
 
-    if (N == 0)
-	return;
+  if (N == 0)
+    return;
 
-    /* form  x := inv( A )*x */
+  /* form  x := inv( A )*x */
 
-    if ((order == CblasRowMajor && Trans == CblasNoTrans && Uplo == CblasUpper)
-        || (order == CblasColMajor && Trans == CblasTrans && Uplo == CblasLower)) {
-      /* backsubstitution */
-      ix = OFFSET(N, incX) + incX * (N - 1);
-      if (nonunit) {
-        X[ix] = X[ix] / A[lda * (N - 1) + (N - 1)];
-      }
-      ix -= incX;
-      for (i = N - 1; i > 0 && i--; ) {
-        BASE tmp = X[ix];
-        jx = ix + incX;
-        for (j = i + 1; j < N; j++) {
-          const BASE Aij = A[lda * i + j];
-          tmp -= Aij * X[jx];
-          jx += incX;
-        }
-        if (nonunit) {
-          X[ix] = tmp / A[lda * i + i];
-        } else {
-          X[ix] = tmp;
-        }
-        ix -= incX;
-      }
-    } else if ((order == CblasRowMajor && Trans == CblasNoTrans && Uplo == CblasLower)
-               || (order == CblasColMajor && Trans == CblasTrans && Uplo == CblasUpper)) {
-
-      /* forward substitution */
-      ix = OFFSET(N, incX);
-      if (nonunit) {
-        X[ix] = X[ix] / A[lda * 0 + 0];
-      }
-      ix += incX;
-      for (i = 1; i < N; i++) {
-        BASE tmp = X[ix];
-        jx = OFFSET(N, incX);
-        for (j = 0; j < i; j++) {
-          const BASE Aij = A[lda * i + j];
-          tmp -= Aij * X[jx];
-          jx += incX;
-        }
-        if (nonunit) {
-          X[ix] = tmp / A[lda * i + i];
-        } else {
-          X[ix] = tmp;
-        }
-        ix += incX;
-      }
-    } else if ((order == CblasRowMajor && Trans == CblasTrans && Uplo == CblasUpper)
-               || (order == CblasColMajor && Trans == CblasNoTrans && Uplo == CblasLower)) {
-      
-      /* form  x := inv( A' )*x */
-      
-      /* forward substitution */
-      ix = OFFSET(N, incX);
-      if (nonunit) {
-        X[ix] = X[ix] / A[lda * 0 + 0];
-      }
-      ix += incX;
-      for (i = 1; i < N; i++) {
-        BASE tmp = X[ix];
-        jx = OFFSET(N, incX);
-        for (j = 0; j < i; j++) {
-          const BASE Aji = A[lda * j + i];
-          tmp -= Aji * X[jx];
-          jx += incX;
-        }
-        if (nonunit) {
-          X[ix] = tmp / A[lda * i + i];
-        } else {
-          X[ix] = tmp;
-        }
-        ix += incX;
-      }
-    } else if ((order == CblasRowMajor && Trans == CblasTrans && Uplo == CblasLower)
-               || (order == CblasColMajor && Trans == CblasNoTrans && Uplo == CblasUpper)) {
-
-      /* backsubstitution */
-      ix = OFFSET(N, incX) + (N-1) * incX;
-      if (nonunit) {
-        X[ix] = X[ix] / A[lda * (N - 1) + (N - 1)];
-      }
-      ix -= incX;
-      for (i = N-1; i > 0 && i--;) {
-        BASE tmp = X[ix];
-        jx = ix + incX;
-        for (j = i + 1; j < N; j++) {
-          const BASE Aji = A[lda * j + i];
-          tmp -= Aji * X[jx];
-          jx += incX;
-        }
-        if (nonunit) {
-          X[ix] = tmp / A[lda * i + i];
-        } else {
-          X[ix] = tmp;
-        }
-        ix -= incX;
-      }
-    } else {
-      BLAS_ERROR ("unrecognized operation");
+  if ((order == CblasRowMajor && Trans == CblasNoTrans && Uplo == CblasUpper)
+      || (order == CblasColMajor && Trans == CblasTrans && Uplo == CblasLower)) {
+    /* backsubstitution */
+    ix = OFFSET(N, incX) + incX * (N - 1);
+    if (nonunit) {
+      X[ix] = X[ix] / A[lda * (N - 1) + (N - 1)];
     }
+    ix -= incX;
+    for (i = N - 1; i > 0 && i--;) {
+      BASE tmp = X[ix];
+      jx = ix + incX;
+      for (j = i + 1; j < N; j++) {
+	const BASE Aij = A[lda * i + j];
+	tmp -= Aij * X[jx];
+	jx += incX;
+      }
+      if (nonunit) {
+	X[ix] = tmp / A[lda * i + i];
+      } else {
+	X[ix] = tmp;
+      }
+      ix -= incX;
+    }
+  } else if ((order == CblasRowMajor && Trans == CblasNoTrans && Uplo == CblasLower)
+	     || (order == CblasColMajor && Trans == CblasTrans && Uplo == CblasUpper)) {
+
+    /* forward substitution */
+    ix = OFFSET(N, incX);
+    if (nonunit) {
+      X[ix] = X[ix] / A[lda * 0 + 0];
+    }
+    ix += incX;
+    for (i = 1; i < N; i++) {
+      BASE tmp = X[ix];
+      jx = OFFSET(N, incX);
+      for (j = 0; j < i; j++) {
+	const BASE Aij = A[lda * i + j];
+	tmp -= Aij * X[jx];
+	jx += incX;
+      }
+      if (nonunit) {
+	X[ix] = tmp / A[lda * i + i];
+      } else {
+	X[ix] = tmp;
+      }
+      ix += incX;
+    }
+  } else if ((order == CblasRowMajor && Trans == CblasTrans && Uplo == CblasUpper)
+	     || (order == CblasColMajor && Trans == CblasNoTrans && Uplo == CblasLower)) {
+
+    /* form  x := inv( A' )*x */
+
+    /* forward substitution */
+    ix = OFFSET(N, incX);
+    if (nonunit) {
+      X[ix] = X[ix] / A[lda * 0 + 0];
+    }
+    ix += incX;
+    for (i = 1; i < N; i++) {
+      BASE tmp = X[ix];
+      jx = OFFSET(N, incX);
+      for (j = 0; j < i; j++) {
+	const BASE Aji = A[lda * j + i];
+	tmp -= Aji * X[jx];
+	jx += incX;
+      }
+      if (nonunit) {
+	X[ix] = tmp / A[lda * i + i];
+      } else {
+	X[ix] = tmp;
+      }
+      ix += incX;
+    }
+  } else if ((order == CblasRowMajor && Trans == CblasTrans && Uplo == CblasLower)
+	     || (order == CblasColMajor && Trans == CblasNoTrans && Uplo == CblasUpper)) {
+
+    /* backsubstitution */
+    ix = OFFSET(N, incX) + (N - 1) * incX;
+    if (nonunit) {
+      X[ix] = X[ix] / A[lda * (N - 1) + (N - 1)];
+    }
+    ix -= incX;
+    for (i = N - 1; i > 0 && i--;) {
+      BASE tmp = X[ix];
+      jx = ix + incX;
+      for (j = i + 1; j < N; j++) {
+	const BASE Aji = A[lda * j + i];
+	tmp -= Aji * X[jx];
+	jx += incX;
+      }
+      if (nonunit) {
+	X[ix] = tmp / A[lda * i + i];
+      } else {
+	X[ix] = tmp;
+      }
+      ix -= incX;
+    }
+  } else {
+    BLAS_ERROR("unrecognized operation");
+  }
 
 }
-

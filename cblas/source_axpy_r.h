@@ -17,39 +17,34 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-/*
- * Author:  G. Jungman
- * RCS:     $Id$
- */
-
 {
-    size_t i;
+  size_t i;
 
-    if (alpha == 0) {
-	return;
+  if (alpha == 0.0) {
+    return;
+  }
+
+  if (incX == 1 && incY == 1) {
+    const size_t m = N % 4;
+
+    for (i = 0; i < m; i++) {
+      Y[i] += alpha * X[i];
     }
 
-    if (incX == 1 && incY == 1) {
-	const size_t m = N % 4;
-
-	for (i = 0; i < m; i++) {
-	    Y[i] += alpha * X[i];
-	}
-
-	for (i = m; i + 3 < N; i += 4) {
-	    Y[i] += alpha * X[i];
-	    Y[i + 1] += alpha * X[i + 1];
-	    Y[i + 2] += alpha * X[i + 2];
-	    Y[i + 3] += alpha * X[i + 3];
-	}
-    } else {
-	size_t ix = OFFSET(N, incX);
-	size_t iy = OFFSET(N, incY);
-
-	for (i = 0; i < N; i++) {
-	    Y[iy] += alpha * X[ix];
-	    ix += incX;
-	    iy += incY;
-	}
+    for (i = m; i + 3 < N; i += 4) {
+      Y[i] += alpha * X[i];
+      Y[i + 1] += alpha * X[i + 1];
+      Y[i + 2] += alpha * X[i + 2];
+      Y[i + 3] += alpha * X[i + 3];
     }
+  } else {
+    size_t ix = OFFSET(N, incX);
+    size_t iy = OFFSET(N, incY);
+
+    for (i = 0; i < N; i++) {
+      Y[iy] += alpha * X[ix];
+      ix += incX;
+      iy += incY;
+    }
+  }
 }

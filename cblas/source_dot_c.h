@@ -17,25 +17,20 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-/*
- * Author:  G. Jungman
- * RCS:     $Id$
- */
-
 {
-    BASE r_real = 0.0;
-    BASE r_imag = 0.0;
-    size_t n;
-    size_t i = OFFSET(N, incX);
-    size_t j = OFFSET(N, incY);
-    for (n = 0; n < N; n++) {
-	BASE x_real = REAL(X, i), x_imag = IMAG(X, i);
-	BASE y_real = REAL(Y, j), y_imag = IMAG(Y, j);
-	r_real += x_real * y_real - CONJ_SIGN * x_imag * y_imag;
-	r_imag += x_real * y_imag + CONJ_SIGN * x_imag * y_real;
-	i += incX;
-	j += incY;
-    }
-    REAL0(result) = r_real;
-    IMAG0(result) = r_imag;
+  BASE r_real = 0.0;
+  BASE r_imag = 0.0;
+  size_t i;
+  size_t ix = OFFSET(N, incX);
+  size_t iy = OFFSET(N, incY);
+  for (i = 0; i < N; i++) {
+    BASE x_real = REAL(X, ix), x_imag = IMAG(X, ix);
+    BASE y_real = REAL(Y, iy), y_imag = IMAG(Y, iy);
+    r_real += x_real * y_real - CONJ_SIGN * x_imag * y_imag;
+    r_imag += x_real * y_imag + CONJ_SIGN * x_imag * y_real;
+    ix += incX;
+    iy += incY;
+  }
+  REAL0(result) = r_real;
+  IMAG0(result) = r_imag;
 }

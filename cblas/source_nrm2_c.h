@@ -17,49 +17,44 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-/*
- * Author:  G. Jungman
- * RCS:     $Id$
- */
-
 {
-    BASE scale = 0.0;
-    BASE ssq = 1.0;
-    size_t n;
-    size_t i = 0;
+  BASE scale = 0.0;
+  BASE ssq = 1.0;
+  size_t i;
+  size_t ix = 0;
 
-    if (N == 0 || incX < 1) {
-	return 0;
+  if (N == 0 || incX < 1) {
+    return 0;
+  }
+
+  for (i = 0; i < N; i++) {
+    const BASE x = REAL(X, ix);
+    const BASE y = IMAG(X, ix);
+
+    if (x != 0.0) {
+      const BASE ax = fabs(x);
+
+      if (scale < ax) {
+	ssq = 1.0 + ssq * (scale / ax) * (scale / ax);
+	scale = ax;
+      } else {
+	ssq += (ax / scale) * (ax / scale);
+      }
     }
 
-    for (n = 0; n < N; n++) {
-	const BASE xi = REAL(X, i);
-	const BASE yi = IMAG(X, i);
+    if (y != 0.0) {
+      const BASE ay = fabs(y);
 
-	if (xi != 0) {
-	    const BASE axi = fabs(xi);
-
-	    if (scale < axi) {
-		ssq = 1.0 + ssq * (scale / axi) * (scale / axi);
-		scale = axi;
-	    } else {
-		ssq += (axi / scale) * (axi / scale);
-	    }
-	}
-
-	if (yi != 0) {
-	    const BASE ayi = fabs(yi);
-
-	    if (scale < ayi) {
-		ssq = 1.0 + ssq * (scale / ayi) * (scale / ayi);
-		scale = ayi;
-	    } else {
-		ssq += (ayi / scale) * (ayi / scale);
-	    }
-	}
-
-	i += incX;
+      if (scale < ay) {
+	ssq = 1.0 + ssq * (scale / ay) * (scale / ay);
+	scale = ay;
+      } else {
+	ssq += (ay / scale) * (ay / scale);
+      }
     }
 
-    return scale * sqrt(ssq);
+    ix += incX;
+  }
+
+  return scale * sqrt(ssq);
 }

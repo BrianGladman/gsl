@@ -18,106 +18,106 @@
  */
 
 {
-    const int nonunit = (Diag == CblasNonUnit);
-    size_t i, j;
-    const int Trans = (TransA != CblasConjTrans) ? TransA : CblasTrans;
+  const int nonunit = (Diag == CblasNonUnit);
+  size_t i, j;
+  const int Trans = (TransA != CblasConjTrans) ? TransA : CblasTrans;
 
-    if (N == 0)
-	return;
+  if (N == 0)
+    return;
 
-    /* form  x := inv( A )*x */
+  /* form  x := inv( A )*x */
 
-    if ((order == CblasRowMajor && Trans == CblasNoTrans && Uplo == CblasUpper)
-        || (order == CblasColMajor && Trans == CblasTrans && Uplo == CblasLower)) {
-      /* backsubstitution */
-      size_t ix = OFFSET(N, incX) + incX * (N - 1);
-      for (i = N; i > 0 && i--; ) {
-        BASE tmp = X[ix];
-        const size_t j_min = i + 1;
-        const size_t j_max = GSL_MIN (N, i + K + 1);
-        size_t jx = OFFSET (N, incX) + j_min * incX;
-        for (j = j_min; j < j_max; j++) {
-          const BASE Aij = A[lda * i + (j-i)];
-          tmp -= Aij * X[jx];
-          jx += incX;
-        }
-        if (nonunit) {
-          X[ix] = tmp / A[lda * i + 0];
-        } else {
-          X[ix] = tmp;
-        }
-        ix -= incX;
+  if ((order == CblasRowMajor && Trans == CblasNoTrans && Uplo == CblasUpper)
+      || (order == CblasColMajor && Trans == CblasTrans && Uplo == CblasLower)) {
+    /* backsubstitution */
+    size_t ix = OFFSET(N, incX) + incX * (N - 1);
+    for (i = N; i > 0 && i--;) {
+      BASE tmp = X[ix];
+      const size_t j_min = i + 1;
+      const size_t j_max = GSL_MIN(N, i + K + 1);
+      size_t jx = OFFSET(N, incX) + j_min * incX;
+      for (j = j_min; j < j_max; j++) {
+	const BASE Aij = A[lda * i + (j - i)];
+	tmp -= Aij * X[jx];
+	jx += incX;
       }
-    } else if ((order == CblasRowMajor && Trans == CblasNoTrans && Uplo == CblasLower)
-               || (order == CblasColMajor && Trans == CblasTrans && Uplo == CblasUpper)) {
-
-      /* forward substitution */
-      size_t ix = OFFSET(N, incX);
-
-      for (i = 0; i < N; i++) {
-        BASE tmp = X[ix];
-        const size_t j_min = (i > K ? i - K : 0);
-        const size_t j_max = i;
-        size_t jx = OFFSET (N, incX) + j_min * incX;
-        for (j = j_min; j < j_max; j++) {
-          const BASE Aij = A[lda * i + (K+j-i)];
-          tmp -= Aij * X[jx];
-          jx += incX;
-        }
-        if (nonunit) {
-          X[ix] = tmp / A[lda * i + K];
-        } else {
-          X[ix] = tmp;
-        }
-        ix += incX;
+      if (nonunit) {
+	X[ix] = tmp / A[lda * i + 0];
+      } else {
+	X[ix] = tmp;
       }
-    } else if ((order == CblasRowMajor && Trans == CblasTrans && Uplo == CblasUpper)
-               || (order == CblasColMajor && Trans == CblasNoTrans && Uplo == CblasLower)) {
-      
-      /* form  x := inv( A' )*x */
-      
-      /* forward substitution */
-      size_t ix = OFFSET(N, incX);
-      for (i = 0; i < N; i++) {
-        BASE tmp = X[ix];
-        const size_t j_min = (K > i ? 0 : i - K);
-        const size_t j_max = i;
-        size_t jx = OFFSET (N, incX) + j_min * incX;
-        for (j = j_min; j < j_max; j++) {
-          const BASE Aji = A[(i-j) + lda * j];
-          tmp -= Aji * X[jx];
-          jx += incX;
-        }
-        if (nonunit) {
-          X[ix] = tmp / A[0 + lda * i];
-        } else {
-          X[ix] = tmp;
-        }
-        ix += incX;
-      }
-    } else if ((order == CblasRowMajor && Trans == CblasTrans && Uplo == CblasLower)
-               || (order == CblasColMajor && Trans == CblasNoTrans && Uplo == CblasUpper)) {
-
-      /* backsubstitution */
-      size_t ix = OFFSET(N, incX) + (N-1) * incX;
-      for (i = N; i > 0 && i--;) {
-        BASE tmp = X[ix];
-        const size_t j_min = i + 1;
-        const size_t j_max = GSL_MIN (N, i + K + 1);
-        size_t jx = OFFSET (N, incX) + j_min * incX;
-        for (j = j_min; j < j_max; j++) {
-          const BASE Aji = A[(K+i-j) + lda * j];
-          tmp -= Aji * X[jx];
-          jx += incX;
-        }
-        if (nonunit) {
-          X[ix] = tmp / A[K + lda * i];
-        } else {
-          X[ix] = tmp;
-        }
-        ix -= incX;
-      }
-    } else {
-      BLAS_ERROR ("unrecognized operation");
+      ix -= incX;
     }
+  } else if ((order == CblasRowMajor && Trans == CblasNoTrans && Uplo == CblasLower)
+	     || (order == CblasColMajor && Trans == CblasTrans && Uplo == CblasUpper)) {
+
+    /* forward substitution */
+    size_t ix = OFFSET(N, incX);
+
+    for (i = 0; i < N; i++) {
+      BASE tmp = X[ix];
+      const size_t j_min = (i > K ? i - K : 0);
+      const size_t j_max = i;
+      size_t jx = OFFSET(N, incX) + j_min * incX;
+      for (j = j_min; j < j_max; j++) {
+	const BASE Aij = A[lda * i + (K + j - i)];
+	tmp -= Aij * X[jx];
+	jx += incX;
+      }
+      if (nonunit) {
+	X[ix] = tmp / A[lda * i + K];
+      } else {
+	X[ix] = tmp;
+      }
+      ix += incX;
+    }
+  } else if ((order == CblasRowMajor && Trans == CblasTrans && Uplo == CblasUpper)
+	     || (order == CblasColMajor && Trans == CblasNoTrans && Uplo == CblasLower)) {
+
+    /* form  x := inv( A' )*x */
+
+    /* forward substitution */
+    size_t ix = OFFSET(N, incX);
+    for (i = 0; i < N; i++) {
+      BASE tmp = X[ix];
+      const size_t j_min = (K > i ? 0 : i - K);
+      const size_t j_max = i;
+      size_t jx = OFFSET(N, incX) + j_min * incX;
+      for (j = j_min; j < j_max; j++) {
+	const BASE Aji = A[(i - j) + lda * j];
+	tmp -= Aji * X[jx];
+	jx += incX;
+      }
+      if (nonunit) {
+	X[ix] = tmp / A[0 + lda * i];
+      } else {
+	X[ix] = tmp;
+      }
+      ix += incX;
+    }
+  } else if ((order == CblasRowMajor && Trans == CblasTrans && Uplo == CblasLower)
+	     || (order == CblasColMajor && Trans == CblasNoTrans && Uplo == CblasUpper)) {
+
+    /* backsubstitution */
+    size_t ix = OFFSET(N, incX) + (N - 1) * incX;
+    for (i = N; i > 0 && i--;) {
+      BASE tmp = X[ix];
+      const size_t j_min = i + 1;
+      const size_t j_max = GSL_MIN(N, i + K + 1);
+      size_t jx = OFFSET(N, incX) + j_min * incX;
+      for (j = j_min; j < j_max; j++) {
+	const BASE Aji = A[(K + i - j) + lda * j];
+	tmp -= Aji * X[jx];
+	jx += incX;
+      }
+      if (nonunit) {
+	X[ix] = tmp / A[K + lda * i];
+      } else {
+	X[ix] = tmp;
+      }
+      ix -= incX;
+    }
+  } else {
+    BLAS_ERROR("unrecognized operation");
+  }
 }

@@ -18,113 +18,108 @@
  */
 
 {
-    size_t i, j, k;
-    int uplo, trans;
+  size_t i, j, k;
+  int uplo, trans;
 
-    if (alpha == 0.0 && beta == 1.0)
-	return;
+  if (alpha == 0.0 && beta == 1.0)
+    return;
 
-    if (Order == CblasRowMajor)
-      {
-        uplo = Uplo;
-        trans = (Trans == CblasConjTrans) ? CblasTrans : Trans;
-      }
-    else
-      {
-        uplo = (Uplo == CblasUpper) ? CblasLower : CblasUpper;
+  if (Order == CblasRowMajor) {
+    uplo = Uplo;
+    trans = (Trans == CblasConjTrans) ? CblasTrans : Trans;
+  } else {
+    uplo = (Uplo == CblasUpper) ? CblasLower : CblasUpper;
 
-        if (Trans == CblasTrans || Trans == CblasConjTrans) {
-          trans = CblasNoTrans;
-        } else {
-          trans = CblasTrans;
-        }
-      }
-
-    /* form  y := beta*y */
-    if (beta == 0.0) {
-      if (uplo == CblasUpper) {
-        for (i = 0; i < N; i++) {
-          for (j = i; j < N; j++) {
-            C[ldc * i + j] = 0.0;
-          }
-        }
-      } else {
-        for (i = 0; i < N; i++) {
-          for (j = 0; j <= i; j++) {
-            C[ldc * i + j] = 0.0;
-          }
-        }
-      }
-    } else if (beta != 1.0) {
-      if (uplo == CblasUpper) {
-        for (i = 0; i < N; i++) {
-          for (j = i; j < N; j++) {
-            C[ldc * i + j] *= beta;
-          }
-        }
-      } else {
-        for (i = 0; i < N; i++) {
-          for (j = 0; j <= i; j++) {
-            C[ldc * i + j] *= beta;
-          }
-        }
-      }
-    }
-
-    if (alpha == 0.0)
-	return;
-
-    if (uplo == CblasUpper && trans == CblasNoTrans) {
- 
-      for (i = 0; i < N; i++) {
-        for (j = i; j < N; j++) {
-          BASE temp = 0.0;
-          for (k = 0 ; k < K; k++) {
-            temp += A[i * lda + k] * A[j * lda + k];
-          }
-          C[i * ldc + j] += alpha * temp;
-        }
-      }
-      
-    } else if (uplo == CblasUpper && trans == CblasTrans) {
-
-      for (i = 0; i < N; i++) {
-        for (j = i; j < N; j++) {
-          BASE temp = 0.0;
-          for (k = 0 ; k < K; k++) {
-            temp += A[k * lda + i] * A[k * lda + j];
-          }
-          C[i * ldc + j] += alpha * temp;
-        }
-      }
-
-    } else if (uplo == CblasLower && trans == CblasNoTrans) {
-
-      for (i = 0; i < N; i++) {
-        for (j = 0; j <= i; j++) {
-          BASE temp = 0.0;
-          for (k = 0 ; k < K; k++) {
-            temp += A[i * lda + k] * A[j * lda + k];
-          }
-          C[i * ldc + j] += alpha * temp;
-        }
-      }
-
-    } else if (uplo == CblasLower && trans == CblasTrans) {
-
-      for (i = 0; i < N; i++) {
-        for (j = 0; j <= i; j++) {
-          BASE temp = 0.0;
-          for (k = 0 ; k < K; k++) {
-            temp += A[k * lda + i] * A[k * lda + j];
-          }
-          C[i * ldc + j] += alpha * temp;
-        }
-      }
-
+    if (Trans == CblasTrans || Trans == CblasConjTrans) {
+      trans = CblasNoTrans;
     } else {
-      BLAS_ERROR("unrecognized operation");
+      trans = CblasTrans;
     }
+  }
+
+  /* form  y := beta*y */
+  if (beta == 0.0) {
+    if (uplo == CblasUpper) {
+      for (i = 0; i < N; i++) {
+	for (j = i; j < N; j++) {
+	  C[ldc * i + j] = 0.0;
+	}
+      }
+    } else {
+      for (i = 0; i < N; i++) {
+	for (j = 0; j <= i; j++) {
+	  C[ldc * i + j] = 0.0;
+	}
+      }
+    }
+  } else if (beta != 1.0) {
+    if (uplo == CblasUpper) {
+      for (i = 0; i < N; i++) {
+	for (j = i; j < N; j++) {
+	  C[ldc * i + j] *= beta;
+	}
+      }
+    } else {
+      for (i = 0; i < N; i++) {
+	for (j = 0; j <= i; j++) {
+	  C[ldc * i + j] *= beta;
+	}
+      }
+    }
+  }
+
+  if (alpha == 0.0)
+    return;
+
+  if (uplo == CblasUpper && trans == CblasNoTrans) {
+
+    for (i = 0; i < N; i++) {
+      for (j = i; j < N; j++) {
+	BASE temp = 0.0;
+	for (k = 0; k < K; k++) {
+	  temp += A[i * lda + k] * A[j * lda + k];
+	}
+	C[i * ldc + j] += alpha * temp;
+      }
+    }
+
+  } else if (uplo == CblasUpper && trans == CblasTrans) {
+
+    for (i = 0; i < N; i++) {
+      for (j = i; j < N; j++) {
+	BASE temp = 0.0;
+	for (k = 0; k < K; k++) {
+	  temp += A[k * lda + i] * A[k * lda + j];
+	}
+	C[i * ldc + j] += alpha * temp;
+      }
+    }
+
+  } else if (uplo == CblasLower && trans == CblasNoTrans) {
+
+    for (i = 0; i < N; i++) {
+      for (j = 0; j <= i; j++) {
+	BASE temp = 0.0;
+	for (k = 0; k < K; k++) {
+	  temp += A[i * lda + k] * A[j * lda + k];
+	}
+	C[i * ldc + j] += alpha * temp;
+      }
+    }
+
+  } else if (uplo == CblasLower && trans == CblasTrans) {
+
+    for (i = 0; i < N; i++) {
+      for (j = 0; j <= i; j++) {
+	BASE temp = 0.0;
+	for (k = 0; k < K; k++) {
+	  temp += A[k * lda + i] * A[k * lda + j];
+	}
+	C[i * ldc + j] += alpha * temp;
+      }
+    }
+
+  } else {
+    BLAS_ERROR("unrecognized operation");
+  }
 }
-
-

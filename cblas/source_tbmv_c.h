@@ -17,161 +17,156 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-/*
- * Author:  G. Jungman
- * RCS:     $Id$
- */
-
 {
   const int conj = (TransA == CblasConjTrans) ? -1 : 1;
   const int Trans = (TransA != CblasConjTrans) ? TransA : CblasTrans;
-  const int nounit = (Diag == CblasNonUnit);
-    size_t i, j;
-    size_t ix, jx;
+  const int nonunit = (Diag == CblasNonUnit);
+  size_t i, j;
+  size_t ix, jx;
 
 
-    if ((order == CblasRowMajor && Trans == CblasNoTrans && Uplo == CblasUpper)
-	|| (order == CblasColMajor && Trans == CblasTrans && Uplo == CblasLower)) {
-	/* form  x := A*x */
+  if ((order == CblasRowMajor && Trans == CblasNoTrans && Uplo == CblasUpper)
+      || (order == CblasColMajor && Trans == CblasTrans && Uplo == CblasLower)) {
+    /* form  x := A*x */
 
-	ix = OFFSET(N, incX);
-	for (i = 0; i < N; i++) {
-	    BASE temp_r = 0.0;
-	    BASE temp_i = 0.0;
-	    const size_t j_min = i + 1;
-	    const size_t j_max = GSL_MIN(N, i + K + 1);
-	    size_t jx = OFFSET(N, incX) + incX * j_min;
-	    for (j = j_min; j < j_max; j++) {
-		const BASE x_real = REAL(X, jx);
-		const BASE x_imag = IMAG(X, jx);
-		const BASE A_real = REAL(A, lda * i + (j - i));
-		const BASE A_imag = conj * IMAG(A, lda * i + (j - i));
+    ix = OFFSET(N, incX);
+    for (i = 0; i < N; i++) {
+      BASE temp_r = 0.0;
+      BASE temp_i = 0.0;
+      const size_t j_min = i + 1;
+      const size_t j_max = GSL_MIN(N, i + K + 1);
+      size_t jx = OFFSET(N, incX) + incX * j_min;
+      for (j = j_min; j < j_max; j++) {
+	const BASE x_real = REAL(X, jx);
+	const BASE x_imag = IMAG(X, jx);
+	const BASE A_real = REAL(A, lda * i + (j - i));
+	const BASE A_imag = conj * IMAG(A, lda * i + (j - i));
 
-		temp_r += A_real * x_real - A_imag * x_imag;
-		temp_i += A_real * x_imag + A_imag * x_real;
+	temp_r += A_real * x_real - A_imag * x_imag;
+	temp_i += A_real * x_imag + A_imag * x_real;
 
-		jx += incX;
-	    }
-	    if (nounit) {
-		const BASE x_real = REAL(X, ix);
-		const BASE x_imag = IMAG(X, ix);
-		const BASE A_real = REAL(A, lda * i + 0);
-		const BASE A_imag = conj * IMAG(A, lda * i + 0);
+	jx += incX;
+      }
+      if (nonunit) {
+	const BASE x_real = REAL(X, ix);
+	const BASE x_imag = IMAG(X, ix);
+	const BASE A_real = REAL(A, lda * i + 0);
+	const BASE A_imag = conj * IMAG(A, lda * i + 0);
 
-		REAL(X, ix) = temp_r + (A_real * x_real - A_imag * x_imag);
-		IMAG(X, ix) = temp_i + (A_real * x_imag + A_imag * x_real);
-	    } else {
-		REAL(X, ix) += temp_r;
-		IMAG(X, ix) += temp_i;
-	    }
-	    ix += incX;
-	}
-    } else if ((order == CblasRowMajor && Trans == CblasNoTrans && Uplo == CblasLower)
-	       || (order == CblasColMajor && Trans == CblasTrans && Uplo == CblasUpper)) {
-	ix = OFFSET(N, incX) + (N - 1) * incX;
-
-	for (i = N; i > 0 && i--;) {	/*  N-1 ... 0 */
-	    BASE temp_r = 0.0;
-	    BASE temp_i = 0.0;
-	    const size_t j_min = (K > i ? 0 : i - K);
-	    const size_t j_max = i;
-	    jx = OFFSET(N, incX) + j_min * incX;
-	    for (j = j_min; j < j_max; j++) {
-		const BASE x_real = REAL(X, jx);
-		const BASE x_imag = IMAG(X, jx);
-		const BASE A_real = REAL(A, lda * i + (K-i+j));
-		const BASE A_imag = conj * IMAG(A, lda * i + (K-i+j));
-
-		temp_r += A_real * x_real - A_imag * x_imag;
-		temp_i += A_real * x_imag + A_imag * x_real;
-
-		jx += incX;
-	    }
-	    if (nounit) {
-		const BASE x_real = REAL(X, ix);
-		const BASE x_imag = IMAG(X, ix);
-		const BASE A_real = REAL(A, lda * i + K);
-		const BASE A_imag = conj * IMAG(A, lda * i + K);
-
-		REAL(X, ix) = temp_r + (A_real * x_real - A_imag * x_imag);
-		IMAG(X, ix) = temp_i + (A_real * x_imag + A_imag * x_real);
-	    } else {
-		REAL(X, ix) += temp_r;
-		IMAG(X, ix) += temp_i;
-	    }
-	    ix -= incX;
-	}
-    } else if ((order == CblasRowMajor && Trans == CblasTrans && Uplo == CblasUpper)
-	       || (order == CblasColMajor && Trans == CblasNoTrans && Uplo == CblasLower)) {
-	/* form  x := A'*x */
-
-	ix = OFFSET(N, incX) + (N - 1) * incX;
-	for (i = N; i > 0 && i--;) {	/*  N-1 ... 0 */
-	    BASE temp_r = 0.0;
-	    BASE temp_i = 0.0;
-	    const size_t j_min = (K > i ? 0 : i - K);
-	    const size_t j_max = i;
-	    jx = OFFSET(N, incX) + j_min * incX;
-	    for (j = j_min; j < j_max; j++) {
-		const BASE x_real = REAL(X, jx);
-		const BASE x_imag = IMAG(X, jx);
-		const BASE A_real = REAL(A, lda * j + (i - j));
-		const BASE A_imag = conj * IMAG(A, lda * j + (i - j));
-
-		temp_r += A_real * x_real - A_imag * x_imag;
-		temp_i += A_real * x_imag + A_imag * x_real;
-
-		jx += incX;
-	    }
-	    if (nounit) {
-		const BASE x_real = REAL(X, ix);
-		const BASE x_imag = IMAG(X, ix);
-		const BASE A_real = REAL(A, lda * i + 0);
-		const BASE A_imag = conj * IMAG(A, lda * i + 0);
-
-		REAL(X, ix) = temp_r + (A_real * x_real - A_imag * x_imag);
-		IMAG(X, ix) = temp_i + (A_real * x_imag + A_imag * x_real);
-	    } else {
-		REAL(X, ix) += temp_r;
-		IMAG(X, ix) += temp_i;
-	    }
-	    ix -= incX;
-	}
-    } else if ((order == CblasRowMajor && Trans == CblasTrans && Uplo == CblasLower)
-	       || (order == CblasColMajor && Trans == CblasNoTrans && Uplo == CblasUpper)) {
-	ix = OFFSET(N, incX);
-	for (i = 0; i < N; i++) {
-	    BASE temp_r = 0.0;
-	    BASE temp_i = 0.0;
-	    const size_t j_min = i + 1;
-	    const size_t j_max = GSL_MIN(N, i + K + 1);
-	    jx = OFFSET(N, incX) + j_min * incX;
-	    for (j = j_min; j < j_max; j++) {
-		const BASE x_real = REAL(X, jx);
-		const BASE x_imag = IMAG(X, jx);
-		const BASE A_real = REAL(A, lda * j + (K - j + i));
-		const BASE A_imag = conj * IMAG(A, lda * j + (K - j + i));
-
-		temp_r += A_real * x_real - A_imag * x_imag;
-		temp_i += A_real * x_imag + A_imag * x_real;
-
-		jx += incX;
-	    }
-	    if (nounit) {
-		const BASE x_real = REAL(X, ix);
-		const BASE x_imag = IMAG(X, ix);
-		const BASE A_real = REAL(A, lda * i + K);
-		const BASE A_imag = conj * IMAG(A, lda * i + K);
-
-		REAL(X, ix) = temp_r + (A_real * x_real - A_imag * x_imag);
-		IMAG(X, ix) = temp_i + (A_real * x_imag + A_imag * x_real);
-	    } else {
-		REAL(X, ix) += temp_r;
-		IMAG(X, ix) += temp_i;
-	    }
-	    ix += incX;
-	}
-    } else {
-	BLAS_ERROR("unrecognized operation");
+	REAL(X, ix) = temp_r + (A_real * x_real - A_imag * x_imag);
+	IMAG(X, ix) = temp_i + (A_real * x_imag + A_imag * x_real);
+      } else {
+	REAL(X, ix) += temp_r;
+	IMAG(X, ix) += temp_i;
+      }
+      ix += incX;
     }
+  } else if ((order == CblasRowMajor && Trans == CblasNoTrans && Uplo == CblasLower)
+	     || (order == CblasColMajor && Trans == CblasTrans && Uplo == CblasUpper)) {
+    ix = OFFSET(N, incX) + (N - 1) * incX;
+
+    for (i = N; i > 0 && i--;) {	/*  N-1 ... 0 */
+      BASE temp_r = 0.0;
+      BASE temp_i = 0.0;
+      const size_t j_min = (K > i ? 0 : i - K);
+      const size_t j_max = i;
+      jx = OFFSET(N, incX) + j_min * incX;
+      for (j = j_min; j < j_max; j++) {
+	const BASE x_real = REAL(X, jx);
+	const BASE x_imag = IMAG(X, jx);
+	const BASE A_real = REAL(A, lda * i + (K - i + j));
+	const BASE A_imag = conj * IMAG(A, lda * i + (K - i + j));
+
+	temp_r += A_real * x_real - A_imag * x_imag;
+	temp_i += A_real * x_imag + A_imag * x_real;
+
+	jx += incX;
+      }
+      if (nonunit) {
+	const BASE x_real = REAL(X, ix);
+	const BASE x_imag = IMAG(X, ix);
+	const BASE A_real = REAL(A, lda * i + K);
+	const BASE A_imag = conj * IMAG(A, lda * i + K);
+
+	REAL(X, ix) = temp_r + (A_real * x_real - A_imag * x_imag);
+	IMAG(X, ix) = temp_i + (A_real * x_imag + A_imag * x_real);
+      } else {
+	REAL(X, ix) += temp_r;
+	IMAG(X, ix) += temp_i;
+      }
+      ix -= incX;
+    }
+  } else if ((order == CblasRowMajor && Trans == CblasTrans && Uplo == CblasUpper)
+	     || (order == CblasColMajor && Trans == CblasNoTrans && Uplo == CblasLower)) {
+    /* form  x := A'*x */
+
+    ix = OFFSET(N, incX) + (N - 1) * incX;
+    for (i = N; i > 0 && i--;) {	/*  N-1 ... 0 */
+      BASE temp_r = 0.0;
+      BASE temp_i = 0.0;
+      const size_t j_min = (K > i ? 0 : i - K);
+      const size_t j_max = i;
+      jx = OFFSET(N, incX) + j_min * incX;
+      for (j = j_min; j < j_max; j++) {
+	const BASE x_real = REAL(X, jx);
+	const BASE x_imag = IMAG(X, jx);
+	const BASE A_real = REAL(A, lda * j + (i - j));
+	const BASE A_imag = conj * IMAG(A, lda * j + (i - j));
+
+	temp_r += A_real * x_real - A_imag * x_imag;
+	temp_i += A_real * x_imag + A_imag * x_real;
+
+	jx += incX;
+      }
+      if (nonunit) {
+	const BASE x_real = REAL(X, ix);
+	const BASE x_imag = IMAG(X, ix);
+	const BASE A_real = REAL(A, lda * i + 0);
+	const BASE A_imag = conj * IMAG(A, lda * i + 0);
+
+	REAL(X, ix) = temp_r + (A_real * x_real - A_imag * x_imag);
+	IMAG(X, ix) = temp_i + (A_real * x_imag + A_imag * x_real);
+      } else {
+	REAL(X, ix) += temp_r;
+	IMAG(X, ix) += temp_i;
+      }
+      ix -= incX;
+    }
+  } else if ((order == CblasRowMajor && Trans == CblasTrans && Uplo == CblasLower)
+	     || (order == CblasColMajor && Trans == CblasNoTrans && Uplo == CblasUpper)) {
+    ix = OFFSET(N, incX);
+    for (i = 0; i < N; i++) {
+      BASE temp_r = 0.0;
+      BASE temp_i = 0.0;
+      const size_t j_min = i + 1;
+      const size_t j_max = GSL_MIN(N, i + K + 1);
+      jx = OFFSET(N, incX) + j_min * incX;
+      for (j = j_min; j < j_max; j++) {
+	const BASE x_real = REAL(X, jx);
+	const BASE x_imag = IMAG(X, jx);
+	const BASE A_real = REAL(A, lda * j + (K - j + i));
+	const BASE A_imag = conj * IMAG(A, lda * j + (K - j + i));
+
+	temp_r += A_real * x_real - A_imag * x_imag;
+	temp_i += A_real * x_imag + A_imag * x_real;
+
+	jx += incX;
+      }
+      if (nonunit) {
+	const BASE x_real = REAL(X, ix);
+	const BASE x_imag = IMAG(X, ix);
+	const BASE A_real = REAL(A, lda * i + K);
+	const BASE A_imag = conj * IMAG(A, lda * i + K);
+
+	REAL(X, ix) = temp_r + (A_real * x_real - A_imag * x_imag);
+	IMAG(X, ix) = temp_i + (A_real * x_imag + A_imag * x_real);
+      } else {
+	REAL(X, ix) += temp_r;
+	IMAG(X, ix) += temp_i;
+      }
+      ix += incX;
+    }
+  } else {
+    BLAS_ERROR("unrecognized operation");
+  }
 }

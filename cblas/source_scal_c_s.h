@@ -17,24 +17,19 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-/*
- * Author:  G. Jungman
- * RCS:     $Id$
- */
-
 {
-    size_t n;
-    size_t i;
+  size_t i;
+  size_t ix;
 
-    if (incX <= 0) {
-	return;
-    }
+  if (incX <= 0) {
+    return;
+  }
 
-    i = OFFSET(N, incX);
+  ix = OFFSET(N, incX);
 
-    for (n = 0; n < N; n++) {
-	REAL(X, i) *= alpha;
-	IMAG(X, i) *= alpha;
-	i += incX;
-    }
+  for (i = 0; i < N; i++) {
+    REAL(X, ix) *= alpha;
+    IMAG(X, ix) *= alpha;
+    ix += incX;
+  }
 }

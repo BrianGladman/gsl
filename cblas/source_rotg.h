@@ -17,35 +17,30 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-/*
- * Author:  G. Jungman
- * RCS:     $Id$
- */
-
 {
-    const BASE roe = (fabs(*a) > fabs(*b) ? *a : *b);
-    const BASE scale = fabs(*a) + fabs(*b);
-    BASE r, z;
+  const BASE roe = (fabs(*a) > fabs(*b) ? *a : *b);
+  const BASE scale = fabs(*a) + fabs(*b);
+  BASE r, z;
 
-    if (scale != 0.0) {
-	const BASE aos = *a / scale;
-	const BASE bos = *b / scale;
-	r = scale * sqrt(aos * aos + bos * bos);
-	r = GSL_SIGN(roe) * r;
-	*c = *a / r;
-	*s = *b / r;
-	z = 1.0;
-	if (fabs(*a) > fabs(*b))
-	    z = *s;
-	if (fabs(*b) >= fabs(*a) && *c != 0.0)
-	    z = 1.0 / (*c);
-    } else {
-	*c = 1.0;
-	*s = 0.0;
-	r = 0.0;
-	z = 0.0;
-    }
+  if (scale != 0.0) {
+    const BASE aos = *a / scale;
+    const BASE bos = *b / scale;
+    r = scale * sqrt(aos * aos + bos * bos);
+    r = GSL_SIGN(roe) * r;
+    *c = *a / r;
+    *s = *b / r;
+    z = 1.0;
+    if (fabs(*a) > fabs(*b))
+      z = *s;
+    if (fabs(*b) >= fabs(*a) && *c != 0.0)
+      z = 1.0 / (*c);
+  } else {
+    *c = 1.0;
+    *s = 0.0;
+    r = 0.0;
+    z = 0.0;
+  }
 
-    *a = r;
-    *b = z;
+  *a = r;
+  *b = z;
 }
