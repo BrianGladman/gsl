@@ -1,3 +1,7 @@
+Wed Feb 23 15:36:39 2000  Brian Gough  <bjg@network-theory.co.uk>
+
+	* changed gsl_vector_copy to gsl_vector_cpy 
+
 Fri Feb 18 18:45:02 2000  Brian Gough  <bjg@network-theory.co.uk>
 
 	* fixed various .c files to use permutation

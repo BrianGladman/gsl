@@ -373,11 +373,11 @@ new_step:
 
   /* copy fnew into f */
 
-  gsl_vector_copy (f, fnew);
+  gsl_vector_cpy (f, fnew);
 
   /* copy x_trial into x */
 
-  gsl_vector_copy (x, x_trial);
+  gsl_vector_cpy (x, x_trial);
 
   for (i = 0; i < n; i++)
     {

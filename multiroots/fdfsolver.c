@@ -121,7 +121,7 @@ gsl_multiroot_fdfsolver_set (gsl_multiroot_fdfsolver * s,
                              gsl_vector * x)
 {
   s->fdf = f;
-  gsl_vector_copy(s->x,x);
+  gsl_vector_cpy(s->x,x);
   
   return (s->type->set) (s->state, s->fdf, s->x, s->f, s->J, s->dx);
 }

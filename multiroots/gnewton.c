@@ -154,7 +154,7 @@ new_step:
 
   /* copy x_trial into x */
 
-  gsl_vector_copy (x, state->x_trial);
+  gsl_vector_cpy (x, state->x_trial);
 
   for (i = 0; i < n; i++)
     {
