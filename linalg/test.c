@@ -1423,7 +1423,6 @@ test_SV_decomp_dim(const gsl_matrix * m, double eps)
   gsl_matrix * v  = gsl_matrix_alloc(M,N);
   gsl_matrix * a  = gsl_matrix_alloc(M,N);
   gsl_matrix * q  = gsl_matrix_alloc(N,N);
-  gsl_matrix * x  = gsl_matrix_alloc(N,N);
   gsl_matrix * dqt  = gsl_matrix_alloc(N,N);
   gsl_vector * d  = gsl_vector_alloc(N);
   gsl_vector * w  = gsl_vector_alloc(N);
@@ -2145,7 +2144,6 @@ int test_TDS_solve(void)
 {
   int f;
   int s = 0;
-  double actual[16];
 
   {
     double actual[] =  {0.0, 2.0};
