@@ -62,7 +62,7 @@ of function provide alternative ways of accessing the same underlying
 code.
 
 The @dfn{natural form} returns only the value of the function and can be
-used directly in mathematical expressions..  For example, the following
+used directly in mathematical expressions.  For example, the following
 function call will compute the value of the Bessel function
 @math{J_0(x)},
 

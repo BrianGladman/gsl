@@ -6,8 +6,8 @@ without eigenvectors.  The algorithms used are symmetric
 bidiagonalization followed by QR reduction.
 
 @cindex LAPACK, recommended for linear algebra
-These routines are intended for "small" systems where simple algorithms are
-acceptable.  Anyone interested finding eigenvalues and eigenvectors of
+These routines are intended for ``small'' systems where simple algorithms are
+acceptable.  Anyone interested in finding eigenvalues and eigenvectors of
 large matrices will want to use the sophisticated routines found in
 @sc{lapack}. The Fortran version of @sc{lapack} is recommended as the
 standard package for linear algebra.

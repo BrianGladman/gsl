@@ -364,7 +364,7 @@ When a module contains type-dependent definitions the library provides
 individual header files for each type.  The filenames are modified as
 shown in the below.  For convenience the default header includes the
 definitions for all the types.  To include only the double precision
-header, or any other specific type, file use its individual filename.
+header file, or any other specific type, use its individual filename.
 
 @example
 #include <gsl/gsl_foo.h>               All types

@@ -910,14 +910,14 @@ m->data[i * m->tda + j]
 where @var{tda} is the physical row-length of the matrix.
 
 @deftypefun double gsl_matrix_get (const gsl_matrix * @var{m}, size_t @var{i}, size_t @var{j})
-This function returns the (@var{i},@var{j})th element of a matrix
+This function returns the @math{(i,j)}-th element of a matrix
 @var{m}.  If @var{i} or @var{j} lie outside the allowed range of 0 to
 @var{n1-1} and 0 to @var{n2-1} then the error handler is invoked and 0
 is returned.
 @end deftypefun
 
 @deftypefun void gsl_matrix_set (gsl_matrix * @var{m}, size_t @var{i}, size_t @var{j}, double @var{x})
-This function sets the value of the (@var{i},@var{j})th element of a
+This function sets the value of the @math{(i,j)}-th element of a
 matrix @var{m} to @var{x}.  If @var{i} or @var{j} lies outside the
 allowed range of 0 to @var{n1-1} and 0 to @var{n2-1} then the error
 handler is invoked.
@@ -925,7 +925,7 @@ handler is invoked.
 
 @deftypefun {double *} gsl_matrix_ptr (gsl_matrix * @var{m}, size_t @var{i}, size_t @var{j})
 @deftypefunx {const double *} gsl_matrix_const_ptr (const gsl_matrix * @var{m}, size_t @var{i}, size_t @var{j})
-These functions return a pointer to the (@var{i},@var{j})th element of a
+These functions return a pointer to the @math{(i,j)}-th element of a
 matrix @var{m}.  If @var{i} or @var{j} lie outside the allowed range of
 0 to @var{n1-1} and 0 to @var{n2-1} then the error handler is invoked
 and a null pointer is returned.
@@ -1021,7 +1021,7 @@ These functions return a matrix view of a submatrix of the matrix
 (@var{k1},@var{k2}) of the original matrix.  The submatrix has @var{n1}
 rows and @var{n2} columns.  The physical number of columns in memory
 given by @var{tda} is unchanged.  Mathematically, the
-(@var{i},@var{j})-th element of the new matrix is given by,
+@math{(i,j)}-th element of the new matrix is given by,
 
 @example
 m'(i,j) = m->data[(k1*m->tda + k1) + i*m->tda + j]
@@ -1053,7 +1053,7 @@ declared @code{const}.
 These functions return a matrix view of the array @var{base}.  The
 matrix has @var{n1} rows and @var{n2} columns.  The physical number of
 columns in memory is also given by @var{n2}.  Mathematically, the
-(@var{i},@var{j})-th element of the new matrix is given by,
+@math{(i,j)}-th element of the new matrix is given by,
 
 @example
 m'(i,j) = base[i*n2 + j]
@@ -1080,7 +1080,7 @@ These functions return a matrix view of the array @var{base} with a
 physical number of columns @var{tda} which may differ from corresponding
 the dimension of the matrix.  The matrix has @var{n1} rows and @var{n2}
 columns, and the physical number of columns in memory is given by
-@var{tda}.  Mathematically, the (@var{i},@var{j})-th element of the new
+@var{tda}.  Mathematically, the @math{(i,j)}-th element of the new
 matrix is given by,
 
 @example
@@ -1106,7 +1106,7 @@ which are declared @code{const}.
 These functions return a matrix view of the vector @var{v}.  The matrix
 has @var{n1} rows and @var{n2} columns. The vector must have unit
 stride. The physical number of columns in memory is also given by
-@var{n2}.  Mathematically, the (@var{i},@var{j})-th element of the new
+@var{n2}.  Mathematically, the @math{(i,j)}-th element of the new
 matrix is given by,
 
 @example
@@ -1135,7 +1135,7 @@ physical number of columns @var{tda} which may differ from the
 corresponding matrix dimension.  The vector must have unit stride. The
 matrix has @var{n1} rows and @var{n2} columns, and the physical number
 of columns in memory is given by @var{tda}.  Mathematically, the
-(@var{i},@var{j})-th element of the new matrix is given by,
+@math{(i,j)}-th element of the new matrix is given by,
 
 @example
 m'(i,j) = v->data[i*tda + j]

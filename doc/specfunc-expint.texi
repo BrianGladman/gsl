@@ -63,7 +63,7 @@ E_2(x) := \Re \int_1^\infty dt \exp(-xt)/t^2.
 
 @deftypefun double gsl_sf_expint_Ei (double @var{x})
 @deftypefunx int gsl_sf_expint_Ei_e (double @var{x}, gsl_sf_result * @var{result})
-These routines compute the exponential integral @math{E_i(x)},
+These routines compute the exponential integral @math{Ei(x)},
 @tex
 \beforedisplay
 $$

@@ -485,6 +485,8 @@ Wrote the major cumulative distribution functions.
 
 @end table
 
+Thanks to Nigel Lowry for help in proofreading the manual.
+
 @node  Autoconf Macros, GSL CBLAS Library, Contributors to GSL, Top
 @appendix Autoconf Macros
 @include autoconf.texi

@@ -258,7 +258,7 @@ This function unpacks the encoded @math{QR} decomposition
 @deftypefun int gsl_linalg_QR_QRsolve (gsl_matrix * @var{Q}, gsl_matrix * @var{R}, const gsl_vector * @var{b}, gsl_vector * @var{x})
 This function solves the system @math{R x = Q^T b} for @var{x}. It can
 be used when the @math{QR} decomposition of a matrix is available in
-unpacked form as (@var{Q},@var{R}).
+unpacked form as (@var{Q}, @var{R}).
 @end deftypefun
 
 @deftypefun int gsl_linalg_QR_update (gsl_matrix * @var{Q}, gsl_matrix * @var{R}, gsl_vector * @var{w}, const gsl_vector * @var{v})
@@ -353,12 +353,12 @@ right-hand side @math{b}, which is replaced by the solution on output.
 @deftypefun int gsl_linalg_QRPT_QRsolve (const gsl_matrix * @var{Q}, const gsl_matrix * @var{R}, const gsl_permutation * @var{p}, const gsl_vector * @var{b}, gsl_vector * @var{x})
 This function solves the system @math{R P^T x = Q^T b} for @var{x}. It can
 be used when the @math{QR} decomposition of a matrix is available in
-unpacked form as (@var{Q},@var{R}).
+unpacked form as (@var{Q}, @var{R}).
 @end deftypefun
 
 @deftypefun int gsl_linalg_QRPT_update (gsl_matrix * @var{Q}, gsl_matrix * @var{R}, const gsl_permutation * @var{p}, gsl_vector * @var{u}, const gsl_vector * @var{v})
 This function performs a rank-1 update @math{w v^T} of the @math{QRP^T}
-decomposition (@var{Q}, @var{R},@var{p}). The update is given by
+decomposition (@var{Q}, @var{R}, @var{p}). The update is given by
 @math{Q'R' = Q R + w v^T} where the output matrices @math{Q'} and
 @math{R'} are also orthogonal and right triangular. Note that @var{w} is
 destroyed by the update. The permutation @var{p} is not changed.

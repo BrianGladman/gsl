@@ -223,7 +223,7 @@ for @c{$\eta \ge 0$}
 @math{\eta >= 0}.
 In the flat limit this takes the form
 @c{$L^{H3d}_0(\lambda,\eta) = j_0(\lambda\eta)$}
-@math{L^@{H3d@}_0(\lambda,\eta) = j_0(\lambda\eta)}
+@math{L^@{H3d@}_0(\lambda,\eta) = j_0(\lambda\eta)}.
 @comment Exceptional Return Values: GSL_EDOM
 @end deftypefun
 
