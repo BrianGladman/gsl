@@ -63,6 +63,7 @@ echo -n "test_switch_LDADD= "
 for i in $list; do
     echo -n "$i.o "
 done
+echo -n "../utils/libutils.a "
 echo ""
     
     for i in $list; do
