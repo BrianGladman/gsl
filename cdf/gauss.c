@@ -61,11 +61,11 @@
  * GAUSS_XLOWER: Smallest value x such that gsl_cdf_gaussian(x) > 0.0.
  */
 
-#define GAUSS_EPSILON  GSL_DBL_EPSILON / 2
-#define GAUSS_XUPPER 8.572
-#define GAUSS_XLOWER -37.519
+#define GAUSS_EPSILON  (GSL_DBL_EPSILON / 2)
+#define GAUSS_XUPPER (8.572)
+#define GAUSS_XLOWER (-37.519)
 
-#define GAUSS_SCALE 16.0
+#define GAUSS_SCALE (16.0)
 
 static double
 get_del (double x, double rational)
@@ -314,12 +314,12 @@ gsl_cdf_ugaussian_Q (const double x)
 
       return result;
     }
-  else if (x > (-GAUSS_XLOWER))
+  else if (x > -(GAUSS_XLOWER))
     {
       result = 0.0;
       return result;
     }
-  else if (x < (-GAUSS_XUPPER))
+  else if (x < -(GAUSS_XUPPER))
     {
       result = 1.0;
       return result;

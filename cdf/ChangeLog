@@ -1,3 +1,8 @@
+2003-08-27  Brian Gough  <bjg@network-theory.co.uk>
+
+	* gauss.c: use parentheses around constant macros to avoid -(-X)
+	being interpreted as --X
+
 2003-07-27  Brian Gough  <bjg@network-theory.co.uk>
 
 	* gumbel1.c (gsl_cdf_gumbel1_Q): use pow in place of exp since
