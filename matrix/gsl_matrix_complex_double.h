@@ -47,7 +47,19 @@ typedef struct
   int owner;
 } gsl_matrix_complex ;
 
-/* typedef struct gsl_matrix_complex_struct gsl_matrix_complex; */
+typedef union
+{
+  gsl_matrix_complex _internal_representation;  
+  gsl_matrix_complex matrix;
+} gsl_matrix_complex_view;
+
+typedef union
+{
+  gsl_matrix_complex _internal_representation;
+  const gsl_matrix_complex matrix;
+} gsl_matrix_complex_const_view;
+
+/* Allocation */
 
 gsl_matrix_complex * 
 gsl_matrix_complex_alloc (const size_t n1, const size_t n2);
@@ -73,36 +85,100 @@ gsl_vector_complex *
 gsl_vector_complex_alloc_col_from_matrix (gsl_matrix_complex * m,
                                                 const size_t j);
 
-
 void gsl_matrix_complex_free (gsl_matrix_complex * m);
 
+/* Views */
 
-int gsl_matrix_complex_view_from_matrix (gsl_matrix_complex * m, 
-                                       gsl_matrix_complex * mm,
-                                       const size_t k1,
-                                       const size_t k2,
-                                       const size_t n1, 
-                                       const size_t n2);
+gsl_matrix_complex_view 
+gsl_matrix_complex_submatrix (gsl_matrix_complex * m, 
+                            const size_t i, const size_t j, 
+                            const size_t n1, const size_t n2);
 
-int gsl_matrix_complex_view_from_vector (gsl_matrix_complex * m, 
-                                       gsl_vector_complex * v,
-                                       const size_t offset,
-                                       const size_t n1, 
-                                       const size_t n2);
+gsl_vector_complex_view 
+gsl_matrix_complex_row (gsl_matrix_complex * m, const size_t i);
 
+gsl_vector_complex_view 
+gsl_matrix_complex_column (gsl_matrix_complex * m, const size_t j);
 
-int gsl_matrix_complex_view_from_array (gsl_matrix_complex * m, 
-                                      double * base,
-                                      const size_t offset,
+gsl_vector_complex_view 
+gsl_matrix_complex_diagonal (gsl_matrix_complex * m);
+
+gsl_vector_complex_view 
+gsl_matrix_complex_subdiagonal (gsl_matrix_complex * m, const size_t k);
+
+gsl_vector_complex_view 
+gsl_matrix_complex_superdiagonal (gsl_matrix_complex * m, const size_t k);
+
+gsl_matrix_complex_view
+gsl_matrix_complex_view_array (double * base,
+                             const size_t n1, 
+                             const size_t n2);
+
+gsl_matrix_complex_view
+gsl_matrix_complex_view_array_with_tda (double * base, 
                                       const size_t n1, 
-                                      const size_t n2);
+                                      const size_t n2,
+                                      const size_t tda);
 
-gsl_matrix_complex gsl_matrix_complex_view (double * m, 
-                                                        const size_t n1, 
-                                                        const size_t n2);
+gsl_matrix_complex_view
+gsl_matrix_complex_view_vector (gsl_vector_complex * v,
+                              const size_t n1, 
+                              const size_t n2);
 
-int gsl_vector_complex_view_row_from_matrix (gsl_vector_complex * v, gsl_matrix_complex * m, const size_t i);
-int gsl_vector_complex_view_col_from_matrix (gsl_vector_complex * v, gsl_matrix_complex * m, const size_t j);
+gsl_matrix_complex_view
+gsl_matrix_complex_view_vector_with_tda (gsl_vector_complex * v,
+                                       const size_t n1, 
+                                       const size_t n2,
+                                       const size_t tda);
+
+
+gsl_matrix_complex_const_view 
+gsl_matrix_complex_const_submatrix (const gsl_matrix_complex * m, 
+                                  const size_t i, const size_t j, 
+                                  const size_t n1, const size_t n2);
+
+gsl_vector_complex_const_view 
+gsl_matrix_complex_const_row (const gsl_matrix_complex * m, 
+                            const size_t i);
+
+gsl_vector_complex_const_view 
+gsl_matrix_complex_const_column (const gsl_matrix_complex * m, 
+                               const size_t j);
+
+gsl_vector_complex_const_view
+gsl_matrix_complex_const_diagonal (const gsl_matrix_complex * m);
+
+gsl_vector_complex_const_view 
+gsl_matrix_complex_const_subdiagonal (const gsl_matrix_complex * m, 
+                                    const size_t k);
+
+gsl_vector_complex_const_view 
+gsl_matrix_complex_const_superdiagonal (const gsl_matrix_complex * m, 
+                                      const size_t k);
+
+gsl_matrix_complex_const_view
+gsl_matrix_complex_const_view_array (const double * base,
+                                   const size_t n1, 
+                                   const size_t n2);
+
+gsl_matrix_complex_const_view
+gsl_matrix_complex_const_view_array_with_tda (const double * base, 
+                                            const size_t n1, 
+                                            const size_t n2,
+                                            const size_t tda);
+
+gsl_matrix_complex_const_view
+gsl_matrix_complex_const_view_vector (const gsl_vector_complex * v,
+                                    const size_t n1, 
+                                    const size_t n2);
+
+gsl_matrix_complex_const_view
+gsl_matrix_complex_const_view_vector_with_tda (const gsl_vector_complex * v,
+                                             const size_t n1, 
+                                             const size_t n2,
+                                             const size_t tda);
+
+/* Operations */
 
 void gsl_matrix_complex_set_zero (gsl_matrix_complex * m);
 void gsl_matrix_complex_set_identity (gsl_matrix_complex * m);
@@ -126,18 +202,6 @@ int gsl_matrix_complex_swap_rowcol(gsl_matrix_complex * m, const size_t i, const
 
 int gsl_matrix_complex_transpose (gsl_matrix_complex * m);
 int gsl_matrix_complex_transpose_memcpy (gsl_matrix_complex * dest, const gsl_matrix_complex * src);
-
-gsl_matrix_complex gsl_matrix_complex_submatrix (gsl_matrix_complex * m, const size_t i, const size_t j, const size_t n1, const size_t n2);
-gsl_vector_complex gsl_matrix_complex_row (gsl_matrix_complex * m, const size_t i);
-gsl_vector_complex gsl_matrix_complex_column (gsl_matrix_complex * m, const size_t j);
-gsl_vector_complex gsl_matrix_complex_diagonal (gsl_matrix_complex * m);
-gsl_vector_complex gsl_matrix_complex_subdiagonal (gsl_matrix_complex * m, const size_t k);
-gsl_vector_complex gsl_matrix_complex_superdiagonal (gsl_matrix_complex * m, const size_t k);
-
-const gsl_matrix_complex gsl_matrix_complex_const_submatrix (const gsl_matrix_complex * m, const size_t i, const size_t j, const size_t n1, const size_t n2);
-const gsl_vector_complex gsl_matrix_complex_const_row (const gsl_matrix_complex * m, const size_t i);
-const gsl_vector_complex gsl_matrix_complex_const_column (const gsl_matrix_complex * m, const size_t j);
-const gsl_vector_complex gsl_matrix_complex_const_diagonal (const gsl_matrix_complex * m);
 
 int gsl_matrix_complex_isnull (const gsl_matrix_complex * m);
 

@@ -17,137 +17,118 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-QUALIFIED_TYPE(gsl_matrix)
-FUNCTION (gsl_matrix, submatrix) (QUALIFIED_TYPE(gsl_matrix) * m, 
-                                  const size_t i, const size_t j,
-                                  const size_t n1, const size_t n2)
-{
-  TYPE(gsl_matrix) s = {0, 0, 0, 0, 0};
-
-  if (i >= m->size1)
-    {
-      GSL_ERROR_VAL ("row index is out of range", GSL_EINVAL, s);
-    }
-  else if (j >= m->size2)
-    {
-      GSL_ERROR_VAL ("column index is out of range", GSL_EINVAL, s);
-    }
-  else if (n1 == 0)
-    {
-      GSL_ERROR_VAL ("first dimension must be non-zero", GSL_EINVAL, s);
-    }
-  else if (n2 == 0)
-    {
-      GSL_ERROR_VAL ("second dimension must be non-zero", GSL_EINVAL, s);
-    }
-  else if (i + n1 > m->size1)
-    {
-      GSL_ERROR_VAL ("first dimension overflows matrix", GSL_EINVAL, s);
-    }
-  else if (j + n2 > m->size2)
-    {
-      GSL_ERROR_VAL ("second dimension overflows matrix", GSL_EINVAL, s);
-    }
-
-  s.data = m->data + MULTIPLICITY * (i * m->tda + j);
-  s.size1 = n1;
-  s.size2 = n2;
-  s.tda = m->tda;
-  s.block = m->block;
-  s.owner = 0;
-
-  return s;
-}
-
-QUALIFIED_TYPE(gsl_vector)
+QUALIFIED_VIEW(gsl_vector,view)
 FUNCTION (gsl_matrix, row) (QUALIFIED_TYPE(gsl_matrix) * m, const size_t i)
 {
-  TYPE(gsl_vector) v = {0, 0, 0, 0};
-
+  QUALIFIED_VIEW(gsl_vector,view) view;
+  
   if (i >= m->size1)
     {
-      GSL_ERROR_VAL ("row index is out of range", GSL_EINVAL, v);
+      GSL_ERROR_VAL ("row index is out of range", GSL_EINVAL, view);
     }
-
-  v.data = m->data + i * MULTIPLICITY * m->tda;
-  v.size = m->size2;
-  v.stride = 1;
-  v.block = m->block;
-  v.owner = 0;
-
-  return v;
+  
+  {
+    TYPE(gsl_vector) v = {0, 0, 0, 0};
+    
+    v.data = m->data + i * MULTIPLICITY * m->tda;
+    v.size = m->size2;
+    v.stride = 1;
+    v.block = m->block;
+    v.owner = 0;
+    
+    view._internal_representation = v;
+    return view;
+  }
 }
 
-QUALIFIED_TYPE(gsl_vector)
+QUALIFIED_VIEW(gsl_vector,view)
 FUNCTION (gsl_matrix, column) (QUALIFIED_TYPE(gsl_matrix) * m, const size_t j)
 {
-  TYPE(gsl_vector) v = {0, 0, 0, 0};
-
+  QUALIFIED_VIEW(gsl_vector,view) view;
+  
   if (j >= m->size2)
     {
-      GSL_ERROR_VAL ("column index is out of range", GSL_EINVAL, v);
+      GSL_ERROR_VAL ("column index is out of range", GSL_EINVAL, view);
     }
 
-  v.data = m->data + j * MULTIPLICITY;
-  v.size = m->size1;
-  v.stride = m->tda;
-  v.block = m->block;
-  v.owner = 0;
+  {
+    TYPE(gsl_vector) v = {0, 0, 0, 0};
+    
+    v.data = m->data + j * MULTIPLICITY;
+    v.size = m->size1;
+    v.stride = m->tda;
+    v.block = m->block;
+    v.owner = 0;
 
-  return v;
+    view._internal_representation = v;
+    return view;
+  }
 }
 
-QUALIFIED_TYPE(gsl_vector)
+QUALIFIED_VIEW(gsl_vector,view)
 FUNCTION (gsl_matrix, diagonal) (QUALIFIED_TYPE(gsl_matrix) * m)
 {
-  TYPE(gsl_vector) v = {0, 0, 0, 0};
+  QUALIFIED_VIEW(gsl_vector,view) view;
 
+  TYPE(gsl_vector) v = {0, 0, 0, 0};
   v.data = m->data;
   v.size = GSL_MIN(m->size1,m->size2);
   v.stride = m->tda + 1;
   v.block = m->block;
   v.owner = 0;
 
-  return v;
+  view._internal_representation = v;
+  return view;
 }
 
-QUALIFIED_TYPE(gsl_vector)
+QUALIFIED_VIEW(gsl_vector,view)
 FUNCTION (gsl_matrix, subdiagonal) (QUALIFIED_TYPE(gsl_matrix) * m,
                                     const size_t k)
 {
-  TYPE(gsl_vector) v = {0, 0, 0, 0};
-
+  QUALIFIED_VIEW(gsl_vector,view) view;
+  
   if (k >= m->size1)
     {
-      GSL_ERROR_VAL ("subdiagonal index is out of range", GSL_EINVAL, v);
+      GSL_ERROR_VAL ("subdiagonal index is out of range", GSL_EINVAL, view);
     }
 
-  v.data = m->data + k * MULTIPLICITY * m->tda;
-  v.size = GSL_MIN(m->size1 - k, m->size2);
-  v.stride = m->tda + 1;
-  v.block = m->block;
-  v.owner = 0;
-
-  return v;
+  {
+    TYPE(gsl_vector) v = {0, 0, 0, 0};
+    
+    v.data = m->data + k * MULTIPLICITY * m->tda;
+    v.size = GSL_MIN(m->size1 - k, m->size2);
+    v.stride = m->tda + 1;
+    v.block = m->block;
+    v.owner = 0;
+    
+    view._internal_representation = v;
+    return view;
+  }
 }
 
-QUALIFIED_TYPE(gsl_vector)
+QUALIFIED_VIEW(gsl_vector,view)
 FUNCTION (gsl_matrix, superdiagonal) (QUALIFIED_TYPE(gsl_matrix) * m,
                                       const size_t k)
 {
-  TYPE(gsl_vector) v = {0, 0, 0, 0};
+  QUALIFIED_VIEW(gsl_vector,view) view;
+
 
   if (k >= m->size2)
     {
-      GSL_ERROR_VAL ("column index is out of range", GSL_EINVAL, v);
+      GSL_ERROR_VAL ("column index is out of range", GSL_EINVAL, view);
     }
 
-  v.data = m->data + k * MULTIPLICITY;
-  v.size = GSL_MIN(m->size1, m->size2 - k);
-  v.stride = m->tda + 1;
-  v.block = m->block;
-  v.owner = 0;
+  {
+    TYPE(gsl_vector) v = {0, 0, 0, 0};
+    
+    v.data = m->data + k * MULTIPLICITY;
+    v.size = GSL_MIN(m->size1, m->size2 - k);
+    v.stride = m->tda + 1;
+    v.block = m->block;
+    v.owner = 0;
 
-  return v;
+    view._internal_representation = v;
+    return view;
+  }
 }
 

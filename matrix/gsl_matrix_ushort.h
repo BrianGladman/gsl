@@ -46,7 +46,19 @@ typedef struct
   int owner;
 } gsl_matrix_ushort;
 
-/* typedef struct gsl_matrix_ushort_struct gsl_matrix_ushort;*/
+typedef union
+{
+  gsl_matrix_ushort _internal_representation;  
+  gsl_matrix_ushort matrix;
+} gsl_matrix_ushort_view;
+
+typedef union
+{
+  gsl_matrix_ushort _internal_representation;
+  const gsl_matrix_ushort matrix;
+} gsl_matrix_ushort_const_view;
+
+/* Allocation */
 
 gsl_matrix_ushort * 
 gsl_matrix_ushort_alloc (const size_t n1, const size_t n2);
@@ -78,32 +90,99 @@ gsl_vector_ushort_alloc_col_from_matrix (gsl_matrix_ushort * m,
 
 void gsl_matrix_ushort_free (gsl_matrix_ushort * m);
 
-int gsl_matrix_ushort_view_from_matrix (gsl_matrix_ushort * m, 
-                                       gsl_matrix_ushort * mm,
-                                       const size_t k1,
-                                       const size_t k2,
-                                       const size_t n1, 
-                                       const size_t n2);
+/* Views */
 
-int gsl_matrix_ushort_view_from_vector (gsl_matrix_ushort * m, 
-                                       gsl_vector_ushort * v,
-                                       const size_t offset,
-                                       const size_t n1, 
-                                       const size_t n2);
+gsl_matrix_ushort_view 
+gsl_matrix_ushort_submatrix (gsl_matrix_ushort * m, 
+                            const size_t i, const size_t j, 
+                            const size_t n1, const size_t n2);
 
+gsl_vector_ushort_view 
+gsl_matrix_ushort_row (gsl_matrix_ushort * m, const size_t i);
 
-int gsl_matrix_ushort_view_from_array (gsl_matrix_ushort * m, 
-                                      unsigned short * base,
-                                      const size_t offset,
+gsl_vector_ushort_view 
+gsl_matrix_ushort_column (gsl_matrix_ushort * m, const size_t j);
+
+gsl_vector_ushort_view 
+gsl_matrix_ushort_diagonal (gsl_matrix_ushort * m);
+
+gsl_vector_ushort_view 
+gsl_matrix_ushort_subdiagonal (gsl_matrix_ushort * m, const size_t k);
+
+gsl_vector_ushort_view 
+gsl_matrix_ushort_superdiagonal (gsl_matrix_ushort * m, const size_t k);
+
+gsl_matrix_ushort_view
+gsl_matrix_ushort_view_array (unsigned short * base,
+                             const size_t n1, 
+                             const size_t n2);
+
+gsl_matrix_ushort_view
+gsl_matrix_ushort_view_array_with_tda (unsigned short * base, 
                                       const size_t n1, 
-                                      const size_t n2);
+                                      const size_t n2,
+                                      const size_t tda);
 
-gsl_matrix_ushort gsl_matrix_ushort_view (unsigned short * m, 
-                                        const size_t n1, 
-                                        const size_t n2);
 
-int gsl_vector_ushort_view_row_from_matrix (gsl_vector_ushort * v, gsl_matrix_ushort * m, const size_t i);
-int gsl_vector_ushort_view_col_from_matrix (gsl_vector_ushort * v, gsl_matrix_ushort * m, const size_t j);
+gsl_matrix_ushort_view
+gsl_matrix_ushort_view_vector (gsl_vector_ushort * v,
+                              const size_t n1, 
+                              const size_t n2);
+
+gsl_matrix_ushort_view
+gsl_matrix_ushort_view_vector_with_tda (gsl_vector_ushort * v,
+                                       const size_t n1, 
+                                       const size_t n2,
+                                       const size_t tda);
+
+
+gsl_matrix_ushort_const_view 
+gsl_matrix_ushort_const_submatrix (const gsl_matrix_ushort * m, 
+                                  const size_t i, const size_t j, 
+                                  const size_t n1, const size_t n2);
+
+gsl_vector_ushort_const_view 
+gsl_matrix_ushort_const_row (const gsl_matrix_ushort * m, 
+                            const size_t i);
+
+gsl_vector_ushort_const_view 
+gsl_matrix_ushort_const_column (const gsl_matrix_ushort * m, 
+                               const size_t j);
+
+gsl_vector_ushort_const_view
+gsl_matrix_ushort_const_diagonal (const gsl_matrix_ushort * m);
+
+gsl_vector_ushort_const_view 
+gsl_matrix_ushort_const_subdiagonal (const gsl_matrix_ushort * m, 
+                                    const size_t k);
+
+gsl_vector_ushort_const_view 
+gsl_matrix_ushort_const_superdiagonal (const gsl_matrix_ushort * m, 
+                                      const size_t k);
+
+gsl_matrix_ushort_const_view
+gsl_matrix_ushort_const_view_array (const unsigned short * base,
+                                   const size_t n1, 
+                                   const size_t n2);
+
+gsl_matrix_ushort_const_view
+gsl_matrix_ushort_const_view_array_with_tda (const unsigned short * base, 
+                                            const size_t n1, 
+                                            const size_t n2,
+                                            const size_t tda);
+
+gsl_matrix_ushort_const_view
+gsl_matrix_ushort_const_view_vector (const gsl_vector_ushort * v,
+                                    const size_t n1, 
+                                    const size_t n2);
+
+gsl_matrix_ushort_const_view
+gsl_matrix_ushort_const_view_vector_with_tda (const gsl_vector_ushort * v,
+                                             const size_t n1, 
+                                             const size_t n2,
+                                             const size_t tda);
+
+/* Operations */
 
 void gsl_matrix_ushort_set_zero (gsl_matrix_ushort * m);
 void gsl_matrix_ushort_set_identity (gsl_matrix_ushort * m);
@@ -126,19 +205,6 @@ int gsl_matrix_ushort_swap_columns(gsl_matrix_ushort * m, const size_t i, const 
 int gsl_matrix_ushort_swap_rowcol(gsl_matrix_ushort * m, const size_t i, const size_t j);
 int gsl_matrix_ushort_transpose (gsl_matrix_ushort * m);
 int gsl_matrix_ushort_transpose_memcpy (gsl_matrix_ushort * dest, const gsl_matrix_ushort * src);
-
-
-gsl_matrix_ushort gsl_matrix_ushort_submatrix (gsl_matrix_ushort * m, const size_t i, const size_t j, const size_t n1, const size_t n2);
-gsl_vector_ushort gsl_matrix_ushort_row (gsl_matrix_ushort * m, const size_t i);
-gsl_vector_ushort gsl_matrix_ushort_column (gsl_matrix_ushort * m, const size_t j);
-gsl_vector_ushort gsl_matrix_ushort_diagonal (gsl_matrix_ushort * m);
-gsl_vector_ushort gsl_matrix_ushort_subdiagonal (gsl_matrix_ushort * m, const size_t k);
-gsl_vector_ushort gsl_matrix_ushort_superdiagonal (gsl_matrix_ushort * m, const size_t k);
-
-const gsl_matrix_ushort gsl_matrix_ushort_const_submatrix (const gsl_matrix_ushort * m, const size_t i, const size_t j, const size_t n1, const size_t n2);
-const gsl_vector_ushort gsl_matrix_ushort_const_row (const gsl_matrix_ushort * m, const size_t i);
-const gsl_vector_ushort gsl_matrix_ushort_const_column (const gsl_matrix_ushort * m, const size_t j);
-const gsl_vector_ushort gsl_matrix_ushort_const_diagonal (const gsl_matrix_ushort * m);
 
 unsigned short gsl_matrix_ushort_max (const gsl_matrix_ushort * m);
 unsigned short gsl_matrix_ushort_min (const gsl_matrix_ushort * m);

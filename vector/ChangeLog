@@ -1,3 +1,10 @@
+Sun Jul  1 22:38:30 2001  Brian Gough  <bjg@network-theory.co.uk>
+
+	* introduction of new-style vector views
+
+	* view_source.c: changed order of arguments to be consistent with
+ 	rest of library for _with_stride functions
+
 Mon May 14 22:43:18 2001  Brian Gough  <bjg@network-theory.co.uk>
 
 	* vector_source.c (FUNCTION): removed unnecessary inline from

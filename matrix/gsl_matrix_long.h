@@ -46,7 +46,19 @@ typedef struct
   int owner;
 } gsl_matrix_long;
 
-/* typedef struct gsl_matrix_long_struct gsl_matrix_long;*/
+typedef union
+{
+  gsl_matrix_long _internal_representation;  
+  gsl_matrix_long matrix;
+} gsl_matrix_long_view;
+
+typedef union
+{
+  gsl_matrix_long _internal_representation;
+  const gsl_matrix_long matrix;
+} gsl_matrix_long_const_view;
+
+/* Allocation */
 
 gsl_matrix_long * 
 gsl_matrix_long_alloc (const size_t n1, const size_t n2);
@@ -78,32 +90,99 @@ gsl_vector_long_alloc_col_from_matrix (gsl_matrix_long * m,
 
 void gsl_matrix_long_free (gsl_matrix_long * m);
 
-int gsl_matrix_long_view_from_matrix (gsl_matrix_long * m, 
-                                       gsl_matrix_long * mm,
-                                       const size_t k1,
-                                       const size_t k2,
-                                       const size_t n1, 
-                                       const size_t n2);
+/* Views */
 
-int gsl_matrix_long_view_from_vector (gsl_matrix_long * m, 
-                                       gsl_vector_long * v,
-                                       const size_t offset,
-                                       const size_t n1, 
-                                       const size_t n2);
+gsl_matrix_long_view 
+gsl_matrix_long_submatrix (gsl_matrix_long * m, 
+                            const size_t i, const size_t j, 
+                            const size_t n1, const size_t n2);
 
+gsl_vector_long_view 
+gsl_matrix_long_row (gsl_matrix_long * m, const size_t i);
 
-int gsl_matrix_long_view_from_array (gsl_matrix_long * m, 
-                                      long * base,
-                                      const size_t offset,
+gsl_vector_long_view 
+gsl_matrix_long_column (gsl_matrix_long * m, const size_t j);
+
+gsl_vector_long_view 
+gsl_matrix_long_diagonal (gsl_matrix_long * m);
+
+gsl_vector_long_view 
+gsl_matrix_long_subdiagonal (gsl_matrix_long * m, const size_t k);
+
+gsl_vector_long_view 
+gsl_matrix_long_superdiagonal (gsl_matrix_long * m, const size_t k);
+
+gsl_matrix_long_view
+gsl_matrix_long_view_array (long * base,
+                             const size_t n1, 
+                             const size_t n2);
+
+gsl_matrix_long_view
+gsl_matrix_long_view_array_with_tda (long * base, 
                                       const size_t n1, 
-                                      const size_t n2);
+                                      const size_t n2,
+                                      const size_t tda);
 
-gsl_matrix_long gsl_matrix_long_view (long * m, 
-                                        const size_t n1, 
-                                        const size_t n2);
 
-int gsl_vector_long_view_row_from_matrix (gsl_vector_long * v, gsl_matrix_long * m, const size_t i);
-int gsl_vector_long_view_col_from_matrix (gsl_vector_long * v, gsl_matrix_long * m, const size_t j);
+gsl_matrix_long_view
+gsl_matrix_long_view_vector (gsl_vector_long * v,
+                              const size_t n1, 
+                              const size_t n2);
+
+gsl_matrix_long_view
+gsl_matrix_long_view_vector_with_tda (gsl_vector_long * v,
+                                       const size_t n1, 
+                                       const size_t n2,
+                                       const size_t tda);
+
+
+gsl_matrix_long_const_view 
+gsl_matrix_long_const_submatrix (const gsl_matrix_long * m, 
+                                  const size_t i, const size_t j, 
+                                  const size_t n1, const size_t n2);
+
+gsl_vector_long_const_view 
+gsl_matrix_long_const_row (const gsl_matrix_long * m, 
+                            const size_t i);
+
+gsl_vector_long_const_view 
+gsl_matrix_long_const_column (const gsl_matrix_long * m, 
+                               const size_t j);
+
+gsl_vector_long_const_view
+gsl_matrix_long_const_diagonal (const gsl_matrix_long * m);
+
+gsl_vector_long_const_view 
+gsl_matrix_long_const_subdiagonal (const gsl_matrix_long * m, 
+                                    const size_t k);
+
+gsl_vector_long_const_view 
+gsl_matrix_long_const_superdiagonal (const gsl_matrix_long * m, 
+                                      const size_t k);
+
+gsl_matrix_long_const_view
+gsl_matrix_long_const_view_array (const long * base,
+                                   const size_t n1, 
+                                   const size_t n2);
+
+gsl_matrix_long_const_view
+gsl_matrix_long_const_view_array_with_tda (const long * base, 
+                                            const size_t n1, 
+                                            const size_t n2,
+                                            const size_t tda);
+
+gsl_matrix_long_const_view
+gsl_matrix_long_const_view_vector (const gsl_vector_long * v,
+                                    const size_t n1, 
+                                    const size_t n2);
+
+gsl_matrix_long_const_view
+gsl_matrix_long_const_view_vector_with_tda (const gsl_vector_long * v,
+                                             const size_t n1, 
+                                             const size_t n2,
+                                             const size_t tda);
+
+/* Operations */
 
 void gsl_matrix_long_set_zero (gsl_matrix_long * m);
 void gsl_matrix_long_set_identity (gsl_matrix_long * m);
@@ -126,19 +205,6 @@ int gsl_matrix_long_swap_columns(gsl_matrix_long * m, const size_t i, const size
 int gsl_matrix_long_swap_rowcol(gsl_matrix_long * m, const size_t i, const size_t j);
 int gsl_matrix_long_transpose (gsl_matrix_long * m);
 int gsl_matrix_long_transpose_memcpy (gsl_matrix_long * dest, const gsl_matrix_long * src);
-
-
-gsl_matrix_long gsl_matrix_long_submatrix (gsl_matrix_long * m, const size_t i, const size_t j, const size_t n1, const size_t n2);
-gsl_vector_long gsl_matrix_long_row (gsl_matrix_long * m, const size_t i);
-gsl_vector_long gsl_matrix_long_column (gsl_matrix_long * m, const size_t j);
-gsl_vector_long gsl_matrix_long_diagonal (gsl_matrix_long * m);
-gsl_vector_long gsl_matrix_long_subdiagonal (gsl_matrix_long * m, const size_t k);
-gsl_vector_long gsl_matrix_long_superdiagonal (gsl_matrix_long * m, const size_t k);
-
-const gsl_matrix_long gsl_matrix_long_const_submatrix (const gsl_matrix_long * m, const size_t i, const size_t j, const size_t n1, const size_t n2);
-const gsl_vector_long gsl_matrix_long_const_row (const gsl_matrix_long * m, const size_t i);
-const gsl_vector_long gsl_matrix_long_const_column (const gsl_matrix_long * m, const size_t j);
-const gsl_vector_long gsl_matrix_long_const_diagonal (const gsl_matrix_long * m);
 
 long gsl_matrix_long_max (const gsl_matrix_long * m);
 long gsl_matrix_long_min (const gsl_matrix_long * m);

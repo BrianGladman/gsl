@@ -36,16 +36,30 @@
 
 __BEGIN_DECLS
 
-struct gsl_vector_ulong_struct
+typedef struct 
 {
   size_t size;
   size_t stride;
   unsigned long *data;
   gsl_block_ulong *block;
   int owner;
-};
+} 
+gsl_vector_ulong;
 
-typedef struct gsl_vector_ulong_struct gsl_vector_ulong;
+typedef union
+{
+  gsl_vector_ulong _internal_representation;  
+  gsl_vector_ulong vector;
+} gsl_vector_ulong_view;
+
+typedef union
+{
+  gsl_vector_ulong _internal_representation;
+  const gsl_vector_ulong vector;
+} gsl_vector_ulong_const_view;
+
+
+/* Allocation */
 
 gsl_vector_ulong *gsl_vector_ulong_alloc (const size_t n);
 gsl_vector_ulong *gsl_vector_ulong_calloc (const size_t n);
@@ -62,21 +76,46 @@ gsl_vector_ulong *gsl_vector_ulong_alloc_from_vector (gsl_vector_ulong * v,
 
 void gsl_vector_ulong_free (gsl_vector_ulong * v);
 
-gsl_vector_ulong gsl_vector_ulong_view (unsigned long *v, size_t n);
+/* Views */
 
-int gsl_vector_ulong_view_from_vector (gsl_vector_ulong *v, 
-                                       gsl_vector_ulong *base,
-                                       size_t offset, size_t n, size_t stride);
+gsl_vector_ulong_view 
+gsl_vector_ulong_view_array (unsigned long *v, size_t n);
 
-int gsl_vector_ulong_view_from_array (gsl_vector_ulong *v, 
-                                      unsigned long *base,
-                                      size_t offset, size_t n, size_t stride);
+gsl_vector_ulong_view 
+gsl_vector_ulong_view_array_with_stride (unsigned long *base,
+                                         size_t n, 
+                                         size_t stride);
 
-gsl_vector_ulong gsl_vector_ulong_subvector (gsl_vector_ulong *v, size_t i, size_t n);
-gsl_vector_ulong gsl_vector_ulong_subvector_with_stride (gsl_vector_ulong *v, size_t i, size_t n, size_t stride);
+gsl_vector_ulong_const_view 
+gsl_vector_ulong_const_view_array (const unsigned long *v, size_t n);
 
-const gsl_vector_ulong gsl_vector_ulong_const_subvector (const gsl_vector_ulong *v, size_t i, size_t n);
-const gsl_vector_ulong gsl_vector_ulong_const_subvector_with_stride (const gsl_vector_ulong *v, size_t i, size_t n, size_t stride);
+gsl_vector_ulong_const_view 
+gsl_vector_ulong_const_view_array_with_stride (const unsigned long *base,
+                                               size_t n, 
+                                               size_t stride);
+
+gsl_vector_ulong_view 
+gsl_vector_ulong_subvector (gsl_vector_ulong *v, 
+                            size_t i, 
+                            size_t n);
+
+gsl_vector_ulong_view 
+gsl_vector_ulong_subvector_with_stride (gsl_vector_ulong *v, 
+                                        size_t i, size_t n, 
+                                        size_t stride);
+
+gsl_vector_ulong_const_view 
+gsl_vector_ulong_const_subvector (const gsl_vector_ulong *v, 
+                                  size_t i, 
+                                  size_t n);
+
+gsl_vector_ulong_const_view 
+gsl_vector_ulong_const_subvector_with_stride (const gsl_vector_ulong *v, 
+                                              size_t i, 
+                                              size_t n, 
+                                              size_t stride);
+
+/* Operations */
 
 unsigned long *gsl_vector_ulong_ptr (const gsl_vector_ulong * v, const size_t i);
 unsigned long gsl_vector_ulong_get (const gsl_vector_ulong * v, const size_t i);
@@ -113,7 +152,6 @@ int gsl_vector_ulong_mul (gsl_vector_ulong * a, const gsl_vector_ulong * b);
 int gsl_vector_ulong_div (gsl_vector_ulong * a, const gsl_vector_ulong * b);
 int gsl_vector_ulong_scale (gsl_vector_ulong * a, const double x);
 int gsl_vector_ulong_add_constant (gsl_vector_ulong * a, const double x);
-
 
 int gsl_vector_ulong_isnull (const gsl_vector_ulong * v);
 

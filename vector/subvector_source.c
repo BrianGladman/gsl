@@ -17,55 +17,70 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-QUALIFIED_TYPE(gsl_vector)
+QUALIFIED_VIEW(gsl_vector, view)
 FUNCTION(gsl_vector, subvector) (QUALIFIED_TYPE(gsl_vector) * v, size_t offset, size_t n)
 {
-  TYPE(gsl_vector) s = {0, 0, 0, 0, 0};
+  QUALIFIED_VIEW(gsl_vector,view) view;
 
   if (n == 0)
     {
-      GSL_ERROR_VAL ("vector length n must be positive integer", GSL_EINVAL, s);
+      GSL_ERROR_VAL ("vector length n must be positive integer", 
+                     GSL_EINVAL, view);
     }
 
   if (offset + (n - 1) >= v->size)
     {
-      GSL_ERROR_VAL ("vector would extend past end of vector", GSL_EINVAL, s);
+      GSL_ERROR_VAL ("view would extend past end of vector", 
+                     GSL_EINVAL, view);
     }
 
-  s.data = v->data +  MULTIPLICITY * v->stride * offset ;
-  s.size = n;
-  s.stride = v->stride;
-  s.block = v->block;
-  s.owner = 0;
+  {
+    TYPE(gsl_vector) s = {0, 0, 0, 0, 0};
 
-  return s;
+    s.data = v->data +  MULTIPLICITY * v->stride * offset ;
+    s.size = n;
+    s.stride = v->stride;
+    s.block = v->block;
+    s.owner = 0;
+
+    view._internal_representation = s;
+    return view;
+  }
 }
 
-QUALIFIED_TYPE(gsl_vector)
-FUNCTION(gsl_vector, subvector_with_stride) (QUALIFIED_TYPE(gsl_vector) * v, size_t offset, size_t n, size_t stride)
+QUALIFIED_VIEW(gsl_vector, view)
+FUNCTION(gsl_vector, subvector_with_stride) (QUALIFIED_TYPE(gsl_vector) * v, size_t offset, size_t stride, size_t n)
 {
-  TYPE(gsl_vector) s = {0, 0, 0, 0, 0};
+  QUALIFIED_VIEW(gsl_vector,view) view;
 
   if (n == 0)
     {
-      GSL_ERROR_VAL ("vector length n must be positive integer", GSL_EINVAL, s);
+      GSL_ERROR_VAL ("vector length n must be positive integer", 
+                     GSL_EINVAL, view);
     }
 
   if (stride == 0)
     {
-      GSL_ERROR_VAL ("stride must be positive integer", GSL_EINVAL, s);
+      GSL_ERROR_VAL ("stride must be positive integer", 
+                     GSL_EINVAL, view);
     }
 
   if (offset + (n - 1) * stride >= v->size)
     {
-      GSL_ERROR_VAL ("vector would extend past end of vector", GSL_EINVAL, s);
+      GSL_ERROR_VAL ("view would extend past end of vector", 
+                     GSL_EINVAL, view);
     }
 
-  s.data = v->data + MULTIPLICITY * v->stride * offset ;
-  s.size = n;
-  s.stride = v->stride * stride;
-  s.block = v->block;
-  s.owner = 0;
+  {
+    TYPE(gsl_vector) s = {0, 0, 0, 0, 0};
 
-  return s;
+    s.data = v->data + MULTIPLICITY * v->stride * offset ;
+    s.size = n;
+    s.stride = v->stride * stride;
+    s.block = v->block;
+    s.owner = 0;
+    
+    view._internal_representation = s;
+    return view;
+  }
 }

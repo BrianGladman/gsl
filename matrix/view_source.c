@@ -17,6 +17,164 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+
+
+QUALIFIED_VIEW (gsl_matrix,view)
+FUNCTION (gsl_matrix, view_array) (QUALIFIER ATOMIC * array, 
+                                   const size_t n1, const size_t n2)
+{
+  QUALIFIED_VIEW (gsl_matrix,view) view;
+
+  if (n1 == 0)
+    {
+      GSL_ERROR_VAL ("matrix dimension n1 must be positive integer",
+                     GSL_EINVAL, view);
+    }
+  else if (n2 == 0)
+    {
+      GSL_ERROR_VAL ("matrix dimension n2 must be positive integer",
+                     GSL_EINVAL, view);
+    }
+
+  {
+    TYPE(gsl_matrix) m = {0, 0, 0, 0, 0, 0};
+
+    m.data = array;
+    m.size1 = n1;
+    m.size2 = n2;
+    m.tda = n2; 
+    m.block = 0;
+    m.owner = 0;
+    
+    view._internal_representation = m;
+    return view;
+  }
+}
+
+QUALIFIED_VIEW (gsl_matrix,view)
+FUNCTION(gsl_matrix, view_array_with_tda) (QUALIFIER ATOMIC * base,
+                                           const size_t n1, 
+                                           const size_t n2,
+                                           const size_t tda)
+{
+  QUALIFIED_VIEW (gsl_matrix,view) view;
+
+  if (n1 == 0)
+    {
+      GSL_ERROR_VAL ("matrix dimension n1 must be positive integer",
+                     GSL_EINVAL, view);
+    }
+  else if (n2 == 0)
+    {
+      GSL_ERROR_VAL ("matrix dimension n2 must be positive integer",
+                     GSL_EINVAL, view);
+    }
+  else if (n2 > tda)
+    {
+      GSL_ERROR_VAL ("matrix dimension n2 must not exceed tda",
+                     GSL_EINVAL, view);
+    }
+
+
+  {
+    TYPE(gsl_matrix) m = {0, 0, 0, 0, 0, 0};
+
+    m.data = base;
+    m.size1 = n1;
+    m.size2 = n2;
+    m.tda = tda;
+    m.block = 0;
+    m.owner = 0;
+
+    view._internal_representation = m;
+    return view;
+  }
+}
+
+QUALIFIED_VIEW (gsl_matrix,view)
+FUNCTION(gsl_matrix, view_vector) (QUALIFIED_TYPE(gsl_vector) * v,
+                                   const size_t n1, 
+                                   const size_t n2)
+{
+  QUALIFIED_VIEW (gsl_matrix,view) view;
+
+  if (n1 == 0)
+    {
+      GSL_ERROR_VAL ("matrix dimension n1 must be positive integer",
+                     GSL_EINVAL, view);
+    }
+  else if (n2 == 0)
+    {
+      GSL_ERROR_VAL ("matrix dimension n2 must be positive integer",
+                     GSL_EINVAL, view);
+    }
+  else if (n1 * n2 > v->size)
+    {
+      GSL_ERROR_VAL ("matrix size exceeds size of original", 
+                     GSL_EINVAL, view);
+    }
+
+  {
+    TYPE(gsl_matrix) m = {0, 0, 0, 0, 0, 0};
+
+    m.data = v->data;
+    m.size1 = n1;
+    m.size2 = n2;
+    m.tda = n2;
+    m.block = v->block;
+    m.owner = 0;
+
+    view._internal_representation = m;
+    return view;
+  }
+}
+
+
+QUALIFIED_VIEW (gsl_matrix,view)
+FUNCTION(gsl_matrix, view_vector_with_tda) (QUALIFIED_TYPE(gsl_vector) * v,
+                                            const size_t n1, 
+                                            const size_t n2,
+                                            const size_t tda)
+{
+  QUALIFIED_VIEW (gsl_matrix,view) view;
+
+  if (n1 == 0)
+    {
+      GSL_ERROR_VAL ("matrix dimension n1 must be positive integer",
+                     GSL_EINVAL, view);
+    }
+  else if (n2 == 0)
+    {
+      GSL_ERROR_VAL ("matrix dimension n2 must be positive integer",
+                     GSL_EINVAL, view);
+    }
+  else if (n2 > tda)
+    {
+      GSL_ERROR_VAL ("matrix dimension n2 must not exceed tda",
+                     GSL_EINVAL, view);
+    }
+  else if (n1 * tda > v->size)
+    {
+      GSL_ERROR_VAL ("matrix size exceeds size of original", 
+                     GSL_EINVAL, view);
+    }
+
+  {
+    TYPE(gsl_matrix) m = {0, 0, 0, 0, 0, 0};
+
+    m.data = v->data;
+    m.size1 = n1;
+    m.size2 = n2;
+    m.tda = tda;
+    m.block = v->block;
+    m.owner = 0;
+
+    view._internal_representation = m;
+    return view;
+  }
+}
+
+#ifdef JUNK
 int
 FUNCTION (gsl_matrix, view_from_matrix) (TYPE(gsl_matrix) * m, 
                                          TYPE(gsl_matrix) * mm, 
@@ -55,95 +213,6 @@ FUNCTION (gsl_matrix, view_from_matrix) (TYPE(gsl_matrix) * m,
 
   return GSL_SUCCESS;
 }
-
-int
-FUNCTION(gsl_matrix, view_from_vector) (TYPE(gsl_matrix) * m,
-                                        TYPE(gsl_vector) * v,
-                                        const size_t offset, 
-                                        const size_t n1, 
-                                        const size_t n2)
-{
-  if (n1 == 0)
-    {
-      GSL_ERROR_VAL ("matrix dimension n1 must be positive integer",
-			GSL_EINVAL, 0);
-    }
-  else if (n2 == 0)
-    {
-      GSL_ERROR_VAL ("matrix dimension n2 must be positive integer",
-			GSL_EINVAL, 0);
-    }
-  else if (offset + n1 * n2 > v->size)
-    {
-      GSL_ERROR_VAL ("matrix size exceeds size of original", GSL_EINVAL, 0);
-    }
-
-  m->data = v->data + MULTIPLICITY * v->stride * offset ;
-  m->size1 = n1;
-  m->size2 = n2;
-  m->tda = n2;
-  m->block = v->block;
-  m->owner = 0;
-
-  return GSL_SUCCESS;
-}
-
-
-int
-FUNCTION(gsl_matrix, view_from_array) (TYPE(gsl_matrix) * m,
-                                       ATOMIC * base,
-                                       const size_t offset, 
-                                       const size_t n1, 
-                                       const size_t n2)
-{
-  if (n1 == 0)
-    {
-      GSL_ERROR_VAL ("matrix dimension n1 must be positive integer",
-			GSL_EINVAL, 0);
-    }
-  else if (n2 == 0)
-    {
-      GSL_ERROR_VAL ("matrix dimension n2 must be positive integer",
-			GSL_EINVAL, 0);
-    }
-
-  m->data = base + offset;
-  m->size1 = n1;
-  m->size2 = n2;
-  m->tda = n2;
-  m->block = 0;
-  m->owner = 0;
-
-  return GSL_SUCCESS;
-}
-
-
-TYPE (gsl_matrix)
-FUNCTION (gsl_matrix, view) (ATOMIC * array, const size_t n1, const size_t n2)
-{
-  TYPE(gsl_matrix) m = {0, 0, 0, 0, 0, 0};
-
-  if (n1 == 0)
-    {
-      GSL_ERROR_VAL ("matrix dimension n1 must be positive integer",
-                     GSL_EINVAL, m);
-    }
-  else if (n2 == 0)
-    {
-      GSL_ERROR_VAL ("matrix dimension n2 must be positive integer",
-                     GSL_EINVAL, m);
-    }
-
-  m.data = array;
-  m.size1 = n1;
-  m.size2 = n2;
-  m.tda = n2; 
-  m.block = 0;
-  m.owner = 0;
-
-  return m;
-}
-
 
 int
 FUNCTION (gsl_vector, view_row_from_matrix) (TYPE(gsl_vector) * v,
@@ -192,4 +261,5 @@ FUNCTION (gsl_vector, view_col_from_matrix) (TYPE(gsl_vector) * v,
 
   return GSL_SUCCESS;
 }
+#endif /* JUNK */
 

@@ -17,7 +17,7 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-QUALIFIED_REAL_TYPE(gsl_vector)
+QUALIFIED_REAL_VIEW(gsl_vector, view)
 FUNCTION(gsl_vector, real) (QUALIFIED_TYPE(gsl_vector) * v)
 {
   REAL_TYPE(gsl_vector) s = {0, 0, 0, 0, 0};
@@ -29,10 +29,14 @@ FUNCTION(gsl_vector, real) (QUALIFIED_TYPE(gsl_vector) * v)
                    block of different type */
   s.owner = 0;
 
-  return s;
+  {
+    QUALIFIED_REAL_VIEW(gsl_vector,view) view;
+    view._internal_representation = s;
+    return view;
+  }
 }
 
-QUALIFIED_REAL_TYPE(gsl_vector)
+QUALIFIED_REAL_VIEW(gsl_vector, view)
 FUNCTION(gsl_vector, imag) (QUALIFIED_TYPE(gsl_vector) * v)
 {
   REAL_TYPE(gsl_vector) s = {0, 0, 0, 0, 0};
@@ -43,6 +47,10 @@ FUNCTION(gsl_vector, imag) (QUALIFIED_TYPE(gsl_vector) * v)
   s.block = 0;  /* FIXME: cannot point to block of different type */
   s.owner = 0;
 
-  return s;
+  {
+    QUALIFIED_REAL_VIEW(gsl_vector,view) view;
+    view._internal_representation = s;
+    return view;
+  }
 }
 

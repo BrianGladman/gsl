@@ -36,16 +36,30 @@
 
 __BEGIN_DECLS
 
-struct gsl_vector_uint_struct
+typedef struct 
 {
   size_t size;
   size_t stride;
   unsigned int *data;
   gsl_block_uint *block;
   int owner;
-};
+} 
+gsl_vector_uint;
 
-typedef struct gsl_vector_uint_struct gsl_vector_uint;
+typedef union
+{
+  gsl_vector_uint _internal_representation;  
+  gsl_vector_uint vector;
+} gsl_vector_uint_view;
+
+typedef union
+{
+  gsl_vector_uint _internal_representation;
+  const gsl_vector_uint vector;
+} gsl_vector_uint_const_view;
+
+
+/* Allocation */
 
 gsl_vector_uint *gsl_vector_uint_alloc (const size_t n);
 gsl_vector_uint *gsl_vector_uint_calloc (const size_t n);
@@ -62,21 +76,46 @@ gsl_vector_uint *gsl_vector_uint_alloc_from_vector (gsl_vector_uint * v,
 
 void gsl_vector_uint_free (gsl_vector_uint * v);
 
-gsl_vector_uint gsl_vector_uint_view (unsigned int *v, size_t n);
+/* Views */
 
-int gsl_vector_uint_view_from_vector (gsl_vector_uint *v, 
-                                       gsl_vector_uint *base,
-                                       size_t offset, size_t n, size_t stride);
+gsl_vector_uint_view 
+gsl_vector_uint_view_array (unsigned int *v, size_t n);
 
-int gsl_vector_uint_view_from_array (gsl_vector_uint *v, 
-                                      unsigned int *base,
-                                      size_t offset, size_t n, size_t stride);
+gsl_vector_uint_view 
+gsl_vector_uint_view_array_with_stride (unsigned int *base,
+                                         size_t n, 
+                                         size_t stride);
 
-gsl_vector_uint gsl_vector_uint_subvector (gsl_vector_uint *v, size_t i, size_t n);
-gsl_vector_uint gsl_vector_uint_subvector_with_stride (gsl_vector_uint *v, size_t i, size_t n, size_t stride);
+gsl_vector_uint_const_view 
+gsl_vector_uint_const_view_array (const unsigned int *v, size_t n);
 
-const gsl_vector_uint gsl_vector_uint_const_subvector (const gsl_vector_uint *v, size_t i, size_t n);
-const gsl_vector_uint gsl_vector_uint_const_subvector_with_stride (const gsl_vector_uint *v, size_t i, size_t n, size_t stride);
+gsl_vector_uint_const_view 
+gsl_vector_uint_const_view_array_with_stride (const unsigned int *base,
+                                               size_t n, 
+                                               size_t stride);
+
+gsl_vector_uint_view 
+gsl_vector_uint_subvector (gsl_vector_uint *v, 
+                            size_t i, 
+                            size_t n);
+
+gsl_vector_uint_view 
+gsl_vector_uint_subvector_with_stride (gsl_vector_uint *v, 
+                                        size_t i, size_t n, 
+                                        size_t stride);
+
+gsl_vector_uint_const_view 
+gsl_vector_uint_const_subvector (const gsl_vector_uint *v, 
+                                  size_t i, 
+                                  size_t n);
+
+gsl_vector_uint_const_view 
+gsl_vector_uint_const_subvector_with_stride (const gsl_vector_uint *v, 
+                                              size_t i, 
+                                              size_t n, 
+                                              size_t stride);
+
+/* Operations */
 
 unsigned int *gsl_vector_uint_ptr (const gsl_vector_uint * v, const size_t i);
 unsigned int gsl_vector_uint_get (const gsl_vector_uint * v, const size_t i);
@@ -113,7 +152,6 @@ int gsl_vector_uint_mul (gsl_vector_uint * a, const gsl_vector_uint * b);
 int gsl_vector_uint_div (gsl_vector_uint * a, const gsl_vector_uint * b);
 int gsl_vector_uint_scale (gsl_vector_uint * a, const double x);
 int gsl_vector_uint_add_constant (gsl_vector_uint * a, const double x);
-
 
 int gsl_vector_uint_isnull (const gsl_vector_uint * v);
 

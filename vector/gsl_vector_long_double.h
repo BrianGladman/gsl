@@ -36,16 +36,30 @@
 
 __BEGIN_DECLS
 
-struct gsl_vector_long_double_struct
+typedef struct 
 {
   size_t size;
   size_t stride;
   long double *data;
   gsl_block_long_double *block;
   int owner;
-};
+} 
+gsl_vector_long_double;
 
-typedef struct gsl_vector_long_double_struct gsl_vector_long_double;
+typedef union
+{
+  gsl_vector_long_double _internal_representation;  
+  gsl_vector_long_double vector;
+} gsl_vector_long_double_view;
+
+typedef union
+{
+  gsl_vector_long_double _internal_representation;
+  const gsl_vector_long_double vector;
+} gsl_vector_long_double_const_view;
+
+
+/* Allocation */
 
 gsl_vector_long_double *gsl_vector_long_double_alloc (const size_t n);
 gsl_vector_long_double *gsl_vector_long_double_calloc (const size_t n);
@@ -62,21 +76,46 @@ gsl_vector_long_double *gsl_vector_long_double_alloc_from_vector (gsl_vector_lon
 
 void gsl_vector_long_double_free (gsl_vector_long_double * v);
 
-gsl_vector_long_double gsl_vector_long_double_view (long double *v, size_t n);
+/* Views */
 
-int gsl_vector_long_double_view_from_vector (gsl_vector_long_double *v, 
-                                       gsl_vector_long_double *base,
-                                       size_t offset, size_t n, size_t stride);
+gsl_vector_long_double_view 
+gsl_vector_long_double_view_array (long double *v, size_t n);
 
-int gsl_vector_long_double_view_from_array (gsl_vector_long_double *v, 
-                                      long double *base,
-                                      size_t offset, size_t n, size_t stride);
+gsl_vector_long_double_view 
+gsl_vector_long_double_view_array_with_stride (long double *base,
+                                         size_t n, 
+                                         size_t stride);
 
-gsl_vector_long_double gsl_vector_long_double_subvector (gsl_vector_long_double *v, size_t i, size_t n);
-gsl_vector_long_double gsl_vector_long_double_subvector_with_stride (gsl_vector_long_double *v, size_t i, size_t n, size_t stride);
+gsl_vector_long_double_const_view 
+gsl_vector_long_double_const_view_array (const long double *v, size_t n);
 
-const gsl_vector_long_double gsl_vector_long_double_const_subvector (const gsl_vector_long_double *v, size_t i, size_t n);
-const gsl_vector_long_double gsl_vector_long_double_const_subvector_with_stride (const gsl_vector_long_double *v, size_t i, size_t n, size_t stride);
+gsl_vector_long_double_const_view 
+gsl_vector_long_double_const_view_array_with_stride (const long double *base,
+                                               size_t n, 
+                                               size_t stride);
+
+gsl_vector_long_double_view 
+gsl_vector_long_double_subvector (gsl_vector_long_double *v, 
+                            size_t i, 
+                            size_t n);
+
+gsl_vector_long_double_view 
+gsl_vector_long_double_subvector_with_stride (gsl_vector_long_double *v, 
+                                        size_t i, size_t n, 
+                                        size_t stride);
+
+gsl_vector_long_double_const_view 
+gsl_vector_long_double_const_subvector (const gsl_vector_long_double *v, 
+                                  size_t i, 
+                                  size_t n);
+
+gsl_vector_long_double_const_view 
+gsl_vector_long_double_const_subvector_with_stride (const gsl_vector_long_double *v, 
+                                              size_t i, 
+                                              size_t n, 
+                                              size_t stride);
+
+/* Operations */
 
 long double *gsl_vector_long_double_ptr (const gsl_vector_long_double * v, const size_t i);
 long double gsl_vector_long_double_get (const gsl_vector_long_double * v, const size_t i);
@@ -113,7 +152,6 @@ int gsl_vector_long_double_mul (gsl_vector_long_double * a, const gsl_vector_lon
 int gsl_vector_long_double_div (gsl_vector_long_double * a, const gsl_vector_long_double * b);
 int gsl_vector_long_double_scale (gsl_vector_long_double * a, const double x);
 int gsl_vector_long_double_add_constant (gsl_vector_long_double * a, const double x);
-
 
 int gsl_vector_long_double_isnull (const gsl_vector_long_double * v);
 

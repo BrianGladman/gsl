@@ -36,16 +36,30 @@
 
 __BEGIN_DECLS
 
-struct gsl_vector_short_struct
+typedef struct 
 {
   size_t size;
   size_t stride;
   short *data;
   gsl_block_short *block;
   int owner;
-};
+} 
+gsl_vector_short;
 
-typedef struct gsl_vector_short_struct gsl_vector_short;
+typedef union
+{
+  gsl_vector_short _internal_representation;  
+  gsl_vector_short vector;
+} gsl_vector_short_view;
+
+typedef union
+{
+  gsl_vector_short _internal_representation;
+  const gsl_vector_short vector;
+} gsl_vector_short_const_view;
+
+
+/* Allocation */
 
 gsl_vector_short *gsl_vector_short_alloc (const size_t n);
 gsl_vector_short *gsl_vector_short_calloc (const size_t n);
@@ -62,21 +76,46 @@ gsl_vector_short *gsl_vector_short_alloc_from_vector (gsl_vector_short * v,
 
 void gsl_vector_short_free (gsl_vector_short * v);
 
-gsl_vector_short gsl_vector_short_view (short *v, size_t n);
+/* Views */
 
-int gsl_vector_short_view_from_vector (gsl_vector_short *v, 
-                                       gsl_vector_short *base,
-                                       size_t offset, size_t n, size_t stride);
+gsl_vector_short_view 
+gsl_vector_short_view_array (short *v, size_t n);
 
-int gsl_vector_short_view_from_array (gsl_vector_short *v, 
-                                      short *base,
-                                      size_t offset, size_t n, size_t stride);
+gsl_vector_short_view 
+gsl_vector_short_view_array_with_stride (short *base,
+                                         size_t n, 
+                                         size_t stride);
 
-gsl_vector_short gsl_vector_short_subvector (gsl_vector_short *v, size_t i, size_t n);
-gsl_vector_short gsl_vector_short_subvector_with_stride (gsl_vector_short *v, size_t i, size_t n, size_t stride);
+gsl_vector_short_const_view 
+gsl_vector_short_const_view_array (const short *v, size_t n);
 
-const gsl_vector_short gsl_vector_short_const_subvector (const gsl_vector_short *v, size_t i, size_t n);
-const gsl_vector_short gsl_vector_short_const_subvector_with_stride (const gsl_vector_short *v, size_t i, size_t n, size_t stride);
+gsl_vector_short_const_view 
+gsl_vector_short_const_view_array_with_stride (const short *base,
+                                               size_t n, 
+                                               size_t stride);
+
+gsl_vector_short_view 
+gsl_vector_short_subvector (gsl_vector_short *v, 
+                            size_t i, 
+                            size_t n);
+
+gsl_vector_short_view 
+gsl_vector_short_subvector_with_stride (gsl_vector_short *v, 
+                                        size_t i, size_t n, 
+                                        size_t stride);
+
+gsl_vector_short_const_view 
+gsl_vector_short_const_subvector (const gsl_vector_short *v, 
+                                  size_t i, 
+                                  size_t n);
+
+gsl_vector_short_const_view 
+gsl_vector_short_const_subvector_with_stride (const gsl_vector_short *v, 
+                                              size_t i, 
+                                              size_t n, 
+                                              size_t stride);
+
+/* Operations */
 
 short *gsl_vector_short_ptr (const gsl_vector_short * v, const size_t i);
 short gsl_vector_short_get (const gsl_vector_short * v, const size_t i);
@@ -113,7 +152,6 @@ int gsl_vector_short_mul (gsl_vector_short * a, const gsl_vector_short * b);
 int gsl_vector_short_div (gsl_vector_short * a, const gsl_vector_short * b);
 int gsl_vector_short_scale (gsl_vector_short * a, const double x);
 int gsl_vector_short_add_constant (gsl_vector_short * a, const double x);
-
 
 int gsl_vector_short_isnull (const gsl_vector_short * v);
 
