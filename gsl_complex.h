@@ -13,6 +13,16 @@ typedef float *        gsl_complex_packed_array_float  ;
 typedef long double *  gsl_complex_packed_array_long_double ;
 
 
+/* Yes... this seems weird. Trust us. The point is just that
+   sometimes you want to make it obvious that something is
+   an output value. The fact that it lacks a 'const' may not
+   be enough of a clue for people in some contexts.
+ */
+typedef double *       gsl_complex_packed_ptr ;
+typedef float *        gsl_complex_packed_float_ptr  ;
+typedef long double *  gsl_complex_packed_long_double_ptr ;
+
+
 typedef struct
   {
     long double dat[2];
