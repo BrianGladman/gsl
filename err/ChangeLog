@@ -1,3 +1,9 @@
+Mon May 18 17:58:20 1998  Brian Gough  <bjg@vvv.lanl.gov>
+
+	* test.c (gsl_test_rel): added a test for numerical quantities,
+ 	given a result, an expected result and an allowable relative
+ 	error.
+
 Sun May 10 16:03:12 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
 	* gsl_errno.h: added GSL_EROUND for roundoff errors

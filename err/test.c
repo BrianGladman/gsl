@@ -1,5 +1,5 @@
 #include <config.h>
-
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -57,6 +57,58 @@ gsl_test (int status, const char *test_description,...)
       fflush (stdout);
     }
 }
+
+
+void
+gsl_test_rel (double result, double expected, double relative_error,
+	      const char *test_description,...)
+{
+  int status = (fabs(result-expected)/fabs(expected) > relative_error) ;
+
+  tests++;
+
+  if (status == 0)
+    {
+      passed++;
+      if (verbose)
+	printf ("PASS: ");
+    }
+  else
+    {
+      failed++;
+      if (verbose)
+	printf ("FAIL: ");
+      
+    }
+
+  if (verbose)
+    {
+
+#ifdef HAVE_VPRINTF
+      va_list ap;
+
+#if __STDC__
+      va_start (ap, test_description);
+#else
+      va_start (ap);
+#endif
+      vprintf (test_description, ap);
+      va_end (ap);
+#endif
+      if (status == 0)
+	{
+	  printf(" (%g observed vs %g expected)", result, expected) ;
+	}
+      else 
+	{
+	  printf(" (%.18g observed vs %.18g expected)", result, expected) ;
+	}
+
+      putchar ('\n');
+      fflush (stdout);
+    }
+}
+
 
 void
 gsl_test_verbose (int v)
