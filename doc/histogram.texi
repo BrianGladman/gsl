@@ -1,8 +1,12 @@
+@cindex histograms
+@cindex binning data
 This chapter describes functions for creating histograms. A histogram
 provides a convenient way of summarizing a set of data by recording the
-distribution of its values. In GSL the bins of a histogram are
+distribution of its values. In GSL the bins of a histogram contain
 floating-point numbers, so they can be used to record both integer and
-non-integer distributions.
+non-integer distributions. The bins can take arbitrary set of ranges,
+such as uniform or logarithmic. Both one and two-dimensional histograms
+are supported.
 
 Once a histogram has been created it can also be converted into a
 probability distribution. The library provides efficient functions for
@@ -15,27 +19,28 @@ A histogram consists of a set of @dfn{bins} which count the number of
 events falling into a given range of a continuous variable @math{x}.  A
 histogram is defined by the following struct,
 
-@example
-typedef struct @{
-  size_t nbins ;
-  double * range ;
-  double * bin ;
-@} gsl_histogram
-@end example
+@deftp {Data Type} {struct gsl_histogram}
+@table @code
+@item size_t nbins
+This is the number of histogram bins
+@item double * range
+The ranges are stored in an array pointed to by @var{range}.
+@item double * bin
+The counts for each bin are stored in an array pointed to by @var{bin}
+The bins are floating-point numbers, so you can increment them by
+non-integer values if necessary.
+@end table
+@end deftp
 @c
 @noindent
-The number of bins is given by @var{nbins}, and the counts for each bin
-are stored in an array pointed to by @var{bin} . The bins are
-floating-point numbers, so you can increment them by non-integer values
-if necessary. The ranges are stored in an array pointed to by
-@var{range}. The range for @var{bin[i]} is given by @var{range[i]} to
+The range for @var{bin[i]} is given by @var{range[i]} to
 @var{range[i+1]}. For @math{n} bins there are @math{n+1} entries in the
 array @var{range}. Each bin is inclusive at the lower end and exclusive
 at the upper end. Mathematically this means that the bins are defined by
 the following inequality,
 
 @display
-bin[i] corresponds to   @math{range[i] \le x < range[i+1]}
+bin[i] corresponds to @math{range[i] \le x < range[i+1]}
 @end display
 
 @noindent
@@ -75,10 +80,10 @@ The bins are uniformly spaced with a total range of @math{0 \le x < n},
 as shown in the table below.
 
 @display
-bin[0] corresponds to   @math{0 \le x < 1}
-bin[1] corresponds to   @math{1 \le x < 2}
+bin[0] corresponds to @math{0 \le x < 1}
+bin[1] corresponds to @math{1 \le x < 2}
 ......
-bin[n-1] corresponds to   @math{n-1 \le x < n}
+bin[n-1] corresponds to @math{n-1 \le x < n}
 @end display
 @noindent
 The bins are initialized to zero so the histogram is ready for use.
@@ -94,10 +99,10 @@ newly initialized @code{gsl_histogram} struct. The bins are shown in the
 table below,
 
 @display
-bin[0] corresponds to   @math{xmin \le x < xmin + d}
-bin[1] corresponds to   @math{xmin + d \le x < xmin + 2 d}
+bin[0] corresponds to @math{xmin \le x < xmin + d}
+bin[1] corresponds to @math{xmin + d \le x < xmin + 2 d}
 ......
-bin[n-1] corresponds to   @math{xmin + (n-1)d \le x < xmax}
+bin[n-1] corresponds to @math{xmin + (n-1)d \le x < xmax}
 @end display
 @noindent
 where @math{d} is the bin spacing, @math{(xmax-xmin)/n}. Each bin is 
@@ -108,9 +113,12 @@ error handler is invoked with an error code of @code{GSL_ENOMEM}.
 @end deftypefun
 
 To create a histogram with non-uniform bins you will need to call
-@code{gsl_histogram_calloc} to create a new histogram struct and then
-modify the @code{range} array to your desired bin limits. For example,
-the following code fragment shows how to create a histogram with
+@code{gsl_histogram_calloc} to prepare a new histogram struct and then
+modify the @code{range} array to your desired bin limits. The ranges are
+arbitrary with the restriction that they must be monotonically
+increasing. 
+
+The following code fragment shows how to create a histogram with
 logarithmic bins from 1---10, 10---100 and 100---1000.
 
 @example
@@ -134,17 +142,23 @@ associated with it.
 
 @section Updating and accessing histogram elements
 
+There are two ways to access histogram bins, either by specifying an
+@var{x} value or by using the bin-index directly. The functions for
+accessing the histogram using @var{x} values employ a binary search to
+identify the bin which covers the appropriate range.
+
 @deftypefun int gsl_histogram_increment (gsl_histogram * h, double x)
 This function updates the histogram @var{h} by adding one (1.0) to the
 bin whose range contains the value @var{x}. 
 
-If @var{x} is less than the lower limit of the histogram then the
-function returns -1, and none of bins are modified.  Similarly, if the
-value of @var{x} is greater than or equal to the upper limit of the
-histogram then the function returns +1, and the bins are not updated.
-In these cases the error handler is not called , since it is often
-necessary to compute histogram for a small range of a larger dataset,
-ignoring the values outside the range of interest.
+If @var{x} lies in the valid range of the histogram then the function
+returns zero to indicate success. If @var{x} is less than the lower
+limit of the histogram then the function returns -1, and none of bins
+are modified. Similarly, if the value of @var{x} is greater than or
+equal to the upper limit of the histogram then the function returns +1,
+and none of the bins are modified. The error handler is not called,
+since it is often necessary to compute histogram for a small range of a
+larger dataset, ignoring the values outside the range of interest.
 @end deftypefun
 
 @deftypefun int gsl_histogram_accumulate (gsl_histogram * @var{h}, double @var{x}, double @var{weight})
@@ -185,11 +199,30 @@ struct directly.
 This function resets all the bins in the histogram @var{h} to zero.
 @end deftypefun
 
-@deftypefun int gsl_histogram_find (const gsl_histogram * @var{h}, double @var{x}, size_t * @var{i})
-@end deftypefun
+@section Searching histogram ranges
+
+The following functions are used by the access and update routines to
+locate the bin which corresponds to a given @var{x} value.
+
 @deftypefun int gsl_histogram_find_impl (size_t @var{n}, const double @var{range[]}, double @var{x}, size_t * @var{i})
+This function finds and sets the index @var{i} to the offset in the
+array @var{range} of size @var{n} which bounds the value @var{x}, such
+that @math{range[i] <= x < range[i+1]}. The @code{bsearch} binary search
+function from the system C-library is used to locate the appropriate
+range. If @var{x} is found in the range the function returns 0 to
+indicate success. If @var{x} is less than the lower limit the function
+returns -1, and if @var{x} is greater than or equal to the upper limit
+it returns +1. The error handler is not called.
 @end deftypefun
 
+@deftypefun int gsl_histogram_find (const gsl_histogram * @var{h}, double @var{x}, size_t * @var{i})
+This function uses @code{gsl_histogram_find_impl} to set the index
+@var{i} to the bin number which covers the value @var{x} in the
+histogram @var{h}. If @var{x} is found then the function sets the index
+@var{i} and returns zero to indicate success. If @var{x} lies outside
+the valid range of the histogram then the function returns
+@code{GSL_EDOM} and the error handler is invoked.
+@end deftypefun
 
 @section Reading and writing histograms
 
@@ -240,19 +273,45 @@ histogram to be manipulated with line-oriented tools.
 
 @deftypefun int gsl_histogram_fscanf (FILE * stream, gsl_histogram * h)
 This function reads formatted data from the stream @var{stream} into the
-histogram @var{h}. The histogram @var{h} must be preallocated with the correct
-length since the function uses the size of @var{h} to determine how many
-numbers to read.  The function returns 0 for success and
-@code{GSL_EFAILED} if there was a problem reading from the file.
+histogram @var{h}. The data is assumed to be in the three-column format
+used by @code{gsl_histogram_fprintf}. The histogram @var{h} must be
+preallocated with the correct length since the function uses the size of
+@var{h} to determine how many numbers to read. The function returns 0
+for success and @code{GSL_EFAILED} if there was a problem reading from
+the file.
 @end deftypefun
 
 @section Resampling from histograms
+@cindex resampling from histograms
+
+A histogram of event counts can be regarded as a measurement of an
+underlying probability distribution. Allowing for statistical error, the
+height of each bin represents the probability of an event with a value
+of @var{x} which falls in the range of that bin. The following functions
+allow you to create a @code{gsl_histogram_pdf} struct which represents
+this probability distribution and generate random samples from it.
 
 @deftypefun {gsl_histogram_pdf *} gsl_histogram_pdf_alloc (const gsl_histogram * h)
+This function allocates memory for a probability distribution calculated
+from the histogram @var{h} and returns a pointer to a newly initialized
+@code{gsl_histogram_pdf} struct. If any of the bins of @var{h} contain
+negative then the a null pointer is returned and the error handler is
+invoked with an error code of @code{GSL_EDOM} because a probability
+distribution cannot contain negative values.
+
+If insufficient memory is available a null pointer is returned and the
+error handler is invoked with an error code of @code{GSL_ENOMEM}.
 @end deftypefun
+
 @deftypefun void gsl_histogram_pdf_free (gsl_histogram_pdf * p)
+This function frees the probability distribution function @var{p} and
+all of the memory associated with it.
 @end deftypefun
+
 @deftypefun double gsl_histogram_pdf_sample (const gsl_histogram_pdf * p, double r)
+This function uses @var{r}, a uniform random number between zero and
+one, to compute a single random sample from the probability distribution
+@var{p}.
 @end deftypefun
 
 
@@ -319,6 +378,11 @@ gsl-lorentz 30 10000 | gsl-histogram -100 100 200 > histogram.dat
 A plot of the resulting histogram shows the familiar shape of the
 lorentz distribution and the fluctations caused by the finite sample
 size.
+
+@example
+gnuplot> plot 'histogram.dat' using 1:3 with step
+@end example
+
 @tex
 \input epsf
 \medskip
@@ -328,75 +392,129 @@ size.
 
 @section Two dimensional histograms
 
-@example
-typedef struct @{
-  size_t nx, ny ;
-  double * xrange ;
-  double * yrange ;
-  double * bin ;
-@} gsl_histogram2d
-@end example
+@section The 2D histogram struct
 
+A histogram consists of a set of @dfn{bins} which count the number of
+events falling into a given range of a continuous variable @math{x}.  A
+histogram is defined by the following struct,
 
-@deftypefun gsl_histogram2d * gsl_histogram2d_alloc (size_t nx, size_t ny)
-@end deftypefun
+@deftp {Data Type} {struct gsl_histogram}
+@table @code
+@item size_t nx, ny
+This is the number of histogram bins in the x and y directions.
+@item double * xrange
+The bin ranges in the x-direction are stored in an array pointed to by @var{xrange}.
+@item double * yrange
+The bin ranges in the y-direction are stored in an array pointed to by @var{yrange}.
+@item double * bin
+The counts for each bin are stored in an array pointed to by @var{bin}
+The bins are floating-point numbers, so you can increment them by
+non-integer values if necessary.
+@end table
+@end deftp
+@c
+@noindent
+The range for @var{bin[i * ny + j]} is given by @var{xrange[i]} to
+@var{xrange[i+1]} in the x-direction and @var{yrange[j]} to
+@var{yrange[j+1]} in the y-direction. Each bin is inclusive at the lower
+end and exclusive at the upper end. Mathematically this means that the
+bins are defined by the following inequality,
 
-@deftypefun gsl_histogram2d * gsl_histogram2d_calloc_uniform (size_t nx, size_t ny, double xmin, double xmax, double ymin, double ymax)
-@end deftypefun
+@display
+bin[i * ny + j] corresponds to @math{xrange[i] \le x < xrange[i+1]}
+                           and @math{yrange[j] \le y < yrange[j+1]}
+@end display
 
-@deftypefun void gsl_histogram2d_free (gsl_histogram2d * h)
-@end deftypefun
+@section 2D Histogram allocation
 
-@deftypefun int gsl_histogram2d_increment (gsl_histogram2d * h, double x, double y)
-@end deftypefun
-@deftypefun int gsl_histogram2d_accumulate (gsl_histogram2d * h, double x, double y, double weight)
-@end deftypefun
-@deftypefun int gsl_histogram2d_find (const gsl_histogram2d * h, double x, double y, size_t * i, size_t * j)
-@end deftypefun
-@deftypefun int gsl_histogram2d_find_impl (const gsl_histogram2d * h, double x, double y, size_t * i, size_t * j)
-@end deftypefun
+The functions for allocating memory to a 2D histogram follow the style
+of @code{malloc} and @code{free}. In addition they also perform their
+own error checking. If there is insufficient memory available to
+allocate a histogram then the functions call the GSL error handler (with
+an error number of @code{GSL_ENOMEM}) in addition to returning a null
+pointer. Thus if you use the library error handler to abort your program
+then it isn't necessary to check every 2D histogram @code{alloc}.
 
-@deftypefun double gsl_histogram2d_get (const gsl_histogram2d * h, size_t i, size_t j)
-@end deftypefun
-@deftypefun double gsl_histogram2d_get_xlowerlimit (const gsl_histogram2d * h, size_t i)
-@end deftypefun
-@deftypefun double gsl_histogram2d_get_xupperlimit (const gsl_histogram2d * h, size_t i)
-@end deftypefun
-@deftypefun double gsl_histogram2d_get_ylowerlimit (const gsl_histogram2d * h, size_t j)
-@end deftypefun
-@deftypefun double gsl_histogram2d_get_yupperlimit (const gsl_histogram2d * h, size_t j)
-@end deftypefun
+@deftypefun {gsl_histogram2d *} gsl_histogram2d_calloc (size_t @var{nx}, size_t @var{ny})
+This function allocates memory for a histogram with @var{nx}*@var{ny}
+bins, and returns a pointer to its newly initialized
+@code{gsl_histogram2d} struct. The bins are uniformly spaced with a
+total range of @math{0 \le x < nx} in the x-direction and @math{0 \le y
+< ny} in the y-direction, as shown in the table below.
 
-@deftypefun double gsl_histogram2d_xmax (const gsl_histogram2d * h)
-@end deftypefun
-@deftypefun double gsl_histogram2d_xmin (const gsl_histogram2d * h)
-@end deftypefun
-@deftypefun size_t gsl_histogram2d_nx (const gsl_histogram2d * h)
-@end deftypefun
+The bins are initialized to zero so the histogram is ready for use.
 
-@deftypefun double gsl_histogram2d_ymax (const gsl_histogram2d * h)
-@end deftypefun
-@deftypefun double gsl_histogram2d_ymin (const gsl_histogram2d * h)
-@end deftypefun
-@deftypefun size_t gsl_histogram2d_ny (const gsl_histogram2d * h)
-@end deftypefun
-
-@deftypefun void gsl_histogram2d_reset (gsl_histogram2d * h)
-@end deftypefun
-
-@deftypefun int gsl_histogram2d_fread (FILE * stream, gsl_histogram2d * h)
-@end deftypefun
-@deftypefun int gsl_histogram2d_fwrite (FILE * stream, const gsl_histogram2d * h)
-@end deftypefun
-@deftypefun int gsl_histogram2d_fprintf (FILE * stream, const gsl_histogram2d * h, const char * range_format, const char * bin_format)
-@end deftypefun
-@deftypefun int gsl_histogram2d_fscanf (FILE * stream, gsl_histogram2d * h)
+If insufficient memory is available a null pointer is returned and the
+error handler is invoked with an error code of @code{GSL_ENOMEM}.
 @end deftypefun
 
-@deftypefun gsl_histogram2d_pdf * gsl_histogram2d_pdf_alloc (const gsl_histogram2d * h)
+@deftypefun {gsl_histogram2d *} gsl_histogram2d_calloc_uniform (size_t @var{nx}, size_t @var{ny}, double @var{xmin}, double @var{xmax}, double @var{ymin}, double @var{ymax})
 @end deftypefun
-@deftypefun void gsl_histogram2d_pdf_free (gsl_histogram2d_pdf * p)
+
+@deftypefun void gsl_histogram2d_free (gsl_histogram2d * @var{h})
+This function frees the 2D histogram @var{h} and all of the memory
+associated with it.
 @end deftypefun
-@deftypefun int gsl_histogram2d_pdf_sample (const gsl_histogram2d_pdf * p, double r1, double r2, double * x, double * y)
+
+@section Updating and accessing 2D histogram elements
+
+@deftypefun int gsl_histogram2d_increment (gsl_histogram2d * @var{h}, double @var{x}, double @var{y})
 @end deftypefun
+@deftypefun int gsl_histogram2d_accumulate (gsl_histogram2d * @var{h}, double @var{x}, double @var{y}, double @var{weight})
+@end deftypefun
+
+@deftypefun double gsl_histogram2d_get (const gsl_histogram2d * @var{h}, size_t @var{i}, size_t @var{j})
+@end deftypefun
+@deftypefun double gsl_histogram2d_get_xlowerlimit (const gsl_histogram2d * @var{h}, size_t @var{i})
+@end deftypefun
+@deftypefun double gsl_histogram2d_get_xupperlimit (const gsl_histogram2d * @var{h}, size_t @var{i})
+@end deftypefun
+@deftypefun double gsl_histogram2d_get_ylowerlimit (const gsl_histogram2d * @var{h}, size_t @var{j})
+@end deftypefun
+@deftypefun double gsl_histogram2d_get_yupperlimit (const gsl_histogram2d * @var{h}, size_t @var{j})
+@end deftypefun
+
+@deftypefun double gsl_histogram2d_xmax (const gsl_histogram2d * @var{h})
+@end deftypefun
+@deftypefun double gsl_histogram2d_xmin (const gsl_histogram2d * @var{h})
+@end deftypefun
+@deftypefun size_t gsl_histogram2d_nx (const gsl_histogram2d * @var{h})
+@end deftypefun
+
+@deftypefun double gsl_histogram2d_ymax (const gsl_histogram2d * @var{h})
+@end deftypefun
+@deftypefun double gsl_histogram2d_ymin (const gsl_histogram2d * @var{h})
+@end deftypefun
+@deftypefun size_t gsl_histogram2d_ny (const gsl_histogram2d * @var{h})
+@end deftypefun
+@deftypefun void gsl_histogram2d_reset (gsl_histogram2d * @var{h})
+@end deftypefun
+
+@section Searching 2D histogram ranges
+
+@deftypefun int gsl_histogram2d_find (const gsl_histogram2d * @var{h}, double @var{x}, double @var{y}, size_t * @var{i}, size_t * @var{j})
+@end deftypefun
+@deftypefun int gsl_histogram2d_find_impl (const gsl_histogram2d * @var{h}, double @var{x}, double @var{y}, size_t * @var{i}, size_t * @var{j})
+@end deftypefun
+
+@section Reading and writing 2D histograms
+
+@deftypefun int gsl_histogram2d_fread (FILE * @var{stream}, gsl_histogram2d * @var{h})
+@end deftypefun
+@deftypefun int gsl_histogram2d_fwrite (FILE * @var{stream}, const gsl_histogram2d * @var{h})
+@end deftypefun
+@deftypefun int gsl_histogram2d_fprintf (FILE * @var{stream}, const gsl_histogram2d * @var{h}, const char * range_format, const char * bin_format)
+@end deftypefun
+@deftypefun int gsl_histogram2d_fscanf (FILE * @var{stream}, gsl_histogram2d * @var{h})
+@end deftypefun
+
+@section Resampling from 2D histograms
+
+@deftypefun {gsl_histogram2d_pdf *} gsl_histogram2d_pdf_alloc (const gsl_histogram2d * @var{h})
+@end deftypefun
+@deftypefun void gsl_histogram2d_pdf_free (gsl_histogram2d_pdf * @var{p})
+@end deftypefun
+@deftypefun int gsl_histogram2d_pdf_sample (const gsl_histogram2d_pdf * @var{p}, double @var{r1}, double @var{r2}, double * @var{x}, double * @var{y})
+@end deftypefun
+
 
