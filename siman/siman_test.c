@@ -4,6 +4,21 @@
 #include <gsl_siman.h>
 #include <stdio.h>
 
+
+/* A cute example of this program to then look at stuff would be:
+./siman_test D3 | grep -v "^#" | awk '{print $3}' | sed 's/::/    /gp' > output
+
+  then go into gnuplot and try typing:
+  gnuplot> set parametric
+  gnuplot> splot 'output' with lines
+
+  Or you can plot from a pipe:
+  gnuplot> plot '<../siman/siman_test | grep -v "^#"' using 1:2 with lines
+  gnuplot> plot '<../siman/siman_test | grep -v "^#"' using 1:3 with lines
+  and so forth.
+  */
+
+
 /* set up parameters for this simulated annealing run */
 #define N_TRIES 200		/* how many points do we try before stepping */
 #define ITERS_FIXED_T 1000	/* how many iterations for each T? */
