@@ -1,0 +1,406 @@
+\input texinfo @c -*-texinfo-*-
+@c %**start of header
+@setfilename GSL.info
+@settitle GNU Scientific Library
+@finalout
+@c @setchapternewpage odd
+@c %**end of header
+
+@ifinfo
+@format
+START-INFO-DIR-ENTRY
+* GSL: (GSL).                           The GNU Scientific Library
+END-INFO-DIR-ENTRY
+@end format
+@end ifinfo
+
+@include version.texi
+
+@ifinfo
+This file documents the the @emph{GNU Scientific Library}.
+
+Copyright (C) 1996 Free Software Foundation, Inc.
+
+Permission is granted to make and distribute verbatim copies of
+this manual provided the copyright notice and this permission notice
+are preserved on all copies.
+
+@ignore
+Permission is granted to process this file through TeX and print the
+results, provided the printed document carries copying permission
+notice identical to this one except for the removal of this paragraph
+(this paragraph not being relevant to the printed manual).
+
+@end ignore
+Permission is granted to copy and distribute modified versions of this
+manual under the conditions for verbatim copying, provided that the entire
+resulting derived work is distributed under the terms of a permission
+notice identical to this one.
+
+Permission is granted to copy and distribute translations of this manual
+into another language, under the above conditions for modified versions,
+except that this permission notice may be stated in a translation approved
+by the Foundation.
+@end ifinfo
+
+@titlepage
+@title GNU Scientific Library
+@subtitle Edition @value{EDITION}, for GSL Version @value{VERSION}
+@subtitle @value{UPDATED}
+@author by Mark Galassi
+
+@page
+@vskip 0pt plus 1filll
+Copyright @copyright{} 1996 Free Software Foundation, Inc.
+
+Permission is granted to make and distribute verbatim copies of
+this manual provided the copyright notice and this permission notice
+are preserved on all copies.
+
+Permission is granted to copy and distribute modified versions of this
+manual under the conditions for verbatim copying, provided that the entire
+resulting derived work is distributed under the terms of a permission
+notice identical to this one.
+
+Permission is granted to copy and distribute translations of this manual
+into another language, under the above conditions for modified versions,
+except that this permission notice may be stated in a translation approved
+by the Foundation.
+@end titlepage
+
+@node Top, Motivation, (dir), (dir)
+
+@ifinfo
+This file documents the the @emph{GNU Scientific Library}, a collection
+of numerical routines for scientific computing.
+@end ifinfo
+
+
+@menu
+* Motivation::                  
+* Design::                      
+* Examples of the existing routines::  
+* Reference manual::            
+* Concept Index::               
+* Function Index::              
+* Variable Index::              
+* Type Index::                  
+@end menu
+
+@node Motivation, Design, Top, Top
+@chapter Motivation
+@cindex numerical analysis
+@cindex free software
+
+There is a need for scientists and engineers to have a numerical
+analysis library that:
+@itemize @bullet
+@item
+is free (in the sense of freedom, not in the sense of gratis; see the
+GNU General Public License), so that people can use that library,
+redistribute it, modify it @dots{}
+@item
+is written in C using modern coding conventions, calling conventions,
+scoping @dots{}
+@item
+is clearly and pedagogically documented; preferably with TeXinfo, so as
+to allow online info, WWW and TeX output.
+@item
+uses top quality state-of-the-art algorithms.
+@item
+is portable and configurable using @emph{autoconf} and @emph{automake}.
+@item
+basically, is GNUlitically correct.
+@item
+whatever...
+@end itemize
+
+There are strengths and weaknesses with existing libraries:
+
+@emph{Netlib} [FIXME: ref] is probably the most advanced set of
+numerical algorithms available on the net, maintained by AT&T.
+Unfortunately the software is written in Fortran, with strange calling
+conventions in many places.  It is also not very well collected, so it
+is a lot of work to get started with netlib.
+
+@emph{Numerical Recipies} [FIXME: ref] is an excellent book: it explains
+the algorithms in a very clear way.  Unfortunately the authors released
+the source code under a bizarre license which allows you to use it, but
+makes you nervous about re-distributing it.  Thus Numerical Recipes is
+not @emph{free} in the sense of @emph{freedom}.  On top of that, the
+implementation suffers from @emph{fortranitis} and other
+limitations. [FIXME give refs on review of NR]
+
+
+
+@node Design, Examples of the existing routines, Motivation, Top
+@chapter Design
+
+@menu
+* Language for implementation::  
+* Interface to other languages::  
+* What routines are implemented::  
+* Standards and conventions::   
+* Legal issues::                
+* Non-UNIX portability::        
+* Compatibility with other libraries::  
+* Parallelism::                 
+@end menu
+
+@node Language for implementation, Interface to other languages, Design, Design
+@section Language for implementation
+
+Issues:
+
+@strong{One language only (C)}
+
+Advantages: simpler, compiler available and quite universal.
+
+Disadvantages: excludes large body of old fortran code.  (Is that really
+a disadvantage?)
+
+@strong{More than one language}
+
+Must be parsed by gcc (C++, objective C, fortran 77).
+
+Routines must be trivially callable by C, without having to write
+wrappers.
+
+@strong{If we do it in C}
+
+How do we protect name space, and keep global vars from being annoying?
+Make recommendations to implementors to help with these issues.
+
+
+@node Interface to other languages, What routines are implemented, Language for implementation, Design
+@section Interface to other languages
+
+We should propose a format for writing wrappers for other languages.
+
+Wrapper packages are supplied as "extra" packages; not as part of the
+"core".
+
+The wrapper packages can be organized either @emph{by language} or
+@emph{by numerical subsystem}.
+
+What languages should be supported?
+@itemize @bullet
+@item
+C++ (pay much attention to the design)
+@item
+scheme/guile
+@item
+sather
+@item
+IDL
+@item
+whatever
+@end itemize
+
+
+
+
+@node What routines are implemented, Standards and conventions, Interface to other languages, Design
+@section What routines are implemented
+
+
+For more guidance we might look at the Forth Scientific Library [see the
+URL http://www.taygeta.com/fsl/sciforth.html].
+
+
+@subsection Random number generators
+
+Includes both random number generators and routines to give various
+interesting distributions.
+
+@subsection Statistics
+
+@subsection Curve fitting
+
+polynomial
+
+special functions
+
+spline
+
+@subsection Ordinary differential equations
+
+@subsection Partial differential equations
+
+@subsection Fourier Analysis
+
+@subsection Wavelets
+
+@subsection Matrix operations: linear equations
+
+@subsection Matrix operations: eigenvalues and spectral analysis
+
+@subsection Matrix operations: any others?
+
+@subsection Direct integration
+
+@subsection Monte carlo methods
+
+@subsection Simulated annealing
+
+@subsection Genetic algorithms
+
+@subsection Cellular automata
+
+@subsection Parallel libraries
+
+
+
+@node Standards and conventions, Legal issues, What routines are implemented, Design
+@section Standards and conventions
+
+The people who kick off this project should set the coding standards and
+conventions.  Some things that should be set are:
+
+@itemize @bullet
+@item
+Function arguments
+@item
+Sub-package function name prefixes
+@item
+Documentation: the project leaders should give examples of how things
+are to be documented.  High quality documentation is absolutely
+mandatory, so documentation should introduce the topic, and give careful
+reference for the provided functions.
+
+@end itemize
+
+
+
+
+@node Legal issues, Non-UNIX portability, Standards and conventions, Design
+@section Legal issues
+
+@itemize @bullet
+@item
+Each contributor must make sure her code is under the GNU General Public
+License (GPL).
+@item
+We must understand ownership of existing code and algorithms.
+@itemize @minus
+@item
+Obviously: don't reference non-free code (such as numerical recipes).
+@item
+I @strong{think} one can reference algorithms from classic books on
+numerical analysis.
+@end itemize
+
+@end itemize
+
+
+
+
+@node Non-UNIX portability, Compatibility with other libraries, Legal issues, Design
+@section Non-UNIX portability
+
+There is good reason to make this library work on non-UNIX systems.  It
+is probably safe to ignore DOS and only worry about windows95/windowsNT
+portability (so filenames can be long, I think).
+
+On the other hand, nobody should be forced to use non-UNIX systems for
+development.
+
+The best solution is probably to issue guidelines for portability, like
+saying "don't use XYZ unless you absolutely have to".  Then the Windows
+people will be able to do their porting.
+
+We should also read up on what Cygnus is doing for their win32
+portability.
+
+
+
+@node Compatibility with other libraries, Parallelism, Non-UNIX portability, Design
+@section Compatibility with other libraries
+
+
+Other libraries, such as Netlib and Numerical Recipes, are widely used.
+It would be good to allow drop-in replacement of these libraries, as
+long as that does not compromise the quality of our routines.
+
+Compatibility should be provided by a set of wrappers, shipped as an
+auxiliary package.
+
+There are probably no legal issues on this front.
+
+
+
+
+
+@node Parallelism,  , Compatibility with other libraries, Design
+@section Parallelism
+
+An extra sub-package with parallel libraries would be nice.  These
+should use standard libraries such as PVM or MPI.  (It appears that PVM
+ships with MPI, and vice-versa; we should figure out which is the
+recommended platform.)
+
+
+
+@node Examples of the existing routines, Reference manual, Design, Top
+@chapter Examples of the existing routines
+
+None have been contributed yet.
+
+@node Reference manual, Concept Index, Examples of the existing routines, Top
+@chapter Reference manual
+@cindex simulated annealing
+@cindex combinatorial searches
+
+@deftp {Union} Element
+Element is a union.  Each field in the union describes one of the
+possible spaces through which the simulated annealing package can
+search.
+
+Users should add more types to the union Element; here's the definition
+of @var{Element} I ship (allows @math{R^1}, @math{R^2}, @math{R^3}
+and cellular automata spaces):
+@smallexample
+union u_Element @{
+  double D1;
+  double D2[2];
+  double D3[3];
+  struct CA_rule rule;
+@};
+
+typedef union u_Element Element;
+@end smallexample
+
+@end deftp
+
+
+@deftypefun void siman_solve (Element *x0_p, double (*Efunc)(Element x), void (*take_step)(Element *x_p, double step_size), double distance(Element x, Element y), void print_position(Element x), Ssiman_params params)
+
+Does a @emph{simulated annealing} search through a given space (defined
+by the type @code{Element}).
+@end deftypefun
+
+
+
+@node Concept Index, Function Index, Reference manual, Top
+@unnumbered Concept Index
+
+@printindex cp
+
+@node Function Index, Variable Index, Concept Index, Top
+@unnumbered Function Index
+
+@printindex fn
+
+@node Variable Index, Type Index, Function Index, Top
+@unnumbered Variable Index
+
+@printindex vr
+
+@node Type Index,  , Variable Index, Top
+@unnumbered Type Index
+
+@printindex tp
+
+@c @shortcontents
+@contents
+@bye
