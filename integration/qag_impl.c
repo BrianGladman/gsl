@@ -42,7 +42,7 @@ gsl_integration_qag_impl (const gsl_function * f,
   size_t iteration = 0;
   int roundoff_type1 = 0, roundoff_type2 = 0, error_type = 0;
 
-  volatile double round_off;	/* "volatile" helps with IEEE behavior */
+  double round_off;	
 
   /* Initialize results */
 
@@ -72,7 +72,9 @@ gsl_integration_qag_impl (const gsl_function * f,
 
   tolerance = GSL_MAX_DBL (epsabs, epsrel * fabs (result0));
 
-  round_off = 50 * GSL_DBL_EPSILON * resabs0;
+  /* need IEEE rounding here to match original quadpack behavior */
+
+  round_off = GSL_COERCE_DBL (50 * GSL_DBL_EPSILON * resabs0);
 
   if (abserr0 <= round_off && abserr0 > tolerance)
     {
