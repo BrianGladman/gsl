@@ -1,8 +1,6 @@
 ## Process this file with automake to produce Makefile.in
 
-noinst_LIBRARIES = gsl-random
-GSL_SOURCES = rnd.c
+noinst_LIBRARIES = gsl_random
+gsl_random_SOURCES = rnd.c
 
-include_HEADERS = gsl-random.h gsl-random-proto.h
-
-info_TEXINFOS = GSL.texi
+include_HEADERS = gsl_random.h gsl_random_proto.h
