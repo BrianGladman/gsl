@@ -124,6 +124,8 @@ FUNCTION (test, func) (void)
 	status = 1;
     };
   
+  FUNCTION (gsl_vector, free) (v);
+
   gsl_test (status, NAME (gsl_vector) "_calloc initializes array to zero");
 }
 
@@ -164,6 +166,10 @@ FUNCTION (test, binary) (void)
       };
     fclose (f);
   }
+
+  FUNCTION (gsl_vector, free) (v);
+  FUNCTION (gsl_vector, free) (w);
+
   gsl_test (status, NAME (gsl_vector) "_write and read work correctly");
 
 }
@@ -239,6 +245,9 @@ FUNCTION (test, trap) (void)
   gsl_test (zp != 0,
 	    NAME (gsl_vector) "_ptr returns zero at upper bound");
 
+  FUNCTION (gsl_vector, free) (vc);
 }
+
+
 
 

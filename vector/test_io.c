@@ -39,5 +39,9 @@ FUNCTION (test, text) (void)
 
     fclose (f);
   }
+
+  FUNCTION (gsl_vector, free) (v);
+  FUNCTION (gsl_vector, free) (w);
 }
+
 

@@ -40,5 +40,8 @@ FUNCTION (test, text) (void)
     fclose (f);
   }
 
+  FUNCTION (gsl_vector, free) (v);
+  FUNCTION (gsl_vector, free) (w);
+
   gsl_test (status, NAME (gsl_vector) "_fprintf and fscanf work correctly");
 }

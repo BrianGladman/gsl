@@ -104,6 +104,7 @@ FUNCTION (test, func) (void)
   
   gsl_test (status, NAME (gsl_vector) "_calloc initializes array to zero");
 
+  FUNCTION (gsl_vector, free) (v);	/* free whatever is in v */
 }
 
 
@@ -145,6 +146,8 @@ FUNCTION (test, binary) (void)
     fclose (f);
   }
 
+  FUNCTION (gsl_vector, free) (v);	/* free whatever is in v */
+  FUNCTION (gsl_vector, free) (w);	/* free whatever is in w */
 }
 
 void
@@ -204,4 +207,10 @@ FUNCTION (test, trap) (void)
   gsl_test (y != 0,
 	    NAME (gsl_vector) "_ptr returns zero for index at upper bound");
 
+  FUNCTION (gsl_vector, free) (v);	/* free whatever is in v */
 }
+
+
+
+
+

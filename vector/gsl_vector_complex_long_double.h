@@ -96,7 +96,7 @@ gsl_vector_complex_long_double_set (gsl_vector_complex_long_double * v, const si
       GSL_ERROR_RETURN_NOTHING ("index out of range", GSL_EINVAL);
     }
 #endif
-  *GSL_COMPLEX_LONG_DOUBLE_AT (v, i) = z;
+  *(GSL_COMPLEX_LONG_DOUBLE_AT (v, i)) = z;
 }
 
 #endif /* HAVE_INLINE */
