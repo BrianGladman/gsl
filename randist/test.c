@@ -28,6 +28,14 @@ double test_erlang (void);
 double test_erlang_pdf (double x);
 double test_exponential (void);
 double test_exponential_pdf (double x);
+double test_exppow1 (void);
+double test_exppow1_pdf (double x);
+double test_exppow1a (void);
+double test_exppow1a_pdf (double x);
+double test_exppow2 (void);
+double test_exppow2_pdf (double x);
+double test_exppow2a (void);
+double test_exppow2a_pdf (double x);
 double test_fdist (void);
 double test_fdist_pdf (double x);
 double test_flat (void);
@@ -40,6 +48,8 @@ double test_gamma_large (void);
 double test_gamma_large_pdf (double x);
 double test_gaussian (void);
 double test_gaussian_pdf (double x);
+double test_ugaussian (void);
+double test_ugaussian_pdf (double x);
 double test_geometric (void);
 double test_geometric_pdf (unsigned int x);
 double test_logistic (void);
@@ -56,8 +66,8 @@ double test_poisson_large (void);
 double test_poisson_large_pdf (unsigned int x);
 double test_tdist (void);
 double test_tdist_pdf (double x);
-double test_two_sided_exp (void);
-double test_two_sided_exp_pdf (double x);
+double test_laplace (void);
+double test_laplace_pdf (double x);
 double test_weibull (void);
 double test_weibull_pdf (double x);
 
@@ -70,8 +80,8 @@ main (void)
   r_global = gsl_rng_alloc (gsl_rng_default);
 
 #define FUNC(x) x, "gsl_ran_" #x
-  test_moments (FUNC (test_gaussian), 0.0, 100.0, 0.5);
-  test_moments (FUNC (test_gaussian), -1.0, 1.0, 0.68);
+  test_moments (FUNC (test_ugaussian), 0.0, 100.0, 0.5);
+  test_moments (FUNC (test_ugaussian), -1.0, 1.0, 0.68);
   test_moments (FUNC (test_exponential), 0.0, 1.0, 1- exp(-0.5));
   test_moments (FUNC (test_cauchy), 0.0, 10000.0, 0.5);
 
@@ -81,17 +91,24 @@ main (void)
   test_pdf (FUNC2(test_chisq));
   test_pdf (FUNC2(test_erlang));
   test_pdf (FUNC2(test_exponential));
+
+  test_pdf (FUNC2(test_exppow1));
+  test_pdf (FUNC2(test_exppow1a));
+  test_pdf (FUNC2(test_exppow2));
+  test_pdf (FUNC2(test_exppow2a));
+
   test_pdf (FUNC2(test_fdist));
   test_pdf (FUNC2(test_flat));
   test_pdf (FUNC2(test_gamma));
   test_pdf (FUNC2(test_gamma_int));
   test_pdf (FUNC2(test_gamma_large));
   test_pdf (FUNC2(test_gaussian));
+  test_pdf (FUNC2(test_ugaussian));
   test_pdf (FUNC2(test_logistic));
   test_pdf (FUNC2(test_lognormal));
   test_pdf (FUNC2(test_pareto));
   test_pdf (FUNC2(test_tdist));
-  test_pdf (FUNC2(test_two_sided_exp));
+  test_pdf (FUNC2(test_laplace));
   test_pdf (FUNC2(test_weibull));
 
   test_discrete_pdf (FUNC2(test_poisson));
@@ -319,6 +336,55 @@ test_exponential_pdf (double x)
 }
 
 double
+test_exppow1 (void)
+{
+  return gsl_ran_exppow (r_global, 3.7, 1.0);
+}
+
+double
+test_exppow1_pdf (double x)
+{
+  return gsl_ran_exppow_pdf (x, 3.7, 1.0);
+}
+
+double
+test_exppow1a (void)
+{
+  return gsl_ran_exppow (r_global, 3.7, 1.9);
+}
+
+double
+test_exppow1a_pdf (double x)
+{
+  return gsl_ran_exppow_pdf (x, 3.7, 1.9);
+}
+
+double
+test_exppow2 (void)
+{
+  return gsl_ran_exppow (r_global, 3.7, 2.0);
+}
+
+double
+test_exppow2_pdf (double x)
+{
+  return gsl_ran_exppow_pdf (x, 3.7, 2.0);
+}
+
+
+double
+test_exppow2a (void)
+{
+  return gsl_ran_exppow (r_global, 3.7, 7.5);
+}
+
+double
+test_exppow2a_pdf (double x)
+{
+  return gsl_ran_exppow_pdf (x, 3.7, 7.5);
+}
+
+double
 test_fdist (void)
 {
   return gsl_ran_fdist (r_global, 3.0, 4.0);
@@ -383,14 +449,27 @@ test_gamma_large_pdf (double x)
 double
 test_gaussian (void)
 {
-  return gsl_ran_gaussian (r_global);
+  return gsl_ran_gaussian (r_global, 3.0);
 }
 
 double
 test_gaussian_pdf (double x)
 {
-  return gsl_ran_gaussian_pdf (x);
+  return gsl_ran_gaussian_pdf (x, 3.0);
 }
+
+double
+test_ugaussian (void)
+{
+  return gsl_ran_ugaussian (r_global);
+}
+
+double
+test_ugaussian_pdf (double x)
+{
+  return gsl_ran_ugaussian_pdf (x);
+}
+
 
 double
 test_geometric (void)
@@ -490,15 +569,15 @@ test_tdist_pdf (double x)
 }
 
 double
-test_two_sided_exp (void)
+test_laplace (void)
 {
-  return gsl_ran_two_sided_exponential (r_global, 2.75);
+  return gsl_ran_laplace (r_global, 2.75);
 }
 
 double
-test_two_sided_exp_pdf (double x)
+test_laplace_pdf (double x)
 {
-  return gsl_ran_two_sided_exponential_pdf (x, 2.75);
+  return gsl_ran_laplace_pdf (x, 2.75);
 }
 
 double

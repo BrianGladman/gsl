@@ -14,6 +14,9 @@ double gsl_ran_binomial_pdf (unsigned int n, double p, unsigned int t);
 double gsl_ran_exponential (const gsl_rng * r, double mu);
 double gsl_ran_exponential_pdf (double x, double mu);
 
+double gsl_ran_exppow (const gsl_rng * r, double mu, double a);
+double gsl_ran_exppow_pdf (double x, double mu, double a);
+
 double gsl_ran_cauchy (const gsl_rng * r, double mu);
 double gsl_ran_cauchy_pdf (double x, double mu);
 
@@ -33,8 +36,11 @@ double gsl_ran_gamma (const gsl_rng * r, double a);
 double gsl_ran_gamma_int (const gsl_rng * r, unsigned int a);
 double gsl_ran_gamma_pdf (double x, double a);
 
-double gsl_ran_gaussian (const gsl_rng * r);
-double gsl_ran_gaussian_pdf (double x);
+double gsl_ran_gaussian (const gsl_rng * r, double sigma);
+double gsl_ran_gaussian_pdf (double x, double sigma);
+
+double gsl_ran_ugaussian (const gsl_rng * r);
+double gsl_ran_ugaussian_pdf (double x);
 
 void gsl_ran_bivariate_gaussian (const gsl_rng * r, double *x, double *y);
 double gsl_ran_bivariate_gaussian_pdf (double x, double y);
@@ -62,8 +68,8 @@ double gsl_ran_poisson_pdf (unsigned int n, double mu);
 double gsl_ran_tdist (const gsl_rng * r, double nu);
 double gsl_ran_tdist_pdf (double x, double nu);
 
-double gsl_ran_two_sided_exponential (const gsl_rng * r, double mu);
-double gsl_ran_two_sided_exponential_pdf (double x, double mu);
+double gsl_ran_laplace (const gsl_rng * r, double mu);
+double gsl_ran_laplace_pdf (double x, double mu);
 
 double gsl_ran_weibull (const gsl_rng * r, double a);
 double gsl_ran_weibull_pdf (double x, double a);

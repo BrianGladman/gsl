@@ -16,7 +16,7 @@ gsl_ran_tdist (const gsl_rng * r, const double nu)
 {
   if (nu <= 2)
     {
-      double Y1 = gsl_ran_gaussian (r);
+      double Y1 = gsl_ran_ugaussian (r);
       double Y2 = gsl_ran_chisq (r, nu);
 
       double t = Y1 / sqrt (Y2 / nu);
@@ -28,7 +28,7 @@ gsl_ran_tdist (const gsl_rng * r, const double nu)
       double Y1, Y2, Z, t;
       do
 	{
-	  Y1 = gsl_ran_gaussian (r);
+	  Y1 = gsl_ran_ugaussian (r);
 	  Y2 = gsl_ran_exponential (r, 1 / (nu/2 - 1));
 
 	  Z = Y1 * Y1 / (nu - 2);

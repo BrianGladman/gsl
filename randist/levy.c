@@ -5,7 +5,7 @@
 
 /* The stable Levy probability distributions have the form
 
-   p(x) dx = (1/(2 pi)) \int exp(it(mu-x) - |ct|^alpha)
+   p(x) dx = (1/(2 pi)) \int dt exp(it(mu-x) - |ct|^alpha)
 
    with 0 < alpha <= 2
 
@@ -34,7 +34,7 @@ gsl_ran_levy (const gsl_rng * r, const double mu, const double a)
   
   do
     {
-      v = gsl_rng_exponential (r, 1.0);
+      v = gsl_ran_exponential (r, 1.0);
     } 
   while (v == 0);
   

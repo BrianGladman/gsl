@@ -4,7 +4,7 @@
 #include <gsl_randist.h>
 
 double
-gsl_ran_gaussian (const gsl_rng * r)
+gsl_ran_gaussian (const gsl_rng * r, const double sigma)
 {
   double x, y, r2;
 
@@ -20,14 +20,28 @@ gsl_ran_gaussian (const gsl_rng * r)
     }
   while (r2 > 1.0 || r2 == 0);
 
-  return y * sqrt (-2.0 * log (r2) / r2);	/* Box-Muller transform */
+  /* Box-Muller transform */
+  return sigma * y * sqrt (-2.0 * log (r2) / r2);
 }
 
 double
-gsl_ran_gaussian_pdf (const double x)
+gsl_ran_gaussian_pdf (const double x, const double sigma)
 {
-  double p = (1 / sqrt (2 * M_PI)) * exp (-x * x / 2);
+  double u = x / fabs(sigma) ;
+  double p = (1 / (sqrt (2 * M_PI) * fabs(sigma)) ) * exp (-u * u / 2);
   return p;
+}
+
+double
+gsl_ran_ugaussian (const gsl_rng * r)
+{
+  return gsl_ran_gaussian (r, 1.0) ;
+}
+
+double
+gsl_ran_ugaussian_pdf (const double x)
+{
+  return gsl_ran_gaussian_pdf (x, 1.0) ;
 }
 
 void
