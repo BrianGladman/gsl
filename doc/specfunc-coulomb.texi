@@ -11,12 +11,12 @@
 /* R_1 := 2Z sqrt(Z) exp(-Z r)
  */
 @deftypefun  int gsl_sf_hydrogenicR_1_impl(
-  double Z, @*
-  double r, @*
+  double Z, 
+  double r, 
   gsl_sf_result * result)
 @deftypefunx int gsl_sf_hydrogenicR_1_e(
-  double Z, @*
-  double r, @*
+  double Z, 
+  double r, 
   gsl_sf_result * result)
 @end deftypefun
 
@@ -25,16 +25,16 @@
  * normalization such that psi(n,l,r) = R_n Y_(lm)
  */
 @deftypefun  int gsl_sf_hydrogenicR_impl(
-  int n, @*
-  int l, @*
-  double Z, @*
-  double r, @*
+  int n, 
+  int l, 
+  double Z, 
+  double r, 
   gsl_sf_result * result)
 @deftypefunx int gsl_sf_hydrogenicR_e(
-  int n, @*
-  int l, @*
-  double Z, @*
-  double r, @*
+  int n, 
+  int l, 
+  double Z, 
+  double r, 
   gsl_sf_result * result)
 @end deftypefun
 
@@ -60,30 +60,30 @@
  */
 int
 gsl_sf_coulomb_wave_FG_impl(
-  const double eta, @*
-  const double x, @*
-  const double lam_F, @*
-  const int  k_lam_G, @*
-  gsl_sf_result * F, gsl_sf_result * Fp, @*
-  gsl_sf_result * G, gsl_sf_result * Gp, @*
+  const double eta, 
+  const double x, 
+  const double lam_F, 
+  const int  k_lam_G, 
+  gsl_sf_result * F, gsl_sf_result * Fp, 
+  gsl_sf_result * G, gsl_sf_result * Gp, 
   double * exp_F, double * exp_G)
 
 
 /* F_L(eta,x)
  */
 @deftypefun  int gsl_sf_coulomb_wave_F_array_impl(
-  double lam_min, @*
-  int kmax, @*
-  double eta,  @*
-  double x, @*
-  double * fc_array, @*
-  double * F_exponent @*)
+  double lam_min, 
+  int kmax, 
+  double eta,  
+  double x, 
+  double * fc_array, 
+  double * F_exponent )
 @deftypefunx int gsl_sf_coulomb_wave_F_array_e(
-  double lam_min,  @*
-  int kmax, @*
-  double eta, @*
-  double x, @*
-  double * fc_array, @*
+  double lam_min,  
+  int kmax, 
+  double eta, 
+  double x, 
+  double * fc_array, 
   double * F_exponent)
 @end deftypefun
 

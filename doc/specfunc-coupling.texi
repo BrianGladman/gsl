@@ -21,13 +21,13 @@ are by convention integers equal to twice the actual spin value.
 @end multitable
 
 @deftypefun  int gsl_sf_coupling_3j_impl(
-  int two_ja, int two_jb, int two_jc, @*
-  int two_ma, int two_mb, int two_mc, @*
+  int two_ja, int two_jb, int two_jc, 
+  int two_ma, int two_mb, int two_mc, 
   gsl_sf_result * result)
 @deftypefunx int gsl_sf_coupling_3j_e(
-  int two_ja, int two_jb, int two_jc, @*
-  int two_ma, int two_mb, int two_mc, @*
-  gsl_sf_result * result) @*
+  int two_ja, int two_jb, int two_jc, 
+  int two_ma, int two_mb, int two_mc, 
+  gsl_sf_result * result) 
 Exceptional Return Values: GSL_EDOM, GSL_EOVRFLW
 @end deftypefun
 
@@ -41,13 +41,13 @@ Exceptional Return Values: GSL_EDOM, GSL_EOVRFLW
 @end multitable
 
 @deftypefun  int gsl_sf_coupling_6j_impl(
-  int two_ja, int two_jb, int two_jc, @*
-  int two_jd, int two_je, int two_jf, @*
+  int two_ja, int two_jb, int two_jc, 
+  int two_jd, int two_je, int two_jf, 
   gsl_sf_result * result)
 @deftypefunx int gsl_sf_coupling_6j_e(
-  int two_ja, int two_jb, int two_jc, @*
-  int two_jd, int two_je, int two_jf, @*
-  gsl_sf_result * result) @*
+  int two_ja, int two_jb, int two_jc, 
+  int two_jd, int two_je, int two_jf, 
+  gsl_sf_result * result) 
 Exceptional Return Values: GSL_EDOM, GSL_EOVRFLW
 @end deftypefun
 
@@ -62,14 +62,14 @@ Exceptional Return Values: GSL_EDOM, GSL_EOVRFLW
 @end multitable
 
 @deftypefun  int gsl_sf_coupling_9j_impl(
-  int two_ja, int two_jb, int two_jc, @*
-  int two_jd, int two_je, int two_jf, @*
-  int two_jg, int two_jh, int two_ji, @*
+  int two_ja, int two_jb, int two_jc, 
+  int two_jd, int two_je, int two_jf, 
+  int two_jg, int two_jh, int two_ji, 
   gsl_sf_result * result)
 @deftypefunx int gsl_sf_coupling_9j_e(
-  int two_ja, int two_jb, int two_jc, @*
-  int two_jd, int two_je, int two_jf, @*
-  int two_jg, int two_jh, int two_ji, @*
-  gsl_sf_result * result) @*
+  int two_ja, int two_jb, int two_jc, 
+  int two_jd, int two_je, int two_jf, 
+  int two_jg, int two_jh, int two_ji, 
+  gsl_sf_result * result) 
 Exceptional Return Values: GSL_EDOM, GSL_EOVRFLW
 @end deftypefun
