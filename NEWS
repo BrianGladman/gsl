@@ -1,5 +1,11 @@
 * What is new in gsl-0.9.4:
 
+* All the physical constants and conversion factors are now defined as
+real numbers to avoid potential problems with integer arithmetic.
+
+* The ODE evolution routines now allow for negative step sizes, and
+integrating backwards as well as forwards.
+
 * The implicit Burlisch-Stoer ODE algorithm 'bsimp' now detects
 singularities and forces a reduction in step size, preventing runaway
 instabilities.
