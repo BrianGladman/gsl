@@ -167,10 +167,11 @@ Equations}).  Work is under way on a special function library.
 * Error handling in GSL::       
 * Random Number Generation::    
 * Random Number Distributions::  
-* Statistics::
+* Statistics::                  
 * Fast Fourier Transforms::     
-* Solutions of Nonlinear Equations::  
 * Roots of Polynomials::        
+* Solutions of Nonlinear Equations::  
+* Minimization::                
 * Special Functions::           
 * Discrete Hankel Transforms::  
 * Interpolation::               
@@ -226,23 +227,28 @@ allowing wrappers to be written for very high level languages.
 @include statistics.texi
 
 @comment Section on FFTs
-@node Fast Fourier Transforms, Solutions of Nonlinear Equations, Statistics, Top
+@node Fast Fourier Transforms, Roots of Polynomials, Statistics, Top
 @chapter Fast Fourier Transforms (FFTs)
 @include fft.texi
 
-@comment Section on root finding
-@node  Solutions of Nonlinear Equations, Roots of Polynomials, Fast Fourier Transforms, Top
-@chapter Solutions of Nonlinear Equations
-@include roots.texi
-
 @comment Section on polynomial root finding
-@node  Roots of Polynomials, Special Functions, Solutions of Nonlinear Equations, Top
+@node  Roots of Polynomials, Solutions of Nonlinear Equations, Fast Fourier Transforms, Top
 @chapter Roots of Polynomials
 @include poly.texi
 
+@comment Section on root finding
+@node  Solutions of Nonlinear Equations, Minimization, Roots of Polynomials, Top
+@chapter Solutions of Nonlinear Equations
+@include roots.texi
+
+@comment Section on minimization
+@node   Minimization, Special Functions, Solutions of Nonlinear Equations, Top
+@chapter Minimization
+@include min.texi
+
 
 @comment Section on special functions
-@node Special Functions, Discrete Hankel Transforms, Roots of Polynomials, Top
+@node Special Functions, Discrete Hankel Transforms, Minimization, Top
 @chapter Special Functions
 @include specfunc.texi
 

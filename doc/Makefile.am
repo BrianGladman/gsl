@@ -2,7 +2,7 @@
 
 info_TEXINFOS = gsl-ref.texi
 noinst_TEXINFOS = gsl-design.texi
-gsl_ref_TEXINFOS = err.texi fft.texi rng.texi randist.texi roots.texi statistics.texi specfunc.texi siman.texi vectors.texi debug.texi histogram.texi integration.texi ieee754.texi montecarlo.texi sum.texi usage.texi dht.texi interp.texi poly.texi
+gsl_ref_TEXINFOS = err.texi min.texi fft.texi rng.texi randist.texi roots.texi statistics.texi specfunc.texi siman.texi vectors.texi debug.texi histogram.texi integration.texi ieee754.texi montecarlo.texi sum.texi usage.texi dht.texi interp.texi poly.texi
 
 noinst_DATA = siman-test.eps siman-energy.eps 12-cities.eps \
 	initial-route.eps final-route.eps \
@@ -10,7 +10,7 @@ noinst_DATA = siman-test.eps siman-energy.eps 12-cities.eps \
 	fft-complex-radix2.eps fft-real-mixedradix.eps \
 	roots-bisection.eps roots-false-position.eps \
 	roots-newtons-method.eps roots-secant-method.eps \
-	histogram.eps histogram2d.eps
+	histogram.eps histogram2d.eps min-interval.eps
 
 EXTRA_DIST = siman-test.eps siman-energy.eps 12-cities.eps \
 	initial-route.eps final-route.eps \
