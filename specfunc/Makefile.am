@@ -103,7 +103,6 @@ libgslspecfunc_a_SOURCES = 	\
 	psi.c			\
         recurse.h               \
 	shint.c			\
-	sig2lamp.c		\
 	sinint.c		\
 	synchrotron.c		\
 	transport.c		\

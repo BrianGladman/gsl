@@ -354,6 +354,87 @@ int check_coupling(void)
   return status;
 }
 
+int check_debye(void)
+{
+  double y;
+  int status = 0;
+  int s;
+
+  s = 0;
+  gsl_sf_debye_1_impl(0.1, &y);
+  s += ( frac_diff( y, 0.975278 ) > 1.0e-5 );
+  gsl_test(s, "  debye_1(0.1)");
+  status += s;
+
+  s = 0;
+  gsl_sf_debye_1_impl(1.0, &y);
+  s += ( frac_diff( y, 0.777505 ) > 1.0e-5 );
+  gsl_test(s, "  debye_1(1.0)");
+  status += s;
+
+  s = 0;
+  gsl_sf_debye_1_impl(10.0, &y);
+  s += ( frac_diff( y, 0.164443 ) > 1.0e-5 );
+  gsl_test(s, "  debye_1(10.0)");
+  status += s;
+
+  s = 0;
+  gsl_sf_debye_2_impl(0.1, &y);
+  s += ( frac_diff( y, 0.967083 ) > 1.0e-5 );
+  gsl_test(s, "  debye_2(0.1)");
+  status += s;
+
+  s = 0;
+  gsl_sf_debye_2_impl(1.0, &y);
+  s += ( frac_diff( y, 0.707878 ) > 1.0e-5 );
+  gsl_test(s, "  debye_2(1.0)");
+  status += s;
+
+  s = 0;
+  gsl_sf_debye_2_impl(10.0, &y);
+  s += ( frac_diff( y, 0.047971 ) > 1.0e-5 );
+  gsl_test(s, "  debye_2(10.0)");
+  status += s;
+
+  s = 0;
+  gsl_sf_debye_3_impl(0.1, &y);
+  s += ( frac_diff( y, 0.963000 ) > 1.0e-5 );
+  gsl_test(s, "  debye_3(0.1)");
+  status += s;
+
+  s = 0;
+  gsl_sf_debye_3_impl(1.0, &y);
+  s += ( frac_diff( y, 0.674416 ) > 1.0e-5 );
+  gsl_test(s, "  debye_3(1.0)");
+  status += s;
+
+  s = 0;
+  gsl_sf_debye_3_impl(10.0, &y);
+  s += ( frac_diff( y, 0.019296 ) > 1.0e-5 );
+  gsl_test(s, "  debye_3(10.0)");
+  status += s;
+
+  s = 0;
+  gsl_sf_debye_4_impl(0.1, &y);
+  s += ( frac_diff( y, 0.960555 ) > 1.0e-5 );
+  gsl_test(s, "  debye_4(0.1)");
+  status += s;
+
+  s = 0;
+  gsl_sf_debye_4_impl(1.0, &y);
+  s += ( frac_diff( y, 0.654874 ) > 1.0e-5 );
+  gsl_test(s, "  debye_4(1.0)");
+  status += s;
+
+  s = 0;
+  gsl_sf_debye_4_impl(10.0, &y);
+  s += ( frac_diff( y, 0.009674 ) > 1.0e-4 );
+  gsl_test(s, "  debye_4(10.0)");
+  status += s;
+
+  return status;
+}
+
 int check_dilog(void)
 {
   int status = 0;
@@ -827,6 +908,7 @@ int main(int argc, char * argv[])
   gsl_test(check_coulomb(),    "Coulomb Wave Functions");
   gsl_test(check_coupling(),   "Coupling Coefficients");
 
+  gsl_test(check_debye(),      "Debye Functions");
   gsl_test(check_dilog(),      "Dilogarithm");
 
   gsl_test(check_gamma(),      "Gamma Functions");
