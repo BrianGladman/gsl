@@ -8,7 +8,6 @@ Release: %{release}
 License: GPL
 Vendor: The GSL Team
 Distribution: research software
-Copyright: Copyright (C) 1997, 1998, 1999, 2000, 2001, 2002 The GSL Team
 Source: gsl-%{version}.tar.gz
 Group: Libraries/Research
 %define mybuildroot /var/tmp/%{name}-build
@@ -34,6 +33,7 @@ The library covers the following subject areas:
   Least-Squares Fitting       Physical Constants       IEEE Floating-Point
 
 Further information can be found in the GSL Reference Manual.
+Copyright (C) 1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004 The GSL Team.
 
 Install the gsl package if you need a library for high-level
 scientific numerical analysis.
