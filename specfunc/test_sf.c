@@ -293,14 +293,23 @@ int test_coupling(void)
   gsl_sf_result r;
   int s = 0;
 
-  TEST_SF(s, gsl_sf_coupling_3j_e, (0, 1, 1, 0, 1, -1, &r), sqrt(1.0/2.0), TEST_TOL0, GSL_SUCCESS);
-  TEST_SF(s, gsl_sf_coupling_3j_e, (1, 1, 2, 1, -1, 0, &r), sqrt(1.0/6.0), TEST_TOL0, GSL_SUCCESS);
-  TEST_SF(s, gsl_sf_coupling_3j_e, (2, 4, 6, 0, 2, -2, &r), sqrt(8.0/105.0), TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_coupling_3j_e, (0, 1, 1, 0,  1, -1, &r), sqrt(1.0/2.0), TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_coupling_3j_e, (1, 1, 2, 1, -1,  0, &r), sqrt(1.0/6.0), TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_coupling_3j_e, (2, 4, 6, 0,  2, -2, &r), sqrt(8.0/105.0), TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_coupling_3j_e, (4, 4, 8, 0,  0,  0, &r), sqrt(2.0/35.0), TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_coupling_3j_e, (4, 4, 8, 2, -2,  0, &r), 2.0/3.0*sqrt(2.0/35.0), TEST_TOL2, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_coupling_3j_e, (4, 4, 8, 4, -4,  0, &r), 1.0/(3.0*sqrt(70.0)), TEST_TOL2, GSL_SUCCESS);
 
-  TEST_SF(s, gsl_sf_coupling_6j_e, (2, 2, 4, 2, 2, 2, &r), 1.0/6.0, TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_coupling_6j_e, (2, 2, 4, 2, 2, 2, &r),  1.0/6.0, TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_coupling_6j_e, (4, 4, 2, 4, 4, 4, &r), -1.0/10.0, TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_coupling_6j_e, (4, 4, 2, 4, 4, 2, &r),  1.0/6.0, TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_coupling_6j_e, (4, 4, 2, 2, 2, 2, &r), -0.5/sqrt(5.0), TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_coupling_6j_e, (4, 4, 4, 2, 2, 2, &r),  sqrt(7.0/3.0)/10.0, TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_coupling_6j_e, (6, 6, 6, 4, 4, 4, &r), -sqrt(3.0/5.0)/14.0, TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_coupling_6j_e, (6, 6, 6, 4, 4, 2, &r), -sqrt(3.0/5.0)/7.0, TEST_TOL0, GSL_SUCCESS);
 
-  TEST_SF(s, gsl_sf_coupling_9j_e, (4, 2, 4, 3, 3, 2, 1, 1, 2, &r), - sqrt(1.0/6.0) / 10.0, TEST_TOL2, GSL_SUCCESS);
-  TEST_SF(s, gsl_sf_coupling_9j_e, (8, 4, 10, 7, 3, 8, 1, 1, 2, &r), sqrt(7.0/3.0)/60.0, TEST_TOL2, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_coupling_9j_e, (4, 2,  4, 3, 3, 2, 1, 1, 2, &r), -sqrt(1.0/6.0)/10.0, TEST_TOL2, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_coupling_9j_e, (8, 4, 10, 7, 3, 8, 1, 1, 2, &r),  sqrt(7.0/3.0)/60.0, TEST_TOL2, GSL_SUCCESS);
 
   return s;
 }
