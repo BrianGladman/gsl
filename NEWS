@@ -1,5 +1,10 @@
 * What is new in gsl-0.7+:
 
+** A full CBLAS implementation is now included for systems where ATLAS
+has not been installed. The CBLAS library can also be used
+independently of GSL.  The organisation of the BLAS directories has be
+simplified.
+
 ** IEEE support for HPUX-11, NetBSD, Apple Darwin and OS/2 are now
 included
 
