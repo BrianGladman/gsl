@@ -160,9 +160,6 @@ int gsl_sf_conical_sph_reg_array_e(int lmax, double lambda, double x, double * r
  * of the Laplacian on a 3-dimensional hyperbolic space.
  * Of particular interest is the flat limit, which is
  * Flat-Lim := {lambda->Inf, eta->0, lambda*eta fixed}.
- *
- * Flat-Lim legendre_H3d(eta) := 
- *
  */
   
 /* Zeroth radial eigenfunction of the Laplacian on the
@@ -184,8 +181,8 @@ double  gsl_sf_legendre_H3d_0(double lambda, double eta);
  * 3-dimensional hyperbolic space.
  *
  * legendre_H3d_1(lambda,eta) :=
- *    1/sqrt(lambda^2 + 1)/(lambda*eta)
- *    (coth(eta) sin(lambda*eta) - lambda cos(lambda*eta))
+ *    1/sqrt(lambda^2 + 1) sin(lam eta)/(lam sinh(eta))
+ *    (coth(eta) - lambda cot(lambda*eta))
  * 
  * Normalization:
  * Flat-Lim legendre_H3d_1(lambda,eta) = j_1(lambda*eta)

@@ -26,6 +26,23 @@ int gsl_sf_complex_sin_impl(const double zr, const double zi, double * szr, doub
   }
 }
 
+
+int gsl_sf_complex_cos_impl(const double zr, const double zi, double * czr, double * czi)
+{
+  if(fabs(zi) < GSL_LOG_DBL_MAX) {
+    double ex = exp(zi);
+    double sh = 0.5*(ex-1.0/ex);
+    double ch = 0.5*(ex+1.0/ex);
+    *czr =  cos(zr)*ch;
+    *czi = -sin(zr)*sh;
+    return GSL_SUCCESS;
+  }
+  else {
+    return GSL_EOVRFLW;
+  }
+}
+
+
 int gsl_sf_complex_logsin_impl(const double zr, const double zi, double * lszr, double * lszi)
 {
   if(zi > 60.0) {
@@ -48,20 +65,36 @@ int gsl_sf_complex_logsin_impl(const double zr, const double zi, double * lszr, 
   return gsl_sf_angle_restrict_symm_impl(lszi);
 }
 
-int gsl_sf_complex_cos_impl(const double zr, const double zi, double * czr, double * czi)
+
+int gsl_sf_lnsinh_impl(const double x, double * result)
 {
-  if(fabs(zi) < GSL_LOG_DBL_MAX) {
-    double ex = exp(zi);
-    double sh = 0.5*(ex-1.0/ex);
-    double ch = 0.5*(ex+1.0/ex);
-    *czr =  cos(zr)*ch;
-    *czi = -sin(zr)*sh;
+  if(x <= 0.0) {
+    *result = 0.0;
+    return GSL_EDOM;
+  }
+  else if(x < -0.5*GSL_LOG_MACH_EPS) {
+    *result = x + log(0.5*(1.0 - exp(-2.0*x)));
     return GSL_SUCCESS;
   }
   else {
-    return GSL_EOVRFLW;
+    *result = -M_LN2 + x;
+    return GSL_SUCCESS;
   }
 }
+
+
+int gsl_sf_lncosh_impl(const double x, double * result)
+{
+  if(x < -0.5*GSL_LOG_MACH_EPS) {
+    *result = x + log(0.5*(1.0 + exp(-2.0*x)));
+    return GSL_SUCCESS;
+  }
+  else {
+    *result = -M_LN2 + x;
+    return GSL_SUCCESS;
+  }
+}
+
 
 /*
 inline int gsl_sf_sincos_impl(const double theta, double * s, double * c)
@@ -169,6 +202,24 @@ int gsl_sf_complex_cos_e(const double zr, const double zi, double * czr, double 
   return status;
 }
 
+int gsl_sf_lnsinh_e(const double x, double * result)
+{
+  int status = gsl_sf_lnsinh_impl(x, result);
+  if(status != GSL_SUCCESS) {
+    GSL_ERROR("gsl_sf_lnsinh_e", status);
+  }
+  return status;
+}
+
+int gsl_sf_lncosh_e(const double x, double * result)
+{
+  int status = gsl_sf_lncosh_impl(x, result);
+  if(status != GSL_SUCCESS) {
+    GSL_ERROR("gsl_sf_lncosh_e", status);
+  }
+  return status;
+}
+
 int gsl_sf_polar_to_rect_e(const double r, const double theta, double * x, double * y)
 {
   int status = gsl_sf_polar_to_rect_impl(r, theta, x, y);
@@ -203,4 +254,27 @@ int gsl_sf_angle_restrict_pos_e(double * theta)
     GSL_ERROR("gsl_sf_angle_restrict_pos_e", status);
   }
   return status;
+}
+
+
+/*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes  *-*-*-*-*-*-*-*-*-*-*/
+
+double gsl_sf_lnsinh(const double x)
+{
+  double y;
+  int status = gsl_sf_lnsinh_impl(x, &y);
+  if(status != GSL_SUCCESS) {
+    GSL_WARNING("gsl_sf_lnsinh", status);
+  }
+  return y;
+}
+
+double gsl_sf_lncosh(const double x)
+{
+  double y;
+  int status = gsl_sf_lncosh_impl(x, &y);
+  if(status != GSL_SUCCESS) {
+    GSL_WARNING("gsl_sf_lncosh", status);
+  }
+  return y;
 }
