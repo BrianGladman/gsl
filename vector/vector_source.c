@@ -2,9 +2,6 @@
 
 #include "source.h"
 
-/* turn off range checking at runtime if zero (see also matrix_source.c) */
-int gsl_check_range = 1; 
-
 BASE
 FUNCTION(gsl_vector,get)(const TYPE(gsl_vector) * v, const size_t i)
 {
