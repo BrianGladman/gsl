@@ -22,9 +22,21 @@
  * break our model for flexible BLAS functionality.
  */
 
-#ifndef CBLAS_H
-#define CBLAS_H
+#ifndef __GSL_CBLAS_H__
+#define __GSL_CBLAS_H__
 #include <stddef.h>
+
+#undef __BEGIN_DECLS
+#undef __END_DECLS
+#ifdef __cplusplus
+#define __BEGIN_DECLS extern "C" {
+#define __END_DECLS }
+#else
+#define __BEGIN_DECLS           /* empty */
+#define __END_DECLS             /* empty */
+#endif
+
+__BEGIN_DECLS
 
 /*
  * Enumerated and derived types
@@ -588,4 +600,7 @@ void cblas_zher2k(const enum CBLAS_ORDER Order, const enum CBLAS_UPLO Uplo,
                   void *C, const int ldc);
 
 void cblas_xerbla(int p, const char *rout, const char *form, ...);
-#endif
+
+__END_DECLS
+
+#endif /* __GSL_CBLAS_H__ */
