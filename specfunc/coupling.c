@@ -233,6 +233,60 @@ gsl_sf_coupling_6j_impl(double ja, double jb, double jc,
 }
 
 
+int
+gsl_sf_coupling_9j_impl(double ja, double jb, double jc,
+                        double jd, double je, double jf,
+			double jg, double jh, double ji,
+			double * result)
+{
+  int two_ja = twice(ja);
+  int two_jb = twice(jb);
+  int two_jc = twice(jc);
+  int two_jd = twice(jd);
+  int two_je = twice(je);
+  int two_jf = twice(jf);
+  int two_jg = twice(jg);
+  int two_jh = twice(jh);
+  int two_ji = twice(ji);
+  
+  if(   triangle_selection_fails(two_ja, two_jb, two_jc)
+     || triangle_selection_fails(two_jd, two_je, two_jf)
+     || triangle_selection_fails(two_jg, two_jh, two_ji)
+     || triangle_selection_fails(two_ja, two_jd, two_jg)
+     || triangle_selection_fails(two_jb, two_je, two_jh)
+     || triangle_selection_fails(two_jc, two_jf, two_ji)
+     ) {
+    *result = 0.0;
+    return GSL_SUCCESS;
+  }
+  else {
+    int tk;
+    int tkmin = locMax3(abs(two_ja-two_ji), abs(two_jh-two_jd), abs(two_jb-two_jf));
+    int tkmax = locMin3(two_ja + two_ji, two_jh + two_jd, two_jb + two_jf);
+    double sum = 0.0;
+    double phase;
+    for(tk=tkmin; tk<=tkmax; tk += 2) {
+      double s1, s2, s3;
+      double term;
+      int status = 0;
+      status += gsl_sf_coupling_6j_impl(ja, ji, jd,  jh, tk, jg,  &s1);
+      status += gsl_sf_coupling_6j_impl(jb, jf, jh,  jd, tk, je,  &s2);
+      status += gsl_sf_coupling_6j_impl(ja, ji, jb,  jf, tk, jc,  &s3);
+      if(status != GSL_SUCCESS) {
+        *result = 0.0;
+	return GSL_EOVRFLW;
+      }
+      term = s1 * s2 * s3;
+      sum += (tk + 1) * term;
+    }
+    
+    phase = GSL_IS_ODD(tkmin) ? -1.0 : 1.0;
+    *result = phase * sum;
+    return GSL_SUCCESS;
+  }
+}
+			
+			
 int gsl_sf_coupling_3j_e(double ja, double jb, double jc,
                          double ma, double mb, double mc,
 		         double * result)
@@ -257,6 +311,18 @@ int gsl_sf_coupling_6j_e(double ja, double jb, double jc,
 }
 
 
+int gsl_sf_coupling_9j_e(double ja, double jb, double jc,
+                         double jd, double je, double jf,
+			 double jg, double jh, double ji,
+			 double * result)
+{
+  int status = gsl_sf_coupling_9j_impl(ja, jb, jc, jd, je, jf, jg, jh, ji, result);
+  if(status != GSL_SUCCESS) {
+    GSL_ERROR("gsl_sf_coupling_9j_e", status);
+  }
+  return status;
+}
+
 
 double gsl_sf_coupling_3j(double ja, double jb, double jc,
                           double ma, double mb, double mc)
@@ -277,6 +343,18 @@ double gsl_sf_coupling_6j(double ja, double jb, double jc,
   int status = gsl_sf_coupling_6j_impl(ja, jb, jc, jd, je, jf, &y);
   if(status != GSL_SUCCESS) {
     GSL_WARNING("gsl_sf_coupling_6j", status);
+  }
+  return y;
+}
+
+double gsl_sf_coupling_9j(double ja, double jb, double jc,
+                          double jd, double je, double jf,
+			  double jg, double jh, double ji)
+{
+  double y;
+  int status = gsl_sf_coupling_9j_impl(ja, jb, jc, jd, je, jf, jg, jh, ji, &y);
+  if(status != GSL_SUCCESS) {
+    GSL_WARNING("gsl_sf_coupling_9j", status);
   }
   return y;
 }
