@@ -154,9 +154,12 @@ Hints for Intel (Pentium)
 
 For the Pentium 4 with GCC-3.2 the flags,
 
-      CFLAGS="-O2 -march=pentium4 -mfpmath=sse -msse2"
+      CFLAGS="-O2 -march=pentium4 -mfpmath=sse -msse -msse2"
 
-increase performance by 33% (reported by Sam Halliday <fommil@yahoo.ie>)
+increase performance (as reported by Sam Halliday <fommil@yahoo.ie>).
+
+Note that P3 machines can also use the above CFLAGS, if the "-msse2"
+is removed and "pentium4" is changed to "pentium3".
 
 Hints for IRIX (SGI)
 ====================
