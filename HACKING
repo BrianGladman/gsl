@@ -8,6 +8,9 @@ ftp://sourceware.cygnus.com/pub/automake/
 * you must have the latest autoconf from
 ftp://sourceware.cygnus.com/pub/automake/
 
+* you must have a recent libtool (1.3 or greater) from
+ftp://ftp.gnu.org/gnu/libtool/
+
 * you must have a recent CVS (at least 1.9) from
 ftp://prep.ai.mit.edu/u2/emacs/
 
@@ -44,16 +47,7 @@ checkout and to use a nice cvs diff option, like "cvs rdiff -u".
 
 ---------- some special targets
 
-To check for ansi compliance try, 'make strict'. This compiles with the
-following CFLAGS:
-
-    -ansi -pedantic -W -Wall -Wtraditional -Wconversion -Wshadow
-    -Wpointer-arith -Wcast-qual -Wcast-align -Wwrite-strings
-    -Waggregate-return -Wstrict-prototypes -fshort-enums -fno-common
-    -Wmissing-prototypes -Wnested-externs -Werror -g -O4
-    -Dinline=''
-
-I recommend having a bash alias,
+To check for ansi compliance define a bash alias "makestrict",
 
     makestrict () { make $* CFLAGS="-ansi -pedantic -Werror -W -Wall -Wtraditional -Wconversion -Wshadow -Wpointer-arith -Wcast-qual -Wcast-align -Wwrite-strings -Wstrict-prototypes -fshort-enums -fno-common -Wmissing-prototypes -Wnested-externs -Dinline= -g -O4" } ;
 
@@ -61,7 +55,9 @@ which lets you type things like
 
     makestrict check
 
-If you can compile your code with 
+Note that total compliance to makestrict is not necessary, but it is a
+useful way to locate possible problems. If you can compile your code
+with
 
     makestrict
     makestrict CC=c++ 
