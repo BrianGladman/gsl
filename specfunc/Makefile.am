@@ -53,7 +53,7 @@ test_LDADD = libgslspecfunc.la \
 	../ieee-utils/libgslieeeutils.la \
 	../sys/libgslsys.la \
 	../err/libgslerr.la \
-	../err/libgsltest.la \
+	../test/libgsltest.la \
         ../utils/libutils.la
 test_DEPENDENCIES = libgslspecfunc.la
 test_SOURCES = test_sf.c		\

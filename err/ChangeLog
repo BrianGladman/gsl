@@ -1,3 +1,7 @@
+Fri May  5 11:20:10 2000  Brian Gough  <bjg@network-theory.co.uk>
+
+	* split gsl_test code out into separate test/ directory
+
 Sun Nov 28 17:17:03 1999  Brian Gough  <bjg@network-theory.co.uk>
 
 	* gsl_errno.h: added GSL_ENOPROG and GSL_ENOPROGJ to handle error

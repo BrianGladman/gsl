@@ -8,8 +8,8 @@ INCLUDES= -I$(top_builddir) -I$(top_srcdir)
 
 TESTS = test test_static
 
-test_LDADD = libgslvector.la ../block/libgslblock.la ../err/libgslerr.la ../err/libgsltest.la ../utils/libutils.la
-test_static_LDADD = libgslvector.la ../block/libgslblock.la ../err/libgslerr.la ../err/libgsltest.la ../utils/libutils.la
+test_LDADD = libgslvector.la ../block/libgslblock.la ../err/libgslerr.la ../test/libgsltest.la ../utils/libutils.la
+test_static_LDADD = libgslvector.la ../block/libgslblock.la ../err/libgslerr.la ../test/libgsltest.la ../utils/libutils.la
 
 test_DEPENDENCIES = libgslvector.la
 test_static_DEPENDENCIES = libgslvector.la

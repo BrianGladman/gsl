@@ -14,10 +14,10 @@ check_PROGRAMS = test test_nist
 TESTS = test test_nist
 
 test_SOURCES = test.c
-test_LDADD = libgslstatistics.la ../sort/libgslsort.la ../err/libgslerr.la ../err/libgsltest.la ../utils/libutils.la
+test_LDADD = libgslstatistics.la ../sort/libgslsort.la ../err/libgslerr.la ../test/libgsltest.la ../utils/libutils.la
 test_DEPENDENCIES = libgslstatistics.la
 
 test_nist_SOURCES = test_nist.c
-test_nist_LDADD = libgslstatistics.la  ../err/libgslerr.la ../err/libgsltest.la ../utils/libutils.la
+test_nist_LDADD = libgslstatistics.la  ../err/libgslerr.la ../test/libgsltest.la ../utils/libutils.la
 test_nist_DEPENDENCIES = libgslstatistics.la
 

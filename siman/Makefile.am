@@ -7,7 +7,7 @@ TESTS = test
 EXTRA_DIST = siman_test_driver.sh
 
 test_SOURCES = test.c
-test_LDADD = libgslsiman.la ../rng/libgslrng.la ../err/libgslerr.la ../err/libgsltest.la ../utils/libutils.la
+test_LDADD = libgslsiman.la ../rng/libgslrng.la ../err/libgslerr.la ../test/libgsltest.la ../utils/libutils.la
 test_DEPENDENCIES = libgslsiman.la
 
 siman_test_SOURCES = siman_test.c

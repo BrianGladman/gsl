@@ -1,0 +1,4 @@
+Fri May  5 11:20:36 2000  Brian Gough  <bjg@network-theory.co.uk>
+
+	* split out gsl_test code from err/ directory
+

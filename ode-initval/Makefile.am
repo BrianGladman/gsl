@@ -12,7 +12,7 @@ check_PROGRAMS = test
 
 TESTS = test
 
-test_LDADD = libgslodeiv.la ../ieee-utils/libgslieeeutils.la ../sys/libgslsys.la ../err/libgslerr.la ../err/libgsltest.la ../linalg/libgsllinalg.la ../blas/libgslblas.la ../blas/libgslblasnative.la ../matrix/libgslmatrix.la ../vector/libgslvector.la ../permutation/libgslpermutation.la ../block/libgslblock.la ../utils/libutils.la
+test_LDADD = libgslodeiv.la ../ieee-utils/libgslieeeutils.la ../sys/libgslsys.la ../err/libgslerr.la ../test/libgsltest.la ../linalg/libgsllinalg.la ../blas/libgslblas.la ../blas/libgslblasnative.la ../matrix/libgslmatrix.la ../vector/libgslvector.la ../permutation/libgslpermutation.la ../block/libgslblock.la ../utils/libutils.la
 test_DEPENDENCIES = libgslodeiv.la
 test_SOURCES = test_odeiv.c
 

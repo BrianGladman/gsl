@@ -10,5 +10,5 @@ INCLUDES= -I$(top_builddir)
 
 TESTS = test
 check_PROGRAMS = test
-test_LDADD = libgslieeeutils.la ../err/libgslerr.la ../err/libgsltest.la ../utils/libutils.la
+test_LDADD = libgslieeeutils.la ../err/libgslerr.la ../test/libgsltest.la ../utils/libutils.la
 test_SOURCES = test.c

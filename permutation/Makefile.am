@@ -14,7 +14,7 @@ noinst_HEADERS = permute_source.c
 
 #test_SOURCES = test.c
 #test_DEPENDENCIES = libgslpermutation.la
-#test_LDADD = ../err/libgslerr.la ../err/libgsltest.la ../utils/libutils.la
+#test_LDADD = ../err/libgslerr.la ../test/libgsltest.la ../utils/libutils.la
 
 #CLEANFILES = test.txt test.dat
 

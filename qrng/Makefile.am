@@ -13,7 +13,7 @@ libgslqrng_la_SOURCES = 	\
 
 
 test_SOURCES = test.c
-test_LDADD = libgslqrng.la ../err/libgslerr.la ../err/libgsltest.la ../utils/libutils.la
+test_LDADD = libgslqrng.la ../err/libgslerr.la ../test/libgsltest.la ../utils/libutils.la
 
 TESTS = test
 check_PROGRAMS = test

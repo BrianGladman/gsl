@@ -71,7 +71,7 @@ INCLUDES= -I$(top_srcdir)
 
 TESTS = test
 
-test_LDADD = libgslblasnative.la ../err/libgslerr.la ../err/libgsltest.la ../sys/libgslsys.la
+test_LDADD = libgslblasnative.la ../err/libgslerr.la ../test/libgsltest.la ../sys/libgslsys.la
 test_SOURCES = test_blas_raw.c test_cases.c test_cases.h
 
 libgslblas_la_SOURCES = 		\

@@ -8,7 +8,7 @@ TESTS = test
 
 check_PROGRAMS = test
 
-test_LDADD = libgsldht.la ../specfunc/libgslspecfunc.la ../sys/libgslsys.la ../err/libgslerr.la ../err/libgsltest.la ../utils/libutils.la
+test_LDADD = libgsldht.la ../specfunc/libgslspecfunc.la ../sys/libgslsys.la ../err/libgslerr.la ../test/libgsltest.la ../utils/libutils.la
 
 test_DEPENDENCIES = libgsldht.la
 test_SOURCES = test_dht.c
