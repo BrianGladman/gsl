@@ -188,7 +188,7 @@ main (void)
   gsl_combination * c;
   size_t i;
 
-  printf("all subsets of @{0,1,2,3@} by size in lex. order\n") ;
+  printf("All subsets of @{0,1,2,3@} by size:\n") ;
   for(i = 0; i <= 4; i++)
     @{
       c = gsl_combination_calloc (4, i);
@@ -210,7 +210,7 @@ Here is the output from the program,
 
 @example
 bash$ ./a.out 
-all subsets of @{1,2,3,4@} by size in lex. order
+All subsets of @{0,1,2,3@} by size:
 @{ @}
 @{ 0 @}
 @{ 1 @}
@@ -231,6 +231,6 @@ all subsets of @{1,2,3,4@} by size in lex. order
 @noindent
 
 @noindent
-All 16 subsets are generated, subsets of each size sorted
+All 16 subsets are generated, and the subsets of each size are sorted
 lexicographically.
 
