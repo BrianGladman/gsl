@@ -89,7 +89,7 @@ unnecessary divisions.
 
 @node FFTs of complex data
 @section FFTs of complex data
-@cindex FFT of complex data
+@cindex FFT, complex data
 
 The inputs and outputs for the radix-2 and mixed-radix complex FFT
 routines are simply vectors of complex elements. For example,
@@ -145,7 +145,7 @@ table above still applies, but @math{N/2} does not appear.
 @node Radix-2 FFT routines for complex data
 @subsection Radix-2 FFT routines for complex data
 @cindex FFT of complex data, radix-2 algorithm
-@cindex Radix-2 FFT for complex data
+@cindex Radix-2 FFT, complex data
 
 The radix-2 algorithms described in this section are simple and compact,
 although not necessarily the most efficient. They use the Cooley-Tukey
@@ -270,7 +270,7 @@ $$
 @node Mixed-radix FFT routines for complex data
 @subsection Mixed-radix FFT routines for complex data
 @cindex FFT of complex data, mixed-radix algorithm
-@cindex Mixed-radix FFT of complex data
+@cindex Mixed-radix FFT, complex data
 
 This section describes mixed-radix FFT algorithms for complex data.  The
 mixed-radix functions work for FFTs of any length. They are a
@@ -665,7 +665,7 @@ result is a real array stored in natural order.
 @node Mixed-radix FFT routines for real data
 @subsection Mixed-radix FFT routines for real data
 @cindex FFT of real data, mixed-radix algorithm
-@cindex Mixed-radix FFT for real data
+@cindex Mixed-radix FFT, real data
 
 This section describes mixed-radix FFT algorithms for real data. The
 mixed-radix functions work for FFTs of any length. They are a
