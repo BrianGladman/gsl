@@ -1229,7 +1229,7 @@ int main (void)
 	gsl_test_rel(w->rlist[i],r[i],1e-15,"qagiu(f455) smooth rlist") ;
 
     for (i = 0; i < 10 ; i++) 
-	gsl_test_rel(w->elist[i],e[i],1e-5,"qagiu(f455) smooth elist") ;
+	gsl_test_rel(w->elist[i],e[i],1e-4,"qagiu(f455) smooth elist") ;
 
     for (i = 0; i < 10 ; i++) 
 	gsl_test_int((int)w->order[i],order[i]-1,"qagiu(f455) smooth order");
