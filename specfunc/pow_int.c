@@ -8,68 +8,34 @@
 #include "gsl_sf_pow_int.h"
 
 
-int gsl_sf_pow_int_impl(double x, int n, double * result)
-{
-  const int MAXN = 50;
-  const int NGRP = 5;
+inline double gsl_sf_pow_2(const double x) { return x*x;   }
+inline double gsl_sf_pow_3(const double x) { return x*x*x; }
+inline double gsl_sf_pow_4(const double x) { double x2 = x*x;   return x2*x2;    }
+inline double gsl_sf_pow_5(const double x) { double x2 = x*x;   return x2*x2*x;  }
+inline double gsl_sf_pow_6(const double x) { double x2 = x*x;   return x2*x2*x2; }
+inline double gsl_sf_pow_7(const double x) { double x3 = x*x*x; return x3*x3*x;  }
+inline double gsl_sf_pow_8(const double x) { double x2 = x*x;   double x4 = x2*x2; return x4*x4; }
+inline double gsl_sf_pow_9(const double x) { double x3 = x*x*x; return x3*x3*x3; }
 
-  if(n < 0) {
-    x = 1./x;
-    n = -n;
-  }
-  
-  if(n == 0) {
-  }
-  else if(n == 1) {
-  }
-  else if(n == 2) {
-  }
-  else if(n == 3) {
-  }
-  else if(n == 4) {
-  }
-  else if(n < NGRP) {
-  
-    double value = 1.;
-    int n_groups;
-    int n_remain;
-    double x5;
-    div_t q = div(n, 5);
-    n_groups = q.quot;
-    n_remain = q.rem;
-  }
-
-  else {
-    *result = pow(x, n);
-  }
-}
 
 double gsl_sf_pow_int(double x, int n)
 {
-  double value = 1;
-
-  if(abs(n) > 50) return pow(x, n);  /* Defer for large powers. */
-  
-  /* Trap. */
-  if(x == 0) {
-    if(n >= 0) {
-      return 0.;
-    }
-    else {
-      return 0. /* GSL_INF */ ; /* FIXME */
-    }
-  }
-  else {
-    if(n == 0) return 1.;
-  } 
+  double value = 1.;
 
   if(n < 0) {
+    if(x == 0.0) return 0.; /* FIXME: should be Inf */
     x = 1./x;
     n = -n;
   }
 
-  for(; n > 0; n--){
-    value *= x;
-  }
-  return value;
+  /* repeated squaring method 
+   * returns 0.0^0 = 1.0, so continuous in x
+   */
+  do {
+     if(GSL_IS_ODD(n)) value *= x;
+     n >>= 1;
+     x *= x;
+  } while (n);
+
+  return value; 
 }
