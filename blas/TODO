@@ -9,8 +9,8 @@ native implementations:
  X gsl_blas_raw_ctbmv
  X gsl_blas_raw_ztbmv
 
- o gsl_blas_raw_ctpmv
- o gsl_blas_raw_ztpmv
+ X gsl_blas_raw_ctpmv
+ X gsl_blas_raw_ztpmv
 
  X gsl_blas_raw_stbsv
  X gsl_blas_raw_dtbsv

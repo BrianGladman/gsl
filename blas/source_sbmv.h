@@ -34,9 +34,10 @@
     for(j=0; j<N; j++) {
       BASE_TYPE tmp1 = alpha * X[jx];
       BASE_TYPE tmp2 = 0.0;
-      ix = 0;
-      iy = 0;
-      for(i=GSL_MAX(0,j-K); i<j; i++) {
+      const size_t i_min = ( j>K ? j-K : 0 );
+      ix = i_min * incX;
+      iy = i_min * incY;
+      for(i=i_min; i<j; i++) {
         Y[iy] += tmp1 * A[lda*j + i];
 	tmp2  += A[lda*j + i] * X[ix];
 	ix += incX;

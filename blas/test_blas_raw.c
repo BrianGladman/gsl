@@ -788,8 +788,74 @@ int test_tpmv(void)
   gsl_test(s, "gsl_blas_raw_stpmv F");
   status += s;
 
+  gsl_blas_raw_scopy(4, vector_4_f, 1, tmp_f, 1);
+  gsl_blas_raw_stpmv(CblasLower, CblasTrans, CblasNonUnit, 4, matrix_gen_4_f, tmp_f, 1);
+  s = ( tmp_f[0] != 13.0 || tmp_f[1] != 5.0 || tmp_f[2] != 6.0 || tmp_f[3] != -6.0 );
+  gsl_test(s, "gsl_blas_raw_stpmv G");
+  status += s;
 
-/* FIXME */
+  gsl_blas_raw_scopy(4, vector_4_f, 1, tmp_f, 1);
+  gsl_blas_raw_stpmv(CblasLower, CblasTrans, CblasUnit, 4, matrix_gen_4_f, tmp_f, 1);
+  s = ( tmp_f[0] != 13.0 || tmp_f[1] != 2.0 || tmp_f[2] != 6.0 || tmp_f[3] != 3.0 );
+  gsl_test(s, "gsl_blas_raw_stpmv H");
+  status += s;
+
+
+  gsl_blas_raw_dcopy(4, vector_4_d, 1, tmp_d, 1);
+  gsl_blas_raw_dtpmv(CblasUpper, CblasNoTrans, CblasNonUnit, 4, matrix_gen_4_d, tmp_d, 1);
+  s = ( tmp_d[0] != 1.0 || tmp_d[1] != 29.0/2.0 || tmp_d[2] != 6.0 || tmp_d[3] != -6.0 );
+  gsl_test(s, "gsl_blas_raw_dtpmv A");
+  status += s;
+
+
+  gsl_blas_raw_ccopy(4, vector_4_c, 1, tmp_f, 1);
+  gsl_blas_raw_ctpmv(CblasUpper, CblasNoTrans, CblasNonUnit, 4, matrix_gen_4_c, tmp_f, 1);
+  s = ( tmp_f[0] != -7.0 || tmp_f[1] != 3.0 || tmp_f[2] != 13.0/2.0 || tmp_f[3] != 75.0/2.0 ||
+        tmp_f[4] != -5.0 || tmp_f[5] != 13.0 || tmp_f[6] != -6.0 || tmp_f[7] != -10.0
+       );
+  gsl_test(s, "gsl_blas_raw_ctpmv A");
+  status += s;
+
+  gsl_blas_raw_ccopy(4, vector_4_c, 1, tmp_f, 1);
+  gsl_blas_raw_ctpmv(CblasUpper, CblasNoTrans, CblasUnit, 4, matrix_gen_4_c, tmp_f, 1);
+  s = ( tmp_f[0] != -7.0 || tmp_f[1] != 3.0 || tmp_f[2] != 6.0 || tmp_f[3] != 38.0 ||
+        tmp_f[4] != 1.0 || tmp_f[5] != 16.0 || tmp_f[6] != 3.0 || tmp_f[7] != 5.0
+       );
+  gsl_test(s, "gsl_blas_raw_ctpmv B");
+  status += s;
+
+  gsl_blas_raw_ccopy(4, vector_4_c, 1, tmp_f, 1);
+  gsl_blas_raw_ctpmv(CblasUpper, CblasTrans, CblasNonUnit, 4, matrix_gen_4_c, tmp_f, 1);
+  s = ( tmp_f[0] != -2.0 || tmp_f[1] != 1.0 || tmp_f[2] != -0.5 || tmp_f[3] != 0.5 ||
+        tmp_f[4] != -7.0 || tmp_f[5] != -2.0 || tmp_f[6] != -18.0 || tmp_f[7] != -1.0
+       );
+  gsl_test(s, "gsl_blas_raw_ctpmv C");
+  status += s;
+
+  gsl_blas_raw_ccopy(4, vector_4_c, 1, tmp_f, 1);
+  gsl_blas_raw_ctpmv(CblasUpper, CblasTrans, CblasUnit, 4, matrix_gen_4_c, tmp_f, 1);
+  s = ( tmp_f[0] != -2.0 || tmp_f[1] != 1.0 || tmp_f[2] != -1.0 || tmp_f[3] != 1.0 ||
+        tmp_f[4] != -1.0 || tmp_f[5] != 1.0 || tmp_f[6] != -9.0 || tmp_f[7] != 14.0
+       );
+  gsl_test(s, "gsl_blas_raw_ctpmv D");
+  status += s;
+
+  gsl_blas_raw_ccopy(4, vector_4_c, 1, tmp_f, 1);
+  gsl_blas_raw_ctpmv(CblasLower, CblasNoTrans, CblasUnit, 4, matrix_gen_4_c, tmp_f, 1);
+  s = ( tmp_f[0] != -2.0 || tmp_f[1] != 1.0 || tmp_f[2] != -1.0 || tmp_f[3] != 1.0 ||
+        tmp_f[4] != -7.0/2.0 || tmp_f[5] != 5.0/2.0 || tmp_f[6] != -13.0 || tmp_f[7] != 12.0
+       );
+  gsl_test(s, "gsl_blas_raw_ctpmv E");
+  status += s;
+
+  gsl_blas_raw_ccopy(4, vector_4_c, 1, tmp_f, 1);
+  gsl_blas_raw_ctpmv(CblasLower, CblasTrans, CblasUnit, 4, matrix_gen_4_c, tmp_f, 1);
+  s = ( tmp_f[0] != 5.0 || tmp_f[1] != 32.0 || tmp_f[2] != -11.0 || tmp_f[3] != 17.0/2.0 ||
+        tmp_f[4] != 1.0 || tmp_f[5] != 16.0 || tmp_f[6] != 3.0 || tmp_f[7] != 5.0
+       );
+  gsl_test(s, "gsl_blas_raw_ctpmv F");
+  status += s;
+
 
   return status;
 }
@@ -817,6 +883,20 @@ int test_symv(void)
   s = ( tmp_f[0] != -5.0 || tmp_f[1] != -17.0 || tmp_f[2] != -1.0 || tmp_f[3] != 7.0 );
   gsl_test(s, "gsl_blas_raw_ssymv B");
   status += s;
+
+  gsl_blas_raw_scopy(4, vector_4_f, 1, tmp_f, 2);
+  gsl_blas_raw_ssymv(CblasLower, 4, 2.0, matrix_gen_4_f, 4, vector_4_f, 1, 3.0, tmp_f, 2);
+  s = ( tmp_f[0] != -5.0 || tmp_f[2] != -17.0 || tmp_f[4] != -1.0 || tmp_f[6] != 7.0 );
+  gsl_test(s, "gsl_blas_raw_ssymv C");
+  status += s;
+
+
+  gsl_blas_raw_dcopy(4, vector_4_d, 1, tmp_d, 1);
+  gsl_blas_raw_dsymv(CblasUpper, 4, 2.0, matrix_gen_4_d, 4, vector_4_d, 1, 3.0, tmp_d, 1);
+  s = ( tmp_d[0] != -4.0 || tmp_d[1] != -3.0 || tmp_d[2] != 1.0 || tmp_d[3] != 3.0 );
+  gsl_test(s, "gsl_blas_raw_dsymv A");
+  status += s;
+
 
   return status;
 }
@@ -847,6 +927,20 @@ int test_sbmv(void)
   gsl_test(s, "gsl_blas_raw_ssbmv C");
   status += s;
 
+  gsl_blas_raw_scopy(4, vector_4_f, 1, tmp_f, 2);
+  gsl_blas_raw_ssbmv(CblasLower, 4, 2, 2.0, matrix_gen_4_f, 4, vector_4_c, 2, 3.0, tmp_f, 2);
+  s = ( tmp_f[0] != -11.0 || tmp_f[2] != -17.0 || tmp_f[4] != -1.0 || tmp_f[6] != 11.0 );
+  gsl_test(s, "gsl_blas_raw_ssbmv D");
+  status += s;
+
+
+  gsl_blas_raw_dcopy(4, vector_4_d, 1, tmp_d, 2);
+  gsl_blas_raw_dsbmv(CblasUpper, 4, 2, 2.0, matrix_gen_4_d, 4, vector_4_d, 1, 3.0, tmp_d, 2);
+  s = ( tmp_d[0] != -10.0 || tmp_d[2] != -3.0 || tmp_d[4] != 1.0 || tmp_d[6] != 7.0 );
+  gsl_test(s, "gsl_blas_raw_dsbmv A");
+  status += s;
+
+
   return status;
 }
 
@@ -858,7 +952,7 @@ int test_spmv(void)
   float  tmp_f[32];
   double tmp_d[32];
 
-/*
+
   gsl_blas_raw_scopy(4, vector_4_f, 1, tmp_f, 1);
   gsl_blas_raw_sspmv(CblasUpper, 4, 2.0, matrix_gen_4_f, vector_4_f, 1, 3.0, tmp_f, 1);
   s = ( tmp_f[0] != -4.0 || tmp_f[1] != 26.0 || tmp_f[2] != 14.0 || tmp_f[3] != -17.0 );
@@ -867,9 +961,21 @@ int test_spmv(void)
 
   gsl_blas_raw_scopy(4, vector_4_f, 1, tmp_f, 1);
   gsl_blas_raw_sspmv(CblasLower, 4, 2.0, matrix_gen_4_f, vector_4_f, 1, 3.0, tmp_f, 1);
-  s = ( tmp_f[0] != 6.0 || tmp_f[1] != -11.0 || tmp_f[2] != -20.0 || tmp_f[3] != 11.0 );
+  s = ( tmp_f[0] != 20.0 || tmp_f[1] != 7.0 || tmp_f[2] != 7.0 || tmp_f[3] != -25.0 );
   gsl_test(s, "gsl_blas_raw_sspmv B");
-*/
+
+  gsl_blas_raw_scopy(4, vector_4_f, 1, tmp_f, 2);
+  gsl_blas_raw_sspmv(CblasLower, 4, 2.0, matrix_gen_4_f, vector_4_f, 1, 3.0, tmp_f, 2);
+  s = ( tmp_f[0] != 20.0 || tmp_f[2] != 7.0 || tmp_f[4] != 7.0 || tmp_f[6] != -25.0 );
+  gsl_test(s, "gsl_blas_raw_sspmv C");
+
+
+  gsl_blas_raw_dcopy(4, vector_4_d, 1, tmp_d, 1);
+  gsl_blas_raw_dspmv(CblasUpper, 4, 2.0, matrix_gen_4_d, vector_4_d, 1, 3.0, tmp_d, 1);
+  s = ( tmp_d[0] != -4.0 || tmp_d[1] != 26.0 || tmp_d[2] != 14.0 || tmp_d[3] != -17.0 );
+  gsl_test(s, "gsl_blas_raw_dspmv A");
+  status += s;
+
   return status;
 }
 
@@ -928,7 +1034,42 @@ int test_hemv(void)
   int status = 0;
   int s;
 
-/* FIXME */
+  float  tmp_f[32];
+  double tmp_d[32];
+
+  gsl_blas_raw_ccopy(4, vector_4_c, 1, tmp_f, 1);
+  gsl_blas_raw_chemv(CblasUpper, 4, c_2, matrix_her_4_c, 4, vector_4_c, 1, c_3, tmp_f, 1);
+  s = ( tmp_f[0] != -20.0 || tmp_f[1] != 9.0 || tmp_f[2] != -35.0 || tmp_f[3] != 51.0 ||
+        tmp_f[4] != -25.0 || tmp_f[5] != 38.0 || tmp_f[6] != 35.0 || tmp_f[7] != 38.0
+       );
+  gsl_test(s, "gsl_blas_raw_chemv A");
+  status += s;
+
+  gsl_blas_raw_ccopy(4, vector_4_c, 1, tmp_f, 1);
+  gsl_blas_raw_chemv(CblasLower, 4, c_2, matrix_her_4_c, 4, vector_4_c, 1, c_3, tmp_f, 1);
+  s = ( tmp_f[0] != -20.0 || tmp_f[1] != 9.0 || tmp_f[2] != -35.0 || tmp_f[3] != 51.0 ||
+        tmp_f[4] != -25.0 || tmp_f[5] != 38.0 || tmp_f[6] != 35.0 || tmp_f[7] != 38.0
+       );
+  gsl_test(s, "gsl_blas_raw_chemv B");
+  status += s;
+
+  gsl_blas_raw_ccopy(4, vector_4_c, 1, tmp_f, 2);
+  gsl_blas_raw_chemv(CblasUpper, 4, c_2, matrix_her_4_c, 4, vector_4_c, 1, c_3, tmp_f, 2);
+  s = ( tmp_f[0] != -20.0 || tmp_f[1] != 9.0 || tmp_f[4] != -35.0 || tmp_f[5] != 51.0 ||
+        tmp_f[8] != -25.0 || tmp_f[9] != 38.0 || tmp_f[12] != 35.0 || tmp_f[13] != 38.0
+       );
+  gsl_test(s, "gsl_blas_raw_chemv C");
+  status += s;
+
+
+  gsl_blas_raw_zcopy(4, vector_4_z, 1, tmp_d, 1);
+  gsl_blas_raw_zhemv(CblasUpper, 4, z_2, matrix_her_4_z, 4, vector_4_z, 1, z_3, tmp_d, 1);
+  s = ( tmp_d[0] != -20.0 || tmp_d[1] != 9.0 || tmp_d[2] != -35.0 || tmp_d[3] != 51.0 ||
+        tmp_d[4] != -25.0 || tmp_d[5] != 38.0 || tmp_d[6] != 35.0 || tmp_d[7] != 38.0
+       );
+  gsl_test(s, "gsl_blas_raw_zhemv A");
+  status += s;
+
 
   return status;
 }
@@ -938,7 +1079,42 @@ int test_hbmv(void)
   int status = 0;
   int s;
 
-/* FIXME */
+  float  tmp_f[32];
+  double tmp_d[32];
+
+  gsl_blas_raw_ccopy(4, vector_4_c, 1, tmp_f, 1);
+  gsl_blas_raw_chbmv(CblasUpper, 4, 2, c_2, matrix_her_4_c, 4, vector_4_c, 1, c_3, tmp_f, 1);
+  s = ( tmp_f[0] != -16.0 || tmp_f[1] != -7.0 || tmp_f[2] != -35.0 || tmp_f[3] != 51.0 ||
+        tmp_f[4] != -25.0 || tmp_f[5] != 38.0 || tmp_f[6] != 37.0 || tmp_f[7] != 32.0
+       );
+  gsl_test(s, "gsl_blas_raw_chbmv A");
+  status += s;
+
+  gsl_blas_raw_ccopy(4, vector_4_c, 1, tmp_f, 1);
+  gsl_blas_raw_chbmv(CblasLower, 4, 2, c_2, matrix_her_4_c, 4, vector_4_c, 1, c_3, tmp_f, 1);
+  s = ( tmp_f[0] != -16.0 || tmp_f[1] != -7.0 || tmp_f[2] != -35.0 || tmp_f[3] != 51.0 ||
+        tmp_f[4] != -25.0 || tmp_f[5] != 38.0 || tmp_f[6] != 37.0 || tmp_f[7] != 32.0
+       );
+  gsl_test(s, "gsl_blas_raw_chbmv B");
+  status += s;
+
+  gsl_blas_raw_ccopy(4, vector_4_c, 1, tmp_f, 2);
+  gsl_blas_raw_chbmv(CblasUpper, 4, 2, c_2, matrix_her_4_c, 4, vector_4_c, 1, c_3, tmp_f, 2);
+  s = ( tmp_f[0] != -16.0 || tmp_f[1] != -7.0 || tmp_f[4] != -35.0 || tmp_f[5] != 51.0 ||
+        tmp_f[8] != -25.0 || tmp_f[9] != 38.0 || tmp_f[12] != 37.0 || tmp_f[13] != 32.0
+       );
+  gsl_test(s, "gsl_blas_raw_chbmv C");
+  status += s;
+
+
+  gsl_blas_raw_zcopy(4, vector_4_z, 1, tmp_d, 1);
+  gsl_blas_raw_zhbmv(CblasUpper, 4, 2, z_2, matrix_her_4_z, 4, vector_4_z, 1, z_3, tmp_d, 1);
+  s = ( tmp_d[0] != -16.0 || tmp_d[1] != -7.0 || tmp_d[2] != -35.0 || tmp_d[3] != 51.0 ||
+        tmp_d[4] != -25.0 || tmp_d[5] != 38.0 || tmp_d[6] != 37.0 || tmp_d[7] != 32.0
+       );
+  gsl_test(s, "gsl_blas_raw_zhbmv A");
+  status += s;
+
 
   return status;
 }
