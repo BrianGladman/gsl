@@ -1,3 +1,8 @@
+Wed Oct 31 18:42:10 2001  Brian Gough  <bjg@network-theory.co.uk>
+
+	* qr.c (qr_companion): increased maximum number of iterations from
+ 	30 to 60
+
 Thu Jun 28 11:24:51 2001  Brian Gough  <bjg@network-theory.co.uk>
 
 	* test.c (main): fixed a subtle bug in the test where the array

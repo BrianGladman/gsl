@@ -101,14 +101,14 @@ next_iteration:
 
   /* No more roots found yet, do another iteration */
 
-  if (iterations == 30)
+  if (iterations == 60)  /* increased from 30 to 60 */
     {
       /* too many iterations - give up! */
 
       return GSL_FAILURE ;
     }
 
-  if (iterations == 10 || iterations == 20)
+  if (iterations % 10 == 0 && iterations > 0)
     {
       /* use an exceptional shift */
 
