@@ -94,7 +94,7 @@ gsl_error_handler_t *
 gsl_set_error_handler (gsl_error_handler_t * new_handler);
 
 gsl_error_handler_t *
-gsl_set_error_handler_off ();
+gsl_set_error_handler_off (void);
 
 gsl_stream_handler_t * 
 gsl_set_stream_handler (gsl_stream_handler_t * new_handler);
@@ -125,6 +125,11 @@ FILE * gsl_set_stream (FILE * new_stream);
        gsl_error (reason, __FILE__, __LINE__, gsl_errno) ; \
        return ; \
        } while (0)
+
+/* GSL_ERROR_NULL suitable for out-of-memory conditions */
+
+#define GSL_ERROR_NULL(reason, gsl_errno) GSL_ERROR_VAL(reason, gsl_errno, 0)
+
 
 /* GSL library code can occasionally generate warnings, which are not
    intended to be fatal. You can compile a version of the library with

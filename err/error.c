@@ -52,7 +52,7 @@ gsl_set_error_handler (gsl_error_handler_t * new_handler)
 
 
 gsl_error_handler_t *
-gsl_set_error_handler_off ()
+gsl_set_error_handler_off (void)
 {
   gsl_error_handler_t * previous_handler = gsl_error_handler;
   gsl_error_handler = no_error_handler;
@@ -62,8 +62,12 @@ gsl_set_error_handler_off ()
 static void
 no_error_handler (const char *reason, const char *file, int line, int gsl_errno)
 {
-    /* do nothing */
-    return;
+  /* do nothing */
+  reason = 0;
+  file = 0;
+  line = 0;
+  gsl_errno = 0;
+  return;
 }
 
 

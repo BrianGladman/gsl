@@ -1,3 +1,8 @@
+Fri Apr 27 18:18:59 2001  Brian Gough  <bjg@network-theory.co.uk>
+
+	* gsl_errno.h (GSL_ERROR_NULL): added macro which returns NULL,
+ 	for out of memory conditions
+
 Mon Jan 22 16:01:55 2001  Brian Gough  <bjg@network-theory.co.uk>
 
 	* gsl_errno.h: added EOF for end of file

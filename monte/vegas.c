@@ -86,16 +86,17 @@ static void random_point (double x[], coord bin[], double *bin_vol,
                           const coord box[], 
                           const double xl[], const double xu[],
                           gsl_monte_vegas_state * s, gsl_rng * r);
-static void resize_grid (gsl_monte_vegas_state * s, int bins);
+static void resize_grid (gsl_monte_vegas_state * s, unsigned int bins);
 static void refine_grid (gsl_monte_vegas_state * s);
 
 static void print_lim (gsl_monte_vegas_state * state,
                        double xl[], double xu[], unsigned long dim);
 static void print_head (gsl_monte_vegas_state * state,
                         unsigned long num_dim, unsigned long calls,
-                        int it_num, int bins, int boxes);
+                        unsigned int it_num, 
+                        unsigned int bins, unsigned int boxes);
 static void print_res (gsl_monte_vegas_state * state,
-                       int itr, double res, double err, 
+                       unsigned int itr, double res, double err, 
                        double cum_res, double cum_err,
                        double chi_sq);
 static void print_dist (gsl_monte_vegas_state * state, unsigned long dim);
@@ -110,7 +111,7 @@ gsl_monte_vegas_integrate (gsl_monte_function * f,
 			   double *result, double *abserr)
 {
   double cum_int, cum_sig;
-  int i, k, it;
+  size_t i, k, it;
 
   if (dim != state->dim)
     {
@@ -152,8 +153,8 @@ gsl_monte_vegas_integrate (gsl_monte_function * f,
 
   if (state->stage <= 2)
     {
-      int bins = state->bins_max;
-      int boxes = 1;
+      unsigned int bins = state->bins_max;
+      unsigned int boxes = 1;
 
       if (state->mode != GSL_VEGAS_MODE_IMPORTANCE_ONLY)
 	{
@@ -602,6 +603,8 @@ random_point (double x[], coord bin[], double *bin_vol,
   size_t bins = s->bins;
   size_t boxes = s->boxes;
 
+  xu = 0;  /* not used, turn off warning from compiler */
+
   for (j = 0; j < dim; ++j)
     {
       /* box[j] + ran gives the position in the box units, while z
@@ -636,7 +639,7 @@ random_point (double x[], coord bin[], double *bin_vol,
 
 
 static void
-resize_grid (gsl_monte_vegas_state * s, int bins)
+resize_grid (gsl_monte_vegas_state * s, unsigned int bins)
 {
   size_t j, k;
   size_t dim = s->dim;
@@ -764,7 +767,7 @@ static void
 print_lim (gsl_monte_vegas_state * state,
 	   double xl[], double xu[], unsigned long dim)
 {
-  int j;
+  size_t j;
 
   fprintf (state->ostream, "The limits of integration are:\n");
   for (j = 0; j < dim; ++j)
@@ -776,7 +779,7 @@ print_lim (gsl_monte_vegas_state * state,
 static void
 print_head (gsl_monte_vegas_state * state,
 	    unsigned long num_dim, unsigned long calls,
-	    int it_num, int bins, int boxes)
+	    unsigned int it_num, unsigned int bins, unsigned int boxes)
 {
   fprintf (state->ostream,
 	   "\nnum_dim=%lu, calls=%lu, it_num=%d, max_it_num=%d ",
@@ -797,7 +800,9 @@ print_head (gsl_monte_vegas_state * state,
 
 static void
 print_res (gsl_monte_vegas_state * state,
-	   int itr, double res, double err, double cum_res, double cum_err,
+	   unsigned int itr, 
+           double res, double err, 
+           double cum_res, double cum_err,
 	   double chi_sq)
 {
   fprintf (state->ostream,
@@ -809,7 +814,7 @@ print_res (gsl_monte_vegas_state * state,
 static void
 print_dist (gsl_monte_vegas_state * state, unsigned long dim)
 {
-  int i, j;
+  size_t i, j;
   int p = state->verbose;
   if (p < 1)
     return;
@@ -835,7 +840,7 @@ print_dist (gsl_monte_vegas_state * state, unsigned long dim)
 static void
 print_grid (gsl_monte_vegas_state * state, unsigned long dim)
 {
-  int i, j;
+  size_t i, j;
   int p = state->verbose;
   if (p < 1)
     return;

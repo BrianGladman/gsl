@@ -24,7 +24,7 @@
 
 static inline void downheap (size_t * p, const void *data, const size_t size, const size_t N, size_t k, gsl_comparison_fn_t compare);
 
-#define CMP(data,size,j,k) (compare((char *)(data) + (size) * (j), (char *)(data) + (size) * (k)))
+#define CMP(data,size,j,k) (compare((const char *)(data) + (size) * (j), (const char *)(data) + (size) * (k)))
 
 static inline void
 downheap (size_t * p, const void *data, const size_t size, const size_t N, size_t k, gsl_comparison_fn_t compare)

@@ -135,7 +135,7 @@ static size_t sobol_state_size(unsigned int dimension)
 static int sobol_init(void * state, unsigned int dimension)
 {
   sobol_state_t * s_state = (sobol_state_t *) state;
-  int i_dim;
+  unsigned int i_dim;
   int j, k;
   int ell;
 
@@ -203,7 +203,7 @@ static int sobol_get(void * state, unsigned int dimension, double * v)
 {
   sobol_state_t * s_state = (sobol_state_t *) state;
 
-  int i_dimension;
+  unsigned int i_dimension;
 
   /* Find the position of the least-significant zero in count. */
   int ell = 0;

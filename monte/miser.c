@@ -570,7 +570,7 @@ estimate_corrmc (gsl_monte_function * f,
 		 const double xmid[], double sigma_l[], double sigma_r[])
 {
   size_t i, n;
-
+  
   double *x = state->x;
   double *fsum_l = state->fsum_l;
   double *fsum_r = state->fsum_r;
@@ -579,7 +579,8 @@ estimate_corrmc (gsl_monte_function * f,
   size_t *hits_l = state->hits_l;
   size_t *hits_r = state->hits_r;
 
-  double vol = 1;
+  double m = 0.0, q = 0.0; 
+  double vol = 1.0;
 
   for (i = 0; i < dim; i++)
     {
@@ -594,8 +595,8 @@ estimate_corrmc (gsl_monte_function * f,
     {
       double fval;
       
-      int j = (n/2) % dim;
-      int side = (n % 2);
+      unsigned int j = (n/2) % dim;
+      unsigned int side = (n % 2);
 
       for (i = 0; i < dim; i++)
 	{
@@ -620,6 +621,14 @@ estimate_corrmc (gsl_monte_function * f,
 
       fval = GSL_MONTE_FN_EVAL (f, x);
 
+      /* recurrence for mean and variance */
+      {
+	double d = fval - m;
+	m += d / (n + 1.0);
+	q += d * d * (n / (n + 1.0));
+      }
+
+      /* compute the variances on each side of the bisection */
       for (i = 0; i < dim; i++)
 	{
 	  if (x[i] <= xmid[i])
@@ -656,5 +665,17 @@ estimate_corrmc (gsl_monte_function * f,
 	}
     }
 
+  *result = vol * m;
+
+  if (calls < 2)
+    {
+      *abserr = GSL_POSINF;
+    }
+  else
+    {
+      *abserr = vol * sqrt (q / (calls * (calls - 1.0)));
+    }
+
   return GSL_SUCCESS;
 }
+

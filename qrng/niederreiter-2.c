@@ -221,7 +221,7 @@ static void calculate_cj(nied2_state_t * ns, unsigned int dimension)
   int ci[NIED2_NBITS][NIED2_NBITS];
   int v[MAXV+1];
   int r;
-  int i_dim;
+  unsigned int i_dim;
 
   for(i_dim=0; i_dim<dimension; i_dim++) {
 
@@ -294,7 +294,7 @@ static void calculate_cj(nied2_state_t * ns, unsigned int dimension)
 static int nied2_init(void * state, unsigned int dimension)
 {
   nied2_state_t * n_state = (nied2_state_t *) state;
-  int i_dim;
+  unsigned int i_dim;
 
   if(dimension < 1 || dimension > NIED2_MAX_DIMENSION) return GSL_EINVAL;
 
@@ -313,7 +313,7 @@ static int nied2_get(void * state, unsigned int dimension, double * v)
   nied2_state_t * n_state = (nied2_state_t *) state;
   int r;
   int c;
-  int i_dim;
+  unsigned int i_dim;
 
   /* Load the result from the saved state. */
   for(i_dim=0; i_dim<dimension; i_dim++) {

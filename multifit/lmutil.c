@@ -8,7 +8,7 @@ static double
 enorm (const gsl_vector * f)
 {
   return gsl_blas_dnrm2 (f);
-};
+}
 
 static double
 scaled_enorm (const gsl_vector * d, const gsl_vector * f)

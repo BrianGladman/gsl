@@ -22,7 +22,7 @@
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_permutation.h>
 #include <gsl/gsl_linalg.h>
-#include <gsl/gsl_multifit.h>
+#include <gsl/gsl_multifit_nlin.h>
 
 /* Compute the covariance matrix
 
@@ -186,4 +186,4 @@ gsl_multifit_covar (const gsl_matrix * J, double epsrel, gsl_matrix * covar)
   gsl_vector_free (tau);
 
   return GSL_SUCCESS;
-};
+}

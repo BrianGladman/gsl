@@ -187,9 +187,9 @@ qrsolv (gsl_matrix * r, const gsl_permutation * p, const double lambda,
 
   for (k = 0; k < nsing; k++)
     {
-      size_t j = (nsing - 1) - k;
-
       double sum = 0;
+
+      j = (nsing - 1) - k;
 
       for (i = j + 1; i < nsing; i++)
 	{

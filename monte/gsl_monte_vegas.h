@@ -46,8 +46,8 @@ typedef struct {
   /* grid */
   size_t dim;
   size_t bins_max;
-  int bins;
-  int boxes; /* these are both counted along the axes */
+  unsigned int bins;
+  unsigned int boxes; /* these are both counted along the axes */
   double * xi;
   double * xin;
   double * delx;
@@ -65,7 +65,7 @@ typedef struct {
   double alpha;
   int mode;
   int verbose;
-  int iterations;
+  unsigned int iterations;
   int stage;
 
   /* scratch variables preserved between calls to vegas1/2/3  */
@@ -78,10 +78,10 @@ typedef struct {
   double result;
   double sigma;
 
-  int it_start;
-  int it_num;
-  int samples;
-  int calls_per_box;
+  unsigned int it_start;
+  unsigned int it_num;
+  unsigned int samples;
+  unsigned int calls_per_box;
 
   FILE * ostream;
 

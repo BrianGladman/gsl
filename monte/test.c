@@ -73,7 +73,7 @@ struct problem {
 #define TRIALS 10
 
 int
-main ()
+main (void)
 {
   double result[TRIALS], error[TRIALS];
   double a = 0.1;
