@@ -19,9 +19,7 @@ gsl_fft_complex_pass_n (complex from[],
   const unsigned int product_1 = product / factor;
   const unsigned int jump = (factor - 1) * product_1;
 
-  double w_real, w_imag;
-
-  int e, e1, e2;
+  unsigned int e, e1;
 
   for (i = 0; i < m; i++)
     {
@@ -32,12 +30,12 @@ gsl_fft_complex_pass_n (complex from[],
     {
       for (i = 0; i < m; i++)
 	{
-	  const unsigned int j = i + e * m;
-	  const unsigned int jc = i + (factor - e) * m;
-	  to[j].real = from[j].real + from[jc].real;
-	  to[j].imag = from[j].imag + from[jc].imag;
-	  to[jc].real = from[j].real - from[jc].real;
-	  to[jc].imag = from[j].imag - from[jc].imag;
+	  const unsigned int idx = i + e * m;
+	  const unsigned int idxc = i + (factor - e) * m;
+	  to[idx].real = from[idx].real + from[idxc].real;
+	  to[idx].imag = from[idx].imag + from[idxc].imag;
+	  to[idxc].real = from[idx].real - from[idxc].real;
+	  to[idxc].imag = from[idx].imag - from[idxc].imag;
 	}
     }
 
@@ -160,7 +158,7 @@ gsl_fft_complex_pass_n (complex from[],
 	      double x_real = from[i + e1 * m].real;
 	      double x_imag = from[i + e1 * m].imag;
 
-	      double wtr, wti ;
+	      double w_real, w_imag ;
 	      if (sign == forward) {
 		w_real = twiddle[(e1-1)*q + k-1].real ;
 		w_imag = twiddle[(e1-1)*q + k-1].imag ;
