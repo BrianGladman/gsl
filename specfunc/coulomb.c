@@ -198,6 +198,39 @@ coulomb_Phi_series(const double lam, const double eta, const double x,
 }
 
 
+/* Deterine the connection phase phi_lambda.
+ * See coulomb_FG_series() below. We have
+ * to be careful about sin(phi)->0.
+ */
+static
+int
+coulomb_connection(const double lam, const double eta,
+                   double * cos_phi, double * sin_phi)
+{
+
+  const double sin_lamh = sin((lam+0.5)*M_PI);  /*  cos(lam*M_PI) */
+  const double cos_lamh = cos((lam+0.5)*M_PI);  /* -sin(lam*M_PI) */
+  const double eta_pi = eta*M_PI;
+  if(eta_pi < 12.0) {
+    const double th = tanh(eta*M_PI);
+    const double Y  = th * sin_lamh;
+    const double X  = cos_lamh;
+    const double R  = sqrt(X*X + Y*Y);
+    const double cos_beta = X/R;
+    const double sin_beta = Y/R;
+    *cos_phi = cos_beta * cos_lamh + sin_beta * sin_lamh;
+    *sin_phi = sin_beta * cos_lamh - cos_beta * sin_lamh;
+  }
+  else {
+    double eps = 2.0 / (1.0 + exp(2.0*eta_pi));   /* 1 - tanh(eta pi) */
+    double cs  = cos_lamh * sin_lamh;
+    *cos_phi = 1.0 - 0.5*eps*eps*cs*cs;
+    *sin_phi = -eps * cs * (1.0 + eps * sin_lamh*sin_lamh);
+  }
+  return GSL_SUCCESS;
+}
+
+
 /* Evaluate the Frobenius series for F_lam(eta,x) and G_lam(eta,x).
  * Homegrown algebra. Evaluates the series for F_{lam} and
  * F_{-lam-1}, then uses
@@ -206,15 +239,6 @@ coulomb_Phi_series(const double lam, const double eta, const double x,
  *    phi = Arg[Gamma[1+lam+I eta]] - Arg[Gamma[-lam + I eta]] - (lam+1/2)Pi
  *        = Arg[Sin[Pi(-lam+I eta)] - (lam+1/2)Pi
  *        = atan2(-cos(lam Pi)sinh(eta Pi), -sin(lam Pi)cosh(eta Pi)) - (lam+1/2)Pi
- *
- * F_lam =             Clam x^(lam+1) Sum[u_m, {m,0,Infinity}]
- * G_lam = 1/(Clam (2lam+1)) x^(-lam) Sum[v_m, {m,0,Infinity}]
- *
- * u_m := a_m x^m
- * a_m m (m+1+2lam) - 2 eta a_{m-1} + a_{m-2} = 0
- *
- * v_m := b_m x^m
- * b_m m (m-1-2lam) - 2 eta b_{m-1} + b_{m-2} = 0
  *
  * Not appropriate for lam <= -1/2, lam = 0, or lam >= 1/2.
  */
@@ -228,9 +252,8 @@ coulomb_FG_series(const double lam, const double eta, const double x,
   const double ClamB = CLeta(-lam-1.0, eta);
   const double tlp1 = 2.0*lam + 1.0;
   const double pow_x = pow(x, lam);
-  const double Y = -cos(lam*M_PI) * sinh(eta*M_PI);
-  const double X = -sin(lam*M_PI) * cosh(eta*M_PI);
-  const double phi_lam = atan2(Y,X) - (lam+0.5)*M_PI;
+  double cos_phi_lam;
+  double sin_phi_lam;
 
   double uA_mm2 = 1.0;                  /* uA sum is for F_{lam} */
   double uA_mm1 = x*eta/(lam+1.0);
@@ -245,6 +268,8 @@ coulomb_FG_series(const double lam, const double eta, const double x,
   double FA, FB;
   int m = 2;
   
+  coulomb_connection(lam, eta, &cos_phi_lam, &sin_phi_lam);
+
   while(m < max_iter) {
     double abs_dA;
     double abs_dB;
@@ -282,67 +307,12 @@ coulomb_FG_series(const double lam, const double eta, const double x,
   FB = B_sum * ClamB / pow_x;
 
   *F = FA;
-  *G = (FA * cos(phi_lam) - FB)/sin(phi_lam);
+  *G = (FA * cos_phi_lam - FB)/sin_phi_lam;
 
   if(m == max_iter)
     return GSL_EMAXITER;
   else
     return GSL_SUCCESS;
-
-#if 0
-  double u_mm2 = 1.0;                  /* u_0 */
-  double u_mm1 = x*eta/(lam+1.0);      /* u_1 */
-  double u_m;
-  double v_mm2 = 1.0;                  /* v_0 */
-  double v_mm1 = -x*eta/lam;           /* v_1 */
-  double v_m;
-  double f_sum = u_mm2 + u_mm1;
-  double g_sum = v_mm2 + v_mm1;
-  double f_abs_del_prev = fabs(f_sum);
-  double g_abs_del_prev = fabs(g_sum);
-  int m = 2;
-  
-  while(m < max_iter) {
-    double abs_df;
-    double abs_dg;
-    u_m = x*(2.0*eta*u_mm1 - x*u_mm2)/(m*(m+tlp1));
-    v_m = x*(2.0*eta*v_mm1 - x*v_mm2)/(m*(m-tlp1));
-    f_sum += u_m;
-    g_sum += v_m;
-    abs_df = fabs(u_m);
-    abs_dg = fabs(v_m);
-    if(m > 15) {
-      /* Don't bother checking until we have gone out a little ways;
-       * a minor optimization. Also make sure to check both the
-       * current and the previous increment because the odd and even
-       * terms of the sum can have very different behaviour, depending
-       * on the value of eta.
-       */
-      double max_abs_df = locMax(abs_df, f_abs_del_prev);
-      double max_abs_dg = locMax(abs_dg, g_abs_del_prev);
-      double abs_f = fabs(f_sum);
-      double abs_g = fabs(g_sum);
-      if(   max_abs_df/(max_abs_df + abs_f) < 40.0*GSL_MACH_EPS
-         && max_abs_dg/(max_abs_dg + abs_g) < 40.0*GSL_MACH_EPS
-         ) break;
-    }
-    f_abs_del_prev = abs_df;
-    g_abs_del_prev = abs_dg;
-    u_mm2 = u_mm1;
-    u_mm1 = u_m;
-    v_mm2 = v_mm1;
-    v_mm1 = v_m;
-    m++;
-  }
-
-  *F = f_sum * Clam * pow_x * x;
-  *G = (g_sum - cos(phi_lam)*pow_x*pow_x*x*f_sum) / (Clam * tlp1) / pow_x;
-
-  if(m == max_iter)
-    return GSL_EMAXITER;
-  else
-    return GSL_SUCCESS;
-#endif
 }
 
 
@@ -820,8 +790,8 @@ coulomb_jwkb(const double lam, const double eta, const double x,
   const double zeta_half = pow(3.0*phi/2.0, 1.0/3.0);
   const double prefactor = sqrt(M_PI*phi*x/(6.0 * rho_ghalf));
   
-  double F = prefactor *     3.0/zeta_half;
-  double G = prefactor * M_SQRT3/zeta_half;
+  double F = prefactor * 3.0/zeta_half;
+  double G = prefactor * 3.0/zeta_half; /* Note the sqrt(3) from Bi normalization */
   double F_exp;
   double G_exp;
   
@@ -892,7 +862,7 @@ gsl_sf_coulomb_wave_FG_impl(const double eta, const double x,
     const double SMALL = 1.0e-100;
     const int N    = (int)(lam_F + 0.5);
     const int span = locMax(k_lam_G, N);
-    const double lam_min = lam_F - N;    /* -1/2 <= lam_min <= 1/2 */
+    const double lam_min = lam_F - N;    /* -1/2 <= lam_min < 1/2 */
     double F_lam_F, Fp_lam_F;
     double G_lam_G, Gp_lam_G;
     double Fp_over_F_lam_F;
@@ -909,10 +879,16 @@ gsl_sf_coulomb_wave_FG_impl(const double eta, const double x,
     /* Recurse down with unnormalized F,F' values. */
     F_lam_F  = SMALL;
     Fp_lam_F = Fp_over_F_lam_F * F_lam_F;
-    coulomb_F_recur(lam_min, span, eta, x,
-                    F_lam_F, Fp_lam_F,
-		    &F_lam_min_unnorm, &Fp_lam_min_unnorm
-		    );
+    if(span != 0) {
+      coulomb_F_recur(lam_min, span, eta, x,
+                      F_lam_F, Fp_lam_F,
+		      &F_lam_min_unnorm, &Fp_lam_min_unnorm
+		      );
+    }
+    else {
+      F_lam_min_unnorm  =  F_lam_F;
+      Fp_lam_min_unnorm = Fp_lam_F;
+    }
 
     /* Determine F and G at lam_min. */
     if(lam_min == -0.5) {
@@ -922,6 +898,14 @@ gsl_sf_coulomb_wave_FG_impl(const double eta, const double x,
       coulomb_FG0_series(eta, x, &F_lam_min, &G_lam_min);
     }
     else if(lam_min == 0.5) {
+      /* This cannot happen. */
+      *F  = F_lam_F;
+      *Fp = Fp_lam_F;
+      *G  = G_lam_G;
+      *Gp = Gp_lam_G;
+      *exp_F = 0.0;
+      *exp_G = 0.0;
+      return GSL_ESANITY;
     }
     else {
       coulomb_FG_series(lam_min, eta, x, &F_lam_min, &G_lam_min);
@@ -972,6 +956,7 @@ gsl_sf_coulomb_wave_FG_impl(const double eta, const double x,
       stat_lam_G = stat_lam_F;
       F_lam_G = F_lam_F;
       G_lam_G = G_lam_F;
+      exp_lam_G = exp_lam_F;
     }
     else {
       stat_lam_G = coulomb_jwkb(lam_G, eta, x, &F_lam_G, &G_lam_G, &exp_lam_G);
