@@ -1,8 +1,16 @@
-* What is new in gsl-0.8:
+* What will be new in gsl-0.9:
 
-** The build process now uses the latest libtool and automake
+** There are new eigensystem routines for real symmetric and complex
+hermitian matrices.
 
-** The library should now compile with Microsoft Visual C++
+** The linear algebra directory now includes functions for computing
+symmetric tridiagonal decompositions
+
+* What was new in gsl-0.8:
+
+** The build process now uses the latest libtool and automake.
+
+** The library should now compile with Microsoft Visual C++.
 
 ** Portable versions of the isinf, isnan and finite functions are
 available as gsl_isinf(x), gsl_isnan(x) and gsl_finite(x).
@@ -10,7 +18,7 @@ available as gsl_isinf(x), gsl_isnan(x) and gsl_finite(x).
 ** The definitions of GSL_POSINF, GSL_NEGINF and GSL_NAN no longer
 cause divisions by zero during compilation.
 
-** The gsl_interp_obj has been renamed to gsl_interp
+** The gsl_interp_obj has been renamed to gsl_interp.
 
 ** The poly_eval and pow_int functions have been moved from the
 specfunc directory to the poly and sys directories.
@@ -64,7 +72,7 @@ three of these function pointers are NULL, then the traditioanl
 approach of using malloc(), memcpy(), and free() with the element size
 is used.
 
-* What is new in gsl-0.7:
+* What was new in gsl-0.7:
 
 ** Linux/PowerPC should now be well supported.
 
