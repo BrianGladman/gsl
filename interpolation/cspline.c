@@ -134,7 +134,11 @@ cspline_calc_natural (
   gsl_vector * diag = gsl_vector_alloc(sys_size);
   gsl_vector * offdiag = gsl_vector_alloc(sys_size);
 
-  gsl_vector solution_vec = { sys_size, 1, interp->c + 1, 0 };
+  gsl_vector solution_vec;
+  solution_vec.size   = sys_size;
+  solution_vec.stride = 1;
+  solution_vec.data   = interp->c + 1;
+  solution_vec.block  = 0;
 
   if (g == 0 || diag == 0 || offdiag == 0)
     {
@@ -208,7 +212,11 @@ cspline_calc_periodic (
     gsl_vector * g = gsl_vector_alloc(sys_size);
     gsl_vector * diag = gsl_vector_alloc(sys_size);
     gsl_vector * offdiag = gsl_vector_alloc(sys_size);
-    gsl_vector solution_vec = { sys_size, 1, interp->c + 1, 0 };
+    gsl_vector solution_vec;
+    solution_vec.size   = sys_size;
+    solution_vec.stride = 1;
+    solution_vec.data   = interp->c + 1;
+    solution_vec.block  = 0;
 
     if (g == 0 || diag == 0 || offdiag == 0) {
       status = GSL_ENOMEM;
