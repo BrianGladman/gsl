@@ -2,13 +2,13 @@
 
 The GSL hacker needs some stuff that the end users don't:
 
-* you must have a recent automake (1.3 or greater) from
+* you must have a recent automake (1.4p1 or greater) from
 ftp://sources.redhat.com/pub/automake/
 
 * you must have the latest autoconf from
 ftp://sources.redhat.com/pub/automake/
 
-* you must have a recent libtool (1.3 or greater) from
+* you must have a recent libtool (1.4 or greater) from
 ftp://ftp.gnu.org/gnu/libtool/
 
 * you must have a recent CVS (at least 1.9) from
