@@ -451,13 +451,13 @@ based on the following papers,
 
 @itemize @asis
 @item
-T. E. Hull and Thomas F. Fairgrieve and Ping Tak Peter Tang,
+T. E. Hull, Thomas F. Fairgrieve, Ping Tak Peter Tang,
 "Implementing Complex Elementary Functions Using Exception
 Handling", @cite{ACM Transactions on Mathematical Software}, Volume 20
 (1994), pp 215-244, Corrigenda, p553
 
 @item
-T. E. Hull and Thomas F. Fairgrieve and Ping Tak Peter Tang,
+T. E. Hull, Thomas F. Fairgrieve, Ping Tak Peter Tang,
 "Implementing the complex arcsin and arccosine functions using exception
 handling", @cite{ACM Transactions on Mathematical Software}, Volume 23
 (1997) pp 299-335

@@ -334,6 +334,178 @@ $ graph -T X -X x -Y y -y 0 20 -m 0 -S 2 -Ie data
 @center @image{fit-wlinear,4in}
 @end iftex
 
+The next program performs a quadratic fit @math{y = c_0 + c_1 x + c_2
+x^2} to a weighted dataset using the generalised linear fitting function
+@code{gsl_multifit_wlinear}.  The model matrix @math{X} for a quadratic
+fit is given by,
+
+@tex
+\beforedisplay
+$$
+X=\pmatrix{1&x_0&x_0^2\cr
+1&x_1&x_1^2\cr
+1&x_2&x_2^2\cr
+\dots&\dots&\dots\cr}
+$$
+\afterdisplay
+@end tex
+@ifinfo
+@example
+X = [ 1   , x_0  , x_0^2 ;
+      1   , x_1  , x_1^2 ;
+      1   , x_2  , x_2^2 ;
+      ... , ...  , ...   ]
+@end example
+@end ifinfo
+@noindent
+where the column of ones corresponds to the constant term @math{c_0}.
+The two remaining columns corresponds to the terms @math{c_1 x} and and
+@math{c_2 x^2}.
+
+The program reads @var{n} lines of data in the format (@var{x}, @var{y},
+@var{err}) where @var{err} is the error (standard deviation) in the
+value @var{y}.
+
+@example
+#include <stdio.h>
+#include <gsl/gsl_multifit.h>
+
+int
+main (int argc, char **argv)
+@{
+  int i, n;
+  double xi, yi, ei, chisq;
+  gsl_matrix *X, *cov;
+  gsl_vector *y, *w, *c;
+
+  if (argc != 2)
+    @{
+      fprintf(stderr,"usage: fit n < data\n");
+      exit (-1);
+    @}
+
+  n = atoi(argv[1]);
+
+  X = gsl_matrix_alloc (n, 3);
+  y = gsl_vector_alloc (n);
+  w = gsl_vector_alloc (n);
+
+  c = gsl_vector_alloc (3);
+  cov = gsl_matrix_alloc (3, 3);
+
+  for (i = 0; i < n ; i++)
+    @{
+      int count = fscanf(stdin, "%lg %lg %lg", &xi, &yi, &ei);
+
+      if (count != 3)
+        @{
+          fprintf(stderr, "error reading file\n");
+          exit(-1);
+        @}
+
+      printf("%g %g +/- %g\n", xi, yi, ei);
+      
+      gsl_matrix_set (X, i, 0, 1.0);
+      gsl_matrix_set (X, i, 1, xi);
+      gsl_matrix_set (X, i, 2, xi*xi);
+      
+      gsl_vector_set (y, i, yi);
+      gsl_vector_set (w, i, 1.0/(ei*ei));
+    @}
+
+  @{
+    gsl_multifit_linear_workspace * work = gsl_multifit_linear_alloc (n, 3);
+    gsl_multifit_wlinear (X, w, y, c, cov, &chisq, work);
+    gsl_multifit_linear_free (work);
+  @}
+
+#define C(i) (gsl_vector_get(c,(i)))
+#define COV(i,j) (gsl_matrix_get(cov,(i),(j)))
+
+  @{
+    printf("# best fit: Y = %g + %g X + %g X^2\n", C(0), C(1), C(2));
+
+    printf("# covariance matrix:\n");
+    printf("[ %+.5e, %+.5e, %+.5e  \n", COV(0,0), COV(0,1), COV(0,2));
+    printf("  %+.5e, %+.5e, %+.5e  \n", COV(1,0), COV(1,1), COV(1,2));
+    printf("  %+.5e, %+.5e, %+.5e ]\n", COV(2,0), COV(2,1), COV(2,2));
+    printf("# chisq = %g\n", chisq);
+  @}
+@}
+@end example
+@noindent
+A suitable set of data for fitting can be generated using the following
+program.  It outputs a set of points with gaussian errors from the curve
+@math{y = e^x} in the region @math{0 < x < 2}.
+
+@example
+#include <stdio.h>
+#include <math.h>
+#include <gsl/gsl_randist.h>
+
+int main (void)
+@{
+  double x;
+  const gsl_rng_type * T;
+  gsl_rng * r;
+  
+  gsl_rng_env_setup();
+  
+  T = gsl_rng_default;
+  r = gsl_rng_alloc(T);
+
+  for (x = 0.1 ; x < 2; x+= 0.1)
+    @{
+      double y0 = exp(x);
+      double err = 0.1*y0;
+
+      printf("%g %g %g\n", x, y0 + gsl_ran_gaussian(r, err), err);
+    @}
+@}
+@end example
+@noindent
+The data can be prepared by running the resulting executable program,
+
+@example
+$ ./generate > exp.dat
+$ more exp.dat
+0.1 0.97935 0.110517
+0.2 1.3359 0.12214
+0.3 1.52573 0.134986
+0.4 1.60318 0.149182
+0.5 1.81731 0.164872
+0.6 1.92475 0.182212
+....
+@end example
+@noindent
+To fit the data use the previous program, with the number of data points
+given as the first argument.  In this case there are 19 data points.
+
+@example
+$ ./fit 19 < exp.dat
+0.1 0.97935 +/- 0.110517
+0.2 1.3359 +/- 0.12214
+...
+# best fit: Y = 1.02318 + 0.956201 X + 0.876796 X^2
+# covariance matrix:
+[ +1.25612e-02, -3.64387e-02, +1.94389e-02  
+  -3.64387e-02, +1.42339e-01, -8.48761e-02  
+  +1.94389e-02, -8.48761e-02, +5.60243e-02 ]
+# chisq = 23.0987
+@end example
+@noindent
+The parameters of the quadratic fit match the coefficients of the
+expansion of @math{e^x}, taking the errors on the parameters into
+account.  The errors on the parameters are given by the square-root of
+the corresponding diagonal elements of the covariance matrix.  The
+chi-squared per degree of freedom is 1.4, indicating a reasonable fit to
+the data.
+
+@iftex
+@sp 1
+@center @image{fit-wlinear2,4in}
+@end iftex
+
 @node Fitting References and Further Reading
 @section References and Further Reading
 

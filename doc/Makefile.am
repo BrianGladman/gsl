@@ -13,7 +13,7 @@ noinst_DATA = siman-test.eps siman-energy.eps 12-cities.eps \
 	roots-bisection.eps roots-false-position.eps \
 	roots-newtons-method.eps roots-secant-method.eps \
 	histogram.eps histogram2d.eps min-interval.eps \
-        fit-wlinear.eps fit-exp.eps ntuple.eps qrng.eps \
+        fit-wlinear.eps fit-wlinear2.eps fit-exp.eps ntuple.eps qrng.eps \
         cheb.eps vdp.eps interp.eps \
 	rand-beta.tex rand-binomial.tex rand-cauchy.tex rand-chisq.tex \
 	rand-erlang.tex rand-exponential.tex rand-fdist.tex rand-flat.tex \
