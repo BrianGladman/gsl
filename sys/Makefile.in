@@ -73,6 +73,8 @@ full_top_srcdir = @full_top_srcdir@
 noinst_LIBRARIES = libgslsys.a 
 
 libgslsys_a_SOURCES = minmax.c prec.c
+
+INCLUDES = -I$(srcdir)/.. 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
 CONFIG_CLEAN_FILES = 
