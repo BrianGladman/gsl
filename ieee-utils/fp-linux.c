@@ -2,7 +2,7 @@
 #include <fpu_control.h>
 #include <gsl_ieee_utils.h>
 
-void
+int
 gsl_ieee_set_mode (int precision, int rounding, int exception_mask)
 {
   int mode = 0 ;
