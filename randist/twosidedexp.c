@@ -27,3 +27,10 @@ gsl_ran_two_sided_exponential (const gsl_rng * r, double mu)
       return -mu * log (u);
     }
 }
+
+double
+gsl_ran_two_sided_exponential_pdf (double x, double mu)
+{
+  double p = 0.5 * exp (-mu * fabs (x));
+  return p;
+}

@@ -3,28 +3,35 @@
 #include <gsl_randist.h>
 #include <gsl_sf.h>
 
+/* The beta distribution has the form
+
+   p(x) dx = (Gamma(a + b)/(Gamma(a) Gamma(b))) x^(a-1) (1-x)^(b-1) dx
+
+   The method used here is the one described in Knuth */
+
 double
 gsl_ran_beta (const gsl_rng * r, double a, double b)
 {
-  /* The beta distribution has the form
+  double x1 = gsl_ran_gamma (r, a);
+  double x2 = gsl_ran_gamma (r, b);
 
-     p(x) dx = (Gamma(a + b)/(Gamma(a) Gamma(b))) x^(a-1) (1-x)^(b-1) dx
-
-     The method used here is the one described in Knuth */
-
-  double x1 = gsl_ran_gamma (r, a) ;
-  double x2 = gsl_ran_gamma (r, b) ;
-
-  return x1/(x1 + x2) ;
+  return x1 / (x1 + x2);
 }
 
 double
 gsl_ran_beta_pdf (double x, double a, double b)
 {
-  double gab = gsl_sf_lngamma (a + b) ;
-  double ga = gsl_sf_lngamma (a) ;
-  double gb = gsl_sf_lngamma (b) ;
-  
-  double p = exp(gab - ga - gb) * pow(x, a - 1) * pow(1 - x, b - 1) ;
-  return p ;
+  if (x < 0 || x > 1)
+    {
+      return 0 ;
+    }
+  else 
+    {
+      double gab = gsl_sf_lngamma (a + b);
+      double ga = gsl_sf_lngamma (a);
+      double gb = gsl_sf_lngamma (b);
+      
+      double p = exp (gab - ga - gb) * pow (x, a - 1) * pow (1 - x, b - 1);
+      return p;
+    }
 }

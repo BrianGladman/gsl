@@ -2,7 +2,12 @@
 #include <gsl_rng.h>
 #include <gsl_randist.h>
 
-/* Lognormal random numbers are the exponentials of gaussian random numbers */
+/* The lognormal distribution has the form 
+
+   p(x) dx = 1/(x * sqrt(2 pi)) exp(-ln(x)^2/2) 
+
+   for x > 0. Lognormal random numbers are the exponentials of
+   gaussian random numbers */
 
 double
 gsl_ran_lognormal (const gsl_rng * r)
@@ -21,9 +26,24 @@ gsl_ran_lognormal (const gsl_rng * r)
     }
   while (r2 > 1.0 || r2 == 0);
 
-  normal = u * sqrt (-2.0 * log (r2) / r2) ;
+  normal = u * sqrt (-2.0 * log (r2) / r2);
 
-  z = exp(normal) ;
+  z = exp (normal);
 
-  return z ;
+  return z;
+}
+
+double
+gsl_ran_lognormal_pdf (double x)
+{
+  if (x <= 0)
+    {
+      return 0 ;
+    }
+  else
+    {
+      double u = log (x);
+      double p = 1 / (x * sqrt (2 * M_PI)) * exp (-u * u / 2);
+      return p;
+    }
 }

@@ -1,5 +1,6 @@
 #include <math.h>
 #include <gsl_math.h>
+#include <gsl_sf.h>
 #include <gsl_rng.h>
 #include <gsl_randist.h>
 
@@ -116,4 +117,12 @@ gamma_frac (const gsl_rng * r, double a)
   while (gsl_rng_uniform (r) >= q);
 
   return x;
+}
+
+double
+gsl_ran_gamma_pdf (double x, double a)
+{
+  double lngamma = gsl_sf_lngamma (a);
+  double p = exp ((a - 1) * log (x) - x - lngamma);
+  return p;
 }

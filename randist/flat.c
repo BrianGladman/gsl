@@ -2,6 +2,13 @@
 #include <gsl_rng.h>
 #include <gsl_randist.h>
 
+/* This is the uniform distribution in the range [a, b)
+
+   p(x)dx = 1/(b-a)   if  a <= x < b
+   .....  = 0         otherwise 
+
+ */
+
 double
 gsl_ran_flat (const gsl_rng * r, double a, double b)
 {
@@ -10,4 +17,17 @@ gsl_ran_flat (const gsl_rng * r, double a, double b)
   /* A uniform distribution over [a,b] */
 
   return a * (1 - u) + b * u;
+}
+
+double
+gsl_ran_flat_pdf (double x, double a, double b)
+{
+  if (x < b && x >= a)
+    {
+      return 1 / (b - a);
+    }
+  else
+    {
+      return 0;
+    }
 }

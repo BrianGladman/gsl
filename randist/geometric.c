@@ -14,16 +14,23 @@ gsl_ran_geometric (const gsl_rng * r, double p)
 {
   double u = gsl_rng_uniform_pos (r);
 
-  unsigned int n ;
+  unsigned int n;
 
   if (p == 1)
     {
-      n = 1 ;
+      n = 1;
     }
-  else 
+  else
     {
-      n = log(u)/log(1-p) + 1 ;
+      n = log (u) / log (1 - p) + 1;
     }
 
   return n;
+}
+
+double
+gsl_ran_geometric_pdf (unsigned int n, double p)
+{
+  double P = p * pow (1 - p, n - 1.0);
+  return P;
 }

@@ -1,3 +1,6 @@
+
+
+
 #include <math.h>
 #include <gsl_rng.h>
 #include <gsl_randist.h>
@@ -25,8 +28,8 @@ gsl_ran_gaussian (const gsl_rng * r)
 double
 gsl_ran_gaussian_pdf (double x)
 {
-  double p = (1 / sqrt(2*M_PI)) * exp(-x*x/2) ;
-  return p ;
+  double p = (1 / sqrt (2 * M_PI)) * exp (-x * x / 2);
+  return p;
 }
 
 void
@@ -46,8 +49,15 @@ gsl_ran_bivariate_gaussian (const gsl_rng * r, double *x, double *y)
     }
   while (r2 > 1.0 || r2 == 0);
 
-  scale = sqrt (-2.0 * log (r2) / r2) ;
+  scale = sqrt (-2.0 * log (r2) / r2);
 
-  *x = u * scale ; 
-  *y = v * scale ;
+  *x = u * scale;
+  *y = v * scale;
+}
+
+double
+gsl_ran_bivariate_gaussian_pdf (double x, double y)
+{
+  double p = (1 / (2 * M_PI)) * exp (-(x * x + y * y) / 2);
+  return p;
 }

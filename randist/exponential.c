@@ -2,6 +2,12 @@
 #include <gsl_rng.h>
 #include <gsl_randist.h>
 
+/* The exponential distribution has the form
+
+   p(x) dx = exp(-x/mu) dx/mu
+
+   for x = 0 ... +infty */
+
 double
 gsl_ran_exponential (const gsl_rng * r, double mu)
 {
@@ -13,7 +19,14 @@ gsl_ran_exponential (const gsl_rng * r, double mu)
 double
 gsl_ran_exponential_pdf (double x, double mu)
 {
-  double p = mu * exp(-mu * x) ;
-
-  return p ;
+  if (x < 0)
+    {
+      return 0 ;
+    }
+  else
+    {
+      double p = exp (-x/mu)/mu;
+      
+      return p;
+    }
 }

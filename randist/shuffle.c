@@ -1,3 +1,4 @@
+
 /* Randomly permute (shuffle) N indices
 
    Supply an integer array x[N], and on return, it will be filled with
@@ -5,8 +6,8 @@
    SemiNumerical Algorithms, v2, p139 */
 
 #include <stdlib.h>
-#include <stdio.h>		/* defines NULL */
-#include <math.h>		/* defines floor() */
+#include <stdio.h>	/* defines NULL */
+#include <math.h>	/* defines floor() */
 #include <gsl_rng.h>
 #include "gsl_randist.h"
 

@@ -1,8 +1,14 @@
 #include <config.h>
-#include <stdlib.h>
 #include <math.h>
+#include <gsl_sf.h>
 #include <gsl_rng.h>
 #include <gsl_randist.h>
+
+/* The poisson distribution has the form
+
+   p(n) = (mu^n / n!) exp(-mu) 
+
+   for n = 0, 1, 2, ... . The method used here is the one from Knuth. */
 
 unsigned int
 gsl_ran_poisson (const gsl_rng * r, double mu)
@@ -11,34 +17,34 @@ gsl_ran_poisson (const gsl_rng * r, double mu)
   double prod = 1.0;
   unsigned int n = 0;
 
-  while (mu > 10) 
+  while (mu > 10)
     {
-      unsigned int m = mu * (7.0 / 8.0) ;
-      
-      double X = gsl_ran_gamma_int (r, m) ;
-      
+      unsigned int m = mu * (7.0 / 8.0);
+
+      double X = gsl_ran_gamma_int (r, m);
+
       if (X >= mu)
 	{
-	  return gsl_ran_binomial (r, mu / X, m - 1) ;
+	  return gsl_ran_binomial (r, mu / X, m - 1);
 	}
       else
 	{
-	  n += m ;
-	  mu -= X ;
+	  n += m;
+	  mu -= X;
 	}
     }
 
   /* This following method works well when mu is small */
-  
-  emu = exp (-mu);		
-  
+
+  emu = exp (-mu);
+
   do
     {
       prod *= gsl_rng_uniform (r);
       n++;
     }
-  while (prod > emu) ;
-  
+  while (prod > emu);
+
   return n - 1;
 
 }
@@ -55,4 +61,13 @@ gsl_ran_poisson_array (const gsl_rng * r, size_t n, unsigned int array[],
     }
 
   return;
+}
+
+double
+gsl_ran_poisson_pdf (unsigned int n, double mu)
+{
+  /* FIXME: ask Jerry about making the fact functions take unsigned ints */
+  double lf = gsl_sf_lnfact ((int)n); 
+  double p = exp (log (mu) * n - lf - mu);
+  return p;
 }
