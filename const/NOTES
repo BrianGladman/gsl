@@ -1,0 +1,92 @@
+* Some header files for physical constants (speed of light, etc),
+using data from the Particle Data Book. (e.g. gsl_physics.h, could
+also have gsl_chemistry.h, gsl_astro.h, etc). See "astroconst" for
+ideas, http://apps.freshmeat.net/homepage/953508686/
+
+----------------------------------------------------------------------
+
+Plan is to make a master file containing the values of the constants
+and their definitions (units, description, reference, url etc).
+
+Use a script to produce a header file of the desired values. Use "GNU
+Units" to convert automatically between unit schemes (MKS, CGS, etc).
+
+e.g. converting joules to ergs
+
+$ units -s J ergs 
+        * 10000000
+        / 1e-07
+
+use definitions like
+
+/* Speed of light, 2.99...e8 m s^-1 */
+
+#define GSL_CONST_SPEED_OF_LIGHT   2.99...e8  /* m s^-1 */
+#define GSL_CONST_SPEED_OF_LIGHT_MKS ... (use MKS as default or make explicit??)
+#define GSL_CONST_SPEED_OF_LIGHT_CGS ...
+
+use the descriptions to add a description in the header.
+
+TODO:
+Do we want to make MKS the default or explicitly require units in macro
+names?
+
+Do we want to make error values available???
+
+Use global constants (better for debugging, but end up being defined
+in different translation units) or macros (simpler)?
+
+Divide up by subject/unit definitions
+
+  #include <gsl_const_atomic.h>
+  #include <gsl_const_physics_cgs.h>
+
+etc
+
+----------------------------------------------------------------------
+
+From: "Barry N. Taylor" <barry.taylor@nist.gov>
+To: bjg@network-theory.co.uk
+Cc: mohr@nist.gov, robert.dragoset@nist.gov
+Subject: Re: formats for fundamental constants
+Date: Tue, 11 Apr 2000 10:25:45 -0400
+
+Dear Brian,
+
+We have this on our agenda of things to do in the future, but it may 
+be a few months before we get to it.
+
+Barry Taylor.
+
+>________________________
+>Through www@physlab.nist.gov
+>________________________
+>
+>Hello,
+>I have a suggestion for the physical constants website.
+>
+>If the complete dataset could be made available in an ascii
+>spreadsheet format it would facilitate conversions into other
+>specialized formats.
+>
+>e.g., I would like to make a C header file containing the constant
+>values to include in the GNU Scientific Library, currently under
+>development.
+>
+>best regards,
+>
+>Brian Gough
+
+
+------------------------------------
+Barry N. Taylor
+NIST, Bldg. 225, Rm. B161
+100 Bureau Drive, Stop 8401
+Gaithersburg, MD 20899-8401
+USA
+Tel.: 301-975-4220
+Fax:  301-975-4578
+Email: barry.taylor@nist.gov
+Web: http://physics.nist.gov/cuu
+------------------------------------
+
