@@ -650,7 +650,7 @@ main (void)
 
   {
     FILE *f = fopen ("test.txt", "w");
-    gsl_histogram2d_fprintf (f, h, "%.19g", "%.19g");
+    gsl_histogram2d_fprintf (f, h, "%.19e", "%.19e");
     fclose (f);
   }
 
