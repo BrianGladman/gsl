@@ -84,18 +84,14 @@ noinst_HEADERS = mean_source.c variance_source.c absdev_source.c \
  minmax_source.c ttest_source.c sort_source.c median_source.c \
  percentiles_source.c source.h
 
-check_PROGRAMS = test test_int test_nist
-TESTS = test test_int test_nist
+check_PROGRAMS = test test_nist
+TESTS = test test_nist
 
-test_SOURCES = test.c test.h
+test_SOURCES = test.c
 test_LDADD = libgslstatistics.a ../err/libgsltest.a
 test_DEPENDENCIES = libgslstatistics.a
 
-test_int_SOURCES = test_int.c test.h
-test_int_LDADD = libgslstatistics.a ../err/libgsltest.a
-test_int_DEPENDENCIES = libgslstatistics.a
-
-test_nist_SOURCES = test_nist.c test.h
+test_nist_SOURCES = test_nist.c
 test_nist_LDADD = libgslstatistics.a ../err/libgsltest.a
 test_nist_DEPENDENCIES = libgslstatistics.a
 
@@ -119,8 +115,6 @@ percentiles.o
 AR = ar
 test_OBJECTS =  test.o
 test_LDFLAGS = 
-test_int_OBJECTS =  test_int.o
-test_int_LDFLAGS = 
 test_nist_OBJECTS =  test_nist.o
 test_nist_LDFLAGS = 
 CFLAGS = @CFLAGS@
@@ -137,10 +131,10 @@ TAR = tar
 GZIP = --best
 DEP_FILES =  .deps/absdev.P .deps/kurtosis.P .deps/lag1.P .deps/mean.P \
 .deps/median.P .deps/minmax.P .deps/p_variance.P .deps/percentiles.P \
-.deps/skew.P .deps/sort.P .deps/test.P .deps/test_int.P \
-.deps/test_nist.P .deps/ttest.P .deps/variance.P
-SOURCES = $(libgslstatistics_a_SOURCES) $(test_SOURCES) $(test_int_SOURCES) $(test_nist_SOURCES)
-OBJECTS = $(libgslstatistics_a_OBJECTS) $(test_OBJECTS) $(test_int_OBJECTS) $(test_nist_OBJECTS)
+.deps/skew.P .deps/sort.P .deps/test.P .deps/test_nist.P .deps/ttest.P \
+.deps/variance.P
+SOURCES = $(libgslstatistics_a_SOURCES) $(test_SOURCES) $(test_nist_SOURCES)
+OBJECTS = $(libgslstatistics_a_OBJECTS) $(test_OBJECTS) $(test_nist_OBJECTS)
 
 all: Makefile $(LIBRARIES) $(HEADERS)
 
@@ -196,10 +190,6 @@ maintainer-clean-checkPROGRAMS:
 test: $(test_OBJECTS) $(test_DEPENDENCIES)
 	@rm -f test
 	$(LINK) $(test_LDFLAGS) $(test_OBJECTS) $(test_LDADD) $(LIBS)
-
-test_int: $(test_int_OBJECTS) $(test_int_DEPENDENCIES)
-	@rm -f test_int
-	$(LINK) $(test_int_LDFLAGS) $(test_int_OBJECTS) $(test_int_LDADD) $(LIBS)
 
 test_nist: $(test_nist_OBJECTS) $(test_nist_DEPENDENCIES)
 	@rm -f test_nist

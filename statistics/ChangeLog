@@ -1,5 +1,9 @@
 Wed Aug  5 12:34:58 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
+	* test.h: removed test.h, not needed
+
+	* test.c: added tests for all types
+
 	* converted functions to use 'long double' for internal calculations,
 	for extra range.
 
