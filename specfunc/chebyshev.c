@@ -352,12 +352,15 @@ int gsl_sf_cheb_eval_integ_e(gsl_sf_cheb_series * cs, double x, gsl_sf_result * 
   return status;
 }
 
+
 /*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*/
 
 void gsl_sf_cheb_free(gsl_sf_cheb_series * cs)
 {
   if(cs != 0) {
     if(cs->c != 0) free(cs->c);
+    if(cs->cp != 0) free(cs->cp);
+    if(cs->ci != 0) free(cs->ci);
     free(cs);
   }
 }

@@ -7,7 +7,6 @@
 struct gsl_sf_result_struct {
   double val;
   double err;
-  int    _reserved;
 };
 typedef struct gsl_sf_result_struct gsl_sf_result;
 
@@ -18,7 +17,6 @@ struct gsl_sf_result_e10_struct {
   double val;
   double err;
   int    e10;
-  int    _reserved;
 };
 typedef struct gsl_sf_result_e10_struct gsl_sf_result_e10;
 

@@ -1180,7 +1180,7 @@ hyperg_U_bge1(const double a, const double b, const double x,
       lnm.err = 2.0 * GSL_DBL_EPSILON * (fabs(lm_0) + fabs(scale_count * lnscale));
       y.val  = GSL_SQRT_DBL_MIN*(U0.val/Ua);
       y.err  = GSL_SQRT_DBL_MIN*(U0.err/fabs(Ua));
-      y.err += 2.0 * GSL_DBL_EPSILON * (fabs(a0-a) + CF1_count + 1.0) * fabs(result->val);
+      y.err += 2.0 * GSL_DBL_EPSILON * (fabs(a0-a) + CF1_count + 1.0) * fabs(y.val);
       stat_e = gsl_sf_exp_mult_err_e10_impl(lnm.val, lnm.err, y.val, y.err, result);
       return GSL_ERROR_SELECT_3(stat_e, stat_U0, stat_CF1);
     }
@@ -1259,7 +1259,7 @@ hyperg_U_bge1(const double a, const double b, const double x,
       lnm.val = lm_for + (scale_count_for - scale_count_bck)*lnscale;
       lnm.err = 2.0 * GSL_DBL_EPSILON * (fabs(lm_for) + fabs(scale_count_for - scale_count_bck)*fabs(lnscale));
       y.val = GSL_SQRT_DBL_MIN*Ua1_for/Ua1_bck;
-      y.err = 2.0 * GSL_DBL_EPSILON * (fabs(a-a0) + CF1_count + 1.0) * fabs(result->val);
+      y.err = 2.0 * GSL_DBL_EPSILON * (fabs(a-a0) + CF1_count + 1.0) * fabs(y.val);
       stat_e = gsl_sf_exp_mult_err_e10_impl(lnm.val, lnm.err, y.val, y.err, result);
       return GSL_ERROR_SELECT_3(stat_e, stat_bck, stat_for);
     }
