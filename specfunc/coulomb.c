@@ -202,10 +202,10 @@ static
 int
 coulomb_G_series(const double lam, const double eta, const double x, double *result)
 {
-  const int max_iter = 500;
+  const int max_iter = 800;
   double Clam = CLeta(lam, eta);
-  double vmm2 = 1.0/(2.0*lam+1.0) / Clam;  /* v_0 */
-  double vmm1 = -x*eta/lam * vmm2;         /* v_1 */
+  double vmm2 = 1.0;                  /* v_0 */
+  double vmm1 = -x*eta/lam * vmm2;    /* v_1 */
   double vm;
   double sum  = vmm2 + vmm1;
   int m = 2;
@@ -213,13 +213,13 @@ coulomb_G_series(const double lam, const double eta, const double x, double *res
   while(m < max_iter) {
     vm = x*(2.0*eta*vmm1 - x*vmm2)/(m*(m-1-2.0*lam));
     sum += vm;
-    if(fabs(vm/sum) < 100.0*GSL_MACH_EPS) break;
+    if(fabs(vm/sum) < 40.0*GSL_MACH_EPS) break;
     vmm2 = vmm1;
     vmm1 = vm;
     m++;
   }
 
-  *result = pow(x, -lam) * sum / Clam;
+  *result = pow(x, -lam) * sum /((2.0*lam+1.0)*Clam);
   if(m == max_iter)
     return GSL_EMAXITER;
   else
@@ -228,17 +228,21 @@ coulomb_G_series(const double lam, const double eta, const double x, double *res
 
 
 /* Evaluate the Frobenius series for G_0(eta,x)
+ * See [Bardin et al., CPC 3, 73 (1972), (14)-(17)];
+ * note the misprint in (17): nu_0=1 is correct, not nu_0=0.
  */
 static
 int
 coulomb_G0_series(const double eta, const double x, double * result)
 {
-  const int max_iter = 500;
+  const int max_iter = 800;
+  const double x2  = x*x;
+  const double tex = 2.0*eta*x;
   double C0 = CLeta(0.0, eta);
   double r1pie;
   int psi_stat = gsl_sf_psi_1piy_impl(eta, &r1pie);
-  double nu_mm2 = 0.0;                                 /* nu_0 */
-  double nu_mm1 = 2.0*eta*x*(2.0*M_EULER-1.0+r1pie);   /* nu_1 */
+  double nu_mm2 = 1.0;                              /* nu_0 */
+  double nu_mm1 = tex*(2.0*M_EULER-1.0+r1pie);      /* nu_1 */
   double nu_m;
   double nusum  = nu_mm2 + nu_mm1;
   double u_mm2 = 0.0;  /* u_0 */
@@ -248,11 +252,12 @@ coulomb_G0_series(const double eta, const double x, double * result)
   int m = 2;
   
   while(m < max_iter) {
-    u_m  = (2.0*eta*x*u_mm1 - x*x*u_mm2)/(m*(m-1.0));
-    nu_m = (2.0*eta*x*nu_mm1 - x*x*nu_mm2 - 2.0*eta*(2.0*m-1.0)*u_m)/(m*(m-1.0));
+    double m_mm1 = m*(m-1.0);
+    u_m  = (tex*u_mm1  - x2*u_mm2)/m_mm1;
+    nu_m = (tex*nu_mm1 - x2*nu_mm2 - 2.0*eta*(2.0*m-1.0)*u_m)/m_mm1;
     nusum += nu_m;
     usum  += u_m;
-    if(fabs(nu_m/nusum) + fabs(u_m/usum) < 100.0*GSL_MACH_EPS) break;
+    if(fabs(nu_m/nusum) + fabs(u_m/usum) < 40.0*GSL_MACH_EPS) break;
     nu_mm2 = nu_mm1;
     nu_mm1 = nu_m;
     u_mm2 = u_mm1;
@@ -261,7 +266,10 @@ coulomb_G0_series(const double eta, const double x, double * result)
   }
   
   *result = (nusum + 2.0*eta*usum * log(2.0*x)) / C0;
-  return psi_stat;
+  if(m == max_iter)
+    return GSL_EMAXITER;
+  else
+    return psi_stat;
 }
 
 
@@ -672,7 +680,6 @@ gsl_sf_coulomb_wave_FG_impl(const double eta, const double x,
     *G  = 0.0; /* FIXME: should be Inf */
     *Gp = 0.0; /* FIXME: should be Inf */
     if(lam_F == 0.0){
-      *F  = 0.0;
       *Fp = C0;
     }
     if(lam_G == 0.0) {
@@ -681,14 +688,14 @@ gsl_sf_coulomb_wave_FG_impl(const double eta, const double x,
     return GSL_EDOM;
     /* After all, since we are asking for G, this is a domain error... */
   }
-  else if(x < 1.0 && fabs(eta*x) < 5.0) {
+  else if(x < 1.2 && fabs(eta*x) < 10.0) {
     /* Reduce to a small lambda value and use the series
      * representations for F and G.
      */
     const double SMALL = 1.0e-100;
-    const int N    = (int)(lam_F + 0.5);
+    const int N    = (int)(lam_F + 0.5 - 2.0*GSL_MACH_EPS);
     const int span = locMax(k_lam_G, N);
-    const double lam_min = lam_F - N;    /* -1/2 <= lam_min <= 1/2 */
+    const double lam_min = lam_F - N;    /* -1/2 < lam_min <= 1/2 */
     const double C_lam_min = CLeta(lam_min, eta);
     const double pow_x = pow(x, lam_min);
     double F_lam_F, Fp_lam_F;
@@ -998,4 +1005,31 @@ gsl_sf_coulomb_wave_FGp_array_e(double lam_min, int kmax,
   }
   return status;
   */
+}
+
+
+void test_coulomb(void)
+{
+  double lam_F = 0.0;
+  double eta = 8.0;
+  double x = 1.05;
+  double F_lam_F, G_lam_F, exp_lam_F;
+  double exp_50, exp_50p1;
+  double F_50, F_50p1;
+  double G_50, G_50p1;
+  double Fp_50;
+  double Fp_lam_F;
+
+  coulomb_jwkb(lam_F, eta, x, &F_lam_F, &G_lam_F, &exp_lam_F);
+  
+  lam_F = 50.0;
+  coulomb_jwkb(lam_F,     eta, x, &F_50,   &G_50, &exp_50);
+  coulomb_jwkb(lam_F+1.0, eta, x, &F_50p1, &G_50p1, &exp_50p1);
+  
+  Fp_50 = ((lam_F+1.0)*(lam_F+1.0)/x+eta)*F_50-sqrt((lam_F+1.0)*(lam_F+1.0)+eta*eta)*F_50p1;
+  Fp_50 /= (lam_F+1.0);
+
+  coulomb_F_recur(0.0, 50, eta, x, F_50, Fp_50, &F_lam_F, &Fp_lam_F);
+  
+  exit(0);
 }

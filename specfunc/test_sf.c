@@ -518,6 +518,33 @@ int check_coulomb(void)
 
   lam_F = 0.0;
   k_G = 0;
+  eta = 1.0;
+  x = 0.5;
+  gsl_sf_coulomb_wave_FG_impl(eta, x, lam_F, k_G, F, Fp, G, Gp, &Fe, &Ge);
+  s = 0;
+  s += ( frac_diff(  F[0],  0.08315404535022023302  ) > 1.e-10 );
+  s += ( frac_diff( Fp[0],  0.22693874616222787568  ) > 1.e-10 );
+  s += ( frac_diff(  G[0],  3.1060069279548875140   ) > 1.e-10 );
+  s += ( frac_diff( Gp[0], -3.549156038719924236    ) > 1.e-10 );
+  gsl_test(s, "  gsl_sf_coulomb_wave_FG_impl(1.0, 0.5, lam_F=0, lam_G=0)");
+  PRINT(0);
+  status += s;
+
+  lam_F = 0.5;
+  k_G = 0;
+  eta = 1.0;
+  x = 0.5;
+  gsl_sf_coulomb_wave_FG_impl(eta, x, lam_F, k_G, F, Fp, G, Gp, &Fe, &Ge);
+  s = 0;
+  s += ( frac_diff(  F[0],  0.04049078073829290935 ) > 1.e-10 );
+  s += ( frac_diff( Fp[0],  0.14194939168094778795 ) > 1.e-10 );
+  s += ( frac_diff(  G[0],  4.720553853049677897   ) > 1.e-10 );
+  s += ( frac_diff( Gp[0], -8.148033852319180005   ) > 1.e-10 );
+  gsl_test(s, "  gsl_sf_coulomb_wave_FG_impl(1.0, 0.5, lam_F=0.5, lam_G=0.5)");
+  status += s;
+
+  lam_F = 0.0;
+  k_G = 0;
   eta = 8.0;
   x = 1.05;
   gsl_sf_coulomb_wave_FG_impl(eta, x, lam_F, k_G, F, Fp, G, Gp, &Fe, &Ge);
@@ -527,6 +554,20 @@ int check_coulomb(void)
   s += ( frac_diff(  G[0],  1.333127992006686320e+07 ) > 1.e-6 );
   s += ( frac_diff( Gp[0], -4.715914530842402330e+07 ) > 1.e-6 );
   gsl_test(s, "  gsl_sf_coulomb_wave_FG_impl(8.0, 1.05, lam_F=0, lam_G=0)");
+  PRINT(0);
+  status += s;
+
+  lam_F = 0.1;
+  k_G = 0;
+  eta = 8.0;
+  x = 1.05;
+  gsl_sf_coulomb_wave_FG_impl(eta, x, lam_F, k_G, F, Fp, G, Gp, &Fe, &Ge);
+  s = 0;
+  s += ( frac_diff(  F[0],  9.611416736061987761e-09  ) > 1.e-10 );
+  s += ( frac_diff( Fp[0],  3.909628126126824140e-08  ) > 1.e-10 );
+  s += ( frac_diff(  G[0],  1.3659284642192625811e+07 ) > 1.e-6 );
+  s += ( frac_diff( Gp[0], -4.848117385783386850e+07  ) > 1.e-6 );
+  gsl_test(s, "  gsl_sf_coulomb_wave_FG_impl(8.0, 1.05, lam_F=0.1, lam_G=0.1)");
   PRINT(0);
   status += s;
 
@@ -1596,6 +1637,8 @@ int check_zeta(void)
 
 int main(int argc, char * argv[])
 {
+/* test_coulomb(); */
+
   gsl_test(check_airy(),       "Airy Functions");
   gsl_test(check_bessel(),     "Bessel Functions");
   gsl_test(check_cheb(),       "Chebyshev Evaluation");
