@@ -510,5 +510,5 @@ double gsl_sf_expint_Ei(const double x)
 
 double gsl_sf_expint_Ei_scaled(const double x)
 {
-  EVAL_RESULT(gsl_sf_expint_Ei_e(x, &result));
+  EVAL_RESULT(gsl_sf_expint_Ei_scaled_e(x, &result));
 }

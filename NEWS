@@ -1,5 +1,8 @@
 * What will be new in gsl-1.6:
 
+** Fixed the function gsl_sf_expint_scaled to call
+gsl_sf_expint_scaled_e instead of gsl_sf_expint_scaled_e.
+
 ** The functions gsl_cdf_beta_P and gsl_cdf_beta_Q now return
 consistent results of 0 or 1 for out of range values, x<0 and x>1,
 rather than 0 for left and right tails simultaneously.
