@@ -1,3 +1,8 @@
+2004-05-30  Brian Gough  <bjg@network-theory.co.uk>
+
+	* test.c (test_LU_solve): increase test tolerance to accommodate
+	gcc-3.3.3 w/ bounds checking
+
 2004-05-26  Brian Gough  <bjg@network-theory.co.uk>
 
 	* householder.c (gsl_linalg_householder_hm):

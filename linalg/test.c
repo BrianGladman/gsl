@@ -500,7 +500,7 @@ int test_LU_solve(void)
   gsl_test(f, "  LU_solve hilbert(3)");
   s += f;
 
-  f = test_LU_solve_dim(hilb4, hilb4_solution, 1024.0 * GSL_DBL_EPSILON);
+  f = test_LU_solve_dim(hilb4, hilb4_solution, 2048.0 * GSL_DBL_EPSILON);
   gsl_test(f, "  LU_solve hilbert(4)");
   s += f;
 
