@@ -512,7 +512,7 @@ inline int gsl_sf_sincos_e(const double theta, double * s, double * c)
 */
 
 int
-gsl_sf_polar_to_rect_e(const double r, const double theta,
+gsl_sf_polar_to_rect(const double r, const double theta,
                           gsl_sf_result * x, gsl_sf_result * y)
 {
   double t   = theta;
@@ -530,7 +530,7 @@ gsl_sf_polar_to_rect_e(const double r, const double theta,
 
 
 int
-gsl_sf_rect_to_polar_e(const double x, const double y,
+gsl_sf_rect_to_polar(const double x, const double y,
                           gsl_sf_result * r, gsl_sf_result * theta)
 {
   int stat_h = gsl_sf_hypot_e(x, y, r);

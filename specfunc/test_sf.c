@@ -1189,12 +1189,12 @@ int test_trig(void)
   TEST_SF(s,  gsl_sf_lncosh_e, (5.0, &r),   4.306898218339271555, TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s,  gsl_sf_lncosh_e, (100.0, &r), 99.30685281944005469, TEST_TOL0, GSL_SUCCESS);
 
-  TEST_SF_2(s, gsl_sf_polar_to_rect_e, (10.0, M_PI/6.0, &r1, &r2),
+  TEST_SF_2(s, gsl_sf_polar_to_rect, (10.0, M_PI/6.0, &r1, &r2),
             (10.0 * sqrt(3) / 2.0), TEST_TOL0,
 	    (10.0 * 0.5), TEST_TOL0,
             GSL_SUCCESS);
 
-  TEST_SF_2(s, gsl_sf_polar_to_rect_e, (10.0, -2.0/3.0*M_PI, &r1, &r2),
+  TEST_SF_2(s, gsl_sf_polar_to_rect, (10.0, -2.0/3.0*M_PI, &r1, &r2),
             (10.0 * (-0.5)), TEST_TOL1,
 	    (10.0 * (-sqrt(3.0)/2.0)), TEST_TOL1,
             GSL_SUCCESS);
