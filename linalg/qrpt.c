@@ -17,8 +17,6 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-/* Author:  G. Jungman */
-
 #include <config.h>
 #include <stdlib.h>
 #include <string.h>
@@ -39,6 +37,9 @@
  *   A P = Q R
  *
  * where Q is orthogonal (M x M) and R is upper triangular (M x N).
+ * When A is rank deficient, r = rank(A) < n, then the permutation is
+ * used to ensure that the lower n - rrows of R are zero and the first
+ * r columns of Q form an orthonormal basis for A.
  *
  * Q is stored as a packed set of Householder transformations in the
  * strict lower triangular part of the input matrix.
@@ -60,7 +61,10 @@
  *
  *       v_i = [1, m(i+1,i), m(i+2,i), ... , m(M,i)]
  *
- * This storage scheme is the same as in LAPACK.  */
+ * This storage scheme is the same as in LAPACK.  See LAPACK's
+ * dgeqpf.f for details.
+ * 
+ */
 
 int
 gsl_linalg_QRPT_decomp (gsl_matrix * A, gsl_vector * tau, gsl_permutation * p, int *signum)
@@ -106,7 +110,7 @@ gsl_linalg_QRPT_decomp (gsl_matrix * A, gsl_vector * tau, gsl_permutation * p, i
 	    {
 	      double x = gsl_vector_get (norm, j);
 
-	      if (x < max_norm)
+	      if (x > max_norm)
 		{
 		  max_norm = x;
 		  kmax = j;
@@ -117,7 +121,8 @@ gsl_linalg_QRPT_decomp (gsl_matrix * A, gsl_vector * tau, gsl_permutation * p, i
 	    {
 	      gsl_matrix_swap_columns (A, i, kmax);
 	      gsl_permutation_swap (p, i, kmax);
-	      gsl_vector_set (norm, kmax, gsl_vector_get (norm, i));
+              gsl_vector_swap_elements(norm,i,kmax);
+
 	      (*signum) = -(*signum);
 	    }
 

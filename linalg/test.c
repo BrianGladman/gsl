@@ -616,7 +616,7 @@ test_QRPT_decomp_dim(const gsl_matrix * m, double eps)
 
   for (i = 0; i < M; i++) {
     gsl_vector row = gsl_matrix_row (a, i);
-    gsl_permute_vector (perm, &row);
+    gsl_permute_vector_inverse (perm, &row);
   }
 
   for(i=0; i<M; i++) {
