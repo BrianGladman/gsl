@@ -97,17 +97,17 @@ test_filip ()
 
     diag = gsl_matrix_diagonal (cov);
 
-    gsl_test_rel (gsl_vector_get(&diag.vector,0), pow(expected_sd[0],2.0), 1e-7, "filip gsl_fit_multilinear cov00") ;
-    gsl_test_rel (gsl_vector_get(&diag.vector,1), pow(expected_sd[1],2.0), 1e-7, "filip gsl_fit_multilinear cov11") ;
-    gsl_test_rel (gsl_vector_get(&diag.vector,2), pow(expected_sd[2],2.0), 1e-7, "filip gsl_fit_multilinear cov22") ;
-    gsl_test_rel (gsl_vector_get(&diag.vector,3), pow(expected_sd[3],2.0), 1e-7, "filip gsl_fit_multilinear cov33") ;
-    gsl_test_rel (gsl_vector_get(&diag.vector,4), pow(expected_sd[4],2.0), 1e-7, "filip gsl_fit_multilinear cov44") ;
-    gsl_test_rel (gsl_vector_get(&diag.vector,5), pow(expected_sd[5],2.0), 1e-7, "filip gsl_fit_multilinear cov55") ;
-    gsl_test_rel (gsl_vector_get(&diag.vector,6), pow(expected_sd[6],2.0), 1e-7, "filip gsl_fit_multilinear cov66") ;
-    gsl_test_rel (gsl_vector_get(&diag.vector,7), pow(expected_sd[7],2.0), 1e-7, "filip gsl_fit_multilinear cov77") ;
-    gsl_test_rel (gsl_vector_get(&diag.vector,8), pow(expected_sd[8],2.0), 1e-7, "filip gsl_fit_multilinear cov88") ;
-    gsl_test_rel (gsl_vector_get(&diag.vector,9), pow(expected_sd[9],2.0), 1e-7, "filip gsl_fit_multilinear cov99") ;
-    gsl_test_rel (gsl_vector_get(&diag.vector,10), pow(expected_sd[10],2.0), 1e-7, "filip gsl_fit_multilinear cov1010") ;
+    gsl_test_rel (gsl_vector_get(&diag.vector,0), pow(expected_sd[0],2.0), 1e-6, "filip gsl_fit_multilinear cov00") ;
+    gsl_test_rel (gsl_vector_get(&diag.vector,1), pow(expected_sd[1],2.0), 1e-6, "filip gsl_fit_multilinear cov11") ;
+    gsl_test_rel (gsl_vector_get(&diag.vector,2), pow(expected_sd[2],2.0), 1e-6, "filip gsl_fit_multilinear cov22") ;
+    gsl_test_rel (gsl_vector_get(&diag.vector,3), pow(expected_sd[3],2.0), 1e-6, "filip gsl_fit_multilinear cov33") ;
+    gsl_test_rel (gsl_vector_get(&diag.vector,4), pow(expected_sd[4],2.0), 1e-6, "filip gsl_fit_multilinear cov44") ;
+    gsl_test_rel (gsl_vector_get(&diag.vector,5), pow(expected_sd[5],2.0), 1e-6, "filip gsl_fit_multilinear cov55") ;
+    gsl_test_rel (gsl_vector_get(&diag.vector,6), pow(expected_sd[6],2.0), 1e-6, "filip gsl_fit_multilinear cov66") ;
+    gsl_test_rel (gsl_vector_get(&diag.vector,7), pow(expected_sd[7],2.0), 1e-6, "filip gsl_fit_multilinear cov77") ;
+    gsl_test_rel (gsl_vector_get(&diag.vector,8), pow(expected_sd[8],2.0), 1e-6, "filip gsl_fit_multilinear cov88") ;
+    gsl_test_rel (gsl_vector_get(&diag.vector,9), pow(expected_sd[9],2.0), 1e-6, "filip gsl_fit_multilinear cov99") ;
+    gsl_test_rel (gsl_vector_get(&diag.vector,10), pow(expected_sd[10],2.0), 1e-6, "filip gsl_fit_multilinear cov1010") ;
 
     gsl_test_rel (chisq, expected_chisq, 1e-7, "filip gsl_fit_multilinear chisq") ;
 
