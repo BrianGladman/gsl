@@ -71,7 +71,7 @@ gsl_finite (const double x)
 {
   return _finite(x);
 }
-#else
+#elif defined(HAVE_IEEE_COMPARISONS)
 int
 gsl_isnan (const double x)
 {

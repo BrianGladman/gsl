@@ -202,6 +202,7 @@ main (void)
     }
   }
 
+#ifdef HAVE_IEEE_COMPARISONS
   /* Test for isinf, isnan, finite*/
 
   {
@@ -254,6 +255,8 @@ main (void)
     s = gsl_finite(nan);
     gsl_test_int (s, 0, "gsl_finite(nan)");
   }
+#endif
+
 
   {
     double x = gsl_fdiv (2.0, 3.0);
@@ -262,5 +265,3 @@ main (void)
 
   exit (gsl_test_summary ());
 }
-
-

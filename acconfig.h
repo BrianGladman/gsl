@@ -73,6 +73,9 @@
 /* Define this if printf can handle %Lf for long double */
 #undef HAVE_PRINTF_LONGDOUBLE
 
+/* Define this is IEEE comparisons work correctly (e.g. NaN != NaN) */
+#undef HAVE_IEEE_COMPARISONS
+
 /* Substitute gsl functions for missing system functions */
 
 #ifndef HAVE_HYPOT

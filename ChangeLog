@@ -1,3 +1,8 @@
+Wed Jan 16 16:55:25 2002  Brian Gough  <bjg@network-theory.co.uk>
+
+	* configure.in acconfig.h: check whether IEEE comparisons work for
+ 	Inf, NaN and define HAVE_IEEE_COMPARISONS
+
 Tue Jan  8 21:38:23 2002  Brian Gough  <bjg@network-theory.co.uk>
 
 	* config.h (GSL_RANGE_CHECK_OFF): turn off range checking when

@@ -1,5 +1,9 @@
 * What is new in gsl-1.1:
 
+** IEEE comparisons of infinities and NaNs are tested during the
+configure stage and the functions gsl_isnan, gsl_isinf and gsl_finite
+are only compiled on platforms which support the necessary tests.
+
 ** The histogram routines now include a sum function, gsl_histogram_sum
 for computing the total bin sum.
 
