@@ -92,7 +92,7 @@ include_HEADERS = 			\
 
 INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../vector -I$(srcdir)/../err
 
-TESTS = test test_float test_int test_complex test_trap
+TESTS = test test_static 
 
 test_LDADD = libgslmatrix.a ../vector/libgslvector.a ../err/libgslerr.a ../err/libgsltest.a
 test_static_LDADD = libgslmatrix.a ../vector/libgslvector.a ../err/libgslerr.a ../err/libgsltest.a
@@ -101,7 +101,7 @@ test_DEPENDENCIES = libgslmatrix.a
 test_SOURCES = test.c
 
 test_static_DEPENDENCIES = libgslmatrix.a
-test_static_SOURCES = test.c
+test_static_SOURCES = test_static.c
 
 CLEANFILES = test.txt test.dat
 
@@ -123,7 +123,7 @@ libgslmatrix_a_OBJECTS =  init.o matrix.o file.o
 AR = ar
 test_OBJECTS =  test.o
 test_LDFLAGS = 
-test_static_OBJECTS =  test.o
+test_static_OBJECTS =  test_static.o
 test_static_LDFLAGS = 
 CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
@@ -137,7 +137,8 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 TAR = tar
 GZIP = --best
-DEP_FILES =  .deps/file.P .deps/init.P .deps/matrix.P .deps/test.P
+DEP_FILES =  .deps/file.P .deps/init.P .deps/matrix.P .deps/test.P \
+.deps/test_static.P
 SOURCES = $(libgslmatrix_a_SOURCES) $(test_SOURCES) $(test_static_SOURCES)
 OBJECTS = $(libgslmatrix_a_OBJECTS) $(test_OBJECTS) $(test_static_OBJECTS)
 

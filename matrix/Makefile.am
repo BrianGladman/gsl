@@ -20,7 +20,7 @@ include_HEADERS = 			\
 
 INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../vector -I$(srcdir)/../err
 
-TESTS = test test_float test_int test_complex test_trap
+TESTS = test test_static 
 
 test_LDADD = libgslmatrix.a ../vector/libgslvector.a ../err/libgslerr.a ../err/libgsltest.a
 test_static_LDADD = libgslmatrix.a ../vector/libgslvector.a ../err/libgslerr.a ../err/libgsltest.a
@@ -29,7 +29,7 @@ test_DEPENDENCIES = libgslmatrix.a
 test_SOURCES = test.c
 
 test_static_DEPENDENCIES = libgslmatrix.a
-test_static_SOURCES = test.c
+test_static_SOURCES = test_static.c
 
 CLEANFILES = test.txt test.dat
 

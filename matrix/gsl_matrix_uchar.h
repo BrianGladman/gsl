@@ -27,7 +27,6 @@ int gsl_matrix_uchar_fprintf (FILE * stream, const gsl_matrix_uchar * m, const c
 
 extern int gsl_check_range ;
 
-
 #ifdef HAVE_INLINE
 
 extern inline 

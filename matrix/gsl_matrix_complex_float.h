@@ -13,7 +13,7 @@ typedef struct
   float * data;
 } gsl_matrix_complex_float ;
 
-gsl_matrix_complex_float * gsl_matrix_complex_float_float_alloc (size_t n1, size_t n2);
+gsl_matrix_complex_float * gsl_matrix_complex_float_alloc (size_t n1, size_t n2);
 gsl_matrix_complex_float * gsl_matrix_complex_float_calloc (size_t n1, size_t n2);
 void                             gsl_matrix_complex_float_free (gsl_matrix_complex_float * m);
 
