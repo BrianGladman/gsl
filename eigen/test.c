@@ -3,6 +3,7 @@
  */
 #include <gsl_test.h>
 #include <gsl_math.h>
+#include <gsl_linalg.h>
 #include "gsl_eigen.h"
 
 gsl_matrix *
