@@ -21,7 +21,7 @@ structure constant, which are pure numbers are defined in
 * Measurement of Time::         
 * Imperial Units ::             
 * Nautical Units::              
-* Printers Units::             
+* Printers Units::              
 * Volume::                      
 * Cookery::                     
 * Mass and Weight ::            
@@ -30,6 +30,8 @@ structure constant, which are pure numbers are defined in
 * Viscosity::                   
 * Light and Illumination::      
 * Radioactivity::               
+* Physical Constant Examples::  
+* Physical Constant References and Further Reading::  
 @end menu
 
 The full list of constants is described briefly below.  Consult the
