@@ -329,48 +329,84 @@ gsl_blas_zaxpy (const gsl_complex * alpha, const gsl_vector_complex * X, gsl_vec
 int
 gsl_blas_srotg (float a[], float b[], float c[], float s[])
 {
+  gsl_blas_raw_srotg(a, b, c, s);
+  return GSL_SUCCESS;
 }
 
 
 int
 gsl_blas_srotmg (float d1[], float d2[], float b1[], float b2, float P[])
 {
+  gsl_blas_raw_srotmg(d1, d2, b1, b2, P);
+  return GSL_SUCCESS;
 }
 
 
 int
 gsl_blas_srot (gsl_vector_float * X, gsl_vector_float * Y, float c, float s)
 {
+  gsl_blas_raw_srot(GSL_MIN(X->size,Y->size), X->data, X->stride, Y->data, Y->stride, c, s);
+  if(X->size != Y->size) {
+    return GSL_EBADLEN;
+  }
+  else {
+    return GSL_SUCCESS;
+  }
 }
 
 
 int
 gsl_blas_srotm (gsl_vector_float * X, gsl_vector_float * Y, const float P[])
 {
+  gsl_blas_raw_srotm(GSL_MIN(X->size,Y->size), X->data, X->stride, Y->data, Y->stride, P);
+  if(X->size != Y->size) {
+    return GSL_EBADLEN;
+  }
+  else {
+    return GSL_SUCCESS;
+  }
 }
 
 
 int
 gsl_blas_drotg (double a[], double b[], double c[], double s[])
 {
+  gsl_blas_raw_drotg(a, b, c, s);
+  return GSL_SUCCESS;
 }
 
 
 int
 gsl_blas_drotmg (double d1[], double d2[], double b1[], double b2, double P[])
 {
+  gsl_blas_raw_drotmg(d1, d2, b1, b2, P);
+  return GSL_SUCCESS;
 }
 
 
 int
 gsl_blas_drot (gsl_vector * X, gsl_vector * Y, const double c, const double s)
 {
+  gsl_blas_raw_drot(GSL_MIN(X->size, Y->size), X->data, X->stride, Y->data, Y->stride, c, s);
+  if(X->size != Y->size) {
+    return GSL_EBADLEN;
+  }
+  else {
+    return GSL_SUCCESS;
+  }
 }
 
 
 int
 gsl_blas_drotm (gsl_vector * X, gsl_vector * Y, const double P[])
 {
+  gsl_blas_raw_drotm(GSL_MIN(X->size, Y->size), X->data, X->stride, Y->data, Y->stride, P);
+  if(X->size != Y->size) {
+    return GSL_EBADLEN;
+  }
+  else {
+    return GSL_SUCCESS;
+  }
 }
 
 
@@ -847,30 +883,38 @@ int  gsl_blas_stpmv (CBLAS_UPLO Uplo,
                      const float Ap[],
                      gsl_vector_float * X)
 {
+  gsl_blas_raw_stpmv(Uplo, TransA, Diag, X->size, Ap, X->data, X->stride);
+  return GSL_SUCCESS;
 }
 
 
 int  gsl_blas_dtpmv (CBLAS_UPLO Uplo,
                      CBLAS_TRANSPOSE TransA, CBLAS_DIAG Diag,
-                     const double Ap[],
+                     const double * Ap,
                      gsl_vector * X)
 {
+  gsl_blas_raw_dtpmv(Uplo, TransA, Diag, X->size, Ap, X->data, X->stride);
+  return GSL_SUCCESS;
 }
 
 
 int  gsl_blas_ctpmv (CBLAS_UPLO Uplo,
                      CBLAS_TRANSPOSE TransA, CBLAS_DIAG Diag,
-                     const void *Ap,
+                     const void * Ap,
                      gsl_vector_complex_float * X)
 {
+  gsl_blas_raw_ctpmv(Uplo, TransA, Diag, X->size, Ap, X->data, X->stride);
+  return GSL_SUCCESS;
 }
 
 
 int  gsl_blas_ztpmv (CBLAS_UPLO Uplo,
                      CBLAS_TRANSPOSE TransA, CBLAS_DIAG Diag,
-                     const void *Ap,
+                     const void * Ap,
                      gsl_vector_complex * X)
 {
+  gsl_blas_raw_ztpmv(Uplo, TransA, Diag, X->size, Ap, X->data, X->stride);
+  return GSL_SUCCESS;
 }
 
 
@@ -1085,6 +1129,8 @@ int  gsl_blas_stpsv (CBLAS_UPLO Uplo,
                      const float Ap[],
                      gsl_vector_float * X)
 {
+  gsl_blas_raw_stpsv(Uplo, TransA, Diag, X->size, Ap, X->data, X->stride);
+  return GSL_SUCCESS;
 }
 
 
@@ -1093,6 +1139,8 @@ int  gsl_blas_dtpsv (CBLAS_UPLO Uplo,
                      const double Ap[],
                      gsl_vector * X)
 {
+  gsl_blas_raw_dtpsv(Uplo, TransA, Diag, X->size, Ap, X->data, X->stride);
+  return GSL_SUCCESS;
 }
 
 
@@ -1101,6 +1149,8 @@ int  gsl_blas_ctpsv (CBLAS_UPLO Uplo,
                      const void * Ap,
                      gsl_vector_complex_float * X)
 {
+  gsl_blas_raw_ctpsv(Uplo, TransA, Diag, X->size, Ap, X->data, X->stride);
+  return GSL_SUCCESS;
 }
 
 
@@ -1109,6 +1159,8 @@ int  gsl_blas_ztpsv (CBLAS_UPLO Uplo,
                      const void *Ap,
                      gsl_vector_complex * X)
 {
+  gsl_blas_raw_ztpsv(Uplo, TransA, Diag, X->size, Ap, X->data, X->stride);
+  return GSL_SUCCESS;
 }
 
 
@@ -1122,7 +1174,7 @@ int  gsl_blas_ssymv (CBLAS_UPLO Uplo,
                      gsl_vector_float * Y)
 {
   size_t row_dim  = A->size1;
-  size_t col_dim  = A->size1;
+  size_t col_dim  = A->size2;
   size_t tda = A->dim2 ;
 
   if(row_dim != col_dim) return GSL_EINVAL;
@@ -1151,7 +1203,7 @@ int  gsl_blas_dsymv (CBLAS_UPLO Uplo,
                      gsl_vector * Y)
 {
   size_t row_dim  = A->size1;
-  size_t col_dim  = A->size1;
+  size_t col_dim  = A->size2;
   size_t tda = A->dim2 ;
 
   if(row_dim != col_dim) return GSL_EINVAL;
@@ -1183,7 +1235,7 @@ int  gsl_blas_ssbmv (CBLAS_UPLO Uplo,
                      gsl_vector_float * Y)
 {
   size_t row_dim  = A->size1;
-  size_t col_dim  = A->size1;
+  size_t col_dim  = A->size2;
   size_t tda = A->dim2 ;
 
   if(row_dim != col_dim) return GSL_EINVAL;
@@ -1214,7 +1266,7 @@ int  gsl_blas_dsbmv (CBLAS_UPLO Uplo,
                      gsl_vector * Y)
 {
   size_t row_dim  = A->size1;
-  size_t col_dim  = A->size1;
+  size_t col_dim  = A->size2;
   size_t tda = A->dim2 ;
 
   if(row_dim != col_dim) return GSL_EINVAL;
@@ -1240,21 +1292,25 @@ int  gsl_blas_dsbmv (CBLAS_UPLO Uplo,
 
 int  gsl_blas_sspmv (CBLAS_UPLO Uplo,
                      float alpha,
-                     const float Ap[],
+                     const float * Ap,
                      const gsl_vector_float * X,
                      float beta,
                      gsl_vector_float * Y)
 {
+  gsl_blas_raw_sspmv(Uplo, X->size, alpha, Ap, X->data, X->stride, beta, Y->data, Y->stride);
+  return GSL_SUCCESS;
 }
 
 
 int  gsl_blas_dspmv (CBLAS_UPLO Uplo,
                      double alpha,
-                     const double Ap[],
+                     const double * Ap,
                      const gsl_vector * X,
                      double beta,
                      gsl_vector * Y)
 {
+  gsl_blas_raw_dspmv(Uplo, X->size, alpha, Ap, X->data, X->stride, beta, Y->data, Y->stride);
+  return GSL_SUCCESS;
 }
 
 
@@ -1357,16 +1413,20 @@ int  gsl_blas_dsyr (CBLAS_UPLO Uplo,
 int  gsl_blas_sspr (CBLAS_UPLO Uplo,
                     float alpha,
                     const gsl_vector_float * X,
-                    float Ap[])
+                    float * Ap)
 {
+  gsl_blas_raw_sspr(Uplo, X->size, alpha, X->data, X->stride, Ap);
+  return GSL_SUCCESS;
 }
 
 
 int  gsl_blas_dspr (CBLAS_UPLO Uplo,
                     double alpha,
                     const gsl_vector * X,
-                    double Ap[])
+                    double * Ap)
 {
+  gsl_blas_raw_dspr(Uplo, X->size, alpha, X->data, X->stride, Ap);
+  return GSL_SUCCESS;
 }
 
 
@@ -1428,8 +1488,10 @@ int  gsl_blas_sspr2 (CBLAS_UPLO Uplo,
                      float alpha,
                      const gsl_vector_float * X,
                      const gsl_vector_float * Y,
-                     gsl_vector_float * A)
+		     float * Ap)
 {
+  gsl_blas_raw_sspr2(Uplo, X->size, alpha, X->data, X->stride, Y->data, Y->stride, Ap);
+  return GSL_SUCCESS;
 }
 
 
@@ -1437,8 +1499,10 @@ int  gsl_blas_dspr2 (CBLAS_UPLO Uplo,
                      double alpha,
                      const gsl_vector * X,
                      const gsl_vector * Y,
-                     double Ap[])
+                     double * Ap)
 {
+  gsl_blas_raw_dspr2(Uplo, X->size, alpha, X->data, X->stride, Y->data, Y->stride, Ap);
+  return GSL_SUCCESS;
 }
 
 
@@ -1451,6 +1515,25 @@ int  gsl_blas_chemv (CBLAS_UPLO Uplo,
                      const gsl_complex_float * beta,
                      gsl_vector_complex_float * Y)
 {
+  size_t row_dim  = A->size1;
+  size_t col_dim  = A->size2;
+  size_t tda = A->dim2 ;
+
+  if(row_dim != col_dim) return GSL_EINVAL;
+
+  if(col_dim == X->size) {
+    gsl_blas_raw_chemv(Uplo,
+                       col_dim,
+		       alpha->dat,
+		       A->data, tda,
+		       X->data, X->stride,
+		       beta->dat,
+		       Y->data, Y->stride
+		       );
+    return GSL_SUCCESS;
+  }
+  else
+    return GSL_EINVAL;
 }
 
 
@@ -1461,6 +1544,25 @@ int  gsl_blas_zhemv (CBLAS_UPLO Uplo,
                      const gsl_complex * beta,
                      gsl_vector_complex * Y)
 {
+  size_t row_dim  = A->size1;
+  size_t col_dim  = A->size2;
+  size_t tda = A->dim2 ;
+
+  if(row_dim != col_dim) return GSL_EINVAL;
+
+  if(col_dim == X->size) {
+    gsl_blas_raw_zhemv(Uplo,
+                       col_dim,
+		       alpha->dat,
+		       A->data, tda,
+		       X->data, X->stride,
+		       beta->dat,
+		       Y->data, Y->stride
+		       );
+    return GSL_SUCCESS;
+  }
+  else
+    return GSL_EINVAL;
 }
 
 
@@ -1474,6 +1576,26 @@ int  gsl_blas_chbmv (CBLAS_UPLO Uplo,
                      const gsl_complex_float * beta,
                      gsl_vector_complex_float * Y)
 {
+  size_t row_dim  = A->size1;
+  size_t col_dim  = A->size2;
+  size_t tda = A->dim2 ;
+
+  if(row_dim != col_dim) return GSL_EINVAL;
+
+  if(col_dim == X->size) {
+    gsl_blas_raw_chbmv(Uplo,
+                       K,
+                       col_dim,
+		       alpha->dat,
+		       A->data, tda,
+		       X->data, X->stride,
+		       beta->dat,
+		       Y->data, Y->stride
+		       );
+    return GSL_SUCCESS;
+  }
+  else
+    return GSL_EINVAL;
 }
 
 
@@ -1485,6 +1607,26 @@ int  gsl_blas_zhbmv (CBLAS_UPLO Uplo,
                      const gsl_complex * beta,
                      gsl_vector_complex * Y)
 {
+  size_t row_dim  = A->size1;
+  size_t col_dim  = A->size2;
+  size_t tda = A->dim2 ;
+
+  if(row_dim != col_dim) return GSL_EINVAL;
+
+  if(col_dim == X->size) {
+    gsl_blas_raw_zhbmv(Uplo,
+                       K,
+                       col_dim,
+		       alpha->dat,
+		       A->data, tda,
+		       X->data, X->stride,
+		       beta->dat,
+		       Y->data, Y->stride
+		       );
+    return GSL_SUCCESS;
+  }
+  else
+    return GSL_EINVAL;
 }
 
 
@@ -1497,6 +1639,8 @@ int  gsl_blas_chpmv (CBLAS_UPLO Uplo,
                      const gsl_complex_float * beta,
                      gsl_vector_complex_float * Y)
 {
+  gsl_blas_raw_chpmv(Uplo, X->size, alpha->dat, Ap, X->data, X->stride, beta->dat, Y->data, Y->stride);
+  return GSL_SUCCESS;
 }
 
 
@@ -1507,6 +1651,8 @@ int  gsl_blas_zhpmv (CBLAS_UPLO Uplo,
                      const gsl_complex * beta,
                      gsl_vector_complex * Y)
 {
+  gsl_blas_raw_zhpmv(Uplo, X->size, alpha->dat, Ap, X->data, X->stride, beta->dat, Y->data, Y->stride);
+  return GSL_SUCCESS;
 }
 
 
@@ -1517,6 +1663,11 @@ int  gsl_blas_cgeru (const gsl_complex_float * alpha,
                      const gsl_vector_complex_float * Y,
                      gsl_matrix_complex_float * A)
 {
+  gsl_blas_raw_cgeru (A->size1, A->size2, alpha->dat,
+                      X->data, X->stride,
+                      Y->data, Y->stride,
+                      A->data, A->dim2);
+  return GSL_SUCCESS;
 }
 
 
@@ -1525,6 +1676,11 @@ int  gsl_blas_zgeru (const gsl_complex * alpha,
                      const gsl_vector_complex * Y,
                      gsl_matrix_complex * A)
 {
+  gsl_blas_raw_zgeru (A->size1, A->size2, alpha->dat,
+                      X->data, X->stride,
+                      Y->data, Y->stride,
+                      A->data, A->dim2);
+  return GSL_SUCCESS;
 }
 
 
@@ -1535,6 +1691,11 @@ int  gsl_blas_cgerc (const gsl_complex_float * alpha,
                      const gsl_vector_complex_float * Y,
                      gsl_matrix_complex_float * A)
 {
+  gsl_blas_raw_cgerc (A->size1, A->size2, alpha->dat,
+                      X->data, X->stride,
+                      Y->data, Y->stride,
+                      A->data, A->dim2);
+  return GSL_SUCCESS;
 }
 
 
@@ -1543,6 +1704,11 @@ int  gsl_blas_zgerc (const gsl_complex * alpha,
                      const gsl_vector_complex * Y,
                      gsl_matrix_complex * A)
 {
+  gsl_blas_raw_zgerc (A->size1, A->size2, alpha->dat,
+                      X->data, X->stride,
+                      Y->data, Y->stride,
+                      A->data, A->dim2);
+  return GSL_SUCCESS;
 }
 
 
@@ -1553,6 +1719,20 @@ int  gsl_blas_cher (CBLAS_UPLO Uplo,
                     const gsl_vector_complex_float * X,
                     gsl_matrix_complex_float * A)
 {
+  size_t row_dim = A->size1;
+  size_t col_dim = A->size2;
+  size_t tda = A->dim2 ;
+
+  if(row_dim != col_dim) return GSL_EINVAL;
+  if(X->size != row_dim) return GSL_EINVAL;
+
+  gsl_blas_raw_cher(Uplo,
+                    row_dim,
+		    alpha,
+        	    X->data, X->stride,
+        	    A->data, tda
+        	    );
+  return GSL_SUCCESS;
 }
 
 
@@ -1561,6 +1741,20 @@ int  gsl_blas_zher (CBLAS_UPLO Uplo,
                     const gsl_vector_complex * X,
                     gsl_matrix_complex * A)
 {
+  size_t row_dim = A->size1;
+  size_t col_dim = A->size2;
+  size_t tda = A->dim2 ;
+
+  if(row_dim != col_dim) return GSL_EINVAL;
+  if(X->size != row_dim) return GSL_EINVAL;
+
+  gsl_blas_raw_zher(Uplo,
+                    row_dim,
+		    alpha,
+        	    X->data, X->stride,
+        	    A->data, tda
+        	    );
+  return GSL_SUCCESS;
 }
 
 
@@ -1571,6 +1765,8 @@ int  gsl_blas_chpr (CBLAS_UPLO Uplo,
                     const gsl_vector_complex_float * X,
                     void * Ap)
 {
+  gsl_blas_raw_chpr(Uplo, X->size, alpha, X->data, X->stride, Ap);
+  return GSL_SUCCESS;
 }
 
 
@@ -1579,6 +1775,8 @@ int  gsl_blas_zhpr (CBLAS_UPLO Uplo,
                     const gsl_vector_complex * X,
                     void * Ap)
 {
+  gsl_blas_raw_zhpr(Uplo, X->size, alpha, X->data, X->stride, Ap);
+  return GSL_SUCCESS;
 }
 
 
@@ -1590,6 +1788,22 @@ int  gsl_blas_cher2 (CBLAS_UPLO Uplo,
                      const gsl_vector_complex_float * Y,
                      gsl_matrix_complex_float * A)
 {
+  size_t row_dim = A->size1;
+  size_t col_dim = A->size2;
+  size_t tda = A->dim2 ;
+
+  if(row_dim != col_dim) return GSL_EINVAL;
+  if(X->size != col_dim) return GSL_EINVAL;
+  if(Y->size != col_dim) return GSL_EINVAL;
+  
+  gsl_blas_raw_cher2(Uplo,
+                     col_dim,
+		     alpha->dat,
+		     X->data, X->stride,
+		     Y->data, Y->stride,
+		     A->data, tda
+		     );
+  return GSL_SUCCESS;
 }
 
 
@@ -1599,6 +1813,22 @@ int  gsl_blas_zher2 (CBLAS_UPLO Uplo,
                      const gsl_vector_complex * Y,
                      gsl_matrix_complex * A)
 {
+  size_t row_dim = A->size1;
+  size_t col_dim = A->size2;
+  size_t tda = A->dim2 ;
+
+  if(row_dim != col_dim) return GSL_EINVAL;
+  if(X->size != col_dim) return GSL_EINVAL;
+  if(Y->size != col_dim) return GSL_EINVAL;
+  
+  gsl_blas_raw_zher2(Uplo,
+                     col_dim,
+		     alpha->dat,
+		     X->data, X->stride,
+		     Y->data, Y->stride,
+		     A->data, tda
+		     );
+  return GSL_SUCCESS;
 }
 
 
@@ -1610,6 +1840,8 @@ int  gsl_blas_chpr2 (CBLAS_UPLO Uplo,
                      const gsl_vector_complex_float * Y,
                      void * Ap)
 {
+  gsl_blas_raw_chpr2(Uplo, X->size, alpha->dat, X->data, X->stride, Y->data, Y->stride, Ap);
+  return GSL_SUCCESS;
 }
 
 
@@ -1617,8 +1849,10 @@ int  gsl_blas_zhpr2 (CBLAS_UPLO Uplo,
                      const gsl_complex * alpha,
                      const gsl_vector_complex * X,
                      const gsl_vector_complex * Y,
-                     void *Ap)
+                     void * Ap)
 {
+  gsl_blas_raw_zhpr2(Uplo, X->size, alpha->dat, X->data, X->stride, Y->data, Y->stride, Ap);
+  return GSL_SUCCESS;
 }
 
 
@@ -1744,7 +1978,19 @@ int  gsl_blas_ssymm (CBLAS_SIDE Side, CBLAS_UPLO Uplo,
                      float beta,
                      gsl_matrix_float * C)
 {
+  if(A->size2 != B->size1) return GSL_EINVAL;
+  if(A->size1 != C->size1) return GSL_EINVAL;
+  if(B->size2 != C->size2) return GSL_EINVAL;
 
+  gsl_blas_raw_ssymm(Side, Uplo,
+                     C->size1, C->size2,
+		     alpha,
+		     A->data, A->dim2,
+		     B->data, B->dim2,
+		     beta,
+		     C->data, C->dim2
+		     );
+  return GSL_SUCCESS;
 }
 
 
@@ -1756,6 +2002,19 @@ int  gsl_blas_dsymm (CBLAS_SIDE Side,
                      double beta,
                      gsl_matrix * C)
 {
+  if(A->size2 != B->size1) return GSL_EINVAL;
+  if(A->size1 != C->size1) return GSL_EINVAL;
+  if(B->size2 != C->size2) return GSL_EINVAL;
+
+  gsl_blas_raw_dsymm(Side, Uplo,
+                     C->size1, C->size2,
+		     alpha,
+		     A->data, A->dim2,
+		     B->data, B->dim2,
+		     beta,
+		     C->data, C->dim2
+		     );
+  return GSL_SUCCESS;
 }
 
 
@@ -1767,6 +2026,19 @@ int  gsl_blas_csymm (CBLAS_SIDE Side,
                      const gsl_complex_float * beta,
                      gsl_matrix_complex_float * C)
 {
+  if(A->size2 != B->size1) return GSL_EINVAL;
+  if(A->size1 != C->size1) return GSL_EINVAL;
+  if(B->size2 != C->size2) return GSL_EINVAL;
+
+  gsl_blas_raw_csymm(Side, Uplo,
+                     C->size1, C->size2,
+		     alpha->dat,
+		     A->data, A->dim2,
+		     B->data, B->dim2,
+		     beta->dat,
+		     C->data, C->dim2
+		     );
+  return GSL_SUCCESS;
 }
 
 int  gsl_blas_zsymm (CBLAS_SIDE Side,
@@ -1777,8 +2049,23 @@ int  gsl_blas_zsymm (CBLAS_SIDE Side,
                      const gsl_complex * beta,
                      gsl_matrix_complex * C)
 {
+  if(A->size2 != B->size1) return GSL_EINVAL;
+  if(A->size1 != C->size1) return GSL_EINVAL;
+  if(B->size2 != C->size2) return GSL_EINVAL;
+
+  gsl_blas_raw_zsymm(Side, Uplo,
+                     C->size1, C->size2,
+		     alpha->dat,
+		     A->data, A->dim2,
+		     B->data, B->dim2,
+		     beta->dat,
+		     C->data, C->dim2
+		     );
+  return GSL_SUCCESS;
 }
 
+
+#if 0
 
 /* SYRK */
 
@@ -2031,3 +2318,5 @@ int  gsl_blas_zher2k (CBLAS_UPLO Uplo,
                       gsl_matrix_complex * C)
 {
 }
+
+#endif /* 0 */

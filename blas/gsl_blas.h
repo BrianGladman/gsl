@@ -391,7 +391,7 @@ int  gsl_blas_sspr2 (CBLAS_UPLO Uplo,
                      float alpha,
                      const gsl_vector_float * X,
                      const gsl_vector_float * Y,
-                     gsl_vector_float * A);
+                     float * A);
 
 int  gsl_blas_dsymv (CBLAS_UPLO Uplo,
                      double alpha,
@@ -440,7 +440,7 @@ int  gsl_blas_dspr2 (CBLAS_UPLO Uplo,
                      double alpha,
                      const gsl_vector * X,
                      const gsl_vector * Y,
-                     double Ap[]);
+                     double * Ap);
 
 /*
  * Routines with C and Z prefixes only
