@@ -221,7 +221,7 @@ gsl_integration_qagse_impl (double (*f) (double x),
 
       if (errsum <= tolerance)
 	{
-	  break;
+	  goto compute_result ;
 	}
 
       if (error_type)
@@ -348,7 +348,7 @@ gsl_integration_qagse_impl (double (*f) (double x),
       error_over_large_intervals = errsum;
 
     }
-  while (i < limit && !error_type && errsum > tolerance);
+  while (i < limit);
 
   if (*abserr == DBL_MAX)
     goto compute_result;
