@@ -37,7 +37,7 @@ point your web browser to
 grab the latest bundled release at
   ftp://sourceware.cygnus.com/pub/gsl/
 
-Let me know (rosalia@cygnus.com) if any of these steps don't work.  I
+Let me know (rosalia@lanl.gov) if any of these steps don't work.  I
 have tried them out on swift and they seem to work.
 
 ---------- submitting patches

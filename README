@@ -10,8 +10,13 @@ A test suite is available for most of the libraries.  It can be
 invoked with "make check" in each directory.  All tests can be run
 together with "make check" at the top level.
 
-If you are interested in participating in GSL development, please send
-mail to Mark Galassi -- rosalia@cygnus.com
+If you run "make check" and get some failures, please see the
+KNOWN-PROBLEMS file.  This file lists failures we already know about.
+If you get failures that are not mentioned in the KNOWN-PROBLEMS file,
+please report them.
 
 Until we have set up a separate bug reporting address, please report
-any bugs to the GSL discussion list gsl-discuss@sourceware.cygnus.com
+bugs to the GSL discussion list gsl-discuss@sourceware.cygnus.com
+
+If you are interested in participating in GSL development, please send
+mail to Mark Galassi -- rosalia@lanl.gov
