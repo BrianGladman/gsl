@@ -60,6 +60,17 @@ gsl_sf_multiply_impl(const double x, const double y, gsl_sf_result * result)
 }
 
 
+int
+gsl_sf_multiply_err_impl(const double x, const double dx,
+                         const double y, const double dy,
+                         gsl_sf_result * result)
+{
+  int status = gsl_sf_multiply_impl(x, y, result);
+  result->err += fabs(dx*y) + fabs(dy*x);
+  return status;
+}
+
+
 /*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
 
 int
@@ -68,6 +79,19 @@ gsl_sf_multiply_e(const double x, const double y, gsl_sf_result * result)
   int status = gsl_sf_multiply_impl(x, y, result);
   if(status != GSL_SUCCESS) {
     GSL_ERROR("gsl_sf_multiply_e", status);
+  }
+  return status;
+}
+
+
+int
+gsl_sf_multiply_err_e(const double x, const double dx,
+                      const double y, const double dy,
+                      gsl_sf_result * result)
+{
+  int status = gsl_sf_multiply_err_impl(x, dx, y, dy, result);
+  if(status != GSL_SUCCESS) {
+    GSL_ERROR("gsl_sf_multiply_err_e", status);
   }
   return status;
 }

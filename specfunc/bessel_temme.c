@@ -93,9 +93,9 @@ gsl_sf_bessel_Y_temme(const double nu, const double x,
   const double pi_nu   = M_PI * nu;
   const double alpha   = pi_nu / 2.0;
   const double sigma   = -nu * ln_half_x;
-  const double sinrat  = (fabs(pi_nu) < GSL_MACH_EPS ? 1.0 : pi_nu/sin(pi_nu));
-  const double sinhrat = (fabs(sigma) < GSL_MACH_EPS ? 1.0 : sinh(sigma)/sigma);
-  const double sinhalf = (fabs(alpha) < GSL_MACH_EPS ? 1.0 : sin(alpha)/alpha);
+  const double sinrat  = (fabs(pi_nu) < GSL_DBL_EPSILON ? 1.0 : pi_nu/sin(pi_nu));
+  const double sinhrat = (fabs(sigma) < GSL_DBL_EPSILON ? 1.0 : sinh(sigma)/sigma);
+  const double sinhalf = (fabs(alpha) < GSL_DBL_EPSILON ? 1.0 : sin(alpha)/alpha);
   const double sin_sqr = nu*M_PI*M_PI*0.5 * sinhalf*sinhalf;
   
   double sum0, sum1;
@@ -130,7 +130,7 @@ gsl_sf_bessel_Y_temme(const double nu, const double x,
     del1 = ck * hk;
     sum0 += del0;
     sum1 += del1;
-    if(fabs(del0) < (1.0 + fabs(sum0))*GSL_MACH_EPS) break;
+    if(fabs(del0) < 0.5*(1.0 + fabs(sum0))*GSL_DBL_EPSILON) break;
   }
 
   *Y_nu   = -sum0;
@@ -153,8 +153,8 @@ gsl_sf_bessel_K_scaled_temme(const double nu, const double x,
   const double half_x_nu = exp(nu*ln_half_x);
   const double pi_nu   = M_PI * nu;
   const double sigma   = -nu * ln_half_x;
-  const double sinrat  = (fabs(pi_nu) < GSL_MACH_EPS ? 1.0 : pi_nu/sin(pi_nu));
-  const double sinhrat = (fabs(sigma) < GSL_MACH_EPS ? 1.0 : sinh(sigma)/sigma);
+  const double sinrat  = (fabs(pi_nu) < GSL_DBL_EPSILON ? 1.0 : pi_nu/sin(pi_nu));
+  const double sinhrat = (fabs(sigma) < GSL_DBL_EPSILON ? 1.0 : sinh(sigma)/sigma);
   const double ex = exp(x);
 
   double sum0, sum1;
@@ -185,7 +185,7 @@ gsl_sf_bessel_K_scaled_temme(const double nu, const double x,
     del1 = ck * hk;
     sum0 += del0;
     sum1 += del1;
-    if(fabs(del0) < fabs(sum0)*GSL_MACH_EPS) break;
+    if(fabs(del0) < 0.5*fabs(sum0)*GSL_DBL_EPSILON) break;
   }
   
   *K_nu   = sum0 * ex;

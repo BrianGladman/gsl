@@ -147,32 +147,38 @@ int gsl_sf_bessel_jl_impl(const int l, const double x, gsl_sf_result * result)
     double b = 0.0;
     int status = gsl_sf_bessel_Inu_Jnu_taylor_impl(l+0.5, x, -1, 50, GSL_DBL_EPSILON, &b);
     result->val = sqrt((0.5*M_PI)/x) * b;
-    result->err = ;
+    result->err = GSL_DBL_EPSILON * fabs(result->val);
     return status;
   }
   else if(GSL_ROOT3_DBL_EPSILON * x > (l*l + l + 1.0)) {
-    double b = 0.0;
+    gsl_sf_result b;
     int status = gsl_sf_bessel_Jnu_asympx_impl(l + 0.5, x, &b);
-    result->val = sqrt((0.5*M_PI)/x) * b;
-    result->err = ;
+    double pre = sqrt((0.5*M_PI)/x);
+    result->val = pre * b.val;
+    result->err = GSL_DBL_EPSILON * fabs(result->val) + pre * b.err;
     return status;
   }
   else if(l > 1.0/GSL_ROOT6_DBL_EPSILON) {
-    double b = 0.0;
+    gsl_sf_result b;
     int status = gsl_sf_bessel_Jnu_asymp_Olver_impl(l + 0.5, x, &b);
-    result->val = sqrt((0.5*M_PI)/x) * b;
-    result->err = ;
+    double pre = sqrt((0.5*M_PI)/x);
+    result->val = pre * b.val;
+    result->err = GSL_DBL_EPSILON * fabs(result->val) + pre * b.err;
     return status;
   }
   else {
     /* recurse down from safe values */
     double rt_term = sqrt((0.5*M_PI)/x);
-    double jellp1, jell, jellm1;
     const int LMAX = 2 + (int)(1.0/GSL_ROOT6_DBL_EPSILON);
-    int ell;
 
-    int stat_0 = gsl_sf_bessel_Jnu_asymp_Olver_impl(LMAX + 1 + 0.5, x, &jellp1);
-    int stat_1 = gsl_sf_bessel_Jnu_asymp_Olver_impl(LMAX     + 0.5, x, &jell);
+    gsl_sf_result r_jellp1;
+    gsl_sf_result r_jell;
+    int stat_0 = gsl_sf_bessel_Jnu_asymp_Olver_impl(LMAX + 1 + 0.5, x, &r_jellp1);
+    int stat_1 = gsl_sf_bessel_Jnu_asymp_Olver_impl(LMAX     + 0.5, x, &r_jell);
+    double jellp1 = r_jellp1.val;
+    double jell   = r_jell.val;
+    double jellm1;
+    int ell;
 
     jellp1 *= rt_term;
     jell   *= rt_term;
@@ -182,7 +188,8 @@ int gsl_sf_bessel_jl_impl(const int l, const double x, gsl_sf_result * result)
       jell   = jellm1;
     }
 
-    *result = jellm1;
+    result->val = jellm1;
+    result->err = fabs(result->val)*(fabs(r_jellp1.err/r_jellp1.val) + fabs(r_jell.err/r_jell.val));
 
     return GSL_ERROR_SELECT_2(stat_0, stat_1);
   }
@@ -191,16 +198,24 @@ int gsl_sf_bessel_jl_impl(const int l, const double x, gsl_sf_result * result)
 
 int gsl_sf_bessel_jl_array_impl(const int lmax, const double x, double * result_array)
 {
-  if(lmax < 0 || x < 0.0) {
+  if(result_array == 0) {
+    return GSL_EFAULT;
+  }
+  else if(lmax < 0 || x < 0.0) {
     int j;
     for(j=0; j<=lmax; j++) result_array[j] = 0.0;
     return GSL_EDOM;
   }
   else {
+    gsl_sf_result r_jellp1;
+    gsl_sf_result r_jell;
+    int stat_0 = gsl_sf_bessel_jl_impl(lmax+1, x, &r_jellp1);
+    int stat_1 = gsl_sf_bessel_jl_impl(lmax,   x, &r_jell);
+    double jellp1 = r_jellp1.val;
+    double jell   = r_jell.val;
+    double jellm1;
     int ell;
-    double jellp1, jell, jellm1;
-    int stat_0 = gsl_sf_bessel_jl_impl(lmax+1, x, &jellp1);
-    int stat_1 = gsl_sf_bessel_jl_impl(lmax,   x, &jell);
+
     result_array[lmax] = jell;
     for(ell = lmax; ell >= 1; ell--) {
       jellm1 = -jellp1 + (2*ell + 1)/x * jell;
@@ -208,19 +223,23 @@ int gsl_sf_bessel_jl_array_impl(const int lmax, const double x, double * result_
       jell   = jellm1;
       result_array[ell-1] = jellm1;
     }
+
     return GSL_ERROR_SELECT_2(stat_0, stat_1);
   }
 }
 
+
 int gsl_sf_bessel_jl_steed_array_impl(const int lmax, const double x, double * jl_x)
 {
-  if(lmax < 0 || x < 0.0) {
+  if(jl_x == 0) {
+    return GSL_EFAULT;
+  }
+  else if(lmax < 0 || x < 0.0) {
     int j;
     for(j=0; j<=lmax; j++) jl_x[j] = 0.0;
     return GSL_EDOM;
   }
-
-  if(x < 2.0*GSL_ROOT4_DBL_EPSILON) {
+  else if(x < 2.0*GSL_ROOT4_DBL_EPSILON) {
     /* first two terms of Taylor series */
     double inv_fact = 1.0;  /* 1/(1 3 5 ... (2l+1)) */
     double x_l      = 1.0;  /* x^l */
@@ -231,6 +250,7 @@ int gsl_sf_bessel_jl_steed_array_impl(const int lmax, const double x, double * j
       inv_fact /= 2.0*l+3.0;
       x_l      *= x;
     }
+    return GSL_SUCCESS;
   }
   else {
     /* Steed/Barnett algorithm [Comp. Phys. Comm. 21, 297 (1981)] */
@@ -286,8 +306,9 @@ int gsl_sf_bessel_jl_steed_array_impl(const int lmax, const double x, double * j
 	jl_x[L] *= W;
       }
     }
+
+    return GSL_SUCCESS;
   }
-  return GSL_SUCCESS;
 }
 
 

@@ -28,16 +28,16 @@ int gsl_sf_bessel_J1_e(double x, gsl_sf_result * result);
  *
  * exceptions: GSL_EUNDRFLW
  */
-int gsl_sf_bessel_Jn_impl(int n, double x, gsl_prec_t goal, gsl_sf_result * result);
-int gsl_sf_bessel_Jn_e(int n, double x, gsl_prec_t goal, gsl_sf_result * result);
+int gsl_sf_bessel_Jn_impl(int n, double x, gsl_sf_result * result);
+int gsl_sf_bessel_Jn_e(int n, double x, gsl_sf_result * result);
 
 
 /* Regular Bessel Function J_n(x),  nmin <= n <= nmax
  *
  * exceptions: GSL_EDOM, GSL_EUNDRFLW
  */
-int gsl_sf_bessel_Jn_array_impl(int nmin, int nmax, double x_array, gsl_prec_t goal, gsl_sf_result * result);
-int gsl_sf_bessel_Jn_array_e(int nmin, int nmax, double x_array, gsl_prec_t goal, gsl_sf_result * result);
+int gsl_sf_bessel_Jn_array_impl(int nmin, int nmax, double x, double * result_array);
+int gsl_sf_bessel_Jn_array_e(int nmin, int nmax, double x, double * result_array);
 
 
 /* Irregular Bessel function Y_0(x)
@@ -63,8 +63,8 @@ int gsl_sf_bessel_Y1_e(double x, gsl_sf_result * result);
  * x > 0.0
  * exceptions: GSL_EDOM, GSL_EOVRFLW, GSL_EUNDRFLW
  */
-int gsl_sf_bessel_Yn_impl(int n,double x, gsl_prec_t goal, gsl_sf_result * result);
-int gsl_sf_bessel_Yn_e(int n,double x, gsl_prec_t goal, gsl_sf_result * result);
+int gsl_sf_bessel_Yn_impl(int n,double x, gsl_sf_result * result);
+int gsl_sf_bessel_Yn_e(int n,double x, gsl_sf_result * result);
 
 
 /* Irregular Bessel function Y_n(x), nmin <= n <= nmax
@@ -72,8 +72,8 @@ int gsl_sf_bessel_Yn_e(int n,double x, gsl_prec_t goal, gsl_sf_result * result);
  * x > 0.0
  * exceptions: GSL_EDOM, GSL_EOVRFLW, GSL_EUNDRFLW
  */
-int gsl_sf_bessel_Yn_array_impl(int nmin, int nmax, double x, gsl_prec_t goal, gsl_sf_result * result);
-int gsl_sf_bessel_Yn_array_e(int nmin, int nmax, double x, gsl_prec_t goal, gsl_sf_result * result);
+int gsl_sf_bessel_Yn_array_impl(int nmin, int nmax, double x, double * result_array);
+int gsl_sf_bessel_Yn_array_e(int nmin, int nmax, double x, double * result_array);
 
 
 /* Regular modified Bessel function I_0(x)
@@ -105,8 +105,8 @@ int gsl_sf_bessel_In_e(int n, double x, gsl_sf_result * result);
  * nmin >=0, nmax >= nmin
  * exceptions: GSL_EDOM, GSL_EOVRFLW, GSL_EUNDRFLW
  */
-int gsl_sf_bessel_In_array_impl(int nmin, int nmax, double x_array, gsl_sf_result * result);
-int gsl_sf_bessel_In_array_e(int nmin, int nmax, double x_array, gsl_sf_result * result);
+int gsl_sf_bessel_In_array_impl(int nmin, int nmax, double x, double * result_array);
+int gsl_sf_bessel_In_array_e(int nmin, int nmax, double x, double * result_array);
 
 
 /* Scaled regular modified Bessel function
@@ -142,8 +142,8 @@ int gsl_sf_bessel_In_scaled_e(int n, double x, gsl_sf_result * result);
  * nmin >=0, nmax >= nmin
  * exceptions: GSL_EUNDRFLW
  */
-int gsl_sf_bessel_In_scaled_array_impl(int nmin, int nmax, double x_array, double * result_array);
-int gsl_sf_bessel_In_scaled_array_e(int nmin, int nmax, double x_array, double * result_array);
+int gsl_sf_bessel_In_scaled_array_impl(int nmin, int nmax, double x, double * result_array);
+int gsl_sf_bessel_In_scaled_array_e(int nmin, int nmax, double x, double * result_array);
 
 
 /* Irregular modified Bessel function K_0(x)
@@ -178,8 +178,8 @@ int gsl_sf_bessel_Kn_e(int n, double x, gsl_sf_result * result);
  * x > 0.0, nmin >=0, nmax >= nmin
  * exceptions: GSL_EDOM, GSL_EOVRFLW, GSL_EUNDRFLW
  */
-int gsl_sf_bessel_Kn_array_impl(int nmin, int nmax, double x_array, gsl_sf_result * result);
-int gsl_sf_bessel_Kn_array_e(int nmin, int nmax, double x_array, gsl_sf_result * result);
+int gsl_sf_bessel_Kn_array_impl(int nmin, int nmax, double x, double * result_array);
+int gsl_sf_bessel_Kn_array_e(int nmin, int nmax, double x, double * result_array);
 
 
 /* Scaled irregular modified Bessel function
@@ -217,8 +217,8 @@ int gsl_sf_bessel_Kn_scaled_e(int n, double x, gsl_sf_result * result);
  * x > 0.0, nmin >=0, nmax >= nmin
  * exceptions: GSL_EDOM, GSL_EUNDRFLW
  */
-int gsl_sf_bessel_Kn_scaled_array_impl(int nmin, int nmax, double x_array, gsl_sf_result * result);
-int gsl_sf_bessel_Kn_scaled_array_e(int nmin, int nmax, double x_array, gsl_sf_result * result);
+int gsl_sf_bessel_Kn_scaled_array_impl(int nmin, int nmax, double x, double * result_array);
+int gsl_sf_bessel_Kn_scaled_array_e(int nmin, int nmax, double x, double * result_array);
 
 
 /* Regular spherical Bessel function j_0(x) = sin(x)/x
@@ -298,16 +298,16 @@ int gsl_sf_bessel_y2_e(double x, gsl_sf_result * result);
  *
  * exceptions: GSL_EUNDRFLW
  */
-int gsl_sf_bessel_yl_impl(int l, double x, gsl_prec_t goal, gsl_sf_result * result);
-int gsl_sf_bessel_yl_e(int l, double x, gsl_prec_t goal, gsl_sf_result * result);
+int gsl_sf_bessel_yl_impl(int l, double x, gsl_sf_result * result);
+int gsl_sf_bessel_yl_e(int l, double x, gsl_sf_result * result);
 
 
 /* Irregular spherical Bessel function y_l(x) for l=0,1,...,lmax
  *
  * exceptions: GSL_EUNDRFLW
  */
-int gsl_sf_bessel_yl_array_impl(int lmax, double x_array, gsl_sf_result * result);
-int gsl_sf_bessel_yl_array_e(int lmax, double x_array, gsl_sf_result * result);
+int gsl_sf_bessel_yl_array_impl(int lmax, double x, double * result_array);
+int gsl_sf_bessel_yl_array_e(int lmax, double x, double * result_array);
 
 
 /* Regular scaled modified spherical Bessel function
@@ -419,16 +419,16 @@ int gsl_sf_bessel_kl_scaled_array_e(int lmax, double x, double * result_array);
  *
  * exceptions: GSL_EDOM, GSL_EUNDRFLW
  */
-int gsl_sf_bessel_Jnu_impl(double nu, double x, gsl_prec_t goal, gsl_sf_result * result);
-int gsl_sf_bessel_Jnu_e(double nu, double x, gsl_prec_t goal, gsl_sf_result * result);
+int gsl_sf_bessel_Jnu_impl(double nu, double x, gsl_sf_result * result);
+int gsl_sf_bessel_Jnu_e(double nu, double x, gsl_sf_result * result);
 
 
 /* Irregular cylindrical Bessel function Y_nu(x)
  *
  * exceptions:  
  */
-int gsl_sf_bessel_Ynu_impl(double nu, double x, gsl_prec_t goal, gsl_sf_result * result);
-int gsl_sf_bessel_Ynu_e(double nu, double x, gsl_prec_t goal, gsl_sf_result * result);
+int gsl_sf_bessel_Ynu_impl(double nu, double x, gsl_sf_result * result);
+int gsl_sf_bessel_Ynu_e(double nu, double x, gsl_sf_result * result);
 
 
 /* Scaled modified cylindrical Bessel functions

@@ -14,23 +14,24 @@
 
 /* [Abramowitz+Stegun, 9.6.11]
  * assumes n >= 1
- *
- * checked OK [GJ] Sun May  3 20:48:26 EDT 1998
  */
-static int bessel_Kn_scaled_small_x(const int n, const double x, double * result)
+static
+int
+bessel_Kn_scaled_small_x(const int n, const double x, gsl_sf_result * result)
 {
   int k;
   double y = 0.25 * x * x;
   double ln_x_2 = log(0.5*x);
-  double ln_nm1_fact;
+  double ex = exp(x);
+  gsl_sf_result ln_nm1_fact;
   double k_term;
   double term1, sum1, ln_pre1;
   double term2, sum2, pre2;
 
   gsl_sf_lnfact_impl((unsigned int)(n-1), &ln_nm1_fact);
 
-  ln_pre1 = -n*ln_x_2 + ln_nm1_fact;
-  if(ln_pre1 > GSL_LOG_DBL_MAX - 3.) return GSL_EOVRFLW;
+  ln_pre1 = -n*ln_x_2 + ln_nm1_fact.val;
+  if(ln_pre1 > GSL_LOG_DBL_MAX - 3.0) return GSL_EOVRFLW;
 
   sum1 = 1.0;
   k_term = 1.0;
@@ -39,49 +40,56 @@ static int bessel_Kn_scaled_small_x(const int n, const double x, double * result
     sum1 += k_term;
   }
   term1 = 0.5 * exp(ln_pre1) * sum1;
-  
+
   pre2 = 0.5 * exp(n*ln_x_2);
   if(pre2 > 0.0) {
     const int KMAX = 20;
-    double psi_n;
-    double npk_fact;
+    gsl_sf_result psi_n;
+    gsl_sf_result npk_fact;
     double yk = 1.0;
     double k_fact  = 1.0;
     double psi_kp1 = -M_EULER;
     double psi_npkp1;
     gsl_sf_psi_int_impl(n, &psi_n);
     gsl_sf_fact_impl((unsigned int)n, &npk_fact);
-    psi_npkp1 = psi_n + 1.0/n;
-    sum2 = (psi_kp1 + psi_npkp1 - 2.0*ln_x_2)/npk_fact;
+    psi_npkp1 = psi_n.val + 1.0/n;
+    sum2 = (psi_kp1 + psi_npkp1 - 2.0*ln_x_2)/npk_fact.val;
     for(k=1; k<KMAX; k++) {
-      psi_kp1   += 1./k;
-      psi_npkp1 += 1./(n+k);
-      k_fact   *= k;
-      npk_fact *= n+k;
+      psi_kp1   += 1.0/k;
+      psi_npkp1 += 1.0/(n+k);
+      k_fact    *= k;
+      npk_fact.val *= n+k;
       yk *= y;
-      k_term = yk*(psi_kp1 + psi_npkp1 - 2.0*ln_x_2)/(k_fact*npk_fact);
+      k_term = yk*(psi_kp1 + psi_npkp1 - 2.0*ln_x_2)/(k_fact*npk_fact.val);
       sum2 += k_term;
     }
-    term2 = ( GSL_IS_ODD(n) ? -1. : 1. ) * pre2 * sum2;
+    term2 = ( GSL_IS_ODD(n) ? -1.0 : 1.0 ) * pre2 * sum2;
   }
   else {
     term2 = 0.0;
   }
 
-  *result = exp(x) * (term1 + term2);
+  result->val  = ex * (term1 + term2);
+  result->err  = ex * GSL_DBL_EPSILON * (fabs(ln_pre1)*fabs(term1) + fabs(term2));
+  result->err += GSL_DBL_EPSILON * fabs(result->val);
+
   return GSL_SUCCESS;
 }
 
 
 /*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
 
-int gsl_sf_bessel_Kn_scaled_impl(int n, const double x, double * result)
+int gsl_sf_bessel_Kn_scaled_impl(int n, const double x, gsl_sf_result * result)
 {
   n = abs(n); /* K(-n, z) = K(n, z) */
 
-  if(x <= 0.0) return GSL_EDOM;
-
-  if(n == 0) {
+  if(result == 0) {
+    return GSL_EFAULT;
+  }
+  else if(x <= 0.0) {
+    return GSL_EDOM;
+  }
+  else if(n == 0) {
     return gsl_sf_bessel_K0_scaled_impl(x, result);
   }
   else if(n == 1) {
@@ -98,13 +106,15 @@ int gsl_sf_bessel_Kn_scaled_impl(int n, const double x, double * result)
   }
   else {
     /* Upward recurrence. [Gradshteyn + Ryzhik, 8.471.1] */
-    int j;
     double two_over_x = 2.0/x;
-    double b_jm1;
-    double b_j;
+    gsl_sf_result r_b_jm1;
+    gsl_sf_result r_b_j;
+    int stat_0 = gsl_sf_bessel_K0_scaled_impl(x, &r_b_jm1);
+    int stat_1 = gsl_sf_bessel_K1_scaled_impl(x, &r_b_j);
+    double b_jm1 = r_b_jm1.val;
+    double b_j   = r_b_j.val;
     double b_jp1;
-    int stat_0 = gsl_sf_bessel_K0_scaled_impl(x, &b_jm1);
-    int stat_1 = gsl_sf_bessel_K1_scaled_impl(x, &b_j);
+    int j;
 
     for(j=1; j<n; j++) {
       b_jp1 = b_jm1 + j * two_over_x * b_j;
@@ -112,32 +122,51 @@ int gsl_sf_bessel_Kn_scaled_impl(int n, const double x, double * result)
       b_j   = b_jp1; 
     } 
     
-    *result = b_j; 
+    result->val = b_j;
+    result->err = fabs(b_j) * (fabs(r_b_jm1.err/r_b_jm1.val) + fabs(r_b_j.err/r_b_j.val));
+
     return GSL_ERROR_SELECT_2(stat_0, stat_1);
   }
 }
 
-/* checked OK [GJ] Sun May  3 21:50:17 EDT 1998 */
+
+int gsl_sf_bessel_Kn_impl(const int n, const double x, gsl_sf_result * result)
+{
+  int status = gsl_sf_bessel_Kn_scaled_impl(n, x, result);
+  double ex = exp(-x);
+  result->val *= ex;
+  result->err *= ex;
+  return status;
+}
+
+
 int gsl_sf_bessel_Kn_scaled_array_impl(const int nmin, const int nmax, const double x, double * result_array)
 {
-  if(nmin < 0 || nmax < nmin || x <= 0.0) {
+  if(result_array == 0) {
+    return GSL_EFAULT;
+  }
+  else if(nmin < 0 || nmax < nmin || x <= 0.0) {
     int j;
     for(j=0; j<=nmax-nmin; j++) result_array[j] = 0.0;
     return GSL_EDOM;
   }
   else if(nmax == 0) {
-    return gsl_sf_bessel_K0_scaled_impl(x, &(result_array[0]));
+    gsl_sf_result b;
+    int stat = gsl_sf_bessel_K0_scaled_impl(x, &b);
+    result_array[0] = b.val;
+    return stat;
   }
   else {
     double two_over_x = 2.0/x;
-    double Knp1;
-    double Kn;
-    double Knm1;
-    int n;
-
-    int stat_0 = gsl_sf_bessel_Kn_scaled_impl(nmin,   x, &Knm1);
-    int stat_1 = gsl_sf_bessel_Kn_scaled_impl(nmin+1, x, &Kn);
+    gsl_sf_result r_Knm1;
+    gsl_sf_result r_Kn;
+    int stat_0 = gsl_sf_bessel_Kn_scaled_impl(nmin,   x, &r_Knm1);
+    int stat_1 = gsl_sf_bessel_Kn_scaled_impl(nmin+1, x, &r_Kn);
     int stat = GSL_ERROR_SELECT_2(stat_0, stat_1);
+    double Knp1;
+    double Kn   = r_Kn.val;
+    double Knm1 = r_Knm1.val;
+    int n;
 
     for(n=nmin+1; n<=nmax+1; n++) {
       if(Knm1 < DBL_MAX) {
@@ -178,7 +207,7 @@ gsl_sf_bessel_Kn_array_impl(const int nmin, const int nmax, const double x, doub
 
 /*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
 
-int gsl_sf_bessel_Kn_scaled_e(const int n, const double x, double * result)
+int gsl_sf_bessel_Kn_scaled_e(const int n, const double x, gsl_sf_result * result)
 {
   int status = gsl_sf_bessel_Kn_scaled_impl(n, x, result);
   if(status != GSL_SUCCESS) {
@@ -187,16 +216,16 @@ int gsl_sf_bessel_Kn_scaled_e(const int n, const double x, double * result)
   return status;
 }
 
-int gsl_sf_bessel_Kn_e(const int n, const double x, double * result)
+
+int gsl_sf_bessel_Kn_e(const int n, const double x, gsl_sf_result * result)
 {
-  double y = 0.;
-  int status = gsl_sf_bessel_Kn_scaled_impl(n, x, &y);
+  int status = gsl_sf_bessel_Kn_impl(n, x, result);
   if(status != GSL_SUCCESS) {
     GSL_ERROR("gsl_sf_bessel_Kn_e", status);
   }
-  *result = exp(-x) * y;
   return status;
 }
+
 
 int gsl_sf_bessel_Kn_scaled_array_e(const int nmin, const int nmax, const double x, double * result)
 {
@@ -214,28 +243,4 @@ int gsl_sf_bessel_Kn_array_e(const int nmin, const int nmax, const double x, dou
     GSL_ERROR("gsl_sf_bessel_Kn_array_e", status);
   }
   return status;
-}
-
-
-/*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*-*-*/
-
-double gsl_sf_bessel_Kn_scaled(const int n, const double x)
-{
-  double y = 0.;
-  int status = gsl_sf_bessel_Kn_scaled_impl(n, x, &y);
-  if(status != GSL_SUCCESS) {
-    GSL_WARNING("gsl_sf_bessel_Kn_scaled", status);
-  }
-  return y;
-}
-
-double gsl_sf_bessel_Kn(const int n, const double x)
-{
-  double y = 0.;
-  int status = gsl_sf_bessel_Kn_scaled_impl(n, x, &y);
-  if(status != GSL_SUCCESS) {
-    GSL_WARNING("gsl_sf_bessel_Kn", status);
-  }
-  y *= exp(-x);
-  return y;
 }

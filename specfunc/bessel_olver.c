@@ -392,7 +392,6 @@ static gsl_sf_cheb_series A4_lt1_cs = {
 };
 
 
-/* checked OK [GJ] Thu Apr 30 22:41:56 MDT 1998 */
 static double olver_B0(double z, double abs_zeta)
 {
   if(z < 0.98) {
@@ -418,7 +417,7 @@ static double olver_B0(double z, double abs_zeta)
   }
 }
 
-/* checked OK [GJ] Thu Apr 30 21:50:09 MDT 1998 */
+
 static double olver_B1(double z, double abs_zeta)
 {
   if(z < 0.88) {
@@ -462,12 +461,14 @@ static double olver_B1(double z, double abs_zeta)
   }
 }
 
-/* checked OK [GJ] Thu Apr 30 22:27:36 MDT 1998 */
+
 static double olver_B2(double z, double abs_zeta)
 {
   if(z < 0.8) {
     const double x = 5.0*z/2.0 - 1.0;
-    return gsl_sf_cheb_eval(&B2_lt1_cs, x) / z;
+    gsl_sf_result c;
+    gsl_sf_cheb_eval_impl(&B2_lt1_cs, x, &c);
+    return  c.val / z;
   }
   else if(z <= 1.2) {
     const double a = 1.0-z;
@@ -486,16 +487,20 @@ static double olver_B2(double z, double abs_zeta)
   else {
     const double zi = 1.0/z;
     const double x  = 12.0/5.0 * zi - 1.0;
-    return gsl_sf_cheb_eval(&B2_gt1_cs, x) * zi*zi*zi;
+    gsl_sf_result c;
+    gsl_sf_cheb_eval_impl(&B2_gt1_cs, x, &c);
+    return c.val * zi*zi*zi;
   }
 }
 
-/* checked OK [GJ] Thu Apr 30 21:01:51 MDT 1998  */
+
 static double olver_B3(double z, double abs_zeta)
 {
   if(z < 0.8) {
     const double x = 5.0*z/2.0 - 1.0;
-    return gsl_sf_cheb_eval(&B3_lt1_cs, x);
+    gsl_sf_result c;
+    gsl_sf_cheb_eval_impl(&B3_lt1_cs, x, &c);
+    return c.val;
   }
   else if(z < 1.2) {
     const double a = 1.0-z;
@@ -511,11 +516,13 @@ static double olver_B3(double z, double abs_zeta)
   else {
     const double x   = 12.0/(5.0*z) - 1.0;
     const double zi2 = 1.0/(z*z);
-    return gsl_sf_cheb_eval(&B3_gt1_cs, x) * zi2*zi2*zi2;
+    gsl_sf_result c;
+    gsl_sf_cheb_eval_impl(&B3_gt1_cs, x, &c);
+    return  c.val * zi2*zi2*zi2;
   }
 }
 
-/* checked OK [GJ] Thu Apr 30 20:08:13 MDT 1998 */
+
 static double olver_A1(double z, double abs_zeta)
 {
   if(z < 0.98) {
@@ -551,7 +558,7 @@ static double olver_A1(double z, double abs_zeta)
   }
 }
 
-/* checked OK [GJ] Thu Apr 30 20:03:06 MDT 1998 */
+
 static double olver_A2(double z, double abs_zeta)
 {
   if(z < 0.88) {
@@ -605,12 +612,14 @@ static double olver_A2(double z, double abs_zeta)
   }
 }
 
-/* checked OK [GJ] Thu Apr 30 17:35:03 MDT 1998 */
+
 static double olver_A3(double z, double abs_zeta)
 {
   if(z < 0.9) {
     const double x = 20.0*z/9.0 - 1.0;
-    return gsl_sf_cheb_eval(&A3_lt1_cs, x);
+    gsl_sf_result c;
+    gsl_sf_cheb_eval_impl(&A3_lt1_cs, x, &c);
+    return c.val;
   }
   else if(z < 1.1) {
     double a = 1.0-z;
@@ -626,16 +635,20 @@ static double olver_A3(double z, double abs_zeta)
   else {
     const double x   = 11.0/(5.0*z) - 1.0;
     const double zi2 = 1.0/(z*z);
-    return gsl_sf_cheb_eval(&A3_gt1_cs, x) * zi2*zi2*zi2;
+    gsl_sf_result c;
+    gsl_sf_cheb_eval_impl(&A3_gt1_cs, x, &c);
+    return  c.val * zi2*zi2*zi2;
   }
 }
 
-/* checked OK [GJ] Thu Apr 30 19:58:55 MDT 1998 */
+
 static double olver_A4(double z, double abs_zeta)
 {
   if(z < 0.8) {
     const double x = 5.0*z/2.0 - 1.0;
-    return gsl_sf_cheb_eval(&A4_lt1_cs, x);
+    gsl_sf_result c;
+    gsl_sf_cheb_eval_impl(&A4_lt1_cs, x, &c);
+    return c.val;
   }
   else if(z < 1.2) {
     double a = 1.0-z;
@@ -650,7 +663,9 @@ static double olver_A4(double z, double abs_zeta)
   else {
     const double x   = 12.0/(5.0*z) - 1.0;
     const double zi2 = 1.0/(z*z);
-    return gsl_sf_cheb_eval(&A4_gt1_cs, x) * zi2*zi2*zi2*zi2;
+    gsl_sf_result c;
+    gsl_sf_cheb_eval_impl(&A4_gt1_cs, x, &c);
+    return c.val * zi2*zi2*zi2*zi2;
   }
 }
 
@@ -691,11 +706,14 @@ static double olver_Bsum(double nu, double z, double abs_zeta)
  *
  * checked OK [GJ] Sun May  3 22:36:29 EDT 1998 
  */
-int gsl_sf_bessel_Jnu_asymp_Olver_impl(double nu, double x, double * result,
-                                       const gsl_prec_t goal, const unsigned int err_bits)
+int gsl_sf_bessel_Jnu_asymp_Olver_impl(double nu, double x, gsl_sf_result * result)
 {
-  if(x <= 0.0 || nu <= 0.0) {
-    *result = 0.0;
+  if(result == 0) {
+    return GSL_EFAULT;
+  }
+  else if(x <= 0.0 || nu <= 0.0) {
+    result->val = 0.0;
+    result->err = 0.0;
     return GSL_EDOM;
   }  
   else {
@@ -703,9 +721,12 @@ int gsl_sf_bessel_Jnu_asymp_Olver_impl(double nu, double x, double * result,
     double arg;
     double pre;
     double asum, bsum;
-    double ai, aip;
+    gsl_sf_result ai;
+    gsl_sf_result aip;
     double z = x/nu;
     double crnu = pow(nu, 1.0/3.0);
+    double nu3  = nu*nu*nu;
+    double nu11 = nu3*nu3*nu3*nu*nu;
     int stat_a;
 
     if(fabs(1.0-z) < 0.02) {
@@ -741,10 +762,12 @@ int gsl_sf_bessel_Jnu_asymp_Olver_impl(double nu, double x, double * result,
     bsum = olver_Bsum(nu, z, abs_zeta);
 
     arg  = crnu*crnu * zeta;
-    stat_a = gsl_sf_airy_Ai_impl(arg, &ai, goal, err_bits);
-    gsl_sf_airy_Ai_deriv_impl(arg, &aip, goal, err_bits);
+    stat_a = gsl_sf_airy_Ai_impl(arg, &ai);
+    gsl_sf_airy_Ai_deriv_impl(arg, &aip);
 
-    *result = pre * (ai*asum/crnu + aip*bsum/(nu*crnu*crnu));
+    result->val  = pre * (ai.val*asum/crnu + aip.val*bsum/(nu*crnu*crnu));
+    result->err  = GSL_DBL_EPSILON * fabs(result->val);
+    result->err += pre / (crnu*nu11);
 
     return stat_a;
   }
@@ -758,11 +781,14 @@ int gsl_sf_bessel_Jnu_asymp_Olver_impl(double nu, double x, double * result,
  *    nu = 10: uniformly good to > 10D
  *    nu = 20: uniformly good to > 13D
  */
-int gsl_sf_bessel_Ynu_asymp_Olver_impl(double nu, double x, double * result,
-                                       const gsl_prec_t goal, const unsigned int err_bits)
+int gsl_sf_bessel_Ynu_asymp_Olver_impl(double nu, double x, gsl_sf_result * result)
 {
-  if(x <= 0.0 || nu <= 0.0) {
-    *result = 0.0;
+  if(result == 0) {
+    return GSL_EFAULT;
+  }
+  else if(x <= 0.0 || nu <= 0.0) {
+    result->val = 0.0;
+    result->err = 0.0;
     return GSL_EDOM;
   }  
   else {
@@ -770,9 +796,12 @@ int gsl_sf_bessel_Ynu_asymp_Olver_impl(double nu, double x, double * result,
     double arg;
     double pre;
     double asum, bsum;
-    double bi, bip;
+    gsl_sf_result bi;
+    gsl_sf_result bip;
     double z = x/nu;
     double crnu = pow(nu, 1.0/3.0);
+    double nu3  = nu*nu*nu;
+    double nu11 = nu3*nu3*nu3*nu*nu;
     int stat_b;
 
     if(fabs(1.0-z) < 0.02) {
@@ -808,10 +837,13 @@ int gsl_sf_bessel_Ynu_asymp_Olver_impl(double nu, double x, double * result,
     bsum = olver_Bsum(nu, z, abs_zeta);
 
     arg  = crnu*crnu * zeta;
-    stat_b = gsl_sf_airy_Bi_impl(arg, &bi, goal, err_bits);
-    gsl_sf_airy_Bi_deriv_impl(arg, &bip, goal, err_bits);
+    stat_b = gsl_sf_airy_Bi_impl(arg, &bi);
+    gsl_sf_airy_Bi_deriv_impl(arg, &bip);
 
-    *result = -pre * (bi*asum/crnu + bip*bsum/(nu*crnu*crnu));
+    result->val  = -pre * (bi.val*asum/crnu + bip.val*bsum/(nu*crnu*crnu));
+    result->err  = GSL_DBL_EPSILON * fabs(result->val);
+    result->err += pre / (crnu*nu11);
+
     return stat_b;
   }
 }

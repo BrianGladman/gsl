@@ -154,39 +154,38 @@ int gsl_sf_bessel_kl_scaled_impl(int l, const double x, gsl_sf_result * result)
     return bessel_kl_scaled_small_x(l, x, result);
   }
   else if(GSL_ROOT3_DBL_EPSILON * x > (l*l + l + 1)) {
-    double b;
-    int status = gsl_sf_bessel_Knu_scaled_asympx_impl(l + 0.5, x, &b);
-    if(status == GSL_SUCCESS) b *= sqrt((0.5*M_PI)/x);
-    result->val = b;
-    result->err = GSL_DBL_EPSILON * fabs(b);
+    int status = gsl_sf_bessel_Knu_scaled_asympx_impl(l + 0.5, x, result);
+    double pre = sqrt((0.5*M_PI)/x);
+    result->val *= pre;
+    result->err *= pre;
     return status;
   }
   else if(GSL_MIN(0.29/(l*l+1.0), 0.5/(l*l+1.0+x*x)) < GSL_ROOT3_DBL_EPSILON) {
-    double b;
-    int status = gsl_sf_bessel_Knu_scaled_asymp_unif_impl(l + 0.5, x, &b);
-    if(status == GSL_SUCCESS) b *= sqrt((0.5*M_PI)/x);
-    result->val = b;
-    result->err = GSL_DBL_EPSILON * fabs(b);
+    int status = gsl_sf_bessel_Knu_scaled_asymp_unif_impl(l + 0.5, x, result);
+    double pre = sqrt((0.5*M_PI)/x);
+    result->val *= pre;
+    result->err *= pre;
     return status;
   }
   else {
     /* recurse upward */
-    int j;
-    double bk, bkm, bkp;
     gsl_sf_result r_bk;
     gsl_sf_result r_bkm;
-    gsl_sf_bessel_k1_scaled_impl(x, &r_bk);
-    gsl_sf_bessel_k0_scaled_impl(x, &r_bkm);
-    bk  = r_bk.val;
-    bkm = r_bkm.val;
+    int stat_1 = gsl_sf_bessel_k1_scaled_impl(x, &r_bk);
+    int stat_0 = gsl_sf_bessel_k0_scaled_impl(x, &r_bkm);
+    double bkp;
+    double bk  = r_bk.val;
+    double bkm = r_bkm.val;
+    int j;
     for(j=1; j<l; j++) { 
       bkp = (2*j+1)/x*bk + bkm;
       bkm = bk;
       bk  = bkp;
     }
     result->val = bk;
-    result->err = GSL_DBL_EPSILON * fabs(bk);
-    return GSL_SUCCESS;
+    result->err = fabs(bk) * (fabs(r_bk.err/r_bk.val) + fabs(r_bkm.err/r_bkm.val));
+
+    return GSL_ERROR_SELECT_2(stat_1, stat_0);
   }
 }
 

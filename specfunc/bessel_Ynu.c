@@ -42,11 +42,14 @@ bessel_Y_recur(const double nu_min, const double x, const int kmax,
 /*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
 
 int
-gsl_sf_bessel_Ynu_impl(double nu, double x, double * result,
-                       const gsl_prec_t goal, const unsigned int err_bits)
+gsl_sf_bessel_Ynu_impl(double nu, double x, gsl_sf_result * result)
 {
-  if(x <= 0.0 || nu < 0.0) {
-    *result = 0.0;
+  if(result == 0) {
+    return GSL_EFAULT;
+  }
+  else if(x <= 0.0 || nu < 0.0) {
+    result->val = 0.0;
+    result->err = 0.0;
     return GSL_EDOM;
   }
   else {
@@ -68,14 +71,19 @@ gsl_sf_bessel_Ynu_impl(double nu, double x, double * result,
       double J_mu, J_mup1, Jp_mu;
       double P, Q;
       if(mu >= 0.0) {
-        stat_0 = gsl_sf_bessel_Jnu_impl(mu,     x, &J_mu, goal, err_bits);
-        stat_1 = gsl_sf_bessel_Jnu_impl(mu+1.0, x, &J_mup1, goal, err_bits);
+        gsl_sf_result r_J_mu;
+	gsl_sf_result r_J_mup1;
+        stat_0 = gsl_sf_bessel_Jnu_impl(mu,     x, &r_J_mu);
+        stat_1 = gsl_sf_bessel_Jnu_impl(mu+1.0, x, &r_J_mup1);
+	J_mu   = r_J_mu.val;
+	J_mup1 = r_J_mup1.val;
       }
       else {
-        double J_mup2;
-	stat_0 = gsl_sf_bessel_Jnu_impl(mu+1.0, x, &J_mup1, goal, err_bits);
-        stat_1 = gsl_sf_bessel_Jnu_impl(mu+2.0, x, &J_mup2, goal, err_bits);
-	J_mu = 2.0*(mu+1.0)/x * J_mup1 - J_mup2;
+        gsl_sf_result r_J_mup1;
+        gsl_sf_result r_J_mup2;
+	stat_0 = gsl_sf_bessel_Jnu_impl(mu+1.0, x, &r_J_mup1);
+        stat_1 = gsl_sf_bessel_Jnu_impl(mu+2.0, x, &r_J_mup2);
+	J_mu = 2.0*(mu+1.0)/x * r_J_mup1.val - r_J_mup2.val;
       }
       stat_mu = gsl_sf_bessel_JY_steed_CF2(mu, x, &P, &Q);
       Jp_mu = mu/x * J_mu - J_mup1;
@@ -85,7 +93,9 @@ gsl_sf_bessel_Ynu_impl(double nu, double x, double * result,
 
     bessel_Y_recur(mu, x, N, Y_mu, Yp_mu, &Y_nu, &Yp_nu);
 
-    *result = Y_nu;
+    result->val = Y_nu;
+    result->err = GSL_DBL_EPSILON * fabs(result->val);
+
     return GSL_ERROR_SELECT_3(stat_mu, stat_0, stat_1);
   }
 }
@@ -94,27 +104,11 @@ gsl_sf_bessel_Ynu_impl(double nu, double x, double * result,
 /*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
 
 int
-gsl_sf_bessel_Ynu_e(const double nu, const double x, double * result,
-                    const gsl_prec_t goal, const unsigned int err_bits)
+gsl_sf_bessel_Ynu_e(const double nu, const double x, gsl_sf_result * result)
 {
-  int status = gsl_sf_bessel_Ynu_impl(nu, x, result, goal, err_bits);
+  int status = gsl_sf_bessel_Ynu_impl(nu, x, result);
   if(status != GSL_SUCCESS) {
     GSL_ERROR("gsl_sf_bessel_Ynu_e", status);
   }
   return status;
-}
-
-
-/*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*/
-
-double
-gsl_sf_bessel_Ynu(const double nu, const double x,
-                  const gsl_prec_t goal, const unsigned int err_bits)
-{
-  double y;
-  int status = gsl_sf_bessel_Ynu_impl(nu, x, &y, goal, err_bits);
-  if(status != GSL_SUCCESS) {
-    GSL_WARNING("gsl_sf_bessel_Ynu", status);
-  }
-  return y;
 }

@@ -217,20 +217,24 @@ int gsl_sf_bessel_il_scaled_impl(const int l, double x, gsl_sf_result * result)
   }
   */
   else if(GSL_MIN(0.29/(l*l+1.0), 0.5/(l*l+1.0+x*x)) < 0.5*GSL_ROOT3_DBL_EPSILON) {
-    double b = 0.0;
-    int status = gsl_sf_bessel_Inu_scaled_asymp_unif_impl(l + 0.5, x, &b);
-    result->val = sgn * sqrt((0.5*M_PI)/x) * b;
-    result->err = GSL_DBL_EPSILON * fabs(result->val);
+    int status = gsl_sf_bessel_Inu_scaled_asymp_unif_impl(l + 0.5, x, result);
+    double pre = sqrt((0.5*M_PI)/x);
+    result->val *= sgn * pre;
+    result->err *= pre;
     return status;
   }
   else {
     /* recurse down from safe values */
     double rt_term = sqrt((0.5*M_PI)/x);
-    double iellp1, iell, iellm1;
-    int ell;
     const int LMAX = 2 + (int) (1.2 / GSL_ROOT6_DBL_EPSILON);
-    int stat_a1 = gsl_sf_bessel_Inu_scaled_asymp_unif_impl(LMAX + 1 + 0.5, x, &iellp1);
-    int stat_a2 = gsl_sf_bessel_Inu_scaled_asymp_unif_impl(LMAX     + 0.5, x, &iell);
+    gsl_sf_result r_iellp1;
+    gsl_sf_result r_iell;
+    int stat_a1 = gsl_sf_bessel_Inu_scaled_asymp_unif_impl(LMAX + 1 + 0.5, x, &r_iellp1);
+    int stat_a2 = gsl_sf_bessel_Inu_scaled_asymp_unif_impl(LMAX     + 0.5, x, &r_iell);
+    double iellp1 = r_iellp1.val;
+    double iell   = r_iell.val;
+    double iellm1;
+    int ell;
     iellp1 *= rt_term;
     iell   *= rt_term;
     for(ell = LMAX; ell >= l+1; ell--) {
@@ -239,7 +243,8 @@ int gsl_sf_bessel_il_scaled_impl(const int l, double x, gsl_sf_result * result)
       iell   = iellm1;
     }
     result->val = sgn * iellm1;
-    result->err = GSL_DBL_EPSILON * fabs(result->val);
+    result->err = fabs(result->val)*(GSL_DBL_EPSILON + fabs(r_iellp1.err/r_iellp1.val) + fabs(r_iell.err/r_iell.val));
+
     return GSL_ERROR_SELECT_2(stat_a1, stat_a2);
   }
 }

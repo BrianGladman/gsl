@@ -4,9 +4,10 @@
 #ifndef BESSEL_OLVER_H_
 #define BESSEL_OLVER_H_
 
+#include "gsl_sf_result.h"
 
-int gsl_sf_bessel_Jnu_asymp_Olver_impl(double nu, double x, double * result, gsl_prec_t goal, unsigned int err_bits);
-int gsl_sf_bessel_Ynu_asymp_Olver_impl(double nu, double x, double * result, gsl_prec_t goal, unsigned int err_bits);
+int gsl_sf_bessel_Jnu_asymp_Olver_impl(double nu, double x, gsl_sf_result * result);
+int gsl_sf_bessel_Ynu_asymp_Olver_impl(double nu, double x, gsl_sf_result * result);
 
 
 #endif  /* !BESSEL_OLVER_H_ */
