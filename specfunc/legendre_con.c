@@ -26,6 +26,17 @@
 #define RECURSE_SMALL  (1.0e+5*DBL_MIN)
 
 
+/* Continued fraction for f_{n+1}/f_n
+ * f_n := P^{-mu-n}_{-1/2 + I tau}(x),  x >= 1.0
+ */
+static
+int
+conicalP_negmu_xgt1_CF1(const double mu, const int n, const double tau,
+                        const double x, double * result)
+{
+}
+
+
 /* Backward recursion for
  * y_n := 1/Gamma[1+mu+n] P^{mu+n}_{-1/2 + I tau}(x)
  * x > 1
@@ -1120,41 +1131,52 @@ int gsl_sf_conicalP_mhalf_impl(const double lambda, const double x, double * res
 }
 
 
-int gsl_sf_conicalP_sph_reg_impl(const int lmax, const double lambda,
-                                const double x,
-                                double * result
-				)
+int gsl_sf_conicalP_sph_reg_impl(const int l, const double lambda,
+                                 const double x,
+                                 double * result
+				 )
 {
-  /* FIXME: do something about this nonsense */
-  double one_p_x  = 1.0 + x;
-  double one_m_x = 1.0 - x;
-  /* double x = 0.5 * (one_plus_x - one_minus_x); */
-
-  if(fabs(x) < 1.0) {
-    double f0;
-    double p[2];
-    int l_start = 20 + (int) ceil(lmax * (1. + (0.14 + 0.026*lambda)));
-    p[0] = lambda*lambda;
-    p[1] = x/sqrt(one_m_x*one_p_x);
-    gsl_sf_conicalP_mhalf_impl(lambda, x, &f0);  /* l =  0  */ 
-    /*recurse_backward_minimal_simple_conical_sph_reg_xlt1(l_start, lmax, 0, p, f0, harvest, result);
-    */
-    
-  }
-  else if(x > 1.0) {
-    double f0;
-    double p[2];
-    int l_start = 10 + (int) ceil(lmax * (1. + (0.14 + 0.026*lambda)*(x-1.)));
-    p[0] = lambda*lambda;
-    p[1] = x/sqrt(-one_m_x*one_p_x);
-    gsl_sf_conicalP_mhalf_impl(lambda, x, &f0);
-    /*recurse_backward_minimal_simple_conical_sph_reg_xgt1(l_start, lmax, 0, p, f0, harvest, result);*/
-  }
-  else {
+  if(x <= -1.0) {
+    *result = 0.0;
     return GSL_EDOM;
   }
-}
+  else if(l == -1) {
+    return gsl_sf_conicalP_half_impl(lambda, x, result);
+  }
+  else if(l == 0) {
+    return gsl_sf_conicalP_mhalf_impl(lambda, x, result);
+  }
+  else if(x == 1.0) {
+    *result = 0.0;
+    return GSL_SUCCESS;
+  }
+  else if(x < 0.0) {
+    double c = 1.0/sqrt(1.0-x*x);
+    double Pellm1;
+    double Pell;
+    double Pellp1;
+    int ell;
+    int stat_0 = gsl_sf_conicalP_half_impl(lambda, x, &Pellm1);   /* P^( 1/2) */
+    int stat_1 = gsl_sf_conicalP_mhalf_impl(lambda, x, &Pellm1);  /* P^(-1/2) */
+    int stat_P = GSL_ERROR_SELECT_2(stat_0, stat_1);
 
+    for(ell=0; ell<l; ell++) {
+      double d = (ell+1.0)*(ell+1.0) + lambda*lambda;
+      Pellp1 = (Pellm1 - 2.0*(ell+0.5)*c*x * Pell) / d;
+      Pellm1 = Pell;
+      Pell   = Pellp1;
+    }
+
+    *result = Pell;
+    return GSL_SUCCESS;
+  }
+  else if(x < 1.0) {
+  }
+  else {
+    /* x > 1.0 */
+    
+  }
+}
 
 
 

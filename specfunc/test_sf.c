@@ -4500,6 +4500,20 @@ int check_legendre(void)
   status += s;
 
   s = 0;
+  y = gsl_sf_conicalP_sph_reg(2, 1.0, -0.5);
+  s += ( frac_diff(y, 1.6406279287008789526 ) > 1.0e-12 );
+  gsl_test(s, "  gsl_sf_conicalP_sph_reg_impl(2, 1.0, -0.5)");
+  printf("%22.18g\n", y);
+  status += s;
+
+  s = 0;
+  y = gsl_sf_conicalP_sph_reg(10, 1.0, -0.5);
+  s += ( frac_diff(y, 0.000029315266725049129448 ) > 1.0e-12 );
+  gsl_test(s, "  gsl_sf_conicalP_sph_reg_impl(10, 1.0, -0.5)");
+  printf("%22.18g\n", y);
+  status += s;
+
+  s = 0;
   s += ( frac_diff(gsl_sf_legendre_H3d_0(1.0e-06, 1.0e-06), 0.9999999999998333333     ) > 1.0e-14 );
   s += ( frac_diff(gsl_sf_legendre_H3d_0(1.0, 0.0),         1.0                       ) > 1.0e-14 );
   s += ( frac_diff(gsl_sf_legendre_H3d_0(1.0, 1.0),         0.7160229153604338713     ) > 1.0e-14 );

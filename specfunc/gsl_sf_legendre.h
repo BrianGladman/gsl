@@ -33,7 +33,7 @@ double gsl_sf_legendre_P4(double x);
 double gsl_sf_legendre_P5(double x);
 
 
-/* P_l^m(x)  m >= 0; l >= m; x >= 0
+/* P_l^m(x)  m >= 0; l >= m; |x| <= 1.0
  *
  * Note that this function grows combinatorially with l.
  * Therefore we can easily generate an overflow for l larger
@@ -55,17 +55,17 @@ int     gsl_sf_legendre_Plm_e(int l, int m, double x, double * result);
 double  gsl_sf_legendre_Plm(int l, int m, double x);
 
 
-/* P_l^m(x)  m >= 0; l >= m; x >= 0
+/* P_l^m(x)  m >= 0; l >= m; |x| <= 1.0
  * l=|m|,...,lmax
  *
- * exceptions: 
+ * exceptions: GSL_EDOM, GSL_EOVRFLW
  */
 int gsl_sf_legendre_Plm_array_impl(int lmax, int m, double x, double * result_array);
 int gsl_sf_legendre_Plm_array_e(int lmax, int m, double x, double * result_array);
 
 
 /* P_l^m(x), normalized properly for use in spherical harmonics
- * m >= 0; l >= m; x >= 0
+ * m >= 0; l >= m; |x| <= 1.0
  *
  * There is no overflow problem, as there is for the
  * standard normalization of P_l^m(x).
@@ -82,10 +82,10 @@ double  gsl_sf_legendre_sphPlm(int l, int m, double x);
 
 
 /* P_l^m(x), normalized properly for use in spherical harmonics
- * m >= 0; l >= m; x >= 0
+ * m >= 0; l >= m; |x| <= 1.0
  * l=|m|,...,lmax
  *
- * exceptions: 
+ * exceptions: GSL_EDOM
  */
 int gsl_sf_legendre_sphPlm_array_impl(int lmax, int m, double x, double * result_array);
 int gsl_sf_legendre_sphPlm_array_e(int lmax, int m, double x, double * result_array);
@@ -97,40 +97,44 @@ int gsl_sf_legendre_sphPlm_array_e(int lmax, int m, double x, double * result_ar
 int gsl_sf_legendre_array_size(const int lmax, const int m);
 
 
-/* Irregular (Spherical) Conical Function, mu=1/2
+/* Irregular (Spherical) Conical Function
  * P^{1/2}_{-1/2 + I lambda}(x)
  *
- * exceptions: 
+ * x > -1.0
+ * exceptions: GSL_EDOM
  */
 int     gsl_sf_conicalP_half_impl(double lambda, double x, double * result);
 int     gsl_sf_conicalP_half_e(double lambda, double x, double * result);
 double  gsl_sf_conicalP_half(double lambda, double x);
 
 
-/* Regular (Spherical) Conical Function, mu=-1/2
+/* Regular (Spherical) Conical Function
  * P^{-1/2}_{-1/2 + I lambda}(x)
  *
- * exceptions: 
+ * x > -1.0
+ * exceptions: GSL_EDOM
  */
 int     gsl_sf_conicalP_mhalf_impl(double lambda, double x, double * result);
 int     gsl_sf_conicalP_mhalf_e(double lambda, double x, double * result);
 double  gsl_sf_conicalP_mhalf(double lambda, double x);
 
 
-/* Conical Function, mu=0
+/* Conical Function
  * P^{0}_{-1/2 + I lambda}(x)
  *
- * exceptions: 
+ * x > -1.0
+ * exceptions: GSL_EDOM
  */
 int     gsl_sf_conicalP_0_impl(double lambda, double x, double * result);
 int     gsl_sf_conicalP_0_e(double lambda, double x, double * result);
 double  gsl_sf_conicalP_0(double lambda, double x);
 
 
-/* Conical Function, mu=1
+/* Conical Function
  * P^{1}_{-1/2 + I lambda}(x)
  *
- * exceptions: 
+ * x > -1.0
+ * exceptions: GSL_EDOM
  */
 int     gsl_sf_conicalP_1_impl(double lambda, double x, double * result);
 int     gsl_sf_conicalP_1_e(double lambda, double x, double * result);
@@ -140,7 +144,8 @@ double  gsl_sf_conicalP_1(double lambda, double x);
 /* Regular (Spherical) Conical Function
  * P^{-1/2-l}_{-1/2 + I lambda}(x)
  *
- * exceptions: 
+ * x > -1.0, l >= -1
+ * exceptions: GSL_EDOM
  */
 int     gsl_sf_conicalP_sph_reg_impl(int l, double lambda, double x, double * result);
 int     gsl_sf_conicalP_sph_reg_e(int l, double lambda, double x, double * result);
@@ -151,7 +156,8 @@ double  gsl_sf_conicalP_sph_reg(int l, double lambda, double x);
  * P^{-1/2-l}_{-1/2 + I lambda}(x)
  * l=0,...,lmax
  *
- * exceptions: 
+ * x > -1.0, lmax >= 0
+ * exceptions: GSL_EDOM
  */
 int gsl_sf_conicalP_sph_reg_array_impl(int lmax, double lambda, double x, double * result_array);
 int gsl_sf_conicalP_sph_reg_array_e(int lmax, double lambda, double x, double * result_array);
@@ -167,12 +173,13 @@ int gsl_sf_conicalP_sph_reg_array_e(int lmax, double lambda, double x, double * 
 /* Zeroth radial eigenfunction of the Laplacian on the
  * 3-dimensional hyperbolic space.
  *
- * legendre_H3d_0(lambda,eta) := 
+ * legendre_H3d_0(lambda,eta) := sin(lambda*eta)/(lambda*sinh(eta))
  * 
- * Noramlization:
+ * Normalization:
  * Flat-Lim legendre_H3d_0(lambda,eta) = j_0(lambda*eta)
  *
- * legendre_H3d_0(lambda,eta) := sin(lambda*eta)/(lambda*sinh(eta))
+ * eta >= 0.0
+ * exceptions: GSL_EDOM
  */
 int     gsl_sf_legendre_H3d_0_impl(double lambda, double eta, double * result);
 int     gsl_sf_legendre_H3d_0_e(double lambda, double eta, double * result);
@@ -189,6 +196,8 @@ double  gsl_sf_legendre_H3d_0(double lambda, double eta);
  * Normalization:
  * Flat-Lim legendre_H3d_1(lambda,eta) = j_1(lambda*eta)
  *
+ * eta >= 0.0
+ * exceptions: GSL_EDOM
  */
 int     gsl_sf_legendre_H3d_1_impl(double lambda, double eta, double * result);
 int     gsl_sf_legendre_H3d_1_e(double lambda, double eta, double * result);
@@ -196,9 +205,13 @@ double  gsl_sf_legendre_H3d_1(double lambda, double eta);
 
 
 /* l'th radial eigenfunction of the Laplacian on the
- * 3-dimensional hyperbolic space. Normalized so that
+ * 3-dimensional hyperbolic space.
  *
+ * Normalization:
  * Flat-Lim legendre_H3d_l(l,lambda,eta) = j_l(lambda*eta)
+ *
+ * eta >= 0.0, l >= 0
+ * exceptions: GSL_EDOM
  */
 int     gsl_sf_legendre_H3d_impl(int l, double lambda, double eta, double * result);
 int     gsl_sf_legendre_H3d_e(int l, double lambda, double eta, double * result);
