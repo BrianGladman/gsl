@@ -44,12 +44,16 @@ int test_LUc_solve_dim(const gsl_matrix_complex * m, const double * actual, doub
 int test_LUc_solve(void);
 int test_QR_solve_dim(const gsl_matrix * m, const double * actual, double eps);
 int test_QR_solve(void);
+int test_QR_QRsolve_dim(const gsl_matrix * m, const double * actual, double eps);
+int test_QR_QRsolve(void);
 int test_QR_lssolve_dim(const gsl_matrix * m, const double * actual, double eps);
 int test_QR_lssolve(void);
 int test_QR_decomp_dim(const gsl_matrix * m, double eps);
 int test_QR_decomp(void);
 int test_QRPT_solve_dim(const gsl_matrix * m, const double * actual, double eps);
 int test_QRPT_solve(void);
+int test_QRPT_QRsolve_dim(const gsl_matrix * m, const double * actual, double eps);
+int test_QRPT_QRsolve(void);
 int test_QRPT_decomp_dim(const gsl_matrix * m, double eps);
 int test_QRPT_decomp(void);
 int test_QR_update_dim(const gsl_matrix * m, double eps);
@@ -635,6 +639,81 @@ int test_QR_solve(void)
 
 
 int
+test_QR_QRsolve_dim(const gsl_matrix * m, const double * actual, double eps)
+{
+  int s = 0;
+  size_t i, dim = m->size1;
+
+  gsl_vector * rhs = gsl_vector_alloc(dim);
+  gsl_matrix * qr  = gsl_matrix_alloc(dim,dim);
+  gsl_matrix * q  = gsl_matrix_alloc(dim,dim);
+  gsl_matrix * r  = gsl_matrix_alloc(dim,dim);
+  gsl_vector * d = gsl_vector_alloc(dim);
+  gsl_vector * x = gsl_vector_alloc(dim);
+
+  gsl_matrix_memcpy(qr,m);
+  for(i=0; i<dim; i++) gsl_vector_set(rhs, i, i+1.0);
+  s += gsl_linalg_QR_decomp(qr, d);
+  s += gsl_linalg_QR_unpack(qr, d, q, r);
+  s += gsl_linalg_QR_QRsolve(q, r, rhs, x);
+  for(i=0; i<dim; i++) {
+    int foo = check(gsl_vector_get(x, i), actual[i], eps);
+    if(foo) {
+      printf("%3d[%d]: %22.18g   %22.18g\n", dim, i, gsl_vector_get(x, i), actual[i]);
+    }
+    s += foo;
+  }
+
+  gsl_vector_free(x);
+  gsl_vector_free(d);
+  gsl_matrix_free(qr);
+  gsl_vector_free(rhs);
+
+  return s;
+}
+
+int test_QR_QRsolve(void)
+{
+  int f;
+  int s = 0;
+
+  f = test_QR_QRsolve_dim(hilb2, hilb2_solution, 2 * 8.0 * GSL_DBL_EPSILON);
+  gsl_test(f, "  QR_QRsolve hilbert(2)");
+  s += f;
+
+  f = test_QR_QRsolve_dim(hilb3, hilb3_solution, 2 * 64.0 * GSL_DBL_EPSILON);
+  gsl_test(f, "  QR_QRsolve hilbert(3)");
+  s += f;
+
+  f = test_QR_QRsolve_dim(hilb4, hilb4_solution, 2 * 1024.0 * GSL_DBL_EPSILON);
+  gsl_test(f, "  QR_QRsolve hilbert(4)");
+  s += f;
+
+  f = test_QR_QRsolve_dim(hilb12, hilb12_solution, 0.5);
+  gsl_test(f, "  QR_QRsolve hilbert(12)");
+  s += f;
+
+  f = test_QR_QRsolve_dim(vander2, vander2_solution, 8.0 * GSL_DBL_EPSILON);
+  gsl_test(f, "  QR_QRsolve vander(2)");
+  s += f;
+
+  f = test_QR_QRsolve_dim(vander3, vander3_solution, 64.0 * GSL_DBL_EPSILON);
+  gsl_test(f, "  QR_QRsolve vander(3)");
+  s += f;
+
+  f = test_QR_QRsolve_dim(vander4, vander4_solution, 1024.0 * GSL_DBL_EPSILON);
+  gsl_test(f, "  QR_QRsolve vander(4)");
+  s += f;
+
+  f = test_QR_QRsolve_dim(vander12, vander12_solution, 0.05);
+  gsl_test(f, "  QR_QRsolve vander(12)");
+  s += f;
+
+  return s;
+}
+
+
+int
 test_QR_lssolve_dim(const gsl_matrix * m, const double * actual, double eps)
 {
   int s = 0;
@@ -896,6 +975,83 @@ int test_QRPT_solve(void)
   return s;
 }
 
+int
+test_QRPT_QRsolve_dim(const gsl_matrix * m, const double * actual, double eps)
+{
+  int s = 0;
+  int signum;
+  size_t i, dim = m->size1;
+
+  gsl_permutation * perm = gsl_permutation_alloc(dim);
+  gsl_vector * rhs = gsl_vector_alloc(dim);
+  gsl_matrix * qr  = gsl_matrix_alloc(dim,dim);
+  gsl_matrix * q  = gsl_matrix_alloc(dim,dim);
+  gsl_matrix * r  = gsl_matrix_alloc(dim,dim);
+  gsl_vector * d = gsl_vector_alloc(dim);
+  gsl_vector * x = gsl_vector_alloc(dim);
+  gsl_vector * norm = gsl_vector_alloc(dim);
+
+  gsl_matrix_memcpy(qr,m);
+  for(i=0; i<dim; i++) gsl_vector_set(rhs, i, i+1.0);
+  s += gsl_linalg_QRPT_decomp2(qr, q, r, d, perm, &signum, norm);
+  s += gsl_linalg_QRPT_QRsolve(q, r, perm, rhs, x);
+  for(i=0; i<dim; i++) {
+    int foo = check(gsl_vector_get(x, i), actual[i], eps);
+    if(foo) {
+      printf("%3d[%d]: %22.18g   %22.18g\n", dim, i, gsl_vector_get(x, i), actual[i]);
+    }
+    s += foo;
+  }
+
+  gsl_vector_free(norm);
+  gsl_vector_free(x);
+  gsl_vector_free(d);
+  gsl_matrix_free(qr);
+  gsl_vector_free(rhs);
+  gsl_permutation_free(perm);
+
+  return s;
+}
+
+int test_QRPT_QRsolve(void)
+{
+  int f;
+  int s = 0;
+
+  f = test_QRPT_QRsolve_dim(hilb2, hilb2_solution, 2 * 8.0 * GSL_DBL_EPSILON);
+  gsl_test(f, "  QRPT_QRsolve hilbert(2)");
+  s += f;
+
+  f = test_QRPT_QRsolve_dim(hilb3, hilb3_solution, 2 * 64.0 * GSL_DBL_EPSILON);
+  gsl_test(f, "  QRPT_QRsolve hilbert(3)");
+  s += f;
+
+  f = test_QRPT_QRsolve_dim(hilb4, hilb4_solution, 2 * 2048.0 * GSL_DBL_EPSILON);
+  gsl_test(f, "  QRPT_QRsolve hilbert(4)");
+  s += f;
+
+  f = test_QRPT_QRsolve_dim(hilb12, hilb12_solution, 0.5);
+  gsl_test(f, "  QRPT_QRsolve hilbert(12)");
+  s += f;
+
+  f = test_QRPT_QRsolve_dim(vander2, vander2_solution, 8.0 * GSL_DBL_EPSILON);
+  gsl_test(f, "  QRPT_QRsolve vander(2)");
+  s += f;
+
+  f = test_QRPT_QRsolve_dim(vander3, vander3_solution, 64.0 * GSL_DBL_EPSILON);
+  gsl_test(f, "  QRPT_QRsolve vander(3)");
+  s += f;
+
+  f = test_QRPT_QRsolve_dim(vander4, vander4_solution, 1024.0 * GSL_DBL_EPSILON);
+  gsl_test(f, "  QRPT_QRsolve vander(4)");
+  s += f;
+
+  f = test_QRPT_QRsolve_dim(vander12, vander12_solution, 0.05);
+  gsl_test(f, "  QRPT_QRsolve vander(12)");
+  s += f;
+
+  return s;
+}
 
 int
 test_QRPT_decomp_dim(const gsl_matrix * m, double eps)
@@ -2074,10 +2230,12 @@ int main(void)
   gsl_test(test_LUc_solve(),      "Complex LU Decomposition and Solve");
   gsl_test(test_QR_decomp(),      "QR Decomposition");
   gsl_test(test_QR_solve(),       "QR Solve");
+  gsl_test(test_QR_QRsolve(),     "QR QR Solve");
   gsl_test(test_QR_lssolve(),     "QR LS Solve");
   gsl_test(test_QR_update(),      "QR Rank-1 Update");
   gsl_test(test_QRPT_decomp(),    "QRPT Decomposition");
   gsl_test(test_QRPT_solve(),     "QRPT Solve");
+  gsl_test(test_QRPT_QRsolve(),   "QRPT QR Solve");
   gsl_test(test_SV_decomp(),      "Singular Value Decomposition");
   gsl_test(test_SV_solve(),       "SVD Solve");
   gsl_test(test_cholesky_decomp(),"Cholesky Decomposition");

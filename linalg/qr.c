@@ -533,7 +533,7 @@ gsl_linalg_QR_QRsolve (gsl_matrix * Q, gsl_matrix * R, const gsl_vector * b, gsl
     {
       /* compute sol = Q^T b */
 
-      gsl_blas_dgemv (CblasNoTrans, 1.0, Q, b, 0.0, x);
+      gsl_blas_dgemv (CblasTrans, 1.0, Q, b, 0.0, x);
 
       /* Solve R x = sol, storing x in-place */
 

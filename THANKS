@@ -150,7 +150,7 @@ for linear algebra, interpolation, additional tridiagonal solvers
 
 * <zunda@24i.net> for bug report
 
-* "Christian T. Steigies" <cts@debian.org> for documentation bug report
+* Christian T. Steigies <cts@debian.org> for documentation bug report
 
 * Atakan Gurkan <ato@northwestern.edu> for bug reports and patches for the 
 random number generators.
@@ -182,10 +182,10 @@ simulated annealing
 
 * Gene Carter <ecarter@mindspring.com> build shared libraries on MacOS X
 
-* "Fabian Jakobs" <fabian.jakobs@web.de> fixed a bug in
+* Fabian Jakobs <fabian.jakobs@web.de> fixed a bug in
 gsl_linalg_bidiag_unpack_B, and documentation bug-fix for blas
 
-* "Gavin Crooks" <gec@threeplusone.com> documentation bug fix,
+* Gavin Crooks <gec@threeplusone.com> documentation bug fix,
 dirichlet distribution, multinomial distribution
 
 * Gert Van den Eynde <gvdeynde@sckcen.be> gsl_ldexp, gsl_frexp, gsl_fcmp
@@ -223,16 +223,13 @@ memory allocation
 
 * Attilio Rivoldini <rivoldini@oma.be> bug report for CBLAS tests
 
-* W.M. Vissers" <vissers@theochem.kun.nl> bug report for
+* W.M. Vissers <vissers@theochem.kun.nl> bug report for
 gsl_complex_arccsc_real
 
 * Paolo Redaelli <paolo.redaelli@libero.it> bug report for chebyshev
 functions
 
 * Andrew Howard <ahoward@pollux.usc.edu> bug report for gsl_ran_discrete
-
-* Mario Pernici <Mario.Pernici@mi.infn.it> bug report for
-gsl_permutation_canonical_to_linear, linalg bug reports.
 
 * Heiko Bauke <Heiko.Bauke@Physik.Uni-Magdeburg.DE> bug reports and patches
 for random number generators
@@ -244,7 +241,9 @@ usage of MINPACK routines
 
 * Mario Pernici <Mario.Pernici@mi.infn.it> bug fix for
 gsl_combination_valid and new function gsl_permutation_memcpy,
-doc fix for bessel functions, bug fix for gsl_sf_psi_1_int
+doc fix for bessel functions, bug fix for gsl_sf_psi_1_int,
+bug report for gsl_permutation_canonical_to_linear, linalg
+QRPT bug reports and fixes.
 
 * Fabio Brugnara <brugnara@itc.it> provided a much-needed bug
 fix for the conjugate gradient algorithm multidimensional

@@ -156,17 +156,17 @@ gsl_linalg_QRPT_decomp (gsl_matrix * A, gsl_vector * tau, gsl_permutation * p, i
             {
               for (j = i + 1; j < N; j++)
                 {
-                  double y = 0;
                   double x = gsl_vector_get (norm, j);
 
 		  if (x > 0.0)
 		    {
+                      double y = 0;
 		      double temp= gsl_matrix_get (A, i, j) / x;
                   
 		      if (fabs (temp) >= 1)
 			y = 0.0;
 		      else
-			y = y * sqrt (1 - temp * temp);
+			y = x * sqrt (1 - temp * temp);
 		      
 		      /* recompute norm to prevent loss of accuracy */
 
@@ -323,7 +323,7 @@ gsl_linalg_QRPT_QRsolve (const gsl_matrix * Q, const gsl_matrix * R,
     {
       /* compute b' = Q^T b */
 
-      gsl_blas_dgemv (CblasNoTrans, 1.0, Q, b, 0.0, x);
+      gsl_blas_dgemv (CblasTrans, 1.0, Q, b, 0.0, x);
 
       /* Solve R x = b', storing x inplace */
 

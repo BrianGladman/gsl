@@ -1,3 +1,13 @@
+2003-05-08  Brian Gough  <bjg@network-theory.co.uk>
+
+	* test.c: added tests for QR_QRsolve and QRPT_QRsolve
+
+	* qrpt.c (gsl_linalg_QRPT_QRsolve): fixed dgemv to use CblasTrans
+	when computing Q^T b
+
+	* qr.c (gsl_linalg_QR_QRsolve): fixed dgemv to use CblasTrans when
+	computing Q^T b
+
 Fri Oct 18 17:46:30 2002  Brian Gough  <bjg@network-theory.co.uk>
 
 	* householdercomplex.c (gsl_linalg_complex_householder_transform):
