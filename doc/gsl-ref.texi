@@ -124,6 +124,11 @@ GNU Manual, like GNU software.''
 
 The Texinfo source for this manual may be obtained from 
 @code{ftp.gnu.org/gnu/gsl/}
+
+@ifclear publish
+Printed copies of this manual can be purchased from Network Theory Ltd
+at@* @uref{http://www.network-theory.co.uk/gsl/manual/}.
+@end ifclear
 @end copying
 @end iftex
 
@@ -191,10 +196,13 @@ routines for scientific computing.  It corresponds to release
 @value{VERSION} of the library.
 
 More information about GSL can be found at the project homepage,
-@url{http://www.gnu.org/software/gsl/}.
+@uref{http://www.gnu.org/software/gsl/}.
 
 Permission is granted to copy, distribute and/or modify this document
 under the terms of the GNU Free Documentation License.
+
+Printed copies of this manual can be purchased from Network Theory Ltd
+at @uref{http://www.network-theory.co.uk/gsl/manual/}.
 @end ifnottex
 
 @menu

@@ -89,7 +89,7 @@ Questions about the GNU GPL},
 
 @itemize @asis
 @item 
-@url{http://www.gnu.org/copyleft/gpl-faq.html}
+@uref{http://www.gnu.org/copyleft/gpl-faq.html}
 @end itemize
 @noindent
 The Free Software Foundation also operates a license consulting service
@@ -108,7 +108,7 @@ code can be found on the GNU website,
 
 @itemize @asis
 @item 
-@url{http://www.gnu.org/software/gsl/}
+@uref{http://www.gnu.org/software/gsl/}
 @end itemize
 @noindent
 The preferred platform for the library is a GNU system, which allows it
@@ -177,9 +177,6 @@ when the library is compiled without optimization. Thank you.
 Additional information, including online copies of this manual, links to
 related projects, and mailing list archives are available from the
 website mentioned above.  
-
-Printed copies of this manual can be purchased from Network Theory Ltd
-at @url{http://www.network-theory.co.uk/gsl/manual/}.
 
 Any questions about the use and installation of the library can be asked
 on the mailing list @code{help-gsl@@gnu.org}.  To subscribe to this

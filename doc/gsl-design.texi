@@ -83,7 +83,7 @@ This file documents the design of @value{GSL}, a collection of numerical
 routines for scientific computing.
 
 More information about GSL can be found at the project homepage,
-@url{http://www.gnu.org/software/gsl/}.
+@uref{http://www.gnu.org/software/gsl/}.
 @end ifinfo
 
 The @value{GSL} is a library of scientific subroutines.  It aims to
@@ -447,9 +447,9 @@ Libraries'', Software - Practice & Experience, v.30, pp.107-128, 2000.
 @end itemize
 @noindent
 It is available from
-@url{http://www.research.att.com/sw/tools/sfio/dm-spe.ps} or the earlier
+@uref{http://www.research.att.com/sw/tools/sfio/dm-spe.ps} or the earlier
 technical report Kiem-Phong Vo, "An Architecture for Reusable Libraries"
-@url{http://citeseer.nj.nec.com/48973.html}.
+@uref{http://citeseer.nj.nec.com/48973.html}.
 
 There are associated papers on Vmalloc, SFIO, and CDT which are also
 relevant to the design of portable C libraries.
@@ -459,17 +459,17 @@ relevant to the design of portable C libraries.
 Kiem-Phong Vo, ``Vmalloc: A General and Efficient Memory
 Allocator''. Software Practice & Experience, 26:1--18, 1996.
 
-@url{http://www.research.att.com/sw/tools/vmalloc/vmalloc.ps}
+@uref{http://www.research.att.com/sw/tools/vmalloc/vmalloc.ps}
 @item
 Kiem-Phong Vo. ``Cdt: A Container Data Type Library''. Soft. Prac. &
 Exp., 27:1177--1197, 1997
 
-@url{http://www.research.att.com/sw/tools/cdt/cdt.ps}
+@uref{http://www.research.att.com/sw/tools/cdt/cdt.ps}
 @item
 David G. Korn and Kiem-Phong Vo, ``Sfio: Safe/Fast String/File IO'',
 Proceedings of the Summer '91 Usenix Conference, pp.  235-256, 1991.
 
-@url{http://citeseer.nj.nec.com/korn91sfio.html}
+@uref{http://citeseer.nj.nec.com/korn91sfio.html}
 @end itemize
 
 Source code should be indented according to the GNU Coding Standards,

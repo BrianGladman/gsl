@@ -355,7 +355,7 @@ command to remove them later if necessary.
 
 @node Debugging References
 @section References and Further Reading
-@noindent
+
 The following books are essential reading for anyone writing and
 debugging numerical programs with @sc{gcc} and @sc{gdb}.
 

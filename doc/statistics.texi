@@ -691,7 +691,7 @@ This program should produce the following output,
 
 @node Statistics References and Further Reading
 @section References and Further Reading
-@noindent
+
 The standard reference for almost any topic in statistics is the
 multi-volume @cite{Advanced Theory of Statistics} by Kendall and Stuart.
 
@@ -725,6 +725,6 @@ R.M. Barnett et al., Physical Review D54, 1 (1996)
 @end itemize
 @noindent
 The Review of Particle Physics is available online at
-@url{http://pdg.lbl.gov/}.
+@uref{http://pdg.lbl.gov/}.
 
 

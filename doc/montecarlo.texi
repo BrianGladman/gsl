@@ -675,7 +675,6 @@ algorithms.
 @node Monte Carlo Integration References and Further Reading
 @section References and Further Reading
 
-@noindent
 The @sc{miser} algorithm is described in the following article,
 
 @itemize @asis

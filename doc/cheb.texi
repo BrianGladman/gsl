@@ -164,7 +164,6 @@ approximation and 40-th order approximation, all sampled at intervals of
 @node Chebyshev Approximation References and Further Reading
 @section References and Further Reading
 
-@noindent
 The following paper describes the use of Chebyshev series,
 
 @itemize @asis

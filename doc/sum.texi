@@ -153,7 +153,7 @@ sum does in 13 terms.
 
 @node Series Acceleration References
 @section References and Further Reading
-@noindent
+
 The algorithms used by these functions are described in the following papers,
 
 @itemize @asis
@@ -179,5 +179,5 @@ A review paper on the Levin Transform is available online,
 @itemize @asis
 @item
 Herbert H. H. Homeier, Scalar Levin-Type Sequence Transformations,
-@url{http://xxx.lanl.gov/abs/math/0005209}
+@uref{http://xxx.lanl.gov/abs/math/0005209}
 @end itemize

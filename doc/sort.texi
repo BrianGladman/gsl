@@ -290,7 +290,7 @@ $ ./a.out
 
 @node Sorting References and Further Reading
 @section References and Further Reading
-@noindent
+
 The subject of sorting is covered extensively in Knuth's
 @cite{Sorting and Searching},
 

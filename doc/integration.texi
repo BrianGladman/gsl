@@ -799,7 +799,6 @@ margin of safety of one order of magnitude.
 @node Numerical integration References and Further Reading
 @section References and Further Reading
 
-@noindent
 The following book is the definitive reference for @sc{quadpack}, and was
 written by the original authors.  It provides descriptions of the
 algorithms, program listings, test programs and examples.  It also

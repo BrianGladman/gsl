@@ -296,7 +296,7 @@ $ ./a.out
 
 @node Special Functions References and Further Reading
 @section References and Further Reading
-@noindent
+
 The library follows the conventions of @cite{Abramowitz & Stegun} where
 possible,
 @itemize @asis

@@ -216,7 +216,7 @@ sign of an eigenvector is arbitrary.
 
 @node Eigenvalue and Eigenvector References
 @section References and Further Reading
-@noindent
+
 Further information on the algorithms described in this section can be
 found in the following book,
 
@@ -233,7 +233,7 @@ The @sc{lapack} library is described in,
 @cite{LAPACK Users' Guide} (Third Edition, 1999), Published by SIAM,
 ISBN 0-89871-447-8.
 
-@url{http://www.netlib.org/lapack} 
+@uref{http://www.netlib.org/lapack} 
 @end itemize
 @noindent
 The @sc{lapack} source code can be found at the website above along with

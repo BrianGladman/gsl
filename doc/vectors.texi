@@ -1551,7 +1551,7 @@ ans =
 
 @node Vector and Matrix References and Further Reading
 @section References and Further Reading
-@noindent
+
 The block, vector and matrix objects in GSL follow the @code{valarray}
 model of C++.  A description of this model can be found in the following
 reference,

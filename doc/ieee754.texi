@@ -388,7 +388,7 @@ subsequent results are rounded to the same value.
 
 @node IEEE References and Further Reading
 @section References and Further Reading
-@noindent
+
 The reference for the IEEE standard is,
 
 @itemize @asis

@@ -705,7 +705,7 @@ the Gaussian approximation would not apply.
 
 @node References and Further Reading for Nonlinear Least-Squares Fitting
 @section References and Further Reading
-@noindent
+
 The @sc{minpack} algorithm is described in the following article,
 
 @itemize @asis

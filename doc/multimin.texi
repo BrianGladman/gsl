@@ -690,7 +690,7 @@ contracts around the minimum.
 
 @node Multimin References and Further Reading
 @section References and Further Reading
-@noindent
+
 A brief description of multidimensional minimization algorithms and
 further references can be found in the following book,
 

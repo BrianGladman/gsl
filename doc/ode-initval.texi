@@ -494,7 +494,7 @@ values into @var{dydt_in}.
 
 @node ODE References and Further Reading
 @section References and Further Reading
-@noindent
+
 Many of the basic Runge-Kutta formulas can be found in the Handbook of
 Mathematical Functions,
 

@@ -941,7 +941,7 @@ accordance with the equation @math{A x = b}.
 
 @node Linear Algebra References and Further Reading
 @section References and Further Reading
-@noindent
+
 Further information on the algorithms described in this section can be
 found in the following book,
 
@@ -958,7 +958,7 @@ The @sc{lapack} library is described in the following manual,
 @cite{LAPACK Users' Guide} (Third Edition, 1999), Published by SIAM,
 ISBN 0-89871-447-8.
 
-@url{http://www.netlib.org/lapack} 
+@uref{http://www.netlib.org/lapack} 
 @end itemize
 @noindent
 The @sc{lapack} source code can be found at the website above, along
@@ -986,7 +986,7 @@ Volume 18, Number 1 (1973), p 74---76
 @item
 James Demmel, Kresimir Veselic, "Jacobi's Method is more accurate than
 QR", @cite{Lapack Working Note 15} (LAWN-15), October 1989. Available
-from netlib, @url{http://www.netlib.org/lapack/} in the @code{lawns} or
+from netlib, @uref{http://www.netlib.org/lapack/} in the @code{lawns} or
 @code{lawnspdf} directories.
 @end itemize
 

@@ -348,7 +348,7 @@ identity) and replace @code{gsl_permutation_next} with
 
 @node Permutation References and Further Reading
 @section References and Further Reading
-@noindent
+
 The subject of permutations is covered extensively in Knuth's
 @cite{Sorting and Searching},
 

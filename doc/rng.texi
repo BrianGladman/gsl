@@ -1410,7 +1410,7 @@ $ GSL_RNG_SEED=123 GSL_RNG_TYPE=mrg ./a.out
 
 @node Random Number References and Further Reading
 @section References and Further Reading
-@noindent
+
 The subject of random number generation and testing is reviewed
 extensively in Knuth's @cite{Seminumerical Algorithms}.
 
@@ -1427,12 +1427,12 @@ L'Ecuyer,
 P. L'Ecuyer, ``Random Number Generation'', Chapter 4 of the
 Handbook on Simulation, Jerry Banks Ed., Wiley, 1998, 93--137.
 
-@url{http://www.iro.umontreal.ca/~lecuyer/papers.html}
+@uref{http://www.iro.umontreal.ca/~lecuyer/papers.html}
 in the file @file{handsim.ps}.
 @end itemize
 @noindent
 On the World Wide Web, see the pLab home page
-(@url{http://random.mat.sbg.ac.at/}) for a lot of information on the
+(@uref{http://random.mat.sbg.ac.at/}) for a lot of information on the
 state-of-the-art in random number generation, and for numerous links to
 various "random" WWW sites.
 
@@ -1444,7 +1444,7 @@ available online.
 @item
 @cite{DIEHARD source code} G. Marsaglia,
 @item
-@url{http://stat.fsu.edu/pub/diehard/}
+@uref{http://stat.fsu.edu/pub/diehard/}
 @end itemize
 
 @noindent
@@ -1457,12 +1457,12 @@ NIST Special Publication 800-22, "A Statistical Test Suite for the
 Validation of Random Number Generators and Pseudo Random Number
 Generators for Cryptographic Applications".
 @item
-@url{http://csrc.nist.gov/rng/}
+@uref{http://csrc.nist.gov/rng/}
 @end itemize
 
 @node Random Number Acknowledgements
 @section Acknowledgements
-@noindent
+
 Thanks to Makoto Matsumoto, Takuji Nishimura and Yoshiharu Kurita for
 making the source code to their generators (MT19937, MM&TN; TT800,
 MM&YK) available under the GNU General Public License.  Thanks to Martin

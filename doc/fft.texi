@@ -874,7 +874,6 @@ signal is also real.
 @node FFT References and Further Reading
 @section References and Further Reading
 
-@noindent
 A good starting point for learning more about the FFT is the review
 article @cite{Fast Fourier Transforms: A Tutorial Review and A State of
 the Art} by Duhamel and Vetterli,
@@ -968,14 +967,14 @@ achieve maximum performance.  It is available under the GNU GPL.
 
 @itemize @asis
 @item
-FFTW Website, @url{http://www.fftw.org/}
+FFTW Website, @uref{http://www.fftw.org/}
 @end itemize
 @noindent
 The source code for @sc{fftpack} is available from Netlib,
 
 @itemize @asis
 @item
-FFTPACK, @url{http://www.netlib.org/fftpack/}
+FFTPACK, @uref{http://www.netlib.org/fftpack/}
 @end itemize
 
 

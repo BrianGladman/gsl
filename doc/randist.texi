@@ -2061,7 +2061,7 @@ Here is the output of the program,
 
 @node Random Number Distribution References and Further Reading
 @section References and Further Reading
-@noindent
+
 For an encyclopaedic coverage of the subject readers are advised to
 consult the book @cite{Non-Uniform Random Variate Generation} by Luc
 Devroye.  It covers every imaginable distribution and provides hundreds
@@ -2091,7 +2091,7 @@ section of its Annual Review of Particle Physics.
 @item
 @cite{Review of Particle Properties}
 R.M. Barnett et al., Physical Review D54, 1 (1996)
-@url{http://pdg.lbl.gov/}.
+@uref{http://pdg.lbl.gov/}.
 @end itemize
 
 @noindent

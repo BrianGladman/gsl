@@ -634,7 +634,7 @@ $ ./a.out
 
 @node BLAS References and Further Reading
 @section References and Further Reading
-@noindent
+
 Information on the @sc{blas} standards, including both the legacy and
 draft interface standards, is available online from the @sc{blas}
 Homepage and @sc{blas} Technical Forum web-site.
@@ -642,10 +642,10 @@ Homepage and @sc{blas} Technical Forum web-site.
 @itemize @asis
 @item
 @cite{BLAS Homepage} 
-@url{http://www.netlib.org/blas/}
+@uref{http://www.netlib.org/blas/}
 @item
 @cite{BLAS Technical Forum} 
-@url{http://www.netlib.org/cgi-bin/checkout/blast/blast.pl}
+@uref{http://www.netlib.org/cgi-bin/checkout/blast/blast.pl}
 @end itemize
 @noindent
 The following papers contain the specifications for Level 1, Level 2 and
@@ -669,5 +669,5 @@ Mathematical Software}, Vol. 16 (1990), Pages 1-28.
 @end itemize
 @noindent
 Postscript versions of the latter two papers are available from
-@url{http://www.netlib.org/blas/}. A @sc{cblas} wrapper for Fortran @sc{blas}
+@uref{http://www.netlib.org/blas/}. A @sc{cblas} wrapper for Fortran @sc{blas}
 libraries is available from the same location.

@@ -447,7 +447,7 @@ number @var{z}, @math{\arccoth(z) = \arctanh(1/z)}.
 
 @node Complex Number References and Further Reading
 @section References and Further Reading
-@noindent
+
 The implementations of the elementary and trigonometric functions are
 based on the following papers,
 

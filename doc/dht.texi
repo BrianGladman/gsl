@@ -124,7 +124,7 @@ This function returns the value of the n'th sample point in "k-space",
 
 @node Discrete Hankel Transform References
 @section References and Further Reading
-@noindent
+
 The algorithms used by these functions are described in the following papers,
 
 @itemize @asis

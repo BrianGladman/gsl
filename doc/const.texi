@@ -556,11 +556,11 @@ Here is the output from the program,
 
 @node Physical Constant References and Further Reading
 @section References and Further Reading
-@noindent
+
 Further information on the values of physical constants is available
 from the NIST website,
 
 @itemize @asis
 @item
-@url{http://www.physics.nist.gov/cuu/Constants/index.html}
+@uref{http://www.physics.nist.gov/cuu/Constants/index.html}
 @end itemize

@@ -204,7 +204,7 @@ lexicographically.
 
 @node Combination References and Further Reading
 @section References and Further Reading
-@noindent
+
 Further information on combinations can be found in,
 
 @itemize @asis

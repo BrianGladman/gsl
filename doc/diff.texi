@@ -90,7 +90,7 @@ $ ./a.out
 
 @node Numerical Differentiation References
 @section References and Further Reading
-@noindent
+
 The algorithms used by these functions are described in the following sources:
 
 @itemize @asis
