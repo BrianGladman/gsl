@@ -1,5 +1,5 @@
-#ifndef GSL_MATRIX_INT_H
-#define GSL_MATRIX_INT_H
+#ifndef GSL_MATRIX_LONG_H
+#define GSL_MATRIX_LONG_H
 
 #include <stdlib.h>
 #include <gsl_errno.h>
@@ -68,4 +68,4 @@ gsl_matrix_long_set(gsl_matrix_long * m,
 }
 #endif /* HAVE_INLINE */
 
-#endif /* !GSL_MATRIX_INT_H */
+#endif /* !GSL_MATRIX_LONG_H */

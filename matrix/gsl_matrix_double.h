@@ -1,5 +1,5 @@
-#ifndef GSL_MATRIX_H
-#define GSL_MATRIX_H
+#ifndef GSL_MATRIX_DOUBLE_H
+#define GSL_MATRIX_DOUBLE_H
 
 #include <stdlib.h>
 #include <gsl_errno.h>
@@ -27,9 +27,10 @@ int gsl_matrix_fprintf (FILE * stream, const gsl_matrix * m, const char * format
 
 extern int gsl_check_range ;
 
-/* inline functions if you are using GCC */
+
 
 #ifdef HAVE_INLINE
+
 extern inline 
 double
 gsl_matrix_get(const gsl_matrix * m, const size_t i, const size_t j)
@@ -63,6 +64,6 @@ gsl_matrix_set(gsl_matrix * m, const size_t i, const size_t j, const double x)
 #endif
   m->data[i * m->size2 + j] = x ;
 }
-#endif
+#endif /* HAVE_INLINE */
 
-#endif /* GSL_MATRIX_H */
+#endif /* !GSL_MATRIX_DOUBLE_H */

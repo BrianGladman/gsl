@@ -113,11 +113,7 @@ CLEANFILES = test.txt test.dat
 
 noinst_HEADERS = matrix_source.c init_source.c file_source.c source.h unsource.h
 
-libgslmatrix_a_SOURCES = \
-	source.h init.c matrix.c file.c gsl_matrix.h \
-	init_int.c matrix_int.c file_int.c gsl_matrix_int.h \
-	init_float.c matrix_float.c file_float.c gsl_matrix_float.h \
-	init_complex.c matrix_complex.c file_complex.c gsl_matrix_complex.h
+libgslmatrix_a_SOURCES = source.h init.c matrix.c file.c
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
 CONFIG_CLEAN_FILES = 
@@ -129,9 +125,7 @@ CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
 libgslmatrix_a_LIBADD = 
-libgslmatrix_a_OBJECTS =  init.o matrix.o file.o init_int.o matrix_int.o \
-file_int.o init_float.o matrix_float.o file_float.o init_complex.o \
-matrix_complex.o file_complex.o
+libgslmatrix_a_OBJECTS =  init.o matrix.o file.o
 AR = ar
 test_OBJECTS =  test.o
 test_LDFLAGS = 
@@ -161,10 +155,7 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 TAR = tar
 GZIP = --best
-DEP_FILES =  .deps/file.P .deps/file_complex.P .deps/file_float.P \
-.deps/file_int.P .deps/init.P .deps/init_complex.P .deps/init_float.P \
-.deps/init_int.P .deps/matrix.P .deps/matrix_complex.P \
-.deps/matrix_float.P .deps/matrix_int.P .deps/test.P \
+DEP_FILES =  .deps/file.P .deps/init.P .deps/matrix.P .deps/test.P \
 .deps/test_complex.P .deps/test_float.P .deps/test_int.P \
 .deps/test_trap.P
 SOURCES = $(libgslmatrix_a_SOURCES) $(test_SOURCES) $(test_int_SOURCES) $(test_float_SOURCES) $(test_complex_SOURCES) $(test_trap_SOURCES)
