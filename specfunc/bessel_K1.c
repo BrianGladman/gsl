@@ -149,7 +149,7 @@ int gsl_sf_bessel_K1_scaled_impl(const double x, double * result)
 int gsl_sf_bessel_K1_impl(const double x, double * result)
 {
   const double xmin    = 2.0*DBL_MIN;
-  const double x_small = 2.*GSL_SQRT_MACH_EPS;
+  const double x_small = 2.0*GSL_SQRT_MACH_EPS;
   const double xmax    = GSL_LOG_DBL_MAX - 0.5 * 6.9 /* FIXME: ?? */  - 0.01;
   /*
     xmax = -alog(r1mach(1))
@@ -169,7 +169,7 @@ int gsl_sf_bessel_K1_impl(const double x, double * result)
   }
   else if(x <= 2.) {
     double y = x*x;
-    return log(0.5*x)*gsl_sf_bessel_I1(x) + (0.75 + gsl_sf_cheb_eval(&bk1_cs, 0.5*y-1.0))/x; 
+    *result = log(0.5*x)*gsl_sf_bessel_I1(x) + (0.75 + gsl_sf_cheb_eval(&bk1_cs, 0.5*y-1.0))/x; 
     return GSL_SUCCESS;
   }
   else if(x < xmax) { 
@@ -177,7 +177,7 @@ int gsl_sf_bessel_K1_impl(const double x, double * result)
     return GSL_SUCCESS;
   }
   else {
-    *result = 0.;
+    *result = 0.0;
     return GSL_EUNDRFLW;
   }
 }

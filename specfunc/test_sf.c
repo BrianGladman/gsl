@@ -120,6 +120,96 @@ int check_bessel(void)
   int s;
 
   s = 0;
+  s += ( frac_diff(gsl_sf_bessel_J0(0.1),     0.99750156206604003230  ) > 1.0e-14 );
+  s += ( frac_diff(gsl_sf_bessel_J0(2.0),     0.22389077914123566805  ) > 1.0e-14 );
+  s += ( frac_diff(gsl_sf_bessel_J0(100.0),   0.019985850304223122424 ) > 1.0e-13 );
+  s += ( frac_diff(gsl_sf_bessel_J0(1.0e+10), 2.1755917502468917269e-06 ) > 1.0e-06 );
+  gsl_test(s, "  gsl_sf_bessel_J0");
+  status += s;
+  
+  s = 0;
+  s += ( frac_diff(gsl_sf_bessel_J1(0.1),      0.04993752603624199756 ) > 1.0e-14 );
+  s += ( frac_diff(gsl_sf_bessel_J1(2.0),      0.57672480775687338720 ) > 1.0e-14 );
+  s += ( frac_diff(gsl_sf_bessel_J1(100.0),   -0.07714535201411215803 ) > 1.0e-13 );
+  s += ( frac_diff(gsl_sf_bessel_J1(1.0e+10), -7.676508175684157103e-06 ) > 1.0e-06 );
+  gsl_test(s, "  gsl_sf_bessel_J1");
+  status += s;
+  
+  s = 0;
+  s += ( frac_diff(gsl_sf_bessel_Jn(   4,     0.1), 2.6028648545684032338e-07 ) > 1.0e-14 );
+  s += ( frac_diff(gsl_sf_bessel_Jn(   5,     2.0), 0.007039629755871685484   ) > 1.0e-14 );
+  s += ( frac_diff(gsl_sf_bessel_Jn( 100,   100.0), 0.09636667329586155967    ) > 1.0e-14 );
+  s += ( frac_diff(gsl_sf_bessel_Jn(1000, 1.0e+10), 2.1759755729360371995e-06 ) > 1.0e-04 );
+  gsl_test(s, "  gsl_sf_bessel_Jn");
+  status += s;
+  
+  s = 0;
+  s += ( frac_diff(gsl_sf_bessel_Y0(0.1),     -1.5342386513503668441  ) > 1.0e-14 );
+  s += ( frac_diff(gsl_sf_bessel_Y0(2.0),      0.5103756726497451196  ) > 1.0e-14 );
+  s += ( frac_diff(gsl_sf_bessel_Y0(100.0),   -0.07724431336508315225 ) > 1.0e-13 );
+  s += ( frac_diff(gsl_sf_bessel_Y0(1.0e+10), -7.676508175792936690e-06 ) > 1.0e-06 );
+  gsl_test(s, "  gsl_sf_bessel_Y0");
+  status += s;
+
+  s = 0;
+  s += ( frac_diff(gsl_sf_bessel_Y1(0.1),     -6.45895109470202698800  ) > 1.0e-14 );
+  s += ( frac_diff(gsl_sf_bessel_Y1(2.0),     -0.10703243154093754689  ) > 1.0e-14 );
+  s += ( frac_diff(gsl_sf_bessel_Y1(100.0),   -0.020372312002759793305 ) > 1.0e-13 );
+  s += ( frac_diff(gsl_sf_bessel_Y1(1.0e+10), -2.1755917506307171357e-06 ) > 1.0e-05 );
+  gsl_test(s, "  gsl_sf_bessel_Y1");
+  status += s;
+
+  s = 0;
+  s += ( frac_diff(gsl_sf_bessel_Yn(   4,     0.1), -305832.29793353160319    ) > 1.0e-14 );
+  s += ( frac_diff(gsl_sf_bessel_Yn(   5,     2.0), -9.935989128481974981     ) > 1.0e-14 );
+  s += ( frac_diff(gsl_sf_bessel_Yn( 100,   100.0), -0.16692141141757650654   ) > 1.0e-14 );
+  s += ( frac_diff(gsl_sf_bessel_Yn(1000, 1.0e+10), -7.676399386609853644e-06 ) > 1.0e-06 );
+  gsl_test(s, "  gsl_sf_bessel_Yn");
+  status += s;
+
+  s = 0;
+  s += ( frac_diff(gsl_sf_bessel_I0(0.1),   1.0025015629340956014      ) > 1.0e-14 );
+  s += ( frac_diff(gsl_sf_bessel_I0(2.0),   2.2795853023360672674      ) > 1.0e-14 );
+  s += ( frac_diff(gsl_sf_bessel_I0(100.0), 1.0737517071310738235e+42  ) > 1.0e-14 );
+  gsl_test(s, "  gsl_sf_bessel_I0");
+  status += s;
+  
+  s = 0;
+  s += ( frac_diff(gsl_sf_bessel_I1(0.1),   0.05006252604709269211    ) > 1.0e-14 );
+  s += ( frac_diff(gsl_sf_bessel_I1(2.0),   1.59063685463732906340    ) > 1.0e-14 );
+  s += ( frac_diff(gsl_sf_bessel_I1(100.0), 1.0683693903381624812e+42 ) > 1.0e-14 );
+  gsl_test(s, "  gsl_sf_bessel_I1");
+  status += s;
+
+  s = 0;
+  s += ( frac_diff(gsl_sf_bessel_In(   4,    0.1), 2.6054690212996573677e-07  ) > 1.0e-14 );
+  s += ( frac_diff(gsl_sf_bessel_In(   5,    2.0), 0.009825679323131702321    ) > 1.0e-14 );
+  s += ( frac_diff(gsl_sf_bessel_In( 100,  100.0), 4.641534941616199114e+21   ) > 1.0e-14 );
+  gsl_test(s, "  gsl_sf_bessel_In");
+  status += s;
+
+  s = 0;
+  s += ( frac_diff(gsl_sf_bessel_K0(0.1),   2.4270690247020166125    ) > 1.0e-14 );
+  s += ( frac_diff(gsl_sf_bessel_K0(2.0),   0.11389387274953343565   ) > 1.0e-14 );
+  s += ( frac_diff(gsl_sf_bessel_K0(100.0), 4.656628229175902019e-45 ) > 1.0e-14 );
+  gsl_test(s, "  gsl_sf_bessel_K0");
+  status += s;
+  
+  s = 0;
+  s += ( frac_diff(gsl_sf_bessel_K1(0.1),   9.853844780870606135     ) > 1.0e-14 );
+  s += ( frac_diff(gsl_sf_bessel_K1(2.0),   0.13986588181652242728   ) > 1.0e-14 );
+  s += ( frac_diff(gsl_sf_bessel_K1(100.0), 4.679853735636909287e-45 ) > 1.0e-14 );
+  gsl_test(s, "  gsl_sf_bessel_K1");
+  status += s;
+
+  s = 0;
+  s += ( frac_diff(gsl_sf_bessel_Kn(   4,    0.1),  479600.2497925682849     ) > 1.0e-14 );
+  s += ( frac_diff(gsl_sf_bessel_Kn(   5,    2.0),  9.431049100596467443     ) > 1.0e-14 );
+  s += ( frac_diff(gsl_sf_bessel_Kn( 100,  100.0),  7.617129630494085416e-25 ) > 1.0e-14 );
+  gsl_test(s, "  gsl_sf_bessel_Kn");
+  status += s;
+  
+  s = 0;
   s += ( frac_diff(gsl_sf_bessel_Jnu(0.0001,10.0),  -0.2459270166445205       ) > 1.e-12 );
   s += ( frac_diff(gsl_sf_bessel_Jnu( 1.0, 0.001),  0.0004999999375000026     ) > 1.e-14 );
   s += ( frac_diff(gsl_sf_bessel_Jnu( 1.0,   1.0),  0.4400505857449335160     ) > 1.e-14 );
