@@ -527,6 +527,65 @@ int check_dilog(void)
   return status;
 }
 
+int check_erf(void)
+{
+  int status = 0;
+  int s;
+  
+  s = 0;
+  s += ( frac_diff(gsl_sf_erfc(-10.0), 2.0000000000000000000 ) > 1.0e-14 );
+  gsl_test(s, "  erfc(-10.0)");
+  status += s;
+
+  s = 0;
+  s += ( frac_diff(gsl_sf_erfc(-1.0), 1.8427007929497148693 ) > 1.0e-9 );
+  gsl_test(s, "  erfc(-1.0)");
+  status += s;
+
+  s = 0;
+  s += ( frac_diff(gsl_sf_erfc(1.0), 0.15729920705028513066 ) > 1.0e-8 );
+  gsl_test(s, "  erfc(1.0)");
+  status += s;
+
+  s = 0;
+  s += ( frac_diff(gsl_sf_erfc(10.0), 2.0884875837625447570e-45 ) > 1.0e-14 );
+  gsl_test(s, "  erfc(10.0)");
+  status += s;
+  
+  s = 0;
+  s += ( frac_diff(gsl_sf_log_erfc(-10.0), log(2.0000000000000000000) ) > 1.0e-14 );
+  gsl_test(s, "  log_erfc(-10.0)");
+  status += s;
+
+  s = 0;
+  s += ( frac_diff(gsl_sf_log_erfc(1.0), log(0.15729920705028513066) ) > 1.0e-14 );
+  gsl_test(s, "  log_erfc(1.0)");
+  status += s;
+
+  s = 0;
+  s += ( frac_diff(gsl_sf_log_erfc(10.0), log(2.0884875837625447570e-45) ) > 1.0e-14 );
+  gsl_test(s, "  log_erfc(10.0)");
+  status += s;
+
+  s = 0;
+  s += ( frac_diff(gsl_sf_erf(-10.0), -1.0000000000000000000 ) > 1.0e-14 );
+  gsl_test(s, "  erf(-10.0)");
+  status += s;
+
+  s = 0;
+  s += ( frac_diff(gsl_sf_erf(1.0), 0.8427007929497148693 ) > 1.0e-14 );
+  gsl_test(s, "  erf(1.0)");
+  status += s;
+
+  s = 0;
+  s += ( frac_diff(gsl_sf_erf(10.0), 1.0000000000000000000 ) > 1.0e-14 );
+  gsl_test(s, "  erf(10.0)");
+  status += s;
+
+  return status;
+}
+
+
 int check_gamma(void)
 {
   double zr, zi, lg_r, lg_i;
@@ -675,6 +734,76 @@ int check_hyperg(void)
   return status;
 }
 
+int check_log(void)
+{
+  double x, y;
+  int status = 0;
+  int s;
+  
+  s = 0;
+  gsl_sf_complex_log_impl(1.0, 1.0, &x, &y);
+  s += ( frac_diff( x, 0.3465735902799726547 ) > 1.0e-14 );
+  s += ( frac_diff( y, 0.7853981633974483096 ) > 1.0e-14 );
+  gsl_test(s, "  log(1 + I)");
+  status += s;
+  
+  s = 0;
+  gsl_sf_complex_log_impl(1.0, -1.0, &x, &y);
+  s += ( frac_diff( x,  0.3465735902799726547 ) > 1.0e-14 );
+  s += ( frac_diff( y, -0.7853981633974483096 ) > 1.0e-14 );
+  gsl_test(s, "  log(1 - I)");
+  status += s;
+  
+  s = 0;
+  gsl_sf_complex_log_impl(1.0, 100.0, &x, &y);
+  s += ( frac_diff( x, 4.605220183488258022 ) > 1.0e-14 );
+  s += ( frac_diff( y, 1.560796660108231381 ) > 1.0e-14 );
+  gsl_test(s, "  log(1 + 100 I)");
+  status += s;
+
+  s = 0;
+  gsl_sf_complex_log_impl(-1000.0, -1.0, &x, &y);
+  s += ( frac_diff( x,  6.907755778981887052  ) > 1.0e-14 );
+  s += ( frac_diff( y, -3.1405926539231263718 ) > 1.0e-14 );
+  gsl_test(s, "  log(-1000 - I)");
+  status += s;
+
+  s = 0;
+  gsl_sf_complex_log_impl(-1.0, 0.0, &x, &y);
+  s += ( frac_diff( y, 3.1415926535897932385 ) > 1.0e-14 );
+  gsl_test(s, "  log(-1)");
+  status += s;
+
+  return status;
+}
+
+int check_poly(void)
+{
+  int status = 0;
+  int s;
+
+  double x;
+  double y;
+  double c[3]  = { 1.0, 0.5, 0.3 };
+  double d[11] = { 1, -1, 1, -1, 1, -1, 1, -1, 1, -1, 1};
+
+  s = 0;
+  x = 0.5;
+  y = gsl_sf_poly_eval(c, 3, x);
+  s += ( frac_diff(y, 1 + 0.5*x + 0.3*x*x) > 1.0e-14 );
+  gsl_test(s, "  poly_eval({1, 0.5, 0.3}, 0.5)");
+  status += s;
+  
+  s = 0;
+  x = 1.0;
+  y = gsl_sf_poly_eval(d, 11, x);
+  s += ( frac_diff(y, 1.0) > 1.0e-14 );
+  gsl_test(s, "  poly_eval({1,-1, 1, -1, 1, -1, 1, -1, 1, -1, 1}, 1.0)");
+  status += s;
+
+  return status;
+}
+
 int check_pow_int(void)
 {
   int status = 0;
@@ -740,6 +869,65 @@ int check_psi(void)
 
   return status;
 }
+
+
+int check_synch(void)
+{
+  double y;
+  int status = 0;
+  int s;
+  
+  s = 0;
+  gsl_sf_synchrotron_1_impl(0.01, &y);
+  s += ( frac_diff( y, 0.444973 ) > 1.0e-05 );
+  gsl_test(s, "  synchrotron_1(0.01)");
+  status += s;
+
+  s = 0;
+  gsl_sf_synchrotron_1_impl(1.0, &y);
+  s += ( frac_diff( y, 0.651423 ) > 1.0e-05 );
+  gsl_test(s, "  synchrotron_1(1.0)");
+  status += s;
+
+  s = 0;
+  gsl_sf_synchrotron_1_impl(10.0, &y);
+  s += ( frac_diff( y, 0.000192238 ) > 1.0e-05 );
+  gsl_test(s, "  synchrotron_1(10.0)");
+  status += s;
+
+  s = 0;
+  gsl_sf_synchrotron_1_impl(100.0, &y);
+  s += ( frac_diff( y, 4.69759e-43 ) > 1.0e-05 );
+  gsl_test(s, "  synchrotron_1(100.0)");
+  status += s;
+
+  s = 0;
+  gsl_sf_synchrotron_2_impl(0.01, &y);
+  s += ( frac_diff( y, 0.23098077342226277732 ) > 1.0e-14 );
+  gsl_test(s, "  synchrotron_2(0.01)");
+  status += s;
+
+  s = 0;
+  gsl_sf_synchrotron_2_impl(1.0, &y);
+  s += ( frac_diff( y, 0.4944750621042082670 ) > 1.0e-14 );
+  gsl_test(s, "  synchrotron_2(1.0)");
+  status += s;
+
+  s = 0;
+  gsl_sf_synchrotron_2_impl(10.0, &y);
+  s += ( frac_diff( y, 0.00018161187569530204281 ) > 1.0e-05 );
+  gsl_test(s, "  synchrotron_2(10.0)");
+  status += s;
+  
+  s = 0;
+  gsl_sf_synchrotron_2_impl(100.0, &y);
+  s += ( frac_diff( y, 4.666936458728046656e-43 ) > 1.0e-05 );
+  gsl_test(s, "  synchrotron_2(100.0)");
+  status += s;
+
+  return status;
+}
+
 
 int check_trig(void)
 {
@@ -911,12 +1099,18 @@ int main(int argc, char * argv[])
   gsl_test(check_debye(),      "Debye Functions");
   gsl_test(check_dilog(),      "Dilogarithm");
 
+  gsl_test(check_erf(),        "Error Functions");
+
   gsl_test(check_gamma(),      "Gamma Functions");
   gsl_test(check_gegen(),      "Gegenbauer Polynomials");
   gsl_test(check_hyperg(),     "Hypergeometric Functions");
 
+  gsl_test(check_log(),        "Logarithm");
+  gsl_test(check_poly(),       "Polynomial Evaluation");
   gsl_test(check_pow_int(),    "Integer Powers");
   gsl_test(check_psi(),        "Psi Functions");
+  gsl_test(check_synch(),      "Synchrotron Functions");
+
   gsl_test(check_trig(),       "Trigonometric and Related Functions");
   gsl_test(check_zeta(),       "Zeta Functions");
 
