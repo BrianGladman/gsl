@@ -9,7 +9,7 @@
    for x > 0 */
 
 double
-gsl_ran_logistic (const gsl_rng * r)
+gsl_ran_logistic (const gsl_rng * r, const double mu)
 {
   double x, z;
 
@@ -21,13 +21,13 @@ gsl_ran_logistic (const gsl_rng * r)
 
   z = log (x / (1 - x));
 
-  return z;
+  return mu * z;
 }
 
 double
-gsl_ran_logistic_pdf (const double x)
+gsl_ran_logistic_pdf (const double x, const double mu)
 {
-  double u = exp (-x);
-  double p = u / ((1 + u) * (1 + u));
+  double u = exp (-x/fabs(mu));
+  double p = u / (mu * (1 + u) * (1 + u));
   return p;
 }

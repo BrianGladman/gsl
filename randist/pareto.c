@@ -4,26 +4,26 @@
 
 /* The Pareto distribution has the form,
 
-   p(x) dx = a / x^(a+1) dx     for x >= 1
+   p(x) dx = (a/mu) / (x/mu)^(a+1) dx     for x >= mu
 
  */
 
 double
-gsl_ran_pareto (const gsl_rng * r, const double a)
+gsl_ran_pareto (const gsl_rng * r, double mu, const double a)
 {
   double x = gsl_rng_uniform_pos (r);
 
   double z = pow (x, -1 / a);
 
-  return z;
+  return mu * z;
 }
 
 double
-gsl_ran_pareto_pdf (const double x, const double a)
+gsl_ran_pareto_pdf (const double x, const double mu, const double a)
 {
-  if (x >= 1)
+  if (x >= mu)
     {
-      double p = a / pow (x, a + 1);
+      double p = (a/mu) / pow (x/mu, a + 1);
       return p;
     }
   else
