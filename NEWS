@@ -1,5 +1,11 @@
 * What is new in gsl-1.3:
 
+** Added a new function gsl_fcmp for approximate comparison of
+floating point numbers using Knuth's algorithm.
+
+** Added new functions gsl_ldexp and gsl_frexp as portable
+alternatives to ldexp() and frexp().
+
 ** Fixed a bug in gsl_linalg_bidiag_unpack_B which was returning
 incorrect results for the superdiagonal.
 

@@ -258,6 +258,7 @@ mind that evil profit-making companies (such as those which sell
 * Datatype widths::             
 * size_t::                      
 * Arrays vs Pointers::          
+* Pointers::                    
 * Constness::                   
 * Pseudo-templates::            
 * Test suites::                 
@@ -872,8 +873,7 @@ the loop order,
 for (i = 0; i < N; i++) @{ j = N - i; ... @}
 @end example
 
-
-@node Arrays vs Pointers, Constness, size_t, Design
+@node Arrays vs Pointers, Pointers, size_t, Design
 @section Arrays vs Pointers
 
 A function can be declared with either pointer arguments or array
@@ -901,7 +901,38 @@ int bar (double x[], size_t n);
 int baz (const double x[], size_t n);           
 @end example
 
-@node Constness, Pseudo-templates, Arrays vs Pointers, Design
+@node  Pointers, Constness, Arrays vs Pointers, Design
+@section Pointers
+
+Avoid deferencing pointers on the right-hand side of an expression where
+possible.  It's better to introduce a temporary variable.  This is
+easier for the compiler to optimise and also more readable since it
+avoids confusion between the use of @code{*} for multiplication and
+dereferencing.
+
+@example
+while (fabs (f) < 0.5)
+{
+  *e = *e - 1;
+  f  *= 2;
+}
+@end example
+@noindent
+is better written as,
+
+@example
+p = *e;
+
+while (fabs(f) < 0.5)
+{
+   p--;
+   f *= 2;
+}
+
+*e = p;
+@end example
+
+@node Constness, Pseudo-templates, Pointers, Design
 @section Constness
 
 Use @code{const} in function prototypes wherever an object pointed to by
@@ -962,6 +993,11 @@ the user provides an invalid pointer.
 The tests should be deterministic.  Use the @code{gsl_test} functions
 provided to perform separate tests for each feature with a separate
 output PASS/FAIL line, so that any failure can be uniquely identified.
+
+Don't use @code{sprintf} to create output strings in the tests.  It can
+cause hard to find bugs in the test programs themselves.  The functions
+@code{gsl_test_...}  support format string arguments so use these
+instead.
 
 @node Compilation, Thread-safety, Test suites, Design
 @section Compilation

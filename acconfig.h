@@ -113,6 +113,15 @@
 #define isnan gsl_isnan
 #endif
 
+#ifndef HAVE_LDEXP
+#define ldexp gsl_ldexp
+#endif
+
+#ifndef HAVE_FREXP
+#define frexp gsl_frexp
+#endif
+
+
 #ifndef HAVE_FINITE
 #ifdef HAVE_ISFINITE
 #define finite isfinite

@@ -1,4 +1,4 @@
-/* config.h.in.  Generated automatically from configure.in by autoheader.  */
+/* config.h.in.  Generated automatically from configure.in by autoheader 2.13.  */
 
 /* Define to empty if the keyword does not work.  */
 #undef const
@@ -36,6 +36,9 @@
 /* Define if you have the finite function.  */
 #undef HAVE_FINITE
 
+/* Define if you have the frexp function.  */
+#undef HAVE_FREXP
+
 /* Define if you have the hypot function.  */
 #undef HAVE_HYPOT
 
@@ -47,6 +50,9 @@
 
 /* Define if you have the isnan function.  */
 #undef HAVE_ISNAN
+
+/* Define if you have the ldexp function.  */
+#undef HAVE_LDEXP
 
 /* Define if you have the log1p function.  */
 #undef HAVE_LOG1P
@@ -188,6 +194,15 @@
 #ifndef HAVE_ISNAN
 #define isnan gsl_isnan
 #endif
+
+#ifndef HAVE_LDEXP
+#define ldexp gsl_ldexp
+#endif
+
+#ifndef HAVE_FREXP
+#define frexp gsl_frexp
+#endif
+
 
 #ifndef HAVE_FINITE
 #ifdef HAVE_ISFINITE

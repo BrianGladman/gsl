@@ -52,6 +52,11 @@ double gsl_coerce_double (const double x);
 float gsl_coerce_float (const float x);
 long double gsl_coerce_long_double (const long double x);
 
+double gsl_ldexp(const double x, const int e);
+double gsl_frexp(const double x, int * e);
+
+int gsl_fcmp (const double x1, const double x2, const double epsilon);
+
 __END_DECLS
 
 #endif /* __GSL_SYS_H__ */

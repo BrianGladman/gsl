@@ -120,6 +120,8 @@ AC_CHECK_FUNCS(expm1)
 AC_CHECK_FUNCS(acosh)
 AC_CHECK_FUNCS(asinh)
 AC_CHECK_FUNCS(atanh)
+AC_CHECK_FUNCS(ldexp)
+AC_CHECK_FUNCS(frexp)
 
 AC_CHECK_FUNCS(isinf, ,[
     AC_MSG_CHECKING([for isinf with <math.h>])

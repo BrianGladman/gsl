@@ -1,3 +1,11 @@
+2002-08-25  Brian Gough  <bjg@network-theory.co.uk>
+
+	* fcmp.c (gsl_fcmp): approximate comparison of floating point
+	numbers using Knuth's algorithm
+
+	* ldfrexp.c (gsl_ldexp): portable replacement for ldexp()
+	(gsl_frexp): portable replacement for frexp()
+
 Wed Jan 16 16:35:58 2002  Brian Gough  <bjg@network-theory.co.uk>
 
 	* test.c (main): only test gsl_isnan, gsl_isinf, gsl_finite

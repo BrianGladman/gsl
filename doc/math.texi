@@ -17,6 +17,7 @@ header file @file{gsl_math.h}.
 * Testing the Sign of Numbers::  
 * Testing for Odd and Even Numbers::  
 * Maximum and Minimum functions::  
+* Approximate Comparison of Floating Point Numbers::  
 @end menu
 
 @node Mathematical Constants
@@ -185,6 +186,21 @@ This function computes the value of @math{\arctanh(x)}. It provides an
 alternative to the standard math function @code{atanh(x)}.
 @end deftypefun
 
+@deftypefun double gsl_ldexp (double @var{x}, int @var{exp})
+@cindex ldexp
+This function computes the value of @math{x * 2^{exp}}. It provides an
+alternative to the standard math function @code{ldexp(x)}.
+@end deftypefun
+
+@deftypefun double gsl_frexp (double @var{x}, int * @var{exp})
+@cindex frexp
+This function splits the number @math{x} in its normalized fraction @math{f}
+and its exponent @math{exp}, such that @math{x = f * 2^{exp}} and 
+@math{0.5 =< f < 1.0}. Ihe function returns @math{f} and stores the exponent
+in @math{exp}. Special case: if @math{x} is zero, both @math{f} and @math{exp}
+are set to zero. This function provides an alternative to the standard math
+function @code{frexp(x, e)}.
+@end deftypefun
 
 @node Small integer powers
 @section Small integer powers
@@ -221,8 +237,6 @@ explicitly writing the corresponding product expression.
 double y = gsl_pow_4 (3.141)  /* compute 3.141**4 */
 @end example
 
-
-
 @node Testing the Sign of Numbers
 @section Testing the Sign of Numbers
 
@@ -245,8 +259,6 @@ This macro is the opposite of @code{GSL_IS_ODD(n)}. It evaluates to 1 if
 @var{n} is even and 0 if @var{n} is odd. The argument @var{n} must be of
 integer type.
 @end defmac
-
-
 
 @node Maximum and Minimum functions
 @section Maximum and Minimum functions
@@ -293,4 +305,33 @@ These functions return the maximum or minimum of the long doubles @var{a}
 and @var{b} using an inline function.  On platforms where inline
 functions are not available the macros @code{GSL_MAX} or @code{GSL_MIN}
 will be automatically substituted.
+@end deftypefun
+
+@node Approximate Comparison of Floating Point Numbers
+@section Approximate Comparison of Floating Point Numbers
+
+It is sometimes useful to be able to compare two floating point numbers
+approximately, to allow for rounding and truncation errors.  The following
+function implements the approximate floating-point comparison algorithm
+proposed by D.E. Knuth in Section 4.2.2 of @cite{Seminumerical
+Algorithms} (3rd edition).
+
+@deftypefun int gsl_fcmp (double @var{x}, double @var{y}, double @var{epsilon})
+@cindex approximate comparison of floating point numbers
+@cindex safe comparison of floating point numbers
+@cindex floating point numbers, approximate comparison
+This function determines whether @math{x} and @math{y} are approximately
+equal to a relative accuracy @var{epsilon}.
+
+The relative accuracy is measured using an interval of size @math{2
+\delta}, where @math{\delta = 2^k \epsilon} and @math{k} is the
+maximimum base-2 exponent of @math{x} and @math{y} as computed by the
+function @code{frexp()}.  
+
+If @math{x} and @math{y} lie within this interval, they are considered
+approximately equal and the function returns 0. Otherwise if @math{x <
+y}, the function returns -1, or if @math{x > y}, the function returns
++1.
+
+The implementation is based on the package @code{fcmp} by T.C. Belding.
 @end deftypefun
