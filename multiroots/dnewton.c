@@ -117,8 +117,6 @@ dnewton_iterate (void * vstate, gsl_multiroot_function * function, gsl_vector * 
   
   int signum ;
 
-  int status;
-
   size_t i;
 
   size_t n = function->n ;

@@ -1,3 +1,8 @@
+Mon Apr 16 20:17:04 2001  Brian Gough  <bjg@network-theory.co.uk>
+
+	* fsolver.c (gsl_root_fsolver_alloc): removed unnecessary status
+ 	variable
+
 Sun Feb 18 15:35:25 2001  Brian Gough  <bjg@network-theory.co.uk>
 
 	* fdfsolver.c fsolver.c: changed so that the solver _alloc

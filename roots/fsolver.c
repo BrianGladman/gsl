@@ -26,8 +26,6 @@
 gsl_root_fsolver *
 gsl_root_fsolver_alloc (const gsl_root_fsolver_type * T)
 {
-  int status;
-
   gsl_root_fsolver * s = (gsl_root_fsolver *) malloc (sizeof (gsl_root_fsolver));
 
   if (s == 0)
