@@ -86,11 +86,11 @@ for $file (@ARGV) {
     }
 }
 
-open(LIBGSL, ">libgsl.dsp");
-print LIBGSL &$begin_project_lib("libgsl", @options, "libgslcblas.lib");
-print LIBGSL &begin_target("libgsl");
-print LIBGSL &add_def(".", "libgsl.def") if $target =~ /DLL/i;
-push(@lib_projects, "libgsl");
+open(LIBGSL, ">gsl.dsp");
+print LIBGSL &$begin_project_lib("gsl", @options, "gslcblas.lib");
+print LIBGSL &begin_target("gsl");
+print LIBGSL &add_def(".", "gsl.def") if $target =~ /DLL/i;
+push(@lib_projects, "gsl");
 for $file (@ARGV) {
     my $makefile = $automake{$file};
 
@@ -112,9 +112,9 @@ for $file (@ARGV) {
         my $name = base($lib);
         #print "adding to libgsl ", $name, "\n";
         print LIBGSL &begin_group($name);
-        print LIBGSL &add_files("libgsl", @confs, $dir, $name, 'inc', $makefile->list_sources($lib));
-        print LIBGSL &add_files("libgsl", @confs, $dir, $name, 'exclude', grep(!/^test_/,@int_headers));
-        print LIBGSL &add_files("libgsl", @confs, $dir, $name, 'exclude', @ext_headers);
+        print LIBGSL &add_files("gsl", @confs, $dir, $name, 'inc', $makefile->list_sources($lib));
+        print LIBGSL &add_files("gsl", @confs, $dir, $name, 'exclude', grep(!/^test_/,@int_headers));
+        print LIBGSL &add_files("gsl", @confs, $dir, $name, 'exclude', @ext_headers);
         print LIBGSL &end_group();
     }
 }
@@ -327,8 +327,8 @@ RSC=rc.exe
 # PROP Output_Dir "$release"
 # PROP Intermediate_Dir "$release"
 # PROP Target_Dir ""
-# ADD BASE CPP /nologo ${release_options} /W3 /GX /O2 /Op- /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /YX /FD /c
-# ADD CPP /nologo  ${release_options} /Za /W3 /GX /O2 /Op- /I "..\\msvc" /I "..\\gsl" /I "." /I ".." /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /YX /FD /c
+# ADD BASE CPP /nologo ${release_options} /W3 /GX /O2 /Op- /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "DLL_EXPORT" /YX /FD /c
+# ADD CPP /nologo  ${release_options} /Za /W3 /GX /O2 /Op- /I "..\\msvc" /I "..\\gsl" /I "." /I ".." /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "DLL_EXPORT" /YX /FD /c
 # ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x809 /d "NDEBUG"
@@ -352,8 +352,8 @@ LINK32=link.exe
 # PROP Output_Dir "$debug"
 # PROP Intermediate_Dir "$debug"
 # PROP Target_Dir ""
-# ADD BASE CPP /nologo  ${debug_options} /W3 /Gm /GX /Z7 /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /YX /FD /GZ /c
-# ADD CPP /nologo  ${debug_options} /Za /W3 /Gm /GX /Z7 /Od /I "..\\msvc" /I "..\\gsl" /I "." /I ".." /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /FD /LDd /GZ /c
+# ADD BASE CPP /nologo  ${debug_options} /W3 /Gm /GX /Z7 /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "DLL_EXPORT" /YX /FD /GZ /c
+# ADD CPP /nologo  ${debug_options} /Za /W3 /Gm /GX /Z7 /Od /I "..\\msvc" /I "..\\gsl" /I "." /I ".." /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "DLL_EXPORT" /FD /LDd /GZ /c
 # SUBTRACT CPP /YX
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
@@ -428,7 +428,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib  kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /machine:I386
-# ADD LINK32 libgsl.lib libgslcblas.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /machine:I386 /out:"$release\\$proj.exe" /libpath:"$release"
+# ADD LINK32 gsl.lib gslcblas.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /machine:I386 /out:"$release\\$proj.exe" /libpath:"$release"
 
 !ELSEIF  "\$(CFG)" == "$proj - Win32 Debug"
 
@@ -453,7 +453,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib  kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 libgsl.lib libgslcblas.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /out:"$debug\\$proj.exe" /pdbtype:sept /libpath:"$debug"
+# ADD LINK32 gsl.lib gslcblas.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /out:"$debug\\$proj.exe" /pdbtype:sept /libpath:"$debug"
 
 !ENDIF 
 EOF
@@ -734,6 +734,7 @@ EOF
 sub base {
     my ($f) = @_ ;
     $f =~ s/\.\w+$//;
+    $f =~ s/^lib//;
     return $f;
 }
 

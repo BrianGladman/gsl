@@ -9,8 +9,8 @@ all:
 	#mv *.dsw ..
 	#mv *.bat ..
 	perl gensetup.pl setup.iss.in > setup.iss
-	perl mkexports.pl libgsl.nm.dat > ../GSLDLL/libgsl.def
-	perl mkexports.pl libgslcblas.nm.dat > ../GSLDLL/libgslcblas.def
+	perl mkexports.pl libgsl.nm.dat > ../GSLDLL/gsl.def
+	perl mkexports.pl libgslcblas.nm.dat > ../GSLDLL/gslcblas.def
 	rm libgsl.nm.dat libgslcblas.nm.dat
         
 update:

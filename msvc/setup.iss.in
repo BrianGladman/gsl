@@ -40,24 +40,24 @@ Source: "..\*.h"; DestDir: "{app}\src"; Flags: recursesubdirs;
 Source: "..\*.c"; DestDir: "{app}\src"; Flags: recursesubdirs;
 Source: "..\*.def"; DestDir: "{app}\src"; Flags: recursesubdirs;
 ;
-Source: "..\GSLDLL\Release\libgsl.dll"; DestDir: "{sys}"; DestName: "libgsl.dll"
-Source: "..\GSLDLL\Release\libgslcblas.dll"; DestDir: "{sys}"; DestName: "libgslcblas.dll";
-Source: "..\GSLDLL\Release\libgsl.exp"; DestDir: "{app}\lib"; DestName: "libgsl.exp"
-Source: "..\GSLDLL\Release\libgslcblas.exp"; DestDir: "{app}\lib"; DestName: "libgslcblas.exp";
-Source: "..\GSLDLL\Release\libgsl.lib"; DestDir: "{app}\lib"; DestName: "libgsl.lib"
-Source: "..\GSLDLL\Release\libgslcblas.lib"; DestDir: "{app}\lib"; DestName: "libgslcblas.lib";
+Source: "..\GSLDLL\Release\gsl.dll"; DestDir: "{app}\lib"; DestName: "gsl.dll"
+Source: "..\GSLDLL\Release\gsl.exp"; DestDir: "{app}\lib"; DestName: "gsl.exp"
+Source: "..\GSLDLL\Release\gsl.lib"; DestDir: "{app}\lib"; DestName: "gsl.lib"
+Source: "..\GSLDLL\Release\gslcblas.dll"; DestDir: "{app}\lib"; DestName: "gslcblas.dll";
+Source: "..\GSLDLL\Release\gslcblas.exp"; DestDir: "{app}\lib"; DestName: "gslcblas.exp";
+Source: "..\GSLDLL\Release\gslcblas.lib"; DestDir: "{app}\lib"; DestName: "gslcblas.lib";
 
-Source: "..\GSLLIBML\Release\libgsl.lib"; DestDir: "{app}\lib"; DestName: "libgslML.lib"
-Source: "..\GSLLIBML\Release\libgslcblas.lib"; DestDir: "{app}\lib"; DestName: "libgslcblasML.lib";
-;;Source: "..\GSLLIBMT\Release\libgsl.lib"; DestDir: "{app}\lib"; DestName: "libgslMT.lib"
-;;Source: "..\GSLLIBMT\Release\libgslcblas.lib"; DestDir: "{app}\lib"; DestName: "libgslcblasMT.lib";
-;;Source: "..\GSLLIBMD\Release\libgsl.lib"; DestDir: "{app}\lib"; DestName: "libgslMD.lib"
-;;Source: "..\GSLLIBMD\Release\libgslcblas.lib"; DestDir: "{app}\lib"; DestName: "libgslcblasMD.lib";
+Source: "..\GSLLIBML\Release\gsl.lib"; DestDir: "{app}\lib"; DestName: "gslML.lib"
+Source: "..\GSLLIBML\Release\gslcblas.lib"; DestDir: "{app}\lib"; DestName: "gslcblasML.lib";
+;;Source: "..\GSLLIBMT\Release\gsl.lib"; DestDir: "{app}\lib"; DestName: "gslMT.lib"
+;;Source: "..\GSLLIBMT\Release\gslcblas.lib"; DestDir: "{app}\lib"; DestName: "gslcblasMT.lib";
+;;Source: "..\GSLLIBMD\Release\gsl.lib"; DestDir: "{app}\lib"; DestName: "gslMD.lib"
+;;Source: "..\GSLLIBMD\Release\gslcblas.lib"; DestDir: "{app}\lib"; DestName: "gslcblasMD.lib";
 
-;;Source: "Debug\libgsl.lib"; DestDir: "{app}\lib";  DestName: "libgsld.lib"
-;;Source: "Debug\libgslcblas.lib"; DestDir: "{app}\lib"; DestName: "libgslcblasd.lib";
-;;Source: "DebugMT\libgsl.lib"; DestDir: "{app}\lib";  DestName: "libgslMTd.lib"
-;;Source: "DebugMT\libgslcblas.lib"; DestDir: "{app}\lib"; DestName: "libgslcblasMTd.lib";
+;;Source: "Debug\gsl.lib"; DestDir: "{app}\lib";  DestName: "gsld.lib"
+;;Source: "Debug\gslcblas.lib"; DestDir: "{app}\lib"; DestName: "gslcblasd.lib";
+;;Source: "DebugMT\gsl.lib"; DestDir: "{app}\lib";  DestName: "gslMTd.lib"
+;;Source: "DebugMT\gslcblas.lib"; DestDir: "{app}\lib"; DestName: "gslcblasMTd.lib";
 
 Source: "..\doc\html\*.chm"; DestDir: "{app}\doc"; 
 

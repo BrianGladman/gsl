@@ -4,10 +4,11 @@ use File::Basename;
 
 $file = $ARGV[0];
 $lib = basename($file); 
+$lib =~ s/^lib//;
 ($name = $lib) =~ s/\..*$//;
 
 print "LIBRARY $name\n";
-print "DESCRIPTION \"GNU Scientific Library $lib\"\n";
+print "DESCRIPTION \"GNU Scientific Library ${name}.lib\"\n";
 print "EXPORTS\n";
 
 open (LIB, "<$file") || die "can't open file: $!";

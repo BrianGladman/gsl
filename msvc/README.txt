@@ -73,16 +73,16 @@ application with GSL using Microsoft Visual C++.
 By default the GSL libraries and header files are
 installed in the following locations,
 
-  C:\Program Files\GSL\include\gsl           - header files
+  C:\Program Files\GSL\include\gsl        - header files
 
-  C:\Program Files\GSL\lib\libgslML.lib      - Main static lib file
-  C:\Program Files\GSL\lib\libgslcblasML.lib - BLAS static lib file
+  C:\Program Files\GSL\lib\gslML.lib      - Main static lib file
+  C:\Program Files\GSL\lib\gslcblasML.lib - BLAS static lib file
 
-  C:\Program Files\GSL\lib\libgsl.lib        - Main DLL lib file
-  C:\Program Files\GSL\lib\libgslcblas.lib   - BLAS DLL lib file
+  C:\Program Files\GSL\lib\gsl.lib        - Main DLL lib file
+  C:\Program Files\GSL\lib\gslcblas.lib   - BLAS DLL lib file
 
-  C:\Windows\System\libgsl.dll               - Main DLL
-  C:\Windows\System\libgslcblas.dll          - BLAS DLL
+  C:\Windows\System\gsl.dll               - Main DLL
+  C:\Windows\System\gslcblas.dll          - BLAS DLL
 
 The single-threaded 'Release' version of the library
 and a multi-threaded 'Release' DLL are supplied with
@@ -124,7 +124,7 @@ list of libraries for each project,
     Project Settings -- Link
         Category: Input
           Object/Library Modules: 
-             libgsl.lib libgslcblas.lib 
+             gsl.lib gslcblas.lib 
 
 Make sure that the Object/Library module settings are
 made for all the appropriate configurations (either
@@ -149,10 +149,10 @@ _DLL, which ensures that the appropriate DLL
 functions are imported in the header files.
 
 To run a program compiled with 'ReleaseDLL' option
-you will need to make sure the DLL files libgsl.dll
-and libgslcblas.dll are available in the
-C:\Windows\System directory, or copy them into the
-same directory as the executable.
+you will need to make sure the DLL files gsl.dll and
+gslcblas.dll are available in one of the directories
+in the PATH, the C:\Windows\System directory, or in
+the same directory as the executable.
 
 See the Microsoft Visual C++ Manual for more details
 on link options.
@@ -224,20 +224,20 @@ generate their output in the GSLLIBMT, GSLLIBML and
 GSLDLL directories, producing the following
 libraries:
 
-    GSLLIBML/Debug/libgsl.lib
-    GSLLIBML/Debug/libgslcblas.lib
-    GSLLIBML/Release/libgsl.lib
-    GSLLIBML/Release/libgslcblas.lib
+    GSLLIBML/Debug/gsl.lib
+    GSLLIBML/Debug/gslcblas.lib
+    GSLLIBML/Release/gsl.lib
+    GSLLIBML/Release/gslcblas.lib
 
-    GSLLIBMT/Debug/libgsl.lib
-    GSLLIBMT/Debug/libgslcblas.lib
-    GSLLIBMT/Release/libgsl.lib
-    GSLLIBMT/Release/libgslcblas.lib
+    GSLLIBMT/Debug/gsl.lib
+    GSLLIBMT/Debug/gslcblas.lib
+    GSLLIBMT/Release/gsl.lib
+    GSLLIBMT/Release/gslcblas.lib
 
-    GSLDLL/Debug/libgsl.{exp,lib,dll}
-    GSLDLL/Debug/libgslcblas.{exp,lib,dll}
-    GSLDLL/Release/libgsl.{exp,lib,dll}
-    GSLDLL/Release/libgslcblas.{exp,lib,dll}
+    GSLDLL/Debug/gsl.{exp,lib,dll}
+    GSLDLL/Debug/gslcblas.{exp,lib,dll}
+    GSLDLL/Release/gsl.{exp,lib,dll}
+    GSLDLL/Release/gslcblas.{exp,lib,dll}
 
 The header file msvc/config.h contains the
 appropriate configuration for Microsoft Visual C++
@@ -258,11 +258,11 @@ produce an output log file "results.dat".  Any lines
 which don't begin with PASS: indicate a problem.
 
 3.  If the tests are successful you can link against
-the files libgsl.lib, libgslcblas.lib and gsl/gsl*.h.
-The *.dll files are also needed to use the GSLDLL
-build.  You will need to add the path to these files
-to the project settings for programs that you compile
-with GSL.
+the files gsl.lib, gslcblas.lib and gsl/gsl*.h.  The
+*.dll files are also needed to use the GSLDLL build.
+You will need to add the path to these files to the
+project settings for programs that you compile with
+GSL.
 
 Reporting Bugs
 ==============
@@ -294,4 +294,3 @@ modified by Brian Gough
 
 GSL has been written by the GSL Team.  See the file
 AUTHORS.txt for details.
-

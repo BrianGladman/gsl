@@ -25,7 +25,13 @@ For the default installation you should build the
 workspace using the project configuration
 'ReleaseML' compiled with the single-threaded /ML
 option, or the using the 'ReleaseDLL' configuration
-compiled with the /MD option.
+compiled with the /MD option.  
+
+To run a program compiled with 'ReleaseDLL' option
+you will need to make the DLLs gsl.dll and
+gslcblas.dll available by copying them from
+"C:\Program Files\GSL\lib" into the same directory
+as the demo.exe executable.
 
 If you want to use other 'Release' or 'Debug'
 configurations you will need to compile the
