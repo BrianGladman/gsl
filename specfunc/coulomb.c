@@ -351,20 +351,19 @@ coulomb_G_recur(const double lam_min, const int kmax,
  */
 static
 int
-my_coulomb_CF1(double lam_min, int kmax,
-            double eta, double x,
-            double * fcl_sign,
-	    double * result
-            )
+my_coulomb_CF1(double lambda,
+               double eta, double x,
+               double * fcl_sign,
+	       double * result
+               )
 {
   const double CF1_small = 1.e-30;
-  const double CF1_abort = 1.e5;
+  const double CF1_abort = 1.0e+05;
   const double CF1_acc   = 10.0*GSL_MACH_EPS;
   const double x_inv     = 1.0/x;
-  const double lam_max   = lam_min + kmax;
   const double px        = lam_max + 1.0 + CF1_abort;
-  
-  double pk = lam_max + 1.0;
+
+  double pk = lambda + 1.0;
   double F  = eta/pk + pk*x_inv;
   double D, C;
   double df;
@@ -393,6 +392,7 @@ my_coulomb_CF1(double lam_min, int kmax,
     }
     pk = pk1;
     if( pk > px ) {
+      *result = F;
       return GSL_ERUNAWAY;
     }
   }
@@ -401,6 +401,7 @@ my_coulomb_CF1(double lam_min, int kmax,
   *result = F;
   return GSL_SUCCESS;
 }
+
 
 static
 int
@@ -801,7 +802,7 @@ gsl_sf_coulomb_wave_FG_impl(const double eta, const double x,
     double gamma;
     double F_scale;
 
-    coulomb_CF1(lam_F, eta, x, &F_sign_lam_F, &Fp_over_F_lam_F);
+    my_coulomb_CF1(lam_F, eta, x, &F_sign_lam_F, &Fp_over_F_lam_F);
 
     F_lam_F  = SMALL;
     Fp_lam_F = Fp_over_F_lam_F * F_lam_F;
