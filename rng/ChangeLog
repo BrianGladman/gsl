@@ -1,3 +1,8 @@
+Thu Feb 24 16:41:48 2000  Brian Gough  <bjg@network-theory.co.uk>
+
+	* ran3.c (ran3_set): initialize unused zeroth element of state to
+ 	zero for consistency.
+
 Mon Feb 14 13:28:26 2000  Brian Gough  <bjg@network-theory.co.uk>
 
 	* made all internal functions static

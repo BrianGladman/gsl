@@ -65,6 +65,11 @@ ran3_set (void *vstate, unsigned long int s)
 
   j = (M_SEED - s) % M_BIG;
 
+  /* the zeroth element is never used, but we initialize it for
+     consistency between states */
+
+  state->buffer[0] = 0; 
+
   state->buffer[55] = j;
 
   k = 1;
