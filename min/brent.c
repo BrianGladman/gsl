@@ -207,10 +207,10 @@ brent_iterate (void *vstate, gsl_function * f, double *minimum, gsl_interval * x
 }
 
 
-static const gsl_min_fsolver_type brent_type =
+static const gsl_min_fminimizer_type brent_type =
 {"brent",			/* name */
  sizeof (brent_state_t),
  &brent_init,
  &brent_iterate};
 
-const gsl_min_fsolver_type *gsl_min_fsolver_brent = &brent_type;
+const gsl_min_fminimizer_type *gsl_min_fminimizer_brent = &brent_type;

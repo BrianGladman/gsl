@@ -1,5 +1,5 @@
 
-/* bisection.c -- bisection minimum finding algorithm */
+/* goldensection.c -- goldensection minimum finding algorithm */
 
 #include <config.h>
 
@@ -19,15 +19,15 @@ typedef struct
   {
     double f_lower, f_upper, f_minimum;
   }
-bisection_state_t;
+goldensection_state_t;
 
-int bisection_init (void * vstate, gsl_function * f, double * minimum, gsl_interval * x);
-int bisection_iterate (void * vstate, gsl_function * f, double * minimum, gsl_interval * x);
+int goldensection_init (void * vstate, gsl_function * f, double * minimum, gsl_interval * x);
+int goldensection_iterate (void * vstate, gsl_function * f, double * minimum, gsl_interval * x);
 
 int
-bisection_init (void * vstate, gsl_function * f, double * minimum, gsl_interval * x)
+goldensection_init (void * vstate, gsl_function * f, double * minimum, gsl_interval * x)
 {
-  bisection_state_t * state = (bisection_state_t *) vstate;
+  goldensection_state_t * state = (goldensection_state_t *) vstate;
 
   double x_lower = x->lower ;
   double x_upper = x->upper ;
@@ -52,16 +52,14 @@ bisection_init (void * vstate, gsl_function * f, double * minimum, gsl_interval 
 }
 
 int
-bisection_iterate (void * vstate, gsl_function * f, double * minimum, gsl_interval * x)
+goldensection_iterate (void * vstate, gsl_function * f, double * minimum, gsl_interval * x)
 {
-  bisection_state_t * state = (bisection_state_t *) vstate;
+  goldensection_state_t * state = (goldensection_state_t *) vstate;
 
   const double x_minimum = *minimum ;
   const double x_lower = x->lower ;
   const double x_upper = x->upper ;
 
-  const double f_lower = state->f_lower;
-  const double f_upper = state->f_upper;
   const double f_minimum = state->f_minimum;
 
   const double golden = 0.318966 ; /* golden = (3 - sqrt(5))/2 */
@@ -100,10 +98,10 @@ bisection_iterate (void * vstate, gsl_function * f, double * minimum, gsl_interv
 }
 
 
-static const gsl_min_fsolver_type bisection_type =
-{"bisection",				/* name */
- sizeof (bisection_state_t),
- &bisection_init,
- &bisection_iterate};
+static const gsl_min_fminimizer_type goldensection_type =
+{"goldensection",				/* name */
+ sizeof (goldensection_state_t),
+ &goldensection_init,
+ &goldensection_iterate};
 
-const gsl_min_fsolver_type  * gsl_min_fsolver_bisection = &bisection_type;
+const gsl_min_fminimizer_type  * gsl_min_fminimizer_goldensection = &goldensection_type;

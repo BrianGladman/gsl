@@ -6,7 +6,7 @@ noinst_HEADERS = min.h
 
 INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../err
 
-libgslmin_a_SOURCES = fsolver.c bisection.c brent.c convergence.c
+libgslmin_a_SOURCES = fsolver.c golden.c brent.c convergence.c
 
 check_PROGRAMS = test
 
