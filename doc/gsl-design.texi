@@ -12,7 +12,7 @@
 @end direntry
 
 @comment @include version-design.texi
-@set GSL @emph{GNU Scientific Library}
+@set GSL @i{GNU Scientific Library}
 
 @ifinfo
 This file documents the @value{GSL}.
@@ -81,15 +81,6 @@ This file documents the the @value{GSL}, a collection
 of numerical routines for scientific computing.
 @end ifinfo
 
-@menu
-* Motivation::                  
-* Design::                      
-* Copying::                     
-* Function Index::              
-* Variable Index::              
-* Type Index::                  
-@end menu
-
 The @value{GSL} is a library of scientific subroutines.  It aims to
 provide a convenient interface to routines that do standard (and not so
 standard) tasks that arise in scientific research.  More than that, it
@@ -104,6 +95,12 @@ ESSL.
 The target platform is a low-end desktop workstation. The goal is to
 provide something which is generally useful, and the library is aimed at
 general users rather than specialists.
+
+@menu
+* Motivation::                  
+* Design::                      
+* Copying::                     
+@end menu
 
 @node Motivation
 @chapter Motivation
@@ -193,11 +190,8 @@ Will Naylor. Public domain.
 @emph{MESHACH} A comprehensive matrix-vector linear algebra library
 written in C. Freely available but not GPL'ed (non-commercial license).
 
-@node JT section
-@section JT section
-
-[written by James Theiler, and not incorporated into the above
-motivation]
+[JT section: written by James Theiler, and not incorporated into the
+above motivation]
 
 And we furthermore promise to try as hard as possible to document
 the software: this will ideally involve discussion of why you might want
@@ -222,6 +216,7 @@ mind that evil profit-making companies (such as those which sell
 * Interface to other languages::  
 * What routines are implemented::  
 * What routines are not implemented::  
+* Tensions in the Design of  Numerical Libraries::  
 * Standards and conventions::   
 * Documentation::               
 * Namespace::                   
@@ -234,11 +229,12 @@ mind that evil profit-making companies (such as those which sell
 * Algorithm decomposition::     
 * Memory allocation and ownership::  
 * Memory layout::               
-* Levels::                      
+* Linear Algebra Levels::       
 * Exceptions and Error handling::  
 * Persistence::                 
 * Datatype widths::             
 * size_t::                      
+* Arrays vs Pointers::          
 * Constness::                   
 * Pseudo-templates::            
 * Test programs::               
@@ -249,6 +245,7 @@ mind that evil profit-making companies (such as those which sell
 * Non-UNIX portability::        
 * Compatibility with other libraries::  
 * Parallelism::                 
+* Miscellaneous::               
 @end menu
 
 @node Language for implementation
@@ -404,6 +401,40 @@ that C is a macro-assembler.  If you are in doubt about something being
 too complicated ask yourself the question "Would I try to write this in
 macro-assembler?" If the answer is obviously "No" then do not try to
 include it in GSL. [BJG]
+
+It will be useful to read the following paper,
+
+@itemize @asis
+@item 
+Kiem-Phong Vo, ``The Discipline and Method Architecture for Reusable
+Libraries'', Software - Practice & Experience, v.30, pp.107-128, 2000.
+@end itemize
+@noindent
+It is available from
+@url{http://www.research.att.com/sw/tools/sfio/dm-spe.ps} or the earlier
+technical report Kiem-Phong Vo, "An Architecture for Reusable Libraries"
+@url{http://citeseer.nj.nec.com/48973.html}.
+
+There are associated papers on Vmalloc, SFIO, and CDT which are also
+relevant to the design of portable C libraries.
+
+@itemize @asis
+@item
+Kiem-Phong Vo, ``Vmalloc: A General and Efficient Memory
+Allocator''. Software Practice & Experience, 26:1--18, 1996.
+
+@url{http://www.research.att.com/sw/tools/vmalloc/vmalloc.ps}
+@item
+Kiem-Phong Vo. ``Cdt: A Container Data Type Library''. Soft. Prac. &
+Exp., 27:1177--1197, 1997
+
+@url{http://www.research.att.com/sw/tools/cdt/cdt.ps}
+@item
+David G. Korn and Kiem-Phong Vo, ``Sfio: Safe/Fast String/File IO'',
+Proceedings of the Summer '91 Usenix Conference, pp.  235-256, 1991.
+
+@url{http://citeseer.nj.nec.com/korn91sfio.html}
+@end itemize
 
 @node Documentation
 @section Documentation
@@ -636,6 +667,34 @@ for (i = 0; i < N; i++) @{ j = N - i ; ... @}
 @noindent
 to avoid problems with wrap-around at @code{i=0}.
 
+@node Arrays vs Pointers
+@section Arrays vs Pointers
+
+A function can be declared with either pointer arguments or array
+arguments.  The C standard considers these to be equivalent. However, it
+is useful to distinguish between the case of a pointer, representing a
+single object which is being modified, and an array which represents a
+set of objects with unit stride (that are modified or not depending on
+the presence of @code{const}).  For vectors, where the stride is not
+required to be unity, the pointer form is preferred.
+
+@example
+/* real value, set on output */
+int foo (double * x);                           
+
+/* real vector, modified */
+int foo (double * x, size_t stride, size_t n);  
+
+/* constant real vector */
+int foo (const double * x, size_t stride, size_t n);  
+
+/* real array, modified */
+int bar (double x[], size_t n);                 
+
+/* real array, not modified */
+int baz (const double x[], size_t n);           
+@end example
+
 @node Constness
 @section Constness
 
@@ -715,7 +774,8 @@ in ANSI C.
 @section Thread-safety
 
 The library should be useable in thread-safe programs.  All the
-functions should be thread-safe.
+functions should be thread-safe, in the sense that they shouldn't use
+static variables, a.k.a. "common blocks".
 
 We don't require everything to be completely thread safe, but anything
 that isn't should be obvious, and not a function.  For example, some
@@ -724,6 +784,11 @@ global variables are used to control the overall behavior of the library
 these are accessed directly by the user it is obvious to the
 multi-threaded programmer that they shouldn't be modified by different
 threads.
+
+There is no need to provide any explicit support for threads
+(e.g. locking mechanisms etc), just to avoid anything which would make
+it impossible for someone to call a GSL routine from a multithreaded
+program.
 
 @node Test suites
 @section Test suites
@@ -790,15 +855,30 @@ people will be able to do their porting.
 We should also read up on what Cygnus is doing for their win32
 portability.
 
+
 @node Compatibility with other libraries
 @section Compatibility with other libraries
 
-We do not regard compatibility with other libraries as a priority.
+We do not regard compatibility with other numerical libraries as a
+priority.
 
 However, other libraries, such as Numerical Recipes, are widely used.
 If somebody writes the code to allow drop-in replacement of these
 libraries it would be useful to people.  If it is done, it would be as a
 separate wrapper that can be maintained and shipped separately.
+
+There is a separate issue of system libraries, such as BSD math library
+and functions like @code{expm1}, @code{log1p}, @code{hypot}.  The
+functions in this library are available on nearly every platform (but
+not all).  
+
+In this case, it is best to write code in terms of these native
+functions to take advantage of the vendor-supplied system library, but
+to also provide portable implementations e.g. @code{gsl_hypot} which can
+be used as an automatic fall back via autoconf when necessary. See the
+usage of @code{hypot} in @file{gsl/complex/math.c}, the implementation
+of @code{gsl_hypot} and the correspoding parts of files
+@file{configure.in} and @file{config.h.in} as an example.
 
 @node Parallelism
 @section Parallelism
