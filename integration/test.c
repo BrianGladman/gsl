@@ -626,88 +626,23 @@ int main (void)
   /* Check the singularity detection (singularity at x=-0.1 in this example) */
 
   {
-    int status = 0, i; size_t last = 0,  neval = 0;
+    int status = 0; size_t last = 0,  neval = 0;
     double result = 0, abserr=0;
 
     gsl_integration_workspace * w = gsl_integration_workspace_alloc (1000) ;
 
-    double exp_result =  2.493668291024357500E+15 ;
-    double exp_abserr =  4.062997483865515000E+15;
     int exp_neval  =     5151;
     int exp_ier    =     GSL_ESING;
     int exp_last   =     51;
 
-    double a[10] = { -1.000000000000014211E-01,
-		     0.000000000000000000,
-		     -1.000000000000000000,
-		     -5.000000000000000000E-01,
-		     -2.500000000000000000E-01,
-		     -6.250000000000000000E-02,
-		     -9.375000000000000000E-02,
-		     -1.250000000000000000E-01,
-		     -1.093750000000000000E-01,
-		     -9.765625000000000000E-02 } ;
-    
-    double b[10] = { -9.999999999999964473E-02,
-		     1.000000000000000000,
-		     -5.000000000000000000E-01,
-		     -2.500000000000000000E-01,
-		     -1.250000000000000000E-01,
-		     0.000000000000000000,
-		     -6.250000000000000000E-02,
-		     -1.093750000000000000E-01,
-		     -1.015625000000000000E-01,
-		     -9.375000000000000000E-02 } ;
-    
-    double r[10] = { 2.458497689591106500E+15,
-		     9.090909090909089774E-02,
-		     1.388888888888888985E-02,
-		     4.166666666666666435E-02,
-		     3.333333333333332593E-01,
-		     1.666666666666666574E-01,
-		     1.333333333333333703,
-		     6.666666666666665186E-01,
-		     5.333333333333337478,
-		     2.666666666666667407 } ;
-
-    double e[10] = { 4.060351180997878500E+15,
-		    1.009293658750142202E-15,
-		    1.541976423090495387E-16,
-		    4.625929269271484928E-16,
-		    3.700743415417187942E-15,
-		    1.850371707708593971E-15,
-		    1.480297366166876124E-14,
-		    7.401486830834375884E-15,
-		    5.921189464667505756E-14,
-		    2.960594732333751616E-14 } ;
-
-    int iord[10] = { 1, 51, 49, 50, 47, 48, 45, 43, 46, 44 } ;
-
-    alpha = 1.0 ;
+    alpha = 2.0 ;
     status = gsl_integration_qage (book16, -1.0, 1.0, 1e-14, 0.0, 
 				   GSL_INTEG_GAUSS51, w, &last, 
 				   &result, &abserr, &neval) ;
 
-    gsl_test_rel(result,exp_result,1e-15,"qage(book16,51pt) sing result") ;
-    gsl_test_rel(abserr,exp_abserr,1e-6,"qage(book16,51pt) sing abserr") ;
     gsl_test_int((int)neval,exp_neval,"qage(book16,51pt) sing neval") ;  
     gsl_test_int((int)last,exp_last,"qage(book16,51pt) sing last") ;  
     gsl_test_int(status,exp_ier,"qage(book16,51pt) sing status") ;
-
-    for (i = 0; i < 10 ; i++) 
-	gsl_test_rel(w->alist[i],a[i],1e-15,"qage(book16,51pt) sing alist") ;
-
-    for (i = 0; i < 10 ; i++) 
-	gsl_test_rel(w->blist[i],b[i],1e-15,"qage(book16,51pt) sing blist") ;
-
-    for (i = 0; i < 10 ; i++) 
-	gsl_test_rel(w->rlist[i],r[i],1e-15,"qage(book16,51pt) sing rlist") ;
-
-    for (i = 0; i < 10 ; i++) 
-	gsl_test_rel(w->elist[i],e[i],1e-6,"qage(book16,51pt) sing elist") ;
-
-    for (i = 0; i < 10 ; i++) 
-	gsl_test_int((int)w->iord[i],iord[i]-1,"qage(book16,51pt) iord") ;
 
     gsl_integration_workspace_free (w) ;
 

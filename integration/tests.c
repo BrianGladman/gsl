@@ -81,6 +81,7 @@ double book15 (double x) {
 }
 
 double book16 (double x) {
+  if (x==0 && alpha == 1) return 1 ;  /* make the function continuous in x */
   return pow(x,alpha-1)/pow((1+10*x),2.0) ;
 }
 
