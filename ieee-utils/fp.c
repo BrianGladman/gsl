@@ -22,6 +22,8 @@
 #include "fp-tru64.c"
 #elif defined(HAVE_FREEBSD_IEEE_INTERFACE)
 #include "fp-freebsd.c"
+#elif defined(HAVE_OS2EMX_IEEE_INTERFACE)
+#include "fp-os2emx.c"
 #else
 #include "fp-unknown.c" 
 #endif

@@ -34,6 +34,7 @@
 #undef HAVE_IRIX_IEEE_INTERFACE
 #undef HAVE_AIX_IEEE_INTERFACE
 #undef HAVE_FREEBSD_IEEE_INTERFACE
+#undef HAVE_OS2EMX_IEEE_INTERFACE
 
 /* Define this if we need to include /usr/include/float.h explicitly
    in order to get FP_RND_RN and related macros.  This is known to be
