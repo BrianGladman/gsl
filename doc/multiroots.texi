@@ -647,9 +647,8 @@ internal scaling.
 
 @deffn {Solver} gsl_multiroot_fsolver_dnewton
 
-@cindex Discrete newton algorithm for multidimensional roots
+@cindex Discrete Newton algorithm for multidimensional roots
 @cindex Newton algorithm, discrete
-@cindex Discrete Newton algorithm for nonlinear systems
 
 The @dfn{discrete Newton algorithm} is the simplest method of solving a
 multidimensional system.  It uses the Newton iteration
@@ -1002,7 +1001,7 @@ The addition of derivative information to the @code{hybrids} solver does
 not make any significant difference to its behavior, since it able to
 approximate the Jacobian numerically with sufficient accuracy.  To
 illustrate the behavior of a different derivative solver we switch to
-@code{gnewton}. This is a traditional newton solver with the constraint
+@code{gnewton}. This is a traditional Newton solver with the constraint
 that it scales back its step if the full step would lead "uphill". Here
 is the output for the @code{gnewton} algorithm,
 
