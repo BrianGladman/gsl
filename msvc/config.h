@@ -176,7 +176,7 @@
 #define isnan gsl_isnan
 #endif
 
-#ifndef HAVE_ISNAN
+#ifndef HAVE_ISFINITE
 #define finite gsl_finite
 #endif
 

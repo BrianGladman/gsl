@@ -20,8 +20,8 @@ tar xvfz $tarfile
   mkdir html ; 
   cd html ; 
   ../../../doc/texi2html -htmlhelp -verbose ../gsl-ref.texi ; )
- cp -a ../msvc .
- (cd msvc ; make ; cp -a gsl-ref.hhp ../doc/html; )
+  cp -a ../msvc . ;
+ (cd msvc ; rm -rf usr *~ demo/*~ ; make ; cp -a gsl-ref.hhp ../doc/html; )
 )
 
 test -e $ver.zip && mv -b $ver.zip $ver.zip.old

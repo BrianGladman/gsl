@@ -28,6 +28,7 @@ Source: "..\Copying"; DestDir: "{app}"; DestName: "Copying.txt";
 Source: "..\NEWS"; DestDir: "{app}"; DestName: "NEWS.txt";
 Source: "..\THANKS"; DestDir: "{app}"; DestName: "THANKS.txt";
 Source: "..\AUTHORS"; DestDir: "{app}"; DestName: "AUTHORS.txt";
+Source: "..\BUGS"; DestDir: "{app}"; DestName: "BUGS.txt";
 ;
 Source: "..\gsl\*.*"; DestDir: "{app}\include\gsl";
 ;
@@ -45,10 +46,11 @@ Source: "..\GSLDLL\Release\libgsl.exp"; DestDir: "{app}\lib"; DestName: "libgsl.
 Source: "..\GSLDLL\Release\libgslcblas.exp"; DestDir: "{app}\lib"; DestName: "libgslcblas.exp";
 Source: "..\GSLDLL\Release\libgsl.lib"; DestDir: "{app}\lib"; DestName: "libgsl.lib"
 Source: "..\GSLDLL\Release\libgslcblas.lib"; DestDir: "{app}\lib"; DestName: "libgslcblas.lib";
-Source: "..\GSLLIBML\Release\libgsl.lib"; DestDir: "{app}\lib"; DestName: "libgslML.lib"
-Source: "..\GSLLIBML\Release\libgslcblas.lib"; DestDir: "{app}\lib"; DestName: "libgslcblasML.lib";
-Source: "..\GSLLIBMT\Release\libgsl.lib"; DestDir: "{app}\lib"; DestName: "libgslMT.lib"
-Source: "..\GSLLIBMT\Release\libgslcblas.lib"; DestDir: "{app}\lib"; DestName: "libgslcblasMT.lib";
+
+;;Source: "..\GSLLIBML\Release\libgsl.lib"; DestDir: "{app}\lib"; DestName: "libgslML.lib"
+;;Source: "..\GSLLIBML\Release\libgslcblas.lib"; DestDir: "{app}\lib"; DestName: "libgslcblasML.lib";
+;;Source: "..\GSLLIBMT\Release\libgsl.lib"; DestDir: "{app}\lib"; DestName: "libgslMT.lib"
+;;Source: "..\GSLLIBMT\Release\libgslcblas.lib"; DestDir: "{app}\lib"; DestName: "libgslcblasMT.lib";
 ;;Source: "..\GSLLIBMD\Release\libgsl.lib"; DestDir: "{app}\lib"; DestName: "libgslMD.lib"
 ;;Source: "..\GSLLIBMD\Release\libgslcblas.lib"; DestDir: "{app}\lib"; DestName: "libgslcblasMD.lib";
 

@@ -20,13 +20,18 @@ The Visual C++ options that need to be present are,
 With these settings you should be able to compile and link the program
 main.c in this directory.
 
-You can choose from four project configurations, 'ReleaseML',
-'ReleaseMT' and 'ReleaseDLL'.  If you want to use the Debug
-configurations you'll need to recompile the library with debugging
-switched on.
+For the default installation you should build the workspace using the
+project configuration 'ReleaseDLL'.  Only the DLL 'Release' version of
+GSL is supplied by default.
+
+If you want to use the 'ReleaseML', 'ReleaseMT', 'DebugML' or
+'DebugMT' configurations you will need to compile the corresponding
+versions the library yourself, following the instructions in main
+README.txt file.
 
 To run the program compiled with 'ReleaseDLL' option you will need to
-copy the dll files libgsl.dll and libgslcblas.dll into the same
+make sure the DLL files libgsl.dll and libgslcblas.dll are available
+in the C:\Windows\System directory, or copy them into the same
 directory as the executable.
 
 The output from the program should be the same as using GSL on Unix,

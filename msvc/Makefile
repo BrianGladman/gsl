@@ -14,9 +14,9 @@ all:
 	rm libgsl.nm.dat libgslcblas.nm.dat
         
 update:
-	nm ../.libs/libgsl.a > libgsl.nm.dat
+	nm usr/lib/libgsl.a > libgsl.nm.dat
 	wc -l libgsl.nm.dat
-	nm ../cblas/.libs/libgslcblas.a > libgslcblas.nm.dat
+	nm usr/lib/libgslcblas.a > libgslcblas.nm.dat
 	wc -l libgslcblas.nm.dat
 
 clean:
