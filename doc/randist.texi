@@ -61,13 +61,13 @@ distribution for gaussian random numbers is,
 @tex
 \beforedisplay
 $$
-p(z) dz = {1 \over \sqrt{2 \pi \sigma^2}} \exp (-(z-\mu)^2 / 2\sigma^2) dz
+p(x) dx = {1 \over \sqrt{2 \pi \sigma^2}} \exp (-(x-\mu)^2 / 2\sigma^2) dx
 $$
 \afterdisplay
 @end tex
 @ifinfo
 @example
-p(z) dz = @{1 \over \sqrt@{2 \pi \sigma^2@}@} \exp (-(z-\mu)^2 / 2\sigma^2) dz
+p(x) dx = @{1 \over \sqrt@{2 \pi \sigma^2@}@} \exp (-(x-\mu)^2 / 2\sigma^2) dx
 @end example
 @end ifinfo
 @noindent
@@ -177,13 +177,13 @@ The probability distribution for bivariate gaussian random numbers is,
 @tex
 \beforedisplay
 $$
-p(x,y) dx dy = {1 \over 2 \pi \sigma_x \sigma_y \sqrt{1-\rho^2}} \exp (-(x^2 + y^2 - 2 \rho x y)/2\sigma_x^2\sigma_y^2 (1-\rho^2)) dz
+p(x,y) dx dy = {1 \over 2 \pi \sigma_x \sigma_y \sqrt{1-\rho^2}} \exp (-(x^2 + y^2 - 2 \rho x y)/2\sigma_x^2\sigma_y^2 (1-\rho^2)) dx dy
 $$
 \afterdisplay
 @end tex
 @ifinfo
 @example
-p(x,y) dx dy = @{1 \over 2 \pi \sigma_x \sigma_y \sqrt@{1-\rho^2@}@} \exp (-(x^2 + y^2 - 2 \rho x y)/2\sigma_x^2\sigma_y^2 (1-\rho^2)) dz
+p(x,y) dx dy = @{1 \over 2 \pi \sigma_x \sigma_y \sqrt@{1-\rho^2@}@} \exp (-(x^2 + y^2 - 2 \rho x y)/2\sigma_x^2\sigma_y^2 (1-\rho^2)) dx dy
 @end example
 @end ifinfo
 
@@ -412,7 +412,7 @@ p(x) dx = @{1 \over 2 \mu \Gamma(1+1/a)@} \exp(-|x/\mu|^a) dx
 for @c{$x \ge 0$}
 @math{x >= 0}. 
 
-For @math{a = 1} this reduces to the laplace distribution. For @math{a = 2} 
+For @math{a = 1} this reduces to the Laplace distribution. For @math{a = 2} 
 it has the same form as a gaussian distribution, but with 
 @c{$\mu = \sqrt{2} \sigma$} 
 @math{\mu = \sqrt@{2@} \sigma}.
@@ -486,7 +486,7 @@ The Cauchy distribution is also known as the Lorentz distribution.
 
 @deftypefun double gsl_ran_cauchy_pdf (double @var{x}, double @var{mu})
 This function computes the probability density @math{p(x)} at @var{x}
-for an Cauchy distribution with scale parameter @var{mu}, using the formula
+for a Cauchy distribution with scale parameter @var{mu}, using the formula
 given above.
 @end deftypefun
 
@@ -2054,13 +2054,13 @@ random numbers is,
 @tex
 \beforedisplay
 $$
-p(k) =  C(n1,k) C(n2, t-k) / C(n1+n2,k)
+p(k) =  C(n_1,k) C(n_2, t-k) / C(n_1+n_2,k)
 $$
 \afterdisplay
 @end tex
 @ifinfo
 @example
-p(k) =  C(n1,k) C(n2, t-k) / C(n1+n2,k)
+p(k) =  C(n_1,k) C(n_2, t-k) / C(n_1 + n_2,k)
 @end example
 @end ifinfo
 @noindent
@@ -2122,8 +2122,8 @@ p(k) = @{-1 \over \log(1-p)@} @{(p^k \over k)@}
 @end ifinfo
 @noindent
 for 
-@c{$n \ge 1$}
-@math{n >= 1}.
+@c{$k \ge 1$}
+@math{k >= 1}.
 @end deftypefn
 
 @deftypefun double gsl_ran_logarithmic_pdf (unsigned int @var{k}, double @var{p})

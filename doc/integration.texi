@@ -63,7 +63,7 @@ $$
 @end tex
 @ifinfo
 @example
-|RESULT - I| <= ABSERR \leq \max@{ epsabs, epsrel |I|@}
+|RESULT - I| <= ABSERR <= \max@{ epsabs, epsrel |I|@}
 @end example
 @end ifinfo
 
@@ -98,6 +98,7 @@ with weight functions. The rules are used to compute an approximation to
 an integral over a small range and an estimate of the error in the
 approximation.
 
+@cindex Gauss-Kronrod quadrature
 A Gauss-Kronrod rule begins with a classical Gaussian quadrature rule of
 order @math{m}. This is extended with interpolatory points between each
 of the abscissae to give a higher order Kronrod rule of order
@@ -106,6 +107,8 @@ computing this higher order rule. It is used as the best approximation
 to the integral, and the difference between the two rules is used to
 estimate the error in the approximation.
 
+@cindex Clenshaw-Curtis quadrature
+@cindex Modified Clenshaw-Curtis quadrature
 A Clenshaw-Curtis rule takes an @math{n}-th order Chebyschev
 approximation to the integrand and integrates it exactly. The Chebyschev
 expansion can be extended to higher order to improve the approximation.

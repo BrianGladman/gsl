@@ -150,10 +150,8 @@ If the underlying distribution has long tails then the variance may be
 subject to large fluctations, or may not converge.
 
 Both these functions compute the mean via a call to
-@code{gsl_stats_mean} or @code{gsl_stats_int_mean}. If you have already
-computed the mean then you can pass it directly to one of the following
-two functions, @code{gsl_stats_est_variance_with_mean} and
-@code{gsl_stats_int_est_variance_with_mean}.
+@code{gsl_stats_mean}. If you have already computed the mean then you
+can pass it directly to @code{gsl_stats_est_variance_with_mean}.
 
 @end deftypefn
 
@@ -222,8 +220,7 @@ $$
 @deftypefn Statistics double gsl_stats_sd (const double @var{data[]}, size_t @var{n})
 @deftypefnx Statistics double gsl_stats_sd_with_mean (const double @var{data[]}, size_t @var{n}, double @var{mean})
 
-The functions @code{gsl_stats_sd}, @code{gsl_stats_int_sd},
-@code{gsl_stats_sd_with_mean} and @code{gsl_stats_int_sd_with_mean}
+The functions @code{gsl_stats_sd} and @code{gsl_stats_sd_with_mean}
 calculate the standard deviation, which is simply the square root of the
 corresponding variance function.
 @end deftypefn

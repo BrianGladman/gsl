@@ -103,7 +103,7 @@ error code of @code{GSL_ENOMEM}.
 
 The generator is automatically initialized with the default seed,
 @code{gsl_rng_default_seed}. This is zero by default but can be changed
-either directly or usubf the environment variable @code{GSL_RNG_SEED},
+either directly or by using the environment variable @code{GSL_RNG_SEED},
 @pxref{Random number environment variables}.
 
 Some of the defined generator types are,
@@ -355,7 +355,8 @@ with other libraries and historical generators from the past.
 @subsection Simulation quality generators
 
 The following generators are recommended for use in simulation. They
-have extremely long periods and pass most statistical tests.
+have extremely long periods, low correlation and pass most statistical
+tests.
 
 @deffn {Generator} gsl_rng_mt19937
 @cindex MT19937 random number generator
