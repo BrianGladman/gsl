@@ -1,8 +1,13 @@
+# $Id$
+# -*-makefile-*-
+
 noinst_LIBRARIES = libroots.a 
 
 noinst_PROGRAMS = test
 
 include_HEADERS = gsl_roots.h
+
+noinst_HEADERS = roots.h
 
 INCLUDES = -I$(srcdir)/../err
 

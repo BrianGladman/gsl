@@ -35,12 +35,12 @@ void gsl_no_error_handler (const char *reason, const char * file, int line) ;
        gsl_errno = errno ; \
        gsl_error (reason, __FILE__, __LINE__) ; \
        return -1 ; \
-       } while (0) ;
+       } while (0)
 
 #define GSL_ERROR_RETURN(reason, errno, value) \
        do { \
        gsl_errno = errno ; \
        gsl_error (reason, __FILE__, __LINE__) ; \
        return value ; \
-       } while (0) ;
+       } while (0)
 

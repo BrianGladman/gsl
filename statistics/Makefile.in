@@ -1,6 +1,6 @@
-# Makefile.in generated automatically by automake 1.1m from Makefile.am
+# Makefile.in generated automatically by automake 1.2 from Makefile.am
 
-# Copyright (C) 1994, 1995, 1996 Free Software Foundation, Inc.
+# Copyright (C) 1994, 1995, 1996, 1997 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
 # gives unlimited permission to copy, distribute and modify it.
 
@@ -44,10 +44,19 @@ INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_DATA = @INSTALL_DATA@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
 transform = @program_transform_name@
+
+NORMAL_INSTALL = true
+PRE_INSTALL = true
+POST_INSTALL = true
+NORMAL_UNINSTALL = true
+PRE_UNINSTALL = true
+POST_UNINSTALL = true
 host_alias = @host_alias@
 host_triplet = @host@
 CC = @CC@
-INSTALL_SCRIPT = @INSTALL_SCRIPT@
+CPP = @CPP@
+LN_S = @LN_S@
+MAKEINFO = @MAKEINFO@
 PACKAGE = @PACKAGE@
 RANLIB = @RANLIB@
 VERSION = @VERSION@
@@ -83,7 +92,7 @@ PROGRAMS =  $(noinst_PROGRAMS)
 jtest_OBJECTS =  jtest.o
 jtest_LDFLAGS = 
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
-LINK = $(CC) $(LDFLAGS) -o $@
+LINK = $(CC) $(CFLAGS) $(LDFLAGS) -o $@
 HEADERS =  $(include_HEADERS)
 
 DIST_COMMON =  Makefile.am Makefile.in
@@ -119,16 +128,16 @@ distclean-libLIBRARIES:
 maintainer-clean-libLIBRARIES:
 
 install-libLIBRARIES: $(lib_LIBRARIES)
-	$(NORMAL_INSTALL)
+	@$(NORMAL_INSTALL)
 	$(mkinstalldirs) $(libdir)
-	list="$(lib_LIBRARIES)"; for p in $$list; do \
+	list='$(lib_LIBRARIES)'; for p in $$list; do \
 	  if test -f $$p; then \
 	    echo " $(INSTALL_DATA) $$p $(libdir)/$$p"; \
 	    $(INSTALL_DATA) $$p $(libdir)/$$p; \
 	  else :; fi; \
 	done
-	$(POST_INSTALL)
-	@list="$(lib_LIBRARIES)"; for p in $$list; do \
+	@$(POST_INSTALL)
+	@list='$(lib_LIBRARIES)'; for p in $$list; do \
 	  if test -f $$p; then \
 	    echo " $(RANLIB) $(libdir)/$$p"; \
 	    $(RANLIB) $(libdir)/$$p; \
@@ -136,7 +145,8 @@ install-libLIBRARIES: $(lib_LIBRARIES)
 	done
 
 uninstall-libLIBRARIES:
-	list="$(lib_LIBRARIES)"; for p in $$list; do \
+	$(NORMAL_UNINSTALL)
+	list='$(lib_LIBRARIES)'; for p in $$list; do \
 	  rm -f $(libdir)/$$p; \
 	done
 
@@ -152,7 +162,6 @@ distclean-compile:
 	rm -f *.tab.c
 
 maintainer-clean-compile:
-$(libgsl_statistics_a_OBJECTS): ../config.h
 
 libgsl_statistics.a: $(libgsl_statistics_a_OBJECTS) $(libgsl_statistics_a_DEPENDENCIES)
 	rm -f libgsl_statistics.a
@@ -167,21 +176,22 @@ clean-noinstPROGRAMS:
 distclean-noinstPROGRAMS:
 
 maintainer-clean-noinstPROGRAMS:
-$(jtest_OBJECTS): ../config.h
 
 jtest: $(jtest_OBJECTS) $(jtest_DEPENDENCIES)
+	@rm -f jtest
 	$(LINK) $(jtest_LDFLAGS) $(jtest_OBJECTS) $(jtest_LDADD) $(LIBS)
 
 install-includeHEADERS: $(include_HEADERS)
-	$(NORMAL_INSTALL)
+	@$(NORMAL_INSTALL)
 	$(mkinstalldirs) $(includedir)
-	@list="$(include_HEADERS)"; for p in $$list; do \
+	@list='$(include_HEADERS)'; for p in $$list; do \
 	  echo " $(INSTALL_DATA) $(srcdir)/$$p $(includedir)/$$p"; \
 	  $(INSTALL_DATA) $(srcdir)/$$p $(includedir)/$$p; \
 	done
 
 uninstall-includeHEADERS:
-	list="$(include_HEADERS)"; for p in $$list; do \
+	$(NORMAL_UNINSTALL)
+	list='$(include_HEADERS)'; for p in $$list; do \
 	  rm -f $(includedir)/$$p; \
 	done
 
@@ -193,11 +203,8 @@ ID: $(HEADERS) $(SOURCES)
 TAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES)
 	tags=; \
 	here=`pwd`; \
-	list="$(SUBDIRS)"; for subdir in $$list; do \
-	  test -f $$subdir/TAGS && tags="$$tags -i $$here/$$subdir/TAGS"; \
-	done; \
 	test -z "$(ETAGS_ARGS)$(SOURCES)$(HEADERS)$$tags" \
-	  || cd $(srcdir) && etags $(ETAGS_ARGS) $$tags  $(SOURCES) $(HEADERS) -o $$here/TAGS
+	  || (cd $(srcdir) && etags $(ETAGS_ARGS) $$tags  $(SOURCES) $(HEADERS) -o $$here/TAGS)
 
 mostlyclean-tags:
 
@@ -211,7 +218,12 @@ maintainer-clean-tags:
 distdir = $(top_builddir)/$(PACKAGE)-$(VERSION)/$(subdir)
 
 subdir = statistics
+
 distdir: $(DISTFILES)
+	here=`cd $(top_builddir) && pwd`; \
+	top_distdir=`cd $(top_distdir) && pwd`; \
+	cd $(top_srcdir) \
+	  && $(AUTOMAKE) --include-deps --build-dir=$$here --srcdir-name=$(top_srcdir) --output-dir=$$top_distdir --gnu statistics/Makefile
 	@for file in $(DISTFILES); do \
 	  d=$(srcdir); \
 	  test -f $(distdir)/$$file \
@@ -221,13 +233,12 @@ distdir: $(DISTFILES)
 
 MKDEP = gcc -M $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
 
+DEPS_MAGIC := $(shell mkdir .deps > /dev/null 2>&1 || :)
 -include .deps/.P
-.deps/.P:
-	test -d .deps || mkdir .deps
+.deps/.P: $(BUILT_SOURCES)
 	echo > $@
 
 -include $(DEP_FILES)
-$(DEP_FILES): .deps/.P
 
 mostlyclean-depend:
 
@@ -238,31 +249,33 @@ distclean-depend:
 maintainer-clean-depend:
 	rm -rf .deps
 
-.deps/%.P: $(srcdir)/%.c
+.deps/%.P: %.c
 	@echo "Computing dependencies for $<..."
-	@o='o';				\
-	test -n "$o" && o='$$o';	\
-	$(MKDEP) $< | sed "s/^\(.*\)\.o:/\1.$$o \1.l$$o:/" > $@
+	@o='o'; \
+	test -n "$o" && o='$$o'; \
+	$(MKDEP) $< >$@.tmp \
+	  && sed "s,^\(.*\)\.o:,\1.$$o \1.l$$o $@:," < $@.tmp > $@ \
+	  && rm -f $@.tmp
 info:
 dvi:
 check: all
 	$(MAKE)
 installcheck:
 install-exec: install-libLIBRARIES
-	$(NORMAL_INSTALL)
+	@$(NORMAL_INSTALL)
 
 install-data: install-includeHEADERS
-	$(NORMAL_INSTALL)
+	@$(NORMAL_INSTALL)
 
 install: install-exec install-data all
 	@:
 
 uninstall: uninstall-libLIBRARIES uninstall-includeHEADERS
 
-all: $(LIBRARIES) $(PROGRAMS) $(HEADERS) Makefile
+all: Makefile $(LIBRARIES) $(PROGRAMS) $(HEADERS)
 
 install-strip:
-	$(MAKE) INSTALL_PROGRAM='$(INSTALL_PROGRAM) -s' install
+	$(MAKE) INSTALL_PROGRAM='$(INSTALL_PROGRAM) -s' INSTALL_SCRIPT='$(INSTALL_PROGRAM)' install
 installdirs:
 	$(mkinstalldirs)  $(libdir) $(includedir)
 
@@ -275,7 +288,7 @@ clean-generic:
 
 distclean-generic:
 	rm -f Makefile $(DISTCLEANFILES)
-	rm -f config.cache config.log stamp-h
+	rm -f config.cache config.log stamp-h stamp-h[0-9]*
 	test -z "$(CONFIG_CLEAN_FILES)" || rm -f $(CONFIG_CLEAN_FILES)
 
 maintainer-clean-generic:

@@ -1,6 +1,6 @@
-# Makefile.in generated automatically by automake 1.1m from Makefile.am
+# Makefile.in generated automatically by automake 1.2 from Makefile.am
 
-# Copyright (C) 1994, 1995, 1996 Free Software Foundation, Inc.
+# Copyright (C) 1994, 1995, 1996, 1997 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
 # gives unlimited permission to copy, distribute and modify it.
 
@@ -42,10 +42,19 @@ INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_DATA = @INSTALL_DATA@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
 transform = @program_transform_name@
+
+NORMAL_INSTALL = true
+PRE_INSTALL = true
+POST_INSTALL = true
+NORMAL_UNINSTALL = true
+PRE_UNINSTALL = true
+POST_UNINSTALL = true
 host_alias = @host_alias@
 host_triplet = @host@
 CC = @CC@
-INSTALL_SCRIPT = @INSTALL_SCRIPT@
+CPP = @CPP@
+LN_S = @LN_S@
+MAKEINFO = @MAKEINFO@
 PACKAGE = @PACKAGE@
 RANLIB = @RANLIB@
 VERSION = @VERSION@
@@ -82,7 +91,7 @@ test_errnos_DEPENDENCIES =  liberr.a
 test_errnos_LDFLAGS = 
 CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
-LINK = $(CC) $(LDFLAGS) -o $@
+LINK = $(CC) $(CFLAGS) $(LDFLAGS) -o $@
 HEADERS =  $(include_HEADERS)
 
 DIST_COMMON =  Makefile.am Makefile.in
@@ -129,7 +138,6 @@ distclean-compile:
 	rm -f *.tab.c
 
 maintainer-clean-compile:
-$(liberr_a_OBJECTS): ../config.h
 
 liberr.a: $(liberr_a_OBJECTS) $(liberr_a_DEPENDENCIES)
 	rm -f liberr.a
@@ -146,9 +154,9 @@ distclean-binPROGRAMS:
 maintainer-clean-binPROGRAMS:
 
 install-binPROGRAMS: $(bin_PROGRAMS)
-	$(NORMAL_INSTALL)
+	@$(NORMAL_INSTALL)
 	$(mkinstalldirs) $(bindir)
-	@list="$(bin_PROGRAMS)"; for p in $$list; do \
+	@list='$(bin_PROGRAMS)'; for p in $$list; do \
 	  if test -f $$p; then \
 	    echo "  $(INSTALL_PROGRAM) $$p $(bindir)/`echo $$p|sed '$(transform)'`"; \
 	     $(INSTALL_PROGRAM) $$p $(bindir)/`echo $$p|sed '$(transform)'`; \
@@ -156,24 +164,26 @@ install-binPROGRAMS: $(bin_PROGRAMS)
 	done
 
 uninstall-binPROGRAMS:
-	list="$(bin_PROGRAMS)"; for p in $$list; do \
+	$(NORMAL_UNINSTALL)
+	list='$(bin_PROGRAMS)'; for p in $$list; do \
 	  rm -f $(bindir)/`echo $$p|sed '$(transform)'`; \
 	done
-$(test_errnos_OBJECTS): ../config.h
 
 test_errnos: $(test_errnos_OBJECTS) $(test_errnos_DEPENDENCIES)
+	@rm -f test_errnos
 	$(LINK) $(test_errnos_LDFLAGS) $(test_errnos_OBJECTS) $(test_errnos_LDADD) $(LIBS)
 
 install-includeHEADERS: $(include_HEADERS)
-	$(NORMAL_INSTALL)
+	@$(NORMAL_INSTALL)
 	$(mkinstalldirs) $(includedir)
-	@list="$(include_HEADERS)"; for p in $$list; do \
+	@list='$(include_HEADERS)'; for p in $$list; do \
 	  echo " $(INSTALL_DATA) $(srcdir)/$$p $(includedir)/$$p"; \
 	  $(INSTALL_DATA) $(srcdir)/$$p $(includedir)/$$p; \
 	done
 
 uninstall-includeHEADERS:
-	list="$(include_HEADERS)"; for p in $$list; do \
+	$(NORMAL_UNINSTALL)
+	list='$(include_HEADERS)'; for p in $$list; do \
 	  rm -f $(includedir)/$$p; \
 	done
 
@@ -185,11 +195,8 @@ ID: $(HEADERS) $(SOURCES)
 TAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES)
 	tags=; \
 	here=`pwd`; \
-	list="$(SUBDIRS)"; for subdir in $$list; do \
-	  test -f $$subdir/TAGS && tags="$$tags -i $$here/$$subdir/TAGS"; \
-	done; \
 	test -z "$(ETAGS_ARGS)$(SOURCES)$(HEADERS)$$tags" \
-	  || cd $(srcdir) && etags $(ETAGS_ARGS) $$tags  $(SOURCES) $(HEADERS) -o $$here/TAGS
+	  || (cd $(srcdir) && etags $(ETAGS_ARGS) $$tags  $(SOURCES) $(HEADERS) -o $$here/TAGS)
 
 mostlyclean-tags:
 
@@ -203,7 +210,12 @@ maintainer-clean-tags:
 distdir = $(top_builddir)/$(PACKAGE)-$(VERSION)/$(subdir)
 
 subdir = err
+
 distdir: $(DISTFILES)
+	here=`cd $(top_builddir) && pwd`; \
+	top_distdir=`cd $(top_distdir) && pwd`; \
+	cd $(top_srcdir) \
+	  && $(AUTOMAKE) --include-deps --build-dir=$$here --srcdir-name=$(top_srcdir) --output-dir=$$top_distdir --gnu err/Makefile
 	@for file in $(DISTFILES); do \
 	  d=$(srcdir); \
 	  test -f $(distdir)/$$file \
@@ -213,13 +225,12 @@ distdir: $(DISTFILES)
 
 MKDEP = gcc -M $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
 
+DEPS_MAGIC := $(shell mkdir .deps > /dev/null 2>&1 || :)
 -include .deps/.P
-.deps/.P:
-	test -d .deps || mkdir .deps
+.deps/.P: $(BUILT_SOURCES)
 	echo > $@
 
 -include $(DEP_FILES)
-$(DEP_FILES): .deps/.P
 
 mostlyclean-depend:
 
@@ -230,53 +241,58 @@ distclean-depend:
 maintainer-clean-depend:
 	rm -rf .deps
 
-.deps/%.P: $(srcdir)/%.c
+.deps/%.P: %.c
 	@echo "Computing dependencies for $<..."
-	@o='o';				\
-	test -n "$o" && o='$$o';	\
-	$(MKDEP) $< | sed "s/^\(.*\)\.o:/\1.$$o \1.l$$o:/" > $@
+	@o='o'; \
+	test -n "$o" && o='$$o'; \
+	$(MKDEP) $< >$@.tmp \
+	  && sed "s,^\(.*\)\.o:,\1.$$o \1.l$$o $@:," < $@.tmp > $@ \
+	  && rm -f $@.tmp
 check-TESTS: $(TESTS)
 	@failed=0; all=0; \
 	srcdir=$(srcdir); export srcdir; \
 	for tst in $(TESTS); do \
-	  all=`expr $$all + 1`; \
 	  if test -f $$tst; then dir=.; \
 	  else dir="$(srcdir)"; fi; \
 	  if $(TESTS_ENVIRONMENT) $$dir/$$tst; then \
+	    all=`expr $$all + 1`; \
 	    echo "PASS: $$tst"; \
-	  else \
+	  elif test $$? -ne 77; then \
+	    all=`expr $$all + 1`; \
 	    failed=`expr $$failed + 1`; \
 	    echo "FAIL: $$tst"; \
 	  fi; \
 	done; \
 	if test "$$failed" -eq 0; then \
-	  echo "========================"; \
-	  echo "All $$all tests passed"; \
-	  echo "========================"; \
+	  banner="All $$all tests passed"; \
 	else \
-	  echo "$$failed of $$all tests failed"; \
-	  exit 1; \
-	fi
+	  banner="$$failed of $$all tests failed"; \
+	fi; \
+	dashes=`echo "$$banner" | sed s/./=/g`; \
+	echo "$$dashes"; \
+	echo "$$banner"; \
+	echo "$$dashes"; \
+	test "$$failed" -eq 0
 info:
 dvi:
 check: all
 	$(MAKE) check-TESTS
 installcheck:
 install-exec: install-binPROGRAMS
-	$(NORMAL_INSTALL)
+	@$(NORMAL_INSTALL)
 
 install-data: install-includeHEADERS
-	$(NORMAL_INSTALL)
+	@$(NORMAL_INSTALL)
 
 install: install-exec install-data all
 	@:
 
 uninstall: uninstall-binPROGRAMS uninstall-includeHEADERS
 
-all: $(LIBRARIES) $(PROGRAMS) $(HEADERS) Makefile
+all: Makefile $(LIBRARIES) $(PROGRAMS) $(HEADERS)
 
 install-strip:
-	$(MAKE) INSTALL_PROGRAM='$(INSTALL_PROGRAM) -s' install
+	$(MAKE) INSTALL_PROGRAM='$(INSTALL_PROGRAM) -s' INSTALL_SCRIPT='$(INSTALL_PROGRAM)' install
 installdirs:
 	$(mkinstalldirs)  $(bindir) $(includedir)
 
@@ -289,7 +305,7 @@ clean-generic:
 
 distclean-generic:
 	rm -f Makefile $(DISTCLEANFILES)
-	rm -f config.cache config.log stamp-h
+	rm -f config.cache config.log stamp-h stamp-h[0-9]*
 	test -z "$(CONFIG_CLEAN_FILES)" || rm -f $(CONFIG_CLEAN_FILES)
 
 maintainer-clean-generic:
