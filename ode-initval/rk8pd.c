@@ -8,32 +8,48 @@
 #include "gsl_odeiv.h"
 
 
-static gsl_odeiv_step * rk8pd_create(unsigned int dimension);
-static int rk8pd_step(void * self, double t, double h, double y[], double yerr[], const double dydt_in[], double dydt_out[], const gsl_odeiv_system * dydt);
+typedef  struct gsl_odeiv_step_rk8pd_struct  gsl_odeiv_step_rk8pd;
 
-
-const gsl_odeiv_step_factory gsl_odeiv_step_factory_rk8pd = 
+struct gsl_odeiv_step_rk8pd_struct
 {
-  "rk8pd",
-  rk8pd_create
+  gsl_odeiv_step parent;  /* inherits from gsl_odeiv_step */
+
+  double * work;  /* generic work space */
 };
 
+static int  rk8pd_step(void * self, double t, double h, double y[], double yerr[], const double dydt_in[], double dydt_out[], const gsl_odeiv_system * dydt);
+static void rk8pd_free(void * self);
 
-static
+
 gsl_odeiv_step *
-rk8pd_create(unsigned int dimension)
+gsl_odeiv_step_rk8pd_new(void)
 {
-  gsl_odeiv_step * step = gsl_odeiv_step_new(gsl_odeiv_step_factory_rk8pd.name, dimension, 8, 0, 14 * dimension * sizeof(double));
-  step->_step = rk8pd_step;
-  step->can_use_dydt = 1;
-  step->stutter = 0;
-  return step;
+  gsl_odeiv_step_rk8pd * s = (gsl_odeiv_step_rk8pd *) malloc(sizeof(gsl_odeiv_step_rk8pd));
+  if(s != 0) {
+    gsl_odeiv_step_construct(&(s->parent),
+      "rk8pd",
+      rk8pd_step,
+      0,
+      rk8pd_free,
+      0,
+      0,
+      8);
+    s->work = 0;
+  }
+  return (gsl_odeiv_step *) s;
 }
 
 
-static
-int
-rk8pd_step(void * self, double t, double h, double y[], double yerr[], const double dydt_in[], double dydt_out[], const gsl_odeiv_system * dydt)
+static int
+rk8pd_step(
+  void * self,
+  double t,
+  double h,
+  double y[],
+  double yerr[],
+  const double dydt_in[],
+  double dydt_out[],
+  const gsl_odeiv_system * sys)
 {
   /* Prince-Dormand constants */
   static const double Abar[] = {
@@ -160,100 +176,126 @@ rk8pd_step(void * self, double t, double h, double y[], double yerr[], const dou
     0.0
   };
 
-  gsl_odeiv_step * my = (gsl_odeiv_step *) self;
-
-  const unsigned int dim = my->dimension;
-
   int i;
   int status = 0;
+  size_t dim;
+
+  double * k1;
+  double * k2;
+  double * k3;
+  double * k4;
+  double * k5;
+  double * k6;
+  double * k7;
+  double * k8;
+  double * k9;
+  double * k10; 
+  double * k11;
+  double * k12;
+  double * k13;
+  double * ytmp;
+
+  gsl_odeiv_step_rk8pd * my = (gsl_odeiv_step_rk8pd *) self;
+
+  if(sys->dimension == 0) {
+    return GSL_EINVAL;
+  }
+
+  if(sys->dimension != my->parent.dimension) {
+    if(my->work != 0) free(my->work);
+    my->parent.dimension = sys->dimension;
+    my->work = (double *) malloc(14 * sys->dimension * sizeof(double));
+    if(my->work == 0) {
+      my->parent.dimension = 0;
+      return GSL_ENOMEM;
+    }
+  }
+
+  dim = my->parent.dimension;
 
   /* divide up the work space */
-  double * w  = (double *) my->_work;
-  double * k1 = w;
-  double * k2 = w + dim;
-  double * k3 = w + 2*dim;
-  double * k4 = w + 3*dim;
-  double * k5 = w + 4*dim;
-  double * k6 = w + 5*dim;
-  double * k7 = w + 6*dim;
-  double * k8 = w + 7*dim;
-  double * k9 = w + 8*dim;
-  double * k10 = w + 9*dim;
-  double * k11 = w + 10*dim;
-  double * k12 = w + 11*dim;
-  double * k13 = w + 12*dim;
-  double * ytmp = w + 13*dim;
+  k1 = my->work;
+  k2 = my->work + dim;
+  k3 = my->work + 2*dim;
+  k4 = my->work + 3*dim;
+  k5 = my->work + 4*dim;
+  k6 = my->work + 5*dim;
+  k7 = my->work + 6*dim;
+  k8 = my->work + 7*dim;
+  k9 = my->work + 8*dim;
+  k10 = my->work + 9*dim;
+  k11 = my->work + 10*dim;
+  k12 = my->work + 11*dim;
+  k13 = my->work + 12*dim;
+  ytmp = my->work + 13*dim;
 
   /* k1 step */
   if(dydt_in != 0) {
-    k1 = dydt_in;
+    memcpy(k1, dydt_in, dim * sizeof(double));
   }
   else {
-    status += ( GSL_ODEIV_FN_EVAL(dydt, t, y, k1) != 0 );
+    status += ( GSL_ODEIV_FN_EVAL(sys, t, y, k1) != 0 );
   }
   for(i=0;i<dim;i++)
     ytmp[i] = y[i] + b21*h*k1[i];
 
   /* k2 step */
-  status += ( GSL_ODEIV_FN_EVAL(dydt, t + ah[0]*h, ytmp, k2) != 0 );
+  status += ( GSL_ODEIV_FN_EVAL(sys, t + ah[0]*h, ytmp, k2) != 0 );
   for(i=0;i<dim;i++)
     ytmp[i] = y[i] + h*(b3[0]*k1[i] + b3[1]*k2[i]);
 
   /* k3 step */
-  status += ( GSL_ODEIV_FN_EVAL(dydt, t + ah[1]*h, ytmp, k3) != 0 );
+  status += ( GSL_ODEIV_FN_EVAL(sys, t + ah[1]*h, ytmp, k3) != 0 );
   for(i=0;i<dim;i++)
     ytmp[i] = y[i] + h*(b4[0]*k1[i] + b4[2]*k3[i]);
 
   /* k4 step */
-  status += ( GSL_ODEIV_FN_EVAL(dydt, t + ah[2]*h, ytmp, k4) != 0 );
+  status += ( GSL_ODEIV_FN_EVAL(sys, t + ah[2]*h, ytmp, k4) != 0 );
   for(i=0;i<dim;i++)
     ytmp[i] = y[i] + h*(b5[0]*k1[i] + b5[2]*k3[i] + b5[3]*k4[i]);
 
   /* k5 step */
-  status += ( GSL_ODEIV_FN_EVAL(dydt, t + ah[3]*h, ytmp, k5) != 0 );
+  status += ( GSL_ODEIV_FN_EVAL(sys, t + ah[3]*h, ytmp, k5) != 0 );
   for(i=0;i<dim;i++)
     ytmp[i] = y[i] + h*(b6[0]*k1[i] + b6[3]*k4[i] + b6[4]*k5[i]);
 
   /* k6 step */
-  status += ( GSL_ODEIV_FN_EVAL(dydt, t + ah[4]*h, ytmp, k6) != 0 );
+  status += ( GSL_ODEIV_FN_EVAL(sys, t + ah[4]*h, ytmp, k6) != 0 );
   for(i=0;i<dim;i++)
     ytmp[i] = y[i] + h*(b7[0]*k1[i] + b7[3]*k4[i] + b7[4]*k5[i] + b7[5]*k6[i]);
 
   /* k7 step */
-  status += ( GSL_ODEIV_FN_EVAL(dydt, t + ah[5]*h, ytmp, k7) != 0 );
+  status += ( GSL_ODEIV_FN_EVAL(sys, t + ah[5]*h, ytmp, k7) != 0 );
   for(i=0;i<dim;i++)
     ytmp[i] = y[i] + h*(b8[0]*k1[i] + b8[3]*k4[i] + b8[4]*k5[i] + b8[5]*k6[i] + b8[6]*k7[i]);
 
   /* k8 step */
-  status += ( GSL_ODEIV_FN_EVAL(dydt, t + ah[6]*h, ytmp, k8) != 0 );
+  status += ( GSL_ODEIV_FN_EVAL(sys, t + ah[6]*h, ytmp, k8) != 0 );
   for(i=0;i<dim;i++)
     ytmp[i] = y[i] + h*(b9[0]*k1[i] + b9[3]*k4[i] + b9[4]*k5[i] + b9[5]*k6[i] + b9[6]*k7[i] + b9[7]*k8[i]);
 
   /* k9 step */
-  status += ( GSL_ODEIV_FN_EVAL(dydt, t + ah[7]*h, ytmp, k9) != 0 );
+  status += ( GSL_ODEIV_FN_EVAL(sys, t + ah[7]*h, ytmp, k9) != 0 );
   for(i=0;i<dim;i++)
     ytmp[i] = y[i] + h*(b10[0]*k1[i] + b10[3]*k4[i] + b10[4]*k5[i] + b10[5]*k6[i] + b10[6]*k7[i] + b10[7]*k8[i] + b10[8]*k9[i]);
 
   /* k10 step */
-  status += ( GSL_ODEIV_FN_EVAL(dydt, t + ah[8]*h, ytmp, k10) != 0 );
+  status += ( GSL_ODEIV_FN_EVAL(sys, t + ah[8]*h, ytmp, k10) != 0 );
   for(i=0;i<dim;i++)
     ytmp[i] = y[i] + h*(b11[0]*k1[i] + b11[3]*k4[i] + b11[4]*k5[i] + b11[5]*k6[i] + b11[6]*k7[i] + b11[7]*k8[i] + b11[8]*k9[i] + b11[9]*k10[i]);
 
   /* k11 step */
-  status += ( GSL_ODEIV_FN_EVAL(dydt, t + ah[9]*h, ytmp, k11) != 0 );
+  status += ( GSL_ODEIV_FN_EVAL(sys, t + ah[9]*h, ytmp, k11) != 0 );
   for(i=0;i<dim;i++)
     ytmp[i] = y[i] + h*(b12[0]*k1[i] + b12[3]*k4[i] + b12[4]*k5[i] + b12[5]*k6[i] + b12[6]*k7[i] + b12[7]*k8[i] + b12[8]*k9[i] + b12[9]*k10[i] + b12[10]*k11[i]);
 
   /* k12 step */
-  status += ( GSL_ODEIV_FN_EVAL(dydt, t + h, ytmp, k12) != 0 );
+  status += ( GSL_ODEIV_FN_EVAL(sys, t + h, ytmp, k12) != 0 );
   for(i=0;i<dim;i++)
     ytmp[i] = y[i] + h*(b13[0]*k1[i] + b13[3]*k4[i] + b13[4]*k5[i] + b13[5]*k6[i] + b13[6]*k7[i] + b13[7]*k8[i] + b13[8]*k9[i] + b13[9]*k10[i] + b13[10]*k11[i] + b13[11]*k12[i]);
 
   /* k13 step */
-  if(dydt_out != 0) {
-    k13 = dydt_out;
-  }
-  status += ( GSL_ODEIV_FN_EVAL(dydt, t + h, ytmp, k13) != 0 );
+  status += ( GSL_ODEIV_FN_EVAL(sys, t + h, ytmp, k13) != 0 );
 
   /* final sum and error estimate */
   for(i=0;i<dim;i++) {
@@ -261,7 +303,19 @@ rk8pd_step(void * self, double t, double h, double y[], double yerr[], const dou
     const double ksum7 = A[0]*k1[i] + A[5]*k6[i] + A[6]*k7[i] + A[7]*k8[i] + A[8]*k9[i] + A[9]*k10[i] + A[10]*k11[i] + A[11]*k12[i];    
     y[i] += h*ksum8;
     yerr[i] = h*(ksum7 - ksum8);
+    if(dydt_out != 0) dydt_out[i] = ksum8;
   }
 
   return ( status == 0 ? GSL_SUCCESS : GSL_EBADFUNC );
+}
+
+
+static void
+rk8pd_free(void * self)
+{
+  if(self != 0) {
+    gsl_odeiv_step_rk8pd * my = (gsl_odeiv_step_rk8pd *) self;
+    if(my->work != 0) free(my->work);
+    free(self);
+  }
 }

@@ -4,7 +4,7 @@
 #include <string.h>
 #include "odeiv_util.h"
 
-
+/*
 gsl_odeiv_step *
 gsl_odeiv_step_new(
   const char * name,
@@ -46,4 +46,25 @@ gsl_odeiv_step_new(
   }
 
   return s;
+}
+*/
+
+void gsl_odeiv_step_construct(
+  gsl_odeiv_step * s,
+  const char * _name,
+  int  (*_step)  (void *, double, double, double *, double *, const double *, double *, const gsl_odeiv_system *),
+  int  (*_reset) (void *),
+  void (*_free)  (void *),
+  int can_use_dydt,
+  size_t dimension,
+  unsigned int order
+  )
+{
+  s->_name = _name;
+  s->_step = _step;
+  s->_reset = _reset;
+  s->_free = _free;
+  s->can_use_dydt = can_use_dydt;
+  s->dimension = dimension;
+  s->order = order;
 }

@@ -228,7 +228,7 @@ int test_stepper_stiff(gsl_odeiv_step * stepper, double h, double base_prec)
 
 int test_stepper_rk2(void)
 {
-  gsl_odeiv_step * stepper = gsl_odeiv_step_factory_rk2.create(2);
+  gsl_odeiv_step * stepper = gsl_odeiv_step_rk2_new();
   int stat = 0;
   int s;
 
@@ -253,7 +253,7 @@ int test_stepper_rk2(void)
 
 int test_stepper_rk4(void)
 {
-  gsl_odeiv_step * stepper = gsl_odeiv_step_factory_rk4.create(2);
+  gsl_odeiv_step * stepper = gsl_odeiv_step_rk4_new();
   int stat = 0;
   int s;
 
@@ -278,7 +278,7 @@ int test_stepper_rk4(void)
 
 int test_stepper_rkck(void)
 {
-  gsl_odeiv_step * stepper = gsl_odeiv_step_factory_rkck.create(2);
+  gsl_odeiv_step * stepper = gsl_odeiv_step_rkck_new();
   int stat = 0;
   int s;
 
@@ -304,7 +304,7 @@ int test_stepper_rkck(void)
 
 int test_stepper_rk8pd(void)
 {
-  gsl_odeiv_step * stepper = gsl_odeiv_step_factory_rk8pd.create(2);
+  gsl_odeiv_step * stepper = gsl_odeiv_step_rk8pd_new();
   int stat = 0;
   int s;
 
@@ -343,7 +343,7 @@ int test_stepper_rk8pd(void)
 
 int test_stepper_rk2imp(void)
 {
-  gsl_odeiv_step * stepper = gsl_odeiv_step_factory_rk2imp.create(2);
+  gsl_odeiv_step * stepper = gsl_odeiv_step_rk2imp_new();
   int stat = 0;
   int s;
 
@@ -374,7 +374,7 @@ int test_stepper_rk2imp(void)
 
 int test_stepper_rk4imp(void)
 {
-  gsl_odeiv_step * stepper = gsl_odeiv_step_factory_rk4imp.create(2);
+  gsl_odeiv_step * stepper = gsl_odeiv_step_rk4imp_new();
   int stat = 0;
   int s;
 
@@ -405,7 +405,7 @@ int test_stepper_rk4imp(void)
 
 int test_stepper_gear1(void)
 {
-  gsl_odeiv_step * stepper = gsl_odeiv_step_factory_gear1.create(2);
+  gsl_odeiv_step * stepper = gsl_odeiv_step_gear1_new();
   int stat = 0;
   int s;
 
@@ -436,7 +436,7 @@ int test_stepper_gear1(void)
 
 int test_stepper_gear2(void)
 {
-  gsl_odeiv_step * stepper = gsl_odeiv_step_factory_gear2.create(2);
+  gsl_odeiv_step * stepper = gsl_odeiv_step_gear2_new();
   int stat = 0;
   int s;
 
@@ -542,7 +542,7 @@ int test_evolve(void)
   gsl_odeiv_evolve_mon * mon = 0 /* gsl_odeiv_evolve_mon_stream_new(stdout) */;
   
 
-  gsl_odeiv_step * step = gsl_odeiv_step_factory_rkck.create(2);
+  gsl_odeiv_step * step = gsl_odeiv_step_rkck_new();
   y[0] = 1.0;
   y[1] = 1.0;
   yfin[0] = exp(10.0);
@@ -553,7 +553,7 @@ int test_evolve(void)
   gsl_odeiv_step_free(step);
 
 
-  step = gsl_odeiv_step_factory_rk8pd.create(2);
+  step = gsl_odeiv_step_rk8pd_new();
   y[0] = 1.0;
   y[1] = 1.0;
   yfin[0] = exp(10.0);
@@ -564,7 +564,7 @@ int test_evolve(void)
   gsl_odeiv_step_free(step);
 
 
-  step = gsl_odeiv_step_factory_rk8pd.create(2);
+  step = gsl_odeiv_step_rk8pd_new();
   y[0] = 1.0;
   y[1] = 0.0;
   yfin[0] = cos(2.0);
@@ -575,7 +575,7 @@ int test_evolve(void)
   gsl_odeiv_step_free(step);
 
 
-  step = gsl_odeiv_step_factory_rk2imp.create(2);
+  step = gsl_odeiv_step_rk2imp_new();
   y[0] = 1.0;
   y[1] = 0.0;
   {
@@ -591,7 +591,7 @@ int test_evolve(void)
   gsl_odeiv_step_free(step);
 
 
-  step = gsl_odeiv_step_factory_rk4imp.create(2);
+  step = gsl_odeiv_step_rk4imp_new();
   y[0] = 1.0;
   y[1] = 0.0;
   {
@@ -607,7 +607,7 @@ int test_evolve(void)
   gsl_odeiv_step_free(step);
 
 
-  step = gsl_odeiv_step_factory_gear1.create(2);
+  step = gsl_odeiv_step_gear1_new();
   y[0] = 1.0;
   y[1] = 0.0;
   {
@@ -623,7 +623,7 @@ int test_evolve(void)
   gsl_odeiv_step_free(step);
 
 
-  step = gsl_odeiv_step_factory_gear1.create(2);
+  step = gsl_odeiv_step_gear1_new();
   y[0] = 1.0;
   y[1] = 0.0;
   {
@@ -639,7 +639,7 @@ int test_evolve(void)
   gsl_odeiv_step_free(step);
 
 
-  step = gsl_odeiv_step_factory_gear2.create(2);
+  step = gsl_odeiv_step_gear2_new();
   y[0] = 1.0;
   y[1] = 0.0;
   {
@@ -655,7 +655,7 @@ int test_evolve(void)
   gsl_odeiv_step_free(step);
 
 
-  step = gsl_odeiv_step_factory_gear2.create(2);
+  step = gsl_odeiv_step_gear2_new();
   y[0] = 1.0;
   y[1] = 0.0;
   {

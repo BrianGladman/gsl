@@ -9,45 +9,79 @@
 #include "gsl_odeiv.h"
 
 
-static gsl_odeiv_step * rk4_create(unsigned int dimension);
-static int rk4_step(void * self, double t, double h, double y[], double yerr[], const double dydt_in[], double dydt_out[], const gsl_odeiv_system * dydt);
+typedef  struct gsl_odeiv_step_rk4_struct  gsl_odeiv_step_rk4;
 
-
-const gsl_odeiv_step_factory gsl_odeiv_step_factory_rk4 = 
+struct gsl_odeiv_step_rk4_struct
 {
-  "rk4",
-  rk4_create
+  gsl_odeiv_step parent;  /* inherits from gsl_odeiv_step */
+
+  double * work;  /* generic work space */
 };
 
 
-static
+static int  rk4_step(void * self, double t, double h, double y[], double yerr[], const double dydt_in[], double dydt_out[], const gsl_odeiv_system * dydt);
+static void rk4_free(void * self);
+
+
 gsl_odeiv_step *
-rk4_create(unsigned int dimension)
+gsl_odeiv_step_rk4_new(void)
 {
-  gsl_odeiv_step * step = gsl_odeiv_step_new(gsl_odeiv_step_factory_rk4.name, dimension, 4, 0, 3*dimension * sizeof(double));
-  step->_step = rk4_step;
-  step->can_use_dydt = 1;
-  step->stutter = 0;
-  return step;
+  gsl_odeiv_step_rk4 * s = (gsl_odeiv_step_rk4 *) malloc(sizeof(gsl_odeiv_step_rk4));
+  if(s != 0) {
+    gsl_odeiv_step_construct(&(s->parent),
+      "rk4",
+      rk4_step,
+      0,
+      rk4_free,
+      0,
+      0,
+      4);
+    s->work = 0;
+  }
+  return (gsl_odeiv_step *) s;
 }
 
 
-static
-int
-rk4_step(void * self, double t, double h, double y[], double yerr[], const double dydt_in[], double dydt_out[], const gsl_odeiv_system * dydt)
+static int
+rk4_step(void * self,
+  double t,
+  double h,
+  double y[],
+  double yerr[],
+  const double dydt_in[],
+  double dydt_out[],
+  const gsl_odeiv_system * sys)
 {
-  gsl_odeiv_step * my = (gsl_odeiv_step *) self;
-  
-  const unsigned int dim = my->dimension;
-
-  /* divide up the workspace */
-  double * w    = (double *) my->_work;
-  double * k    = w;
-  double * y0   = w + dim;
-  double * ytmp = w + 2*dim;
-
   int i;
   int status = 0;
+  size_t dim;
+
+  double * k;
+  double * y0;
+  double * ytmp;
+ 
+  gsl_odeiv_step_rk4 * my = (gsl_odeiv_step_rk4 *) self;
+
+  if(sys->dimension <= 0) {
+    return GSL_EINVAL;
+  }  
+
+  if(sys->dimension != my->parent.dimension) {
+    if(my->work != 0) free(my->work);
+    my->parent.dimension = sys->dimension;
+    my->work = (double *) malloc(3 * sys->dimension * sizeof(double));
+    if(my->work == 0) {
+      my->parent.dimension = 0;
+      return GSL_ENOMEM;
+    }
+  }
+
+  dim = my->parent.dimension;
+
+  /* divide up the workspace */  
+  k    = my->work;
+  y0   = my->work + dim;
+  ytmp = my->work + 2*dim;
 
   /* Copy the starting value. We will write over
    * the y[] vector, using it for scratch and
@@ -60,7 +94,7 @@ rk4_step(void * self, double t, double h, double y[], double yerr[], const doubl
     memcpy(k, dydt_in, dim * sizeof(double));
   }
   else {
-    status += ( GSL_ODEIV_FN_EVAL(dydt, t, y0, k) != 0 );
+    status += ( GSL_ODEIV_FN_EVAL(sys, t, y0, k) != 0 );
   }
   for(i=0; i<dim; i++) {
     y[i] = h/6.0 * k[i]; /* use y[] to store delta_y */
@@ -68,29 +102,38 @@ rk4_step(void * self, double t, double h, double y[], double yerr[], const doubl
   }
 
   /* k2 step */
-  status += ( GSL_ODEIV_FN_EVAL(dydt, t + 0.5*h, ytmp, k) != 0 );
+  status += ( GSL_ODEIV_FN_EVAL(sys, t + 0.5*h, ytmp, k) != 0 );
   for(i=0; i<dim; i++) {
     y[i] += h/3.0 * k[i];
     ytmp[i] = y0[i] + 0.5*h * k[i];
   }  
 
   /* k3 step */
-  status += ( GSL_ODEIV_FN_EVAL(dydt, t + 0.5*h, ytmp, k) != 0 );
+  status += ( GSL_ODEIV_FN_EVAL(sys, t + 0.5*h, ytmp, k) != 0 );
   for(i=0; i<dim; i++) {
     y[i] += h/3.0 * k[i];
     ytmp[i] = y0[i] + h * k[i];
   } 
 
   /* k4 step, error estimate, and final sum */
-  if(dydt_out != 0) {
-    k = dydt_out;
-  }
-  status += ( GSL_ODEIV_FN_EVAL(dydt, t + h, ytmp, k) != 0 );
+  status += ( GSL_ODEIV_FN_EVAL(sys, t + h, ytmp, k) != 0 );
   for(i=0; i<dim; i++) {
     y[i]   += h/6.0 * k[i];
     yerr[i] = h * y[i];
     y[i]   += y0[i];
+    if(dydt_out != 0) dydt_out[i] = k[i];
   } 
 
   return  ( status == 0 ? GSL_SUCCESS : GSL_EBADFUNC );
+}
+
+
+static void
+rk4_free(void * self)
+{
+  if(self != 0) {
+    gsl_odeiv_step_rk4 * my = (gsl_odeiv_step_rk4 *) self;
+    if(my->work != 0) free(my->work);
+    free(self);
+  }
 }

@@ -20,70 +20,105 @@ typedef struct {
 gear2_state;
 
 
-static gsl_odeiv_step * gear2_create(unsigned int dimension);
-static int  gear2_step(void * self, double t, double h, double y[], double yerr[], const double dydt_in[], double dydt_out[], const gsl_odeiv_system * dydt);
-static int  gear2_reset(void * state);
-static void gear2_free(void * state, void * work);
+typedef  struct gsl_odeiv_step_gear2_struct  gsl_odeiv_step_gear2;
 
-
-const gsl_odeiv_step_factory gsl_odeiv_step_factory_gear2 = 
+struct gsl_odeiv_step_gear2_struct
 {
-  "gear2",
-  gear2_create
+  gsl_odeiv_step parent;  /* inherits from gsl_odeiv_step */
+  gear2_state state;      /* state information  */
+
+  double * work;          /* generic work space */
+
+  int stutter;
 };
 
 
-static
+static int  gear2_step(void * self, double t, double h, double y[], double yerr[], const double dydt_in[], double dydt_out[], const gsl_odeiv_system * dydt);
+static int  gear2_reset(void * self);
+static void gear2_free(void * self);
+
+
 gsl_odeiv_step *
-gear2_create(unsigned int dimension)
+gsl_odeiv_step_gear2_new(void)
 {
-  gear2_state * state;
-
-  gsl_odeiv_step * step = gsl_odeiv_step_new(gsl_odeiv_step_factory_gear2.name, dimension, 3, sizeof(gear2_state), 2*dimension * sizeof(double));
-  if(step == 0) return 0;
-
-  step->_step  = gear2_step;
-  step->_reset = gear2_reset;
-  step->_free  = gear2_free;
-  step->can_use_dydt = 0;
-  step->stutter = 0;
-
-  state = (gear2_state *) step->_state;
-  state->primed = 0;
-  state->last_h = 0.0;
-  state->yim1 = (double *)malloc(dimension * sizeof(double));
-  state->primer = gsl_odeiv_step_factory_rk4imp.create(dimension);
-
-  if(state->primer == 0 || state->yim1 == 0) {
-    gsl_odeiv_step_free(step);
-    return 0;
+  gsl_odeiv_step_gear2 * s = (gsl_odeiv_step_gear2 *) malloc(sizeof(gsl_odeiv_step_gear2));
+  if(s != 0) {
+    gsl_odeiv_step_construct(&(s->parent),
+      "gear2",
+      gear2_step,
+      gear2_reset,
+      gear2_free,
+      0,
+      0,
+      3);
+    s->work = 0;
+    s->stutter = 0;
+    s->state.yim1 = 0;
+    s->state.primer = 0;
   }
-  
-  return step;
+  return (gsl_odeiv_step *) s;
 }
 
 
-static
-int
-gear2_step(void * self, double t, double h, double y[], double yerr[], const double dydt_in[], double dydt_out[], const gsl_odeiv_system * dydt)
+static int
+gear2_step(
+  void * self,
+  double t,
+  double h,
+  double y[],
+  double yerr[],
+  const double dydt_in[],
+  double dydt_out[],
+  const gsl_odeiv_system * sys)
 {
-  gsl_odeiv_step * my = (gsl_odeiv_step *) self;
+  const unsigned int dim = sys->dimension;
 
-  gear2_state * s = (gear2_state *) my->_state;
+  gsl_odeiv_step_gear2 * my = (gsl_odeiv_step_gear2 *) self;
 
-  const unsigned int dim = my->dimension;
+  if(sys->dimension == 0) {
+    return GSL_EINVAL;
+  }
+
+  if(sys->dimension != my->parent.dimension) {
+
+    if(my->work != 0) free(my->work);
+    my->parent.dimension = sys->dimension;
+    my->work = (double *) malloc(2 * sys->dimension * sizeof(double));
+    if(my->work == 0) {
+      my->parent.dimension = 0;
+      return GSL_ENOMEM;
+    }
+
+    if(my->state.yim1 != 0) free(my->state.yim1);
+    my->state.yim1 = (double *) malloc(sys->dimension * sizeof(double));
+    if(my->state.yim1 == 0) {
+      free(my->work);
+      my->parent.dimension = 0;
+      return GSL_ENOMEM;
+    }
+
+    if(my->state.primer == 0) {
+      my->state.primer = gsl_odeiv_step_rk4imp_new();
+      if(my->state.primer == 0) {
+        free(my->work);
+        free(my->state.yim1);
+        return GSL_ENOMEM;
+      }
+    }
+
+    my->state.primed = 0;
+    my->state.last_h = 0.0;
+  }
 
   my->stutter = 0;
 
-  if(s->primed && fabs((s->last_h - h)/h) < 8.0 * GSL_DBL_EPSILON) {
+  if(my->state.primed && fabs((my->state.last_h - h)/h) < 8.0 * GSL_DBL_EPSILON) {
     /* We have a previous y value in the buffer, and the step
      * sizes match, so we go ahead with the Gear step.
      */
 
-    /* divide up the workspace */
-    double * w  = (double *) my->_work;
-    double * k  = w;
-    double * y0 = w + dim;
+    double * k  = my->work;
+    double * y0 = my->work + dim;
 
     const int iter_steps = 3;
     int status = 0;
@@ -97,20 +132,20 @@ gear2_step(void * self, double t, double h, double y[], double yerr[], const dou
       k = dydt_out;
     }
     for(nu=0; nu<iter_steps; nu++) {
-      status += ( GSL_ODEIV_FN_EVAL(dydt, t + h, y, k) != 0 );
+      status += ( GSL_ODEIV_FN_EVAL(sys, t + h, y, k) != 0 );
       for(i=0; i<dim; i++) {
-        y[i] = ((4.0 * y0[i] - s->yim1[i]) + 2.0 * h * k[i]) / 3.0;
+        y[i] = ((4.0 * y0[i] - my->state.yim1[i]) + 2.0 * h * k[i]) / 3.0;
       }
     }
 
     /* Estimate error and update the state buffer. */
     for(i=0; i<dim; i++) {
       yerr[i]    = h * h * (y[i] - y0[i]); /* error is third order */
-      s->yim1[i] = y0[i];
+      my->state.yim1[i] = y0[i];
     }
 
     /* Make note of step size. */
-    s->last_h = h;
+    my->state.last_h = h;
 
     return  ( status == 0 ? GSL_SUCCESS : GSL_EBADFUNC );
   }
@@ -121,12 +156,12 @@ gear2_step(void * self, double t, double h, double y[], double yerr[], const dou
      * to stutter.
      */
     int status;
-    memcpy(s->yim1, y, dim * sizeof(double));
-    status = gsl_odeiv_step_impl(s->primer, t, h, y, yerr, dydt_in, dydt_out, dydt);
+    memcpy(my->state.yim1, y, dim * sizeof(double));
+    status = gsl_odeiv_step_impl(my->state.primer, t, h, y, yerr, dydt_in, dydt_out, sys);
 
     /* Make note of step size and indicate readiness for a Gear step. */
-    s->last_h = h;
-    s->primed = 1;
+    my->state.last_h = h;
+    my->state.primed = 1;
     my->stutter = 1;
 
     return status;
@@ -134,24 +169,28 @@ gear2_step(void * self, double t, double h, double y[], double yerr[], const dou
 }
 
 
-static
-int
-gear2_reset(void * state)
+static int
+gear2_reset(void * self)
 {
-  gear2_state * s = (gear2_state *) state;
-  s->primed = 0;
-  s->last_h = 0.0;
-  return GSL_SUCCESS;
+  if(self != 0) {
+    gsl_odeiv_step_gear2 * my = (gsl_odeiv_step_gear2 *) self;
+    my->state.primed = 0;
+    my->state.last_h = 0.0;
+    return GSL_SUCCESS;
+  }
+  else {
+    return GSL_EFAULT;
+  }
 }
 
 
-static
-void
-gear2_free(void * state, void * work)
+static void
+gear2_free(void * self)
 {
-  gear2_state * s = (gear2_state *) state;
-  if(s != 0) {
-    if(s->yim1 != 0) free(s->yim1);
-    gsl_odeiv_step_free(s->primer);
+  if(self != 0) {
+    gsl_odeiv_step_gear2 * my = (gsl_odeiv_step_gear2 *) self;
+    if(my->work != 0) free(my->work);
+    if(my->state.yim1 != 0) free(my->state.yim1);
+    gsl_odeiv_step_free(my->state.primer);
   }
 }

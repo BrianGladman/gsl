@@ -10,65 +10,112 @@
 #include "gsl_odeiv.h"
 
 
-static gsl_odeiv_step * gear1_create(unsigned int dimension);
-static int gear1_step(void *, double t, double h, double y[], double yerr[], const double dydt_in[], double dydt_out[], const gsl_odeiv_system * dydt);
+typedef  struct gsl_odeiv_step_gear1_struct  gsl_odeiv_step_gear1;
 
-
-const gsl_odeiv_step_factory gsl_odeiv_step_factory_gear1 = 
+struct gsl_odeiv_step_gear1_struct
 {
-  "gear1",
-  gear1_create
+  gsl_odeiv_step parent;  /* inherits from gsl_odeiv_step */
+
+  double * k;
+  double * y0;
 };
 
+static int  gear1_step(void *, double t, double h, double y[], double yerr[], const double dydt_in[], double dydt_out[], const gsl_odeiv_system * dydt);
+static void gear1_free(void *);
 
-static
+
+
 gsl_odeiv_step *
-gear1_create(unsigned int dimension)
+gsl_odeiv_step_gear1_new(void)
 {
-  gsl_odeiv_step * step = gsl_odeiv_step_new(gsl_odeiv_step_factory_gear1.name, dimension, 2, 0, 2*dimension * sizeof(double));
-  step->_step = gear1_step;
-  step->can_use_dydt = 0;
-  step->stutter = 0;
-  return step;
+  gsl_odeiv_step_gear1 * s = (gsl_odeiv_step_gear1 *) malloc(sizeof(gsl_odeiv_step_gear1));
+  if(s != 0) {
+    gsl_odeiv_step_construct(&(s->parent),
+      "gear1",
+      gear1_step,
+      0,
+      gear1_free,
+      0,
+      0,
+      2);
+
+    s->k = 0;
+    s->y0 = 0;
+  }
+  return (gsl_odeiv_step *) s;
 }
 
 
-static
-int
-gear1_step(void * self, double t, double h, double y[], double yerr[], const double dydt_in[], double dydt_out[], const gsl_odeiv_system * dydt)
+static int
+gear1_step(
+  void * self,
+  double t,
+  double h,
+  double y[],
+  double yerr[],
+  const double dydt_in[],
+  double dydt_out[],
+  const gsl_odeiv_system * sys)
 {
-  gsl_odeiv_step * my = (gsl_odeiv_step *) self;
-
-  const unsigned int dim = my->dimension;
-
-  /* divide up the workspace */
-  double * w  = (double *) my->_work;
-  double * k  = w;
-  double * y0 = w + dim;
-
   const int iter_steps = 3;
   int status = 0;
   int nu;
   int i;
+  size_t dim;
 
-  memcpy(y0, y, dim * sizeof(double));
+  gsl_odeiv_step_gear1 * my = (gsl_odeiv_step_gear1 *) self;
+
+  if(sys->dimension <= 0) {
+    return GSL_EINVAL;
+  }
+
+  /* (Re)Initialization may be necessary. */
+  if(sys->dimension != my->parent.dimension) {
+    if(my->k != 0) free(my->k);
+    if(my->y0 != 0) free(my->y0);
+    my->parent.dimension = sys->dimension;
+    my->k  = (double *) malloc(sys->dimension * sizeof(double));
+    my->y0 = (double *) malloc(sys->dimension * sizeof(double));
+    if(my->k == 0 || my->y0 == 0) {
+      if(my->k != 0) free(my->k);
+      if(my->y0 != 0) free(my->y0);
+      my->parent.dimension = 0;
+      return GSL_ENOMEM;
+    }
+  }
+
+  dim = my->parent.dimension;
+
+  memcpy(my->y0, y, dim * sizeof(double));
 
   /* iterative solution */
-  if(dydt_out != 0) {
-    k = dydt_out;
-  }
   for(nu=0; nu<iter_steps; nu++) {
-    status += ( GSL_ODEIV_FN_EVAL(dydt, t + h, y, k) != 0 );
+    status += ( GSL_ODEIV_FN_EVAL(sys, t + h, y, my->k) != 0 );
     for(i=0; i<dim; i++) {
-      y[i] = y0[i] + h * k[i];
+      y[i] = my->y0[i] + h * my->k[i];
     }
   }
 
   /* fudge the error estimate */
   for(i=0; i<dim; i++) {
-    yerr[i] = h * h * k[i];
+    yerr[i] = h * h * my->k[i];
+  }
+
+  if(dydt_out != 0) {
+    memcpy(dydt_out, my->k, dim * sizeof(double));
   }
 
   return  ( status == 0 ? GSL_SUCCESS : GSL_EBADFUNC );
 }
 
+
+static void
+gear1_free(void * self)
+{
+  if(self != 0) {
+    gsl_odeiv_step_gear1 * my = (gsl_odeiv_step_gear1 *) self;
+    if(my->k != 0) free(my->k);
+    if(my->y0 != 0) free(my->y0);
+    free(self);
+  }
+}

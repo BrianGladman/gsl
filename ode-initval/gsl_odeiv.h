@@ -42,16 +42,23 @@ gsl_odeiv_system;
  * iterating the stepping operation.
  */
 typedef struct {
-  char * _name;
+  const char * _name;
   int  (*_step)  (void * self, double t, double h, double y[], double yerr[], const double dydt_in[], double dydt_out[], const gsl_odeiv_system * dydt);
+  /*
   int  (*_reset) (void * _state);
   void (*_free)  (void * _state, void * _work);
   void * _state;
   void * _work;
+  */
+  int  (*_reset) (void * self);
+  void (*_free)  (void * self);
+
   int can_use_dydt;
   size_t dimension;
   unsigned int order;
+  /*
   int stutter;
+  */
 }
 gsl_odeiv_step;
 
@@ -61,12 +68,13 @@ gsl_odeiv_step;
  * Specialized factory instances create
  * steppers embodying different methods.
  */
+ /*
 typedef struct {
   const char * name;
   gsl_odeiv_step * (*create) (unsigned int dimension);
 }
 gsl_odeiv_step_factory;
-
+*/
 
 /* Available stepper factories.
  *
@@ -79,6 +87,7 @@ gsl_odeiv_step_factory;
  * gear1  : M=1 implicit Gear method
  * gear2  : M=2 implicit Gear method
  */
+ /*
 extern const gsl_odeiv_step_factory  gsl_odeiv_step_factory_rk2;
 extern const gsl_odeiv_step_factory  gsl_odeiv_step_factory_rk4;
 extern const gsl_odeiv_step_factory  gsl_odeiv_step_factory_rkck;
@@ -87,14 +96,36 @@ extern const gsl_odeiv_step_factory  gsl_odeiv_step_factory_rk2imp;
 extern const gsl_odeiv_step_factory  gsl_odeiv_step_factory_rk4imp;
 extern const gsl_odeiv_step_factory  gsl_odeiv_step_factory_gear1;
 extern const gsl_odeiv_step_factory  gsl_odeiv_step_factory_gear2;
+*/
+
+
+/* Constructors for specialized stepper objects.
+ *
+ * rk2    : embedded 2nd(3rd) Runge-Kutta
+ * rk4    : 4th order (classical) Runge-Kutta
+ * rkck   : embedded 4th(5th) Runge-Kutta, Cash-Karp
+ * rk8pd  : embedded 8th(9th) Runge-Kutta, Prince-Dormand
+ * rk2imp : implicit 2nd order Runge-Kutta at Gaussian points
+ * rk4imp : implicit 4th order Runge-Kutta at Gaussian points
+ * gear1  : M=1 implicit Gear method
+ * gear2  : M=2 implicit Gear method
+ */
+gsl_odeiv_step * gsl_odeiv_step_rk2_new(void);
+gsl_odeiv_step * gsl_odeiv_step_rk4_new(void);
+gsl_odeiv_step * gsl_odeiv_step_rkck_new(void);
+gsl_odeiv_step * gsl_odeiv_step_rk8pd_new(void);
+gsl_odeiv_step * gsl_odeiv_step_rk2imp_new(void);
+gsl_odeiv_step * gsl_odeiv_step_rk4imp_new(void);
+gsl_odeiv_step * gsl_odeiv_step_gear1_new(void);
+gsl_odeiv_step * gsl_odeiv_step_gear2_new(void);
 
 
 /* General stepper object methods.
  */
-const char * gsl_odeiv_step_name(const gsl_odeiv_step * s);
-int  gsl_odeiv_step_impl(gsl_odeiv_step * s, double t, double h, double y[], double yerr[], const double dydt_in[], double dydt_out[], const gsl_odeiv_system * dydt);
-int  gsl_odeiv_step_reset(gsl_odeiv_step * s);
-void gsl_odeiv_step_free(gsl_odeiv_step * s);
+const char * gsl_odeiv_step_name(const gsl_odeiv_step *);
+int  gsl_odeiv_step_impl(gsl_odeiv_step *, double t, double h, double y[], double yerr[], const double dydt_in[], double dydt_out[], const gsl_odeiv_system * dydt);
+int  gsl_odeiv_step_reset(gsl_odeiv_step *);
+void gsl_odeiv_step_free(gsl_odeiv_step *);
 
 
 /* General evolution monitor object.

@@ -97,7 +97,7 @@ gsl_odeiv_evolve_impl(
       t += h;
 
       ++e->count;
-      if(step->stutter) ++e->count_stutter;
+      /* if(step->stutter) ++e->count_stutter; */
 
       if(con == 0) {
         /* We do not have the ability to adjust the step.
