@@ -50,10 +50,11 @@ gamma_inc_D(const double a, const double x, gsl_sf_result * result)
     gsl_sf_result gstar;
     gsl_sf_result ln_term;
     double term1;
-    if (x < a) {
-      double u = x/a;
-      ln_term.val = log(u) - u + 1.0;
-      ln_term.err = ln_term.val * GSL_DBL_EPSILON;
+    if (x < 0.5*a) {
+      double u = x/a;   
+      double ln_u = log(u);
+      ln_term.val = ln_u - u + 1.0;
+      ln_term.err = (fabs(ln_u) + fabs(u) + 1.0) * GSL_DBL_EPSILON;
     } else {
       double mu = (x-a)/a;
       gsl_sf_log_1plusx_mx_e(mu, &ln_term);  /* log(1+mu) - mu */

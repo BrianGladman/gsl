@@ -1,3 +1,9 @@
+2004-12-26  Brian Gough  <bjg@network-theory.co.uk>
+
+	* gamma_inc.c (gamma_inc_D): improve error estimate for case of
+	u=x/a to include cancellation errors and only use it when x < 0.5*a
+	since the cancellation errors are significant for x/a ~ 1
+
 2004-12-23  Brian Gough  <bjg@network-theory.co.uk>
 
 	* gsl_sf_coupling.h: fixed declaration to

@@ -1,5 +1,8 @@
 * What will be new in gsl-1.6:
 
+** Improved the reliability of the gsl_sf_gamma_inc family of
+functions.
+
 ** Corrected the error estimate for gsl_cheb_eval_n_err to use
 evaluation order instead of the approximation order.
 
