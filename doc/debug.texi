@@ -104,12 +104,13 @@ could also print out the values of other variables such as
 @cindex -Wall
 
 Writing reliable numerical programs in C requires great
-care. Uninitialized variables, conversions from integers to floating
-point or from signed to unsigned integers can all cause hard-to-find
-problems.  For many non-numerical programs compiling with @code{gcc}'s
-warning option @code{-Wall} provides . However, for numerical programs
-@code{-Wall} is not enough. If you are unconvinced take a look at this
-program which contains an error that can occur in numerical code,
+care. Uninitialized variables, conversions to and from integers or from
+signed to unsigned integers can all cause hard-to-find problems.  For
+many non-numerical programs compiling with @code{gcc}'s warning option
+@code{-Wall} provides a good check against common errors. However, for
+numerical programs @code{-Wall} is not enough. If you are unconvinced
+take a look at this program which contains an error that can occur in
+numerical code,
 
 @example
 #include <math.h>
@@ -150,8 +151,8 @@ genuinely wanted to convert @code{y} to an integer then we could use an
 explicit cast, @code{(int)y}).  
 
 Fortunately GCC provides many additional warnings which can alert you to
-common problems. You just have to remember to use them. Here is a set
-of recommended warning options for numerical programs.
+problems such as this. You just have to remember to use them. Here is a
+set of recommended warning options for numerical programs.
 
 @example
 gcc -ansi -pedantic -Werror -Wall -W -Wmissing-prototypes
@@ -163,7 +164,7 @@ gcc -ansi -pedantic -Werror -Wall -W -Wmissing-prototypes
 @noindent
 It saves time if you to put these options in your @file{Makefile} (for
 example, under the target @code{make strict}) or define them as a shell
-variable or alias. For the details of these options consult the manual
+variable or alias. For details of each option consult the manual
 @cite{Using and porting GCC}. The following table gives a brief
 explanation of what types of errors these warnings catch.
 
@@ -178,7 +179,7 @@ won't be able to compile the program until it is completely
 warning-free.
 @item -Wall 
 This turns on a set of warnings for common programming problems. You
-need it, but it is not enough on its own, as explained above.
+need @code{-Wall}, but it is not enough on its own, as explained above.
 @item -O4
 The warnings for unitialized variables in @code{-Wall} rely on the
 optimizer to analyze the code. If there is no optimization then the
@@ -211,14 +212,14 @@ cast from a pointer, or if you cast a pointer to a type which has a
 different size, causing an invalid alignment.
 @item -Wwrite-strings
 This option gives string constants a @code{const} qualifier so that it
-will be a compiler error to attempt to overwrite them.
+will be a compile-time error to attempt to overwrite them.
 @item -Waggregate-return 
 Warn if any functions that return structures or unions are defined or
 called. Some older compilers might have problems with such a construct.
 @item -fshort-enums 
 This option makes the type of @code{enum} as short as possible. Normally
-this makes them different from an @code{int}. Consequently any attempts
-to assign a pointer-to-int to a pointer-to-enum will generate a
+this makes an @code{enum} different from an @code{int}. Consequently any
+attempts to assign a pointer-to-int to a pointer-to-enum will generate a
 cast-alignment warning.
 @item -fno-common
 This option prevents global variables being simultaneously defined in
@@ -234,8 +235,9 @@ The @code{inline} keyword is not part of ANSI C. Thus if you want to use
 preprocessor definition to remove the @code{inline} keywords.
 @item -g 
 It always makes sense to put debugging symbols in the executable so that
-you can debug it using @code{gdb}. Their only effect is to increase the
-size, and you can always use @code{strip} to remove them later.
+you can debug it using @code{gdb}. The only effect of debugging symbols
+is to increase the size of the file, and you can use the @code{strip}
+command to remove them later if necessary.
 @end table
 
 For comparison, this is what happens when the test program above is
@@ -250,10 +252,12 @@ bjg|zeke> gcc -ansi -pedantic -Werror -W -Wall -Wtraditional
 cc1: warnings being treated as errors
 tmp.c:7: warning: function declaration isn't a prototype
 tmp.c: In function `main':
-tmp.c:9: warning: passing arg 1 of `f' as integer rather than floating due to prototype
+tmp.c:9: warning: passing arg 1 of `f' as integer rather than floating 
+due to prototype
 tmp.c: In function `f':
 tmp.c:14: warning: type of `x' defaults to `int'
-tmp.c:15: warning: passing arg 1 of `sqrt' as floating rather than integer due to prototype
+tmp.c:15: warning: passing arg 1 of `sqrt' as floating rather than integer 
+due to prototype
 make: *** [tmp] Error 1
 @end example
 @noindent
