@@ -21,7 +21,8 @@ enum {
   GSL_ETOL     = 14,  /* failed to reach the specified tolerance */
   GSL_EUNDRFLW = 15,  /* underflow */
   GSL_EOVRFLW  = 16,  /* overflow  */
-  GSL_ELOSS    = 17   /* loss of accuracy */
+  GSL_ELOSS    = 17,  /* loss of accuracy */
+  GSL_EROUND   = 18   /* failed because of roundoff error */
 } ;
 
 /* just to make things slightly clearer */

@@ -39,6 +39,8 @@ gsl_strerror (const int gsl_errno)
       return "overflow" ;
     case GSL_ELOSS:
       return "loss of accuracy" ;
+    case GSL_EROUND:
+      return "roundoff error" ;
     default:
       return "unknown error code" ;
     }
