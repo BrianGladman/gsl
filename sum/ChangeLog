@@ -1,3 +1,8 @@
+1998-11-06    <bjg@ancho.lanl.gov>
+
+	* test_sum.c: replace variable N by macro to avoid variable length
+	array warning
+
 Tue Oct 27 18:06:16 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
 	* levin_u.c: added in noise but it does not seem to be giving the

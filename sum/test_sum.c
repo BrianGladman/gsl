@@ -15,11 +15,11 @@ double frac_diff(double x1, double x2)
     return 1.0;
 }
 
+#define N 35
 
 int check_levin_u(void)
 {
   const double zeta_2 = M_PI*M_PI/6.0;
-  const int N = 35;
   double array[N];
   double qnum[N];
   double qden[N];
@@ -119,6 +119,9 @@ int check_levin_u(void)
 
 int main(int argc, char * argv[])
 {
+  argc = 0 ; /* prevent warnings about unused parameters */
+  argv = 0 ;
+
   gsl_test(check_levin_u(),      "Levin u-Transform");
 
   return gsl_test_summary();
