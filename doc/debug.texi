@@ -8,5 +8,90 @@ programs which use GSL.
 @node Using gdb
 @section Using gdb
 
-The time-honored way of debugging numerical programs is to insert
-@code{printf} statements at suitable points in the code. 
+Any errors reported by the library are routed through the function
+@code{gsl_error}. By running your programs under gdb and setting a
+breakpoint in this function you can automatically catch any library
+errors. You can add a breakpoint for every session by putting
+
+@example
+break gsl_error
+@end example
+@c
+@noindent
+into your @file{.gdbinit} file in the directory where your program is
+started. If the breakpoint catches an error then you can use a backtrace
+(@code{bt}) to see the call-tree, and the arguments which possibly
+caused the error. By moving into the caller (@code{up}, @code{up}) you
+can investigate the values of variable at that point.
+
+Here is an example from the program @code{fft/test_trap}, which contains
+the following line,
+
+@example
+status = gsl_fft_complex_wavetable_alloc (0, &complex_wavetable);
+@end example
+@noindent
+The function @code{gsl_fft_complex_wavetable_alloc} takes the length of
+an FFT as its first argument. When this line is executed an error will
+be generated because the length of an FFT is not allowed to be zero.
+
+To debug this problem we start @code{gdb}, using the file
+@file{.gdbinit} to define a breakpoint in @code{gsl_error},
+@example
+bjg|zeke> gdb test_trap
+GDB is free software and you are welcome to distribute copies of it
+ under certain conditions; type "show copying" to see the conditions.
+There is absolutely no warranty for GDB; type "show warranty" for details.
+GDB 4.16 (i586-debian-linux), Copyright 1996 Free Software Foundation, Inc...
+Breakpoint 1 at 0x8050b1e: file error.c, line 14.
+@end example
+@c
+@noindent
+When we run the program this breakpoint catches the error and shows the
+reason for it. 
+@example
+(gdb) run
+Starting program: /home/bjg/gsl/fft/test_trap 
+
+Breakpoint 1, gsl_error (reason=0x8052b0d "length n must be positive integer", 
+    file=0x8052b04 "c_init.c", line=108, gsl_errno=1) at error.c:14
+14        if (gsl_error_handler) 
+@end example
+@c
+@noindent
+The first argument of @code{gsl_error} is always a string describing the
+error. Now we can look at the backtrace to see what caused the problem,
+@example
+(gdb) bt
+#0  gsl_error (reason=0x8052b0d "length n must be positive integer", 
+    file=0x8052b04 "c_init.c", line=108, gsl_errno=1) at error.c:14
+#1  0x8049376 in gsl_fft_complex_wavetable_alloc (n=0, wavetable=0xbffff778)
+    at c_init.c:108
+#2  0x8048a00 in main (argc=1, argv=0xbffff9bc) at test_trap.c:94
+#3  0x80488be in ___crt_dummy__ ()
+@end example
+@c
+@noindent
+We can see that the error was generated in the function
+@code{gsl_fft_complex_wavetable_alloc} when it was called with an
+argument of @var{n=0}. The original call came from line 94 in the
+file @file{test_trap.c}.
+
+By moving up to the level of the original call we can find the line that
+caused the error,
+@example
+(gdb) up
+#1  0x8049376 in gsl_fft_complex_wavetable_alloc (n=0, wavetable=0xbffff778)
+    at c_init.c:108
+108           GSL_ERROR ("length n must be positive integer", GSL_EDOM);
+(gdb) up
+#2  0x8048a00 in main (argc=1, argv=0xbffff9bc) at test_trap.c:94
+94        status = gsl_fft_complex_wavetable_alloc (0, &complex_wavetable);
+@end example
+@c
+@noindent
+Thus we have found the line that caused the problem.  From this point we
+could also print out the values of other variables such as
+@code{complex_wavetable}.
+
+
