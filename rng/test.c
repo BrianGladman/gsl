@@ -41,12 +41,20 @@ main (void)
   rng_test (gsl_rng_ranlux, 314159265, 10000, 12077992);
   rng_test (gsl_rng_ranlux389, 314159265, 10000, 165942);
 
-  rng_test (gsl_rng_ranlxs0, 1, 10000, 0.709552764892578125 * ldexp(1,24));
-  rng_test (gsl_rng_ranlxs1, 1, 10000, 0.520606517791748047 * ldexp(1,24));
-  rng_test (gsl_rng_ranlxs2, 1, 10000, 0.407882928848266602 * ldexp(1,24));
+  rng_test (gsl_rng_ranlxs0, 1, 10000, 11904320);
+  /* 0.709552764892578125 * ldexp(1.0,24) */
 
-  rng_test (gsl_rng_ranlxd1, 1, 10000, 0.465248546261094020 * ldexp(1,32));
-  rng_test (gsl_rng_ranlxd2, 1, 10000, 0.919515205581550532 * ldexp(1,32));
+  rng_test (gsl_rng_ranlxs1, 1, 10000, 8734328);
+  /* 0.520606517791748047 * ldexp(1.0,24) */
+
+  rng_test (gsl_rng_ranlxs2, 1, 10000, 6843140); 
+  /* 0.407882928848266602 * ldexp(1.0,24) */
+
+  rng_test (gsl_rng_ranlxd1, 1, 10000, 1998227290UL);
+  /* 0.465248546261094020 * ldexp(1.0,32) */
+
+  rng_test (gsl_rng_ranlxd2, 1, 10000, 3949287736UL);
+  /* 0.919515205581550532 * ldexp(1.0,32) */
 
   /* FIXME: the tests below were made by running the original code in
      the ../random directory and getting the expected value from
