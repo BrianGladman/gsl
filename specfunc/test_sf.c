@@ -1137,11 +1137,13 @@ int check_dilog(void)
   s = 0;
   s += ( frac_diff( gsl_sf_dilog(-0.5), -0.4484142069236462024 ) > 1.0e-14 );
   gsl_test(s, "  gsl_sf_dilog(-0.5)");
+  printf("%22.18g\n", gsl_sf_dilog(-0.5));
   status += s;
 
   s = 0;
   s += ( frac_diff( gsl_sf_dilog(-0.001), -0.0009997501110486510834 ) > 1.0e-14 );
-  gsl_test(s, "  gsl_sf_dilog(-0.001");
+  gsl_test(s, "  gsl_sf_dilog(-0.001)");
+  printf("%22.18g\n", gsl_sf_dilog(-0.001));
   status += s;
   
   s = 0;
@@ -1178,12 +1180,31 @@ int check_dilog(void)
   s += ( frac_diff( gsl_sf_dilog(12.59), 0.0010060918167266208634  ) > 1.0e-12 );
   gsl_test(s, "  gsl_sf_dilog(12.59)");
   status += s;
-  
+
+  s = 0;
+  s += ( frac_diff( gsl_sf_dilog(12.595), 0.00003314826006436236810 ) > 1.0e-10 );
+  gsl_test(s, "  gsl_sf_dilog(12.595)");
+  status += s;
+
+  s = 0;
+  s += ( frac_diff( gsl_sf_dilog(13.0), -0.07806971248458575855 ) > 1.0e-13 );
+  gsl_test(s, "  gsl_sf_dilog(13.0)");
+  status += s;
+
   s = 0;
   s += ( frac_diff( gsl_sf_dilog(20.0), -1.2479770861745251168 ) > 1.0e-14 );
   gsl_test(s, "  gsl_sf_dilog(20.0)");
   status += s;
 
+  s = 0;
+  s += ( frac_diff( gsl_sf_dilog(150.0), -9.270042702348657270 ) > 1.0e-14 );
+  gsl_test(s, "  gsl_sf_dilog(150.0)");
+  status += s;
+
+  s = 0;
+  s += ( frac_diff( gsl_sf_dilog(1100.0), -21.232504073931749553 ) > 1.0e-14 );
+  gsl_test(s, "  gsl_sf_dilog(1100.0)");
+  status += s;
 
   /* complex dilog */
   /* FIXME: probably need more tests here... 
