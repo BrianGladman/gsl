@@ -6,13 +6,10 @@
 @c @setchapternewpage odd
 @c %**end of header
 
-@ifinfo
-@format
-START-INFO-DIR-ENTRY
-* gsl: (gsl).                           The GNU Scientific Library
-END-INFO-DIR-ENTRY
-@end format
-@end ifinfo
+@c @dircategory What category does gsl go in?
+@direntry
+* GSL: (GSL).                           The GNU Scientific Library
+@end direntry
 
 @include version.texi
 @set GSL @emph{GNU Scientific Library}
@@ -70,23 +67,24 @@ by the Foundation.
 @end titlepage
 
 @node Top, Motivation, (dir), (dir)
+@top GSL
 
 @ifinfo
 This file documents the the @value{GSL}, a collection
 of numerical routines for scientific computing.
 @end ifinfo
 
-
 @menu
 * Motivation::                  
 * Design::                      
 * Reference manual::            
+* Copying::                     
 * Function Index::              
 * Variable Index::              
 * Type Index::                  
 @end menu
 
-@node Motivation, Design, Top, Top
+@node Motivation
 @chapter Motivation
 @cindex numerical analysis
 @cindex free software
@@ -139,8 +137,9 @@ limitations. [http://www.lysator.liu.se/c/num-recipes-in-c.html]
 * jt section::                  
 @end menu
 
-@node jt section,  , Motivation, Motivation
+@node jt section
 @section jt section
+
 [written by James Theiler, and not incorporated into the above
 motivation]
 
@@ -209,7 +208,7 @@ hope to expand to include linear algebra, Fourier analysis, etc.
 * Goals::                       
 @end menu
 
-@node Goals,  , jt section, jt section
+@node Goals
 @subsection Goals
 
 @c The short-term aim of GSL is to emulate, possibly even clone, Numerical
@@ -237,7 +236,7 @@ mind that evil profit-making companies (such as those which sell
 
 
 
-@node Design, Reference manual, Motivation, Top
+@node Design
 @chapter Design
 
 @menu
@@ -252,7 +251,7 @@ mind that evil profit-making companies (such as those which sell
 * Parallelism::                 
 @end menu
 
-@node Language for implementation, Interface to other languages, Design, Design
+@node Language for implementation
 @section Language for implementation
 
 Issues:
@@ -277,7 +276,7 @@ How do we protect name space, and keep global vars from being annoying?
 Make recommendations to implementors to help with these issues.
 
 
-@node Interface to other languages, What routines are implemented, Language for implementation, Design
+@node Interface to other languages
 @section Interface to other languages
 
 We should propose a format for writing wrappers for other languages.
@@ -305,7 +304,7 @@ whatever
 
 
 
-@node What routines are implemented, Standards and conventions, Interface to other languages, Design
+@node What routines are implemented
 @section What routines are implemented
 
 
@@ -376,7 +375,7 @@ research projects.  We should concentrate on supplying the former.
 
 
 
-@node Standards and conventions, Test suites, What routines are implemented, Design
+@node Standards and conventions
 @section Standards and conventions
 
 The people who kick off this project should set the coding standards and
@@ -405,7 +404,7 @@ number generators), 'sf' (special functions), 'stat' (statistics), etc.
 @end itemize
 
 
-@node Test suites, Legal issues, Standards and conventions, Design
+@node Test suites
 @section Test suites
 
 The implementor of each library should provide a reasonable test suite
@@ -421,7 +420,7 @@ and that should automatically execute the verification suite for the
 given library.
 
 
-@node Legal issues, Non-UNIX portability, Test suites, Design
+@node Legal issues
 @section Legal issues
 
 @itemize @bullet
@@ -443,7 +442,7 @@ numerical analysis.
 
 
 
-@node Non-UNIX portability, Compatibility with other libraries, Legal issues, Design
+@node Non-UNIX portability
 @section Non-UNIX portability
 
 There is good reason to make this library work on non-UNIX systems.  It
@@ -462,7 +461,7 @@ portability.
 
 
 
-@node Compatibility with other libraries, Parallelism, Non-UNIX portability, Design
+@node Compatibility with other libraries
 @section Compatibility with other libraries
 
 
@@ -479,7 +478,7 @@ There are probably no legal issues on this front.
 
 
 
-@node Parallelism,  , Compatibility with other libraries, Design
+@node Parallelism
 @section Parallelism
 
 An extra sub-package with parallel libraries would be nice.  These
@@ -488,7 +487,7 @@ ships with MPI, and vice-versa; we should figure out which is the
 recommended platform.)
 
 
-@node Reference manual, Function Index, Design, Top
+@node Reference manual
 @chapter Reference manual
 
 This is the reference manual for those parts of GSL that have been
@@ -501,10 +500,9 @@ from the design.
 * Statistics::                  
 * Root finding::                
 * Simulated annealing::         
-* Copying::                     
 @end menu
 
-@node Random number generation, Statistics, Reference manual, Reference manual
+@node Random number generation
 @section Random number generation
 @cindex random
 @cindex gaussian
@@ -520,7 +518,7 @@ from the design.
 * How to incorporate a new random number generator algorithm into this scheme::  
 @end menu
 
-@node General comments on random numbers, Routines for the casual user, Random number generation, Random number generation
+@node General comments on random numbers
 @subsection General comments on random numbers
 
 In 1988, Park and Miller wrote a paper entitled ``Random number
@@ -568,7 +566,7 @@ are both based on a Fibonacci scheme; the former involves a lag of only
 seems to have good statistical properties.  More details for each of
 the algorithms are available in the source code.
 
-@node Routines for the casual user, Somewhat more advanced functions, General comments on random numbers, Random number generation
+@node Routines for the casual user
 @subsection Routines for the casual user
 
 @deftypefn Random void gsl_ran_seed(int s)
@@ -632,7 +630,7 @@ in numerical order.  You will need to call @code{gsl_ran_shuffle(K,x)}
 if you want them in random order.
 @end deftypefn
 
-@node Somewhat more advanced functions, Algorithm-specific random number generators, Routines for the casual user, Random number generation
+@node Somewhat more advanced functions
 @subsection Somewhat more advanced functions
 
 It is important to remember that a function like @code{gsl_ran_uniform()}
@@ -695,7 +693,7 @@ twenty-four digit floating point numbers.  It's only conceivable use is
 for debugging.
 @end deftypefn
 
-@node Algorithm-specific random number generators, How to link, Somewhat more advanced functions, Random number generation
+@node Algorithm-specific random number generators
 @subsection Algorithm-specific random number generators
 
 The above functions make no reference to the actual algorithm used.
@@ -729,7 +727,7 @@ It is also possible to choose, for example, the @code{mrg} algorithm as the
 default used by, for instance, @code{gsl_ran_uniform()}, by using the call
 @code{gsl_ran_use_mrg()}. 
 
-@node How to link, How to incorporate a new random number generator algorithm into this scheme, Algorithm-specific random number generators, Random number generation
+@node How to link
 @subsection How to link
 
 This is not set in stone yet, but for now link against @code{xxx.o
@@ -750,7 +748,7 @@ any random number generators *]
 
 Your code should also have an @code{#include "gsl_ran.h"} in it.
 
-@node How to incorporate a new random number generator algorithm into this scheme,  , How to link, Random number generation
+@node How to incorporate a new random number generator algorithm into this scheme
 @subsection How to incorporate a new random number generator algorithm into this scheme
 
 Suppose you run across a nifty article describing a new algorithm for
@@ -805,7 +803,7 @@ maintain the convention in the GSL random number package that not
 initializing a random number generator is equivalent to initializing
 with a seed of 1.
 
-@node Statistics, Root finding, Random number generation, Reference manual
+@node Statistics
 @section Statistics
 @cindex statistics
 @cindex mean
@@ -921,7 +919,7 @@ int main()
 @}
 @end smallexample
 
-@node Root finding, Simulated annealing, Statistics, Reference manual
+@node Root finding
 @section Root finding
 @cindex root finding
 @cindex Newton's Method
@@ -954,7 +952,7 @@ Example: @code{gsl_newton1D(sin, cos, 2.3)}
 
 
 
-@node Simulated annealing, Copying, Root finding, Reference manual
+@node Simulated annealing
 @section Simulated annealing
 @cindex simulated annealing
 @cindex combinatorial searches
@@ -990,8 +988,8 @@ Does a @emph{simulated annealing} search through a given space (defined
 by the type @code{Element}).
 @end deftypefn
 
-@node Copying,  , Simulated annealing, Reference manual
-@unnumberedsec Copying
+@node Copying
+@unnumbered Copying
 
    The subroutines and source code in the @value{GSL} package are "free";
 this means that everyone is free to use them and free to redistribute
@@ -1027,17 +1025,17 @@ Public Licenses that accompany them.
 
 @printindex cp
 
-@node Function Index, Variable Index, Reference manual, Top
+@node Function Index
 @unnumbered Function Index
 
 @printindex fn
 
-@node Variable Index, Type Index, Function Index, Top
+@node Variable Index
 @unnumbered Variable Index
 
 @printindex vr
 
-@node Type Index,  , Variable Index, Top
+@node Type Index
 @unnumbered Type Index
 
 @printindex tp

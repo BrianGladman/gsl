@@ -5,12 +5,12 @@
 CFLAGS=-g -Wall
 
 noinst_PROGRAMS = jtest
-lib_LIBRARIES = gsl_statistics
+lib_LIBRARIES = libgsl_statistics.a
 
 jtest_SOURCES = jtest.c
 jtest_LDADD = libgsl_statistics.a
 jtest_DEPENDENCIES = libgsl_statistics.a
 
-gsl_statistics_SOURCES = mean.c variance.c test.c
+libgsl_statistics_a_SOURCES = mean.c variance.c test.c
 
 include_HEADERS = mean.h test.h variance.h

@@ -1,4 +1,4 @@
-# Makefile.in generated automatically by automake 1.1g from Makefile.am
+# Makefile.in generated automatically by automake 1.1l from Makefile.am
 
 # Copyright (C) 1994, 1995, 1996 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
@@ -42,7 +42,7 @@ PACKAGE = @PACKAGE@
 VERSION = @VERSION@
 CC = @CC@
 
-ALLRAN= mrg cmrg taus uni uni32 zuf rand
+ALLRAN= taus mrg cmrg uni uni32 zuf rand
 FAVORITERAN= taus
 
 include_HEADERS= gsl_ran.h gsl_ran_switch.h
@@ -64,17 +64,17 @@ CLEANFILES= tmp.out tmp.in
 
 bin_PROGRAMS= mrg test-mrg bench-mrg cmrg test-cmrg bench-cmrg taus test-taus bench-taus uni test-uni bench-uni uni32 test-uni32 bench-uni32 zuf test-zuf bench-zuf rand test-rand bench-rand gauss test-gauss bench-gauss test-switch 
 
-lib_LIBRARIES= gslrandom gslranmrg gslrancmrg gslrantaus gslranuni gslranuni32 gslranzuf gslranrand 
+lib_LIBRARIES= libgslrandom.a libgslranmrg.a libgslrancmrg.a libgslrantaus.a libgslranuni.a libgslranuni32.a libgslranzuf.a libgslranrand.a
 
-gslranmrg_SOURCES= mrg.c mrg-gen.c gauss.c
-gslrancmrg_SOURCES= cmrg.c cmrg-gen.c gauss.c
-gslrantaus_SOURCES= taus.c taus-gen.c gauss.c
-gslranuni_SOURCES= uni.c uni-gen.c gauss.c
-gslranuni32_SOURCES= uni32.c uni32-gen.c gauss.c
-gslranzuf_SOURCES= zuf.c zuf-gen.c gauss.c
-gslranrand_SOURCES= rand.c rand-gen.c gauss.c
+libgslranmrg_a_SOURCES= mrg.c mrg-gen.c gauss.c 
+libgslrancmrg_a_SOURCES= cmrg.c cmrg-gen.c gauss.c 
+libgslrantaus_a_SOURCES= taus.c taus-gen.c gauss.c 
+libgslranuni_a_SOURCES= uni.c uni-gen.c gauss.c 
+libgslranuni32_a_SOURCES= uni32.c uni32-gen.c gauss.c 
+libgslranzuf_a_SOURCES= zuf.c zuf-gen.c gauss.c 
+libgslranrand_a_SOURCES= rand.c rand-gen.c gauss.c 
 
-gslrandom_SOURCES= switch.c gauss.c mrg.c cmrg.c taus.c uni.c uni32.c zuf.c rand.c gauss.c 
+libgslrandom_a_SOURCES= switch.c shuffle.c mrg.c cmrg.c taus.c uni.c uni32.c zuf.c rand.c gauss.c 
 
 test_switch_DEPENDENCIES= gsl_ran_switch.h mrg.o cmrg.o taus.o uni.o uni32.o zuf.o rand.o 
 test_switch_LDADD= mrg.o cmrg.o taus.o uni.o uni32.o zuf.o rand.o 
@@ -147,97 +147,84 @@ mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_CLEAN_FILES = 
 LIBRARIES =  $(lib_LIBRARIES)
 
-lib_LIBFILES =  libgslrandom.a libgslranmrg.a libgslrancmrg.a \
-libgslrantaus.a libgslranuni.a libgslranuni32.a libgslranzuf.a \
-libgslranrand.a
 
 DEFS = @DEFS@ -I. -I$(srcdir) 
 CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
-gslrandom_LIBADD = 
-gslrandom_OBJECTS =  switch.o gauss.o mrg.o cmrg.o taus.o uni.o uni32.o \
-zuf.o rand.o gauss.o
-EXTRA_gslrandom_SOURCES = 
-gslranmrg_LIBADD = 
-gslranmrg_OBJECTS =  mrg.o mrg-gen.o gauss.o
-EXTRA_gslranmrg_SOURCES = 
-gslrancmrg_LIBADD = 
-gslrancmrg_OBJECTS =  cmrg.o cmrg-gen.o gauss.o
-EXTRA_gslrancmrg_SOURCES = 
-gslrantaus_LIBADD = 
-gslrantaus_OBJECTS =  taus.o taus-gen.o gauss.o
-EXTRA_gslrantaus_SOURCES = 
-gslranuni_LIBADD = 
-gslranuni_OBJECTS =  uni.o uni-gen.o gauss.o
-EXTRA_gslranuni_SOURCES = 
-gslranuni32_LIBADD = 
-gslranuni32_OBJECTS =  uni32.o uni32-gen.o gauss.o
-EXTRA_gslranuni32_SOURCES = 
-gslranzuf_LIBADD = 
-gslranzuf_OBJECTS =  zuf.o zuf-gen.o gauss.o
-EXTRA_gslranzuf_SOURCES = 
-gslranrand_LIBADD = 
-gslranrand_OBJECTS =  rand.o rand-gen.o gauss.o
-EXTRA_gslranrand_SOURCES = 
-LIBFILES  =  $(pkglib_LIBFILES) $(noinst_LIBFILES) $(check_LIBFILES) \
-$(lib_LIBFILES)
+libgslrandom_a_LIBADD = 
+libgslrandom_a_OBJECTS =  switch.o shuffle.o mrg.o cmrg.o taus.o uni.o \
+uni32.o zuf.o rand.o gauss.o
+libgslranmrg_a_LIBADD = 
+libgslranmrg_a_OBJECTS =  mrg.o mrg-gen.o gauss.o
+libgslrancmrg_a_LIBADD = 
+libgslrancmrg_a_OBJECTS =  cmrg.o cmrg-gen.o gauss.o
+libgslrantaus_a_LIBADD = 
+libgslrantaus_a_OBJECTS =  taus.o taus-gen.o gauss.o
+libgslranuni_a_LIBADD = 
+libgslranuni_a_OBJECTS =  uni.o uni-gen.o gauss.o
+libgslranuni32_a_LIBADD = 
+libgslranuni32_a_OBJECTS =  uni32.o uni32-gen.o gauss.o
+libgslranzuf_a_LIBADD = 
+libgslranzuf_a_OBJECTS =  zuf.o zuf-gen.o gauss.o
+libgslranrand_a_LIBADD = 
+libgslranrand_a_OBJECTS =  rand.o rand-gen.o gauss.o
 AR = ar
 PROGRAMS =  $(bin_PROGRAMS)
 
 mrg_OBJECTS =  ran.o mrg.o
-EXTRA_mrg_SOURCES = 
+mrg_LDFLAGS = 
 test_mrg_OBJECTS =  testran.o
-EXTRA_test_mrg_SOURCES = 
+test_mrg_LDFLAGS = 
 bench_mrg_OBJECTS =  benchran.o
-EXTRA_bench_mrg_SOURCES = 
+bench_mrg_LDFLAGS = 
 cmrg_OBJECTS =  ran.o cmrg.o
-EXTRA_cmrg_SOURCES = 
+cmrg_LDFLAGS = 
 test_cmrg_OBJECTS =  testran.o
-EXTRA_test_cmrg_SOURCES = 
+test_cmrg_LDFLAGS = 
 bench_cmrg_OBJECTS =  benchran.o
-EXTRA_bench_cmrg_SOURCES = 
+bench_cmrg_LDFLAGS = 
 taus_OBJECTS =  ran.o taus.o
-EXTRA_taus_SOURCES = 
+taus_LDFLAGS = 
 test_taus_OBJECTS =  testran.o
-EXTRA_test_taus_SOURCES = 
+test_taus_LDFLAGS = 
 bench_taus_OBJECTS =  benchran.o
-EXTRA_bench_taus_SOURCES = 
+bench_taus_LDFLAGS = 
 uni_OBJECTS =  ran.o uni.o
-EXTRA_uni_SOURCES = 
+uni_LDFLAGS = 
 test_uni_OBJECTS =  testran.o
-EXTRA_test_uni_SOURCES = 
+test_uni_LDFLAGS = 
 bench_uni_OBJECTS =  benchran.o
-EXTRA_bench_uni_SOURCES = 
+bench_uni_LDFLAGS = 
 uni32_OBJECTS =  ran.o uni32.o
-EXTRA_uni32_SOURCES = 
+uni32_LDFLAGS = 
 test_uni32_OBJECTS =  testran.o
-EXTRA_test_uni32_SOURCES = 
+test_uni32_LDFLAGS = 
 bench_uni32_OBJECTS =  benchran.o
-EXTRA_bench_uni32_SOURCES = 
+bench_uni32_LDFLAGS = 
 zuf_OBJECTS =  ran.o zuf.o
-EXTRA_zuf_SOURCES = 
+zuf_LDFLAGS = 
 test_zuf_OBJECTS =  testran.o
-EXTRA_test_zuf_SOURCES = 
+test_zuf_LDFLAGS = 
 bench_zuf_OBJECTS =  benchran.o
-EXTRA_bench_zuf_SOURCES = 
+bench_zuf_LDFLAGS = 
 rand_OBJECTS =  ran.o rand.o
-EXTRA_rand_SOURCES = 
+rand_LDFLAGS = 
 test_rand_OBJECTS =  testran.o
-EXTRA_test_rand_SOURCES = 
+test_rand_LDFLAGS = 
 bench_rand_OBJECTS =  benchran.o
-EXTRA_bench_rand_SOURCES = 
+bench_rand_LDFLAGS = 
 gauss_OBJECTS =  rungauss.o gauss.o
-EXTRA_gauss_SOURCES = 
 gauss_DEPENDENCIES =  $(FAVORITERAN).o $(FAVORITERAN)-gen.o
+gauss_LDFLAGS = 
 test_gauss_OBJECTS =  test-gauss.o gauss.o
-EXTRA_test_gauss_SOURCES = 
 test_gauss_DEPENDENCIES =  $(FAVORITERAN).o $(FAVORITERAN)-gen.o
+test_gauss_LDFLAGS = 
 bench_gauss_OBJECTS =  bench-gauss.o gauss.o
-EXTRA_bench_gauss_SOURCES = 
 bench_gauss_DEPENDENCIES =  $(FAVORITERAN).o $(FAVORITERAN)-gen.o
+bench_gauss_LDFLAGS = 
 test_switch_OBJECTS =  test-switch.o switch.o
-EXTRA_test_switch_SOURCES = 
+test_switch_LDFLAGS = 
 CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
 LINK = $(CC) $(LDFLAGS) -o $@
@@ -253,50 +240,54 @@ TAR = tar
 DEP_FILES =  .deps/bench-gauss.P .deps/benchran.P .deps/cmrg-gen.P \
 .deps/cmrg-state.P .deps/cmrg.P .deps/gauss.P .deps/mrg-gen.P \
 .deps/mrg-state.P .deps/mrg.P .deps/ran.P .deps/rand-gen.P \
-.deps/rand-state.P .deps/rand.P .deps/rungauss.P .deps/switch.P \
-.deps/taus-gen.P .deps/taus-state.P .deps/taus.P .deps/test-gauss.P \
-.deps/test-switch.P .deps/testran.P .deps/uni-gen.P .deps/uni-state.P \
-.deps/uni.P .deps/uni32-gen.P .deps/uni32-state.P .deps/uni32.P \
-.deps/zuf-gen.P .deps/zuf-state.P .deps/zuf.P
-SOURCES = $(gslrandom_SOURCES) $(gslranmrg_SOURCES) $(gslrancmrg_SOURCES) $(gslrantaus_SOURCES) $(gslranuni_SOURCES) $(gslranuni32_SOURCES) $(gslranzuf_SOURCES) $(gslranrand_SOURCES) $(mrg_SOURCES) $(test_mrg_SOURCES) $(bench_mrg_SOURCES) $(cmrg_SOURCES) $(test_cmrg_SOURCES) $(bench_cmrg_SOURCES) $(taus_SOURCES) $(test_taus_SOURCES) $(bench_taus_SOURCES) $(uni_SOURCES) $(test_uni_SOURCES) $(bench_uni_SOURCES) $(uni32_SOURCES) $(test_uni32_SOURCES) $(bench_uni32_SOURCES) $(zuf_SOURCES) $(test_zuf_SOURCES) $(bench_zuf_SOURCES) $(rand_SOURCES) $(test_rand_SOURCES) $(bench_rand_SOURCES) $(gauss_SOURCES) $(test_gauss_SOURCES) $(bench_gauss_SOURCES) $(test_switch_SOURCES)
-OBJECTS = $(gslrandom_OBJECTS) $(gslranmrg_OBJECTS) $(gslrancmrg_OBJECTS) $(gslrantaus_OBJECTS) $(gslranuni_OBJECTS) $(gslranuni32_OBJECTS) $(gslranzuf_OBJECTS) $(gslranrand_OBJECTS) $(mrg_OBJECTS) $(test_mrg_OBJECTS) $(bench_mrg_OBJECTS) $(cmrg_OBJECTS) $(test_cmrg_OBJECTS) $(bench_cmrg_OBJECTS) $(taus_OBJECTS) $(test_taus_OBJECTS) $(bench_taus_OBJECTS) $(uni_OBJECTS) $(test_uni_OBJECTS) $(bench_uni_OBJECTS) $(uni32_OBJECTS) $(test_uni32_OBJECTS) $(bench_uni32_OBJECTS) $(zuf_OBJECTS) $(test_zuf_OBJECTS) $(bench_zuf_OBJECTS) $(rand_OBJECTS) $(test_rand_OBJECTS) $(bench_rand_OBJECTS) $(gauss_OBJECTS) $(test_gauss_OBJECTS) $(bench_gauss_OBJECTS) $(test_switch_OBJECTS)
+.deps/rand-state.P .deps/rand.P .deps/rungauss.P .deps/shuffle.P \
+.deps/switch.P .deps/taus-gen.P .deps/taus-state.P .deps/taus.P \
+.deps/test-gauss.P .deps/test-switch.P .deps/testran.P .deps/uni-gen.P \
+.deps/uni-state.P .deps/uni.P .deps/uni32-gen.P .deps/uni32-state.P \
+.deps/uni32.P .deps/zuf-gen.P .deps/zuf-state.P .deps/zuf.P
+SOURCES = $(libgslrandom_a_SOURCES) $(libgslranmrg_a_SOURCES) $(libgslrancmrg_a_SOURCES) $(libgslrantaus_a_SOURCES) $(libgslranuni_a_SOURCES) $(libgslranuni32_a_SOURCES) $(libgslranzuf_a_SOURCES) $(libgslranrand_a_SOURCES) $(mrg_SOURCES) $(test_mrg_SOURCES) $(bench_mrg_SOURCES) $(cmrg_SOURCES) $(test_cmrg_SOURCES) $(bench_cmrg_SOURCES) $(taus_SOURCES) $(test_taus_SOURCES) $(bench_taus_SOURCES) $(uni_SOURCES) $(test_uni_SOURCES) $(bench_uni_SOURCES) $(uni32_SOURCES) $(test_uni32_SOURCES) $(bench_uni32_SOURCES) $(zuf_SOURCES) $(test_zuf_SOURCES) $(bench_zuf_SOURCES) $(rand_SOURCES) $(test_rand_SOURCES) $(bench_rand_SOURCES) $(gauss_SOURCES) $(test_gauss_SOURCES) $(bench_gauss_SOURCES) $(test_switch_SOURCES)
+OBJECTS = $(libgslrandom_a_OBJECTS) $(libgslranmrg_a_OBJECTS) $(libgslrancmrg_a_OBJECTS) $(libgslrantaus_a_OBJECTS) $(libgslranuni_a_OBJECTS) $(libgslranuni32_a_OBJECTS) $(libgslranzuf_a_OBJECTS) $(libgslranrand_a_OBJECTS) $(mrg_OBJECTS) $(test_mrg_OBJECTS) $(bench_mrg_OBJECTS) $(cmrg_OBJECTS) $(test_cmrg_OBJECTS) $(bench_cmrg_OBJECTS) $(taus_OBJECTS) $(test_taus_OBJECTS) $(bench_taus_OBJECTS) $(uni_OBJECTS) $(test_uni_OBJECTS) $(bench_uni_OBJECTS) $(uni32_OBJECTS) $(test_uni32_OBJECTS) $(bench_uni32_OBJECTS) $(zuf_OBJECTS) $(test_zuf_OBJECTS) $(bench_zuf_OBJECTS) $(rand_OBJECTS) $(test_rand_OBJECTS) $(bench_rand_OBJECTS) $(gauss_OBJECTS) $(test_gauss_OBJECTS) $(bench_gauss_OBJECTS) $(test_switch_OBJECTS)
 
 default: all
 
+.SUFFIXES:
+.SUFFIXES: .c .o
+$(srcdir)/Makefile.in: Makefile.am $(top_srcdir)/configure.in $(ACLOCAL) 
+	cd $(top_srcdir) && automake --gnu random/Makefile
 
-$(srcdir)/Makefile.in: Makefile.am $(top_srcdir)/configure.in
-	cd $(top_srcdir) && automake --strictness=gnu $(subdir)/Makefile
-
-Makefile: $(top_builddir)/config.status $(srcdir)/Makefile.in $(BUILT_SOURCES)
+Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status $(BUILT_SOURCES)
 	cd $(top_builddir) \
 	  && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
+
 
 mostlyclean-libLIBRARIES:
 
 clean-libLIBRARIES:
-	test -z "$(lib_LIBFILES)" || rm -f $(lib_LIBFILES)
+	test -z "$(lib_LIBRARIES)" || rm -f $(lib_LIBRARIES)
 
 distclean-libLIBRARIES:
 
 maintainer-clean-libLIBRARIES:
 
-install-libLIBRARIES: $(lib_LIBFILES)
+install-libLIBRARIES: $(lib_LIBRARIES)
 	$(NORMAL_INSTALL)
 	$(mkinstalldirs) $(libdir)
-	list="$(lib_LIBFILES)"; for p in $$list; do \
+	list="$(lib_LIBRARIES)"; for p in $$list; do \
 	  if test -f $$p; then \
+	    echo "$(INSTALL_DATA) $$p $(libdir)/$$p"; \
 	    $(INSTALL_DATA) $$p $(libdir)/$$p; \
 	  else :; fi; \
 	done
 	$(POST_INSTALL)
-	list="$(lib_LIBFILES)"; for p in $$list; do \
+	@list="$(lib_LIBRARIES)"; for p in $$list; do \
 	  if test -f $$p; then \
+	    echo "$(RANLIB) $(libdir)/$$p"; \
 	    $(RANLIB) $(libdir)/$$p; \
 	  else :; fi; \
 	done
 
 uninstall-libLIBRARIES:
-	list="$(lib_LIBFILES)"; for p in $$list; do \
+	list="$(lib_LIBRARIES)"; for p in $$list; do \
 	  rm -f $(libdir)/$$p; \
 	done
 
@@ -313,44 +304,44 @@ distclean-compile:
 
 maintainer-clean-compile:
 
-libgslrandom.a: $(gslrandom_OBJECTS) $(gslrandom_DEPENDENCIES)
+libgslrandom.a: $(libgslrandom_a_OBJECTS) $(libgslrandom_a_DEPENDENCIES)
 	rm -f libgslrandom.a
-	$(AR) cru libgslrandom.a $(gslrandom_OBJECTS) $(gslrandom_LIBADD)
+	$(AR) cru libgslrandom.a $(libgslrandom_a_OBJECTS) $(libgslrandom_a_LIBADD)
 	$(RANLIB) libgslrandom.a
 
-libgslranmrg.a: $(gslranmrg_OBJECTS) $(gslranmrg_DEPENDENCIES)
+libgslranmrg.a: $(libgslranmrg_a_OBJECTS) $(libgslranmrg_a_DEPENDENCIES)
 	rm -f libgslranmrg.a
-	$(AR) cru libgslranmrg.a $(gslranmrg_OBJECTS) $(gslranmrg_LIBADD)
+	$(AR) cru libgslranmrg.a $(libgslranmrg_a_OBJECTS) $(libgslranmrg_a_LIBADD)
 	$(RANLIB) libgslranmrg.a
 
-libgslrancmrg.a: $(gslrancmrg_OBJECTS) $(gslrancmrg_DEPENDENCIES)
+libgslrancmrg.a: $(libgslrancmrg_a_OBJECTS) $(libgslrancmrg_a_DEPENDENCIES)
 	rm -f libgslrancmrg.a
-	$(AR) cru libgslrancmrg.a $(gslrancmrg_OBJECTS) $(gslrancmrg_LIBADD)
+	$(AR) cru libgslrancmrg.a $(libgslrancmrg_a_OBJECTS) $(libgslrancmrg_a_LIBADD)
 	$(RANLIB) libgslrancmrg.a
 
-libgslrantaus.a: $(gslrantaus_OBJECTS) $(gslrantaus_DEPENDENCIES)
+libgslrantaus.a: $(libgslrantaus_a_OBJECTS) $(libgslrantaus_a_DEPENDENCIES)
 	rm -f libgslrantaus.a
-	$(AR) cru libgslrantaus.a $(gslrantaus_OBJECTS) $(gslrantaus_LIBADD)
+	$(AR) cru libgslrantaus.a $(libgslrantaus_a_OBJECTS) $(libgslrantaus_a_LIBADD)
 	$(RANLIB) libgslrantaus.a
 
-libgslranuni.a: $(gslranuni_OBJECTS) $(gslranuni_DEPENDENCIES)
+libgslranuni.a: $(libgslranuni_a_OBJECTS) $(libgslranuni_a_DEPENDENCIES)
 	rm -f libgslranuni.a
-	$(AR) cru libgslranuni.a $(gslranuni_OBJECTS) $(gslranuni_LIBADD)
+	$(AR) cru libgslranuni.a $(libgslranuni_a_OBJECTS) $(libgslranuni_a_LIBADD)
 	$(RANLIB) libgslranuni.a
 
-libgslranuni32.a: $(gslranuni32_OBJECTS) $(gslranuni32_DEPENDENCIES)
+libgslranuni32.a: $(libgslranuni32_a_OBJECTS) $(libgslranuni32_a_DEPENDENCIES)
 	rm -f libgslranuni32.a
-	$(AR) cru libgslranuni32.a $(gslranuni32_OBJECTS) $(gslranuni32_LIBADD)
+	$(AR) cru libgslranuni32.a $(libgslranuni32_a_OBJECTS) $(libgslranuni32_a_LIBADD)
 	$(RANLIB) libgslranuni32.a
 
-libgslranzuf.a: $(gslranzuf_OBJECTS) $(gslranzuf_DEPENDENCIES)
+libgslranzuf.a: $(libgslranzuf_a_OBJECTS) $(libgslranzuf_a_DEPENDENCIES)
 	rm -f libgslranzuf.a
-	$(AR) cru libgslranzuf.a $(gslranzuf_OBJECTS) $(gslranzuf_LIBADD)
+	$(AR) cru libgslranzuf.a $(libgslranzuf_a_OBJECTS) $(libgslranzuf_a_LIBADD)
 	$(RANLIB) libgslranzuf.a
 
-libgslranrand.a: $(gslranrand_OBJECTS) $(gslranrand_DEPENDENCIES)
+libgslranrand.a: $(libgslranrand_a_OBJECTS) $(libgslranrand_a_DEPENDENCIES)
 	rm -f libgslranrand.a
-	$(AR) cru libgslranrand.a $(gslranrand_OBJECTS) $(gslranrand_LIBADD)
+	$(AR) cru libgslranrand.a $(libgslranrand_a_OBJECTS) $(libgslranrand_a_LIBADD)
 	$(RANLIB) libgslranrand.a
 
 mostlyclean-binPROGRAMS:
@@ -365,9 +356,10 @@ maintainer-clean-binPROGRAMS:
 install-binPROGRAMS: $(bin_PROGRAMS)
 	$(NORMAL_INSTALL)
 	$(mkinstalldirs) $(bindir)
-	list="$(bin_PROGRAMS)"; for p in $$list; do \
+	@list="$(bin_PROGRAMS)"; for p in $$list; do \
 	  if test -f $$p; then \
-	    $(INSTALL_PROGRAM) $$p $(bindir)/`echo $$p|sed '$(transform)'`; \
+	    echo " $(INSTALL_PROGRAM) $$p $(bindir)/`echo $$p|sed '$(transform)'`"; \
+	     $(INSTALL_PROGRAM) $$p $(bindir)/`echo $$p|sed '$(transform)'`; \
 	  else :; fi; \
 	done
 
@@ -377,84 +369,85 @@ uninstall-binPROGRAMS:
 	done
 
 mrg: $(mrg_OBJECTS) $(mrg_DEPENDENCIES)
-	$(LINK) $(mrg_OBJECTS) $(mrg_LDADD) $(LIBS)
+	$(LINK) $(mrg_LDFLAGS) $(mrg_OBJECTS) $(mrg_LDADD) $(LIBS)
 
 test-mrg: $(test_mrg_OBJECTS) $(test_mrg_DEPENDENCIES)
-	$(LINK) $(test_mrg_OBJECTS) $(test_mrg_LDADD) $(LIBS)
+	$(LINK) $(test_mrg_LDFLAGS) $(test_mrg_OBJECTS) $(test_mrg_LDADD) $(LIBS)
 
 bench-mrg: $(bench_mrg_OBJECTS) $(bench_mrg_DEPENDENCIES)
-	$(LINK) $(bench_mrg_OBJECTS) $(bench_mrg_LDADD) $(LIBS)
+	$(LINK) $(bench_mrg_LDFLAGS) $(bench_mrg_OBJECTS) $(bench_mrg_LDADD) $(LIBS)
 
 cmrg: $(cmrg_OBJECTS) $(cmrg_DEPENDENCIES)
-	$(LINK) $(cmrg_OBJECTS) $(cmrg_LDADD) $(LIBS)
+	$(LINK) $(cmrg_LDFLAGS) $(cmrg_OBJECTS) $(cmrg_LDADD) $(LIBS)
 
 test-cmrg: $(test_cmrg_OBJECTS) $(test_cmrg_DEPENDENCIES)
-	$(LINK) $(test_cmrg_OBJECTS) $(test_cmrg_LDADD) $(LIBS)
+	$(LINK) $(test_cmrg_LDFLAGS) $(test_cmrg_OBJECTS) $(test_cmrg_LDADD) $(LIBS)
 
 bench-cmrg: $(bench_cmrg_OBJECTS) $(bench_cmrg_DEPENDENCIES)
-	$(LINK) $(bench_cmrg_OBJECTS) $(bench_cmrg_LDADD) $(LIBS)
+	$(LINK) $(bench_cmrg_LDFLAGS) $(bench_cmrg_OBJECTS) $(bench_cmrg_LDADD) $(LIBS)
 
 taus: $(taus_OBJECTS) $(taus_DEPENDENCIES)
-	$(LINK) $(taus_OBJECTS) $(taus_LDADD) $(LIBS)
+	$(LINK) $(taus_LDFLAGS) $(taus_OBJECTS) $(taus_LDADD) $(LIBS)
 
 test-taus: $(test_taus_OBJECTS) $(test_taus_DEPENDENCIES)
-	$(LINK) $(test_taus_OBJECTS) $(test_taus_LDADD) $(LIBS)
+	$(LINK) $(test_taus_LDFLAGS) $(test_taus_OBJECTS) $(test_taus_LDADD) $(LIBS)
 
 bench-taus: $(bench_taus_OBJECTS) $(bench_taus_DEPENDENCIES)
-	$(LINK) $(bench_taus_OBJECTS) $(bench_taus_LDADD) $(LIBS)
+	$(LINK) $(bench_taus_LDFLAGS) $(bench_taus_OBJECTS) $(bench_taus_LDADD) $(LIBS)
 
 uni: $(uni_OBJECTS) $(uni_DEPENDENCIES)
-	$(LINK) $(uni_OBJECTS) $(uni_LDADD) $(LIBS)
+	$(LINK) $(uni_LDFLAGS) $(uni_OBJECTS) $(uni_LDADD) $(LIBS)
 
 test-uni: $(test_uni_OBJECTS) $(test_uni_DEPENDENCIES)
-	$(LINK) $(test_uni_OBJECTS) $(test_uni_LDADD) $(LIBS)
+	$(LINK) $(test_uni_LDFLAGS) $(test_uni_OBJECTS) $(test_uni_LDADD) $(LIBS)
 
 bench-uni: $(bench_uni_OBJECTS) $(bench_uni_DEPENDENCIES)
-	$(LINK) $(bench_uni_OBJECTS) $(bench_uni_LDADD) $(LIBS)
+	$(LINK) $(bench_uni_LDFLAGS) $(bench_uni_OBJECTS) $(bench_uni_LDADD) $(LIBS)
 
 uni32: $(uni32_OBJECTS) $(uni32_DEPENDENCIES)
-	$(LINK) $(uni32_OBJECTS) $(uni32_LDADD) $(LIBS)
+	$(LINK) $(uni32_LDFLAGS) $(uni32_OBJECTS) $(uni32_LDADD) $(LIBS)
 
 test-uni32: $(test_uni32_OBJECTS) $(test_uni32_DEPENDENCIES)
-	$(LINK) $(test_uni32_OBJECTS) $(test_uni32_LDADD) $(LIBS)
+	$(LINK) $(test_uni32_LDFLAGS) $(test_uni32_OBJECTS) $(test_uni32_LDADD) $(LIBS)
 
 bench-uni32: $(bench_uni32_OBJECTS) $(bench_uni32_DEPENDENCIES)
-	$(LINK) $(bench_uni32_OBJECTS) $(bench_uni32_LDADD) $(LIBS)
+	$(LINK) $(bench_uni32_LDFLAGS) $(bench_uni32_OBJECTS) $(bench_uni32_LDADD) $(LIBS)
 
 zuf: $(zuf_OBJECTS) $(zuf_DEPENDENCIES)
-	$(LINK) $(zuf_OBJECTS) $(zuf_LDADD) $(LIBS)
+	$(LINK) $(zuf_LDFLAGS) $(zuf_OBJECTS) $(zuf_LDADD) $(LIBS)
 
 test-zuf: $(test_zuf_OBJECTS) $(test_zuf_DEPENDENCIES)
-	$(LINK) $(test_zuf_OBJECTS) $(test_zuf_LDADD) $(LIBS)
+	$(LINK) $(test_zuf_LDFLAGS) $(test_zuf_OBJECTS) $(test_zuf_LDADD) $(LIBS)
 
 bench-zuf: $(bench_zuf_OBJECTS) $(bench_zuf_DEPENDENCIES)
-	$(LINK) $(bench_zuf_OBJECTS) $(bench_zuf_LDADD) $(LIBS)
+	$(LINK) $(bench_zuf_LDFLAGS) $(bench_zuf_OBJECTS) $(bench_zuf_LDADD) $(LIBS)
 
 rand: $(rand_OBJECTS) $(rand_DEPENDENCIES)
-	$(LINK) $(rand_OBJECTS) $(rand_LDADD) $(LIBS)
+	$(LINK) $(rand_LDFLAGS) $(rand_OBJECTS) $(rand_LDADD) $(LIBS)
 
 test-rand: $(test_rand_OBJECTS) $(test_rand_DEPENDENCIES)
-	$(LINK) $(test_rand_OBJECTS) $(test_rand_LDADD) $(LIBS)
+	$(LINK) $(test_rand_LDFLAGS) $(test_rand_OBJECTS) $(test_rand_LDADD) $(LIBS)
 
 bench-rand: $(bench_rand_OBJECTS) $(bench_rand_DEPENDENCIES)
-	$(LINK) $(bench_rand_OBJECTS) $(bench_rand_LDADD) $(LIBS)
+	$(LINK) $(bench_rand_LDFLAGS) $(bench_rand_OBJECTS) $(bench_rand_LDADD) $(LIBS)
 
 gauss: $(gauss_OBJECTS) $(gauss_DEPENDENCIES)
-	$(LINK) $(gauss_OBJECTS) $(gauss_LDADD) $(LIBS)
+	$(LINK) $(gauss_LDFLAGS) $(gauss_OBJECTS) $(gauss_LDADD) $(LIBS)
 
 test-gauss: $(test_gauss_OBJECTS) $(test_gauss_DEPENDENCIES)
-	$(LINK) $(test_gauss_OBJECTS) $(test_gauss_LDADD) $(LIBS)
+	$(LINK) $(test_gauss_LDFLAGS) $(test_gauss_OBJECTS) $(test_gauss_LDADD) $(LIBS)
 
 bench-gauss: $(bench_gauss_OBJECTS) $(bench_gauss_DEPENDENCIES)
-	$(LINK) $(bench_gauss_OBJECTS) $(bench_gauss_LDADD) $(LIBS)
+	$(LINK) $(bench_gauss_LDFLAGS) $(bench_gauss_OBJECTS) $(bench_gauss_LDADD) $(LIBS)
 
 test-switch: $(test_switch_OBJECTS) $(test_switch_DEPENDENCIES)
-	$(LINK) $(test_switch_OBJECTS) $(test_switch_LDADD) $(LIBS)
+	$(LINK) $(test_switch_LDFLAGS) $(test_switch_OBJECTS) $(test_switch_LDADD) $(LIBS)
 
 install-includeHEADERS: $(include_HEADERS)
 	$(NORMAL_INSTALL)
 	$(mkinstalldirs) $(includedir)
-	list="$(include_HEADERS)"; for p in $$list; do \
+	@list="$(include_HEADERS)"; for p in $$list; do \
+	  echo "$(INSTALL_DATA) $(srcdir)/$$p $(includedir)/$$p"; \
 	  $(INSTALL_DATA) $(srcdir)/$$p $(includedir)/$$p; \
 	done
 
@@ -463,13 +456,19 @@ uninstall-includeHEADERS:
 	  rm -f $(includedir)/$$p; \
 	done
 
+tags: TAGS
+
 ID: $(HEADERS) $(SOURCES)
 	here=`pwd` && cd $(srcdir) && mkid -f$$here/ID $(SOURCES) $(HEADERS)
 
-tags: TAGS
-
-TAGS: $(HEADERS) $(SOURCES) $(TAGS_DEPENDENCIES)
-	here=`pwd` && cd $(srcdir) && etags $(ETAGS_ARGS) $(SOURCES) $(HEADERS) -o $$here/TAGS
+TAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES)
+	tags=; \
+	here=`pwd`; \
+	list="$(SUBDIRS)"; for subdir in $$list; do \
+	  test -f $$subdir/TAGS && tags="$$tags -i $$here/$$subdir/TAGS"; \
+	done; \
+	test -z "$(ETAGS_ARGS)$(SOURCES)$(HEADERS)$$tags" \
+	  || cd $(srcdir) && etags $(ETAGS_ARGS) $$tags  $(SOURCES) $(HEADERS) -o $$here/TAGS
 
 mostlyclean-tags:
 
@@ -511,16 +510,14 @@ maintainer-clean-depend:
 	rm -rf .deps
 
 .deps/%.P: $(srcdir)/%.c
-	$(MKDEP) $< > $@-tmp
-	if test -n "$o"; then			\
-	  sed 's/\.o:/$$o:/' $@-tmp > $@;	\
-	  rm $@-tmp;				\
-	else					\
-	  mv $@-tmp $@;				\
-	fi
+	@echo "Computing dependencies for $<..."
+	@o='o';				\
+	test -n "$o" && o='$$o';	\
+	$(MKDEP) $< | sed "s/^\(.*\)\.o:/\1.$$o \1.l$$o:/" > $@
 info:
 dvi:
 check: all
+	$(MAKE)
 installcheck:
 install-exec: install-libLIBRARIES install-binPROGRAMS
 	$(NORMAL_INSTALL)
@@ -533,7 +530,7 @@ install: install-exec install-data all
 
 uninstall: uninstall-libLIBRARIES uninstall-binPROGRAMS uninstall-includeHEADERS
 
-all: $(LIBFILES) $(PROGRAMS) $(BUILT_SOURCES) $(HEADERS) Makefile
+all: $(LIBRARIES) $(PROGRAMS) $(BUILT_SOURCES) $(HEADERS) Makefile
 
 install-strip:
 	$(MAKE) INSTALL_PROGRAM='$(INSTALL_PROGRAM) -s' install
@@ -560,17 +557,17 @@ mostlyclean:  mostlyclean-libLIBRARIES mostlyclean-compile \
 		mostlyclean-depend mostlyclean-generic
 
 clean:  clean-libLIBRARIES clean-compile clean-binPROGRAMS clean-tags \
-		clean-depend clean-generic mostlyclean 
+		clean-depend clean-generic mostlyclean
 
 distclean:  distclean-libLIBRARIES distclean-compile \
 		distclean-binPROGRAMS distclean-tags distclean-depend \
-		distclean-generic clean 
+		distclean-generic clean
 	rm -f config.status
 
 maintainer-clean:  maintainer-clean-libLIBRARIES \
 		maintainer-clean-compile maintainer-clean-binPROGRAMS \
 		maintainer-clean-tags maintainer-clean-depend \
-		maintainer-clean-generic distclean 
+		maintainer-clean-generic distclean
 	@echo "This command is intended for maintainers to use;"
 	@echo "it deletes files that may require special tools to rebuild."
 
@@ -582,10 +579,10 @@ distclean-binPROGRAMS clean-binPROGRAMS maintainer-clean-binPROGRAMS \
 uninstall-binPROGRAMS install-binPROGRAMS uninstall-includeHEADERS \
 install-includeHEADERS tags mostlyclean-tags distclean-tags clean-tags \
 maintainer-clean-tags distdir mostlyclean-depend distclean-depend \
-clean-depend maintainer-clean-depend info dvi check installcheck \
-install-exec install-data install uninstall all installdirs \
-mostlyclean-generic distclean-generic clean-generic \
-maintainer-clean-generic clean mostlyclean distclean maintainer-clean
+clean-depend maintainer-clean-depend info dvi installcheck install-exec \
+install-data install uninstall all installdirs mostlyclean-generic \
+distclean-generic clean-generic maintainer-clean-generic clean \
+mostlyclean distclean maintainer-clean
 
 
 switch.c gsl_ran_switch.h: switch.xc makeswitch
@@ -594,6 +591,12 @@ switch.c gsl_ran_switch.h: switch.xc makeswitch
 Makefile.am: Makefile.ami makeam
 	cat Makefile.ami    > Makefile.am
 	./makeam $(ALLRAN) >> Makefile.am
+
+test-shuffle: test-shuffle.o $(FAVORITERAN).o $(FAVORITERAN)-gen.o
+	$(LINK) -o $@ test-shuffle.o $(FAVORITERAN).o $(FAVORITERAN)-gen.o -lm
+
+test-shuffle.o: shuffle.c
+	$(COMPILE) -c -DMAIN -o $@ shuffle.c
 
 mrg-state.c: xxx-state.xc
 	sed s/gsl_ran_xxx_/gsl_ran_mrg_/g xxx-state.xc > $@
@@ -637,8 +640,6 @@ rand.h: gsl_ran.h
 	sed s/gsl_ran_/gsl_ran_rand_/g gsl_ran.h > $@
 rand-gen.c: xxx-gen.xc
 	sed s/xxx/rand/g xxx-gen.xc > $@
-.SUFFIXES:
-.SUFFIXES: .c .o
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

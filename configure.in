@@ -11,7 +11,7 @@ AC_PROG_INSTALL
 AC_PROG_LN_S
 AC_PROG_RANLIB
 
-VERSION=0.3
+VERSION=0.3a-interim
 AC_SUBST(VERSION)
 PACKAGE=gsl
 AC_SUBST(PACKAGE)
@@ -24,4 +24,4 @@ dnl Checks for library functions.
 dnl Replace `main' with a function in -lm:
 AC_CHECK_LIB(m, main)
 
-AC_OUTPUT(statistics/Makefile roots/Makefile doc/Makefile random/Makefile Makefile)
+AC_OUTPUT(fft/Makefile statistics/Makefile roots/Makefile doc/Makefile random/Makefile Makefile)

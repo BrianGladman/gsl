@@ -1,4 +1,4 @@
-# Makefile.in generated automatically by automake 1.1g from Makefile.am
+# Makefile.in generated automatically by automake 1.1l from Makefile.am
 
 # Copyright (C) 1994, 1995, 1996 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
@@ -45,35 +45,31 @@ CC = @CC@
 CFLAGS=-g -Wall
 
 noinst_PROGRAMS = rtest
-lib_LIBRARIES = gsl_roots
+lib_LIBRARIES = libgsl_roots.a
 
 rtest_SOURCES = rtest.c
 rtest_LDADD = libgsl_roots.a
 rtest_DEPENDENCIES = libgsl_roots.a
 
-gsl_roots_SOURCES = newton.c
+libgsl_roots_a_SOURCES = newton.c
 
 include_HEADERS = roots.h
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_CLEAN_FILES = 
 LIBRARIES =  $(lib_LIBRARIES)
 
-lib_LIBFILES =  libgsl_roots.a
 
 DEFS = @DEFS@ -I. -I$(srcdir) 
 CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
-gsl_roots_LIBADD = 
-gsl_roots_OBJECTS =  newton.o
-EXTRA_gsl_roots_SOURCES = 
-LIBFILES  =  $(pkglib_LIBFILES) $(noinst_LIBFILES) $(check_LIBFILES) \
-$(lib_LIBFILES)
+libgsl_roots_a_LIBADD = 
+libgsl_roots_a_OBJECTS =  newton.o
 AR = ar
 PROGRAMS =  $(noinst_PROGRAMS)
 
 rtest_OBJECTS =  rtest.o
-EXTRA_rtest_SOURCES = 
+rtest_LDFLAGS = 
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
 LINK = $(CC) $(LDFLAGS) -o $@
 HEADERS =  $(include_HEADERS)
@@ -86,45 +82,49 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) \
 
 TAR = tar
 DEP_FILES =  .deps/newton.P .deps/rtest.P
-SOURCES = $(gsl_roots_SOURCES) $(rtest_SOURCES)
-OBJECTS = $(gsl_roots_OBJECTS) $(rtest_OBJECTS)
+SOURCES = $(libgsl_roots_a_SOURCES) $(rtest_SOURCES)
+OBJECTS = $(libgsl_roots_a_OBJECTS) $(rtest_OBJECTS)
 
 default: all
 
+.SUFFIXES:
+.SUFFIXES: .c .o
+$(srcdir)/Makefile.in: Makefile.am $(top_srcdir)/configure.in $(ACLOCAL) 
+	cd $(top_srcdir) && automake --gnu roots/Makefile
 
-$(srcdir)/Makefile.in: Makefile.am $(top_srcdir)/configure.in
-	cd $(top_srcdir) && automake --strictness=gnu $(subdir)/Makefile
-
-Makefile: $(top_builddir)/config.status $(srcdir)/Makefile.in $(BUILT_SOURCES)
+Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status $(BUILT_SOURCES)
 	cd $(top_builddir) \
 	  && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
+
 
 mostlyclean-libLIBRARIES:
 
 clean-libLIBRARIES:
-	test -z "$(lib_LIBFILES)" || rm -f $(lib_LIBFILES)
+	test -z "$(lib_LIBRARIES)" || rm -f $(lib_LIBRARIES)
 
 distclean-libLIBRARIES:
 
 maintainer-clean-libLIBRARIES:
 
-install-libLIBRARIES: $(lib_LIBFILES)
+install-libLIBRARIES: $(lib_LIBRARIES)
 	$(NORMAL_INSTALL)
 	$(mkinstalldirs) $(libdir)
-	list="$(lib_LIBFILES)"; for p in $$list; do \
+	list="$(lib_LIBRARIES)"; for p in $$list; do \
 	  if test -f $$p; then \
+	    echo "$(INSTALL_DATA) $$p $(libdir)/$$p"; \
 	    $(INSTALL_DATA) $$p $(libdir)/$$p; \
 	  else :; fi; \
 	done
 	$(POST_INSTALL)
-	list="$(lib_LIBFILES)"; for p in $$list; do \
+	@list="$(lib_LIBRARIES)"; for p in $$list; do \
 	  if test -f $$p; then \
+	    echo "$(RANLIB) $(libdir)/$$p"; \
 	    $(RANLIB) $(libdir)/$$p; \
 	  else :; fi; \
 	done
 
 uninstall-libLIBRARIES:
-	list="$(lib_LIBFILES)"; for p in $$list; do \
+	list="$(lib_LIBRARIES)"; for p in $$list; do \
 	  rm -f $(libdir)/$$p; \
 	done
 
@@ -141,9 +141,9 @@ distclean-compile:
 
 maintainer-clean-compile:
 
-libgsl_roots.a: $(gsl_roots_OBJECTS) $(gsl_roots_DEPENDENCIES)
+libgsl_roots.a: $(libgsl_roots_a_OBJECTS) $(libgsl_roots_a_DEPENDENCIES)
 	rm -f libgsl_roots.a
-	$(AR) cru libgsl_roots.a $(gsl_roots_OBJECTS) $(gsl_roots_LIBADD)
+	$(AR) cru libgsl_roots.a $(libgsl_roots_a_OBJECTS) $(libgsl_roots_a_LIBADD)
 	$(RANLIB) libgsl_roots.a
 
 mostlyclean-noinstPROGRAMS:
@@ -156,12 +156,13 @@ distclean-noinstPROGRAMS:
 maintainer-clean-noinstPROGRAMS:
 
 rtest: $(rtest_OBJECTS) $(rtest_DEPENDENCIES)
-	$(LINK) $(rtest_OBJECTS) $(rtest_LDADD) $(LIBS)
+	$(LINK) $(rtest_LDFLAGS) $(rtest_OBJECTS) $(rtest_LDADD) $(LIBS)
 
 install-includeHEADERS: $(include_HEADERS)
 	$(NORMAL_INSTALL)
 	$(mkinstalldirs) $(includedir)
-	list="$(include_HEADERS)"; for p in $$list; do \
+	@list="$(include_HEADERS)"; for p in $$list; do \
+	  echo "$(INSTALL_DATA) $(srcdir)/$$p $(includedir)/$$p"; \
 	  $(INSTALL_DATA) $(srcdir)/$$p $(includedir)/$$p; \
 	done
 
@@ -170,13 +171,19 @@ uninstall-includeHEADERS:
 	  rm -f $(includedir)/$$p; \
 	done
 
+tags: TAGS
+
 ID: $(HEADERS) $(SOURCES)
 	here=`pwd` && cd $(srcdir) && mkid -f$$here/ID $(SOURCES) $(HEADERS)
 
-tags: TAGS
-
-TAGS: $(HEADERS) $(SOURCES) $(TAGS_DEPENDENCIES)
-	here=`pwd` && cd $(srcdir) && etags $(ETAGS_ARGS) $(SOURCES) $(HEADERS) -o $$here/TAGS
+TAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES)
+	tags=; \
+	here=`pwd`; \
+	list="$(SUBDIRS)"; for subdir in $$list; do \
+	  test -f $$subdir/TAGS && tags="$$tags -i $$here/$$subdir/TAGS"; \
+	done; \
+	test -z "$(ETAGS_ARGS)$(SOURCES)$(HEADERS)$$tags" \
+	  || cd $(srcdir) && etags $(ETAGS_ARGS) $$tags  $(SOURCES) $(HEADERS) -o $$here/TAGS
 
 mostlyclean-tags:
 
@@ -218,16 +225,14 @@ maintainer-clean-depend:
 	rm -rf .deps
 
 .deps/%.P: $(srcdir)/%.c
-	$(MKDEP) $< > $@-tmp
-	if test -n "$o"; then			\
-	  sed 's/\.o:/$$o:/' $@-tmp > $@;	\
-	  rm $@-tmp;				\
-	else					\
-	  mv $@-tmp $@;				\
-	fi
+	@echo "Computing dependencies for $<..."
+	@o='o';				\
+	test -n "$o" && o='$$o';	\
+	$(MKDEP) $< | sed "s/^\(.*\)\.o:/\1.$$o \1.l$$o:/" > $@
 info:
 dvi:
 check: all
+	$(MAKE)
 installcheck:
 install-exec: install-libLIBRARIES
 	$(NORMAL_INSTALL)
@@ -240,7 +245,7 @@ install: install-exec install-data all
 
 uninstall: uninstall-libLIBRARIES uninstall-includeHEADERS
 
-all: $(LIBFILES) $(PROGRAMS) $(HEADERS) Makefile
+all: $(LIBRARIES) $(PROGRAMS) $(HEADERS) Makefile
 
 install-strip:
 	$(MAKE) INSTALL_PROGRAM='$(INSTALL_PROGRAM) -s' install
@@ -267,18 +272,18 @@ mostlyclean:  mostlyclean-libLIBRARIES mostlyclean-compile \
 		mostlyclean-depend mostlyclean-generic
 
 clean:  clean-libLIBRARIES clean-compile clean-noinstPROGRAMS clean-tags \
-		clean-depend clean-generic mostlyclean 
+		clean-depend clean-generic mostlyclean
 
 distclean:  distclean-libLIBRARIES distclean-compile \
 		distclean-noinstPROGRAMS distclean-tags \
-		distclean-depend distclean-generic clean 
+		distclean-depend distclean-generic clean
 	rm -f config.status
 
 maintainer-clean:  maintainer-clean-libLIBRARIES \
 		maintainer-clean-compile \
 		maintainer-clean-noinstPROGRAMS maintainer-clean-tags \
 		maintainer-clean-depend maintainer-clean-generic \
-		distclean 
+		distclean
 	@echo "This command is intended for maintainers to use;"
 	@echo "it deletes files that may require special tools to rebuild."
 
@@ -290,13 +295,11 @@ distclean-noinstPROGRAMS clean-noinstPROGRAMS \
 maintainer-clean-noinstPROGRAMS uninstall-includeHEADERS \
 install-includeHEADERS tags mostlyclean-tags distclean-tags clean-tags \
 maintainer-clean-tags distdir mostlyclean-depend distclean-depend \
-clean-depend maintainer-clean-depend info dvi check installcheck \
-install-exec install-data install uninstall all installdirs \
-mostlyclean-generic distclean-generic clean-generic \
-maintainer-clean-generic clean mostlyclean distclean maintainer-clean
+clean-depend maintainer-clean-depend info dvi installcheck install-exec \
+install-data install uninstall all installdirs mostlyclean-generic \
+distclean-generic clean-generic maintainer-clean-generic clean \
+mostlyclean distclean maintainer-clean
 
-.SUFFIXES:
-.SUFFIXES: .c .o
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
