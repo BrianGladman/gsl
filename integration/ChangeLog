@@ -1,3 +1,8 @@
+2003-01-12  Brian Gough  <brian.gough@network-theory.co.uk>
+
+	* qawc.c (gsl_integration_qawc): fixed bisection condition to
+	prevent singularity falling on interval boundary
+
 Mon Apr 29 20:05:56 2002  Brian Gough  <bjg@network-theory.co.uk>
 
 	* qcheb.c (gsl_integration_qcheb): avoid loss of precision by

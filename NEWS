@@ -1,5 +1,9 @@
 * What is new in gsl-1.4:
 
+** Fixed a bug in the QAWC Cauchy integration routine which could
+allow the singularity to fall on an interval boundary, leading to
+division by zero.
+
 ** On platforms without IEEE comparisons gsl_{isnan,isinf,finite} will
 fall back to the system versions of isnan, isinf and finite if
 available.

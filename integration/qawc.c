@@ -130,7 +130,7 @@ gsl_integration_qawc (gsl_function * f,
       a2 = b1;
       b2 = b_i;
 
-      if (c > a1 && c < b1) 
+      if (c > a1 && c <= b1) 
 	{
 	  b1 = 0.5 * (c + b2) ;
 	  a2 = b1;
