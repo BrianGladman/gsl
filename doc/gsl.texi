@@ -141,6 +141,7 @@ limitations. [FIXME give refs on review of NR]
 * Interface to other languages::  
 * What routines are implemented::  
 * Standards and conventions::   
+* Test suites::                 
 * Legal issues::                
 * Non-UNIX portability::        
 * Compatibility with other libraries::  
@@ -251,15 +252,20 @@ spline
 
 
 
-@node Standards and conventions, Legal issues, What routines are implemented, Design
+@node Standards and conventions, Test suites, What routines are implemented, Design
 @section Standards and conventions
 
 The people who kick off this project should set the coding standards and
-conventions.  Some things that should be set are:
+conventions.  Some standards that should be set are:
 
 @itemize @bullet
 @item
-Function arguments
+Targets for make.  We of course follow the GNU coding standards and use
+automake, so all the standard GNU targets are present.  In @ref{Test
+suites} we discuss the possibility of a @code{make verify} target which
+will run a verification suite for the given subsystem.
+@item
+Function arguments and abstraction levels.
 @item
 Sub-package function name prefixes
 @item
@@ -271,9 +277,23 @@ reference for the provided functions.
 @end itemize
 
 
+@node Test suites, Legal issues, Standards and conventions, Design
+@section Test suites
+
+The implementor of each library should provide a reasonable test suite
+for that library.
+
+The test suite should be a program that uses the library and checks the
+result against known results, or invokes the library several times and
+does a statistical analysis on the results (for example in the case of
+random number generators).
+
+We should add the target @code{make verify} to the Makefile.am files,
+and that should automatically execute the verification suite for the
+given library.
 
 
-@node Legal issues, Non-UNIX portability, Standards and conventions, Design
+@node Legal issues, Non-UNIX portability, Test suites, Design
 @section Legal issues
 
 @itemize @bullet
