@@ -9,19 +9,19 @@ const double flteps = 1e-4, dbleps = 1e-6;
   {
    int order = 101;
    int uplo = 121;
-   int N = 1;
-   float alpha = 0;
-   float Ap[] = { -0.232 };
-   float X[] = { -0.744 };
-   int incX = 1;
-   float Y[] = { -0.064 };
+   int N = 2;
+   float alpha = -1;
+   float Ap[] = { 0.493, -0.175, -0.831 };
+   float X[] = { -0.163, 0.489 };
+   int incX = -1;
+   float Y[] = { 0.154, 0.769 };
    int incY = -1;
-   float Ap_expected[] = { -0.232 };
+   float Ap_expected[] = { -0.259082, -0.124959, -0.780796 };
    cblas_sspr2(order, uplo, N, alpha, X, incX, Y, incY, Ap);
    {
      int i;
-     for (i = 0; i < 1; i++) {
-       gsl_test_rel(Ap[i], Ap_expected[i], flteps, "sspr2(case 1188)");
+     for (i = 0; i < 3; i++) {
+       gsl_test_rel(Ap[i], Ap_expected[i], flteps, "sspr2(case 1442)");
      }
    };
   };
@@ -30,19 +30,19 @@ const double flteps = 1e-4, dbleps = 1e-6;
   {
    int order = 101;
    int uplo = 122;
-   int N = 1;
-   float alpha = 0;
-   float Ap[] = { -0.232 };
-   float X[] = { -0.744 };
-   int incX = 1;
-   float Y[] = { -0.064 };
+   int N = 2;
+   float alpha = -1;
+   float Ap[] = { 0.493, -0.175, -0.831 };
+   float X[] = { -0.163, 0.489 };
+   int incX = -1;
+   float Y[] = { 0.154, 0.769 };
    int incY = -1;
-   float Ap_expected[] = { -0.232 };
+   float Ap_expected[] = { -0.259082, -0.124959, -0.780796 };
    cblas_sspr2(order, uplo, N, alpha, X, incX, Y, incY, Ap);
    {
      int i;
-     for (i = 0; i < 1; i++) {
-       gsl_test_rel(Ap[i], Ap_expected[i], flteps, "sspr2(case 1189)");
+     for (i = 0; i < 3; i++) {
+       gsl_test_rel(Ap[i], Ap_expected[i], flteps, "sspr2(case 1443)");
      }
    };
   };
@@ -51,19 +51,19 @@ const double flteps = 1e-4, dbleps = 1e-6;
   {
    int order = 102;
    int uplo = 121;
-   int N = 1;
-   float alpha = 0;
-   float Ap[] = { -0.232 };
-   float X[] = { -0.744 };
-   int incX = 1;
-   float Y[] = { -0.064 };
+   int N = 2;
+   float alpha = -1;
+   float Ap[] = { 0.493, -0.175, -0.831 };
+   float X[] = { -0.163, 0.489 };
+   int incX = -1;
+   float Y[] = { 0.154, 0.769 };
    int incY = -1;
-   float Ap_expected[] = { -0.232 };
+   float Ap_expected[] = { -0.259082, -0.124959, -0.780796 };
    cblas_sspr2(order, uplo, N, alpha, X, incX, Y, incY, Ap);
    {
      int i;
-     for (i = 0; i < 1; i++) {
-       gsl_test_rel(Ap[i], Ap_expected[i], flteps, "sspr2(case 1190)");
+     for (i = 0; i < 3; i++) {
+       gsl_test_rel(Ap[i], Ap_expected[i], flteps, "sspr2(case 1444)");
      }
    };
   };
@@ -72,19 +72,19 @@ const double flteps = 1e-4, dbleps = 1e-6;
   {
    int order = 102;
    int uplo = 122;
-   int N = 1;
-   float alpha = 0;
-   float Ap[] = { -0.232 };
-   float X[] = { -0.744 };
-   int incX = 1;
-   float Y[] = { -0.064 };
+   int N = 2;
+   float alpha = -1;
+   float Ap[] = { 0.493, -0.175, -0.831 };
+   float X[] = { -0.163, 0.489 };
+   int incX = -1;
+   float Y[] = { 0.154, 0.769 };
    int incY = -1;
-   float Ap_expected[] = { -0.232 };
+   float Ap_expected[] = { -0.259082, -0.124959, -0.780796 };
    cblas_sspr2(order, uplo, N, alpha, X, incX, Y, incY, Ap);
    {
      int i;
-     for (i = 0; i < 1; i++) {
-       gsl_test_rel(Ap[i], Ap_expected[i], flteps, "sspr2(case 1191)");
+     for (i = 0; i < 3; i++) {
+       gsl_test_rel(Ap[i], Ap_expected[i], flteps, "sspr2(case 1445)");
      }
    };
   };
@@ -93,19 +93,19 @@ const double flteps = 1e-4, dbleps = 1e-6;
   {
    int order = 101;
    int uplo = 121;
-   int N = 1;
-   double alpha = 1;
-   double Ap[] = { 0.111 };
-   double X[] = { -0.415 };
-   int incX = 1;
-   double Y[] = { -0.258 };
+   int N = 2;
+   double alpha = 0;
+   double Ap[] = { 0.938, 0.342, 0.74 };
+   double X[] = { 0.216, -0.566 };
+   int incX = -1;
+   double Y[] = { -0.845, 0.282 };
    int incY = -1;
-   double Ap_expected[] = { 0.32514 };
+   double Ap_expected[] = { 0.938, 0.342, 0.74 };
    cblas_dspr2(order, uplo, N, alpha, X, incX, Y, incY, Ap);
    {
      int i;
-     for (i = 0; i < 1; i++) {
-       gsl_test_rel(Ap[i], Ap_expected[i], dbleps, "dspr2(case 1192)");
+     for (i = 0; i < 3; i++) {
+       gsl_test_rel(Ap[i], Ap_expected[i], dbleps, "dspr2(case 1446)");
      }
    };
   };
@@ -114,19 +114,19 @@ const double flteps = 1e-4, dbleps = 1e-6;
   {
    int order = 101;
    int uplo = 122;
-   int N = 1;
-   double alpha = 1;
-   double Ap[] = { 0.111 };
-   double X[] = { -0.415 };
-   int incX = 1;
-   double Y[] = { -0.258 };
+   int N = 2;
+   double alpha = 0;
+   double Ap[] = { 0.938, 0.342, 0.74 };
+   double X[] = { 0.216, -0.566 };
+   int incX = -1;
+   double Y[] = { -0.845, 0.282 };
    int incY = -1;
-   double Ap_expected[] = { 0.32514 };
+   double Ap_expected[] = { 0.938, 0.342, 0.74 };
    cblas_dspr2(order, uplo, N, alpha, X, incX, Y, incY, Ap);
    {
      int i;
-     for (i = 0; i < 1; i++) {
-       gsl_test_rel(Ap[i], Ap_expected[i], dbleps, "dspr2(case 1193)");
+     for (i = 0; i < 3; i++) {
+       gsl_test_rel(Ap[i], Ap_expected[i], dbleps, "dspr2(case 1447)");
      }
    };
   };
@@ -135,19 +135,19 @@ const double flteps = 1e-4, dbleps = 1e-6;
   {
    int order = 102;
    int uplo = 121;
-   int N = 1;
-   double alpha = 1;
-   double Ap[] = { 0.111 };
-   double X[] = { -0.415 };
-   int incX = 1;
-   double Y[] = { -0.258 };
+   int N = 2;
+   double alpha = 0;
+   double Ap[] = { 0.938, 0.342, 0.74 };
+   double X[] = { 0.216, -0.566 };
+   int incX = -1;
+   double Y[] = { -0.845, 0.282 };
    int incY = -1;
-   double Ap_expected[] = { 0.32514 };
+   double Ap_expected[] = { 0.938, 0.342, 0.74 };
    cblas_dspr2(order, uplo, N, alpha, X, incX, Y, incY, Ap);
    {
      int i;
-     for (i = 0; i < 1; i++) {
-       gsl_test_rel(Ap[i], Ap_expected[i], dbleps, "dspr2(case 1194)");
+     for (i = 0; i < 3; i++) {
+       gsl_test_rel(Ap[i], Ap_expected[i], dbleps, "dspr2(case 1448)");
      }
    };
   };
@@ -156,19 +156,19 @@ const double flteps = 1e-4, dbleps = 1e-6;
   {
    int order = 102;
    int uplo = 122;
-   int N = 1;
-   double alpha = 1;
-   double Ap[] = { 0.111 };
-   double X[] = { -0.415 };
-   int incX = 1;
-   double Y[] = { -0.258 };
+   int N = 2;
+   double alpha = 0;
+   double Ap[] = { 0.938, 0.342, 0.74 };
+   double X[] = { 0.216, -0.566 };
+   int incX = -1;
+   double Y[] = { -0.845, 0.282 };
    int incY = -1;
-   double Ap_expected[] = { 0.32514 };
+   double Ap_expected[] = { 0.938, 0.342, 0.74 };
    cblas_dspr2(order, uplo, N, alpha, X, incX, Y, incY, Ap);
    {
      int i;
-     for (i = 0; i < 1; i++) {
-       gsl_test_rel(Ap[i], Ap_expected[i], dbleps, "dspr2(case 1195)");
+     for (i = 0; i < 3; i++) {
+       gsl_test_rel(Ap[i], Ap_expected[i], dbleps, "dspr2(case 1449)");
      }
    };
   };

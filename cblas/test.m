@@ -655,19 +655,31 @@ endfunction
 function m = bandmatrix (order, A, lda, M, N, KL, KU)
   if (order == 102)   # column major
     tmp = reshape(A,lda,length(A)/lda);
+
+    tmp = tmp(1:(KU+KL+1), 1:N);
+    m = zeros(M,N);
+    for j = 1:min(M+KU,N)
+      i0 = min(max(1, j - KU),M);
+      i1 = min(M, j + KL);
+      k0 = i0 + 1 + KU - j;
+      k1 = i1 + 1 + KU - j;
+      m(i0:i1, j) = tmp(k0:k1,j);
+    endfor
+
   elseif (order == 101)  # row major
     tmp = reshape(A,lda,length(A)/lda).';
+
+    tmp = tmp(1:M, 1:(KU+KL+1));
+    m = zeros(M,N);
+    for i = 1:min(M,N+KL)
+      j0 = min(max(1, i - KL),N);
+      j1 = min(N, i + KU);
+      k0 = j0 + 1 + KL - i;
+      k1 = j1 + 1 + KL - i;
+      m(i, j0:j1) = tmp(i, k0:k1);
+    endfor
+
   endif
-  tmp = tmp(1:(KU+KL+1), 1:N);
-  m = zeros(M,N);
-  for j = 1:min(M+KU,N)
-    i0 = min(max(1, j - KU),M);
-    i1 = min(M, j + KL);
-    k0 = i0 + 1 + KU - j;
-    k1 = i1 + 1 + KU - j;
-    #[j, i0, i1, k0, k1]
-    m(i0:i1, j) = tmp(k0:k1,j);
-  endfor
 endfunction
 
 function a = bmout (order, A, lda, M, N, KL, KU, bm)
@@ -684,10 +696,10 @@ function a = bmout (order, A, lda, M, N, KL, KU, bm)
   elseif (order == 101)        # row major
     a = reshape(A,lda,length(A)/lda).';
 
-    for j = 1:N
-      i0 = max(1, j - KU);
-      i1 = min(M, j + KL);
-      a((i0:i1)+1+KU-j,j) = bm(i0:i1, j);
+    for i = 1:M
+      j0 = max(1, i - KL);
+      j1 = min(M, i + KU);
+      a(i,(j0:j1)+1+KL-i) = bm(i,j0:j1);
     endfor
 
     a = reshape(a.', 1, length(A));
@@ -807,16 +819,33 @@ function YY = blas_axpy (N, alpha, X, incX, Y, incY)
 endfunction
 
 function [r,z,c,s] = blas_rotg (a, b)
-  g = givens (a, b);
-  c = g(1,1);
-  s = g(1,2);
-  r = c * a + s * b;
-  if (abs(a) > abs(b))
+  roe = b;
+  if( abs(a) > abs(b) ) 
+    roe = a;
+  endif
+  scale = abs(a) + abs(b);
+
+  if( scale == 0.0 ) 
+    c = 1.0;
+    s = 0.0;
+    r = 0.0;
+    z = 0.0;
+    return;
+  endif
+    
+  r = scale*sqrt((a/scale)**2 + (b/scale)**2);
+  if (roe < 0)
+    r = -r;
+  endif
+  c = a/r;
+  s = b/r;
+  z = 1.0;
+  if( abs(a) > abs(b) ) 
     z = s;
-  elseif (abs(b) >= abs(a) && c != 0)
-    z = 1/c;
-  else
-    z = 1;
+  endif
+
+  if( abs(b) >= abs(a) && c != 0.0) 
+    z = 1.0/c;
   endif
 endfunction
 
@@ -1618,10 +1647,18 @@ function define(S, type, name,x)
       if (i > 1)
         fprintf(FILE, ", ");
       endif
-      if (abs(x(i)) > 1e3 || abs(x(i)) < 1e-3)
-        format = "%.12e";
+      if ((abs(x(i)) > 1e3 || abs(x(i)) < 1e-3) && abs(x(i)) != 0.0)
+        if (strcmp(S.precision,"float"))
+          format = "%.6e";
+        else
+          format = "%.12e";
+        endif
       else
-        format = "%.12g";
+        if (strcmp(S.precision,"float"))
+          format = "%.6g";
+        else
+          format = "%.12g";
+        endif
       endif
       if (S.complex == 0)
         fprintf(FILE, format, x(i));
@@ -2421,8 +2458,10 @@ endfunction
 ######################################################################
 
 s=1;d=2;c=3;z=4;
-n=1;
-testcases=[1];
+
+testcases=[1:3];
+testcases2=[3];
+testcases3=[3];
 
 begin_file("dot");
 for j = testcases
@@ -2589,8 +2628,10 @@ for j = testcases
 endfor
 end_file();
 
+## Level 2
+
 begin_file("gemv");
-for j = testcases
+for j = testcases2
   for i = [s,d,c,z]
     S = context(i);
     T = test_matvectors(S, j);
@@ -2609,7 +2650,7 @@ endfor
 end_file();
 
 begin_file("gbmv");
-for j = testcases
+for j = testcases2
   for i = [s,d,c,z]
     S = context(i);
     for trans = Trans(S)
@@ -2628,7 +2669,7 @@ endfor
 end_file();
 
 begin_file("trmv");
-for j = testcases
+for j = testcases2
   for i = [s,d,c,z]
     S = context(i);
     for trans = Trans(S)
@@ -2646,8 +2687,9 @@ for j = testcases
 endfor
 end_file();
 
+
 begin_file("tbmv");
-for j = testcases
+for j = testcases2
   for i = [s,d,c,z]
     S = context(i);
     for trans = Trans(S)
@@ -2666,7 +2708,7 @@ endfor
 end_file();
 
 begin_file("tpmv");
-for j = testcases
+for j = testcases2
   for i = [s,d,c,z]
     S = context(i);
     for trans = Trans(S)
@@ -2685,7 +2727,7 @@ endfor
 end_file();
 
 begin_file("symv");
-for j = testcases
+for j = testcases2
   for i = [s,d]
     S = context(i);
     T = test_symatvectors(S, j);
@@ -2707,7 +2749,7 @@ endfor
 end_file();
 
 begin_file("hemv");
-for j = testcases
+for j = testcases2
   for i = [c,z]
     S = context(i);
     T = test_symatvectors(S, j);
@@ -2728,7 +2770,7 @@ endfor
 end_file();
 
 begin_file("hbmv");
-for j = testcases
+for j = testcases2
   for i = [c,z]
     S = context(i);
     T = test_sbmatvectors(S, j);
@@ -2749,7 +2791,7 @@ endfor
 end_file();
 
 begin_file("sbmv");
-for j = testcases
+for j = testcases2
   for i = [s,d]
     S = context(i);
     T = test_sbmatvectors(S, j);
@@ -2770,7 +2812,7 @@ endfor
 end_file();
 
 begin_file("hpmv");
-for j = testcases
+for j = testcases2
   for i = [c,z]
     S = context(i);
     T = test_spmatvectors(S, j);
@@ -2791,7 +2833,7 @@ endfor
 end_file();
 
 begin_file("spmv");
-for j = testcases
+for j = testcases2
   for i = [s,d]
     S = context(i);
     T = test_spmatvectors(S, j);
@@ -2812,7 +2854,7 @@ endfor
 end_file();
 
 begin_file("trsv");
-for j = testcases
+for j = testcases2
   for i = [s,d,c,z]
     S = context(i);
     for trans = Trans(S);
@@ -2831,7 +2873,7 @@ endfor
 end_file();
 
 begin_file("tbsv");
-for j = testcases
+for j = testcases2
   for i = [s,d,c,z]
     S = context(i);
     for trans = Trans(S);
@@ -2850,7 +2892,7 @@ endfor
 end_file();
 
 begin_file("tpsv");
-for j = testcases
+for j = testcases2
   for i = [s,d,c,z]
     S = context(i);
     T = test_tpmatvector(S, j);
@@ -2869,7 +2911,7 @@ endfor
 end_file();
 
 begin_file("ger");
-for j = testcases
+for j = testcases2
   for i = [s,d,c,z];
     S = context(i);
     T = test_matvectors(S, j);
@@ -2891,7 +2933,7 @@ endfor
 end_file();
 
 begin_file("syr");
-for j = testcases
+for j = testcases2
   for i = [s,d];
     S = context(i);
     T = test_trmatvector(S, j);
@@ -2908,7 +2950,7 @@ endfor
 end_file();
 
 begin_file("her");
-for j = testcases
+for j = testcases2
   for i = [c,z];
     S = context(i);
     T = test_trmatvector(S, j);
@@ -2926,7 +2968,7 @@ endfor
 end_file();
 
 begin_file("hpr");
-for j = testcases
+for j = testcases2
   for i = [c,z];
     S = context(i);
     T = test_tpmatvector(S, j);
@@ -2944,7 +2986,7 @@ end_file();
 
 
 begin_file("spr");
-for j = testcases
+for j = testcases2
   for i = [s,d];
     S = context(i);
     T = test_tpmatvector(S, j);
@@ -2961,7 +3003,7 @@ end_file();
 
 
 begin_file("syr2");
-for j = testcases
+for j = testcases2
   for i = [s,d];
     S = context(i);
     T = test_trmatvectors(S, j);
@@ -2978,7 +3020,7 @@ endfor
 end_file();
 
 begin_file("spr2");
-for j = testcases
+for j = testcases2
   for i = [s,d];
     S = context(i);
     T = test_tpmatvectors(S, j);
@@ -2995,7 +3037,7 @@ endfor
 end_file();
 
 begin_file("her2");
-for j = testcases
+for j = testcases2
   for i = [c,z];
     S = context(i);
     T = test_trmatvectors(S, j);
@@ -3012,7 +3054,7 @@ endfor
 end_file();
 
 begin_file("hpr2");
-for j = testcases
+for j = testcases2
   for i = [c,z];
     S = context(i);
     T = test_trmatvectors(S, j);
@@ -3028,8 +3070,10 @@ for j = testcases
 endfor
 end_file();
 
+## Level 3
+
 begin_file("gemm");
-for j = testcases
+for j = testcases3
   for i = [s,d,c,z]
     S = context(i);
     for transA = Trans(S)
@@ -3051,7 +3095,7 @@ endfor
 end_file();
 
 begin_file("symm")  ;
-for j = testcases
+for j = testcases3
   for i = [s,d,c,z]
     S = context(i);
     for uplo = [121, 122]
@@ -3072,7 +3116,7 @@ endfor
 end_file();
 
 begin_file("hemm")  ;
-for j = testcases
+for j = testcases3
   for i = [c,z]
     S = context(i);
     for uplo = [121, 122]
@@ -3093,8 +3137,8 @@ endfor
 end_file();
 
 begin_file("syrk");
-for j = testcases
-  for i = [c,z] #[s,d] #c,z]
+for j = testcases3
+  for i = [s,d,c,z]
     S = context(i);
     for uplo = [121, 122]
       for trans = Trans(S)
@@ -3114,11 +3158,14 @@ endfor
 end_file();
 
 begin_file("herk");
-for j = testcases
+for j = testcases3
   for i = [c,z] #[s,d] #c,z]
     S = context(i);
     for uplo = [121, 122]
       for trans = Trans(S)
+        if (S.complex && trans == 112)
+          continue; # Trans not allowed for complex case, 
+        endif
         T = S ; T.complex = 0;
         for alpha = coeff(T)
           for beta = coeff(T)
@@ -3137,8 +3184,8 @@ end_file();
 
 
 begin_file("syr2k");
-for j = testcases
-  for i = [c,z] #[s,d] #,c,z]
+for j = testcases3
+  for i = [s,d,c,z]
     S = context(i);
     for trans = Trans(S)
       if (S.complex && trans == 113)
@@ -3161,7 +3208,7 @@ endfor
 end_file();
 
 begin_file("her2k");
-for j = testcases
+for j = testcases3
   for i = [c,z]
     S = context(i);
     for trans = Trans(S)
@@ -3185,9 +3232,10 @@ for j = testcases
 endfor
 end_file();
 
+
 begin_file("trmm");
-for j = testcases
-  for i = [c] #[s,d] #,c,z]
+for j = testcases3
+  for i = [s,d,c,z]
     S = context(i);
     for trans = Trans(S)
       for alpha = coeff(S)
@@ -3209,8 +3257,8 @@ endfor
 end_file();
 
 begin_file("trsm");
-for j = testcases
-  for i = [c] #[s,d] #,c,z]
+for j = testcases3
+  for i = [s,d,c,z]
     S = context(i);
     for trans = Trans(S)
       for alpha = coeff(S)
@@ -3230,4 +3278,3 @@ for j = testcases
   endfor
 endfor
 end_file();
-

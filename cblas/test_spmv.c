@@ -10,19 +10,19 @@ const double flteps = 1e-4, dbleps = 1e-6;
    int order = 101;
    int uplo = 121;
    float alpha = 0.1;
-   float beta = 0;
-   int N = 1;
-   float A[] = { 0.15 };
-   float X[] = { 0.918 };
-   int incX = 1;
-   float Y[] = { -0.194 };
+   float beta = -0.3;
+   int N = 2;
+   float A[] = { -0.174, 0.878, 0.478 };
+   float X[] = { 0.503, 0.313 };
+   int incX = -1;
+   float Y[] = { -0.565, -0.109 };
    int incY = -1;
-   float y_expected[] = { 0.01377 };
+   float y_expected[] = { 0.221025, 0.0714172 };
    cblas_sspmv(order, uplo, N, alpha, A, X, incX, beta, Y, incY);
    {
      int i;
-     for (i = 0; i < 1; i++) {
-       gsl_test_rel(Y[i], y_expected[i], flteps, "sspmv(case 880)");
+     for (i = 0; i < 2; i++) {
+       gsl_test_rel(Y[i], y_expected[i], flteps, "sspmv(case 1134)");
      }
    };
   };
@@ -32,19 +32,19 @@ const double flteps = 1e-4, dbleps = 1e-6;
    int order = 101;
    int uplo = 121;
    float alpha = 0.1;
-   float beta = 0;
-   int N = 1;
-   float A[] = { 0.15 };
-   float X[] = { 0.918 };
-   int incX = 1;
-   float Y[] = { -0.194 };
+   float beta = -0.3;
+   int N = 2;
+   float A[] = { -0.174, 0.878, 0.478 };
+   float X[] = { 0.503, 0.313 };
+   int incX = -1;
+   float Y[] = { -0.565, -0.109 };
    int incY = -1;
-   float y_expected[] = { 0.01377 };
+   float y_expected[] = { 0.221025, 0.0714172 };
    cblas_sspmv(order, uplo, N, alpha, A, X, incX, beta, Y, incY);
    {
      int i;
-     for (i = 0; i < 1; i++) {
-       gsl_test_rel(Y[i], y_expected[i], flteps, "sspmv(case 881)");
+     for (i = 0; i < 2; i++) {
+       gsl_test_rel(Y[i], y_expected[i], flteps, "sspmv(case 1135)");
      }
    };
   };
@@ -54,19 +54,19 @@ const double flteps = 1e-4, dbleps = 1e-6;
    int order = 101;
    int uplo = 122;
    float alpha = 0.1;
-   float beta = 0;
-   int N = 1;
-   float A[] = { 0.15 };
-   float X[] = { 0.918 };
-   int incX = 1;
-   float Y[] = { -0.194 };
+   float beta = -0.3;
+   int N = 2;
+   float A[] = { -0.174, 0.878, 0.478 };
+   float X[] = { 0.503, 0.313 };
+   int incX = -1;
+   float Y[] = { -0.565, -0.109 };
    int incY = -1;
-   float y_expected[] = { 0.01377 };
+   float y_expected[] = { 0.221025, 0.0714172 };
    cblas_sspmv(order, uplo, N, alpha, A, X, incX, beta, Y, incY);
    {
      int i;
-     for (i = 0; i < 1; i++) {
-       gsl_test_rel(Y[i], y_expected[i], flteps, "sspmv(case 882)");
+     for (i = 0; i < 2; i++) {
+       gsl_test_rel(Y[i], y_expected[i], flteps, "sspmv(case 1136)");
      }
    };
   };
@@ -76,19 +76,19 @@ const double flteps = 1e-4, dbleps = 1e-6;
    int order = 101;
    int uplo = 122;
    float alpha = 0.1;
-   float beta = 0;
-   int N = 1;
-   float A[] = { 0.15 };
-   float X[] = { 0.918 };
-   int incX = 1;
-   float Y[] = { -0.194 };
+   float beta = -0.3;
+   int N = 2;
+   float A[] = { -0.174, 0.878, 0.478 };
+   float X[] = { 0.503, 0.313 };
+   int incX = -1;
+   float Y[] = { -0.565, -0.109 };
    int incY = -1;
-   float y_expected[] = { 0.01377 };
+   float y_expected[] = { 0.221025, 0.0714172 };
    cblas_sspmv(order, uplo, N, alpha, A, X, incX, beta, Y, incY);
    {
      int i;
-     for (i = 0; i < 1; i++) {
-       gsl_test_rel(Y[i], y_expected[i], flteps, "sspmv(case 883)");
+     for (i = 0; i < 2; i++) {
+       gsl_test_rel(Y[i], y_expected[i], flteps, "sspmv(case 1137)");
      }
    };
   };
@@ -98,19 +98,19 @@ const double flteps = 1e-4, dbleps = 1e-6;
    int order = 102;
    int uplo = 121;
    float alpha = 0.1;
-   float beta = 0;
-   int N = 1;
-   float A[] = { 0.15 };
-   float X[] = { 0.918 };
-   int incX = 1;
-   float Y[] = { -0.194 };
+   float beta = -0.3;
+   int N = 2;
+   float A[] = { -0.174, 0.878, 0.478 };
+   float X[] = { 0.503, 0.313 };
+   int incX = -1;
+   float Y[] = { -0.565, -0.109 };
    int incY = -1;
-   float y_expected[] = { 0.01377 };
+   float y_expected[] = { 0.221025, 0.0714172 };
    cblas_sspmv(order, uplo, N, alpha, A, X, incX, beta, Y, incY);
    {
      int i;
-     for (i = 0; i < 1; i++) {
-       gsl_test_rel(Y[i], y_expected[i], flteps, "sspmv(case 884)");
+     for (i = 0; i < 2; i++) {
+       gsl_test_rel(Y[i], y_expected[i], flteps, "sspmv(case 1138)");
      }
    };
   };
@@ -120,19 +120,19 @@ const double flteps = 1e-4, dbleps = 1e-6;
    int order = 102;
    int uplo = 121;
    float alpha = 0.1;
-   float beta = 0;
-   int N = 1;
-   float A[] = { 0.15 };
-   float X[] = { 0.918 };
-   int incX = 1;
-   float Y[] = { -0.194 };
+   float beta = -0.3;
+   int N = 2;
+   float A[] = { -0.174, 0.878, 0.478 };
+   float X[] = { 0.503, 0.313 };
+   int incX = -1;
+   float Y[] = { -0.565, -0.109 };
    int incY = -1;
-   float y_expected[] = { 0.01377 };
+   float y_expected[] = { 0.221025, 0.0714172 };
    cblas_sspmv(order, uplo, N, alpha, A, X, incX, beta, Y, incY);
    {
      int i;
-     for (i = 0; i < 1; i++) {
-       gsl_test_rel(Y[i], y_expected[i], flteps, "sspmv(case 885)");
+     for (i = 0; i < 2; i++) {
+       gsl_test_rel(Y[i], y_expected[i], flteps, "sspmv(case 1139)");
      }
    };
   };
@@ -142,19 +142,19 @@ const double flteps = 1e-4, dbleps = 1e-6;
    int order = 102;
    int uplo = 122;
    float alpha = 0.1;
-   float beta = 0;
-   int N = 1;
-   float A[] = { 0.15 };
-   float X[] = { 0.918 };
-   int incX = 1;
-   float Y[] = { -0.194 };
+   float beta = -0.3;
+   int N = 2;
+   float A[] = { -0.174, 0.878, 0.478 };
+   float X[] = { 0.503, 0.313 };
+   int incX = -1;
+   float Y[] = { -0.565, -0.109 };
    int incY = -1;
-   float y_expected[] = { 0.01377 };
+   float y_expected[] = { 0.221025, 0.0714172 };
    cblas_sspmv(order, uplo, N, alpha, A, X, incX, beta, Y, incY);
    {
      int i;
-     for (i = 0; i < 1; i++) {
-       gsl_test_rel(Y[i], y_expected[i], flteps, "sspmv(case 886)");
+     for (i = 0; i < 2; i++) {
+       gsl_test_rel(Y[i], y_expected[i], flteps, "sspmv(case 1140)");
      }
    };
   };
@@ -164,19 +164,19 @@ const double flteps = 1e-4, dbleps = 1e-6;
    int order = 102;
    int uplo = 122;
    float alpha = 0.1;
-   float beta = 0;
-   int N = 1;
-   float A[] = { 0.15 };
-   float X[] = { 0.918 };
-   int incX = 1;
-   float Y[] = { -0.194 };
+   float beta = -0.3;
+   int N = 2;
+   float A[] = { -0.174, 0.878, 0.478 };
+   float X[] = { 0.503, 0.313 };
+   int incX = -1;
+   float Y[] = { -0.565, -0.109 };
    int incY = -1;
-   float y_expected[] = { 0.01377 };
+   float y_expected[] = { 0.221025, 0.0714172 };
    cblas_sspmv(order, uplo, N, alpha, A, X, incX, beta, Y, incY);
    {
      int i;
-     for (i = 0; i < 1; i++) {
-       gsl_test_rel(Y[i], y_expected[i], flteps, "sspmv(case 887)");
+     for (i = 0; i < 2; i++) {
+       gsl_test_rel(Y[i], y_expected[i], flteps, "sspmv(case 1141)");
      }
    };
   };
@@ -185,20 +185,20 @@ const double flteps = 1e-4, dbleps = 1e-6;
   {
    int order = 101;
    int uplo = 121;
-   double alpha = 1;
-   double beta = -0.3;
-   int N = 1;
-   double A[] = { 0.284 };
-   double X[] = { 0.29 };
-   int incX = 1;
-   double Y[] = { -0.278 };
+   double alpha = -1;
+   double beta = 0.1;
+   int N = 2;
+   double A[] = { -0.181, -0.071, -0.038 };
+   double X[] = { -0.015, 0.132 };
+   int incX = -1;
+   double Y[] = { -0.449, -0.219 };
    int incY = -1;
-   double y_expected[] = { 0.16576 };
+   double y_expected[] = { -0.036098, 9.270000000000e-04 };
    cblas_dspmv(order, uplo, N, alpha, A, X, incX, beta, Y, incY);
    {
      int i;
-     for (i = 0; i < 1; i++) {
-       gsl_test_rel(Y[i], y_expected[i], dbleps, "dspmv(case 888)");
+     for (i = 0; i < 2; i++) {
+       gsl_test_rel(Y[i], y_expected[i], dbleps, "dspmv(case 1142)");
      }
    };
   };
@@ -207,20 +207,20 @@ const double flteps = 1e-4, dbleps = 1e-6;
   {
    int order = 101;
    int uplo = 121;
-   double alpha = 1;
-   double beta = -0.3;
-   int N = 1;
-   double A[] = { 0.284 };
-   double X[] = { 0.29 };
-   int incX = 1;
-   double Y[] = { -0.278 };
+   double alpha = -1;
+   double beta = 0.1;
+   int N = 2;
+   double A[] = { -0.181, -0.071, -0.038 };
+   double X[] = { -0.015, 0.132 };
+   int incX = -1;
+   double Y[] = { -0.449, -0.219 };
    int incY = -1;
-   double y_expected[] = { 0.16576 };
+   double y_expected[] = { -0.036098, 9.270000000000e-04 };
    cblas_dspmv(order, uplo, N, alpha, A, X, incX, beta, Y, incY);
    {
      int i;
-     for (i = 0; i < 1; i++) {
-       gsl_test_rel(Y[i], y_expected[i], dbleps, "dspmv(case 889)");
+     for (i = 0; i < 2; i++) {
+       gsl_test_rel(Y[i], y_expected[i], dbleps, "dspmv(case 1143)");
      }
    };
   };
@@ -229,20 +229,20 @@ const double flteps = 1e-4, dbleps = 1e-6;
   {
    int order = 101;
    int uplo = 122;
-   double alpha = 1;
-   double beta = -0.3;
-   int N = 1;
-   double A[] = { 0.284 };
-   double X[] = { 0.29 };
-   int incX = 1;
-   double Y[] = { -0.278 };
+   double alpha = -1;
+   double beta = 0.1;
+   int N = 2;
+   double A[] = { -0.181, -0.071, -0.038 };
+   double X[] = { -0.015, 0.132 };
+   int incX = -1;
+   double Y[] = { -0.449, -0.219 };
    int incY = -1;
-   double y_expected[] = { 0.16576 };
+   double y_expected[] = { -0.036098, 9.270000000000e-04 };
    cblas_dspmv(order, uplo, N, alpha, A, X, incX, beta, Y, incY);
    {
      int i;
-     for (i = 0; i < 1; i++) {
-       gsl_test_rel(Y[i], y_expected[i], dbleps, "dspmv(case 890)");
+     for (i = 0; i < 2; i++) {
+       gsl_test_rel(Y[i], y_expected[i], dbleps, "dspmv(case 1144)");
      }
    };
   };
@@ -251,20 +251,20 @@ const double flteps = 1e-4, dbleps = 1e-6;
   {
    int order = 101;
    int uplo = 122;
-   double alpha = 1;
-   double beta = -0.3;
-   int N = 1;
-   double A[] = { 0.284 };
-   double X[] = { 0.29 };
-   int incX = 1;
-   double Y[] = { -0.278 };
+   double alpha = -1;
+   double beta = 0.1;
+   int N = 2;
+   double A[] = { -0.181, -0.071, -0.038 };
+   double X[] = { -0.015, 0.132 };
+   int incX = -1;
+   double Y[] = { -0.449, -0.219 };
    int incY = -1;
-   double y_expected[] = { 0.16576 };
+   double y_expected[] = { -0.036098, 9.270000000000e-04 };
    cblas_dspmv(order, uplo, N, alpha, A, X, incX, beta, Y, incY);
    {
      int i;
-     for (i = 0; i < 1; i++) {
-       gsl_test_rel(Y[i], y_expected[i], dbleps, "dspmv(case 891)");
+     for (i = 0; i < 2; i++) {
+       gsl_test_rel(Y[i], y_expected[i], dbleps, "dspmv(case 1145)");
      }
    };
   };
@@ -273,20 +273,20 @@ const double flteps = 1e-4, dbleps = 1e-6;
   {
    int order = 102;
    int uplo = 121;
-   double alpha = 1;
-   double beta = -0.3;
-   int N = 1;
-   double A[] = { 0.284 };
-   double X[] = { 0.29 };
-   int incX = 1;
-   double Y[] = { -0.278 };
+   double alpha = -1;
+   double beta = 0.1;
+   int N = 2;
+   double A[] = { -0.181, -0.071, -0.038 };
+   double X[] = { -0.015, 0.132 };
+   int incX = -1;
+   double Y[] = { -0.449, -0.219 };
    int incY = -1;
-   double y_expected[] = { 0.16576 };
+   double y_expected[] = { -0.036098, 9.270000000000e-04 };
    cblas_dspmv(order, uplo, N, alpha, A, X, incX, beta, Y, incY);
    {
      int i;
-     for (i = 0; i < 1; i++) {
-       gsl_test_rel(Y[i], y_expected[i], dbleps, "dspmv(case 892)");
+     for (i = 0; i < 2; i++) {
+       gsl_test_rel(Y[i], y_expected[i], dbleps, "dspmv(case 1146)");
      }
    };
   };
@@ -295,20 +295,20 @@ const double flteps = 1e-4, dbleps = 1e-6;
   {
    int order = 102;
    int uplo = 121;
-   double alpha = 1;
-   double beta = -0.3;
-   int N = 1;
-   double A[] = { 0.284 };
-   double X[] = { 0.29 };
-   int incX = 1;
-   double Y[] = { -0.278 };
+   double alpha = -1;
+   double beta = 0.1;
+   int N = 2;
+   double A[] = { -0.181, -0.071, -0.038 };
+   double X[] = { -0.015, 0.132 };
+   int incX = -1;
+   double Y[] = { -0.449, -0.219 };
    int incY = -1;
-   double y_expected[] = { 0.16576 };
+   double y_expected[] = { -0.036098, 9.270000000000e-04 };
    cblas_dspmv(order, uplo, N, alpha, A, X, incX, beta, Y, incY);
    {
      int i;
-     for (i = 0; i < 1; i++) {
-       gsl_test_rel(Y[i], y_expected[i], dbleps, "dspmv(case 893)");
+     for (i = 0; i < 2; i++) {
+       gsl_test_rel(Y[i], y_expected[i], dbleps, "dspmv(case 1147)");
      }
    };
   };
@@ -317,20 +317,20 @@ const double flteps = 1e-4, dbleps = 1e-6;
   {
    int order = 102;
    int uplo = 122;
-   double alpha = 1;
-   double beta = -0.3;
-   int N = 1;
-   double A[] = { 0.284 };
-   double X[] = { 0.29 };
-   int incX = 1;
-   double Y[] = { -0.278 };
+   double alpha = -1;
+   double beta = 0.1;
+   int N = 2;
+   double A[] = { -0.181, -0.071, -0.038 };
+   double X[] = { -0.015, 0.132 };
+   int incX = -1;
+   double Y[] = { -0.449, -0.219 };
    int incY = -1;
-   double y_expected[] = { 0.16576 };
+   double y_expected[] = { -0.036098, 9.270000000000e-04 };
    cblas_dspmv(order, uplo, N, alpha, A, X, incX, beta, Y, incY);
    {
      int i;
-     for (i = 0; i < 1; i++) {
-       gsl_test_rel(Y[i], y_expected[i], dbleps, "dspmv(case 894)");
+     for (i = 0; i < 2; i++) {
+       gsl_test_rel(Y[i], y_expected[i], dbleps, "dspmv(case 1148)");
      }
    };
   };
@@ -339,20 +339,20 @@ const double flteps = 1e-4, dbleps = 1e-6;
   {
    int order = 102;
    int uplo = 122;
-   double alpha = 1;
-   double beta = -0.3;
-   int N = 1;
-   double A[] = { 0.284 };
-   double X[] = { 0.29 };
-   int incX = 1;
-   double Y[] = { -0.278 };
+   double alpha = -1;
+   double beta = 0.1;
+   int N = 2;
+   double A[] = { -0.181, -0.071, -0.038 };
+   double X[] = { -0.015, 0.132 };
+   int incX = -1;
+   double Y[] = { -0.449, -0.219 };
    int incY = -1;
-   double y_expected[] = { 0.16576 };
+   double y_expected[] = { -0.036098, 9.270000000000e-04 };
    cblas_dspmv(order, uplo, N, alpha, A, X, incX, beta, Y, incY);
    {
      int i;
-     for (i = 0; i < 1; i++) {
-       gsl_test_rel(Y[i], y_expected[i], dbleps, "dspmv(case 895)");
+     for (i = 0; i < 2; i++) {
+       gsl_test_rel(Y[i], y_expected[i], dbleps, "dspmv(case 1149)");
      }
    };
   };
