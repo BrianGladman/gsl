@@ -1,3 +1,9 @@
+2003-04-07  G. Jungman
+
+    * gamma_inc.c, gsl_sf_gamma.h: added gsl_sf_gamma_inc_e() and
+    gsl_sf_gamma_inc(), implmentations of the non-normalized incomplete
+    gamma function
+
 2003-03-09  Brian Gough  <bjg@network-theory.co.uk>
 
 	* gsl_sf_legendre.h: added missing const to formal parameter on
