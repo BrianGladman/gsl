@@ -87,9 +87,12 @@ void qpsrt (const size_t limit, const size_t last,
   /* printf("K put %d into iord[%d]\n", last, k+1) ; */
 
   /* Set maxerr_index and maxerr_value */
+
+  i_maxerr = iord[i_nrmax] ;
   
-  * maxerr_index = iord[i_nrmax] ;
+  * maxerr_index = i_maxerr ;
   * maxerr_value = elist[i_maxerr] ;
+
   * nrmax = i_nrmax ;
 }
 

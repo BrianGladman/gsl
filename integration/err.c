@@ -1,7 +1,7 @@
-#include <stdio.h>
-#include <float.h>
 #include <math.h>
+#include <float.h>
 #include <gsl_integration.h>
+
 #include "err.h"
 
 double rescale_error (double err, 
@@ -9,12 +9,14 @@ double rescale_error (double err,
 {
   err = fabs(err) ;
 
+  printf("result_asc=%g\n",result_asc) ;
   if (result_asc != 0 && err != 0)
       {
 	double scale = pow((200 * err / result_asc), 1.5) ;
 	
 	if (scale < 1)
 	  {
+	    printf("error rescaled from %g to %g\n", err, result_asc*scale) ;
 	    err = result_asc * scale ;
 	  }
 	else 
@@ -28,12 +30,10 @@ double rescale_error (double err,
 
       if (min_err > err) 
 	{
-	  printf("min_err = %g, err = %g\n",min_err,err) ;
+	  printf("error boosted from %g to %g\n", err, min_err) ;
 	  err = min_err ;
 	}
     }
-  
-  printf("err = %g\n",err) ;
   
   return err ;
 }

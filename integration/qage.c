@@ -68,7 +68,7 @@ gsl_integration_qage_impl (double (*f)(double x),
 {
   double q_result, q_abserr, q_defabs, q_resabs ;
   double tolerance,  maxerr_value, area, errsum ;
-  size_t maxerr_index, nrmax, i ;
+  size_t maxerr_index, nrmax, i, j, k ;
   int roundoff_type1 = 0, roundoff_type2 = 0, error_type = 0 ;
 
   alist[0] = a ;
@@ -93,6 +93,8 @@ gsl_integration_qage_impl (double (*f)(double x),
   rlist[0] = q_result ;
   elist[0] = q_abserr ;
   iord[0] = 0 ;
+
+  printf("result = %.18g, abserr = %.18g, nqeval = 1\n", q_result, q_abserr);
 
   /* Test on accuracy */
   {
@@ -140,7 +142,7 @@ gsl_integration_qage_impl (double (*f)(double x),
   maxerr_index = 0 ;
   area = q_result ;
   errsum = q_abserr ;
-  nrmax = 1 ;
+  nrmax = 0 ;
 
   i = 1; 
 
@@ -158,19 +160,28 @@ gsl_integration_qage_impl (double (*f)(double x),
       const double a2 = midpoint ; 
       const double b2 = right ;
 
-      double area1, area2, area12 ;
-      double error1, error2, error12 ;
+      double area1 = 0, area2 = 0, area12 = 0 ;
+      double error1 = 0, error2 = 0, error12 = 0 ;
       double defab1, defab2 ;
-      double resabs ;
+      double resabs = 0 ;
 
       printf("i=%d, limit=%d\n",i,limit) ;
 
       q (f, a1, b1, &area1, &error1, &resabs, &defab1) ;
       q (f, a2, b2, &area2, &error2, &resabs, &defab2) ;
+
       
       area12 = area1 + area2;
       error12 = error1 + error2;
+
+      printf("a1 = %g b1 = %g a2 = %g b2 = %g\n", a1,b1,a2,b2) ;
+      printf("area1 = %g area = %g\n", area1, area2) ;
+      printf("error1 = %g error2 = %g\n", error1, error2) ;
+      printf("error12 = %g maxerr_value = %g\n", error12, maxerr_value) ;
+      printf("delta = %g\n", error12 - maxerr_value) ;
+      printf("errsum before = %g\n", errsum) ;
       errsum += (error12 - maxerr_value) ;
+      printf("errsum after = %g\n", errsum) ;
       area += area12 - rlist[maxerr_index] ;
       
       if (defab1 != error1 && defab2 != error2) 
@@ -248,9 +259,21 @@ gsl_integration_qage_impl (double (*f)(double x),
 	 largest error estimate (to be bisected next) */
       
       qpsrt(limit,i,&maxerr_index,&maxerr_value,elist,iord,&nrmax) ;
-      
+
+#ifdef JUNK
+      printf("result = %.18g, abserr = %.18g, nqeval = %d\n", 
+	     area, errsum, i);
       printf("maxerr_value=%g\n", maxerr_value) ;
       printf("errsum=%g tolerance=%g\n", errsum, tolerance) ;
+
+
+      for (j = 0; j<=i; j++) {
+	k = iord[j] ;
+	printf("%d: [%g,%g] = %g +/- %g\n",j,alist[k],blist[k],rlist[k],elist[k]) ;
+      }
+      printf("\n") ;
+#endif
+
       i++ ;
     } while (i < limit && !error_type && errsum > tolerance)  ;
 
@@ -266,7 +289,10 @@ gsl_integration_qage_impl (double (*f)(double x),
   }
   
   *abserr = errsum ;
-  
+  *nqeval = i ;
+
+  printf("result = %.18g, abserr = %.18g, nqeval = %d\n", *result, *abserr, *nqeval);
+
   if (errsum <= tolerance) 
     {
       return GSL_SUCCESS ;

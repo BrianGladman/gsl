@@ -43,7 +43,7 @@ int main (void)
 
   gsl_integration_qng(f,0.0,1.0,0.0,1e-5,&result,&abserr,&neval) ;
 
-  printf("qnd: result = %.18g, abserr = %.18g, neval = %d\n",
+  printf("qng: result = %.18g, abserr = %.18g, neval = %d\n",
 	 result, abserr, neval) ;
 
   {
@@ -51,7 +51,7 @@ int main (void)
     size_t iord[1000] ;
     size_t last;
     result = 0 ; abserr=0; neval=0  ;
-    gsl_integration_qage(f, 0.0, 1.0, 0.0, 1e-10, 1, 1000,
+    gsl_integration_qage(f, 0.0, 1.0, 0.0, 1e-3, 1, 1000,
 			 alist, blist, rlist, elist, iord, &last,
 			 &result, &abserr, &neval) ;
     printf("qage: result = %.18g, abserr = %.18g, neval = %d\n",
@@ -61,7 +61,9 @@ int main (void)
 } 
 
 double f (double x) {
-  return sqrt(1.1+sin(10*x)) ;
+  return fabs(sin(1/x)) ;
 }
+
+
 
 
