@@ -4,6 +4,9 @@ file using libtool.
 ** All header files are now in installed as pkginclude headers in a
 gsl/ subdirectory.
 
+** The header files now use extern "C" to allow them to be included in
+C++ programs
+
 ** For consistency the following functions have been renamed,
 
     gsl_vector_copy (dest, src) is now  gsl_vector_memcpy (dest, src)
@@ -13,11 +16,13 @@ gsl/ subdirectory.
 
 ** A new sort directory has been added for sorting objects and vectors.
 
-** The names of the statistics functions have been reorganized for
-improved clarity. Consult manual for details.
+** A permutation directory has been added for manipulating permutations
 
 ** Statistics functions now support a stride argument for generality, and
 also support weighted samples
+
+** The names of the statistics functions have been reorganized for
+improved clarity. Consult manual for details.
 
 * Was new in gsl-0.5:
 

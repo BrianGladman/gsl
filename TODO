@@ -1,8 +1,10 @@
 TODO  -- see also individual TODO files in each directory
 
-* Extend histogram routines as described in recent discussion
+* Change from gsl-ref.texi to gsl.texi since it is the main file?
 
-* Add notes about gsl-config to documentation, usage.texi
+* Remove error stream stuff?? It is hardly used.
+
+* Extend histogram routines as described in recent discussion
 
 * Check that there are no conflicts when linking with Lapack. CBLAS, ATLAS
 
@@ -15,9 +17,6 @@ checked for.
 * Add a vector layer to statistics and ffts, sometime in the future.
 
 * Switch to library interface versioning for libtool (eventually).
-
-* Add support for C++ headers (Use __BEGIN_DECLS __END_DECLS as
-in the Libtool Manual).
 
 * Eliminate use of volatile where it has been used to force rounding
 (integration/). It is better to write the code to avoid dependence on
@@ -51,7 +50,8 @@ Linux.
 & variables prefixed with gsl_ or GSL_. Useful command for checking this: nm -A -g -P */*.a  | perl -a -n -e 'print if $F[1] !~ /gsl_/ && $F[2] ne "U"'
 
 * Make sure config.h is used consistently. This is especially relevant
-for HAVE_INLINE use in installed headers.
+for HAVE_INLINE use in installed headers.  (in particular, grep
+config.h gsl/*.h shouldn't match anything).
 
 * Make the return value EINVAL vs EDOM consistent for invalid
 parameters. EDOM means a domain error (i.e. float or mathematically
