@@ -33,7 +33,7 @@ intermediate values that might overflow.
 * Maximum and Minimum values::  
 * Median and Percentiles::      
 * Statistical tests::           
-* Example programs::            
+* Example statistical programs::            
 * Statistics References and Further Reading::  
 @end menu
 
@@ -483,8 +483,8 @@ FIXME, do more work on the statistical tests
 @c The t-test statistic measures the difference between the means of two
 @c datasets.
 
-@node Example programs
-@section Example programs
+@node Example statistical programs
+@section Example statistical programs
 Here is a basic example of how to use the statistical functions:
 
 @example
