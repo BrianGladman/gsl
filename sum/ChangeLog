@@ -1,3 +1,8 @@
+Thu Nov 19 13:10:19 1998  Brian Gough  <bjg@vvv.lanl.gov>
+
+	* added an n_used parameter to all routines which gives the number
+ 	of terms actually used
+
 Tue Nov 17 12:31:03 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
 	* test.c: added #include <config.h>

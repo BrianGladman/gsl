@@ -13,13 +13,15 @@ gsl_sum_levin_u_trunc_accel (const double *array,
 			     double *q_num,
 			     double *q_den,
 			     double *sum_accel,
+			     size_t * n_used,
 			     double *sum_plain,
 			     double *precision)
 {
   return gsl_sum_levin_u_trunc_accel_minmax (array, array_size,
 					     0, array_size - 1,
 					     q_num, q_den,
-					   sum_accel, sum_plain, precision);
+					     sum_accel, n_used,
+					     sum_plain, precision);
 }
 
 
@@ -31,6 +33,7 @@ gsl_sum_levin_u_trunc_accel_minmax (const double *array,
 				    double *q_num,
 				    double *q_den,
 				    double *sum_accel,
+				    size_t * n_used,
 				    double *sum_plain,
 				    double *precision)
 {
@@ -38,12 +41,14 @@ gsl_sum_levin_u_trunc_accel_minmax (const double *array,
     {
       *sum_accel = 0.0;
       *sum_plain = 0.0;
+      *n_used    = 0;
       return GSL_SUCCESS;
     }
   else if (array_size == 1)
     {
       *sum_accel = array[0];
       *sum_plain = array[0];
+      *n_used    = 1;
       return GSL_SUCCESS;
     }
   else
@@ -118,6 +123,7 @@ gsl_sum_levin_u_trunc_accel_minmax (const double *array,
 
 	  *sum_accel = result_least_trunc;
 	  *precision = fabs (least_trunc / *sum_accel);
+	  *n_used = n ;
 	  return GSL_SUCCESS;
 	}
       else
@@ -127,6 +133,7 @@ gsl_sum_levin_u_trunc_accel_minmax (const double *array,
 
 	  *sum_accel = result_n;
 	  *precision = fabs (trunc_n / result_n);
+	  *n_used = n ;
 	  return GSL_SUCCESS;
 	}
     }

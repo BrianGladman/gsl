@@ -23,6 +23,7 @@ main (void)
   double prec;
   double x;
   double sd_actual, sd_est;
+  size_t n_used;
   int n;
   int i;
 
@@ -46,11 +47,11 @@ main (void)
       }
 
     gsl_sum_levin_u_trunc_accel (t, N, qnum, qden,
-				 &sum_accel, &sum_plain, &prec);
+				 &sum_accel, &n_used, &sum_plain, &prec);
     gsl_test_rel (sum_accel, zeta_2, 1e-10, "u-transform for zeta(2)");
 
     gsl_sum_levin_u_accel (t, N, qnum, qden, dqnum, dqden, dsum,
-			   &sum_accel, &sum_plain, &prec);
+			   &sum_accel, &n_used, &sum_plain, &prec);
     gsl_test_rel (sum_accel, zeta_2, 1e-10, "roundoff for zeta(2)");
 
     sd_est = -log10 (prec);
@@ -69,11 +70,11 @@ main (void)
       }
 
     gsl_sum_levin_u_trunc_accel (t, N, qnum, qden,
-				 &sum_accel, &sum_plain, &prec);
+				 &sum_accel, &n_used, &sum_plain, &prec);
     gsl_test_rel (sum_accel, exp (x), 1e-12, "u-transform for exp(10)");
 
     gsl_sum_levin_u_accel (t, N, qnum, qden, dqnum, dqden, dsum,
-			   &sum_accel, &sum_plain, &prec);
+			   &sum_accel, &n_used, &sum_plain, &prec);
     gsl_test_rel (sum_accel, exp (x), 1e-12, "roundoff for exp(10)");
 
     sd_est = -log10 (prec);
@@ -92,11 +93,11 @@ main (void)
       }
 
     gsl_sum_levin_u_trunc_accel (t, N, qnum, qden,
-				 &sum_accel, &sum_plain, &prec);
+				 &sum_accel, &n_used, &sum_plain, &prec);
     gsl_test_rel (sum_accel, exp (x), 1e-6, "u-transform for exp(-10)");
 
     gsl_sum_levin_u_accel (t, N, qnum, qden, dqnum, dqden, dsum,
-			   &sum_accel, &sum_plain, &prec);
+			   &sum_accel, &n_used, &sum_plain, &prec);
     gsl_test_rel (sum_accel, exp (x), 1e-6, "roundoff for exp(-10)");
 
     sd_est = -log10 (prec);
@@ -116,11 +117,11 @@ main (void)
       }
 
     gsl_sum_levin_u_trunc_accel (t, N, qnum, qden,
-				 &sum_accel, &sum_plain, &prec);
+				 &sum_accel, &n_used, &sum_plain, &prec);
     gsl_test_rel (sum_accel, M_LN2, 1e-12, "u-transform for -log(1/2)");
 
     gsl_sum_levin_u_accel (t, N, qnum, qden, dqnum, dqden, dsum,
-			   &sum_accel, &sum_plain, &prec);
+			   &sum_accel, &n_used, &sum_plain, &prec);
     gsl_test_rel (sum_accel, M_LN2, 1e-12, "roundoff for -log(1/2)");
 
     sd_est = -log10 (prec);
@@ -139,11 +140,11 @@ main (void)
       }
 
     gsl_sum_levin_u_trunc_accel (t, N, qnum, qden,
-				 &sum_accel, &sum_plain, &prec);
+				 &sum_accel, &n_used, &sum_plain, &prec);
     gsl_test_rel (sum_accel, -M_LN2, 1e-12, "u-transform for -log(2)");
 
     gsl_sum_levin_u_accel (t, N, qnum, qden, dqnum, dqden, dsum,
-			   &sum_accel, &sum_plain, &prec);
+			   &sum_accel, &n_used, &sum_plain, &prec);
     gsl_test_rel (sum_accel, -M_LN2, 1e-12, "roundoff for -log(2)");
 
     sd_est = -log10 (prec);
@@ -165,12 +166,12 @@ main (void)
       }
 
     gsl_sum_levin_u_trunc_accel (t, N, qnum, qden,
-				 &sum_accel, &sum_plain, &prec);
+				 &sum_accel, &n_used, &sum_plain, &prec);
     gsl_test_rel (sum_accel, result, 1e-10,
 		  "u-transform of asymptotic series");
 
     gsl_sum_levin_u_accel (t, N, qnum, qden, dqnum, dqden, dsum,
-			   &sum_accel, &sum_plain, &prec);
+			   &sum_accel, &n_used, &sum_plain, &prec);
     gsl_test_rel (sum_accel, result, 1e-10, "roundoff for asymptotic series");
 
     sd_est = -log10 (prec);

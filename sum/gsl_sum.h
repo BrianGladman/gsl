@@ -34,7 +34,9 @@ int gsl_sum_levin_u_accel (const double * array,
 
 int gsl_sum_levin_u_trunc_accel (const double * array, size_t array_size,
 				 double * q_num, double * q_den,
-				 double * sum_accel, double * sum_plain,
+				 double * sum_accel, 
+				 size_t * n_used,
+				 double * sum_plain,
 				 double * precision);
 
 /* Basic Levin-u acceleration method with constraints on the terms
@@ -77,6 +79,7 @@ int gsl_sum_levin_u_trunc_accel_minmax (const double * array,
 					double * q_num,
 					double * q_den,
 					double * sum_accel,
+					size_t * n_used,
 					double * sum_plain,
 					double * precision);
 
