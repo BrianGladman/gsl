@@ -1,6 +1,6 @@
 Name: gsl
 Summary: GNU Scientific Library (GSL)
-Packager: rosalia@lanl.gov
+Packager: jungman@lanl.gov, rosalia@lanl.gov
 %define version @VERSION@
 %define release 0
 Version: %{version}
