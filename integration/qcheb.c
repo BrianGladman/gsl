@@ -50,9 +50,9 @@ gsl_integration_qcheb (gsl_function * f, double a, double b, double *cheb12, dou
   const double center = 0.5 * (b + a);
   const double half_length =  0.5 * (b - a);
   
-  fval[0] = 0.5 * GSL_FN_EVAL (f, center + half_length);
+  fval[0] = 0.5 * GSL_FN_EVAL (f, b);
   fval[12] = GSL_FN_EVAL (f, center);
-  fval[24] = 0.5 * GSL_FN_EVAL (f, center - half_length);
+  fval[24] = 0.5 * GSL_FN_EVAL (f, a);
 
   for (i = 1; i < 12; i++)
     {

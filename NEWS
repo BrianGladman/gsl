@@ -1,5 +1,11 @@
 * What is new in gsl-1.2:
 
+** Removed unnecessary endpoint subtraction in chebyshev-based
+QUADPACK routines to avoid possible loss of precision.
+
+** The default error handler now outputs a explanatory message before
+aborting.
+
 ** Fixed bug in gsl_interp_cspline_periodic which caused a
 discontinuity in the derivative near the boundary.
 
