@@ -15,28 +15,27 @@ int main(int argc, char * argv[])
   double xmax =   10.0;
   double dx   = 0.1;
   double lambda = 0.5;
-  double y;
+  double y, y1, y2;
   double y_array[4096];
   int i;
 
   double nu = 100.;
   int n = 2;
 
-plot_it();
-exit(0);
-
 /*
 printf("%g %f %lg\n", (double)M_PI, M_PI, (double)M_PI);
 exit(0);
 */
 
-  nu = 10.;
-  for(x=8.33; x < 30.; x += .1) {
-    gsl_sf_bessel_Ynu_asymp_Olver_impl(nu,x,&y);
-    printf("%20.16g  %20.16g    %20.16g\n",
+  nu = 5.;
+  for(x=0.5*nu; x < 2.*nu; x += .01*nu) {
+    gsl_sf_bessel_Jnu_asymp_Olver_impl(nu,x,&y1);
+    gsl_sf_bessel_Ynu_asymp_Olver_impl(nu,x,&y2);
+    printf("%20.16g  %20.16g    %20.16g  %20.16g\n",
            nu,
 	   x,
-	   y);
+	   y1, y2
+	   );
   }
   exit(0);
 

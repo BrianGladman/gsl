@@ -95,48 +95,6 @@ static struct gsl_sf_ChebSeries A4_gt1_cs = {
   (double *)0
 };
 
-/* Chebyshev fit for f(x) = B_1(2/(x+1))
-static double B1_gt1_data[30] = {
-  -0.00125638387443615968469140078230,
-  -0.00079518496830875387886042742516,
-  -0.000117550533792019687221797909112,
-   0.000053177832099392027220254310301,
-  -2.69942462974709280278958305596e-6,
-  -3.8442655040391955801226902901e-6,
-   1.93735278352654820441613088112e-6,
-  -5.7567177444348444716886594860e-7,
-   1.09655991539838265398335388742e-7,
-  -3.9493463262644952802342029354e-10,
-  -1.29925137787315793022146720225e-8,
-   9.0685864569780974583429213845e-9,
-  -4.9217596347029779922435454110e-9,
-   2.52379362404573993294129066226e-9,
-  -1.30781535782041343419561644550e-9,
-   7.0384726336811679054311137949e-10,
-  -3.9656903287869259099757487561e-10,
-   2.33557792366149146495284096555e-10,
-  -1.43039836294329736948171530669e-10,
-   9.0574939745376874544020136846e-11,
-  -5.8990591168315025785999930659e-11,
-   3.9336908506031143837035749223e-11,
-  -2.67442765030341217028365302040e-11,
-   1.84575544800677159001265401512e-11,
-  -1.28626375497176648076677290858e-11,
-   8.9834445611871474998305912925e-12,
-  -6.2114446574034950328703160154e-12,
-   4.1547451016435261417400468910e-12,
-  -2.55075855193449883493817495022e-12,
-   1.21351807208778202835648785394e-12
-};
-static struct gsl_sf_ChebSeries B1_gt1_cs = {
-  B1_gt1_data,
-  -1, 1,
-  29,
-  (double *)0,
-  (double *)0
-};
-*/
-
 /* Chebyshev fit for f(x) = z(x)^3 B_2(z(x)), z(x) = 12/(5(x+1)) */
 static double B2_gt1_data[40] = {
   0.00118587147272683864479328868589,
@@ -750,6 +708,14 @@ static double olver_Bsum(double nu, double z, double abs_zeta)
 }
 
 
+/* uniform asymptotic, nu -> Inf, [Abramowitz+Stegun, 9.3.35]
+ *
+ * error:
+ *    nu =  2: uniformly good to >  6D
+ *    nu =  5: uniformly good to >  8D
+ *    nu = 10: uniformly good to > 10D
+ *    nu = 20: uniformly good to > 13D
+ */
 int gsl_sf_bessel_Jnu_asymp_Olver_impl(double nu, double x, double * result)
 {
   if(x <= 0. || nu <= 0.) {
@@ -765,10 +731,16 @@ int gsl_sf_bessel_Jnu_asymp_Olver_impl(double nu, double x, double * result)
     double crnu = pow(nu, 1./3.);
     double rt   = sqrt(fabs(1.-z)*(1+z));
     
-    if(fabs(1-z) < GSL_SQRT_MACH_EPS) {
+    if(fabs(1-z) < GSL_ROOT4_MACH_EPS) {
       /* z near 1 */
-      pre  = CubeRoot2_*(0.5 + 2./5.*(1-z) + 51./175.*(1-z)*(1-z));
-      zeta = CubeRoot2_*(1-z)*(1. + 3./10.*(1-z));
+      double a = 1.-z;
+      pre  =  1.25992104989487316476721060728
+             +0.37797631496846194943016318218  * a
+	     +0.230385563409348235843147082474 * a*a
+	     +0.165909603649648694839821892031 * a*a*a
+	     ;
+      zeta = a * pre;
+      pre  = sqrt(sqrt(4.*pre/(1+z)));
       abs_zeta = fabs(zeta);
     }
     else if(z < 1.) {
@@ -795,6 +767,14 @@ int gsl_sf_bessel_Jnu_asymp_Olver_impl(double nu, double x, double * result)
   }
 }
 
+/* uniform asymptotic, nu -> Inf,  [Abramowitz+Stegun, 9.3.36]
+ *
+ * error:
+ *    nu =  2: uniformly good to >  6D
+ *    nu =  5: uniformly good to >  8D
+ *    nu = 10: uniformly good to > 10D
+ *    nu = 20: uniformly good to > 13D
+ */
 int gsl_sf_bessel_Ynu_asymp_Olver_impl(double nu, double x, double * result)
 {
   if(x <= 0. || nu <= 0.) {
@@ -810,10 +790,16 @@ int gsl_sf_bessel_Ynu_asymp_Olver_impl(double nu, double x, double * result)
     double crnu = pow(nu, 1./3.);
     double rt   = sqrt(fabs(1.-z)*(1+z));
     
-    if(fabs(1-z) < GSL_SQRT_MACH_EPS) {
+    if(fabs(1-z) < GSL_ROOT4_MACH_EPS) {
       /* z near 1 */
-      pre  = CubeRoot2_*(0.5 + 2./5.*(1-z) + 51./175.*(1-z)*(1-z));
-      zeta = CubeRoot2_*(1-z)*(1. + 3./10.*(1-z));
+      double a = 1.-z;
+      pre  =  1.25992104989487316476721060728
+             +0.37797631496846194943016318218  * a
+	     +0.230385563409348235843147082474 * a*a
+	     +0.165909603649648694839821892031 * a*a*a
+	     ;
+      zeta = a * pre;
+      pre  = sqrt(sqrt(4.*pre/(1+z)));
       abs_zeta = fabs(zeta);
     }
     else if(z < 1.) {
