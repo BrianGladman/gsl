@@ -43,7 +43,7 @@ typedef struct
     double delta;
     gsl_matrix *q;
     gsl_matrix *r;
-    gsl_vector *rdiag;
+    gsl_vector *tau;
     gsl_vector *diag;
     gsl_vector *qtf;
     gsl_vector *newton;
@@ -71,7 +71,7 @@ hybridj_alloc (void *vstate, size_t n)
 {
   hybridj_state_t *state = (hybridj_state_t *) vstate;
   gsl_matrix *q, *r;
-  gsl_vector *rdiag, *diag, *qtf, *newton, *gradient, *x_trial, *f_trial,
+  gsl_vector *tau, *diag, *qtf, *newton, *gradient, *x_trial, *f_trial,
    *df, *qtdf, *rdx, *w, *v;
 
   q = gsl_matrix_calloc (n, n);
@@ -94,17 +94,17 @@ hybridj_alloc (void *vstate, size_t n)
 
   state->r = r;
 
-  rdiag = gsl_vector_calloc (n);
+  tau = gsl_vector_calloc (n);
 
-  if (rdiag == 0)
+  if (tau == 0)
     {
       gsl_matrix_free (q);
       gsl_matrix_free (r);
 
-      GSL_ERROR_VAL ("failed to allocate space for rdiag", GSL_ENOMEM, 0);
+      GSL_ERROR_VAL ("failed to allocate space for tau", GSL_ENOMEM, 0);
     }
 
-  state->rdiag = rdiag;
+  state->tau = tau;
 
   diag = gsl_vector_calloc (n);
 
@@ -112,7 +112,7 @@ hybridj_alloc (void *vstate, size_t n)
     {
       gsl_matrix_free (q);
       gsl_matrix_free (r);
-      gsl_vector_free (rdiag);
+      gsl_vector_free (tau);
 
       GSL_ERROR_VAL ("failed to allocate space for diag", GSL_ENOMEM, 0);
     }
@@ -125,7 +125,7 @@ hybridj_alloc (void *vstate, size_t n)
     {
       gsl_matrix_free (q);
       gsl_matrix_free (r);
-      gsl_vector_free (rdiag);
+      gsl_vector_free (tau);
       gsl_vector_free (diag);
 
       GSL_ERROR_VAL ("failed to allocate space for qtf", GSL_ENOMEM, 0);
@@ -139,7 +139,7 @@ hybridj_alloc (void *vstate, size_t n)
     {
       gsl_matrix_free (q);
       gsl_matrix_free (r);
-      gsl_vector_free (rdiag);
+      gsl_vector_free (tau);
       gsl_vector_free (diag);
       gsl_vector_free (qtf);
 
@@ -154,7 +154,7 @@ hybridj_alloc (void *vstate, size_t n)
     {
       gsl_matrix_free (q);
       gsl_matrix_free (r);
-      gsl_vector_free (rdiag);
+      gsl_vector_free (tau);
       gsl_vector_free (diag);
       gsl_vector_free (qtf);
       gsl_vector_free (newton);
@@ -170,7 +170,7 @@ hybridj_alloc (void *vstate, size_t n)
     {
       gsl_matrix_free (q);
       gsl_matrix_free (r);
-      gsl_vector_free (rdiag);
+      gsl_vector_free (tau);
       gsl_vector_free (diag);
       gsl_vector_free (qtf);
       gsl_vector_free (newton);
@@ -187,7 +187,7 @@ hybridj_alloc (void *vstate, size_t n)
     {
       gsl_matrix_free (q);
       gsl_matrix_free (r);
-      gsl_vector_free (rdiag);
+      gsl_vector_free (tau);
       gsl_vector_free (diag);
       gsl_vector_free (qtf);
       gsl_vector_free (newton);
@@ -205,7 +205,7 @@ hybridj_alloc (void *vstate, size_t n)
     {
       gsl_matrix_free (q);
       gsl_matrix_free (r);
-      gsl_vector_free (rdiag);
+      gsl_vector_free (tau);
       gsl_vector_free (diag);
       gsl_vector_free (qtf);
       gsl_vector_free (newton);
@@ -224,7 +224,7 @@ hybridj_alloc (void *vstate, size_t n)
     {
       gsl_matrix_free (q);
       gsl_matrix_free (r);
-      gsl_vector_free (rdiag);
+      gsl_vector_free (tau);
       gsl_vector_free (diag);
       gsl_vector_free (qtf);
       gsl_vector_free (newton);
@@ -245,7 +245,7 @@ hybridj_alloc (void *vstate, size_t n)
     {
       gsl_matrix_free (q);
       gsl_matrix_free (r);
-      gsl_vector_free (rdiag);
+      gsl_vector_free (tau);
       gsl_vector_free (diag);
       gsl_vector_free (qtf);
       gsl_vector_free (newton);
@@ -266,7 +266,7 @@ hybridj_alloc (void *vstate, size_t n)
     {
       gsl_matrix_free (q);
       gsl_matrix_free (r);
-      gsl_vector_free (rdiag);
+      gsl_vector_free (tau);
       gsl_vector_free (diag);
       gsl_vector_free (qtf);
       gsl_vector_free (newton);
@@ -288,7 +288,7 @@ hybridj_alloc (void *vstate, size_t n)
     {
       gsl_matrix_free (q);
       gsl_matrix_free (r);
-      gsl_vector_free (rdiag);
+      gsl_vector_free (tau);
       gsl_vector_free (diag);
       gsl_vector_free (qtf);
       gsl_vector_free (newton);
@@ -329,7 +329,7 @@ set (void *vstate, gsl_multiroot_function_fdf * fdf, gsl_vector * x, gsl_vector 
 
   gsl_matrix *q = state->q;
   gsl_matrix *r = state->r;
-  gsl_vector *rdiag = state->rdiag;
+  gsl_vector *tau = state->tau;
   gsl_vector *diag = state->diag;
 
   GSL_MULTIROOT_FN_EVAL_F_DF (fdf, x, f, J);
@@ -356,8 +356,8 @@ set (void *vstate, gsl_multiroot_function_fdf * fdf, gsl_vector * x, gsl_vector 
 
   /* Factorize J into QR decomposition */
 
-  gsl_linalg_QR_decomp (J, rdiag);
-  gsl_linalg_QR_unpack (J, rdiag, q, r);
+  gsl_linalg_QR_decomp (J, tau);
+  gsl_linalg_QR_unpack (J, tau, q, r);
 
   return GSL_SUCCESS;
 }
@@ -385,7 +385,7 @@ iterate (void *vstate, gsl_multiroot_function_fdf * fdf, gsl_vector * x, gsl_vec
 
   gsl_matrix *q = state->q;
   gsl_matrix *r = state->r;
-  gsl_vector *rdiag = state->rdiag;
+  gsl_vector *tau = state->tau;
   gsl_vector *diag = state->diag;
   gsl_vector *qtf = state->qtf;
   gsl_vector *x_trial = state->x_trial;
@@ -516,8 +516,8 @@ iterate (void *vstate, gsl_multiroot_function_fdf * fdf, gsl_vector * x, gsl_vec
 
       /* Factorize J into QR decomposition */
 
-      gsl_linalg_QR_decomp (J, rdiag);
-      gsl_linalg_QR_unpack (J, rdiag, q, r);
+      gsl_linalg_QR_decomp (J, tau);
+      gsl_linalg_QR_unpack (J, tau, q, r);
       return GSL_SUCCESS;
     }
 
@@ -565,7 +565,7 @@ hybridj_free (void *vstate)
   gsl_vector_free (state->newton);
   gsl_vector_free (state->qtf);
   gsl_vector_free (state->diag);
-  gsl_vector_free (state->rdiag);
+  gsl_vector_free (state->tau);
   gsl_matrix_free (state->r);
   gsl_matrix_free (state->q);
 }

@@ -1,3 +1,9 @@
+Sat Aug 26 16:12:19 2000  Brian Gough  <bjg@network-theory.co.uk>
+
+	* hybridj.c hybrid.c: renamed rdiag to tau, since it plays that
+ 	role here and is not the diagonal of R (see qr.c documentation for
+ 	more details)
+
 Wed Feb 23 15:36:39 2000  Brian Gough  <bjg@network-theory.co.uk>
 
 	* changed gsl_vector_copy to gsl_vector_cpy 
