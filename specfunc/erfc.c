@@ -412,6 +412,7 @@ int gsl_sf_hazard_e(double x, gsl_sf_result * result)
     const double arg = lnc - 0.5*x*x - result_ln_erfc.val;
     const int stat_e = gsl_sf_exp_e(arg, result);
     result->err += 3.0 * (1.0 + fabs(x)) * GSL_DBL_EPSILON * fabs(result->val);
+    result->err += fabs(result_ln_erfc.err * result->val);
     return GSL_ERROR_SELECT_2(stat_l, stat_e);
   }
   else

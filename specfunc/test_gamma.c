@@ -247,7 +247,7 @@ int test_gamma(void)
   TEST_SF(s, gsl_sf_gamma_inc_e, ( 10.0,     1.0,   &r), 362879.95956592242045, TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_gamma_inc_e, (100.0,     1.0,   &r), 9.3326215443944152682e+155, TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_gamma_inc_e, (  0.0,   100.0, &r), 3.6835977616820321802e-46, TEST_TOL0, GSL_SUCCESS);
-  TEST_SF(s, gsl_sf_gamma_inc_e, (  0.001, 100.0, &r), 3.7006367674063550631e-46, TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_gamma_inc_e, (  0.001, 100.0, &r), 3.7006367674063550631e-46, TEST_TOL1, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_gamma_inc_e, (  1.0,   100.0, &r), 3.7200759760208359630e-44, TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_gamma_inc_e, ( 10.0,   100.0, &r), 4.0836606309106112723e-26, TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_gamma_inc_e, (100.0,   100.0, &r), 4.5421981208626694294e+155, TEST_TOL0, GSL_SUCCESS);

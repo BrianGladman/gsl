@@ -91,7 +91,7 @@ gamma_inc_P_series(const double a, const double x, gsl_sf_result * result)
 
   result->val  = D.val * sum;
   result->err  = D.err * fabs(sum);
-  result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
+  result->err += (1.0 + n) * GSL_DBL_EPSILON * fabs(result->val);
 
   if(n == nmax)
     GSL_ERROR ("error", GSL_EMAXITER);
