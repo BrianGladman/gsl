@@ -663,7 +663,7 @@ for integer data types.
 @comment datasets.
 
 @node Example statistical programs
-@section Example statistical programs
+@section Examples
 Here is a basic example of how to use the statistical functions:
 
 @example

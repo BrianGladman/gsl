@@ -202,7 +202,7 @@ The parameters of the Boltzmann distribution and cooling schedule
 
 
 @node Examples with Simulated Annealing,  , Simulated Annealing functions, Simulated Annealing
-@section Examples with Simulated Annealing
+@section Examples
 
 The simulated Annealing package is clumsy, and it has to be because it
 is written in C, for C callers, and tries to be polymorphic at the same

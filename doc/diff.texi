@@ -10,7 +10,7 @@ These functions are declared in the header file @file{gsl_diff.h}
 
 @menu
 * Numerical Differentiation functions::  
-* Numerical Differentiation Example::  
+* Numerical Differentiation Examples::  
 * Numerical Differentiation References::  
 @end menu
 
@@ -46,8 +46,8 @@ function should be used if @math{f(x)} has a singularity or is undefined
 for values greater than @var{x}.
 @end deftypefun
 
-@node Numerical Differentiation Example
-@section Example
+@node Numerical Differentiation Examples
+@section Examples
 
 The following code estimates the derivative of the function 
 @c{$f(x) = x^{3/2}$}

@@ -108,7 +108,7 @@ truncation error, smoothing out any fluctuations.
 
 
 @node Example of accelerating a series
-@section Example of accelerating a series
+@section Examples
 
 The following code calculates an estimate of @math{\zeta(2) = \pi^2 / 6}
 using the series,
