@@ -32,7 +32,7 @@ static double adeb1_data[19] = {
    0.7e-19,
   -0.1e-19
 };
-static struct gsl_sf_ChebSeries adeb1_cs = {
+static struct gsl_sf_cheb_series adeb1_cs = {
   adeb1_data,
   18,
   -1.0, 1.0,
@@ -61,7 +61,7 @@ static double adeb2_data[19] = {
    0.13e-18,
   -0.1e-19
 };
-static struct gsl_sf_ChebSeries adeb2_cs = {
+static struct gsl_sf_cheb_series adeb2_cs = {
   adeb2_data,
   18,
   -1.0, 1.0,
@@ -90,7 +90,7 @@ static double adeb3_data[19] = {
    0.20e-18,
   -0.2e-19
 };
-static struct gsl_sf_ChebSeries adeb3_cs = {
+static struct gsl_sf_cheb_series adeb3_cs = {
   adeb3_data,
   18,
   -1.0, 1.0,
@@ -119,7 +119,7 @@ static double adeb4_data[19] = {
    0.25e-18,
   -0.2e-19
 };
-static struct gsl_sf_ChebSeries adeb4_cs = {
+static struct gsl_sf_cheb_series adeb4_cs = {
   adeb4_data,
   18,
   -1.0, 1.0,

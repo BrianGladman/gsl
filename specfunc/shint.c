@@ -24,7 +24,7 @@ static double shi_data[7] = {
    0.0000000000000002451817,
    0.0000000000000000000467
 };
-static struct gsl_sf_ChebSeries shi_cs = {
+static struct gsl_sf_cheb_series shi_cs = {
   shi_data,
   6,
   -1, 1,

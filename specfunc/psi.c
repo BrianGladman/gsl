@@ -69,14 +69,14 @@ static double apsics_data[16] = {
    .0000000000000002,
   -.0000000000000000 
 };    
-static struct gsl_sf_ChebSeries psi_cs = {
+static struct gsl_sf_cheb_series psi_cs = {
   psics_data,
   22,
   -1, 1,
   (double *)0,
   (double *)0
 };
-static struct gsl_sf_ChebSeries apsi_cs = {
+static struct gsl_sf_cheb_series apsi_cs = {
   apsics_data,
   15,
   -1, 1,

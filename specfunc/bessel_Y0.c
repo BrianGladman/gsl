@@ -38,7 +38,7 @@ static double by0_data[13] = {
   -.000000000000000011
 };
 
-static struct gsl_sf_ChebSeries by0_cs = {
+static struct gsl_sf_cheb_series by0_cs = {
   by0_data,
   12,
   -1, 1,

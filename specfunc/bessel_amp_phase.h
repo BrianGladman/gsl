@@ -6,11 +6,11 @@
 
 #include "gsl_sf_chebyshev.h"
 
-extern const struct gsl_sf_ChebSeries _bessel_amp_phase_bm0_cs;
-extern const struct gsl_sf_ChebSeries _bessel_amp_phase_bth0_cs;
+extern const struct gsl_sf_cheb_series _bessel_amp_phase_bm0_cs;
+extern const struct gsl_sf_cheb_series _bessel_amp_phase_bth0_cs;
 
-extern const struct gsl_sf_ChebSeries _bessel_amp_phase_bm1_cs;
-extern const struct gsl_sf_ChebSeries _bessel_amp_phase_bth1_cs;
+extern const struct gsl_sf_cheb_series _bessel_amp_phase_bm1_cs;
+extern const struct gsl_sf_cheb_series _bessel_amp_phase_bth1_cs;
 
 
 /* large argument expansions [Abramowitz+Stegun, 9.2.28-29]; x > 0 */

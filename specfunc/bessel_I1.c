@@ -47,7 +47,7 @@ static double bi1_data[11] = {
    .000000000000000024
 };
 
-static struct gsl_sf_ChebSeries bi1_cs = {
+static struct gsl_sf_cheb_series bi1_cs = {
   bi1_data,
   10,
   -1, 1,
@@ -79,7 +79,7 @@ static double ai1_data[21] = {
   -.00000000000000006
 };
 
-static struct gsl_sf_ChebSeries ai1_cs = {
+static struct gsl_sf_cheb_series ai1_cs = {
   ai1_data,
   20,
   -1, 1,
@@ -112,7 +112,7 @@ static double ai12_data[22] = {
   -.00000000000000003
 };
 
-struct gsl_sf_ChebSeries ai12_cs = {
+struct gsl_sf_cheb_series ai12_cs = {
   ai12_data,
   21,
   -1, 1,

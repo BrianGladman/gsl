@@ -38,7 +38,7 @@ static double aexp3_data[25] = {
  -0.24e-18,
   0.2e-19
 };
-static struct gsl_sf_ChebSeries aexp3_cs = {
+static struct gsl_sf_cheb_series aexp3_cs = {
   aexp3_data,
   24,
   -1.0, 1.0,
@@ -73,7 +73,7 @@ static double aexp3a_data[25] = {
   -0.3e-19,
    0.1e-19
 };
-static struct gsl_sf_ChebSeries aexp3a_cs = {
+static struct gsl_sf_cheb_series aexp3a_cs = {
   aexp3a_data,
   24,
   -1.0, 1.0,

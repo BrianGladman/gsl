@@ -39,7 +39,7 @@ static double bj1_data[12] = {
    .000000000000005840,
   -.000000000000000044,
 };
-static struct gsl_sf_ChebSeries bj1_cs = {
+static struct gsl_sf_cheb_series bj1_cs = {
   bj1_data,
   11,
   -1, 1,

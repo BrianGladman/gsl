@@ -49,7 +49,7 @@ static double bi0_data[12] = {
    .00000000000000053339,
    .00000000000000000245
 };
-static struct gsl_sf_ChebSeries bi0_cs = {
+static struct gsl_sf_cheb_series bi0_cs = {
   bi0_data,
   11,
   -1, 1,
@@ -80,7 +80,7 @@ static double ai0_data[21] = {
   -.00000000000000071,
    .00000000000000007
 };
-static struct gsl_sf_ChebSeries ai0_cs = {
+static struct gsl_sf_cheb_series ai0_cs = {
   ai0_data,
   20,
   -1, 1,
@@ -112,7 +112,7 @@ static double ai02_data[22] = {
   -.00000000000000027,
    .00000000000000003
 };
-static struct gsl_sf_ChebSeries ai02_cs = {
+static struct gsl_sf_cheb_series ai02_cs = {
   ai02_data,
   21,
   -1, 1,

@@ -572,6 +572,7 @@ int check_trig(void)
 {
   double zr, zi;
   double yr, yi;
+  double x, y;
   double theta;
   int status = 0;
   int s;
@@ -582,7 +583,57 @@ int check_trig(void)
   s = 0;
   s += ( frac_diff( zr, 62.44551846769653403 ) > 1.0e-14 );
   s += ( frac_diff( zi, 40.09216577799840254 ) > 1.0e-14 );
-  gsl_test(s, "  gsl_sf_complex_sin_impl");
+  gsl_test(s, "  gsl_sf_complex_sin_impl(1 + 5 I)");
+  status += s;
+  
+  yr = 1.0;
+  yi = 5.0;
+  gsl_sf_complex_cos_impl(yr, yi, &zr, &zi);
+  s = 0;
+  s += ( frac_diff( zr,  40.09580630629882573 ) > 1.0e-14 );
+  s += ( frac_diff( zi, -62.43984868079963017 ) > 1.0e-14 );
+  gsl_test(s, "  gsl_sf_complex_cos_impl(1 + 5 I)");
+  status += s;
+
+  yr =   1.0;
+  yi = 100.0;
+  gsl_sf_complex_logsin_impl(yr, yi, &zr, &zi);
+  s = 0;
+  s += ( frac_diff( zr, 99.3068528194400546900 ) > 1.0e-14 );
+  s += ( frac_diff( zi,  0.5707963267948966192 ) > 1.0e-14 );
+  gsl_test(s, "  gsl_sf_complex_logsin_impl(1 + 100 I)");
+  status += s;
+  
+  yr =    1.0;
+  yi = -100.0;
+  gsl_sf_complex_logsin_impl(yr, yi, &zr, &zi);
+  s = 0;
+  s += ( frac_diff( zr,  99.3068528194400546900 ) > 1.0e-14 );
+  s += ( frac_diff( zi,  -0.5707963267948966192 ) > 1.0e-14 );
+  gsl_test(s, "  gsl_sf_complex_logsin_impl(1 - 100 I)");
+  status += s;
+
+  yr = 5.0;
+  yi = 5.0;
+  gsl_sf_complex_logsin_impl(yr, yi, &zr, &zi);
+  s = 0;
+  s += ( frac_diff( zr, 4.3068909128079757420 ) > 1.0e-14 );
+  s += ( frac_diff( zi, 2.8540063315538773952 ) > 1.0e-14 );
+  gsl_test(s, "  gsl_sf_complex_logsin_impl(5 + 5 I)");
+  status += s;
+
+  gsl_sf_polar_to_rect_impl(10.0, M_PI/6.0, &x, &y);
+  s = 0;
+  s += ( frac_diff( x, 10.0 * sqrt(3) / 2.0 ) > 1.0e-14 );
+  s += ( frac_diff( y, 10.0 * 0.5           ) > 1.0e-14 );
+  gsl_test(s, "  gsl_sf_polar_to_rect_impl(10, Pi/6)");
+  status += s;
+  
+  gsl_sf_polar_to_rect_impl(10.0, -2.0/3.0*M_PI, &x, &y);
+  s = 0;
+  s += ( frac_diff( x, 10.0 * (-0.5)           ) > 1.0e-14 );
+  s += ( frac_diff( y, 10.0 * (-sqrt(3) / 2.0) ) > 1.0e-14 );
+  gsl_test(s, "  gsl_sf_polar_to_rect_impl(10, -2/3 Pi)");
   status += s;
   
   theta = 5.0*M_PI + M_PI/2.0;

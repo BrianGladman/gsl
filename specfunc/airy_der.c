@@ -30,7 +30,7 @@ static double aif_data[8] = {
    0.00000000000000504622,
    0.00000000000000000522
 };
-static struct gsl_sf_ChebSeries aif_cs = {
+static struct gsl_sf_cheb_series aif_cs = {
   aif_data,
   7,
   -1, 1,
@@ -56,7 +56,7 @@ static double aig_data[9] = {
    0.000000000000000331562,
    0.000000000000000000314
 };
-static struct gsl_sf_ChebSeries aig_cs = {
+static struct gsl_sf_cheb_series aig_cs = {
   aig_data,
   8,
   -1, 1,
@@ -88,7 +88,7 @@ static double aip2_data[15] = {
     0.0000000000000001403,
    -0.0000000000000000215
 };
-static struct gsl_sf_ChebSeries aip2_cs = {
+static struct gsl_sf_cheb_series aip2_cs = {
   aip2_data,
   14,
   -1, 1,
@@ -130,7 +130,7 @@ static double aip1_data[25] = {
     0.0000000000000000832,
    -0.0000000000000000260
 };
-static struct gsl_sf_ChebSeries aip1_cs = {
+static struct gsl_sf_cheb_series aip1_cs = {
   aip1_data,
   24,
   -1, 1,
@@ -156,7 +156,7 @@ static double bif_data[8] = {
    0.0000000000000087403,
    0.0000000000000000090
 };
-static struct gsl_sf_ChebSeries bif_cs = {
+static struct gsl_sf_cheb_series bif_cs = {
   bif_data,
   7,
   -1, 1,
@@ -182,7 +182,7 @@ static double big_data[9] = {
     0.000000000000000574283,
     0.000000000000000000544
 };
-static struct gsl_sf_ChebSeries big_cs = {
+static struct gsl_sf_cheb_series big_cs = {
   big_data,
   8,
   -1, 1,
@@ -209,7 +209,7 @@ static double bif2_data[10] = {
    0.000000000000000171911,
    0.000000000000000000382
 };
-static struct gsl_sf_ChebSeries bif2_cs = {
+static struct gsl_sf_cheb_series bif2_cs = {
   bif2_data,
   9,
   -1, 1,
@@ -236,7 +236,7 @@ static double big2_data[10] = {
    0.0000000000000130017,
    0.0000000000000000335
 };
-static struct gsl_sf_ChebSeries big2_cs = {
+static struct gsl_sf_cheb_series big2_cs = {
   big2_data,
   9,
   -1, 1,
@@ -282,7 +282,7 @@ static double bip2_data[29] = {
      0.00000000000000017487,
      0.00000000000000000207
 };
-static struct gsl_sf_ChebSeries bip2_cs = {
+static struct gsl_sf_cheb_series bip2_cs = {
   bip2_data,
   28,
   -1, 1,
@@ -323,7 +323,7 @@ static double bip1_data[24] = {
     0.0000000000000001155,
    -0.0000000000000000186
 };
-static struct gsl_sf_ChebSeries bip1_cs = {
+static struct gsl_sf_cheb_series bip1_cs = {
   bip1_data,
   23,
   -1, 1,
@@ -373,7 +373,7 @@ static double an22_data[33] = {
    -0.0000000000000000794,
    -0.0000000000000000330
 };
-static struct gsl_sf_ChebSeries an22_cs = {
+static struct gsl_sf_cheb_series an22_cs = {
   an22_data,
   32,
   -1, 1,
@@ -414,7 +414,7 @@ static double an21_data[24] = {
    -0.0000000000000000993,
    -0.0000000000000000343
 };
-static struct gsl_sf_ChebSeries an21_cs = {
+static struct gsl_sf_cheb_series an21_cs = {
   an21_data,
   23,
   -1, 1,
@@ -447,7 +447,7 @@ static double an20_data[16] = {
    -0.0000000000000001621,
    -0.0000000000000000441
 };
-static struct gsl_sf_ChebSeries an20_cs = {
+static struct gsl_sf_cheb_series an20_cs = {
   an20_data,
   15,
   -1, 1,
@@ -496,7 +496,7 @@ static double aph2_data[32] = {
     0.0000000000000000719,
     0.0000000000000000294
 };
-static struct gsl_sf_ChebSeries aph2_cs = {
+static struct gsl_sf_cheb_series aph2_cs = {
   aph2_data,
   31,
   -1, 1,
@@ -535,7 +535,7 @@ static double aph1_data[22] = {
    0.0000000000000001934,
    0.0000000000000000638
 };
-static struct gsl_sf_ChebSeries aph1_cs = {
+static struct gsl_sf_cheb_series aph1_cs = {
   aph1_data,
   21,
   -1, 1,
@@ -567,7 +567,7 @@ static double aph0_data[15] = {
   0.0000000000000000930,
   0.0000000000000000229
 };
-static struct gsl_sf_ChebSeries aph0_cs = {
+static struct gsl_sf_cheb_series aph0_cs = {
   aph0_data,
   14,
   -1, 1,

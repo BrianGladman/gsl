@@ -11,12 +11,12 @@
 #define gslMIN(a,b) ((a) < (b) ? (a) : (b))
 
 
-int gsl_sf_cheb_calc_impl(struct gsl_sf_ChebSeries *, double (*)(double));
+int gsl_sf_cheb_calc_impl(struct gsl_sf_cheb_series *, double (*)(double));
 
 
 /*-*-*-*-*-*-*-*-*-*-*-* Allocators *-*-*-*-*-*-*-*-*-*-*-*/
 
-struct gsl_sf_ChebSeries * gsl_sf_cheb_new(double (*func)(double),
+struct gsl_sf_cheb_series * gsl_sf_cheb_new(double (*func)(double),
     	    	    	    	    	   const double a, const double b,
 			      	    	   const int order)
 {
@@ -32,8 +32,8 @@ struct gsl_sf_ChebSeries * gsl_sf_cheb_new(double (*func)(double),
     GSL_ERROR_RETURN("gsl_sf_cheb_new: interval close to null", GSL_EFAILED, 0);
   }
   else {
-    struct gsl_sf_ChebSeries * cs = (struct gsl_sf_ChebSeries *)
-      malloc(sizeof(struct gsl_sf_ChebSeries));
+    struct gsl_sf_cheb_series * cs = (struct gsl_sf_cheb_series *)
+      malloc(sizeof(struct gsl_sf_cheb_series));
   
     if(cs == 0) {
       GSL_ERROR_RETURN("gsl_sf_cheb_new: out of memory", GSL_ENOMEM, 0);
@@ -64,7 +64,7 @@ struct gsl_sf_ChebSeries * gsl_sf_cheb_new(double (*func)(double),
 
 /*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
 
-int gsl_sf_cheb_calc_impl(struct gsl_sf_ChebSeries * cs, double (*func)(double))
+int gsl_sf_cheb_calc_impl(struct gsl_sf_cheb_series * cs, double (*func)(double))
 {
   if(cs == 0) {
     return GSL_EFAILED;
@@ -96,7 +96,7 @@ int gsl_sf_cheb_calc_impl(struct gsl_sf_ChebSeries * cs, double (*func)(double))
   }
 }
 
-int gsl_sf_cheb_calc_deriv_impl(struct gsl_sf_ChebSeries * cs)
+int gsl_sf_cheb_calc_deriv_impl(struct gsl_sf_cheb_series * cs)
 {
   int j;
   int n = cs->order + 1;
@@ -116,7 +116,7 @@ int gsl_sf_cheb_calc_deriv_impl(struct gsl_sf_ChebSeries * cs)
   return GSL_SUCCESS;
 }
 
-int gsl_sf_cheb_calc_integ_impl(struct gsl_sf_ChebSeries * cs)
+int gsl_sf_cheb_calc_integ_impl(struct gsl_sf_cheb_series * cs)
 {
   int n = cs->order + 1;
   double con = 0.25 * (cs->b - cs->a);
@@ -151,7 +151,7 @@ int gsl_sf_cheb_calc_integ_impl(struct gsl_sf_ChebSeries * cs)
 
 /*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
 
-int gsl_sf_cheb_calc_e(struct gsl_sf_ChebSeries * cs, double (*func)(double))
+int gsl_sf_cheb_calc_e(struct gsl_sf_cheb_series * cs, double (*func)(double))
 {
   int status = gsl_sf_cheb_calc_impl(cs, func);
   if(status != GSL_SUCCESS) {
@@ -164,7 +164,7 @@ int gsl_sf_cheb_calc_e(struct gsl_sf_ChebSeries * cs, double (*func)(double))
 /*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*-*-*/
 
 
-double gsl_sf_cheb_eval_n(const double x, const int n, const struct gsl_sf_ChebSeries * cs)
+double gsl_sf_cheb_eval_n(const double x, const int n, const struct gsl_sf_cheb_series * cs)
 {
   int j;
   double d  = 0.;
@@ -184,7 +184,7 @@ double gsl_sf_cheb_eval_n(const double x, const int n, const struct gsl_sf_ChebS
   return y*d - dd + 0.5 * cs->c[0];
 }
 
-double gsl_sf_cheb_eval(const double x, const struct gsl_sf_ChebSeries * cs)
+double gsl_sf_cheb_eval(const double x, const struct gsl_sf_cheb_series * cs)
 {
   int j;
   double d  = 0.;
@@ -201,7 +201,7 @@ double gsl_sf_cheb_eval(const double x, const struct gsl_sf_ChebSeries * cs)
   return y*d - dd + 0.5 * cs->c[0];
 }
 
-double gsl_sf_cheb_eval_deriv(const double x, struct gsl_sf_ChebSeries * cs)
+double gsl_sf_cheb_eval_deriv(const double x, struct gsl_sf_cheb_series * cs)
 {
   int j;
   double d  = 0.;
@@ -220,7 +220,7 @@ double gsl_sf_cheb_eval_deriv(const double x, struct gsl_sf_ChebSeries * cs)
   return y*d - dd + 0.5 * cs->cp[0];
 }
 
-double gsl_sf_cheb_eval_integ(const double x, struct gsl_sf_ChebSeries * cs)
+double gsl_sf_cheb_eval_integ(const double x, struct gsl_sf_cheb_series * cs)
 {
   int j;
   double d  = 0.;
@@ -239,7 +239,7 @@ double gsl_sf_cheb_eval_integ(const double x, struct gsl_sf_ChebSeries * cs)
   return y*d - dd + 0.5 * cs->ci[0];
 }
 
-void gsl_sf_cheb_free(struct gsl_sf_ChebSeries * cs)
+void gsl_sf_cheb_free(struct gsl_sf_cheb_series * cs)
 {
   if(cs != 0) {
     if(cs->c != 0) free(cs->c);

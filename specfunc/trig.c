@@ -75,19 +75,23 @@ inline int gsl_sf_sincos_impl(const double theta, double * s, double * c)
 
 int gsl_sf_polar_to_rect_impl(const double r, const double theta, double * x, double * y)
 {
-  if(fabs(theta) == M_PI) {
-    *x = r;
-    *y = 0.;
+  double t   = theta;
+  int status = gsl_sf_angle_restrict_symm_impl(&t, GSL_SQRT_MACH_EPS);
+
+  if(fabs(fabs(theta) - M_PI) < 10.0*GSL_MACH_EPS) {
+    *x = -r;
+    *y = 0.0;
   }
   else {
     double tan_half = tan(0.5 * theta);
-    double den = 1. + tan_half*tan_half;
-    double cos_theta = (tan_half*tan_half - 1.) / den;
-    double sin_theta = 2. * tan_half / den;
+    double den = 1.0 + tan_half*tan_half;
+    double cos_theta = -(tan_half*tan_half - 1.0) / den;
+    double sin_theta =  2.0 * tan_half / den;
     *x = r * cos_theta;
     *y = r * sin_theta;
   }
-  return GSL_SUCCESS;
+
+  return status;
 }
 
 int gsl_sf_rect_to_polar_impl(const double x, const double y, double * r, double * theta)

@@ -31,7 +31,7 @@ static double aclaus_data[16] = {
   0.42e-18,
   0.3e-19
 };
-static struct gsl_sf_ChebSeries aclaus_cs = {
+static struct gsl_sf_cheb_series aclaus_cs = {
   aclaus_data,
   15,
   -1, 1,

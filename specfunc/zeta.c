@@ -29,7 +29,7 @@ static double zeta_xlt1_data[14] = {
  -1.04298190934561897196600035218e-18,
   6.9925216166580021051464412040e-21,
 };
-static struct gsl_sf_ChebSeries zeta_xlt1_cs = {
+static struct gsl_sf_cheb_series zeta_xlt1_cs = {
   zeta_xlt1_data,
   13,
   -1, 1,
@@ -70,7 +70,7 @@ static double zeta_xgt1_data[30] = {
   -2.72765163881247861193238243915e-16,
    7.8473570134636044722154797225e-17
 };
-static struct gsl_sf_ChebSeries zeta_xgt1_cs = {
+static struct gsl_sf_cheb_series zeta_xgt1_cs = {
   zeta_xgt1_data,
   29,
   -1, 1,

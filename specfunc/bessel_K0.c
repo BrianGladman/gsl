@@ -47,7 +47,7 @@ static double bk0_data[11] = {
    .00000000000000000035
 };
 
-static struct gsl_sf_ChebSeries bk0_cs = {
+static struct gsl_sf_cheb_series bk0_cs = {
   bk0_data,
   10,
   -1, 1,
@@ -75,7 +75,7 @@ static double ak0_data[17] = {
    .00000000000000005
 };
 
-static struct gsl_sf_ChebSeries ak0_cs = {
+static struct gsl_sf_cheb_series ak0_cs = {
   ak0_data,
   16,
   -1, 1,
@@ -100,7 +100,7 @@ static double ak02_data[14] = {
   -.00000000000000002
 };
 
-static struct gsl_sf_ChebSeries ak02_cs = {
+static struct gsl_sf_cheb_series ak02_cs = {
   ak02_data,
   13,
   -1, 1,

@@ -31,7 +31,7 @@ static double async1_data[14] = {
    0.15167e-15,
    0.94e-18
 };
-static struct gsl_sf_ChebSeries async1_cs = {
+static struct gsl_sf_cheb_series async1_cs = {
   async1_data,
   13,
   -1.0, 1.0,
@@ -53,7 +53,7 @@ static double async2_data[12] = {
   0.7745e-16,
   0.51e-18
 };
-static struct gsl_sf_ChebSeries async2_cs = {
+static struct gsl_sf_cheb_series async2_cs = {
   async2_data,
   11,
   -1.0, 1.0,
@@ -88,7 +88,7 @@ static double asynca_data[25] = {
   0.11e-18,
   0.2e-19,
 };
-static struct gsl_sf_ChebSeries asynca_cs = {
+static struct gsl_sf_cheb_series asynca_cs = {
   asynca_data,
   24,
   -1.0, 1.0,
@@ -113,7 +113,7 @@ static double asyn21_data[15] = {
   0.96e-18,
   0.1e-19
 };
-static struct gsl_sf_ChebSeries asyn21_cs = {
+static struct gsl_sf_cheb_series asyn21_cs = {
   asyn21_data,
   14,
   -1.0, 1.0,
@@ -137,7 +137,7 @@ static double asyn22_data[14] = {
    0.210e-17,
    0.1e-19
 };
-static struct gsl_sf_ChebSeries asyn22_cs = {
+static struct gsl_sf_cheb_series asyn22_cs = {
   asyn22_data,
   13,
   -1.0, 1.0,
@@ -166,7 +166,7 @@ static double asyn2a_data[19] = {
   0.29e-18,
   0.3e-19
 };
-static struct gsl_sf_ChebSeries asyn2a_cs = {
+static struct gsl_sf_cheb_series asyn2a_cs = {
   asyn2a_data,
   18,
   -1.0, 1.0,

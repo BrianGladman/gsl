@@ -45,7 +45,7 @@ static double A3_gt1_data[31] = {
    1.48065989776771761062838402443e-17,
   -3.00692857507873036348979979631e-18
 };
-static struct gsl_sf_ChebSeries A3_gt1_cs = {
+static struct gsl_sf_cheb_series A3_gt1_cs = {
   A3_gt1_data,
   30,
   -1,1,
@@ -86,7 +86,7 @@ static double A4_gt1_data[30] = {
   3.7849342199690728470461022877e-15,
  -7.8552867468122209577151823365e-16
 };
-static struct gsl_sf_ChebSeries A4_gt1_cs = {
+static struct gsl_sf_cheb_series A4_gt1_cs = {
   A4_gt1_data,
   17, /* 29, */
   -1, 1,
@@ -137,7 +137,7 @@ static double B2_gt1_data[40] = {
  -4.8124980266864320351456993068e-11,
   2.36665346944763060774168319576e-11
 };
-static struct gsl_sf_ChebSeries B2_gt1_cs = {
+static struct gsl_sf_cheb_series B2_gt1_cs = {
   B2_gt1_data,
   39,
   -1, 1,
@@ -179,7 +179,7 @@ static double B3_gt1_data[30] = {
  -4.1358791499961929237755474814e-7,
   2.03541511587388198674779968076e-7
 };
-static struct gsl_sf_ChebSeries B3_gt1_cs = {
+static struct gsl_sf_cheb_series B3_gt1_cs = {
   B3_gt1_data,
   29,
   -1, 1,
@@ -231,7 +231,7 @@ static double B2_lt1_data[40] = {
   6.8663910168392483929411418190e-11,
  -3.4068313177952244040559740439e-11
 };
-static struct gsl_sf_ChebSeries B2_lt1_cs = {
+static struct gsl_sf_cheb_series B2_lt1_cs = {
   B2_lt1_data,
   39,
   -1, 1,
@@ -283,7 +283,7 @@ static double B3_lt1_data[40] = {
   5.0226342286491286957075289622e-8,
  -2.50496456602598829705475558313e-8
 };
-static struct gsl_sf_ChebSeries B3_lt1_cs = {
+static struct gsl_sf_cheb_series B3_lt1_cs = {
   B3_lt1_data,
   39,
   -1, 1,
@@ -335,7 +335,7 @@ static double A3_lt1_data[40] = {
   -5.1347942579352613057675111787e-9,
    2.55835415945867239672615043215e-9
 };
-static struct gsl_sf_ChebSeries A3_lt1_cs = {
+static struct gsl_sf_cheb_series A3_lt1_cs = {
   A3_lt1_data,
   39,
   -1, 1,
@@ -376,7 +376,7 @@ static double A4_lt1_data[30] = {
   2.59237521171322544290027965998e-8,
  -2.33094285521905873046628834773e-8
 };
-static struct gsl_sf_ChebSeries A4_lt1_cs = {
+static struct gsl_sf_cheb_series A4_lt1_cs = {
   A4_lt1_data,
   29,
   -1, 1,
