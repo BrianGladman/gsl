@@ -528,12 +528,21 @@ coulomb_jwkb(double lam, double eta, double x,
   }
 }
 
-/* FIXME: Does jwkb() really return F and G, or
- * are they scaled in some sick way? The fortran
- * is totally confusing.
- * It would make a difference only here, where
- * we try to use the WKB thing.
- */
+
+#define LAM_MIN_RETURN(status)   \
+do {                             \
+  if(! keep_Fmin_values) {       \
+    *F_lam_min  = result_F;      \
+    *Fp_lam_min = result_Fp;     \
+  }                              \
+  *G_lam_min  = result_G;        \
+  *Gp_lam_min = result_Gp;       \
+  *F_exponent = result_Fexp;     \
+  *G_exponent = result_Gexp;     \
+  return status;                 \
+} while(0)
+
+
 /* Determine the values of F and G at the
  * minimum lambda, given the non-normalized
  * values of F,F' and the sign of F there.
@@ -548,96 +557,114 @@ static
 int
 coulomb_lam_min_values(double lam_min,
                        double eta, double x,
-		       int keep_Fmin_values, /* replace F and Fp at lam_min ? */
+		       int keep_Fmin_values,
                        double * F_lam_min,   double * G_lam_min,
                        double * Fp_lam_min,  double * Gp_lam_min,
 		       double * F_exponent,  double * G_exponent
                        )
 {
   int x_less_turn = (x*(x - 2.*eta) < lam_min*(lam_min+ 1.0) ? 1 : 0);
-  int stat_WKB;
-  int stat_CF2;
 
   double P, Q;
-  double fjwkb = 0.0;
-  double gjwkb = 0.0;
-  double exponent;
+  int stat_CF2;
 
   double F_sign_lam_min  = (*F_lam_min  > 0.0 ? 1.0 : -1.0);
   double Fp_sign_lam_min = (*Fp_lam_min > 0.0 ? 1.0 : -1.0);
 
-  *F_exponent = 0.0;
-  *G_exponent = 0.0;
+  double result_F, result_Fp;
+  double result_G, result_Gp;
+  double result_Fexp = 0.0;
+  double result_Gexp = 0.0;
 
   if(x_less_turn) {
+    /* x is below the turning point, so calculate the WKB result.
+     */
     double lam = locMax(lam_min, 0.0);
-    stat_WKB = coulomb_jwkb(lam, eta, x, &fjwkb, &gjwkb, &exponent);
-    if(stat_WKB == GSL_EOVRFLW) {
-      /* WKB detects a large G value. Do not attempt
-       * the continued fraction.
-       */
+    double fjwkb;
+    double gjwkb;
+    double exponent;
+    int stat_WKB = coulomb_jwkb(lam, eta, x, &fjwkb, &gjwkb, &exponent);
+    result_F  = F_sign_lam_min * fjwkb;
+    result_G  = gjwkb;
+    result_Fexp = -exponent;
+    result_Gexp =  exponent;
+    if(*F_lam_min != 0.0) {
       double F_ratio_lam_min = *Fp_lam_min / *F_lam_min;
-      if(! keep_Fmin_values) {
-        *F_lam_min  = F_sign_lam_min * fjwkb;
-        *Fp_lam_min = F_ratio_lam_min * *F_lam_min;
-      }
-      *G_lam_min  = gjwkb;
-      *Gp_lam_min = *G_lam_min * (F_ratio_lam_min - 1.0/(*G_lam_min * *F_lam_min));
-      *F_exponent = -exponent;
-      *G_exponent =  exponent;
-      return GSL_EOVRFLW;
+      result_Fp = F_ratio_lam_min * result_F;
+      result_Gp = result_G * (F_ratio_lam_min - 1.0/(result_G * result_F));
+    }
+    else {
+      /* This should not happen. Since we are below the turning
+       * point for lam_min, we are definitely below the turning
+       * point for lam_max. Therefore no zeros of F_L can be
+       * encountered. That leaves only the possibility of underflow,
+       * but underflow cannot occur in the downward evolution
+       * since F_L must increase in that evolution (it is dominant
+       * for backward recursion).
+       */
+      result_Fp = 0.0;
+      result_Gp =  0.0;
+      LAM_MIN_RETURN(GSL_EZERODIV);
+    }
+
+    if(stat_WKB == GSL_EOVRFLW) {
+      /* WKB detects a large G value. Do not attempt the
+       * continued fraction; bug out now. The WKB values
+       * should be accurate enough anyway.
+       */
+      LAM_MIN_RETURN(GSL_EOVRFLW);
     }
   }
 
-  /* WKB did not detect an overflow, so we are not very far
-   * from the turning point, or we are above the
-   * turning point. Attempt the continued fraction.
+  /* Attempt the continued fraction. Either x is above
+   * the turning point, or the WKB evaluation did not
+   * detect an excessively large value of G.
    */
   stat_CF2 = coulomb_CF2(lam_min, eta, x, &P, &Q);
 
   if(stat_CF2 == GSL_SUCCESS) {
+    /* Continued fraction claims success.
+     * Use that result.
+     */
     if(*F_lam_min != 0.0) {
-      double F_ratio = *Fp_lam_min / *F_lam_min;
-      double gamma = (F_ratio - P)/Q;
-      double omega = 1.0/sqrt((F_ratio - P)*gamma + Q);
-      if(! keep_Fmin_values) {
-        *F_lam_min  =  F_sign_lam_min * omega;
-        *Fp_lam_min = *F_lam_min * F_ratio;
-      }
-      *G_lam_min  = *F_lam_min * gamma;
-      *Gp_lam_min = *G_lam_min * (P - Q/gamma);
-      return GSL_SUCCESS;
-    }
-    else {
-      if(! keep_Fmin_values) {
-        *Fp_lam_min = Fp_sign_lam_min * sqrt(fabs(Q));
-      }
-      *G_lam_min  = *Fp_lam_min / Q;
-      *Gp_lam_min = *G_lam_min * P;
-      return GSL_SUCCESS;
-    }
-  }
-  else {
-    if(x_less_turn) {
-      /* Fallback on WKB values if CF2 claims it failed. */
       double F_ratio_lam_min = *Fp_lam_min / *F_lam_min;
-      if(! keep_Fmin_values) {
-        *F_lam_min  = F_sign_lam_min * fjwkb;
-        *Fp_lam_min = F_ratio_lam_min * *F_lam_min;
-      }
-      *G_lam_min  = gjwkb;
-      *Gp_lam_min = *G_lam_min * (F_ratio_lam_min - 1.0/(*G_lam_min * *F_lam_min));
-      return GSL_SUCCESS;
+      double gamma = (F_ratio_lam_min - P)/Q;
+      double omega = 1.0/sqrt((F_ratio_lam_min - P)*gamma + Q);
+      result_F  = F_sign_lam_min  * omega;
+      result_Fp = F_ratio_lam_min * result_F;
+      result_G  = result_F * gamma;
+      result_Gp = result_G * (P - Q/gamma);
     }
     else {
-      /* This is bad news. We are in the oscillating
-       * region, but CF2 claims it failed. This should
-       * not happen.
-       */
-      return GSL_EFAILED;
+      result_F  = 0.0;
+      result_Fp = Fp_sign_lam_min * sqrt(fabs(Q));
+      result_G  = result_F / Q;
+      result_Gp = result_G * P;
     }
+    result_Fexp = 0.0;
+    result_Gexp = 0.0;
   }
+  else if(! x_less_turn) {
+    /* This is bad news. We are in the oscillating
+     * region, but CF2 claims it failed. This should
+     * not happen.
+     */
+    result_F = 0.0;
+    result_G = 0.0;
+    result_Fp = 0.0;
+    result_Gp = 0.0;
+    result_Fexp = 0.0;
+    result_Gexp = 0.0;
+    LAM_MIN_RETURN(GSL_EFAILED);
+  }
+  
+  /* Now we have results for the values at lam_min, obtained
+   * either by WKB (w/o overflow) or by the continued fraction.
+   */
+  LAM_MIN_RETURN(GSL_SUCCESS);
 }
+
+#undef LAM_MIN_RETURN
 
 
 /* Evaluate the F and G functions in the
@@ -654,7 +681,6 @@ coulomb_small_args(double lam_min, int kmax,
 		   )
 {
   double CL, r;
-  double P, Q;
   double F_lam_max, Fp_lam_max;
   double F_lam_min, Fp_lam_min;
   double G_lam_min, Gp_lam_min;
