@@ -65,10 +65,10 @@ main (void)
   gsl_vector_set (x, 0, 5.0);
   gsl_vector_set (x, 1, 7.0);
 
-  T = gsl_multimin_fdfminimizer_conjugate_pr;
+  T = gsl_multimin_fdfminimizer_conjugate_fr;
   s = gsl_multimin_fdfminimizer_alloc (T, 2);
 
-  gsl_multimin_fdfminimizer_set (s, &my_func, x, 0.0001, 1e-5);
+  gsl_multimin_fdfminimizer_set (s, &my_func, x, 0.01, 1e-4);
 
   do
     {

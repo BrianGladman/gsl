@@ -1,3 +1,17 @@
+2003-04-17  Brian Gough  <bjg@network-theory.co.uk>
+
+	* vector_bfgs.c (vector_bfgs_iterate): no need to update g0norm on
+	each downhill step, since g0norm is the norm for the initial
+	gradient.
+
+	* conjugate_pr.c (conjugate_pr_iterate): no need to update g0norm
+	on each downhill step, since g0norm is the norm for the initial
+	gradient.
+
+	* conjugate_fr.c (conjugate_fr_iterate): no need to update g0norm
+	on each downhill step, since g0norm is the norm for the initial
+	gradient.
+
 Sun Sep 30 20:50:00 2002  Tuomo Keskitalo  <tkeskita@pt.hut.fi>
 
 	* Added Nelder-Mead Simplex optimization algorithm and 

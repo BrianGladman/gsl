@@ -1,7 +1,11 @@
 * What is new in gsl-1.3+:
 
-** Fixed the function gsl_sf_psi_1_int(1) to return the
-correct sign for psi(1,1).
+** Fixed a bug in the conjugate gradient solvers conjugate_pr,
+conjugate_fr and vector_bgfs which caused the search
+directions to be updated incorrectly.
+
+** Fixed a bug in gsl_sf_psi_1_int(1) which caused it to
+return the incorrect sign for psi(1,1).
 
 ** Fixed the simulated annealing routine gsl_siman_solve to use the
 parameter iters_fixed_T for the number of iterations at fixed

@@ -197,7 +197,6 @@ conjugate_pr_iterate (void *vstate, gsl_multimin_function_fdf * fdf,
       *f = fc;
       gsl_vector_memcpy (x, x1);
       GSL_MULTIMIN_FN_EVAL_DF (fdf, x1, gradient);
-      state->g0norm = gsl_blas_dnrm2 (gradient);
       return GSL_SUCCESS;
     }
 
