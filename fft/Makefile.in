@@ -85,7 +85,7 @@ real.c real_init.c real_pass_2.c real_pass_3.c \
 real_pass_4.c real_pass_5.c real_pass_n.c real_radix2.c real_unpack.c \
 compare_source.c dft_source.c hc_main.c real_main.c
 
-INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../vector -I$(srcdir)/../err
+INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../err
 
 TESTS = test #test_radix2 test_trap
 
