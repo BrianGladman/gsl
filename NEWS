@@ -1,5 +1,14 @@
 * What is new in gsl-0.9.4:
 
+* Added histogram _alloc functions for consistency, in addition to the
+existing _calloc functions.
+
+* Renamed all the gsl_multimin functions to be consistent with the
+rest of the library.  An underscore has been removed from _minimizer
+in all the function names.
+
+* Renamed the function gsl_sf_coulomb_CL_list to gsl_sf_coulomb_CL_array
+
 * A bug in the multimin functions where the function parameters
 (params) were omitted has been fixed.
 
