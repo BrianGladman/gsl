@@ -191,7 +191,7 @@ gsl_ran_discrete_preproc(int Kevents, const double *ProbArray)
     stack_t *Bigs;
     stack_t *Smalls;
     double *E;
-    double pTotal,mean,d;
+    double pTotal = 0.0, mean, d;
     
     if (Kevents < 1) {
         fprintf(stderr,"new_randeventW: Kevents=%d < 1\n",Kevents);
@@ -322,7 +322,7 @@ gsl_ran_discrete(const gsl_rng *r, const gsl_ran_discrete_t *g)
     u -= c;
 #endif
     f = (g->F)[c];
-    /* fprintf(stderr,"c,f,u: %d %.4f %f\n",c,f,u); /**/
+    /* fprintf(stderr,"c,f,u: %d %.4f %f\n",c,f,u); */
     if (f == 1.0) return c;
     if (u < f) {
         return c;
