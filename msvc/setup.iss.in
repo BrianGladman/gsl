@@ -10,6 +10,7 @@ AppVerName=GNU Scientific Library @VERSION@
 ;AppUpdatesURL=http://www.network-theory.co.uk/gsl/
 DefaultDirName={pf}\GSL-@VERSION@
 DefaultGroupName=GNU Scientific Library @VERSION@
+UsePreviousAppDir=no
 AlwaysCreateUninstallIcon=yes
 LicenseFile="..\Copying"
 ;InfoBeforeFile=Readme
