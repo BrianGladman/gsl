@@ -1,5 +1,9 @@
 * What will be new in gsl-1.6:
 
+** Fixed a bug in the SYRK and HERK blas functions gsl_blas_{s,d,c,z}syrk 
+and gsl_blas_{c,z}herk which caused invalid memory access for non-square 
+matrices.
+
 ** The Jacobi eigensolvers gsl_eigen_jacobi and gsl_eigen_jacobi_invert 
 have new implementations from Golub and Van Loan.
 
