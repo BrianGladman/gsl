@@ -33,8 +33,8 @@ test_static_SOURCES = test_static.c
 
 CLEANFILES = test.txt test.dat
 
-noinst_HEADERS = matrix_source.c init_source.c file_source.c rowcol.c
+noinst_HEADERS = matrix_source.c init_source.c file_source.c rowcol_source.c
 
-libgslmatrix_a_SOURCES = init.c matrix.c file.c
+libgslmatrix_a_SOURCES = init.c matrix.c file.c rowcol.c
 
 

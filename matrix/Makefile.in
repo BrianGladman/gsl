@@ -105,9 +105,9 @@ test_static_SOURCES = test_static.c
 
 CLEANFILES = test.txt test.dat
 
-noinst_HEADERS = matrix_source.c init_source.c file_source.c 
+noinst_HEADERS = matrix_source.c init_source.c file_source.c rowcol_source.c
 
-libgslmatrix_a_SOURCES = init.c matrix.c file.c
+libgslmatrix_a_SOURCES = init.c matrix.c file.c rowcol.c
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
 CONFIG_CLEAN_FILES = 
@@ -119,7 +119,7 @@ CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
 libgslmatrix_a_LIBADD = 
-libgslmatrix_a_OBJECTS =  init.o matrix.o file.o
+libgslmatrix_a_OBJECTS =  init.o matrix.o file.o rowcol.o
 AR = ar
 test_OBJECTS =  test.o
 test_LDFLAGS = 
@@ -137,8 +137,8 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 TAR = tar
 GZIP = --best
-DEP_FILES =  .deps/file.P .deps/init.P .deps/matrix.P .deps/test.P \
-.deps/test_static.P
+DEP_FILES =  .deps/file.P .deps/init.P .deps/matrix.P .deps/rowcol.P \
+.deps/test.P .deps/test_static.P
 SOURCES = $(libgslmatrix_a_SOURCES) $(test_SOURCES) $(test_static_SOURCES)
 OBJECTS = $(libgslmatrix_a_OBJECTS) $(test_OBJECTS) $(test_static_OBJECTS)
 

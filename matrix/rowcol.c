@@ -1,69 +1,88 @@
+#include <config.h>
+#include <gsl_matrix.h>
+#include <gsl_vector.h>
 #include <gsl_errno.h>
 
-int
-FUNCTION(gsl_matrix,get_row)(const TYPE(gsl_matrix) * m,
-			     const size_t i,
-			     TYPE (gsl_vector) * v)
-{
-  const size_t column_range = m->size1 ;
-  const size_t row_length = m->size2 ;
+#define BASE_GSL_COMPLEX_LONG
+#include "templates_on.h"
+#include "rowcol_source.c"
+#include "templates_off.h"
+#undef  BASE_GSL_COMPLEX_LONG
 
-  if (i >= column_range)
-    {
-      GSL_ERROR("row index is out of range", GSL_EINVAL) ;
-    }
+#define BASE_GSL_COMPLEX
+#include "templates_on.h"
+#include "rowcol_source.c"
+#include "templates_off.h"
+#undef  BASE_GSL_COMPLEX
 
-  if (v->size != row_length) 
-    {
-      GSL_ERROR("matrix row size and vector length are not equal", 
-		GSL_EBADLEN) ;
-    }
+#define BASE_GSL_COMPLEX_FLOAT
+#include "templates_on.h"
+#include "rowcol_source.c"
+#include "templates_off.h"
+#undef  BASE_GSL_COMPLEX_FLOAT
 
-  {
-    const BASE * v_data = v->data ;
-    const BASE * row_data = m->data + i * row_length ;
-    size_t j ;
+#define BASE_LONG_DOUBLE
+#include "templates_on.h"
+#include "rowcol_source.c"
+#include "templates_off.h"
+#undef  BASE_LONG_DOUBLE
 
-    for (j = 0 ; j < row_length ; j++) 
-      {
-	v_data[j] = row_data[j] ;
-      }
-  }
+#define BASE_DOUBLE
+#include "templates_on.h"
+#include "rowcol_source.c"
+#include "templates_off.h"
+#undef  BASE_DOUBLE
 
-  return 0 ;
-}
+#define BASE_FLOAT
+#include "templates_on.h"
+#include "rowcol_source.c"
+#include "templates_off.h"
+#undef  BASE_FLOAT
 
-int
-FUNCTION(gsl_matrix,set_row)(TYPE(gsl_matrix) * m,
-			     const size_t i,
-			     const TYPE (gsl_vector) * v)
-{
-  const size_t column_range = m->size1 ;
-  const size_t row_length = m->size2 ;
+#define BASE_ULONG
+#include "templates_on.h"
+#include "rowcol_source.c"
+#include "templates_off.h"
+#undef  BASE_ULONG
 
-  if (i >= column_range)
-    {
-      GSL_ERROR("row index is out of range", GSL_EINVAL) ;
-    }
+#define BASE_LONG
+#include "templates_on.h"
+#include "rowcol_source.c"
+#include "templates_off.h"
+#undef  BASE_LONG
 
-  if (v->size != row_length) 
-    {
-      GSL_ERROR("matrix row size and vector length are not equal", 
-		GSL_EBADLEN) ;
-    }
+#define BASE_UINT
+#include "templates_on.h"
+#include "rowcol_source.c"
+#include "templates_off.h"
+#undef  BASE_UINT
 
-  {
-    const BASE * v_data = v->data ;
-    const BASE * row_data = m->data + i * row_length ;
-    size_t j ;
+#define BASE_INT
+#include "templates_on.h"
+#include "rowcol_source.c"
+#include "templates_off.h"
+#undef  BASE_INT
 
-    for (j = 0 ; j < row_length ; j++) 
-      {
-	row_data[j] = v_data[j] ;
-      }
-  }
+#define BASE_USHORT
+#include "templates_on.h"
+#include "rowcol_source.c"
+#include "templates_off.h"
+#undef  BASE_USHORT
 
-  return 0 ;
-}
+#define BASE_SHORT
+#include "templates_on.h"
+#include "rowcol_source.c"
+#include "templates_off.h"
+#undef  BASE_SHORT
 
+#define BASE_UCHAR
+#include "templates_on.h"
+#include "rowcol_source.c"
+#include "templates_off.h"
+#undef  BASE_UCHAR
 
+#define BASE_CHAR
+#include "templates_on.h"
+#include "rowcol_source.c"
+#include "templates_off.h"
+#undef  BASE_CHAR
