@@ -72,7 +72,7 @@ int main (void)
   }
 
   {
-    FILE * f = fopen("test.dat","w") ;
+    FILE * f = fopen("test.txt","w") ;
     k = 0 ;
     for (i = 0 ; i < N ; i++) {
       for (j = 0 ; j < M ; j++) {
@@ -89,7 +89,7 @@ int main (void)
 
   {
     int status = 0 ;
-    FILE * f = fopen("test.dat","r") ;
+    FILE * f = fopen("test.txt","r") ;
     
     gsl_matrix_int_fscanf(f, mm) ;
     k = 0 ;
@@ -103,8 +103,7 @@ int main (void)
     gsl_test(status, "gsl_matrix_int_fprintf and fscanf work correctly") ;
 
     fclose(f) ;
-    }
-
+  }
 
   {
     FILE * f = fopen("test.dat", "w") ;
@@ -137,7 +136,6 @@ int main (void)
 
     fclose(f) ;
   }
-
 
   return gsl_test_summary ();
 }

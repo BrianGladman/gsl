@@ -1,3 +1,6 @@
+#ifndef GSL_MATRIX_FLOAT_H
+#define GSL_MATRIX_FLOAT_H
+
 #include <stdlib.h>
 #include <gsl_errno.h>
 
@@ -31,7 +34,7 @@ float
 gsl_matrix_float_get(const gsl_matrix_float * m, 
 		     const size_t i, const size_t j)
 {
-#ifdef GSL_CHECK_RANGE
+#ifndef GSL_RANGE_CHECK_OFF
   if (i >= m->size1)  /* size_t is unsigned, can't be negative */
     {
       GSL_ERROR_RETURN("first index out of range", GSL_EINVAL, 0) ;
@@ -49,8 +52,8 @@ void
 gsl_matrix_float_set(gsl_matrix_float * m, 
 		     const size_t i, const size_t j, const float x)
 {
-#ifdef GSL_CHECK_RANGE
-  if (i >= m->size) /* size_t is unsigned, can't be negative */
+#ifndef GSL_RANGE_CHECK_OFF
+  if (i >= m->size1) /* size_t is unsigned, can't be negative */
     {
       GSL_ERROR_RETURN_NOTHING("first index out of range", GSL_EINVAL) ;
     }
@@ -63,3 +66,4 @@ gsl_matrix_float_set(gsl_matrix_float * m,
 }
 #endif
 
+#endif /* GSL_MATRIX_FLOAT_H */

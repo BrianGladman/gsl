@@ -72,7 +72,7 @@ int main (void)
   }
 
   {
-    FILE * f = fopen("test.dat","w") ;
+    FILE * f = fopen("test.txt","w") ;
     k = 0 ;
     for (i = 0 ; i < N ; i++) {
       for (j = 0 ; j < M ; j++) {
@@ -88,7 +88,7 @@ int main (void)
 
   {
     int status = 0 ;
-    FILE * f = fopen("test.dat","r") ;
+    FILE * f = fopen("test.txt","r") ;
     gsl_matrix * mm = gsl_matrix_calloc(N,M) ;
 
     gsl_matrix_fscanf(f, mm) ;

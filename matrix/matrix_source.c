@@ -10,11 +10,11 @@ FUNCTION(gsl_matrix,get)(const TYPE(gsl_matrix) * m,
     {
       if (i >= m->size1)  /* size_t is unsigned, can't be negative */
 	{
-	  GSL_ERROR_RETURN("first index out of range", GSL_EINVAL, 0) ;
+	  GSL_ERROR_RETURN("first index out of range", GSL_EINVAL, ZERO) ;
 	}
       else if (j >= m->size2) /* size_t is unsigned, can't be negative */
 	{
-	  GSL_ERROR_RETURN("second index out of range", GSL_EINVAL, 0) ;
+	  GSL_ERROR_RETURN("second index out of range", GSL_EINVAL, ZERO) ;
 	}
     }
   return m->data[i * m->size2 + j] ;

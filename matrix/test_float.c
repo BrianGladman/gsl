@@ -72,7 +72,7 @@ int main (void)
   }
 
   {
-    FILE * f = fopen("test.dat","w") ;
+    FILE * f = fopen("test.txt","w") ;
     k = 0 ;
     for (i = 0 ; i < N ; i++) {
       for (j = 0 ; j < M ; j++) {
@@ -85,10 +85,9 @@ int main (void)
     fclose(f) ;
   }
 
-
   {
     int status = 0 ;
-    FILE * f = fopen("test.dat","r") ;
+    FILE * f = fopen("test.txt","r") ;
     gsl_matrix_float * mm = gsl_matrix_float_calloc(N,M) ;
 
     gsl_matrix_float_fscanf(f, mm) ;
@@ -106,7 +105,6 @@ int main (void)
     fclose (f) ;
     gsl_matrix_float_free (mm) ;
   }
-
 
   {
     FILE * f = fopen("test.dat", "w") ;
@@ -136,7 +134,7 @@ int main (void)
 	    status = 1 ;
       }
     }
-
+    
     gsl_test(status, "gsl_matrix_float_write and read work correctly") ;
 
     fclose (f) ;

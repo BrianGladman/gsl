@@ -54,7 +54,7 @@ FUNCTION(gsl_matrix,calloc) (const size_t n1, const size_t n2)
 
   for (i = 0 ; i < n1 * n2; i++)  /* initialize matrix to zero */
     {
-      m->data[i] = 0 ;
+      m->data[i] = ZERO ;
     }
 
   return m ;

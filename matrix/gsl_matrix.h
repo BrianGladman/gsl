@@ -1,3 +1,6 @@
+#ifndef GSL_MATRIX_H
+#define GSL_MATRIX_H
+
 #include <stdlib.h>
 #include <gsl_errno.h>
 
@@ -61,3 +64,4 @@ gsl_matrix_set(gsl_matrix * m, const size_t i, const size_t j, const double x)
 }
 #endif
 
+#endif /* GSL_MATRIX_H */
