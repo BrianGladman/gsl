@@ -116,6 +116,8 @@
 #define GSL_CONST_MKSA_DYNE (1e-5) /* kg m / s^2 */
 #define GSL_CONST_MKSA_JOULE (1e0) /* kg m^2 / s^2 */
 #define GSL_CONST_MKSA_ERG (1e-7) /* kg m^2 / s^2 */
+#define GSL_CONST_MKSA_STEFAN_BOLTZMANN_CONSTANT (5.67039934436e-8) /* kg / K^4 s^3 */
+#define GSL_CONST_MKSA_THOMSON_CROSS_SECTION (6.65245853542e-29) /* m^2 */
 #define GSL_CONST_MKSA_VACUUM_PERMITTIVITY (8.854187817e-12) /* A^2 s^4 / kg m^3 */
 #define GSL_CONST_MKSA_VACUUM_PERMEABILITY (1.25663706144e-6) /* kg m / A^2 s^2 */
 

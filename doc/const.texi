@@ -71,6 +71,9 @@ The molar gas constant, @math{R_0}.
 @item GSL_CONST_MKSA_STANDARD_GAS_VOLUME
 The standard gas volume, @math{V_0}.
 
+@item GSL_CONST_MKSA_STEFAN_BOLTZMANN_CONSTANT
+The Stefan-Boltzmann radiation constant, @math{\sigma}.
+
 @item GSL_CONST_MKSA_GAUSS
 The magnetic field of 1 Gauss.
 
@@ -164,6 +167,9 @@ The physical magnetic moment of the electron is negative.
 
 @item GSL_CONST_MKSA_PROTON_MAGNETIC_MOMENT
 The magnetic moment of the proton, @math{\mu_p}.
+
+@item GSL_CONST_MKSA_THOMSON_CROSS_SECTION
+The Thomson cross section, @math{\sigma_T}.
 @end table
 
 

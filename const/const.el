@@ -160,6 +160,8 @@
          ("J"                     "JOULE")
          ("1e-7 J"                "ERG")
 
+         ("pi^2 k^4 / (60 hbar^3 c^2)"       "STEFAN_BOLTZMANN_CONSTANT")
+         ("8 pi fsc^2 hbar^2/(3*c^2*me^2)" "THOMSON_CROSS_SECTION")
 
          )
        )

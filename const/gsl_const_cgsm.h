@@ -116,5 +116,7 @@
 #define GSL_CONST_CGSM_DYNE (1e0) /* cm g / s^2 */
 #define GSL_CONST_CGSM_JOULE (1e7) /* g cm^2 / s^2 */
 #define GSL_CONST_CGSM_ERG (1e0) /* g cm^2 / s^2 */
+#define GSL_CONST_CGSM_STEFAN_BOLTZMANN_CONSTANT (5.67039934436e-5) /* g / K^4 s^3 */
+#define GSL_CONST_CGSM_THOMSON_CROSS_SECTION (6.65245853542e-25) /* cm^2 */
 
 #endif /* __GSL_CONST_CGSM__ */
