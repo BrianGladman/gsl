@@ -504,23 +504,6 @@ Generators", @cite{Mathematics of Computation}, 65, 213 (1996), 203--213.
 @end itemize
 @end deffn
 
-@deffn {Generator} gsl_rng_tt800
-@cindex TT800 random number generator
-This is an earlier version of the twisted generalized feedback
-shift-register generator, and has been superseded by the development of
-MT19937. However, it is still an acceptable generator in its own
-right. It has a period of @math{2^@{800@}} and uses 33 words of storage
-per generator.
-
-For more information see,
-@itemize @asis
-@item
-From: Makoto Matsumoto and Yoshiharu Kurita, "Twisted GFSR Generators
-II", @cite{ACM Transactions on Modelling and Computer Simulation},
-Vol. 4, No. 3, 1994, pages 254-266.
-@end itemize
-@end deffn
-
 @node Generators provided for compatibility
 @subsection Generators provided for compatibility
 
@@ -742,6 +725,22 @@ number generator", @cite{Journal of Computational Physics}, 40, 517-526
 @end itemize
 @end deffn
 
+@deffn {Generator} gsl_rng_tt800
+@cindex TT800 random number generator
+This is an earlier version of the twisted generalized feedback
+shift-register generator, and has been superseded by the development of
+MT19937. However, it is still an acceptable generator in its own
+right. It has a period of @math{2^@{800@}} and uses 33 words of storage
+per generator.
+
+For more information see,
+@itemize @asis
+@item
+From: Makoto Matsumoto and Yoshiharu Kurita, "Twisted GFSR Generators
+II", @cite{ACM Transactions on Modelling and Computer Simulation},
+Vol. 4, No. 3, 1994, pages 254-266.
+@end itemize
+@end deffn
 
 @c The following generators are included only for historical reasons, so
 @c that you can reproduce results from old programs which might have used
