@@ -6,10 +6,12 @@
 
 /* Regular Bessel functions J_0(x), J_1(x), J_n(x) */
 
-int gsl_sf_bessel_Jn_e(int n, double x, double * result); /* GSL_EUNDRFLW */
+int gsl_sf_bessel_J0_e(double x, double * result);         /* none  */
+int gsl_sf_bessel_J1_e(double x, double * result);         /* GSL_EUNDRFLW */
+int gsl_sf_bessel_Jn_e(int n, double x, double * result);  /* GSL_EUNDRFLW */
 
-double gsl_sf_bessel_J0(double x);          /* no error  */
-double gsl_sf_bessel_J1(double x);          /* no error  */
+double gsl_sf_bessel_J0(double x);          /* none  */
+double gsl_sf_bessel_J1(double x);          /* underflow */
 double gsl_sf_bessel_Jn(int n, double x);   /* underflow */
 
 
@@ -30,11 +32,12 @@ double gsl_sf_bessel_In(int n, double x);  /* overflow, underflow */
  *  exp(-|x|) I_n(x)
  */
 
+int gsl_sf_bessel_I0_scaled_e(double x, double * result);        /* none */
 int gsl_sf_bessel_I1_scaled_e(double x, double * result);        /* GSL_EUNDRFLW */
 int gsl_sf_bessel_In_scaled_e(int n, double x, double * result); /* GSL_EUNDRFLW */
 int gsl_sf_bessel_In_scaled_array_e(int n, double x, double * result_array); /* GSL_EUNDRFLW */
 
-double gsl_sf_bessel_I0_scaled(double x);        /* no error   */
+double gsl_sf_bessel_I0_scaled(double x);        /* none       */
 double gsl_sf_bessel_I1_scaled(double x);        /* underflow  */
 double gsl_sf_bessel_In_scaled(int n, double x); /* underflow  */
 
@@ -83,10 +86,11 @@ double gsl_sf_bessel_Kn_scaled(int n, double x); /* domain, underflow */
 
 /* Regular spherical Bessel functions j_0(x), j_1(x), j_2(x) */
 
+int gsl_sf_bessel_j0_e(double x, double * result);   /* none */
 int gsl_sf_bessel_j1_e(double x, double * result);   /* GSL_EUNDRFLW */
 int gsl_sf_bessel_j2_e(double x, double * result);   /* GSL_EUNDRFLW */
 
-double gsl_sf_bessel_j0(double x);   /* no error  */
+double gsl_sf_bessel_j0(double x);   /* none      */
 double gsl_sf_bessel_j1(double x);   /* underflow */
 double gsl_sf_bessel_j2(double x);   /* underflow */
 

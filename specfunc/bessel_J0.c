@@ -10,6 +10,8 @@
 #include "bessel_amp_phase.h"
 
 
+/*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
+
 /* based on SLATEC besj0, 1977 version, w. fullerton */
 
 /* chebyshev expansions for Bessel functions
@@ -37,37 +39,59 @@ static double bj0_data[13] = {
   -.0000000000000010619,
    .0000000000000000074,
 };
-  	
-
 static struct gsl_sf_ChebSeries bj0_cs = {
   bj0_data,
   12,
   -1, 1
 };
 
-
-double gsl_sf_bessel_J0(const double x)
+int gsl_sf_bessel_J0_impl(const double x, double * result)
 {
   const double xmin = 2. * GSL_SQRT_MACH_EPS;
   const double xmax = 1./GSL_SQRT_MACH_EPS;
-
   double y = fabs(x);
 
   if(y < xmin) {
-    return 1.;
+    *result = 1.;
   }
   else if(y <= 4.0) {
-    return gsl_sf_cheb_eval(0.125*y*y - 1.0, &bj0_cs);
+    *result = gsl_sf_cheb_eval(0.125*y*y - 1.0, &bj0_cs);
   }
   else if (y < xmax) {
     double z     = 32.0/(y*y) - 1.0;
     double ampl  = (0.75 + gsl_sf_cheb_eval(z, &_bessel_amp_phase_bm0_cs)) / sqrt(y);
     double theta = y - M_PI_4 + gsl_sf_cheb_eval(z, &_bessel_amp_phase_bth0_cs) / y;
-    return ampl * cos(theta);
+    *result = ampl * cos(theta);
   }
   else {
     double M     = gsl_sf_bessel_asymp_Mnu(0., y);
     double theta = gsl_sf_bessel_asymp_thetanu(0., y);
-    return M * cos(theta);
+    *result = M * cos(theta);
   }
+  return GSL_SUCCESS;
+}
+
+
+/*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
+
+int gsl_sf_bessel_J0_e(const double x, double * result)
+{
+  int status = gsl_sf_bessel_J0_impl(x, result);
+  if(status != GSL_SUCCESS) {
+    GSL_ERROR("gsl_sf_bessel_J0_e", status);
+  }
+  return status;
+}
+
+
+/*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*-*-*/
+
+double gsl_sf_bessel_J0(const double x)
+{
+  double y;
+  int status = gsl_sf_bessel_J0_impl(x, &y);
+  if(status != GSL_SUCCESS) {
+    GSL_WARNING("gsl_sf_bessel_J0");
+  }
+  return y;
 }

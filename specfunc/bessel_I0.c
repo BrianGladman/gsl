@@ -148,7 +148,7 @@ int gsl_sf_bessel_I0_impl(const double x, double * result)
   }
   else if(y < xmax) {
     double b_scaled;
-    gsl_sf_bessel_I0_scaled_impl(x, &b_scaled)
+    gsl_sf_bessel_I0_scaled_impl(x, &b_scaled);
     *result = exp(y) * b_scaled;
     return GSL_SUCCESS;
   }

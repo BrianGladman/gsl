@@ -13,6 +13,16 @@
 
 /*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
 
+int gsl_sf_bessel_j0_impl(const double x, double * result)
+{
+  if(fabs(x) < GSL_ROOT4_MACH_EPS) {
+    return 1. - x*x/6.;
+  }
+  else {
+    return sin(x)/x;
+  }
+}
+
 int gsl_sf_bessel_j1_impl(const double x, double * result)
 {
   if(fabs(x) < 3.*DBL_MIN) {
@@ -139,6 +149,15 @@ int gsl_sf_bessel_j_steed_array_impl(const int lmax, const double x, double * jl
 
 /*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
 
+int gsl_sf_bessel_j0_e(const double x, double * result)
+{
+  int status = gsl_sf_bessel_j0_impl(x, result);
+  if(status != GSL_SUCCESS) {
+    GSL_ERROR("gsl_sf_bessel_j0_e", status);
+  }
+  return status;
+}
+
 int gsl_sf_bessel_j1_e(const double x, double * result)
 {
   int status = gsl_sf_bessel_j1_impl(x, result);
@@ -171,12 +190,12 @@ int gsl_sf_bessel_j_steed_array_e(const int lmax, const double x, double * jl_x)
 
 double gsl_sf_bessel_j0(const double x)
 {
-  if(fabs(x) < GSL_ROOT4_MACH_EPS) {
-    return 1. - x*x/6.;
+  double y;
+  int status = gsl_sf_bessel_j0_impl(x, &y);
+  if(status != GSL_SUCCESS) {
+    GSL_WARNING("gsl_sf_bessel_j0");
   }
-  else {
-    return sin(x)/x;
-  }
+  return y;
 }
 
 double gsl_sf_bessel_j1(const double x)
