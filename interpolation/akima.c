@@ -241,7 +241,7 @@ akima_eval_deriv (const void * vstate,
 
   size_t index;
 
-  y_array = 0;			/* prevent warning about unused parameter */
+  DISCARD_POINTER(y_array); /* prevent warning about unused parameter */
   
   if (a != 0)
     {
@@ -277,7 +277,7 @@ akima_eval_deriv2 (const void * vstate,
 
   size_t index;
 
-  y_array = 0;			/* prevent warning about unused parameter */
+  DISCARD_POINTER(y_array); /* prevent warning about unused parameter */
 
   if (a != 0)
     {

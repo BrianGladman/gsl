@@ -603,7 +603,7 @@ random_point (double x[], coord bin[], double *bin_vol,
   size_t bins = s->bins;
   size_t boxes = s->boxes;
 
-  xu = 0;  /* not used, turn off warning from compiler */
+  DISCARD_POINTER(xu); /* prevent warning about unused parameter */
 
   for (j = 0; j < dim; ++j)
     {

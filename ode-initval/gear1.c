@@ -89,7 +89,7 @@ gear1_apply(void * vstate,
   double * const k = state->k;
   double * const y0 = state->y0;
 
-  dydt_in = 0; /* avoid warning about unused parameter */
+  DISCARD_POINTER(dydt_in); /* prevent warning about unused parameter */
 
   DBL_MEMCPY(y0, y, dim);
 
