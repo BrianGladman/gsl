@@ -15,7 +15,7 @@ enum {
   GSL_ENOMEM   = 8,   /* malloc failed */
   GSL_EBADFUNC = 9,   /* problem with user-supplied function */
   GSL_ERUNAWAY = 10,  /* iterative process is out of control */
-  GSL_ETIMEOUT = 11,  /* exceeded max number of iterations */
+  GSL_EMAXITER = 11,  /* exceeded max number of iterations */
   GSL_EZERODIV = 12,  /* tried to divide by zero */
   GSL_ETOL     = 13,  /* user specified an invalid tolerance */
   GSL_EUNDRFLW = 14,  /* underflow */

@@ -180,7 +180,7 @@ int gsl_sf_bessel_j_steed_array_impl(const int lmax, const double x, double * jl
 		0.
 		);
 		*/
-	return GSL_ETIMEOUT;
+	return GSL_EMAXITER;
       }
     }
     while(fabs(del) >= fabs(FP) * GSL_MACH_EPS);

@@ -1,3 +1,9 @@
+Fri May  8 18:50:13 1998  Brian Gough  <bjg@vvv.lanl.gov>
+
+	* gsl_errno.h: changed GSL_ETIMEOUT to GSL_EMAXITER to describe
+ 	the error that occurs when a specified number of iterations is
+ 	exceeded.
+
 Sun Apr 19 19:14:05 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
 	* strerror.c (gsl_strerror): added an strerror function for making

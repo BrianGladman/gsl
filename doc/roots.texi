@@ -129,7 +129,7 @@ number when it was called by GSL. (Instead, it returned @code{NAN} or
 happens when an extrapolating algorithm lands on a place where the
 derivative is too small.
 
-@item GSL_ETIMEOUT
+@item GSL_EMAXITER
 The number of iterations executed exceeded @w{@code{max_iterations}}
 (@pxref{Search Stopping Parameters}).
 

@@ -93,6 +93,6 @@ gsl_root_newton(double * root,
     }
     
     /* Uh oh, ran out of iterations. */
-    GSL_ERROR("exceeded maximum number of iterations", GSL_ETIMEOUT);
+    GSL_ERROR("exceeded maximum number of iterations", GSL_EMAXITER);
   }
 }

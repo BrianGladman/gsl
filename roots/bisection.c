@@ -96,6 +96,6 @@ gsl_root_bisection(double * root, double (* f)(double), double * lower_bound,
     }
 
     /* Uh oh, ran out of iterations. */
-    GSL_ERROR("exceeded maximum number of iterations", GSL_ETIMEOUT);
+    GSL_ERROR("exceeded maximum number of iterations", GSL_EMAXITER);
   }
 }

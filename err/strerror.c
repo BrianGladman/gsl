@@ -25,7 +25,7 @@ gsl_strerror (const int gsl_errno)
       return "problem with user-supplied function";
     case GSL_ERUNAWAY:
       return "iterative process is out of control";
-    case GSL_ETIMEOUT:
+    case GSL_EMAXITER:
       return "exceeded max number of iterations" ;
     case GSL_EZERODIV:
       return "tried to divide by zero" ;
