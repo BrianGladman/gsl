@@ -1,3 +1,7 @@
+Mon Jun  1 23:47:23 1998  Brian Gough  <bjg@vvv.lanl.gov>
+
+	* test_nist.c: added some numerical accuracy tests from NIST
+
 Fri Apr 10 15:11:51 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
 	* renamed pooled_variance.c, etc to p_variance to avoid linker
