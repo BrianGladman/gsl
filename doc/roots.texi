@@ -1,0 +1,128 @@
+@cindex root finding
+@cindex zero finding
+@cindex finding roots
+@cindex finding zeros
+@cindex roots
+
+This chapter describes functions for finding the roots of arbitrary
+functions. It discusses proper use and possible pitfalls of each
+function and gives an overview of the algorithms involved.
+
+@menu
+* Root Finding Overview::
+* Setting and Getting Stopping Criteria::
+* Hybrid Algorithms::
+* Bisection::
+* Newtons Method::
+* Secant Method::
+* False Position::
+@end menu
+
+
+@node Root Finding Overview
+@section Root Finding Overview
+@cindex root finding, overview
+
+Insert discussion of numerical root finding here.
+
+Declarations for these functions and associated crud is in
+@file{gsl_roots.h}; you should include it in your programs which make
+use of @sc{gsl} root finding services.
+
+
+@node Setting and Getting Stopping Criteria
+@section Setting and Getting Stopping Criteria
+@cindex root finding, setting stopping criteria
+@cindex root finding, getting stopping criteria
+
+@sc{gsl} root finding functions (and numerical root finding functions in
+general) stop when one of the following conditions is true:
+
+@c @bullet, which it what I really want, works fine with makeinfo but
+@c blows up with texi2dvi!
+@itemize @minus
+@item
+A root has been found to within the user-specified precision (the
+@dfn{epsilon}).
+
+@item
+A user-specified maximum number of iterations has executed.
+
+@item
+An error has occured (for example, Newton's Method has landed on an
+extrema).
+@end itemize
+
+You, as a @sc{gsl} user, may adjust the epsilon and the maximum number
+of iterations with the following functions, which manipulate static
+global variables. @emph{Do not change these variables yourself!} The
+@sc{gsl} functions contain important safety checks which you should not
+bypass.
+
+@deftypefun void gsl_root_set_epsilon (@w{double @var{new_epsilon}})
+@deftypefunx double gsl_root_get_epsilon ()
+Set and get the epsilon used by @sc{gsl} root finding functions.
+@end deftypefun
+
+@deftypefun void gsl_root_set_max_iterations (@w{int @var{new_max_it}})
+@deftypefunx double gsl_root_get_max_iterations ()
+Set and get the maximum number of iterations used by @sc{gsl} root
+finding functions.
+@end deftypefun
+
+
+@node Hybrid Algorithms
+@section Hybrid Algorithms
+@cindex root finding, hybrid algorithms
+
+Often, the best root finding algorithm is one which combines two or more
+different methods. The @value{GSL} provides two hybrids: one for use
+when the function's first derivative is available, and one for when it
+is not.
+
+@deftypefun int gsl_root_have_1der( @w{* (double)(double) @var{fn}}, @w{* (double)(double) @var{dfn}}, @w{double @var{lower_bound}}, @w{double @var{upper_bound}})
+
+Search for a zero between @w{@var{lower_bound}} and
+@w{@var{upper_bound}} using a combination of bisection and Newton's
+Method.
+
+@table @code
+@item GSL_EINVAL
+One or more of the input arguments was invalid. A likely cause is that
+@var{fn} and/or @var{dfn} are/is not working as
+@w{@code{gsl_root_have_1der}} expects them to.
+@end table
+
+@end deftypefun
+
+
+@node Bisection
+@section Bisection
+@cindex bisection
+@cindex root finding, bisection algorithm
+
+ha ha ha
+
+
+@node Newtons Method
+@section Newtons Method
+@cindex Newton's Method
+@cindex root finding, Newton's Method algorithm
+
+ha ha ha
+
+
+@node Secant Method
+@section Secant Method
+@cindex Secant Method
+@cindex root finding, Secant Method algorithm
+
+ha h aha
+
+
+@node False Position
+@section False Position
+@cindex false position
+@cindex root finding, false position algorithm
+
+ha ha ha

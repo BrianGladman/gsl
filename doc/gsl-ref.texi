@@ -118,16 +118,18 @@ team (@pxref{Contributors to GSL}) in C, and are meant to present a
 modern Applications Programming Interface (API) for C programmers, while
 allowing wrappers to be written for very high level languages.
 
+@c Section on error handling
 @node Error handling in GSL, Random number generation, Preliminaries, Top
 @chapter Error handling in GSL
 @cindex Errors
 @include err.texi
 
-
+@c Section on random number generation
 @node Random number generation, Basic statistics, Error handling in GSL, Top
 @chapter Random number generation
 @include random.texi
 
+@c Section on statistics
 @node Basic statistics, FFTs, Random number generation, Top
 @chapter Basic statistics
 @cindex statistics -- basic
@@ -255,38 +257,12 @@ int main()
 @chapter FFTs
 @include fft.texi
 
+@c Section on root finding
 @node Root finding, Simulated annealing, FFTs, Top
 @chapter Root finding
-@cindex root finding
-@cindex Newton's Method
+@include roots.texi
 
-[contributed by Mark Galassi]
-
-There is a program @code{rtest} which does sample runs of many of these
-routines.
-
-@section Newton's method
-
-This is a half-assed implementation of Newton's method, meant mostly as
-an example for the GSL coding conventions.
-
-The epsilon value is static, and can be set and verified with:
-
-@deftypefn {Root finding} void gsl_set_newton_epsilon (double new_val)
-@deftypefnx {Root finding} double gsl_get_newton_epsilon ()
-Sets and gets the epsilon value used in Newton's method.
-@end deftypefn
-
-
-@deftypefn {Root finding} double gsl_newton1D (double (*@var{fn})(double x), double (*@var{dfn})(double x), double @var{guess})
-Uses Newton's method to find a root of the function @var{fn}, starting
-at @var{guess}.  User has to supply both the function @var{fn} and its
-first derivative @var{dfn}.
-
-Example: @code{gsl_newton1D(sin, cos, 2.3)}
-@end deftypefn
-
-
+@c Section on simulated annealing
 @node Simulated annealing, Debugging Numerical Programs, Root finding, Top
 @chapter Simulated annealing
 @cindex simulated annealing
