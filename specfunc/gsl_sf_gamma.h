@@ -210,7 +210,9 @@ double gsl_sf_pochrel(const double a, const double x);
  *
  * Q(a,x) = 1/Gamma(a) Integral[ t^(a-1) e^(-t), {t,x,Infinity} ]
  *
- * a > 0, x >= 0
+ * a >= 0, x >= 0
+ *   Q(a,0) := 1
+ *   Q(0,x) := 0, x != 0
  *
  * exceptions: GSL_EDOM
  */
@@ -228,6 +230,19 @@ double gsl_sf_gamma_inc_Q(const double a, const double x);
  */
 int gsl_sf_gamma_inc_P_e(const double a, const double x, gsl_sf_result * result);
 double gsl_sf_gamma_inc_P(const double a, const double x);
+
+
+/* Non-normalized Incomplete Gamma Function
+ *
+ * Gamma(a,x) := Integral[ t^(a-1) e^(-t), {t,x,Infinity} ]
+ *
+ * x >= 0.0
+ *   Gamma(a, 0) := Gamma(a)
+ *
+ * exceptions: GSL_EDOM
+ */
+int gsl_sf_gamma_inc_e(const double a, const double x, gsl_sf_result * result);
+double gsl_sf_gamma_inc(const double a, const double x);
 
 
 /* Logarithm of Beta Function
