@@ -1,3 +1,8 @@
+Mon Jun  1 11:02:04 1998  Brian Gough  <bjg@vvv.lanl.gov>
+
+	* renamed test.c to test_results.c to avoid confusion when debugging
+	other test programs called test.c
+
 Sat May 30 16:11:34 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
 	* gsl_errno.h: add GSL_ESING for errors caused by singularities

@@ -54,7 +54,7 @@ gsl_test (int status, const char *test_description,...)
       va_end (ap);
 #endif
 
-      putchar ('\n');
+      printf("\n");
       fflush (stdout);
     }
 }
@@ -64,7 +64,16 @@ void
 gsl_test_rel (double result, double expected, double relative_error,
 	      const char *test_description,...)
 {
-  int status = (fabs(result-expected)/fabs(expected) > relative_error) ;
+  int status ;
+
+  if (expected != 0 ) 
+    {
+      status = (fabs(result-expected)/fabs(expected) > relative_error) ;
+    }
+  else
+    {
+      status = (fabs(result) > relative_error) ;
+    }
 
   tests++;
 
@@ -105,7 +114,7 @@ gsl_test_rel (double result, double expected, double relative_error,
 	  printf(" (%.18g observed vs %.18g expected)", result, expected) ;
 	}
 
-      putchar ('\n');
+      printf ("\n") ;
       fflush (stdout);
     }
 }
@@ -154,7 +163,7 @@ gsl_test_int (int result, int expected, const char *test_description,...)
 	  printf(" (%d observed vs %d expected)", result, expected) ;
 	}
 
-      putchar ('\n');
+      printf ("\n");
       fflush (stdout);
     }
 }
@@ -199,7 +208,7 @@ gsl_test_str (const char * result, const char * expected,
 	  printf(" (%s observed vs %s expected)", result, expected) ;
 	}
 
-      putchar ('\n');
+      printf ("\n");
       fflush (stdout);
     }
 }

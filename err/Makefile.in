@@ -74,7 +74,7 @@ lib_LIBRARIES = libgslerr.a libgsltest.a
 include_HEADERS = gsl_errno.h gsl_message.h gsl_test.h
 
 libgslerr_a_SOURCES = error.c stream.c message.c strerror.c warn.c
-libgsltest_a_SOURCES = test.c
+libgsltest_a_SOURCES = test_results.c
 
 check_PROGRAMS = test_errnos
 
@@ -94,7 +94,7 @@ LIBS = @LIBS@
 libgslerr_a_LIBADD = 
 libgslerr_a_OBJECTS =  error.o stream.o message.o strerror.o warn.o
 libgsltest_a_LIBADD = 
-libgsltest_a_OBJECTS =  test.o
+libgsltest_a_OBJECTS =  test_results.o
 AR = ar
 test_errnos_SOURCES = test_errnos.c
 test_errnos_OBJECTS =  test_errnos.o
@@ -113,7 +113,7 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 TAR = tar
 GZIP = --best
 DEP_FILES =  .deps/error.P .deps/message.P .deps/stream.P \
-.deps/strerror.P .deps/test.P .deps/test_errnos.P .deps/warn.P
+.deps/strerror.P .deps/test_errnos.P .deps/test_results.P .deps/warn.P
 SOURCES = $(libgslerr_a_SOURCES) $(libgsltest_a_SOURCES) test_errnos.c
 OBJECTS = $(libgslerr_a_OBJECTS) $(libgsltest_a_OBJECTS) test_errnos.o
 
