@@ -14,6 +14,7 @@ General Public License.
 * No Warranty::                 
 * Reporting Bugs::              
 * Further Information::         
+* Conventions used in this manual::  
 @end menu
 
 @node Routines available in GSL
