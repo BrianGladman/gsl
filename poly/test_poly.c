@@ -293,6 +293,69 @@ test_poly(void)
     gsl_test_rel(GSL_IMAG(z2), 0.0, 1e-9, "z2.imag, (x-17)(x-31)(x-95)=0");
   }
 
+
+  {
+    /* Wilkinson polynomial: y = (x-1)(x-2)(x-3)(x-4)(x-5) */
+
+    double a[6] = { -120, 274, -225, 85, -15, 1 };
+    double z[5] ;
+
+    gsl_poly_complex_workspace * w = gsl_poly_complex_workspace_alloc(6);
+
+    int status = gsl_poly_complex_solve (a,6,w,z);
+
+    gsl_poly_complex_workspace_free(w);
+
+    gsl_test(status, "gsl_poly_complex_solve, 5th-order Wilkinson polynomial");
+    gsl_test_rel(z[0], 1.0, 1e-9, "z0.real, 5th-order polynomial");
+    gsl_test_rel(z[1], 0.0, 1e-9, "z0.imag, 5th-order polynomial"); 
+    gsl_test_rel(z[2], 2.0, 1e-9, "z1.real, 5th-order polynomial");
+    gsl_test_rel(z[3], 0.0, 1e-9, "z1.imag, 5th-order polynomial"); 
+    gsl_test_rel(z[4], 3.0, 1e-9, "z2.real, 5th-order polynomial");
+    gsl_test_rel(z[5], 0.0, 1e-9, "z2.imag, 5th-order polynomial"); 
+    gsl_test_rel(z[6], 4.0, 1e-9, "z3.real, 5th-order polynomial");
+    gsl_test_rel(z[7], 0.0, 1e-9, "z3.imag, 5th-order polynomial"); 
+    gsl_test_rel(z[8], 5.0, 1e-9, "z4.real, 5th-order polynomial");
+    gsl_test_rel(z[9], 0.0, 1e-9, "z4.imag, 5th-order polynomial"); 
+  }
+
+  {
+    /* : 8-th order polynomial y = x^8 + x^4 + 1 */
+
+    double a[9] = { 1, 0, 0, 0, 1, 0, 0, 0, 1 };
+    double z[16] ;
+
+    double C = 0.5;
+    double S = sqrt(3.0)/2.0 ;
+
+    gsl_poly_complex_workspace * w = gsl_poly_complex_workspace_alloc(9);
+
+    int status = gsl_poly_complex_solve (a,9,w,z);
+
+    gsl_poly_complex_workspace_free(w);
+
+    gsl_test(status, "gsl_poly_complex_solve, 8th-order polynomial");
+
+    gsl_test_rel(z[0], -S, 1e-9, "z0.real, 8th-order polynomial");
+    gsl_test_rel(z[1], C, 1e-9, "z0.imag, 8th-order polynomial"); 
+    gsl_test_rel(z[2], -S, 1e-9, "z1.real, 8th-order polynomial");
+    gsl_test_rel(z[3], -C, 1e-9, "z1.imag, 8th-order polynomial"); 
+    gsl_test_rel(z[4], -C, 1e-9, "z2.real, 8th-order polynomial");
+    gsl_test_rel(z[5], S, 1e-9, "z2.imag, 8th-order polynomial"); 
+    gsl_test_rel(z[6], -C, 1e-9, "z3.real, 8th-order polynomial");
+    gsl_test_rel(z[7], -S, 1e-9, "z3.imag, 8th-order polynomial"); 
+    gsl_test_rel(z[8], C, 1e-9, "z4.real, 8th-order polynomial");
+    gsl_test_rel(z[9], S, 1e-9, "z4.imag, 8th-order polynomial"); 
+    gsl_test_rel(z[10], C, 1e-9, "z5.real, 8th-order polynomial");
+    gsl_test_rel(z[11], -S, 1e-9, "z5.imag, 8th-order polynomial"); 
+    gsl_test_rel(z[12], S, 1e-9, "z6.real, 8th-order polynomial");
+    gsl_test_rel(z[13], C, 1e-9, "z6.imag, 8th-order polynomial"); 
+    gsl_test_rel(z[14], S, 1e-9, "z7.real, 8th-order polynomial");
+    gsl_test_rel(z[15], -C, 1e-9, "z7.imag, 8th-order polynomial"); 
+    
+  }
+
+
 }
 
 

@@ -1,3 +1,7 @@
+Tue Aug 24 12:02:47 1999  Brian Gough  <bjg@network-theory.co.uk>
+
+	* zsolve.c: added general solver using QR method
+
 1999-08-22  Mark Galassi  <rosalia@lanl.gov>
 
 	* Makefile.am (libgslpoly_a_SOURCES): for now commented out

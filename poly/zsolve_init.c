@@ -48,22 +48,3 @@ gsl_poly_complex_workspace_free (gsl_poly_complex_workspace * w)
   free(w->matrix) ;
   free(w);
 }
-
-#include <stdio.h>
-
-#define INDEX(m,i,j,n) ((m)[(i)*(n) + (j)])
-
-void
-dump (gsl_poly_complex_workspace * w)
-{
-  int i, j;
-
-  for (i = 0; i < w->nc ; i++)
-    {
-      for (j = 0; j < w->nc ; j++)
-        printf(" %10g", INDEX(w->matrix,i,j,w->nc)) ;
-      
-      printf("\n");
-    }
-  printf("\n");
-}
