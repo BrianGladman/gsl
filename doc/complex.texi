@@ -2,7 +2,7 @@
 
 The functions described in this chapter provide support for complex
 numbers.  The algorithms take care to avoid unnecessary intermediate
-underflows and overflows, allowing the functions to evaluated over the
+underflows and overflows, allowing the functions to be evaluated over 
 as much of the complex plane as possible. 
 
 @comment FIXME: this still needs to be
