@@ -18,7 +18,9 @@ INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../err -I$(srcdir)/../vector -I$(srcdir)/.
 #test_blas_SOURCES = test_blas.c
 
 libgslspecfunc_a_SOURCES = 	\
-	blas.c
+	blas.c			\
+	blas_raw_generic.c
+
 
 strict:
 	$(MAKE) CFLAGS="-ansi -pedantic -W -Wall -Wtraditional -Wconversion -Wshadow -Wpointer-arith -Wcast-qual -Wcast-align -Wwrite-strings -Waggregate-return -Wstrict-prototypes -fshort-enums -fno-common -Wmissing-prototypes -Wnested-externs -g -O4 -Dinline=''"

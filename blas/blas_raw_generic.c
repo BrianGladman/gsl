@@ -1,18 +1,16 @@
 /*
- * Author:  G. Jungman
+ * Author:  G. Jungman  and  B. Gough
  * RCS:     $Id$
  */
-/* Based on draft BLAST C interface specification  [Jul 7 1998]
- */
-#ifndef GSL_BLAS_RAW_H_
-#define GSL_BLAS_RAW_H_
+#include <math.h>
+#include "gsl_blas_types.h"
+#include "gsl_blas_raw.h"
 
-#include <gsl_blas_types.h>
 
 
 /*
  * ===========================================================================
- * Prototypes for level 1 BLAS functions
+ * level 1 BLAS functions
  * ===========================================================================
  */
 
@@ -79,7 +77,7 @@ CBLAS_INDEX gsl_blas_raw_izamax (int N, const void * X, int incX);
 
 /*
  * ===========================================================================
- * Prototypes for level 1 BLAS routines
+ * level 1 BLAS routines
  * ===========================================================================
  */
 
@@ -182,12 +180,13 @@ void gsl_blas_raw_zdscal (int N, double alpha, void * X, int incX);
 
 /*
  * ===========================================================================
- * Prototypes for level 2 BLAS
+ * level 2 BLAS
  * ===========================================================================
  */
 
  
 /* GEMV */
+
 void gsl_blas_raw_sgemv (CBLAS_ORDER order, CBLAS_TRANSPOSE TransA,
                          int M, int N,
                          float alpha,
@@ -708,7 +707,7 @@ void gsl_blas_raw_zhpr2 (CBLAS_ORDER order, CBLAS_UPLO Uplo,
 
 /*
  * ===========================================================================
- * Prototypes for level 3 BLAS
+ * level 3 BLAS
  * ===========================================================================
  */
 
@@ -992,13 +991,3 @@ void gsl_blas_raw_zher2k (CBLAS_ORDER Order, CBLAS_UPLO Uplo,
 			  double beta,
                           void * C, int ldc);
 
-
-#if defined(HAVE_INLINE) && defined(HAVE_CBLAS)
-#include <cblas.h>
-
-/* insert inline cblas implementation of above here */
-
-#endif /* defined(HAVE_INLINE) && defined(HAVE_CBLAS) */
-
-
-#endif /* !GSL_BLAS_RAW_H_ */
