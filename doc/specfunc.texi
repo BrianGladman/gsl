@@ -38,7 +38,8 @@ header files can be included using the file @file{gsl_sf.h}.
 * Gamma Function::              
 * Gegenbauer Functions::        
 * Hypergeometric Functions::    
-* Laguerre Functions::          
+* Laguerre Functions::             
+* Lambert W Functions::        
 * Legendre Functions and Spherical Harmonics::  
 * Logarithm and Related Functions::  
 * Power Function::              
@@ -220,6 +221,10 @@ accuracy.
 @node Laguerre Functions
 @section Laguerre Functions
 @include specfunc-laguerre.texi
+
+@node Lambert W Functions
+@section Lambert W Functions
+@include specfunc-lambert.texi
 
 @node Legendre Functions and Spherical Harmonics
 @section Legendre Functions and Spherical Harmonics
