@@ -45,7 +45,7 @@ main (void)
     
     for (i = 0; i < 1000; i++)
       {
-        double xi = 1.0 / (i + 1.0);
+        double xi = 1.0 / (i + 1.5);
         double yi = xi * xi ;
         double zi = xi * xi * xi;
         
