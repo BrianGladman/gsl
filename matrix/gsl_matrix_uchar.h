@@ -20,9 +20,17 @@ gsl_matrix_uchar_alloc (gsl_block_uchar * b, size_t offset,
                                    size_t n1, size_t n2, size_t d2);
 
 gsl_matrix_uchar * 
-gsl_matrix_uchar_alloc_from_matrix (gsl_matrix_uchar * b,
+gsl_matrix_uchar_alloc_from_matrix (gsl_matrix_uchar * m,
                                     size_t k1, size_t k2,
                                     size_t n1, size_t n2);
+
+gsl_vector_uchar * 
+gsl_vector_uchar_alloc_row_from_matrix (gsl_matrix_uchar * m,
+                                        size_t i);
+
+gsl_vector_uchar * 
+gsl_vector_uchar_alloc_col_from_matrix (gsl_matrix_uchar * m,
+                                        size_t j);
 
 void gsl_matrix_uchar_free (gsl_matrix_uchar * m);
 

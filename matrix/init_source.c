@@ -91,7 +91,6 @@ FUNCTION (gsl_matrix, alloc_from_matrix) (TYPE(gsl_matrix) * mm,
   return m;
 }
 
-
 void
 FUNCTION (gsl_matrix, free) (TYPE (gsl_matrix) * m)
 {

@@ -1,5 +1,7 @@
 * Will be new in gsl-0.4.2 (or 0.5; number is not yet decided):
 
+** Minimization now keeps track of function values.
+
 ** Matrices and vectors now use a BLAS compatible format, and have a
 separate memory handling layer (gsl_block).
 

@@ -26,6 +26,15 @@ gsl_matrix_complex_long_double_alloc_from_matrix (gsl_matrix_complex_long_double
                                             size_t k1, size_t k2,
                                             size_t n1, size_t n2);
 
+gsl_vector_complex_long_double * 
+gsl_vector_complex_long_double_alloc_row_from_matrix (gsl_matrix_complex_long_double * m,
+                                                size_t i);
+
+gsl_vector_complex_long_double * 
+gsl_vector_complex_long_double_alloc_col_from_matrix (gsl_matrix_complex_long_double * m,
+                                                size_t j);
+
+
 void gsl_matrix_complex_long_double_free (gsl_matrix_complex_long_double * m);
 
 gsl_complex_long_double * gsl_matrix_complex_long_double_ptr(const gsl_matrix_complex_long_double * m, size_t i, size_t j);

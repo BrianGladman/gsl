@@ -26,6 +26,15 @@ gsl_matrix_complex_alloc_from_matrix (gsl_matrix_complex * b,
                                             size_t k1, size_t k2,
                                             size_t n1, size_t n2);
 
+gsl_vector_complex * 
+gsl_vector_complex_alloc_row_from_matrix (gsl_matrix_complex * m,
+                                                size_t i);
+
+gsl_vector_complex * 
+gsl_vector_complex_alloc_col_from_matrix (gsl_matrix_complex * m,
+                                                size_t j);
+
+
 void gsl_matrix_complex_free (gsl_matrix_complex * m);
 
 gsl_complex * gsl_matrix_complex_ptr(const gsl_matrix_complex * m, size_t i, size_t j);

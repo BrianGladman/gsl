@@ -49,6 +49,8 @@ int gsl_vector_complex_float_fprintf (FILE * stream,
 				      const gsl_vector_complex_float * v,
 				      const char *format);
 
+int gsl_vector_complex_float_copy (gsl_vector_complex_float * dest, const gsl_vector_complex_float * src);
+
 extern int gsl_check_range;
 
 #ifdef HAVE_INLINE

@@ -131,7 +131,6 @@ FUNCTION (test, trap) (void)
 
   size_t j = 0;
   double x;
-  BASE * y;
 
   status = 0;
   FUNCTION (gsl_vector, set) (v, j - 1, (ATOMIC)0);

@@ -20,9 +20,17 @@ gsl_matrix_int_alloc (gsl_block_int * b, size_t offset,
                                    size_t n1, size_t n2, size_t d2);
 
 gsl_matrix_int * 
-gsl_matrix_int_alloc_from_matrix (gsl_matrix_int * b,
+gsl_matrix_int_alloc_from_matrix (gsl_matrix_int * m,
                                     size_t k1, size_t k2,
                                     size_t n1, size_t n2);
+
+gsl_vector_int * 
+gsl_vector_int_alloc_row_from_matrix (gsl_matrix_int * m,
+                                        size_t i);
+
+gsl_vector_int * 
+gsl_vector_int_alloc_col_from_matrix (gsl_matrix_int * m,
+                                        size_t j);
 
 void gsl_matrix_int_free (gsl_matrix_int * m);
 

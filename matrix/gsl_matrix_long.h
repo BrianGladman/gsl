@@ -20,9 +20,17 @@ gsl_matrix_long_alloc (gsl_block_long * b, size_t offset,
                                    size_t n1, size_t n2, size_t d2);
 
 gsl_matrix_long * 
-gsl_matrix_long_alloc_from_matrix (gsl_matrix_long * b,
+gsl_matrix_long_alloc_from_matrix (gsl_matrix_long * m,
                                     size_t k1, size_t k2,
                                     size_t n1, size_t n2);
+
+gsl_vector_long * 
+gsl_vector_long_alloc_row_from_matrix (gsl_matrix_long * m,
+                                        size_t i);
+
+gsl_vector_long * 
+gsl_vector_long_alloc_col_from_matrix (gsl_matrix_long * m,
+                                        size_t j);
 
 void gsl_matrix_long_free (gsl_matrix_long * m);
 

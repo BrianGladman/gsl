@@ -36,6 +36,8 @@ int gsl_vector_short_fscanf (FILE * stream, gsl_vector_short * v);
 int gsl_vector_short_fprintf (FILE * stream, const gsl_vector_short * v,
 			      const char *format);
 
+int gsl_vector_short_copy (gsl_vector_short * dest, const gsl_vector_short * src);
+
 extern int gsl_check_range;
 
 #ifdef HAVE_INLINE

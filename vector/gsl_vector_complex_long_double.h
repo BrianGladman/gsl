@@ -49,6 +49,8 @@ int gsl_vector_complex_long_double_fprintf (FILE * stream,
 				      const gsl_vector_complex_long_double * v,
 				      const char *format);
 
+int gsl_vector_complex_long_double_copy (gsl_vector_complex_long_double * dest, const gsl_vector_complex_long_double * src);
+
 extern int gsl_check_range;
 
 #ifdef HAVE_INLINE

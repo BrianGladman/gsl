@@ -144,7 +144,7 @@ FUNCTION (test, trap) (void)
 
   BASE z = {{1.2, 3.4}};
   BASE z1 = {{4.5, 6.7}};
-  BASE *zp ;
+
   size_t j = 0;
 
   status = 0;

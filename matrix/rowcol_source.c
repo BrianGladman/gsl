@@ -58,7 +58,7 @@ FUNCTION (gsl_matrix, copy_col) (TYPE (gsl_vector) * v,
 
     for (i = 0; i < row_length; i++)
       {
-	int k;
+	size_t k;
 	for (k = 0; k < MULTIPLICITY; k++)
 	  {
 	    v->data[stride * MULTIPLICITY * j + k] =
@@ -136,4 +136,61 @@ FUNCTION (gsl_matrix, set_col) (TYPE (gsl_matrix) * m,
   }
 
   return GSL_SUCCESS;
+}
+
+
+TYPE (gsl_vector) *
+FUNCTION (gsl_vector, alloc_row_from_matrix) (TYPE(gsl_matrix) * m,
+                                              const size_t i)
+{
+  TYPE (gsl_vector) * v;
+
+  const size_t column_length = m->size1;
+
+  if (i >= column_length)
+    {
+      GSL_ERROR_RETURN ("row index is out of range", GSL_EINVAL, 0);
+    }
+
+  v = (TYPE (gsl_vector) *) malloc (sizeof (TYPE (gsl_vector)));
+
+  if (v == 0)
+    {
+      GSL_ERROR_RETURN ("failed to allocate space for vector struct",
+			GSL_ENOMEM, 0);
+    }
+
+  v->data = m->data + i * m-> dim2 ;
+  v->size = m->size2;
+  v->stride = 1;
+
+  return v;
+}
+
+TYPE (gsl_vector) *
+FUNCTION (gsl_vector, alloc_col_from_matrix) (TYPE(gsl_matrix) * m,
+                                              const size_t j)
+{
+  TYPE (gsl_vector) * v;
+
+  const size_t row_length = m->size2;
+
+  if (j >= row_length)
+    {
+      GSL_ERROR_RETURN ("column index is out of range", GSL_EINVAL, 0);
+    }
+
+  v = (TYPE (gsl_vector) *) malloc (sizeof (TYPE (gsl_vector)));
+
+  if (v == 0)
+    {
+      GSL_ERROR_RETURN ("failed to allocate space for vector struct",
+			GSL_ENOMEM, 0);
+    }
+
+  v->data = m->data + j ;
+  v->size = m->size1;
+  v->stride = m->dim2;
+
+  return v;
 }

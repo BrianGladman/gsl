@@ -36,6 +36,8 @@ int gsl_vector_ulong_fscanf (FILE * stream, gsl_vector_ulong * v);
 int gsl_vector_ulong_fprintf (FILE * stream, const gsl_vector_ulong * v,
 			      const char *format);
 
+int gsl_vector_ulong_copy (gsl_vector_ulong * dest, const gsl_vector_ulong * src);
+
 extern int gsl_check_range;
 
 #ifdef HAVE_INLINE
