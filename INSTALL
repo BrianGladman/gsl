@@ -37,7 +37,7 @@ since it is several megabytes in size.
 
 If you run "make check" and get some failures, please see the notes on
 platform specific problems below.  If you find failures that are not
-mentioned, please report them.
+mentioned, please report them to bug-gsl@gnu.org.
 
 The library can be installed using the command,
 
@@ -70,11 +70,10 @@ If you get any problems try this first.
 
 2) With gcc-2.95/2.96 the tests fail in the eigen/ directory.  This is
 due to a compiler optimization bug which causes errors in the
-manipulation of complex numbers.  Do not use the library if you
-encounter this problem.
+manipulation of complex numbers.  
 
-This is fixed in more recent versions of gcc.  Compiling without
-optimisation will work around the bug.
+This is fixed in more recent versions of gcc.  Do not use the library
+if you encounter this problem---install a newer version of gcc.
 
 3) Attempts to run 'strip' on the static library libgsl.a will probably
 produce a broken library (it is known to happen with GNU binutils
@@ -208,12 +207,8 @@ in addition to the normal compilation options.
 Hints for Microsoft Windows
 ===========================
 
-GSL should compile with GCC under Cygwin or MinGW+MSYS on Microsoft
-Windows.
-
-There are some scripts for converting makefiles into Microsoft Visual
-C++ project files in the msvc/ directory of the CVS repository on
-sources.redhat.com.
+GSL should compile cleanly with GCC under Cygwin or MinGW+MSYS on
+Microsoft Windows.
 
 Hints for OpenBSD
 =================
@@ -235,12 +230,11 @@ config.h file to comment out the line which defines HAVE_ISINF.
 Hints for PowerPC
 =================
 
-F J Frankin <MEP95JFF@sheffield.ac.uk> reported on the gsl-discuss
-mailing list that some early versions of GCC-2.95 have a problem with
-long argument lists on PPC architecture, and this prevents GSL from
-compiling correctly (e.g. the test program in the blas directory gives
-a segmentation fault when run).  This problem is fixed in recent
-versions of GCC. 
+F J Frankin <MEP95JFF@sheffield.ac.uk> reported that some early
+versions of GCC-2.95 have a problem with long argument lists on PPC
+architecture, and this prevents GSL from compiling correctly (e.g. the
+test program in the blas directory gives a segmentation fault when
+run).  This problem is fixed in more recent versions of GCC.
 
 Hints for Solaris
 =================

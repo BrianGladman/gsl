@@ -5,14 +5,6 @@ We are looking for volunteers to do the following tasks.
 Consult the TODO files in each directory first for specific
 requirements.
 
-* Fix error terms in implicit ODE solvers rk2imp, rk4imp, gear1, gear2.
-
-* Generate the examples in the manual directly from example .c
-files (these will also make a nice 'quick check' of programs
-that can be compiled against the installed library)
-
-* PyGSL -- python bindings for GSL, see http://pygsl.sf.net/
-
 * 1st-line support on the mailing lists (e.g. checking that bugs are
 reproducible, and that all relevant information is supplied)
 
@@ -33,8 +25,6 @@ reproducible, and that all relevant information is supplied)
 * Weierstrass elliptic functions
 
 * Complex Bessel Functions
-
-* Incomplete gamma functions 6.5.2 or 6.5.3 in Abramowitz & Stegun
 
 * Additional volunteers with access to a good library to get copies of
 papers for other developers.
@@ -97,6 +87,8 @@ rounding.
 * Constant objects (like gsl_roots_fsolver_brent) ought to have
 constant pointers (const gsl_roots_fsolver_type * const
 gsl_roots_fsolver_brent)
+
+* PyGSL -- python bindings for GSL, see http://pygsl.sf.net/
 
 Wishlist or vague ideas
 =======================

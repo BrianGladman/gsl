@@ -5,7 +5,6 @@ file should be kept up-to-date.
 BUG#1 -- gsl_sf_hyperg_2F1_e fails for some arguments 
 
 From: keith.briggs@bt.com
-To: gsl-discuss@sources.redhat.com
 Subject: gsl_sf_hyperg_2F1 bug report
 Date: Thu, 31 Jan 2002 12:30:04 -0000
 
