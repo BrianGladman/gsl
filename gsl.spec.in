@@ -1,19 +1,17 @@
+Name: gsl
 Summary: GNU Scientific Library (GSL)
-name: gsl
 Packager: rosalia@lanl.gov
 %define version @VERSION@
 %define release 0
-version: %{version}
-release: %{release}
-#Prereq: 
-#requires: 
-vendor: The GSL Team
+Version: %{version}
+Release: %{release}
+License: GPL
+Vendor: The GSL Team
 Distribution: research software
-copyright: Copyright (C) 1997, 1998, 1999, 2000, 2001, 2002 The GSL Team
-source: gsl-%{version}.tar.gz
-group: Libraries/Research
+Copyright: Copyright (C) 1997, 1998, 1999, 2000, 2001, 2002 The GSL Team
+Source: gsl-%{version}.tar.gz
+Group: Libraries/Research
 %define mybuildroot /var/tmp/%{name}-build
-%define installroot /install-tmp
 BuildRoot: %{mybuildroot}
 
 %description
@@ -41,24 +39,36 @@ Install the gsl package if you need a library for high-level
 scientific numerical analysis.
 
 %prep
-%setup -c
-echo "dude, mybuildroot is " %{mybuildroot}
-echo "dude, installroot is " %{installroot}
-echo "dude, RPM_BUILD_ROOT is " $RPM_BUILD_ROOT
+%setup -q -n gsl-%{version}
 
 %build
-cd %{name}-%{version}; ./configure --prefix=/usr; make
+CFLAGS="$RPM_OPT_FLAGS"
+./configure --prefix=%{_prefix} \
+    --bindir=%{_bindir} --mandir=%{_mandir} \
+    --localstatedir=%{_localstatedir} --libdir=%{_libdir} \
+    --datadir=%{_datadir} --includedir=%{_includedir} \
+    --sysconfdir=%{_sysconfdir}
+make
 
 %install
-cd %{name}-%{version}; make install prefix=%{mybuildroot}/usr
-#cd %{name}-%{version}; make install prefix=%{mybuildroot}/%{installroot}
+rm -rf $RPM_BUILD_ROOT
 
-%post
+make prefix=$RPM_BUILD_ROOT%{_prefix} bindir=$RPM_BUILD_ROOT%{_bindir} \
+    mandir=$RPM_BUILD_ROOT%{_mandir} libdir=$RPM_BUILD_ROOT%{_libdir} \
+    localstatedir=$RPM_BUILD_ROOT%{_localstatedir} \
+    datadir=$RPM_BUILD_ROOT%{_datadir} \
+    includedir=$RPM_BUILD_ROOT%{_includedir} \
+    sysconfdir=$RPM_BUILD_ROOT%{_sysconfdir} install
 
-%postun
+%clean
+rm -rf $RPM_BUILD_ROOT
+
+%post -p /sbin/ldconfig
+
+%postun -p /sbin/ldconfig
 
 %files
-%doc %{name}-%{version}/{NEWS,ChangeLog,INSTALL,README,AUTHORS,THANKS,BUGS}
+%doc {NEWS,ChangeLog,INSTALL,README,AUTHORS,THANKS,BUGS}
 %doc /usr/info/gsl-ref*
 /usr/bin/gsl-config
 /usr/bin/gsl-histogram
