@@ -12,7 +12,7 @@ include_HEADERS = gsl_vegas.h gsl_miser.h
 
 #noinst_HEADERS = vegas.h
 
-INCLUDES = -I$(srcdir)/../ -I$(srcdir)/../err -I$(srcdir)/../random/ \
+INCLUDES = -I$(srcdir)/../ -I$(srcdir)/../err -I$(srcdir)/../rng/ \
 		-I$(srcdir)/../vector/
 
 TESTS = vegas_test miser_test
@@ -21,16 +21,15 @@ TESTS_ENVIRONMENT = #BUILDDIR=@full_top_builddir@/roots SRCDIR=@full_top_srcdir@
 
 vegas_test_SOURCES = vegas_test.c gsl_vegas.h
 
-vegas_test_LDADD = libgslmonte.a ../err/libgslerr.a ../err/libgsltest.a \
-			../random/libgslrandom.a ../vector/libgslvector.a
+vegas_test_LDADD = libgslmonte.a ../rng/libgslrng.a ../vector/libgslvector.a \
+		../err/libgslerr.a ../err/libgsltest.a
 
 vegas_test_LDFLAGS = -static
 
-
 miser_test_SOURCES = miser_test.c gsl_miser.h
 
-miser_test_LDADD = libgslmonte.a ../err/libgslerr.a ../err/libgsltest.a \
-			../random/libgslrandom.a ../vector/libgslvector.a
+miser_test_LDADD = libgslmonte.a ../rng/libgslrng.a ../vector/libgslvector.a \
+		../err/libgslerr.a ../err/libgsltest.a 
 
 miser_test_LDFLAGS = -static
 

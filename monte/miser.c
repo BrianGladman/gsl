@@ -13,7 +13,7 @@
 #include <gsl_math.h>
 #include <gsl_vector.h>
 #include <gsl_errno.h>
-#include <gsl_ran.h>
+#include <gsl_rng.h>
 
 #include <gsl_miser.h>
 
@@ -43,19 +43,20 @@ double dither;
 static long iran;
 static long idum;
 
-void ranpt(gsl_vector* pt, double* xl, double* xh, size_t n);
+void ranpt(const gsl_rng * r, gsl_vector* pt, double* xl, double* xh, size_t n);
 
-inline void ranpt(gsl_vector* pt, double* xl, double* xh, size_t n)
+inline void ranpt(const gsl_rng * r, gsl_vector* pt, double* xl, double* xh, size_t n)
 {
   size_t j;
 
   for (j=0; j < n; j++)
-    gsl_vector_set(pt, j, xl[j]+(xh[j]-xl[j])*gsl_ran_uniform());
+    gsl_vector_set(pt, j, xl[j]+(xh[j]-xl[j])*gsl_rng_uniform(r));
 }
 
 
-int gsl_monte_miser(double (*func)(double []), double xl[], double xh[], 
-		     size_t num_dim, size_t calls, double *avg, double *var)
+int gsl_monte_miser(const gsl_rng * r, 
+		    double (*func)(double []), double xl[], double xh[], 
+		    size_t num_dim, size_t calls, double *avg, double *var)
 {
   int status = 0;
 
@@ -78,7 +79,7 @@ int gsl_monte_miser(double (*func)(double []), double xl[], double xh[],
     /* compute the integral by normal montecarlo */
     sum = sum2 = 0.0;
     for (n = 1; n <= calls; n++) {
-      ranpt(pt, xl, xh, num_dim);
+      ranpt(r, pt, xl, xh, num_dim);
       fval = (*func)(pt->data);
       sum += fval;
       sum2 += fval * fval;
@@ -110,7 +111,7 @@ int gsl_monte_miser(double (*func)(double []), double xl[], double xh[],
        in each half..
     */
     for (n = 1; n <= npre; n++) {
-      ranpt(pt, xl, xh, num_dim);
+      ranpt(r, pt, xl, xh, num_dim);
       fval=(*func)(pt->data);
       for (j = 0; j < num_dim; j++) {
 	if (pt->data[j] <= rmid->data[j]) {
@@ -169,11 +170,11 @@ int gsl_monte_miser(double (*func)(double []), double xl[], double xh[],
     }
 
     xh_temp->data[j_bisect] = rmid->data[j_bisect];
-    status = gsl_monte_miser(func, xl_temp->data, xh_temp->data, 
+    status = gsl_monte_miser(r, func, xl_temp->data, xh_temp->data, 
 		   num_dim, calls_l, &avg_l, &var_l);
     xl_temp->data[j_bisect] = rmid->data[j_bisect];
     xh_temp->data[j_bisect] = xh[j_bisect];
-    status = gsl_monte_miser(func, xl_temp->data, xh_temp->data, 
+    status = gsl_monte_miser(r, func, xl_temp->data, xh_temp->data, 
 		   num_dim, calls_r, avg, var);
 
     *avg = frac_l*avg_l+(1-frac_l)*(*avg);

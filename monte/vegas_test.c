@@ -12,6 +12,7 @@
 #include <gsl_errno.h>
 #include <gsl_test.h>
 
+#include <gsl_rng.h>
 #include <gsl_vegas.h>
 
 #define SQR(x)  ((x)*(x))
@@ -35,7 +36,8 @@ int main()
   double chisq = 0;
   int status = 0;
   double tol = 1e-2;
-  int step = 1;
+  int step = 1
+;  gsl_rng * r = gsl_rng_alloc(gsl_rng_env_setup()) ;
 
   c = (1.0 + sqrt(10.0))/9.0 ;
 
@@ -48,7 +50,7 @@ int main()
 
   printf("Testing product function\n");
   for (num_dim = 1; num_dim < 10; num_dim++) {
-    gsl_monte_vegas(f0, xl, xu, num_dim, &res, &err, &chisq);
+    gsl_monte_vegas(r, f0, xl, xu, num_dim, &res, &err, &chisq);
     gsl_test_rel(res, 1.0, tol, "vegas(f0), dim=%d, err=%.4f, chisq=%.4f", 
 		 num_dim, err, chisq); 
   }
@@ -66,7 +68,7 @@ int main()
       alpha -= 0.2; /* Lepage has=1 for n=9 so we step toward that. */
     if (num_dim > 8)
       calls = 15000;
-    status = gsl_monte_vegas(f1, xl, xu, num_dim, &res, &err, &chisq);
+    status = gsl_monte_vegas(r, f1, xl, xu, num_dim, &res, &err, &chisq);
     gsl_test_rel(res, 1.0, tol, "vegas(f1), dim=%d, err=%.4f, chisq=%.4f", 
 		 num_dim, err, chisq); 
   }
@@ -103,7 +105,7 @@ int main()
     /* let's try same trick of stepping alpha */
     if (num_dim > 4) 
       alpha -= (double) step/10.0; 
-    status = gsl_monte_vegas(f2, xl, xu, num_dim, &res, &err, &chisq);
+    status = gsl_monte_vegas(r, f2, xl, xu, num_dim, &res, &err, &chisq);
     gsl_test_rel(res, 1.0, tol, "vegas(f2), dim=%d, err=%.4f, chisq=%.4f", 
 		 num_dim, err, chisq); 
   }
@@ -117,7 +119,7 @@ int main()
 
   printf("Testing Tsuda's function\n");
   for (num_dim = 1; num_dim < 10; num_dim++) {
-    status = gsl_monte_vegas(f3, xl, xu, num_dim, &res, &err, &chisq);
+    status = gsl_monte_vegas(r, f3, xl, xu, num_dim, &res, &err, &chisq);
     gsl_test_rel(res, 1.0, tol, "vegas(f3), dim=%d, err=%.4f, chisq=%.4f", 
 		 num_dim, err, chisq); 
   }

@@ -12,6 +12,7 @@
 #include <gsl_errno.h>
 #include <gsl_test.h>
 
+#include <gsl_rng.h>
 #include <gsl_miser.h>
 
 #define SQR(x)  ((x)*(x))
@@ -37,6 +38,7 @@ int main()
   double tol = 1e-2;
   int step = 1;
   size_t calls = 1000;
+  gsl_rng * r = gsl_rng_alloc(gsl_rng_env_setup()) ;
 
   dither = 0.0;
   c = (1.0 + sqrt(10.0))/9.0 ;
@@ -48,7 +50,7 @@ int main()
   printf("Testing product function\n");
   for (num_dim = 1; num_dim < 10; num_dim++) {
     calls *= 1.8;
-    gsl_monte_miser(f0, xl, xu, num_dim, calls, &res, &err);
+    gsl_monte_miser(r, f0, xl, xu, num_dim, calls, &res, &err);
     gsl_test_rel(res, 1.0, tol, "miser(f0), dim=%d, err=%.4f", 
 		 num_dim, err); 
   }
@@ -73,7 +75,7 @@ int main()
     if ( num_dim == 9) {
       tol = 0.14;
     }
-    status = gsl_monte_miser(f1, xl, xu, num_dim, calls, &res, &err);
+    status = gsl_monte_miser(r, f1, xl, xu, num_dim, calls, &res, &err);
     gsl_test_rel(res, 1.0, tol, "miser(f1), dim=%d, err=%.4f", 
 		 num_dim, err); 
   }
@@ -103,7 +105,7 @@ int main()
       calls = 210000;
       break;
     }
-    status = gsl_monte_miser(f2, xl, xu, num_dim, calls, &res, &err);
+    status = gsl_monte_miser(r, f2, xl, xu, num_dim, calls, &res, &err);
     gsl_test_rel(res, 1.0, tol, "miser(f2), dim=%d, err=%.4f", 
 		 num_dim, err); 
   }
@@ -117,7 +119,7 @@ int main()
     calls *= 1.2;
     if ( num_dim == 6 )
       tol *= 3;
-    status = gsl_monte_miser(f3, xl, xu, num_dim, calls, &res, &err);
+    status = gsl_monte_miser(r, f3, xl, xu, num_dim, calls, &res, &err);
     gsl_test_rel(res, 1.0, tol, "miser(f3), dim=%d, err=%.4f", 
 		 num_dim, err); 
   }

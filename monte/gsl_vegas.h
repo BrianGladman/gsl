@@ -3,6 +3,7 @@
 
 #ifndef GSL_VEGAS_H
 #define GSL_VEGAS_H
+#include <gsl_rng.h>
 
 /* This will go away soon. */
 #define GSL_V_BINS_MAX 50  /* even integer because will be divided by two. */
@@ -18,13 +19,17 @@ extern int    calls;
 typedef double (*gsl_monte_f_T)(double *);
 
 
-int gsl_monte_vegas(gsl_monte_f_T fxn, double xl[], double xu[], int num_dim,
+int gsl_monte_vegas(const gsl_rng * r,
+		    gsl_monte_f_T fxn, double xl[], double xu[], int num_dim,
 		    double* tot_int, double* tot_sig, double* chi_sq_ptr);
-int gsl_monte_vegas1(gsl_monte_f_T fxn, double xl[], double xu[], int num_dim,
+int gsl_monte_vegas1(const gsl_rng * r,
+		     gsl_monte_f_T fxn, double xl[], double xu[], int num_dim,
 		     double* tot_int, double* tot_sig, double* chi_sq_ptr);
-int gsl_monte_vegas2(gsl_monte_f_T fxn, double xl[], double xu[], int num_dim,
+int gsl_monte_vegas2(const gsl_rng * r,
+		     gsl_monte_f_T fxn, double xl[], double xu[], int num_dim,
 		     double* tot_int, double* tot_sig, double* chi_sq_ptr);
-int gsl_monte_vegas3(gsl_monte_f_T fxn, double xl[], double xu[], int num_dim,
+int gsl_monte_vegas3(const gsl_rng * r,
+		     gsl_monte_f_T fxn, double xl[], double xu[], int num_dim,
 		     double* tot_int, double* tot_sig, double* chi_sq_ptr);
 
 #endif /* !GSL_VEGAS_H */

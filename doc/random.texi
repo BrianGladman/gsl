@@ -321,9 +321,18 @@ have to remake routines that depend on @code{cool.c}.  This way, you'll
 maintain the convention in the GSL random number package that not
 initializing a random number generator is equivalent to initializing
 with a seed of 1.
-
+@c lcg
+@c [ LCG(n) := n * 69069 mod (2^32) ]
+@c First 6: [69069, 475559465, 2801775573, 1790562961, 3104832285, 4238970681]
+@c %2^31-1   69069, 475559465, 654291926, 1790562961, 957348638, 2091487034
 @c mrg
-@c [(x([x1, x2, x3, x4, x5]) := [107374182 mod 2147483647 * x1 + 104480 mod 2147483647 * x5, x1, x2, x3, x4])]
+@c [q([x1, x2, x3, x4, x5]) := [107374182 mod 2147483647 * x1 + 104480 mod 2147483647 * x5, x1, x2, x3, x4]]
+@c
+@c cmrg
+@c [q1([x1,x2,x3]) := [63308 mod 2147483647 * x2 -183326 mod 2147483647 * x3, x1, x2],
+@c  q2([x1,x2,x3]) := [86098 mod 2145483479 * x1 -539608 mod 2145483479 * x3, x1, x2] ]
+@c  intial for q1 is [69069, 475559465, 654291926]
+@c  intial for q2 is  [1790562961, 959348806, 2093487202]
 
 @c tausworthe
 @c    [ b1(x) := rsh(xor(lsh(x, 13), x), 19),
@@ -333,3 +342,4 @@ with a seed of 1.
 @c      b3(x) := rsh(xor(lsh(x, 3), x), 11),
 @c      q3(x) := xor(lsh(and(x, 4294967280), 17), b3(x)) ]
 @c      [s1, s2, s3] = [600098857, 1131373026, 1223067536] 
+@c [2948905028, 441213979, 394017882]

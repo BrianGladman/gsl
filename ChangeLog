@@ -1,3 +1,8 @@
+Sun Jun 28 14:31:31 1998  Brian Gough  <bjg@vvv.lanl.gov>
+
+	* replaced the random/ directory by the rng/ directory and made
+ 	minor changes in randist/, siman/ to accommodate it
+
 Tue Jun 23 19:49:22 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
 	* added a top-level file gsl_config.h for detecting features when

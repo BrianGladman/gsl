@@ -41,7 +41,7 @@
 /* gsl headers */
 #include <gsl_math.h>
 #include <gsl_errno.h>
-#include <gsl_ran.h>
+#include <gsl_rng.h>
 
 /* lib-specific headers */
 
@@ -83,7 +83,8 @@ inline void init_array(double array[GSL_V_BINS_MAX+1][GSL_V_MAX_DIM],
 		       int n1, int n2);
 
 
-int gsl_monte_vegas(gsl_monte_f_T fxn, double xl[], double xu[], int num_dim,
+int gsl_monte_vegas(const gsl_rng * r,
+		    gsl_monte_f_T fxn, double xl[], double xu[], int num_dim,
 		    double* tot_int, double* tot_sig, double* chi_sq_ptr)
 {
   int j;
@@ -103,7 +104,7 @@ int gsl_monte_vegas(gsl_monte_f_T fxn, double xl[], double xu[], int num_dim,
     vegas_open_log();
     prn_lim(xl, xu, num_dim);
   }
-  status = gsl_monte_vegas1(fxn, xl, xu, num_dim, tot_int, tot_sig, chi_sq_ptr);
+  status = gsl_monte_vegas1(r, fxn, xl, xu, num_dim, tot_int, tot_sig, chi_sq_ptr);
 
   if (verbose >= 0 ) {
     vegas_close_log();
@@ -112,7 +113,8 @@ int gsl_monte_vegas(gsl_monte_f_T fxn, double xl[], double xu[], int num_dim,
   return status;
 }
 
-int gsl_monte_vegas1(gsl_monte_f_T fxn, double xl[], double xu[], int num_dim,
+int gsl_monte_vegas1(const gsl_rng * r,
+		     gsl_monte_f_T fxn, double xl[], double xu[], int num_dim,
 		     double* tot_int, double* tot_sig, double* chi_sq_ptr)
 {
   int status;
@@ -122,11 +124,12 @@ int gsl_monte_vegas1(gsl_monte_f_T fxn, double xl[], double xu[], int num_dim,
   chi_sum = 0;
   it_num = 1;
 
-  status = gsl_monte_vegas2(fxn, xl, xu, num_dim, tot_int, tot_sig, chi_sq_ptr);
+  status = gsl_monte_vegas2(r, fxn, xl, xu, num_dim, tot_int, tot_sig, chi_sq_ptr);
   return status;
 }
 
-int gsl_monte_vegas2(gsl_monte_f_T fxn, double xl[], double xu[], int num_dim,
+int gsl_monte_vegas2(const gsl_rng * r,
+		     gsl_monte_f_T fxn, double xl[], double xu[], int num_dim,
 		     double* tot_int, double* tot_sig, double* chi_sq_ptr)
 {
 
@@ -201,11 +204,12 @@ int gsl_monte_vegas2(gsl_monte_f_T fxn, double xl[], double xu[], int num_dim,
     prn_head(num_dim, calls, it_num, max_it_num, acc, verbose, alpha, mode, 
 	     bins, boxes);
   }
-  status = gsl_monte_vegas3(fxn, xl, xu, num_dim, tot_int, tot_sig, chi_sq_ptr);
+  status = gsl_monte_vegas3(r, fxn, xl, xu, num_dim, tot_int, tot_sig, chi_sq_ptr);
   return status;
 }
 
-int gsl_monte_vegas3(gsl_monte_f_T fxn, double xl[], double xu[], int num_dim,
+int gsl_monte_vegas3(const gsl_rng * r,
+		     gsl_monte_f_T fxn, double xl[], double xu[], int num_dim,
 		     double* tot_int, double* tot_sig, double* chi_sq_ptr)
 {
 
@@ -244,8 +248,8 @@ int gsl_monte_vegas3(gsl_monte_f_T fxn, double xl[], double xu[], int num_dim,
 	  /* box_cord + ran gives the position in the box units, while
 	     z is the position in bin units.
 	  */
-	  /*	  z = (box_cord[j] + gsl_ran_uniform() ) * bins_per_box; */
-	  z = (box_cord[j] + gsl_ran_uniform() ) * bins / boxes; 
+	  /*	  z = (box_cord[j] + gsl_rng_uniform(r) ) * bins_per_box; */
+	  z = (box_cord[j] + gsl_rng_uniform(r) ) * bins / boxes; 
 	  bin_cord[j] = z;
 	  if (bin_cord[j] == 0) {
 	    binwdth = y_bin[1][j];

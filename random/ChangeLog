@@ -1,3 +1,7 @@
+Sun Jun 28 15:00:20 1998  Brian Gough  <bjg@vvv.lanl.gov>
+
+	* This directory is now reimplemented as rng/
+
 Thu Jun 11 12:01:54 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
 	* xxx-switch.xc: eliminated the need for string.h and strdup() by
