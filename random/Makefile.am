@@ -27,7 +27,7 @@
 #####################################################################
 
 ## Some *.h files are in neighboring directories
-INCLUDES = -I$(srcdir)/../err -I$(srcdir)/../utils
+INCLUDES = -I$(srcdir)/../err
 
 ## Include here the list of algorithms for random number generation
 ## The first one should be the "favorite" (ie, default)
@@ -37,7 +37,7 @@ ALLRAN= taus mrg cmrg uni uni32 zuf rand
 include_HEADERS= gsl_ran.h gsl_ran_switch.h
 
 test_switch_SOURCES= test-switch.c switch.c 
-test_switch_LDADD=../err/libgsltest.a ../utils/libutils.a
+test_switch_LDADD=../err/libgsltest.a
 
 switch.c gsl_ran_switch.h:
 	$(srcdir)/makesrc --switch
@@ -84,7 +84,7 @@ TESTS= test-taus test-mrg test-cmrg test-uni test-uni32 test-zuf test-rand
 
 test_switch_DEPENDENCIES=gsl_ran_switch.h taus.h taus.o mrg.h mrg.o cmrg.h cmrg.o uni.h uni.o uni32.h uni32.o zuf.h zuf.o rand.h rand.o
 
-test_switch_LDADD= taus.o mrg.o cmrg.o uni.o uni32.o zuf.o rand.o ../utils/libutils.a 
+test_switch_LDADD= taus.o mrg.o cmrg.o uni.o uni32.o zuf.o rand.o 
 
 taus_SOURCES=             ran.c taus.c taus.h
 EXTRA_taus_SOURCES=       taus-state.c
@@ -92,7 +92,7 @@ taus_DEPENDENCIES=        taus-state.c taus-gen.o
 taus_LDADD=               taus-gen.o
 test_taus_SOURCES=        testran.c
 test_taus_DEPENDENCIES=   taus.o taus-gen.o taus.h
-test_taus_LDADD=          taus.o taus-gen.o ../err/libgsltest.a ../utils/libutils.a
+test_taus_LDADD=          taus.o taus-gen.o ../err/libgsltest.a
 bench_taus_SOURCES=       benchran.c
 bench_taus_DEPENDENCIES=  taus.o taus-gen.o taus.h
 bench_taus_LDADD=         taus.o taus-gen.o
@@ -102,7 +102,7 @@ mrg_DEPENDENCIES=        mrg-state.c mrg-gen.o
 mrg_LDADD=               mrg-gen.o
 test_mrg_SOURCES=        testran.c
 test_mrg_DEPENDENCIES=   mrg.o mrg-gen.o mrg.h
-test_mrg_LDADD=          mrg.o mrg-gen.o ../err/libgsltest.a ../utils/libutils.a
+test_mrg_LDADD=          mrg.o mrg-gen.o ../err/libgsltest.a
 bench_mrg_SOURCES=       benchran.c
 bench_mrg_DEPENDENCIES=  mrg.o mrg-gen.o mrg.h
 bench_mrg_LDADD=         mrg.o mrg-gen.o
@@ -112,7 +112,7 @@ cmrg_DEPENDENCIES=        cmrg-state.c cmrg-gen.o
 cmrg_LDADD=               cmrg-gen.o
 test_cmrg_SOURCES=        testran.c
 test_cmrg_DEPENDENCIES=   cmrg.o cmrg-gen.o cmrg.h
-test_cmrg_LDADD=          cmrg.o cmrg-gen.o ../err/libgsltest.a ../utils/libutils.a
+test_cmrg_LDADD=          cmrg.o cmrg-gen.o ../err/libgsltest.a
 bench_cmrg_SOURCES=       benchran.c
 bench_cmrg_DEPENDENCIES=  cmrg.o cmrg-gen.o cmrg.h
 bench_cmrg_LDADD=         cmrg.o cmrg-gen.o
@@ -122,7 +122,7 @@ uni_DEPENDENCIES=        uni-state.c uni-gen.o
 uni_LDADD=               uni-gen.o
 test_uni_SOURCES=        testran.c
 test_uni_DEPENDENCIES=   uni.o uni-gen.o uni.h
-test_uni_LDADD=          uni.o uni-gen.o ../err/libgsltest.a ../utils/libutils.a
+test_uni_LDADD=          uni.o uni-gen.o ../err/libgsltest.a
 bench_uni_SOURCES=       benchran.c
 bench_uni_DEPENDENCIES=  uni.o uni-gen.o uni.h
 bench_uni_LDADD=         uni.o uni-gen.o
@@ -132,7 +132,7 @@ uni32_DEPENDENCIES=        uni32-state.c uni32-gen.o
 uni32_LDADD=               uni32-gen.o
 test_uni32_SOURCES=        testran.c
 test_uni32_DEPENDENCIES=   uni32.o uni32-gen.o uni32.h
-test_uni32_LDADD=          uni32.o uni32-gen.o ../err/libgsltest.a ../utils/libutils.a
+test_uni32_LDADD=          uni32.o uni32-gen.o ../err/libgsltest.a
 bench_uni32_SOURCES=       benchran.c
 bench_uni32_DEPENDENCIES=  uni32.o uni32-gen.o uni32.h
 bench_uni32_LDADD=         uni32.o uni32-gen.o
@@ -142,7 +142,7 @@ zuf_DEPENDENCIES=        zuf-state.c zuf-gen.o
 zuf_LDADD=               zuf-gen.o
 test_zuf_SOURCES=        testran.c
 test_zuf_DEPENDENCIES=   zuf.o zuf-gen.o zuf.h
-test_zuf_LDADD=          zuf.o zuf-gen.o ../err/libgsltest.a ../utils/libutils.a
+test_zuf_LDADD=          zuf.o zuf-gen.o ../err/libgsltest.a
 bench_zuf_SOURCES=       benchran.c
 bench_zuf_DEPENDENCIES=  zuf.o zuf-gen.o zuf.h
 bench_zuf_LDADD=         zuf.o zuf-gen.o
@@ -152,7 +152,7 @@ rand_DEPENDENCIES=        rand-state.c rand-gen.o
 rand_LDADD=               rand-gen.o
 test_rand_SOURCES=        testran.c
 test_rand_DEPENDENCIES=   rand.o rand-gen.o rand.h
-test_rand_LDADD=          rand.o rand-gen.o ../err/libgsltest.a ../utils/libutils.a
+test_rand_LDADD=          rand.o rand-gen.o ../err/libgsltest.a
 bench_rand_SOURCES=       benchran.c
 bench_rand_DEPENDENCIES=  rand.o rand-gen.o rand.h
 bench_rand_LDADD=         rand.o rand-gen.o

@@ -9,11 +9,11 @@ TESTS = siman_test_driver.sh
 EXTRA_DIST = siman_test_driver.sh
 
 siman_test_SOURCES = siman_test.c
-siman_test_LDADD = libgslsiman.a ../random/libgslrandom.a ../utils/libutils.a
+siman_test_LDADD = libgslsiman.a ../random/libgslrandom.a
 siman_test_DEPENDENCIES = libgslsiman.a
 
 siman_tsp_SOURCES = siman_tsp.c
-siman_tsp_LDADD = libgslsiman.a ../random/libgslrandom.a ../utils/libutils.a
+siman_tsp_LDADD = libgslsiman.a ../random/libgslrandom.a
 siman_tsp_DEPENDENCIES = libgslsiman.a
 
 CLEANFILES = siman_test.out1 siman_test.out2

@@ -5,14 +5,14 @@ bin_PROGRAMS=gsl-exponential gsl-gamma gsl-gauss gsl-poisson \
 	gsl-lorentz gsl-laplace
 noinst_PROGRAMS= test-gauss test-shuffle
 
-lib_LIBRARIES = libgslrandist.a #libutils.a
+lib_LIBRARIES = libgslrandist.a
 libgslrandist_a_SOURCES = gauss.c poisson.c gamma.c exponential.c lorentz.c \
 	laplace.c
 
 include_HEADERS= gsl_randist.h
 
 INCLUDES= -I$(srcdir)/../random
-LDADD= ../random/libgslrandom.a ../utils/libutils.a
+LDADD= ../random/libgslrandom.a
 
 gsl_gauss_SOURCES= gsl-gauss.c gauss.c
 gsl_exponential_SOURCES= gsl-exponential.c exponential.c

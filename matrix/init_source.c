@@ -26,7 +26,7 @@ FUNCTION(gsl_matrix,alloc) (const size_t n1, const size_t n2)
 			GSL_ENOMEM, 0);
     }
 
-  m->data = malloc(n1 * n2 * sizeof(BASE)) ;
+  m->data = (BASE *) malloc(n1 * n2 * sizeof(BASE)) ;
 
   if (m->data == 0) 
     {

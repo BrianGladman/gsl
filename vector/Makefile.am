@@ -5,15 +5,15 @@ check_PROGRAMS = test test_float test_int test_complex test_trap
 include_HEADERS = gsl_vector.h gsl_vector_float.h gsl_vector_int.h \
 	gsl_vector_complex.h
 
-INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../err -I$(srcdir)/../utils
+INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../err
 
 TESTS = test test_float test_int test_complex test_trap
 
-test_LDADD = libgslvector.a ../err/libgslerr.a ../err/libgsltest.a ../utils/libutils.a
-test_float_LDADD = libgslvector.a ../err/libgslerr.a ../err/libgsltest.a ../utils/libutils.a
-test_int_LDADD = libgslvector.a ../err/libgslerr.a ../err/libgsltest.a ../utils/libutils.a
-test_complex_LDADD = libgslvector.a ../err/libgslerr.a ../err/libgsltest.a ../utils/libutils.a
-test_trap_LDADD = libgslvector.a ../err/libgslerr.a ../err/libgsltest.a ../utils/libutils.a
+test_LDADD = libgslvector.a ../err/libgslerr.a ../err/libgsltest.a
+test_float_LDADD = libgslvector.a ../err/libgslerr.a ../err/libgsltest.a
+test_int_LDADD = libgslvector.a ../err/libgslerr.a ../err/libgsltest.a
+test_complex_LDADD = libgslvector.a ../err/libgslerr.a ../err/libgsltest.a
+test_trap_LDADD = libgslvector.a ../err/libgslerr.a ../err/libgsltest.a
 
 test_DEPENDENCIES = libgslvector.a
 test_trap_DEPENDENCIES = libgslvector.a

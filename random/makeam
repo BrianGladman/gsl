@@ -77,7 +77,7 @@ obj=""
 for i in $list; do
     obj="$obj $i.o"
 done
-obj="$obj ../utils/libutils.a "
+obj="$obj "
 echo "test_switch_LDADD=$obj"
 echo ""
     
@@ -88,7 +88,7 @@ echo ""
     echo "${i}_LDADD=               $i-gen.o"
     echo "test_${i}_SOURCES=        testran.c"
     echo "test_${i}_DEPENDENCIES=   $i.o $i-gen.o $i.h"
-    echo "test_${i}_LDADD=          $i.o $i-gen.o ../err/libgsltest.a ../utils/libutils.a"
+    echo "test_${i}_LDADD=          $i.o $i-gen.o ../err/libgsltest.a"
     echo "bench_${i}_SOURCES=       benchran.c"
     echo "bench_${i}_DEPENDENCIES=  $i.o $i-gen.o $i.h"
     echo "bench_${i}_LDADD=         $i.o $i-gen.o"

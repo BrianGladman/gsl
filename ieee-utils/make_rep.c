@@ -95,7 +95,7 @@ gsl_ieee_double_to_rep (const double * x, gsl_ieee_double_rep * r)
 
 /* A table of character representations of nybbles */
 
-static char nybble[16][4]={
+static char nybble[16][5]={ /* include space for the \0 */
   "0000", "0001", "0010", "0011",
   "0100", "0101", "0110", "0111",
   "1000", "1001", "1010", "1011",
