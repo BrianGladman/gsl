@@ -282,7 +282,7 @@ gsl_blas_caxpy (const gsl_complex_float * alpha,
 		gsl_vector_complex_float * Y)
 {
   if(X->size == Y->size) {
-    gsl_blas_raw_caxpy(X->size, alpha->dat, X->data, X->stride, Y->data, Y->stride);
+    gsl_blas_raw_caxpy(X->size, (float *)alpha->dat, X->data, X->stride, Y->data, Y->stride);
     return GSL_SUCCESS;
   }
   else
@@ -318,7 +318,7 @@ int
 gsl_blas_zaxpy (const gsl_complex * alpha, const gsl_vector_complex * X, gsl_vector_complex * Y)
 {
   if(X->size == Y->size) {
-    gsl_blas_raw_zaxpy(X->size, alpha->dat, X->data, X->stride, Y->data, Y->stride);
+    gsl_blas_raw_zaxpy(X->size, (double *)alpha->dat, X->data, X->stride, Y->data, Y->stride);
     return GSL_SUCCESS;
   }
   else
@@ -387,12 +387,12 @@ void gsl_blas_dscal (double alpha, gsl_vector * X)
 void gsl_blas_cscal  (const gsl_complex_float * alpha,
                       gsl_vector_complex_float * X)
 {
-  gsl_blas_raw_cscal(X->size, alpha->dat, X->data, X->stride);
+  gsl_blas_raw_cscal(X->size, (float *)alpha->dat, X->data, X->stride);
 }
 
 void gsl_blas_zscal  (const gsl_complex * alpha, gsl_vector_complex * X)
 {
-  gsl_blas_raw_zscal(X->size, alpha->dat, X->data, X->stride);
+  gsl_blas_raw_zscal(X->size, (double *)alpha->dat, X->data, X->stride);
 }
 
 void gsl_blas_csscal (float  alpha, gsl_vector_complex_float * X)
@@ -483,10 +483,10 @@ int  gsl_blas_cgemv (CBLAS_TRANSPOSE TransA,
   if(col_dim == X->size) {
     gsl_blas_raw_cgemv(TransA,
                        row_dim, col_dim,
-		       alpha->dat,
+		       (float *)alpha->dat,
 		       A->data, tda,
 		       X->data, X->stride,
-		       beta->dat,
+		       (float *)beta->dat,
 		       Y->data, Y->stride
 		       );
     return GSL_SUCCESS;
@@ -510,10 +510,10 @@ int  gsl_blas_zgemv (CBLAS_TRANSPOSE TransA,
   if(col_dim == X->size) {
     gsl_blas_raw_zgemv(TransA,
                        row_dim, col_dim,
-		       alpha->dat,
+		       (double *)alpha->dat,
 		       A->data, tda,
 		       X->data, X->stride,
-		       beta->dat,
+		       (double *)beta->dat,
 		       Y->data, Y->stride
 		       );
     return GSL_SUCCESS;
@@ -595,10 +595,10 @@ int  gsl_blas_cgbmv (CBLAS_TRANSPOSE TransA,
   if(col_dim == X->size) {
     gsl_blas_raw_cgbmv(TransA,
                        row_dim, col_dim, KL, KU,
-		       alpha->dat,
+		       (float *)alpha->dat,
 		       A->data, tda,
 		       X->data, X->stride,
-		       beta->dat,
+		       (float *)beta->dat,
 		       Y->data, Y->stride
 		       );
     return GSL_SUCCESS;
@@ -623,10 +623,10 @@ int  gsl_blas_zgbmv (CBLAS_TRANSPOSE TransA,
   if(col_dim == X->size) {
     gsl_blas_raw_zgbmv(TransA,
                        row_dim, col_dim, KL, KU,
-		       alpha->dat,
+		       (double *)alpha->dat,
 		       A->data, tda,
 		       X->data, X->stride,
-		       beta->dat,
+		       (double *)beta->dat,
 		       Y->data, Y->stride
 		       );
     return GSL_SUCCESS;
@@ -1699,10 +1699,10 @@ int  gsl_blas_cgemm (CBLAS_TRANSPOSE TransA,
   gsl_blas_raw_cgemm(TransA, TransB,
                      C->size1, C->size2,
 		     K,
-		     alpha->dat,
+		     (float *)alpha->dat,
 		     A->data, A->dim2,
 		     B->data, B->dim2,
-		     beta->dat,
+		     (float *)beta->dat,
 		     C->data, C->dim2
 		     );
   return GSL_SUCCESS;
@@ -1725,10 +1725,10 @@ int  gsl_blas_zgemm (CBLAS_TRANSPOSE TransA,
   gsl_blas_raw_zgemm(TransA, TransB,
                      C->size1, C->size2,
 		     K,
-		     alpha->dat,
+		     (double *)alpha->dat,
 		     A->data, A->dim2,
 		     B->data, B->dim2,
-		     beta->dat,
+		     (double *)beta->dat,
 		     C->data, C->dim2
 		     );
   return GSL_SUCCESS;
