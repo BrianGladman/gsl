@@ -14,8 +14,9 @@ AC_CHECK_LIB(gslcblas,main)
 AC_CHECK_LIB(gsl,main)
 @end example
 @noindent
-Assuming the libraries are found the output during the configure stage
-looks like this,
+It is important to check for @code{libm} and @code{libgslcblas} before
+@code{libgsl}, otherwise the tests will fail.  Assuming the libraries
+are found the output during the configure stage looks like this,
 
 @example
 checking for main in -lm... yes
