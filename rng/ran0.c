@@ -16,7 +16,7 @@ unsigned long int ran0_get (void *vstate);
 void ran0_set (void *state, unsigned long int s);
 
 static const long int m = 2147483647, a = 16807, q = 127773, r = 2836;
-static const unsigned long int mask = 123459876 ;
+static const unsigned long int mask = 123459876;
 
 typedef struct
   {
@@ -43,7 +43,7 @@ ran0_get (void *vstate)
       state->x = t;
     }
 
-  return state->x ;
+  return state->x;
 }
 
 
@@ -54,7 +54,7 @@ ran0_set (void *vstate, unsigned long int s)
 
   if (s == mask)
     {
-      GSL_ERROR_RETURN_NOTHING ("ran0 should not use seed == mask", GSL_EINVAL) ;
+      GSL_ERROR_RETURN_NOTHING ("ran0 should not use seed == mask", GSL_EINVAL);
     }
 
   state->x = s ^ mask;
@@ -65,7 +65,7 @@ ran0_set (void *vstate, unsigned long int s)
 static const gsl_rng_type ran0_type =
 {"ran0",			/* name */
  2147483646,			/* RAND_MAX */
- 1,         			/* RAND_MIN */
+ 1,				/* RAND_MIN */
  sizeof (ran0_state_t),
  &ran0_set,
  &ran0_get};

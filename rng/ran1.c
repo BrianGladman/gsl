@@ -22,7 +22,7 @@ typedef struct
   {
     unsigned long int x;
     unsigned long int n;
-    unsigned long int shuffle[N_SHUFFLE] ;
+    unsigned long int shuffle[N_SHUFFLE];
   }
 ran1_state_t;
 
@@ -45,13 +45,13 @@ ran1_get (void *vstate)
       state->x = t;
     }
 
-  { 
-    unsigned long int j = state->n / N_DIV ;
-    state->n = state->shuffle[j] ;
-    state->shuffle[j] = state->x ;
+  {
+    unsigned long int j = state->n / N_DIV;
+    state->n = state->shuffle[j];
+    state->shuffle[j] = state->x;
   }
 
-  return state->n ;
+  return state->n;
 }
 
 
@@ -63,34 +63,36 @@ ran1_set (void *vstate, unsigned long int s)
 
   if (s == 0)
     s = 1;	/* default seed is 1 */
-  
+
   for (i = 0; i < 8; i++)
     {
       long int h = s / q;
       long int t = a * (s - h * q) - h * r;
-      if (t < 0) t += m;
-      s = t ;
+      if (t < 0)
+	t += m;
+      s = t;
     }
 
   for (i = N_SHUFFLE - 1; i >= 0; i--)
     {
       long int h = s / q;
       long int t = a * (s - h * q) - h * r;
-      if (t < 0) t += m;
-      s = t ;
-      state->shuffle[i] = s ;
+      if (t < 0)
+	t += m;
+      s = t;
+      state->shuffle[i] = s;
     }
 
-  state->x = s ;
-  state->n = s ;
- 
+  state->x = s;
+  state->n = s;
+
   return;
 }
 
 static const gsl_rng_type ran1_type =
 {"ran1",			/* name */
  2147483646,			/* RAND_MAX */
- 1,         			/* RAND_MIN */
+ 1,				/* RAND_MIN */
  sizeof (ran1_state_t),
  &ran1_set,
  &ran1_get};
