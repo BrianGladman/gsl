@@ -117,8 +117,11 @@ gsl_linalg_symmtd_decomp (gsl_matrix * A, gsl_vector * tau)
 /*  Form the orthogonal matrix Q from the packed QR matrix */
 
 int
-gsl_linalg_symmtd_unpack (const gsl_matrix * A, const gsl_vector * tau,
-                          gsl_matrix * Q, gsl_vector * d, gsl_vector * sd)
+gsl_linalg_symmtd_unpack (const gsl_matrix * A, 
+                          const gsl_vector * tau,
+                          gsl_matrix * Q, 
+                          gsl_vector * diag, 
+                          gsl_vector * sdiag)
 {
   if (A->size1 !=  A->size2)
     {
@@ -132,11 +135,11 @@ gsl_linalg_symmtd_unpack (const gsl_matrix * A, const gsl_vector * tau,
     {
       GSL_ERROR ("size of Q must match size of A", GSL_EBADLEN);
     }
-  else if (d->size != A->size1)
+  else if (diag->size != A->size1)
     {
       GSL_ERROR ("size of diagonal must match size of A", GSL_EBADLEN);
     }
-  else if (sd->size + 1 != A->size1)
+  else if (sdiag->size + 1 != A->size1)
     {
       GSL_ERROR ("size of subdiagonal must be (matrix size - 1)", GSL_EBADLEN);
     }
@@ -158,15 +161,15 @@ gsl_linalg_symmtd_unpack (const gsl_matrix * A, const gsl_vector * tau,
 
           gsl_matrix m = gsl_matrix_submatrix (Q, i + 1, i + 1, N-(i+1), N-(i+1));
 
-          gsl_linalg_householder_hm (ti, &h, &m, d);
+          gsl_linalg_householder_hm (ti, &h, &m, diag);
         }
 
-      /* Copy diagonal into d */
+      /* Copy diagonal into diag */
 
       for (i = 0; i < N; i++)
         {
           double Aii = gsl_matrix_get (A, i, i);
-          gsl_vector_set (d, i, Aii);
+          gsl_vector_set (diag, i, Aii);
         }
 
       /* Copy subdiagonal into sd */
@@ -174,7 +177,7 @@ gsl_linalg_symmtd_unpack (const gsl_matrix * A, const gsl_vector * tau,
       for (i = 0; i < N - 1; i++)
         {
           double Aji = gsl_matrix_get (A, i+1, i);
-          gsl_vector_set (sd, i, Aji);
+          gsl_vector_set (sdiag, i, Aji);
         }
 
       return GSL_SUCCESS;
@@ -182,18 +185,19 @@ gsl_linalg_symmtd_unpack (const gsl_matrix * A, const gsl_vector * tau,
 }
 
 int
-gsl_linalg_symmtd_unpack_dsd (const gsl_matrix * A, 
-                              gsl_vector * d, gsl_vector * sd)
+gsl_linalg_symmtd_unpack_T (const gsl_matrix * A, 
+                            gsl_vector * diag, 
+                            gsl_vector * sdiag)
 {
   if (A->size1 !=  A->size2)
     {
       GSL_ERROR ("matrix A must be square", GSL_ENOTSQR);
     }
-  else if (d->size != A->size1)
+  else if (diag->size != A->size1)
     {
       GSL_ERROR ("size of diagonal must match size of A", GSL_EBADLEN);
     }
-  else if (sd->size + 1 != A->size1)
+  else if (sdiag->size + 1 != A->size1)
     {
       GSL_ERROR ("size of subdiagonal must be (matrix size - 1)", GSL_EBADLEN);
     }
@@ -203,20 +207,20 @@ gsl_linalg_symmtd_unpack_dsd (const gsl_matrix * A,
 
       size_t i;
 
-      /* Copy diagonal into d */
+      /* Copy diagonal into diag */
 
       for (i = 0; i < N; i++)
         {
           double Aii = gsl_matrix_get (A, i, i);
-          gsl_vector_set (d, i, Aii);
+          gsl_vector_set (diag, i, Aii);
         }
 
-      /* Copy subdiagonal into sd */
+      /* Copy subdiagonal into sdiag */
 
       for (i = 0; i < N - 1; i++)
         {
           double Aij = gsl_matrix_get (A, i+1, i);
-          gsl_vector_set (sd, i, Aij);
+          gsl_vector_set (sdiag, i, Aij);
         }
 
       return GSL_SUCCESS;

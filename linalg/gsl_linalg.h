@@ -83,11 +83,19 @@ int gsl_linalg_householder_hm (double tau,
                                gsl_matrix * A, 
                                gsl_vector * work);
 
-int gsl_linalg_complex_householder_hm (gsl_complex tau, const gsl_vector_complex * v, gsl_matrix_complex * A, gsl_vector_complex * work);
+int gsl_linalg_householder_mh (double tau, 
+                               const gsl_vector * v, 
+                               gsl_matrix * A, 
+                               gsl_vector * work);
 
 int gsl_linalg_householder_hv (double tau, 
                                const gsl_vector * v, 
                                gsl_vector * w);
+
+int gsl_linalg_complex_householder_hm (gsl_complex tau, 
+                                       const gsl_vector_complex * v, 
+                                       gsl_matrix_complex * A, 
+                                       gsl_vector_complex * work);
 
 /* Singular Value Decomposition
 
@@ -258,24 +266,34 @@ int gsl_linalg_cholesky_svx (const gsl_matrix * cholesky,
 
 /* Symmetric to symmetric tridiagonal decomposition */
 
-int gsl_linalg_symmtd_decomp (gsl_matrix * A, gsl_vector * tau);
-int gsl_linalg_symmtd_unpack (const gsl_matrix * A, const gsl_vector * tau,
-                              gsl_matrix * Q, gsl_vector * d, gsl_vector * sd);
-int gsl_linalg_symmtd_unpack_dsd (const gsl_matrix * A,
-                                  gsl_vector * d, gsl_vector * sd);
+int gsl_linalg_symmtd_decomp (gsl_matrix * A, 
+                              gsl_vector * tau);
+
+int gsl_linalg_symmtd_unpack (const gsl_matrix * A, 
+                              const gsl_vector * tau,
+                              gsl_matrix * Q, 
+                              gsl_vector * diag, 
+                              gsl_vector * subdiag);
+
+int gsl_linalg_symmtd_unpack_T (const gsl_matrix * A,
+                                gsl_vector * diag, 
+                                gsl_vector * subdiag);
 
 /* Hermitian to symmetric tridiagonal decomposition */
 
 int gsl_linalg_hermtd_decomp (gsl_matrix_complex * A, 
                               gsl_vector_complex * tau);
+
 int gsl_linalg_hermtd_unpack (const gsl_matrix_complex * A, 
                               const gsl_vector_complex * tau,
                               gsl_matrix_complex * Q, 
-                              gsl_vector * d, gsl_vector * sd,
+                              gsl_vector * diag, 
+                              gsl_vector * sudiag,
                               gsl_vector_complex * work);
-int gsl_linalg_hermtd_unpack_dsd (const gsl_matrix_complex * A, 
-                                  gsl_vector * d, gsl_vector * sd);
 
+int gsl_linalg_hermtd_unpack_T (const gsl_matrix_complex * A, 
+                                gsl_vector * d, 
+                                gsl_vector * subdiag);
 
 /* Linear Solve Using Householder Transformations
 
@@ -317,6 +335,33 @@ int gsl_linalg_solve_symm_cyc_tridiag (const gsl_vector * diag,
 				       const gsl_vector * b,
 				       gsl_vector * x);
 
+
+/* Bidiagonal decomposition */
+
+int gsl_linalg_bidiag_decomp (gsl_matrix * A, 
+                              gsl_vector * tau_U, 
+                              gsl_vector * tau_V, 
+                              gsl_vector * work);
+
+int gsl_linalg_bidiag_unpack (const gsl_matrix * A, 
+                              const gsl_vector * tau_U, 
+                              gsl_matrix * U, 
+                              const gsl_vector * tau_V,
+                              gsl_matrix * V,
+                              gsl_vector * diag, gsl_vector * superdiag,
+                              gsl_vector * work);
+
+int gsl_linalg_bidiag_unpack (const gsl_matrix * A, 
+                              const gsl_vector * tau_U, 
+                              gsl_matrix * U, 
+                              const gsl_vector * tau_V,
+                              gsl_matrix * V,
+                              gsl_vector * diag, gsl_vector * superdiag,
+                              gsl_vector * work);
+
+int gsl_linalg_bidiag_unpack_B (const gsl_matrix * A, 
+                                gsl_vector * diag, 
+                                gsl_vector * superdiag);
 
 __END_DECLS
 

@@ -128,7 +128,8 @@ int
 gsl_linalg_hermtd_unpack (const gsl_matrix_complex * A, 
                           const gsl_vector_complex * tau,
                           gsl_matrix_complex * Q, 
-                          gsl_vector * d, gsl_vector * sd,
+                          gsl_vector * diag, 
+                          gsl_vector * sdiag,
                           gsl_vector_complex * work)
 {
   if (A->size1 !=  A->size2)
@@ -143,11 +144,11 @@ gsl_linalg_hermtd_unpack (const gsl_matrix_complex * A,
     {
       GSL_ERROR ("size of Q must match size of A", GSL_EBADLEN);
     }
-  else if (d->size != A->size1)
+  else if (diag->size != A->size1)
     {
       GSL_ERROR ("size of diagonal must match size of A", GSL_EBADLEN);
     }
-  else if (sd->size + 1 != A->size1)
+  else if (sdiag->size + 1 != A->size1)
     {
       GSL_ERROR ("size of subdiagonal must be (matrix size - 1)", GSL_EBADLEN);
     }
@@ -180,20 +181,20 @@ gsl_linalg_hermtd_unpack (const gsl_matrix_complex * A,
           gsl_linalg_complex_householder_hm (ti, &h, &m, work);
         }
 
-      /* Copy diagonal into d */
+      /* Copy diagonal into diag */
 
       for (i = 0; i < N; i++)
         {
           gsl_complex Aii = gsl_matrix_complex_get (A, i, i);
-          gsl_vector_set (d, i, GSL_REAL(Aii));
+          gsl_vector_set (diag, i, GSL_REAL(Aii));
         }
 
-      /* Copy subdiagonal into sd */
+      /* Copy subdiagonal into sdiag */
 
       for (i = 0; i < N - 1; i++)
         {
           gsl_complex Aji = gsl_matrix_complex_get (A, i+1, i);
-          gsl_vector_set (sd, i, GSL_REAL(Aji));
+          gsl_vector_set (sdiag, i, GSL_REAL(Aji));
         }
 
       return GSL_SUCCESS;
@@ -201,18 +202,19 @@ gsl_linalg_hermtd_unpack (const gsl_matrix_complex * A,
 }
 
 int
-gsl_linalg_hermtd_unpack_dsd (const gsl_matrix_complex * A, 
-                              gsl_vector * d, gsl_vector * sd)
+gsl_linalg_hermtd_unpack_T (const gsl_matrix_complex * A, 
+                            gsl_vector * diag, 
+                            gsl_vector * sdiag)
 {
   if (A->size1 !=  A->size2)
     {
       GSL_ERROR ("matrix A must be sqaure", GSL_ENOTSQR);
     }
-  else if (d->size != A->size1)
+  else if (diag->size != A->size1)
     {
       GSL_ERROR ("size of diagonal must match size of A", GSL_EBADLEN);
     }
-  else if (sd->size + 1 != A->size1)
+  else if (sdiag->size + 1 != A->size1)
     {
       GSL_ERROR ("size of subdiagonal must be (matrix size - 1)", GSL_EBADLEN);
     }
@@ -222,12 +224,12 @@ gsl_linalg_hermtd_unpack_dsd (const gsl_matrix_complex * A,
 
       size_t i;
 
-      /* Copy diagonal into d */
+      /* Copy diagonal into diag */
 
       for (i = 0; i < N; i++)
         {
           gsl_complex Aii = gsl_matrix_complex_get (A, i, i);
-          gsl_vector_set (d, i, GSL_REAL(Aii));
+          gsl_vector_set (diag, i, GSL_REAL(Aii));
         }
 
       /* Copy subdiagonal into sd */
@@ -235,7 +237,7 @@ gsl_linalg_hermtd_unpack_dsd (const gsl_matrix_complex * A,
       for (i = 0; i < N - 1; i++)
         {
           gsl_complex Aji = gsl_matrix_complex_get (A, i+1, i);
-          gsl_vector_set (sd, i, GSL_REAL(Aji));
+          gsl_vector_set (sdiag, i, GSL_REAL(Aji));
         }
 
       return GSL_SUCCESS;
