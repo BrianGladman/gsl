@@ -1,5 +1,10 @@
 Thu Apr 27 20:31:46 2000  Brian Gough  <bjg@network-theory.co.uk>
 
+	* test.c: tightened up accuracy of the decomp test
+
+	* test_la.c: renamed to test.c for consistency
+	(test_QR_decomp): added the "moler" matrix as a test for SVD
+
 	* svd.c (gsl_linalg_SV_decomp): improved the convergence criterion
  	for rank deficient case.
 

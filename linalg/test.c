@@ -55,6 +55,20 @@ create_vandermonde_matrix(int size)
   return m;
 }
 
+gsl_matrix *
+create_moler_matrix(int size)
+{
+  int i, j;
+  gsl_matrix * m = gsl_matrix_alloc(size, size);
+  for(i=0; i<size; i++) {
+    for(j=0; j<size; j++) {
+      gsl_matrix_set(m, i, j, GSL_MIN(i+1,j+1)-2);
+    }
+  }
+  return m;
+}
+
+
 gsl_matrix * m35;
 gsl_matrix * m53;
 
@@ -83,6 +97,8 @@ double vander4_solution[] = {0.0, 0.0, 1.0, 0.0};
 double vander12_solution[] = {0.0, 0.0, 0.0, 0.0,
                             0.0, 0.0, 0.0, 0.0, 
                             0.0, 0.0, 1.0, 0.0}; 
+
+gsl_matrix * moler10;
 
 int
 test_matmult(void)
@@ -461,7 +477,7 @@ int test_QR_decomp(void)
   gsl_test(f, "  QR_decomp hilbert(4)");
   s += f;
 
-  f = test_QR_decomp_dim(hilb12, 0.5);
+  f = test_QR_decomp_dim(hilb12, 2 * 1024.0 * GSL_DBL_EPSILON);
   gsl_test(f, "  QR_decomp hilbert(12)");
   s += f;
 
@@ -477,7 +493,7 @@ int test_QR_decomp(void)
   gsl_test(f, "  QR_decomp vander(4)");
   s += f;
 
-  f = test_QR_decomp_dim(vander12, 0.05);
+  f = test_QR_decomp_dim(vander12, 0.0005); /* FIXME: bad accuracy */
   gsl_test(f, "  QR_decomp vander(12)");
   s += f;
 
@@ -630,7 +646,7 @@ int test_QRPT_decomp(void)
   gsl_test(f, "  QRPT_decomp hilbert(4)");
   s += f;
 
-  f = test_QRPT_decomp_dim(hilb12, 0.5);
+  f = test_QRPT_decomp_dim(hilb12, 2 * 1024.0 * GSL_DBL_EPSILON);
   gsl_test(f, "  QRPT_decomp hilbert(12)");
   s += f;
 
@@ -646,7 +662,7 @@ int test_QRPT_decomp(void)
   gsl_test(f, "  QRPT_decomp vander(4)");
   s += f;
 
-  f = test_QRPT_decomp_dim(vander12, 0.05);
+  f = test_QRPT_decomp_dim(vander12, 0.0005); /* FIXME: bad accuracy */
   gsl_test(f, "  QRPT_decomp vander(12)");
   s += f;
 
@@ -769,7 +785,7 @@ int test_QR_update(void)
   gsl_test(f, "  QR_update hilbert(4)");
   s += f;
 
-  f = test_QR_update_dim(hilb12, 0.5);
+  f = test_QR_update_dim(hilb12, 2 * 1024.0 * GSL_DBL_EPSILON);
   gsl_test(f, "  QR_update hilbert(12)");
   s += f;
 
@@ -785,7 +801,7 @@ int test_QR_update(void)
   gsl_test(f, "  QR_update vander(4)");
   s += f;
 
-  f = test_QR_update_dim(vander12, 0.05);
+  f = test_QR_update_dim(vander12, 0.0001); /* FIXME: bad accuracy */
   gsl_test(f, "  QR_update vander(12)");
   s += f;
 
@@ -845,7 +861,7 @@ int test_SV_solve(void)
   gsl_test(f, "  SV_solve hilbert(12)");
   s += f;
 
-  f = test_SV_solve_dim(vander2, vander2_solution, 8.0 * GSL_DBL_EPSILON);
+  f = test_SV_solve_dim(vander2, vander2_solution, 64.0 * GSL_DBL_EPSILON);
   gsl_test(f, "  SV_solve vander(2)");
   s += f;
 
@@ -931,6 +947,10 @@ int test_SV_decomp(void)
   gsl_test(f, "  SV_decomp m(5,3)");
   s += f;
 
+  f = test_SV_decomp_dim(moler10, 2 * 64.0 * GSL_DBL_EPSILON);
+  gsl_test(f, "  SV_decomp moler(10)");
+  s += f;
+
   f = test_SV_decomp_dim(hilb2, 2 * 8.0 * GSL_DBL_EPSILON);
   gsl_test(f, "  SV_decomp hilbert(2)");
   s += f;
@@ -943,7 +963,7 @@ int test_SV_decomp(void)
   gsl_test(f, "  SV_decomp hilbert(4)");
   s += f;
 
-  f = test_SV_decomp_dim(hilb12, 0.5);
+  f = test_SV_decomp_dim(hilb12, 2 * 1024.0 * GSL_DBL_EPSILON);
   gsl_test(f, "  SV_decomp hilbert(12)");
   s += f;
 
@@ -959,7 +979,7 @@ int test_SV_decomp(void)
   gsl_test(f, "  SV_decomp vander(4)");
   s += f;
 
-  f = test_SV_decomp_dim(vander12, 0.05);
+  f = test_SV_decomp_dim(vander12, 2 * 1024.0 * GSL_DBL_EPSILON);
   gsl_test(f, "  SV_decomp vander(12)");
   s += f;
 
@@ -1126,6 +1146,8 @@ int main()
   vander3 = create_vandermonde_matrix(3);
   vander4 = create_vandermonde_matrix(4);
   vander12 = create_vandermonde_matrix(12);
+
+  moler10 = create_moler_matrix(10);
 
   gsl_test(test_matmult(),        "Matrix Multiply");
   gsl_test(test_matmult_mod(),    "Matrix Multiply with Modification");
