@@ -13,7 +13,7 @@ The functions described in this section are declared in the header files
 @file{gsl_interp.h} and @file{gsl_spline.h}.
 
 @menu
-* Introduction::                
+* Introduction to Interpolation::  
 * Interpolation Functions::     
 * Interpolation Types::         
 * Index Look-up and Acceleration::  
@@ -23,7 +23,7 @@ The functions described in this section are declared in the header files
 * Interpolation References and Further Reading::  
 @end menu
 
-@node Introduction
+@node Introduction to Interpolation
 @section Introduction
 
 Given a set of data points @math{(x_1, y_1) \dots (x_n, y_n)} the

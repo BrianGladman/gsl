@@ -173,7 +173,7 @@ by the GSL Team.
 @end titlepage
 
 @ifinfo
-@node Top, Preliminaries, (dir), (dir)
+@node Top, Introduction, (dir), (dir)
 @top GSL
 @end ifinfo
 
@@ -183,10 +183,13 @@ routines for scientific computing.
 
 As of @value{UPDATED} the library is in beta-test release only and is
 not recommended for general use.
+
+More information about GSL can be found at the project homepage,
+@url{http://sources.redhat.com/gsl/}.
 @end ifinfo
 
 @menu
-* Preliminaries::               
+* Introduction::                
 * Using the library::           
 * Error Handling::              
 * Mathematical Functions::      
@@ -232,8 +235,8 @@ not recommended for general use.
 * Type Index::                  
 @end menu
 
-@node Preliminaries, Using the library, Top, Top
-@chapter Preliminaries
+@node  Introduction, Using the library, Top, Top
+@chapter Introduction
 
 The GNU Scientific Library (GSL) is a collection of routines for
 numerical computing.  The routines are written from scratch by the GSL
@@ -282,7 +285,7 @@ license is available from the GNU Project webpage @cite{Frequently Asked
 Questions about the GNU GPL},
 @url{http://www.gnu.org/copyleft/gpl-faq.html}.
 
-@node Using the library, Error Handling, Preliminaries, Top
+@node Using the library, Error Handling, Introduction, Top
 @chapter Using the library
 @cindex usage, compiling application programs
 @include usage.texi
