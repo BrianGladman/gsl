@@ -1,3 +1,9 @@
+Tue Jun 26 10:44:13 2001  Brian Gough  <bjg@network-theory.co.uk>
+
+	* fp-netbsd.c (gsl_ieee_set_mode): simplified, patch from Jason Beegan
+
+	* fp-openbsd.c (gsl_ieee_set_mode): simplified
+
 Mon Jun 25 20:47:33 2001  Brian Gough  <bjg@network-theory.co.uk>
 
 	* fp-openbsd.c (gsl_ieee_set_mode): added support for openbsd

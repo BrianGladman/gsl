@@ -1,4 +1,4 @@
-/* fp-netbsd.c
+/* fp-openbsd.c
  * 
  * Copyright (C) 2001 Jason Beegan
  * 
@@ -17,13 +17,12 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-/* This is a copy of fp-netbsd.c, modified for openbsd by Toby White
-   --- Brian Gough */
-
 #include <ieeefp.h>
-#include <sys/param.h>
 #include <gsl/gsl_ieee_utils.h>
 #include <gsl/gsl_errno.h>
+
+/* This is a copy of fp-netbsd.c, modified for openbsd by Toby White
+   --- Brian Gough */
 
 int
 gsl_ieee_set_mode (int precision, int rounding, int exception_mask)
@@ -71,12 +70,13 @@ gsl_ieee_set_mode (int precision, int rounding, int exception_mask)
     }
 
 /* Turn on all available exceptions apart from 'inexact'.
-   Denormalized operand exception not available on all ports. */
+   Denormalized operand exception not available on all platforms. */
 
-#ifdef FP_X_DNML
-  mode = FP_X_INV | FP_X_DNML | FP_X_DZ | FP_X_OFL | FP_X_UFL;
-#else
   mode = FP_X_INV | FP_X_DZ | FP_X_OFL | FP_X_UFL;
+#ifdef FP_X_DNML
+  mode = mode | FP_X_DNML
+#else
+
 #endif
 
   if (exception_mask & GSL_IEEE_MASK_INVALID)
@@ -86,7 +86,7 @@ gsl_ieee_set_mode (int precision, int rounding, int exception_mask)
 #ifdef FP_X_DNML
     mode &= ~ FP_X_DNML;
 #else
-  GSL_ERROR ("openbsd-" MACHINE " does not support the denormalized operand exception. "
+  GSL_ERROR ("OpenBSD does not support the denormalized operand exception on this platform. "
 	     "Use 'mask-denormalized' to work around this.",
 	     GSL_EUNSUP);
 #endif

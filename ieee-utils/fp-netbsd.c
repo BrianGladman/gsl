@@ -18,7 +18,6 @@
  */
 
 #include <ieeefp.h>
-#include <sys/param.h>
 #include <gsl/gsl_ieee_utils.h>
 #include <gsl/gsl_errno.h>
 
@@ -68,12 +67,13 @@ gsl_ieee_set_mode (int precision, int rounding, int exception_mask)
     }
 
 /* Turn on all available exceptions apart from 'inexact'.
-   Denormalized operand exception not available on all ports. */
+   Denormalized operand exception not available on all platforms. */
 
-#ifdef FP_X_DNML
-  mode = FP_X_INV | FP_X_DNML | FP_X_DZ | FP_X_OFL | FP_X_UFL;
-#else
   mode = FP_X_INV | FP_X_DZ | FP_X_OFL | FP_X_UFL;
+#ifdef FP_X_DNML
+  mode = mode | FP_X_DNML
+#else
+
 #endif
 
   if (exception_mask & GSL_IEEE_MASK_INVALID)
@@ -83,7 +83,7 @@ gsl_ieee_set_mode (int precision, int rounding, int exception_mask)
 #ifdef FP_X_DNML
     mode &= ~ FP_X_DNML;
 #else
-  GSL_ERROR ("netbsd-" MACHINE " does not support the denormalized operand exception. "
+  GSL_ERROR ("NetBSD does not support the denormalized operand exception on this platform. "
 	     "Use 'mask-denormalized' to work around this.",
 	     GSL_EUNSUP);
 #endif
