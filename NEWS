@@ -1,5 +1,13 @@
 * What is new in gsl-1.3:
 
+** Changed interface for gsl_sf_coupling_6j...(...). The old functions
+actually calculated 6j for a permutation of the arguments (that
+related to Racah W). This was incorrect and not consistent with
+the documentation. The new versions calculate < {a,b,c}, {d,e,f} >,
+as stated in the documentation. The old versions are still available
+as gsl_sf_coupling_6j_INCORRECT...(...), though they are deprecated
+and will be removed at some point in the future.
+   
 ** Fixed compilation problems with gcc -ansi and other ANSI compilers.
 
 ** Fixed uninitialized memory access in the Niederreiter quasi-random
