@@ -9,7 +9,8 @@
 #include "fft_complex.h"
 
 int
-gsl_fft_complex_forward (double data[], const size_t stride, const size_t n,
+gsl_fft_complex_forward (gsl_complex_packed_array data, 
+			 const size_t stride, const size_t n,
 			 const gsl_fft_complex_wavetable * wavetable)
 {
   gsl_fft_direction sign = forward;

@@ -12,7 +12,7 @@
 
 #include <gsl_errno.h>
 
-#include "fft.h"
+#include "complex_internal.h"
 #include "bitreverse.h"
 
 void my_error_handler (const char *reason, const char *file,

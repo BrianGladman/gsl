@@ -4,7 +4,7 @@
 #include <gsl_errno.h>
 #include <gsl_fft_real.h>
 
-#include "fft.h"
+#include "complex_internal.h"
 
 int
 gsl_fft_real_unpack (const double real_coefficient[],

@@ -3,7 +3,7 @@
 #include <gsl_errno.h>
 #include <gsl_fft_halfcomplex.h>
 
-#include "fft.h"
+#include "complex_internal.h"
 
 int
 gsl_fft_halfcomplex_unpack (const double halfcomplex_coefficient[],

@@ -1,4 +1,4 @@
-#include "fft.h"
+#include "complex_internal.h"
 
 int gsl_fft_real_pass_2 (const double in[],
 			 size_t istride,

@@ -4,7 +4,7 @@
 #include <gsl_fft_halfcomplex.h>
 
 #include "factorize.h"
-#include "fft.h"
+#include "complex_internal.h"
 #include "bitreverse.h"
 
 int

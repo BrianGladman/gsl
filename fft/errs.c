@@ -13,7 +13,7 @@
 
 #include <gsl_test.h>
 #include "compare.h"
-#include "fft.h"
+#include "complex_internal.h"
 
 int verbose = 0;
 

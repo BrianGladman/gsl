@@ -5,7 +5,7 @@
 #include <gsl_dft_complex.h>
 #include <gsl_errno.h>
 
-#include "fft.h"
+#include "complex_internal.h"
 
 int
 gsl_dft_complex_forward (const double data[], 

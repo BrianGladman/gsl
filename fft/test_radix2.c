@@ -14,7 +14,7 @@
 #include <gsl_fft_halfcomplex.h>
 #include <gsl_test.h>
 
-#include "fft.h"
+#include "complex_internal.h"
 #include "bitreverse.h"
 #include "fft_signals.h"
 

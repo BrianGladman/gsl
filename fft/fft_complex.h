@@ -1,4 +1,4 @@
-#include "fft.h"
+#include "complex_internal.h"
 
 int
 fft_complex_pass_2 (const double in[],

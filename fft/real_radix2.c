@@ -4,7 +4,7 @@
 #include <gsl_errno.h>
 #include <gsl_fft_real.h>
 
-#include "fft.h"
+#include "complex_internal.h"
 #include "factorize.h"
 #include "bitreverse.h"
 

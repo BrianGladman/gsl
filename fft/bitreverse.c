@@ -1,7 +1,7 @@
 #include <config.h>
 #include <gsl_fft.h>
 
-#include "fft.h"
+#include "complex_internal.h"
 #include "bitreverse.h"
 
 int 

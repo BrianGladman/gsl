@@ -7,7 +7,7 @@
 
 #include <gsl_dft_complex.h>
 
-#include "fft.h"
+#include "complex_internal.h"
 #include "fft_signals.h"
 
 int

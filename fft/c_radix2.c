@@ -5,7 +5,7 @@
 #include <gsl_fft_complex.h>
 #include <gsl_errno.h>
 
-#include "fft.h"
+#include "complex_internal.h"
 #include "bitreverse.h"
 
 int
