@@ -120,9 +120,6 @@ main (void)
 #define FUNC(x) x, "gsl_ran_" #x
 #define FUNC2(x) x, x ## _pdf, "gsl_ran_" #x
 
-  test_pdf (FUNC2(test_levy1));
-  test_pdf (FUNC2(test_levy2));
-
   test_shuffle() ;
   test_choose() ;
 
@@ -154,6 +151,8 @@ main (void)
   test_pdf (FUNC2(test_ugaussian));
   test_pdf (FUNC2(test_gumbel1));
   test_pdf (FUNC2(test_gumbel2));
+  test_pdf (FUNC2(test_levy1));
+  test_pdf (FUNC2(test_levy2));
   test_pdf (FUNC2(test_logistic));
   test_pdf (FUNC2(test_lognormal));
   test_pdf (FUNC2(test_pareto));
@@ -860,20 +859,20 @@ test_levy2 (void)
 double
 test_levy2_pdf (double x)
 {
-  return gsl_ran_gaussian_pdf (x, 2 * 5.0 * 5.0);
+  return gsl_ran_gaussian_pdf (x, sqrt(2.0) * 5.0 );
 }
 
 
 double
 test_logistic (void)
 {
-  return gsl_ran_logistic (r_global);
+  return gsl_ran_logistic (r_global, 3.1);
 }
 
 double
 test_logistic_pdf (double x)
 {
-  return gsl_ran_logistic_pdf (x);
+  return gsl_ran_logistic_pdf (x, 3.1);
 }
 
 double
@@ -916,13 +915,13 @@ test_pascal_pdf (unsigned int n)
 double
 test_pareto (void)
 {
-  return gsl_ran_pareto (r_global, 2.75);
+  return gsl_ran_pareto (r_global, 1.9, 2.75);
 }
 
 double
 test_pareto_pdf (double x)
 {
-  return gsl_ran_pareto_pdf (x, 2.75);
+  return gsl_ran_pareto_pdf (x, 1.9, 2.75);
 }
 
 double
@@ -990,24 +989,24 @@ test_laplace_pdf (double x)
 double
 test_weibull (void)
 {
-  return gsl_ran_weibull (r_global, 2.75);
+  return gsl_ran_weibull (r_global, 3.14, 2.75);
 }
 
 double
 test_weibull_pdf (double x)
 {
-  return gsl_ran_weibull_pdf (x, 2.75);
+  return gsl_ran_weibull_pdf (x, 3.14, 2.75);
 }
 
 
 double
 test_weibull1 (void)
 {
-  return gsl_ran_weibull (r_global, 1.0);
+  return gsl_ran_weibull (r_global, 2.97, 1.0);
 }
 
 double
 test_weibull1_pdf (double x)
 {
-  return gsl_ran_weibull_pdf (x, 1.0);
+  return gsl_ran_weibull_pdf (x, 2.97, 1.0);
 }

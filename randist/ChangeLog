@@ -1,5 +1,19 @@
 Tue Aug  4 12:29:17 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
+	* gsl-dist.c: a program for generating samples from the 
+ 	distributions
+
+	* levy.c (gsl_ran_levy): take care of special case, a=1
+
+	* logistic.c: allow scale parameter, mu
+
+	* weibull.c: allow scale parameter, mu
+
+	* pareto.c: allow scale parameter, mu
+
+	* exppow.c: handle the case a<1 using a transformation of the
+ 	gamma distribution.
+
 	* gamma.c (gsl_ran_gamma_int): removed the check for
  	GSL_LOGINIFINITY since underflow can't occur for 32-bit random
  	numbers in double precision.
