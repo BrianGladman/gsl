@@ -72,7 +72,7 @@ gsl_ran_shuffle (const gsl_rng * r, void * base, size_t n, size_t size)
 
   for (i = n - 1; i > 0; i--)
     {
-      size_t j = (i + 1) * gsl_rng_uniform (r); 
+      size_t j = gsl_rng_uniform_int(r, i+1); /* originally (i + 1) * gsl_rng_uniform (r) */
 
       swap (base, size, i, j) ;
     }
@@ -117,7 +117,7 @@ gsl_ran_sample (const gsl_rng * r, void * dest, size_t k, void * src,
 
   for (i = 0; i < k; i++)
     {
-      j = n * gsl_rng_uniform (r) ;
+      j = gsl_rng_uniform_int (r, n);  /* originally n * gsl_rng_uniform (r) */
 
       copy (dest, i, src, j, size) ;
     }
