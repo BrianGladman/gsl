@@ -1,3 +1,9 @@
+Mon Aug 17 14:31:55 1998  Brian Gough  <bjg@vvv.lanl.gov>
+
+	* gsl_randist.h: renamed discrete probability distribution
+ 	parameters to use consistent k,n notation (k = sample, n = total,
+ 	e.g. p(k) = function(k,n) )
+
 Wed Aug 12 14:02:31 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
 	* lognormal.c: added zeta and sigma (location and scale parameters)

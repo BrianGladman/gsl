@@ -15,7 +15,7 @@ gsl_ran_poisson (const gsl_rng * r, double mu)
 {
   double emu;
   double prod = 1.0;
-  unsigned int n = 0;
+  unsigned int k = 0;
 
   while (mu > 10)
     {
@@ -25,11 +25,11 @@ gsl_ran_poisson (const gsl_rng * r, double mu)
 
       if (X >= mu)
 	{
-	  return n + gsl_ran_binomial (r, mu / X, m - 1);
+	  return k + gsl_ran_binomial (r, mu / X, m - 1);
 	}
       else
 	{
-	  n += m;
+	  k += m;
 	  mu -= X; 
 	}
     }
@@ -41,11 +41,11 @@ gsl_ran_poisson (const gsl_rng * r, double mu)
   do
     {
       prod *= gsl_rng_uniform (r);
-      n++;
+      k++;
     }
   while (prod > emu);
 
-  return n - 1;
+  return k - 1;
 
 }
 
@@ -64,9 +64,9 @@ gsl_ran_poisson_array (const gsl_rng * r, size_t n, unsigned int array[],
 }
 
 double
-gsl_ran_poisson_pdf (const unsigned int n, const double mu)
+gsl_ran_poisson_pdf (const unsigned int k, const double mu)
 {
-  double lf = gsl_sf_lnfact (n); 
-  double p = exp (log (mu) * n - lf - mu);
+  double lf = gsl_sf_lnfact (k); 
+  double p = exp (log (mu) * k - lf - mu);
   return p;
 }

@@ -25,13 +25,13 @@ gsl_ran_bernoulli (const gsl_rng * r, double p)
 }
 
 double
-gsl_ran_bernoulli_pdf (const unsigned int n, double p)
+gsl_ran_bernoulli_pdf (const unsigned int k, double p)
 {
-  if (n == 0)
+  if (k == 0)
     {
       return 1 - p ;
     }
-  else if (n == 1)
+  else if (k == 1)
     {
       return p ;
     }

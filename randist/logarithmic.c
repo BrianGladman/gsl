@@ -42,15 +42,15 @@ gsl_ran_logarithmic (const gsl_rng * r, const double p)
 }
 
 double
-gsl_ran_logarithmic_pdf (const unsigned int n, const double p)
+gsl_ran_logarithmic_pdf (const unsigned int k, const double p)
 {
-  if (n == 0)
+  if (k == 0)
     {
       return 0 ;
     }
   else 
     {
-      double P = pow(p, n) / (double) n / log(1/(1-p)) ;
+      double P = pow(p, k) / (double) k / log(1/(1-p)) ;
       return P;
     }
 }
