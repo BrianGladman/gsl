@@ -1,13 +1,13 @@
-/*
- * Author:  G. Jungman
- * RCS:     $Id$
- */
 /* Implementation of gsl_blas_raw_cm interface which
  * defers to a CBLAS conformant interface. This includes
  * only the level 2 and level 3 functions, since the level 1
  * functions are insensitive to the storage scheme.
+ *
+ * Author:  G. Jungman
+ * RCS:     $Id$
  */
-#include "gsl_blas_raw_cm.h"
+#include "gsl_blas_raw_cm.h"  /* we conform to this */
+#include "gsl_cblas.h"        /* we use something that conforms to this */
 
 
 /*
@@ -557,7 +557,7 @@ void gsl_blas_raw_dspr2_cm (CBLAS_UPLO_t Uplo,
                             const double Y[], int incY,
                             double A[])
 {
-  cblas_sspr2(CblasColMajor, Uplo, N, alpha, X, incX, Y, incY, A);
+  cblas_dspr2(CblasColMajor, Uplo, N, alpha, X, incX, Y, incY, A);
 }
 
 
@@ -690,7 +690,7 @@ void gsl_blas_raw_cher_cm (CBLAS_UPLO_t Uplo,
                            const void * X, int incX,
                            void * A, int lda)
 {
-  cblas_cher(CblasColMajor, Uplo, N, X, incX, A, lda);
+  cblas_cher(CblasColMajor, Uplo, N, alpha, X, incX, A, lda);
 }
 
 
@@ -700,7 +700,7 @@ void gsl_blas_raw_zher_cm (CBLAS_UPLO_t Uplo,
                            const void * X, int incX,
                            void * A, int lda)
 {
-  cblas_zher(CblasColMajor, Uplo, N, X, incX, A, lda);
+  cblas_zher(CblasColMajor, Uplo, N, alpha, X, incX, A, lda);
 }
 
 

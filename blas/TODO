@@ -1,25 +1,3 @@
 
-native implementations:
-
- o gsl_blas_raw_srotmg
- o gsl_blas_raw_drotmg
- o gsl_blas_raw_srotm
- o gsl_blas_raw_drotm
-
- X gsl_blas_raw_ctbmv
- X gsl_blas_raw_ztbmv
-
- X gsl_blas_raw_ctpmv
- X gsl_blas_raw_ztpmv
-
- X gsl_blas_raw_stbsv
- X gsl_blas_raw_dtbsv
- X gsl_blas_raw_ctbsv
- X gsl_blas_raw_ztbsv
-
- X gsl_blas_raw_stpsv
- X gsl_blas_raw_dtpsv
- X gsl_blas_raw_ctpsv
- X gsl_blas_raw_ztpsv
-
+level 3 raw_native operations not implemented
 

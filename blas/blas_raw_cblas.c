@@ -1,11 +1,12 @@
-/*
+/* Implementation of gsl_blas_raw interface which
+ * defers to a CBLAS conformant interface.
+ *
  * Author:  G. Jungman
  * RCS:     $Id$
  */
-/* Implementation of gsl_blas_raw interface which
- * defers to a CBLAS conformant interface.
- */
-#include "gsl_blas_raw.h"
+#include "gsl_blas_raw.h"  /* we conform to this */
+#include "gsl_cblas.h"     /* we use something that conforms to this */
+
 
 /*
  * ===========================================================================
@@ -899,7 +900,7 @@ void gsl_blas_raw_dspr2 (CBLAS_UPLO_t Uplo,
                          const double Y[], size_t incY,
                          double A[])
 {
-  cblas_sspr2(CblasRowMajor, Uplo, N, alpha, X, incX, Y, incY, A);
+  cblas_dspr2(CblasRowMajor, Uplo, N, alpha, X, incX, Y, incY, A);
 }
 
 
@@ -1033,7 +1034,7 @@ void gsl_blas_raw_cher (CBLAS_UPLO_t Uplo,
                         const gsl_const_complex_packed_array_float X, size_t incX,
                         gsl_complex_packed_array_float A, int lda)
 {
-  cblas_cher(CblasRowMajor, Uplo, N, X, incX, A, lda);
+  cblas_cher(CblasRowMajor, Uplo, N, alpha, X, incX, A, lda);
 }
 
 
@@ -1043,7 +1044,7 @@ void gsl_blas_raw_zher (CBLAS_UPLO_t Uplo,
                         const gsl_const_complex_packed_array X, size_t incX,
                         gsl_complex_packed_array A, int lda)
 {
-  cblas_zher(CblasRowMajor, Uplo, N, X, incX, A, lda);
+  cblas_zher(CblasRowMajor, Uplo, N, alpha, X, incX, A, lda);
 }
 
 

@@ -8,6 +8,9 @@
 #include <gsl/gsl_vector.h>
 #include <gsl/gsl_matrix.h>
 
+#include <gsl/gsl_blas_types.h>
+
+
 #undef __BEGIN_DECLS
 #undef __END_DECLS
 #ifdef __cplusplus
