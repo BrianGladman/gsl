@@ -19,6 +19,8 @@ C++ programs
     gsl_vector_swap_cols        is now  gsl_vector_swap_columns
     gsl_vector_swap_row_col     is now  gsl_vector_swap_row_column
 
+and the vector/matrix view allocation functions have been simplified.
+
 ** A new sort directory has been added for sorting objects and vectors.
 
 ** A permutation directory has been added for manipulating permutations
@@ -30,17 +32,27 @@ also support weighted samples and a covariance function.
 improved clarity. Consult manual for details.
 
 ** The environment variable GSL_IEEE_MODE now uses "," as a separator
-instead of ;
+instead of ";"
 
 ** The autogen.sh script, mostly for use by developers who use the CVS
 repository, now does not run configure.
 
 ** The histogram directory now has additional functions for copying
 and comparing histograms, performing arithmetic on histograms and
-finding maximum and minimum values.
+finding maximum and minimum values. Corresponding functions have been
+added for vectors and matrices.
 
 ** The linear algebra directory supports additional methods, including
 rectangular QR, rectangular QRPT and Cholesky decomposition.
+
+** Complex arithmetic (+,-,*,/) and complex elementary functions
+(sqrt, log, exp, sin, cos, tan, arcsin, arccos, arctan, sinh, cosh,
+tanh, arcsinh, arccosh, arctanh) are now supported.
+
+** Multidimensional minimization methods are now available.
+
+** The special functions directory now includes a routine for
+computing the value of the incomplete beta function.
 
 * Was new in gsl-0.5:
 
@@ -135,7 +147,7 @@ arrays of structs is not guaranteed.
 ** The interface for matrices and vectors has changed. Vectors now
 support strides, and can be used to access rows and columns of a
 matrix. Many more types are available (float, double, long double,
-int, long, sort, char, signed and unsigned, plus complex floats,
+int, long, short, char, signed and unsigned, plus complex floats,
 doubles and long doubles) due to improvements in our preprocessor
 template system.
 
