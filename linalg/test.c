@@ -210,6 +210,7 @@ gsl_matrix * row5;
 gsl_matrix * row12;
 
 gsl_matrix * A22;
+gsl_matrix * A33;
 
 gsl_matrix_complex * c7;
 
@@ -1392,6 +1393,44 @@ int test_SV_decomp(void)
       }
   }
 
+  {
+    int i,j;
+    int iter;
+    double carry;
+    double lower = 0, upper = 1;
+
+    for (i=0; i<3; i++) {
+      for (j=0; j<3; j++) {
+        gsl_matrix_set (A33, i,j, lower);
+      }
+    }
+    
+    for (iter=0; ; iter++) {
+      f = test_SV_decomp_dim(A33, 64 * GSL_DBL_EPSILON);
+      gsl_test(f, "  SV_decomp A(3x3)(%g %g %g | %g %g %g | %g %g %g)",
+               gsl_matrix_get (A33, 0,0),gsl_matrix_get (A33, 0,1),gsl_matrix_get (A33, 0,2),
+               gsl_matrix_get (A33, 1,0),gsl_matrix_get (A33, 1,1),gsl_matrix_get (A33, 1,2),
+               gsl_matrix_get (A33, 2,0),gsl_matrix_get (A33, 2,1),gsl_matrix_get (A33, 2,2));
+      
+      /* increment */
+      carry=1.0;
+      for (i=2; i>=0; i--) {
+        for (j=2; j>=0; j--) {
+          double v=gsl_matrix_get (A33, i,j)+carry;
+          if (v>upper) {
+            v=lower;
+            carry=1.0;
+          } else {
+            carry=0.0;
+          }
+          gsl_matrix_set (A33, i,j, v);
+        }
+      }
+      if (carry) break;
+    }
+    
+  }
+
   return s;
 }
 
@@ -2006,6 +2045,7 @@ int main(void)
   row12 = create_row_matrix(12,12);
 
   A22 = create_2x2_matrix (0.0, 0.0, 0.0, 0.0);
+  A33 = gsl_matrix_alloc(3,3);
 
   /* Matmult now obsolete */
 #ifdef MATMULT

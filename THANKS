@@ -167,3 +167,6 @@ memory leak
 
 * Taliver Heath <taliver@paul.rutgers.edu> keep track of best solution
 in siman_solve.
+
+* Trevor Blackwell <tlb@trevorblackwell.com> bug report test case for
+SVD d_n = 0
