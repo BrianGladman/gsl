@@ -50,3 +50,17 @@ x10. Add random/srandom DONE.
 On the anomaly of ran1() in Monte Carlo pricing of financial
 derivatives; Akira Tajima , Syoiti Ninomiya , and Shu Tezuka ; Winter
 simulation , 1996, Page 360, from ACM
+
+13. The following papers have been published, I think we refer to them
+(or could do),
+
+    Pierre L'Ecuyer, "Tables of Linear Congruential Generators of different
+    size and good lattice structure", Mathematics of Computation, Vol 68,
+    No 225, Jan 1999, p249-260
+
+    Pierre L'Ecuyer, "Tables of Maximally equidistributed combined LSFR
+    generators", ibid, p261-270
+
+14. Look at this paper: I. Vattulainen, "Framework for testing random numbers
+    in parallel calculations", Phys. Rev. E, 59, 6, June 1999, p7200
+

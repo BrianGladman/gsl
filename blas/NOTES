@@ -1,1 +1,9 @@
 A blas interface gsl_blas will go here
+
+BLAS References
+
+BLAS, ACM TOMS Vol 24, No 3
+
+GEMM Based Level 3 BLAS, Kagstrom, Ling, Van Loan, p 268-302,
+Algorithm 784 p 303-316
+
