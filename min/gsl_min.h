@@ -4,6 +4,18 @@
 #include <stdlib.h>
 #include <gsl/gsl_math.h>
 
+#undef __BEGIN_DECLS
+#undef __END_DECLS
+#ifdef __cplusplus
+# define __BEGIN_DECLS extern "C" {
+# define __END_DECLS }
+#else
+# define __BEGIN_DECLS /* empty */
+# define __END_DECLS /* empty */
+#endif
+
+__BEGIN_DECLS
+
 typedef struct
   {
     const char *name;
@@ -69,5 +81,7 @@ int
 gsl_min_find_bracket(gsl_function *f,double *minimum,double * f_minimum,
 		     gsl_interval *x, double * f_lower,double * f_upper,
 		     size_t eval_max);
+
+__END_DECLS
 
 #endif /* __GSL_MIN_H__ */

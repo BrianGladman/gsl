@@ -6,6 +6,18 @@
 
 #include <gsl/gsl_sf_result.h>
 
+#undef __BEGIN_DECLS
+#undef __END_DECLS
+#ifdef __cplusplus
+# define __BEGIN_DECLS extern "C" {
+# define __END_DECLS }
+#else
+# define __BEGIN_DECLS /* empty */
+# define __END_DECLS /* empty */
+#endif
+
+__BEGIN_DECLS
+
 
 /* Real part of DiLogarithm(x), for real argument.
  * In Lewin's notation, this is Li_2(x).
@@ -23,5 +35,7 @@ int     gsl_sf_dilog_e(double x, gsl_sf_result * result);
 int gsl_sf_complex_dilog_impl(double r, double theta, gsl_sf_result * result_re, gsl_sf_result * result_im);
 int gsl_sf_complex_dilog_e(double r, double theta, gsl_sf_result * result_re, gsl_sf_result * result_im);
 
+
+__END_DECLS
 
 #endif /* __GSL_SF_DILOG_H__ */

@@ -4,6 +4,18 @@
 #ifndef __GSL_SUM_H__
 #define __GSL_SUM_H__
 
+#undef __BEGIN_DECLS
+#undef __END_DECLS
+#ifdef __cplusplus
+# define __BEGIN_DECLS extern "C" {
+# define __END_DECLS }
+#else
+# define __BEGIN_DECLS /* empty */
+# define __END_DECLS /* empty */
+#endif
+
+__BEGIN_DECLS
+
 /* Basic Levin-u acceleration method.
  *
  *   array       = array of series elements
@@ -119,7 +131,8 @@ int gsl_sum_levin_u_trunc_step(double term,
 			       double * sum_accel,
 			       double * sum_plain);
 
-#endif /* __GSL_SUM_H__ */
+__END_DECLS
 
+#endif /* __GSL_SUM_H__ */
 
 

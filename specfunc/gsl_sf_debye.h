@@ -6,6 +6,18 @@
 
 #include <gsl/gsl_sf_result.h>
 
+#undef __BEGIN_DECLS
+#undef __END_DECLS
+#ifdef __cplusplus
+# define __BEGIN_DECLS extern "C" {
+# define __END_DECLS }
+#else
+# define __BEGIN_DECLS /* empty */
+# define __END_DECLS /* empty */
+#endif
+
+__BEGIN_DECLS
+
 
 /* D_n(x) := n/x^n Integrate[t^n/(e^t - 1), {t,0,x}] */
 
@@ -40,5 +52,7 @@ int     gsl_sf_debye_3_e(double x, gsl_sf_result * result);
 int     gsl_sf_debye_4_impl(double x, gsl_sf_result * result);
 int     gsl_sf_debye_4_e(double x, gsl_sf_result * result);
 
+
+__END_DECLS
 
 #endif /* __GSL_SF_DEBYE_H__ */

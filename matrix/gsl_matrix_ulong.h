@@ -5,6 +5,18 @@
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_vector_ulong.h>
 
+#undef __BEGIN_DECLS
+#undef __END_DECLS
+#ifdef __cplusplus
+# define __BEGIN_DECLS extern "C" {
+# define __END_DECLS }
+#else
+# define __BEGIN_DECLS /* empty */
+# define __END_DECLS /* empty */
+#endif
+
+__BEGIN_DECLS
+
 typedef struct gsl_matrix_ulong_struct gsl_matrix_ulong;
 
 struct gsl_matrix_ulong_struct
@@ -113,5 +125,7 @@ gsl_matrix_ulong_set(gsl_matrix_ulong * m,
   m->data[i * m->tda + j] = x ;
 }
 #endif
+
+__END_DECLS
 
 #endif /* __GSL_MATRIX_ULONG_H__ */

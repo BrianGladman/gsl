@@ -11,6 +11,18 @@
 #include <gsl/gsl_complex.h>
 #include <gsl/gsl_blas_types.h>
 
+#undef __BEGIN_DECLS
+#undef __END_DECLS
+#ifdef __cplusplus
+# define __BEGIN_DECLS extern "C" {
+# define __END_DECLS }
+#else
+# define __BEGIN_DECLS /* empty */
+# define __END_DECLS /* empty */
+#endif
+
+__BEGIN_DECLS
+
 
 float  gsl_blas_raw_sdsdot (size_t N,
                             float alpha,
@@ -150,5 +162,7 @@ void gsl_blas_raw_cscal  (size_t N, const gsl_const_complex_packed_float alpha, 
 void gsl_blas_raw_zscal  (size_t N, const gsl_const_complex_packed alpha, gsl_complex_packed_array X, size_t incX);
 void gsl_blas_raw_csscal (size_t N, float  alpha, gsl_complex_packed_array_float X, size_t incX);
 void gsl_blas_raw_zdscal (size_t N, double alpha, gsl_complex_packed_array X, size_t incX);
+
+__END_DECLS
 
 #endif /* __GSL_BLAS_RAW_L1_H__ */

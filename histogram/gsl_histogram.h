@@ -1,8 +1,20 @@
-#ifndef __GSL_HISTOGRAM_H__ 
-#define __GSL_HISTOGRAM_H__ 
+#ifndef __GSL_HISTOGRAM_H__
+#define __GSL_HISTOGRAM_H__
 
 #include <stdlib.h>
 #include <stdio.h>
+
+#undef __BEGIN_DECLS
+#undef __END_DECLS
+#ifdef __cplusplus
+# define __BEGIN_DECLS extern "C" {
+# define __END_DECLS }
+#else
+# define __BEGIN_DECLS /* empty */
+# define __END_DECLS /* empty */
+#endif
+
+__BEGIN_DECLS
 
 typedef struct {
   size_t n ;
@@ -47,5 +59,6 @@ gsl_histogram_pdf * gsl_histogram_pdf_alloc (const gsl_histogram * h);
 void gsl_histogram_pdf_free (gsl_histogram_pdf * p);
 double gsl_histogram_pdf_sample (const gsl_histogram_pdf * p, double r);
 
-#endif /* __GSL_HISTOGRAM_H__ */
+__END_DECLS
 
+#endif /* __GSL_HISTOGRAM_H__ */

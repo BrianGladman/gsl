@@ -8,6 +8,18 @@
 #include <gsl/gsl_vector.h>
 #include <gsl/gsl_matrix.h>
 
+#undef __BEGIN_DECLS
+#undef __END_DECLS
+#ifdef __cplusplus
+# define __BEGIN_DECLS extern "C" {
+# define __END_DECLS }
+#else
+# define __BEGIN_DECLS /* empty */
+# define __END_DECLS /* empty */
+#endif
+
+__BEGIN_DECLS
+
 
 /* ========================================================================
  * Level 1
@@ -142,7 +154,6 @@ void gsl_blas_cscal  (const gsl_complex_float * alpha, gsl_vector_complex_float 
 void gsl_blas_zscal  (const gsl_complex * alpha, gsl_vector_complex * X);
 void gsl_blas_csscal (float  alpha, gsl_vector_complex_float * X);
 void gsl_blas_zdscal (double alpha, gsl_vector_complex * X);
-
 
 
 /* ===========================================================================
@@ -804,5 +815,7 @@ int  gsl_blas_zher2k (CBLAS_UPLO_t Uplo,
                       double beta,
                       gsl_matrix_complex * C);
 
+
+__END_DECLS
 
 #endif /* __GSL_BLAS_H__ */

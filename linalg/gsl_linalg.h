@@ -8,6 +8,18 @@
 #include <gsl/gsl_vector.h>
 #include <gsl/gsl_matrix.h>
 
+#undef __BEGIN_DECLS
+#undef __END_DECLS
+#ifdef __cplusplus
+# define __BEGIN_DECLS extern "C" {
+# define __END_DECLS }
+#else
+# define __BEGIN_DECLS /* empty */
+# define __END_DECLS /* empty */
+#endif
+
+__BEGIN_DECLS
+
 typedef enum {
   GSL_LA_MOD_NONE=0,
   GSL_LA_MOD_TRANSPOSE=1,
@@ -190,5 +202,7 @@ gsl_la_solve_symm_cyc_tridiag_impl(const gsl_vector * diag,
                                    const gsl_vector * rhs,
                                    gsl_vector * solution);
 
+
+__END_DECLS
 
 #endif /* __GSL_LINALG_H__ */

@@ -6,6 +6,18 @@
 
 #include <gsl/gsl_sf_result.h>
 
+#undef __BEGIN_DECLS
+#undef __END_DECLS
+#ifdef __cplusplus
+# define __BEGIN_DECLS extern "C" {
+# define __END_DECLS }
+#else
+# define __BEGIN_DECLS /* empty */
+# define __END_DECLS /* empty */
+#endif
+
+__BEGIN_DECLS
+
 
 /* Evaluate Gegenbauer polynomials
  * using explicit representations.
@@ -38,5 +50,7 @@ int gsl_sf_gegenpoly_n_e(int n, double lambda, double x, gsl_sf_result * result)
 int gsl_sf_gegenpoly_array_impl(int nmax, double lambda, double x, double * result_array);
 int gsl_sf_gegenpoly_array_e(int nmax, double lambda, double x, double * result_array);
 
+
+__END_DECLS
 
 #endif /* __GSL_SF_GEGENBAUER_H__ */

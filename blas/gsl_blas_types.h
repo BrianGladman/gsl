@@ -10,6 +10,18 @@
 #include <sys/types.h>
 #include <gsl/gsl_complex.h>
 
+#undef __BEGIN_DECLS
+#undef __END_DECLS
+#ifdef __cplusplus
+# define __BEGIN_DECLS extern "C" {
+# define __END_DECLS }
+#else
+# define __BEGIN_DECLS /* empty */
+# define __END_DECLS /* empty */
+#endif
+
+__BEGIN_DECLS
+
 typedef  size_t  CBLAS_INDEX;
 typedef  size_t  CBLAS_INDEX_t;
 
@@ -27,5 +39,7 @@ typedef  enum CBLAS_SIDE        CBLAS_SIDE_t;
 
 typedef  gsl_complex  COMPLEX;
 
+
+__END_DECLS
 
 #endif /* __GSL_BLAS_TYPES_H__ */

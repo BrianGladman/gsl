@@ -4,6 +4,18 @@
 #ifndef __GSL_PRECISION_H__
 #define __GSL_PRECISION_H__
 
+#undef __BEGIN_DECLS
+#undef __END_DECLS
+#ifdef __cplusplus
+# define __BEGIN_DECLS extern "C" {
+# define __END_DECLS }
+#else
+# define __BEGIN_DECLS /* empty */
+# define __END_DECLS /* empty */
+#endif
+
+__BEGIN_DECLS
+
 
 /* A type for the precision indicator.
  * This is mainly for pedagogy.
@@ -29,5 +41,7 @@ extern const double gsl_root4_prec_eps[];
 extern const double gsl_root5_prec_eps[];
 extern const double gsl_root6_prec_eps[];
 
+
+__END_DECLS
 
 #endif /* __GSL_PRECISION_H__ */

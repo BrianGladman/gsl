@@ -3,6 +3,18 @@
 
 #include <stddef.h>
 
+#undef __BEGIN_DECLS
+#undef __END_DECLS
+#ifdef __cplusplus
+# define __BEGIN_DECLS extern "C" {
+# define __END_DECLS }
+#else
+# define __BEGIN_DECLS /* empty */
+# define __END_DECLS /* empty */
+#endif
+
+__BEGIN_DECLS
+
 double gsl_stats_char_mean (const char data[], size_t stride, size_t n);
 double gsl_stats_char_variance (const char data[], size_t stride, size_t n);
 double gsl_stats_char_sd (const char data[], size_t stride, size_t n);
@@ -34,5 +46,7 @@ void gsl_stats_char_minmax_index (size_t * min_index, size_t * max_index, const 
 
 double gsl_stats_char_median_from_sorted_data (const char sorted_data[], size_t stride, size_t n) ;
 double gsl_stats_char_quantile_from_sorted_data (const char sorted_data[], size_t stride, size_t n, const double f) ;
+
+__END_DECLS
 
 #endif /* __GSL_STATISTICS_CHAR_H__ */

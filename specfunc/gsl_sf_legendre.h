@@ -4,6 +4,18 @@
 #ifndef __GSL_SF_LEGENDRE_H__
 #define __GSL_SF_LEGENDRE_H__
 
+#undef __BEGIN_DECLS
+#undef __END_DECLS
+#ifdef __cplusplus
+# define __BEGIN_DECLS extern "C" {
+# define __END_DECLS }
+#else
+# define __BEGIN_DECLS /* empty */
+# define __END_DECLS /* empty */
+#endif
+
+__BEGIN_DECLS
+
 
 /* P_l(x)   l >= 0; |x| <= 1
  *
@@ -246,5 +258,7 @@ gsl_sf_legendre_array_size(const int lmax, const int m)
 }
 #endif /* HAVE_INLINE */
 
+
+__END_DECLS
 
 #endif /* __GSL_SF_LEGENDRE_H__ */

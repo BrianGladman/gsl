@@ -4,6 +4,18 @@
 #ifndef __GSL_MODE_H__
 #define __GSL_MODE_H__
 
+#undef __BEGIN_DECLS
+#undef __END_DECLS
+#ifdef __cplusplus
+# define __BEGIN_DECLS extern "C" {
+# define __END_DECLS }
+#else
+# define __BEGIN_DECLS /* empty */
+# define __END_DECLS /* empty */
+#endif
+
+__BEGIN_DECLS
+
 
 /* Some functions can take a mode argument. This
  * is a rough method to do things like control
@@ -47,10 +59,11 @@ GSL_MODE_PREC(gsl_mode_t mt)
 #endif /* HAVE_INLINE */
 
 
-
 /* Here are some predefined generic modes.
  */
 #define GSL_MODE_DEFAULT  0
 
+
+__END_DECLS
 
 #endif /* __GSL_MODE_H__ */

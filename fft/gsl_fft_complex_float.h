@@ -7,6 +7,18 @@
 #include <gsl/gsl_complex.h>
 #include <gsl/gsl_fft.h>
 
+#undef __BEGIN_DECLS
+#undef __END_DECLS
+#ifdef __cplusplus
+# define __BEGIN_DECLS extern "C" {
+# define __END_DECLS }
+#else
+# define __BEGIN_DECLS /* empty */
+# define __END_DECLS /* empty */
+#endif
+
+__BEGIN_DECLS
+
 /*  Power of 2 routines  */
 
 
@@ -91,9 +103,8 @@ int gsl_fft_complex_float_transform (gsl_complex_packed_array_float data,
                                      const gsl_fft_wavetable_complex_float * wavetable,
                                      gsl_fft_direction sign);
 
+__END_DECLS
+
 #endif /* __GSL_FFT_COMPLEX_FLOAT_H__ */
-
-
-
 
 

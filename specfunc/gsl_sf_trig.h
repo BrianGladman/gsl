@@ -6,6 +6,18 @@
 
 #include <gsl/gsl_sf_result.h>
 
+#undef __BEGIN_DECLS
+#undef __END_DECLS
+#ifdef __cplusplus
+# define __BEGIN_DECLS extern "C" {
+# define __END_DECLS }
+#else
+# define __BEGIN_DECLS /* empty */
+# define __END_DECLS /* empty */
+#endif
+
+__BEGIN_DECLS
+
 
 /* Sin(x) with GSL semantics. This is actually important
  * because we want to control the error estimate, and trying
@@ -125,5 +137,7 @@ int gsl_sf_angle_restrict_symm_err_impl(double theta, gsl_sf_result * result);
 
 int gsl_sf_angle_restrict_pos_err_impl(double theta, gsl_sf_result * result);
 
+
+__END_DECLS
 
 #endif /* __GSL_SF_TRIG_H__ */

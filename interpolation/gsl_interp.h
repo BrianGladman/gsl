@@ -5,6 +5,18 @@
 #define __GSL_INTERP_H__
 #include <stdlib.h>
 
+#undef __BEGIN_DECLS
+#undef __END_DECLS
+#ifdef __cplusplus
+# define __BEGIN_DECLS extern "C" {
+# define __END_DECLS }
+#else
+# define __BEGIN_DECLS /* empty */
+# define __END_DECLS /* empty */
+#endif
+
+__BEGIN_DECLS
+
 /* evaluation accelerator */
 typedef struct {
   size_t  cache;        /* cache of index   */
@@ -168,5 +180,7 @@ gsl_interp_accel_find(gsl_interp_accel * a, const double xa[], size_t len, doubl
 }
 #endif /* HAVE_INLINE */
 
+
+__END_DECLS
 
 #endif /* __GSL_INTERP_H__ */

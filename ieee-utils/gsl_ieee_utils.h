@@ -2,6 +2,18 @@
 #define __GSL_IEEE_UTILS_H__
 #include <stdio.h>
 
+#undef __BEGIN_DECLS
+#undef __END_DECLS
+#ifdef __cplusplus
+# define __BEGIN_DECLS extern "C" {
+# define __END_DECLS }
+#else
+# define __BEGIN_DECLS /* empty */
+# define __END_DECLS /* empty */
+#endif
+
+__BEGIN_DECLS
+
 enum {
   GSL_IEEE_TYPE_NAN = 1,
   GSL_IEEE_TYPE_INF = 2,
@@ -61,6 +73,8 @@ void gsl_ieee_env_setup (void) ;
 int gsl_ieee_read_mode_string (const char * description, int * precision,
 			       int * rounding, int * exception_mask) ;
 int gsl_ieee_set_mode (int precision, int rounding, int exception_mask) ;
+
+__END_DECLS
 
 #endif /* __GSL_IEEE_UTILS_H__ */
 

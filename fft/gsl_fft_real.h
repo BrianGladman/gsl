@@ -7,6 +7,18 @@
 #include <gsl/gsl_complex.h>
 #include <gsl/gsl_fft.h>
 
+#undef __BEGIN_DECLS
+#undef __END_DECLS
+#ifdef __cplusplus
+# define __BEGIN_DECLS extern "C" {
+# define __END_DECLS }
+#else
+# define __BEGIN_DECLS /* empty */
+# define __END_DECLS /* empty */
+#endif
+
+__BEGIN_DECLS
+
 int gsl_fft_real_radix2_transform (double data[], size_t stride, size_t n) ;
 
 typedef struct
@@ -30,5 +42,7 @@ void  gsl_fft_real_free (gsl_fft_wavetable_real * wavetable);
 int gsl_fft_real_unpack (const double real_coefficient[],
 			 double complex_coefficient[],
 			 size_t stride, size_t n);
+
+__END_DECLS
 
 #endif /* __GSL_FFT_REAL_H__ */

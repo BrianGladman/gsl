@@ -6,6 +6,18 @@
 
 #include <gsl/gsl_sf_result.h>
 
+#undef __BEGIN_DECLS
+#undef __END_DECLS
+#ifdef __cplusplus
+# define __BEGIN_DECLS extern "C" {
+# define __END_DECLS }
+#else
+# define __BEGIN_DECLS /* empty */
+# define __END_DECLS /* empty */
+#endif
+
+__BEGIN_DECLS
+
 
 /* Hypergeometric function related to Bessel functions
  * 0F1[c,x] =
@@ -52,7 +64,6 @@ int gsl_sf_hyperg_U_int_e(int m, int n, double x, gsl_sf_result * result);
  */
 int gsl_sf_hyperg_U_int_e10_impl(int m, int n, double x, gsl_sf_result_e10 * result);
 int gsl_sf_hyperg_U_int_e10_e(int m, int n, double x, gsl_sf_result_e10 * result);
-
 
 
 /* Confluent hypergeometric function.
@@ -121,5 +132,7 @@ int gsl_sf_hyperg_2F1_conj_renorm_e(double aR, double aI, double c, double x, gs
 int     gsl_sf_hyperg_2F0_impl(double a, double b, double x, gsl_sf_result * result);
 int     gsl_sf_hyperg_2F0_e(double a, double b, double x, gsl_sf_result * result);
 
+
+__END_DECLS
 
 #endif /* __GSL_SF_HYPERG_H__ */

@@ -8,6 +8,18 @@
 #include <gsl/gsl_monte.h>
 #include <gsl/gsl_monte_plain.h>
 
+#undef __BEGIN_DECLS
+#undef __END_DECLS
+#ifdef __cplusplus
+# define __BEGIN_DECLS extern "C" {
+# define __END_DECLS }
+#else
+# define __BEGIN_DECLS /* empty */
+# define __END_DECLS /* empty */
+#endif
+
+__BEGIN_DECLS
+
 enum {ESTIMATE_STYLE_NR = -1,  ESTIMATE_STYLE_CORRELATED_MC = 0,  
       ESTIMATE_STYLE_MC = 1};
 
@@ -44,5 +56,7 @@ int gsl_monte_miser_init(gsl_monte_miser_state* state);
 
 void gsl_monte_miser_free(gsl_monte_miser_state* state);
 
+
+__END_DECLS
 
 #endif /* __GSL_MONTE_MISER_H__ */

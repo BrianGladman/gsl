@@ -1,11 +1,23 @@
 /* Author:  G. Jungman
  * RCS:     $Id$
  */
-#ifndef __GSL_COULOMB_H__
-#define __GSL_COULOMB_H__
+#ifndef __GSL_SF_COULOMB_H__
+#define __GSL_SF_COULOMB_H__
 
 #include <gsl/gsl_mode.h>
 #include <gsl/gsl_sf_result.h>
+
+#undef __BEGIN_DECLS
+#undef __END_DECLS
+#ifdef __cplusplus
+# define __BEGIN_DECLS extern "C" {
+# define __END_DECLS }
+#else
+# define __BEGIN_DECLS /* empty */
+# define __END_DECLS /* empty */
+#endif
+
+__BEGIN_DECLS
 
 
 /* Normalized hydrogenic bound states, radial dependence. */
@@ -115,4 +127,6 @@ int gsl_sf_coulomb_CL_impl(double L, double eta, gsl_sf_result * result);
 int gsl_sf_coulomb_CL_list(double Lmin, int kmax, double eta, double * cl);
 
 
-#endif /* __GSL_COULOMB_H__ */
+__END_DECLS
+
+#endif /* __GSL_SF_COULOMB_H__ */

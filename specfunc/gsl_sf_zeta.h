@@ -6,6 +6,18 @@
 
 #include <gsl/gsl_sf_result.h>
 
+#undef __BEGIN_DECLS
+#undef __END_DECLS
+#ifdef __cplusplus
+# define __BEGIN_DECLS extern "C" {
+# define __END_DECLS }
+#else
+# define __BEGIN_DECLS /* empty */
+# define __END_DECLS /* empty */
+#endif
+
+__BEGIN_DECLS
+
 
 /* Riemann Zeta Function
  * zeta(n) = Sum[ k^(-n), {k,1,Infinity} ]
@@ -54,5 +66,7 @@ int gsl_sf_eta_int_e(int n, gsl_sf_result * result);
 int gsl_sf_eta_impl(double s, gsl_sf_result * result);
 int gsl_sf_eta_e(double s, gsl_sf_result * result);
 
+
+__END_DECLS
 
 #endif /* __GSL_SF_ZETA_H__ */

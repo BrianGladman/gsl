@@ -11,6 +11,18 @@
 #include <gsl/gsl_complex.h>
 #include <gsl/gsl_blas_types.h>
 
+#undef __BEGIN_DECLS
+#undef __END_DECLS
+#ifdef __cplusplus
+# define __BEGIN_DECLS extern "C" {
+# define __END_DECLS }
+#else
+# define __BEGIN_DECLS /* empty */
+# define __END_DECLS /* empty */
+#endif
+
+__BEGIN_DECLS
+
 
 /* GEMV */
 
@@ -525,5 +537,7 @@ void gsl_blas_raw_zhpr2 (CBLAS_UPLO_t Uplo,
                          const gsl_const_complex_packed_array Y, size_t incY,
 			 gsl_complex_packed_array Ap);
 
+
+__END_DECLS
 
 #endif /* __GSL_BLAS_RAW_L2_H__ */

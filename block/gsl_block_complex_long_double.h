@@ -4,6 +4,18 @@
 #include <stdlib.h>
 #include <gsl/gsl_errno.h>
 
+#undef __BEGIN_DECLS
+#undef __END_DECLS
+#ifdef __cplusplus
+# define __BEGIN_DECLS extern "C" {
+# define __END_DECLS }
+#else
+# define __BEGIN_DECLS /* empty */
+# define __END_DECLS /* empty */
+#endif
+
+__BEGIN_DECLS
+
 struct gsl_block_complex_long_double_struct
 {
   size_t size;
@@ -28,5 +40,7 @@ int gsl_block_complex_long_double_raw_fprintf (FILE * stream, const long double 
 
 size_t gsl_block_complex_long_double_size (const gsl_block_complex_long_double * b);
 long double * gsl_block_complex_long_double_data (const gsl_block_complex_long_double * b);
+
+__END_DECLS
 
 #endif /* __GSL_BLOCK_COMPLEX_LONG_DOUBLE_H__ */

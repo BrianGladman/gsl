@@ -5,6 +5,18 @@
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_block_short.h>
 
+#undef __BEGIN_DECLS
+#undef __END_DECLS
+#ifdef __cplusplus
+# define __BEGIN_DECLS extern "C" {
+# define __END_DECLS }
+#else
+# define __BEGIN_DECLS /* empty */
+# define __END_DECLS /* empty */
+#endif
+
+__BEGIN_DECLS
+
 struct gsl_vector_short_struct
 {
   size_t size;
@@ -86,12 +98,8 @@ gsl_vector_short_set (gsl_vector_short * v, const size_t i, short x)
 
 #endif /* HAVE_INLINE */
 
+__END_DECLS
+
 #endif /* __GSL_VECTOR_SHORT_H__ */
-
-
-
-
-
-
 
 

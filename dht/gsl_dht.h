@@ -4,6 +4,18 @@
 #ifndef __GSL_DHT_H__
 #define __GSL_DHT_H__
 
+#undef __BEGIN_DECLS
+#undef __END_DECLS
+#ifdef __cplusplus
+# define __BEGIN_DECLS extern "C" {
+# define __END_DECLS }
+#else
+# define __BEGIN_DECLS /* empty */
+# define __END_DECLS /* empty */
+#endif
+
+__BEGIN_DECLS
+
 
 struct gsl_dht_transform_struct {
   size_t    size;  /* size of the sample arrays to be transformed    */
@@ -53,5 +65,7 @@ void gsl_dht_transform_free(gsl_dht_transform * t);
  */
 int gsl_dht_transform_apply(const gsl_dht_transform * t, double * f_in, double * f_out);
 
+
+__END_DECLS
 
 #endif /* __GSL_DHT_H__ */

@@ -6,6 +6,18 @@
 #include <gsl/gsl_vector.h>
 #include <gsl/gsl_matrix.h>
 
+#undef __BEGIN_DECLS
+#undef __END_DECLS
+#ifdef __cplusplus
+# define __BEGIN_DECLS extern "C" {
+# define __END_DECLS }
+#else
+# define __BEGIN_DECLS /* empty */
+# define __END_DECLS /* empty */
+#endif
+
+__BEGIN_DECLS
+
 /* Definition of vector-valued functions with parameters based on gsl_vector */
 
 struct gsl_multiroot_function_struct
@@ -135,5 +147,7 @@ extern const gsl_multiroot_fdfsolver_type * gsl_multiroot_fdfsolver_gnewton;
 extern const gsl_multiroot_fdfsolver_type * gsl_multiroot_fdfsolver_hybridj;
 extern const gsl_multiroot_fdfsolver_type * gsl_multiroot_fdfsolver_hybridsj;
 
+
+__END_DECLS
 
 #endif /* __GSL_MULTIROOTS_H__ */

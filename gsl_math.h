@@ -47,6 +47,18 @@
 #include <gsl/gsl_machine.h>
 #include <gsl/gsl_precision.h>
 
+#undef __BEGIN_DECLS
+#undef __END_DECLS
+#ifdef __cplusplus
+# define __BEGIN_DECLS extern "C" {
+# define __END_DECLS }
+#else
+# define __BEGIN_DECLS /* empty */
+# define __END_DECLS /* empty */
+#endif
+
+__BEGIN_DECLS
+
 
 /* other needlessly compulsive abstractions */
 
@@ -169,5 +181,7 @@ struct gsl_interval_struct
 };
 
 typedef struct gsl_interval_struct gsl_interval;
+
+__END_DECLS
 
 #endif /* __GSL_MATH_H__ */

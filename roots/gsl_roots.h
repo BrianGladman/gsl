@@ -4,6 +4,18 @@
 #include <stdlib.h>
 #include <gsl/gsl_math.h>
 
+#undef __BEGIN_DECLS
+#undef __END_DECLS
+#ifdef __cplusplus
+# define __BEGIN_DECLS extern "C" {
+# define __END_DECLS }
+#else
+# define __BEGIN_DECLS /* empty */
+# define __END_DECLS /* empty */
+#endif
+
+__BEGIN_DECLS
+
 typedef struct
   {
     const char *name;
@@ -88,5 +100,7 @@ extern const gsl_root_fsolver_type  * gsl_root_fsolver_falsepos;
 extern const gsl_root_fdfsolver_type  * gsl_root_fdfsolver_newton;
 extern const gsl_root_fdfsolver_type  * gsl_root_fdfsolver_secant;
 extern const gsl_root_fdfsolver_type  * gsl_root_fdfsolver_steffenson;
+
+__END_DECLS
 
 #endif /* __GSL_ROOTS_H__ */

@@ -7,6 +7,18 @@
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_min.h>
 
+#undef __BEGIN_DECLS
+#undef __END_DECLS
+#ifdef __cplusplus
+# define __BEGIN_DECLS extern "C" {
+# define __END_DECLS }
+#else
+# define __BEGIN_DECLS /* empty */
+# define __END_DECLS /* empty */
+#endif
+
+__BEGIN_DECLS
+
 /* Definition of an arbitrary real-valued function with gsl_vector input and */
 /* parameters */
 struct gsl_multimin_function_struct 
@@ -190,5 +202,7 @@ extern const gsl_multimin_fdf_minimizer_type *gsl_multimin_fdf_minimizer_vector_
 
 int
 gsl_multimin_test_gradient_sqr_norm(gsl_multimin_fdf_history *h,double epsabs);
+
+__END_DECLS
 
 #endif /* __GSL_MULTIMIN_H__ */

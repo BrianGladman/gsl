@@ -9,6 +9,18 @@
 #include <gsl/gsl_precision.h>
 #include <gsl/gsl_sf_result.h>
 
+#undef __BEGIN_DECLS
+#undef __END_DECLS
+#ifdef __cplusplus
+# define __BEGIN_DECLS extern "C" {
+# define __END_DECLS }
+#else
+# define __BEGIN_DECLS /* empty */
+# define __END_DECLS /* empty */
+#endif
+
+__BEGIN_DECLS
+
 
 /* Regular Bessel Function J_0(x)
  *
@@ -500,7 +512,6 @@ int gsl_sf_bessel_lnKnu_impl(double nu, double x, gsl_sf_result * result);
 int gsl_sf_bessel_lnKnu_e(double nu, double x, gsl_sf_result * result);
 
 
-
 /* s'th positive zero of the Bessel function J_0(x).
  *
  * exceptions: 
@@ -525,5 +536,6 @@ int gsl_sf_bessel_zero_Jnu_impl(double nu, int s, gsl_sf_result * result);
 int gsl_sf_bessel_zero_Jnu_e(double nu, int s, gsl_sf_result * result);
 
 
+__END_DECLS
 
 #endif /* __GSL_SF_BESSEL_H__ */

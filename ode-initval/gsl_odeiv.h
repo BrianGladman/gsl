@@ -7,6 +7,18 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#undef __BEGIN_DECLS
+#undef __END_DECLS
+#ifdef __cplusplus
+# define __BEGIN_DECLS extern "C" {
+# define __END_DECLS }
+#else
+# define __BEGIN_DECLS /* empty */
+# define __END_DECLS /* empty */
+#endif
+
+__BEGIN_DECLS
+
 
 /* Description of a system of ODEs.
  *
@@ -121,7 +133,6 @@ gsl_odeiv_step * gsl_odeiv_step_gear2_new(void);
 gsl_odeiv_step * gsl_odeiv_step_bsimp_new(double eps);
 
 
-
 /* General stepper object methods.
  */
 const char * gsl_odeiv_step_name(const gsl_odeiv_step *);
@@ -205,7 +216,6 @@ gsl_odeiv_evolve_control * gsl_odeiv_evolve_control_yp_new(double eps_rel, doubl
 void gsl_odeiv_evolve_control_free(gsl_odeiv_evolve_control *);
 
 
-
 /* General evolution object.
  */
 typedef struct {
@@ -227,5 +237,7 @@ gsl_odeiv_evolve * gsl_odeiv_evolve_new(void);
 int gsl_odeiv_evolve_impl(gsl_odeiv_evolve *, gsl_odeiv_evolve_mon * mon, gsl_odeiv_evolve_control * con, gsl_odeiv_step * step, const gsl_odeiv_system * dydt, double t0, double t1, double hstart, double y[]);
 void gsl_odeiv_evolve_free(gsl_odeiv_evolve *);
 
+
+__END_DECLS
 
 #endif /* __GSL_ODEIV_H__ */

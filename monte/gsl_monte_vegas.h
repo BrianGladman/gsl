@@ -8,6 +8,18 @@
 #include <gsl/gsl_monte.h>
 #include <stdio.h>
 
+#undef __BEGIN_DECLS
+#undef __END_DECLS
+#ifdef __cplusplus
+# define __BEGIN_DECLS extern "C" {
+# define __END_DECLS }
+#else
+# define __BEGIN_DECLS /* empty */
+# define __END_DECLS /* empty */
+#endif
+
+__BEGIN_DECLS
+
 /* This will go away soon. */
 #define GSL_V_BINS_MAX 50  /* even integer because will be divided by two. */
 #define GSL_V_MAX_DIM 10
@@ -68,6 +80,8 @@ int gsl_monte_vegas_validate(gsl_monte_vegas_state* state,
 int gsl_monte_vegas_init(gsl_monte_vegas_state* state);
 
 void gsl_monte_vegas_free (gsl_monte_vegas_state* s);
+
+__END_DECLS
 
 #endif /* __GSL_MONTE_VEGAS_H__ */
 

@@ -7,6 +7,18 @@
 #include <gsl/gsl_vector.h>
 #include <gsl/gsl_matrix.h>
 
+#undef __BEGIN_DECLS
+#undef __END_DECLS
+#ifdef __cplusplus
+# define __BEGIN_DECLS extern "C" {
+# define __END_DECLS }
+#else
+# define __BEGIN_DECLS /* empty */
+# define __END_DECLS /* empty */
+#endif
+
+__BEGIN_DECLS
+
 typedef enum {
   GSL_EIGEN_SORT_VALUE,
   GSL_EIGEN_SORT_ABSVALUE
@@ -49,5 +61,7 @@ gsl_eigen_sort_impl(gsl_vector * eval,
                     gsl_matrix * evec,
                     gsl_eigen_sort_t sort_type);
 
+
+__END_DECLS
 
 #endif /* __GSL_EIGEN_H__ */

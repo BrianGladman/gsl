@@ -6,7 +6,21 @@
 #include <gsl/gsl_permutation.h>
 #include <gsl/gsl_vector_uchar.h>
 
+#undef __BEGIN_DECLS
+#undef __END_DECLS
+#ifdef __cplusplus
+# define __BEGIN_DECLS extern "C" {
+# define __END_DECLS }
+#else
+# define __BEGIN_DECLS /* empty */
+# define __END_DECLS /* empty */
+#endif
+
+__BEGIN_DECLS
+
 void gsl_sort_vector_uchar (gsl_vector_uchar * v);
 int gsl_sort_vector_uchar_index (gsl_permutation * p, const gsl_vector_uchar * v);
+
+__END_DECLS
 
 #endif /* __GSL_SORT_VECTOR_UCHAR_H__ */

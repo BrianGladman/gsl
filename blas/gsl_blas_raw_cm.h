@@ -5,8 +5,8 @@
 /* Raw BLAS interface for column-major matrices.
  * Based on draft BLAST C interface specification  [Jul 7 1998]
  */
-#ifndef __GSL_BLAS_RAW_H__
-#define __GSL_BLAS_RAW_H__
+#ifndef __GSL_BLAS_RAW_CM_H__
+#define __GSL_BLAS_RAW_CM_H__
 
 #include <gsl/gsl_blas_raw_L1.h>
 #include <gsl/gsl_blas_types.h>
@@ -821,9 +821,23 @@ void gsl_blas_raw_zher2k_cm (CBLAS_UPLO_t Uplo,
 #if defined(HAVE_INLINE) && defined(HAVE_CBLAS)
 #include <cblas.h>
 
+#undef __BEGIN_DECLS
+#undef __END_DECLS
+#ifdef __cplusplus
+# define __BEGIN_DECLS extern "C" {
+# define __END_DECLS }
+#else
+# define __BEGIN_DECLS /* empty */
+# define __END_DECLS /* empty */
+#endif
+
+__BEGIN_DECLS
+
 /* insert inline cblas implementation of above here */
 
 #endif /* defined(HAVE_INLINE) && defined(HAVE_CBLAS) */
 
 
-#endif /* __GSL_BLAS_RAW_H__ */
+__END_DECLS
+
+#endif /* __GSL_BLAS_RAW_CM_H__ */

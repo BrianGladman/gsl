@@ -7,6 +7,18 @@
 #include <gsl/gsl_mode.h>
 #include <gsl/gsl_sf_result.h>
 
+#undef __BEGIN_DECLS
+#undef __END_DECLS
+#ifdef __cplusplus
+# define __BEGIN_DECLS extern "C" {
+# define __END_DECLS }
+#else
+# define __BEGIN_DECLS /* empty */
+# define __END_DECLS /* empty */
+#endif
+
+__BEGIN_DECLS
+
 
 /* data for a Chebyshev series over a given interval */
 struct gsl_sf_cheb_series_struct {
@@ -96,5 +108,7 @@ int gsl_sf_cheb_eval_integ_e(gsl_sf_cheb_series * cs, double x, gsl_sf_result * 
  */
 void gsl_sf_cheb_free(gsl_sf_cheb_series * cs);
 
+
+__END_DECLS
 
 #endif /* __GSL_SF_CHEBYSHEV_H__ */

@@ -7,6 +7,18 @@
 #include <gsl/gsl_complex.h>
 #include <gsl/gsl_fft.h>
 
+#undef __BEGIN_DECLS
+#undef __END_DECLS
+#ifdef __cplusplus
+# define __BEGIN_DECLS extern "C" {
+# define __END_DECLS }
+#else
+# define __BEGIN_DECLS /* empty */
+# define __END_DECLS /* empty */
+#endif
+
+__BEGIN_DECLS
+
 int gsl_dft_complex_float_forward (const float data[], size_t stride, size_t n,
 			     float result[]);
 
@@ -18,5 +30,7 @@ int gsl_dft_complex_float_inverse (const float data[], size_t stride, size_t n,
 
 int gsl_dft_complex_float_transform (const float data[], size_t stride, size_t n,
 		     float result[], const gsl_fft_direction sign);
+
+__END_DECLS
 
 #endif /* __GSL_DFT_COMPLEX_FLOAT_H__ */

@@ -7,6 +7,18 @@
 #include <gsl/gsl_vector_complex.h>
 #include <gsl/gsl_block_complex_float.h>
 
+#undef __BEGIN_DECLS
+#undef __END_DECLS
+#ifdef __cplusplus
+# define __BEGIN_DECLS extern "C" {
+# define __END_DECLS }
+#else
+# define __BEGIN_DECLS /* empty */
+# define __END_DECLS /* empty */
+#endif
+
+__BEGIN_DECLS
+
 struct gsl_vector_complex_float_struct
 {
   size_t size;
@@ -102,5 +114,7 @@ gsl_vector_complex_float_set (gsl_vector_complex_float * v,
 }
 
 #endif /* HAVE_INLINE */
+
+__END_DECLS
 
 #endif /* __GSL_VECTOR_COMPLEX_FLOAT_H__ */

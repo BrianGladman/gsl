@@ -4,6 +4,18 @@
 #include <stdio.h>
 #include <errno.h>
 
+#undef __BEGIN_DECLS
+#undef __END_DECLS
+#ifdef __cplusplus
+# define __BEGIN_DECLS extern "C" {
+# define __END_DECLS }
+#else
+# define __BEGIN_DECLS /* empty */
+# define __END_DECLS /* empty */
+#endif
+
+__BEGIN_DECLS
+
 enum { 
   GSL_SUCCESS  = 0, 
   GSL_FAILURE  = -1,
@@ -139,5 +151,7 @@ extern int gsl_warnings_off ;
 #define GSL_ERROR_SELECT_4(a,b,c,d)   ((a) != GSL_SUCCESS ? (a) : GSL_ERROR_SELECT_3(b,c,d))
 #define GSL_ERROR_SELECT_5(a,b,c,d,e) ((a) != GSL_SUCCESS ? (a) : GSL_ERROR_SELECT_4(b,c,d,e))
 
+
+__END_DECLS
 
 #endif /* __GSL_ERRNO_H__ */

@@ -1,11 +1,23 @@
 /* Author: G. Jungman
  * RCS: $Id$
  */
-#ifndef __GSL_ELLINT_H__
-#define __GSL_ELLINT_H__
+#ifndef __GSL_SF_ELLINT_H__
+#define __GSL_SF_ELLINT_H__
 
 #include <gsl/gsl_mode.h>
 #include <gsl/gsl_sf_result.h>
+
+#undef __BEGIN_DECLS
+#undef __END_DECLS
+#ifdef __cplusplus
+# define __BEGIN_DECLS extern "C" {
+# define __END_DECLS }
+#else
+# define __BEGIN_DECLS /* empty */
+# define __END_DECLS /* empty */
+#endif
+
+__BEGIN_DECLS
 
 
 /* Legendre form of complete elliptic integrals
@@ -65,4 +77,6 @@ int gsl_sf_ellint_RJ_impl(double x, double y, double z, double p, gsl_mode_t mod
 int gsl_sf_ellint_RJ_e(double x, double y, double z, double p, gsl_mode_t mode, gsl_sf_result * result);
 
 
-#endif /* __GSL_ELLINT_H__ */
+__END_DECLS
+
+#endif /* __GSL_SF_ELLINT_H__ */

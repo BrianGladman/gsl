@@ -10,6 +10,18 @@
 #include <gsl/gsl_monte.h>
 #include <gsl/gsl_rng.h>
 
+#undef __BEGIN_DECLS
+#undef __END_DECLS
+#ifdef __cplusplus
+# define __BEGIN_DECLS extern "C" {
+# define __END_DECLS }
+#else
+# define __BEGIN_DECLS /* empty */
+# define __END_DECLS /* empty */
+#endif
+
+__BEGIN_DECLS
+
 typedef struct {
   /* control variables */
   double acc;
@@ -40,5 +52,7 @@ int gsl_monte_plain_validate(gsl_monte_plain_state* state,
 int gsl_monte_plain_init(gsl_monte_plain_state* state);
 
 void gsl_monte_plain_free (gsl_monte_plain_state* s);
+
+__END_DECLS
 
 #endif /* __GSL_MONTE_PLAIN_H__ */
