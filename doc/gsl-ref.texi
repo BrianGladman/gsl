@@ -182,44 +182,6 @@ University of Paris-Dauphine
 @top GSL
 @end ifinfo
 
-@ifset publish
-@iftex
-@unnumbered Preface
-This manual documents the use of the GNU Scientific Library, a numerical
-library for C and C++ programmers.
-
-The GNU Scientific Library is @dfn{free software}.  The term "free
-software" is sometimes misunderstood --- it has nothing to do with
-price. It is about freedom.  It refers to your freedom to run, copy,
-distribute, study, change and improve the software.  With the GNU
-Scientific Library you have all these freedoms.
-
-The GNU Scientific Library is part of the GNU Project.  The GNU Project
-was launched in 1984 to develop a complete Unix-like operating system
-which is free software: the GNU system.  It was conceived as a way of
-bringing back the cooperative spirit that prevailed in the computing
-community in earlier days --- to make cooperation possible once again by
-removing the obstacles to cooperation imposed by the owners of
-proprietary software.  Variants of the GNU operating system, which use
-the kernel Linux, are now widely used; though these systems are often
-referred to as ``Linux'', they are more accurately called GNU/Linux
-systems.
-
-The Free Software Foundation is a tax-exempt charity that raises funds
-for work on the GNU Project.  It is dedicated to promoting computer
-users' right to use, study, copy, modify, and redistribute computer
-programs.  You can support the Free Software Foundation by becoming an
-associate member, making a donation or ordering manuals and CD-ROMs.
-For more information visit the website @url{www.gnu.org}.
-@sp 1
-@flushright
-Brian Gough
-Publisher
-December 2002
-@end flushright
-@end iftex
-@end ifset
-
 @ifinfo
 This file documents the @value{GSL} (GSL), a collection of numerical
 routines for scientific computing.  It corresponds to release
@@ -227,8 +189,6 @@ routines for scientific computing.  It corresponds to release
 
 More information about GSL can be found at the project homepage,
 @url{http://www.gnu.org/software/gsl/}.
-
-This manual is also available as a printed book (ISBN 0954161734).
 
 Permission is granted to copy, distribute and/or modify this document
 under the terms of the GNU Free Documentation License.
