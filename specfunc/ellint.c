@@ -34,6 +34,7 @@ static double gslMAX4(double x, double y, double z, double w)
 
 /*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
 
+
 /* based on Carlson's algorithms:
    [B. C. Carlson Numer. Math. 33 (1979)]
    
@@ -121,6 +122,7 @@ int gsl_sf_ellint_RC_impl(double x, double y, double errtol, double * result)
     return GSL_EDOM;
   }
 }
+
 
 /*
       DOUBLE PRECISION FUNCTION RD(X,Y,Z,ERRTOL,IERR)
@@ -226,6 +228,7 @@ int gsl_sf_ellint_RD_impl(double x, double y, double z, double errtol, double * 
   }
 }
 
+
 /*
       DOUBLE PRECISION FUNCTION RF(X,Y,Z,ERRTOL,IERR)
 C
@@ -281,7 +284,7 @@ int gsl_sf_ellint_RF_impl(double x, double y, double z, double errtol, double * 
     return GSL_EDOM;
   }
   else if(x+y < lolim || x+z < lolim || y+z < lolim) {
-    * result = 0.0;
+    *result = 0.0;
     return GSL_EDOM;
   }
   else if(gslMAX3(x,y,z) < uplim) { 
@@ -320,6 +323,7 @@ int gsl_sf_ellint_RF_impl(double x, double y, double z, double errtol, double * 
     return GSL_EDOM;
   }
 }
+
 
 /*
     DOUBLE PRECISION FUNCTION RJ(X,Y,Z,P,ERRTOL,IERR)
@@ -425,7 +429,10 @@ int gsl_sf_ellint_RJ_impl(double x, double y, double z, double p, double errtol,
       alfa = alfa * alfa;
       beta = pn * (pn + lamda) * (pn + lamda);
       rcstatus = gsl_sf_ellint_RC_impl(alfa, beta, etolrc, &rcresult);
-      if(rcstatus != GSL_SUCCESS) return GSL_EFAILED;
+      if(rcstatus != GSL_SUCCESS) {
+        *result = 0.0;
+        return rcstatus;
+      }
       sigma  += power4 * rcresult;
       power4 *= 0.25;
       xn = (xn + lamda) * 0.25;
@@ -462,6 +469,9 @@ int gsl_sf_ellint_F_impl(double phi, double k, double prec, double * result)
   if(status == GSL_SUCCESS) {
     *result = sin_phi * rf;
   }
+  else {
+    *result = 0.0;
+  }
   return status;
 }
 
@@ -481,9 +491,11 @@ int gsl_sf_ellint_E_impl(double phi, double k, double prec, double * result)
     return GSL_SUCCESS;
   }
   else if(rfstatus == GSL_EDOM || rdstatus == GSL_EDOM) {
+    *result = 0.0;
     return GSL_EDOM;
   }
   else {
+    *result = 0.0;
     return GSL_EFAILED;
   }
 }
@@ -504,9 +516,11 @@ int gsl_sf_ellint_P_impl(double phi, double k, double n, double prec, double * r
     return GSL_SUCCESS;
   }
   else if(rfstatus == GSL_EDOM || rjstatus == GSL_EDOM) {
+    *result = 0.0;
     return GSL_EDOM;
   }
   else {
+    *result = 0.0;
     return GSL_EFAILED;
   }
 }
@@ -524,11 +538,14 @@ int gsl_sf_ellint_D_impl(double phi, double k, double n, double prec, double * r
   if(status == GSL_SUCCESS) {
     *result = sin3_phi/3.0 * rd;
   }
+  else {
+    *result = 0.0;
+  }
   return status;
 }
 
 /* [Carlson, Numer. Math. 33 (1979) 1, (4.5)] */
-int gsl_sf_ellint_Kcomp_impl(double k, double prec, double *result)
+int gsl_sf_ellint_Kcomp_impl(double k, double prec, double * result)
 {
   return gsl_sf_ellint_RF_impl(0.0, 1.0 - k*k, 1.0, prec, result);
 }
@@ -539,7 +556,7 @@ int gsl_sf_ellint_Ecomp_impl(double k, double prec, double * result)
   double y = 1.0 - k*k;
   double rf, rd;
   int rfstatus = gsl_sf_ellint_RF_impl(0.0, y, 1.0, prec, &rf);
-  int rdstatus = gsl_sf_ellint_RD_impl(0.0, y, 1.0, prec, &rf);
+  int rdstatus = gsl_sf_ellint_RD_impl(0.0, y, 1.0, prec, &rd);
   if(rfstatus == GSL_SUCCESS && rdstatus == GSL_SUCCESS) {
     *result = rf - k*k/3.0 * rd;
     return GSL_SUCCESS;

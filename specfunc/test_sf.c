@@ -571,7 +571,6 @@ int check_dilog(void)
 
 int check_ellint(void)
 {
-  double p;
   int status = 0;
   int s;
   
@@ -586,13 +585,33 @@ int check_ellint(void)
   status += s;
   
   s = 0;
-  s += ( frac_diff( gsl_sf_ellint_Ecomp( 0.5, 1.0e-10), 1.3506438810476755025 ) > 1.0e-10 );
-  s += ( frac_diff( gsl_sf_ellint_Ecomp(0.01, 1.0e-10), 1.5668619420216682912 ) > 1.0e-10 );
+  s += ( frac_diff( gsl_sf_ellint_Ecomp( 0.5, 1.0e-3), 1.3506438810476755025 ) > 1.0e-10 );
+  s += ( frac_diff( gsl_sf_ellint_Ecomp(0.01, 1.0e-3), 1.5668619420216682912 ) > 1.0e-10 );
   gsl_test(s, "  ellint_Ecomp");
   printf("%24.18g  %24.28g\n",
-  gsl_sf_ellint_Ecomp( 0.5, 1.0e-10),
-  gsl_sf_ellint_Ecomp(0.01, 1.0e-10)
+  gsl_sf_ellint_Ecomp( 0.5, 1.0e-3),
+  gsl_sf_ellint_Ecomp(0.01, 1.0e-3)
   );
+  status += s;
+
+  s = 0;
+  s += ( frac_diff( gsl_sf_ellint_RF(5.0e-11, 1.0e-10, 1.0, 1.0e-3), 12.36441982 ) > 1.0e-09 );
+  gsl_test(s, "  ellint_RF(5.0e-11, 1.0e-10, 1.0, 1.0e-3)");
+  status += s;
+
+  s = 0;
+  s += ( frac_diff( gsl_sf_ellint_RD(5.0e-11, 1.0e-10, 1.0, 1.0e-3), 34.09325948 ) > 1.0e-09 );
+  gsl_test(s, "  ellint_RD(5.0e-11, 1.0e-10, 1.0, 1.0e-3)");
+  status += s;
+
+  s = 0;
+  s += ( frac_diff( gsl_sf_ellint_RC(1.0, 2.0, 1.0e-3), 0.7853981630 ) > 1.0e-09 );
+  gsl_test(s, "  ellint_RC(1.0, 2.0, 1.0e-3)");
+  status += s;
+
+  s = 0;
+  s += ( frac_diff( gsl_sf_ellint_RJ(2.0, 3.0, 4.0, 5.0, 1.0e-3), 0.1429757967 ) > 1.0e-09 );
+  gsl_test(s, "  ellint_RJ(2.0, 3.0, 4.0, 5.0, 1.0e-3)");
   status += s;
 
   return status;
