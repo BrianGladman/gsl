@@ -26,8 +26,8 @@ int main (void)
     
     for (i = 0; i < 100000 ; i++)
       {
-	double u = ((double) rand ()) / (1+RAND_MAX);
-	double v = ((double) rand ()) / (1+RAND_MAX);
+	double u = ((double) rand ()) / (1.0 + RAND_MAX);
+	double v = ((double) rand ()) / (1.0 + RAND_MAX);
 	double x, y ;
 	status = gsl_histogram2d_pdf_sample (p, u, v, &x, &y) ;
 	status = gsl_histogram2d_increment (hh, x, y) ;

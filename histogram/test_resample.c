@@ -22,7 +22,7 @@ int main (void)
 
     for (i = 0; i < 100000 ; i++)
       {
-	double u = ((double) rand ()) / (1+RAND_MAX);
+	double u = ((double) rand ()) / (1.0 + RAND_MAX);
 	double x = gsl_histogram_pdf_sample (p, u) ;
 	gsl_histogram_increment (hh, x) ;
       }
