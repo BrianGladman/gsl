@@ -8,7 +8,7 @@ Information is available for the following systems,
 -- DOS
 -- IRIX
 -- MacOS X
--- Microsoft Visual C++
+-- Microsoft Windows (MS Visual C++, Borland C++)
 -- OpenBSD
 -- OS/2
 -- PPC
@@ -116,6 +116,9 @@ For 64-bit compilation use the following options,
 
   CC=cc CFLAGS="-64" LDFLAGS="-64" ./configure
 
+or for gcc
+
+  CFLAGS="-mabi-64" LDFLAGS="-mabi=64 -mips4 -L/usr/local/lib/mabi=64"
 
 * MacOS X
 ---------
@@ -125,18 +128,10 @@ compiled with
 
   ./configure --disable-shared
 
-* Microsoft Visual C++
-----------------------
+* Microsoft Windows
+-------------------------------
 
-When compiled with the "Maximize speed" optimisation option (/O2 flag)
-the tests give the following failures
-
-[...]
-FAIL: gsl_isnan(nan) (0 observed vs 1 expected)
-[...]
-FAIL: gsl_finite(nan) (1 observed vs 0 expected)
-
-They work correctly without optimization
+With Microsoft Visual C++, see the directory msvc/ in the CVS repository.
 
 * OpenBSD
 ---------
@@ -172,6 +167,8 @@ problem.
 Some warnings about "end of loop code not reached". These can be
 ignored -- they come from the do { ... ; return ; } while(0) statement
 in the GSL_ERROR macro.
+
+
 
 
 

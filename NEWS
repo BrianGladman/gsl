@@ -1,5 +1,13 @@
 * What is new in gsl-0.9.4:
 
+* A bug in the multimin functions where the function parameters
+(params) were omitted has been fixed.
+
+* A bug in the nonlinear minimization routines has been fixed, which
+could prevent the algorithms from converging.  Additional tests from
+the NIST reference datasets have been added and these now agree with
+MINPACK.
+
 * All the physical constants and conversion factors are now defined as
 real numbers to avoid potential problems with integer arithmetic.
 
