@@ -4,8 +4,6 @@ Main Todo Items
 Consult the TODO files in each directory first for specific
 requirements.
 
-* config.h.in. Should it be in CVS or is acconfig.h enough?
-
 * Document ode-initval, dht
 
 * Finish BLAS, by implementing Level-3 operations
@@ -39,6 +37,8 @@ condition.  Use GCOV to improve coverage.
 * Add a "Related Projects" section to the web page in order to link to
 GSDV
 
+* Use pkg-config from GNOME, preferably the C version when that is
+working.
 
 Before Each Release
 ===================
