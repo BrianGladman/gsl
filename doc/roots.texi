@@ -416,7 +416,7 @@ true:
 A root has been found to within the user-specified precision.
 
 @item
-A user-specified maximum number of iterations has executed.
+A user-specified maximum number of iterations has been reached.
 
 @item
 An error has occurred.

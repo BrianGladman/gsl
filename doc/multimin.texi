@@ -9,7 +9,7 @@ methods uses the same framework, so that you can switch between
 minimizers at runtime without needing to recompile your program.  Each
 instance of a minimizer keeps track of its own state, allowing the
 minimizers to be used in multi-threaded programs. The minimization
-algorithms can be used to maximize a function by reversing its sign.
+algorithms can be used to maximize a function by inverting its sign.
 
 The header file @file{gsl_multimin.h} contains prototypes for the
 minimization functions and related declarations.  
@@ -50,8 +50,11 @@ functions the gradient @math{g = \nabla f} vanishes at the minimum. In
 general there are no bracketing methods available for the minimization
 of @math{n}-dimensional functions.  All algorithms proceed from an
 initial guess using a search algorithm which attempts to move in a
-downhill direction.  The search direction is updated with local
-information from the function and its derivatives.
+downhill direction. A one-dimensional line minimisation is performed
+along this direction until the lowest point is found to a suitable
+tolerance. The search direction is then updated with local information
+from the function and its derivatives, and the whole process repeated
+until the true @math{n}-dimensional minimum is found.
 
 Several minimization algorithms are available within a single
 framework. The user provides a high-level driver for the algorithms, and
@@ -70,7 +73,9 @@ test @var{s} for convergence, and repeat iteration if necessary
 @end itemize
 
 @noindent
-The state for the minimizers is held in a
+Each iteration step consists either of an improvement to the
+line-mimisation in the current direction or an update to the search
+direction itself.  The state for the minimizers is held in a
 @code{gsl_multimin_fdfminimizer} struct.
 
 @node Multimin Caveats
@@ -111,7 +116,7 @@ minimization is specified by @var{tol}.  The precise meaning of this
 parameter depends on the method used.  Typically the line minimization
 is considered successful if the gradient of the function @math{g} is
 orthogonal to the current search direction @math{p} to a relative
-accuracy of @var{tol}, @c{$p\cdot g < tol |p| |g|$} 
+accuracy of @var{tol}, where @c{$p\cdot g < tol |p| |g|$} 
 @math{dot(p,g) < tol |p| |g|}.
 @end deftypefun
 
@@ -250,11 +255,11 @@ The minimizer maintains a current best estimate of the minimum at all
 times.  This information can be accessed with the following auxiliary
 functions,
 
-@deftypefun double gsl_multiroot_fdfsolver_minimum (const gsl_multiroot_fdfsolver * @var{s})
-@deftypefunx {gsl_vector *} gsl_multiroot_fdfsolver_x (const gsl_multiroot_fdfsolver * @var{s})
+@deftypefun {gsl_vector *} gsl_multiroot_fdfsolver_x (const gsl_multiroot_fdfsolver * @var{s})
+@deftypefunx double gsl_multiroot_fdfsolver_minimum (const gsl_multiroot_fdfsolver * @var{s})
 @deftypefunx {gsl_vector *} gsl_multiroot_fdfsolver_gradient (const gsl_multiroot_fdfsolver * @var{s})
 These functions return the current best estimate of the location of the
-minimum, the value of the function at that point and the gradient for
+minimum, the value of the function at that point and its gradient, for
 the minimizer @var{s}.
 @end deftypefun
 
@@ -274,7 +279,7 @@ conditions is true:
 A minimum has been found to within the user-specified precision.
 
 @item
-A user-specified maximum number of iterations has executed.
+A user-specified maximum number of iterations has been reached.
 
 @item
 An error has occurred.
@@ -337,7 +342,7 @@ direction.
 
 @deffn {Minimizer} gsl_multimin_fdfminimizer_conjugate_pr
 This is the Polak-Ribiere conjugate gradient algorithm.  It is similar
-to the Fletcher-Reeves method, differing in the choice of the
+to the Fletcher-Reeves method, differing only in the choice of the
 coefficient @math{\beta}. Both methods work well when the evaluation
 point is close enough to the minimum of the objective function that it
 is well approximated by a quadratic hypersurface.
