@@ -25,7 +25,16 @@ AC_TYPE_SIZE_T
 AC_C_CONST
 AC_C_INLINE
 
-if test "$ac_cv_c_inline" != no ; then
+dnl Check for "extern inline", using a modified version of the test
+dnl for AC_C_INLINE from acspecific.mt
+dnl
+AC_CACHE_CHECK([for extern inline], ac_cv_c_extern_inline,
+[ac_cv_c_extern_inline=no
+AC_TRY_COMPILE(, [} extern $ac_cv_c_inline foo() {], 
+	       [ac_cv_c_extern_inline="yes"])
+])
+
+if test "$ac_cv_c_extern_inline" != no ; then
   AC_DEFINE(HAVE_INLINE,1)
   AC_SUBST(HAVE_INLINE)
 fi
