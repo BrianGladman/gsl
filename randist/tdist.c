@@ -14,26 +14,26 @@ gsl_ran_tdist (const gsl_rng * r, double nu)
 
   if (nu <= 2)
     {
-      double y1 = gsl_ran_gaussian (r) ;
-      double y2 = gsl_ran_chisq (r, nu) ;
+      double Y1 = gsl_ran_gaussian (r) ;
+      double Y2 = gsl_ran_chisq (r, nu) ;
       
-      double t = y1 / sqrt(y2 / nu) ;
+      double t = Y1 / sqrt(Y2 / nu) ;
 
       return t ;
     }
   else
     {
-      double y1, y2, z, t ;
+      double Y1, Y2, Z, t ;
       do 
 	{
-	  y1 = gsl_ran_gaussian (r) ;
-	  y2 = gsl_ran_exponential (r, 2/(nu - 2)) ;
+	  Y1 = gsl_ran_gaussian (r) ;
+	  Y2 = gsl_ran_exponential (r, 2/(nu - 2)) ;
 	  
-	  z = y1*y1 / (nu - 2) ;
+	  Z = Y1*Y1 / (nu - 2) ;
 	}
-      while (exp(-y2-z) >= (1 - z)) ;
+      while (exp(-Y2-Z) >= (1 - Z)) ;
       
-      t = y1 / sqrt((1-2*nu)*(1-z)) ;
+      t = Y1 / sqrt((1-2*nu)*(1-Z)) ;
       return t ;
     }
 }

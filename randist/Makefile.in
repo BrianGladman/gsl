@@ -80,7 +80,11 @@ libgslrandist_a_SOURCES = \
 include_HEADERS= gsl_randist.h
 
 INCLUDES= -I$(srcdir)/../rng
-LDADD= ../rng/libgslrng.a
+
+test_SOURCES = test.c
+test_LDADD = libgslrandist.a ../rng/libgslrng.a ../err/libgslerr.a ../err/libgsltest.a
+TESTS = test
+check_PROGRAMS = test
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
 CONFIG_CLEAN_FILES = 
@@ -97,6 +101,10 @@ exponential.o fdist.o flat.o gamma.o gauss.o geometric.o laplace.o \
 logistic.o lognormal.o pareto.o poisson.o shuffle.o sphere.o tdist.o \
 weibull.o
 AR = ar
+test_OBJECTS =  test.o
+test_DEPENDENCIES =  libgslrandist.a ../rng/libgslrng.a \
+../err/libgslerr.a ../err/libgsltest.a
+test_LDFLAGS = 
 CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
 LINK = $(CC) $(CFLAGS) $(LDFLAGS) -o $@
@@ -113,9 +121,10 @@ DEP_FILES =  .deps/beta.P .deps/binomial.P .deps/cauchy.P .deps/chisq.P \
 .deps/erlang.P .deps/exponential.P .deps/fdist.P .deps/flat.P \
 .deps/gamma.P .deps/gauss.P .deps/geometric.P .deps/laplace.P \
 .deps/logistic.P .deps/lognormal.P .deps/pareto.P .deps/poisson.P \
-.deps/shuffle.P .deps/sphere.P .deps/tdist.P .deps/weibull.P
-SOURCES = $(libgslrandist_a_SOURCES)
-OBJECTS = $(libgslrandist_a_OBJECTS)
+.deps/shuffle.P .deps/sphere.P .deps/tdist.P .deps/test.P \
+.deps/weibull.P
+SOURCES = $(libgslrandist_a_SOURCES) $(test_SOURCES)
+OBJECTS = $(libgslrandist_a_OBJECTS) $(test_OBJECTS)
 
 all: Makefile $(LIBRARIES) $(HEADERS)
 
@@ -181,6 +190,19 @@ libgslrandist.a: $(libgslrandist_a_OBJECTS) $(libgslrandist_a_DEPENDENCIES)
 	-rm -f libgslrandist.a
 	$(AR) cru libgslrandist.a $(libgslrandist_a_OBJECTS) $(libgslrandist_a_LIBADD)
 	$(RANLIB) libgslrandist.a
+
+mostlyclean-checkPROGRAMS:
+
+clean-checkPROGRAMS:
+	-test -z "$(check_PROGRAMS)" || rm -f $(check_PROGRAMS)
+
+distclean-checkPROGRAMS:
+
+maintainer-clean-checkPROGRAMS:
+
+test: $(test_OBJECTS) $(test_DEPENDENCIES)
+	@rm -f test
+	$(LINK) $(test_LDFLAGS) $(test_OBJECTS) $(test_LDADD) $(LIBS)
 
 install-includeHEADERS: $(include_HEADERS)
 	@$(NORMAL_INSTALL)
@@ -262,10 +284,35 @@ maintainer-clean-depend:
 	@-sed -e 's/^\([^:]*\)\.o:/\1.lo \1.o:/' \
 	  < .deps/$(*F).p > .deps/$(*F).P
 	@-rm -f .deps/$(*F).p
+check-TESTS: $(TESTS)
+	@failed=0; all=0; \
+	srcdir=$(srcdir); export srcdir; \
+	for tst in $(TESTS); do \
+	  if test -f $$tst; then dir=.; \
+	  else dir="$(srcdir)"; fi; \
+	  if $(TESTS_ENVIRONMENT) $$dir/$$tst; then \
+	    all=`expr $$all + 1`; \
+	    echo "PASS: $$tst"; \
+	  elif test $$? -ne 77; then \
+	    all=`expr $$all + 1`; \
+	    failed=`expr $$failed + 1`; \
+	    echo "FAIL: $$tst"; \
+	  fi; \
+	done; \
+	if test "$$failed" -eq 0; then \
+	  banner="All $$all tests passed"; \
+	else \
+	  banner="$$failed of $$all tests failed"; \
+	fi; \
+	dashes=`echo "$$banner" | sed s/./=/g`; \
+	echo "$$dashes"; \
+	echo "$$banner"; \
+	echo "$$dashes"; \
+	test "$$failed" -eq 0
 info:
 dvi:
-check: all
-	$(MAKE)
+check: all $(check_PROGRAMS)
+	$(MAKE) check-TESTS
 installcheck:
 install-exec: install-libLIBRARIES
 	@$(NORMAL_INSTALL)
@@ -299,32 +346,36 @@ maintainer-clean-generic:
 	-test -z "$(MAINTAINERCLEANFILES)" || rm -f $(MAINTAINERCLEANFILES)
 	-test -z "$(BUILT_SOURCES)" || rm -f $(BUILT_SOURCES)
 mostlyclean:  mostlyclean-libLIBRARIES mostlyclean-compile \
-		mostlyclean-tags mostlyclean-depend mostlyclean-generic
+		mostlyclean-checkPROGRAMS mostlyclean-tags \
+		mostlyclean-depend mostlyclean-generic
 
-clean:  clean-libLIBRARIES clean-compile clean-tags clean-depend \
-		clean-generic mostlyclean
+clean:  clean-libLIBRARIES clean-compile clean-checkPROGRAMS clean-tags \
+		clean-depend clean-generic mostlyclean
 
-distclean:  distclean-libLIBRARIES distclean-compile distclean-tags \
-		distclean-depend distclean-generic clean
+distclean:  distclean-libLIBRARIES distclean-compile \
+		distclean-checkPROGRAMS distclean-tags distclean-depend \
+		distclean-generic clean
 	-rm -f config.status
 
 maintainer-clean:  maintainer-clean-libLIBRARIES \
-		maintainer-clean-compile maintainer-clean-tags \
-		maintainer-clean-depend maintainer-clean-generic \
-		distclean
+		maintainer-clean-compile maintainer-clean-checkPROGRAMS \
+		maintainer-clean-tags maintainer-clean-depend \
+		maintainer-clean-generic distclean
 	@echo "This command is intended for maintainers to use;"
 	@echo "it deletes files that may require special tools to rebuild."
 
 .PHONY: mostlyclean-libLIBRARIES distclean-libLIBRARIES \
 clean-libLIBRARIES maintainer-clean-libLIBRARIES uninstall-libLIBRARIES \
 install-libLIBRARIES mostlyclean-compile distclean-compile \
-clean-compile maintainer-clean-compile uninstall-includeHEADERS \
+clean-compile maintainer-clean-compile mostlyclean-checkPROGRAMS \
+distclean-checkPROGRAMS clean-checkPROGRAMS \
+maintainer-clean-checkPROGRAMS uninstall-includeHEADERS \
 install-includeHEADERS tags mostlyclean-tags distclean-tags clean-tags \
 maintainer-clean-tags distdir mostlyclean-depend distclean-depend \
-clean-depend maintainer-clean-depend info dvi installcheck install-exec \
-install-data install uninstall all installdirs mostlyclean-generic \
-distclean-generic clean-generic maintainer-clean-generic clean \
-mostlyclean distclean maintainer-clean
+clean-depend maintainer-clean-depend check-TESTS info dvi installcheck \
+install-exec install-data install uninstall all installdirs \
+mostlyclean-generic distclean-generic clean-generic \
+maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.

@@ -8,5 +8,8 @@ libgslrandist_a_SOURCES = \
 include_HEADERS= gsl_randist.h
 
 INCLUDES= -I$(srcdir)/../rng
-LDADD= ../rng/libgslrng.a
 
+test_SOURCES = test.c
+test_LDADD = libgslrandist.a ../rng/libgslrng.a ../err/libgslerr.a ../err/libgsltest.a
+TESTS = test
+check_PROGRAMS = test

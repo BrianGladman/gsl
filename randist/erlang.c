@@ -10,7 +10,7 @@
    */
 
 double
-gsl_ran_erlang (const gsl_rng * r, double mu, unsigned int n)
+gsl_ran_erlang (const gsl_rng * r, double mu, double n)
 {
-  return mu * gsl_ran_gamma(r, (double)n);
+  return mu * gsl_ran_gamma(r, n);
 }

@@ -336,10 +336,12 @@ have extremely long periods and pass most statistical tests.
 The MT19937 generator of Makoto Matsumoto and Takuji Nishimura is a
 variant of the twisted generalized feedback shift-register algorithm,
 and is known as the "Mersenne Twister" generator. It has a Mersenne
-prime period of @math{2^@{19937@} - 1} (about @math{10^@{6000@}}) and
-is equi-distributed in 623 dimensions. It has passed the @sc{diehard}
+prime period of @math{2^@{19937@} - 1} (about @math{10^@{6000@}}) and is
+equi-distributed in 623 dimensions. It has passed the @sc{diehard}
 statistical tests. It uses 624 words of state per generator and is
-comparable in speed to the other generators.
+comparable in speed to the other generators. The original generator used
+a default seed of 4357 and choosing @var{s} equal to zero in
+@code{gsl_rng_set} reproduces this.
 
 For more information see,
 @itemize @asis

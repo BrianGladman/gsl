@@ -11,15 +11,36 @@ gsl_ran_poisson (const gsl_rng * r, double mu)
   double prod = 1.0;
   unsigned int n = 0;
 
-  emu = exp (-mu);		/* This method works well when mu is small */
+  while (mu > 10) 
+    {
+      unsigned int m = mu * (7.0 / 8.0) ;
+      
+      double X = gsl_ran_gamma_int (r, m) ;
+      
+      if (X >= mu)
+	{
+	  return gsl_ran_binomial (r, mu / X, m - 1) ;
+	}
+      else
+	{
+	  n += m ;
+	  mu -= X ;
+	}
+    }
 
-  while (prod > emu)
+  /* This following method works well when mu is small */
+  
+  emu = exp (-mu);		
+  
+  do
     {
       prod *= gsl_rng_uniform (r);
       n++;
     }
+  while (prod > emu) ;
+  
+  return n - 1;
 
-  return n - 1;			/* FIXME, could be a problem if mu = 0 (or mu < 0) ? */
 }
 
 void

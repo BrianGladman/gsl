@@ -13,10 +13,10 @@ gsl_ran_fdist (const gsl_rng * r, double nu1, double nu2)
 
      The method used here is the one described in Knuth */
 
-  double y1 = 2 * gsl_ran_gamma (r, nu1 / 2) ;
-  double y2 = 2 * gsl_ran_gamma (r, nu2 / 2) ;
+  double Y1 = 2 * gsl_ran_gamma (r, nu1 / 2) ;
+  double Y2 = 2 * gsl_ran_gamma (r, nu2 / 2) ;
 
-  double f = (y1 * nu2) / (y2 * nu1) ;
+  double f = (Y1 * nu2) / (Y2 * nu1) ;
   
   return f ;
 }
