@@ -66,6 +66,8 @@ main (void)
 			  sin, 4.0, 0.0, M_PI);
   test_bisection_failure ("gsl_root_bisection, invalid range check [1, 1]",
 			  sin, 1.0, 1.0, M_PI);
+  test_bisection_failure ("gsl_root_bisection, invalid range check [0.1, 0.2]",
+			  sin, 0.1, 0.2, M_PI);
 
   test_brent ("gsl_root_brent, sin(x) [3, 4]",
 		  sin, 3.0, 4.0, M_PI);
@@ -88,6 +90,12 @@ main (void)
   test_brent ("gsl_root_brent, (x - 1)^7 [0.1, 2]",
 		  func6, 0.1, 2.0, 1.0);
 
+  test_brent_failure ("gsl_root_brent, invalid range check [4, 0]",
+			  sin, 4.0, 0.0, M_PI);
+  test_brent_failure ("gsl_root_brent, invalid range check [1, 1]",
+			  sin, 1.0, 1.0, M_PI);
+  test_brent_failure ("gsl_root_brent, invalid range check [0.1, 0.2]",
+			  sin, 0.1, 0.2, M_PI);
 
   /* Test false position. */
 
@@ -412,6 +420,7 @@ test_bisection_failure (const char *description,
 }
 
 
+void
 test_brent (const char *description,
 		double (*f) (double),
 		double lower_bound, double upper_bound,
@@ -431,9 +440,27 @@ test_brent (const char *description,
   if (!WITHIN_TOL (root, correct_root, REL_EPSILON, ABS_EPSILON))
     {
       status = 1; /* failed */ ;
-      gsl_test (status, "precision incorrectly reported");
+      gsl_test (status, "precision incorrectly reported (%.18g vs %.18g)", 
+		root, correct_root);
     }
 }
+
+void
+test_brent_failure (const char *description,
+		    double (*f) (double),
+		    double lower_bound, double upper_bound,
+		    double correct_root)
+{
+  int status;
+  double root;
+
+  status = gsl_root_brent (&root, f, &lower_bound, &upper_bound,
+			   REL_EPSILON, ABS_EPSILON,
+			   MAX_ITERATIONS);
+  
+  gsl_test (!status, description, root - correct_root);
+}
+
 
 /* Using gsl_root_falsepos, find the root of the function pointed to by f,
    using the interval [lower_bound, upper_bound]. Check if f succeeded and
