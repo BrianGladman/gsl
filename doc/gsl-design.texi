@@ -543,6 +543,34 @@ Some of the graphs have been made with gnuplot which is not truly free
 (or GNU) software, and some have been made with proprietary
 programs. These should be replaced with output from GNU plotutils.
 
+When citing references be sure to use the standard, definitive and best
+reference books in the field, rather than lesser known text-books or
+introductory books which happen to be available (e.g. from undergraduate
+studies).  For example, references concerning algorithms should be to
+Knuth, references concerning statistics should be to Kendall & Stuart,
+references concerning special functions should be to Abramowitz & Stegun
+(Handbook of Mathematical Functions AMS-55), etc.
+
+The standard references have a better chance of being available in an
+accessible library for the user.  If they are not available and the user
+decides to buy a copy in order to look up the reference then this also
+gives them the best quality book which should also cover the largest
+number of other references in the GSL Manual.  If many different books
+were to be referenced this would be an expensive and inefficient use of
+resources for a user who needs to look up the details of the algorithms.
+Reference books also stay in print much longer than text books, which
+are often out-of-print after a few years.
+
+Similarly, cite original papers wherever possible.  Be sure to keep
+copies of these for your own reference (e.g. when dealing with bug
+reports) or to pass on to future maintainers.
+
+If you need help in tracking down references, ask on the
+@code{gsl-discuss} mailing list.  There is a group of volunteers with
+access to good libraries who have offered to help GSL developers get
+copies of papers.
+
+
 @node Namespace, Header files, Documentation, Design
 @section Namespace
 
@@ -920,24 +948,26 @@ dereferencing.
 
 @example
 while (fabs (f) < 0.5)
-{
+@{
   *e = *e - 1;
   f  *= 2;
-}
+@}
 @end example
 @noindent
 is better written as,
 
 @example
-p = *e;
+@{ 
+  int p = *e;
 
-while (fabs(f) < 0.5)
-{
-   p--;
-   f *= 2;
-}
+  while (fabs(f) < 0.5)
+    @{
+     p--;
+     f *= 2;
+    @}
 
-*e = p;
+  *e = p;
+@}
 @end example
 
 @node Constness, Pseudo-templates, Pointers, Design
