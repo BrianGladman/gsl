@@ -29,8 +29,8 @@ int gsl_sf_log_abs_e(double x, gsl_sf_result * result);
  *
  * exceptions: GSL_EDOM
  */
-int gsl_sf_complex_log_impl(double zr, double zi, double * lnr, double * theta);
-int gsl_sf_complex_log_e(double zr, double zi, double * lnr, double * theta);
+int gsl_sf_complex_log_impl(double zr, double zi, gsl_sf_result * lnr, gsl_sf_result * theta);
+int gsl_sf_complex_log_e(double zr, double zi, gsl_sf_result * lnr, gsl_sf_result * theta);
 
 
 /* Log(1 + x)

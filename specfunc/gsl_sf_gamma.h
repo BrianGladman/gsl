@@ -71,8 +71,8 @@ int gsl_sf_gammainv_e(double x, gsl_sf_result * result);
  *
  * exceptions: GSL_EDOM, GSL_ELOSS
  */
-int gsl_sf_lngamma_complex_impl(double zr, double zi, double * lnr, double * arg);
-int gsl_sf_lngamma_complex_e(double zr, double zi, double * lnr, double * arg);
+int gsl_sf_lngamma_complex_impl(double zr, double zi, gsl_sf_result * lnr, gsl_sf_result * arg);
+int gsl_sf_lngamma_complex_e(double zr, double zi, gsl_sf_result * lnr, gsl_sf_result * arg);
 
 
 /* x^n / n!

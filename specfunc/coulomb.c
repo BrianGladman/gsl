@@ -67,7 +67,7 @@ CLeta(double L, double eta)
     gsl_sf_lngamma_impl(L+1.0, &ln1);
   }
   else {
-    double p1;                 /* phase of numerator Gamma -- not used */
+    gsl_sf_result p1;                 /* phase of numerator Gamma -- not used */
     gsl_sf_lngamma_complex_impl(L+1.0, eta, &ln1, &p1); /* should be ok */
   }
   gsl_sf_lngamma_impl(2.0*(L+1.0), &ln2);
@@ -759,9 +759,8 @@ coulomb_CF2(const double lambda, const double eta, const double x,
 static
 int
 coulomb_jwkb(const double lam, const double eta, const double x,
-             double * fjwkb, double * gjwkb,
-	     double * exponent,
-	     const gsl_prec_t goal, const unsigned int err_bits)
+             gsl_sf_result * fjwkb, gsl_sf_result * gjwkb,
+	     double * exponent)
 {
   const double llp1      = lam*(lam+1.0) + 6.0/35.0;
   const double llp1_eff  = GSL_MAX(llp1, 0.0);
@@ -782,22 +781,26 @@ coulomb_jwkb(const double lam, const double eta, const double x,
   const double airy_scale_exp = phi;
   gsl_sf_result ai;
   gsl_sf_result bi;
-  gsl_sf_airy_Ai_scaled_impl(zeta_half*zeta_half, &ai);
-  gsl_sf_airy_Bi_scaled_impl(zeta_half*zeta_half, &bi);
+  gsl_sf_airy_Ai_scaled_impl(zeta_half*zeta_half, GSL_MODE_DEFAULT, &ai);
+  gsl_sf_airy_Bi_scaled_impl(zeta_half*zeta_half, GSL_MODE_DEFAULT, &bi);
   F *= ai.val;
   G *= bi.val;
   F_exp = log(F) - airy_scale_exp;
   G_exp = log(G) + airy_scale_exp;
 
   if(G_exp >= GSL_LOG_DBL_MAX) {
-    *fjwkb = F;
-    *gjwkb = G;
+    fjwkb->val = F;
+    gjwkb->val = G;
+    fjwkb->err = 1.0e-3 * fabs(F);
+    gjwkb->err = 1.0e-3 * fabs(G);
     *exponent = airy_scale_exp;
     return GSL_EOVRFLW;
   }
   else {
-    *fjwkb = exp(F_exp);
-    *gjwkb = exp(G_exp);
+    fjwkb->val = exp(F_exp);
+    gjwkb->val = exp(G_exp);
+    fjwkb->err = 1.0e-3 * fabs(fjwkb->val);
+    gjwkb->err = 1.0e-3 * fabs(gjwkb->val);
     *exponent = 0.0;
     return GSL_SUCCESS;
   }
@@ -817,7 +820,7 @@ coulomb_jwkb(const double lam, const double eta, const double x,
 static
 int
 coulomb_AS_xlt2eta(const double lam, const double eta, const double x,
-                   double * f_AS, double * g_AS,
+                   gsl_sf_result * f_AS, gsl_sf_result * g_AS,
 	           double * exponent)
 {
   /* no time to do this now... */
@@ -832,35 +835,44 @@ int
 gsl_sf_coulomb_wave_FG_impl(const double eta, const double x,
                             const double lam_F,
 			    const int  k_lam_G,      /* lam_G = lam_F - k_lam_G */
-                            double * F, double * Fp,
-			    double * G, double * Gp,
-			    double * exp_F, double * exp_G,
-			    const gsl_prec_t goal, const unsigned int err_bits)
+                            gsl_sf_result * F, gsl_sf_result * Fp,
+			    gsl_sf_result * G, gsl_sf_result * Gp,
+			    double * exp_F, double * exp_G)
 {
   const double lam_G = lam_F - k_lam_G;
 
   if(x < 0.0 || lam_F <= -0.5 || lam_G <= -0.5) {
-    *F  = 0.0;
-    *Fp = 0.0;
-    *G  = 0.0;
-    *Gp = 0.0;
+    F->val  = 0.0;
+    F->err  = 0.0;
+    Fp->val = 0.0;
+    Fp->err = 0.0;
+    G->val  = 0.0;
+    G->err  = 0.0;
+    Gp->val = 0.0;
+    Gp->err = 0.0;
     *exp_F = 0.0;
     *exp_G = 0.0;
     return GSL_EDOM;
   }
   else if(x == 0.0) {
     double C0 = CLeta(0.0, eta);
+    F->val  = 0.0;
+    F->err  = 0.0;
+    Fp->val = 0.0;
+    Fp->err = 0.0;
+    G->val  = 0.0; /* FIXME: should be Inf */
+    G->err  = 0.0;
+    Gp->val = 0.0; /* FIXME: should be Inf */
+    Gp->err = 0.0;
     *exp_F = 0.0;
     *exp_G = 0.0;
-    *F  = 0.0;
-    *Fp = 0.0;
-    *G  = 0.0; /* FIXME: should be Inf */
-    *Gp = 0.0; /* FIXME: should be Inf */
     if(lam_F == 0.0){
-      *Fp = C0;
+      Fp->val = C0;
+      Fp->err = GSL_DBL_EPSILON * fabs(C0);
     }
     if(lam_G == 0.0) {
-      *G  = 1.0/C0;
+      G->val = 1.0/C0;
+      G->err = GSL_DBL_EPSILON / fabs(C0);
     }
     return GSL_EDOM;
     /* After all, since we are asking for G, this is a domain error... */
@@ -918,10 +930,14 @@ gsl_sf_coulomb_wave_FG_impl(const double eta, const double x,
     }
     else if(lam_min == 0.5) {
       /* This cannot happen. */
-      *F  = F_lam_F;
-      *Fp = Fp_lam_F;
-      *G  = G_lam_G;
-      *Gp = Gp_lam_G;
+      F->val  = F_lam_F;
+      F->err  = GSL_DBL_EPSILON * fabs(F->val);
+      Fp->val = Fp_lam_F;
+      Fp->err = GSL_DBL_EPSILON * fabs(Fp->val);
+      G->val  = G_lam_G;
+      G->err  = GSL_DBL_EPSILON * fabs(G->val);
+      Gp->val = Gp_lam_G;
+      Gp->err = GSL_DBL_EPSILON * fabs(Gp->val);
       *exp_F = 0.0;
       *exp_G = 0.0;
       return GSL_ESANITY;
@@ -945,10 +961,14 @@ gsl_sf_coulomb_wave_FG_impl(const double eta, const double x,
 		              &G_lam_G, &Gp_lam_G
 		              );
 
-    *F  = F_lam_F;
-    *Fp = Fp_lam_F;
-    *G  = G_lam_G;
-    *Gp = Gp_lam_G;
+    F->val  = F_lam_F;
+    F->err  = GSL_DBL_EPSILON * fabs(F->val);
+    Fp->val = Fp_lam_F;
+    Fp->err = GSL_DBL_EPSILON * fabs(Fp->val);
+    G->val  = G_lam_G;
+    G->err  = GSL_DBL_EPSILON * fabs(G->val);
+    Gp->val = Gp_lam_G;
+    Gp->err = GSL_DBL_EPSILON * fabs(Gp->val);
     *exp_F = 0.0;
     *exp_G = 0.0;
 
@@ -971,7 +991,7 @@ gsl_sf_coulomb_wave_FG_impl(const double eta, const double x,
     double F_sign_lam_F;
     double F_sign_lam_G;
 
-    stat_lam_F = coulomb_jwkb(lam_F, eta, x, &F_lam_F, &G_lam_F, &exp_lam_F, goal, err_bits);
+    stat_lam_F = coulomb_jwkb(lam_F, eta, x, &F_lam_F, &G_lam_F, &exp_lam_F);
     if(k_lam_G == 0) {
       stat_lam_G = stat_lam_F;
       F_lam_G = F_lam_F;
@@ -979,7 +999,7 @@ gsl_sf_coulomb_wave_FG_impl(const double eta, const double x,
       exp_lam_G = exp_lam_F;
     }
     else {
-      stat_lam_G = coulomb_jwkb(lam_G, eta, x, &F_lam_G, &G_lam_G, &exp_lam_G, goal, err_bits);
+      stat_lam_G = coulomb_jwkb(lam_G, eta, x, &F_lam_G, &G_lam_G, &exp_lam_G);
     }
 
     stat_CF1_lam_F = coulomb_CF1(lam_F, eta, x, &F_sign_lam_F, &Fp_over_F_lam_F);
@@ -992,10 +1012,14 @@ gsl_sf_coulomb_wave_FG_impl(const double eta, const double x,
       stat_CF1_lam_G = coulomb_CF1(lam_G, eta, x, &F_sign_lam_G, &Fp_over_F_lam_G);
     }
 
-    *F = F_lam_F;
-    *G = G_lam_G;
-    *Fp = Fp_over_F_lam_F * F_lam_F;
-    *Gp = Fp_over_F_lam_G * G_lam_G - 1.0/F_lam_G;
+    F->val = F_lam_F;
+    F->err = GSL_DBL_EPSILON * fabs(F->val);
+    G->val = G_lam_G;
+    G->err = GSL_DBL_EPSILON * fabs(G->val);
+    Fp->val = Fp_over_F_lam_F * F_lam_F;
+    Fp->err = GSL_DBL_EPSILON * fabs(Fp->val);
+    Gp->val = Fp_over_F_lam_G * G_lam_G - 1.0/F_lam_G;
+    Gp->err = GSL_DBL_EPSILON * fabs(Gp->val);
     *exp_F = exp_lam_F;
     *exp_G = exp_lam_G;
     if(stat_lam_F == GSL_EOVRFLW || stat_lam_G == GSL_EOVRFLW) {
@@ -1065,10 +1089,14 @@ gsl_sf_coulomb_wave_FG_impl(const double eta, const double x,
 		              &G_lam_G, &Gp_lam_G
 		              );
 
-    *F  = F_lam_F;
-    *Fp = Fp_lam_F;
-    *G  = G_lam_G;
-    *Gp = Gp_lam_G;
+    F->val  = F_lam_F;
+    F->err  = GSL_DBL_EPSILON * fabs(F->val);
+    Fp->val = Fp_lam_F;
+    Fp->err = GSL_DBL_EPSILON * fabs(Fp->val);
+    G->val  = G_lam_G;
+    G->err  = GSL_DBL_EPSILON * fabs(G->val);
+    Gp->val = Gp_lam_G;
+    Gp->err = GSL_DBL_EPSILON * fabs(Gp->val);
     *exp_F = 0.0;
     *exp_G = 0.0;
 
@@ -1080,47 +1108,45 @@ gsl_sf_coulomb_wave_FG_impl(const double eta, const double x,
 int
 gsl_sf_coulomb_wave_F_array_impl(double lam_min, int kmax,
                                  double eta, double x, 
-                                 double * fc,
-			         double * F_exp,
-			         const gsl_prec_t goal, const unsigned int err_bits)
+                                 double * fc_array,
+			         double * F_exp)
 {
   if(x == 0.0) {
     int k;
     *F_exp = 0.0;
     for(k=0; k<=kmax; k++) {
-      fc[k] = 0.0;
+      fc_array[k] = 0.0;
     }
     if(lam_min == 0.0){
-      fc[0] = CLeta(0.0, eta);
+      fc_array[0] = CLeta(0.0, eta);
     }
     return GSL_SUCCESS;
   }
   else {
     const double x_inv = 1.0/x;
     const double lam_max = lam_min + kmax;
-    double F, Fp;
-    double G, Gp, G_exp;
+    gsl_sf_result F, Fp;
+    gsl_sf_result G, Gp;
+    double G_exp;
 
     int stat_FG = gsl_sf_coulomb_wave_FG_impl(eta, x, lam_max, 0,
-                                              &F, &Fp, &G, &Gp, F_exp, &G_exp,
-					      goal, err_bits);
+                                              &F, &Fp, &G, &Gp, F_exp, &G_exp);
 
-    double fcl  = F;
-    double fpl = Fp;
+    double fcl  = F.val;
+    double fpl = Fp.val;
     double lam = lam_max;
     int k;
 
-    fc[kmax] = F;
+    fc_array[kmax] = F.val;
 
     for(k=kmax-1; k>=0; k--) {
       double el = eta/lam;
       double rl = sqrt(1.0 + el*el);
       double sl = el  + lam*x_inv;
-      double fc_lm1;
-      fc_lm1 = (fcl*sl + fpl)/rl;
-      fc[k] = fc_lm1;
-      fpl  =  fc_lm1*sl - fcl*rl;
-      fcl  =  fc_lm1;
+      double fc_lm1 = (fcl*sl + fpl)/rl;
+      fc_array[k]   = fc_lm1;
+      fpl           =  fc_lm1*sl - fcl*rl;
+      fcl           =  fc_lm1;
       lam -= 1.0;
     }
 
@@ -1132,27 +1158,25 @@ gsl_sf_coulomb_wave_F_array_impl(double lam_min, int kmax,
 int
 gsl_sf_coulomb_wave_FG_array_impl(double lam_min, int kmax,
                                   double eta, double x,
-                                  double * fc, double * gc,
-			          double * F_exp, double * G_exp,
-			          const gsl_prec_t goal, const unsigned int err_bits)
+                                  double * fc_array, double * gc_array,
+			          double * F_exp, double * G_exp)
 {
   const double x_inv = 1.0/x;
   const double lam_max = lam_min + kmax;
-  double F, Fp;
-  double G, Gp;
+  gsl_sf_result F, Fp;
+  gsl_sf_result G, Gp;
 
   int stat_FG = gsl_sf_coulomb_wave_FG_impl(eta, x, lam_max, kmax,
-                                            &F, &Fp, &G, &Gp, F_exp, G_exp,
-					    goal, err_bits);
+                                            &F, &Fp, &G, &Gp, F_exp, G_exp);
 
-  double fcl  = F;
-  double fpl = Fp;
+  double fcl  = F.val;
+  double fpl = Fp.val;
   double lam = lam_max;
   int k;
 
   double gcl, gpl;
 
-  fc[kmax] = F;
+  fc_array[kmax] = F.val;
 
   for(k=kmax-1; k>=0; k--) {
     double el = eta/lam;
@@ -1160,26 +1184,26 @@ gsl_sf_coulomb_wave_FG_array_impl(double lam_min, int kmax,
     double sl = el  + lam*x_inv;
     double fc_lm1;
     fc_lm1 = (fcl*sl + fpl)/rl;
-    fc[k] = fc_lm1;
-    fpl    =  fc_lm1*sl - fcl*rl;
-    fcl    =  fc_lm1;
+    fc_array[k] = fc_lm1;
+    fpl         =  fc_lm1*sl - fcl*rl;
+    fcl         =  fc_lm1;
     lam -= 1.0;
   }
 
-  gcl = G;
-  gpl = Gp;
+  gcl = G.val;
+  gpl = Gp.val;
   lam = lam_min + 1.0;
 
-  gc[0] = G;
+  gc_array[0] = G.val;
 
   for(k=1; k<=kmax; k++) {
     double el = eta/lam;
     double rl = sqrt(1.0 + el*el);
     double sl = el + lam*x_inv;
     double gcl1 = (sl*gcl - gpl)/rl;
-    gc[k] = gcl1;
-    gpl  = rl*gcl - sl*gcl1;
-    gcl  = gcl1;
+    gc_array[k] = gcl1;
+    gpl         = rl*gcl - sl*gcl1;
+    gcl         = gcl1;
     lam += 1.0;
   }
 
@@ -1190,30 +1214,28 @@ gsl_sf_coulomb_wave_FG_array_impl(double lam_min, int kmax,
 int
 gsl_sf_coulomb_wave_FGp_array_impl(double lam_min, int kmax,
                                    double eta, double x,
-		                   double * fc, double * fcp,
-		                   double * gc, double * gcp,
-			           double * F_exp, double * G_exp,
-			           const gsl_prec_t goal, const unsigned int err_bits)
+		                   double * fc_array, double * fcp_array,
+		                   double * gc_array, double * gcp_array,
+			           double * F_exp, double * G_exp)
 
 {
   const double x_inv = 1.0/x;
   const double lam_max = lam_min + kmax;
-  double F, Fp;
-  double G, Gp;
+  gsl_sf_result F, Fp;
+  gsl_sf_result G, Gp;
 
   int stat_FG = gsl_sf_coulomb_wave_FG_impl(eta, x, lam_max, kmax,
-                                            &F, &Fp, &G, &Gp, F_exp, G_exp,
-					    goal, err_bits);
+                                            &F, &Fp, &G, &Gp, F_exp, G_exp);
 
-  double fcl  = F;
-  double fpl = Fp;
+  double fcl  = F.val;
+  double fpl = Fp.val;
   double lam = lam_max;
   int k;
 
   double gcl, gpl;
 
-  fc[kmax]  = F;
-  fcp[kmax] = Fp;
+  fc_array[kmax]  = F.val;
+  fcp_array[kmax] = Fp.val;
 
   for(k=kmax-1; k>=0; k--) {
     double el = eta/lam;
@@ -1221,29 +1243,29 @@ gsl_sf_coulomb_wave_FGp_array_impl(double lam_min, int kmax,
     double sl = el  + lam*x_inv;
     double fc_lm1;
     fc_lm1 = (fcl*sl + fpl)/rl;
-    fc[k]  = fc_lm1;
-    fpl    = fc_lm1*sl - fcl*rl;
-    fcp[k] = fpl;
-    fcl    =  fc_lm1;
+    fc_array[k]  = fc_lm1;
+    fpl          = fc_lm1*sl - fcl*rl;
+    fcp_array[k] = fpl;
+    fcl          =  fc_lm1;
     lam -= 1.0;
   }
 
-  gcl = G;
-  gpl = Gp;
+  gcl = G.val;
+  gpl = Gp.val;
   lam = lam_min + 1.0;
 
-  gc[0]  = G;
-  gcp[0] = Gp;
+  gc_array[0]  = G.val;
+  gcp_array[0] = Gp.val;
 
   for(k=1; k<=kmax; k++) {
     double el = eta/lam;
     double rl = sqrt(1.0 + el*el);
     double sl = el + lam*x_inv;
     double gcl1 = (sl*gcl - gpl)/rl;
-    gc[k] = gcl1;
-    gpl   = rl*gcl - sl*gcl1;
-    gcp[k] = gpl;
-    gcl  = gcl1;
+    gc_array[k]  = gcl1;
+    gpl          = rl*gcl - sl*gcl1;
+    gcp_array[k] = gpl;
+    gcl          = gcl1;
     lam += 1.0;
   }
 
@@ -1254,9 +1276,8 @@ gsl_sf_coulomb_wave_FGp_array_impl(double lam_min, int kmax,
 int
 gsl_sf_coulomb_wave_sphF_array_impl(double lam_min, int kmax,
                                     double eta, double x,
-		                    double * fc,
-			            double * F_exp,
-				    const gsl_prec_t goal, const unsigned int err_bits)
+		                    double * fc_array,
+			            double * F_exp)
 {
   int k;
 
@@ -1265,10 +1286,10 @@ gsl_sf_coulomb_wave_sphF_array_impl(double lam_min, int kmax,
   }
   else if(x < 10.0/DBL_MAX) {
     for(k=0; k<=kmax; k++) {
-      fc[k] = 0.0;
+      fc_array[k] = 0.0;
     }
     if(lam_min == 0.0) {
-      fc[0] = sqrt(C0sq(eta));
+      fc_array[0] = sqrt(C0sq(eta));
     }
     *F_exp = 0.0;
     if(x == 0.0)
@@ -1280,12 +1301,11 @@ gsl_sf_coulomb_wave_sphF_array_impl(double lam_min, int kmax,
     int k;
     int stat_F = gsl_sf_coulomb_wave_F_array_impl(lam_min, kmax,
                                                   eta, x, 
-                                                  fc,
-                                                  F_exp,
-						  goal, err_bits);
+                                                  fc_array,
+                                                  F_exp);
 
     for(k=0; k<=kmax; k++) {
-      fc[k] = fc[k] / x;
+      fc_array[k] = fc_array[k] / x;
     }
     return stat_F;
   }
@@ -1297,15 +1317,13 @@ gsl_sf_coulomb_wave_sphF_array_impl(double lam_min, int kmax,
 int
 gsl_sf_coulomb_wave_F_array_e(double lam_min, int kmax,
                         double eta, double x,
-                        double * fc,
-			double * F_exponent,
-			const gsl_prec_t goal, const unsigned int err_bits
+                        double * fc_array,
+			double * F_exponent
                         )
 {
   int status = gsl_sf_coulomb_wave_F_array_impl(lam_min, kmax, x, eta,
-                                                fc,
-					        F_exponent,
-                                                goal, err_bits);
+                                                fc_array,
+					        F_exponent);
   if(status != GSL_SUCCESS) {
     GSL_ERROR("gsl_sf_coulomb_wave_F_array_e", status);
   }
@@ -1316,18 +1334,16 @@ gsl_sf_coulomb_wave_F_array_e(double lam_min, int kmax,
 int
 gsl_sf_coulomb_wave_FG_array_e(double lam_min, int kmax,
                          double eta, double x,
-                         double * fc,
-			 double * gc,
+                         double * fc_array,
+			 double * gc_array,
 			 double * F_exponent,
-			 double * G_exponent,
-			 const gsl_prec_t goal, const unsigned int err_bits
+			 double * G_exponent
                          )
 {
   int status = gsl_sf_coulomb_wave_FG_array_impl(lam_min, kmax,
                                                  eta, x,
-                                                 fc, gc,
-					         F_exponent, G_exponent,
-						 goal, err_bits
+                                                 fc_array, gc_array,
+					         F_exponent, G_exponent
 					         );
 
   if(status != GSL_SUCCESS) {
@@ -1340,20 +1356,18 @@ gsl_sf_coulomb_wave_FG_array_e(double lam_min, int kmax,
 int
 gsl_sf_coulomb_wave_FGp_array_e(double lam_min, int kmax,
                           double eta, double x,
-                          double * fc, double * fcp,
-                          double * gc, double * gcp,
+                          double * fc_array, double * fcp_array,
+                          double * gc_array, double * gcp_array,
                           double * F_exponent,
-                          double * G_exponent,
-			  const gsl_prec_t goal, const unsigned int err_bits
+                          double * G_exponent
                           )
 {
   int status = gsl_sf_coulomb_wave_FGp_array_impl(lam_min, kmax,
                                                   eta, x,
-                                                  fc, fcp,
-                                                  gc, gcp,
+                                                  fc_array, fcp_array,
+                                                  gc_array, gcp_array,
                                                   F_exponent,
-                                                  G_exponent,
-						  goal, err_bits
+                                                  G_exponent
                                                   );
 
   if(status != GSL_SUCCESS) {
@@ -1361,4 +1375,3 @@ gsl_sf_coulomb_wave_FGp_array_e(double lam_min, int kmax,
   }
   return status;
 }
-

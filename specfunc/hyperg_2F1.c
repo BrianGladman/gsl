@@ -807,9 +807,9 @@ gsl_sf_hyperg_2F1_conj_renorm_impl(const double aR, const double aI, const doubl
     else {
       /* 2F1 does not terminate early enough, so something survives */
       /* [Abramowitz+Stegun, 15.1.2] */
-      double g1, g2;
+      gsl_sf_result g1, g2;
       gsl_sf_result g3;
-      double a1, a2;
+      gsl_sf_result a1, a2;
       int stat = 0;
       stat += gsl_sf_lngamma_complex_impl(aR-c+1, aI, &g1, &a1);
       stat += gsl_sf_lngamma_complex_impl(aR, aI, &g2, &a2);
@@ -822,8 +822,8 @@ gsl_sf_hyperg_2F1_conj_renorm_impl(const double aR, const double aI, const doubl
       else {
         gsl_sf_result F;
         int stat_F = gsl_sf_hyperg_2F1_conj_impl(aR-c+1, aI, -c+2, x, &F);
-        double ln_pre_val = 2.0*(g1 - g2) - g3.val;
-	double ln_pre_err = g3.err;
+        double ln_pre_val = 2.0*(g1.val - g2.val) - g3.val;
+	double ln_pre_err = 2.0 * (g1.err + g2.err) + g3.err;
 	int stat_e = gsl_sf_exp_mult_err_impl(ln_pre_val, ln_pre_err,
                                               F.val, F.err,
                                               result);

@@ -643,11 +643,11 @@ static double lanczos_7_c[9] = {
  */
 static
 int
-lngamma_lanczos_complex(double zr, double zi, double * yr, double * yi)
+lngamma_lanczos_complex(double zr, double zi, gsl_sf_result * yr, gsl_sf_result * yi)
 {
   int k;
-  double log1_r,    log1_i;
-  double logAg_r,   logAg_i;
+  gsl_sf_result log1_r,    log1_i;
+  gsl_sf_result logAg_r,   logAg_i;
   double Ag_r, Ag_i;
 
   zr -= 1.0; /* Lanczos writes z! instead of Gamma(z) */
@@ -666,9 +666,11 @@ lngamma_lanczos_complex(double zr, double zi, double * yr, double * yi)
   gsl_sf_complex_log_impl(Ag_r, Ag_i,   &logAg_r, &logAg_i);
 
   /* (z+0.5)*log(z+7.5) - (z+7.5) + LogRootTwoPi_ + log(Ag(z)) */
-  *yr = (zr+0.5)*log1_r - zi*log1_i - (zr+7.5) + LogRootTwoPi_ + logAg_r;
-  *yi = zi*log1_r + (zr+0.5)*log1_i - zi + logAg_i;
-  return gsl_sf_angle_restrict_symm_impl(yi);
+  yr->val = (zr+0.5)*log1_r.val - zi*log1_i.val - (zr+7.5) + LogRootTwoPi_ + logAg_r.val;
+  yi->val = zi*log1_r.val + (zr+0.5)*log1_i.val - zi + logAg_i.val;
+  yr->err = 3.0 * GSL_DBL_EPSILON * fabs(yr->val);
+  yi->err = 3.0 * GSL_DBL_EPSILON * fabs(yi->val);
+  return gsl_sf_angle_restrict_symm_impl(&(yi->val));
 }
 
 
@@ -1366,7 +1368,8 @@ gsl_sf_gammainv_impl(const double x, gsl_sf_result * result)
 }
 
 
-int gsl_sf_lngamma_complex_impl(double zr, double zi, double * lnr, double * arg)
+int
+gsl_sf_lngamma_complex_impl(double zr, double zi, gsl_sf_result * lnr, gsl_sf_result * arg)
 {
   if(zr <= 0.5) {
     /* Transform to right half plane using reflection;
@@ -1374,20 +1377,26 @@ int gsl_sf_lngamma_complex_impl(double zr, double zi, double * lnr, double * arg
      */
     double x = 1.0-zr;
     double y = -zi;
-    double a, b;
-    double lnsin_r, lnsin_i;
+    gsl_sf_result a, b;
+    gsl_sf_result lnsin_r, lnsin_i;
 
     int stat_l = lngamma_lanczos_complex(x, y, &a, &b);
     int stat_s = gsl_sf_complex_logsin_impl(M_PI*zr, M_PI*zi, &lnsin_r, &lnsin_i);
     
     if(stat_s == GSL_SUCCESS) {
       int stat_r;
-      *lnr = M_LNPI - lnsin_r - a;
-      *arg =        - lnsin_i - b;
-      stat_r = gsl_sf_angle_restrict_symm_impl(arg);
+      lnr->val = M_LNPI - lnsin_r.val - a.val;
+      lnr->err = lnsin_r.err + a.err;
+      arg->val =        - lnsin_i.val - b.val;
+      arg->err = lnsin_i.err + b.err;
+      stat_r = gsl_sf_angle_restrict_symm_impl(&(arg->val));
       return GSL_ERROR_SELECT_2(stat_r, stat_l);
     }
     else {
+      lnr->val = 0.0;
+      lnr->err = 0.0;
+      arg->val = 0.0;
+      arg->err = 0.0;
       return GSL_EDOM;
     }
   }
@@ -1683,7 +1692,7 @@ int gsl_sf_gammainv_e(const double x, gsl_sf_result * result)
 }
 
 
-int gsl_sf_lngamma_complex_e(double zr, double zi, double * lnr, double * arg)
+int gsl_sf_lngamma_complex_e(double zr, double zi, gsl_sf_result * lnr, gsl_sf_result * arg)
 {
   int status = gsl_sf_lngamma_complex_impl(zr, zi, lnr, arg);
   if(status != GSL_SUCCESS) {;

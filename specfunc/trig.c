@@ -59,84 +59,118 @@ cosh_m1_series(const double x, double * result)
 
 /*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
 
-int gsl_sf_complex_sin_impl(const double zr, const double zi, double * szr, double * szi)
+int
+gsl_sf_complex_sin_impl(const double zr, const double zi,
+                        gsl_sf_result * szr, gsl_sf_result * szi)
 {
-  if(fabs(zi) < 1.0) {
+  if(szr == 0 || szi == 0) {
+    return GSL_EFAULT;
+  }
+  else if(fabs(zi) < 1.0) {
     double ch_m1, sh;
     sinh_series(zi, &sh);
     cosh_m1_series(zi, &ch_m1);
-    *szr = sin(zr)*(ch_m1 + 1.0);
-    *szi = cos(zr)*sh;
+    szr->val = sin(zr)*(ch_m1 + 1.0);
+    szi->val = cos(zr)*sh;
+    szr->err = 2.0 * GSL_DBL_EPSILON * fabs(szr->val);
+    szi->err = 2.0 * GSL_DBL_EPSILON * fabs(szi->val);
     return GSL_SUCCESS;
   }
   else if(fabs(zi) < GSL_LOG_DBL_MAX) {
     double ex = exp(zi);
     double ch = 0.5*(ex+1.0/ex);
     double sh = 0.5*(ex-1.0/ex);
-    *szr = sin(zr)*ch;
-    *szi = cos(zr)*sh;
+    szr->val = sin(zr)*ch;
+    szi->val = cos(zr)*sh;
+    szr->err = 2.0 * GSL_DBL_EPSILON * fabs(szr->val);
+    szi->err = 2.0 * GSL_DBL_EPSILON * fabs(szi->val);
     return GSL_SUCCESS;
   }
   else {
-    *szr = 0.0;
-    *szi = 0.0;
+    szr->val = 0.0;
+    szi->val = 0.0;
+    szr->err = 0.0;
+    szi->err = 0.0;
     return GSL_EOVRFLW;
   }
 }
 
 
-int gsl_sf_complex_cos_impl(const double zr, const double zi, double * czr, double * czi)
+int
+gsl_sf_complex_cos_impl(const double zr, const double zi,
+                        gsl_sf_result * czr, gsl_sf_result * czi)
 {
-  if(fabs(zi) < 1.0) {
+  if(czr == 0 || czi == 0) {
+    return GSL_EFAULT;
+  }
+  else if(fabs(zi) < 1.0) {
     double ch_m1, sh;
     sinh_series(zi, &sh);
     cosh_m1_series(zi, &ch_m1);
-    *czr =  cos(zr)*(ch_m1 + 1.0);
-    *czi = -sin(zr)*sh;
+    czr->val =  cos(zr)*(ch_m1 + 1.0);
+    czi->val = -sin(zr)*sh;
+    czr->err = 2.0 * GSL_DBL_EPSILON * fabs(czr->val);
+    czi->err = 2.0 * GSL_DBL_EPSILON * fabs(czi->val);
     return GSL_SUCCESS;
   }
   else if(fabs(zi) < GSL_LOG_DBL_MAX) {
     double ex = exp(zi);
     double ch = 0.5*(ex+1.0/ex);
     double sh = 0.5*(ex-1.0/ex);
-    *czr =  cos(zr)*ch;
-    *czi = -sin(zr)*sh;
+    czr->val =  cos(zr)*ch;
+    czi->val = -sin(zr)*sh;
+    czr->err = 2.0 * GSL_DBL_EPSILON * fabs(czr->val);
+    czi->err = 2.0 * GSL_DBL_EPSILON * fabs(czi->val);
     return GSL_SUCCESS;
   }
   else {
-    *czr = 0.0;
-    *czi = 0.0;
+    czr->val = 0.0;
+    czi->val = 0.0;
+    czr->err = 0.0;
+    czi->err = 0.0;
     return GSL_EOVRFLW;
   }
 }
 
 
-int gsl_sf_complex_logsin_impl(const double zr, const double zi, double * lszr, double * lszi)
+int
+gsl_sf_complex_logsin_impl(const double zr, const double zi,
+                           gsl_sf_result * lszr, gsl_sf_result * lszi)
 {
-  if(zi > 60.0) {
-    *lszr = -M_LN2 + zi;
-    *lszi =  0.5*M_PI - zr;
+  if(lszr == 0 || lszi == 0) {
+    return GSL_EFAULT;
+  }
+  else if(zi > 60.0) {
+    lszr->val = -M_LN2 + zi;
+    lszi->val =  0.5*M_PI - zr;
+    lszr->err = GSL_DBL_EPSILON * fabs(lszr->val);
+    lszi->err = GSL_DBL_EPSILON * fabs(lszi->val);
   }
   else if(zi < -60.0) {
-    *lszr = -M_LN2 - zi;
-    *lszi = -0.5*M_PI + zr;
+    lszr->val = -M_LN2 - zi;
+    lszi->val = -0.5*M_PI + zr;
+    lszr->err = GSL_DBL_EPSILON * fabs(lszr->val);
+    lszi->err = GSL_DBL_EPSILON * fabs(lszi->val);
   }
   else {
-    double sin_r, sin_i;
+    gsl_sf_result sin_r, sin_i;
     int status;
     gsl_sf_complex_sin_impl(zr, zi, &sin_r, &sin_i); /* ok by construction */
-    status = gsl_sf_complex_log_impl(sin_r, sin_i, lszr, lszi);
+    status = gsl_sf_complex_log_impl(sin_r.val, sin_i.val, lszr, lszi);
     if(status == GSL_EDOM) {
-      *lszr = 0.0;
-      *lszi = 0.0;
+      lszr->val = 0.0;
+      lszi->val = 0.0;
+      lszr->err = 0.0;
+      lszi->err = 0.0;
       return GSL_EDOM;
     }
   }
-  return gsl_sf_angle_restrict_symm_impl(lszi);
+  return gsl_sf_angle_restrict_symm_impl(&(lszi->val));
 }
 
 
-int gsl_sf_lnsinh_impl(const double x, gsl_sf_result * result)
+int
+gsl_sf_lnsinh_impl(const double x, gsl_sf_result * result)
 {
   if(result == 0) {
     return GSL_EFAULT;
@@ -199,25 +233,35 @@ inline int gsl_sf_sincos_impl(const double theta, double * s, double * c)
 }
 */
 
-int gsl_sf_polar_to_rect_impl(const double r, const double theta, double * x, double * y)
+int
+gsl_sf_polar_to_rect_impl(const double r, const double theta,
+                          gsl_sf_result * x, gsl_sf_result * y)
 {
   double t   = theta;
   int status = gsl_sf_angle_restrict_symm_impl(&t);
-  *x = r * cos(t);
-  *y = r * sin(t);
+  x->val = r * cos(t);
+  y->val = r * sin(t);
+  x->err = GSL_DBL_EPSILON * fabs(x->val);
+  y->err = GSL_DBL_EPSILON * fabs(y->val);
   return status;
 }
 
 
-int gsl_sf_rect_to_polar_impl(const double x, const double y, double * r, double * theta)
+int
+gsl_sf_rect_to_polar_impl(const double x, const double y,
+                          gsl_sf_result * r, gsl_sf_result * theta)
 {
-  *r = hypot(x, y);
-  if(*r > 0.0) {
-    *theta = atan2(y, x);
+  r->val = hypot(x, y);
+  r->err = GSL_DBL_EPSILON * fabs(r->val);
+
+  if(r->val > 0.0) {
+    theta->val = atan2(y, x);
+    theta->err = GSL_DBL_EPSILON * fabs(theta->val);
     return GSL_SUCCESS;
   }
   else {
-    *theta = 0.0;
+    theta->val = 0.0;
+    theta->err = 0.0;
     return GSL_EDOM;
   }
 }
@@ -285,7 +329,7 @@ int gsl_sf_cos_err_impl(const double x, const double dx, gsl_sf_result * result)
 
 /*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
 
-int gsl_sf_complex_sin_e(const double zr, const double zi, double * szr, double * szi)
+int gsl_sf_complex_sin_e(const double zr, const double zi, gsl_sf_result * szr, gsl_sf_result * szi)
 {
   int status = gsl_sf_complex_sin_impl(zr, zi, szr, szi);
   if(status != GSL_SUCCESS) {
@@ -294,7 +338,7 @@ int gsl_sf_complex_sin_e(const double zr, const double zi, double * szr, double 
   return status;
 }
 
-int gsl_sf_complex_logsin_e(const double zr, const double zi, double * lszr, double * lszi)
+int gsl_sf_complex_logsin_e(const double zr, const double zi, gsl_sf_result * lszr, gsl_sf_result * lszi)
 {
   int status = gsl_sf_complex_logsin_impl(zr, zi, lszr, lszi);
   if(status != GSL_SUCCESS) {
@@ -303,7 +347,7 @@ int gsl_sf_complex_logsin_e(const double zr, const double zi, double * lszr, dou
   return status;
 }
 
-int gsl_sf_complex_cos_e(const double zr, const double zi, double * czr, double * czi)
+int gsl_sf_complex_cos_e(const double zr, const double zi, gsl_sf_result * czr, gsl_sf_result * czi)
 {
   int status = gsl_sf_complex_cos_impl(zr, zi, czr, czi);
   if(status != GSL_SUCCESS) {
@@ -330,7 +374,7 @@ int gsl_sf_lncosh_e(const double x, gsl_sf_result * result)
   return status;
 }
 
-int gsl_sf_polar_to_rect_e(const double r, const double theta, double * x, double * y)
+int gsl_sf_polar_to_rect_e(const double r, const double theta, gsl_sf_result * x, gsl_sf_result * y)
 {
   int status = gsl_sf_polar_to_rect_impl(r, theta, x, y);
   if(status != GSL_SUCCESS) {
@@ -339,7 +383,7 @@ int gsl_sf_polar_to_rect_e(const double r, const double theta, double * x, doubl
   return status;
 }
 
-int gsl_sf_rect_to_polar_e(const double x, const double y, double * r, double * theta)
+int gsl_sf_rect_to_polar_e(const double x, const double y, gsl_sf_result * r, gsl_sf_result * theta)
 {
   int status = gsl_sf_rect_to_polar_impl(x, y, r, theta);
   if(status != GSL_SUCCESS) {

@@ -1153,12 +1153,12 @@ hyperg_1F1_a_negint_U(const int a, const double b, const double x, gsl_sf_result
   const double sgn = ( GSL_IS_ODD(n) ? -1.0 : 1.0 );
   gsl_sf_result lnpoch;
   double sgpoch;
-  double U;
+  gsl_sf_result U;
   const int stat_p = gsl_sf_lnpoch_sgn_impl(b, n, &lnpoch, &sgpoch);
   const int stat_U = gsl_sf_hyperg_U_impl(-n, b, x, &U);
   if(stat_p == GSL_SUCCESS) {
-    if(U != 0.0 && (stat_U == GSL_SUCCESS || stat_U == GSL_ELOSS)) {
-      const int stat_e = gsl_sf_exp_mult_impl(-lnpoch.val, sgn * sgpoch * U, result);
+    if(U.val != 0.0 && (stat_U == GSL_SUCCESS || stat_U == GSL_ELOSS)) {
+      const int stat_e = gsl_sf_exp_mult_impl(-lnpoch.val, sgn * sgpoch * U.val, result);
       return GSL_ERROR_SELECT_2(stat_e, stat_U);
     }
     else {

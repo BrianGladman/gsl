@@ -45,7 +45,6 @@ int
 gsl_sf_coulomb_wave_FG_impl(const double eta, const double x,
                             const double lam_F,
 			    const int  k_lam_G,
-			    gsl_mode_t mode,
                             gsl_sf_result * F, gsl_sf_result * Fp,
 			    gsl_sf_result * G, gsl_sf_result * Gp,
 			    double * exp_F, double * exp_G);
@@ -54,15 +53,13 @@ gsl_sf_coulomb_wave_FG_impl(const double eta, const double x,
 /* F_L(eta,x)
  */
 int gsl_sf_coulomb_wave_F_array_impl(double lam_min, int kmax,
-                               double eta, double x,
-			       gsl_mode_t mode,
-                               gsl_sf_result * fc,
-			       double * F_exponent
-                               );
+                                     double eta, double x,
+                                     double * fc_array,
+			             double * F_exponent
+                                     );
 int gsl_sf_coulomb_wave_F_e(double lam_min, int kmax,
                             double eta, double x,
-			    gsl_mode_t mode,
-                            gsl_sf_result * fc,
+                            double * fc_array,
 			    double * F_exponent
                             );
 
@@ -70,7 +67,6 @@ int gsl_sf_coulomb_wave_F_e(double lam_min, int kmax,
  */
 int gsl_sf_coulomb_wave_FG_array_impl(double lam_min, int kmax,
                                 double eta, double x,
-			        gsl_mode_t mode,
                                 double * fc_array, double * gc_array,
 				double * F_exponent,
 				double * G_exponent
@@ -79,15 +75,13 @@ int gsl_sf_coulomb_wave_FG_array_e(double lam_min, int kmax,
                              double eta, double x,
                              double * fc_array, double * gc_array,
 			     double * F_exponent,
-			     double * G_exponent,
-			     gsl_mode_t mode, unsigned int err_bits
+			     double * G_exponent
                              );
 
 /* F_L(eta,x), G_L(eta,x), F'_L(eta,x), G'_L(eta,x)
  */
 int gsl_sf_coulomb_wave_FGp_impl(double lam_min, int kmax,
                                  double eta, double x,
-			         gsl_mode_t mode,
                                  gsl_sf_result * fc, gsl_sf_result * fcp,
                                  gsl_sf_result * gc, gsl_sf_result * gcp,
 				 double * F_exponent,
@@ -95,7 +89,6 @@ int gsl_sf_coulomb_wave_FGp_impl(double lam_min, int kmax,
 	      	      	         );
 int gsl_sf_coulomb_wave_FGp_e(double lam_min, int kmax,
                               double eta, double x,
-			      gsl_mode_t mode,
                               gsl_sf_result * fc, gsl_sf_result * fcp,
                               gsl_sf_result * gc, gsl_sf_result * gcp,
 			      double * F_exponent,
@@ -108,7 +101,6 @@ int gsl_sf_coulomb_wave_FGp_e(double lam_min, int kmax,
  */
 int gsl_sf_coulomb_wave_sphF_array_impl(double lam_min, int kmax,
                                         double eta, double x,
-					gsl_mode_t mode,
 	              	                double * fc_array,
 			                double * F_exponent
 	      	      	                );

@@ -9,8 +9,8 @@
  *
  * exceptions: GSL_EDOM
  */
-int     gsl_sf_legendre_Pl_impl(int l, double x, double * result);
-int     gsl_sf_legendre_Pl_e(int l, double x, double * result);
+int     gsl_sf_legendre_Pl_impl(int l, double x, gsl_sf_result * result);
+int     gsl_sf_legendre_Pl_e(int l, double x, gsl_sf_result * result);
 double  gsl_sf_legendre_Pl(int l, double x);
 
 
@@ -75,9 +75,8 @@ int gsl_sf_legendre_Ql_e(int l, double x, gsl_sf_result * result);
  *
  * exceptions: GSL_EDOM, GSL_EOVRFLW
  */
-int     gsl_sf_legendre_Plm_impl(int l, int m, double x, double * result);
-int     gsl_sf_legendre_Plm_e(int l, int m, double x, double * result);
-double  gsl_sf_legendre_Plm(int l, int m, double x);
+int     gsl_sf_legendre_Plm_impl(int l, int m, double x, gsl_sf_result * result);
+int     gsl_sf_legendre_Plm_e(int l, int m, double x, gsl_sf_result * result);
 
 
 /* P_l^m(x)  m >= 0; l >= m; |x| <= 1.0
@@ -101,9 +100,8 @@ int gsl_sf_legendre_Plm_array_e(int lmax, int m, double x, double * result_array
  *
  * exceptions: GSL_EDOM
  */
-int     gsl_sf_legendre_sphPlm_impl(int l, int m, double x, double * result);
-int     gsl_sf_legendre_sphPlm_e(int l, int m, double x, double * result);
-double  gsl_sf_legendre_sphPlm(int l, int m, double x);
+int     gsl_sf_legendre_sphPlm_impl(int l, int m, double x, gsl_sf_result * result);
+int     gsl_sf_legendre_sphPlm_e(int l, int m, double x, gsl_sf_result * result);
 
 
 /* P_l^m(x), normalized properly for use in spherical harmonics
@@ -128,9 +126,8 @@ int gsl_sf_legendre_array_size(const int lmax, const int m);
  * x > -1.0
  * exceptions: GSL_EDOM
  */
-int     gsl_sf_conicalP_half_impl(double lambda, double x, double * result);
-int     gsl_sf_conicalP_half_e(double lambda, double x, double * result);
-double  gsl_sf_conicalP_half(double lambda, double x);
+int     gsl_sf_conicalP_half_impl(double lambda, double x, gsl_sf_result * result);
+int     gsl_sf_conicalP_half_e(double lambda, double x, gsl_sf_result * result);
 
 
 /* Regular Spherical Conical Function
@@ -139,9 +136,8 @@ double  gsl_sf_conicalP_half(double lambda, double x);
  * x > -1.0
  * exceptions: GSL_EDOM
  */
-int     gsl_sf_conicalP_mhalf_impl(double lambda, double x, double * result);
-int     gsl_sf_conicalP_mhalf_e(double lambda, double x, double * result);
-double  gsl_sf_conicalP_mhalf(double lambda, double x);
+int     gsl_sf_conicalP_mhalf_impl(double lambda, double x, gsl_sf_result * result);
+int     gsl_sf_conicalP_mhalf_e(double lambda, double x, gsl_sf_result * result);
 
 
 /* Conical Function
@@ -150,9 +146,8 @@ double  gsl_sf_conicalP_mhalf(double lambda, double x);
  * x > -1.0
  * exceptions: GSL_EDOM
  */
-int     gsl_sf_conicalP_0_impl(double lambda, double x, double * result);
-int     gsl_sf_conicalP_0_e(double lambda, double x, double * result);
-double  gsl_sf_conicalP_0(double lambda, double x);
+int     gsl_sf_conicalP_0_impl(double lambda, double x, gsl_sf_result * result);
+int     gsl_sf_conicalP_0_e(double lambda, double x, gsl_sf_result * result);
 
 
 /* Conical Function
@@ -161,9 +156,8 @@ double  gsl_sf_conicalP_0(double lambda, double x);
  * x > -1.0
  * exceptions: GSL_EDOM
  */
-int     gsl_sf_conicalP_1_impl(double lambda, double x, double * result);
-int     gsl_sf_conicalP_1_e(double lambda, double x, double * result);
-double  gsl_sf_conicalP_1(double lambda, double x);
+int     gsl_sf_conicalP_1_impl(double lambda, double x, gsl_sf_result * result);
+int     gsl_sf_conicalP_1_e(double lambda, double x, gsl_sf_result * result);
 
 
 /* Regular Spherical Conical Function
@@ -172,9 +166,8 @@ double  gsl_sf_conicalP_1(double lambda, double x);
  * x > -1.0, l >= -1
  * exceptions: GSL_EDOM
  */
-int     gsl_sf_conicalP_sph_reg_impl(int l, double lambda, double x, double * result);
-int     gsl_sf_conicalP_sph_reg_e(int l, double lambda, double x, double * result);
-double  gsl_sf_conicalP_sph_reg(int l, double lambda, double x);
+int     gsl_sf_conicalP_sph_reg_impl(int l, double lambda, double x, gsl_sf_result * result);
+int     gsl_sf_conicalP_sph_reg_e(int l, double lambda, double x, gsl_sf_result * result);
 
 
 /* Regular Cylindrical Conical Function
@@ -183,9 +176,8 @@ double  gsl_sf_conicalP_sph_reg(int l, double lambda, double x);
  * x > -1.0, m >= -1
  * exceptions: GSL_EDOM
  */
-int     gsl_sf_conicalP_cyl_reg_impl(int m, double lambda, double x, double * result);
-int     gsl_sf_conicalP_cyl_reg_e(int m, double lambda, double x, double * result);
-double  gsl_sf_conicalP_cyl_reg(int m, double lambda, double x);
+int     gsl_sf_conicalP_cyl_reg_impl(int m, double lambda, double x, gsl_sf_result * result);
+int     gsl_sf_conicalP_cyl_reg_e(int m, double lambda, double x, gsl_sf_result * result);
 
 
 /* The following spherical functions are specializations

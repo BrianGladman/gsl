@@ -11,24 +11,24 @@
  *
  * exceptions: GSL_EOVRFLW
  */
-int gsl_sf_complex_sin_impl(double zr, double zi, double * szr, double * szi);
-int gsl_sf_complex_sin_e(double zr, double zi, double * szr, double * szi);
+int gsl_sf_complex_sin_impl(double zr, double zi, gsl_sf_result * szr, gsl_sf_result * szi);
+int gsl_sf_complex_sin_e(double zr, double zi, gsl_sf_result * szr, gsl_sf_result * szi);
 
 
 /* cos(z) for complex z
  *
  * exceptions: GSL_EOVRFLW
  */
-int gsl_sf_complex_cos_impl(double zr, double zi, double * czr, double * czi);
-int gsl_sf_complex_cos_e(double zr, double zi, double * czr, double * czi);
+int gsl_sf_complex_cos_impl(double zr, double zi, gsl_sf_result * czr, gsl_sf_result * czi);
+int gsl_sf_complex_cos_e(double zr, double zi, gsl_sf_result * czr, gsl_sf_result * czi);
 
 
 /* log(sin(z)) for complex z
  *
  * exceptions: GSL_EDOM, GSL_ELOSS
  */
-int gsl_sf_complex_logsin_impl(double zr, double zi, double * lszr, double * lszi);
-int gsl_sf_complex_logsin_e(double zr, double zi, double * lszr, double * lszi);
+int gsl_sf_complex_logsin_impl(double zr, double zi, gsl_sf_result * lszr, gsl_sf_result * lszi);
+int gsl_sf_complex_logsin_e(double zr, double zi, gsl_sf_result * lszr, gsl_sf_result * lszi);
 
 
 /* log(sinh(x)), x > 0
@@ -51,8 +51,8 @@ int gsl_sf_lncosh_e(double x, gsl_sf_result * result);
  *
  * exceptions: GSL_ELOSS
  */
-int gsl_sf_polar_to_rect_impl(double r, double theta, double * x, double * y);
-int gsl_sf_polar_to_rect_e(double r, double theta, double * x, double * y); 
+int gsl_sf_polar_to_rect_impl(double r, double theta, gsl_sf_result * x, gsl_sf_result * y);
+int gsl_sf_polar_to_rect_e(double r, double theta, gsl_sf_result * x, gsl_sf_result * y); 
 
 
 /* Convert rectilinear to polar coordinates.
@@ -60,8 +60,8 @@ int gsl_sf_polar_to_rect_e(double r, double theta, double * x, double * y);
  *
  * exceptions: GSL_EDOM
  */
-int gsl_sf_rect_to_polar_impl(double x, double y, double * r, double * theta);
-int gsl_sf_rect_to_polar_e(double x, double y, double * r, double * theta); 
+int gsl_sf_rect_to_polar_impl(double x, double y, gsl_sf_result * r, gsl_sf_result * theta);
+int gsl_sf_rect_to_polar_e(double x, double y, gsl_sf_result * r, gsl_sf_result * theta); 
 
 
 /* Force an angle to lie in the range (-pi,pi].
