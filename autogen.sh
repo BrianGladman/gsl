@@ -5,5 +5,5 @@
 
 libtoolize --automake
 aclocal
-automake --add-missing
+automake --add-missing --gnu
 autoconf
