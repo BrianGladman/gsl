@@ -21,7 +21,7 @@ FUNCTION(gsl_vector,alloc) (const size_t n)
 			GSL_ENOMEM, 0);
     }
 
-  v->data = malloc(n * sizeof(BASE)) ;
+  v->data = (BASE *) malloc(n * sizeof(BASE)) ;
 
   if (v->data == 0) 
     {

@@ -1,3 +1,7 @@
+Wed Jun 10 19:13:35 1998  Brian Gough  <bjg@vvv.lanl.gov>
+
+	* init_source.c: added a cast for each malloc
+
 Sun Apr 26 14:10:06 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
 	* added support for complex vectors

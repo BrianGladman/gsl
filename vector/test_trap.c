@@ -64,15 +64,15 @@ int main (void)
   /* integer */ 
 
   status = 0 ;
-  gsl_vector_int_set(vi, j-1, 1.2) ;
+  gsl_vector_int_set(vi, j-1, 1) ;
   gsl_test(!status, "gsl_vector_int_set traps index below lower array bound") ;
 
   status = 0 ;
-  gsl_vector_int_set(vi, N+1, 1.2) ;
+  gsl_vector_int_set(vi, N+1, 1) ;
   gsl_test(!status, "gsl_vector_int_set traps index above upper array bound") ;
 
   status = 0 ;
-  gsl_vector_int_set(vi, N, 1.2) ;
+  gsl_vector_int_set(vi, N, 1) ;
   gsl_test(!status, "gsl_vector_int_set traps index at upper array bound") ;
 
   status = 0 ;

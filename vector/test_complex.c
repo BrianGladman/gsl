@@ -26,7 +26,7 @@ int main (void)
     int status = 0 ;
 
     for (i = 0 ; i < N ; i++) {
-      gsl_complex x, y ;
+      gsl_complex x ;
       x.real = i ; x.imag = i+1 ;
       if(v->data[i].real != x.real || v->data[i].imag != x.imag) 
 	status = 1 ;
