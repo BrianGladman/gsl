@@ -5,8 +5,18 @@ AM_INIT_AUTOMAKE(gsl,"1.2")
 AM_CONFIG_HEADER(config.h)
 AM_MAINTAINER_MODE
 
-AC_DEFINE(GSL_LT_VERSION,"0:0:0")
+dnl Library versioning (current:revision:age)
+dnl See the libtool manual for an explanation of the numbers
+dnl
+dnl gsl-1.0    libgsl 0:0:0  libgslcblas 0:0:0
+dnl gsl-1.1    libgsl 1:0:1  libgslcblas 0:0:0
+dnl gsl-1.1.1  libgsl 2:0:2  libgslcblas 0:0:0
+dnl gsl-1.2    libgsl 3:0:3  libgslcblas 0:0:0
+
+GSL_LT_VERSION="3:0:3"
 AC_SUBST(GSL_LT_VERSION)
+GSL_LT_CBLAS_VERSION="0:0:0"
+AC_SUBST(GSL_LT_CBLAS_VERSION)
 
 dnl things required by automake
 AC_ARG_PROGRAM

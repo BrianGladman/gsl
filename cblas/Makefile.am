@@ -1,4 +1,5 @@
 lib_LTLIBRARIES = libgslcblas.la
+libgslcblas_la_LDFLAGS = -version-info $(GSL_LT_CBLAS_VERSION)
 
 pkginclude_HEADERS = gsl_cblas.h
 
