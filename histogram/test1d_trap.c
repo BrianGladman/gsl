@@ -27,12 +27,12 @@
 
 #define N 397
 
-void my_error_handler (const char *reason, const char *file,
-		       int line, int err);
-int status = 0;
+static void my_error_handler (const char *reason, const char *file,
+                              int line, int err);
+static int status = 0;
 
-int
-main (void)
+void
+test1d_trap (void)
 {
   gsl_histogram *h;
   double result, lower, upper;
@@ -118,12 +118,10 @@ main (void)
   gsl_test (status != GSL_EDOM, "gsl_histogram_find traps x above xmax");
 
   gsl_histogram_free (h);
-
-  exit (gsl_test_summary ());
 }
 
 
-void
+static void
 my_error_handler (const char *reason, const char *file, int line, int err)
 {
   if (0)

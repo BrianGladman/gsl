@@ -28,12 +28,12 @@
 #define N 107
 #define M 239
 
-void my_error_handler (const char *reason, const char *file,
-		       int line, int err);
-int status = 0;
+static void my_error_handler (const char *reason, const char *file,
+                              int line, int err);
+static int status = 0;
 
-int
-main (void)
+void
+test2d_trap (void)
 {
   gsl_histogram2d *h;
   double result, lower, upper;
@@ -191,12 +191,10 @@ main (void)
   gsl_test (status != GSL_EDOM, "gsl_histogram2d_find traps y above ymax");
 
   gsl_histogram2d_free (h);
-
-  exit (gsl_test_summary ());
 }
 
 
-void
+static void
 my_error_handler (const char *reason, const char *file, int line, int err)
 {
   if (0)

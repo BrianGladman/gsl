@@ -10,14 +10,10 @@ libgslstatistics_la_SOURCES =  mean.c variance.c absdev.c skew.c kurtosis.c lag1
 
 noinst_HEADERS = mean_source.c variance_source.c covariance_source.c absdev_source.c skew_source.c kurtosis_source.c lag1_source.c p_variance_source.c minmax_source.c ttest_source.c median_source.c quantiles_source.c wmean_source.c wvariance_source.c wabsdev_source.c wskew_source.c wkurtosis_source.c test_float_source.c test_int_source.c
 
-check_PROGRAMS = test test_nist
-TESTS = test test_nist
+check_PROGRAMS = test
+TESTS = test
 
-test_SOURCES = test.c
+test_SOURCES = test.c test_nist.c
 test_LDADD = libgslstatistics.la ../sort/libgslsort.la ../ieee-utils/libgslieeeutils.la ../err/libgslerr.la ../test/libgsltest.la ../utils/libutils.la
-
-
-test_nist_SOURCES = test_nist.c
-test_nist_LDADD = libgslstatistics.la ../ieee-utils/libgslieeeutils.la ../err/libgslerr.la ../test/libgsltest.la ../utils/libutils.la
 
 

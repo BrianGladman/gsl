@@ -30,7 +30,7 @@
 #include <gsl/gsl_ieee_utils.h>
 
 int
-main (void)
+test_nist (void)
 {
   size_t i ;
 
@@ -492,8 +492,6 @@ main (void)
     gsl_test_rel (lag1, expected_lag1, 1e-10, "acc4 autocorrelation") ;
   }
 
-
-  exit (gsl_test_summary ());
 }
 
 

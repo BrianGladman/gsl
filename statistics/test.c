@@ -28,6 +28,8 @@
 #include <gsl/gsl_statistics.h>
 #include <gsl/gsl_ieee_utils.h>
 
+int test_nist (void);
+
 /* Test program for mean.c.  JimDavies 7.96 */
 
 #define BASE_LONG_DOUBLE
@@ -121,6 +123,8 @@ main (void)
       test_uchar_func (s1,s2);
       test_char_func (s1,s2);
     }
+
+  test_nist();
 
   exit (gsl_test_summary ());
 }

@@ -26,8 +26,8 @@
 
 #include "urand.c"
 
-int
-main (void)
+void
+test2d_resample (void)
 {
   size_t i, j;
   int status = 0;
@@ -112,6 +112,4 @@ main (void)
   }
 
   gsl_histogram2d_free (h) ;
-
-  exit (gsl_test_summary ());
 }

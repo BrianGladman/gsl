@@ -1,4 +1,4 @@
-/* histogram/test_resample.c
+/* histogram/test1d_resample.c
  * 
  * Copyright (C) 1996, 1997, 1998, 1999, 2000 Brian Gough
  * 
@@ -26,8 +26,8 @@
 
 #include "urand.c"
 
-int
-main (void)
+void
+test1d_resample (void)
 {
   size_t i;
   int status = 0;
@@ -96,6 +96,4 @@ main (void)
   }
 
   gsl_histogram_free (h);
-
-  exit (gsl_test_summary ());
 }

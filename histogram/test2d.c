@@ -34,8 +34,8 @@
 #define MR 10
 #define NR 5
 
-int
-main (void)
+void
+test2d (void)
 {
   double xr[MR + 1] =
     { 0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0 };
@@ -750,6 +750,4 @@ main (void)
   gsl_histogram2d_free (h1);
   gsl_histogram2d_free (g);
   gsl_histogram2d_free (hr);
-
-  exit (gsl_test_summary ());
 }
