@@ -22,7 +22,7 @@ tar xvfz $tarfile
  (cd msvc ; make ; cp -a gsl-ref.hhp ../doc/html; )
 )
 
-zip -l -r $ver.zip $ver
+zip -l -r $ver.zip $ver -x '*~' -x '*/CVS/*' -x '*/.*'
 rm -r $ver
 
 

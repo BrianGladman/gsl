@@ -71,6 +71,10 @@ settings are required,
 Make sure that the Object/Library module settings are made for the
 appropriate configuration (either 'Release' or 'Debug').
 
+If you want to use the inline functions from GSL, you should also add
+the proprocessor definitions HAVE_INLINE,inline=__inline.  These
+functions are slightly faster but increase the code size.
+
 You can test your installation using the demonstration workspace
 available in the directory 'demo'.
 
@@ -81,6 +85,13 @@ compiled with the following option selected,
       C/C++
         Category: Customize
           Disable Language Extensions
+
+If you do this you should apply the optimization option /Op- to
+prevent your code from being slowed down by a feature of 'Disable
+Language extensions'.  By default the 'Disable Language Extensions'
+option turns on the strictest IEEE arithmetic behavior, which slows
+down the program significantly.  For most programs this is not
+required and can be turned off with /Op-.
 
 The library is built with the /LD or /LDd option.  This is compatible
 with the default link option /ML for single-threaded applications.

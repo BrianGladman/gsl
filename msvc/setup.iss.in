@@ -36,10 +36,12 @@ Source: "Debug\libgslcblas.lib"; DestDir: "{app}\lib"; DestName: "libgslcblasd.l
 ;
 Source: "..\doc\html\*.chm"; DestDir: "{app}\doc"; 
 ;
-Source: "demo\*.*"; DestDir: "{app}\demo";
+Source: "demo\*.*"; DestDir: "{userdesktop}\GSL @VERSION@ demo";
 
 [Icons]
 Name: "{group}\GNU Scientific Library Reference Manual"; Filename: "{app}\doc\gsl-ref.chm"
+Name: "{userdesktop}\GNU Scientific Library Reference Manual @VERSION@"; Filename: "{app}\doc\gsl-ref.chm"
+Name: "{userdesktop}\GNU Scientific Library @VERSION@"; Filename: "{app}"; WorkingDir: "{app}";
 Name: "{group}\README"; Filename: "{app}\README.txt"
 Name: "{group}\NEWS"; Filename: "{app}\NEWS.txt"
 Name: "{group}\LICENSE"; Filename: "{app}\COPYING.txt"
