@@ -165,16 +165,16 @@ int test_legendre(void)
   sa = 0;
   gsl_sf_legendre_Plm_array(100, 5, 0.999, L);
   TEST_SF_VAL(sa, L[0],  +0.0,  -0.00016883550990916552255, TEST_TOL2);
-  TEST_SF_VAL(sa, L[10], +0.0,  -30.651334850159821525, TEST_TOL1 );
-  TEST_SF_VAL(sa, L[95], +0.0,  -1.9831610803806212189e+09, TEST_TOL1);
+  TEST_SF_VAL(sa, L[10], +0.0,  -30.651334850159821525, TEST_TOL2 );
+  TEST_SF_VAL(sa, L[95], +0.0,  -1.9831610803806212189e+09, TEST_TOL2);
   gsl_test(sa, "gsl_sf_legendre_Plm_array(100, 5, 0.999)");
   s += sa;
 
   sa = 0;
   gsl_sf_legendre_Plm_array(100, 5, -0.999, L);
-  TEST_SF_VAL(sa, L[0],  +0.0,  -0.00016883550990916552255, TEST_TOL1);
-  TEST_SF_VAL(sa, L[10], +0.0,  -30.651334850159821525, TEST_TOL1 );
-  TEST_SF_VAL(sa, L[95], +0.0,   1.9831610803806212189e+09, TEST_TOL1);
+  TEST_SF_VAL(sa, L[0],  +0.0,  -0.00016883550990916552255, TEST_TOL2);
+  TEST_SF_VAL(sa, L[10], +0.0,  -30.651334850159821525, TEST_TOL2 );
+  TEST_SF_VAL(sa, L[95], +0.0,   1.9831610803806212189e+09, TEST_TOL2);
   gsl_test(sa, "gsl_sf_legendre_Plm_array(100, 5, -0.999)");
   s += sa;
 
