@@ -1,5 +1,9 @@
 * What is new in gsl-1.1:
 
+** The implementation of gsl_sf_gamma_inc has been improved and now
+avoids problems caused by internal singularities which occurred in the
+series expansion for some combinations of parameters.
+
 ** IEEE comparisons of infinities and NaNs are tested during the
 configure stage and the functions gsl_isnan, gsl_isinf and gsl_finite
 are only compiled on platforms which support the necessary tests.

@@ -124,3 +124,7 @@ fixes for the special functions
 multiroots
 
 * Jungemann Markus <Markus.Jungemann@de.bosch.com> documentation fixes
+
+* Hans E. Plesser (hans dot plesser at itf dot nlh dot no) more
+reliable implementation of gamma_inc
+
