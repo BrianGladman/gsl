@@ -478,6 +478,14 @@ Proceedings of the Summer '91 Usenix Conference, pp.  235-256, 1991.
 @url{http://citeseer.nj.nec.com/korn91sfio.html}
 @end itemize
 
+Source code should be indented according to the GNU Coding Standards,
+with spaces not tabs. For example, by using the @code{indent} command:
+
+@example
+indent -gnu -nut *.c *.h
+@end example
+@noindent
+The @code{-nut} option converts tabs into spaces.
 
 @node Background and Preparation, Documentation, Standards and conventions, Design
 @section Background and Preparation
@@ -1017,6 +1025,9 @@ the heap.  It's the best memory checking tool.  If checkergcc isn't
 available then Electric Fence will check the heap, which is better than
 no checking.
 
+There is a new tool @code{valgrind} for checking memory access.  Test
+the code with this as well.
+
 Make sure that the library will also compile with C++ compilers
 (g++).  This should not be too much of a problem if you have been writing
 in ANSI C.
@@ -1047,15 +1058,28 @@ program.
 @itemize @bullet
 @item
 Each contributor must make sure her code is under the GNU General Public
-License (GPL).
+License (GPL).   This means getting a disclaimer from your employer.
 @item
 We must understand ownership of existing code and algorithms.  
 @item
 Each contributor can retain ownership of their code, or sign it over to
 FSF as they prefer.  In the event of any legal uncertainty code will
 simply be removed from the library.
-@itemize @minus
-@item
+
+There is a standard disclaimer in the GPL (take a look at it).  The more
+specific you make your disclaimer the more likely it is that it will be
+accepted by an employer.  For example,
+
+@smallexample
+Yoyodyne, Inc., hereby disclaims all copyright interest in the software
+`GNU Scientific Library - Legendre Functions' (routines for computing
+legendre functions numerically in C) written by James Hacker.
+
+<signature of Ty Coon>, 1 April 1989
+Ty Coon, President of Vice
+@end smallexample
+
+@item 
 Obviously: don't use or translate non-free code. 
 
 In particular don't copy or translate code from @cite{Numerical Recipes}
@@ -1083,8 +1107,6 @@ author.
 @item
 I @strong{think} one can reference algorithms from classic books on
 numerical analysis.
-@end itemize
-
 @end itemize
 
 @node Non-UNIX portability, Compatibility with other libraries, Legal issues, Design
