@@ -1353,6 +1353,38 @@ function CC = blas_syrk (order, uplo, trans, N, K,  alpha, \
   CC = trmatout(order, uplo, 131, C, ldc, N, c);
 endfunction
 
+
+function CC = blas_herk (order, uplo, trans, N, K,  alpha, \
+                         A, lda, beta, C, ldc)
+  c = trmatrix (order, uplo, 131, C, ldc, N);
+
+  if (beta == 1 && (alpha == 0 || K == 0))
+    CC=C;
+    return;
+  endif
+
+  if (trans == 111)
+    a = matrix (order, A, lda, N, K);
+  else
+    a = matrix (order, A, lda, K, N);
+  endif
+
+  t = triu(c,1) + tril(c,-1);
+  c = t + t' + diag(real(diag(c)));  # make hermitian
+
+  if (trans == 111)
+    c = alpha * a * a' + beta * c;
+  else
+    c = alpha * a' * a + beta * c;
+  endif
+
+  for i = 1:N
+    c(i,i) = real(c(i,i));
+  endfor
+
+  CC = trmatout(order, uplo, 131, C, ldc, N, c);
+endfunction
+
 ######################################################################
 
                                 # testing functions
@@ -2089,6 +2121,31 @@ function test_syrk (S, fn, order, uplo, trans, N, K, alpha, A, \
   end_block();
 endfunction
 
+function test_syrk (S, fn, order, uplo, trans, N, K, alpha, A, \
+                    lda, beta, C, ldc)
+  begin_block();
+  define(S, "int", "order", order);
+  define(S, "int", "uplo", uplo);
+  define(S, "int", "trans", trans);
+  define(S, "int", "N", N);
+  define(S, "int", "K", K);
+  T = S ; T.complex = 0;
+  define(T, "scalar", "alpha", alpha);
+  define(T, "scalar", "beta", beta);
+  define(S, "matrix", "A", A);
+  define(S, "int", "lda", lda);
+  define(S, "matrix", "C", C);
+  define(S, "int", "ldc", ldc);
+
+  CC = feval(strcat("blas_", fn), order, uplo, trans, N, K, \
+             alpha, A, lda, beta, C, ldc);
+  define(S, "matrix", "C_expected", CC);
+  call("cblas_", S.prefix, fn, "(order, uplo, trans, N, K, alpha, A, lda, beta, C, ldc)");
+  test(S, "matrix", "C", "C_expected", strcat(S.prefix, fn), C);
+  end_block();
+endfunction
+
+
 ######################################################################
 
 s=1;d=2;c=3;z=4;
@@ -2699,16 +2756,36 @@ n=16;
 #   endfor
 # endfor
 
+# for j = 1:n
+#   for i = [c,z] #[s,d] #c,z]
+#     S = context(i);
+#     for uplo = [121, 122]
+#       for trans = Trans(S)
+#         for alpha = coeff(S)
+#           for beta = coeff(S)
+#             for order = [101, 102]
+#               T = test_syrkmatmat(S, j, order, trans);
+#               test_syrk (S, "syrk", order, uplo, trans, T.n, T.k,
+#                          alpha, T.A, T.lda, beta, T.C, T.ldc);
+#             endfor
+#           endfor
+#         endfor
+#       endfor
+#     endfor
+#   endfor
+# endfor
+
 for j = 1:n
   for i = [c,z] #[s,d] #c,z]
     S = context(i);
     for uplo = [121, 122]
       for trans = Trans(S)
-        for alpha = coeff(S)
-          for beta = coeff(S)
+        T = S ; T.complex = 0;
+        for alpha = coeff(T)
+          for beta = coeff(T)
             for order = [101, 102]
               T = test_syrkmatmat(S, j, order, trans);
-              test_syrk (S, "syrk", order, uplo, trans, T.n, T.k,
+              test_syrk (S, "herk", order, uplo, trans, T.n, T.k,
                          alpha, T.A, T.lda, beta, T.C, T.ldc);
             endfor
           endfor

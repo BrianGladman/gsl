@@ -1427,7 +1427,7 @@ cblas_zsyrk (const enum CBLAS_ORDER Order, const enum CBLAS_UPLO Uplo,
 #undef BASE
 }
 
-#ifdef 0
+
 /* HERK */
 
 void
@@ -1452,7 +1452,7 @@ cblas_zherk (const enum CBLAS_ORDER Order, const enum CBLAS_UPLO Uplo,
 #undef BASE
 }
 
-
+#ifdef 0
 /* SYR2K */
 
 void
