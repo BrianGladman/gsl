@@ -84,10 +84,10 @@ INCLUDES= -I$(srcdir)/../rng -I$(srcdir)/../specfunc -I$(srcdir)/../err -I$(top_
 bin_PROGRAMS = gsl-randist
 
 gsl_randist_SOURCES = gsl-randist.c
-gsl_randist_LDADD = libgslrandist.a ../rng/libgslrng.a ../specfunc/libgslspecfunc.a ../err/libgslerr.a
+gsl_randist_LDADD = libgslrandist.a ../rng/libgslrng.a ../specfunc/libgslspecfunc.a ../err/libgslerr.a ../utils/libutils.a
 
 test_SOURCES = test.c
-test_LDADD = libgslrandist.a ../rng/libgslrng.a ../specfunc/libgslspecfunc.a ../err/libgslerr.a ../err/libgsltest.a
+test_LDADD = libgslrandist.a ../rng/libgslrng.a ../specfunc/libgslspecfunc.a ../err/libgslerr.a ../err/libgsltest.a  ../utils/libutils.a
 TESTS = test
 check_PROGRAMS = test
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
@@ -111,11 +111,12 @@ PROGRAMS =  $(bin_PROGRAMS)
 
 gsl_randist_OBJECTS =  gsl-randist.o
 gsl_randist_DEPENDENCIES =  libgslrandist.a ../rng/libgslrng.a \
-../specfunc/libgslspecfunc.a ../err/libgslerr.a
+../specfunc/libgslspecfunc.a ../err/libgslerr.a ../utils/libutils.a
 gsl_randist_LDFLAGS = 
 test_OBJECTS =  test.o
 test_DEPENDENCIES =  libgslrandist.a ../rng/libgslrng.a \
-../specfunc/libgslspecfunc.a ../err/libgslerr.a ../err/libgsltest.a
+../specfunc/libgslspecfunc.a ../err/libgslerr.a ../err/libgsltest.a \
+../utils/libutils.a
 test_LDFLAGS = 
 CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
