@@ -177,8 +177,10 @@ Equations}).  Work is under way on a special function library.
 * Interpolation::               
 * Series Acceleration::         
 * Simulated Annealing::         
-* Vectors and Matrices::
-* BLAS Support::        
+* Vectors and Matrices::        
+* BLAS Support::                
+* Linear Algebra::              
+* Eigensystems::                
 * Histograms::                  
 * Numerical Integration::       
 * Monte Carlo Integration::     
@@ -277,11 +279,19 @@ allowing wrappers to be written for very high level languages.
 @chapter Vectors and Matrices
 @include vectors.texi
 
-@node BLAS Support, Histograms, Vectors and Matrices, Top
+@node BLAS Support, Linear Algebra, Vectors and Matrices, Top
 @chapter BLAS Support
 @include blas.texi
 
-@node Histograms, Numerical Integration, BLAS Support, Top
+@node Linear Algebra, Eigensystems, BLAS Support, Top
+@chapter Linear Algebra
+@include linalg.texi
+
+@node Eigensystems, Histograms, Linear Algebra, Top
+@chapter Eigensystems
+@include linalg.texi
+
+@node Histograms, Numerical Integration, Eigensystems, Top
 @chapter Histograms
 @include histogram.texi
 
