@@ -1,3 +1,9 @@
+Wed May 27 18:15:34 1998  Brian Gough  <bjg@vvv.lanl.gov>
+
+	* test.c (gsl_test_str): changed things so that the strings aren't
+ 	printed unless the string equality test fails (usually they were
+ 	too long)
+
 Mon May 18 17:58:20 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
 	* test.c (gsl_test_rel): added a test for numerical quantities,

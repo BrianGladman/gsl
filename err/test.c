@@ -194,11 +194,7 @@ gsl_test_str (const char * result, const char * expected,
       vprintf (test_description, ap);
       va_end (ap);
 #endif
-      if (status == 0)
-	{
-	  printf(" (%s observed vs %s expected)", result, expected) ;
-	}
-      else 
+      if (status)
 	{
 	  printf(" (%s observed vs %s expected)", result, expected) ;
 	}
