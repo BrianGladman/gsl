@@ -135,18 +135,6 @@ to build the library this way.
 Use GNU tar to unpack the tar file, as Tru64 tar gives an error
 halfway through.
 
-Hints for DOS
-=============
-
-When using DJGPP The default stack size of 512k may be insufficient for
-the specfunc tests and will cause them to crash.  To increase the
-stack size by a suitable amount use,
-
-  	stubedit test.exe minstack=1536k
-
-on the executable and then rerun it manually.  (5/01: The specfunc
-tests have been rewritten to use less stack space now).
-
 Hints for HP-UX
 ===============
 
