@@ -1,3 +1,8 @@
+2003-01-25  Brian Gough  <brian.gough@network-theory.co.uk>
+
+	* test_gamma.c (test_gamma): added a test for
+	gamma_inc_P(10,1e-16) (BUG#12)
+
 Sat Sep  7 15:56:15 2002  Brian Gough  <bjg@network-theory.co.uk>
 
 	* test_sf.h (TEST_FACTOR): include an overall factor in the test

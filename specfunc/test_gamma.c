@@ -174,6 +174,9 @@ int test_gamma(void)
   TEST_SF(s, gsl_sf_gamma_inc_P_e, (34.0, 32.0, &r), 0.3849626436463866776322932129, TEST_TOL2, GSL_SUCCESS);
   /* and the next test is gamma_inc_P(37,35-20*eps) */
   TEST_SF(s, gsl_sf_gamma_inc_P_e, (37.0, 3.499999999999999289e+01, &r), 0.3898035054195570860969333039, TEST_TOL2, GSL_SUCCESS);
+
+  /* Regression test Martin Jansche <jansche@ling.ohio-state.edu> BUG#12 */
+  TEST_SF(s, gsl_sf_gamma_inc_P_e, (10, 1e-16, &r), 2.755731922398588814734648067e-167, TEST_TOL2, GSL_SUCCESS);
   
   TEST_SF(s, gsl_sf_gamma_inc_Q_e, (0.001, 0.001, &r), 0.006312353291139709793, TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_gamma_inc_Q_e, (0.001, 1.0, &r), 0.00021960835758555639171, TEST_TOL1, GSL_SUCCESS);
