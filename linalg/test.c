@@ -24,6 +24,7 @@
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_ieee_utils.h>
 #include <gsl/gsl_permute_vector.h>
+#include <gsl/gsl_blas.h>
 #include "gsl_linalg.h"
 
 static int 
@@ -119,6 +120,8 @@ double vander12_solution[] = {0.0, 0.0, 0.0, 0.0,
 
 gsl_matrix * moler10;
 
+/* matmult now obsolete */
+#ifdef MATMULT
 int
 test_matmult(void)
 {
@@ -276,7 +279,7 @@ test_matmult_mod(void)
 
   return s;
 }
-
+#endif
 
 static int
 test_LU_solve_dim(const gsl_matrix * m, const double * actual, double eps)
@@ -449,7 +452,8 @@ test_QR_decomp_dim(const gsl_matrix * m, double eps)
   s += gsl_linalg_QR_decomp(qr, d);
   s += gsl_linalg_QR_unpack(qr, d, q, r);
   
-  gsl_linalg_matmult (q, r, a);
+  /* compute a = q r */
+  gsl_blas_dgemm (CblasNoTrans, CblasNoTrans, 1.0, q, r, 0.0, a);
 
   for(i=0; i<M; i++) {
     for(j=0; j<N; j++) {
@@ -609,8 +613,10 @@ test_QRPT_decomp_dim(const gsl_matrix * m, double eps)
 
   s += gsl_linalg_QRPT_decomp(qr, d, perm, &signum);
   s += gsl_linalg_QR_unpack(qr, d, q, r);
-  
-  gsl_linalg_matmult (q, r, a);
+
+  /* compute a = q r */
+  gsl_blas_dgemm (CblasNoTrans, CblasNoTrans, 1.0, q, r, 0.0, a);
+
 
   /* Compute QR P^T by permuting the elements of the rows of QR */
 
@@ -929,7 +935,8 @@ test_SV_decomp_dim(const gsl_matrix * m, double eps)
         }
     }
             
-  gsl_linalg_matmult (v, dqt, a);
+  /* compute a = v dqt */
+  gsl_blas_dgemm (CblasNoTrans, CblasNoTrans, 1.0, v, dqt, 0.0, a);
 
   for(i=0; i<M; i++) {
     for(j=0; j<N; j++) {
@@ -1085,7 +1092,8 @@ test_cholesky_decomp_dim(const gsl_matrix * m, double eps)
         }
     }
             
-  gsl_linalg_matmult (l, lt, a);
+  /* compute a = l lt */
+  gsl_blas_dgemm (CblasNoTrans, CblasNoTrans, 1.0, l, lt, 0.0, a);
 
   for(i=0; i<M; i++) {
     for(j=0; j<N; j++) {
@@ -1294,8 +1302,11 @@ int main()
 
   moler10 = create_moler_matrix(10);
 
-  gsl_test(test_matmult(),        "Matrix Multiply");
-  gsl_test(test_matmult_mod(),    "Matrix Multiply with Modification");
+  /* Matmult now obsolete */
+#ifdef MATMULT
+  gsl_test(test_matmult(),        "Matrix Multiply"); 
+  gsl_test(test_matmult_mod(),    "Matrix Multiply with Modification"); 
+#endif
   gsl_test(test_LU_solve(),       "LU Decomposition and Solve");
   gsl_test(test_QR_decomp(),      "QR Decomposition");
   gsl_test(test_QR_solve(),       "QR Solve");

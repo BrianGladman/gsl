@@ -48,6 +48,8 @@ typedef enum
 gsl_linalg_matrix_mod_t;
 
 
+/* Note: You can now use the gsl_blas_dgemm function instead of matmult */
+
 /* Simple implementation of matrix multiply.
  * Calculates C = A.B
  *

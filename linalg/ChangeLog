@@ -1,3 +1,7 @@
+Fri Apr 13 20:43:38 2001  Brian Gough  <bjg@network-theory.co.uk>
+
+	* test.c: replaced uses of matmult by dgemm
+
 Sun Oct 22 13:56:30 2000  Brian Gough  <bjg@network-theory.co.uk>
 
 	* householder.c (gsl_linalg_householder_transform): changed calls
