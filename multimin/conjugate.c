@@ -194,7 +194,7 @@ conjugate_direction(void *vstate,gsl_multimin_fdf_history *h ,gsl_vector * dir)
     }
 }
 
-static const gsl_multimin_fdf_minimizer_type conjugate_type_pr =
+static const gsl_multimin_fdfminimizer_type conjugate_type_pr =
 {"conjugate_pr",			/* name */
  sizeof (conjugate_state_t),
  &conjugate_alloc_pr,
@@ -202,9 +202,9 @@ static const gsl_multimin_fdf_minimizer_type conjugate_type_pr =
  &conjugate_direction,
  &conjugate_free};
 
-const gsl_multimin_fdf_minimizer_type *gsl_multimin_fdf_minimizer_conjugate_pr = &conjugate_type_pr;
+const gsl_multimin_fdfminimizer_type *gsl_multimin_fdfminimizer_conjugate_pr = &conjugate_type_pr;
 
-static const gsl_multimin_fdf_minimizer_type conjugate_type_fr =
+static const gsl_multimin_fdfminimizer_type conjugate_type_fr =
 {"conjugate_fr",			/* name */
  sizeof (conjugate_state_t),
  &conjugate_alloc_fr,
@@ -212,4 +212,4 @@ static const gsl_multimin_fdf_minimizer_type conjugate_type_fr =
  &conjugate_direction,
  &conjugate_free};
 
-const gsl_multimin_fdf_minimizer_type *gsl_multimin_fdf_minimizer_conjugate_fr = &conjugate_type_fr;
+const gsl_multimin_fdfminimizer_type *gsl_multimin_fdfminimizer_conjugate_fr = &conjugate_type_fr;

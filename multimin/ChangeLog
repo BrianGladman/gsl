@@ -1,3 +1,11 @@
+Thu Oct 18 22:56:52 2001  Brian Gough  <bjg@network-theory.co.uk>
+
+	* renamed gsl_multimin_f_minimizer to gsl_multimin_fminimizer for
+ 	consistency with rest of the library
+
+	* renamed gsl_multimin_fdf_minimizer to gsl_multimin_fdfminimizer
+ 	for consistency with rest of the library
+
 Mon Oct  8 21:41:51 2001  Brian Gough  <bjg@network-theory.co.uk>
 
 	* diff.c (gsl_multimin_diff): pass params argument using

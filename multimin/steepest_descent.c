@@ -60,7 +60,7 @@ steepest_descent_direction(void *state,gsl_multimin_fdf_history *h ,gsl_vector *
   return GSL_SUCCESS;
 }
 
-static const gsl_multimin_fdf_minimizer_type steepest_descent_type =
+static const gsl_multimin_fdfminimizer_type steepest_descent_type =
 {"steepest_descent",			/* name */
  sizeof (steepest_descent_state_t),
  &steepest_descent_alloc,
@@ -68,4 +68,4 @@ static const gsl_multimin_fdf_minimizer_type steepest_descent_type =
  &steepest_descent_direction,
  &steepest_descent_free};
 
-const gsl_multimin_fdf_minimizer_type *gsl_multimin_fdf_minimizer_steepest_descent = &steepest_descent_type;
+const gsl_multimin_fdfminimizer_type *gsl_multimin_fdfminimizer_steepest_descent = &steepest_descent_type;

@@ -173,12 +173,12 @@ typedef struct
   int (*direction) (void *state,gsl_multimin_fdf_history *h,gsl_vector * dir);
   void (*free) (void *state);
 }
-gsl_multimin_fdf_minimizer_type;
+gsl_multimin_fdfminimizer_type;
 
 typedef struct 
 {
   /* multi dimensional part */
-  const gsl_multimin_fdf_minimizer_type *type;
+  const gsl_multimin_fdfminimizer_type *type;
   gsl_multimin_function_fdf *fdf;
   gsl_multimin_fdf_history *history;
   /* one dimensional part */
@@ -188,50 +188,50 @@ typedef struct
   gsl_min_fminimizer *line_search;
   void *state;
 }
-gsl_multimin_fdf_minimizer;
+gsl_multimin_fdfminimizer;
 
-gsl_multimin_fdf_minimizer *
-gsl_multimin_fdf_minimizer_alloc(const gsl_multimin_fdf_minimizer_type *T,
+gsl_multimin_fdfminimizer *
+gsl_multimin_fdfminimizer_alloc(const gsl_multimin_fdfminimizer_type *T,
 				 gsl_multimin_function_fdf *fdf,
 				 const gsl_vector * x,
 				 gsl_min_bracketing_function bracket,
 				 const gsl_min_fminimizer_type * T_line);
 void
-gsl_multimin_fdf_minimizer_free(gsl_multimin_fdf_minimizer *s);
+gsl_multimin_fdfminimizer_free(gsl_multimin_fdfminimizer *s);
 
 const gsl_vector *
-gsl_multimin_fdf_minimizer_direction(gsl_multimin_fdf_minimizer *s);
+gsl_multimin_fdfminimizer_direction(gsl_multimin_fdfminimizer *s);
 
 int
-gsl_multimin_fdf_minimizer_next_direction(gsl_multimin_fdf_minimizer *s);
+gsl_multimin_fdfminimizer_next_direction(gsl_multimin_fdfminimizer *s);
 
 int
-gsl_multimin_fdf_minimizer_bracket(gsl_multimin_fdf_minimizer *s,
+gsl_multimin_fdfminimizer_bracket(gsl_multimin_fdfminimizer *s,
 				   double first_step,size_t eval_max);
 
 int
-gsl_multimin_fdf_minimizer_iterate(gsl_multimin_fdf_minimizer *s);
+gsl_multimin_fdfminimizer_iterate(gsl_multimin_fdfminimizer *s);
 
 int
-gsl_multimin_fdf_minimizer_step(gsl_multimin_fdf_minimizer *s,
+gsl_multimin_fdfminimizer_step(gsl_multimin_fdfminimizer *s,
 				double step);
 int
-gsl_multimin_fdf_minimizer_best_step(gsl_multimin_fdf_minimizer *s);
+gsl_multimin_fdfminimizer_best_step(gsl_multimin_fdfminimizer *s);
 
 int
-gsl_multimin_fdf_minimizer_restart(gsl_multimin_fdf_minimizer *s);
+gsl_multimin_fdfminimizer_restart(gsl_multimin_fdfminimizer *s);
 
 int
-gsl_multimin_fdf_minimizer_step_with_value(gsl_multimin_fdf_minimizer *s,
+gsl_multimin_fdfminimizer_step_with_value(gsl_multimin_fdfminimizer *s,
 					   double step,double f_at_end);
 
-extern const gsl_multimin_fdf_minimizer_type *gsl_multimin_fdf_minimizer_steepest_descent;
+extern const gsl_multimin_fdfminimizer_type *gsl_multimin_fdfminimizer_steepest_descent;
 
-extern const gsl_multimin_fdf_minimizer_type *gsl_multimin_fdf_minimizer_conjugate_pr;
+extern const gsl_multimin_fdfminimizer_type *gsl_multimin_fdfminimizer_conjugate_pr;
 
-extern const gsl_multimin_fdf_minimizer_type *gsl_multimin_fdf_minimizer_conjugate_fr;
+extern const gsl_multimin_fdfminimizer_type *gsl_multimin_fdfminimizer_conjugate_fr;
 
-extern const gsl_multimin_fdf_minimizer_type *gsl_multimin_fdf_minimizer_vector_bfgs;
+extern const gsl_multimin_fdfminimizer_type *gsl_multimin_fdfminimizer_vector_bfgs;
 
 int
 gsl_multimin_test_gradient_sqr_norm(gsl_multimin_fdf_history *h,double epsabs);

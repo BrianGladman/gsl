@@ -41,7 +41,7 @@ const unsigned int MAX_ITERATIONS = 100000;
 int
 test_fdf(const char * desc, gsl_multimin_function_fdf *f,
 	 initpt_function initpt,
-	 const gsl_multimin_fdf_minimizer_type *T,
+	 const gsl_multimin_fdfminimizer_type *T,
 	 int restarting_period)
 {
   size_t iterations = 0;
@@ -53,13 +53,13 @@ test_fdf(const char * desc, gsl_multimin_function_fdf *f,
   
   gsl_vector *x = gsl_vector_alloc (f->n);
 
-  gsl_multimin_fdf_minimizer *s;
+  gsl_multimin_fdfminimizer *s;
 
   gsl_ieee_env_setup ();
 
   (*initpt) (x);
 
-  s = gsl_multimin_fdf_minimizer_alloc(T,f,x,
+  s = gsl_multimin_fdfminimizer_alloc(T,f,x,
 				       gsl_min_find_bracket,
 				       gsl_min_fminimizer_brent);
 #ifdef DEBUG
@@ -69,8 +69,8 @@ test_fdf(const char * desc, gsl_multimin_function_fdf *f,
   do 
     {
       iterations++;
-      status = gsl_multimin_fdf_minimizer_next_direction(s);
-      status = gsl_multimin_fdf_minimizer_bracket(s,10.0,50);
+      status = gsl_multimin_fdfminimizer_next_direction(s);
+      status = gsl_multimin_fdfminimizer_bracket(s,10.0,50);
       if (status == GSL_FAILURE) 
 	{
 	  if (just_started)
@@ -82,7 +82,7 @@ test_fdf(const char * desc, gsl_multimin_function_fdf *f,
 #ifdef DEBUG
 	      printf("%i: automatic restart\n",iterations);
 #endif
-	      gsl_multimin_fdf_minimizer_restart(s);
+	      gsl_multimin_fdfminimizer_restart(s);
 	      just_started = 1;
 	      status = GSL_CONTINUE;
 	      continue;
@@ -94,7 +94,7 @@ test_fdf(const char * desc, gsl_multimin_function_fdf *f,
 	  do 
 	    {
 	      iterations_line++;
-	      status = gsl_multimin_fdf_minimizer_iterate(s);
+	      status = gsl_multimin_fdfminimizer_iterate(s);
 	      
 	      minimum = gsl_min_fminimizer_minimum(s->line_search);
 	      a = gsl_min_fminimizer_x_lower(s->line_search);
@@ -109,7 +109,7 @@ test_fdf(const char * desc, gsl_multimin_function_fdf *f,
 	    }
 	  while (status == GSL_CONTINUE && iterations_line < MAX_ITERATIONS_LINE);
 	  total_i_line += iterations_line;
-	  gsl_multimin_fdf_minimizer_best_step(s);
+	  gsl_multimin_fdfminimizer_best_step(s);
 	}
 
 #ifdef DEBUG
@@ -124,7 +124,7 @@ test_fdf(const char * desc, gsl_multimin_function_fdf *f,
       /* This is not mandatory */
       if (iterations%restarting_period == 0)
 	{
-	  gsl_multimin_fdf_minimizer_restart(s);
+	  gsl_multimin_fdfminimizer_restart(s);
 	  just_started = 1;
 	}
       else
@@ -138,7 +138,7 @@ test_fdf(const char * desc, gsl_multimin_function_fdf *f,
 	   "%s (restarting every %d), on %s: %i iterations (%d), f(x)=%g",
 	   T->name,restarting_period,desc,iterations,total_i_line,
 	   s->line_search->f_minimum);
-  gsl_multimin_fdf_minimizer_free(s);
+  gsl_multimin_fdfminimizer_free(s);
   gsl_vector_free(x);
 
   return status;
@@ -147,13 +147,13 @@ test_fdf(const char * desc, gsl_multimin_function_fdf *f,
 int
 main (void)
 {
-  const gsl_multimin_fdf_minimizer_type *fdfminimizers[5];
-  const gsl_multimin_fdf_minimizer_type ** T;
+  const gsl_multimin_fdfminimizer_type *fdfminimizers[5];
+  const gsl_multimin_fdfminimizer_type ** T;
 
-  fdfminimizers[0] = gsl_multimin_fdf_minimizer_steepest_descent;
-  fdfminimizers[1] = gsl_multimin_fdf_minimizer_conjugate_pr;
-  fdfminimizers[2] = gsl_multimin_fdf_minimizer_conjugate_fr;
-  fdfminimizers[3] = gsl_multimin_fdf_minimizer_vector_bfgs;
+  fdfminimizers[0] = gsl_multimin_fdfminimizer_steepest_descent;
+  fdfminimizers[1] = gsl_multimin_fdfminimizer_conjugate_pr;
+  fdfminimizers[2] = gsl_multimin_fdfminimizer_conjugate_fr;
+  fdfminimizers[3] = gsl_multimin_fdfminimizer_vector_bfgs;
   fdfminimizers[4] = 0;
 
   T = fdfminimizers;

@@ -132,7 +132,7 @@ vector_bfgs_free(void *vstate)
   gsl_vector_free(state->p);
 }
 
-static const gsl_multimin_fdf_minimizer_type vector_bfgs_type =
+static const gsl_multimin_fdfminimizer_type vector_bfgs_type =
 {"vector_bfgs",			/* name */
  sizeof (vector_bfgs_state_t),
  &vector_bfgs_alloc,
@@ -140,5 +140,5 @@ static const gsl_multimin_fdf_minimizer_type vector_bfgs_type =
  &vector_bfgs_direction,
  &vector_bfgs_free};
 
-const gsl_multimin_fdf_minimizer_type *gsl_multimin_fdf_minimizer_vector_bfgs = &vector_bfgs_type;
+const gsl_multimin_fdfminimizer_type *gsl_multimin_fdfminimizer_vector_bfgs = &vector_bfgs_type;
 
