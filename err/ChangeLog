@@ -1,3 +1,8 @@
+Tue Nov 10 15:55:56 1998  Brian Gough  <bjg@vvv.lanl.gov>
+
+	* test_results.c (gsl_test_abs), gsl_test.h: added gsl_test_abs
+ 	for absolute errors, like gsl_test_rel for relative errors
+
 Fri Oct 23 12:51:01 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
 	* test_results.c (gsl_test_rel): print a shorter "observed vs

@@ -126,6 +126,66 @@ gsl_test_rel (double result, double expected, double relative_error,
     }
 }
 
+void
+gsl_test_abs (double result, double expected, double absolute_error,
+	      const char *test_description,...)
+{
+  int status ;
+
+  status = fabs(result-expected) > absolute_error ;
+
+  tests++;
+
+  if (status == 0)
+    {
+      passed++;
+      if (verbose)
+	printf ("PASS: ");
+    }
+  else
+    {
+      failed++;
+      if (verbose)
+	printf ("FAIL: ");
+      
+    }
+
+  if (verbose)
+    {
+
+#ifdef HAVE_VPRINTF
+      va_list ap;
+
+#if __STDC__
+      va_start (ap, test_description);
+#else
+      va_start (ap);
+#endif
+      vprintf (test_description, ap);
+      va_end (ap);
+#endif
+      if (status == 0)
+	{
+	  if (strlen(test_description) < 45)
+	    {
+	      printf(" (%g observed vs %g expected)", result, expected) ;
+	    }
+	  else
+	    {
+	      printf(" (%g obs vs %g exp)", result, expected) ;
+	    }
+	}
+      else 
+	{
+	  printf(" (%.18g observed vs %.18g expected)", result, expected) ;
+	}
+
+      printf ("\n") ;
+      fflush (stdout);
+    }
+}
+
+
 
 void
 gsl_test_int (int result, int expected, const char *test_description,...)
