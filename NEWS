@@ -1,4 +1,10 @@
-* What will be new in gsl-0.9:
+* What is new in gsl-0.9:
+
+** There is a new system of vector and matrix views.  Any code using
+vector and matrix views will need to be updated.  
+
+** The order of arguments of the view functions involving strides have
+been changed to be consistent with the rest of the library.
 
 ** The ode solvers have been reorganized.
 
@@ -6,7 +12,16 @@
 hermitian matrices.
 
 ** The linear algebra directory now includes functions for computing
-symmetric tridiagonal decompositions
+symmetric tridiagonal decompositions and bidiagonal decompositions.
+
+** The svd routines now include the Golub-Reinsch and Modified
+Golub-Reinsch algorithms in addition to the Jacobi algorithm.
+
+** The interpolation directory has been reorganized and a higher-level
+"spline" interface has been added which simplifies the handling of
+interpolation arguments.
+
+** IEEE support is now available on OpenBSD.
 
 * What was new in gsl-0.8:
 
