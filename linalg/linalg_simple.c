@@ -593,7 +593,9 @@ gsl_la_eigen_jacobi_impl(gsl_matrix * a,
 
 
 int
-gsl_la_invert_jacobi_impl(const gsl_matrix * a, gsl_matrix * ainv, unsigned int max_rot)
+gsl_la_invert_jacobi_impl(const gsl_matrix * a,
+                          gsl_matrix * ainv,
+                          unsigned int max_rot)
 {
   if(a == 0 || ainv == 0) {
     return GSL_EFAULT;
