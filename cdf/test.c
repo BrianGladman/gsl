@@ -872,13 +872,13 @@ main (void)
   TEST(gsl_cdf_fdist_P, (100000,5.3,2.7), 9.999997597592e-01, TEST_TOL6);
   TEST(gsl_cdf_fdist_P, (1000000,5.3,2.7), 9.999999892687e-01, TEST_TOL6);
   TEST(gsl_cdf_fdist_P, (10000000,5.3,2.7), 9.999999995207e-01, TEST_TOL6);
-  TEST(gsl_cdf_fdist_P, (100000000,5.3,2.7), 9.999999999786e-01, TEST_TOL6);
-  TEST(gsl_cdf_fdist_P, (1000000000,5.3,2.7), 9.999999999990e-01, TEST_TOL6);
-  TEST(gsl_cdf_fdist_P, (10000000000,5.3,2.7), 1.000000000000e-00, TEST_TOL6);
+  TEST(gsl_cdf_fdist_P, (1e8,5.3,2.7), 9.999999999786e-01, TEST_TOL6);
+  TEST(gsl_cdf_fdist_P, (1e9,5.3,2.7), 9.999999999990e-01, TEST_TOL6);
+  TEST(gsl_cdf_fdist_P, (1e10,5.3,2.7), 1.000000000000e-00, TEST_TOL6);
 
-  TEST(gsl_cdf_fdist_Q, (10000000000,5.3,2.7), 4.272202262298e-14, TEST_TOL6);
-  TEST(gsl_cdf_fdist_Q, (1000000000,5.3,2.7), 9.564269502770e-13, TEST_TOL6);
-  TEST(gsl_cdf_fdist_Q, (100000000,5.3,2.7), 2.141173208523e-11, TEST_TOL6);
+  TEST(gsl_cdf_fdist_Q, (1e10,5.3,2.7), 4.272202262298e-14, TEST_TOL6);
+  TEST(gsl_cdf_fdist_Q, (1e9,5.3,2.7), 9.564269502770e-13, TEST_TOL6);
+  TEST(gsl_cdf_fdist_Q, (1e8,5.3,2.7), 2.141173208523e-11, TEST_TOL6);
   TEST(gsl_cdf_fdist_Q, (10000000,5.3,2.7), 4.793489218238e-10, TEST_TOL6);
   TEST(gsl_cdf_fdist_Q, (1000000,5.3,2.7), 1.073127433440e-08, TEST_TOL6);
   TEST(gsl_cdf_fdist_Q, (100000,5.3,2.7), 2.402407758939e-07, TEST_TOL6);
@@ -899,11 +899,11 @@ main (void)
   TEST(gsl_cdf_fdist_Q, (1.00000000000000004e-10,5.3,2.7), 1.000000000000e+00, TEST_TOL6);
   TEST(gsl_cdf_fdist_Q, (0,5.3,2.7), 1.000000000000e+00, TEST_TOL6);
 
-  TEST(gsl_cdf_cauchy_P, (-10000000000,1.3), 4.138028520389e-11, TEST_TOL6);
+  TEST(gsl_cdf_cauchy_P, (-1e10,1.3), 4.138028520389e-11, TEST_TOL6);
   TEST(gsl_cdf_cauchy_Pinv, (4.13802852038927895e-11,1.3), -1.000000000000e+10, TEST_TOL6);
-  TEST(gsl_cdf_cauchy_P, (-1000000000,1.3), 4.138028520389e-10, TEST_TOL6);
+  TEST(gsl_cdf_cauchy_P, (-1e9,1.3), 4.138028520389e-10, TEST_TOL6);
   TEST(gsl_cdf_cauchy_Pinv, (4.13802852038927973e-10,1.3), -1.000000000000e+09, TEST_TOL6);
-  TEST(gsl_cdf_cauchy_P, (-100000000,1.3), 4.138028520389e-09, TEST_TOL6);
+  TEST(gsl_cdf_cauchy_P, (-1e8,1.3), 4.138028520389e-09, TEST_TOL6);
   TEST(gsl_cdf_cauchy_Pinv, (4.1380285203892787e-09,1.3), -1.000000000000e+08, TEST_TOL6);
   TEST(gsl_cdf_cauchy_P, (-10000000,1.3), 4.138028520389e-08, TEST_TOL6);
   TEST(gsl_cdf_cauchy_Pinv, (4.13802852038925487e-08,1.3), -1.000000000000e+07, TEST_TOL6);
@@ -961,15 +961,15 @@ main (void)
   TEST(gsl_cdf_cauchy_P, (100000,1.3), 9.999958619715e-01, TEST_TOL6);
   TEST(gsl_cdf_cauchy_P, (1000000,1.3), 9.999995861971e-01, TEST_TOL6);
   TEST(gsl_cdf_cauchy_P, (10000000,1.3), 9.999999586197e-01, TEST_TOL6);
-  TEST(gsl_cdf_cauchy_P, (100000000,1.3), 9.999999958620e-01, TEST_TOL6);
-  TEST(gsl_cdf_cauchy_P, (1000000000,1.3), 9.999999995862e-01, TEST_TOL6);
-  TEST(gsl_cdf_cauchy_P, (10000000000,1.3), 9.999999999586e-01, TEST_TOL6);
+  TEST(gsl_cdf_cauchy_P, (1e8,1.3), 9.999999958620e-01, TEST_TOL6);
+  TEST(gsl_cdf_cauchy_P, (1e9,1.3), 9.999999995862e-01, TEST_TOL6);
+  TEST(gsl_cdf_cauchy_P, (1e10,1.3), 9.999999999586e-01, TEST_TOL6);
 
-  TEST(gsl_cdf_cauchy_Q, (10000000000,1.3), 4.138028520389e-11, TEST_TOL6);
+  TEST(gsl_cdf_cauchy_Q, (1e10,1.3), 4.138028520389e-11, TEST_TOL6);
   TEST(gsl_cdf_cauchy_Qinv, (4.13802852038927895e-11,1.3), 1.000000000000e+10, TEST_TOL6);
-  TEST(gsl_cdf_cauchy_Q, (1000000000,1.3), 4.138028520389e-10, TEST_TOL6);
+  TEST(gsl_cdf_cauchy_Q, (1e9,1.3), 4.138028520389e-10, TEST_TOL6);
   TEST(gsl_cdf_cauchy_Qinv, (4.13802852038927973e-10,1.3), 1.000000000000e+09, TEST_TOL6);
-  TEST(gsl_cdf_cauchy_Q, (100000000,1.3), 4.138028520389e-09, TEST_TOL6);
+  TEST(gsl_cdf_cauchy_Q, (1e8,1.3), 4.138028520389e-09, TEST_TOL6);
   TEST(gsl_cdf_cauchy_Qinv, (4.1380285203892787e-09,1.3), 1.000000000000e+08, TEST_TOL6);
   TEST(gsl_cdf_cauchy_Q, (10000000,1.3), 4.138028520389e-08, TEST_TOL6);
   TEST(gsl_cdf_cauchy_Qinv, (4.13802852038925487e-08,1.3), 1.000000000000e+07, TEST_TOL6);
@@ -1027,13 +1027,13 @@ main (void)
   TEST(gsl_cdf_cauchy_Q, (-100000,1.3), 9.999958619715e-01, TEST_TOL6);
   TEST(gsl_cdf_cauchy_Q, (-1000000,1.3), 9.999995861971e-01, TEST_TOL6);
   TEST(gsl_cdf_cauchy_Q, (-10000000,1.3), 9.999999586197e-01, TEST_TOL6);
-  TEST(gsl_cdf_cauchy_Q, (-100000000,1.3), 9.999999958620e-01, TEST_TOL6);
-  TEST(gsl_cdf_cauchy_Q, (-1000000000,1.3), 9.999999995862e-01, TEST_TOL6);
-  TEST(gsl_cdf_cauchy_Q, (-10000000000,1.3), 9.999999999586e-01, TEST_TOL6);
+  TEST(gsl_cdf_cauchy_Q, (-1e8,1.3), 9.999999958620e-01, TEST_TOL6);
+  TEST(gsl_cdf_cauchy_Q, (-1e9,1.3), 9.999999995862e-01, TEST_TOL6);
+  TEST(gsl_cdf_cauchy_Q, (-1e10,1.3), 9.999999999586e-01, TEST_TOL6);
 
-  TEST(gsl_cdf_gaussian_P, (-10000000000,1.3), 0.000000000000e+00, TEST_TOL6);
-  TEST(gsl_cdf_gaussian_P, (-1000000000,1.3), 0.000000000000e+00, TEST_TOL6);
-  TEST(gsl_cdf_gaussian_P, (-100000000,1.3), 0.000000000000e+00, TEST_TOL6);
+  TEST(gsl_cdf_gaussian_P, (-1e10,1.3), 0.000000000000e+00, TEST_TOL6);
+  TEST(gsl_cdf_gaussian_P, (-1e9,1.3), 0.000000000000e+00, TEST_TOL6);
+  TEST(gsl_cdf_gaussian_P, (-1e8,1.3), 0.000000000000e+00, TEST_TOL6);
   TEST(gsl_cdf_gaussian_P, (-10000000,1.3), 0.000000000000e+00, TEST_TOL6);
   TEST(gsl_cdf_gaussian_P, (-1000000,1.3), 0.000000000000e+00, TEST_TOL6);
   TEST(gsl_cdf_gaussian_P, (-100000,1.3), 0.000000000000e+00, TEST_TOL6);
@@ -1081,13 +1081,13 @@ main (void)
   TEST(gsl_cdf_gaussian_P, (100000,1.3), 1.000000000000e+00, TEST_TOL6);
   TEST(gsl_cdf_gaussian_P, (1000000,1.3), 1.000000000000e+00, TEST_TOL6);
   TEST(gsl_cdf_gaussian_P, (10000000,1.3), 1.000000000000e+00, TEST_TOL6);
-  TEST(gsl_cdf_gaussian_P, (100000000,1.3), 1.000000000000e+00, TEST_TOL6);
-  TEST(gsl_cdf_gaussian_P, (1000000000,1.3), 1.000000000000e+00, TEST_TOL6);
-  TEST(gsl_cdf_gaussian_P, (10000000000,1.3), 1.000000000000e+00, TEST_TOL6);
+  TEST(gsl_cdf_gaussian_P, (1e8,1.3), 1.000000000000e+00, TEST_TOL6);
+  TEST(gsl_cdf_gaussian_P, (1e9,1.3), 1.000000000000e+00, TEST_TOL6);
+  TEST(gsl_cdf_gaussian_P, (1e10,1.3), 1.000000000000e+00, TEST_TOL6);
 
-  TEST(gsl_cdf_gaussian_Q, (10000000000,1.3), 0.000000000000e+00, TEST_TOL6);
-  TEST(gsl_cdf_gaussian_Q, (1000000000,1.3), 0.000000000000e+00, TEST_TOL6);
-  TEST(gsl_cdf_gaussian_Q, (100000000,1.3), 0.000000000000e+00, TEST_TOL6);
+  TEST(gsl_cdf_gaussian_Q, (1e10,1.3), 0.000000000000e+00, TEST_TOL6);
+  TEST(gsl_cdf_gaussian_Q, (1e9,1.3), 0.000000000000e+00, TEST_TOL6);
+  TEST(gsl_cdf_gaussian_Q, (1e8,1.3), 0.000000000000e+00, TEST_TOL6);
   TEST(gsl_cdf_gaussian_Q, (10000000,1.3), 0.000000000000e+00, TEST_TOL6);
   TEST(gsl_cdf_gaussian_Q, (1000000,1.3), 0.000000000000e+00, TEST_TOL6);
   TEST(gsl_cdf_gaussian_Q, (100000,1.3), 0.000000000000e+00, TEST_TOL6);
@@ -1135,13 +1135,13 @@ main (void)
   TEST(gsl_cdf_gaussian_Q, (-100000,1.3), 1.000000000000e+00, TEST_TOL6);
   TEST(gsl_cdf_gaussian_Q, (-1000000,1.3), 1.000000000000e+00, TEST_TOL6);
   TEST(gsl_cdf_gaussian_Q, (-10000000,1.3), 1.000000000000e+00, TEST_TOL6);
-  TEST(gsl_cdf_gaussian_Q, (-100000000,1.3), 1.000000000000e+00, TEST_TOL6);
-  TEST(gsl_cdf_gaussian_Q, (-1000000000,1.3), 1.000000000000e+00, TEST_TOL6);
-  TEST(gsl_cdf_gaussian_Q, (-10000000000,1.3), 1.000000000000e+00, TEST_TOL6);
+  TEST(gsl_cdf_gaussian_Q, (-1e8,1.3), 1.000000000000e+00, TEST_TOL6);
+  TEST(gsl_cdf_gaussian_Q, (-1e9,1.3), 1.000000000000e+00, TEST_TOL6);
+  TEST(gsl_cdf_gaussian_Q, (-1e10,1.3), 1.000000000000e+00, TEST_TOL6);
 
-  TEST(gsl_cdf_laplace_P, (-10000000000,1.3), 0.000000000000e+00, TEST_TOL6);
-  TEST(gsl_cdf_laplace_P, (-1000000000,1.3), 0.000000000000e+00, TEST_TOL6);
-  TEST(gsl_cdf_laplace_P, (-100000000,1.3), 0.000000000000e+00, TEST_TOL6);
+  TEST(gsl_cdf_laplace_P, (-1e10,1.3), 0.000000000000e+00, TEST_TOL6);
+  TEST(gsl_cdf_laplace_P, (-1e9,1.3), 0.000000000000e+00, TEST_TOL6);
+  TEST(gsl_cdf_laplace_P, (-1e8,1.3), 0.000000000000e+00, TEST_TOL6);
   TEST(gsl_cdf_laplace_P, (-10000000,1.3), 0.000000000000e+00, TEST_TOL6);
   TEST(gsl_cdf_laplace_P, (-1000000,1.3), 0.000000000000e+00, TEST_TOL6);
   TEST(gsl_cdf_laplace_P, (-100000,1.3), 0.000000000000e+00, TEST_TOL6);
@@ -1191,13 +1191,13 @@ main (void)
   TEST(gsl_cdf_laplace_P, (100000,1.3), 1.000000000000e+00, TEST_TOL6);
   TEST(gsl_cdf_laplace_P, (1000000,1.3), 1.000000000000e+00, TEST_TOL6);
   TEST(gsl_cdf_laplace_P, (10000000,1.3), 1.000000000000e+00, TEST_TOL6);
-  TEST(gsl_cdf_laplace_P, (100000000,1.3), 1.000000000000e+00, TEST_TOL6);
-  TEST(gsl_cdf_laplace_P, (1000000000,1.3), 1.000000000000e+00, TEST_TOL6);
-  TEST(gsl_cdf_laplace_P, (10000000000,1.3), 1.000000000000e+00, TEST_TOL6);
+  TEST(gsl_cdf_laplace_P, (1e8,1.3), 1.000000000000e+00, TEST_TOL6);
+  TEST(gsl_cdf_laplace_P, (1e9,1.3), 1.000000000000e+00, TEST_TOL6);
+  TEST(gsl_cdf_laplace_P, (1e10,1.3), 1.000000000000e+00, TEST_TOL6);
 
-  TEST(gsl_cdf_laplace_Q, (10000000000,1.3), 0.000000000000e+00, TEST_TOL6);
-  TEST(gsl_cdf_laplace_Q, (1000000000,1.3), 0.000000000000e+00, TEST_TOL6);
-  TEST(gsl_cdf_laplace_Q, (100000000,1.3), 0.000000000000e+00, TEST_TOL6);
+  TEST(gsl_cdf_laplace_Q, (1e10,1.3), 0.000000000000e+00, TEST_TOL6);
+  TEST(gsl_cdf_laplace_Q, (1e9,1.3), 0.000000000000e+00, TEST_TOL6);
+  TEST(gsl_cdf_laplace_Q, (1e8,1.3), 0.000000000000e+00, TEST_TOL6);
   TEST(gsl_cdf_laplace_Q, (10000000,1.3), 0.000000000000e+00, TEST_TOL6);
   TEST(gsl_cdf_laplace_Q, (1000000,1.3), 0.000000000000e+00, TEST_TOL6);
   TEST(gsl_cdf_laplace_Q, (100000,1.3), 0.000000000000e+00, TEST_TOL6);
@@ -1247,9 +1247,9 @@ main (void)
   TEST(gsl_cdf_laplace_Q, (-100000,1.3), 1.000000000000e+00, TEST_TOL6);
   TEST(gsl_cdf_laplace_Q, (-1000000,1.3), 1.000000000000e+00, TEST_TOL6);
   TEST(gsl_cdf_laplace_Q, (-10000000,1.3), 1.000000000000e+00, TEST_TOL6);
-  TEST(gsl_cdf_laplace_Q, (-100000000,1.3), 1.000000000000e+00, TEST_TOL6);
-  TEST(gsl_cdf_laplace_Q, (-1000000000,1.3), 1.000000000000e+00, TEST_TOL6);
-  TEST(gsl_cdf_laplace_Q, (-10000000000,1.3), 1.000000000000e+00, TEST_TOL6);
+  TEST(gsl_cdf_laplace_Q, (-1e8,1.3), 1.000000000000e+00, TEST_TOL6);
+  TEST(gsl_cdf_laplace_Q, (-1e9,1.3), 1.000000000000e+00, TEST_TOL6);
+  TEST(gsl_cdf_laplace_Q, (-1e10,1.3), 1.000000000000e+00, TEST_TOL6);
 
   TEST(gsl_cdf_rayleigh_P, (0,1.3), 0.000000000000e+00, TEST_TOL6);
   TEST(gsl_cdf_rayleigh_P, (1.00000000000000004e-10,1.3), 2.958579881657e-21, TEST_TOL6);
@@ -1281,13 +1281,13 @@ main (void)
   TEST(gsl_cdf_rayleigh_P, (100000,1.3), 1.000000000000e+00, TEST_TOL6);
   TEST(gsl_cdf_rayleigh_P, (1000000,1.3), 1.000000000000e+00, TEST_TOL6);
   TEST(gsl_cdf_rayleigh_P, (10000000,1.3), 1.000000000000e+00, TEST_TOL6);
-  TEST(gsl_cdf_rayleigh_P, (100000000,1.3), 1.000000000000e+00, TEST_TOL6);
-  TEST(gsl_cdf_rayleigh_P, (1000000000,1.3), 1.000000000000e+00, TEST_TOL6);
-  TEST(gsl_cdf_rayleigh_P, (10000000000,1.3), 1.000000000000e+00, TEST_TOL6);
+  TEST(gsl_cdf_rayleigh_P, (1e8,1.3), 1.000000000000e+00, TEST_TOL6);
+  TEST(gsl_cdf_rayleigh_P, (1e9,1.3), 1.000000000000e+00, TEST_TOL6);
+  TEST(gsl_cdf_rayleigh_P, (1e10,1.3), 1.000000000000e+00, TEST_TOL6);
 
-  TEST(gsl_cdf_rayleigh_Q, (10000000000,1.3), 0.000000000000e+00, TEST_TOL6);
-  TEST(gsl_cdf_rayleigh_Q, (1000000000,1.3), 0.000000000000e+00, TEST_TOL6);
-  TEST(gsl_cdf_rayleigh_Q, (100000000,1.3), 0.000000000000e+00, TEST_TOL6);
+  TEST(gsl_cdf_rayleigh_Q, (1e10,1.3), 0.000000000000e+00, TEST_TOL6);
+  TEST(gsl_cdf_rayleigh_Q, (1e9,1.3), 0.000000000000e+00, TEST_TOL6);
+  TEST(gsl_cdf_rayleigh_Q, (1e8,1.3), 0.000000000000e+00, TEST_TOL6);
   TEST(gsl_cdf_rayleigh_Q, (10000000,1.3), 0.000000000000e+00, TEST_TOL6);
   TEST(gsl_cdf_rayleigh_Q, (1000000,1.3), 0.000000000000e+00, TEST_TOL6);
   TEST(gsl_cdf_rayleigh_Q, (100000,1.3), 0.000000000000e+00, TEST_TOL6);
@@ -1332,13 +1332,13 @@ main (void)
   TEST(gsl_cdf_flat_P, (100000,1.3,750.0), 1.000000000000e+00, TEST_TOL6);
   TEST(gsl_cdf_flat_P, (1000000,1.3,750.0), 1.000000000000e+00, TEST_TOL6);
   TEST(gsl_cdf_flat_P, (10000000,1.3,750.0), 1.000000000000e+00, TEST_TOL6);
-  TEST(gsl_cdf_flat_P, (100000000,1.3,750.0), 1.000000000000e+00, TEST_TOL6);
-  TEST(gsl_cdf_flat_P, (1000000000,1.3,750.0), 1.000000000000e+00, TEST_TOL6);
-  TEST(gsl_cdf_flat_P, (10000000000,1.3,750.0), 1.000000000000e+00, TEST_TOL6);
+  TEST(gsl_cdf_flat_P, (1e8,1.3,750.0), 1.000000000000e+00, TEST_TOL6);
+  TEST(gsl_cdf_flat_P, (1e9,1.3,750.0), 1.000000000000e+00, TEST_TOL6);
+  TEST(gsl_cdf_flat_P, (1e10,1.3,750.0), 1.000000000000e+00, TEST_TOL6);
 
-  TEST(gsl_cdf_flat_Q, (10000000000,1.3,750.0), 0.000000000000e+00, TEST_TOL6);
-  TEST(gsl_cdf_flat_Q, (1000000000,1.3,750.0), 0.000000000000e+00, TEST_TOL6);
-  TEST(gsl_cdf_flat_Q, (100000000,1.3,750.0), 0.000000000000e+00, TEST_TOL6);
+  TEST(gsl_cdf_flat_Q, (1e10,1.3,750.0), 0.000000000000e+00, TEST_TOL6);
+  TEST(gsl_cdf_flat_Q, (1e9,1.3,750.0), 0.000000000000e+00, TEST_TOL6);
+  TEST(gsl_cdf_flat_Q, (1e8,1.3,750.0), 0.000000000000e+00, TEST_TOL6);
   TEST(gsl_cdf_flat_Q, (10000000,1.3,750.0), 0.000000000000e+00, TEST_TOL6);
   TEST(gsl_cdf_flat_Q, (1000000,1.3,750.0), 0.000000000000e+00, TEST_TOL6);
   TEST(gsl_cdf_flat_Q, (100000,1.3,750.0), 0.000000000000e+00, TEST_TOL6);
@@ -1396,15 +1396,15 @@ main (void)
   TEST(gsl_cdf_lognormal_Pinv, (0.999922389725085625,1.3,2.7), 1.000000000000e+05, TEST_TOL6);
   TEST(gsl_cdf_lognormal_P, (1000000,1.3,2.7), 9.999982185389e-01, TEST_TOL6);
   TEST(gsl_cdf_lognormal_P, (10000000,1.3,2.7), 9.999999796956e-01, TEST_TOL6);
-  TEST(gsl_cdf_lognormal_P, (100000000,1.3,2.7), 9.999999998859e-01, TEST_TOL6);
-  TEST(gsl_cdf_lognormal_P, (1000000000,1.3,2.7), 9.999999999997e-01, TEST_TOL6);
-  TEST(gsl_cdf_lognormal_P, (10000000000,1.3,2.7), 1.000000000000e-00, TEST_TOL6);
+  TEST(gsl_cdf_lognormal_P, (1e8,1.3,2.7), 9.999999998859e-01, TEST_TOL6);
+  TEST(gsl_cdf_lognormal_P, (1e9,1.3,2.7), 9.999999999997e-01, TEST_TOL6);
+  TEST(gsl_cdf_lognormal_P, (1e10,1.3,2.7), 1.000000000000e-00, TEST_TOL6);
 
-  TEST(gsl_cdf_lognormal_Q, (10000000000,1.3,2.7), 4.255893513650e-16, TEST_TOL6);
+  TEST(gsl_cdf_lognormal_Q, (1e10,1.3,2.7), 4.255893513650e-16, TEST_TOL6);
   TEST(gsl_cdf_lognormal_Qinv, (4.25589351365027652e-16,1.3,2.7), 1.000000000000e+10, TEST_TOL6);
-  TEST(gsl_cdf_lognormal_Q, (1000000000,1.3,2.7), 3.150574023842e-13, TEST_TOL6);
+  TEST(gsl_cdf_lognormal_Q, (1e9,1.3,2.7), 3.150574023842e-13, TEST_TOL6);
   TEST(gsl_cdf_lognormal_Qinv, (3.15057402384182958e-13,1.3,2.7), 1.000000000000e+09, TEST_TOL6);
-  TEST(gsl_cdf_lognormal_Q, (100000000,1.3,2.7), 1.141445550080e-10, TEST_TOL6);
+  TEST(gsl_cdf_lognormal_Q, (1e8,1.3,2.7), 1.141445550080e-10, TEST_TOL6);
   TEST(gsl_cdf_lognormal_Qinv, (1.14144555008021072e-10,1.3,2.7), 1.000000000000e+08, TEST_TOL6);
   TEST(gsl_cdf_lognormal_Q, (10000000,1.3,2.7), 2.030439602858e-08, TEST_TOL6);
   TEST(gsl_cdf_lognormal_Qinv, (2.03043960285769145e-08,1.3,2.7), 1.000000000000e+07, TEST_TOL6);
@@ -1468,13 +1468,13 @@ main (void)
   TEST(gsl_cdf_gamma_P, (100000,1.3,2.7), 1.000000000000e-00, TEST_TOL6);
   TEST(gsl_cdf_gamma_P, (1000000,1.3,2.7), 1.000000000000e-00, TEST_TOL6);
   TEST(gsl_cdf_gamma_P, (10000000,1.3,2.7), 1.000000000000e-00, TEST_TOL6);
-  TEST(gsl_cdf_gamma_P, (100000000,1.3,2.7), 1.000000000000e-00, TEST_TOL6);
-  TEST(gsl_cdf_gamma_P, (1000000000,1.3,2.7), 1.000000000000e-00, TEST_TOL6);
-  TEST(gsl_cdf_gamma_P, (10000000000,1.3,2.7), 1.000000000000e-00, TEST_TOL6);
+  TEST(gsl_cdf_gamma_P, (1e8,1.3,2.7), 1.000000000000e-00, TEST_TOL6);
+  TEST(gsl_cdf_gamma_P, (1e9,1.3,2.7), 1.000000000000e-00, TEST_TOL6);
+  TEST(gsl_cdf_gamma_P, (1e10,1.3,2.7), 1.000000000000e-00, TEST_TOL6);
 
-  TEST(gsl_cdf_gamma_Q, (10000000000,1.3,2.7), 0.000000000000e+00, TEST_TOL6);
-  TEST(gsl_cdf_gamma_Q, (1000000000,1.3,2.7), 0.000000000000e+00, TEST_TOL6);
-  TEST(gsl_cdf_gamma_Q, (100000000,1.3,2.7), 0.000000000000e+00, TEST_TOL6);
+  TEST(gsl_cdf_gamma_Q, (1e10,1.3,2.7), 0.000000000000e+00, TEST_TOL6);
+  TEST(gsl_cdf_gamma_Q, (1e9,1.3,2.7), 0.000000000000e+00, TEST_TOL6);
+  TEST(gsl_cdf_gamma_Q, (1e8,1.3,2.7), 0.000000000000e+00, TEST_TOL6);
   TEST(gsl_cdf_gamma_Q, (10000000,1.3,2.7), 0.000000000000e+00, TEST_TOL6);
   TEST(gsl_cdf_gamma_Q, (1000000,1.3,2.7), 0.000000000000e+00, TEST_TOL6);
   TEST(gsl_cdf_gamma_Q, (100000,1.3,2.7), 0.000000000000e+00, TEST_TOL6);
@@ -1534,12 +1534,12 @@ main (void)
   TEST(gsl_cdf_gamma_P, (100000,1.3,123.0), 1.000000000000e+00, TEST_TOL6);
   TEST(gsl_cdf_gamma_P, (1000000,1.3,123.0), 1.000000000000e+00, TEST_TOL6);
   TEST(gsl_cdf_gamma_P, (10000000,1.3,123.0), 1.000000000000e+00, TEST_TOL6);
-  TEST(gsl_cdf_gamma_P, (100000000,1.3,123.0), 1.000000000000e+00, TEST_TOL6);
-  TEST(gsl_cdf_gamma_P, (1000000000,1.3,123.0), 1.000000000000e+00, TEST_TOL6);
-  TEST(gsl_cdf_gamma_P, (10000000000,1.3,123.0), 1.000000000000e+00, TEST_TOL6);
-  TEST(gsl_cdf_gamma_Q, (10000000000,1.3,123.0), 0.000000000000e+00, TEST_TOL6);
-  TEST(gsl_cdf_gamma_Q, (1000000000,1.3,123.0), 0.000000000000e+00, TEST_TOL6);
-  TEST(gsl_cdf_gamma_Q, (100000000,1.3,123.0), 0.000000000000e+00, TEST_TOL6);
+  TEST(gsl_cdf_gamma_P, (1e8,1.3,123.0), 1.000000000000e+00, TEST_TOL6);
+  TEST(gsl_cdf_gamma_P, (1e9,1.3,123.0), 1.000000000000e+00, TEST_TOL6);
+  TEST(gsl_cdf_gamma_P, (1e10,1.3,123.0), 1.000000000000e+00, TEST_TOL6);
+  TEST(gsl_cdf_gamma_Q, (1e10,1.3,123.0), 0.000000000000e+00, TEST_TOL6);
+  TEST(gsl_cdf_gamma_Q, (1e9,1.3,123.0), 0.000000000000e+00, TEST_TOL6);
+  TEST(gsl_cdf_gamma_Q, (1e8,1.3,123.0), 0.000000000000e+00, TEST_TOL6);
   TEST(gsl_cdf_gamma_Q, (10000000,1.3,123.0), 0.000000000000e+00, TEST_TOL6);
   TEST(gsl_cdf_gamma_Q, (1000000,1.3,123.0), 0.000000000000e+00, TEST_TOL6);
   TEST(gsl_cdf_gamma_Q, (100000,1.3,123.0), 0.000000000000e+00, TEST_TOL6);
@@ -1597,13 +1597,13 @@ main (void)
   TEST(gsl_cdf_chisq_P, (100000,1.3), 1.000000000000e+00, TEST_TOL6);
   TEST(gsl_cdf_chisq_P, (1000000,1.3), 1.000000000000e+00, TEST_TOL6);
   TEST(gsl_cdf_chisq_P, (10000000,1.3), 1.000000000000e+00, TEST_TOL6);
-  TEST(gsl_cdf_chisq_P, (100000000,1.3), 1.000000000000e+00, TEST_TOL6);
-  TEST(gsl_cdf_chisq_P, (1000000000,1.3), 1.000000000000e+00, TEST_TOL6);
-  TEST(gsl_cdf_chisq_P, (10000000000,1.3), 1.000000000000e+00, TEST_TOL6);
+  TEST(gsl_cdf_chisq_P, (1e8,1.3), 1.000000000000e+00, TEST_TOL6);
+  TEST(gsl_cdf_chisq_P, (1e9,1.3), 1.000000000000e+00, TEST_TOL6);
+  TEST(gsl_cdf_chisq_P, (1e10,1.3), 1.000000000000e+00, TEST_TOL6);
 
-  TEST(gsl_cdf_chisq_Q, (10000000000,1.3), 0.000000000000e+00, TEST_TOL6);
-  TEST(gsl_cdf_chisq_Q, (1000000000,1.3), 0.000000000000e+00, TEST_TOL6);
-  TEST(gsl_cdf_chisq_Q, (100000000,1.3), 0.000000000000e+00, TEST_TOL6);
+  TEST(gsl_cdf_chisq_Q, (1e10,1.3), 0.000000000000e+00, TEST_TOL6);
+  TEST(gsl_cdf_chisq_Q, (1e9,1.3), 0.000000000000e+00, TEST_TOL6);
+  TEST(gsl_cdf_chisq_Q, (1e8,1.3), 0.000000000000e+00, TEST_TOL6);
   TEST(gsl_cdf_chisq_Q, (10000000,1.3), 0.000000000000e+00, TEST_TOL6);
   TEST(gsl_cdf_chisq_Q, (1000000,1.3), 0.000000000000e+00, TEST_TOL6);
   TEST(gsl_cdf_chisq_Q, (100000,1.3), 0.000000000000e+00, TEST_TOL6);
@@ -1633,11 +1633,11 @@ main (void)
   TEST(gsl_cdf_chisq_Q, (1.00000000000000004e-10,1.3), 9.999997761116e-01, TEST_TOL6);
   TEST(gsl_cdf_chisq_Q, (0,1.3), 1.000000000000e+00, TEST_TOL6);
 
-  TEST(gsl_cdf_tdist_P, (-10000000000,1.3), 3.467848111850e-14, TEST_TOL6);
+  TEST(gsl_cdf_tdist_P, (-1e10,1.3), 3.467848111850e-14, TEST_TOL6);
   TEST(gsl_cdf_tdist_Pinv, (3.46784811185003178e-14,1.3), -1.000000000000e+10, TEST_TOL6);
-  TEST(gsl_cdf_tdist_P, (-1000000000,1.3), 6.919266651610e-13, TEST_TOL6);
+  TEST(gsl_cdf_tdist_P, (-1e9,1.3), 6.919266651610e-13, TEST_TOL6);
   TEST(gsl_cdf_tdist_Pinv, (6.91926665161035136e-13,1.3), -1.000000000000e+09, TEST_TOL6);
-  TEST(gsl_cdf_tdist_P, (-100000000,1.3), 1.380575199718e-11, TEST_TOL6);
+  TEST(gsl_cdf_tdist_P, (-1e8,1.3), 1.380575199718e-11, TEST_TOL6);
   TEST(gsl_cdf_tdist_Pinv, (1.38057519971790271e-11,1.3), -1.000000000000e+08, TEST_TOL6);
   TEST(gsl_cdf_tdist_P, (-10000000,1.3), 2.754609668978e-10, TEST_TOL6);
   TEST(gsl_cdf_tdist_Pinv, (2.75460966897774739e-10,1.3), -1.000000000000e+07, TEST_TOL6);
@@ -1694,15 +1694,15 @@ main (void)
   TEST(gsl_cdf_tdist_P, (100000,1.3), 9.999998903370e-01, TEST_TOL6);
   TEST(gsl_cdf_tdist_P, (1000000,1.3), 9.999999945038e-01, TEST_TOL6);
   TEST(gsl_cdf_tdist_P, (10000000,1.3), 9.999999997245e-01, TEST_TOL6);
-  TEST(gsl_cdf_tdist_P, (100000000,1.3), 9.999999999862e-01, TEST_TOL6);
-  TEST(gsl_cdf_tdist_P, (1000000000,1.3), 9.999999999993e-01, TEST_TOL6);
-  TEST(gsl_cdf_tdist_P, (10000000000,1.3), 1.000000000000e-00, TEST_TOL6);
+  TEST(gsl_cdf_tdist_P, (1e8,1.3), 9.999999999862e-01, TEST_TOL6);
+  TEST(gsl_cdf_tdist_P, (1e9,1.3), 9.999999999993e-01, TEST_TOL6);
+  TEST(gsl_cdf_tdist_P, (1e10,1.3), 1.000000000000e-00, TEST_TOL6);
 
-  TEST(gsl_cdf_tdist_Q, (10000000000,1.3), 3.467848111850e-14, TEST_TOL6);
+  TEST(gsl_cdf_tdist_Q, (1e10,1.3), 3.467848111850e-14, TEST_TOL6);
   TEST(gsl_cdf_tdist_Qinv, (3.46784811185003178e-14,1.3), 1.000000000000e+10, TEST_TOL6);
-  TEST(gsl_cdf_tdist_Q, (1000000000,1.3), 6.919266651610e-13, TEST_TOL6);
+  TEST(gsl_cdf_tdist_Q, (1e9,1.3), 6.919266651610e-13, TEST_TOL6);
   TEST(gsl_cdf_tdist_Qinv, (6.91926665161035136e-13,1.3), 1.000000000000e+09, TEST_TOL6);
-  TEST(gsl_cdf_tdist_Q, (100000000,1.3), 1.380575199718e-11, TEST_TOL6);
+  TEST(gsl_cdf_tdist_Q, (1e8,1.3), 1.380575199718e-11, TEST_TOL6);
   TEST(gsl_cdf_tdist_Qinv, (1.38057519971790271e-11,1.3), 1.000000000000e+08, TEST_TOL6);
   TEST(gsl_cdf_tdist_Q, (10000000,1.3), 2.754609668978e-10, TEST_TOL6);
   TEST(gsl_cdf_tdist_Qinv, (2.75460966897774739e-10,1.3), 1.000000000000e+07, TEST_TOL6);
@@ -1759,13 +1759,13 @@ main (void)
   TEST(gsl_cdf_tdist_Q, (-100000,1.3), 9.999998903370e-01, TEST_TOL6);
   TEST(gsl_cdf_tdist_Q, (-1000000,1.3), 9.999999945038e-01, TEST_TOL6);
   TEST(gsl_cdf_tdist_Q, (-10000000,1.3), 9.999999997245e-01, TEST_TOL6);
-  TEST(gsl_cdf_tdist_Q, (-100000000,1.3), 9.999999999862e-01, TEST_TOL6);
-  TEST(gsl_cdf_tdist_Q, (-1000000000,1.3), 9.999999999993e-01, TEST_TOL6);
-  TEST(gsl_cdf_tdist_Q, (-10000000000,1.3), 1.000000000000e-00, TEST_TOL6);
+  TEST(gsl_cdf_tdist_Q, (-1e8,1.3), 9.999999999862e-01, TEST_TOL6);
+  TEST(gsl_cdf_tdist_Q, (-1e9,1.3), 9.999999999993e-01, TEST_TOL6);
+  TEST(gsl_cdf_tdist_Q, (-1e10,1.3), 1.000000000000e-00, TEST_TOL6);
 
-  TEST(gsl_cdf_gumbel1_P, (-10000000000,1.3,2.7), 0.000000000000e+00, TEST_TOL6);
-  TEST(gsl_cdf_gumbel1_P, (-1000000000,1.3,2.7), 0.000000000000e+00, TEST_TOL6);
-  TEST(gsl_cdf_gumbel1_P, (-100000000,1.3,2.7), 0.000000000000e+00, TEST_TOL6);
+  TEST(gsl_cdf_gumbel1_P, (-1e10,1.3,2.7), 0.000000000000e+00, TEST_TOL6);
+  TEST(gsl_cdf_gumbel1_P, (-1e9,1.3,2.7), 0.000000000000e+00, TEST_TOL6);
+  TEST(gsl_cdf_gumbel1_P, (-1e8,1.3,2.7), 0.000000000000e+00, TEST_TOL6);
   TEST(gsl_cdf_gumbel1_P, (-10000000,1.3,2.7), 0.000000000000e+00, TEST_TOL6);
   TEST(gsl_cdf_gumbel1_P, (-1000000,1.3,2.7), 0.000000000000e+00, TEST_TOL6);
   TEST(gsl_cdf_gumbel1_P, (-100000,1.3,2.7), 0.000000000000e+00, TEST_TOL6);
@@ -1814,13 +1814,13 @@ main (void)
   TEST(gsl_cdf_gumbel1_P, (100000,1.3,2.7), 1.000000000000e+00, TEST_TOL6);
   TEST(gsl_cdf_gumbel1_P, (1000000,1.3,2.7), 1.000000000000e+00, TEST_TOL6);
   TEST(gsl_cdf_gumbel1_P, (10000000,1.3,2.7), 1.000000000000e+00, TEST_TOL6);
-  TEST(gsl_cdf_gumbel1_P, (100000000,1.3,2.7), 1.000000000000e+00, TEST_TOL6);
-  TEST(gsl_cdf_gumbel1_P, (1000000000,1.3,2.7), 1.000000000000e+00, TEST_TOL6);
-  TEST(gsl_cdf_gumbel1_P, (10000000000,1.3,2.7), 1.000000000000e+00, TEST_TOL6);
+  TEST(gsl_cdf_gumbel1_P, (1e8,1.3,2.7), 1.000000000000e+00, TEST_TOL6);
+  TEST(gsl_cdf_gumbel1_P, (1e9,1.3,2.7), 1.000000000000e+00, TEST_TOL6);
+  TEST(gsl_cdf_gumbel1_P, (1e10,1.3,2.7), 1.000000000000e+00, TEST_TOL6);
 
-  TEST(gsl_cdf_gumbel1_Q, (10000000000,1.3,2.7), 0.000000000000e+00, TEST_TOL6);
-  TEST(gsl_cdf_gumbel1_Q, (1000000000,1.3,2.7), 0.000000000000e+00, TEST_TOL6);
-  TEST(gsl_cdf_gumbel1_Q, (100000000,1.3,2.7), 0.000000000000e+00, TEST_TOL6);
+  TEST(gsl_cdf_gumbel1_Q, (1e10,1.3,2.7), 0.000000000000e+00, TEST_TOL6);
+  TEST(gsl_cdf_gumbel1_Q, (1e9,1.3,2.7), 0.000000000000e+00, TEST_TOL6);
+  TEST(gsl_cdf_gumbel1_Q, (1e8,1.3,2.7), 0.000000000000e+00, TEST_TOL6);
   TEST(gsl_cdf_gumbel1_Q, (10000000,1.3,2.7), 0.000000000000e+00, TEST_TOL6);
   TEST(gsl_cdf_gumbel1_Q, (1000000,1.3,2.7), 0.000000000000e+00, TEST_TOL6);
   TEST(gsl_cdf_gumbel1_Q, (100000,1.3,2.7), 0.000000000000e+00, TEST_TOL6);
@@ -1869,9 +1869,9 @@ main (void)
   TEST(gsl_cdf_gumbel1_Q, (-100000,1.3,2.7), 1.000000000000e+00, TEST_TOL6);
   TEST(gsl_cdf_gumbel1_Q, (-1000000,1.3,2.7), 1.000000000000e+00, TEST_TOL6);
   TEST(gsl_cdf_gumbel1_Q, (-10000000,1.3,2.7), 1.000000000000e+00, TEST_TOL6);
-  TEST(gsl_cdf_gumbel1_Q, (-100000000,1.3,2.7), 1.000000000000e+00, TEST_TOL6);
-  TEST(gsl_cdf_gumbel1_Q, (-1000000000,1.3,2.7), 1.000000000000e+00, TEST_TOL6);
-  TEST(gsl_cdf_gumbel1_Q, (-10000000000,1.3,2.7), 1.000000000000e+00, TEST_TOL6);
+  TEST(gsl_cdf_gumbel1_Q, (-1e8,1.3,2.7), 1.000000000000e+00, TEST_TOL6);
+  TEST(gsl_cdf_gumbel1_Q, (-1e9,1.3,2.7), 1.000000000000e+00, TEST_TOL6);
+  TEST(gsl_cdf_gumbel1_Q, (-1e10,1.3,2.7), 1.000000000000e+00, TEST_TOL6);
 
   TEST(gsl_cdf_gumbel2_P, (0,1.3,2.7), 0.000000000000e+00, TEST_TOL6);
   TEST(gsl_cdf_gumbel2_P, (1.00000000000000004e-10,1.3,2.7), 0.000000000000e+00, TEST_TOL6);
@@ -1897,15 +1897,15 @@ main (void)
   TEST(gsl_cdf_gumbel2_P, (100000,1.3,2.7), 9.999991461854e-01, TEST_TOL6);
   TEST(gsl_cdf_gumbel2_P, (1000000,1.3,2.7), 9.999999572079e-01, TEST_TOL6);
   TEST(gsl_cdf_gumbel2_P, (10000000,1.3,2.7), 9.999999978553e-01, TEST_TOL6);
-  TEST(gsl_cdf_gumbel2_P, (100000000,1.3,2.7), 9.999999998925e-01, TEST_TOL6);
-  TEST(gsl_cdf_gumbel2_P, (1000000000,1.3,2.7), 9.999999999946e-01, TEST_TOL6);
-  TEST(gsl_cdf_gumbel2_P, (10000000000,1.3,2.7), 9.999999999997e-01, TEST_TOL6);
+  TEST(gsl_cdf_gumbel2_P, (1e8,1.3,2.7), 9.999999998925e-01, TEST_TOL6);
+  TEST(gsl_cdf_gumbel2_P, (1e9,1.3,2.7), 9.999999999946e-01, TEST_TOL6);
+  TEST(gsl_cdf_gumbel2_P, (1e10,1.3,2.7), 9.999999999997e-01, TEST_TOL6);
 
-  TEST(gsl_cdf_gumbel2_Q, (10000000000,1.3,2.7), 2.700000000000e-13, TEST_TOL6);
+  TEST(gsl_cdf_gumbel2_Q, (1e10,1.3,2.7), 2.700000000000e-13, TEST_TOL6);
   TEST(gsl_cdf_gumbel2_Qinv, (2.69999999999964922e-13,1.3,2.7), 1.000000000000e+10, TEST_TOL6);
-  TEST(gsl_cdf_gumbel2_Q, (1000000000,1.3,2.7), 5.387208250401e-12, TEST_TOL6);
+  TEST(gsl_cdf_gumbel2_Q, (1e9,1.3,2.7), 5.387208250401e-12, TEST_TOL6);
   TEST(gsl_cdf_gumbel2_Qinv, (5.38720825040149301e-12,1.3,2.7), 1.000000000000e+09, TEST_TOL6);
-  TEST(gsl_cdf_gumbel2_Q, (100000000,1.3,2.7), 1.074889360437e-10, TEST_TOL6);
+  TEST(gsl_cdf_gumbel2_Q, (1e8,1.3,2.7), 1.074889360437e-10, TEST_TOL6);
   TEST(gsl_cdf_gumbel2_Qinv, (1.0748893604366781e-10,1.3,2.7), 1.000000000000e+08, TEST_TOL6);
   TEST(gsl_cdf_gumbel2_Q, (10000000,1.3,2.7), 2.144686231456e-09, TEST_TOL6);
   TEST(gsl_cdf_gumbel2_Qinv, (2.14468623145572944e-09,1.3,2.7), 1.000000000000e+07, TEST_TOL6);
@@ -1965,13 +1965,13 @@ main (void)
   TEST(gsl_cdf_weibull_P, (100000,1.3,2.7), 1.000000000000e+00, TEST_TOL6);
   TEST(gsl_cdf_weibull_P, (1000000,1.3,2.7), 1.000000000000e+00, TEST_TOL6);
   TEST(gsl_cdf_weibull_P, (10000000,1.3,2.7), 1.000000000000e+00, TEST_TOL6);
-  TEST(gsl_cdf_weibull_P, (100000000,1.3,2.7), 1.000000000000e+00, TEST_TOL6);
-  TEST(gsl_cdf_weibull_P, (1000000000,1.3,2.7), 1.000000000000e+00, TEST_TOL6);
-  TEST(gsl_cdf_weibull_P, (10000000000,1.3,2.7), 1.000000000000e+00, TEST_TOL6);
+  TEST(gsl_cdf_weibull_P, (1e8,1.3,2.7), 1.000000000000e+00, TEST_TOL6);
+  TEST(gsl_cdf_weibull_P, (1e9,1.3,2.7), 1.000000000000e+00, TEST_TOL6);
+  TEST(gsl_cdf_weibull_P, (1e10,1.3,2.7), 1.000000000000e+00, TEST_TOL6);
 
-  TEST(gsl_cdf_weibull_Q, (10000000000,1.3,2.7), 0.000000000000e+00, TEST_TOL6);
-  TEST(gsl_cdf_weibull_Q, (1000000000,1.3,2.7), 0.000000000000e+00, TEST_TOL6);
-  TEST(gsl_cdf_weibull_Q, (100000000,1.3,2.7), 0.000000000000e+00, TEST_TOL6);
+  TEST(gsl_cdf_weibull_Q, (1e10,1.3,2.7), 0.000000000000e+00, TEST_TOL6);
+  TEST(gsl_cdf_weibull_Q, (1e9,1.3,2.7), 0.000000000000e+00, TEST_TOL6);
+  TEST(gsl_cdf_weibull_Q, (1e8,1.3,2.7), 0.000000000000e+00, TEST_TOL6);
   TEST(gsl_cdf_weibull_Q, (10000000,1.3,2.7), 0.000000000000e+00, TEST_TOL6);
   TEST(gsl_cdf_weibull_Q, (1000000,1.3,2.7), 0.000000000000e+00, TEST_TOL6);
   TEST(gsl_cdf_weibull_Q, (100000,1.3,2.7), 0.000000000000e+00, TEST_TOL6);
@@ -2017,15 +2017,15 @@ main (void)
   TEST(gsl_cdf_pareto_P, (100000,1.3,2.7), 9.999988498013e-01, TEST_TOL6);
   TEST(gsl_cdf_pareto_P, (1000000,1.3,2.7), 9.999999423535e-01, TEST_TOL6);
   TEST(gsl_cdf_pareto_P, (10000000,1.3,2.7), 9.999999971109e-01, TEST_TOL6);
-  TEST(gsl_cdf_pareto_P, (100000000,1.3,2.7), 9.999999998552e-01, TEST_TOL6);
-  TEST(gsl_cdf_pareto_P, (1000000000,1.3,2.7), 9.999999999928e-01, TEST_TOL6);
-  TEST(gsl_cdf_pareto_P, (10000000000,1.3,2.7), 9.999999999997e-01, TEST_TOL6);
+  TEST(gsl_cdf_pareto_P, (1e8,1.3,2.7), 9.999999998552e-01, TEST_TOL6);
+  TEST(gsl_cdf_pareto_P, (1e9,1.3,2.7), 9.999999999928e-01, TEST_TOL6);
+  TEST(gsl_cdf_pareto_P, (1e10,1.3,2.7), 9.999999999997e-01, TEST_TOL6);
 
-  TEST(gsl_cdf_pareto_Q, (10000000000,1.3,2.7), 3.637247829654e-13, TEST_TOL6);
+  TEST(gsl_cdf_pareto_Q, (1e10,1.3,2.7), 3.637247829654e-13, TEST_TOL6);
   TEST(gsl_cdf_pareto_Qinv, (3.63724782965361678e-13,1.3,2.7), 1.000000000000e+10, TEST_TOL6);
-  TEST(gsl_cdf_pareto_Q, (1000000000,1.3,2.7), 7.257263524710e-12, TEST_TOL6);
+  TEST(gsl_cdf_pareto_Q, (1e9,1.3,2.7), 7.257263524710e-12, TEST_TOL6);
   TEST(gsl_cdf_pareto_Qinv, (7.25726352471021187e-12,1.3,2.7), 1.000000000000e+09, TEST_TOL6);
-  TEST(gsl_cdf_pareto_Q, (100000000,1.3,2.7), 1.448014442065e-10, TEST_TOL6);
+  TEST(gsl_cdf_pareto_Q, (1e8,1.3,2.7), 1.448014442065e-10, TEST_TOL6);
   TEST(gsl_cdf_pareto_Qinv, (1.44801444206524988e-10,1.3,2.7), 1.000000000000e+08, TEST_TOL6);
   TEST(gsl_cdf_pareto_Q, (10000000,1.3,2.7), 2.889168647783e-09, TEST_TOL6);
   TEST(gsl_cdf_pareto_Qinv, (2.8891686477834784e-09,1.3,2.7), 1.000000000000e+07, TEST_TOL6);
@@ -2054,9 +2054,9 @@ main (void)
   TEST(gsl_cdf_pareto_Q, (1.00000000000000004e-10,1.3,2.7), 1.000000000000e-00, TEST_TOL6);
   TEST(gsl_cdf_pareto_Q, (0,1.3,2.7), 1.000000000000e+00, TEST_TOL6);
 
-  TEST(gsl_cdf_logistic_P, (-10000000000,1.3), 0.000000000000e+00, TEST_TOL6);
-  TEST(gsl_cdf_logistic_P, (-1000000000,1.3), 0.000000000000e+00, TEST_TOL6);
-  TEST(gsl_cdf_logistic_P, (-100000000,1.3), 0.000000000000e+00, TEST_TOL6);
+  TEST(gsl_cdf_logistic_P, (-1e10,1.3), 0.000000000000e+00, TEST_TOL6);
+  TEST(gsl_cdf_logistic_P, (-1e9,1.3), 0.000000000000e+00, TEST_TOL6);
+  TEST(gsl_cdf_logistic_P, (-1e8,1.3), 0.000000000000e+00, TEST_TOL6);
   TEST(gsl_cdf_logistic_P, (-10000000,1.3), 0.000000000000e+00, TEST_TOL6);
   TEST(gsl_cdf_logistic_P, (-1000000,1.3), 0.000000000000e+00, TEST_TOL6);
   TEST(gsl_cdf_logistic_P, (-100000,1.3), 0.000000000000e+00, TEST_TOL6);
@@ -2106,13 +2106,13 @@ main (void)
   TEST(gsl_cdf_logistic_P, (100000,1.3), 1.000000000000e+00, TEST_TOL6);
   TEST(gsl_cdf_logistic_P, (1000000,1.3), 1.000000000000e+00, TEST_TOL6);
   TEST(gsl_cdf_logistic_P, (10000000,1.3), 1.000000000000e+00, TEST_TOL6);
-  TEST(gsl_cdf_logistic_P, (100000000,1.3), 1.000000000000e+00, TEST_TOL6);
-  TEST(gsl_cdf_logistic_P, (1000000000,1.3), 1.000000000000e+00, TEST_TOL6);
-  TEST(gsl_cdf_logistic_P, (10000000000,1.3), 1.000000000000e+00, TEST_TOL6);
+  TEST(gsl_cdf_logistic_P, (1e8,1.3), 1.000000000000e+00, TEST_TOL6);
+  TEST(gsl_cdf_logistic_P, (1e9,1.3), 1.000000000000e+00, TEST_TOL6);
+  TEST(gsl_cdf_logistic_P, (1e10,1.3), 1.000000000000e+00, TEST_TOL6);
 
-  TEST(gsl_cdf_logistic_Q, (10000000000,1.3), 0.000000000000e+00, TEST_TOL6);
-  TEST(gsl_cdf_logistic_Q, (1000000000,1.3), 0.000000000000e+00, TEST_TOL6);
-  TEST(gsl_cdf_logistic_Q, (100000000,1.3), 0.000000000000e+00, TEST_TOL6);
+  TEST(gsl_cdf_logistic_Q, (1e10,1.3), 0.000000000000e+00, TEST_TOL6);
+  TEST(gsl_cdf_logistic_Q, (1e9,1.3), 0.000000000000e+00, TEST_TOL6);
+  TEST(gsl_cdf_logistic_Q, (1e8,1.3), 0.000000000000e+00, TEST_TOL6);
   TEST(gsl_cdf_logistic_Q, (10000000,1.3), 0.000000000000e+00, TEST_TOL6);
   TEST(gsl_cdf_logistic_Q, (1000000,1.3), 0.000000000000e+00, TEST_TOL6);
   TEST(gsl_cdf_logistic_Q, (100000,1.3), 0.000000000000e+00, TEST_TOL6);
@@ -2162,9 +2162,9 @@ main (void)
   TEST(gsl_cdf_logistic_Q, (-100000,1.3), 1.000000000000e+00, TEST_TOL6);
   TEST(gsl_cdf_logistic_Q, (-1000000,1.3), 1.000000000000e+00, TEST_TOL6);
   TEST(gsl_cdf_logistic_Q, (-10000000,1.3), 1.000000000000e+00, TEST_TOL6);
-  TEST(gsl_cdf_logistic_Q, (-100000000,1.3), 1.000000000000e+00, TEST_TOL6);
-  TEST(gsl_cdf_logistic_Q, (-1000000000,1.3), 1.000000000000e+00, TEST_TOL6);
-  TEST(gsl_cdf_logistic_Q, (-10000000000,1.3), 1.000000000000e+00, TEST_TOL6);
+  TEST(gsl_cdf_logistic_Q, (-1e8,1.3), 1.000000000000e+00, TEST_TOL6);
+  TEST(gsl_cdf_logistic_Q, (-1e9,1.3), 1.000000000000e+00, TEST_TOL6);
+  TEST(gsl_cdf_logistic_Q, (-1e10,1.3), 1.000000000000e+00, TEST_TOL6);
 
 
   exit (gsl_test_summary ());
