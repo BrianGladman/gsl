@@ -46,6 +46,8 @@ int gsl_vector_ulong_view_from_vector (gsl_vector_ulong *v,
                                        gsl_vector_ulong *base,
                                        size_t offset, size_t n, size_t stride);
 
+gsl_vector_ulong gsl_vector_ulong_subvector (gsl_vector_ulong *v, size_t i, size_t n, size_t stride);
+
 unsigned long *gsl_vector_ulong_ptr (const gsl_vector_ulong * v, const size_t i);
 unsigned long gsl_vector_ulong_get (const gsl_vector_ulong * v, const size_t i);
 void gsl_vector_ulong_set (gsl_vector_ulong * v, const size_t i, unsigned long x);
@@ -63,7 +65,8 @@ int gsl_vector_ulong_memcpy (gsl_vector_ulong * dest, const gsl_vector_ulong * s
 
 int gsl_vector_ulong_reverse (gsl_vector_ulong * v);
 
-int gsl_vector_ulong_swap (gsl_vector_ulong * v, const size_t i, const size_t j);
+int gsl_vector_ulong_swap (gsl_vector_ulong * v, gsl_vector_ulong * w);
+int gsl_vector_ulong_swap_elements (gsl_vector_ulong * v, const size_t i, const size_t j);
 
 int gsl_vector_ulong_isnull (gsl_vector_ulong * v);
 

@@ -99,18 +99,18 @@ FUNCTION (test, func) (void)
     GSL_REAL(y) = 5 ;
     GSL_IMAG(y) = 5 + 1234;
 
-    FUNCTION (gsl_vector,swap) (v, 2, 5) ;
+    FUNCTION (gsl_vector,swap_elements) (v, 2, 5) ;
     
     status = ! GSL_COMPLEX_EQ(FUNCTION(gsl_vector,get)(v,2),y) ;
     status |= ! GSL_COMPLEX_EQ(FUNCTION(gsl_vector,get)(v,5),x) ;
     
-    FUNCTION (gsl_vector,swap) (v, 2, 5) ;
+    FUNCTION (gsl_vector,swap_elements) (v, 2, 5) ;
     
     status |= ! GSL_COMPLEX_EQ(FUNCTION(gsl_vector,get)(v,2),x) ;
     status |= ! GSL_COMPLEX_EQ(FUNCTION(gsl_vector,get)(v,5),y) ;
   }
 
-  gsl_test (status, NAME(gsl_vector) "_swap" DESC " exchanges elements correctly") ;
+  gsl_test (status, NAME(gsl_vector) "_swap_elements" DESC " exchanges elements correctly") ;
 
   status = 0;
 

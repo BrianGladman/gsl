@@ -71,24 +71,29 @@ int gsl_matrix_ulong_fwrite (FILE * stream, const gsl_matrix_ulong * m) ;
 int gsl_matrix_ulong_fscanf (FILE * stream, gsl_matrix_ulong * m);
 int gsl_matrix_ulong_fprintf (FILE * stream, const gsl_matrix_ulong * m, const char * format);
  
+int gsl_matrix_ulong_memcpy(gsl_matrix_ulong * dest, const gsl_matrix_ulong * src);
+
+int gsl_matrix_ulong_swap_rows(gsl_matrix_ulong * m, const size_t i, const size_t j);
+int gsl_matrix_ulong_swap_columns(gsl_matrix_ulong * m, const size_t i, const size_t j);
+int gsl_matrix_ulong_swap_rowcol(gsl_matrix_ulong * m, const size_t i, const size_t j);
+
+gsl_matrix_ulong gsl_matrix_ulong_submatrix (gsl_matrix_ulong * m, size_t i, size_t j, size_t n1, size_t n2);
+gsl_vector_ulong gsl_matrix_ulong_row (gsl_matrix_ulong * m, size_t i);
+gsl_vector_ulong gsl_matrix_ulong_column (gsl_matrix_ulong * m, size_t j);
+gsl_vector_ulong gsl_matrix_ulong_diagonal (gsl_matrix_ulong * m);
+
+/***********************************************************************/
+/* The functions below are obsolete                                    */
+/***********************************************************************/
 int gsl_matrix_ulong_get_row(gsl_vector_ulong * v, const gsl_matrix_ulong * m, const size_t i);
 int gsl_matrix_ulong_get_col(gsl_vector_ulong * v, const gsl_matrix_ulong * m, const size_t j);
 int gsl_matrix_ulong_set_row(gsl_matrix_ulong * m, const size_t i, const gsl_vector_ulong * v);
 int gsl_matrix_ulong_set_col(gsl_matrix_ulong * m, const size_t j, const gsl_vector_ulong * v);
 
-int gsl_matrix_ulong_swap_rows(gsl_matrix_ulong * m, const size_t i, const size_t j);
-int gsl_matrix_ulong_swap_cols(gsl_matrix_ulong * m, const size_t i, const size_t j);
-int gsl_matrix_ulong_swap_rowcol(gsl_matrix_ulong * m, const size_t i, const size_t j);
-
-int gsl_matrix_ulong_memcpy(gsl_matrix_ulong * dest, const gsl_matrix_ulong * src);
-
 int gsl_vector_ulong_view_row_from_matrix (gsl_vector_ulong * v, gsl_matrix_ulong * m, const size_t i);
 int gsl_vector_ulong_view_col_from_matrix (gsl_vector_ulong * v, gsl_matrix_ulong * m, const size_t j);
 
-int gsl_matrix_ulong_view_from_vector (gsl_matrix_ulong * m, 
-                                       gsl_vector_ulong * base,
-                                       const size_t offset, 
-                                       const size_t n1, const size_t n2, const size_t d2);
+int gsl_matrix_ulong_view_from_vector (gsl_matrix_ulong * m, gsl_vector_ulong * base, const size_t offset, const size_t n1, const size_t n2, const size_t d2);
 
 extern int gsl_check_range ;
 
@@ -97,8 +102,7 @@ extern int gsl_check_range ;
 #ifdef HAVE_INLINE
 extern inline 
 unsigned long
-gsl_matrix_ulong_get(const gsl_matrix_ulong * m, 
-		     const size_t i, const size_t j)
+gsl_matrix_ulong_get(const gsl_matrix_ulong * m, const size_t i, const size_t j)
 {
 #ifndef GSL_RANGE_CHECK_OFF
   if (i >= m->size1)
@@ -115,8 +119,7 @@ gsl_matrix_ulong_get(const gsl_matrix_ulong * m,
 
 extern inline 
 void
-gsl_matrix_ulong_set(gsl_matrix_ulong * m, 
-		     const size_t i, const size_t j, const unsigned long x)
+gsl_matrix_ulong_set(gsl_matrix_ulong * m, const size_t i, const size_t j, const unsigned long x)
 {
 #ifndef GSL_RANGE_CHECK_OFF
   if (i >= m->size1)

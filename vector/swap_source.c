@@ -1,5 +1,33 @@
 int
-FUNCTION (gsl_vector, swap) (TYPE (gsl_vector) * v, const size_t i, const size_t j)
+FUNCTION (gsl_vector, swap) (TYPE (gsl_vector) * v, TYPE (gsl_vector) * w)
+{
+  ATOMIC * d1 = v->data ;
+  ATOMIC * d2 = w->data ;
+  const size_t size = v->size ;
+  const size_t s1 = MULTIPLICITY * v->stride ;
+  const size_t s2 = MULTIPLICITY * v->stride ;
+  size_t i, k ;
+
+  if (v->size != w->size)
+    {
+      GSL_ERROR("vector lengths must be equal", GSL_EINVAL);
+    }
+
+  for (i = 0; i < size; i++)
+    {
+      for (k = 0; k < MULTIPLICITY; k++)
+        {
+          ATOMIC tmp = d1[i*s1 + k];
+          d1[i*s1+k] = d2[i*s2 + k];
+          d2[i*s2+k] = tmp;
+        }
+    }
+  
+  return GSL_SUCCESS;
+}
+
+int
+FUNCTION (gsl_vector, swap_elements) (TYPE (gsl_vector) * v, const size_t i, const size_t j)
 {
   ATOMIC * data = v->data ;
   const size_t size = v->size ;
@@ -30,7 +58,6 @@ FUNCTION (gsl_vector, swap) (TYPE (gsl_vector) * v, const size_t i, const size_t
   
   return GSL_SUCCESS;
 }
-
 
 int
 FUNCTION (gsl_vector, reverse) (TYPE (gsl_vector) * v)

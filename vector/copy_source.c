@@ -22,7 +22,7 @@ FUNCTION (gsl_vector, memcpy) (TYPE (gsl_vector) * dest,
         for (k = 0; k < MULTIPLICITY; k++) 
           {
             dest->data[MULTIPLICITY * dest_stride * j + k] 
-              = src->data[MULTIPLICITY * src_stride*j + k];
+              = src->data[MULTIPLICITY * src_stride * j + k];
           }
       }
   }

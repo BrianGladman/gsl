@@ -71,24 +71,29 @@ int gsl_matrix_uint_fwrite (FILE * stream, const gsl_matrix_uint * m) ;
 int gsl_matrix_uint_fscanf (FILE * stream, gsl_matrix_uint * m);
 int gsl_matrix_uint_fprintf (FILE * stream, const gsl_matrix_uint * m, const char * format);
  
+int gsl_matrix_uint_memcpy(gsl_matrix_uint * dest, const gsl_matrix_uint * src);
+
+int gsl_matrix_uint_swap_rows(gsl_matrix_uint * m, const size_t i, const size_t j);
+int gsl_matrix_uint_swap_columns(gsl_matrix_uint * m, const size_t i, const size_t j);
+int gsl_matrix_uint_swap_rowcol(gsl_matrix_uint * m, const size_t i, const size_t j);
+
+gsl_matrix_uint gsl_matrix_uint_submatrix (gsl_matrix_uint * m, size_t i, size_t j, size_t n1, size_t n2);
+gsl_vector_uint gsl_matrix_uint_row (gsl_matrix_uint * m, size_t i);
+gsl_vector_uint gsl_matrix_uint_column (gsl_matrix_uint * m, size_t j);
+gsl_vector_uint gsl_matrix_uint_diagonal (gsl_matrix_uint * m);
+
+/***********************************************************************/
+/* The functions below are obsolete                                    */
+/***********************************************************************/
 int gsl_matrix_uint_get_row(gsl_vector_uint * v, const gsl_matrix_uint * m, const size_t i);
 int gsl_matrix_uint_get_col(gsl_vector_uint * v, const gsl_matrix_uint * m, const size_t j);
 int gsl_matrix_uint_set_row(gsl_matrix_uint * m, const size_t i, const gsl_vector_uint * v);
 int gsl_matrix_uint_set_col(gsl_matrix_uint * m, const size_t j, const gsl_vector_uint * v);
 
-int gsl_matrix_uint_swap_rows(gsl_matrix_uint * m, const size_t i, const size_t j);
-int gsl_matrix_uint_swap_cols(gsl_matrix_uint * m, const size_t i, const size_t j);
-int gsl_matrix_uint_swap_rowcol(gsl_matrix_uint * m, const size_t i, const size_t j);
-
-int gsl_matrix_uint_memcpy(gsl_matrix_uint * dest, const gsl_matrix_uint * src);
-
 int gsl_vector_uint_view_row_from_matrix (gsl_vector_uint * v, gsl_matrix_uint * m, const size_t i);
 int gsl_vector_uint_view_col_from_matrix (gsl_vector_uint * v, gsl_matrix_uint * m, const size_t j);
 
-int gsl_matrix_uint_view_from_vector (gsl_matrix_uint * m, 
-                                       gsl_vector_uint * base,
-                                       const size_t offset, 
-                                       const size_t n1, const size_t n2, const size_t d2);
+int gsl_matrix_uint_view_from_vector (gsl_matrix_uint * m, gsl_vector_uint * base, const size_t offset, const size_t n1, const size_t n2, const size_t d2);
 
 extern int gsl_check_range ;
 
@@ -97,8 +102,7 @@ extern int gsl_check_range ;
 #ifdef HAVE_INLINE
 extern inline 
 unsigned int
-gsl_matrix_uint_get(const gsl_matrix_uint * m, 
-		     const size_t i, const size_t j)
+gsl_matrix_uint_get(const gsl_matrix_uint * m, const size_t i, const size_t j)
 {
 #ifndef GSL_RANGE_CHECK_OFF
   if (i >= m->size1)
@@ -115,8 +119,7 @@ gsl_matrix_uint_get(const gsl_matrix_uint * m,
 
 extern inline 
 void
-gsl_matrix_uint_set(gsl_matrix_uint * m, 
-		     const size_t i, const size_t j, const unsigned int x)
+gsl_matrix_uint_set(gsl_matrix_uint * m, const size_t i, const size_t j, const unsigned int x)
 {
 #ifndef GSL_RANGE_CHECK_OFF
   if (i >= m->size1)

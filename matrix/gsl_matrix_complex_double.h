@@ -70,24 +70,30 @@ int gsl_matrix_complex_fwrite (FILE * stream, const gsl_matrix_complex * m) ;
 int gsl_matrix_complex_fscanf (FILE * stream, gsl_matrix_complex * m);
 int gsl_matrix_complex_fprintf (FILE * stream, const gsl_matrix_complex * m, const char * format);
 
+int gsl_matrix_complex_memcpy(gsl_matrix_complex * dest, const gsl_matrix_complex * src);
+
+int gsl_matrix_complex_swap_rows(gsl_matrix_complex * m, const size_t i, const size_t j);
+int gsl_matrix_complex_swap_columns(gsl_matrix_complex * m, const size_t i, const size_t j);
+int gsl_matrix_complex_swap_rowcol(gsl_matrix_complex * m, const size_t i, const size_t j);
+
+
+gsl_matrix_complex gsl_matrix_complex_submatrix (gsl_matrix_complex * m, size_t i, size_t j, size_t n1, size_t n2);
+gsl_vector_complex gsl_matrix_complex_row (gsl_matrix_complex * m, size_t i);
+gsl_vector_complex gsl_matrix_complex_column (gsl_matrix_complex * m, size_t j);
+gsl_vector_complex gsl_matrix_complex_diagonal (gsl_matrix_complex * m);
+
+/***********************************************************************/
+/* The functions below are obsolete                                    */
+/***********************************************************************/
 int gsl_matrix_complex_get_row(gsl_vector_complex * v, const gsl_matrix_complex * m, const size_t i);
 int gsl_matrix_complex_get_col(gsl_vector_complex * v, const gsl_matrix_complex * m, const size_t j);
 int gsl_matrix_complex_set_row(gsl_matrix_complex * m, const size_t i, const gsl_vector_complex * v);
 int gsl_matrix_complex_set_col(gsl_matrix_complex * m, const size_t j, const gsl_vector_complex * v);
 
-int gsl_matrix_complex_swap_rows(gsl_matrix_complex * m, const size_t i, const size_t j);
-int gsl_matrix_complex_swap_cols(gsl_matrix_complex * m, const size_t i, const size_t j);
-int gsl_matrix_complex_swap_rowcol(gsl_matrix_complex * m, const size_t i, const size_t j);
-
-int gsl_matrix_complex_memcpy(gsl_matrix_complex * dest, const gsl_matrix_complex * src);
-
 int gsl_vector_complex_view_row_from_matrix (gsl_vector_complex * v, gsl_matrix_complex * m, const size_t i);
 int gsl_vector_complex_view_col_from_matrix (gsl_vector_complex * v, gsl_matrix_complex * m, const size_t j);
 
-int gsl_matrix_complex_view_from_vector (gsl_matrix_complex * m, 
-                                               gsl_vector_complex * base,
-                                               const size_t offset, 
-                                               const size_t n1, const size_t n2, const size_t d2);
+int gsl_matrix_complex_view_from_vector (gsl_matrix_complex * m, gsl_vector_complex * base, const size_t offset, const size_t n1, const size_t n2, const size_t d2);
 
 extern int gsl_check_range ;
 

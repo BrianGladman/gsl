@@ -78,17 +78,17 @@ FUNCTION (test, func) (void)
       FUNCTION (gsl_vector, set) (v, i, (ATOMIC) i);
     }
 
-  FUNCTION (gsl_vector,swap) (v, 2, 5) ;
+  FUNCTION (gsl_vector,swap_elements) (v, 2, 5) ;
   
   status = (FUNCTION(gsl_vector,get)(v,2) != 5) ;
   status |= (FUNCTION(gsl_vector,get)(v,5) != 2) ;
 
-  FUNCTION (gsl_vector,swap) (v, 2, 5) ;
+  FUNCTION (gsl_vector,swap_elements) (v, 2, 5) ;
 
   status |= (FUNCTION(gsl_vector,get)(v,2) != 2) ;
   status |= (FUNCTION(gsl_vector,get)(v,5) != 5) ;
 
-  gsl_test (status, NAME(gsl_vector) "_swap" DESC " exchanges elements correctly") ;
+  gsl_test (status, NAME(gsl_vector) "_swap_elements" DESC " exchanges elements correctly") ;
 
   status = 0;
 

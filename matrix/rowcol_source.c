@@ -1,3 +1,93 @@
+TYPE(gsl_matrix)
+FUNCTION (gsl_matrix, submatrix) (TYPE(gsl_matrix) * matrix, 
+                                  const size_t i, const size_t j,
+                                  const size_t m, const size_t n)
+{
+  TYPE(gsl_matrix) s = {0, 0, 0, 0};
+
+  if (i >= matrix->size1)
+    {
+      GSL_ERROR_RETURN ("row index is out of range", GSL_EINVAL, s);
+    }
+  else if (j >= matrix->size2)
+    {
+      GSL_ERROR_RETURN ("column index is out of range", GSL_EINVAL, s);
+    }
+  else if (m == 0)
+    {
+      GSL_ERROR_RETURN ("first dimension must be non-zero", GSL_EINVAL, s);
+    }
+  else if (n == 0)
+    {
+      GSL_ERROR_RETURN ("second dimension must be non-zero", GSL_EINVAL, s);
+    }
+  else if (i + m > matrix->size1)
+    {
+      GSL_ERROR_RETURN ("first dimension overflows matrix", GSL_EINVAL, s);
+    }
+  else if (j + n > matrix->size2)
+    {
+      GSL_ERROR_RETURN ("second dimension overflows matrix", GSL_EINVAL, s);
+    }
+
+  s.data = matrix->data + i * matrix->tda + j;
+  s.size1 = m;
+  s.size2 = n;
+  s.tda = matrix->tda;
+
+  return s;
+}
+
+TYPE(gsl_vector)
+FUNCTION (gsl_matrix, row) (TYPE(gsl_matrix) * m, const size_t i)
+{
+  TYPE(gsl_vector) v = {0, 0, 0, 0};
+
+  if (i >= m->size1)
+    {
+      GSL_ERROR_RETURN ("row index is out of range", GSL_EINVAL, v);
+    }
+
+  v.data = m->data + i * m->tda;
+  v.size = m->size2;
+  v.stride = 1;
+
+  return v;
+}
+
+TYPE(gsl_vector)
+FUNCTION (gsl_matrix, column) (TYPE(gsl_matrix) * m, const size_t j)
+{
+  TYPE(gsl_vector) v = {0, 0, 0, 0};
+
+  if (j >= m->size2)
+    {
+      GSL_ERROR_RETURN ("column index is out of range", GSL_EINVAL, v);
+    }
+
+  v.data = m->data + j;
+  v.size = m->size1;
+  v.stride = m->tda;
+
+  return v;
+}
+
+TYPE(gsl_vector)
+FUNCTION (gsl_matrix, diagonal) (TYPE(gsl_matrix) * m)
+{
+  TYPE(gsl_vector) v = {0, 0, 0, 0};
+
+  v.data = m->data;
+  v.size = GSL_MIN(m->size1,m->size2);
+  v.stride = m->tda + 1;
+
+  return v;
+}
+
+/**********************************************************************/
+/* The functions below are obsolete                                   */
+/**********************************************************************/
+
 int
 FUNCTION (gsl_matrix, get_row) (TYPE (gsl_vector) * v,
                                  const TYPE (gsl_matrix) * m,

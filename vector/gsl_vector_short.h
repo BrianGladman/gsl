@@ -46,6 +46,8 @@ int gsl_vector_short_view_from_vector (gsl_vector_short *v,
                                        gsl_vector_short *base,
                                        size_t offset, size_t n, size_t stride);
 
+gsl_vector_short gsl_vector_short_subvector (gsl_vector_short *v, size_t i, size_t n, size_t stride);
+
 short *gsl_vector_short_ptr (const gsl_vector_short * v, const size_t i);
 short gsl_vector_short_get (const gsl_vector_short * v, const size_t i);
 void gsl_vector_short_set (gsl_vector_short * v, const size_t i, short x);
@@ -63,7 +65,8 @@ int gsl_vector_short_memcpy (gsl_vector_short * dest, const gsl_vector_short * s
 
 int gsl_vector_short_reverse (gsl_vector_short * v);
 
-int gsl_vector_short_swap (gsl_vector_short * v, const size_t i, const size_t j);
+int gsl_vector_short_swap (gsl_vector_short * v, gsl_vector_short * w);
+int gsl_vector_short_swap_elements (gsl_vector_short * v, const size_t i, const size_t j);
 
 int gsl_vector_short_isnull (gsl_vector_short * v);
 

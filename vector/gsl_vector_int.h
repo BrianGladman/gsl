@@ -46,6 +46,8 @@ int gsl_vector_int_view_from_vector (gsl_vector_int *v,
                                        gsl_vector_int *base,
                                        size_t offset, size_t n, size_t stride);
 
+gsl_vector_int gsl_vector_int_subvector (gsl_vector_int *v, size_t i, size_t n, size_t stride);
+
 int *gsl_vector_int_ptr (const gsl_vector_int * v, const size_t i);
 int gsl_vector_int_get (const gsl_vector_int * v, const size_t i);
 void gsl_vector_int_set (gsl_vector_int * v, const size_t i, int x);
@@ -63,7 +65,8 @@ int gsl_vector_int_memcpy (gsl_vector_int * dest, const gsl_vector_int * src);
 
 int gsl_vector_int_reverse (gsl_vector_int * v);
 
-int gsl_vector_int_swap (gsl_vector_int * v, const size_t i, const size_t j);
+int gsl_vector_int_swap (gsl_vector_int * v, gsl_vector_int * w);
+int gsl_vector_int_swap_elements (gsl_vector_int * v, const size_t i, const size_t j);
 
 int gsl_vector_int_isnull (gsl_vector_int * v);
 

@@ -70,24 +70,30 @@ int gsl_matrix_complex_long_double_fwrite (FILE * stream, const gsl_matrix_compl
 int gsl_matrix_complex_long_double_fscanf (FILE * stream, gsl_matrix_complex_long_double * m);
 int gsl_matrix_complex_long_double_fprintf (FILE * stream, const gsl_matrix_complex_long_double * m, const char * format);
 
+int gsl_matrix_complex_long_double_memcpy(gsl_matrix_complex_long_double * dest, const gsl_matrix_complex_long_double * src);
+
+int gsl_matrix_complex_long_double_swap_rows(gsl_matrix_complex_long_double * m, const size_t i, const size_t j);
+int gsl_matrix_complex_long_double_swap_columns(gsl_matrix_complex_long_double * m, const size_t i, const size_t j);
+int gsl_matrix_complex_long_double_swap_rowcol(gsl_matrix_complex_long_double * m, const size_t i, const size_t j);
+
+
+gsl_matrix_complex_long_double gsl_matrix_complex_long_double_submatrix (gsl_matrix_complex_long_double * m, size_t i, size_t j, size_t n1, size_t n2);
+gsl_vector_complex_long_double gsl_matrix_complex_long_double_row (gsl_matrix_complex_long_double * m, size_t i);
+gsl_vector_complex_long_double gsl_matrix_complex_long_double_column (gsl_matrix_complex_long_double * m, size_t j);
+gsl_vector_complex_long_double gsl_matrix_complex_long_double_diagonal (gsl_matrix_complex_long_double * m);
+
+/***********************************************************************/
+/* The functions below are obsolete                                    */
+/***********************************************************************/
 int gsl_matrix_complex_long_double_get_row(gsl_vector_complex_long_double * v, const gsl_matrix_complex_long_double * m, const size_t i);
 int gsl_matrix_complex_long_double_get_col(gsl_vector_complex_long_double * v, const gsl_matrix_complex_long_double * m, const size_t j);
 int gsl_matrix_complex_long_double_set_row(gsl_matrix_complex_long_double * m, const size_t i, const gsl_vector_complex_long_double * v);
 int gsl_matrix_complex_long_double_set_col(gsl_matrix_complex_long_double * m, const size_t j, const gsl_vector_complex_long_double * v);
 
-int gsl_matrix_complex_long_double_swap_rows(gsl_matrix_complex_long_double * m, const size_t i, const size_t j);
-int gsl_matrix_complex_long_double_swap_cols(gsl_matrix_complex_long_double * m, const size_t i, const size_t j);
-int gsl_matrix_complex_long_double_swap_rowcol(gsl_matrix_complex_long_double * m, const size_t i, const size_t j);
-
-int gsl_matrix_complex_long_double_memcpy(gsl_matrix_complex_long_double * dest, const gsl_matrix_complex_long_double * src);
-
 int gsl_vector_complex_long_double_view_row_from_matrix (gsl_vector_complex_long_double * v, gsl_matrix_complex_long_double * m, const size_t i);
 int gsl_vector_complex_long_double_view_col_from_matrix (gsl_vector_complex_long_double * v, gsl_matrix_complex_long_double * m, const size_t j);
 
-int gsl_matrix_complex_long_double_view_from_vector (gsl_matrix_complex_long_double * m, 
-                                               gsl_vector_complex_long_double * base,
-                                               const size_t offset, 
-                                               const size_t n1, const size_t n2, const size_t d2);
+int gsl_matrix_complex_long_double_view_from_vector (gsl_matrix_complex_long_double * m, gsl_vector_complex_long_double * base, const size_t offset, const size_t n1, const size_t n2, const size_t d2);
 
 extern int gsl_check_range ;
 

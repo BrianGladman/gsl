@@ -50,6 +50,9 @@ int gsl_vector_complex_float_view_from_vector (gsl_vector_complex_float *v,
                                                gsl_vector_complex_float *base,
                                                size_t offset, size_t n, size_t stride);
 
+gsl_vector_complex_float gsl_vector_complex_float_subvector (gsl_vector_complex_float *v, size_t i, size_t n, size_t stride);
+
+
 gsl_complex_float 
 *gsl_vector_complex_float_ptr (const gsl_vector_complex_float * v, size_t i);
 
@@ -77,7 +80,8 @@ int gsl_vector_complex_float_memcpy (gsl_vector_complex_float * dest, const gsl_
 
 int gsl_vector_complex_float_reverse (gsl_vector_complex_float * v);
 
-int gsl_vector_complex_float_swap (gsl_vector_complex_float * v, const size_t i, const size_t j);
+int gsl_vector_complex_float_swap (gsl_vector_complex_float * v, gsl_vector_complex_float * w);
+int gsl_vector_complex_float_swap_elements (gsl_vector_complex_float * v, const size_t i, const size_t j);
 
 int gsl_vector_complex_float_isnull (gsl_vector_complex_float * v);
 
