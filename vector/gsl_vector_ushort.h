@@ -51,9 +51,9 @@ typedef struct
   gsl_vector_ushort vector;
 } gsl_vector_ushort_view;
 
-typedef struct
+typedef const struct
 {
-  const gsl_vector_ushort vector;
+  gsl_vector_ushort vector;
 } gsl_vector_ushort_const_view;
 
 

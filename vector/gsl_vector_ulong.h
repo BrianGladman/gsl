@@ -51,9 +51,9 @@ typedef struct
   gsl_vector_ulong vector;
 } gsl_vector_ulong_view;
 
-typedef struct
+typedef const struct
 {
-  const gsl_vector_ulong vector;
+  gsl_vector_ulong vector;
 } gsl_vector_ulong_const_view;
 
 

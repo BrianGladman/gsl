@@ -51,9 +51,9 @@ typedef struct
   gsl_matrix_char matrix;
 } gsl_matrix_char_view;
 
-typedef struct
+typedef const struct
 {
-  const gsl_matrix_char matrix;
+  gsl_matrix_char matrix;
 } gsl_matrix_char_const_view;
 
 /* Allocation */

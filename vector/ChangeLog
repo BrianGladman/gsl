@@ -1,3 +1,11 @@
+Thu Aug 23 13:22:29 2001  Brian Gough  <bjg@network-theory.co.uk>
+
+	* gsl_vector_complex_float.h: added const to second argument of
+ 	_ptr functions
+
+	* gsl_vector.h: changed definition of gsl_vector_const_view to
+ 	compile with Sun's cc
+
 Fri Aug  3 14:11:51 2001  Brian Gough  <bjg@network-theory.co.uk>
 
 	* added gsl_vector_ptr and gsl_vector_const_ptr functions

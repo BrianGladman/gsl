@@ -51,9 +51,9 @@ typedef struct
   gsl_vector_long_double vector;
 } gsl_vector_long_double_view;
 
-typedef struct
+typedef const struct
 {
-  const gsl_vector_long_double vector;
+  gsl_vector_long_double vector;
 } gsl_vector_long_double_const_view;
 
 

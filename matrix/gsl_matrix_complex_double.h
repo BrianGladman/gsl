@@ -52,9 +52,9 @@ typedef struct
   gsl_matrix_complex matrix;
 } gsl_matrix_complex_view;
 
-typedef struct
+typedef const struct
 {
-  const gsl_matrix_complex matrix;
+  gsl_matrix_complex matrix;
 } gsl_matrix_complex_const_view;
 
 /* Allocation */

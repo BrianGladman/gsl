@@ -53,9 +53,9 @@ typedef struct
   gsl_vector_complex vector;
 } gsl_vector_complex_view;
 
-typedef struct
+typedef const struct
 {
-  const gsl_vector_complex vector;
+  gsl_vector_complex vector;
 } gsl_vector_complex_const_view;
 
 /* Allocation */
@@ -144,10 +144,10 @@ void gsl_vector_complex_set (gsl_vector_complex * v, const size_t i,
                                    gsl_complex z);
 
 gsl_complex 
-*gsl_vector_complex_ptr (gsl_vector_complex * v, size_t i);
+*gsl_vector_complex_ptr (gsl_vector_complex * v, const size_t i);
 
 const gsl_complex 
-*gsl_vector_complex_const_ptr (const gsl_vector_complex * v, size_t i);
+*gsl_vector_complex_const_ptr (const gsl_vector_complex * v, const size_t i);
 
 void gsl_vector_complex_set_zero (gsl_vector_complex * v);
 void gsl_vector_complex_set_all (gsl_vector_complex * v,
