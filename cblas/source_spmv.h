@@ -18,7 +18,7 @@
  */
 
 {
-  size_t i, j;
+  INDEX i, j;
 
 
   if (alpha == 0.0 && beta == 1.0)
@@ -26,13 +26,13 @@
 
   /* form  y := beta*y */
   if (beta == 0.0) {
-    size_t iy = OFFSET(N, incY);
+    INDEX iy = OFFSET(N, incY);
     for (i = 0; i < N; i++) {
       Y[iy] = 0.0;
       iy += incY;
     }
   } else if (beta != 1.0) {
-    size_t iy = OFFSET(N, incY);
+    INDEX iy = OFFSET(N, incY);
     for (i = 0; i < N; i++) {
       Y[iy] *= beta;
       iy += incY;
@@ -46,15 +46,15 @@
 
   if ((order == CblasRowMajor && Uplo == CblasUpper)
       || (order == CblasColMajor && Uplo == CblasLower)) {
-    size_t ix = OFFSET(N, incX);
-    size_t iy = OFFSET(N, incY);
+    INDEX ix = OFFSET(N, incX);
+    INDEX iy = OFFSET(N, incY);
     for (i = 0; i < N; i++) {
       BASE tmp1 = alpha * X[ix];
       BASE tmp2 = 0.0;
-      const size_t j_min = i + 1;
-      const size_t j_max = N;
-      size_t jx = OFFSET(N, incX) + j_min * incX;
-      size_t jy = OFFSET(N, incY) + j_min * incY;
+      const INDEX j_min = i + 1;
+      const INDEX j_max = N;
+      INDEX jx = OFFSET(N, incX) + j_min * incX;
+      INDEX jy = OFFSET(N, incY) + j_min * incY;
 
       Y[iy] += tmp1 * Ap[TPUP(N, i, i)];
 
@@ -71,16 +71,16 @@
     }
   } else if ((order == CblasRowMajor && Uplo == CblasLower)
 	     || (order == CblasColMajor && Uplo == CblasUpper)) {
-    size_t ix = OFFSET(N, incX);
-    size_t iy = OFFSET(N, incY);
+    INDEX ix = OFFSET(N, incX);
+    INDEX iy = OFFSET(N, incY);
     for (i = 0; i < N; i++) {
       BASE tmp1 = alpha * X[ix];
       BASE tmp2 = 0.0;
 
-      const size_t j_min = 0;
-      const size_t j_max = i;
-      size_t jx = OFFSET(N, incX) + j_min * incX;
-      size_t jy = OFFSET(N, incY) + j_min * incY;
+      const INDEX j_min = 0;
+      const INDEX j_max = i;
+      INDEX jx = OFFSET(N, incX) + j_min * incX;
+      INDEX jy = OFFSET(N, incY) + j_min * incY;
 
       Y[iy] += tmp1 * Ap[TPLO(N, i, i)];
 

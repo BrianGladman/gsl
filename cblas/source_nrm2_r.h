@@ -20,8 +20,8 @@
 {
   BASE scale = 0.0;
   BASE ssq = 1.0;
-  size_t i;
-  size_t ix = 0;
+  INDEX i;
+  INDEX ix = 0;
 
   if (N <= 0 || incX <= 0) {
     return 0;

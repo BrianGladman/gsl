@@ -18,13 +18,13 @@
  */
 
 {
-  size_t i, j;
+  INDEX i, j;
 
   if (order == CblasRowMajor) {
-    size_t ix = OFFSET(M, incX);
+    INDEX ix = OFFSET(M, incX);
     for (i = 0; i < M; i++) {
       const BASE tmp = alpha * X[ix];
-      size_t jy = OFFSET(N, incY);
+      INDEX jy = OFFSET(N, incY);
       for (j = 0; j < N; j++) {
 	A[lda * i + j] += Y[jy] * tmp;
 	jy += incY;
@@ -32,10 +32,10 @@
       ix += incX;
     }
   } else if (order == CblasColMajor) {
-    size_t jy = OFFSET(N, incY);
+    INDEX jy = OFFSET(N, incY);
     for (j = 0; j < N; j++) {
       const BASE tmp = alpha * Y[jy];
-      size_t ix = OFFSET(M, incX);
+      INDEX ix = OFFSET(M, incX);
       for (i = 0; i < M; i++) {
 	A[i + lda * j] += X[ix] * tmp;
 	ix += incX;

@@ -18,9 +18,9 @@
  */
 
 {
-  size_t i;
-  size_t ix = OFFSET(N, incX);
-  size_t iy = OFFSET(N, incY);
+  INDEX i;
+  INDEX ix = OFFSET(N, incX);
+  INDEX iy = OFFSET(N, incY);
 
   for (i = 0; i < N; i++) {
     Y[iy] = X[ix];

@@ -18,8 +18,8 @@
  */
 
 {
-  size_t i;
-  size_t ix;
+  INDEX i;
+  INDEX ix;
 
   if (incX <= 0) {
     return;

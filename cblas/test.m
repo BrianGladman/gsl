@@ -2,8 +2,10 @@ rand("seed", 1);
 global TEST=0;
 global FILE=stdout;
 global LIST;
+global HEADER;
 
 [LIST] = fopen("tests.c", "w");
+[HEADER] = fopen("tests.h", "w");
 
 ######################################################################
 
@@ -1588,8 +1590,10 @@ endfunction
 function begin_file(name,decls)
   global FILE;
   global LIST;
+  global HEADER;
   printf("opening %s\n", name) ;
   fprintf(LIST, "  test_%s ();\n", name);
+  fprintf(HEADER, "void test_%s (void);\n", name);
   filename = strcat("test_", name, ".c");
   [FILE] = fopen(filename, "w");
   fprintf(FILE,"#include <gsl/gsl_test.h>\n");
@@ -1597,8 +1601,10 @@ function begin_file(name,decls)
   fprintf(FILE,"#include <gsl/gsl_math.h>\n");
   fprintf(FILE,"#include \"gsl_cblas.h\"\n");
   fprintf(FILE,"\n");
+  fprintf(FILE,"#include \"tests.h\"\n");
+  fprintf(FILE,"\n");
   fprintf(FILE,"void\n");
-  fprintf(FILE,"test_%s () {\n", name);
+  fprintf(FILE,"test_%s (void) {\n", name);
   if (nargin == 1)
     fprintf(FILE,"const double flteps = 1e-4, dbleps = 1e-6;\n");
   else
@@ -1811,7 +1817,7 @@ function test_amax (S, fn, N, X, incX)
   define(S, "vector", "X", X);
   define(S, "int", "incX", incX);
   T = S; T.complex = 0;
-  define(T, "scalar", "expected", feval(strcat("blas_", fn), N, X, incX));
+  define(T, "int", "expected", feval(strcat("blas_", fn), N, X, incX));
   define(T, "int", "k");
   call("k = cblas_i", S.prefix, fn, "(N, X, incX)");
   test(T, "int", "k", "expected", strcat(S.prefix, fn));

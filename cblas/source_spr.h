@@ -18,7 +18,7 @@
  */
 
 {
-  size_t i, j;
+  INDEX i, j;
 
   if (N == 0)
     return;
@@ -28,10 +28,10 @@
 
   if ((order == CblasRowMajor && Uplo == CblasUpper)
       || (order == CblasColMajor && Uplo == CblasLower)) {
-    size_t ix = OFFSET(N, incX);
+    INDEX ix = OFFSET(N, incX);
     for (i = 0; i < N; i++) {
       const BASE tmp = alpha * X[ix];
-      size_t jx = ix;
+      INDEX jx = ix;
       for (j = i; j < N; j++) {
 	Ap[TPUP(N, i, j)] += X[jx] * tmp;
 	jx += incX;
@@ -40,10 +40,10 @@
     }
   } else if ((order == CblasRowMajor && Uplo == CblasLower)
 	     || (order == CblasColMajor && Uplo == CblasUpper)) {
-    size_t ix = OFFSET(N, incX);
+    INDEX ix = OFFSET(N, incX);
     for (i = 0; i < N; i++) {
       const BASE tmp = alpha * X[ix];
-      size_t jx = OFFSET(N, incX);
+      INDEX jx = OFFSET(N, incX);
       for (j = 0; j <= i; j++) {
 	Ap[TPLO(N, i, j)] += X[jx] * tmp;
 	jx += incX;

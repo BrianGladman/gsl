@@ -18,11 +18,13 @@
  */
 
 {
-  size_t i, j, k;
+  INDEX i, j, k;
   int uplo, trans;
 
-  const BASE alpha_real = REAL0(alpha), alpha_imag = IMAG0(alpha);
-  const BASE beta_real = REAL0(beta), beta_imag = IMAG0(beta);
+  const BASE alpha_real = CONST_REAL0(alpha);
+  const BASE alpha_imag = CONST_IMAG0(alpha);
+  const BASE beta_real = CONST_REAL0(beta);
+  const BASE beta_imag = CONST_IMAG0(beta);
 
   if ((alpha_real == 0.0 && alpha_imag == 0.0)
       && (beta_real == 1.0 && beta_imag == 0.0))
@@ -87,14 +89,14 @@
 	BASE temp_real = 0.0;
 	BASE temp_imag = 0.0;
 	for (k = 0; k < K; k++) {
-	  const BASE Aik_real = REAL(A, i * lda + k);
-	  const BASE Aik_imag = IMAG(A, i * lda + k);
-	  const BASE Bik_real = REAL(B, i * lda + k);
-	  const BASE Bik_imag = IMAG(B, i * lda + k);
-	  const BASE Ajk_real = REAL(A, j * lda + k);
-	  const BASE Ajk_imag = IMAG(A, j * lda + k);
-	  const BASE Bjk_real = REAL(B, j * lda + k);
-	  const BASE Bjk_imag = IMAG(B, j * lda + k);
+	  const BASE Aik_real = CONST_REAL(A, i * lda + k);
+	  const BASE Aik_imag = CONST_IMAG(A, i * lda + k);
+	  const BASE Bik_real = CONST_REAL(B, i * ldb + k);
+	  const BASE Bik_imag = CONST_IMAG(B, i * ldb + k);
+	  const BASE Ajk_real = CONST_REAL(A, j * lda + k);
+	  const BASE Ajk_imag = CONST_IMAG(A, j * lda + k);
+	  const BASE Bjk_real = CONST_REAL(B, j * ldb + k);
+	  const BASE Bjk_imag = CONST_IMAG(B, j * ldb + k);
 	  temp_real += ((Aik_real * Bjk_real - Aik_imag * Bjk_imag)
 			+ (Bik_real * Ajk_real - Bik_imag * Ajk_imag));
 	  temp_imag += ((Aik_real * Bjk_imag + Aik_imag * Bjk_real)
@@ -109,19 +111,19 @@
 
     for (k = 0; k < K; k++) {
       for (i = 0; i < N; i++) {
-	BASE Aki_real = REAL(A, k * lda + i);
-	BASE Aki_imag = IMAG(A, k * lda + i);
-	BASE Bki_real = REAL(B, k * lda + i);
-	BASE Bki_imag = IMAG(B, k * lda + i);
+	BASE Aki_real = CONST_REAL(A, k * lda + i);
+	BASE Aki_imag = CONST_IMAG(A, k * lda + i);
+	BASE Bki_real = CONST_REAL(B, k * ldb + i);
+	BASE Bki_imag = CONST_IMAG(B, k * ldb + i);
 	BASE temp1_real = alpha_real * Aki_real - alpha_imag * Aki_imag;
 	BASE temp1_imag = alpha_real * Aki_imag + alpha_imag * Aki_real;
 	BASE temp2_real = alpha_real * Bki_real - alpha_imag * Bki_imag;
 	BASE temp2_imag = alpha_real * Bki_imag + alpha_imag * Bki_real;
 	for (j = i; j < N; j++) {
-	  BASE Akj_real = REAL(A, k * lda + j);
-	  BASE Akj_imag = IMAG(A, k * lda + j);
-	  BASE Bkj_real = REAL(B, k * lda + j);
-	  BASE Bkj_imag = IMAG(B, k * lda + j);
+	  BASE Akj_real = CONST_REAL(A, k * lda + j);
+	  BASE Akj_imag = CONST_IMAG(A, k * lda + j);
+	  BASE Bkj_real = CONST_REAL(B, k * ldb + j);
+	  BASE Bkj_imag = CONST_IMAG(B, k * ldb + j);
 	  REAL(C, i * lda + j) += (temp1_real * Bkj_real - temp1_imag * Bkj_imag)
 	      + (temp2_real * Akj_real - temp2_imag * Akj_imag);
 	  IMAG(C, i * lda + j) += (temp1_real * Bkj_imag + temp1_imag * Bkj_real)
@@ -138,14 +140,14 @@
 	BASE temp_real = 0.0;
 	BASE temp_imag = 0.0;
 	for (k = 0; k < K; k++) {
-	  const BASE Aik_real = REAL(A, i * lda + k);
-	  const BASE Aik_imag = IMAG(A, i * lda + k);
-	  const BASE Bik_real = REAL(B, i * lda + k);
-	  const BASE Bik_imag = IMAG(B, i * lda + k);
-	  const BASE Ajk_real = REAL(A, j * lda + k);
-	  const BASE Ajk_imag = IMAG(A, j * lda + k);
-	  const BASE Bjk_real = REAL(B, j * lda + k);
-	  const BASE Bjk_imag = IMAG(B, j * lda + k);
+	  const BASE Aik_real = CONST_REAL(A, i * lda + k);
+	  const BASE Aik_imag = CONST_IMAG(A, i * lda + k);
+	  const BASE Bik_real = CONST_REAL(B, i * ldb + k);
+	  const BASE Bik_imag = CONST_IMAG(B, i * ldb + k);
+	  const BASE Ajk_real = CONST_REAL(A, j * lda + k);
+	  const BASE Ajk_imag = CONST_IMAG(A, j * lda + k);
+	  const BASE Bjk_real = CONST_REAL(B, j * ldb + k);
+	  const BASE Bjk_imag = CONST_IMAG(B, j * ldb + k);
 	  temp_real += ((Aik_real * Bjk_real - Aik_imag * Bjk_imag)
 			+ (Bik_real * Ajk_real - Bik_imag * Ajk_imag));
 	  temp_imag += ((Aik_real * Bjk_imag + Aik_imag * Bjk_real)
@@ -160,19 +162,19 @@
 
     for (k = 0; k < K; k++) {
       for (i = 0; i < N; i++) {
-	BASE Aki_real = REAL(A, k * lda + i);
-	BASE Aki_imag = IMAG(A, k * lda + i);
-	BASE Bki_real = REAL(B, k * lda + i);
-	BASE Bki_imag = IMAG(B, k * lda + i);
+	BASE Aki_real = CONST_REAL(A, k * lda + i);
+	BASE Aki_imag = CONST_IMAG(A, k * lda + i);
+	BASE Bki_real = CONST_REAL(B, k * ldb + i);
+	BASE Bki_imag = CONST_IMAG(B, k * ldb + i);
 	BASE temp1_real = alpha_real * Aki_real - alpha_imag * Aki_imag;
 	BASE temp1_imag = alpha_real * Aki_imag + alpha_imag * Aki_real;
 	BASE temp2_real = alpha_real * Bki_real - alpha_imag * Bki_imag;
 	BASE temp2_imag = alpha_real * Bki_imag + alpha_imag * Bki_real;
 	for (j = 0; j <= i; j++) {
-	  BASE Akj_real = REAL(A, k * lda + j);
-	  BASE Akj_imag = IMAG(A, k * lda + j);
-	  BASE Bkj_real = REAL(B, k * lda + j);
-	  BASE Bkj_imag = IMAG(B, k * lda + j);
+	  BASE Akj_real = CONST_REAL(A, k * lda + j);
+	  BASE Akj_imag = CONST_IMAG(A, k * lda + j);
+	  BASE Bkj_real = CONST_REAL(B, k * ldb + j);
+	  BASE Bkj_imag = CONST_IMAG(B, k * ldb + j);
 	  REAL(C, i * lda + j) += (temp1_real * Bkj_real - temp1_imag * Bkj_imag)
 	      + (temp2_real * Akj_real - temp2_imag * Akj_imag);
 	  IMAG(C, i * lda + j) += (temp1_real * Bkj_imag + temp1_imag * Bkj_real)

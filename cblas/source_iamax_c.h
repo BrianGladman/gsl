@@ -19,8 +19,8 @@
 
 {
   BASE max = 0.0;
-  size_t ix = 0;
-  CBLAS_INDEX i;
+  INDEX ix = 0;
+  INDEX i;
   CBLAS_INDEX result = 0;
 
   if (incX <= 0) {
@@ -28,7 +28,7 @@
   }
 
   for (i = 0; i < N; i++) {
-    const BASE a = fabs(REAL(X, ix)) + fabs(IMAG(X, ix));
+    const BASE a = fabs(CONST_REAL(X, ix)) + fabs(CONST_IMAG(X, ix));
 
     if (a > max) {
       max = a;

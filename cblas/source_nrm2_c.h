@@ -20,16 +20,16 @@
 {
   BASE scale = 0.0;
   BASE ssq = 1.0;
-  size_t i;
-  size_t ix = 0;
+  INDEX i;
+  INDEX ix = 0;
 
   if (N == 0 || incX < 1) {
     return 0;
   }
 
   for (i = 0; i < N; i++) {
-    const BASE x = REAL(X, ix);
-    const BASE y = IMAG(X, ix);
+    const BASE x = CONST_REAL(X, ix);
+    const BASE y = CONST_IMAG(X, ix);
 
     if (x != 0.0) {
       const BASE ax = fabs(x);

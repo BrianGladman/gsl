@@ -18,8 +18,8 @@
  */
 
 {
-  size_t i, j, k;
-  size_t n1, n2;
+  INDEX i, j, k;
+  INDEX n1, n2;
   int uplo, side;
 
   if (alpha == 0.0 && beta == 1.0)

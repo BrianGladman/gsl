@@ -19,7 +19,7 @@
 
 {
   const int nonunit = (Diag == CblasNonUnit);
-  size_t i, j;
+  INDEX i, j;
   const int Trans = (TransA != CblasConjTrans) ? TransA : CblasTrans;
 
   if (N == 0)
@@ -30,12 +30,12 @@
   if ((order == CblasRowMajor && Trans == CblasNoTrans && Uplo == CblasUpper)
       || (order == CblasColMajor && Trans == CblasTrans && Uplo == CblasLower)) {
     /* backsubstitution */
-    size_t ix = OFFSET(N, incX) + incX * (N - 1);
+    INDEX ix = OFFSET(N, incX) + incX * (N - 1);
     for (i = N; i > 0 && i--;) {
       BASE tmp = X[ix];
-      const size_t j_min = i + 1;
-      const size_t j_max = GSL_MIN(N, i + K + 1);
-      size_t jx = OFFSET(N, incX) + j_min * incX;
+      const INDEX j_min = i + 1;
+      const INDEX j_max = GSL_MIN(N, i + K + 1);
+      INDEX jx = OFFSET(N, incX) + j_min * incX;
       for (j = j_min; j < j_max; j++) {
 	const BASE Aij = A[lda * i + (j - i)];
 	tmp -= Aij * X[jx];
@@ -52,13 +52,13 @@
 	     || (order == CblasColMajor && Trans == CblasTrans && Uplo == CblasUpper)) {
 
     /* forward substitution */
-    size_t ix = OFFSET(N, incX);
+    INDEX ix = OFFSET(N, incX);
 
     for (i = 0; i < N; i++) {
       BASE tmp = X[ix];
-      const size_t j_min = (i > K ? i - K : 0);
-      const size_t j_max = i;
-      size_t jx = OFFSET(N, incX) + j_min * incX;
+      const INDEX j_min = (i > K ? i - K : 0);
+      const INDEX j_max = i;
+      INDEX jx = OFFSET(N, incX) + j_min * incX;
       for (j = j_min; j < j_max; j++) {
 	const BASE Aij = A[lda * i + (K + j - i)];
 	tmp -= Aij * X[jx];
@@ -77,12 +77,12 @@
     /* form  x := inv( A' )*x */
 
     /* forward substitution */
-    size_t ix = OFFSET(N, incX);
+    INDEX ix = OFFSET(N, incX);
     for (i = 0; i < N; i++) {
       BASE tmp = X[ix];
-      const size_t j_min = (K > i ? 0 : i - K);
-      const size_t j_max = i;
-      size_t jx = OFFSET(N, incX) + j_min * incX;
+      const INDEX j_min = (K > i ? 0 : i - K);
+      const INDEX j_max = i;
+      INDEX jx = OFFSET(N, incX) + j_min * incX;
       for (j = j_min; j < j_max; j++) {
 	const BASE Aji = A[(i - j) + lda * j];
 	tmp -= Aji * X[jx];
@@ -99,12 +99,12 @@
 	     || (order == CblasColMajor && Trans == CblasNoTrans && Uplo == CblasUpper)) {
 
     /* backsubstitution */
-    size_t ix = OFFSET(N, incX) + (N - 1) * incX;
+    INDEX ix = OFFSET(N, incX) + (N - 1) * incX;
     for (i = N; i > 0 && i--;) {
       BASE tmp = X[ix];
-      const size_t j_min = i + 1;
-      const size_t j_max = GSL_MIN(N, i + K + 1);
-      size_t jx = OFFSET(N, incX) + j_min * incX;
+      const INDEX j_min = i + 1;
+      const INDEX j_max = GSL_MIN(N, i + K + 1);
+      INDEX jx = OFFSET(N, incX) + j_min * incX;
       for (j = j_min; j < j_max; j++) {
 	const BASE Aji = A[(K + i - j) + lda * j];
 	tmp -= Aji * X[jx];

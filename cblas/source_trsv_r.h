@@ -19,8 +19,8 @@
 
 {
   const int nonunit = (Diag == CblasNonUnit);
-  size_t ix, jx;
-  size_t i, j;
+  INDEX ix, jx;
+  INDEX i, j;
   const int Trans = (TransA != CblasConjTrans) ? TransA : CblasTrans;
 
   if (N == 0)

@@ -18,14 +18,14 @@
  */
 
 {
-  size_t i;
+  INDEX i;
 
   if (alpha == 0.0) {
     return;
   }
 
   if (incX == 1 && incY == 1) {
-    const size_t m = N % 4;
+    const INDEX m = N % 4;
 
     for (i = 0; i < m; i++) {
       Y[i] += alpha * X[i];
@@ -38,8 +38,8 @@
       Y[i + 3] += alpha * X[i + 3];
     }
   } else {
-    size_t ix = OFFSET(N, incX);
-    size_t iy = OFFSET(N, incY);
+    INDEX ix = OFFSET(N, incX);
+    INDEX iy = OFFSET(N, incY);
 
     for (i = 0; i < N; i++) {
       Y[iy] += alpha * X[ix];

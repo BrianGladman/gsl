@@ -3,8 +3,10 @@
 #include <gsl/gsl_math.h>
 #include "gsl_cblas.h"
 
+#include "tests.h"
+
 void
-test_asum () {
+test_asum (void) {
 const double flteps = 1e-4, dbleps = 1e-6;
   {
    int N = 1;

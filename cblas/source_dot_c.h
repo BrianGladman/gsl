@@ -20,12 +20,14 @@
 {
   BASE r_real = 0.0;
   BASE r_imag = 0.0;
-  size_t i;
-  size_t ix = OFFSET(N, incX);
-  size_t iy = OFFSET(N, incY);
+  INDEX i;
+  INDEX ix = OFFSET(N, incX);
+  INDEX iy = OFFSET(N, incY);
   for (i = 0; i < N; i++) {
-    BASE x_real = REAL(X, ix), x_imag = IMAG(X, ix);
-    BASE y_real = REAL(Y, iy), y_imag = IMAG(Y, iy);
+    const BASE x_real = CONST_REAL(X, ix);
+    const BASE x_imag = CONST_IMAG(X, ix);
+    const BASE y_real = CONST_REAL(Y, iy);
+    const BASE y_imag = CONST_IMAG(Y, iy);
     r_real += x_real * y_real - CONJ_SIGN * x_imag * y_imag;
     r_imag += x_real * y_imag + CONJ_SIGN * x_imag * y_real;
     ix += incX;

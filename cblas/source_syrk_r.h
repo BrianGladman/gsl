@@ -18,7 +18,7 @@
  */
 
 {
-  size_t i, j, k;
+  INDEX i, j, k;
   int uplo, trans;
 
   if (alpha == 0.0 && beta == 1.0)

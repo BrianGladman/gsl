@@ -18,7 +18,7 @@
  */
 
 {
-  size_t i, j, k;
+  INDEX i, j, k;
   int uplo, trans;
 
   if (alpha == 0.0 && beta == 1.0)
@@ -77,8 +77,8 @@
       for (j = i; j < N; j++) {
 	BASE temp = 0.0;
 	for (k = 0; k < K; k++) {
-	  temp += (A[i * lda + k] * B[j * lda + k]
-		   + B[i * lda + k] * A[j * lda + k]);
+	  temp += (A[i * lda + k] * B[j * ldb + k]
+		   + B[i * ldb + k] * A[j * lda + k]);
 	}
 	C[i * ldc + j] += alpha * temp;
       }
@@ -89,9 +89,9 @@
     for (k = 0; k < K; k++) {
       for (i = 0; i < N; i++) {
 	BASE temp1 = alpha * A[k * lda + i];
-	BASE temp2 = alpha * B[k * lda + i];
+	BASE temp2 = alpha * B[k * ldb + i];
 	for (j = i; j < N; j++) {
-	  C[i * lda + j] += temp1 * B[k * lda + j] + temp2 * A[k * lda + j];
+	  C[i * lda + j] += temp1 * B[k * ldb + j] + temp2 * A[k * lda + j];
 	}
       }
     }
@@ -103,8 +103,8 @@
       for (j = 0; j <= i; j++) {
 	BASE temp = 0.0;
 	for (k = 0; k < K; k++) {
-	  temp += (A[i * lda + k] * B[j * lda + k]
-		   + B[i * lda + k] * A[j * lda + k]);
+	  temp += (A[i * lda + k] * B[j * ldb + k]
+		   + B[i * ldb + k] * A[j * lda + k]);
 	}
 	C[i * ldc + j] += alpha * temp;
       }
@@ -115,9 +115,9 @@
     for (k = 0; k < K; k++) {
       for (i = 0; i < N; i++) {
 	BASE temp1 = alpha * A[k * lda + i];
-	BASE temp2 = alpha * B[k * lda + i];
+	BASE temp2 = alpha * B[k * ldb + i];
 	for (j = 0; j <= i; j++) {
-	  C[i * lda + j] += temp1 * B[k * lda + j] + temp2 * A[k * lda + j];
+	  C[i * lda + j] += temp1 * B[k * ldb + j] + temp2 * A[k * lda + j];
 	}
       }
     }

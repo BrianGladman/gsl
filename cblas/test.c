@@ -22,53 +22,10 @@
 #include <gsl/gsl_math.h>
 #include "gsl_cblas.h"
 
-void test_dot ();
-void test_nrm2 ();
-void test_asum ();
-void test_amax ();
-void test_axpy ();
-void test_copy ();
-void test_swap ();
-void test_scal ();
-void test_rotg ();
-void test_rot ();
-void test_rotmg ();
-void test_rotm ();
-void test_gemv ();
-void test_gbmv ();
-void test_trmv ();
-void test_tbmv ();
-void test_tpmv ();
-void test_symv ();
-void test_hemv ();
-void test_hbmv ();
-void test_sbmv ();
-void test_hpmv ();
-void test_spmv ();
-void test_trsv ();
-void test_tbsv ();
-void test_tpsv ();
-void test_ger ();
-void test_syr ();
-void test_her ();
-void test_hpr ();
-void test_spr ();
-void test_syr2 ();
-void test_spr2 ();
-void test_her2 ();
-void test_hpr2 ();
-void test_gemm ();
-void test_symm ();
-void test_hemm ();
-void test_syrk ();
-void test_herk ();
-void test_syr2k ();
-void test_her2k ();
-void test_trmm ();
-void test_trsm ();
+#include "tests.h"
 
 int 
-main ()
+main (void)
 {
   gsl_ieee_env_setup ();
 

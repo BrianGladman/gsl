@@ -18,11 +18,14 @@
  */
 
 {
-  size_t i, j;
-  size_t lenX, lenY, L, U;
+  INDEX i, j;
+  INDEX lenX, lenY, L, U;
 
-  const BASE alpha_real = REAL0(alpha), alpha_imag = IMAG0(alpha);
-  const BASE beta_real = REAL0(beta), beta_imag = IMAG0(beta);
+  const BASE alpha_real = CONST_REAL0(alpha);
+  const BASE alpha_imag = CONST_IMAG0(alpha);
+
+  const BASE beta_real = CONST_REAL0(beta);
+  const BASE beta_imag = CONST_IMAG0(beta);
 
   if (M == 0 || N == 0)
     return;
@@ -45,14 +48,14 @@
 
   /* form  y := beta*y */
   if (beta_real == 0.0 && beta_imag == 0.0) {
-    size_t iy = OFFSET(lenY, incY);
+    INDEX iy = OFFSET(lenY, incY);
     for (i = 0; i < lenY; i++) {
       REAL(Y, iy) = 0.0;
       IMAG(Y, iy) = 0.0;
       iy += incY;
     }
   } else if (!(beta_real == 1.0 && beta_imag == 0.0)) {
-    size_t iy = OFFSET(lenY, incY);
+    INDEX iy = OFFSET(lenY, incY);
     for (i = 0; i < lenY; i++) {
       const BASE y_real = REAL(Y, iy);
       const BASE y_imag = IMAG(Y, iy);
@@ -70,18 +73,18 @@
   if ((order == CblasRowMajor && TransA == CblasNoTrans)
       || (order == CblasColMajor && TransA == CblasTrans)) {
     /* form  y := alpha*A*x + y */
-    size_t iy = OFFSET(lenY, incY);
+    INDEX iy = OFFSET(lenY, incY);
     for (i = 0; i < lenY; i++) {
       BASE dotR = 0.0;
       BASE dotI = 0.0;
-      const size_t j_min = (i > L ? i - L : 0);
-      const size_t j_max = GSL_MIN(lenX, i + U + 1);
-      size_t ix = OFFSET(lenX, incX) + j_min * incX;
+      const INDEX j_min = (i > L ? i - L : 0);
+      const INDEX j_max = GSL_MIN(lenX, i + U + 1);
+      INDEX ix = OFFSET(lenX, incX) + j_min * incX;
       for (j = j_min; j < j_max; j++) {
-	const BASE x_real = REAL(X, ix);
-	const BASE x_imag = IMAG(X, ix);
-	const BASE A_real = REAL(A, lda * i + (L + j - i));
-	const BASE A_imag = IMAG(A, lda * i + (L + j - i));
+	const BASE x_real = CONST_REAL(X, ix);
+	const BASE x_imag = CONST_IMAG(X, ix);
+	const BASE A_real = CONST_REAL(A, lda * i + (L + j - i));
+	const BASE A_imag = CONST_IMAG(A, lda * i + (L + j - i));
 
 	dotR += A_real * x_real - A_imag * x_imag;
 	dotI += A_real * x_imag + A_imag * x_real;
@@ -95,19 +98,19 @@
   } else if ((order == CblasRowMajor && TransA == CblasTrans)
 	     || (order == CblasColMajor && TransA == CblasNoTrans)) {
     /* form  y := alpha*A'*x + y */
-    size_t ix = OFFSET(lenX, incX);
+    INDEX ix = OFFSET(lenX, incX);
     for (j = 0; j < lenX; j++) {
-      BASE x_real = REAL(X, ix);
-      BASE x_imag = IMAG(X, ix);
+      const BASE x_real = CONST_REAL(X, ix);
+      const BASE x_imag = CONST_IMAG(X, ix);
       BASE tmpR = alpha_real * x_real - alpha_imag * x_imag;
       BASE tmpI = alpha_real * x_imag + alpha_imag * x_real;
       if (!(tmpR == 0.0 && tmpI == 0.0)) {
-	const size_t i_min = (j > U ? j - U : 0);
-	const size_t i_max = GSL_MIN(lenY, j + L + 1);
-	size_t iy = OFFSET(lenY, incY) + i_min * incY;
+	const INDEX i_min = (j > U ? j - U : 0);
+	const INDEX i_max = GSL_MIN(lenY, j + L + 1);
+	INDEX iy = OFFSET(lenY, incY) + i_min * incY;
 	for (i = i_min; i < i_max; i++) {
-	  const BASE A_real = REAL(A, lda * j + (U + i - j));
-	  const BASE A_imag = IMAG(A, lda * j + (U + i - j));
+	  const BASE A_real = CONST_REAL(A, lda * j + (U + i - j));
+	  const BASE A_imag = CONST_IMAG(A, lda * j + (U + i - j));
 	  REAL(Y, iy) += A_real * tmpR - A_imag * tmpI;
 	  IMAG(Y, iy) += A_real * tmpI + A_imag * tmpR;
 	  iy += incY;
@@ -117,19 +120,19 @@
     }
   } else if (order == CblasRowMajor && TransA == CblasConjTrans) {
     /* form  y := alpha*A^H*x + y */
-    size_t ix = OFFSET(lenX, incX);
+    INDEX ix = OFFSET(lenX, incX);
     for (j = 0; j < lenX; j++) {
-      BASE x_real = REAL(X, ix);
-      BASE x_imag = IMAG(X, ix);
+      const BASE x_real = CONST_REAL(X, ix);
+      const BASE x_imag = CONST_IMAG(X, ix);
       BASE tmpR = alpha_real * x_real - alpha_imag * x_imag;
       BASE tmpI = alpha_real * x_imag + alpha_imag * x_real;
       if (!(tmpR == 0.0 && tmpI == 0.0)) {
-	const size_t i_min = (j > U ? j - U : 0);
-	const size_t i_max = GSL_MIN(lenY, j + L + 1);
-	size_t iy = OFFSET(lenY, incY) + i_min * incY;
+	const INDEX i_min = (j > U ? j - U : 0);
+	const INDEX i_max = GSL_MIN(lenY, j + L + 1);
+	INDEX iy = OFFSET(lenY, incY) + i_min * incY;
 	for (i = i_min; i < i_max; i++) {
-	  const BASE A_real = REAL(A, lda * j + (U + i - j));
-	  const BASE A_imag = IMAG(A, lda * j + (U + i - j));
+	  const BASE A_real = CONST_REAL(A, lda * j + (U + i - j));
+	  const BASE A_imag = CONST_IMAG(A, lda * j + (U + i - j));
 	  REAL(Y, iy) += A_real * tmpR - (-1.0) * A_imag * tmpI;
 	  IMAG(Y, iy) += A_real * tmpI + (-1.0) * A_imag * tmpR;
 	  iy += incY;
@@ -139,18 +142,18 @@
     }
   } else if (order == CblasColMajor && TransA == CblasConjTrans) {
     /* form  y := alpha*A^H*x + y */
-    size_t iy = OFFSET(lenY, incY);
+    INDEX iy = OFFSET(lenY, incY);
     for (i = 0; i < lenY; i++) {
       BASE dotR = 0.0;
       BASE dotI = 0.0;
-      const size_t j_min = (i > L ? i - L : 0);
-      const size_t j_max = GSL_MIN(lenX, i + U + 1);
-      size_t ix = OFFSET(lenX, incX) + j_min * incX;
+      const INDEX j_min = (i > L ? i - L : 0);
+      const INDEX j_max = GSL_MIN(lenX, i + U + 1);
+      INDEX ix = OFFSET(lenX, incX) + j_min * incX;
       for (j = j_min; j < j_max; j++) {
-	const BASE x_real = REAL(X, ix);
-	const BASE x_imag = IMAG(X, ix);
-	const BASE A_real = REAL(A, lda * i + (L + j - i));
-	const BASE A_imag = IMAG(A, lda * i + (L + j - i));
+	const BASE x_real = CONST_REAL(X, ix);
+	const BASE x_imag = CONST_IMAG(X, ix);
+	const BASE A_real = CONST_REAL(A, lda * i + (L + j - i));
+	const BASE A_imag = CONST_IMAG(A, lda * i + (L + j - i));
 
 	dotR += A_real * x_real - (-1.0) * A_imag * x_imag;
 	dotI += A_real * x_imag + (-1.0) * A_imag * x_real;

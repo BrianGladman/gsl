@@ -18,10 +18,10 @@
  */
 
 {
-  size_t i;
-  size_t ix;
-  const BASE alpha_real = REAL0(alpha);
-  const BASE alpha_imag = IMAG0(alpha);
+  INDEX i;
+  INDEX ix;
+  const BASE alpha_real = CONST_REAL0(alpha);
+  const BASE alpha_imag = CONST_IMAG0(alpha);
 
   if (incX <= 0) {
     return;

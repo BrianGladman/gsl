@@ -1,3 +1,4 @@
+#define INDEX int
 #define OFFSET(N, incX) ((incX) > 0 ?  0 : ((N) - 1) * (-(incX)))
 #define BLAS_ERROR(x)  abort(); 
 
@@ -13,6 +14,13 @@
 
 #define REAL0(a) (((BASE *)a)[0])
 #define IMAG0(a) (((BASE *)a)[1])
+
+#define CONST_REAL(a,i) (((const BASE *) a)[2*(i)])
+#define CONST_IMAG(a,i) (((const BASE *) a)[2*(i)+1])
+
+#define CONST_REAL0(a) (((const BASE *)a)[0])
+#define CONST_IMAG0(a) (((const BASE *)a)[1])
+
 
 #define GB(KU,KL,lda,i,j) ((KU+1+(i-j))*lda + j)
 

@@ -19,8 +19,8 @@
 
 {
   BASE r = 0.0;
-  size_t i;
-  size_t ix = 0;
+  INDEX i;
+  INDEX ix = 0;
 
   if (incX <= 0) {
     return 0;

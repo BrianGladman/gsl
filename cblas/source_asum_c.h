@@ -19,15 +19,15 @@
 
 {
   BASE r = 0.0;
-  size_t i;
-  size_t ix = 0;
+  INDEX i;
+  INDEX ix = 0;
 
   if (incX <= 0) {
     return 0;
   }
 
   for (i = 0; i < N; i++) {
-    r += fabs(REAL(X, ix)) + fabs(IMAG(X, ix));
+    r += fabs(CONST_REAL(X, ix)) + fabs(CONST_IMAG(X, ix));
     ix += incX;
   }
   return r;

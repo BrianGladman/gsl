@@ -18,7 +18,7 @@
  */
 
 {
-  size_t i, j;
+  INDEX i, j;
   const int nonunit = (Diag == CblasNonUnit);
   const int Trans = (TransA != CblasConjTrans) ? TransA : CblasTrans;
 
@@ -30,14 +30,14 @@
   if ((order == CblasRowMajor && Trans == CblasNoTrans && Uplo == CblasUpper)
       || (order == CblasColMajor && Trans == CblasTrans && Uplo == CblasLower)) {
     /* backsubstitution */
-    size_t ix = OFFSET(N, incX) + incX * (N - 1);
+    INDEX ix = OFFSET(N, incX) + incX * (N - 1);
     if (nonunit) {
       X[ix] = X[ix] / Ap[TPUP(N, (N - 1), (N - 1))];
     }
     ix -= incX;
     for (i = N - 1; i > 0 && i--;) {
       BASE tmp = X[ix];
-      size_t jx = ix + incX;
+      INDEX jx = ix + incX;
       for (j = i + 1; j < N; j++) {
 	const BASE Aij = Ap[TPUP(N, i, j)];
 	tmp -= Aij * X[jx];
@@ -54,14 +54,14 @@
 	     || (order == CblasColMajor && Trans == CblasTrans && Uplo == CblasUpper)) {
 
     /* forward substitution */
-    size_t ix = OFFSET(N, incX);
+    INDEX ix = OFFSET(N, incX);
     if (nonunit) {
       X[ix] = X[ix] / Ap[TPLO(N, 0, 0)];
     }
     ix += incX;
     for (i = 1; i < N; i++) {
       BASE tmp = X[ix];
-      size_t jx = OFFSET(N, incX);
+      INDEX jx = OFFSET(N, incX);
       for (j = 0; j < i; j++) {
 	const BASE Aij = Ap[TPLO(N, i, j)];
 	tmp -= Aij * X[jx];
@@ -80,14 +80,14 @@
     /* form  x := inv( A' )*x */
 
     /* forward substitution */
-    size_t ix = OFFSET(N, incX);
+    INDEX ix = OFFSET(N, incX);
     if (nonunit) {
       X[ix] = X[ix] / Ap[TPUP(N, 0, 0)];
     }
     ix += incX;
     for (i = 1; i < N; i++) {
       BASE tmp = X[ix];
-      size_t jx = OFFSET(N, incX);
+      INDEX jx = OFFSET(N, incX);
       for (j = 0; j < i; j++) {
 	const BASE Aji = Ap[TPUP(N, j, i)];
 	tmp -= Aji * X[jx];
@@ -104,14 +104,14 @@
 	     || (order == CblasColMajor && Trans == CblasNoTrans && Uplo == CblasUpper)) {
 
     /* backsubstitution */
-    size_t ix = OFFSET(N, incX) + (N - 1) * incX;
+    INDEX ix = OFFSET(N, incX) + (N - 1) * incX;
     if (nonunit) {
       X[ix] = X[ix] / Ap[TPLO(N, (N - 1), (N - 1))];
     }
     ix -= incX;
     for (i = N - 1; i > 0 && i--;) {
       BASE tmp = X[ix];
-      size_t jx = ix + incX;
+      INDEX jx = ix + incX;
       for (j = i + 1; j < N; j++) {
 	const BASE Aji = Ap[TPLO(N, j, i)];
 	tmp -= Aji * X[jx];

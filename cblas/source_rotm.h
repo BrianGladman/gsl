@@ -18,9 +18,9 @@
  */
 
 {
-  size_t n;
-  size_t i = OFFSET(N, incX);
-  size_t j = OFFSET(N, incY);
+  INDEX n;
+  INDEX i = OFFSET(N, incX);
+  INDEX j = OFFSET(N, incY);
 
   BASE h11, h21, h12, h22;
 

@@ -19,8 +19,8 @@
 
 {
   BASE max = 0.0;
-  size_t ix = 0;
-  CBLAS_INDEX i;
+  INDEX ix = 0;
+  INDEX i;
   CBLAS_INDEX result = 0;
 
   if (incX <= 0) {

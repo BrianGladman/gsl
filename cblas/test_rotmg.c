@@ -3,8 +3,10 @@
 #include <gsl/gsl_math.h>
 #include "gsl_cblas.h"
 
+#include "tests.h"
+
 void
-test_rotmg () {
+test_rotmg (void) {
 const double flteps = 1e-4, dbleps = 1e-6;
   {
    float d1 = -1630.28519312;

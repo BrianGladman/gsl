@@ -18,13 +18,13 @@
  */
 
 {
-  size_t i;
-  size_t ix = OFFSET(N, incX);
-  size_t iy = OFFSET(N, incY);
+  INDEX i;
+  INDEX ix = OFFSET(N, incX);
+  INDEX iy = OFFSET(N, incY);
 
   for (i = 0; i < N; i++) {
-    REAL(Y, iy) = REAL(X, ix);
-    IMAG(Y, iy) = IMAG(X, ix);
+    REAL(Y, iy) = CONST_REAL(X, ix);
+    IMAG(Y, iy) = CONST_IMAG(X, ix);
     ix += incX;
     iy += incY;
   }

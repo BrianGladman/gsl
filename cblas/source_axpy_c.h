@@ -18,19 +18,20 @@
  */
 
 {
-  size_t i;
-  size_t ix = OFFSET(N, incX);
-  size_t iy = OFFSET(N, incY);
+  INDEX i;
+  INDEX ix = OFFSET(N, incX);
+  INDEX iy = OFFSET(N, incY);
 
-  const BASE alpha_real = REAL0(alpha);
-  const BASE alpha_imag = IMAG0(alpha);
+  const BASE alpha_real = CONST_REAL0(alpha);
+  const BASE alpha_imag = CONST_IMAG0(alpha);
 
   if (fabs(alpha_real) == 0 && fabs(alpha_imag) == 0) {
     return;
   }
 
   for (i = 0; i < N; i++) {
-    const BASE x_real = REAL(X, ix), x_imag = IMAG(X, ix);
+    const BASE x_real = CONST_REAL(X, ix);
+    const BASE x_imag = CONST_IMAG(X, ix);
     REAL(Y, iy) += (alpha_real * x_real - alpha_imag * x_imag);
     IMAG(Y, iy) += (alpha_real * x_imag + alpha_imag * x_real);
     ix += incX;

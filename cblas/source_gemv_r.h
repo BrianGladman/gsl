@@ -18,8 +18,8 @@
  */
 
 {
-  size_t i, j;
-  size_t lenX, lenY;
+  INDEX i, j;
+  INDEX lenX, lenY;
 
   const int Trans = (TransA != CblasConjTrans) ? TransA : CblasTrans;
 
@@ -39,13 +39,13 @@
 
   /* form  y := beta*y */
   if (beta == 0.0) {
-    size_t iy = OFFSET(lenY, incY);
+    INDEX iy = OFFSET(lenY, incY);
     for (i = 0; i < lenY; i++) {
       Y[iy] = 0.0;
       iy += incY;
     }
   } else if (beta != 1.0) {
-    size_t iy = OFFSET(lenY, incY);
+    INDEX iy = OFFSET(lenY, incY);
     for (i = 0; i < lenY; i++) {
       Y[iy] *= beta;
       iy += incY;
@@ -58,10 +58,10 @@
   if ((order == CblasRowMajor && Trans == CblasNoTrans)
       || (order == CblasColMajor && Trans == CblasTrans)) {
     /* form  y := alpha*A*x + y */
-    size_t iy = OFFSET(lenY, incY);
+    INDEX iy = OFFSET(lenY, incY);
     for (i = 0; i < lenY; i++) {
       BASE temp = 0.0;
-      size_t ix = OFFSET(lenX, incX);
+      INDEX ix = OFFSET(lenX, incX);
       for (j = 0; j < lenX; j++) {
 	temp += X[ix] * A[lda * i + j];
 	ix += incX;
@@ -72,11 +72,11 @@
   } else if ((order == CblasRowMajor && Trans == CblasTrans)
 	     || (order == CblasColMajor && Trans == CblasNoTrans)) {
     /* form  y := alpha*A'*x + y */
-    size_t ix = OFFSET(lenX, incX);
+    INDEX ix = OFFSET(lenX, incX);
     for (j = 0; j < lenX; j++) {
       const BASE temp = alpha * X[ix];
       if (temp != 0.0) {
-	size_t iy = OFFSET(lenY, incY);
+	INDEX iy = OFFSET(lenY, incY);
 	for (i = 0; i < lenY; i++) {
 	  Y[iy] += temp * A[lda * j + i];
 	  iy += incY;

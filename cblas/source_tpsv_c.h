@@ -21,8 +21,7 @@
   const int conj = (TransA == CblasConjTrans) ? -1 : 1;
   const int Trans = (TransA != CblasConjTrans) ? TransA : CblasTrans;
   const int nonunit = (Diag == CblasNonUnit);
-  size_t i, j;
-  size_t ix, jx;
+  INDEX i, j;
 
   if (N == 0)
     return;
@@ -32,11 +31,11 @@
   if ((order == CblasRowMajor && Trans == CblasNoTrans && Uplo == CblasUpper)
       || (order == CblasColMajor && Trans == CblasTrans && Uplo == CblasLower)) {
 
-    ix = OFFSET(N, incX) + incX * (N - 1);
+    INDEX ix = OFFSET(N, incX) + incX * (N - 1);
 
     if (nonunit) {
-      const BASE a_real = REAL(Ap, TPUP(N, (N - 1), (N - 1)));
-      const BASE a_imag = conj * IMAG(Ap, TPUP(N, (N - 1), (N - 1)));
+      const BASE a_real = CONST_REAL(Ap, TPUP(N, (N - 1), (N - 1)));
+      const BASE a_imag = conj * CONST_IMAG(Ap, TPUP(N, (N - 1), (N - 1)));
       const BASE x_real = REAL(X, ix);
       const BASE x_imag = IMAG(X, ix);
       const BASE s = hypot(a_real, a_imag);
@@ -51,10 +50,10 @@
     for (i = N - 1; i > 0 && i--;) {
       BASE tmp_real = REAL(X, ix);
       BASE tmp_imag = IMAG(X, ix);
-      jx = ix + incX;
+      INDEX jx = ix + incX;
       for (j = i + 1; j < N; j++) {
-	const BASE Aij_real = REAL(Ap, TPUP(N, i, j));
-	const BASE Aij_imag = conj * IMAG(Ap, TPUP(N, i, j));
+	const BASE Aij_real = CONST_REAL(Ap, TPUP(N, i, j));
+	const BASE Aij_imag = conj * CONST_IMAG(Ap, TPUP(N, i, j));
 	const BASE x_real = REAL(X, jx);
 	const BASE x_imag = IMAG(X, jx);
 	tmp_real -= Aij_real * x_real - Aij_imag * x_imag;
@@ -63,8 +62,8 @@
       }
 
       if (nonunit) {
-	const BASE a_real = REAL(Ap, TPUP(N, i, i));
-	const BASE a_imag = conj * IMAG(Ap, TPUP(N, i, i));
+	const BASE a_real = CONST_REAL(Ap, TPUP(N, i, i));
+	const BASE a_imag = conj * CONST_IMAG(Ap, TPUP(N, i, i));
 	const BASE s = hypot(a_real, a_imag);
 	const BASE b_real = a_real / s;
 	const BASE b_imag = a_imag / s;
@@ -81,11 +80,11 @@
 	     || (order == CblasColMajor && Trans == CblasTrans && Uplo == CblasUpper)) {
     /* forward substitution */
 
-    ix = OFFSET(N, incX);
+    INDEX ix = OFFSET(N, incX);
 
     if (nonunit) {
-      const BASE a_real = REAL(Ap, TPLO(N, 0, 0));
-      const BASE a_imag = conj * IMAG(Ap, TPLO(N, 0, 0));
+      const BASE a_real = CONST_REAL(Ap, TPLO(N, 0, 0));
+      const BASE a_imag = conj * CONST_IMAG(Ap, TPLO(N, 0, 0));
       const BASE x_real = REAL(X, ix);
       const BASE x_imag = IMAG(X, ix);
       const BASE s = hypot(a_real, a_imag);
@@ -100,10 +99,10 @@
     for (i = 1; i < N; i++) {
       BASE tmp_real = REAL(X, ix);
       BASE tmp_imag = IMAG(X, ix);
-      jx = OFFSET(N, incX);
+      INDEX jx = OFFSET(N, incX);
       for (j = 0; j < i; j++) {
-	const BASE Aij_real = REAL(Ap, TPLO(N, i, j));
-	const BASE Aij_imag = conj * IMAG(Ap, TPLO(N, i, j));
+	const BASE Aij_real = CONST_REAL(Ap, TPLO(N, i, j));
+	const BASE Aij_imag = conj * CONST_IMAG(Ap, TPLO(N, i, j));
 	const BASE x_real = REAL(X, jx);
 	const BASE x_imag = IMAG(X, jx);
 	tmp_real -= Aij_real * x_real - Aij_imag * x_imag;
@@ -111,8 +110,8 @@
 	jx += incX;
       }
       if (nonunit) {
-	const BASE a_real = REAL(Ap, TPLO(N, i, i));
-	const BASE a_imag = conj * IMAG(Ap, TPLO(N, i, i));
+	const BASE a_real = CONST_REAL(Ap, TPLO(N, i, i));
+	const BASE a_imag = conj * CONST_IMAG(Ap, TPLO(N, i, i));
 	const BASE s = hypot(a_real, a_imag);
 	const BASE b_real = a_real / s;
 	const BASE b_imag = a_imag / s;
@@ -130,11 +129,11 @@
 
     /* forward substitution */
 
-    ix = OFFSET(N, incX);
+    INDEX ix = OFFSET(N, incX);
 
     if (nonunit) {
-      const BASE a_real = REAL(Ap, TPUP(N, 0, 0));
-      const BASE a_imag = conj * IMAG(Ap, TPUP(N, 0, 0));
+      const BASE a_real = CONST_REAL(Ap, TPUP(N, 0, 0));
+      const BASE a_imag = conj * CONST_IMAG(Ap, TPUP(N, 0, 0));
       const BASE x_real = REAL(X, ix);
       const BASE x_imag = IMAG(X, ix);
       const BASE s = hypot(a_real, a_imag);
@@ -149,10 +148,10 @@
     for (i = 1; i < N; i++) {
       BASE tmp_real = REAL(X, ix);
       BASE tmp_imag = IMAG(X, ix);
-      jx = OFFSET(N, incX);
+      INDEX jx = OFFSET(N, incX);
       for (j = 0; j < i; j++) {
-	const BASE Aij_real = REAL(Ap, TPUP(N, j, i));
-	const BASE Aij_imag = conj * IMAG(Ap, TPUP(N, j, i));
+	const BASE Aij_real = CONST_REAL(Ap, TPUP(N, j, i));
+	const BASE Aij_imag = conj * CONST_IMAG(Ap, TPUP(N, j, i));
 	const BASE x_real = REAL(X, jx);
 	const BASE x_imag = IMAG(X, jx);
 	tmp_real -= Aij_real * x_real - Aij_imag * x_imag;
@@ -160,8 +159,8 @@
 	jx += incX;
       }
       if (nonunit) {
-	const BASE a_real = REAL(Ap, TPUP(N, i, i));
-	const BASE a_imag = conj * IMAG(Ap, TPUP(N, i, i));
+	const BASE a_real = CONST_REAL(Ap, TPUP(N, i, i));
+	const BASE a_imag = conj * CONST_IMAG(Ap, TPUP(N, i, i));
 	const BASE s = hypot(a_real, a_imag);
 	const BASE b_real = a_real / s;
 	const BASE b_imag = a_imag / s;
@@ -178,11 +177,11 @@
 
     /* backsubstitution */
 
-    ix = OFFSET(N, incX) + incX * (N - 1);
+    INDEX ix = OFFSET(N, incX) + incX * (N - 1);
 
     if (nonunit) {
-      const BASE a_real = REAL(Ap, TPLO(N, (N - 1), (N - 1)));
-      const BASE a_imag = conj * IMAG(Ap, TPLO(N, (N - 1), (N - 1)));
+      const BASE a_real = CONST_REAL(Ap, TPLO(N, (N - 1), (N - 1)));
+      const BASE a_imag = conj * CONST_IMAG(Ap, TPLO(N, (N - 1), (N - 1)));
       const BASE x_real = REAL(X, ix);
       const BASE x_imag = IMAG(X, ix);
       const BASE s = hypot(a_real, a_imag);
@@ -197,10 +196,10 @@
     for (i = N - 1; i > 0 && i--;) {
       BASE tmp_real = REAL(X, ix);
       BASE tmp_imag = IMAG(X, ix);
-      jx = ix + incX;
+      INDEX jx = ix + incX;
       for (j = i + 1; j < N; j++) {
-	const BASE Aij_real = REAL(Ap, TPLO(N, j, i));
-	const BASE Aij_imag = conj * IMAG(Ap, TPLO(N, j, i));
+	const BASE Aij_real = CONST_REAL(Ap, TPLO(N, j, i));
+	const BASE Aij_imag = conj * CONST_IMAG(Ap, TPLO(N, j, i));
 	const BASE x_real = REAL(X, jx);
 	const BASE x_imag = IMAG(X, jx);
 	tmp_real -= Aij_real * x_real - Aij_imag * x_imag;
@@ -209,8 +208,8 @@
       }
 
       if (nonunit) {
-	const BASE a_real = REAL(Ap, TPLO(N, i, i));
-	const BASE a_imag = conj * IMAG(Ap, TPLO(N, i, i));
+	const BASE a_real = CONST_REAL(Ap, TPLO(N, i, i));
+	const BASE a_imag = conj * CONST_IMAG(Ap, TPLO(N, i, i));
 	const BASE s = hypot(a_real, a_imag);
 	const BASE b_real = a_real / s;
 	const BASE b_imag = a_imag / s;
