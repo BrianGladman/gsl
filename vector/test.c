@@ -21,7 +21,7 @@ int main (void)
     int status = 0 ;
 
     for (i = 0 ; i < N ; i++) {
-      if(v->data[i] != (double)i) 
+      if(v->data[i] != i) 
 	status = 1 ;
     } ;
     
@@ -32,7 +32,7 @@ int main (void)
     int status = 0 ;
 
     for (i = 0 ; i < N ; i++) {
-      if(gsl_vector_get(v,i) != (double)i) 
+      if(gsl_vector_get(v,i) != i) 
 	status = 1 ;
     } ;
     gsl_test(status, "gsl_vector_get reads from array correctly") ;
