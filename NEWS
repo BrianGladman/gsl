@@ -1,4 +1,4 @@
-#We need to do a better job with the NEWS file!
+* Will be new in gsl-0.4.1:
 
 ** Two changes not making their way into the documentation
 A couple of things are not getting into the docs, so here are the
@@ -12,16 +12,20 @@ is now gsl_complex (or gsl_complex_long_double or gsl_complex_float),
 and the macros to access them are
     GSL_REAL(z)
     GSL_IMAG(z)
-    GSL_SET_REAL(zp, x)
-    GSL_SET_IMAG(zp, y)
-    GSL_COMPLEX_P_REAL(zp)       /* pointer versions of the above */
+    GSL_COMPLEX_P_REAL(zp)
     GSL_COMPLEX_P_IMAG(zp)
-    GSL_COMPLEX_EQ(z1, z2)       /* comparison */
-    GSL_COMPLEX_SET(z, x, y)     /* create */
+    GSL_COMPLEX_EQ(z1,z2)
+    GSL_SET_COMPLEX(zp,x,y)
+    GSL_SET_REAL(zp,x)
+    GSL_SET_IMAG(zp,y)
+
+This change in the complex number API makes it important that you
+start working with 0.4.1 or later.
 
 ** 0.4.1 is being released in occasion of the Red Hat 6.0 release.
 The specfunc module is still in an alpha state; if you run "make
-check" in the specfunc directory you will see what tests still fail.
+check" in the specfunc directory you will see that some tests still
+fail.
 
 ** Most Alpha specific problems have been fixed. In particular the
 random number generators rand48 and ranf now work on the Alpha

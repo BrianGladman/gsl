@@ -1,3 +1,8 @@
+1999-02-25  Mark Galassi  <rosalia@cygnus.com>
+
+	* configure.in: upped the version to 0.4.1; this is ready for
+	tagging.
+
 1999-02-06  Mark Galassi  <rosalia@cygnus.com>
 
 	* NEWS: udpated in occasion of the imminent 0.4.1 release.
