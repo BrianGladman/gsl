@@ -932,20 +932,36 @@ mcmahon_correction(const double mu, const double beta)
 {
   const double eb   = 8.0*beta;
   const double ebsq = eb*eb;
-  const double mi   = 1.0/mu;
-  const double r  = mu/ebsq;
-  const double n2 = 4.0/3.0    * (7.0 - 31.0*mi);
-  const double n3 = 32.0/15.0  * (83.0 + (-982.0 + 3779.0*mi)*mi);
-  const double n4 = 64.0/105.0 * (6949.0 + (-153855.0 + (1585743.0 - 6277237.0*mi)*mi)*mi);
-  const double n5 = 512.0/315.0 * (70197.0 + (-2479316.0 + (48010494.0 + (-512062548.0 + 2092163573.0*mi)*mi)*mi)*mi);
-  const double n6 = 2048.0/3465.0 * (5592657.0 + (-287149133.0 + (8903961290.0 + (-179289628602.0 + (1982611456181.0 - 8249725736393.0*mi)*mi)*mi)*mi)*mi);
-  const double term1 = (1.0 - mi) * r;
-  const double term2 = term1 * n2 * r;
-  const double term3 = term1 * n3 * r*r;
-  const double term4 = term1 * n4 * r*r*r;
-  const double term5 = term1 * n5 * r*r*r*r;
-  const double term6 = term1 * n6 * r*r*r*r*r;
-  return 1.0 - 8.0*(term1 + term2 + term3 + term4 + term5 + term6);
+
+  if(mu < GSL_DBL_EPSILON) {
+    /* Prevent division by zero below. */
+    const double term1 =  1.0/ebsq;
+    const double term2 = -4.0*31.0/(3*ebsq*ebsq);
+    const double term3 =  32.0*3779.0/(15.0*ebsq*ebsq*ebsq);
+    const double term4 = -64.0*6277237.0/(105.0*ebsq*ebsq*ebsq*ebsq);
+    const double term5 =  512.0*2092163573.0/(315.0*ebsq*ebsq*ebsq*ebsq*ebsq);
+    return 1.0 + 8.0*(term1 + term2 + term3 + term4 + term5);
+  }
+  else {
+    /* Here we do things in terms of 1/mu, which
+     * is purely to prevent overflow in the very
+     * unlikely case that mu is really big.
+     */
+    const double mi   = 1.0/mu;
+    const double r  = mu/ebsq;
+    const double n2 = 4.0/3.0    * (7.0 - 31.0*mi);
+    const double n3 = 32.0/15.0  * (83.0 + (-982.0 + 3779.0*mi)*mi);
+    const double n4 = 64.0/105.0 * (6949.0 + (-153855.0 + (1585743.0 - 6277237.0*mi)*mi)*mi);
+    const double n5 = 512.0/315.0 * (70197.0 + (-2479316.0 + (48010494.0 + (-512062548.0 + 2092163573.0*mi)*mi)*mi)*mi);
+    const double n6 = 2048.0/3465.0 * (5592657.0 + (-287149133.0 + (8903961290.0 + (-179289628602.0 + (1982611456181.0 - 8249725736393.0*mi)*mi)*mi)*mi)*mi);
+    const double term1 = (1.0 - mi) * r;
+    const double term2 = term1 * n2 * r;
+    const double term3 = term1 * n3 * r*r;
+    const double term4 = term1 * n4 * r*r*r;
+    const double term5 = term1 * n5 * r*r*r*r;
+    const double term6 = term1 * n6 * r*r*r*r*r;
+    return 1.0 - 8.0*(term1 + term2 + term3 + term4 + term5 + term6);
+  }
 }
 
 
