@@ -25,14 +25,9 @@
 #include <gsl/gsl_ieee_utils.h>
 #include "gsl_chebyshev.h"
 
-double fsin (double x, void * p) {
+double f_sin (double x, void * p) {
   p = 0;
   return sin(x);
-}
-
-double fexp (double x, void * p) {
-  p = 0;
-  return exp(x);
 }
 
 int 
@@ -45,17 +40,14 @@ main(void)
   gsl_cheb_series * csd = gsl_cheb_alloc(40);
   gsl_cheb_series * csi = gsl_cheb_alloc(40);
 
-  gsl_function f_sin, f_exp;
+  gsl_function F_sin;
 
-  f_sin.function = fsin;
-  f_sin.params = 0;
-
-  f_exp.function = fexp;
-  f_exp.params = 0;
+  F_sin.function = f_sin;
+  F_sin.params = 0;
 
   gsl_ieee_env_setup();
 
-  gsl_cheb_init(cs, &f_sin, -M_PI, M_PI);
+  gsl_cheb_init(cs, &F_sin, -M_PI, M_PI);
 
   for(x=-M_PI; x<M_PI; x += M_PI/100.0) {
     double r = gsl_cheb_eval(cs, x);
