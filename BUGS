@@ -49,7 +49,25 @@ Rodolphe Conan writes:
  > gsl: bessel.c:531: ERROR: error
  > Abort (core dumped)
 
-One of the continued fraction computations is breaking down
+One of the continued fraction computations is breaking down in
+gsl_sf_bessel_J_CF1.
+
+Also reported by Rainer Bunger (rainer.bunger@m.eads.net) for 
+gsl_sf_bessel_jl_array which also calls gsl_sf_bessel_J_CF1.
+
+#include <gsl/gsl_sf_bessel.h>
+
+int main(int argc, char *argv[]) {
+
+  int lmax = 94;
+  double x = 27246.7832109820;
+  double result_array[95];
+
+  //gsl_sf_bessel_Jn(2,27246.0);
+
+  gsl_sf_bessel_jl_array(lmax, x, result_array);
+}
+
 
 ----------------------------------------------------------------------
 BUG#4 -- gsl_linalg_solve_symm_cyc_tridiag() crashes 
