@@ -16,7 +16,10 @@ test_odeiv_LDADD = libgslodeiv.a \
 	../ieee-utils/libgslieeeutils.a \
 	../sys/libgslsys.a \
 	../err/libgslerr.a \
-	../err/libgsltest.a
+	../err/libgsltest.a \
+	../vector/libgslvector.a \
+	../matrix/libgslmatrix.a \
+	../linalg/libgsllinalg.a
 test_odeiv_DEPENDENCIES = libgslodeiv.a
 test_odeiv_SOURCES = test_odeiv.c
 

@@ -118,6 +118,8 @@ gsl_odeiv_step * gsl_odeiv_step_rk2imp_new(void);
 gsl_odeiv_step * gsl_odeiv_step_rk4imp_new(void);
 gsl_odeiv_step * gsl_odeiv_step_gear1_new(void);
 gsl_odeiv_step * gsl_odeiv_step_gear2_new(void);
+gsl_odeiv_step * gsl_odeiv_step_bsimp_new(double eps);
+
 
 
 /* General stepper object methods.

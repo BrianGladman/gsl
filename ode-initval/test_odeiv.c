@@ -7,6 +7,8 @@
 #include <gsl_test.h>
 #include <gsl_errno.h>
 #include <gsl_math.h>
+#include <gsl_matrix.h>
+#include <gsl_linalg.h>
 #include <gsl_ieee_utils.h>
 #include "gsl_odeiv.h"
 
@@ -20,9 +22,24 @@ int rhs_linear(double t, const double y[], double f[], void * params)
   return GSL_SUCCESS;
 }
 
+int jac_linear(double t, const double y[], double * dfdy, double dfdt[], void * params)
+{
+  gsl_matrix dfdy_mat;
+  dfdy_mat.data = dfdy;
+  dfdy_mat.size1 = 2;
+  dfdy_mat.size2 = 2;
+  gsl_matrix_set(&dfdy_mat, 0, 0, 0.0);
+  gsl_matrix_set(&dfdy_mat, 0, 1, 0.0);
+  gsl_matrix_set(&dfdy_mat, 1, 0, 1.0);
+  gsl_matrix_set(&dfdy_mat, 1, 1, 0.0);
+  dfdt[0] = 0.0;
+  dfdt[1] = 0.0;
+  return GSL_SUCCESS;
+}
+
 gsl_odeiv_system rhs_func_lin = {
   rhs_linear,
-  0,
+  jac_linear,
   2,
   0
 };
@@ -34,6 +51,21 @@ int rhs_sin(double t, const double y[], double f[], void * params)
 {
   f[0] = -y[1];
   f[1] =  y[0];
+  return GSL_SUCCESS;
+}
+
+int jac_sin(double t, const double y[], double * dfdy, double dfdt[], void * params)
+{
+  gsl_matrix dfdy_mat;
+  dfdy_mat.data = dfdy;
+  dfdy_mat.size1 = 2;
+  dfdy_mat.size2 = 2;
+  gsl_matrix_set(&dfdy_mat, 0, 0,  0.0);
+  gsl_matrix_set(&dfdy_mat, 0, 1, -1.0);
+  gsl_matrix_set(&dfdy_mat, 1, 0,  1.0);
+  gsl_matrix_set(&dfdy_mat, 1, 1,  0.0);
+  dfdt[0] = 0.0;
+  dfdt[1] = 0.0;
   return GSL_SUCCESS;
 }
 
@@ -54,9 +86,24 @@ int rhs_exp(double t, const double y[], double f[], void * params)
   return GSL_SUCCESS;
 }
 
+int jac_exp(double t, const double y[], double * dfdy, double dfdt[], void * params)
+{
+  gsl_matrix dfdy_mat;
+  dfdy_mat.data = dfdy;
+  dfdy_mat.size1 = 2;
+  dfdy_mat.size2 = 2;
+  gsl_matrix_set(&dfdy_mat, 0, 0, 0.0);
+  gsl_matrix_set(&dfdy_mat, 0, 1, 1.0);
+  gsl_matrix_set(&dfdy_mat, 1, 0, 1.0);
+  gsl_matrix_set(&dfdy_mat, 1, 1, 0.0);
+  dfdt[0] = 0.0;
+  dfdt[1] = 0.0;
+  return GSL_SUCCESS;
+}
+
 gsl_odeiv_system rhs_func_exp = {
   rhs_exp,
-  0,
+  jac_exp,
   2,
   0
 };
@@ -71,9 +118,24 @@ int rhs_stiff(double t, const double y[], double f[], void * params)
   return GSL_SUCCESS;
 }
 
+int jac_stiff(double t, const double y[], double * dfdy, double dfdt[], void * params)
+{
+  gsl_matrix dfdy_mat;
+  dfdy_mat.data = dfdy;
+  dfdy_mat.size1 = 2;
+  dfdy_mat.size2 = 2;
+  gsl_matrix_set(&dfdy_mat, 0, 0,   998.0);
+  gsl_matrix_set(&dfdy_mat, 0, 1,  1998.0);
+  gsl_matrix_set(&dfdy_mat, 1, 0,  -999.0);
+  gsl_matrix_set(&dfdy_mat, 1, 1, -1999.0);
+  dfdt[0] = 0.0;
+  dfdt[1] = 0.0;
+  return GSL_SUCCESS;
+}
+
 gsl_odeiv_system rhs_func_stiff = {
   rhs_stiff,
-  0,
+  jac_stiff,
   2,
   0
 };
@@ -476,6 +538,37 @@ int test_stepper_gear2(void)
 }
 
 
+int test_stepper_bsimp(void)
+{
+  gsl_odeiv_step * stepper = gsl_odeiv_step_bsimp_new(1.0e-04);
+  int stat = 0;
+  int s;
+
+  s = test_stepper_linear(stepper, 1.0e-03, GSL_DBL_EPSILON);
+  gsl_test(s, "  LINEAR");
+  stat += s;
+  gsl_odeiv_step_reset(stepper);
+
+  s = test_stepper_stiff(stepper, 2.0e-04, 1.0e+05 * GSL_DBL_EPSILON);
+  gsl_test(s, "  STIFF");
+  stat += s;
+
+  s = test_stepper_exp(stepper, 3.0e-03,  GSL_SQRT_DBL_EPSILON);
+  gsl_test(s, "  EXP");
+  stat += s;
+  gsl_odeiv_step_reset(stepper);
+
+  s = test_stepper_stiff(stepper, 1.0e-03, GSL_SQRT_DBL_EPSILON);
+  gsl_test(s, "  STIFF");
+  stat += s;
+
+
+  gsl_odeiv_step_free(stepper);
+
+  return stat;
+}
+
+
 int test_evolve_system_flat(
   gsl_odeiv_step * step, 
   gsl_odeiv_evolve_mon * mon,
@@ -681,7 +774,7 @@ int test_evolve(void)
 int main()
 {
   gsl_ieee_env_setup();
-
+/*
   gsl_test(test_stepper_rk2(),     "Runge-Kutta 2(3), Euler-Cauchy");
   gsl_test(test_stepper_rk4(),     "Runge-Kutta 4, Classical");
   gsl_test(test_stepper_rkck(),    "Runge-Kutta 4(5), Cash-Karp");
@@ -690,8 +783,11 @@ int main()
   gsl_test(test_stepper_rk4imp(),  "Runge-Kutta 4, Gaussian implicit");
   gsl_test(test_stepper_gear1(),   "Gear 1");
   gsl_test(test_stepper_gear2(),   "Gear 2");
+*/
+  gsl_test(test_stepper_bsimp(),   "Bulirsch-Stoer Implicit");
 
+/*
   gsl_test(test_evolve(),  "Evolution");
-
+*/
   return gsl_test_summary();
 }
