@@ -1099,7 +1099,7 @@ hyperg_1F1_ab_posint(const int a, const int b, const double x, gsl_sf_result * r
           Mnm1 = Ma0b;
           Mn   = Ma0p1b;
 
-          for(n=a0+1.0; n<a;n ++) {
+          for(n=a0+1; n<a; n++) {
             Mnp1 = ((b-n)*Mnm1 + (2*n-b+x)*Mn)/n;
             Mnm1 = Mn;
             Mn   = Mnp1;
