@@ -35,12 +35,13 @@ static struct gsl_sf_ChebSeries shi_cs = {
   -1, 1
 };
 
+/* checked OK [GJ] */
 int gsl_sf_Shi_impl(const double x, double * result)
 {
   const double xsml = GSL_SQRT_MACH_EPS;  /* sqrt (r1mach(3)) */
-  const double ax = fabs(x);
+  const double ax   = fabs(x);
 
-  if(x < xsml) {
+  if(ax < xsml) {
     *result = x;
     return GSL_SUCCESS;
   }
@@ -56,23 +57,30 @@ int gsl_sf_Shi_impl(const double x, double * result)
     if(status_Ei == GSL_EUNDRFLW && status_E1 == GSL_EUNDRFLW) {
       return GSL_EUNDRFLW;
     }
+    else if(status_Ei == GSL_EOVRFLW || status_E1 == GSL_EOVRFLW) {
+      return GSL_EOVRFLW;
+    }
     else {
       return GSL_SUCCESS;
     }
   }
 }
 
+/* checked OK [GJ] */
 int gsl_sf_Chi_impl(const double x, double * result)
 {
   double Ei, E1;
   int status_Ei = gsl_sf_expint_Ei_impl(x, &Ei);
-  int status_E1 = gsl_sf_expint_Ei_impl(x, &E1);
+  int status_E1 = gsl_sf_expint_E1_impl(x, &E1);
   if(status_Ei == GSL_EDOM || status_E1 == GSL_EDOM) {
     return GSL_EDOM;
   }
   else if(status_Ei == GSL_EUNDRFLW && status_E1 == GSL_EUNDRFLW) {
     *result = 0.;
     return GSL_EUNDRFLW;
+  }
+  else if(status_Ei == GSL_EOVRFLW || status_E1 == GSL_EOVRFLW) {
+    return GSL_EOVRFLW;
   }
   else {
     *result = 0.5 * (Ei - E1);

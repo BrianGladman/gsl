@@ -268,12 +268,16 @@ static struct gsl_sf_ChebSeries AE14_cs = {
 };
 
 
+/* checked OK [GJ] */
 int gsl_sf_expint_E1_impl(const double x, double * result)
 {
-  const double xmaxt = GSL_LOG_DBL_MIN;      /* XMAXT = -LOG (R1MACH(1)) */
-  const double xmax  = xmaxt - log(xmaxt);   /* XMAX = XMAXT - LOG(XMAXT) */
+  const double xmaxt = -GSL_LOG_DBL_MIN;      /* XMAXT = -LOG (R1MACH(1)) */
+  const double xmax  = xmaxt - log(xmaxt);    /* XMAX = XMAXT - LOG(XMAXT) */
 
-  if(x <= -10.) {
+  if(x < -xmax) {
+    return GSL_EOVRFLW;
+  }
+  else if(x <= -10.) {
     *result = exp(-x)/x * (1. + gsl_sf_cheb_eval(20./x+1., &AE11_cs));
     return GSL_SUCCESS;
   }
@@ -306,11 +310,12 @@ int gsl_sf_expint_E1_impl(const double x, double * result)
   }
 }
 
-int gsl_sf_expint_Ei_impl(double x, double * result)
+/* checked OK [GJ] */
+int gsl_sf_expint_Ei_impl(const double x, double * result)
 {
   int status = gsl_sf_expint_E1_impl(-x, result);
   if(status == GSL_SUCCESS) {
-    *result *= -1.;
+    *result = - *result;
   }
   return status;
 }

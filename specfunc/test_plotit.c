@@ -11,8 +11,8 @@ extern int gsl_sf_conical_sph_reg_array_impl(int, double, double, double *, doub
 int main(int argc, char * argv[])
 {
   double x;
-  double xmin = -2.0;
-  double xmax =  2.0;
+  double xmin =  -10.0;
+  double xmax =   10.0;
   double dx   = 0.1;
   double lambda = 0.5;
   double y;
@@ -22,7 +22,14 @@ int main(int argc, char * argv[])
   double nu = 100.;
   int n = 2;
 
-  
+  for(x=xmin; x<xmax; x += dx) {
+    y = gsl_sf_Shi(x);
+    printf("%22.17g    %22.17g\n",
+	    x,
+	    y
+	    );
+  }
+
 /*
   for(x=xmin; x<xmax; x += dx){
     gsl_sf_conical_sph_reg_0_impl(lambda, 1-x, 1+x, &y);
@@ -33,7 +40,7 @@ int main(int argc, char * argv[])
   }
 */
 
-
+/*
   gsl_sf_conical_sph_reg_array_impl(100, lambda, 0.5, &y, y_array);
   
   for(i=0; i<=100; i++) {
@@ -43,6 +50,8 @@ int main(int argc, char * argv[])
 	    y_array[i]
 	    );
   }
+*/
 
+  
   exit(0);
 }

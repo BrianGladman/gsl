@@ -240,28 +240,25 @@ static struct gsl_sf_ChebSeries si_cs = {
 };
 
 
+/* checked OK [GJ] */
 int gsl_sf_Si_impl(const double x, double * result)
 {
   double xsml = GSL_SQRT_MACH_EPS;  /* sqrt (eps) (??) */
-  double ax = fabs(x);
+  double ax   = fabs(x);
   
-  if(x < GSL_SQRT_MACH_EPS) {
+  if(ax < GSL_SQRT_MACH_EPS) {
     *result = x;
     return GSL_SUCCESS;
   }
-  else if(x <= 4.0) {
+  else if(ax <= 4.0) {
     *result = x * (0.75 + gsl_sf_cheb_eval((x*x-8.0)*0.125, &si_cs));
     return GSL_SUCCESS;
   }
   else {
-    double tan_half = tan(0.5 * x);
-    double den = 1. + tan_half*tan_half;
-    double cos_x = (tan_half*tan_half - 1.) / den;
-    double sin_x = 2. * tan_half / den;
     double f, g;
-    fg_asymp(x, &f, &g);
-    *result = 0.5 * M_PI - f*cos_x - g*sin_x;
-    if(x < 0.) *result *= -1.;
+    fg_asymp(ax, &f, &g);
+    *result = 0.5 * M_PI - f*cos(ax) - g*sin(ax);
+    if(x < 0.) *result = - *result;
     return GSL_SUCCESS;
   }
 }
@@ -295,7 +292,7 @@ static struct gsl_sf_ChebSeries ci_cs = {
   -1, 1
 };
 
-
+/* checked OK [GJ] */
 int gsl_sf_Ci_impl(const double x, double * result)
 {
   const double xsml = GSL_SQRT_DBL_MIN;
@@ -310,13 +307,9 @@ int gsl_sf_Ci_impl(const double x, double * result)
     return GSL_SUCCESS;
   }
   else {
-    double tan_half = tan(0.5 * x);
-    double den = 1. + tan_half*tan_half;
-    double cos_x = (tan_half*tan_half - 1.) / den;
-    double sin_x = 2. * tan_half / den;
     double f, g;
     fg_asymp(x, &f, &g);
-    *result = f*sin_x - g*cos_x;
+    *result = f*sin(x) - g*cos(x);
     return GSL_SUCCESS;
   }
 }
