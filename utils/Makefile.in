@@ -65,6 +65,7 @@ host_alias = @host_alias@
 host_triplet = @host@
 CC = @CC@
 CPP = @CPP@
+HAVE_INLINE = @HAVE_INLINE@
 LN_S = @LN_S@
 MAKEINFO = @MAKEINFO@
 PACKAGE = @PACKAGE@
@@ -76,8 +77,8 @@ full_top_srcdir = @full_top_srcdir@
 noinst_LIBRARIES = libutils.a
 
 # Don't need to list alloca.c, etc., Automake includes them.
-libutils_a_SOURCES = system.h
-libutils_a_LIBADD = @LIBOBJS@ @ALLOCA@
+libutils_a_SOURCES = system.h xmalloc.c
+libutils_a_LIBADD = @LIBOBJS@ 
 libutils_a_DEPENDENCIES = $(libutils_a_LIBADD)
 
 EXTRA_DIST = README
@@ -91,21 +92,21 @@ DEFS = @DEFS@ -I. -I$(srcdir) -I..
 CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
-libutils_a_OBJECTS = 
+libutils_a_OBJECTS =  xmalloc.o
 AR = ar
 CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
 LINK = $(CC) $(CFLAGS) $(LDFLAGS) -o $@
-DIST_COMMON =  README Makefile.am Makefile.in alloca.c memcpy.c \
-memmove.c strdup.c strerror.c
+DIST_COMMON =  README Makefile.am Makefile.in memcpy.c memmove.c \
+strdup.c strtol.c strtoul.c
 
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 TAR = tar
 GZIP = --best
-DEP_FILES =  .deps/alloca.P .deps/memcpy.P .deps/memmove.P \
-.deps/strdup.P .deps/strerror.P
+DEP_FILES =  .deps/memcpy.P .deps/memmove.P .deps/strdup.P \
+.deps/strtol.P .deps/strtoul.P .deps/xmalloc.P
 SOURCES = $(libutils_a_SOURCES)
 OBJECTS = $(libutils_a_OBJECTS)
 
