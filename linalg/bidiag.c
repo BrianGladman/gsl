@@ -34,19 +34,19 @@
  *
  * The full matrix for U can be obtained as the product
  *
- *       U = U_N .. U_2 U_1
+ *       U = U_1 U_2 .. U_N
  *
  * where 
  *
- *       U_i = (I - tau_i * v_i * v_i')
+ *       U_i = (I - tau_i * u_i * u_i')
  *
- * and where v_i is a Householder vector
+ * and where u_i is a Householder vector
  *
- *       v_i = [1, A(i+2,i), A(i+3,i), ... , A(M,i)]
+ *       u_i = [0, .. , 0, 1, A(i+1,i), A(i+3,i), .. , A(M,i)]
  *
  * The full matrix for V can be obtained as the product
  *
- *       V = V_N .. V_2 V_1
+ *       V = V_1 V_2 .. V_(N-2)
  *
  * where 
  *
@@ -54,9 +54,13 @@
  *
  * and where v_i is a Householder vector
  *
- *       v_i = [1, A(i,i+2), A(i,i+3), ... , A(i,N)]
+ *       v_i = [0, .. , 0, 1, A(i,i+2), A(i,i+3), .. , A(i,N)]
  *
- * See Golub & Van Loan, "Matrix Computations" (3rd ed), Algorithm 5.4.2 */
+ * See Golub & Van Loan, "Matrix Computations" (3rd ed), Algorithm 5.4.2 
+ *
+ * Note: this description uses 1-based indices. The code below uses
+ * 0-based indices 
+ */
 
 #include <config.h>
 #include <stdlib.h>
