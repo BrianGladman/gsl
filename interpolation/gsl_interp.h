@@ -18,10 +18,11 @@ gsl_interp_accel;
 struct _gsl_interp_obj_struct {
   int     (*eval_impl)   (const struct _gsl_interp_obj_struct *, const double xa[], const double ya[], double x, gsl_interp_accel *, double * y);
   int     (*eval_d_impl) (const struct _gsl_interp_obj_struct *, const double xa[], const double ya[], double x, gsl_interp_accel *, double * dydx);
+  int     (*eval_i_impl) (const struct _gsl_interp_obj_struct *, const double xa[], const double ya[], gsl_interp_accel *, double a, double b, double * result);
   void    (*free)        (struct _gsl_interp_obj_struct *);
   double  xmin;
   double  xmax;
-  size_t     size;
+  size_t  size;
 };
 typedef  struct _gsl_interp_obj_struct  gsl_interp_obj;
 
@@ -88,6 +89,29 @@ double
 gsl_interp_eval_deriv(const gsl_interp_obj * obj,
                       const double xa[], const double ya[], double x,
 		      gsl_interp_accel * a
+                      );
+
+int
+gsl_interp_eval_integ_impl(const gsl_interp_obj * obj,
+                           const double xa[], const double ya[],
+                           double a, double b,
+			   gsl_interp_accel * acc,
+                           double * y
+                           );
+
+int
+gsl_interp_eval_integ_e(const gsl_interp_obj * obj,
+                        const double xa[], const double ya[],
+                        double a, double b,
+			gsl_interp_accel * acc,
+                        double * y
+                        );
+
+double
+gsl_interp_eval_integ(const gsl_interp_obj * obj,
+                      const double xa[], const double ya[],
+                      double a, double b,
+		      gsl_interp_accel * acc
                       );
 
 void
