@@ -1,3 +1,8 @@
+2003-02-17  Brian Gough  <bjg@network-theory.co.uk>
+
+	* canonical.c (gsl_permutation_canonical_to_linear): fixed bug
+	confusing input and output (swapped pp and qq)
+
 Sat Apr  6 19:08:40 2002  Brian Gough  <bjg@network-theory.co.uk>
 
 	* test.c (main): added tests for canonical representation

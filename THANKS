@@ -229,3 +229,6 @@ gsl_complex_arccsc_real
 functions
 
 * Andrew Howard <ahoward@pollux.usc.edu> bug report for gsl_ran_discrete
+
+* Mario Pernici <Mario.Pernici@mi.infn.it> bug report for
+gsl_permutation_canonical_to_linear

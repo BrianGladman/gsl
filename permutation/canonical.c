@@ -87,8 +87,8 @@ gsl_permutation_canonical_to_linear (gsl_permutation * p,
   size_t i, k, kk, first;
   const size_t n = p->size;
 
-  const size_t *const pp = p->data;
-  size_t *const qq = q->data;
+  size_t *const pp = p->data;
+  const size_t *const qq = q->data;
 
   if (q->size != p->size)
     {
@@ -97,30 +97,30 @@ gsl_permutation_canonical_to_linear (gsl_permutation * p,
 
   for (i = 0; i < n; i++)
     {
-      qq[i] = i;
+      pp[i] = i;
     }
 
-  k = pp[0];
-  first = qq[k];
+  k = qq[0];
+  first = pp[k];
 
   for (i = 1; i < n; i++)
     {
-      kk = pp[i];
+      kk = qq[i];
 
       if (kk > first)
 	{
-	  qq[k] = qq[kk];
+	  pp[k] = pp[kk];
 	  k = kk;
 	}
       else
 	{
-	  qq[k] = first;
+	  pp[k] = first;
 	  k = kk;
-	  first = qq[kk];
+	  first = pp[kk];
 	}
     }
 
-  qq[k] = first;
+  pp[k] = first;
 
   return GSL_SUCCESS;
 }
