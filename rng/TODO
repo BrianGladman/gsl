@@ -28,12 +28,14 @@ are listing as "Simulation Quality" -- some of those are a bit old and
 might fail one or two diehard tests.
 
 7. Add drand48,   DONE
-       NAG,       missing 
+       NAG,       missing, gave up! 
        CRAY,      DONE 
        CDC 48-bit missing 
 
-8. Get the macros from the faster MT19937 generator and use them.
+8. Get the macros from the faster MT19937 generator and use them. We
+need to make MT be the fastest of the simulation quality generators if
+it is the default.
 
 9. Send to M.Makumoto for review.
 
-10. Add random/srandom
+10. Add random/srandom DONE.
