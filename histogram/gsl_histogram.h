@@ -22,8 +22,10 @@ gsl_histogram * gsl_histogram_alloc_uniform (size_t n, double xmin,
 void gsl_histogram_free (gsl_histogram * h);
 int gsl_histogram_increment (gsl_histogram * h, double x);
 int gsl_histogram_accumulate (gsl_histogram * h, double x, double weight);
-int gsl_histogram_find (const size_t n, const double range[], 
-			const double x, size_t * i);
+int gsl_histogram_find (const gsl_histogram * h, 
+			double x, size_t * i);
+int gsl_histogram_find_impl (size_t n, const double range[],
+			     double x, size_t * i);
 
 double gsl_histogram_get (const gsl_histogram * h, size_t i);
 double gsl_histogram_get_lowerlimit (const gsl_histogram * h, size_t i);

@@ -7,8 +7,22 @@ typedef int cmp_fn_t(const void *, const void *) ;
 static int compare_range (const double * x, const double * range) ;
 
 int 
-gsl_histogram_find (const size_t n, const double range[], 
+gsl_histogram_find (const gsl_histogram * h,
 		    const double x, size_t * i)
+{
+  int status = gsl_histogram_find_impl (h->nbins, h->range, x, i) ;
+
+  if (status)
+    {
+      GSL_ERROR ("x not found in range of h", GSL_EDOM) ;
+    }
+
+  return 0 ;
+}
+
+int 
+gsl_histogram_find_impl (const size_t n, const double range[], 
+			 const double x, size_t * i)
 {
   if (x < range[0]) 
     {

@@ -12,8 +12,9 @@ typedef struct {
 } gsl_histogram2d ;
 
 typedef struct {
-  size_t nbins ;
-  double * range ;
+  size_t nx, ny ;
+  double * xrange ;
+  double * yrange ;
   double * sum ;
 } gsl_histogram2d_pdf ;
 
@@ -27,6 +28,10 @@ void gsl_histogram2d_free (gsl_histogram2d * h);
 int gsl_histogram2d_increment (gsl_histogram2d * h, double x, double y);
 int gsl_histogram2d_accumulate (gsl_histogram2d * h, 
 				double x, double y, double weight);
+int gsl_histogram2d_find (const gsl_histogram2d * h, 
+			  double x, double y, size_t * i, size_t * j);
+int gsl_histogram2d_find_impl (const gsl_histogram2d * h, 
+			       double x, double y, size_t * i, size_t * j);
 
 double gsl_histogram2d_get (const gsl_histogram2d * h, size_t i, size_t j);
 double gsl_histogram2d_get_xlowerlimit (const gsl_histogram2d * h, size_t i);
@@ -50,9 +55,11 @@ int gsl_histogram2d_fprintf (FILE * stream, gsl_histogram2d * h,
 			   const char * format);
 int gsl_histogram2d_fscanf (FILE * stream, gsl_histogram2d * h);
 
-/* gsl_histogram_pdf * gsl_histogram_pdf_alloc (const gsl_histogram * h);
-void gsl_histogram_pdf_free (gsl_histogram_pdf * p);
-double gsl_histogram_pdf_sample (const gsl_histogram_pdf * p, double r); */
+gsl_histogram2d_pdf * gsl_histogram2d_pdf_alloc (const gsl_histogram2d * h);
+void gsl_histogram2d_pdf_free (gsl_histogram2d_pdf * p);
+int gsl_histogram2d_pdf_sample (const gsl_histogram2d_pdf * p, 
+				   double r1, double r2, 
+				   double * x, double * y);
 
 #endif /* GSL_HISTOGRAM_H */
 

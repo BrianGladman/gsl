@@ -49,7 +49,6 @@ int main (void)
       }
     gsl_test(status,"gsl_histogram2d_accumulate writes into array correctly") ;
   }
-
   
   {
     int status = 0 ;
@@ -185,7 +184,7 @@ int main (void)
 
   gsl_histogram2d_free(h);  /* free whatever is in h */
 
-  h = gsl_histogram2d_alloc_uniform (N, M, 0.0, 1.0, 0.0, 1.0) ;
+  h = gsl_histogram2d_alloc_uniform (N1, M1, 0.0, 5.0, 0.0, 5.0) ;
 
   gsl_test(h->xrange == 0,
 	   "gsl_histogram2d_alloc_uniform returns valid range pointer") ;
@@ -193,9 +192,9 @@ int main (void)
 	   "gsl_histogram2d_alloc_uniform returns valid range pointer") ;
   gsl_test(h->bin == 0,
 	   "gsl_histogram2d_alloc_uniform returns valid bin pointer") ;
-  gsl_test(h->nx != N,
+  gsl_test(h->nx != N1,
 	   "gsl_histogram2d_alloc_uniform returns valid nx") ;
-  gsl_test(h->ny != M,
+  gsl_test(h->ny != M1,
 	   "gsl_histogram2d_alloc_uniform returns valid ny") ;
 
   gsl_histogram2d_accumulate (h, 0.0, 3.01, 1.0) ;
@@ -203,37 +202,39 @@ int main (void)
   gsl_histogram2d_accumulate (h, 0.2, 1.01, 3.0) ;
   gsl_histogram2d_accumulate (h, 0.3, 0.01, 4.0) ;
 
-#ifdef JUNK
   { 
     size_t i1, i2, i3, i4;
+    size_t j1, j2, j3, j4;
     double expected ;
-    int status = gsl_histogram2d_find (h->nbins, h->range, 0.0, &i1) ;
-    status = gsl_histogram2d_find (h->nbins, h->range, 0.1, &i2) ;
-    status = gsl_histogram2d_find (h->nbins, h->range, 0.2, &i3) ;
-    status = gsl_histogram2d_find (h->nbins, h->range, 0.3, &i4) ;
+    int status ; 
+    status = gsl_histogram2d_find (h, 0.0, 3.01, &i1, &j1) ;
+    status = gsl_histogram2d_find (h, 0.1, 2.01, &i2, &j2) ;
+    status = gsl_histogram2d_find (h, 0.2, 1.01, &i3, &j3) ;
+    status = gsl_histogram2d_find (h, 0.3, 0.01, &i4, &j4) ;
 
-    for (i = 0; i < N; i++)
+    for (i = 0; i < N1; i++)
       {
-	if (i == i1) {
-	  expected = 1.0 ;
-	} else if (i == i2) {
-	  expected = 2.0 ;
-	} else if (i == i3) {
-	  expected = 3.0 ;
-	} else if (i == i4) {
-	  expected = 4.0 ;
-	} else {
-	  expected = 0.0 ;
-	}
+	for (j = 0; j < M1; j++)
+	  {
+	    if (i == i1 && j == j1) {
+	      expected = 1.0 ;
+	    } else if (i == i2 && j == j2) {
+	      expected = 2.0 ;
+	    } else if (i == i3 && j == j3) {
+	      expected = 3.0 ;
+	    } else if (i == i4 && j == j4) {
+	      expected = 4.0 ;
+	    } else {
+	      expected = 0.0 ;
+	    }
 
-	if (h->bin[i] != expected) {
-	  status = 1 ;
-	}
-
+	    if (h->bin[i * M1 + j] != expected) {
+	      status = 1 ;
+	    }
+	  }
       }
     gsl_test(status, "gsl_histogram2d_find works correctly") ;
   }
-
 
   {
     FILE * f = fopen("test.dat","w") ;
@@ -243,20 +244,37 @@ int main (void)
 
   {
     FILE * f = fopen("test.dat","r") ;
-    gsl_histogram * hh = gsl_histogram2d_alloc (N);
+    gsl_histogram2d * hh = gsl_histogram2d_alloc (N1,M1);
     int status = 0 ;
 
     gsl_histogram2d_fscanf(f, hh) ;
 
-    for (i = 0; i < N; i++) 
+    for (i = 0; i <= N1; i++) 
       {
-	if (h->range[i] != hh->range[i]) 
-	  status = 1 ;
-	if (h->bin[i] != hh->bin[i]) 
-	  status = 1 ;
+	if (h->xrange[i] != hh->xrange[i]) 
+	  {
+	    printf("xrange[%d] : %g orig vs %g\n", i, h->xrange[i],hh->xrange[i]) ;
+	    status = 1 ;
+	  }
       }
-    if (h->range[N] != hh->range[N]) 
-	  status = 1 ;
+
+    for (j = 0; j <= M1; j++) 
+      {
+	if (h->yrange[j] != hh->yrange[j]) 
+	  {
+	    printf("yrange[%d] : %g orig vs %g\n", j, h->yrange[j],hh->yrange[j]) ;
+	    status = 1 ;
+	  }
+      }
+
+    for (i = 0; i < N1*M1; i++) 
+      {
+	if (h->bin[i] != hh->bin[i]) 
+	  {
+	    printf("bin[%d] : %g orig vs %g\n", i, h->bin[i],hh->bin[i]) ;
+	    status = 1 ;
+	  }
+      }
 
     gsl_test(status, "gsl_histogram2d_fprintf and fscanf work correctly") ;
 
@@ -272,27 +290,44 @@ int main (void)
 
   {
     FILE * f = fopen("test.dat","r") ;
-    gsl_histogram * hh = gsl_histogram2d_alloc (N);
+    gsl_histogram2d * hh = gsl_histogram2d_alloc (N1,M1);
     int status = 0 ;
 
     gsl_histogram2d_fread(f, hh) ;
 
-    for (i = 0; i < N; i++) 
+    for (i = 0; i <= N1; i++) 
       {
-	if (h->range[i] != hh->range[i]) 
-	  status = 1 ;
-	if (h->bin[i] != hh->bin[i]) 
-	  status = 1 ;
+	if (h->xrange[i] != hh->xrange[i]) 
+	  {
+	    printf("xrange[%d] : %g orig vs %g\n", i, h->xrange[i],hh->xrange[i]) ;
+	    status = 1 ;
+	  }
       }
-    if (h->range[N] != hh->range[N]) 
-	  status = 1 ;
+
+    for (j = 0; j <= M1; j++) 
+      {
+	if (h->yrange[j] != hh->yrange[j]) 
+	  {
+	    printf("yrange[%d] : %g orig vs %g\n", j, h->yrange[j],hh->yrange[j]) ;
+	    status = 1 ;
+	  }
+      }
+
+    for (i = 0; i < N1*M1; i++) 
+      {
+	if (h->bin[i] != hh->bin[i]) 
+	  {
+	    printf("bin[%d] : %g orig vs %g\n", i, h->bin[i],hh->bin[i]) ;
+	    status = 1 ;
+	  }
+      }
 
     gsl_test(status, "gsl_histogram2d_fwrite and fread work correctly") ;
 
     gsl_histogram2d_free (hh);
     fclose(f) ;
   }
-#endif
+
 
   return gsl_test_summary ();
 }

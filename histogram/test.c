@@ -137,10 +137,10 @@ int main (void)
   { 
     size_t i1, i2, i3, i4;
     double expected ;
-    int status = gsl_histogram_find (h->nbins, h->range, 0.0, &i1) ;
-    status = gsl_histogram_find (h->nbins, h->range, 0.1, &i2) ;
-    status = gsl_histogram_find (h->nbins, h->range, 0.2, &i3) ;
-    status = gsl_histogram_find (h->nbins, h->range, 0.3, &i4) ;
+    int status = gsl_histogram_find (h, 0.0, &i1) ;
+    status = gsl_histogram_find (h, 0.1, &i2) ;
+    status = gsl_histogram_find (h, 0.2, &i3) ;
+    status = gsl_histogram_find (h, 0.3, &i4) ;
 
     for (i = 0; i < N; i++)
       {

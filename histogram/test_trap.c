@@ -87,16 +87,16 @@ int main (void)
   gsl_test(result != 0, "gsl_histogram_get_upperlimit traps index above nbins") ;
 
   status = 0;
-  status = gsl_histogram_find (h->nbins, h->range, -0.01, &i) ;
-  gsl_test(status != -1, "gsl_histogram_find traps x below xmin") ;
+  gsl_histogram_find (h, -0.01, &i) ;
+  gsl_test(status != GSL_EDOM, "gsl_histogram_find traps x below xmin") ;
 
   status = 0;
-  status = gsl_histogram_find (h->nbins, h->range, 1.0, &i) ;
-  gsl_test(status != 1, "gsl_histogram_find traps x at xmax") ;
+  gsl_histogram_find (h, 1.0, &i) ;
+  gsl_test(status != GSL_EDOM, "gsl_histogram_find traps x at xmax") ;
 
   status = 0;
-  status = gsl_histogram_find (h->nbins, h->range, 1.1, &i) ;
-  gsl_test(status != 1, "gsl_histogram_find traps x above xmax") ;
+  gsl_histogram_find (h, 1.1, &i) ;
+  gsl_test(status != GSL_EDOM, "gsl_histogram_find traps x above xmax") ;
 
   return gsl_test_summary ();
 }

@@ -7,7 +7,7 @@ double
 gsl_histogram_pdf_sample (const gsl_histogram_pdf * p, const double r)
 {
   size_t i ;
-  int status = gsl_histogram_find (p->nbins, p->sum, r, &i) ;
+  int status = gsl_histogram_find_impl (p->nbins, p->sum, r, &i) ;
   if (status) {
     return 0 ;
   } else {

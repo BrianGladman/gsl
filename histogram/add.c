@@ -5,7 +5,7 @@
 int
 gsl_histogram_increment (gsl_histogram * h, double x)
 {
-  int status = gsl_histogram_accumulate(h, x, 1.0) ;
+  int status = gsl_histogram_accumulate (h, x, 1.0) ;
   return status ;
 }
 
@@ -13,10 +13,9 @@ int
 gsl_histogram_accumulate (gsl_histogram * h, double x, double weight)
 {
   const size_t n = h->nbins ;
-  const double * range = h->range ;
   size_t index = 0 ;
 
-  int status = gsl_histogram_find (n, range, x, &index) ;
+  int status = gsl_histogram_find_impl (h->nbins, h->range, x, &index) ;
 
   if (status) 
     {
