@@ -29,9 +29,9 @@
 
 double test_sf_frac_diff(double x1, double x2);
 int test_sf_check_result(char * message_buff, gsl_sf_result r, double val, double tol);
+int test_sf_check_val(char * message_buff, double rval, double val, double tol);
 int test_sf_check_return(char * message_buff, int val_return, int expected_return);
 int test_sf_check_result_relax(char * message_buff, gsl_sf_result r, double val, double tol);
-
 
 #define TEST_TOL0  (2.0*GSL_DBL_EPSILON)
 #define TEST_TOL1  (16.0*GSL_DBL_EPSILON)
@@ -49,11 +49,14 @@ int test_sf_check_result_relax(char * message_buff, gsl_sf_result r, double val,
 #define TEST_SF_RETBAD  8
 
 int test_sf (gsl_sf_result r, double val_in, double tol, int status, int expect_return, const char * desc);
+int test_sf_val (double val, double val_in, double tol, const char * desc);
 int test_sf_rlx (gsl_sf_result r, double val_in, double tol, int status, int expect_return, const char * desc);
 int test_sf_2 (gsl_sf_result r1, double val1, double tol1, gsl_sf_result r2, double val2, double tol2, int status, int expect_return, const char * desc);
 int test_sf_sgn (gsl_sf_result r, double sgn, double val_in, double tol, double expect_sgn, int status, int expect_return, const char * desc);
 
 #define TEST_SF(stat, func, args, val_in, tol, expect_return) { int status = func args; stat += test_sf(r, val_in, tol, status, expect_return, #func #args); }
+
+#define TEST_SF_VAL(stat, func, args, val_in, tol) { double val = func args; stat += test_sf_val(val, val_in, tol, #func #args); }
 
 #define TEST_SF_RLX(stat, func, args, val_in, tol, expect_return) { int status = func args; stat += test_sf_rlx(r, val_in, tol, status, expect_return, #func #args); }
 

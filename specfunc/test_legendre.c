@@ -73,9 +73,9 @@ int test_legendre(void)
 
   sa = 0;
   gsl_sf_legendre_Pl_array(100, 0.5, L);
-  sa += ( test_sf_frac_diff(L[0],    1.0 ) > TEST_TOL0 );
-  sa += ( test_sf_frac_diff(L[10],  -0.18822860717773437500 ) > TEST_TOL0 );
-  sa += ( test_sf_frac_diff(L[100], -0.06051802596186118687 ) > TEST_TOL0 );
+  TEST_SF_VAL(sa, L[0], +0.0, 1.0, TEST_TOL1);
+  TEST_SF_VAL(sa, L[10], +0.0, -0.18822860717773437500, TEST_TOL1);
+  TEST_SF_VAL(sa, L[100], +0.0,  -0.06051802596186118687, TEST_TOL1);
   gsl_test(sa, "  gsl_sf_legendre_Pl_array(100)");
   s += sa;
 
@@ -99,9 +99,9 @@ int test_legendre(void)
 
   sa = 0;
   gsl_sf_legendre_Plm_array(100, 5, 0.5, L);
-  sa += ( test_sf_frac_diff(L[0],  -460.3466286991656682 ) > TEST_TOL0 );
-  sa += ( test_sf_frac_diff(L[10],  38852.51334152290535 ) > TEST_TOL0 );
-  sa += ( test_sf_frac_diff(L[95],  6.617107444248382171e+08 ) > TEST_TOL0 );
+  TEST_SF_VAL(sa, L[0], +0.0,  -460.3466286991656682, TEST_TOL1);
+  TEST_SF_VAL(sa, L[10], +0.0,  38852.51334152290535, TEST_TOL1 );
+  TEST_SF_VAL(sa, L[95], +0.0,  6.617107444248382171e+08, TEST_TOL1);
   gsl_test(sa, "  gsl_sf_legendre_Plm_array(100, 5, 0.5)");
   s += sa;
 
@@ -124,10 +124,10 @@ int test_legendre(void)
 
   sa = 0;
   gsl_sf_legendre_sphPlm_array(100, 5, 0.5, L);
-  sa += ( test_sf_frac_diff(L[0],   -0.22609703187800460722 ) > TEST_TOL2 );
-  sa += ( test_sf_frac_diff(L[10],   0.07452710323813558940 ) > TEST_TOL2 );
-  sa += ( test_sf_frac_diff(L[95],   0.25865355990880161717 ) > TEST_TOL2 );
-  gsl_test(s, "  gsl_sf_legendre_sphPlm_array(100, 5, 0.5)");
+  TEST_SF_VAL(sa, L[0], +0.0, -0.22609703187800460722, TEST_TOL3);
+  TEST_SF_VAL(sa, L[10], +0.0, 0.07452710323813558940, TEST_TOL3);
+  TEST_SF_VAL(sa, L[95], +0.0, 0.25865355990880161717, TEST_TOL3);
+  gsl_test(sa, "  gsl_sf_legendre_sphPlm_array(100, 5, 0.5)");
   s += sa;
 
   TEST_SF(s, gsl_sf_conicalP_half_e, (0.0, -0.5, &r),   0.8573827581049917129, TEST_TOL0, GSL_SUCCESS);
@@ -286,10 +286,10 @@ int test_legendre(void)
 #if 0
   sa = 0;
   gsl_sf_legendre_H3d_array(100, 1.0, 3.0, L);
-  sa += ( test_sf_frac_diff(L[  0], gsl_sf_legendre_H3d(  0, 1.0, 3.0)) > 1.0e-12 );
-  sa += ( test_sf_frac_diff(L[  1], gsl_sf_legendre_H3d(  1, 1.0, 3.0)) > 1.0e-12 );
-  sa += ( test_sf_frac_diff(L[ 10], gsl_sf_legendre_H3d( 10, 1.0, 3.0)) > 1.0e-12 );
-  sa += ( test_sf_frac_diff(L[100], gsl_sf_legendre_H3d(100, 1.0, 3.0)) > 1.0e-12 );
+  TEST_SF_VAL(sa, L[0], +0.0, gsl_sf_legendre_H3d(0, 1.0, 3.0), 1.0e-12);
+  TEST_SF_VAL(sa, L[1], +0.0, gsl_sf_legendre_H3d(1, 1.0, 3.0), 1.0e-12);
+  TEST_SF_VAL(sa, L[10], +0.0, gsl_sf_legendre_H3d(10, 1.0, 3.0), 1.0e-12);
+  TEST_SF_VAL(sa, L[100], +0.0, gsl_sf_legendre_H3d(100, 1.0, 3.0), 1.0e-12);
   gsl_test(sa, "  gsl_sf_legendre_H3d_array(100, 1.0, 3.0)");
   s += sa;
 #endif

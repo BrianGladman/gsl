@@ -81,6 +81,32 @@ test_sf_check_result(char * message_buff, gsl_sf_result r, double val, double to
   return s;
 }
 
+int
+test_sf_check_val(char * message_buff, double rval, double val, double tol)
+{
+  int    s = 0;
+  double f = test_sf_frac_diff(val, rval);
+
+  if(f > tol)                       s |= TEST_SF_TOLBAD;
+
+  if(s != 0) {
+    char buff[2048];
+    sprintf(buff, "  expected: %20.16g\n", val);
+    strcat(message_buff, buff);
+    sprintf(buff, "  obtained: %20.16g\n", rval);
+    strcat(message_buff, buff);
+    sprintf(buff, "  fracdiff: %20.16g\n", f);
+    strcat(message_buff, buff);
+  }
+
+  if(s & TEST_SF_TOLBAD) {
+    strcat(message_buff, "  value not within tolerance of expected value\n");
+  }
+
+  return s;
+}
+
+
 /* Relax the condition on the agreement and on the usefulness
  * of the error estimate.
  */
@@ -155,6 +181,26 @@ test_sf (gsl_sf_result r, double val_in, double tol, int status,
   }
   return local_s;
 }
+
+int
+test_sf_val (double val, double val_in, double tol, const char * desc)
+{
+  char message_buff[4096];
+  int local_s = 0;
+
+  message_buff[0] = '\0';
+
+  local_s |= test_sf_check_val(message_buff, val, val_in, tol);
+
+  gsl_test(local_s, desc);
+  if(local_s != 0) {
+    /* printf("  %s %d\n", __FILE__, __LINE__); */
+    printf("%s", message_buff);
+    printf("  %22.18g\n", val);
+  }
+  return local_s;
+}
+
 
 int
 test_sf_rlx (gsl_sf_result r, double val_in, double tol, int status,
