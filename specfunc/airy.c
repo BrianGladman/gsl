@@ -5,6 +5,7 @@
 #include <gsl_math.h>
 #include <gsl_errno.h>
 #include "gsl_sf_chebyshev.h"
+#include "gsl_sf_trig.h"
 #include "gsl_sf_airy.h"
 
 
@@ -669,12 +670,13 @@ gsl_sf_airy_Ai_impl(const double x, const gsl_mode_t mode, gsl_sf_result * resul
   else if(x < -1.0) {
     gsl_sf_result mod;
     gsl_sf_result theta;
-    int status_mp = airy_mod_phase(x, mode, &mod, &theta);
-    double c    = cos(theta.val);
-    result->val  = mod.val * c;
-    result->err  = fabs(result->val * theta.err) + fabs(c * mod.err);
+    gsl_sf_result cos_result;
+    int stat_mp  = airy_mod_phase(x, mode, &mod, &theta);
+    int stat_cos = gsl_sf_cos_err_impl(theta.val, theta.err, &cos_result);
+    result->val  = mod.val * cos_result.val;
+    result->err  = fabs(mod.val * cos_result.err) + fabs(cos_result.val * mod.err);
     result->err += GSL_DBL_EPSILON * fabs(result->val);
-    return status_mp;
+    return GSL_ERROR_SELECT_2(stat_mp, stat_cos);
   }
   else if(x <= 1.0) {
     const double z = x*x*x;
@@ -712,12 +714,13 @@ gsl_sf_airy_Ai_scaled_impl(const double x, gsl_mode_t mode, gsl_sf_result * resu
   else if(x < -1.0) {
     gsl_sf_result mod;
     gsl_sf_result theta;
-    int status_mp = airy_mod_phase(x, mode, &mod, &theta);
-    double c    = cos(theta.val);
-    result->val  = mod.val * c;
-    result->err  = fabs(result->val * theta.err) + fabs(c * mod.err);
+    gsl_sf_result cos_result;
+    int stat_mp  = airy_mod_phase(x, mode, &mod, &theta);
+    int stat_cos = gsl_sf_cos_err_impl(theta.val, theta.err, &cos_result);
+    result->val  = mod.val * cos_result.val;
+    result->err  = fabs(mod.val * cos_result.err) + fabs(cos_result.val * mod.err);
     result->err += GSL_DBL_EPSILON * fabs(result->val);
-    return status_mp;
+    return GSL_ERROR_SELECT_2(stat_mp, stat_cos);
   }
   else if(x <= 1.0) {
     const double z = x*x*x;
@@ -751,12 +754,13 @@ int gsl_sf_airy_Bi_impl(const double x, gsl_mode_t mode, gsl_sf_result * result)
   else if(x < -1.0) {
     gsl_sf_result mod;
     gsl_sf_result theta;
-    int status_mp = airy_mod_phase(x, mode, &mod, &theta);
-    double s = sin(theta.val);
-    result->val  = mod.val * s;
-    result->err  = fabs(result->val * theta.err) + fabs(s * mod.err);
+    gsl_sf_result sin_result;
+    int stat_mp  = airy_mod_phase(x, mode, &mod, &theta);
+    int stat_sin = gsl_sf_sin_err_impl(theta.val, theta.err, &sin_result);
+    result->val  = mod.val * sin_result.val;
+    result->err  = fabs(mod.val * sin_result.err) + fabs(sin_result.val * mod.err);
     result->err += GSL_DBL_EPSILON * fabs(result->val);
-    return status_mp;
+    return GSL_ERROR_SELECT_2(stat_mp, stat_sin);
   }
   else if(x < 1.0) {
     const double z = x*x*x;
@@ -810,12 +814,13 @@ gsl_sf_airy_Bi_scaled_impl(const double x, gsl_mode_t mode, gsl_sf_result * resu
   else if(x < -1.0) {
     gsl_sf_result mod;
     gsl_sf_result theta;
-    int status_mp = airy_mod_phase(x, mode, &mod, &theta);
-    double s = sin(theta.val);
-    result->val  = mod.val * s;
-    result->err  = fabs(result->val * theta.err) + fabs(s * mod.err);
+    gsl_sf_result sin_result;
+    int stat_mp  = airy_mod_phase(x, mode, &mod, &theta);
+    int stat_sin = gsl_sf_sin_err_impl(theta.val, theta.err, &sin_result);
+    result->val  = mod.val * sin_result.val;
+    result->err  = fabs(mod.val * sin_result.err) + fabs(sin_result.val * mod.err);
     result->err += GSL_DBL_EPSILON * fabs(result->val);
-    return status_mp;
+    return GSL_ERROR_SELECT_2(stat_mp, stat_sin);
   }
   else if(x < 1.0) {
     const double z = x*x*x;
@@ -826,13 +831,11 @@ gsl_sf_airy_Bi_scaled_impl(const double x, gsl_mode_t mode, gsl_sf_result * resu
     result->val  = 0.625 + result_c0.val + x*(0.4375 + result_c1.val);
     result->err  = result_c0.err + fabs(x * result_c1.err);
     result->err += GSL_DBL_EPSILON * fabs(result->val);
-
     if(x > 0.0) {
       const double scale = exp(-2.0/3.0 * sqrt(z));
       result->val *= scale;
       result->err *= scale;
     }
-
     return GSL_SUCCESS;
   }
   else if(x <= 2.0) {

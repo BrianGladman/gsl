@@ -12,38 +12,6 @@
 #include "gsl_sf_bessel.h"
 
 
-/* Perform backward recurrence for I_nu(x) and I'_nu(x)
- *
- *        I_{nu-1} = nu/x I_nu + I'_nu
- *       I'_{nu-1} = (nu-1)/x I_{nu-1} + I_nu
- */
-static
-int
-bessel_I_recur(const double nu_min, const double x, const int kmax,
-               const double I_start, const double Ip_start,
-	       double * I_end, double * Ip_end
-	       )
-{
-  double x_inv  = 1.0/x;
-  double nu_max = nu_min + kmax;
-  double I_nu  = I_start;
-  double Ip_nu = Ip_start;
-  double nu = nu_max;
-  int k;
-
-  for(k=kmax-1; k>=0; k--) {
-    double nuox = nu*x_inv;
-    double I_nu_save = I_nu;
-    I_nu  = nuox*I_nu + Ip_nu;
-    Ip_nu = (nuox - x_inv)*I_nu + I_nu_save;
-    nu -= 1.0;
-  }
-  *I_end  = I_nu;
-  *Ip_end = Ip_nu;
-  return GSL_SUCCESS;
-}
-
-
 /*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
 
 int
@@ -77,24 +45,41 @@ gsl_sf_bessel_Inu_scaled_impl(double nu, double x, gsl_sf_result * result)
     return gsl_sf_bessel_Inu_scaled_asymp_unif_impl(nu, x, result);
   }
   else {
-    int N = floor(nu);
-    int M = ceil(sqrt(0.5/GSL_ROOT3_DBL_EPSILON - x*x + 1.0)) + 1;
-    double nu_frac = nu - N;
-    double mu = M + nu_frac;
-    double I_mu, Ip_mu, I_mup1;
-    double I_nu, Ip_nu;
-    gsl_sf_result r_I_mu;
-    gsl_sf_result r_I_mup1;
-    gsl_sf_bessel_Inu_scaled_asymp_unif_impl(mu,     x, &r_I_mu);
-    gsl_sf_bessel_Inu_scaled_asymp_unif_impl(mu+1.0, x, &r_I_mup1);
-    I_mu   = r_I_mu.val;
-    I_mup1 = r_I_mup1.val;
-    Ip_mu = mu/x * I_mu + I_mup1;
-    bessel_I_recur(nu, x, M-N, I_mu, Ip_mu, &I_nu, &Ip_nu);
-    result->val  = I_nu;
-    result->err  = I_nu * (r_I_mu.err/r_I_mu.val + r_I_mup1.err/r_I_mup1.val);
-    result->err += 2.0 * GSL_DBL_EPSILON * I_nu;
-    return GSL_SUCCESS;
+    int N = (int)(nu + 0.5);
+    double mu = nu - N;      /* -1/2 <= mu <= 1/2 */ 
+    double K_mu, K_mup1, Kp_mu;
+    double K_nu, K_nup1, K_num1;
+    double I_nu_ratio;
+    int stat_Irat;
+    int stat_Kmu;
+    int n;
+
+    /* obtain K_mu, K_mup1 */
+    if(x < 2.0) {
+      stat_Kmu = gsl_sf_bessel_K_scaled_temme(mu, x, &K_mu, &K_mup1, &Kp_mu);
+    }
+    else {
+      stat_Kmu = gsl_sf_bessel_K_scaled_steed_temme_CF2(mu, x, &K_mu, &K_mup1, &Kp_mu);
+    }
+
+    /* recurse forward to obtain K_num1, K_nu */
+    K_nu   = K_mu;
+    K_nup1 = K_mup1;
+
+    for(n=0; n<N; n++) {
+      K_num1 = K_nu;
+      K_nu   = K_nup1;
+      K_nup1 = 2.0*(mu+n+1)/x * K_nu + K_num1;
+    }
+
+    /* calculate I_{nu+1}/I_nu */
+    stat_Irat = gsl_sf_bessel_I_CF1_ser(nu, x, &I_nu_ratio);
+
+    /* solve for I_nu */
+    result->val = 1.0/(x * (K_nup1 + I_nu_ratio * K_nu));
+    result->err = GSL_DBL_EPSILON * (0.5*N + 2.0) * fabs(result->val);
+
+    return GSL_ERROR_SELECT_2(stat_Kmu, stat_Irat);
   }
 }
 

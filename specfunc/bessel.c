@@ -259,7 +259,7 @@ gsl_sf_bessel_Inu_scaled_asympx_impl(const double nu, const double x, gsl_sf_res
   double pre  = 1.0/sqrt(2.0*M_PI*x);
   double r    = mu/x;
   result->val = pre * (1.0 - mum1/(8.0*x) + mum1*mum9/(128.0*x*x));
-  result->err = GSL_DBL_EPSILON * fabs(result->val) + pre * fabs(0.1*r*r*r);
+  result->err = 2.0 * GSL_DBL_EPSILON * fabs(result->val) + pre * fabs(0.1*r*r*r);
   return GSL_SUCCESS;
 }
 
@@ -274,7 +274,7 @@ gsl_sf_bessel_Knu_scaled_asympx_impl(const double nu, const double x, gsl_sf_res
   double pre  = sqrt(M_PI/(2.0*x));
   double r    = nu/x;
   result->val = pre * (1.0 + mum1/(8.0*x) + mum1*mum9/(128.0*x*x));
-  result->err = GSL_DBL_EPSILON * fabs(result->val) + pre * fabs(0.1*r*r*r);
+  result->err = 2.0 * GSL_DBL_EPSILON * fabs(result->val) + pre * fabs(0.1*r*r*r);
   return GSL_SUCCESS;
 }
 
@@ -306,7 +306,7 @@ gsl_sf_bessel_Knu_scaled_asympx_impl(const double nu, const double x, gsl_sf_res
  *
  * This makes sense. For x << nu, the error will be of the form u_N(1)/nu^N,
  * since the polynomial term will be evaluated near t=1, so the bound
- * on nu will become constant for small x. Furthermore, decreasing x with
+ * on nu will become constant for small x. Furthermore, increasing x with
  * nu fixed will decrease the error.
  */
 int
@@ -317,17 +317,28 @@ gsl_sf_bessel_Inu_scaled_asymp_unif_impl(const double nu, const double x, gsl_sf
   double root_term = sqrt(1.0 + z*z);
   double pre = 1.0/sqrt(2.0*M_PI*nu * root_term);
   double eta = root_term + log(z/(1.0+root_term));
-  double ex  = ( z < 1.0/GSL_ROOT3_DBL_EPSILON ? exp(nu*(-z + eta)) : exp(-0.5*nu/z*(1.0 - 1.0/(12.0*z*z))) );
-  double t = 1.0/root_term;
-  double sum;
-  double tpow[16];
-  tpow[0] = 1.0;
-  for(i=1; i<16; i++) tpow[i] = t * tpow[i-1];
-  sum = 1.0 + debye_u1(tpow)/nu + debye_u2(tpow)/(nu*nu) + debye_u3(tpow)/(nu*nu*nu)
-        + debye_u4(tpow)/(nu*nu*nu*nu) + debye_u5(tpow)/(nu*nu*nu*nu*nu);
-  result->val = pre * ex * sum;
-  result->err = GSL_DBL_EPSILON * fabs(result->val) + pre * ex / (nu*nu*nu*nu*nu*nu);
-  return GSL_SUCCESS;
+  double ex_arg = ( z < 1.0/GSL_ROOT3_DBL_EPSILON ? nu*(-z + eta) : -0.5*nu/z*(1.0 - 1.0/(12.0*z*z)) );
+  gsl_sf_result ex_result;
+  int stat_ex = gsl_sf_exp_impl(ex_arg, &ex_result);
+  if(stat_ex == GSL_SUCCESS) {
+    double t = 1.0/root_term;
+    double sum;
+    double tpow[16];
+    tpow[0] = 1.0;
+    for(i=1; i<16; i++) tpow[i] = t * tpow[i-1];
+    sum = 1.0 + debye_u1(tpow)/nu + debye_u2(tpow)/(nu*nu) + debye_u3(tpow)/(nu*nu*nu)
+          + debye_u4(tpow)/(nu*nu*nu*nu) + debye_u5(tpow)/(nu*nu*nu*nu*nu);
+    result->val  = pre * ex_result.val * sum;
+    result->err  = pre * ex_result.val / (nu*nu*nu*nu*nu*nu);
+    result->err += pre * ex_result.err * fabs(sum);
+    result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
+    return GSL_SUCCESS;
+  }
+  else {
+    result->val = 0.0;
+    result->err = 0.0;
+    return stat_ex;
+  }
 }
 
 
@@ -346,17 +357,28 @@ gsl_sf_bessel_Knu_scaled_asymp_unif_impl(const double nu, const double x, gsl_sf
   double root_term = sqrt(1.0 + z*z);
   double pre = sqrt(M_PI/(2.0*nu*root_term));
   double eta = root_term + log(z/(1.0+root_term));
-  double ex  = ( z < 1.0/GSL_ROOT3_DBL_EPSILON ? exp(nu*(z - eta)) : exp(0.5*nu/z*(1.0 + 1.0/(12.0*z*z))) );
-  double t = 1.0/root_term;
-  double sum;
-  double tpow[16];
-  tpow[0] = 1.0;
-  for(i=1; i<16; i++) tpow[i] = t * tpow[i-1];
-  sum = 1.0 - debye_u1(tpow)/nu + debye_u2(tpow)/(nu*nu) - debye_u3(tpow)/(nu*nu*nu)
-        + debye_u4(tpow)/(nu*nu*nu*nu) - debye_u5(tpow)/(nu*nu*nu*nu*nu);
-  result->val = pre * ex * sum;
-  result->err = GSL_DBL_EPSILON * fabs(result->val) + pre * ex / (nu*nu*nu*nu*nu*nu);
-  return GSL_SUCCESS;
+  double ex_arg = ( z < 1.0/GSL_ROOT3_DBL_EPSILON ? nu*(z - eta) : 0.5*nu/z*(1.0 + 1.0/(12.0*z*z)) );
+  gsl_sf_result ex_result;
+  int stat_ex = gsl_sf_exp_impl(ex_arg, &ex_result);
+  if(stat_ex == GSL_SUCCESS) {
+    double t = 1.0/root_term;
+    double sum;
+    double tpow[16];
+    tpow[0] = 1.0;
+    for(i=1; i<16; i++) tpow[i] = t * tpow[i-1];
+    sum = 1.0 - debye_u1(tpow)/nu + debye_u2(tpow)/(nu*nu) - debye_u3(tpow)/(nu*nu*nu)
+          + debye_u4(tpow)/(nu*nu*nu*nu) - debye_u5(tpow)/(nu*nu*nu*nu*nu);
+    result->val  = pre * ex_result.val * sum;
+    result->err  = pre * ex_result.err * fabs(sum);
+    result->err += pre * ex_result.val / (nu*nu*nu*nu*nu*nu);
+    result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
+    return GSL_SUCCESS;
+  }
+  else {
+    result->val = 0.0;
+    result->err = 0.0;
+    return stat_ex;
+  }
 }
 
 
@@ -397,6 +419,64 @@ gsl_sf_bessel_JnuYnu_zero(const double nu,
   }
   if(status)
     return GSL_EDOM;
+  else
+    return GSL_SUCCESS;
+}
+
+
+/* Evaluate the continued fraction CF1 for J_{nu+1}/J_nu
+ * using Gautschi (Euler) equivalent series.
+ */
+int
+gsl_sf_bessel_J_CF1_ser(const double nu, const double x, double * ratio)
+{
+  const int maxk = 20000;
+  double tk   = 1.0;
+  double sum  = 1.0;
+  double rhok = 0.0;
+  int k;
+
+  for(k=1; k<maxk; k++) {
+    double ak = -0.25 * (x/(nu+k)) * x/(nu+k+1.0);
+    rhok = -ak*(1.0 + rhok)/(1.0 + ak*(1.0 + rhok));
+    tk  *= rhok;
+    sum += tk;
+    if(fabs(tk/sum) < GSL_DBL_EPSILON) break;
+  }
+
+  *ratio = x/(2.0*(nu+1.0)) * sum;
+
+  if(k == maxk)
+    return GSL_EMAXITER;
+  else
+    return GSL_SUCCESS;
+}
+
+
+/* Evaluate the continued fraction CF1 for I_{nu+1}/I_nu
+ * using Gautschi (Euler) equivalent series.
+ */
+int
+gsl_sf_bessel_I_CF1_ser(const double nu, const double x, double * ratio)
+{
+  const int maxk = 20000;
+  double tk   = 1.0;
+  double sum  = 1.0;
+  double rhok = 0.0;
+  int k;
+
+  for(k=1; k<maxk; k++) {
+    double ak = 0.25 * (x/(nu+k)) * x/(nu+k+1.0);
+    rhok = -ak*(1.0 + rhok)/(1.0 + ak*(1.0 + rhok));
+    tk  *= rhok;
+    sum += tk;
+    if(fabs(tk/sum) < GSL_DBL_EPSILON) break;
+  }
+
+  *ratio = x/(2.0*(nu+1.0)) * sum;
+
+  if(k == maxk)
+    return GSL_EMAXITER;
   else
     return GSL_SUCCESS;
 }

@@ -10,55 +10,14 @@
 #include "gsl_sf_bessel.h"
 
 
-#if 0
-static
-int
-bessel_J_CF1(const double nu, const double x, double * result, double * sign)
-{
-  const int max_iter = 5000;
-  const double SMALL = 1.0e-100;
-
-  int i = 1;
-  int isign = 1;
-  double x_inv = 1.0/x;
-  double r = nu * x_inv;
-  double b = 2.0*nu*x_inv;
-  double d = 0.0;
-  double c;
-  r = GSL_MAX(r, SMALL);
-  c = r;
-  while(i < max_iter) {
-    double del;
-    b  += 2.0*x_inv;
-    d   = b - d;
-    if(fabs(d) < SMALL) d = SMALL;
-    c   = b - 1.0/c;
-    if(fabs(c) < SMALL) c = SMALL;
-    d = 1.0/d;
-    del = c*d;
-    r *= del;
-    if(d < 0.0) isign = -isign;
-    if(fabs(del-1.0) < GSL_DBL_EPSILON) break;
-  }
-  
-  *result = r;
-  *sign = isign;
-  if(i == max_iter) {
-    return GSL_EMAXITER;
-  }
-  else {
-    return GSL_SUCCESS;
-  }
-}
-#endif /* 0 */
-
 
 /* Evaluate at large enough nu to apply asymptotic
  * results and apply backward recurrence.
  */
 static
 int
-bessel_J_recur_asymp(const double nu, const double x, double * Jnu, double * Jnup1)
+bessel_J_recur_asymp(const double nu, const double x,
+                     gsl_sf_result * Jnu, gsl_sf_result * Jnup1)
 {
   const double nu_cut = 25.0;
   int n;
@@ -68,6 +27,7 @@ bessel_J_recur_asymp(const double nu, const double x, double * Jnu, double * Jnu
   gsl_sf_result r_Jn;
   int stat_O1 = gsl_sf_bessel_Jnu_asymp_Olver_impl(nu + steps + 1.0, x, &r_Jnp1);
   int stat_O2 = gsl_sf_bessel_Jnu_asymp_Olver_impl(nu + steps,       x, &r_Jn);
+  double r_fe = fabs(r_Jnp1.err/r_Jnp1.val) + fabs(r_Jn.err/r_Jn.val);
   double Jnp1 = r_Jnp1.val;
   double Jn   = r_Jn.val;
   double Jnm1;
@@ -80,8 +40,11 @@ bessel_J_recur_asymp(const double nu, const double x, double * Jnu, double * Jnu
     Jn   = Jnm1;
   }
 
-  *Jnu   = Jn;
-  *Jnup1 = Jnp1_save;
+  Jnu->val = Jn;
+  Jnu->err = (r_fe + GSL_DBL_EPSILON * (steps + 1.0)) * fabs(Jn);
+  Jnup1->val = Jnp1_save;
+  Jnup1->err = (r_fe + GSL_DBL_EPSILON * (steps + 1.0)) * fabs(Jnp1_save);
+
   return GSL_ERROR_SELECT_2(stat_O1, stat_O2);
 }
 
@@ -91,8 +54,6 @@ bessel_J_recur_asymp(const double nu, const double x, double * Jnu, double * Jnu
 int
 gsl_sf_bessel_Jnu_impl(const double nu, const double x, gsl_sf_result * result)
 {
-  const double nu_cut = 25.0;
-
   if(result == 0) {
     return GSL_EFAULT;
   }
@@ -122,15 +83,12 @@ gsl_sf_bessel_Jnu_impl(const double nu, const double x, gsl_sf_result * result)
     result->err = 2.0 * GSL_DBL_EPSILON * fabs(result->val);
     return stat;
   }
-  else if(nu > nu_cut) {
+  else if(nu > 25.0) {
     return gsl_sf_bessel_Jnu_asymp_Olver_impl(nu, x, result);
   }
   else {
-    double Jnu, Jnup1;
-    int status = bessel_J_recur_asymp(nu, x, &Jnu, &Jnup1);
-    result->val = Jnu;
-    result->err = 2.0 * GSL_DBL_EPSILON * fabs(GSL_MAX_DBL(nu,1.0) * Jnu);
-    return status;
+    gsl_sf_result Jnup1;
+    return bessel_J_recur_asymp(nu, x, result, &Jnup1);
   }
 }
 

@@ -50,7 +50,7 @@ gsl_sf_hydrogenicR_impl(const int n, const int l,
                         const double Z, const double r,
                         gsl_sf_result * result)
 {
-  if(n < 1 || l > n-1 || Z <= 0.0) {
+  if(n < 1 || l > n-1 || Z <= 0.0 || r < 0.0) {
     result->val = 0.0;
     result->err = 0.0;
     return GSL_EDOM;
@@ -67,7 +67,7 @@ gsl_sf_hydrogenicR_impl(const int n, const int l,
     double W = norm * ea * pp;
     result->val  = W * lag.val;
     result->err  = fabs(W)*lag.err;
-    result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val * 0.5*rho);
+    result->err += 2.0 * GSL_DBL_EPSILON * fabs(0.5*rho+1.0) * fabs(result->val);
     stat_uf = ( result->val == 0.0 ? GSL_EUNDRFLW : GSL_SUCCESS );
     return GSL_ERROR_SELECT_2(stat_lag, stat_uf);
   }

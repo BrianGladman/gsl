@@ -13,36 +13,6 @@
 
 
 
-/* Perform forward recurrence for K_nu(x) and K'_nu(x)
- *
- *        K_{nu+1} =  nu/x K_nu - K'_nu
- *       K'_{nu+1} = -(nu+1)/x K_{nu+1} - K_nu
- */
-static
-int
-bessel_K_recur(const double nu_min, const double x, const int kmax,
-               const double K_start, const double Kp_start,
-	       double * K_end, double * Kp_end)
-{
-  double x_inv = 1.0/x;
-  double nu = nu_min;
-  double K_nu  = K_start;
-  double Kp_nu = Kp_start;
-  int k;
-
-  for(k=1; k<=kmax; k++) {
-    double nuox = nu*x_inv;
-    double K_nu_save = K_nu;
-    K_nu  = -Kp_nu + nuox * K_nu;
-    Kp_nu = -K_nu_save - (nuox+x_inv) * K_nu;
-    nu += 1.0;
-  }
-  *K_end  = K_nu;
-  *Kp_end = Kp_nu;
-  return GSL_SUCCESS;
-}
-
-
 /*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
 
 int
@@ -60,7 +30,8 @@ gsl_sf_bessel_Knu_scaled_impl(const double nu, const double x, gsl_sf_result * r
     int N = (int)(nu + 0.5);
     double mu = nu - N;      /* -1/2 <= mu <= 1/2 */
     double K_mu, K_mup1, Kp_mu;
-    double K_nu, Kp_nu;
+    double K_nu, K_nup1, K_num1;
+    int n;
 
     if(x < 2.0) {
       gsl_sf_bessel_K_scaled_temme(mu, x, &K_mu, &K_mup1, &Kp_mu);
@@ -68,9 +39,19 @@ gsl_sf_bessel_Knu_scaled_impl(const double nu, const double x, gsl_sf_result * r
     else {
       gsl_sf_bessel_K_scaled_steed_temme_CF2(mu, x, &K_mu, &K_mup1, &Kp_mu);
     }
-    bessel_K_recur(mu, x, N, K_mu, Kp_mu, &K_nu, &Kp_nu);
+
+    /* recurse forward to obtain K_num1, K_nu */
+    K_nu   = K_mu;
+    K_nup1 = K_mup1;
+
+    for(n=0; n<N; n++) {
+      K_num1 = K_nu;
+      K_nu   = K_nup1;
+      K_nup1 = 2.0*(mu+n+1)/x * K_nu + K_num1;
+    }
+
     result->val = K_nu;
-    result->err = 2.0 * GSL_DBL_EPSILON * fabs(result->val);
+    result->err = GSL_DBL_EPSILON * (0.5*N + 2.0) * fabs(result->val);
     return GSL_SUCCESS;
   }
 }

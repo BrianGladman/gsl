@@ -138,7 +138,8 @@ int gsl_sf_bessel_j2_impl(const double x, gsl_sf_result * result)
 }
 
 
-int gsl_sf_bessel_jl_impl(const int l, const double x, gsl_sf_result * result)
+int
+gsl_sf_bessel_jl_impl(const int l, const double x, gsl_sf_result * result)
 {
   if(l < 0 || x < 0.0) {
     result->val = 0.0;
@@ -183,37 +184,42 @@ int gsl_sf_bessel_jl_impl(const int l, const double x, gsl_sf_result * result)
     return status;
   }
   else {
-    /* recurse down from safe values */
-    double rt_term = sqrt((0.5*M_PI)/x);
-    const int LMAX = 8 + (int)(1.0/GSL_ROOT6_DBL_EPSILON);
-
-    gsl_sf_result r_jellp1;
-    gsl_sf_result r_jell;
-    int stat_0 = gsl_sf_bessel_Jnu_asymp_Olver_impl(LMAX + 1 + 0.5, x, &r_jellp1);
-    int stat_1 = gsl_sf_bessel_Jnu_asymp_Olver_impl(LMAX     + 0.5, x, &r_jell);
-    double jellp1 = r_jellp1.val;
-    double jell   = r_jell.val;
+    double ratio;
+    int stat_CF1 = gsl_sf_bessel_J_CF1_ser(l+0.5, x, &ratio);
+    double jellp1 = GSL_SQRT_DBL_EPSILON * ratio;
+    double jell   = GSL_SQRT_DBL_EPSILON;
     double jellm1;
     int ell;
-
-    jellp1 *= rt_term;
-    jell   *= rt_term;
-    for(ell = LMAX; ell >= l+1; ell--) {
+    for(ell = l; ell > 0; ell--) {
       jellm1 = -jellp1 + (2*ell + 1)/x * jell;
       jellp1 = jell;
       jell   = jellm1;
     }
 
-    result->val  = jellm1;
-    result->err  = fabs(result->val)*(fabs(r_jellp1.err/r_jellp1.val) + fabs(r_jell.err/r_jell.val));
-    result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
-
-    return GSL_ERROR_SELECT_2(stat_0, stat_1);
+    if(fabs(jell) > fabs(jellp1)) {
+      gsl_sf_result j0_result;
+      int stat_j0  = gsl_sf_bessel_j0_impl(x, &j0_result);
+      double pre   = GSL_SQRT_DBL_EPSILON / jell;
+      result->val  = j0_result.val * pre;
+      result->err  = j0_result.err * fabs(pre);
+      result->err += GSL_DBL_EPSILON * (0.5*l + 1.0) * fabs(result->val);
+      return GSL_ERROR_SELECT_2(stat_j0, stat_CF1);
+    }
+    else {
+      gsl_sf_result j1_result;
+      int stat_j1  = gsl_sf_bessel_j1_impl(x, &j1_result);
+      double pre   = GSL_SQRT_DBL_EPSILON / jellp1;
+      result->val  = j1_result.val * pre;
+      result->err  = j1_result.err * fabs(pre);
+      result->err += GSL_DBL_EPSILON * (0.5*l + 1.0) * fabs(result->val);
+      return GSL_ERROR_SELECT_2(stat_j1, stat_CF1);
+    }
   }
 }
 
 
-int gsl_sf_bessel_jl_array_impl(const int lmax, const double x, double * result_array)
+int
+gsl_sf_bessel_jl_array_impl(const int lmax, const double x, double * result_array)
 {
   if(result_array == 0) {
     return GSL_EFAULT;

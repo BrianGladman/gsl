@@ -199,7 +199,6 @@ gsl_sf_cos_impl(double x, gsl_sf_result * result)
     const double P2 = 3.77489470793079817668e-8;
     const double P3 = 2.69515142907905952645e-15;
 
-    const double sgn_x = GSL_SIGN(x);
     const double abs_x = fabs(x);
 
     if(abs_x < GSL_ROOT4_DBL_EPSILON) {
@@ -209,7 +208,7 @@ gsl_sf_cos_impl(double x, gsl_sf_result * result)
       return GSL_SUCCESS;
     }
     else {
-      double sgn_result = sgn_x;
+      double sgn_result = 1.0;
       double y = floor(abs_x/(0.25*M_PI));
       int octant = y - ldexp(floor(ldexp(y,-3)),3);
       int stat_cs;
@@ -515,19 +514,19 @@ int gsl_sf_angle_restrict_pos_impl(double * theta)
 
 int gsl_sf_sin_err_impl(const double x, const double dx, gsl_sf_result * result)
 {
-  double s = sin(x);
-  result->val = s;
-  result->err = fabs((1.0 - s*s) * dx) + GSL_DBL_EPSILON * fabs(s);
-  return GSL_SUCCESS;
+  int stat_s = gsl_sf_sin_impl(x, result);
+  result->err += fabs(cos(x) * dx);
+  result->err += GSL_DBL_EPSILON * fabs(result->val);
+  return stat_s;
 }
 
 
 int gsl_sf_cos_err_impl(const double x, const double dx, gsl_sf_result * result)
 {
-  double c = cos(x);
-  result->val = c;
-  result->err = fabs((1.0 - c*c) * dx) + GSL_DBL_EPSILON * fabs(c);
-  return GSL_SUCCESS;
+  int stat_c = gsl_sf_cos_impl(x, result);
+  result->err += fabs(sin(x) * dx);
+  result->err += GSL_DBL_EPSILON * fabs(result->val);
+  return stat_c;
 }
 
 

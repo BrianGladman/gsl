@@ -31,6 +31,13 @@ gsl_sf_bessel_JnuYnu_zero(double nu,
 		          );
 
 int
+gsl_sf_bessel_J_CF1_ser(double nu, double x, double * ratio);
+
+int
+gsl_sf_bessel_I_CF1_ser(double nu, double x, double * ratio);
+
+
+int
 gsl_sf_bessel_JY_steed_CF2(double nu, double x,
                            double * P, double * Q);
 

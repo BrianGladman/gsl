@@ -523,7 +523,7 @@ static double olver_B3(double z, double abs_zeta)
 }
 
 
-static double olver_A1(double z, double abs_zeta)
+static double olver_A1(double z, double abs_zeta, double * err)
 {
   if(z < 0.98) {
     double t = 1.0/sqrt(1.0-z*z);
@@ -532,6 +532,7 @@ static double olver_A1(double z, double abs_zeta)
     double term1 =  t2*(81.0 - 462.0*t2 + 385.0*t2*t2)/1152.0;
     double term2 = -455.0/(4608.0*abs_zeta*abs_zeta*abs_zeta);
     double term3 =  7.0*t*(-3.0 + 5.0*t2)/(1152.0*rz*rz*rz);
+    *err = 2.0 * GSL_DBL_EPSILON * (fabs(term1) + fabs(term2) + fabs(term3));
     return term1 + term2 + term3;
   }
   else if(z < 1.02) {
@@ -545,7 +546,9 @@ static double olver_A1(double z, double abs_zeta)
     const double c6 =  0.00123177312220625816558607537838;
     const double c7 =  0.00087334711007377573881689318421;
     const double c8 =  0.00059004942455353250141217015410;
-    return c0+a*(c1+a*(c2+a*(c3+a*(c4+a*(c5+a*(c6+a*(c7+a*c8)))))));
+    const double sum = c0+a*(c1+a*(c2+a*(c3+a*(c4+a*(c5+a*(c6+a*(c7+a*c8)))))));
+    *err = 2.0 * GSL_DBL_EPSILON * fabs(sum);
+    return sum;
   }
   else {
     const double t = 1.0/(z*sqrt(1.0 - 1.0/(z*z)));
@@ -554,6 +557,7 @@ static double olver_A1(double z, double abs_zeta)
     const double term1 = -t2*(81.0 + 462.0*t2 + 385.0*t2*t2)/1152.0;
     const double term2 =  455.0/(4608.0*abs_zeta*abs_zeta*abs_zeta);
     const double term3 = -7.0*t*(3.0 + 5.0*t2)/(1152.0*rz*rz*rz);
+    *err = 2.0 * GSL_DBL_EPSILON * (fabs(term1) + fabs(term2) + fabs(term3));
     return term1 + term2 + term3;
   }
 }
@@ -672,13 +676,15 @@ static double olver_A4(double z, double abs_zeta)
 #ifdef HAVE_INLINE
 inline
 #endif
-static double olver_Asum(double nu, double z, double abs_zeta)
+static double olver_Asum(double nu, double z, double abs_zeta, double * err)
 {
   double nu2 = nu*nu;
-  double A1 = olver_A1(z, abs_zeta);
+  double A1_err;
+  double A1 = olver_A1(z, abs_zeta, &A1_err);
   double A2 = olver_A2(z, abs_zeta);
   double A3 = olver_A3(z, abs_zeta);
   double A4 = olver_A4(z, abs_zeta);
+  *err = A1_err/nu2 + GSL_DBL_EPSILON;
   return 1.0 + A1/nu2 + A2/(nu2*nu2) + A3/(nu2*nu2*nu2) + A4/(nu2*nu2*nu2*nu2);
 }
 
@@ -719,14 +725,14 @@ int gsl_sf_bessel_Jnu_asymp_Olver_impl(double nu, double x, gsl_sf_result * resu
     double zeta, abs_zeta;
     double arg;
     double pre;
-    double asum, bsum;
+    double asum, bsum, asum_err;
     gsl_sf_result ai;
     gsl_sf_result aip;
     double z = x/nu;
     double crnu = pow(nu, 1.0/3.0);
     double nu3  = nu*nu*nu;
     double nu11 = nu3*nu3*nu3*nu*nu;
-    int stat_a;
+    int stat_a, stat_ap;
 
     if(fabs(1.0-z) < 0.02) {
       const double a = 1.0-z;
@@ -757,21 +763,23 @@ int gsl_sf_bessel_Jnu_asymp_Olver_impl(double nu, double x, gsl_sf_result * resu
       pre  = sqrt(2.0*sqrt(abs_zeta/(rt*rt)));
     }
 
-    asum = olver_Asum(nu, z, abs_zeta);
+    asum = olver_Asum(nu, z, abs_zeta, &asum_err);
     bsum = olver_Bsum(nu, z, abs_zeta);
 
     arg  = crnu*crnu * zeta;
-    stat_a = gsl_sf_airy_Ai_impl(arg, GSL_MODE_DEFAULT, &ai);
-    gsl_sf_airy_Ai_deriv_impl(arg, GSL_MODE_DEFAULT, &aip);
+    stat_a  = gsl_sf_airy_Ai_impl(arg, GSL_MODE_DEFAULT, &ai);
+    stat_ap = gsl_sf_airy_Ai_deriv_impl(arg, GSL_MODE_DEFAULT, &aip);
 
     result->val  = pre * (ai.val*asum/crnu + aip.val*bsum/(nu*crnu*crnu));
     result->err  = pre * (ai.err * fabs(asum/crnu));
-    result->err += pre / (crnu*nu11);
+    result->err += pre * fabs(ai.val) * asum_err / crnu;
+    result->err += pre * fabs(ai.val * asum) / (crnu*nu11);
     result->err += 8.0 * GSL_DBL_EPSILON * fabs(result->val);
 
-    return stat_a;
+    return GSL_ERROR_SELECT_2(stat_a, stat_ap);
   }
 }
+
 
 /* uniform asymptotic, nu -> Inf,  [Abramowitz+Stegun, 9.3.36]
  *
@@ -795,7 +803,7 @@ int gsl_sf_bessel_Ynu_asymp_Olver_impl(double nu, double x, gsl_sf_result * resu
     double zeta, abs_zeta;
     double arg;
     double pre;
-    double asum, bsum;
+    double asum, bsum, asum_err;
     gsl_sf_result bi;
     gsl_sf_result bip;
     double z = x/nu;
@@ -834,7 +842,7 @@ int gsl_sf_bessel_Ynu_asymp_Olver_impl(double nu, double x, gsl_sf_result * resu
       pre  = sqrt(2.0*sqrt(abs_zeta)/rt);
     }
 
-    asum = olver_Asum(nu, z, abs_zeta);
+    asum = olver_Asum(nu, z, abs_zeta, &asum_err);
     bsum = olver_Bsum(nu, z, abs_zeta);
 
     arg  = crnu*crnu * zeta;
@@ -843,7 +851,8 @@ int gsl_sf_bessel_Ynu_asymp_Olver_impl(double nu, double x, gsl_sf_result * resu
 
     result->val  = -pre * (bi.val*asum/crnu + bip.val*bsum/(nu*crnu*crnu));
     result->err  =  pre * (bi.err * fabs(asum/crnu));
-    result->err +=  pre / (crnu*nu11);
+    result->err +=  pre * fabs(bi.val) * asum_err / crnu;
+    result->err +=  pre * fabs(bi.val*asum) / (crnu*nu11);
     result->err +=  8.0 * GSL_DBL_EPSILON * fabs(result->val);
 
     return GSL_ERROR_SELECT_2(stat_b, stat_d);
