@@ -1,3 +1,6 @@
+/* This is an automatically generated file created by
+   convert_double_to_int.pl -- do not edit                */
+
 #include <stdlib.h>
 #include <gsl_statistics_int.h>
 

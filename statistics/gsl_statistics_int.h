@@ -1,3 +1,6 @@
+/* This is an automatically generated file created by
+   convert_double_to_int.pl -- do not edit                */
+
 #ifndef _GSL_STATISTICS_INT_H
 #define _GSL_STATISTICS_INT_H
 
