@@ -86,6 +86,57 @@ static double F2_c_integrand(double y, double A)
 
 /*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
 
+/* [Goano, TOMS-745, (4)] */
+int gsl_sf_fermi_integral_m1_impl(const double x, double * result)
+{
+  if(x < GSL_LOG_DBL_MIN + 1.0) {
+    *result = 0.0;
+    return GSL_EUNDRFLW;
+  }
+  else if( x < 0.0) {
+    double ex = exp(x);
+    *result = ex/(1.0+ex);
+    return GSL_SUCCESS;
+  }
+  else {
+    *result = 1.0/(1.0 + exp(-x));
+    return GSL_SUCCESS;
+  }
+}
+
+/* [Goano, TOMS-745, (3)] */
+int gsl_sf_fermi_integral_0_impl(const double x, double * result)
+{
+  if(x < GSL_LOG_DBL_MIN) {
+    *result = 0.0;
+    return GSL_EUNDRFLW;
+  }
+  else if(x < -10) {
+    double ex = exp(x);
+    *result = ex * ( 1.0 - 0.5*ex + ex*ex/3.0 - ex*ex*ex/4.0);
+    return GSL_SUCCESS;
+  }
+  else if(x < 10) {
+    *result = log(1.0 + exp(x));
+    return GSL_SUCCESS;
+  }
+  else {
+    double ex = exp(-x);
+    *result = x + ex * (1.0 - 0.5*ex + ex*ex/3.0 - ex*ex*ex/4.0);
+    return GSL_SUCCESS;
+  }
+}
+
+/* [Goano, TOMS-745, p. 222] */
+int gsl_sf_fermi_integral_inc_0_impl(const double x, const double b, double * result)
+{
+  double arg = b - x;
+  double f0;
+  int status = gsl_sf_fermi_integral_0_impl(arg, &f0);
+  *result = f0 - arg;
+  return status;
+}
+
 int gsl_sf_fermi_integral_1_impl(const double A, double * result)
 {
   if(A <= 0.) {
