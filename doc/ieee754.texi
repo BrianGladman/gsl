@@ -13,16 +13,154 @@ the header file @file{gsl_ieee_utils.h}.
 
 @node Representation of floating point numbers
 @section Representation of floating point numbers
+@cindex IEEE format for floating point numbers
+@cindex bias, IEEE format
+@cindex exponent, IEEE format
+@cindex sign bit, IEEE format
+@cindex mantissa, IEEE format
+The IEEE Standard for Binary Floating-Point Arithmetic defines binary
+formats for single and double precision numbers. Each number is composed
+of three parts: a @dfn{sign bit} (@math{s}), an @dfn{exponent}
+(@math{E}) and a @dfn{fraction} (@math{f}). The numerical value of the
+combination @math{(s,E,f)} is given by the following formula,
 
-The IEEE Standard for floating
+@tex
+\beforedisplay
+$$
+(-1)^s (1 \cdot fffff\dots) 2^E
+$$
+\afterdisplay
+@end tex
+@ifinfo
+@example
+(-1)^s (1.fffff...) 2^E
+@end example
+@end ifinfo
 
-@deftypefun void gsl_ieee_printf_float (const float * @var{x})
-@deftypefunx void gsl_ieee_printf_double (const double * @var{x})
-@end deftypefun
+@noindent
+@cindex normalized form, IEEE format
+@cindex denormalized form, IEEE format
+The sign bit is either zero or one.  The exponent ranges from
+@c{$E_{min}$}
+@math{E_min} 
+to 
+@c{$E_{max}$}
+@math{E_max}. It is converted to an unsigned number
+@math{e}, known as the @dfn{biased exponent}, for storage by adding a
+@dfn{bias} parameter,
+@c{$e = E + \hbox{\it bias}$}
+@math{e = E + bias}.
+The sequence @math{fffff...} represents the digits of the binary
+fraction @math{f}. The binary digits are stored in @dfn{normalized
+form}, by adjusting the exponent to give a leading bit of @math{1}. 
+Since the leading digit is always 1 for normalized numbers it can then be
+assumed implicitly and does not have to be stored.
+Numbers smaller than 
+@c{$2^{E_{min}}$}
+@math{2^(E_min)}
+are be stored in @dfn{denormalised form} with a leading zero,
+
+@tex
+\beforedisplay
+$$
+(-1)^s (0 \cdot fffff\dots) 2^{E_{min}}
+$$
+\afterdisplay
+@end tex
+@ifinfo
+@example
+(-1)^s (0.fffff...) 2^(E_min)
+@end example
+@end ifinfo
+
+@noindent
+@cindex zero, IEEE format
+@cindex infinity, IEEE format
+This allows gradual underflow down to 
+@c{$2^{E_{min} - p}$}
+@math{2^(E_min - p)} for @math{p} bits of precision. 
+A zero is encoded with the special exponent of 
+@c{$2^{E_{min}-1}$}
+@math{2^(E_min - 1)} and infinities with the exponent of 
+@c{$2^{E_{max}+1}$}
+@math{2^(E_max + 1)}.
+
+@noindent
+@cindex single precision, IEEE format
+The format for single precision numbers uses 32 bits divided in the
+following way,
+
+@example
+seeeeeeeefffffffffffffffffffffff
+    
+s = sign bit, 1 bit
+e = exponent, 8 bits  (E_min = -126, E_max = 127, bias = 127)
+f = fraction, 23 bits
+@end example
+
+@noindent
+@cindex double precision, IEEE format
+The format for double precision numbers uses 64 bits divided in the
+following way,
+
+@example
+seeeeeeeeeeeffffffffffffffffffffffffffffffffffffffffffffffffffff
+
+s = sign bit, 1 bit
+e = exponent, 11 bits  (E_min = -1022, E_max = 1023, bias = 1023)
+f = fraction, 52 bits
+@end example
+
+@noindent
+It is often useful to be able to investigate the behavior of a
+calculation at the bit-level and the library provides functions for
+printing the IEEE representations in a human-readable form.
+
+@comment float vs double vs long double 
+@comment (how many digits are available for each)
 
 @deftypefun void gsl_ieee_fprintf_float (FILE * @var{stream}, const float * @var{x})
 @deftypefunx void gsl_ieee_fprintf_double (FILE * @var{stream}, const double * @var{x})
+These functions output a formatted version of the IEEE floating-point
+number pointed to by @var{x} to the stream @var{stream}. A pointer is
+used to pass the number indirectly, to avoid any undesired promotion
+from @code{float} to @code{double}.  The output takes one of the
+following forms,
+
+@table @code
+@item NaN
+the Not-a-Number symbol
+
+@item Inf, -Inf
+positive or negative infinity
+
+@item 1.fffff...*2^E, -1.fffff...*2^E 
+a normalized floating point number
+
+@item 0.fffff...*2^E, -0.fffff...*2^E 
+a denormalized floating point number
+
+@item 0, -0
+positive or negative zero
+
+@comment @item [non-standard IEEE float], [non-standard IEEE double]
+@comment an unrecognized encoding
+@end table
+
+The output can be used directly in GNU Emacs Calc mode by preceding it
+with @code{2#} to indicate binary.
 @end deftypefun
+
+@deftypefun void gsl_ieee_printf_float (const float * @var{x})
+@deftypefunx void gsl_ieee_printf_double (const double * @var{x})
+These functions output a formatted version of the IEEE floating-point
+number pointed to by @var{x} to the stream @code{stdout}.
+@end deftypefun
+
+The following program demonstrates the use of the functions by printing
+the single and double precision representations of the fraction
+@math{1/3}. For comparison the representation of the value promoted from
+single to double precision is also printed.
 
 @example
 #include <stdio.h>
@@ -30,53 +168,63 @@ The IEEE Standard for floating
 
 main () 
 @{
-  float f = 1.0/3.0 ;
-  double d = 1.0/3.0 ;
+  float f = 1.0/3.0;
+  double d = 1.0/3.0;
 
-  double fd = f ; /* promote from float to double */
+  double fd = f; /* promote from float to double */
   
-  printf("     float 1/3 = ") ; gsl_ieee_printf_float(&f) ; printf("\n") ;
-  printf("promoted float = ") ; gsl_ieee_printf_double(&fd) ; printf("\n") ;
-  printf("    double 1/3 = ") ; gsl_ieee_printf_double(&d) ; printf("\n") ;
+  printf(" float 1/3 = "); gsl_ieee_printf_float(&f); printf("\n");
+  printf("  promoted = "); gsl_ieee_printf_double(&fd); printf("\n");
+  printf("double 1/3 = "); gsl_ieee_printf_double(&d); printf("\n");
 @}
 @end example
 
+@noindent
+The binary representation of @math{1/3} is @math{0.01010101... }. The
+output below shows that the IEEE format normalizes this fraction to give
+a leading digit of 1,
 
 @example
-     float 1/3 =  1.01010101010101010101011*2^-2
-promoted float =  1.0101010101010101010101100000000000000000000000000000*2^-2
-    double 1/3 =  1.0101010101010101010101010101010101010101010101010101*2^-2
+ float 1/3 =  1.01010101010101010101011*2^-2
+  promoted =  1.0101010101010101010101100000000000000000000000000000*2^-2
+double 1/3 =  1.0101010101010101010101010101010101010101010101010101*2^-2
 @end example
 
-To use these numbers in Calc, precede them by @code{2#} to indicate binary.
-In @code{bc}, work with the mantissa separately from the exponent.
+@noindent
+The output also shows that a single-precision number is promoted to
+double-precision by adding zeros in the binary representation.
 
-float vs double vs long double (how many digits are available for each)
+@comment importance of using 1.234L in long double calculations
 
-importance of using 1.234L in long double calculations
-
-@example
-int main (void)
-@{
-  long double x = 1.0, y = 1.0 ;
+@comment @example
+@comment int main (void)
+@comment @{
+@comment   long double x = 1.0, y = 1.0;
   
-  x = x + 0.2 ;
-  y = y + 0.2L ;
+@comment   x = x + 0.2;
+@comment   y = y + 0.2L;
 
-  printf(" d %.20Lf\n",x) ;
-  printf("ld %.20Lf\n",y) ;
+@comment   printf(" d %.20Lf\n",x);
+@comment   printf("ld %.20Lf\n",y);
 
-  return 1;
-@}
+@comment   return 1;
+@comment @}
 
- d 1.20000000000000001110
-ld 1.20000000000000000004
-@end example
+@comment  d 1.20000000000000001110
+@comment ld 1.20000000000000000004
+@comment @end example
 
 
 @node Setting up your IEEE environment
 @section Setting up your IEEE environment
-
+@cindex IEEE exceptions
+@cindex precision, IEEE arithmetic
+@cindex rounding mode
+@cindex arithmetic exceptions
+@cindex exceptions, IEEE arithmetic
+@cindex division by zero, IEEE exceptions
+@cindex underflow, IEEE exceptions
+@cindex overflow, IEEE exceptions
 The IEEE standard defines several @dfn{modes} for controlling the
 behavior of floating point operations. These modes specify the important
 properties of computer arithmetic: the direction used for rounding (e.g.
@@ -181,21 +329,21 @@ e = 1 + 1/2! + 1/3! + 1/4! + ...
 int main (void)
 @{
   double x = 1, oldsum = 0, sum = 0; 
-  int i = 0 ;
+  int i = 0;
 
-  gsl_ieee_env_setup () ; /* read GSL_IEEE_MODE */
+  gsl_ieee_env_setup (); /* read GSL_IEEE_MODE */
 
   do 
     @{
-      i++ ;
+      i++;
       
-      oldsum = sum ;
-      sum += x ;
-      x = x / i ;
+      oldsum = sum;
+      sum += x;
+      x = x / i;
       
-      printf("i=%2d sum=%.18f error=%g\n",i, sum, sum - M_E) ;
+      printf("i=%2d sum=%.18f error=%g\n",i, sum, sum - M_E);
     @}  
-  while (sum != oldsum) ;
+  while (sum != oldsum);
 
 @}
 @end example
@@ -266,6 +414,17 @@ subsequent results are rounded to the same value.
 @node IEEE References and Further Reading
 @section IEEE References and Further Reading
 
+The reference for the IEEE standard is,
+
+@itemize @asis
+@item
+ANSI/IEEE Std 754-1985, IEEE Standard for Binary Floating-Point Arithmetic
+@end itemize
+
+A more pedagogical introduction to the standard can be found in the
+paper ``What Every Computer Scientist Should Know About Floating-Point
+Arithmetic''.
+
 @itemize @asis
 @item
 David Goldberg: What Every Computer Scientist Should Know About
@@ -284,17 +443,18 @@ No. 3 (September 1992), page 319
 @noindent
 
 
+
 @comment to turn on math exception handling use __setfpucw, see
 @comment /usr/include/i386/fpu_control.h
 @comment e.g.
 @comment #include <math.h>
 @comment #include <stdio.h>
 @comment #include <fpu_control.h>
-@comment double f (double x) ;
+@comment double f (double x);
 @comment int main ()
 @comment {
-@comment   double a = 0 ;
-@comment   double y, z ;
+@comment   double a = 0;
+@comment   double y, z;
 @comment   __setfpucw(0x1372); 
 @comment mention extended vs double precision on Pentium, and how to get around
 @comment it (-ffloat-store, or selective use of volatile)
