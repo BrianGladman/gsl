@@ -226,6 +226,7 @@ int gsl_matrix_uchar_mul_elements (gsl_matrix_uchar * a, const gsl_matrix_uchar 
 int gsl_matrix_uchar_div_elements (gsl_matrix_uchar * a, const gsl_matrix_uchar * b);
 int gsl_matrix_uchar_scale (gsl_matrix_uchar * a, const double x);
 int gsl_matrix_uchar_add_constant (gsl_matrix_uchar * a, const double x);
+int gsl_matrix_uchar_add_diagonal (gsl_matrix_uchar * a, const double x);
 
 /***********************************************************************/
 /* The functions below are obsolete                                    */

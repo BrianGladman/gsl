@@ -226,6 +226,7 @@ int gsl_matrix_int_mul_elements (gsl_matrix_int * a, const gsl_matrix_int * b);
 int gsl_matrix_int_div_elements (gsl_matrix_int * a, const gsl_matrix_int * b);
 int gsl_matrix_int_scale (gsl_matrix_int * a, const double x);
 int gsl_matrix_int_add_constant (gsl_matrix_int * a, const double x);
+int gsl_matrix_int_add_diagonal (gsl_matrix_int * a, const double x);
 
 /***********************************************************************/
 /* The functions below are obsolete                                    */

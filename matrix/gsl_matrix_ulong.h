@@ -226,6 +226,7 @@ int gsl_matrix_ulong_mul_elements (gsl_matrix_ulong * a, const gsl_matrix_ulong 
 int gsl_matrix_ulong_div_elements (gsl_matrix_ulong * a, const gsl_matrix_ulong * b);
 int gsl_matrix_ulong_scale (gsl_matrix_ulong * a, const double x);
 int gsl_matrix_ulong_add_constant (gsl_matrix_ulong * a, const double x);
+int gsl_matrix_ulong_add_diagonal (gsl_matrix_ulong * a, const double x);
 
 /***********************************************************************/
 /* The functions below are obsolete                                    */

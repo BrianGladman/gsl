@@ -226,6 +226,7 @@ int gsl_matrix_short_mul_elements (gsl_matrix_short * a, const gsl_matrix_short 
 int gsl_matrix_short_div_elements (gsl_matrix_short * a, const gsl_matrix_short * b);
 int gsl_matrix_short_scale (gsl_matrix_short * a, const double x);
 int gsl_matrix_short_add_constant (gsl_matrix_short * a, const double x);
+int gsl_matrix_short_add_diagonal (gsl_matrix_short * a, const double x);
 
 /***********************************************************************/
 /* The functions below are obsolete                                    */

@@ -159,9 +159,9 @@ FUNCTION(gsl_matrix, add_constant) (TYPE(gsl_matrix) * a, const double x)
   const size_t M = a->size1;
   const size_t N = a->size2;
   const size_t tda = a->tda;
-  
+
   size_t i, j;
-  
+
   for (i = 0; i < M; i++)
     {
       for (j = 0; j < N; j++)
@@ -170,5 +170,22 @@ FUNCTION(gsl_matrix, add_constant) (TYPE(gsl_matrix) * a, const double x)
         }
     }
   
+  return GSL_SUCCESS;
+}
+
+
+int 
+FUNCTION(gsl_matrix, add_diagonal) (TYPE(gsl_matrix) * a, const double x)
+{
+  const size_t M = a->size1;
+  const size_t N = a->size2;
+  const size_t tda = a->tda;
+  const size_t loop_lim = ( M < N ? M : N );
+  size_t i;
+  for (i = 0; i < loop_lim; i++)
+  {
+    a->data[i * tda + i] += x;
+  }
+
   return GSL_SUCCESS;
 }
