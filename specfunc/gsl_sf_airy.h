@@ -4,6 +4,8 @@
 #ifndef GSL_SF_AIRY_H_
 #define GSL_SF_AIRY_H_
 
+#include "gsl_precision.h"
+
 
 /* Airy function Ai(x)
  *

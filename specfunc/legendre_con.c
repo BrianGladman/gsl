@@ -307,8 +307,9 @@ gsl_sf_conicalP_xgt1_neg_mu_largetau_impl(const double mu, const double tau,
   ln_pre = 0.5*ln_xi_pre - mu*log(tau);
 
   arg = tau*xi;
-  gsl_sf_bessel_Jnu_impl(mu + 1.0,   arg, &J_mup1);
-  gsl_sf_bessel_Jnu_impl(mu,         arg, &J_mu);
+  /* FIXME: I just added 0, 0 as thelast to args to make it build */
+  gsl_sf_bessel_Jnu_impl(mu + 1.0,   arg, &J_mup1, 0, 0);
+  gsl_sf_bessel_Jnu_impl(mu,         arg, &J_mu, 0, 0);
   J_mum1 = -J_mup1 + 2.0*mu/arg*J_mu;      /* careful of mu < 1 */
 
   sumA = 1.0 - olver_A1_xi(-mu, xi, x)/(tau*tau);

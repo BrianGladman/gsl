@@ -1,3 +1,14 @@
+1998-12-05  Mark Galassi  <rosalia@cygnus.com>
+
+	* legendre_poly.c (gsl_sf_legendre_Pl_impl):
+	* legendre_con.c (gsl_sf_conicalP_xgt1_neg_mu_largetau_impl):
+	added an ugly fix to the invocation of gsl_sf_bessel_Jn_impl() to
+	give it two bogus arguments so that it builds.  I hope Jerry fixes
+	it up soon!
+
+	* gsl_sf_airy.h: added an include of gsl_precision.h so that
+	gsl_prec_t is defined.
+
 Tue Nov 17 17:29:31 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
 	* added #include <config.h> to all top-level source files

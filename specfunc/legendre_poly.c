@@ -66,7 +66,8 @@ gsl_sf_legendre_Pl_impl(const int l, const double x, double * result)
     double J0;
     double Jm1;
     int stat_J0  = gsl_sf_bessel_J0_impl(u*th, &J0);
-    int stat_Jm1 = gsl_sf_bessel_Jn_impl(-1, u*th, &Jm1);
+    /* FIXME: I just added 0, 0 as thelast to args to make it build */
+    int stat_Jm1 = gsl_sf_bessel_Jn_impl(-1, u*th, &Jm1, 0, 0);
     double pre;
     double B00;
 
