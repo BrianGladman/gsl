@@ -4,7 +4,6 @@
 #include <gsl_rng.h>
 #include <gsl_randist.h>
 
-#define GSL_LOGINFINITY 300.0
 static double gamma_large (const gsl_rng * r, double a);
 static double gamma_frac (const gsl_rng * r, double a);
 
@@ -44,19 +43,19 @@ gsl_ran_gamma_int (const gsl_rng * r, const unsigned int a)
   if (a < 12)
     {
       unsigned int i;
-      double prod = 1.0;
+      double prod = 1;
 
       for (i = 0; i < a; i++)
-	prod *= gsl_rng_uniform (r);
+	{
+	  prod *= gsl_rng_uniform_pos (r);
+	}
 
-      if (prod == 0)
-	{
-	  return GSL_LOGINFINITY;
-	}
-      else
-	{
-	  return -log (prod);
-	}
+      /* Note: for 12 iterations we are safe against underflow, since
+	 the smallest positive random number is O(2^-32). This means
+	 the smallest possible product is 2^(-12*32) = 10^-116 which
+	 is within the range of double precision. */
+
+      return -log (prod);
     }
   else
     {
