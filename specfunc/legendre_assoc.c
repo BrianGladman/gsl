@@ -8,16 +8,20 @@
 #include "gsl_sf_pow_int.h"
 #include "gsl_sf_legendre.h"
 
+#include "recurse.h"
 
 #define Root_2OverPi_  0.797884560802865355879892
 
 
-/* checked OK [GJ] */
-int gsl_sf_legendre_sph_con_reg_m1_impl(double lambda,
-                                        double one_minus_x,
-                                        double one_plus_x,
-                                        double * result
-                                        )
+/* P_{-1/2 + I lambda}^{1/2}
+ *
+ * checked OK [GJ]
+ */
+int gsl_sf_conical_sph_irr_1_impl(double lambda,
+                                  double one_minus_x,
+                                  double one_plus_x,
+                                  double * result
+                                  )
 {
   double x = 0.5 * (one_plus_x - one_minus_x);
   if(fabs(x) < 1.) {
@@ -40,12 +44,15 @@ int gsl_sf_legendre_sph_con_reg_m1_impl(double lambda,
 }
 
 
-/* checked OK [GJ] */
-int gsl_sf_legendre_sph_con_reg_0_impl(double lambda,
-                                       double one_minus_x,
-                                       double one_plus_x,
-                                       double * result
-                                       )
+/* P_{-1/2 + I lambda}{-1/2} (x)
+ *
+ * checked OK [GJ] 
+ */
+int gsl_sf_conical_sph_reg_0_impl(double lambda,
+                                  double one_minus_x,
+                                  double one_plus_x,
+                                  double * result
+                                  )
 {
   double x = 0.5 * (one_plus_x - one_minus_x);
   if(fabs(x) < 1.) {
@@ -83,28 +90,30 @@ int gsl_sf_legendre_sph_con_reg_0_impl(double lambda,
   }
 }
 
-int gsl_sf_legendre_sph_con_reg_array_impl(int lmax, double lambda, double x, double * result, double * harvest)
+
+/* P_{-1/2 + I lambda}^{-1/2-n} (x)
+ *
+ * p[0] = lambda^2
+ * p[1] = x/Sqrt(x^2 - 1)
+ */
+#define REC_COEFF_A(n,p) (-(2.*n+1.)*p[1]/((n+1)*(n+1)+p[0]))
+#define REC_COEFF_B(n,p) (1./((n+1)*(n+1)+p[0]))
+GEN_RECURSE_BACKWARD_MINIMAL_SIMPLE(conical_sph_reg)
+#undef REC_COEFF_A
+#undef REC_COEFF_B
+
+
+int gsl_sf_conical_sph_reg_array_impl(int lmax, double lambda, double x, double * result, double * harvest)
 {
-  double nu_nup1 = -0.25 - lambda*lambda;
-  double X = x/sqrt(x*x-1.);
-  double y2, y1, y0;
-  int ell;
-  double ell_fact = 1.;
-
-  gsl_sf_legendre_sph_con_reg_m1_impl(lambda, 1-x, 1+x, &y2);
-  gsl_sf_legendre_sph_con_reg_0_impl(lambda, 1-x, 1+x, &y1);
-  harvest[0] = y1;
-
-  for(ell=1; ell<=lmax; ell++) {
-    y0 = (-y2 - 2*(0.5-ell)*X*y1) / (ell*ell - 0.25 - nu_nup1);
-printf("%22.17g   %22.17g    %22.17g\n", y2, -2.*(0.5-ell)*X*y1, -y2 - 2*(0.5-ell)*X*y1);
-    y2 = y1;
-    y1 = y0;
-    harvest[ell] = y0;
-  }
-  
-  *result = y0;
+  double f0;
+  double p[2];
+  p[0] = lambda*lambda;
+  p[1] = x/sqrt(x*x-1.);
+  gsl_sf_conical_sph_reg_0_impl(lambda, 1-x, 1+x, &f0);
+  recurse_backward_minimal_simple_conical_sph_reg(lmax+30, lmax, 0, p, f0, harvest, result);
 }
+
+
 
 
 int gsl_sf_hyper_0_impl(double lambda, double x, double * result)

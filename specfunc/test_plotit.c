@@ -2,10 +2,10 @@
 #include "gsl_sf.h"
 
 extern double gsl_sf_lngamma_test(double);
-extern int gsl_sf_legendre_sph_con_reg_0_impl(double, double, double, double*);
-extern int gsl_sf_legendre_sph_con_reg_array_impl(int, double, double, double *, double *);
+extern int gsl_sf_conical_sph_reg_0_impl(double, double, double, double*);
+extern int gsl_sf_conical_sph_reg_array_impl(int, double, double, double *, double *);
 
-extern int gsl_sf_hyper_array_impl(int, double, double, double *, double *);
+extern int gsl_sf_conical_sph_reg_array_impl(int, double, double, double *, double *);
 
 
 int main(int argc, char * argv[])
@@ -23,20 +23,20 @@ int main(int argc, char * argv[])
   int n = 2;
 
   
-  /*
+/*
   for(x=xmin; x<xmax; x += dx){
-    gsl_sf_legendre_sph_con_reg_0_impl(lambda, x, &y);
+    gsl_sf_conical_sph_reg_0_impl(lambda, 1-x, 1+x, &y);
     printf("%22.17g    %22.17g\n",
 	    x,
 	    y
 	    );
   }
-  */
+*/
 
 
-  gsl_sf_hyper_array_impl(1000, lambda, 2., &y, y_array);
+  gsl_sf_conical_sph_reg_array_impl(100, lambda, 2., &y, y_array);
   
-  for(i=0; i<=1000; i++) {
+  for(i=0; i<=100; i++) {
   printf("%3d   %22.17g    %22.17g\n",
 	    i,
 	    x,
