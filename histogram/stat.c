@@ -33,30 +33,43 @@
  ***************************************************************/
 #include <config.h>
 #include <stdlib.h>
+#include <math.h>
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_histogram.h>
 
-/* FIXME: these algorithms could be made more stable by using the
-   recurrences found in the statistics directory. Also we should
-   probably skip negative values in the histogram h->bin[i] < 0, since
-   those correspond to negative weights (BJG) */
+/* FIXME: We skip negative values in the histogram h->bin[i] < 0,
+   since those correspond to negative weights (BJG) */
 
 double
 gsl_histogram_mean (const gsl_histogram * h)
 {
   const size_t n = h->n;
   size_t i;
-  double meansum = 0;
-  double entries = 0;
+
+  /* Compute the bin-weighted arithmetic mean M of a histogram using the
+     recurrence relation
+
+     M(n) = M(n-1) + (x[n] - M(n-1)) (w(n)/(W(n-1) + w(n))) 
+     W(n) = W(n-1) + w(n)
+
+   */
+
+  long double wmean = 0;
+  long double W = 0;
 
   for (i = 0; i < n; i++)
     {
-      double binvalue = (h->range[i + 1] - h->range[i]) / 2;
-      meansum += binvalue * h->bin[i];
-      entries += h->bin[i];
+      double xi = (h->range[i + 1] + h->range[i]) / 2;
+      double wi = h->bin[i];
+
+      if (wi > 0)
+        {
+          W += wi;
+          wmean += (xi - wmean) * (wi / W);
+        }
     }
 
-  return meansum / entries;
+  return wmean;
 }
 
 double
@@ -64,17 +77,47 @@ gsl_histogram_sigma (const gsl_histogram * h)
 {
   const size_t n = h->n;
   size_t i;
-  double meansum = 0;
-  double sigmasum = 0;
-  double entries = 0;
+
+  long double wvariance = 0 ;
+  long double wmean = 0;
+  long double W = 0;
+
+  /* FIXME: should use a single pass formula here, as given in
+     N.J.Higham 'Accuracy and Stability of Numerical Methods', p.12 */
+
+  /* Compute the mean */
 
   for (i = 0; i < n; i++)
     {
-      double binvalue = ((h->range[i + 1]) - (h->range[i])) / 2;
-      sigmasum += binvalue * binvalue * h->bin[i];
-      meansum += binvalue * h->bin[i];
-      entries += h->bin[i];
+      double xi = (h->range[i + 1] + h->range[i]) / 2;
+      double wi = h->bin[i];
+
+      if (wi > 0)
+        {
+          W += wi;
+          wmean += (xi - wmean) * (wi / W);
+        }
     }
 
-  return sigmasum / entries - meansum / entries * meansum / entries;
+  /* Compute the variance */
+
+  W = 0.0;
+
+  for (i = 0; i < n; i++)
+    {
+      double xi = ((h->range[i + 1]) + (h->range[i])) / 2;
+      double wi = h->bin[i];
+
+      if (wi > 0) {
+        const long double delta = (xi - wmean);
+        W += wi ;
+        wvariance += (delta * delta - wvariance) * (wi / W);
+      }
+    }
+
+  {
+    double sigma = sqrt (wvariance) ;
+    return sigma;
+  }
 }
+

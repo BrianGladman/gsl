@@ -1,3 +1,8 @@
+Wed Sep 12 13:39:55 2001  Brian Gough  <bjg@network-theory.co.uk>
+
+	* gsl-histogram.c (main): print out the mean and standard
+ 	deviation as comments
+
 Sun Sep  9 22:57:11 2001  Brian Gough  <bjg@network-theory.co.uk>
 
 	* configure.in: print out a warning for OS/2 telling the user to

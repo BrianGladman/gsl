@@ -1,3 +1,8 @@
+Wed Sep 12 13:38:40 2001  Brian Gough  <bjg@network-theory.co.uk>
+
+	* stat.c (gsl_histogram_mean): fixed calculation of mean/sigma and
+ 	made it part of the library
+
 Sun Aug 19 13:31:35 2001  Brian Gough  <bjg@network-theory.co.uk>
 
 	* test_gsl_histogram.sh: moved to top-level directory

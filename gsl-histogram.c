@@ -58,6 +58,13 @@ main (int argc, char **argv)
 	gsl_histogram_increment(h, x);
       }
 
+    {
+      double mean = gsl_histogram_mean (h);
+      double sigma = gsl_histogram_sigma (h);
+      fprintf (stdout, "# mean = %g\n", mean);
+      fprintf (stdout, "# sigma = %g\n", sigma);
+    }
+
     gsl_histogram_fprintf (stdout, h, "%g", "%g");
 
     gsl_histogram_free (h);
