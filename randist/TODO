@@ -2,6 +2,7 @@
 using a rational function approximation for the rejection scaling
 parameter.
 
-2. Check for off by one error in the shuffle algorithm.
+x2. Check for off by one error in the shuffle algorithm. DONE. checked
+against Knuth.
 
 

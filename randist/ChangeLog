@@ -1,3 +1,9 @@
+Tue Aug  4 12:29:17 1998  Brian Gough  <bjg@vvv.lanl.gov>
+
+	* gamma.c (gsl_ran_gamma_int): removed the check for
+ 	GSL_LOGINIFINITY since underflow can't occur for 32-bit random
+ 	numbers in double precision.
+
 Mon Aug  3 13:09:39 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
 	* test.c: added tests for shuffle and choose
