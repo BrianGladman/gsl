@@ -158,7 +158,7 @@ This function sets, or resets, an existing solver @var{s} to use the
 function @var{f} and the initial guess @var{x}.
 @end deftypefun
 
-@deftypefun int gsl_multiroot_fdfsolver_set (gsl_multiroot_fdfsolver * @var{s}, gsl_function_fdf * @var{fdf}, gsl_vector * @var{x})
+@deftypefun int gsl_multiroot_fdfsolver_set (gsl_multiroot_fdfsolver * @var{s}, gsl_multiroot_function_fdf * @var{fdf}, gsl_vector * @var{x})
 This function sets, or resets, an existing solver @var{s} to use the
 function and derivative @var{fdf} and the initial guess @var{x}.
 @end deftypefun
@@ -236,20 +236,20 @@ int
 powell (gsl_vector * x, void * p, gsl_vector * f) @{
    struct powell_params * params 
      = *(struct powell_params *)p;
-   double A = (params->A);
-   double x0 = gsl_vector_get(x,0);
-   double x1 = gsl_vector_get(x,1);
+   const double A = (params->A);
+   const double x0 = gsl_vector_get(x,0);
+   const double x1 = gsl_vector_get(x,1);
 
-   gsl_vector_set (f, 0, A * x0 * x1 - 1)
+   gsl_vector_set (f, 0, A * x0 * x1 - 1);
    gsl_vector_set (f, 1, (exp(-x0) + exp(-x1) 
-                          - (1.0 + 1.0/A)))
+                          - (1.0 + 1.0/A)));
    return GSL_SUCCESS
 @}
 
 gsl_multiroot_function F;
 struct powell_params params = @{ 10000.0 @};
 
-F.function = &powell;
+F.f = &powell;
 F.n = 2;
 F.params = &params;
 @end example
@@ -298,13 +298,13 @@ powell_df (gsl_vector * x, void * p, gsl_matrix * J)
 @{
    struct powell_params * params 
      = *(struct powell_params *)p;
-   double A = (params->A);
-   double x0 = gsl_vector_get(x,0);
-   double x1 = gsl_vector_get(x,1);
-   gsl_matrix_set (J, 0, 0, A * x1)
-   gsl_matrix_set (J, 0, 1, A * x0)
-   gsl_matrix_set (J, 1, 0, -exp(-x0))
-   gsl_matrix_set (J, 1, 1, -exp(-x1))
+   const double A = (params->A);
+   const double x0 = gsl_vector_get(x,0);
+   const double x1 = gsl_vector_get(x,1);
+   gsl_matrix_set (J, 0, 0, A * x1);
+   gsl_matrix_set (J, 0, 1, A * x0);
+   gsl_matrix_set (J, 1, 0, -exp(-x0));
+   gsl_matrix_set (J, 1, 1, -exp(-x1));
    return GSL_SUCCESS
 @}
 
@@ -313,20 +313,20 @@ powell_fdf (gsl_vector * x, void * p,
             gsl_matrix * f, gsl_matrix * J) @{
    struct powell_params * params 
      = *(struct powell_params *)p;
-   double A = (params->A);
-   double x0 = gsl_vector_get(x,0);
-   double x1 = gsl_vector_get(x,1);
+   const double A = (params->A);
+   const double x0 = gsl_vector_get(x,0);
+   const double x1 = gsl_vector_get(x,1);
 
-   double u0 = exp(-x0);
-   double u1 = exp(-x1);
+   const double u0 = exp(-x0);
+   const double u1 = exp(-x1);
 
-   gsl_vector_set (f, 0, A * x0 * x1 - 1)
-   gsl_vector_set (f, 1, u0 + u1 - (1 + 1/A))
+   gsl_vector_set (f, 0, A * x0 * x1 - 1);
+   gsl_vector_set (f, 1, u0 + u1 - (1 + 1/A));
 
-   gsl_matrix_set (J, 0, 0, A * x1)
-   gsl_matrix_set (J, 0, 1, A * x0)
-   gsl_matrix_set (J, 1, 0, -u0)
-   gsl_matrix_set (J, 1, 1, -u1)
+   gsl_matrix_set (J, 0, 0, A * x1);
+   gsl_matrix_set (J, 0, 1, A * x0);
+   gsl_matrix_set (J, 1, 0, -u0);
+   gsl_matrix_set (J, 1, 1, -u1);
    return GSL_SUCCESS
 @}
 
@@ -782,11 +782,11 @@ rosenbrock_f (const gsl_vector * x, void *params,
   double a = ((struct rparams *) params)->a;
   double b = ((struct rparams *) params)->b;
 
-  double x0 = gsl_vector_get (x, 0);
-  double x1 = gsl_vector_get (x, 1);
+  const double x0 = gsl_vector_get (x, 0);
+  const double x1 = gsl_vector_get (x, 1);
 
-  double y0 = a * (1 - x0);
-  double y1 = b * (x1 - x0 * x0);
+  const double y0 = a * (1 - x0);
+  const double y1 = b * (x1 - x0 * x0);
 
   gsl_vector_set (f, 0, y0);
   gsl_vector_set (f, 1, y1);
@@ -914,15 +914,15 @@ int
 rosenbrock_df (const gsl_vector * x, void *params, 
                gsl_matrix * J)
 @{
-  double a = ((struct rparams *) params)->a;
-  double b = ((struct rparams *) params)->b;
+  const double a = ((struct rparams *) params)->a;
+  const double b = ((struct rparams *) params)->b;
 
-  double x0 = gsl_vector_get (x, 0);
+  const double x0 = gsl_vector_get (x, 0);
 
-  double df00 = -a;
-  double df01 = 0;
-  double df10 = -2 * b  * x0;
-  double df11 = b;
+  const double df00 = -a;
+  const double df01 = 0;
+  const double df10 = -2 * b  * x0;
+  const double df11 = b;
 
   gsl_matrix_set (J, 0, 0, df00);
   gsl_matrix_set (J, 0, 1, df01);
