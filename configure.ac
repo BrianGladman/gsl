@@ -1,6 +1,6 @@
 dnl Process this file with autoconf to produce a configure script.
 
-AC_INIT(gsl,1.3+)
+AC_INIT(gsl,1.3.20030729)
 AC_CONFIG_SRCDIR(gsl_math.h)
 
 AM_INIT_AUTOMAKE([gnu no-dependencies])
@@ -15,8 +15,9 @@ dnl gsl-1.1    libgsl 1:0:1  libgslcblas 0:0:0
 dnl gsl-1.1.1  libgsl 2:0:2  libgslcblas 0:0:0
 dnl gsl-1.2    libgsl 3:0:3  libgslcblas 0:0:0
 dnl gsl-1.3    libgsl 4:0:4  libgslcblas 0:0:0
+dnl gsl-1.4    libgsl 5:0:5  libgslcblas 0:0:0
 
-GSL_LT_VERSION="4:0:4"
+GSL_LT_VERSION="5:0:5"
 AC_SUBST(GSL_LT_VERSION)
 GSL_LT_CBLAS_VERSION="0:0:0"
 AC_SUBST(GSL_LT_CBLAS_VERSION)
@@ -248,6 +249,19 @@ AC_CACHE_CHECK([for IEEE arithmetic interface type], ac_cv_c_ieee_interface,
         ;;
 esac
 ])
+
+if test "$ac_cv_c_ieee_interface" = "gnux86" ; then
+    AC_CACHE_CHECK([for FPU_SETCW], ac_cv_c_fpu_setcw,
+    [ac_cv_c_fpu_setcw=no
+    AC_TRY_COMPILE([#include <fpu_control.h>
+#ifndef _FPU_SETCW
+#include <i386/fpu_control.h>
+#define _FPU_SETCW(cw) __setfpucw(cw)
+#endif
+],  [ unsigned short mode = 0 ; _FPU_SETCW(mode); ],
+    [ac_cv_c_fpu_setcw="yes"],[ac_cv_c_ieee_interface=unknown])
+    ])
+fi
 
 ac_tr_ieee_interface=HAVE_`echo $ac_cv_c_ieee_interface | tr 'abcdefghijklmnopqrstuvwxyz' 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'`_IEEE_INTERFACE
 AC_DEFINE_UNQUOTED($ac_tr_ieee_interface,1,[IEEE Interface Type])
