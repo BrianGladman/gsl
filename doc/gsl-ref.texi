@@ -565,13 +565,13 @@ distance.
 
 @example
 Stsp_city cities[N_CITIES] = @{@{"Santa_Fe",    10.2,	35.4@},
-			      @{"Albuquerque", 12.1,	31.4@},
-			      @{"Alamagordo",  12.1,	26.1@},
-			      @{"Los_Alamos",  12.9,	36.0@},
-			      @{"Tesuque",     10.2,	35.7@},
-			      @{"Las_Cruces",  12.1,	18.4@},
-			      @{"Phoenix",     30.1,	22.4@},
-			      @{"Tuscon",      31.2,	20.0@}@};
+                              @{"Albuquerque", 12.1,	31.4@},
+                              @{"Alamagordo",  12.1,	26.1@},
+                              @{"Los_Alamos",  12.9,	36.0@},
+                              @{"Tesuque",     10.2,	35.7@},
+                              @{"Las_Cruces",  12.1,	18.4@},
+                              @{"Phoenix",     30.1,	22.4@},
+                              @{"Tuscon",      31.2,	20.0@}@};
 
 /* distance between two cities */
 double city_distance(Stsp_city c1, Stsp_city c2)

@@ -16,32 +16,50 @@
 gsl_siman_params_t params = {N_TRIES, ITERS_FIXED_T, STEP_SIZE,
 			     K, T_INITIAL, MU_T, T_MIN};
 
-#define N_CITIES 10
-
 #define CITY_NAME_LEN 50
 struct s_tsp_city {
   char name[CITY_NAME_LEN];
-  double x, y;			/* coordinates */
+  double lat, longitude;	/* coordinates */
 };
 typedef struct s_tsp_city Stsp_city;
 
-Stsp_city cities[N_CITIES] = {{"Santa_Fe",    10.2,	35.4},
-			      {"Albuquerque", 12.1,	31.4},
-			      {"Clovis",       6.9,	30.4},
-			      {"Dallas",       4.2,	29.4},
-			      {"Alamagordo",  12.1,	26.1},
-			      {"Los_Alamos",  12.9,	36.0},
-			      {"Tesuque",     10.2,	35.7},
-			      {"Las_Cruces",  12.1,	18.4},
-			      {"Phoenix",     30.1,	22.4},
-			      {"Tuscon",      31.2,	20.0}};
+/* in this table, latitude and longitude are obtained from the US
+   Census Bureau, at http://www.census.gov/cgi-bin/gazetteer */
+Stsp_city cities[] = {{"Santa_Fe",    35.68,   105.95},
+		      {"Albuquerque", 35.12,   106.62},
+		      {"Clovis",      34.41,   103.20},
+		      {"Dallas",      32.79,    96.77},
+		      {"Grants",      35.15,   107.84},
+		      {"Los Alamos",  35.89,   106.28},
+		      {"Tesuque",     35.77,   105.92},
+		      {"Las Cruces",  32.34,   106.76},
+		      {"Phoenix",     33.54,   112.07},
+		      {"Durango",     37.29,   107.87},
+		      {"Cortez",      37.35,   108.58},
+		      {"Gallup",      35.52,   108.74}};
+/*  			      {"Tuscon",      }}; */
+
+#define N_CITIES (sizeof(cities)/sizeof(Stsp_city))
+
 
 /* distance between two cities */
 double city_distance(Stsp_city c1, Stsp_city c2)
 {
-  double dx = c2.x - c1.x;
-  double dy = c2.y - c1.y;
-  return sqrt(dx*dx + dy*dy);
+  const earth_radius = 7;	/* 7KM approximately */
+  double x1 = earth_radius*cos(2*c1.lat)*cos(c1.longitude);
+  double x2 = earth_radius*cos(2*c2.lat)*cos(c2.longitude);
+
+  double y1 = earth_radius*cos(2*c1.lat)*sin(c1.longitude);
+  double y2 = earth_radius*cos(2*c2.lat)*sin(c2.longitude);
+
+  double z1 = earth_radius*sin(2*c1.lat);
+  double z2 = earth_radius*sin(2*c2.lat);
+
+  double dx = x2 - x1;
+  double dy = y2 - y1;
+  double dz = z2 - z1;
+
+  return sqrt(dx*dx + dy*dy + dz*dz);
 }
 
 /* energy for the travelling salesman problem */
