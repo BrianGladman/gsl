@@ -16,15 +16,31 @@ calculate absolute deviations, skewness, and kurtosis as well as the
 median and arbitrary percentiles.  Statistical tests for comparing
 different datasets, such as the t-test, are also included.
 
-All the functions are available in versions for floating-point datasets
-and integer datasets. The versions for floating-point data have the
-prefix @code{gsl_stats} and the versions for integer data have the
-prefix @code{gsl_stats_int}. All the algorithms use a recurrence
-relation to compute average quantities in a stable way, without large
-intermediate values that might overflow.
+All the functions are available in versions for datasets in all the
+standard floating-point and integer types. The versions for double
+precision floating-point data have the prefix @code{gsl_stats} and the
+versions for integer data have the prefix @code{gsl_stats_int}. The
+following table gives the prefixes for all the numeric types,
+
+@example
+gsl_stats_               double        
+gsl_stats_long_double_   long double   
+gsl_stats_float_         float         
+gsl_stats_long_          long          
+gsl_stats_ulong_         unsigned long 
+gsl_stats_int_           int           
+gsl_stats_uint_          unsigned int  
+gsl_stats_short_         short         
+gsl_stats_ushort_        unsigned short
+gsl_stats_char_          char          
+gsl_stats_uchar_         unsigned char 
+@end example
+@noindent
+All the algorithms use a recurrence relation to compute average
+quantities in a stable way, without large intermediate values that might
+overflow.
 
 @menu
-* Statistical Concepts::        
 * Mean and standard deviation and variance::  
 * Absolute deviation::          
 * Higher moments (skewness and kurtosis)::  
@@ -35,61 +51,59 @@ intermediate values that might overflow.
 * Statistics References and Further Reading::  
 @end menu
 
-@node Statistical Concepts
-@section Statistical Concepts
+@c @node Statistical Concepts
+@c @section Statistical Concepts
 
-A probability density function tells us the frequency with which a
-random variable takes a particular value or lies in a given range,
-@c
-@equation
-\hbox@{probability@}(a < x < b) = \int_a^b dx \, p(x)
-@end equation
-@noindent
-The ensemble of all possible values generated with the appropriate
-frequency by the probability density function is called the
-@dfn{population}. We can define parameters describing the probability
-density function, such as the population mean @math{\mu} and population
-variance @math{\sigma^2},
-@c
-@equation
-\mu = \int_@{-\infty@}^@{+\infty@} dx \, x p(x) 
-@end equation
-@equation
-\sigma^2 = \int_@{-\infty@}^@{+\infty@} dx \, (x-\mu)^2 p(x)
-@end equation
-@noindent
-The parameters cannot be observed directly. In statistical calculations
-we try to estimate these parameters from a finite set of observations.
+@c A probability density function tells us the frequency with which a
+@c random variable takes a particular value or lies in a given range,
+@c @c
+@c @equation
+@c \hbox@{probability@}(a < x < b) = \int_a^b dx \, p(x)
+@c @end equation
+@c @noindent
+@c The ensemble of all possible values generated with the appropriate
+@c frequency by the probability density function is called the
+@c @dfn{population}. We can define parameters describing the probability
+@c density function, such as the population mean @math{\mu} and population
+@c variance @math{\sigma^2},
+@c @c
+@c @equation
+@c \mu = \int_@{-\infty@}^@{+\infty@} dx \, x p(x) 
+@c @end equation
+@c @equation
+@c \sigma^2 = \int_@{-\infty@}^@{+\infty@} dx \, (x-\mu)^2 p(x)
+@c @end equation
+@c @noindent
+@c The parameters cannot be observed directly. In statistical calculations
+@c we try to estimate these parameters from a finite set of observations.
 
-An observed datapoint drawn from a population is called a
-@dfn{sample}. A @dfn{statistic} is a function of a set of samples, such
-as their mean, median or maximum value.  An @dfn{estimator} is a
-statistic that we use to extract the underlying parameters of the
-probability density function.
+@c An observed datapoint drawn from a population is called a
+@c @dfn{sample}. A @dfn{statistic} is a function of a set of samples, such
+@c as their mean, median or maximum value.  An @dfn{estimator} is a
+@c statistic that we use to extract the underlying parameters of the
+@c probability density function.
 
-For example the arithmetic mean of an observed dataset, also known as
-the sample mean, can be shown to be a good estimator for the population
-mean @math{\mu}. We denote estimators with a "hat", so the sample mean
-is written @math{\hat \mu}.
+@c For example the arithmetic mean of an observed dataset, also known as
+@c the sample mean, can be shown to be a good estimator for the population
+@c mean @math{\mu}. We denote estimators with a "hat", so the sample mean
+@c is written @math{\hat \mu}.
 
-There can be many possible estimators for a parameter, but some will be
-better than others. Using probability theory and the probability density
-function we can calculate the behavior of any estimator. An estimator is
-called @dfn{unbiased} if its expectation value in repeated observations
-equals the underlying parameter of the probability density function. An
-unbiased estimator is desirable. There are also other measures of an
-estimator properties, such as @dfn{precision} and @dfn{efficiency}
-(consult the references for details).
+@c There can be many possible estimators for a parameter, but some will be
+@c better than others. Using probability theory and the probability density
+@c function we can calculate the behavior of any estimator. An estimator is
+@c called @dfn{unbiased} if its expectation value in repeated observations
+@c equals the underlying parameter of the probability density function. An
+@c unbiased estimator is desirable. There are also other measures of an
+@c estimator properties, such as @dfn{precision} and @dfn{efficiency}
+@c (consult the references for details).
 
 @node Mean and standard deviation and variance
 @section Mean, Standard Deviation and Variance
 
 @deftypefn Statistics double gsl_stats_mean (const double @var{data[]}, size_t @var{n})
-@deftypefnx Statistics double gsl_stats_int_mean (const int @var{data[]}, size_t @var{n})
 
 The function @code{gsl_stats_mean} returns the arithmetic mean of
-@var{data}, a double-precision array of length @var{n}. The function
-@code{gsl_stats_int_mean} returns the sample mean of an integer array.
+@var{data}, an array of length @var{n}.
 
 The sample mean is an unbiased estimator of the population mean and is
 denoted by @math{\hat \mu}.
@@ -110,12 +124,9 @@ subject to large fluctations.
 @end deftypefn
 
 @deftypefn Statistics double gsl_stats_est_variance (const double @var{data[]}, size_t @var{n})
-@deftypefnx Statistics double gsl_stats_int_est_variance (const int @var{data[]}, size_t @var{n})
 
 The function @code{gsl_stats_est_variance} returns the estimated
-variance of @var{data}, a double-precision array of length @var{n}.
-The function @code{gsl_stats_int_est_variance} returns the estimated
-variance of an integer array.
+variance of @var{data}, an array of length @var{n}.
 
 This is an unbiased estimator of
 @math{\sigma^2}, and is defined by
@@ -148,12 +159,10 @@ two functions, @code{gsl_stats_est_variance_with_mean} and
 @end deftypefn
 
 @deftypefn Statistics double gsl_stats_est_variance_with_mean (const double @var{data[]}, size_t @var{n}, double @var{mean})
-@deftypefnx Statistics double gsl_stats_int_est_variance_with_mean (const int @var{data[]}, size_t @var{n}, double @var{mean})
 
 The function @code{gsl_stats_est_variance_with_mean} returns the sample
-variance of @var{data} relative to the given value of @var{mean}, and
-@code{gsl_stats_int_est_variance} does the same for an integer array.
-The functions are computed with @math{\hat \mu} replaced by the value of
+variance of @var{data} relative to the given value of @var{mean}.  The
+function is computed with @math{\hat \mu} replaced by the value of
 @var{mean} that you supply,
 @c
 @equation
@@ -163,9 +172,7 @@ The functions are computed with @math{\hat \mu} replaced by the value of
 @end deftypefn
 
 @deftypefn Statistics double gsl_stats_est_sd (const double @var{data[]}, size_t @var{n})
-@deftypefnx Statistics double gsl_stats_int_est_sd (const int @var{data[]}, size_t @var{n})
 @deftypefnx Statistics double gsl_stats_est_sd_with_mean (const double @var{data[]}, size_t @var{n}, double @var{mean})
-@deftypefnx Statistics double gsl_stats_int_est_sd_with_mean (const int @var{data[]}, size_t @var{n}, double @var{mean})
 
 The standard deviation is defined as the square root of the
 variance. These functions return the square root of the corresponding
@@ -173,9 +180,7 @@ variance functions above.
 @end deftypefn
 
 @deftypefn Statistics double gsl_stats_variance (const double @var{data[]}, size_t @var{n})
-@deftypefnx Statistics double gsl_stats_int_variance (const int @var{data[]}, size_t @var{n})
 @deftypefnx Statistics double gsl_stats_variance_with_mean (const double @var{data[]}, size_t @var{n}, double @var{mean})
-@deftypefnx Statistics double gsl_stats_int_variance_with_mean (const int @var{data[]}, size_t @var{n}, double @var{mean})
 
 These functions compute an unbiased estimate of the variance when the
 population mean of a distribution is known @emph{a priori}.
@@ -191,9 +196,7 @@ population mean @math{\mu},
 @end deftypefn
 
 @deftypefn Statistics double gsl_stats_sd (const double @var{data[]}, size_t @var{n})
-@deftypefnx Statistics double gsl_stats_int_sd (const int @var{data[]}, size_t @var{n})
 @deftypefnx Statistics double gsl_stats_sd_with_mean (const double @var{data[]}, size_t @var{n}, double @var{mean})
-@deftypefnx Statistics double gsl_stats_int_sd_with_mean (const int @var{data[]}, size_t @var{n}, double @var{mean})
 
 The functions @code{gsl_stats_sd}, @code{gsl_stats_int_sd},
 @code{gsl_stats_sd_with_mean} and @code{gsl_stats_int_sd_with_mean}
@@ -206,10 +209,9 @@ corresponding variance function.
 @section Absolute deviation
 
 @deftypefn Statistics double gsl_stats_absdev (const double @var{data[]}, size_t @var{n})
-@deftypefnx Statistics double gsl_stats_int_absdev (const int @var{data[]}, size_t @var{n})
 
 The function @code{gsl_stats_absdev} computes the absolute deviation
-from the mean of @var{data}, a double precision array of length @var{n}.
+from the mean of @var{data}, an array of length @var{n}.
 
 The absolute deviation from the mean is defined as
 @c
@@ -228,11 +230,10 @@ Both these functions compute the mean of @var{data} via a call to
 @end deftypefn
 
 @deftypefn Statistics double gsl_stats_absdev_with_mean (const double @var{data[]}, size_t @var{n}, double @var{mean})
-@deftypefnx Statistics double gsl_stats_int_absdev_with_mean (const int @var{data[]}, size_t @var{n}, double @var{mean})
 
-The functions @code{gsl_stats_absdev_with_mean} and
-@code{gsl_stats_int_absdev_with_mean} compute the absolute deviation of
-the array @var{data} relative to the given value of @var{mean}
+The function @code{gsl_stats_absdev_with_mean} computes the absolute
+deviation of the array @var{data} relative to the given value of
+@var{mean},
 @c
 @equation
 absdev  = @{1 \over N@} \sum |x_i - mean|
@@ -249,7 +250,6 @@ median).
 @section Higher moments (skewness and kurtosis)
 
 @deftypefn Statistics double gsl_stats_skew (const double @var{data[]}, size_t @var{n})
-@deftypefnx Statistics double gsl_stats_int_skew (const int @var{data[]}, size_t @var{n}, double @var{mean})
 The functions @code{gsl_stats_skew} and @code{gsl_stats_int_skew}
 compute the skewness of @var{data}, an array of length @var{n}.
 
@@ -272,12 +272,10 @@ Both these functions compute the mean and standard deviation of
 @end deftypefn
 
 @deftypefn Statistics double gsl_stats_skew_with_mean_and_sd (const double @var{data[]}, size_t @var{n}, double @var{mean}, double @var{sd})
-@deftypefnx Statistics double gsl_stats_int_skew_with_mean_and_sd (const int @var{data[]}, size_t @var{n}, double @var{mean}, double @var{sd})
 
-The functions @code{gsl_stats_skew_with_mean_and_sd} and
-@code{gsl_stats_int_skew_with_mean_and_sd} compute the skewness of the
-array @var{data} using the given values of the mean @var{mean} and
-standard deviation @var{sd}.
+The function @code{gsl_stats_skew_with_mean_and_sd} computes the
+skewness of the array @var{data} using the given values of the mean
+@var{mean} and standard deviation @var{sd}.
 
 @equation
 skew = @{1 \over N@}
@@ -290,11 +288,9 @@ standard deviation of @var{data} and want to avoid recomputing them.
 @end deftypefn
 
 @deftypefn Statistics double gsl_stats_kurtosis (const double @var{data[]}, size_t @var{n})
-@deftypefnx Statistics double gsl_stats_int_kurtosis (const int @var{data[]}, size_t @var{n}, double @var{mean})
 
-The functions @code{gsl_stats_kurtosis} and
-@code{gsl_stats_int_kurtosis} compute the kurtosis of @var{data}, an
-array of length @var{n}.
+The function @code{gsl_stats_kurtosis} computes the kurtosis of
+@var{data}, an array of length @var{n}.
 
 The kurtosis is defined as 
 @c
@@ -313,12 +309,10 @@ distribution by the -3 in the defintion.
 @end deftypefn
 
 @deftypefn Statistics double gsl_stats_kurtosis_with_mean_and_sd (const double @var{data[]}, size_t @var{n}, double @var{mean}, double @var{sd})
-@deftypefnx Statistics double gsl_stats_int_kurtosis_with_mean_and_sd (const int @var{data[]}, size_t @var{n}, double @var{mean}, double @var{sd})
 
-The functions @code{gsl_stats_kurtosis_with_mean_and_sd} and
-@code{gsl_stats_int_kurtosis_with_mean_and_sd} compute the kurtosis of
-the array @var{data} using the given values of the mean @var{mean} and
-standard deviation @var{sd}.
+The function @code{gsl_stats_kurtosis_with_mean_and_sd} computes the
+kurtosis of the array @var{data} using the given values of the mean
+@var{mean} and standard deviation @var{sd}.
 
 @equation
 kurtosis = @{1 \over N@}
@@ -335,13 +329,11 @@ standard deviation of @var{data} and want to avoid recomputing them.
 @section Maximum and Minimum values
 
 @deftypefn Statistics double gsl_stats_max (const double @var{data[]}, size_t @var{n})
-@deftypefnx Statistics int gsl_stats_int_max (const int @var{data[]}, size_t @var{n})
 
 The function @code{gsl_stats_max} returns the maximum value in
-@var{data}, a double-precision array of length @var{n}.  The function
-@code{gsl_stats_int_stats_max} returns the maximum value of an integer
-array. The maximum value is defined as the value of the element
-@math{x_i} which satisfies @math{x_i >= x_j} for all @math{j}.
+@var{data}, an array of length @var{n}. The maximum value is defined as
+the value of the element @math{x_i} which satisfies @math{x_i >= x_j}
+for all @math{j}.
 
 If you want instead to find the element with the largest absolute
 magnitude you will need to apply @code{fabs} or @code{abs} to your data
@@ -349,13 +341,11 @@ before calling this function.
 
 @end deftypefn
 @deftypefn Statistics double gsl_stats_min (const double @var{data[]}, size_t @var{n})
-@deftypefnx Statistics int gsl_stats_int_min (const int @var{data[]}, size_t @var{n})
 
 The function @code{gsl_stats_min} returns the minimun value in
-@var{data}, a double-precision array of length @var{n}.  The function
-@code{gsl_stats_int_stats_min} returns the minimum value of an integer
-array. The minimum value is defined as the value of the element
-@math{x_i} which satisfies @math{x_i <= x_j} for all @math{j}.
+@var{data}, an array of length @var{n}.  The minimum value is defined as
+the value of the element @math{x_i} which satisfies @math{x_i <= x_j}
+for all @math{j}.
 
 If you want instead to find the element with the smallest absolute
 magnitude you will need to apply @code{fabs} or @code{abs} to your data
@@ -363,28 +353,22 @@ before calling this function.
 @end deftypefn
 
 @deftypefn Statistics size_t gsl_stats_max_index (const double @var{data[]}, size_t @var{n})
-@deftypefnx Statistics size_t gsl_stats_int_max_index (const int @var{data[]}, size_t @var{n})
 
 The function @code{gsl_stats_max_index} returns the index of the maximum
-value in @var{data}, a double-precision array of length @var{n}. The
-function @code{gsl_stats_int_stats_max} returns the index of the maximum
-value of an integer array. The maximum value is defined as the value of
-the element @math{x_i} which satisfies @math{x_i >= x_j} for all
-@math{j}. When there are several equal maximum elements then the first
-one is chosen.
+value in @var{data}, an array of length @var{n}. The maximum value is
+defined as the value of the element @math{x_i} which satisfies @math{x_i
+>= x_j} for all @math{j}. When there are several equal maximum elements
+then the first one is chosen.
 
 @end deftypefn
 
 @deftypefn Statistics size_t gsl_stats_min_index (const double @var{data[]}, size_t @var{n})
-@deftypefnx Statistics size_t gsl_stats_int_min_index (const int @var{data[]}, size_t @var{n})
 
 The function @code{gsl_stats_min_index} returns the index of the minimum
 value in @var{data}, a double-precision array of length @var{n}. The
-function @code{gsl_stats_int_stats_min} returns the index of the minimum
-value of an integer array. The minimum value is defined as the value of
-the element @math{x_i} which satisfies @math{x_i >= x_j} for all
-@math{j}. When there are several equal minimum elements then the first
-one is chosen.
+minimum value is defined as the value of the element @math{x_i} which
+satisfies @math{x_i >= x_j} for all @math{j}. When there are several
+equal minimum elements then the first one is chosen.
 @end deftypefn
 
 @node Median and Percentiles
@@ -395,25 +379,23 @@ sorted data. For convenience we use @dfn{quantiles}, measured on a scale
 of 0 to 1, instead of percentiles (which use a scale of 0 to 100).
 
 @deftypefn Statistics void gsl_stats_sort_data (double @var{data[]}, size_t @var{n})
-@deftypefnx Statistics void gsl_stats_int_sort_data (int @var{data[]}, size_t @var{n})
 
 The function @code{gsl_stats_sort_data} sorts the elements of
-@var{data}, a double-precision array of length @var{n}, into ascending
-numerical order in-place (i.e. after sorting, the minimum value of data
-is in @var{data[0]} and the maximum value is in @var{data[n-1]}). The
-system @code{qsort} function is used to perform the sorting.
+@var{data}, an array of length @var{n}, into ascending numerical order
+in-place (i.e. after sorting, the minimum value of data is in
+@var{data[0]} and the maximum value is in @var{data[n-1]}). The system
+@code{qsort} function is used to perform the sorting.
 
 The function @code{gsl_stats_int_sort_data} sorts an integer array.
 @end deftypefn
 
 @deftypefn Statistics double gsl_stats_median_from_sorted_data (const double @var{sorted_data[]}, size_t @var{n})
-@deftypefnx Statistics double gsl_stats_int_median_from_sorted_data (const int @var{sorted_data[]}, size_t @var{n})
 
 The function @code{gsl_stats_median_from_sorted_data} returns the median
-value of @var{sorted_data}, a double-precision array of length @var{n} with its
-elements in ascending numerical order. There are no checks to see
-whether the data are sorted, so the function @code{gsl_stats_sort_data}
-should always be used first.
+value of @var{sorted_data}, an array of length @var{n} with its elements
+in ascending numerical order. There are no checks to see whether the
+data are sorted, so the function @code{gsl_stats_sort_data} should
+always be used first.
 
 When the array has an odd number of elements the median is the value of
 element @math{(n-1)/2}. When the array has an even number of elements
