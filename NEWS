@@ -1,5 +1,7 @@
 * Will be new in gsl-0.4.2 (or 0.5; number is not yet decided):
 
+** Roots of general polynomials can now be found using gsl_poly_complex_solve
+
 ** IEEE modes support on Tru64
 
 ** We have added the second generation RANLUX generators RANLXS and RANLXD
