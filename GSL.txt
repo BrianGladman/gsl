@@ -35,7 +35,7 @@ allowing wrappers to be written for very high level languages.
 
 %%GNU: 
 
-%%web-page: http://sources.redhat.com/gsl/
+%%web-page: http://www.gnu.org/software/gsl/
 
 %%support:
 
@@ -51,7 +51,7 @@ Rossi <rossi@ufrmd.dauphine.fr>
 
 %%sponsors: 
 
-%%source: ftp://sources.redhat.com/pub/gsl/
+%%source: ftp://ftp.gnu.org/pub/gsl/
 
 %%debian:
 
@@ -73,7 +73,7 @@ Rossi <rossi@ufrmd.dauphine.fr>
 
 %%source-prerequisites:
 
-%%version: 
+%%version: 1.1
 
 %%announce-list: <gsl-announce@sources.redhat.com>
 Send email to gsl-announce-subscribe@sources.redhat.com to subscribe
