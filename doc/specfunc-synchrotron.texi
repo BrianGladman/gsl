@@ -18,7 +18,7 @@ These routines compute the first synchrotron function
  
 @deftypefun double gsl_sf_synchrotron_2 (double @var{x})
 @deftypefunx int gsl_sf_synchrotron_2_e (double @var{x}, gsl_sf_result * @var{result})
-These routines comput the second synchroton function 
+These routines compute the second synchrotron function 
 @c{$x K_{2/3}(x)$}
 @math{x K_@{2/3@}(x)} for @c{$x \ge 0$}
 @math{x >= 0}.

@@ -178,7 +178,7 @@ main (void)
 @}
 @end example
 @noindent
-The ouput below shows that the Levin u-transform is able to obtain an 
+The output below shows that the Levin u-transform is able to obtain an 
 estimate of the sum to 1 part in 
 @c{$10^{10}$}
 @math{10^10} using the first eleven terms of the series.  The

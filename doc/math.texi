@@ -75,7 +75,7 @@ Twice the reciprocal of pi, @math{2/\pi}
 The natural logarithm of ten, @math{\ln(10)}
 
 @item M_LN2
-The natural logarith of two, @math{\ln(2)}
+The natural logarithm of two, @math{\ln(2)}
 
 @item M_LNPI
 The natural logarithm of pi, @math{\ln(\pi)}

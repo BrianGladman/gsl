@@ -472,7 +472,7 @@ This function allocates a workspace for a complex transform of length
 
 @deftypefun void gsl_fft_complex_workspace_free (gsl_fft_complex_workspace * @var{workspace})
 This function frees the memory associated with the workspace
-@var{workspace}. The workspacecan be freed if no further FFTs of the
+@var{workspace}. The workspace can be freed if no further FFTs of the
 same length will be needed.
 @end deftypefun
 
@@ -857,7 +857,7 @@ halfcomplex transforms.
 
 @deftypefun void gsl_fft_real_workspace_free (gsl_fft_real_workspace * @var{workspace})
 This function frees the memory associated with the workspace
-@var{workspace}. The workspacecan be freed if no further FFTs of the
+@var{workspace}. The workspace can be freed if no further FFTs of the
 same length will be needed.
 @end deftypefun
 @noindent

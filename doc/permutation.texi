@@ -62,7 +62,7 @@ insufficient memory is available to create the permutation.
 @end deftypefun
 
 @deftypefun void gsl_permutation_init (gsl_permutation * @var{p})
-@cindex indentity permutation
+@cindex identity permutation
 This function initializes the permutation @var{p} to the identity, i.e.
 @math{(0,1,2,...,n-1)}.
 @end deftypefun
@@ -120,7 +120,7 @@ This function reverses the elements of the permutation @var{p}.
 
 @deftypefun int gsl_permutation_inverse (gsl_permutation * @var{inv}, const gsl_permutation * @var{p})
 @cindex inverting a permutation
-This function computes the inverse of the permuation @var{p}, storing
+This function computes the inverse of the permutation @var{p}, storing
 the result in @var{inv}.
 @end deftypefun
 

@@ -3,7 +3,7 @@ This chapter describes functions for computing eigenvalues and
 eigenvectors of matrices.  There are routines for real symmetric and
 complex hermitian matrices, and eigenvalues can be computed with or
 without eigenvectors.  The algorithms used are symmetric
-bidiagonalisation followed by QR reduction.
+bidiagonalization followed by QR reduction.
 
 @cindex LAPACK, recommended for linear algebra
 These routines are meant for "small" systems where simple algorithms are
@@ -12,7 +12,8 @@ large matrices will want to use the sophisticated routines found in
 @sc{lapack}. The Fortran version of @sc{lapack} is recommended as the
 standard package for linear algebra.
 
-These functions are declared in the header file @file{gsl_eigen.h}.
+The functions described in this chapter are declared in the header file
+@file{gsl_eigen.h}.
 
 @menu
 * Real Symmetric Matrices::     

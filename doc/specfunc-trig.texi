@@ -84,7 +84,7 @@ These routines compute @math{\log(\cosh(x))} for any @var{x}.
 
 @deftypefun int gsl_sf_polar_to_rect (double @var{r}, double @var{theta}, gsl_sf_result * @var{x}, gsl_sf_result * @var{y}); 
 This function converts the polar coordinates (@var{r},@var{theta}) to
-rectlinear coordinates (@var{x},@var{y}), @math{x = r\cos(\theta)},
+rectilinear coordinates (@var{x},@var{y}), @math{x = r\cos(\theta)},
 @math{y = r\sin(\theta)}.
 @comment Exceptional Return Values: GSL_ELOSS
 @end deftypefun

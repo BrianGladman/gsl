@@ -15,6 +15,10 @@ recommended as the standard package for linear algebra.  It supports
 blocked algorithms, specialized data representations and other
 optimizations.
 
+The functions described in this chapter are declared in the header file
+@file{gsl_linalg.h}.
+
+
 @menu
 * LU Decomposition::            
 * QR Decomposition::            
