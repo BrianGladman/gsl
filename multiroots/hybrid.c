@@ -11,24 +11,22 @@
 #include <gsl_multiroots.h>
 #include <gsl_linalg.h>
 
-/* Newton method with Model Trust Region modification */
-
 typedef struct
   {
     gsl_matrix * lu;
     gsl_vector_int * permutation;
   }
-mtrnewton_state_t;
+hybrid_state_t;
 
-int mtrnewton_init (void * vstate, gsl_multiroot_function_fdf * fdf, gsl_vector * x, gsl_vector * f, gsl_matrix * J, gsl_vector * dx);
-int mtrnewton_iterate (void * vstate, gsl_multiroot_function_fdf * fdf, gsl_vector * x, gsl_vector * f, gsl_matrix * J, gsl_vector * dx);
-void mtrnewton_free (void * vstate);
+int hybrid_init (void * vstate, gsl_multiroot_function * function, gsl_vector * x, gsl_vector * f, gsl_vector * dx);
+int hybrid_iterate (void * vstate, gsl_multiroot_function * function, gsl_vector * x, gsl_vector * f, gsl_vector * dx);
+void hybrid_free (void * vstate);
 
 int
-mtrnewton_init (void * vstate, gsl_multiroot_function_fdf * FDF, gsl_vector * x, gsl_vector * f, gsl_matrix * J, gsl_vector * dx)
+hybrid_init (void * vstate, gsl_multiroot_function * function, gsl_vector * x, gsl_vector * f, gsl_vector * dx)
 {
-  mtrnewton_state_t * state = (mtrnewton_state_t *) vstate;
-  size_t i, n = FDF->n ;
+  hybrid_state_t * state = (hybrid_state_t *) vstate;
+  size_t i, n = function->n ;
   gsl_vector_int * p;
   gsl_matrix * m;
 
@@ -52,7 +50,7 @@ mtrnewton_init (void * vstate, gsl_multiroot_function_fdf * FDF, gsl_vector * x,
 
   state->permutation = p ;
 
-  GSL_MULTIROOT_FN_EVAL_F_DF (FDF, x, f, J);
+  GSL_MULTIROOT_FN_EVAL_F (function, x, f);
 
   for (i = 0; i < n; i++)
     {
@@ -63,9 +61,9 @@ mtrnewton_init (void * vstate, gsl_multiroot_function_fdf * FDF, gsl_vector * x,
 }
 
 int
-mtrnewton_iterate (void * vstate, gsl_multiroot_function_fdf * fdf, gsl_vector * x, gsl_vector * f, gsl_matrix * J, gsl_vector * dx)
+hybrid_iterate (void * vstate, gsl_multiroot_function * function, gsl_vector * x, gsl_vector * f, gsl_vector * dx)
 {
-  mtrnewton_state_t * state = (mtrnewton_state_t *) vstate;
+  hybrid_state_t * state = (hybrid_state_t *) vstate;
   
   int signum ;
 
@@ -87,18 +85,16 @@ mtrnewton_iterate (void * vstate, gsl_multiroot_function_fdf * fdf, gsl_vector *
       gsl_vector_set (x, i, y - e);
     }
 
-  /* FIXME: add model trust step here */
-
-  GSL_MULTIROOT_FN_EVAL_F_DF (fdf, x, f, J);
+  GSL_MULTIROOT_FN_EVAL_F (function, x, f);
 
   return GSL_SUCCESS;
 }
 
 
 void
-mtrnewton_free (void * vstate)
+hybrid_free (void * vstate)
 {
-  mtrnewton_state_t * state = (mtrnewton_state_t *) vstate;
+  hybrid_state_t * state = (hybrid_state_t *) vstate;
 
   gsl_matrix_free(state->lu);
 
@@ -106,11 +102,11 @@ mtrnewton_free (void * vstate)
 }
 
 
-static const gsl_multiroot_fdfsolver_type mtrnewton_type =
-{"mtrnewton",				/* name */
- sizeof (mtrnewton_state_t),
- &mtrnewton_init,
- &mtrnewton_iterate,
- &mtrnewton_free};
+static const gsl_multiroot_fdfsolver_type hybrid_type =
+{"hybrid",				/* name */
+ sizeof (hybrid_state_t),
+ &hybrid_init,
+ &hybrid_iterate,
+ &hybrid_free};
 
-const gsl_multiroot_fdfsolver_type  * gsl_multiroot_fdfsolver_mtrnewton = &mtrnewton_type;
+const gsl_multiroot_fdfsolver_type  * gsl_multiroot_fdfsolver_hybrid = &hybrid_type;

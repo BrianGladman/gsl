@@ -8,7 +8,7 @@ pkginclude_HEADERS = gsl_multiroots.h
 
 INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../linalg -I$(srcdir)/../matrix -I$(srcdir)/../vector -I$(srcdir)/../block  -I$(srcdir)/../err
 
-libgslmultiroots_a_SOURCES = fdjac.c fsolver.c fdfsolver.c newton.c mtrnewton.c convergence.c
+libgslmultiroots_a_SOURCES = fdjac.c fsolver.c fdfsolver.c hybrid.c newton.c mtrnewton.c convergence.c
 
 check_PROGRAMS = test
 

@@ -28,8 +28,9 @@ typedef struct
   {
     const char *name;
     size_t size;
-    int (*set) (void *state, gsl_multiroot_function * f, gsl_vector * x);
-    int (*iterate) (void *state, gsl_multiroot_function * f, gsl_vector * x);
+    int (*set) (void *state, gsl_multiroot_function * function, gsl_vector * x, gsl_vector * f, gsl_vector * dx);
+    int (*iterate) (void *state, gsl_multiroot_function * function, gsl_vector * x, gsl_vector * f, gsl_vector * dx);
+    void (*free) (void *state);
   }
 gsl_multiroot_fsolver_type;
 
@@ -122,7 +123,7 @@ int gsl_multiroot_test_delta (const gsl_vector * dx, const gsl_vector * x,
 
 int gsl_multiroot_test_residual (const gsl_vector * f, double epsabs);
 
-extern const gsl_multiroot_fsolver_type  * gsl_multiroot_fsolver_bisection;
+extern const gsl_multiroot_fsolver_type  * gsl_multiroot_fsolver_hybrid;
 extern const gsl_multiroot_fdfsolver_type  * gsl_multiroot_fdfsolver_newton;
 extern const gsl_multiroot_fdfsolver_type  * gsl_multiroot_fdfsolver_mtrnewton;
 
