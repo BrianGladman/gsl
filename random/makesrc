@@ -1,0 +1,51 @@
+#! /bin/sh
+## $Id$
+## Usage: 'makesrc --all'    makes all
+##        'makesrc --switch' makes switch.c gsl_ran_switch.h
+##        'makesrc xxx'      makes xxx-state.c, xxx.h, xxx-gen.c
+##        'makesrc'          gets this usage message
+
+if [ $# -eq 0 ]; then
+    echo "Usage: 'makesrc --all'    makes all, including switch"
+    echo "       'makesrc --switch' makes switch.c gsl_ran_switch.h"
+    echo "       'makesrc xxx'      makes xxx-state.c, xxx.h, xxx-gen.c"
+    echo "       'makesrc'          gets this usage message"
+    exit
+fi
+
+buildsrc () { 
+for i in $*; do
+    sed s/gsl_ran_XXX_/gsl_ran_${i}_/g xxx-state.xc > $i-state.c
+    sed s/gsl_ran_/gsl_ran_${i}_/g gsl_ran.h > $i.h
+    sed s/XXX/$i/g xxx-gen.xc > $i-gen.c
+done 
+}
+
+if [ "$1" = "--switch" -o "$1" = "-switch" ]; then
+    echo '### $Id$'                     > gsl_ran_switch.h
+    echo '### '                            >> gsl_ran_switch.h
+    echo "void gsl_ran_use_default(void);" >> gsl_ran_switch.h
+    for i in $list; do
+	echo "void gsl_ran_use_$i(void);" >> gsl_ran_switch.h
+    done
+    
+    sed -n -e '/include..XXX.h./,$p' < xxx-switch.xc > tmp.xxx
+    sed    -e '/include..XXX.h./,$d' \
+    -e s/YYY/$fave/           < xxx-switch.xc > switch.c
+
+    for xxx in $list; do
+	sed s/XXX/$xxx/g tmp.xxx >> switch.c
+    done
+
+    /bin/rm tmp.xxx
+    exit
+
+fi  
+
+if [ "$1" = "--all" -o "$1" = "-all" ]; then
+    list=`egrep '^ALLRAN=' Makefile.ami | sed s/ALLRAN=//`
+    buildsrc $list
+else
+    buildsrc $*
+fi
+

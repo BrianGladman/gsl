@@ -1,25 +1,32 @@
 #! /bin/sh
-## Bugs: too clever by half!
-## But still not clever enough, since auxlist has to be
-## specified here, and not on the command line
+## $Id$
+## Usage: 'makeam [Makefile.ami] > Makefile.am'
+## makes the 'Makefile.am' file from the template 'Makefile.ami'
 
+ami=Makefile.ami
+if [ $# -gt 0 ]; then
+    ami=$1
+fi
 
-list="$*"
-auxlist=""
+list=`egrep '^ALLRAN=' $ami | sed s/ALLRAN=//`
+
+first () { echo $1 }
+fave=`first $list`
+
+##################################################
+## Start writing the Makefile.am
+##
+echo '### $Id$' 
+cat Makefile.ami   | egrep -v '^### '
+echo FAVORITERAN= $fave
+    
 auxbin="test-switch"
 
-echo -n "noinst_PROGRAMS= "     # don't want to install tests globally
-for i in $list $auxlist; do
+echo -n "bin_PROGRAMS= "
+for i in $list; do
     echo -n "$i test-$i bench-$i "
 done
 echo -n "$auxbin "
-echo ""
-echo ""
-
-echo -n "TESTS = "
-for i in $list $auxlist; do
-    echo -n "test-$i "
-done
 echo ""
 echo ""
 
@@ -35,7 +42,7 @@ done
 echo ""
 
 echo -n "libgslrandom_a_SOURCES= switch.c "
-for i in $list $auxlist; do
+for i in $list; do
     echo -n "$i.c "
 done
 echo ""
@@ -53,33 +60,47 @@ for i in $list; do
 done
 echo ""
     
-for i in $list; do
+    for i in $list; do
     echo "${i}_SOURCES=             ran.c $i.c"
     echo "${i}_DEPENDENCIES=        $i-state.c $i.h $i-gen.o"
     echo "${i}_LDADD=               $i-gen.o"
     echo "test_${i}_SOURCES=        testran.c"
     echo "test_${i}_DEPENDENCIES=   $i.o $i-gen.o $i.h"
-    echo "test_${i}_LDADD=          $i.o $i-gen.o ../err/libgsltest.a ../utils/libutils.a"
+    echo "test_${i}_LDADD=          $i.o $i-gen.o"
     echo "bench_${i}_SOURCES=       benchran.c"
     echo "bench_${i}_DEPENDENCIES=  $i.o $i-gen.o $i.h"
     echo "bench_${i}_LDADD=         $i.o $i-gen.o"
 done
 echo ""
 
-for i in $list; do
-    echo "$i-state.c: xxx-state.xc"
-    echo "	sed s/gsl_ran_XXX_/gsl_ran_${i}_/g xxx-state.xc > \$@"
-    echo "$i.h: gsl_ran.h"
-    echo "	sed s/gsl_ran_/gsl_ran_${i}_/g gsl_ran.h > \$@"
-    echo "$i-gen.c: xxx-gen.xc"
-    echo "	sed s/XXX/$i/g xxx-gen.xc > \$@"
-done
-echo ""
-
-echo -n "BUILT_SOURCES= "
+echo "## Note, BUILT_SOURCES has special meaning to automake"
+echo "## I'm deliberately trying to avoid having the casual user"
+echo "## build sources.  If you want to build THE_BUILT_SOURCESS"
+echo "## then run the program './makesrc'"
+echo -n "THE_BUILT_SOURCES= "
 for i in $list; do
     echo -n "$i.h $i-state.c $i-gen.c "
 done
 echo -n "gsl_ran_switch.h switch.c"
+echo ""
+echo "## If you need to build these sources, use the 'makesrc' script"
+for i in $list; do
+    echo "$i.h $i-state.c $i-gen.c: makesrc"
+    echo "	./makesrc $i"
+    echo ""
+done
 
+echo "## This target is kind of like 'distclean'"
+echo "tooclean:"
+echo "	/bin/rm -rf .deps"
+for i in $list; do
+    echo "	/bin/rm -f $i.h $i-state.c $i-gen.c"
+done
+echo "	/bin/rm switch.c gsl_ran_switch.h"
+echo ""
+     
 ##
+
+
+
+
