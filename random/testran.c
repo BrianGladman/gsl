@@ -8,24 +8,9 @@
 #include <gsl_test.h>
 #include "gsl_ran.h"
 
-#include <getopt.h>
-
-void
-usage()
-{
-  printf("Usage: test [OPTION]\n"
-"Exercise a random number routine. By default 1000000 random numbers are\n"
-"tested.\n"
-"\n"
-"  -n, --number=NUM       sample NUM random numbers\n"
-"  -s, --seed=NUM         set random number seed (optional)\n"
-"  -v, --verbose          verbosely list tests\n"
-"\n"
-"Without the -v option the test is quiet. The exit status indicates\n"
-"success or failure.\n"
-) ; 
-  exit(0) ;
-}
+/* Usage: test [n] [seed] 
+   Exercise a random number routine. By default 1000000 random numbers are
+   tested. The exit status indicates success or failure. */
 
 int verbose = 0 ;
 
@@ -42,57 +27,15 @@ main(int argc, char *argv[])
   double test_a[5], test_b[5], test_c[5] ;
   int randseed=17;
   void *tmpState;
+
+  if (argc >= 2) 
+    n = strtol (argv[1], NULL, 0);
   
-  while (1) {
-    
-    static struct option long_options[] = 
+  if (argc == 3) 
     {
-      {"verbose", 0, 0, 'v'},
-      {"number", 1, 0, 'n'},
-      {"seed", 1, 0, 's'},
-      {"help", 0, 0, 'h'},
-      {0, 0, 0, 0}
-    } ;
-    
-    int option_index = 0 ;
-    
-    int c = getopt_long (argc, argv, "hn:s:v",
-			 long_options, &option_index) ;
-    
-    if (c == -1)   /* end of options */
-      break ;   
-    
-    if (c == 0 && long_options[option_index].flag == 0)
-      c = long_options[option_index].val;
-    
-    switch (c) 
-      {
-      case 'v':
-	verbose = 1 ;
-	break ;
-
-      case 'n':
-	if (optarg) 
-	  n = strtol (optarg, NULL, 0);
-	else 
-	  usage () ;
-	break ;
-
-      case 's':
-	if (optarg) 
-	  {
-	    randseed = strtol (optarg, NULL, 0);
-	    gsl_ran_seed(randseed);
-	  }
-	else 
-	  usage () ;
-	break ;
-
-      case 'h':
-      default:
-	usage () ;
-      }
-  }
+      randseed = strtol (argv[2], NULL, 0);
+      gsl_ran_seed(randseed);
+    }
 
   if (verbose)
     printf("n=%d seed=%d\n", n, randseed) ;

@@ -151,14 +151,15 @@ case "$host" in
         ;;
 esac
 
+dnl AC_ARG_ENABLE(exceptions,[exceptions],AC_PROG_CXX)
 
-#
-# FIXME: on Solaris we will need a prototype for hypot, since it is 
-# missing from their math.h according to Jerry.
-#
-# extern double hypot(double, double);
-#
+dnl
+dnl FIXME: on Solaris we will need a prototype for hypot, since it is 
+dnl missing from their math.h according to Jerry.
+dnl
+dnl extern double hypot(double, double);
+dnl
 
-#
+dnl
 AC_OUTPUT(err/Makefile ieee-utils/Makefile fft/Makefile specfunc/Makefile statistics/Makefile roots/Makefile random/Makefile randist/Makefile siman/Makefile integration/Makefile doc/Makefile utils/Makefile vector/Makefile matrix/Makefile histogram/Makefile Makefile)
 

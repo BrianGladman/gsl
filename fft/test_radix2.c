@@ -15,74 +15,25 @@
 #include <gsl_fft_signals.h>
 #include <gsl_test.h>
 
-#include <getopt.h>
 #include "compare.h"
 
-void usage (void);
 void check_complex_bitreverse_order (size_t n) ;
 void check_complex_radix2 (size_t n) ;
 void check_real_radix2 (size_t n) ;
 
-void
-usage (void)
-{
-  printf("Usage: test_radix2 [OPTION]\n"
-"Exercise the radix-2 fft routines for length n. By default n runs\n"
-"through small powers of two: 1, 2, 4, 8, ... , 1024.\n"
-"\n"
-"  -n, --number=NUM       tests on length n\n"
-"  -v, --verbose          verbosely list tests\n"
-"\n"
-"Without the -v option the test is quiet. The exit status indicates\n"
-"success or failure.\n"
-) ; 
-  exit(0) ;
-}
-
+/*  Usage: test_radix2 [n]
+    Exercise the radix-2 fft routines for length n. By default n runs
+    through small powers of two: 1, 2, 4, 8, ... , 1024.
+    The exit status indicates success or failure. */
 
 int
 main (int argc, char *argv[])
 {
   size_t i ;
   size_t n = 0;
-
-  while (1) {
-
-    static struct option long_options[] = 
-    {
-      {"verbose", 0, 0, 'v'},
-      {"number", 1, 0, 'n'},
-      {"help", 0, 0, 'h'},
-      {0, 0, 0, 0}
-    } ;
-
-    int option_index = 0 ;
-
-    int c = getopt_long (argc, argv, "hn:v",
-			 long_options, &option_index) ;
-   
-    if (c == -1)   /* end of options */
-      break ;   
-
-    if (c == 0 && long_options[option_index].flag == 0)
-      c = long_options[option_index].val;
-
-    switch (c) 
-      {
-      case 'v':
-	/* gsl_test_verbose () ; */
-	break ;
-      case 'n':
-	if (optarg) 
-	  n = strtol (optarg, NULL, 0);
-	else 
-	  usage () ;
-	break ;
-      case 'h':
-      default:
-	usage () ;
-      }
-  }
+  
+  if (argc == 2) 
+    n = strtol (argv[1], NULL, 0);
 
   if (n)
     {
