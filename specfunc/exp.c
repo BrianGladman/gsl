@@ -83,37 +83,45 @@ exprel_n_CF(const int N, const double x, double * result)
 
 /*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
 
-int gsl_sf_exp_impl(const double x, double * result)
+int gsl_sf_exp_impl(const double x, gsl_sf_result * result)
 {
   if(x > GSL_LOG_DBL_MAX) {
-    *result = 0.0;
+    result->val = 0.0;
+    result->err = 0.0;
     return GSL_EOVRFLW;
   }
   else if(x < GSL_LOG_DBL_MIN) {
-    *result = 0.0;
+    result->val = 0.0;
+    result->err = 0.0;
     return GSL_EUNDRFLW;
   }
   else {
-    *result = exp(x);
+    result->val = exp(x);
+    result->err = GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
   }
 }
 
-int gsl_sf_exp_sgn_impl(const double x, const double sgn, double * result)
+
+int gsl_sf_exp_sgn_impl(const double x, const double sgn, gsl_sf_result * result)
 {
   if(x > GSL_LOG_DBL_MAX) {
-    *result = 0.0;
+    result->val = 0.0;
+    result->err = 0.0;
     return GSL_EOVRFLW;
   }
   else if(x < GSL_LOG_DBL_MIN) {
-    *result = 0.0;
+    result->val = 0.0;
+    result->err = 0.0;
     return GSL_EUNDRFLW;
   }
   else {
-    *result = GSL_SIGN(sgn) * exp(x);
+    result->val = GSL_SIGN(sgn) * exp(x);
+    result->err = GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
   }
 }
+
 
 int gsl_sf_exp_mult_impl(const double x, const double y, gsl_sf_result * result)
 {
@@ -137,11 +145,13 @@ int gsl_sf_exp_mult_impl(const double x, const double y, gsl_sf_result * result)
     const double lnr = x + ly;
 
     if(lnr > GSL_LOG_DBL_MAX - 0.01) {
-      *result = 0.0; /* FIXME: should be Inf */
+      result->val = 0.0; /* FIXME: should be Inf */
+      result->err = 0.0;
       return GSL_EOVRFLW;
     }
     else if(lnr < GSL_LOG_DBL_MIN + 0.01) {
-      *result = 0.0;
+      result->val = 0.0;
+      result->err = 0.0;
       return GSL_EUNDRFLW;
     }
     else {
@@ -151,106 +161,124 @@ int gsl_sf_exp_mult_impl(const double x, const double y, gsl_sf_result * result)
       const double a   = x  - M;
       const double b   = ly - N;
       result->val = sy * exp(M+N) * exp(a+b);
-      result->err = fabs(result->val * GSL_DBL_EPSILON);
+      result->err = GSL_DBL_EPSILON * fabs(result->val);
       return GSL_SUCCESS;
     }
   }
 }
 
-int gsl_sf_expm1_impl(const double x, double * result)
+int gsl_sf_expm1_impl(const double x, gsl_sf_result * result)
 {
   const double cut = 0.002;
 
   if(x < GSL_LOG_DBL_MIN) {
-    *result = -1.0;
+    result->val = -1.0;
+    result->err = GSL_DBL_EPSILON;
     return GSL_SUCCESS;
   }
   else if(x < -cut) {
-    *result = exp(x) - 1.0;
+    result->val = exp(x) - 1.0;
+    result->err = GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
   }
   else if(x < cut) {
-    *result = x * (1.0 + 0.5*x*(1.0 + x/3.0*(1.0 + 0.25*x*(1.0 + 0.2*x))));
+    result->val = x * (1.0 + 0.5*x*(1.0 + x/3.0*(1.0 + 0.25*x*(1.0 + 0.2*x))));
+    result->err = GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
   } 
   else if(x < GSL_LOG_DBL_MAX) {
-    *result = exp(x) - 1.0;
+    result->val = exp(x) - 1.0;
+    result->err = GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
   }
   else {
-    *result = 0.0; /* FIXME: should be Inf */
+    result->val = 0.0; /* FIXME: should be Inf */
+    result->err = 0.0;
     return GSL_EOVRFLW;
   }
 }
 
 
-int gsl_sf_exprel_impl(const double x, double * result)
+int gsl_sf_exprel_impl(const double x, gsl_sf_result * result)
 {
   const double cut = 0.002;
 
   if(x < GSL_LOG_DBL_MIN) {
-    *result = -1.0/x;
+    result->val = -1.0/x;
+    result->err = GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
   }
   else if(x < -cut) {
-    *result = (exp(x) - 1.0)/x;
+    result->val = (exp(x) - 1.0)/x;
+    result->err = GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
   }
   else if(x < cut) {
-    *result = (1.0 + 0.5*x*(1.0 + x/3.0*(1.0 + 0.25*x*(1.0 + 0.2*x))));
+    result->val = (1.0 + 0.5*x*(1.0 + x/3.0*(1.0 + 0.25*x*(1.0 + 0.2*x))));
+    result->err = GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
   } 
   else if(x < GSL_LOG_DBL_MAX) {
-    *result = (exp(x) - 1.0)/x;
+    result->val = (exp(x) - 1.0)/x;
+    result->err = GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
   }
   else {
-    *result = 0.0; /* FIXME: should be Inf */
+    result->val = 0.0; /* FIXME: should be Inf */
+    result->err = 0.0;
     return GSL_EOVRFLW;
   }
 }
 
 
-int gsl_sf_exprel_2_impl(double x, double * result)
+int gsl_sf_exprel_2_impl(double x, gsl_sf_result * result)
 {
   const double cut = 0.002;
 
   if(x < GSL_LOG_DBL_MIN) {
-    *result = -2.0/x*(1.0 + 1.0/x);
+    result->val = -2.0/x*(1.0 + 1.0/x);
+    result->err = GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
   }
   else if(x < -cut) {
-    *result = 2.0*(exp(x) - 1.0 - x)/(x*x);
+    result->val = 2.0*(exp(x) - 1.0 - x)/(x*x);
+    result->err = GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
   }
   else if(x < cut) {
-    *result = (1.0 + 1.0/3.0*x*(1.0 + 0.25*x*(1.0 + 0.2*x*(1.0 + 1.0/6.0*x))));
+    result->val = (1.0 + 1.0/3.0*x*(1.0 + 0.25*x*(1.0 + 0.2*x*(1.0 + 1.0/6.0*x))));
+    result->err = GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
   } 
   else if(x < GSL_LOG_DBL_MAX) {
-    *result = 2.0*(exp(x) - 1.0 - x)/(x*x);
+    result->val = 2.0*(exp(x) - 1.0 - x)/(x*x);
+    result->err = GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
   }
   else {
-    *result = 0.0; /* FIXME: should be Inf */
+    result->val = 0.0; /* FIXME: should be Inf */
+    result->err = 0.0;
     return GSL_EOVRFLW;
   }
 }
 
 
 int
-gsl_sf_exprel_n_impl(const int N, const double x, double * result)
+gsl_sf_exprel_n_impl(const int N, const double x, gsl_sf_result * result)
 {
   if(N < 0) {
-    *result = 0.0;
+    result->val = 0.0;
+    result->err = 0.0;
     return GSL_EDOM;
   }
   else if(x == 0.0) {
-    *result = 1.0;
+    result->val = 1.0;
+    result->err = 0.0;
     return GSL_SUCCESS;
   }
   else if(fabs(x) < GSL_ROOT3_MACH_EPS * N) {
-    *result = 1.0 + x/(N+1) * (1.0 + x/(N+2));
+    result->val = 1.0 + x/(N+1) * (1.0 + x/(N+2));
+    result->err = GSL_DBL_EPSILON;
     return GSL_SUCCESS;
   }
   else if(N == 0) {
@@ -268,10 +296,10 @@ gsl_sf_exprel_n_impl(const int N, const double x, double * result)
        * Ignore polynomial part, so
        * exprel_N(x) ~= e^x N!/x^N
        */
-      double lnf_N;
+      gsl_sf_result lnf_N;
       double lnr;
       gsl_sf_lnfact_impl(N, &lnf_N);
-      lnr = x + lnf_N - N*log(x);
+      lnr = x + lnf_N.val - N*log(x);
       return gsl_sf_exp_impl(lnr, result);
     }
     else if(x > N) {
@@ -300,16 +328,20 @@ gsl_sf_exprel_n_impl(const int N, const double x, double * result)
 	}
 	stat_eG = gsl_sf_exp_mult_impl(ln_bigG_ratio_pre, bigGsum, &bigG_ratio);
 	if(stat_eG == GSL_SUCCESS) {
-          *result = pre * (1.0 - bigG_ratio);
+          result->val  = pre * (1.0 - bigG_ratio);
+	  result->err  = pre * GSL_DBL_EPSILON * fabs(ln_bigG_ratio_pre);
+	  result->err += GSL_DBL_EPSILON * fabs(result->val);
 	  return GSL_SUCCESS;
 	}
 	else {
-	  *result = 0.0;
+	  result->val = 0.0;
+	  result->err = 0.0;
 	  return stat_eG;
 	}
       }
       else {
-        *result = 0.0;
+	result->val = 0.0;
+	result->err = 0.0;
 	return GSL_EOVRFLW;
       }
     }
@@ -328,7 +360,8 @@ gsl_sf_exprel_n_impl(const int N, const double x, double * result)
         term *= (N-k)/x;
 	sum  += term;
       }
-      *result = -N/x * sum;
+      result->val = -N/x * sum;
+      result->err = GSL_DBL_EPSILON * fabs(result->val);
       return GSL_SUCCESS;
     }
   }
@@ -365,7 +398,7 @@ gsl_sf_exp_err_impl(const double x, const double dx, gsl_sf_result * result)
 
 /*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
 
-int gsl_sf_exp_e(const double x, double * result)
+int gsl_sf_exp_e(const double x, gsl_sf_result * result)
 {
   int status = gsl_sf_exp_impl(x, result);
   if(status != GSL_SUCCESS) {
@@ -375,7 +408,7 @@ int gsl_sf_exp_e(const double x, double * result)
 }
 
 
-int gsl_sf_exp_sgn_e(const double x, const double sgn, double * result)
+int gsl_sf_exp_sgn_e(const double x, const double sgn, gsl_sf_result * result)
 {
   int status = gsl_sf_exp_sgn_impl(x, sgn, result);
   if(status != GSL_SUCCESS) {
@@ -385,7 +418,7 @@ int gsl_sf_exp_sgn_e(const double x, const double sgn, double * result)
 }
 
 
-int gsl_sf_exp_mult_e(const double x, const double y, double * result)
+int gsl_sf_exp_mult_e(const double x, const double y, gsl_sf_result * result)
 {
   int status = gsl_sf_exp_mult_impl(x, y, result);
   if(status != GSL_SUCCESS) {
@@ -395,7 +428,7 @@ int gsl_sf_exp_mult_e(const double x, const double y, double * result)
 }
 
 
-int gsl_sf_expm1_e(const double x, double * result)
+int gsl_sf_expm1_e(const double x, gsl_sf_result * result)
 {
   int status = gsl_sf_expm1_impl(x, result);
   if(status != GSL_SUCCESS) {
@@ -405,7 +438,7 @@ int gsl_sf_expm1_e(const double x, double * result)
 }
 
 
-int gsl_sf_exprel_e(const double x, double * result)
+int gsl_sf_exprel_e(const double x, gsl_sf_result * result)
 {
   int status = gsl_sf_exprel_impl(x, result);
   if(status != GSL_SUCCESS) {
@@ -415,7 +448,7 @@ int gsl_sf_exprel_e(const double x, double * result)
 }
 
 
-int gsl_sf_exprel_2_e(const double x, double * result)
+int gsl_sf_exprel_2_e(const double x, gsl_sf_result * result)
 {
   int status = gsl_sf_exprel_2_impl(x, result);
   if(status != GSL_SUCCESS) {
@@ -425,90 +458,11 @@ int gsl_sf_exprel_2_e(const double x, double * result)
 }
 
 
-int gsl_sf_exprel_n_e(const int n, const double x, double * result)
+int gsl_sf_exprel_n_e(const int n, const double x, gsl_sf_result * result)
 {
   int status = gsl_sf_exprel_n_impl(n, x, result);
   if(status != GSL_SUCCESS) {
     GSL_ERROR("gsl_sf_exprel_n_e", status);
   }
   return status;
-}
-
-
-/*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*-*/
-
-double gsl_sf_exp(const double x)
-{
-  double y;
-  int status = gsl_sf_exp_impl(x, &y);
-  if(status != GSL_SUCCESS) {
-    GSL_WARNING("  gsl_sf_exp", status);
-  }
-  return y;
-}
-
-
-double gsl_sf_exp_sgn(const double x, const double sgn)
-{
-  double y;
-  int status = gsl_sf_exp_sgn_impl(x, sgn, &y);
-  if(status != GSL_SUCCESS) {
-    GSL_WARNING("  gsl_sf_exp_sgn", status);
-  }
-  return y;
-}
-
-
-double gsl_sf_exp_mult(const double x, const double y)
-{
-  double r;
-  int status = gsl_sf_exp_mult_impl(x, y, &r);
-  if(status != GSL_SUCCESS) {
-    GSL_WARNING("  gsl_sf_exp_mult", status);
-  }
-  return r;
-}
-
-
-double gsl_sf_expm1(const double x)
-{
-  double y;
-  int status = gsl_sf_expm1_impl(x, &y);
-  if(status != GSL_SUCCESS) {
-    GSL_WARNING("  gsl_sf_expm1", status);
-  }
-  return y;
-}
-
-
-double gsl_sf_exprel(const double x)
-{
-  double y;
-  int status = gsl_sf_exprel_impl(x, &y);
-  if(status != GSL_SUCCESS) {
-    GSL_WARNING("  gsl_sf_exprel", status);
-  }
-  return y;
-}
-
-
-double gsl_sf_exprel_2(const double x)
-{
-  double y;
-  int status = gsl_sf_exprel_2_impl(x, &y);
-  if(status != GSL_SUCCESS) {
-    GSL_WARNING("  gsl_sf_exprel_2", status);
-  }
-  return y;
-}
-
-
-double gsl_sf_exprel_n(const int n, const double x)
-{
-  double y;
-  int status = gsl_sf_exprel_n_impl(n, x, &y);
-  if(status != GSL_SUCCESS) {
-    GSL_WARNING("  gsl_sf_exprel_n", status);
-  }
-  return y;
 }

@@ -39,9 +39,9 @@ C0sq(double eta)
     return 0.0;
   }
   else {
-    double scale = 0.0;
+    gsl_sf_result scale;
     gsl_sf_expm1_impl(twopieta, &scale);
-    return twopieta/scale;
+    return twopieta/scale.val;
   }
 }
 
@@ -59,8 +59,8 @@ static
 double
 CLeta(double L, double eta)
 {
-  double ln1; /* log of numerator Gamma function */
-  double ln2; /* log of denominator Gamma function */
+  gsl_sf_result ln1; /* log of numerator Gamma function */
+  gsl_sf_result ln2; /* log of denominator Gamma function */
   double sgn = 1.0;
 
   if(fabs(eta/(L+1.0)) < GSL_MACH_EPS) {
@@ -73,7 +73,7 @@ CLeta(double L, double eta)
   gsl_sf_lngamma_impl(2.0*(L+1.0), &ln2);
   if(L < -1.0) sgn = -sgn;
 
-  return sgn * exp(L*M_LN2 - 0.5*eta*M_PI + ln1 - ln2);
+  return sgn * exp(L*M_LN2 - 0.5*eta*M_PI + ln1.val - ln2.val);
 }
 
 
@@ -337,13 +337,13 @@ coulomb_FG0_series(const double eta, const double x, double * F, double * G)
   const double x2  = x*x;
   const double tex = 2.0*eta*x;
   double C0 = CLeta(0.0, eta);
-  double r1pie;
+  gsl_sf_result r1pie;
   int psi_stat = gsl_sf_psi_1piy_impl(eta, &r1pie);
   double u_mm2 = 0.0;  /* u_0 */
   double u_mm1 = x;    /* u_1 */
   double u_m;
-  double v_mm2 = 1.0;                              /* nu_0 */
-  double v_mm1 = tex*(2.0*M_EULER-1.0+r1pie);      /* nu_1 */
+  double v_mm2 = 1.0;                               /* nu_0 */
+  double v_mm1 = tex*(2.0*M_EULER-1.0+r1pie.val);   /* nu_1 */
   double v_m;
   double u_sum = u_mm2 + u_mm1;
   double v_sum = v_mm2 + v_mm1;
@@ -412,13 +412,14 @@ coulomb_FGmhalf_series(const double eta, const double x, double * F, double * G)
   double u_m;
   double v_mm2, v_mm1, v_m;
   double f_sum, g_sum;
-  double rpsi_1pe, rpsi_1p2e;
+  gsl_sf_result rpsi_1pe;
+  gsl_sf_result rpsi_1p2e;
   int m = 2;
 
   gsl_sf_psi_1piy_impl(eta,     &rpsi_1pe);
   gsl_sf_psi_1piy_impl(2.0*eta, &rpsi_1p2e);
 
-  v_mm2 = 2.0*M_EULER - M_LN2 - rpsi_1pe + 2.0*rpsi_1p2e;
+  v_mm2 = 2.0*M_EULER - M_LN2 - rpsi_1pe.val + 2.0*rpsi_1p2e.val;
   v_mm1 = tex*(v_mm2 - 2.0*u_mm2);
 
   f_sum = u_mm2 + u_mm1;
@@ -779,11 +780,12 @@ coulomb_jwkb(const double lam, const double eta, const double x,
   double G_exp;
   
   const double airy_scale_exp = phi;
-  double ai, bi;
-  gsl_sf_airy_Ai_scaled_impl(zeta_half*zeta_half, &ai, goal, err_bits);
-  gsl_sf_airy_Bi_scaled_impl(zeta_half*zeta_half, &bi, goal, err_bits);
-  F *= ai;
-  G *= bi;
+  gsl_sf_result ai;
+  gsl_sf_result bi;
+  gsl_sf_airy_Ai_scaled_impl(zeta_half*zeta_half, &ai);
+  gsl_sf_airy_Bi_scaled_impl(zeta_half*zeta_half, &bi);
+  F *= ai.val;
+  G *= bi.val;
   F_exp = log(F) - airy_scale_exp;
   G_exp = log(G) + airy_scale_exp;
 

@@ -113,8 +113,6 @@ libgslspecfunc_a_SOURCES = 	\
 	laguerre.c		\
 	legendre_H3d.c		\
 	legendre_Qn.c		\
-	legendre_con.c		\
-	legendre_poly.c		\
 	log.c			\
 	poch.c			\
 	poly.c			\
@@ -128,6 +126,8 @@ libgslspecfunc_a_SOURCES = 	\
 	trig.c			\
 	zeta.c
 #	t-erf.c			\
+#	legendre_con.c		\
+#	legendre_poly.c		\
 
 strict:
 	$(MAKE) CFLAGS="-ansi -pedantic -W -Wall -Wtraditional -Wconversion -Wshadow -Wpointer-arith -Wcast-qual -Wcast-align -Wwrite-strings -Waggregate-return -Wstrict-prototypes -fshort-enums -fno-common -Wmissing-prototypes -Wnested-externs -g -O4 -Dinline=''"

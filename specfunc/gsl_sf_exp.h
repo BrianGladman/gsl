@@ -64,8 +64,8 @@ int gsl_sf_exprel_2_e(double x, gsl_sf_result * result);
  *             = 1 + x/(N+1) + x^2/((N+1)(N+2)) + ...
  *             = 1F1(1,1+N,x)
  */
-int gsl_sf_exprel_n_impl(int n, double x, gsl_prec_t goal, gsl_sf_result * result);
-int gsl_sf_exprel_n_e(int n, double x, gsl_prec_t goal, gsl_sf_result * result);
+int gsl_sf_exprel_n_impl(int n, double x, gsl_sf_result * result);
+int gsl_sf_exprel_n_e(int n, double x, gsl_sf_result * result);
 
 
 /* Exponentiate a quantity with an associated error.

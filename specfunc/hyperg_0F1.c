@@ -176,18 +176,18 @@ hyperg_0F1_bessel_J(const double nu, const double x, double * result,
     const double anu = -nu;
     const double s   = sin(anu*M_PI);
     const double c   = cos(anu*M_PI);
-    double J = 0.0;
-    double Y = 0.0;
-    int stat_J = gsl_sf_bessel_Jnu_impl(anu, x, &J, goal, err_bits);
-    int stat_Y = gsl_sf_bessel_Ynu_impl(anu, x, &Y, goal, err_bits);
-    *result = c * J - s * Y;
+    gsl_sf_result J;
+    gsl_sf_result Y;
+    int stat_J = gsl_sf_bessel_Jnu_impl(anu, x, &J);
+    int stat_Y = gsl_sf_bessel_Ynu_impl(anu, x, &Y);
+    *result = c * J.val - s * Y.val;
     if(stat_Y != GSL_SUCCESS)
       return stat_Y;
     else
       return stat_J;
   }
   else {
-    return gsl_sf_bessel_Jnu_impl(nu, x, result, goal, err_bits);
+    return gsl_sf_bessel_Jnu_impl(nu, x, result);
   }
 }
 

@@ -307,9 +307,9 @@ gsl_sf_conicalP_xgt1_neg_mu_largetau_impl(const double mu, const double tau,
   ln_pre = 0.5*ln_xi_pre - mu*log(tau);
 
   arg = tau*xi;
-  /* FIXME: I just added 0, 0 as thelast to args to make it build */
-  gsl_sf_bessel_Jnu_impl(mu + 1.0,   arg, &J_mup1, 0, 0);
-  gsl_sf_bessel_Jnu_impl(mu,         arg, &J_mu, 0, 0);
+
+  gsl_sf_bessel_Jnu_impl(mu + 1.0,   arg, &J_mup1);
+  gsl_sf_bessel_Jnu_impl(mu,         arg, &J_mu);
   J_mum1 = -J_mup1 + 2.0*mu/arg*J_mu;      /* careful of mu < 1 */
 
   sumA = 1.0 - olver_A1_xi(-mu, xi, x)/(tau*tau);
@@ -721,7 +721,7 @@ gsl_sf_conicalP_0_impl(const double lambda, const double x, double * result)
     if(x < 1.0) {
       const double th = acos(x);
       const double s  = sin(0.5*th);
-      stat_K = gsl_sf_ellint_Kcomp_impl(s, &K, goal);
+      stat_K = gsl_sf_ellint_Kcomp_impl(s, &K);
       *result = 2.0/M_PI * K;
       return stat_K;
     }
@@ -729,7 +729,7 @@ gsl_sf_conicalP_0_impl(const double lambda, const double x, double * result)
       const double xi = acosh(x);
       const double c  = cosh(0.5*xi);
       const double t  = tanh(0.5*xi);
-      stat_K = gsl_sf_ellint_Kcomp_impl(t, &K, goal);
+      stat_K = gsl_sf_ellint_Kcomp_impl(t, &K);
       *result = 2.0/M_PI / c * K;
       return stat_K;
     }
@@ -818,8 +818,8 @@ gsl_sf_conicalP_1_impl(const double lambda, const double x, double * result)
         const double s  = sin(0.5*th);
         const double c2 = 1.0 - s*s;
         const double sth = sin(th);
-        stat_K = gsl_sf_ellint_Kcomp_impl(s, &K, goal);
-        stat_E = gsl_sf_ellint_Ecomp_impl(s, &E, goal);
+        stat_K = gsl_sf_ellint_Kcomp_impl(s, &K);
+        stat_E = gsl_sf_ellint_Ecomp_impl(s, &E);
         *result = 2.0/(M_PI*sth) * (E - c2 * K);
         return stat_K;
       }
