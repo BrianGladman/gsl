@@ -32,7 +32,7 @@ C0sq(double eta)
 {
   double twopieta = 2.0*M_PI*eta;
 
-  if(fabs(eta) < GSL_MACH_EPS) {
+  if(fabs(eta) < GSL_DBL_EPSILON) {
     return 1.0;
   }
   else if(twopieta > GSL_LOG_DBL_MAX) {
@@ -56,42 +56,51 @@ C0sq(double eta)
  * This is not valid for L <= -3/2  or  L = -1.
  */
 static
-double
-CLeta(double L, double eta)
+int
+CLeta(double L, double eta, gsl_sf_result * result)
 {
   gsl_sf_result ln1; /* log of numerator Gamma function */
   gsl_sf_result ln2; /* log of denominator Gamma function */
   double sgn = 1.0;
+  double arg_val, arg_err;
 
-  if(fabs(eta/(L+1.0)) < GSL_MACH_EPS) {
+  if(fabs(eta/(L+1.0)) < GSL_DBL_EPSILON) {
     gsl_sf_lngamma_impl(L+1.0, &ln1);
   }
   else {
     gsl_sf_result p1;                 /* phase of numerator Gamma -- not used */
     gsl_sf_lngamma_complex_impl(L+1.0, eta, &ln1, &p1); /* should be ok */
   }
+
   gsl_sf_lngamma_impl(2.0*(L+1.0), &ln2);
   if(L < -1.0) sgn = -sgn;
 
-  return sgn * exp(L*M_LN2 - 0.5*eta*M_PI + ln1.val - ln2.val);
+  arg_val  = L*M_LN2 - 0.5*eta*M_PI + ln1.val - ln2.val;
+  arg_err  = ln1.err + ln2.err;
+  arg_err += GSL_DBL_EPSILON * (fabs(L*M_LN2) + fabs(0.5*eta*M_PI));
+  return gsl_sf_exp_err_impl(arg_val, arg_err, result);
 }
 
 
 int
-gsl_sf_coulomb_CL_impl(double lam, double eta, double * result)
+gsl_sf_coulomb_CL_impl(double lam, double eta, gsl_sf_result * result)
 {
-  if(lam <= -1.0) {
-    *result = 0.0;
+  if(result == 0) {
+    return GSL_EFAULT;
+  }
+  else if(lam <= -1.0) {
+    result->val = 0.0;
+    result->err = 0.0;
     return GSL_EDOM;
   }
-  else if(fabs(lam) < GSL_MACH_EPS) {
+  else if(fabs(lam) < GSL_DBL_EPSILON) {
     /* saves a calculation of complex_lngamma(), otherwise not necessary */
-    *result = sqrt(C0sq(eta));
+    result->val = sqrt(C0sq(eta));
+    result->err = 2.0 * GSL_DBL_EPSILON * result->val;
     return GSL_SUCCESS;
   }
   else {
-    *result = CLeta(lam, eta);
-    return GSL_SUCCESS;
+    return CLeta(lam, eta, result);
   }
 }
 
@@ -102,13 +111,15 @@ int
 gsl_sf_coulomb_CL_list(double lam_min, int kmax, double eta, double * cl)
 {
   int k;
-  gsl_sf_coulomb_CL_impl(lam_min, eta, cl);
+  gsl_sf_result cl_0;
+  gsl_sf_coulomb_CL_impl(lam_min, eta, &cl_0);
+  cl[0] = cl_0.val;
 
   for(k=1; k<=kmax; k++) {
     double L = lam_min + k;
     cl[k] = cl[k-1] * sqrt(L*L + eta*eta)/(L*(2.0*L+1.0));
   }
-  
+
   return GSL_SUCCESS;
 }
 
@@ -167,10 +178,10 @@ coulomb_Phi_series(const double lam, const double eta, const double x,
     abs_del   = fabs(del);
     abs_del_p = fabs(del_p);
 
-    if(          abs_del/(fabs(sum)+abs_del)          < GSL_MACH_EPS
-       &&   prev_abs_del/(fabs(sum)+prev_abs_del)     < GSL_MACH_EPS
-       &&      abs_del_p/(fabs(sump)+abs_del_p)       < GSL_MACH_EPS
-       && prev_abs_del_p/(fabs(sump)+prev_abs_del_p)  < GSL_MACH_EPS
+    if(          abs_del/(fabs(sum)+abs_del)          < GSL_DBL_EPSILON
+       &&   prev_abs_del/(fabs(sum)+prev_abs_del)     < GSL_DBL_EPSILON
+       &&      abs_del_p/(fabs(sump)+abs_del_p)       < GSL_DBL_EPSILON
+       && prev_abs_del_p/(fabs(sump)+prev_abs_del_p)  < GSL_DBL_EPSILON
        && k > kmin
        ) break;
 
@@ -254,11 +265,13 @@ coulomb_connection(const double lam, const double eta,
 static
 int
 coulomb_FG_series(const double lam, const double eta, const double x,
-                  double * F, double * G)
+                  gsl_sf_result * F, gsl_sf_result * G)
 {
   const int max_iter = 800;
-  const double ClamA = CLeta(lam, eta);
-  const double ClamB = CLeta(-lam-1.0, eta);
+  gsl_sf_result ClamA;
+  gsl_sf_result ClamB;
+  int stat_A = CLeta(lam, eta, &ClamA);
+  int stat_B = CLeta(-lam-1.0, eta, &ClamB);
   const double tlp1 = 2.0*lam + 1.0;
   const double pow_x = pow(x, lam);
   double cos_phi_lam;
@@ -274,9 +287,9 @@ coulomb_FG_series(const double lam, const double eta, const double x,
   double B_sum = uB_mm2 + uB_mm1;
   double A_abs_del_prev = fabs(A_sum);
   double B_abs_del_prev = fabs(B_sum);
-  double FA, FB;
+  gsl_sf_result FA, FB;
   int m = 2;
-  
+
   coulomb_connection(lam, eta, &cos_phi_lam, &sin_phi_lam);
 
   while(m < max_iter) {
@@ -299,8 +312,8 @@ coulomb_FG_series(const double lam, const double eta, const double x,
       double max_abs_dB = GSL_MAX(abs_dB, B_abs_del_prev);
       double abs_A = fabs(A_sum);
       double abs_B = fabs(B_sum);
-      if(   max_abs_dA/(max_abs_dA + abs_A) < 40.0*GSL_MACH_EPS
-         && max_abs_dB/(max_abs_dB + abs_B) < 40.0*GSL_MACH_EPS
+      if(   max_abs_dA/(max_abs_dA + abs_A) < 10.0*GSL_DBL_EPSILON
+         && max_abs_dB/(max_abs_dB + abs_B) < 10.0*GSL_DBL_EPSILON
          ) break;
     }
     A_abs_del_prev = abs_dA;
@@ -312,16 +325,20 @@ coulomb_FG_series(const double lam, const double eta, const double x,
     m++;
   }
 
-  FA = A_sum * ClamA * pow_x * x;
-  FB = B_sum * ClamB / pow_x;
+  FA.val = A_sum * ClamA.val * pow_x * x;
+  FA.err = A_sum * ClamA.err * pow_x * x + 2.0*GSL_DBL_EPSILON*fabs(FA.val);
+  FB.val = B_sum * ClamB.val / pow_x;
+  FB.err = B_sum * ClamB.err / pow_x + 2.0*GSL_DBL_EPSILON*fabs(FB.val);
 
-  *F = FA;
-  *G = (FA * cos_phi_lam - FB)/sin_phi_lam;
+  F->val = FA.val;
+  F->err = FA.err;
+  G->val = (FA.val * cos_phi_lam - FB.val)/sin_phi_lam;
+  G->err = (FA.err * fabs(cos_phi_lam) + FB.err)/fabs(sin_phi_lam);
 
   if(m == max_iter)
     return GSL_EMAXITER;
   else
-    return GSL_SUCCESS;
+    return GSL_ERROR_SELECT_2(stat_A, stat_B);
 }
 
 
@@ -331,12 +348,14 @@ coulomb_FG_series(const double lam, const double eta, const double x,
  */
 static
 int
-coulomb_FG0_series(const double eta, const double x, double * F, double * G)
+coulomb_FG0_series(const double eta, const double x,
+                   gsl_sf_result * F, gsl_sf_result * G)
 {
   const int max_iter = 800;
   const double x2  = x*x;
   const double tex = 2.0*eta*x;
-  double C0 = CLeta(0.0, eta);
+  gsl_sf_result C0;
+  int stat_CL = CLeta(0.0, eta, &C0);
   gsl_sf_result r1pie;
   int psi_stat = gsl_sf_psi_1piy_impl(eta, &r1pie);
   double u_mm2 = 0.0;  /* u_0 */
@@ -372,8 +391,8 @@ coulomb_FG0_series(const double eta, const double x, double * F, double * G)
       double max_abs_dv = GSL_MAX(abs_dv, v_abs_del_prev);
       double abs_u = fabs(u_sum);
       double abs_v = fabs(v_sum);
-      if(   max_abs_du/(max_abs_du + abs_u) < 40.0*GSL_MACH_EPS
-         && max_abs_dv/(max_abs_dv + abs_v) < 40.0*GSL_MACH_EPS
+      if(   max_abs_du/(max_abs_du + abs_u) < 40.0*GSL_DBL_EPSILON
+         && max_abs_dv/(max_abs_dv + abs_v) < 40.0*GSL_DBL_EPSILON
          ) break;
     }
     u_abs_del_prev = abs_du;
@@ -385,13 +404,15 @@ coulomb_FG0_series(const double eta, const double x, double * F, double * G)
     m++;
   }
 
-  *F = C0 * u_sum;
-  *G = (v_sum + 2.0*eta*u_sum * log(2.0*x)) / C0;
+  F->val = C0.val * u_sum;
+  F->err = C0.err * fabs(u_sum) + 2.0*GSL_DBL_EPSILON*fabs(F->val);
+  G->val = (v_sum + 2.0*eta*u_sum * log(2.0*x)) / C0.val;
+  G->err = (fabs(v_sum) + fabs(2.0*eta*u_sum * log(2.0*x))) / fabs(C0.val) * fabs(C0.err/C0.val);
 
   if(m == max_iter)
     return GSL_EMAXITER;
   else
-    return psi_stat;
+    return GSL_ERROR_SELECT_2(psi_stat, stat_CL);
 }
 
 
@@ -400,18 +421,21 @@ coulomb_FG0_series(const double eta, const double x, double * F, double * G)
  */
 static
 int
-coulomb_FGmhalf_series(const double eta, const double x, double * F, double * G)
+coulomb_FGmhalf_series(const double eta, const double x,
+                       gsl_sf_result * F, gsl_sf_result * G)
 {
   const int max_iter = 800;
   const double rx  = sqrt(x);
   const double x2  = x*x;
   const double tex = 2.0*eta*x;
-  const double Cmhalf = CLeta(-0.5, eta);
+  gsl_sf_result Cmhalf;
+  int stat_CL = CLeta(-0.5, eta, &Cmhalf);
   double u_mm2 = 1.0;                      /* u_0 */
   double u_mm1 = tex * u_mm2;              /* u_1 */
   double u_m;
   double v_mm2, v_mm1, v_m;
   double f_sum, g_sum;
+  double tmp1;
   gsl_sf_result rpsi_1pe;
   gsl_sf_result rpsi_1p2e;
   int m = 2;
@@ -433,7 +457,7 @@ coulomb_FGmhalf_series(const double eta, const double x, double * F, double * G)
     g_sum += v_m;
     if(   f_sum != 0.0
        && g_sum != 0.0
-       && (fabs(u_m/f_sum) + fabs(v_m/g_sum) < 40.0*GSL_MACH_EPS)) break;
+       && (fabs(u_m/f_sum) + fabs(v_m/g_sum) < 10.0*GSL_DBL_EPSILON)) break;
     u_mm2 = u_mm1;
     u_mm1 = u_m;
     v_mm2 = v_mm1;
@@ -441,12 +465,17 @@ coulomb_FGmhalf_series(const double eta, const double x, double * F, double * G)
     m++;
   }
   
-  *F = Cmhalf * rx * f_sum;
-  *G = -rx*(f_sum * log(x) + g_sum)/Cmhalf;
+  F->val = Cmhalf.val * rx * f_sum;
+  F->err = Cmhalf.err * fabs(rx * f_sum) + 2.0*GSL_DBL_EPSILON*fabs(F->val);
+
+  tmp1 = f_sum*log(x);
+  G->val = -rx*(tmp1 + g_sum)/Cmhalf.val;
+  G->err = fabs(rx)*(fabs(tmp1) + fabs(g_sum))/fabs(Cmhalf.val) * fabs(Cmhalf.err/Cmhalf.val);
+
   if(m == max_iter)
     return GSL_EMAXITER;
   else
-    return GSL_SUCCESS;
+    return stat_CL;
 }
 
 
@@ -544,7 +573,7 @@ coulomb_CF1(double lambda,
 {
   const double CF1_small = 1.e-30;
   const double CF1_abort = 1.0e+05;
-  const double CF1_acc   = 10.0*GSL_MACH_EPS;
+  const double CF1_acc   = 10.0*GSL_DBL_EPSILON;
   const double x_inv     = 1.0/x;
   const double px        = lambda + 1.0 + CF1_abort;
 
@@ -598,7 +627,7 @@ old_coulomb_CF1(const double lambda,
                 )
 {
   const double CF1_abort = 1.e5;
-  const double CF1_acc   = 10.0*GSL_MACH_EPS;
+  const double CF1_acc   = 10.0*GSL_DBL_EPSILON;
   const double x_inv     = 1.0/x;
   const double px        = lambda + 1.0 + CF1_abort;
   
@@ -680,7 +709,7 @@ coulomb_CF2(const double lambda, const double eta, const double x,
 {
   int status = GSL_SUCCESS;
 
-  const double CF2_acc   = 10.0*GSL_MACH_EPS;
+  const double CF2_acc   = 4.0*GSL_DBL_EPSILON;
   const double CF2_abort = 2.0e+05;
 
   const double wi    = 2.0*eta;
@@ -729,7 +758,7 @@ coulomb_CF2(const double lambda, const double eta, const double x,
   }
   while(fabs(dp)+fabs(dq) > (fabs(P)+fabs(Q))*CF2_acc);
 
-  if(Q < CF2_abort*GSL_MACH_EPS*fabs(P)) {
+  if(Q < CF2_abort*GSL_DBL_EPSILON*fabs(P)) {
     status = GSL_ELOSS;
   }
 
@@ -791,7 +820,7 @@ coulomb_jwkb(const double lam, const double eta, const double x,
   if(G_exp >= GSL_LOG_DBL_MAX) {
     fjwkb->val = F;
     gjwkb->val = G;
-    fjwkb->err = 1.0e-3 * fabs(F);
+    fjwkb->err = 1.0e-3 * fabs(F); /* FIXME: real error here ... could be smaller */
     gjwkb->err = 1.0e-3 * fabs(G);
     *exponent = airy_scale_exp;
     return GSL_EOVRFLW;
@@ -842,37 +871,28 @@ gsl_sf_coulomb_wave_FG_impl(const double eta, const double x,
   const double lam_G = lam_F - k_lam_G;
 
   if(x < 0.0 || lam_F <= -0.5 || lam_G <= -0.5) {
-    F->val  = 0.0;
-    F->err  = 0.0;
-    Fp->val = 0.0;
-    Fp->err = 0.0;
-    G->val  = 0.0;
-    G->err  = 0.0;
-    Gp->val = 0.0;
-    Gp->err = 0.0;
+    GSL_SF_RESULT_SET(F,  0.0, 0.0);
+    GSL_SF_RESULT_SET(Fp, 0.0, 0.0);
+    GSL_SF_RESULT_SET(G,  0.0, 0.0);
+    GSL_SF_RESULT_SET(Gp, 0.0, 0.0);
     *exp_F = 0.0;
     *exp_G = 0.0;
     return GSL_EDOM;
   }
   else if(x == 0.0) {
-    double C0 = CLeta(0.0, eta);
-    F->val  = 0.0;
-    F->err  = 0.0;
-    Fp->val = 0.0;
-    Fp->err = 0.0;
-    G->val  = 0.0; /* FIXME: should be Inf */
-    G->err  = 0.0;
-    Gp->val = 0.0; /* FIXME: should be Inf */
-    Gp->err = 0.0;
+    gsl_sf_result C0;
+    CLeta(0.0, eta, &C0);
+    GSL_SF_RESULT_SET(F,  0.0, 0.0);
+    GSL_SF_RESULT_SET(Fp, 0.0, 0.0);
+    GSL_SF_RESULT_SET(G,  0.0, 0.0); /* FIXME: should be Inf */
+    GSL_SF_RESULT_SET(Gp, 0.0, 0.0); /* FIXME: should be Inf */
     *exp_F = 0.0;
     *exp_G = 0.0;
     if(lam_F == 0.0){
-      Fp->val = C0;
-      Fp->err = GSL_DBL_EPSILON * fabs(C0);
+      GSL_SF_RESULT_SET(Fp, C0.val, C0.err);
     }
     if(lam_G == 0.0) {
-      G->val = 1.0/C0;
-      G->err = GSL_DBL_EPSILON / fabs(C0);
+      GSL_SF_RESULT_SET(Gp, 1.0/C0.val, fabs(C0.err/C0.val)/fabs(C0.val));
     }
     return GSL_EDOM;
     /* After all, since we are asking for G, this is a domain error... */
@@ -885,7 +905,7 @@ gsl_sf_coulomb_wave_FG_impl(const double eta, const double x,
      * [see coulomb_FG_series() and coulomb_connection() above].
      * Note that large negative eta is ok however.
      */
-    const double SMALL = 1.0e-100;
+    const double SMALL = GSL_SQRT_DBL_EPSILON;
     const int N    = (int)(lam_F + 0.5);
     const int span = GSL_MAX(k_lam_G, N);
     const double lam_min = lam_F - N;    /* -1/2 <= lam_min < 1/2 */
@@ -895,8 +915,8 @@ gsl_sf_coulomb_wave_FG_impl(const double eta, const double x,
     double F_sign_lam_F;
     double F_lam_min_unnorm, Fp_lam_min_unnorm;
     double Fp_over_F_lam_min;
-    double F_lam_min;
-    double G_lam_min, Gp_lam_min;
+    gsl_sf_result F_lam_min;
+    gsl_sf_result G_lam_min, Gp_lam_min;
     double F_scale;
 
     /* Determine F'/F at lam_F. */
@@ -931,13 +951,13 @@ gsl_sf_coulomb_wave_FG_impl(const double eta, const double x,
     else if(lam_min == 0.5) {
       /* This cannot happen. */
       F->val  = F_lam_F;
-      F->err  = GSL_DBL_EPSILON * fabs(F->val);
+      F->err  = 2.0 * GSL_DBL_EPSILON * fabs(F->val);
       Fp->val = Fp_lam_F;
-      Fp->err = GSL_DBL_EPSILON * fabs(Fp->val);
+      Fp->err = 2.0 * GSL_DBL_EPSILON * fabs(Fp->val);
       G->val  = G_lam_G;
-      G->err  = GSL_DBL_EPSILON * fabs(G->val);
+      G->err  = 2.0 * GSL_DBL_EPSILON * fabs(G->val);
       Gp->val = Gp_lam_G;
-      Gp->err = GSL_DBL_EPSILON * fabs(Gp->val);
+      Gp->err = 2.0 * GSL_DBL_EPSILON * fabs(Gp->val);
       *exp_F = 0.0;
       *exp_G = 0.0;
       return GSL_ESANITY;
@@ -948,27 +968,29 @@ gsl_sf_coulomb_wave_FG_impl(const double eta, const double x,
 
     /* Determine remaining quantities. */
     Fp_over_F_lam_min = Fp_lam_min_unnorm / F_lam_min_unnorm;
-    Gp_lam_min = Fp_over_F_lam_min*G_lam_min - 1.0/F_lam_min;
-    F_scale = F_lam_min / F_lam_min_unnorm;
- 
+    Gp_lam_min.val  = Fp_over_F_lam_min*G_lam_min.val - 1.0/F_lam_min.val;
+    Gp_lam_min.err  = fabs(Fp_over_F_lam_min)*G_lam_min.err;
+    Gp_lam_min.err += fabs(1.0/F_lam_min.val) * fabs(F_lam_min.err/F_lam_min.val);
+    F_scale = F_lam_min.val / F_lam_min_unnorm;
+
     /* Apply scale to the original F,F' values. */
     F_lam_F  *= F_scale;
     Fp_lam_F *= F_scale;
 
     /* Recurse up to get the required G,G' values. */
     stat_Gr = coulomb_G_recur(lam_min, GSL_MAX(N-k_lam_G,0), eta, x,
-                              G_lam_min, Gp_lam_min,
+                              G_lam_min.val, Gp_lam_min.val,
 		              &G_lam_G, &Gp_lam_G
 		              );
 
     F->val  = F_lam_F;
-    F->err  = GSL_DBL_EPSILON * fabs(F->val);
+    F->err  = 2.0 * GSL_DBL_EPSILON * fabs(F->val);
     Fp->val = Fp_lam_F;
-    Fp->err = GSL_DBL_EPSILON * fabs(Fp->val);
+    Fp->err = 2.0 * GSL_DBL_EPSILON * fabs(Fp->val);
     G->val  = G_lam_G;
-    G->err  = GSL_DBL_EPSILON * fabs(G->val);
+    G->err  = 2.0 * GSL_DBL_EPSILON * fabs(G->val);
     Gp->val = Gp_lam_G;
-    Gp->err = GSL_DBL_EPSILON * fabs(Gp->val);
+    Gp->err = 2.0 * GSL_DBL_EPSILON * fabs(Gp->val);
     *exp_F = 0.0;
     *exp_G = 0.0;
 
@@ -979,8 +1001,8 @@ gsl_sf_coulomb_wave_FG_impl(const double eta, const double x,
      * lambda values, and use the Wronskian and the
      * continued fractions for F'/F to obtain F' and G'.
      */
-    double F_lam_F, G_lam_F;
-    double F_lam_G, G_lam_G;
+    gsl_sf_result F_lam_F, G_lam_F;
+    gsl_sf_result F_lam_G, G_lam_G;
     double exp_lam_F, exp_lam_G;
     int stat_lam_F;
     int stat_lam_G;
@@ -1012,14 +1034,16 @@ gsl_sf_coulomb_wave_FG_impl(const double eta, const double x,
       stat_CF1_lam_G = coulomb_CF1(lam_G, eta, x, &F_sign_lam_G, &Fp_over_F_lam_G);
     }
 
-    F->val = F_lam_F;
-    F->err = GSL_DBL_EPSILON * fabs(F->val);
-    G->val = G_lam_G;
-    G->err = GSL_DBL_EPSILON * fabs(G->val);
-    Fp->val = Fp_over_F_lam_F * F_lam_F;
-    Fp->err = GSL_DBL_EPSILON * fabs(Fp->val);
-    Gp->val = Fp_over_F_lam_G * G_lam_G - 1.0/F_lam_G;
-    Gp->err = GSL_DBL_EPSILON * fabs(Gp->val);
+    F->val = F_lam_F.val;
+    F->err = F_lam_F.err;
+    G->val = G_lam_G.val;
+    G->err = G_lam_G.err;
+    Fp->val  = Fp_over_F_lam_F * F_lam_F.val;
+    Fp->err  = fabs(Fp_over_F_lam_F) * F_lam_F.err;
+    Fp->err += 2.0*GSL_DBL_EPSILON*fabs(Fp->val);
+    Gp->val  = Fp_over_F_lam_G * G_lam_G.val - 1.0/F_lam_G.val;
+    Gp->err  = fabs(Fp_over_F_lam_G) * G_lam_G.err;
+    Gp->err += fabs(1.0/F_lam_G.val) * fabs(F_lam_G.err/F_lam_G.val);
     *exp_F = exp_lam_F;
     *exp_G = exp_lam_G;
     if(stat_lam_F == GSL_EOVRFLW || stat_lam_G == GSL_EOVRFLW) {
@@ -1118,7 +1142,9 @@ gsl_sf_coulomb_wave_F_array_impl(double lam_min, int kmax,
       fc_array[k] = 0.0;
     }
     if(lam_min == 0.0){
-      fc_array[0] = CLeta(0.0, eta);
+      gsl_sf_result f_0;
+      CLeta(0.0, eta, &f_0);
+      fc_array[0] = f_0.val;
     }
     return GSL_SUCCESS;
   }

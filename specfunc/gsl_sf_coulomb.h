@@ -109,8 +109,8 @@ int gsl_sf_coulomb_wave_sphF_array_impl(double lam_min, int kmax,
 /* Coulomb wave function normalization constant.
  * [Abramowitz+Stegun 14.1.8, 14.1.9]
  */
-int gsl_sf_coulomb_CL_impl(double L, double eta, double * result);
-int gsl_sf_coulomb_CL_list(double Lmin, int kmax, double eta, double *cl);
+int gsl_sf_coulomb_CL_impl(double L, double eta, gsl_sf_result * result);
+int gsl_sf_coulomb_CL_list(double Lmin, int kmax, double eta, double * cl);
 
 
 #endif  /* !GSL_COULOMB_H_ */

@@ -85,6 +85,7 @@ do {                                                                            
 
 int test_airy(void);
 int test_bessel(void);
+int test_coulomb(void);
 int test_dilog(void);
 int test_gamma(void);
 int test_hyperg(void);
