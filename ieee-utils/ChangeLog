@@ -1,3 +1,7 @@
+Mon Aug 26 20:57:29 2002  Brian Gough  <bjg@network-theory.co.uk>
+
+	* test.c: use system values for FLT_MIN, FLT_MAX, DBL_MIN, DBL_MAX
+
 Sat May 11 22:30:43 2002  Brian Gough  <bjg@network-theory.co.uk>
 
 	* test.c (TEST_DENORMAL): test denormals only when available, as

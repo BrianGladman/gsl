@@ -33,6 +33,22 @@
 #endif
 #endif
 
+#ifndef FLT_MIN
+#define FLT_MIN 1.17549435e-38f
+#endif
+
+#ifndef FLT_MAX
+#define FLT_MAX 3.40282347e+38f
+#endif
+
+#ifndef DBL_MIN
+#define DBL_MIN 2.2250738585072014e-308
+#endif
+
+#ifndef DBL_MAX
+#define DBL_MAX 1.7976931348623157e+308
+#endif
+
 int
 main (void)
 {
@@ -137,7 +153,7 @@ main (void)
   /* Check for FLT_MIN (smallest possible number that is not denormal) */
 
   {
-    float f = 1.17549435e-38f;	/* FLT_MIN (float) */
+    float f = FLT_MIN;	
     const char mantissa[] = "00000000000000000000000";
     gsl_ieee_float_rep r;
     gsl_ieee_float_to_rep (&f, &r);
@@ -151,7 +167,7 @@ main (void)
   /* Check for FLT_MAX (largest possible number that is not Inf) */
 
   {
-    float f = 3.40282347e+38f;	/* FLT_MAX */
+    float f = FLT_MAX;
     const char mantissa[] = "11111111111111111111111";
 
     gsl_ieee_float_rep r;
@@ -168,7 +184,7 @@ main (void)
 
 #ifdef TEST_DENORMAL
   {
-    float f = 1.17549435e-38f;	/* FLT_MIN */
+    float f = FLT_MIN;	
     char mantissa[] = "10000000000000000000000";
 
     int i;
@@ -195,7 +211,7 @@ main (void)
   /* Check for positive INFINITY (e.g. 2*FLT_MAX) */
 
   {
-    float f = 3.40282347e+38f;	/* FLT_MAX */
+    float f = FLT_MAX;	
     const char mantissa[] = "00000000000000000000000";
 
     gsl_ieee_float_rep r;
@@ -213,7 +229,7 @@ main (void)
   /* Check for negative INFINITY (e.g. -2*FLT_MAX) */
 
   {
-    float f = 3.40282347e+38f;	/* FLT_MAX */
+    float f = FLT_MAX;	
     const char mantissa[] = "00000000000000000000000";
 
     gsl_ieee_float_rep r;
@@ -350,7 +366,7 @@ main (void)
   /* Check for DBL_MIN (smallest possible number that is not denormal) */
 
   {
-    double d = 2.2250738585072014e-308;		/* DBL_MIN */
+    double d = DBL_MIN;
     const char mantissa[]
       = "0000000000000000000000000000000000000000000000000000";
     gsl_ieee_double_rep r;
@@ -366,7 +382,7 @@ main (void)
   /* Check for DBL_MAX (largest possible number that is not Inf) */
 
   {
-    double d = 1.7976931348623157e+308;		/* DBL_MAX */
+    double d = DBL_MAX;
     const char mantissa[]
     = "1111111111111111111111111111111111111111111111111111";
     gsl_ieee_double_rep r;
@@ -383,7 +399,7 @@ main (void)
 
 #ifdef TEST_DENORMAL
   {
-    double d = 2.2250738585072014e-308;		/* DBL_MIN */
+    double d = DBL_MIN;
     char mantissa[]
       = "1000000000000000000000000000000000000000000000000000";
     int i;
@@ -410,7 +426,7 @@ main (void)
   /* Check for positive INFINITY (e.g. 2*DBL_MAX) */
 
   {
-    double d = 1.7976931348623157e+308;		/* DBL_MAX */
+    double d = DBL_MAX;
     const char mantissa[]
       = "0000000000000000000000000000000000000000000000000000";
     gsl_ieee_double_rep r;
@@ -428,7 +444,7 @@ main (void)
   /* Check for negative INFINITY (e.g. -2*DBL_MAX) */
 
   {
-    double d = 1.7976931348623157e+308;		/* DBL_MAX */
+    double d = DBL_MAX;
     const char mantissa[]
       = "0000000000000000000000000000000000000000000000000000";
     gsl_ieee_double_rep r;
