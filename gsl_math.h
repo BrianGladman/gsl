@@ -87,12 +87,12 @@ inline int GSL_MIN_DBL(double a, double b) { return GSL_MIN(a,b); }
 inline int GSL_MAX_LDBL(long double a, long double b) { return GSL_MAX(a,b); }
 inline int GSL_MIN_LDBL(long double a, long double b) { return GSL_MIN(a,b); }
 #else
-#define GSL_MAX_INT(a, b)   GSL_MAX(a,b)
-#define GSL_MIN_INT(a, b)   GSL_MIN(a,b)
-#define GSL_MAX_DBL(a, b)   GSL_MAX(a,b)
-#define GSL_MIN_DBL(a, b)   GSL_MIN(a,b)
-#define GSL_MAX_LDBL(a, b)  GSL_MAX(a,b)
-#define GSL_MIN_LDBL(a, b)  GSL_MIN(a,b)
+#define GSL_MAX_INT(a,b)   GSL_MAX(a,b)
+#define GSL_MIN_INT(a,b)   GSL_MIN(a,b)
+#define GSL_MAX_DBL(a,b)   GSL_MAX(a,b)
+#define GSL_MIN_DBL(a,b)   GSL_MIN(a,b)
+#define GSL_MAX_LDBL(a,b)  GSL_MAX(a,b)
+#define GSL_MIN_LDBL(a,b)  GSL_MIN(a,b)
 #endif /* HAVE_INLINE */
 
 
