@@ -55,7 +55,8 @@ gsl_root_falsepos(double * root, double (* f)(double), double * lower_bound,
   {
     double splitpoint, fl, fu, fs, old_lower_bound, old_upper_bound;
     unsigned int iterations;
-  
+    enum { UPPER, LOWER } moved = 0;
+
     /* Evaluate the function under search at *lower_bound and *upper_bound. */
     _BARF_FPCALL(f, *lower_bound, fl);
     _BARF_FPCALL(f, *upper_bound, fu);
@@ -84,6 +85,7 @@ gsl_root_falsepos(double * root, double (* f)(double), double * lower_bound,
       if ((fl > 0.0 && fs < 0.0) || (fl < 0.0 && fs > 0.0)) {
         *upper_bound = splitpoint;
         fu = fs;
+	moved = UPPER ;
       }
       /* If the root is not between *lower_bound and the split point, it is
          guaranteed to be between the split point and *upper_bound, because
@@ -93,6 +95,7 @@ gsl_root_falsepos(double * root, double (* f)(double), double * lower_bound,
       else {
         *lower_bound = splitpoint;
         fl = fs;
+	moved = LOWER ;
       }
       
       /* Now, let's check if we're finished. FIXME.1: this test needs help! */
@@ -107,15 +110,15 @@ gsl_root_falsepos(double * root, double (* f)(double), double * lower_bound,
       }
       /* If the lower bound stayed the same and the upper bound moved less
          than epsilon, the root is *upper_bound. */
-      if (old_lower_bound == *lower_bound
-          && _WITHIN_TOL(old_upper_bound, *upper_bound, rel_epsilon,
+      if (moved == UPPER 
+	  && _WITHIN_TOL(old_upper_bound, *upper_bound, rel_epsilon,
                          abs_epsilon)) {
         *root = *upper_bound;
         return GSL_SUCCESS;
       }
       /* If the upper bound stayed the same and the lower bound moved less
          than epsilon, the root is *lower_bound. */
-      if (old_upper_bound == *upper_bound
+      if (moved == LOWER
           && _WITHIN_TOL(old_lower_bound, *lower_bound, rel_epsilon,
                          abs_epsilon)) {
         *root = *lower_bound;
