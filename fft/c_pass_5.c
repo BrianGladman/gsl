@@ -1,4 +1,4 @@
-int
+static int
 FUNCTION(fft_complex,pass_5) (const BASE in[],
 			      const size_t istride,
 			      BASE out[],

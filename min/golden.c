@@ -21,10 +21,10 @@ typedef struct
   }
 goldensection_state_t;
 
-int goldensection_init (void * vstate, gsl_function * f, double minimum, double f_minimum, gsl_interval x, double f_lower, double f_upper);
-int goldensection_iterate (void * vstate, gsl_function * f, double * minimum, double * f_minimum, gsl_interval * x, double * f_lower, double * f_upper);
+static int goldensection_init (void * vstate, gsl_function * f, double minimum, double f_minimum, gsl_interval x, double f_lower, double f_upper);
+static int goldensection_iterate (void * vstate, gsl_function * f, double * minimum, double * f_minimum, gsl_interval * x, double * f_lower, double * f_upper);
 
-int
+static int
 goldensection_init (void * vstate, gsl_function * f, double minimum, double f_minimum, gsl_interval x, double f_lower, double f_upper)
 {
   goldensection_state_t * state = (goldensection_state_t *) vstate;
@@ -43,7 +43,7 @@ goldensection_init (void * vstate, gsl_function * f, double minimum, double f_mi
   return GSL_SUCCESS;
 }
 
-int
+static int
 goldensection_iterate (void * vstate, gsl_function * f, double * minimum, double * f_minimum, gsl_interval * x, double * f_lower, double * f_upper)
 {
   goldensection_state_t * state = (goldensection_state_t *) vstate;

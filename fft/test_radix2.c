@@ -77,13 +77,7 @@ void check_complex_bitreverse_order (size_t n)
 
   memcpy (complex_tmp, complex_data, 2 * n * sizeof(double)) ;
 
-  result = fft_binary_logn(n) ;
-  
-  if (result == -1) {
-    abort() ;
-  } else {
-    logn = result ;
-  }
+  logn = 0 ;  while (n > (1<<logn)) {logn++} ;
 
   /* do a naive bit reversal as a baseline for testing the other routines */
 

@@ -21,10 +21,10 @@ typedef struct
   }
 bisection_state_t;
 
-int bisection_init (void * vstate, gsl_function * f, double * root, gsl_interval * x);
-int bisection_iterate (void * vstate, gsl_function * f, double * root, gsl_interval * x);
+static int bisection_init (void * vstate, gsl_function * f, double * root, gsl_interval * x);
+static int bisection_iterate (void * vstate, gsl_function * f, double * root, gsl_interval * x);
 
-int
+static int
 bisection_init (void * vstate, gsl_function * f, double * root, gsl_interval * x)
 {
   bisection_state_t * state = (bisection_state_t *) vstate;
@@ -51,7 +51,7 @@ bisection_init (void * vstate, gsl_function * f, double * root, gsl_interval * x
 
 }
 
-int
+static int
 bisection_iterate (void * vstate, gsl_function * f, double * root, gsl_interval * x)
 {
   bisection_state_t * state = (bisection_state_t *) vstate;

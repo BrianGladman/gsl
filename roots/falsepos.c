@@ -32,12 +32,10 @@ typedef struct
   }
 falsepos_state_t;
 
-int
-falsepos_init (void * vstate, gsl_function * f, double * root, gsl_interval * x);
-int
-falsepos_iterate (void * vstate, gsl_function * f, double * root, gsl_interval * x);
+static int falsepos_init (void * vstate, gsl_function * f, double * root, gsl_interval * x);
+static int falsepos_iterate (void * vstate, gsl_function * f, double * root, gsl_interval * x);
 
-int
+static int
 falsepos_init (void * vstate, gsl_function * f, double * root, gsl_interval * x)
 {
   falsepos_state_t * state = (falsepos_state_t *) vstate;
@@ -64,7 +62,7 @@ falsepos_init (void * vstate, gsl_function * f, double * root, gsl_interval * x)
 
 }
 
-int
+static int
 falsepos_iterate (void * vstate, gsl_function * f, double * root, gsl_interval * x)
 {
   falsepos_state_t * state = (falsepos_state_t *) vstate;

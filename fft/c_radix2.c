@@ -1,5 +1,3 @@
-#include "bitreverse.h"
-
 int
 FUNCTION(gsl_fft_complex,radix2_forward) (TYPE(gsl_complex_packed_array) data,
 					  const size_t stride, const size_t n)

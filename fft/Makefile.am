@@ -1,4 +1,4 @@
-pkglib_LIBRARIES = libgslfft.a 
+noinst_LTLIBRARIES = libgslfft.la 
 
 check_PROGRAMS = test
 
@@ -12,26 +12,25 @@ hc_init.c hc_pass_2.c hc_pass_3.c \
 hc_pass_4.c hc_pass_5.c hc_pass_n.c hc_radix2.c hc_unpack.c \
 real.c real_init.c real_pass_2.c real_pass_3.c \
 real_pass_4.c real_pass_5.c real_pass_n.c real_radix2.c real_unpack.c \
-compare_source.c dft_source.c hc_main.c real_main.c \
+compare.h compare_source.c dft_source.c hc_main.c real_main.c \
 test_complex.c test_real.c test_trap.c urand.c
 
 INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../err
 
 TESTS = test
 
-test_LDADD = libgslfft.a ../err/libgslerr.a ../err/libgsltest.a ../utils/libutils.a
-#errs_LDADD = libgslfft.a ../err/libgslerr.a ../err/libgsltest.a
-#benchmark_LDADD = libgslfft.a ../err/libgslerr.a ../err/libgsltest.a
+test_LDADD = libgslfft.la ../err/libgslerr.la ../err/libgsltest.la ../utils/libutils.la
+#errs_LDADD = libgslfft.la ../err/libgslerr.la ../err/libgsltest.la
+#benchmark_LDADD = libgslfft.la ../err/libgslerr.la ../err/libgsltest.la
 
-test_DEPENDENCIES = libgslfft.a
+test_DEPENDENCIES = libgslfft.la
 
 test_SOURCES = test.c signals.c
 
-libgslfft_a_SOURCES = compare.c compare.h dft.c \
+libgslfft_la_SOURCES =  dft.c \
 gsl_dft_complex.h gsl_dft_complex_float.h \
 gsl_fft.h \
 gsl_fft_complex.h gsl_fft_complex_float.h \
 gsl_fft_halfcomplex.h gsl_fft_halfcomplex_float.h \
 gsl_fft_real.h gsl_fft_real_float.h \
-c.c c_float.c  factorize.c factorize.h bitreverse.h \
-hc.c real.c
+fft.c

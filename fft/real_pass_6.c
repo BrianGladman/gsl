@@ -1,8 +1,6 @@
-#include "real_pass.h"
- 
 /* NOT USED */
 
-void
+static void
 FUNCTION(fft_real,pass_6) (const BASE from[], BASE to[],
 			   const size_t product,
 			   const size_t n,

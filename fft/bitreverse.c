@@ -4,7 +4,7 @@
 #include "complex_internal.h"
 #include "bitreverse.h"
 
-int 
+static int 
 FUNCTION(fft_complex,bitreverse_order) (BASE data[], 
 					const size_t stride,
 					const size_t n,
@@ -44,7 +44,7 @@ FUNCTION(fft_complex,bitreverse_order) (BASE data[],
 }
 
 
-int 
+static int 
 FUNCTION(fft_real,bitreverse_order) (BASE data[], 
 				const size_t stride, 
 				const size_t n,

@@ -1,6 +1,4 @@
-#include "hc_pass.h"
-
-void
+static void
 FUNCTION(fft_halfcomplex,pass_2) (const BASE in[],
 				  const size_t istride,
 				  BASE out[],

@@ -1,7 +1,3 @@
-#include "complex_internal.h"
-#include "factorize.h"
-#include "bitreverse.h"
-
 int
 FUNCTION(gsl_fft_real,radix2_transform) (BASE data[], const size_t stride,  const size_t n)
 {

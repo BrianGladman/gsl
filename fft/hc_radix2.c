@@ -1,7 +1,3 @@
-#include "factorize.h"
-#include "complex_internal.h"
-#include "bitreverse.h"
-
 int
 FUNCTION(gsl_fft_halfcomplex,radix2_backward) (BASE data[],
 					       const size_t stride,

@@ -37,10 +37,10 @@ typedef struct
   }
 steffenson_state_t;
 
-int steffenson_init (void * vstate, gsl_function_fdf * fdf, double * root);
-int steffenson_iterate (void * vstate, gsl_function_fdf * fdf, double * root);
+static int steffenson_init (void * vstate, gsl_function_fdf * fdf, double * root);
+static int steffenson_iterate (void * vstate, gsl_function_fdf * fdf, double * root);
 
-int
+static int
 steffenson_init (void * vstate, gsl_function_fdf * fdf, double * root)
 {
   steffenson_state_t * state = (steffenson_state_t *) vstate;
@@ -60,7 +60,7 @@ steffenson_init (void * vstate, gsl_function_fdf * fdf, double * root)
 
 }
 
-int
+static int
 steffenson_iterate (void * vstate, gsl_function_fdf * fdf, double * root)
 {
   steffenson_state_t * state = (steffenson_state_t *) vstate;

@@ -28,6 +28,8 @@ void my_error_handler (const char *reason, const char *file,
 
 #define BASE_DOUBLE
 #include "templates_on.h"
+#include "compare_source.c"
+#include "bitreverse.c"
 #include "test_complex.c"
 #include "test_real.c"
 #include "test_trap.c"
@@ -36,6 +38,8 @@ void my_error_handler (const char *reason, const char *file,
 
 #define BASE_FLOAT
 #include "templates_on.h"
+#include "compare_source.c"
+#include "bitreverse.c"
 #include "test_complex.c"
 #include "test_real.c"
 #include "test_trap.c"

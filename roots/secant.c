@@ -33,10 +33,10 @@ typedef struct
   }
 secant_state_t;
 
-int secant_init (void * vstate, gsl_function_fdf * fdf, double * root);
-int secant_iterate (void * vstate, gsl_function_fdf * fdf, double * root);
+static int secant_init (void * vstate, gsl_function_fdf * fdf, double * root);
+static int secant_iterate (void * vstate, gsl_function_fdf * fdf, double * root);
 
-int
+static int
 secant_init (void * vstate, gsl_function_fdf * fdf, double * root)
 {
   secant_state_t * state = (secant_state_t *) vstate;
@@ -49,7 +49,7 @@ secant_init (void * vstate, gsl_function_fdf * fdf, double * root)
 
 }
 
-int
+static int
 secant_iterate (void * vstate, gsl_function_fdf * fdf, double * root)
 {
   secant_state_t * state = (secant_state_t *) vstate;

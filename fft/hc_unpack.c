@@ -1,5 +1,3 @@
-#include "complex_internal.h"
-
 int
 FUNCTION(gsl_fft_halfcomplex,unpack) (const BASE halfcomplex_coefficient[],
 				      BASE complex_coefficient[],

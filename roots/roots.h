@@ -3,12 +3,6 @@
 #ifndef __ROOTS_H__
 #define __ROOTS_H__
 
-/* Macros */
-
-#ifndef HAVE_ISINF
-#define isinf(x) (x == HUGE_VAL)
-#endif /* HAVE_ISINF */
-
 /* Call the pointed-to function with argument x, put its result in y, and barf
    if it returned something icky. */
 

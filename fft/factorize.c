@@ -4,7 +4,7 @@
 
 #include "factorize.h"
 
-int
+static int
 fft_complex_factorize (const size_t n,
 			   size_t *nf,
 			   size_t factors[])
@@ -19,7 +19,7 @@ fft_complex_factorize (const size_t n,
   return status;
 }
 
-int
+static int
 fft_halfcomplex_factorize (const size_t n,
 			       size_t *nf,
 			       size_t factors[])
@@ -31,7 +31,7 @@ fft_halfcomplex_factorize (const size_t n,
   return status;
 }
 
-int
+static int
 fft_real_factorize (const size_t n,
 			size_t *nf,
 			size_t factors[])
@@ -44,7 +44,7 @@ fft_real_factorize (const size_t n,
 }
 
 
-int
+static int
 fft_factorize (const size_t n,
 		   const size_t implemented_subtransforms[],
 		   size_t *n_factors,
@@ -129,7 +129,8 @@ fft_factorize (const size_t n,
 }
 
 
-int fft_binary_logn (const size_t n)
+static int 
+fft_binary_logn (const size_t n)
 {
   size_t ntest ;
   size_t binary_logn = 0 ;

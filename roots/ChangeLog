@@ -1,3 +1,9 @@
+Mon Feb 14 13:05:30 2000  Brian Gough  <bjg@network-theory.co.uk>
+
+	* removed definition of isinf macro (no longer needed)
+
+	* made all internal functions static
+
 Wed Nov  3 11:59:35 1999  Brian Gough  <bjg@network-theory.co.uk>
 
 	* fixed test failures

@@ -1,6 +1,4 @@
-#include "real_pass.h"
-
-void
+static void
 FUNCTION(fft_real,pass_n) (const BASE in[],
 			   const size_t istride,
 			   BASE out[],

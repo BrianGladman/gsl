@@ -1,5 +1,4 @@
 #include "bitreverse.h"
-#include "factorize.h"
 #include "signals.h"
 #include "compare.h"
 
@@ -207,7 +206,6 @@ void
 FUNCTION(test_complex,bitreverse_order) (size_t stride, size_t n) 
 {
   int status ;
-  int result ;
   size_t logn, i ;
 
   BASE * tmp = (BASE *) malloc (2 * n * stride * sizeof (BASE));
@@ -221,13 +219,7 @@ FUNCTION(test_complex,bitreverse_order) (size_t stride, size_t n)
 
   memcpy (tmp, data, 2 * n * stride * sizeof(BASE)) ;
 
-  result = fft_binary_logn(n) ;
-  
-  if (result == -1) {
-    abort() ;
-  } else {
-    logn = result ;
-  }
+  logn = 0 ; while (n > (1<<logn)) {logn++ ; } ;
 
   /* do a naive bit reversal as a baseline for testing the other routines */
 

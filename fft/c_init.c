@@ -1,5 +1,3 @@
-#include "factorize.h"
-
 TYPE(gsl_fft_wavetable_complex) * 
 FUNCTION(gsl_fft_complex,alloc) (size_t n)
 {
