@@ -1,5 +1,9 @@
 TODO  -- see also individual TODO files in each directory
 
+* Extend histogram routines as described in recent discussion
+
+* Add notes about gsl-config to documentation, usage.texi
+
 * Check that there are no conflicts when linking with Lapack. CBLAS, ATLAS
 
 * Add GPL copyright notices for each file
