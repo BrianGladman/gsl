@@ -190,7 +190,7 @@ broyden_set (void *vstate, gsl_multiroot_function * function, gsl_vector * x, gs
 
   gsl_multiroot_fdjacobian (function, x, f, GSL_SQRT_DBL_EPSILON, state->lu);
   gsl_la_decomp_LU_impl (state->lu, state->permutation, &signum);
-  gsl_la_invert_LU (state->lu, state->permutation, state->H);
+  gsl_la_invert_LU_impl (state->lu, state->permutation, state->H);
 
   for (i = 0; i < n; i++)
     for (j = 0; j < n; j++)
@@ -227,8 +227,6 @@ broyden_iterate (void *vstate, gsl_multiroot_function * function, gsl_vector * x
 
   size_t n = function->n;
 
-restart:
-
   /* p = H f */
 
   for (i = 0; i < n; i++)
@@ -262,33 +260,45 @@ new_step:
 
   iter++ ;
 
-  if (phi1 > phi0 && iter < 10)
+  if (phi1 > phi0 && iter < 10 && t > 0.1)
     {
       /* full step goes uphill, take a reduced step instead */
       
-      if (t > 0.1)
-        {
-          double theta = phi1 / phi0;
-          t *= (sqrt (1.0 + 6.0 * theta) - 1.0) / (3.0 * theta);
-          goto new_step;
-        }
-      else
-        {
-          /* need to recompute Jacobian */
-          int signum = 0;
-          
-          gsl_multiroot_fdjacobian (function, x, f, GSL_SQRT_DBL_EPSILON, lu);
-          gsl_la_decomp_LU_impl (lu, perm, &signum);
-          gsl_la_invert_LU (lu, perm, H);
-          
-          for (i = 0; i < n; i++)
-            for (j = 0; j < n; j++)
-              gsl_matrix_set(H,i,j,-gsl_matrix_get(H,i,j));
-
-          goto restart;
-        }
+      double theta = phi1 / phi0;
+      t *= (sqrt (1.0 + 6.0 * theta) - 1.0) / (3.0 * theta);
+      goto new_step;
     }
 
+  if (phi1 > phi0)
+    {
+      /* need to recompute Jacobian */
+      int signum = 0;
+      
+      gsl_multiroot_fdjacobian (function, x, f, GSL_SQRT_DBL_EPSILON, lu);
+      
+      for (i = 0; i < n; i++)
+        for (j = 0; j < n; j++)
+          gsl_matrix_set(lu,i,j,-gsl_matrix_get(lu,i,j));
+      
+      gsl_la_decomp_LU_impl (lu, perm, &signum);
+      gsl_la_invert_LU_impl (lu, perm, H);
+      
+      gsl_la_solve_LU_impl (lu, perm, f, p);          
+
+      t = 1;
+
+      for (i = 0; i < n; i++)
+        {
+          double pi = gsl_vector_get (p, i);
+          double xi = gsl_vector_get (x, i);
+          gsl_vector_set (x_trial, i, xi + t * pi);
+        }
+      
+      GSL_MULTIROOT_FN_EVAL (function, x_trial, fnew);
+      
+      phi1 = enorm (fnew);
+    }
+  
   /* y = f' - f */
 
   for (i = 0; i < n; i++)

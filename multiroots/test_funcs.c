@@ -5,6 +5,16 @@
 
 #include "test_funcs.h"
 
+/* For information on testing see the following paper,
+
+   J.J More, B.S. Garbow, K.E. Hillstrom, "Testing Unconstrained
+   Optimization Software", ACM Transactions on Mathematical Software,
+   Vol 7, No 1, (1981) p 17-41
+
+   */
+
+/* Rosenbrock Function */
+
 gsl_multiroot_function_fdf rosenbrock =
 {&rosenbrock_f,
  &rosenbrock_df,
@@ -65,6 +75,196 @@ rosenbrock_fdf (const gsl_vector * x, void *params,
   return GSL_SUCCESS;
 }
 
+
+/* Freudenstein and Roth function */
+
+gsl_multiroot_function_fdf roth =
+{&roth_f,
+ &roth_df,
+ &roth_fdf,
+ 2, 0};
+
+void
+roth_initpt (gsl_vector * x)
+{
+  gsl_vector_set (x, 0, 0.5);  /* changed from the value in the paper */
+  gsl_vector_set (x, 1, 2.0);  /* otherwise the problem is too hard */
+}
+
+int
+roth_f (const gsl_vector * x, void *params, gsl_vector * f)
+{
+  double x0 = gsl_vector_get (x, 0);
+  double x1 = gsl_vector_get (x, 1);
+
+  double y0 = -13.0 + x0 + ((5.0 - x1)*x1 - 2.0)*x1;
+  double y1 = -29.0 + x0 + ((x1 + 1.0)*x1 - 14.0)*x1;
+
+  gsl_vector_set (f, 0, y0);
+  gsl_vector_set (f, 1, y1);
+
+  params = 0;			/* avoid warning about unused parameters */
+
+  return GSL_SUCCESS;
+}
+
+int
+roth_df (const gsl_vector * x, void *params, gsl_matrix * df)
+{
+  double x1 = gsl_vector_get (x, 1);
+
+  double df00 = 1;
+  double df01 = -3 * x1 * x1 + 10 * x1 - 2;
+  double df10 = 1;
+  double df11 = 3 * x1 * x1 + 2 * x1 - 14;
+
+  gsl_matrix_set (df, 0, 0, df00);
+  gsl_matrix_set (df, 0, 1, df01);
+  gsl_matrix_set (df, 1, 0, df10);
+  gsl_matrix_set (df, 1, 1, df11);
+
+  params = 0;			/* avoid warning about unused parameters */
+
+  return GSL_SUCCESS;
+}
+
+int
+roth_fdf (const gsl_vector * x, void *params,
+		gsl_vector * f, gsl_matrix * df)
+{
+  roth_f (x, params, f);
+  roth_df (x, params, df);
+
+  return GSL_SUCCESS;
+}
+
+
+
+/* Powell badly scaled function */
+
+gsl_multiroot_function_fdf powellscal =
+{&powellscal_f,
+ &powellscal_df,
+ &powellscal_fdf,
+ 2, 0};
+
+void
+powellscal_initpt (gsl_vector * x)
+{
+  gsl_vector_set (x, 0, 0.0);
+  gsl_vector_set (x, 1, 1.0);
+}
+
+int
+powellscal_f (const gsl_vector * x, void *params, gsl_vector * f)
+{
+  double x0 = gsl_vector_get (x, 0);
+  double x1 = gsl_vector_get (x, 1);
+
+  double y0 = 10000.0 * x0 * x1 - 1.0;
+  double y1 = exp (-x0) + exp (-x1) - 1.0001;
+
+  gsl_vector_set (f, 0, y0);
+  gsl_vector_set (f, 1, y1);
+
+  params = 0;			/* avoid warning about unused parameters */
+
+  return GSL_SUCCESS;
+}
+
+int
+powellscal_df (const gsl_vector * x, void *params, gsl_matrix * df)
+{
+  double x0 = gsl_vector_get (x, 0);
+  double x1 = gsl_vector_get (x, 1);
+
+  double df00 = 10000.0 * x1, df01 = 10000.0 * x0;
+  double df10 = -exp (-x0), df11 = -exp (-x1);
+
+  gsl_matrix_set (df, 0, 0, df00);
+  gsl_matrix_set (df, 0, 1, df01);
+  gsl_matrix_set (df, 1, 0, df10);
+  gsl_matrix_set (df, 1, 1, df11);
+
+  params = 0;			/* avoid warning about unused parameters */
+
+  return GSL_SUCCESS;
+}
+
+int
+powellscal_fdf (const gsl_vector * x, void *params,
+		  gsl_vector * f, gsl_matrix * df)
+{
+  powellscal_f (x, params, f);
+  powellscal_df (x, params, df);
+
+  return GSL_SUCCESS;
+}
+
+
+/* Brown badly scaled function */
+
+gsl_multiroot_function_fdf brownscal =
+{&brownscal_f,
+ &brownscal_df,
+ &brownscal_fdf,
+ 2, 0};
+
+void
+brownscal_initpt (gsl_vector * x)
+{
+  gsl_vector_set (x, 0, 1.0);
+  gsl_vector_set (x, 1, 1.0);
+}
+
+int
+brownscal_f (const gsl_vector * x, void *params, gsl_vector * f)
+{
+  double x0 = gsl_vector_get (x, 0);
+  double x1 = gsl_vector_get (x, 1);
+
+  double y0 = x0 - 1e6;
+  double y1 = x0 * x1 - 2;
+
+  gsl_vector_set (f, 0, y0);
+  gsl_vector_set (f, 1, y1);
+
+  params = 0;			/* avoid warning about unused parameters */
+
+  return GSL_SUCCESS;
+}
+
+int
+brownscal_df (const gsl_vector * x, void *params, gsl_matrix * df)
+{
+  double x0 = gsl_vector_get (x, 0);
+  double x1 = gsl_vector_get (x, 1);
+
+  double df00 = 1.0, df01 = 0.0;
+  double df10 = 1.0, df11 = 1.0;
+
+  gsl_matrix_set (df, 0, 0, df00);
+  gsl_matrix_set (df, 0, 1, df01);
+  gsl_matrix_set (df, 1, 0, df10);
+  gsl_matrix_set (df, 1, 1, df11);
+
+  params = 0;			/* avoid warning about unused parameters */
+
+  return GSL_SUCCESS;
+}
+
+int
+brownscal_fdf (const gsl_vector * x, void *params,
+		  gsl_vector * f, gsl_matrix * df)
+{
+  brownscal_f (x, params, f);
+  brownscal_df (x, params, df);
+
+  return GSL_SUCCESS;
+}
+
+
+/* Powell Singular Function */
 
 gsl_multiroot_function_fdf powellsing =
 {&powellsing_f,
@@ -153,65 +353,7 @@ powellsing_fdf (const gsl_vector * x, void *params,
 }
 
 
-gsl_multiroot_function_fdf powellscal =
-{&powellscal_f,
- &powellscal_df,
- &powellscal_fdf,
- 2, 0};
-
-void
-powellscal_initpt (gsl_vector * x)
-{
-  gsl_vector_set (x, 0, 0.0);
-  gsl_vector_set (x, 1, 1.0);
-}
-
-int
-powellscal_f (const gsl_vector * x, void *params, gsl_vector * f)
-{
-  double x0 = gsl_vector_get (x, 0);
-  double x1 = gsl_vector_get (x, 1);
-
-  double y0 = 10000.0 * x0 * x1 - 1.0;
-  double y1 = exp (-x0) + exp (-x1) - 1.0001;
-
-  gsl_vector_set (f, 0, y0);
-  gsl_vector_set (f, 1, y1);
-
-  params = 0;			/* avoid warning about unused parameters */
-
-  return GSL_SUCCESS;
-}
-
-int
-powellscal_df (const gsl_vector * x, void *params, gsl_matrix * df)
-{
-  double x0 = gsl_vector_get (x, 0);
-  double x1 = gsl_vector_get (x, 1);
-
-  double df00 = 10000.0 * x1, df01 = 10000.0 * x0;
-  double df10 = -exp (-x0), df11 = -exp (-x1);
-
-  gsl_matrix_set (df, 0, 0, df00);
-  gsl_matrix_set (df, 0, 1, df01);
-  gsl_matrix_set (df, 1, 0, df10);
-  gsl_matrix_set (df, 1, 1, df11);
-
-  params = 0;			/* avoid warning about unused parameters */
-
-  return GSL_SUCCESS;
-}
-
-int
-powellscal_fdf (const gsl_vector * x, void *params,
-		  gsl_vector * f, gsl_matrix * df)
-{
-  powellscal_f (x, params, f);
-  powellscal_df (x, params, df);
-
-  return GSL_SUCCESS;
-}
-
+/* Wood function */
 
 gsl_multiroot_function_fdf wood =
 {&wood_f,

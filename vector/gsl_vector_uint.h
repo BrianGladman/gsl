@@ -44,6 +44,8 @@ int gsl_vector_uint_copy (gsl_vector_uint * dest, const gsl_vector_uint * src);
 
 int gsl_vector_uint_swap (gsl_vector_uint * v, size_t i, size_t j);
 
+int gsl_vector_uint_isnull (gsl_vector_uint * v);
+
 extern int gsl_check_range;
 
 #ifdef HAVE_INLINE

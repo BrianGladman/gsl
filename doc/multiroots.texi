@@ -14,6 +14,7 @@ multidimensional root finding functions and related declarations.
 @menu
 * Multidimensional Root Finding Overview::  
 * Multidimensional Root Finding - Initializing the Solver::  
+* Multidimensional Root Finding - Providing the function to solve::  
 * Multidimensional Root Finding References and Further Reading::  
 @end menu
 
@@ -142,6 +143,149 @@ printf("s is a '%s' solver\n", gsl_multiroot_fdfsolver_name (s)) ;
 @noindent
 would print something like @code{s is a 'newton' solver}
 @end deftypefun
+
+@node Multidimensional Root Finding - Providing the function to solve
+@section Providing the function to solve
+@cindex multidimensional root finding, providing a function to solve
+
+You must provide a continuous function of n variables for the root
+finders to operate on, and, sometimes, its first derivative. In order to
+allow for general parameters the functions are defined by the following
+data types:
+
+@deftp {Data Type} gsl_multiroot_function 
+This data type defines a general function with parameters. 
+
+@table @code
+@item int (* f) (const gsl_vector * @var{x}, void * @var{params}, gsl_vector * @var{f})
+this function should store the vector result
+@c{$f(x,\hbox{\it params})$}
+@math{f(x,params)} in $var{f} for argument @var{x} and parameters @var{params},
+returning an appropriate error code if the function cannot be computed.
+
+@item size_t @var{n}
+the dimension of the system, i.e. the number of components of the
+vectors @var{x} and @var{f}
+
+@item void * @var{params}
+a pointer to the parameters of the function
+@end table
+
+Here is an example for the general quadratic function,
+
+@tex
+\beforedisplay
+$$
+f(x) = a x^2 + b x + c
+$$
+\afterdisplay
+@end tex
+@ifinfo
+@example
+f(x) = a x^2 + b x + c
+@end example
+@end ifinfo
+
+@noindent
+with @math{a = 3}, @math{b = 2}, @math{c = 1}. The following code
+defines a @code{gsl_function} @code{F} which you could pass to a root
+finder:
+
+@example
+struct my_f_params @{ double a ; double b ; double c ; @} ;
+
+double
+my_f (double x, void * p) @{
+   struct my_f_params * params = *(struct my_f_params *)p ;
+   double a = (params->a) ;
+   double b = (params->b) ;
+   double c = (params->c) ;
+
+   return  (a * x + b) * x + c ;
+@}
+
+gsl_function F ;
+struct my_f_params params = @{ 3.0, 2.0, 1.0 @};
+
+F.function = &my_f ;
+F.params = &params ;
+@end example
+
+The function @math{f(x)} can be evaluated using the following macro,
+
+@example
+#define GSL_FN_EVAL(F,x) (*((F)->function))(x,(F)->params)
+@end example
+
+@end deftp
+
+@deftp {Data Type} gsl_multiroot_function_fdf
+This data type defines a general function with parameters and its first
+derivative.
+
+@table @code
+@item double (* @var{f}) (double @var{x}, void * @var{params})
+this function should return the value of
+@c{$f(x,\hbox{\it params})$}
+@math{f(x,params)} for argument @var{x} and parameters @var{params}
+
+@item double (* @var{df}) (double @var{x}, void * @var{params})
+this function should return the value of the derivative of @var{f} with
+respect to @var{x},
+@c{$f'(x,\hbox{\it params})$}
+@math{f'(x,params)}, for argument @var{x} and parameters @var{params}
+
+@item void (* @var{fdf}) (double @var{x}, void * @var{params}, double * @var{f}, double * @var{d}f)
+this function should set the values of the function @var{f} to 
+@c{$f(x,\hbox{\it params})$}
+@math{f(x,params)}
+and its derivative @var{df} to
+@c{$f'(x,\hbox{\it params})$}
+@math{f'(x,params)} 
+for argument @var{x} and parameters @var{params}. This function provides
+an optimization of the separate functions for @math{f(x)} and @math{f'(x)} -- 
+it is always faster to compute the function and its derivative at the
+same time. 
+
+@item void * @var{params}
+a pointer to the parameters of the function
+@end table
+
+Here is an example where 
+@c{$f(x) = \exp(2x)$}
+@math{f(x) = 2\exp(2x)}:
+
+@example
+double
+my_f (double x, void * params)
+@{
+   return exp (2 * x);
+@}
+
+double
+my_df (double x, void * params)
+@{
+   return 2 * exp (2 * x);
+@}
+
+void
+my_fdf (double x, void * params, double * f, double * df)
+@{
+   double t = exp (2 * x) ;
+
+   *f = t;
+   *df = 2 * t;   /* computing using existing values */
+@}
+
+gsl_function_fdf FDF ;
+
+FDF.f = &my_f ;
+FDF.df = &my_df ;
+FDF.fdf = &my_fdf ;
+FDF.params = 0 ;
+@end example
+
+@end deftp
 
 
 @node Multidimensional Root Finding References and Further Reading

@@ -7,17 +7,29 @@ int rosenbrock_f (const gsl_vector * x, void *params, gsl_vector * f);
 int rosenbrock_df (const gsl_vector * x, void *params, gsl_matrix * df);
 int rosenbrock_fdf (const gsl_vector * x, void *params,	gsl_vector * f, gsl_matrix * df);
 
-extern gsl_multiroot_function_fdf powellsing;
-void powellsing_initpt (gsl_vector * x);
-int powellsing_f (const gsl_vector * x, void *params, gsl_vector * f);
-int powellsing_df (const gsl_vector * x, void *params, gsl_matrix * df);
-int powellsing_fdf (const gsl_vector * x, void *params, gsl_vector * f, gsl_matrix * df);
+extern gsl_multiroot_function_fdf roth;
+void roth_initpt (gsl_vector * x);
+int roth_f (const gsl_vector * x, void *params, gsl_vector * f);
+int roth_df (const gsl_vector * x, void *params, gsl_matrix * df);
+int roth_fdf (const gsl_vector * x, void *params, gsl_vector * f, gsl_matrix * df);
+
+extern gsl_multiroot_function_fdf brownscal;
+void brownscal_initpt (gsl_vector * x);
+int brownscal_f (const gsl_vector * x, void *params, gsl_vector * f);
+int brownscal_df (const gsl_vector * x, void *params, gsl_matrix * df);
+int brownscal_fdf (const gsl_vector * x, void *params, gsl_vector * f, gsl_matrix * df);
 
 extern gsl_multiroot_function_fdf powellscal;
 void powellscal_initpt (gsl_vector * x);
 int powellscal_f (const gsl_vector * x, void *params, gsl_vector * f);
 int powellscal_df (const gsl_vector * x, void *params, gsl_matrix * df);
 int powellscal_fdf (const gsl_vector * x, void *params, gsl_vector * f, gsl_matrix * df);
+
+extern gsl_multiroot_function_fdf powellsing;
+void powellsing_initpt (gsl_vector * x);
+int powellsing_f (const gsl_vector * x, void *params, gsl_vector * f);
+int powellsing_df (const gsl_vector * x, void *params, gsl_matrix * df);
+int powellsing_fdf (const gsl_vector * x, void *params, gsl_vector * f, gsl_matrix * df);
 
 extern gsl_multiroot_function_fdf wood;
 void wood_initpt (gsl_vector * x);

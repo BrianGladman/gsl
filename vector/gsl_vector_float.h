@@ -44,6 +44,8 @@ int gsl_vector_float_copy (gsl_vector_float * dest, const gsl_vector_float * src
 
 int gsl_vector_float_swap (gsl_vector_float * v, size_t i, size_t j);
 
+int gsl_vector_float_isnull (gsl_vector_float * v);
+
 extern int gsl_check_range;
 
 #ifdef HAVE_INLINE

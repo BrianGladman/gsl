@@ -44,6 +44,8 @@ int gsl_vector_ulong_copy (gsl_vector_ulong * dest, const gsl_vector_ulong * src
 
 int gsl_vector_ulong_swap (gsl_vector_ulong * v, size_t i, size_t j);
 
+int gsl_vector_ulong_isnull (gsl_vector_ulong * v);
+
 extern int gsl_check_range;
 
 #ifdef HAVE_INLINE

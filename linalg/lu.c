@@ -219,9 +219,9 @@ gsl_la_solve_LU_impl(const gsl_matrix     * lu_matrix,
 
 
 int
-gsl_la_invert_LU (const gsl_matrix     * lu_matrix,
-                  const gsl_vector_int * permutation,
-                  gsl_matrix           * inverse)
+gsl_la_invert_LU_impl (const gsl_matrix     * lu_matrix,
+                       const gsl_vector_int * permutation,
+                       gsl_matrix           * inverse)
 {
   size_t i,j, n = lu_matrix->size1;
 
@@ -239,7 +239,7 @@ gsl_la_invert_LU (const gsl_matrix     * lu_matrix,
 
       if (status)
         {
-          GSL_ERROR ("failed to solve for column", status);
+          return status;
         }
     }
 

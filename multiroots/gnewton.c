@@ -140,8 +140,10 @@ new_step:
   
   phi1 = enorm (f);
 
-  if (phi1 > phi0)  /* full step goes uphill, take a reduced step instead */
+  if (phi1 > phi0 && t > 0.1)  
     {
+      /* full step goes uphill, take a reduced step instead */
+
       double theta = phi1 / phi0;
       t *= (sqrt(1.0 + 6.0 * theta) - 1.0) / (3.0 * theta);
       goto new_step;

@@ -21,6 +21,7 @@ BLAS routines.
 * Reading and writing vectors::  
 * Copying vectors::             
 * Exchanging elements::         
+* Vector properties::           
 * Example programs for vectors::  
 * The matrix struct::           
 * Matrix allocation::           
@@ -415,6 +416,13 @@ This function exchanges the @var{i}-th and @var{j}-th elements of the
 vector @var{v} in-place.
 @end deftypefun
 
+@node Vector properties
+@section Vector properties
+
+@deftypefun int gsl_vector_isnull (gsl_vector * @var{v})
+This function returns 1 if all the elements of the vector @var{v} are
+zero, and 0 otherwise.
+@end deftypefun
 
 @node Example programs for vectors
 @section Example programs for vectors
