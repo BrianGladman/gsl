@@ -40,20 +40,58 @@ void gsl_empty_error_handler (const char *reason, const char * file, int line);
 void gsl_message(const char * message, const char * file, int line, unsigned int mask);
 
 
+#ifdef GSL_THREAD_SAFE
+#define GSL_ERRHANDLER_OFF
+#define GSL_ERRHANDLER_DISABLE(x) x
+#else 
+#define GSL_ERRHANDLER_DISABLE(x) FIXME
+#endif
+
 /* call error handler, returning error status in POSIX fashion */
+#ifdef GSL_ERRHANDLER_OFF
+#define GSL_ERROR(reason, gsl_errno) \
+       do { \
+       return gsl_errno ; \
+       } while (0)
+/* call error handler, returning a specified value [non-POSIX behaviour] */
+#define GSL_ERROR_RETURN(reason, gsl_errno, value) \
+       do { \
+       GSL_WARNING(reason) ; \
+       return value ; \
+       } while (0)
+#else
 #define GSL_ERROR(reason, gsl_errno) \
        do { \
        gsl_error (reason, __FILE__, __LINE__) ; \
        return gsl_errno ; \
        } while (0)
-
 /* call error handler, returning a specified value [non-POSIX behaviour] */
 #define GSL_ERROR_RETURN(reason, gsl_errno, value) \
        do { \
+       GSL_WARNING(reason) ; \
        gsl_error (reason, __FILE__, __LINE__) ; \
        return value ; \
        } while (0)
+#endif /* GSL_ERRHANDLER_OFF */
 
+/* GSL library code can occasionally generate warnings, which
+ * are not intended to be fatal. Warnings can be turned off globally
+ * by defining the preprocessor constant GSL_WARNINGS_OFF. This
+ * turns off all warning level messages, but does not disable error
+ * handling in any way or turn off error messages.
+ *
+ * GSL_WARNING() is not intended for use in client code.
+ * Use GSL_MESSAGE() instead.
+ */
+
+#ifdef GSL_WARNINGS_OFF   /* throw away warnings */
+#define GSL_WARNING(warning) do { } while(0)
+#else                     /* output all warnings */
+#define GSL_WARNING(warning) \
+       do { \
+       gsl_warning (warning, __FILE__, __LINE__) ; \
+       } while (0)
+#endif
 
 
 /* Provide a general messaging service for client use.
@@ -89,25 +127,5 @@ enum {
        gsl_message (message, __FILE__, __LINE__, mask) ; \
        } while (0)
 #endif
-
-
-/* GSL library code can occasionally generate warnings, which
- * are not intended to be fatal. Warnings can be turned off globally
- * by defining the preprocessor constant GSL_WARNINGS_OFF. This
- * turns off all warning level messages, but does not disable error
- * handling in any way or turn off error messages.
- *
- * GSL_WARNING() is not intended for use in client code.
- * Use GSL_MESSAGE() instead.
- */
-#ifdef GSL_WARNINGS_OFF   /* throw away warnings */
-#define GSL_WARNING(warning) do { } while(0)
-#else                     /* output all warnings */
-#define GSL_WARNING(warning) \
-       do { \
-       gsl_warning (warning, __FILE__, __LINE__) ; \
-       } while (0)
-#endif
-
 
 #endif /* !_GSL_ERRNO_H */
