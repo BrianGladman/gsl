@@ -1,3 +1,9 @@
+Tue Apr 25 11:31:38 2000  Brian Gough  <bjg@network-theory.co.uk>
+
+	* test_source.c (FUNCTION): modified the tests so that they work
+ 	more cleanly with checkergcc when using long doubles. The trick
+ 	seems to be to avoid having any long doubles on the stack.
+
 Sat Apr 22 15:09:44 2000  Brian Gough  <bjg@network-theory.co.uk>
 
 	* init_source.c (FUNCTION): separated subvector functions into

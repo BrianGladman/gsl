@@ -85,12 +85,12 @@ FUNCTION (test, func) (void)
           {
             BASE k = FUNCTION(gsl_matrix, get) (m, i, j);
             if (k > exp_max) {
-              exp_max = k;
+              exp_max =  FUNCTION(gsl_matrix, get) (m, i, j);
               exp_imax = i;
               exp_jmax = j;
             }
             if (k < exp_min) {
-              exp_min = k;
+              exp_min =  FUNCTION(gsl_matrix, get) (m, i, j);
               exp_imin = i;
               exp_jmin = j;
             }

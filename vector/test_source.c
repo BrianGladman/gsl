@@ -8,7 +8,7 @@ FUNCTION (test, func) (void)
   TYPE (gsl_vector) * v;
   size_t i;
 
-  v = FUNCTION (gsl_vector, alloc) (N);
+  v = FUNCTION (gsl_vector, calloc) (N);
 
   gsl_test (v->data == 0, NAME (gsl_vector) "_alloc returns valid pointer");
   gsl_test (v->size != N, NAME (gsl_vector) "_alloc returns valid size");
@@ -109,14 +109,19 @@ FUNCTION (test, func) (void)
     for (i = 0; i < N; i++)
       {
         BASE k = FUNCTION(gsl_vector, get) (v, i) ;
-        if (k > exp_max) {
-          exp_max = k;
-          exp_imax = i;
-        }
         if (k < exp_min) {
-          exp_min = k;
+          exp_min = FUNCTION(gsl_vector, get) (v, i);
           exp_imin = i;
         }
+      }
+
+    for (i = 0; i < N; i++)
+      {
+        BASE k = FUNCTION(gsl_vector, get) (v, i) ;
+        if (k > exp_max) {
+          exp_max = FUNCTION(gsl_vector, get) (v, i) ;
+          exp_imax = i;
+        } 
       }
 
     {
