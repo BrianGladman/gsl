@@ -9,7 +9,12 @@ permutations. A permutation @math{p} is represented by an array of
 @math{v'_i = v_@{p_i@}}. 
 For example, the array @math{(0,1,3,2)} represents a permutation
 which exchanges the last two elements of a four element vector.
-The corresponding identity permutation is @math{(0,1,2,3)}. 
+The corresponding identity permutation is @math{(0,1,2,3)}.   
+
+Note that the permutations produced by the linear algebra routines
+correspond to exchanges of matrix columns, and so should be considered
+as applying to row-vectors in the form @math{v' = v P}, rather than
+column-vectors, when permuting the elements of a vector.
 
 The functions described in this chapter are defined in the header file
 @file{gsl_permutation.h}.
@@ -156,14 +161,21 @@ array @var{data} of size @var{n} with stride @var{stride}.
 
 @deftypefun int gsl_permute_vector (const gsl_permutation * @var{p}, gsl_vector * @var{v})
 This function applies the permutation @var{p} to the elements of the
-vector @var{v}. The permutation @var{p} and the vector @var{v} must have
-the same length.
+vector @var{v}, considered as a row-vector acted on by a permutation
+matrix from the right, @math{v' = v P}.  The @math{j}-th column of the
+permutation matrix @math{P} is given by the @math{p_j}-th column of the
+identity matrix. The permutation @var{p} and the vector @var{v} must
+have the same length.
 @end deftypefun
 
 @deftypefun int gsl_permute_vector_inverse (const gsl_permutation * @var{p}, gsl_vector * @var{v})
 This function applies the inverse of the permutation @var{p} to the
-elements of the vector @var{v}. The permutation @var{p} and the vector
-@var{v} must have
+elements of the vector @var{v}, considered as a row-vector acted on by
+an inverse permutation matrix from the right, @math{v' = v P^T}.  Note
+that for permutation matrices the inverse is the same as the transpose.
+The @math{j}-th column of the permutation matrix @math{P} is given by
+the @math{p_j}-th column of the identity matrix. The permutation @var{p}
+and the vector @var{v} must have the same length.
 @end deftypefun
 
 @node Reading and writing permutations
