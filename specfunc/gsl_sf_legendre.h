@@ -1,6 +1,6 @@
 /* specfunc/gsl_sf_legendre.h
  * 
- * Copyright (C) 1996, 1997, 1998, 1999, 2000 Gerard Jungman
+ * Copyright (C) 1996, 1997, 1998, 1999, 2000, 2001, 2002 Gerard Jungman
  * 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,14 +42,28 @@ __BEGIN_DECLS
  * exceptions: GSL_EDOM
  */
 int     gsl_sf_legendre_Pl_e(const int l, const double x, gsl_sf_result * result);
-double     gsl_sf_legendre_Pl(const int l, const double x);
+double  gsl_sf_legendre_Pl(const int l, const double x);
 
 
 /* P_l(x) for l=0,...,lmax; |x| <= 1
  *
  * exceptions: GSL_EDOM
  */
-int gsl_sf_legendre_Pl_array(const int lmax, const double x, double * result_array);
+int gsl_sf_legendre_Pl_array(
+  const int lmax, const double x,
+  double * result_array
+  );
+
+
+/* P_l(x) and P_l'(x) for l=0,...,lmax; |x| <= 1
+ *
+ * exceptions: GSL_EDOM
+ */
+int gsl_sf_legendre_Pl_deriv_array(
+  const int lmax, const double x,
+  double * result_array,
+  double * result_deriv_array
+  );
 
 
 /* P_l(x), l=1,2,3
@@ -106,7 +120,7 @@ double gsl_sf_legendre_Ql(const int l, const double x);
  * exceptions: GSL_EDOM, GSL_EOVRFLW
  */
 int     gsl_sf_legendre_Plm_e(const int l, const int m, const double x, gsl_sf_result * result);
-double     gsl_sf_legendre_Plm(const int l, const int m, const double x);
+double  gsl_sf_legendre_Plm(const int l, const int m, const double x);
 
 
 /* P_l^m(x)  m >= 0; l >= m; |x| <= 1.0
@@ -114,7 +128,22 @@ double     gsl_sf_legendre_Plm(const int l, const int m, const double x);
  *
  * exceptions: GSL_EDOM, GSL_EOVRFLW
  */
-int gsl_sf_legendre_Plm_array(const int lmax, const int m, const double x, double * result_array);
+int gsl_sf_legendre_Plm_array(
+  const int lmax, const int m, const double x,
+  double * result_array
+  );
+
+
+/* P_l^m(x)  and d(P_l^m(x))/dx;  m >= 0; lmax >= m; |x| <= 1.0
+ * l=|m|,...,lmax
+ *
+ * exceptions: GSL_EDOM, GSL_EOVRFLW
+ */
+int gsl_sf_legendre_Plm_deriv_array(
+  const int lmax, const int m, const double x,
+  double * result_array,
+  double * result_deriv_array
+  );
 
 
 /* P_l^m(x), normalized properly for use in spherical harmonics
@@ -130,16 +159,33 @@ int gsl_sf_legendre_Plm_array(const int lmax, const int m, const double x, doubl
  * exceptions: GSL_EDOM
  */
 int     gsl_sf_legendre_sphPlm_e(const int l, int m, const double x, gsl_sf_result * result);
-double     gsl_sf_legendre_sphPlm(const int l, const int m, const double x);
+double  gsl_sf_legendre_sphPlm(const int l, const int m, const double x);
 
 
-/* P_l^m(x), normalized properly for use in spherical harmonics
+/* sphPlm(l,m,x) values
  * m >= 0; l >= m; |x| <= 1.0
  * l=|m|,...,lmax
  *
  * exceptions: GSL_EDOM
  */
-int gsl_sf_legendre_sphPlm_array(const int lmax, int m, const double x, double * result_array);
+int gsl_sf_legendre_sphPlm_array(
+  const int lmax, int m, const double x,
+  double * result_array
+  );
+
+
+/* sphPlm(l,m,x) and d(sphPlm(l,m,x))/dx values
+ * m >= 0; l >= m; |x| <= 1.0
+ * l=|m|,...,lmax
+ *
+ * exceptions: GSL_EDOM
+ */
+int gsl_sf_legendre_sphPlm_deriv_array(
+  const int lmax, int m, const double x,
+  double * result_array,
+  double * result_deriv_array
+  );
+
 
 
 /* size of result_array[] needed for the array versions of Plm
