@@ -39,7 +39,7 @@ switch.c gsl_ran_switch.h: switch.xc makeswitch
 ## permits him/her to contribute to the project!!
 ##
 EXTRA_DIST= switch.xc makeswitch xxx-gen.xc xxx-state.xc \
-	makeam Makefile.ami
+	makeam Makefile.ami $(BUILT_SOURCES)
 
 CLEANFILES= tmp.out tmp.in
 
@@ -65,7 +65,7 @@ test-shuffle.o: shuffle.c
 
 bin_PROGRAMS= taus test-taus bench-taus mrg test-mrg bench-mrg cmrg test-cmrg bench-cmrg uni test-uni bench-uni uni32 test-uni32 bench-uni32 zuf test-zuf bench-zuf rand test-rand bench-rand gauss test-gauss bench-gauss poisson test-poisson bench-poisson test-switch 
 
-lib_LIBRARIES= libgslrandom.a libgslrantaus.a libgslranmrg.a libgslrancmrg.a libgslranuni.a libgslranuni32.a libgslranzuf.a libgslranrand.a
+lib_LIBRARIES= libgslrandom.a libgslrantaus.a libgslranmrg.a libgslrancmrg.a libgslranuni.a libgslranuni32.a libgslranzuf.a libgslranrand.a 
 
 libgslrantaus_a_SOURCES= taus.c taus-gen.c gauss.c 
 libgslranmrg_a_SOURCES= mrg.c mrg-gen.c gauss.c 
@@ -77,7 +77,7 @@ libgslranrand_a_SOURCES= rand.c rand-gen.c gauss.c
 
 libgslrandom_a_SOURCES= switch.c shuffle.c taus.c mrg.c cmrg.c uni.c uni32.c zuf.c rand.c gauss.c poisson.c 
 
-test_switch_DEPENDENCIES= gsl_ran_switch.h taus.o mrg.o cmrg.o uni.o uni32.o zuf.o rand.o 
+test_switch_DEPENDENCIES= gsl_ran_switch.h taus.h taus.o mrg.h mrg.o cmrg.h cmrg.o uni.h uni.o uni32.h uni32.o zuf.h zuf.o rand.h rand.o 
 test_switch_LDADD= taus.o mrg.o cmrg.o uni.o uni32.o zuf.o rand.o 
 taus_SOURCES=             ran.c taus.c
 taus_DEPENDENCIES=        taus-state.c taus.h taus-gen.o
