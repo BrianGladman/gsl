@@ -33,15 +33,19 @@ size_t c63[20][3] = {
   { 2, 3, 4 },  { 2, 3, 5 },  { 2, 4, 5 },  { 3, 4, 5 }
 } ;
 
+void my_error_handler (const char *reason, const char *file, int line, int err);
+
 
 int 
 main (void)
 {
   size_t i, j;
-  int status = 0;
+  int status = 0, s;
   gsl_combination * c ;
 
   c = gsl_combination_alloc (6,3);
+
+  /* Test combinations in forward order */
 
   gsl_combination_init_first (c);
   
@@ -58,6 +62,12 @@ main (void)
         {
           status |= (c->data[j] != c63[i][j]);
         }
+
+      {
+        int s1 = gsl_combination_valid (c);
+        gsl_test (s1, "gsl_combination_valid (%u)", i);
+      }
+
       i++;
     }
   while (gsl_combination_next(c) == GSL_SUCCESS);
@@ -73,6 +83,12 @@ main (void)
     }
   gsl_test(status, "gsl_combination_next on the last combination");
 
+  {
+    int s1 = gsl_combination_valid (c);
+    gsl_test (s1, "gsl_combination_valid on the last combination");
+  }
+
+  /* Now test combinations in reverse order */
 
   gsl_combination_init_last (c);
 
@@ -91,6 +107,11 @@ main (void)
         {
           status |= (c->data[j] != c63[i][j]);
         }
+
+      {
+        int s1 = gsl_combination_valid (c);
+        gsl_test (s1, "gsl_combination_valid (%u)", i);
+      }
     }
   while (gsl_combination_prev(c) == GSL_SUCCESS);
 
@@ -104,6 +125,12 @@ main (void)
       status |= (c->data[j] != c63[0][j]);
     }
   gsl_test(status, "gsl_combination_prev on the first combination");
+
+  {
+    int s1 = gsl_combination_valid (c);
+    gsl_test (s1, "gsl_combination_valid on the first combination");
+  }
+
   gsl_combination_free (c);
 
   c = gsl_combination_calloc(7, 0);
@@ -144,5 +171,35 @@ main (void)
   gsl_test(status, "gsl_combination 7 choose 7");
   gsl_combination_free (c);
 
+  c = gsl_combination_calloc(6, 3);
+
+  gsl_set_error_handler (&my_error_handler);
+
+  c->data[0] = 1;
+  c->data[1] = 1;
+  c->data[2] = 2;
+  s = gsl_combination_valid (c);
+  gsl_test (!s, "gsl_combination_valid on an invalid combination (1,1,2)");
+
+  c->data[0] = 2;
+  c->data[1] = 1;
+  c->data[2] = 0;
+  s = gsl_combination_valid (c);
+  gsl_test (!s, "gsl_combination_valid on an invalid combination (2,1,0)");
+
+  c->data[0] = 1;
+  c->data[1] = 2;
+  c->data[2] = 0;
+  s = gsl_combination_valid (c);
+  gsl_test (!s, "gsl_combination_valid on an invalid combination (1,2,0)");
+
+  gsl_combination_free (c);
+
   exit (gsl_test_summary());
+}
+
+void
+my_error_handler (const char *reason, const char *file, int line, int err)
+{
+  if (0) printf ("(caught [%s:%d: %s (%d)])\n", file, line, reason, err) ;
 }

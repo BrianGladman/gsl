@@ -240,3 +240,5 @@ for random number generators
 
 * Peter Verveer <verveer@embl-heidelberg.de> improvement to memory
 usage of MINPACK routines
+
+* Mario Pernici <Mario.Pernici@mi.infn.it> bug fix for gsl_combination_valid

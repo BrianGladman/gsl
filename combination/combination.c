@@ -73,18 +73,20 @@ gsl_combination_valid (gsl_combination * c)
     }
   for (i = 0; i < k; i++) 
     {
-      if (c->data[i] >= n)
+      const size_t ci = c->data[i];
+
+      if (ci >= n)
         {
           GSL_ERROR("combination index outside range", GSL_FAILURE) ;
         }
 
       for (j = 0; j < i; j++)
         {
-          if (c->data[i] == c->data[j])
+          if (c->data[j] == ci)
             {
               GSL_ERROR("duplicate combination index", GSL_FAILURE) ;
             }
-          if (c->data[i] > c->data[j])
+          if (c->data[j] > ci)
             {
               GSL_ERROR("combination index no in increasing order",
 			GSL_FAILURE) ;
