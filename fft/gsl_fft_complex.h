@@ -66,9 +66,9 @@ int gsl_fft_complex_inverse (double data[], size_t stride, size_t n,
 			     const gsl_fft_complex_wavetable * wavetable);
 
 int
-gsl_fft_complex (double data[], size_t stride, size_t n,
-		 const gsl_fft_complex_wavetable * wavetable,
-		 gsl_fft_direction sign);
+gsl_fft_complex_transform (double data[], size_t stride, size_t n,
+			   const gsl_fft_complex_wavetable * wavetable,
+			   gsl_fft_direction sign);
 
 int
 gsl_fft_complex_init (size_t n,

@@ -6,9 +6,9 @@
 #include <gsl_errno.h>
 #include <gsl_complex.h>
 
-#include <gsl_fft_complex.h>
+#include <gsl_fft_complex_float.h>
 
-#define BASE_DOUBLE
+#define BASE_FLOAT
 #include "templates_on.h"
 #include "fft_complex.h"
 #include "c_init.c"
@@ -21,4 +21,5 @@
 #include "c_pass_7.c"
 #include "c_pass_n.c"
 #include "templates_off.h"
-#undef  BASE_DOUBLE
+#undef  BASE_FLOAT
+

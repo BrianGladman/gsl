@@ -1,16 +1,6 @@
-#include <config.h>
-#include <stddef.h>
-#include <stdlib.h>
-#include <math.h>
-
-#include <gsl_errno.h>
-#include <gsl_complex.h>
-#include <gsl_fft_complex.h>
-
-#include "factorize.h"
-
 int
-gsl_fft_complex_init (size_t n, gsl_fft_complex_wavetable * wavetable)
+FUNCTION(gsl_fft_complex,init) (size_t n, 
+				TYPE2(gsl_fft_complex,wavetable) * wavetable)
 {
   int status;
   size_t n_factors;
@@ -22,7 +12,7 @@ gsl_fft_complex_init (size_t n, gsl_fft_complex_wavetable * wavetable)
 
   wavetable->n = n;
 
-  status = gsl_fft_complex_factorize (n, &n_factors, wavetable->factor);
+  status = FUNCTION(gsl_fft_complex,factorize) (n, &n_factors, wavetable->factor);
 
   if (status)
     {
@@ -31,7 +21,7 @@ gsl_fft_complex_init (size_t n, gsl_fft_complex_wavetable * wavetable)
 
   wavetable->nf = n_factors;
 
-  status = gsl_fft_complex_generate_wavetable (n, wavetable);
+  status = FUNCTION(gsl_fft_complex,generate_wavetable) (n, wavetable);
 
   if (status)
     {
@@ -42,8 +32,8 @@ gsl_fft_complex_init (size_t n, gsl_fft_complex_wavetable * wavetable)
 }
 
 int
-gsl_fft_complex_generate_wavetable (size_t n,
-				    gsl_fft_complex_wavetable * wavetable)
+FUNCTION(gsl_fft_complex,generate_wavetable) (size_t n,
+					      TYPE2(gsl_fft_complex,wavetable) * wavetable)
 {
   size_t i;
   double d_theta;
@@ -98,24 +88,25 @@ gsl_fft_complex_generate_wavetable (size_t n,
   return 0;
 }
 
-gsl_fft_complex_wavetable * 
-gsl_fft_complex_wavetable_alloc (size_t n)
+TYPE2(gsl_fft_complex,wavetable) * 
+FUNCTION(gsl_fft_complex,wavetable_alloc) (size_t n)
 {
-  gsl_fft_complex_wavetable * w ;
+  TYPE2(gsl_fft_complex,wavetable) * w ;
 
   if (n == 0)
     {
       GSL_ERROR_RETURN ("length n must be positive integer", GSL_EDOM, 0);
     }
 
-  w = (gsl_fft_complex_wavetable *) malloc(sizeof(gsl_fft_complex_wavetable));
+  w = (TYPE2(gsl_fft_complex,wavetable) *) 
+    malloc(sizeof(TYPE2(gsl_fft_complex,wavetable)));
 
   if (w == NULL)
     {
       GSL_ERROR_RETURN ("failed to allocate struct", GSL_ENOMEM, 0);
     }
 
-  w->scratch = (double *) malloc (n * 2 * sizeof (double));
+  w->scratch = (BASE *) malloc (2 * n * sizeof (BASE));
 
   if (w->scratch == NULL)
     {
@@ -139,7 +130,7 @@ gsl_fft_complex_wavetable_alloc (size_t n)
 }
 
 void
-gsl_fft_complex_wavetable_free (gsl_fft_complex_wavetable * wavetable)
+FUNCTION(gsl_fft_complex,wavetable_free) (TYPE2(gsl_fft_complex,wavetable) * wavetable)
 {
 
   /* release scratch space and trigonometric lookup tables */
@@ -154,8 +145,8 @@ gsl_fft_complex_wavetable_free (gsl_fft_complex_wavetable * wavetable)
 }
 
 int
-gsl_fft_complex_wavetable_cpy (gsl_fft_complex_wavetable * dest,
-			       gsl_fft_complex_wavetable * src)
+FUNCTION(gsl_fft_complex,wavetable_cpy) (TYPE2(gsl_fft_complex,wavetable) * dest,
+					 TYPE2(gsl_fft_complex,wavetable) * src)
 {
   int i, n, nf ;
 
@@ -167,7 +158,7 @@ gsl_fft_complex_wavetable_cpy (gsl_fft_complex_wavetable * dest,
   n = dest->n ;
   nf = dest->nf ;
 
-  memcpy(dest->trig, src->trig, n * sizeof (gsl_complex)) ;
+  memcpy(dest->trig, src->trig, n * sizeof (double)) ;
   
   for (i = 0 ; i < nf ; i++)
     {

@@ -1,24 +1,16 @@
-#include <config.h>
-#include <math.h>
-
-#include <gsl_complex.h>
-#include <gsl_fft_complex.h>
-
-#include "fft_complex.h"
-
 int
-fft_complex_pass_6 (const double in[],
-		    const size_t istride,
-		    double out[],
-		    const size_t ostride,
-		    const gsl_fft_direction sign,
-		    const size_t product,
-		    const size_t n,
-		    const gsl_complex twiddle1[],
-		    const gsl_complex twiddle2[],
-		    const gsl_complex twiddle3[],
-		    const gsl_complex twiddle4[],
-		    const gsl_complex twiddle5[])
+FUNCTION(fft_complex,pass_6) (const BASE in[],
+			      const size_t istride,
+			      BASE out[],
+			      const size_t ostride,
+			      const gsl_fft_direction sign,
+			      const size_t product,
+			      const size_t n,
+			      const gsl_complex twiddle1[],
+			      const gsl_complex twiddle2[],
+			      const gsl_complex twiddle3[],
+			      const gsl_complex twiddle4[],
+			      const gsl_complex twiddle5[])
 {
 
   size_t i = 0, j = 0;

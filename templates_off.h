@@ -22,6 +22,10 @@
 #undef TYPE
 #endif
 
+#ifdef TYPE2
+#undef TYPE2
+#endif
+
 #undef BASE
 #undef SHORT
 #undef ATOMIC

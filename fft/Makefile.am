@@ -4,7 +4,10 @@ check_PROGRAMS = test test_trap test_radix2 benchmark errs
 
 include_HEADERS = gsl_fft.h gsl_fft_complex.h gsl_fft_halfcomplex.h gsl_fft_real.h gsl_dft_complex.h
 
-noinst_HEADERS = fft_complex.h fft_halfcomplex.h fft_real.h fft_signals.h
+noinst_HEADERS = fft_complex.h fft_halfcomplex.h fft_real.h \
+fft_signals.h c_main.c c_init.c c_pass_2.c c_pass_3.c c_pass_4.c c_pass_5.c \
+c_pass_6.c c_pass_7.c c_pass_n.c c_radix2.c
+
 
 INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../vector -I$(srcdir)/../err
 
@@ -34,17 +37,8 @@ gsl_dft_complex.h \
 gsl_fft.h \
  \
 c.c \
+c_float.c \
 gsl_fft_complex.h \
-c_init.c \
-c_pass_2.c \
-c_pass_3.c \
-c_pass_4.c \
-c_pass_5.c \
-c_pass_6.c \
-c_pass_7.c \
-c_pass_n.c \
-c_radix2.c \
- \
 factorize.c \
 factorize.h \
 bitreverse.c \
