@@ -235,9 +235,9 @@ gsl_complex_float
 gsl_matrix_complex_float_get(const gsl_matrix_complex_float * m, 
 		     const size_t i, const size_t j)
 {
+#ifndef GSL_RANGE_CHECK_OFF
   const gsl_complex_float zero = {{0,0}};
 
-#ifndef GSL_RANGE_CHECK_OFF
   if (i >= m->size1)
     {
       GSL_ERROR_VAL("first index out of range", GSL_EINVAL, zero) ;
