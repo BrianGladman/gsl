@@ -1,0 +1,29 @@
+#! /bin/sh 
+## $Id$
+## Convert template xxx-switch.xc and generic header gsl_ran.h
+## to actual switch.c/gsl_ran_switch.h
+## source code by replacing XXX section with specific mrg, crmg, etc.
+
+fave=$1
+list=$*
+
+echo "void gsl_ran_use_default(void);" >> gsl_ran_switch.h
+for xxx in $list; do
+    echo "void gsl_ran_use_$xxx(void);" >> gsl_ran_switch.h
+done
+
+sed -n -e '/include..XXX.h./,$p' < xxx-switch.xc > tmp.xxx
+sed    -e '/include..XXX.h./,$d' \
+       -e s/YYY/$fave/           < xxx-switch.xc > switch.c
+
+for xxx in $list; do
+    sed s/XXX/$xxx/g tmp.xxx >> switch.c
+done
+
+/bin/rm tmp.xxx
+
+##
+
+
+
+
