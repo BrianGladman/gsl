@@ -28,24 +28,49 @@ and related declarations.
 @section Root Finding Overview
 @cindex root finding, overview
 
+Root finding algorithms can be divided into two classes, those which are
+guaranteed to converge and those which converge only if started "close
+enough" to a root.  Algorithms with guaranteed convergence start with a
+bounded region known to contain a root. The size of this bounded region
+is reduced iteratively until it is reaches a desired tolerance. This
+provides a rigorous error estimate for the location of the root. 
+
+Algorithms without guaranteed convergence sacrifice rigorous error
+bounds for speed.  By approximating the behavior of a function in the
+vicinity of a root they attempt to find a higher order improvement of an
+initial guess.  This technique is often referred to as "root
+polishing". When the behavior of the function is known to be compatible
+with the algorithm and a good initial guess is available, perhaps from a
+systematic approximation, these algorithms can provide rapid
+convergence.
+
+Note that root finding functions can only search for one root at a time.
+When there are several roots in the search area, the first root to be
+found will be returned; however it is difficult to predict which of the
+roots this will be. @emph{In most cases, no error will be reported if
+you try to find a root in an area where there is more than one.}
+
+Care must be taken when a function may have a root of second-order or
+higher multiplicity (such as @math{f(x) = (x-c)^2} or @math{f(x) =
+(x-c)^3}).  Routines which maintain a strict bound on the root should
+not have problems with odd-multiplicity roots (e.g. cubic, quintic,
+@dots), since they make use only of the occurrence zero-crossings and
+not the behavior of the function. However it is impossible to use these
+routines for even-multiplicity roots because they require a bound on the
+initial root which guarantees a zero-crossing (below zero at one end of
+the bound and above zero at the other end). Roots with even-multiplicity
+do not cross zero, but only touch it instantaneously. In general these
+functions need to be approached on a case-by-case basis using knowledge
+of the algorithm to be used. Root polishing algorithms generally work
+with higher multiplicity roots but with a reduced rate of convergence.
+
 While it is not absolutely required that @math{f} have a root within the
 search region, numerical root finding functions should not be used
 haphazardly to check for the @emph{existence} of roots. There are better
 ways to do this! Because it is so easy to create situations where
 numerical root finders go awry, it is a bad idea to throw a root finder
-at a function you do not know much about.
-
-Note that  root finding functions can only search for one root at a
-time. While their behavior in cases of multiple roots (several roots in
-the search area, not one root of degree greater than 1) is
-deterministic, it depends entirely on the algorithm and the function
-under search and is rather complex; it is therefore difficult to
-predict. @emph{In most cases, no error will be reported if you try to
-find a root in an area where there is more than one.}
-
-GSL provides three high level root finding functions. They are simple to
-use, robust, and adequate for most tasks, but certain situations require
-more control than the high level root finding functions provide.
+at a function you do not know much about. In general it is best to
+examine the function visually by plotting before searching for a root.
 
 @node Root Finder Exit Values
 @section Root Finder Exit Values
