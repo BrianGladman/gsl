@@ -558,6 +558,8 @@ over a range of 40 timesteps. The initial guess for the parameters is
 chosen as (0.0, 1.0, 0.0).
 
 @example
+#define N 40
+
 int
 main (void)
 @{
@@ -567,12 +569,12 @@ main (void)
   int status;
   size_t i, iter = 0;
 
-  const size_t n = 40;
+  const size_t n = N;
   const size_t p = 3;
 
   gsl_matrix *covar = gsl_matrix_alloc (p, p);
 
-  double y[n], sigma[n];
+  double y[N], sigma[N];
 
   struct data d = @{ n, y, sigma@};
   
