@@ -25,7 +25,8 @@ enum {
   GSL_EROUND   = 18,  /* failed because of roundoff error */
   GSL_EBADLEN  = 19,  /* matrix, vector lengths are not conformant */
   GSL_ESING    = 20,  /* apparent singularity detected */
-  GSL_EUNSUP   = 21   /* requested feature is not supported by the hardware */
+  GSL_EUNSUP   = 21,  /* requested feature is not supported by the hardware */
+  GSL_EUNIMPL  = 22   /* requested feature not (yet) implemented */
 } ;
 
 /* just to make things slightly clearer */

@@ -52,6 +52,8 @@ gsl_strerror (const int gsl_errno)
       return "singularity or extremely bad function behavior detected" ;
     case GSL_EUNSUP:
       return "the required feature is not supported by this hardware platform";
+    case GSL_EUNIMPL:
+      return "the requested feature is not (yet) implemented";
     default:
       return "unknown error code" ;
     }
