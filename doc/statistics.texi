@@ -438,7 +438,7 @@ This function returns the square root of the corresponding variance
 function @code{gsl_stats_wvariance_m} above.
 @end deftypefn
 
-@deftypefn Statistics double gsl_stats_wvariance_with_fixed_mean (const double @var{w}[], size_t @var{wstride}, const double @var{data}[], size_t @var{stride}, size_t @var{n})
+@deftypefn Statistics double gsl_stats_wvariance_with_fixed_mean (const double @var{w}[], size_t @var{wstride}, const double @var{data}[], size_t @var{stride}, size_t @var{n}, const double @var{mean})
 This function computes an unbiased estimate of the variance of weighted
 dataset @var{data} when the population mean @var{mean} of the underlying
 distribution is known @emph{a priori}.  In this case the estimator for
@@ -459,7 +459,7 @@ $$
 @end ifinfo
 @end deftypefn
 
-@deftypefn Statistics double gsl_stats_wsd_with_fixed_mean (const double @var{w}[], size_t @var{wstride}, const double @var{data}[], size_t @var{stride}, size_t @var{n})
+@deftypefn Statistics double gsl_stats_wsd_with_fixed_mean (const double @var{w}[], size_t @var{wstride}, const double @var{data}[], size_t @var{stride}, size_t @var{n}, const double @var{mean})
 The standard deviation is defined as the square root of the variance.
 This function returns the square root of the corresponding variance
 function above.
