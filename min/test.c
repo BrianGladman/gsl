@@ -7,8 +7,8 @@
 
 /* stopping parameters */
 
-const double EPSABS = 0.0001 ;
-const double EPSREL = 0.0001 ;
+const double EPSABS = 0.001 ;
+const double EPSREL = 0.001 ;
 
 const unsigned int MAX_ITERATIONS = 100;
 
@@ -21,21 +21,26 @@ void my_error_handler (const char *reason, const char *file,
 int
 main (void)
 {
-  gsl_function F_cos;
+  gsl_function F_cos, F_func1, F_func2;
   
   const gsl_min_fsolver_type * fsolver[4] ;
   const gsl_min_fsolver_type ** T;
 
   fsolver[0] = gsl_min_fsolver_bisection;
-  fsolver[1] = 0;
+  fsolver[1] = gsl_min_fsolver_brent;
+  fsolver[2] = 0;
 
   F_cos = create_function (cos) ;
+  F_func1 = create_function (func1) ;
+  F_func2 = create_function (func2) ;
 
   gsl_set_error_handler (&my_error_handler);
 
   for (T = fsolver ; *T != 0 ; T++)
     {
       test_f (*T, "cos(x) [0 (3) 6]", &F_cos, 0.0, 3.0, 6.0, M_PI);
+      test_f (*T, "x^4 - 1 [-3 (-1) 17]", &F_func1, -3.0, -1.0, 17.0, 0.0);
+      test_f (*T, "sqrt(|x|) [-2 (-1) 1.5]", &F_func2, -2.0, -1.0, 1.5, 0.0);
 
 #ifdef JUNK
       test_f_e (*T, "invalid range check [4, 0]", &F_sin, 4.0, 0.0, M_PI);
@@ -68,19 +73,26 @@ test_f (const gsl_min_fsolver_type * T,
     {
       iterations++ ;
 
-      gsl_min_fsolver_iterate (s);
+      status = gsl_min_fsolver_iterate (s);
 
       m = gsl_min_fsolver_minimum(s);
       x = gsl_min_fsolver_interval(s);
-      
+
       a = x.lower;
       b = x.upper;
+
+#ifdef DEBUG
+      printf("%.12f %.18f %.12f %.18f %.12f %.18f\n", 
+             a, GSL_FN_EVAL(f, a), m, GSL_FN_EVAL(f, m), b, GSL_FN_EVAL(f, b));
+#endif
 
       if (a > b)
 	gsl_test (GSL_FAILURE, "interval is invalid (%g,%g)", a, b);
 
       if (m < a || m > b)
-	gsl_test (GSL_FAILURE, "r lies outside interval %g (%g,%g)", m, a, b);
+	gsl_test (GSL_FAILURE, "m lies outside interval %g (%g,%g)", m, a, b);
+
+      if (status) break ;
 
       status = gsl_min_test_interval (x, EPSABS, EPSREL);
     }

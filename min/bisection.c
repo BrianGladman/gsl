@@ -17,7 +17,7 @@
 
 typedef struct
   {
-    double f_lower, f_upper, f_middle;
+    double f_lower, f_upper, f_minimum;
   }
 bisection_state_t;
 
@@ -32,17 +32,17 @@ bisection_init (void * vstate, gsl_function * f, double * minimum, gsl_interval 
   double x_lower = x->lower ;
   double x_upper = x->upper ;
 
-  double f_lower, f_upper, f_middle ;
+  double f_lower, f_upper, f_minimum ;
 
   SAFE_FUNC_CALL (f, x_lower, &f_lower);
   SAFE_FUNC_CALL (f, x_upper, &f_upper);
-  SAFE_FUNC_CALL (f, *minimum, &f_middle);
+  SAFE_FUNC_CALL (f, *minimum, &f_minimum);
   
   state->f_lower = f_lower;
   state->f_upper = f_upper;
-  state->f_middle = f_middle;
+  state->f_minimum = f_minimum;
 
-  if (f_middle >= f_lower || f_middle >= f_upper)
+  if (f_minimum >= f_lower || f_minimum >= f_upper)
     {
       GSL_ERROR ("endpoints do not enclose a minimum", GSL_EINVAL);
     }
@@ -56,54 +56,47 @@ bisection_iterate (void * vstate, gsl_function * f, double * minimum, gsl_interv
 {
   bisection_state_t * state = (bisection_state_t *) vstate;
 
+  const double x_minimum = *minimum ;
   const double x_lower = x->lower ;
   const double x_upper = x->upper ;
 
-  const double f_middle = state->f_middle;
+  const double f_lower = state->f_lower;
+  const double f_upper = state->f_upper;
+  const double f_minimum = state->f_minimum;
 
-  const double golden = 0.318966 ;
+  const double golden = 0.318966 ; /* golden = (3 - sqrt(5))/2 */
   
-  const double w_lower = (*minimum - x_lower);
-  const double w_upper = (x_upper - *minimum);
+  const double w_lower = (x_minimum - x_lower);
+  const double w_upper = (x_upper - x_minimum);
 
-  if (w_lower > w_upper) 
+  double x_new, f_new;
+  
+  x_new = x_minimum + golden * ((w_upper > w_lower) ? w_upper : -w_lower) ;
+
+  SAFE_FUNC_CALL (f, x_new, &f_new);
+
+  if (f_new < f_minimum)
     {
-      double x_new = *minimum - golden * w_lower ;
-
-      double f_new;
-      SAFE_FUNC_CALL (f, x_new, &f_new);
-
-      if (f_new < f_middle)
-        {
-          *minimum = x_new ;
-          state->f_middle = f_new ;
-        }
-      else 
-        {
-          x->lower = x_new ;
-          state->f_lower = f_new ;
-        }
-    } 
+      *minimum = x_new ;
+      state->f_minimum = f_new ;
+      return GSL_SUCCESS;
+    }
+  else if (x_new < x_minimum && f_new > f_minimum)
+    {
+      x->lower = x_new ;
+      state->f_lower = f_new ;
+      return GSL_SUCCESS;
+    }
+  else if (x_new > x_minimum && f_new > f_minimum)
+    {
+      x->upper = x_new ;
+      state->f_upper = f_new ;
+      return GSL_SUCCESS;
+    }
   else
     {
-      double x_new = *minimum + golden * w_upper ;
-
-      double f_new;
-      SAFE_FUNC_CALL (f, x_new, &f_new);
-
-      if (f_new < f_middle)
-        {
-          *minimum = x_new ;
-          state->f_middle = f_new ;
-        }
-      else 
-        {
-          x->upper = x_new ;
-          state->f_upper = f_new ;
-        }
+      return GSL_FAILURE;
     }
-
-  return GSL_SUCCESS;
 }
 
 

@@ -45,6 +45,6 @@ gsl_min_test_delta (double x1, double x0, double epsabs, double epsrel);
 
 extern const gsl_min_fsolver_type  * gsl_min_fsolver_bisection;
 extern const gsl_min_fsolver_type  * gsl_min_fsolver_brent;
-extern const gsl_min_fsolver_type  * gsl_min_fsolver_falsepos;
+extern const gsl_min_fsolver_type  * gsl_min_fsolver_brent2;
 
 #endif /* GSL_MIN_H */
