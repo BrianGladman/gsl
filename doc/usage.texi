@@ -163,6 +163,9 @@ libgsdv_la_LDFLAGS =    \
         $(GTK_LIBS) -lgsdvgsl $(GSL_LIBS) -lgslcblas
 @end example
 @noindent
+Note that the macro @code{AM_PATH_GSL} needs to use the C compiler so it
+should appear in the @file{configure.in} file before the macro
+@code{AC_LANG_CPLUSPLUS} for programs that use C++.
 
 @node Inline functions
 @section Inline functions
@@ -197,6 +200,30 @@ and the macro will then be defined in the compilation flags or by
 including the file @file{config.h} before any library headers.  If you
 do not define the macro @code{HAVE_INLINE} then the slower non-inlined
 versions of the functions will be used instead.
+
+Note that the actual usage of the inline keyword is @code{extern
+inline}, which eliminates unnecessary function definitions in @sc{gcc}.
+If the form @code{extern inline} causes problems with other compilers a
+stricter autoconf test can be used,
+
+@example
+dnl Check for "extern inline", using a modified version of the test
+dnl for AC_C_INLINE from acspecific.mt
+dnl
+AC_CACHE_CHECK([for extern inline], ac_cv_c_extern_inline,
+[ac_cv_c_extern_inline=no
+AC_TRY_COMPILE([extern $ac_cv_c_inline double foo(double x);
+extern $ac_cv_c_inline double foo(double x) @{ return x + 1.0 ; @} ;
+double foo (double x) @{ return x + 1.0 ; @};], 
+[  foo(1.0)  ],
+[ac_cv_c_extern_inline="yes"])
+])
+
+if test "$ac_cv_c_extern_inline" != no ; then
+  AC_DEFINE(HAVE_INLINE,1)
+  AC_SUBST(HAVE_INLINE)
+fi
+@end example
 
 @node Long double
 @section Long double
