@@ -7,7 +7,7 @@ int
 main (int argc, char **argv)
 {
   int i, j ;
-  unsigned long buffer[1024] ;
+  char buffer[1024 * 4] ;
   gsl_rng * r ;
 
   gsl_rng_env_setup () ;
@@ -22,6 +22,7 @@ main (int argc, char **argv)
       exit (0);
     }
 
+  argv = 0 ; /* prevent warning about unused argument */
 
   for (i = 0; i < 3000 ; i++)
     {
@@ -29,10 +30,18 @@ main (int argc, char **argv)
 
       for (j = 0; j < 1024; j++)
 	{
-	  buffer[j] = gsl_rng_get (r) ;
+	  unsigned long int u = gsl_rng_get (r) ;
+	  buffer[4 * j + 0] = u & 0xFF ;
+	  u >>= 8;
+	  buffer[4 * j + 1] = u & 0xFF ;
+	  u >>= 8;
+	  buffer[4 * j + 2] = u & 0xFF ;
+	  u >>= 8;
+	  buffer[4 * j + 3] = u & 0xFF ;
+
 	}
       
-      status = fwrite(buffer, sizeof(unsigned long), 1024, stdout) ;
+      status = fwrite(buffer, 4 * sizeof(char), 1024, stdout) ;
 
       if (status != 1024) 
 	{
