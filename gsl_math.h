@@ -178,6 +178,7 @@ GSL_MIN_LDBL (long double a, long double b)
 
 /* Functions from sys directory */
 double gsl_log1p (const double x);
+double gsl_expm1 (const double x);
 double gsl_hypot (const double x, const double y);
 
 
