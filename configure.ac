@@ -1,6 +1,6 @@
 dnl Process this file with autoconf to produce a configure script.
 
-AC_INIT(gsl,1.4)
+AC_INIT(gsl,1.4+)
 AC_CONFIG_SRCDIR(gsl_math.h)
 
 AM_INIT_AUTOMAKE([gnu no-dependencies])
