@@ -1,3 +1,9 @@
+Tue Nov 10 20:05:27 1998  Brian Gough  <bjg@vvv.lanl.gov>
+
+	* gsl_math.h: moved the MAX(a,b) and MIN(a,b) to gsl_math.h and
+ 	renamed them GSL_MAX(a,b) and GSL_MIN(a,b) to avoid inevitable
+ 	conflicts with system macros.
+
 Mon Nov  9 21:08:10 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
 	* config.h: added MAX(a,b) and MIN(a,b) macros since we use these

@@ -71,4 +71,9 @@
 #define GSL_IS_EVEN(n) (!(GSL_IS_ODD(n)))
 #define GSL_SIGN(x)    ((x) >= 0.0 ? 1 : -1)
 
+/* Define MAX and MIN functions if they don't exist */
+
+#define GSL_MAX(a,b) ((a) > (b) ? (a) : (b))
+#define GSL_MIN(a,b) ((a) < (b) ? (a) : (b))
+
 #endif /* _GSL_MATH_H */
