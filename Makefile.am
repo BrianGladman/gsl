@@ -2,8 +2,6 @@
 
 SUBDIRS = utils err random vector matrix randist fft roots specfunc statistics siman integration histogram doc
 
-lib_LIBRARIES = libgsl.a
-
 include_HEADERS = gsl_complex.h gsl_math.h
 
 strict:
