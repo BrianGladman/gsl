@@ -5,6 +5,9 @@
 #include <gsl_fft_complex.h>
 #include <gsl_errno.h>
 
+#include "fft.h"
+#include "bitreverse.h"
+
 int
 gsl_fft_complex_radix2_forward (gsl_vector_complex * data)
 {

@@ -1,4 +1,5 @@
-#define VECTOR(a,stride,i) ((a)[(stride)*(i)])
+#include "fft.h"
+
 int
 gsl_fft_halfcomplex_pass_2 (const double in[],
 			    size_t istride,

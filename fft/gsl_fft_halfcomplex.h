@@ -8,7 +8,7 @@
 #include <gsl_vector.h>
 #include <gsl_fft.h>
 
-int gsl_fft_halfcomplex_radix2_backward (gsl_vector * data);
+int gsl_fft_halfcomplex_radix2_backward (double data[], size_t stride, size_t n);
 int gsl_fft_halfcomplex_radix2_inverse (gsl_vector * data);
 int gsl_fft_halfcomplex_radix2 (gsl_vector * data);
 
@@ -51,6 +51,6 @@ gsl_fft_halfcomplex_wavetable_free (gsl_fft_halfcomplex_wavetable * wavetable);
 int
 gsl_fft_halfcomplex_unpack (const double halfcomplex_coefficient[],
 			    gsl_complex complex_coefficient[],
-			    const size_t n);
+			    size_t n);
 
 #endif /* GSL_FFT_HALFCOMPLEX_H */

@@ -1,3 +1,5 @@
+#include "fft.h"
+
 int
 gsl_fft_complex_pass_2 (const double in[],
 			size_t istride,

@@ -4,21 +4,24 @@
 #include <gsl_fft_halfcomplex.h>
 
 #include "factorize.h"
+#include "fft.h"
 #include "bitreverse.h"
 
 int
 gsl_fft_halfcomplex_radix2_backward (double data[],
+				     const size_t stride,
 				     const size_t n)
 {
-  int status = gsl_fft_halfcomplex_radix2 (data, n) ;
+  int status = gsl_fft_halfcomplex_radix2 (data, stride, n) ;
   return status ;
 }
 
 int
 gsl_fft_halfcomplex_radix2_inverse (double data[],
+				    const size_t stride,
 				    const size_t n)
 {
-  int status = gsl_fft_halfcomplex_radix2 (data, n);
+  int status = gsl_fft_halfcomplex_radix2 (data, stride, n);
 
   if (status)
     {
@@ -32,7 +35,7 @@ gsl_fft_halfcomplex_radix2_inverse (double data[],
     size_t i;
     for (i = 0; i < n; i++)
       {
-	data[i] *= norm;
+	data[stride*i] *= norm;
       }
   }
   return status;
@@ -40,6 +43,7 @@ gsl_fft_halfcomplex_radix2_inverse (double data[],
 
 int
 gsl_fft_halfcomplex_radix2 (double data[],
+			    const size_t stride,
 			    const size_t n)
 {
   int result ;
@@ -74,28 +78,19 @@ gsl_fft_halfcomplex_radix2 (double data[],
     {
       size_t a, b;
 
-#ifdef DEBUG
-#define DISPLAY for(k=0; k<n ;k++) {printf("%d: %e\n",k,data[k]); } ;
-
-      printf("at beginning of loop i=%d, p=%d, p_1=%d, q=%d\n",i,p,p_1,q) ;
-      DISPLAY ;
-#endif
-
       /* a = 0 */
 
       for (b = 0; b < q; b++)
 	{
-	  double t0_real = data[b*p] + data[b*p + p_1] ;
-	  double t1_real = data[b*p] - data[b*p + p_1] ;
+	  const double z0 = VECTOR(data,stride,b*p);
+	  const double z1 = VECTOR(data,stride,b*p + p_1);
 	  
-	  data[b*p] = t0_real;
-	  data[b*p + p_1] = t1_real ;
+	  const double t0_real = z0 + z1 ;
+	  const double t1_real = z0 - z1 ;
+	  
+	  VECTOR(data,stride,b*p) = t0_real;
+	  VECTOR(data,stride,b*p + p_1) = t1_real ;
 	}
-
-#ifdef DEBUG
-      printf("after doing a=0\n",i) ;
-      DISPLAY ;
-#endif
 
       /* a = 1 ... p_{i-1}/2 - 1 */
 
@@ -122,10 +117,10 @@ gsl_fft_halfcomplex_radix2 (double data[],
 	    
 	    for (b = 0; b < q; b++)
 	      {
-		double z0_real = data[b*p + a] ;
-		double z0_imag = data[b*p + p - a] ;
-		double z1_real = data[b*p + p_1 - a] ;
-		double z1_imag = -data[b*p + p_1 + a] ;
+		double z0_real = VECTOR(data,stride,b*p + a) ;
+		double z0_imag = VECTOR(data,stride,b*p + p - a) ;
+		double z1_real = VECTOR(data,stride,b*p + p_1 - a) ;
+		double z1_imag = -VECTOR(data,stride,b*p + p_1 + a) ;
 		
 		/* t0 = z0 + z1 */
 		
@@ -137,35 +132,20 @@ gsl_fft_halfcomplex_radix2 (double data[],
 		double t1_real = z0_real -  z1_real;
 		double t1_imag = z0_imag -  z1_imag;
 		
-		data[b*p + a] = t0_real ;
-		data[b*p + p_1 - a] = t0_imag ;
+		VECTOR(data,stride,b*p + a) = t0_real ;
+		VECTOR(data,stride,b*p + p_1 - a) = t0_imag ;
 		
-		data[b*p + p_1 + a] = (w_real * t1_real - w_imag * t1_imag) ;
-		data[b*p + p - a] = (w_real * t1_imag + w_imag * t1_real) ;
+		VECTOR(data,stride,b*p + p_1 + a) = (w_real * t1_real - w_imag * t1_imag) ;
+		VECTOR(data,stride,b*p + p - a) = (w_real * t1_imag + w_imag * t1_real) ;
 	      }
 	  }
       }
 
-#ifdef DEBUG
-      if ((p_1)/2 > 1) {
-	printf("after doing a=1 ... p_{i-1}/2-1 (q=%d)\n",q) ;
-	DISPLAY ;
-      }
-#endif      
-
       if (p_1 >  1) {
-	
 	for (b = 0; b < q; b++) {
-	  /* a = p_{i-1}/2 */
-	  
-	  data[b*p + p_1/2] *= 2 ;
-	  data[b*p + p_1 + p_1/2] *= -2 ;
-	  
+	  VECTOR(data,stride,b*p + p_1/2) *= 2 ;
+	  VECTOR(data,stride,b*p + p_1 + p_1/2) *= -2 ;
 	}
-#ifdef DEBUG
-	printf("after doing a=p_{i-1}/2 (q=%d)\n",q) ;
-	DISPLAY ;
-#endif
       }
 
       p_1 = p_1 / 2 ;
@@ -176,7 +156,7 @@ gsl_fft_halfcomplex_radix2 (double data[],
   /* bit reverse the ordering of output data for decimation in
      frequency algorithm */
   
-  status = gsl_fft_real_bitreverse_order(data, n, logn) ;
+  status = fft_real_bitreverse_order(data, stride, n, logn) ;
 
   return 0;
 

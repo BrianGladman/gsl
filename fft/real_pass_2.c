@@ -7,8 +7,10 @@
 #include "fft_real.h"
 
 int
-gsl_fft_real_pass_2 (const double from[],
-		     double to[],
+gsl_fft_real_pass_2 (const double in[],
+		     const size_t istride,
+		     double out[],
+		     const size_t ostride,
 		     const size_t product,
 		     const size_t n,
 		     const gsl_complex twiddle[])
@@ -22,26 +24,20 @@ gsl_fft_real_pass_2 (const double from[],
 
   for (k1 = 0; k1 < q; k1++)
     {
-      double r0, r1, s0, s1;
-      {
-	const size_t from0 = k1 * product_1;
-	const size_t from1 = from0 + m;
+      const size_t from0 = k1 * product_1;
+      const size_t from1 = from0 + m;
 
-	r0 = from[from0];
-	r1 = from[from1];
-      }
-
-      s0 = r0 + r1;
-      s1 = r0 - r1;
-
-      {
-	const size_t to0 = product * k1;
-	const size_t to1 = to0 + product - 1;
-
-	to[to0] = s0;
-	to[to1] = s1;
-      }
-
+      const double r0 = VECTOR(in,istride,from0);
+      const double r1 = VECTOR(in,istride,from1);
+      
+      const double s0 = r0 + r1;
+      const double s1 = r0 - r1;
+      
+      const size_t to0 = product * k1;
+      const size_t to1 = to0 + product - 1;
+      
+      VECTOR(out,ostride,to0) = s0;
+      VECTOR(out,ostride,to1) = s1;
     }
 
   if (product_1 == 1)
@@ -56,50 +52,43 @@ gsl_fft_real_pass_2 (const double from[],
 
       for (k1 = 0; k1 < q; k1++)
 	{
-	  double f0_real, f0_imag, f1_real, f1_imag, z0_real, z0_imag,
-	    z1_real, z1_imag, x0_real, x0_imag, x1_real, x1_imag;
+	  const size_t from0 = k1 * product_1 + 2 * k - 1;
+	  const size_t from1 = from0 + m;
 
-	  {
-	    const size_t from0 = k1 * product_1 + 2 * k - 1;
-	    const size_t from1 = from0 + m;
+	  const double f0_real = VECTOR(in,istride,from0);
+	  const double f0_imag = VECTOR(in,istride,from0 + 1);
 
-	    f0_real = from[from0];
-	    f0_imag = from[from0 + 1];
+	  const double f1_real = VECTOR(in,istride,from1);
+	  const double f1_imag = VECTOR(in,istride,from1 + 1);
 
-	    f1_real = from[from1];
-	    f1_imag = from[from1 + 1];
-	  }
+	  const double z0_real = f0_real;
+	  const double z0_imag = f0_imag;
 
-	  z0_real = f0_real;
-	  z0_imag = f0_imag;
-
-	  z1_real = w_real * f1_real - w_imag * f1_imag;
-	  z1_imag = w_real * f1_imag + w_imag * f1_real;
+	  const double z1_real = w_real * f1_real - w_imag * f1_imag;
+	  const double z1_imag = w_real * f1_imag + w_imag * f1_real;
 
 	  /* compute x = W(2) z */
 
 	  /* x0 = z0 + z1 */
-	  x0_real = z0_real + z1_real;
-	  x0_imag = z0_imag + z1_imag;
+	  const double x0_real = z0_real + z1_real;
+	  const double x0_imag = z0_imag + z1_imag;
 
 	  /* x1 = z0 - z1 */
-	  x1_real = z0_real - z1_real;
-	  x1_imag = z0_imag - z1_imag;
+	  const double x1_real = z0_real - z1_real;
+	  const double x1_imag = z0_imag - z1_imag;
 
-	  {
-	    const size_t to0 = k1 * product + 2 * k - 1;
-	    const size_t to1 = k1 * product + product - 2 * k - 1;
-
-	    to[to0] = x0_real;
-	    to[to0 + 1] = x0_imag;
-
-	    /* stored in conjugate location */
-	    to[to1] = x1_real;
-	    to[to1 + 1] = -x1_imag;
-	  }
+	  const size_t to0 = k1 * product + 2 * k - 1;
+	  const size_t to1 = k1 * product + product - 2 * k - 1;
+	  
+	  VECTOR(out,ostride,to0) = x0_real;
+	  VECTOR(out,ostride,to0 + 1) = x0_imag;
+	  
+	  /* stored in conjugate location */
+	  VECTOR(out,ostride,to1) = x1_real;
+	  VECTOR(out,ostride,to1 + 1) = -x1_imag;
 	}
     }
-
+  
   if (product_1 % 2 == 1)
     return 0;
 
@@ -109,8 +98,8 @@ gsl_fft_real_pass_2 (const double from[],
       const size_t from1 = from0 + m;
       const size_t to0 = k1 * product + product_1 - 1;
 
-      to[to0] = from[from0];
-      to[to0 + 1] = -from[from1];
+      VECTOR(out,ostride,to0) = VECTOR(in,istride,from0);
+      VECTOR(out,ostride,to0 + 1) = -VECTOR(in,istride,from1);
     }
   return 0;
 }

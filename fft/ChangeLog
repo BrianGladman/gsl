@@ -1,5 +1,7 @@
 Tue Jul 28 11:30:43 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
+	* fft.h: a place to keep some local macros
+
 	* c.c: renamed complex.c to c.c
 
 Mon Jul 27 12:46:25 1998  Brian Gough  <bjg@vvv.lanl.gov>

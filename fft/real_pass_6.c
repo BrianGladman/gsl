@@ -6,6 +6,8 @@
 
 #include "fft_real.h"
 
+/* NOT USED */
+
 int
 gsl_fft_real_pass_6 (const double from[], double to[],
 		     const size_t product,
@@ -35,94 +37,89 @@ gsl_fft_real_pass_6 (const double from[], double to[],
 
   for (k1 = 0; k1 < q; k1++)
     {
-      double t1_real, t2_real, t3_real, t4_real, t5_real, t6_real, t7_real,
-        t8_real, t9_real, t10_real, t11_real;
-      double z0_real, z1_real, z2_real, z3_real, z4_real;
-      gsl_complex x0, x1, x2;
+      const size_t from0 = k1 * product_1;
+      const size_t from1 = from0 + m;
+      const size_t from2 = from1 + m;
+      const size_t from3 = from2 + m;
+      const size_t from4 = from3 + m;
+      const size_t from5 = from4 + m;
 
-      from0 = k1 * product_1;
-      from1 = from0 + m;
-      from2 = from1 + m;
-      from3 = from2 + m;
-      from4 = from3 + m;
-      from5 = from4 + m;
-
-      z0_real = from[from0];
-      z1_real = from[from1];
-      z2_real = from[from2];
-      z3_real = from[from3];
-      z4_real = from[from4];
-      z5_real = from[from5];
+      const double z0_real = VECTOR(in,istride,from0);
+      const double z1_real = VECTOR(in,istride,from1);
+      const double z2_real = VECTOR(in,istride,from2);
+      const double z3_real = VECTOR(in,istride,from3);
+      const double z4_real = VECTOR(in,istride,from4);
+      const double z5_real = VECTOR(in,istride,from5);
 
       /* compute x = W(6) z */
       /* W(6) is a combination of sums and differences of W(3) acting
          on the even and odd elements of z */
 
       /* ta1 = z2 + z4 */
-      ta1.real = z2.real + z4.real;
+      const double ta1.real = z2.real + z4.real;
 
       /* ta2 = z0 - ta1/2 */
-      ta2.real = z0.real - ta1.real / 2;
+      const double ta2.real = z0.real - ta1.real / 2;
 
       /* ta3 = (+/-) sin(pi/3)*(z2 - z4) */
-      ta3.real = tau * (z2.real - z4.real);
+      const double ta3.real = tau * (z2.real - z4.real);
 
       /* a0 = z0 + ta1 */
-      a0.real = z0.real + ta1.real;
+      const double a0.real = z0.real + ta1.real;
 
       /* a1 = ta2 + i ta3 */
-      a1.real = ta2.real - ta3.imag;
+      const double a1.real = ta2.real - ta3.imag;
 
       /* a2 = ta2 - i ta3 */
-      a2.real = ta2.real + ta3.imag;
+      const double a2.real = ta2.real + ta3.imag;
 
       /* tb1 = z5 + z1 */
-      tb1.real = z5.real + z1.real;
+      const double tb1.real = z5.real + z1.real;
 
       /* tb2 = z3 - tb1/2 */
-      tb2.real = z3.real - tb1.real / 2;
+      const double tb2.real = z3.real - tb1.real / 2;
 
       /* tb3 = -sin(pi/3)*(z5 - z1) */
-      tb3.real = -tau * (z5.real - z1.real);
+      const double tb3.real = -tau * (z5.real - z1.real);
 
       /* b0 = z3 + tb1 */
-      b0.real = z3.real + tb1.real;
+      const double b0.real = z3.real + tb1.real;
 
       /* b1 = tb2 + i tb3 */
-      b1.real = tb2.real;
-      b1.imag = tb3.real;
+      const double b1.real = tb2.real;
+      const double b1.imag = tb3.real;
 
       /* b2 = tb2 - i tb3 */
-      b2.real = tb2.real;
-      b2.imag = -tb3.real;
+      const double b2.real = tb2.real;
+      const double b2.imag = -tb3.real;
 
       /* x0 = a0 + b0 */
-      x0.real = a0.real + b0.real;
-      x0.imag = a0.imag + b0.imag;
+      const double x0.real = a0.real + b0.real;
+      const double x0.imag = a0.imag + b0.imag;
 
       /* x4 = a1 + b1 */
-      x4.real = a1.real + b1.real;
-      x4.imag = a1.imag + b1.imag;
+      const double x4.real = a1.real + b1.real;
+      const double x4.imag = a1.imag + b1.imag;
 
       /* x2 = a2 + b2 */
-      x2.real = a2.real + b2.real;
-      x2.imag = a2.imag + b2.imag;
+      const double x2.real = a2.real + b2.real;
+      const double x2.imag = a2.imag + b2.imag;
 
       /* x3 = a0 - b0 */
-      x3.real = a0.real - b0.real;
-      x3.imag = a0.imag - b0.imag;
+      const double x3.real = a0.real - b0.real;
+      const double x3.imag = a0.imag - b0.imag;
 
       /* x1 = a1 - b1 */
-      x1.real = a1.real - b1.real;
-      x1.imag = a1.imag - b1.imag;
+      const double x1.real = a1.real - b1.real;
+      const double x1.imag = a1.imag - b1.imag;
 
       /* x5 = a2 - b2 */
-      x5.real = a2.real - b2.real;
-      x5.imag = a2.imag - b2.imag;
+      const double x5.real = a2.real - b2.real;
+      const double x5.imag = a2.imag - b2.imag;
 
-      to0 = product * k1;
-      to1 = to0 + 2 * product_1 - 1;
-      to2 = to1 + 2 * product_1;
+      const size_t to0 = product * k1;
+      const size_t to1 = to0 + 2 * product_1 - 1;
+      const size_t to2 = to1 + 2 * product_1;
 
       to[to0] = x0.real;
       to[to1] = x1.real;
@@ -161,8 +158,8 @@ gsl_fft_real_pass_6 (const double from[], double to[],
 	  from3 = from2 + m;
 	  from4 = from3 + m;
 
-	  z0.real = from[from0];
-	  z0.imag = from[from0 + 1];
+	  z0.real = VECTOR(in,istride,from0);
+	  z0.imag = VECTOR(in,istride,from0 + 1);
 	  z1.real = w1.real * from[from1] - w1.imag * from[from1 + 1];
 	  z1.imag = w1.real * from[from1 + 1] + w1.imag * from[from1];
 	  z2.real = w2.real * from[from2] - w2.imag * from[from2 + 1];

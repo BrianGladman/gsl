@@ -7,8 +7,10 @@
 #include "fft_real.h"
 
 int
-gsl_fft_real_pass_n (const double from[],
-		     double to[],
+gsl_fft_real_pass_n (const double in[],
+		     const size_t istride,
+		     double out[],
+		     const size_t ostride,
 		     const size_t factor,
 		     const size_t product,
 		     const size_t n,
@@ -49,7 +51,7 @@ gsl_fft_real_pass_n (const double from[],
 
 	  for (e2 = 0; e2 < factor; e2++)
 	    {
-	      double z_real = from[k1 * product_1 + e2 * m];
+	      double z_real = VECTOR(in,istride,k1 * product_1 + e2 * m);
 
 	      if (e2 > 0)
 		{
@@ -66,18 +68,18 @@ gsl_fft_real_pass_n (const double from[],
 	  if (e1 == 0)
 	    {
 	      const size_t to0 = product * k1;
-	      to[to0] = sum_real;
+	      VECTOR(out,ostride,to0) = sum_real;
 	    }
 	  else if (e1 < factor - e1)
 	    {
 	      const size_t to0 = k1 * product + 2 * e1 * product_1 - 1;
-	      to[to0] = sum_real;
-	      to[to0 + 1] = sum_imag;
+	      VECTOR(out,ostride,to0) = sum_real;
+	      VECTOR(out,ostride,to0 + 1) = sum_imag;
 	    }
 	  else if (e1 == factor - e1)
 	    {
 	      const size_t to0 = k1 * product + 2 * e1 * product_1 - 1;
-	      to[to0] = sum_real;
+	      VECTOR(out,ostride,to0) = sum_real;
 	    }
 
 	}
@@ -123,13 +125,13 @@ gsl_fft_real_pass_n (const double from[],
 		  else
 		    {
 		      const size_t t_index = (k - 1) + (e2 - 1) * tskip;
-		      tw_real = twiddle[t_index].real;
-		      tw_imag = -twiddle[t_index].imag;
+		      tw_real = GSL_REAL(twiddle[t_index]);
+		      tw_imag = -GSL_REAL(twiddle[t_index]);
 		    }
 
 		  {
-		    const double f0_real = from[from0];
-		    const double f0_imag = from[from0 + 1];
+		    const double f0_real = VECTOR(in,istride,from0);
+		    const double f0_imag = VECTOR(in,istride,from0 + 1);
 
 		    z_real = tw_real * f0_real - tw_imag * f0_imag;
 		    z_imag = tw_real * f0_imag + tw_imag * f0_real;
@@ -150,14 +152,14 @@ gsl_fft_real_pass_n (const double from[],
 	      if (e1 < factor - e1)
 		{
 		  const size_t to0 = k1 * product - 1 + 2 * e1 * product_1 + 2 * k;
-		  to[to0] = sum_real;
-		  to[to0 + 1] = sum_imag;
+		  VECTOR(out,ostride,to0) = sum_real;
+		  VECTOR(out,ostride,to0 + 1) = sum_imag;
 		}
 	      else
 		{
 		  const size_t to0 = k1 * product - 1 + 2 * (factor - e1) * product_1 - 2 * k;
-		  to[to0] = sum_real;
-		  to[to0 + 1] = -sum_imag;
+		  VECTOR(out,ostride,to0) = sum_real;
+		  VECTOR(out,ostride,to0 + 1) = -sum_imag;
 		}
 
 	    }
@@ -217,7 +219,7 @@ gsl_fft_real_pass_n (const double from[],
 
 		{
 		  const size_t from0 = k1 * product_1 + 2 * k + e2 * m - 1;
-		  const double f0_real = from[from0];
+		  const double f0_real = VECTOR(in,istride,from0);
 		  z_real = tw_real * f0_real;
 		  z_imag = tw_imag * f0_real;
 		}
@@ -229,19 +231,19 @@ gsl_fft_real_pass_n (const double from[],
 	    if (e1 + 1 < factor - e1)
 	      {
 		const size_t to0 = k1 * product - 1 + 2 * e1 * product_1 + 2 * k;
-		to[to0] = sum_real;
-		to[to0 + 1] = sum_imag;
+		VECTOR(out,ostride,to0) = sum_real;
+		VECTOR(out,ostride,to0 + 1) = sum_imag;
 	      }
 	    else if (e1 + 1 == factor - e1)
 	      {
 		const size_t to0 = k1 * product - 1 + 2 * e1 * product_1 + 2 * k;
-		to[to0] = sum_real;
+		VECTOR(out,ostride,to0) = sum_real;
 	      }
 	    else
 	      {
 		const size_t to0 = k1 * product - 1 + 2 * (factor - e1) * product_1 - 2 * k;
-		to[to0] = sum_real;
-		to[to0 + 1] = -sum_imag;
+		VECTOR(out,ostride,to0) = sum_real;
+		VECTOR(out,ostride,to0 + 1) = -sum_imag;
 	      }
 
 	  }

@@ -3,9 +3,6 @@
 
 #include <gsl_complex.h>
 
-#define REAL(a,stride,i) ((a)[2*(stride)*(i)])
-#define IMAG(a,stride,i) ((a)[2*(stride)*(i)+1])
-
 typedef enum
   {
     forward = -1, backward = +1   
