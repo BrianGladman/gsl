@@ -1,5 +1,4 @@
 #include <config.h>
-#include <unistd.h>
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_vector.h>

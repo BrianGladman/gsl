@@ -1,7 +1,5 @@
 #include <config.h>
 #include <stdio.h>
-#include <unistd.h>
-#include <stdio.h>
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_block.h>
 #include <gsl/gsl_vector.h>
