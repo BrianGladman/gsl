@@ -181,6 +181,37 @@ gsl_linalg_QRPT_decomp (gsl_matrix * A, gsl_vector * tau, gsl_permutation * p, i
     }
 }
 
+int
+gsl_linalg_QRPT_decomp2 (const gsl_matrix * A, gsl_matrix * q, gsl_matrix * r, gsl_vector * tau, gsl_permutation * p, int *signum)
+{
+  const size_t M = A->size1;
+  const size_t N = A->size2;
+
+  if (q->size1 != M || q->size2 !=M) 
+    {
+      GSL_ERROR ("q must be M x M", GSL_EBADLEN);
+    }
+  else if (r->size1 != M || r->size2 !=N)
+    {
+      GSL_ERROR ("r must be M x N", GSL_EBADLEN);
+    }
+  else if (tau->size != GSL_MIN (M, N))
+    {
+      GSL_ERROR ("size of tau must be MIN(M,N)", GSL_EBADLEN);
+    }
+  else if (p->size != N)
+    {
+      GSL_ERROR ("permutation size mismatch", GSL_EBADLEN);
+    }
+
+  gsl_matrix_memcpy (r, A);
+  gsl_linalg_QRPT_decomp (r, tau, p, signum);
+  gsl_linalg_QR_unpack (r, tau, q, r);
+
+  return GSL_SUCCESS;
+}
+
+
 /* Solves the system A x = b using the Q R P^T factorisation,
 
    R z = Q^T b

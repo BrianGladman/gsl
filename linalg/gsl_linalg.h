@@ -184,6 +184,12 @@ int gsl_linalg_QRPT_decomp (gsl_matrix * A,
 			    gsl_permutation * p,
 			    int *signum);
 
+int gsl_linalg_QRPT_decomp2 (const gsl_matrix * A, 
+                             gsl_matrix * q, gsl_matrix * r, 
+                             gsl_vector * tau, 
+                             gsl_permutation * p, 
+                             int *signum);
+
 int gsl_linalg_QRPT_solve (const gsl_matrix * QR,
 			   const gsl_vector * tau,
 			   const gsl_permutation * p,
