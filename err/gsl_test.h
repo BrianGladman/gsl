@@ -9,7 +9,7 @@ gsl_test_rel (double result, double expected, double relative_error,
 	      const char *test_description, ...) ;
 
 void
-gsl_test_abs (double result, double expected, double relative_error,
+gsl_test_abs (double result, double expected, double absolute_error,
 	      const char *test_description, ...) ;
 
 void

@@ -1,3 +1,7 @@
+Thu Oct 28 14:41:31 1999  Brian Gough  <bjg@network-theory.co.uk>
+
+	* gsl_test.h: changed variable name in prototype for clarity
+
 Thu Oct  7 11:46:53 1999  Brian Gough  <bjg@network-theory.co.uk>
 
 	* test_results.c (gsl_test_str): changed #if __STDC__ to #ifdef
