@@ -191,30 +191,8 @@ int gsl_sf_polar_to_rect_impl(const double r, const double theta, double * x, do
 {
   double t   = theta;
   int status = gsl_sf_angle_restrict_symm_impl(&t);
-
-  if(fabs(t) < GSL_SQRT_DBL_EPSILON) {
-    *x = r;
-    *y = r*t;
-  }
-  else if(fabs(t - M_PI) < GSL_SQRT_DBL_EPSILON) {
-    double eps = t - M_PI;
-    *x = -r;
-    *y = -r*eps;
-  }
-  else if(fabs(t + M_PI) < GSL_SQRT_DBL_EPSILON) {
-    double eps = t + M_PI;
-    *x = -r;
-    *y = -r*eps;
-  }
-  else {
-    double tan_half = tan(0.5 * theta);
-    double den = 1.0 + tan_half*tan_half;
-    double cos_theta = (1.0 - tan_half*tan_half) / den;
-    double sin_theta = 2.0 * tan_half / den;
-    *x = r * cos_theta;
-    *y = r * sin_theta;
-  }
-
+  *x = r * cos(t);
+  *y = r * sin(t);
   return status;
 }
 

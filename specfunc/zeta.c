@@ -91,20 +91,6 @@ static gsl_sf_cheb_series zeta_xgt1_cs = {
 };
 
 
-/* assumes s > 0,  product representation */
-#ifdef HAVE_INLINE
-inline
-#endif
-static
-double riemann_zeta_prod(double s)
-{
-  double f2 = 1.0 - pow(2.0,-s);
-  double f3 = 1.0 - pow(3.0,-s);
-  double f5 = 1.0 - pow(5.0,-s);
-  double f7 = 1.0 - pow(7.0,-s);
-  return 1.0/(f2*f3*f5*f7);
-}
-
 /* assumes s >= 0 and s != 1.0 */
 #ifdef HAVE_INLINE
 inline
@@ -120,9 +106,14 @@ double riemann_zeta_sgt0(double s)
     return gsl_sf_cheb_eval(&zeta_xgt1_cs, x) / (s - 1.0);
   }
   else {
-    return riemann_zeta_prod(s);
+    double f2 = 1.0 - pow(2.0,-s);
+    double f3 = 1.0 - pow(3.0,-s);
+    double f5 = 1.0 - pow(5.0,-s);
+    double f7 = 1.0 - pow(7.0,-s);
+    return 1.0/(f2*f3*f5*f7);
   }
 }
+
 
 /* zeta(n) */
 #define ZETA_POS_TABLE_NMAX   100
@@ -473,60 +464,60 @@ static double eta_neg_int_table[ETA_NEG_TABLE_SIZE] = {
 
 int gsl_sf_hzeta_impl(const double s, const double q, double * result)
 {
-  double ln_term0;
-
   if(s <= 1.0 || q <= 0.0) {
+    *result = 0.0;
     return GSL_EDOM;
   }
-
-  ln_term0 = -s * log(q);  
-
-  if(ln_term0 < GSL_LOG_DBL_MIN + 1.0) {
-    *result = 0.0;
-    return GSL_EUNDRFLW;
-  }
-  else if(ln_term0 > GSL_LOG_DBL_MAX - 1.0) {
-    *result = 0.0; /* FIXME: should be Inf */
-    return GSL_EOVRFLW;
-  }
-
-  if((s > 54.0 && q < 1.0) || (s > 27.0 && q < 0.25)) {
-    *result = exp(ln_term0);
-    return GSL_SUCCESS;
-  }
-  else if(s > 27.0 && q < 1.0) {
-    const double p1 = exp(ln_term0);
-    const double p2 = pow(q/(1.0+q), s);
-    const double p3 = pow(q/(2.0+q), s);
-    *result = p1 * (1.0 + p2 + p3);
-    return GSL_SUCCESS;
-  }
   else {
-    /* Euler-Maclaurin summation formula 
-       [Moshier, p. 400, with several typo corrections]
-     */
-    const int jmax = 12;
-    const int kmax = 10;
-    int j, k;
-    const double pmax  = pow(kmax + q, -s);
-    double scp = s;
-    double pcp = pmax / (kmax + q);
-    double ans = pmax*((kmax+q)/(s-1.0) + 0.5);
+    const double max_bits = 54.0;
+    const double ln_term0 = -s * log(q);  
 
-    for(k=0; k<kmax; k++) {
-      ans += pow(k + q, -s);
+    if(ln_term0 < GSL_LOG_DBL_MIN + 1.0) {
+      *result = 0.0;
+      return GSL_EUNDRFLW;
     }
-
-    for(j=0; j<=jmax; j++) {
-      double delta = hzeta_c[j+1] * scp * pcp;
-      ans += delta;
-      if(fabs(delta/ans) < 0.5*GSL_DBL_EPSILON) break;
-      scp *= (s+2*j+1)*(s+2*j+2);
-      pcp /= (kmax + q)*(kmax + q);
+    else if(ln_term0 > GSL_LOG_DBL_MAX - 1.0) {
+      *result = 0.0; /* FIXME: should be Inf */
+      return GSL_EOVRFLW;
     }
+    else if((s > max_bits && q < 1.0) || (s > 0.5*max_bits && q < 0.25)) {
+      *result = pow(q, -s) /* exp(ln_term0) */;
+      return GSL_SUCCESS;
+    }
+    else if(s > 0.5*max_bits && q < 1.0) {
+      const double p1 = pow(q, -s) /* exp(ln_term0) */;
+      const double p2 = pow(q/(1.0+q), s);
+      const double p3 = pow(q/(2.0+q), s);
+      *result = p1 * (1.0 + p2 + p3);
+      return GSL_SUCCESS;
+    }
+    else {
+      /* Euler-Maclaurin summation formula 
+         [Moshier, p. 400, with several typo corrections]
+       */
+      const int jmax = 12;
+      const int kmax = 10;
+      int j, k;
+      const double pmax  = pow(kmax + q, -s);
+      double scp = s;
+      double pcp = pmax / (kmax + q);
+      double ans = pmax*((kmax+q)/(s-1.0) + 0.5);
 
-    *result = ans;
-    return GSL_SUCCESS;
+      for(k=0; k<kmax; k++) {
+        ans += pow(k + q, -s);
+      }
+
+      for(j=0; j<=jmax; j++) {
+        double delta = hzeta_c[j+1] * scp * pcp;
+        ans += delta;
+        if(fabs(delta/ans) < 0.5*GSL_DBL_EPSILON) break;
+        scp *= (s+2*j+1)*(s+2*j+2);
+        pcp /= (kmax + q)*(kmax + q);
+      }
+
+      *result = ans;
+      return GSL_SUCCESS;
+    }
   }
 }
 
@@ -537,8 +528,7 @@ int gsl_sf_zeta_impl(const double s, double * result)
     *result = 0.0;
     return GSL_EDOM;
   }
-
-  if(s >= 0.0) {
+  else if(s >= 0.0) {
     *result = riemann_zeta_sgt0(s);
     return GSL_SUCCESS;
   }
