@@ -63,7 +63,7 @@ this matrix, being dependent on @math{\nu} and @math{M}, must be
 precomputed and stored; the @code{gsl_dht} object encapsulates this
 data.  The allocation function @code{gsl_dht_alloc} returns a
 @code{gsl_dht} object which must be properly initialized with
-@code{gsl_dht_calc} before it can be used to perform transforms on data
+@code{gsl_dht_init} before it can be used to perform transforms on data
 sample vectors, for fixed @math{\nu} and @math{M}, using the
 @code{gsl_dht_apply} function. The implementation allows a scaling of
 the fundamental interval, for convenience, so that one take assume the
@@ -90,7 +90,11 @@ This function initializes the transform @var{t} for the given values of
 @var{nu} and @var{x}.
 @end deftypefun
 
-@comment , double @var{nu}, double @var{xmax}
+@deftypefun {gsl_dht *} gsl_dht_new (size_t @var{size}, double @var{nu}, double @var{xmax})
+This function allocates a Discrete Hankel transform object of size
+@var{size} and initializes it for the given values of @var{nu} and
+@var{x}.
+@end deftypefun
 
 @deftypefun void gsl_dht_free (gsl_dht * @var{t})
 This function frees the transform @var{t}.
