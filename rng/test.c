@@ -43,7 +43,7 @@ main (void)
      the ../random directory and getting the expected value from
      that. An analytic calculation would be preferable. */
 
-  rng_test (gsl_rng_cmlib, 1, 10000, 45776);
+  rng_test (gsl_rng_slatec, 1, 10000, 45776);
   rng_test (gsl_rng_uni, 1, 10000, 9214);
   rng_test (gsl_rng_uni32, 1, 10000, 1155229825);
   rng_test (gsl_rng_zuf, 1, 10000, 3970);
@@ -92,7 +92,7 @@ main (void)
 
   /* Test constant relationship between int and double functions */
 
-  rng_float_test (gsl_rng_cmlib);
+  rng_float_test (gsl_rng_slatec);
   rng_float_test (gsl_rng_cmrg);
   rng_float_test (gsl_rng_minstd);
   rng_float_test (gsl_rng_mrg);
@@ -137,7 +137,7 @@ main (void)
 
   /* Test save/restore functions */
 
-  rng_state_test (gsl_rng_cmlib);
+  rng_state_test (gsl_rng_slatec);
   rng_state_test (gsl_rng_cmrg);
   rng_state_test (gsl_rng_minstd);
   rng_state_test (gsl_rng_mrg);
@@ -180,7 +180,7 @@ main (void)
   rng_state_test (gsl_rng_vax);
   rng_state_test (gsl_rng_zuf);
 
-  rng_parallel_state_test (gsl_rng_cmlib);
+  rng_parallel_state_test (gsl_rng_slatec);
   rng_parallel_state_test (gsl_rng_cmrg);
   rng_parallel_state_test (gsl_rng_minstd);
   rng_parallel_state_test (gsl_rng_mrg);
@@ -227,7 +227,7 @@ main (void)
      don't get any crazy results back from the generator, i.e. they
      aren't a test of the algorithm, just the implementation) */
 
-  generic_rng_test (gsl_rng_cmlib);
+  generic_rng_test (gsl_rng_slatec);
   generic_rng_test (gsl_rng_cmrg);
   generic_rng_test (gsl_rng_minstd);
   generic_rng_test (gsl_rng_mrg);

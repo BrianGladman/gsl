@@ -121,15 +121,15 @@ C
 #include <stdlib.h>
 #include <gsl_rng.h>
 
-inline unsigned long int cmlib_get (void *vstate);
-double cmlib_get_double (void *vstate);
-void cmlib_set (void *state, unsigned long int s);
+inline unsigned long int slatec_get (void *vstate);
+double slatec_get_double (void *vstate);
+void slatec_set (void *state, unsigned long int s);
 
 typedef struct
   {
     long int x0, x1;
   }
-cmlib_state_t;
+slatec_state_t;
 
 static const long P = 4194304;
 static const long a1 = 1536;
@@ -138,10 +138,10 @@ static const long a1ma0 = 507;
 static const long c = 1731;
 
 inline unsigned long int
-cmlib_get (void *vstate)
+slatec_get (void *vstate)
 {
   long y0, y1;
-  cmlib_state_t *state = (cmlib_state_t *) vstate;
+  slatec_state_t *state = (slatec_state_t *) vstate;
 
   y0 = a0 * state->x0;
   y1 = a1 * state->x1 + a1ma0 * (state->x0 - state->x1) + y0;
@@ -154,15 +154,15 @@ cmlib_get (void *vstate)
 }
 
 double 
-cmlib_get_double (void *vstate)
+slatec_get_double (void *vstate)
 {
-  return cmlib_get (vstate) / 4194304.0 ;
+  return slatec_get (vstate) / 4194304.0 ;
 }
 
 void
-cmlib_set (void *vstate, unsigned long int s)
+slatec_set (void *vstate, unsigned long int s)
 {
-  cmlib_state_t *state = (cmlib_state_t *) vstate;
+  slatec_state_t *state = (slatec_state_t *) vstate;
 
   /* Only eight seeds are permitted.  This is pretty limiting, but
      at least we are guaranteed that the eight sequences are different */
@@ -174,13 +174,13 @@ cmlib_set (void *vstate, unsigned long int s)
   state->x1 = (s - state->x0) / 2048;
 }
 
-static const gsl_rng_type cmlib_type =
-{"cmlib",			/* name */
+static const gsl_rng_type slatec_type =
+{"slatec",			/* name */
  4194303,			/* RAND_MAX */
  0,				/* RAND_MIN */
- sizeof (cmlib_state_t),
- &cmlib_set,
- &cmlib_get,
- &cmlib_get_double};
+ sizeof (slatec_state_t),
+ &slatec_set,
+ &slatec_get,
+ &slatec_get_double};
 
-const gsl_rng_type *gsl_rng_cmlib = &cmlib_type;
+const gsl_rng_type *gsl_rng_slatec = &slatec_type;
