@@ -1,3 +1,13 @@
+1998-02-09  Mark Galassi  <rosalia@cygnus.com>
+
+	* test.c (main): added an extra argument so that the $(srcdir) can
+	be passed along when "make check" is run in a separate build
+	directory.
+
+	* test-macros, test-secant, test-bisection, test-newton,
+	test-falsepos: modified these to use build and source directories
+	explicitly.  Now "make check" in a separate build directory works.
+
 1998-02-02  Mark Galassi  <rosalia@cygnus.com>
 
 	* Makefile.am (TESTS): added $(srcdir) before these scripts, since

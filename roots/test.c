@@ -36,7 +36,8 @@ void my_error_handler (const char *reason, const char *file, int line);
 void
 usage(void)
 {
-  printf("Usage:  test <tests>\n"
+  printf("Usage:  test <srcdir> <tests>\n"
+"where <srcdir> is the path to the directory with the source code\n"
 "where <tests> is a string indicating which tests to run. It can contain the\n"
 "following characters:\n"
 "\n"
@@ -58,35 +59,42 @@ main(int argc, char ** argv)
 {
   int status ;
   int num_passed = 0, num_failed = 0;
+  char *srcdir = NULL;
 
   /* Do some basic checking of the arguments. */
   {
     char c;
    
     /* The user must specifiy one argument. */
-    if (argc != 2) {
+    if (argc != 3) {
       usage();
       return 1;
     }
 
-    /* It can contain only the characters "mbfsn". */
+    srcdir = (char *) malloc(strlen(argv[1])*sizeof(char) + 1);
+    strcpy(srcdir, argv[1]);
+    printf("running tests in the source directory %s\n", srcdir);
+
+    /* argv[2] can contain only the characters "mbfsn". */
     for (c = ' '; c <= '~'; c++)
-      if (strchr(argv[1], c) && !strchr("mbfsn", c)) {
+      if (strchr(argv[2], c) && !strchr("mbfsn", c)) {
         usage();
         return 1;
       }
   }
 
-  gsl_set_error_handler(&my_error_handler) ;
+  gsl_set_error_handler(&my_error_handler);
+
+  
 
   /* Test macros if so instructed. */
-  if (strchr(argv[1], 'm')) {
+  if (strchr(argv[2], 'm')) {
     test_macros() ;
   }
 
   /* Test bisection if so instructed. */
 
-  if (strchr(argv[1], 'b')) 
+  if (strchr(argv[2], 'b')) 
     {
       test_bisection("gsl_root_bisection, sin(x) [3, 4]", 
 		     sin, 3.0, 4.0, M_PI); 
@@ -116,7 +124,7 @@ main(int argc, char ** argv)
     }
   
   /* Test false position if so instructed. */
-  if (strchr(argv[1], 'f')) 
+  if (strchr(argv[2], 'f')) 
     {
       test_falsepos("gsl_root_falsepos, sin(x) [3, 3.2]",
 		    sin, 3.0, 3.2, M_PI); 
@@ -142,7 +150,7 @@ main(int argc, char ** argv)
   }
 
   /* Test secant method if so instructed. */
-  if (strchr(argv[1], 's')) 
+  if (strchr(argv[2], 's')) 
     {
       test_secant("gsl_root_secant, sin(x) {3.3, 3.4}", 
 		  sin, 3.3, 3.4, M_PI); 
@@ -173,7 +181,7 @@ main(int argc, char ** argv)
   }
 
   /* Test Newton's Method if so instructed. */
-  if (strchr(argv[1], 'n')) {
+  if (strchr(argv[2], 'n')) {
     test_newton("gsl_root_newton, sin(x) {3.4}",
 		sin_fdf, 3.4, M_PI); 
     test_newton("gsl_root_newton, sin(x) {-3.3}",

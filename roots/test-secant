@@ -1,3 +1,3 @@
 #!/bin/sh
-# $Id$
-./test s
+echo running $0 in $BUILDDIR
+$BUILDDIR/test $SRCDIR s
