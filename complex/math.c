@@ -86,7 +86,7 @@ gsl_complex_arg (gsl_complex z)
 double
 gsl_complex_abs (gsl_complex z)
 {				/* return |z| */
-  return gsl_hypot (GSL_REAL (z), GSL_IMAG (z));
+  return hypot (GSL_REAL (z), GSL_IMAG (z));
 }
 
 double
@@ -118,7 +118,7 @@ gsl_complex_logabs (gsl_complex z)
 
   /* Handle underflow when u is close to 0 */
 
-  return log (max) + 0.5 * gsl_log1p (u * u);
+  return log (max) + 0.5 * log1p (u * u);
 }
 
 
@@ -487,7 +487,7 @@ gsl_complex_arcsin (gsl_complex a)
   else
     {
       double x = fabs (R), y = fabs (I);
-      double r = gsl_hypot (x + 1, y), s = gsl_hypot (x - 1, y);
+      double r = hypot (x + 1, y), s = hypot (x - 1, y);
       double A = 0.5 * (r + s);
       double B = x / A;
       double y2 = y * y;
@@ -528,7 +528,7 @@ gsl_complex_arcsin (gsl_complex a)
 	      Am1 = 0.5 * (y2 / (r + (x + 1)) + (s + (x - 1)));
 	    }
 
-	  imag = gsl_log1p (Am1 + sqrt (Am1 * (A + 1)));
+	  imag = log1p (Am1 + sqrt (Am1 * (A + 1)));
 	}
       else
 	{
@@ -578,7 +578,7 @@ gsl_complex_arccos (gsl_complex a)
   else
     {
       double x = fabs (R), y = fabs (I);
-      double r = gsl_hypot (x + 1, y), s = gsl_hypot (x - 1, y);
+      double r = hypot (x + 1, y), s = hypot (x - 1, y);
       double A = 0.5 * (r + s);
       double B = x / A;
       double y2 = y * y;
@@ -619,7 +619,7 @@ gsl_complex_arccos (gsl_complex a)
 	      Am1 = 0.5 * (y2 / (r + (x + 1)) + (s + (x - 1)));
 	    }
 
-	  imag = gsl_log1p (Am1 + sqrt (Am1 * (A + 1)));
+	  imag = log1p (Am1 + sqrt (Am1 * (A + 1)));
 	}
       else
 	{
@@ -672,7 +672,7 @@ gsl_complex_arctan (gsl_complex a)
          take into account cancellation errors, overflow, underflow
          etc.  It would benefit from the Hull et al treatment. */
 
-      double r = gsl_hypot (R, I);
+      double r = hypot (R, I);
 
       double imag;
 
@@ -683,12 +683,12 @@ gsl_complex_arctan (gsl_complex a)
 
       if (fabs (u) < 0.1)
 	{
-	  imag = 0.25 * (gsl_log1p (u) - gsl_log1p (-u));
+	  imag = 0.25 * (log1p (u) - log1p (-u));
 	}
       else
 	{
-	  double A = gsl_hypot (R, I + 1);
-	  double B = gsl_hypot (R, I - 1);
+	  double A = hypot (R, I + 1);
+	  double B = hypot (R, I - 1);
 	  imag = 0.5 * log (A / B);
 	}
 

@@ -1,3 +1,10 @@
+Sun Oct 22 13:55:09 2000  Brian Gough  <bjg@network-theory.co.uk>
+
+	* math.c: changed calls to gsl_hypot() to hypot() so that the
+ 	system function is used in preference (the configure script will
+ 	define hypot to gsl_hypot if hypot is unavailable), similar change
+ 	for functions log1p and gsl_log1p also
+
 Wed Mar 15 11:17:21 2000  Brian Gough  <bjg@network-theory.co.uk>
 
 	* gsl_complex.h: moved into complex/ subdirectory from top-level

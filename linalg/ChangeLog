@@ -1,3 +1,18 @@
+Sun Oct 22 13:56:30 2000  Brian Gough  <bjg@network-theory.co.uk>
+
+	* householder.c (gsl_linalg_householder_transform): changed calls
+ 	to gsl_hypot() to hypot() so that the system function is used in
+ 	preference (the configure script will define hypot to gsl_hypot if
+ 	hypot is unavailable)
+
+	* svd.c (gsl_linalg_SV_decomp): changed calls to gsl_hypot() to
+ 	hypot()
+
+Sat Oct 21 15:54:56 2000  Brian Gough  <bjg@network-theory.co.uk>
+
+	* tridiag.c (solve_tridiag): prevent out-of-bounds array access
+ 	for small N (attempt to access element[N-2] when N is 1).
+
 Tue Sep 19 21:42:13 2000  Brian Gough  <bjg@network-theory.co.uk>
 
 	* qrpt.c (gsl_linalg_QRPT_decomp2): added convenience function to

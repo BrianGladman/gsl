@@ -168,7 +168,7 @@ gsl_linalg_SV_decomp (gsl_matrix * A,
 		  else
 		    {
 		      q -= r;
-		      v = gsl_hypot (2.0 * p, q);
+		      v = hypot (2.0 * p, q);
 		      cosine = sqrt ((v + q) / (2.0 * v));
 		      sine = p / (v * cosine);
 		    }
