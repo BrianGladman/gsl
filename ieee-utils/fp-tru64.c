@@ -7,11 +7,17 @@
  * that you pass a special flag to your C compiler.  For Compaq's C compiler
  * the flag is `-fprm d', for gcc it's `-mfp-rounding-mode=d'.
  *
- * Enabling the trap control (via ieee_set_fp_control) also requires a flag be
- * passed to the C compiler.  If you don't need the `inexact' stuff the flag
- * for Compaq's C compiler is `-ieee' and for gcc it's `-mieee'.  If you *do*
- * need the `inexact' stuff, the flag for Compaq's compiler is
- * `-ieee_with_inexact', and the flag for gcc is `-mieee-with-inexact'.
+ * Enabling the trap control (via ieee_set_fp_control) also requires a
+ * flag be passed to the C compiler.  The flag for Compaq's C compiler
+ * is `-ieee' and for gcc it's `-mieee'.
+
+ * We have not implemented the `inexact' case, since it is rarely used
+ * and requires the library being built with an additional compiler
+ * flag that can degrade performance for everything else. If you need
+ * to add support for `inexact' the relevant flag for Compaq's
+ * compiler is `-ieee_with_inexact', and the flag for gcc is
+ * `-mieee-with-inexact'.
+
  */
 
 #include <float.h>
@@ -105,12 +111,20 @@ gsl_ieee_set_mode (int precision, int rounding, int exception_mask)
 
   if (exception_mask & GSL_IEEE_TRAP_INEXACT)
     {
-	/* requires special flag to C compiler */
-      mode |= IEEE_TRAP_ENABLE_INE ;
+      /* To implement this would require a special flag to the C
+       compiler which can cause degraded performance */
+
+      GSL_ERROR ("Sorry, GSL does not implement trap-inexact for Tru64 Unix on the alpha - see fp-tru64.c for details", GSL_EUNSUP) ;
+
+      /* In case you need to add it, the appropriate line would be 
+       *  
+       *  mode |= IEEE_TRAP_ENABLE_INE ; 
+       *
+       */
+
     }
   else
     {
-	/* requires special flag to C compiler */
       mode &= ~ IEEE_TRAP_ENABLE_INE ;
     }
 
