@@ -1,0 +1,22 @@
+Sun Mar 22 23:34:05 1998  Brian Gough  <bjg@vvv.lanl.gov>
+
+	* skew.c: compute the skewness of a dataset
+
+	* percentiles.c: find a given percentile from a sorted dataset
+
+	* minmax.c: allow the user to find the indices of the max/min
+ 	data points, in addition to the max/min values
+
+	* median.c: compute the median of a sorted dataset
+
+	* kurtosis.c: compute the kurtosis
+
+	* absdev.c: compute absolute deviations
+
+	* split statistics functions into double versions (gsl_stats) and
+ 	integer versions (gsl_stats_int). There is a script
+ 	(convert_double_to_int.pl) to make the integer versions from the
+ 	double versions. 
+
+	
+
