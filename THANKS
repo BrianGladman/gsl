@@ -70,7 +70,7 @@ functions
 * Pablo Bianucci <pbian@pccp.com.ar> for patches to complex matrix/vectors
 
 * Toby White <tow@theor.ch.cam.ac.uk> for several patches and
-improvements to the design
+improvements to the design, OpenBSD support
 
 * Bill Brower <wbrower@ll.mit.edu> for bug report on gsl.m4
 
@@ -97,3 +97,5 @@ the skewed Levy alpha-stable variates gsl_ran_levy_skew
 
 * Ramin Nakisa <raminnakisa@yahoo.com> for bug reports
 
+* Achim Gaedke <achim@zpr.uni-koeln.de> for bug reports and
+suggestions, additional histogram code, PyGSL python interface
