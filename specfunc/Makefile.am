@@ -71,7 +71,6 @@ libgslspecfunc_a_SOURCES = 	\
 	fermi_dirac.c		\
 	gamma.c			\
 	laguerre.c		\
-	legendre.c		\
 	legendre_con.c		\
 	legendre_poly.c		\
 	log.c			\
