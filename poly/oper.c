@@ -23,307 +23,294 @@
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_poly.h>
 
-extern int gsl_check_range ; /* defined in vector/vector.c */
+extern int gsl_check_range;	/* defined in vector/vector.c */
 
-void gsl_poly_dump (gsl_poly * p)
+double
+gsl_poly_eval2 (gsl_poly * p, double x)
 {
-    int i;
-    printf("%d\n",p->degree);
-    for (i = p->degree; i >= 0; i--) 
-      {
-	printf("%e\n",p->c[i]);
-      }
-    printf("\n");
+  return gsl_poly_eval (p->c, p->size, x);
 }
 
-double gsl_poly_get(const gsl_poly * p, const size_t i)
+double
+gsl_poly_get (const gsl_poly * p, const size_t i)
 {
-    if (gsl_check_range)
-      {
-	if (i > p->degree)
-	  {
-	    GSL_ERROR_VAL("Index out of range", GSL_EINVAL, 0.0);
-	  }
-      }
-    return p->c[i];
+  if (gsl_check_range)
+    {
+      if (i >= p->size)
+	{
+	  GSL_ERROR_VAL ("index out of range", GSL_EINVAL, 0.0);
+	}
+    }
+
+  return p->c[i];
 }
 
-void gsl_poly_set(gsl_poly * p, const size_t i, double a)
+void
+gsl_poly_set (gsl_poly * p, const size_t i, double a)
 {
-    if (gsl_check_range)
-      {
-	if (i > p->size - 1)
-	  {
-	    GSL_ERROR_VOID("Index out of range", GSL_EINVAL);
-	  }
-      }
-    p->c[i] = a;
-    if (i > p->degree) p->degree = i;
+  if (gsl_check_range)
+    {
+      if (i >= p->size)
+	{
+	  GSL_ERROR_VOID ("index out of range", GSL_EINVAL);
+	}
+    }
+
+  p->c[i] = a;
 }
 
-int gsl_poly_set_zero(gsl_poly * p)
-{ 
-    size_t i;
-
-    for (i = 0; i < p->size; i++)
-      {
-	p->c[i] = 0.0;
-      }
-    p->degree = 0;
-    return GSL_SUCCESS;
-}
-
-int gsl_poly_set_all(gsl_poly * p, size_t d, double x)
+int
+gsl_poly_set_zero (gsl_poly * p)
 {
-    size_t i;
-    if (p->size <= d) 
-      { 
-	GSL_ERROR("size of destination poly too small",GSL_EBADLEN);
-      }	
-    else
-      {    
-	p->degree = d;
-	for (i = 0; i <= d; i++)
-	  {
-	    p->c[i] = x;
-	  }
-      }
-    return GSL_SUCCESS;
+  size_t i;
+  size_t size = p->size;
+
+  for (i = 0; i < size; i++)
+    {
+      p->c[i] = 0.0;
+    }
+
+  return GSL_SUCCESS;
 }
 
-int gsl_poly_consistent(const gsl_poly * p, double tol) 
+int
+gsl_poly_memcpy (gsl_poly * dest, const gsl_poly * src)
 {
-    int i = 0, d = 0;
-    int status = 0;
+  size_t src_size = src->size;
+  size_t dest_size = dest->size;
+  size_t j;
 
-    for (i = p->size - 1; i >= 0; i--)
-      {
-	if (fabs(p->c[i]) >= tol)
-	  {
-	    d = i;
-	    break;
-	  }
-      }
-    if ( d == p->degree) 
-      {
-	status = GSL_SUCCESS;
-      }
-    else
-      {
-	status = GSL_FAILURE;
-      }
-    return status;
+  if (src_size != dest_size)
+    {
+      GSL_ERROR ("polynomial sizes are not equal", GSL_EBADLEN);
+    }
+
+  for (j = 0; j < src_size; j++)
+    {
+      dest->c[j] = src->c[j];
+    }
+
+  return GSL_SUCCESS;
 }
 
-int gsl_poly_scale(gsl_poly * p, double a)
+int
+gsl_poly_chop (gsl_poly * p, size_t k)
 {
-    size_t d = p->degree;
-    size_t i;
+  size_t i, size = p->size;
 
-    for (i = 0; i <= d; i++)
-      {
-	p->c[i] *= a;
-      }
+  for (i = k; i < size; i++)
+    {
+      p->c[i] = 0.0;
+    }
 
-    return GSL_SUCCESS;
+  return GSL_SUCCESS;
 }
 
-int gsl_poly_memcpy(gsl_poly * dest, const gsl_poly * src)
+size_t
+gsl_poly_find_size (const gsl_poly * p, double tol)
 {
-    size_t src_size = src->size;
-    size_t dest_size = dest->size;
-    size_t j;
+  size_t i;
+  size_t size = p->size;
 
+  for (i = size; i > 0 && i--;)
+    {
+      if (fabs (p->c[i]) >= tol)
+	{
+	  break;
+	}
+    }
 
-    if (src_size > dest_size)
-      {
-	GSL_ERROR("size of destination poly too small",GSL_EBADLEN);
-      }	
-
-    for (j = 0; j < src_size; j++)
-      {
-	dest->c[j] = src->c[j];
-      }
-    dest->degree = src->degree;
-
-    return GSL_SUCCESS;
+  return i;
 }
 
-double gsl_poly_eval2(gsl_poly * p, double x)
+int
+gsl_poly_set_from_array (gsl_poly * p, const double * a, size_t size)
 {
-    return gsl_poly_eval(p->c,p->degree+1,x);
+  size_t i;
+
+  if (p->size != size)
+    {
+      GSL_ERROR ("size of polynomial must match array", GSL_EBADLEN);
+    }
+
+  for (i = 0; i < size; i++)
+    {
+      p->c[i] = a[i];
+    }
+
+  return GSL_SUCCESS;
 }
 
-int gsl_poly_get_degree(const gsl_poly * p)
+int
+gsl_poly_add (gsl_poly * p1, const gsl_poly * p2)
 {
-    return p->degree;
+  size_t i;
+  size_t size = p2->size;
+
+  if (p1->size != p2->size)
+    {
+      GSL_ERROR ("size of polynomials must be equal", GSL_EBADLEN);
+    }
+  
+  for (i = 0; i < size; i++)
+    {
+      p1->c[i] += p2->c[i];
+    }
+  
+  return GSL_SUCCESS;
 }
 
-int gsl_poly_set_degree(gsl_poly * p, double tol) 
+int
+gsl_poly_sub (gsl_poly * p1, const gsl_poly * p2)
 {
-    int i = 0;
-    size_t d = 0;
+  size_t i;
+  size_t size = p2->size;
 
-    for (i = p->size - 1; i >= 0; i--)
-      {
-	if (fabs(p->c[i]) < tol)
-	  {
-	    p->c[i] = 0.0;
-	  }
-	else
-	  {
-	    d = i;
-	    break;
-	  }
-      }
-    p->degree = d;
-
-    return (GSL_SUCCESS);
+  if (p1->size != p2->size)
+    {
+      GSL_ERROR ("size of polynomials must be equal", GSL_EBADLEN);
+    }
+  
+  for (i = 0; i < size; i++)
+    {
+      p1->c[i] -= p2->c[i];
+    }
+  
+  return GSL_SUCCESS;
 }
 
-
-int gsl_poly_add(gsl_poly * p1, const gsl_poly * p2)
+int
+gsl_poly_mul (gsl_poly * q, const gsl_poly * p1, const gsl_poly * p2)
 {
-    size_t i = 0;
+  int i, j, k;
 
-    if (p1->size <= p2->degree)
-      {
-	GSL_ERROR("size of destination poly not sufficient", GSL_EBADLEN);
-      }
-    else
-      {
-	for (i = 0; i <= p2->degree; i++)
-	  {
-	    p1->c[i] += p2->c[i];
-	  }
-	p1->degree = GSL_MAX(p1->degree, p2->degree);
-	return GSL_SUCCESS;
-      }
+  int size_p1 = p1->size;
+  int size_p2 = p2->size;
+  int size_q = size_p1 + size_p2;
+
+  if (size_q != size_p1 + size_p2)
+    {
+      GSL_ERROR ("incorrect size of destination polynomial", GSL_EBADLEN);
+    }
+
+  for (i = 0; i < size_q; i++)
+    {
+      q->c[i] = 0.0;
+    }
+  
+  for (i = 0; i < size_q; i++)
+    {
+      double sum = 0.0;
+
+      size_t j_min = (i < size_p2) ? 0 : (i - size_p2);
+      size_t j_max = (i > size_p1) ? i : size_p1;
+
+      for (j = j_min; j < j_max; j++)
+        {
+          sum += p1->c[j] * p2->c[i-j];
+        }
+      
+      q->c[i] = sum;
+    }
+
+  return GSL_SUCCESS;
 }
 
-int gsl_poly_sub(gsl_poly * p1, const gsl_poly * p2)
+int
+gsl_poly_div (gsl_poly * q, gsl_poly * r, const gsl_poly * u, const gsl_poly * v)
 {
-    size_t i = 0;
+  size_t size_u = u->size;
+  size_t size_v = v->size;
+  size_t size_q = q->size;
+  size_t size_r = r->size;
+  
+  size_t i, j, k;
 
-    if (p1->size <= p2->degree)
-      {
-	GSL_ERROR("size of destination poly not sufficient", GSL_EBADLEN);
-      }
-    else
-      {
-	for (i = 0; i <= p2->degree; i++)
-	  {
-	    p1->c[i] -= p2->c[i];
-	  }
-	p1->degree = GSL_MAX(p1->degree, p2->degree);
-	return GSL_SUCCESS;
-      }
+  if (size_v > size_u)
+    {
+      GSL_ERROR
+	("degree of denominator should not exceed degree of numerator",
+	 GSL_EINVAL);
+    }
+
+  if (size_q != size_u)
+    {
+      GSL_ERROR ("size of quotient must equal size of numerator", GSL_EBADLEN);
+    }
+
+  if (size_r != size_u)
+    {
+      GSL_ERROR ("size of remainder must equal size of numerator", GSL_EBADLEN);
+    }
+
+  for (i = 0; i < size_u; i++)
+    {
+      q->c[i] = 0.0;
+      r->c[i] = u->c[i];
+    }
+
+  for (k = size_u - size_v + 1; k > 0 && k--;) 
+    {
+      double qk = r->c[size_v + k - 1] / v->c[size_v - 1];
+
+      q->c[k] = qk;
+
+      for (j = size_v + k - 1; j > k && j--;)
+	{
+	  r->c[j] -= qk * v->c[j - k];
+	}
+    }
+
+  for (j = size_v; j < size_u; j++)
+    {
+      r->c[j] = 0.0;
+    }
+
+  return GSL_SUCCESS;
 }
 
-int gsl_poly_mul(gsl_poly * p1, const gsl_poly * p2, gsl_poly * w)
+int
+gsl_poly_scale (gsl_poly * p, double a)
 {
-    int i,j,k;
-    int d1 = p1->degree;
-    int d2 = p2->degree;
-    double x;
-    if (p1 -> size <= d1 + d2)
-      {
-	GSL_ERROR("size of destination poly not sufficient",GSL_EBADLEN);
-      }
-    if (w -> size  <= d1 + d2)
-      {
-	GSL_ERROR("size of workspace poly not sufficient",GSL_EBADLEN);
-      }
-    else
-      {
-	for (i = 0; i < w -> size; i++)
-	  {
-	    w->c[i] = 0.0;
-	  }
-	for (i = 0; i <= d1; i++)
-	  {
-	    x = p1->c[i];
-	    for (j = 0; j <= d2; j++)
-	      {
-		k = i + j;
-		w->c[k] += x * p2->c[j];
-	      }
-	  }
-	for (i = 0; i <= d1+d2; i++)
-	  {
-	    p1->c[i] = w->c[i];
-	  }
-	p1->degree = d1 + d2;
-      }
-    return GSL_SUCCESS;
+  size_t size = p->size;
+  size_t i;
+
+  for (i = 0; i < size; i++)
+    {
+      p->c[i] *= a;
+    }
+
+  return GSL_SUCCESS;
 }
 
-int gsl_poly_div(const gsl_poly * p1, const gsl_poly * p2, gsl_poly * q, gsl_poly * r)
+int
+gsl_poly_diff (gsl_poly * dp, const gsl_poly * p)
 {
-    size_t d1 = p1->degree;
-    size_t d2 = p2->degree;
-    size_t dq = q->size - 1;
-    size_t dr = r->size - 1;
-    int k,j;
+  size_t size = dp->size;
+  size_t i;
+  
+  if (size + 1 !=  p->size)
+    {
+      GSL_ERROR ("derivative must be one element smaller than polynomial", GSL_EBADLEN);
+    }
 
-    if (d2 > d1) 
-      {
-	GSL_ERROR("degree of denominator should not exceed degree of numerator", GSL_EINVAL);
-      }
+  for (i = 0; i < size; i++)
+    {
+      dp->c[i] = (i + 1.0) * p->c[i + 1];
+    }
 
-    if (dq < d1)
-      {
-	GSL_ERROR("size of quotient not sufficient",GSL_EBADLEN);
-      }
-
-    if (dr < d1)
-      {
-	GSL_ERROR("size of remainder not sufficient",GSL_EBADLEN);
-      }
-
-    for (j = 0; j <= d1; j++) 
-      {
-	r->c[j] = p1->c[j];
-	q->c[j] = 0.0;
-      }
-
-    for (k = d1 - d2; k >= 0; k--)
-      {
-	q->c[k] = r->c[d2+k]/p2->c[d2];
-	for (j = d2 + k - 1; j >= k; j--)
-	  {
-	    r->c[j] -= q->c[k]*p2->c[j-k];
-	  }
-      }
-    for (j = d2; j <= d1; j++)
-      {
-	r->c[j] = 0.0;
-      } 
-    gsl_poly_set_degree(q,GSL_DBL_EPSILON);
-    gsl_poly_set_degree(r,GSL_DBL_EPSILON);
-    return GSL_SUCCESS;
+  return GSL_SUCCESS;
 }
 
-int gsl_poly_diff(const gsl_poly * p, gsl_poly * dp)
+void
+gsl_poly_dump (gsl_poly * p)
 {
-    int i;
-
-    if (dp->size < p->degree)
-      {
-	GSL_ERROR("size of resulting poly not sufficient", GSL_EBADLEN);
-      }
-
-    for (i = 0; i < p->degree; i++)
-      {
-	dp->c[i] = (i+1) * p->c[i+1];
-      }
-
-    for (i = p->degree; i < dp->size; i++)
-      {
-	dp->c[i] = 0.0;
-      }
-
-    dp->degree = p->degree - 1;
-
-    return GSL_SUCCESS;
+  int i;
+  printf ("%d\n", p->size);
+  for (i = 0; i < p->size; i++)
+    {
+      printf ("%e\n", p->c[i]);
+    }
+  printf ("\n");
 }
+

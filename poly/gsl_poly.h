@@ -39,84 +39,41 @@ __BEGIN_DECLS
 struct gsl_poly_struct {
 
   double * c;    /* coefficients   */
-  size_t degree; /* degree         */
   size_t size;   /* allocated size */
 };
 typedef struct gsl_poly_struct gsl_poly;
-
-/* Struct for a Sturm sequence */
-struct gsl_poly_sturm_struct {
-
-   gsl_poly ** sturmseq;
-   size_t index;
-   size_t size;
-};
-typedef struct gsl_poly_sturm_struct gsl_poly_sturm;
  
 /* Allocate polynomial */
-gsl_poly * gsl_poly_alloc(const size_t size);
+gsl_poly * gsl_poly_alloc (const size_t size);
 
 /* Allocate polynomial and init to zero polynomial*/
-gsl_poly * gsl_poly_calloc(const size_t size);
+gsl_poly * gsl_poly_calloc (const size_t size);
 
 /* Free polynomial */
-void gsl_poly_free(gsl_poly * p);
+void gsl_poly_free (gsl_poly * p);
 
 /* Operations */
-double gsl_poly_get(const gsl_poly * p, const size_t i);
-void gsl_poly_set(gsl_poly * p, const size_t i, double a);
-int gsl_poly_get_degree(const gsl_poly * p);
-int gsl_poly_set_zero(gsl_poly * p);
-int gsl_poly_set_all(gsl_poly * p, size_t d, double x);
-int gsl_poly_set_basis(gsl_poly * p, size_t i);
-int gsl_poly_scale(gsl_poly * p, double a);
-int gsl_poly_consistent(const gsl_poly * p, double tol);
-int gsl_poly_set_Legendre(gsl_poly * p, unsigned int d, gsl_poly * w1, gsl_poly * w2, gsl_poly * w3);
+double gsl_poly_get (const gsl_poly * p, const size_t i);
+void gsl_poly_set (gsl_poly * p, const size_t i, double a);
+
+int gsl_poly_set_zero (gsl_poly * p);
+int gsl_poly_set_all (gsl_poly * p, size_t d, double x);
+int gsl_poly_set_basis (gsl_poly * p, size_t i);
+int gsl_poly_scale (gsl_poly * p, double a);
+int gsl_poly_consistent (const gsl_poly * p, double tol);
  
-int gsl_poly_memcpy(gsl_poly * dest, const gsl_poly * src);
+int gsl_poly_memcpy (gsl_poly * dest, const gsl_poly * src);
 
-int gsl_poly_add(gsl_poly * p1, const gsl_poly * p2);
-int gsl_poly_sub(gsl_poly * p1, const gsl_poly * p2);
-int gsl_poly_mul(gsl_poly * p1, const gsl_poly * p2, gsl_poly * w);
-int gsl_poly_div(const gsl_poly * p1, const gsl_poly * p2, gsl_poly * q, gsl_poly *r);
-int gsl_poly_set_degree(gsl_poly * p, double tol);
+int gsl_poly_add (gsl_poly * p1, const gsl_poly * p2);
+int gsl_poly_sub (gsl_poly * p1, const gsl_poly * p2);
+int gsl_poly_mul (gsl_poly * q, const gsl_poly * p1, const gsl_poly * p2);
+int gsl_poly_div (gsl_poly * q, gsl_poly *r, const gsl_poly * u, const gsl_poly * v);
 
-int gsl_poly_diff(const gsl_poly * p, gsl_poly * dp);
+int gsl_poly_diff (gsl_poly * dp, const gsl_poly * p);
 
-double gsl_poly_eval2(gsl_poly * p, double x);
+double gsl_poly_eval2 (gsl_poly * p, double x);
 
-void gsl_poly_dump(gsl_poly * p);
-
-/* Allocate Sturm sequence */
-gsl_poly_sturm *
-gsl_poly_sturm_alloc(const size_t size);
-
-/* Allocate Sturm sequence and initialize all data to zero*/
-gsl_poly_sturm *
-gsl_poly_sturm_calloc(const size_t size);
-
-/* Free Sturm sequence */
-void gsl_poly_sturm_free(gsl_poly_sturm * ss);
-
-
-/* Build sturm sequence */
-int gsl_poly_sturm_build(gsl_poly_sturm *ss, const gsl_poly * p, gsl_poly * w);
-
-/* Calculate the number of sign changes in the Sturm sequence at point a */
-
-int gsl_poly_sturm_changes(const gsl_poly_sturm * ss, double a);
-
-/* Calculate the number of roots between a and b based on Sturm sequence ss */
-int gsl_poly_sturm_numroots(const gsl_poly_sturm * ss,double a, double b);
-
-
-/* Dump Sturm sequence */
-
-void gsl_poly_sturm_dump(const gsl_poly_sturm * ss);
-
-
-
-
+void gsl_poly_dump (gsl_poly * p);
 
 /* Evaluate polynomial
  *
