@@ -245,9 +245,12 @@ versions of GCC.
 Hints for Solaris
 =================
 
-Some warnings about "end of loop code not reached". These can be
-ignored -- they come from the do { ... ; return ; } while(0) statement
-in the GSL_ERROR macro.
+If you are using the Sun compilers then the library should be compiled
+with the Sun C compiler 'cc', not the Sun C++ compiler 'CC'.
+
+There may be some warnings about "end of loop code not reached". These
+can be ignored -- they come from the do { ... ; return ; } while(0)
+statement in the GSL_ERROR macro.
 
                     ------------------------------
 
