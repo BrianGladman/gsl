@@ -1,3 +1,8 @@
+2003-05-30  Brian Gough  <bjg@network-theory.co.uk>
+
+	* householder.c (gsl_linalg_householder_hv): converted to use blas
+	routines
+
 2003-05-08  Brian Gough  <bjg@network-theory.co.uk>
 
 	* test.c: added tests for QR_QRsolve and QRPT_QRsolve

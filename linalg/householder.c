@@ -153,34 +153,35 @@ gsl_linalg_householder_hv (double tau, const gsl_vector * v, gsl_vector * w)
 {
   /* applies a householder transformation v to vector w */
   size_t i;
+  const size_t N = v->size;
   double d = 0;
  
   if (tau == 0)
     return GSL_SUCCESS ;
 
-  /* d = v'w */
-
-  d = gsl_vector_get(w,0);
-
-  for (i = 1 ; i < v->size ; i++)
-    {
-      d += gsl_vector_get(v,i) * gsl_vector_get(w,i);
-    }
-
-  /* w = w - tau (v) (v'w) */
-  
   {
-    double w0 = gsl_vector_get (w,0);
-    gsl_vector_set (w, 0, w0 - tau * d);
-  }
+    /* compute d = v'w */
 
-  for (i = 1; i < v->size ; i++)
+    double d0 = gsl_vector_get(w,0);
+    double d1, d;
+
+    gsl_vector_const_view v1 = gsl_vector_const_subvector(v, 1, N-1);
+    gsl_vector_view w1 = gsl_vector_subvector(w, 1, N-1);
+
+    gsl_blas_ddot (&v1.vector, &w1.vector, &d1);
+    
+    d = d0 + d1;
+
+    /* compute w = w - tau (v) (v'w) */
+  
     {
-      double wi = gsl_vector_get (w,i);
-      double vi = gsl_vector_get (v,i);
-      gsl_vector_set (w, i, wi - tau * vi * d);
+      double w0 = gsl_vector_get (w,0);
+      gsl_vector_set (w, 0, w0 - tau * d);
     }
-
+    
+    gsl_blas_daxpy (-tau * d, &v1.vector, &w1.vector);
+  }
+  
   return GSL_SUCCESS;
 }
 

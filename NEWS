@@ -1,5 +1,7 @@
 * What is new in gsl-1.3+:
 
+** gsl_linalg_householder_hv now uses BLAS routines internally
+
 ** Added faster binomial random variates using the TPE rejection
 algorithm, in the function gsl_randist_binomial_tpe.
 
