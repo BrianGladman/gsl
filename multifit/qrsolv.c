@@ -1,7 +1,7 @@
 int
-qrsolv (gsl_matrix * r, gsl_permutation * p, gsl_vector * diag,
-        gsl_vector * qtb, gsl_vector * x, gsl_vector * sdiag, 
-        gsl_vector * wa)
+qrsolv (gsl_matrix * r, const gsl_permutation * p, 
+        const gsl_vector * diag, const gsl_vector * qtb, gsl_vector * x, 
+        gsl_vector * sdiag,   gsl_vector * wa)
 {
   size_t n = r->size2;
 

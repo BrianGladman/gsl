@@ -1,0 +1,38 @@
+static int
+set (void *vstate, gsl_multifit_function_fdf * fdf, gsl_vector * x, gsl_vector * f, gsl_matrix * J, gsl_vector * dx, int scale)
+{
+  lmder_state_t *state = (lmder_state_t *) vstate;
+
+  gsl_matrix *q = state->q;
+  gsl_matrix *r = state->r;
+  gsl_vector *tau = state->tau;
+  gsl_vector *diag = state->diag;
+  gsl_permutation *perm = state->perm;
+
+  int signum;
+
+  GSL_MULTIFIT_FN_EVAL_F_DF (fdf, x, f, J);
+
+  state->iter = 1;
+  state->fnorm = enorm (f);
+
+  gsl_vector_set_all (dx, 0.0);
+
+  /* store column norms in diag */
+
+  if (scale)
+    compute_diag (J, diag);
+  else
+    gsl_vector_set_all (diag, 1.0);
+
+  /* set delta to factor |D x| or to factor if |D x| is zero */
+
+  state->delta = compute_delta (diag, x);
+
+  /* Factorize J into QR decomposition */
+
+  gsl_linalg_QRPT_decomp (J, tau, perm, &signum);
+  gsl_linalg_QR_unpack (J, tau, q, r);
+
+  return GSL_SUCCESS;
+}
