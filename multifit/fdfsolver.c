@@ -171,9 +171,14 @@ gsl_multifit_fdfsolver_name (const gsl_multifit_fdfsolver * s)
 }
 
 gsl_vector *
-gsl_multifit_fdfsolver_root (const gsl_multifit_fdfsolver * s)
+gsl_multifit_fdfsolver_position (const gsl_multifit_fdfsolver * s)
 {
   return s->x;
 }
 
+int
+gsl_multifit_fdfsolver_covar (const gsl_multifit_fdfsolver * s, gsl_matrix * covar)
+{
+  
+}
 

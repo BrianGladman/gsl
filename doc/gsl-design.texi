@@ -90,20 +90,20 @@ of numerical routines for scientific computing.
 * Type Index::                  
 @end menu
 
-@value{GSL} is a library of scientific subroutines.  It aims to provide
-a convenient interface to ``black box'' routines that do standard (and
-not so standard) tasks that arise in scientific research.  More than
-that, it also provides the source code.  Users are welcome to alter,
-adjust, modify, and improve the interfaces and/or implementations of
-whichever routines might be needed for a particular purpose.  We are
-starting small, with random number generators and special functions, but
-hope to expand to include linear algebra, Fourier analysis, etc.
+The @value{GSL} is a library of scientific subroutines.  It aims to
+provide a convenient interface to routines that do standard (and not so
+standard) tasks that arise in scientific research.  More than that, it
+also provides the source code.  Users are welcome to alter, adjust,
+modify, and improve the interfaces and/or implementations of whichever
+routines might be needed for a particular purpose.
 
 GSL is intended to provide a free equivalent to existing proprietary
-numerical libraries such as NAG, IMSL and IBM's ESSL.
+numerical libraries written in C or Fortran, such as NAG, IMSL and IBM's
+ESSL.
 
 The target platform is a low-end desktop workstation. The goal is to
-provide something which is generally useful, and aimed at general users.
+provide something which is generally useful, and the library is aimed at
+general users rather than specialists.
 
 @node Motivation
 @chapter Motivation
@@ -143,7 +143,7 @@ so it is a lot of work to get started with netlib.
 of pointers to scientific software, but like netlib, the individual
 routines vary in their quality and their level of documentation.
 
-@emph{Numerical Recipies} (http://www.nr.com,
+@emph{Numerical Recipes} (http://www.nr.com,
 http://cfata2.harvard.edu/nr/) is an excellent book: it explains the
 algorithms in a very clear way.  Unfortunately the authors released the
 source code under a license which allows you to use it, but prevents you
@@ -153,7 +153,7 @@ from @emph{fortranitis} and other
 limitations. [http://www.lysator.liu.se/c/num-recipes-in-c.html]
 
 @emph{SLATEC} is a large public domain collection of numerical routines
-in Fortan written under a Department of Energy program in the
+in Fortran written under a Department of Energy program in the
 1970's. The routines are well tested and have a reasonable overall
 design (given the limitations of that era).  GSL should aim to be a
 modern version of SLATEC.
@@ -167,22 +167,37 @@ arguments".
 Forth Scientific Library [see the URL
 http://www.taygeta.com/fsl/sciforth.html].
 
-@menu
-* jt section::                  
-@end menu
+@emph{Numerical Algorithms with C} G. Engeln-Mullges, F. Uhlig. A nice
+numerical library written in ANSI C with an accompanying
+textbook. Source code is available but the library is not free software.
 
-@node jt section
-@section jt section
+@emph{NUMAL} A C version of the NUMAL library has been written by
+H.T. Lau and is published as a book and disk with the title "A Numerical
+Library in C for Scientists and Engineers". Source code is available but
+the library is not free software.
+
+@emph{C Mathematical Function Handbook} by Louis Baker. A library of
+function approximations and methods corresponding to those in the
+"Handbook of Mathematical Functions" by Abramovitz and Stegun.  Source
+code is available but the library is not free software.
+
+@emph{CCMATH} by Daniel A. Atkinson. A C numerical library covering 
+similar areas to GSL and also under the GPL. The code is quite terse.
+
+@emph{CEPHES} A useful collection of high-quality special functions
+written in C. Not GPL'ed.
+
+@emph{WNLIB} A small collection of numerical routines written in C by
+Will Naylor. Public domain.
+
+@emph{MESHACH} A comprehensive matrix-vector linear algebra library
+written in C. Freely available but not GPL'ed (non-commercial license).
+
+@node JT section
+@section JT section
 
 [written by James Theiler, and not incorporated into the above
 motivation]
-
-@menu
-* Goals::                       
-@end menu
-
-@node Goals
-@subsection Goals
 
 And we furthermore promise to try as hard as possible to document
 the software: this will ideally involve discussion of why you might want
@@ -199,34 +214,6 @@ contributors will have to contribute copylefted software and they cannot
 mind that evil profit-making companies (such as those which sell
 "environments") might use this software as part of their packages.
 
-@node Tensions in the Design of  Numerical Libraries
-@subsection Tensions in the Design of  Numerical Libraries
-
-In writing a numerical library there is a unavoidable tension between
-completeness and simplicity.  By completeness I mean the ability to
-perform operations on different objects so that the group is
-"closed". In mathematics objects can be combined and operated on in an
-infinite number of ways.  For example, I can take the derivative of a
-scalar field wrt a vector and the derivative of a vector field wrt a
-scalar (along a path).
-
-There is a definite tendency to unconsciously try to reproduce this in a
-numerical library, by adding new features one by one. After all, it is
-always easy enough to support just one more feature.... so why not?
-
-Looking at the big picture, no-one would start out by saying "I want to
-be able to represent every possible mathematical object and operation
-using C structs" -- this is a strategy which is doomed to fail.  There
-is a limited amount of complexity which can be represented in a
-programming language like C.  Attempts to reproduce the complexity of
-mathematics within such a language would just lead to a morass of
-unmaintainable code.  However, it's easy to go down that road if you
-don't think about it ahead of time.
-
-So choose simplicity over completeness.  Keep modules independent where
-possible. If interdependencies between modules are introduced be sure
-about where you are going to draw the line.  
-
 @node Design
 @chapter Design
 
@@ -234,8 +221,9 @@ about where you are going to draw the line.
 * Language for implementation::  
 * Interface to other languages::  
 * What routines are implemented::  
+* What routines are not implemented::  
 * Standards and conventions::   
-* Levels::                      
+* Documentation::               
 * Namespace::                   
 * Header files::                
 * Target system::               
@@ -246,6 +234,7 @@ about where you are going to draw the line.
 * Algorithm decomposition::     
 * Memory allocation and ownership::  
 * Memory layout::               
+* Levels::                      
 * Exceptions and Error handling::  
 * Persistence::                 
 * Datatype widths::             
@@ -281,65 +270,108 @@ Use standard tools to make wrappers: swig, g-wrap
 @section What routines are implemented
 
 Anything which is in any of the existing libraries.  Obviously it makes
-sense to prioritise and write code for the most important areas first.
+sense to prioritize and write code for the most important areas first.
 
-@subsection Random number generators
+@itemize @bullet
+@item Random number generators
 
 Includes both random number generators and routines to give various
 interesting distributions.
 
-@subsection Statistics
+@item Statistics
 
-@subsection Special Functions
+@item Special Functions
 
 What I (jt) envision for this section is a collection of routines for
 reliable and accurate (but not necessarily fast or efficient) estimation
 of values for special functions, explicitly using Taylor series, asymptotic 
 expansions, continued fraction expansions, etc.  As well as these routines,
-fast approximations will also be provided, primarily based on Chebyshev
+fast approximations will also be provided, primarily based on Chebyschev
 polynomials and ratios of polynomials.  In this vision, the approximations
 will be the "standard" routines for the users, and the exact (so-called)
 routines will be used for verification of the approximations.  It may also
 be useful to provide various identity-checking routines as part of the
 verification suite.
 
-@subsection Curve fitting
+@item Curve fitting
 
-polynomial
+polynomial, special functions, spline
 
-special functions
+@item Ordinary differential equations
 
-spline
+@item Partial differential equations
 
-@subsection Ordinary differential equations
+@item Fourier Analysis
 
-@subsection Partial differential equations
+@item Wavelets
 
-@subsection Fourier Analysis
+@item Matrix operations: linear equations
 
-@subsection Wavelets
+@item Matrix operations: eigenvalues and spectral analysis
 
-@subsection Matrix operations: linear equations
+@item Matrix operations: any others?
 
-@subsection Matrix operations: eigenvalues and spectral analysis
+@item Direct integration
 
-@subsection Matrix operations: any others?
+@item Monte carlo methods
 
-@subsection Direct integration
+@item Simulated annealing
 
-@subsection Monte carlo methods
-
-@subsection Simulated annealing
-
-@subsection Genetic algorithms
+@item Genetic algorithms
 
 We need to think about what kinds of algorithms are basic generally
 useful numerical algorithms, and which ones are special purpose
 research projects.  We should concentrate on supplying the former.
 
-@subsection Cellular automata
+@item Cellular automata
 
-@subsection Parallel libraries
+@end itemize
+
+@node What routines are not implemented
+@section What routines are not implemented
+
+@itemize @bullet
+@item anything which already exists as a high-quality GPL'ed package.
+
+@item anything which is too big
+ -- i.e. an application in its own right rather than a subroutine
+
+For example, partial differential equation solvers are often huge and
+very specialized applications (since there are so many types of PDEs,
+types of solution, types of grid, etc).  This sort of thing should
+remain separate.  It is better to point people to the good applications
+which exist.
+@end itemize
+
+
+@node Tensions in the Design of  Numerical Libraries
+@section Tensions in the Design of  Numerical Libraries
+
+In writing a numerical library there is a unavoidable tension between
+completeness and simplicity.  By completeness I mean the ability to
+perform operations on different objects so that the group is
+"closed". In mathematics objects can be combined and operated on in an
+infinite number of ways.  For example, I can take the derivative of a
+scalar field wrt a vector and the derivative of a vector field wrt a
+scalar (along a path).
+
+There is a definite tendency to unconsciously try to reproduce this in a
+numerical library, by adding new features one by one. After all, it is
+always easy enough to support just one more feature.... so why not?
+
+Looking at the big picture, no-one would start out by saying "I want to
+be able to represent every possible mathematical object and operation
+using C structs" -- this is a strategy which is doomed to fail.  There
+is a limited amount of complexity which can be represented in a
+programming language like C.  Attempts to reproduce the complexity of
+mathematics within such a language would just lead to a morass of
+unmaintainable code.  However, it's easy to go down that road if you
+don't think about it ahead of time.
+
+So choose simplicity over completeness.  Keep modules independent where
+possible. If interdependencies between modules are introduced be sure
+about where you are going to draw the line.  
+
 
 @node Standards and conventions
 @section Standards and conventions
@@ -354,60 +386,33 @@ conventions.  In order of precedence the  standards that we follow are,
 @item We follow the conventions of the glib GTK support Library.
 @end itemize
 
+The references for these standards are the @cite{GNU Coding Standards}
+document, Harbison and Steele @cite{C: A Reference Manual}, the
+@cite{GNU C Library Manual} (version 2), and the Glib source code.
+
 If the project has a philosophy it is "Think C".  Since we are working
 in C we should only do what is natural in C, rather than trying to
 simulate features of other languages.  If there is something which is
 unnatural in C and has to be simulated then we avoid using it. If this
 means leaving something out of the library, or only offering a limited
 version then so be it.  It is not worthwhile making the library
-overcomplicated.  There are numerical libraries in other languages, and
+over-complicated.  There are numerical libraries in other languages, and
 if people need the features of those languages it would be sensible for
 them to use the corresponding libraries, rather than coercing a C
 library into doing that job.  It should be borne in mind at all time
 that C is a macro-assembler.  If you are in doubt about something being
 too complicated ask yourself the question "Would I try to write this in
-macro-assember?" If the answer is obviously "No" then do not try to
-include it in GSL.
+macro-assembler?" If the answer is obviously "No" then do not try to
+include it in GSL. [BJG]
 
-@itemize @bullet
-@item
+@node Documentation
+@section Documentation
 Documentation: the project leaders should give examples of how things
 are to be documented.  High quality documentation is absolutely
 mandatory, so documentation should introduce the topic, and give careful
 reference for the provided functions. The priority is to provide
 reference documentation for each function. It is not necessary to
 provide tutorial documentation.
-
-@end itemize
-
-
-@node Levels
-@section Levels
-
-For purely "1d" functions we use the C-style arguments (double *,
-stride, size) so that it is simpler to use the functions in a normal C
-program, without needing to invoke all the gsl_vector machinery.
-
-The philosophy here is to minimise the learning curve. If someone only
-needs to use one function, like an fft, they can do so without having
-to learn about gsl_vector.  
-
-This leads to the question of why we don't do the same for matrices.
-In that case the argument list gets too long and confusing, with
-(size1, size2, tda) for each matrix and potential ambiguities over row
-vs column ordering. In this case, it makes sense to use gsl_vector and
-gsl_matrix, which take care of this for the user.
-
-So really the library has two levels -- a lower level based on C types
-for 1d operations, and a higher level based on gsl_matrix and
-gsl_vector for general linear algebra.
-
-Of course, it would be possible to define a vector version of the
-lower level functions too. So far we have not done that because it was
-not essential -- it could be done but it is easy enough to get by
-using the C arguments, by typing v->data, v->stride, v->size instead.
-A gsl_vector version of low-level functions would mainly be a
-convenience.
 
 @node Namespace
 @section Namespace
@@ -445,8 +450,10 @@ arithmetic.
 @node Function Names
 @section Function Names
 
-Each module has a name, which prefixes any function names in that module,
-e.g. the module gsl_fft has function names like gsl_fft_init
+Each module has a name, which prefixes any function names in that
+module, e.g. the module gsl_fft has function names like
+gsl_fft_init. The modules correspond to subdirectories of the library
+source tree.
 
 @node Object-orientation
 @section Object-orientation
@@ -485,7 +492,10 @@ not desirable.
 @section Algorithm decomposition
 
 Iterative algorithms should be decomposed into an INITIALIZE, ITERATE,
-TEST form, so that the user can control the progress of the iteration.
+TEST form, so that the user can control the progress of the iteration
+and print out intermediate results.  This is better than using call-backs
+or using flags to control whether the function prints out intermediate
+results.
 
 @node Memory allocation and ownership
 @section Memory allocation and ownership
@@ -504,6 +514,36 @@ We use flat blocks of memory to store matrices and vectors, not C-style
 pointer-to-pointer arrays.  The matrices are stored in row-major order
 -- i.e. the column index (second index) moves continuously through memory. 
 
+@node Linear Algebra Levels
+@section Linear Algebra Levels
+
+Functions using linear algebra are divided into two levels:
+
+For purely "1d" functions we use the C-style arguments (double *,
+stride, size) so that it is simpler to use the functions in a normal C
+program, without needing to invoke all the gsl_vector machinery.
+
+The philosophy here is to minimize the learning curve. If someone only
+needs to use one function, like an fft, they can do so without having
+to learn about gsl_vector.  
+
+This leads to the question of why we don't do the same for matrices.
+In that case the argument list gets too long and confusing, with
+(size1, size2, tda) for each matrix and potential ambiguities over row
+vs column ordering. In this case, it makes sense to use gsl_vector and
+gsl_matrix, which take care of this for the user.
+
+So really the library has two levels -- a lower level based on C types
+for 1d operations, and a higher level based on gsl_matrix and
+gsl_vector for general linear algebra.
+
+Of course, it would be possible to define a vector version of the
+lower level functions too. So far we have not done that because it was
+not essential -- it could be done but it is easy enough to get by
+using the C arguments, by typing v->data, v->stride, v->size instead.
+A gsl_vector version of low-level functions would mainly be a
+convenience.
+
 @node Exceptions and Error handling
 @section Exceptions and Error handling
 
@@ -511,6 +551,18 @@ The basic error handling procedure is the return code (see gsl_errno.h
 for a list of allowed values).  Use the GSL_ERROR macro to mark an
 error.  The current definition of this macro is not ideal but it can be
 changed at compile time. 
+
+You should always use the GSL_ERROR macro to indicate an error, rather
+than just returning an error code. The macro allows the user to trap
+errors using the debugger (by setting a breakpoint on the function
+gsl_error).  
+
+The only circumstances where GSL_ERROR should not be used are where the
+return value is "indicative" rather than an error -- for example, the
+iterative routines use the return code to indicate the success or
+failure of an iteration. By the nature of an iterative algorithm
+"failure" (a return code of GSL_CONTINUE) is a normal occurrence and
+there is no need to use GSL_ERROR there.
 
 Be sure to free any memory allocated by your function if you return an
 error (in particular for errors in partially initialized objects).
@@ -606,7 +658,7 @@ nightmare, but unavoidable in places.
 In particular, the convention is: templates are used for operations on
 "data" only (vectors, matrices, statistics, sorting).  This is intended
 to cover the case where the program must interface with an external
-datasource which produces a fixed type. e.g. a big array of char's
+data-source which produces a fixed type. e.g. a big array of char's
 produced by an 8-bit counter.
 
 All other functions can use double, for floating point, or the
@@ -614,10 +666,10 @@ appropriate integer type for integers (e.g. unsigned long int for random
 numbers).  It is not the intention to provide a fully templated version
 of the library. 
 
-That would be "putting a quart into a pint pot". To summarise, almost
+That would be "putting a quart into a pint pot". To summarize, almost
 everything should be in a "natural type" which is appropriate for
 typical usage, and templates are there to handle a few cases where it is
-unavoidable that other datatypes will be encountered.
+unavoidable that other data-types will be encountered.
 
 For floating point work "double" is considered a "natural type".  This
 sort of idea is a part of the C language.
@@ -627,7 +679,7 @@ sort of idea is a part of the C language.
 
 Provide one test program per directory which aims for 100% path coverage
 of the code.  Obviously it would be a lot of work to really achieve this,
-so prioritise testing on the critical parts and use inspection for the
+so prioritize testing on the critical parts and use inspection for the
 rest.  Test all the error conditions by explicitly provoking them,
 because we consider it a serious defect if the function does not return
 an error for an invalid parameter. N.B. Don't bother to test for null
@@ -669,8 +721,9 @@ We don't require everything to be completely thread safe, but anything
 that isn't should be obvious, and not a function.  For example, some
 global variables are used to control the overall behavior of the library
 (range-checking on/off, function to call on fatal error, etc).  Since
-these are accessed directly by the user it is obvious that they
-shouldn't be modified by multiple threads.
+these are accessed directly by the user it is obvious to the
+multi-threaded programmer that they shouldn't be modified by different
+threads.
 
 @node Test suites
 @section Test suites
@@ -698,7 +751,21 @@ License (GPL).
 We must understand ownership of existing code and algorithms.
 @itemize @minus
 @item
-Obviously: don't reference non-free code (such as numerical recipes).
+Obviously: don't use or translate non-free code. Such as: Numerical
+Recipes, ACM TOMS.  
+
+Note that the ACM algorithms are not public domain, even though they are
+distributed on the internet -- the ACM uses a special non-commercial
+license which is not compatible with the GPL. The details of this
+license can be found on the cover page of ACM Transactions on
+Mathematical Software or on the ACM Website.
+
+Only use code which is explicitly under a free license: GPL or Public
+Domain.  If there is no license on the code then this does not mean it
+is public domain -- an explicit statement is required (see the Debian
+Free Software Guidelines for details). If in doubt check with the
+author.
+
 @item
 I @strong{think} one can reference algorithms from classic books on
 numerical analysis.
@@ -728,19 +795,17 @@ portability.
 
 We do not regard compatibility with other libraries as a priority.
 
-However, other libraries, such as Netlib and Numerical Recipes, are
-widely used.  If somebody wries the code to allow drop-in replacement of
-these libraries it would be useful to people.  If it is done, it would
-be as a separate wrapper that can be maintained and shipped separately.
+However, other libraries, such as Numerical Recipes, are widely used.
+If somebody writes the code to allow drop-in replacement of these
+libraries it would be useful to people.  If it is done, it would be as a
+separate wrapper that can be maintained and shipped separately.
 
 @node Parallelism
 @section Parallelism
 
 We don't intend to provide support for parallelism within the library
-itself. A parallel library would have to be designed completely
-differently and would carry overhead that other applications do not
-need.
-
+itself. A parallel library would require a completely different design
+and would carry overhead that other applications do not need.
 
 @node Copying
 @unnumbered Copying
@@ -777,22 +842,22 @@ on our reputation.
 being distributed that relate to @value{GSL} are found in the General
 Public Licenses that accompany them.
 
-@printindex cp
+@c @printindex cp
 
-@node Function Index
-@unnumbered Function Index
+@c @node Function Index
+@c @unnumbered Function Index
 
-@printindex fn
+@c @printindex fn
 
-@node Variable Index
-@unnumbered Variable Index
+@c @node Variable Index
+@c @unnumbered Variable Index
 
-@printindex vr
+@c @printindex vr
 
-@node Type Index
-@unnumbered Type Index
+@c @node Type Index
+@c @unnumbered Type Index
 
-@printindex tp
+@c @printindex tp
 
 @c -@shortcontents
 @contents

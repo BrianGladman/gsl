@@ -52,10 +52,9 @@ typedef struct gsl_multifit_function_struct gsl_multifit_function ;
 #define GSL_MULTIFIT_FN_EVAL(F,x,y) (*((F)->f))(x,(F)->params,(y))
 
 int gsl_multifit_fdjacobian (gsl_multifit_function * F,
-                                  const gsl_vector * x, 
-                                  const gsl_vector * f,
-                                  double epsrel, gsl_matrix * jacobian);
-
+                             const gsl_vector * x, 
+                             const gsl_vector * f,
+                             double epsrel, gsl_matrix * jacobian);
 
 typedef struct
   {
@@ -93,7 +92,7 @@ int gsl_multifit_fsolver_set (gsl_multifit_fsolver * s,
 int gsl_multifit_fsolver_iterate (gsl_multifit_fsolver * s);
 
 const char * gsl_multifit_fsolver_name (const gsl_multifit_fsolver * s);
-gsl_vector * gsl_multifit_fsolver_root (const gsl_multifit_fsolver * s);
+gsl_vector * gsl_multifit_fsolver_position (const gsl_multifit_fsolver * s);
 
 /* Definition of vector-valued functions and gradient with parameters
    based on gsl_vector */
@@ -155,13 +154,12 @@ void
 gsl_multifit_fdfsolver_free (gsl_multifit_fdfsolver * s);
 
 const char * gsl_multifit_fdfsolver_name (const gsl_multifit_fdfsolver * s);
-gsl_vector * gsl_multifit_fdfsolver_root (const gsl_multifit_fdfsolver * s);
+gsl_vector * gsl_multifit_fdfsolver_position (const gsl_multifit_fdfsolver * s);
 
 int gsl_multifit_test_delta (const gsl_vector * dx, const gsl_vector * x, 
-                                  double epsabs, double epsrel);
+                             double epsabs, double epsrel);
 
 int gsl_multifit_test_residual (const gsl_vector * f, double epsabs);
-
 
 extern const gsl_multifit_fsolver_type * gsl_multifit_fsolver_hybrids;
 

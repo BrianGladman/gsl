@@ -10,3 +10,22 @@ The definitions of constants in the MKS system are available in the file
 structure constant, which are pure numbers are defined in
 @file{gsl_const_num.h}.
 
+
+@table @code
+@item GSL_CONST_NUM_FINE_STRUCTURE
+The electromagnetic fine structure constant @math{\alpha}.
+
+@item GSL_CONST_NUM_AVAGADRO
+Avogadro's number, @math{N_a}
+
+@item GSL_CONST_MKS_SPEED_OF_LIGHT
+
+@item GSL_CONST_MKS_ASTRONOMICAL_UNIT
+
+@item GSL_CONST_MKS_GRAVITATIONAL_CONSTANT
+
+@item GSL_CONST_MKS_LIGHT_YEAR
+
+@item GSL_CONST_MKS_PARSEC
+
+@end table

@@ -60,7 +60,7 @@ brown_fdf (const gsl_vector * x, void *params,
 }
 
 int
-main (void)
+test_lmder (void)
 {
   const gsl_multifit_fdfsolver_type *T;
   gsl_multifit_fdfsolver *s;
@@ -79,7 +79,7 @@ main (void)
   T = gsl_multifit_fdfsolver_lmder;
   s = gsl_multifit_fdfsolver_alloc (T, &f, &x);
 
-//  gsl_multifit_fdfsolver_set (
+  /* gsl_multifit_fdfsolver_set ( */
 
   print_state (iter, s);
 
@@ -90,12 +90,12 @@ main (void)
 
       print_state (iter, s);
 
-      //if (status)
-	//break;
+      /* if (status)
+	break; */
 
-      //status = gsl_multifit_test_residual (s->f, 0.0000001);
+      /* status = gsl_multifit_test_residual (s->f, 0.0000001); */
     }
-  while (iter < 1000);
+  while (iter < 100);
 
   printf ("status = %s\n", gsl_strerror (status));
 

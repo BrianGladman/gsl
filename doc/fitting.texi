@@ -2,24 +2,25 @@
 @cindex least squares fit
 @cindex regression, least squares
 
-This chapter describes functions for performing least squares fits to
-experimental data. The data may be weighted or unweighted.  For weighted
-data the functions compute the best fit parameters and their associated
-covariance matrix.  For unweighted data the covariance matrix is
-estimated from the scatter of the points, giving a variance-covariance
-matrix. The functions are divided into separate versions for simple one-
-or two-parameter regression and multiple-parameter fits.
+This chapter describes functions for performing univariate least squares
+fits to experimental data. The data may be weighted or unweighted.  For
+weighted data the functions compute the best fit parameters and their
+associated covariance matrix.  For unweighted data the covariance matrix
+is estimated from the scatter of the points, giving a
+variance-covariance matrix. The functions are divided into separate
+versions for simple one- or two-parameter regression and
+multiple-parameter fits.
 
 @menu
-* Simple linear fitting::       
+* Linear regression::           
 * Linear fitting without a constant term::  
 * Multi-parameter fitting::     
-* Fitting examples::            
+* Fitting Examples::            
 * Fitting References and Further Reading::  
 @end menu
 
-@node  Simple linear fitting
-@section Simple linear fitting
+@node   Linear regression
+@section Linear regression
 
 The functions described in this section can be used to perform
 least-squares fits to a straight line model, @math{Y = c_0 + c_1 X}.
@@ -215,6 +216,9 @@ X_@{ij@} = x_j(i)
 where @math{x_j(i)} is the @math{i}-th value of the predictor variable
 @math{x_j}.
 
+The functions described in this section are declared in the header file
+@file{gsl_multifit.h}.
+
 The solution of the general linear least-squares system requires an
 additional working space for intermediate results, such as the singular
 value decomposition of the matrix @math{X}.
@@ -257,7 +261,7 @@ components which have zero singular value (to machine precision) are
 discarded from the fit.
 @end deftypefun
 
-@node Fitting examples
+@node Fitting Examples
 @section Examples
 
 The following program computes a least squares straight-line fit to a
