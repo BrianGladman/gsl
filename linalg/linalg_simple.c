@@ -639,7 +639,7 @@ gsl_la_invert_jacobi_impl(const gsl_matrix * a,
     gsl_la_eigen_jacobi_impl(ainv, eval, evec, max_rot, &nrot);
 
     for(i=0; i<n; i++) {
-      if(fabs(gsl_vector_get(eval, i)) < GSL_SQRT_DBL_EPSILON) {
+      if(fabs(gsl_vector_get(eval, i)) < 100.0 * GSL_DBL_EPSILON) {
         /* apparent singularity */
         gsl_vector_free(eval);
         gsl_matrix_free(evec);

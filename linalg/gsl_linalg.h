@@ -7,6 +7,20 @@
 #include <gsl_vector.h>
 #include <gsl_matrix.h>
 
+typedef enum {
+  GSL_LA_EIGEN_SORT_VALUE,
+  GSL_LA_EIGEN_SORT_ABSVALUE
+}
+gsl_la_eigen_sort_t;
+
+
+/* Simple implementation of matrix multiply.
+ *
+ * exceptions: GSL_EFAULT, GSL_EBADLEN
+ */
+int
+gsl_la_matmult_impl(const gsl_matrix * A, const gsl_matrix * B, gsl_matrix * C);
+
 
 /* Singular Value Decomposition
  *
@@ -49,21 +63,41 @@ gsl_la_solve_HH_impl(gsl_matrix * matrix,
 
 /* Eigensolve by Jacobi Method
  *
+ * The data in the matrix input is destroyed.
+ *
  * exceptions: 
  */
 int
-gsl_la_eigen_jacobi_impl(gsl_matrix * a,
+gsl_la_eigen_jacobi_impl(gsl_matrix * matrix,
                          gsl_vector * eval,
                          gsl_matrix * evec,
                          unsigned int max_rot, 
                          unsigned int * nrot);
 
-/* Invert by Jacobi Method
+
+/* Sort eigensystem results based on eigenvalues.
+ * Sorts in order of increasing value or increasing
+ * absolute value.
+ *
+ * exceptions: GSL_EFAULT, GSL_EBADLEN
  */
 int
-gsl_la_invert_jacobi_impl(const gsl_matrix * a,
+gsl_la_eigen_sort_impl(gsl_vector * eval,
+                       gsl_matrix * evec,
+                       gsl_la_eigen_sort_t sort_type);
+
+
+/* Invert by Jacobi Method
+ *
+ * exceptions: 
+ */
+int
+gsl_la_invert_jacobi_impl(const gsl_matrix * matrix,
                           gsl_matrix * ainv,
                           unsigned int max_rot);
+
+
+
 
 
 #endif  /* !GSL_LINALG_H */
