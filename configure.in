@@ -1,12 +1,13 @@
 dnl Process this file with autoconf to produce a configure script.
-AC_INIT(rnd.c)
+AC_INIT(random/rnd.c)
 
 dnl things required by automake
 AC_ARG_PROGRAM
+AC_PROG_MAKE_SET
 
 VERSION=0.0
 AC_SUBST(VERSION)
-PACKAGE=GR
+PACKAGE=gsl
 AC_SUBST(PACKAGE)
 
 dnl Checks for programs.
@@ -22,4 +23,6 @@ dnl Checks for typedefs, structures, and compiler characteristics.
 
 dnl Checks for library functions.
 
-AC_OUTPUT(Makefile)
+dnl AC_OUTPUT(Makefile)
+
+AC_OUTPUT(random/Makefile statistics/Makefile doc/Makefile Makefile, echo timestamp > stamp-h)
