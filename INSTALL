@@ -206,14 +206,10 @@ compiled with,
 
   ./configure --disable-shared
 
-To build shared libraries you can install MacOS X versions of libtool,
-automake and autoconf, and then reconfigure:
-
-  1. Get the fink packaging tool (http://fink.sourceforge.net)
-  2, Install fink's libtool14, automake, autoconf25.
-  3. Regenerate GSL's configuration using ./autogen.sh in the 
-     top-level directory.
-  4. ./configure, make
+It has been reported that shared libraries can be built if MacOS X
+specific versions of libtool, automake and autoconf from
+http://fink.sourceforge.net/ are installed, and the GSL source is
+reconfigured from scratch (./autogen.sh; ./configure; make)
 
 To avoid warnings about long-double, use the flag
 
