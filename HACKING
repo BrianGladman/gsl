@@ -132,6 +132,8 @@ configure, make, make check.
     cd doc ; mkdir html ; cd html
     ../texi2html -verbose -split_chapter -expandinfo ~/gsl/doc/gsl-ref.texi
     cvs -d sourceware.cygnus.com:/cvs/gsl  import -m 'this is release 0.123' htdocs/ref texi2html release-0-123
+    cd .. ; tar cvfz gsl-ref-html.tar.gz
+    scp -v gsl-ref-html.tar.gz sourceware.cygnus.com:/sourceware/ftp/anonftp/pub/gsl
 
 * Make postscript file in the usual way
 
