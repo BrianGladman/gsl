@@ -426,7 +426,7 @@ int check_dawson(void)
 
   s = 0;
   s += ( frac_diff( gsl_sf_dawson(0.5), 0.4244363835020222959 ) > 1.0e-14 );
-  printf("%24.18g\n", gsl_sf_dawson(0.5));
+  gsl_test(s, "  dawson(0.5)");
   status += s;
   
   s = 0;
@@ -663,33 +663,58 @@ int check_ellint(void)
   int s;
   
   s = 0;
-  s += ( frac_diff( gsl_sf_ellint_Kcomp( 0.5, 1.0e-3), 1.8540746773013719184 ) > 1.0e-10 );
-  s += ( frac_diff( gsl_sf_ellint_Kcomp(0.01, 1.0e-3), 1.5747455615173559527 ) > 1.0e-10 );
+  s += ( frac_diff( gsl_sf_ellint_Kcomp( 0.99, 1.0e-3), 3.3566005233611923760 ) > 1.0e-14 );
+  s += ( frac_diff( gsl_sf_ellint_Kcomp( 0.50, 1.0e-3), 1.6857503548125960429 ) > 1.0e-14 );
+  s += ( frac_diff( gsl_sf_ellint_Kcomp(0.010, 1.0e-3), 1.5708355989121522360 ) > 1.0e-14 );
   gsl_test(s, "  ellint_Kcomp");
-  printf("%24.18g  %24.28g\n",
-  gsl_sf_ellint_Kcomp( 0.5, 1.0e-3),
-  gsl_sf_ellint_Kcomp(0.01, 1.0e-3)
-  );
   status += s;
-  
+
   s = 0;
-  s += ( frac_diff( gsl_sf_ellint_Ecomp( 0.5, 1.0e-3), 1.3506438810476755025 ) > 1.0e-10 );
-  s += ( frac_diff( gsl_sf_ellint_Ecomp(0.01, 1.0e-3), 1.5668619420216682912 ) > 1.0e-10 );
+  s += ( frac_diff( gsl_sf_ellint_Ecomp(0.99, 1.0e-3), 1.0284758090288040010 ) > 1.0e-14 );
+  s += ( frac_diff( gsl_sf_ellint_Ecomp(0.50, 1.0e-3), 1.4674622093394271555 ) > 1.0e-14 );
+  s += ( frac_diff( gsl_sf_ellint_Ecomp(0.01, 1.0e-3), 1.5707570561503852873 ) > 1.0e-14 );
   gsl_test(s, "  ellint_Ecomp");
-  printf("%24.18g  %24.28g\n",
-  gsl_sf_ellint_Ecomp( 0.5, 1.0e-3),
-  gsl_sf_ellint_Ecomp(0.01, 1.0e-3)
-  );
+  status += s;
+
+  s = 0;
+  s += ( frac_diff( gsl_sf_ellint_F(M_PI/3.0, 0.99, 1.0e-3), 1.3065333392738766762 ) > 1.0e-14 );
+  s += ( frac_diff( gsl_sf_ellint_F(M_PI/3.0, 0.50, 1.0e-3), 1.0895506700518854093 ) > 1.0e-14 );
+  s += ( frac_diff( gsl_sf_ellint_F(M_PI/3.0, 0.01, 1.0e-3), 1.0472129063770918952 ) > 1.0e-14 );
+  gsl_test(s, "  ellint_F");
+  status += s;
+
+  s = 0;
+  s += ( frac_diff( gsl_sf_ellint_E(M_PI/3.0, 0.99, 1.0e-3), 0.8704819220377943536 ) > 1.0e-14 );
+  s += ( frac_diff( gsl_sf_ellint_E(M_PI/3.0, 0.50, 1.0e-3), 1.0075555551444720293 ) > 1.0e-14 );
+  s += ( frac_diff( gsl_sf_ellint_E(M_PI/3.0, 0.01, 1.0e-3), 1.0471821963889481104 ) > 1.0e-14 );
+  gsl_test(s, "  ellint_E");
+  status += s;
+
+  s = 0;
+  s += ( frac_diff( gsl_sf_ellint_P(M_PI/3.0, 0.99, 0.5, 1.0e-3), 1.1288726598764099882 ) > 1.0e-14 );
+  s += ( frac_diff( gsl_sf_ellint_P(M_PI/3.0, 0.50, 0.5, 1.0e-3), 0.9570574331323584890 ) > 1.0e-14 );
+  s += ( frac_diff( gsl_sf_ellint_P(M_PI/3.0, 0.01, 0.5, 1.0e-3), 0.9228868127118118465 ) > 1.0e-14 );
+  gsl_test(s, "  ellint_P");
   status += s;
 
   s = 0;
   s += ( frac_diff( gsl_sf_ellint_RF(5.0e-11, 1.0e-10, 1.0, 1.0e-3), 12.36441982 ) > 1.0e-09 );
   gsl_test(s, "  ellint_RF(5.0e-11, 1.0e-10, 1.0, 1.0e-3)");
   status += s;
+  
+  s = 0;
+  s += ( frac_diff( gsl_sf_ellint_RF(1.0, 2.0, 3.0, 1.0e-3), 0.726946 ) > 1.0e-05 );
+  gsl_test(s, "  ellint_RF(1.0, 2.0, 3.0, 1.0e-3)");
+  status += s;
 
   s = 0;
   s += ( frac_diff( gsl_sf_ellint_RD(5.0e-11, 1.0e-10, 1.0, 1.0e-3), 34.09325948 ) > 1.0e-09 );
   gsl_test(s, "  ellint_RD(5.0e-11, 1.0e-10, 1.0, 1.0e-3)");
+  status += s;
+
+  s = 0;
+  s += ( frac_diff( gsl_sf_ellint_RD(1.0, 2.0, 3.0, 1.0e-3), 0.29046 ) > 1.0e-04 );
+  gsl_test(s, "  ellint_RD(1.0, 2.0, 3.0, 1.0e-3)");
   status += s;
 
   s = 0;
@@ -1347,7 +1372,5 @@ int main(int argc, char * argv[])
   gsl_test(check_trig(),       "Trigonometric and Related Functions");
   gsl_test(check_zeta(),       "Zeta Functions");
 
-  gsl_test_summary();
-
-  return 0;  
+  return gsl_test_summary();
 }

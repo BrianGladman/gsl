@@ -510,9 +510,9 @@ int gsl_sf_ellint_P_impl(double phi, double k, double n, double prec, double * r
   double y = 1.0 - k*k*sin2_phi;
   double rf, rj;
   int rfstatus = gsl_sf_ellint_RF_impl(x, y, 1.0, prec, &rf);
-  int rjstatus = gsl_sf_ellint_RJ_impl(x, y, 1.0, 1.0 + n*sin3_phi, prec, &rj);
+  int rjstatus = gsl_sf_ellint_RJ_impl(x, y, 1.0, 1.0 + n*sin2_phi, prec, &rj);
   if(rfstatus == GSL_SUCCESS && rjstatus == GSL_SUCCESS) {
-    *result = sin_phi * rf - n/3.0*k*k*sin3_phi * rj;
+    *result = sin_phi * rf - n/3.0*sin3_phi * rj;
     return GSL_SUCCESS;
   }
   else if(rfstatus == GSL_EDOM || rjstatus == GSL_EDOM) {
