@@ -16,8 +16,9 @@ dnl gsl-1.1.1  libgsl 2:0:2  libgslcblas 0:0:0
 dnl gsl-1.2    libgsl 3:0:3  libgslcblas 0:0:0
 dnl gsl-1.3    libgsl 4:0:4  libgslcblas 0:0:0
 dnl gsl-1.4    libgsl 5:0:5  libgslcblas 0:0:0
+dnl gsl-1.5    libgsl 6:0:6  libgslcblas 0:0:0
 
-GSL_LT_VERSION="5:0:5"
+GSL_LT_VERSION="6:0:6"
 AC_SUBST(GSL_LT_VERSION)
 GSL_LT_CBLAS_VERSION="0:0:0"
 AC_SUBST(GSL_LT_CBLAS_VERSION)
