@@ -1,10 +1,11 @@
 #include <math.h>
-
+#include <stdio.h>
+#include <gsl_math.h>
 #include <gsl_rng.h>
 #include <gsl_siman.h>
-#include <stdio.h>
 
 /* set up parameters for this simulated annealing run */
+
 #define N_TRIES 200		/* how many points do we try before stepping */
 #define ITERS_FIXED_T 2000	/* how many iterations for each T? */
 #define STEP_SIZE 1.0		/* max step size in random walk */
@@ -13,21 +14,27 @@
 #define MU_T 1.002		/* damping factor for temperature */
 #define T_MIN 5.0e-1
 
-void prepare_distance_matrix();
-void exhaustive_search();
-void print_distance_matrix();
 gsl_siman_params_t params = {N_TRIES, ITERS_FIXED_T, STEP_SIZE,
 			     K, T_INITIAL, MU_T, T_MIN};
 
-#define CITY_NAME_LEN 50
 struct s_tsp_city {
-  char name[CITY_NAME_LEN];
+  const char * name;
   double lat, longitude;	/* coordinates */
 };
 typedef struct s_tsp_city Stsp_city;
 
+void prepare_distance_matrix(void);
+void exhaustive_search(void);
+void print_distance_matrix(void);
+double city_distance(Stsp_city c1, Stsp_city c2);
+double Etsp(void *xp);
+double Mtsp(void *xp, void *yp);
+void Stsp(const gsl_rng * r, void *xp, double step_size);
+void Ptsp(void *xp);
+
 /* in this table, latitude and longitude are obtained from the US
    Census Bureau, at http://www.census.gov/cgi-bin/gazetteer */
+
 Stsp_city cities[] = {{"Santa Fe",    35.68,   105.95},
 		      {"Phoenix",     33.54,   112.07},
 		      {"Albuquerque", 35.12,   106.62},
@@ -44,7 +51,6 @@ Stsp_city cities[] = {{"Santa Fe",    35.68,   105.95},
 #define N_CITIES (sizeof(cities)/sizeof(Stsp_city))
 
 double distance_matrix[N_CITIES][N_CITIES];
-
 
 /* distance between two cities */
 double city_distance(Stsp_city c1, Stsp_city c2)
@@ -79,7 +85,7 @@ double Etsp(void *xp)
   /* an array of N_CITIES integers describing the order */
   int *route = (int *) xp;
   double E = 0;
-  int i;
+  unsigned int i;
 
   for (i = 0; i < N_CITIES; ++i) {
     /* use the distance_matrix to optimize this calculation; it had
@@ -94,7 +100,7 @@ double Mtsp(void *xp, void *yp)
 {
   int *route1 = (int *) xp, *route2 = (int *) yp;
   double distance = 0;
-  int i;
+  unsigned int i;
 
   for (i = 0; i < N_CITIES; ++i) {
     distance += ((route1[i] == route2[i]) ? 0 : 1);
@@ -108,6 +114,8 @@ void Stsp(const gsl_rng * r, void *xp, double step_size)
 {
   int x1, x2, dummy;
   int *route = (int *) xp;
+
+  step_size = 0 ; /* prevent warnings about unused parameter */
 
   /* pick the two cities to swap in the matrix; we leave the first
      city fixed */
@@ -123,7 +131,7 @@ void Stsp(const gsl_rng * r, void *xp, double step_size)
 
 void Ptsp(void *xp)
 {
-  int i;
+  unsigned int i;
   int *route = (int *) xp;
   printf("  [");
   for (i = 0; i < N_CITIES; ++i) {
@@ -132,10 +140,10 @@ void Ptsp(void *xp)
   printf("]  ");
 }
 
-int main(int argc, char *argv[])
+int main(void)
 {
   int x_initial[N_CITIES];
-  int i;
+  unsigned int i;
 
   const gsl_rng * r = gsl_rng_alloc (gsl_rng_env_setup()) ;
 
@@ -191,7 +199,7 @@ int main(int argc, char *argv[])
 
 void prepare_distance_matrix()
 {
-  int i, j;
+  unsigned int i, j;
   double dist;
 
   for (i = 0; i < N_CITIES; ++i) {
@@ -208,8 +216,7 @@ void prepare_distance_matrix()
 
 void print_distance_matrix()
 {
-  int i, j;
-/*   double dist; */
+  unsigned int i, j;
 
   for (i = 0; i < N_CITIES; ++i) {
     printf("# ");
@@ -279,7 +286,8 @@ static void do_all_perms(int *route, int n)
     }
   } else {
     int new_route[N_CITIES];
-    int j, swap_tmp;
+    unsigned int j;
+    int swap_tmp;
     memcpy(new_route, route, N_CITIES*sizeof(*route));
     for (j = n; j < N_CITIES; ++j) {
       swap_tmp = new_route[j];

@@ -1,3 +1,7 @@
+Sun Nov  8 20:40:28 1998  Brian Gough  <bjg@vvv.lanl.gov>
+
+	* siman_tsp.c: clean up for make strict
+
 1998-11-06    <bjg@ancho.lanl.gov>
 
 	* test.c: added prototype for memcpy using #include <string.h>
