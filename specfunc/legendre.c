@@ -16,13 +16,13 @@ int gsl_sf_legendre_Plm_impl(int l, int m, double x, double * result, double * h
 {
   int i;
   double pmm;  /* Starting value for recursion, P_m^m(x) */
-  
+
   /* If l is large and m is large, then we have to worry
    * about overflow. Calculate an approximate exponent which
    * measures the normalization of this thing.
    */
-  double dif = l-am;
-  double sum = l+am;
+  double dif = l-m;
+  double sum = l+m;
   double exp_check = 0.5 * log(2.*l+1.) 
                      + 0.5 * dif * (log(dif)-1.)
                      - 0.5 * sum * (log(sum)-1.);
@@ -186,35 +186,39 @@ int gsl_sf_legendre_sphPlm_impl(int l, int m, double x, double * result, double 
 int gsl_sf_legendre_Plm_e(int l, int m, double x, double * result)
 {
   int status = gsl_sf_legendre_Plm_impl(l, m, x, result, (double *)0);
-  
   if(status != GSL_SUCCESS) {
+    GSL_ERROR("gsl_sf_legendre_Plm_e", status);
   }
+  return status;
 }
 
 int gsl_sf_legendre_sphPlm_e(int l, int m, double x, double * result)
 {
   int status = gsl_sf_legendre_sphPlm_impl(l, m, x, result, (double *)0);
-  
   if(status != GSL_SUCCESS) {
+    GSL_ERROR("gsl_sf_legendre_sphPlm_e", status);
   }
+  return status;
 }
 
 int gsl_sf_legendre_Plm_array_e(int lmax, int m, double x, double * result_array)
 {
   double y;
   int status = gsl_sf_legendre_Plm_impl(lmax, m, x, &y, result_array);
-  
   if(status != GSL_SUCCESS) {
+    GSL_ERROR("gsl_sf_legendre_Plm_array_e", status);
   }
+  return status;
 }
 
 int gsl_sf_legendre_sphPlm_array_e(int lmax, int m, double x, double * result_array)
 {
   double y;
   int status = gsl_sf_legendre_sphPlm_impl(lmax, m, x, &y, result_array);
-  
   if(status != GSL_SUCCESS) {
+    GSL_ERROR("gsl_sf_legendre_sphPlm_array_e", status);
   }
+  return status;
 }
 
 
@@ -222,27 +226,25 @@ int gsl_sf_legendre_sphPlm_array_e(int lmax, int m, double x, double * result_ar
 
 int gsl_sf_legendre_array_size(int lmax, int m)
 {
-  return l-m+1;
+  return lmax-m+1;
 }
 
 double gsl_sf_legendre_Plm(int l, int m, double x)
 {
   double y;
   int status = gsl_sf_legendre_Plm_impl(l, m, x, &y, (double *)0);
-  
   if(status != GSL_SUCCESS) {
+    GSL_WARNING("gsl_sf_legendre_Plm");
   }
-  
   return y;
 }
 
-double gsl_sf_legendre_sphPlm_e(int l, int m, double x)
+double gsl_sf_legendre_sphPlm(int l, int m, double x)
 {
   double y;
   int status = gsl_sf_legendre_sphPlm_impl(l, m, x, &y, (double *)0);
-  
   if(status != GSL_SUCCESS) {
+    GSL_WARNING("gsl_sf_legendre_sphPlm");
   }
-  
   return y;
 }

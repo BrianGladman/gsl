@@ -35,7 +35,7 @@ double gsl_sf_hydrogenicR_2(int l, double Z, double r)
   double norm = R_norm(2, l, Z);
   double ea = exp(-Z*r);
   if(l == 0) {
-    return norm * ea * laguerre_1(2.*l+1, A*r);
+    return norm * ea * gsl_sf_laguerre_1(2.*l+1, A*r);
   }
   else if(l == 1) {
     double pp = A*r;

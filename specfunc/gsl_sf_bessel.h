@@ -4,68 +4,88 @@
 #ifndef GSL_BESSEL_H_
 #define GSL_BESSEL_H_
 
-/* Evaluate regular cylindrical Bessel functions J_0(x), J_1(x), J_n(x)
- */
+/* Regular Bessel functions J_0(x), J_1(x), J_n(x) */
+
+int gsl_sf_bessel_Jn_e(int n, double x, double * result); /* GSL_EUNDRFLW */
+
 double gsl_sf_bessel_J0(double x);          /* no error can occur  */
 double gsl_sf_bessel_J1(double x);          /* no error can occur  */
-double gsl_sf_bessel_J(int n, double x);    /* underflow can occur */
+double gsl_sf_bessel_Jn(int n, double x);   /* underflow can occur */
 
-/* Evaluate regular cylindrical Bessel function J_n(x)
- * Return GSL_SUCCESS on success, GSL_EUNDRFLW on underflow.
+
+/* Regular modified Bessel functions I_0(x), I_1(x), I_n(x) */
+
+int gsl_sf_bessel_I0_e(double x, double * result);        /* GSL_EOVRFLW */
+int gsl_sf_bessel_I1_e(double x, double * result);        /* GSL_EOVRFLW, GSL_EUNDRFLW */
+int gsl_sf_bessel_In_e(int n, double x, double * result); /* GSL_EOVRFLW, GSL_EUNDRFLW */
+
+double gsl_sf_bessel_I0(double x);         /* overflow  */
+double gsl_sf_bessel_I1(double x);         /* overflow, underflow */
+double gsl_sf_bessel_In(int n, double x);  /* overflow, underflow */
+
+
+/* Scaled regular modified Bessel funcions
+ *  exp(-|x|) I_0(x)
+ *  exp(-|x|) I_1(x)
+ *  exp(-|x|) I_n(x)
  */
-int gsl_sf_bessel_J_e(int n, double x, double * result);
 
-/* Evaluate regular modified cylindrical Bessel functions I_0(x), I_1(x), I_n(x) */
-double gsl_sf_bessel_I0(double x);
-double gsl_sf_bessel_I1(double x);
-double gsl_sf_bessel_I(int n, double x);
+int gsl_sf_bessel_I1_scaled_e(double x, double * result);        /* GSL_EUNDRFLW */
+int gsl_sf_bessel_In_scaled_e(int n, double x, double * result); /* GSL_EUNDRFLW */
 
-/* As above, with POSIX-ish error status return.
- * Return GSL_EOVRFLW on overflow, GSL_SUCCESS on success.
+double gsl_sf_bessel_I0_scaled(double x);        /* no error   */
+double gsl_sf_bessel_I1_scaled(double x);        /* underflow  */
+double gsl_sf_bessel_In_scaled(int n, double x); /* underflow  */
+
+
+/* Irregular Bessel functions Y_0(x), Y_1(x), Y_n(x)
+ * x > 0.0
  */
-int gsl_sf_bessel_I0_e(double x, double * result);
-int gsl_sf_bessel_I1_e(double x, double * result);
-int gsl_sf_bessel_I_e(int n, double x, double * result);
 
-/* Evaluate scaled regular modified cylindrical Bessel funcions
-   exp(-|x|) I_0(x)
-   exp(-|x|) I_1(x)
-   exp(-|x|) I_n(x)
-   */
-double gsl_sf_bessel_I0_scaled(double x);
-double gsl_sf_bessel_I1_scaled(double x);
-double gsl_sf_bessel_I_scaled(int n, double x);
+int gsl_sf_bessel_Y0_e(double x, double * result);       /* GSL_EDOM, GSL_EUNDRFLW */
+int gsl_sf_bessel_Y1_e(double x, double * result);       /* GSL_EDOM, GSL_EOVRFLW, GSL_EUNDRFLW */
+int gsl_sf_bessel_Yn_e(int n,double x, double * result); /* GSL_EDOM, GSL_EOVRFLW, GSL_EUNDRFLW */
 
-/* Evaluate irregular Bessel functions K_0(x), K_1(x), K_n(x)
-   x > 0.0
-   */
-double gsl_sf_bessel_K0(double x);
-double gsl_sf_bessel_K1(double x);
-double gsl_sf_bessel_K(int n, double x);
+double gsl_sf_bessel_Y0(double x);         /* domain, underflow */
+double gsl_sf_bessel_Y1(double x);         /* domain, overflow, underflow */
+double gsl_sf_bessel_Yn(int n, double x);  /* domain, overflow, underflow */
 
-/* Evaluate scaled irregular Bessel functions
-   exp(x) K_0(x)
-   exp(x) K_1(x)
-   exp(x) K_n(x)
-   x > 0.0
-   */
-double gsl_sf_bessel_K0_scaled(double x);
-double gsl_sf_bessel_K1_scaled(double x);
-double gsl_sf_bessel_K_scaled(int n, double x);
 
-/* Evaluate irregular Bessel functions Y_0(x), Y_1(x)
-   x > 0.0
-   */
-double gsl_sf_bessel_Y0(double x);
-double gsl_sf_bessel_Y1(double x);
+/* Irregular modified Bessel functions K_0(x), K_1(x), K_n(x)
+ *  x > 0.0
+ */
+
+int gsl_sf_bessel_K0_e(double x, double * result); /* GSL_EDOM, GSL_EUNDRFLW */
+int gsl_sf_bessel_K1_e(double x, double * result); /* GSL_EDOM, GSL_EOVRFLW, GSL_EUNDRFLW */
+int gsl_sf_bessel_Kn_e(int n, double x, double * result); 
+
+double gsl_sf_bessel_K0(double x);          /* domain, underflow */
+double gsl_sf_bessel_K1(double x);          /* domain, overflow, underflow */
+double gsl_sf_bessel_Kn(int n, double x);
+
+
+/* Scaled irregular modified Bessel functions
+ *  exp(x) K_0(x)
+ *  exp(x) K_1(x)
+ *  exp(x) K_n(x)
+ *  x > 0.0
+ */
+
+int gsl_sf_bessel_K0_scaled_e(double x, double * result);        /* GSL_EDOM */
+int gsl_sf_bessel_K1_scaled_e(double x, double * result);        /* GSL_EDOM, GSL_EUNDRFLW */
+int gsl_sf_bessel_Kn_scaled_e(int n, double x, double * result); /* GSL_EDOM, GSL_EUNDRFLW */
+
+double gsl_sf_bessel_K0_scaled(double x);        /* domain */
+double gsl_sf_bessel_K1_scaled(double x);        /* domain, underflow */
+double gsl_sf_bessel_Kn_scaled(int n, double x); /* domain, underflow */
+
 
 /* Evaluate the regular spherical Bessel function j_l(x)
-   at a given point x for a set of l values 0,...,lmax.
-   Assumes x > 0.
-   Uses the Steed/Barnett algorithm.
-   See Comp. Phys. Comm. 21, 297 (1981).
+ * at a given point x for a set of l values 0,...,lmax.
+ * x >= 0.
+ * Steed+Barnett algorithm [Comp. Phys. Comm. 21, 297 (1981)]
  */
-void gsl_sf_bessel_j_steed(double x, int lmax, double * jl_x);
+int gsl_sf_bessel_j_steed_array_e(double x, int lmax, double * jl_x);
 
 
 /* Regular cylindrical Bessel functions J_nu(x) calculated

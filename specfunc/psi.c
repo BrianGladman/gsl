@@ -3,6 +3,7 @@
  */
 #include <math.h>
 #include <gsl_math.h>
+#include <gsl_errno.h>
 #include "gsl_sf_chebyshev.h"
 #include "gsl_sf_psi.h"
 
@@ -73,7 +74,7 @@ static double psics_data[23] = {
   -.000000000000000691,
    .000000000000000118,
   -.000000000000000020
-}    
+};    
 static double apsics_data[16] = {    
   -.0204749044678185,
   -.0101801271534859,
@@ -91,17 +92,17 @@ static double apsics_data[16] = {
   -.0000000000000009,
    .0000000000000002,
   -.0000000000000000 
-}    
+};    
 static struct gsl_sf_ChebSeries psi_cs = {
   psics_data,
   22,
   -1, 1
-}
+};
 static struct gsl_sf_ChebSeries apsi_cs = {
   apsics_data,
   15,
   -1, 1
-}
+};
 
 
 int gsl_sf_psi_impl(double x, double * result)
@@ -132,7 +133,7 @@ int gsl_sf_psi_impl(double x, double * result)
       if(x < 0.) --n;
       y = x - n;
       --n;
-      ans = gsl_sf_cheb_eval(2.*y-1., psi_cs);
+      ans = gsl_sf_cheb_eval(2.*y-1., &psi_cs);
       if(n == 0) {
 	*result = ans;
 	return GSL_SUCCESS;
@@ -146,6 +147,7 @@ int gsl_sf_psi_impl(double x, double * result)
 	return GSL_EDOM;
       }
       else {
+	int i;
 	for(i=0; i<n; i++) {
           ans -= 1./(x + i);
       	}
@@ -160,4 +162,48 @@ int gsl_sf_psi_impl(double x, double * result)
       }
     }
   }
+}
+
+
+/*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
+
+int gsl_sf_psi_int_e(int n, double * result)
+{
+  int status = gsl_sf_psi_int_impl(n, result);
+  if(status != GSL_SUCCESS){
+    GSL_ERROR("gsl_sf_psi_int_e", status);
+  }
+  return status;
+}
+
+int gsl_sf_psi_e(double x, double * result)
+{
+  int status = gsl_sf_psi_impl(x, result);
+  if(status != GSL_SUCCESS){
+    GSL_ERROR("gsl_sf_psi_e", status);
+  }
+  return status;
+}
+
+
+/*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*-*-*/
+
+double gsl_sf_psi_int(int n)
+{
+  double y;
+  int status = gsl_sf_psi_int_impl(n, &y);
+  if(status != GSL_SUCCESS){
+    GSL_WARNING("gsl_sf_psi_int");
+  }
+  return y;
+}
+
+double gsl_sf_psi(double x)
+{
+  double y;
+  int status = gsl_sf_psi_impl(x, &y);
+  if(status != GSL_SUCCESS){
+    GSL_WARNING("gsl_sf_psi");
+  }
+  return y;
 }

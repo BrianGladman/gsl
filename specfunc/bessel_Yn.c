@@ -56,7 +56,8 @@ int gsl_sf_bessel_Yn_impl(int n, double x, double * result)
 	bym = by;
 	by  = byp;
       }
-      return sign * by;
+      *result = sign * by;
+      return GSL_SUCCESS;/* GSL_EDOM, GSL_EOVRFLW, GSL_EUNDRFLW */
     }
     else {
       double ampl  = gsl_sf_bessel_asymp_Mnu(n, x);
@@ -73,9 +74,10 @@ int gsl_sf_bessel_Yn_impl(int n, double x, double * result)
 int gsl_sf_bessel_Yn_e(int n, double x, double * result)
 {
   int status = gsl_sf_bessel_Yn_impl(n, x, result);
-  
   if(status != GSL_SUCCESS) {
+    GSL_ERROR("gsl_sf_bessel_Yn_e", status);
   }
+  return status;
 }
 
 
@@ -85,9 +87,8 @@ double gsl_sf_bessel_Yn(int n, double x)
 {
   double y;
   int status = gsl_sf_bessel_Yn_impl(n, x, &y);
-  
   if(status != GSL_SUCCESS) {
+    GSL_WARNING("gsl_sf_bessel_Yn");
   }
-  
   return y;
 }

@@ -4,25 +4,27 @@
 #include <math.h>
 #include <gsl_math.h>
 #include <gsl_errno.h>
-#include "gsl_sf_besel_.h"
+#include "gsl_sf_bessel.h"
+
+extern int gsl_sf_bessel_K0_scaled_impl(double, double *);
+extern int gsl_sf_bessel_K1_scaled_impl(double, double *);
 
 
-double gsl_sf_bessel_K_scaled(int n, double x)
+/*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
+
+int gsl_sf_bessel_Kn_scaled_impl(int n, double x, double * result)
 {
-  double result;
+  n = abs(n); /* K(-n, z) = K(n, z) */
   
-  if(x <= 0.) {
-    /* domain error */
-    result = 0.;
+  if(n == 0) {
+    return gsl_sf_bessel_K0_scaled_impl(x, result);
+  }
+  else if(n == 1) {
+    return gsl_sf_bessel_K1_scaled_impl(x, result);
   }
   else {
-    n = abs(n); /* K(-n, z) = K(n, z) */
-    
-    if(n == 0) {
-      result = gsl_sf_bessel_K0_scaled(x);
-    }
-    else if(n == 1) {
-      result = gsl_sf_bessel_K1_scaled(x);
+    if(x <= 0.) {
+      return GSL_EDOM;
     }
     else {
       /* Upward recurrence. [Gradshteyn + Ryzhik, 8.471.1] */
@@ -38,21 +40,44 @@ double gsl_sf_bessel_K_scaled(int n, double x)
 	b_j   = b_jp1; 
       } 
       
-      result = b_j; 
+      *result = b_j; 
+      return GSL_SUCCESS;
     }
   }
-  
-  return result;
 }
 
 
+/*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
+
+int gsl_sf_bessel_K_scaled_e(int n, double x, double * result)
+{
+  int status = gsl_sf_bessel_K_scaled_impl(n, x, result);
+  if(status != GSL_SUCCESS) {
+    GSL_ERROR("gsl_sf_bessel_K_scaled_e", status);
+  }
+  return status;
+}
+
+int gsl_sf_bessel_K_e(int n, double x, double * result)
+{
+  double y = 0.;
+  int status = gsl_sf_bessel_K_scaled_impl(n, x, &y);
+  if(status != GSL_SUCCESS) {
+    GSL_ERROR("gsl_sf_bessel_K_e", status);
+  }
+  *result = exp(-x) * y;
+  return status;
+}
+
+/*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*-*-*/
+
 double gsl_sf_bessel_K(int n, double x)
 {
-  if(x <= 0.) {
-    /* domain error */
-    return 0.;
+  double y = 0.;
+  int status = gsl_sf_bessel_K_scaled_impl(n, x, &y);
+  if(status != GSL_SUCCESS) {
+    GSL_WARNING("gsl_sf_bessel_K");
   }
-  else {
-    return exp(-x) * gsl_sf_bessel_K_scaled(n, x);
-  }
+  y *= exp(-x);
+  return y;
 }

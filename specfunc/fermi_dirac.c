@@ -203,17 +203,19 @@ int gsl_sf_fermi_integral_2_impl(double A, double * result)
 int gsl_sf_fermi_integral_1_e(double A, double * result)
 {
   int status = gsl_sf_fermi_integral_1_impl(A, result);
-  
   if(status != GSL_SUCCESS){
+    GSL_ERROR("gsl_sf_fermi_integral_1_e", status);
   }
+  return status;
 }
 
 int gsl_sf_fermi_integral_2_e(double A, double * result)
 {
   int status = gsl_sf_fermi_integral_2_impl(A, result);
-  
   if(status != GSL_SUCCESS){
+    GSL_ERROR("gsl_sf_fermi_integral_2_e", status);
   }
+  return status;
 }
 
 
@@ -223,10 +225,9 @@ double gsl_sf_fermi_integral_1(double A)
 {
   double y;
   int status = gsl_sf_fermi_integral_1_impl(A, &y);
-  
   if(status != GSL_SUCCESS){
+    GSL_WARNING("gsl_sf_fermi_integral_1");
   }
-  
   return y;
 }
 
@@ -234,10 +235,9 @@ double gsl_sf_fermi_integral_2(double A)
 {
   double y;
   int status = gsl_sf_fermi_integral_2_impl(A, &y);
-  
   if(status != GSL_SUCCESS){
+    GSL_WARNING("gsl_sf_fermi_integral_2");
   }
-  
   return y;
 }
 

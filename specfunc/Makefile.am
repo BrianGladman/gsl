@@ -17,6 +17,7 @@ include_HEADERS = \
 	gsl_sf_legendre.h	\
 	gsl_sf_log.h 		\
 	gsl_sf_pow_int.h 	\
+	gsl_sf_psi.h		\
 	gsl_sf_trig.h
 
 
@@ -35,14 +36,18 @@ libgslspecfunc_a_SOURCES = 	\
 	bessel.c		\
 	bessel_I0.c		\
 	bessel_I1.c		\
+	bessel_In.c		\
 	bessel_J0.c		\
 	bessel_J1.c		\
 	bessel_Jn.c		\
 	bessel_K0.c		\
 	bessel_K1.c		\
+	bessel_Kn.c		\
 	bessel_Y0.c		\
 	bessel_Y1.c		\
+	bessel_Yn.c		\
 	bessel_amp_phase.c	\
+	bessel_j.c		\
 	chebyshev.c		\
 	coulomb.c		\
 	dilog.c			\
@@ -53,6 +58,7 @@ libgslspecfunc_a_SOURCES = 	\
 	legendre.c		\
 	log.c			\
 	pow_int.c		\
+	psi.c			\
 	sig2lamp.c		\
 	t-erf.c			\
 	trig.c

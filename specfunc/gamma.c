@@ -15,6 +15,8 @@ extern double hypot(double, double);
 #define LogPi_         1.1447298858494001741
 #define Max(a,b) ((a) > (b) ? (a) : (b))
 
+extern int gsl_sf_angle_restrict_symm_impl(double *, double);
+
 
 /*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
 
@@ -82,7 +84,7 @@ static void lngamma_lanczos_complex(double zr, double zi, double * yr, double * 
   /* (z+0.5)*log(z+7.5) - (z+7.5) + LogRootTwoPi_ + log(Ag(z)) */
   *yr = (zr+0.5)*log1_r - zi*log1_i - (zr+7.5) + LogRootTwoPi_ + logAg_r;
   *yi = zi*log1_r + (zr+0.5)*log1_i - zi + logAg_i;
-  gsl_sf_angle_restrict_symm(yi);
+  gsl_sf_angle_restrict_symm_impl(yi, 1.e-12);
 }
 
 
@@ -350,35 +352,29 @@ int gsl_sf_fact_impl(int n, double * result)
 
 int gsl_sf_fact_e(int n, double * result)
 {
-  int status == gsl_sf_fact_impl(n, result);
-  
+  int status = gsl_sf_fact_impl(n, result);
   if(status != GSL_SUCCESS) {
-    char buff[128];
-    sprintf(buff, "gsl_sf_fact_e: n= %d", n);
-    GSL_ERROR(buff, status);
+    GSL_ERROR("gsl_sf_fact_e", status);
   }
+  return status;
 }
 
 int gsl_sf_lngamma_e(double x, double * result)
 {
   int status = gsl_sf_lngamma_impl(x, result);
-  
   if(status != GSL_SUCCESS) {
-    char buff[128];
-    sprintf(buff, "gsl_sf_lngamma_e: x= %22.27g", x);
-    GSL_ERROR(buff, status);
+    GSL_ERROR("gsl_sf_lngamma_e", status);
   }
+  return status;
 }
 
 int gsl_sf_lngamma_complex_e(double zr, double zi, double * lnr, double * arg)
 {
-  int status = gsl_sf_lngamma_impl(x, result);
-  
-  if(status != GSL_SUCCESS) {
-    char buff[128];
-    sprintf(buff, "gsl_sf_lngamma_complex_e: zr= %22.27g  zi=  %22.27g", zr, zi);
-    GSL_ERROR(buff, status);
+  int status = gsl_sf_lngamma_complex_impl(zr, zi, lnr, arg);
+  if(status != GSL_SUCCESS) {;
+    GSL_ERROR("gsl_sf_lngamma_complex_e", status);
   }
+  return status;
 }
 
 
@@ -388,11 +384,8 @@ double gsl_sf_lngamma(double x)
 {
   double y;
   int status = gsl_sf_lngamma_impl(x, &y);
-  if(status == GSL_SUCCESS) {
-    return y;
+  if(status != GSL_SUCCESS) {
+    GSL_WARNING("gsl_sf_lngamma");
   }
-  else {
-    GSL_WARNING("gsl_sf_lngamma: domain error detected");
-    return 0.;
-  }
+  return y;
 }

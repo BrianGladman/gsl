@@ -7,6 +7,8 @@
 #include <gsl_math.h>
 #include "gsl_sf_chebyshev.h"
 
+int gsl_sf_cheb_calc_impl(struct gsl_sf_ChebSeries *, double (*)(double));
+
 
 /*-*-*-*-*-*-*-*-*-*-*-* Allocators *-*-*-*-*-*-*-*-*-*-*-*/
 
@@ -36,7 +38,7 @@ struct gsl_sf_ChebSeries * gsl_sf_cheb_new(double (*func)(double),
       GSL_ERROR_RETURN("gsl_sf_cheb_new: out of memory", GSL_ENOMEM, 0);
     }
   
-    if(gsl_sf_cheb_calc(cs, func) != GSL_SUCCESS) {
+    if(gsl_sf_cheb_calc_impl(cs, func) != GSL_SUCCESS) {
       free(cs);
       return 0;
     }
@@ -47,7 +49,7 @@ struct gsl_sf_ChebSeries * gsl_sf_cheb_new(double (*func)(double),
 }
 
 
-/*-*-*-*-*-*-*-*-*-*-*-* Implementations *-*-*-*-*-*-*-*-*-*-*-*/
+/*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
 
 int gsl_sf_cheb_calc_impl(struct gsl_sf_ChebSeries * cs, double (*func)(double))
 {
@@ -82,19 +84,19 @@ int gsl_sf_cheb_calc_impl(struct gsl_sf_ChebSeries * cs, double (*func)(double))
 }
 
 
-/*-*-*-*-*-*-*-*-*-*-*-* Error Handling Functions *-*-*-*-*-*-*-*-*-*-*-*/
+/*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
 
 int gsl_sf_cheb_calc_e(struct gsl_sf_ChebSeries * cs, double (*func)(double))
 {
   int status = gsl_sf_cheb_calc_impl(cs, func);
-  
   if(status != GSL_SUCCESS) {
-    GSL_ERROR("gsl_sf_cheb_calc_e: failed", status);
+    GSL_ERROR("gsl_sf_cheb_calc_e", status);
   }
+  return status;
 }
 
 
-/*-*-*-*-*-*-*-*-*-*-*-* Natural Prototype Functions *-*-*-*-*-*-*-*-*-*-*-*/
+/*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*-*-*/
 
 
 double gsl_sf_cheb_eval_n(double x, int n, const struct gsl_sf_ChebSeries * cs)

@@ -153,7 +153,7 @@ double gsl_sf_dilog(double x)
 
 
 /* dilog_c() for small modulus */
-static inline double dilog_c_smallr(double r, double cos_theta)
+static double dilog_c_smallr(double r, double cos_theta)
 {
   return cos_theta * r + 0.25 * (2.*cos_theta*cos_theta - 1.) * r*r;
 }

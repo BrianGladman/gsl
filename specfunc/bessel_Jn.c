@@ -34,6 +34,7 @@ Direct inquiries to 30 Frost Street, Cambridge, MA 02140
 
 #include <gsl_math.h>
 #include <gsl_errno.h>
+#include "gsl_sf_pow_int.h"
 #include "gsl_sf_bessel.h"
 
 extern int gsl_sf_bessel_J0_impl(double, double *);
@@ -110,7 +111,6 @@ int gsl_sf_bessel_Jn_impl(int n, double x, double * result)
       }
     }
     else {
-      double ans;
       double pkm2, pkm1, r;
 
       /* continued fraction [Abramowitz+Stegun, 9.1.73] */
@@ -160,9 +160,10 @@ int gsl_sf_bessel_Jn_impl(int n, double x, double * result)
 int gsl_sf_bessel_Jn_e(int n, double x, double * result)
 {
   int status = gsl_sf_bessel_Jn_impl(n, x, result);
-  
   if(status != GSL_SUCCESS) {
+    GSL_ERROR("gsl_sf_bessel_Jn_e", status);
   }
+  return status;
 }
 
 
@@ -172,10 +173,8 @@ double gsl_sf_bessel_Jn(int n, double x)
 {
   double y;
   int status = gsl_sf_bessel_Jn_impl(n, x, &y);
-  
   if(status != GSL_SUCCESS) {
-    GSL_WARNING();
+    GSL_WARNING("gsl_sf_bessel_Jn");
   }
-  
   return y;
 }

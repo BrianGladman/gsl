@@ -89,9 +89,10 @@ int gsl_sf_bessel_Y1_impl(double x, double * result)
 int gsl_sf_bessel_Y1_e(double x, double * result)
 {
   int status = gsl_sf_bessel_Y1_impl(x, result);
-  
   if(status != GSL_SUCCESS) {
+    GSL_ERROR("gsl_sf_bessel_Y1_e", status);
   }
+  return status;
 }
 
 
@@ -101,9 +102,8 @@ double gsl_sf_bessel_Y1(double x)
 {
   double y;
   int status = gsl_sf_bessel_Y1_impl(x, &y);
-  
   if(status != GSL_SUCCESS) {
+    GSL_WARNING("gsl_sf_bessel_Y1");
   }
-  
   return y;
 }

@@ -1,6 +1,8 @@
 /* Author:  G. Jungman
  * RCS:     $Id$
  */
+#include <math.h>
+#include <gsl_math.h>
 #include "gsl_sf_chebyshev.h"
 #include "gsl_sf_bessel.h"
 

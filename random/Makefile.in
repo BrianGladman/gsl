@@ -1,14 +1,8 @@
-# Makefile.in generated automatically by automake 1.2f from Makefile.am
+# Makefile.in generated automatically by automake 1.2 from Makefile.am
 
-# Copyright (C) 1994, 1995, 1996, 1997, 1998 Free Software Foundation, Inc.
+# Copyright (C) 1994, 1995, 1996, 1997 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
-# gives unlimited permission to copy and/or distribute it,
-# with or without modifications, as long as this notice is preserved.
-
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY, to the extent permitted by law; without
-# even the implied warranty of MERCHANTABILITY or FITNESS FOR A
-# PARTICULAR PURPOSE.
+# gives unlimited permission to copy, distribute and modify it.
 
 #####################################################################
 
@@ -53,12 +47,12 @@ INSTALL_DATA = @INSTALL_DATA@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
 transform = @program_transform_name@
 
-NORMAL_INSTALL = :
-PRE_INSTALL = :
-POST_INSTALL = :
-NORMAL_UNINSTALL = :
-PRE_UNINSTALL = :
-POST_UNINSTALL = :
+NORMAL_INSTALL = true
+PRE_INSTALL = true
+POST_INSTALL = true
+NORMAL_UNINSTALL = true
+PRE_UNINSTALL = true
+POST_UNINSTALL = true
 host_alias = @host_alias@
 host_triplet = @host@
 CC = @CC@
@@ -260,7 +254,7 @@ OBJECTS = $(libgslrandom_a_OBJECTS) $(libgslrantaus_a_OBJECTS) $(libgslranmrg_a_
 default: all
 
 .SUFFIXES:
-.SUFFIXES: .S .c .o .s
+.SUFFIXES: .c .o
 $(srcdir)/Makefile.in: Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
 	cd $(top_srcdir) && $(AUTOMAKE) --gnu random/Makefile
 
@@ -272,7 +266,7 @@ Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status $(BUILT_SOURCES)
 mostlyclean-libLIBRARIES:
 
 clean-libLIBRARIES:
-	-test -z "$(lib_LIBRARIES)" || rm -f $(lib_LIBRARIES)
+	test -z "$(lib_LIBRARIES)" || rm -f $(lib_LIBRARIES)
 
 distclean-libLIBRARIES:
 
@@ -296,71 +290,68 @@ install-libLIBRARIES: $(lib_LIBRARIES)
 	done
 
 uninstall-libLIBRARIES:
-	@$(NORMAL_UNINSTALL)
+	$(NORMAL_UNINSTALL)
 	list='$(lib_LIBRARIES)'; for p in $$list; do \
 	  rm -f $(libdir)/$$p; \
 	done
 
-.s.o:
-	$(COMPILE) -c $<
-
-.S.o:
+.c.o:
 	$(COMPILE) -c $<
 
 mostlyclean-compile:
-	-rm -f *.o core *.core
+	rm -f *.o core
 
 clean-compile:
 
 distclean-compile:
-	-rm -f *.tab.c
+	rm -f *.tab.c
 
 maintainer-clean-compile:
 
 libgslrandom.a: $(libgslrandom_a_OBJECTS) $(libgslrandom_a_DEPENDENCIES)
-	-rm -f libgslrandom.a
+	rm -f libgslrandom.a
 	$(AR) cru libgslrandom.a $(libgslrandom_a_OBJECTS) $(libgslrandom_a_LIBADD)
 	$(RANLIB) libgslrandom.a
 
 libgslrantaus.a: $(libgslrantaus_a_OBJECTS) $(libgslrantaus_a_DEPENDENCIES)
-	-rm -f libgslrantaus.a
+	rm -f libgslrantaus.a
 	$(AR) cru libgslrantaus.a $(libgslrantaus_a_OBJECTS) $(libgslrantaus_a_LIBADD)
 	$(RANLIB) libgslrantaus.a
 
 libgslranmrg.a: $(libgslranmrg_a_OBJECTS) $(libgslranmrg_a_DEPENDENCIES)
-	-rm -f libgslranmrg.a
+	rm -f libgslranmrg.a
 	$(AR) cru libgslranmrg.a $(libgslranmrg_a_OBJECTS) $(libgslranmrg_a_LIBADD)
 	$(RANLIB) libgslranmrg.a
 
 libgslrancmrg.a: $(libgslrancmrg_a_OBJECTS) $(libgslrancmrg_a_DEPENDENCIES)
-	-rm -f libgslrancmrg.a
+	rm -f libgslrancmrg.a
 	$(AR) cru libgslrancmrg.a $(libgslrancmrg_a_OBJECTS) $(libgslrancmrg_a_LIBADD)
 	$(RANLIB) libgslrancmrg.a
 
 libgslranuni.a: $(libgslranuni_a_OBJECTS) $(libgslranuni_a_DEPENDENCIES)
-	-rm -f libgslranuni.a
+	rm -f libgslranuni.a
 	$(AR) cru libgslranuni.a $(libgslranuni_a_OBJECTS) $(libgslranuni_a_LIBADD)
 	$(RANLIB) libgslranuni.a
 
 libgslranuni32.a: $(libgslranuni32_a_OBJECTS) $(libgslranuni32_a_DEPENDENCIES)
-	-rm -f libgslranuni32.a
+	rm -f libgslranuni32.a
 	$(AR) cru libgslranuni32.a $(libgslranuni32_a_OBJECTS) $(libgslranuni32_a_LIBADD)
 	$(RANLIB) libgslranuni32.a
 
 libgslranzuf.a: $(libgslranzuf_a_OBJECTS) $(libgslranzuf_a_DEPENDENCIES)
-	-rm -f libgslranzuf.a
+	rm -f libgslranzuf.a
 	$(AR) cru libgslranzuf.a $(libgslranzuf_a_OBJECTS) $(libgslranzuf_a_LIBADD)
 	$(RANLIB) libgslranzuf.a
 
 libgslranrand.a: $(libgslranrand_a_OBJECTS) $(libgslranrand_a_DEPENDENCIES)
-	-rm -f libgslranrand.a
+	rm -f libgslranrand.a
 	$(AR) cru libgslranrand.a $(libgslranrand_a_OBJECTS) $(libgslranrand_a_LIBADD)
 	$(RANLIB) libgslranrand.a
 
 mostlyclean-binPROGRAMS:
 
 clean-binPROGRAMS:
-	-test -z "$(bin_PROGRAMS)" || rm -f $(bin_PROGRAMS)
+	test -z "$(bin_PROGRAMS)" || rm -f $(bin_PROGRAMS)
 
 distclean-binPROGRAMS:
 
@@ -377,7 +368,7 @@ install-binPROGRAMS: $(bin_PROGRAMS)
 	done
 
 uninstall-binPROGRAMS:
-	@$(NORMAL_UNINSTALL)
+	$(NORMAL_UNINSTALL)
 	list='$(bin_PROGRAMS)'; for p in $$list; do \
 	  rm -f $(bindir)/`echo $$p|sed '$(transform)'`; \
 	done
@@ -479,33 +470,28 @@ install-includeHEADERS: $(include_HEADERS)
 	done
 
 uninstall-includeHEADERS:
-	@$(NORMAL_UNINSTALL)
+	$(NORMAL_UNINSTALL)
 	list='$(include_HEADERS)'; for p in $$list; do \
 	  rm -f $(includedir)/$$p; \
 	done
 
 tags: TAGS
 
-ID: $(HEADERS) $(SOURCES) $(LISP)
-	here=`pwd` && cd $(srcdir) \
-	  && mkid -f$$here/ID $(SOURCES) $(HEADERS) $(LISP)
+ID: $(HEADERS) $(SOURCES)
+	here=`pwd` && cd $(srcdir) && mkid -f$$here/ID $(SOURCES) $(HEADERS)
 
-TAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) $(LISP)
+TAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES)
 	tags=; \
 	here=`pwd`; \
-	list='$(SOURCES) $(HEADERS)'; \
-	unique=`for i in $$list; do echo $$i; done | \
-	  awk '    { files[$$0] = 1; } \
-	       END { for (i in files) print i; }'`; \
-	test -z "$(ETAGS_ARGS)$$unique$(LISP)$$tags" \
-	  || (cd $(srcdir) && etags $(ETAGS_ARGS) $$tags  $$unique $(LISP) -o $$here/TAGS)
+	test -z "$(ETAGS_ARGS)$(SOURCES)$(HEADERS)$$tags" \
+	  || (cd $(srcdir) && etags $(ETAGS_ARGS) $$tags  $(SOURCES) $(HEADERS) -o $$here/TAGS)
 
 mostlyclean-tags:
 
 clean-tags:
 
 distclean-tags:
-	-rm -f TAGS ID
+	rm -f TAGS ID
 
 maintainer-clean-tags:
 
@@ -516,7 +502,6 @@ subdir = random
 distdir: $(DISTFILES)
 	here=`cd $(top_builddir) && pwd`; \
 	top_distdir=`cd $(top_distdir) && pwd`; \
-	distdir=`cd $(distdir) && pwd`; \
 	cd $(top_srcdir) \
 	  && $(AUTOMAKE) --include-deps --build-dir=$$here --srcdir-name=$(top_srcdir) --output-dir=$$top_distdir --gnu random/Makefile
 	@for file in $(DISTFILES); do \
@@ -526,7 +511,12 @@ distdir: $(DISTFILES)
 	  || cp -p $$d/$$file $(distdir)/$$file; \
 	done
 
+MKDEP = gcc -M $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
+
 DEPS_MAGIC := $(shell mkdir .deps > /dev/null 2>&1 || :)
+-include .deps/.P
+.deps/.P: $(BUILT_SOURCES)
+	echo > $@
 
 -include $(DEP_FILES)
 
@@ -537,18 +527,15 @@ clean-depend:
 distclean-depend:
 
 maintainer-clean-depend:
-	-rm -rf .deps
+	rm -rf .deps
 
-%.o: %.c
-	@echo '$(COMPILE) -c $<'; \
-	$(COMPILE) -Wp,-MD,.deps/$(*F).P -c $<
-
-%.lo: %.c
-	@echo '$(LTCOMPILE) -c $<'; \
-	$(LTCOMPILE) -Wp,-MD,.deps/$(*F).p -c $<
-	@-sed -e 's/^\([^:]*\)\.o:/\1.lo \1.o:/' \
-	  < .deps/$(*F).p > .deps/$(*F).P
-	@-rm -f .deps/$(*F).p
+.deps/%.P: %.c
+	@echo "Computing dependencies for $<..."
+	@o='o'; \
+	test -n "$o" && o='$$o'; \
+	$(MKDEP) $< >$@.tmp \
+	  && sed "s,^\(.*\)\.o:,\1.$$o \1.l$$o $@:," < $@.tmp > $@ \
+	  && rm -f $@.tmp
 info:
 dvi:
 check: all
@@ -574,19 +561,19 @@ installdirs:
 
 
 mostlyclean-generic:
-	-test -z "$(MOSTLYCLEANFILES)" || rm -f $(MOSTLYCLEANFILES)
+	test -z "$(MOSTLYCLEANFILES)" || rm -f $(MOSTLYCLEANFILES)
 
 clean-generic:
-	-test -z "$(CLEANFILES)" || rm -f $(CLEANFILES)
+	test -z "$(CLEANFILES)" || rm -f $(CLEANFILES)
 
 distclean-generic:
-	-rm -f Makefile $(DISTCLEANFILES)
-	-rm -f config.cache config.log stamp-h stamp-h[0-9]*
-	-test -z "$(CONFIG_CLEAN_FILES)" || rm -f $(CONFIG_CLEAN_FILES)
+	rm -f Makefile $(DISTCLEANFILES)
+	rm -f config.cache config.log stamp-h stamp-h[0-9]*
+	test -z "$(CONFIG_CLEAN_FILES)" || rm -f $(CONFIG_CLEAN_FILES)
 
 maintainer-clean-generic:
-	-test -z "$(MAINTAINERCLEANFILES)" || rm -f $(MAINTAINERCLEANFILES)
-	-test -z "$(BUILT_SOURCES)" || rm -f $(BUILT_SOURCES)
+	test -z "$(MAINTAINERCLEANFILES)" || rm -f $(MAINTAINERCLEANFILES)
+	test -z "$(BUILT_SOURCES)" || rm -f $(BUILT_SOURCES)
 mostlyclean:  mostlyclean-libLIBRARIES mostlyclean-compile \
 		mostlyclean-binPROGRAMS mostlyclean-tags \
 		mostlyclean-depend mostlyclean-generic
@@ -597,7 +584,7 @@ clean:  clean-libLIBRARIES clean-compile clean-binPROGRAMS clean-tags \
 distclean:  distclean-libLIBRARIES distclean-compile \
 		distclean-binPROGRAMS distclean-tags distclean-depend \
 		distclean-generic clean
-	-rm -f config.status
+	rm -f config.status
 
 maintainer-clean:  maintainer-clean-libLIBRARIES \
 		maintainer-clean-compile maintainer-clean-binPROGRAMS \

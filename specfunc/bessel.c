@@ -8,7 +8,8 @@
 #include "gsl_sf_pow_int.h"
 #include "gsl_sf_bessel.h"
 
-extern int gsl_sf_fact_impl(double, double *);
+extern int gsl_sf_fact_impl(int, double *);
+extern int gsl_sf_lngamma_impl(double, double *);
 
 
 /*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
@@ -55,12 +56,31 @@ int gsl_sf_bessel_Jnu_taylor_impl(double nu, double x, int kmax, double * result
     return GSL_EDOM;
   }
   else {
-    double ts;
-    double p   = (nu == 0. ? 1. :  pow(0.5*x, nu));
-    double pre = pre / exp(gsl_sf_lngamma(nu+1.));
-    int status = Jnu_taylorsum(nu, x, kmax, &ts);
-    *result = pre * ts;
-    return status;
+    if(x == 0.) {
+      if(nu == 0.) {
+	*result= 1.;
+	return GSL_SUCCESS;
+      }
+      else {
+	*result = 0.;
+	return GSL_SUCCESS;
+      }
+    }
+    else {
+      double ts;
+      double g;
+      int status = gsl_sf_lngamma_impl(nu+1., &g);  /* ok by construction */
+      double pre = (nu == 0. ? 1. :  pow(0.5*x, nu)) / exp(g);
+      if(pre > 0.) {
+        status = Jnu_taylorsum(nu, x, kmax, &ts);
+        *result = pre * ts;
+        return status;
+      }
+      else {
+	*result = 0.;
+	return GSL_EUNDRFLW;
+      }
+    }
   }
 }
 
@@ -70,19 +90,37 @@ int gsl_sf_bessel_Jn_taylor_impl(int n, double x, int kmax, double * result)
     return GSL_EDOM;
   }  
   else {
-    double ts;
-    double pre;
-    double nfact;
-    int status = gsl_sf_fact_impl(n, &nfact);
-    if(status == GSL_SUCCESS) {
-      pre = gsl_sf_pow_int(0.5*x, n) / nfact;
-      status = Jnu_taylorsum_e(n, x, kmax, &ts);
-      *result = pre * ts;
-      return status;
+    if(x == 0.) {
+      if(n == 0) {
+	*result= 1.;
+	return GSL_SUCCESS;
+      }
+      else {
+	*result = 0.;
+	return GSL_SUCCESS;
+      }
     }
     else {
-      *result = 0.;
-      return GSL_EUNDRFLW;
+      double ts;
+      double pre;
+      double nfact;
+      int status = gsl_sf_fact_impl(n, &nfact);
+      if(status == GSL_SUCCESS) {
+        pre = gsl_sf_pow_int(0.5*x, n) / nfact;
+	if(pre > 0.) {
+          status = Jnu_taylorsum_e(n, x, kmax, &ts);
+          *result = pre * ts;
+          return status;
+	}
+	else {
+	  *result = 0.;
+	  return GSL_EUNDRFLW;
+	}
+      }
+      else {
+        *result = 0.;
+        return GSL_EUNDRFLW;
+      }
     }
   }
 }
@@ -250,83 +288,3 @@ void asymp_sphbesselj_meissel(double l, double x,
     *jlp = -(s*(8.*x2 + 2.) + 7.*x*c)/ (8.*x2*x);
   }
 }
-
-
-
-#define ACC GSL_MACH_EPS
-#define RootPiOver2_  0.88622693
-#define Gamma1pt5_    RootPiOver2_
-void gsl_sf_bessel_j_steed(double x, int lmax, double * jl_x)
-{
-  if(x < ACC) {
-    /* first term of Taylor series */
-    int l;
-    double inv_gam = 1./Gamma1pt5_;
-    for(l=0; l<=lmax; l++) {
-      jl_x[l] = RootPiOver2_ * pow(0.5*x, l) * inv_gam;
-      inv_gam = inv_gam / (l+1.5);
-    }
-  }
-  else {
-    /* Steed/Barnett algorithm */
-    double x_inv = 1./x;
-    double W = 2.*x_inv;
-    double F = 1.;
-    double FP = (lmax+1.) * x_inv;
-    double B = 2.*FP + x_inv;
-    double end = B + 20000.*W;
-    double D = 1./B;
-    double del = -D;
-    
-    FP += del;
-    
-    /* continued fraction */
-    do {
-      B += W;
-      D = 1./(B-D);
-      del *= (B*D - 1.);
-      FP += del;
-      if(D < 0.) F = -F;
-      if(B > end) {
-	GSL_ERROR_RETURN(
-		"gsl_sf_bessel_j_steed: continued fraction not converging",
-		GSL_EFAILED,
-		0.
-		);
-      }
-    }
-    while(fabs(del) >= fabs(FP) * ACC);
-    
-    FP *= F;
-    
-    if(lmax > 0) {
-      /* downward recursion */
-      double XP2 = FP;
-      double PL = lmax * x_inv;
-      int L  = lmax;
-      int LP;
-      jl_x[lmax] = F;
-      for(LP = 1; LP<=lmax; LP++) {
-	jl_x[L-1] = PL * jl_x[L] + XP2;
-	FP = PL*jl_x[L-1] - jl_x[L];
-	XP2 = FP;
-	PL -= x_inv;
-	--L;
-      }
-      F = jl_x[0];
-    }
-    
-    /* normalization */
-    W = x_inv / sqrt(FP*FP + F*F);
-    jl_x[0] = W*F;
-    if(lmax > 0) {
-      int L;
-      for(L=1; L<=lmax; L++) {
-	jl_x[L] *= W;
-      }
-    }
-  }
-}
-#undef ACC
-#undef RootPiOver2_
-#undef Gamma1pt5_

@@ -6,7 +6,7 @@
 #include "gsl_sf_log.h"
 
 
-/*-*-*-*-*-*-*-*-*-*-*-* Implementations *-*-*-*-*-*-*-*-*-*-*-*/
+/*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
 
 int gsl_sf_complex_log_impl(double zr, double zi, double * lnr, double * theta)
 {
@@ -27,10 +27,8 @@ int gsl_sf_complex_log_impl(double zr, double zi, double * lnr, double * theta)
 int gsl_sf_complex_log_e(double zr, double zi, double * lnr, double * theta)
 {
   int status = gsl_sf_complex_log_impl(zr, zi, lnr, theta);
-  
   if(status != GSL_SUCCESS) {
-    char buff[128];
-    sprintf(buff, "gsl_sf_complex_log_e: zr= %22.17g zi= %22.17g", zr, zi);
-    GSL_ERROR(buff, status);
+    GSL_ERROR("gsl_sf_complex_log_e", status);
   }
+  return status;
 }

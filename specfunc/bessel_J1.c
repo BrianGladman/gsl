@@ -51,7 +51,7 @@ double gsl_sf_bessel_J1(double x)
 { 
   const double xmin = ROOT_EIGHT * GSL_SQRT_MACH_EPS;
   const double xmax = 1./GSL_SQRT_MACH_EPS;
-  double y = abs(x);
+  double y = fabs(x);
   
   if(y < xmin) {
     return 0.5*x;

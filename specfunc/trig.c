@@ -140,65 +140,63 @@ int gsl_sf_angle_restrict_pos_impl(double * theta, double precision)
 int gsl_sf_complex_sin_e(double zr, double zi, double * szr, double * szi)
 {
   int status = gsl_sf_complex_sin_impl(zr, zi, szr, szi);
-  
   if(status != GSL_SUCCESS) {
-    char buff[128];
-    sprintf(buff, "gsl_sf_complex_sin_e: n= %d", n);
-    GSL_ERROR(buff, status);
+    GSL_ERROR("gsl_sf_complex_sin_e", status);
   }
+  return status;
 }
 
 int gsl_sf_complex_logsin_e(double zr, double zi, double * lszr, double * lszi)
 {
   int status = gsl_sf_complex_logsin_impl(zr, zi, lszr, lszi);
-  
   if(status != GSL_SUCCESS) {
+    GSL_ERROR("gsl_sf_complex_logsin_e", status);
   }
+  return status;
 }
 
 int gsl_sf_complex_cos_e(double zr, double zi, double * czr, double * czi)
 {
   int status = gsl_sf_complex_cos_impl(zr, zi, czr, czi);
-  
   if(status != GSL_SUCCESS) {
+    GSL_ERROR("gsl_sf_complex_cos_e", status);
   }
+  return status;
 }
 
 
 int gsl_sf_polar_to_rect_e(double r, double theta, double * x, double * y)
 {
   int status = gsl_sf_polar_to_rect_impl(r, theta, x, y);
-  
   if(status != GSL_SUCCESS) {
+    GSL_ERROR("gsl_sf_polar_to_rect_e", status);
   }
+  return status;
 }
 
 int gsl_sf_rect_to_polar_e(double x, double y, double * r, double * theta)
 {
   int status = gsl_sf_rect_to_polar_impl(x, y, r, theta);
-  
   if(status != GSL_SUCCESS) {
+    GSL_ERROR("gsl_sf_rect_to_polar_e", status);
   }
+  return status;
 }
 
 int gsl_sf_angle_restrict_symm_e(double * theta, double precision)
 {
   int status = gsl_sf_angle_restrict_symm_impl(theta, precision);
-  
   if(status != GSL_SUCCESS) {
-    char buff[100];
-    sprintf(buff,"gsl_sf_angle_restrict_symm_e: theta= %22.17g", *theta);
-    GSL_ERROR(buff, status);
+    GSL_ERROR("gsl_sf_angle_restrict_symm_e", status);
   }
+  return status;
 }
 
 int gsl_sf_angle_restrict_pos_e(double * theta, double precision)
 {
   int status = gsl_sf_angle_restrict_pos_impl(theta, precision);
-  
   if(status != GSL_SUCCESS) {
-    char buff[100];
-    sprintf(buff,"gsl_sf_angle_restrict_pos_e: theta= %22.17g", *theta);
-    GSL_ERROR(buff, status);
+    GSL_ERROR("gsl_sf_angle_restrict_pos_e", status);
   }
+  return status;
 }

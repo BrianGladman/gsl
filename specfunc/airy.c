@@ -237,11 +237,9 @@ static int airy_mod_phase(double x, double * mod, double * phase)
     *phase = -0.625 + gsl_sf_cheb_eval(z, &ath2_cs);
   }
   else {
-    char buff[64];
     *mod = 0.;
     *phase = 0.;
-    sprintf(buff,"airy_mod_phase: x= %20.15g  > -1", x);
-    GSL_ERROR(buff, GSL_EDOM);
+    return GSL_EDOM;
   }
 
   sqx = sqrt(-x);
@@ -595,9 +593,10 @@ int gsl_sf_airy_Bi_impl(double x, double * result)
 int gsl_sf_airy_Bi_e(double x, double * result)
 {
   int status = gsl_sf_airy_Bi_impl(x, result);
-  
   if(status != GSL_SUCCESS) {
+    GSL_ERROR("gsl_sf_airy_Bi_e", status);
   }
+  return status;
 }
 
 
@@ -607,13 +606,9 @@ double gsl_sf_airy_Bi(double x)
 {
   double y;
   int status = gsl_sf_airy_Bi_impl(x, &y);
-
   if(status != GSL_SUCCESS) {
-    char buff[128];
-    sprintf(buff, "gsl_sf_airy_Bi: x= %22.17g", x);
-    GSL_WARNING(buff);
+    GSL_WARNING("gsl_sf_airy_Bi");
   }
-
   return y;
 }
 

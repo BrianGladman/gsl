@@ -30,7 +30,7 @@ static int laguerre_n_cp(int n, double a, double x, double * result)
     ans += c[0] - 1.;
 
     free(c);
-    *result ans;
+    *result = ans;
     return GSL_SUCCESS;
   }
 }

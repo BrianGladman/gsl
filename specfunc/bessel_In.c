@@ -86,17 +86,19 @@ int gsl_sf_bessel_I_impl(int n, double x, double * result)
 int gsl_sf_bessel_I_scaled_e(int n, double x, double * result)
 {
   int status = gsl_sf_bessel_I_scaled_impl(n, x, result);
-  
   if(status != GSL_SUCCESS) {
+    GSL_ERROR("gsl_sf_bessel_I_scaled_e", status);
   }
+  return status;
 }
 
 int gsl_sf_bessel_I_e(int n, double x, double * result)
 {
   int status = gsl_sf_bessel_I_impl(n, x, result);
-  
   if(status != GSL_SUCCESS) {
+    GSL_ERROR("gsl_sf_bessel_I_e", status);
   }
+  return status;
 }
 
 
@@ -106,10 +108,9 @@ double gsl_sf_bessel_I_scaled(int n, double x)
 {
   double y;
   int status = gsl_sf_bessel_I_scaled_impl(n, x, &y);
-  
   if(status != GSL_SUCCESS) {
+    GSL_WARNING("gsl_sf_bessel_I_scaled");
   }
-  
   return y;
 }
 
@@ -117,9 +118,8 @@ double gsl_sf_bessel_I(int n, double x)
 {
   double y;
   int status = gsl_sf_bessel_I_impl(n, x, &y);
-  
   if(status != GSL_SUCCESS) {
+    GSL_WARNING("gsl_sf_bessel_I");
   }
-  
   return y;
 }

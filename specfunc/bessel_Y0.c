@@ -85,21 +85,21 @@ int gsl_sf_bessel_Y0_impl(double x, double * result)
 int gsl_sf_bessel_Y0_e(double x, double * result)
 {
   int status = gsl_sf_bessel_Y0_impl(x, result);
-  
   if(status != GSL_SUCCESS) {
+    GSL_ERROR("gsl_sf_bessel_Y0_e", status);
   }
+  return status;
 }
 
 
 /*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*-*-*/
 
-double gsl_sf_bessel_Y0_e(double x)
+double gsl_sf_bessel_Y0(double x)
 {
   double y;
   int status = gsl_sf_bessel_Y0_impl(x, &y);
-  
   if(status != GSL_SUCCESS) {
+    GSL_WARNING("gsl_sf_bessel_Y0");
   }
-  
   return y;
 }
