@@ -95,12 +95,12 @@ The inputs and outputs for the radix-2 and mixed-radix complex FFT
 routines are simply vectors of complex elements. For example,
 
 @example
-complex data[128] ;
+gsl_complex data[128] ;
 @end example
 @noindent
 The array indices are the same as those in the definition of the DFT ---
 i.e. there are no index transformations or permutations of the data.
-The @code{complex} type is defined as @code{struct @{double real ;
+The @code{gsl_complex} type is defined as @code{struct @{double real ;
 double imag@}}.
 
 For physical applications it is important to remember that the index
@@ -156,11 +156,11 @@ expense of requiring additional scratch space.
 
 All these functions are declared in the header file @file{gsl_fft_complex.h}.
 
-@deftypefun int gsl_fft_complex_radix2_forward (complex data[], const unsigned int n)
+@deftypefun int gsl_fft_complex_radix2_forward (gsl_complex data[], const unsigned int n)
 
-@deftypefunx int gsl_fft_complex_radix2_backward (complex data[], const unsigned int n)
+@deftypefunx int gsl_fft_complex_radix2_backward (gsl_complex data[], const unsigned int n)
 
-@deftypefunx int gsl_fft_complex_radix2_inverse (complex data[], const unsigned int n)
+@deftypefunx int gsl_fft_complex_radix2_inverse (gsl_complex data[], const unsigned int n)
 
 These functions compute the forward, backward and inverse FFTs of
 @var{data}, a complex array of length @var{n}, using an in-place radix-2
@@ -179,11 +179,11 @@ The length of the data @var{n} is not a power of two.
 @end deftypefun
 
 
-@deftypefun int gsl_fft_complex_radix2_dif_forward (complex data[], const unsigned int n)
+@deftypefun int gsl_fft_complex_radix2_dif_forward (gsl_complex data[], const unsigned int n)
 
-@deftypefunx int gsl_fft_complex_radix2_dif_backward (complex data[], const unsigned int n)
+@deftypefunx int gsl_fft_complex_radix2_dif_backward (gsl_complex data[], const unsigned int n)
 
-@deftypefunx int gsl_fft_complex_radix2_dif_inverse (complex data[], const unsigned int n)
+@deftypefunx int gsl_fft_complex_radix2_dif_inverse (gsl_complex data[], const unsigned int n)
 
 These are decimation-in-frequency versions of the radix-2 FFT functions.
 
@@ -208,7 +208,7 @@ array).
 int main ()
 @{
   int i;
-  complex data[128];
+  gsl_complex data[128];
 
   for (i = 0; i < 128; i++)
     @{
@@ -427,15 +427,15 @@ used.
 @comment (FIXME: This is a fixed length array and therefore probably in
 @comment violation of the GNU Coding Standards).
 
-@item complex * scratch
+@item gsl_complex * scratch
 This is a pointer to a scratch area of @code{n} complex elements,
 capable of holding intermediate copies of the original data set.
 
-@item complex * trig
+@item gsl_complex * trig
 This is a pointer to a preallocated trigonometric lookup table of
 @code{n} complex elements.
 
-@item complex * twiddle[64]
+@item gsl_complex * twiddle[64]
 This is an array of pointers into @code{trig}, giving the twiddle
 factors for each pass.
 
@@ -443,9 +443,9 @@ factors for each pass.
 
 @end deftp
 
-@deftypefun int gsl_fft_complex_forward (complex @var{data}[], const unsigned int @var{n}, const gsl_fft_wavetable * @var{wavetable})
-@deftypefunx int gsl_fft_complex_inverse (complex @var{data}[], const unsigned int @var{n}, const gsl_fft_complex_wavetable * @var{wavetable})
-@deftypefunx int gsl_fft_complex_backward (complex @var{data}[], const unsigned int @var{n}, const gsl_fft_complex_wavetable * @var{wavetable})
+@deftypefun int gsl_fft_complex_forward (gsl_complex @var{data}[], const unsigned int @var{n}, const gsl_fft_wavetable * @var{wavetable})
+@deftypefunx int gsl_fft_complex_inverse (gsl_complex @var{data}[], const unsigned int @var{n}, const gsl_fft_complex_wavetable * @var{wavetable})
+@deftypefunx int gsl_fft_complex_backward (gsl_complex @var{data}[], const unsigned int @var{n}, const gsl_fft_complex_wavetable * @var{wavetable})
 
 These functions compute the forward, backward and inverse FFT of
 @var{data}, a complex array of length @var{n}, using a mixed radix
@@ -492,7 +492,7 @@ int main ()
 @{
   int i;
   const int n = 630 ;
-  complex data[n];
+  gsl_complex data[n];
 
   gsl_fft_complex_wavetable wavetable;
 
@@ -852,7 +852,7 @@ The length of the data @var{n} and the length used to compute the given
 @end deftypefun
 
 
-@deftypefun int gsl_fft_real_unpack (const double real_coefficient[], complex complex_coefficient[], const unsigned int n)
+@deftypefun int gsl_fft_real_unpack (const double real_coefficient[], gsl_complex complex_coefficient[], const unsigned int n)
 
 This function converts a single real array, @var{real_coefficient} into
 an equivalent complex array, @var{complex_coefficient}, (with imaginary
@@ -878,7 +878,7 @@ is zero).
 @end table
 @end deftypefun
 
-@deftypefun int gsl_fft_halfcomplex_unpack (const double halfcomplex_coefficient[], complex complex_coefficient[], const unsigned int n)
+@deftypefun int gsl_fft_halfcomplex_unpack (const double halfcomplex_coefficient[], gsl_complex complex_coefficient[], const unsigned int n)
 
 This function converts @var{halfcomplex_coefficient}, an array of
 half-complex coefficients as returned by @code{gsl_fft_real}, into an
@@ -1021,7 +1021,7 @@ to check and independent of all the other routines.
 
 These functions are declared in the header file @file{gsl_fft_signals.h}.
 
-@deftypefun int gsl_fft_signal_complex_pulse (const unsigned int t, const unsigned int n, const double z_real, const double z_imag, complex data[], complex fft[])
+@deftypefun int gsl_fft_signal_complex_pulse (const unsigned int t, const unsigned int n, const double z_real, const double z_imag, gsl_complex data[], complex fft[])
 
 This function prepares a ``delta-function'' pulse of complex amplitude
 (@var{z_real},@var{z_imag}) at time @var{t} in the complex array
@@ -1045,7 +1045,7 @@ x_j = \sum_@{k=0@}^@{n-1@} z \delta_@{kt@} \exp(-2\pi i j k/n)
 @end equation
 @end deftypefun
 
-@deftypefun int gsl_fft_signal_complex_constant (const unsigned int n, const double z_real, const double z_imag, complex data[], complex fft[])
+@deftypefun int gsl_fft_signal_complex_constant (const unsigned int n, const double z_real, const double z_imag, gsl_complex data[], complex fft[])
 
 This function prepares a constant complex signal of amplitude
 (@var{z_real},@var{z_imag}) in the complex array @var{data} of length
@@ -1066,7 +1066,7 @@ x_j = \sum_@{k=0@}^@{n-1@} z \exp(-2\pi i j k/n)
 @end equation
 @end deftypefun
 
-@deftypefun int gsl_fft_signal_complex_exp (const int f, const unsigned int n, const double z_real, const double z_imag, complex data[], complex fft[])
+@deftypefun int gsl_fft_signal_complex_exp (const int f, const unsigned int n, const double z_real, const double z_imag, gsl_complex data[], gsl_complex fft[])
 
 This function prepares a complex exponential signal of amplitude
 (@var{z_real},@var{z_imag}) and frequency @var{f} in the complex array
@@ -1089,7 +1089,7 @@ x_j = \sum_@{k=0@}^@{n-1@} z \exp(2\pi i k f/n) \exp(-2\pi i j k/n)
 @end equation
 @end deftypefun
 
-@deftypefun int gsl_fft_signal_complex_exppair (const int f1, const int f2, const unsigned int n, const double z1_real, const double z1_imag, const double z2_real, const double z2_imag, complex data[], complex fft[])
+@deftypefun int gsl_fft_signal_complex_exppair (const int f1, const int f2, const unsigned int n, const double z1_real, const double z1_imag, const double z2_real, const double z2_imag, gsl_complex data[], gsl_complex fft[])
 
 This function prepares a pair of exponential signals of amplitude
 (@var{z1_real},@var{z1_imag}) and (@var{z2_real},@var{z2_imag}) with
@@ -1110,7 +1110,7 @@ x_j =  z_1 n \delta_@{j,f_1@}  + z_2 n \delta_@{j,f_2@}
 @end equation
 @end deftypefun
 
-@deftypefun int gsl_fft_signal_complex_noise (const unsigned int n, complex data[], complex fft[])
+@deftypefun int gsl_fft_signal_complex_noise (const unsigned int n, gsl_complex data[], gsl_complex fft[])
 
 This function prepares a complex white-noise signal in the complex array
 @var{data} of length @var{n}. The real and imaginary components of each
@@ -1125,7 +1125,7 @@ the array @var{fft} is only useful in detecting large errors.
 
 @end deftypefun
 
-@deftypefun int gsl_fft_signal_real_noise (const unsigned int n, complex data[], complex fft[])
+@deftypefun int gsl_fft_signal_real_noise (const unsigned int n, gsl_complex data[], gsl_complex fft[])
 
 This function generates real white noise instead of complex white noise.
 It is the same as @code{gsl_fft_signal_complex_noise} but with the
