@@ -45,7 +45,9 @@ gsl_ran_ugaussian_pdf (const double x)
 }
 
 void
-gsl_ran_bivariate_gaussian (const gsl_rng * r, double *x, double *y)
+gsl_ran_bivariate_gaussian (const gsl_rng * r, 
+			    double sigma_x, double sigma_y, double rho,
+			    double *x, double *y)
 {
   double u, v, r2, scale;
 
@@ -63,13 +65,23 @@ gsl_ran_bivariate_gaussian (const gsl_rng * r, double *x, double *y)
 
   scale = sqrt (-2.0 * log (r2) / r2);
 
-  *x = u * scale;
-  *y = v * scale;
+  *x = sigma_x * u * scale;
+  *y = sigma_y * (rho * u + sqrt(1 - rho*rho) * v) * scale;
 }
 
 double
-gsl_ran_bivariate_gaussian_pdf (const double x, const double y)
+gsl_ran_bivariate_gaussian_pdf (const double x, const double y, 
+				const double sigma_x, const double sigma_y,
+				const double rho)
 {
-  double p = (1 / (2 * M_PI)) * exp (-(x * x + y * y) / 2);
+  double u = x / sigma_x ;
+  double v = y / sigma_y ;
+  double c = 1 - rho*rho ;
+  double p = (1 / (2 * M_PI * sigma_x * sigma_y * sqrt(c))) 
+    * exp (-(u * u - 2 * rho * u * v + v * v) / (2 * c));
   return p;
 }
+
+
+
+

@@ -42,8 +42,8 @@ double gsl_ran_gaussian_pdf (double x, double sigma);
 double gsl_ran_ugaussian (const gsl_rng * r);
 double gsl_ran_ugaussian_pdf (double x);
 
-void gsl_ran_bivariate_gaussian (const gsl_rng * r, double *x, double *y);
-double gsl_ran_bivariate_gaussian_pdf (double x, double y);
+void gsl_ran_bivariate_gaussian (const gsl_rng * r, double sigma_x, double sigma_y, double rho, double *x, double *y);
+double gsl_ran_bivariate_gaussian_pdf (double x, double y, double sigma_x, double sigma_y, double rho);
 
 unsigned int gsl_ran_geometric (const gsl_rng * r, double p);
 double gsl_ran_geometric_pdf (unsigned int n, double p);

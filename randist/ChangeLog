@@ -1,3 +1,10 @@
+Thu Aug  6 12:19:59 1998  Brian Gough  <bjg@vvv.lanl.gov>
+
+	* gauss.c (gsl_ran_bivariate_gaussian): added bivariate with
+ 	correlations.
+
+	* hyperg.c: renamed variables, fixed bug
+
 Wed Aug  5 11:21:45 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
 	* gsl-dist.c: renamed gsl-dist.c to gsl-randist.c, for

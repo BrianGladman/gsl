@@ -7,7 +7,7 @@
 #include <gsl_rng.h>
 #include <gsl_test.h>
 
-#define N 500000
+#define N 100000
 void test_moments (double (*f) (void), const char *name,
 		   double a, double b, double p);
 void test_pdf (double (*f) (void), double (*pdf)(double), const char *name);
@@ -56,6 +56,14 @@ double test_gamma_large (void);
 double test_gamma_large_pdf (double x);
 double test_gaussian (void);
 double test_gaussian_pdf (double x);
+double test_bivariate_gaussian1 (void);
+double test_bivariate_gaussian1_pdf (double x);
+double test_bivariate_gaussian2 (void);
+double test_bivariate_gaussian2_pdf (double x);
+double test_bivariate_gaussian3 (void);
+double test_bivariate_gaussian3_pdf (double x);
+double test_bivariate_gaussian4 (void);
+double test_bivariate_gaussian4_pdf (double x);
 double test_gumbel1 (void);
 double test_gumbel1_pdf (double x);
 double test_gumbel2 (void);
@@ -72,6 +80,10 @@ double test_hypergeometric2 (void);
 double test_hypergeometric2_pdf (unsigned int x);
 double test_hypergeometric3 (void);
 double test_hypergeometric3_pdf (unsigned int x);
+double test_hypergeometric4 (void);
+double test_hypergeometric4_pdf (unsigned int x);
+double test_hypergeometric5 (void);
+double test_hypergeometric5_pdf (unsigned int x);
 double test_levy1 (void);
 double test_levy1_pdf (double x);
 double test_levy2 (void);
@@ -119,6 +131,10 @@ main (void)
 
 #define FUNC(x) x, "gsl_ran_" #x
 #define FUNC2(x) x, x ## _pdf, "gsl_ran_" #x
+  test_pdf (FUNC2(test_bivariate_gaussian1));
+  test_pdf (FUNC2(test_bivariate_gaussian2));
+  test_pdf (FUNC2(test_bivariate_gaussian3));
+  test_pdf (FUNC2(test_bivariate_gaussian4));
 
   test_shuffle() ;
   test_choose() ;
@@ -149,6 +165,7 @@ main (void)
   test_pdf (FUNC2(test_gamma_large));
   test_pdf (FUNC2(test_gaussian));
   test_pdf (FUNC2(test_ugaussian));
+
   test_pdf (FUNC2(test_gumbel1));
   test_pdf (FUNC2(test_gumbel2));
   test_pdf (FUNC2(test_levy1));
@@ -177,6 +194,8 @@ main (void)
   test_discrete_pdf (FUNC2(test_hypergeometric1));
   test_discrete_pdf (FUNC2(test_hypergeometric2));
   test_discrete_pdf (FUNC2(test_hypergeometric3));
+  test_discrete_pdf (FUNC2(test_hypergeometric4));
+  test_discrete_pdf (FUNC2(test_hypergeometric5));
   test_discrete_pdf (FUNC2(test_negative_binomial));
   test_discrete_pdf (FUNC2(test_pascal));
 
@@ -328,8 +347,12 @@ test_pdf (double (*f) (void), double (*pdf)(double), const char *name)
          x+dx using Simpson's rule */
 
       double x = a + i * dx ;
-#define STEPS 1000
+#define STEPS 100
       double sum = 0 ;
+      
+      if (fabs(x) < 1e-10) /* hit the origin exactly */
+	x = 0.0 ; 
+      
       for (j = 1; j < STEPS; j++)
 	sum += pdf(x + j * dx / STEPS) ;
 
@@ -740,6 +763,84 @@ test_gaussian_pdf (double x)
 }
 
 double
+test_bivariate_gaussian1 (void)
+{
+  double x = 0, y = 0;
+  gsl_ran_bivariate_gaussian (r_global, 3.0, 2.0, 0.3, &x, &y);
+  return x ;
+}
+
+double
+test_bivariate_gaussian1_pdf (double x)
+{
+  return gsl_ran_gaussian_pdf (x, 3.0);
+}
+
+double
+test_bivariate_gaussian2 (void)
+{
+  double x = 0, y = 0;
+  gsl_ran_bivariate_gaussian (r_global, 3.0, 2.0, 0.3, &x, &y);
+  return y ;
+}
+
+double
+test_bivariate_gaussian2_pdf (double y)
+{
+  int i, n = 10 ;
+  double sum = 0 ;
+  double a = -10, b = 10, dx = (b - a)/n ;
+  for (i = 0; i < n ; i++)
+    {
+      double x = a + i * dx ;
+      sum += gsl_ran_bivariate_gaussian_pdf (x, y, 3.0, 2.0, 0.3) * dx ;
+    }
+  return sum ;
+}
+
+
+double
+test_bivariate_gaussian3 (void)
+{
+  double x = 0, y = 0;
+  gsl_ran_bivariate_gaussian (r_global, 3.0, 2.0, 0.3, &x, &y);
+  return x + y ;
+}
+
+double
+test_bivariate_gaussian3_pdf (double x)
+{
+  double sx = 3.0, sy = 2.0, r = 0.3;
+  double su = (sx+r*sy) ;
+  double sv = sy*sqrt(1-r*r) ;
+  double sigma = sqrt(su*su + sv*sv) ;
+    
+  return gsl_ran_gaussian_pdf (x, sigma);
+}
+
+double
+test_bivariate_gaussian4 (void)
+{
+  double x = 0, y = 0;
+  gsl_ran_bivariate_gaussian (r_global, 3.0, 2.0, -0.5, &x, &y);
+  return x + y ;
+}
+
+double
+test_bivariate_gaussian4_pdf (double x)
+{
+  double sx = 3.0, sy = 2.0, r = -0.5;
+  double su = (sx+r*sy) ;
+  double sv = sy*sqrt(1-r*r) ;
+  double sigma = sqrt(su*su + sv*sv) ;
+    
+  return gsl_ran_gaussian_pdf (x, sigma);
+}
+
+
+
+
+double
 test_ugaussian (void)
 {
   return gsl_ran_ugaussian (r_global);
@@ -812,6 +913,31 @@ test_hypergeometric3_pdf (unsigned int n)
 {
   return gsl_ran_hypergeometric_pdf (n, 5, 7, 1);
 }
+
+double
+test_hypergeometric4 (void)
+{
+  return gsl_ran_hypergeometric (r_global, 5, 7, 20);
+}
+
+double
+test_hypergeometric4_pdf (unsigned int n)
+{
+  return gsl_ran_hypergeometric_pdf (n, 5, 7, 20);
+}
+
+double
+test_hypergeometric5 (void)
+{
+  return gsl_ran_hypergeometric (r_global, 2, 7, 5);
+}
+
+double
+test_hypergeometric5_pdf (unsigned int n)
+{
+  return gsl_ran_hypergeometric_pdf (n, 2, 7, 5);
+}
+
 
 
 double
@@ -939,13 +1065,13 @@ test_poisson_pdf (unsigned int n)
 double
 test_poisson_large (void)
 {
-  return gsl_ran_poisson (r_global, 20.0);
+  return gsl_ran_poisson (r_global, 30.0);
 }
 
 double
 test_poisson_large_pdf (unsigned int n)
 {
-  return gsl_ran_poisson_pdf (n, 20.0);
+  return gsl_ran_poisson_pdf (n, 30.0);
 }
 
 
