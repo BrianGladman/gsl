@@ -267,6 +267,10 @@ FUNCTION(gsl_matrix, view_from_vector) (TYPE(gsl_matrix) * m,
     {
       GSL_ERROR ("matrix size exceeds available vector size", GSL_EDOM);
     }
+  else if (base->stride != 1) 
+    {
+      GSL_ERROR ("matrix view requires a vector with unit stride", GSL_EDOM);
+    }
 
   if (m->block != 0)
     {
