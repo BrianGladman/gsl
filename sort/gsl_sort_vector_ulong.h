@@ -40,11 +40,11 @@ __BEGIN_DECLS
 void gsl_sort_vector_ulong (gsl_vector_ulong * v);
 int gsl_sort_vector_ulong_index (gsl_permutation * p, const gsl_vector_ulong * v);
 
-int gsl_sort_vector_ulong_smallest (unsigned long * dest, size_t k, const gsl_vector_ulong * v);
-int gsl_sort_vector_ulong_largest (unsigned long * dest, size_t k, const gsl_vector_ulong * v);
+int gsl_sort_vector_ulong_smallest (unsigned long * dest, const size_t k, const gsl_vector_ulong * v);
+int gsl_sort_vector_ulong_largest (unsigned long * dest, const size_t k, const gsl_vector_ulong * v);
 
-int gsl_sort_vector_ulong_smallest_index (size_t * p, size_t k, const gsl_vector_ulong * v);
-int gsl_sort_vector_ulong_largest_index (size_t * p, size_t k, const gsl_vector_ulong * v);
+int gsl_sort_vector_ulong_smallest_index (size_t * p, const size_t k, const gsl_vector_ulong * v);
+int gsl_sort_vector_ulong_largest_index (size_t * p, const size_t k, const gsl_vector_ulong * v);
 
 __END_DECLS
 

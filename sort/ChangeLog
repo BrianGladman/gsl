@@ -1,3 +1,8 @@
+Tue Jun 26 12:06:58 2001  Brian Gough  <bjg@network-theory.co.uk>
+
+	* subset_source. subsetind_source.c: make prototypes match header
+ 	file
+
 Sun Jan 21 18:36:04 2001  Brian Gough  <bjg@network-theory.co.uk>
 
 	* subset.c, subsetind.c: added functions for selecting subsets
