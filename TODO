@@ -6,14 +6,16 @@ requirements.
 
 * Document ode-initval, dht
 
-* Finish BLAS, by implementing Level-3 operations
-
 * use  GSL_NAN, GSL_POSINF, GSL_NEGINF macros 
 
 * Complex polynomial solvers (Got Newton-Mueller from
 jotahtin@cc.hut.fi, still to add (BJG)).
 
 * Reorganize siman and monte interfaces to allow iterative use.
+
+* Add n-tuple support
+
+* Convert histograms to use linear scales
 
 * Finalize error handling scheme and sort out __impl vs _e vs no
 suffix.  Add a GSL_ERROR_MODE environment variable for choosing error
@@ -74,7 +76,6 @@ return values to use == GSL_SUCCESS, if they are checking for zero.
 N.B. want to be careful about accidentally omitting error conditions
 if using something like == GSL_FAILURE when function returns a
 different error code.
-
 
 Wishlist or vague ideas
 =======================
