@@ -107,6 +107,7 @@ function library.
 * Basic statistics::            
 * FFTs::                        
 * Root finding::                
+* Special Functions::           
 * Simulated Annealing::         
 * Debugging Numerical Programs::  
 * Contributors to GSL::         
@@ -148,17 +149,17 @@ allowing wrappers to be written for very high level languages.
 @include fft.texi
 
 @c Section on root finding
-@node Root finding, Simulated Annealing, FFTs, Top
+@node Root finding, Special Functions, FFTs, Top
 @chapter Root finding
 @include roots.texi
 
 @c Section on special functions
-@node Special Functions
+@node Special Functions, Simulated Annealing, Root finding, Top
 @chapter Special Functions
 @include specfunc.texi
 
 @c Section on simulated annealing
-@node Simulated Annealing, Debugging Numerical Programs, Root finding, Top
+@node Simulated Annealing, Debugging Numerical Programs, Special Functions, Top
 @chapter Simulated Annealing
 @cindex simulated annealing
 @cindex combinatorial searches
