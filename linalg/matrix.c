@@ -23,7 +23,7 @@ subvector (gsl_vector * v, size_t i1, size_t i2)
 {
   gsl_vector subv = {0,0,0,0} ;
 
-  if (i1 >= m->size1 || i2 >= m->size1 || i1 > i2) 
+  if (i1 >= v->size || i2 >= v->size || i1 > i2) 
     return subv;
 
   subv.data = v->data + i1 * v->stride ;
