@@ -1,3 +1,9 @@
+Tue Jun 19 23:40:18 2001  Brian Gough  <bjg@network-theory.co.uk>
+
+	* hybrid.c: removed workspace for linalg calls, no longer needed
+
+	* hybridj.c: removed workspace for linalg calls, no longer needed
+
 Wed Jun  6 13:31:18 2001  Brian Gough  <bjg@network-theory.co.uk>
 
 	* hybridj.c: updated to use new QR calling convention (now passes

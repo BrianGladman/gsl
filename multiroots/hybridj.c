@@ -55,7 +55,6 @@ typedef struct
     gsl_vector *rdx;
     gsl_vector *w;
     gsl_vector *v;
-    gsl_vector *work;
   }
 hybridj_state_t;
 
@@ -73,7 +72,7 @@ hybridj_alloc (void *vstate, size_t n)
   hybridj_state_t *state = (hybridj_state_t *) vstate;
   gsl_matrix *q, *r;
   gsl_vector *tau, *diag, *qtf, *newton, *gradient, *x_trial, *f_trial,
-   *df, *qtdf, *rdx, *w, *v, *work;
+   *df, *qtdf, *rdx, *w, *v;
 
   q = gsl_matrix_calloc (n, n);
 
@@ -306,30 +305,6 @@ hybridj_alloc (void *vstate, size_t n)
 
   state->v = v;
 
-  work = gsl_vector_calloc (n);
-
-  if (work == 0)
-    {
-      gsl_matrix_free (q);
-      gsl_matrix_free (r);
-      gsl_vector_free (tau);
-      gsl_vector_free (diag);
-      gsl_vector_free (qtf);
-      gsl_vector_free (newton);
-      gsl_vector_free (gradient);
-      gsl_vector_free (x_trial);
-      gsl_vector_free (f_trial);
-      gsl_vector_free (df);
-      gsl_vector_free (qtdf);
-      gsl_vector_free (rdx);
-      gsl_vector_free (w);
-      gsl_vector_free (v);
-
-      GSL_ERROR_VAL ("failed to allocate space for v", GSL_ENOMEM, 0);
-    }
-
-  state->work = work;
-
   return GSL_SUCCESS;
 }
 
@@ -356,7 +331,6 @@ set (void *vstate, gsl_multiroot_function_fdf * fdf, gsl_vector * x, gsl_vector 
   gsl_matrix *r = state->r;
   gsl_vector *tau = state->tau;
   gsl_vector *diag = state->diag;
-  gsl_vector *work = state->work;
 
   GSL_MULTIROOT_FN_EVAL_F_DF (fdf, x, f, J);
 
@@ -382,8 +356,8 @@ set (void *vstate, gsl_multiroot_function_fdf * fdf, gsl_vector * x, gsl_vector 
 
   /* Factorize J into QR decomposition */
 
-  gsl_linalg_QR_decomp (J, tau, work);
-  gsl_linalg_QR_unpack (J, tau, q, r, work);
+  gsl_linalg_QR_decomp (J, tau);
+  gsl_linalg_QR_unpack (J, tau, q, r);
 
   return GSL_SUCCESS;
 }
@@ -421,7 +395,6 @@ iterate (void *vstate, gsl_multiroot_function_fdf * fdf, gsl_vector * x, gsl_vec
   gsl_vector *rdx = state->rdx;
   gsl_vector *w = state->w;
   gsl_vector *v = state->v;
-  gsl_vector *work = state->work;
 
   double prered, actred;
   double pnorm, fnorm1, fnorm1p;
@@ -557,8 +530,8 @@ iterate (void *vstate, gsl_multiroot_function_fdf * fdf, gsl_vector * x, gsl_vec
 
       /* Factorize J into QR decomposition */
 
-      gsl_linalg_QR_decomp (J, tau, work);
-      gsl_linalg_QR_unpack (J, tau, q, r, work);
+      gsl_linalg_QR_decomp (J, tau);
+      gsl_linalg_QR_unpack (J, tau, q, r);
       return GSL_SUCCESS;
     }
 
@@ -595,7 +568,6 @@ hybridj_free (void *vstate)
 {
   hybridj_state_t *state = (hybridj_state_t *) vstate;
 
-  gsl_vector_free (state->work);
   gsl_vector_free (state->v);
   gsl_vector_free (state->w);
   gsl_vector_free (state->rdx);
