@@ -66,7 +66,12 @@ List of Known Problems
 ======================
 
 The errors below have been automatically extracted from the output of
-"make check" and are known to the developers.  
+"make check" and are known to the developers.  The output is in three
+sections,
+
+  1) make 
+  2) make check  (using extended-precision floating point registers)
+  3) make check  (using strict IEEE double-precision arithmetic)
 
 If you find a bug which is not on this list please report it to the
 mailing list gsl-discuss@sourceware.cygnus.com. Thank you.

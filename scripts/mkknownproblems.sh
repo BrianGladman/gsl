@@ -10,6 +10,6 @@ make -k CFLAGS="-g -O2 -Wall" >>typescript.make 2>&1
 echo Running make check >>typescript.make 2>&1 
 make -k check CFLAGS="-g -O2 -Wall" >>typescript.make 2>&1 
 echo Running make check in double-precision >>typescript.make 2>&1 
-export GSL_IEEE_MODE=double-precision,mask-underflow,mask-denormalized
+export GSL_IEEE_MODE=double-precision,mask-all
 make -k check CFLAGS="-g -O2 -Wall" >>typescript.make 2>&1 
 ../scripts/knownproblems.pl < typescript.make > ../KNOWN-PROBLEMS

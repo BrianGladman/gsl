@@ -2,7 +2,12 @@ List of Known Problems
 ======================
 
 The errors below have been automatically extracted from the output of
-"make check" and are known to the developers.  
+"make check" and are known to the developers.  The output is in three
+sections,
+
+  1) make 
+  2) make check  (using extended-precision floating point registers)
+  3) make check  (using strict IEEE double-precision arithmetic)
 
 If you find a bug which is not on this list please report it to the
 mailing list gsl-discuss@sourceware.cygnus.com. Thank you.
@@ -119,38 +124,13 @@ Making check in monte
 ===========================================================================
 Running make check in double-precision
 
-Making check in specfunc
-    PASS:   gsl_sf_laguerre_n_impl(1, -2.0, 1.0, &r)
-*** FAIL: test
-    ===================
---------
-    ===================
-*** make[2]: *** [check-TESTS] Error 1
-    make[2]: Leaving directory `/home/cvs/gsl-cvs/gsl/=gsl.build/specfunc'
-*** make[1]: *** [check-am] Error 2
-*** make[1]: Target `check' not remade because of errors.
-    make[1]: Leaving directory `/home/cvs/gsl-cvs/gsl/=gsl.build/specfunc'
---------
-Making check in siman
-    make[2]: Entering directory `/home/cvs/gsl-cvs/gsl/=gsl.build/siman'
-*** FAIL: test
-    ===================
---------
-    ===================
-*** make[2]: *** [check-TESTS] Error 1
-    make[2]: Leaving directory `/home/cvs/gsl-cvs/gsl/=gsl.build/siman'
-*** make[1]: *** [check-am] Error 2
-*** make[1]: Target `check' not remade because of errors.
-    make[1]: Leaving directory `/home/cvs/gsl-cvs/gsl/=gsl.build/siman'
---------
-Making check in monte
     PASS: vegas(f2), dim=7, err=0.0097, chisq=0.7997 (1.00714 observed vs 1 expected)
 *** FAIL: vegas(f2), dim=9, err=0.0003, chisq=0.6418 (0.499681001846611295 observed vs 1 expected)
     Testing Tsuda's function
 --------
     PASS: vegas(f3), dim=9, err=0.0004, chisq=1.4636 (0.999834 observed vs 1 expected)
 *** FAIL: vegas_test
-    GSL_IEEE_MODE="double-precision,mask-denormalized,mask-underflow"
+    GSL_IEEE_MODE="double-precision,mask-all"
 --------
     PASS: miser(f2), dim=7, err=0.0371 (1.00238 observed vs 1 expected)
 *** FAIL: miser(f2), dim=9, err=0.0927 (0.895824771461299685 observed vs 1 expected)
@@ -158,7 +138,7 @@ Making check in monte
 --------
     PASS: miser(f3), dim=9, err=0.0171 (1.004 observed vs 1 expected)
 *** FAIL: miser_test
-    GSL_IEEE_MODE="double-precision,mask-denormalized,mask-underflow"
+    GSL_IEEE_MODE="double-precision,mask-all"
 --------
     ===================
 *** make[2]: *** [check-TESTS] Error 1
@@ -166,30 +146,6 @@ Making check in monte
 *** make[1]: *** [check-am] Error 2
 *** make[1]: Target `check' not remade because of errors.
     make[1]: Leaving directory `/home/cvs/gsl-cvs/gsl/=gsl.build/monte'
---------
-Making check in ode-initval
-    PASS:   Evolve: stiff, rk4imp
-*** FAIL: test
-    ===================
---------
-    ===================
-*** make[2]: *** [check-TESTS] Error 1
-    make[2]: Leaving directory `/home/cvs/gsl-cvs/gsl/=gsl.build/ode-initval'
-*** make[1]: *** [check-am] Error 2
-*** make[1]: Target `check' not remade because of errors.
-    make[1]: Leaving directory `/home/cvs/gsl-cvs/gsl/=gsl.build/ode-initval'
---------
-Making check in roots
-    PASS: GSL_IS_REAL(1.0) is 1
-*** FAIL: test
-    ===================
---------
-    ===================
-*** make[2]: *** [check-TESTS] Error 1
-    make[2]: Leaving directory `/home/cvs/gsl-cvs/gsl/=gsl.build/roots'
-*** make[1]: *** [check-am] Error 2
-*** make[1]: Target `check' not remade because of errors.
-    make[1]: Leaving directory `/home/cvs/gsl-cvs/gsl/=gsl.build/roots'
 --------
 Making check in doc
     make[1]: Leaving directory `/home/cvs/gsl-cvs/gsl/=gsl.build'
