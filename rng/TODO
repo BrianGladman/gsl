@@ -1,3 +1,5 @@
+* Add read/write functions for saving the state
+
 * Add all the new generators from Knuth's 3rd Edition 
 
 * Add SWNS generator Phys.Rev.E 50 (2) p. 1607-1615 (1994), Phys.Rev.E
