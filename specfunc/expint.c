@@ -289,6 +289,7 @@ int gsl_sf_expint_E1_impl(const double x, double * result)
   const double xmax  = xmaxt - log(xmaxt);    /* XMAX = XMAXT - LOG(XMAXT) */
 
   if(x < -xmax) {
+    *result = 0.0; /* FIXME: should be Inf */
     return GSL_EOVRFLW;
   }
   else if(x <= -10.) {
@@ -319,10 +320,32 @@ int gsl_sf_expint_E1_impl(const double x, double * result)
     return GSL_SUCCESS;
   }
   else {
-    *result = 0.;
+    *result = 0.0;
     return GSL_EUNDRFLW;
   }
 }
+
+int gsl_sf_expint_E2_impl(const double x, double * result)
+{
+  const double xmaxt = -GSL_LOG_DBL_MIN;
+  const double xmax  = xmaxt - log(xmaxt);
+
+  if(x < -xmax) {
+    *result = 0.0; /* FIXME: should be Inf */
+    return GSL_EOVRFLW;
+  }
+  else if(x <= xmax) {
+    double E1;
+    int stat_E1 = gsl_sf_expint_E1_impl(x, &E1);
+    *result = 0.5 * (exp(-x) - x*E1);
+    return stat_E1;
+  }
+  else {
+    *result = 0.0;
+    return GSL_EUNDRFLW;
+  }
+}
+
 
 /* checked OK [GJ] */
 int gsl_sf_expint_Ei_impl(const double x, double * result)
@@ -358,6 +381,15 @@ int gsl_sf_expint_E1_e(const double x, double * result)
   return status;
 }
 
+int gsl_sf_expint_E2_e(const double x, double * result)
+{
+  int status = gsl_sf_expint_E2_impl(x, result);
+  if(status != GSL_SUCCESS) {
+    GSL_ERROR("gsl_sf_expint_E2_e", status);
+  }
+  return status;
+}
+
 int gsl_sf_expint_Ei_e(const double x, double * result)
 {
   int status = gsl_sf_expint_Ei_impl(x, result);
@@ -376,6 +408,16 @@ double gsl_sf_expint_E1(double x)
   int status = gsl_sf_expint_E1_impl(x, &y);
   if(status != GSL_SUCCESS) {
     GSL_WARNING("gsl_sf_expint_E1", status);
+  }
+  return y;
+}
+
+double gsl_sf_expint_E2(double x)
+{
+  double y;
+  int status = gsl_sf_expint_E2_impl(x, &y);
+  if(status != GSL_SUCCESS) {
+    GSL_WARNING("gsl_sf_expint_E2", status);
   }
   return y;
 }

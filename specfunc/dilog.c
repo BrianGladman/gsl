@@ -202,14 +202,14 @@ dilogc_series_1(double r, double cos_theta, double * result)
   double sk  = beta;
   double rk  = r;
   double sum = r*(1.0 - ck);
-  int kmax = locMax( 10, (int)(10.0/(-log(r))) );
+  int kmax = 100 + (int)(10.0/(-log(r)));
   int k;
   for(k=2; k<kmax; k++) {
     double ck_tmp = ck;
     ck = ck - (alpha*ck + beta*sk);
     sk = sk - (alpha*sk - beta*ck_tmp);
     rk *= r;
-    sum += rk/(k*k) * (1.0 - ck);
+    sum += rk/((double)k*k) * (1.0 - ck);
   }
   
   /* Re(Li2(z)) = Li2(|z|) - sum */
@@ -267,7 +267,7 @@ dilogc_series_2(double r, double cos_theta, double *result)
     ck = ck - (alpha*ck + beta*sk);
     sk = sk - (alpha*sk - beta*ck_tmp);
     rk *= r;
-    sum += (1.0-rk)/(k*k) * (1.0 - ck);
+    sum += (1.0-rk)/((double)k*k) * (1.0 - ck);
   }
 
   /* Clean up the last part of the sum,

@@ -7,9 +7,11 @@
 #include "gsl_sf_chebyshev.h"
 #include "gsl_sf_expint.h"
 
+
 /* based on MISCFUN EXP3(X) by Allan J. Macleod  [TOMS 757] */
 
 /* expint_3(x) = integral 0 to x  (exp(-t*t*t)) dt */
+
 
 static double aexp3_data[25] = {
   1.26919841422112601434,
@@ -111,4 +113,25 @@ int gsl_sf_expint_3_impl(const double x, double * result)
     *result = FUNINF;
     return GSL_SUCCESS;
   }
+}
+
+
+int gsl_sf_expint_3_e(double x, double * result)
+{
+  int status = gsl_sf_expint_3_impl(x, result);
+  if(status != GSL_SUCCESS) {
+    GSL_ERROR("gsl_sf_expint_3_e", status);
+  }
+  return status;
+}
+
+
+double gsl_sf_expint_3(double x)
+{
+  double y;
+  int status = gsl_sf_expint_3_impl(x, &y);
+  if(status != GSL_SUCCESS) {
+    GSL_WARNING("gsl_sf_expint_3", status);
+  }
+  return y;
 }
