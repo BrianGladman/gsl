@@ -242,3 +242,28 @@ int main (void)
 }
 
 ----------------------------------------------------------------------
+BUG#32 - sort goes into an infinite loop for NaN values
+
+From: Ben Klemens <klemens@hss.caltech.edu>
+Subject: [Bug-gsl] sorting vectors with NANs
+Date: Wed, 23 Feb 2005 13:40:06 -0800
+
+If there's an NAN in a vector, then gsl_sort_vector falls into an
+infinite loop.
+
+#include <gsl/gsl_matrix.h>
+#include <gsl/gsl_sort_vector.h>
+#include <gsl/gsl_math.h>
+ 
+int main(void){
+gsl_vector      *v      = gsl_vector_calloc(3);
+        gsl_vector_set(v, 0, GSL_NAN);
+        gsl_vector_set(v, 1, 1);
+        gsl_vector_set(v, 2, 2);
+        gsl_sort_vector(v);
+        return 0;
+}
+----------------------------------------------------------------------
+Last assigned bug number = 32
+
+ 
