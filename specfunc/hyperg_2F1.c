@@ -424,7 +424,7 @@ int gsl_sf_hyperg_2F1_impl(double a, double b, const double c,
     stat_bd1 = gsl_sf_lngamma_impl(a+d1, &lng_bd1);
     stat_bd2 = gsl_sf_lngamma_impl(a+d1, &lng_bd2);
     
-    
+    if(stat_ad != GSL_SUCCESS || stat_c != GSL_SUCCESS)
     ln_pre1 = lng_ad + lng_c + d2*ln_omx - lng_ad1 - lng_bd1;
     ln_pre2 =          lng_c + d1*ln_omx - lng_ad2 - lng_bd2;
 
