@@ -9,8 +9,8 @@
 #define SHORT complex_long_double
 #define ATOMIC long double
 #define MULTIPLICITY 2
-#define IN_FORMAT "%Lg %Lg"
-#define OUT_FORMAT "%Lg %Lg"
+#define IN_FORMAT "%Lg"
+#define OUT_FORMAT "%Lg"
 #define ZERO {{0,0}}
 
 #elif defined(BASE_GSL_COMPLEX)
@@ -18,8 +18,8 @@
 #define SHORT complex
 #define ATOMIC double
 #define MULTIPLICITY 2
-#define IN_FORMAT "%lg %lg"
-#define OUT_FORMAT "%g %g"
+#define IN_FORMAT "%lg"
+#define OUT_FORMAT "%g"
 #define ZERO {{0,0}}
 
 #elif defined(BASE_GSL_COMPLEX_FLOAT)
@@ -27,8 +27,8 @@
 #define SHORT complex_float
 #define ATOMIC float
 #define MULTIPLICITY 2
-#define IN_FORMAT "%g %g"
-#define OUT_FORMAT "%g %g"
+#define IN_FORMAT "%g"
+#define OUT_FORMAT "%g"
 #define ZERO {{0,0}}
 
 #elif defined(BASE_LONG_DOUBLE)
