@@ -9,14 +9,39 @@
    p(x) dx = (1/(2 mu Gamma(1+1/a))) * exp(-|x/mu|^a) dx
 
    for -infty < x < infty. For a = 1 it reduces to the Laplace
-   distribution. */
+   distribution. 
+
+   The exponential power distribution is related to the gamma
+   distribution by E = mu * pow(G(1/a),1/a), where E is an exponential
+   power variate and G is a gamma variate.
+
+   We use this relation for a < 1. For a >=1 we use rejection methods
+   based on the laplace and gaussian distributions which should be
+   faster.
+
+   See P. R. Tadikamalla, "Random Sampling from the Exponential Power
+   Distribution", Journal of the American Statistical Association,
+   September 1980, Volume 75, Number 371, pages 683-686.
+   
+*/
 
 double
 gsl_ran_exppow (const gsl_rng * r, const double mu, const double a)
 {
   if (a < 1) 
     {
-      abort () ; /* FIXME */
+      double u = gsl_rng_uniform (r) ;
+      double v = gsl_ran_gamma (r, 1/a) ;
+      double z = mu * pow(v, 1/a) ;
+
+      if (u > 0.5) 
+	{
+	  return z ;
+	} 
+      else 
+	{
+	  return -z ;
+	}
     }
   else if (a == 1) 
     {
