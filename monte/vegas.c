@@ -56,20 +56,13 @@
    when the desired accuracy has been achieved.
 */
 
-/* All the state variables and workspace variables should be put into
-   a structure or two, say vegas_flags and vegas_workspace.
-*/
-
-enum {MODE_IMPORTANCE = 1, MODE_IMPORTANCE_ONLY = 0, MODE_STRATIFIED = -1};
-
-
 /* predeclare functions */
 
 void adjust_bins(gsl_monte_vegas_state *state,
 		 double bin[GSL_V_BINS_MAX+1][GSL_V_MAX_DIM], 
 		 double weight[GSL_V_BINS_MAX+1], 
 		 double pts_per_bin, int j, int bins_prev, int bins);
-inline int change_box_cord(int box_cord[GSL_V_MAX_DIM], 
+inline int change_box_coord(int box_coord[GSL_V_MAX_DIM], 
 			   int ng, unsigned long j);
 inline void init_array(double array[GSL_V_BINS_MAX+1][GSL_V_MAX_DIM], 
 		       int imax, unsigned long jmax);
@@ -116,23 +109,27 @@ int gsl_monte_vegas_integrate(gsl_monte_vegas_state *state,
   if (state->stage <= 2) {
     state->bins = GSL_V_BINS_MAX;
     state->boxes = 1;
-    if (state->mode != MODE_IMPORTANCE_ONLY) {
+    if (state->mode != GSL_VEGAS_MODE_IMPORTANCE_ONLY) {
+      /* shooting for 2 calls/box */
+      int box_per_bin;
       state->boxes = floor( pow(calls/2.0, 1.0/num_dim) ); 
-      state->mode = MODE_IMPORTANCE;
+      state->mode = GSL_VEGAS_MODE_IMPORTANCE;
       if ((2 * state->boxes - GSL_V_BINS_MAX) >= 0) {
-	state->mode = MODE_STRATIFIED;
-	i = state->boxes / GSL_V_BINS_MAX;
+	/* if bins/box < 2 */
+	state->mode = GSL_VEGAS_MODE_STRATIFIED;
+	box_per_bin = state->boxes / GSL_V_BINS_MAX;
 	if ( state->boxes % GSL_V_BINS_MAX ) 
-	  ++i;
-	state->bins = state->boxes / i;
-	state->boxes = i * state->bins;
+	  ++box_per_bin;
+	state->bins = state->boxes / box_per_bin;
+	state->boxes = box_per_bin * state->bins;
       }
     }
-    
-    k = floor( pow( (double) state->boxes, (double) num_dim) );
-    state->calls_per_box = myMAX(calls/k, 2);
-    calls = state->calls_per_box * k;
-    
+    {
+      int tot_boxes;
+      tot_boxes = floor( pow( (double) state->boxes, (double) num_dim) );
+      state->calls_per_box = myMAX(calls/tot_boxes, 2);
+      calls = state->calls_per_box * tot_boxes;
+    }
     /* total volume of x-space/(avg num of calls/bin) */
     state->jac = state->vol *
       pow( (double) state->bins, (double) num_dim) / calls;
@@ -169,15 +166,15 @@ int gsl_monte_vegas_integrate(gsl_monte_vegas_state *state,
        ++state->it_num) {
     double intgrl, intgrl_sq, sig;
     double wgt, x[GSL_V_MAX_DIM];
-    int    box_cord[GSL_V_MAX_DIM];
+    int    box_coord[GSL_V_MAX_DIM];
     for (j = 0; j < num_dim; ++j)
-      box_cord[j] = 0;
+      box_coord[j] = 0;
     init_array(state->grid_sum, state->bins, num_dim);
     init_array(state->bin_sum, state->bins, num_dim);
     intgrl = 0.;
     sig = 0.;
     do {
-      int    bin_cord[GSL_V_MAX_DIM];
+      int    bin_coord[GSL_V_MAX_DIM];
       double f, f_sq, f_sum, f_sq_sum;
 
       for (k = 1, f_sum = 0., f_sq_sum = 0.; k <= state->calls_per_box; ++k) {
@@ -187,19 +184,20 @@ int gsl_monte_vegas_integrate(gsl_monte_vegas_state *state,
 	for (j = 0; j < num_dim; ++j) {
 	  double binwdth;
 
-	  /* box_cord + ran gives the position in the box units, while
+	  /* box_coord + ran gives the position in the box units, while
 	     z is the position in bin units.
 	  */
-	  /*	  z = (box_cord[j] + gsl_rng_uniform(r) ) * bins_per_box; */
-	  z = (box_cord[j] + gsl_rng_uniform(r) ) * state->bins / state->boxes; 
-	  bin_cord[j] = z;
-	  if (bin_cord[j] == 0) {
+	  /*	  z = (box_coord[j] + gsl_rng_uniform(r) ) * bins_per_box; */
+	  z = (box_coord[j] + gsl_rng_uniform(r)) * state->bins / state->boxes; 
+	  bin_coord[j] = z;
+	  if (bin_coord[j] == 0) {
 	    binwdth = state->y_bin[1][j];
 	    y = z * binwdth;
 	  } 
 	  else {
-	    binwdth = state->y_bin[bin_cord[j] + 1][j] - state->y_bin[bin_cord[j]][j];
-	    y = state->y_bin[bin_cord[j]][j] + (z - bin_cord[j]) * binwdth;
+	    binwdth = state->y_bin[bin_coord[j] + 1][j] - 
+	      state->y_bin[bin_coord[j]][j];
+	    y = state->y_bin[bin_coord[j]][j] + (z - bin_coord[j]) * binwdth;
 	  }
 	  x[j] = xl[j] + y * state->delx[j];
 	  if (j > 2) {
@@ -216,9 +214,9 @@ int gsl_monte_vegas_integrate(gsl_monte_vegas_state *state,
 	f_sum += f;
 	f_sq_sum += f_sq;
 	for (j = 0; j < num_dim; ++j) {
-	  state->bin_sum[bin_cord[j] + 1][j] += f;
-	  if (state->mode != MODE_STRATIFIED)
-	    state->grid_sum[bin_cord[j] + 1][j] += f_sq;
+	  state->bin_sum[bin_coord[j] + 1][j] += f;
+	  if (state->mode != GSL_VEGAS_MODE_STRATIFIED)
+	    state->grid_sum[bin_coord[j] + 1][j] += f_sq;
 	}
       } /* end of k loop */
 
@@ -227,12 +225,12 @@ int gsl_monte_vegas_integrate(gsl_monte_vegas_state *state,
       intgrl += f_sum;
       if (f_sq_sum <= 0.0) f_sq_sum = GSL_V_TINY;
       sig += f_sq_sum;
-      if (state->mode == MODE_STRATIFIED) {
+      if (state->mode == GSL_VEGAS_MODE_STRATIFIED) {
 	for (j = 0; j < num_dim; ++j)
-	  state->grid_sum[bin_cord[j] + 1][j] += f_sq_sum;
+	  state->grid_sum[bin_coord[j] + 1][j] += f_sq_sum;
       }
-    } while ( change_box_cord ( box_cord, state->boxes, num_dim-1) );
-    /* end of box_cord loop */
+    } while ( change_box_coord ( box_coord, state->boxes, num_dim-1) );
+    /* end of box_coord loop */
 
     /* Compute final results for this iteration   */
 
@@ -336,13 +334,16 @@ void adjust_bins(gsl_monte_vegas_state *state,
   return;
 }
 
-inline int change_box_cord(int box_cord[GSL_V_MAX_DIM], 
+/* change_box_coord steps through the box coord like
+   {0,0}, {0, 1}, {0, 2}, {0, 3}, {1, 0}, {1, 1}, {1, 2}, ...
+*/
+inline int change_box_coord(int box_coord[GSL_V_MAX_DIM], 
 			   int ng, unsigned long j_start)
 {
   int j = j_start;
   while ( j >= 0 ) {
-    ++box_cord[j];
-    if ( (box_cord[j] %= ng) != 0) 
+    ++box_coord[j];
+    if ( (box_coord[j] %= ng) != 0) 
       return (1);
     j--;
   }
@@ -409,7 +410,7 @@ int gsl_monte_vegas_validate(gsl_monte_vegas_state* state,
     }
     if (xu[i] - xl[i] > DBL_MAX) {
       sprintf(warning, 
-	      "Range of integration is too large for cord %lu, please rescale", 
+	      "Range of integration is too large for coord %lu, please rescale", 
 	      i);
       GSL_ERROR(warning, GSL_EINVAL);
     }
@@ -439,6 +440,7 @@ int gsl_monte_vegas_init(gsl_monte_vegas_state* state)
   state->alpha = 1.5;
   state->verbose = -1;
   state->max_it_num = 5;
+  state->mode = GSL_VEGAS_MODE_IMPORTANCE;
   state->ranf = gsl_rng_alloc(gsl_rng_env_setup());
 
   state->init_done = 1;
