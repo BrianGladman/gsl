@@ -35,7 +35,7 @@ test_f (const gsl_min_fminimizer_type * T,
 	double lower_bound, double middle, double upper_bound, 
         double correct_minimum);
 
-void
+int
 test_bracket (const char * description,gsl_function *f,double lower_bound, 
 	      double upper_bound, int max);
 

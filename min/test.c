@@ -182,7 +182,7 @@ my_error_handler (const char *reason, const char *file, int line, int err)
     printf ("(caught [%s:%d: %s (%d)])\n", file, line, reason, err);
 }
 
-void
+int
 test_bracket (const char * description,gsl_function *f,double lower_bound, 
 	      double upper_bound, int max)
 {
@@ -198,6 +198,7 @@ test_bracket (const char * description,gsl_function *f,double lower_bound,
   status=gsl_min_find_bracket(f,&minimum,&f_minimum,&x,&f_lower,&f_upper,max);
   gsl_test (status,"%s, interval: [%g,%g], values: (%g,%g), minimum at: %g, value: %g",
 	    description,x.lower,x.upper,f_lower,f_upper,minimum,f_minimum);
+  return status;
 }
 
 
