@@ -15,9 +15,10 @@ END-INFO-DIR-ENTRY
 @end ifinfo
 
 @include version.texi
+@set GSL @emph{GNU Scientific Library}
 
 @ifinfo
-This file documents the the @emph{GNU Scientific Library}.
+This file documents the @emph{GNU Scientific Library}.
 
 Copyright (C) 1996 Free Software Foundation, Inc.
 
@@ -78,16 +79,16 @@ of numerical routines for scientific computing.
 
 @menu
 * Motivation::                  
+* Motivation again::                  
 * Design::                      
 * Examples of the existing routines::  
 * Reference manual::            
-* Concept Index::               
 * Function Index::              
 * Variable Index::              
 * Type Index::                  
 @end menu
 
-@node Motivation, Design, Top, Top
+@node Motivation, Motivation again, Top, Top
 @chapter Motivation
 @cindex numerical analysis
 @cindex free software
@@ -119,9 +120,13 @@ There are strengths and weaknesses with existing libraries:
 
 @emph{Netlib} [FIXME: ref] is probably the most advanced set of
 numerical algorithms available on the net, maintained by AT&T.
-Unfortunately the software is written in Fortran, with strange calling
+Unfortunately most of the software is written in Fortran, with strange calling
 conventions in many places.  It is also not very well collected, so it
 is a lot of work to get started with netlib.
+
+@emph{GAMS} [FIXME: ref] is an extremely well organized set of pointers
+to scientific software, but like netlib, the individual routines vary in
+their quality and their level of documentation.
 
 @emph{Numerical Recipies} [FIXME: ref] is an excellent book: it explains
 the algorithms in a very clear way.  Unfortunately the authors released
@@ -131,9 +136,99 @@ not @emph{free} in the sense of @emph{freedom}.  On top of that, the
 implementation suffers from @emph{fortranitis} and other
 limitations. [FIXME give refs on review of NR]
 
+@node Motivation again, Design, Motivation, Top
+[written by James Theiler, and not incorporated into the above
+motivation]
+
+@value{GSL} is a library of scientific subroutines.  It aims to provide a
+convenient interface to "black box" routines that do standard (and not
+so standard) tasks that arise in scientific research.  More than that,
+it also provides the source code.  Users are welcome to alter, adjust,
+modify, and improve the interfaces and/or implementations of whichever
+routines might be needed for a particular purpose. We are starting
+small, with random number generators and special functions, but hope to
+expand to include linear algebra, Fourier analysis, etc.
+
+The secret name of this package is GNUmerical Recipes.
+
+As much as we might grumble about them, we have great admiration for the
+Numerical Recipes series.  This is perhaps the cheapest ($80 buys you
+the book and a single-screen license) and most comprehensive collection
+of good numerical software available.  We know of very few working
+scientists who do not have a copy of one of the Numerical Recipes books
+on their shelf.  
+
+The software is not always the latest and greatest, and complaints about
+this have appeared from time to time, but it has several noteworthy strengths
+which we think accounts for its incredible success over the last decade.
+
+Most noteworthy is the book itself.  Each routine is preceeded by a
+readable, lively (if somewhat condescending) discussion of the issues at
+hand.  The issues include: why one might want to use such a routine in
+the first place, what tradeoffs in terms of accuracy or efficiency have
+to be made in the implementation, etc.  And the book covers a remarkable
+range of topics, from linear algebra to nonlinear optimization.  
+
+Almost as remarkable is that the authors included the source code.
+Indeed, the source code is enshrined (well, typeset) in the text of the
+Numerical Recipes book.  Users are invited to modify the code to fit
+their needs, to pick and choose which routines (or which parts of
+routines) to use or adapt for their particular applications.  Though the
+routines can be (and usually are) used as black boxes, it makes
+scientists happy and more comfortable to be able to look under the hood.
+
+The main problem with Numerical Recipes is that the code is not free.
+It may seem petty to complain about this.  People don't complain that
+IMSL isn't free.  Part of the problem is the unusual (bizarre)
+per-screen license.  But the main problem is that source code is
+provided, and so it is essentially impossible to enforce the license,
+except by intimidation.  Numerical Recipes is probably the most pirated
+software (well... pirating Microsoft doesn't count) available.  To the
+authors' credit, Numerical Recipes software is inexpensive and easily
+obtainable.  It is easy to incorporate into your own applications.  But
+as long as it contains NR subroutines, you cannot legally exchange your
+code with your colleagues.  You can try to be careful and isolate the
+NR subroutines, and then distribute an NR-less version, but in that case
+you have to use the NR routines exactly as they are, which destroys the
+advantage of having source code that you could modify.
+
+The approach taken by Larry Wall, Donald Libes, John Ousterhout, and the
+O'Reilly and Associates publishing company is to provide free software,
+let the community debug, beta-test, and improve the code (often in
+directions completely unanticipated by the original authors), and then
+to write a book describing the freely-available software.  Oddly, the
+authors of Numerical Recipes have taken precisely the opposite approach.
+The book can be downloaded from the official Numerical Recipes web site,
+but the software must be licensed.
+
+----
+
+The short-term aim of GSL is to emulate, possibly even clone, Numerical
+Recipes software and documentation.  The goal will be to provide a
+somewhat coherent package of somewhat independent subroutines.  We
+hereby promise not to use any actual NR code, but we paid for the book,
+and we are not going to take it off of our shelves or pretend not to
+read it.  We also plan to provide drop-in substitutes for NR
+subroutines, usually as wrappers to our own preferred interfaces.
+
+And we furthermore promise to try as hard as possible to document
+the software: this will ideally involve discussion of why you might want
+to use it, what precisely it does, how precisely to invoke it, 
+how more-or-less it works, and where we learned about the algorithm,
+and (unless we wrote it from scratch) where we got the code.
+We do not plan to write this entire package from scratch, but to cannibalize
+existing mathematical freeware, just as we expect our own software to
+be cannibalized.
+
+The long-term goal will be to provide a framework to which the real
+numerical experts (or their graduate students) will contribute.  Such
+contributors will have to contribute copylefted software and they cannot
+mind that evil profit-making companies (such as those which sell
+"environments") might use this software as part of their packages.
 
 
-@node Design, Examples of the existing routines, Motivation, Top
+
+@node Design, Examples of the existing routines, Motivation again, Top
 @chapter Design
 
 @menu
@@ -215,6 +310,22 @@ Includes both random number generators and routines to give various
 interesting distributions.
 
 @subsection Statistics
+
+@subsection Special Functions
+
+What I (jt) envision for this section is a collection of routines for
+reliable and accurate (but not necessarily fast or efficient) estimation
+of values for special functions, explicitly using Taylor series, asymptotic 
+expansions, continued fraction expansions, etc.  As well as these routines,
+fast approximations will also be provided, primarily based on Chebyshev
+polynomials and ratios of polynomials.  In this vision, the approximations
+will be the "standard" routines for the users, and the exact (so-called)
+routines will be used for verification of the approximations.  It may also
+be useful to provide various identity-checking routines as part of the
+verification suite.
+
+Currently, the only available functions are: @code{gsl_sf_erf()} and 
+@code{gsl_sf_erfc()}
 
 @subsection Curve fitting
 
@@ -366,17 +477,203 @@ recommended platform.)
 
 None have been contributed yet.
 
-@node Reference manual, Concept Index, Examples of the existing routines, Top
+@node Reference manual, Function Index, Examples of the existing routines, Top
 @chapter Reference manual
 
 
 @menu
+* Random Number Generation::    
 * Statistics::                  
 * Root finding::                
 * Simulated annealing::         
+* Copying::                     
 @end menu
 
-@node Statistics, Root finding, Reference manual, Reference manual
+@node Random Number Generation, Statistics, Reference manual, Reference manual
+@section Random number generation
+@cindex random
+@cindex gaussian
+@cindex uniform
+@cindex poisson
+
+General routines for the casual user:
+
+@deftypefn Random void gsl_ran_seed(int s)
+@code{gsl_ran_seed} initializes (or `seeds') the random number
+generator.  In general, it is recommended that
+this routine be called before any random numbers are generated. Although we have
+tried to set up the generators so that they will still produce sensible
+random numbers even if the seed has not been explicitly set, you should
+not trust us.  What we do guarantee is: If the
+random number generator is seeded with the same value of @code{s} on two
+different runs, the same stream of random numbers should be generated (by
+successive calls to the routines below).  If (even
+slightly) different values of @code{s} are supplied, then the generated
+streams of random numbers should be 
+completely different, uncorrelated, and independent of each other.
+@end deftypefn
+
+@deftypefn Random {unsigned long} gsl_ran_random()
+@code{gsl_ran_random} returns a random positive integer.
+All integers between 1 [FIXME: Is 0 ever a return value??] 
+and the maximum value are equally likely.
+The maximum value depends on the algorithm used for random number generation,
+and it is given by...
+@end deftypefn
+
+@deftypefn Random double gsl_ran_max()
+@code{gsl_ran_max} returns the maximum value that @code{gsl_ran_random}
+can return.
+@end deftypefn
+
+@deftypefn Random double gsl_ran_uniform()
+@code{gsl_ran_uniform} returns a (@code{double} precision) floating point 
+number uniformly distributed between zero and one.  Usually (but not always) 
+this is implemented as:
+@code{
+double gsl_ran_uniform() @{ return (double)gsl_ran_random()*dx; @}
+}
+where @code{dx} is @code{1./gsl_ran_max()}.
+@end deftypefn
+
+@deftypefn Random double gsl_ran_gaussian()
+@code{gsl_ran_gaussian} returns a gaussian random number, with mean zero and
+variance one.
+@end deftypefn
+
+[Somewhat more advanced functions.]
+
+It is important to remember that a function like @code{gsl_ran_uniform()}
+is not a "real" function like the sine or cosine.  Unlike real
+functions, successive calls to @code{gsl_ran_uniform()} yield different
+return values.  Of course that is just what you want for a random number
+generator, but to achieve this effect, the generator must keep track of
+some kind of "state" variable.  Sometimes this state is just an integer
+(sometimes just the value of the previously generated random number),
+but often it is more complicated than that and may involve a whole array
+of numbers, possibly with some indices thrown in.  To use the random
+number generators, you do not need to know the details of what comprises
+the state, and besides that varies from algorithm to algorithm.  
+
+The above methods blithely ignore the random number `state' which
+changes from call to call.  But it is often practical to be able to
+"save" and "restore" the state.  Or to maintain independent streams of
+random numbers in which each refers to its own (and not to a single
+common) state.  To permit these practices, a few somewhat more advanced
+functions are supplied.  These include:
+
+@deftypefn Random void *gsl_ran_getRandomState()
+@code{gsl_ran_getRandomState} returns a pointer to a @emph{copy} of the
+@code{static} random number state used by @code{gsl_ran_random()},
+@code{gsl_ran_uniform()}, etc.  Note that a @code{void *} pointer is
+returned, so that we don't have to be specific about the type that
+the state is.  Also, note that @code{calloc()} is used to allocate
+memory for the copy of the random state, and that too many calls to this
+function can lead to a problem with memory leaking.  You can alleviate this
+problem by @code{cfree}'ing the memory after you are finished with it.
+@end deftypefn
+
+@deftypefn Random void gsl_ran_setRandomState(void *vState)
+@code{gsl_ran_setRandomState} copies the state pointed to by @code{vState}
+into the @code{static} random number state.  After doing this, you may
+want to @code{cfree((char *)vState)} to recover the memory.
+@end deftypefn
+
+@deftypefn Random void gsl_ran_seed_wstate(void *vState,int s)
+@code{gsl_ran_seed_wstate} initializes the random number whose state
+is pointed to by @code{vState}.
+@end deftypefn
+
+@deftypefn Random {unsigned long} gsl_ran_random_wstate(void *vState)
+@code{gsl_ran_random_wstate} updates the state pointed to by @code{vState},
+and returns the integer random number resulting from that update.
+@end deftypefn
+
+@deftypefn Random double gsl_ran_uniform_wstate(void *vState)
+@code{gsl_ran_uniform_wstate} updates the state pointed to by @code{vState},
+and returns the uniformly distributed real random number 
+resulting from that update.
+@end deftypefn
+
+ALGORITHM-SPECIFIC RANDOM NUMBER GENERATORS:
+
+The above functions make no reference to the actual algorithm used.
+This is deliberate so that you can change algorithms without having to
+change any of your application source code.  Simply link against another
+object file.
+
+Among the algorithms available are: 
+mrg       Multiple recursive
+cmrg      Combined MRG
+taus      Combined Tausworthe
+uni       Fibonacci subtraction
+uni32     32 bit version of uni
+zuf       Another Fibonacci subtraction method
+rand      Linear congruental 
+
+To invoke these routines, use @code{gsl_ran_xxx_yyyyy()}, where @code{xxx}
+is the algorithm, and @code{yyyyy} describes what is wanted.  For instance,
+@code{gsl_ran_taus_uniform()} returns a uniform random number generated by
+the combined Tausworthe method.
+
+It is also possible to choose, for example, the @code{mrg} algorithm as the
+default used by, for instance, @code{gsl_ran_uniform()}, by using the call
+@code{gsl_ran_use_mrg()}. 
+
+HOW TO LINK:
+
+This is not set in stone yet, but for now link against @code{xxx.o
+xxx-gen.o} to cause the generic calls to use algorithm @code{xxx}.  Link
+against @code{xxx1.o xxx2.o ... xxxN.o switch.o} to permit the use of
+@code{gsl_ran_use_xxx1()}, ..., @code{gsl_ran_use_xxxN()} in order to
+specify the algorithm at run-time.  Note that this second scheme
+involves an extra step of indirection and might not be as efficient (but
+then again, function call overhead may well be small compared to the
+calculations involved to generate a good random number)
+
+If you link using `@code{-lgsl_random}', that will be equivalent to
+using @code{xxx1.o xxx2.o ... xxxN.o switch.o}, with all incorporated
+generators included, and one of them the default.
+[**FIXME: not implemented yet]
+
+
+HOW TO INCORPORATE A NEW RANDOM NUMBER GENERATOR ALGORITHM INTO THIS SCHEME:
+
+Suppose you run across a nifty article describing a new algorithm for
+generating a random number.  You can place it in the scheme here by
+doing the following:
+
+Easy first step is to think of a short name for the generator.  It should
+be less than ten characters, involve no whitespace, and `xxx' isn't allowed.
+Let's say you choose `cool'.
+
+You will want to make a file called `cool.c';  the easiest place to start
+is by copying the file `xxx.c' over to `cool.c', and then replacing every
+occurrence of `xxx' in that file with `cool'.   Then you'll have to do some
+real editing.
+
+Determine the "state" of the generator.  Sometimes this isn't obvious,
+but generally the state variables will either be @code{static} or
+external to the subroutine that returns the random numbers.  Create a
+@code{struct} with all the state variables.  Do not use pointers!  When
+the state is copied, you don't want the pointers pointing to values in
+another state.  
+
+Write functions @code{unsigned long gsl_ran_cool_random()}, 
+@code{void gsl_ran_cool_seed(int)}, and @code{double gsl_ran_cool_uniform()},
+and include them in the @code{cool.c} file.   Add the line 
+`@code{#include "cool-state.c"}' as the last line of the @code{cool.c}
+file.
+
+Add `@code{cool}' to the list in the `@code{ALLRAN=...}' line of the file
+@code{Makefile.ami}.
+
+Now you can `@code{make cool}', or `@code{make test-cool}', or 
+`@code{make bench-cool}', to get executable files for using/testing your
+cool new random number generator.
+
+
+@node Statistics, Root finding, Random Number Generation, Reference manual
 @section Statistics
 @cindex statistics
 @cindex mean
@@ -525,7 +822,7 @@ Example: @code{gsl_newton1D(sin, cos, 2.3)}
 
 
 
-@node Simulated annealing,  , Root finding, Reference manual
+@node Simulated annealing, Copying, Root finding, Reference manual
 @section Simulated annealing
 @cindex simulated annealing
 @cindex combinatorial searches
@@ -561,14 +858,44 @@ Does a @emph{simulated annealing} search through a given space (defined
 by the type @code{Element}).
 @end deftypefn
 
+@node   Copying,  , Simulated annealing, Reference manual
+@unnumberedsec Copying
 
+   The subroutines and source code in the @value{GSL} package are "free";
+this means that everyone is free to use them and free to redistribute
+them on a free basis.  The @value{GSL}-related programs are not in the
+public domain; they are copyrighted and there are restrictions on their
+distribution, but these restrictions are designed to permit everything
+that a good cooperating citizen would want to do.  What is not allowed
+is to try to prevent others from further sharing any version of these
+programs that they might get from you.
 
-@node Concept Index, Function Index, Reference manual, Top
-@unnumbered Concept Index
+   Specifically, we want to make sure that you have the right to give
+away copies of the programs that relate to @value{GSL}, that you receive
+source code or else can get it if you want it, that you can change these
+programs or use pieces of them in new free programs, and that you know
+you can do these things.
+
+   To make sure that everyone has such rights, we have to forbid you to
+deprive anyone else of these rights.  For example, if you distribute
+copies of the @value{GSL}-related code, you must give the recipients all
+the rights that you have.  You must make sure that they, too, receive or
+can get the source code.  And you must tell them their rights.
+
+   Also, for our own protection, we must make certain that everyone
+finds out that there is no warranty for the programs that relate to
+@value{GSL}.  If these programs are modified by someone else and passed
+on, we want their recipients to know that what they have is not what we
+distributed, so that any problems introduced by others will not reflect
+on our reputation.
+
+   The precise conditions of the licenses for the programs currently
+being distributed that relate to @value{GSL} are found in the General
+Public Licenses that accompany them.
 
 @printindex cp
 
-@node Function Index, Variable Index, Concept Index, Top
+@node Function Index, Variable Index, Reference manual, Top
 @unnumbered Function Index
 
 @printindex fn
