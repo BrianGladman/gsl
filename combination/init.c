@@ -58,6 +58,10 @@ gsl_combination_alloc (const size_t n, const size_t k)
                          GSL_ENOMEM, 0);
         }
     }
+  else
+    {
+      c->data = 0;
+    }
 
   c->n = n;
   c->k = k;

@@ -1,3 +1,7 @@
+2003-07-30  Brian Gough  <bjg@network-theory.co.uk>
+
+	* init.c (gsl_combination_alloc): set c->data to NULL when k=0
+
 2003-04-12  Szymon Jaroszewicz  <sj@cs.umb.edu>
 
 	* combination.c (gsl_combination_valid): fix a typo in error
