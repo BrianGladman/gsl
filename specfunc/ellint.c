@@ -54,16 +54,13 @@ static double locMAX4(double x, double y, double z, double w)
 */
 
 
-int gsl_sf_ellint_RC_impl(double x, double y, double errtol, double * result)
+int gsl_sf_ellint_RC_impl(double x, double y, double * result, gsl_prec_t goal)
 {
   const double lolim = 5.0 * DBL_MIN;
   const double uplim = 0.2 * DBL_MAX;
+  const double errtol = ( goal == GSL_DOUBLE_PREC ? 0.001 : 0.03 );
 
-  if(errtol < GSL_MACH_EPS) {
-    *result = 0.0;
-    return GSL_EBADTOL;
-  }
-  else if(x < 0.0 || y < 0.0 || x + y < lolim) {
+  if(x < 0.0 || y < 0.0 || x + y < lolim) {
     *result = 0.0;
     return GSL_EDOM;
   }
@@ -91,16 +88,14 @@ int gsl_sf_ellint_RC_impl(double x, double y, double errtol, double * result)
 }
 
 
-int gsl_sf_ellint_RD_impl(double x, double y, double z, double errtol, double * result)
+int gsl_sf_ellint_RD_impl(double x, double y, double z, double * result, gsl_prec_t goal)
 {
-  const double lolim = 2.0/pow(DBL_MAX, 2./3.);
-  const double uplim = pow(0.1*errtol/DBL_MIN, 2./3.);
+  const double errtol = ( goal == GSL_DOUBLE_PREC ? 0.001 : 0.03 );
+  const double lolim = 2.0/pow(DBL_MAX, 2.0/3.0);
+  const double uplim = pow(0.1*errtol/DBL_MIN, 2.0/3.0);
 
-  if(errtol < GSL_MACH_EPS) {
+  if(GSL_MIN(x,y) < 0.0 || GSL_MIN(x+y,z) < lolim) {
     *result = 0.0;
-    return GSL_EBADTOL;
-  }
-  else if(GSL_MIN(x,y) < 0.0 || GSL_MIN(x+y,z) < lolim) {
     return GSL_EDOM;
   }
   else if(locMAX3(x,y,z) < uplim) {
@@ -150,16 +145,13 @@ int gsl_sf_ellint_RD_impl(double x, double y, double z, double errtol, double * 
 }
 
 
-int gsl_sf_ellint_RF_impl(double x, double y, double z, double errtol, double * result)
+int gsl_sf_ellint_RF_impl(double x, double y, double z, double * result, gsl_prec_t goal)
 {
   const double lolim = 5.0 * DBL_MIN;
   const double uplim = 0.2 * DBL_MAX;
+  const double errtol = ( goal == GSL_DOUBLE_PREC ? 0.001 : 0.03 );
 
-  if(errtol < GSL_MACH_EPS) {
-    *result = 0.0;
-    return GSL_EBADTOL;
-  }
-  else if(x < 0.0 || y < 0.0 || z < 0.0) {
+  if(x < 0.0 || y < 0.0 || z < 0.0) {
     *result = 0.0;
     return GSL_EDOM;
   }
@@ -205,16 +197,13 @@ int gsl_sf_ellint_RF_impl(double x, double y, double z, double errtol, double * 
 }
 
 
-int gsl_sf_ellint_RJ_impl(double x, double y, double z, double p, double errtol, double * result)
+int gsl_sf_ellint_RJ_impl(double x, double y, double z, double p, double * result, gsl_prec_t goal)
 {
+  const double errtol = ( goal == GSL_DOUBLE_PREC ? 0.001 : 0.03 );
   const double lolim =       pow(5.0 * DBL_MIN, 1.0/3.0);
   const double uplim = 0.3 * pow(0.2 * DBL_MAX, 1.0/3.0);
 
-  if(errtol < GSL_MACH_EPS) {
-    *result = 0.0;
-    return GSL_EBADTOL;
-  }
-  else if(x < 0.0 || y < 0.0 || y < 0.0) {
+  if(x < 0.0 || y < 0.0 || y < 0.0) {
     *result = 0.0;
     return GSL_EDOM;
   }
@@ -233,7 +222,6 @@ int gsl_sf_ellint_RJ_impl(double x, double y, double z, double p, double errtol,
     double pn = p;
     double sigma = 0.0;
     double power4 = 1.0;
-    double etolrc = 0.5 * errtol;
     double mu, xndev, yndev, zndev, pndev;
     double ea, eb, ec, e2, e3, s1, s2, s3;
     while(1) {
@@ -256,7 +244,7 @@ int gsl_sf_ellint_RJ_impl(double x, double y, double z, double p, double errtol,
       alfa = pn * (xnroot + ynroot + znroot) + xnroot * ynroot * znroot;
       alfa = alfa * alfa;
       beta = pn * (pn + lamda) * (pn + lamda);
-      rcstatus = gsl_sf_ellint_RC_impl(alfa, beta, etolrc, &rcresult);
+      rcstatus = gsl_sf_ellint_RC_impl(alfa, beta, &rcresult, goal);
       if(rcstatus != GSL_SUCCESS) {
         *result = 0.0;
         return rcstatus;
@@ -287,26 +275,21 @@ int gsl_sf_ellint_RJ_impl(double x, double y, double z, double p, double errtol,
 
 
 /* [Carlson, Numer. Math. 33 (1979) 1, (4.1)] */
-int gsl_sf_ellint_F_impl(double phi, double k, double prec, double * result)
+int gsl_sf_ellint_F_impl(double phi, double k, double * result, gsl_prec_t goal)
 {
   double sin_phi  = sin(phi);
   double sin2_phi = sin_phi*sin_phi;
   double x = 1.0 - sin2_phi;
   double y = 1.0 - k*k*sin2_phi;
   double rf;
-  int status = gsl_sf_ellint_RF_impl(x, y, 1.0, prec, &rf);
-  if(status == GSL_SUCCESS) {
-    *result = sin_phi * rf;
-  }
-  else {
-    *result = 0.0;
-  }
+  int status = gsl_sf_ellint_RF_impl(x, y, 1.0, &rf, goal);
+  *result = sin_phi * rf;
   return status;
 }
 
 
 /* [Carlson, Numer. Math. 33 (1979) 1, (4.2)] */
-int gsl_sf_ellint_E_impl(double phi, double k, double prec, double * result)
+int gsl_sf_ellint_E_impl(double phi, double k, double * result, gsl_prec_t goal)
 {
   double sin_phi  = sin(phi);
   double sin2_phi = sin_phi  * sin_phi;
@@ -314,25 +297,15 @@ int gsl_sf_ellint_E_impl(double phi, double k, double prec, double * result)
   double x = 1.0 - sin2_phi;
   double y = 1.0 - k*k*sin2_phi;
   double rf, rd;
-  int rfstatus = gsl_sf_ellint_RF_impl(x, y, 1.0, prec, &rf);
-  int rdstatus = gsl_sf_ellint_RD_impl(x, y, 1.0, prec, &rd);
-  if(rfstatus == GSL_SUCCESS && rdstatus == GSL_SUCCESS) {
-    *result = sin_phi * rf - k*k/3.0 * sin3_phi * rd;
-    return GSL_SUCCESS;
-  }
-  else if(rfstatus == GSL_EDOM || rdstatus == GSL_EDOM) {
-    *result = 0.0;
-    return GSL_EDOM;
-  }
-  else {
-    *result = 0.0;
-    return GSL_EFAILED;
-  }
+  int rfstatus = gsl_sf_ellint_RF_impl(x, y, 1.0, &rf, goal);
+  int rdstatus = gsl_sf_ellint_RD_impl(x, y, 1.0, &rd, goal);
+  *result = sin_phi * rf - k*k/3.0 * sin3_phi * rd;
+  return GSL_ERROR_SELECT_2(rfstatus, rdstatus);
 }
 
 
 /* [Carlson, Numer. Math. 33 (1979) 1, (4.3)] */
-int gsl_sf_ellint_P_impl(double phi, double k, double n, double prec, double * result)
+int gsl_sf_ellint_P_impl(double phi, double k, double n, double * result, gsl_prec_t goal)
 {
   double sin_phi  = sin(phi);
   double sin2_phi = sin_phi  * sin_phi;
@@ -340,25 +313,15 @@ int gsl_sf_ellint_P_impl(double phi, double k, double n, double prec, double * r
   double x = 1.0 - sin2_phi;
   double y = 1.0 - k*k*sin2_phi;
   double rf, rj;
-  int rfstatus = gsl_sf_ellint_RF_impl(x, y, 1.0, prec, &rf);
-  int rjstatus = gsl_sf_ellint_RJ_impl(x, y, 1.0, 1.0 + n*sin2_phi, prec, &rj);
-  if(rfstatus == GSL_SUCCESS && rjstatus == GSL_SUCCESS) {
-    *result = sin_phi * rf - n/3.0*sin3_phi * rj;
-    return GSL_SUCCESS;
-  }
-  else if(rfstatus == GSL_EDOM || rjstatus == GSL_EDOM) {
-    *result = 0.0;
-    return GSL_EDOM;
-  }
-  else {
-    *result = 0.0;
-    return GSL_EFAILED;
-  }
+  int rfstatus = gsl_sf_ellint_RF_impl(x, y, 1.0, &rf, goal);
+  int rjstatus = gsl_sf_ellint_RJ_impl(x, y, 1.0, 1.0 + n*sin2_phi, &rj, goal);
+  *result = sin_phi * rf - n/3.0*sin3_phi * rj;
+  return GSL_ERROR_SELECT_2(rfstatus, rjstatus);
 }
 
 
 /* [Carlson, Numer. Math. 33 (1979) 1, (4.4)] */
-int gsl_sf_ellint_D_impl(double phi, double k, double n, double prec, double * result)
+int gsl_sf_ellint_D_impl(double phi, double k, double n, double * result, gsl_prec_t goal)
 {
   double sin_phi  = sin(phi);
   double sin2_phi = sin_phi  * sin_phi;
@@ -366,130 +329,117 @@ int gsl_sf_ellint_D_impl(double phi, double k, double n, double prec, double * r
   double x = 1.0 - sin2_phi;
   double y = 1.0 - k*k*sin2_phi;
   double rd;
-  int status = gsl_sf_ellint_RD_impl(x, y, 1.0, prec, &rd);
-  if(status == GSL_SUCCESS) {
-    *result = sin3_phi/3.0 * rd;
-  }
-  else {
-    *result = 0.0;
-  }
+  int status = gsl_sf_ellint_RD_impl(x, y, 1.0, &rd, goal);
+  *result = sin3_phi/3.0 * rd;
   return status;
 }
 
 
 /* [Carlson, Numer. Math. 33 (1979) 1, (4.5)] */
-int gsl_sf_ellint_Kcomp_impl(double k, double prec, double * result)
+int gsl_sf_ellint_Kcomp_impl(double k, double * result, gsl_prec_t goal)
 {
-  return gsl_sf_ellint_RF_impl(0.0, 1.0 - k*k, 1.0, prec, result);
+  return gsl_sf_ellint_RF_impl(0.0, 1.0 - k*k, 1.0, result, goal);
 }
 
 
 /* [Carlson, Numer. Math. 33 (1979) 1, (4.6)] */
-int gsl_sf_ellint_Ecomp_impl(double k, double prec, double * result)
+int gsl_sf_ellint_Ecomp_impl(double k, double * result, gsl_prec_t goal)
 {
   double y = 1.0 - k*k;
   double rf, rd;
-  int rfstatus = gsl_sf_ellint_RF_impl(0.0, y, 1.0, prec, &rf);
-  int rdstatus = gsl_sf_ellint_RD_impl(0.0, y, 1.0, prec, &rd);
-  if(rfstatus == GSL_SUCCESS && rdstatus == GSL_SUCCESS) {
-    *result = rf - k*k/3.0 * rd;
-    return GSL_SUCCESS;
-  }
-  else if(rfstatus == GSL_EDOM || rdstatus == GSL_EDOM) {
-    return GSL_EDOM;
-  }
-  else {
-    return GSL_EFAILED;
-  }
+  int rfstatus = gsl_sf_ellint_RF_impl(0.0, y, 1.0, &rf, goal);
+  int rdstatus = gsl_sf_ellint_RD_impl(0.0, y, 1.0, &rd, goal);
+  *result = rf - k*k/3.0 * rd;
+  return GSL_ERROR_SELECT_2(rfstatus, rdstatus);
 }
 
 
 /*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
 
-int gsl_sf_ellint_Kcomp_e(double k, double prec, double * result)
+int gsl_sf_ellint_Kcomp_e(double k, double * result, gsl_prec_t goal)
 {
-  int status = gsl_sf_ellint_Kcomp_impl(k, prec, result);
+  int status = gsl_sf_ellint_Kcomp_impl(k, result, goal);
   if(status != GSL_SUCCESS) {
     GSL_ERROR("gsl_sf_ellint_Kcomp_e", status);
   }
   return status;
 }
 
-int gsl_sf_ellint_Ecomp_e(double k, double prec, double * result)
+int gsl_sf_ellint_Ecomp_e(double k, double * result, gsl_prec_t goal)
 {
-  int status = gsl_sf_ellint_Ecomp_impl(k, prec, result);
+  int status = gsl_sf_ellint_Ecomp_impl(k, result, goal);
   if(status != GSL_SUCCESS) {
     GSL_ERROR("gsl_sf_ellint_Ecomp_e", status);
   }
   return status;
 }
 
-int gsl_sf_ellint_F_e(double phi, double k, double prec, double * result)
+int gsl_sf_ellint_F_e(double phi, double k, double * result, gsl_prec_t goal)
 {
-  int status = gsl_sf_ellint_F_impl(phi, k, prec, result);
+  int status = gsl_sf_ellint_F_impl(phi, k, result, goal);
   if(status != GSL_SUCCESS) {
     GSL_ERROR("gsl_sf_ellint_F_e", status);
   }
   return status;
 }
 
-int gsl_sf_ellint_E_e(double phi, double k, double prec, double * result)
+int gsl_sf_ellint_E_e(double phi, double k, double * result, gsl_prec_t goal)
 {
-  int status = gsl_sf_ellint_E_impl(phi, k, prec, result);
+  int status = gsl_sf_ellint_E_impl(phi, k, result, goal);
   if(status != GSL_SUCCESS) {
     GSL_ERROR("gsl_sf_ellint_E_e", status);
   }
   return status;
 }
 
-int gsl_sf_ellint_P_e(double phi, double k, double n, double prec, double * result)
+int gsl_sf_ellint_P_e(double phi, double k, double n, double * result, gsl_prec_t goal)
 {
-  int status = gsl_sf_ellint_P_impl(phi, k, n, prec, result);
+  int status = gsl_sf_ellint_P_impl(phi, k, n, result, goal);
   if(status != GSL_SUCCESS) {
     GSL_ERROR("gsl_sf_ellint_P_e", status);
   }
   return status;
 }
 
-int gsl_sf_ellint_D_e(double phi, double k, double n, double prec, double * result)
+int gsl_sf_ellint_D_e(double phi, double k, double n, double * result, gsl_prec_t goal)
 {
-  int status = gsl_sf_ellint_D_impl(phi, k, n, prec, result);
+  int status = gsl_sf_ellint_D_impl(phi, k, n, result, goal);
   if(status != GSL_SUCCESS) {
     GSL_ERROR("gsl_sf_ellint_D_e", status);
   }
   return status;
 }
 
-int gsl_sf_ellint_RC_e(double x, double y, double prec, double * result)
+int gsl_sf_ellint_RC_e(double x, double y, double * result, gsl_prec_t goal)
 {
-  int status = gsl_sf_ellint_RC_impl(x, y, prec, result);
+  int status = gsl_sf_ellint_RC_impl(x, y, result, goal);
   if(status != GSL_SUCCESS) {
     GSL_ERROR("gsl_sf_ellint_RC_e", status);
   }
   return status;
 }
 
-int gsl_sf_ellint_RD_e(double x, double y, double z, double prec, double * result)
+int gsl_sf_ellint_RD_e(double x, double y, double z, double * result, gsl_prec_t goal)
 {
-  int status = gsl_sf_ellint_RD_impl(x, y, z, prec, result);
+  int status = gsl_sf_ellint_RD_impl(x, y, z, result, goal);
   if(status != GSL_SUCCESS) {
     GSL_ERROR("gsl_sf_ellint_RD_e", status);
   }
   return status;
 }
 
-int gsl_sf_ellint_RF_e(double x, double y, double z, double prec, double * result)
+int gsl_sf_ellint_RF_e(double x, double y, double z, double * result, gsl_prec_t goal)
 {
-  int status = gsl_sf_ellint_RF_impl(x, y, z, prec, result);
+  int status = gsl_sf_ellint_RF_impl(x, y, z, result, goal);
   if(status != GSL_SUCCESS) {
     GSL_ERROR("gsl_sf_ellint_RF_e", status);
   }
   return status;
 }
 
-int gsl_sf_ellint_RJ_e(double x, double y, double z, double p, double prec, double * result)
+int gsl_sf_ellint_RJ_e(double x, double y, double z, double p, double * result, gsl_prec_t goal)
 {
-  int status = gsl_sf_ellint_RJ_impl(x, y, z, p, prec, result);
+  int status = gsl_sf_ellint_RJ_impl(x, y, z, p, result, goal);
   if(status != GSL_SUCCESS) {
     GSL_ERROR("gsl_sf_ellint_RJ_e", status);
   }
@@ -499,100 +449,100 @@ int gsl_sf_ellint_RJ_e(double x, double y, double z, double p, double prec, doub
 
 /*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*-*-*/
 
-double gsl_sf_ellint_Kcomp(double k, double prec)
+double gsl_sf_ellint_Kcomp(double k, gsl_prec_t goal)
 {
   double y;
-  int status = gsl_sf_ellint_Kcomp_impl(k, prec, &y);
+  int status = gsl_sf_ellint_Kcomp_impl(k, &y, goal);
   if(status != GSL_SUCCESS) {
     GSL_WARNING("gsl_sf_ellint_Kcomp", status);
   }
   return y;
 }
 
-double gsl_sf_ellint_Ecomp(double k, double prec)
+double gsl_sf_ellint_Ecomp(double k, gsl_prec_t goal)
 {
   double y;
-  int status = gsl_sf_ellint_Ecomp_impl(k, prec, &y);
+  int status = gsl_sf_ellint_Ecomp_impl(k, &y, goal);
   if(status != GSL_SUCCESS) {
     GSL_WARNING("gsl_sf_ellint_Ecomp", status);
   }
   return y;
 }
 
-double gsl_sf_ellint_F(double phi, double k, double prec)
+double gsl_sf_ellint_F(double phi, double k, gsl_prec_t goal)
 {
   double y;
-  int status = gsl_sf_ellint_F_impl(phi, k, prec, &y);
+  int status = gsl_sf_ellint_F_impl(phi, k, &y, goal);
   if(status != GSL_SUCCESS) {
     GSL_WARNING("gsl_sf_ellint_F", status);
   }
   return y;
 }
 
-double gsl_sf_ellint_E(double phi, double k, double prec)
+double gsl_sf_ellint_E(double phi, double k, gsl_prec_t goal)
 {
   double y;
-  int status = gsl_sf_ellint_E_impl(phi, k, prec, &y);
+  int status = gsl_sf_ellint_E_impl(phi, k, &y, goal);
   if(status != GSL_SUCCESS) {
     GSL_WARNING("gsl_sf_ellint_E", status);
   }
   return y;
 }
 
-double gsl_sf_ellint_P(double phi, double k, double n, double prec)
+double gsl_sf_ellint_P(double phi, double k, double n, gsl_prec_t goal)
 {
   double y;
-  int status = gsl_sf_ellint_P_impl(phi, k, n, prec, &y);
+  int status = gsl_sf_ellint_P_impl(phi, k, n, &y, goal);
   if(status != GSL_SUCCESS) {
     GSL_WARNING("gsl_sf_ellint_P", status);
   }
   return y;
 }
 
-double gsl_sf_ellint_D(double phi, double k, double n, double prec)
+double gsl_sf_ellint_D(double phi, double k, double n, gsl_prec_t goal)
 {
   double y;
-  int status = gsl_sf_ellint_D_impl(phi, k, n, prec, &y);
+  int status = gsl_sf_ellint_D_impl(phi, k, n, &y, goal);
   if(status != GSL_SUCCESS) {
     GSL_WARNING("gsl_sf_ellint_D", status);
   }
   return y;
 }
 
-double gsl_sf_ellint_RC(double x, double y, double prec)
+double gsl_sf_ellint_RC(double x, double y, gsl_prec_t goal)
 {
   double yy;
-  int status = gsl_sf_ellint_RC_impl(x, y, prec, &yy);
+  int status = gsl_sf_ellint_RC_impl(x, y, &yy, goal);
   if(status != GSL_SUCCESS) {
     GSL_WARNING("gsl_sf_ellint_RC", status);
   }
   return yy;
 }
 
-double gsl_sf_ellint_RD(double x, double y, double z, double prec)
+double gsl_sf_ellint_RD(double x, double y, double z, gsl_prec_t goal)
 {
   double yy;
-  int status = gsl_sf_ellint_RD_impl(x, y, z, prec, &yy);
+  int status = gsl_sf_ellint_RD_impl(x, y, z, &yy, goal);
   if(status != GSL_SUCCESS) {
     GSL_WARNING("gsl_sf_ellint_RD", status);
   }
   return yy;
 }
 
-double gsl_sf_ellint_RF(double x, double y, double z, double prec)
+double gsl_sf_ellint_RF(double x, double y, double z, gsl_prec_t goal)
 {
   double yy;
-  int status = gsl_sf_ellint_RF_impl(x, y, z, prec, &yy);
+  int status = gsl_sf_ellint_RF_impl(x, y, z, &yy, goal);
   if(status != GSL_SUCCESS) {
     GSL_WARNING("gsl_sf_ellint_RF", status);
   }
   return yy;
 }
 
-double gsl_sf_ellint_RJ(double x, double y, double z, double p, double prec)
+double gsl_sf_ellint_RJ(double x, double y, double z, double p, gsl_prec_t goal)
 {
   double yy;
-  int status = gsl_sf_ellint_RJ_impl(x, y, z, p, prec, &yy);
+  int status = gsl_sf_ellint_RJ_impl(x, y, z, p, &yy, goal);
   if(status != GSL_SUCCESS) {
     GSL_WARNING("gsl_sf_ellint_RJ", status);
   }

@@ -704,6 +704,8 @@ conicalP_1_V(const double t, const double f, const double tau, const double sgn,
 int
 gsl_sf_conicalP_0_impl(const double lambda, const double x, double * result)
 {
+  const gsl_prec_t goal = GSL_DOUBLE_PREC;
+
   if(x <= -1.0) {
     *result = 0.0;
     return GSL_EDOM;
@@ -718,7 +720,7 @@ gsl_sf_conicalP_0_impl(const double lambda, const double x, double * result)
     if(x < 1.0) {
       const double th = acos(x);
       const double s  = sin(0.5*th);
-      stat_K = gsl_sf_ellint_Kcomp_impl(s, locEPS, &K);
+      stat_K = gsl_sf_ellint_Kcomp_impl(s, &K, goal);
       *result = 2.0/M_PI * K;
       return stat_K;
     }
@@ -726,7 +728,7 @@ gsl_sf_conicalP_0_impl(const double lambda, const double x, double * result)
       const double xi = acosh(x);
       const double c  = cosh(0.5*xi);
       const double t  = tanh(0.5*xi);
-      stat_K = gsl_sf_ellint_Kcomp_impl(t, locEPS, &K);
+      stat_K = gsl_sf_ellint_Kcomp_impl(t, &K, goal);
       *result = 2.0/M_PI / c * K;
       return stat_K;
     }
@@ -792,6 +794,8 @@ gsl_sf_conicalP_0_impl(const double lambda, const double x, double * result)
 int
 gsl_sf_conicalP_1_impl(const double lambda, const double x, double * result)
 {
+  const gsl_prec_t goal = GSL_DOUBLE_PREC;
+
   if(x <= -1.0) {
     *result = 0.0;
     return GSL_EDOM;
@@ -813,8 +817,8 @@ gsl_sf_conicalP_1_impl(const double lambda, const double x, double * result)
         const double s  = sin(0.5*th);
         const double c2 = 1.0 - s*s;
         const double sth = sin(th);
-        stat_K = gsl_sf_ellint_Kcomp_impl(s, locEPS, &K);
-        stat_E = gsl_sf_ellint_Ecomp_impl(s, locEPS, &E);
+        stat_K = gsl_sf_ellint_Kcomp_impl(s, &K, goal);
+        stat_E = gsl_sf_ellint_Ecomp_impl(s, &E, goal);
         *result = 2.0/(M_PI*sth) * (E - c2 * K);
         return stat_K;
       }
@@ -829,8 +833,8 @@ gsl_sf_conicalP_1_impl(const double lambda, const double x, double * result)
         const double c  = cosh(0.5*xi);
         const double t  = tanh(0.5*xi);
         const double sxi = sinh(xi);
-        stat_K = gsl_sf_ellint_Kcomp_impl(t, locEPS, &K);
-        stat_E = gsl_sf_ellint_Ecomp_impl(t, locEPS, &E);
+        stat_K = gsl_sf_ellint_Kcomp_impl(t, &K, goal);
+        stat_E = gsl_sf_ellint_Ecomp_impl(t, &E, goal);
         *result = 2.0/(M_PI*sxi) * c * (E - K);
         return stat_K;
       }

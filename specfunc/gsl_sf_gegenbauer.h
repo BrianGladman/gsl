@@ -18,6 +18,7 @@ double gsl_sf_gegenpoly_3(double lambda, double x);
 /* Evaluate Gegenbauer polynomials
  * by recurrence on n.
  *
+ * |x| <= 1
  * exceptions: GSL_EDOM
  */
 int    gsl_sf_gegenpoly_n_impl(int n, double lambda, double x, double * result);

@@ -45,7 +45,7 @@ noinst_HEADERS = \
 	legendre.h
 
 
-INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../err -I$(srcdir)/../integration 
+INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../err 
 
 TESTS = test_sf
 
