@@ -56,8 +56,6 @@ gsl_la_decomp_LU_impl(gsl_matrix * matrix,
       for(j=0; j<N; j++) {
         REAL aij = fabs(gsl_matrix_get(matrix, i, j));
         max_row_element = GSL_MAX(max_row_element, aij);
-        /* FIXME: is it guaranteed safe to comment this out ? BJG */
-	/* gsl_vector_int_set(permutation, j, j); */
       }
 
       if(max_row_element == 0.0) {
@@ -108,16 +106,12 @@ gsl_la_decomp_LU_impl(gsl_matrix * matrix,
 
       /* Perform pivot if non-null. */
       if(j != i_pivot) {
-        for(k=0; k<N; k++) {
-          REAL aipk = gsl_matrix_get(matrix, i_pivot, k);
-	  gsl_matrix_set(matrix, i_pivot, k, gsl_matrix_get(matrix, j, k));
-	  gsl_matrix_set(matrix, j, k, aipk);
-        }
+        gsl_matrix_swap_rows (matrix, i_pivot, j);
         *signum = -(*signum);
         scale[i_pivot] = scale[j];
       }
 
-      gsl_vector_int_set(permutation, j, i_pivot);
+      gsl_vector_int_set(permutation, j, i_pivot); 
 
       /* Trap apparent singularity. */
       if(gsl_matrix_get(matrix, j, j) == 0.0) {

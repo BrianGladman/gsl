@@ -1,0 +1,6 @@
+Make the algorithms work with rectangular MxN matrices where appropriate
+
+Clean up the error handling, _impl is not necessarily the way to go
+where there are potentially fatal errors.
+
+LU solver seems a bit unstable on the Vandermonde problem.

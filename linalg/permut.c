@@ -41,6 +41,8 @@ permute (const gsl_vector_int * perm, gsl_vector * v)
       if (pk == i)
         continue ;
 
+      /* shuffle the elements of the cycle */
+
       t = gsl_vector_get(v,i);
 
       while (pk != i)
@@ -81,6 +83,8 @@ invpermute (const gsl_vector_int * perm, gsl_vector * v)
 
       if (pk == i)
         continue ;
+
+      /* shuffle the elements of the cycle in the inverse direction */
 
       t = gsl_vector_get(v,k);
 

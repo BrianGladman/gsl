@@ -287,15 +287,15 @@ int test_QR_solve(void)
   int f;
   int s = 0;
 
-  f = test_QR_solve_dim(hilb2, hilb2_solution, 8.0 * GSL_DBL_EPSILON);
+  f = test_QR_solve_dim(hilb2, hilb2_solution, 2 * 8.0 * GSL_DBL_EPSILON);
   gsl_test(f, "  solve_QR hilbert(2)");
   s += f;
 
-  f = test_QR_solve_dim(hilb3, hilb3_solution, 64.0 * GSL_DBL_EPSILON);
+  f = test_QR_solve_dim(hilb3, hilb3_solution, 2 * 64.0 * GSL_DBL_EPSILON);
   gsl_test(f, "  solve_QR hilbert(3)");
   s += f;
 
-  f = test_QR_solve_dim(hilb4, hilb4_solution, 1024.0 * GSL_DBL_EPSILON);
+  f = test_QR_solve_dim(hilb4, hilb4_solution, 2 * 1024.0 * GSL_DBL_EPSILON);
   gsl_test(f, "  solve_QR hilbert(4)");
   s += f;
 

@@ -22,497 +22,606 @@
 #include "norm.c"
 #include "permut.c"
 
-/* From SLATEC, qrfac */
+/* Factorise a general NxN matrix A into 
+
+    A P = Q R
+
+   where P is a permutation matrix, Q is orthogonal and R is upper triangular.
+
+   Q: diagonal and lower triangle of matrix contains a packed set of
+      Householder transformations (see QFORM subroutine for unpacking 
+      procedure)
+
+   R: strict upper triangle of matrix, with diagonal elements rdiag
+
+   P: column j of P is column k of the identity matrix, 
+      where k = permutation->data[j]
+
+   Uses pivoting. From SLATEC, qrfac.f */
 
 int
-gsl_la_decomp_QR_impl(gsl_matrix * matrix, 
-                      gsl_vector * rdiag,
-                      gsl_vector_int * permutation, 
-                      int * signum)
+gsl_la_decomp_QR_impl (gsl_matrix * matrix,
+		       gsl_vector * rdiag,
+		       gsl_vector_int * permutation,
+		       int *signum)
 {
-  if(matrix == 0 || permutation == 0 || signum == 0) {
-    return GSL_EFAULT;
-  }
-  else if(matrix->size1 != matrix->size2) {
-    return GSL_ENOTSQR;
-  }
-  else if(permutation->size != matrix->size2) {
-    return GSL_EBADLEN;
-  }
-  else if(rdiag->size != matrix->size2) {
-    return GSL_EBADLEN;
-  }
-  else if(matrix->size1 == 0) {
-    return GSL_SUCCESS; /* FIXME: what to do with this idiot case ? */
-  }
-  else {
-    const int N = matrix->size1;
-    const int M = matrix->size2;
-    int i, j, k;
-    REAL * wa = (REAL *) malloc(N * sizeof(REAL));
-
-    if(wa == 0) {
-      return GSL_ENOMEM;
+  if (matrix == 0 || permutation == 0 || signum == 0)
+    {
+      return GSL_EFAULT;
     }
-
-    *signum = 1;
-
-    for (j = 0; j < N; j++)
-      {
-        REAL norm = column_norm(matrix, 0, M, j);
-        gsl_vector_set(rdiag,j,norm);
-        wa[j] = norm;
-        gsl_vector_int_set(permutation,j,j) ;
-      }
-
-    for (j = 0; j < N; j++)
-      {
-        REAL ajnorm, rk = 0, rkmax = 0;
-
-        /* Bring the column of largest norm into the pivot position */
-
-        int kmax = j;
-
-        for (k = j ; k < N; k++)
-          {
-            rk = gsl_vector_get(rdiag, k);
-
-            if (rk > rkmax) 
-              {
-                kmax = k;
-                rkmax = rk;
-              }
-          }
-
-        if (kmax != k)
-          {
-            gsl_matrix_swap_cols (matrix, j, kmax);
-            gsl_vector_int_swap (permutation, j, kmax);
-            gsl_vector_set(rdiag, kmax, gsl_vector_get(rdiag,j));
-            wa[kmax] = wa[j];
-            (*signum) =  - (*signum);
-          }
-
-        /* Compute the Householder transformation to reduce the j-th
-           column of the matrix to a multiple of the j-th unit vector */
-
-        ajnorm = column_norm(matrix, j, M, j);
-
-        if (ajnorm == 0)
-          {
-            gsl_vector_set(rdiag,j,0.0); 
-            continue ;
-          }
-        
-        if (gsl_matrix_get(matrix, j, j) < 0)
-          ajnorm *= -1;
-
-        for (i = j; i < M; i++)
-          {
-            REAL aij = gsl_matrix_get(matrix, i, j);
-            gsl_matrix_set(matrix, i, j, aij/ajnorm);
-          }
-
-        gsl_matrix_set(matrix, j, j, 1.0 + gsl_matrix_get(matrix, j, j));
-
-        /* Apply the transformation to the remaining columns and
-           update the norms */
-
-        for (k = j + 1; k < N ; k++)
-          {
-            REAL temp, sum = 0.0;
-
-            for (i = j; i < M; i++)
-              {
-                REAL aij = gsl_matrix_get(matrix, i, j);
-                REAL aik = gsl_matrix_get(matrix, i, k);
-                sum += aij * aik;
-              }
-
-            temp = sum / gsl_matrix_get(matrix, j, j);
-            
-            for (i = j; i < M; i++)
-              {
-                REAL aij = gsl_matrix_get(matrix, i, j);
-                REAL aik = gsl_matrix_get(matrix, i, k);
-                gsl_matrix_set(matrix, i, k, aik - temp * aij);
-              }
-            
-            rk = gsl_vector_get(rdiag,k); 
-
-            if (rk == 0)
-              continue;
-            
-            temp = gsl_matrix_get(matrix, j, k) / rk ;
-
-            if (fabs(temp) >= 1)
-              rk = 0.0;
-            else
-              rk = rk*sqrt(1-temp*temp);
-            
-            if (fabs(rk/wa[k]) < sqrt(20.0) * GSL_SQRT_DBL_EPSILON)
-              {
-                rk = column_norm(matrix, j+1, M, k);
-                wa[k] = rk;
-              }
-
-            gsl_vector_set(rdiag,k, rk);
-          }
-
-        gsl_vector_set(rdiag,j,-ajnorm);
-      }
-    free(wa);
-    return GSL_SUCCESS;
-  }
-}
-
-int
-gsl_la_solve_QR_impl(const gsl_matrix     * qr_matrix,
-                     const gsl_vector     * rdiag,
-                     const gsl_vector_int * permutation,
-                     const gsl_vector     * rhs,
-		     gsl_vector           * solution)
-{
-  if(qr_matrix == 0 || permutation == 0 || rhs == 0 || solution == 0) {
-    return GSL_EFAULT;
-  }
-  else if(solution->data == 0 || rhs->data == 0) {
-    return GSL_EFAULT;
-  }
-  else if(qr_matrix->size1 != qr_matrix->size2) {
-    return GSL_ENOTSQR;
-  }
-  else if(   qr_matrix->size1 != permutation->size
-          || qr_matrix->size1 != rhs->size
-	  || qr_matrix->size1 != solution->size)
-         {
-    return GSL_EBADLEN;
-  }
-  else if(qr_matrix->size1 == 0) {
-    return GSL_SUCCESS; /* FIXME: dumb case */
-  }
-  else {
-    const size_t N = qr_matrix->size1;
-    size_t n;
-    
-    /* compute sol = Q^T b */
-
-    gsl_la_QTvec_impl (qr_matrix, rhs, solution);
-
-    /* Solve R z = sol, storing z inplace in sol */
-
-    for (n = N ; n > 0; n--)
-      {
-        size_t j, i = n - 1;
-
-        REAL bi, di, sum = 0.0;
-
-        for (j = n; j < N; j++)
-          {
-            REAL aij = gsl_matrix_get(qr_matrix, i, j);
-            REAL bj = gsl_vector_get(solution, j);
-            sum += aij * bj;
-          }
-        
-        bi = gsl_vector_get(solution, i);
-        di = gsl_vector_get(rdiag, i);
-
-        gsl_vector_set(solution, i, (bi - sum)/di);
-      }
-
-    /* Apply permutation to solution in place */
-
-    invpermute(permutation, solution);
-
-    return GSL_SUCCESS;
-  }
-}
-
-int
-gsl_la_QTvec_impl (const gsl_matrix * qr_matrix, 
-                   const gsl_vector * v, 
-                   gsl_vector * result)
-{
-  if(qr_matrix == 0 || v == 0 || result == 0) {
-    return GSL_EFAULT;
-  }
-  else if(v->data == 0 || result->data == 0) {
-    return GSL_EFAULT;
-  }
-  else if(qr_matrix->size1 != qr_matrix->size2) {
-    return GSL_ENOTSQR;
-  }
-  else if(qr_matrix->size1 != v->size
-          || qr_matrix->size1 != result->size)
+  else if (matrix->size1 != matrix->size2)
+    {
+      return GSL_ENOTSQR;
+    }
+  else if (permutation->size != matrix->size2)
     {
       return GSL_EBADLEN;
     }
-  else if(qr_matrix->size1 == 0) {
-    return GSL_SUCCESS; /* FIXME: dumb case */
-  }
-  else {
-    const size_t N = qr_matrix->size1;
-    size_t i,j;
-    int k;
-
-    /* Copy rhs into solution */
-
-
-    for(k=0; k<N; k++) {
-      gsl_vector_set(result, k, gsl_vector_get(v, k));
+  else if (rdiag->size != matrix->size2)
+    {
+      return GSL_EBADLEN;
     }
+  else if (matrix->size1 == 0)
+    {
+      return GSL_SUCCESS;	/* FIXME: what to do with this idiot case ? */
+    }
+  else
+    {
+      const int N = matrix->size1;
+      const int M = matrix->size2;
+      int i, j, k;
+      REAL *wa = (REAL *) malloc (N * sizeof (REAL));
 
-    /* compute Q^T v */
+      if (wa == 0)
+	{
+	  return GSL_ENOMEM;
+	}
 
-    for (j = 0; j < N; j++)
-      { 
-        
-        REAL t, sum = 0.0;
+      *signum = 1;
 
-        for (i = j; i < N; i++)
-          {
-            REAL qij = gsl_matrix_get(qr_matrix, i, j);
-            REAL si = gsl_vector_get(result, i);
+      for (j = 0; j < N; j++)
+	{
+	  REAL norm = column_norm (matrix, 0, M, j);
+	  gsl_vector_set (rdiag, j, norm);
+	  wa[j] = norm;
+	  gsl_vector_int_set (permutation, j, j);
+	}
 
-            sum += qij * si ;
-          }
+      for (j = 0; j < N; j++)
+	{
+	  REAL ajnorm, rk = 0, rkmax = 0;
 
-        t = -sum / gsl_matrix_get(qr_matrix, j, j);
+	  /* Bring the column of largest norm into the pivot position */
 
-        for (i = j; i < N; i++)
-          {
-            REAL qij = gsl_matrix_get(qr_matrix, i, j);
-            REAL si = gsl_vector_get(result, i);
+	  int kmax = j;
 
-            gsl_vector_set(result, i, si + t * qij) ;
-          }
-      }
-    return GSL_SUCCESS;
-  }
+	  for (k = j; k < N; k++)
+	    {
+	      rk = gsl_vector_get (rdiag, k);
+
+	      if (rk > rkmax)
+		{
+		  kmax = k;
+		  rkmax = rk;
+		}
+	    }
+
+	  if (kmax != k)
+	    {
+	      gsl_matrix_swap_cols (matrix, j, kmax);
+	      gsl_vector_int_swap (permutation, j, kmax);
+	      gsl_vector_set (rdiag, kmax, gsl_vector_get (rdiag, j));
+	      wa[kmax] = wa[j];
+	      (*signum) = -(*signum);
+	    }
+
+	  /* Compute the Householder transformation to reduce the j-th
+	     column of the matrix to a multiple of the j-th unit vector */
+
+	  ajnorm = column_norm (matrix, j, M, j);
+
+	  if (ajnorm == 0)
+	    {
+	      gsl_vector_set (rdiag, j, 0.0);
+	      continue;
+	    }
+
+	  if (gsl_matrix_get (matrix, j, j) < 0)
+	    ajnorm *= -1;
+
+	  for (i = j; i < M; i++)
+	    {
+	      REAL aij = gsl_matrix_get (matrix, i, j);
+	      gsl_matrix_set (matrix, i, j, aij / ajnorm);
+	    }
+
+	  gsl_matrix_set (matrix, j, j, 1.0 + gsl_matrix_get (matrix, j, j));
+
+	  /* Apply the transformation to the remaining columns and
+	     update the norms */
+
+	  for (k = j + 1; k < N; k++)
+	    {
+	      REAL temp, sum = 0.0;
+
+	      for (i = j; i < M; i++)
+		{
+		  REAL aij = gsl_matrix_get (matrix, i, j);
+		  REAL aik = gsl_matrix_get (matrix, i, k);
+		  sum += aij * aik;
+		}
+
+	      temp = sum / gsl_matrix_get (matrix, j, j);
+
+	      for (i = j; i < M; i++)
+		{
+		  REAL aij = gsl_matrix_get (matrix, i, j);
+		  REAL aik = gsl_matrix_get (matrix, i, k);
+		  gsl_matrix_set (matrix, i, k, aik - temp * aij);
+		}
+
+	      rk = gsl_vector_get (rdiag, k);
+
+	      if (rk == 0)
+		continue;
+
+	      temp = gsl_matrix_get (matrix, j, k) / rk;
+
+	      if (fabs (temp) >= 1)
+		rk = 0.0;
+	      else
+		rk = rk * sqrt (1 - temp * temp);
+
+	      if (fabs (rk / wa[k]) < sqrt (20.0) * GSL_SQRT_DBL_EPSILON)
+		{
+		  rk = column_norm (matrix, j + 1, M, k);
+		  wa[k] = rk;
+		}
+
+	      gsl_vector_set (rdiag, k, rk);
+	    }
+
+	  gsl_vector_set (rdiag, j, -ajnorm);
+	}
+      free (wa);
+      return GSL_SUCCESS;
+    }
+}
+
+/* Solves the system A x = rhs using the QR factorisation,
+
+      R z = Q^T rhs
+      
+      x = P z;
+
+   to obtain x. Based on SLATEC code. */
+
+int
+gsl_la_solve_QR_impl (const gsl_matrix * qr_matrix,
+		      const gsl_vector * rdiag,
+		      const gsl_vector_int * permutation,
+		      const gsl_vector * rhs,
+		      gsl_vector * solution)
+{
+  if (qr_matrix == 0 || permutation == 0 || rhs == 0 || solution == 0)
+    {
+      return GSL_EFAULT;
+    }
+  else if (solution->data == 0 || rhs->data == 0)
+    {
+      return GSL_EFAULT;
+    }
+  else if (qr_matrix->size1 != qr_matrix->size2)
+    {
+      return GSL_ENOTSQR;
+    }
+  else if (qr_matrix->size1 != permutation->size
+	   || qr_matrix->size1 != rhs->size
+	   || qr_matrix->size1 != solution->size)
+    {
+      return GSL_EBADLEN;
+    }
+  else if (qr_matrix->size1 == 0)
+    {
+      return GSL_SUCCESS;	/* FIXME: dumb case */
+    }
+  else
+    {
+      /* compute sol = Q^T b */
+
+      gsl_la_QTvec_impl (qr_matrix, rhs, solution);
+
+      /* Solve R z = sol, storing z inplace in sol */
+
+      gsl_la_Rsolve_QR_impl (qr_matrix, rdiag, permutation, solution);
+
+      return GSL_SUCCESS;
+    }
+}
+
+int
+gsl_la_Rsolve_QR_impl (const gsl_matrix * qr_matrix,
+                       const gsl_vector * rdiag,
+                       const gsl_vector_int * permutation,
+                       gsl_vector * solution)
+{
+  if (qr_matrix == 0 || permutation == 0 || solution == 0)
+    {
+      return GSL_EFAULT;
+    }
+  else if (solution->data == 0)
+    {
+      return GSL_EFAULT;
+    }
+  else if (qr_matrix->size1 != qr_matrix->size2)
+    {
+      return GSL_ENOTSQR;
+    }
+  else if (qr_matrix->size1 != permutation->size
+	   || qr_matrix->size1 != solution->size)
+    {
+      return GSL_EBADLEN;
+    }
+  else if (qr_matrix->size1 == 0)
+    {
+      return GSL_SUCCESS;	/* FIXME: dumb case */
+    }
+  else
+    {
+      const size_t N = qr_matrix->size1;
+      size_t n;
+
+      /* Solve R z = sol, storing z inplace in sol */
+
+      for (n = N; n > 0; n--)
+	{
+	  size_t j, i = n - 1;
+
+	  REAL bi, di, sum = 0.0;
+
+	  for (j = n; j < N; j++)
+	    {
+	      REAL aij = gsl_matrix_get (qr_matrix, i, j);
+	      REAL bj = gsl_vector_get (solution, j);
+	      sum += aij * bj;
+	    }
+
+	  bi = gsl_vector_get (solution, i);
+	  di = gsl_vector_get (rdiag, i);
+
+	  gsl_vector_set (solution, i, (bi - sum) / di);
+	}
+
+      /* Apply permutation to solution in place */
+
+      invpermute (permutation, solution);
+
+      return GSL_SUCCESS;
+    }
+}
+
+
+/* Form the product Q^T v  from a QR factorized matrix */
+
+int
+gsl_la_QTvec_impl (const gsl_matrix * qr_matrix,
+		   const gsl_vector * v,
+		   gsl_vector * result)
+{
+  if (qr_matrix == 0 || v == 0 || result == 0)
+    {
+      return GSL_EFAULT;
+    }
+  else if (v->data == 0 || result->data == 0)
+    {
+      return GSL_EFAULT;
+    }
+  else if (qr_matrix->size1 != qr_matrix->size2)
+    {
+      return GSL_ENOTSQR;
+    }
+  else if (qr_matrix->size1 != v->size
+	   || qr_matrix->size1 != result->size)
+    {
+      return GSL_EBADLEN;
+    }
+  else if (qr_matrix->size1 == 0)
+    {
+      return GSL_SUCCESS;	/* FIXME: dumb case */
+    }
+  else
+    {
+      const size_t N = qr_matrix->size1;
+      size_t i, j;
+      int k;
+
+      /* Copy rhs into solution */
+
+
+      for (k = 0; k < N; k++)
+	{
+	  gsl_vector_set (result, k, gsl_vector_get (v, k));
+	}
+
+      /* compute Q^T v */
+
+      for (j = 0; j < N; j++)
+	{
+
+	  REAL t, sum = 0.0;
+
+	  for (i = j; i < N; i++)
+	    {
+	      REAL qij = gsl_matrix_get (qr_matrix, i, j);
+	      REAL si = gsl_vector_get (result, i);
+
+	      sum += qij * si;
+	    }
+
+	  t = -sum / gsl_matrix_get (qr_matrix, j, j);
+
+	  for (i = j; i < N; i++)
+	    {
+	      REAL qij = gsl_matrix_get (qr_matrix, i, j);
+	      REAL si = gsl_vector_get (result, i);
+
+	      gsl_vector_set (result, i, si + t * qij);
+	    }
+	}
+      return GSL_SUCCESS;
+    }
 }
 
 
 /* [Engeln-Mullges + Uhlig, Alg. 4.42]
  */
 int
-gsl_la_solve_HH_impl(gsl_matrix * matrix,
-                     gsl_vector * vec)
+gsl_la_solve_HH_impl (gsl_matrix * matrix,
+		      gsl_vector * vec)
 {
-  if(matrix == 0 || vec == 0) {
-    return GSL_EFAULT;
-  }
-  else if(matrix->size1 > matrix->size2) {
-    /* System is underdetermined.
-     */
-    return GSL_EINVAL;
-  }
-  else if(matrix->size2 != vec->size) {
-    return GSL_EBADLEN;
-  }
-  else if(matrix->size1 == 0 || matrix->size2 == 0) {
-    return GSL_SUCCESS; /* FIXME: dumb case */
-  }
-  else {
-    const int N = matrix->size1;
-    const int M = matrix->size2;
-    int i, j, k;
-    REAL * d = (REAL *) malloc(N * sizeof(REAL));
-
-    if(d == 0) {
-      return GSL_ENOMEM;
+  if (matrix == 0 || vec == 0)
+    {
+      return GSL_EFAULT;
     }
-
-    /* Perform Householder transformation.
-     */
-    for(i=0; i<N; i++) {
-      const REAL elem_ii = gsl_matrix_get(matrix, i, i);
-      REAL alpha;
-      REAL f;
-      REAL ak;
-      REAL max_norm = 0.0;
-      REAL r = 0.0;
-
-      for(k=i; k<M; k++) {
-        REAL elem_ki = gsl_matrix_get(matrix, k, i);
-        r += elem_ki * elem_ki;
-      }
-
-      if(r == 0.0) {
-        /* Rank of matrix is
-	 * less than size1.
-	 */
-        free(d);
-        return GSL_ESING;
-      }
-
-      alpha = sqrt(r) * GSL_SIGN(elem_ii);
-
-      ak = 1.0 / (r + alpha * elem_ii);
-      gsl_matrix_set(matrix, i, i, elem_ii + alpha);
-
-      d[i] = -alpha;
-
-      for(k=i+1; k<N; k++) {
-        REAL norm = 0.0;
-	f = 0.0;
-        for(j=i; j<M; j++) {
-	  REAL elem_jk = gsl_matrix_get(matrix, j, k);
-	  REAL elem_ji = gsl_matrix_get(matrix, j, i);
-	  norm += elem_jk * elem_jk;
-	  f    += elem_jk * elem_ji;
-        }
-	max_norm = GSL_MAX(max_norm, norm);
-
-        f *= ak;
-
-        for(j=i; j<M; j++) {
-	  REAL elem_jk = gsl_matrix_get(matrix, j, k);
-	  REAL elem_ji = gsl_matrix_get(matrix, j, i);
-	  gsl_matrix_set(matrix, j, k, elem_jk - f * elem_ji);
-	}
-      }
-
-      if(fabs(alpha) < 2.0 * GSL_DBL_EPSILON * sqrt(max_norm)) {
-        /* Apparent singularity.
-         */
-        free(d);
-        return GSL_ESING;
-      }
-
-      /* Perform update of RHS.
+  else if (matrix->size1 > matrix->size2)
+    {
+      /* System is underdetermined.
        */
-      f = 0.0;
-      for(j=i; j<M; j++) {
-        f += gsl_vector_get(vec, j) * gsl_matrix_get(matrix, j, i);
-      }
-      f *= ak;
-      for(j=i; j<M; j++) {
-	REAL vec_j = gsl_vector_get(vec, j);
-	gsl_vector_set(vec, j, vec_j - f * gsl_matrix_get(matrix, j, i));
-      }
-
+      return GSL_EINVAL;
     }
-
-    /* Perform back-substitution.
-     */
-    for(i=N-1; i>=0; i--) {
-      REAL vec_i = gsl_vector_get(vec, i);
-      REAL sum = 0.0;
-      for(k=i+1; k<N; k++) {
-        sum += gsl_matrix_get(matrix, i, k) * gsl_vector_get(vec, k);
-      }
-
-      gsl_vector_set(vec, i, (vec_i - sum) / d[i]);
+  else if (matrix->size2 != vec->size)
+    {
+      return GSL_EBADLEN;
     }
+  else if (matrix->size1 == 0 || matrix->size2 == 0)
+    {
+      return GSL_SUCCESS;	/* FIXME: dumb case */
+    }
+  else
+    {
+      const int N = matrix->size1;
+      const int M = matrix->size2;
+      int i, j, k;
+      REAL *d = (REAL *) malloc (N * sizeof (REAL));
 
-    free(d);
-    return GSL_SUCCESS;
-  }
+      if (d == 0)
+	{
+	  return GSL_ENOMEM;
+	}
+
+      /* Perform Householder transformation.
+       */
+      for (i = 0; i < N; i++)
+	{
+	  const REAL elem_ii = gsl_matrix_get (matrix, i, i);
+	  REAL alpha;
+	  REAL f;
+	  REAL ak;
+	  REAL max_norm = 0.0;
+	  REAL r = 0.0;
+
+	  for (k = i; k < M; k++)
+	    {
+	      REAL elem_ki = gsl_matrix_get (matrix, k, i);
+	      r += elem_ki * elem_ki;
+	    }
+
+	  if (r == 0.0)
+	    {
+	      /* Rank of matrix is
+	       * less than size1.
+	       */
+	      free (d);
+	      return GSL_ESING;
+	    }
+
+	  alpha = sqrt (r) * GSL_SIGN (elem_ii);
+
+	  ak = 1.0 / (r + alpha * elem_ii);
+	  gsl_matrix_set (matrix, i, i, elem_ii + alpha);
+
+	  d[i] = -alpha;
+
+	  for (k = i + 1; k < N; k++)
+	    {
+	      REAL norm = 0.0;
+	      f = 0.0;
+	      for (j = i; j < M; j++)
+		{
+		  REAL elem_jk = gsl_matrix_get (matrix, j, k);
+		  REAL elem_ji = gsl_matrix_get (matrix, j, i);
+		  norm += elem_jk * elem_jk;
+		  f += elem_jk * elem_ji;
+		}
+	      max_norm = GSL_MAX (max_norm, norm);
+
+	      f *= ak;
+
+	      for (j = i; j < M; j++)
+		{
+		  REAL elem_jk = gsl_matrix_get (matrix, j, k);
+		  REAL elem_ji = gsl_matrix_get (matrix, j, i);
+		  gsl_matrix_set (matrix, j, k, elem_jk - f * elem_ji);
+		}
+	    }
+
+	  if (fabs (alpha) < 2.0 * GSL_DBL_EPSILON * sqrt (max_norm))
+	    {
+	      /* Apparent singularity.
+	       */
+	      free (d);
+	      return GSL_ESING;
+	    }
+
+	  /* Perform update of RHS.
+	   */
+	  f = 0.0;
+	  for (j = i; j < M; j++)
+	    {
+	      f += gsl_vector_get (vec, j) * gsl_matrix_get (matrix, j, i);
+	    }
+	  f *= ak;
+	  for (j = i; j < M; j++)
+	    {
+	      REAL vec_j = gsl_vector_get (vec, j);
+	      gsl_vector_set (vec, j, vec_j - f * gsl_matrix_get (matrix, j, i));
+	    }
+	}
+
+      /* Perform back-substitution.
+       */
+      for (i = N - 1; i >= 0; i--)
+	{
+	  REAL vec_i = gsl_vector_get (vec, i);
+	  REAL sum = 0.0;
+	  for (k = i + 1; k < N; k++)
+	    {
+	      sum += gsl_matrix_get (matrix, i, k) * gsl_vector_get (vec, k);
+	    }
+
+	  gsl_vector_set (vec, i, (vec_i - sum) / d[i]);
+	}
+
+      free (d);
+      return GSL_SUCCESS;
+    }
 }
+
+/*  Form the orthogonal matrix Q from the packed QR matrix */
 
 int
 gsl_la_qform_QR_impl (const gsl_matrix * qr, gsl_matrix * q)
 {
-  if(qr == 0 || q == 0) {
-    return GSL_EFAULT;
-  }
-  else if(qr->size1 != qr->size2) {
-    return GSL_ENOTSQR;
-  }
-  else if(q->size1 != qr->size2) {
-    return GSL_EBADLEN;
-  }
-  else if(qr->size1 == 0) {
-    return GSL_SUCCESS; /* FIXME: what to do with this idiot case ? */
-  }
-  else {
-    const int N = qr->size1;
-    const int M = qr->size2;
-    int i, j, k, L;
-    REAL * wa = (REAL *) malloc(N * sizeof(REAL));
-
-    if(wa == 0) {
-      return GSL_ENOMEM;
+  if (qr == 0 || q == 0)
+    {
+      return GSL_EFAULT;
     }
-    
-    for (j = 0; j < M; j++)
-      {
-        for (i = 0; i < j; i++)
-          gsl_matrix_set(q, i, j, 0.0);
+  else if (qr->size1 != qr->size2)
+    {
+      return GSL_ENOTSQR;
+    }
+  else if (q->size1 != qr->size2)
+    {
+      return GSL_EBADLEN;
+    }
+  else if (qr->size1 == 0)
+    {
+      return GSL_SUCCESS;	/* FIXME: what to do with this idiot case ? */
+    }
+  else
+    {
+      const int N = qr->size1;
+      const int M = qr->size2;
+      int i, j, k, L;
+      REAL *wa = (REAL *) malloc (N * sizeof (REAL));
 
-        /* gsl_matrix_set(q, j, j, 1.0); */
-        
-        for (i = j ; i < M; i++)
-          gsl_matrix_set(q, i, j, gsl_matrix_get(qr, i, j));
-      }
-    
-    for (L = 0; L < M; L++)
-      {
-        k = (M-1) - L;
+      if (wa == 0)
+	{
+	  return GSL_ENOMEM;
+	}
 
-        for (i = k ; i < M; i++)
-          {
-            wa[i] = gsl_matrix_get(q,i,k);
-            gsl_matrix_set(q,i,k,0.0);
-          }
+      for (j = 0; j < M; j++)
+	{
+	  for (i = 0; i < j; i++)
+	    gsl_matrix_set (q, i, j, 0.0);
 
-        gsl_matrix_set(q,k,k,1.0);
-        
-        if (wa[k] == 0)
-          continue;
+	  for (i = j; i < M; i++)
+	    gsl_matrix_set (q, i, j, gsl_matrix_get (qr, i, j));
+	}
 
-        for (j = k; j < M; j++)
-          {
-            double temp, sum = 0.0;
-            for (i = k; i < M; i++)
-              {
-                sum += gsl_matrix_get(q,i,j) * wa[i];
-              }
-            temp = sum / wa[k];
-            for (i = k; i < M; i++)
-              {
-                REAL qij = gsl_matrix_get(q, i, j);
-                gsl_matrix_set(q, i, j, qij - temp*wa[i]);
-              }
-          }
-      }
-    free(wa);
-    return GSL_SUCCESS;
-  }
+      for (L = 0; L < M; L++)
+	{
+	  k = (M - 1) - L;
+
+	  for (i = k; i < M; i++)
+	    {
+	      wa[i] = gsl_matrix_get (q, i, k);
+	      gsl_matrix_set (q, i, k, 0.0);
+	    }
+
+	  gsl_matrix_set (q, k, k, 1.0);
+
+	  if (wa[k] == 0)
+	    continue;
+
+	  for (j = k; j < M; j++)
+	    {
+	      double temp, sum = 0.0;
+	      for (i = k; i < M; i++)
+		{
+		  sum += gsl_matrix_get (q, i, j) * wa[i];
+		}
+	      temp = sum / wa[k];
+	      for (i = k; i < M; i++)
+		{
+		  REAL qij = gsl_matrix_get (q, i, j);
+		  gsl_matrix_set (q, i, j, qij - temp * wa[i]);
+		}
+	    }
+	}
+      free (wa);
+      return GSL_SUCCESS;
+    }
 }
+
+/*  Form the right triangular matrix R from a packed QR matrix */
 
 int
 gsl_la_rform_QR_impl (const gsl_matrix * qr, const gsl_vector * rdiag,
-                      gsl_matrix * r)
+		      gsl_matrix * r)
 {
-  if(qr == 0 || r == 0 || rdiag == 0) {
-    return GSL_EFAULT;
-  }
-  else if(qr->size1 != qr->size2) {
-    return GSL_ENOTSQR;
-  }
-  else if(r->size1 != qr->size2 || rdiag->size != qr->size2) {
-    return GSL_EBADLEN;
-  }
-  else if(qr->size1 == 0) {
-    return GSL_SUCCESS; /* FIXME: what to do with this idiot case ? */
-  }
-  else {
-    const int N = qr->size1;
-    int i, j;
-    
-    for (i = 0; i < N; i++)
-      {
-        for (j = 0; j < i; j++)
-          gsl_matrix_set(r, i, j, 0.0);
+  if (qr == 0 || r == 0 || rdiag == 0)
+    {
+      return GSL_EFAULT;
+    }
+  else if (qr->size1 != qr->size2)
+    {
+      return GSL_ENOTSQR;
+    }
+  else if (r->size1 != qr->size2 || rdiag->size != qr->size2)
+    {
+      return GSL_EBADLEN;
+    }
+  else if (qr->size1 == 0)
+    {
+      return GSL_SUCCESS;	/* FIXME: what to do with this idiot case ? */
+    }
+  else
+    {
+      const int N = qr->size1;
+      int i, j;
 
-        gsl_matrix_set(r, i, i, gsl_vector_get (rdiag, i));
-        
-        for (j = i+1 ; j < N; j++)
-          gsl_matrix_set(r, i, j, gsl_matrix_get(qr, i, j));
-      }
-    
-    return GSL_SUCCESS;
-  }
+      for (i = 0; i < N; i++)
+	{
+	  for (j = 0; j < i; j++)
+	    gsl_matrix_set (r, i, j, 0.0);
+
+	  gsl_matrix_set (r, i, i, gsl_vector_get (rdiag, i));
+
+	  for (j = i + 1; j < N; j++)
+	    gsl_matrix_set (r, i, j, gsl_matrix_get (qr, i, j));
+	}
+
+      return GSL_SUCCESS;
+    }
 }
-
