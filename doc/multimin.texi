@@ -565,7 +565,7 @@ points.
 
 @iftex
 @sp 1
-@center @image{multimin,4in}
+@center @image{multimin,3.4in}
 @end iftex
 @noindent
 The conjugate gradient algorithm finds the minimum on its second

@@ -1,6 +1,6 @@
 \input texinfo @c -*-texinfo-*-
 @c This will be for the printing version of the manual
-@c @input config-local.texi
+@input config-local.texi
 @c %**start of header
 @setfilename gsl-ref.info
 @settitle GNU Scientific Library -- Reference Manual
@@ -172,6 +172,10 @@ University of Paris-Dauphine
 @vskip 0pt plus 1filll
 @ifset publish
 @flushleft
+A catalogue record for this book is available from the British Library.
+
+Second Edition, First Printing, December 2002 (24/12/2002)
+
 Published by Network Theory Limited.
 
 15 Royal Park
@@ -181,11 +185,11 @@ United Kingdom
 
 Email: info@@network-theory.co.uk
 
-ISBN 0-9541617-0-X
+ISBN 0-9541617-3-4
 
 Cover design by David Nicholls.
 
-Errata for this book will be available from 
+Further information about this book is available from 
 @url{http://www.network-theory.co.uk/gsl/manual/}
 
 @end flushleft
@@ -209,7 +213,7 @@ This manual documents the use of the GNU Scientific Library, a numerical
 library for C and C++ programmers.
 
 The GNU Scientific Library is @dfn{free software}.  The term "free
-software" is sometimes misunderstood---it has nothing to do with
+software" is sometimes misunderstood --- it has nothing to do with
 price. It is about freedom.  It refers to your freedom to run, copy,
 distribute, study, change and improve the software.  With the GNU
 Scientific Library you have all these freedoms.
@@ -218,7 +222,7 @@ The GNU Scientific Library is part of the GNU Project.  The GNU Project
 was launched in 1984 to develop a complete Unix-like operating system
 which is free software: the GNU system.  It was conceived as a way of
 bringing back the cooperative spirit that prevailed in the computing
-community in earlier days---to make cooperation possible once again by
+community in earlier days --- to make cooperation possible once again by
 removing the obstacles to cooperation imposed by the owners of
 proprietary software.  Variants of the GNU operating system, which use
 the kernel Linux, are now widely used; though these systems are often
@@ -235,7 +239,7 @@ information visit the website @url{www.gnu.org}.
 @flushright
 Brian Gough
 Publisher
-December 2001
+December 2002
 @end flushright
 @end iftex
 @end ifset

@@ -559,7 +559,7 @@ the interval.
 @comment eps file "roots-bisection.eps"
 @iftex
 @sp 1
-@center @image{roots-bisection,4in}
+@center @image{roots-bisection,3.4in}
 
 @quotation
 Four iterations of bisection, where @math{a_n} is @math{n}th position of
@@ -670,7 +670,7 @@ for multiple roots.
 @comment eps file "roots-newtons-method.eps"
 @iftex
 @sp 1
-@center @image{roots-newtons-method,4in}
+@center @image{roots-newtons-method,3.4in}
 
 @quotation
 Several iterations of Newton's Method, where @math{g_n} is the

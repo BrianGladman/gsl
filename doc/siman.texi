@@ -425,7 +425,7 @@ the calculation at which a new temperature is set) for this problem:
 
 @iftex
 @sp 1
-@center @image{12-cities,4.4in}
+@center @image{12-cities,3.4in}
 
 @quotation
 Example of a simulated annealing run for the 12 southwestern cities

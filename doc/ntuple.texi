@@ -287,7 +287,7 @@ Note the cut-off at the lower bound.
 
 @iftex
 @sp 1
-@center @image{ntuple,4in}
+@center @image{ntuple,3.4in}
 @end iftex
 
 @node Ntuple References and Further Reading

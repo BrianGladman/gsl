@@ -180,7 +180,7 @@ approximation and 40-th order approximation, all sampled at intervals of
 
 @iftex
 @sp 1
-@center @image{cheb,4in}
+@center @image{cheb,3.4in}
 @end iftex
 
 @node Chebyshev Approximation References and Further Reading

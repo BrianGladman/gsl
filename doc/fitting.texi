@@ -343,7 +343,7 @@ $ graph -T X -X x -Y y -y 0 20 -m 0 -S 2 -Ie data
 
 @iftex
 @sp 1
-@center @image{fit-wlinear,4in}
+@center @image{fit-wlinear,3.4in}
 @end iftex
 
 The next program performs a quadratic fit @math{y = c_0 + c_1 x + c_2
@@ -527,7 +527,7 @@ of freedom is 1.4, indicating a reasonable fit to the data.
 
 @iftex
 @sp 1
-@center @image{fit-wlinear2,4in}
+@center @image{fit-wlinear2,3.4in}
 @end iftex
 
 @node Fitting References and Further Reading

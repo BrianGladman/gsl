@@ -153,7 +153,7 @@ between previous points.
 The following plot shows the distribution in the x-y plane of the first
 1024 points from the Sobol sequence,
 @sp 1
-@center @image{qrng}
+@center @image{qrng,3.4in}
 @sp 1
 @center Distribution of the first 1024 points 
 @center from the quasi-random Sobol sequence

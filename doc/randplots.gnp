@@ -1,7 +1,7 @@
 #set term postscript eps enhanced
 set term pstex monochrome
 set samples 300
-set size 1,1.1
+set size 0.8,0.88
 
 # Continuous distributions
 

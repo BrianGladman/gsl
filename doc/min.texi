@@ -41,7 +41,7 @@ upper bound @math{b}, with an estimate of the location of the minimum
 
 @iftex
 @sp 1
-@center @image{min-interval}
+@center @image{min-interval,3.4in}
 @end iftex
 
 @noindent

@@ -517,7 +517,7 @@ accuracy of @c{$10^{-6}$}
 
 @iftex
 @sp 1
-@center @image{vdp}
+@center @image{vdp,3.4in}
 @center Numerical solution of the Van der Pol oscillator equation 
 @center using Prince-Dormand 8th order Runge-Kutta.
 @end iftex
