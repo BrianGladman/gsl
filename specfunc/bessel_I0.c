@@ -48,7 +48,6 @@ static double bi0_data[12] = {
    .00000000000000053339,
    .00000000000000000245
 };
-
 static struct gsl_sf_ChebSeries bi0_cs = {
   bi0_data,
   11,
@@ -78,7 +77,6 @@ static double ai0_data[21] = {
   -.00000000000000071,
    .00000000000000007
 };
-
 static struct gsl_sf_ChebSeries ai0_cs = {
   ai0_data,
   20,
@@ -109,14 +107,30 @@ static double ai02_data[22] = {
   -.00000000000000027,
    .00000000000000003
 };
-
 static struct gsl_sf_ChebSeries ai02_cs = {
   ai02_data,
   21,
   -1, 1
 };
 
-double gsl_sf_bessel_I0_scaled(double);
+int gsl_sf_bessel_I0_scaled_impl(const double x, double * result)
+{
+  double y = fabs(x);
+
+  if(y < 2.0 * GSL_SQRT_MACH_EPS) {
+    *result = 1.;
+  }
+  else if(y <= 3.0) {
+    *result = exp(-y) * (2.75 + gsl_sf_cheb_eval(y*y/4.5-1., &bi0_cs));
+  }
+  else if(y <= 8.0) {
+    *result = (.375 + gsl_sf_cheb_eval((48./y-11.)/5., &ai0_cs)) / sqrt(y);
+  }
+  else {
+    *result = (.375 + gsl_sf_cheb_eval(16./y-1., &ai02_cs)) / sqrt(y);
+  }
+  return GSL_SUCCESS;
+}
 
 int gsl_sf_bessel_I0_impl(const double x, double * result)
 {
@@ -133,7 +147,9 @@ int gsl_sf_bessel_I0_impl(const double x, double * result)
     return GSL_SUCCESS;
   }
   else if(y < xmax) {
-    *result = exp(y) * gsl_sf_bessel_I0_scaled(x);
+    double b_scaled;
+    gsl_sf_bessel_I0_scaled_impl(x, &b_scaled)
+    *result = exp(y) * b_scaled;
     return GSL_SUCCESS;
   }
   else {
@@ -144,6 +160,15 @@ int gsl_sf_bessel_I0_impl(const double x, double * result)
 
 
 /*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
+
+int gsl_sf_bessel_I0_scaled_e(const double x, double * result)
+{
+  int status = gsl_sf_bessel_I0_scaled_impl(x, result);  
+  if(status != GSL_SUCCESS) {
+    GSL_ERROR("gsl_sf_bessel_I0_e", status);
+  }
+  return status;
+}
 
 int gsl_sf_bessel_I0_e(const double x, double * result)
 {
@@ -159,20 +184,12 @@ int gsl_sf_bessel_I0_e(const double x, double * result)
 
 double gsl_sf_bessel_I0_scaled(const double x)
 {
-  double y = fabs(x);
-
-  if(y < 2.0 * GSL_SQRT_MACH_EPS) {
-    return 1.;
+  double y;
+  int status = gsl_sf_bessel_I0_scaled_impl(x, &y);
+  if(status != GSL_SUCCESS) {
+    GSL_WARNING("gsl_sf_bessel_I0_scaled");
   }
-  else if(y <= 3.0) {
-    return exp(-y) * (2.75 + gsl_sf_cheb_eval(y*y/4.5-1., &bi0_cs));
-  }
-  else if(y <= 8.0) {
-    return (.375 + gsl_sf_cheb_eval((48./y-11.)/5., &ai0_cs)) / sqrt(y);
-  }
-  else {
-    return (.375 + gsl_sf_cheb_eval(16./y-1., &ai02_cs)) / sqrt(y);
-  }
+  return y;
 }
 
 
