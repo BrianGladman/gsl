@@ -1,3 +1,7 @@
+2004-12-23  Brian Gough  <bjg@network-theory.co.uk>
+
+	* eval.c (gsl_cheb_eval_mode): added missing function
+
 2004-08-27  Brian Gough  <bjg@network-theory.co.uk>
 
 	* test.c (main): make the hard-coded tolerances a variable, ftol

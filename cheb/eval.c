@@ -175,3 +175,20 @@ gsl_cheb_eval_mode_e (const gsl_cheb_series * cs,
 
   return GSL_SUCCESS;
 }
+
+double
+gsl_cheb_eval_mode (const gsl_cheb_series * cs,
+                    const double x, gsl_mode_t mode)
+{
+  double result, abserr;
+  int status = gsl_cheb_eval_mode_e (cs, x, mode, &result, &abserr);
+
+  if (status != GSL_SUCCESS) 
+    {
+      GSL_ERROR_VAL("gsl_cheb_eval_mode", status, result);
+    };
+
+  return result;
+}
+
+
