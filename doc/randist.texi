@@ -51,7 +51,7 @@ corresponding cumulative distribution functions are declared in
 * The Beta Distribution::       
 * The Logistic Distribution::   
 * The Pareto Distribution::     
-* The Spherical Distribution (Random Direction Vectors)::  
+* Spherical Vector Distributions::  
 * The Weibull Distribution::    
 * The Type-1 Gumbel Distribution::  
 * The Type-2 Gumbel Distribution::  
