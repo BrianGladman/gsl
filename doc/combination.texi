@@ -19,6 +19,7 @@ The functions described in this chapter are defined in the header file
 * Combination functions::       
 * Reading and writing combinations::  
 * Combination Examples::        
+* Combination References and Further Reading::
 @end menu
 
 @node The Combination struct
@@ -53,7 +54,7 @@ lexicographically first combination. A null pointer is returned if
 insufficient memory is available to create the combination.
 @end deftypefun
 
-@deftypefun {gsl_combination *} gsl_combination_calloc (size_t @var{n})
+@deftypefun {gsl_combination *} gsl_combination_calloc (size_t @var{n}, size_t @var{k})
 This function allocates memory for a new combination with parameters
 @var{n}, @var{k} and initializes it to the lexicographically first
 combination. A null pointer is returned if insufficient memory is
@@ -239,4 +240,23 @@ All subsets of @{0,1,2,3@} by size:
 @noindent
 All 16 subsets are generated, and the subsets of each size are sorted
 lexicographically.
+
+
+@node Combination References and Further Reading
+@section References and Further Reading
+@noindent
+Further information on combinations can be found in,
+
+@itemize @asis
+@item
+Donald L. Kreher, Douglas R. Stinson, @cite{Combinatorial Algorithms:
+Generation, Enumeration and Search}, 1998, CRC Press LLC, ISBN
+084933988X
+
+@item
+Donald E. Knuth, @cite{The Art of Computer Programming: Combinatorial
+Algorithms} (Vol 4, pre-fascicle 2c)
+@url{http://www-cs-faculty.stanford.edu/~knuth/fasc2c.ps.gz}
+@end itemize
+@noindent
 

@@ -88,7 +88,7 @@ gsl_combination_valid (gsl_combination * c)
             }
           if (c->data[j] > ci)
             {
-              GSL_ERROR("combination index no in increasing order",
+              GSL_ERROR("combination indices not in increasing order",
 			GSL_FAILURE) ;
             }
         }
