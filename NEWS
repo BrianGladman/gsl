@@ -1,5 +1,8 @@
 * What is new in gsl-0.9.4:
 
+* Reorganized the multmin functions to use the same interface as the
+other iterative solvers.
+
 * Added histogram _alloc functions for consistency, in addition to the
 existing _calloc functions.
 
