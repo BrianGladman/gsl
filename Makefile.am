@@ -14,7 +14,7 @@ EXTRA_DIST = autogen.sh gsl-config.in configure.in THANKS KNOWN-PROBLEMS gsl.spe
 lib_LTLIBRARIES = libgsl.la
 libgsl_la_SOURCES = version.c
 libgsl_la_LIBADD = $(SUBLIBS)
-noinst_HEADERS = complex_internal.h templates_on.h templates_off.h
+noinst_HEADERS = templates_on.h templates_off.h
 
 m4datadir = $(datadir)/aclocal
 m4data_DATA = gsl.m4
