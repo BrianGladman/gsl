@@ -16,12 +16,9 @@ typedef struct {
   unsigned long int (* get)(void * state) ;
 } gsl_rng_type ;
 
-void gsl_blah_set (void * state, unsigned int seed) ;
-unsigned long int gsl_blah_get (void * state) ;
+const gsl_rng_type * gsl_rng_blah (void) ;
 
-const gsl_rng_type BLAH = { sizeof(double), &gsl_blah_set, &gsl_blah_get} ;
-
-gsl_rng * gsl_rng_alloc (gsl_rng_type * T) ;
+gsl_rng * gsl_rng_alloc (const gsl_rng_type * (*f)(void)) ;
 unsigned long int gsl_rng_get (gsl_rng * r) ;
 void gsl_rng_set (gsl_rng * r, unsigned int seed) ;
 void gsl_rng_free (gsl_rng * r) ;
