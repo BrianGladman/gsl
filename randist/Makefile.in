@@ -1,6 +1,6 @@
-# Makefile.in generated automatically by automake 1.2c from Makefile.am
+# Makefile.in generated automatically by automake 1.2h from Makefile.am
 
-# Copyright (C) 1994, 1995, 1996, 1997 Free Software Foundation, Inc.
+# Copyright (C) 1994, 1995, 1996, 1997, 1998 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
 # with or without modifications, as long as this notice is preserved.
@@ -32,6 +32,8 @@ mandir = @mandir@
 includedir = @includedir@
 oldincludedir = /usr/include
 
+DISTDIR =
+
 pkgdatadir = $(datadir)/@PACKAGE@
 pkglibdir = $(libdir)/@PACKAGE@
 pkgincludedir = $(includedir)/@PACKAGE@
@@ -49,12 +51,12 @@ INSTALL_DATA = @INSTALL_DATA@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
 transform = @program_transform_name@
 
-NORMAL_INSTALL = true
-PRE_INSTALL = true
-POST_INSTALL = true
-NORMAL_UNINSTALL = true
-PRE_UNINSTALL = true
-POST_UNINSTALL = true
+NORMAL_INSTALL = :
+PRE_INSTALL = :
+POST_INSTALL = :
+NORMAL_UNINSTALL = :
+PRE_UNINSTALL = :
+POST_UNINSTALL = :
 host_alias = @host_alias@
 host_triplet = @host@
 CC = @CC@
@@ -176,14 +178,14 @@ DEP_FILES =  .deps/bench-gamma.P .deps/bench-gauss.P \
 SOURCES = $(libgslrandist_a_SOURCES) $(exponential_SOURCES) $(gamma_SOURCES) $(gauss_SOURCES) $(poisson_SOURCES) $(lorentz_SOURCES) $(laplace_SOURCES) $(bench_gamma_SOURCES) $(bench_gauss_SOURCES) $(bench_poisson_SOURCES) $(test_gauss_SOURCES) $(test_shuffle_SOURCES)
 OBJECTS = $(libgslrandist_a_OBJECTS) $(exponential_OBJECTS) $(gamma_OBJECTS) $(gauss_OBJECTS) $(poisson_OBJECTS) $(lorentz_OBJECTS) $(laplace_OBJECTS) $(bench_gamma_OBJECTS) $(bench_gauss_OBJECTS) $(bench_poisson_OBJECTS) $(test_gauss_OBJECTS) $(test_shuffle_OBJECTS)
 
-default: all
+all: Makefile $(LIBRARIES) $(PROGRAMS) $(HEADERS)
 
 .SUFFIXES:
-.SUFFIXES: .c .o
-$(srcdir)/Makefile.in: Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
+.SUFFIXES: .S .c .o .s
+$(srcdir)/Makefile.in: Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4)
 	cd $(top_srcdir) && $(AUTOMAKE) --gnu randist/Makefile
 
-Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status $(BUILT_SOURCES)
+Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status $(BUILT_SOURCES)
 	cd $(top_builddir) \
 	  && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
@@ -199,32 +201,35 @@ maintainer-clean-libLIBRARIES:
 
 install-libLIBRARIES: $(lib_LIBRARIES)
 	@$(NORMAL_INSTALL)
-	$(mkinstalldirs) $(libdir)
+	$(mkinstalldirs) $(DESTDIR)$(libdir)
 	list='$(lib_LIBRARIES)'; for p in $$list; do \
 	  if test -f $$p; then \
-	    echo " $(INSTALL_DATA) $$p $(libdir)/$$p"; \
-	    $(INSTALL_DATA) $$p $(libdir)/$$p; \
+	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(libdir)/$$p"; \
+	    $(INSTALL_DATA) $$p $(DESTDIR)$(libdir)/$$p; \
 	  else :; fi; \
 	done
 	@$(POST_INSTALL)
 	@list='$(lib_LIBRARIES)'; for p in $$list; do \
 	  if test -f $$p; then \
-	    echo " $(RANLIB) $(libdir)/$$p"; \
-	    $(RANLIB) $(libdir)/$$p; \
+	    echo " $(RANLIB) $(DESTDIR)$(libdir)/$$p"; \
+	    $(RANLIB) $(DESTDIR)$(libdir)/$$p; \
 	  else :; fi; \
 	done
 
 uninstall-libLIBRARIES:
-	$(NORMAL_UNINSTALL)
+	@$(NORMAL_UNINSTALL)
 	list='$(lib_LIBRARIES)'; for p in $$list; do \
-	  rm -f $(libdir)/$$p; \
+	  rm -f $(DESTDIR)$(libdir)/$$p; \
 	done
 
-.c.o:
+.s.o:
+	$(COMPILE) -c $<
+
+.S.o:
 	$(COMPILE) -c $<
 
 mostlyclean-compile:
-	-rm -f *.o core
+	-rm -f *.o core *.core
 
 clean-compile:
 
@@ -249,18 +254,18 @@ maintainer-clean-binPROGRAMS:
 
 install-binPROGRAMS: $(bin_PROGRAMS)
 	@$(NORMAL_INSTALL)
-	$(mkinstalldirs) $(bindir)
+	$(mkinstalldirs) $(DESTDIR)$(bindir)
 	@list='$(bin_PROGRAMS)'; for p in $$list; do \
 	  if test -f $$p; then \
-	    echo "  $(INSTALL_PROGRAM) $$p $(bindir)/`echo $$p|sed '$(transform)'`"; \
-	     $(INSTALL_PROGRAM) $$p $(bindir)/`echo $$p|sed '$(transform)'`; \
+	    echo "  $(INSTALL_PROGRAM) $$p $(DESTDIR)$(bindir)/`echo $$p|sed '$(transform)'`"; \
+	     $(INSTALL_PROGRAM) $$p $(DESTDIR)$(bindir)/`echo $$p|sed '$(transform)'`; \
 	  else :; fi; \
 	done
 
 uninstall-binPROGRAMS:
-	$(NORMAL_UNINSTALL)
+	@$(NORMAL_UNINSTALL)
 	list='$(bin_PROGRAMS)'; for p in $$list; do \
-	  rm -f $(bindir)/`echo $$p|sed '$(transform)'`; \
+	  rm -f $(DESTDIR)$(bindir)/`echo $$p|sed '$(transform)'`; \
 	done
 
 mostlyclean-noinstPROGRAMS:
@@ -318,28 +323,34 @@ test-shuffle: $(test_shuffle_OBJECTS) $(test_shuffle_DEPENDENCIES)
 
 install-includeHEADERS: $(include_HEADERS)
 	@$(NORMAL_INSTALL)
-	$(mkinstalldirs) $(includedir)
+	$(mkinstalldirs) $(DESTDIR)$(includedir)
 	@list='$(include_HEADERS)'; for p in $$list; do \
-	  echo " $(INSTALL_DATA) $(srcdir)/$$p $(includedir)/$$p"; \
-	  $(INSTALL_DATA) $(srcdir)/$$p $(includedir)/$$p; \
+	  if test -f "$$p"; then d= ; else d="$(srcdir)/"; fi; \
+	  echo " $(INSTALL_DATA) $$d$$p $(DESTDIR)$(includedir)/$$p"; \
+	  $(INSTALL_DATA) $$d$$p $(DESTDIR)$(includedir)/$$p; \
 	done
 
 uninstall-includeHEADERS:
-	$(NORMAL_UNINSTALL)
+	@$(NORMAL_UNINSTALL)
 	list='$(include_HEADERS)'; for p in $$list; do \
-	  rm -f $(includedir)/$$p; \
+	  rm -f $(DESTDIR)$(includedir)/$$p; \
 	done
 
 tags: TAGS
 
-ID: $(HEADERS) $(SOURCES)
-	here=`pwd` && cd $(srcdir) && mkid -f$$here/ID $(SOURCES) $(HEADERS)
+ID: $(HEADERS) $(SOURCES) $(LISP)
+	here=`pwd` && cd $(srcdir) \
+	  && mkid -f$$here/ID $(SOURCES) $(HEADERS) $(LISP)
 
-TAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES)
+TAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) $(LISP)
 	tags=; \
 	here=`pwd`; \
-	test -z "$(ETAGS_ARGS)$(SOURCES)$(HEADERS)$$tags" \
-	  || (cd $(srcdir) && etags $(ETAGS_ARGS) $$tags  $(SOURCES) $(HEADERS) -o $$here/TAGS)
+	list='$(SOURCES) $(HEADERS)'; \
+	unique=`for i in $$list; do echo $$i; done | \
+	  awk '    { files[$$0] = 1; } \
+	       END { for (i in files) print i; }'`; \
+	test -z "$(ETAGS_ARGS)$$unique$(LISP)$$tags" \
+	  || (cd $(srcdir) && etags $(ETAGS_ARGS) $$tags  $$unique $(LISP) -o $$here/TAGS)
 
 mostlyclean-tags:
 
@@ -367,12 +378,7 @@ distdir: $(DISTFILES)
 	  || cp -p $$d/$$file $(distdir)/$$file; \
 	done
 
-MKDEP = $(CC) -M $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
-
 DEPS_MAGIC := $(shell mkdir .deps > /dev/null 2>&1 || :)
--include .deps/.P
-.deps/.P: $(BUILT_SOURCES)
-	echo > $@
 
 -include $(DEP_FILES)
 
@@ -385,13 +391,16 @@ distclean-depend:
 maintainer-clean-depend:
 	-rm -rf .deps
 
-.deps/%.P: %.c
-	@echo "Computing dependencies for $<..."
-	@o='o'; \
-	test -n "$o" && o='$$o'; \
-	$(MKDEP) $< >$@.tmp \
-	  && sed "s,^\(.*\)\.o:,\1.$$o \1.l$$o $@:," < $@.tmp > $@ \
-	  && rm -f $@.tmp
+%.o: %.c
+	@echo '$(COMPILE) -c $<'; \
+	$(COMPILE) -Wp,-MD,.deps/$(*F).P -c $<
+
+%.lo: %.c
+	@echo '$(LTCOMPILE) -c $<'; \
+	$(LTCOMPILE) -Wp,-MD,.deps/$(*F).p -c $<
+	@-sed -e 's/^\([^:]*\)\.o:/\1.lo \1.o:/' \
+	  < .deps/$(*F).p > .deps/$(*F).P
+	@-rm -f .deps/$(*F).p
 info:
 dvi:
 check: all
@@ -408,12 +417,11 @@ install: install-exec install-data all
 
 uninstall: uninstall-libLIBRARIES uninstall-binPROGRAMS uninstall-includeHEADERS
 
-all: Makefile $(LIBRARIES) $(PROGRAMS) $(HEADERS)
-
 install-strip:
 	$(MAKE) INSTALL_PROGRAM='$(INSTALL_PROGRAM) -s' INSTALL_SCRIPT='$(INSTALL_PROGRAM)' install
 installdirs:
-	$(mkinstalldirs)  $(libdir) $(bindir) $(includedir)
+	$(mkinstalldirs)  $(DATADIR)$(libdir) $(DATADIR)$(bindir) \
+		$(DATADIR)$(includedir)
 
 
 mostlyclean-generic:
@@ -451,7 +459,7 @@ maintainer-clean:  maintainer-clean-libLIBRARIES \
 	@echo "This command is intended for maintainers to use;"
 	@echo "it deletes files that may require special tools to rebuild."
 
-.PHONY: default mostlyclean-libLIBRARIES distclean-libLIBRARIES \
+.PHONY: mostlyclean-libLIBRARIES distclean-libLIBRARIES \
 clean-libLIBRARIES maintainer-clean-libLIBRARIES uninstall-libLIBRARIES \
 install-libLIBRARIES mostlyclean-compile distclean-compile \
 clean-compile maintainer-clean-compile mostlyclean-binPROGRAMS \

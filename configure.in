@@ -17,6 +17,11 @@ AC_PROG_INSTALL
 AC_PROG_LN_S
 AC_PROG_RANLIB
 
+dnl Check compiler features
+AC_TYPE_SIZE_T
+AC_C_CONST
+AC_C_INLINE
+
 dnl some magic to get a full path to the working directory
 full_top_srcdir=`cd $srcdir; pwd`
 full_top_builddir=`pwd`
@@ -123,4 +128,5 @@ fi ;
 
 
 
-AC_OUTPUT(err/Makefile fft/Makefile specfunc/Makefile statistics/Makefile roots/Makefile random/Makefile randist/Makefile siman/Makefile integration/Makefile doc/Makefile utils/Makefile Makefile)
+AC_OUTPUT(err/Makefile fft/Makefile specfunc/Makefile statistics/Makefile roots/Makefile random/Makefile randist/Makefile siman/Makefile integration/Makefile doc/Makefile utils/Makefile vector/Makefile Makefile)
+
