@@ -22,8 +22,6 @@
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_machine.h>
 
-double gsl_acosh (const double x);
-
 double
 gsl_acosh (const double x)
 {
@@ -50,8 +48,6 @@ gsl_acosh (const double x)
     }
 }
 
-double gsl_asinh (const double x);
-
 double
 gsl_asinh (const double x)
 {
@@ -76,8 +72,6 @@ gsl_asinh (const double x)
       return x;
     }
 }
-
-double gsl_atanh (const double x);
 
 double
 gsl_atanh (const double x)

@@ -21,8 +21,6 @@
 #include <math.h>
 #include <gsl/gsl_math.h>
 
-double gsl_expm1 (const double x);
-
 double gsl_expm1 (const double x)
 {
   /* FIXME: this should be improved */

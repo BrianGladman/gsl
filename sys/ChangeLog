@@ -1,3 +1,11 @@
+2003-07-24  Brian Gough  <bjg@network-theory.co.uk>
+
+	* invhyp.c: removed duplicate declarations
+
+	* ldfrexp.c: removed duplicate declarations
+
+	* expm1.c: removed duplicate declaration of gsl_expm1
+
 2003-01-02  Brian Gough  <brian.gough@network-theory.co.uk>
 
 	* infnan.c (gsl_isnan): fall back to isnan,isinf,finite/isfinite

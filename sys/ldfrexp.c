@@ -21,9 +21,6 @@
 #include <math.h>
 #include <gsl/gsl_math.h>
 
-double gsl_ldexp (const double x, const int e);
-double gsl_frexp (const double x, int *e);
-
 double
 gsl_ldexp (const double x, const int e)
 {
