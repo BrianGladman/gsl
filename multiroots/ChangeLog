@@ -1,3 +1,8 @@
+Sun Aug 27 13:43:13 2000  Brian Gough  <bjg@network-theory.co.uk>
+
+	* hybridj.c hybrid.c dogleg.c: begin comments with a capital
+ 	letter to improve readability
+
 Sat Aug 26 16:12:19 2000  Brian Gough  <bjg@network-theory.co.uk>
 
 	* hybridj.c hybrid.c: renamed rdiag to tau, since it plays that

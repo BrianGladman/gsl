@@ -371,14 +371,14 @@ set (void *vstate, gsl_multiroot_function * func, gsl_vector * x, gsl_vector * f
 
   gsl_vector_set_all (dx, 0.0);
 
-  /* store column norms in diag */
+  /* Store column norms in diag */
 
   if (scale)
     compute_diag (J, diag);
   else
     gsl_vector_set_all (diag, 1.0);
 
-  /* set delta to factor |D x| or to factor if |D x| is zero */
+  /* Set delta to factor |D x| or to factor if |D x| is zero */
 
   state->delta = compute_delta (diag, x);
 
@@ -430,15 +430,15 @@ iterate (void *vstate, gsl_multiroot_function * func, gsl_vector * x, gsl_vector
   double ratio;
   double p1 = 0.1, p5 = 0.5, p001 = 0.001, p0001 = 0.0001;
 
-  /* compute qtf = Q^T f */
+  /* Compute qtf = Q^T f */
 
   compute_qtf (q, f, qtf);
 
-  /* compute dogleg step */
+  /* Compute dogleg step */
 
   dogleg (r, qtf, diag, state->delta, state->newton, state->gradient, dx);
 
-  /* take a trial step */
+  /* Take a trial step */
 
   compute_trial_step (x, dx, state->x_trial);
 
@@ -452,31 +452,31 @@ iterate (void *vstate, gsl_multiroot_function * func, gsl_vector * x, gsl_vector
 	}
     }
 
-  /* evaluate function at x + p */
+  /* Evaluate function at x + p */
 
   GSL_MULTIROOT_FN_EVAL (func, x_trial, f_trial);
 
-  /* df = f_trial - f */
+  /* Set df = f_trial - f */
 
   compute_df (f_trial, f, df);
 
-  /* compute the scaled actual reduction */
+  /* Compute the scaled actual reduction */
 
   fnorm1 = enorm (f_trial);
 
   actred = compute_actual_reduction (fnorm, fnorm1);
 
-  /* compute rdx = R dx */
+  /* Compute rdx = R dx */
 
   compute_rdx (r, dx, rdx);
 
-  /* compute the scaled predicted reduction phi1p = |Q^T f + R dx| */
+  /* Compute the scaled predicted reduction phi1p = |Q^T f + R dx| */
 
   fnorm1p = enorm_sum (qtf, rdx);
 
   prered = compute_predicted_reduction (fnorm, fnorm1p);
 
-  /* compute the ratio of the actual to predicted reduction */
+  /* Compute the ratio of the actual to predicted reduction */
 
   if (prered > 0)
     {
@@ -487,7 +487,7 @@ iterate (void *vstate, gsl_multiroot_function * func, gsl_vector * x, gsl_vector
       ratio = 0;
     }
 
-  /* update the step bound */
+  /* Update the step bound */
 
   if (ratio < p1)
     {
@@ -506,7 +506,7 @@ iterate (void *vstate, gsl_multiroot_function * func, gsl_vector * x, gsl_vector
 	state->delta = pnorm / p5;
     }
 
-  /* test for successful iteration */
+  /* Test for successful iteration */
 
   if (ratio >= p0001)
     {
@@ -516,7 +516,7 @@ iterate (void *vstate, gsl_multiroot_function * func, gsl_vector * x, gsl_vector
       state->iter++;
     }
 
-  /* determine the progress of the iteration */
+  /* Determine the progress of the iteration */
 
   state->nslow1++;
   if (actred >= p001)
@@ -551,13 +551,13 @@ iterate (void *vstate, gsl_multiroot_function * func, gsl_vector * x, gsl_vector
       return GSL_SUCCESS;
     }
 
-  /* compute qtdf = Q^T df, w = (Q^T df - R dx)/|dx|,  v = D^2 dx/|dx| */
+  /* Compute qtdf = Q^T df, w = (Q^T df - R dx)/|dx|,  v = D^2 dx/|dx| */
 
   compute_qtf (q, df, qtdf);
 
   compute_wv (qtdf, rdx, dx, diag, pnorm, w, v);
 
-  /* rank-1 update of the jacobian Q'R' = Q(R + w v^T) */
+  /* Rank-1 update of the jacobian Q'R' = Q(R + w v^T) */
 
   gsl_linalg_QR_update (q, r, w, v);
 

@@ -359,7 +359,7 @@ dogleg (const gsl_matrix * r, const gsl_vector * qtf,
 
   minimum_step (gnorm, diag, gradient);
 
-  compute_Rg (r, gradient, p);	/* use p as temporary space to compute Rg */
+  compute_Rg (r, gradient, p);	/* Use p as temporary space to compute Rg */
 
 #ifdef DEBUG
   printf("mingrad = "); gsl_vector_fprintf(stdout, gradient, "%g"); printf("\n");
