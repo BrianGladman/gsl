@@ -29,8 +29,7 @@
 #define ELEMENT(a,stride,i) ((a)[(stride)*(i)])
 
 static int binary_logn (const size_t n);
-static void dwt_step (const gsl_wavelet * w, double *a, size_t stride,
-                      size_t n, int isign, gsl_wavelet_workspace * work);
+static void dwt_step (const gsl_wavelet * w, double *a, size_t stride, size_t n, gsl_wavelet_direction dir, gsl_wavelet_workspace * work);
 
 static int
 binary_logn (const size_t n)
