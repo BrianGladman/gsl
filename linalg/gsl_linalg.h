@@ -53,23 +53,14 @@ gsl_la_decomp_SV_impl(gsl_matrix * A,
                       gsl_vector * S,
                       double tolerance);
 
-/* LU Decomposition
+/* LU Decomposition, Crout's method
  *
  * exceptions: 
  */
 int
-gsl_la_decomp_LU_Gauss_impl(gsl_matrix * matrix,
-                            gsl_vector_int * permutation,
-		            int * signum);
-
-/* LU Decomposition
- *
- * exceptions: 
- */
-int
-gsl_la_decomp_LU_Crout_impl(gsl_matrix * matrix,
-                            gsl_vector_int * permutation,
-		            int * signum);
+gsl_la_decomp_LU_impl(gsl_matrix * matrix,
+                      gsl_vector_int * permutation,
+		      int * signum);
 
 
 /* Linear Solve Using LU Decomposition

@@ -143,7 +143,7 @@ test_LU_solve_dim(size_t dim, const double * actual, double eps)
   gsl_matrix * hm  = create_hilbert_matrix(dim);
   gsl_vector * solution = gsl_vector_alloc(dim);
   for(i=0; i<dim; i++) gsl_vector_set(rhs, i, i+1.0);
-  s += gsl_la_decomp_LU_Crout_impl(hm, perm, &signum);
+  s += gsl_la_decomp_LU_impl(hm, perm, &signum);
   s += gsl_la_solve_LU_impl(hm, perm, rhs, solution);
   for(i=0; i<dim; i++) {
     int foo = ( fabs(gsl_vector_get(solution, i) - actual[i])/fabs(actual[i]) > eps );
