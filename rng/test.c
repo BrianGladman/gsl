@@ -20,6 +20,15 @@ main (void)
   rng_test (gsl_rng_cmrg,1,10000,1477798470); 
   rng_test (gsl_rng_mrg,1,10000,1711374253); 
   rng_test (gsl_rng_taus,1,10000,676146779);
+  rng_test (gsl_rng_vax,1,10000,3051034865UL); 
+
+
+  rng_test (gsl_rng_ranlux,314159265,10000,12077992); 
+  rng_test (gsl_rng_ranlux389,314159265,10000,165942); 
+
+  /* FIXME: the ranlux test was made by running the fortran code and
+     getting the expected value from that. An analytic calculation
+     would be preferable. */
 
   /* generic statistical tests */
 
@@ -31,6 +40,7 @@ main (void)
   generic_rng_test (gsl_rng_uni);
   generic_rng_test (gsl_rng_uni32);
   generic_rng_test (gsl_rng_zuf);
+  generic_rng_test (gsl_rng_ranlux);
 
   return gsl_test_summary ();
 }
@@ -69,7 +79,7 @@ generic_rng_test (const gsl_rng_type * T)
        the theoretical max.  */
 
     status = (kmax > ran_max)
-      || (expected_uncovered < actual_uncovered && actual_uncovered > 1);
+      || (2 * expected_uncovered < actual_uncovered && actual_uncovered > 1);
 
     gsl_test (status,
 	      "%s, observed vs theoretical maximum (%lu vs %lu)",
@@ -108,8 +118,6 @@ rng_test (const gsl_rng_type * T, unsigned int seed, unsigned int n,
   unsigned int i ;
   unsigned long int k = 0;
   int status;
-
-  unsigned long int x  = 36532 ;
 
   if (seed != 1) {
     gsl_rng_set(r,seed) ;

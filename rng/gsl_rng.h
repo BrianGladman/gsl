@@ -21,6 +21,9 @@ typedef struct {
 
 extern const gsl_rng_type * gsl_rng_bad_randu ;
 extern const gsl_rng_type * gsl_rng_bad_rand ;
+extern const gsl_rng_type * gsl_rng_vax ;
+extern const gsl_rng_type * gsl_rng_ranlux ;
+extern const gsl_rng_type * gsl_rng_ranlux389 ;
 extern const gsl_rng_type * gsl_rng_cmrg ;
 extern const gsl_rng_type * gsl_rng_minstd ;
 extern const gsl_rng_type * gsl_rng_mrg ;
