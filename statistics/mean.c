@@ -246,23 +246,5 @@ double iittest (int *array1, int *array2, int size1, int size2)
 
 }
 
-double ddpvariance(double *array1, double *array2, int size1, int size2)
-{
-  /* Find the pooled variance of two double arrays */
-
-  double var1, var2, pooled_variance;
-
-  pooled_variance = 0;
-
-  /* find the variances */
-  var1 = dest_variance(array1, size1);
-  var2 = dest_variance(array2, size2);
-
-  /* calculate the pooled variance */
-  pooled_variance = (((size1 - 1)*var1)+((size2-1)*var2)) / (size1+size2-2);
-  
-  return pooled_variance;
-
-}
 
 /* double ddttest (int *array1, int *array2, int size1, int size2);*/

@@ -10,6 +10,5 @@ double iest_sd (int *array, int size);
 double dest_sd (double *array, int size);
 double iipvariance(int *array1, int *array2, int size1, int size2);
 double iittest (int *array1, int *array2, int size1, int size2);
-double ddpvariance(double *array1, double *array2, int size1, int size2);
 double ddttest (double *array1, double *array2, int size1, int size2);
 
