@@ -1,7 +1,5 @@
-This is a first attempt to make GSL compile on Visual C++ 6.0.
-
-Initial scripts by José Miguel Buenaposada (jmbuena@dia.fi.upm.es)
-Modified by Brian Gough
+Compiling GSL with Microsoft Visual C++ 6.0
+===========================================
 
 1.  Build the workspace GSL.dsw.  This should produce the following
 libraries,
@@ -28,5 +26,14 @@ This produces an output log file "results.dat".  Any lines which don't
 begin with PASS: indicate a problem.
 
 3.  If the tests are successful install the files libgsl.lib,
-libgslcblas.lib and gsl/gsl*.h
+libgslcblas.lib and gsl/gsl*.h.  You will need to add these to the
+project settings for programs that you compile with GSL.
 
+The library is built with the /LD or /LDd option.  This is compatible
+with the default link option for single-threaded applications, /ML.
+To use GSL in a multi-threaded application you may need to recompile
+the library with another option, such as /MD.  See the Microsoft
+Visual C++ Manual for details on link options.
+
+The initial scripts were provided by José Miguel Buenaposada
+(jmbuena@dia.fi.upm.es) and subsequently modified by Brian Gough
