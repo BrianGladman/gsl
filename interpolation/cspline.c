@@ -122,17 +122,13 @@ cspline_calc_natural (
 
       for (i = 0; i < sys_size; i++)
 	{
-	  gsl_vector_set(offdiag, i, xa[i + 2] - xa[i + 1]);
-	}
-
-      for (i = 0; i < sys_size; i++)
-	{
 	  const double h_i   = xa[i + 1] - xa[i];
 	  const double h_ip1 = xa[i + 2] - xa[i + 1];
 	  const double ydiff_i   = ya[i + 1] - ya[i];
 	  const double ydiff_ip1 = ya[i + 2] - ya[i + 1];
-	  gsl_vector_set(diag, i, 2.0 * (h_ip1 + h_i));
-	  gsl_vector_set(g, i, 3.0 * (ydiff_ip1 / h_ip1  -  ydiff_i / h_i));
+          gsl_vector_set(offdiag, i, h_ip1);
+          gsl_vector_set(diag, i, 2.0 * (h_ip1 + h_i));
+          gsl_vector_set(g, i, 3.0 * (ydiff_ip1 / h_ip1  -  ydiff_i / h_i));
 	}
 
       status = gsl_la_solve_symm_tridiag_impl(diag, offdiag, g, &solution_vec);
@@ -193,9 +189,6 @@ cspline_calc_periodic (
       status = GSL_ENOMEM;
     }
     else {
-      for (i = 0; i < sys_size; i++) {
-        gsl_vector_set(offdiag, i, xa[i + 2] - xa[i + 1]);
-      }
       gsl_vector_set(offdiag, max_index, xa[1]-xa[0]);
 
       for (i = 0; i < sys_size; i++) {
@@ -203,11 +196,12 @@ cspline_calc_periodic (
         const double h_ip1 = xa[i + 2] - xa[i + 1];
         const double ydiff_i   = ya[i + 1] - ya[i];
         const double ydiff_ip1 = ya[(i + 2) % num_points] - ya[i + 1];
+        gsl_vector_set(offdiag, i, h_ip1);
         gsl_vector_set(diag, i, 2.0 * (h_ip1 + h_i));
         gsl_vector_set(g, i, 3.0 * (ydiff_ip1 / h_ip1 - ydiff_i / h_i));
       }
 
-      status = gsl_la_solve_symm_tridiag_impl(diag, offdiag, g, &solution_vec);
+      status = gsl_la_solve_symm_cyc_tridiag_impl(diag, offdiag, g, &solution_vec);
       interp->c[0] = interp->c[max_index];
     }
 
