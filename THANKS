@@ -284,3 +284,5 @@ gsl_ran_hypergeometric_pdf
 * Neil Bushong <bushong@mh-4426b.ucsd.edu> documentation typo bug report
 
 * Brad Bell <brad@apl.washington.edu> documentation bug report
+
+* Andreas Schneider <1@c07.de> bug report for R250
