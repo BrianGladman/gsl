@@ -6,7 +6,7 @@ INCLUDES= -I$(top_builddir)
 
 libgslcheb_la_SOURCES =  deriv.c eval.c init.c integ.c
 
-TESTS = test
+TESTS = $(check_PROGRAMS)
 
 check_PROGRAMS = test
 

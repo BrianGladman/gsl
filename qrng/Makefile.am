@@ -6,7 +6,7 @@ INCLUDES= -I$(top_builddir)
 
 libgslqrng_la_SOURCES =	gsl_qrng.h qrng.c niederreiter-2.c sobol.c
 
-TESTS = test
+TESTS = $(check_PROGRAMS)
 check_PROGRAMS = test
 
 test_SOURCES = test.c

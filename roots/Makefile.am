@@ -12,7 +12,7 @@ libgslroots_la_SOURCES = bisection.c brent.c falsepos.c	newton.c  secant.c steff
 
 check_PROGRAMS = test
 
-TESTS = test
+TESTS = $(check_PROGRAMS)
 
 test_SOURCES = test.c test_funcs.c test.h
 test_LDADD = libgslroots.la ../ieee-utils/libgslieeeutils.la  ../err/libgslerr.la ../test/libgsltest.la ../sys/libgslsys.la ../utils/libutils.la

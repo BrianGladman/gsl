@@ -6,7 +6,7 @@ INCLUDES= -I$(top_builddir)
 
 libgslntuple_la_SOURCES = ntuple.c
 
-TESTS = test
+TESTS = $(check_PROGRAMS)
 
 check_PROGRAMS = test #demo demo1
 

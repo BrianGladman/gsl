@@ -6,7 +6,7 @@ pkginclude_HEADERS = gsl_monte.h gsl_monte_vegas.h gsl_monte_miser.h gsl_monte_p
 
 INCLUDES= -I$(top_builddir) -I$(top_srcdir)
 
-TESTS = test
+TESTS = $(check_PROGRAMS)
 
 check_PROGRAMS = test #demo
 

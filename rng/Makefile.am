@@ -13,7 +13,7 @@ noinst_HEADERS = schrage.c
 test_SOURCES = test.c
 test_LDADD = libgslrng.la ../ieee-utils/libgslieeeutils.la ../err/libgslerr.la ../test/libgsltest.la ../sys/libgslsys.la ../utils/libutils.la
 
-TESTS = test
+TESTS = $(check_PROGRAMS)
 check_PROGRAMS = test
 
 # benchmark_SOURCES = benchmark.c 

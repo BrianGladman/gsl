@@ -6,7 +6,7 @@ libgslderiv_la_SOURCES = deriv.c
 
 pkginclude_HEADERS = gsl_deriv.h
 
-TESTS = test
+TESTS = $(check_PROGRAMS)
 check_PROGRAMS = test #demo
 
 test_SOURCES = test.c

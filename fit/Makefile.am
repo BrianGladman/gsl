@@ -8,7 +8,7 @@ libgslfit_la_SOURCES = linear.c
 
 check_PROGRAMS = test #demo
 
-TESTS = test
+TESTS = $(check_PROGRAMS)
 
 test_SOURCES = test.c
 test_LDADD = libgslfit.la ../ieee-utils/libgslieeeutils.la ../err/libgslerr.la ../test/libgsltest.la ../utils/libutils.la ../sys/libgslsys.la

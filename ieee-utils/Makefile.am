@@ -8,7 +8,7 @@ noinst_HEADERS = fp-aix.c fp-darwin.c fp-hpux.c fp-hpux11.c fp-irix.c fp-gnum68k
 
 INCLUDES= -I$(top_builddir)
 
-TESTS = test
+TESTS = $(check_PROGRAMS)
 check_PROGRAMS = test
 test_LDADD = libgslieeeutils.la ../err/libgslerr.la ../test/libgsltest.la ../sys/libgslsys.la ../utils/libutils.la
 test_SOURCES = test.c

@@ -295,3 +295,5 @@ gsl_ran_hypergeometric_pdf
 
 * Rémi Butel <r.butel@epoc.u-bordeaux1.fr> fixes for multimin overflow
 conditions
+
+* Andris Pavenis <pavenis@latnet.lv> Makefile fix for EXEEXT

@@ -10,7 +10,7 @@ noinst_HEADERS = bsearch.h
 
 INCLUDES= -I$(top_builddir)
 
-TESTS = test
+TESTS = $(check_PROGRAMS)
 
 test_LDADD = libgslinterpolation.la ../poly/libgslpoly.la ../linalg/libgsllinalg.la ../permutation/libgslpermutation.la ../blas/libgslblas.la ../matrix/libgslmatrix.la ../vector/libgslvector.la ../block/libgslblock.la ../complex/libgslcomplex.la ../cblas/libgslcblas.la ../ieee-utils/libgslieeeutils.la  ../err/libgslerr.la ../test/libgsltest.la ../sys/libgslsys.la ../utils/libutils.la
 

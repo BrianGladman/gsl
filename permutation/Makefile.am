@@ -8,7 +8,7 @@ libgslpermutation_la_SOURCES = init.c file.c permutation.c permute.c canonical.c
 
 noinst_HEADERS = permute_source.c
 
-TESTS = test
+TESTS = $(check_PROGRAMS)
 
 check_PROGRAMS = test
 

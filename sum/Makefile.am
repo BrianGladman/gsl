@@ -6,7 +6,7 @@ INCLUDES= -I$(top_builddir)
 
 libgslsum_la_SOURCES = levin_u.c levin_utrunc.c work_u.c work_utrunc.c
 
-TESTS = test
+TESTS = $(check_PROGRAMS)
 
 check_PROGRAMS = test
 

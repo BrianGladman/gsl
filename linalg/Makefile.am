@@ -8,7 +8,7 @@ libgsllinalg_la_SOURCES = multiply.c exponential.c tridiag.c tridiag.h lu.c luc.
 
 noinst_HEADERS =  givens.c apply_givens.c svdstep.c tridiag.h 
 
-TESTS = test
+TESTS = $(check_PROGRAMS)
 
 check_PROGRAMS = test
 

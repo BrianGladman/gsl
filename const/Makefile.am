@@ -2,7 +2,7 @@ pkginclude_HEADERS = gsl_const.h gsl_const_cgs.h gsl_const_mks.h gsl_const_cgsm.
 
 INCLUDES= -I$(top_builddir)
 
-TESTS = test
+TESTS = $(check_PROGRAMS)
 
 check_PROGRAMS = test
 

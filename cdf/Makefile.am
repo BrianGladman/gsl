@@ -9,7 +9,7 @@ libgslcdf_la_SOURCES = beta.c cauchy.c cauchyinv.c chisq.c chisqinv.c exponentia
 
 noinst_HEADERS = beta_inc.c rat_eval.h test_auto.c
 
-TESTS = test
+TESTS = $(check_PROGRAMS)
 
 check_PROGRAMS = test
 

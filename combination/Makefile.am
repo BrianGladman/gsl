@@ -8,7 +8,7 @@ libgslcombination_la_SOURCES = init.c file.c combination.c
 
 noinst_HEADERS = 
 
-TESTS = test
+TESTS = $(check_PROGRAMS)
 
 check_PROGRAMS = test
 

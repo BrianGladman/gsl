@@ -6,7 +6,7 @@ pkginclude_HEADERS = gsl_block.h gsl_block_char.h gsl_block_complex.h gsl_block_
 
 INCLUDES= -I$(top_builddir) -I$(top_srcdir)
 
-TESTS = test
+TESTS = $(check_PROGRAMS)
 
 test_LDADD = libgslblock.la ../ieee-utils/libgslieeeutils.la ../err/libgslerr.la ../test/libgsltest.la ../sys/libgslsys.la ../utils/libutils.la
 

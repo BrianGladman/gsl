@@ -6,7 +6,7 @@ pkginclude_HEADERS = gsl_matrix.h gsl_matrix_char.h gsl_matrix_complex_double.h 
 
 INCLUDES= -I$(top_builddir) -I$(top_srcdir)
 
-TESTS = test test_static 
+TESTS = $(check_PROGRAMS) 
 
 test_LDADD = libgslmatrix.la ../vector/libgslvector.la ../block/libgslblock.la ../ieee-utils/libgslieeeutils.la  ../err/libgslerr.la ../test/libgsltest.la ../sys/libgslsys.la ../utils/libutils.la
 test_static_LDADD = libgslmatrix.la ../vector/libgslvector.la ../block/libgslblock.la ../ieee-utils/libgslieeeutils.la  ../err/libgslerr.la ../test/libgsltest.la ../sys/libgslsys.la ../utils/libutils.la

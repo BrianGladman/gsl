@@ -7,7 +7,7 @@ INCLUDES= -I$(top_builddir) -I$(top_srcdir)
 libgslsort_la_SOURCES = sort.c sortind.c sortvec.c sortvecind.c subset.c subsetind.c
 noinst_HEADERS = sortvec_source.c sortvecind_source.c subset_source.c subsetind_source.c test_source.c test_heapsort.c 
 
-TESTS = test
+TESTS = $(check_PROGRAMS)
 
 check_PROGRAMS = test
 

@@ -7,7 +7,7 @@ INCLUDES = -I$(top_srcdir)
 
 libgslcomplex_la_SOURCES = math.c
 
-TESTS = test
+TESTS = $(check_PROGRAMS)
 check_PROGRAMS = test
 
 test_SOURCES = test.c results.h results1.h results_real.h

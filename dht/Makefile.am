@@ -4,7 +4,7 @@ pkginclude_HEADERS = gsl_dht.h
 
 INCLUDES= -I$(top_builddir)
 
-TESTS = test
+TESTS = $(check_PROGRAMS)
 
 check_PROGRAMS = test
 

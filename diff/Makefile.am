@@ -6,7 +6,7 @@ libgsldiff_la_SOURCES = diff.c
 
 pkginclude_HEADERS = gsl_diff.h
 
-TESTS = test
+TESTS = $(check_PROGRAMS)
 check_PROGRAMS = test #demo
 
 test_SOURCES = test.c

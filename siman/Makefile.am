@@ -1,9 +1,10 @@
 ## Process this file with automake to produce Makefile.in
 
-check_PROGRAMS = test siman_tsp
+check_PROGRAMS = test 
+noinst_PROGRAMS = siman_tsp
 noinst_LTLIBRARIES = libgslsiman.la
 
-TESTS = test
+TESTS = $(check_PROGRAMS)
 EXTRA_DIST = siman_test_driver.sh
 
 test_SOURCES = test.c
@@ -15,9 +16,7 @@ siman_tsp_LDADD = libgslsiman.la ../rng/libgslrng.la ../ieee-utils/libgslieeeuti
 CLEANFILES = siman_test.out
 
 libgslsiman_la_SOURCES = siman.c
-
 pkginclude_HEADERS = gsl_siman.h
 
 INCLUDES= -I$(top_builddir)
-
 check_INCLUDES = -I. -I../rng -I../err

@@ -8,7 +8,7 @@ libgslpoly_la_SOURCES = dd.c eval.c solve_quadratic.c solve_cubic.c zsolve_quadr
 
 noinst_HEADERS = balance.c companion.c norm.c qr.c
 
-TESTS = test
+TESTS = $(check_PROGRAMS)
 
 check_PROGRAMS = test
 

@@ -6,7 +6,7 @@ pkginclude_HEADERS = gsl_vector.h gsl_vector_char.h gsl_vector_complex.h gsl_vec
 
 INCLUDES= -I$(top_builddir) -I$(top_srcdir)
 
-TESTS = test test_static
+TESTS = $(check_PROGRAMS)
 
 test_LDADD = libgslvector.la ../block/libgslblock.la ../ieee-utils/libgslieeeutils.la ../err/libgslerr.la ../test/libgsltest.la ../sys/libgslsys.la ../utils/libutils.la
 test_static_LDADD = libgslvector.la ../block/libgslblock.la ../ieee-utils/libgslieeeutils.la ../err/libgslerr.la ../test/libgsltest.la ../sys/libgslsys.la ../utils/libutils.la

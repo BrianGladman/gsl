@@ -9,7 +9,7 @@ libgslhistogram_la_SOURCES = add.c  get.c init.c params.c reset.c file.c pdf.c g
 noinst_HEADERS = urand.c find.c find2d.c
 
 check_PROGRAMS = test
-TESTS = test
+TESTS = $(check_PROGRAMS)
 
 EXTRA_DIST = urand.c
 
