@@ -1,12 +1,12 @@
 noinst_LTLIBRARIES = libgsldht.la 
 
-check_PROGRAMS = test
-
 pkginclude_HEADERS = gsl_dht.h
 
 INCLUDES= -I$(top_builddir)
 
-TESTS = test_dht
+TESTS = test
+
+check_PROGRAMS = test
 
 test_LDADD = libgsldht.la ../specfunc/libgslspecfunc.la ../sys/libgslsys.la ../err/libgslerr.la ../err/libgsltest.la ../utils/libutils.la
 
