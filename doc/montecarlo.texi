@@ -61,7 +61,7 @@ the variance @math{Var(f)}
 of the combined estimate @math{E(f) = @{1\over 2@} E_a(f) + @{1\over 2@} E_b(f)}
 is given by
 @equation
-  Var(f) = @{\sigma_a^2(f) \over 4 N_a@} + \sigma_b^2(f) \over 4 N_b@}
+  Var(f) = @{\sigma_a^2(f) \over 4 N_a@} + @{\sigma_b^2(f) \over 4 N_b@}
 @end equation
 This variance 
 is minimized (subject to the constrain that @math{N_a + N_b} is fixed) 
@@ -109,15 +109,14 @@ and similarly
 @equation
 Var_g(f; N) = Var(f/g; N)
 @end equation
-It is clear from this that if @math{g = |f|} then the variance
-vanishes.  This then it was what vegas attempts to do.  It
-makes several passes, histogramming @math{f}, and each time
-using the histogram to define the sampling distribution.  Since
-this basic idea again has the problem that the number of histogram
-bins grows like @math{K^d}.  The compromise that Vegas 
-(ie, Peter Lepage) is to assume that @math{g} factorizes: 
-@math{g(x_1, x_2, \ldots) = g_1(x_1) g_2(x_2) \ldots}
-so that the number of bins required is only @math{d K}.  
+It is clear from this that if @math{g = |f|} then the variance vanishes.
+This it was what Vegas attempts to do.  It makes several passes,
+histogramming @math{f}, and each time using the histogram to define the
+sampling distribution for the next pass.  This basic idea again has the
+problem that the number of histogram bins grows like @math{K^d}.  The
+compromise that Vegas (ie, Peter Lepage) adopts is to assume that
+@math{g} factorizes: @math{g(x_1, x_2, \ldots) = g_1(x_1) g_2(x_2)
+\ldots} so that the number of bins required is only @math{d K}.
 
 FIXME: There is more to say, but it will have to wait.
 
@@ -178,7 +177,7 @@ is no reason to expect that the variance should scale like @math{1/N} and
 so they allow the scaling to depend on @math{\alpha}
 @equation 
   Var(f) = @{\sigma_a \over N_a^\alpha @} + 
-               @{\sigma_b \over N_b^\alpha @}
+                @{\sigma_b \over N_b^\alpha @}
 @end equation
 @end deftypevr
 

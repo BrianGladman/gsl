@@ -71,6 +71,10 @@ by the Foundation.
 @address Theoretical Particle Physics Group, Los Alamos National Laboratory
 @address @email{jungman@@nnn.lanl.gov}
 @author
+@author Michael Booth
+@address Department of Physics and Astronomy, The Johns Hopkins University
+@address @email{booth@@planck.pha.jhu.edu} or @email{booth@@debian.org}
+@author
 
 @page
 @vskip 0pt plus 1filll
@@ -119,6 +123,7 @@ function library and numerical integration.
 * Vectors and Matrices::        
 * Histograms::                  
 * Numerical Integration::       
+* Monte Carlo Integration::     
 * The IEEE standard for floating-point arithmetic::  
 * Debugging Numerical Programs::  
 * Contributors to GSL::         
@@ -182,11 +187,15 @@ allowing wrappers to be written for very high level languages.
 @chapter Histograms
 @include histogram.texi
 
-@node Numerical Integration, The IEEE standard for floating-point arithmetic, Histograms, Top
+@node Numerical Integration, Monte Carlo Integration, Histograms, Top
 @chapter Numerical Integration
 @include integration.texi
 
-@node  The IEEE standard for floating-point arithmetic, Debugging Numerical Programs, Numerical Integration, Top
+@node Monte Carlo Integration, The IEEE standard for floating-point arithmetic, Numerical Integration, Top
+@chapter Monte Carlo Integration
+@include montecarlo.texi
+
+@node  The IEEE standard for floating-point arithmetic, Debugging Numerical Programs, Monte Carlo Integration, Top
 @chapter The IEEE standard for floating-point arithmetic
 @include ieee754.texi
 
