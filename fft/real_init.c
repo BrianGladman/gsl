@@ -116,12 +116,19 @@ FUNCTION(gsl_fft_real,alloc) (size_t n)
       GSL_ERROR_RETURN ("failed to allocate scratch space", GSL_ENOMEM, 0);
     }
 
-  w->trig = (gsl_complex *) malloc ((n / 2) * sizeof (gsl_complex));
-
-  if (w->trig == NULL)
+  if (n == 1) 
     {
-      GSL_ERROR_RETURN ("failed to allocate trigonometric lookup table", 
-			GSL_ENOMEM, 0);
+      w->trig = 0;
+    }
+  else
+    {
+      w->trig = (gsl_complex *) malloc ((n / 2) * sizeof (gsl_complex));
+      
+      if (w->trig == NULL)
+	{
+	  GSL_ERROR_RETURN ("failed to allocate trigonometric lookup table", 
+			    GSL_ENOMEM, 0);
+	}
     }
 
   return w;
