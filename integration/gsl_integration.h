@@ -53,6 +53,29 @@ gsl_integration_qaws_table_set (gsl_integration_qaws_table * t,
 void
 gsl_integration_qaws_table_free (gsl_integration_qaws_table * t);
 
+/* Workspace for QAWS integrator */
+
+typedef struct
+{
+  size_t i;
+  size_t n;
+  double w;
+  double L;
+  int sine;
+  double *chebmo;
+}
+gsl_integration_qawf_workspace;
+
+gsl_integration_qawf_workspace * 
+gsl_integration_qawf_workspace_alloc (double par, size_t n);
+
+int
+gsl_integration_qawf_workspace_set (gsl_integration_qawf_workspace * t,
+				    double par);
+
+void
+gsl_integration_qawf_workspace_free (gsl_integration_qawf_workspace * t);
+
 
 /* Definition of an integration rule */
 

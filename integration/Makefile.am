@@ -13,7 +13,8 @@ libgslintegration_a_SOURCES = \
 	err.c err.h \
 	workspace.c \
 	qcheb.c qawc.c \
-	qmomo.c qaws.c
+	qmomo.c qaws.c \
+	qmomof.c
 
 include_HEADERS = gsl_integration.h
 noinst_HEADERS = integration.h qpsrt.c qelg.c  qc25c.c qc25s.c

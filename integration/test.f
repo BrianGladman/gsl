@@ -345,6 +345,23 @@ c     do i=1,25
 c        write(6,4) i,alist(i),blist(i),rlist(i),elist(i),iord(i)
 c     enddo
 
+c     alpha = -0.5
+c     beta = -0.3
+c     integr = 4
+c     a = 0.0
+c     b = 1.0
+c     epsabs = 0.0
+c     epsrel = 1.0d-7
+c     limit = 1000
+c     print *, 'DQAGP'
+c     call dqawse(book458,a,b,alpha,beta,integr,epsabs,epsrel,limit,
+c    $     result, abserr, neval,ier,alist,blist,rlist,elist,
+c    $     iord,last)
+c     write(6,3) result, abserr, neval, ier, last
+c     do i=1,10
+c        write(6,4) i,alist(i),blist(i),rlist(i),elist(i),iord(i)
+c     enddo
+
       alpha = -0.5
       beta = -0.3
       integr = 4

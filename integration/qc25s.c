@@ -77,7 +77,6 @@ qc25s (gsl_function * f, double a, double b, double a1, double b1,
   else if (b1 == b && (t->beta != 0.0 || t->nu != 0))
     {
       double cheb12[13], cheb24[25];
-      double res12 = 0, res24 = 0;
       double factor = pow(0.5 * (b1 - a1), t->beta + 1.0);
 
       weighted_function.function = &fn_qaws_L;
