@@ -851,7 +851,7 @@ distribution with parameters @var{zeta} and @var{sigma}.
 @page
 @node The Chi-squared Distribution
 @section The Chi-squared Distribution
-The chi-squared distribution arises in statistics If @math{Y_i} are
+The chi-squared distribution arises in statistics.  If @math{Y_i} are
 @math{n} independent gaussian random variates with unit variance then the
 sum-of-squares,
 
