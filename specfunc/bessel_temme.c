@@ -139,9 +139,9 @@ gsl_sf_bessel_Y_temme(const double nu, const double x,
   }
 
   Ynu->val   = -sum0;
-  Ynu->err   = 8.0 * GSL_DBL_EPSILON * fabs(Ynu->val);
+  Ynu->err   = (2.0 + 0.5*k) * GSL_DBL_EPSILON * fabs(Ynu->val);
   Ynup1->val = -sum1 * 2.0/x;
-  Ynup1->err = 8.0 * GSL_DBL_EPSILON * fabs(Ynup1->val);
+  Ynup1->err = (2.0 + 0.5*k) * GSL_DBL_EPSILON * fabs(Ynup1->val);
 
   stat_iter = ( k >= max_iter ? GSL_EMAXITER : GSL_SUCCESS );
   return GSL_ERROR_SELECT_2(stat_iter, stat_g);

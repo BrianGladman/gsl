@@ -174,6 +174,11 @@ legendre_H3d_CF1(const int ell, const double lambda, const double coth_eta, doub
  * by continued fraction. Use the Gautschi (Euler)
  * equivalent series.
  */
+ /* FIXME: Maybe we have to worry about this. The a_k are
+  * not positive and there can be a blow-up. It happened
+  * for J_nu once or twice. Then we should probably use
+  * the method above.
+  */
 static
 int
 legendre_H3d_CF1_ser(const int ell, const double lambda, const double coth_eta, double * result)
@@ -229,13 +234,15 @@ gsl_sf_legendre_H3d_0_impl(const double lambda, const double eta, gsl_sf_result 
     if(eta > -0.5*GSL_LOG_DBL_EPSILON) {
       double f = 2.0 / lambda * exp(-eta);
       result->val  = f * s.val;
-      result->err  = fabs(f) * (fabs(s.val * GSL_DBL_EPSILON) + s.err);
+      result->err  = fabs(f * s.val) * (fabs(eta) + 1.0) * GSL_DBL_EPSILON;
+      result->err += fabs(f) * s.err;
       result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
     }
     else {
       double f = 1.0/(lambda*sinh(eta));
       result->val  = f * s.val;
-      result->err  = fabs(f) * (fabs(s.val * GSL_DBL_EPSILON) + s.err);
+      result->err  = fabs(f * s.val) * (fabs(eta) + 1.0) * GSL_DBL_EPSILON;
+      result->err += fabs(f) * s.err;
       result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
     }
     return GSL_SUCCESS;
@@ -313,6 +320,7 @@ gsl_sf_legendre_H3d_1_impl(const double lambda, const double eta, gsl_sf_result 
     term1 = cos_term;
     result->val  = pre * (term1 - term2);
     result->err  = pre * (sin_term_err * coth_term + cos_term_err);
+    result->err += pre * fabs(term1) * (fabs(eta) + 1.0) * GSL_DBL_EPSILON;
     result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
   }
@@ -370,12 +378,15 @@ gsl_sf_legendre_H3d_impl(const int ell, const double lambda, const double eta,
     else {
       double lnN;
       gsl_sf_result lnsh;
+      double ln_abslam;
       double lnpre_val, lnpre_err;
       int stat_e;
       gsl_sf_lnsinh_impl(eta, &lnsh);
       legendre_H3d_lnnorm(ell, lambda, &lnN);
-      lnpre_val  = 0.5*(M_LNPI + lnN - M_LN2 - lnsh.val) - log(abs_lam);
+      ln_abslam = log(abs_lam);
+      lnpre_val  = 0.5*(M_LNPI + lnN - M_LN2 - lnsh.val) - ln_abslam;
       lnpre_err  = lnsh.err;
+      lnpre_err += GSL_DBL_EPSILON * (0.5*(M_LNPI + M_LN2 + fabs(lnN)) + fabs(ln_abslam));
       lnpre_err += 2.0 * GSL_DBL_EPSILON * fabs(lnpre_val);
       stat_e = gsl_sf_exp_mult_err_impl(lnpre_val + lm, lnpre_err, P.val, 0.0, result);
       return GSL_ERROR_SELECT_2(stat_e, stat_P);
@@ -398,12 +409,15 @@ gsl_sf_legendre_H3d_impl(const int ell, const double lambda, const double eta,
     else {
       double lnN;
       gsl_sf_result lnsh;
+      double ln_abslam;
       double lnpre_val, lnpre_err;
       int stat_e;
       gsl_sf_lnsinh_impl(eta, &lnsh);
       legendre_H3d_lnnorm(ell, lambda, &lnN);
-      lnpre_val  = 0.5*(M_LNPI + lnN - M_LN2 - lnsh.val) - log(abs_lam);
+      ln_abslam = log(abs_lam);
+      lnpre_val  = 0.5*(M_LNPI + lnN - M_LN2 - lnsh.val) - ln_abslam;
       lnpre_err  = lnsh.err;
+      lnpre_err += GSL_DBL_EPSILON * (0.5*(M_LNPI + M_LN2 + fabs(lnN)) + fabs(ln_abslam));
       lnpre_err += 2.0 * GSL_DBL_EPSILON * fabs(lnpre_val);
       stat_e = gsl_sf_exp_mult_err_impl(lnpre_val + lm, lnpre_err, P.val, 0.0, result);
       return GSL_ERROR_SELECT_2(stat_e, stat_P);
@@ -438,8 +452,8 @@ gsl_sf_legendre_H3d_impl(const int ell, const double lambda, const double eta,
     else {
       gsl_sf_result H1;
       int stat_H1 = gsl_sf_legendre_H3d_1_impl(lambda, eta, &H1);
-      result->val = GSL_SQRT_DBL_MIN/Hlp1 * H1.val;
-      result->err = GSL_SQRT_DBL_MIN/Hlp1 * H1.err;
+      result->val  = GSL_SQRT_DBL_MIN/Hlp1 * H1.val;
+      result->err  = GSL_SQRT_DBL_MIN/Hlp1 * H1.err;
       result->err += GSL_DBL_EPSILON * ell * fabs(result->val);
       return GSL_ERROR_SELECT_2(stat_H1, stat_CF1);
     }

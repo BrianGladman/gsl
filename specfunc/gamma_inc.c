@@ -187,7 +187,7 @@ gamma_inc_Q_CF(const double a, const double x, gsl_sf_result * result)
 
   result->val  = D.val * (a/x) * sum;
   result->err  = D.err * fabs((a/x) * sum);
-  result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
+  result->err += GSL_DBL_EPSILON * (2.0 + 0.5*k) * fabs(result->val);
 
   if(k == kmax)
     return GSL_EMAXITER;

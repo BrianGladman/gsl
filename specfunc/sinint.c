@@ -309,7 +309,7 @@ static gsl_sf_cheb_series ci_cs = {
 
 int gsl_sf_Si_impl(const double x, gsl_sf_result * result)
 {
-  double ax   = fabs(x);
+  double ax = fabs(x);
   
   if(result == 0) {
     return GSL_EFAULT;
@@ -322,13 +322,13 @@ int gsl_sf_Si_impl(const double x, gsl_sf_result * result)
   else if(ax <= 4.0) {
     gsl_sf_result result_c;
     gsl_sf_cheb_eval_impl(&si_cs, (x*x-8.0)*0.125, &result_c);
-    result->val  = x * (0.75 + result_c.val);
-    result->err  = x * result_c.err;
-    result->err += GSL_DBL_EPSILON * fabs(result->val);
+    result->val  =  x * (0.75 + result_c.val);
+    result->err  = ax * result_c.err;
+    result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
   }
   else {
-    /* Note there is no loss pf precision
+    /* Note there is no loss of precision
      * here bcause of the leading constant.
      */
     gsl_sf_result f;
@@ -336,7 +336,7 @@ int gsl_sf_Si_impl(const double x, gsl_sf_result * result)
     fg_asymp(ax, &f, &g);
     result->val  = 0.5 * M_PI - f.val*cos(ax) - g.val*sin(ax);
     result->err  = f.err + g.err;
-    result->err += GSL_DBL_EPSILON * fabs(result->val);
+    result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
     if(x < 0.0) result->val = -result->val;
     return GSL_SUCCESS;
   }
@@ -359,26 +359,25 @@ int gsl_sf_Ci_impl(const double x, gsl_sf_result * result)
     gsl_sf_result result_c;
     gsl_sf_cheb_eval_impl(&ci_cs, y, &result_c);
     result->val  = lx - 0.5 + result_c.val;
-    result->err  = GSL_DBL_EPSILON * fabs(lx) + result_c.err;
-    result->err += GSL_DBL_EPSILON * fabs(result->val);
+    result->err  = 2.0 * GSL_DBL_EPSILON * (fabs(lx) + 0.5) + result_c.err;
+    result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
   }
   else {
-    /* In principle there is a possible loss of precision
-     * here in the trigonometric evaluation, due to the
-     * argument restriction. However, the argument is the
-     * given function argument, which is exact by assumption,
-     * so we do not account for it.
-     */
-    const double s = sin(x);
-    const double c = cos(x);
+    gsl_sf_result sin_result;
+    gsl_sf_result cos_result;
+    int stat_sin = gsl_sf_sin_impl(x, &sin_result);
+    int stat_cos = gsl_sf_cos_impl(x, &cos_result);
     gsl_sf_result f;
     gsl_sf_result g;
     fg_asymp(x, &f, &g);
-    result->val  = f.val*s - g.val*c;
-    result->err  = fabs(f.err*s) + fabs(g.err*c);
-    result->err += GSL_DBL_EPSILON*fabs(result->val);
-    return GSL_SUCCESS;
+    result->val  = f.val*sin_result.val - g.val*cos_result.val;
+    result->err  = fabs(f.err*sin_result.val);
+    result->err += fabs(g.err*cos_result.val);
+    result->err += fabs(f.val*sin_result.err);
+    result->err += fabs(g.val*cos_result.err);
+    result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
+    return GSL_ERROR_SELECT_2(stat_sin, stat_cos);
   }
 }
 

@@ -1104,10 +1104,20 @@ int gsl_sf_lngamma_impl(double x, gsl_sf_result * result)
     return GSL_EFAULT;
   }
   else if(fabs(x - 1.0) < 0.01) {
-    return lngamma_1_pade(x - 1.0, result);
+    /* Note that we must amplify the errors
+     * from the Pade evaluations because of
+     * the way we must pass the argument, i.e.
+     * writing (1-x) is a loss of precision
+     * when x is near 1.
+     */
+    int stat = lngamma_1_pade(x - 1.0, result);
+    result->err *= 1.0/(GSL_DBL_EPSILON + fabs(x - 1.0));
+    return stat;
   }
   else if(fabs(x - 2.0) < 0.01) {
-    return lngamma_2_pade(x - 2.0, result);
+    int stat = lngamma_2_pade(x - 2.0, result);
+    result->err *= 1.0/(GSL_DBL_EPSILON + fabs(x - 2.0));
+    return stat;
   }
   else if(x >= 0.5) {
     return lngamma_lanczos(x, result);

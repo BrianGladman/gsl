@@ -508,8 +508,9 @@ gsl_sf_psi_1piy_impl(const double y, gsl_sf_result * result)
     gsl_sf_result result_c;
     gsl_sf_cheb_eval_impl(&r1py_cs, x, &result_c);
     result->val  = result_c.val - M_EULER + v;
-    result->err  = result_c.err + GSL_DBL_EPSILON * fabs(v);
-    result->err += GSL_DBL_EPSILON * fabs(result->val);
+    result->err  = result_c.err;
+    result->err += GSL_DBL_EPSILON * (fabs(v) + M_EULER + fabs(result_c.val));
+    result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
   }
   else {
@@ -541,8 +542,8 @@ gsl_sf_psi_1piy_impl(const double y, gsl_sf_result * result)
 
     v = y2 * (sum + p);
     result->val  = -M_EULER + v;
-    result->err  = GSL_DBL_EPSILON * (M_EULER + v);
-    result->err += GSL_DBL_EPSILON * fabs(result->val);
+    result->err  = GSL_DBL_EPSILON * (M_EULER + fabs(v));
+    result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
   }
 }

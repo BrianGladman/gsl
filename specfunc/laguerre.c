@@ -31,9 +31,15 @@ laguerre_large_n(const int n, const double alpha, const double x,
   gsl_sf_result lnfact;
   int stat_lg = gsl_sf_lngamma_impl(b+n, &lg_b);
   int stat_lf = gsl_sf_lnfact_impl(n, &lnfact);
-  double lnpre = lg_b.val - lnfact.val + 0.5*x + 0.5*(1.0-b)*log(0.25*x*eta) - 0.25*log(pre_h);
-  double ser   = sin(a*M_PI) + sin(0.25*eta*(2.0*th - sin(2.0*th)) + 0.25*M_PI);
-  int stat_e = gsl_sf_exp_mult_impl(lnpre, ser, result);
+  double pre_term1 = 0.5*(1.0-b)*log(0.25*x*eta);
+  double pre_term2 = 0.25*log(pre_h);
+  double lnpre_val = lg_b.val - lnfact.val + 0.5*x + pre_term1 - pre_term2;
+  double lnpre_err = lg_b.err + lnfact.err + GSL_DBL_EPSILON * (fabs(pre_term1)+fabs(pre_term2));
+  double ser_term1 = sin(a*M_PI);
+  double ser_term2 = sin(0.25*eta*(2.0*th - sin(2.0*th)) + 0.25*M_PI);
+  double ser_val = ser_term1 + ser_term2;
+  double ser_err = GSL_DBL_EPSILON * (fabs(ser_term1) + fabs(ser_term2));
+  int stat_e = gsl_sf_exp_mult_err_impl(lnpre_val, lnpre_err, ser_val, ser_err, result);
   result->err += 2.0 * GSL_SQRT_DBL_EPSILON * fabs(result->val);
   return GSL_ERROR_SELECT_3(stat_e, stat_lf, stat_lg);
 }

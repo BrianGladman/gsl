@@ -5,6 +5,7 @@
 #include <gsl_math.h>
 #include <gsl_errno.h>
 #include "gsl_sf_bessel.h"
+#include "gsl_sf_exp.h"
 #include "gsl_sf_gamma.h"
 #include "gsl_sf_log.h"
 #include "gsl_sf_pow_int.h"
@@ -214,6 +215,11 @@ gsl_sf_legendre_Plm_impl(const int l, const int m, const double x, gsl_sf_result
     return GSL_EOVRFLW;
   }
   else {
+    /* Account for the error due to the
+     * representation of 1-x.
+     */
+    double err_amp = 1.0 / (GSL_DBL_EPSILON + fabs(1.0-fabs(x)));
+
     double pmm;                 /* P_m^m(x) */
     double pmmp1;               /* P_{m+1}^m(x) */
 
@@ -236,12 +242,12 @@ gsl_sf_legendre_Plm_impl(const int l, const int m, const double x, gsl_sf_result
 
     if(l == m){
       result->val = pmm;
-      result->err = 2.0 * GSL_DBL_EPSILON * fabs(pmm);
+      result->err = err_amp * 2.0 * GSL_DBL_EPSILON * fabs(pmm);
       return GSL_SUCCESS;
     }
     else if(l == m + 1) {
       result->val = pmmp1;
-      result->err = 2.0 * GSL_DBL_EPSILON * fabs(pmmp1);
+      result->err = err_amp * 2.0 * GSL_DBL_EPSILON * fabs(pmmp1);
       return GSL_SUCCESS;
     }
     else{
@@ -256,7 +262,7 @@ gsl_sf_legendre_Plm_impl(const int l, const int m, const double x, gsl_sf_result
       }
 
       result->val = p_ell;
-      result->err = (0.5*(l-m) + 1.0) * GSL_DBL_EPSILON * fabs(p_ell);
+      result->err = err_amp * (0.5*(l-m) + 1.0) * GSL_DBL_EPSILON * fabs(p_ell);
 
       return GSL_SUCCESS;
     }
@@ -378,17 +384,23 @@ gsl_sf_legendre_sphPlm_impl(const int l, int m, const double x, gsl_sf_result * 
      */
     gsl_sf_result lncirc;
     gsl_sf_result lnpoch;
-    double lnpre;
+    double lnpre_val;
+    double lnpre_err;
+    gsl_sf_result ex_pre;
+    double sr;
     double sgn = ( GSL_IS_ODD(m) ? -1.0 : 1.0);
     double ymm, ymmerr;
     double ymmp1_factor = x * sqrt(2.0*m + 3.0);
     double ymmp1;
     gsl_sf_log_1plusx_impl(-x*x, &lncirc);
     gsl_sf_lnpoch_impl(m, 0.5, &lnpoch);  /* Gamma(m+1/2)/Gamma(m) */
-    lnpre = -0.25*M_LNPI + 0.5 * (lnpoch.val + m*lncirc.val);
-    ymm   = sqrt((2.0+1.0/m)/(4.0*M_PI)) * sgn * exp(lnpre);
+    lnpre_val = -0.25*M_LNPI + 0.5 * (lnpoch.val + m*lncirc.val);
+    lnpre_err = 0.25*M_LNPI*GSL_DBL_EPSILON + 0.5 * (lnpoch.err + fabs(m)*lncirc.err);
+    gsl_sf_exp_err_impl(lnpre_val, lnpre_err, &ex_pre);
+    sr    = sqrt((2.0+1.0/m)/(4.0*M_PI));
+    ymm   = sgn * sr * ex_pre.val;
     ymmp1 = ymmp1_factor * ymm;
-    ymmerr = (lnpoch.err + fabs(m*lncirc.err)) * GSL_DBL_EPSILON * fabs(ymm);
+    ymmerr = 2.0 * GSL_DBL_EPSILON * fabs(ymm) + sr * ex_pre.err;
 
     if(l == m){
       result->val  = ymm;

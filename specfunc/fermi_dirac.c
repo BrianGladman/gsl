@@ -1003,8 +1003,10 @@ fd_asymp(const double j, const double x, gsl_sf_result * result)
   double xgam = 1.0;
   double add = DBL_MAX;
   double cos_term;
+  double ln_x;
   gsl_sf_result fneg;
-  gsl_sf_result exp_arg;
+  gsl_sf_result ex_arg;
+  gsl_sf_result ex;
   int stat_fneg;
   int stat_ser;
   int stat_e;
@@ -1022,10 +1024,13 @@ fd_asymp(const double j, const double x, gsl_sf_result * result)
   stat_ser = ( fabs(add) > locEPS*fabs(seqn) ? GSL_ELOSS : GSL_SUCCESS );
 
   stat_fneg = fd_neg(j, -x, &fneg);
-  stat_e    = gsl_sf_exp_impl((j+1.0)*log(x) - lg.val, &exp_arg);
+  ln_x = log(x);
+  ex_arg.val = (j+1.0)*ln_x - lg.val;
+  ex_arg.err = fabs((j+1.0)*ln_x) + lg.err + GSL_DBL_EPSILON * fabs(ex_arg.val);
+  stat_e    = gsl_sf_exp_err_impl(ex_arg.val, ex_arg.err, &ex);
   cos_term  = cos(j*M_PI);
-  result->val  = cos_term * fneg.val + 2.0 * seqn * exp_arg.val;
-  result->err  = fabs(2.0 * seqn) * exp_arg.err;
+  result->val  = cos_term * fneg.val + 2.0 * seqn * ex.val;
+  result->err  = fabs(2.0 * seqn) * ex.err;
   result->err += fabs(cos_term) * fneg.err;
   result->err += 4.0 * GSL_DBL_EPSILON * fabs(result->val);
   return GSL_ERROR_SELECT_4(stat_e, stat_ser, stat_fneg, stat_lg);

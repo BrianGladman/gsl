@@ -423,7 +423,7 @@ gsl_sf_bessel_JY_mu_restricted(const double mu, const double x,
       double c = 2.0*(mu+1.0)/x;
       Jmu->val  = c * Jmup1->val - Jmup2.val;
       Jmu->err  = c * Jmup1->err + Jmup2.err;
-      Jmu->err += GSL_DBL_EPSILON * fabs(Jmu->val);
+      Jmu->err += 2.0 * GSL_DBL_EPSILON * fabs(Jmu->val);
       stat_J = GSL_ERROR_SELECT_2(stat_J1, stat_J2);
       stat_Y = gsl_sf_bessel_Y_temme(mu, x, Ymu, Ymup1);
       return GSL_ERROR_SELECT_2(stat_J, stat_Y);
@@ -434,9 +434,9 @@ gsl_sf_bessel_JY_mu_restricted(const double mu, const double x,
       double J_sgn;
       const int stat_CF1 = gsl_sf_bessel_J_CF1(mu, x, &J_ratio, &J_sgn);
       const int stat_CF2 = gsl_sf_bessel_JY_steed_CF2(mu, x, &P, &Q);
-      double gamma = (P - J_ratio)/Q;
-      double f     = mu/x - J_ratio;
-      Jmu->val = J_sgn * sqrt(2.0/(M_PI*x) / (Q + gamma*(P-f)));
+      double Jprime_J_ratio = mu/x - J_ratio;
+      double gamma = (P - Jprime_J_ratio)/Q;
+      Jmu->val = J_sgn * sqrt(2.0/(M_PI*x) / (Q + gamma*(P-Jprime_J_ratio)));
       Jmu->err = 4.0 * GSL_DBL_EPSILON * fabs(Jmu->val);
       Jmup1->val = J_ratio * Jmu->val;
       Jmup1->err = fabs(J_ratio) * Jmu->err;
@@ -505,10 +505,10 @@ gsl_sf_bessel_J_CF1(const double nu, const double x,
     fn = An/Bn;
     del = old_fn/fn;
 
-    dn = 1.0 / (2.0/x - (nu+n-1.0)/(nu+n) * dn);
+    dn = 1.0 / (2.0*(nu+n)/x - dn);
     if(dn < 0.0) s = -s;
 
-    if(fabs(del - 1.0) < 4.0*GSL_DBL_EPSILON) break;
+    if(fabs(del - 1.0) < 2.0*GSL_DBL_EPSILON) break;
   }
 
   *ratio = fn;

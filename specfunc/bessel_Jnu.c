@@ -108,7 +108,7 @@ gsl_sf_bessel_Jnu_impl(const double nu, const double x, gsl_sf_result * result)
       }
 
       result->val = 2.0/(M_PI*x) / (Jnup1_Jnu*Yn - Ynp1);
-      result->err = GSL_DBL_EPSILON * (0.5*N + 2.0) * fabs(result->val);
+      result->err = GSL_DBL_EPSILON * (N + 2.0) * fabs(result->val);
       return GSL_ERROR_SELECT_2(stat_mu, stat_CF1);
     }
     else {
@@ -135,13 +135,13 @@ gsl_sf_bessel_Jnu_impl(const double nu, const double x, gsl_sf_result * result)
       }
       Jmup1_Jmu = Jnp1/Jn;
       sgn_Jmu   = GSL_SIGN(Jn);
-      Jmuprime_Jmu = nu/x - Jmup1_Jmu;
+      Jmuprime_Jmu = mu/x - Jmup1_Jmu;
 
       gamma = (P - Jmuprime_Jmu)/Q;
       Jmu   = sgn_Jmu * sqrt(2.0/(M_PI*x) / (Q + gamma*(P-Jmuprime_Jmu)));
 
       result->val = Jmu * (sgn_Jnu * GSL_SQRT_DBL_MIN) / Jn;
-      result->err = GSL_DBL_EPSILON * (0.5*N + 2.0) * fabs(result->val);
+      result->err = GSL_DBL_EPSILON * (N + 2.0) * fabs(result->val);
 
       return GSL_ERROR_SELECT_2(stat_CF2, stat_CF1);
     }

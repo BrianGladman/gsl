@@ -321,7 +321,7 @@ int gsl_sf_expint_E1_impl(const double x, gsl_sf_result * result)
     return GSL_EDOM;
   }
   else if(x <= 1.0) {
-    const double ln_term = -log(x);
+    const double ln_term = -log(fabs(x));
     gsl_sf_result result_c;
     gsl_sf_cheb_eval_impl(&E12_cs, x, &result_c);
     result->val  = ln_term - 0.6875 + x + result_c.val;

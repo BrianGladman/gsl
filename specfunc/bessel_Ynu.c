@@ -15,6 +15,7 @@
  *        Y_{nu+1} =  nu/x Y_nu - Y'_nu
  *       Y'_{nu+1} = -(nu+1)/x Y_{nu+1} + Y_nu
  */
+#if 0
 static
 int
 bessel_Y_recur(const double nu_min, const double x, const int kmax,
@@ -38,6 +39,7 @@ bessel_Y_recur(const double nu_min, const double x, const int kmax,
   *Yp_end = Yp_nu;
   return GSL_SUCCESS;
 }
+#endif
 
 
 /*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
@@ -60,8 +62,8 @@ gsl_sf_bessel_Ynu_impl(double nu, double x, gsl_sf_result * result)
     /* -1/2 <= mu <= 1/2 */
     int N = (int)(nu + 0.5);
     double mu = nu - N;
- 
-    double Ymu, Ymup1;
+
+    gsl_sf_result Y_mu, Y_mup1;
     int stat_mu;
     double Ynm1;
     double Yn;
@@ -74,33 +76,28 @@ gsl_sf_bessel_Ynu_impl(double nu, double x, gsl_sf_result * result)
        * be handled by a call to gsl_sf_bessel_JY_mu_restricted(),
        * as below.
        */
-      gsl_sf_result Y_mu, Y_mup1;
       stat_mu = gsl_sf_bessel_Y_temme(mu, x, &Y_mu, &Y_mup1);
-      Ymu   = Y_mu.val;
-      Ymup1 = Y_mup1.val;
     }
     else {
       /* Determine Ymu, Ymup1 and Jmu, Jmup1.
        */
-      gsl_sf_result Y_mu, Y_mup1;
       gsl_sf_result J_mu, J_mup1;
       stat_mu = gsl_sf_bessel_JY_mu_restricted(mu, x, &J_mu, &J_mup1, &Y_mu, &Y_mup1);
-      Ymu   = Y_mu.val;
-      Ymup1 = Y_mup1.val;
     }
 
     /* Forward recursion to get Ynu, Ynup1.
      */
-    Ynm1 = Ymu;
-    Yn   = Ymup1;
+    Ynm1 = Y_mu.val;
+    Yn   = Y_mup1.val;
     for(n=1; n<=N; n++) {
       Ynp1 = 2.0*(mu+n)/x * Yn - Ynm1;
       Ynm1 = Yn;
       Yn   = Ynp1;
     }
 
-    result->val = Ynm1; /* Y_nu */
-    result->err = GSL_DBL_EPSILON * (0.5*N + 2.0) * fabs(Ynm1);
+    result->val  = Ynm1; /* Y_nu */
+    result->err  = (N + 1.0) * fabs(Ynm1) * (fabs(Y_mu.err/Y_mu.val) + fabs(Y_mup1.err/Y_mup1.val));
+    result->err += 2.0 * GSL_DBL_EPSILON * fabs(Ynm1);
 
     return stat_mu;
   }

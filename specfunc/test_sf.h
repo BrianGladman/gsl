@@ -31,7 +31,7 @@ do {                                                                            
   int _tsf_status = func args;                                              	  \
   _tsf_local_s |= test_sf_check_result(message_buff, r, val_in, tol);             \
   _tsf_local_s |= test_sf_check_return(message_buff, _tsf_status, expect_return); \
-  gsl_test(_tsf_local_s, #func #args);                                        	  \
+  gsl_test(_tsf_local_s, "  " #func #args);                                        	  \
   if(_tsf_local_s != 0) {                                                         \
     printf("  %s %d\n", __FILE__, __LINE__);                                        \
     printf("%s", message_buff);                                                   \
@@ -49,7 +49,7 @@ do {                                                                        	  \
   _tsf_local_s |= test_sf_check_result(message_buff, r1, val1, tol1);	          \
   _tsf_local_s |= test_sf_check_result(message_buff, r2, val2, tol2);	          \
   _tsf_local_s |= test_sf_check_return(message_buff, _tsf_status, expect_return); \
-  gsl_test(_tsf_local_s, #func #args);                                        	  \
+  gsl_test(_tsf_local_s, "  " #func #args);                                        	  \
   if(_tsf_local_s != 0) {                                                         \
     printf("  %s %d\n", __FILE__, __LINE__);                                        \
     printf("%s", message_buff);                                                   \
@@ -71,7 +71,7 @@ do {                                                                            
   _tsf_local_s |= test_sf_check_result(message_buff, r, val_in, tol);             \
   _tsf_local_s |= test_sf_check_result(message_buff, _tsf_local_r, expect_sgn, 0.0); \
   _tsf_local_s |= test_sf_check_return(message_buff, _tsf_status, expect_return); \
-  gsl_test(_tsf_local_s, #func #args);                                        	  \
+  gsl_test(_tsf_local_s, "  " #func #args);                                        	  \
   if(_tsf_local_s != 0) {                                                         \
     printf("  %s %d\n", __FILE__, __LINE__);                                        \
     printf("%s", message_buff);                                                   \
