@@ -1,0 +1,4 @@
+Wed Mar 15 11:17:21 2000  Brian Gough  <bjg@network-theory.co.uk>
+
+	* gsl_complex.h: moved into complex/ subdirectory from top-level
+

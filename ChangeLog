@@ -1,3 +1,7 @@
+Wed Mar 15 11:16:14 2000  Brian Gough  <bjg@network-theory.co.uk>
+
+	* added a directory for complex number support, complex/
+
 Tue Mar 14 10:28:43 2000  Brian Gough  <bjg@network-theory.co.uk>
 
 	* added support for including headers in C++ programs using
