@@ -336,7 +336,7 @@ main (void)
   printf("\n");
 
   printf("inverse permutation:");  
-  gsl_permutation_invert (q, p);
+  gsl_permutation_inverse (q, p);
   gsl_permutation_fprintf (stdout, q, " %u");
   printf("\n");
 
