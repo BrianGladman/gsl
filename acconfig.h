@@ -1,5 +1,4 @@
 @BOTTOM@
-
 /* Define if you have inline */
 #undef HAVE_INLINE
 
