@@ -7,7 +7,7 @@ noinst_LIBRARIES = gsl_statistics
 
 LDADD = libgsl_statistics.a -lm
 
-gsl_statistics_SOURCES = mean.c
+gsl_statistics_SOURCES = mean.c ttest.c
 
 jtest_SOURCES = jtest.c
 

@@ -1,6 +1,6 @@
 \input texinfo @c -*-texinfo-*-
 @c %**start of header
-@setfilename GSL.info
+@setfilename gsl.info
 @settitle GNU Scientific Library
 @finalout
 @c @setchapternewpage odd
@@ -9,7 +9,7 @@
 @ifinfo
 @format
 START-INFO-DIR-ENTRY
-* GSL: (GSL).                           The GNU Scientific Library
+* gsl: (gsl).                           The GNU Scientific Library
 END-INFO-DIR-ENTRY
 @end format
 @end ifinfo
@@ -45,7 +45,7 @@ by the Foundation.
 
 @titlepage
 @title GNU Scientific Library
-@subtitle Edition @value{EDITION}, for GSL Version @value{VERSION}
+@subtitle Edition @value{EDITION}, for gsl Version @value{VERSION}
 @subtitle @value{UPDATED}
 @author by Mark Galassi
 
@@ -348,10 +348,53 @@ None have been contributed yet.
 
 @node Reference manual, Concept Index, Examples of the existing routines, Top
 @chapter Reference manual
+
+
+@menu
+* Statistics::                  
+* Simulated annealing::         
+@end menu
+
+@node Statistics, Simulated annealing, Reference manual, Reference manual
+@section Statistics
+@cindex statistics
+@cindex mean
+@cindex standard deviation
+@cindex variance
+
+The following commands were created primarily to be used for statistics 
+for Psychology.
+
+@deftypefn Statistics double dmean (double *array, int size)
+@code{dmean} returns the mean of an array of doubles.
+@end deftypefn
+
+@deftypefn Statistics double imean (int *array, int size)
+@code{imean} returns the mean of an array of integers.
+@end deftypefn
+
+@deftypefn Statistics double dvariance (double *array, int size)
+@code{dvariance} returns the variance of an array of doubles.
+@end deftypefn
+
+@deftypefn Statistics double ivariance (int *array, int size)
+@code{ivariance} returns the variance of an array of integers.
+@end deftypefn
+
+@deftypefn Statistics double dsd (double *array, int size)
+@code{dsd} returns the standard deviation of an array of doubles.
+@end deftypefn
+
+@deftypefn Statistics double isd (int *array, int size)
+@code{isd} returns the standard deviation of an array of integers.
+@end deftypefn
+
+@node Simulated annealing,  , Statistics, Reference manual
+@section Simulated annealing
 @cindex simulated annealing
 @cindex combinatorial searches
 
-@deftp {Union} Element
+@deftp {Simulated annealing} Union Element
 Element is a union.  Each field in the union describes one of the
 possible spaces through which the simulated annealing package can
 search.
@@ -373,11 +416,11 @@ typedef union u_Element Element;
 @end deftp
 
 
-@deftypefun void siman_solve (Element *x0_p, double (*Efunc)(Element x), void (*take_step)(Element *x_p, double step_size), double distance(Element x, Element y), void print_position(Element x), Ssiman_params params)
+@deftypefn {Simulated annealing} void siman_solve (Element *x0_p, double (*Efunc)(Element x), void (*take_step)(Element *x_p, double step_size), double distance(Element x, Element y), void print_position(Element x), Ssiman_params params)
 
 Does a @emph{simulated annealing} search through a given space (defined
 by the type @code{Element}).
-@end deftypefun
+@end deftypefn
 
 
 
