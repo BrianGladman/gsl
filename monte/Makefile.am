@@ -4,7 +4,7 @@
 
 noinst_LIBRARIES = libgslmonte.a 
 
-libgslmonte_a_SOURCES = vegas.c vegas-print.c vegas_print.h miser.c plain.c gsl_monte_vegas.h gsl_monte_miser.h gsl_monte_plain.h gsl_monte.h utils.c source.h init_source.c
+libgslmonte_a_SOURCES = vegas.c vegas-print.c vegas_print.h miser.c plain.c gsl_monte_vegas.h gsl_monte_miser.h gsl_monte_plain.h gsl_monte.h utils.c utils.h source.h init_source.c
 
 check_PROGRAMS = vegas_test miser_test plain_test
 

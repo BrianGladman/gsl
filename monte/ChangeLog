@@ -1,3 +1,8 @@
+Fri Aug 14 10:12:06 1998  Brian Gough  <bjg@vvv.lanl.gov>
+
+	* Makefile.am: I needed to add utils.h to libgslmonte_a_SOURCES to
+ 	get it to work with my automake
+
 Thu Jul 30 17:31:29 1998  booth  <booth@planck.pha.jhu.edu>
 
 	* gsl_monte_miser.h, miser.c:
