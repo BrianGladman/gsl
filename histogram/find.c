@@ -43,7 +43,7 @@ find (const size_t n, const double range[], const double x, size_t * i)
 #ifdef LINEAR_OPT
   {
     double u =  (x - range[0]) / (range[n] - range[0]);
-    i_linear = u * n;
+    i_linear = (size_t) (u * n);
   }
 
   if (x >= range[i_linear] && x < range[i_linear + 1])

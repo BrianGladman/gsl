@@ -50,7 +50,7 @@ FUNCTION(gsl_fft_complex,radix2_inverse) (TYPE(gsl_complex_packed_array) data,
   /* normalize inverse fft with 1/n */
 
   {
-    const double norm = 1.0 / n;
+    const ATOMIC norm = 1.0 / n;
     size_t i;
     for (i = 0; i < n; i++)
       {
@@ -104,14 +104,14 @@ FUNCTION(gsl_fft_complex,radix2_transform) (TYPE(gsl_complex_packed_array) data,
 
   for (bit = 0; bit < logn; bit++)
     {
-      double w_real = 1.0;
-      double w_imag = 0.0;
+      ATOMIC w_real = 1.0;
+      ATOMIC w_imag = 0.0;
 
       const double theta = 2.0 * ((int) sign) * M_PI / (2.0 * (double) dual);
 
-      const double s = sin (theta);
-      const double t = sin (theta / 2.0);
-      const double s2 = 2.0 * t * t;
+      const ATOMIC s = sin (theta);
+      const ATOMIC t = sin (theta / 2.0);
+      const ATOMIC s2 = 2.0 * t * t;
 
       size_t a, b;
 
@@ -122,11 +122,11 @@ FUNCTION(gsl_fft_complex,radix2_transform) (TYPE(gsl_complex_packed_array) data,
 	  const size_t i = b ;
 	  const size_t j = b + dual;
 	  
-	  const double z1_real = REAL(data,stride,j) ;
-	  const double z1_imag = IMAG(data,stride,j) ;
+	  const ATOMIC z1_real = REAL(data,stride,j) ;
+	  const ATOMIC z1_imag = IMAG(data,stride,j) ;
 
-	  const double wd_real = z1_real ;
-	  const double wd_imag = z1_imag ;
+	  const ATOMIC wd_real = z1_real ;
+	  const ATOMIC wd_imag = z1_imag ;
 	  
 	  REAL(data,stride,j) = REAL(data,stride,i) - wd_real;
 	  IMAG(data,stride,j) = IMAG(data,stride,i) - wd_imag;
@@ -142,8 +142,8 @@ FUNCTION(gsl_fft_complex,radix2_transform) (TYPE(gsl_complex_packed_array) data,
 	  /* trignometric recurrence for w-> exp(i theta) w */
 
 	  {
-	    const double tmp_real = w_real - s * w_imag - s2 * w_real;
-	    const double tmp_imag = w_imag + s * w_real - s2 * w_imag;
+	    const ATOMIC tmp_real = w_real - s * w_imag - s2 * w_real;
+	    const ATOMIC tmp_imag = w_imag + s * w_real - s2 * w_imag;
 	    w_real = tmp_real;
 	    w_imag = tmp_imag;
 	  }
@@ -153,11 +153,11 @@ FUNCTION(gsl_fft_complex,radix2_transform) (TYPE(gsl_complex_packed_array) data,
 	      const size_t i = b + a;
 	      const size_t j = b + a + dual;
 
-	      const double z1_real = REAL(data,stride,j) ;
-	      const double z1_imag = IMAG(data,stride,j) ;
+	      const ATOMIC z1_real = REAL(data,stride,j) ;
+	      const ATOMIC z1_imag = IMAG(data,stride,j) ;
 	      
-	      const double wd_real = w_real * z1_real - w_imag * z1_imag;
-	      const double wd_imag = w_real * z1_imag + w_imag * z1_real;
+	      const ATOMIC wd_real = w_real * z1_real - w_imag * z1_imag;
+	      const ATOMIC wd_imag = w_real * z1_imag + w_imag * z1_real;
 
 	      REAL(data,stride,j) = REAL(data,stride,i) - wd_real;
 	      IMAG(data,stride,j) = IMAG(data,stride,i) - wd_imag;
@@ -209,7 +209,7 @@ FUNCTION(gsl_fft_complex,radix2_dif_inverse) (TYPE(gsl_complex_packed_array) dat
   /* normalize inverse fft with 1/n */
 
   {
-    const double norm = 1.0 / n;
+    const ATOMIC norm = 1.0 / n;
     size_t i;
     for (i = 0; i < n; i++)
       {
@@ -257,14 +257,14 @@ FUNCTION(gsl_fft_complex,radix2_dif_transform) (TYPE(gsl_complex_packed_array) d
 
   for (bit = 0; bit < logn; bit++)
     {
-      double w_real = 1.0;
-      double w_imag = 0.0;
+      ATOMIC w_real = 1.0;
+      ATOMIC w_imag = 0.0;
 
       const double theta = 2.0 * ((int) sign) * M_PI / ((double) (2 * dual));
 
-      const double s = sin (theta);
-      const double t = sin (theta / 2.0);
-      const double s2 = 2.0 * t * t;
+      const ATOMIC s = sin (theta);
+      const ATOMIC t = sin (theta / 2.0);
+      const ATOMIC s2 = 2.0 * t * t;
 
       size_t a, b;
 
@@ -275,10 +275,10 @@ FUNCTION(gsl_fft_complex,radix2_dif_transform) (TYPE(gsl_complex_packed_array) d
 	      const size_t i = b + a;
 	      const size_t j = b + a + dual;
 	      
-	      const double t1_real = REAL(data,stride,i) + REAL(data,stride,j);
-	      const double t1_imag = IMAG(data,stride,i) + IMAG(data,stride,j);
-	      const double t2_real = REAL(data,stride,i) - REAL(data,stride,j);
-	      const double t2_imag = IMAG(data,stride,i) - IMAG(data,stride,j);
+	      const ATOMIC t1_real = REAL(data,stride,i) + REAL(data,stride,j);
+	      const ATOMIC t1_imag = IMAG(data,stride,i) + IMAG(data,stride,j);
+	      const ATOMIC t2_real = REAL(data,stride,i) - REAL(data,stride,j);
+	      const ATOMIC t2_imag = IMAG(data,stride,i) - IMAG(data,stride,j);
 
 	      REAL(data,stride,i) = t1_real;
 	      IMAG(data,stride,i) = t1_imag;
@@ -289,8 +289,8 @@ FUNCTION(gsl_fft_complex,radix2_dif_transform) (TYPE(gsl_complex_packed_array) d
 	  /* trignometric recurrence for w-> exp(i theta) w */
 
 	  {
-	    const double tmp_real = w_real - s * w_imag - s2 * w_real;
-	    const double tmp_imag = w_imag + s * w_real - s2 * w_imag;
+	    const ATOMIC tmp_real = w_real - s * w_imag - s2 * w_real;
+	    const ATOMIC tmp_imag = w_imag + s * w_real - s2 * w_imag;
 	    w_real = tmp_real;
 	    w_imag = tmp_imag;
 	  }

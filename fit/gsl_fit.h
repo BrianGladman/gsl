@@ -37,7 +37,7 @@ __BEGIN_DECLS
 
 int gsl_fit_linear (const double * x, const size_t xstride,
                     const double * y, const size_t ystride,
-                    size_t n,
+                    const size_t n,
                     double * c0, double * c1, 
                     double * cov00, double * cov01, double * cov11, 
                     double * sumsq);
@@ -46,21 +46,21 @@ int gsl_fit_linear (const double * x, const size_t xstride,
 int gsl_fit_wlinear (const double * x, const size_t xstride,
                      const double * w, const size_t wstride,
                      const double * y, const size_t ystride,
-                     size_t n,
+                     const size_t n,
                      double * c0, double * c1, 
                      double * cov00, double * cov01, double * cov11, 
                      double * chisq);
 
 int
-gsl_fit_linear_est (double x, 
-                    double c0, double c1, 
-                    double c00, double c01, double c11,
+gsl_fit_linear_est (const double x, 
+                    const double c0, const double c1, 
+                    const double c00, const double c01, const double c11,
                     double *y, double *y_err);
 
 
 int gsl_fit_mul (const double * x, const size_t xstride,
                  const double * y, const size_t ystride,
-                 size_t n,
+                 const size_t n,
                  double * c1, 
                  double * cov11, 
                  double * sumsq);
@@ -68,16 +68,16 @@ int gsl_fit_mul (const double * x, const size_t xstride,
 int gsl_fit_wmul (const double * x, const size_t xstride,
                   const double * w, const size_t wstride,
                   const double * y, const size_t ystride,
-                  size_t n,
+                  const size_t n,
                   double * c1, 
                   double * cov11, 
                   double * sumsq);
 
 
 int
-gsl_fit_mul_est (double x, 
-                 double c1, 
-                 double c11,
+gsl_fit_mul_est (const double x, 
+                 const double c1, 
+                 const double c11,
                  double *y, double *y_err);
 
 

@@ -36,9 +36,7 @@
 
 __BEGIN_DECLS
 
-typedef struct gsl_matrix_int_struct gsl_matrix_int;
-
-struct gsl_matrix_int_struct
+typedef struct 
 {
   size_t size1;
   size_t size2;
@@ -46,7 +44,9 @@ struct gsl_matrix_int_struct
   int * data;
   gsl_block_int * block;
   int owner;
-} ;
+} gsl_matrix_int;
+
+/* typedef struct gsl_matrix_int_struct gsl_matrix_int;*/
 
 gsl_matrix_int * 
 gsl_matrix_int_alloc (const size_t n1, const size_t n2);
@@ -128,14 +128,14 @@ int gsl_matrix_int_transpose (gsl_matrix_int * m);
 int gsl_matrix_int_transpose_memcpy (gsl_matrix_int * dest, const gsl_matrix_int * src);
 
 
-gsl_matrix_int gsl_matrix_int_submatrix (gsl_matrix_int * m, size_t i, size_t j, size_t n1, size_t n2);
-gsl_vector_int gsl_matrix_int_row (gsl_matrix_int * m, size_t i);
-gsl_vector_int gsl_matrix_int_column (gsl_matrix_int * m, size_t j);
+gsl_matrix_int gsl_matrix_int_submatrix (gsl_matrix_int * m, const size_t i, const size_t j, const size_t n1, const size_t n2);
+gsl_vector_int gsl_matrix_int_row (gsl_matrix_int * m, const size_t i);
+gsl_vector_int gsl_matrix_int_column (gsl_matrix_int * m, const size_t j);
 gsl_vector_int gsl_matrix_int_diagonal (gsl_matrix_int * m);
 
-const gsl_matrix_int gsl_matrix_int_const_submatrix (const gsl_matrix_int * m, size_t i, size_t j, size_t n1, size_t n2);
-const gsl_vector_int gsl_matrix_int_const_row (const gsl_matrix_int * m, size_t i);
-const gsl_vector_int gsl_matrix_int_const_column (const gsl_matrix_int * m, size_t j);
+const gsl_matrix_int gsl_matrix_int_const_submatrix (const gsl_matrix_int * m, const size_t i, const size_t j, const size_t n1, const size_t n2);
+const gsl_vector_int gsl_matrix_int_const_row (const gsl_matrix_int * m, const size_t i);
+const gsl_vector_int gsl_matrix_int_const_column (const gsl_matrix_int * m, const size_t j);
 const gsl_vector_int gsl_matrix_int_const_diagonal (const gsl_matrix_int * m);
 
 int gsl_matrix_int_max (const gsl_matrix_int * m);

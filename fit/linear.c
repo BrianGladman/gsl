@@ -38,9 +38,9 @@
 */
 
 int
-gsl_fit_linear (const double *x, size_t xstride,
-		const double *y, size_t ystride,
-		size_t n,
+gsl_fit_linear (const double *x, const size_t xstride,
+		const double *y, const size_t ystride,
+		const size_t n,
 		double *c0, double *c1,
 		double *cov_00, double *cov_01, double *cov_11, double *sumsq)
 {
@@ -112,7 +112,7 @@ int
 gsl_fit_wlinear (const double *x, size_t xstride,
 		 const double *w, size_t wstride,
 		 const double *y, size_t ystride,
-		 size_t n,
+		 const size_t n,
 		 double *c0, double *c1,
 		 double *cov_00, double *cov_01, double *cov_11,
 		 double *chisq)
@@ -194,9 +194,9 @@ gsl_fit_wlinear (const double *x, size_t xstride,
 
 
 int
-gsl_fit_linear_est (double x,
-		    double c0, double c1,
-		    double c00, double c01, double c11,
+gsl_fit_linear_est (const double x,
+		    const double c0, const double c1,
+		    const double c00, const double c01, const double c11,
 		    double *y, double *y_err)
 {
   *y = c0 + c1 * x;
@@ -206,9 +206,10 @@ gsl_fit_linear_est (double x,
 
 
 int
-gsl_fit_mul (const double *x, size_t xstride,
-	     const double *y, size_t ystride,
-	     size_t n, double *c1, double *cov_11, double *sumsq)
+gsl_fit_mul (const double *x, const size_t xstride,
+	     const double *y, const size_t ystride,
+	     const size_t n, 
+             double *c1, double *cov_11, double *sumsq)
 {
   double m_x = 0, m_y = 0, m_dx2 = 0, m_dxdy = 0;
 
@@ -262,7 +263,8 @@ int
 gsl_fit_wmul (const double *x, size_t xstride,
 	      const double *w, size_t wstride,
 	      const double *y, size_t ystride,
-	      size_t n, double *c1, double *cov_11, double *chisq)
+	      const size_t n, 
+              double *c1, double *cov_11, double *chisq)
 {
 
   /* compute the weighted means and weighted deviations from the means */
@@ -334,7 +336,9 @@ gsl_fit_wmul (const double *x, size_t xstride,
 }
 
 int
-gsl_fit_mul_est (double x, double c1, double c11, double *y, double *y_err)
+gsl_fit_mul_est (const double x, 
+                 const double c1, const double c11, 
+                 double *y, double *y_err)
 {
   *y = c1 * x;
   *y_err = sqrt (c11) * fabs (x);

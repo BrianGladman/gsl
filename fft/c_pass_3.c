@@ -37,11 +37,11 @@ FUNCTION(fft_complex,pass_3) (const BASE in[],
   const size_t product_1 = product / factor;
   const size_t jump = (factor - 1) * product_1;
 
-  const double tau = sqrt (3.0) / 2.0;
+  const ATOMIC tau = sqrt (3.0) / 2.0;
 
   for (k = 0; k < q; k++)
     {
-      double w1_real, w1_imag, w2_real, w2_imag;
+      ATOMIC w1_real, w1_imag, w2_real, w2_imag;
 
       if (k == 0)
 	{
@@ -72,38 +72,38 @@ FUNCTION(fft_complex,pass_3) (const BASE in[],
 
       for (k1 = 0; k1 < product_1; k1++)
 	{
-	  const double z0_real = REAL(in,istride,i);
-	  const double z0_imag = IMAG(in,istride,i);
-	  const double z1_real = REAL(in,istride,i+m);
-	  const double z1_imag = IMAG(in,istride,i+m);
-	  const double z2_real = REAL(in,istride,i+2*m);
-	  const double z2_imag = IMAG(in,istride,i+2*m);
+	  const ATOMIC z0_real = REAL(in,istride,i);
+	  const ATOMIC z0_imag = IMAG(in,istride,i);
+	  const ATOMIC z1_real = REAL(in,istride,i+m);
+	  const ATOMIC z1_imag = IMAG(in,istride,i+m);
+	  const ATOMIC z2_real = REAL(in,istride,i+2*m);
+	  const ATOMIC z2_imag = IMAG(in,istride,i+2*m);
 
 	  /* compute x = W(3) z */
 
 	  /* t1 = z1 + z2 */
-	  const double t1_real = z1_real + z2_real;
-	  const double t1_imag = z1_imag + z2_imag;
+	  const ATOMIC t1_real = z1_real + z2_real;
+	  const ATOMIC t1_imag = z1_imag + z2_imag;
 	  
 	  /* t2 = z0 - t1/2 */
-	  const double t2_real = z0_real - t1_real / 2.0;
-	  const double t2_imag = z0_imag - t1_imag / 2.0;
+	  const ATOMIC t2_real = z0_real - t1_real / 2.0;
+	  const ATOMIC t2_imag = z0_imag - t1_imag / 2.0;
 	  
 	  /* t3 = (+/-) sin(pi/3)*(z1 - z2) */
-	  const double t3_real = ((int) sign) * tau * (z1_real - z2_real);
-	  const double t3_imag = ((int) sign) * tau * (z1_imag - z2_imag);
+	  const ATOMIC t3_real = ((int) sign) * tau * (z1_real - z2_real);
+	  const ATOMIC t3_imag = ((int) sign) * tau * (z1_imag - z2_imag);
 	  
 	  /* x0 = z0 + t1 */
-	  const double x0_real = z0_real + t1_real;
-	  const double x0_imag = z0_imag + t1_imag;
+	  const ATOMIC x0_real = z0_real + t1_real;
+	  const ATOMIC x0_imag = z0_imag + t1_imag;
 	  
 	  /* x1 = t2 + i t3 */
-	  const double x1_real = t2_real - t3_imag;
-	  const double x1_imag = t2_imag + t3_real;
+	  const ATOMIC x1_real = t2_real - t3_imag;
+	  const ATOMIC x1_imag = t2_imag + t3_real;
 	  
 	  /* x2 = t2 - i t3 */
-	  const double x2_real = t2_real + t3_imag;
-	  const double x2_imag = t2_imag - t3_real;
+	  const ATOMIC x2_real = t2_real + t3_imag;
+	  const ATOMIC x2_imag = t2_imag - t3_real;
 
 	  /* apply twiddle factors */
 

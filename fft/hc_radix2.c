@@ -41,7 +41,7 @@ FUNCTION(gsl_fft_halfcomplex,radix2_inverse) (BASE data[],
   /* normalize inverse fft with 1/n */
 
   {
-    const double norm = 1.0 / n;
+    const ATOMIC norm = 1.0 / n;
     size_t i;
     for (i = 0; i < n; i++)
       {
@@ -92,11 +92,11 @@ FUNCTION(gsl_fft_halfcomplex,radix2_transform) (BASE data[],
 
       for (b = 0; b < q; b++)
 	{
-	  const double z0 = VECTOR(data,stride,b*p);
-	  const double z1 = VECTOR(data,stride,b*p + p_1);
+	  const ATOMIC z0 = VECTOR(data,stride,b*p);
+	  const ATOMIC z1 = VECTOR(data,stride,b*p + p_1);
 	  
-	  const double t0_real = z0 + z1 ;
-	  const double t1_real = z0 - z1 ;
+	  const ATOMIC t0_real = z0 + z1 ;
+	  const ATOMIC t1_real = z0 - z1 ;
 	  
 	  VECTOR(data,stride,b*p) = t0_real;
 	  VECTOR(data,stride,b*p + p_1) = t1_real ;
@@ -105,42 +105,42 @@ FUNCTION(gsl_fft_halfcomplex,radix2_transform) (BASE data[],
       /* a = 1 ... p_{i-1}/2 - 1 */
 
       {
-	double w_real = 1.0;
-	double w_imag = 0.0;
+	ATOMIC w_real = 1.0;
+	ATOMIC w_imag = 0.0;
 
-	const double theta = 2.0 * M_PI / p;
+	const ATOMIC theta = 2.0 * M_PI / p;
 	
-	const double s = sin (theta);
-	const double t = sin (theta / 2.0);
-	const double s2 = 2.0 * t * t;
+	const ATOMIC s = sin (theta);
+	const ATOMIC t = sin (theta / 2.0);
+	const ATOMIC s2 = 2.0 * t * t;
 	
 	for (a = 1; a < (p_1)/2; a++)
 	  {
 	    /* trignometric recurrence for w-> exp(i theta) w */
 	    
 	    {
-	      const double tmp_real = w_real - s * w_imag - s2 * w_real;
-	      const double tmp_imag = w_imag + s * w_real - s2 * w_imag;
+	      const ATOMIC tmp_real = w_real - s * w_imag - s2 * w_real;
+	      const ATOMIC tmp_imag = w_imag + s * w_real - s2 * w_imag;
 	      w_real = tmp_real;
 	      w_imag = tmp_imag;
 	    }
 	    
 	    for (b = 0; b < q; b++)
 	      {
-		double z0_real = VECTOR(data,stride,b*p + a) ;
-		double z0_imag = VECTOR(data,stride,b*p + p - a) ;
-		double z1_real = VECTOR(data,stride,b*p + p_1 - a) ;
-		double z1_imag = -VECTOR(data,stride,b*p + p_1 + a) ;
+		ATOMIC z0_real = VECTOR(data,stride,b*p + a) ;
+		ATOMIC z0_imag = VECTOR(data,stride,b*p + p - a) ;
+		ATOMIC z1_real = VECTOR(data,stride,b*p + p_1 - a) ;
+		ATOMIC z1_imag = -VECTOR(data,stride,b*p + p_1 + a) ;
 		
 		/* t0 = z0 + z1 */
 		
-		double t0_real = z0_real + z1_real;
-		double t0_imag = z0_imag + z1_imag;
+		ATOMIC t0_real = z0_real + z1_real;
+		ATOMIC t0_imag = z0_imag + z1_imag;
 		
 		/* t1 = (z0 - z1) */
 		
-		double t1_real = z0_real -  z1_real;
-		double t1_imag = z0_imag -  z1_imag;
+		ATOMIC t1_real = z0_real -  z1_real;
+		ATOMIC t1_imag = z0_imag -  z1_imag;
 		
 		VECTOR(data,stride,b*p + a) = t0_real ;
 		VECTOR(data,stride,b*p + p_1 - a) = t0_imag ;

@@ -36,9 +36,7 @@
 
 __BEGIN_DECLS
 
-typedef struct gsl_matrix_float_struct gsl_matrix_float;
-
-struct gsl_matrix_float_struct
+typedef struct 
 {
   size_t size1;
   size_t size2;
@@ -46,7 +44,9 @@ struct gsl_matrix_float_struct
   float * data;
   gsl_block_float * block;
   int owner;
-} ;
+} gsl_matrix_float;
+
+/* typedef struct gsl_matrix_float_struct gsl_matrix_float;*/
 
 gsl_matrix_float * 
 gsl_matrix_float_alloc (const size_t n1, const size_t n2);
@@ -128,14 +128,14 @@ int gsl_matrix_float_transpose (gsl_matrix_float * m);
 int gsl_matrix_float_transpose_memcpy (gsl_matrix_float * dest, const gsl_matrix_float * src);
 
 
-gsl_matrix_float gsl_matrix_float_submatrix (gsl_matrix_float * m, size_t i, size_t j, size_t n1, size_t n2);
-gsl_vector_float gsl_matrix_float_row (gsl_matrix_float * m, size_t i);
-gsl_vector_float gsl_matrix_float_column (gsl_matrix_float * m, size_t j);
+gsl_matrix_float gsl_matrix_float_submatrix (gsl_matrix_float * m, const size_t i, const size_t j, const size_t n1, const size_t n2);
+gsl_vector_float gsl_matrix_float_row (gsl_matrix_float * m, const size_t i);
+gsl_vector_float gsl_matrix_float_column (gsl_matrix_float * m, const size_t j);
 gsl_vector_float gsl_matrix_float_diagonal (gsl_matrix_float * m);
 
-const gsl_matrix_float gsl_matrix_float_const_submatrix (const gsl_matrix_float * m, size_t i, size_t j, size_t n1, size_t n2);
-const gsl_vector_float gsl_matrix_float_const_row (const gsl_matrix_float * m, size_t i);
-const gsl_vector_float gsl_matrix_float_const_column (const gsl_matrix_float * m, size_t j);
+const gsl_matrix_float gsl_matrix_float_const_submatrix (const gsl_matrix_float * m, const size_t i, const size_t j, const size_t n1, const size_t n2);
+const gsl_vector_float gsl_matrix_float_const_row (const gsl_matrix_float * m, const size_t i);
+const gsl_vector_float gsl_matrix_float_const_column (const gsl_matrix_float * m, const size_t j);
 const gsl_vector_float gsl_matrix_float_const_diagonal (const gsl_matrix_float * m);
 
 float gsl_matrix_float_max (const gsl_matrix_float * m);

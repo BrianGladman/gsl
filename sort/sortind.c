@@ -20,7 +20,7 @@
 
 #include <config.h>
 #include <stdlib.h>
-#include <gsl_heapsort.h>
+#include <gsl/gsl_heapsort.h>
 
 static inline void downheap (size_t * p, const void *data, const size_t size, const size_t N, size_t k, gsl_comparison_fn_t compare);
 

@@ -24,8 +24,8 @@
 #define IN_FORMAT "%lg"
 #define OUT_FORMAT "%g"
 #define ATOMIC_IO ATOMIC
-#define ZERO {{0,0}}
-#define ONE {{1,0}}
+#define ZERO {{0.0,0.0}}
+#define ONE {{1.0,0.0}}
 
 #elif defined(BASE_GSL_COMPLEX_FLOAT)
 #define BASE gsl_complex_float
@@ -35,8 +35,8 @@
 #define IN_FORMAT "%g"
 #define OUT_FORMAT "%g"
 #define ATOMIC_IO ATOMIC
-#define ZERO {{0,0}}
-#define ONE {{1,0}}
+#define ZERO {{0.0F,0.0F}}
+#define ONE {{1.0F,0.0F}}
 
 #elif defined(BASE_LONG_DOUBLE)
 #define BASE long double
@@ -58,8 +58,8 @@
 #define IN_FORMAT "%lg"
 #define OUT_FORMAT "%g"
 #define ATOMIC_IO ATOMIC
-#define ZERO 0
-#define ONE 1
+#define ZERO 0.0
+#define ONE 1.0
 #define BASE_EPSILON GSL_DBL_EPSILON
 
 #elif defined(BASE_FLOAT)
@@ -70,8 +70,8 @@
 #define IN_FORMAT "%g"
 #define OUT_FORMAT "%g"
 #define ATOMIC_IO ATOMIC
-#define ZERO 0
-#define ONE 1
+#define ZERO 0.0F
+#define ONE 1.0F
 #define BASE_EPSILON GSL_FLT_EPSILON
 
 #elif defined(BASE_ULONG)

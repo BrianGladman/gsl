@@ -37,9 +37,7 @@
 
 __BEGIN_DECLS
 
-typedef struct gsl_matrix_complex_struct gsl_matrix_complex;
-
-struct gsl_matrix_complex_struct 
+typedef struct 
 {
   size_t size1;
   size_t size2;
@@ -47,8 +45,9 @@ struct gsl_matrix_complex_struct
   double * data;
   gsl_block_complex * block;
   int owner;
-} ;
+} gsl_matrix_complex ;
 
+/* typedef struct gsl_matrix_complex_struct gsl_matrix_complex; */
 
 gsl_matrix_complex * 
 gsl_matrix_complex_alloc (const size_t n1, const size_t n2);
@@ -133,9 +132,9 @@ gsl_vector_complex gsl_matrix_complex_row (gsl_matrix_complex * m, const size_t 
 gsl_vector_complex gsl_matrix_complex_column (gsl_matrix_complex * m, const size_t j);
 gsl_vector_complex gsl_matrix_complex_diagonal (gsl_matrix_complex * m);
 
-const gsl_matrix_complex gsl_matrix_complex_const_submatrix (const gsl_matrix_complex * m, size_t i, size_t j, size_t n1, size_t n2);
-const gsl_vector_complex gsl_matrix_complex_const_row (const gsl_matrix_complex * m, size_t i);
-const gsl_vector_complex gsl_matrix_complex_const_column (const gsl_matrix_complex * m, size_t j);
+const gsl_matrix_complex gsl_matrix_complex_const_submatrix (const gsl_matrix_complex * m, const size_t i, const size_t j, const size_t n1, const size_t n2);
+const gsl_vector_complex gsl_matrix_complex_const_row (const gsl_matrix_complex * m, const size_t i);
+const gsl_vector_complex gsl_matrix_complex_const_column (const gsl_matrix_complex * m, const size_t j);
 const gsl_vector_complex gsl_matrix_complex_const_diagonal (const gsl_matrix_complex * m);
 
 int gsl_matrix_complex_isnull (const gsl_matrix_complex * m);

@@ -59,7 +59,7 @@ FUNCTION(gsl_fft_complex,inverse) (TYPE(gsl_complex_packed_array) data,
   /* normalize inverse fft with 1/n */
 
   {
-    const double norm = 1.0 / n;
+    const ATOMIC norm = ONE / (ATOMIC)n;
     size_t i;
     for (i = 0; i < n; i++)
       {

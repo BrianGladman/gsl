@@ -34,7 +34,7 @@ FUNCTION(fft_real,pass_6) (const BASE from[], BASE to[],
   size_t from0, from1, from2, from3, from4;
   size_t to0, to1, to2, to3, to4;
 
-  double tau = sqrt (3.0) / 2.0;
+  ATOMIC tau = sqrt (3.0) / 2.0;
 
   i = 0;
   j = 0;
@@ -54,78 +54,78 @@ FUNCTION(fft_real,pass_6) (const BASE from[], BASE to[],
       const size_t from4 = from3 + m;
       const size_t from5 = from4 + m;
 
-      const double z0_real = VECTOR(in,istride,from0);
-      const double z1_real = VECTOR(in,istride,from1);
-      const double z2_real = VECTOR(in,istride,from2);
-      const double z3_real = VECTOR(in,istride,from3);
-      const double z4_real = VECTOR(in,istride,from4);
-      const double z5_real = VECTOR(in,istride,from5);
+      const ATOMIC z0_real = VECTOR(in,istride,from0);
+      const ATOMIC z1_real = VECTOR(in,istride,from1);
+      const ATOMIC z2_real = VECTOR(in,istride,from2);
+      const ATOMIC z3_real = VECTOR(in,istride,from3);
+      const ATOMIC z4_real = VECTOR(in,istride,from4);
+      const ATOMIC z5_real = VECTOR(in,istride,from5);
 
       /* compute x = W(6) z */
       /* W(6) is a combination of sums and differences of W(3) acting
          on the even and odd elements of z */
 
       /* ta1 = z2 + z4 */
-      const double ta1.real = z2.real + z4.real;
+      const ATOMIC ta1.real = z2.real + z4.real;
 
       /* ta2 = z0 - ta1/2 */
-      const double ta2.real = z0.real - ta1.real / 2;
+      const ATOMIC ta2.real = z0.real - ta1.real / 2;
 
       /* ta3 = (+/-) sin(pi/3)*(z2 - z4) */
-      const double ta3.real = tau * (z2.real - z4.real);
+      const ATOMIC ta3.real = tau * (z2.real - z4.real);
 
       /* a0 = z0 + ta1 */
-      const double a0.real = z0.real + ta1.real;
+      const ATOMIC a0.real = z0.real + ta1.real;
 
       /* a1 = ta2 + i ta3 */
-      const double a1.real = ta2.real - ta3.imag;
+      const ATOMIC a1.real = ta2.real - ta3.imag;
 
       /* a2 = ta2 - i ta3 */
-      const double a2.real = ta2.real + ta3.imag;
+      const ATOMIC a2.real = ta2.real + ta3.imag;
 
       /* tb1 = z5 + z1 */
-      const double tb1.real = z5.real + z1.real;
+      const ATOMIC tb1.real = z5.real + z1.real;
 
       /* tb2 = z3 - tb1/2 */
-      const double tb2.real = z3.real - tb1.real / 2;
+      const ATOMIC tb2.real = z3.real - tb1.real / 2;
 
       /* tb3 = -sin(pi/3)*(z5 - z1) */
-      const double tb3.real = -tau * (z5.real - z1.real);
+      const ATOMIC tb3.real = -tau * (z5.real - z1.real);
 
       /* b0 = z3 + tb1 */
-      const double b0.real = z3.real + tb1.real;
+      const ATOMIC b0.real = z3.real + tb1.real;
 
       /* b1 = tb2 + i tb3 */
-      const double b1.real = tb2.real;
-      const double b1.imag = tb3.real;
+      const ATOMIC b1.real = tb2.real;
+      const ATOMIC b1.imag = tb3.real;
 
       /* b2 = tb2 - i tb3 */
-      const double b2.real = tb2.real;
-      const double b2.imag = -tb3.real;
+      const ATOMIC b2.real = tb2.real;
+      const ATOMIC b2.imag = -tb3.real;
 
       /* x0 = a0 + b0 */
-      const double x0.real = a0.real + b0.real;
-      const double x0.imag = a0.imag + b0.imag;
+      const ATOMIC x0.real = a0.real + b0.real;
+      const ATOMIC x0.imag = a0.imag + b0.imag;
 
       /* x4 = a1 + b1 */
-      const double x4.real = a1.real + b1.real;
-      const double x4.imag = a1.imag + b1.imag;
+      const ATOMIC x4.real = a1.real + b1.real;
+      const ATOMIC x4.imag = a1.imag + b1.imag;
 
       /* x2 = a2 + b2 */
-      const double x2.real = a2.real + b2.real;
-      const double x2.imag = a2.imag + b2.imag;
+      const ATOMIC x2.real = a2.real + b2.real;
+      const ATOMIC x2.imag = a2.imag + b2.imag;
 
       /* x3 = a0 - b0 */
-      const double x3.real = a0.real - b0.real;
-      const double x3.imag = a0.imag - b0.imag;
+      const ATOMIC x3.real = a0.real - b0.real;
+      const ATOMIC x3.imag = a0.imag - b0.imag;
 
       /* x1 = a1 - b1 */
-      const double x1.real = a1.real - b1.real;
-      const double x1.imag = a1.imag - b1.imag;
+      const ATOMIC x1.real = a1.real - b1.real;
+      const ATOMIC x1.imag = a1.imag - b1.imag;
 
       /* x5 = a2 - b2 */
-      const double x5.real = a2.real - b2.real;
-      const double x5.imag = a2.imag - b2.imag;
+      const ATOMIC x5.real = a2.real - b2.real;
+      const ATOMIC x5.imag = a2.imag - b2.imag;
 
       const size_t to0 = product * k1;
       const size_t to1 = to0 + 2 * product_1 - 1;
@@ -281,8 +281,8 @@ FUNCTION(fft_real,pass_6) (const BASE from[], BASE to[],
 
   for (k1 = 0; k1 < q; k1++)
     {
-      double x0, x1, x2, x3, x4;
-      double t1, t2, t3, t4, t5, t6, t7;
+      ATOMIC x0, x1, x2, x3, x4;
+      ATOMIC t1, t2, t3, t4, t5, t6, t7;
 
       from0 = k1 * product_1 + product_1 - 1;
       from1 = from0 + m;

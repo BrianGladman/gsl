@@ -40,7 +40,7 @@ FUNCTION(fft_complex,pass_4) (const BASE in[],
 
   for (k = 0; k < q; k++)
     {
-      double w1_real, w1_imag, w2_real, w2_imag, w3_real, w3_imag;
+      ATOMIC w1_real, w1_imag, w2_real, w2_imag, w3_real, w3_imag;
 
       if (k == 0)
 	{
@@ -77,48 +77,48 @@ FUNCTION(fft_complex,pass_4) (const BASE in[],
 
       for (k1 = 0; k1 < p_1; k1++)
 	{
-	  const double z0_real = REAL(in,istride,i);
-	  const double z0_imag = IMAG(in,istride,i);
-	  const double z1_real = REAL(in,istride,i+m);
-	  const double z1_imag = IMAG(in,istride,i+m);
-	  const double z2_real = REAL(in,istride,i+2*m);
-	  const double z2_imag = IMAG(in,istride,i+2*m);
-	  const double z3_real = REAL(in,istride,i+3*m);
-	  const double z3_imag = IMAG(in,istride,i+3*m);
+	  const ATOMIC z0_real = REAL(in,istride,i);
+	  const ATOMIC z0_imag = IMAG(in,istride,i);
+	  const ATOMIC z1_real = REAL(in,istride,i+m);
+	  const ATOMIC z1_imag = IMAG(in,istride,i+m);
+	  const ATOMIC z2_real = REAL(in,istride,i+2*m);
+	  const ATOMIC z2_imag = IMAG(in,istride,i+2*m);
+	  const ATOMIC z3_real = REAL(in,istride,i+3*m);
+	  const ATOMIC z3_imag = IMAG(in,istride,i+3*m);
 
 	  /* compute x = W(4) z */
 	  
 	  /* t1 = z0 + z2 */
-	  const double t1_real = z0_real + z2_real;
-	  const double t1_imag = z0_imag + z2_imag;
+	  const ATOMIC t1_real = z0_real + z2_real;
+	  const ATOMIC t1_imag = z0_imag + z2_imag;
 	  
 	  /* t2 = z1 + z3 */
-	  const double t2_real = z1_real + z3_real;
-	  const double t2_imag = z1_imag + z3_imag;
+	  const ATOMIC t2_real = z1_real + z3_real;
+	  const ATOMIC t2_imag = z1_imag + z3_imag;
 	  
 	  /* t3 = z0 - z2 */
-	  const double t3_real = z0_real - z2_real;
-	  const double t3_imag = z0_imag - z2_imag;
+	  const ATOMIC t3_real = z0_real - z2_real;
+	  const ATOMIC t3_imag = z0_imag - z2_imag;
 	  
 	  /* t4 = (+/-) (z1 - z3) */
-	  const double t4_real = ((int) sign) * (z1_real - z3_real);
-	  const double t4_imag = ((int) sign) * (z1_imag - z3_imag);
+	  const ATOMIC t4_real = ((int) sign) * (z1_real - z3_real);
+	  const ATOMIC t4_imag = ((int) sign) * (z1_imag - z3_imag);
 
 	    /* x0 = t1 + t2 */
-	  const double x0_real = t1_real + t2_real;
-	  const double x0_imag = t1_imag + t2_imag;
+	  const ATOMIC x0_real = t1_real + t2_real;
+	  const ATOMIC x0_imag = t1_imag + t2_imag;
 
 	    /* x1 = t3 + i t4 */
-	  const double x1_real = t3_real - t4_imag;
-	  const double x1_imag = t3_imag + t4_real;
+	  const ATOMIC x1_real = t3_real - t4_imag;
+	  const ATOMIC x1_imag = t3_imag + t4_real;
 
 	    /* x2 = t1 - t2 */
-	  const double x2_real = t1_real - t2_real;
-	  const double x2_imag = t1_imag - t2_imag;
+	  const ATOMIC x2_real = t1_real - t2_real;
+	  const ATOMIC x2_imag = t1_imag - t2_imag;
 
 	    /* x3 = t3 - i t4 */
-	  const double x3_real = t3_real + t4_imag;
-	  const double x3_imag = t3_imag - t4_real;
+	  const ATOMIC x3_real = t3_real + t4_imag;
+	  const ATOMIC x3_imag = t3_imag - t4_real;
 
 	  /* apply twiddle factors */
 

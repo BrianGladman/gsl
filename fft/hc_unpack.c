@@ -34,8 +34,8 @@ FUNCTION(gsl_fft_halfcomplex,unpack) (const BASE halfcomplex_coefficient[],
 
   for (i = 1; i < n - i; i++)
     {
-      const double hc_real = halfcomplex_coefficient[(2 * i - 1) * stride];
-      const double hc_imag = halfcomplex_coefficient[2 * i * stride];
+      const ATOMIC hc_real = halfcomplex_coefficient[(2 * i - 1) * stride];
+      const ATOMIC hc_imag = halfcomplex_coefficient[2 * i * stride];
 
       REAL(complex_coefficient,stride,i) = hc_real;
       IMAG(complex_coefficient,stride,i) = hc_imag;
@@ -70,8 +70,8 @@ FUNCTION(gsl_fft_halfcomplex,radix2_unpack) (const BASE halfcomplex_coefficient[
 
   for (i = 1; i < n - i; i++)
     {
-      const double hc_real = halfcomplex_coefficient[i * stride];
-      const double hc_imag = halfcomplex_coefficient[(n - i) * stride];
+      const ATOMIC hc_real = halfcomplex_coefficient[i * stride];
+      const ATOMIC hc_imag = halfcomplex_coefficient[(n - i) * stride];
 
       REAL(complex_coefficient,stride,i) = hc_real;
       IMAG(complex_coefficient,stride,i) = hc_imag;

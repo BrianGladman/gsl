@@ -36,9 +36,7 @@
 
 __BEGIN_DECLS
 
-typedef struct gsl_matrix_struct gsl_matrix;
-
-struct gsl_matrix_struct
+typedef struct 
 {
   size_t size1;
   size_t size2;
@@ -46,7 +44,9 @@ struct gsl_matrix_struct
   double * data;
   gsl_block * block;
   int owner;
-} ;
+} gsl_matrix;
+
+/* typedef struct gsl_matrix_struct gsl_matrix;*/
 
 gsl_matrix * 
 gsl_matrix_alloc (const size_t n1, const size_t n2);
@@ -128,14 +128,14 @@ int gsl_matrix_transpose (gsl_matrix * m);
 int gsl_matrix_transpose_memcpy (gsl_matrix * dest, const gsl_matrix * src);
 
 
-gsl_matrix gsl_matrix_submatrix (gsl_matrix * m, size_t i, size_t j, size_t n1, size_t n2);
-gsl_vector gsl_matrix_row (gsl_matrix * m, size_t i);
-gsl_vector gsl_matrix_column (gsl_matrix * m, size_t j);
+gsl_matrix gsl_matrix_submatrix (gsl_matrix * m, const size_t i, const size_t j, const size_t n1, const size_t n2);
+gsl_vector gsl_matrix_row (gsl_matrix * m, const size_t i);
+gsl_vector gsl_matrix_column (gsl_matrix * m, const size_t j);
 gsl_vector gsl_matrix_diagonal (gsl_matrix * m);
 
-const gsl_matrix gsl_matrix_const_submatrix (const gsl_matrix * m, size_t i, size_t j, size_t n1, size_t n2);
-const gsl_vector gsl_matrix_const_row (const gsl_matrix * m, size_t i);
-const gsl_vector gsl_matrix_const_column (const gsl_matrix * m, size_t j);
+const gsl_matrix gsl_matrix_const_submatrix (const gsl_matrix * m, const size_t i, const size_t j, const size_t n1, const size_t n2);
+const gsl_vector gsl_matrix_const_row (const gsl_matrix * m, const size_t i);
+const gsl_vector gsl_matrix_const_column (const gsl_matrix * m, const size_t j);
 const gsl_vector gsl_matrix_const_diagonal (const gsl_matrix * m);
 
 double gsl_matrix_max (const gsl_matrix * m);

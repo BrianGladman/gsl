@@ -1,3 +1,8 @@
+Tue May  1 23:09:25 2001  Brian Gough  <bjg@network-theory.co.uk>
+
+	* gsl_matrix_float.h (struct ): MS VC++ requires that the
+ 	struct/typedef be made with a single definition
+
 Mon Mar 26 20:33:45 2001  Brian Gough  <bjg@network-theory.co.uk>
 
 	* view_source.c: split view functions out into a separate file

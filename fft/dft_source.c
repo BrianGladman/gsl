@@ -49,7 +49,7 @@ FUNCTION(gsl_dft_complex,inverse) (const BASE data[],
   /* normalize inverse fft with 1/n */
 
   {
-    const double norm = 1.0 / n;
+    const ATOMIC norm = ONE / (ATOMIC)n;
     size_t i;
     for (i = 0; i < n; i++)
       {
@@ -75,8 +75,8 @@ FUNCTION(gsl_dft_complex,transform) (const BASE data[],
 
   for (i = 0; i < n; i++)
     {
-      double sum_real = 0;
-      double sum_imag = 0;
+      ATOMIC sum_real = 0;
+      ATOMIC sum_imag = 0;
 
       exponent = 0;
 
@@ -85,11 +85,11 @@ FUNCTION(gsl_dft_complex,transform) (const BASE data[],
 	  double theta = d_theta * (double) exponent;
 	  /* sum = exp(i theta) * data[j] */
 
-	  double w_real = cos (theta);
-	  double w_imag = sin (theta);
+	  ATOMIC w_real = (ATOMIC) cos (theta);
+	  ATOMIC w_imag = (ATOMIC) sin (theta);
 
-	  double data_real = REAL(data,stride,j);
-	  double data_imag = IMAG(data,stride,j);
+	  ATOMIC data_real = REAL(data,stride,j);
+	  ATOMIC data_imag = IMAG(data,stride,j);
 
 	  sum_real += w_real * data_real - w_imag * data_imag;
 	  sum_imag += w_real * data_imag + w_imag * data_real;

@@ -19,7 +19,7 @@
 
 #include <config.h>
 #include <stdlib.h>
-#include <gsl_heapsort.h>
+#include <gsl/gsl_heapsort.h>
 
 static inline void swap (void *base, size_t size, size_t i, size_t j);
 static inline void downheap (void *data, const size_t size, const size_t N, size_t k, gsl_comparison_fn_t compare);

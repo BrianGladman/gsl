@@ -18,42 +18,42 @@
  */
 
 QUALIFIED_TYPE(gsl_matrix)
-FUNCTION (gsl_matrix, submatrix) (QUALIFIED_TYPE(gsl_matrix) * matrix, 
+FUNCTION (gsl_matrix, submatrix) (QUALIFIED_TYPE(gsl_matrix) * m, 
                                   const size_t i, const size_t j,
-                                  const size_t m, const size_t n)
+                                  const size_t n1, const size_t n2)
 {
   TYPE(gsl_matrix) s = {0, 0, 0, 0, 0};
 
-  if (i >= matrix->size1)
+  if (i >= m->size1)
     {
       GSL_ERROR_VAL ("row index is out of range", GSL_EINVAL, s);
     }
-  else if (j >= matrix->size2)
+  else if (j >= m->size2)
     {
       GSL_ERROR_VAL ("column index is out of range", GSL_EINVAL, s);
     }
-  else if (m == 0)
+  else if (n1 == 0)
     {
       GSL_ERROR_VAL ("first dimension must be non-zero", GSL_EINVAL, s);
     }
-  else if (n == 0)
+  else if (n2 == 0)
     {
       GSL_ERROR_VAL ("second dimension must be non-zero", GSL_EINVAL, s);
     }
-  else if (i + m > matrix->size1)
+  else if (i + n1 > m->size1)
     {
       GSL_ERROR_VAL ("first dimension overflows matrix", GSL_EINVAL, s);
     }
-  else if (j + n > matrix->size2)
+  else if (j + n2 > m->size2)
     {
       GSL_ERROR_VAL ("second dimension overflows matrix", GSL_EINVAL, s);
     }
 
-  s.data = matrix->data + MULTIPLICITY * (i * matrix->tda + j);
-  s.size1 = m;
-  s.size2 = n;
-  s.tda = matrix->tda;
-  s.block = matrix->block;
+  s.data = m->data + MULTIPLICITY * (i * m->tda + j);
+  s.size1 = n1;
+  s.size2 = n2;
+  s.tda = m->tda;
+  s.block = m->block;
   s.owner = 0;
 
   return s;

@@ -38,7 +38,7 @@ FUNCTION(fft_complex,pass_2) (const BASE in[],
 
   for (k = 0; k < q; k++)
     {
-      double w_real, w_imag;
+      ATOMIC w_real, w_imag;
 
       if (k == 0)
 	{
@@ -63,21 +63,21 @@ FUNCTION(fft_complex,pass_2) (const BASE in[],
 
       for (k1 = 0; k1 < product_1; k1++)
 	{
-	  const double z0_real = REAL(in,istride,i);
-	  const double z0_imag = IMAG(in,istride,i);
+	  const ATOMIC z0_real = REAL(in,istride,i);
+	  const ATOMIC z0_imag = IMAG(in,istride,i);
 
-	  const double z1_real = REAL(in,istride,i+m);
-	  const double z1_imag = IMAG(in,istride,i+m);
+	  const ATOMIC z1_real = REAL(in,istride,i+m);
+	  const ATOMIC z1_imag = IMAG(in,istride,i+m);
 
 	  /* compute x = W(2) z */
 
 	  /* x0 = z0 + z1 */
-	  const double x0_real = z0_real + z1_real;
-	  const double x0_imag = z0_imag + z1_imag;
+	  const ATOMIC x0_real = z0_real + z1_real;
+	  const ATOMIC x0_imag = z0_imag + z1_imag;
 
 	  /* x1 = z0 - z1 */
-	  const double x1_real = z0_real - z1_real;
-	  const double x1_imag = z0_imag - z1_imag;
+	  const ATOMIC x1_real = z0_real - z1_real;
+	  const ATOMIC x1_imag = z0_imag - z1_imag;
 
 	  /* apply twiddle factors */
 	  

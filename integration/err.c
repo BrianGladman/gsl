@@ -23,7 +23,7 @@
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_integration.h>
 
-static double rescale_error (double err, double result_abs, double result_asc) ;
+static double rescale_error (double err, const double result_abs, const double result_asc) ;
 
 static double
 rescale_error (double err, const double result_abs, const double result_asc)

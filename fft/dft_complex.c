@@ -58,7 +58,7 @@ gsl_dft_complex_inverse (const double data[],
   /* normalize inverse fft with 1/n */
 
   {
-    const double norm = 1.0 / n;
+    const ATOMIC norm = 1.0 / n;
     size_t i;
     for (i = 0; i < n; i++)
       {
@@ -84,8 +84,8 @@ gsl_dft_complex (const double data[],
 
   for (i = 0; i < n; i++)
     {
-      double sum_real = 0;
-      double sum_imag = 0;
+      ATOMIC sum_real = 0;
+      ATOMIC sum_imag = 0;
 
       exponent = 0;
 
@@ -94,11 +94,11 @@ gsl_dft_complex (const double data[],
 	  double theta = d_theta * (double) exponent;
 	  /* sum = exp(i theta) * data[j] */
 
-	  double w_real = cos (theta);
-	  double w_imag = sin (theta);
+	  ATOMIC w_real = cos (theta);
+	  ATOMIC w_imag = sin (theta);
 
-	  double data_real = REAL(data,stride,j);
-	  double data_imag = IMAG(data,stride,j);
+	  ATOMIC data_real = REAL(data,stride,j);
+	  ATOMIC data_imag = IMAG(data,stride,j);
 
 	  sum_real += w_real * data_real - w_imag * data_imag;
 	  sum_imag += w_real * data_imag + w_imag * data_real;

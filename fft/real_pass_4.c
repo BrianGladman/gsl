@@ -42,34 +42,34 @@ FUNCTION(fft_real,pass_4) (const BASE in[],
       const size_t from2 = from1 + m;
       const size_t from3 = from2 + m;
       
-      const double z0_real = VECTOR(in,istride,from0);
-      const double z1_real = VECTOR(in,istride,from1);
-      const double z2_real = VECTOR(in,istride,from2);
-      const double z3_real = VECTOR(in,istride,from3);
+      const ATOMIC z0_real = VECTOR(in,istride,from0);
+      const ATOMIC z1_real = VECTOR(in,istride,from1);
+      const ATOMIC z2_real = VECTOR(in,istride,from2);
+      const ATOMIC z3_real = VECTOR(in,istride,from3);
 
       /* compute x = W(4) z */
 
       /* t1 = z0 + z2 */
-      const double t1_real = z0_real + z2_real;
+      const ATOMIC t1_real = z0_real + z2_real;
       
       /* t2 = z1 + z3 */
-      const double t2_real = z1_real + z3_real;
+      const ATOMIC t2_real = z1_real + z3_real;
       
 	/* t3 = z0 - z2 */
-      const double t3_real = z0_real - z2_real;
+      const ATOMIC t3_real = z0_real - z2_real;
       
       /* t4 = - (z1 - z3) */
-      const double t4_real = -(z1_real - z3_real);
+      const ATOMIC t4_real = -(z1_real - z3_real);
       
       /* x0 = t1 + t2 */
-      const double x0_real = t1_real + t2_real;
+      const ATOMIC x0_real = t1_real + t2_real;
 
       /* x1 = t3 + i t4 */
-      const double x1_real = t3_real;
-      const double x1_imag = t4_real;
+      const ATOMIC x1_real = t3_real;
+      const ATOMIC x1_imag = t4_real;
 
       /* x2 = t1 - t2 */
-      const double x2_real = t1_real - t2_real;
+      const ATOMIC x2_real = t1_real - t2_real;
 
       const size_t to0 = product * k1;
       const size_t to1 = to0 + 2 * product_1 - 1;
@@ -86,7 +86,7 @@ FUNCTION(fft_real,pass_4) (const BASE in[],
 
   for (k = 1; k < (product_1 + 1) / 2; k++)
     {
-      double w1_real, w1_imag, w2_real, w2_imag, w3_real, w3_imag;
+      ATOMIC w1_real, w1_imag, w2_real, w2_imag, w3_real, w3_imag;
       w1_real = GSL_REAL(twiddle1[k - 1]);
       w1_imag = -GSL_IMAG(twiddle1[k - 1]);
       w2_real = GSL_REAL(twiddle2[k - 1]);
@@ -101,57 +101,57 @@ FUNCTION(fft_real,pass_4) (const BASE in[],
 	  const size_t from2 = from1 + m;
 	  const size_t from3 = from2 + m;
 	  
-	  const double f0_real = VECTOR(in,istride,from0);
-	  const double f0_imag = VECTOR(in,istride,from0 + 1);
-	  const double f1_real = VECTOR(in,istride,from1);
-	  const double f1_imag = VECTOR(in,istride,from1 + 1);
-	  const double f2_real = VECTOR(in,istride,from2);
-	  const double f2_imag = VECTOR(in,istride,from2 + 1);
-	  const double f3_real = VECTOR(in,istride,from3);
-	  const double f3_imag = VECTOR(in,istride,from3 + 1);
+	  const ATOMIC f0_real = VECTOR(in,istride,from0);
+	  const ATOMIC f0_imag = VECTOR(in,istride,from0 + 1);
+	  const ATOMIC f1_real = VECTOR(in,istride,from1);
+	  const ATOMIC f1_imag = VECTOR(in,istride,from1 + 1);
+	  const ATOMIC f2_real = VECTOR(in,istride,from2);
+	  const ATOMIC f2_imag = VECTOR(in,istride,from2 + 1);
+	  const ATOMIC f3_real = VECTOR(in,istride,from3);
+	  const ATOMIC f3_imag = VECTOR(in,istride,from3 + 1);
 	  
-	  const double z0_real = f0_real;
-	  const double z0_imag = f0_imag;
-	  const double z1_real = w1_real * f1_real - w1_imag * f1_imag;
-	  const double z1_imag = w1_real * f1_imag + w1_imag * f1_real;
-	  const double z2_real = w2_real * f2_real - w2_imag * f2_imag;
-	  const double z2_imag = w2_real * f2_imag + w2_imag * f2_real;
-	  const double z3_real = w3_real * f3_real - w3_imag * f3_imag;
-	  const double z3_imag = w3_real * f3_imag + w3_imag * f3_real;
+	  const ATOMIC z0_real = f0_real;
+	  const ATOMIC z0_imag = f0_imag;
+	  const ATOMIC z1_real = w1_real * f1_real - w1_imag * f1_imag;
+	  const ATOMIC z1_imag = w1_real * f1_imag + w1_imag * f1_real;
+	  const ATOMIC z2_real = w2_real * f2_real - w2_imag * f2_imag;
+	  const ATOMIC z2_imag = w2_real * f2_imag + w2_imag * f2_real;
+	  const ATOMIC z3_real = w3_real * f3_real - w3_imag * f3_imag;
+	  const ATOMIC z3_imag = w3_real * f3_imag + w3_imag * f3_real;
 
 	  /* compute x = W(4) z */
 
 	  /* t1 = z0 + z2 */
-	  const double t1_real = z0_real + z2_real;
-	  const double t1_imag = z0_imag + z2_imag;
+	  const ATOMIC t1_real = z0_real + z2_real;
+	  const ATOMIC t1_imag = z0_imag + z2_imag;
 	  
 	  /* t2 = z1 + z3 */
-	  const double t2_real = z1_real + z3_real;
-	  const double t2_imag = z1_imag + z3_imag;
+	  const ATOMIC t2_real = z1_real + z3_real;
+	  const ATOMIC t2_imag = z1_imag + z3_imag;
 	  
 	  /* t3 = z0 - z2 */
-	  const double t3_real = z0_real - z2_real;
-	  const double t3_imag = z0_imag - z2_imag;
+	  const ATOMIC t3_real = z0_real - z2_real;
+	  const ATOMIC t3_imag = z0_imag - z2_imag;
 	  
 	  /* t4 = - (z1 - z3) */
-	  const double t4_real = -(z1_real - z3_real);
-	  const double t4_imag = -(z1_imag - z3_imag);
+	  const ATOMIC t4_real = -(z1_real - z3_real);
+	  const ATOMIC t4_imag = -(z1_imag - z3_imag);
 	  
 	  /* x0 = t1 + t2 */
-	  const double x0_real = t1_real + t2_real;
-	  const double x0_imag = t1_imag + t2_imag;
+	  const ATOMIC x0_real = t1_real + t2_real;
+	  const ATOMIC x0_imag = t1_imag + t2_imag;
 	  
 	  /* x1 = t3 + i t4 */
-	  const double x1_real = t3_real - t4_imag;
-	  const double x1_imag = t3_imag + t4_real;
+	  const ATOMIC x1_real = t3_real - t4_imag;
+	  const ATOMIC x1_imag = t3_imag + t4_real;
 	  
 	  /* x2 = t1 - t2 */
-	  const double x2_real = t1_real - t2_real;
-	  const double x2_imag = t1_imag - t2_imag;
+	  const ATOMIC x2_real = t1_real - t2_real;
+	  const ATOMIC x2_imag = t1_imag - t2_imag;
 	  
 	  /* x3 = t3 - i t4 */
-	  const double x3_real = t3_real + t4_imag;
-	  const double x3_imag = t3_imag - t4_real;
+	  const ATOMIC x3_real = t3_real + t4_imag;
+	  const ATOMIC x3_imag = t3_imag - t4_real;
 
 	  const size_t to0 = k1 * product + 2 * k - 1;
 	  const size_t to1 = to0 + 2 * product_1;
@@ -182,13 +182,13 @@ FUNCTION(fft_real,pass_4) (const BASE in[],
       const size_t from2 = from1 + m;
       const size_t from3 = from2 + m;
       
-      const double x0 = VECTOR(in,istride,from0);
-      const double x1 = VECTOR(in,istride,from1);
-      const double x2 = VECTOR(in,istride,from2);
-      const double x3 = VECTOR(in,istride,from3);
+      const ATOMIC x0 = VECTOR(in,istride,from0);
+      const ATOMIC x1 = VECTOR(in,istride,from1);
+      const ATOMIC x2 = VECTOR(in,istride,from2);
+      const ATOMIC x3 = VECTOR(in,istride,from3);
       
-      const double t1 = (1.0 / sqrt (2.0)) * (x1 - x3);
-      const double t2 = (1.0 / sqrt (2.0)) * (x1 + x3);
+      const ATOMIC t1 = (1.0 / sqrt (2.0)) * (x1 - x3);
+      const ATOMIC t2 = (1.0 / sqrt (2.0)) * (x1 + x3);
       
       const size_t to0 = k1 * product + 2 * k - 1;
       const size_t to1 = to0 + 2 * product_1;

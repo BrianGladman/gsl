@@ -26,6 +26,12 @@
 #define GSL_NEGINF (-HUGE_VAL)
 #define GSL_POSZERO (+0)
 #define GSL_NEGZERO (-0)
+#elif defined(_MSC_VER) /* Microsoft Visual C++ */
+#define GSL_NAN _FPCLASS_QNAN
+#define GSL_POSINF _FPCLASS_PINF
+#define GSL_NEGINF _FPCLASS_NINF
+#define GSL_POSZERO _FPCLASS_PZ
+#define GSL_NEGZERO _FPCLASS_NZ
 #else
 #define GSL_NAN (0.0/0.0)
 #define GSL_POSINF (+1.0/0.0)

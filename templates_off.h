@@ -2,6 +2,14 @@
 #undef FUNCTION
 #endif
 
+#ifdef CONCAT4
+#undef CONCAT4
+#endif
+
+#ifdef CONCAT4x
+#undef CONCAT4x
+#endif
+
 #ifdef CONCAT3
 #undef CONCAT3
 #endif

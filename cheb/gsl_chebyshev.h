@@ -85,7 +85,7 @@ int gsl_cheb_init(gsl_cheb_series * cs, const gsl_function * func,
 /* Evaluate a Chebyshev series at a given point.
  * No errors can occur for a struct obtained from gsl_cheb_new().
  */
-double gsl_cheb_eval(const gsl_cheb_series * cs, double x);
+double gsl_cheb_eval(const gsl_cheb_series * cs, const double x);
 int gsl_cheb_eval_err(const gsl_cheb_series * cs, const double x, 
                       double * result, double * abserr);
 
@@ -93,7 +93,8 @@ int gsl_cheb_eval_err(const gsl_cheb_series * cs, const double x,
 /* Evaluate a Chebyshev series at a given point, to (at most) the given order.
  * No errors can occur for a struct obtained from gsl_cheb_new().
  */
-double gsl_cheb_eval_n(const gsl_cheb_series * cs, size_t order, double x);
+double gsl_cheb_eval_n(const gsl_cheb_series * cs, const size_t order, 
+                       const double x);
 int gsl_cheb_eval_n_err(const gsl_cheb_series * cs, const size_t order, 
                         const double x, double * result, double * abserr);
 
