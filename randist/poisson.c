@@ -66,8 +66,7 @@ gsl_ran_poisson_array (const gsl_rng * r, size_t n, unsigned int array[],
 double
 gsl_ran_poisson_pdf (unsigned int n, double mu)
 {
-  /* FIXME: ask Jerry about making the fact functions take unsigned ints */
-  double lf = gsl_sf_lnfact ((int)n); 
+  double lf = gsl_sf_lnfact (n); 
   double p = exp (log (mu) * n - lf - mu);
   return p;
 }

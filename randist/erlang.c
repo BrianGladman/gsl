@@ -19,7 +19,14 @@ gsl_ran_erlang (const gsl_rng * r, double mu, double n)
 double
 gsl_ran_erlang_pdf (double x, double mu, double n)
 {
-  double lngamma = gsl_sf_lngamma (n);
-  double p = exp ((n - 1) * log (x/mu) - x/mu - lngamma) / mu;
-  return p;
+  if (x <= 0) 
+    {
+      return 0 ;
+    }
+  else
+    {
+      double lngamma = gsl_sf_lngamma (n);
+      double p = exp ((n - 1) * log (x/mu) - x/mu - lngamma) / mu;
+      return p;
+    }
 }

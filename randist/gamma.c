@@ -122,7 +122,25 @@ gamma_frac (const gsl_rng * r, double a)
 double
 gsl_ran_gamma_pdf (double x, double a)
 {
-  double lngamma = gsl_sf_lngamma (a);
-  double p = exp ((a - 1) * log (x) - x - lngamma);
-  return p;
+  if (x < 0)
+    {
+      return 0 ;
+    }
+  else if (x == 0)
+    {
+      if (a == 1)
+	return 1 ;
+      else
+	return 0 ;
+    }
+  else if (a == 1)
+    {
+      return exp(-x) ;
+    }
+  else 
+    {
+      double lngamma = gsl_sf_lngamma (a);
+      double p = exp ((a - 1) * log (x) - x - lngamma);
+      return p;
+    }
 }

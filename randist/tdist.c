@@ -37,6 +37,7 @@ gsl_ran_tdist (const gsl_rng * r, double nu)
 
       /* FIXME: there must be a typo in Knuth's formula
 	 sqrt(1-2nu) can't be right if nu > 2 */
+
       t = Y1 / sqrt ((1 - 2 * nu) * (1 - Z));
       return t;
     }
