@@ -19,10 +19,13 @@ int gsl_sf_bessel_i0_scaled_impl(const double x, double * result)
   double ax = fabs(x);
 
   if(ax < GSL_ROOT4_MACH_EPS) {
-    *result = exp(-ax) * (1. + x*x/6.);
+    *result = exp(-ax) * (1.0 + x*x/6.0);
+  }
+  else if(ax < -0.5*GSL_LOG_MACH_EPS){
+    *result = (1.0 - exp(-2.0*ax))/(2.0*ax);
   }
   else {
-    *result = (1.0 - exp(-2.0*ax))/(2.0*ax);
+    *result = 1.0/(2.0*ax);
   }
   return GSL_SUCCESS;
 }
@@ -31,17 +34,18 @@ int gsl_sf_bessel_i1_scaled_impl(const double x, double * result)
 {
   double ax = fabs(x);
 
-  if(ax < 3.*DBL_MIN) {
-    *result = 0.;
+  if(ax < 3.0*DBL_MIN) {
+    *result = 0.0;
     return GSL_EUNDRFLW;
   }
-  else if(ax < 2.*GSL_ROOT4_MACH_EPS) {
-    *result = exp(-ax) * x/3. * (1. + x*x/10.);
+  else if(ax < 0.02) {
+    *result = exp(-ax) * x/3.0 * (1.0 + x*x/10.0 * (1.0 + x*x/28.0 * (1.0 + x*x/54.0)));
     return GSL_SUCCESS;
   }
   else {
     double ex = exp(-2.0*ax);
-    *result = -0.5 * ((1.0-ex)/(ax*ax) - (1.0+ex)) / ax;
+    *result = 0.5 * (ax*(1.0+ex) - (1.0-ex)) / (ax*ax);
+    if(x < 0.0) *result = - *result;
     return GSL_SUCCESS;
   }
 }
@@ -50,18 +54,19 @@ int gsl_sf_bessel_i2_scaled_impl(const double x, double * result)
 {
   double ax = fabs(x);
 
-  if(ax < GSL_SQRT_DBL_MIN) {
-    *result = 0.;
+  if(ax < 4.0*GSL_SQRT_DBL_MIN) {
+    *result = 0.0;
     return GSL_EUNDRFLW;
   }
-  else if(ax < 2.*GSL_ROOT4_MACH_EPS) {
-    *result = exp(-ax) * x*x/15. * (1. + x*x/14.);
+  else if(ax < 0.25) {
+    double pre = exp(-ax) * x*x/15.0;
+    *result = pre * (1.0 + x*x/14.0 * (1.0 + x*x/36.0 * (1.0 + x*x/66.0 * (1.0 + x*x/104.0 * (1.0 + x*x/150.0)))));
     return GSL_SUCCESS;
   }
   else {
     double ex = exp(-2.0*ax);
     double x2 = x*x;
-    *result =  0.5 * ((3./x2 - 1.) * (1.0-ex)/ax - 3.*(1.0+ex)/x2);
+    *result =  0.5 * ((3.0+x2)*(1.0-ex) - 3.0*ax*(1.0+ex))/(ax*ax*ax);
     return GSL_SUCCESS;
   }
 }  
@@ -69,6 +74,7 @@ int gsl_sf_bessel_i2_scaled_impl(const double x, double * result)
 int gsl_sf_bessel_il_scaled_impl(const int l, double x, double * result)
 {
   double sgn = 1.0;
+  double ax  = fabs(x);
 
   if(x < 0.0) {
     /* i_l(-x) = (-1)^l i_l(x) */
@@ -83,10 +89,16 @@ int gsl_sf_bessel_il_scaled_impl(const int l, double x, double * result)
     *result = 0.0;
     return GSL_SUCCESS;
   }
-  else if(x*x < 10.*(l+1.5)*GSL_ROOT5_MACH_EPS) {
+  else if(x*x < 10.0*(l+1.5)*GSL_ROOT5_MACH_EPS) {
     double b = 0.0;
     int status = gsl_sf_bessel_Inu_Jnu_taylor_impl(l+0.5, x, 1, 4, &b);
-    *result = sgn * exp(-x) * sqrt(M_PI/(2.0*x)) * b;
+    *result = sgn * exp(-ax) * sqrt(M_PI/(2.0*x)) * b;
+    return status;
+  }
+  else if(x*x < 10.0*(l+1.5)/M_E) {
+    double b = 0.0;
+    int status = gsl_sf_bessel_Inu_Jnu_taylor_impl(l+0.5, x, 1, 14, &b);
+    *result = sgn * exp(-ax) * sqrt(M_PI/(2.0*x)) * b;
     return status;
   }
   else if(GSL_ROOT3_MACH_EPS * x > (l*l + l + 1)) {

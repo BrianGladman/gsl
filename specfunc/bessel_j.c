@@ -162,7 +162,7 @@ int gsl_sf_bessel_jl_array_impl(const int lmax, const double x, double * result_
   }
 }
 
-int gsl_sf_bessel_j_steed_array_impl(const int lmax, const double x, double * jl_x)
+int gsl_sf_bessel_jl_steed_array_impl(const int lmax, const double x, double * jl_x)
 {
   if(lmax < 0 || x < 0.0) {
     int j;

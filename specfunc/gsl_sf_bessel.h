@@ -372,7 +372,8 @@ double  gsl_sf_bessel_i2_scaled(double x);
  *
  * i_l(x) = Sqrt[Pi/(2x)] BesselI[l+1/2,x]
  *
- * exceptions: GSL_EUNDRFLW
+ * l >= 0
+ * exceptions: GSL_EDOM, GSL_EUNDRFLW
  */
 int     gsl_sf_bessel_il_scaled_impl(int l, double x, double * result);
 int     gsl_sf_bessel_il_scaled_e(int l, double x, double * result);
@@ -381,7 +382,7 @@ double  gsl_sf_bessel_il_scaled(int l, double x);
 
 /* Regular scaled modified spherical Bessel functions
  *
- * i_l(x)
+ * Exp[-|x|] i_l(x)
  * for l=0,1,...,lmax
  *
  * exceptions: GSL_EUNDRFLW
@@ -390,27 +391,33 @@ int gsl_sf_bessel_il_scaled_array_impl(int lmax, double x, double * result_array
 int gsl_sf_bessel_il_scaled_array_e(int lmax, double x, double * result_array);
 
 
-/* Irregular modified spherical Bessel function k_0(x)
+/* Irregular scaled modified spherical Bessel function
+ * Exp[x] k_0(x)
  *
- * exceptions: none
+ * x > 0.0
+ * exceptions: GSL_EDOM, GSL_EUNDRFLW
  */
 int     gsl_sf_bessel_k0_scaled_impl(double x, double * result);
 int     gsl_sf_bessel_k0_scaled_e(double x, double * result);
 double  gsl_sf_bessel_k0_scaled(double x);
 
 
-/* Irregular modified spherical Bessel function k_1(x)
+/* Irregular modified spherical Bessel function
+ * Exp[x] k_1(x)
  *
- * exceptions: GSL_EUNDRFLW
+ * x > 0.0
+ * exceptions: GSL_EDOM, GSL_EUNDRFLW, GSL_EOVRFLW
  */
 int     gsl_sf_bessel_k1_scaled_impl(double x, double * result);
 int     gsl_sf_bessel_k1_scaled_e(double x, double * result);
 double  gsl_sf_bessel_k1_scaled(double x);
 
 
-/* Irregular modified spherical Bessel function k_2(x)
+/* Irregular modified spherical Bessel function
+ * Exp[x] k_2(x)
  *
- * exceptions: GSL_EUNDRFLW
+ * x > 0.0
+ * exceptions: GSL_EDOM, GSL_EUNDRFLW, GSL_EOVRFLW
  */
 int     gsl_sf_bessel_k2_scaled_impl(double x, double * result);
 int     gsl_sf_bessel_k2_scaled_e(double x, double * result);
@@ -418,21 +425,22 @@ double  gsl_sf_bessel_k2_scaled(double x);
 
 
 /* Irregular modified spherical Bessel function
+ * Exp[x] k_l[x]
  *
  * k_l(x) = Sqrt[Pi/(2x)] BesselK[l+1/2,x]
  *
- * exceptions: GSL_EUNDRFLW
+ * exceptions: GSL_EDOM, GSL_EUNDRFLW
  */
 int     gsl_sf_bessel_kl_scaled_impl(int l, double x, double * result);
 int     gsl_sf_bessel_kl_scaled_e(int l, double x, double * result);
 double  gsl_sf_bessel_kl_scaled(int l, double x);
 
 
-/* Irregular modified spherical Bessel function
+/* Irregular scaled modified spherical Bessel function
+ * Exp[x] k_l(x)
  *
- * k_l(x)
  * for l=0,1,...,lmax
- * exceptions: GSL_EUNDRFLW
+ * exceptions: GSL_EDOM, GSL_EUNDRFLW
  */
 int gsl_sf_bessel_kl_scaled_array_impl(int lmax, double x, double * result_array);
 int gsl_sf_bessel_kl_scaled_array_e(int lmax, double x, double * result_array);

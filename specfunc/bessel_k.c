@@ -33,6 +33,7 @@ static int bessel_kl_scaled_small_x(int l, const double x, double * result)
     double ipos_term;
     double ineg_term;
     double sgn = (GSL_IS_ODD(l) ? -1.0 : 1.0);
+    double ex  = exp(x);
     double t = 0.5*x*x;
     double sum = 1.0;
     double t_coeff = 1.0;
@@ -43,11 +44,12 @@ static int bessel_kl_scaled_small_x(int l, const double x, double * result)
       t_power *= t;
       delta = t_power*t_coeff;
       sum += delta;
-      if(fabs(delta) < GSL_MACH_EPS) break;
+      if(fabs(delta/sum) < GSL_MACH_EPS) break;
     }
     gsl_sf_bessel_il_scaled_impl(l, x, &ipos_term);
     ineg_term =  sgn * num_fact/den * sum;
-    *result   = -sgn * 0.5*M_PI * (ipos_term - ineg_term);
+    *result   = -sgn * 0.5*M_PI * (ex*ipos_term - ineg_term);
+    *result  *= ex;
     return GSL_SUCCESS;
   }
 }
@@ -79,7 +81,10 @@ int gsl_sf_bessel_k1_scaled_impl(const double x, double * result)
   }
   else {
     *result = M_PI/(2.0*x) * (1.0 + 1.0/x);
-    return GSL_SUCCESS;
+    if(*result == 0.0)
+      return GSL_EUNDRFLW;
+    else 
+      return GSL_SUCCESS;
   }
 }
 
@@ -94,7 +99,10 @@ int gsl_sf_bessel_k2_scaled_impl(const double x, double * result)
   }
   else {
     *result = M_PI/(2.0*x) * (1.0 + 3.0/x * (1.0 + 1.0/x));
-    return GSL_SUCCESS;
+    if(*result == 0.0)
+      return GSL_EUNDRFLW;
+    else 
+      return GSL_SUCCESS;
   }
 }
 
