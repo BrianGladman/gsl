@@ -126,26 +126,6 @@ Subject: subscribe
 You will receive a response asking to you to reply in order to confirm
 your subscription.
 
-@node   An Example Program
-@section An Example Program
-
-The following short program demonstrates the use of the library by
-computing the value of the Bessel function @math{J_0(x)} for @math{x=5},
-
-@example
-@verbatiminclude examples/intro.c
-@end example
-@noindent
-The output is shown below, and should be correct to double-precision
-accuracy,
-
-@example
-@verbatiminclude examples/intro.out
-@end example
-@noindent
-The steps needed to compile programs which use the library are described
-in the next chapter.
-
 @node  No Warranty
 @section No Warranty
 @cindex warranty (none)

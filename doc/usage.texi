@@ -19,6 +19,25 @@ introduces its conventions.
 * Thread-safety::               
 * Code Reuse::                  
 @end menu
+@node   An Example Program
+@section An Example Program
+
+The following short program demonstrates the use of the library by
+computing the value of the Bessel function @math{J_0(x)} for @math{x=5},
+
+@example
+@verbatiminclude examples/intro.c
+@end example
+@noindent
+The output is shown below, and should be correct to double-precision
+accuracy,
+
+@example
+@verbatiminclude examples/intro.out
+@end example
+@noindent
+The steps needed to compile this program are described in the following
+sections.
 
 @node ANSI C Compliance
 @section ANSI C Compliance
@@ -61,13 +80,13 @@ If the directory is not installed on the standard search path of your
 compiler you will also need to provide its location to the preprocessor
 as a command line flag.  The default location of the @file{gsl}
 directory is @file{/usr/local/include/gsl}.  A typical compilation
-command for a source file @file{app.c} with the GNU C compiler
+command for a source file @file{example.c} with the GNU C compiler
 @code{gcc} is,
 @example
-gcc -I/usr/local/include -c app.c
+gcc -I/usr/local/include -c example.c
 @end example
 @noindent
-This results in an object file @file{app.o}.   The default
+This results in an object file @file{example.o}.   The default
 include path for @code{gcc} searches @file{/usr/local/include} automatically so
 the @code{-I} option can be omitted when GSL is installed in its default
 location.
@@ -86,14 +105,14 @@ provides standard basic linear algebra subroutines.  A suitable
 example shows how to link an application with the library,
 
 @example
-gcc app.o -lgsl -lgslcblas -lm
+gcc example.o -lgsl -lgslcblas -lm
 @end example
 @noindent
 The following command line shows how you would link the same application
 with an alternative blas library called @file{libcblas},
 
 @example
-gcc app.o -lgsl -lcblas -lm
+gcc example.o -lgsl -lcblas -lm
 @end example
 @noindent
 For the best performance an optimized platform-specific @sc{cblas}
@@ -105,7 +124,7 @@ and matrix operations.  The following command line will link with the
 @sc{atlas} library and its @sc{cblas} interface,
 
 @example
-gcc app.o -lgsl -lcblas -latlas -lm
+gcc example.o -lgsl -lcblas -latlas -lm
 @end example
 @noindent
 For more information see @ref{BLAS Support}.
@@ -129,14 +148,14 @@ necessary to define the shell variable @code{LD_LIBRARY_PATH} to include
 the directory where the library is installed.  For example,
 
 @example
-LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH ./app
+LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH ./example
 @end example
 @noindent
 To compile a statically linked version of the program instead, use the
 @code{-static} flag in @code{gcc},
 
 @example
-gcc -static app.o -lgsl -lgslcblas -lm
+gcc -static example.o -lgsl -lgslcblas -lm
 @end example
 
 @node Inline functions
@@ -152,7 +171,7 @@ included by defining the macro @code{HAVE_INLINE} when compiling an
 application.
 
 @example
-gcc -c -DHAVE_INLINE app.c
+gcc -c -DHAVE_INLINE example.c
 @end example
 @noindent
 If you use @code{autoconf} this macro can be defined automatically.  If
