@@ -1,4 +1,4 @@
-/* conjugate_pr.c -- Polak-Ribiere version of the conjugate gradient */
+/* conjugate.c -- Conjugate gradients */
 
 #include <gsl_multimin.h>
 #include <gsl_blas_types.h>
@@ -186,7 +186,7 @@ static const gsl_multimin_fdf_minimizer_type conjugate_type_pr =
 const gsl_multimin_fdf_minimizer_type *gsl_multimin_fdf_minimizer_conjugate_pr = &conjugate_type_pr;
 
 static const gsl_multimin_fdf_minimizer_type conjugate_type_fr =
-{"conjugate",			/* name */
+{"conjugate_fr",			/* name */
  sizeof (conjugate_state_t),
  &conjugate_alloc_fr,
  &conjugate_restart,

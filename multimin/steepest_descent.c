@@ -17,7 +17,7 @@ steepest_descent_alloc(void *vstate, size_t n)
 }
 
 int 
-steepest_descent_restart(void *vstate, size_t n)
+steepest_descent_restart(void *vstate)
 {
   return GSL_SUCCESS;
 }

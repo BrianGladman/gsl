@@ -3,7 +3,7 @@
 
 gsl_multimin_fdf_history *
 gsl_multimin_fdf_history_alloc(gsl_multimin_function_fdf *fdf,
-			       gsl_vector * x)
+			       const gsl_vector * x)
 {
   gsl_multimin_fdf_history *h;
   const size_t n = fdf->n;  
@@ -70,7 +70,7 @@ gsl_multimin_fdf_history_alloc(gsl_multimin_function_fdf *fdf,
 int
 gsl_multimin_fdf_history_set(gsl_multimin_fdf_history *h,
 			     gsl_multimin_function_fdf *fdf,
-			     gsl_vector * x)
+			     const gsl_vector * x)
 {
   gsl_vector_copy(h->x,x);
   GSL_MULTIMIN_FN_EVAL_F_DF(fdf,h->x,&(h->f),h->g);
@@ -82,7 +82,7 @@ gsl_multimin_fdf_history_set(gsl_multimin_fdf_history *h,
 int
 gsl_multimin_fdf_history_set_with_value(gsl_multimin_fdf_history *h,
 					gsl_multimin_function_fdf *fdf,
-					gsl_vector * x,
+					const gsl_vector * x,
 					double fx)
 {
   gsl_vector_copy(h->x,x);
@@ -135,11 +135,14 @@ gsl_multimin_fdf_history_free(gsl_multimin_fdf_history *h)
 gsl_multimin_fdf_minimizer *
 gsl_multimin_fdf_minimizer_alloc(const gsl_multimin_fdf_minimizer_type *T,
 				 gsl_multimin_function_fdf *fdf,
-				 gsl_vector * x) 
+				 const gsl_vector * x,
+				 gsl_min_bracketing_function bracket,
+				 const gsl_min_fminimizer_type * T_line) 
 {
   int status;
   gsl_vector *direction;
-  gsl_multimin_to_single_fdf *w;
+  gsl_multimin_to_single *w;
+  gsl_interval dummy;
     
   gsl_multimin_fdf_minimizer *s;
   
@@ -196,7 +199,7 @@ gsl_multimin_fdf_minimizer_alloc(const gsl_multimin_fdf_minimizer_type *T,
 			GSL_ENOMEM, 0);
     }
 
-  w = gsl_multimin_to_single_fdf_alloc(fdf,s->history->x,direction);
+  w = gsl_multimin_to_single_alloc_fdf(fdf,s->history->x,direction);
 
   if (w == 0) 
     {
@@ -210,11 +213,11 @@ gsl_multimin_fdf_minimizer_alloc(const gsl_multimin_fdf_minimizer_type *T,
 			GSL_ENOMEM, 0);
     }
   
-  s->f_directional = gsl_multimin_to_single_function_fdf_alloc(w);
+  s->f_directional = gsl_multimin_to_single_function_alloc(w);
   
   if (s->f_directional == 0) 
     {
-      gsl_multimin_to_single_fdf_free(w);
+      gsl_multimin_to_single_free(w);
       gsl_vector_free(direction);
       gsl_multimin_fdf_history_free(s->history);
       (T->free)(s->state);
@@ -225,12 +228,36 @@ gsl_multimin_fdf_minimizer_alloc(const gsl_multimin_fdf_minimizer_type *T,
 			GSL_ENOMEM, 0);     
     }
 
+  s->bracketing = bracket;
+  s->line_search_type = T_line;
+  /* Warning, we try to bypass checks */
+  dummy.lower = 0;
+  dummy.upper = 1;
+  s->line_search = 
+    gsl_min_fminimizer_alloc_with_values(T_line,s->f_directional,0.5,
+					 0.0,dummy,1.0,1.0);
+  
+  if (s->line_search == 0)
+    {
+      gsl_multimin_to_single_function_free(s->f_directional);
+      gsl_multimin_fdf_history_free(s->history);
+      (T->free)(s->state);
+      free(s->state);
+      free(s);
+
+      GSL_ERROR_RETURN ("failed to allocate one dimensional minimization algorithm",
+			GSL_ENOMEM, 0);     
+    }
+  
+
   return s;
 }
 
 void
 gsl_multimin_fdf_minimizer_free(gsl_multimin_fdf_minimizer *s) 
 {
+  gsl_min_fminimizer_free(s->line_search);
+  gsl_multimin_to_single_function_free(s->f_directional);
   gsl_multimin_fdf_history_free(s->history);
   (s->type->free)(s->state);
   free(s->state);
@@ -240,7 +267,7 @@ gsl_multimin_fdf_minimizer_free(gsl_multimin_fdf_minimizer *s)
 gsl_vector *
 gsl_multimin_fdf_minimizer_direction_internal(gsl_multimin_fdf_minimizer *s)
 {
-  return ((gsl_multimin_to_single_fdf *)(s->f_directional->params))->params->direction;
+  return ((gsl_multimin_to_single *)(s->f_directional->params))->direction;
 }
 
 const gsl_vector *
@@ -253,6 +280,43 @@ int
 gsl_multimin_fdf_minimizer_next_direction(gsl_multimin_fdf_minimizer *s)
 {
   return s->type->direction(s->state,s->history,gsl_multimin_fdf_minimizer_direction_internal(s));
+}
+
+int
+gsl_multimin_fdf_minimizer_bracket(gsl_multimin_fdf_minimizer *s,
+				   double first_step,size_t eval_max)
+{
+  int status;
+  gsl_interval bracket;
+  double f_minimum,f_upper,f_lower;
+  double minimum;
+
+  
+  bracket.upper = first_step;
+  bracket.lower = 0.0;
+  f_lower = s->history->f;
+  f_upper = GSL_FN_EVAL(s->f_directional,first_step);
+  if (!GSL_IS_REAL(f_upper))
+    GSL_ERROR("function not continuous", GSL_EBADFUNC);
+  status =  (s->bracketing)(s->f_directional,&minimum,
+			    &f_minimum,&bracket,&f_lower,&f_upper,eval_max);
+  if (status == GSL_SUCCESS)
+    {
+      return gsl_min_fminimizer_set_with_values(s->line_search,
+						s->f_directional,
+						minimum,f_minimum,
+						bracket,f_lower,f_upper);
+    }
+  else
+    {
+      return status;
+    }
+}
+
+int
+gsl_multimin_fdf_minimizer_iterate(gsl_multimin_fdf_minimizer *s)
+{
+  return gsl_min_fminimizer_iterate(s->line_search);
 }
 
 int
@@ -274,6 +338,14 @@ gsl_multimin_fdf_minimizer_step(gsl_multimin_fdf_minimizer *s,
     gsl_multimin_fdf_history_step(s->history,s->fdf,
 				  gsl_multimin_fdf_minimizer_direction(s),
 				  step);  
+}
+
+int
+gsl_multimin_fdf_minimizer_best_step(gsl_multimin_fdf_minimizer *s)
+{
+  return 
+    gsl_multimin_fdf_minimizer_step_with_value(s,s->line_search->minimum,
+					       s->line_search->f_minimum);
 }
 
 int

@@ -5,6 +5,7 @@
 #include <gsl_math.h>
 #include <gsl_vector.h>
 #include <gsl_matrix.h>
+#include <gsl_min.h>
 
 /* Definition of an arbitrary real-valued function with gsl_vector input and */
 /* parameters */
@@ -39,28 +40,10 @@ typedef struct gsl_multimin_function_fdf_struct gsl_multimin_function_fdf;
 /* wrapper for using a vector input function as a real input function */
 typedef struct 
 {
+  gsl_multimin_function f;
   gsl_vector * starting_point;
   gsl_vector * direction;
   gsl_vector * evaluation_point;
-}
-gsl_multimin_to_single_params;
-
-gsl_multimin_to_single_params *
-gsl_multimin_to_single_params_alloc(gsl_vector * starting_point,
-				    gsl_vector * direction);
-
-int
-gsl_multimin_to_single_params_set(gsl_multimin_to_single_params *p,
-				  gsl_vector * starting_point,
-				  gsl_vector * direction);
-
-void
-gsl_multimin_to_single_params_free(gsl_multimin_to_single_params *p);
-
-typedef struct 
-{
-  const gsl_multimin_function *f;
-  gsl_multimin_to_single_params *params;
 }
 gsl_multimin_to_single;
 
@@ -83,31 +66,15 @@ gsl_multimin_to_single_function_alloc(gsl_multimin_to_single *w);
 void
 gsl_multimin_to_single_function_free(gsl_function *f);
 
-typedef struct 
-{
-  const gsl_multimin_function_fdf *fdf;
-  gsl_multimin_to_single_params *params;
-}
-gsl_multimin_to_single_fdf;
-
-gsl_multimin_to_single_fdf *
-gsl_multimin_to_single_fdf_alloc(const gsl_multimin_function_fdf *f,
+gsl_multimin_to_single *
+gsl_multimin_to_single_alloc_fdf(const gsl_multimin_function_fdf *f,
 				 gsl_vector * starting_point,
 				 gsl_vector * direction);
 int
-gsl_multimin_to_single_fdf_set(gsl_multimin_to_single_fdf *w,
+gsl_multimin_to_single_set_fdf(gsl_multimin_to_single *w,
 			       const gsl_multimin_function_fdf *f,
 			       gsl_vector * starting_point,
 			       gsl_vector * direction);
-
-void
-gsl_multimin_to_single_fdf_free(gsl_multimin_to_single_fdf *w);
-
-gsl_function *
-gsl_multimin_to_single_function_fdf_alloc(gsl_multimin_to_single_fdf *w);
-
-void
-gsl_multimin_to_single_function_fdf_free(gsl_function *f);
 
 void
 gsl_multimin_compute_evaluation_point(gsl_vector *evaluation_point,
@@ -130,12 +97,12 @@ gsl_multimin_fdf_history;
 
 gsl_multimin_fdf_history *
 gsl_multimin_fdf_history_alloc(gsl_multimin_function_fdf *fdf,
-			       gsl_vector * x);
+			       const gsl_vector * x);
 
 int
 gsl_multimin_fdf_history_set(gsl_multimin_fdf_history *h,
 			     gsl_multimin_function_fdf *fdf,
-			     gsl_vector * x);
+			     const gsl_vector * x);
 
 void
 gsl_multimin_fdf_history_free(gsl_multimin_fdf_history *h);
@@ -165,10 +132,15 @@ gsl_multimin_fdf_minimizer_type;
 
 typedef struct 
 {
+  /* multi dimensional part */
   const gsl_multimin_fdf_minimizer_type *type;
   gsl_multimin_function_fdf *fdf;
   gsl_multimin_fdf_history *history;
+  /* one dimensional part */
+  gsl_min_bracketing_function bracketing;
   gsl_function *f_directional;
+  const gsl_min_fminimizer_type * line_search_type;
+  gsl_min_fminimizer *line_search;
   void *state;
 }
 gsl_multimin_fdf_minimizer;
@@ -176,7 +148,9 @@ gsl_multimin_fdf_minimizer;
 gsl_multimin_fdf_minimizer *
 gsl_multimin_fdf_minimizer_alloc(const gsl_multimin_fdf_minimizer_type *T,
 				 gsl_multimin_function_fdf *fdf,
-				 gsl_vector * x);
+				 const gsl_vector * x,
+				 gsl_min_bracketing_function bracket,
+				 const gsl_min_fminimizer_type * T_line);
 void
 gsl_multimin_fdf_minimizer_free(gsl_multimin_fdf_minimizer *s);
 
@@ -187,8 +161,18 @@ int
 gsl_multimin_fdf_minimizer_next_direction(gsl_multimin_fdf_minimizer *s);
 
 int
+gsl_multimin_fdf_minimizer_bracket(gsl_multimin_fdf_minimizer *s,
+				   double first_step,size_t eval_max);
+
+int
+gsl_multimin_fdf_minimizer_iterate(gsl_multimin_fdf_minimizer *s);
+
+int
 gsl_multimin_fdf_minimizer_step(gsl_multimin_fdf_minimizer *s,
 				double step);
+int
+gsl_multimin_fdf_minimizer_best_step(gsl_multimin_fdf_minimizer *s);
+
 int
 gsl_multimin_fdf_minimizer_restart(gsl_multimin_fdf_minimizer *s);
 
@@ -201,6 +185,8 @@ extern const gsl_multimin_fdf_minimizer_type *gsl_multimin_fdf_minimizer_steepes
 extern const gsl_multimin_fdf_minimizer_type *gsl_multimin_fdf_minimizer_conjugate_pr;
 
 extern const gsl_multimin_fdf_minimizer_type *gsl_multimin_fdf_minimizer_conjugate_fr;
+
+extern const gsl_multimin_fdf_minimizer_type *gsl_multimin_fdf_minimizer_vector_bfgs;
 
 int
 gsl_multimin_test_gradient_sqr_norm(gsl_multimin_fdf_history *h,double epsabs);

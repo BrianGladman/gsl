@@ -10,7 +10,7 @@
 int 
 gsl_min_find_bracket(gsl_function *f,double *minimum,double * f_minimum,
 		     gsl_interval *x, double * f_lower,double * f_upper,
-		     int eval_max)
+		     size_t eval_max)
 {
   double f_left = *f_lower;
   double x_left = x->lower;
@@ -80,7 +80,7 @@ gsl_min_find_bracket(gsl_function *f,double *minimum,double * f_minimum,
 	}
     }
   while (nb_eval < eval_max 
-	 && (x_right - x_left) > GSL_SQRT_DBL_EPSILON * (x_right + x_left) * 0.5);
+	 && (x_right - x_left) > GSL_SQRT_DBL_EPSILON * ( (x_right + x_left) * 0.5 ) + GSL_SQRT_DBL_EPSILON);
   x->lower = x_left;
   x->upper = x_right;
   *minimum = x_center;
