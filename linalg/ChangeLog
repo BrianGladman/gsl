@@ -1,3 +1,7 @@
+Thu May 17 17:01:45 2001  Brian Gough  <bjg@network-theory.co.uk>
+
+	* qr.c (gsl_linalg_QR_lssolve): added least squares solver
+
 Sat Apr 28 00:39:53 2001  Brian Gough  <bjg@network-theory.co.uk>
 
 	* qr.c (gsl_linalg_QR_update): fixed QR update to work correctly
