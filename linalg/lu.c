@@ -56,6 +56,7 @@ gsl_la_decomp_LU_impl(gsl_matrix * matrix,
       for(j=0; j<N; j++) {
         REAL aij = fabs(gsl_matrix_get(matrix, i, j));
         max_row_element = GSL_MAX(max_row_element, aij);
+        /* FIXME: is it guaranteed safe to comment this out ? BJG */
 	/* gsl_vector_int_set(permutation, j, j); */
       }
 

@@ -75,6 +75,27 @@ double gsl_la_det_LU (gsl_matrix * lu_matrix, int signum);
 double gsl_la_lndet_LU (gsl_matrix * lu_matrix);
 int gsl_la_sgndet_LU (gsl_matrix * lu_matrix, int signum);
 
+/* QR decomposition */
+
+int
+gsl_la_decomp_QR_impl(gsl_matrix * matrix, 
+                      gsl_vector * rdiag,
+                      gsl_vector_int * permutation, 
+                      int * signum);
+
+/* Linear Solve Using QR Decomposition */
+
+int
+gsl_la_solve_QR_impl(const gsl_matrix     * qr_matrix,
+                     const gsl_vector     * rdiag,
+                     const gsl_vector_int * permutation,
+                     const gsl_vector     * rhs,
+		     gsl_vector           * solution);
+
+
+int
+gsl_la_qform_QR_impl (const gsl_matrix * qr, gsl_matrix * q);
+
 
 /* Linear Solve Using Householder Transformations
  *

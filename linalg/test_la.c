@@ -19,6 +19,44 @@ create_hilbert_matrix(int size)
   return m;
 }
 
+gsl_matrix *
+create_vandermonde_matrix(int size)
+{
+  int i, j;
+  gsl_matrix * m = gsl_matrix_alloc(size, size);
+  for(i=0; i<size; i++) {
+    for(j=0; j<size; j++) {
+      gsl_matrix_set(m, i, j, pow(i + 1.0, size - j - 1));
+    }
+  }
+  return m;
+}
+
+gsl_matrix * hilb2;
+gsl_matrix * hilb3;
+gsl_matrix * hilb4;
+gsl_matrix * hilb12;
+
+double hilb2_solution[] = {-8.0, 18.0} ;
+double hilb3_solution[] = {27.0, -192.0, 210.0};
+double hilb4_solution[] = {-64.0, 900.0, -2520.0, 1820.0};
+double hilb12_solution[] = {-1728.0, 245388.0, -8528520.0, 
+                            127026900.0, -1009008000.0, 4768571808.0, 
+                            -14202796608.0, 27336497760.0, -33921201600.0,
+                            26189163000.0, -11437874448.0, 2157916488.0 };
+
+
+gsl_matrix * vander2;
+gsl_matrix * vander3;
+gsl_matrix * vander4;
+gsl_matrix * vander12;
+
+double vander2_solution[] = {1.0, 0.0}; 
+double vander3_solution[] = {0.0, 1.0, 0.0}; 
+double vander4_solution[] = {0.0, 0.0, 1.0, 0.0}; 
+double vander12_solution[] = {0.0, 0.0, 0.0, 0.0,
+                            0.0, 0.0, 0.0, 0.0, 
+                            0.0, 0.0, 1.0, 0.0}; 
 
 int
 test_matmult(void)
@@ -140,19 +178,20 @@ test_matmult_mod(void)
 
 
 static int
-test_LU_solve_dim(size_t dim, const double * actual, double eps)
+test_LU_solve_dim(const gsl_matrix * m, const double * actual, double eps)
 {
   int s = 0;
   int signum;
-  size_t i;
+  size_t i, dim = m->size1;
 
   gsl_vector_int * perm = gsl_vector_int_alloc(dim);
   gsl_vector * rhs = gsl_vector_alloc(dim);
-  gsl_matrix * hm  = create_hilbert_matrix(dim);
+  gsl_matrix * lu  = gsl_matrix_alloc(dim,dim);
   gsl_vector * solution = gsl_vector_alloc(dim);
+  gsl_matrix_copy(lu,m);
   for(i=0; i<dim; i++) gsl_vector_set(rhs, i, i+1.0);
-  s += gsl_la_decomp_LU_impl(hm, perm, &signum);
-  s += gsl_la_solve_LU_impl(hm, perm, rhs, solution);
+  s += gsl_la_decomp_LU_impl(lu, perm, &signum);
+  s += gsl_la_solve_LU_impl(lu, perm, rhs, solution);
   for(i=0; i<dim; i++) {
     int foo = ( fabs(gsl_vector_get(solution, i) - actual[i])/fabs(actual[i]) > eps );
     if(foo) {
@@ -161,7 +200,7 @@ test_LU_solve_dim(size_t dim, const double * actual, double eps)
     s += foo;
   }
   gsl_vector_free(solution);
-  gsl_matrix_free(hm);
+  gsl_matrix_free(lu);
   gsl_vector_free(rhs);
   gsl_vector_int_free(perm);
 
@@ -173,42 +212,36 @@ int test_LU_solve(void)
 {
   int f;
   int s = 0;
-  double actual[16];
 
-  actual[0] =  -8.0;
-  actual[1] =  18.0;
-  f = test_LU_solve_dim(2, actual, 8.0 * GSL_DBL_EPSILON);
-  gsl_test(f, "  solve_LU dim=2");
+  f = test_LU_solve_dim(hilb2, hilb2_solution, 8.0 * GSL_DBL_EPSILON);
+  gsl_test(f, "  solve_LU hilbert(2)");
   s += f;
 
-  actual[0] =   27.0;
-  actual[1] = -192.0;
-  actual[2] =  210.0;
-  f = test_LU_solve_dim(3, actual, 64.0 * GSL_DBL_EPSILON);
-  gsl_test(f, "  solve_LU dim=3");
+  f = test_LU_solve_dim(hilb3, hilb3_solution, 64.0 * GSL_DBL_EPSILON);
+  gsl_test(f, "  solve_LU hilbert(3)");
   s += f;
 
-  actual[0] =   -64.0;
-  actual[1] =   900.0;
-  actual[2] = -2520.0;
-  actual[3] =  1820.0;
-  f = test_LU_solve_dim(4, actual, 1024.0 * GSL_DBL_EPSILON);
+  f = test_LU_solve_dim(hilb4, hilb4_solution, 1024.0 * GSL_DBL_EPSILON);
   gsl_test(f, "  solve_LU dim=4");
   s += f;
 
-  actual[0]  = -1728.0;
-  actual[1]  =  245388.0;
-  actual[2]  = -8528520.0;
-  actual[3]  =  127026900.0;
-  actual[4]  = -1009008000.0;
-  actual[5]  =  4768571808.0;
-  actual[6]  = -14202796608.0;
-  actual[7]  =  27336497760.0;
-  actual[8]  = -33921201600.0;
-  actual[9]  =  26189163000.0;
-  actual[10] = -11437874448.0;
-  actual[11] =  2157916488.0;
-  f = test_LU_solve_dim(12, actual, 0.05);
+  f = test_LU_solve_dim(hilb12, hilb12_solution, 0.05);
+  gsl_test(f, "  solve_LU dim=12");
+  s += f;
+
+  f = test_LU_solve_dim(vander2, vander2_solution, 8.0 * GSL_DBL_EPSILON);
+  gsl_test(f, "  solve_LU dim=2");
+  s += f;
+
+  f = test_LU_solve_dim(vander3, vander3_solution, 64.0 * GSL_DBL_EPSILON);
+  gsl_test(f, "  solve_LU dim=3");
+  s += f;
+
+  f = test_LU_solve_dim(vander4, vander4_solution, 1024.0 * GSL_DBL_EPSILON);
+  gsl_test(f, "  solve_LU dim=4");
+  s += f;
+
+  f = test_LU_solve_dim(vander12, vander12_solution, 0.05);
   gsl_test(f, "  solve_LU dim=12");
   s += f;
 
@@ -216,71 +249,143 @@ int test_LU_solve(void)
 }
 
 
+
 static int
-test_HH_solve_dim(size_t dim, const double * actual, double eps)
+test_QR_solve_dim(const gsl_matrix * m, const double * actual, double eps)
 {
   int s = 0;
-  size_t i;
+  int signum;
+  size_t i, dim = m->size1;
 
+  gsl_vector_int * perm = gsl_vector_int_alloc(dim);
   gsl_vector * rhs = gsl_vector_alloc(dim);
-  gsl_matrix * hm  = create_hilbert_matrix(dim);
+  gsl_matrix * qr  = gsl_matrix_alloc(dim,dim);
+  gsl_vector * d = gsl_vector_alloc(dim);
+  gsl_vector * solution = gsl_vector_alloc(dim);
+  gsl_matrix_copy(qr,m);
   for(i=0; i<dim; i++) gsl_vector_set(rhs, i, i+1.0);
-  s += gsl_la_solve_HH_impl(hm, rhs);
+  s += gsl_la_decomp_QR_impl(qr, d, perm, &signum);
+  s += gsl_la_solve_QR_impl(qr, d, perm, rhs, solution);
   for(i=0; i<dim; i++) {
-    int foo = ( fabs(gsl_vector_get(rhs, i) - actual[i])/fabs(actual[i]) > eps );
+    int foo = ( fabs(gsl_vector_get(solution, i) - actual[i])/fabs(actual[i]) > eps );
     if(foo) {
-      printf("%3d[%d]: %22.18g   %22.18g\n", dim, i, gsl_vector_get(rhs, i), actual[i]);
+      printf("%3d[%d]: %22.18g   %22.18g\n", dim, i, gsl_vector_get(solution, i), actual[i]);
     }
     s += foo;
   }
-  gsl_matrix_free(hm);
+  gsl_vector_free(solution);
+  gsl_vector_free(d);
+  gsl_matrix_free(qr);
   gsl_vector_free(rhs);
+  gsl_vector_int_free(perm);
 
   return s;
 }
 
+int test_QR_solve(void)
+{
+  int f;
+  int s = 0;
+
+  f = test_QR_solve_dim(hilb2, hilb2_solution, 8.0 * GSL_DBL_EPSILON);
+  gsl_test(f, "  solve_QR dim=2");
+  s += f;
+
+  f = test_QR_solve_dim(hilb3, hilb3_solution, 64.0 * GSL_DBL_EPSILON);
+  gsl_test(f, "  solve_QR dim=3");
+  s += f;
+
+  f = test_QR_solve_dim(hilb4, hilb4_solution, 1024.0 * GSL_DBL_EPSILON);
+  gsl_test(f, "  solve_QR dim=4");
+  s += f;
+
+  f = test_QR_solve_dim(hilb12, hilb12_solution, 0.05);
+  gsl_test(f, "  solve_QR dim=12");
+  s += f;
+
+  f = test_QR_solve_dim(vander2, vander2_solution, 8.0 * GSL_DBL_EPSILON);
+  gsl_test(f, "  solve_QR dim=2");
+  s += f;
+
+  f = test_QR_solve_dim(vander3, vander3_solution, 64.0 * GSL_DBL_EPSILON);
+  gsl_test(f, "  solve_QR dim=3");
+  s += f;
+
+  f = test_QR_solve_dim(vander4, vander4_solution, 1024.0 * GSL_DBL_EPSILON);
+  gsl_test(f, "  solve_QR dim=4");
+  s += f;
+
+  f = test_QR_solve_dim(vander12, vander12_solution, 0.05);
+  gsl_test(f, "  solve_QR dim=12");
+  s += f;
+
+  return s;
+}
+
+static int
+test_HH_solve_dim(const gsl_matrix * m, const double * actual, double eps)
+{
+  int s = 0;
+  int signum;
+  size_t i, dim = m->size1;
+
+  gsl_vector_int * perm = gsl_vector_int_alloc(dim);
+  gsl_matrix * hh  = gsl_matrix_alloc(dim,dim);
+  gsl_vector * d = gsl_vector_alloc(dim);
+  gsl_vector * solution = gsl_vector_alloc(dim);
+  gsl_matrix_copy(hh,m);
+  for(i=0; i<dim; i++) gsl_vector_set(solution, i, i+1.0);
+  s += gsl_la_solve_HH_impl(hh, solution);
+  for(i=0; i<dim; i++) {
+    int foo = ( fabs(gsl_vector_get(solution, i) - actual[i])/fabs(actual[i]) > eps );
+    if( foo) {
+      printf("%3d[%d]: %22.18g   %22.18g\n", dim, i, gsl_vector_get(solution, i), actual[i]);
+    }
+    s += foo;
+  }
+  gsl_vector_free(solution);
+  gsl_vector_free(d);
+  gsl_matrix_free(hh);
+  gsl_vector_int_free(perm);
+
+  return s;
+}
 
 int test_HH_solve(void)
 {
   int f;
   int s = 0;
-  double actual[16];
 
-  actual[0] =  -8.0;
-  actual[1] =  18.0;
-  f = test_HH_solve_dim(2, actual, 8.0 * GSL_DBL_EPSILON);
+  f = test_HH_solve_dim(hilb2, hilb2_solution, 8.0 * GSL_DBL_EPSILON);
   gsl_test(f, "  solve_HH dim=2");
   s += f;
 
-  actual[0] =   27.0;
-  actual[1] = -192.0;
-  actual[2] =  210.0;
-  f = test_HH_solve_dim(3, actual, 64.0 * GSL_DBL_EPSILON);
+  f = test_HH_solve_dim(hilb3, hilb3_solution, 64.0 * GSL_DBL_EPSILON);
   gsl_test(f, "  solve_HH dim=3");
   s += f;
 
-  actual[0] =   -64.0;
-  actual[1] =   900.0;
-  actual[2] = -2520.0;
-  actual[3] =  1820.0;
-  f = test_HH_solve_dim(4, actual, 2.0 * 1024.0 * GSL_DBL_EPSILON);
+  f = test_HH_solve_dim(hilb4, hilb4_solution, 2.0 * 1024.0 * GSL_DBL_EPSILON);
   gsl_test(f, "  solve_HH dim=4");
   s += f;
 
-  actual[0]  = -1728.0;
-  actual[1]  =  245388.0;
-  actual[2]  = -8528520.0;
-  actual[3]  =  127026900.0;
-  actual[4]  = -1009008000.0;
-  actual[5]  =  4768571808.0;
-  actual[6]  = -14202796608.0;
-  actual[7]  =  27336497760.0;
-  actual[8]  = -33921201600.0;
-  actual[9]  =  26189163000.0;
-  actual[10] = -11437874448.0;
-  actual[11] =  2157916488.0;
-  f = test_HH_solve_dim(12, actual, 0.01);
+  f = test_HH_solve_dim(hilb12, hilb12_solution, 0.01);
   gsl_test(f, "  solve_HH dim=12");
+  s += f;
+
+  f = test_HH_solve_dim(vander2, vander2_solution, 8.0 * GSL_DBL_EPSILON);
+  gsl_test(f, "  solve_HH vander(2)");
+  s += f;
+
+  f = test_HH_solve_dim(vander3, vander3_solution, 64.0 * GSL_DBL_EPSILON);
+  gsl_test(f, "  solve_HH vander(3)");
+  s += f;
+
+  f = test_HH_solve_dim(vander4, vander4_solution, 1024.0 * GSL_DBL_EPSILON);
+  gsl_test(f, "  solve_HH vander(4)");
+  s += f;
+
+  f = test_HH_solve_dim(vander12, vander12_solution, 0.05);
+  gsl_test(f, "  solve_HH vander(12)");
   s += f;
 
   return s;
@@ -363,11 +468,28 @@ int test_TD_solve(void)
 
 int main()
 {
+  hilb2 = create_hilbert_matrix(2);
+  hilb3 = create_hilbert_matrix(3);
+  hilb4 = create_hilbert_matrix(4);
+  hilb12 = create_hilbert_matrix(12);
+
+  vander2 = create_vandermonde_matrix(2);
+  vander3 = create_vandermonde_matrix(3);
+  vander4 = create_vandermonde_matrix(4);
+  vander12 = create_vandermonde_matrix(12);
+
   gsl_test(test_matmult(),        "Matrix Multiply");
   gsl_test(test_matmult_mod(),    "Matrix Multiply with Modification");
   gsl_test(test_LU_solve(),       "LU Decomposition and Solve");
+  gsl_test(test_QR_solve(),       "QR Decomposition and Solve");
   gsl_test(test_HH_solve(),       "Householder solve");
   gsl_test(test_TD_solve(),       "Tridiagonal solve");
+
+  gsl_matrix_free(hilb2);
+  gsl_matrix_free(hilb3);
+  gsl_matrix_free(hilb4);
+  gsl_matrix_free(hilb12);
+
 
   return gsl_test_summary();
 }
