@@ -5,8 +5,8 @@
 #include <gsl_rng.h>
 #include <gsl_errno.h>
 
-unsigned long int gsl_rng_default_seed = 0;
-const gsl_rng_type *gsl_rng_default;
+/* The initial defaults are defined in the file mt.c, so we can get
+   access to the static parts of the default generator. */
 
 static void
   check (const gsl_rng_type ** def, const gsl_rng_type * test, const char *p);

@@ -36,6 +36,8 @@
 
 #include <gsl_rng.h>
 
+
+
 inline unsigned long int mt_get (void *vstate);
 double mt_get_double (void *vstate);
 void mt_set (void *state, unsigned long int s);
@@ -130,3 +132,8 @@ static const gsl_rng_type mt_type =
  &mt_get_double};
 
 const gsl_rng_type *gsl_rng_mt19937 = &mt_type;
+
+/* MT19937 is the default generator, so define that here too */
+
+const gsl_rng_type *gsl_rng_default = &mt_type;
+unsigned long int gsl_rng_default_seed = 0;
