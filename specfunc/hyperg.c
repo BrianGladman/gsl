@@ -101,6 +101,7 @@ gsl_sf_hyperg_1F1_1_int_impl(const int b, const double x, double * result)
     return gsl_sf_exprel_2_impl(x, result);
   }
   else {
+    return gsl_sf_exprel_n_impl(b-1, x, result);
   }
 }
 

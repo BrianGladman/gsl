@@ -222,7 +222,6 @@ gsl_sf_hyperg_0F1_impl(double c, double x, double * result)
   if(x < 0.0) {
     double Jcm1;
     double lg_c, sgn;
-    double ln_result;
     int stat_g = gsl_sf_lngamma_sgn_impl(c, &lg_c, &sgn);
     int stat_J = hyperg_0F1_bessel_J(c-1.0, 2.0*sqrt(-x), &Jcm1);
     if(stat_g != GSL_SUCCESS) {
@@ -235,19 +234,8 @@ gsl_sf_hyperg_0F1_impl(double c, double x, double * result)
     }
     else {
       double s_J = (Jcm1 > 0.0 ? 1.0 : -1.0);
-      ln_result = lg_c + log(-x)*0.5*(1.0-c) + log(fabs(Jcm1));
-      if(ln_result > GSL_LOG_DBL_MAX) {
-        *result = 0.0;  /* FIXME: should be Inf */
-        return GSL_EOVRFLW;
-      }
-      else if(ln_result < GSL_LOG_DBL_MIN) {
-        *result = 0.0;
-	return GSL_EUNDRFLW;
-      }
-      else {
-        *result = s_J * sgn * exp(ln_result);
-	return stat_J;
-      }
+      double ln_result = lg_c + log(-x)*0.5*(1.0-c) + log(fabs(Jcm1));
+      return gsl_sf_exp_sgn_impl(ln_result, s_J * sgn, result);
     }
   }
   else if(x == 0.0) {
@@ -257,7 +245,6 @@ gsl_sf_hyperg_0F1_impl(double c, double x, double * result)
   else {
     double Icm1;
     double lg_c, sgn;
-    double ln_result;
     int stat_g = gsl_sf_lngamma_sgn_impl(c, &lg_c, &sgn);
     int stat_I = hyperg_0F1_bessel_I(c-1.0, 2.0*sqrt(x), &Icm1);
     if(stat_g != GSL_SUCCESS) {
@@ -270,19 +257,8 @@ gsl_sf_hyperg_0F1_impl(double c, double x, double * result)
     }
     else {
       double s_I = (Icm1 > 0.0 ? 1.0 : -1.0);
-      ln_result = log(x)*0.5*(1.0-c) + lg_c + log(fabs(Icm1));
-      if(ln_result > GSL_LOG_DBL_MAX) {
-        *result = 0.0;  /* FIXME: should be Inf */
-        return GSL_EOVRFLW;
-      }
-      else if(ln_result < GSL_LOG_DBL_MIN) {
-        *result = 0.0;
-	return GSL_EUNDRFLW;
-      }
-      else {
-        *result = s_I * sgn * exp(ln_result);
-	return stat_I;
-      }
+      double ln_result = log(x)*0.5*(1.0-c) + lg_c + log(fabs(Icm1));
+      return gsl_sf_exp_sgn_impl(ln_result, s_I * sgn, result);
     }
   }
 }

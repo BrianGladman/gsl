@@ -727,6 +727,26 @@ hyperg_1F1_ab_posint(const int a, const int b, const double x, double * result)
   if(a == b) {
     return gsl_sf_exp_impl(x, result);
   }
+  else if(a == 1) {
+    return gsl_sf_exprel_n_impl(b-1, x, result);
+  }
+  else if(b == a + 1) {
+    double K;
+    int stat_K = gsl_sf_exprel_n_impl(a, -x, &K);  /* 1F1(1,1+a,-x) */
+    if(K == 0.0) {
+      *result = 0.0;
+      return stat_K;
+    }
+    if(stat_K == GSL_SUCCESS) {
+      double lK = log(fabs(K));
+      double lr = lK + x;
+      return gsl_sf_exp_sgn_impl(lr, K, result);
+    }
+    else {
+      *result = 0.0;
+      return stat_K;
+    }
+  }
   else if(a == b + 1) {
     *result = exp(x) * (1.0 + x/b);
     return GSL_SUCCESS;
@@ -734,8 +754,6 @@ hyperg_1F1_ab_posint(const int a, const int b, const double x, double * result)
   else if(a == b + 2) {
     *result = exp(x) * (1.0 + x/b*(2.0 + x/(b+1)));
     return GSL_SUCCESS;
-  }
-  else if(a == 1) {
   }
   else if(   ( b < 10 && a < 10 && ax < 5.0 )
           || ( b > a*ax )

@@ -15,6 +15,15 @@ int     gsl_sf_exp_e(double x, double * result);
 double  gsl_sf_exp(double x);
 
 
+/* Exponentiate and apply a given sign: Exp(x) * Sgn(sgn)
+ *
+ * exceptions: GSL_EOVRFLW, GSL_EUNDRFLW
+ */
+int     gsl_sf_exp_sgn_impl(double x, double sgn, double * result);
+int     gsl_sf_exp_sgn_e(double x, double sgn, double * result);
+double  gsl_sf_exp_sgn(double x, double sgn);
+
+
 /* Similarly for exp(x)-1
  *
  * exceptions: GSL_EOVRFLW
@@ -42,11 +51,23 @@ int     gsl_sf_exprel_2_e(double x, double * result);
 double  gsl_sf_exprel_2(double x);
 
 
+/* Similarly for the N-th generalization of
+ * the above. The so-called N-relative exponential
+ *
+ * exprel_N(x) = N!/x^N (exp(x) - Sum[x^k/k!, {k,0,N-1}])
+ *             = 1 + x/(N+1) + x^2/((N+1)(N+2)) + ...
+ *             = 1F1(1,1+N,x)
+ */
+int     gsl_sf_exprel_n_impl(int n, double x, double * result);
+int     gsl_sf_exprel_n_e(int n, double x, double * result);
+double  gsl_sf_exprel_n(int n, double x);
+
+
 #ifdef HAVE_INLINE
 #include <gsl_math.h>
 #include <gsl_errno.h>
 extern inline
-int gsl_sf_exp_impl(double x, double * result)
+int gsl_sf_exp_impl(const double x, double * result)
 {
   if(x > GSL_LOG_DBL_MAX) {
     *result = 0.0;
@@ -58,6 +79,22 @@ int gsl_sf_exp_impl(double x, double * result)
   }
   else {
     *result = exp(x);
+    return GSL_SUCCESS;
+  }  
+}
+extern inline
+int gsl_sf_exp_sgn_impl(const double x, const double sgn, double * result)
+{
+  if(x > GSL_LOG_DBL_MAX) {
+    *result = 0.0;
+    return GSL_EOVRFLW;
+  }
+  else if(x < GSL_LOG_DBL_MIN) {
+    *result = 0.0;
+    return GSL_EUNDRFLW;
+  }
+  else {
+    *result = GSL_SIGN(sgn) * exp(x);
     return GSL_SUCCESS;
   }  
 }

@@ -55,6 +55,30 @@ static struct gsl_sf_cheb_series lopx_cs = {
 
 /*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
 
+int gsl_sf_log_impl(const double x, double * result)
+{
+  if(x <= 0.0) {
+    *result = 0.0;
+    return GSL_EDOM;
+  }
+  else {
+    *result = log(x);
+    return GSL_SUCCESS;
+  }
+}
+
+int gsl_sf_log_abs_impl(const double x, double * result)
+{
+  if(x == 0.0) {
+    *result = 0.0;
+    return GSL_EDOM;
+  }
+  else {
+    *result = log(fabs(x));
+    return GSL_SUCCESS;
+  }
+}
+
 int gsl_sf_complex_log_impl(const double zr, const double zi, double * lnr, double * theta)
 {
   if(zr != 0.0 || zi != 0.0) {
@@ -92,6 +116,24 @@ int gsl_sf_log_1plusx_impl(const double x, double * result)
 
 /*-*-*-*-*-*-*-*-*-*-*-* Error Handling Versions *-*-*-*-*-*-*-*-*-*-*-*/
 
+int gsl_sf_log_e(const double x, double * result)
+{
+  int status = gsl_sf_log_impl(x, result);
+  if(status != GSL_SUCCESS) {
+    GSL_ERROR("gsl_sf_log_e", status);
+  }
+  return status;
+}
+
+int gsl_sf_log_abs_e(const double x, double * result)
+{
+  int status = gsl_sf_log_abs_impl(x, result);
+  if(status != GSL_SUCCESS) {
+    GSL_ERROR("gsl_sf_log_abs_e", status);
+  }
+  return status;
+}
+
 int gsl_sf_complex_log_e(const double zr, const double zi, double * lnr, double * theta)
 {
   int status = gsl_sf_complex_log_impl(zr, zi, lnr, theta);
@@ -113,6 +155,25 @@ int gsl_sf_log_1plusx_e(const double x, double * result)
 
 /*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*-*-*/
 
+double gsl_sf_log(const double x)
+{
+  double y;
+  int status = gsl_sf_log_impl(x, &y);
+  if(status != GSL_SUCCESS) {
+    GSL_WARNING("gsl_sf_log", status);
+  }
+  return y;
+}
+
+double gsl_sf_log_abs(const double x)
+{
+  double y;
+  int status = gsl_sf_log_abs_impl(x, &y);
+  if(status != GSL_SUCCESS) {
+    GSL_WARNING("gsl_sf_log_abs", status);
+  }
+  return y;
+}
 
 double gsl_sf_log_1plusx(const double x)
 {
