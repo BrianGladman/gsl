@@ -19,7 +19,9 @@ different datasets, such as the t-test, are also included.
 All the functions are available in versions for floating-point datasets
 and integer datasets. The versions for floating-point data have the
 prefix @code{gsl_stats} and the versions for integer data have the
-prefix @code{gsl_stats_int}.
+prefix @code{gsl_stats_int}. All the algorithms use a recurrence
+relation to compute average quantities in a stable way, without large
+intermediate values that might overflow.
 
 @menu
 * Statistical Concepts::        
