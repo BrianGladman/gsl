@@ -1,6 +1,6 @@
-/* gsl_nan.h
+/* sys/fdiv.c
  * 
- * Copyright (C) 1996, 1997, 1998, 1999, 2000 Gerard Jungman, Brian Gough
+ * Copyright (C) 2001 Brian Gough
  * 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,27 +17,13 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef __GSL_NAN_H__
-#define __GSL_NAN_H__
+#include <config.h>
+#include <math.h>
 
-#ifdef NAN
-#define GSL_NAN NAN
-#define GSL_POSINF HUGE_VAL
-#define GSL_NEGINF (-HUGE_VAL)
-#define GSL_POSZERO (+0)
-#define GSL_NEGZERO (-0)
-#elif defined(_MSC_VER) /* Microsoft Visual C++ */
-#define GSL_NAN _FPCLASS_QNAN
-#define GSL_POSINF _FPCLASS_PINF
-#define GSL_NEGINF _FPCLASS_NINF
-#define GSL_POSZERO _FPCLASS_PZ
-#define GSL_NEGZERO _FPCLASS_NZ
-#else
-#define GSL_NAN (gsl_fdiv(0.0,0.0))
-#define GSL_POSINF (gsl_fdiv(+1.0,0.0))
-#define GSL_NEGINF (gsl_fdiv(-1.0,0.0))
-#define GSL_POSZERO (+0)
-#define GSL_NEGZERO (-0)
-#endif
+double gsl_fdiv (const double x, const double y);
 
-#endif /* __GSL_NAN_H__ */
+double 
+gsl_fdiv (const double x, const double y)
+{
+  return x / y;
+}

@@ -7,6 +7,8 @@
 #include <limits.h>
 #include <float.h>
 
+/* magic constants; mostly for the benefit of the implementation */
+
 /* -*-MACHINE CONSTANTS-*-
  *
  * PLATFORM: Whiz-O-Matic 9000

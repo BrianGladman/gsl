@@ -90,7 +90,7 @@
 #define M_EULER    0.57721566490153286060651209008	/* Euler constant */
 #endif
 
-/* magic constants; mostly for the benefit of the implementation */
+#include <gsl/gsl_sys.h>
 #include <gsl/gsl_machine.h>
 #include <gsl/gsl_precision.h>
 #include <gsl/gsl_nan.h>
@@ -176,21 +176,6 @@ GSL_MIN_LDBL (long double a, long double b)
 #define GSL_MAX_LDBL(a,b)  GSL_MAX(a,b)
 #define GSL_MIN_LDBL(a,b)  GSL_MIN(a,b)
 #endif /* HAVE_INLINE */
-
-/* Functions from sys directory */
-double gsl_log1p (const double x);
-double gsl_expm1 (const double x);
-double gsl_hypot (const double x, const double y);
-double gsl_acosh (const double x);
-double gsl_asinh (const double x);
-double gsl_atanh (const double x);
-int gsl_isnan (const double x);
-int gsl_isinf (const double x);
-int gsl_finite (const double x);
-
-double gsl_coerce_double (const double x);
-float gsl_coerce_float (const float x);
-long double gsl_coerce_long_double (const long double x);
 
 /* Definition of an arbitrary function with parameters */
 

@@ -254,6 +254,11 @@ main (void)
     gsl_test_int (s, 0, "gsl_finite(nan)");
   }
 
+  {
+    double x = gsl_fdiv (2.0, 3.0);
+    gsl_test_rel (x, 2.0/3.0, 4*GSL_DBL_EPSILON, "gsl_fdiv(2,3)");
+  }
+
   return gsl_test_summary ();
 }
 
