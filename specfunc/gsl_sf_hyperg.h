@@ -6,6 +6,9 @@
 
 
 /* Hypergeometric function related to Bessel functions
+ * 0F1[c,x] =
+ *            Gamma[c]    x^(1/2(1-c)) I_{c-1}(2 Sqrt[x])
+ *            Gamma[c] (-x)^(1/2(1-c)) J_{c-1}(2 Sqrt[-x])
  *
  * exceptions:
  */
@@ -14,7 +17,7 @@ int     gsl_sf_hyperg_0F1_e(double c, double x, double * result);
 double  gsl_sf_hyperg_0F1(double c, double x);
 
 
-/* Confluent hypereometric function  1F1[a,b,x] = M(a,b,x)
+/* Confluent hypergeometric function  1F1[a,b,x] = M(a,b,x)
  *
  * exceptions:
  */
@@ -33,7 +36,8 @@ int     gsl_sf_hyperg_2F1_e(double a, double b, double c, double x, double * res
 double  gsl_sf_hyperg_2F1(double a, double b, double c, double x);
 
 
-/* Gauss hypergeometric function 2F1[aR + I aI, aR - I aI, c, x]
+/* Gauss hypergeometric function
+ * 2F1[aR + I aI, aR - I aI, c, x]
  * |x| < 1
  *
  * exceptions:
@@ -43,7 +47,8 @@ int     gsl_sf_hyperg_2F1_conj_e(double aR, double aI, double c, double x, doubl
 double  gsl_sf_hyperg_2F1_conj(double aR, double aI, double c, double x);
 
 
-/* Renormalized Gauss hypergeometric function 2F1[a,b,c,x] / Gamma[c]
+/* Renormalized Gauss hypergeometric function
+ * 2F1[a,b,c,x] / Gamma[c]
  * |x| < 1
  *
  * exceptions:
@@ -53,7 +58,8 @@ int     gsl_sf_hyperg_2F1_renorm_e(double a, double b, double c, double x, doubl
 double  gsl_sf_hyperg_2F1_renorm(double a, double b, double c, double x);
 
 
-/* Renormalized Gauss hypergeometric function 2F1[aR + I aI, aR - I aI, c, x] / Gamma[c]
+/* Renormalized Gauss hypergeometric function
+ * 2F1[aR + I aI, aR - I aI, c, x] / Gamma[c]
  * |x| < 1
  *
  * exceptions:

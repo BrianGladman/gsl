@@ -10,6 +10,7 @@
 #define locMAX(a,b)     ((a) > (b) ? (a) : (b))
 #define locEPS          (1000.0*GSL_MACH_EPS)
 
+#define SUM_LARGE  (1.0e-5*DBL_MAX)
 
 
 static
@@ -44,7 +45,7 @@ hyperg_1F1_series(const double a, const double b, const double x,
       else
         return GSL_SUCCESS;
     }
-    
+
     u = x * (an/(bn*n));
     abs_u = fabs(u);
     if(abs_u > 1.0 && max_abs_del > DBL_MAX/abs_u) {
@@ -54,6 +55,12 @@ hyperg_1F1_series(const double a, const double b, const double x,
     }
     del *= u;
     sum += del;
+
+    if(fabs(sum) > SUM_LARGE) {
+      *prec = 1.0;
+      *result = sum;
+      return GSL_EOVRFLW;
+    }
 
     abs_del = fabs(del);
     max_abs_del = locMAX(abs_del, max_abs_del);

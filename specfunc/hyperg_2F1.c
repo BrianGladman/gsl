@@ -47,9 +47,12 @@ static int hyperg_2F1_series(const double a, const double b, const double c,
   return GSL_SUCCESS;
 }
 
+
 /* a = aR + i aI, b = aR - i aI */
-static int hyperg_2F1_conj_series(const double aR, const double aI, const double c,
-                                  double x, double * result, double * prec)
+static
+int
+hyperg_2F1_conj_series(const double aR, const double aI, const double c,
+                       double x, double * result, double * prec)
 {
   if(fabs(c) < locEPS) {
     *prec   = 1.0;
@@ -79,9 +82,12 @@ static int hyperg_2F1_conj_series(const double aR, const double aI, const double
   }
 }
 
-static int hyperg_2F1_luke(const double a, const double b, const double c,
-                           const double xin, 
-			   double * result, double * prec)
+
+static
+int
+hyperg_2F1_luke(const double a, const double b, const double c,
+                const double xin, 
+                double * result, double * prec)
 {
   const int nmax = 20000;
   int n = 3;
@@ -246,9 +252,11 @@ void testy(void)
 
 
 /* a = aR + i aI, b = aR - i aI */
-static int hyperg_2F1_conj_luke(const double aR, const double aI, const double c,
-                                const double x, 
-			        double * result, double * prec)
+static
+int
+hyperg_2F1_conj_luke(const double aR, const double aI, const double c,
+                     const double x, 
+                     double * result, double * prec)
 {
   const int nmax = 10000;
   int n = 3;
@@ -336,16 +344,16 @@ static int pow_omx(const double x, const double p, double * result)
 }
 
 
-int gsl_sf_hyperg_2F1_impl(double a, double b, const double c,
-                           const double x,
-                           double * result)
+int
+gsl_sf_hyperg_2F1_impl(double a, double b, const double c,
+                       const double x,
+                       double * result)
 {
   int a_neg_integer;
   int b_neg_integer;
   int c_neg_integer;
   
-  if(fabs(x) >= 1.0) return GSL_EDOM;
-
+  if(x < -1.0 || 1.0 <= x) return GSL_EDOM;
 
   a_neg_integer = ( a < 0.0  &&  fabs(a - rint(a)) < locEPS );
   b_neg_integer = ( b < 0.0  &&  fabs(b - rint(b)) < locEPS );
@@ -359,8 +367,11 @@ int gsl_sf_hyperg_2F1_impl(double a, double b, const double c,
     return pow_omx(x, c-a-b, result);  /* (1-x)^(c-a-b) */
   }
 
-
-  if(x < 0.0) {
+  if(fabs(a) < 10.0 && fabs(b) < 10.0) {
+    double prec;
+    return hyperg_2F1_series(a, b, c, x, result, &prec);
+  }
+  else if(x < 0.0) {
     double prec;
     return hyperg_2F1_luke(a, b, c, x, result, &prec);
   }
@@ -642,7 +653,7 @@ int gsl_sf_hyperg_2F1_conj_impl(const double aR, const double aI, const double c
     int status = hyperg_2F1_conj_series(aR, aI, c, x, result, &prec);
     return status;
   }
-  else if(fabs(aR) < 5.0 && fabs(aI) < 5.0) {
+  else if(aR*aR+aI*aI < 50.0 /* fabs(aR) < 5.0 && fabs(aI) < 5.0 */) {
     double prec;
     int status = hyperg_2F1_conj_series(aR, aI, c, x, result, &prec);
     return status;
@@ -654,7 +665,7 @@ int gsl_sf_hyperg_2F1_conj_impl(const double aR, const double aI, const double c
   }
 }
 
-/* 2F1(a, b; c; x) / Gamma(c)   with correct handling for c = negative integer */
+
 int gsl_sf_hyperg_2F1_renorm_impl(const double a, const double b, const double c,
                                   const double x,
 			          double * result
@@ -697,9 +708,10 @@ int gsl_sf_hyperg_2F1_renorm_impl(const double a, const double b, const double c
   else {
     /* generic c */
     double F;
-    double lng = gsl_sf_lngamma(c);
+    double lng;
+    int stat_g = gsl_sf_lngamma_impl(c, &lng);
     int stat_F = gsl_sf_hyperg_2F1_impl(a, b, c, x, &F);
-    if(stat_F == GSL_SUCCESS) {
+    if(stat_F == GSL_SUCCESS && stat_g == GSL_SUCCESS) {
       double ln_absF   = log(fabs(F));
       double ln_result = ln_absF - lng;
       if(ln_result < GSL_LOG_DBL_MIN) {
@@ -713,6 +725,7 @@ int gsl_sf_hyperg_2F1_renorm_impl(const double a, const double b, const double c
       }
     }
     else {
+      *result = 0.0;
       return GSL_EFAILED;
     }
   }
