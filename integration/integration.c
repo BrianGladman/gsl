@@ -1,3 +1,4 @@
+#if 0
 /* Created: [GJ] Tue Apr 23 21:26:53 EDT 1996
  */
 #include <stdio.h>
@@ -5,7 +6,7 @@
 #include <strings.h>
 #include <math.h>
 #include <gsl_errno.h>
-#include "interpolation.h"
+/* #include "interpolation.h" */
 #include "gsl_integration.h"
 
 
@@ -272,3 +273,5 @@ double gsl_integ_lorenz(double (*f)(double),
     return gsl_integ_simpson(f_y, lower_y, upper_y, eps);
   }
 }
+
+#endif /* 0 */

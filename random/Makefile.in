@@ -613,28 +613,28 @@ mostlyclean distclean maintainer-clean
 
 
 switch.c gsl_ran_switch.h:
-	$(srcdir)/makesrc --switch
+	$(srcdir)/makesrc $(srcdir) --switch
 
 taus.h taus-state.c taus-gen.c: makesrc
-	$(srcdir)/makesrc taus
+	$(srcdir)/makesrc $(srcdir) taus
 
 mrg.h mrg-state.c mrg-gen.c: makesrc
-	$(srcdir)/makesrc mrg
+	$(srcdir)/makesrc $(srcdir) mrg
 
 cmrg.h cmrg-state.c cmrg-gen.c: makesrc
-	$(srcdir)/makesrc cmrg
+	$(srcdir)/makesrc $(srcdir) cmrg
 
 uni.h uni-state.c uni-gen.c: makesrc
-	$(srcdir)/makesrc uni
+	$(srcdir)/makesrc $(srcdir) uni
 
 uni32.h uni32-state.c uni32-gen.c: makesrc
-	$(srcdir)/makesrc uni32
+	$(srcdir)/makesrc $(srcdir) uni32
 
 zuf.h zuf-state.c zuf-gen.c: makesrc
-	$(srcdir)/makesrc zuf
+	$(srcdir)/makesrc $(srcdir) zuf
 
 rand.h rand-state.c rand-gen.c: makesrc
-	$(srcdir)/makesrc rand
+	$(srcdir)/makesrc $(srcdir) rand
 
 tooclean:
 	/bin/rm -rf .deps

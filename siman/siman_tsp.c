@@ -207,7 +207,7 @@ void prepare_distance_matrix()
 void print_distance_matrix()
 {
   int i, j;
-  double dist;
+/*   double dist; */
 
   for (i = 0; i < N_CITIES; ++i) {
     printf("# ");
