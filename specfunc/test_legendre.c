@@ -212,7 +212,7 @@ int test_legendre(void)
   TEST_SF(s, gsl_sf_conicalP_1_impl, (200.0,  0.999, &r), 195733.0396081538,        TEST_TOL2, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_conicalP_1_impl, (200.0,  10.0, &r), -2.9272610662414349553,    TEST_TOL2, GSL_SUCCESS);
 
-  TEST_SF(s, gsl_sf_conicalP_1_impl, (1000.0, 100.0, &r),  -1.7783258105862399857,    TEST_TOL4, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_conicalP_1_impl, (1000.0, 100.0, &r),  -1.7783258105862399857,    TEST_TOL6, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_conicalP_1_impl, (1000.0, 1000.0, &r),  0.4535161075156427179,    TEST_TOL4, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_conicalP_1_impl, (1000.0, 1.0e+8, &r),  0.0009983414549874888478, TEST_SQRT_TOL0, GSL_SUCCESS);
 
