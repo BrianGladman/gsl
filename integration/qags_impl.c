@@ -85,7 +85,8 @@ gsl_integration_qags_impl (const gsl_function * f,
 
   /* Initialization */
 
-  initialise_table (&table, result0);
+  initialise_table (&table);
+  append_table (&table, result0);
 
   area = result0;
   errsum = abserr0;
@@ -265,7 +266,7 @@ gsl_integration_qags_impl (const gsl_function * f,
 
       /* Prepare bisection of the smallest interval. */
 
-      if (table.n == 0)
+      if (table.n == 1)
 	{
 	  disallow_extrapolation = 1;
 	}

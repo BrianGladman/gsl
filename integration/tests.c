@@ -131,6 +131,18 @@ double f455 (double x, void * params) {
   return log(x) / (1.0 + 100.0 * x * x) ;
 }
 
+/* f456(x) = log(x) */
+/* integ(f456*sin(10 pi x),x,0,1) = -(gamma + log(10pi) - Ci(10pi))/(10pi) */
+
+double f456 (double x, void * params) {
+  params = 0 ;
+  if (x == 0)
+    {
+      return 0;
+    }
+  return log(x) ;
+}
+
 /* f458(x) = 1/(1 + log(x)^2)^2 */
 /* integ(log(x) f458(x),x,0,1) = (Ci(1) sin(1) + (pi/2 - Si(1)) cos(1))/pi 
                                = -0.1892752 */

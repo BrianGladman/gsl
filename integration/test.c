@@ -1,6 +1,7 @@
 #include <config.h>
 #include <stdio.h>
 #include <math.h>
+#include <gsl_math.h>
 #include <gsl_integration.h>
 #include <gsl_errno.h>
 #include <gsl_test.h>
@@ -1624,11 +1625,100 @@ int main (void)
     gsl_test_rel(result,exp_result,1e-14,"qaws(f458) smooth result") ;
     gsl_test_rel(abserr,exp_abserr,1e-6,"qaws(f458) smooth abserr") ;
 
-
-
     gsl_integration_workspace_free (w) ;
 
   }
+
+
+  /* Test oscillatory integration using a relative error bound */
+
+  {
+    int status = 0, i; struct counter_params p;
+    double result = 0, abserr=0;
+
+    gsl_integration_workspace * w = gsl_integration_workspace_alloc (1000) ;
+    gsl_integration_qawo_workspace * wo 
+      = gsl_integration_qawo_workspace_alloc (10 * M_PI, 1, 1, 1000) ;
+
+    /* All results are for GSL_IEEE_MODE=double-precision */
+
+    double exp_result = -1.281368483991674190E-01;
+    double exp_abserr =  6.875028324415666248E-12;
+    int exp_neval  =      305;
+    int exp_ier    =        0;
+    int exp_last   =        9;
+
+    double a[9] = { 0.000000000000000000E+00,
+		    5.000000000000000000E-01,
+		    2.500000000000000000E-01,
+		    1.250000000000000000E-01,
+		    6.250000000000000000E-02,
+		    3.125000000000000000E-02,
+		    1.562500000000000000E-02,
+		    7.812500000000000000E-03,
+		    3.906250000000000000E-03 } ;
+    double b[9] = { 3.906250000000000000E-03,
+		    1.000000000000000000E+00,
+		    5.000000000000000000E-01,
+		    2.500000000000000000E-01,
+		    1.250000000000000000E-01,
+		    6.250000000000000000E-02,
+		    3.125000000000000000E-02,
+		    1.562500000000000000E-02,
+		    7.812500000000000000E-03 } ;
+    double r[9] = { -1.447193692377651136E-03,
+		    2.190541162282139478E-02,
+		    -2.587726479625663753E-02,
+		    5.483209176363500886E-02,
+		    -3.081695575172510582E-02,
+		    -9.178321994387816929E-02,
+		    -3.886716016498160953E-02,
+		    -1.242306301902117854E-02,
+		    -3.659495117871544145E-03} ;
+    double e[9] = { 8.326506625798146465E-07,
+		    1.302638552580516100E-13,
+		    7.259224351945759794E-15,
+		    1.249770395036711102E-14,
+		    7.832180081562836579E-16,
+		    1.018998440559284116E-15,
+		    4.315121611695628020E-16,
+		    1.379237060008662177E-16,
+		    4.062855738364339357E-17 } ;
+    int order[9] = { 1, 2, 4, 3, 6, 5, 7, 8, 9 } ;
+
+    double alpha = 1.0 ;
+    gsl_function f = { &f456, &alpha } ;
+    gsl_function fc = make_counter(&f, &p) ;
+
+    status = gsl_integration_qawo (&fc, 0.0, 1.0, 0, 1e-7, w->limit,
+				   w, wo, &result, &abserr) ;
+    
+    gsl_test_rel(result,exp_result,1e-14,"qawo(f456) smooth result") ;
+    gsl_test_rel(abserr,exp_abserr,1e-3,"qawo(f456) smooth abserr") ;
+    gsl_test_int((int)(p.neval),exp_neval,"qawo(f456) smooth neval") ;  
+    gsl_test_int((int)(w->size),exp_last,"qawo(f456) smooth last") ;  
+    gsl_test_int(status,exp_ier,"qawo(f456) smooth status") ;
+
+    for (i = 0; i < 9 ; i++) 
+	gsl_test_rel(w->alist[i],a[i],1e-15,"qawo(f456) smooth alist") ;
+
+    for (i = 0; i < 9 ; i++) 
+	gsl_test_rel(w->blist[i],b[i],1e-15,"qawo(f456) smooth blist") ;
+
+    for (i = 0; i < 9 ; i++) 
+	gsl_test_rel(w->rlist[i],r[i],1e-14,"qawo(f456) smooth rlist") ;
+
+    for (i = 0; i < 9 ; i++) 
+	gsl_test_rel(w->elist[i],e[i],1e-3,"qawo(f456) smooth elist") ;
+
+    for (i = 0; i < 9 ; i++) 
+	gsl_test_int((int)w->order[i],order[i]-1,"qawo(f456) smooth order");
+
+    gsl_integration_qawo_workspace_free (wo) ;
+    gsl_integration_workspace_free (w) ;
+
+  }
+
 
   return gsl_test_summary() ;
 } 

@@ -3,18 +3,18 @@
 #include <gsl_integration.h>
 #include <gsl_errno.h>
 
-gsl_integration_qawf_workspace *
-gsl_integration_qawf_workspace_alloc (double par, size_t n)
+gsl_integration_qawo_workspace *
+gsl_integration_qawo_workspace_alloc (double omega, double L, int sine, size_t n)
 {
-  gsl_integration_qawf_workspace *t;
+  gsl_integration_qawo_workspace *t;
   double * chebmo;
 
-  t = (gsl_integration_qawf_workspace *)
-    malloc (sizeof (gsl_integration_qawf_workspace));
+  t = (gsl_integration_qawo_workspace *)
+    malloc (sizeof (gsl_integration_qawo_workspace));
 
   if (t == 0)
     {
-      GSL_ERROR_RETURN ("failed to allocate space for qawf_workspace struct",
+      GSL_ERROR_RETURN ("failed to allocate space for qawo_workspace struct",
 			GSL_ENOMEM, 0);
     }
 
@@ -29,25 +29,29 @@ gsl_integration_qawf_workspace_alloc (double par, size_t n)
 
   t->i = 0;
   t->n = n;
-  t->par = par;
+  t->sine = sine;
+  t->omega = omega;
+  t->par = 0.5 * omega * L;
   t->chebmo = chebmo;
 
   return t;
 }
 
 int
-gsl_integration_qawf_workspace_set (gsl_integration_qawf_workspace * t,
-				double par)
+gsl_integration_qawo_workspace_set (gsl_integration_qawo_workspace * t,
+				    double omega, double L, int sine)
 {
   t->i = 0;
-  t->par = par;
+  t->omega = omega;
+  t->sine = sine;
+  t->par = 0.5 * omega * L;
 
   return GSL_SUCCESS;
 }
 
 
 void
-gsl_integration_qawf_workspace_free (gsl_integration_qawf_workspace * t)
+gsl_integration_qawo_workspace_free (gsl_integration_qawo_workspace * t)
 {
   free (t->chebmo);
   free (t);

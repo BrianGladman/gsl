@@ -4,7 +4,6 @@ compute_moments (double par, double * cheb);
 static int
 dgtsl (size_t n, double *c, double *d, double *e, double *b);
 
-
 struct fn_fourier_params
 {
   gsl_function *function;
@@ -18,24 +17,22 @@ static void compute_moments (double par, double *moment);
 
 static void
 qc25f (gsl_function * f, double a, double b, 
-       gsl_integration_qawf_workspace * wf, size_t level,
-       double *result, double *abserr, int *err_reliable);
+       gsl_integration_qawo_workspace * wf, size_t level,
+       double *result, double *abserr, double *resabs, double *resasc);
 
 static void
 qc25f (gsl_function * f, double a, double b, 
-       gsl_integration_qawf_workspace * wf, size_t level,
-       double *result, double *abserr, int *err_reliable)
+       gsl_integration_qawo_workspace * wf, size_t level,
+       double *result, double *abserr, double *resabs, double *resasc)
 {
   const double center = 0.5 * (a + b);
   const double half_length = 0.5 * (b - a);
-  const double omega = wf->w ;
+  const double omega = wf->omega ;
   
-  const double par = wf->w * half_length;
+  const double par = omega * half_length;
 
   if (fabs (par) < 2)
     {
-      double resabs, resasc;
-
       gsl_function weighted_function;
       struct fn_fourier_params fn_params;
 
@@ -54,51 +51,76 @@ qc25f (gsl_function * f, double a, double b,
       weighted_function.params = &fn_params;
 
       gsl_integration_qk15 (&weighted_function, a, b, result, abserr,
-			    &resabs, &resasc);
+			    resabs, resasc);
       
-      if (*abserr == resasc)
-	{
-	  *err_reliable = 0;
-	}
-      else 
-	{
-	  *err_reliable = 1;
-	}
-
       return;
     }
   else
     {
-      double cheb12[13], cheb24[25], moment[25];
-      double res12 = 0, res24 = 0;
+      double *moment;
+      double cheb12[13], cheb24[25];
+      double result_abs, res12_cos, res12_sin, res24_cos, res24_sin;
+      double est_cos, est_sin;
+      double c, s;
       size_t i;
+
       gsl_integration_qcheb (f, a, b, cheb12, cheb24);
 
-      if (level < wf->i)
-	{
-	  use cheb[25*level];
-	}
-      else
+      /* FIXME: check for overflowing the table here (size n) */
+
+      if (level >= wf->i)
 	{
 	  for (i = wf->i ; i <= level; i++)
 	    {
-	      compute_moments (par, wf->cheb[25*i]);
+	      compute_moments (par, wf->chebmo + 25*i);
 	    }
 	}
+      
+      moment = wf->chebmo + 25 * level;
 
-      for (i = 0; i < 13; i++)
+      res12_cos = cheb12[12] * moment[12];
+      res12_sin = 0 ;
+
+      for (i = 0; i < 6; i++)
 	{
-	  res12 += cheb12[i] * moment[i];
+	  size_t k = 10 - 2 * i;
+	  res12_cos += cheb12[k] * moment[k];
+	  res12_sin += cheb12[k + 1] * moment[k + 1];
 	}
 
-      for (i = 0; i < 25; i++)
+      res24_cos = cheb24[24] * moment[24];
+      res24_sin = 0 ;
+
+      result_abs = fabs(cheb24[24]) ;
+
+      for (i = 0; i < 12; i++)
 	{
-	  res24 += cheb24[i] * moment[i];
+	  size_t k = 22 - 2 * i;
+	  res24_cos += cheb24[k] * moment[k];
+	  res24_sin += cheb24[k + 1] * moment[k + 1];
+	  result_abs += fabs(cheb24[k]) + fabs(cheb24[k+1]);
 	}
 
-      *result = res24;
-      *abserr = fabs(res24 - res12) ;
-      *err_reliable = 0;
+      est_cos = fabs(res24_cos - res12_cos);
+      est_sin = fabs(res24_sin - res12_sin);
+
+      c = half_length * cos(center * omega);
+      s = half_length * sin(center * omega);
+
+      if (wf->sine)
+	{
+	  *result = c * res24_sin + s * res24_cos;
+	  *abserr = fabs(c * est_sin) + fabs(s * est_cos);
+	}
+      else
+	{
+      	  *result = c * res24_cos - s * res24_sin;
+	  *abserr = fabs(c * est_cos) + fabs(s * est_sin);
+	}
+      
+
+      *resabs = result_abs * half_length;
+      *resasc = GSL_DBL_MAX;
 
       return;
     }
@@ -110,7 +132,9 @@ fn_sin (double x, void *params)
   struct fn_fourier_params *p = (struct fn_fourier_params *) params;
   gsl_function *f = p->function;
   double w = p->omega;
-  return sin (w * x) * GSL_FN_EVAL (f, x) ;
+  double wx = w * x;
+  double sinwx = sin(wx) ;
+  return GSL_FN_EVAL (f, x) * sinwx;
 }
 
 static double
@@ -119,9 +143,10 @@ fn_cos (double x, void *params)
   struct fn_fourier_params *p = (struct fn_fourier_params *) params;
   gsl_function *f = p->function;
   double w = p->omega;
-  return cos (w * x) * GSL_FN_EVAL (f, x) ;
+  double wx = w * x;
+  double coswx = cos(wx) ;
+  return GSL_FN_EVAL (f, x) * coswx ;
 }
-
 
 static void
 compute_moments (double par, double *chebmo)

@@ -35,6 +35,22 @@ incorrect due to a typo.
 The line RES24 = RES12+CHEB24(I)*RG(I) should be RES24 = RES24+CHEB24(I)*RG(I)
 to make the summation correct.
 
+DQC25F: Around line 349 there is a summation loop which is slightly
+incorrect
+
+      RESABS = ABS(CHEB24(25))
+      K = 23
+      DO 150 J = 1,12
+        RESC24 = RESC24+CHEB24(K)*CHEBMO(M,K)
+        RESS24 = RESS24+CHEB24(K+1)*CHEBMO(M,K+1)
+        RESABS = ABS(CHEB24(K))+ABS(CHEB24(K+1))
+        K = K-2
+  150 CONTINUE
+
+The line RESABS = ABS(CHEB24(K))+ABS(CHEB24(K+1)) should be RESABS =
+RESABS + ABS(CHEB24(K))+ABS(CHEB24(K+1)) for the sum to make sense.
+
+
 Testing
 =======
 

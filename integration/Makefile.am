@@ -14,10 +14,10 @@ libgslintegration_a_SOURCES = \
 	workspace.c \
 	qcheb.c qawc.c \
 	qmomo.c qaws.c \
-	qmomof.c
+	qmomof.c qawo.c
 
 include_HEADERS = gsl_integration.h
-noinst_HEADERS = integration.h qpsrt.c qelg.c  qc25c.c qc25s.c
+noinst_HEADERS = integration.h qpsrt.c qelg.c  qc25c.c qc25s.c qc25f.c
 
 TESTS = test
 check_PROGRAMS = test

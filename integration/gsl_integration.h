@@ -59,22 +59,22 @@ typedef struct
 {
   size_t i;
   size_t n;
-  double w;
-  double L;
+  double omega;
+  double par;
   int sine;
   double *chebmo;
 }
-gsl_integration_qawf_workspace;
+gsl_integration_qawo_workspace;
 
-gsl_integration_qawf_workspace * 
-gsl_integration_qawf_workspace_alloc (double par, size_t n);
+gsl_integration_qawo_workspace * 
+gsl_integration_qawo_workspace_alloc (double omega, double L, int sine, size_t n);
 
 int
-gsl_integration_qawf_workspace_set (gsl_integration_qawf_workspace * t,
-				    double par);
+gsl_integration_qawo_workspace_set (gsl_integration_qawo_workspace * t,
+				    double omega, double L, int sine);
 
 void
-gsl_integration_qawf_workspace_free (gsl_integration_qawf_workspace * t);
+gsl_integration_qawo_workspace_free (gsl_integration_qawo_workspace * t);
 
 
 /* Definition of an integration rule */
@@ -178,5 +178,14 @@ int gsl_integration_qaws (gsl_function * f,
 			  const size_t limit,
 			  gsl_integration_workspace * workspace,
 			  double *result, double *abserr);
+
+int gsl_integration_qawo (gsl_function * f,
+			  const double a, const double b,
+			  const double epsabs, const double epsrel,
+			  const size_t limit,
+			  gsl_integration_workspace * workspace,
+			  gsl_integration_qawo_workspace * wf,
+			  double *result, double *abserr);
+
 
 #endif /* GSL_INTEGRATION_H */

@@ -2,20 +2,23 @@
       double precision a,b,result,abserr,resabs,resasc
       double precision book1,book3,book11,book15,book16
       double precision book454,book455,book458,book459
-      double precision myfn1,myfn2,myfn3
+      double precision myfn1,myfn2,myfn3,myfn4
       double precision alpha,beta
       double precision alist(1000),blist(1000),rlist(1000)
       double precision elist(1000),pts(1000)
       double precision points(4)
+      double precision chebmo(1000,25)
       integer iord(1000)
+      integer nnlog(1000)
       integer ndin(1000)
       integer level(1000)
+      integer maxp1,momcom
       integer inf
       integer integr
       common /ALPHA/alpha
       external book1,book3,book11,book15,book16
       external book454,book455,book458,book459
-      external myfn1,myfn2,myfn3
+      external myfn1,myfn2,myfn3,myfn4
       call gsl_ieee_env_setup
 
       a = 0.0
@@ -362,18 +365,38 @@ c     do i=1,10
 c        write(6,4) i,alist(i),blist(i),rlist(i),elist(i),iord(i)
 c     enddo
 
-      alpha = -0.5
-      beta = -0.3
-      integr = 4
+c     alpha = -0.5
+c     beta = -0.3
+c     integr = 4
+c     a = 0.0
+c     b = 1.0
+c     epsabs = 0.0
+c     epsrel = 1.0d-7
+c     limit = 1000
+c     print *, 'DQAGP'
+c     call dqawse(book458,a,b,alpha,beta,integr,epsabs,epsrel,limit,
+c    $     result, abserr, neval,ier,alist,blist,rlist,elist,
+c    $     iord,last)
+c     write(6,3) result, abserr, neval, ier, last
+c     do i=1,10
+c        write(6,4) i,alist(i),blist(i),rlist(i),elist(i),iord(i)
+c     enddo
+
       a = 0.0
       b = 1.0
+      omega = 10.0 * 3.14159265358979323846
       epsabs = 0.0
       epsrel = 1.0d-7
       limit = 1000
+      integr = 2
+      icall = 1
+      maxp1 = 1000
+      momcom = 0
       print *, 'DQAGP'
-      call dqawse(book458,a,b,alpha,beta,integr,epsabs,epsrel,limit,
-     $     result, abserr, neval,ier,alist,blist,rlist,elist,
-     $     iord,last)
+      call dqawoe(myfn4,a,b,omega,integr,epsabs,epsrel,limit,
+     $     icall, maxp1,
+     $     result, abserr, neval,ier,last,alist,blist,rlist,elist,
+     $     iord, nnlog, momcom, chebmo)
       write(6,3) result, abserr, neval, ier, last
       do i=1,10
          write(6,4) i,alist(i),blist(i),rlist(i),elist(i),iord(i)
@@ -489,6 +512,15 @@ c     enddo
       myfn3=exp(-x)
       write(6,6661) x, myfn3
  6661 format("FF x = ", 1pe25.18, " myfn3 = ", 1pe25.18)
+      end
+
+      double precision function myfn4(x)
+      double precision alpha,x
+      common /ALPHA/alpha
+      myfn4=0
+      if (x.gt.0.0) myfn4=log(x)
+      write(6,6661) x, myfn4
+ 6661 format("FF x = ", 1pe25.18, " myfn4 = ", 1pe25.18)
       end
 
 

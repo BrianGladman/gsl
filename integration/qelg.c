@@ -7,11 +7,18 @@ struct extrapolation_table
   };
 
 static void
-  initialise_table (struct extrapolation_table *table, double y);
+  initialise_table (struct extrapolation_table *table);
 
 static void
   append_table (struct extrapolation_table *table, double y);
 
+static void
+initialise_table (struct extrapolation_table *table)
+{
+  table->n = 0;
+  table->nres = 0;
+}
+#ifdef JUNK
 static void
 initialise_table (struct extrapolation_table *table, double y)
 {
@@ -19,13 +26,14 @@ initialise_table (struct extrapolation_table *table, double y)
   table->rlist2[0] = y;
   table->nres = 0;
 }
+#endif
 static void
 append_table (struct extrapolation_table *table, double y)
 {
   size_t n;
-  table->n++;
   n = table->n;
   table->rlist2[n] = y;
+  table->n++;
 }
 
 /* static inline void
@@ -41,7 +49,7 @@ qelg (struct extrapolation_table *table, double *result, double *abserr)
 {
   double *epstab = table->rlist2;
   double *res3la = table->res3la;
-  const size_t n = table->n;
+  const size_t n = table->n - 1;
 
   const double current = epstab[n];
 
@@ -178,7 +186,7 @@ qelg (struct extrapolation_table *table, double *result, double *abserr)
 	}
     }
 
-  table->n = n_final;
+  table->n = n_final + 1;
 
   if (nres_orig < 3)
     {
