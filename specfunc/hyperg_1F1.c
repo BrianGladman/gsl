@@ -260,32 +260,16 @@ gsl_sf_hyperg_1F1_impl(const double a, const double b, const double x,
 
 
   /* Now we have dealt with any special negative integer cases,
-   * including the error cases, so we are left with a well-behaved
+   * including the error cases, so we are left with a well-defined
    * series evaluation, though the arguments may be large.
    */
-  if(fabs(x) < 10.0) {
-  /*
-    const double cut = 10.0;
-    if(b > fabs(a)/cut) {
-      if(b > cut*a) {
-        double prec;
-        return hyperg_1F1_series(a, b, x, result, &prec); 
-      }
-      else {
-        double prec;
-        double Ex = exp(x);
-        double Kummer_1F1;
-        int stat_Kummer = hyperg_1F1_series(b-a, b, x, &Kummer_1F1, &prec);
-        *result = Ex * Kummer_1F1;
-        return stat_Kummer;
-      }
-    }
-    */
-    if((fabs(a) < 30.0*fabs(b))  ||  (fabs(a) < 30.0 && fabs(b) < 30.0)) {
+
+  if(fabs(x) < 20.0) {
+    if(b > fabs(a) || fabs(a) < 20.0) {
       double prec;
-      return hyperg_1F1_series(a, b, x, result, &prec); 
+      return hyperg_1F1_series(a, b, x, result, &prec);
     }
-    else if(fabs(b-a) < 30.0 && fabs(b) < 30.0) {
+    else if(b > fabs(b-a) || fabs(b-a) < 20.0) {
       double prec;
       double Ex = exp(x);
       double Kummer_1F1;
