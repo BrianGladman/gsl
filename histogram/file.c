@@ -80,7 +80,7 @@ gsl_histogram_fprintf (FILE * stream, const gsl_histogram * h,
 	}
     }
 
-  return 0;
+  return GSL_SUCCESS;
 }
 
 int
@@ -104,5 +104,5 @@ gsl_histogram_fscanf (FILE * stream, gsl_histogram * h)
 
   h->range[n] = upper;
 
-  return 0;
+  return GSL_SUCCESS;
 }

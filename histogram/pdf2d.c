@@ -38,7 +38,7 @@ gsl_histogram2d_pdf_sample (const gsl_histogram2d_pdf * p,
       double delta = (r1 - p->sum[k]) / (p->sum[k + 1] - p->sum[k]);
       *x = p->xrange[i] + delta * (p->xrange[i + 1] - p->xrange[i]);
       *y = p->yrange[j] + r2 * (p->yrange[j + 1] - p->yrange[j]);
-      return 0;
+      return GSL_SUCCESS;
     }
 }
 

@@ -30,5 +30,5 @@ gsl_histogram_accumulate (gsl_histogram * h, double x, double weight)
 
   h->bin[index] += weight;
 
-  return 0;
+  return GSL_SUCCESS;
 }

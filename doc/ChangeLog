@@ -1,3 +1,8 @@
+2000-04-01  Mark Galassi  <rosalia@lanl.gov>
+
+	* roots.texi (Providing the function to solve): fixed a typo,
+	THANKS Dave Morrison.
+
 1999-12-03  Mark Galassi  <rosalia@lanl.gov>
 
 	* gsl-ref.texi, gsl-design.texi: updated my email address.

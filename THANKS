@@ -38,7 +38,13 @@ functions
 
 * Fabrice Rossi <rossi@ufrmd.dauphine.fr> bug reports and suggestions
 
-* Paul Walmsley <pwalmsley@iee.org> for bug report and patch for fixing matmult 
-* Dave Morrison <dave@bnl.gov> for advice on build procedure
+* Paul Walmsley <pwalmsley@iee.org> for bug report and patch for
+  fixing matmult.
+
+* Dave Morrison <dave@bnl.gov> for advice on build procedure and
+  various patches.
 
 * Brett Viren <bviren@superk.physics.sunysb.edu> for debugging qpsrt.c.
+
+* Christopher Gabriel <cgabriel@firenze.linux.it> for help with
+  gsl-config.

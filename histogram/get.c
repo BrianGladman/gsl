@@ -30,5 +30,5 @@ gsl_histogram_get_range (const gsl_histogram * h, size_t i,
   *lower = h->range[i];
   *upper = h->range[i + 1];
 
-  return 0;
+  return GSL_SUCCESS;
 }

@@ -1,3 +1,8 @@
+2000-04-01  Mark Galassi  <rosalia@lanl.gov>
+
+	* *.c: changed 0 -> GSL_SUCCESS where appropriate; THANKS to Dave
+	Morrison.
+
 Fri Nov 19 15:31:51 1999  Brian Gough  <bjg@network-theory.co.uk>
 
 	* gsl-histogram.c (main): free memory before exit, eliminates

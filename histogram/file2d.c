@@ -130,7 +130,7 @@ gsl_histogram2d_fprintf (FILE * stream, const gsl_histogram2d * h,
 	}
     }
 
-  return 0;
+  return GSL_SUCCESS;
 }
 
 int
@@ -161,5 +161,5 @@ gsl_histogram2d_fscanf (FILE * stream, gsl_histogram2d * h)
 
   h->xrange[nx] = xupper;
 
-  return 0;
+  return GSL_SUCCESS;
 }

@@ -37,7 +37,7 @@ gsl_histogram2d_get_xrange (const gsl_histogram2d * h, const size_t i,
   *xlower = h->xrange[i];
   *xupper = h->xrange[i + 1];
 
-  return 0;
+  return GSL_SUCCESS;
 }
 
 int
@@ -54,5 +54,5 @@ gsl_histogram2d_get_yrange (const gsl_histogram2d * h, const size_t j,
   *ylower = h->yrange[j];
   *yupper = h->yrange[j + 1];
 
-  return 0;
+  return GSL_SUCCESS;
 }

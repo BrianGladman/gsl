@@ -40,5 +40,5 @@ gsl_histogram2d_accumulate (gsl_histogram2d * h,
 
   h->bin[i * ny + j] += weight;
 
-  return 0;
+  return GSL_SUCCESS;
 }

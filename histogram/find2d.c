@@ -23,7 +23,7 @@ gsl_histogram2d_find (const gsl_histogram2d * h,
       GSL_ERROR ("y not found in range of h", GSL_EDOM);
     }
 
-  return 0;
+  return GSL_SUCCESS;
 }
 
 
