@@ -7,3 +7,4 @@ Makefile.in
 benchmark
 rng-dump
 test
+test.dat
