@@ -795,7 +795,7 @@ the function is not well-behaved.
 
 For any root finding algorithm we need to prepare the function to be
 solved.  For this example we will use the general quadratic equation
-described earlier.  We first need a header file (@file{demof.h}) to
+described earlier.  We first need a header file (@file{demo_fn.h}) to
 define the function parameters,
 
 @example
@@ -810,7 +810,7 @@ void quadratic_fdf (double x, void *params, double *y, double *dy);
 @end example
 
 @noindent
-We place the function definitions in a separate file (@file{demof.c}),
+We place the function definitions in a separate file (@file{demo_fn.c}),
 
 @example
 double
@@ -878,8 +878,8 @@ with solution @math{x = \sqrt 5 = 2.236068...}
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_roots.h>
 
-#include "demof.h"
-#include "demof.c"
+#include "demo_fn.h"
+#include "demo_fn.c"
 
 int
 main ()
@@ -972,8 +972,8 @@ instead.
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_roots.h>
 
-#include "demof.h"
-#include "demof.c"
+#include "demo_fn.h"
+#include "demo_fn.c"
 
 int
 main ()

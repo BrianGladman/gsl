@@ -1,8 +1,14 @@
+@cindex linear algebra
+@cindex solution of linear systems, Ax=b
+@cindex matrix factorization
+@cindex factorization of matrices
+
 This chapter describes functions for solving linear systems.  The
 library provides simple linear algebra operations which operate directly
 on the @code{gsl_vector} and @code{gsl_matrix} objects.  These are meant
 for "small" systems where simple algorithms are acceptable.
 
+@cindex LAPACK, recommended for linear algebra
 Anyone interested in large systems will want to use the sophisticated
 routines found in @sc{lapack}. The Fortran version of @sc{lapack} is
 recommended as the standard package for linear algebra.  It supports
@@ -22,6 +28,7 @@ optimizations.
 
 @node LU Decomposition
 @section LU Decomposition
+@cindex LU decomposition
 
 A general square matrix @math{A} has an @math{LU} decomposition into
 upper and lower triangular matrices,
@@ -65,6 +72,7 @@ partial pivoting (Golub & Van Loan, @cite{Matrix Computations},
 Algorithm 3.4.1).
 @end deftypefun
 
+@cindex linear systems, solution of
 @deftypefun int gsl_linalg_LU_solve (const gsl_matrix * @var{LU}, const gsl_permutation * @var{p}, const gsl_vector * @var{b}, gsl_vector * @var{x})
 This function solves the system @math{A x = b} using the @math{LU}
 decomposition of @math{A} into (@var{LU}, @var{p}) given by
@@ -78,6 +86,9 @@ This function solves the system @math{A x = b} in-place using the
 by the solution on output.
 @end deftypefun
 
+@cindex refinement of solutions in linear systems
+@cindex iterative refinement of solutions in linear systems
+@cindex linear systems, refinement of solutions
 @deftypefun int gsl_linalg_LU_refine (const gsl_matrix * @var{A}, const gsl_matrix * @var{LU}, const gsl_permutation * @var{p}, const gsl_vector * @var{b}, gsl_vector * @var{x}, gsl_vector * @var{residual})
 This function applies an iterative improvement to @var{x}, the solution
 of @math{A x = b}, using the @math{LU} decomposition of @math{A} into
@@ -85,6 +96,8 @@ of @math{A x = b}, using the @math{LU} decomposition of @math{A} into
 computed and stored in @var{residual}.
 @end deftypefun
 
+@cindex inverse of a matrix, by LU decomposition
+@cindex matrix inverse
 @deftypefun int gsl_linalg_LU_invert (const gsl_matrix * @var{LU}, const gsl_permutation * @var{p}, gsl_matrix * @var{inverse})
 This function computes the inverse of a matrix @math{A} from its
 @math{LU} decomposition (@var{LU},@var{p}), storing the result in the
@@ -92,6 +105,8 @@ matrix @var{inverse}. The inverse is computed by solving the system
 @math{A x = b} for each column of the identity matrix.
 @end deftypefun
 
+@cindex determinant of a matrix, by LU decomposition
+@cindex matrix determinant
 @deftypefun double gsl_linalg_LU_det (gsl_matrix * @var{LU}, int @var{signum})
 This function computes the determinant of a matrix @math{A} from its
 @math{LU} decomposition, @var{LU}. The determinant is computed as the
@@ -99,6 +114,7 @@ product of the diagonal elements of @math{U} and the sign of the row
 permutation @var{signum}.
 @end deftypefun
 
+@cindex logarithm of the determinant of a matrix
 @deftypefun double gsl_linalg_LU_lndet (gsl_matrix * @var{LU})
 This function computes the logarithm of the absolute value of the
 determinant of a matrix @math{A}, @math{\ln|det(A)|}, from its @math{LU}
@@ -106,6 +122,7 @@ decomposition, @var{LU}.  This function may be useful if the direct
 computation of the determinant would overflow or underflow.
 @end deftypefun
 
+@cindex sign of the determinant of a matrix
 @deftypefun int gsl_linalg_LU_sgndet (gsl_matrix * @var{LU}, int @var{signum})
 This function computes the sign of the determinant of a matrix @math{A},
 @math{sign(det(A))}, from its @math{LU} decomposition, @var{LU}.
@@ -113,6 +130,7 @@ This function computes the sign of the determinant of a matrix @math{A},
 
 @node QR Decomposition
 @section QR Decomposition
+@cindex QR decomposition
 
 A general rectangular @math{M}-by-@math{N} matrix @math{A} has a
 @math{QR} decomposition into the product of an orthogonal
@@ -225,6 +243,7 @@ replaced by the solution on output.
 
 @node QR Decomposition with Column Pivoting
 @section QR Decomposition with Column Pivoting
+@cindex QR decomposition with column pivoting
 
 The @math{QR} decomposition can be extended to the rank deficient case
 by introducing a column permutation @math{P},
@@ -313,6 +332,8 @@ replaced by the solution on output.
 
 @node Singular Value Decomposition
 @section Singular Value Decomposition
+@cindex SVD
+@cindex singular value decomposition
 
 A general rectangular @math{M}-by-@math{N} matrix @math{A} has a
 singular value decomposition (@sc{svd}) into the product of an
@@ -435,6 +456,8 @@ replaced by the solution on output.
 
 @node Householder solver for linear systems
 @section Householder solver for linear systems
+@cindex solution of linear system by householder transformations
+@cindex householder linear solver
 
 @deftypefun int gsl_linalg_HH_solve (gsl_matrix * @var{A}, const gsl_vector * @var{b}, gsl_vector * @var{x})
 This function solves the system @math{A x = b} directly using
@@ -452,7 +475,7 @@ matrix @var{A} is destroyed by the Householder transformations.
 
 @node Tridiagonal Systems
 @section Tridiagonal Systems
-
+@cindex tridiagonal systems
 @deftypefun int gsl_linalg_solve_symm_tridiag (const gsl_vector * @var{diag}, const gsl_vector * @var{offdiag}, const gsl_vector * @var{b}, gsl_vector * @var{x})
 @end deftypefun
 

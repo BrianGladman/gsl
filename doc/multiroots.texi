@@ -1,3 +1,7 @@
+@cindex solving nonlinear systems of equations
+@cindex nonlinear systems of equations, solution of
+@cindex systems of equations, nonlinear
+
 This chapter describes functions for multidimensional root-finding
 (solving nonlinear systems with @math{n} equations in @math{n}
 unknowns).  The library provides low level components for a variety of
@@ -13,17 +17,18 @@ The header file @file{gsl_multiroots.h} contains prototypes for the
 multidimensional root finding functions and related declarations.
 
 @menu
-* Multidimensional Root Finding - Overview::  
-* Multidimensional Root Finding - Initializing the Solver::  
-* Multidimensional Root Finding - Providing the function to solve::  
-* Multidimensional Root Finding - Iteration::  
-* Multidimensional Root Finding - Search Stopping Parameters::  
-* Multidimensional Root Finding - Algorithms using Derivatives::  
-* Multidimensional Root Finding - Algorithms without derivatives::  
-* Multidimensional Root Finding - References and Further Reading::  
+* Overview of Multidimensional Root Finding::  
+* Initializing the Multidimensional Solver::  
+* Providing the multidimensional system of equations to solve::  
+* Iteration of the multidimensional solver::  
+* Search Stopping Parameters for the multidimensional solver::  
+* Algorithms using Derivatives::  
+* Algorithms without Derivatives::  
+* Example programs for Multidimensional Root finding::  
+* References and Further Reading for Multidimensional Root Finding::  
 @end menu
 
-@node Multidimensional Root Finding - Overview
+@node Overview of Multidimensional Root Finding
 @section Overview
 @cindex multidimensional root finding, overview
 
@@ -67,7 +72,7 @@ Jacobian matrix @c{$J_{ij} = \partial f_i / \partial x_j$}
 @math{J_@{ij@} = d f_i / d x_j}.
 Additional strategies are also used to enlarge the region of
 convergence.  These include requiring a decrease in the norm @math{|f|} on
-each iteration proposed by Newton's method, or taking downwards steps in
+each step proposed by Newton's method, or taking downwards steps in
 the direction of the negative gradient of @math{|f|}.
 
 The evaluation of the Jacobian matrix can be problematic, either because
@@ -86,7 +91,7 @@ uses only function evaluations (not derivatives).  The algorithms
 estimate the matrix @math{J} or @c{$J^{-1}$} 
 @math{J^@{-1@}} by approximate methods.
 
-@node Multidimensional Root Finding - Initializing the Solver
+@node Initializing the Multidimensional Solver
 @section Initializing the Solver
 
 @deftypefun {gsl_multiroot_fsolver *} gsl_multiroot_fsolver_alloc (const gsl_multiroot_fsolver_type * @var{T}, gsl_multiroot_function * @var{f}, gsl_vector * @var{x})
@@ -148,7 +153,7 @@ printf("s is a '%s' solver\n", gsl_multiroot_fdfsolver_name (s)) ;
 would print something like @code{s is a 'newton' solver}
 @end deftypefun
 
-@node Multidimensional Root Finding - Providing the function to solve
+@node Providing the multidimensional system of equations to solve
 @section Providing the function to solve
 @cindex multidimensional root finding, providing a function to solve
 
@@ -304,7 +309,7 @@ FDF.params = 0 ;
 Note that the function @code{powell_fdf} is able to reuse existing terms
 from the function when calculating the Jacobian, thus saving time.
 
-@node Multidimensional Root Finding - Iteration
+@node Iteration of the multidimensional solver
 @section Iteration
 
 The following functions drive the iteration of each algorithm.  Each
@@ -340,7 +345,7 @@ following auxiliary functions,
 These functions return the current estimate of the root for the solver @var{s}.
 @end deftypefun
 
-@node Multidimensional Root Finding - Search Stopping Parameters
+@node Search Stopping Parameters for the multidimensional solver
 @section Search Stopping Parameters
 @cindex root finding, stopping parameters
 
@@ -387,6 +392,7 @@ $$
 for each component of @var{x} and returns @code{GSL_CONTINUE} otherwise.
 @end deftypefun
 
+@cindex residual, in nonlinear systems of equations
 @deftypefun int gsl_multiroot_test_residual (const gsl_vector * @var{f}, double @var{epsabs})
 This function tests the residual value @var{f} against the absolute
 error bound @var{epsabs}.  The test returns @code{GSL_SUCCESS} if the
@@ -414,7 +420,7 @@ enough.
 
 @comment ============================================================
 
-@node Multidimensional Root Finding - Algorithms using Derivatives
+@node Algorithms using Derivatives
 @section Algorithms using Derivatives
 
 The root finding algorithms described in this section make use of both
@@ -426,16 +432,17 @@ conditions are satisfied then convergence is quadratic.
 
 
 @comment ============================================================
-
+@cindex HYBRID algorithms for nonlinear systems
 @deffn {Derivative Solver} gsl_multiroot_fdfsolver_hybridsj
-
+@cindex HYBRIDSJ algorithm
+@cindex MINPACK, minimization algorithms
 This is a modified version of Powell's Hybrid method as implemented in
 the @sc{hybrj} algorithm in @sc{minpack}.  Minpack was written by Jorge
 J. Mor@'e, Burton S. Garbow and Kenneth E. Hillstrom.  The Hybrid
 algorithm retains the fast convergence of Newton's method but will also
 reduce the residual when Newton's method is unreliable. 
 
-The algorithm uses a generalised trust region to keep each step under
+The algorithm uses a generalized trust region to keep each step under
 control.  In order to be accepted a proposed new position @math{x'} must
 satisfy the condition @math{|D (x' - x)| < \delta}, where @math{D} is a
 diagonal scaling matrix and @math{\delta} is the size of the trust
@@ -448,7 +455,7 @@ On each iteration the algorithm first determines the standard Newton
 step by solving the system @math{J dx = - f}.  If this step falls inside
 the trust region it is used as a trial step in the next stage.  If not,
 the algorithm uses the linear combination of the Newton and Gradient
-directions which is predicted to minimise the norm of the function while
+directions which is predicted to minimize the norm of the function while
 staying inside the trust region.
 
 @tex
@@ -486,14 +493,14 @@ the iteration is not making any progress, preventing the algorithm from
 continuing.
 
 @item GSL_ENOPROGJ
-reevalutations of the jacobian indicate that the iteration is not
+re-evaluations of the Jacobian indicate that the iteration is not
 making any progress, preventing the algorithm from continuing.
 @end table
 
 @end deffn
 
 @deffn {Derivative Solver} gsl_multiroot_fdfsolver_hybridj
-
+@cindex HYBRIDJ algorithm
 This algorithm is an unscaled version of @code{hybridsj}.  The steps are
 controlled by a spherical trust region @math{|x' - x| < \delta}, instead
 of a generalized region.  This can be useful if the generalized region
@@ -502,14 +509,13 @@ estimated by @code{hybridsj} is inappropriate.
 
 
 @deffn {Derivative Solver} gsl_multiroot_fdfsolver_newton
-@cindex Newton's Method algorithm for finding roots
-@cindex root finding, Newton's Method algorithm
+@cindex Newton's Method for systems of nonlinear equations
 
 Newton's Method is the standard root-polishing algorithm.  The algorithm
-begins with an initial guess for the location of the root.  On each
+begins with an initial guess for the location of the solution.  On each
 iteration a linear approximation to the function @math{F} is used to
-estimate the step which will zero all the components of the
-residual.  The iteration is defined by the following sequence,
+estimate the step which will zero all the components of the residual.
+The iteration is defined by the following sequence,
 
 @tex
 \beforedisplay
@@ -547,9 +553,8 @@ using LU decomposition.
 @comment ============================================================
 
 @deffn {Derivative Solver} gsl_multiroot_fdfsolver_gnewton
-@cindex Newton's Method algorithm for finding roots
-@cindex root finding, Newton's Method algorithm
-
+@cindex Modified Newton's Method for nonlinear systems
+@cindex GNEWTON algorithm
 This is a modified version of Newtons method which attempts to improve
 global convergence by requiring every step to reduce the Euclidean norm
 of the residual, @math{|f(x)|}.  If the Newton step leads to an increase
@@ -575,15 +580,15 @@ size is found.
 
 @comment ============================================================
 
-@node Multidimensional Root Finding - Algorithms without derivatives
-@section Algorithms without derivatives
+@node Algorithms without Derivatives
+@section Algorithms without Derivatives
 
 The algorithms described in this section do not require any derivative
 information to be supplied by the user.  Any derivatives needed are
 approximated from by finite difference.
 
-
 @deffn {Solver} gsl_multiroot_fsolver_hybrids
+@cindex HYBRIDS algorithm, scaled without derivatives
 This is a version of the Hybrid algorithm which replaces calls to the
 Jacobian function by its finite difference approximation.  The finite
 difference approximation is computed using @code{gsl_multiroots_fdjac}
@@ -591,6 +596,7 @@ with a relative step size of @code{GSL_SQRT_DBL_EPSILON}.
 @end deffn
 
 @deffn {Solver} gsl_multiroot_fsolver_hybrid
+@cindex HYBRID algorith, unscaled without derivates
 This is a finite difference version of the Hybrid algorithm without
 internal scaling.
 @end deffn
@@ -601,7 +607,7 @@ internal scaling.
 
 @cindex Discrete newton algorithm for multidimensional roots
 @cindex Newton algorithm, discrete
-@cindex multidimensional root finding, Discrete Newton algorithm
+@cindex Discrete Newton algorithm for nonlinear systems
 
 The @dfn{discrete Newton algorithm} is the simplest method of solving a
 multidimensional system.  It uses the Newton iteration
@@ -686,7 +692,281 @@ pedagogical purposes.
 
 @comment ============================================================
 
-@node Multidimensional Root Finding - References and Further Reading
+
+@node Example programs for Multidimensional Root finding
+@section Examples
+
+The multidimensional solvers are used in a similar way to the
+one-dimensional root finding algorithms.  This first example
+demonstrates the @code{hybrids} scaled-hybrid algorithm, which does not
+require derivatives. The program solves the Rosenbrock system of equations
+
+@tex
+\beforedisplay
+$$
+f_1 (x, y) = a (1 - x),
+f_2 (x, y) = b (y - x^2)
+$$
+\afterdisplay
+@end tex
+@ifinfo
+@example
+f_1 (x, y) = a (1 - x)
+f_2 (x, y) = b (y - x^2)
+@end example
+@end ifinfo
+@noindent
+with @math{a = 1, b = 10}. The solution of this system lies at
+@math{(x,y) = (1,1)} in a narrow valley.
+
+The first stage of the program is to define the system of equations,
+
+@example
+#include <stdlib.h>
+#include <stdio.h>
+#include <gsl/gsl_vector.h>
+#include <gsl/gsl_multiroots.h>
+
+struct rparams
+  @{
+    double a;
+    double b;
+  @};
+
+int
+rosenbrock_f (const gsl_vector * x, void *params, gsl_vector * f)
+@{
+  double a = ((struct rparams *) params)->a;
+  double b = ((struct rparams *) params)->b;
+
+  double x0 = gsl_vector_get (x, 0);
+  double x1 = gsl_vector_get (x, 1);
+
+  double y0 = a * (1 - x0);
+  double y1 = b * (x1 - x0 * x0);
+
+  gsl_vector_set (f, 0, y0);
+  gsl_vector_set (f, 1, y1);
+
+  return GSL_SUCCESS;
+@}
+@end example
+@noindent
+The main program begins by creating the function object @code{f}, with
+the arguments @code{(x,y)} and parameters @code{(a,b)}. The solver
+@code{s} is initialized to use this function, with the @code{hybrids}
+method.
+
+@example
+int
+main (void)
+@{
+  const gsl_multiroot_fsolver_type *T;
+  gsl_multiroot_fsolver *s;
+
+  int status;
+  size_t i, iter = 0;
+
+  const size_t n = 2;
+  struct rparams p = @{1.0, 10.0@};
+  gsl_multiroot_function f = @{&rosenbrock_f, n, &p@};
+
+  double x_init[2] = @{-10.0, -5.0@};
+  gsl_vector *x = gsl_vector_alloc (n);
+
+  gsl_vector_set (x, 0, x_init[0]);
+  gsl_vector_set (x, 1, x_init[1]);
+
+  T = gsl_multiroot_fsolver_hybrids;
+  s = gsl_multiroot_fsolver_alloc (T, &f, x);
+
+  print_state (iter, s);
+
+  do
+    @{
+      iter++;
+      status = gsl_multiroot_fsolver_iterate (s);
+
+      print_state (iter, s);
+
+      if (status)   /* check if solver is stuck */
+        break;
+
+      status = gsl_multiroot_test_residual (s->f, 0.0000001);
+    @}
+  while (status == GSL_CONTINUE && iter < 1000);
+
+  printf ("status = %s\n", gsl_strerror (status));
+
+  gsl_multiroot_fsolver_free (s);
+  gsl_vector_free (x);
+@}
+@end example
+@noindent
+Note that it is important to check the return status of each solver
+step, in case the algorithm becomes stuck.  If an error condition is
+detected, indicating that the algorithm cannot proceed, then the error
+can be reported to the user, a new starting point chosen or a different
+algorithm used.
+
+The intermediate state of the solution is displayed by the following
+function.  The solver state contains the vector @code{s->x} which is the
+current position, and the vector @code{s->f} with corresponding function
+values.
+@example
+int
+print_state (size_t iter, gsl_multiroot_fsolver * s)
+@{
+  printf ("iter = %3u x = % 10.3f % 10.3f  f(x) = % .3e % .3e\n",
+	  iter,
+	  gsl_vector_get (s->x, 0), gsl_vector_get (s->x, 1),
+	  gsl_vector_get (s->f, 0), gsl_vector_get (s->f, 1));
+@}
+@end example
+@noindent
+Here are the results of running the program. The algorithm is started at
+@math{(-10,-5)} far from the solution.  Since the solution is hidden in
+a narrow valley the earliest steps follow the gradient of the function
+downhill, in an attempt to reduce the large value of the residual. Once
+the root has been approximately located, on iteration 8, the Newton
+behavior takes over and convergence is very rapid.
+
+@example
+iter =   0 x =  -10.00000000  -5.00000000  f(x) =  1.100e+01 -1.050e+03
+iter =   1 x =  -10.00000000  -5.00000000  f(x) =  1.100e+01 -1.050e+03
+iter =   2 x =   -3.97577039  24.82704463  f(x) =  4.976e+00  9.020e+01
+iter =   3 x =   -3.97577039  24.82704463  f(x) =  4.976e+00  9.020e+01
+iter =   4 x =   -3.97577039  24.82704463  f(x) =  4.976e+00  9.020e+01
+iter =   5 x =   -1.27350954  -5.67999688  f(x) =  2.274e+00 -7.302e+01
+iter =   6 x =   -1.27350954  -5.67999688  f(x) =  2.274e+00 -7.302e+01
+iter =   7 x =    0.24894860   0.29786482  f(x) =  7.511e-01  2.359e+00
+iter =   8 x =    0.24894860   0.29786482  f(x) =  7.511e-01  2.359e+00
+iter =   9 x =    1.00000000   0.87821493  f(x) =  1.268e-10 -1.218e+00
+iter =  10 x =    1.00000000   0.98919827  f(x) =  1.124e-11 -1.080e-01
+iter =  11 x =    1.00000000   1.00000000  f(x) =  0.000e+00  0.000e+00
+status = success
+@end example
+@noindent
+Note that the algorithm does not update the location on every
+iteration. Some iterations are used to adjust the trust-region
+parameter, after trying a step which was found to be divergent, or to
+recompute the Jacobian, when poor convergence behavior is detected.
+
+The next example program adds derivative information, in order to
+accelerate the solution. There are two derivative functions
+@code{rosenbrock_df} and @code{rosenbrock_fdf}. The latter computes both
+the function and its derivative simultaneously. This allows the
+optimization of any common terms.  For simplicity we substitute calls to
+the separate @code{f} and @code{df} functions at this point in the code
+below.
+
+@example
+int
+rosenbrock_df (const gsl_vector * x, void *params, gsl_matrix * df)
+@{
+  double a = ((struct rparams *) params)->a;
+  double b = ((struct rparams *) params)->b;
+
+  double x0 = gsl_vector_get (x, 0);
+
+  double df00 = -a;
+  double df01 = 0;
+  double df10 = -2 * b  * x0;
+  double df11 = b;
+
+  gsl_matrix_set (df, 0, 0, df00);
+  gsl_matrix_set (df, 0, 1, df01);
+  gsl_matrix_set (df, 1, 0, df10);
+  gsl_matrix_set (df, 1, 1, df11);
+
+  return GSL_SUCCESS;
+@}
+
+int
+rosenbrock_fdf (const gsl_vector * x, void *params,
+		gsl_vector * f, gsl_matrix * df)
+@{
+  rosenbrock_f (x, params, f);
+  rosenbrock_df (x, params, df);
+
+  return GSL_SUCCESS;
+@}
+@end example
+@noindent
+The main program now makes calls to the corresponding @code{fdfsolver}
+versions of the functions,
+
+@example
+int
+main (void)
+@{
+  const gsl_multiroot_fdfsolver_type *T;
+  gsl_multiroot_fdfsolver *s;
+
+  int status;
+  size_t i, iter = 0;
+
+  const size_t n = 2;
+  struct rparams p = @{1.0, 10.0@};
+  gsl_multiroot_function_fdf f = @{&rosenbrock_f, 
+                                  &rosenbrock_df, 
+                                  &rosenbrock_fdf, n, &p@};
+
+  double x_init[2] = @{-10.0, -5.0@};
+  gsl_vector *x = gsl_vector_alloc (n);
+
+  gsl_vector_set (x, 0, x_init[0]);
+  gsl_vector_set (x, 1, x_init[1]);
+
+  T = gsl_multiroot_fdfsolver_gnewton;
+  s = gsl_multiroot_fdfsolver_alloc (T, &f, x);
+
+  print_state (iter, s);
+
+  do
+    @{
+      iter++;
+
+      status = gsl_multiroot_fdfsolver_iterate (s);
+
+      print_state (iter, s);
+
+      if (status)
+        break;
+
+      status = gsl_multiroot_test_residual (s->f, 0.0000001);
+    @}
+  while (status == GSL_CONTINUE && iter < 1000);
+
+  printf ("status = %s\n", gsl_strerror (status));
+
+  gsl_multiroot_fdfsolver_free (s);
+  gsl_vector_free (x);
+@}
+@end example
+@noindent
+The addition of derivative information to the @code{hybrids} solver does
+not make any significant difference to its behavior, since it able to
+approximate the Jacobian numerically with sufficient accuracy.  To
+illustrate the behavior of a different derivative solver we switch to
+@code{gnewton}. This is a traditional newton solver with the constraint
+that it scales back its step if the full step would lead "uphill". Here
+is the output for the @code{gnewton} algorithm,
+
+@example
+iter =  0 x = -10.00000000  -5.00000000  f(x) =  1.100e+01 -1.050e+03
+iter =  1 x =  -4.23051697 -65.31732261  f(x) =  5.231e+00 -8.321e+02
+iter =  2 x =   1.00000000 -26.35830775  f(x) = -8.882e-16 -2.736e+02
+iter =  3 x =   1.00000000   1.00000000  f(x) = -2.220e-16 -4.441e-15
+status = success
+@end example
+@noindent
+The convergence is much more rapid, but takes a wide excursion out to
+the point @math{(-4.23,-65.3)}. This could lead to algorithm going
+astray in a realistic application.  The hybrid algorithm follows the
+downhill path to the solution more reliably.
+
+@node References and Further Reading for Multidimensional Root Finding
 @section References and Further Reading
 
 The original version of the Hybrid method is described in the following

@@ -4,9 +4,9 @@ Main Todo Items
 Consult the TODO files in each directory first for specific
 requirements.
 
-* Document ode-initval, dht
+* config.h.in. Should it be in CVS or is acconfig.h enough?
 
-* Document the use of autogen.sh in the HACKING file
+* Document ode-initval, dht
 
 * Finish BLAS, by implementing Level-3 operations
 
