@@ -1,3 +1,9 @@
+Mon Nov 23 16:09:21 1998  Brian Gough  <bjg@vvv.lanl.gov>
+
+	* gsl_config.h: removed, it was an unnecessary hack just for
+ 	defining macros. Autoconf's config.h should be used by the
+ 	programmer instead.
+ 
 Sat Nov 21 20:39:14 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
 	* texinfo.tex: removed, this is a duplicate and shouldn't be

@@ -3,7 +3,6 @@
 
 #include <stdlib.h>
 #include <gsl_errno.h>
-#include <gsl_config.h>
 #include <gsl_vector_ulong.h>
 
 typedef struct gsl_matrix_ulong_struct gsl_matrix_ulong ;

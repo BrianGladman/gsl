@@ -3,7 +3,6 @@
 
 #include <stdlib.h>
 #include <gsl_errno.h>
-#include <gsl_config.h>
 #include <gsl_complex.h>
 #include <gsl_vector_complex.h>
 

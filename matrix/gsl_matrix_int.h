@@ -3,7 +3,6 @@
 
 #include <stdlib.h>
 #include <gsl_errno.h>
-#include <gsl_config.h>
 #include <gsl_vector_int.h>
 
 typedef struct gsl_matrix_int_struct gsl_matrix_int;
