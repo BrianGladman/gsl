@@ -19,7 +19,7 @@
     for(j=0; j<N; j++) {
       BASE_TYPE tmp = alpha * X[jx];
       ix = 0;
-      for(i=0; i<j; i++) {
+      for(i=0; i<=j; i++) {
         A[lda*j + i] += X[ix]*tmp;
         ix += incX;
       }
