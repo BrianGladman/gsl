@@ -19,7 +19,7 @@ tar xvfz $tarfile
   cd html ; 
   ../../../doc/texi2html -htmlhelp -verbose ../gsl-ref.texi ; )
  cp -a ../msvc .
- (cd msvc ; make)
+ (cd msvc ; make ; cp -a gsl-ref.hhp ../doc/html; )
 )
 
 zip -l -r $ver.zip $ver

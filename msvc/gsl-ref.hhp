@@ -1,0 +1,13 @@
+[OPTIONS]
+Auto Index=Yes
+Compatibility=1.1 or later
+Compiled file=gsl-ref.chm
+Contents file=gsl-ref.hhc
+Default topic=gsl-ref_toc.html
+Display compile progress=No
+Full-text search=Yes
+Index file=gsl-ref.hhk
+Title=GNU Scientific Library Reference Manual
+
+[FILES]
+gsl-ref_toc.html
