@@ -172,9 +172,13 @@ allowing wrappers to be written for very high level languages.
 @chapter Simulated Annealing
 @include siman.texi
 
+@node Vectors and Matrices
+@chapter Vectors and Matrices
+@include vectors.texi
+
 @node Debugging Numerical Programs, Contributors to GSL, Simulated Annealing, Top
 @appendix Debugging Numerical Programs
-
+@include debug.texi
 
 @node Contributors to GSL, Copying, Debugging Numerical Programs, Top
 @appendix Contributors to GSL
