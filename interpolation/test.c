@@ -28,7 +28,7 @@
 #include <gsl/gsl_test.h>
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_interp.h>
-
+#include <gsl/gsl_ieee_utils.h>
 
 int
 test_bsearch(void)
@@ -237,6 +237,8 @@ int
 main (int argc, char **argv)
 {
   int status = 0;
+
+  gsl_ieee_env_setup ();
 
   argc = 0;    /* prevent warnings about unused parameters */
   argv = 0;

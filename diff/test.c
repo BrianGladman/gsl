@@ -25,6 +25,7 @@
 #include <gsl/gsl_diff.h>
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_test.h>
+#include <gsl/gsl_ieee_utils.h>
 
 double
 f1 (double x, void *params)
@@ -143,6 +144,8 @@ int
 main ()
 {
   gsl_function F1, DF1, F2, DF2, F3, DF3, F4, DF4, F5, DF5, F6, DF6;
+
+  gsl_ieee_env_setup ();
 
   F1.function = &f1;
   DF1.function = &df1;

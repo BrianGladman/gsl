@@ -24,6 +24,7 @@
 #include <math.h>
 #include <gsl/gsl_combination.h>
 #include <gsl/gsl_test.h>
+#include <gsl/gsl_ieee_utils.h>
 
 size_t c63[20][3] = {
   { 0, 1, 2 },  { 0, 1, 3 },  { 0, 1, 4 },  { 0, 1, 5 },
@@ -42,6 +43,8 @@ main (void)
   size_t i, j;
   int status = 0, s;
   gsl_combination * c ;
+
+  gsl_ieee_env_setup ();
 
   c = gsl_combination_alloc (6,3);
 

@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <gsl/gsl_ntuple.h>
 #include <gsl/gsl_test.h>
+#include <gsl/gsl_ieee_utils.h>
 
 struct data
 {
@@ -26,6 +27,8 @@ main (void)
   
   double scale = 1.5;
   
+  gsl_ieee_env_setup ();
+
   S.function = &sel_func;
   S.params = &scale;
   
