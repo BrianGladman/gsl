@@ -1,0 +1,4 @@
+1998-01-27  Mark Galassi  <rosalia@cygnus.com>
+
+	* Makefile.am: fixed a typo: removed trailing \ at the end of this file.
+	

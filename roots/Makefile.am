@@ -13,7 +13,7 @@ INCLUDES = -I$(srcdir)/../err
 
 TESTS = test-macros test-bisection test-falsepos test-secant test-newton
 
-test_LDADD = libgslroots.a ../err/libgslerr.a
+test_LDADD = libgslroots.a ../err/libgslerr.a ../err/libgsltest.a
 
 test_DEPENDENCIES = libgslroots.a
 

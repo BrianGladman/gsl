@@ -10,6 +10,7 @@
 # even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 # PARTICULAR PURPOSE.
 
+
 SHELL = /bin/sh
 
 srcdir = @srcdir@
@@ -137,7 +138,7 @@ real_pass_n.c \
 real_radix2.c \
 real_unpack.c \
  \
-signals.c \
+signals.c
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
 CONFIG_CLEAN_FILES = 
