@@ -1,5 +1,7 @@
-#include "mean.h"
+#include <stdio.h>
 #include <math.h>
+
+#include "mean.h"
 
 double imean (int *array, int size)
 {

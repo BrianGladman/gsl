@@ -3,9 +3,11 @@ CFLAGS=-g -Wall
 # CC=gcc
 
 noinst_PROGRAMS = jtest
-noinst_LIBRARIES = gsl-mean
+noinst_LIBRARIES = gsl_statistics
 
-gsl_mean_SOURCES = mean.c
+LDADD = libgsl_statistics.a -lm
+
+gsl_statistics_SOURCES = mean.c
 
 jtest_SOURCES = jtest.c
 
