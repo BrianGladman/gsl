@@ -114,6 +114,7 @@ int gsl_sf_bessel_y2_impl(const double x, double * result)
   }
 }
 
+/* checked OK [GJ] Wed May 13 16:28:01 MDT 1998 */
 int gsl_sf_bessel_yl_impl(int l, const double x, double * result)
 {
   if(l < 0 || x <= 0.0) {
@@ -157,7 +158,7 @@ int gsl_sf_bessel_yl_impl(int l, const double x, double * result)
   }
 }
 
-
+/* checked OK [GJ] Wed May 13 16:33:10 MDT 1998 */
 int gsl_sf_bessel_yl_array_impl(const int lmax, const double x, double * result_array)
 {
   if(lmax < 1 || x <= 0.0) {
@@ -182,18 +183,18 @@ int gsl_sf_bessel_yl_array_impl(const int lmax, const double x, double * result_
 
 void testy(void)
 {
-  double x;
+  int i;
+  double x = 10.0;
   double dx = 0.1;
   double xmin = 0.1;
   double xmax = 10.0;
   double y0, y1, y2;
+  double y_array[1000];
   int l = 40;
 
-  for(x = xmin; x < xmax; x += dx) {
-    gsl_sf_bessel_yl_impl(l, x, &y0);
-    printf("%26.18g     %26.18g  \n",
-           x, y0
-           );
+  gsl_sf_bessel_yl_array_impl(l, x, y_array);
+  for(i=0; i<=l; i++) {
+    printf("%3d  %26.18g  %26.18g\n", i, x, y_array[i]);
   }
   exit(0);
 }

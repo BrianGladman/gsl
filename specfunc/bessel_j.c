@@ -33,12 +33,6 @@ int gsl_sf_bessel_j1_impl(const double x, double * result)
     return GSL_SUCCESS;
   }
   else {
-    /*
-    double tan_half = tan(0.5 * x);
-    double den = 1. + tan_half*tan_half;
-    double cos_x = (tan_half*tan_half - 1.) / den;
-    double sin_x = 2. * tan_half / den;
-    */
     double cos_x = cos(x);
     double sin_x = sin(x);
     *result = sin_x/(x*x) - cos_x/x;
@@ -58,12 +52,6 @@ int gsl_sf_bessel_j2_impl(const double x, double * result)
   }
   else {
     double x2 = x*x;
-    /*
-    double tan_half = tan(0.5 * x);
-    double den = 1. + tan_half*tan_half;
-    double cos_x = (tan_half*tan_half - 1.) / den;
-    double sin_x = 2. * tan_half / den;
-    */
     double cos_x = cos(x);
     double sin_x = sin(x);
     *result =  (3./x2 - 1.) * sin_x/x - 3.*cos_x/x2;

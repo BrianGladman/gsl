@@ -126,6 +126,7 @@ libgslspecfunc_a_SOURCES = 	\
 	bessel_Yn.c		\
 	bessel_amp_phase.c	\
         bessel_amp_phase.h      \
+	bessel_i.c		\
 	bessel_j.c		\
 	bessel_olver.c		\
 	bessel_y.c		\
@@ -166,10 +167,11 @@ libgslspecfunc_a_LIBADD =
 libgslspecfunc_a_OBJECTS =  airy.o airy_der.o bessel.o bessel_I0.o \
 bessel_I1.o bessel_In.o bessel_J0.o bessel_J1.o bessel_Jn.o bessel_K0.o \
 bessel_K1.o bessel_Kn.o bessel_Y0.o bessel_Y1.o bessel_Yn.o \
-bessel_amp_phase.o bessel_j.o bessel_olver.o bessel_y.o chebyshev.o \
-dilog.o ellint.o erfc.o expint.o fermi_dirac.o gamma.o laguerre.o \
-legendre.o legendre_assoc.o legendre_con.o legendre_poly.o log.o poly.o \
-pow_int.o psi.o shint.o sig2lamp.o sinint.o t-erf.o trig.o zeta.o
+bessel_amp_phase.o bessel_i.o bessel_j.o bessel_olver.o bessel_y.o \
+chebyshev.o dilog.o ellint.o erfc.o expint.o fermi_dirac.o gamma.o \
+laguerre.o legendre.o legendre_assoc.o legendre_con.o legendre_poly.o \
+log.o poly.o pow_int.o psi.o shint.o sig2lamp.o sinint.o t-erf.o trig.o \
+zeta.o
 AR = ar
 test_sf_OBJECTS =  test_sf.o
 test_sf_LDFLAGS = 
@@ -189,10 +191,10 @@ DEP_FILES =  .deps/airy.P .deps/airy_der.P .deps/bessel.P \
 .deps/bessel_I0.P .deps/bessel_I1.P .deps/bessel_In.P .deps/bessel_J0.P \
 .deps/bessel_J1.P .deps/bessel_Jn.P .deps/bessel_K0.P .deps/bessel_K1.P \
 .deps/bessel_Kn.P .deps/bessel_Y0.P .deps/bessel_Y1.P .deps/bessel_Yn.P \
-.deps/bessel_amp_phase.P .deps/bessel_j.P .deps/bessel_olver.P \
-.deps/bessel_y.P .deps/chebyshev.P .deps/dilog.P .deps/ellint.P \
-.deps/erfc.P .deps/expint.P .deps/fermi_dirac.P .deps/gamma.P \
-.deps/laguerre.P .deps/legendre.P .deps/legendre_assoc.P \
+.deps/bessel_amp_phase.P .deps/bessel_i.P .deps/bessel_j.P \
+.deps/bessel_olver.P .deps/bessel_y.P .deps/chebyshev.P .deps/dilog.P \
+.deps/ellint.P .deps/erfc.P .deps/expint.P .deps/fermi_dirac.P \
+.deps/gamma.P .deps/laguerre.P .deps/legendre.P .deps/legendre_assoc.P \
 .deps/legendre_con.P .deps/legendre_poly.P .deps/log.P .deps/poly.P \
 .deps/pow_int.P .deps/psi.P .deps/shint.P .deps/sig2lamp.P \
 .deps/sinint.P .deps/t-erf.P .deps/test_sf.P .deps/trig.P .deps/zeta.P
