@@ -5,7 +5,8 @@
 
 The Debye functions are defined by the integral @math{D_n(x) = n/x^n
 \int_0^x dt (t^n/(e^t - 1))}.  For further information see Abramowitz &
-Stegun, Section 27.1.
+Stegun, Section 27.1.  The Debye functions are declared in the header
+file @file{gsl_sf_debye.h}.
 
 @deftypefun double gsl_sf_debye_1 (double @var{x})
 @deftypefunx int gsl_sf_debye_1_e (double @var{x}, gsl_sf_result * @var{result})

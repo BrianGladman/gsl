@@ -7,6 +7,7 @@ The transport functions @math{J(n,x)} are defined by the integral
 representations
 @c{$J(n,x) := \int_0^x dt \, t^n e^t /(e^t - 1)^2$}
 @math{J(n,x) := \int_0^x dt t^n e^t /(e^t - 1)^2}.
+They are declared in the header file @file{gsl_sf_transport.h}.
 
 @deftypefun double gsl_sf_transport_2 (double @var{x})
 @deftypefunx int gsl_sf_transport_2_e (double @var{x}, gsl_sf_result * @var{result})

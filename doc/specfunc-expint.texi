@@ -7,7 +7,8 @@
 @subsection Exponential Integrals
 
 Information on the exponential integrals can be found in Abramowitz &
-Stegun, Chapter 5.
+Stegun, Chapter 5.  These functions are declared in the header file
+@file{gsl_sf_expint.h}.
 
 @deftypefun double gsl_sf_expint_E1 (double @var{x})
 @deftypefunx int gsl_sf_expint_E1_e (double @var{x}, gsl_sf_result * @var{result})

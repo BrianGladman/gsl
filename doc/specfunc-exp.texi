@@ -4,6 +4,8 @@
 @cindex exponential function
 @cindex exp
 
+The functions described in this section are declared in the header file
+@file{gsl_sf_exp.h}.
 
 @subsection Exponential Function
 

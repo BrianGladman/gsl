@@ -7,7 +7,8 @@
 
 These simple trigonometric functions are important because we want to
 control the error estimate, and it is to determine the error for the
-standard library implementations.
+standard library implementations.  These functions are declared in
+the header file @file{gsl_sf_trig.h}.
 
 @deftypefun double gsl_sf_sin (double @var{x})
 @deftypefunx int gsl_sf_sin_e (double @var{x}, gsl_sf_result * @var{result})

@@ -4,10 +4,11 @@
 @cindex power function
 @cindex integer powers
 
-A common complaint about the standard C library is its lack of
-a function for calculating (small) integer powers. GSL provides
-a simple function to fill this gap.  For reasons of efficiency,
-these functions do not check for overflow or underflow conditions.
+A common complaint about the standard C library is its lack of a
+function for calculating (small) integer powers. GSL provides a simple
+function to fill this gap.  For reasons of efficiency, these functions
+do not check for overflow or underflow conditions. The functions are
+declared in the header file @file{gsl_sf_pow_int.h}.
 
 @deftypefun double gsl_sf_pow_int (double @var{x}, int @var{n})
 @deftypefunx int gsl_sf_pow_int_e (double @var{x}, int @var{n}, gsl_sf_result * @var{result}) 

@@ -4,7 +4,8 @@
 @cindex logarithm
 
 Information on the properties of the Logarithm function can be found in
-Abramowitz & Stegun, Chapter 4.
+Abramowitz & Stegun, Chapter 4.  The functions described in this section
+are declared in the header file @file{gsl_sf_log.h}.
 
 @deftypefun double gsl_sf_log (double @var{x})
 @deftypefunx int gsl_sf_log_e (double @var{x}, gsl_sf_result * @var{result})

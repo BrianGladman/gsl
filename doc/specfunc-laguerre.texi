@@ -7,7 +7,8 @@
 The Laguerre polynomials are defined in terms of confluent
 hypergeometric functions as
 @c{$L^a_n(x) = ((a+1)_n / n!) {}_1F_1(-n,a+1,x)$}
-@math{L^a_n(x) = ((a+1)_n / n!) 1F1(-n,a+1,x)}.
+@math{L^a_n(x) = ((a+1)_n / n!) 1F1(-n,a+1,x)}.  These functions are
+declared in the header file @file{gsl_sf_laguerre.h}.
 
 
 @deftypefun double gsl_sf_laguerre_1 (double @var{a}, double @var{x})

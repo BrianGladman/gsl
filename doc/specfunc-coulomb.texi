@@ -4,6 +4,8 @@
 @cindex Coulomb wave functions
 @cindex hydrogen atom
 
+The coulomb functions are declared in the header file @file{gsl_sf_coulomb.h}.
+
 @subsection Normalized Hydrogenic Bound States
 
 @deftypefun double gsl_sf_hydrogenicR_1 (double @var{Z}, double @var{r})

@@ -4,7 +4,8 @@
 @cindex elliptic functions (Jacobi)
 
 The Jacobian Elliptic functions are defined in Abramowitz & Stegun,
-Chapter 16.
+Chapter 16.  The functions are declared in the header file
+@file{gsl_sf_elljac.h}.
 
 @deftypefun int gsl_sf_elljac_e (double @var{u}, double @var{m}, double * @var{sn}, double * @var{cn}, double * @var{dn})
 This function computes the Jacobian elliptic functions @math{sn(u|m)},

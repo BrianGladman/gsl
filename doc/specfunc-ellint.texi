@@ -3,6 +3,8 @@
 @section Elliptic Integrals
 @cindex elliptic integrals
 
+The functions described in this section are declared in the header file
+@file{gsl_sf_ellint.h}.
 
 @subsection Legendre Forms
 

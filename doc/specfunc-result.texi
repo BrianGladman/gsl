@@ -39,6 +39,7 @@ return @code{GSL_SUCCESS}.
 The error handling form of the special functions always calculate an
 error estimate along with the value of the result.  Therefore,
 structures are provided for amalgating a value and error estimate.
+These structures are declared in the header file @file{gsl_sf_result.h}.
 
 The @code{gsl_sf_result} struct contains value and error fields.
 

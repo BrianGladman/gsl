@@ -3,6 +3,9 @@
 @section Dilogarithm
 @cindex dilogarithm
 
+The functions described in this section are declared in the header file
+@file{gsl_sf_dilog.h}.
+
 @subsection Real Argument
 
 

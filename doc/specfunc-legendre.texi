@@ -7,7 +7,8 @@
 @cindex hyperbolic space
 
 The Legendre Functions and Legendre Polynomials are described in
-Abramowitz & Stegun, Chapter 8.
+Abramowitz & Stegun, Chapter 8.  These functions are declared in 
+the header file @file{gsl_sf_legendre.h}.
 
 @subsection Legendre Polynomials
 

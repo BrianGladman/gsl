@@ -4,7 +4,8 @@
 @cindex Gegenbauer functions
 
 The Gegenbauer polynomials are defined in Abramowitz & Stegun, Chapter
-22, where they are known as Ultraspherical polynomiasl.
+22, where they are known as Ultraspherical polynomials.  These functions
+are declared in the header file @file{gsl_sf_gegenbauer.h}.
 
 
 @deftypefun double gsl_sf_gegenpoly_1 (double @var{lambda}, double @var{x})

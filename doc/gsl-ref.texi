@@ -213,7 +213,8 @@ not recommended for general use.
 * Nonlinear Fitting::           
 * One dimensional Root-Finding::  
 * Multidimensional Root-Finding::  
-* Minimization::                
+* One dimensional Minimization::                
+* Multidimensional Minimization::                
 * Simulated Annealing::         
 * Fast Fourier Transforms::     
 * Discrete Hankel Transforms::  
@@ -346,15 +347,19 @@ will be announced for general use.
 @chapter One dimensional Root-Finding
 @include roots.texi
 
-@node  Multidimensional Root-Finding, Minimization, One dimensional Root-Finding, Top
+@node  Multidimensional Root-Finding, One dimensional Minimization, One dimensional Root-Finding, Top
 @chapter Multidimensional Root-Finding
 @include multiroots.texi
 
-@node   Minimization, Simulated Annealing, Multidimensional Root-Finding, Top
-@chapter Minimization
+@node   One dimensional Minimization, Multidimensional Minimization, Multidimensional Root-Finding, Top
+@chapter One dimensional Minimization
 @include min.texi
 
-@node Simulated Annealing, Fast Fourier Transforms, Minimization, Top
+@node   Multidimensional Minimization, Simulated Annealing, One dimensional Minimization, Top
+@chapter Multidimensional Minimization
+@include multimin.texi
+
+@node Simulated Annealing, Fast Fourier Transforms, Multidimensional Minimization, Top
 @chapter Simulated Annealing
 @include siman.texi
 

@@ -2,3 +2,74 @@ This chapter describes functions for solving ordinary differential
 equation (ODE) initial value problems.
 
 
+@deftypefun gsl_odeiv_step * (*@var{create}) (unsigned int @var{dimension})
+@end deftypefun
+
+@deftypefun gsl_odeiv_step * gsl_odeiv_step_rk2_new (@var{void})
+@end deftypefun
+
+@deftypefun gsl_odeiv_step * gsl_odeiv_step_rk4_new (@var{void})
+@end deftypefun
+
+@deftypefun gsl_odeiv_step * gsl_odeiv_step_rkck_new (@var{void})
+@end deftypefun
+
+@deftypefun gsl_odeiv_step * gsl_odeiv_step_rk8pd_new (@var{void})
+@end deftypefun
+
+@deftypefun gsl_odeiv_step * gsl_odeiv_step_rk2imp_new (@var{void})
+@end deftypefun
+
+@deftypefun gsl_odeiv_step * gsl_odeiv_step_rk4imp_new (@var{void})
+@end deftypefun
+
+@deftypefun gsl_odeiv_step * gsl_odeiv_step_gear1_new (@var{void})
+@end deftypefun
+
+@deftypefun gsl_odeiv_step * gsl_odeiv_step_gear2_new (@var{void})
+@end deftypefun
+
+@deftypefun gsl_odeiv_step * gsl_odeiv_step_bsimp_new (double @var{eps})
+@end deftypefun
+
+@deftypefun const char * gsl_odeiv_step_name (const gsl_odeiv_step *)
+@end deftypefun
+
+@deftypefun int gsl_odeiv_step_apply (gsl_odeiv_step *, double @var{t}, double @var{h}, double y[], double yerr[], const double dydt_in[], double dydt_out[], const gsl_odeiv_system * @var{dydt})
+@end deftypefun
+
+@deftypefun int gsl_odeiv_step_reset (gsl_odeiv_step *)
+@end deftypefun
+
+@deftypefun void gsl_odeiv_step_free (gsl_odeiv_step *)
+@end deftypefun
+
+@deftypefun gsl_odeiv_evolve_mon * gsl_odeiv_evolve_mon_stream_new (FILE *)
+@end deftypefun
+
+@deftypefun void gsl_odeiv_evolve_mon_free (gsl_odeiv_evolve_mon *)
+@end deftypefun
+
+
+@deftypefun gsl_odeiv_evolve_control * gsl_odeiv_evolve_control_standard_new (double @var{eps_rel}, double @var{eps_abs}, double @var{a_y}, double @var{a_dydt})
+@end deftypefun
+
+@deftypefun gsl_odeiv_evolve_control * gsl_odeiv_evolve_control_y_new (double @var{eps_rel}, double @var{eps_abs})
+@end deftypefun
+
+@deftypefun gsl_odeiv_evolve_control * gsl_odeiv_evolve_control_yp_new (double @var{eps_rel}, double @var{eps_abs})
+@end deftypefun
+
+@deftypefun void gsl_odeiv_evolve_control_free (gsl_odeiv_evolve_control *)
+@end deftypefun
+
+@deftypefun gsl_odeiv_evolve * gsl_odeiv_evolve_new (@var{void})
+@end deftypefun
+
+@deftypefun int gsl_odeiv_evolve_apply (gsl_odeiv_evolve *, gsl_odeiv_evolve_mon * @var{mon}, gsl_odeiv_evolve_control * @var{con}, gsl_odeiv_step * @var{step}, const gsl_odeiv_system * @var{dydt}, double @var{t0}, double @var{t1}, double @var{hstart}, double y[])
+@end deftypefun
+
+@deftypefun void gsl_odeiv_evolve_free (gsl_odeiv_evolve *)
+@end deftypefun
+
+

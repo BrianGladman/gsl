@@ -8,7 +8,8 @@
 The Riemann zeta function is defined by 
 @c{$\zeta(s) = \sum_{k=1}^\infty k^{-s}$}
 @math{\zeta(s) = \sum_@{k=1@}^\infty k^@{-s@}}.  For more information
-see Abramowitz & Stegun, Section 23.2.
+see Abramowitz & Stegun, Section 23.2.  The functions described
+in this section are declared in the header file @file{gsl_sf_zeta.h}.
 
 @deftypefun double gsl_sf_zeta_int (int @var{n})
 @deftypefunx int gsl_sf_zeta_int_e (int @var{n}, gsl_sf_result * @var{result})

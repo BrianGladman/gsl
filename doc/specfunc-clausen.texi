@@ -6,7 +6,8 @@
 The Clausen integral is defined to be
 @math{Cl_2(x) = - \int_0^x dt \log(2 \sin(t/2))}.
 It is related to the dilogarithm by
-@math{Cl_2(\theta) = \Im  Li_2(\exp(i \theta))}.
+@math{Cl_2(\theta) = \Im  Li_2(\exp(i \theta))}.  The Clausen functions
+are declared in the header file @file{gsl_sf_clausen.h}.
 
 @deftypefun double gsl_sf_clausen (double @var{x})
 @deftypefunx int gsl_sf_clausen_e (double @var{x}, gsl_sf_result * @var{result})

@@ -5,7 +5,8 @@
 @cindex confluent hypergeometric functions
 
 Hypergeometric functions are described in Abramowitz & Stegun, Chapters
-13 and 15.
+13 and 15.  These functions are declared in the header file
+@file{gsl_sf_hyperg.h}.
 
 @deftypefun double gsl_sf_hyperg_0F1 (double @var{c}, double @var{x})
 @deftypefunx int gsl_sf_hyperg_0F1_e (double @var{c}, double @var{x}, gsl_sf_result * @var{result})

@@ -9,6 +9,7 @@ The polygamma functions of order @math{m} defined by
 @c{$\psi^{(m)}(x) = (d/dx)^m \psi(x) = (d/dx)^@{m+1@} \log(\Gamma(x))$}
 @math{\psi^@{(m)@}(x) = (d/dx)^m \psi(x) = (d/dx)^@{m+1@} \log(\Gamma(x))},
 where @math{\psi(x) = \Gamma'(x)/\Gamma(x)} is known as the digamma function.
+These functions are declared in the header file @file{gsl_sf_psi.h}.
 
 @subsection Digamma Function
 

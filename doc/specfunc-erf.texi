@@ -6,6 +6,7 @@
 @cindex erfc(x)
 
 The error function is described in Abramowitz & Stegun, Chapter 7.
+These functions are declared in the header file @file{gsl_sf_erf.h}.
 
 @subsection Error Function
 

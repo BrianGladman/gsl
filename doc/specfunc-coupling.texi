@@ -12,7 +12,8 @@ combined angular momentum vectors.  Since the arguments of the standard
 coupling coefficient functions are integer or half-integer, the
 arguments of the following functions are, by convention, integers equal
 to twice the actual spin value.  For information on the 3-j coefficients
-see Abramowitz & Stegun, Section 27.9.
+see Abramowitz & Stegun, Section 27.9.  The functions described in this
+section are declared in the header file @file{gsl_sf_coupling.h}.
 
 @subsection 3-j Symbols
 

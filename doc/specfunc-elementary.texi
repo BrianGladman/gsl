@@ -4,7 +4,9 @@
 @cindex elementary operations
 @cindex multiplication
 
-The following functions allow the propagation of errors from 
+The following functions allow for the propagation of errors when
+combining quantities by multiplication.  The functions are declared in
+the header file @file{gsl_sf_elementary.h}.
 
 @comment @deftypefun double gsl_sf_multiply (double @var{x}, double @var{y})
 @deftypefun int gsl_sf_multiply_e (double @var{x}, double @var{y}, gsl_sf_result * @var{result})

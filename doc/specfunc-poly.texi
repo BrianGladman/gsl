@@ -3,6 +3,8 @@
 @section Polynomial Manipulation
 @cindex polynomial manipulation
 
+This function is declared in the header file @file{gsl_sf_poly.h}.
+
 @deftypefun double gsl_sf_poly_eval (const double c[], const int @var{len}, const double @var{x})
 This function evaluates the polynomial 
 @c{$c[0] + c[1] x + c[2] x^2 + \dots + c[len-1] x^{len-1}$}
