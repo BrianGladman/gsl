@@ -22,6 +22,7 @@ FUNCTION (gsl_vector, fwrite) (FILE * stream, const TYPE (gsl_vector) * v)
   return status;
 }
 
+#if ! (defined(BASE_LONG_DOUBLE) && !defined(HAVE_PRINTF_LONGDOUBLE))
 int
 FUNCTION (gsl_vector, fprintf) (FILE * stream, const TYPE (gsl_vector) * v,
 				const char *format)
@@ -43,6 +44,7 @@ FUNCTION (gsl_vector, fscanf) (FILE * stream, TYPE (gsl_vector) * v)
 					     v->stride);
   return status;
 }
+#endif
 
 int
 FUNCTION (gsl_block, fread) (FILE * stream, ATOMIC * data, const size_t n,
