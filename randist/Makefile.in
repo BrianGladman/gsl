@@ -81,10 +81,10 @@ include_HEADERS= gsl_randist.h
 
 INCLUDES= -I$(srcdir)/../rng -I$(srcdir)/../specfunc -I$(srcdir)/../err -I$(top_srcdir)
 
-bin_PROGRAMS = gsl-dist
+bin_PROGRAMS = gsl-randist
 
-gsl_dist_SOURCES = gsl-dist.c
-gsl_dist_LDADD = libgslrandist.a ../rng/libgslrng.a ../specfunc/libgslspecfunc.a ../err/libgslerr.a
+gsl_randist_SOURCES = gsl-randist.c
+gsl_randist_LDADD = libgslrandist.a ../rng/libgslrng.a ../specfunc/libgslspecfunc.a ../err/libgslerr.a
 
 test_SOURCES = test.c
 test_LDADD = libgslrandist.a ../rng/libgslrng.a ../specfunc/libgslspecfunc.a ../err/libgslerr.a ../err/libgsltest.a
@@ -109,10 +109,10 @@ weibull.o
 AR = ar
 PROGRAMS =  $(bin_PROGRAMS)
 
-gsl_dist_OBJECTS =  gsl-dist.o
-gsl_dist_DEPENDENCIES =  libgslrandist.a ../rng/libgslrng.a \
+gsl_randist_OBJECTS =  gsl-randist.o
+gsl_randist_DEPENDENCIES =  libgslrandist.a ../rng/libgslrng.a \
 ../specfunc/libgslspecfunc.a ../err/libgslerr.a
-gsl_dist_LDFLAGS = 
+gsl_randist_LDFLAGS = 
 test_OBJECTS =  test.o
 test_DEPENDENCIES =  libgslrandist.a ../rng/libgslrng.a \
 ../specfunc/libgslspecfunc.a ../err/libgslerr.a ../err/libgsltest.a
@@ -132,13 +132,13 @@ GZIP = --best
 DEP_FILES =  .deps/bernoulli.P .deps/beta.P .deps/binomial.P \
 .deps/cauchy.P .deps/chisq.P .deps/erlang.P .deps/exponential.P \
 .deps/exppow.P .deps/fdist.P .deps/flat.P .deps/gamma.P .deps/gauss.P \
-.deps/geometric.P .deps/gsl-dist.P .deps/gumbel.P .deps/hyperg.P \
+.deps/geometric.P .deps/gsl-randist.P .deps/gumbel.P .deps/hyperg.P \
 .deps/laplace.P .deps/levy.P .deps/logistic.P .deps/lognormal.P \
 .deps/nbinomial.P .deps/pareto.P .deps/pascal.P .deps/poisson.P \
 .deps/shuffle.P .deps/sphere.P .deps/tdist.P .deps/test.P \
 .deps/weibull.P
-SOURCES = $(libgslrandist_a_SOURCES) $(gsl_dist_SOURCES) $(test_SOURCES)
-OBJECTS = $(libgslrandist_a_OBJECTS) $(gsl_dist_OBJECTS) $(test_OBJECTS)
+SOURCES = $(libgslrandist_a_SOURCES) $(gsl_randist_SOURCES) $(test_SOURCES)
+OBJECTS = $(libgslrandist_a_OBJECTS) $(gsl_randist_OBJECTS) $(test_OBJECTS)
 
 all: Makefile $(LIBRARIES) $(PROGRAMS) $(HEADERS)
 
@@ -216,9 +216,9 @@ distclean-checkPROGRAMS:
 
 maintainer-clean-checkPROGRAMS:
 
-gsl-dist: $(gsl_dist_OBJECTS) $(gsl_dist_DEPENDENCIES)
-	@rm -f gsl-dist
-	$(LINK) $(gsl_dist_LDFLAGS) $(gsl_dist_OBJECTS) $(gsl_dist_LDADD) $(LIBS)
+gsl-randist: $(gsl_randist_OBJECTS) $(gsl_randist_DEPENDENCIES)
+	@rm -f gsl-randist
+	$(LINK) $(gsl_randist_LDFLAGS) $(gsl_randist_OBJECTS) $(gsl_randist_LDADD) $(LIBS)
 
 test: $(test_OBJECTS) $(test_DEPENDENCIES)
 	@rm -f test

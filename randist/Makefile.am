@@ -11,10 +11,10 @@ include_HEADERS= gsl_randist.h
 INCLUDES= -I$(srcdir)/../rng -I$(srcdir)/../specfunc -I$(srcdir)/../err -I$(top_srcdir)
 
 
-bin_PROGRAMS = gsl-dist
+bin_PROGRAMS = gsl-randist
 
-gsl_dist_SOURCES = gsl-dist.c
-gsl_dist_LDADD = libgslrandist.a ../rng/libgslrng.a ../specfunc/libgslspecfunc.a ../err/libgslerr.a
+gsl_randist_SOURCES = gsl-randist.c
+gsl_randist_LDADD = libgslrandist.a ../rng/libgslrng.a ../specfunc/libgslspecfunc.a ../err/libgslerr.a
 
 test_SOURCES = test.c
 test_LDADD = libgslrandist.a ../rng/libgslrng.a ../specfunc/libgslspecfunc.a ../err/libgslerr.a ../err/libgsltest.a
