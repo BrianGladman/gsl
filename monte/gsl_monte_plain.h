@@ -23,15 +23,16 @@ typedef struct {
 
 } gsl_monte_plain_state;
 
-int gsl_monte_plain_integrate(const gsl_monte_plain_state *state, 
-		    const gsl_monte_f_T fun, 
-		    const double* xl, const double* xu, const size_t num_dim, 
-		    const size_t calls, double* res, double* err);
+int gsl_monte_plain_integrate(gsl_monte_plain_state *state, 
+			      const gsl_monte_f_T fun, 
+			      const double* xl, const double* xu, 
+			      const size_t num_dim, 
+			      const size_t calls, double* res, double* err);
 
 gsl_monte_plain_state* gsl_monte_plain_alloc(size_t num_dim);
 
 int gsl_monte_plain_validate(gsl_monte_plain_state* state,
-                             double xl[], double xu[], 
+                             const double xl[], const double xu[], 
                              unsigned long num_dim, unsigned long calls);
 
 int gsl_monte_plain_init(gsl_monte_plain_state* state);

@@ -25,7 +25,7 @@ typedef struct {
   int bins_prev;
   int calls_per_box;
   int it_num;
-  int num_dim;
+  unsigned long num_dim;
   int bins;
   int boxes;
   int init_done;

@@ -29,7 +29,7 @@ FUNCTION(gsl_monte_vector,calloc) (const size_t n)
 {
   size_t i ;
 
-  BASE * v = (BASE *) FUNCTION(gsl_vector,alloc) (n) ;
+  BASE * v = (BASE *) FUNCTION(gsl_monte_vector,alloc) (n) ;
   
   if (v == 0) 
     return 0 ;
@@ -43,12 +43,13 @@ FUNCTION(gsl_monte_vector,calloc) (const size_t n)
 }
 
 
-void
+int
 FUNCTION(gsl_monte_vector,free) (BASE * v)
 {
   if ( v == (BASE *) NULL) {
-    GSL_ERROR_RETURN_NOTHING("Attempt to free null pointer", EFAULT);
+    GSL_ERROR("Attempt to free null pointer", GSL_EFAULT);
   }
   free(v) ;
+  return 0;
 }
 

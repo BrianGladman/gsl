@@ -9,8 +9,8 @@
 
 /* gsl headers */
 #include <gsl_math.h>
-#include <gsl_vector.h>
-#include <gsl_vector_int.h>
+/* #include <gsl_vector.h> */
+/* #include <gsl_vector_int.h> */
 #include <gsl_errno.h>
 #include <gsl_rng.h>
 
