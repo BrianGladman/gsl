@@ -39,8 +39,8 @@ test_trap_SOURCES = test_trap.c
 
 CLEANFILES = test.txt test.dat
 
-noinst_HEADERS = matrix_source.c init_source.c file_source.c source.h unsource.h
+noinst_HEADERS = matrix_source.c init_source.c file_source.c 
 
-libgslmatrix_a_SOURCES = source.h init.c matrix.c file.c
+libgslmatrix_a_SOURCES = init.c matrix.c file.c
 
 

@@ -37,11 +37,11 @@ gsl_matrix_char_get(const gsl_matrix_char * m, const size_t i, const size_t j)
 #ifndef GSL_RANGE_CHECK_OFF
   if (i >= m->size1)  /* size_t is unsigned, can't be negative */
     {
-      GSL_ERROR_CONTINUE("first index out of range", GSL_EINVAL) ;
+      GSL_ERROR_RETURN("first index out of range", GSL_EINVAL, 0) ;
     }
   else if (j >= m->size2) /* size_t is unsigned, can't be negative */
     {
-      GSL_ERROR_CONTINUE("second index out of range", GSL_EINVAL) ;
+      GSL_ERROR_RETURN("second index out of range", GSL_EINVAL, 0) ;
     }
 #endif
   return m->data[i * m->size2 + j] ;

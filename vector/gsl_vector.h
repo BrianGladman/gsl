@@ -2,7 +2,7 @@
 #define GSL_VECTOR_H_
 
 #include <gsl_vector_complex_long_double.h>
-#include <gsl_vector_complex.h>
+#include <gsl_vector_complex_double.h>
 #include <gsl_vector_complex_float.h>
 
 #include <gsl_vector_long_double.h>

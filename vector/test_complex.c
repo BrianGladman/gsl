@@ -1,7 +1,7 @@
 #include <config.h>
 #include <fcntl.h>
 #include <stdio.h>
-#include <gsl_vector_complex.h>
+#include <gsl_vector.h>
 #include <gsl_test.h>
 
 #define N 10000

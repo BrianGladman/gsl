@@ -5,7 +5,7 @@ check_PROGRAMS = test test_float test_int test_complex test_trap
 include_HEADERS = 		\
 	gsl_vector.h		\
 	gsl_vector_char.h	\
-	gsl_vector_complex.h	\
+	gsl_vector_complex_double.h	\
 	gsl_vector_complex_float.h	 \
 	gsl_vector_complex_long_double.h \
 	gsl_vector_double.h	\
@@ -40,6 +40,6 @@ test_trap_SOURCES = test_trap.c
 
 CLEANFILES = test.txt test.dat
 
-noinst_HEADERS = source.h unsource.h vector_source.c init_source.c file_source.c fprintf_block.c
+noinst_HEADERS = vector_source.c init_source.c file_source.c fprintf_block.c
 
 libgslvector_a_SOURCES = init.c file.c vector.c

@@ -37,14 +37,16 @@ gsl_complex_float
 gsl_matrix_complex_float_get(const gsl_matrix_complex_float * m, 
 		     const size_t i, const size_t j)
 {
+  const gsl_complex_float zero = {{0,0}};
+
 #ifndef GSL_RANGE_CHECK_OFF
   if (i >= m->size1)  /* size_t is unsigned, can't be negative */
     {
-      GSL_ERROR_CONTINUE("first index out of range", GSL_EINVAL) ;
+      GSL_ERROR_RETURN("first index out of range", GSL_EINVAL, zero) ;
     }
   else if (j >= m->size2) /* size_t is unsigned, can't be negative */
     {
-      GSL_ERROR_CONTINUE("second index out of range", GSL_EINVAL) ;
+      GSL_ERROR_RETURN("second index out of range", GSL_EINVAL, zero) ;
     }
 #endif
   return *(gsl_complex_float *)(m->data + 2*(i * m->size2 + j)) ;

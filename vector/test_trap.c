@@ -5,9 +5,6 @@
 #define GSL_WARNINGS_OFF
 
 #include <gsl_vector.h>
-#include <gsl_vector_int.h>
-#include <gsl_vector_float.h>
-#include <gsl_vector_complex.h>
 #include <gsl_test.h>
 
 #define N 10000

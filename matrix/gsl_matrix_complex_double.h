@@ -39,14 +39,15 @@ gsl_matrix_complex_get(const gsl_matrix_complex * m,
 		     const size_t i, const size_t j)
 {
 #ifndef GSL_RANGE_CHECK_OFF
-  static const gsl_complex gsl_complex_zero = {{0, 0}} ;
+  const gsl_complex zero = {{0,0}};
+
   if (i >= m->size1)  /* size_t is unsigned, can't be negative */
     {
-      GSL_ERROR_RETURN("first index out of range", GSL_EINVAL, gsl_complex_zero) ;
+      GSL_ERROR_RETURN("first index out of range", GSL_EINVAL, zero) ;
     }
   else if (j >= m->size2) /* size_t is unsigned, can't be negative */
     {
-      GSL_ERROR_RETURN("second index out of range", GSL_EINVAL, gsl_complex_zero) ;
+      GSL_ERROR_RETURN("second index out of range", GSL_EINVAL, zero) ;
     }
 #endif
   return *(gsl_complex *)(m->data + 2*(i * m->size2 + j)) ;

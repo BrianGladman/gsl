@@ -1,7 +1,5 @@
 #include <gsl_errno.h>
 
-#include "source.h"
-
 int
 FUNCTION(gsl_matrix,get_row)(const TYPE(gsl_matrix) * m,
 			     const size_t i,

@@ -75,7 +75,8 @@ gsl_vector_complex_float_get(const gsl_vector_complex_float * v, const size_t i)
 #ifndef GSL_RANGE_CHECK_OFF
   if (i >= v->size) /* size_t is unsigned, can't be negative */
     {
-      GSL_ERROR_CONTINUE("index out of range", GSL_EINVAL);
+      const gsl_complex_float zero = {{0,0}} ;
+      GSL_ERROR_RETURN("index out of range", GSL_EINVAL, zero);
     }
 #endif
   return *GSL_COMPLEX_FLOAT_AT(v, i);

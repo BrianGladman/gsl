@@ -2,7 +2,7 @@
 
 SUBDIRS = err ieee-utils rng vector matrix randist fft roots specfunc statistics siman integration interpolation histogram monte blas doc
 
-include_HEADERS = gsl_config.h gsl_complex.h gsl_math.h
+include_HEADERS = gsl_config.h gsl_complex.h gsl_math.h templates_on.h templates_off.h
 
 strict:
 	$(MAKE) CFLAGS="-ansi -pedantic -Werror -W -Wall -Wtraditional -Wconversion -Wshadow -Wpointer-arith -Wcast-qual -Wcast-align -Wwrite-strings -Waggregate-return -Wstrict-prototypes -fshort-enums -fno-common -Wmissing-prototypes -Wnested-externs -Dinline='' -g -O4"

@@ -27,3 +27,5 @@
 #undef ATOMIC
 #undef MULTIPLICITY
 #undef IN_FORMAT
+#undef ZERO
+

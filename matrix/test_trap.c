@@ -34,16 +34,6 @@ int main (void)
   /* double */
 
   status = 0 ;
-  gsl_matrix_set(m, i-1, j, 1.2) ;
-  gsl_test(!status, 
-	   "gsl_matrix_set traps first index below lower array bound") ;
-
-  status = 0 ;
-  gsl_matrix_set(m, i, j-1, 1.2) ;
-  gsl_test(!status, 
-	   "gsl_matrix_set traps second index below lower array bound") ;
-
-  status = 0 ;
   gsl_matrix_set(m, N+1, 0, 1.2) ;
   gsl_test(!status, 
 	   "gsl_matrix_set traps first index above upper array bound") ;

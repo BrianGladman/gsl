@@ -2,8 +2,6 @@
 #include <unistd.h>
 #include <gsl_errno.h>
 
-#include "source.h"
-
 int
 FUNCTION(gsl_matrix,fread)(FILE * stream, TYPE(gsl_matrix) * m)
 {
