@@ -6,7 +6,7 @@
    be an order of magnitude faster than a
    call to standard library pow().
  */
-double pow_int(double x, int n);
+double gsl_sf_pow_int(double x, int n);
 
 
 #endif /* GSL_SF_POW_INT_H_ */

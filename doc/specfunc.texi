@@ -1,0 +1,143 @@
+@cindex Special Functions
+
+This chapter describes the GSL special function library.
+
+@menu
+* Airy Functions::
+* Bessel Functions:: 
+* Chebyshev Polynomials::
+* Coulomb Wave Functions::
+* Dilogarithm::
+* Error Function::
+* Fermi-Dirac Function::
+* Gamma Function::
+* Laguerre Functions::
+* Legendre Functions and Spherical Harmonics::
+* Logarithm (Complex)::
+* Power Function::
+* Trigonometric Functions (Complex)::
+@end menu
+
+@c ---------------------------------------------------------------------------
+@node Airy Functions
+@section Airy Functions
+@cindex Airy functions
+@cindex Ai(x)
+@cindex Bi(x)
+
+The Airy functions @math{Ai(x)} and @math{Bi(x)} are defined
+by the integral representations
+
+@equation
+Ai(x) = @{1 \over \pi@} \int_0^\infty \cos( @{1\over 3@} t^3 + xt ) dt,
+@end equation
+
+@equation
+Bi(x) = @{1 \over \pi@} \int_0^\infty ( e^@{-t^3/3@} + \sin( @{1\over 3@} t^3 + xt ) dt.
+@end equation
+
+@noindent
+They are linearly independent solutions of the equation @math{f(x)'' = x f(x)}.
+
+Being functions of a single variable, they are quite easy to
+evaluate in production code, using fits to Chebyshev polynomials
+in various regions. Such fits provide a uniform approximation over
+the full domain of the function. The GSL implementation is 
+a re-implementation of the Airy Chebyshev fits in the SLATEC Fortran library.
+
+@deftypefun double gsl_sf_airy_Ai(double x)
+
+@deftypefunx double gsl_sf_airy_Bi(double x)
+
+@deftypefunx double gsl_sf_airy_Bi_scaled(double x)
+
+@end deftypefun
+
+
+@c ---------------------------------------------------------------------------
+@node Bessel Functions
+@section Bessel Functions
+@cindex Bessel functions
+
+
+@c ---------------------------------------------------------------------------
+@node Chebyshev Polynomials
+@section Chebyshev Polynomials
+@cindex Chebyshev polynomials
+
+
+
+@c ---------------------------------------------------------------------------
+@node Coulomb Wave Functions
+@section Coulomb Wave Functions
+@cindex Coulomb wave functions
+
+
+@c ---------------------------------------------------------------------------
+@node Dilogarithm
+@section Dilogarithm
+@cindex dilogarithm
+
+
+@c ---------------------------------------------------------------------------
+@node Error Function
+@section Error Function
+@cindex error function
+@cindex erf(x)
+@cindex erfc(x)
+
+@c ---------------------------------------------------------------------------
+@node Fermi-Dirac Function
+@section Fermi-Dirac Function
+@cindex Fermi-Dirac function
+
+
+@c ---------------------------------------------------------------------------
+@node Gamma Function
+@section Gamma Function
+@cindex gamma function
+
+@c ---------------------------------------------------------------------------
+@node Laguerre Functions
+@section Laguerre Functions
+@cindex Laguerre functions
+
+
+@c ---------------------------------------------------------------------------
+@node Legendre Functions and Spherical Harmonics
+@section Legendre Functions and Spherical Harmonics
+@cindex Legendre functions
+@cindex spherical harmonics
+
+
+@c ---------------------------------------------------------------------------
+@node Logarithm (Complex)
+@section Logarithm (Complex)
+@cindex logarithm
+
+
+@c ---------------------------------------------------------------------------
+@node Power Function
+@section Power Function
+@cindex power function
+@cindex integer powers
+
+A common complaint about the standard C library is its lack of
+a function for calculating (small) integer powers. GSL provides
+a simple function to fill this gap.
+
+@deftypefun double gsl_sf_pow_int(double x, int n)
+@end deftypefun
+
+@example
+#include <gsl_sf_pow_int.h>
+double y = gsl_sf_pow_int(3., 12)
+@end example
+
+@c ---------------------------------------------------------------------------
+@node Trigonometric Functions (Complex)
+@section Trigonometric Functions (Complex)
+@cindex trigonometric functions 
+@cindex sine
+@cindex cosine
+
