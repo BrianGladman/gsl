@@ -1,5 +1,7 @@
 Thu Sep  6 10:38:51 2001  Brian Gough  <bjg@network-theory.co.uk>
 
+	* clausen.c: added missing initialiser to cheb_series struct
+
 	* pow_int.c (gsl_sf_pow_int_e): handle the case x == 0, n < 0
 
 	* legendre_poly.c (gsl_sf_legendre_array_size): added missing

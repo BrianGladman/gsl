@@ -50,6 +50,7 @@ static cheb_series aclaus_cs = {
   aclaus_data,
   14,
   -1, 1,
+  8  /* FIXME:  this is a guess, correct value needed here BJG */
 };
 
 
