@@ -286,11 +286,11 @@ gsl_sf_legendre_Plm_e(const int l, const int m, const double x, gsl_sf_result * 
    * about overflow. Calculate an approximate exponent which
    * measures the normalization of this thing.
    */
-  double dif = l-m;
-  double sum = l+m;
-  double exp_check = 0.5 * log(2.0*l+1.0) 
-                   + 0.5 * dif * (log(dif)-1.0)
-                   - 0.5 * sum * (log(sum)-1.0);
+  const double dif = l-m;
+  const double sum = l+m;
+  const double t_d = ( dif == 0.0 ? 0.0 : 0.5 * dif * (log(dif)-1.0) );
+  const double t_s = ( dif == 0.0 ? 0.0 : 0.5 * sum * (log(sum)-1.0) );
+  const double exp_check = 0.5 * log(2.0*l+1.0) + t_d - t_s;
 
   /* CHECK_POINTER(result) */
 
