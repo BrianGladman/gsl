@@ -477,7 +477,7 @@ there are several equal minimum or maximum elements then the lowest
 indices are returned.
 @end deftypefun
 
-@deftypefun int gsl_vector_isnull (gsl_vector * @var{v})
+@deftypefun int gsl_vector_isnull (const gsl_vector * @var{v})
 This function returns 1 if all the elements of the vector @var{v} are
 zero, and 0 otherwise.
 @end deftypefun
@@ -825,7 +825,12 @@ function falls into this category.
 
 @deftypefun int gsl_matrix_memcpy (gsl_matrix * @var{dest}, const gsl_matrix * @var{src})
 This function copies the elements of the matrix @var{src} into the
-matrix @var{dest}.  The two matrix must have the same size.
+matrix @var{dest}.  The two matrices must have the same size.
+@end deftypefun
+
+@deftypefun int gsl_matrix_swap (gsl_matrix * @var{m1}, const gsl_matrix * @var{m2})
+This function exchanges the elements of the matrices @var{m1} and
+@var{m2} by copying.  The two matrices must have the same size.
 @end deftypefun
 
 @node Copying rows and columns
@@ -882,6 +887,12 @@ matrix @var{m} in-place.  The matrix must be square for this operation to
 be possible.
 @end deftypefun
 
+@deftypefun int gsl_matrix_transpose (gsl_matrix * @var{m})
+This function replaces the matrix @var{m} by its transpose by copying
+the elements of the matrix in-place.  The matrix must be square for this
+operation to be possible.
+@end deftypefun
+
 @node Matrix Properties
 @section Matrix Properties
 
@@ -917,6 +928,10 @@ the matrix @var{m}, storing them in (@var{imin},@var{jmin}) and
 elements then the first elements found are returned.
 @end deftypefun
 
+@deftypefun int gsl_matrix_isnull (const gsl_matrix * @var{m})
+This function returns 1 if all the elements of the matrix @var{m} are
+zero, and 0 otherwise.
+@end deftypefun
 
 @node Example programs for matrices
 @section Example programs for matrices

@@ -369,6 +369,12 @@ by the constant @var{scale}.
 i.e. @math{h'_1(i) = h_1(i) scale}.
 @end deftypefun
 
+@deftypefun int gsl_histogram_shift (gsl_histogram *@var{h}, double @var{offset})
+This function shifts the contents of the bins of histogram @var{h}
+by the constant @var{offset}. 
+i.e. @math{h'_1(i) = h_1(i) + offset}.
+@end deftypefun
+
 @node Reading and writing histograms
 @section Reading and writing histograms
 
@@ -900,6 +906,12 @@ i.e. @math{h'_1(i,j) = h_1(i,j) / h_2(i,j)}.
 This function multiplies the contents of the bins of histogram @var{h}
 by the constant @var{scale}. 
 i.e. @math{h'_1(i,j) = h_1(i,j) scale}.
+@end deftypefun
+
+@deftypefun int gsl_histogram2d_shift (gsl_histogram2d *@var{h}, double @var{offset})
+This function shifts the contents of the bins of histogram @var{h}
+by the constant @var{offset}. 
+i.e. @math{h'_1(i,j) = h_1(i,j) + offset}.
 @end deftypefun
 
 @node Reading and writing 2D histograms

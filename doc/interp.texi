@@ -13,13 +13,19 @@ is stored in a @code{gsl_interp_accel}, which is a kind of iterator
 for interpolation lookups.
 
 The interpolation library provides five interpolation object factories:
-@multitable {gsl_interp_factory_cspline_periodic  } { nyaknyaknyaknyaknyaknyak }
-@item @code{gsl_interp_factory_linear} @tab linear interpolation
-@item @code{gsl_interp_factory_cspline_natural} @tab cubic spline with natural BC
-@item @code{gsl_interp_factory_cspline_periodic} @tab cubic spline with periodic BC
-@item @code{gsl_interp_factory_akima_natural} @tab Akima spline with natural BC
-@item @code{gsl_interp_factory_akima_periodic} @tab Akima spline with periodic BC
-@end multitable
+
+@table @code
+@item gsl_interp_factory_linear
+linear interpolation
+@item gsl_interp_factory_cspline_natural
+cubic spline with natural boundary conditions
+@item gsl_interp_factory_cspline_periodic
+cubic spline with periodic boundary conditions
+@item gsl_interp_factory_akima_natural
+Akima spline with natural boundary conditions
+@item gsl_interp_factory_akima_periodic
+Akima spline with periodic boundary conditions
+@end table
 
 The interpolation object (@code{gsl_interp_obj}) does not copy the
 data arrays but stores all static state computed from the data.
