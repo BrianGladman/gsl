@@ -17,10 +17,10 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-QUALIFIED_VIEW(gsl_vector,view)
+QUALIFIED_VIEW(_gsl_vector,view)
 FUNCTION(gsl_vector, view_array) (QUALIFIER ATOMIC * base, size_t n)
 {
-  QUALIFIED_VIEW(gsl_vector,view) view = NULL_VECTOR_VIEW;
+  QUALIFIED_VIEW(_gsl_vector,view) view = NULL_VECTOR_VIEW;
 
   if (n == 0)
     {
@@ -37,17 +37,17 @@ FUNCTION(gsl_vector, view_array) (QUALIFIER ATOMIC * base, size_t n)
     v.block = 0;
     v.owner = 0;
     
-    ((VIEW(gsl_vector,view) *)&view)->vector = v;
+    ((VIEW(_gsl_vector,view) *)&view)->vector = v;
     return view;
   }
 }
 
-QUALIFIED_VIEW(gsl_vector,view)
+QUALIFIED_VIEW(_gsl_vector,view)
 FUNCTION(gsl_vector, view_array_with_stride) (QUALIFIER ATOMIC * base, 
                                               size_t stride,
                                               size_t n)
 {
-  QUALIFIED_VIEW(gsl_vector,view) view = NULL_VECTOR_VIEW;
+  QUALIFIED_VIEW(_gsl_vector,view) view = NULL_VECTOR_VIEW;
 
   if (n == 0)
     {
@@ -70,7 +70,7 @@ FUNCTION(gsl_vector, view_array_with_stride) (QUALIFIER ATOMIC * base,
     v.block = 0;
     v.owner = 0;
 
-    ((VIEW(gsl_vector,view) *)&view)->vector = v;
+    ((VIEW(_gsl_vector,view) *)&view)->vector = v;
     return view;
   }
 }

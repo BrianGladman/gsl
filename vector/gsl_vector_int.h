@@ -49,12 +49,16 @@ gsl_vector_int;
 typedef struct
 {
   gsl_vector_int vector;
-} gsl_vector_int_view;
+} _gsl_vector_int_view;
 
-typedef const struct
+typedef _gsl_vector_int_view gsl_vector_int_view;
+
+typedef struct
 {
   gsl_vector_int vector;
-} gsl_vector_int_const_view;
+} _gsl_vector_int_const_view;
+
+typedef const _gsl_vector_int_const_view gsl_vector_int_const_view;
 
 
 /* Allocation */
@@ -76,39 +80,39 @@ void gsl_vector_int_free (gsl_vector_int * v);
 
 /* Views */
 
-gsl_vector_int_view 
+_gsl_vector_int_view 
 gsl_vector_int_view_array (int *v, size_t n);
 
-gsl_vector_int_view 
+_gsl_vector_int_view 
 gsl_vector_int_view_array_with_stride (int *base,
                                          size_t stride,
                                          size_t n);
 
-gsl_vector_int_const_view 
+_gsl_vector_int_const_view 
 gsl_vector_int_const_view_array (const int *v, size_t n);
 
-gsl_vector_int_const_view 
+_gsl_vector_int_const_view 
 gsl_vector_int_const_view_array_with_stride (const int *base,
                                                size_t stride,
                                                size_t n);
 
-gsl_vector_int_view 
+_gsl_vector_int_view 
 gsl_vector_int_subvector (gsl_vector_int *v, 
                             size_t i, 
                             size_t n);
 
-gsl_vector_int_view 
+_gsl_vector_int_view 
 gsl_vector_int_subvector_with_stride (gsl_vector_int *v, 
                                         size_t i,
                                         size_t stride,
                                         size_t n);
 
-gsl_vector_int_const_view 
+_gsl_vector_int_const_view 
 gsl_vector_int_const_subvector (const gsl_vector_int *v, 
                                   size_t i, 
                                   size_t n);
 
-gsl_vector_int_const_view 
+_gsl_vector_int_const_view 
 gsl_vector_int_const_subvector_with_stride (const gsl_vector_int *v, 
                                               size_t i, 
                                               size_t stride,

@@ -17,10 +17,10 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-QUALIFIED_VIEW(gsl_vector,view)
+QUALIFIED_VIEW(_gsl_vector,view)
 FUNCTION (gsl_matrix, row) (QUALIFIED_TYPE(gsl_matrix) * m, const size_t i)
 {
-  QUALIFIED_VIEW(gsl_vector,view) view = NULL_VECTOR_VIEW;
+  QUALIFIED_VIEW(_gsl_vector,view) view = NULL_VECTOR_VIEW;
   
   if (i >= m->size1)
     {
@@ -36,15 +36,15 @@ FUNCTION (gsl_matrix, row) (QUALIFIED_TYPE(gsl_matrix) * m, const size_t i)
     v.block = m->block;
     v.owner = 0;
     
-    ((VIEW(gsl_vector, view) *)&view)->vector = v;
+    ((VIEW(_gsl_vector, view) *)&view)->vector = v;
     return view;
   }
 }
 
-QUALIFIED_VIEW(gsl_vector,view)
+QUALIFIED_VIEW(_gsl_vector,view)
 FUNCTION (gsl_matrix, column) (QUALIFIED_TYPE(gsl_matrix) * m, const size_t j)
 {
-  QUALIFIED_VIEW(gsl_vector,view) view = NULL_VECTOR_VIEW;
+  QUALIFIED_VIEW(_gsl_vector,view) view = NULL_VECTOR_VIEW;
   
   if (j >= m->size2)
     {
@@ -60,15 +60,15 @@ FUNCTION (gsl_matrix, column) (QUALIFIED_TYPE(gsl_matrix) * m, const size_t j)
     v.block = m->block;
     v.owner = 0;
 
-    ((VIEW(gsl_vector, view) *)&view)->vector = v;
+    ((VIEW(_gsl_vector, view) *)&view)->vector = v;
     return view;
   }
 }
 
-QUALIFIED_VIEW(gsl_vector,view)
+QUALIFIED_VIEW(_gsl_vector,view)
 FUNCTION (gsl_matrix, diagonal) (QUALIFIED_TYPE(gsl_matrix) * m)
 {
-  QUALIFIED_VIEW(gsl_vector,view) view = NULL_VECTOR_VIEW;
+  QUALIFIED_VIEW(_gsl_vector,view) view = NULL_VECTOR_VIEW;
 
   TYPE(gsl_vector) v = NULL_VECTOR;
   v.data = m->data;
@@ -77,15 +77,15 @@ FUNCTION (gsl_matrix, diagonal) (QUALIFIED_TYPE(gsl_matrix) * m)
   v.block = m->block;
   v.owner = 0;
 
-  ((VIEW(gsl_vector, view) *)&view)->vector = v;
+  ((VIEW(_gsl_vector, view) *)&view)->vector = v;
   return view;
 }
 
-QUALIFIED_VIEW(gsl_vector,view)
+QUALIFIED_VIEW(_gsl_vector,view)
 FUNCTION (gsl_matrix, subdiagonal) (QUALIFIED_TYPE(gsl_matrix) * m,
                                     const size_t k)
 {
-  QUALIFIED_VIEW(gsl_vector,view) view = NULL_VECTOR_VIEW;
+  QUALIFIED_VIEW(_gsl_vector,view) view = NULL_VECTOR_VIEW;
   
   if (k >= m->size1)
     {
@@ -101,16 +101,16 @@ FUNCTION (gsl_matrix, subdiagonal) (QUALIFIED_TYPE(gsl_matrix) * m,
     v.block = m->block;
     v.owner = 0;
     
-    ((VIEW(gsl_vector, view) *)&view)->vector = v;
+    ((VIEW(_gsl_vector, view) *)&view)->vector = v;
     return view;
   }
 }
 
-QUALIFIED_VIEW(gsl_vector,view)
+QUALIFIED_VIEW(_gsl_vector,view)
 FUNCTION (gsl_matrix, superdiagonal) (QUALIFIED_TYPE(gsl_matrix) * m,
                                       const size_t k)
 {
-  QUALIFIED_VIEW(gsl_vector,view) view = NULL_VECTOR_VIEW;
+  QUALIFIED_VIEW(_gsl_vector,view) view = NULL_VECTOR_VIEW;
 
 
   if (k >= m->size2)
@@ -127,7 +127,7 @@ FUNCTION (gsl_matrix, superdiagonal) (QUALIFIED_TYPE(gsl_matrix) * m,
     v.block = m->block;
     v.owner = 0;
 
-    ((VIEW(gsl_vector, view) *)&view)->vector = v;
+    ((VIEW(_gsl_vector, view) *)&view)->vector = v;
     return view;
   }
 }

@@ -49,12 +49,16 @@ gsl_vector_long;
 typedef struct
 {
   gsl_vector_long vector;
-} gsl_vector_long_view;
+} _gsl_vector_long_view;
 
-typedef const struct
+typedef _gsl_vector_long_view gsl_vector_long_view;
+
+typedef struct
 {
   gsl_vector_long vector;
-} gsl_vector_long_const_view;
+} _gsl_vector_long_const_view;
+
+typedef const _gsl_vector_long_const_view gsl_vector_long_const_view;
 
 
 /* Allocation */
@@ -76,39 +80,39 @@ void gsl_vector_long_free (gsl_vector_long * v);
 
 /* Views */
 
-gsl_vector_long_view 
+_gsl_vector_long_view 
 gsl_vector_long_view_array (long *v, size_t n);
 
-gsl_vector_long_view 
+_gsl_vector_long_view 
 gsl_vector_long_view_array_with_stride (long *base,
                                          size_t stride,
                                          size_t n);
 
-gsl_vector_long_const_view 
+_gsl_vector_long_const_view 
 gsl_vector_long_const_view_array (const long *v, size_t n);
 
-gsl_vector_long_const_view 
+_gsl_vector_long_const_view 
 gsl_vector_long_const_view_array_with_stride (const long *base,
                                                size_t stride,
                                                size_t n);
 
-gsl_vector_long_view 
+_gsl_vector_long_view 
 gsl_vector_long_subvector (gsl_vector_long *v, 
                             size_t i, 
                             size_t n);
 
-gsl_vector_long_view 
+_gsl_vector_long_view 
 gsl_vector_long_subvector_with_stride (gsl_vector_long *v, 
                                         size_t i,
                                         size_t stride,
                                         size_t n);
 
-gsl_vector_long_const_view 
+_gsl_vector_long_const_view 
 gsl_vector_long_const_subvector (const gsl_vector_long *v, 
                                   size_t i, 
                                   size_t n);
 
-gsl_vector_long_const_view 
+_gsl_vector_long_const_view 
 gsl_vector_long_const_subvector_with_stride (const gsl_vector_long *v, 
                                               size_t i, 
                                               size_t stride,

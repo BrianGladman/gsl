@@ -17,7 +17,7 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-QUALIFIED_REAL_VIEW(gsl_vector, view)
+QUALIFIED_REAL_VIEW(_gsl_vector, view)
 FUNCTION(gsl_vector, real) (QUALIFIED_TYPE(gsl_vector) * v)
 {
   REAL_TYPE(gsl_vector) s = NULL_VECTOR;
@@ -30,13 +30,13 @@ FUNCTION(gsl_vector, real) (QUALIFIED_TYPE(gsl_vector) * v)
   s.owner = 0;
 
   {
-    QUALIFIED_REAL_VIEW(gsl_vector,view) view = NULL_VECTOR_VIEW;
+    QUALIFIED_REAL_VIEW(_gsl_vector,view) view = NULL_VECTOR_VIEW;
     ((REAL_VIEW(gsl_vector,view) *)(&view))->vector = s;
     return view;
   }
 }
 
-QUALIFIED_REAL_VIEW(gsl_vector, view)
+QUALIFIED_REAL_VIEW(_gsl_vector, view)
 FUNCTION(gsl_vector, imag) (QUALIFIED_TYPE(gsl_vector) * v)
 {
   REAL_TYPE(gsl_vector) s = NULL_VECTOR;
@@ -48,7 +48,7 @@ FUNCTION(gsl_vector, imag) (QUALIFIED_TYPE(gsl_vector) * v)
   s.owner = 0;
 
   {
-    QUALIFIED_REAL_VIEW(gsl_vector,view) view = NULL_VECTOR_VIEW;
+    QUALIFIED_REAL_VIEW(_gsl_vector,view) view = NULL_VECTOR_VIEW;
     ((REAL_VIEW(gsl_vector,view) *)(&view))->vector = s;
     return view;
   }

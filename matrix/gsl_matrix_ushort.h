@@ -49,12 +49,16 @@ typedef struct
 typedef struct
 {
   gsl_matrix_ushort matrix;
-} gsl_matrix_ushort_view;
+} _gsl_matrix_ushort_view;
 
-typedef const struct
+typedef _gsl_matrix_ushort_view gsl_matrix_ushort_view;
+
+typedef struct
 {
   gsl_matrix_ushort matrix;
-} gsl_matrix_ushort_const_view;
+} _gsl_matrix_ushort_const_view;
+
+typedef const _gsl_matrix_ushort_const_view gsl_matrix_ushort_const_view;
 
 /* Allocation */
 
@@ -90,91 +94,91 @@ void gsl_matrix_ushort_free (gsl_matrix_ushort * m);
 
 /* Views */
 
-gsl_matrix_ushort_view 
+_gsl_matrix_ushort_view 
 gsl_matrix_ushort_submatrix (gsl_matrix_ushort * m, 
                             const size_t i, const size_t j, 
                             const size_t n1, const size_t n2);
 
-gsl_vector_ushort_view 
+_gsl_vector_ushort_view 
 gsl_matrix_ushort_row (gsl_matrix_ushort * m, const size_t i);
 
-gsl_vector_ushort_view 
+_gsl_vector_ushort_view 
 gsl_matrix_ushort_column (gsl_matrix_ushort * m, const size_t j);
 
-gsl_vector_ushort_view 
+_gsl_vector_ushort_view 
 gsl_matrix_ushort_diagonal (gsl_matrix_ushort * m);
 
-gsl_vector_ushort_view 
+_gsl_vector_ushort_view 
 gsl_matrix_ushort_subdiagonal (gsl_matrix_ushort * m, const size_t k);
 
-gsl_vector_ushort_view 
+_gsl_vector_ushort_view 
 gsl_matrix_ushort_superdiagonal (gsl_matrix_ushort * m, const size_t k);
 
-gsl_matrix_ushort_view
+_gsl_matrix_ushort_view
 gsl_matrix_ushort_view_array (unsigned short * base,
                              const size_t n1, 
                              const size_t n2);
 
-gsl_matrix_ushort_view
+_gsl_matrix_ushort_view
 gsl_matrix_ushort_view_array_with_tda (unsigned short * base, 
                                       const size_t n1, 
                                       const size_t n2,
                                       const size_t tda);
 
 
-gsl_matrix_ushort_view
+_gsl_matrix_ushort_view
 gsl_matrix_ushort_view_vector (gsl_vector_ushort * v,
                               const size_t n1, 
                               const size_t n2);
 
-gsl_matrix_ushort_view
+_gsl_matrix_ushort_view
 gsl_matrix_ushort_view_vector_with_tda (gsl_vector_ushort * v,
                                        const size_t n1, 
                                        const size_t n2,
                                        const size_t tda);
 
 
-gsl_matrix_ushort_const_view 
+_gsl_matrix_ushort_const_view 
 gsl_matrix_ushort_const_submatrix (const gsl_matrix_ushort * m, 
                                   const size_t i, const size_t j, 
                                   const size_t n1, const size_t n2);
 
-gsl_vector_ushort_const_view 
+_gsl_vector_ushort_const_view 
 gsl_matrix_ushort_const_row (const gsl_matrix_ushort * m, 
                             const size_t i);
 
-gsl_vector_ushort_const_view 
+_gsl_vector_ushort_const_view 
 gsl_matrix_ushort_const_column (const gsl_matrix_ushort * m, 
                                const size_t j);
 
-gsl_vector_ushort_const_view
+_gsl_vector_ushort_const_view
 gsl_matrix_ushort_const_diagonal (const gsl_matrix_ushort * m);
 
-gsl_vector_ushort_const_view 
+_gsl_vector_ushort_const_view 
 gsl_matrix_ushort_const_subdiagonal (const gsl_matrix_ushort * m, 
                                     const size_t k);
 
-gsl_vector_ushort_const_view 
+_gsl_vector_ushort_const_view 
 gsl_matrix_ushort_const_superdiagonal (const gsl_matrix_ushort * m, 
                                       const size_t k);
 
-gsl_matrix_ushort_const_view
+_gsl_matrix_ushort_const_view
 gsl_matrix_ushort_const_view_array (const unsigned short * base,
                                    const size_t n1, 
                                    const size_t n2);
 
-gsl_matrix_ushort_const_view
+_gsl_matrix_ushort_const_view
 gsl_matrix_ushort_const_view_array_with_tda (const unsigned short * base, 
                                             const size_t n1, 
                                             const size_t n2,
                                             const size_t tda);
 
-gsl_matrix_ushort_const_view
+_gsl_matrix_ushort_const_view
 gsl_matrix_ushort_const_view_vector (const gsl_vector_ushort * v,
                                     const size_t n1, 
                                     const size_t n2);
 
-gsl_matrix_ushort_const_view
+_gsl_matrix_ushort_const_view
 gsl_matrix_ushort_const_view_vector_with_tda (const gsl_vector_ushort * v,
                                              const size_t n1, 
                                              const size_t n2,

@@ -49,12 +49,16 @@ typedef struct
 typedef struct
 {
   gsl_matrix_char matrix;
-} gsl_matrix_char_view;
+} _gsl_matrix_char_view;
 
-typedef const struct
+typedef _gsl_matrix_char_view gsl_matrix_char_view;
+
+typedef struct
 {
   gsl_matrix_char matrix;
-} gsl_matrix_char_const_view;
+} _gsl_matrix_char_const_view;
+
+typedef const _gsl_matrix_char_const_view gsl_matrix_char_const_view;
 
 /* Allocation */
 
@@ -90,91 +94,91 @@ void gsl_matrix_char_free (gsl_matrix_char * m);
 
 /* Views */
 
-gsl_matrix_char_view 
+_gsl_matrix_char_view 
 gsl_matrix_char_submatrix (gsl_matrix_char * m, 
                             const size_t i, const size_t j, 
                             const size_t n1, const size_t n2);
 
-gsl_vector_char_view 
+_gsl_vector_char_view 
 gsl_matrix_char_row (gsl_matrix_char * m, const size_t i);
 
-gsl_vector_char_view 
+_gsl_vector_char_view 
 gsl_matrix_char_column (gsl_matrix_char * m, const size_t j);
 
-gsl_vector_char_view 
+_gsl_vector_char_view 
 gsl_matrix_char_diagonal (gsl_matrix_char * m);
 
-gsl_vector_char_view 
+_gsl_vector_char_view 
 gsl_matrix_char_subdiagonal (gsl_matrix_char * m, const size_t k);
 
-gsl_vector_char_view 
+_gsl_vector_char_view 
 gsl_matrix_char_superdiagonal (gsl_matrix_char * m, const size_t k);
 
-gsl_matrix_char_view
+_gsl_matrix_char_view
 gsl_matrix_char_view_array (char * base,
                              const size_t n1, 
                              const size_t n2);
 
-gsl_matrix_char_view
+_gsl_matrix_char_view
 gsl_matrix_char_view_array_with_tda (char * base, 
                                       const size_t n1, 
                                       const size_t n2,
                                       const size_t tda);
 
 
-gsl_matrix_char_view
+_gsl_matrix_char_view
 gsl_matrix_char_view_vector (gsl_vector_char * v,
                               const size_t n1, 
                               const size_t n2);
 
-gsl_matrix_char_view
+_gsl_matrix_char_view
 gsl_matrix_char_view_vector_with_tda (gsl_vector_char * v,
                                        const size_t n1, 
                                        const size_t n2,
                                        const size_t tda);
 
 
-gsl_matrix_char_const_view 
+_gsl_matrix_char_const_view 
 gsl_matrix_char_const_submatrix (const gsl_matrix_char * m, 
                                   const size_t i, const size_t j, 
                                   const size_t n1, const size_t n2);
 
-gsl_vector_char_const_view 
+_gsl_vector_char_const_view 
 gsl_matrix_char_const_row (const gsl_matrix_char * m, 
                             const size_t i);
 
-gsl_vector_char_const_view 
+_gsl_vector_char_const_view 
 gsl_matrix_char_const_column (const gsl_matrix_char * m, 
                                const size_t j);
 
-gsl_vector_char_const_view
+_gsl_vector_char_const_view
 gsl_matrix_char_const_diagonal (const gsl_matrix_char * m);
 
-gsl_vector_char_const_view 
+_gsl_vector_char_const_view 
 gsl_matrix_char_const_subdiagonal (const gsl_matrix_char * m, 
                                     const size_t k);
 
-gsl_vector_char_const_view 
+_gsl_vector_char_const_view 
 gsl_matrix_char_const_superdiagonal (const gsl_matrix_char * m, 
                                       const size_t k);
 
-gsl_matrix_char_const_view
+_gsl_matrix_char_const_view
 gsl_matrix_char_const_view_array (const char * base,
                                    const size_t n1, 
                                    const size_t n2);
 
-gsl_matrix_char_const_view
+_gsl_matrix_char_const_view
 gsl_matrix_char_const_view_array_with_tda (const char * base, 
                                             const size_t n1, 
                                             const size_t n2,
                                             const size_t tda);
 
-gsl_matrix_char_const_view
+_gsl_matrix_char_const_view
 gsl_matrix_char_const_view_vector (const gsl_vector_char * v,
                                     const size_t n1, 
                                     const size_t n2);
 
-gsl_matrix_char_const_view
+_gsl_matrix_char_const_view
 gsl_matrix_char_const_view_vector_with_tda (const gsl_vector_char * v,
                                              const size_t n1, 
                                              const size_t n2,

@@ -49,12 +49,16 @@ gsl_vector_uchar;
 typedef struct
 {
   gsl_vector_uchar vector;
-} gsl_vector_uchar_view;
+} _gsl_vector_uchar_view;
 
-typedef const struct
+typedef _gsl_vector_uchar_view gsl_vector_uchar_view;
+
+typedef struct
 {
   gsl_vector_uchar vector;
-} gsl_vector_uchar_const_view;
+} _gsl_vector_uchar_const_view;
+
+typedef const _gsl_vector_uchar_const_view gsl_vector_uchar_const_view;
 
 
 /* Allocation */
@@ -76,39 +80,39 @@ void gsl_vector_uchar_free (gsl_vector_uchar * v);
 
 /* Views */
 
-gsl_vector_uchar_view 
+_gsl_vector_uchar_view 
 gsl_vector_uchar_view_array (unsigned char *v, size_t n);
 
-gsl_vector_uchar_view 
+_gsl_vector_uchar_view 
 gsl_vector_uchar_view_array_with_stride (unsigned char *base,
                                          size_t stride,
                                          size_t n);
 
-gsl_vector_uchar_const_view 
+_gsl_vector_uchar_const_view 
 gsl_vector_uchar_const_view_array (const unsigned char *v, size_t n);
 
-gsl_vector_uchar_const_view 
+_gsl_vector_uchar_const_view 
 gsl_vector_uchar_const_view_array_with_stride (const unsigned char *base,
                                                size_t stride,
                                                size_t n);
 
-gsl_vector_uchar_view 
+_gsl_vector_uchar_view 
 gsl_vector_uchar_subvector (gsl_vector_uchar *v, 
                             size_t i, 
                             size_t n);
 
-gsl_vector_uchar_view 
+_gsl_vector_uchar_view 
 gsl_vector_uchar_subvector_with_stride (gsl_vector_uchar *v, 
                                         size_t i,
                                         size_t stride,
                                         size_t n);
 
-gsl_vector_uchar_const_view 
+_gsl_vector_uchar_const_view 
 gsl_vector_uchar_const_subvector (const gsl_vector_uchar *v, 
                                   size_t i, 
                                   size_t n);
 
-gsl_vector_uchar_const_view 
+_gsl_vector_uchar_const_view 
 gsl_vector_uchar_const_subvector_with_stride (const gsl_vector_uchar *v, 
                                               size_t i, 
                                               size_t stride,

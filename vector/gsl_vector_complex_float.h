@@ -51,12 +51,16 @@ typedef struct
 typedef struct
 {
   gsl_vector_complex_float vector;
-} gsl_vector_complex_float_view;
+} _gsl_vector_complex_float_view;
 
-typedef const struct
+typedef _gsl_vector_complex_float_view gsl_vector_complex_float_view;
+
+typedef struct
 {
   gsl_vector_complex_float vector;
-} gsl_vector_complex_float_const_view;
+} _gsl_vector_complex_float_const_view;
+
+typedef const _gsl_vector_complex_float_const_view gsl_vector_complex_float_const_view;
 
 /* Allocation */
 
@@ -79,59 +83,59 @@ void gsl_vector_complex_float_free (gsl_vector_complex_float * v);
 
 /* Views */
 
-gsl_vector_complex_float_view
+_gsl_vector_complex_float_view
 gsl_vector_complex_float_view_array (float *base,
                                      size_t n);
 
-gsl_vector_complex_float_view
+_gsl_vector_complex_float_view
 gsl_vector_complex_float_view_array_with_stride (float *base,
                                                  size_t stride,
                                                  size_t n);
 
-gsl_vector_complex_float_const_view
+_gsl_vector_complex_float_const_view
 gsl_vector_complex_float_const_view_array (const float *base,
                                            size_t n);
 
-gsl_vector_complex_float_const_view
+_gsl_vector_complex_float_const_view
 gsl_vector_complex_float_const_view_array_with_stride (const float *base,
                                                        size_t offset, 
                                                        size_t stride,
                                                        size_t n);
 
-gsl_vector_complex_float_view
+_gsl_vector_complex_float_view
 gsl_vector_complex_float_subvector (gsl_vector_complex_float *base,
                                          size_t i, 
                                          size_t n);
 
 
-gsl_vector_complex_float_view 
+_gsl_vector_complex_float_view 
 gsl_vector_complex_float_subvector_with_stride (gsl_vector_complex_float *v, 
                                                 size_t i, 
                                                 size_t stride, 
                                                 size_t n);
 
-gsl_vector_complex_float_const_view
+_gsl_vector_complex_float_const_view
 gsl_vector_complex_float_const_subvector (const gsl_vector_complex_float *base,
                                                size_t i, 
                                                size_t n);
 
 
-gsl_vector_complex_float_const_view 
+_gsl_vector_complex_float_const_view 
 gsl_vector_complex_float_const_subvector_with_stride (const gsl_vector_complex_float *v, 
                                                       size_t i, 
                                                       size_t stride, 
                                                       size_t n);
 
-gsl_vector_float_view
+_gsl_vector_float_view
 gsl_vector_complex_float_real (gsl_vector_complex_float *v);
 
-gsl_vector_float_view 
+_gsl_vector_float_view 
 gsl_vector_complex_float_imag (gsl_vector_complex_float *v);
 
-gsl_vector_float_const_view
+_gsl_vector_float_const_view
 gsl_vector_complex_float_const_real (const gsl_vector_complex_float *v);
 
-gsl_vector_float_const_view 
+_gsl_vector_float_const_view 
 gsl_vector_complex_float_const_imag (const gsl_vector_complex_float *v);
 
 

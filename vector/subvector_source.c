@@ -17,10 +17,10 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-QUALIFIED_VIEW(gsl_vector, view)
+QUALIFIED_VIEW(_gsl_vector, view)
 FUNCTION(gsl_vector, subvector) (QUALIFIED_TYPE(gsl_vector) * v, size_t offset, size_t n)
 {
-  QUALIFIED_VIEW(gsl_vector,view) view = NULL_VECTOR_VIEW;
+  QUALIFIED_VIEW(_gsl_vector,view) view = NULL_VECTOR_VIEW;
 
   if (n == 0)
     {
@@ -43,15 +43,15 @@ FUNCTION(gsl_vector, subvector) (QUALIFIED_TYPE(gsl_vector) * v, size_t offset, 
     s.block = v->block;
     s.owner = 0;
 
-    ((VIEW(gsl_vector,view) *)&view)->vector = s;
+    ((VIEW(_gsl_vector,view) *)&view)->vector = s;
     return view;
   }
 }
 
-QUALIFIED_VIEW(gsl_vector, view)
+QUALIFIED_VIEW(_gsl_vector, view)
 FUNCTION(gsl_vector, subvector_with_stride) (QUALIFIED_TYPE(gsl_vector) * v, size_t offset, size_t stride, size_t n)
 {
-  QUALIFIED_VIEW(gsl_vector,view) view = NULL_VECTOR_VIEW;
+  QUALIFIED_VIEW(_gsl_vector,view) view = NULL_VECTOR_VIEW;
 
   if (n == 0)
     {
@@ -80,7 +80,7 @@ FUNCTION(gsl_vector, subvector_with_stride) (QUALIFIED_TYPE(gsl_vector) * v, siz
     s.block = v->block;
     s.owner = 0;
     
-    ((VIEW(gsl_vector,view) *)&view)->vector = s;
+    ((VIEW(_gsl_vector,view) *)&view)->vector = s;
     return view;
   }
 }

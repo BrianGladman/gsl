@@ -17,12 +17,12 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-QUALIFIED_VIEW(gsl_matrix,view)
+QUALIFIED_VIEW(_gsl_matrix,view)
 FUNCTION (gsl_matrix, submatrix) (QUALIFIED_TYPE(gsl_matrix) * m, 
                                   const size_t i, const size_t j,
                                   const size_t n1, const size_t n2)
 {
-  QUALIFIED_VIEW(gsl_matrix,view) view = NULL_MATRIX_VIEW; 
+  QUALIFIED_VIEW(_gsl_matrix,view) view = NULL_MATRIX_VIEW; 
 
   if (i >= m->size1)
     {
@@ -59,7 +59,7 @@ FUNCTION (gsl_matrix, submatrix) (QUALIFIED_TYPE(gsl_matrix) * m,
      s.block = m->block;
      s.owner = 0;
 
-    ((VIEW(gsl_matrix, view) *)&view)->matrix = s;     
+    ((VIEW(_gsl_matrix, view) *)&view)->matrix = s;     
      return view;
   }
 }
