@@ -4006,6 +4006,72 @@ int check_jac(void)
   return status;
 }
 
+
+int check_laguerre(void)
+{
+  int status = 0;
+  int s;
+
+  s = 0;
+  s += ( frac_diff( gsl_sf_laguerre_1(0.5, -1.0), 2.5 ) > 1.0e-14 );
+  s += ( frac_diff( gsl_sf_laguerre_1(0.5,  1.0), 0.5 ) > 1.0e-14 );
+  s += ( frac_diff( gsl_sf_laguerre_1(1.0,  1.0), 1.0 ) > 1.0e-14 );
+  gsl_test(s, "  gsl_sf_laguerre_1");
+  status += s;
+
+  s = 0;
+  s += ( frac_diff( gsl_sf_laguerre_2(0.5, -1.0),  4.875 ) > 1.0e-14 );
+  s += ( frac_diff( gsl_sf_laguerre_2(0.5,  1.0), -0.125 ) > 1.0e-14 );
+  s += ( frac_diff( gsl_sf_laguerre_2(1.0,  1.0),  0.5   ) > 1.0e-14 );
+  gsl_test(s, "  gsl_sf_laguerre_2");
+  status += s;
+
+  s = 0;
+  s += ( frac_diff( gsl_sf_laguerre_3(0.5, -1.0),  8.479166666666666667   ) > 1.0e-14 );
+  s += ( frac_diff( gsl_sf_laguerre_3(0.5,  1.0), -0.6041666666666666667  ) > 1.0e-14 );
+  s += ( frac_diff( gsl_sf_laguerre_3(1.0,  1.0), -0.16666666666666666667 ) > 1.0e-14 );
+  s += ( frac_diff( gsl_sf_laguerre_3(2.0,  1.0),  2.3333333333333333333  ) > 1.0e-14 );
+  gsl_test(s, "  gsl_sf_laguerre_3");
+  status += s;
+
+  s = 0;
+  s += ( frac_diff( gsl_sf_laguerre_4(0.5, -1.0),  13.752604166666666667 ) > 1.0e-14 );
+  s += ( frac_diff( gsl_sf_laguerre_4(0.5,  1.0), -0.8723958333333333333 ) > 1.0e-14 );
+  s += ( frac_diff( gsl_sf_laguerre_4(1.0,  1.0), -0.7916666666666666667 ) > 1.0e-14 );
+  s += ( frac_diff( gsl_sf_laguerre_4(2.0,  1.0),  1.5416666666666666667 ) > 1.0e-14 );
+  s += ( frac_diff( gsl_sf_laguerre_4(2.0,  0.5),  6.752604166666666667  ) > 1.0e-14 );
+  gsl_test(s, "  gsl_sf_laguerre_4");
+  status += s;
+
+  s = 0;
+  s += ( frac_diff( gsl_sf_laguerre_5(0.5, -1.0),  21.24921875 ) > 1.0e-14 );
+  s += ( frac_diff( gsl_sf_laguerre_5(0.5,  1.0), -0.9393229166666666667  ) > 1.0e-14 );
+  s += ( frac_diff( gsl_sf_laguerre_5(1.0,  1.0), -1.2583333333333333333  ) > 1.0e-14 );
+  s += ( frac_diff( gsl_sf_laguerre_5(2.0,  1.0),  0.28333333333333333333 ) > 1.0e-14 );
+  s += ( frac_diff( gsl_sf_laguerre_5(2.0,  0.5),  7.45546875             ) > 1.0e-14 );
+  gsl_test(s, "  gsl_sf_laguerre_5");
+  status += s;
+
+  s = 0;
+  s += ( frac_diff( gsl_sf_laguerre_n(1, 0.5, 1.0), 0.5 ) > 1.0e-14 );
+  s += ( frac_diff( gsl_sf_laguerre_n(2, 1.0, 1.0), 0.5 ) > 1.0e-14 );
+  s += ( frac_diff( gsl_sf_laguerre_n(3, 2.0, 1.0), 2.3333333333333333333 ) > 1.0e-14 );
+  s += ( frac_diff( gsl_sf_laguerre_n(4, 2.0, 0.5), 6.752604166666666667  ) > 1.0e-14 );
+  s += ( frac_diff( gsl_sf_laguerre_n(90, 2.0,  0.5),   -48.79047157201507897 ) > 1.0e-12 );
+  s += ( frac_diff( gsl_sf_laguerre_n(90, 2.0, -100.0),  2.5295879275042410902e+63 ) > 1.0e-12 );
+  s += ( frac_diff( gsl_sf_laguerre_n(90, 2.0,  100.0), -2.0929042259546928670e+20 ) > 1.0e-12 );
+  s += ( frac_diff( gsl_sf_laguerre_n(100, 2.0, -0.5),   2.2521795545919391405e+07 ) > 1.0e-12 );
+  s += ( frac_diff( gsl_sf_laguerre_n(100, 2.0,  0.5),  -28.764832945909097418 ) > 1.0e-12 );
+  s += ( frac_diff( gsl_sf_laguerre_n(1000, 2.0, -0.5),  2.4399915170947549589e+21 ) > 1.0e-12 );
+  s += ( frac_diff( gsl_sf_laguerre_n(1000, 2.0,  0.5), -306.77440254315317525 ) > 1.0e-14 );
+  s += ( frac_diff( gsl_sf_laguerre_n(100000, 2.0, 1.0), 5107.73491348319 ) > 1.0e-12 );
+  gsl_test(s, "  gsl_sf_laguerre_n");
+  status += s;
+
+  return status;
+}
+
+
 int check_legendre(void)
 {
   double y;
@@ -4810,7 +4876,7 @@ int main(int argc, char * argv[])
   gsl_test(check_gamma(),      "Gamma Functions");
   gsl_test(check_gegen(),      "Gegenbauer Polynomials");
   gsl_test(check_hyperg(),     "Hypergeometric Functions");
-
+  gsl_test(check_laguerre(),   "Laguerre Polynomials");
   gsl_test(check_legendre(),   "Legendre Functions");
   gsl_test(check_log(),        "Logarithm");
   gsl_test(check_poly(),       "Polynomial Evaluation");
