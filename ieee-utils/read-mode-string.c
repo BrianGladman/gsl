@@ -162,10 +162,10 @@ lookup_string (const char * p, int * precision, int * rounding,
     {
       *exception_mask = GSL_IEEE_TRAP_INEXACT ;
     }
-  else 
+  else if (strcmp(p,"default") == 0) 
     {
-      return 1 ;
+      return 0 ;
     }
 
-  return 0 ;
+  return 1 ;
 }
