@@ -201,7 +201,7 @@ int gsl_monte_miser_integrate(gsl_monte_miser_state* state,
 	    sqrt(sum2_l[i] - SQR(sum_l[i])/hits_l[i]);
 	  sigma_l[i] *= fraction_l*vol/hits_l[i];
 	}
-	if (hits_l[i] > 0 ) {
+	if (hits_r[i] > 0 ) {
 	  sum_r[i] /= hits_r[i];
 	  sigma_r[i] = 
 	    sqrt(sum2_r[i] - SQR(sum_r[i])/hits_r[i]);
