@@ -30,23 +30,31 @@ hyperg_2F1_series(const double a, const double b, const double c,
   int i = 0;
 
   if(fabs(c) < GSL_DBL_EPSILON) {
-    result->err = 1.0;
     result->val = 0.0; /* FIXME: ?? */
+    result->err = 1.0;
     return GSL_EDOM;
   }
 
   do {
-    if(++i > 20000) {
+    if(++i > 30000) {
       result->val  = sum_pos - sum_neg;
       result->err  = del_pos + del_neg;
-      result->err += GSL_DBL_EPSILON * fabs(result->val);
+      result->err += 2.0 * GSL_DBL_EPSILON * (sum_pos + sum_neg);
+      result->err += 2.0 * GSL_DBL_EPSILON * (2.0*sqrt(k)+1.0) * fabs(result->val);
       return GSL_EMAXITER;
     }
     del *= (a+k)*(b+k) * x / ((c+k) * (k+1.0));  /* Gauss series */
 
-    if(del >= 0.0) {
+    if(del > 0.0) {
       del_pos  =  del;
       sum_pos +=  del;
+    }
+    else if(del == 0.0) {
+      /* Exact termination (a or b was a negative integer).
+       */
+      del_pos = 0.0;
+      del_neg = 0.0;
+      break;
     }
     else {
       del_neg  = -del;
@@ -58,7 +66,8 @@ hyperg_2F1_series(const double a, const double b, const double c,
 
   result->val  = sum_pos - sum_neg;
   result->err  = del_pos + del_neg;
-  result->err += GSL_DBL_EPSILON * fabs(result->val);
+  result->err += 2.0 * GSL_DBL_EPSILON * (sum_pos + sum_neg);
+  result->err += 2.0 * GSL_DBL_EPSILON * (2.0*sqrt(k) + 1.0) * fabs(result->val);
 
   return GSL_SUCCESS;
 }
@@ -95,10 +104,11 @@ hyperg_2F1_conj_series(const double aR, const double aI, const double c,
         sum_neg -=  del;
       }
 
-      if(k > 20000) {
+      if(k > 30000) {
         result->val  = sum_pos - sum_neg;
         result->err  = del_pos + del_neg;
-	result->err += GSL_DBL_EPSILON * fabs(result->val);
+        result->err += 2.0 * GSL_DBL_EPSILON * (sum_pos + sum_neg);
+        result->err += 2.0 * GSL_DBL_EPSILON * (2.0*sqrt(k)+1.0) * fabs(result->val);
         return GSL_EMAXITER;
       }
 
@@ -107,7 +117,8 @@ hyperg_2F1_conj_series(const double aR, const double aI, const double c,
 
     result->val  = sum_pos - sum_neg;
     result->err  = del_pos + del_neg;
-    result->err += GSL_DBL_EPSILON * fabs(result->val);
+    result->err += 2.0 * GSL_DBL_EPSILON * (sum_pos + sum_neg);
+    result->err += 2.0 * GSL_DBL_EPSILON * (2.0*sqrt(k) + 1.0) * fabs(result->val);
 
     return GSL_SUCCESS;
   }
@@ -128,6 +139,7 @@ hyperg_2F1_luke(const double a, const double b, const double c,
                 const double xin, 
                 gsl_sf_result * result)
 {
+  int stat_iter;
   const double RECUR_BIG = 1.0e+50;
   const int nmax = 20000;
   int n = 3;
@@ -170,7 +182,7 @@ hyperg_2F1_luke(const double a, const double b, const double c,
     prec = fabs((F - r)/F);
     F = r;
 
-    if(prec < 4.0*GSL_DBL_EPSILON || n > nmax) break;
+    if(prec < GSL_DBL_EPSILON || n > nmax) break;
 
     if(fabs(An) > RECUR_BIG || fabs(Bn) > RECUR_BIG) {
       An   /= RECUR_BIG;
@@ -203,10 +215,15 @@ hyperg_2F1_luke(const double a, const double b, const double c,
   }
 
   result->val  = F;
-  result->err  = fabs(prec * F);
-  result->err += GSL_DBL_EPSILON * n * fabs(F);
+  result->err  = 2.0 * fabs(prec * F);
+  result->err += 2.0 * GSL_DBL_EPSILON * (n+1.0) * fabs(F);
 
-  return GSL_SUCCESS;
+  /* FIXME: just a hack: there's a lot of shit going on here */
+  result->err *= 8.0 * (fabs(a) + fabs(b) + 1.0);
+
+  stat_iter = (n >= nmax ? GSL_EMAXITER : GSL_SUCCESS );
+
+  return stat_iter;
 }
 
 
@@ -219,6 +236,7 @@ hyperg_2F1_conj_luke(const double aR, const double aI, const double c,
                      const double xin, 
                      gsl_sf_result * result)
 {
+  int stat_iter;
   const double RECUR_BIG = 1.0e+50;
   const int nmax = 10000;
   int n = 3;
@@ -263,7 +281,7 @@ hyperg_2F1_conj_luke(const double aR, const double aI, const double c,
     prec = fabs(F - r)/fabs(F);
     F = r;
 
-    if(prec < 4.0*GSL_DBL_EPSILON || n > nmax) break;
+    if(prec < GSL_DBL_EPSILON || n > nmax) break;
 
     if(fabs(An) > RECUR_BIG || fabs(Bn) > RECUR_BIG) {
       An   /= RECUR_BIG;
@@ -296,10 +314,15 @@ hyperg_2F1_conj_luke(const double aR, const double aI, const double c,
   }
   
   result->val  = F;
-  result->err  = fabs(prec * F);
-  result->err += GSL_DBL_EPSILON * n * fabs(F);
+  result->err  = 2.0 * fabs(prec * F);
+  result->err += 2.0 * GSL_DBL_EPSILON * (n+1.0) * fabs(F);
 
-  return GSL_SUCCESS;
+  /* FIXME: see above */
+  result->err *= 8.0 * (fabs(aR) + fabs(aI) + 1.0);
+
+  stat_iter = (n >= nmax ? GSL_EMAXITER : GSL_SUCCESS );
+
+  return stat_iter;
 }
 
 
@@ -464,6 +487,7 @@ hyperg_2F1_reflect(const double a, const double b, const double c,
     sgn_2 = ( GSL_IS_ODD(intd) ? -1.0 : 1.0 );
     result->val  = F1.val + sgn_2 * F2.val;
     result->err  = F1.err + F2. err;
+    result->err += 2.0 * GSL_DBL_EPSILON * (fabs(F1.val) + fabs(F2.val));
     result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
     return stat_F2;
   }
@@ -557,7 +581,8 @@ hyperg_2F1_reflect(const double a, const double b, const double c,
     result->val  = pre1.val*F1.val + pre2.val*F2.val;
     result->err  = fabs(pre1.val*F1.err) + fabs(pre2.val*F2.err);
     result->err += fabs(pre1.err*F1.val) + fabs(pre2.err*F2.val);
-    result->err += GSL_DBL_EPSILON * fabs(result->val);
+    result->err += 2.0 * GSL_DBL_EPSILON * (fabs(pre1.val*F1.val) + fabs(pre2.val*F2.val));
+    result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
 
     return GSL_SUCCESS;
   }
