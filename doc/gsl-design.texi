@@ -48,9 +48,6 @@ by the Foundation.
 @author Mark Galassi @footnote{Cygnus Solutions and Los Alamos National Laboratory}
 @author @email{rosalia@@cygnus.com}
 @author
-@author Jim Davies @footnote{Space Data Systems Group, Los Alamos National Laboratory and Department of Computer Science, Georgia Institute of Technology}
-@author @email{jimmyd@@nis.lanl.gov}
-@author
 @author James Theiler @footnote{Astrophysics and Radiation Measurements group, Los Alamos National Laboratory}
 @author @email{jt@@nis.lanl.gov}
 @author
@@ -123,23 +120,23 @@ whatever...
 
 There are strengths and weaknesses with existing libraries:
 
-@emph{Netlib} (http://www.netlib.org/) is probably the most advanced set of
-numerical algorithms available on the net, maintained by AT&T.
-Unfortunately most of the software is written in Fortran, with strange calling
-conventions in many places.  It is also not very well collected, so it
-is a lot of work to get started with netlib.
+@emph{Netlib} (http://www.netlib.org/) is probably the most advanced set
+of numerical algorithms available on the net, maintained by AT&T.
+Unfortunately most of the software is written in Fortran, with strange
+calling conventions in many places.  It is also not very well collected,
+so it is a lot of work to get started with netlib.
 
-@emph{GAMS} (http://gams.nist.gov/) is an extremely well organized set of pointers
-to scientific software, but like netlib, the individual routines vary in
-their quality and their level of documentation.
+@emph{GAMS} (http://gams.nist.gov/) is an extremely well organized set
+of pointers to scientific software, but like netlib, the individual
+routines vary in their quality and their level of documentation.
 
-@emph{Numerical Recipies} (http://www.nr.com, http://cfata2.harvard.edu/nr/)
-is an excellent book: it explains
-the algorithms in a very clear way.  Unfortunately the authors released
-the source code under a license which allows you to use it, but
-prevents you from re-distributing it.  Thus Numerical Recipes is
-not @emph{free} in the sense of @emph{freedom}.  On top of that, the
-implementation suffers from @emph{fortranitis} and other
+@emph{Numerical Recipies} (http://www.nr.com,
+http://cfata2.harvard.edu/nr/) is an excellent book: it explains the
+algorithms in a very clear way.  Unfortunately the authors released the
+source code under a license which allows you to use it, but prevents you
+from re-distributing it.  Thus Numerical Recipes is not @emph{free} in
+the sense of @emph{freedom}.  On top of that, the implementation suffers
+from @emph{fortranitis} and other
 limitations. [http://www.lysator.liu.se/c/num-recipes-in-c.html]
 
 @menu
