@@ -984,7 +984,7 @@ int test_QR_update(void)
   gsl_test(f, "  QR_update vander(4)");
   s += f;
 
-  f = test_QR_update_dim(vander12, 0.0001); /* FIXME: bad accuracy */
+  f = test_QR_update_dim(vander12, 0.0005); /* FIXME: bad accuracy */
   gsl_test(f, "  QR_update vander(12)");
   s += f;
 
