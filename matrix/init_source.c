@@ -56,7 +56,7 @@ FUNCTION (gsl_matrix, calloc) (const size_t n1, const size_t n2)
 
   for (i = 0; i < MULTIPLICITY * n1 * n2; i++)
     {
-      m->data[i] = 0.0;
+      m->data[i] = 0;
     }
 
   return m;

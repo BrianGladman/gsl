@@ -51,7 +51,7 @@ FUNCTION (gsl_vector, calloc) (const size_t n)
 
   for (i = 0; i < MULTIPLICITY * n; i++)
     {
-      v->data[i] = 0.0;
+      v->data[i] = 0;
     }
 
   return v;
