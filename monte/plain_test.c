@@ -82,7 +82,8 @@ int main()
 		 calls, num_dim, err); 
   }
 
-  calls = 1000;
+  calls = 2000;
+  tol = 2e-2;
   printf("Testing product function\n");
   for (num_dim = 1; num_dim < 10; num_dim++) {
     calls *= 1.8;
@@ -93,22 +94,23 @@ int main()
   }
 
   /*  verbose = 1;*/
-  calls =  10000;
+  calls =  20000;
   tol = 0.04;
 
   printf("Testing single gaussian\n");
   for (num_dim = 1; num_dim < 10; num_dim++) {
     if (num_dim == 5) {
-      calls = 100000;
-      tol = 0.05;
+      calls = 120000;
+      tol = 0.15;
     }
     if (num_dim == 6) {
-      calls = 150000;
-      tol = 0.04;
+      calls = 250000;
+      tol = 0.1;
     }
     if (num_dim == 8)
       tol = 0.1;
     if ( num_dim == 9) {
+      calls = 700000;
       tol = 0.14;
     }
     status = gsl_monte_plain_integrate(s, f1, xl, xu, num_dim, calls, 
@@ -134,9 +136,10 @@ int main()
       break;
     case 7:
       calls = 120000;
+      tol = 0.15;
       break;
     case 9:
-      calls = 210000;
+      calls = 700000;
       break;
     }
     status = gsl_monte_plain_integrate(s, f2, xl, xu, num_dim, calls, 

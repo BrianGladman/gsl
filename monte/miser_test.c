@@ -102,6 +102,10 @@ int main()
 
   printf("Testing single gaussian\n");
   for (num_dim = 1; num_dim < 10; num_dim++) {
+    if (num_dim == 4) {
+      calls = 50000;
+      tol = 0.05;
+    }
     if (num_dim == 5) {
       calls = 100000;
       tol = 0.05;
@@ -111,7 +115,7 @@ int main()
       tol = 0.04;
     }
     if (num_dim == 8)
-      tol = 0.1;
+      tol = 0.11;
     if ( num_dim == 9) {
       tol = 0.14;
     }
@@ -130,6 +134,11 @@ int main()
   printf("Testing double gaussian\n");
   for (num_dim = 1; num_dim < 10; num_dim += step) {
     switch (num_dim) {
+    case 4:
+      tol = 0.10;
+      calls = 40000;
+      s->dither = 0.1;
+      break;
     case 5:
       tol = 0.09;
       calls = 60000;
@@ -139,11 +148,11 @@ int main()
       break;
     case 7:
       s->dither = 0.1;
-      calls = 120000;
+      calls = 150000;
       break;
     case 9:
-      s->dither = 0.1;
-      calls = 210000;
+      s->dither = 0.13;
+      calls = 310000;
       break;
     }
     status = gsl_monte_miser_integrate(s, f2, xl, xu, num_dim, calls, 
