@@ -111,6 +111,57 @@ gsl_test_rel (double result, double expected, double relative_error,
 
 
 void
+gsl_test_int (int result, int expected, const char *test_description,...)
+{
+  int status = (result != expected) ;
+
+  tests++;
+
+  if (status == 0)
+    {
+      passed++;
+      if (verbose)
+	printf ("PASS: ");
+    }
+  else
+    {
+      failed++;
+      if (verbose)
+	printf ("FAIL: ");
+      
+    }
+
+  if (verbose)
+    {
+
+#ifdef HAVE_VPRINTF
+      va_list ap;
+
+#if __STDC__
+      va_start (ap, test_description);
+#else
+      va_start (ap);
+#endif
+      vprintf (test_description, ap);
+      va_end (ap);
+#endif
+      if (status == 0)
+	{
+	  printf(" (%d observed vs %d expected)", result, expected) ;
+	}
+      else 
+	{
+	  printf(" (%d observed vs %d expected)", result, expected) ;
+	}
+
+      putchar ('\n');
+      fflush (stdout);
+    }
+}
+
+
+
+void
 gsl_test_verbose (int v)
 {
   verbose = v;

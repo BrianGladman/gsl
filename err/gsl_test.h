@@ -10,6 +10,9 @@ void
 void
 gsl_test_rel (double result, double expected, double relative_error,
 	      const char *test_description, ...) ;
+
+void
+gsl_test_int (int result, int expected, const char *test_description, ...) ;
 #endif 
 
 void

@@ -3,6 +3,7 @@ Mon May 18 17:58:20 1998  Brian Gough  <bjg@vvv.lanl.gov>
 	* test.c (gsl_test_rel): added a test for numerical quantities,
  	given a result, an expected result and an allowable relative
  	error.
+	(gsl_test_int): added a test for comparing integers
 
 Sun May 10 16:03:12 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
