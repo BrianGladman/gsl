@@ -499,8 +499,8 @@ dilogc_unitdisk(double x, double y, gsl_sf_result * real_dl, gsl_sf_result * ima
     const double x_tmp = 1.0 - x;
     const double y_tmp =     - y;
     const double r_tmp = sqrt(x_tmp*x_tmp + y_tmp*y_tmp);
-    const double cos_theta_tmp = x_tmp/r_tmp;
-    const double sin_theta_tmp = y_tmp/r_tmp;
+    /* const double cos_theta_tmp = x_tmp/r_tmp; */
+    /* const double sin_theta_tmp = y_tmp/r_tmp; */
 
     gsl_sf_result result_re_tmp;
     gsl_sf_result result_im_tmp;
@@ -595,7 +595,7 @@ gsl_sf_complex_dilog_xy_e(
     const double r = sqrt(r2);
     const double x_tmp =  x/r2;
     const double y_tmp = -y/r2;
-    const double r_tmp = 1.0/r;
+    /* const double r_tmp = 1.0/r; */
     gsl_sf_result result_re_tmp, result_im_tmp;
 
     const int stat_dilog =
