@@ -932,18 +932,38 @@ several bins contain the same maximum value the first bin found is
 returned.
 @end deftypefun
 
-@comment @deftypefun double gsl_histogram2d_mean (const gsl_histogram2d * @var{h})
-@comment This function returns the mean of the histogrammed variable, where the
-@comment histogram is regarded as a probability distribution. Negative bin values
-@comment are ignored for the purposes of this calculation.
-@comment @end deftypefun
+@deftypefun double gsl_histogram2d_xmean (const gsl_histogram2d * @var{h})
+This function returns the mean of the histogrammed x variable, where the
+histogram is regarded as a probability distribution. Negative bin values
+are ignored for the purposes of this calculation.
+@end deftypefun
 
-@comment @deftypefun double gsl_histogram2d_sigma (const gsl_histogram2d * @var{h})
-@comment This function returns the standard deviation of the histogrammed
-@comment variable, where the histogram is regarded as a probability
-@comment distribution. Negative bin values are ignored for the purposes of this
-@comment calculation.
-@comment @end deftypefun
+@deftypefun double gsl_histogram2d_ymean (const gsl_histogram2d * @var{h})
+This function returns the mean of the histogrammed y variable, where the
+histogram is regarded as a probability distribution. Negative bin values
+are ignored for the purposes of this calculation.
+@end deftypefun
+
+@deftypefun double gsl_histogram2d_xsigma (const gsl_histogram2d * @var{h})
+This function returns the standard deviation of the histogrammed
+x variable, where the histogram is regarded as a probability
+distribution. Negative bin values are ignored for the purposes of this
+calculation.
+@end deftypefun
+
+@deftypefun double gsl_histogram2d_ysigma (const gsl_histogram2d * @var{h})
+This function returns the standard deviation of the histogrammed
+y variable, where the histogram is regarded as a probability
+distribution. Negative bin values are ignored for the purposes of this
+calculation.
+@end deftypefun
+
+@deftypefun double gsl_histogram2d_cov (const gsl_histogram2d * @var{h})
+This function returns the covariance of the histogrammed x and y
+variables, where the histogram is regarded as a probability
+distribution. Negative bin values are ignored for the purposes of this
+calculation.
+@end deftypefun
 
 @deftypefun double gsl_histogram2d_sum (const gsl_histogram2d * @var{h})
 This function returns the sum of all bin values. Negative bin values

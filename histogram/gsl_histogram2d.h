@@ -112,6 +112,20 @@ gsl_histogram2d_min_val(const gsl_histogram2d *h);
 void
 gsl_histogram2d_min_bin (const gsl_histogram2d *h, size_t *i, size_t *j);
 
+double
+gsl_histogram2d_xmean (const gsl_histogram2d * h);
+
+double
+gsl_histogram2d_ymean (const gsl_histogram2d * h);
+
+double
+gsl_histogram2d_xsigma (const gsl_histogram2d * h);
+
+double
+gsl_histogram2d_ysigma (const gsl_histogram2d * h);
+
+double
+gsl_histogram2d_cov (const gsl_histogram2d * h);
 
 double
 gsl_histogram2d_sum (const gsl_histogram2d *h);

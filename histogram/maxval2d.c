@@ -138,20 +138,3 @@ gsl_histogram2d_min_bin (const gsl_histogram2d * h, size_t * imin_out, size_t * 
   *jmin_out = jmin;
 }
 
-/*
-  sum up all bins of histogram2d
- */
-
-double 
-gsl_histogram2d_sum(const gsl_histogram2d * h)
-{
-  const size_t n;
-  double sum=0;
-  size_t i=0;
-  n=h->nx*h->ny;
-
-  while(i < n)
-    sum += h->bin[i++];
-
-  return sum;
-}

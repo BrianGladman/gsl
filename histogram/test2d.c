@@ -20,6 +20,9 @@
 #include <config.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <gsl/gsl_errno.h>
+#include <gsl/gsl_math.h>
+#include <gsl/gsl_machine.h>
 #include <gsl/gsl_histogram2d.h>
 #include <gsl/gsl_test.h>
 #include <gsl/gsl_ieee_utils.h>
@@ -417,8 +420,77 @@ main (void)
     }
 
   {
-    double sum=gsl_histogram2d_sum (h);
-    gsl_test(sum != N*M*27+((N*M-1)*N*M)/2, "gsl_histogram2d_sum sum all bin values");
+    double sum  = gsl_histogram2d_sum (h);
+    double sum1 = gsl_histogram2d_psum (h,   0,   M, 0, N/2);
+    double sum2 = gsl_histogram2d_psum (h,   0, M/2, N/2, N);
+    double sum3 = gsl_histogram2d_psum (h, M/2,   M, N/2, N);
+    gsl_test(sum != N*M*27+((N*M-1)*N*M)/2, "gsl_histogram2d_sum sums all bin values correctly");
+    gsl_test(sum != sum1+sum2+sum3, "gsl_histogram2d_psum sums parts of bin values correctly");
+  }
+
+  {
+    /* first test... */
+    const double xpos=0.6;
+    const double ypos=0.85;
+    double xmean;
+    double ymean;
+    size_t xbin;
+    size_t ybin;
+    gsl_histogram2d* h3=gsl_histogram2d_alloc(M,N);
+    gsl_histogram2d_set_ranges_uniform(h3,0,1,0,1);
+    gsl_histogram2d_increment(h3,xpos,ypos);
+    gsl_histogram2d_find(h3,xpos,ypos,&xbin,&ybin);
+    xmean=gsl_histogram2d_xmean(h3);
+    ymean=gsl_histogram2d_ymean(h3);
+    /* seems to have precision problems of order 1e-17
+       printf("differences: x: %g, y: %g\n",
+              xmean-(h3->xrange[xbin]+h3->xrange[xbin+1])/2.0,
+              ymean-(h3->yrange[ybin]+h3->yrange[ybin+1])/2.0);
+    */
+    gsl_test(abs(xmean-(h3->xrange[xbin]+h3->xrange[xbin+1])/2.0)>GSL_DBL_EPSILON,
+	     "gsl_histogram2d_xmean works correctly");
+    gsl_test(abs(ymean-(h3->yrange[ybin]+h3->yrange[ybin+1])/2.0)>GSL_DBL_EPSILON,
+	     "gsl_histogram2d_ymean works correctly");
+    gsl_histogram2d_free(h3);
+  }
+
+  {
+    /* test it with bivariate normal distribution */
+    const double xmean=0.7;
+    const double ymean=0.85;
+    const double xsigma=0.1;
+    const double ysigma=0.1;
+    const double correl=0.5;
+    const double norm=10.0/M_PI/xsigma/ysigma/sqrt(1-correl*correl);
+    size_t xbin;
+    size_t ybin;
+    gsl_histogram2d* h3=gsl_histogram2d_alloc(M,N);
+    gsl_histogram2d_set_ranges_uniform(h3,0,1,0,1);
+    /* initialize with 2d gauss pdf in two directions*/
+    for (xbin=0 ; xbin<M ; xbin++) {
+      double xi=((h3->xrange[xbin]+h3->xrange[xbin+1])/2.0-xmean)/xsigma;
+      for (ybin=0 ; ybin<N ; ybin++) {
+	double yi=((h3->yrange[ybin]+h3->yrange[ybin+1])/2.0-ymean)/ysigma;
+	double prob=norm*exp(-(xi*xi-2.0*correl*xi*yi+yi*yi)/2.0/(1-correl*correl));
+	h3->bin[xbin*N+ybin]=prob;
+      }
+    }
+    {
+      /*
+	printf("x: %g +/- %g\n",gsl_histogram2d_xmean(h3),gsl_histogram2d_xsigma(h3));
+	printf("y: %g +/- %g\n",gsl_histogram2d_ymean(h3),gsl_histogram2d_ysigma(h3));
+	printf("cov: %g\n",gsl_histogram2d_cov(h3));
+      */
+      double xs=gsl_histogram2d_xsigma(h3);
+      double ys=gsl_histogram2d_ysigma(h3);
+      /* evaluate results and compare with parameters */
+      gsl_test(abs(xmean-gsl_histogram2d_xmean(h3))>2/M,"gsl_histogram2d_xmean works fine");
+      gsl_test(abs(ymean-gsl_histogram2d_ymean(h3))>2/N,"gsl_histogram2d_ymean works fine");
+      gsl_test(abs(xsigma-xs)>2/M,"gsl_histogram2d_xsigma works fine");
+      gsl_test(abs(ysigma-ys)>2/N,"gsl_histogram2d_ysigma works fine");
+      gsl_test(abs(correl-gsl_histogram2d_cov(h3)/xs/ys)>2/((M<N)?M:N),"gsl_histogram2d_cov works fine");
+    }
+    gsl_histogram2d_free(h3);
   }
 
   gsl_histogram2d_memcpy (h1, g);

@@ -4,8 +4,9 @@
 configure stage and the functions gsl_isnan, gsl_isinf and gsl_finite
 are only compiled on platforms which support the necessary tests.
 
-** The histogram routines now include a sum function, gsl_histogram_sum
-for computing the total bin sum.
+** The histogram routines now include a sum function,
+gsl_histogram_sum for computing the total bin sum, and additional
+statistics functions for 2d histograms.
 
 ** Internal error checking of user-defined functions has been improved
 in the multiroots functions.

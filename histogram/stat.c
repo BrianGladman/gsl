@@ -137,3 +137,4 @@ gsl_histogram_sum(const gsl_histogram * h)
 
   return sum;
 }
+
