@@ -929,6 +929,12 @@ and a null pointer is returned.
 @subsection Initializing matrix elements
 @cindex matrices, initializing
 @cindex initializing matrices
+@cindex identity matrix
+@cindex matrix, identity
+@cindex zero matrix
+@cindex matrix, zero
+@cindex constant matrix
+@cindex matrix, constant
 
 @deftypefun void gsl_matrix_set_all (gsl_matrix * @var{m}, double @var{x})
 This function sets all the elements of the matrix @var{m} to the value
@@ -1255,6 +1261,8 @@ The function @code{gsl_vector_const_column} equivalent to
 @code{const}.
 @end deftypefun
 
+@cindex matrix diagonal
+@cindex diagonal, of a matrix
 @deftypefun gsl_vector_view gsl_matrix_diagonal (gsl_matrix * @var{m})
 @deftypefunx {gsl_vector_const_view} gsl_matrix_const_diagonal (const gsl_matrix * @var{m})
 These functions returns a vector view of the diagonal of the matrix
@@ -1267,6 +1275,8 @@ The function @code{gsl_matrix_const_diagonal} is equivalent to
 declared @code{const}.
 @end deftypefun
 
+@cindex matrix subdiagonal
+@cindex subdiagonal, of a matrix
 @deftypefun gsl_vector_view gsl_matrix_subdiagonal (gsl_matrix * @var{m}, size_t @var{k}) 
 @deftypefunx {gsl_vector_const_view} gsl_matrix_const_subdiagonal (const gsl_matrix * @var{m}, size_t @var{k})
 These functions return a vector view of the @var{k}-th subdiagonal of
@@ -1278,6 +1288,8 @@ The function @code{gsl_matrix_const_subdiagonal} is equivalent to
 declared @code{const}.
 @end deftypefun
 
+@cindex matrix superdiagonal
+@cindex superdiagonal, matrix
 @deftypefun gsl_vector_view gsl_matrix_superdiagonal (gsl_matrix * @var{m}, size_t @var{k}) 
 @deftypefunx {gsl_vector_const_view} gsl_matrix_const_superdiagonal (const gsl_matrix * @var{m}, size_t @var{k})
 These functions return a vector view of the @var{k}-th superdiagonal of
