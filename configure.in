@@ -93,6 +93,14 @@ dnl Checks for typedefs, structures, and compiler characteristics.
 dnl Checks for library functions.
 AC_CHECK_LIB(m, main)
 AC_CHECK_FUNCS(hypot)
+AC_CHECK_FUNCS(expm1)
+AC_CHECK_FUNCS(acosh)
+AC_CHECK_FUNCS(asinh)
+AC_CHECK_FUNCS(atanh)
+AC_CHECK_FUNCS(isinf)
+AC_CHECK_FUNCS(isnan)
+AC_CHECK_FUNCS(finite)
+
 dnl OpenBSD has a broken implementation of log1p.
 case "$host" in
     *-*-*openbsd*)
@@ -102,13 +110,8 @@ case "$host" in
        AC_CHECK_FUNCS(log1p)
        ;;
 esac
-AC_CHECK_FUNCS(expm1)
-AC_CHECK_FUNCS(acosh)
-AC_CHECK_FUNCS(asinh)
-AC_CHECK_FUNCS(atanh)
-AC_CHECK_FUNCS(isinf)
-AC_CHECK_FUNCS(isnan)
-AC_CHECK_FUNCS(finite)
+
+
 dnl AC_FUNC_ALLOCA
 AC_FUNC_VPRINTF
 

@@ -20,6 +20,11 @@
 #ifndef __GSL_MATH_H__
 #define __GSL_MATH_H__
 #include <math.h>
+#include <gsl/gsl_sys.h>
+#include <gsl/gsl_machine.h>
+#include <gsl/gsl_precision.h>
+#include <gsl/gsl_nan.h>
+#include <gsl/gsl_pow_int.h>
 
 #ifndef M_E
 #define M_E        2.71828182845904523536028747135	/* e */
@@ -89,12 +94,6 @@
 #ifndef M_EULER
 #define M_EULER    0.57721566490153286060651209008	/* Euler constant */
 #endif
-
-#include <gsl/gsl_sys.h>
-#include <gsl/gsl_machine.h>
-#include <gsl/gsl_precision.h>
-#include <gsl/gsl_nan.h>
-#include <gsl/gsl_pow_int.h>
 
 #undef __BEGIN_DECLS
 #undef __END_DECLS
