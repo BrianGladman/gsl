@@ -460,7 +460,7 @@ gsl_linalg_LQ_unpack (const gsl_matrix * LQ, const gsl_vector * tau, gsl_matrix 
  *       = (L + v u^T Q^T) Q
  *       = (L + v w^T) Q
  *
- * where w = Q^T u.
+ * where w = Q u.
  *
  * Algorithm from Golub and Van Loan, "Matrix Computations", Section
  * 12.5 (Updating Matrix Factorizations, Rank-One Changes)
