@@ -1,3 +1,7 @@
+Sat Jan 26 22:39:03 2002  Brian Gough  <bjg@network-theory.co.uk>
+
+	* test.c: use unsigned loop variables
+
 Sat Dec  8 18:22:06 2001  Szymon Jaroszewicz  <sj@cs.umb.edu>
 
 	* added combination support to GSL

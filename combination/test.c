@@ -37,13 +37,16 @@ size_t c63[20][3] = {
 int 
 main (void)
 {
-  int i = 0, j, status = 0;
+  size_t i, j;
+  int status = 0;
   gsl_combination * c ;
 
   c = gsl_combination_alloc (6,3);
 
   gsl_combination_init_first (c);
   
+  i = 0;
+
   do 
     {
       if ( i >= 20 )
@@ -73,19 +76,21 @@ main (void)
 
   gsl_combination_init_last (c);
 
-  i = 19;
+  i = 20;
   do 
     {
-      if ( i < 0 )
+      if ( i == 0 )
         {
 	  status = 1;
           break;
 	}
+
+      i--;
+
       for (j = 0; j < 3; j++)
         {
           status |= (c->data[j] != c63[i][j]);
         }
-      i--;
     }
   while (gsl_combination_prev(c) == GSL_SUCCESS);
 
