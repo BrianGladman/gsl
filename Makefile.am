@@ -32,8 +32,8 @@ libgsl.a: blas/libgslblas.a blas/libgslblascblas.a blas/libgslblasnative.a err/l
 	do (cd $$dir ; \
 	  for lib in lib*.a ; \
 	  do test -f $$lib \
-	  && echo ar q libgsl.a `$(AR) t $$lib` \
-	  && $(AR) q ../libgsl.a `$(AR) t $$lib` || true ; \
+	  && echo ar q libgsl.a `$(AR) t $$lib |grep -v "__.SYMDEF SORTED"` \
+	  && $(AR) q ../libgsl.a `$(AR) t $$lib |grep -v "__.SYMDEF SORTED"` || true ; \
 	  done ) ; \
 	done 
 	$(RANLIB) libgsl.a 
