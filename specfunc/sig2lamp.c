@@ -2,7 +2,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "gsl_special.h"
+#include "gsl_specfunc.h"
 
 const double LOGBASETENOFTWO=0.301029995663981;
 const double SQRTONEHALF=0.707106781186547;

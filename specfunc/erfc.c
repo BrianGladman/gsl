@@ -107,7 +107,8 @@ static inline double erfcasympsum(double x)
     }
     return e;
 }
-double GSL_erfc_asymptotic(double x)
+
+double gsl_erfc_asymptotic(double x)
 {
     /* valid as x->infty */
     double e;
@@ -115,14 +116,16 @@ double GSL_erfc_asymptotic(double x)
     e *= exp(-x*x)/x;
     return 0.564189583547756287*e;
 }
-double GSL_log_erfc_asymptotic(double x)
+
+double gsl_log_erfc_asymptotic(double x)
 {
     double e;
     e = erfcasympsum(x);
     e = log(e) - x*x - log(x) - 0.57236494292470008706;
     return e;
 }
-double GSL_log_erfc(double x)
+
+double gsl_log_erfc(double x)
 {
     if (x > 5) {
         return log_erfc8(x);
@@ -130,7 +133,8 @@ double GSL_log_erfc(double x)
         return log(erfc(x));
     }
 }
-double GSL_erfc(double x)
+
+double gsl_erfc(double x)
 {
     double e;
     if (x < 0) {
@@ -160,7 +164,8 @@ static inline double erfseries(double x)
     }
     return 2*0.564189583547756287*e;
 }
-double GSL_erf(double x)
+
+double gsl_erf(double x)
 {
     if (fabs(x) < 1.0) 
         return erfseries(x);
@@ -169,12 +174,13 @@ double GSL_erf(double x)
 }
 
 
-double GSL_Z(double x)
+double gsl_Z(double x)
 {
     const double oneover_sqrt_twopi = .39894228040143267794;
     exp(-x*x/2.0)*oneover_sqrt_twopi;
 }
-double GSL_Q(double x)
+
+double gsl_Q(double x)
 {
     /* Abramowitz+Stegun, 26.2.17 */
     const double p=0.2316419;
@@ -188,10 +194,7 @@ double GSL_Q(double x)
     double t,e;
     
     t = 1.0/(1.0+p*fabs(x));
-    e = GSL_Z(x)*t*(b[0] + t*(b[1] + t*(b[2] + t*(b[3] + t*b[4]))));
+    e = gsl_Z(x)*t*(b[0] + t*(b[1] + t*(b[2] + t*(b[3] + t*b[4]))));
     if (x < 0) e = 1.0-e;
     return e;
 }
-
-
-
