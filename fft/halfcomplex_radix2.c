@@ -7,7 +7,7 @@
 
 int
 gsl_fft_halfcomplex_radix2_backward (double data[],
-				     const unsigned int n)
+				     const size_t n)
 {
   int status = gsl_fft_halfcomplex_radix2 (data, n) ;
   return status ;
@@ -15,7 +15,7 @@ gsl_fft_halfcomplex_radix2_backward (double data[],
 
 int
 gsl_fft_halfcomplex_radix2_inverse (double data[],
-				    const unsigned int n)
+				    const size_t n)
 {
   int status = gsl_fft_halfcomplex_radix2 (data, n);
 
@@ -28,7 +28,7 @@ gsl_fft_halfcomplex_radix2_inverse (double data[],
 
   {
     const double norm = 1.0 / n;
-    unsigned int i;
+    size_t i;
     for (i = 0; i < n; i++)
       {
 	data[i] *= norm;
@@ -39,12 +39,12 @@ gsl_fft_halfcomplex_radix2_inverse (double data[],
 
 int
 gsl_fft_halfcomplex_radix2 (double data[],
-			    const unsigned int n)
+			    const size_t n)
 {
   int result ;
-  unsigned int p, p_1, q;
-  unsigned int i; 
-  unsigned int logn = 0;
+  size_t p, p_1, q;
+  size_t i; 
+  size_t logn = 0;
   int status;
 
   if (n == 1) /* identity operation */
@@ -71,7 +71,7 @@ gsl_fft_halfcomplex_radix2 (double data[],
 
   for (i = 1; i <= logn; i++)
     {
-      unsigned int a, b;
+      size_t a, b;
 
 #ifdef DEBUG
 #define DISPLAY for(k=0; k<n ;k++) {printf("%d: %e\n",k,data[k]); } ;

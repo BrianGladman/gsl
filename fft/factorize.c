@@ -4,11 +4,11 @@
 #include "factorize.h"
 
 int
-gsl_fft_complex_factorize (const unsigned int n,
-			   unsigned int *nf,
-			   unsigned int factors[])
+gsl_fft_complex_factorize (const size_t n,
+			   size_t *nf,
+			   size_t factors[])
 {
-  const unsigned int complex_subtransforms[] =
+  const size_t complex_subtransforms[] =
   {7, 6, 5, 4, 3, 2, 0};
 
   /* other factors can be added here if their transform modules are
@@ -19,11 +19,11 @@ gsl_fft_complex_factorize (const unsigned int n,
 }
 
 int
-gsl_fft_halfcomplex_factorize (const unsigned int n,
-			       unsigned int *nf,
-			       unsigned int factors[])
+gsl_fft_halfcomplex_factorize (const size_t n,
+			       size_t *nf,
+			       size_t factors[])
 {
-  const unsigned int halfcomplex_subtransforms[] =
+  const size_t halfcomplex_subtransforms[] =
   {5, 4, 3, 2, 0};
 
   int status = gsl_fft_factorize (n, halfcomplex_subtransforms, nf, factors);
@@ -31,11 +31,11 @@ gsl_fft_halfcomplex_factorize (const unsigned int n,
 }
 
 int
-gsl_fft_real_factorize (const unsigned int n,
-			unsigned int *nf,
-			unsigned int factors[])
+gsl_fft_real_factorize (const size_t n,
+			size_t *nf,
+			size_t factors[])
 {
-  const unsigned int real_subtransforms[] =
+  const size_t real_subtransforms[] =
   {5, 4, 3, 2, 0};
 
   int status = gsl_fft_factorize (n, real_subtransforms, nf, factors);
@@ -44,16 +44,16 @@ gsl_fft_real_factorize (const unsigned int n,
 
 
 int
-gsl_fft_factorize (const unsigned int n,
-		   const unsigned int implemented_subtransforms[],
-		   unsigned int *n_factors,
-		   unsigned int factors[])
+gsl_fft_factorize (const size_t n,
+		   const size_t implemented_subtransforms[],
+		   size_t *n_factors,
+		   size_t factors[])
 
 {
-  unsigned int nf = 0;
-  unsigned int ntest = n;
-  unsigned int factor;
-  unsigned int i = 0;
+  size_t nf = 0;
+  size_t ntest = n;
+  size_t factor;
+  size_t i = 0;
 
   if (n == 0)
     {
@@ -109,7 +109,7 @@ gsl_fft_factorize (const unsigned int n,
 
   /* check that the factorization is correct */
   {
-    unsigned int product = 1;
+    size_t product = 1;
 
     for (i = 0; i < nf; i++)
       {
@@ -128,11 +128,11 @@ gsl_fft_factorize (const unsigned int n,
 }
 
 
-int gsl_fft_binary_logn (const unsigned int n)
+int gsl_fft_binary_logn (const size_t n)
 {
-  unsigned int ntest ;
-  unsigned int binary_logn = 0 ;
-  unsigned int k = 1;
+  size_t ntest ;
+  size_t binary_logn = 0 ;
+  size_t k = 1;
 
   while (k < n)
     {

@@ -8,20 +8,20 @@ int
 gsl_fft_complex_pass_n (gsl_complex from[],
 			gsl_complex to[],
 			const gsl_fft_direction sign,
-			const unsigned int factor,
-			const unsigned int product,
-			const unsigned int n,
+			const size_t factor,
+			const size_t product,
+			const size_t n,
 			const gsl_complex twiddle[])
 {
-  unsigned int i = 0, j = 0;
-  unsigned int k, k1;
+  size_t i = 0, j = 0;
+  size_t k, k1;
 
-  const unsigned int m = n / factor;
-  const unsigned int q = n / product;
-  const unsigned int product_1 = product / factor;
-  const unsigned int jump = (factor - 1) * product_1;
+  const size_t m = n / factor;
+  const size_t q = n / product;
+  const size_t product_1 = product / factor;
+  const size_t jump = (factor - 1) * product_1;
 
-  unsigned int e, e1;
+  size_t e, e1;
 
   for (i = 0; i < m; i++)
     {
@@ -32,8 +32,8 @@ gsl_fft_complex_pass_n (gsl_complex from[],
     {
       for (i = 0; i < m; i++)
 	{
-	  const unsigned int idx = i + e * m;
-	  const unsigned int idxc = i + (factor - e) * m;
+	  const size_t idx = i + e * m;
+	  const size_t idxc = i + (factor - e) * m;
 	  to[idx].real = from[idx].real + from[idxc].real;
 	  to[idx].imag = from[idx].imag + from[idxc].imag;
 	  to[idxc].real = from[idx].real - from[idxc].real;
@@ -59,12 +59,12 @@ gsl_fft_complex_pass_n (gsl_complex from[],
 
   for (e = 1; e < (factor-1)/2 + 1; e++)
     {
-      unsigned int idx = e*q ;
-      const unsigned int idx_step = e * q ;
+      size_t idx = e*q ;
+      const size_t idx_step = e * q ;
       double w_real, w_imag ;
 
-      const unsigned int em = e * m ;
-      const unsigned int ecm = (factor - e) * m ;
+      const size_t em = e * m ;
+      const size_t ecm = (factor - e) * m ;
 
       for (i = 0; i < m; i++) 
 	{

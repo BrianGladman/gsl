@@ -7,12 +7,12 @@
 
 int
 gsl_fft_real_radix2 (double data[],
-		     const unsigned int n)
+		     const size_t n)
 {
   int result ;
-  unsigned int p, p_1, q;
-  unsigned int i; 
-  unsigned int logn = 0;
+  size_t p, p_1, q;
+  size_t i; 
+  size_t logn = 0;
   int status;
 
   if (n == 1) /* identity operation */
@@ -43,7 +43,7 @@ gsl_fft_real_radix2 (double data[],
 
   for (i = 1; i <= logn; i++)
     {
-      unsigned int a, b;
+      size_t a, b;
 
       p_1 = p ;
       p = 2 * p ;

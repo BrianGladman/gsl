@@ -9,7 +9,7 @@
 
 int
 gsl_fft_halfcomplex_backward (double *data,
-			      const unsigned int n,
+			      const size_t n,
 			      const gsl_fft_halfcomplex_wavetable * wavetable)
 {
   int status = gsl_fft_halfcomplex (data, n, wavetable) ;
@@ -18,7 +18,7 @@ gsl_fft_halfcomplex_backward (double *data,
 
 int
 gsl_fft_halfcomplex_inverse (double * data,
-			     const unsigned int n,
+			     const size_t n,
 			     const gsl_fft_halfcomplex_wavetable * wavetable)
 {
   int status = gsl_fft_halfcomplex (data, n, wavetable);
@@ -32,7 +32,7 @@ gsl_fft_halfcomplex_inverse (double * data,
 
   {
     const double norm = 1.0 / n;
-    unsigned int i;
+    size_t i;
     for (i = 0; i < n; i++)
       {
 	data[i] *= norm;
@@ -43,13 +43,13 @@ gsl_fft_halfcomplex_inverse (double * data,
 
 int
 gsl_fft_halfcomplex (double *data,
-		     const unsigned int n,
+		     const size_t n,
 		     const gsl_fft_halfcomplex_wavetable * wavetable)
 {
 
-  unsigned int factor, product, q, state;
-  unsigned int i;
-  unsigned int nf;
+  size_t factor, product, q, state;
+  size_t i;
+  size_t nf;
   int product_1;
   int tskip;
   double *from, *to, *scratch;

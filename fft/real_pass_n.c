@@ -7,18 +7,18 @@
 int
 gsl_fft_real_pass_n (const double from[],
 		     double to[],
-		     const unsigned int factor,
-		     const unsigned int product,
-		     const unsigned int n,
+		     const size_t factor,
+		     const size_t product,
+		     const size_t n,
 		     const gsl_complex twiddle[])
 {
-  unsigned int k, k1;
+  size_t k, k1;
 
-  const unsigned int m = n / factor;
-  const unsigned int q = n / product;
-  const unsigned int product_1 = product / factor;
+  const size_t m = n / factor;
+  const size_t q = n / product;
+  const size_t product_1 = product / factor;
 
-  unsigned int e1, e2;
+  size_t e1, e2;
 
   const double d_theta = 2.0 * M_PI / ((double) factor);
   const double cos_d_theta = cos (d_theta);
@@ -63,18 +63,18 @@ gsl_fft_real_pass_n (const double from[],
 	    }
 	  if (e1 == 0)
 	    {
-	      const unsigned int to0 = product * k1;
+	      const size_t to0 = product * k1;
 	      to[to0] = sum_real;
 	    }
 	  else if (e1 < factor - e1)
 	    {
-	      const unsigned int to0 = k1 * product + 2 * e1 * product_1 - 1;
+	      const size_t to0 = k1 * product + 2 * e1 * product_1 - 1;
 	      to[to0] = sum_real;
 	      to[to0 + 1] = sum_imag;
 	    }
 	  else if (e1 == factor - e1)
 	    {
-	      const unsigned int to0 = k1 * product + 2 * e1 * product_1 - 1;
+	      const size_t to0 = k1 * product + 2 * e1 * product_1 - 1;
 	      to[to0] = sum_real;
 	    }
 
@@ -109,7 +109,7 @@ gsl_fft_real_pass_n (const double from[],
 		{
 
 		  int tskip = (product_1 + 1) / 2 - 1;
-		  const unsigned int from0 = k1 * product_1 + 2 * k + e2 * m - 1;
+		  const size_t from0 = k1 * product_1 + 2 * k + e2 * m - 1;
 		  double tw_real, tw_imag;
 		  double z_real, z_imag;
 
@@ -120,7 +120,7 @@ gsl_fft_real_pass_n (const double from[],
 		    }
 		  else
 		    {
-		      const unsigned int t_index = (k - 1) + (e2 - 1) * tskip;
+		      const size_t t_index = (k - 1) + (e2 - 1) * tskip;
 		      tw_real = twiddle[t_index].real;
 		      tw_imag = -twiddle[t_index].imag;
 		    }
@@ -147,13 +147,13 @@ gsl_fft_real_pass_n (const double from[],
 
 	      if (e1 < factor - e1)
 		{
-		  const unsigned int to0 = k1 * product - 1 + 2 * e1 * product_1 + 2 * k;
+		  const size_t to0 = k1 * product - 1 + 2 * e1 * product_1 + 2 * k;
 		  to[to0] = sum_real;
 		  to[to0 + 1] = sum_imag;
 		}
 	      else
 		{
-		  const unsigned int to0 = k1 * product - 1 + 2 * (factor - e1) * product_1 - 2 * k;
+		  const size_t to0 = k1 * product - 1 + 2 * (factor - e1) * product_1 - 2 * k;
 		  to[to0] = sum_real;
 		  to[to0 + 1] = -sum_imag;
 		}
@@ -214,7 +214,7 @@ gsl_fft_real_pass_n (const double from[],
 
 
 		{
-		  const unsigned int from0 = k1 * product_1 + 2 * k + e2 * m - 1;
+		  const size_t from0 = k1 * product_1 + 2 * k + e2 * m - 1;
 		  const double f0_real = from[from0];
 		  z_real = tw_real * f0_real;
 		  z_imag = tw_imag * f0_real;
@@ -226,18 +226,18 @@ gsl_fft_real_pass_n (const double from[],
 
 	    if (e1 + 1 < factor - e1)
 	      {
-		const unsigned int to0 = k1 * product - 1 + 2 * e1 * product_1 + 2 * k;
+		const size_t to0 = k1 * product - 1 + 2 * e1 * product_1 + 2 * k;
 		to[to0] = sum_real;
 		to[to0 + 1] = sum_imag;
 	      }
 	    else if (e1 + 1 == factor - e1)
 	      {
-		const unsigned int to0 = k1 * product - 1 + 2 * e1 * product_1 + 2 * k;
+		const size_t to0 = k1 * product - 1 + 2 * e1 * product_1 + 2 * k;
 		to[to0] = sum_real;
 	      }
 	    else
 	      {
-		const unsigned int to0 = k1 * product - 1 + 2 * (factor - e1) * product_1 - 2 * k;
+		const size_t to0 = k1 * product - 1 + 2 * (factor - e1) * product_1 - 2 * k;
 		to[to0] = sum_real;
 		to[to0 + 1] = -sum_imag;
 	      }

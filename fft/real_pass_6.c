@@ -6,8 +6,8 @@
 
 int
 gsl_fft_real_pass_6 (const double from[], double to[],
-		     const unsigned int product,
-		     const unsigned int n,
+		     const size_t product,
+		     const size_t n,
 		     const gsl_complex twiddle1[],
 		     const gsl_complex twiddle2[],
 		     const gsl_complex twiddle3[],
@@ -15,10 +15,10 @@ gsl_fft_real_pass_6 (const double from[], double to[],
 		     const gsl_complex twiddle5[])
 {
 
-  unsigned int i, j, k, k1, jump;
-  unsigned int factor, q, m, product_1;
-  unsigned int from0, from1, from2, from3, from4;
-  unsigned int to0, to1, to2, to3, to4;
+  size_t i, j, k, k1, jump;
+  size_t factor, q, m, product_1;
+  size_t from0, from1, from2, from3, from4;
+  size_t to0, to1, to2, to3, to4;
 
   double tau = sqrt (3.0) / 2.0;
 

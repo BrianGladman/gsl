@@ -1,3 +1,8 @@
+Sun Mar 29 15:56:34 1998  Brian Gough  <bjg@vvv.lanl.gov>
+
+	* To be compatible with other architectures use size_t everywhere
+ 	instead of unsigned int
+
 Sat Mar 21 17:28:26 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
 	* factorize.c (gsl_fft_factorize): Stopped returning the sum of

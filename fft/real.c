@@ -9,22 +9,22 @@
 
 int
 gsl_fft_real (double data[],
-	      const unsigned int n,
+	      const size_t n,
 	      const gsl_fft_real_wavetable * wavetable)
 {
 
-  const unsigned int nf = wavetable->nf;
+  const size_t nf = wavetable->nf;
 
-  unsigned int i;
+  size_t i;
 
-  unsigned int q, product = 1;
-  unsigned int tskip;
-  unsigned int product_1;
+  size_t q, product = 1;
+  size_t tskip;
+  size_t product_1;
 
   double *scratch = wavetable->scratch;
   gsl_complex *twiddle1, *twiddle2, *twiddle3, *twiddle4;
 
-  unsigned int state = 0;
+  size_t state = 0;
   double *from = data;
   double *to = scratch;
 
@@ -46,7 +46,7 @@ gsl_fft_real (double data[],
 
   for (i = 0; i < nf; i++)
     {
-      const unsigned int factor = wavetable->factor[i];
+      const size_t factor = wavetable->factor[i];
       product_1 = product;
       product *= factor;
       q = n / product;

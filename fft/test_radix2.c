@@ -19,9 +19,9 @@
 #include <compare.h>
 
 void usage (void);
-void check_complex_bitreverse_order (unsigned int n) ;
-void check_complex_radix2 (unsigned int n) ;
-void check_real_radix2 (unsigned int n) ;
+void check_complex_bitreverse_order (size_t n) ;
+void check_complex_radix2 (size_t n) ;
+void check_real_radix2 (size_t n) ;
 
 void
 usage (void)
@@ -43,8 +43,8 @@ usage (void)
 int
 main (int argc, char *argv[])
 {
-  unsigned int i ;
-  unsigned int n = 0;
+  size_t i ;
+  size_t n = 0;
 
   while (1) {
 
@@ -105,11 +105,11 @@ main (int argc, char *argv[])
 }
 
 
-void check_complex_bitreverse_order (unsigned int n) 
+void check_complex_bitreverse_order (size_t n) 
 {
   int status ;
   int result ;
-  unsigned int logn, i ;
+  size_t logn, i ;
   gsl_complex *complex_data, *complex_tmp, *complex_reversed_data;
 
   complex_tmp = malloc (n * sizeof (gsl_complex));
@@ -137,9 +137,9 @@ void check_complex_bitreverse_order (unsigned int n)
   for (i = 0; i < n; i++) 
     {
       
-      unsigned int i_tmp = i ;
-      unsigned int j = 0 ;
-      unsigned int bit ;
+      size_t i_tmp = i ;
+      size_t j = 0 ;
+      size_t bit ;
 
       for (bit = 0; bit < logn; bit++)
 	{
@@ -184,7 +184,7 @@ void check_complex_bitreverse_order (unsigned int n)
   free (complex_tmp) ;
 }
 
-void check_complex_radix2 (unsigned int n) 
+void check_complex_radix2 (size_t n) 
 {
   int status ;
 
@@ -227,10 +227,10 @@ void check_complex_radix2 (unsigned int n)
   
 }
 
-void check_real_radix2 (unsigned int n) 
+void check_real_radix2 (size_t n) 
 {
 
-  unsigned int i ;
+  size_t i ;
   int status ;
 
   double *real_data, *real_tmp;

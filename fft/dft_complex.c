@@ -6,7 +6,7 @@
 int
 gsl_dft_complex_forward (const gsl_complex data[],
 			 gsl_complex result[],
-			 const unsigned int n)
+			 const size_t n)
 {
   gsl_fft_direction sign = forward;
   int status = gsl_dft_complex (data, result, n, sign);
@@ -16,7 +16,7 @@ gsl_dft_complex_forward (const gsl_complex data[],
 int
 gsl_dft_complex_backward (const gsl_complex data[],
 			  gsl_complex result[],
-			  const unsigned int n)
+			  const size_t n)
 {
   gsl_fft_direction sign = backward;
   int status = gsl_dft_complex (data, result, n, sign);
@@ -27,7 +27,7 @@ gsl_dft_complex_backward (const gsl_complex data[],
 int
 gsl_dft_complex_inverse (const gsl_complex data[],
 			 gsl_complex result[],
-			 const unsigned int n)
+			 const size_t n)
 {
   gsl_fft_direction sign = backward;
   int status = gsl_dft_complex (data, result, n, sign);
@@ -36,7 +36,7 @@ gsl_dft_complex_inverse (const gsl_complex data[],
 
   {
     const double norm = 1.0 / n;
-    unsigned int i;
+    size_t i;
     for (i = 0; i < n; i++)
       {
 	result[i].real *= norm;
@@ -49,11 +49,11 @@ gsl_dft_complex_inverse (const gsl_complex data[],
 int
 gsl_dft_complex (const gsl_complex data[],
 		 gsl_complex result[],
-		 const unsigned int n,
+		 const size_t n,
 		 const gsl_fft_direction sign)
 {
 
-  unsigned int i, j, exponent;
+  size_t i, j, exponent;
   const double d_theta = 2.0 * ((int) sign) * M_PI / (double) n;
 
   for (i = 0; i < n; i++)

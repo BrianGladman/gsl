@@ -9,11 +9,11 @@
 #include "factorize.h"
 
 int
-gsl_fft_real_init (unsigned int n,
+gsl_fft_real_init (size_t n,
 		   gsl_fft_real_wavetable * wavetable)
 {
   int status;
-  unsigned int n_factors;
+  size_t n_factors;
 
   if (n == 0)
     {
@@ -42,12 +42,12 @@ gsl_fft_real_init (unsigned int n,
 }
 
 int
-gsl_fft_real_generate_wavetable (unsigned int n,
+gsl_fft_real_generate_wavetable (size_t n,
 				 gsl_fft_real_wavetable * wavetable)
 {
-  unsigned int i;
+  size_t i;
   double d_theta;
-  unsigned int t, product, product_1, q;
+  size_t t, product, product_1, q;
 
   if (n == 0)
     {
@@ -65,8 +65,8 @@ gsl_fft_real_generate_wavetable (unsigned int n,
   product = 1;
   for (i = 0; i < wavetable->nf; i++)
     {
-      unsigned int j;
-      const unsigned int factor = wavetable->factor[i];
+      size_t j;
+      const size_t factor = wavetable->factor[i];
       wavetable->twiddle[i] = wavetable->trig + t;
       product_1 = product;	/* product_1 = p_(i-1) */
       product *= factor;
@@ -74,8 +74,8 @@ gsl_fft_real_generate_wavetable (unsigned int n,
 
       for (j = 1; j < factor; j++)
 	{
-	  unsigned int k;
-	  unsigned int m = 0;
+	  size_t k;
+	  size_t m = 0;
 	  for (k = 1; k < (product_1 + 1) / 2; k++)
 	    {
 	      double theta;
@@ -99,7 +99,7 @@ gsl_fft_real_generate_wavetable (unsigned int n,
 }
 
 int
-gsl_fft_real_wavetable_alloc (unsigned int n,
+gsl_fft_real_wavetable_alloc (size_t n,
 			      gsl_fft_real_wavetable * wavetable)
 {
 

@@ -19,7 +19,7 @@
 #include <compare.h>
 
 void usage (void);
-void check_complex (unsigned int n) ;
+void check_complex (size_t n) ;
 
 void
 usage (void)
@@ -40,8 +40,8 @@ usage (void)
 int
 main (int argc, char *argv[])
 {
-  unsigned int i;
-  unsigned int n = 0;
+  size_t i;
+  size_t n = 0;
 
   while (1) {
 
@@ -97,9 +97,9 @@ main (int argc, char *argv[])
 
 }
 
-void check_complex (unsigned int n) 
+void check_complex (size_t n) 
 {
-  unsigned int i ;
+  size_t i ;
   int status ;
 
   double *real_data, *real_tmp;

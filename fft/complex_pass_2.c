@@ -8,18 +8,18 @@ int
 gsl_fft_complex_pass_2 (const gsl_complex from[],
 			gsl_complex to[],
 			const gsl_fft_direction sign,
-			const unsigned int product,
-			const unsigned int n,
+			const size_t product,
+			const size_t n,
 			const gsl_complex twiddle[])
 {
-  unsigned int i = 0, j = 0;
-  unsigned int k, k1;
+  size_t i = 0, j = 0;
+  size_t k, k1;
 
-  const unsigned int factor = 2;
-  const unsigned int m = n / factor;
-  const unsigned int q = n / product;
-  const unsigned int product_1 = product / factor;
-  const unsigned int jump = (factor - 1) * product_1;
+  const size_t factor = 2;
+  const size_t m = n / factor;
+  const size_t q = n / product;
+  const size_t product_1 = product / factor;
+  const size_t jump = (factor - 1) * product_1;
 
   for (k = 0; k < q; k++)
     {
@@ -52,8 +52,8 @@ gsl_fft_complex_pass_2 (const gsl_complex from[],
 	  double x0_real, x0_imag, x1_real, x1_imag;
 
 	  {
-	    const unsigned int from0 = i;
-	    const unsigned int from1 = from0 + m;
+	    const size_t from0 = i;
+	    const size_t from1 = from0 + m;
 	    z0 = from[from0];
 	    z1 = from[from1];
 	  }
@@ -70,8 +70,8 @@ gsl_fft_complex_pass_2 (const gsl_complex from[],
 
 	  /* apply twiddle factors */
 	  {
-	    const unsigned int to0 = j;
-	    const unsigned int to1 = product_1 + j;
+	    const size_t to0 = j;
+	    const size_t to1 = product_1 + j;
 
 	    /* to0 = 1 * x0 */
 	    to[to0].real = x0_real;

@@ -7,19 +7,19 @@
 int
 gsl_fft_real_pass_5 (const double from[],
 		     double to[],
-		     const unsigned int product,
-		     const unsigned int n,
+		     const size_t product,
+		     const size_t n,
 		     const gsl_complex twiddle1[],
 		     const gsl_complex twiddle2[],
 		     const gsl_complex twiddle3[],
 		     const gsl_complex twiddle4[])
 {
-  unsigned int k, k1;
+  size_t k, k1;
 
-  const unsigned int factor = 5;
-  const unsigned int m = n / factor;
-  const unsigned int q = n / product;
-  const unsigned int product_1 = product / factor;
+  const size_t factor = 5;
+  const size_t m = n / factor;
+  const size_t q = n / product;
+  const size_t product_1 = product / factor;
 
   const double sina = sin (2.0 * M_PI / 5.0);
   const double sinb = sin (2.0 * M_PI / 10.0);
@@ -32,11 +32,11 @@ gsl_fft_real_pass_5 (const double from[],
       double x0_real, x1_real, x1_imag, x2_real, x2_imag;
 
       {
-	const unsigned int from0 = k1 * product_1;
-	const unsigned int from1 = from0 + m;
-	const unsigned int from2 = from1 + m;
-	const unsigned int from3 = from2 + m;
-	const unsigned int from4 = from3 + m;
+	const size_t from0 = k1 * product_1;
+	const size_t from1 = from0 + m;
+	const size_t from2 = from1 + m;
+	const size_t from3 = from2 + m;
+	const size_t from4 = from3 + m;
 
 	z0_real = from[from0];
 	z1_real = from[from1];
@@ -90,9 +90,9 @@ gsl_fft_real_pass_5 (const double from[],
       x2_imag = t11_real;
 
       {
-	const unsigned int to0 = product * k1;
-	const unsigned int to1 = to0 + 2 * product_1 - 1;
-	const unsigned int to2 = to1 + 2 * product_1;
+	const size_t to0 = product * k1;
+	const size_t to1 = to0 + 2 * product_1 - 1;
+	const size_t to2 = to1 + 2 * product_1;
 
 	to[to0] = x0_real;
 	to[to1] = x1_real;
@@ -124,11 +124,11 @@ gsl_fft_real_pass_5 (const double from[],
 	  double z0_real, z0_imag, z1_real, z1_imag, z2_real, z2_imag,
 	    z3_real, z3_imag, z4_real, z4_imag;
 	  {
-	    const unsigned int from0 = k1 * product_1 + 2 * k - 1;
-	    const unsigned int from1 = from0 + m;
-	    const unsigned int from2 = from1 + m;
-	    const unsigned int from3 = from2 + m;
-	    const unsigned int from4 = from3 + m;
+	    const size_t from0 = k1 * product_1 + 2 * k - 1;
+	    const size_t from1 = from0 + m;
+	    const size_t from2 = from1 + m;
+	    const size_t from3 = from2 + m;
+	    const size_t from4 = from3 + m;
 
 	    const double f0_real = from[from0];
 	    const double f0_imag = from[from0 + 1];
@@ -221,11 +221,11 @@ gsl_fft_real_pass_5 (const double from[],
 	  }
 
 	  {
-	    const unsigned int to0 = k1 * product + 2 * k - 1;
-	    const unsigned int to1 = to0 + 2 * product_1;
-	    const unsigned int to2 = to1 + 2 * product_1;
-	    const unsigned int to3 = 2 * product_1 - 2 * k + k1 * product - 1;
-	    const unsigned int to4 = to3 + 2 * product_1;
+	    const size_t to0 = k1 * product + 2 * k - 1;
+	    const size_t to1 = to0 + 2 * product_1;
+	    const size_t to2 = to1 + 2 * product_1;
+	    const size_t to3 = 2 * product_1 - 2 * k + k1 * product - 1;
+	    const size_t to4 = to3 + 2 * product_1;
 
 	    to[to0] = x0_real;
 	    to[to0 + 1] = x0_imag;
@@ -254,11 +254,11 @@ gsl_fft_real_pass_5 (const double from[],
       double t1, t2, t3, t4, t5, t6, t7;
 
       {
-	const unsigned int from0 = k1 * product_1 + product_1 - 1;
-	const unsigned int from1 = from0 + m;
-	const unsigned int from2 = from1 + m;
-	const unsigned int from3 = from2 + m;
-	const unsigned int from4 = from3 + m;
+	const size_t from0 = k1 * product_1 + product_1 - 1;
+	const size_t from1 = from0 + m;
+	const size_t from2 = from1 + m;
+	const size_t from3 = from2 + m;
+	const size_t from4 = from3 + m;
 
 	z0_real = from[from0];
 	z1_real = from[from1];
@@ -276,11 +276,11 @@ gsl_fft_real_pass_5 (const double from[],
       t7 = (sqrt (5.0) / 4.0) * (t1 + t3);
 
       {
-	const unsigned int to0 = k1 * product + product_1 - 1;
-	const unsigned int to1 = to0 + 2 * product_1;
-	const unsigned int to2 = to1 + 2 * product_1;
-	/* const unsigned int to3 = 2 * product_1 - product_1 + k1 * product - 1;
-	   const unsigned int to4 = to3 + 2 * product_1; */
+	const size_t to0 = k1 * product + product_1 - 1;
+	const size_t to1 = to0 + 2 * product_1;
+	const size_t to2 = to1 + 2 * product_1;
+	/* const size_t to3 = 2 * product_1 - product_1 + k1 * product - 1;
+	   const size_t to4 = to3 + 2 * product_1; */
 
 	to[to0] = t6 + t7;
 	to[to0 + 1] = -sinb * t2 - sina * t4;

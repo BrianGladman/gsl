@@ -8,8 +8,8 @@ int
 gsl_fft_complex_pass_6 (const gsl_complex from[],
 			gsl_complex to[],
 			const gsl_fft_direction sign,
-			const unsigned int product,
-			const unsigned int n,
+			const size_t product,
+			const size_t n,
 			const gsl_complex twiddle1[],
 			const gsl_complex twiddle2[],
 			const gsl_complex twiddle3[],
@@ -17,14 +17,14 @@ gsl_fft_complex_pass_6 (const gsl_complex from[],
 			const gsl_complex twiddle5[])
 {
 
-  unsigned int i = 0, j = 0;
-  unsigned int k, k1;
+  size_t i = 0, j = 0;
+  size_t k, k1;
 
-  const unsigned int factor = 6;
-  const unsigned int m = n / factor;
-  const unsigned int q = n / product;
-  const unsigned int product_1 = product / factor;
-  const unsigned int jump = (factor - 1) * product_1;
+  const size_t factor = 6;
+  const size_t m = n / factor;
+  const size_t q = n / product;
+  const size_t product_1 = product / factor;
+  const size_t jump = (factor - 1) * product_1;
 
   const double tau = sqrt (3.0) / 2.0;
 
@@ -85,12 +85,12 @@ gsl_fft_complex_pass_6 (const gsl_complex from[],
 	    x3_real, x3_imag, x4_real, x4_imag, x5_real, x5_imag;
 
 	  {
-	    const unsigned int from0 = i;
-	    const unsigned int from1 = from0 + m;
-	    const unsigned int from2 = from1 + m;
-	    const unsigned int from3 = from2 + m;
-	    const unsigned int from4 = from3 + m;
-	    const unsigned int from5 = from4 + m;
+	    const size_t from0 = i;
+	    const size_t from1 = from0 + m;
+	    const size_t from2 = from1 + m;
+	    const size_t from3 = from2 + m;
+	    const size_t from4 = from3 + m;
+	    const size_t from5 = from4 + m;
 
 	    z0 = from[from0];
 	    z1 = from[from1];
@@ -180,12 +180,12 @@ gsl_fft_complex_pass_6 (const gsl_complex from[],
 
 	  /* apply twiddle factors */
 	  {
-	    const unsigned int to0 = j;
-	    const unsigned int to1 = to0 + product_1;
-	    const unsigned int to2 = to1 + product_1;
-	    const unsigned int to3 = to2 + product_1;
-	    const unsigned int to4 = to3 + product_1;
-	    const unsigned int to5 = to4 + product_1;
+	    const size_t to0 = j;
+	    const size_t to1 = to0 + product_1;
+	    const size_t to2 = to1 + product_1;
+	    const size_t to3 = to2 + product_1;
+	    const size_t to4 = to3 + product_1;
+	    const size_t to5 = to4 + product_1;
 
 	    /* to0 = 1 * x0 */
 	    to[to0].real = x0_real;

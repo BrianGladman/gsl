@@ -3,16 +3,16 @@
 #include "bitreverse.h"
 
 int gsl_fft_complex_bitreverse_order (gsl_complex data[], 
-				      const unsigned int n,
-				      const unsigned int logn)
+				      const size_t n,
+				      const size_t logn)
 {
-  unsigned int i;
+  size_t i;
 
   for (i = 0; i < n; i++)
     {
-      unsigned int j = 0;
-      unsigned int i_tmp = i;
-      unsigned int bit;
+      size_t j = 0;
+      size_t i_tmp = i;
+      size_t bit;
 
       for (bit = 0; bit < logn; bit++)
 	{
@@ -32,16 +32,16 @@ int gsl_fft_complex_bitreverse_order (gsl_complex data[],
 }
 
 int gsl_fft_real_bitreverse_order (double data[], 
-				   const unsigned int n,
-				   const unsigned int logn)
+				   const size_t n,
+				   const size_t logn)
 {
-  unsigned int i;
+  size_t i;
 
   for (i = 0; i < n; i++)
     {
-      unsigned int j = 0;
-      unsigned int i_tmp = i;
-      unsigned int bit;
+      size_t j = 0;
+      size_t i_tmp = i;
+      size_t bit;
 
       for (bit = 0; bit < logn; bit++)
 	{
@@ -62,14 +62,14 @@ int gsl_fft_real_bitreverse_order (double data[],
 
 
 int gsl_fft_complex_goldrader_bitreverse_order (gsl_complex data[], 
-						const unsigned int n)
+						const size_t n)
 {
-  unsigned int i;
-  unsigned int j = 0;
+  size_t i;
+  size_t j = 0;
 
   for (i = 0; i < n - 1; i++)
     {
-      unsigned int k = n / 2 ;
+      size_t k = n / 2 ;
 
       if (i < j)
 	{
@@ -93,16 +93,16 @@ int gsl_fft_complex_goldrader_bitreverse_order (gsl_complex data[],
 
 
 int gsl_fft_complex_rodriguez_bitreverse_order (gsl_complex data[], 
-						const unsigned int n,
-						const unsigned int logn)
+						const size_t n,
+						const size_t logn)
 {
-  unsigned int i;
-  unsigned int j = 0 ;
+  size_t i;
+  size_t j = 0 ;
   unsigned last = n - ( 1 << ((logn + 1)/2) ) ;
 
   for (i = 1; i < last ; i++)
     {
-      unsigned int k = n / 2 ;
+      size_t k = n / 2 ;
 
       while (k <= j) 
 	{

@@ -7,17 +7,17 @@
 int
 gsl_fft_halfcomplex_pass_4 (const double from[],
 			    double to[],
-			    const unsigned int product,
-			    const unsigned int n,
+			    const size_t product,
+			    const size_t n,
 			    const gsl_complex twiddle1[],
 			    const gsl_complex twiddle2[],
 			    const gsl_complex twiddle3[])
 {
 
-  unsigned int i, j, k, k1, jump;
-  unsigned int factor, q, m, product_1;
-  unsigned int from0, from1, from2, from3;
-  unsigned int to0, to1, to2, to3;
+  size_t i, j, k, k1, jump;
+  size_t factor, q, m, product_1;
+  size_t from0, from1, from2, from3;
+  size_t to0, to1, to2, to3;
 
   i = 0;
   j = 0;

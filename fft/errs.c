@@ -17,15 +17,15 @@
 
 int verbose = 0;
 
-unsigned int tests = 0;
-unsigned int passed = 0;
-unsigned int failed = 0;
+size_t tests = 0;
+size_t passed = 0;
+size_t failed = 0;
 
 int
 main (int argc, char *argv[])
 {
   int status, factor_sum;
-  unsigned int i, start, end, n;
+  size_t i, start, end, n;
   gsl_complex *complex_data, *complex_tmp;
   double rms, total;
 

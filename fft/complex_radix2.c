@@ -5,7 +5,7 @@
 
 int
 gsl_fft_complex_radix2_forward (gsl_complex data[],
-				const unsigned int n)
+				const size_t n)
 {
   gsl_fft_direction sign = forward;
   int status = gsl_fft_complex_radix2 (data, n, sign);
@@ -14,7 +14,7 @@ gsl_fft_complex_radix2_forward (gsl_complex data[],
 
 int
 gsl_fft_complex_radix2_backward (gsl_complex data[],
-				 const unsigned int n)
+				 const size_t n)
 {
   gsl_fft_direction sign = backward;
   int status = gsl_fft_complex_radix2 (data, n, sign);
@@ -23,7 +23,7 @@ gsl_fft_complex_radix2_backward (gsl_complex data[],
 
 int
 gsl_fft_complex_radix2_inverse (gsl_complex data[],
-				const unsigned int n)
+				const size_t n)
 {
   gsl_fft_direction sign = backward;
   int status = gsl_fft_complex_radix2 (data, n, sign);
@@ -37,7 +37,7 @@ gsl_fft_complex_radix2_inverse (gsl_complex data[],
 
   {
     const double norm = 1.0 / n;
-    unsigned int i;
+    size_t i;
     for (i = 0; i < n; i++)
       {
 	data[i].real *= norm;
@@ -50,7 +50,7 @@ gsl_fft_complex_radix2_inverse (gsl_complex data[],
 
 int
 gsl_fft_complex_radix2_dif_forward (gsl_complex data[],
-				const unsigned int n)
+				const size_t n)
 {
   gsl_fft_direction sign = forward;
   int status = gsl_fft_complex_radix2_dif (data, n, sign);
@@ -59,7 +59,7 @@ gsl_fft_complex_radix2_dif_forward (gsl_complex data[],
 
 int
 gsl_fft_complex_radix2_dif_backward (gsl_complex data[],
-				 const unsigned int n)
+				 const size_t n)
 {
   gsl_fft_direction sign = backward;
   int status = gsl_fft_complex_radix2_dif (data, n, sign);
@@ -68,7 +68,7 @@ gsl_fft_complex_radix2_dif_backward (gsl_complex data[],
 
 int
 gsl_fft_complex_radix2_dif_inverse (gsl_complex data[],
-				const unsigned int n)
+				const size_t n)
 {
   gsl_fft_direction sign = backward;
   int status = gsl_fft_complex_radix2_dif (data, n, sign);
@@ -82,7 +82,7 @@ gsl_fft_complex_radix2_dif_inverse (gsl_complex data[],
 
   {
     const double norm = 1.0 / n;
-    unsigned int i;
+    size_t i;
     for (i = 0; i < n; i++)
       {
 	data[i].real *= norm;
@@ -95,14 +95,14 @@ gsl_fft_complex_radix2_dif_inverse (gsl_complex data[],
 
 int
 gsl_fft_complex_radix2 (gsl_complex data[],
-			const unsigned int n,
+			const size_t n,
 			const gsl_fft_direction sign)
 {
 
   int result ;
-  unsigned int dual;
-  unsigned int bit; 
-  unsigned int logn = 0;
+  size_t dual;
+  size_t bit; 
+  size_t logn = 0;
   int status;
 
   if (n == 1) /* identity operation */
@@ -142,14 +142,14 @@ gsl_fft_complex_radix2 (gsl_complex data[],
       const double t = sin (theta / 2.0);
       const double s2 = 2.0 * t * t;
 
-      unsigned int a, b;
+      size_t a, b;
 
       /* a = 0 */
 
       for (b = 0; b < n; b += 2 * dual)
 	{
-	  const unsigned int i = b ;
-	  const unsigned int j = b + dual;
+	  const size_t i = b ;
+	  const size_t j = b + dual;
 	  
 	  const double z1_real = data[j].real ;
 	  const double z1_imag = data[j].imag ;
@@ -179,8 +179,8 @@ gsl_fft_complex_radix2 (gsl_complex data[],
 
 	  for (b = 0; b < n; b += 2 * dual)
 	    {
-	      const unsigned int i = b + a;
-	      const unsigned int j = b + a + dual;
+	      const size_t i = b + a;
+	      const size_t j = b + a + dual;
 
 	      const double z1_real = data[j].real ;
 	      const double z1_imag = data[j].imag ;
@@ -205,13 +205,13 @@ gsl_fft_complex_radix2 (gsl_complex data[],
 
 int
 gsl_fft_complex_radix2_dif (gsl_complex data[],
-			    const unsigned int n,
+			    const size_t n,
 			    const gsl_fft_direction sign)
 {
   int result ;
-  unsigned int dual;
-  unsigned int bit; 
-  unsigned int logn = 0;
+  size_t dual;
+  size_t bit; 
+  size_t logn = 0;
   int status;
 
   if (n == 1) /* identity operation */
@@ -247,14 +247,14 @@ gsl_fft_complex_radix2_dif (gsl_complex data[],
       const double t = sin (theta / 2.0);
       const double s2 = 2.0 * t * t;
 
-      unsigned int a, b;
+      size_t a, b;
 
       for (b = 0; b < dual; b++)
 	{
 	  for (a = 0; a < n; a+= 2 * dual)
 	    {
-	      const unsigned int i = b + a;
-	      const unsigned int j = b + a + dual;
+	      const size_t i = b + a;
+	      const size_t j = b + a + dual;
 	      
 	      const double t1_real = data[i].real + data[j].real;
 	      const double t1_imag = data[i].imag + data[j].imag;

@@ -7,19 +7,19 @@
 int
 gsl_fft_halfcomplex_pass_n (const double from[],
 			    double to[],
-			    const unsigned int factor,
-			    const unsigned int product,
-			    const unsigned int n,
+			    const size_t factor,
+			    const size_t product,
+			    const size_t n,
 			    const gsl_complex twiddle[])
 {
 
-  unsigned int k, k1;
+  size_t k, k1;
 
-  const unsigned int m = n / factor;
-  const unsigned int q = n / product;
-  const unsigned int product_1 = product / factor;
+  const size_t m = n / factor;
+  const size_t q = n / product;
+  const size_t product_1 = product / factor;
 
-  unsigned int e1, e2;
+  size_t e1, e2;
 
   const double d_theta = 2.0 * M_PI / ((double) factor);
   const double cos_d_theta = cos (d_theta);
@@ -58,21 +58,21 @@ gsl_fft_halfcomplex_pass_n (const double from[],
 
 	      if (e2 == 0)
 		{
-		  unsigned int from_idx = factor * k1 * q;
+		  size_t from_idx = factor * k1 * q;
 		  z_real = from[from_idx];
 		  z_imag = 0.0;
 		  sum_real += w_real * z_real - w_imag * z_imag;
 		}
 	      else if (e2 == factor - e2)
 		{
-		  unsigned int from_idx = factor * q * k1 + 2 * e2 * q - 1;
+		  size_t from_idx = factor * q * k1 + 2 * e2 * q - 1;
 		  z_real = from[from_idx];
 		  z_imag = 0.0;
 		  sum_real += w_real * z_real;
 		}
 	      else
 		{
-		  unsigned int from_idx = factor * q * k1 + 2 * e2 * q - 1;
+		  size_t from_idx = factor * q * k1 + 2 * e2 * q - 1;
 		  z_real = from[from_idx];
 		  z_imag = from[from_idx + 1];
 		  sum_real += 2 * (w_real * z_real - w_imag * z_imag);
@@ -81,7 +81,7 @@ gsl_fft_halfcomplex_pass_n (const double from[],
 	    }
 
 	  {
-	    const unsigned int to_idx = q * k1 + e1 * m;
+	    const size_t to_idx = q * k1 + e1 * m;
 	    to[to_idx] = sum_real;
 	  }
 	}
@@ -125,13 +125,13 @@ gsl_fft_halfcomplex_pass_n (const double from[],
 
 		  if (e2 < factor - e2)
 		    {
-		      const unsigned int from0 = factor * k1 * q + 2 * k + 2 * e2 * q - 1;
+		      const size_t from0 = factor * k1 * q + 2 * k + 2 * e2 * q - 1;
 		      z_real = from[from0];
 		      z_imag = from[from0 + 1];
 		    }
 		  else
 		    {
-		      const unsigned int from0 = factor * k1 * q - 2 * k + 2 * (factor - e2) * q - 1;
+		      const size_t from0 = factor * k1 * q - 2 * k + 2 * (factor - e2) * q - 1;
 		      z_real = from[from0];
 		      z_imag = -from[from0 + 1];
 		    }
@@ -147,13 +147,13 @@ gsl_fft_halfcomplex_pass_n (const double from[],
 		}
 	      else
 		{
-		  unsigned int tskip = (q + 1) / 2 - 1;
+		  size_t tskip = (q + 1) / 2 - 1;
 		  w_real = twiddle[k - 1 + tskip * (e1 - 1)].real;
 		  w_imag = twiddle[k - 1 + tskip * (e1 - 1)].imag;
 		}
 
 	      {
-		const unsigned int to0 = k1 * q + 2 * k + e1 * m - 1;
+		const size_t to0 = k1 * q + 2 * k + e1 * m - 1;
 		to[to0] = w_real * sum_real - w_imag * sum_imag;
 		to[to0 + 1] = w_real * sum_imag + w_imag * sum_real;
 	      }
@@ -216,14 +216,14 @@ gsl_fft_halfcomplex_pass_n (const double from[],
 
 		if (e2 == factor - e2 - 1)
 		  {
-		    const unsigned int from0 = factor * k1 * q + q + 2 * e2 * q - 1;
+		    const size_t from0 = factor * k1 * q + q + 2 * e2 * q - 1;
 		    z_real = from[from0];
 		    z_imag = 0.0;
 		    sum_real += w_real * z_real - w_imag * z_imag;
 		  }
 		else
 		  {
-		    const unsigned int from0 = factor * k1 * q + q + 2 * e2 * q - 1;
+		    const size_t from0 = factor * k1 * q + q + 2 * e2 * q - 1;
 		    z_real = from[from0];
 		    z_imag = from[from0 + 1];
 		    sum_real += 2 * (w_real * z_real - w_imag * z_imag);
@@ -232,7 +232,7 @@ gsl_fft_halfcomplex_pass_n (const double from[],
 	      }
 
 	    {
-	      const unsigned int to0 = k1 * q + q + e1 * m - 1;
+	      const size_t to0 = k1 * q + q + e1 * m - 1;
 	      to[to0] = sum_real;
 	    }
 	  }
