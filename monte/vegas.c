@@ -62,11 +62,11 @@
 
 enum {MODE_IMPORTANCE = 1, MODE_IMPORTANCE_ONLY = 0, MODE_STRATIFIED = -1};
 
-int    calls = 1000;
 double acc = -1, alpha = 1.5;
 int    mode, verbose = -1, max_it_num = 5;
 
 static int    it_start, bins_prev, calls_per_box, it_num, bins, boxes;
+
 static double delx[GSL_V_MAX_DIM], grid_sum[GSL_V_BINS_MAX+1][GSL_V_MAX_DIM];
 static double bin_sum[GSL_V_BINS_MAX+1][GSL_V_MAX_DIM];
 static double y_bin[GSL_V_BINS_MAX+1][GSL_V_MAX_DIM];
@@ -83,12 +83,15 @@ inline void init_array(double array[GSL_V_BINS_MAX+1][GSL_V_MAX_DIM],
 		       int n1, int n2);
 
 
-int gsl_monte_vegas(const gsl_rng * r,
-		    gsl_monte_f_T fxn, double xl[], double xu[], int num_dim,
+int gsl_monte_vegas(gsl_monte_vegas_state *state,
+		    gsl_monte_f_T fxn, double xl[], double xu[], 
+		    int num_dim, int calls,
 		    double* tot_int, double* tot_sig, double* chi_sq_ptr)
 {
   int j;
   int status;
+
+  status = gsl_monte_vegas_validate(state, xl, xu, num_dim, calls);
 
   init_array(y_bin, GSL_V_BINS_MAX, num_dim);
   for (j = 0; j < num_dim; ++j)
@@ -104,7 +107,8 @@ int gsl_monte_vegas(const gsl_rng * r,
     vegas_open_log();
     prn_lim(xl, xu, num_dim);
   }
-  status = gsl_monte_vegas1(r, fxn, xl, xu, num_dim, tot_int, tot_sig, chi_sq_ptr);
+  status = gsl_monte_vegas1(state, fxn, xl, xu, num_dim, calls, 
+			    tot_int, tot_sig, chi_sq_ptr);
 
   if (verbose >= 0 ) {
     vegas_close_log();
@@ -113,8 +117,9 @@ int gsl_monte_vegas(const gsl_rng * r,
   return status;
 }
 
-int gsl_monte_vegas1(const gsl_rng * r,
-		     gsl_monte_f_T fxn, double xl[], double xu[], int num_dim,
+int gsl_monte_vegas1(gsl_monte_vegas_state *state,
+		     gsl_monte_f_T fxn, double xl[], double xu[], 
+		     int num_dim, int calls,
 		     double* tot_int, double* tot_sig, double* chi_sq_ptr)
 {
   int status;
@@ -124,12 +129,16 @@ int gsl_monte_vegas1(const gsl_rng * r,
   chi_sum = 0;
   it_num = 1;
 
-  status = gsl_monte_vegas2(r, fxn, xl, xu, num_dim, tot_int, tot_sig, chi_sq_ptr);
+  status = gsl_monte_vegas_validate(state, xl, xu, num_dim, calls);
+
+  status |= gsl_monte_vegas2(state, fxn, xl, xu, num_dim, calls,
+			     tot_int, tot_sig, chi_sq_ptr);
   return status;
 }
 
-int gsl_monte_vegas2(const gsl_rng * r,
-		     gsl_monte_f_T fxn, double xl[], double xu[], int num_dim,
+int gsl_monte_vegas2(gsl_monte_vegas_state *state,
+		     gsl_monte_f_T fxn, double xl[], double xu[], 
+		     int num_dim, int calls,
 		     double* tot_int, double* tot_sig, double* chi_sq_ptr)
 {
 
@@ -161,6 +170,8 @@ int gsl_monte_vegas2(const gsl_rng * r,
 
   int    i, j, k;
   int status;
+
+  status = gsl_monte_vegas_validate(state, xl, xu, num_dim, calls);
 
   bins = GSL_V_BINS_MAX;
   boxes = 1;
@@ -206,12 +217,14 @@ int gsl_monte_vegas2(const gsl_rng * r,
     prn_head(num_dim, calls, it_num, max_it_num, acc, verbose, alpha, mode, 
 	     bins, boxes);
   }
-  status = gsl_monte_vegas3(r, fxn, xl, xu, num_dim, tot_int, tot_sig, chi_sq_ptr);
+  status = gsl_monte_vegas3(state, fxn, xl, xu, num_dim, calls, 
+			    tot_int, tot_sig, chi_sq_ptr);
   return status;
 }
 
-int gsl_monte_vegas3(const gsl_rng * r,
-		     gsl_monte_f_T fxn, double xl[], double xu[], int num_dim,
+int gsl_monte_vegas3(gsl_monte_vegas_state *state,
+		     gsl_monte_f_T fxn, double xl[], double xu[], 
+		     int num_dim, int calls,
 		     double* tot_int, double* tot_sig, double* chi_sq_ptr)
 {
 
@@ -222,6 +235,10 @@ int gsl_monte_vegas3(const gsl_rng * r,
 
   double cum_int, cum_sig;
   double  chi_sq = 0;
+
+  gsl_rng *r;
+  status = gsl_monte_vegas_validate(state, xl, xu, num_dim, calls);
+  r = state->ranf;
 
   it_start = it_num;
   cum_int = 1.;
@@ -412,4 +429,86 @@ inline void init_array(double array[GSL_V_BINS_MAX+1][GSL_V_MAX_DIM],
     for (i = 0; i <= n1; ++i)
       array[i][j] = 0;
   }
+}
+
+gsl_monte_vegas_state* gsl_monte_vegas_alloc(void)
+{
+  gsl_monte_vegas_state *s =  
+    (gsl_monte_vegas_state *) malloc(sizeof (gsl_monte_vegas_state));
+  
+  if ( s == (gsl_monte_vegas_state*) NULL) {
+    GSL_ERROR_RETURN ("failed to allocate space for miser state struct",
+                        GSL_ENOMEM, 0);
+  }
+
+  return s;
+}
+
+int gsl_monte_vegas_validate(gsl_monte_vegas_state* state,
+			     double xl[], double xu[], 
+			     unsigned long num_dim, unsigned long calls)
+{
+  unsigned long i;
+  char warning[100];
+
+  if (state == (gsl_monte_vegas_state*) NULL) {
+    GSL_ERROR("Allocate state structure before calling!", GSL_EINVAL);
+
+  }
+
+  if (state->check_done) 
+    return GSL_SUCCESS;
+    
+  if (num_dim <= 0) {
+    sprintf(warning, "number of dimensions must be greater than zero, not %lu",
+	    num_dim);
+    GSL_ERROR(warning, GSL_EINVAL);
+  }
+  
+  for (i=0; i < num_dim; i++ ) {
+    if (xu[i] - xl[i] <= 0 ) {
+      sprintf(warning, "xu[%lu] must be greater than xu[%lu]", i, i);
+    GSL_ERROR(warning, GSL_EINVAL);
+    }
+    if (xu[i] - xl[i] > DBL_MAX) {
+      sprintf(warning, 
+	      "Range of integration is too large for cord %lu, please rescale", 
+	      i);
+      GSL_ERROR(warning, GSL_EINVAL);
+    }
+  }
+
+  if ( calls <= 0 ) {
+    sprintf(warning, "number of calls must be greater than zero, not %lu",
+	    calls);
+    GSL_ERROR(warning, GSL_EINVAL);
+  }
+  
+  state->check_done = 1;
+
+  return GSL_SUCCESS;
+}  
+
+/* Set some default values and whatever */
+int gsl_monte_vegas_init(gsl_monte_vegas_state* state)
+{
+
+  if (state == (gsl_monte_vegas_state*) NULL) {
+    GSL_ERROR("Allocate state structure before calling!", GSL_EINVAL);
+  }
+
+  state->calls = 1000;
+  state->acc = -1;
+  state->alpha = 1.5;
+  state->verbose = -1;
+  state->max_it_num = 5;
+  state->ranf = gsl_rng_alloc(gsl_rng_env_setup());
+
+  state->init_done = 1;
+  return GSL_SUCCESS;
+}
+
+void gsl_monte_vegas_free (gsl_monte_vegas_state* s)
+{
+  free (s);
 }

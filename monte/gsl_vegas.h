@@ -15,7 +15,6 @@
 extern double acc, alpha;
 extern int    mode, verbose;
 extern int    max_it_num;
-extern int    calls;
 
 typedef struct {
   /* control variables */
@@ -25,6 +24,7 @@ typedef struct {
   int verbose;
   int max_it_num;
   int calls;
+  int stage;
 
   /* state variables */
   int it_start;
@@ -33,6 +33,9 @@ typedef struct {
   int it_num;
   int bins;
   int boxes;
+  int init_done;
+  int check_done;
+  gsl_rng* ranf;
 
   /* scratch variables preserved between calls to vegas1/2/3  */
   double jac;
@@ -47,21 +50,33 @@ typedef struct {
   double bin_sum[GSL_V_BINS_MAX+1][GSL_V_MAX_DIM];
   double y_bin[GSL_V_BINS_MAX+1][GSL_V_MAX_DIM];
 
-} gsl_monte_workspace;
+} gsl_monte_vegas_state;
 
 
-int gsl_monte_vegas(const gsl_rng * r,
-		    gsl_monte_f_T fxn, double xl[], double xu[], int num_dim,
+int gsl_monte_vegas(gsl_monte_vegas_state *state,
+		    gsl_monte_f_T fxn, double xl[], double xu[], 
+		    int num_dim, int calls,
 		    double* tot_int, double* tot_sig, double* chi_sq_ptr);
-int gsl_monte_vegas1(const gsl_rng * r,
-		     gsl_monte_f_T fxn, double xl[], double xu[], int num_dim,
+int gsl_monte_vegas1(gsl_monte_vegas_state *state,
+		     gsl_monte_f_T fxn, double xl[], double xu[], 
+		     int num_dim, int calls,
 		     double* tot_int, double* tot_sig, double* chi_sq_ptr);
-int gsl_monte_vegas2(const gsl_rng * r,
-		     gsl_monte_f_T fxn, double xl[], double xu[], int num_dim,
+int gsl_monte_vegas2(gsl_monte_vegas_state *state,
+		     gsl_monte_f_T fxn, double xl[], double xu[], 
+		     int num_dim, int calls,
 		     double* tot_int, double* tot_sig, double* chi_sq_ptr);
-int gsl_monte_vegas3(const gsl_rng * r,
-		     gsl_monte_f_T fxn, double xl[], double xu[], int num_dim,
+int gsl_monte_vegas3(gsl_monte_vegas_state *state,
+		     gsl_monte_f_T fxn, double xl[], double xu[], 
+		     int num_dim, int calls,
 		     double* tot_int, double* tot_sig, double* chi_sq_ptr);
+
+
+gsl_monte_vegas_state* gsl_monte_vegas_alloc(void);
+int gsl_monte_vegas_validate(gsl_monte_vegas_state* state,
+			     double xl[], double xu[], 
+			     unsigned long num_dim, unsigned long calls);
+int gsl_monte_vegas_init(gsl_monte_vegas_state* state);
+void gsl_monte_vegas_free (gsl_monte_vegas_state* s);
 
 #endif /* !GSL_VEGAS_H */
 
