@@ -30,7 +30,7 @@
 
    The theoretical value of x_{10001} is 1244127297.
 
-   The period of this generator is 2^32. */
+   The period of this generator is 2^30. */
 
 static inline unsigned long int transputer_get (void *vstate);
 static double transputer_get_double (void *vstate);
