@@ -1,3 +1,7 @@
+Mon Aug 16 21:10:23 1999  Brian Gough  <bjg@network-theory.co.uk>
+
+	* added the minimization directory, min/
+
 Fri Aug  6 11:15:58 1999  Brian Gough  <bjg@network-theory.co.uk>
 
 	* configure.in: removed need to configure for rand() and RAND_MAX

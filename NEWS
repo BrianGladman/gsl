@@ -1,5 +1,9 @@
 * Will be new in gsl-0.4.2 (or 0.5; number is not yet decided):
 
+** We have added the second generation RANLUX generators RANLXS and RANLXD
+
+** Minimization algorithms are available (one-dimensional)
+
 ** Documentation now works out of the box with the standard Texinfo.
 
 ** Full reimplementation of the QUADPACK integration library

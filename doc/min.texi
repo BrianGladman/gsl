@@ -6,21 +6,22 @@
 
 This chapter describes functions for finding minima of arbitrary
 one-dimensional functions.  The library provides low level components
-for a variety of iterative solvers and convergence tests. These can be
+for a variety of iterative minimizers and convergence tests. These can be
 combined by the user to achieve the desired solution, with full access
 to the intermediate steps of the algorithms. Each class of methods uses
-the same framework, so that you can switch between solvers at runtime
-without needing to recompile your program. Each instance of a solver
-keeps track of its own state, allowing the solvers to be used in
+the same framework, so that you can switch between minimizers at runtime
+without needing to recompile your program. Each instance of a minimizer
+keeps track of its own state, allowing the minimizers to be used in
 multi-threaded programs.
 
 The header file @file{gsl_min.h} contains prototypes for the
-minimization functions and related declarations.
+minimization functions and related declarations. To use the minimization
+algorithms to find the maximum of a function simply invert its sign.
 
 @menu
 * Minimization Overview::       
 * Minimization Caveats::        
-* Initializing the Minimization Solver::  
+* Initializing the Minimizer::  
 * Providing the function to minimize::  
 * Minimization Iteration::      
 * Minimization Stopping Parameters::  
@@ -33,9 +34,9 @@ minimization functions and related declarations.
 @section Minimization Overview
 @cindex minimization, overview
 
-The mimimization algorithms is GSL begin with a bounded region known to
-contain a minimum. The region is described by an lower bound @math{a} and an
-upper bound @math{b}, with an estimate of the minimum @math{x}. 
+The minimization algorithms begin with a bounded region known to contain
+a minimum. The region is described by an lower bound @math{a} and an
+upper bound @math{b}, with an estimate of the minimum @math{x}.
 
 @iftex
 @sp 1
@@ -43,8 +44,8 @@ upper bound @math{b}, with an estimate of the minimum @math{x}.
 @end iftex
 
 @noindent
-The value of the function at @math{x} must be less than the
-value of the function at the ends of the interval,
+The value of the function at @math{x} must be less than the value of the
+function at the ends of the interval,
 
 @iftex
 @tex
@@ -60,25 +61,23 @@ f(a) > f(x) < f(b)
 @noindent
 This condition guarantees that a minimum is contained somewhere within
 the interval. On each iteration a new point @math{x'} is selected using
-one of the available algorithms.
-If the new point is a better estimate of the minimum, @math{f(x') < f(x)}, 
-then the current estimate of the minimum @math{x} is updated.  
-The new point also allows the size of the bounded interval to be
-reduced, by choosing the best set of points
-which satisfy the constraint @math{f(a) > f(x) < f(b)}.  
-The interval is reduced until it encloses the true minimum to a desired
+one of the available algorithms.  If the new point is a better estimate
+of the minimum, @math{f(x') < f(x)}, then the current estimate of the
+minimum @math{x} is updated.  The new point also allows the size of the
+bounded interval to be reduced, by choosing the most compact set of
+points which satisfies the constraint @math{f(a) > f(x) < f(b)}.  The
+interval is reduced until it encloses the true minimum to a desired
 tolerance. This provides a best estimate of the location of the minimum
 and a rigorous error estimate.
 
 In GSL different bracketing algorithms are available in a similar
-framework. The user provides a high-level driver for the algorithms,
-and the library provides the individual functions necessary for each
-of the steps.  There are three main phases of the iteration. The steps
-are,
+framework. The user provides a high-level driver for the algorithms, and
+the library provides the individual functions necessary for each of the
+steps.  There are three main phases of the iteration. The steps are,
 
 @itemize @bullet
 @item
-initialize solver state, @var{s}, for algorithm @var{T}
+initialize minimizer state, @var{s}, for algorithm @var{T}
 
 @item
 update @var{s} using the iteration @var{T}
@@ -88,7 +87,7 @@ test @var{s} for convergence, and repeat iteration if necessary
 @end itemize
 
 @noindent
-The state for the solvers is held in a @code{gsl_min_fsolver}
+The state for the minimizers is held in a @code{gsl_min_fminimizer}
 struct. The updating procedure uses only function evaluations (not
 derivatives).
 
@@ -103,10 +102,10 @@ which of the minima this will be. @emph{In most cases, no error will be
 reported if you try to find a minimum in an area where there is more
 than one.}
 
-For minima of well-behaved functions, where @math{f'(x) = 0}, it can be 
-difficult to determine the location of the minimum to the full extent of
-the available numerical precision. The behavior of the function in the 
-region of the minimum @math{x^*} can be approximated by a Taylor expansion,
+With all minimization algorithms it can be difficult to determine the
+location of the minimum to full numerical precision. The behavior of the
+function in the region of the minimum @math{x^*} can be approximated by
+a Taylor expansion,
 
 @iftex
 @tex
@@ -122,52 +121,55 @@ y = f(x^*) + (1/2) f''(x^*) (x - x^*)^2
 @end ifinfo
 
 @noindent
-The second term of this expansion can be lost at finite precision, when
-added to the first term. This magnifies the error in locating @math{x^*}, 
-making it proportional to @math{\sqrt \epsilon}, where @math{\epsilon} 
-is the relative accuracy of the floating point numbers. 
-For functions with higher order minima, such as @math{x^4}, the magnification
-of the error is correspondingly worse. 
+and the second term of this expansion can be lost when added to the
+first term at finite precision. This magnifies the error in locating
+@math{x^*}, making it proportional to @math{\sqrt \epsilon} (where
+@math{\epsilon} is the relative accuracy of the floating point numbers).
+For functions with higher order minima, such as @math{x^4}, the
+magnification of the error is correspondingly worse. The best that can
+be achieved is to converge to the limit of numerical accuracy in the
+function values, rather than the location of the minimum itself.
 
-@node Initializing the Minimization Solver
-@section Initializing the Minimization Solver
+@node Initializing the Minimizer
+@section Initializing the Minimizer
 
-@deftypefun {gsl_min_fsolver *} gsl_min_fsolver_alloc (const gsl_min_fsolver_type * @var{T}, gsl_function * @var{f}, double @var{minimum}, gsl_interval @var{x})
+@deftypefun {gsl_min_fminimizer *} gsl_min_fminimizer_alloc (const gsl_min_fminimizer_type * @var{T}, gsl_function * @var{f}, double @var{minimum}, gsl_interval @var{x})
 This function returns a pointer to a a newly allocated instance of a
-solver of type @var{T} for the function @var{f}, with an initial bracket
-on the minimum of @var{x} containing a guess for the location of the
-minimum @var{minimum}. For example, the following code creates an
-instance of a bisection solver,
+minimizer of type @var{T} for the function @var{f}, with an
+initial bracket on the minimum of @var{x} containing a guess for the
+location of the minimum @var{minimum}. For example, the following code
+creates an instance of a golden section minimizer,
 
 @example
-gsl_min_fsolver * s = 
-    gsl_min_fsolver_alloc (gsl_min_fsolver_bisection);
+gsl_min_fminimizer * s = 
+    gsl_min_fminimizer_alloc (gsl_min_fminimizer_goldensection);
 @end example
 
-If there is insufficient memory to create the solver then the function
+If there is insufficient memory to create the minimizer then the function
 returns a null pointer and the error handler is invoked with an error
 code of @code{GSL_ENOMEM}.
 @end deftypefun
 
-@deftypefun int gsl_min_fsolver_set (gsl_min_fsolver * @var{s}, gsl_function * @var{f}, double @var{minimum}, gsl_interval @var{x})
-This function reinitializes an existing solver @var{s} to use the
-function @var{f} and the initial search interval @var{x}, with a guess
-for the location of the minimum @var{minimum}.
+@deftypefun int gsl_min_fminimizer_set (gsl_min_fminimizer * @var{s}, gsl_function * @var{f}, double @var{minimum}, gsl_interval @var{x})
+This function reinitializes an existing minimizer @var{s} to use
+the function @var{f} and the initial search interval @var{x}, with a
+guess for the location of the minimum @var{minimum}.
 @end deftypefun
 
-@deftypefun void gsl_min_fsolver_free (gsl_min_fsolver * @var{s})
-This function frees all the memory associated with the solver @var{s}.
+@deftypefun void gsl_min_fminimizer_free (gsl_min_fminimizer * @var{s})
+This function frees all the memory associated with the minimizer
+@var{s}.
 @end deftypefun
 
-@deftypefun {const char *} gsl_min_fsolver_name (const gsl_min_fsolver * @var{s})
-This function returns a pointer to the name of the solver. For example,
+@deftypefun {const char *} gsl_min_fminimizer_name (const gsl_min_fminimizer * @var{s})
+This function returns a pointer to the name of the minimizer. For example,
 
 @example
-printf("s is a '%s' solver\n", gsl_min_fsolver_name (s)) ;
+printf("s is a '%s' minimizer\n", gsl_min_fminimizer_name (s)) ;
 @end example
 
 @noindent
-would print something like @code{s is a 'brent' solver}
+would print something like @code{s is a 'brent' minimizer}
 @end deftypefun
 
 @node Providing the function to minimize
@@ -175,21 +177,21 @@ would print something like @code{s is a 'brent' solver}
 @cindex minimization, providing a function to minimize
 
 You must provide a continuous function of one variable for the
-minimization solvers to operate on. In order to allow for general
-parameters the functions are defined by @code{gsl_function} data type
+minimizers to operate on. In order to allow for general parameters the
+functions are defined by a @code{gsl_function} data type
 (@pxref{Providing the function to solve}).
 
 @node Minimization Iteration
 @section Minimization Iteration
 
 The following functions drive the iteration of each algorithm. Each
-function performs one iteration to update the state of any solver of the
-corresponding type. The same functions work for all solvers so that
+function performs one iteration to update the state of any minimizer of the
+corresponding type. The same functions work for all minimizers so that
 different methods can be substituted at runtime without modifications to
 the code.
 
-@deftypefun int gsl_min_fsolver_iterate (gsl_min_fsolver * @var{s})
-This function performs a single iteration of the solver @var{s}. If the
+@deftypefun int gsl_min_fminimizer_iterate (gsl_min_fminimizer * @var{s})
+This function performs a single iteration of the minimizer @var{s}. If the
 iteration encounters an unexpected problem then an error code will be
 returned,
 
@@ -199,26 +201,27 @@ the iteration encountered a singular point where the function evaluated
 to @code{Inf} or @code{NaN}.
 
 @item GSL_FAILURE
-
+the algorithm could not improve the current best approximation or
+bounding interval.
 @end table
 @end deftypefun
 
-The solver maintains a current best estimate of the minimum at all
+The minimizer maintains a current best estimate of the minimum at all
 times, and the current interval bounding the minimum. This information
 can be accessed with the following auxiliary functions,
 
-@deftypefun double gsl_min_fsolver_mimimum (const gsl_min_fsolver * @var{s})
-This function returns the current estimate of the minimum for the solver
+@deftypefun double gsl_min_fminimizer_minimum (const gsl_min_fminimizer * @var{s})
+This function returns the current estimate of the minimum for the minimizer
 @var{s}.
 @end deftypefun
 
-@deftypefun gsl_interval gsl_min_fsolver_interval (const gsl_min_fsolver * @var{s})
-This function returns the current bounding interval for the solver @var{s}.
+@deftypefun gsl_interval gsl_min_fminimizer_interval (const gsl_min_fminimizer * @var{s})
+This function returns the current bounding interval for the minimizer @var{s}.
 @end deftypefun
 
 @node Minimization Stopping Parameters
 @section Minimization Stopping Parameters
-@cindex root finding, stopping parameters
+@cindex minimization, stopping parameters
 
 A minimization procedure should stop when one of the following
 conditions is true:
@@ -236,8 +239,8 @@ An error has occurred.
 
 @noindent
 In the minimization framework of GSL the handling of these conditions is
-under user control.  The functions below allow the user to test the
-precision of the current result in several standard ways.
+under user control.  The function below allows the user to test the
+precision of the current result.
 
 @deftypefun int gsl_min_test_interval (gsl_interval @var{x}, double @var{epsrel}, double @var{epsabs})
 This function tests for the convergence of the interval @var{x} 
@@ -271,60 +274,55 @@ to the origin.
 @node Minimization Algorithms
 @section Minimization Algorithms
 
-The root bracketing algorithms described in this section require an
-initial interval which is guaranteed to contain a root -- if @math{a}
-and @math{b} are the endpoints of the interval then @math{f(a)} must
-differ in sign from @math{f(b)}. This ensures that the function crosses
-zero at least once in the interval. If a valid initial interval is used
-then these algorithm cannot fail, provided the function is well-behaved.
+The minimization algorithms described in this section require an initial
+interval which is guaranteed to contain a minimum --- if @math{a} and
+@math{b} are the endpoints of the interval and @math{x} is an estimate
+of the minimum then @math{f(a) > f(x) < f(b)}. This ensures that the
+function has at least one minimum somewhere in the interval. If a valid
+initial interval is used then these algorithm cannot fail, provided the
+function is well-behaved.
 
-Note that a bracketing algorithm cannot find roots of even degree, since
-these do not cross the @math{x}-axis.
+@deffn {Minimizer} gsl_min_fminimizer_goldensection
 
-@deffn {Solver} gsl_min_fsolver_bisection
+@cindex golden section algorithm for finding minima
+@cindex minimum finding, golden section algorithm
 
-@cindex bisection algorithm for finding roots
-@cindex root finding, bisection algorithm
+The @dfn{golden section algorithm} is the simplest method of bracketing
+the minimum of a function.  It is the slowest algorithm provided by the
+library, with linear convergence.
 
-The @dfn{bisection algorithm} is the simplest method of bracketing the
-roots of a function.   It is the slowest algorithm provided by
-the library, with linear convergence.
-
-On each iteration, the interval is bisected and the value of the
-function at the midpoint is calculated. The sign of this value is used
-to determine which half of the interval does not contain a root. That
-half is discarded to give a new, smaller interval containing the
-root. This procedure can be continued indefinitely until the interval is
-sufficiently small.
-
-At any time the current estimate of the root is taken as the midpoint of
-the interval.
+On each iteration, the algorithm first compares the subintervals from
+the endpoints to the current minimum. The larger subinterval is divided
+in a golden section (using the famous ratio @math{(3-\sqrt 5)/2}) and
+the value of the function at this new point is calculated. The new value
+is used with the constraint @math{f(a') > f(x') < f(b')} to a select new
+interval containing the minimum, by discarding the least useful
+point. This procedure can be continued indefinitely until the interval
+is sufficiently small.  Choosing the golden section as the bisection
+ratio can be shown to provide the fastest convergence for this type of
+algorithm.
 
 @end deffn
 
 @comment ============================================================
 
-@deffn {Solver} gsl_min_fsolver_brent
-@cindex brent's method for finding roots
-@cindex root finding, brent's method
+@deffn {Minimizer} gsl_min_fminimizer_brent
+@cindex brent's method for finding minima
+@cindex minimum finding, brent's method
 
-The @dfn{Brent-Dekker method} (referred to here as @dfn{Brent's method})
-combines an interpolation strategy with the bisection algorithm. This
-produces a fast algorithm which is still robust.
+The @dfn{Brent minimization algorithm} combines a parabolic
+interpolation with the golden section algorithm. This produces a fast
+algorithm which is still robust.
 
-On each iteration Brent's method approximates the function using an
-interpolating curve. On the first iteration this is a linear
-interpolation of the two endpoints. For subsequent iterations the
-algorithm uses an inverse quadratic fit to the last three points, for
-higher accuracy. The intercept of the interpolating curve with the
-@math{x}-axis is taken as a guess for the root.  If it lies within the
+The outline of the algorithm can be summarized as follows: on each
+iteration Brent's method approximates the function using an
+interpolating parabola through three existing points. The minimum of the
+parabola is taken as a guess for the minimum.  If it lies within the
 bounds of the current interval then the interpolating point is accepted,
 and used to generate a smaller interval. If the interpolating point is
-not accepted then the algorithm falls back to an ordinary bisection
-step.
-
-The best estimate of the root is taken from the most recent
-interpolation or bisection.
+not accepted then the algorithm falls back to an ordinary golden section
+step. The full details of Brent's method include some additional checks
+to improve convergence.
 @end deffn
 
 @comment ============================================================
@@ -332,129 +330,64 @@ interpolation or bisection.
 @node Minimization Examples
 @section Minimization Examples
 
-For any root finding algorithm we need to prepare the function to be
-solved.  For this example we will use the general quadratic equation
-described earlier. We first need a header file (@file{demof.h}) to
-define the function parameters,
-
-@example
-struct quadratic_params
-  @{
-    double a, b, c;
-  @};
-
-double quadratic (double x, void *params);
-double quadratic_deriv (double x, void *params);
-void quadratic_fdf (double x, void *params, double *y, double *dy);
-@end example
-
-@noindent
-We place the function definitions in a separate file (@file{demof.c}),
-
-@example
-double
-quadratic (double x, void *params)
-@{
-  struct quadratic_params *p = (struct quadratic_params *) params;
-
-  double a = p->a;
-  double b = p->b;
-  double c = p->c;
-
-  return (a * x + b) * x + c;
-@}
-
-double
-quadratic_deriv (double x, void *params)
-@{
-  struct quadratic_params *p = (struct quadratic_params *) params;
-
-  double a = p->a;
-  double b = p->b;
-  double c = p->c;
-
-  return 2.0 * a * x + b;
-@}
-
-void
-quadratic_fdf (double x, void *params, double *y, double *dy)
-@{
-  struct quadratic_params *p = (struct quadratic_params *) params;
-
-  double a = p->a;
-  double b = p->b;
-  double c = p->c;
-
-  *y = (a * x + b) * x + c;
-  *dy = 2.0 * a * x + b;
-@}
-@end example
-
-@noindent
-The first program uses the function solver @code{gsl_min_fsolver_brent}
-for Brent's method and the general quadratic defined above to solve the
-following equation,
-
-@tex
-\beforedisplay
-$$
-x^2 - 5 = 0
-$$
-\afterdisplay
-@end tex
-@ifinfo
-@example
-x^2 - 5 = 0
-@end example
-@end ifinfo
-
-@noindent
-with solution @math{x = \sqrt 5 = 2.236068...}
+The following program uses the Brent algorithm to find the minimum of
+the function @math{f(x) = \cos(x) + 1}, which occurs at @math{x = \pi}.
+The starting interval is @math{(0,6)}, with an initial guess for the
+minimum of @math{2}.
 
 @example
 #include <stdio.h>
 #include <gsl_errno.h>
 #include <gsl_math.h>
-#include <gsl_roots.h>
+#include <gsl_min.h>
 
-#include "demof.h"
-#include "demof.c"
+double fn1 (double x, void * params);
+
+double fn1 (double x, void * params)
+@{
+  return cos(x) + 1.0 ;
+@}
 
 int
 main ()
 @{
   int status;
   int iterations = 0, max_iterations = 100;
-  gsl_min_fsolver *s;
-  double r = 0, r_expected = sqrt (5.0);
-  gsl_interval x = @{0.0, 5.0@};
+  gsl_min_fminimizer *s;
+  double m = 2.0, m_expected = M_PI;
+  gsl_interval x =  @{0, 6.0@};
   gsl_function F;
-  struct quadratic_params params = @{1.0, 0.0, -5.0@};
 
-  F.function = &quadratic;
-  F.params = &params;
+  F.function = &fn1;
+  F.params = 0;
 
-  s = gsl_min_fsolver_alloc (gsl_min_fsolver_brent, &F, x);
+  s = gsl_min_fminimizer_alloc (gsl_min_fminimizer_brent, &F, m, x);
 
-  printf ("using %s method\n", gsl_min_fsolver_name (s));
+  printf ("using %s method\n", gsl_min_fminimizer_name (s));
 
   printf ("%5s [%9s, %9s] %9s %9s %10s %9s\n",
-          "iter", "lower", "upper", "root", "actual", "err", "err(est)");
+	  "iter", "lower", "upper", "min", "actual", "err", "err(est)");
+
+  printf ("%5d [%.7f, %.7f] %.7f %.7f %+.7f %.7f\n",
+          iterations, x.lower, x.upper,
+          m, m_expected, m - m_expected, x.upper - x.lower);
 
   do
     @{
       iterations++;
-      status = gsl_min_fsolver_iterate (s);
-      r = gsl_min_fsolver_root (s);
-      x = gsl_min_fsolver_interval (s);
-      status = gsl_min_test_interval (x, 0, 0.001);
+      status = gsl_min_fminimizer_iterate (s);
+
+      m = gsl_min_fminimizer_minimum (s);
+      x = gsl_min_fminimizer_interval (s);
+
+      status = gsl_min_test_interval (x, 0.001, 0.0);
 
       if (status == GSL_SUCCESS)
-        printf ("Converged:\n");
+	printf ("Converged:\n");
 
       printf ("%5d [%.7f, %.7f] %.7f %.7f %+.7f %.7f\n",
-              iterations, x.lower, x.upper,
-              r, r_expected, r - r_expected, x.upper - x.lower);
+	      iterations, x.lower, x.upper,
+	      m, m_expected, m - m_expected, x.upper - x.lower);
     @}
   while (status == GSL_CONTINUE && iterations < max_iterations);
 
@@ -462,32 +395,34 @@ main ()
 @end example
 
 @noindent
-Here are the results of the iterations,
+Here are the results of the minimization procedure.
 
 @example
 bash$ ./a.out 
-using brent method
- iter [    lower,     upper]      root    actual        err  err(est)
-    1 [1.0000000, 5.0000000] 1.0000000 2.2360680 -1.2360680 4.0000000
-    2 [1.0000000, 3.0000000] 3.0000000 2.2360680 +0.7639320 2.0000000
-    3 [2.0000000, 3.0000000] 2.0000000 2.2360680 -0.2360680 1.0000000
-    4 [2.2000000, 3.0000000] 2.2000000 2.2360680 -0.0360680 0.8000000
-    5 [2.2000000, 2.2366300] 2.2366300 2.2360680 +0.0005621 0.0366300
+    0 [0.0000000, 6.0000000] 2.0000000 3.1415927 -1.1415927 6.0000000
+    1 [2.0000000, 6.0000000] 3.2758640 3.1415927 +0.1342713 4.0000000
+    2 [2.0000000, 3.2831929] 3.2758640 3.1415927 +0.1342713 1.2831929
+    3 [2.8689068, 3.2831929] 3.2758640 3.1415927 +0.1342713 0.4142862
+    4 [2.8689068, 3.2831929] 3.2758640 3.1415927 +0.1342713 0.4142862
+    5 [2.8689068, 3.2758640] 3.1460585 3.1415927 +0.0044658 0.4069572
+    6 [3.1346075, 3.2758640] 3.1460585 3.1415927 +0.0044658 0.1412565
+    7 [3.1346075, 3.1874620] 3.1460585 3.1415927 +0.0044658 0.0528545
+    8 [3.1346075, 3.1460585] 3.1460585 3.1415927 +0.0044658 0.0114510
+    9 [3.1346075, 3.1460585] 3.1424060 3.1415927 +0.0008133 0.0114510
+   10 [3.1346075, 3.1424060] 3.1415885 3.1415927 -0.0000041 0.0077985
 Converged:
-    6 [2.2360634, 2.2366300] 2.2360634 2.2360680 -0.0000046 0.0005666
+   11 [3.1415885, 3.1424060] 3.1415927 3.1415927 -0.0000000 0.0008175
 @end example
-
 
 @node Minimization References and Further Reading
 @section Minimization References and Further Reading
 
-For information on the Brent-Dekker algorithm see the following two
-papers,
+Further information on Brent's algorithm is available in the following
+book,
 
 @itemize @asis
 @item
-
-@item
-
+Richard Brent, @cite{Algorithms for minimization without derivatives},
+Prentice-Hall (1973)
 @end itemize
 
