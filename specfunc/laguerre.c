@@ -1,9 +1,64 @@
 /* Author:  G. Jungman
  * RCS:     $Id$
  */
-#include "gsl_sf_laguerre.h"
 #include <gsl_errno.h>
+#include "gsl_sf_laguerre.h"
 
+
+/* polynomial based on confluent hypergeometric representation */
+static int laguerre_n_cp(int n, double a, double x, double * result)
+{
+  double * c = (double *)malloc((n+1) * sizeof(double));
+  if(c == 0) {
+    return GSL_ENOMEM;
+  }
+  else {
+    int i;
+    double ans;
+
+    c[0] = 1.;
+    for(i=n; i>=1; i--) { c[0] *= (i + a)/i; }
+
+    c[1] = -c[0] * n / (1.+a);
+
+    for(i=2; i<=n; i++) { c[i] = -(n+1.-i)/(i*(i+a)); }
+
+    ans = 1. + c[n] * x;
+    for(i=n-1; i>0; i--) {
+      ans = 1. + c[i] * x * ans;
+    }
+    ans += c[0] - 1.;
+
+    free(c);
+    *result ans;
+    return GSL_SUCCESS;
+  }
+}
+
+
+/*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
+
+int gsl_sf_laguerre_n_impl(int n, double a, double x, double * result)
+{
+  if(n < 0 || a <= -1. || x < 0.) {
+    return GSL_EDOM;
+  }
+  else if(n == 0) {
+    *result = 1.;
+    return GSL_SUCCESS;
+  }
+  else if(n == 1) {
+    *result = 1. + a - x;
+    return GSL_SUCCESS;
+  }
+  else {
+    int status = laguerre_n_cp(n, a, x, result);
+    return status;
+  }
+}
+
+
+/*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*-*-*/
 
 double gsl_sf_laguerre_1(double a, double x)
 {
@@ -13,7 +68,7 @@ double gsl_sf_laguerre_1(double a, double x)
 double gsl_sf_laguerre_2(double a, double x)
 {
   double c0 = 0.5 * (2.+a)*(1.+a);
-  double c1 = -2.-a;
+  double c1 = -(2.+a);
   double c2 = -0.5/(2.+a);
   return c0 + c1*x*(1. + c2*x);
 }
@@ -46,44 +101,4 @@ double gsl_sf_laguerre_5(double a, double x)
   double c4 = -1./(2.*(4.+a));
   double c5 = -1./(5.*(5.+a));
   return c0 + c1*x*(1. + c2*x*(1. + c3*x*(1. + c4*x*(1. + c5*x))));
-}
-
-double gsl_sf_laguerre_cp(int n, double a, double x)
-{
-  if(n < 0) {
-    char buff[100];
-    sprintf(buff,"laguerre_cp: n=%d  < 0 not allowed", n);
-    GSL_ERROR_RETURN(buff, GSL_EDOM, 1.);
-  }
-  else if(n == 0) {
-    return 1.;
-  }
-  else if(n == 1) {
-    return 1. + a - x;
-  }
-  else {
-    int i;
-    double result;
-    double * c = (double *)malloc((n+1) * sizeof(double));
-    if(c == 0) {
-      GSL_ERROR_RETURN("gsl_sf_laguerre_cp: out of memory", GSL_ENOMEM, 1.);
-    }
-    else {
-      c[0] = 1.;
-      for(i=n; i>=1; i--) { c[0] *= (i + a)/i; }
-  
-      c[1] = -c[0] * n / (1.+a);
-  
-      for(i=2; i<=n; i++) { c[i] = -(n+1.-i)/(i*(i+a)); }
-
-      result = 1. + c[n] * x;
-      for(i=n-1; i>0; i--) {
-        result = 1. + c[i] * x * result;
-      }
-      result += c[0] - 1.;
-
-      free(c);
-      return result;
-    }
-  }
 }

@@ -7,27 +7,29 @@
 #include "gsl_sf_psi.h"
 
 
+/*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
+
 /* simple implementation for integer argument */
-double gsl_sf_psi_i(int n)
+int gsl_sf_psi_int_impl(int n, double * result)
 {
-  double result;
-  
   if(n == 1) {
-    result = -M_EULER;
+    *result = -M_EULER;
+    return GSL_SUCCESS;
   }
   else if(n <= 0) {
-    /* domain error */
-    result = 0.;
+    *result = 0.;
+    return GSL_EDOM;
   }
   else {
     int k;
-    result = -M_EULER;
+    double ans;
+    ans = -M_EULER;
     for(k=1; k<n; k++) {
-      result += 1./k;
+      ans += 1./k;
     }
+    *result = ans;
+    return GSL_SUCCESS;
   }
-  
-  return result;
 }
 
 
@@ -102,9 +104,8 @@ static struct gsl_sf_ChebSeries apsi_cs = {
 }
 
 
-double gsl_sf_psi(double x)
+int gsl_sf_psi_impl(double x, double * result)
 {
-  double result;
   double y = fabs(x);
   double xbig  = 1./GSL_SQRT_MACH_EPS;       /* XBIG  = 1.0/SQRT(R1MACH(3)) */
   double dxrel = 10. * GSL_SQRT_MACH_EPS;    /* DXREL = SQRT (R1MACH(4))    */
@@ -113,42 +114,50 @@ double gsl_sf_psi(double x)
     double aux = 0.;
     if(y < xbig) aux = gsl_sf_cheb_eval(8./(y*y)-1., &apsi_cs);
     if(x < 0.) {
-      result = log(y) - 0.5/x + aux - M_PI * cot(M_PI*x);
+      *result = log(y) - 0.5/x + aux - M_PI * cot(M_PI*x);
     }
-    else { /* x > 0 */
-      result = log(x) - 0.5/x + aux;
+    else {
+      *result = log(y) - 0.5/x + aux;  /* note: x > 0 by construction */
     }
+    return GSL_SUCCESS;
   }
   else { /* y < 2.0 */
     if(x == 0.) {
-      /* x == 0 */
-      result = 0.;
+      *result = 0.; /* FIXME: should be Inf */
+      return GSL_EDOM;
     }
     else {
+      double ans;
       int n = x;
       if(x < 0.) --n;
       y = x - n;
       --n;
-      result = gsl_sf_cheb_eval(2.*y-1., psi_cs);
-      if(n == 0) return result;
+      ans = gsl_sf_cheb_eval(2.*y-1., psi_cs);
+      if(n == 0) {
+	*result = ans;
+	return GSL_SUCCESS;
+      }
 
       n = -n;
 
       if(x < 0. && x+n-2 == 0.) {
       	/* x is a negative integer */
-	result = 0.;
+	*result = 0.; /* FIXME: should be Inf */
+	return GSL_EDOM;
       }
       else {
+	for(i=0; i<n; i++) {
+          ans -= 1./(x + i);
+      	}
+	*result = ans;
 	if(x < -0.5 && fabs((x-AINT(x-0.5))/x) < dxrel) {
-      	/* loss of precision: x near a negative integer */
+      	  /* loss of precision: x near a negative integer */
+	  return GSL_ELOSS;
       	}
-
-      	for(i=0; i<n; i++) {
-      	  result -= 1./(x + i);
-      	}
+	else {
+	  return GSL_SUCCESS;
+	}
       }
     }
-  }    
-  
-  return result;
+  }
 }

@@ -4,17 +4,13 @@
 #include <math.h>
 #include <gsl_math.h>
 #include <gsl_errno.h>
+#include "gsl_sf_pow_int.h"
 #include "gsl_sf_fermi_dirac.h"
 
 #ifndef Sqr
 #define Sqr(x) ((x)*(x))
 #endif
 
-
-double gsl_sf_fermi_dirac(double beta, double zeta_inverse, double E)
-{
-  return 1./(zeta_inverse*exp(beta*E)+1.);
-}
 
 /* implement trapezoid rule for func with 2 args
    integrates with respect to the first arg
@@ -60,58 +56,6 @@ static double F1_c_integrand(double y, double A)
   return numer / denom;
 }
 
-
-double gsl_sf_fermi_integral_1(double A)
-{
-  if(A <= 0.) {
-    char buff[100];
-    sprintf(buff, "fermi_integral_1: bad arg  %18.12g\n", A);
-    GSL_ERROR_RETURN(buff, GSL_EDOM, 6600.);
-  }
-  else if(A < 0.01) {
-    /* asymptotic */
-    double LA = -log(A);
-    double rLA = sqrt(LA);
-    double term1 = 2./3. * rLA * LA;
-    double term2 = Sqr(M_PI)/(12. * rLA);
-    double term3 = 7.*Sqr(M_PI)*Sqr(M_PI)/(960. * (rLA * LA*LA));
-    return term1 + term2 + term3;
-  }
-  else if(A < 0.99) {
-    /* integrate */
-    double LA = -log(A);
-    double i1 = trap_rule_2(F1_a_integrand, 0., LA, LA, 100);
-    double i2 = 
-        trap_rule_2(F1_b_integrand, LA,    LA+2.,  LA, 100)
-      + trap_rule_2(F1_b_integrand, LA+2., LA+4.,  LA, 50)
-      + trap_rule_2(F1_b_integrand, LA+4., LA+6.,  LA, 50)
-      + trap_rule_2(F1_b_integrand, LA+6., LA+10., LA, 50);
-    double term1 = 2./3. * LA * sqrt(LA);
-    return term1 + i1 + i2;
-  }
-  else if(A < 1.01) {
-    /* Taylor series near A=1 */
-    return 0.678148 * (1 - 0.791 * (A-1.));
-  }
-  else if(A < 20.) {
-    /* integrate */
-    double integral =
-      trap_rule_2(F1_c_integrand, 0., 4., A, 50)
-      + trap_rule_2(F1_c_integrand, 4., 6., A, 50)
-      + trap_rule_2(F1_c_integrand, 6., 10., A, 50)
-      + trap_rule_2(F1_c_integrand, 10., 20., A, 50);
-    return integral / A;
-  }
-  else {
-    /* asymptotic */
-    double coeff = 0.5 * sqrt(M_PI);
-    double sum = 0.;
-    int i;
-    for(i=1; i<4; i++) { sum += pow(1./(double)i, 1.5) / pow(-A, i); }
-    return coeff / A * (1. + sum);
-  }
-}
-
 /* F2 first integrand */
 static double F2_a_integrand(double t, double abs_lnA)
 {
@@ -139,13 +83,67 @@ static double F2_c_integrand(double y, double A)
   return numer/denom;
 }
 
-double gsl_sf_fermi_integral_2(double A)
+
+/*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
+
+int gsl_sf_fermi_integral_1_impl(double A, double * result)
 {
   if(A <= 0.) {
-    char buff[100];
-    sprintf(buff, "fermi_integral_2: bad arg  %18.12g\n", A);
-    GSL_ERROR_RETURN(buff, GSL_EDOM, 6666.);
-    return 6666.;
+    return GSL_EDOM;
+  }
+  else if(A < 0.01) {
+    /* asymptotic */
+    double LA = -log(A);
+    double rLA = sqrt(LA);
+    double term1 = 2./3. * rLA * LA;
+    double term2 = Sqr(M_PI)/(12. * rLA);
+    double term3 = 7.*Sqr(M_PI)*Sqr(M_PI)/(960. * (rLA * LA*LA));
+    *result = term1 + term2 + term3;
+    return GSL_SUCCESS;
+  }
+  else if(A < 0.99) {
+    /* integrate */
+    double LA = -log(A);
+    double i1 = trap_rule_2(F1_a_integrand, 0., LA, LA, 100);
+    double i2 = 
+        trap_rule_2(F1_b_integrand, LA,    LA+2.,  LA, 100)
+      + trap_rule_2(F1_b_integrand, LA+2., LA+4.,  LA, 50)
+      + trap_rule_2(F1_b_integrand, LA+4., LA+6.,  LA, 50)
+      + trap_rule_2(F1_b_integrand, LA+6., LA+10., LA, 50);
+    double term1 = 2./3. * LA * sqrt(LA);
+    *result = term1 + i1 + i2;
+    return GSL_SUCCESS;
+  }
+  else if(A < 1.01) {
+    /* Taylor series near A=1 */
+    *result = 0.678148 * (1 - 0.791 * (A-1.));
+    return GSL_SUCCESS;
+  }
+  else if(A < 20.) {
+    /* integrate */
+    double integral =
+      trap_rule_2(F1_c_integrand, 0., 4., A, 50)
+      + trap_rule_2(F1_c_integrand, 4., 6., A, 50)
+      + trap_rule_2(F1_c_integrand, 6., 10., A, 50)
+      + trap_rule_2(F1_c_integrand, 10., 20., A, 50);
+    *result = integral / A;
+    return GSL_SUCCESS;
+  }
+  else {
+    /* asymptotic */
+    double coeff = 0.5 * sqrt(M_PI);
+    double sum = 0.;
+    int i;
+    for(i=1; i<4; i++) { sum += 1./(i*sqrt(i)) / gsl_sf_pow_int(-A, i); }
+    *result = coeff / A * (1. + sum);
+    return GSL_SUCCESS;
+  }
+}
+
+int gsl_sf_fermi_integral_2_impl(double A, double * result)
+{
+  if(A <= 0.) {
+    return GSL_EDOM;
   }
   else if(A < 0.01) {
     /* asymptotic */
@@ -154,7 +152,8 @@ double gsl_sf_fermi_integral_2(double A)
     double term1 = rLA;
     double term2 = -Sqr(M_PI)/24. / (rLA * LA);
     double term3 = -7. * Sqr(M_PI)*Sqr(M_PI) / 384. / (rLA * LA*LA*LA);
-    return term1 + term2 + term3;
+    *result = term1 + term2 + term3;
+    return GSL_SUCCESS;
   }
   else if(A < 0.99) {
     /* integrate */
@@ -169,11 +168,13 @@ double gsl_sf_fermi_integral_2(double A)
     double term1 = sqrt(LA) * i1;
     double term2 = sqrt(1.+LA) * i2;
 
-    return term1 + term2;
+    *result = term1 + term2;
+    return GSL_SUCCESS;
   }
   else if(A < 1.01) {
     /* Taylor series near A=1 */
-    return 0.536077 * (1 - 0.466 * (A-1.));
+    *result = 0.536077 * (1 - 0.466 * (A-1.));
+    return GSL_SUCCESS;
   }
   else if(A < 20.) {
     /* integrate */
@@ -182,18 +183,63 @@ double gsl_sf_fermi_integral_2(double A)
       + trap_rule_2(F2_c_integrand, 4., 6., A, 100)
       + trap_rule_2(F2_c_integrand, 6., 10., A, 50)
       + trap_rule_2(F2_c_integrand, 10., 20., A, 50);
-    return integral / A;
+    *result = integral / A;
+    return GSL_SUCCESS;
   }
   else {
     /* asymptotic */
     double coeff = 0.5 * sqrt(M_PI);
     double sum = 0.;
     int i;
-    for(i=1; i<4; i++) { sum += sqrt(1./(double)i) / pow(-A, i); }
-    return coeff / A * (1. + sum);
+    for(i=1; i<4; i++) { sum += sqrt(1./(double)i) / gsl_sf_pow_int(-A, i); }
+    *result = coeff / A * (1. + sum);
+    return GSL_SUCCESS;
   }
 }
 
+
+/*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
+
+int gsl_sf_fermi_integral_1_e(double A, double * result)
+{
+  int status = gsl_sf_fermi_integral_1_impl(A, result);
+  
+  if(status != GSL_SUCCESS){
+  }
+}
+
+int gsl_sf_fermi_integral_2_e(double A, double * result)
+{
+  int status = gsl_sf_fermi_integral_2_impl(A, result);
+  
+  if(status != GSL_SUCCESS){
+  }
+}
+
+
+/*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*-*-*/
+
+double gsl_sf_fermi_integral_1(double A)
+{
+  double y;
+  int status = gsl_sf_fermi_integral_1_impl(A, &y);
+  
+  if(status != GSL_SUCCESS){
+  }
+  
+  return y;
+}
+
+double gsl_sf_fermi_integral_2(double A)
+{
+  double y;
+  int status = gsl_sf_fermi_integral_2_impl(A, &y);
+  
+  if(status != GSL_SUCCESS){
+  }
+  
+  return y;
+}
 
 double gsl_sf_fermi_zeta_inverse(double dbar, double g, double prec)
 {
@@ -233,4 +279,9 @@ double gsl_sf_fermi_zeta_inverse(double dbar, double g, double prec)
       zeta_inverse_1 = new_zeta_inverse;
     }
   }
+}
+
+double gsl_sf_fermi_dirac(double beta, double zeta_inverse, double E)
+{
+  return 1./(zeta_inverse*exp(beta*E)+1.);
 }

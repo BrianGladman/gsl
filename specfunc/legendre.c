@@ -8,122 +8,115 @@
 #include "gsl_sf_pow_int.h"
 #include "gsl_sf_legendre.h"
 
-double gsl_sf_legendre(int l, int m, double x)
+
+/*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
+
+/* l >= m >= 0; |x| <= 1; l >= 0 */
+int gsl_sf_legendre_Plm_impl(int l, int m, double x, double * result, double * harvest)
 {
   int i;
-  double dif, sum, exp_check;
-  
-  /* Starting value for recursion, P_m^m(x) */
-  double pmm = 1.0;
-
-  /* Strip sign of m. */
-  int am = m > 0 ? m : -m;
-
-  /* Check arguments. */
-  if(m < 0){
-    char buff[100];
-    sprintf(buff, "gsl_sf_legendre: negative m= %d  will be sign-stripped", m);
-    GSL_ERROR(buff, GSL_EDOM);
-  }
-  if(am > l){
-    char buff[100];
-    sprintf(buff, "gsl_sf_legendre: bad m argument for legendre: m= %d  l= %d",m,l);
-    GSL_ERROR_RETURN(buff, GSL_EDOM, 0.);
-  }
-  if(fabs(x) > 1.){
-    char buff[100];
-    sprintf(buff, "gsl_sf_legendre: bad x argument for legendre: x= %g", x);
-    GSL_ERROR_RETURN(buff, GSL_EDOM, 0.);
-  }
+  double pmm;  /* Starting value for recursion, P_m^m(x) */
   
   /* If l is large and m is large, then we have to worry
    * about overflow. Calculate an approximate exponent which
    * measures the normalization of this thing.
    */
-  dif = l-am;
-  sum = l+am;
-  exp_check = 0.5 * log(2.*l+1.) 
-    + 0.5 * dif * (log(dif)-1.)
-      - 0.5 * sum * (log(sum)-1.);
-
-  /* Bail out if if looks bad.
-   */  
+  double dif = l-am;
+  double sum = l+am;
+  double exp_check = 0.5 * log(2.*l+1.) 
+                     + 0.5 * dif * (log(dif)-1.)
+                     - 0.5 * sum * (log(sum)-1.);
+  
+  /* check args */
+  if(m < 0 || m > l || x < 0. || l < 0) {
+    return GSL_EDOM;
+  }
+  
+  /* Bail out if it looks like overflow. */  
   if(exp_check < GSL_LOG_DBL_MIN + 10.){
-    char buff[100];
-    sprintf(buff, "gsl_sf_legendre: apparent overflow condition: l= %d  m= %d",l,m);
-    GSL_ERROR_RETURN(buff, GSL_EDOM, 0.);
+    return GSL_EOVRFLW;
   }
 
-  /* If m > 0, then calculate P_m^m from the analytic result:
-   * 
-   *          P_m^m(x) = (-1)^m (2m-1)!! (1-x^2)^(m/2)
+  /* Calculate P_m^m from the analytic result:
+   *          P_0^0(x) = 1
+   *          P_m^m(x) = (-1)^m (2m-1)!! (1-x^2)^(m/2) , m > 0
    */
+  pmm = 1.;
   if(m > 0){
-    double somx2 = sqrt((1.-x)*(1.+x));
+    double circ = sqrt((1.-x)*(1.+x));
     double fact = 1.;
-
     for(i=1; i<=m; i++){
-      pmm *= -fact * somx2;
+      pmm  *= -fact * circ;
       fact += 2.;
     }
   }
 
+  if(harvest != 0) harvest[0] = pmm;
+  
   if(l == m){
-    /* If we are already there, then we are done. */
-    return pmm;
+    *result = pmm;
+    return GSL_SUCCESS;
   }
   else{
-    
-    /* Otherwise calculate P_{m+1}^m. */
-    double pmmp1 = x * (2*m + 1) * pmm;
+    double pmmp1 = x * (2*m + 1) * pmm;    /* P_{m+1}^m. */
 
+    if(harvest != 0) harvest[1] = pmmp1;
+    
     if(l == (m+1)){
-      /* If we are just at the penultimate step, then we are done. */
-      return pmmp1;
+      *result = pmmp1;  
+      return GSL_SUCCESS;
     }
     else {
       /* Otherwise compute P_l^m, l > m+1, recursively. */
-      double pll;
-      int ll;
+      double p_ell;
+      int ell;
 
-      for(ll=m+2; ll <= l; ll++){
-	pll = (x*(2*ll-1)*pmmp1 - (ll+m-1)*pmm) / (ll-m);
-	pmm = pmmp1;
-	pmmp1 = pll;
+      if(harvest != 0) {
+        for(ell=m+2; ell <= l; ell++){
+	  p_ell = (x*(2*ell-1)*pmmp1 - (ell+m-1)*pmm) / (ell-m);
+	  pmm = pmmp1;
+	  pmmp1 = p_ell;
+	  harvest[ell-m] = p_ell;
+        }
+      }
+      else {
+	for(ell=m+2; ell <= l; ell++){
+	  p_ell = (x*(2*ell-1)*pmmp1 - (ell+m-1)*pmm) / (ell-m);
+	  pmm = pmmp1;
+	  pmmp1 = p_ell;
+        }
       }
       
-      return pll;
+      *result = p_ell;
+      return GSL_SUCCESS;
     }
   }
 }
 
-
-double gsl_sf_Ylm_legendre(int l, int m, double x)
+/* l >= |m| >= 0; |x| <= 1; l >= 0 */
+int gsl_sf_legendre_sphPlm_impl(int l, int m, double x, double * result, double * harvest)
 {
   int i;
-  double sgn_m, sgn_factor;
+  double sgn_factor;
 
   /* Starting value for recursion, Y_m^m(x).
    * We include part of the normalization factor here.
    */
   double ymm = sqrt((2.*(double)l+1.) / (4.*M_PI));
 
-  /* Check arguments. */
-  if(abs(m) > l){
-    char buff[100];
-    sprintf(buff, "Ylm_legendre: bad m argument: m= %d  l= %d", m, l);
-    GSL_ERROR_RETURN(buff, GSL_EDOM, 0.);
+  /* check args */
+  if(abs(m) > l || l < 0 || x < 0.) {
+    return GSL_EDOM;
   }
-  if(fabs(x) > 1.){
-    char buff[100];
-    sprintf(buff, "Ylm_legendre: bad x argument: x= %g", x);
-    GSL_ERROR_RETURN(buff, GSL_EDOM, 0.);
-  }
-
+  
   /* strip sign of m */
-  sgn_m = (m < 0 ? -1. : 1.);
-  m *= sgn_m;
-  sgn_factor = (sgn_m < 0. ? pow_int(-1.,m) : 1.);
+  if(m < 0) {
+    m = -m;
+    sgn_factor = (GSL_IS_ODD(m) ? -1. : 1.);  /* (-1)^m */
+  }
+  else {
+    sgn_factor = 1.;
+  }
 
   /* If m > 0, then calculate Y_m^m from the analytic result.
    * If m==0, then we don't have to do anything; ymm is ready to go.
@@ -131,43 +124,125 @@ double gsl_sf_Ylm_legendre(int l, int m, double x)
    *          Y_m^m(x) = sqrt(1/(2m)!) (-1)^m (2m-1)!! (1-x^2)^(m/2)
    */
   if(m > 0){
-    double somx2 = sqrt((1.-x)*(1.+x));
+    double circ = sqrt((1.-x)*(1.+x));
     double fact1 = 1.;
     double fact2 = 1. / sqrt(2.);
-
     for(i=1; i<=m; i++){
-      ymm *= -fact1 * fact2 * somx2;
+      ymm   *= -fact1 * fact2 * circ;
       fact1 += 2.;
-      fact2 = 1. / sqrt(fact1 * (fact1 + 1.));
+      fact2  = 1. / sqrt(fact1 * (fact1 + 1.));
     }
   }
 
+  if(harvest != 0) harvest[0] = sgn_factor * ymm;
+
   if(l == m){
-    /* If we are already there, then we are done. */
-    return sgn_factor * ymm;
+    *result = sgn_factor * ymm;
+    return GSL_SUCCESS;
   }
   else{
-    /* Otherwise calculate Y_{m+1}^m. */
-    double ymmp1 = x * sqrt(2.*(double)m + 1) * ymm;
+    double ymmp1 = x * sqrt(2.*(double)m + 1) * ymm;  /* Y_{m+1}^m. */
+
+    if(harvest != 0) harvest[1] = sgn_factor * ymmp1;
 
     if(l == (m+1)){
-      /* If we are just at the penultimate step, then we are done. */
-      return sgn_factor * ymmp1;
+      *result = sgn_factor * ymmp1;
+      return GSL_SUCCESS;
     }
     else {
       /* Otherwise compute Y_l^m, l > m+1, recursively. */
-      double yll;
-      int ll;
+      double y_ell;
+      int ell;
       
-      for(ll=m+2; ll <= l; ll++){
-	double factor1 = sqrt((double)(ll-m) / (double)(ll+m));
-	double factor2 = factor1 * sqrt((double)(ll-m-1.) / (double)(ll+m-1.));
-	yll = (x*(2.*ll-1)*ymmp1*factor1 - (ll+m-1.)*ymm*factor2) / (ll-m);
-	ymm = ymmp1;
-	ymmp1 = yll;
+      if(harvest != 0) {
+        for(ell=m+2; ell <= l; ell++){
+	  double factor1 = sqrt((double)(ell-m) / (double)(ell+m));
+	  double factor2 = factor1 * sqrt((double)(ell-m-1.) / (double)(ell+m-1.));
+	  y_ell = (x*(2.*ell-1)*ymmp1*factor1 - (ell+m-1.)*ymm*factor2) / (ell-m);
+	  ymm   = ymmp1;
+	  ymmp1 = y_ell;
+	  harvest[ell-m] = sgn_factor * y_ell;
+        }
+      }
+      else {
+	for(ell=m+2; ell <= l; ell++){
+	  double factor1 = sqrt((double)(ell-m) / (double)(ell+m));
+	  double factor2 = factor1 * sqrt((double)(ell-m-1.) / (double)(ell+m-1.));
+	  y_ell = (x*(2.*ell-1)*ymmp1*factor1 - (ell+m-1.)*ymm*factor2) / (ell-m);
+	  ymm   = ymmp1;
+	  ymmp1 = y_ell;
+        }
       }
       
-      return sgn_factor * yll;
+      *result = sgn_factor * y_ell;
+      return GSL_SUCCESS;
     }
   }
+}
+
+
+/*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
+
+int gsl_sf_legendre_Plm_e(int l, int m, double x, double * result)
+{
+  int status = gsl_sf_legendre_Plm_impl(l, m, x, result, (double *)0);
+  
+  if(status != GSL_SUCCESS) {
+  }
+}
+
+int gsl_sf_legendre_sphPlm_e(int l, int m, double x, double * result)
+{
+  int status = gsl_sf_legendre_sphPlm_impl(l, m, x, result, (double *)0);
+  
+  if(status != GSL_SUCCESS) {
+  }
+}
+
+int gsl_sf_legendre_Plm_array_e(int lmax, int m, double x, double * result_array)
+{
+  double y;
+  int status = gsl_sf_legendre_Plm_impl(lmax, m, x, &y, result_array);
+  
+  if(status != GSL_SUCCESS) {
+  }
+}
+
+int gsl_sf_legendre_sphPlm_array_e(int lmax, int m, double x, double * result_array)
+{
+  double y;
+  int status = gsl_sf_legendre_sphPlm_impl(lmax, m, x, &y, result_array);
+  
+  if(status != GSL_SUCCESS) {
+  }
+}
+
+
+/*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*-*-*/
+
+int gsl_sf_legendre_array_size(int lmax, int m)
+{
+  return l-m+1;
+}
+
+double gsl_sf_legendre_Plm(int l, int m, double x)
+{
+  double y;
+  int status = gsl_sf_legendre_Plm_impl(l, m, x, &y, (double *)0);
+  
+  if(status != GSL_SUCCESS) {
+  }
+  
+  return y;
+}
+
+double gsl_sf_legendre_sphPlm_e(int l, int m, double x)
+{
+  double y;
+  int status = gsl_sf_legendre_sphPlm_impl(l, m, x, &y, (double *)0);
+  
+  if(status != GSL_SUCCESS) {
+  }
+  
+  return y;
 }

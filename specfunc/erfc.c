@@ -1,4 +1,4 @@
-/* Author:  J. Theiler
+/* Author:  J. Theiler (modifications by G. Jungman)
  * RCS:     $Id$
  */
 /**
@@ -9,8 +9,11 @@
 #include <math.h>
 #include "gsl_sf_erf.h"
 
+#define OneOverRootPi_    0.564189583547756287
+#define LogRootPi_        0.57236494292470008706
 
-static inline double erfc8_sum(double x)
+
+static double erfc8_sum(double x)
 {
     /* estimates erfc(x) valid for 8 < x < 100 */
     /* This is based on index 5725 in Hart et al */
@@ -32,7 +35,7 @@ static inline double erfc8_sum(double x)
         2.260528520767326969591866945,
         1.0
     };
-    double num=0,den=0;
+    double num=0.0, den=0.0;
     double e;
     int i;
 
@@ -63,7 +66,7 @@ static inline double log_erfc8(double x)
     return e;
 }
 
-static inline double erfc0(double x) {
+static double erfc0(double x) {
     /* ERFC 5663, from Hart et al */
     /* this gives >9 places of absolute accuracy for 0<x<10 */
     static double P[] = {
@@ -96,37 +99,40 @@ static inline double erfc0(double x) {
     return e;
 }
 
-static inline double erfcasympsum(double x)
+/* Abramowitz+Stegun, 7.2.14 */
+static double erfcasympsum(double x)
 {
-    double e,coef;
-    int i;
-    e=1;
-    coef = 1;
-    for (i=1; i<10; ++i) {
-        coef *= -(2*i-1)/(2*x*x);
-        e += coef;
-        if (fabs(coef) < 1.0e-15) break;
-        if (fabs(coef) > 1.0e10) break;
-    }
-    return e;
+  int i;
+  double e = 1.;
+  double coef = 1.;
+  for (i=1; i<5; ++i) {
+    /* coef *= -(2*i-1)/(2*x*x); ??? [GJ] */
+    coef *= -(2*i+1)/(i*(4*x*x*x*x));
+    e += coef;
+    /*
+    if (fabs(coef) < 1.0e-15) break;
+    if (fabs(coef) > 1.0e10) break;
+    
+    [GJ]: These tests are not useful. This function is only
+    used below. Took them out; they gum up the pipeline.
+    */
+  }
+  return e;
 }
 
+
+/* Abramowitz+Stegun, 7.2.14 */
 double gsl_sf_erfc_asymptotic(double x)
 {
-    /* valid as x->infty */
-    double e;
-    e = erfcasympsum(x);
-    e *= exp(-x*x)/x;
-    return 0.564189583547756287*e;
+  return OneOverRootPi_ * exp(-x*x)/x * erfcasympsum(x);
 }
 
+/* Abramowitz+Stegun, 7.2.14 */
 double gsl_sf_log_erfc_asymptotic(double x)
 {
-    double e;
-    e = erfcasympsum(x);
-    e = log(e) - x*x - log(x) - 0.57236494292470008706;
-    return e;
+  return log(erfcasympsum(x)/x) - x*x - LogRootPi_;
 }
+
 
 double gsl_sf_log_erfc(double x)
 {
@@ -139,7 +145,7 @@ double gsl_sf_log_erfc(double x)
 
 double gsl_sf_erfc(double x)
 {
-    double e;
+    double e; 
     if (x < 0) {
         if (x < -9) { e = 2.0 - erfc8(-x); }
         else        { e = 2.0 - erfc0(-x); }
@@ -151,21 +157,25 @@ double gsl_sf_erfc(double x)
 }
 
 
-
-static inline double erfseries(double x)
+/* Abramowitz+Stegun, 7.1.5 */
+static double erfseries(double x)
 {
     int k;
-    double coef,e;
-
-    coef = x;
-    e = coef;
-    for (k=1; k<50; ++k) {
+    double coef = x;
+    double e = coef;
+    for (k=1; k < 30 /* [GJ] 50 */; ++k) {
         coef *= -x*x/k;
-        e += coef/(2*k+1);
-        if (fabs(coef) < 1.0e-15) break; /* we are accurate enough */
-        if (fabs(coef) > 1.0e10) break; /* we are overflowing! */
+        e += coef/(2.*k+1.);
+	/*
+        if (fabs(coef) < 1.0e-15) break; we are accurate enough
+        if (fabs(coef) > 1.0e10) break;  we are overflowing!
+	
+	[GJ]: These tests are not useful. This function is only
+	used below and will always converge. Took them out;
+	they gum up the pipeline.
+	*/
     }
-    return 2*0.564189583547756287*e;
+    return 2. * OneOverRootPi_ * e;
 }
 
 double gsl_sf_erf(double x)
@@ -177,12 +187,14 @@ double gsl_sf_erf(double x)
 }
 
 
+/* Abramowitz+Stegun, 26.2.1 */
 double gsl_sf_erf_Z(double x)
 {
     const double oneover_sqrt_twopi = .39894228040143267794;
     return exp(-x*x/2.0)*oneover_sqrt_twopi;
 }
 
+/* Abramowitz+Stegun, 26.2.3 */
 double gsl_sf_erf_Q(double x)
 {
     /* Abramowitz+Stegun, 26.2.17 */
@@ -194,10 +206,9 @@ double gsl_sf_erf_Q(double x)
          -1.821255978,
           1.330274429
     };
-    double t,e;
-    
-    t = 1.0/(1.0+p*fabs(x));
-    e = gsl_sf_erf_Z(x)*t*(b[0] + t*(b[1] + t*(b[2] + t*(b[3] + t*b[4]))));
-    if (x < 0) e = 1.0-e;
+
+    double t = 1.0/(1.0+p*fabs(x));
+    double e = gsl_sf_erf_Z(x)*t*(b[0] + t*(b[1] + t*(b[2] + t*(b[3] + t*b[4]))));
+    if (x < 0) e = 1.0 - e;
     return e;
 }
