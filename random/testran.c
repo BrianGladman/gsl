@@ -58,7 +58,7 @@ main(int argc, char *argv[])
     
     int option_index = 0 ;
     
-    int c = getopt_long (argc, argv, "hn:v",
+    int c = getopt_long (argc, argv, "hn:s:v",
 			 long_options, &option_index) ;
     
     if (c == -1)   /* end of options */
@@ -95,6 +95,9 @@ main(int argc, char *argv[])
 	usage () ;
       }
   }
+
+  if (verbose)
+    printf("n=%d seed=%d\n", n, randseed) ;
 
   if (verbose) 
     {
