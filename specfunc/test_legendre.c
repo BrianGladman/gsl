@@ -28,7 +28,7 @@
 int test_legendre(void)
 {
   gsl_sf_result r;
-  double L[256];
+  double L[256], DL[256];
   int s = 0;
   int sa;
 
@@ -73,11 +73,50 @@ int test_legendre(void)
 
   sa = 0;
   gsl_sf_legendre_Pl_array(100, 0.5, L);
-  TEST_SF_VAL(sa, L[0], +0.0, 1.0, TEST_TOL1);
-  TEST_SF_VAL(sa, L[10], +0.0, -0.18822860717773437500, TEST_TOL1);
+  TEST_SF_VAL(sa, L[0],   +0.0,   1.0, TEST_TOL1);
+  TEST_SF_VAL(sa, L[10],  +0.0,  -0.18822860717773437500, TEST_TOL1);
   TEST_SF_VAL(sa, L[100], +0.0,  -0.06051802596186118687, TEST_TOL1);
-  gsl_test(sa, "  gsl_sf_legendre_Pl_array(100)");
+  gsl_test(sa, "gsl_sf_legendre_Pl_array(100, 0.5)");
   s += sa;
+
+  sa = 0;
+  gsl_sf_legendre_Pl_deriv_array(100, 0.5, L, DL);
+  TEST_SF_VAL(sa, DL[0],   +0.0,   0.0, TEST_TOL1);
+  TEST_SF_VAL(sa, DL[1],   +0.0,   1.0, TEST_TOL1);
+  TEST_SF_VAL(sa, DL[10],  +0.0,  -2.3171234130859375000, TEST_TOL1);
+  TEST_SF_VAL(sa, DL[100], +0.0,  -7.0331691653942815112, TEST_TOL1);
+  gsl_test(sa, "gsl_sf_legendre_Pl_deriv_array(100, 0.5)");
+  s += sa;
+  sa = 0;
+
+  gsl_sf_legendre_Pl_deriv_array(10, 1.0, L, DL);
+  TEST_SF_VAL(sa, DL[0],   +0.0,   0.0, TEST_TOL1);
+  TEST_SF_VAL(sa, DL[1],   +0.0,   1.0, TEST_TOL1);
+  TEST_SF_VAL(sa, DL[10],  +0.0,  55.0, TEST_TOL1);
+  gsl_test(sa, "gsl_sf_legendre_Pl_deriv_array(10, 1.0)");
+  s += sa;
+
+  gsl_sf_legendre_Pl_deriv_array(10, 1.0 - 1.0e-11, L, DL);
+  TEST_SF_VAL(sa, DL[0],   +0.0,   0.0, TEST_TOL1);
+  TEST_SF_VAL(sa, DL[1],   +0.0,   1.0, TEST_TOL1);
+  TEST_SF_VAL(sa, DL[10],  +0.0,  54.999999985150000001, TEST_TOL1);
+  gsl_test(sa, "gsl_sf_legendre_Pl_deriv_array(10, 1.0 - 1.0e-11)");
+  s += sa;
+
+  gsl_sf_legendre_Pl_deriv_array(10, -1.0, L, DL);
+  TEST_SF_VAL(sa, DL[0],   +0.0,   0.0, TEST_TOL1);
+  TEST_SF_VAL(sa, DL[1],   +0.0,   1.0, TEST_TOL1);
+  TEST_SF_VAL(sa, DL[10],  +0.0, -55.0, TEST_TOL1);
+  gsl_test(sa, "gsl_sf_legendre_Pl_deriv_array(10, -1.0)");
+  s += sa;
+
+  gsl_sf_legendre_Pl_deriv_array(10, -1.0 + 1.0e-11, L, DL);
+  TEST_SF_VAL(sa, DL[0],   +0.0,   0.0, TEST_TOL1);
+  TEST_SF_VAL(sa, DL[1],   +0.0,   1.0, TEST_TOL1);
+  TEST_SF_VAL(sa, DL[10],  +0.0, -54.999999985150000001, TEST_TOL1);
+  gsl_test(sa, "gsl_sf_legendre_Pl_deriv_array(10, -1.0 + 1.0e-11)");
+  s += sa;
+
 
   TEST_SF(s, gsl_sf_legendre_Plm_e, (10, 0, -0.5, &r), -0.18822860717773437500, TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_legendre_Plm_e, (10, 0, 1.0e-08, &r), -0.24609374999999864648, TEST_TOL0, GSL_SUCCESS);
@@ -99,11 +138,38 @@ int test_legendre(void)
 
   sa = 0;
   gsl_sf_legendre_Plm_array(100, 5, 0.5, L);
-  TEST_SF_VAL(sa, L[0], +0.0,  -460.3466286991656682, TEST_TOL1);
+  TEST_SF_VAL(sa, L[0],  +0.0, -460.3466286991656682, TEST_TOL1);
   TEST_SF_VAL(sa, L[10], +0.0,  38852.51334152290535, TEST_TOL1 );
   TEST_SF_VAL(sa, L[95], +0.0,  6.617107444248382171e+08, TEST_TOL1);
-  gsl_test(sa, "  gsl_sf_legendre_Plm_array(100, 5, 0.5)");
+  gsl_test(sa, "gsl_sf_legendre_Plm_array(100, 5, 0.5)");
   s += sa;
+
+  sa = 0;
+  gsl_sf_legendre_Plm_array(100, 5, 0.999, L);
+  TEST_SF_VAL(sa, L[0],  +0.0,  -0.00016883550990916552255, TEST_TOL1);
+  TEST_SF_VAL(sa, L[10], +0.0,  -30.651334850159821525, TEST_TOL1 );
+  TEST_SF_VAL(sa, L[95], +0.0,  -1.9831610803806212189e+09, TEST_TOL1);
+  gsl_test(sa, "gsl_sf_legendre_Plm_array(100, 5, 0.999)");
+  s += sa;
+
+  sa = 0;
+  gsl_sf_legendre_Plm_array(100, 5, -0.999, L);
+  TEST_SF_VAL(sa, L[0],  +0.0,  -0.00016883550990916552255, TEST_TOL1);
+  TEST_SF_VAL(sa, L[10], +0.0,  -30.651334850159821525, TEST_TOL1 );
+  TEST_SF_VAL(sa, L[95], +0.0,   1.9831610803806212189e+09, TEST_TOL1);
+  gsl_test(sa, "gsl_sf_legendre_Plm_array(100, 5, -0.999)");
+  s += sa;
+
+  sa = 0;
+  gsl_sf_legendre_Plm_deriv_array(100, 5, 0.999, L, DL);
+  TEST_SF_VAL(sa, DL[0],  +0.0,  0.42187762481054616565, TEST_TOL1);
+  TEST_SF_VAL(sa, DL[1],  +0.0,  4.6341560284340909936, TEST_TOL1 );
+  TEST_SF_VAL(sa, DL[2],  +0.0,  27.759505566959219127, TEST_TOL1 );
+  TEST_SF_VAL(sa, DL[10], +0.0,  76051.795860179545484, TEST_TOL1 );
+  TEST_SF_VAL(sa, DL[95], +0.0,  3.0344503083851936814e+12, TEST_TOL1);
+  gsl_test(sa, "gsl_sf_legendre_Plm_deriv_array(100, 5, 0.999)");
+  s += sa;
+
 
   TEST_SF(s, gsl_sf_legendre_sphPlm_e, (10, 0, -0.5, &r), -0.24332702369300133776, TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_legendre_sphPlm_e, (10, 0, 0.5, &r), -0.24332702369300133776, TEST_TOL0, GSL_SUCCESS);
@@ -124,10 +190,10 @@ int test_legendre(void)
 
   sa = 0;
   gsl_sf_legendre_sphPlm_array(100, 5, 0.5, L);
-  TEST_SF_VAL(sa, L[0], +0.0, -0.22609703187800460722, TEST_TOL3);
-  TEST_SF_VAL(sa, L[10], +0.0, 0.07452710323813558940, TEST_TOL3);
-  TEST_SF_VAL(sa, L[95], +0.0, 0.25865355990880161717, TEST_TOL3);
-  gsl_test(sa, "  gsl_sf_legendre_sphPlm_array(100, 5, 0.5)");
+  TEST_SF_VAL(sa, L[0],  +0.0, -0.22609703187800460722, TEST_TOL3);
+  TEST_SF_VAL(sa, L[10], +0.0,  0.07452710323813558940, TEST_TOL3);
+  TEST_SF_VAL(sa, L[95], +0.0,  0.25865355990880161717, TEST_TOL3);
+  gsl_test(sa, "gsl_sf_legendre_sphPlm_array(100, 5, 0.5)");
   s += sa;
 
   TEST_SF(s, gsl_sf_conicalP_half_e, (0.0, -0.5, &r),   0.8573827581049917129, TEST_TOL0, GSL_SUCCESS);
