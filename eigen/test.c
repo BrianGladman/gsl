@@ -251,6 +251,7 @@ test_eigen_symm(const char * desc, const gsl_matrix * m)
   gsl_matrix_free(A);
   gsl_matrix_free(evec);
   gsl_vector_free(eval);
+  gsl_vector_free(eval2);
 }
 
 
@@ -293,6 +294,7 @@ test_eigen_herm(const char * desc, const gsl_matrix_complex * m)
   gsl_matrix_complex_free(A);
   gsl_matrix_complex_free(evec);
   gsl_vector_free(eval);
+  gsl_vector_free(eval2);
 }
 
 

@@ -119,7 +119,7 @@ gsl_eigen_symm (gsl_matrix * A, gsl_vector * eval,
 	gsl_vector sd_vec = gsl_vector_view (sd, N - 1);
 	gsl_vector tau = gsl_vector_view (sd, N - 1);
 	gsl_linalg_symmtd_decomp (A, &tau);
-        gsl_linalg_symmtd_unpack_dsd (A, &d_vec, &sd_vec);
+        gsl_linalg_symmtd_unpack_T (A, &d_vec, &sd_vec);
       }
       
       /* Make an initial pass through the tridiagonal decomposition

@@ -119,7 +119,7 @@ gsl_eigen_herm (gsl_matrix_complex * A, gsl_vector * eval,
 	gsl_vector sd_vec = gsl_vector_view (sd, N - 1);
 	gsl_vector_complex tau_vec = gsl_vector_complex_view (w->tau, N-1);
 	gsl_linalg_hermtd_decomp (A, &tau_vec);
-	gsl_linalg_hermtd_unpack_dsd (A, &d_vec, &sd_vec);
+	gsl_linalg_hermtd_unpack_T (A, &d_vec, &sd_vec);
       }
 
       /* Make an initial pass through the tridiagonal decomposition
