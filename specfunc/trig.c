@@ -15,8 +15,8 @@ int gsl_sf_complex_sin_impl(const double zr, const double zi, double * szr, doub
 {
   if(fabs(zi) < GSL_LOG_DBL_MAX) {
     double ex = exp(zi);
-    double sh = 0.5*(ex-1./ex);
-    double ch = 0.5*(ex+1./ex);
+    double sh = 0.5*(ex-1.0/ex);
+    double ch = 0.5*(ex+1.0/ex);
     *szr = sin(zr)*ch;
     *szi = cos(zr)*sh;
     return GSL_SUCCESS;
@@ -45,15 +45,15 @@ int gsl_sf_complex_logsin_impl(const double zr, const double zi, double * lszr, 
       return GSL_EDOM;
     }
   }
-  return gsl_sf_angle_restrict_symm_impl(lszi, GSL_SQRT_MACH_EPS);
+  return gsl_sf_angle_restrict_symm_impl(lszi);
 }
 
 int gsl_sf_complex_cos_impl(const double zr, const double zi, double * czr, double * czi)
 {
   if(fabs(zi) < GSL_LOG_DBL_MAX) {
     double ex = exp(zi);
-    double sh = 0.5*(ex-1./ex);
-    double ch = 0.5*(ex+1./ex);
+    double sh = 0.5*(ex-1.0/ex);
+    double ch = 0.5*(ex+1.0/ex);
     *czr =  cos(zr)*ch;
     *czi = -sin(zr)*sh;
     return GSL_SUCCESS;
@@ -68,25 +68,25 @@ inline int gsl_sf_sincos_impl(const double theta, double * s, double * c)
 {
   double tan_half = tan(0.5 * theta);
   double den = 1. + tan_half*tan_half;
-  double cos_theta = (tan_half*tan_half - 1.) / den;
-  double sin_theta = 2. * tan_half / den;
+  double cos_theta = (1.0 - tan_half*tan_half) / den;
+  double sin_theta = 2.0 * tan_half / den;
 }
 */
 
 int gsl_sf_polar_to_rect_impl(const double r, const double theta, double * x, double * y)
 {
   double t   = theta;
-  int status = gsl_sf_angle_restrict_symm_impl(&t, GSL_SQRT_MACH_EPS);
+  int status = gsl_sf_angle_restrict_symm_impl(&t);
 
-  if(fabs(fabs(theta) - M_PI) < 10.0*GSL_MACH_EPS) {
+  if(fabs(fabs(t) - M_PI) < 10.0*GSL_MACH_EPS) {
     *x = -r;
     *y = 0.0;
   }
   else {
     double tan_half = tan(0.5 * theta);
     double den = 1.0 + tan_half*tan_half;
-    double cos_theta = -(tan_half*tan_half - 1.0) / den;
-    double sin_theta =  2.0 * tan_half / den;
+    double cos_theta = (1.0 - tan_half*tan_half) / den;
+    double sin_theta = 2.0 * tan_half / den;
     *x = r * cos_theta;
     *y = r * sin_theta;
   }
@@ -107,17 +107,16 @@ int gsl_sf_rect_to_polar_impl(const double x, const double y, double * r, double
   }
 }
 
-int gsl_sf_angle_restrict_symm_impl(double * theta, const double precision)
-{   
-  const double P1 = 4.0 * 7.85398125648498535156e-1;
-  const double P2 = 4.0 * 3.77489470793079817668e-8;
-  const double P3 = 4.0 * 2.69515142907905952645e-15;
-  const double TwoPi = 2.0*(P1 + P2 + P3);
+int gsl_sf_angle_restrict_symm_impl(double * theta)
+{
+  const double P1 = 4 * 7.8539812564849853515625e-1;
+  const double P2 = 4 * 3.7748947079307981766760e-8;
+  const double P3 = 4 * 2.6951514290790594840552e-15;
+  const double TwoPi = 2*(P1 + P2 + P3);
   const double t = *theta;
-  const double y = 2.0*floor(t/TwoPi);
+  const double y = 2*floor(t/TwoPi);
   double r = ((t - y*P1) - y*P2) - y*P3;
   if(r >  M_PI) r -= TwoPi;
-  if(r < -M_PI) r += TwoPi;
   *theta = r;
   if(t > 1.0/GSL_SQRT_MACH_EPS)
     return GSL_ELOSS;
@@ -125,14 +124,14 @@ int gsl_sf_angle_restrict_symm_impl(double * theta, const double precision)
     return GSL_SUCCESS;
 }
 
-int gsl_sf_angle_restrict_pos_impl(double * theta, const double precision)
+int gsl_sf_angle_restrict_pos_impl(double * theta)
 {
-  const double P1 = 4.0 * 7.85398125648498535156e-1;
-  const double P2 = 4.0 * 3.77489470793079817668e-8;
-  const double P3 = 4.0 * 2.69515142907905952645e-15;
-  const double TwoPi = 2.0*(P1 + P2 + P3);
+  const double P1 = 4 * 7.85398125648498535156e-1;
+  const double P2 = 4 * 3.77489470793079817668e-8;
+  const double P3 = 4 * 2.69515142907905952645e-15;
+  const double TwoPi = 2*(P1 + P2 + P3);
   const double t = *theta;
-  const double y = 2.0*floor(t/TwoPi);
+  const double y = 2*floor(t/TwoPi);
   *theta = ((t - y*P1) - y*P2) - y*P3;
   if(t > 1.0/GSL_SQRT_MACH_EPS)
     return GSL_ELOSS;
@@ -188,18 +187,18 @@ int gsl_sf_rect_to_polar_e(const double x, const double y, double * r, double * 
   return status;
 }
 
-int gsl_sf_angle_restrict_symm_e(double * theta, const double precision)
+int gsl_sf_angle_restrict_symm_e(double * theta)
 {
-  int status = gsl_sf_angle_restrict_symm_impl(theta, precision);
+  int status = gsl_sf_angle_restrict_symm_impl(theta);
   if(status != GSL_SUCCESS) {
     GSL_ERROR("gsl_sf_angle_restrict_symm_e", status);
   }
   return status;
 }
 
-int gsl_sf_angle_restrict_pos_e(double * theta, const double precision)
+int gsl_sf_angle_restrict_pos_e(double * theta)
 {
-  int status = gsl_sf_angle_restrict_pos_impl(theta, precision);
+  int status = gsl_sf_angle_restrict_pos_impl(theta);
   if(status != GSL_SUCCESS) {
     GSL_ERROR("gsl_sf_angle_restrict_pos_e", status);
   }

@@ -354,6 +354,98 @@ int check_coupling(void)
   return status;
 }
 
+int check_dilog(void)
+{
+  int status = 0;
+  int s;
+
+  s = 0;
+  s += ( frac_diff( gsl_sf_dilog(-3.0), -1.9393754207667089531 ) > 1.0e-14 );
+  gsl_test(s, "  dilog(-3.0)");
+  status += s;
+
+  s = 0;
+  s += ( frac_diff( gsl_sf_dilog(-0.5), -0.4484142069236462024 ) > 1.0e-14 );
+  gsl_test(s, "  dilog(-0.5)");
+  status += s;
+
+  s = 0;
+  s += ( frac_diff( gsl_sf_dilog(-0.001), -0.0009997501110486510834 ) > 1.0e-14 );
+  gsl_test(s, "  dilog(-0.001");
+  status += s;
+  
+  s = 0;
+  s += ( frac_diff( gsl_sf_dilog(0.1),  0.1026177910993911 ) > 1.0e-14 );
+  gsl_test(s, "  dilog(0.1)");
+  status += s;
+  
+  s = 0;
+  s += ( frac_diff( gsl_sf_dilog(0.7),  0.8893776242860387386 ) > 1.0e-14 );
+  gsl_test(s, "  dilog(0.7)");
+  status += s;
+
+  s = 0;
+  s += ( frac_diff( gsl_sf_dilog(1.0),  1.6449340668482260 ) > 1.0e-14 );
+  gsl_test(s, "  dilog(1.0)");
+  status += s;
+  
+  s = 0;
+  s += ( frac_diff( gsl_sf_dilog(1.5),  2.3743952702724802007 ) > 1.0e-14 );
+  gsl_test(s, "  dilog(1.5)");
+  status += s;
+  
+  s = 0;
+  s += ( frac_diff( gsl_sf_dilog(2.0),  2.4674011002723397 ) > 1.0e-14 );
+  gsl_test(s, "  dilog(2.0)");
+  status += s;
+  
+  s = 0;
+  s += ( frac_diff( gsl_sf_dilog( 5.0),  1.7837191612666306277 ) > 1.0e-14 );
+  gsl_test(s, "  dilog(5.0)");
+  status += s;
+  
+  s = 0;
+  s += ( frac_diff( gsl_sf_dilog(12.59), 0.0010060918167266208634  ) > 1.0e-12 );
+  gsl_test(s, "  dilog(12.59)");
+  status += s;
+  
+  s = 0;
+  s += ( frac_diff( gsl_sf_dilog(20.0), -1.2479770861745251168 ) > 1.0e-14 );
+  gsl_test(s, "  dilog(20.0)");
+  status += s;
+
+  s = 0;
+  s += ( frac_diff( gsl_sf_dilogc(0.99999, 0.0), -0.20561329262779687646 ) > 1.0e-14 );
+  gsl_test(s, "  dilogc(0.99999, cos(Pi/2))");
+  printf("%22.16g\n", gsl_sf_dilogc(0.99999, 0.0));
+  status += s;
+
+  s = 0;
+  s += ( frac_diff( gsl_sf_dilogc(0.5, 0.0), -0.05897507442156586346 ) > 1.0e-12 );
+  gsl_test(s, "  dilogc(0.5, cos(Pi/2))");
+  printf("%22.16g\n", gsl_sf_dilogc(0.5, 0.0));
+  status += s;
+
+  s = 0;
+  s += ( frac_diff( gsl_sf_dilogc(0.01, 0.0), -0.000024999375027776215378 ) > 1.0e-12 );
+  gsl_test(s, "  dilogc(0.01, cos(Pi/2))");
+  printf("%22.16g\n", gsl_sf_dilogc(0.01, 0.0));
+  status += s;
+
+  s = 0;
+  s += ( frac_diff( gsl_sf_dilogc(10.0, 0.0), -3.0596887943287347304 ) > 1.0e-11 );
+  gsl_test(s, "  dilogc(10.0, cos(Pi/2))");
+  printf("%22.16g\n", gsl_sf_dilogc(10.0, 0.0));
+
+  s = 0;
+  s += ( frac_diff( gsl_sf_dilogc(100.0, 0.0), -11.015004738293824854 ) > 1.0e-13 );
+  gsl_test(s, "  dilogc(100.0, cos(Pi/2))");
+  printf("%22.16g\n", gsl_sf_dilogc(100.0, 0.0));
+  status += s;
+
+  return status;
+}
+
 int check_gamma(void)
 {
   double zr, zi, lg_r, lg_i;
@@ -637,61 +729,57 @@ int check_trig(void)
   status += s;
   
   theta = 5.0*M_PI + M_PI/2.0;
-  gsl_sf_angle_restrict_pos_impl(&theta, GSL_SQRT_MACH_EPS);
+  gsl_sf_angle_restrict_pos_impl(&theta);
   s = 0;
   s += ( frac_diff( theta, 3.0/2.0*M_PI ) > 1.e-14 );
   gsl_test(s, "  gsl_angle_restrict_pos_impl: theta =  11/2 Pi");
   status += s;
 
   theta = -5.0*M_PI - M_PI/2.0;
-  gsl_sf_angle_restrict_pos_impl(&theta, GSL_SQRT_MACH_EPS);
+  gsl_sf_angle_restrict_pos_impl(&theta);
   s = 0;
   s += ( frac_diff( theta, M_PI/2.0 ) > 1.e-14 );
   gsl_test(s, "  gsl_angle_restrict_pos_impl: theta = -11/2 Pi");
   status += s;
 
   theta = 5.0*M_PI + M_PI/2.0;
-  gsl_sf_angle_restrict_symm_impl(&theta, GSL_SQRT_MACH_EPS);
+  gsl_sf_angle_restrict_symm_impl(&theta);
   s = 0;
   s += ( frac_diff( theta, -M_PI/2.0 ) > 1.e-14 );
   gsl_test(s, "  gsl_angle_restrict_symm_impl: theta =  11/2 Pi");
   status += s;
 
   theta = -5.0*M_PI - M_PI/2.0;
-  gsl_sf_angle_restrict_symm_impl(&theta, GSL_SQRT_MACH_EPS);
+  gsl_sf_angle_restrict_symm_impl(&theta);
   s = 0;
   s += ( frac_diff( theta, M_PI/2.0 ) > 1.e-14 );
   gsl_test(s, "  gsl_angle_restrict_symm_impl: theta = -11/2 Pi");
   status += s;
 
   theta =  5.0*M_PI - M_PI/2.0;
-  gsl_sf_angle_restrict_symm_impl(&theta, GSL_SQRT_MACH_EPS);
+  gsl_sf_angle_restrict_symm_impl(&theta);
   s = 0;
   s += ( frac_diff( theta, M_PI/2.0 ) > 1.e-14 );
   gsl_test(s, "  gsl_angle_restrict_symm_impl: theta = -9/2 Pi");
   status += s;
 
   theta =  3.0/2.0*M_PI;
-  gsl_sf_angle_restrict_symm_impl(&theta, GSL_SQRT_MACH_EPS);
+  gsl_sf_angle_restrict_symm_impl(&theta);
   s = 0;
   s += ( frac_diff( theta, -M_PI/2.0 ) > 1.e-14 );
   gsl_test(s, "  gsl_angle_restrict_symm_impl: theta =  3/2 Pi");
   status += s;
 
   theta = -3.0/2.0*M_PI;
-  gsl_sf_angle_restrict_symm_impl(&theta, GSL_SQRT_MACH_EPS);
+  gsl_sf_angle_restrict_symm_impl(&theta);
   s = 0;
   s += ( frac_diff( theta, M_PI/2.0 ) > 1.e-14 );
   gsl_test(s, "  gsl_angle_restrict_symm_impl: theta = -3/2 Pi");
   status += s;
 
-  for(theta=1000.0; theta < 1.e20 ; theta *= 10.0) {
-    double nyak = 2.0*M_PI*theta + 0.5*M_PI;
-    gsl_sf_angle_restrict_symm_impl(&nyak, 1.0);
-    printf("%24.20g   %24.20g   %24.20g\n", theta, nyak, (nyak-0.5*M_PI)/(nyak+0.5*M_PI));
-  }
   return status;
 }
+
 
 int check_zeta(void)
 {
@@ -738,6 +826,8 @@ int main(int argc, char * argv[])
   gsl_test(check_clausen(),    "Clausen Integral");
   gsl_test(check_coulomb(),    "Coulomb Wave Functions");
   gsl_test(check_coupling(),   "Coupling Coefficients");
+
+  gsl_test(check_dilog(),      "Dilogarithm");
 
   gsl_test(check_gamma(),      "Gamma Functions");
   gsl_test(check_gegen(),      "Gegenbauer Polynomials");

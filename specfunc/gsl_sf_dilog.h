@@ -1,8 +1,8 @@
 /* Author:  G. Jungman
  * RCS:     $Id$
  */
-#ifndef GSL_DILOG_H_
-#define GSL_DILOG_H_
+#ifndef GSL_SF_DILOG_H_
+#define GSL_SF_DILOG_H_
 
 
 /* Real part of DiLogarithm(x), for real argument.
@@ -10,16 +10,20 @@
  *
  *   dilog(x) = - Re[ Integrate[ Log[1-s] / s, {s, 0, x}] ]
  */
-double gsl_sf_dilog(double);
+int     gsl_sf_dilog_impl(double x, double * result);
+int     gsl_sf_dilog_e(double x, double * result);
+double  gsl_sf_dilog(double);
 
 
 /* Real part of DiLogarithm(z), for complex argument.
  * We use the notation of Lewin again, so it is
- * expressed as a function of the modulus and cos(phase).
+ * expressed as a function of r=modulus(z) and c=cos(arg(z)).
  *
- *   dilog_c(r, cos) = -1/2 Re[ Integrate[ Log[1 - 2 cos s + s^2] / s , {s,0,r}] ] 
+ *   dilogc(r, c) = -1/2 Re[ Integrate[ Log[1 - 2 c s + s^2] / s , {s,0,r}] ] 
  */
-double gsl_sf_dilog_c(double r, double cos_theta);
+int     gsl_sf_dilogc_impl(double r, double c, double * result);
+int     gsl_sf_dilogc_e(double r, double c, double * result);
+double  gsl_sf_dilogc(double r, double c);
 
 
-#endif /* GSL_DILOG_H_ */
+#endif /* GSL_SF_DILOG_H_ */

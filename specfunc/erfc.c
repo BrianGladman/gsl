@@ -36,7 +36,6 @@ static double erfc8_sum(double x)
         1.0
     };
     double num=0.0, den=0.0;
-    double e;
     int i;
 
     num = P[5];

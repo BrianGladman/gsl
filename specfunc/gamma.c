@@ -576,7 +576,7 @@ static void lngamma_lanczos_complex(double zr, double zi, double * yr, double * 
   /* (z+0.5)*log(z+7.5) - (z+7.5) + LogRootTwoPi_ + log(Ag(z)) */
   *yr = (zr+0.5)*log1_r - zi*log1_i - (zr+7.5) + LogRootTwoPi_ + logAg_r;
   *yi = zi*log1_r + (zr+0.5)*log1_i - zi + logAg_i;
-  gsl_sf_angle_restrict_symm_impl(yi, 1.e-12);
+  gsl_sf_angle_restrict_symm_impl(yi);
 }
 
 
@@ -622,7 +622,7 @@ int gsl_sf_lngamma_complex_impl(double zr, double zi, double * lnr, double * arg
     if(status == GSL_SUCCESS) {
       *lnr = LogPi_ - lnsin_r - a;
       *arg =        - lnsin_i - b;
-      gsl_sf_angle_restrict_symm_impl(arg, 10.*GSL_MACH_EPS);
+      gsl_sf_angle_restrict_symm_impl(arg);
       return GSL_SUCCESS;
     }
     else {

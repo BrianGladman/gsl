@@ -162,6 +162,7 @@ int gsl_sf_debye_1_impl(const double x, double * result)
       xk -= x;
     }
     *result = 1.0/(x*DEBINF) - sum*expmx;
+    return GSL_SUCCESS;
   }
   else if(x < xlim) {
     *result = 1.0/(x*DEBINF) - exp(-x)*(1.0 + 1.0/x);

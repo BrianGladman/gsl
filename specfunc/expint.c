@@ -334,6 +334,7 @@ int gsl_sf_expint_Ei_impl(const double x, double * result)
   return status;
 }
 
+#if 0
 static double recurse_En(int n, double x, double E1)
 {
   int i;
@@ -344,7 +345,7 @@ static double recurse_En(int n, double x, double E1)
   }
   return En;
 }
-
+#endif
 
 /*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
 

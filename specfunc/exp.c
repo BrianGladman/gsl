@@ -37,6 +37,7 @@ int gsl_sf_expm1_impl(double x, double * result)
   }
   else if(x < cut) {
     *result = x * (1.0 + 0.5*x*(1.0 + x/3.0*(1.0 + 0.25*x*(1.0 + 0.2*x))));
+    return GSL_SUCCESS;
   } 
   else if(x < GSL_LOG_DBL_MAX) {
     *result = exp(x) - 1.0;

@@ -3,6 +3,7 @@
  */
 #include <gsl_math.h>
 #include <gsl_errno.h>
+#include "gsl_sf_pow_int.h"
 #include "gsl_sf_elljac.h"
 
 
@@ -13,11 +14,13 @@ gsl_sf_elljac_impl(double u, double m, double * sn, double *cn, double * dn)
     *sn = sin(u);
     *cn = cos(u);
     *dn = 1.0;
+    return GSL_SUCCESS;
   }
   else if(fabs(m - 1.0) < GSL_MACH_EPS) {
     *sn = tanh(u);
     *cn = 1.0/cosh(u);
     *dn = *cn;
+    return GSL_SUCCESS;
   }
   else {
     int status = GSL_SUCCESS;
@@ -39,6 +42,7 @@ gsl_sf_elljac_impl(double u, double m, double * sn, double *cn, double * dn)
       if(n >= N - 2) {
         status = GSL_EMAXITER;
 	c[N-1] = 0;
+	break;
       }
       ++n;
     }
@@ -54,7 +58,7 @@ gsl_sf_elljac_impl(double u, double m, double * sn, double *cn, double * dn)
     *sn = sin(phi[0]);
     *cn = cos(phi[0]);
     *dn = *cn / cos(phi[1] - phi[0]);
-    return GSL_SUCCESS;
+    return status;
   }
 }
 

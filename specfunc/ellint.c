@@ -12,12 +12,19 @@
 
 /*-*-*-*-*-*-*-*-*-*-*-* Private Section *-*-*-*-*-*-*-*-*-*-*-*/
 
-static double inline gslMAX3(double x, double y, double z)
+#ifdef HAVE_INLINE
+inline
+#endif
+static double gslMAX3(double x, double y, double z)
 {
   double xy = gslMAX(x, y);
   return gslMAX(xy, z);
 }
-static double inline gslMAX4(double x, double y, double z, double w)
+
+#ifdef HAVE_INLINE
+inline
+#endif
+static double gslMAX4(double x, double y, double z, double w)
 {
   double xy  = gslMAX(x,  y);
   double xyz = gslMAX(xy, z);
@@ -386,7 +393,7 @@ int gsl_sf_ellint_RJ_impl(double x, double y, double z, double p, double errtol,
       yndev = (mu - yn) / mu;
       zndev = (mu - zn) / mu;
       pndev = (mu - pn) / mu;
-      epslon = gslmax4(fabs(xndev), fabs(yndev), fabs(zndev), fabs(pndev));
+      epslon = gslMAX4(fabs(xndev), fabs(yndev), fabs(zndev), fabs(pndev));
       if(epslon < errtol) break;
       xnroot = sqrt(xn);
       ynroot = sqrt(yn);
