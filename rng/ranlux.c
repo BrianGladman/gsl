@@ -8,7 +8,10 @@
    x_n = d_n + b_n
 
    where d_n = x_{n-10} - x_{n-24} - c_{n-1}, b_n = 0 if d_n >= 0 and
-   b_n = 2^24 if d_n < 0, c_n = 0 if d_n >= 0 and c_n = 1 if d_n < 0
+   b_n = 2^24 if d_n < 0, c_n = 0 if d_n >= 0 and c_n = 1 if d_n < 0,
+   where after 24 samples a group of p integers are "skipped", to
+   reduce correlations. By default p = 199, but can be increased to
+   365.
 
    The period of the generator is around 10^171. 
 
@@ -175,7 +178,7 @@ ranlux389_set (void *vstate, unsigned long int s)
 static const gsl_rng_type ranlux_type =
 {"ranlux",			/* name */
  0x00ffffffUL,			/* RAND_MAX */
- 0,			        /* RAND_MIN */
+ 0,				/* RAND_MIN */
  sizeof (ranlux_state_t),
  &ranlux_set,
  &ranlux_get};
@@ -183,7 +186,7 @@ static const gsl_rng_type ranlux_type =
 static const gsl_rng_type ranlux389_type =
 {"ranlux389",			/* name */
  0x00ffffffUL,			/* RAND_MAX */
- 0,			        /* RAND_MIN */
+ 0,				/* RAND_MIN */
  sizeof (ranlux_state_t),
  &ranlux389_set,
  &ranlux_get};
