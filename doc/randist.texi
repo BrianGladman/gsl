@@ -104,7 +104,7 @@ Kinderman-Monahan ratio method.
 @end deftypefun
 
 @deftypefn Random double gsl_ran_ugaussian (const gsl_rng * @var{r})
-@deftypefnx Random double gsl_ran_ugaussian_pdf (double @var{x})
+@deftypefnx Function double gsl_ran_ugaussian_pdf (double @var{x})
 @deftypefnx Random double gsl_ran_ugaussian_ratio_method (const gsl_rng * @var{r})
 These functions compute results for the unit Gaussian distribution.  They
 are equivalent to the functions above with a standard deviation of one,
@@ -168,7 +168,7 @@ lower limit @var{a}, using the formula given above.
 @end tex
 
 @deftypefn Random double gsl_ran_ugaussian_tail (const gsl_rng * @var{r}, double @var{a})
-@deftypefnx Random double gsl_ran_ugaussian_tail_pdf (double @var{x}, double @var{a})
+@deftypefnx Function double gsl_ran_ugaussian_tail_pdf (double @var{x}, double @var{a})
 These functions compute results for the tail of a unit Gaussian
 distribution.  They are equivalent to the functions above with a standard
 deviation of one, @var{sigma} = 1.
@@ -1220,7 +1220,7 @@ generators below, such as the binomial distribution.  To use if for
 something like the Poisson Distribution, a modification would have to
 be made, since it only takes a finite set of @math{K} outcomes.
 
-@deftypefn Random {gsl_ran_discrete_t *} gsl_ran_discrete_preproc (size_t @var{K}, const double * @var{P})
+@deftypefun {gsl_ran_discrete_t *} gsl_ran_discrete_preproc (size_t @var{K}, const double * @var{P})
 @cindex Discrete random numbers
 @cindex Discrete random numbers, preprocessing
 This function returns a pointer to a structure that contains the lookup
@@ -1230,7 +1230,7 @@ positive, but they needn't add up to one (so you can think of them more
 generally as "weights") -- the preprocessor will normalize appropriately.
 This return value is used
 as an argument for the @code{gsl_ran_discrete} function below.
-@end deftypefn
+@end deftypefun
 
 @deftypefn Random {size_t} gsl_ran_discrete (const gsl_rng * @var{r}, const gsl_ran_discrete_t * @var{g})
 @cindex Discrete random numbers
@@ -1238,7 +1238,7 @@ After the preprocessor, above, has been called, you use this function to
 get the discrete random numbers.
 @end deftypefn
 
-@deftypefn Random {double} gsl_ran_discrete_pdf (size_t @var{k}, const gsl_ran_discrete_t * @var{g})
+@deftypefun {double} gsl_ran_discrete_pdf (size_t @var{k}, const gsl_ran_discrete_t * @var{g})
 @cindex Discrete random numbers
 Returns the probability @math{P[k]} of observing the variable @var{k}.
 Since @math{P[k]} is not stored as part of the lookup table, it must be
@@ -1246,12 +1246,12 @@ recomputed; this computation takes @math{O(K)}, so if @var{K} is large
 and you care about the original array @math{P[k]} used to create the
 lookup table, then you should just keep this original array @math{P[k]}
 around.
-@end deftypefn
+@end deftypefun
 
-@deftypefn Random {void} gsl_ran_discrete_free (gsl_ran_discrete_t * @var{g})
+@deftypefun {void} gsl_ran_discrete_free (gsl_ran_discrete_t * @var{g})
 @cindex Discrete random numbers
 De-allocates the lookup table pointed to by @var{g}.
-@end deftypefn
+@end deftypefun
 
 @page
 @node The Poisson Distribution
