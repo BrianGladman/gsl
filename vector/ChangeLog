@@ -1,3 +1,8 @@
+Fri Jul 24 19:44:52 1998  Brian Gough  <bjg@vvv.lanl.gov>
+
+	* added parent pointer in structs, to determine whether or not
+ 	we're allowed to free the memory pointed to by * data.
+
 Wed Jun 10 19:13:35 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
 	* init_source.c: added a cast for each malloc

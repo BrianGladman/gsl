@@ -5,13 +5,18 @@
 #include <gsl_errno.h>
 #include <gsl_config.h>
 
-typedef struct
-  {
-    size_t size;
-    size_t stride;
-    unsigned int *data;
-  }
-gsl_vector_uint;
+struct gsl_matrix_uint_struct;
+typedef struct gsl_matrix_uint_struct gsl_matrix_uint;
+
+struct gsl_vector_uint_struct
+{
+  size_t size;
+  size_t stride;
+  gsl_matrix_uint * parent;
+  unsigned int *data;
+};
+
+typedef struct gsl_vector_uint_struct gsl_vector_uint;
 
 gsl_vector_uint *gsl_vector_uint_alloc (size_t n);
 gsl_vector_uint *gsl_vector_uint_calloc (size_t n);

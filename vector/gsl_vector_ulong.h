@@ -5,13 +5,18 @@
 #include <gsl_errno.h>
 #include <gsl_config.h>
 
-typedef struct
-  {
-    size_t size;
-    size_t stride;
-    unsigned long *data;
-  }
-gsl_vector_ulong;
+struct gsl_matrix_ulong_struct;
+typedef struct gsl_matrix_ulong_struct gsl_matrix_ulong;
+
+struct gsl_vector_ulong_struct
+{
+  size_t size;
+  size_t stride;
+  gsl_matrix_ulong * parent;
+  unsigned long *data;
+};
+
+typedef struct gsl_vector_ulong_struct gsl_vector_ulong;
 
 gsl_vector_ulong *gsl_vector_ulong_alloc (size_t n);
 gsl_vector_ulong *gsl_vector_ulong_calloc (size_t n);

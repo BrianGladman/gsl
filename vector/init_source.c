@@ -32,6 +32,7 @@ FUNCTION (gsl_vector, alloc) (const size_t n)
 
   v->size = n;
   v->stride = 1;
+  v->parent = 0;
 
   return v;
 }
@@ -59,6 +60,10 @@ FUNCTION (gsl_vector, calloc) (const size_t n)
 void
 FUNCTION (gsl_vector, free) (TYPE (gsl_vector) * v)
 {
-  free (v->data);
+  if (v->parent == 0)
+    {
+      free (v->data);
+    }
+
   free (v);
 }

@@ -5,13 +5,18 @@
 #include <gsl_errno.h>
 #include <gsl_config.h>
 
-typedef struct
-  {
-    size_t size;
-    size_t stride;
-    char *data;
-  }
-gsl_vector_char;
+struct gsl_matrix_char_struct;
+typedef struct gsl_matrix_char_struct gsl_matrix_char;
+
+struct gsl_vector_char_struct
+{
+  size_t size;
+  size_t stride;
+  gsl_matrix_char * parent;
+  char *data;
+};
+
+typedef struct gsl_vector_char_struct gsl_vector_char;
 
 gsl_vector_char *gsl_vector_char_alloc (size_t n);
 gsl_vector_char *gsl_vector_char_calloc (size_t n);

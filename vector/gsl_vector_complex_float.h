@@ -7,13 +7,18 @@
 #include <gsl_complex.h>
 #include <gsl_vector_complex.h>
 
-typedef struct
-  {
-    size_t size;
-    size_t stride;
-    float *data;
-  }
-gsl_vector_complex_float;
+struct gsl_matrix_complex_float_struct;
+typedef struct gsl_matrix_complex_float_struct gsl_matrix_complex_float;
+
+struct gsl_vector_complex_float_struct
+{
+  size_t size;
+  size_t stride;
+  gsl_matrix_complex_float * parent;
+  float *data;
+};
+
+typedef struct gsl_vector_complex_float_struct gsl_vector_complex_float;
 
 gsl_vector_complex_float *gsl_vector_complex_float_alloc (size_t n);
 gsl_vector_complex_float *gsl_vector_complex_float_calloc (size_t n);

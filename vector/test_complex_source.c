@@ -12,6 +12,8 @@ FUNCTION (test, func) (void)
 
   gsl_test (v->data == 0, NAME (gsl_vector) "_alloc returns valid pointer");
   gsl_test (v->size != N, NAME (gsl_vector) "_alloc returns valid size");
+  gsl_test (v->stride != 1, NAME (gsl_vector) "_alloc returns unit stride");
+  gsl_test (v->parent != 0, NAME (gsl_vector) "_alloc sets parent to zero");
 
   for (i = 0; i < N; i++)
     {
