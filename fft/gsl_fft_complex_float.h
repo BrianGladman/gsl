@@ -75,11 +75,6 @@ int gsl_fft_complex_float_radix2_dif_transform (gsl_complex_packed_array_float d
                                                 const size_t n,
                                                 const gsl_fft_direction sign);
 
-int gsl_fft_complex_float_bitreverse_order (gsl_complex_packed_array_float data,
-                                            size_t stride,
-                                            size_t n,
-                                            size_t n_bits);
-
 /*  Mixed Radix general-N routines  */
 
 typedef struct

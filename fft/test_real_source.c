@@ -154,11 +154,11 @@ FUNCTION(test_real,bitreverse_order) (size_t stride, size_t n)
 
   status = FUNCTION(compare_real,results) ("naive bit reverse", 
                                            reversed_data,
-                                           "gsl_fft_complex_bitreverse_order", 
+                                           "fft_complex_bitreverse_order", 
                                            data,
                                            stride, n, 1e6);
 
-  gsl_test (status, NAME(gsl_fft_real) "_bitreverse_order, n = %d", n);
+  gsl_test (status, NAME(fft_real) "_bitreverse_order, n = %d", n);
 
   free (reversed_data) ;
   free (data) ;
