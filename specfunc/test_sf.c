@@ -379,8 +379,26 @@ int check_coulomb(void)
   double F[kmax+1], Fp[kmax+1], G[kmax+1], Gp[kmax+1];
   double Fe, Ge;
   double lam_min;
+  double lam_F;
   double eta, x;
+  int k_G;
 
+  lam_F = 0.0;
+  k_G   = 0;
+  eta = 1.0;
+  x = 5.0;
+  gsl_sf_coulomb_wave_FG_impl(eta, x, lam_F, k_G, F, Fp, G, Gp, &Fe, &Ge);
+  s = 0;
+  s += ( frac_diff(  F[0],  0.6849374120059439677 ) > 1.e-10 );
+  s += ( frac_diff( Fp[0], -0.7236423862556063963 ) > 1.e-10 );
+  /*s += ( frac_diff(  G[0],   ) > 1.e-10 );
+  s += ( frac_diff( Gp[0],  ) > 1.e-10 );
+  */
+  gsl_test(s,"  gsl_sf_coulomb_wave_FG_impl(1.0, 5.0)");
+  PRINT(0);
+  status += s;
+
+/*
   lam_min = 0.0;
   eta = -1000.0;
   x = 1.0;
@@ -514,7 +532,7 @@ int check_coulomb(void)
   gsl_test(s, "  coulomb(0, 10, 10)");
   PRINT(0);
   status += s;
-
+*/
   return status;
 }
 
@@ -1277,6 +1295,31 @@ int check_psi(void)
   s = 0;
   s += ( frac_diff(gsl_sf_psi(-1.0e+5-0.5), 11.512935464924395337 ) > 1.0e-10 );
   gsl_test(s, "  gsl_sf_psi(-1.0e+5-0.5)");
+  status += s;
+  
+  s = 0;
+  s += ( frac_diff(gsl_sf_psi_1piy(0.8), -0.07088340212750589223 ) > 1.0e-14 );
+  gsl_test(s, "  gsl_sf_psi_1piy(0.8)");
+  status += s;
+  
+  s = 0;
+  s += ( frac_diff(gsl_sf_psi_1piy(1.0), 0.09465032062247697727 ) > 1.0e-14 );
+  gsl_test(s, "  gsl_sf_psi_1piy(1.0)");
+  status += s;
+
+  s = 0;
+  s += ( frac_diff(gsl_sf_psi_1piy(5.0), 1.6127848446157465854  ) > 1.0e-13 );
+  gsl_test(s, "  gsl_sf_psi_1piy(5.0)");
+  status += s;
+
+  s = 0;
+  s += ( frac_diff(gsl_sf_psi_1piy(100.0),  4.605178519404762003 ) > 1.0e-14 );
+  gsl_test(s, "  gsl_sf_psi_1piy(100.0)");
+  status += s;
+
+  s = 0;
+  s += ( frac_diff(gsl_sf_psi_1piy(2000.0), 7.600902480375416216 ) > 1.0e-14 );
+  gsl_test(s, "  gsl_sf_psi_1piy(2000.0)");
   status += s;
 
   return status;

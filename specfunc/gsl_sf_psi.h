@@ -23,4 +23,13 @@ int     gsl_sf_psi_e(double x, double * result);
 double  gsl_sf_psi(double x);
 
 
+/* Re[Psi(1 + I y)]
+ *
+ * exceptions: none
+ */
+int     gsl_sf_psi_1piy_impl(double y, double * result);
+int     gsl_sf_psi_1piy_e(double y, double * result);
+double  gsl_sf_psi_1piy(double y);
+
+
 #endif /* !GSL_SF_PSI_H_ */
