@@ -1,3 +1,8 @@
+Tue Apr 25 20:45:14 2000  Brian Gough  <bjg@network-theory.co.uk>
+
+	* shuffle.c (gsl_ran_sample): lifted the restriction that sampling
+ 	with replacement could only be done less than n times for n objects.
+
 Tue Mar 14 21:31:46 2000  Brian Gough  <bjg@network-theory.co.uk>
 
 	* logistic.c (gsl_ran_logistic_pdf): prevent overflow in

@@ -96,12 +96,6 @@ gsl_ran_sample (const gsl_rng * r, void * dest, size_t k, void * src,
 
   /* Choose k out of n items, with replacement */
 
-  if (k > n)
-    {
-      GSL_ERROR_RETURN ("k is greater than n, cannot sample more than n items",
-			GSL_EINVAL, 0) ;
-    }
-
   for (i = 0; i < k; i++)
     {
       j = n * gsl_rng_uniform (r) ;
