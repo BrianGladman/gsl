@@ -420,7 +420,7 @@ the number of events falling in a given area of the @math{(x,y)}
 plane. The simplest way to use a two dimensional histogram is to record
 two-dimensional position information. A more sophisticated use is to
 form a joint-distribution by recording related variables. For example a
-detector might record the position of an event (@math(x)) and, for
+detector might record the position of an event (@math{x}) and, for
 example, the amount of energy it deposited @math{E}. These could be
 histogrammed as the joint distribution @math{n(x,E)}.
 
@@ -660,12 +660,12 @@ the range of that bin. For a two-dimensional histogram the probability
 distribution takes the form @math{p(x,y) dx dy} where,
 
 @equation
-p(x,y) = n_{ij}/ (N A_{ij})
+p(x,y) = n_@{ij@}/ (N A_@{ij@})
 @end equation
 @noindent
 
-In this equation @math{n_{ij}} is the number of events in the bin which
-contains @math{(x,y)}, @math{A_{ij}} is the area of the bin and @math{N} is
+In this equation @math{n_@{ij@}} is the number of events in the bin which
+contains @math{(x,y)}, @math{A_@{ij@}} is the area of the bin and @math{N} is
 the total number of events. The distribution of events within each bin
 is assumed to be uniform.
 
