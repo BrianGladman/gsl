@@ -19,7 +19,7 @@ form,
 @tex
 \beforedisplay
 $$
-I = \int_a^b f(x) w(x) dx
+I = \int_a^b f(x) w(x) \,dx
 $$
 \afterdisplay
 @end tex
