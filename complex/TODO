@@ -1,3 +1,6 @@
+* Complex polynomial solvers (Got Newton-Mueller from
+jotahtin@cc.hut.fi, still to add (BJG)).
+
 * The asymptotic behavior of the secondary functions (sec, csc, cot,
 etc) can overflow because of expressions like cosh(x) / D , where D =
 cosh^2 which is computed prior to the division.  This should by
