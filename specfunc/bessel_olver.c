@@ -314,17 +314,6 @@ static struct gsl_sf_ChebSeries B3_lt1_cs = {
   (double *)0
 };
 
-/* Chebyshev fit for f(x) = (1-x^2) A_2(((x+1)/2)^2) */
-static double A2_lt1_data[] = {
-};
-static struct gsl_sf_ChebSeries A2_lt1_cs = {
-  A2_lt1_data,
-  -1, 1,
-  ,
-  (double *)0,
-  (double *)0
-};
-
 /* Chebyshev fit for f(x) = (1-x^2) A_3(((x+1)/2)^2) */
 static double A3_lt1_data[40] = {
   0.000046453520358433328476671530033,
@@ -424,7 +413,7 @@ static double olver_B0(double z, double abs_zeta)
 
 static double olver_B1(double z, double abs_zeta)
 {
-  if(fabs(1.-z) < GSL_ROOT6_MACH_EPS) {
+  if(fabs(1.-z) < sqrt(GSL_ROOT3_MACH_EPS)) {
     double a = 1.-z;
     return -0.00149282953213429172050073403334
            -0.00175640941909277865678308358128 * a
@@ -441,7 +430,7 @@ static double olver_B1(double z, double abs_zeta)
     double rz  = sqrt(abs_zeta);
     double z32 = rz*rz*rz;
     double z92 = z32*z32*z32;
-    double term1 = t*t*t * (30375. - 369603.*t2 + 765765.*t2*t2 - 425425.t2*t2*t2)/414720.;
+    double term1 = t*t*t * (30375. - 369603.*t2 + 765765.*t2*t2 - 425425.*t2*t2*t2)/414720.;
     double term2 = 85085./(663552.*z92);
     double term3 = 385./110592.*t*(3.-5.*t2)/(abs_zeta*abs_zeta*abs_zeta);
     double term4 = 5./55296.*t2*(81. - 462.*t2 + 385.*t2*t2)/z32;
