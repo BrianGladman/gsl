@@ -46,34 +46,32 @@ by the Foundation.
 @title GNU Scientific Library -- Reference Manual
 @subtitle Edition @value{EDITION}, for gsl Version @value{VERSION}
 @subtitle @value{UPDATED}
-@sp
-@flushleft
-@authorfont Mark Galassi 
-@subtitlefont Cygnus Solutions and Los Alamos National Laboratory
-@subtitlefont @email{rosalia@@nis.lanl.gov}
+@author Mark Galassi 
+@address Cygnus Solutions and Los Alamos National Laboratory
+@address @email{rosalia@@nis.lanl.gov}
+@author
+@author Jim Davies 
+@address Space Data Systems Group, Los Alamos National Laboratory and 
+@address Department of Computer Science, Georgia Institute of Technology 
+@address @email{jimmyd@@nis.lanl.gov}
+@author
+@author James Theiler 
+@address Astrophysics and Radiation Measurements Group, Los Alamos National Laboratory
+@address @email{jt@@nis.lanl.gov}
+@author
+@author Brian Gough 
+@address Theoretical Particle Physics Group, Los Alamos National Laboratory
+@address @email{bjg@@vvv.lanl.gov}
+@author
+@author Reid Priedhorsky 
+@address Mathematical Modeling and Analysis Group, Los Alamos National Laboratory
+@address @email{rp@@lanl.gov}
+@author
+@author Gerard Jungman 
+@address Theoretical Particle Physics Group, Los Alamos National Laboratory
+@address @email{jungman@@nnn.lanl.gov}
+@author
 
-@authorfont Jim Davies 
-@subtitlefont Space Data Systems Group, Los Alamos National Laboratory and 
-@subtitlefont Department of Computer Science, Georgia Institute of Technology 
-@subtitlefont @email{jimmyd@@nis.lanl.gov}
-
-@authorfont James Theiler 
-@subtitlefont Astrophysics and Radiation Measurements Group, Los Alamos National Laboratory
-@subtitlefont @email{jt@@nis.lanl.gov}
-
-@authorfont Brian Gough 
-@subtitlefont Theoretical Particle Physics Group, Los Alamos National Laboratory
-@subtitlefont @email{bjg@@vvv.lanl.gov}
-
-@authorfont Reid Priedhorsky 
-@subtitlefont Mathematical Modeling and Analysis Group, Los Alamos National Laboratory
-@subtitlefont @email{rp@@lanl.gov}
-
-@authorfont Gerard Jungman 
-@subtitlefont Theoretical Particle Physics Group, Los Alamos National Laboratory
-@subtitlefont @email{jungman@@nnn.lanl.gov}
-@end flushleft
-@sp
 @page
 @vskip 0pt plus 1filll
 Copyright @copyright{} 1996, 1997, 1998 The GSL Project.

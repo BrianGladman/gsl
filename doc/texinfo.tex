@@ -1745,7 +1745,8 @@ $$}
 % This change was not in the ChangeLog anyway.  --rms.
 %   \let\subtitlerm=\cmr12
    \def\subtitlefont{\subtitlerm \normalbaselineskip = 13pt \normalbaselines}%
-   %
+   % address code added by BJG
+   \def\addressfont{\subtitlerm \normalbaselineskip = 13pt \normalbaselines}%
    \def\authorfont{\authorrm \normalbaselineskip = 16pt \normalbaselines}%
    %
    % Leave some space at the very top of the page.
@@ -1768,6 +1769,9 @@ $$}
    \def\author{\parsearg\authorzzz}%
    \def\authorzzz##1{\ifseenauthor\else\vskip 0pt plus 1filll\seenauthortrue\fi
       {\authorfont \leftline{##1}}}%
+   %%% added by BJG
+   \def\address{\parsearg\addresszzz}%
+   \def\addresszzz##1{{\addressfont \leftline{##1}}}%
    %
    % Most title ``pages'' are actually two pages long, with space
    % at the top of the second.  We don't want the ragged left on the second.
