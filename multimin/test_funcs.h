@@ -38,3 +38,15 @@ double roth_f (const gsl_vector * x, void *params);
 void roth_df (const gsl_vector * x, void *params, gsl_vector * df);
 void roth_fdf (const gsl_vector * x, void *params, double * f, gsl_vector * df);
 
+extern gsl_multimin_function_fdf Nrosenbrock;
+void Nrosenbrock_df (const gsl_vector * x, void *params, gsl_vector * df);
+void Nrosenbrock_fdf (const gsl_vector * x, void *params, double * f, gsl_vector * df);
+
+extern gsl_multimin_function_fdf Nroth;
+void Nroth_df (const gsl_vector * x, void *params, gsl_vector * df);
+void Nroth_fdf (const gsl_vector * x, void *params, double * f, gsl_vector * df);
+
+extern gsl_multimin_function_fdf Nwood;
+void Nwood_df (const gsl_vector * x, void *params, gsl_vector * df);
+void Nwood_fdf (const gsl_vector * x, void *params, double * f, gsl_vector * df);
+

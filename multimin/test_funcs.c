@@ -161,3 +161,71 @@ void wood_fdf (const gsl_vector * x, void *params, double * f, gsl_vector * df)
   wood_df(x,params,df);
   *f=wood_f(x,params);
 }
+
+
+gsl_multimin_function_fdf Nrosenbrock =
+{&rosenbrock_f,
+ &Nrosenbrock_df,
+ &Nrosenbrock_fdf,
+ 2, 0};
+
+void Nrosenbrock_df (const gsl_vector * x, void *params, gsl_vector * df)
+{
+  gsl_multimin_function F ;
+  F.f = rosenbrock_f;
+  F.params = params;
+  F.n = x->size;
+  gsl_multimin_diff (&F, x, df);
+}
+
+void Nrosenbrock_fdf (const gsl_vector * x, void *params, double * f,
+		     gsl_vector * df) 
+{
+  *f = rosenbrock_f (x, params);
+  Nrosenbrock_df (x, params, df);
+}
+
+gsl_multimin_function_fdf Nroth =
+{&roth_f,
+ &Nroth_df,
+ &Nroth_fdf,
+ 2, 0};
+
+void Nroth_df (const gsl_vector * x, void *params, gsl_vector * df)
+{
+  gsl_multimin_function F ;
+  F.f = roth_f;
+  F.params = params;
+  F.n = x->size;
+  gsl_multimin_diff (&F, x, df);
+}
+
+void Nroth_fdf (const gsl_vector * x, void *params, double * f,
+		     gsl_vector * df) 
+{
+  *f = roth_f (x, params);
+  Nroth_df (x, params, df);
+}
+
+
+gsl_multimin_function_fdf Nwood =
+{&wood_f,
+ &Nwood_df,
+ &Nwood_fdf,
+ 4, 0};
+
+void Nwood_df (const gsl_vector * x, void *params, gsl_vector * df)
+{
+  gsl_multimin_function F ;
+  F.f = wood_f;
+  F.params = params;
+  F.n = x->size;
+  gsl_multimin_diff (&F, x, df);
+}
+
+void Nwood_fdf (const gsl_vector * x, void *params, double * f,
+		     gsl_vector * df) 
+{
+  *f = wood_f (x, params);
+  Nwood_df (x, params, df);
+}

@@ -6,7 +6,7 @@ noinst_HEADERS =
 
 INCLUDES= -I$(top_builddir)
 
-libgslmultimin_la_SOURCES = directional_minimize.c fdfminimizer.c steepest_descent.c conjugate.c convergence.c vector_bfgs.c
+libgslmultimin_la_SOURCES = directional_minimize.c fdfminimizer.c steepest_descent.c conjugate.c convergence.c vector_bfgs.c diff.c
 
 check_PROGRAMS = test
 

@@ -166,5 +166,15 @@ main (void)
       T++;
     }
 
+  T = fdfminimizers;
+
+  while (*T != 0) 
+    {
+      test_fdf("NRoth", &Nroth, roth_initpt,*T,5*Nroth.n);
+      test_fdf("NWood", &Nwood, wood_initpt,*T,5*Nwood.n);
+      test_fdf("NRosenbrock", &Nrosenbrock, rosenbrock_initpt,*T,5*Nrosenbrock.n);
+      T++;
+    }
+
   return gsl_test_summary();
 }
