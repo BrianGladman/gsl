@@ -1,3 +1,12 @@
+Thu Nov  2 20:08:14 2000  Brian Gough  <bjg@network-theory.co.uk>
+
+	* added support for a workspace so that the user does not have to
+ 	allocate memory
+
+	* made the names of the functions consistent as either levin_u,
+ 	for the full u transform with error estimate, or levin_utrunc for
+ 	the u transform with only a truncation error estimate.
+
 Mon Apr 24 21:15:27 2000  Brian Gough  <bjg@network-theory.co.uk>
 
 	* gsl_sum.h: added #include <stdlib.h> for size_t

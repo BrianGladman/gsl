@@ -1,0 +1,24 @@
+Title: Scalar Levin-Type Sequence Transformations
+Authors: Herbert H. H. Homeier (Institut f\"ur Physikalische und Theoretische
+  Chemie, Regensburg, Germany)
+Comments: 59 pages, LaTeX, invited review for J. Comput. Applied Math.,
+  abstract shortened
+Report-no: TC-NA-2000-1
+Subj-class: Numerical Analysis; Scientific Computation
+MSC-class: 65B05 65B10 65B15 40A05 40A25 42C15
+\\
+  Sequence transformations are important tools for the convergence acceleration
+of slowly convergent scalar sequences or series and for the summation of
+divergent series. Transformations that depend not only on the sequence elements
+or partial sums $s_n$ but also on an auxiliary sequence of so-called remainder
+estimates $\omega_n$ are of Levin-type if they are linear in the $s_n$, and
+nonlinear in the $\omega_n$. Known Levin-type sequence transformations are
+reviewed and put into a common theoretical framework. It is discussed how such
+transformations may be constructed by either a model sequence approach or by
+iteration of simple transformations. As illustration, two new sequence
+transformations are derived. Common properties and results on convergence
+acceleration and stability are given. For important special cases, extensions
+of the general results are presented. Also, guidelines for the application of
+Levin-type sequence transformations are discussed, and a few numerical examples
+are given.
+\\ ( http://arXiv.org/abs/math/0005209 ,  66kb)

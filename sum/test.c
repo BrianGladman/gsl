@@ -200,33 +200,35 @@ main (void)
 void
 check_trunc (double * t, double expected, const char * desc)
 {
-  double qnum[N], qden[N];
-  double sum_accel, sum_plain, prec;
-  size_t n_used;
+  double sum_accel, prec;
+
+  gsl_sum_levin_utrunc_workspace * w = gsl_sum_levin_utrunc_alloc (N);
   
-  gsl_sum_levin_u_trunc_accel (t, N, qnum, qden,
-                               &sum_accel, &n_used, &sum_plain, &prec);
+  gsl_sum_levin_utrunc_accel (t, N, w, &sum_accel, &prec);
   gsl_test_rel (sum_accel, expected, 1e-8, "trunc result, %s", desc);
-  
+
   /* No need to check precision for truncated result since this is not
      a meaningful number */
+
+  gsl_sum_levin_utrunc_free (w);
 }
 
 void
 check_full (double * t, double expected, const char * desc)
 {
-  double qnum[N], qden[N], dqnum[N * N], dqden[N * N], dsum[N];
-  double sum_accel, sum_plain, prec, sd_actual, sd_est;
-  size_t n_used;
+  double sum_accel, err_est, sd_actual, sd_est;
   
-  gsl_sum_levin_u_accel (t, N, qnum, qden, dqnum, dqden, dsum,
-                         &sum_accel, &n_used, &sum_plain, &prec);
+  gsl_sum_levin_u_workspace * w = gsl_sum_levin_u_alloc (N);
+
+  gsl_sum_levin_u_accel (t, N, w, &sum_accel, &err_est);
   gsl_test_rel (sum_accel, expected, 1e-8, "full result, %s", desc);
   
-  sd_est = -log10 (prec);
-  sd_actual = -log10 (DBL_EPSILON + fabs (sum_accel - expected) / expected);
+  sd_est = -log10 (err_est/fabs(sum_accel));
+  sd_actual = -log10 (DBL_EPSILON + fabs ((sum_accel - expected)/expected));
 
   /* Allow one digit of slop */
 
   gsl_test (sd_est > sd_actual + 1.0, "full significant digits, %s (%g vs %g)", desc, sd_est, sd_actual);
+
+  gsl_sum_levin_u_free (w);
 }
