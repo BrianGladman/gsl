@@ -24,7 +24,7 @@ FUNCTION (gsl_vector, swap) (TYPE (gsl_vector) * v, TYPE (gsl_vector) * w)
   ATOMIC * d2 = w->data ;
   const size_t size = v->size ;
   const size_t s1 = MULTIPLICITY * v->stride ;
-  const size_t s2 = MULTIPLICITY * v->stride ;
+  const size_t s2 = MULTIPLICITY * w->stride ;
   size_t i, k ;
 
   if (v->size != w->size)

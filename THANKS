@@ -300,3 +300,5 @@ conditions
 
 * Daniel Webb <lists@danielwebb.us> bug report for potential cspline
 division by zero
+
+* Ewald Stamp <stamp@math.hu-berlin.de> bugfix for vector/swap_source.c

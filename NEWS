@@ -1,5 +1,8 @@
 * What will be new in gsl-1.6:
 
+** Fixed a bug in gsl_swap_vectors which caused it to return incorrect
+results when swapping vectors with different strides.
+
 ** Added a new wavelet directory, with 1-dimensional and 2-dimensional
 discrete wavelet transforms.
 

@@ -1,5 +1,8 @@
 2004-09-13  Brian Gough  <bjg@network-theory.co.uk>
 
+	* swap_source.c (gsl_vector_swap): fixed bug where stride of
+	first argument v was used for second argument w
+
 	* test.c: improved test coverage
 
 2003-01-01  Brian Gough  <brian.gough@network-theory.co.uk>
