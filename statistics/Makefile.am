@@ -1,9 +1,8 @@
 ## Process this file with automake to produce Makefile.in
 CFLAGS=-g -Wall
-# CC=gcc
 
 noinst_PROGRAMS = jtest
-noinst_LIBRARIES = gsl_statistics
+lib_LIBRARIES = gsl_statistics
 
 LDADD = libgsl_statistics.a -lm
 
