@@ -335,7 +335,7 @@ static struct {int n; double f; long i; } fact_table[FACT_TABLE_SIZE] = {
 
 int gsl_sf_fact_impl(const int n, double * result)
 {
- if(n <= 0) {
+ if(n < 0) {
     return GSL_EDOM;
   }
   else if(n <= FACT_TABLE_MAX){
@@ -347,6 +347,21 @@ int gsl_sf_fact_impl(const int n, double * result)
   }
 }
 
+int gsl_sf_lnfact_impl(const int n, double * result)
+{
+ if(n < 0) {
+    return GSL_EDOM;
+  }
+  else if(n <= FACT_TABLE_MAX){
+    *result = log(fact_table[n].f);
+    return GSL_SUCCESS;
+  }
+  else {
+    gsl_sf_lngamma_impl(n+1., result);
+    return GSL_SUCCESS;
+  }
+}
+
 
 /*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
 
@@ -355,6 +370,15 @@ int gsl_sf_fact_e(const int n, double * result)
   int status = gsl_sf_fact_impl(n, result);
   if(status != GSL_SUCCESS) {
     GSL_ERROR("gsl_sf_fact_e", status);
+  }
+  return status;
+}
+
+int gsl_sf_lnfact_e(const int n, double * result)
+{
+  int status = gsl_sf_lnfact_impl(n, result);
+  if(status != GSL_SUCCESS) {
+    GSL_ERROR("gsl_sf_lnfact_e", status);
   }
   return status;
 }
@@ -386,6 +410,16 @@ double gsl_sf_lngamma(const double x)
   int status = gsl_sf_lngamma_impl(x, &y);
   if(status != GSL_SUCCESS) {
     GSL_WARNING("gsl_sf_lngamma");
+  }
+  return y;
+}
+
+double gsl_sf_lnfact(const int n)
+{
+  double y;
+  int status = gsl_sf_lnfact_impl(n, &y);
+  if(status != GSL_SUCCESS) {
+    GSL_WARNING("gsl_sf_lnfact");
   }
   return y;
 }

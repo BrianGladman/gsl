@@ -5,61 +5,83 @@
 #include <math.h>
 #include <gsl_math.h>
 #include <gsl_errno.h>
+#include "gsl_sf_pow_int.h"
 #include "gsl_sf_laguerre.h"
 #include "gsl_sf_gamma.h"
 #include "gsl_sf_coulomb.h"
 
+extern int gsl_sf_lnfact_impl(int, double *);
+
+#define Max(a, b) ((a) > (b) ? (a) : (b))
+
 
 /* normalization for hydrogenic wave functions */
-static double R_norm(int n, int l, double Z)
+/* static */ double R_norm(const int n, const int l, const double Z)
 {
   int i;
   double A = 2.*Z/n;
   double term1 = A*A*A /(2.*n);
-  double term2 = 1.;
-  for(i=n+l; i>=n-l; i--) { term2 *= (double)i; }
-  return sqrt(term1/term2);
+  double ln_a, ln_b;
+  gsl_sf_lnfact_impl(n+l, &ln_a);
+  gsl_sf_lnfact_impl(n-l-1, &ln_b);
+  return sqrt(term1) * exp(-0.5*(ln_a-ln_b));
 }
 
-double gsl_sf_hydrogenicR_1(double Z, double r)
+int gsl_sf_hydrogenicR_1_impl(const double Z, const double r, double * result)
 {
-  double A = 2.*Z;
-  double norm = A*sqrt(0.5*A);
-  double ea = exp(-Z*r);
-  return norm*ea;
-}
-
-double gsl_sf_hydrogenicR_2(int l, double Z, double r)
-{
-  double A = Z;
-  double norm = R_norm(2, l, Z);
-  double ea = exp(-Z*r);
-  if(l == 0) {
-    return norm * ea * gsl_sf_laguerre_1(2.*l+1, A*r);
-  }
-  else if(l == 1) {
-    double pp = A*r;
-    return norm * ea * pp;
+  if(Z > 0. && r >= 0.) {
+    double A = 2.*Z;
+    double norm = A*sqrt(Z);
+    double ea = exp(-Z*r);
+    *result = norm*ea;
+    return ( *result > 0. ? GSL_SUCCESS : GSL_EUNDRFLW );
   }
   else {
-    char buff[100];
-    sprintf(buff,"hydrogenicR_2: l= %d", l);
-    GSL_ERROR_RETURN(buff, GSL_EDOM, 0.);
+    return GSL_EDOM;
   }
 }
 
-double gsl_sf_hydrogenicR(int n, int l, double Z, double r)
+int gsl_sf_hydrogenicR_2_impl(const int l, const double Z, const double r, double * result)
+{
+  if(Z > 0. && r >= 0.) {
+    double term1 = 0.25*Z*Z*Z;
+    double ea = exp(-Z*r);
+    if(l == 0) {
+      double pp = 2.-Z*r;
+      double norm = sqrt(term1/2.);
+      *result = norm * ea * pp;
+      return GSL_SUCCESS;
+    }
+    else if(l == 1) {
+      double pp = Z*r;
+      double norm = sqrt(term1/6.);
+      *result = norm * ea * pp;
+      return GSL_SUCCESS;
+    }
+    else {
+      return GSL_EDOM;
+    }
+  }
+  else {
+    return GSL_EDOM;
+  }
+}
+
+int gsl_sf_hydrogenicR_impl(const int n, const int l, const double Z, const double r, double * result)
 {
   if(n < 1 || l > n-1 || Z <= 0.) {
-    return 0.;
+    return GSL_EDOM;
   }
   else {
     double A = 2.*Z/n;
     double norm = R_norm(n, l, Z);
     double rho = A*r;
     double ea = exp(-0.5*rho);
-    double pp = pow(rho, l);
-    return norm * ea * pp * laguerre_cp(n-l-1, 2.*l+1., rho);
+    double pp = gsl_sf_pow_int(rho, l);
+    double lag;
+    gsl_sf_laguerre_n_impl(n-l-1, 2.*l+1., rho, &lag);
+    *result = norm * ea * pp * lag;
+    return GSL_SUCCESS;
   }
 }
 
@@ -98,7 +120,7 @@ static double CLeta(double L, double eta)
   }
   else {
     double p1;  /* phase of numerator Gamma -- not used */
-    gsl_sf_complex_lngamma(L+1., eta, &ln1, &p1);
+    gsl_sf_lngamma_complex_e(L+1., eta, &ln1, &p1);
   }
   ln2 = gsl_sf_lngamma(2.*L+2.);
   
@@ -211,7 +233,7 @@ static void coulfg_small_args(double x, double eta, double xlmin, double xlmax,
     GSL_ERROR("coulfg_small_args: out of memory", GSL_ENOMEM);
     return;
   }
-  coulomb_CL_list(xlmin, i_delta_lam+1, eta, cl);
+  gsl_sf_coulomb_CL_list(xlmin, i_delta_lam+1, eta, cl);
   for(i=0; i<=i_delta_lam; i++) { 
     fc[i] = cl[i] * pow(x,i+1);
     if(mode==Mode_FGp || mode==Mode_FG) {
@@ -441,9 +463,11 @@ static void coulfg(double x, double eta, double xlmin, double xlmax,
 
     if(fabs(delta_lam - floor(delta_lam+0.5)) > 100.*CFG_ACC) {
       char buff[100];
+      /*
       sprintf(buff, "coulfg: xlmax-xlmin= %25.18g  not an integer",
 	      delta_lam);
       GSL_ERROR_MESSAGE(buff, GSL_EDOM);
+      */
     }
 
     /* Compute first continued fraction, evaluating F_prime()/F()
