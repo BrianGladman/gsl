@@ -81,7 +81,7 @@ gsl_odeiv_evolve_alloc (size_t dim)
 
   e->dimension = dim;
   e->count = 0;
-  e->count_stutter = 0;
+  e->failed_steps = 0;
   e->last_step = 0.0;
 
   return e;
@@ -91,7 +91,7 @@ int
 gsl_odeiv_evolve_reset (gsl_odeiv_evolve * e)
 {
   e->count = 0;
-  e->count_stutter = 0;
+  e->failed_steps = 0;
   e->last_step = 0.0;
   return GSL_SUCCESS;
 }
@@ -185,6 +185,7 @@ try_step:
 	{
 	  /* Step was decreased. Undo and go back to try again. */
 	  DBL_MEMCPY (y, e->y0, dydt->dimension);
+          e->failed_steps++;
 	  goto try_step;
 	}
     }

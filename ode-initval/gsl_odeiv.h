@@ -206,7 +206,7 @@ typedef struct {
   double * dydt_out;
   double last_step;
   unsigned long int count;
-  unsigned long int count_stutter;
+  unsigned long int failed_steps;
 }
 gsl_odeiv_evolve;
 

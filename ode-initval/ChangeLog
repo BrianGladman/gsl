@@ -1,3 +1,7 @@
+Fri Jun 22 11:59:24 2001  Brian Gough  <bjg@network-theory.co.uk>
+
+	* evolve.c: keep track of failed step count
+
 Tue Jun 12 11:34:23 2001  Brian Gough  <bjg@network-theory.co.uk>
 
 	* rkf45.c: added Runge-Kutta Fehlberg method, RKF45
