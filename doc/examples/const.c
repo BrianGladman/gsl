@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include <gsl/gsl_const_mks.h>
+#include <gsl/gsl_const_mksa.h>
 
 int
 main (void)
