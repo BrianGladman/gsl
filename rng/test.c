@@ -95,6 +95,7 @@ main (void)
   /* Test constant relationship between int and double functions */
 
   rng_float_test (gsl_rng_slatec);
+  rng_float_test (gsl_rng_gfsr4);
   rng_float_test (gsl_rng_cmrg);
   rng_float_test (gsl_rng_minstd);
   rng_float_test (gsl_rng_mrg);
@@ -141,6 +142,7 @@ main (void)
 
   rng_state_test (gsl_rng_slatec);
   rng_state_test (gsl_rng_cmrg);
+  rng_state_test (gsl_rng_gfsr4);
   rng_state_test (gsl_rng_minstd);
   rng_state_test (gsl_rng_mrg);
   rng_state_test (gsl_rng_mt19937);
@@ -184,6 +186,7 @@ main (void)
 
   rng_parallel_state_test (gsl_rng_slatec);
   rng_parallel_state_test (gsl_rng_cmrg);
+  rng_parallel_state_test (gsl_rng_gfsr4);
   rng_parallel_state_test (gsl_rng_minstd);
   rng_parallel_state_test (gsl_rng_mrg);
   rng_parallel_state_test (gsl_rng_mt19937);
@@ -231,6 +234,7 @@ main (void)
 
   generic_rng_test (gsl_rng_slatec);
   generic_rng_test (gsl_rng_cmrg);
+  generic_rng_test (gsl_rng_gfsr4);
   generic_rng_test (gsl_rng_minstd);
   generic_rng_test (gsl_rng_mrg);
   generic_rng_test (gsl_rng_mt19937);
@@ -321,7 +325,6 @@ rng_float_test (const gsl_rng_type * T)
   while (k == 0) ;
 
   c = k / u ;
-
   for (i = 0; i < N2; i++)
     {
       k = gsl_rng_get (ri);
@@ -555,6 +558,10 @@ rng_sum_test (gsl_rng * r, double *sigma)
   /* more than 3 sigma is an error */
   
   status = (fabs (*sigma) > 3 || fabs(*sigma) < 0.003);
+
+  if (status) {
+      fprintf(stderr,"sum=%g, sigma=%g\n",sum,*sigma);
+  }
 
   return status;
 }

@@ -33,6 +33,7 @@ gsl_rng_type;
 
 extern const gsl_rng_type *gsl_rng_slatec;
 extern const gsl_rng_type *gsl_rng_cmrg;
+extern const gsl_rng_type *gsl_rng_gfsr4;
 extern const gsl_rng_type *gsl_rng_minstd;
 extern const gsl_rng_type *gsl_rng_mrg;
 extern const gsl_rng_type *gsl_rng_mt19937;

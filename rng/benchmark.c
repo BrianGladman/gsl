@@ -13,6 +13,7 @@ int
 main (void)
 {
   benchmark(gsl_rng_slatec);
+  benchmark(gsl_rng_gfsr4);
   benchmark(gsl_rng_cmrg);
   benchmark(gsl_rng_minstd);
   benchmark(gsl_rng_mrg);
