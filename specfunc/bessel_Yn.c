@@ -73,7 +73,8 @@ static int bessel_Yn_small_x(const int n, const double x, double * result)
 /*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
 
 /* checked OK [GJ] Mon May  4 00:10:56 EDT 1998 */
-int gsl_sf_bessel_Yn_impl(int n, const double x, double * result)
+int
+gsl_sf_bessel_Yn_impl(int n, const double x, double * result)
 {
   int sign = 1;
 
@@ -140,37 +141,62 @@ int gsl_sf_bessel_Yn_impl(int n, const double x, double * result)
   }
 }
 
-int gsl_sf_bessel_Yn_array_impl(const int nmax, const double x, double * result_array)
+
+int
+gsl_sf_bessel_Yn_array_impl(const int nmin, const int nmax, const double x, double * result_array)
 {
-  if(nmax < 1 || x <= 0.0) {
+  if(x <= 0.0) {
     return GSL_EDOM;
   }
   else {
-    int j;
-    double by, bym, byp;
-    double two_over_x = 2.0/x;
-    gsl_sf_bessel_Y1_impl(x, &by);
-    gsl_sf_bessel_Y0_impl(x, &bym);
-    result_array[0] = bym;
-    result_array[1] = by;
-    for(j=1; j<nmax; j++) { 
-      byp = j*two_over_x*by - bym;
-      result_array[j+1] = byp;
-      bym = by;
-      by  = byp;
+    double Ynp1;
+    double Yn;
+    double Ynm1;
+    int n;
+
+    int stat_nm1 = gsl_sf_bessel_Yn_impl(nmin,   x, &Ynm1);
+    int stat_n   = gsl_sf_bessel_Yn_impl(nmin+1, x, &Yn);
+
+    int stat = GSL_ERROR_SELECT_2(stat_nm1, stat_n);
+
+    if(stat == GSL_SUCCESS) {
+      for(n=nmin+1; n<=nmax+1; n++) {
+        result_array[n-nmin-1] = Ynm1;
+        Ynp1 = -Ynm1 + 2.0*n/x * Yn;
+	Ynm1 = Yn;
+        Yn   = Ynp1;
+      }
     }
-    return GSL_SUCCESS;
+    else {
+      for(n=nmin; n<=nmax; n++) {
+        result_array[n-nmin] = 0.0;
+      }
+    }
+    
+    return stat;
   }
 }
 
 
 /*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
 
-int gsl_sf_bessel_Yn_e(const int n, const double x, double * result)
+int
+gsl_sf_bessel_Yn_e(const int n, const double x, double * result)
 {
   int status = gsl_sf_bessel_Yn_impl(n, x, result);
   if(status != GSL_SUCCESS) {
     GSL_ERROR("gsl_sf_bessel_Yn_e", status);
+  }
+  return status;
+}
+
+
+int
+gsl_sf_bessel_Yn_array_e(const int nmin, const int nmax, const double x, double * result_array)
+{
+  int status = gsl_sf_bessel_Yn_array_impl(nmin, nmax, x, result_array);
+  if(status != GSL_SUCCESS) {
+    GSL_ERROR("gsl_sf_bessel_Yn_array_e", status);
   }
   return status;
 }

@@ -5,7 +5,7 @@
 #define GSL_BESSEL_H_
 
 
-/* Regular Bessel function J_0(x)
+/* Regular Bessel Function J_0(x)
  *
  * exceptions: none
  */
@@ -14,7 +14,7 @@ int     gsl_sf_bessel_J0_e(double x, double * result);
 double  gsl_sf_bessel_J0(double x);
 
 
-/* Regular Bessel function J_1(x)
+/* Regular Bessel Function J_1(x)
  *
  * exceptions: GSL_EUNDRFLW
  */
@@ -23,13 +23,21 @@ int     gsl_sf_bessel_J1_e(double x, double * result);
 double  gsl_sf_bessel_J1(double x);
 
 
-/* Regular Bessel function J_n(x)
+/* Regular Bessel Function J_n(x)
  *
  * exceptions: GSL_EUNDRFLW
  */
 int     gsl_sf_bessel_Jn_impl(int n, double x, double * result);
 int     gsl_sf_bessel_Jn_e(int n, double x, double * result);
 double  gsl_sf_bessel_Jn(int n, double x);
+
+
+/* Regular Bessel Function J_n(x),  nmin <= n <= nmax
+ *
+ * exceptions: GSL_EUNDRFLW
+ */
+int gsl_sf_bessel_Jn_array_impl(int nmin, int nmax, double x, double * result_array);
+int gsl_sf_bessel_Jn_array_e(int nmin, int nmax, double x, double * result_array);
 
 
 /* Irregular Bessel function Y_0(x)
@@ -60,6 +68,15 @@ double  gsl_sf_bessel_Y1(double x);
 int     gsl_sf_bessel_Yn_impl(int n,double x, double * result);
 int     gsl_sf_bessel_Yn_e(int n,double x, double * result);
 double  gsl_sf_bessel_Yn(int n, double x);
+
+
+/* Irregular Bessel function Y_n(x), nmin <= n <= nmax
+ *
+ * x > 0.0
+ * exceptions: GSL_EDOM, GSL_EOVRFLW, GSL_EUNDRFLW
+ */
+int gsl_sf_bessel_Yn_array_impl(int nmin, int nmax, double x, double * result);
+int gsl_sf_bessel_Yn_array_e(int nmin, int nmax, double x, double * result);
 
 
 /* Regular modified Bessel function I_0(x)

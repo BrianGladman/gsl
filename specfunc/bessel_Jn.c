@@ -110,6 +110,47 @@ int gsl_sf_bessel_Jn_impl(int n, double x, double * result)
 }
 
 
+int
+gsl_sf_bessel_Jn_array_impl(int nmin, int nmax, double x, double * result_array)
+{
+  if(x == 0.0) {
+    int n;
+    for(n=nmax; n>=nmin; n--) {
+      result_array[n-nmin] = 0.0;
+    }
+    if(nmin == 0) result_array[0] = 1.0;
+    return GSL_SUCCESS;
+  }
+  else {
+    double Jnp1;
+    double Jn;
+    double Jnm1;
+    int n;
+
+    int stat_np1 = gsl_sf_bessel_Jn_impl(nmax+1, x, &Jnp1);
+    int stat_n   = gsl_sf_bessel_Jn_impl(nmax,   x, &Jn);
+
+    int stat = GSL_ERROR_SELECT_2(stat_np1, stat_n);
+
+    if(stat == GSL_SUCCESS) {
+      for(n=nmax; n>=nmin; n--) {
+        result_array[n-nmin] = Jn;
+        Jnm1 = -Jnp1 + 2.0*n/x * Jn;
+        Jnp1 = Jn;
+        Jn   = Jnm1;
+      }
+    }
+    else {
+      for(n=nmax; n>=nmin; n--) {
+        result_array[n-nmin] = 0.0;
+      }
+    }
+    
+    return stat;
+  }
+}
+
+
 /*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
 
 int gsl_sf_bessel_Jn_e(const int n, const double x, double * result)
@@ -117,6 +158,16 @@ int gsl_sf_bessel_Jn_e(const int n, const double x, double * result)
   int status = gsl_sf_bessel_Jn_impl(n, x, result);
   if(status != GSL_SUCCESS) {
     GSL_ERROR("gsl_sf_bessel_Jn_e", status);
+  }
+  return status;
+}
+
+int
+gsl_sf_bessel_Jn_array_e(int nmin, int nmax, double x, double * result_array)
+{
+  int status = gsl_sf_bessel_Jn_array_impl(nmin, nmax, x, result_array);
+  if(status != GSL_SUCCESS) {
+    GSL_ERROR("gsl_sf_bessel_Jn_array_e", status);
   }
   return status;
 }
