@@ -80,26 +80,6 @@ gsl_fit_mul_est (const double x,
                  const double c11,
                  double *y, double *y_err);
 
-
-/* choose better names!! */
-
-int gsl_fit_poly (const double * x, 
-                  const double * w,
-                  const double * y, 
-                  size_t n,
-                  double * c, size_t m,
-                  double * chisq);
-
-int gsl_fit_fns (const double * A, 
-                 const double * w,
-                 const double * y, 
-                 size_t n,
-                 double * c, size_t m,
-                 double * chisq);
-
-int gsl_fit_linear_nd (double * m, double * y, double * w);
-
-
 __END_DECLS
 
 #endif /* __GSL_FIT_H__ */
