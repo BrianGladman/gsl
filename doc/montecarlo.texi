@@ -656,6 +656,7 @@ main ()
   double xl[3] = @{ 0, 0, 0 @};
   double xu[3] = @{ M_PI, M_PI, M_PI @};
 
+  gsl_rng_type *T;
   gsl_rng *r;
 
   gsl_monte_function G = @{ &g, 3, 0 @};
@@ -664,7 +665,8 @@ main ()
 
   gsl_rng_env_setup ();
 
-  r = gsl_rng_alloc (gsl_rng_default);
+  T = gsl_rng_default;
+  r = gsl_rng_alloc (T);
 
   @{
     gsl_monte_plain_state *s = gsl_monte_plain_alloc (3);

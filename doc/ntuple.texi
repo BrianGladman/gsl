@@ -172,6 +172,7 @@ struct data
 int
 main (void)
 @{
+  gsl_rng_type * T;
   gsl_rng * r;
 
   struct data ntuple_row;
@@ -181,8 +182,9 @@ main (void)
                                           sizeof (ntuple_row));
 
   gsl_rng_env_setup();
- 
-  r = gsl_rng_alloc (gsl_rng_default);
+
+  T = gsl_rng_default; 
+  r = gsl_rng_alloc (T);
 
   for (i = 0; i < 10000; i++)
     @{

@@ -278,9 +278,12 @@ gsl_rng * r ;  /* global generator */
 int 
 main ()
 @{
+  gsl_rng_type * T;
+
   gsl_rng_env_setup() ;
 
-  r = gsl_rng_alloc (gsl_rng_default);
+  T = gsl_rng_default;
+  r = gsl_rng_alloc (T);
   
   printf("generator type: %s\n", gsl_rng_name (r));
   printf("seed = %u\n", gsl_rng_default_seed);

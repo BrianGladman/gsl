@@ -1591,6 +1591,7 @@ Poisson distribution with a mean of 3.
 int
 main ()
 @{
+  gsl_rng_type * T;
   gsl_rng * r ;
 
   int i, n = 10;
@@ -1599,7 +1600,9 @@ main ()
   /* create a generator chosen by the environment variable GSL_RNG_TYPE */
 
   gsl_rng_env_setup();
-  r = gsl_rng_alloc (gsl_rng_default);
+
+  T = gsl_rng_default;
+  r = gsl_rng_alloc (T);
 
   /* print n random variates chosen from the poisson distribution with
      mean parameter mu */
