@@ -1,6 +1,6 @@
 /* specfunc/dilog.c
  * 
- * Copyright (C) 1996, 1997, 1998, 1999, 2000 Gerard Jungman
+ * Copyright (C) 1996, 1997, 1998, 1999, 2000, 2004 Gerard Jungman
  * 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -408,6 +408,109 @@ dilog_gfunc(double A, double omega, double theta, double cos_omega, double sin_o
 }
 
 
+/* Compute
+ *
+ *   sum_{k=1}{infty} z^k / (k^2 (k+1))
+ *
+ * This is a series which appears in the one-step accelerated
+ * method, which splits out one elementary function from the
+ * full definition of Li_2.
+ */
+static int
+dilog_series_3(
+  double r,
+  double cos_theta,
+  double sin_theta,
+  gsl_sf_result * sum_re,
+  gsl_sf_result * sum_im
+  )
+{  
+  double alpha = 1.0 - cos_theta;
+  double beta  = sin_theta;
+  double ck = cos_theta;
+  double sk = sin_theta;
+  double rk = r;
+  double real_sum = r*ck;
+  double imag_sum = r*sk;
+  int kmax = 40; /* tuned for double-precision */
+  int k;
+  for(k=2; k<kmax; k++) {
+    double ck_tmp = ck;
+    ck = ck - (alpha*ck + beta*sk);
+    sk = sk - (alpha*sk - beta*ck_tmp);
+    rk *= r;
+    real_sum += rk/(k*k*(k+1.0)) * ck;
+    imag_sum += rk/(k*k*(k+1.0)) * sk;
+    /* FIXME: how about a termination condition? */
+printf("SUM: %18.14g %18.14g\n", real_sum, imag_sum);
+  }
+
+  sum_re->val = real_sum;
+  sum_re->err = 2.0 * kmax * GSL_DBL_EPSILON * fabs(real_sum);
+  sum_im->val = imag_sum;
+  sum_im->err = 2.0 * kmax * GSL_DBL_EPSILON * fabs(imag_sum);
+
+  return GSL_SUCCESS;
+}
+
+
+/* Compute the Spence function using the accelerated
+ * series. This is good for small r, say |r| < 1/2,
+ * which is consistent with the tuning of the series
+ * evaluation function.
+ *
+ * computes spence(s)
+ *
+ * s = A exp(i omega)
+ * r = |1-s|
+ */
+static
+int
+spence_use_series_3(
+  double A,
+  double omega,
+  double r,
+  gsl_sf_result * real_sp,
+  gsl_sf_result * imag_sp
+  )
+{
+  const double cos_omega = cos(omega);
+  const double sin_omega = sin(omega);
+  const double s_x = A * cos_omega;
+  const double s_y = A * sin_omega;
+  const double oms_x = 1.0 - s_x;
+  const double oms_y =     - s_y;
+
+  if(r == 0.0)
+  {
+    real_sp->val = 0.0;
+    imag_sp->val = 0.0;
+    real_sp->err = 0.0;
+    imag_sp->err = 0.0;
+    return GSL_SUCCESS;
+  }
+  else
+  {
+    const double cos_theta = oms_x/r;
+    const double sin_theta = oms_y/r;
+    gsl_sf_result sum_re;
+    gsl_sf_result sum_im;
+    const int stat_s3 = dilog_series_3(r, cos_theta, sin_theta, &sum_re, &sum_im);
+    const double lns_re = log(A);
+    const double lns_im = omega;
+    /* FIXME: algebra?????? */
+    const double tmp0_re =  s_x * oms_x - s_y * oms_y;
+    const double tmp0_im =  s_x * oms_y + s_y * oms_x;
+    const double tmp1_re = (tmp0_re * lns_re - tmp0_im * lns_im)/(r*r);
+    const double tmp1_im = (tmp0_re * lns_im + tmp0_im * lns_re)/(r*r);
+    real_sp->val = tmp1_re + sum_re.val + 1.0;
+    imag_sp->val = tmp1_im + sum_im.val;
+    real_sp->err = sum_re.err + 2.0*GSL_DBL_EPSILON*fabs(real_sp->val);
+    imag_sp->err = sum_im.err + 2.0*GSL_DBL_EPSILON*fabs(imag_sp->val);
+    return stat_s3;
+  }
+}
+
 
 /*-*-*-*-*-*-*-*-*-*-*-* Functions with Error Codes *-*-*-*-*-*-*-*-*-*-*-*/
 
@@ -575,23 +678,44 @@ int
 gsl_sf_complex_spence_e(
   const double A,
   const double omega,
-  gsl_sf_result * real_dl,
-  gsl_sf_result * imag_dl
+  gsl_sf_result * real_sp,
+  gsl_sf_result * imag_sp
   )
 {
+  /* s = A exp(i omega) is the input
+   *
+   * oms = 1 - s
+   * theta = arg(oms)   -pi <= theta <= pi
+   * r = |oms|
+   *
+   * so spence(s) = Li_2(1-s) = Li_2(r exp(i theta))
+   */
   const double cos_omega = cos(omega);
   const double sin_omega = sin(omega);
-  const double ax = 1.0 - A * cos_omega;
-  const double ay = - A * sin_omega;
-  const double r = sqrt(ax*ax + ay*ay);
-  const double theta = atan2(ay, ax);
+  const double s_x = A * cos_omega;
+  const double s_y = A * sin_omega;
+  const double oms_x = 1.0 - s_x;
+  const double oms_y =     - s_y;
+  const double r = sqrt(oms_x*oms_x + oms_y*oms_y);
 
-  const double imag_term_disc = omega * log(r);
-  gsl_sf_result imag_term_periodic;
-  const int stat_g = dilog_gfunc(A, omega, theta, cos_omega, sin_omega, &imag_term_periodic);
-  imag_dl->val = 0.5 * (imag_term_disc + imag_term_periodic.val);
-  imag_dl->err = 0.5 * imag_term_periodic.err;
-  imag_dl->err += GSL_DBL_EPSILON * fabs(imag_dl->val);
+  if(r < 0.5)
+  {
+    /* direct evaluation */
+printf("DIRECT %g\n", r);
+    return spence_use_series_3(A, omega, r, real_sp, imag_sp);
+  }
+  else
+  {
+printf("INDIRECT %g\n", r);
+    /* so_oms = s/(1-s) = A_inv exp(i omega_inv) */
+    const double so_oms_x = (s_x * oms_x - s_y * s_y) / (r*r);
+    const double so_oms_y = (s_y * oms_x + s_y * s_x) / (r*r);
+    const double r_inv = 1.0/r;
+    const double A_inv = sqrt(so_oms_x*so_oms_x + so_oms_y*so_oms_y);
+    const double omega_inv = atan2(so_oms_y, so_oms_x);
+    gsl_sf_result real_sp_tmp, imag_sp_tmp;
+    const int stat_s3 = spence_use_series_3(A_inv, omega_inv, r_inv, &real_sp_tmp, &imag_sp_tmp);
+  }
 
   return 0; /* GSL_ERROR_SELECT_(stat_g); */
 }

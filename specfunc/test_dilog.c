@@ -176,5 +176,13 @@ int test_dilog(void)
             0.3556738764969238976, TEST_TOL1,
             GSL_SUCCESS);
 
+
+  /*
+  TEST_SF_2(s, gsl_sf_complex_spence_e, (0.75, M_PI*0.125, &r1, &r2),
+            0.30250949083979250610, TEST_TOL1,
+           -0.33724658791102608334, TEST_TOL1,
+            GSL_SUCCESS);
+  */
+
   return s;
 }
