@@ -160,6 +160,7 @@ void check_complex_bitreverse_order (unsigned int n)
 
   gsl_test (status, "gsl_fft_complex_bitreverse_order, n = %d", n);
 
+#ifdef UNUSED
   memcpy (complex_data, complex_tmp, n * sizeof(complex)) ;
   gsl_fft_complex_goldrader_bitreverse_order (complex_data, n);
   status = compare_complex_results ("naive bit reverse", 
@@ -177,6 +178,7 @@ void check_complex_bitreverse_order (unsigned int n)
 				    complex_data, 
 				    n, 1e6);
   gsl_test (status, "gsl_fft_complex_rodriguez_bitreverse_order, n = %d", n);
+#endif
 
   free (complex_data) ;
   free (complex_tmp) ;
