@@ -4,6 +4,8 @@ This is a (hopefully complete) list of things which need to be done for the
 root finding package. The ordering is random. Contact Reid (rp@lanl.gov) for
 details or clarification on anything.
 
+* Add Brent and Dekker root finders. They are the best.
+
 * Fix the documentation. It needs some minor reorganization and additions and
   some clarifications.
 

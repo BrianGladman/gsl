@@ -1,101 +1,105 @@
 /* bisection.c -- bisection root finding algorithm */
-/* $Id$ */
 
-
-/* config headers */
 #include <config.h>
 
-/* standard headers */
 #include <stddef.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
 #include <float.h>
 
-/* gsl headers */
 #include <gsl_errno.h>
 #include <gsl_roots.h>
 
-/* roots headers */
 #include "roots.h"
 
-/* Note that this function checks against 2 * epsilon, not epsilon. This is
-   because if the interval is twice as wide as we want, we can return the
-   midpoint of the interval and that will be within the desired accuracy. */
-/* See the documentation for more information about this function. */
+/* Note that this function checks against 2 * epsilon, not epsilon.
+   This is because if the interval is twice as wide as we want, we can
+   return the midpoint of the interval and that will be within the
+   desired accuracy. */
+
 int
-gsl_root_bisection(double * root, double (* f)(double), double * lower_bound,
-                   double * upper_bound, double rel_epsilon,
-                   double abs_epsilon, unsigned int max_iterations,
-                   double max_deltay)
+gsl_root_bisection (double *root, double (*f) (double), 
+		    double *lower_bound, double *upper_bound, 
+		    double rel_epsilon, double abs_epsilon, 
+		    unsigned int max_iterations)
 {
-  /* Validate input. */
-  {
-    int status;
-    
-    /* Validate arguments. */
-    if (_gsl_root_validate_bfp_args(root, f, lower_bound, upper_bound,
-                                    rel_epsilon, abs_epsilon, max_iterations,
-                                    max_deltay) == GSL_FAILURE)
-      return GSL_FAILURE; /* GSL_ERROR was already called. */
-    
-    /* Make sure we have a root. */
-    if (_gsl_root_ivt_guar(f, *lower_bound, *upper_bound) == GSL_FAILURE)
-      return GSL_FAILURE; /* GSL_ERROR was already called. */
+  unsigned int iterations;
+  double midpoint, fl, fu, fm;
 
-    /* Check if the user unwittingly provided the root. If _g_r_s_u returns
-       non-zero, it has taken care of things and we should return what it
-       returned. */
-    if ((status = _gsl_root_silly_user(root, f, *lower_bound, *upper_bound,
-                                       rel_epsilon, abs_epsilon, max_deltay)))
-      return status;
-  }
+  if (*lower_bound >= *upper_bound)
+    GSL_ERROR ("lower bound larger than upper_bound", GSL_EINVAL);
+ 
+  if (rel_epsilon < 0.0 || abs_epsilon < 0.0)
+    GSL_ERROR ("relative or absolute tolerance negative", GSL_EBADTOL);
 
-  /* Doh! It looks like we'll have to do actual work. */
-  {
-    double midpoint, fl, fu, fm;
-    unsigned int iterations;
-  
-    /* Evaluate the function under search at *lower_bound and *upper_bound. */
-    _BARF_FPCALL(f, *lower_bound, fl);
-    _BARF_FPCALL(f, *upper_bound, fu);
-  
-    for (iterations = 0; iterations < max_iterations; iterations++) {
-      /* Find the midpoint of the interval; this is where we will split it. */
-      midpoint = (*upper_bound + *lower_bound) / 2.0;
-      _BARF_FPCALL(f, midpoint, fm);
-      
-      /* If the midpoint is the root exactly, we're done. */
-      if (fm == 0.0) {
-        *root = midpoint;
-        return GSL_SUCCESS;
-      }
-      
-      /* Discard the half of the interval which doesn't contain the root. */
-      if ((fl > 0.0 && fm < 0.0) || (fl < 0.0 && fm > 0.0)) {
-        *upper_bound = midpoint;
-        fu = fm;
-      }
-      /* If the root is not between *lower_bound and midpoint, it is guaranteed
-         to be between midpoint and *upper_bound. There is definitely a root
-         between *lower_bound and *upper_bound, and f(*lower_bound),
-         f(*upper_bound), and f(midpoint) are all non-zero. */
-      else {
-        *lower_bound = midpoint;
-        fl = fm;
-      }
-      
-      /* Now, let's check if we're finished. */
-      _BARF_TOLS(*lower_bound, *upper_bound, 2 * rel_epsilon, 2 * abs_epsilon);
-      _BARF_DELTAY(fl, fu, max_deltay);
-      if (_WITHIN_TOL(*lower_bound, *upper_bound, 2 * rel_epsilon,
-                      2 * abs_epsilon)) {
-        *root = (*lower_bound + *upper_bound) / 2.0;
-        return GSL_SUCCESS;
-      }
+ if (rel_epsilon < DBL_EPSILON * GSL_ROOT_EPSILON_BUFFER)
+    GSL_ERROR ("relative tolerance too small", GSL_EBADTOL);
+
+  SAFE_FUNC_CALL (f, *lower_bound, fl);
+
+  if (fl == 0.0)
+    {
+      *root = *lower_bound;
+      return GSL_SUCCESS;
     }
 
-    /* Uh oh, ran out of iterations. */
-    GSL_ERROR("exceeded maximum number of iterations", GSL_EMAXITER);
-  }
+  SAFE_FUNC_CALL (f, *upper_bound, fu);
+
+  if (fu == 0.0)
+    {
+      *root = *upper_bound;
+      return GSL_SUCCESS;
+    }
+
+  if ((fl < 0 && fu < 0.0) || (fl > 0 && fu > 0))
+    {
+      GSL_ERROR ("endpoints do not straddle y=0", GSL_EINVAL);
+    }
+
+  if (WITHIN_TOL (*lower_bound, *upper_bound, 2 * rel_epsilon, 2 * abs_epsilon))
+    {
+      *root = (*lower_bound + *upper_bound) / 2.0;
+      return GSL_SUCCESS;
+    }
+  
+  for (iterations = 0; iterations < max_iterations; iterations++)
+    {
+      midpoint = (*upper_bound + *lower_bound) / 2.0;
+
+      SAFE_FUNC_CALL (f, midpoint, fm);
+      
+      if (fm == 0.0)
+	{
+	  *root = midpoint;
+	  return GSL_SUCCESS;
+	}
+      
+      /* Discard the half of the interval which doesn't contain the root. */
+
+      if ((fl > 0.0 && fm < 0.0) || (fl < 0.0 && fm > 0.0))
+	{
+	  *upper_bound = midpoint;
+	  fu = fm;
+	}
+      else
+	{
+	  *lower_bound = midpoint;
+	  fl = fm;
+	}
+      
+
+      if (WITHIN_TOL (*lower_bound, *upper_bound, 2 * rel_epsilon, 2 * abs_epsilon))
+	{
+	  *root = (*lower_bound + *upper_bound) / 2.0;
+	  return GSL_SUCCESS;
+	}
+      else
+	{
+	  CHECK_TOL (*lower_bound, *upper_bound, 2 * rel_epsilon, 2 * abs_epsilon);
+	}
+    }
+  
+  GSL_ERROR ("exceeded maximum number of iterations", GSL_EMAXITER);
+  
 }

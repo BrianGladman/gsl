@@ -88,7 +88,7 @@ test_SOURCES = test.c test.h
 test_LDADD = libgslroots.a ../err/libgslerr.a ../err/libgsltest.a
 test_DEPENDENCIES = libgslroots.a
 
-libgslroots_a_SOURCES = utility.c bisection.c falsepos.c secant.c newton.c
+libgslroots_a_SOURCES = bisection.c falsepos.c secant.c newton.c
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
 CONFIG_CLEAN_FILES = 
@@ -100,8 +100,7 @@ CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
 libgslroots_a_LIBADD = 
-libgslroots_a_OBJECTS =  utility.o bisection.o falsepos.o secant.o \
-newton.o
+libgslroots_a_OBJECTS =  bisection.o falsepos.o secant.o newton.o
 AR = ar
 test_OBJECTS =  test.o
 test_LDFLAGS = 
@@ -118,7 +117,7 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 TAR = tar
 GZIP = --best
 DEP_FILES =  .deps/bisection.P .deps/falsepos.P .deps/newton.P \
-.deps/secant.P .deps/test.P .deps/utility.P
+.deps/secant.P .deps/test.P
 SOURCES = $(libgslroots_a_SOURCES) $(test_SOURCES)
 OBJECTS = $(libgslroots_a_OBJECTS) $(test_OBJECTS)
 

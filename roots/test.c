@@ -14,6 +14,7 @@
 
 /* gsl headers */
 #include <gsl_errno.h>
+#include <gsl_math.h>
 #include <gsl_roots.h>
 
 /* roots headers */
@@ -26,15 +27,13 @@
 /* stopping parameters */
 const double REL_EPSILON = (10 * DBL_EPSILON * GSL_ROOT_EPSILON_BUFFER);
 const double ABS_EPSILON = (10 * DBL_EPSILON * GSL_ROOT_EPSILON_BUFFER);
-const int MAX_ITERATIONS = 100;
-const double MAX_DELTAY = 2000000.0;
-const double MAX_STEP_SIZE = 100.0;
+const unsigned int MAX_ITERATIONS = 100;
 
 void my_error_handler (const char *reason, const char *file,
 		       int line, int err);
 
 int
-main (int argc, char **argv)
+main (void)
 {
 
   gsl_set_error_handler (&my_error_handler);
@@ -53,15 +52,15 @@ main (int argc, char **argv)
   test_bisection ("gsl_root_bisection, cos(x) [-3, 0]",
 		  cos, -3.0, 0.0, -M_PI / 2.0);
   test_bisection ("gsl_root_bisection, x^20 - 1 [0.1, 2]",
-		  test_hairy_1, 0.1, 2.0, 1.0);
+		  func1, 0.1, 2.0, 1.0);
   test_bisection ("gsl_root_bisection, sqrt(|x|)*sgn(x)",
-		  test_hairy_2, -1.0 / 3.0, 1.0, 0.0);
+		  func2, -1.0 / 3.0, 1.0, 0.0);
   test_bisection ("gsl_root_bisection, x^2 - 1e-8 [0, 1]",
-		  test_hairy_3, 0.0, 1.0, sqrt (1e-8));
+		  func3, 0.0, 1.0, sqrt (1e-8));
   test_bisection ("gsl_root_bisection, x exp(-x) [-1/3, 2]",
-		  test_hairy_4, -1.0 / 3.0, 2.0, 0.0);
+		  func4, -1.0 / 3.0, 2.0, 0.0);
   test_bisection ("gsl_root_bisection, (x - 1)^7 [0.1, 2]",
-		  test_hairy_6, 0.1, 2.0, 1.0);
+		  func6, 0.1, 2.0, 1.0);
 
   test_bisection_failure ("gsl_root_bisection, invalid range check [4, 0]",
 			  sin, 4.0, 0.0, M_PI);
@@ -81,15 +80,15 @@ main (int argc, char **argv)
   test_falsepos ("gsl_root_falsepos, cos(x) [-3, 0]",
 		 cos, -3.0, 0.0, -M_PI / 2.0);
   test_falsepos ("gsl_root_falsepos, x^{20} - 1 [0.99, 1.01]",
-		 test_hairy_1, 0.99, 1.01, 1.0);
+		 func1, 0.99, 1.01, 1.0);
   test_falsepos ("gsl_root_falsepos, sqrt(|x|)*sgn(x) [-1/3, 1]",
-		 test_hairy_2, -1.0 / 3.0, 1.0, 0.0);
+		 func2, -1.0 / 3.0, 1.0, 0.0);
   test_falsepos ("gsl_root_falsepos, x^2 - 1e-8 [5e-5, 3e-4]",
-		 test_hairy_3, 5e-5, 3.0e-4, sqrt (1e-8));
+		 func3, 5e-5, 3.0e-4, sqrt (1e-8));
   test_falsepos ("gsl_root_falsepos, x exp(-x) [-1/3, 2]",
-		 test_hairy_4, -1.0 / 3.0, 2.0, 0.0);
+		 func4, -1.0 / 3.0, 2.0, 0.0);
   test_falsepos ("gsl_root_falsepos, (x - 1)^7 [0.8, 1.2]",
-		 test_hairy_6, 0.8, 1.2, 1.0);
+		 func6, 0.8, 1.2, 1.0);
 
 
   /* Test secant method. */
@@ -105,51 +104,51 @@ main (int argc, char **argv)
   test_secant ("gsl_root_secant, cos(x) {-2.5, -3.0}",
 	       cos, -2.5, -3.0, -M_PI / 2.0);
   test_secant ("gsl_root_secant, x^20 - 1 {0.9, 0.91}",
-	       test_hairy_1, 0.9, 0.91, 1.0);
+	       func1, 0.9, 0.91, 1.0);
   test_secant ("gsl_root_secant, x^20 - 1 {1.1, 1.11}",
-	       test_hairy_1, 1.1, 1.11, 1.0);
+	       func1, 1.1, 1.11, 1.0);
   test_secant ("gsl_root_secant, sqrt(abs(x)) * sgn(x) {1, 1.01}",
-	       test_hairy_2, 1.0, 1.01, 0.0);
+	       func2, 1.0, 1.01, 0.0);
   test_secant ("gsl_root_secant, x^2 - 1e-8 {1, 1.01}",
-	       test_hairy_3, 1.0, 1.01, sqrt (1e-8));
+	       func3, 1.0, 1.01, sqrt (1e-8));
 
   test_secant_failure ("gsl_root_secant, max iterations x -> +Inf, x exp(-x) {2, 2.01}",
-		       test_hairy_4, 2.0, 2.01, 0.0);
+		       func4, 2.0, 2.01, 0.0);
   test_secant_failure ("gsl_root_secant, max iterations x -> -Inf, 1/(1 + exp(-x)) {0, 0.01}",
-		       test_hairy_5, 0.0, 0.01, 0.0);
+		       func5, 0.0, 0.01, 0.0);
   test_secant_failure ("gsl_root_secant, max iterations towards root, (x - 1)^7 {0, 0.01}",
-		       test_hairy_6, 0.0, 0.01, 1.0);
+		       func6, 0.0, 0.01, 1.0);
 
   /* Test Newton's Method. */
 
   test_newton ("gsl_root_newton, sin(x) {3.4}",
-	       sin_fdf, 3.4, M_PI);
+	       sin_f, sin_df, sin_fdf, 3.4, M_PI);
   test_newton ("gsl_root_newton, sin(x) {-3.3}",
-	       sin_fdf, -3.3, -M_PI);
+	       sin_f, sin_df, sin_fdf, -3.3, -M_PI);
   test_newton ("gsl_root_newton, sin(x) {0.5}",
-	       sin_fdf, 0.5, 0.0);
+	       sin_f, sin_df, sin_fdf, 0.5, 0.0);
   test_newton ("gsl_root_newton, cos(x) {0.6}",
-	       cos_fdf, 0.6, M_PI / 2.0);
+	       cos_f, cos_df, cos_fdf, 0.6, M_PI / 2.0);
   test_newton ("gsl_root_newton, cos(x) {-2.5}",
-	       cos_fdf, -2.5, -M_PI / 2.0);
+	       cos_f, cos_df, cos_fdf, -2.5, -M_PI / 2.0);
   test_newton ("gsl_root_newton, x^{20} - 1 {0.9}",
-	       test_hairy_1_fdf, 0.9, 1.0);
+	       func1, func1_df, func1_fdf, 0.9, 1.0);
   test_newton ("gsl_root_newton, x^{20} - 1 {1.1}",
-	       test_hairy_1_fdf, 1.1, 1.0);
+	       func1, func1_df, func1_fdf, 1.1, 1.0);
   test_newton ("gsl_root_newton, sqrt(|x|)*sgn(x) {1.001}",
-	       test_hairy_2_fdf, 0.001, 0.0);
+	       func2, func2_df, func2_fdf, 0.001, 0.0);
   test_newton ("gsl_root_newton, x^2 - 1e-8 {1}",
-	       test_hairy_3_fdf, 1.0, sqrt (1e-8));
+	       func3, func3_df, func3_fdf, 1.0, sqrt (1e-8));
   test_newton ("gsl_root_newton, x exp(-x) {-2}",
-	       test_hairy_4_fdf, -2.0, 0.0);
+	       func4, func4_df, func4_fdf, -2.0, 0.0);
 
   test_newton_failure ("gsl_root_newton, max iterations x -> +Inf, x exp(-x) {2}",
-		       test_hairy_4_fdf, 2.0, 0.0);
+		       func4, func4_df, func4_fdf, 2.0, 0.0);
   test_newton_failure ("gsl_root_newton, max iterations x -> -Inf, 1/(1 + exp(-x)) {0}",
-		       test_hairy_5_fdf, 0.0, 0.0);
-
+		       func5, func5_df, func5_fdf, 0.0, 0.0);
+  
   test_newton_failure ("gsl_root_newton, max iterations towards root, (x - 1)^7 {0}",
-		       test_hairy_6_fdf, 0.0, 1.0);
+		       func6, func6_df, func6_fdf, 0.0, 1.0);
 
 
   /* now summarize the results */
@@ -160,20 +159,25 @@ main (int argc, char **argv)
 
 /* Test certain macros. */
 void
-test_macros ()
+test_macros (void)
 {
   int result;
+  double inf, nan ;
 
   /* 1.0 is real */
   result = GSL_ISREAL (1.0);
   gsl_test (result != 1, "GSL_ISREAL(1.0) is 1");
 
+  inf = 1.0 / (sqrt(1.0) - 1) ;
+
   /* 1.0/0.0 == Inf is not real */
-  result = GSL_ISREAL (1.0 / 0.0);
+  result = GSL_ISREAL (inf);
   gsl_test (result != 0, "GSL_ISREAL(Inf) is 0");
 
+  nan = inf - inf ;
+
   /* 0.0/0.0 == NaN is not real */
-  result = GSL_ISREAL (0.0 / 0.0);
+  result = GSL_ISREAL (nan);
   gsl_test (result != 0, "GSL_ISREAL(NaN) is 0");
 }
 
@@ -192,13 +196,13 @@ test_bisection (const char *description,
 
   status = gsl_root_bisection (&root, f, &lower_bound, &upper_bound,
 			       REL_EPSILON, ABS_EPSILON,
-			       MAX_ITERATIONS, MAX_DELTAY);
+			       MAX_ITERATIONS);
 
   gsl_test (status, description, root - correct_root);
 
   /* check the validity of the returned result */
 
-  if (!_WITHIN_TOL (root, correct_root, REL_EPSILON, ABS_EPSILON))
+  if (!WITHIN_TOL (root, correct_root, REL_EPSILON, ABS_EPSILON))
     {
       status = 1; /* failed */ ;
       gsl_test (status, "precision incorrectly reported");
@@ -216,7 +220,7 @@ test_bisection_failure (const char *description,
 
   status = gsl_root_bisection (&root, f, &lower_bound, &upper_bound,
 			       REL_EPSILON, ABS_EPSILON,
-			       MAX_ITERATIONS, MAX_DELTAY);
+			       MAX_ITERATIONS);
 
   gsl_test (!status, description, root - correct_root);
 }
@@ -237,13 +241,13 @@ test_falsepos (const char *description,
 
   status = gsl_root_falsepos (&root, f, &lower_bound, &upper_bound,
 			      REL_EPSILON, ABS_EPSILON,
-			      MAX_ITERATIONS, MAX_DELTAY);
+			      MAX_ITERATIONS);
 
-  gsl_test (status, description, root - correct_root);
+  gsl_test (status, description);
 
   /* check the validity of the returned result */
 
-  if (!_WITHIN_TOL (root, correct_root, REL_EPSILON, ABS_EPSILON))
+  if (!WITHIN_TOL (root, correct_root, REL_EPSILON, ABS_EPSILON))
     {
       status = 1; /* failed */ ;
       gsl_test (status, "precision incorrectly reported");
@@ -261,7 +265,7 @@ test_falsepos_failure (const char *description,
 
   status = gsl_root_falsepos (&root, f, &lower_bound, &upper_bound,
 			      REL_EPSILON, ABS_EPSILON,
-			      MAX_ITERATIONS, MAX_DELTAY);
+			      MAX_ITERATIONS);
 
   gsl_test (!status, description, root - correct_root);
 }
@@ -282,13 +286,13 @@ test_secant (const char *description,
 
   status = gsl_root_secant (&root, f, &lower_bound, &upper_bound,
 			    REL_EPSILON, ABS_EPSILON,
-			    MAX_ITERATIONS, MAX_STEP_SIZE);
+			    MAX_ITERATIONS);
 
   /* check the validity of the returned result */
 
   gsl_test (status, description, root - correct_root);
 
-  if (!_WITHIN_TOL (root, correct_root, REL_EPSILON, ABS_EPSILON))
+  if (!WITHIN_TOL(root, correct_root, REL_EPSILON, ABS_EPSILON))
     {
       status = 1; /* failed */ ;
       gsl_test (status, "precision incorrectly reported");
@@ -306,7 +310,7 @@ test_secant_failure (const char *description,
 
   status = gsl_root_secant (&root, f, &lower_bound, &upper_bound,
 			    REL_EPSILON, ABS_EPSILON,
-			    MAX_ITERATIONS, MAX_STEP_SIZE);
+			    MAX_ITERATIONS);
 
   gsl_test (!status, description, root - correct_root);
 }
@@ -315,21 +319,24 @@ test_secant_failure (const char *description,
 /* Using gsl_root_newton, find the root of the function pointed to by fdf,
    with guess guess. Check if f succeeded and that it was accurate enough. */
 void
-test_newton (const char *description,
-	     void (*fdf) (double *, double *, double, int, int),
-	     double guess, double correct_root)
+  test_newton (const char *description,
+	       double (*f) (double),
+	       double (*df) (double),
+	       void (*fdf) (double, double *, double *),
+	       double guess, double correct_root)
 {
   int status;
   double root;
 
-  status = gsl_root_newton (&root, fdf, &guess, REL_EPSILON, ABS_EPSILON,
-			    MAX_ITERATIONS, MAX_STEP_SIZE);
+  status = gsl_root_newton (&root, f, df, fdf, &guess, 
+			    REL_EPSILON, ABS_EPSILON,
+			    MAX_ITERATIONS);
 
   gsl_test (status, description, root - correct_root);
 
   /* check the validity of the returned result */
 
-  if (!_WITHIN_TOL (root, correct_root, REL_EPSILON, ABS_EPSILON))
+  if (!WITHIN_TOL (root, correct_root, REL_EPSILON, ABS_EPSILON))
     {
       status = 1; /* failed */ ;
       gsl_test (status, "precision incorrectly reported (%g obs vs %g expected)", root, correct_root);
@@ -338,15 +345,18 @@ test_newton (const char *description,
 }
 
 void
-test_newton_failure (const char *description,
-		     void (*fdf) (double *, double *, double, int, int),
-		     double guess, double correct_root)
+  test_newton_failure (const char *description,
+		       double (*f) (double),
+		       double (*df) (double),
+		       void (*fdf) (double, double *, double *),
+		       double guess, double correct_root)
 {
   int status;
   double root;
 
-  status = gsl_root_newton (&root, fdf, &guess, REL_EPSILON, ABS_EPSILON,
-			    MAX_ITERATIONS, MAX_STEP_SIZE);
+  status = gsl_root_newton (&root, f, df, fdf, &guess, 
+			    REL_EPSILON, ABS_EPSILON,
+			    MAX_ITERATIONS);
 
   gsl_test (!status, description, root - correct_root);
 }
@@ -357,16 +367,21 @@ test_newton_failure (const char *description,
 /* f'(x) = 20x^{19} */
 /* zero at x = 1 or -1 */
 double
-test_hairy_1 (double x)
+func1 (double x)
 {
   return pow (x, 20.0) - 1;
 }
 
-void
-test_hairy_1_fdf (double *y, double *yprime, double x, int y_wanted,
-		  int yprime_wanted)
+double
+func1_df (double x)
 {
-  *y = test_hairy_1 (x);
+  return 20.0 * pow (x, 19.0);
+}
+
+void
+func1_fdf (double x, double *y, double *yprime)
+{
+  *y = func1 (x);
   *yprime = 20.0 * pow (x, 19.0);
 }
 
@@ -374,7 +389,7 @@ test_hairy_1_fdf (double *y, double *yprime, double x, int y_wanted,
 /* f'(x) = 1 / sqrt(abs(x) */
 /* zero at x = 0 */
 double
-test_hairy_2 (double x)
+func2 (double x)
 {
   double delta;
 
@@ -388,11 +403,16 @@ test_hairy_2 (double x)
   return sqrt (fabs (x)) * delta;
 }
 
-void
-test_hairy_2_fdf (double *y, double *yprime, double x, int y_wanted,
-		  int yprime_wanted)
+double
+func2_df (double x)
 {
-  *y = test_hairy_2 (x);
+  return 1 / sqrt (fabs (x));
+}
+
+void
+func2_fdf (double x, double *y, double *yprime)
+{
+  *y = func2 (x);
   *yprime = 1 / sqrt (fabs (x));
 }
 
@@ -401,16 +421,21 @@ test_hairy_2_fdf (double *y, double *yprime, double x, int y_wanted,
 /* f'(x) = 2x */
 /* zero at x = sqrt(1e-8) or -sqrt(1e-8) */
 double
-test_hairy_3 (double x)
+func3 (double x)
 {
   return pow (x, 2.0) - 1e-8;
 }
 
-void
-test_hairy_3_fdf (double *y, double *yprime, double x, int y_wanted,
-		  int yprime_wanted)
+double
+func3_df (double x)
 {
-  *y = test_hairy_3 (x);
+  return 2 * x;
+}
+
+void
+func3_fdf (double x, double *y, double *yprime)
+{
+  *y = func3 (x);
   *yprime = 2 * x;
 }
 
@@ -418,16 +443,21 @@ test_hairy_3_fdf (double *y, double *yprime, double x, int y_wanted,
 /* f'(x) = exp(-x) - x exp(-x) */
 /* zero at x = 0 */
 double
-test_hairy_4 (double x)
+func4 (double x)
 {
   return x * exp (-x);
 }
 
-void
-test_hairy_4_fdf (double *y, double *yprime, double x, int y_wanted,
-		  int yprime_wanted)
+double
+func4_df (double x)
 {
-  *y = test_hairy_4 (x);
+  return exp (-x) - x * exp (-x);
+}
+
+void
+func4_fdf (double x, double *y, double *yprime)
+{
+  *y = func4 (x);
   *yprime = exp (-x) - x * exp (-x);
 }
 
@@ -435,16 +465,21 @@ test_hairy_4_fdf (double *y, double *yprime, double x, int y_wanted,
 /* f'(x) = -exp(x) / (1 + exp(x))^2 */
 /* no roots! */
 double
-test_hairy_5 (double x)
+func5 (double x)
 {
   return 1 / (1 + exp (x));
 }
 
-void
-test_hairy_5_fdf (double *y, double *yprime, double x, int y_wanted,
-		  int yprime_wanted)
+double
+func5_df (double x)
 {
-  *y = test_hairy_5 (x);
+  return -exp (x) / pow (1 + exp (x), 2.0);
+}
+
+void
+func5_fdf (double x, double *y, double *yprime)
+{
+  *y = func5 (x);
   *yprime = -exp (x) / pow (1 + exp (x), 2.0);
 }
 
@@ -452,32 +487,59 @@ test_hairy_5_fdf (double *y, double *yprime, double x, int y_wanted,
 /* f'(x) = 7 * (x - 1)^6 */
 /* zero at x = 1 */
 double
-test_hairy_6 (double x)
+func6 (double x)
 {
   return pow (x - 1, 7.0);
 }
 
-void
-test_hairy_6_fdf (double *y, double *yprime, double x, int y_wanted,
-		  int yprime_wanted)
+double
+func6_df (double x)
 {
-  *y = test_hairy_6 (x);
+  return 7.0 * pow (x - 1, 6.0);
+}
+
+void
+func6_fdf (double x, double *y, double *yprime)
+{
+  *y = func6 (x);
   *yprime = 7.0 * pow (x - 1, 6.0);
 }
 
 /* sin(x) packaged up nicely. */
+double
+sin_f (double x)
+{
+  return sin (x);
+}
+
+double
+sin_df (double x)
+{
+  return cos (x);
+}
+
 void
-sin_fdf (double *y, double *yprime, double x, int y_wanted,
-	 int yprime_wanted)
+sin_fdf (double x, double *y, double *yprime)
 {
   *y = sin (x);
   *yprime = cos (x);
 }
 
 /* cos(x) packaged up nicely. */
+double
+cos_f (double x)
+{
+  return cos (x);
+}
+
+double
+cos_df (double x)
+{
+  return - sin (x);
+}
+
 void
-cos_fdf (double *y, double *yprime, double x, int y_wanted,
-	 int yprime_wanted)
+cos_fdf (double x, double *y, double *yprime)
 {
   *y = cos (x);
   *yprime = -sin (x);
@@ -490,3 +552,5 @@ my_error_handler (const char *reason, const char *file, int line, int err)
   if (0)
     printf ("(caught [%s:%d: %s (%d)])\n", file, line, reason, err);
 }
+
+

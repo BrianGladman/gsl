@@ -1,3 +1,10 @@
+Thu Oct 15 13:59:30 1998  Brian Gough  <bjg@vvv.lanl.gov>
+
+	* bisection.c, falsepos.c, secant.c: reordered the tests so that
+ 	the minimum number of function evaluations are performed when
+ 	there is an early exit due to one of the supplied limits lying on
+ 	a root.
+
 Fri Aug 21 14:48:13 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
 	* test.c: clean up of tests to get rid of warnings
