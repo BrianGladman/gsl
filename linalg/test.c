@@ -1668,6 +1668,7 @@ test_SV_decomp_mod_dim(const gsl_matrix * m, double eps)
   gsl_matrix * v  = gsl_matrix_alloc(M,N);
   gsl_matrix * a  = gsl_matrix_alloc(M,N);
   gsl_matrix * q  = gsl_matrix_alloc(N,N);
+  gsl_matrix * x  = gsl_matrix_alloc(N,N);
   gsl_matrix * dqt  = gsl_matrix_alloc(N,N);
   gsl_vector * d  = gsl_vector_alloc(N);
   gsl_vector * w  = gsl_vector_alloc(N);
@@ -2388,6 +2389,7 @@ int test_TDN_cyc_solve(void)
 {
   int f;
   int s = 0;
+  double actual[16];
 
   actual[0] =  3.0/2.0;
   actual[1] = -1.0/2.0;
