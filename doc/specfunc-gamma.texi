@@ -241,6 +241,15 @@ for @math{a > 0}, @math{b > 0}.
 @comment exceptions: GSL_EDOM
 @end deftypefun
 
+@deftypefun double gsl_sf_beta_inc (double @var{a}, double @var{b}, double @var{x})
+@deftypefunx int gsl_sf_beta_inc_e (double @var{a}, double @var{b}, double @var{x}, gsl_sf_result * @var{result})
+@cindex incomplete Beta function, normalized
+@cindex normalized incomplete Beta function
+@cindex Beta function, incomplete normalized 
+These routines compute the normalize incomplete Beta function
+@math{B_x(a,b)/B(a,b)} for @math{a > 0}, @math{b > 0}, and @c{$0 \le x \le 1$}
+@math{0 <= x <= 1}.
+@end deftypefun
 
 
 
