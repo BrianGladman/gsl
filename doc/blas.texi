@@ -2,23 +2,11 @@
 @cindex vector, operations
 @cindex BLAS
 
-@menu
-* Introduction::                
-* Organization::                
-* GSL BLAS Interface::          
-* Raw BLAS Interface::          
-* BLAS References and Further Reading::  
-@end menu
-
-@node Introduction
-@section Introduction
-
 The Basic Linear Algebra Standard (BLAS) prescribes a set of fundamental
 operations on vectors and matrices which can be used to create
 higher-level linear algebra functionality.  Because of the many possible
 types of vectors and matrices, including variations in base precision,
-the number of functions specified by the BLAS standard is tediously
-large.
+the number of functions specified by the BLAS standard is large.
 
 Furthermore, because of the long history of BLAS and BLAS-like
 implementations, and the need for interoperability, the complexity of
@@ -28,24 +16,30 @@ common high-level linear algebra operations on GSL vector and matrix
 objects.  Some familiarity with the BLAS standards, including both the
 legacy and draft interface standards, is assumed in this chapter.
 
+@menu
+* Organization::                
+* GSL BLAS Interface::          
+* CBLAS Library::               
+* BLAS References and Further Reading::  
+@end menu
 
 @node Organization
 @section Organization
 
-GSL provides two layers of BLAS functionality, a low-level or "raw"
-layer, which corresponds directly to the BLAS standard, and a GSL
-specific layer for operation on GSL vector and matrix objects.  Users
-who are interested in simple operations on GSL vector and matrix objects
-should use the high-level GSL specific layer, which is specified in the
-file @code{gsl_blas.h}.  Also, users interested in simple linear algebra
+GSL provides two layers of BLAS functionality, a low-level layer, which
+corresponds directly to the BLAS standard, and a GSL specific layer for
+operation on GSL vector and matrix objects.  Users who are interested in
+simple operations on GSL vector and matrix objects should use the
+high-level GSL specific layer, which is specified in the file
+@code{gsl_blas.h}.  Also, users interested in simple linear algebra
 functionality for GSL vector and matrix objects are directed to the
 @code{gsl_linalg} library.  This should satisfy the needs of most users.
 Note that full BLAS functionality is not available for GSL vector and
 matrix objects since GSL provides only standard dense storage-format
 objects, for which much of the BLAS functionality does not apply.
 
-The interface for the @code{gsl_blas_raw} layer is specified in the file
-@code{gsl_blas_raw.h}.  The functionality described by this interface is
+The interface for the @code{gsl_cblas} layer is specified in the file
+@code{gsl_cblas.h}.  The functionality described by this interface is
 semantically equivalent to the BLAST reference draft for a C interface
 to legacy BLAS implementations.
 
@@ -90,6 +84,15 @@ matrix objects, based on the relevant built-in types.  Therefore, we
 provide a GSL specific interface to BLAS functionality, for those
 operations which are meaningful with the GSL objects.  The interface to
 this functionality is given in the file @code{gsl_blas.h}.
+
+@menu
+* Level 1 GSL BLAS Interface::  
+* Level 2 GSL BLAS Interface::  
+* Level 3 GSL BLAS Interface::  
+@end menu
+
+@node Level 1 GSL BLAS Interface
+@subsection Level 1 
 
 @deftypefun int gsl_blas_sdsdot (float @var{alpha}, const gsl_vector_float * @var{X}, const gsl_vector_float * @var{Y}, float * @var{result})
 @end deftypefun
@@ -156,6 +159,9 @@ this functionality is given in the file @code{gsl_blas.h}.
 
 @deftypefun int gsl_blas_scopy (const gsl_vector_float * @var{X}, gsl_vector_float * @var{Y})
 @end deftypefun
+
+@node Level 2 GSL BLAS Interface
+@subsection Level 2 
 
 @deftypefun int gsl_blas_saxpy (float @var{alpha}, const gsl_vector_float * @var{X}, gsl_vector_float * @var{Y})
 @end deftypefun
@@ -427,6 +433,10 @@ this functionality is given in the file @code{gsl_blas.h}.
 @deftypefun int gsl_blas_zhpr2 (CBLAS_UPLO_t @var{Uplo}, const gsl_complex * @var{alpha}, const gsl_vector_complex * @var{X}, const gsl_vector_complex * @var{Y}, void *@var{Ap})
 @end deftypefun
 
+@node Level 3 GSL BLAS Interface
+@subsection Level 3
+
+
 @deftypefun int gsl_blas_sgemm (CBLAS_TRANSPOSE_t @var{TransA}, CBLAS_TRANSPOSE_t @var{TransB}, int @var{K}, float @var{alpha}, const gsl_matrix_float * @var{A}, const gsl_matrix_float * @var{B}, float @var{beta}, gsl_matrix_float * @var{C})
 @end deftypefun
 
@@ -517,443 +527,13 @@ this functionality is given in the file @code{gsl_blas.h}.
 @deftypefun int gsl_blas_zher2k (CBLAS_UPLO_t @var{Uplo}, CBLAS_TRANSPOSE_t @var{Trans}, int @var{K}, const gsl_complex * @var{alpha}, const gsl_matrix_complex * @var{A}, const gsl_matrix_complex * @var{B}, double @var{beta}, gsl_matrix_complex * @var{C})
 @end deftypefun
 
-@node Raw BLAS Interface
-@section Raw BLAS Interface
+@node CBLAS Library
+@section CBLAS Library
 
-The low-level @code{gsl_blas_raw} interface is specified in the
-file @code{gsl_blas_raw.h}. 
+The low-level @sc{cblas} interface is specified in the file
+@code{gsl_cblas.h}.
 
-Level 1
 
-@deftypefun float gsl_blas_raw_sdsdot (size_t @var{N}, float @var{alpha}, const float X[], size_t @var{incX}, const float Y[], size_t @var{incY})
-@end deftypefun
-
-@deftypefun double gsl_blas_raw_dsdot (size_t @var{N}, const float X[], size_t @var{incX}, const float Y[], size_t @var{incY})
-@end deftypefun
-
-@deftypefun float gsl_blas_raw_sdot (size_t @var{N}, const float X[], size_t @var{incX}, const float Y[], size_t @var{incY})
-@end deftypefun
-
-@deftypefun double gsl_blas_raw_ddot (size_t @var{N}, const double X[], size_t @var{incX}, const double Y[], size_t @var{incY})
-@end deftypefun
-
-@deftypefun void gsl_blas_raw_cdotu (size_t @var{N}, const gsl_const_complex_packed_array_float @var{X}, size_t @var{incX}, const gsl_const_complex_packed_array_float @var{Y}, size_t @var{incY}, gsl_complex_packed_float @var{dotu})
-@end deftypefun
-
-@deftypefun void gsl_blas_raw_cdotc (size_t @var{N}, const gsl_const_complex_packed_array_float @var{X}, size_t @var{incX}, const gsl_const_complex_packed_array_float @var{Y}, size_t @var{incY}, gsl_complex_packed_float @var{dotc})
-@end deftypefun
-
-@deftypefun void gsl_blas_raw_zdotu (size_t @var{N}, const gsl_const_complex_packed_array @var{X}, size_t @var{incX}, const gsl_const_complex_packed_array @var{Y}, size_t @var{incY}, gsl_complex_packed @var{dotu})
-@end deftypefun
-
-@deftypefun void gsl_blas_raw_zdotc (size_t @var{N}, const gsl_const_complex_packed_array @var{X}, size_t @var{incX}, const gsl_const_complex_packed_array @var{Y}, size_t @var{incY}, gsl_complex_packed @var{dotc})
-@end deftypefun
-
-@deftypefun float gsl_blas_raw_snrm2 (size_t @var{N}, const float X[], size_t @var{incX})
-@end deftypefun
-
-@deftypefun double gsl_blas_raw_dnrm2 (size_t @var{N}, const double X[], size_t @var{incX})
-@end deftypefun
-
-@deftypefun float gsl_blas_raw_scnrm2 (size_t @var{N}, const gsl_const_complex_packed_array_float @var{X}, size_t @var{incX})
-@end deftypefun
-
-@deftypefun double gsl_blas_raw_dznrm2 (size_t @var{N}, const gsl_const_complex_packed_array @var{X}, size_t @var{incX})
-@end deftypefun
-
-@deftypefun float gsl_blas_raw_sasum (size_t @var{N}, const float X[], size_t @var{incX})
-@end deftypefun
-
-@deftypefun double gsl_blas_raw_dasum (size_t @var{N}, const double X[], size_t @var{incX})
-@end deftypefun
-
-@deftypefun float gsl_blas_raw_scasum (size_t @var{N}, const gsl_const_complex_packed_array_float @var{X}, size_t @var{incX})
-@end deftypefun
-
-@deftypefun double gsl_blas_raw_dzasum (size_t @var{N}, const gsl_const_complex_packed_array @var{X}, size_t @var{incX})
-@end deftypefun
-
-@deftypefun CBLAS_INDEX_t gsl_blas_raw_isamax (size_t @var{N}, const float X[], size_t @var{incX})
-@end deftypefun
-
-@deftypefun CBLAS_INDEX_t gsl_blas_raw_idamax (size_t @var{N}, const double X[], size_t @var{incX})
-@end deftypefun
-
-@deftypefun CBLAS_INDEX_t gsl_blas_raw_icamax (size_t @var{N}, const gsl_const_complex_packed_array_float @var{X}, size_t @var{incX})
-@end deftypefun
-
-@deftypefun CBLAS_INDEX_t gsl_blas_raw_izamax (size_t @var{N}, const gsl_const_complex_packed_array @var{X}, size_t @var{incX})
-@end deftypefun
-
-@deftypefun void gsl_blas_raw_sswap (size_t @var{N}, float X[], size_t @var{incX}, float Y[], size_t @var{incY})
-@end deftypefun
-
-@deftypefun void gsl_blas_raw_dswap (size_t @var{N}, double X[], size_t @var{incX}, double Y[], size_t @var{incY})
-@end deftypefun
-
-@deftypefun void gsl_blas_raw_cswap (size_t @var{N}, gsl_complex_packed_array_float @var{X}, size_t @var{incX}, gsl_complex_packed_array_float @var{Y}, size_t @var{incY})
-@end deftypefun
-
-@deftypefun void gsl_blas_raw_zswap (size_t @var{N}, gsl_complex_packed_array @var{X}, size_t @var{incX}, gsl_complex_packed_array @var{Y}, size_t @var{incY})
-@end deftypefun
-
-@deftypefun void gsl_blas_raw_scopy (size_t @var{N}, const float X[], size_t @var{incX}, float Y[], size_t @var{incY})
-@end deftypefun
-
-@deftypefun void gsl_blas_raw_dcopy (size_t @var{N}, const double X[], size_t @var{incX}, double Y[], size_t @var{incY})
-@end deftypefun
-
-@deftypefun void gsl_blas_raw_ccopy (size_t @var{N}, const gsl_const_complex_packed_array_float @var{X}, size_t @var{incX}, gsl_complex_packed_array_float @var{Y}, size_t @var{incY})
-@end deftypefun
-
-@deftypefun void gsl_blas_raw_zcopy (size_t @var{N}, const gsl_const_complex_packed_array @var{X}, size_t @var{incX}, gsl_complex_packed_array @var{Y}, size_t @var{incY})
-@end deftypefun
-
-@deftypefun void gsl_blas_raw_saxpy (size_t @var{N}, float @var{alpha}, const float X[], size_t @var{incX}, float Y[], size_t @var{incY})
-@end deftypefun
-
-@deftypefun void gsl_blas_raw_daxpy (size_t @var{N}, double @var{alpha}, const double X[], size_t @var{incX}, double Y[], size_t @var{incY})
-@end deftypefun
-
-@deftypefun void gsl_blas_raw_caxpy (size_t @var{N}, const gsl_const_complex_packed_float @var{alpha}, const gsl_const_complex_packed_array_float @var{X}, size_t @var{incX}, gsl_complex_packed_array_float @var{Y}, size_t @var{incY})
-@end deftypefun
-
-@deftypefun void gsl_blas_raw_zaxpy (size_t @var{N}, const gsl_const_complex_packed @var{alpha}, const gsl_const_complex_packed_array @var{X}, size_t @var{incX}, gsl_complex_packed_array @var{Y}, size_t @var{incY})
-@end deftypefun
-
-@deftypefun void gsl_blas_raw_srotg (float a[], float b[], float c[], float s[])
-@end deftypefun
-
-@deftypefun void gsl_blas_raw_drotg (double a[], double b[], double c[], double s[])
-@end deftypefun
-
-@deftypefun void gsl_blas_raw_srotmg (float d1[], float d2[], float b1[], float @var{b2}, float P[])
-@end deftypefun
-
-@deftypefun void gsl_blas_raw_drotmg (double d1[], double d2[], double b1[], double @var{b2}, double P[])
-@end deftypefun
-
-@deftypefun void gsl_blas_raw_srot (size_t @var{N}, float X[], size_t @var{incX}, float Y[], size_t @var{incY}, const float @var{c}, const float @var{s})
-@end deftypefun
-
-@deftypefun void gsl_blas_raw_drot (size_t @var{N}, double X[], size_t @var{incX}, double Y[], size_t @var{incY}, const double @var{c}, const double @var{s})
-@end deftypefun
-
-@deftypefun void gsl_blas_raw_srotm (size_t @var{N}, float X[], size_t @var{incX}, float Y[], size_t @var{incY}, const float P[])
-@end deftypefun
-
-@deftypefun void gsl_blas_raw_drotm (size_t @var{N}, double X[], size_t @var{incX}, double Y[], size_t @var{incY}, const double P[])
-@end deftypefun
-
-@deftypefun void gsl_blas_raw_sscal (size_t @var{N}, float @var{alpha}, float X[], size_t @var{incX})
-@end deftypefun
-
-@deftypefun void gsl_blas_raw_dscal (size_t @var{N}, double @var{alpha}, double X[], size_t @var{incX})
-@end deftypefun
-
-@deftypefun void gsl_blas_raw_cscal (size_t @var{N}, const gsl_const_complex_packed_float @var{alpha}, gsl_complex_packed_array_float @var{X}, size_t @var{incX})
-@end deftypefun
-
-@deftypefun void gsl_blas_raw_zscal (size_t @var{N}, const gsl_const_complex_packed @var{alpha}, gsl_complex_packed_array @var{X}, size_t @var{incX})
-@end deftypefun
-
-@deftypefun void gsl_blas_raw_csscal (size_t @var{N}, float @var{alpha}, gsl_complex_packed_array_float @var{X}, size_t @var{incX})
-@end deftypefun
-
-@deftypefun void gsl_blas_raw_zdscal (size_t @var{N}, double @var{alpha}, gsl_complex_packed_array @var{X}, size_t @var{incX})
-@end deftypefun
-
-Level 2
-
-@deftypefun void gsl_blas_raw_sgemv (CBLAS_TRANSPOSE_t @var{TransA}, size_t @var{M}, size_t @var{N}, float @var{alpha}, const float A[], int @var{lda}, const float X[], size_t @var{incX}, float @var{beta}, float Y[], size_t @var{incY})
-@end deftypefun
-
-@deftypefun void gsl_blas_raw_dgemv (CBLAS_TRANSPOSE_t @var{TransA}, size_t @var{M}, size_t @var{N}, double @var{alpha}, const double A[], int @var{lda}, const double X[], size_t @var{incX}, double @var{beta}, double Y[], size_t @var{incY})
-@end deftypefun
-
-@deftypefun void gsl_blas_raw_cgemv (CBLAS_TRANSPOSE_t @var{TransA}, size_t @var{M}, size_t @var{N}, const gsl_const_complex_packed_float @var{alpha}, const gsl_const_complex_packed_array_float @var{A}, int @var{lda}, const gsl_const_complex_packed_array_float @var{X}, size_t @var{incX}, const gsl_const_complex_packed_float @var{beta}, gsl_complex_packed_array_float @var{Y}, size_t @var{incY})
-@end deftypefun
-
-@deftypefun void gsl_blas_raw_zgemv (CBLAS_TRANSPOSE_t @var{TransA}, size_t @var{M}, size_t @var{N}, const gsl_const_complex_packed @var{alpha}, const gsl_const_complex_packed_array @var{A}, int @var{lda}, const gsl_const_complex_packed_array @var{X}, size_t @var{incX}, const gsl_const_complex_packed @var{beta}, gsl_complex_packed_array @var{Y}, size_t @var{incY})
-@end deftypefun
-
-@deftypefun void gsl_blas_raw_sgbmv (CBLAS_TRANSPOSE_t @var{TransA}, size_t @var{M}, size_t @var{N}, size_t @var{KL}, size_t @var{KU}, float @var{alpha}, const float A[], int @var{lda}, const float X[], size_t @var{incX}, float @var{beta}, float Y[], size_t @var{incY})
-@end deftypefun
-
-@deftypefun void gsl_blas_raw_dgbmv (CBLAS_TRANSPOSE_t @var{TransA}, size_t @var{M}, size_t @var{N}, size_t @var{KL}, size_t @var{KU}, double @var{alpha}, const double A[], int @var{lda}, const double X[], size_t @var{incX}, double @var{beta}, double Y[], size_t @var{incY})
-@end deftypefun
-
-@deftypefun void gsl_blas_raw_cgbmv (CBLAS_TRANSPOSE_t @var{TransA}, size_t @var{M}, size_t @var{N}, size_t @var{KL}, size_t @var{KU}, const gsl_const_complex_packed_float @var{alpha}, const gsl_const_complex_packed_array_float @var{A}, int @var{lda}, const gsl_const_complex_packed_array_float @var{X}, size_t @var{incX}, const gsl_const_complex_packed_float @var{beta}, gsl_complex_packed_array_float @var{Y}, size_t @var{incY})
-@end deftypefun
-
-@deftypefun void gsl_blas_raw_zgbmv (CBLAS_TRANSPOSE_t @var{TransA}, size_t @var{M}, size_t @var{N}, size_t @var{KL}, size_t @var{KU}, const gsl_const_complex_packed @var{alpha}, const gsl_const_complex_packed_array @var{A}, int @var{lda}, const gsl_const_complex_packed_array @var{X}, size_t @var{incX}, const gsl_const_complex_packed @var{beta}, gsl_complex_packed_array @var{Y}, size_t @var{incY})
-@end deftypefun
-
-@deftypefun void gsl_blas_raw_strmv (CBLAS_UPLO_t @var{Uplo}, CBLAS_TRANSPOSE_t @var{TransA}, CBLAS_DIAG_t @var{Diag}, size_t @var{N}, const float A[], int @var{lda}, float X[], size_t @var{incX})
-@end deftypefun
-
-@deftypefun void gsl_blas_raw_dtrmv (CBLAS_UPLO_t @var{Uplo}, CBLAS_TRANSPOSE_t @var{TransA}, CBLAS_DIAG_t @var{Diag}, size_t @var{N}, const double A[], int @var{lda}, double X[], size_t @var{incX})
-@end deftypefun
-
-@deftypefun void gsl_blas_raw_ctrmv (CBLAS_UPLO_t @var{Uplo}, CBLAS_TRANSPOSE_t @var{TransA}, CBLAS_DIAG_t @var{Diag}, size_t @var{N}, const gsl_const_complex_packed_array_float @var{A}, int @var{lda}, gsl_complex_packed_array_float @var{X}, size_t @var{incX})
-@end deftypefun
-
-@deftypefun void gsl_blas_raw_ztrmv (CBLAS_UPLO_t @var{Uplo}, CBLAS_TRANSPOSE_t @var{TransA}, CBLAS_DIAG_t @var{Diag}, size_t @var{N}, const gsl_const_complex_packed_array @var{A}, int @var{lda}, gsl_complex_packed_array @var{X}, size_t @var{incX})
-@end deftypefun
-
-@deftypefun void gsl_blas_raw_stbmv (CBLAS_UPLO_t @var{Uplo}, CBLAS_TRANSPOSE_t @var{TransA}, CBLAS_DIAG_t @var{Diag}, size_t @var{N}, size_t @var{K}, const float A[], int @var{lda}, float X[], size_t @var{incX})
-@end deftypefun
-
-@deftypefun void gsl_blas_raw_dtbmv (CBLAS_UPLO_t @var{Uplo}, CBLAS_TRANSPOSE_t @var{TransA}, CBLAS_DIAG_t @var{Diag}, size_t @var{N}, size_t @var{K}, const double A[], int @var{lda}, double X[], size_t @var{incX})
-@end deftypefun
-
-@deftypefun void gsl_blas_raw_ctbmv (CBLAS_UPLO_t @var{Uplo}, CBLAS_TRANSPOSE_t @var{TransA}, CBLAS_DIAG_t @var{Diag}, size_t @var{N}, size_t @var{K}, const gsl_const_complex_packed_array_float @var{A}, int @var{lda}, gsl_complex_packed_array_float @var{X}, size_t @var{incX})
-@end deftypefun
-
-@deftypefun void gsl_blas_raw_ztbmv (CBLAS_UPLO_t @var{Uplo}, CBLAS_TRANSPOSE_t @var{TransA}, CBLAS_DIAG_t @var{Diag}, size_t @var{N}, size_t @var{K}, const gsl_const_complex_packed_array @var{A}, int @var{lda}, gsl_complex_packed_array @var{X}, size_t @var{incX})
-@end deftypefun
-
-@deftypefun void gsl_blas_raw_stpmv (CBLAS_UPLO_t @var{Uplo}, CBLAS_TRANSPOSE_t @var{TransA}, CBLAS_DIAG_t @var{Diag}, size_t @var{N}, const float Ap[], float X[], size_t @var{incX})
-@end deftypefun
-
-@deftypefun void gsl_blas_raw_dtpmv (CBLAS_UPLO_t @var{Uplo}, CBLAS_TRANSPOSE_t @var{TransA}, CBLAS_DIAG_t @var{Diag}, size_t @var{N}, const double Ap[], double X[], size_t @var{incX})
-@end deftypefun
-
-@deftypefun void gsl_blas_raw_ctpmv (CBLAS_UPLO_t @var{Uplo}, CBLAS_TRANSPOSE_t @var{TransA}, CBLAS_DIAG_t @var{Diag}, size_t @var{N}, const gsl_const_complex_packed_array_float @var{Ap}, gsl_complex_packed_array_float @var{X}, size_t @var{incX})
-@end deftypefun
-
-@deftypefun void gsl_blas_raw_ztpmv (CBLAS_UPLO_t @var{Uplo}, CBLAS_TRANSPOSE_t @var{TransA}, CBLAS_DIAG_t @var{Diag}, size_t @var{N}, const gsl_const_complex_packed_array @var{Ap}, gsl_complex_packed_array @var{X}, size_t @var{incX})
-@end deftypefun
-
-@deftypefun void gsl_blas_raw_strsv (CBLAS_UPLO_t @var{Uplo}, CBLAS_TRANSPOSE_t @var{TransA}, CBLAS_DIAG_t @var{Diag}, size_t @var{N}, const float A[], int @var{lda}, float X[], size_t @var{incX})
-@end deftypefun
-
-@deftypefun void gsl_blas_raw_dtrsv (CBLAS_UPLO_t @var{Uplo}, CBLAS_TRANSPOSE_t @var{TransA}, CBLAS_DIAG_t @var{Diag}, size_t @var{N}, const double A[], int @var{lda}, double X[], size_t @var{incX})
-@end deftypefun
-
-@deftypefun void gsl_blas_raw_ctrsv (CBLAS_UPLO_t @var{Uplo}, CBLAS_TRANSPOSE_t @var{TransA}, CBLAS_DIAG_t @var{Diag}, size_t @var{N}, const gsl_const_complex_packed_array_float @var{A}, int @var{lda}, gsl_complex_packed_array_float @var{X}, size_t @var{incX})
-@end deftypefun
-
-@deftypefun void gsl_blas_raw_ztrsv (CBLAS_UPLO_t @var{Uplo}, CBLAS_TRANSPOSE_t @var{TransA}, CBLAS_DIAG_t @var{Diag}, size_t @var{N}, const gsl_const_complex_packed_array @var{A}, int @var{lda}, gsl_complex_packed_array @var{X}, size_t @var{incX})
-@end deftypefun
-
-@deftypefun void gsl_blas_raw_stbsv (CBLAS_UPLO_t @var{Uplo}, CBLAS_TRANSPOSE_t @var{TransA}, CBLAS_DIAG_t @var{Diag}, size_t @var{N}, size_t @var{K}, const float A[], int @var{lda}, float X[], size_t @var{incX})
-@end deftypefun
-
-@deftypefun void gsl_blas_raw_dtbsv (CBLAS_UPLO_t @var{Uplo}, CBLAS_TRANSPOSE_t @var{TransA}, CBLAS_DIAG_t @var{Diag}, size_t @var{N}, size_t @var{K}, const double A[], int @var{lda}, double X[], size_t @var{incX})
-@end deftypefun
-
-@deftypefun void gsl_blas_raw_ctbsv (CBLAS_UPLO_t @var{Uplo}, CBLAS_TRANSPOSE_t @var{TransA}, CBLAS_DIAG_t @var{Diag}, size_t @var{N}, size_t @var{K}, const gsl_const_complex_packed_array_float @var{A}, int @var{lda}, gsl_complex_packed_array_float @var{X}, size_t @var{incX})
-@end deftypefun
-
-@deftypefun void gsl_blas_raw_ztbsv (CBLAS_UPLO_t @var{Uplo}, CBLAS_TRANSPOSE_t @var{TransA}, CBLAS_DIAG_t @var{Diag}, size_t @var{N}, size_t @var{K}, const gsl_const_complex_packed_array @var{A}, int @var{lda}, gsl_complex_packed_array @var{X}, size_t @var{incX})
-@end deftypefun
-
-@deftypefun void gsl_blas_raw_stpsv (CBLAS_UPLO_t @var{Uplo}, CBLAS_TRANSPOSE_t @var{TransA}, CBLAS_DIAG_t @var{Diag}, size_t @var{N}, const float Ap[], float X[], size_t @var{incX})
-@end deftypefun
-
-@deftypefun void gsl_blas_raw_dtpsv (CBLAS_UPLO_t @var{Uplo}, CBLAS_TRANSPOSE_t @var{TransA}, CBLAS_DIAG_t @var{Diag}, size_t @var{N}, const double Ap[], double X[], size_t @var{incX})
-@end deftypefun
-
-@deftypefun void gsl_blas_raw_ctpsv (CBLAS_UPLO_t @var{Uplo}, CBLAS_TRANSPOSE_t @var{TransA}, CBLAS_DIAG_t @var{Diag}, size_t @var{N}, const gsl_const_complex_packed_array_float @var{Ap}, gsl_complex_packed_array_float @var{X}, size_t @var{incX})
-@end deftypefun
-
-@deftypefun void gsl_blas_raw_ztpsv (CBLAS_UPLO_t @var{Uplo}, CBLAS_TRANSPOSE_t @var{TransA}, CBLAS_DIAG_t @var{Diag}, size_t @var{N}, const gsl_const_complex_packed_array @var{Ap}, gsl_complex_packed_array @var{X}, size_t @var{incX})
-@end deftypefun
-
-@deftypefun void gsl_blas_raw_ssymv (CBLAS_UPLO_t @var{Uplo}, size_t @var{N}, float @var{alpha}, const float A[], int @var{lda}, const float X[], size_t @var{incX}, float @var{beta}, float Y[], size_t @var{incY})
-@end deftypefun
-
-@deftypefun void gsl_blas_raw_dsymv (CBLAS_UPLO_t @var{Uplo}, size_t @var{N}, double @var{alpha}, const double A[], int @var{lda}, const double X[], size_t @var{incX}, double @var{beta}, double Y[], size_t @var{incY})
-@end deftypefun
-
-@deftypefun void gsl_blas_raw_ssbmv (CBLAS_UPLO_t @var{Uplo}, size_t @var{N}, size_t @var{K}, float @var{alpha}, const float A[], int @var{lda}, const float X[], size_t @var{incX}, float @var{beta}, float Y[], size_t @var{incY})
-@end deftypefun
-
-@deftypefun void gsl_blas_raw_dsbmv (CBLAS_UPLO_t @var{Uplo}, size_t @var{N}, size_t @var{K}, double @var{alpha}, const double A[], int @var{lda}, const double X[], size_t @var{incX}, double @var{beta}, double Y[], size_t @var{incY})
-@end deftypefun
-
-@deftypefun void gsl_blas_raw_sspmv (CBLAS_UPLO_t @var{Uplo}, size_t @var{N}, float @var{alpha}, const float Ap[], const float X[], size_t @var{incX}, float @var{beta}, float Y[], size_t @var{incY})
-@end deftypefun
-
-@deftypefun void gsl_blas_raw_dspmv (CBLAS_UPLO_t @var{Uplo}, size_t @var{N}, double @var{alpha}, const double Ap[], const double X[], size_t @var{incX}, double @var{beta}, double Y[], size_t @var{incY})
-@end deftypefun
-
-@deftypefun void gsl_blas_raw_sger (size_t @var{M}, size_t @var{N}, float @var{alpha}, const float X[], size_t @var{incX}, const float Y[], size_t @var{incY}, float A[], int @var{lda})
-@end deftypefun
-
-@deftypefun void gsl_blas_raw_dger (size_t @var{M}, size_t @var{N}, double @var{alpha}, const double X[], size_t @var{incX}, const double Y[], size_t @var{incY}, double A[], int @var{lda})
-@end deftypefun
-
-@deftypefun void gsl_blas_raw_ssyr (CBLAS_UPLO_t @var{Uplo}, size_t @var{N}, float @var{alpha}, const float X[], size_t @var{incX}, float A[], int @var{lda})
-@end deftypefun
-
-@deftypefun void gsl_blas_raw_dsyr (CBLAS_UPLO_t @var{Uplo}, size_t @var{N}, double @var{alpha}, const double X[], size_t @var{incX}, double A[], int @var{lda})
-@end deftypefun
-
-@deftypefun void gsl_blas_raw_sspr (CBLAS_UPLO_t @var{Uplo}, size_t @var{N}, float @var{alpha}, const float X[], size_t @var{incX}, float Ap[])
-@end deftypefun
-
-@deftypefun void gsl_blas_raw_dspr (CBLAS_UPLO_t @var{Uplo}, size_t @var{N}, double @var{alpha}, const double X[], size_t @var{incX}, double Ap[])
-@end deftypefun
-
-@deftypefun void gsl_blas_raw_ssyr2 (CBLAS_UPLO_t @var{Uplo}, size_t @var{N}, float @var{alpha}, const float X[], size_t @var{incX}, const float Y[], size_t @var{incY}, float A[], int @var{lda})
-@end deftypefun
-
-@deftypefun void gsl_blas_raw_dsyr2 (CBLAS_UPLO_t @var{Uplo}, size_t @var{N}, double @var{alpha}, const double X[], size_t @var{incX}, const double Y[], size_t @var{incY}, double A[], int @var{lda})
-@end deftypefun
-
-@deftypefun void gsl_blas_raw_sspr2 (CBLAS_UPLO_t @var{Uplo}, size_t @var{N}, float @var{alpha}, const float X[], size_t @var{incX}, const float Y[], size_t @var{incY}, float A[])
-@end deftypefun
-
-@deftypefun void gsl_blas_raw_dspr2 (CBLAS_UPLO_t @var{Uplo}, size_t @var{N}, double @var{alpha}, const double X[], size_t @var{incX}, const double Y[], size_t @var{incY}, double A[])
-@end deftypefun
-
-@deftypefun void gsl_blas_raw_chemv (CBLAS_UPLO_t @var{Uplo}, size_t @var{N}, const gsl_const_complex_packed_float @var{alpha}, const gsl_const_complex_packed_array_float @var{A}, int @var{lda}, const gsl_const_complex_packed_array_float @var{X}, size_t @var{incX}, const gsl_const_complex_packed_float @var{beta}, gsl_complex_packed_array_float @var{Y}, size_t @var{incY})
-@end deftypefun
-
-@deftypefun void gsl_blas_raw_zhemv (CBLAS_UPLO_t @var{Uplo}, size_t @var{N}, const gsl_const_complex_packed @var{alpha}, const gsl_const_complex_packed_array @var{A}, int @var{lda}, const gsl_const_complex_packed_array @var{X}, size_t @var{incX}, const gsl_const_complex_packed @var{beta}, gsl_complex_packed_array @var{Y}, size_t @var{incY})
-@end deftypefun
-
-@deftypefun void gsl_blas_raw_chbmv (CBLAS_UPLO_t @var{Uplo}, size_t @var{N}, size_t @var{K}, const gsl_const_complex_packed_float @var{alpha}, const gsl_const_complex_packed_array_float @var{A}, int @var{lda}, const gsl_const_complex_packed_array_float @var{X}, size_t @var{incX}, const gsl_const_complex_packed_float @var{beta}, gsl_complex_packed_array_float @var{Y}, size_t @var{incY})
-@end deftypefun
-
-@deftypefun void gsl_blas_raw_zhbmv (CBLAS_UPLO_t @var{Uplo}, size_t @var{N}, size_t @var{K}, const gsl_const_complex_packed @var{alpha}, const gsl_const_complex_packed_array @var{A}, int @var{lda}, const gsl_const_complex_packed_array @var{X}, size_t @var{incX}, const gsl_const_complex_packed @var{beta}, gsl_complex_packed_array @var{Y}, size_t @var{incY})
-@end deftypefun
-
-@deftypefun void gsl_blas_raw_chpmv (CBLAS_UPLO_t @var{Uplo}, size_t @var{N}, const gsl_const_complex_packed_float @var{alpha}, const gsl_const_complex_packed_array_float @var{Ap}, const gsl_const_complex_packed_array_float @var{X}, size_t @var{incX}, const gsl_const_complex_packed_float @var{beta}, gsl_complex_packed_array_float @var{Y}, size_t @var{incY})
-@end deftypefun
-
-@deftypefun void gsl_blas_raw_zhpmv (CBLAS_UPLO_t @var{Uplo}, size_t @var{N}, const gsl_const_complex_packed @var{alpha}, const gsl_const_complex_packed_array @var{Ap}, const gsl_const_complex_packed_array @var{X}, size_t @var{incX}, const gsl_const_complex_packed @var{beta}, gsl_complex_packed_array @var{Y}, size_t @var{incY})
-@end deftypefun
-
-@deftypefun void gsl_blas_raw_cgeru (size_t @var{M}, size_t @var{N}, const gsl_const_complex_packed_float @var{alpha}, const gsl_const_complex_packed_array_float @var{X}, size_t @var{incX}, const gsl_const_complex_packed_array_float @var{Y}, size_t @var{incY}, gsl_complex_packed_array_float @var{A}, int @var{lda})
-@end deftypefun
-
-@deftypefun void gsl_blas_raw_zgeru (size_t @var{M}, size_t @var{N}, const gsl_const_complex_packed @var{alpha}, const gsl_const_complex_packed_array @var{X}, size_t @var{incX}, const gsl_const_complex_packed_array @var{Y}, size_t @var{incY}, gsl_complex_packed_array @var{A}, int @var{lda})
-@end deftypefun
-
-@deftypefun void gsl_blas_raw_cgerc (size_t @var{M}, size_t @var{N}, const gsl_const_complex_packed_float @var{alpha}, const gsl_const_complex_packed_array_float @var{X}, size_t @var{incX}, const gsl_const_complex_packed_array_float @var{Y}, size_t @var{incY}, gsl_complex_packed_array_float @var{A}, int @var{lda})
-@end deftypefun
-
-@deftypefun void gsl_blas_raw_zgerc (size_t @var{M}, size_t @var{N}, const gsl_const_complex_packed @var{alpha}, const gsl_const_complex_packed_array @var{X}, size_t @var{incX}, const gsl_const_complex_packed_array @var{Y}, size_t @var{incY}, gsl_complex_packed_array @var{A}, int @var{lda})
-@end deftypefun
-
-@deftypefun void gsl_blas_raw_cher (CBLAS_UPLO_t @var{Uplo}, size_t @var{N}, float @var{alpha}, const gsl_const_complex_packed_array_float @var{X}, size_t @var{incX}, gsl_complex_packed_array_float @var{A}, int @var{lda})
-@end deftypefun
-
-@deftypefun void gsl_blas_raw_zher (CBLAS_UPLO_t @var{Uplo}, size_t @var{N}, double @var{alpha}, const gsl_const_complex_packed_array @var{X}, size_t @var{incX}, gsl_complex_packed_array @var{A}, int @var{lda})
-@end deftypefun
-
-@deftypefun void gsl_blas_raw_chpr (CBLAS_UPLO_t @var{Uplo}, size_t @var{N}, float @var{alpha}, const gsl_const_complex_packed_array_float @var{X}, size_t @var{incX}, gsl_complex_packed_array_float @var{A})
-@end deftypefun
-
-@deftypefun void gsl_blas_raw_zhpr (CBLAS_UPLO_t @var{Uplo}, size_t @var{N}, double @var{alpha}, const gsl_const_complex_packed_array @var{X}, size_t @var{incX}, gsl_complex_packed_array @var{A})
-@end deftypefun
-
-@deftypefun void gsl_blas_raw_cher2 (CBLAS_UPLO_t @var{Uplo}, size_t @var{N}, const gsl_const_complex_packed_float @var{alpha}, const gsl_const_complex_packed_array_float @var{X}, size_t @var{incX}, const gsl_const_complex_packed_array_float @var{Y}, size_t @var{incY}, gsl_complex_packed_array_float @var{A}, int @var{lda})
-@end deftypefun
-
-@deftypefun void gsl_blas_raw_zher2 (CBLAS_UPLO_t @var{Uplo}, size_t @var{N}, const gsl_const_complex_packed @var{alpha}, const gsl_const_complex_packed_array @var{X}, size_t @var{incX}, const gsl_const_complex_packed_array @var{Y}, size_t @var{incY}, gsl_complex_packed_array @var{A}, int @var{lda})
-@end deftypefun
-
-@deftypefun void gsl_blas_raw_chpr2 (CBLAS_UPLO_t @var{Uplo}, size_t @var{N}, const gsl_const_complex_packed_float @var{alpha}, const gsl_const_complex_packed_array_float @var{X}, size_t @var{incX}, const gsl_const_complex_packed_array_float @var{Y}, size_t @var{incY}, gsl_complex_packed_array_float @var{Ap})
-@end deftypefun
-
-@deftypefun void gsl_blas_raw_zhpr2 (CBLAS_UPLO_t @var{Uplo}, size_t @var{N}, const gsl_const_complex_packed @var{alpha}, const gsl_const_complex_packed_array @var{X}, size_t @var{incX}, const gsl_const_complex_packed_array @var{Y}, size_t @var{incY}, gsl_complex_packed_array @var{Ap})
-@end deftypefun
-
-Level 3
-
-@deftypefun void gsl_blas_raw_sgemm (CBLAS_TRANSPOSE_t @var{TransA}, CBLAS_TRANSPOSE_t @var{TransB}, size_t @var{M}, size_t @var{N}, size_t @var{K}, float @var{alpha}, const float A[], int @var{lda}, const float B[], int @var{ldb}, float @var{beta}, float C[], int @var{ldc})
-@end deftypefun
-
-@deftypefun void gsl_blas_raw_dgemm (CBLAS_TRANSPOSE_t @var{TransA}, CBLAS_TRANSPOSE_t @var{TransB}, size_t @var{M}, size_t @var{N}, size_t @var{K}, double @var{alpha}, const double A[], int @var{lda}, const double B[], int @var{ldb}, double @var{beta}, double C[], int @var{ldc})
-@end deftypefun
-
-@deftypefun void gsl_blas_raw_cgemm (CBLAS_TRANSPOSE_t @var{TransA}, CBLAS_TRANSPOSE_t @var{TransB}, size_t @var{M}, size_t @var{N}, size_t @var{K}, const gsl_const_complex_packed_float @var{alpha}, const gsl_const_complex_packed_array_float @var{A}, int @var{lda}, const gsl_const_complex_packed_array_float @var{B}, int @var{ldb}, const gsl_const_complex_packed_float @var{beta}, gsl_complex_packed_array_float @var{C}, int @var{ldc})
-@end deftypefun
-
-@deftypefun void gsl_blas_raw_zgemm (CBLAS_TRANSPOSE_t @var{TransA}, CBLAS_TRANSPOSE_t @var{TransB}, size_t @var{M}, size_t @var{N}, size_t @var{K}, const gsl_const_complex_packed @var{alpha}, const gsl_const_complex_packed_array @var{A}, int @var{lda}, const gsl_const_complex_packed_array @var{B}, int @var{ldb}, const gsl_const_complex_packed @var{beta}, gsl_complex_packed_array @var{C}, int @var{ldc})
-@end deftypefun
-
-@deftypefun void gsl_blas_raw_ssymm (CBLAS_SIDE_t @var{Side}, CBLAS_UPLO_t @var{Uplo}, size_t @var{M}, size_t @var{N}, float @var{alpha}, const float A[], int @var{lda}, const float B[], int @var{ldb}, float @var{beta}, float C[], int @var{ldc})
-@end deftypefun
-
-@deftypefun void gsl_blas_raw_dsymm (CBLAS_SIDE_t @var{Side}, CBLAS_UPLO_t @var{Uplo}, size_t @var{M}, size_t @var{N}, double @var{alpha}, const double A[], int @var{lda}, const double B[], int @var{ldb}, double @var{beta}, double C[], int @var{ldc})
-@end deftypefun
-
-@deftypefun void gsl_blas_raw_csymm (CBLAS_SIDE_t @var{Side}, CBLAS_UPLO_t @var{Uplo}, size_t @var{M}, size_t @var{N}, const gsl_const_complex_packed_float @var{alpha}, const gsl_const_complex_packed_array_float @var{A}, int @var{lda}, const gsl_const_complex_packed_array_float @var{B}, int @var{ldb}, const gsl_const_complex_packed_float @var{beta}, gsl_complex_packed_array_float @var{C}, int @var{ldc})
-@end deftypefun
-
-@deftypefun void gsl_blas_raw_zsymm (CBLAS_SIDE_t @var{Side}, CBLAS_UPLO_t @var{Uplo}, size_t @var{M}, size_t @var{N}, const gsl_const_complex_packed @var{alpha}, const gsl_const_complex_packed_array @var{A}, int @var{lda}, const gsl_const_complex_packed_array @var{B}, int @var{ldb}, const gsl_const_complex_packed @var{beta}, gsl_complex_packed_array @var{C}, int @var{ldc})
-@end deftypefun
-
-@deftypefun void gsl_blas_raw_ssyrk (CBLAS_UPLO_t @var{Uplo}, CBLAS_TRANSPOSE_t @var{Trans}, size_t @var{N}, size_t @var{K}, float @var{alpha}, const float A[], int @var{lda}, float @var{beta}, float C[], int @var{ldc})
-@end deftypefun
-
-@deftypefun void gsl_blas_raw_dsyrk (CBLAS_UPLO_t @var{Uplo}, CBLAS_TRANSPOSE_t @var{Trans}, size_t @var{N}, size_t @var{K}, double @var{alpha}, const double A[], int @var{lda}, double @var{beta}, double C[], int @var{ldc})
-@end deftypefun
-
-@deftypefun void gsl_blas_raw_csyrk (CBLAS_UPLO_t @var{Uplo}, CBLAS_TRANSPOSE_t @var{Trans}, size_t @var{N}, size_t @var{K}, const gsl_const_complex_packed_float @var{alpha}, const gsl_const_complex_packed_array_float @var{A}, int @var{lda}, const gsl_const_complex_packed_float @var{beta}, gsl_complex_packed_array_float @var{C}, int @var{ldc})
-@end deftypefun
-
-@deftypefun void gsl_blas_raw_zsyrk (CBLAS_UPLO_t @var{Uplo}, CBLAS_TRANSPOSE_t @var{Trans}, size_t @var{N}, size_t @var{K}, const gsl_const_complex_packed @var{alpha}, const gsl_const_complex_packed_array @var{A}, int @var{lda}, const gsl_const_complex_packed @var{beta}, gsl_complex_packed_array @var{C}, int @var{ldc})
-@end deftypefun
-
-@deftypefun void gsl_blas_raw_ssyr2k (CBLAS_UPLO_t @var{Uplo}, CBLAS_TRANSPOSE_t @var{Trans}, size_t @var{N}, size_t @var{K}, float @var{alpha}, const float A[], int @var{lda}, const float B[], int @var{ldb}, float @var{beta}, float C[], int @var{ldc})
-@end deftypefun
-
-@deftypefun void gsl_blas_raw_dsyr2k (CBLAS_UPLO_t @var{Uplo}, CBLAS_TRANSPOSE_t @var{Trans}, size_t @var{N}, size_t @var{K}, double @var{alpha}, const double A[], int @var{lda}, const double B[], int @var{ldb}, double @var{beta}, double C[], int @var{ldc})
-@end deftypefun
-
-@deftypefun void gsl_blas_raw_csyr2k (CBLAS_UPLO_t @var{Uplo}, CBLAS_TRANSPOSE_t @var{Trans}, size_t @var{N}, size_t @var{K}, const gsl_const_complex_packed_float @var{alpha}, const gsl_const_complex_packed_array_float @var{A}, int @var{lda}, const gsl_const_complex_packed_array_float @var{B}, int @var{ldb}, const gsl_const_complex_packed_float @var{beta}, gsl_complex_packed_array_float @var{C}, int @var{ldc})
-@end deftypefun
-
-@deftypefun void gsl_blas_raw_zsyr2k (CBLAS_UPLO_t @var{Uplo}, CBLAS_TRANSPOSE_t @var{Trans}, size_t @var{N}, size_t @var{K}, const gsl_const_complex_packed @var{alpha}, const gsl_const_complex_packed_array @var{A}, int @var{lda}, const gsl_const_complex_packed_array @var{B}, int @var{ldb}, const gsl_const_complex_packed @var{beta}, gsl_complex_packed_array @var{C}, int @var{ldc})
-@end deftypefun
-
-@deftypefun void gsl_blas_raw_strmm (CBLAS_SIDE_t @var{Side}, CBLAS_UPLO_t @var{Uplo}, CBLAS_TRANSPOSE_t @var{TransA}, CBLAS_DIAG_t @var{Diag}, size_t @var{M}, size_t @var{N}, float @var{alpha}, const float A[], int @var{lda}, float B[], int @var{ldb})
-@end deftypefun
-
-@deftypefun void gsl_blas_raw_dtrmm (CBLAS_SIDE_t @var{Side}, CBLAS_UPLO_t @var{Uplo}, CBLAS_TRANSPOSE_t @var{TransA}, CBLAS_DIAG_t @var{Diag}, size_t @var{M}, size_t @var{N}, double @var{alpha}, const double A[], int @var{lda}, double B[], int @var{ldb})
-@end deftypefun
-
-@deftypefun void gsl_blas_raw_ctrmm (CBLAS_SIDE_t @var{Side}, CBLAS_UPLO_t @var{Uplo}, CBLAS_TRANSPOSE_t @var{TransA}, CBLAS_DIAG_t @var{Diag}, size_t @var{M}, size_t @var{N}, const gsl_const_complex_packed_float @var{alpha}, const gsl_const_complex_packed_array_float @var{A}, int @var{lda}, gsl_complex_packed_array_float @var{B}, int @var{ldb})
-@end deftypefun
-
-@deftypefun void gsl_blas_raw_ztrmm (CBLAS_SIDE_t @var{Side}, CBLAS_UPLO_t @var{Uplo}, CBLAS_TRANSPOSE_t @var{TransA}, CBLAS_DIAG_t @var{Diag}, size_t @var{M}, size_t @var{N}, const gsl_const_complex_packed @var{alpha}, const gsl_const_complex_packed_array @var{A}, int @var{lda}, gsl_complex_packed_array @var{B}, int @var{ldb})
-@end deftypefun
-
-@deftypefun void gsl_blas_raw_strsm (CBLAS_SIDE_t @var{Side}, CBLAS_UPLO_t @var{Uplo}, CBLAS_TRANSPOSE_t @var{TransA}, CBLAS_DIAG_t @var{Diag}, size_t @var{M}, size_t @var{N}, float @var{alpha}, const float A[], int @var{lda}, float B[], int @var{ldb})
-@end deftypefun
-
-@deftypefun void gsl_blas_raw_dtrsm (CBLAS_SIDE_t @var{Side}, CBLAS_UPLO_t @var{Uplo}, CBLAS_TRANSPOSE_t @var{TransA}, CBLAS_DIAG_t @var{Diag}, size_t @var{M}, size_t @var{N}, double @var{alpha}, const double A[], int @var{lda}, double B[], int @var{ldb})
-@end deftypefun
-
-@deftypefun void gsl_blas_raw_ctrsm (CBLAS_SIDE_t @var{Side}, CBLAS_UPLO_t @var{Uplo}, CBLAS_TRANSPOSE_t @var{TransA}, CBLAS_DIAG_t @var{Diag}, size_t @var{M}, size_t @var{N}, const gsl_const_complex_packed_float @var{alpha}, const gsl_const_complex_packed_array_float @var{A}, int @var{lda}, gsl_complex_packed_array_float @var{B}, int @var{ldb})
-@end deftypefun
-
-@deftypefun void gsl_blas_raw_ztrsm (CBLAS_SIDE_t @var{Side}, CBLAS_UPLO_t @var{Uplo}, CBLAS_TRANSPOSE_t @var{TransA}, CBLAS_DIAG_t @var{Diag}, size_t @var{M}, size_t @var{N}, const gsl_const_complex_packed @var{alpha}, const gsl_const_complex_packed_array @var{A}, int @var{lda}, gsl_complex_packed_array @var{B}, int @var{ldb})
-@end deftypefun
-
-@deftypefun void gsl_blas_raw_chemm (CBLAS_SIDE_t @var{Side}, CBLAS_UPLO_t @var{Uplo}, size_t @var{M}, size_t @var{N}, const gsl_const_complex_packed_float @var{alpha}, const gsl_const_complex_packed_array_float @var{A}, int @var{lda}, const gsl_const_complex_packed_array_float @var{B}, int @var{ldb}, const gsl_const_complex_packed_float @var{beta}, gsl_complex_packed_array_float @var{C}, int @var{ldc})
-@end deftypefun
-
-@deftypefun void gsl_blas_raw_zhemm (CBLAS_SIDE_t @var{Side}, CBLAS_UPLO_t @var{Uplo}, size_t @var{M}, size_t @var{N}, const gsl_const_complex_packed @var{alpha}, const gsl_const_complex_packed_array @var{A}, int @var{lda}, const gsl_const_complex_packed_array @var{B}, int @var{ldb}, const gsl_const_complex_packed @var{beta}, gsl_complex_packed_array @var{C}, int @var{ldc})
-@end deftypefun
-
-@deftypefun void gsl_blas_raw_cherk (CBLAS_UPLO_t @var{Uplo}, CBLAS_TRANSPOSE_t @var{Trans}, size_t @var{N}, size_t @var{K}, float @var{alpha}, const gsl_const_complex_packed_array_float @var{A}, int @var{lda}, float @var{beta}, gsl_complex_packed_array_float @var{C}, int @var{ldc})
-@end deftypefun
-
-@deftypefun void gsl_blas_raw_zherk (CBLAS_UPLO_t @var{Uplo}, CBLAS_TRANSPOSE_t @var{Trans}, size_t @var{N}, size_t @var{K}, double @var{alpha}, const gsl_const_complex_packed_array @var{A}, int @var{lda}, double @var{beta}, gsl_complex_packed_array @var{C}, int @var{ldc})
-@end deftypefun
-
-@deftypefun void gsl_blas_raw_cher2k (CBLAS_UPLO_t @var{Uplo}, CBLAS_TRANSPOSE_t @var{Trans}, size_t @var{N}, size_t @var{K}, const gsl_const_complex_packed_float @var{alpha}, const gsl_const_complex_packed_array_float @var{A}, int @var{lda}, const gsl_const_complex_packed_array_float @var{B}, int @var{ldb}, float @var{beta}, gsl_complex_packed_array_float @var{C}, int @var{ldc})
-@end deftypefun
-
-@deftypefun void gsl_blas_raw_zher2k (CBLAS_UPLO_t @var{Uplo}, CBLAS_TRANSPOSE_t @var{Trans}, size_t @var{N}, size_t @var{K}, const gsl_const_complex_packed @var{alpha}, const gsl_const_complex_packed_array @var{A}, int @var{lda}, const gsl_const_complex_packed_array @var{B}, int @var{ldb}, double @var{beta}, gsl_complex_packed_array @var{C}, int @var{ldc})
-@end deftypefun
 
 
 @node BLAS References and Further Reading
