@@ -4,7 +4,7 @@
 
 double f (double x) ;
 double g (double x) ;
-
+double stepfn (double x) ;
 int main (void)
 {
   double result, abserr, resabs, resasc ;
@@ -47,6 +47,7 @@ int main (void)
 
   printf("qng: result = %.18g, abserr = %.18g, neval = %d\n",
 	 result, abserr, neval) ;
+
 #ifdef JUNK
   {
     double alist[1000], blist[1000], rlist[1000], elist[1000];
@@ -60,6 +61,8 @@ int main (void)
 	   result, abserr, neval) ;
   }
 
+#endif
+
   {
     double alist[1000], blist[1000], rlist[1000], elist[1000];
     size_t iord[1000] ;
@@ -72,8 +75,9 @@ int main (void)
 	   result, abserr, neval) ;
     printf("status=%d\n",status) ;
   }
-#endif
 
+
+#ifdef JUNK
   {
     double alist[1000], blist[1000], rlist[1000], elist[1000];
     size_t iord[1000] ;
@@ -87,6 +91,21 @@ int main (void)
     printf("status=%d\n",status) ;
   }
 
+
+  {
+    double alist[1000], blist[1000], rlist[1000], elist[1000];
+    size_t iord[1000] ;
+    size_t last;
+    result = 0 ; abserr=0; neval=0  ;
+    status = gsl_integration_qagse(stepfn, 0.0, 1.0, 0, 1e-10, 3,
+				   alist, blist, rlist, elist, iord, &last,
+				   &result, &abserr, &neval) ;
+    printf("qagse: result = %.18g, abserr = %.18g, neval = %d\n",
+	   result, abserr, neval) ;
+    printf("status=%d\n",status) ;
+  }
+#endif
+
   return 0 ;
 } 
 
@@ -96,6 +115,16 @@ double f (double x) {
 
 double g (double x) {
   return 1/sqrt(fabs(x*x + 2*x - 2)) ;
+}
+
+
+double stepfn (double x) {
+  if (x < 1.0/3.0)
+    {
+      return 0 ;
+    }
+  
+  return 1 ;
 }
 
 
