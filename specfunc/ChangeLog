@@ -1,5 +1,9 @@
 1998-12-05  Mark Galassi  <rosalia@cygnus.com>
 
+	* Makefile.am: t-erf.c was commented out, which is a problem
+	(pointed out by automake-1.3b).  Moved the commented-out t-erf.c
+	line to the end of the long list of files.
+
 	* legendre_poly.c (gsl_sf_legendre_Pl_impl):
 	* legendre_con.c (gsl_sf_conicalP_xgt1_neg_mu_largetau_impl):
 	added an ugly fix to the invocation of gsl_sf_bessel_Jn_impl() to

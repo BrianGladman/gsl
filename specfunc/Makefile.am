@@ -125,9 +125,9 @@ libgslspecfunc_a_SOURCES = 	\
 	sinint.c		\
 	synchrotron.c		\
 	transport.c		\
-#	t-erf.c			\
 	trig.c			\
 	zeta.c
+#	t-erf.c			\
 
 strict:
 	$(MAKE) CFLAGS="-ansi -pedantic -W -Wall -Wtraditional -Wconversion -Wshadow -Wpointer-arith -Wcast-qual -Wcast-align -Wwrite-strings -Waggregate-return -Wstrict-prototypes -fshort-enums -fno-common -Wmissing-prototypes -Wnested-externs -g -O4 -Dinline=''"
