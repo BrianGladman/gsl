@@ -645,6 +645,11 @@ main (void)
   printf ("lambda = %.5f +/- %.5f\n", FIT(1), ERR(1));
   printf ("b      = %.5f +/- %.5f\n", FIT(2), ERR(2));
 
+  { 
+    double chi = gsl_blas_dnrm2(s->f);
+    printf("chisq/dof = %g\n",  pow(chi, 2.0)/ (n - p));
+  }
+
   printf ("status = %s\n", gsl_strerror (status));
 
   gsl_multifit_fdfsolver_free (s);
@@ -681,12 +686,17 @@ iter: 7 x = 5.05828006 0.10051819 0.99757710 |f(x)| = 6.33119
 A      = 5.05828 +/- 0.05983
 lambda = 0.10052 +/- 0.00309
 b      = 0.99758 +/- 0.03944
+chisq/dof = 1.08335
 status = success
 @end smallexample
 @noindent
-The approximate values of the parameters are found correctly.  The
-errors on the parameters are given by the square roots of the diagonal
-elements of the covariance matrix.
+The approximate values of the parameters are found correctly, and the
+chi-squared value indicates a good fit (the chi-squared per degree of
+freedom is approximately 1).  In this case the errors on the parameters
+can be estimated from the square roots of the diagonal elements of the
+covariance matrix.  If the chi-squared value indicates a poor fit then
+error estimates obtained from the covariance matrix are not valid, since
+the Gaussian approximation would not apply.
 
 @iftex
 @sp 1
