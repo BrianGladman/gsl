@@ -116,7 +116,7 @@ __BEGIN_DECLS
 
 /* Return nonzero if x is a real number, i.e. non NaN or infinite. */
 /* FIXME: Is this correct way to check if something is real? */
-#define GSL_IS_REAL(x) (0 * (x) == 0)
+#define GSL_IS_REAL(x) (gsl_is_real(x))
 
 /* Define MAX and MIN macros/functions if they don't exist. */
 
@@ -185,6 +185,9 @@ double gsl_hypot (const double x, const double y);
 double gsl_acosh (const double x);
 double gsl_asinh (const double x);
 double gsl_atanh (const double x);
+int gsl_isnan (const double x);
+int gsl_isinf (const double x);
+int gsl_isreal (const double x);
 
 double gsl_coerce_double (const double x);
 float gsl_coerce_float (const float x);

@@ -1,6 +1,6 @@
 noinst_LTLIBRARIES = libgslsys.la 
 
-libgslsys_la_SOURCES = minmax.c prec.c hypot.c log1p.c expm1.c coerce.c invhyp.c pow_int.c
+libgslsys_la_SOURCES = minmax.c prec.c hypot.c log1p.c expm1.c coerce.c invhyp.c pow_int.c infnan.c
 
 INCLUDES = -I$(top_builddir)
 

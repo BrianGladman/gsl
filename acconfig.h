@@ -94,3 +94,12 @@
 #ifndef HAVE_ATANH
 #define atanh gsl_atanh
 #endif
+
+#ifndef HAVE_ISINF
+#define isinf gsl_isinf
+#endif
+
+#ifndef HAVE_ISNAN
+#define isnan gsl_isnan
+#endif
+

@@ -201,6 +201,56 @@ main (void)
     }
   }
 
+  /* Test for isinf, isnan, isreal*/
+
+  {
+    double zero, one, inf, nan;
+    int s;
+
+    zero = 0.0;
+    one = 1.0;
+    inf = exp(1.0e10);
+    nan = inf - inf;
+    
+    s = gsl_isinf(zero);
+    gsl_test_int (s, 0, "gsl_isinf(0)");
+    
+    s = gsl_isinf(one);
+    gsl_test_int (s, 0, "gsl_isinf(1)");
+    
+    s = gsl_isinf(inf);
+    gsl_test_int (s, 1, "gsl_isinf(inf)");
+    
+    s = gsl_isinf(nan);
+    gsl_test_int (s, 0, "gsl_isinf(nan)");
+
+
+    s = gsl_isnan(zero);
+    gsl_test_int (s, 0, "gsl_isnan(0)");
+    
+    s = gsl_isnan(one);
+    gsl_test_int (s, 0, "gsl_isnan(1)");
+    
+    s = gsl_isnan(inf);
+    gsl_test_int (s, 0, "gsl_isnan(inf)");
+    
+    s = gsl_isnan(nan);
+    gsl_test_int (s, 1, "gsl_isnan(nan)");
+
+
+    s = gsl_isreal(zero);
+    gsl_test_int (s, 1, "gsl_isreal(0)");
+    
+    s = gsl_isreal(one);
+    gsl_test_int (s, 1, "gsl_isreal(1)");
+    
+    s = gsl_isreal(inf);
+    gsl_test_int (s, 0, "gsl_isreal(inf)");
+    
+    s = gsl_isreal(nan);
+    gsl_test_int (s, 0, "gsl_isreal(nan)");
+  }
+
   return gsl_test_summary ();
 }
 
