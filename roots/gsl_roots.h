@@ -89,9 +89,4 @@ extern const gsl_root_fdfsolver_type  * gsl_root_fdfsolver_newton;
 extern const gsl_root_fdfsolver_type  * gsl_root_fdfsolver_secant;
 extern const gsl_root_fdfsolver_type  * gsl_root_fdfsolver_steffenson;
 
-/* Requested epsilon must be greater than GSL_DBL_EPSILON by this
-   factor to protect against roundoff problems. */
-
-#define GSL_ROOT_EPSILON_BUFFER 10.0
-
 #endif /* GSL_ROOTS_H */
