@@ -185,4 +185,7 @@ gsl_linalg_bidiag_unpack_B, and documentation bug-fix for blas
 * "Gavin Crooks" <gec@threeplusone.com> documentation bug fix,
 dirichlet distribution
 
-*  Gert Van den Eynde <gvdeynde@sckcen.be> gsl_ldexp, gsl_frexp, gsl_fcmp
+* Gert Van den Eynde <gvdeynde@sckcen.be> gsl_ldexp, gsl_frexp, gsl_fcmp
+
+* Reinhold Bader <Reinhold.Bader@lrz-muenchen.de>, fixes for Hitachi SR8000
+
