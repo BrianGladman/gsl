@@ -173,14 +173,14 @@ void gsl_blas_zdscal (double alpha, gsl_vector_complex * X);
 /*
  * Routines with standard 4 prefixes (S, D, C, Z)
  */
-int  gsl_blas_sgemv (CBLAS_ORDER order, CBLAS_TRANSPOSE TransA,
+int  gsl_blas_sgemv (CBLAS_TRANSPOSE TransA,
                      float alpha,
                      const gsl_matrix_float * A,
                      const gsl_vector_float * X,
                      float beta,
                      gsl_vector_float * Y);
 
-int  gsl_blas_sgbmv (CBLAS_ORDER order, CBLAS_TRANSPOSE TransA,
+int  gsl_blas_sgbmv (CBLAS_TRANSPOSE TransA,
                      int KL, int KU,
 		     float alpha,
                      const gsl_matrix_float * A,
@@ -188,46 +188,46 @@ int  gsl_blas_sgbmv (CBLAS_ORDER order, CBLAS_TRANSPOSE TransA,
                      float beta,
                      gsl_vector_float * Y);
 
-int  gsl_blas_strmv (CBLAS_ORDER order, CBLAS_UPLO Uplo,
+int  gsl_blas_strmv (CBLAS_UPLO Uplo,
                      CBLAS_TRANSPOSE TransA, CBLAS_DIAG Diag,
                      const gsl_matrix_float * A,
                      gsl_vector_float * X);
 
-int  gsl_blas_stbmv (CBLAS_ORDER order, CBLAS_UPLO Uplo,
+int  gsl_blas_stbmv (CBLAS_UPLO Uplo,
                      CBLAS_TRANSPOSE TransA, CBLAS_DIAG Diag,
                      int K,
                      const gsl_matrix_float * A,
                      gsl_vector_float * X);
 
-int  gsl_blas_stpmv (CBLAS_ORDER order, CBLAS_UPLO Uplo,
+int  gsl_blas_stpmv (CBLAS_UPLO Uplo,
                      CBLAS_TRANSPOSE TransA, CBLAS_DIAG Diag,
                      const float Ap[],
                      gsl_vector_float * X);
 
-int  gsl_blas_strsv (CBLAS_ORDER order, CBLAS_UPLO Uplo,
+int  gsl_blas_strsv (CBLAS_UPLO Uplo,
                      CBLAS_TRANSPOSE TransA, CBLAS_DIAG Diag,
                      const gsl_matrix_float * A,
                      gsl_vector_float * X);
 
-int  gsl_blas_stbsv (CBLAS_ORDER order, CBLAS_UPLO Uplo,
+int  gsl_blas_stbsv (CBLAS_UPLO Uplo,
                      CBLAS_TRANSPOSE TransA, CBLAS_DIAG Diag,
                      int K,
                      const gsl_matrix_float * A,
                      gsl_vector_float * X);
 
-int  gsl_blas_stpsv (CBLAS_ORDER order, CBLAS_UPLO Uplo,
+int  gsl_blas_stpsv (CBLAS_UPLO Uplo,
                      CBLAS_TRANSPOSE TransA, CBLAS_DIAG Diag,
                      const float Ap[],
                      gsl_vector_float * X);
 
-int  gsl_blas_dgemv (CBLAS_ORDER order, CBLAS_TRANSPOSE TransA,
+int  gsl_blas_dgemv (CBLAS_TRANSPOSE TransA,
                      double alpha,
                      const gsl_matrix * A,
                      const gsl_vector * X,
                      double beta,
                      gsl_vector * Y);
 
-int  gsl_blas_dgbmv (CBLAS_ORDER order, CBLAS_TRANSPOSE TransA,
+int  gsl_blas_dgbmv (CBLAS_TRANSPOSE TransA,
                      int KL, int KU,
                      double alpha,
                      const gsl_matrix * A,
@@ -235,47 +235,46 @@ int  gsl_blas_dgbmv (CBLAS_ORDER order, CBLAS_TRANSPOSE TransA,
                      double beta,
                      gsl_vector * Y);
 
-int  gsl_blas_dtrmv (CBLAS_ORDER order, CBLAS_UPLO Uplo,
+int  gsl_blas_dtrmv (CBLAS_UPLO Uplo,
                      CBLAS_TRANSPOSE TransA, CBLAS_DIAG Diag,
                      const gsl_matrix * A,
                      gsl_vector * X);
 
-int  gsl_blas_dtbmv (CBLAS_ORDER order, CBLAS_UPLO Uplo,
+int  gsl_blas_dtbmv (CBLAS_UPLO Uplo,
                      CBLAS_TRANSPOSE TransA, CBLAS_DIAG Diag,
                      int K,
                      const gsl_matrix * A,
                      gsl_vector * X);
 
-int  gsl_blas_dtpmv (CBLAS_ORDER order, CBLAS_UPLO Uplo,
+int  gsl_blas_dtpmv (CBLAS_UPLO Uplo,
                      CBLAS_TRANSPOSE TransA, CBLAS_DIAG Diag,
                      const double Ap[],
                      gsl_vector * X);
 
-int  gsl_blas_dtrsv (CBLAS_ORDER order, CBLAS_UPLO Uplo,
+int  gsl_blas_dtrsv (CBLAS_UPLO Uplo,
                      CBLAS_TRANSPOSE TransA, CBLAS_DIAG Diag,
                      const gsl_matrix * A,
                      gsl_vector * X);
 
-int  gsl_blas_dtbsv (CBLAS_ORDER order, CBLAS_UPLO Uplo,
+int  gsl_blas_dtbsv (CBLAS_UPLO Uplo,
                      CBLAS_TRANSPOSE TransA, CBLAS_DIAG Diag,
                      int K,
                      const gsl_matrix * A,
                      gsl_vector * X);
 
-int  gsl_blas_dtpsv (CBLAS_ORDER order, CBLAS_UPLO Uplo,
+int  gsl_blas_dtpsv (CBLAS_UPLO Uplo,
                      CBLAS_TRANSPOSE TransA, CBLAS_DIAG Diag,
                      const double Ap[],
                      gsl_vector * X);
 
-int  gsl_blas_cgemv (CBLAS_ORDER order, CBLAS_TRANSPOSE TransA,
+int  gsl_blas_cgemv (CBLAS_TRANSPOSE TransA,
                      const gsl_complex * alpha,
                      const gsl_matrix_complex * A,
                      const gsl_vector_complex * X,
                      const gsl_complex * beta,
                      gsl_vector_complex * Y);
 
-int  gsl_blas_cgbmv (CBLAS_ORDER order,
-                     CBLAS_TRANSPOSE TransA,
+int  gsl_blas_cgbmv (CBLAS_TRANSPOSE TransA,
                      int KL, int KU,
                      const gsl_complex * alpha,
                      const gsl_matrix_complex * A,
@@ -283,46 +282,46 @@ int  gsl_blas_cgbmv (CBLAS_ORDER order,
                      const gsl_complex * beta,
                      gsl_vector_complex * Y);
 
-int  gsl_blas_ctrmv (CBLAS_ORDER order, CBLAS_UPLO Uplo,
+int  gsl_blas_ctrmv (CBLAS_UPLO Uplo,
                      CBLAS_TRANSPOSE TransA, CBLAS_DIAG Diag,
                      const gsl_matrix * A,
                      gsl_vector_complex * X);
 
-int  gsl_blas_ctbmv (CBLAS_ORDER order, CBLAS_UPLO Uplo,
+int  gsl_blas_ctbmv (CBLAS_UPLO Uplo,
                      CBLAS_TRANSPOSE TransA, CBLAS_DIAG Diag,
                      int K,
                      const gsl_matrix * A,
                      gsl_vector_complex * X);
 
-int  gsl_blas_ctpmv (CBLAS_ORDER order, CBLAS_UPLO Uplo,
+int  gsl_blas_ctpmv (CBLAS_UPLO Uplo,
                      CBLAS_TRANSPOSE TransA, CBLAS_DIAG Diag,
                      const void * Ap,
                      gsl_vector_complex * X);
 
-int  gsl_blas_ctrsv (CBLAS_ORDER order, CBLAS_UPLO Uplo,
+int  gsl_blas_ctrsv (CBLAS_UPLO Uplo,
                      CBLAS_TRANSPOSE TransA, CBLAS_DIAG Diag,
                      const gsl_matrix_complex * A,
                      gsl_vector_complex * X);
 
-int  gsl_blas_ctbsv (CBLAS_ORDER order, CBLAS_UPLO Uplo,
+int  gsl_blas_ctbsv (CBLAS_UPLO Uplo,
                      CBLAS_TRANSPOSE TransA, CBLAS_DIAG Diag,
                      int K,
                      const gsl_matrix_complex * A,
                      gsl_vector_complex * X);
 
-int  gsl_blas_ctpsv (CBLAS_ORDER order, CBLAS_UPLO Uplo,
+int  gsl_blas_ctpsv (CBLAS_UPLO Uplo,
                      CBLAS_TRANSPOSE TransA, CBLAS_DIAG Diag,
                      const void * Ap,
                      gsl_vector_complex * X);
 
-int  gsl_blas_zgemv (CBLAS_ORDER order, CBLAS_TRANSPOSE TransA,
+int  gsl_blas_zgemv (CBLAS_TRANSPOSE TransA,
                      const gsl_complex * alpha,
                      const gsl_matrix_complex * A,
                      const gsl_vector_complex * X,
                      const gsl_complex * beta,
                      gsl_vector_complex * Y);
 
-int  gsl_blas_zgbmv (CBLAS_ORDER order, CBLAS_TRANSPOSE TransA,
+int  gsl_blas_zgbmv (CBLAS_TRANSPOSE TransA,
                      int KL, int KU,
                      const gsl_complex * alpha,
                      const gsl_matrix_complex * A,
@@ -330,34 +329,34 @@ int  gsl_blas_zgbmv (CBLAS_ORDER order, CBLAS_TRANSPOSE TransA,
                      const gsl_complex * beta,
                      gsl_vector_complex * Y);
 
-int  gsl_blas_ztrmv (CBLAS_ORDER order, CBLAS_UPLO Uplo,
+int  gsl_blas_ztrmv (CBLAS_UPLO Uplo,
                      CBLAS_TRANSPOSE TransA, CBLAS_DIAG Diag,
                      const gsl_matrix_complex * A,
                      gsl_vector_complex * X);
 
-int  gsl_blas_ztbmv (CBLAS_ORDER order, CBLAS_UPLO Uplo,
+int  gsl_blas_ztbmv (CBLAS_UPLO Uplo,
                      CBLAS_TRANSPOSE TransA, CBLAS_DIAG Diag,
                      int K,
                      const gsl_matrix_complex * A,
                      gsl_vector_complex * X);
 
-int  gsl_blas_ztpmv (CBLAS_ORDER order, CBLAS_UPLO Uplo,
+int  gsl_blas_ztpmv (CBLAS_UPLO Uplo,
                      CBLAS_TRANSPOSE TransA, CBLAS_DIAG Diag,
                      const void *Ap,
                      gsl_vector_complex * X);
 
-int  gsl_blas_ztrsv (CBLAS_ORDER order, CBLAS_UPLO Uplo,
+int  gsl_blas_ztrsv (CBLAS_UPLO Uplo,
                      CBLAS_TRANSPOSE TransA, CBLAS_DIAG Diag,
                      const gsl_matrix_complex * A,
                      gsl_vector_complex *X);
 
-int  gsl_blas_ztbsv (CBLAS_ORDER order, CBLAS_UPLO Uplo,
+int  gsl_blas_ztbsv (CBLAS_UPLO Uplo,
                      CBLAS_TRANSPOSE TransA, CBLAS_DIAG Diag,
                      int K,
                      const gsl_matrix_complex * A,
                      gsl_vector_complex * X);
 
-int  gsl_blas_ztpsv (CBLAS_ORDER order, CBLAS_UPLO Uplo,
+int  gsl_blas_ztpsv (CBLAS_UPLO Uplo,
                      CBLAS_TRANSPOSE TransA, CBLAS_DIAG Diag,
                      const void *Ap,
                      gsl_vector_complex * X);
@@ -365,14 +364,14 @@ int  gsl_blas_ztpsv (CBLAS_ORDER order, CBLAS_UPLO Uplo,
 /*
  * Routines with S and D prefixes only
  */
-int  gsl_blas_ssymv (CBLAS_ORDER order, CBLAS_UPLO Uplo,
+int  gsl_blas_ssymv (CBLAS_UPLO Uplo,
                      float alpha,
                      const gsl_matrix_float * A,
                      const gsl_vector_float * X,
                      float beta,
                      gsl_vector_float * Y);
 
-int  gsl_blas_ssbmv (CBLAS_ORDER order, CBLAS_UPLO Uplo,
+int  gsl_blas_ssbmv (CBLAS_UPLO Uplo,
                      int K,
                      float alpha,
                      const gsl_matrix_float * A,
@@ -380,7 +379,7 @@ int  gsl_blas_ssbmv (CBLAS_ORDER order, CBLAS_UPLO Uplo,
                      float beta,
                      gsl_vector_float * Y);
 
-int  gsl_blas_sspmv (CBLAS_ORDER order, CBLAS_UPLO Uplo,
+int  gsl_blas_sspmv (CBLAS_UPLO Uplo,
                      float alpha,
                      const float Ap[],
                      const gsl_vector_float * X,
@@ -393,36 +392,36 @@ int  gsl_blas_sger (CBLAS_ORDER order,
                     const gsl_vector_float * Y,
                     gsl_matrix_float * A);
 
-int  gsl_blas_ssyr (CBLAS_ORDER order, CBLAS_UPLO Uplo,
+int  gsl_blas_ssyr (CBLAS_UPLO Uplo,
                     float alpha,
                     const gsl_vector_float * X,
                     gsl_matrix_float * A);
 
-int  gsl_blas_sspr (CBLAS_ORDER order, CBLAS_UPLO Uplo,
+int  gsl_blas_sspr (CBLAS_UPLO Uplo,
                     float alpha,
                     const gsl_vector_float * X,
                     float Ap[]);
 
-int  gsl_blas_ssyr2 (CBLAS_ORDER order, CBLAS_UPLO Uplo,
+int  gsl_blas_ssyr2 (CBLAS_UPLO Uplo,
                      float alpha,
                      const gsl_vector_float * X,
                      const gsl_vector_float * Y,
                      gsl_matrix_float * A);
 
-int  gsl_blas_sspr2 (CBLAS_ORDER order, CBLAS_UPLO Uplo,
+int  gsl_blas_sspr2 (CBLAS_UPLO Uplo,
                      float alpha,
                      const gsl_vector_float * X,
                      const gsl_vector_float * Y,
                      gsl_vector_float * A);
 
-int  gsl_blas_dsymv (CBLAS_ORDER order, CBLAS_UPLO Uplo,
+int  gsl_blas_dsymv (CBLAS_UPLO Uplo,
                      double alpha,
                      const gsl_matrix * A,
                      const gsl_vector * X,
                      double beta,
                      gsl_vector * Y);
 
-int  gsl_blas_dsbmv (CBLAS_ORDER order, CBLAS_UPLO Uplo,
+int  gsl_blas_dsbmv (CBLAS_UPLO Uplo,
                      int K,
                      double alpha,
                      const gsl_matrix * A,
@@ -430,36 +429,35 @@ int  gsl_blas_dsbmv (CBLAS_ORDER order, CBLAS_UPLO Uplo,
                      double beta,
                      gsl_vector * Y);
 
-int  gsl_blas_dspmv (CBLAS_ORDER order, CBLAS_UPLO Uplo,
+int  gsl_blas_dspmv (CBLAS_UPLO Uplo,
                      double alpha,
                      const double Ap[],
                      const gsl_vector * X,
                      double beta,
                      gsl_vector * Y);
 
-int  gsl_blas_dger (CBLAS_ORDER order,
-                    double alpha,
+int  gsl_blas_dger (double alpha,
                     const gsl_vector * X,
                     const gsl_vector * Y,
                     gsl_matrix * A);
 
-int  gsl_blas_dsyr (CBLAS_ORDER order, CBLAS_UPLO Uplo,
+int  gsl_blas_dsyr (CBLAS_UPLO Uplo,
                     double alpha,
                     const gsl_vector * X,
                     gsl_matrix * A);
 
-int  gsl_blas_dspr (CBLAS_ORDER order, CBLAS_UPLO Uplo,
+int  gsl_blas_dspr (CBLAS_UPLO Uplo,
                     double alpha,
                     const gsl_vector * X,
                     double Ap[]);
 
-int  gsl_blas_dsyr2 (CBLAS_ORDER order, CBLAS_UPLO Uplo,
+int  gsl_blas_dsyr2 (CBLAS_UPLO Uplo,
                      double alpha,
                      const gsl_vector * X,
                      const gsl_vector * Y,
                      gsl_matrix * A);
 
-int  gsl_blas_dspr2 (CBLAS_ORDER order, CBLAS_UPLO Uplo,
+int  gsl_blas_dspr2 (CBLAS_UPLO Uplo,
                      double alpha,
                      const gsl_vector * X,
                      const gsl_vector * Y,
@@ -468,14 +466,14 @@ int  gsl_blas_dspr2 (CBLAS_ORDER order, CBLAS_UPLO Uplo,
 /*
  * Routines with C and Z prefixes only
  */
-int  gsl_blas_chemv (CBLAS_ORDER order, CBLAS_UPLO Uplo,
+int  gsl_blas_chemv (CBLAS_UPLO Uplo,
                      const gsl_complex * alpha,
                      const gsl_matrix_complex * A,
                      const gsl_vector_complex * X,
                      const gsl_complex * beta,
                      gsl_vector_complex * Y);
 
-int  gsl_blas_chbmv (CBLAS_ORDER order, CBLAS_UPLO Uplo,
+int  gsl_blas_chbmv (CBLAS_UPLO Uplo,
                      int K,
                      const gsl_complex * alpha,
                      const gsl_matrix_complex * A,
@@ -483,55 +481,53 @@ int  gsl_blas_chbmv (CBLAS_ORDER order, CBLAS_UPLO Uplo,
                      const gsl_complex * beta,
                      gsl_vector_complex * Y);
 
-int  gsl_blas_chpmv (CBLAS_ORDER order, CBLAS_UPLO Uplo,
+int  gsl_blas_chpmv (CBLAS_UPLO Uplo,
                      const gsl_complex * alpha,
 		     const void * Ap,
                      const gsl_vector_complex * X,
                      const gsl_complex * beta,
                      gsl_vector_complex * Y);
 
-int  gsl_blas_cgeru (CBLAS_ORDER order,
-                     const gsl_complex * alpha,
+int  gsl_blas_cgeru (const gsl_complex * alpha,
                      const gsl_vector_complex * X,
                      const gsl_vector_complex * Y,
                      gsl_matrix_complex * A);
 
-int  gsl_blas_cgerc (CBLAS_ORDER order,
-                     const gsl_complex * alpha,
+int  gsl_blas_cgerc (const gsl_complex * alpha,
                      const gsl_vector_complex * X,
                      const gsl_vector_complex * Y,
                      gsl_matrix_complex * A);
 
-int  gsl_blas_cher (CBLAS_ORDER order, CBLAS_UPLO Uplo,
+int  gsl_blas_cher (CBLAS_UPLO Uplo,
                     float alpha,
                     const gsl_vector_complex * X,
                     gsl_matrix_complex * A);
 
-int  gsl_blas_chpr (CBLAS_ORDER order, CBLAS_UPLO Uplo,
+int  gsl_blas_chpr (CBLAS_UPLO Uplo,
                     float alpha,
                     const gsl_vector_complex * X,
                     void * Ap);
 
-int  gsl_blas_cher2 (CBLAS_ORDER order, CBLAS_UPLO Uplo,
+int  gsl_blas_cher2 (CBLAS_UPLO Uplo,
                      const gsl_complex * alpha,
                      const gsl_vector_complex * X,
                      const gsl_vector_complex * Y,
                      gsl_matrix_complex * A);
 
-int  gsl_blas_chpr2 (CBLAS_ORDER order, CBLAS_UPLO Uplo,
+int  gsl_blas_chpr2 (CBLAS_UPLO Uplo,
                      const gsl_complex * alpha,
                      const gsl_vector_complex * X,
                      const gsl_vector_complex * Y,
                      void * Ap);
 
-int  gsl_blas_zhemv (CBLAS_ORDER order, CBLAS_UPLO Uplo,
+int  gsl_blas_zhemv (CBLAS_UPLO Uplo,
                      const gsl_complex * alpha,
                      const gsl_matrix_complex * A,
                      const gsl_vector_complex * X,
                      const gsl_complex * beta,
                      gsl_vector_complex * Y);
 
-int  gsl_blas_zhbmv (CBLAS_ORDER order, CBLAS_UPLO Uplo,
+int  gsl_blas_zhbmv (CBLAS_UPLO Uplo,
                      int K,
                      const gsl_complex * alpha,
                      const gsl_matrix_complex * A,
@@ -539,42 +535,40 @@ int  gsl_blas_zhbmv (CBLAS_ORDER order, CBLAS_UPLO Uplo,
                      const gsl_complex * beta,
                      gsl_vector_complex * Y);
 
-int  gsl_blas_zhpmv (CBLAS_ORDER order, CBLAS_UPLO Uplo,
+int  gsl_blas_zhpmv (CBLAS_UPLO Uplo,
                      const gsl_complex * alpha,
                      const void * Ap,
                      const gsl_vector_complex * X,
                      const gsl_complex * beta,
                      gsl_vector_complex * Y);
 
-int  gsl_blas_zgeru (CBLAS_ORDER order,
-                     const gsl_complex * alpha,
+int  gsl_blas_zgeru (const gsl_complex * alpha,
                      const gsl_vector_complex * X,
                      const gsl_vector_complex * Y,
                      gsl_matrix_complex * A);
 
-int  gsl_blas_zgerc (CBLAS_ORDER order,
-                     const gsl_complex * alpha,
+int  gsl_blas_zgerc (const gsl_complex * alpha,
                      const gsl_vector_complex * X,
                      const gsl_vector_complex * Y,
                      gsl_matrix_complex * A);
 
-int  gsl_blas_zher (CBLAS_ORDER order, CBLAS_UPLO Uplo,
+int  gsl_blas_zher (CBLAS_UPLO Uplo,
                     double alpha,
                     const gsl_vector_complex * X,
                     gsl_matrix_complex * A);
 
-int  gsl_blas_zhpr (CBLAS_ORDER order, CBLAS_UPLO Uplo,
+int  gsl_blas_zhpr (CBLAS_UPLO Uplo,
                     double alpha,
                     const gsl_vector_complex * X,
                     void * Ap);
 
-int  gsl_blas_zher2 (CBLAS_ORDER order, CBLAS_UPLO Uplo,
+int  gsl_blas_zher2 (CBLAS_UPLO Uplo,
                      const gsl_complex * alpha,
                      const gsl_vector_complex * X,
                      const gsl_vector_complex * Y,
                      gsl_matrix_complex * A);
 
-int  gsl_blas_zhpr2 (CBLAS_ORDER order, CBLAS_UPLO Uplo,
+int  gsl_blas_zhpr2 (CBLAS_UPLO Uplo,
                      const gsl_complex * alpha,
                      const gsl_vector_complex * X,
                      const gsl_vector_complex * Y,
@@ -589,7 +583,7 @@ int  gsl_blas_zhpr2 (CBLAS_ORDER order, CBLAS_UPLO Uplo,
 /*
  * Routines with standard 4 prefixes (S, D, C, Z)
  */
-int  gsl_blas_sgemm (CBLAS_ORDER Order, CBLAS_TRANSPOSE TransA,
+int  gsl_blas_sgemm (CBLAS_TRANSPOSE TransA,
                      CBLAS_TRANSPOSE TransB,
                      int K,
                      float alpha,
