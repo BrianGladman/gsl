@@ -9,6 +9,8 @@ main (void)
   float d = 0.5 ;
   int i, w ;
 
+  y = 2.1 ; printf("%g ",y) ;    gsl_ieee_printf_double(&y) ; printf("\n") ;
+
   for (i = 1; i<30; i++) {
     printf("%g ",x) ;    gsl_ieee_printf_float(&x) ; printf("\n") ;
     x += d ;

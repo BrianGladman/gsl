@@ -90,7 +90,7 @@ gsl_ieee_double_to_rep (const double * x, gsl_ieee_double_rep * r)
   sprint_byte(u.ieee.byte[4],r->bits + 12) ;
   sprint_byte(u.ieee.byte[3],r->bits + 20) ; 
   sprint_byte(u.ieee.byte[2],r->bits + 28) ;
-  sprint_byte(u.ieee.byte[1],r->bits + 37) ;
+  sprint_byte(u.ieee.byte[1],r->bits + 36) ;
   sprint_byte(u.ieee.byte[0],r->bits + 44) ;
 }
 	  
