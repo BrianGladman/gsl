@@ -38,14 +38,17 @@ rand48_advance (void *vstate)
 {
   rand48_state_t *state = (rand48_state_t *) vstate;
 
-  const unsigned short int x0 = state->x0 ;
-  const unsigned short int x1 = state->x1 ;
-  const unsigned short int x2 = state->x2 ;
+  /* work with unsigned long ints throughout to get correct integer
+     promotions of any unsigned short ints */
+
+  const unsigned long int x0 = (unsigned long int) state->x0 ;
+  const unsigned long int x1 = (unsigned long int) state->x1 ;
+  const unsigned long int x2 = (unsigned long int) state->x2 ;
 
   unsigned long int a ;
   
   a = a0 * x0 + c0 ;
-  state->x0 = (a & 0x0000FFFFUL) ;
+  state->x0 = (a & 0xFFFF) ;
  
   a >>= 16 ;
 
@@ -53,21 +56,25 @@ rand48_advance (void *vstate)
      in the following stage, so it does not matter */
 
   a += a0 * x1 + a1 * x0 ; 
-  state->x1 = (a & 0x0000FFFFUL) ;
+  state->x1 = (a & 0xFFFF) ;
 
   a >>= 16 ;
   a += a0 * x2 + a1 * x1 + a2 * x0 ;
-  state->x2 = (a & 0x0000FFFFUL) ;
+  state->x2 = (a & 0xFFFF) ;
 }
 
 unsigned long int 
 rand48_get (void *vstate)
 {
-  rand48_state_t *state = (rand48_state_t *) vstate;
+  unsigned long int x1, x2;
 
+  rand48_state_t *state = (rand48_state_t *) vstate;
   rand48_advance (state) ;
 
-  return (state->x2 << 16) + state->x1;
+  x2 = (unsigned long int) state->x2;
+  x1 = (unsigned long int) state->x1;
+
+  return (x2 << 16) + x1;
 }
 
 double
@@ -96,8 +103,8 @@ rand48_set (void *vstate, unsigned long int s)
   else 
     {
       state->x0 = 0x330E ;
-      state->x1 = s & 0x0000FFFF ;
-      state->x2 = (s >> 16) & 0x0000FFFF ;
+      state->x1 = s & 0xFFFF ;
+      state->x2 = (s >> 16) & 0xFFFF ;
     }
 
   return;

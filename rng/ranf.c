@@ -46,32 +46,36 @@ ranf_advance (void *vstate)
 {
   ranf_state_t *state = (ranf_state_t *) vstate;
 
-  const unsigned short int x0 = state->x0 ;
-  const unsigned short int x1 = state->x1 ;
-  const unsigned short int x2 = state->x2 ;
+  const unsigned long int x0 = (unsigned long int) state->x0 ;
+  const unsigned long int x1 = (unsigned long int) state->x1 ;
+  const unsigned long int x2 = (unsigned long int) state->x2 ;
 
   unsigned long int r ;
   
   r = a0 * x0 ;
-  state->x0 = (r & 0x0000FFFFUL) ;
+  state->x0 = (r & 0xFFFF) ;
  
   r >>= 16 ;
   r += a0 * x1 + a1 * x0 ;
-  state->x1 = (r & 0x0000FFFFUL) ;
+  state->x1 = (r & 0xFFFF) ;
   
   r >>= 16 ;
   r += a0 * x2 + a1 * x1 + a2 * x0 ;
-  state->x2 = (r & 0x0000FFFFUL) ;
+  state->x2 = (r & 0xFFFF) ;
 }
 
 unsigned long int 
 ranf_get (void *vstate)
 {
-  ranf_state_t *state = (ranf_state_t *) vstate;
+  unsigned long int x1, x2;
 
+  ranf_state_t *state = (ranf_state_t *) vstate;
   ranf_advance (state) ;  
 
-  return ((state->x2 &0xFFFF) << 16) + state->x1;;
+  x1 = (unsigned long int) state->x1;
+  x2 = (unsigned long int) state->x2;
+  
+  return (x2 << 16) + x1;
 }
 
 double
@@ -94,9 +98,9 @@ ranf_set (void *vstate, unsigned long int s)
   unsigned short int x0, x1, x2 ;
   unsigned long int r ;
 
-  unsigned short int b0 = 0xD6DD ;
-  unsigned short int b1 = 0xB894 ;
-  unsigned short int b2 = 0x5CEE ;
+  unsigned long int b0 = 0xD6DD ;
+  unsigned long int b1 = 0xB894 ;
+  unsigned long int b2 = 0x5CEE ;
 
   if (s == 0)  /* default seed */
     {
@@ -106,21 +110,21 @@ ranf_set (void *vstate, unsigned long int s)
     }
   else 
     {
-      x0 = (s | 1) & 0x0000FFFF ;
-      x1 = s >> 16 & 0x0000FFFF ;
+      x0 = (s | 1) & 0xFFFF ;
+      x1 = s >> 16 & 0xFFFF ;
       x2 = 0 ;
     }
 
   r = b0 * x0 ;
-  state->x0 = (r & 0x0000FFFFUL) ;
+  state->x0 = (r & 0xFFFF) ;
  
   r >>= 16 ;
   r += b0 * x1 + b1 * x0 ;
-  state->x1 = (r & 0x0000FFFFUL) ;
+  state->x1 = (r & 0xFFFF) ;
   
   r >>= 16 ;
   r += b0 * x2 + b1 * x1 + b2 * x0 ;
-  state->x2 = (r & 0x0000FFFFUL) ;
+  state->x2 = (r & 0xFFFF) ;
 
   return;
 }
