@@ -13,6 +13,97 @@
 #define locEPS          (1000.0*GSL_MACH_EPS)
 
 
+/* Luke's rational approximation.
+ * See [Luke, Algorithms for the Computation of Mathematical Functions, p.182]
+ *
+ * Like the case of the 1F1 rational approximations, these probably
+ * are guaranteed to converge for x < 0.
+ */
+static
+int
+hyperg_1F1_luke(const double a, const double c, const double xin,
+                double * result, double * prec)
+{
+  const double RECUR_BIG = 1.0e+50;
+  const int nmax = 20000;
+  int n = 3;
+  const double x  = -xin;
+  const double x3 = x*x*x;
+  const double t0 = a/c;
+  const double t1 = (a+1.0)/(2.0*c);
+  const double t2 = (a+2.0)/(2.0*(c+1.0));
+  double F = 1.0;
+
+  double Bnm3 = 1.0;                                  /* B0 */
+  double Bnm2 = 1.0 + t1 * x;                         /* B1 */
+  double Bnm1 = 1.0 + t2 * x * (1.0 + t1/3.0 * x);    /* B2 */
+ 
+  double Anm3 = 1.0;                                                      /* A0 */
+  double Anm2 = Bnm2 - t0 * x;                                            /* A1 */
+  double Anm1 = Bnm1 - t0*(1.0 + t2*x)*x + t0 * t1 * (c/(c+1.0)) * x*x;   /* A2 */
+
+  while(1) {
+    double npam1 = n + a - 1;
+    double npcm1 = n + c - 1;
+    double npam2 = n + a - 2;
+    double npcm2 = n + c - 2;
+    double tnm1  = 2*n - 1;
+    double tnm3  = 2*n - 3;
+    double tnm5  = 2*n - 5;
+    double F1 =  (n-a-2) / (2*tnm3*npcm1);
+    double F2 =  (n+a)*npam1 / (4*tnm1*tnm3*npcm2*npcm1);
+    double F3 = -npam2*npam1*(n-a-2) / (8*tnm3*tnm3*tnm5*(n+c-3)*npcm2*npcm1);
+    double E  = -npam1*(n-c-1) / (2*tnm3*npcm2*npcm1);
+
+    double An = (1.0+F1*x)*Anm1 + (E + F2*x)*x*Anm2 + F3*x3*Anm3;
+    double Bn = (1.0+F1*x)*Bnm1 + (E + F2*x)*x*Bnm2 + F3*x3*Bnm3;
+    double r = An/Bn;
+
+    *prec = fabs((F - r)/F);
+    F = r;
+
+    if(*prec < 0.1*locEPS || n > nmax) break;
+
+    if(fabs(An) > RECUR_BIG || fabs(Bn) > RECUR_BIG) {
+      An   /= RECUR_BIG;
+      Bn   /= RECUR_BIG;
+      Anm1 /= RECUR_BIG;
+      Bnm1 /= RECUR_BIG;
+      Anm2 /= RECUR_BIG;
+      Bnm2 /= RECUR_BIG;
+      Anm3 /= RECUR_BIG;
+      Bnm3 /= RECUR_BIG;
+    }
+    else if(fabs(An) < 1.0/RECUR_BIG || fabs(Bn) < 1.0/RECUR_BIG) {
+      An   *= RECUR_BIG;
+      Bn   *= RECUR_BIG;
+      Anm1 *= RECUR_BIG;
+      Bnm1 *= RECUR_BIG;
+      Anm2 *= RECUR_BIG;
+      Bnm2 *= RECUR_BIG;
+      Anm3 *= RECUR_BIG;
+      Bnm3 *= RECUR_BIG;
+    }
+
+    n++;
+    Bnm3 = Bnm2;
+    Bnm2 = Bnm1;
+    Bnm1 = Bn;
+    Anm3 = Anm2;
+    Anm2 = Anm1;
+    Anm1 = An;
+  }
+
+  *result = F;
+
+  if(*prec > 10.0 * locEPS)
+    return GSL_ELOSS;
+  else
+    return GSL_SUCCESS;
+}
+
+
+
 
 /* Do the (stable) upward recursion on the parameter 'a'.
  * Work in terms of the function
@@ -300,6 +391,15 @@ gsl_sf_hyperg_1F1_impl(const double a, const double b, const double x,
    */
 
   if(fabs(x) < 20.0) {
+    
+    if(x < -5.0) {
+      /* Luke should be most appropriate here, for 
+       * not very small negative x.
+       */
+      double prec;
+      return hyperg_1F1_luke(a, b, x, result, &prec);
+    }
+
     if( (fabs(a) < 20.0 && fabs(b) < 20.0) || (b >= fabs(a)) ) {
       /* Arguments small enough to evaluate series directly
        * or series is dominated and safe.
@@ -336,6 +436,13 @@ gsl_sf_hyperg_1F1_impl(const double a, const double b, const double x,
     return hyperg_1F1_asymp_posx(a, b, x, result, &prec);
   }
 
+  if(x < 0.0) {
+    /* Luke should converge for x < 0.
+     */
+    double prec;
+    return hyperg_1F1_luke(a, b, x, result, &prec);
+  }
+
   /* At this point we have no more tricks. Instead we must
    * proceed systematically. If a>0 we reduce it to 0<a<1
    * by backward recursion, then use the small-a evaluation
@@ -346,7 +453,7 @@ gsl_sf_hyperg_1F1_impl(const double a, const double b, const double x,
    * Temme says... p.65
    */
   *result = 0.0;
-  return GSL_EUNSUP;
+  return GSL_EUNIMPL;
 }
 
 

@@ -138,7 +138,7 @@ hyperg_2F1_luke(const double a, const double b, const double c,
     *prec = fabs((F - r)/F);
     F = r;
 
-    if(*prec < locEPS || n > nmax) break;
+    if(*prec < 0.1*locEPS || n > nmax) break;
 
     if(fabs(An) > RECUR_BIG || fabs(Bn) > RECUR_BIG) {
       An   /= RECUR_BIG;
@@ -231,7 +231,7 @@ hyperg_2F1_conj_luke(const double aR, const double aI, const double c,
     *prec = fabs(F - r)/fabs(F);
     F = r;
 
-    if(*prec < locEPS || n > nmax) break;
+    if(*prec < 0.1*locEPS || n > nmax) break;
 
     if(fabs(An) > RECUR_BIG || fabs(Bn) > RECUR_BIG) {
       An   /= RECUR_BIG;
@@ -273,7 +273,7 @@ hyperg_2F1_conj_luke(const double aR, const double aI, const double c,
 
 
 /* Do the reflection described in [Moshier, p. 334].
- * Assumes c != neg integer.
+ * Assumes a,b,c != neg integer.
  */
 static
 int
@@ -592,20 +592,29 @@ gsl_sf_hyperg_2F1_impl(double a, double b, const double c,
     }
 
     if(x < 0.0) {
+      /* What the hell, maybe Luke will converge.
+       */
       double prec;
       return hyperg_2F1_luke(a, b, c, x, result, &prec);
     }
 
     if(locMAX(fabs(a),1.0)*fabs(bp)*fabs(x) < 2.0*fabs(c)) {
-      /* If c is large enough we can attempt the series anyway.
+      /* If c is large enough or x is small enough,
+       * we can attempt the series anyway.
        */
       double prec;
       return hyperg_2F1_series(a, b, c, x, result, &prec);
     }
 
+    if(fabs(bp*bp*x*x) < 0.001*fabs(bp) && fabs(a) < 10.0) {
+      /* The famous but nearly worthless "large b" asymptotic.
+       */
+      return gsl_sf_hyperg_1F1_impl(a, c, bp*x, result);
+    }
 
-
-
+    /* We give up. */
+    *result = 0.0;
+    return GSL_EUNIMPL;
   }
 }
 
@@ -636,6 +645,17 @@ int gsl_sf_hyperg_2F1_conj_impl(const double aR, const double aI, const double c
     }
   }
   else {
+  
+    if(x < 0.0) {
+      /* What the hell, maybe Luke will converge.
+       */
+      double prec;
+      return hyperg_2F1_conj_luke(aR, aI, c, x, result, &prec); 
+    }
+
+    /* Give up. */
+    *result = 0.0;
+    return GSL_EUNIMPL;
   }
 }
 
@@ -659,12 +679,13 @@ int gsl_sf_hyperg_2F1_renorm_impl(const double a, const double b, const double c
       /* 2F1 does not terminate early enough, so something survives */
       /* [Abramowitz+Stegun, 15.1.2] */
       double g1, g2, g3, g4, g5;
+      double s1, s2, s3, s4, s5;
       int stat = 0;
-      stat += gsl_sf_lngamma_impl(a-c+1, &g1);
-      stat += gsl_sf_lngamma_impl(b-c+1, &g2);
-      stat += gsl_sf_lngamma_impl(a, &g3);
-      stat += gsl_sf_lngamma_impl(b, &g4);
-      stat += gsl_sf_lngamma_impl(-c+2, &g5);
+      stat += gsl_sf_lngamma_sgn_impl(a-c+1, &g1, &s1);
+      stat += gsl_sf_lngamma_sgn_impl(b-c+1, &g2, &s2);
+      stat += gsl_sf_lngamma_sgn_impl(a, &g3, &s3);
+      stat += gsl_sf_lngamma_sgn_impl(b, &g4, &s4);
+      stat += gsl_sf_lngamma_sgn_impl(-c+2, &g5, &s5);
       if(stat != 0) {
         *result = 0.0;
         return GSL_EDOM;
@@ -673,9 +694,17 @@ int gsl_sf_hyperg_2F1_renorm_impl(const double a, const double b, const double c
         double F;
         int stat_F = gsl_sf_hyperg_2F1_impl(a-c+1, b-c+1, -c+2, x, &F);
         double ln_pre = g1 + g2 - g3 - g4 - g5;
-        /* FIXME: error handling */
-        *result = exp(ln_pre) * gsl_sf_pow_int(x, -c+1) * F;
-        return GSL_SUCCESS;
+	double sg = s1 * s2 * s3 * s4 * s5;
+	double sF = ( F > 0.0 ? 1.0 : -1.0 );
+	double lnr = ln_pre + (1.0-c)*log(x) + log(fabs(F));
+	if(lnr < GSL_LOG_DBL_MAX) {
+          *result = sg * sF * exp(lnr);
+          return GSL_SUCCESS;
+	}
+	else {
+	  *result = 0.0;
+	  return GSL_EOVRFLW;
+	}
       }
     }
   }
