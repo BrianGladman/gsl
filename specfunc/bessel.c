@@ -284,6 +284,8 @@ int gsl_sf_bessel_Ynu_asympx_impl(const double nu, const double x, double * resu
  *
  * empirical error analysis:
  *   choose  GSL_ROOT3_MACH_EPS * x > 0.25 * (nu*nu + 1)
+ *
+ * checked OK [GJ] Sun May  3 21:40:12 EDT 1998 
  */
 int gsl_sf_bessel_Inu_scaled_asympx_impl(const double nu, const double x, double * result)
 {
@@ -299,6 +301,8 @@ int gsl_sf_bessel_Inu_scaled_asympx_impl(const double nu, const double x, double
  *
  * empirical error analysis:
  *   choose  GSL_ROOT3_MACH_EPS * x > 0.25 * (nu*nu + 1)
+ *
+ * checked OK [GJ] Sun May  3 21:37:16 EDT 1998 
  */
 int gsl_sf_bessel_Knu_scaled_asympx_impl(const double nu, const double x, double * result)
 {
@@ -471,6 +475,8 @@ int gsl_sf_bessel_Ynu_asymp_Debye_osc_impl(const double nu, const double x, doub
  * since the polynomial term will be evaluated near t=1, so the bound
  * on nu will become constant for small x. Furthermore, decreasing x with
  * nu fixed will decrease the error.
+ *
+ * checked OK [GJ] Sun May  3 21:31:53 EDT 1998 
  */
 int gsl_sf_bessel_Inu_scaled_asymp_unif_impl(const double nu, const double x, double * result)
 {
@@ -479,7 +485,7 @@ int gsl_sf_bessel_Inu_scaled_asymp_unif_impl(const double nu, const double x, do
   double root_term = sqrt(1. + z*z);
   double pre = 1./sqrt(2.*M_PI*nu * root_term);
   double eta = root_term + log(z/(1.+root_term));
-  double ex  = ( z < 1./GSL_MACH_EPS ? exp(nu*(-z + eta)) : exp(-nu/(2.*z)) );
+  double ex  = ( z < 1./GSL_ROOT3_MACH_EPS ? exp(nu*(-z + eta)) : exp(-0.5*nu/z*(1. + 1./(12.*z*z))) );
   double t = 1./root_term;
   double sum;
   double tpow[16];
@@ -495,6 +501,8 @@ int gsl_sf_bessel_Inu_scaled_asymp_unif_impl(const double nu, const double x, do
  *
  * error:
  *   identical to that above for Inu_scaled
+ *
+ * checked OK [GJ] Sun May  3 21:27:11 EDT 1998 
  */
 int gsl_sf_bessel_Knu_scaled_asymp_unif_impl(const double nu, const double x, double * result)
 {
@@ -503,10 +511,11 @@ int gsl_sf_bessel_Knu_scaled_asymp_unif_impl(const double nu, const double x, do
   double root_term = sqrt(1. + z*z);
   double pre = sqrt(M_PI/(2.*nu*root_term));
   double eta = root_term + log(z/(1.+root_term));
-  double ex  = ( z < 1./GSL_SQRT_MACH_EPS ? exp(nu*(z - eta)) : exp(-nu/(2.*z)) );
+  double ex  = ( z < 1./GSL_ROOT3_MACH_EPS ? exp(nu*(z - eta)) : exp(0.5*nu/z*(1. + 1./(12.*z*z))) );
   double t = 1./root_term;
   double sum;
   double tpow[16];
+  tpow[0] = 1.;
   for(i=1; i<16; i++) tpow[i] = t * tpow[i-1];
   sum = 1. - debye_u1(tpow)/nu + debye_u2(tpow)/(nu*nu) - debye_u3(tpow)/(nu*nu*nu)
         + debye_u4(tpow)/(nu*nu*nu*nu) - debye_u5(tpow)/(nu*nu*nu*nu*nu);

@@ -7,6 +7,8 @@
 #include "gsl_sf_chebyshev.h"
 #include "gsl_sf_psi.h"
 
+#include "psi_impl.h"
+
 
 /*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
 
@@ -157,7 +159,7 @@ int gsl_sf_psi_impl(const double x, double * result)
           ans -= 1./(x + i);
       	}
 	*result = ans;
-	if(x < -0.5 && fabs((x-AINT(x-0.5))/x) < dxrel) {
+	if(x < -0.5 && fabs((x-(int)(x-0.5))/x) < dxrel) {
       	  /* loss of precision: x near a negative integer */
 	  return GSL_ELOSS;
       	}

@@ -110,7 +110,9 @@ noinst_HEADERS = \
 	bessel_Yn_impl.h	\
 	expint_impl.h		\
 	gamma_impl.h		\
+	legendre_impl.h		\
 	log_impl.h		\
+	psi_impl.h		\
 	shint_impl.h		\
 	sinint_impl.h		\
 	trig_impl.h
