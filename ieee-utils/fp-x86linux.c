@@ -84,6 +84,13 @@ gsl_ieee_set_mode (int precision, int rounding, int exception_mask)
       mode |= _FPU_MASK_PM ;
     }
 
+  /* Handle libc5, where _FPU_SETCW is not available, suggested by
+     OKUJI Yoshinori <okuji@gnu.org> */
+
+#ifndef _FPU_SETCW
+#define _FPU_SETCW(cw) __asm__ ("fldcw %0" : : "m" (*&cw))
+#endif
+
   _FPU_SETCW(mode) ;
 
   return GSL_SUCCESS ;

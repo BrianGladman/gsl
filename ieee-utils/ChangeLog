@@ -1,3 +1,9 @@
+Mon Jun 12 19:23:53 2000  Brian Gough  <bjg@network-theory.co.uk>
+
+	* fp-x86linux.c (gsl_ieee_set_mode): Handle libc5, where
+ 	_FPU_SETCW is not available, by defining the macro. Suggested by
+ 	OKUJI Yoshinori <okuji@gnu.org>
+
 Wed Jun  7 19:18:15 2000  Brian Gough  <bjg@network-theory.co.uk>
 
 	* fp-ppclinux.c: added support for ppc linux 

@@ -63,3 +63,5 @@ functions
 
 * John Fisher <johnfish@uclink4.berkeley.edu> testing on powerpc linux 
   and support for fp-ppclinux.c
+
+* OKUJI Yoshinori <okuji@gnu.org> for a patch for fp-x86linux.c for libc5
