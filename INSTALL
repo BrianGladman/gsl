@@ -242,6 +242,18 @@ Hints for Solaris
 If you are using the Sun compilers then the library should be compiled
 with the Sun C compiler 'cc', not the Sun C++ compiler 'CC'.
 
+The Sun compiler tools are stored in non-standard directories -- make
+sure that all the compiler and linker tools (cc, ar, ranlib, ld) are
+on the PATH.  A typical PATH should include the directories
+/opt/SUNWspro/bin:/usr/ccs/bin:/usr/ucb in that order.
+
+If you see configure output 
+  
+   checking for ar... :
+
+it means that 'ar' has not been found, and the library will fail to
+build.
+
 There may be some warnings about "end of loop code not reached". These
 can be ignored -- they come from the do { ... ; return ; } while(0)
 statement in the GSL_ERROR macro.
