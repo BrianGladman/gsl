@@ -76,6 +76,23 @@ convergence.  These include requiring a decrease in the norm @math{|f|} on
 each step proposed by Newton's method, or taking steepest-descent steps in
 the direction of the negative gradient of @math{|f|}.
 
+Several root-finding algorithms are available within a single framework.
+The user provides a high-level driver for the algorithms, and the
+library provides the individual functions necessary for each of the
+steps.  There are three main phases of the iteration.  The steps are,
+
+@itemize @bullet
+@item
+initialize solver state, @var{s}, for algorithm @var{T}
+
+@item
+update @var{s} using the iteration @var{T}
+
+@item
+test @var{s} for convergence, and repeat iteration if necessary
+@end itemize
+
+@noindent
 The evaluation of the Jacobian matrix can be problematic, either because
 programming the derivatives is intractable or because computation of the
 @math{n^2} terms of the matrix becomes too expensive.  For these reasons
@@ -95,20 +112,24 @@ estimate the matrix @math{J} or @c{$J^{-1}$}
 @node Initializing the Multidimensional Solver
 @section Initializing the Solver
 
+The following functions initialize a multidimensional solver, either
+with or without derivatives.  The solver itself depends only on the
+dimension of the problem and the algorithm and can be reused for
+different problems.
+
 @deftypefun {gsl_multiroot_fsolver *} gsl_multiroot_fsolver_alloc (const gsl_multiroot_fsolver_type * @var{T}, size_t @var{n})
 This function returns a pointer to a a newly allocated instance of a
 solver of type @var{T} for a system of @var{n} dimensions.
-For example, the following code creates an instance of a Newton solver, 
+For example, the following code creates an instance of a hybrid solver, 
 to solve a 3-dimensional system of equations.
 
 @example
 const gsl_multiroot_fsolver_type * T 
-    = gsl_multiroot_fsolver_newton;
-
+    = gsl_multiroot_fsolver_hybrid;
 gsl_multiroot_fsolver * s 
     = gsl_multiroot_fsolver_alloc (T, 3);
 @end example
-
+@noindent
 If there is insufficient memory to create the solver then the function
 returns a null pointer and the error handler is invoked with an error
 code of @code{GSL_ENOMEM}.
@@ -123,11 +144,10 @@ for a 2-dimensional system of equations.
 @example
 const gsl_multiroot_fdfsolver_type * T 
     = gsl_multiroot_fdfsolver_newton;
-
 gsl_multiroot_fdfsolver * s = 
     gsl_multiroot_fdfsolver_alloc (T, 2);
 @end example
-
+@noindent
 If there is insufficient memory to create the solver then the function
 returns a null pointer and the error handler is invoked with an error
 code of @code{GSL_ENOMEM}.
@@ -156,7 +176,6 @@ These functions return a pointer to the name of the solver.  For example,
 printf("s is a '%s' solver\n", 
        gsl_multiroot_fdfsolver_name (s));
 @end example
-
 @noindent
 would print something like @code{s is a 'newton' solver}.
 @end deftypefun
@@ -181,10 +200,10 @@ returning an appropriate error code if the function cannot be computed.
 
 @item size_t @var{n}
 the dimension of the system, i.e. the number of components of the
-vectors @var{x} and @var{f}
+vectors @var{x} and @var{f}.
 
 @item void * @var{params}
-a pointer to the parameters of the function
+a pointer to the parameters of the function.
 @end table
 @end deftp
 
@@ -205,7 +224,6 @@ f_1(x) = A x_0 x_1 - 1,
 f_2(x) = exp(-x_0) + exp(-x_1) - (1 + 1/A)
 @end example
 @end ifinfo
-
 @noindent
 with @math{A = 10^4}.  The following code defines a
 @code{gsl_multiroot_function} system @code{F} which you could pass to a
@@ -263,10 +281,10 @@ same time.
 
 @item size_t @var{n}
 the dimension of the system, i.e. the number of components of the
-vectors @var{x} and @var{f}
+vectors @var{x} and @var{f}.
 
 @item void * @var{params}
-a pointer to the parameters of the function
+a pointer to the parameters of the function.
 @end table
 @end deftp
 
@@ -698,8 +716,8 @@ time passes.  The algorithm has a tendency to become unstable unless it
 starts close to the root.  The Jacobian is refreshed if this instability
 is detected (consult the source for details).
 
-This algorithm is not recommended for real work and is included only for
-pedagogical purposes.
+This algorithm is not recommended and is included only for demonstration
+purposes.
 @end deffn
 
 @comment ============================================================
@@ -711,7 +729,7 @@ pedagogical purposes.
 The multidimensional solvers are used in a similar way to the
 one-dimensional root finding algorithms.  This first example
 demonstrates the @code{hybrids} scaled-hybrid algorithm, which does not
-require derivatives. The program solves the Rosenbrock system of equations
+require derivatives. The program solves the Rosenbrock system of equations,
 
 @tex
 \beforedisplay

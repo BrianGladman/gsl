@@ -6,7 +6,7 @@
 @cindex solving a non-linear equation
 @cindex non-linear equation, solutions of
 
-This chapter describes functions for finding roots of arbitrary
+This chapter describes routines for finding roots of arbitrary
 one-dimensional functions.  The library provides low level components
 for a variety of iterative solvers and convergence tests.  These can be
 combined by the user to achieve the desired solution, with full access
@@ -1017,7 +1017,7 @@ main (void)
       status = gsl_root_fdfsolver_iterate (s);
       x0 = x;
       x = gsl_root_fdfsolver_root (s);
-      status = gsl_root_test_delta (x, x0, 0, 0.001);
+      status = gsl_root_test_delta (x, x0, 0, 1e-3);
 
       if (status == GSL_SUCCESS)
         printf ("Converged:\n");

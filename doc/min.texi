@@ -4,7 +4,7 @@
 @cindex finding minima
 @cindex non-linear functions, minimization
 
-This chapter describes functions for finding minima of arbitrary
+This chapter describes routines for finding minima of arbitrary
 one-dimensional functions.  The library provides low level components
 for a variety of iterative minimizers and convergence tests.  These can be
 combined by the user to achieve the desired solution, with full access
@@ -372,8 +372,6 @@ minimum of @math{2}.
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_min.h>
-
-double fn1 (double x, void * params);
 
 double fn1 (double x, void * params)
 @{
