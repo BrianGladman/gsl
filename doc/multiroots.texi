@@ -596,7 +596,7 @@ using LU decomposition.
 
 @deffn {Derivative Solver} gsl_multiroot_fdfsolver_gnewton
 @cindex Modified Newton's Method for nonlinear systems
-@cindex GNEWTON algorithm
+@cindex Newton algorithm, globally convergent
 This is a modified version of Newton's method which attempts to improve
 global convergence by requiring every step to reduce the Euclidean norm
 of the residual, @math{|f(x)|}.  If the Newton step leads to an increase

@@ -111,14 +111,18 @@
 Copyright @copyright{} 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003 The GSL Team.
 
 Permission is granted to copy, distribute and/or modify this document
-under the terms of the GNU Free Documentation License, Version 1.1
-or any later version published by the Free Software Foundation;
-with no Invariant Sections, no Front-Cover Texts, and no Back-Cover Texts.
-A copy of the license is included in the section entitled ``GNU
+under the terms of the GNU Free Documentation License, Version 1.1 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License", the Front-Cover
+text being ``A GNU Manual'', and with the Back-Cover Text being (a) (see
+below).  A copy of the license is included in the section entitled ``GNU
 Free Documentation License''.
 
-The Texinfo source for this manual may be obtained from: @*
-@code{http://www.network-theory.co.uk/gsl/manual/src/}
+(a) The Back-Cover Text is: ``You have freedom to copy and modify this
+GNU Manual, like GNU software.''
+
+The Texinfo source for this manual may be obtained from 
+@code{ftp.gnu.org/gnu/gsl/}
 @end copying
 @end iftex
 
@@ -177,12 +181,10 @@ University of Paris-Dauphine
 @contents
 @end ifset
 
-@ifinfo
+@ifnottex
 @node Top, Introduction, (dir), (dir)
 @top GSL
-@end ifinfo
 
-@ifinfo
 This file documents the @value{GSL} (GSL), a collection of numerical
 routines for scientific computing.  It corresponds to release
 @value{VERSION} of the library.
@@ -192,7 +194,7 @@ More information about GSL can be found at the project homepage,
 
 Permission is granted to copy, distribute and/or modify this document
 under the terms of the GNU Free Documentation License.
-@end ifinfo
+@end ifnottex
 
 @menu
 * Introduction::                

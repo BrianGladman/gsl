@@ -65,10 +65,11 @@ Jacobian matrix @c{$J_{ij}$}
 where @code{dimension} is the dimension of the system.
 
 Some of the simpler solver algorithms do not make use of the Jacobian
-matrix, so it is not always strictly necessary to provide it (this
-element of the struct can be replace by a null pointer).  However, it is
-useful to provide the Jacobian to allow the solver algorithms to be
-interchanged -- the best algorithms make use of the Jacobian.
+matrix, so it is not always strictly necessary to provide it (the
+@code{jacobian} element of the struct can be replaced by a null pointer
+for those algorithms).  However, it is useful to provide the Jacobian to allow
+the solver algorithms to be interchanged -- the best algorithms make use
+of the Jacobian.
 
 @item size_t dimension;
 This is the dimension of the system of equations
