@@ -5,39 +5,39 @@
 #include <gsl_sum.h>
 
 int
-gsl_sum_levin_u_with_derivs_accel (const double *array, 
-				   const size_t array_size,
-				   double *q_num,
-				   double *q_den,
-				   double *dq_num,
-				   double *dq_den,
-				   double *dsum,		       
-				   double *sum_accel,
-				   double *sum_plain,
-				   double *precision)
+gsl_sum_levin_u_accel (const double *array,
+		       const size_t array_size,
+		       double *q_num,
+		       double *q_den,
+		       double *dq_num,
+		       double *dq_den,
+		       double *dsum,
+		       double *sum_accel,
+		       double *sum_plain,
+		       double *precision)
 {
-  return gsl_sum_levin_u_with_derivs_accel_minmax (array, array_size,
-						   0, array_size - 1,
-						   q_num, q_den,
-						   dq_num, dq_den, dsum,
-						   sum_accel, 
-						   sum_plain, 
-						   precision);
+  return gsl_sum_levin_u_accel_minmax (array, array_size,
+				       0, array_size - 1,
+				       q_num, q_den,
+				       dq_num, dq_den, dsum,
+				       sum_accel,
+				       sum_plain,
+				       precision);
 }
 
 int
-gsl_sum_levin_u_with_derivs_accel_minmax (const double *array, 
-					  const size_t array_size,
-					  const size_t min_terms,
-					  const size_t max_terms,
-					  double *q_num,
-					  double *q_den,
-					  double *dq_num,
-					  double *dq_den,
-					  double *dsum,
-					  double *sum_accel,
-					  double *sum_plain,
-					  double *precision)
+gsl_sum_levin_u_accel_minmax (const double *array,
+			      const size_t array_size,
+			      const size_t min_terms,
+			      const size_t max_terms,
+			      double *q_num,
+			      double *q_den,
+			      double *dq_num,
+			      double *dq_den,
+			      double *dsum,
+			      double *sum_accel,
+			      double *sum_plain,
+			      double *precision)
 {
   if (array_size == 0)
     {
@@ -69,26 +69,26 @@ gsl_sum_levin_u_with_derivs_accel_minmax (const double *array,
       double least_trunc_result;
 
       /* Calculate specified minimum number of terms.  No convergence
-	 tests are made, and no truncation information is stored.  */
+         tests are made, and no truncation information is stored.  */
 
       for (n = 0; n < min_terms; n++)
 	{
 	  const double t = array[n];
 	  result_nm1 = result_n;
-	  gsl_sum_levin_u_with_derivs_step (t, n, nmax, q_num, q_den, 
-					    dq_num, dq_den, dsum,
-					    &result_n,sum_plain);
+	  gsl_sum_levin_u_step (t, n, nmax, q_num, q_den,
+				dq_num, dq_den, dsum,
+				&result_n, sum_plain);
 	}
 
-      least_trunc_result = result_n ;
+      least_trunc_result = result_n;
 
-      variance = 0 ;
-      for (i = 0 ; i <= n; i++) 
+      variance = 0;
+      for (i = 0; i <= n; i++)
 	{
 	  double dn = dsum[i] * GSL_MACH_EPS * array[i];
-	  variance += dn * dn ;
+	  variance += dn * dn;
 	}
-      noise_n = sqrt(variance) ;
+      noise_n = sqrt (variance);
 
       /* Calculate up to maximum number of terms.  Check truncation
          condition.  */
@@ -98,23 +98,23 @@ gsl_sum_levin_u_with_derivs_accel_minmax (const double *array,
 	  const double t = array[n];
 
 	  result_nm1 = result_n;
-	  gsl_sum_levin_u_with_derivs_step (t, n, nmax, q_num, q_den, 
-					    dq_num, dq_den, dsum,
-					    &result_n, sum_plain);
+	  gsl_sum_levin_u_step (t, n, nmax, q_num, q_den,
+				dq_num, dq_den, dsum,
+				&result_n, sum_plain);
 
 	  trunc_nm1 = trunc_n;
 	  trunc_n = fabs (result_n - result_nm1);
 
 	  noise_nm1 = noise_n;
-	  variance = 0 ;
-	  
-	  for (i = 0 ; i <= n; i++) 
+	  variance = 0;
+
+	  for (i = 0; i <= n; i++)
 	    {
 	      double dn = dsum[i] * GSL_MACH_EPS * array[i];
-	      variance += dn * dn ;
+	      variance += dn * dn;
 	    }
-	  
-	  noise_n = sqrt(variance) ;
+
+	  noise_n = sqrt (variance);
 
 	  /* Determine if we are in the convergence region.  */
 
@@ -126,9 +126,9 @@ gsl_sum_levin_u_with_derivs_accel_minmax (const double *array,
 	    {
 	      if (trunc_n < least_trunc)
 		{
-		  /* Found a low truncation point in
-		   * the convergence region. Save it.
-		   */
+		  /* Found a low truncation point in the convergence
+		     region. Save it. */
+
 		  least_trunc_result = result_n;
 		  least_trunc = trunc_n;
 		  least_trunc_noise = noise_n;
@@ -136,8 +136,8 @@ gsl_sum_levin_u_with_derivs_accel_minmax (const double *array,
 
 	      if (noise_n > trunc_n / 3.0)
 		break;
-	      
-	      if (trunc_n < 10.0 * GSL_MACH_EPS * fabs(result_n))
+
+	      if (trunc_n < 10.0 * GSL_MACH_EPS * fabs (result_n))
 		break;
 	    }
 
@@ -149,8 +149,8 @@ gsl_sum_levin_u_with_derivs_accel_minmax (const double *array,
 	     error estimate.  */
 
 	  *sum_accel = least_trunc_result;
-	  *precision = (GSL_MAX(least_trunc,least_trunc_noise) 
-			/ fabs(*sum_accel));
+	  *precision = (GSL_MAX (least_trunc, least_trunc_noise)
+			/ fabs (*sum_accel));
 	  return GSL_SUCCESS;
 	}
       else
@@ -159,7 +159,7 @@ gsl_sum_levin_u_with_derivs_accel_minmax (const double *array,
 	     calculated values.  */
 
 	  *sum_accel = result_n;
-	  *precision = GSL_MAX(trunc_n, noise_n) / fabs(result_n);
+	  *precision = GSL_MAX (trunc_n, noise_n) / fabs (result_n);
 	  return GSL_SUCCESS;
 	}
     }
@@ -167,20 +167,19 @@ gsl_sum_levin_u_with_derivs_accel_minmax (const double *array,
 
 
 int
-gsl_sum_levin_u_with_derivs_step (const double term,
-				  const size_t n,
-				  const size_t nmax,
-				  double *q_num,
-				  double *q_den,
-				  double *dq_num,
-				  double *dq_den,
-				  double *dsum,
-				  double *sum_accel,
-				  double *sum_plain)
+gsl_sum_levin_u_step (const double term,
+		      const size_t n,
+		      const size_t nmax,
+		      double *q_num,
+		      double *q_den,
+		      double *dq_num,
+		      double *dq_den,
+		      double *dsum,
+		      double *sum_accel,
+		      double *sum_plain)
 {
 
-#define IN(i,j) ((i)*(nmax+1) + j)
-
+#define I(i,j) ((i)*(nmax+1) + j)
 
   if (n == 0)
     {
@@ -190,8 +189,8 @@ gsl_sum_levin_u_with_derivs_step (const double term,
       q_den[0] = 1.0 / term;
       q_num[0] = 1.0;
 
-      dq_den[IN(0,0)] = -1.0 / (term * term);
-      dq_num[IN(0,0)] = 0.0;
+      dq_den[I (0, 0)] = -1.0 / (term * term);
+      dq_num[I (0, 0)] = 0.0;
 
       dsum[0] = 1.0;
 
@@ -211,12 +210,12 @@ gsl_sum_levin_u_with_derivs_step (const double term,
 
       for (i = 0; i < n; i++)
 	{
-	  dq_den[IN(i,n)] = 0;
-	  dq_num[IN(i,n)] = q_den[n] ;
+	  dq_den[I (i, n)] = 0;
+	  dq_num[I (i, n)] = q_den[n];
 	}
 
-      dq_den[IN(n,n)] = -q_den[n] / term;
-      dq_num[IN(n,n)] = q_den[n] + (*sum_plain) * (dq_den[IN(n,n)]);
+      dq_den[I (n, n)] = -q_den[n] / term;
+      dq_num[I (n, n)] = q_den[n] + (*sum_plain) * (dq_den[I (n, n)]);
 
       for (j = n - 1; j >= 0; j--)
 	{
@@ -227,23 +226,22 @@ gsl_sum_levin_u_with_derivs_step (const double term,
 
 	  for (i = 0; i < n; i++)
 	    {
-	      dq_den[IN(i,j)] = dq_den[IN(i,j+1)] - c * dq_den[IN(i,j)]; 
-	      dq_num[IN(i,j)] = dq_num[IN(i,j+1)] - c * dq_num[IN(i,j)]; 
-	    } 
-	  
-	  dq_den[IN(n,j)] = dq_den[IN(n,j+1)] ;
-	  dq_num[IN(n,j)] = dq_num[IN(n,j+1)] ;
+	      dq_den[I (i, j)] = dq_den[I (i, j + 1)] - c * dq_den[I (i, j)];
+	      dq_num[I (i, j)] = dq_num[I (i, j + 1)] - c * dq_num[I (i, j)];
+	    }
+
+	  dq_den[I (n, j)] = dq_den[I (n, j + 1)];
+	  dq_num[I (n, j)] = dq_num[I (n, j + 1)];
 	}
 
       *sum_accel = q_num[0] / q_den[0];
 
       for (i = 0; i <= n; i++)
 	{
-	  dsum[i] = (dq_num[IN(i,0)] / q_den[0] 
-		     - q_num[0] * dq_den[IN(i,0)] / (q_den[0] * q_den[0]));
+	  dsum[i] = (dq_num[I (i, 0)] / q_den[0]
+		     - q_num[0] * dq_den[I (i, 0)] / (q_den[0] * q_den[0]));
 	}
 
       return GSL_SUCCESS;
     }
 }
-

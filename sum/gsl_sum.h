@@ -19,10 +19,10 @@
  * See [Fessler et al., ACM TOMS 9, 346 (1983) and TOMS-602]
  */
 
-int gsl_sum_levin_u_accel (const double * array, size_t array_size,
-			   double * q_num, double * q_den,
-			   double * sum_accel, double * sum_plain,
-			   double * precision);
+int gsl_sum_levin_u_trunc_accel (const double * array, size_t array_size,
+				 double * q_num, double * q_den,
+				 double * sum_accel, double * sum_plain,
+				 double * precision);
 
 /* Basic Levin-u acceleration method
  * with constraints on the terms used.
@@ -41,14 +41,16 @@ int gsl_sum_levin_u_accel (const double * array, size_t array_size,
  * See [Fessler et al., ACM TOMS 9, 346 (1983) and TOMS-602]
  */
 
-int gsl_sum_levin_u_accel_minmax (const double * array, size_t array_size,
-				  size_t min_terms, size_t max_terms,
-				  double * q_num,
-				  double * q_den,
-				  double * sum_accel,
-				  double * sum_plain,
-				  double * precision)
-;
+int gsl_sum_levin_u_trunc_accel_minmax (const double * array, 
+					size_t array_size,
+					size_t min_terms, 
+					size_t max_terms,
+					double * q_num,
+					double * q_den,
+					double * sum_accel,
+					double * sum_plain,
+					double * precision);
+
 /* Basic Levin-u step w/o reference to the array of terms.
  * We only need to specify the value of the current term
  * to execute the step. See TOMS-745.
@@ -63,48 +65,48 @@ int gsl_sum_levin_u_accel_minmax (const double * array, size_t array_size,
  *   sum_plain = simple sum of series
  */
 
-int gsl_sum_levin_u_step(double term,
-			 size_t n,
-			 double * q_num,
-			 double * q_den,
-			 double * sum_accel,
-			 double * sum_plain);
+int gsl_sum_levin_u_trunc_step(double term,
+			       size_t n,
+			       double * q_num,
+			       double * q_den,
+			       double * sum_accel,
+			       double * sum_plain);
 
 int
-gsl_sum_levin_u_with_derivs_step (const double term,
-				  const size_t n,
-				  const size_t nmax,
-				  double *q_num,
-				  double *q_den,
-				  double *dq_num,
-				  double *dq_den,
-				  double *dsum,
-				  double *sum_accel,
-				  double *sum_plain);
+gsl_sum_levin_u_step (double term,
+		      size_t n,
+		      size_t nmax,
+		      double *q_num,
+		      double *q_den,
+		      double *dq_num,
+		      double *dq_den,
+		      double *dsum,
+		      double *sum_accel,
+		      double *sum_plain);
 
-int gsl_sum_levin_u_with_derivs_accel (const double * array, 
-				       size_t array_size,
-				       double * q_num,
-				       double * q_den,
-				       double * dq_num,
-				       double * dq_den,
-				       double * dsum,
-				       double * sum_accel,
-				       double * sum_plain,
-				       double * precision);
+int gsl_sum_levin_u_accel (const double * array, 
+			   size_t array_size,
+			   double * q_num,
+			   double * q_den,
+			   double * dq_num,
+			   double * dq_den,
+			   double * dsum,
+			   double * sum_accel,
+			   double * sum_plain,
+			   double * precision);
 
-int gsl_sum_levin_u_with_derivs_accel_minmax (const double * array, 
-					      size_t array_size,
-					      size_t min_terms, 
-					      size_t max_terms,
-					      double * q_num,
-					      double * q_den,
-					      double * dq_num,
-					      double * dq_den,
-					      double * dsum,
-					      double * sum_accel,
-					      double * sum_plain,
-					      double * precision);
+int gsl_sum_levin_u_accel_minmax (const double * array, 
+				  size_t array_size,
+				  size_t min_terms, 
+				  size_t max_terms,
+				  double * q_num,
+				  double * q_den,
+				  double * dq_num,
+				  double * dq_den,
+				  double * dsum,
+				  double * sum_accel,
+				  double * sum_plain,
+				  double * precision);
 
 
 #endif  /* GSL_SUM_H */

@@ -1,6 +1,6 @@
 /* Author:  G. Jungman
- * RCS:     $Id$
- */
+   RCS:     $Id$ */
+
 #include <config.h>
 #include <gsl_math.h>
 #include <gsl_test.h>
@@ -8,30 +8,31 @@
 #include <gsl_sum.h>
 
 int
-gsl_sum_levin_u_accel (const double *array, 
-		       const size_t array_size,
-		       double *q_num,
-		       double *q_den,
-		       double *sum_accel,
-		       double *sum_plain,
-		       double *precision)
+gsl_sum_levin_u_trunc_accel (const double *array,
+			     const size_t array_size,
+			     double *q_num,
+			     double *q_den,
+			     double *sum_accel,
+			     double *sum_plain,
+			     double *precision)
 {
-  return gsl_sum_levin_u_accel_minmax (array, array_size,
-				       0, array_size - 1,
-				       q_num, q_den,
-				       sum_accel, sum_plain, precision);
+  return gsl_sum_levin_u_trunc_accel_minmax (array, array_size,
+					     0, array_size - 1,
+					     q_num, q_den,
+					   sum_accel, sum_plain, precision);
 }
 
 
 int
-gsl_sum_levin_u_accel_minmax (const double *array, const size_t array_size,
-			      const size_t min_terms,
-			      const size_t max_terms,
-			      double *q_num,
-			      double *q_den,
-			      double *sum_accel,
-			      double *sum_plain,
-			      double *precision)
+gsl_sum_levin_u_trunc_accel_minmax (const double *array,
+				    const size_t array_size,
+				    const size_t min_terms,
+				    const size_t max_terms,
+				    double *q_num,
+				    double *q_den,
+				    double *sum_accel,
+				    double *sum_plain,
+				    double *precision)
 {
   if (array_size == 0)
     {
@@ -58,40 +59,38 @@ gsl_sum_levin_u_accel_minmax (const double *array, const size_t array_size,
       double least_trunc = DBL_MAX;
       double result_least_trunc;
 
-      /* Calculate specified minimum number of terms.
-       * No convergence tests are made, and no
-       * truncation information is stored.
-       */
+      /* Calculate specified minimum number of terms. No convergence
+         tests are made, and no truncation information is stored. */
 
       for (n = 0; n < min_terms; n++)
 	{
 	  const double t = array[n];
 
 	  result_nm1 = result_n;
-	  gsl_sum_levin_u_step (t, n, q_num, q_den, &result_n, sum_plain);
+	  gsl_sum_levin_u_trunc_step (t, n, q_num, q_den, 
+				      &result_n, sum_plain);
 	}
 
-      /* Assume the result after the minimum
-       * calculation is the best.
-       */
+      /* Assume the result after the minimum calculation is the best. */
+
       result_least_trunc = result_n;
 
-      /* Calculate up to maximum number of terms.
-       * Check truncation condition.
-       */
+      /* Calculate up to maximum number of terms. Check truncation
+         condition. */
+
       for (; n <= nmax; n++)
 	{
 	  const double t = array[n];
 
 	  result_nm1 = result_n;
-	  gsl_sum_levin_u_step (t, n, q_num, q_den, &result_n, sum_plain);
+	  gsl_sum_levin_u_trunc_step (t, n, q_num, q_den, 
+				      &result_n, sum_plain);
 
 	  trunc_nm1 = trunc_n;
 	  trunc_n = fabs (result_n - result_nm1);
 
-	  /* Determine if we are in the
-	   * convergence region.
-	   */
+	  /* Determine if we are in the convergence region. */
+
 	  better = (trunc_n < trunc_nm1 || trunc_n < SMALL * fabs (result_n));
 	  converging = converging || (better && before);
 	  before = better;
@@ -100,9 +99,9 @@ gsl_sum_levin_u_accel_minmax (const double *array, const size_t array_size,
 	    {
 	      if (trunc_n < least_trunc)
 		{
-		  /* Found a low truncation point in
-		   * the convergence region. Save it.
-		   */
+		  /* Found a low truncation point in the convergence
+		     region. Save it. */
+
 		  least_trunc = trunc_n;
 		  result_least_trunc = result_n;
 		}
@@ -114,18 +113,18 @@ gsl_sum_levin_u_accel_minmax (const double *array, const size_t array_size,
 
       if (converging)
 	{
-	  /* Stopped in the convergence region.
-	   * Return result and error estimate.
-	   */
+	  /* Stopped in the convergence region. Return result and
+	     error estimate. */
+
 	  *sum_accel = result_least_trunc;
 	  *precision = fabs (least_trunc / *sum_accel);
 	  return GSL_SUCCESS;
 	}
       else
 	{
-	  /* Never reached the convergence region.
-	   * Use the last calculated values.
-	   */
+	  /* Never reached the convergence region. Use the last
+	     calculated values. */
+
 	  *sum_accel = result_n;
 	  *precision = fabs (trunc_n / result_n);
 	  return GSL_SUCCESS;
@@ -134,21 +133,20 @@ gsl_sum_levin_u_accel_minmax (const double *array, const size_t array_size,
 }
 
 int
-gsl_sum_levin_u_step (const double term,
-		      const size_t n,
-		      double *q_num,
-		      double *q_den,
-		      double *sum_accel,
-		      double *sum_plain)
+gsl_sum_levin_u_trunc_step (const double term,
+			    const size_t n,
+			    double *q_num,
+			    double *q_den,
+			    double *sum_accel,
+			    double *sum_plain)
 {
   if (term == 0.0)
     {
-      /* This is actually harmless when treated in
-       * this way. A term which is exactly zero is
-       * simply ignored; the state is not changed.
-       * We return GSL_EZERODIV as an indicator that
-       * this occured.
-       */
+      /* This is actually harmless when treated in this way. A term
+         which is exactly zero is simply ignored; the state is not
+         changed. We return GSL_EZERODIV as an indicator that this
+         occured. */
+
       return GSL_EZERODIV;
     }
   else if (n == 0)
@@ -181,6 +179,3 @@ gsl_sum_levin_u_step (const double term,
       return GSL_SUCCESS;
     }
 }
-
-
-
