@@ -48,6 +48,7 @@ main (int argc, char *argv[])
 "  bivariate-gaussian\n"
 "  dir-2d\n"
 "  dir-3d\n"
+"  dir-nd\n"
 "  geometric\n"
 "  gumbel1\n"
 "  gumbel2\n"
@@ -87,6 +88,7 @@ main (int argc, char *argv[])
 
 #define NAME(x) !strcmp(name,(x))
 #define OUTPUT(x) for (i = 0; i < n; i++) { printf("%g\n", (x)) ; }
+#define OUTPUT1(a,x) for(i = 0; i < n; i++) { a ; printf("%g\n", x) ; }
 #define OUTPUT2(a,x,y) for(i = 0; i < n; i++) { a ; printf("%g %g\n", x, y) ; }
 #define OUTPUT3(a,x,y,z) for(i = 0; i < n; i++) { a ; printf("%g %g %g\n", x, y, z) ; }
 #define INT_OUTPUT(x) for (i = 0; i < n; i++) { printf("%d\n", (x)) ; }
@@ -190,6 +192,16 @@ main (int argc, char *argv[])
     {
       OUTPUT3(gsl_ran_dir_3d (r, &x, &y, &z), x, y, z);
     }
+  else if (NAME("dir-nd"))
+    {
+      double *xarr;  
+      ARGS(1, "n1 = number of dimensions of hypersphere"); 
+      INT_ARG(n1) ;
+      xarr = malloc(n1*sizeof(double));
+      /* We only output the first coordinate */ 
+      OUTPUT1(gsl_ran_dir_nd (r, n1, xarr), xarr[0]);
+      cfree((char *)xarr);
+    }  
   else if (NAME("geometric"))
     {
       ARGS(1, "p = bernoulli trial probability of success");

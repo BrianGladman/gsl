@@ -1,3 +1,13 @@
+1999-01-28  James Theiler <jt@lanl.gov>
+	* sphere.c modified gsl_ran_dir_3d, to speed it up about 2x
+	also modified gsl_ran_dir_2d, providing alternative algorithms 
+	(#ifdef'd appropriately).  which is faster is machine dependent.
+	also gsl_ran_dir_nd for n-dimensional direction, using
+	gaussian random variables, normalized to the unit sphere
+	also added ref's to Knuth and others describing the algorithms	
+	* gsl_randist.h added gsl_ran_dir_nd() prototype
+	* gsl-randist.c added dir-nd option
+
 Tue Dec 15 23:08:57 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
 	* updated all the functions depending on gsl_sf to use the new
