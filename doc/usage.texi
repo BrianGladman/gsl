@@ -60,7 +60,17 @@ directory.  You should write any preprocessor include statements with a
 If the directory is not installed on the standard search path of your
 compiler you will also need to provide its location to the preprocessor
 as a command line flag.  The default location of the @file{gsl}
-directory is @file{/usr/local/include/gsl}.
+directory is @file{/usr/local/include/gsl}.  A typical compilation
+command for a source file @file{app.c} with the GNU C compiler
+@code{gcc} is,
+@example
+gcc -I/usr/local/include -c app.c
+@end example
+@noindent
+This results in an object file @file{app.o}.   The default
+include path for @code{gcc} searches @file{/usr/local/include} automatically so
+the @code{-I} option can be omitted when GSL is installed in its default
+location.
 
 @cindex compiling programs, library paths
 @cindex linking with GSL libraries
