@@ -61,11 +61,8 @@ host_alias = @host_alias@
 host_triplet = @host@
 CC = @CC@
 CPP = @CPP@
-LD = @LD@
-LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
 MAKEINFO = @MAKEINFO@
-NM = @NM@
 PACKAGE = @PACKAGE@
 RANLIB = @RANLIB@
 VERSION = @VERSION@
@@ -320,7 +317,6 @@ clean:  clean-vti clean-aminfo clean-generic mostlyclean
 
 distclean:  distclean-vti distclean-aminfo distclean-generic clean
 	-rm -f config.status
-	-rm -f libtool
 
 maintainer-clean:  maintainer-clean-vti maintainer-clean-aminfo \
 		maintainer-clean-generic distclean

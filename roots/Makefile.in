@@ -63,18 +63,15 @@ host_alias = @host_alias@
 host_triplet = @host@
 CC = @CC@
 CPP = @CPP@
-LD = @LD@
-LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
 MAKEINFO = @MAKEINFO@
-NM = @NM@
 PACKAGE = @PACKAGE@
 RANLIB = @RANLIB@
 VERSION = @VERSION@
 full_top_builddir = @full_top_builddir@
 full_top_srcdir = @full_top_srcdir@
 
-lib_LTLIBRARIES = libgslroots.la 
+lib_LIBRARIES = libgslroots.a 
 
 check_PROGRAMS = test
 
@@ -90,33 +87,32 @@ EXTRA_DIST = test-macros test-bisection test-falsepos test-secant test-newton
 
 TESTS_ENVIRONMENT = BUILDDIR=@full_top_builddir@/roots SRCDIR=@full_top_srcdir@ $(SHELL) -x
 
-test_LDADD = libgslroots.la ../err/libgslerr.la ../err/libgsltest.la
+test_LDADD = libgslroots.a ../err/libgslerr.a ../err/libgsltest.a
 
-test_DEPENDENCIES = libgslroots.la
+test_DEPENDENCIES = libgslroots.a
 
 test_SOURCES = test.c test.h
 
-libgslroots_la_SOURCES = utility.c bisection.c falsepos.c secant.c newton.c
+libgslroots_a_SOURCES = utility.c bisection.c falsepos.c secant.c newton.c
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
 CONFIG_CLEAN_FILES = 
-LTLIBRARIES =  $(lib_LTLIBRARIES)
+LIBRARIES =  $(lib_LIBRARIES)
 
 
 DEFS = @DEFS@ -I. -I$(srcdir) -I..
 CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
-libgslroots_la_LDFLAGS = 
-libgslroots_la_LIBADD = 
-libgslroots_la_OBJECTS =  utility.lo bisection.lo falsepos.lo secant.lo \
-newton.lo
+libgslroots_a_LIBADD = 
+libgslroots_a_OBJECTS =  utility.o bisection.o falsepos.o secant.o \
+newton.o
+AR = ar
 test_OBJECTS =  test.o
 test_LDFLAGS = 
 CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
-LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
-LINK = $(LIBTOOL) --mode=link $(CC) $(CFLAGS) $(LDFLAGS) -o $@
+LINK = $(CC) $(CFLAGS) $(LDFLAGS) -o $@
 HEADERS =  $(include_HEADERS) $(noinst_HEADERS)
 
 DIST_COMMON =  ChangeLog Makefile.am Makefile.in TODO
@@ -128,13 +124,13 @@ TAR = tar
 GZIP = --best
 DEP_FILES =  .deps/bisection.P .deps/falsepos.P .deps/newton.P \
 .deps/secant.P .deps/test.P .deps/utility.P
-SOURCES = $(libgslroots_la_SOURCES) $(test_SOURCES)
-OBJECTS = $(libgslroots_la_OBJECTS) $(test_OBJECTS)
+SOURCES = $(libgslroots_a_SOURCES) $(test_SOURCES)
+OBJECTS = $(libgslroots_a_OBJECTS) $(test_OBJECTS)
 
-all: Makefile $(LTLIBRARIES) $(HEADERS)
+all: Makefile $(LIBRARIES) $(HEADERS)
 
 .SUFFIXES:
-.SUFFIXES: .S .c .lo .o .s
+.SUFFIXES: .S .c .o .s
 $(srcdir)/Makefile.in: Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4)
 	cd $(top_srcdir) && $(AUTOMAKE) --gnu roots/Makefile
 
@@ -143,29 +139,36 @@ Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status $(BUILT_SOURCES)
 	  && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
 
-mostlyclean-libLTLIBRARIES:
+mostlyclean-libLIBRARIES:
 
-clean-libLTLIBRARIES:
-	-test -z "$(lib_LTLIBRARIES)" || rm -f $(lib_LTLIBRARIES)
+clean-libLIBRARIES:
+	-test -z "$(lib_LIBRARIES)" || rm -f $(lib_LIBRARIES)
 
-distclean-libLTLIBRARIES:
+distclean-libLIBRARIES:
 
-maintainer-clean-libLTLIBRARIES:
+maintainer-clean-libLIBRARIES:
 
-install-libLTLIBRARIES: $(lib_LTLIBRARIES)
+install-libLIBRARIES: $(lib_LIBRARIES)
 	@$(NORMAL_INSTALL)
 	$(mkinstalldirs) $(DESTDIR)$(libdir)
-	@list='$(lib_LTLIBRARIES)'; for p in $$list; do \
+	list='$(lib_LIBRARIES)'; for p in $$list; do \
 	  if test -f $$p; then \
-	    echo "$(LIBTOOL)  --mode=install $(INSTALL_DATA) $$p $(DESTDIR)$(libdir)/$$p"; \
-	    $(LIBTOOL)  --mode=install $(INSTALL_DATA) $$p $(DESTDIR)$(libdir)/$$p; \
+	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(libdir)/$$p"; \
+	    $(INSTALL_DATA) $$p $(DESTDIR)$(libdir)/$$p; \
+	  else :; fi; \
+	done
+	@$(POST_INSTALL)
+	@list='$(lib_LIBRARIES)'; for p in $$list; do \
+	  if test -f $$p; then \
+	    echo " $(RANLIB) $(DESTDIR)$(libdir)/$$p"; \
+	    $(RANLIB) $(DESTDIR)$(libdir)/$$p; \
 	  else :; fi; \
 	done
 
-uninstall-libLTLIBRARIES:
+uninstall-libLIBRARIES:
 	@$(NORMAL_UNINSTALL)
-	list='$(lib_LTLIBRARIES)'; for p in $$list; do \
-	  $(LIBTOOL)  --mode=uninstall rm -f $(DESTDIR)$(libdir)/$$p; \
+	list='$(lib_LIBRARIES)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(libdir)/$$p; \
 	done
 
 .s.o:
@@ -184,24 +187,10 @@ distclean-compile:
 
 maintainer-clean-compile:
 
-.s.lo:
-	$(LIBTOOL) --mode=compile $(COMPILE) -c $<
-
-.S.lo:
-	$(LIBTOOL) --mode=compile $(COMPILE) -c $<
-
-mostlyclean-libtool:
-	-rm -f *.lo
-
-clean-libtool:
-	-rm -rf .libs _libs
-
-distclean-libtool:
-
-maintainer-clean-libtool:
-
-libgslroots.la: $(libgslroots_la_OBJECTS) $(libgslroots_la_DEPENDENCIES)
-	$(LINK) -rpath $(libdir) $(libgslroots_la_LDFLAGS) $(libgslroots_la_OBJECTS) $(libgslroots_la_LIBADD) $(LIBS)
+libgslroots.a: $(libgslroots_a_OBJECTS) $(libgslroots_a_DEPENDENCIES)
+	-rm -f libgslroots.a
+	$(AR) cru libgslroots.a $(libgslroots_a_OBJECTS) $(libgslroots_a_LIBADD)
+	$(RANLIB) libgslroots.a
 
 mostlyclean-checkPROGRAMS:
 
@@ -326,7 +315,7 @@ dvi:
 check: all $(check_PROGRAMS)
 	$(MAKE) check-TESTS
 installcheck:
-install-exec: install-libLTLIBRARIES
+install-exec: install-libLIBRARIES
 	@$(NORMAL_INSTALL)
 
 install-data: install-includeHEADERS
@@ -335,7 +324,7 @@ install-data: install-includeHEADERS
 install: install-exec install-data all
 	@:
 
-uninstall: uninstall-libLTLIBRARIES uninstall-includeHEADERS
+uninstall: uninstall-libLIBRARIES uninstall-includeHEADERS
 
 install-strip:
 	$(MAKE) INSTALL_PROGRAM='$(INSTALL_PROGRAM) -s' INSTALL_SCRIPT='$(INSTALL_PROGRAM)' install
@@ -357,34 +346,29 @@ distclean-generic:
 maintainer-clean-generic:
 	-test -z "$(MAINTAINERCLEANFILES)" || rm -f $(MAINTAINERCLEANFILES)
 	-test -z "$(BUILT_SOURCES)" || rm -f $(BUILT_SOURCES)
-mostlyclean:  mostlyclean-libLTLIBRARIES mostlyclean-compile \
-		mostlyclean-libtool mostlyclean-checkPROGRAMS \
-		mostlyclean-tags mostlyclean-depend mostlyclean-generic
+mostlyclean:  mostlyclean-libLIBRARIES mostlyclean-compile \
+		mostlyclean-checkPROGRAMS mostlyclean-tags \
+		mostlyclean-depend mostlyclean-generic
 
-clean:  clean-libLTLIBRARIES clean-compile clean-libtool \
-		clean-checkPROGRAMS clean-tags clean-depend \
-		clean-generic mostlyclean
+clean:  clean-libLIBRARIES clean-compile clean-checkPROGRAMS clean-tags \
+		clean-depend clean-generic mostlyclean
 
-distclean:  distclean-libLTLIBRARIES distclean-compile distclean-libtool \
+distclean:  distclean-libLIBRARIES distclean-compile \
 		distclean-checkPROGRAMS distclean-tags distclean-depend \
 		distclean-generic clean
 	-rm -f config.status
-	-rm -f libtool
 
-maintainer-clean:  maintainer-clean-libLTLIBRARIES \
-		maintainer-clean-compile maintainer-clean-libtool \
-		maintainer-clean-checkPROGRAMS maintainer-clean-tags \
-		maintainer-clean-depend maintainer-clean-generic \
-		distclean
+maintainer-clean:  maintainer-clean-libLIBRARIES \
+		maintainer-clean-compile maintainer-clean-checkPROGRAMS \
+		maintainer-clean-tags maintainer-clean-depend \
+		maintainer-clean-generic distclean
 	@echo "This command is intended for maintainers to use;"
 	@echo "it deletes files that may require special tools to rebuild."
 
-.PHONY: mostlyclean-libLTLIBRARIES distclean-libLTLIBRARIES \
-clean-libLTLIBRARIES maintainer-clean-libLTLIBRARIES \
-uninstall-libLTLIBRARIES install-libLTLIBRARIES mostlyclean-compile \
-distclean-compile clean-compile maintainer-clean-compile \
-mostlyclean-libtool distclean-libtool clean-libtool \
-maintainer-clean-libtool mostlyclean-checkPROGRAMS \
+.PHONY: mostlyclean-libLIBRARIES distclean-libLIBRARIES \
+clean-libLIBRARIES maintainer-clean-libLIBRARIES uninstall-libLIBRARIES \
+install-libLIBRARIES mostlyclean-compile distclean-compile \
+clean-compile maintainer-clean-compile mostlyclean-checkPROGRAMS \
 distclean-checkPROGRAMS clean-checkPROGRAMS \
 maintainer-clean-checkPROGRAMS uninstall-includeHEADERS \
 install-includeHEADERS tags mostlyclean-tags distclean-tags clean-tags \

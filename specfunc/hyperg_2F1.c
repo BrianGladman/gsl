@@ -371,17 +371,97 @@ int gsl_sf_hyperg_2F1_conj_impl(const double aR, const double aI, const double c
                                 const double x,
 				double * result)
 {
-  double ax = fabs(x);
+  const double ax = fabs(x);
   const int c_neg_integer = ( c < 0.0  &&  fabs(c - rint(c)) < locEPS );
 
   if(ax >= 1.0) return GSL_EDOM;
   if(c_neg_integer) return GSL_EDOM;
 
-  if(fabs(aR) < 5.0 && fabs(aI) < 5.0) {
+  if(ax < 0.2 && fabs(aR) < 20.0 && fabs(aI) < 20.0) {
+    double prec;
+    int status = hyperg_2F1_conj_series(aR, aI, c, x, result, &prec);
+    return status;
+  }
+  else if(fabs(aR) < 5.0 && fabs(aI) < 5.0) {
     double prec;
     int status = hyperg_2F1_conj_series(aR, aI, c, x, result, &prec);
     return status;
   }
   else {
+    double prec;
+    int status = hyperg_2F1_conj_luke(aR, aI, c, x, result, &prec);
+    return status;
   }
+}
+
+/* 2F1(a, b; c; x) / Gamma(c)   with correct handling for c = negative integer */
+int gsl_sf_hyperg_2F1_renorm_impl(const double a, const double b, const double c,
+                                  const double x,
+			          double * result
+			          )
+{
+  const int a_neg_integer = ( a < 0.0  &&  fabs(a - rint(a)) < locEPS );
+  const int b_neg_integer = ( b < 0.0  &&  fabs(b - rint(b)) < locEPS );
+  const int c_neg_integer = ( c < 0.0  &&  fabs(c - rint(c)) < locEPS );
+  
+  if(c_neg_integer) {
+    if((a_neg_integer && a > c) || (b_neg_integer && b > c)) {
+      /* 2F1 terminates early */
+      *result = 0.0;
+      return GSL_SUCCESS;
+    }
+    else {
+      /* 2F1 does not terminate early enough, so something survives */
+      /* [Abramowitz+Stegun, 15.1.2] */
+      double g1, g2, g3, g4, g5;
+      int stat = 0;
+      stat += gsl_sf_lngamma_impl(a-c+1, &g1);
+      stat += gsl_sf_lngamma_impl(b-c+1, &g2);
+      stat += gsl_sf_lngamma_impl(a, &g3);
+      stat += gsl_sf_lngamma_impl(b, &g4);
+      stat += gsl_sf_lngamma_impl(-c+2, &g5);
+      if(stat != 0) {
+        *result = 0.0;
+        return GSL_EDOM;
+      }
+      else {
+        double F;
+        int stat_F = gsl_sf_hyperg_2F1_impl(a-c+1, b-c+1, -c+2, x, &F);
+        double ln_pre = g1 + g2 - g3 - g4 - g5;
+        /* FIXME: error handling */
+        *result = exp(ln_pre) * gsl_sf_pow_int(x, -c+1) * F;
+        return GSL_SUCCESS;
+      }
+    }
+  }
+  else {
+    /* generic c */
+    double F;
+    double lng = gsl_sf_lngamma(c);
+    int stat_F = gsl_sf_hyperg_2F1_impl(a, b, c, x, &F);
+    if(stat_F == GSL_SUCCESS) {
+      double ln_absF   = log(fabs(F));
+      double ln_result = ln_absF - lng;
+      if(ln_result < GSL_LOG_DBL_MIN) {
+        *result = 0.0;
+        return GSL_EUNDRFLW;
+      }
+      else {
+        double sgn = (F > 0.0 ? 1.0 : -1.0);
+        *result = sgn * exp(ln_result);
+        return GSL_SUCCESS;
+      }
+    }
+    else {
+      return GSL_EFAILED;
+    }
+  }
+}
+
+int gsl_sf_hyperg_2F1_conj_renorm_impl(const double aR, const double aI, const int c,
+                                       const double x,
+			               double * result
+			               )
+{
+/* FIXME: copy above, when it works right */
 }

@@ -61,54 +61,48 @@ host_alias = @host_alias@
 host_triplet = @host@
 CC = @CC@
 CPP = @CPP@
-LD = @LD@
-LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
 MAKEINFO = @MAKEINFO@
-NM = @NM@
 PACKAGE = @PACKAGE@
 RANLIB = @RANLIB@
 VERSION = @VERSION@
 full_top_builddir = @full_top_builddir@
 full_top_srcdir = @full_top_srcdir@
 
-lib_LTLIBRARIES = libgslerr.la libgsltest.la
+lib_LIBRARIES = libgslerr.a libgsltest.a
 
 include_HEADERS = gsl_errno.h gsl_message.h gsl_test.h
 
-libgslerr_la_SOURCES = error.c stream.c message.c strerror.c warn.c
-libgsltest_la_SOURCES = test.c
+libgslerr_a_SOURCES = error.c stream.c message.c strerror.c warn.c
+libgsltest_a_SOURCES = test.c
 
 check_PROGRAMS = test_errnos
 
 TESTS = test_errnos
 
-test_errnos_LDADD = libgslerr.la libgsltest.la
+test_errnos_LDADD = libgslerr.a libgsltest.a
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
 CONFIG_CLEAN_FILES = 
-LTLIBRARIES =  $(lib_LTLIBRARIES)
+LIBRARIES =  $(lib_LIBRARIES)
 
 
 DEFS = @DEFS@ -I. -I$(srcdir) -I..
 CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
-libgslerr_la_LDFLAGS = 
-libgslerr_la_LIBADD = 
-libgslerr_la_OBJECTS =  error.lo stream.lo message.lo strerror.lo \
-warn.lo
-libgsltest_la_LDFLAGS = 
-libgsltest_la_LIBADD = 
-libgsltest_la_OBJECTS =  test.lo
+libgslerr_a_LIBADD = 
+libgslerr_a_OBJECTS =  error.o stream.o message.o strerror.o warn.o
+libgsltest_a_LIBADD = 
+libgsltest_a_OBJECTS =  test.o
+AR = ar
 test_errnos_SOURCES = test_errnos.c
 test_errnos_OBJECTS =  test_errnos.o
-test_errnos_DEPENDENCIES =  libgslerr.la libgsltest.la
+test_errnos_DEPENDENCIES =  libgslerr.a libgsltest.a
 test_errnos_LDFLAGS = 
 CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
-LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
-LINK = $(LIBTOOL) --mode=link $(CC) $(CFLAGS) $(LDFLAGS) -o $@
+LINK = $(CC) $(CFLAGS) $(LDFLAGS) -o $@
 HEADERS =  $(include_HEADERS)
 
 DIST_COMMON =  ChangeLog Makefile.am Makefile.in
@@ -120,13 +114,13 @@ TAR = tar
 GZIP = --best
 DEP_FILES =  .deps/error.P .deps/message.P .deps/stream.P \
 .deps/strerror.P .deps/test.P .deps/test_errnos.P .deps/warn.P
-SOURCES = $(libgslerr_la_SOURCES) $(libgsltest_la_SOURCES) test_errnos.c
-OBJECTS = $(libgslerr_la_OBJECTS) $(libgsltest_la_OBJECTS) test_errnos.o
+SOURCES = $(libgslerr_a_SOURCES) $(libgsltest_a_SOURCES) test_errnos.c
+OBJECTS = $(libgslerr_a_OBJECTS) $(libgsltest_a_OBJECTS) test_errnos.o
 
-all: Makefile $(LTLIBRARIES) $(HEADERS)
+all: Makefile $(LIBRARIES) $(HEADERS)
 
 .SUFFIXES:
-.SUFFIXES: .S .c .lo .o .s
+.SUFFIXES: .S .c .o .s
 $(srcdir)/Makefile.in: Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4)
 	cd $(top_srcdir) && $(AUTOMAKE) --gnu err/Makefile
 
@@ -135,29 +129,36 @@ Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status $(BUILT_SOURCES)
 	  && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
 
-mostlyclean-libLTLIBRARIES:
+mostlyclean-libLIBRARIES:
 
-clean-libLTLIBRARIES:
-	-test -z "$(lib_LTLIBRARIES)" || rm -f $(lib_LTLIBRARIES)
+clean-libLIBRARIES:
+	-test -z "$(lib_LIBRARIES)" || rm -f $(lib_LIBRARIES)
 
-distclean-libLTLIBRARIES:
+distclean-libLIBRARIES:
 
-maintainer-clean-libLTLIBRARIES:
+maintainer-clean-libLIBRARIES:
 
-install-libLTLIBRARIES: $(lib_LTLIBRARIES)
+install-libLIBRARIES: $(lib_LIBRARIES)
 	@$(NORMAL_INSTALL)
 	$(mkinstalldirs) $(DESTDIR)$(libdir)
-	@list='$(lib_LTLIBRARIES)'; for p in $$list; do \
+	list='$(lib_LIBRARIES)'; for p in $$list; do \
 	  if test -f $$p; then \
-	    echo "$(LIBTOOL)  --mode=install $(INSTALL_DATA) $$p $(DESTDIR)$(libdir)/$$p"; \
-	    $(LIBTOOL)  --mode=install $(INSTALL_DATA) $$p $(DESTDIR)$(libdir)/$$p; \
+	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(libdir)/$$p"; \
+	    $(INSTALL_DATA) $$p $(DESTDIR)$(libdir)/$$p; \
+	  else :; fi; \
+	done
+	@$(POST_INSTALL)
+	@list='$(lib_LIBRARIES)'; for p in $$list; do \
+	  if test -f $$p; then \
+	    echo " $(RANLIB) $(DESTDIR)$(libdir)/$$p"; \
+	    $(RANLIB) $(DESTDIR)$(libdir)/$$p; \
 	  else :; fi; \
 	done
 
-uninstall-libLTLIBRARIES:
+uninstall-libLIBRARIES:
 	@$(NORMAL_UNINSTALL)
-	list='$(lib_LTLIBRARIES)'; for p in $$list; do \
-	  $(LIBTOOL)  --mode=uninstall rm -f $(DESTDIR)$(libdir)/$$p; \
+	list='$(lib_LIBRARIES)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(libdir)/$$p; \
 	done
 
 .s.o:
@@ -176,27 +177,15 @@ distclean-compile:
 
 maintainer-clean-compile:
 
-.s.lo:
-	$(LIBTOOL) --mode=compile $(COMPILE) -c $<
+libgslerr.a: $(libgslerr_a_OBJECTS) $(libgslerr_a_DEPENDENCIES)
+	-rm -f libgslerr.a
+	$(AR) cru libgslerr.a $(libgslerr_a_OBJECTS) $(libgslerr_a_LIBADD)
+	$(RANLIB) libgslerr.a
 
-.S.lo:
-	$(LIBTOOL) --mode=compile $(COMPILE) -c $<
-
-mostlyclean-libtool:
-	-rm -f *.lo
-
-clean-libtool:
-	-rm -rf .libs _libs
-
-distclean-libtool:
-
-maintainer-clean-libtool:
-
-libgslerr.la: $(libgslerr_la_OBJECTS) $(libgslerr_la_DEPENDENCIES)
-	$(LINK) -rpath $(libdir) $(libgslerr_la_LDFLAGS) $(libgslerr_la_OBJECTS) $(libgslerr_la_LIBADD) $(LIBS)
-
-libgsltest.la: $(libgsltest_la_OBJECTS) $(libgsltest_la_DEPENDENCIES)
-	$(LINK) -rpath $(libdir) $(libgsltest_la_LDFLAGS) $(libgsltest_la_OBJECTS) $(libgsltest_la_LIBADD) $(LIBS)
+libgsltest.a: $(libgsltest_a_OBJECTS) $(libgsltest_a_DEPENDENCIES)
+	-rm -f libgsltest.a
+	$(AR) cru libgsltest.a $(libgsltest_a_OBJECTS) $(libgsltest_a_LIBADD)
+	$(RANLIB) libgsltest.a
 
 mostlyclean-checkPROGRAMS:
 
@@ -321,7 +310,7 @@ dvi:
 check: all $(check_PROGRAMS)
 	$(MAKE) check-TESTS
 installcheck:
-install-exec: install-libLTLIBRARIES
+install-exec: install-libLIBRARIES
 	@$(NORMAL_INSTALL)
 
 install-data: install-includeHEADERS
@@ -330,7 +319,7 @@ install-data: install-includeHEADERS
 install: install-exec install-data all
 	@:
 
-uninstall: uninstall-libLTLIBRARIES uninstall-includeHEADERS
+uninstall: uninstall-libLIBRARIES uninstall-includeHEADERS
 
 install-strip:
 	$(MAKE) INSTALL_PROGRAM='$(INSTALL_PROGRAM) -s' INSTALL_SCRIPT='$(INSTALL_PROGRAM)' install
@@ -352,34 +341,29 @@ distclean-generic:
 maintainer-clean-generic:
 	-test -z "$(MAINTAINERCLEANFILES)" || rm -f $(MAINTAINERCLEANFILES)
 	-test -z "$(BUILT_SOURCES)" || rm -f $(BUILT_SOURCES)
-mostlyclean:  mostlyclean-libLTLIBRARIES mostlyclean-compile \
-		mostlyclean-libtool mostlyclean-checkPROGRAMS \
-		mostlyclean-tags mostlyclean-depend mostlyclean-generic
+mostlyclean:  mostlyclean-libLIBRARIES mostlyclean-compile \
+		mostlyclean-checkPROGRAMS mostlyclean-tags \
+		mostlyclean-depend mostlyclean-generic
 
-clean:  clean-libLTLIBRARIES clean-compile clean-libtool \
-		clean-checkPROGRAMS clean-tags clean-depend \
-		clean-generic mostlyclean
+clean:  clean-libLIBRARIES clean-compile clean-checkPROGRAMS clean-tags \
+		clean-depend clean-generic mostlyclean
 
-distclean:  distclean-libLTLIBRARIES distclean-compile distclean-libtool \
+distclean:  distclean-libLIBRARIES distclean-compile \
 		distclean-checkPROGRAMS distclean-tags distclean-depend \
 		distclean-generic clean
 	-rm -f config.status
-	-rm -f libtool
 
-maintainer-clean:  maintainer-clean-libLTLIBRARIES \
-		maintainer-clean-compile maintainer-clean-libtool \
-		maintainer-clean-checkPROGRAMS maintainer-clean-tags \
-		maintainer-clean-depend maintainer-clean-generic \
-		distclean
+maintainer-clean:  maintainer-clean-libLIBRARIES \
+		maintainer-clean-compile maintainer-clean-checkPROGRAMS \
+		maintainer-clean-tags maintainer-clean-depend \
+		maintainer-clean-generic distclean
 	@echo "This command is intended for maintainers to use;"
 	@echo "it deletes files that may require special tools to rebuild."
 
-.PHONY: mostlyclean-libLTLIBRARIES distclean-libLTLIBRARIES \
-clean-libLTLIBRARIES maintainer-clean-libLTLIBRARIES \
-uninstall-libLTLIBRARIES install-libLTLIBRARIES mostlyclean-compile \
-distclean-compile clean-compile maintainer-clean-compile \
-mostlyclean-libtool distclean-libtool clean-libtool \
-maintainer-clean-libtool mostlyclean-checkPROGRAMS \
+.PHONY: mostlyclean-libLIBRARIES distclean-libLIBRARIES \
+clean-libLIBRARIES maintainer-clean-libLIBRARIES uninstall-libLIBRARIES \
+install-libLIBRARIES mostlyclean-compile distclean-compile \
+clean-compile maintainer-clean-compile mostlyclean-checkPROGRAMS \
 distclean-checkPROGRAMS clean-checkPROGRAMS \
 maintainer-clean-checkPROGRAMS uninstall-includeHEADERS \
 install-includeHEADERS tags mostlyclean-tags distclean-tags clean-tags \

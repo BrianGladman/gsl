@@ -61,22 +61,19 @@ host_alias = @host_alias@
 host_triplet = @host@
 CC = @CC@
 CPP = @CPP@
-LD = @LD@
-LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
 MAKEINFO = @MAKEINFO@
-NM = @NM@
 PACKAGE = @PACKAGE@
 RANLIB = @RANLIB@
 VERSION = @VERSION@
 full_top_builddir = @full_top_builddir@
 full_top_srcdir = @full_top_srcdir@
 
-lib_LTLIBRARIES = libgslintegration.la
+lib_LIBRARIES = libgslintegration.a
 
 INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../err
 
-libgslintegration_la_SOURCES = integration.c \
+libgslintegration_a_SOURCES = integration.c \
 	qk15.c qk15.h \
 	qk21.c qk21.h \
 	qk31.c qk31.h \
@@ -94,32 +91,31 @@ include_HEADERS = gsl_integration.h
 TESTS = test
 check_PROGRAMS = test
 
-test_SOURCES = test.c tests.c
-test_LDADD = libgslintegration.la
-test_LDADD = libgslintegration.la ../err/libgslerr.la ../err/libgsltest.la 
+test_SOURCES = test.c tests.c tests.h
+test_LDADD = libgslintegration.a
+test_LDADD = libgslintegration.a ../err/libgslerr.a ../err/libgsltest.a 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
 CONFIG_CLEAN_FILES = 
-LTLIBRARIES =  $(lib_LTLIBRARIES)
+LIBRARIES =  $(lib_LIBRARIES)
 
 
 DEFS = @DEFS@ -I. -I$(srcdir) -I..
 CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
-libgslintegration_la_LDFLAGS = 
-libgslintegration_la_LIBADD = 
-libgslintegration_la_OBJECTS =  integration.lo qk15.lo qk21.lo qk31.lo \
-qk41.lo qk51.lo qk61.lo qk.lo qng.lo qage.lo qage_impl.lo qpsrt.lo \
-qagse.lo qagse_impl.lo qelg.lo err.lo
+libgslintegration_a_LIBADD = 
+libgslintegration_a_OBJECTS =  integration.o qk15.o qk21.o qk31.o qk41.o \
+qk51.o qk61.o qk.o qng.o qage.o qage_impl.o qpsrt.o qagse.o \
+qagse_impl.o qelg.o err.o
+AR = ar
 test_OBJECTS =  test.o tests.o
-test_DEPENDENCIES =  libgslintegration.la ../err/libgslerr.la \
-../err/libgsltest.la
+test_DEPENDENCIES =  libgslintegration.a ../err/libgslerr.a \
+../err/libgsltest.a
 test_LDFLAGS = 
 CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
-LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
-LINK = $(LIBTOOL) --mode=link $(CC) $(CFLAGS) $(LDFLAGS) -o $@
+LINK = $(CC) $(CFLAGS) $(LDFLAGS) -o $@
 HEADERS =  $(include_HEADERS)
 
 DIST_COMMON =  Makefile.am Makefile.in
@@ -134,13 +130,13 @@ DEP_FILES =  .deps/err.P .deps/integration.P .deps/qage.P \
 .deps/qk.P .deps/qk15.P .deps/qk21.P .deps/qk31.P .deps/qk41.P \
 .deps/qk51.P .deps/qk61.P .deps/qng.P .deps/qpsrt.P .deps/test.P \
 .deps/tests.P
-SOURCES = $(libgslintegration_la_SOURCES) $(test_SOURCES)
-OBJECTS = $(libgslintegration_la_OBJECTS) $(test_OBJECTS)
+SOURCES = $(libgslintegration_a_SOURCES) $(test_SOURCES)
+OBJECTS = $(libgslintegration_a_OBJECTS) $(test_OBJECTS)
 
-all: Makefile $(LTLIBRARIES) $(HEADERS)
+all: Makefile $(LIBRARIES) $(HEADERS)
 
 .SUFFIXES:
-.SUFFIXES: .S .c .lo .o .s
+.SUFFIXES: .S .c .o .s
 $(srcdir)/Makefile.in: Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4)
 	cd $(top_srcdir) && $(AUTOMAKE) --gnu integration/Makefile
 
@@ -149,29 +145,36 @@ Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status $(BUILT_SOURCES)
 	  && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
 
-mostlyclean-libLTLIBRARIES:
+mostlyclean-libLIBRARIES:
 
-clean-libLTLIBRARIES:
-	-test -z "$(lib_LTLIBRARIES)" || rm -f $(lib_LTLIBRARIES)
+clean-libLIBRARIES:
+	-test -z "$(lib_LIBRARIES)" || rm -f $(lib_LIBRARIES)
 
-distclean-libLTLIBRARIES:
+distclean-libLIBRARIES:
 
-maintainer-clean-libLTLIBRARIES:
+maintainer-clean-libLIBRARIES:
 
-install-libLTLIBRARIES: $(lib_LTLIBRARIES)
+install-libLIBRARIES: $(lib_LIBRARIES)
 	@$(NORMAL_INSTALL)
 	$(mkinstalldirs) $(DESTDIR)$(libdir)
-	@list='$(lib_LTLIBRARIES)'; for p in $$list; do \
+	list='$(lib_LIBRARIES)'; for p in $$list; do \
 	  if test -f $$p; then \
-	    echo "$(LIBTOOL)  --mode=install $(INSTALL_DATA) $$p $(DESTDIR)$(libdir)/$$p"; \
-	    $(LIBTOOL)  --mode=install $(INSTALL_DATA) $$p $(DESTDIR)$(libdir)/$$p; \
+	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(libdir)/$$p"; \
+	    $(INSTALL_DATA) $$p $(DESTDIR)$(libdir)/$$p; \
+	  else :; fi; \
+	done
+	@$(POST_INSTALL)
+	@list='$(lib_LIBRARIES)'; for p in $$list; do \
+	  if test -f $$p; then \
+	    echo " $(RANLIB) $(DESTDIR)$(libdir)/$$p"; \
+	    $(RANLIB) $(DESTDIR)$(libdir)/$$p; \
 	  else :; fi; \
 	done
 
-uninstall-libLTLIBRARIES:
+uninstall-libLIBRARIES:
 	@$(NORMAL_UNINSTALL)
-	list='$(lib_LTLIBRARIES)'; for p in $$list; do \
-	  $(LIBTOOL)  --mode=uninstall rm -f $(DESTDIR)$(libdir)/$$p; \
+	list='$(lib_LIBRARIES)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(libdir)/$$p; \
 	done
 
 .s.o:
@@ -190,24 +193,10 @@ distclean-compile:
 
 maintainer-clean-compile:
 
-.s.lo:
-	$(LIBTOOL) --mode=compile $(COMPILE) -c $<
-
-.S.lo:
-	$(LIBTOOL) --mode=compile $(COMPILE) -c $<
-
-mostlyclean-libtool:
-	-rm -f *.lo
-
-clean-libtool:
-	-rm -rf .libs _libs
-
-distclean-libtool:
-
-maintainer-clean-libtool:
-
-libgslintegration.la: $(libgslintegration_la_OBJECTS) $(libgslintegration_la_DEPENDENCIES)
-	$(LINK) -rpath $(libdir) $(libgslintegration_la_LDFLAGS) $(libgslintegration_la_OBJECTS) $(libgslintegration_la_LIBADD) $(LIBS)
+libgslintegration.a: $(libgslintegration_a_OBJECTS) $(libgslintegration_a_DEPENDENCIES)
+	-rm -f libgslintegration.a
+	$(AR) cru libgslintegration.a $(libgslintegration_a_OBJECTS) $(libgslintegration_a_LIBADD)
+	$(RANLIB) libgslintegration.a
 
 mostlyclean-checkPROGRAMS:
 
@@ -332,7 +321,7 @@ dvi:
 check: all $(check_PROGRAMS)
 	$(MAKE) check-TESTS
 installcheck:
-install-exec: install-libLTLIBRARIES
+install-exec: install-libLIBRARIES
 	@$(NORMAL_INSTALL)
 
 install-data: install-includeHEADERS
@@ -341,7 +330,7 @@ install-data: install-includeHEADERS
 install: install-exec install-data all
 	@:
 
-uninstall: uninstall-libLTLIBRARIES uninstall-includeHEADERS
+uninstall: uninstall-libLIBRARIES uninstall-includeHEADERS
 
 install-strip:
 	$(MAKE) INSTALL_PROGRAM='$(INSTALL_PROGRAM) -s' INSTALL_SCRIPT='$(INSTALL_PROGRAM)' install
@@ -363,34 +352,29 @@ distclean-generic:
 maintainer-clean-generic:
 	-test -z "$(MAINTAINERCLEANFILES)" || rm -f $(MAINTAINERCLEANFILES)
 	-test -z "$(BUILT_SOURCES)" || rm -f $(BUILT_SOURCES)
-mostlyclean:  mostlyclean-libLTLIBRARIES mostlyclean-compile \
-		mostlyclean-libtool mostlyclean-checkPROGRAMS \
-		mostlyclean-tags mostlyclean-depend mostlyclean-generic
+mostlyclean:  mostlyclean-libLIBRARIES mostlyclean-compile \
+		mostlyclean-checkPROGRAMS mostlyclean-tags \
+		mostlyclean-depend mostlyclean-generic
 
-clean:  clean-libLTLIBRARIES clean-compile clean-libtool \
-		clean-checkPROGRAMS clean-tags clean-depend \
-		clean-generic mostlyclean
+clean:  clean-libLIBRARIES clean-compile clean-checkPROGRAMS clean-tags \
+		clean-depend clean-generic mostlyclean
 
-distclean:  distclean-libLTLIBRARIES distclean-compile distclean-libtool \
+distclean:  distclean-libLIBRARIES distclean-compile \
 		distclean-checkPROGRAMS distclean-tags distclean-depend \
 		distclean-generic clean
 	-rm -f config.status
-	-rm -f libtool
 
-maintainer-clean:  maintainer-clean-libLTLIBRARIES \
-		maintainer-clean-compile maintainer-clean-libtool \
-		maintainer-clean-checkPROGRAMS maintainer-clean-tags \
-		maintainer-clean-depend maintainer-clean-generic \
-		distclean
+maintainer-clean:  maintainer-clean-libLIBRARIES \
+		maintainer-clean-compile maintainer-clean-checkPROGRAMS \
+		maintainer-clean-tags maintainer-clean-depend \
+		maintainer-clean-generic distclean
 	@echo "This command is intended for maintainers to use;"
 	@echo "it deletes files that may require special tools to rebuild."
 
-.PHONY: mostlyclean-libLTLIBRARIES distclean-libLTLIBRARIES \
-clean-libLTLIBRARIES maintainer-clean-libLTLIBRARIES \
-uninstall-libLTLIBRARIES install-libLTLIBRARIES mostlyclean-compile \
-distclean-compile clean-compile maintainer-clean-compile \
-mostlyclean-libtool distclean-libtool clean-libtool \
-maintainer-clean-libtool mostlyclean-checkPROGRAMS \
+.PHONY: mostlyclean-libLIBRARIES distclean-libLIBRARIES \
+clean-libLIBRARIES maintainer-clean-libLIBRARIES uninstall-libLIBRARIES \
+install-libLIBRARIES mostlyclean-compile distclean-compile \
+clean-compile maintainer-clean-compile mostlyclean-checkPROGRAMS \
 distclean-checkPROGRAMS clean-checkPROGRAMS \
 maintainer-clean-checkPROGRAMS uninstall-includeHEADERS \
 install-includeHEADERS tags mostlyclean-tags distclean-tags clean-tags \

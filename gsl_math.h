@@ -4,27 +4,31 @@
 #include <float.h>
 
 #ifndef M_SQRT2
-#define M_SQRT2		1.41421356237309504880
+#define M_SQRT2		1.41421356237309504880168872421
 #endif
 
 #ifndef M_PI
-#define M_PI		3.14159265358979323846
+#define M_PI		3.14159265358979323846264338328
 #endif
 
 #ifndef M_PI_4
-#define M_PI_4        	0.78539816339744830962      /* pi/4 */
+#define M_PI_4        	0.785398163397448309661566084582    /* pi/4 */
+#endif
+
+#ifndef M_SQRTPI
+#define M_SQRTPI        1.77245385090551602729816748334     /* sqrt(pi) */
 #endif
 
 #ifndef M_LN10
-#define M_LN10     	      	2.30258509299404568402	    /* ln(10) */
+#define M_LN10     	2.30258509299404568401799145468	    /* ln(10) */
 #endif
 
 #ifndef M_LN2
-#define M_LN2 	      	      	0.69314718055994530942	    /* ln(2) */
+#define M_LN2 	      	0.69314718055994530941723212146	    /* ln(2) */
 #endif
 
 #ifndef M_EULER
-#define M_EULER                 0.5772156649015328606065    /* Euler constant */
+#define M_EULER         0.57721566490153286060651209008     /* Euler constant */
 #endif
 
 

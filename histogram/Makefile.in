@@ -61,18 +61,15 @@ host_alias = @host_alias@
 host_triplet = @host@
 CC = @CC@
 CPP = @CPP@
-LD = @LD@
-LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
 MAKEINFO = @MAKEINFO@
-NM = @NM@
 PACKAGE = @PACKAGE@
 RANLIB = @RANLIB@
 VERSION = @VERSION@
 full_top_builddir = @full_top_builddir@
 full_top_srcdir = @full_top_srcdir@
 
-lib_LTLIBRARIES = libgslhistogram.la 
+lib_LIBRARIES = libgslhistogram.a 
 
 include_HEADERS = gsl_histogram.h gsl_histogram2d.h
 
@@ -84,21 +81,21 @@ check_PROGRAMS = test test2d test_resample test2d_resample test_trap test2d_trap
 TESTS = test test2d test_resample test2d_resample test_trap test2d_trap
 
 gsl_histogram_SOURCES = gsl-histogram.c
-gsl_histogram_LDADD = libgslhistogram.la ../vector/libgslvector.la  ../err/libgslerr.la ../err/libgsltest.la ../utils/libutils.a
+gsl_histogram_LDADD = libgslhistogram.a ../vector/libgslvector.a  ../err/libgslerr.a ../err/libgsltest.a ../utils/libutils.a
 
-test_LDADD = libgslhistogram.la ../vector/libgslvector.la  ../err/libgslerr.la ../err/libgsltest.la ../utils/libutils.a
-test2d_LDADD = libgslhistogram.la ../vector/libgslvector.la  ../err/libgslerr.la ../err/libgsltest.la ../utils/libutils.a
-test_resample_LDADD = libgslhistogram.la ../vector/libgslvector.la ../err/libgslerr.la ../err/libgsltest.la ../utils/libutils.a
-test2d_resample_LDADD = libgslhistogram.la ../vector/libgslvector.la  ../err/libgslerr.la ../err/libgsltest.la ../utils/libutils.a
-test_trap_LDADD = libgslhistogram.la ../vector/libgslvector.la ../err/libgslerr.la ../err/libgsltest.la ../utils/libutils.a
-test2d_trap_LDADD = libgslhistogram.la ../vector/libgslvector.la  ../err/libgslerr.la ../err/libgsltest.la ../utils/libutils.a
+test_LDADD = libgslhistogram.a ../vector/libgslvector.a  ../err/libgslerr.a ../err/libgsltest.a ../utils/libutils.a
+test2d_LDADD = libgslhistogram.a ../vector/libgslvector.a  ../err/libgslerr.a ../err/libgsltest.a ../utils/libutils.a
+test_resample_LDADD = libgslhistogram.a ../vector/libgslvector.a ../err/libgslerr.a ../err/libgsltest.a ../utils/libutils.a
+test2d_resample_LDADD = libgslhistogram.a ../vector/libgslvector.a  ../err/libgslerr.a ../err/libgsltest.a ../utils/libutils.a
+test_trap_LDADD = libgslhistogram.a ../vector/libgslvector.a ../err/libgslerr.a ../err/libgsltest.a ../utils/libutils.a
+test2d_trap_LDADD = libgslhistogram.a ../vector/libgslvector.a  ../err/libgslerr.a ../err/libgsltest.a ../utils/libutils.a
 
-test_DEPENDENCIES = libgslhistogram.la
-test2d_DEPENDENCIES = libgslhistogram.la
-test_resample_DEPENDENCIES = libgslhistogram.la
-test2d_resample_DEPENDENCIES = libgslhistogram.la
-test_trap_DEPENDENCIES = libgslhistogram.la
-test2d_trap_DEPENDENCIES = libgslhistogram.la
+test_DEPENDENCIES = libgslhistogram.a
+test2d_DEPENDENCIES = libgslhistogram.a
+test_resample_DEPENDENCIES = libgslhistogram.a
+test2d_resample_DEPENDENCIES = libgslhistogram.a
+test_trap_DEPENDENCIES = libgslhistogram.a
+test2d_trap_DEPENDENCIES = libgslhistogram.a
 
 test_SOURCES = test.c
 test2d_SOURCES = test2d.c
@@ -109,7 +106,7 @@ test2d_trap_SOURCES = test2d_trap.c
 
 CLEANFILES = test.txt test.dat
 
-libgslhistogram_la_SOURCES = \
+libgslhistogram_a_SOURCES = \
 	add.c find.c get.c init.c params.c reset.c file.c pdf.c \
 	gsl_histogram.h \
 	add2d.c find2d.c get2d.c init2d.c params2d.c reset2d.c \
@@ -118,24 +115,23 @@ libgslhistogram_la_SOURCES = \
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
 CONFIG_CLEAN_FILES = 
-LTLIBRARIES =  $(lib_LTLIBRARIES)
+LIBRARIES =  $(lib_LIBRARIES)
 
 
 DEFS = @DEFS@ -I. -I$(srcdir) -I..
 CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
-libgslhistogram_la_LDFLAGS = 
-libgslhistogram_la_LIBADD = 
-libgslhistogram_la_OBJECTS =  add.lo find.lo get.lo init.lo params.lo \
-reset.lo file.lo pdf.lo add2d.lo find2d.lo get2d.lo init2d.lo \
-params2d.lo reset2d.lo file2d.lo pdf2d.lo
+libgslhistogram_a_LIBADD = 
+libgslhistogram_a_OBJECTS =  add.o find.o get.o init.o params.o reset.o \
+file.o pdf.o add2d.o find2d.o get2d.o init2d.o params2d.o reset2d.o \
+file2d.o pdf2d.o
+AR = ar
 PROGRAMS =  $(bin_PROGRAMS)
 
 gsl_histogram_OBJECTS =  gsl-histogram.o
-gsl_histogram_DEPENDENCIES =  libgslhistogram.la \
-../vector/libgslvector.la ../err/libgslerr.la ../err/libgsltest.la \
-../utils/libutils.a
+gsl_histogram_DEPENDENCIES =  libgslhistogram.a ../vector/libgslvector.a \
+../err/libgslerr.a ../err/libgsltest.a ../utils/libutils.a
 gsl_histogram_LDFLAGS = 
 test_OBJECTS =  test.o
 test_LDFLAGS = 
@@ -151,8 +147,7 @@ test2d_trap_OBJECTS =  test2d_trap.o
 test2d_trap_LDFLAGS = 
 CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
-LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
-LINK = $(LIBTOOL) --mode=link $(CC) $(CFLAGS) $(LDFLAGS) -o $@
+LINK = $(CC) $(CFLAGS) $(LDFLAGS) -o $@
 HEADERS =  $(include_HEADERS)
 
 DIST_COMMON =  Makefile.am Makefile.in
@@ -168,13 +163,13 @@ DEP_FILES =  .deps/add.P .deps/add2d.P .deps/file.P .deps/file2d.P \
 .deps/params2d.P .deps/pdf.P .deps/pdf2d.P .deps/reset.P \
 .deps/reset2d.P .deps/test.P .deps/test2d.P .deps/test2d_resample.P \
 .deps/test2d_trap.P .deps/test_resample.P .deps/test_trap.P
-SOURCES = $(libgslhistogram_la_SOURCES) $(gsl_histogram_SOURCES) $(test_SOURCES) $(test2d_SOURCES) $(test_resample_SOURCES) $(test2d_resample_SOURCES) $(test_trap_SOURCES) $(test2d_trap_SOURCES)
-OBJECTS = $(libgslhistogram_la_OBJECTS) $(gsl_histogram_OBJECTS) $(test_OBJECTS) $(test2d_OBJECTS) $(test_resample_OBJECTS) $(test2d_resample_OBJECTS) $(test_trap_OBJECTS) $(test2d_trap_OBJECTS)
+SOURCES = $(libgslhistogram_a_SOURCES) $(gsl_histogram_SOURCES) $(test_SOURCES) $(test2d_SOURCES) $(test_resample_SOURCES) $(test2d_resample_SOURCES) $(test_trap_SOURCES) $(test2d_trap_SOURCES)
+OBJECTS = $(libgslhistogram_a_OBJECTS) $(gsl_histogram_OBJECTS) $(test_OBJECTS) $(test2d_OBJECTS) $(test_resample_OBJECTS) $(test2d_resample_OBJECTS) $(test_trap_OBJECTS) $(test2d_trap_OBJECTS)
 
-all: Makefile $(LTLIBRARIES) $(PROGRAMS) $(HEADERS)
+all: Makefile $(LIBRARIES) $(PROGRAMS) $(HEADERS)
 
 .SUFFIXES:
-.SUFFIXES: .S .c .lo .o .s
+.SUFFIXES: .S .c .o .s
 $(srcdir)/Makefile.in: Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4)
 	cd $(top_srcdir) && $(AUTOMAKE) --gnu histogram/Makefile
 
@@ -183,29 +178,36 @@ Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status $(BUILT_SOURCES)
 	  && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
 
-mostlyclean-libLTLIBRARIES:
+mostlyclean-libLIBRARIES:
 
-clean-libLTLIBRARIES:
-	-test -z "$(lib_LTLIBRARIES)" || rm -f $(lib_LTLIBRARIES)
+clean-libLIBRARIES:
+	-test -z "$(lib_LIBRARIES)" || rm -f $(lib_LIBRARIES)
 
-distclean-libLTLIBRARIES:
+distclean-libLIBRARIES:
 
-maintainer-clean-libLTLIBRARIES:
+maintainer-clean-libLIBRARIES:
 
-install-libLTLIBRARIES: $(lib_LTLIBRARIES)
+install-libLIBRARIES: $(lib_LIBRARIES)
 	@$(NORMAL_INSTALL)
 	$(mkinstalldirs) $(DESTDIR)$(libdir)
-	@list='$(lib_LTLIBRARIES)'; for p in $$list; do \
+	list='$(lib_LIBRARIES)'; for p in $$list; do \
 	  if test -f $$p; then \
-	    echo "$(LIBTOOL)  --mode=install $(INSTALL_DATA) $$p $(DESTDIR)$(libdir)/$$p"; \
-	    $(LIBTOOL)  --mode=install $(INSTALL_DATA) $$p $(DESTDIR)$(libdir)/$$p; \
+	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(libdir)/$$p"; \
+	    $(INSTALL_DATA) $$p $(DESTDIR)$(libdir)/$$p; \
+	  else :; fi; \
+	done
+	@$(POST_INSTALL)
+	@list='$(lib_LIBRARIES)'; for p in $$list; do \
+	  if test -f $$p; then \
+	    echo " $(RANLIB) $(DESTDIR)$(libdir)/$$p"; \
+	    $(RANLIB) $(DESTDIR)$(libdir)/$$p; \
 	  else :; fi; \
 	done
 
-uninstall-libLTLIBRARIES:
+uninstall-libLIBRARIES:
 	@$(NORMAL_UNINSTALL)
-	list='$(lib_LTLIBRARIES)'; for p in $$list; do \
-	  $(LIBTOOL)  --mode=uninstall rm -f $(DESTDIR)$(libdir)/$$p; \
+	list='$(lib_LIBRARIES)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(libdir)/$$p; \
 	done
 
 .s.o:
@@ -224,24 +226,10 @@ distclean-compile:
 
 maintainer-clean-compile:
 
-.s.lo:
-	$(LIBTOOL) --mode=compile $(COMPILE) -c $<
-
-.S.lo:
-	$(LIBTOOL) --mode=compile $(COMPILE) -c $<
-
-mostlyclean-libtool:
-	-rm -f *.lo
-
-clean-libtool:
-	-rm -rf .libs _libs
-
-distclean-libtool:
-
-maintainer-clean-libtool:
-
-libgslhistogram.la: $(libgslhistogram_la_OBJECTS) $(libgslhistogram_la_DEPENDENCIES)
-	$(LINK) -rpath $(libdir) $(libgslhistogram_la_LDFLAGS) $(libgslhistogram_la_OBJECTS) $(libgslhistogram_la_LIBADD) $(LIBS)
+libgslhistogram.a: $(libgslhistogram_a_OBJECTS) $(libgslhistogram_a_DEPENDENCIES)
+	-rm -f libgslhistogram.a
+	$(AR) cru libgslhistogram.a $(libgslhistogram_a_OBJECTS) $(libgslhistogram_a_LIBADD)
+	$(RANLIB) libgslhistogram.a
 
 mostlyclean-binPROGRAMS:
 
@@ -257,8 +245,8 @@ install-binPROGRAMS: $(bin_PROGRAMS)
 	$(mkinstalldirs) $(DESTDIR)$(bindir)
 	@list='$(bin_PROGRAMS)'; for p in $$list; do \
 	  if test -f $$p; then \
-	    echo " $(LIBTOOL)  --mode=install $(INSTALL_PROGRAM) $$p $(DESTDIR)$(bindir)/`echo $$p|sed '$(transform)'`"; \
-	    $(LIBTOOL)  --mode=install $(INSTALL_PROGRAM) $$p $(DESTDIR)$(bindir)/`echo $$p|sed '$(transform)'`; \
+	    echo "  $(INSTALL_PROGRAM) $$p $(DESTDIR)$(bindir)/`echo $$p|sed '$(transform)'`"; \
+	     $(INSTALL_PROGRAM) $$p $(DESTDIR)$(bindir)/`echo $$p|sed '$(transform)'`; \
 	  else :; fi; \
 	done
 
@@ -415,7 +403,7 @@ dvi:
 check: all $(check_PROGRAMS)
 	$(MAKE) check-TESTS
 installcheck:
-install-exec: install-libLTLIBRARIES install-binPROGRAMS
+install-exec: install-libLIBRARIES install-binPROGRAMS
 	@$(NORMAL_INSTALL)
 
 install-data: install-includeHEADERS
@@ -424,7 +412,7 @@ install-data: install-includeHEADERS
 install: install-exec install-data all
 	@:
 
-uninstall: uninstall-libLTLIBRARIES uninstall-binPROGRAMS uninstall-includeHEADERS
+uninstall: uninstall-libLIBRARIES uninstall-binPROGRAMS uninstall-includeHEADERS
 
 install-strip:
 	$(MAKE) INSTALL_PROGRAM='$(INSTALL_PROGRAM) -s' INSTALL_SCRIPT='$(INSTALL_PROGRAM)' install
@@ -447,46 +435,41 @@ distclean-generic:
 maintainer-clean-generic:
 	-test -z "$(MAINTAINERCLEANFILES)" || rm -f $(MAINTAINERCLEANFILES)
 	-test -z "$(BUILT_SOURCES)" || rm -f $(BUILT_SOURCES)
-mostlyclean:  mostlyclean-libLTLIBRARIES mostlyclean-compile \
-		mostlyclean-libtool mostlyclean-binPROGRAMS \
-		mostlyclean-checkPROGRAMS mostlyclean-tags \
-		mostlyclean-depend mostlyclean-generic
+mostlyclean:  mostlyclean-libLIBRARIES mostlyclean-compile \
+		mostlyclean-binPROGRAMS mostlyclean-checkPROGRAMS \
+		mostlyclean-tags mostlyclean-depend mostlyclean-generic
 
-clean:  clean-libLTLIBRARIES clean-compile clean-libtool \
-		clean-binPROGRAMS clean-checkPROGRAMS clean-tags \
-		clean-depend clean-generic mostlyclean
+clean:  clean-libLIBRARIES clean-compile clean-binPROGRAMS \
+		clean-checkPROGRAMS clean-tags clean-depend \
+		clean-generic mostlyclean
 
-distclean:  distclean-libLTLIBRARIES distclean-compile distclean-libtool \
+distclean:  distclean-libLIBRARIES distclean-compile \
 		distclean-binPROGRAMS distclean-checkPROGRAMS \
 		distclean-tags distclean-depend distclean-generic clean
 	-rm -f config.status
-	-rm -f libtool
 
-maintainer-clean:  maintainer-clean-libLTLIBRARIES \
-		maintainer-clean-compile maintainer-clean-libtool \
-		maintainer-clean-binPROGRAMS \
+maintainer-clean:  maintainer-clean-libLIBRARIES \
+		maintainer-clean-compile maintainer-clean-binPROGRAMS \
 		maintainer-clean-checkPROGRAMS maintainer-clean-tags \
 		maintainer-clean-depend maintainer-clean-generic \
 		distclean
 	@echo "This command is intended for maintainers to use;"
 	@echo "it deletes files that may require special tools to rebuild."
 
-.PHONY: mostlyclean-libLTLIBRARIES distclean-libLTLIBRARIES \
-clean-libLTLIBRARIES maintainer-clean-libLTLIBRARIES \
-uninstall-libLTLIBRARIES install-libLTLIBRARIES mostlyclean-compile \
-distclean-compile clean-compile maintainer-clean-compile \
-mostlyclean-libtool distclean-libtool clean-libtool \
-maintainer-clean-libtool mostlyclean-binPROGRAMS distclean-binPROGRAMS \
-clean-binPROGRAMS maintainer-clean-binPROGRAMS uninstall-binPROGRAMS \
-install-binPROGRAMS mostlyclean-checkPROGRAMS distclean-checkPROGRAMS \
-clean-checkPROGRAMS maintainer-clean-checkPROGRAMS \
-uninstall-includeHEADERS install-includeHEADERS tags mostlyclean-tags \
-distclean-tags clean-tags maintainer-clean-tags distdir \
-mostlyclean-depend distclean-depend clean-depend \
-maintainer-clean-depend check-TESTS info dvi installcheck install-exec \
-install-data install uninstall all installdirs mostlyclean-generic \
-distclean-generic clean-generic maintainer-clean-generic clean \
-mostlyclean distclean maintainer-clean
+.PHONY: mostlyclean-libLIBRARIES distclean-libLIBRARIES \
+clean-libLIBRARIES maintainer-clean-libLIBRARIES uninstall-libLIBRARIES \
+install-libLIBRARIES mostlyclean-compile distclean-compile \
+clean-compile maintainer-clean-compile mostlyclean-binPROGRAMS \
+distclean-binPROGRAMS clean-binPROGRAMS maintainer-clean-binPROGRAMS \
+uninstall-binPROGRAMS install-binPROGRAMS mostlyclean-checkPROGRAMS \
+distclean-checkPROGRAMS clean-checkPROGRAMS \
+maintainer-clean-checkPROGRAMS uninstall-includeHEADERS \
+install-includeHEADERS tags mostlyclean-tags distclean-tags clean-tags \
+maintainer-clean-tags distdir mostlyclean-depend distclean-depend \
+clean-depend maintainer-clean-depend check-TESTS info dvi installcheck \
+install-exec install-data install uninstall all installdirs \
+mostlyclean-generic distclean-generic clean-generic \
+maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.

@@ -65,11 +65,8 @@ host_alias = @host_alias@
 host_triplet = @host@
 CC = @CC@
 CPP = @CPP@
-LD = @LD@
-LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
 MAKEINFO = @MAKEINFO@
-NM = @NM@
 PACKAGE = @PACKAGE@
 RANLIB = @RANLIB@
 VERSION = @VERSION@
@@ -83,140 +80,133 @@ ALLRAN= taus mrg cmrg uni uni32 zuf rand
 include_HEADERS= gsl_ran.h gsl_ran_switch.h
 
 test_switch_SOURCES= test-switch.c switch.c 
-test_switch_LDADD=../err/libgsltest.la ../utils/libutils.a
+test_switch_LDADD=../err/libgsltest.a ../utils/libutils.a
 
 EXTRA_DIST= xxx-switch.xc xxx-gen.xc xxx-state.xc \
 	makeam makesrc Makefile.ami 
 
-CLEANFILES= tmp.lout tmp.in
+CLEANFILES= tmp.out tmp.in
 
 bin_PROGRAMS= taus mrg cmrg uni uni32 zuf rand test-switch
 
 check_PROGRAMS= test-taus bench-taus test-mrg bench-mrg test-cmrg bench-cmrg test-uni bench-uni test-uni32 bench-uni32 test-zuf bench-zuf test-rand bench-rand
 
-lib_LTLIBRARIES= libgslrandom.la  libgslrantaus.la libgslranmrg.la libgslrancmrg.la libgslranuni.la libgslranuni32.la libgslranzuf.la libgslranrand.la
+lib_LIBRARIES= libgslrandom.a  libgslrantaus.a libgslranmrg.a libgslrancmrg.a libgslranuni.a libgslranuni32.a libgslranzuf.a libgslranrand.a
 
-libgslrantaus_la_SOURCES= taus.c taus-gen.c 
-libgslranmrg_la_SOURCES= mrg.c mrg-gen.c 
-libgslrancmrg_la_SOURCES= cmrg.c cmrg-gen.c 
-libgslranuni_la_SOURCES= uni.c uni-gen.c 
-libgslranuni32_la_SOURCES= uni32.c uni32-gen.c 
-libgslranzuf_la_SOURCES= zuf.c zuf-gen.c 
-libgslranrand_la_SOURCES= rand.c rand-gen.c 
+libgslrantaus_a_SOURCES= taus.c taus-gen.c 
+libgslranmrg_a_SOURCES= mrg.c mrg-gen.c 
+libgslrancmrg_a_SOURCES= cmrg.c cmrg-gen.c 
+libgslranuni_a_SOURCES= uni.c uni-gen.c 
+libgslranuni32_a_SOURCES= uni32.c uni32-gen.c 
+libgslranzuf_a_SOURCES= zuf.c zuf-gen.c 
+libgslranrand_a_SOURCES= rand.c rand-gen.c 
 
-libgslrandom_la_SOURCES=switch.c  taus.c mrg.c cmrg.c uni.c uni32.c zuf.c rand.c
+libgslrandom_a_SOURCES=switch.c  taus.c mrg.c cmrg.c uni.c uni32.c zuf.c rand.c
 
 TESTS= test-taus test-mrg test-cmrg test-uni test-uni32 test-zuf test-rand
 
-test_switch_DEPENDENCIES=gsl_ran_switch.h taus.h taus.lo mrg.h mrg.lo cmrg.h cmrg.lo uni.h uni.lo uni32.h uni32.lo zuf.h zuf.lo rand.h rand.lo
+test_switch_DEPENDENCIES=gsl_ran_switch.h taus.h taus.o mrg.h mrg.o cmrg.h cmrg.o uni.h uni.o uni32.h uni32.o zuf.h zuf.o rand.h rand.o
 
-test_switch_LDADD= taus.lo mrg.lo cmrg.lo uni.lo uni32.lo zuf.lo rand.lo ../utils/libutils.a 
+test_switch_LDADD= taus.o mrg.o cmrg.o uni.o uni32.o zuf.o rand.o ../utils/libutils.a 
 
 taus_SOURCES=             ran.c taus.c taus.h
 EXTRA_taus_SOURCES=       taus-state.c
-taus_DEPENDENCIES=        taus-state.c taus-gen.lo
-taus_LDADD=               taus-gen.lo
+taus_DEPENDENCIES=        taus-state.c taus-gen.o
+taus_LDADD=               taus-gen.o
 test_taus_SOURCES=        testran.c
-test_taus_DEPENDENCIES=   taus.lo taus-gen.lo taus.h
-test_taus_LDADD=          taus.lo taus-gen.lo ../err/libgsltest.la ../utils/libutils.a
+test_taus_DEPENDENCIES=   taus.o taus-gen.o taus.h
+test_taus_LDADD=          taus.o taus-gen.o ../err/libgsltest.a ../utils/libutils.a
 bench_taus_SOURCES=       benchran.c
-bench_taus_DEPENDENCIES=  taus.lo taus-gen.lo taus.h
-bench_taus_LDADD=         taus.lo taus-gen.lo
+bench_taus_DEPENDENCIES=  taus.o taus-gen.o taus.h
+bench_taus_LDADD=         taus.o taus-gen.o
 mrg_SOURCES=             ran.c mrg.c mrg.h
 EXTRA_mrg_SOURCES=       mrg-state.c
-mrg_DEPENDENCIES=        mrg-state.c mrg-gen.lo
-mrg_LDADD=               mrg-gen.lo
+mrg_DEPENDENCIES=        mrg-state.c mrg-gen.o
+mrg_LDADD=               mrg-gen.o
 test_mrg_SOURCES=        testran.c
-test_mrg_DEPENDENCIES=   mrg.lo mrg-gen.lo mrg.h
-test_mrg_LDADD=          mrg.lo mrg-gen.lo ../err/libgsltest.la ../utils/libutils.a
+test_mrg_DEPENDENCIES=   mrg.o mrg-gen.o mrg.h
+test_mrg_LDADD=          mrg.o mrg-gen.o ../err/libgsltest.a ../utils/libutils.a
 bench_mrg_SOURCES=       benchran.c
-bench_mrg_DEPENDENCIES=  mrg.lo mrg-gen.lo mrg.h
-bench_mrg_LDADD=         mrg.lo mrg-gen.lo
+bench_mrg_DEPENDENCIES=  mrg.o mrg-gen.o mrg.h
+bench_mrg_LDADD=         mrg.o mrg-gen.o
 cmrg_SOURCES=             ran.c cmrg.c cmrg.h
 EXTRA_cmrg_SOURCES=       cmrg-state.c
-cmrg_DEPENDENCIES=        cmrg-state.c cmrg-gen.lo
-cmrg_LDADD=               cmrg-gen.lo
+cmrg_DEPENDENCIES=        cmrg-state.c cmrg-gen.o
+cmrg_LDADD=               cmrg-gen.o
 test_cmrg_SOURCES=        testran.c
-test_cmrg_DEPENDENCIES=   cmrg.lo cmrg-gen.lo cmrg.h
-test_cmrg_LDADD=          cmrg.lo cmrg-gen.lo ../err/libgsltest.la ../utils/libutils.a
+test_cmrg_DEPENDENCIES=   cmrg.o cmrg-gen.o cmrg.h
+test_cmrg_LDADD=          cmrg.o cmrg-gen.o ../err/libgsltest.a ../utils/libutils.a
 bench_cmrg_SOURCES=       benchran.c
-bench_cmrg_DEPENDENCIES=  cmrg.lo cmrg-gen.lo cmrg.h
-bench_cmrg_LDADD=         cmrg.lo cmrg-gen.lo
+bench_cmrg_DEPENDENCIES=  cmrg.o cmrg-gen.o cmrg.h
+bench_cmrg_LDADD=         cmrg.o cmrg-gen.o
 uni_SOURCES=             ran.c uni.c uni.h
 EXTRA_uni_SOURCES=       uni-state.c
-uni_DEPENDENCIES=        uni-state.c uni-gen.lo
-uni_LDADD=               uni-gen.lo
+uni_DEPENDENCIES=        uni-state.c uni-gen.o
+uni_LDADD=               uni-gen.o
 test_uni_SOURCES=        testran.c
-test_uni_DEPENDENCIES=   uni.lo uni-gen.lo uni.h
-test_uni_LDADD=          uni.lo uni-gen.lo ../err/libgsltest.la ../utils/libutils.a
+test_uni_DEPENDENCIES=   uni.o uni-gen.o uni.h
+test_uni_LDADD=          uni.o uni-gen.o ../err/libgsltest.a ../utils/libutils.a
 bench_uni_SOURCES=       benchran.c
-bench_uni_DEPENDENCIES=  uni.lo uni-gen.lo uni.h
-bench_uni_LDADD=         uni.lo uni-gen.lo
+bench_uni_DEPENDENCIES=  uni.o uni-gen.o uni.h
+bench_uni_LDADD=         uni.o uni-gen.o
 uni32_SOURCES=             ran.c uni32.c uni32.h
 EXTRA_uni32_SOURCES=       uni32-state.c
-uni32_DEPENDENCIES=        uni32-state.c uni32-gen.lo
-uni32_LDADD=               uni32-gen.lo
+uni32_DEPENDENCIES=        uni32-state.c uni32-gen.o
+uni32_LDADD=               uni32-gen.o
 test_uni32_SOURCES=        testran.c
-test_uni32_DEPENDENCIES=   uni32.lo uni32-gen.lo uni32.h
-test_uni32_LDADD=          uni32.lo uni32-gen.lo ../err/libgsltest.la ../utils/libutils.a
+test_uni32_DEPENDENCIES=   uni32.o uni32-gen.o uni32.h
+test_uni32_LDADD=          uni32.o uni32-gen.o ../err/libgsltest.a ../utils/libutils.a
 bench_uni32_SOURCES=       benchran.c
-bench_uni32_DEPENDENCIES=  uni32.lo uni32-gen.lo uni32.h
-bench_uni32_LDADD=         uni32.lo uni32-gen.lo
+bench_uni32_DEPENDENCIES=  uni32.o uni32-gen.o uni32.h
+bench_uni32_LDADD=         uni32.o uni32-gen.o
 zuf_SOURCES=             ran.c zuf.c zuf.h
 EXTRA_zuf_SOURCES=       zuf-state.c
-zuf_DEPENDENCIES=        zuf-state.c zuf-gen.lo
-zuf_LDADD=               zuf-gen.lo
+zuf_DEPENDENCIES=        zuf-state.c zuf-gen.o
+zuf_LDADD=               zuf-gen.o
 test_zuf_SOURCES=        testran.c
-test_zuf_DEPENDENCIES=   zuf.lo zuf-gen.lo zuf.h
-test_zuf_LDADD=          zuf.lo zuf-gen.lo ../err/libgsltest.la ../utils/libutils.a
+test_zuf_DEPENDENCIES=   zuf.o zuf-gen.o zuf.h
+test_zuf_LDADD=          zuf.o zuf-gen.o ../err/libgsltest.a ../utils/libutils.a
 bench_zuf_SOURCES=       benchran.c
-bench_zuf_DEPENDENCIES=  zuf.lo zuf-gen.lo zuf.h
-bench_zuf_LDADD=         zuf.lo zuf-gen.lo
+bench_zuf_DEPENDENCIES=  zuf.o zuf-gen.o zuf.h
+bench_zuf_LDADD=         zuf.o zuf-gen.o
 rand_SOURCES=             ran.c rand.c rand.h
 EXTRA_rand_SOURCES=       rand-state.c
-rand_DEPENDENCIES=        rand-state.c rand-gen.lo
-rand_LDADD=               rand-gen.lo
+rand_DEPENDENCIES=        rand-state.c rand-gen.o
+rand_LDADD=               rand-gen.o
 test_rand_SOURCES=        testran.c
-test_rand_DEPENDENCIES=   rand.lo rand-gen.lo rand.h
-test_rand_LDADD=          rand.lo rand-gen.lo ../err/libgsltest.la ../utils/libutils.a
+test_rand_DEPENDENCIES=   rand.o rand-gen.o rand.h
+test_rand_LDADD=          rand.o rand-gen.o ../err/libgsltest.a ../utils/libutils.a
 bench_rand_SOURCES=       benchran.c
-bench_rand_DEPENDENCIES=  rand.lo rand-gen.lo rand.h
-bench_rand_LDADD=         rand.lo rand-gen.lo
+bench_rand_DEPENDENCIES=  rand.o rand-gen.o rand.h
+bench_rand_LDADD=         rand.o rand-gen.o
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
 CONFIG_CLEAN_FILES = 
-LTLIBRARIES =  $(lib_LTLIBRARIES)
+LIBRARIES =  $(lib_LIBRARIES)
 
 
 DEFS = @DEFS@ -I. -I$(srcdir) -I..
 CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
-libgslrandom_la_LDFLAGS = 
-libgslrandom_la_LIBADD = 
-libgslrandom_la_OBJECTS =  switch.lo taus.lo mrg.lo cmrg.lo uni.lo \
-uni32.lo zuf.lo rand.lo
-libgslrantaus_la_LDFLAGS = 
-libgslrantaus_la_LIBADD = 
-libgslrantaus_la_OBJECTS =  taus.lo taus-gen.lo
-libgslranmrg_la_LDFLAGS = 
-libgslranmrg_la_LIBADD = 
-libgslranmrg_la_OBJECTS =  mrg.lo mrg-gen.lo
-libgslrancmrg_la_LDFLAGS = 
-libgslrancmrg_la_LIBADD = 
-libgslrancmrg_la_OBJECTS =  cmrg.lo cmrg-gen.lo
-libgslranuni_la_LDFLAGS = 
-libgslranuni_la_LIBADD = 
-libgslranuni_la_OBJECTS =  uni.lo uni-gen.lo
-libgslranuni32_la_LDFLAGS = 
-libgslranuni32_la_LIBADD = 
-libgslranuni32_la_OBJECTS =  uni32.lo uni32-gen.lo
-libgslranzuf_la_LDFLAGS = 
-libgslranzuf_la_LIBADD = 
-libgslranzuf_la_OBJECTS =  zuf.lo zuf-gen.lo
-libgslranrand_la_LDFLAGS = 
-libgslranrand_la_LIBADD = 
-libgslranrand_la_OBJECTS =  rand.lo rand-gen.lo
+libgslrandom_a_LIBADD = 
+libgslrandom_a_OBJECTS =  switch.o taus.o mrg.o cmrg.o uni.o uni32.o \
+zuf.o rand.o
+libgslrantaus_a_LIBADD = 
+libgslrantaus_a_OBJECTS =  taus.o taus-gen.o
+libgslranmrg_a_LIBADD = 
+libgslranmrg_a_OBJECTS =  mrg.o mrg-gen.o
+libgslrancmrg_a_LIBADD = 
+libgslrancmrg_a_OBJECTS =  cmrg.o cmrg-gen.o
+libgslranuni_a_LIBADD = 
+libgslranuni_a_OBJECTS =  uni.o uni-gen.o
+libgslranuni32_a_LIBADD = 
+libgslranuni32_a_OBJECTS =  uni32.o uni32-gen.o
+libgslranzuf_a_LIBADD = 
+libgslranzuf_a_OBJECTS =  zuf.o zuf-gen.o
+libgslranrand_a_LIBADD = 
+libgslranrand_a_OBJECTS =  rand.o rand-gen.o
+AR = ar
 PROGRAMS =  $(bin_PROGRAMS)
 
 taus_OBJECTS =  ran.o taus.o
@@ -265,8 +255,7 @@ bench_rand_OBJECTS =  benchran.o
 bench_rand_LDFLAGS = 
 CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
-LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
-LINK = $(LIBTOOL) --mode=link $(CC) $(CFLAGS) $(LDFLAGS) -o $@
+LINK = $(CC) $(CFLAGS) $(LDFLAGS) -o $@
 HEADERS =  $(include_HEADERS)
 
 DIST_COMMON =  ChangeLog Makefile.am Makefile.in
@@ -283,13 +272,13 @@ DEP_FILES =  .deps/benchran.P .deps/cmrg-gen.P .deps/cmrg-state.P \
 .deps/testran.P .deps/uni-gen.P .deps/uni-state.P .deps/uni.P \
 .deps/uni32-gen.P .deps/uni32-state.P .deps/uni32.P .deps/zuf-gen.P \
 .deps/zuf-state.P .deps/zuf.P
-SOURCES = $(libgslrandom_la_SOURCES) $(libgslrantaus_la_SOURCES) $(libgslranmrg_la_SOURCES) $(libgslrancmrg_la_SOURCES) $(libgslranuni_la_SOURCES) $(libgslranuni32_la_SOURCES) $(libgslranzuf_la_SOURCES) $(libgslranrand_la_SOURCES) $(taus_SOURCES) $(EXTRA_taus_SOURCES) $(mrg_SOURCES) $(EXTRA_mrg_SOURCES) $(cmrg_SOURCES) $(EXTRA_cmrg_SOURCES) $(uni_SOURCES) $(EXTRA_uni_SOURCES) $(uni32_SOURCES) $(EXTRA_uni32_SOURCES) $(zuf_SOURCES) $(EXTRA_zuf_SOURCES) $(rand_SOURCES) $(EXTRA_rand_SOURCES) $(test_switch_SOURCES) $(test_taus_SOURCES) $(bench_taus_SOURCES) $(test_mrg_SOURCES) $(bench_mrg_SOURCES) $(test_cmrg_SOURCES) $(bench_cmrg_SOURCES) $(test_uni_SOURCES) $(bench_uni_SOURCES) $(test_uni32_SOURCES) $(bench_uni32_SOURCES) $(test_zuf_SOURCES) $(bench_zuf_SOURCES) $(test_rand_SOURCES) $(bench_rand_SOURCES)
-OBJECTS = $(libgslrandom_la_OBJECTS) $(libgslrantaus_la_OBJECTS) $(libgslranmrg_la_OBJECTS) $(libgslrancmrg_la_OBJECTS) $(libgslranuni_la_OBJECTS) $(libgslranuni32_la_OBJECTS) $(libgslranzuf_la_OBJECTS) $(libgslranrand_la_OBJECTS) $(taus_OBJECTS) $(mrg_OBJECTS) $(cmrg_OBJECTS) $(uni_OBJECTS) $(uni32_OBJECTS) $(zuf_OBJECTS) $(rand_OBJECTS) $(test_switch_OBJECTS) $(test_taus_OBJECTS) $(bench_taus_OBJECTS) $(test_mrg_OBJECTS) $(bench_mrg_OBJECTS) $(test_cmrg_OBJECTS) $(bench_cmrg_OBJECTS) $(test_uni_OBJECTS) $(bench_uni_OBJECTS) $(test_uni32_OBJECTS) $(bench_uni32_OBJECTS) $(test_zuf_OBJECTS) $(bench_zuf_OBJECTS) $(test_rand_OBJECTS) $(bench_rand_OBJECTS)
+SOURCES = $(libgslrandom_a_SOURCES) $(libgslrantaus_a_SOURCES) $(libgslranmrg_a_SOURCES) $(libgslrancmrg_a_SOURCES) $(libgslranuni_a_SOURCES) $(libgslranuni32_a_SOURCES) $(libgslranzuf_a_SOURCES) $(libgslranrand_a_SOURCES) $(taus_SOURCES) $(EXTRA_taus_SOURCES) $(mrg_SOURCES) $(EXTRA_mrg_SOURCES) $(cmrg_SOURCES) $(EXTRA_cmrg_SOURCES) $(uni_SOURCES) $(EXTRA_uni_SOURCES) $(uni32_SOURCES) $(EXTRA_uni32_SOURCES) $(zuf_SOURCES) $(EXTRA_zuf_SOURCES) $(rand_SOURCES) $(EXTRA_rand_SOURCES) $(test_switch_SOURCES) $(test_taus_SOURCES) $(bench_taus_SOURCES) $(test_mrg_SOURCES) $(bench_mrg_SOURCES) $(test_cmrg_SOURCES) $(bench_cmrg_SOURCES) $(test_uni_SOURCES) $(bench_uni_SOURCES) $(test_uni32_SOURCES) $(bench_uni32_SOURCES) $(test_zuf_SOURCES) $(bench_zuf_SOURCES) $(test_rand_SOURCES) $(bench_rand_SOURCES)
+OBJECTS = $(libgslrandom_a_OBJECTS) $(libgslrantaus_a_OBJECTS) $(libgslranmrg_a_OBJECTS) $(libgslrancmrg_a_OBJECTS) $(libgslranuni_a_OBJECTS) $(libgslranuni32_a_OBJECTS) $(libgslranzuf_a_OBJECTS) $(libgslranrand_a_OBJECTS) $(taus_OBJECTS) $(mrg_OBJECTS) $(cmrg_OBJECTS) $(uni_OBJECTS) $(uni32_OBJECTS) $(zuf_OBJECTS) $(rand_OBJECTS) $(test_switch_OBJECTS) $(test_taus_OBJECTS) $(bench_taus_OBJECTS) $(test_mrg_OBJECTS) $(bench_mrg_OBJECTS) $(test_cmrg_OBJECTS) $(bench_cmrg_OBJECTS) $(test_uni_OBJECTS) $(bench_uni_OBJECTS) $(test_uni32_OBJECTS) $(bench_uni32_OBJECTS) $(test_zuf_OBJECTS) $(bench_zuf_OBJECTS) $(test_rand_OBJECTS) $(bench_rand_OBJECTS)
 
-all: Makefile $(LTLIBRARIES) $(PROGRAMS) $(HEADERS)
+all: Makefile $(LIBRARIES) $(PROGRAMS) $(HEADERS)
 
 .SUFFIXES:
-.SUFFIXES: .S .c .lo .o .s
+.SUFFIXES: .S .c .o .s
 $(srcdir)/Makefile.in: Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4)
 	cd $(top_srcdir) && $(AUTOMAKE) --gnu random/Makefile
 
@@ -298,29 +287,36 @@ Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status $(BUILT_SOURCES)
 	  && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
 
-mostlyclean-libLTLIBRARIES:
+mostlyclean-libLIBRARIES:
 
-clean-libLTLIBRARIES:
-	-test -z "$(lib_LTLIBRARIES)" || rm -f $(lib_LTLIBRARIES)
+clean-libLIBRARIES:
+	-test -z "$(lib_LIBRARIES)" || rm -f $(lib_LIBRARIES)
 
-distclean-libLTLIBRARIES:
+distclean-libLIBRARIES:
 
-maintainer-clean-libLTLIBRARIES:
+maintainer-clean-libLIBRARIES:
 
-install-libLTLIBRARIES: $(lib_LTLIBRARIES)
+install-libLIBRARIES: $(lib_LIBRARIES)
 	@$(NORMAL_INSTALL)
 	$(mkinstalldirs) $(DESTDIR)$(libdir)
-	@list='$(lib_LTLIBRARIES)'; for p in $$list; do \
+	list='$(lib_LIBRARIES)'; for p in $$list; do \
 	  if test -f $$p; then \
-	    echo "$(LIBTOOL)  --mode=install $(INSTALL_DATA) $$p $(DESTDIR)$(libdir)/$$p"; \
-	    $(LIBTOOL)  --mode=install $(INSTALL_DATA) $$p $(DESTDIR)$(libdir)/$$p; \
+	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(libdir)/$$p"; \
+	    $(INSTALL_DATA) $$p $(DESTDIR)$(libdir)/$$p; \
+	  else :; fi; \
+	done
+	@$(POST_INSTALL)
+	@list='$(lib_LIBRARIES)'; for p in $$list; do \
+	  if test -f $$p; then \
+	    echo " $(RANLIB) $(DESTDIR)$(libdir)/$$p"; \
+	    $(RANLIB) $(DESTDIR)$(libdir)/$$p; \
 	  else :; fi; \
 	done
 
-uninstall-libLTLIBRARIES:
+uninstall-libLIBRARIES:
 	@$(NORMAL_UNINSTALL)
-	list='$(lib_LTLIBRARIES)'; for p in $$list; do \
-	  $(LIBTOOL)  --mode=uninstall rm -f $(DESTDIR)$(libdir)/$$p; \
+	list='$(lib_LIBRARIES)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(libdir)/$$p; \
 	done
 
 .s.o:
@@ -339,45 +335,45 @@ distclean-compile:
 
 maintainer-clean-compile:
 
-.s.lo:
-	$(LIBTOOL) --mode=compile $(COMPILE) -c $<
+libgslrandom.a: $(libgslrandom_a_OBJECTS) $(libgslrandom_a_DEPENDENCIES)
+	-rm -f libgslrandom.a
+	$(AR) cru libgslrandom.a $(libgslrandom_a_OBJECTS) $(libgslrandom_a_LIBADD)
+	$(RANLIB) libgslrandom.a
 
-.S.lo:
-	$(LIBTOOL) --mode=compile $(COMPILE) -c $<
+libgslrantaus.a: $(libgslrantaus_a_OBJECTS) $(libgslrantaus_a_DEPENDENCIES)
+	-rm -f libgslrantaus.a
+	$(AR) cru libgslrantaus.a $(libgslrantaus_a_OBJECTS) $(libgslrantaus_a_LIBADD)
+	$(RANLIB) libgslrantaus.a
 
-mostlyclean-libtool:
-	-rm -f *.lo
+libgslranmrg.a: $(libgslranmrg_a_OBJECTS) $(libgslranmrg_a_DEPENDENCIES)
+	-rm -f libgslranmrg.a
+	$(AR) cru libgslranmrg.a $(libgslranmrg_a_OBJECTS) $(libgslranmrg_a_LIBADD)
+	$(RANLIB) libgslranmrg.a
 
-clean-libtool:
-	-rm -rf .libs _libs
+libgslrancmrg.a: $(libgslrancmrg_a_OBJECTS) $(libgslrancmrg_a_DEPENDENCIES)
+	-rm -f libgslrancmrg.a
+	$(AR) cru libgslrancmrg.a $(libgslrancmrg_a_OBJECTS) $(libgslrancmrg_a_LIBADD)
+	$(RANLIB) libgslrancmrg.a
 
-distclean-libtool:
+libgslranuni.a: $(libgslranuni_a_OBJECTS) $(libgslranuni_a_DEPENDENCIES)
+	-rm -f libgslranuni.a
+	$(AR) cru libgslranuni.a $(libgslranuni_a_OBJECTS) $(libgslranuni_a_LIBADD)
+	$(RANLIB) libgslranuni.a
 
-maintainer-clean-libtool:
+libgslranuni32.a: $(libgslranuni32_a_OBJECTS) $(libgslranuni32_a_DEPENDENCIES)
+	-rm -f libgslranuni32.a
+	$(AR) cru libgslranuni32.a $(libgslranuni32_a_OBJECTS) $(libgslranuni32_a_LIBADD)
+	$(RANLIB) libgslranuni32.a
 
-libgslrandom.la: $(libgslrandom_la_OBJECTS) $(libgslrandom_la_DEPENDENCIES)
-	$(LINK) -rpath $(libdir) $(libgslrandom_la_LDFLAGS) $(libgslrandom_la_OBJECTS) $(libgslrandom_la_LIBADD) $(LIBS)
+libgslranzuf.a: $(libgslranzuf_a_OBJECTS) $(libgslranzuf_a_DEPENDENCIES)
+	-rm -f libgslranzuf.a
+	$(AR) cru libgslranzuf.a $(libgslranzuf_a_OBJECTS) $(libgslranzuf_a_LIBADD)
+	$(RANLIB) libgslranzuf.a
 
-libgslrantaus.la: $(libgslrantaus_la_OBJECTS) $(libgslrantaus_la_DEPENDENCIES)
-	$(LINK) -rpath $(libdir) $(libgslrantaus_la_LDFLAGS) $(libgslrantaus_la_OBJECTS) $(libgslrantaus_la_LIBADD) $(LIBS)
-
-libgslranmrg.la: $(libgslranmrg_la_OBJECTS) $(libgslranmrg_la_DEPENDENCIES)
-	$(LINK) -rpath $(libdir) $(libgslranmrg_la_LDFLAGS) $(libgslranmrg_la_OBJECTS) $(libgslranmrg_la_LIBADD) $(LIBS)
-
-libgslrancmrg.la: $(libgslrancmrg_la_OBJECTS) $(libgslrancmrg_la_DEPENDENCIES)
-	$(LINK) -rpath $(libdir) $(libgslrancmrg_la_LDFLAGS) $(libgslrancmrg_la_OBJECTS) $(libgslrancmrg_la_LIBADD) $(LIBS)
-
-libgslranuni.la: $(libgslranuni_la_OBJECTS) $(libgslranuni_la_DEPENDENCIES)
-	$(LINK) -rpath $(libdir) $(libgslranuni_la_LDFLAGS) $(libgslranuni_la_OBJECTS) $(libgslranuni_la_LIBADD) $(LIBS)
-
-libgslranuni32.la: $(libgslranuni32_la_OBJECTS) $(libgslranuni32_la_DEPENDENCIES)
-	$(LINK) -rpath $(libdir) $(libgslranuni32_la_LDFLAGS) $(libgslranuni32_la_OBJECTS) $(libgslranuni32_la_LIBADD) $(LIBS)
-
-libgslranzuf.la: $(libgslranzuf_la_OBJECTS) $(libgslranzuf_la_DEPENDENCIES)
-	$(LINK) -rpath $(libdir) $(libgslranzuf_la_LDFLAGS) $(libgslranzuf_la_OBJECTS) $(libgslranzuf_la_LIBADD) $(LIBS)
-
-libgslranrand.la: $(libgslranrand_la_OBJECTS) $(libgslranrand_la_DEPENDENCIES)
-	$(LINK) -rpath $(libdir) $(libgslranrand_la_LDFLAGS) $(libgslranrand_la_OBJECTS) $(libgslranrand_la_LIBADD) $(LIBS)
+libgslranrand.a: $(libgslranrand_a_OBJECTS) $(libgslranrand_a_DEPENDENCIES)
+	-rm -f libgslranrand.a
+	$(AR) cru libgslranrand.a $(libgslranrand_a_OBJECTS) $(libgslranrand_a_LIBADD)
+	$(RANLIB) libgslranrand.a
 
 mostlyclean-binPROGRAMS:
 
@@ -393,8 +389,8 @@ install-binPROGRAMS: $(bin_PROGRAMS)
 	$(mkinstalldirs) $(DESTDIR)$(bindir)
 	@list='$(bin_PROGRAMS)'; for p in $$list; do \
 	  if test -f $$p; then \
-	    echo " $(LIBTOOL)  --mode=install $(INSTALL_PROGRAM) $$p $(DESTDIR)$(bindir)/`echo $$p|sed '$(transform)'`"; \
-	    $(LIBTOOL)  --mode=install $(INSTALL_PROGRAM) $$p $(DESTDIR)$(bindir)/`echo $$p|sed '$(transform)'`; \
+	    echo "  $(INSTALL_PROGRAM) $$p $(DESTDIR)$(bindir)/`echo $$p|sed '$(transform)'`"; \
+	     $(INSTALL_PROGRAM) $$p $(DESTDIR)$(bindir)/`echo $$p|sed '$(transform)'`; \
 	  else :; fi; \
 	done
 
@@ -611,7 +607,7 @@ dvi:
 check: all $(check_PROGRAMS)
 	$(MAKE) check-TESTS
 installcheck:
-install-exec: install-libLTLIBRARIES install-binPROGRAMS
+install-exec: install-libLIBRARIES install-binPROGRAMS
 	@$(NORMAL_INSTALL)
 
 install-data: install-includeHEADERS
@@ -620,7 +616,7 @@ install-data: install-includeHEADERS
 install: install-exec install-data all
 	@:
 
-uninstall: uninstall-libLTLIBRARIES uninstall-binPROGRAMS uninstall-includeHEADERS
+uninstall: uninstall-libLIBRARIES uninstall-binPROGRAMS uninstall-includeHEADERS
 
 install-strip:
 	$(MAKE) INSTALL_PROGRAM='$(INSTALL_PROGRAM) -s' INSTALL_SCRIPT='$(INSTALL_PROGRAM)' install
@@ -643,46 +639,41 @@ distclean-generic:
 maintainer-clean-generic:
 	-test -z "$(MAINTAINERCLEANFILES)" || rm -f $(MAINTAINERCLEANFILES)
 	-test -z "$(BUILT_SOURCES)" || rm -f $(BUILT_SOURCES)
-mostlyclean:  mostlyclean-libLTLIBRARIES mostlyclean-compile \
-		mostlyclean-libtool mostlyclean-binPROGRAMS \
-		mostlyclean-checkPROGRAMS mostlyclean-tags \
-		mostlyclean-depend mostlyclean-generic
+mostlyclean:  mostlyclean-libLIBRARIES mostlyclean-compile \
+		mostlyclean-binPROGRAMS mostlyclean-checkPROGRAMS \
+		mostlyclean-tags mostlyclean-depend mostlyclean-generic
 
-clean:  clean-libLTLIBRARIES clean-compile clean-libtool \
-		clean-binPROGRAMS clean-checkPROGRAMS clean-tags \
-		clean-depend clean-generic mostlyclean
+clean:  clean-libLIBRARIES clean-compile clean-binPROGRAMS \
+		clean-checkPROGRAMS clean-tags clean-depend \
+		clean-generic mostlyclean
 
-distclean:  distclean-libLTLIBRARIES distclean-compile distclean-libtool \
+distclean:  distclean-libLIBRARIES distclean-compile \
 		distclean-binPROGRAMS distclean-checkPROGRAMS \
 		distclean-tags distclean-depend distclean-generic clean
 	-rm -f config.status
-	-rm -f libtool
 
-maintainer-clean:  maintainer-clean-libLTLIBRARIES \
-		maintainer-clean-compile maintainer-clean-libtool \
-		maintainer-clean-binPROGRAMS \
+maintainer-clean:  maintainer-clean-libLIBRARIES \
+		maintainer-clean-compile maintainer-clean-binPROGRAMS \
 		maintainer-clean-checkPROGRAMS maintainer-clean-tags \
 		maintainer-clean-depend maintainer-clean-generic \
 		distclean
 	@echo "This command is intended for maintainers to use;"
 	@echo "it deletes files that may require special tools to rebuild."
 
-.PHONY: mostlyclean-libLTLIBRARIES distclean-libLTLIBRARIES \
-clean-libLTLIBRARIES maintainer-clean-libLTLIBRARIES \
-uninstall-libLTLIBRARIES install-libLTLIBRARIES mostlyclean-compile \
-distclean-compile clean-compile maintainer-clean-compile \
-mostlyclean-libtool distclean-libtool clean-libtool \
-maintainer-clean-libtool mostlyclean-binPROGRAMS distclean-binPROGRAMS \
-clean-binPROGRAMS maintainer-clean-binPROGRAMS uninstall-binPROGRAMS \
-install-binPROGRAMS mostlyclean-checkPROGRAMS distclean-checkPROGRAMS \
-clean-checkPROGRAMS maintainer-clean-checkPROGRAMS \
-uninstall-includeHEADERS install-includeHEADERS tags mostlyclean-tags \
-distclean-tags clean-tags maintainer-clean-tags distdir \
-mostlyclean-depend distclean-depend clean-depend \
-maintainer-clean-depend check-TESTS info dvi installcheck install-exec \
-install-data install uninstall all installdirs mostlyclean-generic \
-distclean-generic clean-generic maintainer-clean-generic clean \
-mostlyclean distclean maintainer-clean
+.PHONY: mostlyclean-libLIBRARIES distclean-libLIBRARIES \
+clean-libLIBRARIES maintainer-clean-libLIBRARIES uninstall-libLIBRARIES \
+install-libLIBRARIES mostlyclean-compile distclean-compile \
+clean-compile maintainer-clean-compile mostlyclean-binPROGRAMS \
+distclean-binPROGRAMS clean-binPROGRAMS maintainer-clean-binPROGRAMS \
+uninstall-binPROGRAMS install-binPROGRAMS mostlyclean-checkPROGRAMS \
+distclean-checkPROGRAMS clean-checkPROGRAMS \
+maintainer-clean-checkPROGRAMS uninstall-includeHEADERS \
+install-includeHEADERS tags mostlyclean-tags distclean-tags clean-tags \
+maintainer-clean-tags distdir mostlyclean-depend distclean-depend \
+clean-depend maintainer-clean-depend check-TESTS info dvi installcheck \
+install-exec install-data install uninstall all installdirs \
+mostlyclean-generic distclean-generic clean-generic \
+maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 
 
 switch.c gsl_ran_switch.h:

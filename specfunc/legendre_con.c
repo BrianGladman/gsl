@@ -8,6 +8,7 @@
 #include "gsl_sf_gamma.h"
 #include "gsl_sf_pow_int.h"
 #include "gsl_sf_bessel.h"
+#include "gsl_sf_hyperg.h"
 #include "gsl_sf_legendre.h"
 
 #define Root_2OverPi_  0.797884560802865355879892
@@ -188,6 +189,57 @@ static int sphconicalP_xlt1_large_tau_impl(int ell, double tau, double x, double
   
   *result = pre * (Im * sumA - theta/tau * Imm1 * sumB);
   return GSL_SUCCESS; /* FIXME: hmmm, success??? */
+}
+
+/* P^{-mu}_{-1/2 + I tau}  first hypergeometric representation
+ *
+ * [Kolbig,   (3)] (note typo in args of gamma functions)
+ * [Bateman, (22)] (correct form)
+ */
+static int conicalP_xlt1_hyperg_A(double mu, double tau, double x, double * result)
+{
+  double x2 = x*x;
+  double pre  = M_SQRTPI * pow(0.5*sqrt(1-x2), mu);
+  double ln_g1, ln_g2, arg_g1, arg_g2;
+  double pre1, pre2, F1, F2;
+  
+  int stat_F1 = gsl_sf_hyperg_2F1_conj_impl(0.25 + 0.5*mu, 0.5*tau, 0.5, x2, &F1);
+  int stat_F2 = gsl_sf_hyperg_2F1_conj_impl(0.75 + 0.5*mu, 0.5*tau, 1.5, x2, &F2);
+
+  /* FIXME: error handling */
+
+  gsl_sf_lngamma_complex(0.75 + 0.5*mu, -0.5*tau, &ln_g1, &arg_g1);
+  gsl_sf_lngamma_complex(0.25 + 0.5*mu, -0.5*tau, &ln_g2, &arg_g2);
+  
+  pre1 =        exp(-2.0*ln_g1);
+  pre2 = -2.0*x*exp(-2.0*ln_g2);
+  
+  *result = pre * (pre1 * F1 + pre2 * F2);
+  return GSL_SUCCESS;
+}
+
+/* P^{-mu}_{-1/2 + I tau}  second hypergeometric representation
+ *
+ * [Zhurina+Karmazina,  (3.1)]   mu != a positive integer
+ */
+static int conicalP_xnear1_hyperg_B(double mu, double tau, double x, double * result)
+{
+  double ln_pre;
+  double ln_g0, ln_g1, ln_g2, arg_g1, arg_g2;
+  double F;
+  
+  int stat_F = gsl_sf_hyperg_2F1_conj_impl(0.5 - mu, tau, 1.0-mu, 0.5*(1.0-x), &F);
+  
+  /* FIXME: error handling */
+
+  ln_g0 = gsl_sf_lngamma(1.0 - mu);
+  gsl_sf_lngamma_complex(0.5-mu, tau, &ln_g1, &arg_g1);
+  gsl_sf_lngamma_complex(0.5+mu, tau, &ln_g2, &arg_g2);
+
+  ln_pre = mu*M_LN2 - 0.5*mu*log(fabs(x*x-1.0)) - ln_g0;
+  
+  *result = exp(ln_pre) * F;
+  return GSL_SUCCESS;
 }
 
 
