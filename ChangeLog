@@ -1,3 +1,8 @@
+Wed Nov 18 10:40:18 1998  Brian Gough  <bjg@vvv.lanl.gov>
+
+	* gsl_math.h: added prototypes for inline functions GSL_MAX_INT
+ 	etc
+
 Tue Nov 10 20:05:27 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
 	* gsl_math.h: moved the MAX(a,b) and MIN(a,b) to gsl_math.h and
