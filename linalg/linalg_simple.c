@@ -76,7 +76,7 @@ gsl_la_decomp_SV_impl(gsl_matrix * A,
             r += Aik * Aik;
           }
 
-          if(q*r < GSL_DBL_EPSILON) {
+          if(q*r < GSL_DBL_MIN) {
             /* column elements of A small */
             count--;
             continue;
