@@ -24,13 +24,22 @@ int     gsl_sf_expm1_e(double x, double * result);
 double  gsl_sf_expm1(double x);
 
 
-/* Similarly for (exp(x)-1)/x
+/* Similarly for (exp(x)-1)/x = 1 + x/2 + x^2/(2*3) + x^3/(2*3*4) + ...
  *
  * exceptions: GSL_EOVRFLW
  */
 int     gsl_sf_exprel_impl(double x, double * result);
 int     gsl_sf_exprel_e(double x, double * result);
 double  gsl_sf_exprel(double x);
+
+
+/* Similarly for 2(exp(x)-1-x)/x^2 = 1 + x/3 + x^2/(3*4) + x^3/(3*4*5) + ...
+ *
+ * exceptions: GSL_EOVRFLW
+ */
+int     gsl_sf_exprel_2_impl(double x, double * result);
+int     gsl_sf_exprel_2_e(double x, double * result);
+double  gsl_sf_exprel_2(double x);
 
 
 #ifdef HAVE_INLINE

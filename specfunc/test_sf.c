@@ -1120,13 +1120,23 @@ int check_exp(void)
   status += s;
 
   s = 0;
-  s += ( frac_diff( gsl_sf_exprel(-10.0),   (exp( -10.0)-1.0)/(-10.0)  ) > 1.0e-14 );
-  s += ( frac_diff( gsl_sf_exprel(-0.001),   0.9995001666250084 ) > 1.0e-14 );
-  s += ( frac_diff( gsl_sf_exprel(-1.0e-8),   1.0 - 0.5e-08 ) > 1.0e-14 );
-  s += ( frac_diff( gsl_sf_exprel( 1.0e-8),   1.0 + 0.5e-08 ) > 1.0e-14 );
-  s += ( frac_diff( gsl_sf_exprel( 0.001),   1.0005001667083417 ) > 1.0e-14 );
-  s += ( frac_diff( gsl_sf_exprel( 10.0),   (exp(  10.0)-1.0)/(10.0)  ) > 1.0e-14 );
+  s += ( frac_diff( gsl_sf_exprel(-10.0),   0.0999954600070237515 ) > 1.0e-14 );
+  s += ( frac_diff( gsl_sf_exprel(-0.001),  0.9995001666250084    ) > 1.0e-14 );
+  s += ( frac_diff( gsl_sf_exprel(-1.0e-8),   1.0 - 0.5e-08       ) > 1.0e-14 );
+  s += ( frac_diff( gsl_sf_exprel( 1.0e-8),   1.0 + 0.5e-08       ) > 1.0e-14 );
+  s += ( frac_diff( gsl_sf_exprel( 0.001),   1.0005001667083417   ) > 1.0e-14 );
+  s += ( frac_diff( gsl_sf_exprel( 10.0),   2202.5465794806716517 ) > 1.0e-14 );
   gsl_test(s, "  gsl_sf_exprel");
+  status += s;
+
+  s = 0;
+  s += ( frac_diff( gsl_sf_exprel_2(-10.0),   0.18000090799859524970 ) > 1.0e-14 );
+  s += ( frac_diff( gsl_sf_exprel_2(-0.001),  0.9996667499833361107  ) > 1.0e-14 );
+  s += ( frac_diff( gsl_sf_exprel_2(-1.0e-8), 0.9999999966666666750  ) > 1.0e-14 );
+  s += ( frac_diff( gsl_sf_exprel_2( 1.0e-8), 1.0000000033333333417  ) > 1.0e-14 );
+  s += ( frac_diff( gsl_sf_exprel_2( 0.001),  1.0003334166833361115  ) > 1.0e-14 );
+  s += ( frac_diff( gsl_sf_exprel_2( 10.0),   440.3093158961343303   ) > 1.0e-14 );
+  gsl_test(s, "  gsl_sf_exprel_2");
   status += s;
 
   return status;

@@ -715,7 +715,128 @@ hyperg_1F1_recurse_nega(double a, double b, double x, int N, double * FN, double
 }
 
 
-/* Handle a = neg integer cases.
+/* Handle the case of a and b both positive integers.
+ * Assumes a > 0 and b > 0.
+ */
+static
+int
+hyperg_1F1_ab_posint(const int a, const int b, const double x, double * result)
+{
+  double ax = fabs(x);
+
+  if(a == b) {
+    return gsl_sf_exp_impl(x, result);
+  }
+  else if(a == b + 1) {
+    *result = exp(x) * (1.0 + x/b);
+    return GSL_SUCCESS;
+  }
+  else if(a == b + 2) {
+    *result = exp(x) * (1.0 + x/b*(2.0 + x/(b+1)));
+    return GSL_SUCCESS;
+  }
+  else if(a == 1) {
+  }
+  else if(   ( b < 10 && a < 10 && ax < 5.0 )
+          || ( b > a*ax )
+	  || ( b > a && ax < 5.0 )
+    ) {
+    double prec;
+    return gsl_sf_hyperg_1F1_series_impl(a, b, x, result, &prec);
+  }
+  else {
+    /* Forward recursion. */
+    double M0 = 1.0;
+    double M1;
+    
+  }
+}
+
+
+static
+int
+hyperg_1F1_ab_int(const int a, const int b, const double x, double * result)
+{
+  if(x == 0.0) {
+    *result = 1.0;
+    return GSL_SUCCESS;
+  }
+  else if(a == b) {
+    return gsl_sf_exp_impl(x, result);
+  }
+  else if(b == 0) {
+    *result = 0.0;
+    return GSL_EDOM;
+  }
+  else if(a == 0) {
+    *result = 1.0;
+    return GSL_SUCCESS;
+  }
+  else if(b < 0 && (a < b || a > 0)) {
+    *result = 0.0;
+    return GSL_EDOM;
+  }
+  else if(a == -1) {
+    *result = 1.0 + (double)a/b * x;
+    return GSL_SUCCESS;
+  }
+  else if(a == -2) {
+    *result = 1.0 + (double)a/b*x * (1.0 + 0.5*(a+1.0)/(b+1.0)*x);
+  }
+  else if(a < 0 && b < 0) {
+    /* Safe to recurse backward with Z function.
+     */
+    double Z0 = 1.0;           /* Z(0,0,b,x) */
+    double Z1 = 1.0 + a*x/b;   /* Z(0,1,b,x) */
+    double ZN, ZNp1;
+  }
+  else if(a < 0 && b > 0) {
+    /* Use Kummer to reduce it to the positive integer case.
+     */
+    double Kummer_1F1;
+    int stat_K = hyperg_1F1_ab_posint(b-a, b, -x, &Kummer_1F1);
+    if(stat_K == GSL_SUCCESS) {
+      if(Kummer_1F1 == 0.0) {
+        *result = 0.0;
+	return GSL_SUCCESS;
+      }
+      else {
+        double sK  = ( Kummer_1F1 > 0.0 ? 1.0 : -1.0 );
+        double lnr = log(fabs(Kummer_1F1)) + x;
+	if(lnr < GSL_LOG_DBL_MAX) {
+	  *result = sK * exp(lnr);
+	  return GSL_SUCCESS;
+	}
+	else {
+	  *result = 0.0; /* FIXME: should be Inf */
+	  return GSL_EOVRFLW;
+	}
+      }
+    }
+    else {
+      *result = 0.0;
+      return stat_K;
+    }
+  }
+  else {
+    /* a > 0 and b > 0 */
+    return hyperg_1F1_ab_posint(a, b, x, result);
+  }
+}
+
+
+/* Handle a = positive integer cases.
+ * Because of the way we use the Z and Y
+ * functions, this is actually useful.
+ * It is also somewhat clearer to separate
+ * this case explicitly.
+ */
+static
+int
+hyperg_1F1_a_posint(const int a, const double b, const double x);
+
+
+/* Handle a = negative integer cases.
  * Assumes b is such that the numerator terminates
  * before the denominator, which is of course required
  * in any case. Also assumes a <= 0.
@@ -849,8 +970,10 @@ gsl_sf_hyperg_1F1_impl(const double a, const double b, const double x,
   * For the negative integer test, we resort to an
   * (arbitrary) nearness measure.
   */
-  const int a_neg_integer = ( a < -0.1 &&  fabs(a - rint(a)) < locEPS );
-  const int b_neg_integer = ( b < -0.1  &&  fabs(b - rint(b)) < locEPS );
+  const int a_integer = ( fabs(a - rint(a)) < locEPS );
+  const int b_integer = ( fabs(b - rint(b)) < locEPS );
+  const int a_neg_integer = ( a < -0.1 &&  a_integer );
+  const int b_neg_integer = ( b < -0.1 &&  b_integer );
   const int bma_neg_integer = ( bma < -0.1  &&  fabs(bma - rint(bma)) < locEPS );
   const int amb_neg_integer = ( amb < -0.1  &&  fabs(amb - rint(amb)) < locEPS );
 
@@ -873,13 +996,26 @@ gsl_sf_hyperg_1F1_impl(const double a, const double b, const double x,
     return GSL_SUCCESS;
   }
 
+  /* case: a==b; exp(x)
+   * It's good to test exact equality now.
+   * We also test approximate equality later.
+   * Note that we need to test this before we
+   * test for the domain error below (denominator
+   * zero before numerator), because a and b
+   * might be negative integers with a==b, which would
+   * wrongly trip the test below.
+   */
+  if(a == b) {
+    return gsl_sf_exp_impl(x, result);
+  }
+
   /* case: denominator zeroes before numerator
    * Note that we draw a distinction between the
-   * negative integers and zero. Zero is handled
-   * in the cases below, and is not a negative
-   * integer. So we can test the negative integer
-   * case now since there is no interference between
-   * the cases.
+   * negative integers and zero. Approximate zero
+   * is handled in the cases below, and is not a
+   * negative integer. So we can test the negative
+   * integer case now since there is no interference
+   * between the cases.
    */
   if(b_neg_integer && !(a_neg_integer && a > b + 0.1)) {
     *result = 0.0;
@@ -941,14 +1077,34 @@ gsl_sf_hyperg_1F1_impl(const double a, const double b, const double x,
     }
   }
 
-  /* case: a==b;  exp(x)
-   * We test this after the above because this can
-   * be triggered for very small a and b, even though
-   * they might be very different from each other.
-   * In that case exp(x) would be wrong.
+  /* case: approximate a==b;
+   *
+   * 1F1(a,a+eps,x) = exp(ax/b) (1 + eps x^2 (v2 + v3 x + ...) + ...)
+   *
+   *   v2 = a/(2b^2(b+1))
+   *   v3 = a(b-2a)/(3b^3(b+1)(b+2))
+   *   ...
+   *
+   * See [Luke, Mathematical Functions and Their Approximations, p.292]
+   *
+   * This cannot be used for b near a negative integer or zero.
+   * Also, if x/b is large the deviation from exp(x) behaviour grows.
    */
-  if(fabs(bma) < locEPS) {
-    return gsl_sf_exp_impl(x, result);
+  if(b > locEPS && fabs(bma) < GSL_SQRT_MACH_EPS && fabs(b) > fabs(x) ) {
+    double eps = bma;
+    double exab;
+    int stat_e = gsl_sf_exp_impl(a*x/b, &exab);
+    if(stat_e == GSL_SUCCESS) {
+      double v2 = a/(2.0*b*b*(b+1.0));
+      double v3 = a*(b-2.0*a)/(3.0*b*b*b*(b+1.0)*(b+2.0));
+      double v  = v2 + v3 * x;
+      *result = exab * (1.0 + eps*x*x*(v2 + v3 * x));
+      return GSL_SUCCESS;
+    }
+    else {
+      *result = 0.0;
+      return stat_e;
+    }
   }
 
   /* case: a = neg integer; use explicit evaluation */

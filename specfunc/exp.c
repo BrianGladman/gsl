@@ -77,6 +77,33 @@ int gsl_sf_exprel_impl(double x, double * result)
 }
 
 
+int gsl_sf_exprel_2_impl(double x, double * result)
+{
+  const double cut = 0.002;
+
+  if(x < GSL_LOG_DBL_MIN) {
+    *result = -2.0/x*(1.0 + 1.0/x);
+    return GSL_SUCCESS;
+  }
+  else if(x < -cut) {
+    *result = 2.0*(exp(x) - 1.0 - x)/(x*x);
+    return GSL_SUCCESS;
+  }
+  else if(x < cut) {
+    *result = (1.0 + 1.0/3.0*x*(1.0 + 0.25*x*(1.0 + 0.2*x*(1.0 + 1.0/6.0*x))));
+    return GSL_SUCCESS;
+  } 
+  else if(x < GSL_LOG_DBL_MAX) {
+    *result = 2.0*(exp(x) - 1.0 - x)/(x*x);
+    return GSL_SUCCESS;
+  }
+  else {
+    *result = 0.0; /* FIXME: should be Inf */
+    return GSL_EOVRFLW;
+  }
+}
+
+
 int gsl_sf_exp_e(double x, double * result)
 {
   int status = gsl_sf_exp_impl(x, result);
@@ -101,6 +128,16 @@ int gsl_sf_exprel_e(double x, double * result)
   int status = gsl_sf_exprel_impl(x, result);
   if(status != GSL_SUCCESS) {
     GSL_ERROR("gsl_sf_exprel_e", status);
+  }
+  return status;
+}
+
+
+int gsl_sf_exprel_2_e(double x, double * result)
+{
+  int status = gsl_sf_exprel_2_impl(x, result);
+  if(status != GSL_SUCCESS) {
+    GSL_ERROR("gsl_sf_exprel_2_e", status);
   }
   return status;
 }
@@ -134,6 +171,16 @@ double gsl_sf_exprel(double x)
   int status = gsl_sf_exprel_impl(x, &y);
   if(status != GSL_SUCCESS) {
     GSL_WARNING("  gsl_sf_exprel", status);
+  }
+  return y;
+}
+
+double gsl_sf_exprel_2(double x)
+{
+  double y;
+  int status = gsl_sf_exprel_2_impl(x, &y);
+  if(status != GSL_SUCCESS) {
+    GSL_WARNING("  gsl_sf_exprel_2", status);
   }
   return y;
 }
