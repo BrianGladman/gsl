@@ -97,13 +97,13 @@ int gsl_sf_bessel_jl_impl(const int l, const double x, double * result)
   }
   else if(x*x < 10.0*(l+1.5)*GSL_ROOT5_MACH_EPS) {
     double b = 0.0;
-    int status = gsl_sf_bessel_Inu_Jnu_taylor_impl(l+0.5, x, -1, 4, &b);
+    int status = gsl_sf_bessel_Inu_Jnu_taylor_impl(l+0.5, x, -1, 50, GSL_MACH_EPS, &b);
     *result = sqrt(M_PI/(2.0*x)) * b;
     return status;
   }
   else if(x*x < 10.0*(l+0.5)/M_E) {
     double b = 0.0;
-    int status = gsl_sf_bessel_Inu_Jnu_taylor_impl(l+0.5, x, -1, 14, &b);
+    int status = gsl_sf_bessel_Inu_Jnu_taylor_impl(l+0.5, x, -1, 50, GSL_MACH_EPS, &b);
     *result = sqrt(M_PI/(2.0*x)) * b;
     return status;
   }

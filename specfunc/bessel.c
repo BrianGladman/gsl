@@ -27,6 +27,7 @@
 static int Inu_Jnu_taylorsum(const double nu, const double x,
                              const int sign,
                              const int kmax,
+			     const double threshold,
                              double * result
                              )
 {
@@ -39,17 +40,15 @@ static int Inu_Jnu_taylorsum(const double nu, const double x,
   for(k=1; k<=kmax; k++) {
     term *= y/(nu+k)/k;
     sum  += term;
-    if(fabs(term/sum) < GSL_MACH_EPS) break;
+    if(fabs(term/sum) < threshold) break;
   }
 
   *result = sum;
 
-  if(fabs(term) > 10.0 * GSL_MACH_EPS) {
-    return GSL_ELOSS;
-  }
-  else {
+  if(k == kmax)
+    return GSL_EMAXITER;
+  else
     return GSL_SUCCESS;
-  }
 }
 
 
@@ -195,10 +194,12 @@ static double debye_M(const double nu, const double * tpow)
 int gsl_sf_bessel_Inu_Jnu_taylor_impl(const double nu, const double x,
                                       const int sign,
                                       const int kmax,
+				      const double threshold,
                                       double * result
                                       )
 {
   if(nu < 0.0 || x < 0.0) {
+    *result = 0.0;
     return GSL_EDOM;
   }
   else if(x == 0.0) {
@@ -211,20 +212,22 @@ int gsl_sf_bessel_Inu_Jnu_taylor_impl(const double nu, const double x,
     return GSL_SUCCESS;
   }
   else if(nu == 0.0) {
-    return Inu_Jnu_taylorsum(nu, x, sign, kmax, result);
+    /* avoid unnecessary gamma computation */
+    return Inu_Jnu_taylorsum(nu, x, sign, kmax, threshold, result);
   }
   else {
     /* nu > 0 and x > 0 */
     double lg;
     double ln_pre;
+    double sum;
+    int stat_sum = Inu_Jnu_taylorsum(nu, x, sign, kmax, threshold, &sum);
     gsl_sf_lngamma_impl(nu+1.0, &lg);  /* ok by construction */
     ln_pre = nu*log(0.5*x) - lg;
+
+    /* Overflow is presumed not to be an issue here. */
     if(ln_pre > GSL_LOG_DBL_MIN + 1.0) {
-      double pre = exp(ln_pre);
-      double ts;
-      int status = Inu_Jnu_taylorsum(nu, x, sign, kmax, &ts);
-      *result = pre * ts;
-      return status;
+      *result = sum * exp(ln_pre);
+      return stat_sum;
     }
     else {
       *result = 0.0;

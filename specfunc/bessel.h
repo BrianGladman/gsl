@@ -7,6 +7,7 @@
 int gsl_sf_bessel_Inu_Jnu_taylor_impl(double nu, double x,
                                       int sign,
                                       int kmax,
+				      double threshold,
                                       double * result
                                       );
 

@@ -8,122 +8,95 @@
 #include "gsl_sf_bessel.h"
 
 
-/*-*-*-*-*-*-*-*-*-*-*-* Private Section *-*-*-*-*-*-*-*-*-*-*-*/
-
-
-/* backward recursion using asymptotic starting values
- * assumes: n >= 2, x > 0
- * checked OK [GJ] Sun May  3 09:15:06 EDT 1998 
- */
-static
-void
-asymp_recurse_In_scaled(const int n, const double x, double * b_n, double * b_nm1)
-{
-  int j;
-  double b_jp1, b_j, b_jm1;
-  double two_over_x = 2.0/x;
-  
-  /* go high enough to apply asymptotic result */
-  int big_nu = 5 + GSL_MAX_INT(n, (int)sqrt(1.5*GSL_MAX_DBL(0.0, 0.5/GSL_ROOT3_MACH_EPS - x*x)));
-
-  gsl_sf_bessel_Inu_scaled_asymp_unif_impl(big_nu  , x, &b_jp1);
-  gsl_sf_bessel_Inu_scaled_asymp_unif_impl(big_nu-1, x, &b_j);
-
-  for(j=big_nu-1; j>=n; j--){
-    b_jm1 = b_jp1 + j * two_over_x * b_j;
-    b_jp1 = b_j;
-    b_j   = b_jm1;
-  }
-  
-  *b_n   = b_jp1;
-  *b_nm1 = b_j;
-}
-
-
-/* checked OK [GJ] Sun May  3 15:43:00 EDT 1998 */
-#ifdef HAVE_INLINE
-inline
-#endif
-static
-int
-taylor_In_scaled(const int max, const int n, const double x, double * b_n, double * b_nm1)
-{
-  double ex = exp(-x);
-  int status1 = gsl_sf_bessel_Inu_Jnu_taylor_impl(n, x, 1, max, b_n);
-  int status2 = GSL_SUCCESS;
-  *b_n *= ex;
-  if(b_nm1 != (double *)0) {
-    status2 = gsl_sf_bessel_Inu_Jnu_taylor_impl(n-1, x, 1, max, b_nm1);
-    *b_nm1 *= ex;
-  }
-  return GSL_ERROR_SELECT_2(status1, status2);
-}
-
-
-/* convenience function for I_n and I_{n-1}
- * assumes n >= 2; x > 0
- * checked OK [GJ] Sun May  3 16:19:10 EDT 1998 
+/* I_{n+1}/I_n
  */
 static
 int
-bessel_In_scaled(const int n, const double x, double * b_n, double * b_nm1)
+bessel_In_CF1(const int n, const double x, const double threshold, double * ratio)
 {
-  *b_n = 0.0;
-  if(b_nm1 != (double *)0) *b_nm1 = 0.0;
+  const int kmax = 2000;
+  double tk   = 1.0;
+  double sum  = 1.0;
+  double rhok = 0.0;
+  int k;
 
-  if(x*x < 10.0*(n+1)*GSL_ROOT5_MACH_EPS) {
-    return taylor_In_scaled(4, n, x, b_n, b_nm1);
+  for(k=1; k<kmax; k++) {
+    double ak = 0.25*x*x/((n+k)*(n+k+1.0));
+    rhok = -ak*(1.0 + rhok)/(1.0 + ak*(1.0 + rhok));
+    tk  *= rhok;
+    sum += tk;
+    if(fabs(tk/sum) < threshold) break;
   }
-  else if(x*x < 10.0*(n+1)/M_E) {
-    return taylor_In_scaled(14, n, x, b_n, b_nm1);
-  }
-  else if( GSL_MIN( 0.29/(n*n), 0.5/(n*n + x*x) ) < 0.2*GSL_ROOT3_MACH_EPS) {
-    gsl_sf_bessel_Inu_scaled_asymp_unif_impl(n, x, b_n);
-    if(b_nm1 != (double *)0) {
-      gsl_sf_bessel_Inu_scaled_asymp_unif_impl(n-1, x, b_nm1);
-    }
+
+  if(k == kmax)
+    return GSL_EMAXITER;
+  else
     return GSL_SUCCESS;
-  }
-  else {
-    double local_b_n;
-    double local_b_nm1;
-    asymp_recurse_In_scaled(n, x, &local_b_n, &local_b_nm1);
-    *b_n = local_b_n;
-    if(b_nm1 != (double *) 0) *b_nm1 = local_b_nm1;
-    return GSL_SUCCESS;
-  }
 }
 
 
 /*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
 
-/* checked OK [GJ] Sun May  3 15:50:23 EDT 1998 */
+
 int
 gsl_sf_bessel_In_scaled_impl(int n, const double x, double * result)
 {
   n = abs(n);  /* I(-n, z) = I(n, z) */
- 
+
   if(n == 0) {
     return gsl_sf_bessel_I0_scaled_impl(x, result);
   }
   else if(n == 1) {
     return gsl_sf_bessel_I1_scaled_impl(x, result);
   }
-  else { 
-    if(x == 0.0) {
-      *result = 0.0;
-      return GSL_SUCCESS;
+  else if(x == 0.0) {
+    *result = 0.0;
+    return GSL_SUCCESS;
+  }
+  else if(x*x < 10.0*(n+1.0)/M_E) {
+    int stat_In = gsl_sf_bessel_Inu_Jnu_taylor_impl(n, x, 1, 50, GSL_MACH_EPS, result);
+    *result *= exp(-fabs(x));
+    return stat_In;
+  }
+  else if(n < 150) {
+    double I0_scaled;
+    int stat_I0  = gsl_sf_bessel_I0_scaled_impl(x, &I0_scaled);
+    double rat;
+    int stat_CF1 = bessel_In_CF1(n, x, GSL_MACH_EPS, &rat);
+    double Ikp1 = rat * GSL_SQRT_DBL_MIN;
+    double Ik	= GSL_SQRT_DBL_MIN;
+    double Ikm1;
+    int k;
+    for(k=n; k >= 1; k--) {
+      Ikm1 = Ikp1 + 2.0*k/x * Ik;
+      Ikp1 = Ik;
+      Ik   = Ikm1;
     }
-    else {
-      int status = bessel_In_scaled(n, fabs(x), result, (double *)0);
-      if(x < 0.0 && GSL_IS_ODD(n)) *result = - *result;
-      return status;
+    *result = I0_scaled * (GSL_SQRT_DBL_MIN / Ik);
+    return GSL_ERROR_SELECT_2(stat_I0, stat_CF1);
+  }
+  else if( GSL_MIN( 0.29/(n*n), 0.5/(n*n + x*x) ) < 0.2*GSL_ROOT3_MACH_EPS) {
+    return gsl_sf_bessel_Inu_scaled_asymp_unif_impl((double)n, x, result);
+  }
+  else {
+    const int nhi = 2 + (int) (1.6 / GSL_ROOT6_MACH_EPS);
+    double Ikp1;
+    double Ik;
+    double Ikm1;
+    int k;
+    int stat_a1 = gsl_sf_bessel_Inu_scaled_asymp_unif_impl(nhi+1.0, x, &Ikp1);
+    int stat_a2 = gsl_sf_bessel_Inu_scaled_asymp_unif_impl(nhi,     x, &Ik);
+    for(k=nhi; k > n; k--) {
+      Ikm1 = Ikp1 + 2.0*k/x * Ik;
+      Ikp1 = Ik;
+      Ik   = Ikm1;
     }
+    *result = Ik;
+    return GSL_ERROR_SELECT_2(stat_a1, stat_a2);
   }
 }
 
 
-/* checked OK [GJ] Sun May  3 16:04:13 EDT 1998 */
 int
 gsl_sf_bessel_In_scaled_array_impl(const int nmin, const int nmax, const double x, double * result_array)
 {
@@ -149,7 +122,9 @@ gsl_sf_bessel_In_scaled_array_impl(const int nmin, const int nmax, const double 
     double Inp1;
     int n;
 
-    int stat = bessel_In_scaled(nmax+1, ax, &Inp1, &In);  /* starting values */
+    /* starting values */
+    int stat_0 = gsl_sf_bessel_In_scaled_impl(nmax+1, ax, &Inp1);
+    int stat_1 = gsl_sf_bessel_In_scaled_impl(nmax,   ax, &In);
 
     for(n=nmax; n>=nmin; n--) {
       result_array[n-nmin] = In;
@@ -165,27 +140,30 @@ gsl_sf_bessel_In_scaled_array_impl(const int nmin, const int nmax, const double 
       }
     }
 
-    return stat;
+    return GSL_ERROR_SELECT_2(stat_0, stat_1);
   }
 }
 
 /* checked OK [GJ] Sun May  3 16:18:04 EDT 1998 */
 int
-gsl_sf_bessel_In_impl(int n, const double x, double * result)
+gsl_sf_bessel_In_impl(int n_in, const double x, double * result)
 {
-  double ax = fabs(x);
+  const double ax = fabs(x);
+  const int n = abs(n_in);  /* I(-n, z) = I(n, z) */
+  double I0_scaled;
+  const int stat_In_scaled = gsl_sf_bessel_In_scaled_impl(n, ax, &I0_scaled);
 
-  n = abs(n);  /* I(-n, z) = I(n, z) */
-
+  /* In_scaled is always less than 1,
+   * so this overflow check is conservative.
+   */
   if(ax > GSL_LOG_DBL_MAX - 1.0) {
     *result = 0.0; /* FIXME: should be Inf */
     return GSL_EOVRFLW;
   }
   else {
-    int status = bessel_In_scaled(n, ax, result, (double *)0);
     if(x < 0.0 && GSL_IS_ODD(n)) *result = - *result;
     *result *= exp(ax);
-    return status;
+    return stat_In_scaled;
   }
 }
 

@@ -79,7 +79,7 @@ int gsl_sf_bessel_Jn_impl(int n, double x, double * result)
       return GSL_SUCCESS;
     }
     else if(x*x < 10.0*(n+1.0)*GSL_ROOT5_MACH_EPS) {
-      int status = gsl_sf_bessel_Inu_Jnu_taylor_impl((double)n, x, -1, 4, result);
+      int status = gsl_sf_bessel_Inu_Jnu_taylor_impl((double)n, x, -1, 50, GSL_MACH_EPS, result);
       *result *= sign;
       return status;
     }
