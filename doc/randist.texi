@@ -84,7 +84,7 @@ for @math{x} in the range @math{-\infty} to @math{+\infty}.  Use the
 transformation @math{z = \mu + x} on the numbers returned by
 @code{gsl_ran_gaussian} to obtain a Gaussian distribution with mean
 @math{\mu}.  This function uses the Box-Mueller algorithm which requires two
-calls the random number generator @var{r}.
+calls to the random number generator @var{r}.
 @end deftypefn
 
 @deftypefun double gsl_ran_gaussian_pdf (double @var{x}, double @var{sigma})
