@@ -1,3 +1,9 @@
+1998-11-09    <bjg@ancho.lanl.gov>
+
+	* test_source.c, test_complex_source.c: use macros to determine if
+	we should run tests with long double printf/scanf, since these
+	aren't supported on all platforms
+
 Mon Apr  6 15:06:38 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
 	* make range checking the default, you have to define

@@ -19,6 +19,7 @@ FUNCTION (gsl_matrix, fwrite) (FILE * stream, const TYPE (gsl_matrix) * m)
   return status;
 }
 
+#if !(defined(USES_LONGDOUBLE) && !defined(HAVE_PRINTF_LONGDOUBLE))
 int
 FUNCTION (gsl_matrix, fprintf) (FILE * stream, const TYPE (gsl_matrix) * m,
 				const char *format)
@@ -35,3 +36,5 @@ FUNCTION (gsl_matrix, fscanf) (FILE * stream, TYPE (gsl_matrix) * m)
 					     m->size1 * m->size2, 1);
   return status;
 }
+#endif
+

@@ -114,6 +114,7 @@ FUNCTION (test, func) (void)
   }
 }
 
+#if !(defined(USES_LONGDOUBLE) && !defined(HAVE_PRINTF_LONGDOUBLE))
 void
 FUNCTION (test, text) (void)
 {
@@ -161,6 +162,7 @@ FUNCTION (test, text) (void)
   }
   FUNCTION (gsl_matrix, free) (m);
 }
+#endif
 
 void
 FUNCTION (test, binary) (void)
