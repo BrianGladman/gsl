@@ -1,4 +1,3 @@
-/* $Id$ */
 #ifndef _gsl_ran_cmrg_RANDOM_H_
 #define _gsl_ran_cmrg_RANDOM_H_
 

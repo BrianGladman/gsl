@@ -1,4 +1,3 @@
-/* $Id$ */
 /* Switch between various algorithms at run-time, using the function
    gsl_ran_use_xxx() to start using xxx.  The function gsl_ran_name()
    returns the name of the algorithm currently in use.

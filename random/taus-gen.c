@@ -1,4 +1,3 @@
-/* $Id$ */
 /* File xxx-gen.xc is a template file
  *
  * This is either the template file xxx-gen.xc or else is generated

@@ -1,4 +1,3 @@
-/* $Id$ */
 /**
   From:
   P. L'Ecuyer, F. Blouin, and R. Coutre, "A search for good multiple

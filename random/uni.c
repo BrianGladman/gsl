@@ -1,4 +1,3 @@
-/* $Id$ */
 /**
   This is a lagged Fibonacci generator which supposedly excellent
   statistical properties (I do not concur)

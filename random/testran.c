@@ -1,5 +1,3 @@
-
-/* $Id$ */
 /* Test routine for the uniform random number generators */
 #include <config.h>
 

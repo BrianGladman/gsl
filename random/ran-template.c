@@ -1,4 +1,3 @@
-/* $Id$ */
 /* This is not real code, but a template for adding new PRNG's (pseudo
  * random number generators) consistent with the GSL interface.
  *

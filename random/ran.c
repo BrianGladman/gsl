@@ -1,4 +1,3 @@
-/* $Id$ */
 /* Driver routine for the uniform random number generators */
 #include <stdio.h>
 #include "gsl_ran.h"

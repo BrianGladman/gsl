@@ -1,4 +1,3 @@
-/* $Id$ */
 /* Benchmark routine for the uniform random number generators */
 #include <stdio.h>
 #include <stdlib.h>

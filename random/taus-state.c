@@ -1,4 +1,3 @@
-/* $Id$ */
 /* File xxx-state.xc is a template file
  *
  * This is either the template file xxx-state.xc or else is generated

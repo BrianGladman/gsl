@@ -1,4 +1,3 @@
-/* $Id$ */
 /**
   From:
   P. L'Ecuyer, "Maximally equidistributed combined Tausworthe
