@@ -55,12 +55,11 @@ p = e^@{-(E_@{i+1@} - E_i)/(kT)@}
 
 @noindent
 if 
-@c{$E_{i+1} < E_i$}
-@math{E_@{i+1@} < E_i}, and 
-@c{$p = 0$}
-@math{p = 0} when 
-@c{$E_{i+1} \ge E_i$}
-@math{E_@{i+1@} \ge E_i}.
+@c{$E_{i+1} > E_i$}
+@math{E_@{i+1@} > E_i}, and 
+@math{p = 1} when 
+@c{$E_{i+1} \le E_i$}
+@math{E_@{i+1@} <= E_i}.
 
 In other words, a step @emph{will} occur if the new energy is lower.  If
 the new energy is higher, the transition can still occur, and its
