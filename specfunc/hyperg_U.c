@@ -468,8 +468,8 @@ hyperg_U_series(const double a, const double b, const double x, gsl_sf_result * 
       }
 
       result->val  = dchu_val;
-      result->err  = dchu_err;
-      result->err += fabs(t_val);
+      result->err  = 2.0 * dchu_err;
+      result->err += 2.0 * fabs(t_val);
       result->err += 4.0 * GSL_DBL_EPSILON * (i+1.0) * fabs(dchu_val);
 
       if(i >= 2000) {
@@ -522,9 +522,9 @@ hyperg_U_series(const double a, const double b, const double x, gsl_sf_result * 
       }
 
       result->val  = dchu_val;
-      result->err  = dchu_err;
-      result->err += fabs(t_val);
-      result->err += 2.0 * GSL_DBL_EPSILON * (i+1.0) * fabs(dchu_val);
+      result->err  = 2.0 * dchu_err;
+      result->err += 2.0 * fabs(t_val);
+      result->err += 4.0 * GSL_DBL_EPSILON * (i+1.0) * fabs(dchu_val);
 
       if(i >= 2000) {
         return GSL_EMAXITER;

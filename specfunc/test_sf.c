@@ -267,6 +267,7 @@ int test_elementary(void)
   TEST_SF(s,  gsl_sf_multiply_impl, (x, 0.2, &r),    0.04*DBL_MAX, TEST_TOL1, GSL_SUCCESS);
   TEST_SF(s,  gsl_sf_multiply_impl, (x, 4.0, &r),    0.8*DBL_MAX,  TEST_TOL1, GSL_SUCCESS);
   s += ( gsl_sf_multiply_impl(DBL_MAX, 1.1, &r) != GSL_EOVRFLW);
+  s += ( gsl_sf_multiply_impl(DBL_MIN,  DBL_MIN, &r) != GSL_EUNDRFLW);
   s += ( gsl_sf_multiply_impl(DBL_MIN, -DBL_MIN, &r) != GSL_EUNDRFLW);
 
   return s;

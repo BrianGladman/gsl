@@ -34,7 +34,7 @@ gsl_sf_multiply_impl(const double x, const double y, gsl_sf_result * result)
     if(max < 0.9 * GSL_SQRT_DBL_MAX || min < (f * DBL_MAX)/max) {
       result->val = x*y;
       result->err = 2.0 * GSL_DBL_EPSILON * fabs(result->val);
-      return (fabs(result->val) == 0.0 ? GSL_EUNDRFLW : GSL_SUCCESS);
+      return (result->val == 0.0 ? GSL_EUNDRFLW : GSL_SUCCESS);
     }
     else {
       result->val = 0.0; /* FIXME: should be Inf */

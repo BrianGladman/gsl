@@ -986,8 +986,9 @@ hyperg_1F1_ab_posint(const int a, const int b, const double x, gsl_sf_result * r
           Mnm1 = Mn;
           Mn   = Mnp1;
         }
-        result->val = Mn;
-	result->err = 2.0 * GSL_DBL_EPSILON * (fabs(a-b)+1.0) * fabs(Mn);
+        result->val  = Mn;
+	result->err  = (x + 1.0) * GSL_DBL_EPSILON * fabs(Mn);
+	result->err *= fabs(a-b)+1.0;
         return GSL_SUCCESS;
       }
       else {
@@ -1033,8 +1034,9 @@ hyperg_1F1_ab_posint(const int a, const int b, const double x, gsl_sf_result * r
        * so we must find another way. We recurse down in b,
        * from the a=b line.
        */
-      double Manp1 = exp(x);
-      double Man   = exp(x) * (1.0 + x/(a-1.0));
+      double ex = exp(x);
+      double Manp1 = ex;
+      double Man   = ex * (1.0 + x/(a-1.0));
       double Manm1;
       int n;
       for(n=a-1; n>b; n--) {
@@ -1043,8 +1045,8 @@ hyperg_1F1_ab_posint(const int a, const int b, const double x, gsl_sf_result * r
         Man = Manm1;
       }
       result->val  = Man;
-      result->err  = GSL_DBL_EPSILON * (fabs(x) + 1.0) * fabs(Man);
-      result->err += 2.0 * GSL_DBL_EPSILON * (fabs(b-a)+1.0) * fabs(Man);
+      result->err  = (fabs(x) + 1.0) * GSL_DBL_EPSILON * fabs(Man);
+      result->err *= fabs(b-a)+1.0;
       return GSL_SUCCESS;
     }
     else {
@@ -1062,8 +1064,9 @@ hyperg_1F1_ab_posint(const int a, const int b, const double x, gsl_sf_result * r
       double Mnp1;
       int n;
       {
-    	double Ma0np1 = exp(x);
-    	double Ma0n   = exp(x) * (1.0 + x/(a0-1.0));
+        double ex = exp(x);
+    	double Ma0np1 = ex;
+    	double Ma0n   = ex * (1.0 + x/(a0-1.0));
     	double Ma0nm1;
     	for(n=a0-1; n>b; n--) {
     	  Ma0nm1 = (-n*(1-n-x)*Ma0n - x*(n-a0)*Ma0np1)/(n*(n-1.0));
@@ -1083,8 +1086,8 @@ hyperg_1F1_ab_posint(const int a, const int b, const double x, gsl_sf_result * r
     	Mn   = Mnp1;
       }
       result->val  = Mn;
-      result->err  = GSL_DBL_EPSILON * (fabs(x) + 1.0) * fabs(Mn);
-      result->err += 2.0 * GSL_DBL_EPSILON * (fabs(b-a)+1.0) * fabs(Mn);
+      result->err  = (fabs(x) + 1.0) * GSL_DBL_EPSILON *  fabs(Mn);
+      result->err *= fabs(b-a)+1.0;
       return GSL_SUCCESS;
     }
   }
@@ -1533,11 +1536,17 @@ hyperg_1F1_ab_pos(const double a, const double b,
         minim_pair = GSL_MIN_DBL(fabs(Manp1) + fabs(Man), minim_pair);
       }
 
+      /* FIXME: this is a nasty little hack; there is some
+         (transient?) instability in this recurrence for some
+	 values. I can tell when it happens, which is when
+	 this pair_ratio is large. But I do not know how to
+	 measure the error in terms of it. I guessed quadratic
+	 below, but it is probably worse than that.
+	 */
       pair_ratio = start_pair/minim_pair;
       result->val  = Man;
       result->err  = 2.0 * (rat_0 + rat_1 + GSL_DBL_EPSILON) * (fabs(b-a)+1.0) * fabs(Man);
-      result->err += 2.0 * (rat_0 + rat_1) * pair_ratio*pair_ratio * fabs(Man);
-      result->err += 2.0 * GSL_DBL_EPSILON * fabs(Man);
+      result->err *= pair_ratio*pair_ratio + 1.0;
       return GSL_ERROR_SELECT_2(stat_0, stat_1);
     }
     else {
