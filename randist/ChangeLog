@@ -1,3 +1,9 @@
+Mon Aug  3 13:09:39 1998  Brian Gough  <bjg@vvv.lanl.gov>
+
+	* pascal.c: added the Pascal distribution
+
+	* hyperg.c: added the hypergeometric distribution
+
 Fri Jul 31 12:52:12 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
 	* gsl_randist.h: renamed gsl_ran_two_sided_exponential to
