@@ -217,3 +217,79 @@ gsl_la_solve_LU_impl(const gsl_matrix     * lu_matrix,
   }
 }
 
+
+int
+gsl_la_invert_LU (const gsl_matrix     * lu_matrix,
+                  const gsl_vector_int * permutation,
+                  gsl_matrix           * inverse)
+{
+  size_t i,j, n = lu_matrix->size1;
+
+  for (i = 0; i < n ; i++)
+    for (j = 0; j < n ; j++)
+      gsl_matrix_set(inverse, i, j, (i == j) ? 1.0 : 0.0);
+
+  for (i = 0; i < n ; i++)
+    {
+      gsl_vector w = {0, 0, 0, 0};
+      gsl_vector_view_col_from_matrix(&w, inverse, i);
+      gsl_la_solve_LU_impl(lu_matrix,permutation,&w,&w);
+    }
+}
+
+double
+gsl_la_det_LU (gsl_matrix * lu_matrix, int signum)
+{
+  size_t i, n = lu_matrix->size1;
+  
+  double det = (double) signum;
+
+  for (i = 0; i < n; i++)
+    {
+      det *= gsl_matrix_get(lu_matrix, i, i);
+    }
+
+  return det;
+}
+
+
+int
+gsl_la_lndet_LU (gsl_matrix * lu_matrix)
+{
+  size_t i, n = lu_matrix->size1;
+
+  double lndet = 0.0;
+
+  for (i = 0; i < n; i++)
+    {
+      lndet += log(fabs(gsl_matrix_get(lu_matrix, i, i)));
+    }
+
+  return lndet;
+}
+
+
+int
+gsl_la_sgndet_LU (gsl_matrix * lu_matrix, int signum)
+{
+  size_t i, n = lu_matrix->size1;
+
+  int s = signum;
+
+  for (i = 0; i < n; i++)
+    {
+      double u = gsl_matrix_get(lu_matrix, i, i);
+
+      if (u < 0)
+        {
+          s *= -1;
+        }
+     else if (u == 0)
+       {
+         s = 0;
+         break ;
+       }
+    }
+
+  return s;
+}

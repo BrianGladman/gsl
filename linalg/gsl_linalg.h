@@ -67,6 +67,14 @@ gsl_la_solve_LU_impl(const gsl_matrix     * lu_matrix,
                      const gsl_vector     * rhs,
                      gsl_vector           * solution);
 
+int gsl_la_invert_LU (const gsl_matrix     * lu_matrix,
+                      const gsl_vector_int * permutation,
+                      gsl_matrix           * inverse);
+
+double gsl_la_det_LU (gsl_matrix * lu_matrix, int signum);
+int gsl_la_lndet_LU (gsl_matrix * lu_matrix);
+int gsl_la_sgndet_LU (gsl_matrix * lu_matrix, int signum);
+
 
 /* Linear Solve Using Householder Transformations
  *
