@@ -1,5 +1,9 @@
 rand("seed", 1);
 global TEST=0;
+global FILE=stdout;
+global LIST;
+
+[LIST] = fopen("tests.c", "w");
 
 ######################################################################
 
@@ -21,6 +25,8 @@ function S = context (i)
       S.prefix = "z";
       S.precision = "double";
       S.complex = 1;
+    otherwise
+      error ("unrecognized case %d\n", i);
   endswitch
 endfunction
 
@@ -423,6 +429,12 @@ function T = test_trmatmat (S, j, order, side, trans)
   endif
 endfunction
 
+function r = rnd ()
+  r = 10**((rand()-0.5)*10);
+  if (rand() < 0.5)
+    r = -r;
+  endif
+endfunction
 
 function v = random_vector(n)
   v = fix((rand(1,n)-0.5)*2000)/1000;
@@ -1544,41 +1556,67 @@ endfunction
 
                                 # testing functions
 
-function begin_block()
-  printf("  {\n");
+function begin_file(name)
+  global FILE;
+  global LIST;
+  printf("opening %s\n", name) ;
+  fprintf(LIST, "  test_%s ();\n", name);
+  filename = strcat("test_", name, ".c");
+  [FILE] = fopen(filename, "w");
+  fprintf(FILE,"#include <gsl/gsl_test.h>\n");
+  fprintf(FILE,"#include <gsl/gsl_ieee_utils.h>\n");
+  fprintf(FILE,"#include <gsl/gsl_math.h>\n");
+  fprintf(FILE,"#include \"gsl_cblas.h\"\n");
+  fprintf(FILE,"\n");
+  fprintf(FILE,"void\n");
+  fprintf(FILE,"test_%s () {\n", name);
+  fprintf(FILE,"const double flteps = 1e-4, dbleps = 1e-6;\n");
+endfunction
+
+function end_file()
+  global FILE;
+  fprintf(FILE, "}\n");
+  fclose(FILE);
+endfunction
+
+function begin_block(name)
+  global FILE;
+  fprintf(FILE, "  {\n");
 endfunction
 
 function end_block()
-  printf("  };\n\n\n");
+  global FILE;
+  fprintf(FILE, "  };\n\n\n");
 endfunction
 
 function define(S, type, name,x)
+  global FILE;
   if (strcmp(type,"scalar"))
     if (S.complex == 0)
       if (nargin == 3)
-        printf("   %s %s;\n", S.precision, name);
+        fprintf(FILE, "   %s %s;\n", S.precision, name);
       else
-        printf("   %s %s = %.12g;\n", S.precision, name, x);
+        fprintf(FILE, "   %s %s = %.12g;\n", S.precision, name, x);
       endif
     else
       if (nargin == 3)
-        printf("   %s %s[2];\n", S.precision, name);
+        fprintf(FILE, "   %s %s[2];\n", S.precision, name);
       else
-        printf("   %s %s[2] = {%.12g, %.12g};\n", S.precision, name, \
+        fprintf(FILE, "   %s %s[2] = {%.12g, %.12g};\n", S.precision, name, \
                real(x), imag(x));
       endif
     endif
   elseif (strcmp(type,"int"))
       if (nargin == 3)
-        printf("   %s %s;\n", type, name);
+        fprintf(FILE, "   %s %s;\n", type, name);
       else
-        printf("   %s %s = %d;\n", type, name, x);
+        fprintf(FILE, "   %s %s = %d;\n", type, name, x);
       endif
   elseif (strcmp(type,"vector") || strcmp(type,"matrix"))
-    printf("   %s %s[] = { ", S.precision, name);
+    fprintf(FILE, "   %s %s[] = { ", S.precision, name);
     for i = 1:length(x)
       if (i > 1)
-        printf(", ");
+        fprintf(FILE, ", ");
       endif
       if (abs(x(i)) > 1e3 || abs(x(i)) < 1e-3)
         format = "%.12e";
@@ -1586,20 +1624,22 @@ function define(S, type, name,x)
         format = "%.12g";
       endif
       if (S.complex == 0)
-        printf(format, x(i));
+        fprintf(FILE, format, x(i));
       else
-        printf(strcat(format, ", ", format), real(x(i)), imag(x(i)));
+        fprintf(FILE, strcat(format, ", ", format), real(x(i)), imag(x(i)));
       endif
     endfor
-    printf(" };\n");
+    fprintf(FILE, " };\n");
   endif
 endfunction
 
 function call (...)
-  printf("   %s;\n", strcat(all_va_args, ""));
+  global FILE;
+  fprintf(FILE, "   %s;\n", strcat(all_va_args, ""));
 endfunction
 
 function test(S,type,a,b,desc,var)
+  global FILE;
   global TEST;
   TEST++;
   desc = strcat(desc, "(case ", int2str(TEST), ")");
@@ -1611,32 +1651,34 @@ function test(S,type,a,b,desc,var)
 
   if (strcmp(type,"scalar"))
     if (S.complex == 0)
-      printf("   gsl_test_rel(%s, %s, %s, \"%s\");\n", a, b, rel, desc);
+      fprintf(FILE, "   gsl_test_rel(%s, %s, %s, \"%s\");\n", a, b, rel, desc);
     else
-      printf("   gsl_test_rel(%s[0], %s[0], %s, \"%s real\");\n", a, b, rel, desc);
-      printf("   gsl_test_rel(%s[1], %s[1], %s, \"%s imag\");\n", a, b, rel, desc);
+      fprintf(FILE, "   gsl_test_rel(%s[0], %s[0], %s, \"%s real\");\n", a, b, rel, desc);
+      fprintf(FILE, "   gsl_test_rel(%s[1], %s[1], %s, \"%s imag\");\n", a, b, rel, desc);
     endif
   elseif (strcmp(type,"int"))
-    printf("   gsl_test_int(%s, %s, \"%s\");\n", a, b, desc);
+    fprintf(FILE, "   gsl_test_int(%s, %s, \"%s\");\n", a, b, desc);
   elseif (strcmp(type,"vector") || strcmp(type,"matrix"))
     N = length(var);
     if (S.complex == 0)
-      printf("   {\n");
-      printf("     int i;\n");
-      printf("     for (i = 0; i < %d; i++) {\n", N);
-      printf("       gsl_test_rel(%s[i], %s[i], %s, \"%s\");\n", a, b, \
-             rel, desc);
-      printf("     }\n");
-      printf("   };\n");
+#      fprintf(FILE, "   test_rel (%s, %s, %s, \"%s\");\n", N, a, b, rel, desc);
+       fprintf(FILE, "   {\n");
+       fprintf(FILE, "     int i;\n");
+       fprintf(FILE, "     for (i = 0; i < %d; i++) {\n", N);
+       fprintf(FILE, "       gsl_test_rel(%s[i], %s[i], %s, \"%s\");\n", a, b, \
+              rel, desc);
+       fprintf(FILE, "     }\n");
+       fprintf(FILE, "   };\n");
     else
-      printf("   {\n");
-      printf("     int i;\n");
-      printf("     for (i = 0; i < %d; i++) {\n", N);
-      printf("       gsl_test_rel(%s[2*i], %s[2*i], %s, \"%s real\");\n", a, b, rel, desc);
-      printf("       gsl_test_rel(%s[2*i+1], %s[2*i+1], %s, \"%s imag\");\n", a, b, \
-             rel, desc);
-      printf("     };\n");
-      printf("   };\n");
+#      fprintf(FILE, "   test_zrel (%s, %s, %s, \"%s\");\n", N, a, b, rel, desc);
+       fprintf(FILE, "   {\n");
+       fprintf(FILE, "     int i;\n");
+       fprintf(FILE, "     for (i = 0; i < %d; i++) {\n", N);
+       fprintf(FILE, "       gsl_test_rel(%s[2*i], %s[2*i], %s, \"%s real\");\n", a, b, rel, desc);
+       fprintf(FILE, "       gsl_test_rel(%s[2*i+1], %s[2*i+1], %s, \"%s imag\");\n", a, b, \
+              rel, desc);
+       fprintf(FILE, "     };\n");
+       fprintf(FILE, "   };\n");
     endif
   endif
   
@@ -1646,7 +1688,7 @@ endfunction
 ######################################################################
 
 function test_sdsdot (S, fn, N, alpha, X, incX, Y, incY)
-  begin_block();
+  begin_block(fn);
   define(S, "int", "N", N);
   define(S, "scalar", "alpha", alpha);
   define(S, "vector", "X", X);
@@ -1667,7 +1709,7 @@ function test_sdsdot (S, fn, N, alpha, X, incX, Y, incY)
 endfunction
 
 function test_dot (S, fn, N, X, incX, Y, incY)
-  begin_block();
+  begin_block(fn);
   define(S, "int", "N", N);
   define(S, "vector", "X", X);
   define(S, "vector", "Y", Y);
@@ -1687,7 +1729,7 @@ function test_dot (S, fn, N, X, incX, Y, incY)
 endfunction
 
 function test_nrm2 (S, fn, N, X, incX)
-  begin_block();
+  begin_block(fn);
   define(S, "int", "N", N);
   define(S, "vector", "X", X);
   define(S, "int", "incX", incX);
@@ -1705,7 +1747,7 @@ function test_nrm2 (S, fn, N, X, incX)
 endfunction
 
 function test_asum (S, fn, N, X, incX)
-  begin_block();
+  begin_block(fn);
   define(S, "int", "N", N);
   define(S, "vector", "X", X);
   define(S, "int", "incX", incX);
@@ -1723,7 +1765,7 @@ function test_asum (S, fn, N, X, incX)
 endfunction
 
 function test_amax (S, fn, N, X, incX)
-  begin_block();
+  begin_block(fn);
   define(S, "int", "N", N);
   define(S, "vector", "X", X);
   define(S, "int", "incX", incX);
@@ -1736,7 +1778,7 @@ function test_amax (S, fn, N, X, incX)
 endfunction
 
 function test_axpy (S, fn, N, alpha, X, incX, Y, incY)
-  begin_block();
+  begin_block(fn);
   define(S, "int", "N", N);
   define(S, "scalar", "alpha", alpha);
   define(S, "vector", "X", X);
@@ -1746,12 +1788,12 @@ function test_axpy (S, fn, N, alpha, X, incX, Y, incY)
   define(S, "vector", "expected", feval(strcat("blas_", fn), N, alpha, \
                                         X, incX, Y, incY));
   call("cblas_", S.prefix, fn, "(N, alpha, X, incX, Y, incY)");
-  test(S, "vector", "Y", "expected", strcat(S.prefix, fn));
+  test(S, "vector", "Y", "expected", strcat(S.prefix, fn), Y);
   end_block();
 endfunction
 
 function test_copy (S, fn, N, X, incX, Y, incY)
-  begin_block();
+  begin_block(fn);
   define(S, "int", "N", N);
   define(S, "vector", "X", X);
   define(S, "int", "incX", incX);
@@ -1760,12 +1802,12 @@ function test_copy (S, fn, N, X, incX, Y, incY)
   define(S, "vector", "expected", feval(strcat("blas_", fn), N, \
                                         X, incX, Y, incY));
   call("cblas_", S.prefix, fn, "(N, X, incX, Y, incY)");
-  test(S, "vector", "Y", "expected", strcat(S.prefix, fn));
+  test(S, "vector", "Y", "expected", strcat(S.prefix, fn), Y);
   end_block();
 endfunction
 
 function test_swap (S, fn, N, X, incX, Y, incY)
-  begin_block();
+  begin_block(fn);
   define(S, "int", "N", N);
   define(S, "vector", "X", X);
   define(S, "int", "incX", incX);
@@ -1775,25 +1817,25 @@ function test_swap (S, fn, N, X, incX, Y, incY)
   define(S, "vector", "expected1", XX);
   define(S, "vector", "expected2", YY);
   call("cblas_", S.prefix, fn, "(N, X, incX, Y, incY)");
-  test(S, "vector", "X", "expected1", strcat(S.prefix, fn));
-  test(S, "vector", "Y", "expected2", strcat(S.prefix, fn));
+  test(S, "vector", "X", "expected1", strcat(S.prefix, fn), X);
+  test(S, "vector", "Y", "expected2", strcat(S.prefix, fn), Y);
   end_block();
 endfunction
 
 function test_scal (S, fn, N, alpha, X, incX)
-  begin_block();
+  begin_block(fn);
   define(S, "int", "N", N);
   define(S, "scalar", "alpha", alpha);
   define(S, "vector", "X", X);
   define(S, "int", "incX", incX);
   define(S, "vector", "expected", feval(strcat("blas_", fn), N, alpha, X, incX));
   call("cblas_", S.prefix, fn, "(N, alpha, X, incX)");
-  test(S, "vector", "X", "expected", strcat(S.prefix, fn));
+  test(S, "vector", "X", "expected", strcat(S.prefix, fn), X);
   end_block();
 endfunction
 
 function test_rotg (S, fn, a, b)
-  begin_block();
+  begin_block(fn);
   define(S, "scalar", "a", a);
   define(S, "scalar", "b", b);
   define(S, "scalar", "c");
@@ -1812,7 +1854,7 @@ function test_rotg (S, fn, a, b)
 endfunction
 
 function test_rot (S, fn, N, X, incX, Y, incY, c, s)
-  begin_block();
+  begin_block(fn);
   define(S, "int", "N", N);
   define(S, "scalar", "c", c);
   define(S, "scalar", "s", s);
@@ -1824,14 +1866,14 @@ function test_rot (S, fn, N, X, incX, Y, incY, c, s)
   define(S, "vector", "x_expected", XX);
   define(S, "vector", "y_expected", YY);
   call("cblas_", S.prefix, fn, "(N, X, incX, Y, incY, c, s)");
-  test(S, "vector", "X", "x_expected", strcat(S.prefix, fn));
-  test(S, "vector", "Y", "y_expected", strcat(S.prefix, fn));
+  test(S, "vector", "X", "x_expected", strcat(S.prefix, fn), X);
+  test(S, "vector", "Y", "y_expected", strcat(S.prefix, fn), Y);
   end_block();
 endfunction
 
 
 function test_rotmg (S, fn, d1, d2, b1, b2)
-  begin_block();
+  begin_block(fn);
   v0 = [-999.0, -999.1, -999.2, -999.3, -999.4];
   define(S, "scalar", "d1", d1);
   define(S, "scalar", "d2", d2);
@@ -1877,7 +1919,7 @@ function test_rotmg (S, fn, d1, d2, b1, b2)
 endfunction
 
 function test_rotm (S, fn, N, X, incX, Y, incY, flag, h)
-  begin_block();
+  begin_block(fn);
   define(S, "int", "N", N);
   define(S, "vector", "h", [flag, h(1,1), h(2,1), h(1,2), h(2,2)]);
   define(S, "vector", "X", X);
@@ -1888,15 +1930,15 @@ function test_rotm (S, fn, N, X, incX, Y, incY, flag, h)
   define(S, "vector", "x_expected", XX);
   define(S, "vector", "y_expected", YY);
   call("cblas_", S.prefix, fn, "(N, X, incX, Y, incY, h)");
-  test(S, "vector", "X", "x_expected", strcat(S.prefix, fn));
-  test(S, "vector", "Y", "y_expected", strcat(S.prefix, fn));
+  test(S, "vector", "X", "x_expected", strcat(S.prefix, fn), X);
+  test(S, "vector", "Y", "y_expected", strcat(S.prefix, fn), Y);
   end_block();
 endfunction
 
 
 function test_gemv (S, fn, order, trans, M, N, alpha, A, lda, X, incX, \
                     beta, Y, incY)
-  begin_block();
+  begin_block(fn);
   define(S, "int", "order", order);
   define(S, "int", "trans", trans);
   define(S, "int", "M", M);
@@ -1920,7 +1962,7 @@ endfunction
 
 function test_gbmv (S, fn, order, trans, M, N, KL, KU, alpha, A, lda, \
                     X, incX, beta, Y, incY)
-  begin_block();
+  begin_block(fn);
   define(S, "int", "order", order);
   define(S, "int", "trans", trans);
   define(S, "int", "M", M);
@@ -1946,7 +1988,7 @@ endfunction
 
 
 function test_trmv (S, fn, order, uplo, trans, diag, N, A, lda, X, incX)
-  begin_block();
+  begin_block(fn);
   define(S, "int", "order", order);
   define(S, "int", "trans", trans);
   define(S, "int", "uplo", uplo);
@@ -1965,7 +2007,7 @@ function test_trmv (S, fn, order, uplo, trans, diag, N, A, lda, X, incX)
 endfunction
 
 function test_tbmv (S, fn, order, uplo, trans, diag, N, K, A, lda, X, incX)
-  begin_block();
+  begin_block(fn);
   define(S, "int", "order", order);
   define(S, "int", "trans", trans);
   define(S, "int", "uplo", uplo);
@@ -1986,7 +2028,7 @@ endfunction
 
 
 function test_tpmv (S, fn, order, uplo, trans, diag, N, A, X, incX)
-  begin_block();
+  begin_block(fn);
   define(S, "int", "order", order);
   define(S, "int", "trans", trans);
   define(S, "int", "uplo", uplo);
@@ -2005,7 +2047,7 @@ endfunction
 
 function test_hesymv (S, fn, order, uplo, N, alpha, A, lda,  X, incX, \
                     beta, Y, incY)
-  begin_block();
+  begin_block(fn);
   define(S, "int", "order", order);
   define(S, "int", "uplo", uplo);
   define(S, "scalar", "alpha", alpha);
@@ -2028,7 +2070,7 @@ endfunction
 
 function test_hbsbmv (S, fn, order, uplo, N, k, alpha, A, lda,  X, incX, \
                     beta, Y, incY)
-  begin_block();
+  begin_block(fn);
   define(S, "int", "order", order);
   define(S, "int", "uplo", uplo);
   define(S, "scalar", "alpha", alpha);
@@ -2052,7 +2094,7 @@ endfunction
 
 function test_hpspmv (S, fn, order, uplo, N, alpha, A,  X, incX, \
                     beta, Y, incY)
-  begin_block();
+  begin_block(fn);
   define(S, "int", "order", order);
   define(S, "int", "uplo", uplo);
   define(S, "scalar", "alpha", alpha);
@@ -2075,7 +2117,7 @@ endfunction
 
 function test_ger (S, fn, order, M, N, alpha, X, incX, \
                    Y, incY, A, lda)
-  begin_block();
+  begin_block(fn);
   define(S, "int", "order", order);
   define(S, "int", "M", M);
   define(S, "int", "N", N);
@@ -2094,7 +2136,7 @@ function test_ger (S, fn, order, M, N, alpha, X, incX, \
 endfunction
 
 function test_syr (S, fn, order, uplo, N, alpha, X, incX, A, lda)
-  begin_block();
+  begin_block(fn);
   define(S, "int", "order", order);
   define(S, "int", "uplo", uplo);
   define(S, "int", "N", N);
@@ -2111,7 +2153,7 @@ function test_syr (S, fn, order, uplo, N, alpha, X, incX, A, lda)
 endfunction
 
 function test_spr (S, fn, order, uplo, N, alpha, X, incX, Ap)
-  begin_block();
+  begin_block(fn);
   define(S, "int", "order", order);
   define(S, "int", "uplo", uplo);
   define(S, "int", "N", N);
@@ -2127,7 +2169,7 @@ function test_spr (S, fn, order, uplo, N, alpha, X, incX, Ap)
 endfunction
 
 function test_syr2 (S, fn, order, uplo, N, alpha, X, incX, Y, incY, A, lda)
-  begin_block();
+  begin_block(fn);
   define(S, "int", "order", order);
   define(S, "int", "uplo", uplo);
   define(S, "int", "N", N);
@@ -2146,7 +2188,7 @@ function test_syr2 (S, fn, order, uplo, N, alpha, X, incX, Y, incY, A, lda)
 endfunction
 
 function test_spr2 (S, fn, order, uplo, N, alpha, X, incX, Y, incY, Ap)
-  begin_block();
+  begin_block(fn);
   define(S, "int", "order", order);
   define(S, "int", "uplo", uplo);
   define(S, "int", "N", N);
@@ -2166,7 +2208,7 @@ endfunction
 
 
 function test_her (S, fn, order, uplo, N, alpha, X, incX, A, lda)
-  begin_block();
+  begin_block(fn);
   define(S, "int", "order", order);
   define(S, "int", "uplo", uplo);
   define(S, "int", "N", N);
@@ -2184,7 +2226,7 @@ function test_her (S, fn, order, uplo, N, alpha, X, incX, A, lda)
 endfunction
 
 function test_hpr (S, fn, order, uplo, N, alpha, X, incX, Ap)
-  begin_block();
+  begin_block(fn);
   define(S, "int", "order", order);
   define(S, "int", "uplo", uplo);
   define(S, "int", "N", N);
@@ -2202,7 +2244,7 @@ endfunction
 
 function test_gemm (S, fn, order, transA, transB, M, N, K, alpha, A, \
                     lda, B, ldb, beta, C, ldc)
-  begin_block();
+  begin_block(fn);
   define(S, "int", "order", order);
   define(S, "int", "transA", transA);
   define(S, "int", "transB", transB);
@@ -2229,7 +2271,7 @@ endfunction
 
 function test_hesymm (S, fn, order, side, uplo, M, N, alpha, A, \
                     lda, B, ldb, beta, C, ldc)
-  begin_block();
+  begin_block(fn);
   define(S, "int", "order", order);
   define(S, "int", "side", side);
   define(S, "int", "uplo", uplo);
@@ -2255,7 +2297,7 @@ endfunction
 
 function test_syrk (S, fn, order, uplo, trans, N, K, alpha, A, \
                     lda, beta, C, ldc)
-  begin_block();
+  begin_block(fn);
   define(S, "int", "order", order);
   define(S, "int", "uplo", uplo);
   define(S, "int", "trans", trans);
@@ -2276,9 +2318,9 @@ function test_syrk (S, fn, order, uplo, trans, N, K, alpha, A, \
   end_block();
 endfunction
 
-function test_syrk (S, fn, order, uplo, trans, N, K, alpha, A, \
+function test_herk (S, fn, order, uplo, trans, N, K, alpha, A, \
                     lda, beta, C, ldc)
-  begin_block();
+  begin_block(fn);
   define(S, "int", "order", order);
   define(S, "int", "uplo", uplo);
   define(S, "int", "trans", trans);
@@ -2303,7 +2345,7 @@ endfunction
 
 function test_syr2k (S, fn, order, uplo, trans,  N, K, alpha, A, \
                     lda, B, ldb, beta, C, ldc)
-  begin_block();
+  begin_block(fn);
   define(S, "int", "order", order);
   define(S, "int", "uplo", uplo);
   define(S, "int", "trans", trans);
@@ -2328,7 +2370,7 @@ endfunction
 
 function test_her2k (S, fn, order, uplo, trans,  N, K, alpha, A, \
                     lda, B, ldb, beta, C, ldc)
-  begin_block();
+  begin_block(fn);
   define(S, "int", "order", order);
   define(S, "int", "uplo", uplo);
   define(S, "int", "trans", trans);
@@ -2354,7 +2396,7 @@ endfunction
 
 function test_trmm (S, fn, order, side, uplo, trans, diag, M, N, alpha, A, \
                     lda, B, ldb)
-  begin_block();
+  begin_block(fn);
   define(S, "int", "order", order);
   define(S, "int", "side", side);
   define(S, "int", "uplo", uplo);
@@ -2379,115 +2421,136 @@ endfunction
 ######################################################################
 
 s=1;d=2;c=3;z=4;
-n=16;
+n=1;
+testcases=[1];
 
-# for j = 1:n
-#   for i = [s]
-#     S = context(i);
-#     T = test_vectors(S, j);
-#     for alpha = [0.0, 0.1, 1.0]
-#       test_sdsdot (S, "dsdot", T.n, alpha, T.v1, T.s1, T.v2, T.s2);
-#     endfor
-#   endfor
-# endfor
+begin_file("dot");
+for j = testcases
+  for i = [s]
+    S = context(i);
+    T = test_vectors(S, j);
+    for alpha = [0.0, 0.1, 1.0]
+      test_sdsdot (S, "dsdot", T.n, alpha, T.v1, T.s1, T.v2, T.s2);
+    endfor
+  endfor
+endfor
 
-# for j = 1:n
-#   for i = [s,d,c,z]
-#     S = context(i);
-#     T = test_vectors(S, j);
-#     if (S.complex == 0)
-#       test_dot (S, "dot", T.n, T.v1, T.s1, T.v2, T.s2);
-#     else
-#       test_dot (S, "dotu", T.n, T.v1, T.s1, T.v2, T.s2);
-#       test_dot (S, "dotc", T.n, T.v1, T.s1, T.v2, T.s2);
-#     endif
-#   endfor
-# endfor
+for j = testcases
+  for i = [s,d,c,z]
+    S = context(i);
+    T = test_vectors(S, j);
+    if (S.complex == 0)
+      test_dot (S, "dot", T.n, T.v1, T.s1, T.v2, T.s2);
+    else
+      test_dot (S, "dotu", T.n, T.v1, T.s1, T.v2, T.s2);
+      test_dot (S, "dotc", T.n, T.v1, T.s1, T.v2, T.s2);
+    endif
+  endfor
+endfor
+end_file();
 
-# for j = 1:n
-#   for i = [s,d,c,z]
-#     S = context(i);
-#     T = test_vector(S, j);
-#     test_nrm2 (S, "nrm2", T.n, T.v, T.s);
-#   endfor
-# endfor
+begin_file("nrm2");
+for j = testcases
+  for i = [s,d,c,z]
+    S = context(i);
+    T = test_vector(S, j);
+    test_nrm2 (S, "nrm2", T.n, T.v, T.s);
+  endfor
+endfor
+end_file();
 
-# for j = 1:n
-#   for i = [s,d,c,z]
-#     S = context(i);
-#     T = test_vector(S, j);
-#     test_nrm2 (S, "asum", T.n, T.v, T.s);
-#   endfor
-# endfor
+begin_file("asum");
+for j = testcases
+  for i = [s,d,c,z]
+    S = context(i);
+    T = test_vector(S, j);
+    test_nrm2 (S, "asum", T.n, T.v, T.s);
+  endfor
+endfor
+end_file();
 
-# for j = 1:n
-#   for i = [s,d,c,z]
-#     S = context(i);
-#     T = test_vector(S, j);
-#     test_amax (S, "amax", T.n, T.v, T.s);
-#   endfor
-# endfor
+begin_file("amax");
+for j = testcases
+  for i = [s,d,c,z]
+    S = context(i);
+    T = test_vector(S, j);
+    test_amax (S, "amax", T.n, T.v, T.s);
+  endfor
+endfor
+end_file();
 
-# for j = 1:n
-#   for i = [s,d,c,z]
-#     S = context(i);
-#     T = test_vectors(S, j);
-#     for alpha = coeff(S)
-#       test_axpy (S, "axpy", T.n, alpha, T.v1, T.s1, T.v2, T.s2);
-#     endfor
-#   endfor
-# endfor
+begin_file("axpy");
+for j = testcases
+  for i = [s,d,c,z]
+    S = context(i);
+    T = test_vectors(S, j);
+    for alpha = coeff(S)
+      test_axpy (S, "axpy", T.n, alpha, T.v1, T.s1, T.v2, T.s2);
+    endfor
+  endfor
+endfor
+end_file();
 
-# for j = 1:n
-#   for i = [s,d,c,z]
-#     S = context(i);
-#     T = test_vectors(S, j);
-#     test_copy (S, "copy", T.n, T.v1, T.s1, T.v2, T.s2);
-#   endfor
-# endfor
+begin_file("copy");
+for j = testcases
+  for i = [s,d,c,z]
+    S = context(i);
+    T = test_vectors(S, j);
+    test_copy (S, "copy", T.n, T.v1, T.s1, T.v2, T.s2);
+  endfor
+endfor
+end_file();
 
-# for j = 1:n
-#   for i = [s,d,c,z]
-#     S = context(i);
-#     T = test_vectors(S, j);
-#     test_swap (S, "swap", T.n, T.v1, T.s1, T.v2, T.s2);
-#   endfor
-# endfor
+begin_file("swap");
+for j = testcases
+  for i = [s,d,c,z]
+    S = context(i);
+    T = test_vectors(S, j);
+    test_swap (S, "swap", T.n, T.v1, T.s1, T.v2, T.s2);
+  endfor
+endfor
+end_file();
 
-# for j = 1:n
-#   for i = [s,d,c,z]
-#     S = context(i);
-#     T = test_vector(S, j);
-#     for alpha = [0, 0.1, 1.0]
-#       test_scal (S, "scal", T.n, alpha, T.v, T.s);
-#     endfor
-#     if (S.complex)
-#       for alpha = [0.1*I, 0.1+0.2*I, 1.0 + 0.3 * I]
-#         test_scal (S, "scal", T.n, alpha, T.v, T.s);
-#       endfor
-#     endif
-#   endfor
-# endfor
+begin_file("scal");
+for j = testcases
+  for i = [s,d,c,z]
+    S = context(i);
+    T = test_vector(S, j);
+    for alpha = [0, 0.1, 1.0]
+      test_scal (S, "scal", T.n, alpha, T.v, T.s);
+    endfor
+    if (S.complex)
+      for alpha = [0.1*I, 0.1+0.2*I, 1.0 + 0.3 * I]
+        test_scal (S, "scal", T.n, alpha, T.v, T.s);
+      endfor
+    endif
+  endfor
+endfor
+end_file();
 
-# for i = [s,d]
-#   S = context(i);
-#   for a = [-1.5, -1, -0.1, 0, 0.1, 1, 1.5]
-#     for b = [-1.5, -1, -0.1, 0, 0.1, 1, 1.5]
-#       test_rotg (S, "rotg", a, b);
-#     endfor
-#   endfor
-# endfor
+begin_file("rotg");
+for i = [s,d]
+  S = context(i);
+  for a = [-1.5, -1, -0.1, 0, 0.1, 1, 1.5]
+    for b = [-1.5, -1, -0.1, 0, 0.1, 1, 1.5]
+      test_rotg (S, "rotg", a, b);
+    endfor
+  endfor
+endfor
+end_file();
 
-# for j = 1:n
-#   for i = [s,d]
-#     S = context(i);
-#     T = test_vectors(S, j);
-#     for z = [0, exp(I*pi/6), 0-I, -1]
-#       test_rot (S, "rot", T.n, T.v1, T.s1, T.v2, T.s2, \
-#                  real(z), imag(z));
-#     endfor
-#   endfor
-# endfor
+begin_file("rot");
+for j = testcases
+  for i = [s,d]
+    S = context(i);
+    T = test_vectors(S, j);
+    for zz = [0, exp(I*pi/6), 0-I, -1]
+      test_rot (S, "rot", T.n, T.v1, T.s1, T.v2, T.s2, \
+                 real(zz), imag(zz));
+    endfor
+  endfor
+endfor
+end_file();
 
 # for i = [s,d]
 #   S = context(i);
@@ -2502,596 +2565,651 @@ n=16;
 #   endfor
 # endfor
 
-# function r = rnd ()
-#   r = 10**((rand()-0.5)*10);
-#   if (rand() < 0.5)
-#     r = -r;
-#   endif
-# endfunction
+begin_file("rotmg");
+for j = testcases
+  for i = [s,d]
+    S = context(i);
+    test_rotmg (S, "rotmg", rnd(), rnd(), rnd(), rnd());
+  endfor
+endfor
+end_file();
 
-#for i = [s,d]
-#  S = context(i);
-#  for j = [1:100]
-#    test_rotmg (S, "rotmg", rnd(), rnd(), rnd(), rnd());
-#  endfor
-#endfor
+begin_file("rotm");
+for j = testcases
+  for i = [s,d]
+    S = context(i);
+    T = test_vectors(S, j);
+    v = [-2, -1, 0, 1];
+    for k = 1:10
+      h = [rnd(), rnd(); rnd(), rnd()];
+      flag = v(rem(k,4)+1);
+      test_rotm (S, "rotm", T.n, T.v1, T.s1, T.v2, T.s2, flag, h);
+    endfor
+  endfor
+endfor
+end_file();
+
+begin_file("gemv");
+for j = testcases
+  for i = [s,d,c,z]
+    S = context(i);
+    T = test_matvectors(S, j);
+    for trans = Trans(S)
+      for alpha = coeff(S)
+        for beta = coeff(S)
+          for order = [101, 102]
+            test_gemv (S, "gemv", order, trans, T.m, T.n, alpha, T.A, \
+                       T.lda, T.v1, T.s1, beta, T.v2, T.s2);
+          endfor
+        endfor
+      endfor
+    endfor
+  endfor
+endfor
+end_file();
+
+begin_file("gbmv");
+for j = testcases
+  for i = [s,d,c,z]
+    S = context(i);
+    for trans = Trans(S)
+      T = test_bmatvectors(S, j, trans);
+      for alpha = coeff(S)
+        for beta = coeff(S)
+          for order = [101, 102]
+            test_gbmv (S, "gbmv", order, trans, T.m, T.n, T.kl, T.ku, \
+                       alpha, T.A, T.lda, T.v1, T.s1, beta, T.v2, T.s2);
+          endfor
+        endfor
+      endfor
+    endfor
+  endfor
+endfor
+end_file();
+
+begin_file("trmv");
+for j = testcases
+  for i = [s,d,c,z]
+    S = context(i);
+    for trans = Trans(S)
+      T = test_trmatvector(S, j);
+      for order = [101, 102]
+        for uplo = [121, 122]
+          for diag = [131, 132]
+            test_trmv (S, "trmv", order, uplo, trans, diag, T.n,
+                       T.A, T.lda, T.v, T.s);
+          endfor
+        endfor
+      endfor
+    endfor
+  endfor
+endfor
+end_file();
+
+begin_file("tbmv");
+for j = testcases
+  for i = [s,d,c,z]
+    S = context(i);
+    for trans = Trans(S)
+      T = test_tbmatvector(S, j);
+      for order = [101, 102]
+        for uplo = [121, 122]
+          for diag = [131, 132]
+            test_tbmv (S, "tbmv", order, uplo, trans, diag, T.n, T.k,
+                       T.A, T.lda, T.v, T.s);
+          endfor
+        endfor
+      endfor
+    endfor
+  endfor
+endfor
+end_file();
+
+begin_file("tpmv");
+for j = testcases
+  for i = [s,d,c,z]
+    S = context(i);
+    for trans = Trans(S)
+      T = test_tpmatvector(S, j);
+      for order = [101, 102]
+        for uplo = [121, 122]
+          for diag = [131, 132]
+            test_tpmv (S, "tpmv", order, uplo, trans, diag, T.n, 
+                       T.A, T.v, T.s);
+          endfor
+        endfor
+      endfor
+    endfor
+  endfor
+endfor
+end_file();
+
+begin_file("symv");
+for j = testcases
+  for i = [s,d]
+    S = context(i);
+    T = test_symatvectors(S, j);
+    for alpha = coeff(S)
+      for beta = coeff(S)
+        for order = [101, 102]
+          for uplo = [121, 122]
+            for diag = [131, 132]
+              test_hesymv (S, "symv", order, uplo, T.n, alpha, 
+                           T.A, T.lda, 
+                           T.v1, T.s1, beta, T.v2, T.s2);
+            endfor
+          endfor
+        endfor
+      endfor
+    endfor
+  endfor
+endfor
+end_file();
+
+begin_file("hemv");
+for j = testcases
+  for i = [c,z]
+    S = context(i);
+    T = test_symatvectors(S, j);
+    for alpha = coeff(S)
+      for beta = coeff(S)
+        for order = [101, 102]
+          for uplo = [121, 122]
+            for diag = [131, 132]
+              test_hesymv (S, "hemv", order, uplo, T.n, alpha, 
+                           T.A, T.lda, T.v1, T.s1, beta, T.v2, T.s2);
+            endfor
+          endfor
+        endfor
+      endfor
+    endfor
+  endfor
+endfor
+end_file();
+
+begin_file("hbmv");
+for j = testcases
+  for i = [c,z]
+    S = context(i);
+    T = test_sbmatvectors(S, j);
+    for alpha = coeff(S)
+      for beta = coeff(S)
+        for order = [101, 102]
+          for uplo = [121, 122]
+            for diag = [131, 132]
+              test_hbsbmv (S, "hbmv", order, uplo, T.n, T.k, alpha, 
+                           T.A, T.lda, T.v1, T.s1, beta, T.v2, T.s2);
+            endfor
+          endfor
+        endfor
+      endfor
+    endfor
+  endfor
+endfor
+end_file();
+
+begin_file("sbmv");
+for j = testcases
+  for i = [s,d]
+    S = context(i);
+    T = test_sbmatvectors(S, j);
+    for alpha = coeff(S)
+      for beta = coeff(S)
+        for order = [101, 102]
+          for uplo = [121, 122]
+            for diag = [131, 132]
+              test_hbsbmv (S, "sbmv", order, uplo, T.n, T.k, alpha, 
+                           T.A, T.lda, T.v1, T.s1, beta, T.v2, T.s2);
+            endfor
+          endfor
+        endfor
+      endfor
+    endfor
+  endfor
+endfor
+end_file();
+
+begin_file("hpmv");
+for j = testcases
+  for i = [c,z]
+    S = context(i);
+    T = test_spmatvectors(S, j);
+    for alpha = coeff(S)
+      for beta = coeff(S)
+        for order = [101, 102]
+          for uplo = [121, 122]
+            for diag = [131, 132]
+              test_hpspmv (S, "hpmv", order, uplo, T.n, alpha, T.A, T.v1, \
+                           T.s1, beta, T.v2, T.s2);
+            endfor
+          endfor
+        endfor
+      endfor
+    endfor
+  endfor
+endfor
+end_file();
+
+begin_file("spmv");
+for j = testcases
+  for i = [s,d]
+    S = context(i);
+    T = test_spmatvectors(S, j);
+    for alpha = coeff(S)
+      for beta = coeff(S)
+        for order = [101, 102]
+          for uplo = [121, 122]
+            for diag = [131, 132]
+              test_hpspmv (S, "spmv", order, uplo, T.n, alpha, T.A, T.v1, \
+                           T.s1, beta, T.v2, T.s2);
+            endfor
+          endfor
+        endfor
+      endfor
+    endfor
+  endfor
+endfor
+end_file();
+
+begin_file("trsv");
+for j = testcases
+  for i = [s,d,c,z]
+    S = context(i);
+    for trans = Trans(S);
+      T = test_trmatvector(S, j);
+      for order = [101, 102]
+        for uplo = [121, 122]
+          for diag = [131, 132]
+            test_trmv (S, "trsv", order, uplo, trans, diag, T.n,
+                       T.A, T.lda, T.v, T.s);
+          endfor
+        endfor
+      endfor
+    endfor
+  endfor
+endfor
+end_file();
+
+begin_file("tbsv");
+for j = testcases
+  for i = [s,d,c,z]
+    S = context(i);
+    for trans = Trans(S);
+      T = test_tbmatvector(S, j);
+      for order = [101, 102]
+        for uplo = [121, 122]
+          for diag = [131, 132]
+            test_tbmv (S, "tbsv", order, uplo, trans, diag, T.n, T.k,
+                       T.A, T.lda, T.v, T.s);
+          endfor
+        endfor
+      endfor
+    endfor
+  endfor
+endfor
+end_file();
+
+begin_file("tpsv");
+for j = testcases
+  for i = [s,d,c,z]
+    S = context(i);
+    T = test_tpmatvector(S, j);
+    for trans = Trans(S)
+      for order = [101, 102]
+        for uplo = [121, 122]
+          for diag = [131, 132]
+            test_tpmv (S, "tpsv", order, uplo, trans, diag, T.n, 
+                       T.A, T.v, T.s);
+          endfor
+        endfor
+      endfor
+    endfor
+  endfor
+endfor
+end_file();
+
+begin_file("ger");
+for j = testcases
+  for i = [s,d,c,z];
+    S = context(i);
+    T = test_matvectors(S, j);
+    for alpha = coeff(S)
+      for order = [101, 102]
+        if (S.complex == 0)
+          test_ger (S, "ger", order, T.m, T.n, alpha, T.v1, T.s1, \
+                    T.v2, T.s2, T.A, T.lda);
+        else
+          test_ger (S, "geru", order, T.m, T.n, alpha, T.v1, T.s1, \
+                    T.v2, T.s2, T.A, T.lda);
+          test_ger (S, "gerc", order, T.m, T.n, alpha, T.v1, T.s1, \
+                    T.v2, T.s2, T.A, T.lda);
+        endif
+      endfor
+    endfor
+  endfor
+endfor
+end_file();
+
+begin_file("syr");
+for j = testcases
+  for i = [s,d];
+    S = context(i);
+    T = test_trmatvector(S, j);
+    for alpha = coeff(S)
+      for order = [101, 102]
+        for uplo = [121, 122]
+          test_syr (S, "syr", order, uplo, T.n, alpha, T.v, T.s, \
+                    T.A, T.lda);
+        endfor
+      endfor
+    endfor
+  endfor
+endfor
+end_file();
+
+begin_file("her");
+for j = testcases
+  for i = [c,z];
+    S = context(i);
+    T = test_trmatvector(S, j);
+    R = S ; R.complex = 0;
+    for alpha = coeff(R)
+      for order = [101, 102]
+        for uplo = [121, 122]
+          test_her (S, "her", order, uplo, T.n, alpha, T.v, T.s, \
+                      T.A, T.lda);
+        endfor
+      endfor
+    endfor
+  endfor
+endfor
+end_file();
+
+begin_file("hpr");
+for j = testcases
+  for i = [c,z];
+    S = context(i);
+    T = test_tpmatvector(S, j);
+    R = S ; R.complex = 0;
+    for alpha = coeff(R)
+      for order = [101, 102]
+        for uplo = [121, 122]
+          test_hpr (S, "hpr", order, uplo, T.n, alpha, T.v, T.s, T.A);
+        endfor
+      endfor
+    endfor
+  endfor
+endfor
+end_file();
 
 
-# for j = 1:n
-#   for i = [s,d]
-#     S = context(i);
-#     T = test_vectors(S, j);
-#     v = [-2, -1, 0, 1];
-#     for k = 1:10
-#       h = [rnd(), rnd(); rnd(), rnd()];
-#       flag = v(rem(k,4)+1);
-#       test_rotm (S, "rotm", T.n, T.v1, T.s1, T.v2, T.s2, flag, h);
-#     endfor
-#   endfor
-# endfor
-
-# for j = 1:n
-#   for i = [s,d,c,z]
-#     S = context(i);
-#     T = test_matvectors(S, j);
-#     for trans = Trans(S)
-#       for alpha = coeff(S)
-#         for beta = coeff(S)
-#           for order = [101, 102]
-#             test_gemv (S, "gemv", order, trans, T.m, T.n, alpha, T.A, \
-#                        T.lda, T.v1, T.s1, beta, T.v2, T.s2);
-#           endfor
-#         endfor
-#       endfor
-#     endfor
-#   endfor
-# endfor
-
-# for j = 1:n
-#   for i = [s,d,c,z]
-#     S = context(i);
-#     for trans = Trans(S)
-#       T = test_bmatvectors(S, j, trans);
-#       for alpha = coeff(S)
-#         for beta = coeff(S)
-#           for order = [101, 102]
-#             test_gbmv (S, "gbmv", order, trans, T.m, T.n, T.kl, T.ku, \
-#                        alpha, T.A, T.lda, T.v1, T.s1, beta, T.v2, T.s2);
-#           endfor
-#         endfor
-#       endfor
-#     endfor
-#   endfor
-# endfor
-
-# for j = 1:n
-#   for i = [s,d,c,z]
-#     S = context(i);
-#     for trans = Trans(S)
-#       T = test_trmatvector(S, j);
-#       for order = [101, 102]
-#         for uplo = [121, 122]
-#           for diag = [131, 132]
-#             test_trmv (S, "trmv", order, uplo, trans, diag, T.n,
-#                        T.A, T.lda, T.v, T.s);
-#           endfor
-#         endfor
-#       endfor
-#     endfor
-#   endfor
-# endfor
-
-# for j = 1:n
-#   for i = [s,d,c,z]
-#     S = context(i);
-#     for trans = Trans(S)
-#       T = test_tbmatvector(S, j);
-#       for order = [101, 102]
-#         for uplo = [121, 122]
-#           for diag = [131, 132]
-#             test_tbmv (S, "tbmv", order, uplo, trans, diag, T.n, T.k,
-#                        T.A, T.lda, T.v, T.s);
-#           endfor
-#         endfor
-#       endfor
-#     endfor
-#   endfor
-# endfor
-
-# for j = 1:n
-#   for i = [s,d,c,z]
-#     S = context(i);
-#     for trans = Trans(S)
-#       T = test_tpmatvector(S, j);
-#       for order = [101, 102]
-#         for uplo = [121, 122]
-#           for diag = [131, 132]
-#             test_tpmv (S, "tpmv", order, uplo, trans, diag, T.n, 
-#                        T.A, T.v, T.s);
-#           endfor
-#         endfor
-#       endfor
-#     endfor
-#   endfor
-# endfor
-
-# for j = 1:n
-#   for i = [s,d]
-#     S = context(i);
-#     T = test_symatvectors(S, j);
-#     for alpha = coeff(S)
-#       for beta = coeff(S)
-#         for order = [101, 102]
-#           for uplo = [121, 122]
-#             for diag = [131, 132]
-#               test_hesymv (S, "symv", order, uplo, T.n, alpha, 
-#                            T.A, T.lda, 
-#                            T.v1, T.s1, beta, T.v2, T.s2);
-#             endfor
-#           endfor
-#         endfor
-#       endfor
-#     endfor
-#   endfor
-# endfor
-
-# for j = 1:n
-#   for i = [c,z]
-#     S = context(i);
-#     T = test_symatvectors(S, j);
-#     for alpha = coeff(S)
-#       for beta = coeff(S)
-#         for order = [101, 102]
-#           for uplo = [121, 122]
-#             for diag = [131, 132]
-#               test_hesymv (S, "hemv", order, uplo, T.n, alpha, 
-#                            T.A, T.lda, 
-#                            T.v1, T.s1, beta, T.v2, T.s2);
-#             endfor
-#           endfor
-#         endfor
-#       endfor
-#     endfor
-#   endfor
-# endfor
-
-# for j = 31
-#   for i = [c,z]
-#     S = context(i);
-#     T = test_sbmatvectors(S, j);
-#     for alpha = coeff(S)
-#       for beta = coeff(S)
-#         for order = [101, 102]
-#           for uplo = [121, 122]
-#             for diag = [131, 132]
-#               test_hbsbmv (S, "hbmv", order, uplo, T.n, T.k, alpha, 
-#                            T.A, T.lda, T.v1, T.s1, beta, T.v2, T.s2);
-#             endfor
-#           endfor
-#         endfor
-#       endfor
-#     endfor
-#   endfor
-# endfor
-
-# for j = 1:16
-#   for i = [s,d]
-#     S = context(i);
-#     T = test_sbmatvectors(S, j);
-#     for alpha = coeff(S)
-#       for beta = coeff(S)
-#         for order = [101, 102]
-#           for uplo = [121, 122]
-#             for diag = [131, 132]
-#               test_hbsbmv (S, "sbmv", order, uplo, T.n, T.k, alpha, 
-#                            T.A, T.lda, T.v1, T.s1, beta, T.v2, T.s2);
-#             endfor
-#           endfor
-#         endfor
-#       endfor
-#     endfor
-#   endfor
-# endfor
+begin_file("spr");
+for j = testcases
+  for i = [s,d];
+    S = context(i);
+    T = test_tpmatvector(S, j);
+    for alpha = coeff(S)
+      for order = [101, 102]
+        for uplo = [121, 122]
+          test_spr (S, "spr", order, uplo, T.n, alpha, T.v, T.s, T.A);
+        endfor
+      endfor
+    endfor
+  endfor
+endfor
+end_file();
 
 
-# for j = 1:n
-#   for i = [c,z]
-#     S = context(i);
-#     T = test_spmatvectors(S, j);
-#     for alpha = coeff(S)
-#       for beta = coeff(S)
-#         for order = [101, 102]
-#           for uplo = [121, 122]
-#             for diag = [131, 132]
-#               test_hpspmv (S, "hpmv", order, uplo, T.n, alpha, T.A, T.v1, \
-#                            T.s1, beta, T.v2, T.s2);
-#             endfor
-#           endfor
-#         endfor
-#       endfor
-#     endfor
-#   endfor
-# endfor
+begin_file("syr2");
+for j = testcases
+  for i = [s,d];
+    S = context(i);
+    T = test_trmatvectors(S, j);
+    for alpha = coeff(S)
+      for order = [101, 102]
+        for uplo = [121, 122]
+          test_syr2 (S, "syr2", order, uplo, T.n, alpha, T.v1, T.s1, \
+                     T.v2, T.s2, T.A, T.lda);
+        endfor
+      endfor
+    endfor
+  endfor
+endfor
+end_file();
 
-# for j = 1:n
-#   for i = [s,d]
-#     S = context(i);
-#     T = test_spmatvectors(S, j);
-#     for alpha = coeff(S)
-#       for beta = coeff(S)
-#         for order = [101, 102]
-#           for uplo = [121, 122]
-#             for diag = [131, 132]
-#               test_hpspmv (S, "spmv", order, uplo, T.n, alpha, T.A, T.v1, \
-#                            T.s1, beta, T.v2, T.s2);
-#             endfor
-#           endfor
-#         endfor
-#       endfor
-#     endfor
-#   endfor
-# endfor
+begin_file("spr2");
+for j = testcases
+  for i = [s,d];
+    S = context(i);
+    T = test_tpmatvectors(S, j);
+    for alpha = coeff(S)
+      for order = [101, 102]
+        for uplo = [121, 122]
+          test_spr2 (S, "spr2", order, uplo, T.n, alpha, T.v1, T.s1, \
+                     T.v2, T.s2, T.A);
+        endfor
+      endfor
+    endfor
+  endfor
+endfor
+end_file();
 
-# for j = 1:n
-#   for i = [s,d,c,z]
-#     S = context(i);
-#     for trans = Trans(S);
-#       T = test_trmatvector(S, j);
-#       for order = [101, 102]
-#         for uplo = [121, 122]
-#           for diag = [131, 132]
-#             test_trmv (S, "trsv", order, uplo, trans, diag, T.n,
-#                        T.A, T.lda, T.v, T.s);
-#           endfor
-#         endfor
-#       endfor
-#     endfor
-#   endfor
-# endfor
+begin_file("her2");
+for j = testcases
+  for i = [c,z];
+    S = context(i);
+    T = test_trmatvectors(S, j);
+    for alpha = coeff(S)
+      for order = [101, 102]
+        for uplo = [121, 122]
+          test_syr2 (S, "her2", order, uplo, T.n, alpha, T.v1, T.s1, \
+                     T.v2, T.s2, T.A, T.lda);
+        endfor
+      endfor
+    endfor
+  endfor
+endfor
+end_file();
 
-# for j = 1:n
-#   for i = [s,d,c,z]
-#     S = context(i);
-#     for trans = Trans(S);
-#       T = test_tbmatvector(S, j);
-#       for order = [101, 102]
-#         for uplo = [121, 122]
-#           for diag = [131, 132]
-#             test_tbmv (S, "tbsv", order, uplo, trans, diag, T.n, T.k,
-#                        T.A, T.lda, T.v, T.s);
-#           endfor
-#         endfor
-#       endfor
-#     endfor
-#   endfor
-# endfor
+begin_file("hpr2");
+for j = testcases
+  for i = [c,z];
+    S = context(i);
+    T = test_trmatvectors(S, j);
+    for alpha = coeff(S)
+      for order = [101, 102]
+        for uplo = [121, 122]
+          test_spr2 (S, "hpr2", order, uplo, T.n, alpha, T.v1, T.s1, \
+                     T.v2, T.s2, T.A, T.lda);
+        endfor
+      endfor
+    endfor
+  endfor
+endfor
+end_file();
 
-# for j = 1:n
-#   for i = [s,d,c,z]
-#     S = context(i);
-#     T = test_tpmatvector(S, j);
-#     for trans = Trans(S)
-#       for order = [101, 102]
-#         for uplo = [121, 122]
-#           for diag = [131, 132]
-#             test_tpmv (S, "tpsv", order, uplo, trans, diag, T.n, 
-#                        T.A, T.v, T.s);
-#           endfor
-#         endfor
-#       endfor
-#     endfor
-#   endfor
-# endfor
+begin_file("gemm");
+for j = testcases
+  for i = [s,d,c,z]
+    S = context(i);
+    for transA = Trans(S)
+      for transB = Trans(S)
+        for alpha = coeff(S)
+          for beta = coeff(S)
+            for order = [101, 102]
+              T = test_matmat(S, j, order, transA, transB);
+              test_gemm (S, "gemm", order, transA, transB, T.m, T.n,
+                         T.k, alpha, 
+                         T.A, T.lda, T.B, T.ldb, beta, T.C, T.ldc);
+            endfor
+          endfor
+        endfor
+      endfor
+    endfor
+  endfor
+endfor
+end_file();
 
-# for j = 1:n
-#   for i = [s,d,c,z];
-#     S = context(i);
-#     T = test_matvectors(S, j);
-#     for alpha = coeff(S)
-#       for order = [101, 102]
-#         if (S.complex == 0)
-#           test_ger (S, "ger", order, T.m, T.n, alpha, T.v1, T.s1, \
-#                     T.v2, T.s2, T.A, T.lda);
-#         else
-#           test_ger (S, "geru", order, T.m, T.n, alpha, T.v1, T.s1, \
-#                     T.v2, T.s2, T.A, T.lda);
-#           test_ger (S, "gerc", order, T.m, T.n, alpha, T.v1, T.s1, \
-#                     T.v2, T.s2, T.A, T.lda);
-#         endif
-#       endfor
-#     endfor
-#   endfor
-# endfor
+begin_file("symm")  ;
+for j = testcases
+  for i = [s,d,c,z]
+    S = context(i);
+    for uplo = [121, 122]
+      for side = [141, 142]
+        for alpha = coeff(S)
+          for beta = coeff(S)
+            for order = [101, 102]
+              T = test_symatmat(S, j, order, side);
+              test_hesymm (S, "symm", order, side, uplo, T.m, T.n,
+                         alpha, T.A, T.lda, T.B, T.ldb, beta, T.C, T.ldc);
+            endfor
+          endfor
+        endfor
+      endfor
+    endfor
+  endfor
+endfor
+end_file();
 
-# for j = 1:n
-#   for i = [s,d];
-#     S = context(i);
-#     T = test_trmatvector(S, j);
-#     for alpha = coeff(S)
-#       for order = [101, 102]
-#         for uplo = [121, 122]
-#           test_syr (S, "syr", order, uplo, T.n, alpha, T.v, T.s, \
-#                     T.A, T.lda);
-#           else
-#           endif
-#         endfor
-#       endfor
-#     endfor
-#   endfor
-# endfor
+begin_file("hemm")  ;
+for j = testcases
+  for i = [c,z]
+    S = context(i);
+    for uplo = [121, 122]
+      for side = [141, 142]
+        for alpha = coeff(S)
+          for beta = coeff(S)
+            for order = [101, 102]
+              T = test_symatmat(S, j, order, side);
+              test_hesymm (S, "hemm", order, side, uplo, T.m, T.n,
+                         alpha, T.A, T.lda, T.B, T.ldb, beta, T.C, T.ldc);
+            endfor
+          endfor
+        endfor
+      endfor
+    endfor
+  endfor
+endfor
+end_file();
 
-# for j = 1:n
-#   for i = [c,z];
-#     S = context(i);
-#     T = test_trmatvector(S, j);
-#     R = S ; R.complex = 0;
-#     for alpha = coeff(R)
-#       for order = [101, 102]
-#         for uplo = [121, 122]
-#           test_her (S, "her", order, uplo, T.n, alpha, T.v, T.s, \
-#                       T.A, T.lda);
-#         endfor
-#       endfor
-#     endfor
-#   endfor
-# endfor
+begin_file("syrk");
+for j = testcases
+  for i = [c,z] #[s,d] #c,z]
+    S = context(i);
+    for uplo = [121, 122]
+      for trans = Trans(S)
+        for alpha = coeff(S)
+          for beta = coeff(S)
+            for order = [101, 102]
+              T = test_syrkmatmat(S, j, order, trans);
+              test_syrk (S, "syrk", order, uplo, trans, T.n, T.k,
+                         alpha, T.A, T.lda, beta, T.C, T.ldc);
+            endfor
+          endfor
+        endfor
+      endfor
+    endfor
+  endfor
+endfor
+end_file();
 
-# for j = 1:n
-#   for i = [c,z];
-#     S = context(i);
-#     T = test_tpmatvector(S, j);
-#     R = S ; R.complex = 0;
-#     for alpha = coeff(R)
-#       for order = [101, 102]
-#         for uplo = [121, 122]
-#           test_hpr (S, "hpr", order, uplo, T.n, alpha, T.v, T.s, T.A);
-#         endfor
-#       endfor
-#     endfor
-#   endfor
-# endfor
+begin_file("herk");
+for j = testcases
+  for i = [c,z] #[s,d] #c,z]
+    S = context(i);
+    for uplo = [121, 122]
+      for trans = Trans(S)
+        T = S ; T.complex = 0;
+        for alpha = coeff(T)
+          for beta = coeff(T)
+            for order = [101, 102]
+              T = test_syrkmatmat(S, j, order, trans);
+              test_herk (S, "herk", order, uplo, trans, T.n, T.k,
+                         alpha, T.A, T.lda, beta, T.C, T.ldc);
+            endfor
+          endfor
+        endfor
+      endfor
+    endfor
+  endfor
+endfor
+end_file();
 
 
+begin_file("syr2k");
+for j = testcases
+  for i = [c,z] #[s,d] #,c,z]
+    S = context(i);
+    for trans = Trans(S)
+      if (S.complex && trans == 113)
+        continue; # ConjTrans not allowed for complex case, 
+      endif
+      for alpha = coeff(S)
+        for beta = coeff(S)
+          for order = [101, 102]
+            for uplo = [121, 122]
+              T = test_syr2kmatmat(S, j, order, trans);
+              test_syr2k (S, "syr2k", order, uplo, trans, T.n, T.k, alpha, 
+                          T.A, T.lda, T.B, T.ldb, beta, T.C, T.ldc);
+            endfor
+          endfor
+        endfor
+      endfor
+    endfor
+  endfor
+endfor
+end_file();
 
-# for j = 1:n
-#   for i = [s,d];
-#     S = context(i);
-#     T = test_tpmatvector(S, j);
-#     for alpha = coeff(S)
-#       for order = [101, 102]
-#         for uplo = [121, 122]
-#           test_spr (S, "spr", order, uplo, T.n, alpha, T.v, T.s, T.A);
-#         endfor
-#       endfor
-#     endfor
-#   endfor
-# endfor
+begin_file("her2k");
+for j = testcases
+  for i = [c,z]
+    S = context(i);
+    for trans = Trans(S)
+      if (S.complex && trans == 112)
+        continue; # Trans not allowed for complex case, 
+      endif
+      for alpha = coeff(S)
+        R = S; R.complex = 0;
+        for beta = coeff(R)
+          for order = [101, 102]
+            for uplo = [121, 122]
+              T = test_syr2kmatmat(S, j, order, trans);
+              test_her2k (S, "her2k", order, uplo, trans, T.n, T.k, alpha, 
+                          T.A, T.lda, T.B, T.ldb, beta, T.C, T.ldc);
+            endfor
+          endfor
+        endfor
+      endfor
+    endfor
+  endfor
+endfor
+end_file();
 
-  
-# for j = 1:n
-#   for i = [s,d];
-#     S = context(i);
-#     T = test_trmatvectors(S, j);
-#     for alpha = coeff(S)
-#       for order = [101, 102]
-#         for uplo = [121, 122]
-#           test_syr2 (S, "syr2", order, uplo, T.n, alpha, T.v1, T.s1, \
-#                      T.v2, T.s2, T.A, T.lda);
-#         endfor
-#       endfor
-#     endfor
-#   endfor
-# endfor
+begin_file("trmm");
+for j = testcases
+  for i = [c] #[s,d] #,c,z]
+    S = context(i);
+    for trans = Trans(S)
+      for alpha = coeff(S)
+        for side = [141, 142]
+          for order = [101, 102]
+            for uplo = [121, 122]
+              for diag = [131, 132]
+                T = test_trmatmat(S, j, order, side, trans);
+                test_trmm (S, "trmm", order, side, uplo, trans, diag, T.m, T.n,
+                           alpha, T.A, T.lda, T.B, T.ldb);
+              endfor
+            endfor
+          endfor
+        endfor
+      endfor
+    endfor
+  endfor
+endfor
+end_file();
 
-# for j = 1:n
-#   for i = [s,d];
-#     S = context(i);
-#     T = test_tpmatvectors(S, j);
-#     for alpha = coeff(S)
-#       for order = [101, 102]
-#         for uplo = [121, 122]
-#           test_spr2 (S, "spr2", order, uplo, T.n, alpha, T.v1, T.s1, \
-#                      T.v2, T.s2, T.A);
-#         endfor
-#       endfor
-#     endfor
-#   endfor
-# endfor
-
-# for j = 1:n
-#   for i = [c,z];
-#     S = context(i);
-#     T = test_trmatvectors(S, j);
-#     for alpha = coeff(S)
-#       for order = [101, 102]
-#         for uplo = [121, 122]
-#           test_syr2 (S, "her2", order, uplo, T.n, alpha, T.v1, T.s1, \
-#                      T.v2, T.s2, T.A, T.lda);
-#         endfor
-#       endfor
-#     endfor
-#   endfor
-# endfor
-
-# for j = 1:n
-#   for i = [c,z];
-#     S = context(i);
-#     T = test_trmatvectors(S, j);
-#     for alpha = coeff(S)
-#       for order = [101, 102]
-#         for uplo = [121, 122]
-#           test_spr2 (S, "hpr2", order, uplo, T.n, alpha, T.v1, T.s1, \
-#                      T.v2, T.s2, T.A, T.lda);
-#         endfor
-#       endfor
-#     endfor
-#   endfor
-# endfor
-
-# for j = 1:n
-#   for i = [s,d,c,z]
-#     S = context(i);
-#     for transA = Trans(S)
-#       for transB = Trans(S)
-#         for alpha = coeff(S)
-#           for beta = coeff(S)
-#             for order = [101, 102]
-#               T = test_matmat(S, j, order, transA, transB);
-#               test_gemm (S, "gemm", order, transA, transB, T.m, T.n,
-#                          T.k, alpha, 
-#                          T.A, T.lda, T.B, T.ldb, beta, T.C, T.ldc);
-#             endfor
-#           endfor
-#         endfor
-#       endfor
-#     endfor
-#   endfor
-# endfor
-    
-# for j = 1:n
-#   for i = [s,d,c,z]
-#     S = context(i);
-#     for uplo = [121, 122]
-#       for side = [141, 142]
-#         for alpha = coeff(S)
-#           for beta = coeff(S)
-#             for order = [101, 102]
-#               T = test_symatmat(S, j, order, side);
-#               test_hesymm (S, "symm", order, side, uplo, T.m, T.n,
-#                          alpha, T.A, T.lda, T.B, T.ldb, beta, T.C, T.ldc);
-#             endfor
-#           endfor
-#         endfor
-#       endfor
-#     endfor
-#   endfor
-# endfor
-    
-# for j = 1:n
-#   for i = [c,z]
-#     S = context(i);
-#     for uplo = [121, 122]
-#       for side = [141, 142]
-#         for alpha = coeff(S)
-#           for beta = coeff(S)
-#             for order = [101, 102]
-#               T = test_symatmat(S, j, order, side);
-#               test_hesymm (S, "hemm", order, side, uplo, T.m, T.n,
-#                          alpha, T.A, T.lda, T.B, T.ldb, beta, T.C, T.ldc);
-#             endfor
-#           endfor
-#         endfor
-#       endfor
-#     endfor
-#   endfor
-# endfor
-
-# for j = 1:n
-#   for i = [c,z] #[s,d] #c,z]
-#     S = context(i);
-#     for uplo = [121, 122]
-#       for trans = Trans(S)
-#         for alpha = coeff(S)
-#           for beta = coeff(S)
-#             for order = [101, 102]
-#               T = test_syrkmatmat(S, j, order, trans);
-#               test_syrk (S, "syrk", order, uplo, trans, T.n, T.k,
-#                          alpha, T.A, T.lda, beta, T.C, T.ldc);
-#             endfor
-#           endfor
-#         endfor
-#       endfor
-#     endfor
-#   endfor
-# endfor
-
-# for j = 1:n
-#   for i = [c,z] #[s,d] #c,z]
-#     S = context(i);
-#     for uplo = [121, 122]
-#       for trans = Trans(S)
-#         T = S ; T.complex = 0;
-#         for alpha = coeff(T)
-#           for beta = coeff(T)
-#             for order = [101, 102]
-#               T = test_syrkmatmat(S, j, order, trans);
-#               test_syrk (S, "herk", order, uplo, trans, T.n, T.k,
-#                          alpha, T.A, T.lda, beta, T.C, T.ldc);
-#             endfor
-#           endfor
-#         endfor
-#       endfor
-#     endfor
-#   endfor
-# endfor
-
-# for j = 1:n
-#   for i = [c,z] #[s,d] #,c,z]
-#     S = context(i);
-#     for trans = Trans(S)
-#       if (S.complex && trans == 113)
-#         continue; # ConjTrans not allowed for complex case, 
-#       endif
-#       for alpha = coeff(S)
-#         for beta = coeff(S)
-#           for order = [101, 102]
-#             for uplo = [121, 122]
-#               T = test_syr2kmatmat(S, j, order, trans);
-#               test_syr2k (S, "syr2k", order, uplo, trans, T.n, T.k, alpha, 
-#                           T.A, T.lda, T.B, T.ldb, beta, T.C, T.ldc);
-#             endfor
-#           endfor
-#         endfor
-#       endfor
-#     endfor
-#   endfor
-# endfor
-
-# for j = 1:n
-#   for i = [c,z]
-#     S = context(i);
-#     for trans = Trans(S)
-#       if (S.complex && trans == 112)
-#         continue; # Trans not allowed for complex case, 
-#       endif
-#       for alpha = coeff(S)
-#         R = S; R.complex = 0;
-#         for beta = coeff(R)
-#           for order = [101, 102]
-#             for uplo = [121, 122]
-#               T = test_syr2kmatmat(S, j, order, trans);
-#               test_her2k (S, "her2k", order, uplo, trans, T.n, T.k, alpha, 
-#                           T.A, T.lda, T.B, T.ldb, beta, T.C, T.ldc);
-#             endfor
-#           endfor
-#         endfor
-#       endfor
-#     endfor
-#   endfor
-# endfor
-
-# for j = 1:n
-#   for i = [c] #[s,d] #,c,z]
-#     S = context(i);
-#     for trans = Trans(S)
-#       for alpha = coeff(S)
-#         for side = [141, 142]
-#           for order = [101, 102]
-#             for uplo = [121, 122]
-#               for diag = [131, 132]
-#                 T = test_trmatmat(S, j, order, side, trans);
-#                 test_trmm (S, "trmm", order, side, uplo, trans, diag, T.m, T.n,
-#                            alpha, T.A, T.lda, T.B, T.ldb);
-#               endfor
-#             endfor
-#           endfor
-#         endfor
-#       endfor
-#     endfor
-#   endfor
-# endfor
-
-for j = 1:5
+begin_file("trsm");
+for j = testcases
   for i = [c] #[s,d] #,c,z]
     S = context(i);
     for trans = Trans(S)
@@ -3111,4 +3229,5 @@ for j = 1:5
     endfor
   endfor
 endfor
+end_file();
 
