@@ -195,7 +195,7 @@ int main (void)
 { 
 const char * s = "5678"; long double x = 1.234 ; 
 fprintf(stderr,"%Lg\n",x) ; 
-scanf(s, "%Lg", &x);
+sscanf(s, "%Lg", &x);
 if (x == 5678) exit (0) else exit(1); 
 }],
 ac_cv_func_longdouble_printf=yes, 
