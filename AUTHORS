@@ -5,6 +5,6 @@ Brian Gough (bjg@vvv.lanl.gov) - FFT package, error handling, vector and
   matrix functions, histograms, some parts of statistics, ieee-utils, 
   integration, rng directory and random number distributions
 Reid Priedhorsky (rp@lanl.gov) - root finding
-Gerard Jungman (jungman@nnn.lanl.gov) special functions, interpolation, 
+Gerard Jungman (jungman@lanl.gov) special functions, interpolation, 
   series acceleration
 Michael Booth (booth@debian.org) - Monte Carlo integration
