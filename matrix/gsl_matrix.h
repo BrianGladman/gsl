@@ -5,10 +5,6 @@
 #include <gsl_matrix_complex_double.h>
 #include <gsl_matrix_complex_float.h>
 
-#include <gsl_matrix_complex_long_double.h>
-#include <gsl_matrix_complex.h>
-#include <gsl_matrix_complex_float.h>
-
 #include <gsl_matrix_long_double.h>
 #include <gsl_matrix_double.h>
 #include <gsl_matrix_float.h>

@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <gsl_matrix.h>
 
 
 TYPE(gsl_matrix) * 
@@ -51,9 +52,9 @@ FUNCTION(gsl_matrix,calloc) (const size_t n1, const size_t n2)
   if (m == 0) 
     return 0 ;
 
-  for (i = 0 ; i < n1 * n2; i++)  /* initialize matrix to zero */
+  for (i = 0 ; i < MULTIPLICITY*MULTIPLICITY * n1 * n2; i++)  /* initialize matrix to zero */
     {
-      m->data[i] = ZERO ;
+      m->data[i] = 0.0 ;
     }
 
   return m ;
