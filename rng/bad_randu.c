@@ -22,8 +22,6 @@
 
 unsigned long int bad_randu_get (void * vstate);
 void bad_randu_set (void * state, unsigned long int s);
-void bad_randu_set_with_state (void * vstate, const void * vinit_state,
-			 unsigned long int s);
 
 static const long int a = 65539 ;
 static const unsigned long int m = 2147483648UL ;

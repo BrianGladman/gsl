@@ -125,10 +125,13 @@ ranlux_set_impl (void * vstate, unsigned long int s, unsigned int luxury)
   ranlux_state_t * state = (ranlux_state_t *) vstate;
   int i ;
 
-  long int seed = s ;
+  long int seed ;
 
-  if (s == 0) s = 314159265 ; /* default seed is 314159265 */
+  if (s == 0) 
+    s = 314159265 ; /* default seed is 314159265 */
 
+  seed = s ;
+  
   for (i = 0; i < 24; i++)
     {
       unsigned long int k = seed / 53668 ;

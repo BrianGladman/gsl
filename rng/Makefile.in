@@ -77,7 +77,7 @@ INCLUDES = -I$(srcdir)/..  -I$(srcdir)/../err
 
 libgslrng_a_SOURCES = gsl_rng.h rng.c \
                       cmrg.c mrg.c rand.c taus.c uni.c uni32.c zuf.c \
-		      minstd.c \
+		      minstd.c mt.c tt.c \
                       bad_rand.c bad_randu.c vax.c ranlux.c \
                       default.c
 
@@ -97,7 +97,8 @@ LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
 libgslrng_a_LIBADD = 
 libgslrng_a_OBJECTS =  rng.o cmrg.o mrg.o rand.o taus.o uni.o uni32.o \
-zuf.o minstd.o bad_rand.o bad_randu.o vax.o ranlux.o default.o
+zuf.o minstd.o mt.o tt.o bad_rand.o bad_randu.o vax.o ranlux.o \
+default.o
 AR = ar
 test_OBJECTS =  test.o
 test_DEPENDENCIES =  libgslrng.a ../err/libgslerr.a ../err/libgsltest.a
@@ -115,9 +116,9 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 TAR = tar
 GZIP = --best
 DEP_FILES =  .deps/bad_rand.P .deps/bad_randu.P .deps/cmrg.P \
-.deps/default.P .deps/minstd.P .deps/mrg.P .deps/rand.P .deps/ranlux.P \
-.deps/rng.P .deps/taus.P .deps/test.P .deps/uni.P .deps/uni32.P \
-.deps/vax.P .deps/zuf.P
+.deps/default.P .deps/minstd.P .deps/mrg.P .deps/mt.P .deps/rand.P \
+.deps/ranlux.P .deps/rng.P .deps/taus.P .deps/test.P .deps/tt.P \
+.deps/uni.P .deps/uni32.P .deps/vax.P .deps/zuf.P
 SOURCES = $(libgslrng_a_SOURCES) $(test_SOURCES)
 OBJECTS = $(libgslrng_a_OBJECTS) $(test_OBJECTS)
 

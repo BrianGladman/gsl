@@ -15,8 +15,6 @@
 
 unsigned long int vax_get (void * vstate);
 void vax_set (void * state, unsigned long int s);
-void vax_set_with_state (void * vstate, const void * vinit_state,
-			 unsigned long int s);
 
 static const long int a = 69069 ;
 static const long int c = 1 ;

@@ -1,4 +1,10 @@
-Improve the seeding for routines that use the LCG seed generator.  It
-can only generate 130,000 different initial states. We should change
-it to provide 2^31 different initial states (this will also prevent
-the high bits being correlated).
+1. Improve the seeding for routines that use the LCG seed generator.
+It can only generate 130,000 different initial states. We should
+change it to provide 2^31 different initial states (this will also
+prevent the high bits being zero).
+
+2. Make things work on 64 bit platforms. Sometimes we just need to use
+& 0xffffffff on 32 bit quantities that are returned to the user where
+we rely on 32 bit arithmetic, sometimes it is more complicated
+(e.g. the Tausworthe generator relies on 32 bit arithmetic at all
+stages).

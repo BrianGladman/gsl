@@ -14,7 +14,7 @@ check (const gsl_rng_type ** def, const gsl_rng_type * test, const char * p) ;
 int
 gsl_rng_env_setup (void)
 {
-  unsigned long int seed = 1;
+  unsigned long int seed = 0;
   const char * p = getenv ("GSL_RNG_TYPE") ;
 
   if (p)

@@ -18,8 +18,6 @@
 
 unsigned long int bad_rand_get (void * vstate);
 void bad_rand_set (void * state, unsigned long int s);
-void bad_rand_set_with_state (void * vstate, const void * vinit_state,
-			 unsigned long int s);
 
 static const unsigned long int m = 2147483648UL ;
 static const long int a = 1103515245 ;
