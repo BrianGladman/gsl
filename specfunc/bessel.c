@@ -123,6 +123,24 @@ int gsl_sf_bessel_Jnu_asympx_impl(const double nu, const double x, double * resu
 }
 
 /* x >> nu*nu+1; error ~ O( ((nu*nu+1)/x)^3 ) */
+int gsl_sf_bessel_Ynu_asympx_impl(const double nu, const double x, double * result)
+{
+  double mu   = 4.*nu*nu;
+  double mum1 = mu-1.;
+  double mum9 = mu-9.;
+  double chi = x - (0.5*nu + 0.25)*M_PI;
+  double P   = 1. - mum1*mum9/(128.*x*x);
+  double Q   = mum1/(8.*x);
+  *result = 2./(Root_2Pi_* sqrt(x)) * (cos(chi)*P + sin(chi)*Q);
+  return GSL_SUCCESS;
+}
+
+/* nu -> Inf; x >> nu */
+int gsl_sf_bessel_Jnu_asymp_Debye_impl(const double nu, const double x, double * result)
+{
+}
+
+/* x >> nu*nu+1; error ~ O( ((nu*nu+1)/x)^3 ) */
 int gsl_sf_bessel_Inu_scaled_asympx_impl(const double nu, const double x, double * result)
 {
   double mu   = 4.*nu*nu;
