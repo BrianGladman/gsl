@@ -1,5 +1,20 @@
 $Id$
 
+20 Oct 97
+
+Just had another fail-to-compile, because it couldn't find sources
+that it hadn't built yet.  I think the Makefile structure is way too
+complicated, and will suggest an alternative way too complicated
+approach:
+
+Put the source building makefile stuff into the file GNUmakefile,
+and build it with something like 'make sources'.  Then cvs commit
+those sources.
+
+
+==================================================================
+19 Nov 96
+
 1/ could simplify the basic tasks required of the writer of
    new random number generators by
    a/ rewriting zuf() using integers, and then having the
