@@ -30,7 +30,7 @@
  * Q is stored as a packed set of Householder transformations in the
  * lower triangular part of the input matrix below the first subdiagonal.
  *
- *  * The full matrix for Q can be obtained as the product
+ * The full matrix for Q can be obtained as the product
  *
  *       Q = Q_1 Q_2 ... Q_(N-2)
  *
