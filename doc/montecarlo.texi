@@ -132,7 +132,7 @@ when done.  For an integrator algorithm, call it COOL
 (substitute any of the currently existing algorithms) we then 
 have
 (FIXME: why does this look like crap?)
-@deftypefun gsl_monte_COOL_state* gsl_monte_COOL_alloc()
+@deftypefun gsl_monte_COOL_state* gsl_monte_COOL_alloc(size_t @var(dim))
 @end deftypefun
 @deftypefun int gsl_monte_COOL_init(gsl_monte_COOL_state* @var{s})
 @end deftypefun
@@ -253,7 +253,7 @@ main ()
   unsigned long calls = 10000;
   unsigned long dimension = 10;
 
-  gsl_monte_vegas_state* s = gsl_monte_vegas_alloc();
+  gsl_monte_vegas_state* s = gsl_monte_vegas_alloc(10);
   gsl_monte_plain_init(s);
 
   s->alpha = 1.5; /* default */
