@@ -1,8 +1,6 @@
 #ifndef GSL_TEST_H
 #define GSL_TEST_H
 
-#include <config.h>
-
 void
   gsl_test (int status, const char *test_description, ...);
 
