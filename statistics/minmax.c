@@ -39,6 +39,7 @@ size_t
 gsl_stats_max_index (const double data[], const size_t n)
 {
   /* finds the index of the largest member of a dataset */
+  /* if there is more than one largest value then we choose the first */
 
   double max = data[0];
   size_t i, max_index = 0;
@@ -59,6 +60,7 @@ size_t
 gsl_stats_min_index (const double data[], const size_t n)
 {
   /* finds the index of the smallest member of a dataset */
+  /* if there is more than one largest value then we choose the first  */
 
   double min = data[0];
   size_t i, min_index = 0;
