@@ -7,6 +7,8 @@
 #include "gsl_sf_chebyshev.h"
 #include "gsl_sf_airy.h"
 
+#include "airy_impl.h"
+
 
 /* chebyshev expansions for Airy modulus and phase
    based on SLATEC r9aimp()
@@ -415,11 +417,12 @@ static struct gsl_sf_ChebSeries big2_cs = {
                decimal places required  17.06
 	       
  [GJ] Sun Apr 19 18:14:31 EDT 1998
- There was something wrong with these coefficients. I think the SLATEC
- numbers were systematically wrong, creating errors after 3 or 4 digits.
- I recomputed this table. Now I get double precision agreement with
- Mathematica. Is it possible that an error in the SLATEC fit has
- been propagated for 20 years? Seeing is believing...
+ There was something wrong with these coefficients. I was getting
+ errors after 3 or 4 digits. So I recomputed this table. Now I get
+ double precision agreement with Mathematica. But it does not seem
+ possible that the small differences here would account for the
+ original discrepancy. There must have been something wrong with my
+ original usage...
 */
 static double data_aip[36] = {
  -0.0187519297793867540198,
@@ -624,6 +627,7 @@ static double airy_bie(const double x)
 
 /*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
 
+/* checked OK [GJ] Sun Apr 19 18:37:38 EDT 1998 */
 int gsl_sf_airy_Ai_impl(const double x, double * result)
 {
   if(x < -1.0) {
@@ -646,6 +650,7 @@ int gsl_sf_airy_Ai_impl(const double x, double * result)
   }
 }
 
+/* checked OK [GJ] Sun Apr 19 18:37:54 EDT 1998  */
 int gsl_sf_airy_Ai_scaled_impl(const double x, double * result)
 {
   if(x < -1.0) {
@@ -672,6 +677,7 @@ int gsl_sf_airy_Ai_scaled_impl(const double x, double * result)
   }
 }
 
+/* checked OK [GJ] Sun Apr 19 18:38:14 EDT 1998 */
 int gsl_sf_airy_Bi_impl(const double x, double * result)
 {
   if(x < -1.0) {
@@ -704,6 +710,7 @@ int gsl_sf_airy_Bi_impl(const double x, double * result)
   }
 }
 
+/* checked OK [GJ] Sun Apr 19 18:38:28 EDT 1998  */
 int gsl_sf_airy_Bi_scaled_impl(const double x, double * result)
 {
   if(x < -1.0) {

@@ -7,6 +7,7 @@
 #include "gsl_sf_chebyshev.h"
 #include "gsl_sf_airy.h"
 
+#include "airy_impl.h"
 
 
 /* based on SLATEC aide.f, bide.f, aid.f, bid.f, r9admp.f */
@@ -611,6 +612,7 @@ static int airy_deriv_mod_phase(const double x, double * ampl, double * phi)
 
 /*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
 
+/* checked OK [GJ] Sun Apr 19 19:06:29 EDT 1998 */
 int gsl_sf_airy_Ai_deriv_scaled_impl(const double x, double * result)
 {
   const double eta   = 0.1 * GSL_MACH_EPS;	         /* 0.1*r1mach(3) */
@@ -649,6 +651,7 @@ int gsl_sf_airy_Ai_deriv_scaled_impl(const double x, double * result)
   }
 }
 
+/* checked OK [GJ] Sun Apr 19 19:06:46 EDT 1998 */
 int gsl_sf_airy_Ai_deriv_impl(const double x, double * result)
 {
   const double x3sml = GSL_ROOT3_MACH_EPS;   /* r1mach(3)**0.3334 */
@@ -679,6 +682,7 @@ int gsl_sf_airy_Ai_deriv_impl(const double x, double * result)
   }
 }
 
+/* checked OK [GJ] Sun Apr 19 19:07:00 EDT 1998 */
 int gsl_sf_airy_Bi_deriv_scaled_impl(const double x, double * result)
 {
   const double atr =  8.7506905708484345;   /* 16./(sqrt(8)-1) */
@@ -725,6 +729,7 @@ int gsl_sf_airy_Bi_deriv_scaled_impl(const double x, double * result)
   }
 }
 
+/* checked OK [GJ] Sun Apr 19 19:07:15 EDT 1998 */
 int gsl_sf_airy_Bi_deriv_impl(const double x, double * result)
 {
   const double eta = 0.1 * GSL_MACH_EPS;                  /* 0.1*r1mach(3) */

@@ -2,8 +2,10 @@
 #include <gsl_math.h>
 #include "gsl_sf.h"
 
+#include "airy_impl.h"
 #include "bessel.h"
 #include "bessel_Jn_impl.h"
+
 
 int main(int argc, char * argv[])
 {
@@ -19,15 +21,13 @@ int main(int argc, char * argv[])
   double nu = 100.;
   int n = 2;
 
-  for(x=-5; x < 10.; x += .02) {
-    printf("%20.16g    %20.16g %20.16g     %20.16g %20.16g    %20.16g %20.16g\n",
+  for(x=-5; x < 10.; x += .05) {
+    printf("%20.16g    %20.16g %20.16g     %20.16g %20.16g\n",
            x,
 	   gsl_sf_airy_Ai(x),
 	   gsl_sf_airy_Bi(x),
 	   gsl_sf_airy_Ai_scaled(x),
-	   gsl_sf_airy_Bi_scaled(x),
-	   gsl_sf_airy_Ai_deriv(x),
-	   gsl_sf_airy_Bi_deriv(x)
+	   gsl_sf_airy_Bi_scaled(x)
            );
   }
   exit(0);
