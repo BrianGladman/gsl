@@ -54,7 +54,7 @@ void gsl_siman_solve(void *x0_p, gsl_Efunc_t Ef,
     n_rejects = 0;
     n_eless = 0;
     for (i = 0; i < params.n_tries-1; ++i) {
-/*       memcpy(new_x, x, element_size); */
+      memcpy(new_x, x, element_size);
       take_step(new_x, params.step_size);
       new_E = Ef(new_x);
       ++n_evals;		/* keep trakc of Ef() evaluations */
@@ -92,6 +92,10 @@ void gsl_siman_solve(void *x0_p, gsl_Efunc_t Ef,
       done = 1;
     }
   }
+
+  /* at the end, copy the result onto the initial point, so we pass it
+     back to the caller */
+  memcpy(x0_p, x, element_size);
 
   free(x);
   free(new_x);

@@ -44,12 +44,16 @@ CC = @CC@
 
 CFLAGS=-g -Wall
 
-check_PROGRAMS = siman_test
+check_PROGRAMS = siman_test siman_tsp
 lib_LIBRARIES = libgsl_siman.a
 
 siman_test_SOURCES = siman_test.c
 siman_test_LDADD = libgsl_siman.a -L$(srcdir)/random -lgslrandom
 siman_test_DEPENDENCIES = libgsl_siman.a
+
+siman_tsp_SOURCES = siman_tsp.c
+siman_tsp_LDADD = libgsl_siman.a -L$(srcdir)/random -lgslrandom
+siman_tsp_DEPENDENCIES = libgsl_siman.a
 
 libgsl_siman_a_SOURCES = siman.c
 
@@ -71,6 +75,8 @@ libgsl_siman_a_OBJECTS =  siman.o
 AR = ar
 siman_test_OBJECTS =  siman_test.o
 siman_test_LDFLAGS = 
+siman_tsp_OBJECTS =  siman_tsp.o
+siman_tsp_LDFLAGS = 
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
 LINK = $(CC) $(LDFLAGS) -o $@
 HEADERS =  $(include_HEADERS)
@@ -82,9 +88,9 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) \
 	$(TEXINFOS) $(MANS) $(EXTRA_DIST)
 
 TAR = tar
-DEP_FILES =  .deps/siman.P .deps/siman_test.P
-SOURCES = $(libgsl_siman_a_SOURCES) $(siman_test_SOURCES)
-OBJECTS = $(libgsl_siman_a_OBJECTS) $(siman_test_OBJECTS)
+DEP_FILES =  .deps/siman.P .deps/siman_test.P .deps/siman_tsp.P
+SOURCES = $(libgsl_siman_a_SOURCES) $(siman_test_SOURCES) $(siman_tsp_SOURCES)
+OBJECTS = $(libgsl_siman_a_OBJECTS) $(siman_test_OBJECTS) $(siman_tsp_OBJECTS)
 
 default: all
 
@@ -158,6 +164,9 @@ maintainer-clean-checkPROGRAMS:
 
 siman_test: $(siman_test_OBJECTS) $(siman_test_DEPENDENCIES)
 	$(LINK) $(siman_test_LDFLAGS) $(siman_test_OBJECTS) $(siman_test_LDADD) $(LIBS)
+
+siman_tsp: $(siman_tsp_OBJECTS) $(siman_tsp_DEPENDENCIES)
+	$(LINK) $(siman_tsp_LDFLAGS) $(siman_tsp_OBJECTS) $(siman_tsp_LDADD) $(LIBS)
 
 install-includeHEADERS: $(include_HEADERS)
 	$(NORMAL_INSTALL)

@@ -96,7 +96,7 @@ suite (@pxref{Random number generation}) and the FFT package
 * Preliminaries::               
 * Error handling in GSL::       
 * Random number generation::    
-* Basic statistics::                  
+* Basic statistics::            
 * FFTs::                        
 * Root finding::                
 * Simulated annealing::         
@@ -296,11 +296,60 @@ not well understood or is not smooth, so that techniques like Newton's
 method (which requires calculating Jacobian derivative matrices) cannot
 be used.
 
-Simulated annealing is a stochastic search technique which has shown
-good results in avoiding local minima; it is based on the idea of a
-@emph{cooling schedule} for the size of random steps which are taken.
+In particular, these techniques are frequently used to solve
+@emph{combinatorial optimization} problems, such as the traveling
+salesman problem.
+@cindex combinatorial optimization
+@cindex optimization -- combinatorial
+
+The basic problem layout is that we are looking for a point in the space
+at which a real valued @emph{energy function} (or @emph{cost function})
+is minimized.
+@cindex energy function
+@cindex cost function
+
+Simulated annealing is a technique which has given good results in
+avoiding local minima; it is based on the idea of taking a random walk
+through the space at successively lower temperatures, where the
+probability of taking a step is given by a Boltzmann distribution.
+
+@menu
+* Simulated Annealing algorithm::  
+* Simulated Annealing functions::  
+* Examples with Simulated Annealing::  
+@end menu
+
+@node Simulated Annealing algorithm
+@section Simulated Annealing algorithm
+
+
+We take random walks through the problem space, looking for points with
+low energies; in these random walks, the probability of taking a step is
+determined by the Boltzmann distribution
+@equation
+p = e^@{-(E_@{i+1@} - E_i)/(kT)@}
+@end equation
+@noindent
+if @math{E_@{i+1@} < E_i}, and @math{p = 0} when @math{E_@{i+1@} \ge
+E_i}.
+
+In other words, a step @emph{will} occur if the new energy is lower.  If
+the new energy is higher, the transition can still occur, and its
+likelyhood is proportional to the temperature @math{T} and inversely
+proportional to the energy difference @math{E_@{i+1@} - E_i}.
+
+The temperature @math{T} is initially set to a high value, and a random
+walk is carried out at that temperature.  Then the temperature is
+lowered very slightly (according to a @emph{cooling schedule}) and
+another random walk is taken.
 @cindex cooling schedule
 @cindex schedule - cooling
+
+This slight probability of taking a step that gives @emph{higher} energy
+is what allows simulated annealing to frequently get out of local
+minima.
+
+------
 
 An initial guess is supplied.  At each step, a point is chosen at a
 random distance from the current one, where the random distance @emph{r}
@@ -321,14 +370,6 @@ T -> T/mu_T
 @end ifinfo
 where mu_T is slightly greater than 1.
 
-@menu
-* Simulated Annealing algorithm::  
-* Simulated Annealing functions::  
-* Examples with Simulated Annealing::  
-@end menu
-
-@node Simulated Annealing algorithm
-@section Simulated Annealing algorithm
 
 @node Simulated Annealing functions
 @section Simulated Annealing functions
@@ -406,6 +447,14 @@ is written in C, for C callers, and tries to be polymorphic at the same
 time.  But here we provide some examples which can be pasted into your
 application with little change and should make things easier.
 
+@menu
+* Trivial example::             
+* Traveling Salesman Problem::  
+@end menu
+
+@node Trivial example
+@subsection Trivial example
+
 The first example, in one dimensional cartesian space, sets up an energy
 function which is a damped sine wave; this has many local minima, but
 only one global minimum, somewhere between 1.0 and 1.5.  The initial
@@ -481,8 +530,8 @@ int main(int argc, char *argv[])
 \font\nineit=cmti9  \font\eightit=cmti8
 \font\ninesl=cmsl9  \font\eightsl=cmsl8
 
-\centerline{\epsfxsize=5in\epsfbox{siman-test.eps}}
-%\centerline{\epsfxsize=5in\epsfbox{siman-point.eps}}
+\centerline{\epsfxsize=4.4in\epsfbox{siman-test.eps}}
+%\centerline{\epsfxsize=4.8in\epsfbox{siman-point.eps}}
 \nobreak
 \centerline{\nineit Example of a simulated annealing run: at higher
 temperatures (early in the plot)}
@@ -493,13 +542,61 @@ lower temperatures it converges.}
 
 \medskip
 
-\centerline{\epsfxsize=5in\epsfbox{siman-energy.eps}}
+\centerline{\epsfxsize=4.4in\epsfbox{siman-energy.eps}}
 \nobreak
 \centerline{\nineit The energy value versus iteration for the above
 run. This was generated with the simple instruction}
 \centerline{\eighttt gnuplot> plot '<../siman/siman\_test | grep -v "\^{}\#"' using 1:3 with lines}
 \smallskip
 @end tex
+
+
+@node Traveling Salesman Problem
+@subsection Traveling Salesman Problem
+@cindex TSP
+@cindex Traveling Salesman Problem
+
+The TSP (@emph{Traveling Salesman Problem}) is the classic combinatorial
+optimization problem.  I have provided a very simple version of it,
+mostly because I have not yet found a good database of cities.  This
+should maybe be called the @emph{Flying Salesman Problem}, since I am
+using the great-circle distance between cities, rather than the driving
+distance.
+
+@example
+Stsp_city cities[N_CITIES] = @{@{"Santa_Fe",    10.2,	35.4@},
+			      @{"Albuquerque", 12.1,	31.4@},
+			      @{"Alamagordo",  12.1,	26.1@},
+			      @{"Los_Alamos",  12.9,	36.0@},
+			      @{"Tesuque",     10.2,	35.7@},
+			      @{"Las_Cruces",  12.1,	18.4@},
+			      @{"Phoenix",     30.1,	22.4@},
+			      @{"Tuscon",      31.2,	20.0@}@};
+
+/* distance between two cities */
+double city_distance(Stsp_city c1, Stsp_city c2)
+@{
+  double dx = c2.x - c1.x;
+  double dy = c2.y - c1.y;
+  return sqrt(dx*dx + dy*dy);
+@}
+@end example
+
+The optimal route turns out to be:
+@example
+Los_Alamos
+Tesuque
+Santa_Fe
+Albuquerque
+Alamagordo
+Las_Cruces
+Tuscon
+Phoenix
+@end example
+
+The full code can be found in @file{siman/siman_tsp.c}
+
+
 
 
 @node Contributors to GSL
