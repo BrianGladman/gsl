@@ -10,10 +10,6 @@
 # even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 # PARTICULAR PURPOSE.
 
-#AUTOMAKE_OPTIONS=no-dependencies
-
-#CFLAGS=-g -Wall
-
 
 SHELL = /bin/sh
 
@@ -71,17 +67,21 @@ VERSION = @VERSION@
 full_top_builddir = @full_top_builddir@
 full_top_srcdir = @full_top_srcdir@
 
-noinst_PROGRAMS = jtest
 lib_LIBRARIES = libgslstatistics.a
+include_HEADERS = gsl_statistics.h
 
-jtest_SOURCES = jtest.c
-jtest_LDADD = libgslstatistics.a
-jtest_DEPENDENCIES = libgslstatistics.a
+noinst_PROGRAMS = test
 
-libgslstatistics_a_SOURCES = mean.c variance.c test.c
+TESTS = test
 
-#include_HEADERS = mean.h test.h variance.h
-include_HEADERS = gsl_bstats.h
+test_SOURCES = test.c test.h
+test_LDADD = libgslstatistics.a ../err/libgsltest.a
+test_DEPENDENCIES = libgslstatistics.a
+
+libgslstatistics_a_SOURCES = \
+mean.c variance.c \
+mean.h variance.h \
+minmax.c
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
 CONFIG_CLEAN_FILES = 
@@ -93,12 +93,12 @@ CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
 libgslstatistics_a_LIBADD = 
-libgslstatistics_a_OBJECTS =  mean.o variance.o test.o
+libgslstatistics_a_OBJECTS =  mean.o variance.o minmax.o
 AR = ar
 PROGRAMS =  $(noinst_PROGRAMS)
 
-jtest_OBJECTS =  jtest.o
-jtest_LDFLAGS = 
+test_OBJECTS =  test.o
+test_LDFLAGS = 
 CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
 LINK = $(CC) $(CFLAGS) $(LDFLAGS) -o $@
@@ -111,9 +111,9 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 TAR = tar
 GZIP = --best
-DEP_FILES =  .deps/jtest.P .deps/mean.P .deps/test.P .deps/variance.P
-SOURCES = $(libgslstatistics_a_SOURCES) $(jtest_SOURCES)
-OBJECTS = $(libgslstatistics_a_OBJECTS) $(jtest_OBJECTS)
+DEP_FILES =  .deps/mean.P .deps/minmax.P .deps/test.P .deps/variance.P
+SOURCES = $(libgslstatistics_a_SOURCES) $(test_SOURCES)
+OBJECTS = $(libgslstatistics_a_OBJECTS) $(test_OBJECTS)
 
 default: all
 
@@ -186,9 +186,9 @@ distclean-noinstPROGRAMS:
 
 maintainer-clean-noinstPROGRAMS:
 
-jtest: $(jtest_OBJECTS) $(jtest_DEPENDENCIES)
-	@rm -f jtest
-	$(LINK) $(jtest_LDFLAGS) $(jtest_OBJECTS) $(jtest_LDADD) $(LIBS)
+test: $(test_OBJECTS) $(test_DEPENDENCIES)
+	@rm -f test
+	$(LINK) $(test_LDFLAGS) $(test_OBJECTS) $(test_LDADD) $(LIBS)
 
 install-includeHEADERS: $(include_HEADERS)
 	@$(NORMAL_INSTALL)
@@ -266,10 +266,35 @@ maintainer-clean-depend:
 	$(MKDEP) $< >$@.tmp \
 	  && sed "s,^\(.*\)\.o:,\1.$$o \1.l$$o $@:," < $@.tmp > $@ \
 	  && rm -f $@.tmp
+check-TESTS: $(TESTS)
+	@failed=0; all=0; \
+	srcdir=$(srcdir); export srcdir; \
+	for tst in $(TESTS); do \
+	  if test -f $$tst; then dir=.; \
+	  else dir="$(srcdir)"; fi; \
+	  if $(TESTS_ENVIRONMENT) $$dir/$$tst; then \
+	    all=`expr $$all + 1`; \
+	    echo "PASS: $$tst"; \
+	  elif test $$? -ne 77; then \
+	    all=`expr $$all + 1`; \
+	    failed=`expr $$failed + 1`; \
+	    echo "FAIL: $$tst"; \
+	  fi; \
+	done; \
+	if test "$$failed" -eq 0; then \
+	  banner="All $$all tests passed"; \
+	else \
+	  banner="$$failed of $$all tests failed"; \
+	fi; \
+	dashes=`echo "$$banner" | sed s/./=/g`; \
+	echo "$$dashes"; \
+	echo "$$banner"; \
+	echo "$$dashes"; \
+	test "$$failed" -eq 0
 info:
 dvi:
 check: all
-	$(MAKE)
+	$(MAKE) check-TESTS
 installcheck:
 install-exec: install-libLIBRARIES
 	@$(NORMAL_INSTALL)
@@ -332,10 +357,10 @@ distclean-noinstPROGRAMS clean-noinstPROGRAMS \
 maintainer-clean-noinstPROGRAMS uninstall-includeHEADERS \
 install-includeHEADERS tags mostlyclean-tags distclean-tags clean-tags \
 maintainer-clean-tags distdir mostlyclean-depend distclean-depend \
-clean-depend maintainer-clean-depend info dvi installcheck install-exec \
-install-data install uninstall all installdirs mostlyclean-generic \
-distclean-generic clean-generic maintainer-clean-generic clean \
-mostlyclean distclean maintainer-clean
+clean-depend maintainer-clean-depend check-TESTS info dvi installcheck \
+install-exec install-data install uninstall all installdirs \
+mostlyclean-generic distclean-generic clean-generic \
+maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.

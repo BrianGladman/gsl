@@ -1,26 +1,27 @@
-double gsl_stats_imean (int *array, int size);
-double gsl_stats_dmean (double *array, int size);
+#ifndef _GSL_STATISTICS_H
+#define _GSL_STATISTICS_H
 
-double gsl_stats_ittest (int *array1, int *array2, int size1, int size2);
-double gsl_stats_dttest (double *array1, double *array2, int size1, int size2);
+double gsl_stats_mean (const double data[], unsigned int n);
+double gsl_stats_variance (const double data[], unsigned int n);
+double gsl_stats_stddev (const double data[], unsigned int n);
+double gsl_stats_est_variance (const double data[], unsigned int n);
+double gsl_stats_est_stddev (const double data[], unsigned int n);
+double gsl_stats_pvariance (const double data1[], const double data2[], 
+			    unsigned int n1, unsigned int n2);
+double gsl_stats_ttest (const double data1[], const double data2[],
+			 unsigned int n1, unsigned int n2);
 
-double gsl_stats_ivariance (int *array, int size);
-double gsl_stats_dvariance (double *array, int size);
+double gsl_stats_max (const double data[], unsigned int n);
+double gsl_stats_min (const double data[], unsigned int n);
 
-double gsl_stats_isd (int *array, int size);
-double gsl_stats_dsd (double *array, int size);
+double gsl_stats_imean (const int data[], unsigned int n);
+double gsl_stats_ivariance (const int data[], unsigned int n);
+double gsl_stats_istddev (const int data[], unsigned int n);
+double gsl_stats_iest_variance (const int data[], unsigned int n);
+double gsl_stats_iest_stddev (const int data[], unsigned int n);
+double gsl_stats_ipvariance (const int data1[], const int data2[], unsigned int n1, unsigned int n2);
+double gsl_stats_ittest (const int data1[], const int data2[], unsigned int n1, unsigned int n2);
+int gsl_stats_imax (const int data[], unsigned int n);
+int gsl_stats_imin (const int data[], unsigned int n);
 
-double gsl_stats_iest_variance (int *array, int size);
-double gsl_stats_dest_variance (double *array, int size);
-
-double gsl_stats_iest_sd (int *array, int size);
-double gsl_stats_dest_sd (double *array, int size);
-
-double gsl_stats_ipvariance (int *array1, int *array2, int size1, int size2);
-double gsl_stats_dpvariance (double *array1, double *array2, int size1, int size2);
-
-int gsl_stats_imax (int *array, int size);
-double gsl_stats_dmax (double *array, int size);
-
-int gsl_stats_imin (int *array, int size);
-double gsl_stats_dmin (double *array, int size);
+#endif /* _GSL_STATISTICS_H */

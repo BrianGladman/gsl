@@ -1,47 +1,37 @@
-#include <stdio.h>
-#include <math.h>
+#include <gsl_statistics.h>
 
-#include "gsl_bstats.h"
-
-double gsl_stats_imean (int *array, int size)
+double gsl_stats_mean (const double data[], unsigned int size)
 {
-
-  /* Takes an array of integers and finds a double mean */
+  /* Compute the arithmetic mean of a data set */
   
-  double sum, mean;
+  double sum = 0, mean;
   int i;
   
-  sum = 0;
-  
-  /*  Find the sum    */
-  for (i=0; i<size; i++){
-    sum += array[i];
-  }
-  
-  /* find the mean */
-  mean = (sum / size);
-  
+  for (i = 0; i < size; i++)
+    {
+      sum += data[i];
+    }
+
+  mean = sum / size;
+
   return mean;
 }
 
-double gsl_stats_dmean (double *array, int size)
+double gsl_stats_imean (const int data[], unsigned int size)
 {
-
-  /* Takes an array of doubles and finds the double mean */
+  /* Compute the arithmetic mean of an integer data set */
   
-  double sum, mean;
+  double sum = 0, mean;
   int i;
   
-  sum = 0;
-  
-  /*  Find the sum    */
-  for (i=0; i<size; i++){
-    sum += array[i];
-  }
-  
-  /* find the mean */
-  mean = (sum / size);
+  for (i = 0; i < size; i++)
+    {
+      sum += data[i];
+    }
+
+  mean = sum / size;
 
   return mean;
 }
+
 

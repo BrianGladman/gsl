@@ -1,10 +1,62 @@
-#include <stdio.h>
 #include <math.h>
+#include <gsl_statistics.h>
 
-#include "gsl_bstats.h"
+double sum_of_squares (const double data[], unsigned int n) ;
+
+double gsl_stats_variance (const double data[], unsigned int n)
+{
+  double sum = sum_of_squares(data, n) ;
+  double variance = sum / n ; 
+
+  return variance ; 
+}
+
+double gsl_stats_est_variance (const double data[], unsigned int n)
+{
+  double sum = sum_of_squares(data, n) ;
+  double variance = sum / (n - 1) ; 
+
+  return variance ; 
+
+}
+
+double gsl_stats_stddev (const double data[], unsigned int n)
+{
+  double variance = gsl_stats_variance(data, n);
+  double stddev = sqrt(variance);
+
+  return stddev;
+}
+
+double gsl_stats_est_stddev (const double data[], unsigned int n)
+{
+  double est_variance = gsl_stats_est_variance(data, n);
+  double est_stddev = sqrt(est_variance);
+
+  return est_stddev;
+}
+
+double sum_of_squares (const double data[], unsigned int n)
+{
+  /* takes an data of doubles and finds the variance */
+
+  double sum = 0, mean ;
+  int i;
+  
+  mean = gsl_stats_mean(data, n);   /* find the mean */
+
+  /* find the sum of the squares */
+  for (i = 0; i < n; i++)
+    {
+      double delta = (data[i] - mean) ;
+      sum += delta*delta ;
+    }
+
+  return sum ; 
+}
 
 
-double gsl_stats_ivariance (int *array, int size)
+double gsl_stats_ivariance (const int data[], unsigned int n)
 {
   
   /* takes an array of integers and finds the variance */
@@ -16,44 +68,23 @@ double gsl_stats_ivariance (int *array, int size)
   sum = square = difference = 0;
   
   /* find the mean */
-  the_mean = gsl_stats_imean(array, size);
+  the_mean = gsl_stats_imean(data, n);
 
   /* find sum of the squares */
-  for (i=0; i<size; i++){
-    difference = array[i] - the_mean;
+  for (i=0; i<n; i++){
+    difference = data[i] - the_mean;
     square = difference * difference;
     sum = sum + square;
   }
 
   /* find variance */
-  return sum / size;
+  return sum / n;
 }
 
-double gsl_stats_dvariance (double *array, int size)
+
+double gsl_stats_iest_variance (const int data[], unsigned int n)
 {
-  
-  /* takes an array of doubles and finds the variance */
-
-  double sum, the_mean;
-  int i;
-
-  sum=0;
-  
-  /* find the mean */
-  the_mean = gsl_stats_dmean(array, size);
-
-  /* find sum of the squares */
-  for (i=0; i<size; i++){
-    sum += ((array[i] - the_mean) * (array[i] - the_mean));
-  }
-
-  /* find variance */
-  return (sum / size);
-}
-
-double gsl_stats_iest_variance (int *array, int size)
-{
-  /* takes an array of integers and finds the variance */
+  /* takes an data of integers and finds the variance */
 
   double sum, the_mean;
   double square, difference;
@@ -62,189 +93,48 @@ double gsl_stats_iest_variance (int *array, int size)
   sum = square = difference = 0;
   
   /* find the mean */
-  the_mean = gsl_stats_imean(array, size);
+  the_mean = gsl_stats_imean(data, n);
 
   /* find sum of the squares */
-  for (i=0; i<size; i++){
-    difference = array[i] - the_mean;
+  for (i=0; i<n; i++){
+    difference = data[i] - the_mean;
     square = difference * difference;
     sum = sum + square;
   }
 
   /* find variance */
-  return sum / (size-1);
+  return sum / (n-1);
 }
 
-double gsl_stats_dest_variance (double *array, int size)
+
+double gsl_stats_isd (const int data[], unsigned int n)
 {
-  /* takes an array of doubles and finds the variance */
-
-  double sum, the_mean;
-  int i;
-  
-  sum=0;
-  
-  /* find the mean */
-  the_mean = gsl_stats_dmean(array, size);
-  
-  /* find sum of the squares */
-  for (i=0; i<size; i++){
-    sum += ((array[i] - the_mean) * (array[i] - the_mean));
-  }
-
-  /* find variance */
-  return sum / (size -1);
-}
-
-double gsl_stats_isd (int *array, int size)
-{
-  /* finds the standard deviation of an array of integers */
+  /* finds the standard deviation of an data of integers */
 
   double variance, sd;
 
-  variance = gsl_stats_ivariance(array, size);
+  variance = gsl_stats_ivariance(data, n);
 
   sd = sqrt(variance);
 
   return sd;
 }
 
-double gsl_stats_dsd (double *array, int size)
+
+double gsl_stats_iest_sd (const int data[], unsigned int n)
 {
-  /* finds the standard deviation of an array of doubles */
+  /* finds the standard deviation of an data of integers */
 
   double variance, sd;
 
-  variance = gsl_stats_dvariance(array, size);
+  variance = gsl_stats_iest_variance(data, n);
 
   sd = sqrt(variance);
 
   return sd;
 }
 
-double gsl_stats_iest_sd (int *array, int size)
-{
-  /* finds the standard deviation of an array of integers */
-
-  double variance, sd;
-
-  variance = gsl_stats_iest_variance(array, size);
-
-  sd = sqrt(variance);
-
-  return sd;
-}
-
-double gsl_stats_dest_sd (double *array, int size)
-{
-  /* finds the standard deviation of an array of doubles */
-
-  double variance, sd;
-
-  variance = gsl_stats_dest_variance(array, size);
-
-  sd = sqrt(variance);
-
-  return sd;
-}
-
-double gsl_stats_ipvariance(int *array1, int *array2, int size1, int size2)
-{
-  /* Find the pooled variance of two integer arrays */
-
-  double var1, var2, pooled_variance;
-
-  pooled_variance = 0;
-
-  /* find the variances */
-  var1 = gsl_stats_iest_variance(array1, size1);
-  var2 = gsl_stats_iest_variance(array2, size2);
-
-  /* calculate the pooled variance */
-  pooled_variance = (((size1 - 1)*var1)+((size2-1)*var2)) / (size1+size2-2);
-  
-  return pooled_variance;
-
-}
-
-double gsl_stats_dpvariance(double *array1, double *array2, int size1, int size2)
-{
-  /* Find the pooled variance of two double arrays */
-
-  double var1, var2, pooled_variance;
-
-  pooled_variance = 0;
-
-  /* find the variances */
-  var1 = gsl_stats_dest_variance(array1, size1);
-  var2 = gsl_stats_dest_variance(array2, size2);
-
-  /* calculate the pooled variance */
-  pooled_variance = (((size1 - 1)*var1)+((size2-1)*var2)) / (size1+size2-2);
-
-  return pooled_variance;
-
-}
 
 
-int gsl_stats_imax (int *array, int size)
-{
-  /* finds the highest member of an integer array */
-  int max, i;
-  
-  max = array[0];
-  
-  for (i=0; i < size; i++){
-    if (array[i] > max) 
-	      max = array[i];
-  }
-  return max;
-}
 
-double gsl_stats_dmax (double *array, int size)
-{
-  /* finds the highest member of an integer array */
-  double max;
-  int i;
-
-  max = array[0];
-  
-  for (i=0; i < size; i++){
-    if (array[i] > max)
-	      max = array[i];
-  }
-  return max;
-}
-
-int gsl_stats_imin (int *array, int size)
-{
-    /* finds the highest member of an integer array */
-  
-  int min, i;
-
-  min = array[0];
-  
-  for (i=0; i < size; i++){
-    if (array[i] < min)
-	      min = array[i];
-  }
-  return min;
-}
-
-double gsl_stats_dmin (double *array, int size)
-{
-  /* finds the highest member of an integer array */
-  
-  double min;
-  int i;
-  
-  min = array[0];
-  
-  for (i=0; i < size; i++){
-    if (array[i] <min)
-      min = array[i];
-  }
-
-  return min;
-}
 
