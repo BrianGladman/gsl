@@ -186,20 +186,22 @@ This function computes the value of @math{\arctanh(x)}. It provides an
 alternative to the standard math function @code{atanh(x)}.
 @end deftypefun
 
-@deftypefun double gsl_ldexp (double @var{x}, int @var{exp})
+
+@deftypefun double gsl_ldexp (double @var{x}, int @var{e})
 @cindex ldexp
-This function computes the value of @math{x * 2^{exp}}. It provides an
+This function computes the value of @math{x * 2^e}. It provides an
 alternative to the standard math function @code{ldexp(x)}.
 @end deftypefun
 
-@deftypefun double gsl_frexp (double @var{x}, int * @var{exp})
+@deftypefun double gsl_frexp (double @var{x}, int * @var{e})
 @cindex frexp
-This function splits the number @math{x} in its normalized fraction @math{f}
-and its exponent @math{exp}, such that @math{x = f * 2^{exp}} and 
-@math{0.5 =< f < 1.0}. Ihe function returns @math{f} and stores the exponent
-in @math{exp}. Special case: if @math{x} is zero, both @math{f} and @math{exp}
-are set to zero. This function provides an alternative to the standard math
-function @code{frexp(x, e)}.
+This function splits the number @math{x} into its normalized fraction
+@math{f} and exponent @math{e}, such that @math{x = f * 2^e} and
+@c{$0.5 \le f < 1$}
+@math{0.5 <= f < 1}. Ihe function returns @math{f} and stores the
+exponent in @math{e}. If @math{x} is zero, both @math{f} and @math{e}
+are set to zero. This function provides an alternative to the standard
+math function @code{frexp(x, e)}.
 @end deftypefun
 
 @node Small integer powers
