@@ -37,6 +37,9 @@ The library covers the following subject areas:
 
 Further information can be found in the GSL Reference Manual.
 
+Install the gsl package if you need a library for high-level
+scientific numerical analysis.
+
 %prep
 %setup -c
 echo "dude, mybuildroot is " %{mybuildroot}
