@@ -67,12 +67,13 @@ VERSION = @VERSION@
 full_top_builddir = @full_top_builddir@
 full_top_srcdir = @full_top_srcdir@
 
-bin_PROGRAMS=exponential gamma gauss poisson 
+bin_PROGRAMS=exponential gamma gauss poisson lorentz laplace
 noinst_PROGRAMS=bench-gamma bench-gauss bench-poisson  \
    test-gauss test-shuffle
 
 lib_LIBRARIES = libgslrandist.a
-libgslrandist_a_SOURCES = gauss.c poisson.c gamma.c exponential.c
+libgslrandist_a_SOURCES = gauss.c poisson.c gamma.c exponential.c lorentz.c \
+	laplace.c
 
 include_HEADERS= gsl_randist.h
 
@@ -84,6 +85,8 @@ test_gauss_SOURCES= test-gauss.c gauss.c
 bench_gauss_SOURCES= bench-gauss.c gauss.c
 
 exponential_SOURCES= runexponential.c exponential.c
+lorentz_SOURCES = runlorentz.c lorentz.c
+laplace_SOURCES = runlaplace.c laplace.c
 
 poisson_SOURCES= runpoisson.c poisson.c 
 poisson_LDADD= exponential.o $(LDADD)
@@ -105,7 +108,8 @@ CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
 libgslrandist_a_LIBADD = 
-libgslrandist_a_OBJECTS =  gauss.o poisson.o gamma.o exponential.o
+libgslrandist_a_OBJECTS =  gauss.o poisson.o gamma.o exponential.o \
+lorentz.o laplace.o
 AR = ar
 PROGRAMS =  $(bin_PROGRAMS) $(noinst_PROGRAMS)
 
@@ -124,6 +128,14 @@ gauss_LDFLAGS =
 poisson_OBJECTS =  runpoisson.o poisson.o
 poisson_DEPENDENCIES =  exponential.o ../random/libgslrandom.a
 poisson_LDFLAGS = 
+lorentz_OBJECTS =  runlorentz.o lorentz.o
+lorentz_LDADD = $(LDADD)
+lorentz_DEPENDENCIES =  ../random/libgslrandom.a
+lorentz_LDFLAGS = 
+laplace_OBJECTS =  runlaplace.o laplace.o
+laplace_LDADD = $(LDADD)
+laplace_DEPENDENCIES =  ../random/libgslrandom.a
+laplace_LDFLAGS = 
 bench_gamma_OBJECTS =  bench-gamma.o gamma.o
 bench_gamma_LDADD = $(LDADD)
 bench_gamma_DEPENDENCIES =  ../random/libgslrandom.a
@@ -157,11 +169,12 @@ TAR = tar
 GZIP = --best
 DEP_FILES =  .deps/bench-gamma.P .deps/bench-gauss.P \
 .deps/bench-poisson.P .deps/exponential.P .deps/gamma.P .deps/gauss.P \
-.deps/poisson.P .deps/runexponential.P .deps/rungamma.P \
-.deps/rungauss.P .deps/runpoisson.P .deps/shuffle.P .deps/test-gauss.P \
+.deps/laplace.P .deps/lorentz.P .deps/poisson.P .deps/runexponential.P \
+.deps/rungamma.P .deps/rungauss.P .deps/runlaplace.P .deps/runlorentz.P \
+.deps/runpoisson.P .deps/shuffle.P .deps/test-gauss.P \
 .deps/test-shuffle.P
-SOURCES = $(libgslrandist_a_SOURCES) $(exponential_SOURCES) $(gamma_SOURCES) $(gauss_SOURCES) $(poisson_SOURCES) $(bench_gamma_SOURCES) $(bench_gauss_SOURCES) $(bench_poisson_SOURCES) $(test_gauss_SOURCES) $(test_shuffle_SOURCES)
-OBJECTS = $(libgslrandist_a_OBJECTS) $(exponential_OBJECTS) $(gamma_OBJECTS) $(gauss_OBJECTS) $(poisson_OBJECTS) $(bench_gamma_OBJECTS) $(bench_gauss_OBJECTS) $(bench_poisson_OBJECTS) $(test_gauss_OBJECTS) $(test_shuffle_OBJECTS)
+SOURCES = $(libgslrandist_a_SOURCES) $(exponential_SOURCES) $(gamma_SOURCES) $(gauss_SOURCES) $(poisson_SOURCES) $(lorentz_SOURCES) $(laplace_SOURCES) $(bench_gamma_SOURCES) $(bench_gauss_SOURCES) $(bench_poisson_SOURCES) $(test_gauss_SOURCES) $(test_shuffle_SOURCES)
+OBJECTS = $(libgslrandist_a_OBJECTS) $(exponential_OBJECTS) $(gamma_OBJECTS) $(gauss_OBJECTS) $(poisson_OBJECTS) $(lorentz_OBJECTS) $(laplace_OBJECTS) $(bench_gamma_OBJECTS) $(bench_gauss_OBJECTS) $(bench_poisson_OBJECTS) $(test_gauss_OBJECTS) $(test_shuffle_OBJECTS)
 
 default: all
 
@@ -274,6 +287,14 @@ gauss: $(gauss_OBJECTS) $(gauss_DEPENDENCIES)
 poisson: $(poisson_OBJECTS) $(poisson_DEPENDENCIES)
 	@rm -f poisson
 	$(LINK) $(poisson_LDFLAGS) $(poisson_OBJECTS) $(poisson_LDADD) $(LIBS)
+
+lorentz: $(lorentz_OBJECTS) $(lorentz_DEPENDENCIES)
+	@rm -f lorentz
+	$(LINK) $(lorentz_LDFLAGS) $(lorentz_OBJECTS) $(lorentz_LDADD) $(LIBS)
+
+laplace: $(laplace_OBJECTS) $(laplace_DEPENDENCIES)
+	@rm -f laplace
+	$(LINK) $(laplace_LDFLAGS) $(laplace_OBJECTS) $(laplace_LDADD) $(LIBS)
 
 bench-gamma: $(bench_gamma_OBJECTS) $(bench_gamma_DEPENDENCIES)
 	@rm -f bench-gamma
