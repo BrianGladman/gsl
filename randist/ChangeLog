@@ -1,0 +1,5 @@
+1998-01-30  Mark Galassi  <rosalia@cygnus.com>
+
+	* Makefile.am (lib_LIBRARIES): now it creates libgslrandist.a so
+	that we have gaussian and poisson distributions.
+

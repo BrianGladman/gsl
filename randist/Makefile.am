@@ -7,6 +7,9 @@ bin_PROGRAMS=exponential gamma gauss poisson
 noinst_PROGRAMS=bench-gamma bench-gauss bench-poisson  \
    test-gauss test-shuffle
 
+lib_LIBRARIES = libgslrandist.a
+libgslrandist_a_SOURCES = gauss.c poisson.c gamma.c exponential.c
+
 include_HEADERS= gsl_randist.h
 
 INCLUDES= -I$(srcdir)/../random
