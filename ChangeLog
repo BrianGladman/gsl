@@ -1,5 +1,10 @@
 2000-10-26  Mark Galassi  <rosalia@lanl.gov>
 
+	* scripts/mkknownproblems.sh: fixed it so it's slightly better,
+	but it still assumes that you run it out of $(srcdir)/scripts.
+
+	* scripts/knownproblems.pl: put in a more standard path for perl.
+
 	* AUTHORS: some changes and additions.
 
 	* KNOWN-PROBLEMS: updated the list of known problems.
