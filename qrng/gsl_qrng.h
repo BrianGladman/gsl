@@ -30,7 +30,7 @@ typedef struct
   unsigned int max_dimension;
   size_t (*state_size) (unsigned int dimension);
   int (*init_state) (void * state, unsigned int dimension);
-  int (*get) (void * state, unsigned int dimension, double *);
+  int (*get) (void * state, unsigned int dimension, double x[]);
 }
 gsl_qrng_type;
 
@@ -91,14 +91,14 @@ void * gsl_qrng_state (const gsl_qrng * r);
 
 
 /* Retrieve next vector in sequence. */
-int gsl_qrng_get (const gsl_qrng * r, double *);
+int gsl_qrng_get (const gsl_qrng * r, double x[]);
 
 
 #ifdef HAVE_INLINE
-extern inline int gsl_qrng_get (const gsl_qrng * r, double * v);
-extern inline int gsl_qrng_get (const gsl_qrng * r, double * v)
+extern inline int gsl_qrng_get (const gsl_qrng * r, double x[]);
+extern inline int gsl_qrng_get (const gsl_qrng * r, double x[])
 {
-  return (r->type->get) (r->state, r->dimension, v);
+  return (r->type->get) (r->state, r->dimension, x);
 }
 
 #endif /* HAVE_INLINE */

@@ -2,7 +2,7 @@
 
 info_TEXINFOS = gsl-ref.texi
 noinst_TEXINFOS = gsl-design.texi
-gsl_ref_TEXINFOS = err.texi blas.texi min.texi fft.texi rng.texi randist.texi roots.texi statistics.texi specfunc.texi specfunc-airy.texi specfunc-bessel.texi specfunc-chebyshev.texi specfunc-clausen.texi specfunc-coulomb.texi specfunc-coupling.texi specfunc-dawson.texi specfunc-debye.texi specfunc-dilog.texi specfunc-elementary.texi specfunc-ellint.texi specfunc-elljac.texi specfunc-erf.texi specfunc-exp.texi specfunc-expint.texi specfunc-fermi-dirac.texi specfunc-gamma.texi specfunc-gegenbauer.texi specfunc-hyperg.texi specfunc-laguerre.texi specfunc-legendre.texi specfunc-log.texi specfunc-poly.texi specfunc-pow-int.texi specfunc-psi.texi specfunc-result.texi specfunc-synchrotron.texi specfunc-transport.texi specfunc-trig.texi specfunc-zeta.texi siman.texi vectors.texi debug.texi histogram.texi ode-initval.texi integration.texi ieee754.texi montecarlo.texi sum.texi usage.texi dht.texi interp.texi poly.texi linalg.texi eigen.texi multiroots.texi sort.texi permutation.texi complex.texi math.texi fitting.texi multifit.texi const.texi ntuple.texi diff.texi
+gsl_ref_TEXINFOS = err.texi blas.texi min.texi fft.texi rng.texi randist.texi roots.texi statistics.texi specfunc.texi specfunc-airy.texi specfunc-bessel.texi specfunc-chebyshev.texi specfunc-clausen.texi specfunc-coulomb.texi specfunc-coupling.texi specfunc-dawson.texi specfunc-debye.texi specfunc-dilog.texi specfunc-elementary.texi specfunc-ellint.texi specfunc-elljac.texi specfunc-erf.texi specfunc-exp.texi specfunc-expint.texi specfunc-fermi-dirac.texi specfunc-gamma.texi specfunc-gegenbauer.texi specfunc-hyperg.texi specfunc-laguerre.texi specfunc-legendre.texi specfunc-log.texi specfunc-poly.texi specfunc-pow-int.texi specfunc-psi.texi specfunc-result.texi specfunc-synchrotron.texi specfunc-transport.texi specfunc-trig.texi specfunc-zeta.texi siman.texi vectors.texi debug.texi histogram.texi ode-initval.texi integration.texi ieee754.texi montecarlo.texi sum.texi usage.texi dht.texi interp.texi poly.texi linalg.texi eigen.texi multiroots.texi sort.texi permutation.texi complex.texi math.texi fitting.texi multifit.texi const.texi ntuple.texi diff.texi qrng.texi
 
 man_MANS = gsl.3
 
@@ -13,7 +13,7 @@ noinst_DATA = siman-test.eps siman-energy.eps 12-cities.eps \
 	roots-bisection.eps roots-false-position.eps \
 	roots-newtons-method.eps roots-secant-method.eps \
 	histogram.eps histogram2d.eps min-interval.eps \
-        fit-wlinear.eps fit-exp.eps ntuple.eps
+        fit-wlinear.eps fit-exp.eps ntuple.eps qrng.eps
 
 EXTRA_DIST = $(man_MANS) gsl-design.texi \
         siman-test.eps siman-energy.eps 12-cities.eps \
@@ -25,7 +25,7 @@ EXTRA_DIST = $(man_MANS) gsl-design.texi \
 	roots-bisection.eps roots-false-position.eps \
 	roots-newtons-method.eps roots-secant-method.eps \
 	histogram.eps histogram2d.eps min-interval.eps \
-        fit-wlinear.eps fit-exp.eps ntuple.eps \
+        fit-wlinear.eps fit-exp.eps ntuple.eps qrng.eps \
 	rand-beta.tex rand-binomial.tex rand-cauchy.tex rand-chisq.tex \
 	rand-erlang.tex rand-exponential.tex rand-fdist.tex rand-flat.tex \
 	rand-gamma.tex rand-gaussian.tex rand-geometric.tex rand-laplace.tex \

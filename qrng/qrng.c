@@ -55,7 +55,6 @@ gsl_qrng_memcpy (gsl_qrng * dest, const gsl_qrng * src)
 }
 
 
-/* WHAT THE HELL ? WHAT ABOUT THE OTHER STATE INFO ??? */
 gsl_qrng *
 gsl_qrng_clone (const gsl_qrng * q)
 {
@@ -87,9 +86,9 @@ gsl_qrng_clone (const gsl_qrng * q)
 
 
 int
-gsl_qrng_get (const gsl_qrng * r, double * v)
+gsl_qrng_get (const gsl_qrng * r, double x[])
 {
-  return (r->type->get) (r->state, r->dimension, v);
+  return (r->type->get) (r->state, r->dimension, x);
 }
 
 
