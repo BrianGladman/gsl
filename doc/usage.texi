@@ -97,39 +97,6 @@ bash$ gsl-config --prefix
 @noindent
 Further information is available using the command @code{gsl-config --help}.
 
-@node Automake macros
-@section Automake macros
-
-The GSL library also provides some useful automake macros to use in your 
-applications. The gsl.m4 file contains all needed to stuff in order to
-have a clean Makefile generation.
-
-Simply add to your configure.in files the lines:
-
-@example
-AM_PATH_GSL(GSL_VERSION,
-           AC_MSG_ERROR(Error message!))
-@end example
-@noindent
-
-where GSL_VERSION is the GSL Library version you need to compile and run your 
-application, and where "Error message" is the warning you want to show if the 
-required library is not found.
-
-Then, you can add to your Makefile.am files the @code{$(GSL_LIBS)} and 
-@code{$(GSL_CFLAGS)} variables to have the correct compiler flags. 
-@code{$(GSL_LIBS)} is equal to the output of the @code{gsl-config --libs} 
-command as @code{$(GSL_CFLAGS)} is equal to @code{gsl-config --cflags} 
-command.
-
-Tiny example:
-@example
-libgsdv_la_LDFLAGS =    \
-        $(GTK_LIBDIR) \
-        $(GTK_LIBS) -lgsdvgsl $(GSL_LIBS) -lgslblasnative
-@end example
-@noindent
-
 @node Shared Libraries
 @section Shared Libraries
 
@@ -147,6 +114,37 @@ To compile a statically linked version of the program instead, use the
 @example
 gcc -static app.o -lgsl -lgslblasnative -lm
 @end example
+
+@node Automake macros
+@section Automake macros
+
+The GSL library also provides some useful automake macros to use in your
+applications. The @file{gsl.m4} file contains the definitions needed to
+detect GSL in automatic Makefile generation.
+
+To use the macros simply add the following line to your @file{configure.in}
+file:
+
+@example
+AM_PATH_GSL(GSL_VERSION,AC_MSG_ERROR(Error message!))
+@end example
+@noindent
+where @code{GSL_VERSION} is the GSL Library version you need to compile
+and run your application, and where "Error message" is the warning you
+want to show if the required library is not found.
+
+Then, you can add the variables @code{GSL_LIBS} and @code{GSL_CFLAGS} to
+your Makefile.am files to obtain the correct compiler flags.
+@code{GSL_LIBS} is equal to the output of the @code{gsl-config --libs}
+command and @code{GSL_CFLAGS} is equal to @code{gsl-config --cflags}
+command. For example,
+
+@example
+libgsdv_la_LDFLAGS =    \
+        $(GTK_LIBDIR) \
+        $(GTK_LIBS) -lgsdvgsl $(GSL_LIBS) -lgslblasnative
+@end example
+@noindent
 
 @node Inline functions
 @section Inline functions
