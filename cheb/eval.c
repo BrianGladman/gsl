@@ -80,6 +80,8 @@ gsl_cheb_eval_err (const gsl_cheb_series * cs, const double x,
   double y = (2. * x - cs->a - cs->b) / (cs->b - cs->a);
   double y2 = 2.0 * y;
 
+  double absc = 0.0;
+
   for (i = cs->order; i >= 1; i--)
     {
       double temp = d1;
@@ -88,7 +90,17 @@ gsl_cheb_eval_err (const gsl_cheb_series * cs, const double x,
     }
 
   *result = y * d1 - d2 + 0.5 * cs->c[0];
-  *abserr = fabs (*result) * GSL_DBL_EPSILON + fabs (cs->c[cs->order]);
+
+  /* Estimate cumulative numerical error */
+
+  for (i = 0; i <= cs->order; i++)
+    {
+      absc += fabs(cs->c[i]);
+    }
+
+  /* Combine truncation error and numerical error */
+
+  *abserr = fabs (cs->c[cs->order]) + absc * GSL_DBL_EPSILON;
 
   return GSL_SUCCESS;
 }
@@ -105,6 +117,8 @@ gsl_cheb_eval_n_err (const gsl_cheb_series * cs,
   double y = (2. * x - cs->a - cs->b) / (cs->b - cs->a);
   double y2 = 2.0 * y;
 
+  double absc = 0.0;
+
   int eval_order = GSL_MIN_INT (n, cs->order);
 
   for (i = eval_order; i >= 1; i--)
@@ -115,7 +129,17 @@ gsl_cheb_eval_n_err (const gsl_cheb_series * cs,
     }
 
   *result = y * d1 - d2 + 0.5 * cs->c[0];
-  *abserr = fabs (*result) * GSL_DBL_EPSILON + fabs (cs->c[eval_order]);
+
+  /* Estimate cumulative numerical error */
+
+  for (i = 0; i <= cs->order; i++)
+    {
+      absc += fabs(cs->c[i]);
+    }
+
+  /* Combine truncation error and numerical error */
+
+  *abserr = fabs (cs->c[cs->order]) + absc * GSL_DBL_EPSILON;
 
   return GSL_SUCCESS;
 }

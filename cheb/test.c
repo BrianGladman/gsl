@@ -22,6 +22,7 @@
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_test.h>
+#include <gsl/gsl_ieee_utils.h>
 #include "gsl_chebyshev.h"
 
 double fsin (double x, void * p) {
@@ -51,6 +52,8 @@ main(void)
 
   f_exp.function = fexp;
   f_exp.params = 0;
+
+  gsl_ieee_env_setup();
 
   gsl_cheb_init(cs, &f_sin, -M_PI, M_PI);
 
