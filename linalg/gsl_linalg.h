@@ -83,6 +83,8 @@ int gsl_linalg_householder_hm (double tau,
                                gsl_matrix * A, 
                                gsl_vector * work);
 
+int gsl_linalg_complex_householder_hm (gsl_complex tau, const gsl_vector_complex * v, gsl_matrix_complex * A, gsl_vector_complex * work);
+
 int gsl_linalg_householder_hv (double tau, 
                                const gsl_vector * v, 
                                gsl_vector * w);

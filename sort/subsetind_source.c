@@ -16,7 +16,7 @@
 /* find the k-th smallest elements of the vector data, in ascending order */
 
 int
-FUNCTION (gsl_sort, smallest_index) (size_t * p, size_t k,
+FUNCTION (gsl_sort, smallest_index) (size_t * p, const size_t k,
                                      const BASE * src, const size_t stride,
                                      const size_t n)
 {
@@ -74,14 +74,14 @@ FUNCTION (gsl_sort, smallest_index) (size_t * p, size_t k,
 
 
 int
-FUNCTION (gsl_sort_vector,smallest_index) (size_t * p, size_t k, 
+FUNCTION (gsl_sort_vector,smallest_index) (size_t * p, const size_t k, 
                                            const TYPE (gsl_vector) * v)
 {
   return FUNCTION (gsl_sort, smallest_index) (p, k, v->data, v->stride, v->size);
 }
 
 int
-FUNCTION (gsl_sort, largest_index) (size_t * p, size_t k,
+FUNCTION (gsl_sort, largest_index) (size_t * p, const size_t k,
                                     const BASE * src, const size_t stride,
                                     const size_t n)
 {
@@ -139,7 +139,7 @@ FUNCTION (gsl_sort, largest_index) (size_t * p, size_t k,
 
 
 int
-FUNCTION (gsl_sort_vector,largest_index) (size_t * p, size_t k, 
+FUNCTION (gsl_sort_vector,largest_index) (size_t * p, const size_t k, 
                                           const TYPE (gsl_vector) * v)
 {
   return FUNCTION (gsl_sort, largest_index) (p, k, v->data, v->stride, v->size);

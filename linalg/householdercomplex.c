@@ -26,6 +26,7 @@
 #include <gsl/gsl_complex_math.h>
 
 #include "gsl_linalg.h"
+
 gsl_complex
 gsl_linalg_complex_householder_transform (gsl_vector_complex * v)
 {
