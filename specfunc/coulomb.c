@@ -133,7 +133,7 @@ coulomb_Phi_series(const double lam, const double eta, const double x,
   int kmax = 200;
   int k;
   double Akm2 = 1.0;
-  double Akm1 = eta/(lam+ 1.0);
+  double Akm1 = eta/(lam+1.0);
   double Ak;
 
   double xpow = x;
@@ -213,7 +213,7 @@ coulomb_G_series(const double lam, const double eta, const double x, double *res
   while(m < max_iter) {
     vm = x*(2.0*eta*vmm1 - x*vmm2)/(m*(m-1-2.0*lam));
     sum += vm;
-    if(fabs(vm/sum) < 40.0*GSL_MACH_EPS) break;
+    if(sum != 0.0 && fabs(vm/sum) < 40.0*GSL_MACH_EPS) break;
     vmm2 = vmm1;
     vmm1 = vm;
     m++;
@@ -257,7 +257,9 @@ coulomb_G0_series(const double eta, const double x, double * result)
     nu_m = (tex*nu_mm1 - x2*nu_mm2 - 2.0*eta*(2.0*m-1.0)*u_m)/m_mm1;
     nusum += nu_m;
     usum  += u_m;
-    if(fabs(nu_m/nusum) + fabs(u_m/usum) < 40.0*GSL_MACH_EPS) break;
+    if(   nusum != 0.0
+       && usum  != 0.0
+       && (fabs(nu_m/nusum) + fabs(u_m/usum) < 40.0*GSL_MACH_EPS)) break;
     nu_mm2 = nu_mm1;
     nu_mm1 = nu_m;
     u_mm2 = u_mm1;
@@ -693,9 +695,9 @@ gsl_sf_coulomb_wave_FG_impl(const double eta, const double x,
      * representations for F and G.
      */
     const double SMALL = 1.0e-100;
-    const int N    = (int)(lam_F + 0.5 - 2.0*GSL_MACH_EPS);
+    const int N    = (int)(lam_F + 0.5);
     const int span = locMax(k_lam_G, N);
-    const double lam_min = lam_F - N;    /* -1/2 < lam_min <= 1/2 */
+    const double lam_min = lam_F - N;    /* -1/2 <= lam_min <= 1/2 */
     const double C_lam_min = CLeta(lam_min, eta);
     const double pow_x = pow(x, lam_min);
     double F_lam_F, Fp_lam_F;
@@ -730,9 +732,10 @@ gsl_sf_coulomb_wave_FG_impl(const double eta, const double x,
       coulomb_G0_series(eta, x, &G_lam_min);
     }
     else {
+      /* FIXME: do something about -1/2 and 1/2 */
       coulomb_G_series(lam_min, eta, x, &G_lam_min);
     }
-    Gp_lam_min = (Fp_lam_min * G_lam_min - 1.0)/F_lam_min;
+    Gp_lam_min = (Fp_lam_min/F_lam_min)*G_lam_min - 1.0/F_lam_min;
  
     /* Apply scale to the original F,F' values. */
     F_lam_F  *= F_scale;
@@ -748,6 +751,8 @@ gsl_sf_coulomb_wave_FG_impl(const double eta, const double x,
     *Fp = Fp_lam_F;
     *G  = G_lam_G;
     *Gp = Gp_lam_G;
+    *exp_F = 0.0;
+    *exp_G = 0.0;
     return GSL_SUCCESS;
   }
   else if(x < 2.0*eta) {
