@@ -322,9 +322,9 @@ int main ()
 @end example
 
 @noindent
-Note that have assumed that the program is using the default @code{gsl}
-error handler (which calls @code{abort} for any errors).  If you are not
-using a safe error handler you would need to check the return status of
+Note that we have assumed that the program is using the default error
+handler (which calls @code{abort} for any errors).  If you are not using
+a safe error handler you would need to check the return status of
 @code{gsl_fft_complex_radix2_forward}.
 @tex
 \input epsf

@@ -56,38 +56,45 @@ The functions described in this section are declared in
 @section The Gaussian Distribution
 @deftypefn Random double gsl_ran_gaussian (const gsl_rng * @var{r}, double @var{sigma})
 @cindex Gaussian random numbers
-This function returns a gaussian random number, with mean zero and
+This function returns a Gaussian random number, with mean zero and
 standard deviation @var{sigma}. The probability distribution for
-gaussian random numbers is,
+Gaussian random numbers is,
 
 @tex
 \beforedisplay
 $$
-p(x) dx = {1 \over \sqrt{2 \pi \sigma^2}} \exp (-(x-\mu)^2 / 2\sigma^2) dx
+p(x) dx = {1 \over \sqrt{2 \pi \sigma^2}} \exp (-x^2 / 2\sigma^2) dx
 $$
 \afterdisplay
 @end tex
 @ifinfo
 @example
-p(x) dx = @{1 \over \sqrt@{2 \pi \sigma^2@}@} \exp (-(x-\mu)^2 / 2\sigma^2) dx
+p(x) dx = @{1 \over \sqrt@{2 \pi \sigma^2@}@} \exp (-x^2 / 2\sigma^2) dx
 @end example
 @end ifinfo
 @noindent
 for @math{x} in the range @math{-\infty} to @math{+\infty}. Use the
 transformation @math{z = \mu + x} on the numbers returned by
-@code{gsl_ran_gaussian} to obtain a gaussian distribution with mean
+@code{gsl_ran_gaussian} to obtain a Gaussian distribution with mean
 @math{\mu}.
 @end deftypefn
 
 @deftypefun double gsl_ran_gaussian_pdf (double @var{x}, double @var{sigma})
 This function computes the probability density @math{p(x)} at @var{x}
-for a gaussian distribution with standard deviation @var{sigma}, using
+for a Gaussian distribution with standard deviation @var{sigma}, using
 the formula given above.
 @end deftypefun
 
 @tex
 \centerline{\input rand-gaussian.tex}
 @end tex
+
+@deftypefn Random double gsl_ran_ugaussian (const gsl_rng * @var{r})
+@deftypefnx Random double gsl_ran_ugaussian_pdf (double @var{x})
+These functions compute results for the unit Gaussian distribution. They
+are equivalent to the functions above with a standard deviation of one,
+@var{sigma} = 1.
+@end deftypefn
 
 @subheading Properties
 
@@ -171,6 +178,14 @@ lower limit @var{a}, using the formula given above.
 @tex
 \centerline{\input rand-gaussian-tail.tex}
 @end tex
+
+@deftypefn Random double gsl_ran_ugaussian_tail (const gsl_rng * @var{r}, double @var{a})
+@deftypefnx Random double gsl_ran_ugaussian_tail_pdf (double @var{x}, double @var{a})
+These functions compute results for the tail of a unit Gaussian
+distribution. They are equivalent to the functions above with a standard
+deviation of one, @var{sigma} = 1.
+@end deftypefn
+
 
 @page
 @node The Bivariate Gaussian Distribution
