@@ -91,7 +91,7 @@ FUNCTION (gsl_vector, alloc_from_block) (TYPE(gsl_block) * block,
   v->data = block->data + offset ;
   v->size = n;
   v->stride = stride;
-  v->block = block;
+  v->block = 0;
 
   return v;
 }
