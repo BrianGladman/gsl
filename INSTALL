@@ -147,6 +147,15 @@ configuration option:
       CFLAGS="-Ae -O"  ./configure
 
 
+Hints for Intel (Pentium)
+========================
+
+For the Pentium 4 with GCC-3.2 the flags,
+
+      CFLAGS="-O2 -march=pentium4 -mfpmath=sse -msse2"
+
+increase performance by 33% (reported by Sam Halliday <fommil@yahoo.ie>)
+
 Hints for IRIX (SGI)
 ====================
 
