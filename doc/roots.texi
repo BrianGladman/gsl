@@ -197,9 +197,6 @@ this function should return the value
 a pointer to the parameters of the function
 @end table
 
-The function can be evaluated by the macro @code{GSL_FN_EVAL(F,x)} which
-expands to @code{(*((F)->function))(x,(F)->params)}.
-
 Here is an example for the general quadratic function,
 
 @tex
@@ -220,7 +217,7 @@ with @math{a = 3}, @math{b = 2}, @math{c = 1}. The following code
 defines a @code{gsl_function} @code{F} which you could pass to a root
 finder:
 
-@smallexample
+@example
 struct my_f_params @{ double a ; double b ; double c ; @} ;
 
 double
@@ -238,7 +235,14 @@ struct my_f_params params = @{ 3.0, 2.0, 1.0 @};
 
 F.function = &my_f ;
 F.params = &params ;
-@end smallexample
+@end example
+
+The function @math{f(x)} can be evaluated using the following macro,
+
+@example
+#define GSL_FN_EVAL(F,x) (*((F)->function))(x,(F)->params)
+@end example
+
 @end deftp
 
 @deftp {Data Type} gsl_function_fdf
@@ -273,35 +277,11 @@ same time.
 a pointer to the parameters of the function
 @end table
 
-The function @math{f(x)} can be evaluated using the following macro,
-
-@example
-#define GSL_FN_FDF_EVAL_F(FDF,x) (*((FDF)->f))(x,(FDF)->params)
-@end example
-@noindent
-The derivative @math{f'(x)} can be evaluated using the following macro,
-
-@example
-#define GSL_FN_FDF_EVAL_DF(FDF,x) (*((FDF)->df))(x,(FDF)->params)
-@end example
-@noindent
-and both the function @math{y = f(x)} and its derivative @math{dy = f'(x)}
-can be evaluated at the same time using the following macro,
-
-@example
-#define GSL_FN_FDF_EVAL_F_DF(FDF,x,y,dy) 
-     (*((FDF)->fdf))(x,(FDF)->params,(y),(dy))
-@end example
-
-The macro stores @math{f(x)} in its @var{y} argument and @math{f'(x)} in
-its @var{dy} argument -- both of these should be pointers to
-@code{double}.
-
-Here's an example where 
+Here is an example where 
 @c{$f(x) = \exp(2x)$}
 @math{f(x) = 2\exp(2x)}:
 
-@smallexample
+@example
 double
 my_f (double x, void * params)
 @{
@@ -329,7 +309,33 @@ FDF.f = &my_f ;
 FDF.df = &my_df ;
 FDF.fdf = &my_fdf ;
 FDF.params = 0 ;
-@end smallexample
+@end example
+
+The function @math{f(x)} can be evaluated using the following macro,
+
+@example
+#define GSL_FN_FDF_EVAL_F(FDF,x) 
+     (*((FDF)->f))(x,(FDF)->params)
+@end example
+@noindent
+The derivative @math{f'(x)} can be evaluated using the following macro,
+
+@example
+#define GSL_FN_FDF_EVAL_DF(FDF,x) 
+     (*((FDF)->df))(x,(FDF)->params)
+@end example
+@noindent
+and both the function @math{y = f(x)} and its derivative @math{dy = f'(x)}
+can be evaluated at the same time using the following macro,
+
+@example
+#define GSL_FN_FDF_EVAL_F_DF(FDF,x,y,dy) 
+     (*((FDF)->fdf))(x,(FDF)->params,(y),(dy))
+@end example
+
+The macro stores @math{f(x)} in its @var{y} argument and @math{f'(x)} in
+its @var{dy} argument -- both of these should be pointers to
+@code{double}.
 
 @end deftp
 
@@ -751,13 +757,13 @@ routines. It combines the basic Newton algorithm with an Aitken
 @tex
 \beforedisplay
 $$
-R_i = x_i - {(x_{i+1} - x_i)^2 \over (x_{i+2} - 2 x_{i+1} - x_i)}
+R_i = x_i - {(x_{i+1} - x_i)^2 \over (x_{i+2} - 2 x_{i+1} + x_i)}
 $$
 \afterdisplay
 @end tex
 @ifinfo
 @example
-R_i = x_i - (x_@{i+1@} - x_i)^2 / (x_@{i+2@} - 2 x_@{i+1@} - x_@{i@})
+R_i = x_i - (x_@{i+1@} - x_i)^2 / (x_@{i+2@} - 2 x_@{i+1@} + x_@{i@})
 @end example
 @end ifinfo
 
@@ -775,6 +781,245 @@ the function is not well-behaved.
 @node Root Finding Examples
 @section Root Finding Examples
 
+For any root finding algorithm we need to prepare the function to be
+solved.  For this example we will use the general quadratic equation
+described earlier. We first need a header file (@file{demof.h}) to
+define the function parameters,
+
+@example
+struct quadratic_params
+  @{
+    double a, b, c;
+  @};
+
+double quadratic (double x, void *params);
+double quadratic_deriv (double x, void *params);
+void quadratic_fdf (double x, void *params, double *y, double *dy);
+@end example
+
+@noindent
+We place the function definitions in a separate file (@file{demof.c}),
+
+@example
+double
+quadratic (double x, void *params)
+@{
+  struct quadratic_params *p = (struct quadratic_params *) params;
+
+  double a = p->a;
+  double b = p->b;
+  double c = p->c;
+
+  return (a * x + b) * x + c;
+@}
+
+double
+quadratic_deriv (double x, void *params)
+@{
+  struct quadratic_params *p = (struct quadratic_params *) params;
+
+  double a = p->a;
+  double b = p->b;
+  double c = p->c;
+
+  return 2.0 * a * x + b;
+@}
+
+void
+quadratic_fdf (double x, void *params, double *y, double *dy)
+@{
+  struct quadratic_params *p = (struct quadratic_params *) params;
+
+  double a = p->a;
+  double b = p->b;
+  double c = p->c;
+
+  *y = (a * x + b) * x + c;
+  *dy = 2.0 * a * x + b;
+@}
+@end example
+
+@noindent
+The first program uses the function solver @code{gsl_root_fsolver_brent}
+for Brent's method and the general quadratic defined above to solve the
+following equation,
+
+@tex
+\beforedisplay
+$$
+x^2 - 5 = 0
+$$
+\afterdisplay
+@end tex
+@ifinfo
+@example
+x^2 - 5 = 0
+@end example
+@end ifinfo
+
+@noindent
+with solution @math{x = \sqrt 5 = 2.236068...}
+
+@example
+#include <stdio.h>
+#include <gsl_errno.h>
+#include <gsl_math.h>
+#include <gsl_roots.h>
+
+#include "demof.h"
+#include "demof.c"
+
+int
+main ()
+@{
+  int status;
+  int iterations = 0, max_iterations = 100;
+  gsl_root_fsolver *s;
+  double r = 0, r_expected = sqrt (5.0);
+  gsl_interval x = @{0.0, 5.0@};
+  gsl_function F;
+  struct quadratic_params params = @{1.0, 0.0, -5.0@};
+
+  F.function = &quadratic;
+  F.params = &params;
+
+  s = gsl_root_fsolver_alloc (gsl_root_fsolver_brent, &F, x);
+
+  printf ("using %s method\n", gsl_root_fsolver_name (s));
+
+  printf ("%5s [%9s, %9s] %9s %9s %10s %9s\n",
+	  "iter", "lower", "upper", "root", "actual", "err", "err(est)");
+
+  do
+    @{
+      iterations++;
+      status = gsl_root_fsolver_iterate (s);
+      r = gsl_root_fsolver_root (s);
+      x = gsl_root_fsolver_interval (s);
+      status = gsl_root_test_interval (x, 0, 0.001);
+
+      if (status == GSL_SUCCESS)
+	printf ("Converged:\n");
+
+      printf ("%5d [%.7f, %.7f] %.7f %.7f %+.7f %.7f\n",
+	      iterations, x.lower, x.upper,
+	      r, r_expected, r - r_expected, x.upper - x.lower);
+    @}
+  while (status == GSL_CONTINUE && iterations < max_iterations);
+
+@}
+@end example
+
+@noindent
+Here are the results of the iterations,
+
+@example
+bash$ ./a.out 
+using brent method
+ iter [    lower,     upper]      root    actual        err  err(est)
+    1 [1.0000000, 5.0000000] 1.0000000 2.2360680 -1.2360680 4.0000000
+    2 [1.0000000, 3.0000000] 3.0000000 2.2360680 +0.7639320 2.0000000
+    3 [2.0000000, 3.0000000] 2.0000000 2.2360680 -0.2360680 1.0000000
+    4 [2.2000000, 3.0000000] 2.2000000 2.2360680 -0.0360680 0.8000000
+    5 [2.2000000, 2.2366300] 2.2366300 2.2360680 +0.0005621 0.0366300
+Converged:
+    6 [2.2360634, 2.2366300] 2.2360634 2.2360680 -0.0000046 0.0005666
+@end example
+
+@noindent
+If the program is modified to use the bisection solver instead of
+Brent's method, by changing @code{gsl_root_fsolver_brent} to
+@code{gsl_root_fsolver_bisection} the slower convergence of the
+Bisection method can be observed,
+
+@example
+bash$ ./a.out 
+using bisection method
+ iter [    lower,     upper]      root    actual        err  err(est)
+    1 [0.0000000, 2.5000000] 1.2500000 2.2360680 -0.9860680 2.5000000
+    2 [1.2500000, 2.5000000] 1.8750000 2.2360680 -0.3610680 1.2500000
+    3 [1.8750000, 2.5000000] 2.1875000 2.2360680 -0.0485680 0.6250000
+    4 [2.1875000, 2.5000000] 2.3437500 2.2360680 +0.1076820 0.3125000
+    5 [2.1875000, 2.3437500] 2.2656250 2.2360680 +0.0295570 0.1562500
+    6 [2.1875000, 2.2656250] 2.2265625 2.2360680 -0.0095055 0.0781250
+    7 [2.2265625, 2.2656250] 2.2460938 2.2360680 +0.0100258 0.0390625
+    8 [2.2265625, 2.2460938] 2.2363281 2.2360680 +0.0002601 0.0195312
+    9 [2.2265625, 2.2363281] 2.2314453 2.2360680 -0.0046227 0.0097656
+   10 [2.2314453, 2.2363281] 2.2338867 2.2360680 -0.0021813 0.0048828
+   11 [2.2338867, 2.2363281] 2.2351074 2.2360680 -0.0009606 0.0024414
+Converged:
+   12 [2.2351074, 2.2363281] 2.2357178 2.2360680 -0.0003502 0.0012207
+@end example
+
+The next program solves the same function using a derivative solver
+instead.
+
+@example
+#include <stdio.h>
+#include <gsl_errno.h>
+#include <gsl_math.h>
+#include <gsl_roots.h>
+
+#include "demof.h"
+#include "demof.c"
+
+int
+main ()
+@{
+  int status;
+  int iterations = 0, max_iterations = 100;
+  gsl_root_fdfsolver *s;
+  double x0, x = 5.0, r_expected = sqrt (5.0);
+  gsl_function_fdf FDF;
+  struct quadratic_params params = @{1.0, 0.0, -5.0@};
+
+  FDF.f = &quadratic;
+  FDF.df = &quadratic_deriv;
+  FDF.fdf = &quadratic_fdf;
+  FDF.params = &params;
+
+  s = gsl_root_fdfsolver_alloc (gsl_root_fdfsolver_newton, &FDF, x);
+
+  printf ("using %s method\n", gsl_root_fdfsolver_name (s));
+
+  printf ("%-5s %10s %10s %10s %10s\n",
+	  "iter", "root", "actual", "err", "err(est)");
+  do
+    @{
+      iterations++;
+      status = gsl_root_fdfsolver_iterate (s);
+      x0 = x;
+      x = gsl_root_fdfsolver_root (s);
+      status = gsl_root_test_delta (x, x0, 0, 0.001);
+
+      if (status == GSL_SUCCESS)
+	printf ("Converged:\n");
+
+      printf ("%5d %10.7f %10.7f %+10.7f %10.7f\n",
+	      iterations, x, r_expected, x - r_expected, x - x0);
+    @}
+  while (status == GSL_CONTINUE && iterations < max_iterations);
+
+@}
+@end example
+
+Here are the results for Newton's method,
+
+@example
+bash$ ./a.out 
+using newton method
+iter        root     actual        err   err(est)
+    1  3.0000000  2.2360680 +0.7639320 -2.0000000
+    2  2.3333333  2.2360680 +0.0972654 -0.6666667
+    3  2.2380952  2.2360680 +0.0020273 -0.0952381
+Converged:
+    4  2.2360689  2.2360680 +0.0000009 -0.0020263
+@end example
+
+@noindent
+The other derivative solvers can be investigated by changing
+@code{gsl_root_fdfsolver_newton} to @code{gsl_root_fdfsolver_secant} or
+@code{gsl_root_fdfsolver_steffenson}.
 
 @node Root Finding References and Further Reading
 @section Root Finding References and Further Reading

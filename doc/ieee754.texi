@@ -2,26 +2,8 @@
 
 This chapter describes functions for examining the representation of
 floating point numbers and controlling the floating point environment of
-your program.
-
-@comment to turn on math exception handling use __setfpucw, see
-@comment /usr/include/i386/fpu_control.h
-@comment e.g.
-@comment #include <math.h>
-@comment #include <stdio.h>
-@comment #include <fpu_control.h>
-@comment double f (double x) ;
-@comment int main ()
-@comment {
-@comment   double a = 0 ;
-@comment   double y, z ;
-@comment   __setfpucw(0x1372); 
-@comment mention extended vs double precision on Pentium, and how to get around
-@comment it (-ffloat-store, or selective use of volatile)
-
-@comment On the alpha the option -mieee is needed with gcc
-@comment In Digital's compiler the equivalent is -ieee, -ieee-with-no-inexact 
-@comment and -ieee-with-inexact,  or -fpe1 or -fpe2
+your program. The functions described in this chapter are declared in
+the header file @file{gsl_ieee_utils.h}.
 
 @menu
 * Representation of floating point numbers::  
@@ -32,9 +14,14 @@ your program.
 @node Representation of floating point numbers
 @section Representation of floating point numbers
 
+The IEEE Standard for floating
+
 @deftypefun void gsl_ieee_printf_float (const float * @var{x})
 @deftypefunx void gsl_ieee_printf_double (const double * @var{x})
+@end deftypefun
 
+@deftypefun void gsl_ieee_fprintf_float (FILE * @var{stream}, const float * @var{x})
+@deftypefunx void gsl_ieee_fprintf_double (FILE * @var{stream}, const double * @var{x})
 @end deftypefun
 
 @example
@@ -295,3 +282,23 @@ Floating-Point Arithmetic''. @cite{ACM Computing Surveys}, Vol. 24,
 No. 3 (September 1992), page 319
 @end itemize
 @noindent
+
+
+@comment to turn on math exception handling use __setfpucw, see
+@comment /usr/include/i386/fpu_control.h
+@comment e.g.
+@comment #include <math.h>
+@comment #include <stdio.h>
+@comment #include <fpu_control.h>
+@comment double f (double x) ;
+@comment int main ()
+@comment {
+@comment   double a = 0 ;
+@comment   double y, z ;
+@comment   __setfpucw(0x1372); 
+@comment mention extended vs double precision on Pentium, and how to get around
+@comment it (-ffloat-store, or selective use of volatile)
+
+@comment On the alpha the option -mieee is needed with gcc
+@comment In Digital's compiler the equivalent is -ieee, -ieee-with-no-inexact 
+@comment and -ieee-with-inexact,  or -fpe1 or -fpe2
