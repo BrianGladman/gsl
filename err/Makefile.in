@@ -76,7 +76,7 @@ include_HEADERS = gsl_errno.h gsl_message.h gsl_test.h
 libgslerr_a_SOURCES = errno.c
 libgsltest_a_SOURCES = test.c
 
-bin_PROGRAMS = test_errnos
+check_PROGRAMS = test_errnos
 
 TESTS = test_errnos
 
@@ -96,8 +96,6 @@ libgslerr_a_OBJECTS =  errno.o
 libgsltest_a_LIBADD = 
 libgsltest_a_OBJECTS =  test.o
 AR = ar
-PROGRAMS =  $(bin_PROGRAMS)
-
 test_errnos_SOURCES = test_errnos.c
 test_errnos_OBJECTS =  test_errnos.o
 test_errnos_DEPENDENCIES =  libgslerr.a libgsltest.a
@@ -118,7 +116,7 @@ DEP_FILES =  .deps/errno.P .deps/test.P .deps/test_errnos.P
 SOURCES = $(libgslerr_a_SOURCES) $(libgsltest_a_SOURCES) test_errnos.c
 OBJECTS = $(libgslerr_a_OBJECTS) $(libgsltest_a_OBJECTS) test_errnos.o
 
-all: Makefile $(LIBRARIES) $(PROGRAMS) $(HEADERS)
+all: Makefile $(LIBRARIES) $(HEADERS)
 
 .SUFFIXES:
 .SUFFIXES: .S .c .o .s
@@ -165,30 +163,14 @@ libgsltest.a: $(libgsltest_a_OBJECTS) $(libgsltest_a_DEPENDENCIES)
 	$(AR) cru libgsltest.a $(libgsltest_a_OBJECTS) $(libgsltest_a_LIBADD)
 	$(RANLIB) libgsltest.a
 
-mostlyclean-binPROGRAMS:
+mostlyclean-checkPROGRAMS:
 
-clean-binPROGRAMS:
-	-test -z "$(bin_PROGRAMS)" || rm -f $(bin_PROGRAMS)
+clean-checkPROGRAMS:
+	-test -z "$(check_PROGRAMS)" || rm -f $(check_PROGRAMS)
 
-distclean-binPROGRAMS:
+distclean-checkPROGRAMS:
 
-maintainer-clean-binPROGRAMS:
-
-install-binPROGRAMS: $(bin_PROGRAMS)
-	@$(NORMAL_INSTALL)
-	$(mkinstalldirs) $(DESTDIR)$(bindir)
-	@list='$(bin_PROGRAMS)'; for p in $$list; do \
-	  if test -f $$p; then \
-	    echo "  $(INSTALL_PROGRAM) $$p $(DESTDIR)$(bindir)/`echo $$p|sed '$(transform)'`"; \
-	     $(INSTALL_PROGRAM) $$p $(DESTDIR)$(bindir)/`echo $$p|sed '$(transform)'`; \
-	  else :; fi; \
-	done
-
-uninstall-binPROGRAMS:
-	@$(NORMAL_UNINSTALL)
-	list='$(bin_PROGRAMS)'; for p in $$list; do \
-	  rm -f $(DESTDIR)$(bindir)/`echo $$p|sed '$(transform)'`; \
-	done
+maintainer-clean-checkPROGRAMS:
 
 test_errnos: $(test_errnos_OBJECTS) $(test_errnos_DEPENDENCIES)
 	@rm -f test_errnos
@@ -301,10 +283,10 @@ check-TESTS: $(TESTS)
 	test "$$failed" -eq 0
 info:
 dvi:
-check: all
+check: all $(check_PROGRAMS)
 	$(MAKE) check-TESTS
 installcheck:
-install-exec: install-binPROGRAMS
+install-exec: 
 	@$(NORMAL_INSTALL)
 
 install-data: install-includeHEADERS
@@ -313,12 +295,12 @@ install-data: install-includeHEADERS
 install: install-exec install-data all
 	@:
 
-uninstall: uninstall-binPROGRAMS uninstall-includeHEADERS
+uninstall: uninstall-includeHEADERS
 
 install-strip:
 	$(MAKE) INSTALL_PROGRAM='$(INSTALL_PROGRAM) -s' INSTALL_SCRIPT='$(INSTALL_PROGRAM)' install
 installdirs:
-	$(mkinstalldirs)  $(DATADIR)$(bindir) $(DATADIR)$(includedir)
+	$(mkinstalldirs)  $(DATADIR)$(includedir)
 
 
 mostlyclean-generic:
@@ -336,19 +318,19 @@ maintainer-clean-generic:
 	-test -z "$(MAINTAINERCLEANFILES)" || rm -f $(MAINTAINERCLEANFILES)
 	-test -z "$(BUILT_SOURCES)" || rm -f $(BUILT_SOURCES)
 mostlyclean:  mostlyclean-noinstLIBRARIES mostlyclean-compile \
-		mostlyclean-binPROGRAMS mostlyclean-tags \
+		mostlyclean-checkPROGRAMS mostlyclean-tags \
 		mostlyclean-depend mostlyclean-generic
 
-clean:  clean-noinstLIBRARIES clean-compile clean-binPROGRAMS clean-tags \
-		clean-depend clean-generic mostlyclean
+clean:  clean-noinstLIBRARIES clean-compile clean-checkPROGRAMS \
+		clean-tags clean-depend clean-generic mostlyclean
 
 distclean:  distclean-noinstLIBRARIES distclean-compile \
-		distclean-binPROGRAMS distclean-tags distclean-depend \
+		distclean-checkPROGRAMS distclean-tags distclean-depend \
 		distclean-generic clean
 	-rm -f config.status
 
 maintainer-clean:  maintainer-clean-noinstLIBRARIES \
-		maintainer-clean-compile maintainer-clean-binPROGRAMS \
+		maintainer-clean-compile maintainer-clean-checkPROGRAMS \
 		maintainer-clean-tags maintainer-clean-depend \
 		maintainer-clean-generic distclean
 	@echo "This command is intended for maintainers to use;"
@@ -357,15 +339,15 @@ maintainer-clean:  maintainer-clean-noinstLIBRARIES \
 .PHONY: mostlyclean-noinstLIBRARIES distclean-noinstLIBRARIES \
 clean-noinstLIBRARIES maintainer-clean-noinstLIBRARIES \
 mostlyclean-compile distclean-compile clean-compile \
-maintainer-clean-compile mostlyclean-binPROGRAMS distclean-binPROGRAMS \
-clean-binPROGRAMS maintainer-clean-binPROGRAMS uninstall-binPROGRAMS \
-install-binPROGRAMS uninstall-includeHEADERS install-includeHEADERS \
-tags mostlyclean-tags distclean-tags clean-tags maintainer-clean-tags \
-distdir mostlyclean-depend distclean-depend clean-depend \
-maintainer-clean-depend check-TESTS info dvi installcheck install-exec \
-install-data install uninstall all installdirs mostlyclean-generic \
-distclean-generic clean-generic maintainer-clean-generic clean \
-mostlyclean distclean maintainer-clean
+maintainer-clean-compile mostlyclean-checkPROGRAMS \
+distclean-checkPROGRAMS clean-checkPROGRAMS \
+maintainer-clean-checkPROGRAMS uninstall-includeHEADERS \
+install-includeHEADERS tags mostlyclean-tags distclean-tags clean-tags \
+maintainer-clean-tags distdir mostlyclean-depend distclean-depend \
+clean-depend maintainer-clean-depend check-TESTS info dvi installcheck \
+install-exec install-data install uninstall all installdirs \
+mostlyclean-generic distclean-generic clean-generic \
+maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.

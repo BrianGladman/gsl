@@ -2,7 +2,7 @@
 
 lib_LIBRARIES = libgslroots.a 
 
-noinst_PROGRAMS = test
+check_PROGRAMS = test
 
 include_HEADERS = gsl_roots.h
 

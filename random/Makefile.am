@@ -60,7 +60,10 @@ CLEANFILES= tmp.out tmp.in
 
 
 
-bin_PROGRAMS= taus test-taus bench-taus mrg test-mrg bench-mrg cmrg test-cmrg bench-cmrg uni test-uni bench-uni uni32 test-uni32 bench-uni32 zuf test-zuf bench-zuf rand test-rand bench-rand test-switch
+bin_PROGRAMS= taus mrg cmrg uni uni32 zuf rand test-switch
+
+
+check_PROGRAMS= test-taus bench-taus test-mrg bench-mrg test-cmrg bench-cmrg test-uni bench-uni test-uni32 bench-uni32 test-zuf bench-zuf test-rand bench-rand
 
 
 lib_LIBRARIES= libgslrandom.a  libgslrantaus.a libgslranmrg.a libgslrancmrg.a libgslranuni.a libgslranuni32.a libgslranzuf.a libgslranrand.a

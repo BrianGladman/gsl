@@ -5,7 +5,6 @@ include_HEADERS = gsl_statistics.h gsl_statistics_int.h
 
 INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../err
 
-noinst_PROGRAMS = test test_int
 noinst_HEADERS = mean_source.c \
 variance_source.c  \
 absdev_source.c \
@@ -19,6 +18,7 @@ median_source.c \
 percentiles_source.c \
 source.h
 
+check_PROGRAMS = test test_int
 TESTS = test test_int
 
 test_SOURCES = test.c test.h

@@ -1,6 +1,6 @@
 lib_LIBRARIES = libgslspecfunc.a 
 
-noinst_PROGRAMS = test_sf
+check_PROGRAMS = test_sf
 
 include_HEADERS = \
 	gsl_sf.h 	    	\

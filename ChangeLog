@@ -1,3 +1,9 @@
+Wed Apr  8 18:30:48 1998  Brian Gough  <bjg@vvv.lanl.gov>
+
+	* Now using the automake variable check_PROGRAMS everywhere for
+ 	the testing programs (no need to build them unless we do make
+ 	check)
+
 Mon Apr  6 15:09:08 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
 	* added matrix and vector subdirectories

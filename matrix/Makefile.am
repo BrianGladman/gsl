@@ -1,6 +1,6 @@
 lib_LIBRARIES = libgslmatrix.a 
 
-noinst_PROGRAMS = test test_trap
+check_PROGRAMS = test test_trap
 
 include_HEADERS = gsl_matrix.h gsl_matrix_float.h gsl_matrix_int.h
 

@@ -71,7 +71,7 @@ full_top_srcdir = @full_top_srcdir@
 
 lib_LIBRARIES = libgslmatrix.a 
 
-noinst_PROGRAMS = test test_trap
+check_PROGRAMS = test test_trap
 
 include_HEADERS = gsl_matrix.h gsl_matrix_float.h gsl_matrix_int.h
 
@@ -115,8 +115,6 @@ libgslmatrix_a_LIBADD =
 libgslmatrix_a_OBJECTS =  init.o matrix.o init_int.o matrix_int.o \
 init_float.o matrix_float.o
 AR = ar
-PROGRAMS =  $(noinst_PROGRAMS)
-
 test_OBJECTS =  test.o
 test_LDFLAGS = 
 test_trap_OBJECTS =  test_trap.o
@@ -139,7 +137,7 @@ DEP_FILES =  .deps/init.P .deps/init_float.P .deps/init_int.P \
 SOURCES = $(libgslmatrix_a_SOURCES) $(test_SOURCES) $(test_trap_SOURCES)
 OBJECTS = $(libgslmatrix_a_OBJECTS) $(test_OBJECTS) $(test_trap_OBJECTS)
 
-all: Makefile $(LIBRARIES) $(PROGRAMS) $(HEADERS)
+all: Makefile $(LIBRARIES) $(HEADERS)
 
 .SUFFIXES:
 .SUFFIXES: .S .c .o .s
@@ -204,14 +202,14 @@ libgslmatrix.a: $(libgslmatrix_a_OBJECTS) $(libgslmatrix_a_DEPENDENCIES)
 	$(AR) cru libgslmatrix.a $(libgslmatrix_a_OBJECTS) $(libgslmatrix_a_LIBADD)
 	$(RANLIB) libgslmatrix.a
 
-mostlyclean-noinstPROGRAMS:
+mostlyclean-checkPROGRAMS:
 
-clean-noinstPROGRAMS:
-	-test -z "$(noinst_PROGRAMS)" || rm -f $(noinst_PROGRAMS)
+clean-checkPROGRAMS:
+	-test -z "$(check_PROGRAMS)" || rm -f $(check_PROGRAMS)
 
-distclean-noinstPROGRAMS:
+distclean-checkPROGRAMS:
 
-maintainer-clean-noinstPROGRAMS:
+maintainer-clean-checkPROGRAMS:
 
 test: $(test_OBJECTS) $(test_DEPENDENCIES)
 	@rm -f test
@@ -328,7 +326,7 @@ check-TESTS: $(TESTS)
 	test "$$failed" -eq 0
 info:
 dvi:
-check: all
+check: all $(check_PROGRAMS)
 	$(MAKE) check-TESTS
 installcheck:
 install-exec: install-libLIBRARIES
@@ -363,31 +361,30 @@ maintainer-clean-generic:
 	-test -z "$(MAINTAINERCLEANFILES)" || rm -f $(MAINTAINERCLEANFILES)
 	-test -z "$(BUILT_SOURCES)" || rm -f $(BUILT_SOURCES)
 mostlyclean:  mostlyclean-libLIBRARIES mostlyclean-compile \
-		mostlyclean-noinstPROGRAMS mostlyclean-tags \
+		mostlyclean-checkPROGRAMS mostlyclean-tags \
 		mostlyclean-depend mostlyclean-generic
 
-clean:  clean-libLIBRARIES clean-compile clean-noinstPROGRAMS clean-tags \
+clean:  clean-libLIBRARIES clean-compile clean-checkPROGRAMS clean-tags \
 		clean-depend clean-generic mostlyclean
 
 distclean:  distclean-libLIBRARIES distclean-compile \
-		distclean-noinstPROGRAMS distclean-tags \
-		distclean-depend distclean-generic clean
+		distclean-checkPROGRAMS distclean-tags distclean-depend \
+		distclean-generic clean
 	-rm -f config.status
 
 maintainer-clean:  maintainer-clean-libLIBRARIES \
-		maintainer-clean-compile \
-		maintainer-clean-noinstPROGRAMS maintainer-clean-tags \
-		maintainer-clean-depend maintainer-clean-generic \
-		distclean
+		maintainer-clean-compile maintainer-clean-checkPROGRAMS \
+		maintainer-clean-tags maintainer-clean-depend \
+		maintainer-clean-generic distclean
 	@echo "This command is intended for maintainers to use;"
 	@echo "it deletes files that may require special tools to rebuild."
 
 .PHONY: mostlyclean-libLIBRARIES distclean-libLIBRARIES \
 clean-libLIBRARIES maintainer-clean-libLIBRARIES uninstall-libLIBRARIES \
 install-libLIBRARIES mostlyclean-compile distclean-compile \
-clean-compile maintainer-clean-compile mostlyclean-noinstPROGRAMS \
-distclean-noinstPROGRAMS clean-noinstPROGRAMS \
-maintainer-clean-noinstPROGRAMS uninstall-includeHEADERS \
+clean-compile maintainer-clean-compile mostlyclean-checkPROGRAMS \
+distclean-checkPROGRAMS clean-checkPROGRAMS \
+maintainer-clean-checkPROGRAMS uninstall-includeHEADERS \
 install-includeHEADERS tags mostlyclean-tags distclean-tags clean-tags \
 maintainer-clean-tags distdir mostlyclean-depend distclean-depend \
 clean-depend maintainer-clean-depend check-TESTS info dvi installcheck \

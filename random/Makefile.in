@@ -89,7 +89,9 @@ EXTRA_DIST= xxx-switch.xc xxx-gen.xc xxx-state.xc \
 
 CLEANFILES= tmp.out tmp.in
 
-bin_PROGRAMS= taus test-taus bench-taus mrg test-mrg bench-mrg cmrg test-cmrg bench-cmrg uni test-uni bench-uni uni32 test-uni32 bench-uni32 zuf test-zuf bench-zuf rand test-rand bench-rand test-switch
+bin_PROGRAMS= taus mrg cmrg uni uni32 zuf rand test-switch
+
+check_PROGRAMS= test-taus bench-taus test-mrg bench-mrg test-cmrg bench-cmrg test-uni bench-uni test-uni32 bench-uni32 test-zuf bench-zuf test-rand bench-rand
 
 lib_LIBRARIES= libgslrandom.a  libgslrantaus.a libgslranmrg.a libgslrancmrg.a libgslranuni.a libgslranuni32.a libgslranzuf.a libgslranrand.a
 
@@ -204,48 +206,48 @@ PROGRAMS =  $(bin_PROGRAMS)
 
 taus_OBJECTS =  ran.o taus.o
 taus_LDFLAGS = 
+mrg_OBJECTS =  ran.o mrg.o
+mrg_LDFLAGS = 
+cmrg_OBJECTS =  ran.o cmrg.o
+cmrg_LDFLAGS = 
+uni_OBJECTS =  ran.o uni.o
+uni_LDFLAGS = 
+uni32_OBJECTS =  ran.o uni32.o
+uni32_LDFLAGS = 
+zuf_OBJECTS =  ran.o zuf.o
+zuf_LDFLAGS = 
+rand_OBJECTS =  ran.o rand.o
+rand_LDFLAGS = 
+test_switch_OBJECTS =  test-switch.o switch.o
+test_switch_LDFLAGS = 
 test_taus_OBJECTS =  testran.o
 test_taus_LDFLAGS = 
 bench_taus_OBJECTS =  benchran.o
 bench_taus_LDFLAGS = 
-mrg_OBJECTS =  ran.o mrg.o
-mrg_LDFLAGS = 
 test_mrg_OBJECTS =  testran.o
 test_mrg_LDFLAGS = 
 bench_mrg_OBJECTS =  benchran.o
 bench_mrg_LDFLAGS = 
-cmrg_OBJECTS =  ran.o cmrg.o
-cmrg_LDFLAGS = 
 test_cmrg_OBJECTS =  testran.o
 test_cmrg_LDFLAGS = 
 bench_cmrg_OBJECTS =  benchran.o
 bench_cmrg_LDFLAGS = 
-uni_OBJECTS =  ran.o uni.o
-uni_LDFLAGS = 
 test_uni_OBJECTS =  testran.o
 test_uni_LDFLAGS = 
 bench_uni_OBJECTS =  benchran.o
 bench_uni_LDFLAGS = 
-uni32_OBJECTS =  ran.o uni32.o
-uni32_LDFLAGS = 
 test_uni32_OBJECTS =  testran.o
 test_uni32_LDFLAGS = 
 bench_uni32_OBJECTS =  benchran.o
 bench_uni32_LDFLAGS = 
-zuf_OBJECTS =  ran.o zuf.o
-zuf_LDFLAGS = 
 test_zuf_OBJECTS =  testran.o
 test_zuf_LDFLAGS = 
 bench_zuf_OBJECTS =  benchran.o
 bench_zuf_LDFLAGS = 
-rand_OBJECTS =  ran.o rand.o
-rand_LDFLAGS = 
 test_rand_OBJECTS =  testran.o
 test_rand_LDFLAGS = 
 bench_rand_OBJECTS =  benchran.o
 bench_rand_LDFLAGS = 
-test_switch_OBJECTS =  test-switch.o switch.o
-test_switch_LDFLAGS = 
 CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
 LINK = $(CC) $(CFLAGS) $(LDFLAGS) -o $@
@@ -263,8 +265,8 @@ DEP_FILES =  .deps/benchran.P .deps/cmrg-gen.P .deps/cmrg.P \
 .deps/switch.P .deps/taus-gen.P .deps/taus.P .deps/test-switch.P \
 .deps/testran.P .deps/uni-gen.P .deps/uni.P .deps/uni32-gen.P \
 .deps/uni32.P .deps/zuf-gen.P .deps/zuf.P
-SOURCES = $(libgslrandom_a_SOURCES) $(libgslrantaus_a_SOURCES) $(libgslranmrg_a_SOURCES) $(libgslrancmrg_a_SOURCES) $(libgslranuni_a_SOURCES) $(libgslranuni32_a_SOURCES) $(libgslranzuf_a_SOURCES) $(libgslranrand_a_SOURCES) $(taus_SOURCES) $(test_taus_SOURCES) $(bench_taus_SOURCES) $(mrg_SOURCES) $(test_mrg_SOURCES) $(bench_mrg_SOURCES) $(cmrg_SOURCES) $(test_cmrg_SOURCES) $(bench_cmrg_SOURCES) $(uni_SOURCES) $(test_uni_SOURCES) $(bench_uni_SOURCES) $(uni32_SOURCES) $(test_uni32_SOURCES) $(bench_uni32_SOURCES) $(zuf_SOURCES) $(test_zuf_SOURCES) $(bench_zuf_SOURCES) $(rand_SOURCES) $(test_rand_SOURCES) $(bench_rand_SOURCES) $(test_switch_SOURCES)
-OBJECTS = $(libgslrandom_a_OBJECTS) $(libgslrantaus_a_OBJECTS) $(libgslranmrg_a_OBJECTS) $(libgslrancmrg_a_OBJECTS) $(libgslranuni_a_OBJECTS) $(libgslranuni32_a_OBJECTS) $(libgslranzuf_a_OBJECTS) $(libgslranrand_a_OBJECTS) $(taus_OBJECTS) $(test_taus_OBJECTS) $(bench_taus_OBJECTS) $(mrg_OBJECTS) $(test_mrg_OBJECTS) $(bench_mrg_OBJECTS) $(cmrg_OBJECTS) $(test_cmrg_OBJECTS) $(bench_cmrg_OBJECTS) $(uni_OBJECTS) $(test_uni_OBJECTS) $(bench_uni_OBJECTS) $(uni32_OBJECTS) $(test_uni32_OBJECTS) $(bench_uni32_OBJECTS) $(zuf_OBJECTS) $(test_zuf_OBJECTS) $(bench_zuf_OBJECTS) $(rand_OBJECTS) $(test_rand_OBJECTS) $(bench_rand_OBJECTS) $(test_switch_OBJECTS)
+SOURCES = $(libgslrandom_a_SOURCES) $(libgslrantaus_a_SOURCES) $(libgslranmrg_a_SOURCES) $(libgslrancmrg_a_SOURCES) $(libgslranuni_a_SOURCES) $(libgslranuni32_a_SOURCES) $(libgslranzuf_a_SOURCES) $(libgslranrand_a_SOURCES) $(taus_SOURCES) $(mrg_SOURCES) $(cmrg_SOURCES) $(uni_SOURCES) $(uni32_SOURCES) $(zuf_SOURCES) $(rand_SOURCES) $(test_switch_SOURCES) $(test_taus_SOURCES) $(bench_taus_SOURCES) $(test_mrg_SOURCES) $(bench_mrg_SOURCES) $(test_cmrg_SOURCES) $(bench_cmrg_SOURCES) $(test_uni_SOURCES) $(bench_uni_SOURCES) $(test_uni32_SOURCES) $(bench_uni32_SOURCES) $(test_zuf_SOURCES) $(bench_zuf_SOURCES) $(test_rand_SOURCES) $(bench_rand_SOURCES)
+OBJECTS = $(libgslrandom_a_OBJECTS) $(libgslrantaus_a_OBJECTS) $(libgslranmrg_a_OBJECTS) $(libgslrancmrg_a_OBJECTS) $(libgslranuni_a_OBJECTS) $(libgslranuni32_a_OBJECTS) $(libgslranzuf_a_OBJECTS) $(libgslranrand_a_OBJECTS) $(taus_OBJECTS) $(mrg_OBJECTS) $(cmrg_OBJECTS) $(uni_OBJECTS) $(uni32_OBJECTS) $(zuf_OBJECTS) $(rand_OBJECTS) $(test_switch_OBJECTS) $(test_taus_OBJECTS) $(bench_taus_OBJECTS) $(test_mrg_OBJECTS) $(bench_mrg_OBJECTS) $(test_cmrg_OBJECTS) $(bench_cmrg_OBJECTS) $(test_uni_OBJECTS) $(bench_uni_OBJECTS) $(test_uni32_OBJECTS) $(bench_uni32_OBJECTS) $(test_zuf_OBJECTS) $(bench_zuf_OBJECTS) $(test_rand_OBJECTS) $(bench_rand_OBJECTS)
 
 all: Makefile $(LIBRARIES) $(PROGRAMS) $(HEADERS)
 
@@ -391,9 +393,46 @@ uninstall-binPROGRAMS:
 	  rm -f $(DESTDIR)$(bindir)/`echo $$p|sed '$(transform)'`; \
 	done
 
+mostlyclean-checkPROGRAMS:
+
+clean-checkPROGRAMS:
+	-test -z "$(check_PROGRAMS)" || rm -f $(check_PROGRAMS)
+
+distclean-checkPROGRAMS:
+
+maintainer-clean-checkPROGRAMS:
+
 taus: $(taus_OBJECTS) $(taus_DEPENDENCIES)
 	@rm -f taus
 	$(LINK) $(taus_LDFLAGS) $(taus_OBJECTS) $(taus_LDADD) $(LIBS)
+
+mrg: $(mrg_OBJECTS) $(mrg_DEPENDENCIES)
+	@rm -f mrg
+	$(LINK) $(mrg_LDFLAGS) $(mrg_OBJECTS) $(mrg_LDADD) $(LIBS)
+
+cmrg: $(cmrg_OBJECTS) $(cmrg_DEPENDENCIES)
+	@rm -f cmrg
+	$(LINK) $(cmrg_LDFLAGS) $(cmrg_OBJECTS) $(cmrg_LDADD) $(LIBS)
+
+uni: $(uni_OBJECTS) $(uni_DEPENDENCIES)
+	@rm -f uni
+	$(LINK) $(uni_LDFLAGS) $(uni_OBJECTS) $(uni_LDADD) $(LIBS)
+
+uni32: $(uni32_OBJECTS) $(uni32_DEPENDENCIES)
+	@rm -f uni32
+	$(LINK) $(uni32_LDFLAGS) $(uni32_OBJECTS) $(uni32_LDADD) $(LIBS)
+
+zuf: $(zuf_OBJECTS) $(zuf_DEPENDENCIES)
+	@rm -f zuf
+	$(LINK) $(zuf_LDFLAGS) $(zuf_OBJECTS) $(zuf_LDADD) $(LIBS)
+
+rand: $(rand_OBJECTS) $(rand_DEPENDENCIES)
+	@rm -f rand
+	$(LINK) $(rand_LDFLAGS) $(rand_OBJECTS) $(rand_LDADD) $(LIBS)
+
+test-switch: $(test_switch_OBJECTS) $(test_switch_DEPENDENCIES)
+	@rm -f test-switch
+	$(LINK) $(test_switch_LDFLAGS) $(test_switch_OBJECTS) $(test_switch_LDADD) $(LIBS)
 
 test-taus: $(test_taus_OBJECTS) $(test_taus_DEPENDENCIES)
 	@rm -f test-taus
@@ -403,10 +442,6 @@ bench-taus: $(bench_taus_OBJECTS) $(bench_taus_DEPENDENCIES)
 	@rm -f bench-taus
 	$(LINK) $(bench_taus_LDFLAGS) $(bench_taus_OBJECTS) $(bench_taus_LDADD) $(LIBS)
 
-mrg: $(mrg_OBJECTS) $(mrg_DEPENDENCIES)
-	@rm -f mrg
-	$(LINK) $(mrg_LDFLAGS) $(mrg_OBJECTS) $(mrg_LDADD) $(LIBS)
-
 test-mrg: $(test_mrg_OBJECTS) $(test_mrg_DEPENDENCIES)
 	@rm -f test-mrg
 	$(LINK) $(test_mrg_LDFLAGS) $(test_mrg_OBJECTS) $(test_mrg_LDADD) $(LIBS)
@@ -414,10 +449,6 @@ test-mrg: $(test_mrg_OBJECTS) $(test_mrg_DEPENDENCIES)
 bench-mrg: $(bench_mrg_OBJECTS) $(bench_mrg_DEPENDENCIES)
 	@rm -f bench-mrg
 	$(LINK) $(bench_mrg_LDFLAGS) $(bench_mrg_OBJECTS) $(bench_mrg_LDADD) $(LIBS)
-
-cmrg: $(cmrg_OBJECTS) $(cmrg_DEPENDENCIES)
-	@rm -f cmrg
-	$(LINK) $(cmrg_LDFLAGS) $(cmrg_OBJECTS) $(cmrg_LDADD) $(LIBS)
 
 test-cmrg: $(test_cmrg_OBJECTS) $(test_cmrg_DEPENDENCIES)
 	@rm -f test-cmrg
@@ -427,10 +458,6 @@ bench-cmrg: $(bench_cmrg_OBJECTS) $(bench_cmrg_DEPENDENCIES)
 	@rm -f bench-cmrg
 	$(LINK) $(bench_cmrg_LDFLAGS) $(bench_cmrg_OBJECTS) $(bench_cmrg_LDADD) $(LIBS)
 
-uni: $(uni_OBJECTS) $(uni_DEPENDENCIES)
-	@rm -f uni
-	$(LINK) $(uni_LDFLAGS) $(uni_OBJECTS) $(uni_LDADD) $(LIBS)
-
 test-uni: $(test_uni_OBJECTS) $(test_uni_DEPENDENCIES)
 	@rm -f test-uni
 	$(LINK) $(test_uni_LDFLAGS) $(test_uni_OBJECTS) $(test_uni_LDADD) $(LIBS)
@@ -438,10 +465,6 @@ test-uni: $(test_uni_OBJECTS) $(test_uni_DEPENDENCIES)
 bench-uni: $(bench_uni_OBJECTS) $(bench_uni_DEPENDENCIES)
 	@rm -f bench-uni
 	$(LINK) $(bench_uni_LDFLAGS) $(bench_uni_OBJECTS) $(bench_uni_LDADD) $(LIBS)
-
-uni32: $(uni32_OBJECTS) $(uni32_DEPENDENCIES)
-	@rm -f uni32
-	$(LINK) $(uni32_LDFLAGS) $(uni32_OBJECTS) $(uni32_LDADD) $(LIBS)
 
 test-uni32: $(test_uni32_OBJECTS) $(test_uni32_DEPENDENCIES)
 	@rm -f test-uni32
@@ -451,10 +474,6 @@ bench-uni32: $(bench_uni32_OBJECTS) $(bench_uni32_DEPENDENCIES)
 	@rm -f bench-uni32
 	$(LINK) $(bench_uni32_LDFLAGS) $(bench_uni32_OBJECTS) $(bench_uni32_LDADD) $(LIBS)
 
-zuf: $(zuf_OBJECTS) $(zuf_DEPENDENCIES)
-	@rm -f zuf
-	$(LINK) $(zuf_LDFLAGS) $(zuf_OBJECTS) $(zuf_LDADD) $(LIBS)
-
 test-zuf: $(test_zuf_OBJECTS) $(test_zuf_DEPENDENCIES)
 	@rm -f test-zuf
 	$(LINK) $(test_zuf_LDFLAGS) $(test_zuf_OBJECTS) $(test_zuf_LDADD) $(LIBS)
@@ -463,10 +482,6 @@ bench-zuf: $(bench_zuf_OBJECTS) $(bench_zuf_DEPENDENCIES)
 	@rm -f bench-zuf
 	$(LINK) $(bench_zuf_LDFLAGS) $(bench_zuf_OBJECTS) $(bench_zuf_LDADD) $(LIBS)
 
-rand: $(rand_OBJECTS) $(rand_DEPENDENCIES)
-	@rm -f rand
-	$(LINK) $(rand_LDFLAGS) $(rand_OBJECTS) $(rand_LDADD) $(LIBS)
-
 test-rand: $(test_rand_OBJECTS) $(test_rand_DEPENDENCIES)
 	@rm -f test-rand
 	$(LINK) $(test_rand_LDFLAGS) $(test_rand_OBJECTS) $(test_rand_LDADD) $(LIBS)
@@ -474,10 +489,6 @@ test-rand: $(test_rand_OBJECTS) $(test_rand_DEPENDENCIES)
 bench-rand: $(bench_rand_OBJECTS) $(bench_rand_DEPENDENCIES)
 	@rm -f bench-rand
 	$(LINK) $(bench_rand_LDFLAGS) $(bench_rand_OBJECTS) $(bench_rand_LDADD) $(LIBS)
-
-test-switch: $(test_switch_OBJECTS) $(test_switch_DEPENDENCIES)
-	@rm -f test-switch
-	$(LINK) $(test_switch_LDFLAGS) $(test_switch_OBJECTS) $(test_switch_LDADD) $(LIBS)
 
 install-includeHEADERS: $(include_HEADERS)
 	@$(NORMAL_INSTALL)
@@ -586,7 +597,7 @@ check-TESTS: $(TESTS)
 	test "$$failed" -eq 0
 info:
 dvi:
-check: all
+check: all $(check_PROGRAMS)
 	$(MAKE) check-TESTS
 installcheck:
 install-exec: install-libLIBRARIES install-binPROGRAMS
@@ -622,21 +633,23 @@ maintainer-clean-generic:
 	-test -z "$(MAINTAINERCLEANFILES)" || rm -f $(MAINTAINERCLEANFILES)
 	-test -z "$(BUILT_SOURCES)" || rm -f $(BUILT_SOURCES)
 mostlyclean:  mostlyclean-libLIBRARIES mostlyclean-compile \
-		mostlyclean-binPROGRAMS mostlyclean-tags \
-		mostlyclean-depend mostlyclean-generic
+		mostlyclean-binPROGRAMS mostlyclean-checkPROGRAMS \
+		mostlyclean-tags mostlyclean-depend mostlyclean-generic
 
-clean:  clean-libLIBRARIES clean-compile clean-binPROGRAMS clean-tags \
-		clean-depend clean-generic mostlyclean
+clean:  clean-libLIBRARIES clean-compile clean-binPROGRAMS \
+		clean-checkPROGRAMS clean-tags clean-depend \
+		clean-generic mostlyclean
 
 distclean:  distclean-libLIBRARIES distclean-compile \
-		distclean-binPROGRAMS distclean-tags distclean-depend \
-		distclean-generic clean
+		distclean-binPROGRAMS distclean-checkPROGRAMS \
+		distclean-tags distclean-depend distclean-generic clean
 	-rm -f config.status
 
 maintainer-clean:  maintainer-clean-libLIBRARIES \
 		maintainer-clean-compile maintainer-clean-binPROGRAMS \
-		maintainer-clean-tags maintainer-clean-depend \
-		maintainer-clean-generic distclean
+		maintainer-clean-checkPROGRAMS maintainer-clean-tags \
+		maintainer-clean-depend maintainer-clean-generic \
+		distclean
 	@echo "This command is intended for maintainers to use;"
 	@echo "it deletes files that may require special tools to rebuild."
 
@@ -645,7 +658,9 @@ clean-libLIBRARIES maintainer-clean-libLIBRARIES uninstall-libLIBRARIES \
 install-libLIBRARIES mostlyclean-compile distclean-compile \
 clean-compile maintainer-clean-compile mostlyclean-binPROGRAMS \
 distclean-binPROGRAMS clean-binPROGRAMS maintainer-clean-binPROGRAMS \
-uninstall-binPROGRAMS install-binPROGRAMS uninstall-includeHEADERS \
+uninstall-binPROGRAMS install-binPROGRAMS mostlyclean-checkPROGRAMS \
+distclean-checkPROGRAMS clean-checkPROGRAMS \
+maintainer-clean-checkPROGRAMS uninstall-includeHEADERS \
 install-includeHEADERS tags mostlyclean-tags distclean-tags clean-tags \
 maintainer-clean-tags distdir mostlyclean-depend distclean-depend \
 clean-depend maintainer-clean-depend check-TESTS info dvi installcheck \

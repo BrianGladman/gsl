@@ -1,6 +1,6 @@
 lib_LIBRARIES = libgslvector.a 
 
-noinst_PROGRAMS = test test_trap
+check_PROGRAMS = test test_trap
 
 include_HEADERS = gsl_vector.h gsl_vector_float.h gsl_vector_int.h
 
