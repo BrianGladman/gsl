@@ -26,12 +26,12 @@ do { \
 /* Return nonzero if a and b are within tolerance of each other. */
 
 #define WITHIN_TOL(a, b, rel_epsilon, abs_epsilon) \
-     (fabs((a) - (b)) < (rel_epsilon) * MIN(fabs(a), fabs(b)) + (abs_epsilon))
+ (fabs((a) - (b)) < (rel_epsilon) * GSL_MIN(fabs(a), fabs(b)) + (abs_epsilon))
 
 #define CHECK_TOL(a, b, rel_epsilon, abs_epsilon) \
 do { \
-  if (rel_epsilon * MIN(fabs(a), fabs(b)) + abs_epsilon \
-      < MAX(fabs(a), fabs(b)) * DBL_EPSILON * GSL_ROOT_EPSILON_BUFFER) \
+  if (rel_epsilon * GSL_MIN(fabs(a), fabs(b)) + abs_epsilon \
+      < GSL_MAX(fabs(a), fabs(b)) * DBL_EPSILON * GSL_ROOT_EPSILON_BUFFER) \
     GSL_ERROR("tolerances too small for this context", GSL_EBADTOL); \
 } while (0)
 

@@ -16,6 +16,7 @@
 #include <math.h>
 #include <float.h>
 
+#include <gsl_math.h>
 #include <gsl_errno.h>
 #include <gsl_roots.h>
 
@@ -98,7 +99,7 @@ gsl_root_brent (double *root, double (*f) (double),
 	  fc = fa;
 	}
 
-      tol = 0.5 * MAX (rel_epsilon * fabs (b), abs_epsilon);
+      tol = 0.5 * GSL_MAX (rel_epsilon * fabs (b), abs_epsilon);
       m = 0.5 * (c - b);
 
       if (fb == 0)
@@ -151,7 +152,7 @@ gsl_root_brent (double *root, double (*f) (double),
 	      p = -p;
 	    }
 
-	  if (2 * p < MIN (3 * m * q - fabs (tol * q), fabs (e * q)))
+	  if (2 * p < GSL_MIN (3 * m * q - fabs (tol * q), fabs (e * q)))
 	    {
 	      e = d;
 	      d = p / q;

@@ -8,6 +8,7 @@
 #include <math.h>
 #include <float.h>
 
+#include <gsl_math.h>
 #include <gsl_errno.h>
 #include <gsl_roots.h>
 
