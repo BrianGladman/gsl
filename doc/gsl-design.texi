@@ -217,7 +217,9 @@ mind that evil profit-making companies (such as those which sell
 * What routines are implemented::  
 * What routines are not implemented::  
 * Tensions in the Design of  Numerical Libraries::  
+* Code Reuse::                  
 * Standards and conventions::   
+* Background and Preparation::  
 * Documentation::               
 * Namespace::                   
 * Header files::                
@@ -232,15 +234,16 @@ mind that evil profit-making companies (such as those which sell
 * Linear Algebra Levels::       
 * Exceptions and Error handling::  
 * Persistence::                 
+* Using Return Values::         
+* Variable Names::              
 * Datatype widths::             
 * size_t::                      
 * Arrays vs Pointers::          
 * Constness::                   
 * Pseudo-templates::            
-* Test programs::               
+* Test suites::                 
 * Compilation::                 
 * Thread-safety::               
-* Test suites::                 
 * Legal issues::                
 * Non-UNIX portability::        
 * Compatibility with other libraries::  
@@ -369,6 +372,15 @@ So choose simplicity over completeness.  Keep modules independent where
 possible. If interdependencies between modules are introduced be sure
 about where you are going to draw the line.  
 
+@node Code Reuse
+@section Code Reuse
+
+It is useful if people can grab a single source file and include it in
+their own programs without needing the whole library.  Try to allow
+standalone files like this whenever it is reasonable.  Obviously the
+user might need to define a few macros, such as GSL_ERROR, to compile
+the file but that is ok.  Examples where this can be done: grabbing a
+single random number generator.
 
 @node Standards and conventions
 @section Standards and conventions
@@ -387,9 +399,9 @@ The references for these standards are the @cite{GNU Coding Standards}
 document, Harbison and Steele @cite{C: A Reference Manual}, the
 @cite{GNU C Library Manual} (version 2), and the Glib source code.
 
-If the project has a philosophy it is "Think C".  Since we are working
-in C we should only do what is natural in C, rather than trying to
-simulate features of other languages.  If there is something which is
+If the project has a philosophy it is to "Think in C".  Since we are
+working in C we should only do what is natural in C, rather than trying
+to simulate features of other languages.  If there is something which is
 unnatural in C and has to be simulated then we avoid using it. If this
 means leaving something out of the library, or only offering a limited
 version then so be it.  It is not worthwhile making the library
@@ -435,6 +447,44 @@ Proceedings of the Summer '91 Usenix Conference, pp.  235-256, 1991.
 
 @url{http://citeseer.nj.nec.com/korn91sfio.html}
 @end itemize
+
+
+@node Background and Preparation
+@section Background and Preparation
+
+Before implementing something be sure to research the subject
+thoroughly.  This will save a lot of time in the long-run.  The two most
+important steps are,
+
+@enumerate
+@item
+to determine whether there is already a free library which does the job.
+If so, there is no need to reimplement it.  Carry out a search on
+Netlib, GAMs, na-net, sci.math.num-analysis and the web in general. This
+should also provide a list of existing proprietary libraries which are
+relevant.
+
+@item 
+make a comparative survey of existing implementations in the
+commercial/free libraries. Examine the typical APIs, methods of
+communication between program and subroutine, and classify them so that
+you are familiar with the key concepts or features that an
+implementation may or may not have, depending on the relevant tradeoffs
+chosen.  Be sure to review the documentation of existing libraries for
+useful references.
+
+@item
+read up on the subject and determine the state-of-the-art.  Find the
+latest review papers.  A search of the following journals should be
+undertaken.
+
+ACM Transactions on Mathematical Software
+Numerische Mathematik
+Journal of Computation and Applied Mathematics
+Computer Physics Communications
+SIAM Journal of Numerical Analysis
+SIAM Journal of Scientific Computing
+@end enumerate
 
 @node Documentation
 @section Documentation
@@ -498,6 +548,35 @@ complicated for the library.
 
 Note: it is possible to define an abstract base class easily in C, using
 function pointers.  See the rng directory for an example. 
+
+When reimplementing public domain fortran code, please try to introduce
+the appropriate object concepts as structs, rather than translating the
+code literally in terms of arrays.  The structs can be useful just
+within the file, you don't need to export them to the user.
+
+For example, if a fortran program repeatedly uses a subroutine like,
+
+@example
+SUBROUTINE  RESIZE (X, K, ND, K1)
+@end example
+@noindent
+where X(K,D) represents a grid to be resized to X(K1,D) you can make
+this more readable by introducing a struct,
+
+@example
+struct grid @{
+    int nd;  /* number of dimensions */
+    int k;   /* number of bins */
+    double * x;   /* partition of axes, array of size x[k][nd] */
+@}
+
+void
+resize_grid (struct grid * g, int k_new)
+@{
+...
+@}
+@end example
+
 
 @node Comments
 @section Comments
@@ -636,6 +715,65 @@ ide, const char *format);
 @noindent
 to do the actual reading and writing.
 
+@node Using Return Values
+@section Using Return Values
+
+Always assign a return value to a variable before using it.  This allows
+easier debugging of the function, and inspection and modification of the
+return value.  If the variable is only needed temporarily then enclose
+it in a suitable scope.
+
+For example, instead of writing,
+
+@example
+a = f(g(h(x,y)))
+@end example
+@noindent
+use temporary variables to store the intermediate values,
+@example
+@{
+  double u = h(x,y);
+  double v = g(u);
+  a = f(v);
+@}
+@end example
+@noindent
+These can then be inspected more easily in the debugger, and breakpoints
+can be placed more precisely.  The compiler will eliminate the temporary
+variables automatically when the program is compiled with optimization.
+
+@node Variable Names
+@section Variable Names
+
+Try to follow existing conventions for variable names,
+
+@table @code
+@item dim
+number of dimensions
+@item w
+pointer to workspace 
+@item state
+pointer to state variable (use @code{s} if you need to save characters)
+@item result
+pointer to result (output variable)
+@item abserr
+absolute error 
+@item relerr
+relative error
+@item size
+the size of an array or vector e.g. double array[size] 
+@item stride
+the stride of a vector
+@item size1
+the number of rows in a matrix
+@item size2
+the number of columns in a matrix
+@item n
+general integer number, e.g. number of elements of array, in fft, etc
+@item r
+random number generator (gsl_rng)
+@end table
+
 @node Datatype widths
 @section Datatype widths
 
@@ -733,17 +871,25 @@ unavoidable that other data-types will be encountered.
 For floating point work "double" is considered a "natural type".  This
 sort of idea is a part of the C language.
 
-@node Test programs
-@section Test programs
+@node Test suites
+@section Test suites
 
-Provide one test program per directory which aims for 100% path coverage
-of the code.  Obviously it would be a lot of work to really achieve this,
-so prioritize testing on the critical parts and use inspection for the
-rest.  Test all the error conditions by explicitly provoking them,
-because we consider it a serious defect if the function does not return
-an error for an invalid parameter. N.B. Don't bother to test for null
-pointers -- it's sufficient for the library to segfault if the user
-provides an invalid pointer.
+The implementor of each library should provide a reasonable test suite
+for that library.
+
+The test suite should be a program that uses the library and checks the
+result against known results, or invokes the library several times and
+does a statistical analysis on the results (for example in the case of
+random number generators).
+
+Ideally the one test program per directory should aim for 100% path
+coverage of the code.  Obviously it would be a lot of work to really
+achieve this, so prioritize testing on the critical parts and use
+inspection for the rest.  Test all the error conditions by explicitly
+provoking them, because we consider it a serious defect if the function
+does not return an error for an invalid parameter. N.B. Don't bother to
+test for null pointers -- it's sufficient for the library to segfault if
+the user provides an invalid pointer.
 
 The tests should be deterministic.  Use the @code{gsl_test} functions
 provided to perform separate tests for each feature with a separate
@@ -790,20 +936,6 @@ There is no need to provide any explicit support for threads
 it impossible for someone to call a GSL routine from a multithreaded
 program.
 
-@node Test suites
-@section Test suites
-
-The implementor of each library should provide a reasonable test suite
-for that library.
-
-The test suite should be a program that uses the library and checks the
-result against known results, or invokes the library several times and
-does a statistical analysis on the results (for example in the case of
-random number generators).
-
-We should add the target @code{make check} to the Makefile.am files,
-and that should automatically execute the verification suite for the
-given library.
 
 @node Legal issues
 @section Legal issues
@@ -890,9 +1022,9 @@ and would carry overhead that other applications do not need.
 @node Miscellaneous
 @section Miscellaneous
 
-Don't use @code{l} as a variable name --- it is difficult to distinguish
-from the number @code{1}. (This seems to be a favorite in old Fortran
-programs).
+Don't use the letter @code{l} as a variable name --- it is difficult to
+distinguish from the number @code{1}. (This seems to be a favorite in
+old Fortran programs).
 
 @node Copying
 @unnumbered Copying
