@@ -1,7 +1,5 @@
-
 #include <stdio.h>
 #include <math.h>
-#include <time.h>
 #include <stdlib.h>
 
 /* include these with quotes instead of angle brackets so that we get the
@@ -38,8 +36,6 @@ void gsl_siman_solve(void *x0_p, gsl_Efunc_t Ef,
 
   x = (void *) malloc(element_size);
   new_x = (void *) malloc(element_size);
-
-  gsl_ran_seed(time(0L));
 
   T = params.t_initial;
   memcpy(x, x0_p, element_size);
@@ -129,8 +125,6 @@ void gsl_siman_solve_many(void *x0_p, gsl_Efunc_t Ef,
   energies = (double *) malloc(params.n_tries*sizeof(double));
   probs = (double *) malloc(params.n_tries*sizeof(double));
   sum_probs = (double *) malloc(params.n_tries*sizeof(double));
-
-  gsl_ran_seed(time(0L));
 
   T = params.t_initial;
   memcpy(x, x0_p, element_size);

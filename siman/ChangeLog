@@ -1,3 +1,11 @@
+Sat May 23 13:59:55 1998  Brian Gough  <bjg@vvv.lanl.gov>
+
+	* siman.c: made the solving functions deterministic by removing
+ 	the random seed, gsl_ran_seed(time(0L)). When the function is
+ 	non-deterministic it is hard to debug and test (about 1 time in 20
+ 	the test would fail due to the randomness). We can let the user do
+ 	the seeding if they need that.
+	
 1998-02-09  Mark Galassi  <rosalia@nis.lanl.gov>
 
 	* siman_test_driver.sh (LAST_ENERGY): fixed a typo; the tests now
