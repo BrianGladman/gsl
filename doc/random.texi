@@ -543,7 +543,7 @@ significant bits.
 
 @menu
 * Unix random number generators::  
-* Numerical Recipes random number generators::  
+* Numerical Recipes generators::  
 * Other random number generators::  
 @end menu
 
@@ -633,8 +633,8 @@ the double precision number @math{x_n/m}, which is equivalent to the
 function @code{drand48}.
 @end deffn
 
-@node Numerical Recipes random number generators
-@subsubsection Numerical Recipes random number generators
+@node Numerical Recipes generators
+@subsubsection Numerical Recipes generators
 @cindex Random number generators, Numerical recipes
 @cindex Numerical recipes, random number generators
 @c
