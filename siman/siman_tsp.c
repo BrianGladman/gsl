@@ -28,7 +28,7 @@ typedef struct s_tsp_city Stsp_city;
 
 /* in this table, latitude and longitude are obtained from the US
    Census Bureau, at http://www.census.gov/cgi-bin/gazetteer */
-Stsp_city cities[] = {{"Santa_Fe",    35.68,   105.95},
+Stsp_city cities[] = {{"Santa Fe",    35.68,   105.95},
 		      {"Phoenix",     33.54,   112.07},
 		      {"Albuquerque", 35.12,   106.62},
 		      {"Clovis",      34.41,   103.20},
@@ -142,7 +142,7 @@ int main(int argc, char *argv[])
   /* set up a trivial initial route */
   printf("# initial order of cities:\n");
   for (i = 0; i < N_CITIES; ++i) {
-    printf("# %s\n", cities[i].name);
+    printf("# \"%s\"\n", cities[i].name);
     x_initial[i] = i;
   }
 
@@ -153,7 +153,7 @@ int main(int argc, char *argv[])
   /* this can be plotted with */
   /* ./siman_tsp > hhh ; grep city_coord hhh | awk '{print $2 "   " $3}' | xyplot -ps -d "xy" > c.eps */
   for (i = 0; i < N_CITIES+1; ++i) {
-    printf("###initial_city_coord: %g %g %s\n",
+    printf("###initial_city_coord: %g %g \"%s\"\n",
 	   -cities[x_initial[i % N_CITIES]].longitude,
 	   cities[x_initial[i % N_CITIES]].lat,
 	   cities[x_initial[i % N_CITIES]].name);
@@ -166,7 +166,7 @@ int main(int argc, char *argv[])
 
   printf("# final order of cities:\n");
   for (i = 0; i < N_CITIES; ++i) {
-    printf("# %s\n", cities[x_initial[i]].name);
+    printf("# \"%s\"\n", cities[x_initial[i]].name);
   }
 
   printf("# final coordinates of cities (longitude and latitude)\n");
