@@ -192,6 +192,20 @@ I fed some data from both variants into Marsaglia's diehard and found that the
 documented version is better in most tests. Thus the error is probably in the 
 implementation and the documentation is right.
 ----------------------------------------------------------------------
+BUG#19 -- randist/landau has an out of range error
+
+The lines 
+
+  else if (I >= 7 && I <= 980)
+    {
+      RANLAN = F[I] + U * (F[I + 1] - F[I] -
+                           0.25 * (1 - U) * (F[I + 2] - F[I + 1] - F[I] + F[I - 
+1]));
+    }
+
+can access element 982 which is out of range (the array is declared as
+f[982] so the maximum index should be 981).
+----------------------------------------------------------------------
 BUG#20 -- seg fault from gsl_sf_legendre_sphPlm_e (underflow)
 
 In the following bit of code, the first call works, but the second call 
