@@ -17,7 +17,7 @@ gsl_histogram_pdf_sample (const gsl_histogram_pdf * p, const double r)
   status = gsl_histogram_find_impl (p->nbins, p->sum, r, &i) ;
 
   if (status) {
-    GSL_ERROR_RETURN ("cannot find r in cumulative pdf", EDOM, 0) ;
+    GSL_ERROR_RETURN ("cannot find r in cumulative pdf", GSL_EDOM, 0) ;
   } else {
     double delta = (r - p->sum[i])/(p->sum[i+1] - p->sum[i]) ;
     double x = p->range[i] + delta * (p->range[i+1] - p->range[i]) ;

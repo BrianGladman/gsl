@@ -11,13 +11,13 @@ gsl_histogram2d_get (const gsl_histogram2d * h, const size_t i, const size_t j)
   if (i >= nx) 
     {
       GSL_ERROR_RETURN ("index i lies outside valid range of 0 .. nx - 1",
-			EDOM, 0) ;
+			GSL_EDOM, 0) ;
     }
 
   if (j >= ny) 
     {
       GSL_ERROR_RETURN ("index j lies outside valid range of 0 .. ny - 1",
-			EDOM, 0) ;
+			GSL_EDOM, 0) ;
     }
   
   return h->bin[i * ny + j] ;
@@ -31,7 +31,7 @@ gsl_histogram2d_get_xlowerlimit (const gsl_histogram2d * h, const size_t i)
   if (i >= nx) 
     {
       GSL_ERROR_RETURN ("index i lies outside valid range of 0 .. nx - 1",
-			EDOM, 0) ;
+			GSL_EDOM, 0) ;
     }
 
   return h->xrange[i] ;
@@ -45,7 +45,7 @@ gsl_histogram2d_get_xupperlimit (const gsl_histogram2d * h, const size_t i)
   if (i >= nx) 
     {
       GSL_ERROR_RETURN ("index i lies outside valid range of 0 .. nx - 1",
-			EDOM, 0) ;
+			GSL_EDOM, 0) ;
     }
 
   return h->xrange[i + 1] ;
@@ -61,7 +61,7 @@ gsl_histogram2d_get_ylowerlimit (const gsl_histogram2d * h, const size_t j)
   if (j >= ny) 
     {
       GSL_ERROR_RETURN ("index j lies outside valid range of 0 .. ny - 1",
-			EDOM, 0) ;
+			GSL_EDOM, 0) ;
     }
 
   return h->yrange[j] ;
@@ -75,7 +75,7 @@ gsl_histogram2d_get_yupperlimit (const gsl_histogram2d * h, const size_t j)
   if (j >= ny) 
     {
       GSL_ERROR_RETURN ("index j lies outside valid range of 0 .. ny - 1",
-			EDOM, 0) ;
+			GSL_EDOM, 0) ;
     }
 
   return h->yrange[j + 1] ;

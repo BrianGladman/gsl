@@ -23,7 +23,7 @@ gsl_histogram2d_pdf_sample (const gsl_histogram2d_pdf * p,
   status = gsl_histogram_find_impl (p->nx * p->ny, p->sum, r1, &k) ;
 
   if (status) {
-    GSL_ERROR ("cannot find r1 in cumulative pdf", EDOM) ;
+    GSL_ERROR ("cannot find r1 in cumulative pdf", GSL_EDOM) ;
   } else {
     size_t i = k / p->ny ;
     size_t j = k - (i * p->ny) ;
