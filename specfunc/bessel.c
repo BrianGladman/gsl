@@ -569,12 +569,6 @@ int gsl_sf_bessel_Jnu_asymp_trans_impl(const double nu, const double x, double *
   return GSL_SUCCESS; 
 }
 
-/* transition region
- */
-int gsl_sf_bessel_Ynu_asymp_trans_impl(const double nu, const double x, double * result)
-{
-}
-
 
 /************************************************************************
  *                                                                      *
@@ -1016,7 +1010,8 @@ gsl_sf_bessel_JY_steed_CF2(const double nu, const double x,
  */
 int
 gsl_sf_bessel_K_scaled_steed_temme_CF2(const double nu, const double x,
-                                       double * K_nu, double * K_nup1, double * Kp_nu)
+                                       double * K_nu, double * K_nup1,
+                                       double * Kp_nu)
 {
   const int maxiter = 10000;
 

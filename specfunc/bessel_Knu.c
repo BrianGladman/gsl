@@ -41,6 +41,26 @@ gsl_sf_bessel_Knu_scaled_impl(const double nu, const double x, double * result)
 
 
 int
+gsl_sf_bessel_Knu_impl(const double nu, const double x, double * result)
+{
+  if(-x < GSL_LOG_DBL_MIN) {
+    *result = 0.0;
+    return GSL_EUNDRFLW;
+  }
+  else {
+    double ex = exp(-x);
+    double b = 0.0;
+    int stat_K = gsl_sf_bessel_Knu_scaled_impl(nu, x, &b);
+    *result = ex * b;
+    if(*result == 0.0)
+      return GSL_EUNDRFLW;
+    else
+      return stat_K;
+  }
+}
+
+
+int
 gsl_sf_bessel_Knu_scaled_e(const double nu, const double x, double * result)
 {
   int status = gsl_sf_bessel_Knu_scaled_impl(nu, x, result);
@@ -51,6 +71,16 @@ gsl_sf_bessel_Knu_scaled_e(const double nu, const double x, double * result)
 }
 
 
+int
+gsl_sf_bessel_Knu_e(const double nu, const double x, double * result)
+{
+  int status = gsl_sf_bessel_Knu_impl(nu, x, result);
+  if(status != GSL_SUCCESS) {
+    GSL_ERROR("gsl_sf_bessel_Knu_e", status);
+  }
+  return status;
+}
+
 double
 gsl_sf_bessel_Knu_scaled(const double nu, const double x)
 {
@@ -58,6 +88,18 @@ gsl_sf_bessel_Knu_scaled(const double nu, const double x)
   int status = gsl_sf_bessel_Knu_scaled_impl(nu, x, &y);
   if(status != GSL_SUCCESS) {
     GSL_WARNING("gsl_sf_bessel_Knu_scaled", status);
+  }
+  return y;
+}
+
+
+double
+gsl_sf_bessel_Knu(const double nu, const double x)
+{
+  double y;
+  int status = gsl_sf_bessel_Knu_impl(nu, x, &y);
+  if(status != GSL_SUCCESS) {
+    GSL_WARNING("gsl_sf_bessel_Knu", status);
   }
   return y;
 }

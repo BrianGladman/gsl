@@ -399,39 +399,6 @@ int     gsl_sf_bessel_Ynu_e(double nu, double x, double * result);
 double  gsl_sf_bessel_Ynu(double nu, double x);
 
 
-/* Bessel functions of real order
- * J_nu(x), J'_nu(x)
- * Y_nu(x), Y'_nu(x)
- * for nu = numin, numin+1, numin+2, ..., numin+kmax
- *
- * exceptions: GSL_EDOM
- */
-int gsl_sf_bessel_JnuYnu_scaled_impl(double numin, double x, int kmax,
-                                     double * result_J_array,
-                                     double * result_Y_array,
-                                     double * result_Jp_array,
-                                     double * result_Yp_array);
-
-
-/* Modified Bessel functions of real order
- * Exp[-|x|] I_nu(x), Exp[-|x|] I'_nu(x)
- * Exp[+|x|] K_nu(x), Exp[+|x|] K'_nu(x)
- * for nu = numin, numin+1, numin+2, ..., numin+kmax
- *
- * exceptions: GSL_EDOM
- */
-int gsl_sf_bessel_InuKnu_scaled_impl(double numin, double x, int kmax,
-                                     double * result_I_array,
-                                     double * result_K_array,
-                                     double * result_Ip_array,
-                                     double * result_Kp_array);
-
-
-
-
-
-
-
 /* Scaled modified cylindrical Bessel functions
  *   Exp[-|x|] BesselI[nu, x]
  *
@@ -442,6 +409,17 @@ int     gsl_sf_bessel_Inu_scaled_e(double nu, double x, double * result);
 double  gsl_sf_bessel_Inu_scaled(double nu, double x);
 
 
+/* Modified cylindrical Bessel functions
+ *  BesselI[nu, x]
+ *
+ * exceptions: GSL_EDOM, GSL_EOVRFLW
+ */
+int     gsl_sf_bessel_Inu_impl(double nu, double x, double * result);
+int     gsl_sf_bessel_Inu_e(double nu, double x, double * result);
+double  gsl_sf_bessel_Inu(double nu, double x);
+
+
+
 /* Scaled modified cylindrical Bessel functions
  *   Exp[+|x|] BesselK[nu, x]
  *
@@ -450,6 +428,16 @@ double  gsl_sf_bessel_Inu_scaled(double nu, double x);
 int     gsl_sf_bessel_Knu_scaled_impl(double nu, double x, double * result);
 int     gsl_sf_bessel_Knu_scaled_e(double nu, double x, double * result);
 double  gsl_sf_bessel_Knu_scaled(double nu, double x);
+
+
+/* Modified cylindrical Bessel functions
+ *   BesselK[nu, x]
+ *
+ * exceptions: GSL_EDOM, GSL_EUNDRFLW
+ */
+int     gsl_sf_bessel_Knu_impl(double nu, double x, double * result);
+int     gsl_sf_bessel_Knu_e(double nu, double x, double * result);
+double  gsl_sf_bessel_Knu(double nu, double x);
 
 
 /* Regular cylindrical Bessel functions J_nu(x) calculated

@@ -27,8 +27,16 @@ gsl_sf_bessel_Ynu_impl(double nu, double x, double * result)
     else {
       double J_mu, J_mup1, Jp_mu;
       double P, Q;
-      gsl_sf_bessel_Jnu_impl(mu,     x, &J_mu);
-      gsl_sf_bessel_Jnu_impl(mu+1.0, x, &J_mup1);
+      if(mu >= 0.0) {
+        gsl_sf_bessel_Jnu_impl(mu,     x, &J_mu);
+        gsl_sf_bessel_Jnu_impl(mu+1.0, x, &J_mup1);
+      }
+      else {
+        double J_mup2;
+	gsl_sf_bessel_Jnu_impl(mu+1.0, x, &J_mup1);
+        gsl_sf_bessel_Jnu_impl(mu+2.0, x, &J_mup2);
+	J_mu = 2.0*(mu+1.0)/x * J_mup1 - J_mup2;
+      }
       gsl_sf_bessel_JY_steed_CF2(mu, x, &P, &Q);
       Jp_mu = mu/x * J_mu - J_mup1;
       Y_mu  = (P*J_mu - Jp_mu)/Q;

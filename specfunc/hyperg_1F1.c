@@ -114,6 +114,7 @@ hyperg_1F1_Y_recurse_a(double a, double b, double x,
   return GSL_SUCCESS;
 }
 
+
 /* Manage the upward recursion on the parameter 'a',
  * Evaluating 1F1(a+n_stop,b,x) by recursing up
  * from 1F1(a+n_start,b,x) and 1F1(a+n_start+1,b,x).
@@ -249,16 +250,23 @@ gsl_sf_hyperg_1F1_impl(const double a, const double b, const double x,
     return stat;
   }
 
-  
+
   /* Now we have dealt with any special negative integer cases,
    * including the error cases, so we are left with a well-behaved
    * series evaluation, though the arguments may be large.
    */
-
   if(fabs(x) < 30.0) {
     if((fabs(a) < 30.0*fabs(b))  ||  (fabs(a) < 30.0 && fabs(b) < 30.0)) {
       double prec;
       return hyperg_1F1_series(a, b, x, result, &prec); 
+    }
+    else if(fabs(b-a) < 30.0 && fabs(b) < 30.0) {
+      double prec;
+      double Ex = exp(x);
+      double Kummer_1F1;
+      int stat_Kummer = hyperg_1F1_series(b-a, b, x, &Kummer_1F1, &prec);
+      *result = Ex * Kummer_1F1;
+      return stat_Kummer;
     }
     else {
       /* |a| >> |b|  && (|a| > 30 || |b| > 30) */

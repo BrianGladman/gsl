@@ -6,6 +6,7 @@
 #include <gsl_errno.h>
 #include "gsl_sf_exp.h"
 #include "gsl_sf_gamma.h"
+#include "gsl_sf_bessel.h"
 #include "gsl_sf_hyperg.h"
 
 #define locEPS        (1000.0*GSL_MACH_EPS)
@@ -137,6 +138,74 @@ test_hyperg0F1_stuff(void)
          c, x, result, prec, gsl_strerror(stat)
 	 );
   printf("\n");
+  return 0;
+}
+
+
+/* Evaluate bessel_I(nu, x), allowing nu < 0.
+ * This is fine here because we do not not allow
+ * nu to be a negative integer.
+ * x > 0.
+ */
+static
+int
+hyperg_0F1_bessel_I(const double nu, const double x, double * result)
+{
+  if(x > GSL_LOG_DBL_MAX) {
+    *result = 0.0;
+    return GSL_EOVRFLW;
+  }
+
+  if(nu < 0.0) { 
+    const double anu = -nu;
+    const double s   = 2.0/M_PI * sin(anu*M_PI);
+    const double ex  = exp(x);
+    double I = 0.0;
+    double K = 0.0;
+    int stat_I = gsl_sf_bessel_Inu_scaled_impl(anu, x, &I);
+    int stat_K = gsl_sf_bessel_Knu_scaled_impl(anu, x, &K);
+    *result = ex * I + s * K / ex;
+    if(stat_K != GSL_SUCCESS)
+      return stat_K;
+    else
+      return stat_I;
+  }
+  else {
+    const double ex  = exp(x);
+    double I = 0.0;
+    int stat_I = gsl_sf_bessel_Inu_scaled_impl(nu, x, &I);
+    *result = ex * I;
+    return stat_I;
+  }
+}
+
+
+/* Evaluate bessel_J(nu, x), allowing nu < 0.
+ * This is fine here because we do not not allow
+ * nu to be a negative integer.
+ * x > 0.
+ */
+static
+int
+hyperg_0F1_bessel_J(const double nu, const double x, double * result)
+{
+  if(nu < 0.0) { 
+    const double anu = -nu;
+    const double s   = sin(anu*M_PI);
+    const double c   = cos(anu*M_PI);
+    double J = 0.0;
+    double Y = 0.0;
+    int stat_J = gsl_sf_bessel_Jnu_impl(anu, x, &J);
+    int stat_Y = gsl_sf_bessel_Ynu_impl(anu, x, &Y);
+    *result = c * J - s * Y;
+    if(stat_Y != GSL_SUCCESS)
+      return stat_Y;
+    else
+      return stat_J;
+  }
+  else {
+    return gsl_sf_bessel_Jnu_impl(nu, x, result);
+  }
 }
 
 
@@ -152,13 +221,91 @@ gsl_sf_hyperg_0F1_impl(double c, double x, double * result)
 
   if(x < 0.0) {
     double Jcm1;
-    double lg_c;
-    int stat_J = gsl_sf_bessel_Jnu();
+    double lg_c, sgn;
+    double ln_result;
+    int stat_g = gsl_sf_lngamma_sgn_impl(c, &lg_c, &sgn);
+    int stat_J = hyperg_0F1_bessel_J(c-1.0, 2.0*sqrt(-x), &Jcm1);
+    if(stat_g != GSL_SUCCESS) {
+      *result = 0.0;
+      return stat_g;
+    }
+    if(Jcm1 == 0.0) {
+      *result = 0.0;
+      return stat_J;
+    }
+    else {
+      double s_J = (Jcm1 > 0.0 ? 1.0 : -1.0);
+      ln_result = lg_c + log(-x)*0.5*(1.0-c) + log(fabs(Jcm1));
+      if(ln_result > GSL_LOG_DBL_MAX) {
+        *result = 0.0;  /* FIXME: should be Inf */
+        return GSL_EOVRFLW;
+      }
+      else if(ln_result < GSL_LOG_DBL_MIN) {
+        *result = 0.0;
+	return GSL_EUNDRFLW;
+      }
+      else {
+        *result = s_J * sgn * exp(ln_result);
+	return stat_J;
+      }
+    }
   }
   else if(x == 0.0) {
     *result = 1.0;
     return GSL_SUCCESS;
   }
   else {
+    double Icm1;
+    double lg_c, sgn;
+    double ln_result;
+    int stat_g = gsl_sf_lngamma_sgn_impl(c, &lg_c, &sgn);
+    int stat_I = hyperg_0F1_bessel_I(c-1.0, 2.0*sqrt(x), &Icm1);
+    if(stat_g != GSL_SUCCESS) {
+      *result = 0.0;
+      return stat_g;
+    }
+    if(Icm1 == 0.0) {
+      *result = 0.0;
+      return stat_I;
+    }
+    else {
+      double s_I = (Icm1 > 0.0 ? 1.0 : -1.0);
+      ln_result = log(x)*0.5*(1.0-c) + lg_c + log(fabs(Icm1));
+      if(ln_result > GSL_LOG_DBL_MAX) {
+        *result = 0.0;  /* FIXME: should be Inf */
+        return GSL_EOVRFLW;
+      }
+      else if(ln_result < GSL_LOG_DBL_MIN) {
+        *result = 0.0;
+	return GSL_EUNDRFLW;
+      }
+      else {
+        *result = s_I * sgn * exp(ln_result);
+	return stat_I;
+      }
+    }
   }
+}
+
+
+int
+gsl_sf_hyperg_0F1_e(const double c, const double x, double * result)
+{
+  int status = gsl_sf_hyperg_0F1_impl(c, x, result);
+  if(status != GSL_SUCCESS) {
+    GSL_ERROR("gsl_sf_hyperg_0F1_e", status);
+  }
+  return status;
+}
+
+
+double
+gsl_sf_hyperg_0F1(const double c, const double x)
+{
+  double y;
+  int status = gsl_sf_hyperg_0F1_impl(c, x, &y);
+  if(status != GSL_SUCCESS) {
+    GSL_WARNING("gsl_sf_hyperg_0F1", status);
+  }
+  return y;
 }

@@ -14,6 +14,7 @@
 
 /*-*-*-*-*-*-*-*-*-*-*-* Private Section *-*-*-*-*-*-*-*-*-*-*-*/
 
+#if 0
 /* standard backward recursion with arbitrary starting values
  * assumes: n >= 2, x > 0
  * checked OK [GJ] Sun May  3 09:09:40 EDT 1998 
@@ -59,6 +60,7 @@ static void recurse_In(const int n, const double x, double I0, double * b_n, dou
   *b_n   = local_b_n   * ratio;
   *b_nm1 = local_b_nm1 * ratio;
 }
+#endif /* 0 */
 
 
 /* backward recursion using asymptotic starting values
@@ -146,13 +148,13 @@ int gsl_sf_bessel_In_scaled_impl(int n, const double x, double * result)
     return gsl_sf_bessel_I1_scaled_impl(x, result);
   }
   else { 
-    if(x == 0.) {
-      *result = 0.;
+    if(x == 0.0) {
+      *result = 0.0;
       return GSL_SUCCESS;
     }
     else {
       int status = bessel_In_scaled(n, fabs(x), result, (double *)0);
-      if(x < 0. && GSL_IS_ODD(n)) *result = - *result;
+      if(x < 0.0 && GSL_IS_ODD(n)) *result = - *result;
       return status;
     }
   }
@@ -215,13 +217,13 @@ int gsl_sf_bessel_In_impl(int n, const double x, double * result)
   
   n = abs(n);  /* I(-n, z) = I(n, z) */
   
-  if(ax > GSL_LOG_DBL_MAX - 1.) {
+  if(ax > GSL_LOG_DBL_MAX - 1.0) {
     *result = 0.; /* FIXME: should be Inf */
     return GSL_EOVRFLW;
   }
   else {
     int status = bessel_In_scaled(n, ax, result, (double *)0);
-    if(x < 0. && GSL_IS_ODD(n)) *result = - *result;
+    if(x < 0.0 && GSL_IS_ODD(n)) *result = - *result;
     *result *= exp(ax);
     return status;
   }
@@ -236,7 +238,7 @@ int gsl_sf_bessel_In_array_impl(int n, const double x, double * result_array)
   n = abs(n);  /* I(-n, z) = I(n, z) */
 
   if(ax > GSL_LOG_DBL_MAX - 1.) {
-    for(j=0; j<=n; j++) result_array[j] = 0.; /* FIXME: should be Inf */
+    for(j=0; j<=n; j++) result_array[j] = 0.0; /* FIXME: should be Inf */
     return GSL_EOVRFLW;
   }
   else {

@@ -26,7 +26,7 @@ int gsl_sf_bessel_Jnu_asymp_Debye_osc_impl(double nu, double x, double * result)
 int gsl_sf_bessel_Ynu_asymp_Debye_osc_impl(double nu, double x, double * result);
 
 int gsl_sf_bessel_Jnu_asymp_trans_impl(double nu, double x, double * result);
-int gsl_sf_bessel_Ynu_asymp_trans_impl(double nu, double x, double * result);
+/* int gsl_sf_bessel_Ynu_asymp_trans_impl(double nu, double x, double * result); */
 
 int gsl_sf_bessel_Jnu_asymp_Olver_impl(double nu, double x, double * result);
 int gsl_sf_bessel_Ynu_asymp_Olver_impl(double nu, double x, double * result);
@@ -67,5 +67,9 @@ int
 gsl_sf_bessel_JY_steed_CF2(double nu, double x,
                            double * P, double * Q);
 
+int
+gsl_sf_bessel_K_scaled_steed_temme_CF2(const double nu, const double x,
+                                       double * K_nu, double * K_nup1,
+				       double * Kp_nu);
 
 #endif /* !_BESSEL_H_ */
