@@ -5,13 +5,13 @@ The Gamma function is defined by the following integral,
 @tex
 \beforedisplay
 $$
-\Gamma(x) = \int_0^{\inf} dt \, t^{x-1} \exp(-t)
+\Gamma(x) = \int_0^{\infty} dt \, t^{x-1} \exp(-t)
 $$
 \afterdisplay
 @end tex
 @ifinfo
 @example
-\Gamma(x) = \int_0^\inf dt  t^@{x-1@} \exp(-t)
+\Gamma(x) = \int_0^\infty dt  t^@{x-1@} \exp(-t)
 @end example
 @end ifinfo
 @noindent
