@@ -79,7 +79,7 @@ gsl_dht_alloc (size_t size)
 static int
 dht_bessel_zeros(gsl_dht * t)
 {
-  int s;
+  unsigned int s;
   gsl_sf_result z;
   int stat_z = 0;
   t->j[0] = 0.0;
