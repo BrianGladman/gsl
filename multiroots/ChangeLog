@@ -1,3 +1,7 @@
+Mon Apr 23 12:55:39 2001  Brian Gough  <bjg@network-theory.co.uk>
+
+	* Makefile.am (test_LDADD): added cblas lib
+
 Mon Apr 16 20:18:08 2001  Brian Gough  <bjg@network-theory.co.uk>
 
 	* dnewton.c (dnewton_iterate): removed unnecessary status variable
