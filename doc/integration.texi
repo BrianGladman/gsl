@@ -481,8 +481,7 @@ This function frees all the memory associated with the
 
 This function computes the integral of the function @math{f(x)} over the
 interval @math{(a,b)} with the singular weight function
-@c{$(x - a)^\alpha (b - x)^\beta \log^\mu (x - a) \log^\nu (b - x)$}
-@math{(x-a)^alpha (b-x)^beta log^\mu (x-a) log^\nu (b-x)}.  The parameters 
+@math{(x-a)^\alpha (b-x)^\beta log^\mu (x-a) log^\nu (b-x)}.  The parameters 
 of the weight function @math{(\alpha, \beta, \mu, \nu)} are taken from the
 table @var{t}.
 
@@ -513,13 +512,9 @@ Gauss-Kronrod integration rule is used.
 @section QAWO adaptive integration for oscillatory functions
 
 The QAWO algorithm is designed for integrands with an oscillatory
-factor, 
-@c{$\sin(\omega x)$}
-@math{\sin(\omega x)} or 
-@c{$\cos(\omega x)$}
-@math{\cos(\omega x)}. 
-In order to work efficiently the algorithm requires a table of
-Chebyschev moments which is updated as the algorithm proceeds.
+factor, @math{\sin(\omega x)} or @math{\cos(\omega x)}.  In order to
+work efficiently the algorithm requires a table of Chebyschev moments
+which is updated as the algorithm proceeds.
 
 @deftypefun {gsl_integration_qawo_table *} gsl_integration_qawo_table_alloc (double @var{omega}, double @var{L}, enum gsl_integration_qawo_enum @var{sine}, size_t @var{n})
 

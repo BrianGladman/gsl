@@ -435,7 +435,6 @@ s = range[i] + delta * (range[i+1] - range[i])
 where @math{i} is the index which satisfies 
 @c{$sum[i] \le  r < sum[i+1]$}
 @math{sum[i] <=  r < sum[i+1]} and 
-@c{$\delta$}
 @math{delta} is 
 @c{$(r - sum[i])/(sum[i+1] - sum[i])$}
 @math{(r - sum[i])/(sum[i+1] - sum[i])}.

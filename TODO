@@ -1,6 +1,35 @@
 TODO  -- see also individual TODO files in each directory
 
-* Subtle bug in BLAS. If uninitialized memory is passed with a
+* Public domain or free texts which could be distributed with GSL:
+     
+Abramowitz and Stegun, "Handbook of Mathematical Functions" appears to
+be the public domain.
+
+Devroye's book on Random Variates (1st ed) is/was in the public domain
+and he said the troff source could be made available.
+
+ACM TOMS articles in the printed journal have the copyright notice
+
+    "Permission to copy without fee all or part fo this material is
+    granted provided that the copies are made not made or distributed for
+    direct commercial advantage, the ACM copyright notice and the title of
+    the publication and its date appear, and notice is given by
+    permisision of the association for Computing Machinery. To copy
+    otherwise, or to republish, requires a fee and/or specific
+    permission."
+
+Wonder what this might mean with regard to being scanned and
+distributed (??).  The versions downloaded from their server forbid
+redistribution (natch).
+
+* Document the use of autogen.sh in the instructions
+
+* Add covariance statistics functions
+
+* Document Jacobi eigen function, in particular that it only works for
+symmetric matrices.
+
+* Subtle bug(?) in BLAS. If uninitialized memory is passed with a
 multiplier of zero then it is accessed and multiplied by zero. This
 would be ok, except that the memory could contain NaN or Inf. Should
 check for zero case and explicitly handle it.
@@ -25,6 +54,8 @@ vs _inverse). Also adopt a convection for functions which can operate
 in place vs use of workspace (e.g linalg_solve functions).
 
 * Change from gsl-ref.texi to gsl.texi since it is the main file?
+Also, put under dir section "Math" (which seems to be the appropriate
+one for Debian, as Octave, Gnuplot etc are in that)
 
 * Remove error stream stuff?? It is hardly used.
 

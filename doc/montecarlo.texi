@@ -41,10 +41,8 @@ E(f; N) = @{1 \over N @} \sum_i^N f(x_i).
 @end example
 @end ifinfo
 @noindent
-for @math{N} randomly distributed points 
-@c{$x_i$} 
-@math{x_i} 
-Similarly, we will denote the variance of @math{f} by 
+for @math{N} randomly distributed points @math{x_i} Similarly, we will
+denote the variance of @math{f} by
 
 @tex
 \beforedisplay
@@ -228,7 +226,6 @@ This it was what Vegas attempts to do.  It makes several passes,
 histograming @math{f}, and each time using the histogram to define the
 sampling distribution for the next pass.  This basic idea again has the
 problem that the number of histogram bins grows like 
-@c{$K^d$}
 @math{K^d}.  The
 compromise that Vegas (ie, Peter Lepage) adopts is to assume that
 @math{g} factors: 

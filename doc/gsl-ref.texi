@@ -53,6 +53,19 @@
 \gdef\afterdisplay{\vskip-5pt}
 \gdef\beforedisplayh{\vskip-25pt}
 \gdef\afterdisplayh{\vskip-10pt}
+%
+\gdef\arcsec{\hbox{\rm arcsec}}
+\gdef\arccsc{\hbox{\rm arccsc}}
+\gdef\arccot{\hbox{\rm arccot}}
+\gdef\sech{\hbox{\rm sech}}
+\gdef\csch{\hbox{\rm csch}}
+\gdef\coth{\hbox{\rm coth}}
+\gdef\arcsinh{\hbox{\rm arcsinh}}
+\gdef\arccosh{\hbox{\rm arccosh}}
+\gdef\arctanh{\hbox{\rm arctanh}}
+\gdef\arcsech{\hbox{\rm arcsech}}
+\gdef\arccsch{\hbox{\rm arccsch}}
+\gdef\arccoth{\hbox{\rm arccoth}}
 @end tex
 
 @include version-ref.texi
@@ -166,31 +179,31 @@ not recommended for general use.
 * Preliminaries::               
 * Using the library::           
 * Error handling in GSL::       
-* Random Number Generation::    
-* Random Number Distributions::  
-* Permutations::                
-* Sorting::                     
-* Statistics::                  
-* Fast Fourier Transforms::     
-* Roots of Polynomials::        
-* One dimensional Root-Finding::  
-* Multidimensional Root-Finding::  
-* Minimization::                
-* Special Functions::           
-* Discrete Hankel Transforms::  
-* Interpolation::               
-* Series Acceleration::         
-* Simulated Annealing::         
 * Complex Numbers::             
 * Vectors and Matrices::        
 * BLAS Support::                
 * Linear Algebra::              
 * Eigensystems::                
+* Special Functions::           
+* Roots of Polynomials::        
+* Interpolation::               
+* Series Acceleration::         
+* Random Number Generation::    
+* Random Number Distributions::  
+* Permutations::                
+* Sorting::                     
+* Statistics::                  
 * Histograms::                  
+* One dimensional Root-Finding::  
+* Multidimensional Root-Finding::  
+* Minimization::                
+* Simulated Annealing::         
+* Fast Fourier Transforms::     
+* Discrete Hankel Transforms::  
 * Numerical Integration::       
 * Monte Carlo Integration::     
 * Ordinary Differential Equations (ODEs)::  
-* The IEEE standard for floating-point arithmetic::  
+* IEEE floating-point arithmetic::  
 * Debugging Numerical Programs::  
 * Contributors to GSL::         
 * Copying::                     
@@ -209,92 +222,17 @@ team (@pxref{Contributors to GSL}) in C, and are meant to present a
 modern Applications Programming Interface (API) for C programmers, while
 allowing wrappers to be written for very high level languages.
 
-@comment Section on using the library
 @node Using the library, Error handling in GSL, Preliminaries, Top
 @chapter Using the library
 @cindex usage, compiling application programs
 @include usage.texi
 
-@comment Section on error handling
-@node Error handling in GSL, Random Number Generation, Using the library, Top
+@node Error handling in GSL, Complex Numbers, Using the library, Top
 @chapter Error handling in GSL
 @cindex Errors
 @include err.texi
 
-@comment Section on random number generation
-@node Random Number Generation, Random Number Distributions, Error handling in GSL, Top
-@chapter Random Number Generation
-@include rng.texi
-
-@node  Random Number Distributions, Permutations, Random Number Generation, Top
-@chapter Random Number Distributions
-@include randist.texi
-
-@comment Section on permutations
-@node   Permutations, Sorting, Random Number Distributions, Top
-@chapter Permutations
-@include permutation.texi
-
-@comment Section on sorting
-@node  Sorting, Statistics, Permutations, Top
-@chapter Sorting
-@include sort.texi
-
-@comment Section on statistics
-@node Statistics, Fast Fourier Transforms, Sorting, Top
-@chapter Statistics
-@include statistics.texi
-
-@comment Section on FFTs
-@node Fast Fourier Transforms, Roots of Polynomials, Statistics, Top
-@chapter Fast Fourier Transforms (FFTs)
-@include fft.texi
-
-@comment Section on polynomial root finding
-@node  Roots of Polynomials, One dimensional Root-Finding, Fast Fourier Transforms, Top
-@chapter Roots of Polynomials
-@include poly.texi
-
-@comment Section on root finding
-@node  One dimensional Root-Finding, Multidimensional Root-Finding, Roots of Polynomials, Top
-@chapter One dimensional Root-Finding
-@include roots.texi
-
-@node  Multidimensional Root-Finding, Minimization, One dimensional Root-Finding, Top
-@chapter Multidimensional Root-Finding
-@include multiroots.texi
-
-@comment Section on minimization
-@node   Minimization, Special Functions, Multidimensional Root-Finding, Top
-@chapter Minimization
-@include min.texi
-
-@comment Section on special functions
-@node Special Functions, Discrete Hankel Transforms, Minimization, Top
-@chapter Special Functions
-@include specfunc.texi
-
-@comment Section on Discrete Hankel Transforms
-@node  Discrete Hankel Transforms, Interpolation, Special Functions, Top
-@chapter Discrete Hankel Transforms
-@include dht.texi
-
-@comment Section on Interpolation
-@node   Interpolation, Series Acceleration, Discrete Hankel Transforms, Top
-@chapter Interpolation
-@include interp.texi
-
-@comment Section on series acceleration
-@node Series Acceleration, Simulated Annealing, Interpolation, Top
-@chapter Series Acceleration
-@include sum.texi
-
-@comment Section on simulated annealing
-@node Simulated Annealing, Complex Numbers, Series Acceleration, Top
-@chapter Simulated Annealing
-@include siman.texi
-
-@node Complex Numbers, Vectors and Matrices, Simulated Annealing, Top
+@node Complex Numbers, Vectors and Matrices, Error handling in GSL, Top
 @chapter Complex Numbers
 @include complex.texi
 
@@ -310,15 +248,75 @@ allowing wrappers to be written for very high level languages.
 @chapter Linear Algebra
 @include linalg.texi
 
-@node Eigensystems, Histograms, Linear Algebra, Top
+@node Eigensystems, Special Functions, Linear Algebra, Top
 @chapter Eigensystems
 @include eigen.texi
 
-@node Histograms, Numerical Integration, Eigensystems, Top
+@node Special Functions, Roots of Polynomials, Eigensystems, Top
+@chapter Special Functions
+@include specfunc.texi
+
+@node  Roots of Polynomials, Interpolation, Special Functions, Top
+@chapter Roots of Polynomials
+@include poly.texi
+
+@node   Interpolation, Series Acceleration, Roots of Polynomials, Top
+@chapter Interpolation
+@include interp.texi
+
+@node Series Acceleration, Random Number Generation, Interpolation, Top
+@chapter Series Acceleration
+@include sum.texi
+
+@node Random Number Generation, Random Number Distributions, Series Acceleration, Top
+@chapter Random Number Generation
+@include rng.texi
+
+@node  Random Number Distributions, Permutations, Random Number Generation, Top
+@chapter Random Number Distributions
+@include randist.texi
+
+@node   Permutations, Sorting, Random Number Distributions, Top
+@chapter Permutations
+@include permutation.texi
+
+@node  Sorting, Statistics, Permutations, Top
+@chapter Sorting
+@include sort.texi
+
+@node Statistics, Histograms, Sorting, Top
+@chapter Statistics
+@include statistics.texi
+
+@node Histograms, One dimensional Root-Finding, Statistics, Top
 @chapter Histograms
 @include histogram.texi
 
-@node Numerical Integration, Monte Carlo Integration, Histograms, Top
+@node  One dimensional Root-Finding, Multidimensional Root-Finding, Histograms, Top
+@chapter One dimensional Root-Finding
+@include roots.texi
+
+@node  Multidimensional Root-Finding, Minimization, One dimensional Root-Finding, Top
+@chapter Multidimensional Root-Finding
+@include multiroots.texi
+
+@node   Minimization, Simulated Annealing, Multidimensional Root-Finding, Top
+@chapter Minimization
+@include min.texi
+
+@node Simulated Annealing, Fast Fourier Transforms, Minimization, Top
+@chapter Simulated Annealing
+@include siman.texi
+
+@node Fast Fourier Transforms, Discrete Hankel Transforms, Simulated Annealing, Top
+@chapter Fast Fourier Transforms (FFTs)
+@include fft.texi
+
+@node  Discrete Hankel Transforms, Numerical Integration, Fast Fourier Transforms, Top
+@chapter Discrete Hankel Transforms
+@include dht.texi
+
+@node Numerical Integration, Monte Carlo Integration, Discrete Hankel Transforms, Top
 @chapter Numerical Integration
 @include integration.texi
 
@@ -326,15 +324,15 @@ allowing wrappers to be written for very high level languages.
 @chapter Monte Carlo Integration
 @include montecarlo.texi
 
-@node Ordinary Differential Equations (ODEs), The IEEE standard for floating-point arithmetic, Monte Carlo Integration, Top
+@node Ordinary Differential Equations (ODEs), IEEE floating-point arithmetic, Monte Carlo Integration, Top
 @chapter Ordinary Differential Equations (ODEs)
 @include ode-initval.texi
 
-@node  The IEEE standard for floating-point arithmetic, Debugging Numerical Programs, Ordinary Differential Equations (ODEs), Top
-@chapter The IEEE standard for floating-point arithmetic
+@node IEEE floating-point arithmetic, Debugging Numerical Programs, Ordinary Differential Equations (ODEs), Top
+@chapter IEEE floating-point arithmetic
 @include ieee754.texi
 
-@node Debugging Numerical Programs, Contributors to GSL, The IEEE standard for floating-point arithmetic, Top
+@node Debugging Numerical Programs, Contributors to GSL, IEEE floating-point arithmetic, Top
 @appendix Debugging Numerical Programs
 @include debug.texi
 

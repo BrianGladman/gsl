@@ -1,9 +1,32 @@
-/* Basic complex arithmetic functions 
+/* Basic complex arithmetic functions
 
- * Original version by Jorma Olavi T{htinen <jotahtin@cc.hut.fi> 
+ * Original version by Jorma Olavi Tähtinen <jotahtin@cc.hut.fi>
  *
- * Modified for GSL by Brian Gough, 3/2000 
+ * Modified for GSL by Brian Gough, 3/2000
  */
+
+/* The following references describe the methods used in these
+ * functions,
+ *
+ *   T. E. Hull and Thomas F. Fairgrieve and Ping Tak Peter Tang,
+ *   "Implementing Complex Elementary Functions Using Exception
+ *   Handling", ACM Transactions on Mathematical Software, Volume 20
+ *   (1994), pp 215-244, Corrigenda, p553
+ *
+ *   Hull et al, "Implementing the complex arcsin and arccosine
+ *   functions using exception handling", ACM Transactions on
+ *   Mathematical Software, Volume 23 (1997) pp 299-335
+ *
+ *   Abramowitz and Stegun, Handbook of Mathematical Functions, "Inverse
+ *   Circular Functions in Terms of Real and Imaginary Parts", Formulas
+ *   4.4.37, 4.4.38, 4.4.39
+ *
+ * FIXME: The functions using gsl_complex_inverse will overflow in
+ * intermediate expressions like sinh(I), which are then
+ * reciprocated. The overflow could be avoided by rearranging the
+ * expression, as done for tan(z).  
+ */
+
 
 #include <config.h>
 #include <math.h>
@@ -12,7 +35,7 @@
 #include <gsl_complex_math.h>
 
 /**********************************************************************
- * Complex numbers 
+ * Complex numbers
  **********************************************************************/
 
 gsl_complex
@@ -32,7 +55,7 @@ gsl_complex_polar (double r, double theta)
 }
 
 /**********************************************************************
- * Properties of complex numbers 
+ * Properties of complex numbers
  **********************************************************************/
 
 double
@@ -81,7 +104,7 @@ gsl_complex_logabs (gsl_complex z)
 
 
 /***********************************************************************
- * Complex arithmetic operators 
+ * Complex arithmetic operators
  ***********************************************************************/
 
 gsl_complex
@@ -204,15 +227,15 @@ gsl_complex_negative (gsl_complex a)
 gsl_complex
 gsl_complex_inverse (gsl_complex a)
 {				/* z=1/a */
-  double s2 = 1.0 / gsl_complex_abs2 (a);
+  double s = 1.0 / gsl_complex_abs (a);
 
   gsl_complex z;
-  GSL_SET_COMPLEX (&z, GSL_REAL (a) * s2, -GSL_IMAG (a) * s2);
+  GSL_SET_COMPLEX (&z, (GSL_REAL (a) * s) * s, -(GSL_IMAG (a) * s) * s);
   return z;
 }
 
 /**********************************************************************
- * Elementary complex functions 
+ * Elementary complex functions
  **********************************************************************/
 
 gsl_complex
@@ -409,67 +432,28 @@ gsl_complex_tan (gsl_complex a)
 gsl_complex
 gsl_complex_sec (gsl_complex a)
 {				/* z = sec(a) */
-  double R = GSL_REAL (a), I = GSL_IMAG (a);
-  gsl_complex z;
-
-  if (fabs (I) > 1)
-    {
-      double D = sinh (I) * (1 + pow (cos (R) / sinh (I), 2.0));
-
-      GSL_SET_COMPLEX (&z, cos (R) / (tanh (I) * D), sin (R) / D);
-    }
-  else
-    {
-      double D = gsl_hypot (cos (R), sinh (I));
-
-      GSL_SET_COMPLEX (&z, (cos (R) / D) * (cosh (I) / D), (sin (R) / D) * (sinh (I) / D));
-    }
-
-  return z;
+  gsl_complex z = gsl_complex_cos (a);
+  return gsl_complex_inverse (z);
 }
 
 gsl_complex
 gsl_complex_csc (gsl_complex a)
 {				/* z = csc(a) */
-  double R = GSL_REAL (a), I = GSL_IMAG (a);
-
-  gsl_complex z;
-
-  if (fabs (I) > 1)
-    {
-      double D = sinh (I) * (1 + pow (sin (R) / sinh (I), 2.0));
-
-      GSL_SET_COMPLEX (&z, sin (R) / (tanh (I) * D), -cos (R) / D);
-    }
-  else
-    {
-      double D = gsl_hypot (sin (R), sinh (I));
-
-      GSL_SET_COMPLEX (&z, (sin (R) / D) * (cosh (I) / D), -(cos (R) / D) * (sinh (I) / D));
-    }
-
-  return z;
+  gsl_complex z = gsl_complex_sin (a);
+  return gsl_complex_inverse(z);
 }
 
 
 gsl_complex
 gsl_complex_cot (gsl_complex a)
 {				/* z = cot(a) */
-  double R = GSL_REAL (a), I = GSL_IMAG (a);
-  double D = pow (sin (R), 2.0) + pow (sinh (I), 2.0);
-
-  gsl_complex z;
-  GSL_SET_COMPLEX (&z, 0.5 * sin (2 * R) / D, -0.5 * sinh (2 * I) / D);
-  return z;
+  gsl_complex z = gsl_complex_tan (a);
+  return gsl_complex_inverse (z);
 }
 
 /**********************************************************************
- * Inverse Complex Trigonometric Functions 
+ * Inverse Complex Trigonometric Functions
  **********************************************************************/
-
-/* See Hull et al, "Implementing the complex arcsin and arccosine
-   functions using exception handling", ACM TOMS Vol 23 (1997) pp
-   299-335 */
 
 gsl_complex
 gsl_complex_arcsin (gsl_complex a)
@@ -485,51 +469,51 @@ gsl_complex_arcsin (gsl_complex a)
     {
       double x = fabs (R), y = fabs (I);
       double r = gsl_hypot (x + 1, y), s = gsl_hypot (x - 1, y);
-      double a = 0.5 * (r + s);
-      double b = x / a;
+      double A = 0.5 * (r + s);
+      double B = x / A;
       double y2 = y * y;
 
       double real, imag;
 
-      const double a_crossover = 1.5, b_crossover = 0.6417;
+      const double A_crossover = 1.5, B_crossover = 0.6417;
 
-      if (b <= b_crossover)
+      if (B <= B_crossover)
 	{
-	  real = asin (b);
+	  real = asin (B);
 	}
       else
 	{
 	  if (x <= 1)
 	    {
-	      double D = 0.5 * (a + x) * (y2 / (r + x + 1) + (s + (1 - x)));
+	      double D = 0.5 * (A + x) * (y2 / (r + x + 1) + (s + (1 - x)));
 	      real = atan (x / sqrt (D));
 	    }
 	  else
 	    {
-	      double apx = a + x;
-	      double D = 0.5 * (apx / (r + x + 1) + apx / (s + (x - 1)));
+	      double Apx = A + x;
+	      double D = 0.5 * (Apx / (r + x + 1) + Apx / (s + (x - 1)));
 	      real = atan (x / (y * sqrt (D)));
 	    }
 	}
 
-      if (a <= a_crossover)
+      if (A <= A_crossover)
 	{
-	  double am1;
+	  double Am1;
 
 	  if (x < 1)
 	    {
-	      am1 = 0.5 * (y2 / (r + (x + 1)) + y2 / (s + (1 - x)));
+	      Am1 = 0.5 * (y2 / (r + (x + 1)) + y2 / (s + (1 - x)));
 	    }
 	  else
 	    {
-	      am1 = 0.5 * (y2 / (r + (x + 1)) + (s + (x - 1)));
+	      Am1 = 0.5 * (y2 / (r + (x + 1)) + (s + (x - 1)));
 	    }
 
-	  imag = gsl_log1p (am1 + sqrt (am1 * (a + 1)));
+	  imag = gsl_log1p (Am1 + sqrt (Am1 * (A + 1)));
 	}
       else
 	{
-	  imag = log (a + sqrt (a * a - 1));
+	  imag = log (A + sqrt (A * A - 1));
 	}
 
       GSL_SET_COMPLEX (&z, (R >= 0) ? real : -real, (I >= 0) ? imag : -imag);
@@ -576,51 +560,51 @@ gsl_complex_arccos (gsl_complex a)
     {
       double x = fabs (R), y = fabs (I);
       double r = gsl_hypot (x + 1, y), s = gsl_hypot (x - 1, y);
-      double a = 0.5 * (r + s);
-      double b = x / a;
+      double A = 0.5 * (r + s);
+      double B = x / A;
       double y2 = y * y;
 
       double real, imag;
 
-      const double a_crossover = 1.5, b_crossover = 0.6417;
+      const double A_crossover = 1.5, B_crossover = 0.6417;
 
-      if (b <= b_crossover)
+      if (B <= B_crossover)
 	{
-	  real = acos (b);
+	  real = acos (B);
 	}
       else
 	{
 	  if (x <= 1)
 	    {
-	      double D = 0.5 * (a + x) * (y2 / (r + x + 1) + (s + (1 - x)));
+	      double D = 0.5 * (A + x) * (y2 / (r + x + 1) + (s + (1 - x)));
 	      real = atan (sqrt (D) / x);
 	    }
 	  else
 	    {
-	      double apx = a + x;
-	      double D = 0.5 * (apx / (r + x + 1) + apx / (s + (x - 1)));
+	      double Apx = A + x;
+	      double D = 0.5 * (Apx / (r + x + 1) + Apx / (s + (x - 1)));
 	      real = atan ((y * sqrt (D)) / x);
 	    }
 	}
 
-      if (a <= a_crossover)
+      if (A <= A_crossover)
 	{
-	  double am1;
+	  double Am1;
 
 	  if (x < 1)
 	    {
-	      am1 = 0.5 * (y2 / (r + (x + 1)) + y2 / (s + (1 - x)));
+	      Am1 = 0.5 * (y2 / (r + (x + 1)) + y2 / (s + (1 - x)));
 	    }
 	  else
 	    {
-	      am1 = 0.5 * (y2 / (r + (x + 1)) + (s + (x - 1)));
+	      Am1 = 0.5 * (y2 / (r + (x + 1)) + (s + (x - 1)));
 	    }
 
-	  imag = gsl_log1p (am1 + sqrt (am1 * (a + 1)));
+	  imag = gsl_log1p (Am1 + sqrt (Am1 * (A + 1)));
 	}
       else
 	{
-	  imag = log (a + sqrt (a * a - 1));
+	  imag = log (A + sqrt (A * A - 1));
 	}
 
       GSL_SET_COMPLEX (&z, (R >= 0) ? real : M_PI - real, (I >= 0) ? -imag : imag);
@@ -675,15 +659,18 @@ gsl_complex_arctan (gsl_complex a)
 
       double u = 2 * I / (1 + r * r);
 
-      if (fabs (u) < 0.1)	/* FIXME: this cross-over should be optimized */
+      /* FIXME: the following cross-over should be optimized but 0.1
+         seems to work ok */
+
+      if (fabs (u) < 0.1)
 	{
 	  imag = 0.25 * (gsl_log1p (u) - gsl_log1p (-u));
 	}
       else
 	{
-	  double a = gsl_hypot (R, I + 1);
-	  double b = gsl_hypot (R, I - 1);
-	  imag = 0.5 * log (a / b);
+	  double A = gsl_hypot (R, I + 1);
+	  double B = gsl_hypot (R, I - 1);
+	  imag = 0.5 * log (A / B);
 	}
 
       if (R == 0)
@@ -713,16 +700,10 @@ gsl_complex_arctan (gsl_complex a)
 gsl_complex
 gsl_complex_arcsec (gsl_complex a)
 {				/* z = arcsec(a) */
-  double R = GSL_REAL (a), I = GSL_IMAG (a);
-  double D = pow (R, 2.0) + pow (I, 2.0);
-  double t = sqrt (pow (pow (R, 2.0) - 1, 2.0)
-		   + pow (I, 2.0) * (2 * (1 + pow (R, 2.0)) + pow (I, 2.0)));
-  double Phi = sqrt ((1 + D + t) / (2 * D));
-  double P = R / D;
-  gsl_complex z;
-  GSL_SET_COMPLEX (&z, acos (P / Phi), (I >= 0.0) ? acosh (Phi) : -acosh (Phi));
-  return z;
+  gsl_complex z = gsl_complex_inverse (a);
+  return gsl_complex_arccos (z);
 }
+
 gsl_complex
 gsl_complex_arcsec_real (double a)
 {				/* z = arcsec(a) */
@@ -750,14 +731,8 @@ gsl_complex_arcsec_real (double a)
 gsl_complex
 gsl_complex_arccsc (gsl_complex a)
 {				/* z = arccsc(a) */
-  double R = GSL_REAL (a), I = GSL_IMAG (a);
-  double D = pow (R, 2.0) + pow (I, 2.0);
-  double t = sqrt (pow (pow (R, 2.0) - 1, 2.0) + pow (I, 2.0) * (2 * (1 + pow (R, 2.0)) + pow (I, 2.0)));
-  double Phi = sqrt ((1 + D + t) / (2 * D));
-  double P = R / D;
-  gsl_complex z;
-  GSL_SET_COMPLEX (&z, asin (P / Phi), (I >= 0.0) ? -acosh (Phi) : acosh (Phi));
-  return z;
+  gsl_complex z = gsl_complex_inverse (a);
+  return gsl_complex_arcsin (z);
 }
 
 gsl_complex
@@ -784,7 +759,6 @@ gsl_complex_arccsc_real (double a)
   return z;
 }
 
-
 gsl_complex
 gsl_complex_arccot (gsl_complex a)
 {				/* z = arccot(a) */
@@ -804,7 +778,7 @@ gsl_complex_arccot (gsl_complex a)
 }
 
 /**********************************************************************
- * Complex Hyperbolic Functions 
+ * Complex Hyperbolic Functions
  **********************************************************************/
 
 gsl_complex
@@ -841,38 +815,26 @@ gsl_complex_tanh (gsl_complex a)
 gsl_complex
 gsl_complex_sech (gsl_complex a)
 {				/* z = sech(a) */
-  double R = GSL_REAL (a), I = GSL_IMAG (a);
-  double D = pow (cos (I), 2.0) + pow (sinh (R), 2.0);
-
-  gsl_complex z;
-  GSL_SET_COMPLEX (&z, cosh (R) * cos (I) / D, -sinh (R) * sin (I) / D);
-  return z;
+  gsl_complex z = gsl_complex_cosh (a);
+  return gsl_complex_inverse (z);
 }
 
 gsl_complex
 gsl_complex_csch (gsl_complex a)
 {				/* z = csch(a) */
-  double R = GSL_REAL (a), I = GSL_IMAG (a);
-  double D = pow (sinh (R), 2.0) + pow (sin (I), 2.0);
-
-  gsl_complex z;
-  GSL_SET_COMPLEX (&z, sinh (R) * cos (I) / D, -cosh (R) * sin (I) / D);
-  return z;
+  gsl_complex z = gsl_complex_sinh (a);
+  return gsl_complex_inverse (z);
 }
 
 gsl_complex
 gsl_complex_coth (gsl_complex a)
 {				/* z = coth(a) */
-  double R = GSL_REAL (a), I = GSL_IMAG (a);
-  double D = pow (sin (I), 2.0) + pow (sinh (R), 2.0);
-
-  gsl_complex z;
-  GSL_SET_COMPLEX (&z, sinh (R) * cosh (R) / D, -0.5 * sin (2 * I) / D);
-  return z;
+  gsl_complex z = gsl_complex_tanh (a);
+  return gsl_complex_inverse (z);
 }
 
 /**********************************************************************
- * Inverse Complex Hyperbolic Functions 
+ * Inverse Complex Hyperbolic Functions
  **********************************************************************/
 
 gsl_complex

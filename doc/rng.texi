@@ -457,11 +457,7 @@ z_n = (x_n - y_n) mod m_1
 @end example
 @end ifinfo
 @noindent
-where the two underlying generators 
-@c{$x_n$}
-@math{x_n} and 
-@c{$y_n$}
-@math{y_n} are,
+where the two underlying generators @math{x_n} and @math{y_n} are,
 
 @tex
 \beforedisplay
@@ -530,11 +526,8 @@ x_n = (a_1 x_@{n-1@} + a_5 x_@{n-5@}) mod m
 
 @noindent
 with 
-@c{$a_1 = 107374182$} 
 @math{a_1 = 107374182}, 
-@c{$a_2 = a_3 = a_4 = 0$}
 @math{a_2 = a_3 = a_4 = 0}, 
-@c{$a_5 = 104480$}
 @math{a_5 = 104480}
 and 
 @c{$m = 2^{31}-1$}

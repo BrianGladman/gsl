@@ -14,9 +14,12 @@
 (setq max-specpdl-size 2400)
 (setq calc-internal-prec 64) ;; probably unnecessarily high, but found
 			     ;; a few discrepancies at prec=20
+(setq calc-infinite-mode t)
 (setq calc-angle-mode 'rad)
 (setq calc-float-format '(sci 20))
 ;;(setq calc-full-float-format '(sci 0))
+
+(calc-eval '(setq var-EvalRules '(vec (calcFunc-assign (calcFunc-sec (var x var-x)) (/ 1 (calcFunc-cos (var x var-x)))) (calcFunc-assign (calcFunc-csc (var x var-x)) (/ 1 (calcFunc-sin (var x var-x)))) (calcFunc-assign (calcFunc-cot (var x var-x)) (/ 1 (calcFunc-tan (var x var-x)))) (calcFunc-assign (calcFunc-sech (var x var-x)) (/ 1 (calcFunc-cosh (var x var-x)))) (calcFunc-assign (calcFunc-csch (var x var-x)) (/ 1 (calcFunc-sinh (var x var-x)))) (calcFunc-assign (calcFunc-coth (var x var-x)) (/ 1 (calcFunc-tanh (var x var-x)))) (calcFunc-assign (calcFunc-arcsec (var x var-x)) (calcFunc-arccos (/ 1 (var x var-x)))) (calcFunc-assign (calcFunc-arccsc (var x var-x)) (calcFunc-arcsin (/ 1 (var x var-x)))) (calcFunc-assign (calcFunc-arccot (var x var-x)) (calcFunc-arctan (/ 1 (var x var-x)))) (calcFunc-assign (calcFunc-arcsech (var x var-x)) (calcFunc-arccosh (/ 1 (var x var-x)))) (calcFunc-assign (calcFunc-arccsch (var x var-x)) (calcFunc-arcsinh (/ 1 (var x var-x)))) (calcFunc-assign (calcFunc-arccoth (var x var-x)) (calcFunc-arctanh (/ 1 (var x var-x)))))) 'eval)
 
 (defun reflections (a b)
   (let ((a (float a)) (b (float b)))
@@ -66,8 +69,10 @@
          (y (nth 1 arg))
          (z (format "(%.60e,%.60e)" x y))
          (v (concat "clean(" function "(" z "),60)"))
-        (result (calc-eval v)))
-    ;;(message "%s (%g %g)" function x y)
+         (result (calc-eval v)))
+    (message "%s (%g %g) = %s" function x y result)
+    (if (string-match "clean(\\(.*\\), *[0-9]*)" result)
+        (setq result (replace-match "\\1" nil nil result)))
     (if (string-match "(\\(.*\\),\\(.*\\))" result)
         (setq result (replace-match "\\1,\\2" nil nil result)))
     (if (string-match "^\\([^,]*\\)$" result)
@@ -142,25 +147,26 @@
 
 ;  (test "arcsinh" trigs)
 ;  (test "arccosh" trigs)
-  (test "arctanh" trigs)
+;  (test "arctanh" trigs)
 
-  (test "cosec" trigs)
-  (test "sec" trigs)
-  (test "cot" trigs)
+;  (test "csc" trigs)
+;  (test "sec" trigs)
+;  (test "cot" trigs)
 
-  (test "cosech" trigs)
-  (test "sech" trigs)
-  (test "coth" trigs)
+  (test "csch" trigs)
+;  (test "sech" trigs)
+;  (test "coth" trigs)
 
-  (test "arccosec" trigs)
-  (test "arcsec" trigs)
-  (test "arccot" trigs)
+;  (test "arccsc" trigs)
+;  (test "arcsec" trigs)
+;  (test "arccot" trigs)
 
-  (test "arccosech" trigs)
-  (test "arcsech" trigs)
-  (test "arccoth" trigs)
+  (test "arccsch" trigs)
+;  (test "arcsech" trigs)
+;  (test "arccoth" trigs)
 
 )
+
 
 ;;(test-all)
 
