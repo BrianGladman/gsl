@@ -5,6 +5,7 @@
 #include <gsl_math.h>
 #include <gsl_errno.h>
 #include "gsl_sf_chebyshev.h"
+#include "gsl_sf_synchrotron.h"
 
 
 /* based on SYNCH1(), SYNCH2() of MISCFUN, Allan J. MacLeod  [TOMS 757] */
@@ -12,6 +13,7 @@
 /* SYNCH1(x) = x * Integral{x to inf} K(5/3)(t) dt */
 
 /* SYNCH2(x) = x * K(2/3)(x)                       */
+
 
 static double async1_data[14] = {
   30.36468298250107627340,
