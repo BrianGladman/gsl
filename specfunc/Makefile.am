@@ -9,6 +9,7 @@ include_HEADERS = \
 	gsl_sf_bessel.h     	\
 	gsl_sf_chebyshev.h  	\
 	gsl_sf_clausen.h	\
+	gsl_sf_coupling.h	\
 	gsl_sf_coulomb.h	\
 	gsl_sf_debye.h      	\
 	gsl_sf_dilog.h      	\
@@ -70,6 +71,7 @@ libgslspecfunc_a_SOURCES = 	\
 	bessel_y.c		\
 	chebyshev.c		\
 	clausen.c		\
+	coupling.c		\
 #	coulomb.c		\ doesn't work yet
 	debye.c			\
 	dilog.c			\
