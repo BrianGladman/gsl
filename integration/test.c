@@ -9,7 +9,6 @@ double alpha = 0 ;
 
 int main (void)
 {
-  size_t neval ;
 
   /* Test a smooth function. This will find any discrepancies in the
      Gauss-Kronrod calculation */

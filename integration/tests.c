@@ -8,7 +8,7 @@ double book1 (double x) {
 }
 
 double book2 (double x) {
-  return pow(4.0,-alpha) / (pow((x-M_PI/4.0),2.0) + pow(16,-alpha)) ;
+  return pow(4.0,-alpha) / (pow((x-M_PI/4.0),2.0) + pow(16.0,-alpha)) ;
 }
 
 double book3 (double x) {
@@ -36,7 +36,7 @@ double book8 (double x) {
 }
 
 double book9 (double x) {
-  return exp(20*(x-1)) * sin(pow(2,alpha) * x) ;
+  return exp(20*(x-1)) * sin(pow(2.0,alpha) * x) ;
 }
 
 double book10 (double x) {
@@ -56,7 +56,7 @@ double book13 (double x) {
 }
 
 double book14 (double x) {
-  return pow(2.0,-alpha)/(((x-1)*(x-1)+pow(4,-alpha))*(x-2)) ;
+  return pow(2.0,-alpha)/(((x-1)*(x-1)+pow(4.0,-alpha))*(x-2)) ;
 }
 
 
