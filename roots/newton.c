@@ -54,8 +54,15 @@ gsl_root_newton(double * root,
       /* Draw a line tangent to f at guess and note where that crosses the X
          axis; that's our new guess. */
       _BARF_ZERO(dfg);
+
       new_guess = *guess - (fg / dfg);
-      _BARF_FDFPCALL(fdf, &fnew, &dfnew, new_guess, WANTED, WANTED);
+
+      (*fdf)(&fnew, &dfnew, new_guess, 1, 1); 
+
+      if (!GSL_ISREAL(fnew))
+	{
+	  GSL_ERROR("function not continuous", GSL_EBADFUNC);
+	}
 
       /* If the new point is the root exactly, we're done. */
       if (fnew == 0.0) {
@@ -73,6 +80,11 @@ gsl_root_newton(double * root,
         *root = new_guess;
         return GSL_SUCCESS;
       }
+
+      if (!GSL_ISREAL(dfnew))
+	{
+	  GSL_ERROR("function not differentiable", GSL_EBADFUNC);
+	}
 
       /* Rotate the guesses. */
       *guess = new_guess;
