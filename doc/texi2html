@@ -216,7 +216,7 @@ $html2_doctype = '<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0 Strict Level 2//E
 	      'var', 'VAR',
 	      'w', '',			# unsupported
 #	      'math', 'I',		# not very useful, but at least italicize
-	      'math', '',		# don't want italic numbers
+	      'math', '',	        # don't want italic numbers
 	      );
 
 #
@@ -607,6 +607,7 @@ while ($_ = &next_line) {
     if ($end_tag) {
 	next if $to_skip{"end $end_tag"};
     } elsif ($tag) {
+        last if $htmlhelp && $tag eq 'comment' && /htmlhelp: \@bye/;
 	next if $to_skip{$tag};
 	last if $tag eq 'bye';
     }
@@ -1194,6 +1195,8 @@ while (@lines) {
 		if $key ne $_ && $debug & $DEBUG_INDEX;
             $globalindex{$_} .= "$ary{$key}$;"; 
 	}
+        next if $htmlhelp;  # don't make the index for Htmlhelp files
+
 	$last_letter = undef;
 	foreach $key (sort byalpha @keys) {
 	    $letter = substr($key2alpha{$key}, 0, 1);

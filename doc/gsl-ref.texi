@@ -543,6 +543,8 @@ Multidimensional minimization.
 @unnumbered GNU Free Documentation License
 @include fdl.texi
 
+@comment htmlhelp: @bye
+
 @node Concept Index, Function Index, GNU Free Documentation License, Top
 @unnumbered Concept Index
 
