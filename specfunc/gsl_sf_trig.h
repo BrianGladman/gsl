@@ -1,13 +1,28 @@
 /* Author:  G. Jungman
  * RCS:     $Id$
  */
-#ifndef GSL_SF_TRIG_H_
-#define GSL_SF_TRIG_H_
+#ifndef GSL_SF_TRIG_H
+#define GSL_SF_TRIG_H
 
 #include <gsl_sf_result.h>
 
 
-/* sin(z) for complex z
+/* Sin(x) with GSL semantics. This is actually important
+ * because we want to control the error estimate, and trying
+ * to guess the error for the standard library implementation
+ * every time it is used would be a little goofy.
+ */
+int gsl_sf_sin_impl(double x, gsl_sf_result * result);
+int gsl_sf_sin_e(double x, gsl_sf_result * result);
+
+
+/* Cos(x) with GSL semantics.
+ */
+int gsl_sf_cos_impl(double x, gsl_sf_result * result);
+int gsl_sf_cos_e(double x, gsl_sf_result * result);
+
+
+/* Sin(z) for complex z
  *
  * exceptions: GSL_EOVRFLW
  */
@@ -15,7 +30,7 @@ int gsl_sf_complex_sin_impl(double zr, double zi, gsl_sf_result * szr, gsl_sf_re
 int gsl_sf_complex_sin_e(double zr, double zi, gsl_sf_result * szr, gsl_sf_result * szi);
 
 
-/* cos(z) for complex z
+/* Cos(z) for complex z
  *
  * exceptions: GSL_EOVRFLW
  */
@@ -23,7 +38,7 @@ int gsl_sf_complex_cos_impl(double zr, double zi, gsl_sf_result * czr, gsl_sf_re
 int gsl_sf_complex_cos_e(double zr, double zi, gsl_sf_result * czr, gsl_sf_result * czi);
 
 
-/* log(sin(z)) for complex z
+/* Log(Sin(z)) for complex z
  *
  * exceptions: GSL_EDOM, GSL_ELOSS
  */
@@ -31,7 +46,7 @@ int gsl_sf_complex_logsin_impl(double zr, double zi, gsl_sf_result * lszr, gsl_s
 int gsl_sf_complex_logsin_e(double zr, double zi, gsl_sf_result * lszr, gsl_sf_result * lszi);
 
 
-/* sin(pi x)
+/* Sin(pi x)
  *
  * exceptions: none
  */
@@ -39,7 +54,7 @@ int gsl_sf_sin_pi_x_impl(double x, gsl_sf_result * result);
 int gsl_sf_sin_pi_x_e(double x, gsl_sf_result * result);
 
 
-/* log(sinh(x)), x > 0
+/* Log(Sinh(x)), x > 0
  *
  * exceptions: GSL_EDOM
  */
@@ -47,7 +62,7 @@ int gsl_sf_lnsinh_impl(double x, gsl_sf_result * result);
 int gsl_sf_lnsinh_e(double x, gsl_sf_result * result);
 
 
-/* log(cosh(x))
+/* Log(Cosh(x))
  *
  * exceptions: none
  */
@@ -100,4 +115,43 @@ int gsl_sf_cos_err_impl(double x, double dx, gsl_sf_result * result);
 int gsl_sf_cos_err_e(double x, double dx, gsl_sf_result * result);
 
 
-#endif /* GSL_SF_TRIG_H_ */
+
+#ifdef HAVE_INLINE
+extern inline int
+gsl_sf_sin_impl(double x, gsl_sf_result * result)
+{
+  double frac_err;
+  if(x > 1.0/GSL_DBL_EPSILON) {
+    frac_err = 1.0;
+  }
+  else if(x > 10.0/GSL_SQRT_DBL_EPSILON) {
+    frac_err = GSL_SQRT_DBL_EPSILON;
+  }
+  else {
+    frac_err = 2.0 * GSL_DBL_EPSILON;
+  }
+  result->val = sin(x);
+  result->err = frac_err * fabs(result->val);
+  return GSL_SUCCESS;
+}
+extern inline int
+gsl_sf_cos_impl(double x, gsl_sf_result * result)
+{
+  double frac_err;
+  if(x > 1.0/GSL_DBL_EPSILON) {
+    frac_err = 1.0;
+  }
+  else if(x > 10.0/GSL_SQRT_DBL_EPSILON) {
+    frac_err = GSL_SQRT_DBL_EPSILON;
+  }
+  else {
+    frac_err = 2.0 * GSL_DBL_EPSILON;
+  }
+  result->val = cos(x);
+  result->err = frac_err * fabs(result->val);
+  return GSL_SUCCESS;
+}
+#endif /* HAVE_INLINE */
+
+
+#endif /* !GSL_SF_TRIG_H */

@@ -72,9 +72,12 @@ int gsl_sf_bessel_y0_impl(const double x, gsl_sf_result * result)
     return GSL_EOVRFLW;
   }
   else {
-    result->val = -cos(x)/x;
-    result->err = 2.0 * GSL_DBL_EPSILON * fabs(result->val);
-    return GSL_SUCCESS;
+    gsl_sf_result cos_result;
+    const int stat = gsl_sf_cos_impl(x, &cos_result);
+    result->val  = -cos_result.val/x;
+    result->err  = fabs(cos_result.err/x);
+    result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
+    return stat;
   }
 }
 
@@ -108,11 +111,16 @@ int gsl_sf_bessel_y1_impl(const double x, gsl_sf_result * result)
     return GSL_SUCCESS;
   }
   else {
-    const double cx = cos(x);
-    const double sx = sin(x);
-    result->val = -(cx/x + sx)/x;
-    result->err = GSL_DBL_EPSILON * (fabs(sx/x) + fabs(cx/(x*x)));
-    return GSL_SUCCESS;
+    gsl_sf_result cos_result;
+    gsl_sf_result sin_result;
+    const int stat_cos = gsl_sf_cos_impl(x, &cos_result);
+    const int stat_sin = gsl_sf_sin_impl(x, &sin_result);
+    const double cx = cos_result.val;
+    const double sx = sin_result.val;
+    result->val  = -(cx/x + sx)/x;
+    result->err  = (fabs(cos_result.err/x) + sin_result.err)/fabs(x);
+    result->err += GSL_DBL_EPSILON * (fabs(sx/x) + fabs(cx/(x*x)));
+    return GSL_ERROR_SELECT_2(stat_cos, stat_sin);
   }
 }
 
@@ -147,12 +155,17 @@ int gsl_sf_bessel_y2_impl(const double x, gsl_sf_result * result)
     return GSL_SUCCESS;
   }
   else {
-    double a  = 3.0/(x*x);
-    double sx = sin(x);
-    double cx = cos(x);
-    result->val = (1.0 - a)/x * cx - a * sx;
-    result->err = GSL_DBL_EPSILON * (fabs(cx/x) + fabs(sx/(x*x)));
-    return GSL_SUCCESS;
+    gsl_sf_result cos_result;
+    gsl_sf_result sin_result;
+    const int stat_cos = gsl_sf_cos_impl(x, &cos_result);
+    const int stat_sin = gsl_sf_sin_impl(x, &sin_result);
+    const double sx = sin_result.val;
+    const double cx = cos_result.val;
+    const double a  = 3.0/(x*x);
+    result->val  = (1.0 - a)/x * cx - a * sx;
+    result->err  = cos_result.err * fabs((1.0 - a)/x) + sin_result.err * fabs(a);
+    result->err += GSL_DBL_EPSILON * (fabs(cx/x) + fabs(sx/(x*x)));
+    return GSL_ERROR_SELECT_2(stat_cos, stat_sin);
   }
 }
 

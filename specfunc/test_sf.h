@@ -16,6 +16,7 @@ int test_sf_check_return(char * message_buff, int val_return, int expected_retur
 #define TEST_TOL2  (256.0*GSL_DBL_EPSILON)
 #define TEST_TOL3  (2048.0*GSL_DBL_EPSILON)
 #define TEST_TOL4  (16384.0*GSL_DBL_EPSILON)
+#define TEST_SQRT_TOL0 (2.0*GSL_SQRT_DBL_EPSILON)
 
 #define TEST_SF_INCONS  1
 #define TEST_SF_ERRNEG  2

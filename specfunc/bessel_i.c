@@ -57,15 +57,15 @@ int gsl_sf_bessel_i0_scaled_impl(const double x, gsl_sf_result * result)
     const double c5 = 1.0/39916800.0;
     const double sum = 1.0 + y*(c1 + y*(c2 + y*(c3 + y*(c4 + y*c5))));
     result->val = eax * sum;
-    result->err = GSL_DBL_EPSILON * result->val;
+    result->err = 2.0 * GSL_DBL_EPSILON * result->val;
   }
   else if(ax < -0.5*GSL_LOG_DBL_EPSILON) {
     result->val = (1.0 - exp(-2.0*ax))/(2.0*ax);
-    result->err = GSL_DBL_EPSILON * result->val;
+    result->err = 2.0 * GSL_DBL_EPSILON * result->val;
   }
   else {
     result->val = 1.0/(2.0*ax);
-    result->err = GSL_DBL_EPSILON * result->val;
+    result->err = 2.0 * GSL_DBL_EPSILON * result->val;
   }
   return GSL_SUCCESS;
 }
@@ -93,13 +93,13 @@ int gsl_sf_bessel_i1_scaled_impl(const double x, gsl_sf_result * result)
     const double c5 = 1.0/172972800.0;
     const double sum = 1.0 + y*(c1 + y*(c2 + y*(c3 + y*(c4 + y*c5))));
     result->val = eax * x/3.0 * sum;
-    result->err = GSL_DBL_EPSILON * fabs(result->val);
+    result->err = 2.0 * GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
   }
   else {
     double ex = exp(-2.0*ax);
     result->val = 0.5 * (ax*(1.0+ex) - (1.0-ex)) / (ax*ax);
-    result->err = GSL_DBL_EPSILON * fabs(result->val);
+    result->err = 2.0 * GSL_DBL_EPSILON * fabs(result->val);
     if(x < 0.0) result->val = -result->val;
     return GSL_SUCCESS;
   }
@@ -128,14 +128,14 @@ int gsl_sf_bessel_i2_scaled_impl(const double x, gsl_sf_result * result)
     const double sum = 1.0 + y*(c1 + y*(c2 + y*(c3 + y*(c4 + y*c5))));
     const double pre = exp(-ax) * x*x/15.0;
     result->val = pre * sum;
-    result->err = GSL_DBL_EPSILON * fabs(result->val);
+    result->err = 2.0 * GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
   }
   else {
     double ex = exp(-2.0*ax);
     double x2 = x*x;
-    result->val =  0.5 * ((3.0+x2)*(1.0-ex) - 3.0*ax*(1.0+ex))/(ax*ax*ax);
-    result->err = GSL_DBL_EPSILON * fabs(result->val);
+    result->val = 0.5 * ((3.0+x2)*(1.0-ex) - 3.0*ax*(1.0+ex))/(ax*ax*ax);
+    result->err = 2.0 * GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
   }
 }  

@@ -105,21 +105,21 @@ gsl_sf_bessel_Jnu_impl(const double nu, const double x, gsl_sf_result * result)
     double b;
     int stat = gsl_sf_bessel_JnuYnu_zero(nu, &b, (double *)0, (double *)0, (double *)0);
     result->val = b;
-    result->err = GSL_DBL_EPSILON * fabs(result->val);
+    result->err = 2.0 * GSL_DBL_EPSILON * fabs(result->val);
     return stat;
   }
   else if(x*x < 10.0*(nu+1.0)*GSL_ROOT5_DBL_EPSILON) {
     double b;
     int stat = gsl_sf_bessel_Inu_Jnu_taylor_impl(nu, x, -1, 50, GSL_DBL_EPSILON, &b);
     result->val = b;
-    result->err = GSL_DBL_EPSILON * fabs(result->val);
+    result->err = 2.0 * GSL_DBL_EPSILON * fabs(result->val);
     return stat;
   }
   else if(x*x < 10.0*(nu+1.0)) {
     double b;
     int stat = gsl_sf_bessel_Inu_Jnu_taylor_impl(nu, x, -1, 100, GSL_DBL_EPSILON, &b);
     result->val = b;
-    result->err = GSL_DBL_EPSILON * fabs(result->val);
+    result->err = 2.0 * GSL_DBL_EPSILON * fabs(result->val);
     return stat;
   }
   else if(nu > nu_cut) {
@@ -129,7 +129,7 @@ gsl_sf_bessel_Jnu_impl(const double nu, const double x, gsl_sf_result * result)
     double Jnu, Jnup1;
     int status = bessel_J_recur_asymp(nu, x, &Jnu, &Jnup1);
     result->val = Jnu;
-    result->err = GSL_DBL_EPSILON * fabs(0.5 * GSL_MAX_DBL(nu,1.0) * Jnu);
+    result->err = 2.0 * GSL_DBL_EPSILON * fabs(0.5 * GSL_MAX_DBL(nu,1.0) * Jnu);
     return status;
   }
 }

@@ -52,8 +52,9 @@ int gsl_sf_Shi_impl(const double x, gsl_sf_result * result)
   else if(ax <= 0.375) {
     gsl_sf_result result_c;
     gsl_sf_cheb_eval_impl(&shi_cs, 128.0*x*x/9.0-1.0, &result_c);
-    result->val = x * (1.0 + result_c.val);
-    result->err = x * result_c.err;
+    result->val  = x * (1.0 + result_c.val);
+    result->err  = x * result_c.err;
+    result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
   }
   else {
@@ -61,8 +62,9 @@ int gsl_sf_Shi_impl(const double x, gsl_sf_result * result)
     gsl_sf_result result_E1;
     int status_Ei = gsl_sf_expint_Ei_impl(x, &result_Ei);
     int status_E1 = gsl_sf_expint_E1_impl(x, &result_E1);
-    result->val = 0.5*(result_Ei.val + result_E1.val);
-    result->err = 0.5*(result_Ei.err + result_E1.err);
+    result->val  = 0.5*(result_Ei.val + result_E1.val);
+    result->err  = 0.5*(result_Ei.err + result_E1.err);
+    result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
     if(status_Ei == GSL_EUNDRFLW && status_E1 == GSL_EUNDRFLW) {
       return GSL_EUNDRFLW;
     }
@@ -98,8 +100,9 @@ int gsl_sf_Chi_impl(const double x, gsl_sf_result * result)
     return GSL_EOVRFLW;
   }
   else {
-    result->val = 0.5 * (result_Ei.val - result_E1.val);
-    result->err = 0.5 * (result_Ei.err - result_E1.err);
+    result->val  = 0.5 * (result_Ei.val - result_E1.val);
+    result->err  = 0.5 * (result_Ei.err + result_E1.err);
+    result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
   }
 }

@@ -93,8 +93,9 @@ gsl_sf_bessel_Ynu_impl(double nu, double x, gsl_sf_result * result)
 
     bessel_Y_recur(mu, x, N, Y_mu, Yp_mu, &Y_nu, &Yp_nu);
 
-    result->val = Y_nu;
-    result->err = GSL_DBL_EPSILON * fabs(result->val);
+    result->val  = Y_nu;
+    result->err  = GSL_DBL_EPSILON * fabs(0.5 * GSL_MAX_DBL(N, 1.0) * result->val);
+    result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
 
     return GSL_ERROR_SELECT_3(stat_mu, stat_0, stat_1);
   }

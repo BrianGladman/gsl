@@ -59,7 +59,7 @@ delta(int ta, int tb, int tc, gsl_sf_result * d)
     return GSL_EOVRFLW;
   }
   d->val = f1.val * f2.val * f3.val / f4.val;
-  d->err = GSL_DBL_EPSILON * fabs(d->val);
+  d->err = 4.0 * GSL_DBL_EPSILON * fabs(d->val);
   return GSL_SUCCESS;
 }
 
@@ -178,7 +178,7 @@ gsl_sf_coupling_3j_impl(int two_ja, int two_jb, int two_jc,
     }
 
     result->val = sum_pos - sum_neg;
-    result->err = GSL_DBL_EPSILON * (sum_pos + sum_neg);
+    result->err = 2.0 * GSL_DBL_EPSILON * (sum_pos + sum_neg);
 
     return GSL_SUCCESS;
   }
@@ -274,7 +274,7 @@ gsl_sf_coupling_6j_impl(int two_ja, int two_jb, int two_jc,
     }
     
     result->val = sum_pos - sum_neg;
-    result->err = GSL_DBL_EPSILON * (sum_pos + sum_neg);
+    result->err = 2.0 * GSL_DBL_EPSILON * (sum_pos + sum_neg);
 
     return GSL_SUCCESS;
   }
@@ -338,7 +338,7 @@ gsl_sf_coupling_9j_impl(int two_ja, int two_jb, int two_jc,
     phase = GSL_IS_ODD(tkmin) ? -1.0 : 1.0;
 
     result->val = phase * (sum_pos - sum_neg);
-    result->err = GSL_DBL_EPSILON * (sum_pos + sum_neg);
+    result->err = 2.0 * GSL_DBL_EPSILON * (sum_pos + sum_neg);
 
     return GSL_SUCCESS;
   }

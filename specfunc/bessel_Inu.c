@@ -62,7 +62,7 @@ gsl_sf_bessel_Inu_scaled_impl(double nu, double x, gsl_sf_result * result)
     double ex = exp(-x);
     int stat = gsl_sf_bessel_Inu_Jnu_taylor_impl(nu, x, 1, 50, GSL_DBL_EPSILON, &b);
     result->val = ex * b;
-    result->err = GSL_DBL_EPSILON * fabs(result->val);
+    result->err = 2.0 * GSL_DBL_EPSILON * fabs(result->val);
     return stat;
   }
   else if(x*x < 10.0*(nu+1.0)) {
@@ -70,7 +70,7 @@ gsl_sf_bessel_Inu_scaled_impl(double nu, double x, gsl_sf_result * result)
     double ex = exp(-x);
     int stat = gsl_sf_bessel_Inu_Jnu_taylor_impl(nu, x, 1, 100, GSL_DBL_EPSILON, &b);
     result->val = ex * b;
-    result->err = GSL_DBL_EPSILON * fabs(result->val);
+    result->err = 2.0 * GSL_DBL_EPSILON * fabs(result->val);
     return stat;
   }
   else if(0.5/(nu*nu + x*x) < GSL_ROOT3_DBL_EPSILON) {
@@ -91,8 +91,9 @@ gsl_sf_bessel_Inu_scaled_impl(double nu, double x, gsl_sf_result * result)
     I_mup1 = r_I_mup1.val;
     Ip_mu = mu/x * I_mu + I_mup1;
     bessel_I_recur(nu, x, M-N, I_mu, Ip_mu, &I_nu, &Ip_nu);
-    result->val = I_nu;
-    result->err = I_nu * (GSL_DBL_EPSILON + r_I_mu.err/r_I_mu.val + r_I_mup1.err/r_I_mup1.val);
+    result->val  = I_nu;
+    result->err  = I_nu * (r_I_mu.err/r_I_mu.val + r_I_mup1.err/r_I_mup1.val);
+    result->err += 2.0 * GSL_DBL_EPSILON * I_nu;
     return GSL_SUCCESS;
   }
 }

@@ -33,9 +33,12 @@ int gsl_sf_bessel_j0_impl(const double x, gsl_sf_result * result)
     return GSL_SUCCESS;
   }
   else {
-    result->val = sin(x)/x;
-    result->err = 2.0 * GSL_DBL_EPSILON * fabs(result->val);
-    return GSL_SUCCESS;
+    gsl_sf_result sin_result;
+    const int stat = gsl_sf_sin_impl(x, &sin_result);
+    result->val  = sin_result.val/x;
+    result->err  = fabs(sin_result.err/x);
+    result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
+    return stat;
   }
 }
 
@@ -70,12 +73,17 @@ int gsl_sf_bessel_j1_impl(const double x, gsl_sf_result * result)
     return GSL_SUCCESS;
   }
   else {
-    double cos_x = cos(x);
-    double sin_x = sin(x);
+    gsl_sf_result cos_result;
+    gsl_sf_result sin_result;
+    const int stat_cos = gsl_sf_cos_impl(x, &cos_result);
+    const int stat_sin = gsl_sf_sin_impl(x, &sin_result);
+    const double cos_x = cos_result.val;
+    const double sin_x = sin_result.val;
     result->val  = (sin_x/x - cos_x)/x;
-    result->err  = GSL_DBL_EPSILON * (fabs(sin_x/(x*x)) + fabs(cos_x/x));
-    result->err += GSL_DBL_EPSILON * fabs(result->val);
-    return GSL_SUCCESS;
+    result->err  = (fabs(sin_result.err/x) + fabs(cos_result.err))/fabs(x);
+    result->err += GSL_DBL_EPSILON * (fabs(sin_x/(x*x)) + fabs(cos_x/x));
+    result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
+    return GSL_ERROR_SELECT_2(stat_cos, stat_sin);
   }
 }
 
@@ -114,12 +122,18 @@ int gsl_sf_bessel_j2_impl(const double x, gsl_sf_result * result)
     return GSL_SUCCESS;
   }
   else {
-    double cos_x = cos(x);
-    double sin_x = sin(x);
-    result->val  = ((3.0/(x*x) - 1.0) * sin_x - 3.0*cos_x/x)/x;
-    result->err  = GSL_DBL_EPSILON * (fabs(sin_x/x) + 3.0*fabs(cos_x/(x*x)));
-    result->err += GSL_DBL_EPSILON * fabs(result->val);
-    return GSL_SUCCESS;
+    gsl_sf_result cos_result;
+    gsl_sf_result sin_result;
+    const int stat_cos = gsl_sf_cos_impl(x, &cos_result);
+    const int stat_sin = gsl_sf_sin_impl(x, &sin_result);
+    const double cos_x = cos_result.val;
+    const double sin_x = sin_result.val;
+    const double f = (3.0/(x*x) - 1.0);
+    result->val  = (f * sin_x - 3.0*cos_x/x)/x;
+    result->err  = fabs(f * sin_result.err/x) + fabs((3.0*cos_result.err/x)/x);
+    result->err += GSL_DBL_EPSILON * (fabs(sin_x/x) + 3.0*fabs(cos_x/(x*x)));
+    result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
+    return GSL_ERROR_SELECT_2(stat_cos, stat_sin);
   }
 }
 
@@ -192,7 +206,7 @@ int gsl_sf_bessel_jl_impl(const int l, const double x, gsl_sf_result * result)
 
     result->val  = jellm1;
     result->err  = fabs(result->val)*(fabs(r_jellp1.err/r_jellp1.val) + fabs(r_jell.err/r_jell.val));
-    result->err += GSL_DBL_EPSILON * fabs(result->val);
+    result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
 
     return GSL_ERROR_SELECT_2(stat_0, stat_1);
   }

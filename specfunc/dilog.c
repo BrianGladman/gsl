@@ -32,7 +32,7 @@ dilog_series(const double x, gsl_sf_result * result)
   }
 
   result->val = sum;
-  result->err = fabs(term);
+  result->err = 2.0 * fabs(term);
 
   if(k == kmax)
     return GSL_EMAXITER;
@@ -53,7 +53,7 @@ dilog_xge0(const double x, gsl_sf_result * result)
     int stat_ser = dilog_series(1.0/x, &ser);
     result->val  = M_PI*M_PI/3.0 - ser.val - 0.5*log_x*log_x;
     result->err  = GSL_DBL_EPSILON * fabs(log_x) + ser.err;
-    result->val += GSL_DBL_EPSILON * fabs(result->val);
+    result->val += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
     return stat_ser;
   }
   else if(x > 1.01) {
@@ -63,7 +63,7 @@ dilog_xge0(const double x, gsl_sf_result * result)
     int stat_ser = dilog_series(1.0 - 1.0/x, &ser);
     result->val  = M_PI*M_PI/6.0 + ser.val - log_term;
     result->err  = GSL_DBL_EPSILON * fabs(log_x) + ser.err;
-    result->err += GSL_DBL_EPSILON * fabs(result->val);
+    result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
     return stat_ser;
   }
   else if(x > 1.0) {
@@ -80,12 +80,12 @@ dilog_xge0(const double x, gsl_sf_result * result)
     const double c7 =  (1.0 - 7.0*lne)/49.0;
     const double c8 = -(1.0 - 8.0*lne)/64.0;
     result->val = c0+eps*(c1+eps*(c2+eps*(c3+eps*(c4+eps*(c5+eps*(c6+eps*(c7+eps*c8)))))));
-    result->err = GSL_DBL_EPSILON * fabs(result->val);
+    result->err = 2.0 * GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
   }
   else if(x == 1.0) {
     result->val = M_PI*M_PI/6.0;
-    result->err = GSL_DBL_EPSILON * M_PI*M_PI/6.0;
+    result->err = 2.0 * GSL_DBL_EPSILON * M_PI*M_PI/6.0;
     return GSL_SUCCESS;
   }
   else if(x > 0.5) {
@@ -94,7 +94,7 @@ dilog_xge0(const double x, gsl_sf_result * result)
     int stat_ser = dilog_series(1.0-x, &ser);
     result->val  = M_PI*M_PI/6.0 - ser.val - log_x*log(1.0-x);
     result->err  = GSL_DBL_EPSILON * fabs(log_x) + ser.err;
-    result->err += GSL_DBL_EPSILON * fabs(result->val);
+    result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
     return stat_ser;
   }
   else if(x > 0.0) {

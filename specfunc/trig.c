@@ -60,6 +60,43 @@ cosh_m1_series(const double x, double * result)
 /*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
 
 int
+gsl_sf_sin_impl(double x, gsl_sf_result * result)
+{
+  double frac_err;
+  if(x > 1.0/GSL_DBL_EPSILON) {
+    frac_err = 1.0;
+  }
+  else if(x > 10.0/GSL_SQRT_DBL_EPSILON) {
+    frac_err = GSL_SQRT_DBL_EPSILON;
+  }
+  else {
+    frac_err = 2.0 * GSL_DBL_EPSILON;
+  }
+  result->val = sin(x);
+  result->err = frac_err * fabs(result->val);
+  return GSL_SUCCESS;
+}
+
+int
+gsl_sf_cos_impl(double x, gsl_sf_result * result)
+{
+  double frac_err;
+  if(x > 1.0/GSL_DBL_EPSILON) {
+    frac_err = 1.0;
+  }
+  else if(x > 10.0/GSL_SQRT_DBL_EPSILON) {
+    frac_err = GSL_SQRT_DBL_EPSILON;
+  }
+  else {
+    frac_err = 2.0 * GSL_DBL_EPSILON;
+  }
+  result->val = cos(x);
+  result->err = frac_err * fabs(result->val);
+  return GSL_SUCCESS;
+}
+
+
+int
 gsl_sf_complex_sin_impl(const double zr, const double zi,
                         gsl_sf_result * szr, gsl_sf_result * szi)
 {

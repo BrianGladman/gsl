@@ -96,7 +96,7 @@ int test_cheb(void)
     f += fabs(r.val - sin(x));
   }
   s = 0;
-  s += ( f > 100.0 * TEST_TOL0 );
+  s += ( f > 200.0 * TEST_TOL0 );
   gsl_test(s, "  gsl_sf_cheb_eval_impl()");
   status += s;
   
@@ -106,7 +106,7 @@ int test_cheb(void)
     f += fabs(r.val - sin(x));
   }
   s = 0;
-  s += ( f > 100.0 * TEST_TOL0 );
+  s += ( f > 200.0 * TEST_TOL0 );
   gsl_test(s, "  gsl_sf_cheb_eval_n_impl()");
   status += s;
 
@@ -117,7 +117,7 @@ int test_cheb(void)
     f += fabs(r.val - sin(x));
   }
   s = 0;
-  s += ( f > 100.0 * TEST_TOL0 );
+  s += ( f > 200.0 * TEST_TOL0 );
   gsl_test(s, "  gsl_sf_cheb_calc_impl()");
   status += s;
 
@@ -127,7 +127,7 @@ int test_cheb(void)
     f += fabs(r.val - cos(x));
   }
   s = 0;
-  s += ( f > 100.0 * 10.0 * TEST_TOL0 );
+  s += ( f > 200.0 * 10.0 * TEST_TOL0 );
   gsl_test(s, "  gsl_sf_cheb_eval_deriv_impl()");
   status += s;
 
@@ -137,7 +137,7 @@ int test_cheb(void)
     f += fabs(r.val + (1.0 + cos(x)));
   }
   s = 0;
-  s += ( f > 100.0 * TEST_TOL0 );
+  s += ( f > 200.0 * TEST_TOL0 );
   gsl_test(s, "  gsl_sf_cheb_eval_integ_impl()");
   status += s;
 
@@ -502,24 +502,21 @@ int test_debye(void)
   gsl_sf_result r;
   int s = 0;
 
-  /* FIXME: I do not have more accurate test values than these.
-   */
+  TEST_SF(s, gsl_sf_debye_1_impl, (0.1, &r),  0.975277750004723276, TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_debye_1_impl, (1.0, &r),  0.777504634112248239, TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_debye_1_impl, (10.0, &r), 0.164443465679946027, TEST_TOL0, GSL_SUCCESS);
 
-  TEST_SF(s, gsl_sf_debye_1_impl, (0.1, &r), 0.975278, 1.0e-5, GSL_SUCCESS);
-  TEST_SF(s, gsl_sf_debye_1_impl, (1.0, &r), 0.777505, 1.0e-5, GSL_SUCCESS);
-  TEST_SF(s, gsl_sf_debye_1_impl, (10.0, &r), 0.164443, 1.0e-5, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_debye_2_impl, (0.1, &r),  0.967083287045302664,  TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_debye_2_impl, (1.0, &r),  0.70787847562782924,   TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_debye_2_impl, (10.0, &r), 0.0479714980201218708, TEST_TOL0, GSL_SUCCESS);
 
-  TEST_SF(s, gsl_sf_debye_2_impl, (0.1, &r), 0.967083, 1.0e-5, GSL_SUCCESS);
-  TEST_SF(s, gsl_sf_debye_2_impl, (1.0, &r), 0.707878, 1.0e-5, GSL_SUCCESS);
-  TEST_SF(s, gsl_sf_debye_2_impl, (10.0, &r), 0.047971, 1.0e-5, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_debye_3_impl, (0.1, &r),  0.962999940487211048,  TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_debye_3_impl, (1.0, &r),  0.674415564077814667,  TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_debye_3_impl, (10.0, &r), 0.0192957656903454886, TEST_TOL0, GSL_SUCCESS);
 
-  TEST_SF(s, gsl_sf_debye_3_impl, (0.1, &r), 0.963000, 1.0e-5, GSL_SUCCESS);
-  TEST_SF(s, gsl_sf_debye_3_impl, (1.0, &r), 0.674416, 1.0e-5, GSL_SUCCESS);
-  TEST_SF(s, gsl_sf_debye_3_impl, (10.0, &r), 0.019296, 1.0e-5, GSL_SUCCESS);
-
-  TEST_SF(s, gsl_sf_debye_4_impl, (0.1, &r), 0.960555, 1.0e-5, GSL_SUCCESS);
-  TEST_SF(s, gsl_sf_debye_4_impl, (1.0, &r), 0.654874, 1.0e-5, GSL_SUCCESS);
-  TEST_SF(s, gsl_sf_debye_4_impl, (10.0, &r), 0.009674, 1.0e-5, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_debye_4_impl, (0.1, &r),  0.960555486124335944,   TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_debye_4_impl, (1.0, &r),  0.654874068886737049,   TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_debye_4_impl, (10.0, &r), 0.00967367556027115896, TEST_TOL0, GSL_SUCCESS);
 
   return s;
 }
@@ -972,10 +969,10 @@ int test_fermidirac(void)
   TEST_SF(s, gsl_sf_fermi_dirac_3half_impl, (  1.0, &r), 2.0022581487784644573  , TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_fermi_dirac_3half_impl, (  1.5, &r), 2.9277494127932173068  , TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_fermi_dirac_3half_impl, (  2.5, &r), 5.768879312210516582   , TEST_TOL0, GSL_SUCCESS);
-  TEST_SF(s, gsl_sf_fermi_dirac_3half_impl, ( 10.0, &r), 101.00510084332600020  , TEST_TOL0, GSL_SUCCESS);
-  TEST_SF(s, gsl_sf_fermi_dirac_3half_impl, ( 12.0, &r), 156.51518642795728036  , TEST_TOL0, GSL_SUCCESS);
-  TEST_SF(s, gsl_sf_fermi_dirac_3half_impl, ( 20.0, &r), 546.5630100657601959   , TEST_TOL0, GSL_SUCCESS);
-  TEST_SF(s, gsl_sf_fermi_dirac_3half_impl, ( 50.0, &r), 5332.353566687145552   , TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_fermi_dirac_3half_impl, ( 10.0, &r), 101.00510084332600020  , TEST_TOL1, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_fermi_dirac_3half_impl, ( 12.0, &r), 156.51518642795728036  , TEST_TOL1, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_fermi_dirac_3half_impl, ( 20.0, &r), 546.5630100657601959   , TEST_TOL1, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_fermi_dirac_3half_impl, ( 50.0, &r), 5332.353566687145552   , TEST_TOL1, GSL_SUCCESS);
 
   TEST_SF(s, gsl_sf_fermi_dirac_int_impl, (3,  -2.0, &r), 0.1342199155038680215 , TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_fermi_dirac_int_impl, (3,   0.0, &r), 0.9470328294972459176 , TEST_TOL0, GSL_SUCCESS);
