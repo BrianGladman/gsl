@@ -325,3 +325,6 @@ distribution, bug reports
 
 * Patricio Rojo <pato@astro.cornell.edu> patch for numerical
 instability in interpolation integrate function
+
+* Damir Herman <herman@ncbi.nlm.nih.gov> improved accuracy of
+histogram range calculations

@@ -67,6 +67,19 @@ gsl_histogram_alloc (size_t n)
   return h;
 }
 
+static void
+make_uniform (double range[], size_t n, double xmin, double xmax)
+{
+  size_t i;
+
+  for (i = 0; i <= n; i++)
+    {
+      double f1 = ((double) (n-i) / (double) n);
+      double f2 = ((double) i / (double) n);
+      range[i] = f1 * xmin +  f2 * xmax;
+    }
+}
+
 gsl_histogram *
 gsl_histogram_calloc_uniform (const size_t n, const double xmin,
                               const double xmax)
@@ -85,14 +98,7 @@ gsl_histogram_calloc_uniform (const size_t n, const double xmin,
       return h;
     }
 
-  {
-    size_t i;
-
-    for (i = 0; i < n + 1; i++)
-      {
-        h->range[i] = xmin + ((double) i / (double) n) * (xmax - xmin);
-      }
-  }
+  make_uniform (h->range, n, xmin, xmax);
 
   return h;
 }
@@ -145,15 +151,12 @@ gsl_histogram_set_ranges_uniform (gsl_histogram * h, double xmin, double xmax)
 
   if (xmin >= xmax)
     {
-      GSL_ERROR_VAL ("xmin must be less than xmax", GSL_EINVAL, 0);
+      GSL_ERROR ("xmin must be less than xmax", GSL_EINVAL);
     }
 
   /* initialize ranges */
 
-  for (i = 0; i <= n; i++)
-    {
-      h->range[i] = xmin + ((double) i / (double) n) * (xmax - xmin);
-    }
+  make_uniform (h->range, n, xmin, xmax);
 
   /* clear contents */
 
@@ -173,8 +176,7 @@ gsl_histogram_set_ranges (gsl_histogram * h, const double range[], size_t size)
 
   if (size != (n+1))
     {
-      GSL_ERROR_VAL ("size of range must match size of histogram", 
-                     GSL_EINVAL, 0);
+      GSL_ERROR ("size of range must match size of histogram", GSL_EINVAL);
     }
 
   /* initialize ranges */
@@ -193,3 +195,4 @@ gsl_histogram_set_ranges (gsl_histogram * h, const double range[], size_t size)
 
   return GSL_SUCCESS;
 }
+

@@ -87,6 +87,19 @@ gsl_histogram2d_alloc (const size_t nx, const size_t ny)
   return h;
 }
 
+static void
+make_uniform (double range[], size_t n, double xmin, double xmax)
+{
+  size_t i;
+
+  for (i = 0; i <= n; i++)
+    {
+      double f1 = ((double) (n-i) / (double) n);
+      double f2 = ((double) i / (double) n);
+      range[i] = f1 * xmin +  f2 * xmax;
+    }
+}
+
 gsl_histogram2d *
 gsl_histogram2d_calloc_uniform (const size_t nx, const size_t ny,
                                 const double xmin, const double xmax,
@@ -111,19 +124,8 @@ gsl_histogram2d_calloc_uniform (const size_t nx, const size_t ny,
       return h;
     }
 
-  {
-    size_t i;
-
-    for (i = 0; i < nx + 1; i++)
-      {
-        h->xrange[i] = xmin + ((double) i / (double) nx) * (xmax - xmin);
-      }
-
-    for (i = 0; i < ny + 1; i++)
-      {
-        h->yrange[i] = ymin + ((double) i / (double) ny) * (ymax - ymin);
-      }
-  }
+  make_uniform (h->xrange, nx, xmin, xmax);
+  make_uniform (h->yrange, ny, ymin, ymax);
 
   return h;
 }
@@ -242,15 +244,8 @@ gsl_histogram2d_set_ranges_uniform (gsl_histogram2d * h,
 
   /* initialize ranges */
 
-  for (i = 0; i <= nx; i++)
-    {
-      h->xrange[i] = xmin + ((double) i / (double) nx) * (xmax - xmin);
-    }
-
-  for (i = 0; i <= ny; i++)
-    {
-      h->yrange[i] = ymin + ((double) i / (double) ny) * (ymax - ymin);
-    }
+  make_uniform (h->xrange, nx, xmin, xmax);
+  make_uniform (h->yrange, ny, ymin, ymax);
 
   /* clear contents */
 

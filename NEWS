@@ -1,5 +1,8 @@
 * What will be new in gsl-1.6:
 
+** Removed potential cancellation error in calculation of uniform
+histogram ranges.
+
 ** Improved numerical stability of integration for akima and cspline
 interpolation.
 
