@@ -32,8 +32,6 @@ explicitly forbid redistribution (natch).
 
 * Document the use of autogen.sh in the HACKING file
 
-* Add covariance statistics functions
-
 * Document Jacobi eigen function, in particular that it only works for
 symmetric matrices.
 

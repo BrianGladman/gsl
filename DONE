@@ -1,3 +1,6 @@
+* Add covariance statistics functions
+   -- Still need to think about weighted version of covariance functions
+
 * Make the algorithms work with rectangular MxN matrices where
 appropriate. This is very confused right now.
 

@@ -29,6 +29,7 @@ a stable way, without large intermediate values that might overflow.
 * Absolute deviation::          
 * Higher moments (skewness and kurtosis)::  
 * Autocorrelation::             
+* Covariance::                  
 * Weighted Samples::            
 * Maximum and Minimum values::  
 * Median and Percentiles::      
@@ -329,6 +330,33 @@ a_1 = @{\sum_@{i = 1@}^@{n@} (x_@{i@} - \hat\mu) (x_@{i-1@} - \hat\mu)
 
 @deftypefun double gsl_stats_lag1_autocorrelation_m (const double data[], const size_t @var{stride}, const size_t @var{n}, const double @var{mean})
 @end deftypefun
+
+@node Covariance
+@section Covariance
+@cindex covariance, of two datasets
+
+@deftypefun double gsl_stats_covariance (const double @var{data1}[], const size_t @var{stride1}, const double data2[], const size_t @var{stride2}, const size_t @var{n})
+This function computes the covariance of the datasets @var{data1} and
+@var{data2} which must both be of the same length @var{n}.
+
+@tex
+\beforedisplay
+$$
+covar = {1 \over (n - 1)} \sum_{i = 1}^{n} (x_{i} - \hat x) (y_{i} - \hat y)
+$$
+\afterdisplay
+@end tex
+@ifinfo
+@example
+covar = (1/(n - 1)) \sum_@{i = 1@}^@{n@} (x_i - \hat x) (y_i - \hat y)
+@end example
+@end ifinfo
+@noindent
+@end deftypefun
+
+@deftypefun double gsl_stats_covariance_m (const double @var{data1}[], const size_t @var{stride1}, const double @var{data2}[], const size_t @var{n}, const double @var{mean1}, const double @var{mean2})
+@end deftypefun
+
 
 @node Weighted Samples
 @section Weighted Samples

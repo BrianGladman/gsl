@@ -24,12 +24,12 @@ C++ programs
 ** A permutation directory has been added for manipulating permutations
 
 ** Statistics functions now support a stride argument for generality, and
-also support weighted samples
+also support weighted samples and a covariance function.
 
 ** The names of the statistics functions have been reorganized for
 improved clarity. Consult manual for details.
 
-** The environment variable GSL_IEEE_MODE now uses , as a separator
+** The environment variable GSL_IEEE_MODE now uses "," as a separator
 instead of ;
 
 ** The autogen.sh script, mostly for use by developers who use the CVS

@@ -63,6 +63,9 @@ print "median_less_one groupb = ", &median_less_one(@groupb), "\n" ;
 print "median_less_one igroupa = ", &median_less_one(@igroupa), "\n" ;
 print "median_less_one igroupb = ", &median_less_one(@igroupb), "\n" ;
 
+print "cov groupa groupb = ", &cov(\@groupa,\@groupb), "\n" ;
+print "cov igroupa igroupb = ", &cov(\@igroupa,\@igroupb), "\n" ;
+
 print "pv groupa groupb = ", &pv(\@groupa,\@groupb), "\n" ;
 print "pv igroupa igroupb = ", &pv(\@igroupa,\@igroupb), "\n" ;
 
@@ -240,6 +243,19 @@ sub median_less_one {
     return &median(@x) ;
 }
 
+sub cov {
+    my ($x, $y) = @_ ;
+    my $mean1 = &mean(@$x);
+    my $mean2 = &mean(@$y);
+    my $n1 = scalar(@$x) ;
+    my $n2 = scalar(@$y) ;
+    my $cov = 0;
+    for (my $i = 0 ; $i < $n1 ; $i++) {
+        print "i = $i d1 = ", $x->[$i] - $mean1, " d2 = ", $y->[$i] - $mean2, "\n" ;
+        $cov += ($x->[$i] - $mean1) * ($y->[$i] - $mean2);
+    }
+    return $cov / ($n1 - 1); 
+}
 
 
 sub pv {

@@ -159,6 +159,13 @@ FUNCTION (test, func) (const size_t stridea, const size_t strideb)
   }
 
   {
+    double c = FUNCTION(gsl_stats,covariance) (groupa, stridea, groupb, strideb, nb);
+    double expected = -0.000139021538461539;
+    gsl_test_rel (c, expected, rel, NAME(gsl_stats) "_covariance");
+  }
+
+
+  {
     double pv = FUNCTION(gsl_stats,pvariance) (groupa, stridea, na, groupb, strideb, nb);
     double expected = 0.00123775384615385;
     gsl_test_rel (pv, expected, rel, NAME(gsl_stats) "_pvariance");
@@ -171,11 +178,10 @@ FUNCTION (test, func) (const size_t stridea, const size_t strideb)
   }
 
   {
-    BASE max = FUNCTION(gsl_stats,max) (groupa, stridea, na);
     BASE expected = 0.1331;
-    gsl_test  (max != expected,
+    gsl_test  (FUNCTION(gsl_stats,max) (groupa, stridea, na) != expected,
 	       NAME(gsl_stats) "_max (" OUT_FORMAT " observed vs " OUT_FORMAT " expected)", 
-	       max, expected);
+               FUNCTION(gsl_stats,max) (groupa, stridea, na), expected);
   }
 
   {
