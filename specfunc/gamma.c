@@ -1260,8 +1260,7 @@ gsl_sf_gamma_impl(const double x, gsl_sf_result * result)
       gsl_sf_result lng;
       double sgn;
       int stat_lng = gsl_sf_lngamma_sgn_impl(x, &lng, &sgn);
-      int stat_e   = gsl_sf_exp_sgn_impl(lng.val, sgn, result);
-      result->err  = GSL_DBL_EPSILON * fabs(result->val) * fabs(lng.val);
+      int stat_e   = gsl_sf_exp_mult_err_impl(lng.val, lng.err, sgn, 0.0, result);
       return GSL_ERROR_SELECT_2(stat_e, stat_lng);
     }
   }
@@ -1342,9 +1341,7 @@ gsl_sf_gammainv_impl(const double x, gsl_sf_result * result)
       return stat_lng;
     }
     else {
-      int stat = gsl_sf_exp_sgn_impl(-lng.val, sgn, result);
-      result->err = result->val * lng.err;
-      return stat;
+      return gsl_sf_exp_mult_err_impl(-lng.val, lng.err, sgn, 0.0, result);
     }
   }
   else {

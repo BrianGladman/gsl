@@ -818,27 +818,27 @@ int test_dawson(void)
 
 int test_debye(void)
 {
-  gsl_sf_result y;
+  gsl_sf_result r;
   int s = 0;
 
   /* FIXME: I do not have more accurate test values than these.
    */
 
-  TEST_SF(s, gsl_sf_debye_1_impl, (0.1, &y), 0.975278, 1.0e-5, GSL_SUCCESS);
-  TEST_SF(s, gsl_sf_debye_1_impl, (1.0, &y), 0.777505, 1.0e-5, GSL_SUCCESS);
-  TEST_SF(s, gsl_sf_debye_1_impl, (10.0, &y), 0.164443, 1.0e-5, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_debye_1_impl, (0.1, &r), 0.975278, 1.0e-5, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_debye_1_impl, (1.0, &r), 0.777505, 1.0e-5, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_debye_1_impl, (10.0, &r), 0.164443, 1.0e-5, GSL_SUCCESS);
 
-  TEST_SF(s, gsl_sf_debye_2_impl, (0.1, &y), 0.967083, 1.0e-5, GSL_SUCCESS);
-  TEST_SF(s, gsl_sf_debye_2_impl, (1.0, &y), 0.707878, 1.0e-5, GSL_SUCCESS);
-  TEST_SF(s, gsl_sf_debye_2_impl, (10.0, &y), 0.047971, 1.0e-5, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_debye_2_impl, (0.1, &r), 0.967083, 1.0e-5, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_debye_2_impl, (1.0, &r), 0.707878, 1.0e-5, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_debye_2_impl, (10.0, &r), 0.047971, 1.0e-5, GSL_SUCCESS);
 
-  TEST_SF(s, gsl_sf_debye_3_impl, (0.1, &y), 0.963000, 1.0e-5, GSL_SUCCESS);
-  TEST_SF(s, gsl_sf_debye_3_impl, (1.0, &y), 0.674416, 1.0e-5, GSL_SUCCESS);
-  TEST_SF(s, gsl_sf_debye_3_impl, (10.0, &y), 0.019296, 1.0e-5, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_debye_3_impl, (0.1, &r), 0.963000, 1.0e-5, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_debye_3_impl, (1.0, &r), 0.674416, 1.0e-5, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_debye_3_impl, (10.0, &r), 0.019296, 1.0e-5, GSL_SUCCESS);
 
-  TEST_SF(s, gsl_sf_debye_4_impl, (0.1, &y), 0.960555, 1.0e-5, GSL_SUCCESS);
-  TEST_SF(s, gsl_sf_debye_4_impl, (1.0, &y), 0.654874, 1.0e-5, GSL_SUCCESS);
-  TEST_SF(s, gsl_sf_debye_4_impl, (10.0, &y), 0.009674, 1.0e-5, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_debye_4_impl, (0.1, &r), 0.960555, 1.0e-5, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_debye_4_impl, (1.0, &r), 0.654874, 1.0e-5, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_debye_4_impl, (10.0, &r), 0.009674, 1.0e-5, GSL_SUCCESS);
 
   return status;
 }
@@ -847,7 +847,9 @@ int test_debye(void)
 int test_dilog(void)
 {
   gsl_sf_result r;
-  double x, y;
+  gsl_sf_result x;
+  gsl_sf_result y;
+  int c;
   int status = 0;
   int s = 0;
 
@@ -877,103 +879,62 @@ int test_dilog(void)
    * adjust the switch-over point I suppose.
    */
 
-  s = 0;
-  gsl_sf_complex_dilog_impl(1.00001, M_PI/2.0, &x, &y);
-  s += ( frac_diff( x, -0.20562022409960237363 ) > TOL );
-  s += ( frac_diff( y,  0.91597344814458309320 ) > TOL );
-  gsl_test(s, "  gsl_sf_complex_dilog(1.00001, Pi/2)");
-  status += s;
+  c  = gsl_sf_complex_dilog_impl(1.00001, M_PI/2.0, &x, &y);
+  s += test_sf_analyze("gsl_sf_complex_dilog_impl(1.00001, M_PI/2.0)", x, -0.20562022409960237363, TEST_TOL0, c, GSL_SUCCESS);
+  s += test_sf_analyze("gsl_sf_complex_dilog_impl(1.00001, M_PI/2.0)", y,  0.91597344814458309320, TEST_TOL0, c, GSL_SUCCESS);
 
-  s = 0;
-  gsl_sf_complex_dilog_impl(0.99999, M_PI/2.0, &x, &y);
-  s += ( frac_diff( x, -0.20561329262779687646 ) > TOL );
-  s += ( frac_diff( y,  0.91595774018131512060 ) > TOL );
-  gsl_test(s, "  gsl_sf_complex_dilog(0.99999, Pi/2)");
-  status += s;
+  c  = gsl_sf_complex_dilog_impl(0.99999, M_PI/2.0, &x, &y);
+  s += test_sf_analyze("gsl_sf_complex_dilog_impl(0.99999, M_PI/2.0)", x, -0.20561329262779687646, TEST_TOL0, c, GSL_SUCCESS);
+  s += test_sf_analyze("gsl_sf_complex_dilog_impl(0.99999, M_PI/2.0)", y,  0.91595774018131512060, TEST_TOL0, c, GSL_SUCCESS);
 
-  s = 0;
-  gsl_sf_complex_dilog_impl(0.991, M_PI/2.0, &x, &y);
-  s += ( frac_diff( x, -0.20250384721077806127 ) > 1.0e-06 );
-  s += ( frac_diff( y,  0.90888544355846447810 ) > TOL );
-  gsl_test(s, "  gsl_sf_complex_dilog(0.991, Pi/2)");
-  status += s;
+  c  = gsl_sf_complex_dilog_impl(0.991, M_PI/2.0, &x, &y);
+  s += test_sf_analyze("gsl_sf_complex_dilog_impl(0.991, M_PI/2.0)", x, -0.20250384721077806127, TEST_TOL0, c, GSL_SUCCESS);
+  s += test_sf_analyze("gsl_sf_complex_dilog_impl(0.991, M_PI/2.0)", y,  0.90888544355846447810, TEST_TOL0, c, GSL_SUCCESS);
 
-  s = 0;
-  gsl_sf_complex_dilog_impl(0.98, M_PI/2.0, &x, &y);
-  s += ( frac_diff( x, -0.19871638377785918403 ) > 1.0e-05 );
-  s += ( frac_diff( y,  0.90020045882981847610 ) > TOL );
-  gsl_test(s, "  gsl_sf_complex_dilog(0.98, Pi/2)");
-  status += s;
+  c  = gsl_sf_complex_dilog_impl(0.98, M_PI/2.0, &x, &y);
+  s += test_sf_analyze("gsl_sf_complex_dilog_impl(0.98, M_PI/2.0)", x, -0.19871638377785918403, TEST_TOL0, c, GSL_SUCCESS);
+  s += test_sf_analyze("gsl_sf_complex_dilog_impl(0.98, M_PI/2.0)", y,  0.90020045882981847610, TEST_TOL0, c, GSL_SUCCESS);
 
-  s = 0;
-  gsl_sf_complex_dilog_impl(0.95, M_PI/2.0, &x, &y);
-  s += ( frac_diff( x, -0.18848636456893572091 ) > TOL );
-  s += ( frac_diff( y,  0.87633754133420277830 ) > TOL );
-  gsl_test(s, "  gsl_sf_complex_dilog(0.95, Pi/2)");
-  status += s;
+  c  = gsl_sf_complex_dilog_impl(0.95, M_PI/2.0, &x, &y);
+  s += test_sf_analyze("gsl_sf_complex_dilog_impl(0.95, M_PI/2.0)", x, -0.18848636456893572091, TEST_TOL0, c, GSL_SUCCESS);
+  s += test_sf_analyze("gsl_sf_complex_dilog_impl(0.95, M_PI/2.0)", y,  0.87633754133420277830, TEST_TOL0, c, GSL_SUCCESS);
 
-  s = 0;
-  gsl_sf_complex_dilog_impl(0.8, M_PI/2.0, &x, &y);
-  s += ( frac_diff( x, -0.13980800855429037810 ) > TOL );
-  s += ( frac_diff( y,  0.75310609092419884460 ) > TOL );
-  gsl_test(s, "  gsl_sf_complex_dilog(0.8, Pi/2)");
-  status += s;
+  c  = gsl_sf_complex_dilog_impl(0.8, M_PI/2.0, &x, &y);
+  s += test_sf_analyze("gsl_sf_complex_dilog_impl(0.8, M_PI/2.0)", x, -0.13980800855429037810, TEST_TOL0, c, GSL_SUCCESS);
+  s += test_sf_analyze("gsl_sf_complex_dilog_impl(0.8, M_PI/2.0)", y,  0.75310609092419884460, TEST_TOL0, c, GSL_SUCCESS);
 
-  s = 0;
-  gsl_sf_complex_dilog_impl(0.5, M_PI/2.0, &x, &y);
-  s += ( frac_diff( x, -0.05897507442156586346 ) > TOL );
-  s += ( frac_diff( y,  0.48722235829452235710 ) > TOL );
-  gsl_test(s, "  gsl_sf_complex_dilog(0.5, Pi/2)");
-  status += s;
+  c  = gsl_sf_complex_dilog_impl(0.5, M_PI/2.0, &x, &y);
+  s += test_sf_analyze("gsl_sf_complex_dilog_impl(0.5, M_PI/2.0)", x, -0.05897507442156586346, TEST_TOL0, c, GSL_SUCCESS);
+  s += test_sf_analyze("gsl_sf_complex_dilog_impl(0.5, M_PI/2.0)", y,  0.48722235829452235710, TEST_TOL0, c, GSL_SUCCESS);
 
-  s = 0;
-  gsl_sf_complex_dilog_impl(0.01, M_PI/2.0, &x, &y);
-  s += ( frac_diff( x, -0.000024999375027776215378 ) > 1.0e-12 );
-  s += ( frac_diff( y,  0.009999888892888684820    ) > TOL );
-  gsl_test(s, "  gsl_sf_complex_dilog(0.01, Pi/2)");
-  status += s;
+  c  = gsl_sf_complex_dilog_impl(0.01, M_PI/2.0, &x, &y);
+  s += test_sf_analyze("gsl_sf_complex_dilog_impl(0.01, M_PI/2.0)", x, -0.000024999375027776215378, TEST_TOL0, c, GSL_SUCCESS);
+  s += test_sf_analyze("gsl_sf_complex_dilog_impl(0.01, M_PI/2.0)", y,  0.009999888892888684820, TEST_TOL0, c, GSL_SUCCESS);
 
-  s = 0;
-  gsl_sf_complex_dilog_impl(10.0, M_PI/2.0, &x, &y);
-  s += ( frac_diff( x, -3.0596887943287347304 ) > TOL );
-  s += ( frac_diff( y,  3.7167814930680685900 ) > TOL );
-  gsl_test(s, "  gsl_sf_complex_dilog(10.0, Pi/2)");
-  status += s;
+  c  = gsl_sf_complex_dilog_impl(10.0, M_PI/2.0, &x, &y);
+  s += test_sf_analyze("gsl_sf_complex_dilog_impl(10.0, M_PI/2.0)", x, -3.0596887943287347304, TEST_TOL0, c, GSL_SUCCESS);
+  s += test_sf_analyze("gsl_sf_complex_dilog_impl(10.0, M_PI/2.0)", y,  3.7167814930680685900, TEST_TOL0, c, GSL_SUCCESS);
 
-  s = 0;
-  gsl_sf_complex_dilog_impl(100.0, M_PI/2.0, &x, &y);
-  s += ( frac_diff( x, -11.015004738293824854 ) > TOL );
-  s += ( frac_diff( y,  7.2437843013083534970 ) > TOL );
-  gsl_test(s, "  gsl_sf_complex_dilog(100.0, Pi/2)");
-  status += s;
+  c  = gsl_sf_complex_dilog_impl(100.0, M_PI/2.0, &x, &y);
+  s += test_sf_analyze("gsl_sf_complex_dilog_impl(100.0, M_PI/2.0)", x, -11.015004738293824854, TEST_TOL0, c, GSL_SUCCESS);
+  s += test_sf_analyze("gsl_sf_complex_dilog_impl(100.0, M_PI/2.0)", y,  7.2437843013083534970, TEST_TOL0, c, GSL_SUCCESS);
 
-  s = 0;
-  gsl_sf_complex_dilog_impl(0.9, M_PI/8.0, &x, &y);
-  s += ( frac_diff( x, 0.9659561692810778695 ) > TOL );
-  s += ( frac_diff( y, 0.6295758865676813951 ) > TOL );
-  gsl_test(s, "  gsl_sf_complex_dilog(0.9, Pi/8)");
-  status += s;
+  c  = gsl_sf_complex_dilog_impl(0.9, M_PI/2.0, &x, &y);
+  s += test_sf_analyze("gsl_sf_complex_dilog_impl(0.9, M_PI/2.0)", x, 0.9659561692810778695, TEST_TOL0, c, GSL_SUCCESS);
+  s += test_sf_analyze("gsl_sf_complex_dilog_impl(0.9, M_PI/2.0)", y, 0.6295758865676813951, TEST_TOL0, c, GSL_SUCCESS);
 
-  s = 0;
-  gsl_sf_complex_dilog_impl(0.99, M_PI/8.0, &x, &y);
-  s += ( frac_diff( x, 1.0571539648820244720 ) > TOL );
-  s += ( frac_diff( y, 0.7469145254610851318 ) > TOL );
-  gsl_test(s, "  gsl_sf_complex_dilog(0.99, Pi/8)");
-  status += s;
+  c  = gsl_sf_complex_dilog_impl(0.99, M_PI/8.0, &x, &y);
+  s += test_sf_analyze("gsl_sf_complex_dilog_impl(0.99, M_PI/8.0)", x, 1.0571539648820244720, TEST_TOL0, c, GSL_SUCCESS);
+  s += test_sf_analyze("gsl_sf_complex_dilog_impl(0.99, M_PI/8.0)", y, 0.7469145254610851318, TEST_TOL0, c, GSL_SUCCESS);
 
-  s = 0;
-  gsl_sf_complex_dilog_impl(0.99, M_PI/64.0, &x, &y);
-  s += ( frac_diff( x, 1.5381800285902999666 ) > TOL );
-  s += ( frac_diff( y, 0.1825271634987756651 ) > TOL );
-  gsl_test(s, "  gsl_sf_complex_dilog(0.99, Pi/64)");
-  status += s;
+  c  = gsl_sf_complex_dilog_impl(0.99, M_PI/64.0, &x, &y);
+  s += test_sf_analyze("gsl_sf_complex_dilog_impl(0.99, M_PI/64.0)", x, 1.5381800285902999666, TEST_TOL0, c, GSL_SUCCESS);
+  s += test_sf_analyze("gsl_sf_complex_dilog_impl(0.99, M_PI/64.0)", y, 0.1825271634987756651, TEST_TOL0, c, GSL_SUCCESS);
 
-  s = 0;
-  gsl_sf_complex_dilog_impl(0.9, 3.0*M_PI/4.0, &x, &y);
-  s += ( frac_diff( x, -0.6062840301356530985 ) > TOL );
-  s += ( frac_diff( y,  0.4836632833122775721 ) > TOL );
-  gsl_test(s, "  gsl_sf_complex_dilog(0.9, 3Pi/4)");
-  status += s;
+  c  = gsl_sf_complex_dilog_impl(0.9, 3.0*M_PI/4.0, &x, &y);
+  s += test_sf_analyze("gsl_sf_complex_dilog_impl(0.9, 3.0*M_PI/4.0)", x, -0.6062840301356530985, TEST_TOL0, c, GSL_SUCCESS);
+  s += test_sf_analyze("gsl_sf_complex_dilog_impl(0.9, 3.0*M_PI/4.0)", y,  0.4836632833122775721, TEST_TOL0, c, GSL_SUCCESS);
+
 
   return status;
 }

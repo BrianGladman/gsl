@@ -15,11 +15,13 @@
 int gsl_sf_erfc_impl(double x, gsl_sf_result * result);
 int gsl_sf_erfc_e(double x, gsl_sf_result * result);
 
+
 /* Log Complementary Error Function
  *
  * exceptions: none
  */
 int gsl_sf_log_erfc_impl(double x, gsl_sf_result * result);
+int gsl_sf_log_erfc_e(double x, gsl_sf_result * result);
 
 
 /* Error Function

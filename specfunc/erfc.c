@@ -366,3 +366,51 @@ int gsl_sf_erf_Q_impl(double x, gsl_sf_result * result)
 
 /*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
 
+int gsl_sf_erfc_e(double x, gsl_sf_result * result)
+{
+  int status = gsl_sf_erfc_impl(x, result);
+  if(status != GSL_SUCCESS) {
+    GSL_ERROR("gsl_sf_erfc_e", status);
+  }
+  return status;
+}
+
+
+int gsl_sf_log_erfc_e(double x, gsl_sf_result * result)
+{
+  int status = gsl_sf_log_erfc_impl(x, result);
+  if(status != GSL_SUCCESS) {
+    GSL_ERROR("gsl_sf_log_erfc_e", status);
+  }
+  return status;
+}
+
+
+int gsl_sf_erf_e(double x, gsl_sf_result * result)
+{
+  int status = gsl_sf_erf_impl(x, result);
+  if(status != GSL_SUCCESS) {
+    GSL_ERROR("gsl_sf_erf_e", status);
+  }
+  return status;
+}
+
+
+int gsl_sf_erf_Z_e(double x, gsl_sf_result * result)
+{
+  int status = gsl_sf_erf_Z_impl(x, result);
+  if(status != GSL_SUCCESS) {
+    GSL_ERROR("gsl_sf_erf_Z_e", status);
+  }
+  return status;
+}
+
+
+int gsl_sf_erf_Q_e(double x, gsl_sf_result * result)
+{
+  int status = gsl_sf_erf_Q_impl(x, result);
+  if(status != GSL_SUCCESS) {
+    GSL_ERROR("gsl_sf_erf_Q_e", status);
+  }
+  return status;
+}

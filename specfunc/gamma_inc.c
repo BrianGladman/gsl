@@ -116,10 +116,12 @@ gamma_inc_Q_asymp_unif(const double a, const double x, gsl_sf_result * result)
   const int stat_ln = gsl_sf_log_1plusx_mx_impl(eps, &ln_term);  /* log(1+eps) - eps */
   const double eta  = eps * sqrt(-2.0*ln_term.val/(eps*eps));
 
-  double erfc = gsl_sf_erfc(eta*M_SQRT2*rta);
+  gsl_sf_result erfc;
 
   double R;
   double c0, c1;
+
+  gsl_sf_erfc_impl(eta*M_SQRT2*rta, &erfc);
 
   if(fabs(eps) < GSL_ROOT5_DBL_EPSILON) {
     c0 = -1.0/3.0 + eps*(1.0/12.0 - eps*(23.0/540.0 - eps*(353.0/12960.0 - eps*589.0/30240.0)));
@@ -134,8 +136,8 @@ gamma_inc_Q_asymp_unif(const double a, const double x, gsl_sf_result * result)
 
   R = exp(-0.5*a*eta*eta)/(M_SQRT2*M_SQRTPI*rta) * (c0 + c1/a);
 
-  result->val = 0.5 * erfc + R;
-  result->err = GSL_DBL_EPSILON * (fabs(result->val) + fabs(R)*fabs(0.5*a*eta*eta));
+  result->val = 0.5 * erfc.val + R;
+  result->err = GSL_DBL_EPSILON * fabs(R * 0.5 * a*eta*eta) + 0.5 * erfc.err;
 
   return stat_ln;
 }
@@ -178,7 +180,7 @@ gamma_inc_Q_CF(const double a, const double x, gsl_sf_result * result)
   }
 
   result->val = pre * sum;
-  result->err = GSL_DBL_EPSILON * fabs(result->val);
+  result->err = 2.0 * GSL_DBL_EPSILON * fabs(result->val);
 
   if(k == kmax)
     return GSL_EMAXITER;

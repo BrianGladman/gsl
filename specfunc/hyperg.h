@@ -7,24 +7,26 @@
 #ifndef _HYPERG_H_
 #define _HYPERG_H_
 
+#include <gsl_sf_result.h>
+
 
 /* Direct implementation of 1F1 series.
  */
 int
-gsl_sf_hyperg_1F1_series_impl(double a, double b, double x, double * result, double * prec);
+gsl_sf_hyperg_1F1_series_impl(double a, double b, double x, gsl_sf_result * result);
 
 
 /* Implementation of the 1F1 related to the
  * incomplete gamma function: 1F1(1,b,x), b >= 1.
  */
 int
-gsl_sf_hyperg_1F1_1_impl(double b, double x, double * result);
+gsl_sf_hyperg_1F1_1_impl(double b, double x, gsl_sf_result * result);
 
 
 /* 1F1(1,b,x) for integer b >= 1
  */
 int
-gsl_sf_hyperg_1F1_1_int_impl(int b, double x, double * result);
+gsl_sf_hyperg_1F1_1_int_impl(int b, double x, gsl_sf_result * result);
 
 
 /* Implementation of large b asymptotic.
@@ -34,7 +36,7 @@ gsl_sf_hyperg_1F1_1_int_impl(int b, double x, double * result);
  * a^2 << b, |x|/|b| < 1 - delta
  */
 int
-gsl_sf_hyperg_1F1_large_b_impl(double a, double b, double x, double * result);
+gsl_sf_hyperg_1F1_large_b_impl(double a, double b, double x, gsl_sf_result * result);
 
 
 /* Implementation of large b asymptotic.
@@ -43,7 +45,7 @@ gsl_sf_hyperg_1F1_large_b_impl(double a, double b, double x, double * result);
  */
 int
 gsl_sf_hyperg_U_large_b_impl(double a, double b, double x,
-                             double * result,
+                             gsl_sf_result * result,
                              double * ln_multiplier
                              );
 
@@ -52,7 +54,7 @@ gsl_sf_hyperg_U_large_b_impl(double a, double b, double x,
  */
 int
 gsl_sf_hyperg_2F0_series_impl(double a, double b, double x, int n_trunc,
-                              double * result, double * prec);
+                              gsl_sf_result * result);
 
 
 #endif  /* !_HYPERG_H_ */

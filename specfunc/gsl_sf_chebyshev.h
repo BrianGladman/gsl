@@ -24,6 +24,8 @@ struct gsl_sf_cheb_series_struct {
    * only they know how to calculate it, since it is
    * specific to the approximated function. By default,
    * order_sp = order.
+   * It is used explicitly only by the gsl_sf_cheb_eval_mode
+   * functions, which are not meant for casual use.
    */
   int order_sp;
 };

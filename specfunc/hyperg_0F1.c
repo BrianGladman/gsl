@@ -131,10 +131,11 @@ hyperg_0F1_series(double c, double x, double * result, double * prec)
  */
 static
 int
-hyperg_0F1_bessel_I(const double nu, const double x, double * result)
+hyperg_0F1_bessel_I(const double nu, const double x, gsl_sf_result * result)
 {
   if(x > GSL_LOG_DBL_MAX) {
-    *result = 0.0;
+    result->val = 0.0;
+    result->err = 0.0;
     return GSL_EOVRFLW;
   }
 
@@ -142,21 +143,21 @@ hyperg_0F1_bessel_I(const double nu, const double x, double * result)
     const double anu = -nu;
     const double s   = 2.0/M_PI * sin(anu*M_PI);
     const double ex  = exp(x);
-    double I = 0.0;
-    double K = 0.0;
+    gsl_sf_result I;
+    gsl_sf_result K;
     int stat_I = gsl_sf_bessel_Inu_scaled_impl(anu, x, &I);
     int stat_K = gsl_sf_bessel_Knu_scaled_impl(anu, x, &K);
-    *result = ex * I + s * K / ex;
-    if(stat_K != GSL_SUCCESS)
-      return stat_K;
-    else
-      return stat_I;
+    result->val  = ex * I.val + s * (K.val / ex);
+    result->err  = ex * I.err + fabs(s * K.err/ex);
+    result->err += fabs(s * (K.val/ex)) * GSL_DBL_EPSILON * anu * M_PI;
+    return GSL_ERROR_SELECT_2(stat_K, stat_I);
   }
   else {
     const double ex  = exp(x);
-    double I = 0.0;
+    gsl_sf_result I;
     int stat_I = gsl_sf_bessel_Inu_scaled_impl(nu, x, &I);
-    *result = ex * I;
+    result->val = ex * I.val;
+    result->err = ex * I.err + GSL_DBL_EPSILON * fabs(result->val);
     return stat_I;
   }
 }
@@ -169,8 +170,7 @@ hyperg_0F1_bessel_I(const double nu, const double x, double * result)
  */
 static
 int
-hyperg_0F1_bessel_J(const double nu, const double x, double * result,
-                    const gsl_prec_t goal, const unsigned int err_bits)
+hyperg_0F1_bessel_J(const double nu, const double x, gsl_sf_result * result)
 {
   if(nu < 0.0) { 
     const double anu = -nu;
@@ -180,11 +180,10 @@ hyperg_0F1_bessel_J(const double nu, const double x, double * result,
     gsl_sf_result Y;
     int stat_J = gsl_sf_bessel_Jnu_impl(anu, x, &J);
     int stat_Y = gsl_sf_bessel_Ynu_impl(anu, x, &Y);
-    *result = c * J.val - s * Y.val;
-    if(stat_Y != GSL_SUCCESS)
-      return stat_Y;
-    else
-      return stat_J;
+    result->val  = c * J.val - s * Y.val;
+    result->err  = fabs(c * J. err) + fabs(s * Y.err);
+    result->err += fabs(anu * M_PI) * GSL_DBL_EPSILON * fabs(J.val + Y.val);
+    return GSL_ERROR_SELECT_2(stat_Y, stat_J);
   }
   else {
     return gsl_sf_bessel_Jnu_impl(nu, x, result);
@@ -195,55 +194,68 @@ hyperg_0F1_bessel_J(const double nu, const double x, double * result,
 /*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
 
 int
-gsl_sf_hyperg_0F1_impl(double c, double x, double * result,
-                       const gsl_prec_t goal, unsigned int err_bits)
+gsl_sf_hyperg_0F1_impl(double c, double x, gsl_sf_result * result)
 {
   const double rintc = floor(c + 0.5);
   const int c_neg_integer = (c < 0.0 && fabs(c - rintc) < locEPS);
 
-  if(c == 0.0 || c_neg_integer) {
-    *result = 0.0;
+  if(result == 0) {
+    return GSL_EFAULT;
+  }
+  else if(c == 0.0 || c_neg_integer) {
+    result->val = 0.0;
+    result->err = 0.0;
     return GSL_EDOM;
   }
-
-  if(x < 0.0) {
-    double Jcm1;
-    double lg_c, sgn;
+  else if(x < 0.0) {
+    gsl_sf_result Jcm1;
+    gsl_sf_result lg_c;
+    double sgn;
     int stat_g = gsl_sf_lngamma_sgn_impl(c, &lg_c, &sgn);
-    int stat_J = hyperg_0F1_bessel_J(c-1.0, 2.0*sqrt(-x), &Jcm1, goal, err_bits);
+    int stat_J = hyperg_0F1_bessel_J(c-1.0, 2.0*sqrt(-x), &Jcm1);
     if(stat_g != GSL_SUCCESS) {
-      *result = 0.0;
+      result->val = 0.0;
+      result->err = 0.0;
       return stat_g;
     }
-    if(Jcm1 == 0.0) {
-      *result = 0.0;
+    else if(Jcm1.val == 0.0) {
+      result->val = 0.0;
+      result->err = 0.0;
       return stat_J;
     }
     else {
-      double ln_pre = lg_c + log(-x)*0.5*(1.0-c);
-      return gsl_sf_exp_mult_impl(ln_pre, sgn*Jcm1, result);
+      double ln_pre = lg_c.val + log(-x)*0.5*(1.0-c);
+      return gsl_sf_exp_mult_err_impl(ln_pre, GSL_DBL_EPSILON * fabs(ln_pre),
+                                      sgn*Jcm1.val, Jcm1.err,
+				      result);
     }
   }
   else if(x == 0.0) {
-    *result = 1.0;
+    result->val = 1.0;
+    result->err = 1.0;
     return GSL_SUCCESS;
   }
   else {
-    double Icm1;
-    double lg_c, sgn;
+    gsl_sf_result Icm1;
+    gsl_sf_result lg_c;
+    double sgn;
     int stat_g = gsl_sf_lngamma_sgn_impl(c, &lg_c, &sgn);
     int stat_I = hyperg_0F1_bessel_I(c-1.0, 2.0*sqrt(x), &Icm1);
     if(stat_g != GSL_SUCCESS) {
-      *result = 0.0;
+      result->val = 0.0;
+      result->err = 0.0;
       return stat_g;
     }
-    if(Icm1 == 0.0) {
-      *result = 0.0;
+    else if(Icm1.val == 0.0) {
+      result->val = 0.0;
+      result->err = 0.0;
       return stat_I;
     }
     else {
-      double ln_pre = log(x)*0.5*(1.0-c) + lg_c;
-      return gsl_sf_exp_mult_impl(ln_pre, sgn*Icm1, result);
+      double ln_pre = log(x)*0.5*(1.0-c) + lg_c.val;
+      return gsl_sf_exp_mult_err_impl(ln_pre, GSL_DBL_EPSILON * fabs(ln_pre),
+                                      sgn*Icm1.val, Icm1.err,
+				      result);
     }
   }
 }
@@ -252,27 +264,11 @@ gsl_sf_hyperg_0F1_impl(double c, double x, double * result,
 /*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
 
 int
-gsl_sf_hyperg_0F1_e(const double c, const double x, double * result,
-                    const gsl_prec_t goal, const unsigned int err_bits)
+gsl_sf_hyperg_0F1_e(const double c, const double x, gsl_sf_result * result)
 {
-  int status = gsl_sf_hyperg_0F1_impl(c, x, result, goal, err_bits);
+  int status = gsl_sf_hyperg_0F1_impl(c, x, result);
   if(status != GSL_SUCCESS) {
     GSL_ERROR("gsl_sf_hyperg_0F1_e", status);
   }
   return status;
-}
-
-
-/*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*-*-*/
-
-double
-gsl_sf_hyperg_0F1(const double c, const double x,
-                  const gsl_prec_t goal, const unsigned int err_bits)
-{
-  double y;
-  int status = gsl_sf_hyperg_0F1_impl(c, x, &y, goal, err_bits);
-  if(status != GSL_SUCCESS) {
-    GSL_WARNING("gsl_sf_hyperg_0F1", status);
-  }
-  return y;
 }

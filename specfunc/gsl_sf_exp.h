@@ -97,27 +97,6 @@ int gsl_sf_exp_impl(const double x, gsl_sf_result * result)
     return GSL_SUCCESS;
   }  
 }
-extern inline
-int gsl_sf_exp_sgn_impl(const double x, const double sgn, gsl_sf_result * result)
-{
-  if(x > GSL_LOG_DBL_MAX) {
-    result->val = 0.0;
-    result->err = 0.0;
-    return GSL_EOVRFLW;
-  }
-  else if(x < GSL_LOG_DBL_MIN) {
-    result->val = 0.0;
-    result->err = 0.0;
-    return GSL_EUNDRFLW;
-  }
-  else {
-    double s = GSL_SIGN(sgn);
-    double e = exp(x);
-    result->val = s * e;
-    result->err = e * GSL_DBL_EPSILON;
-    return GSL_SUCCESS;
-  }  
-}
 #endif  /* HAVE_INLINE */
 
 

@@ -4,6 +4,8 @@
 #ifndef GSL_SF_DILOG_H_
 #define GSL_SF_DILOG_H_
 
+#include <gsl_sf_result.h>
+
 
 /* Real part of DiLogarithm(x), for real argument.
  * In Lewin's notation, this is Li_2(x).

@@ -14,9 +14,8 @@
  *
  * exceptions: GSL_EOVRFLW, GSL_EUNDRFLW
  */
-int     gsl_sf_hyperg_0F1_impl(double c, double x, double * result, gsl_prec_t goal, unsigned int err_bits);
-int     gsl_sf_hyperg_0F1_e(double c, double x, double * result, gsl_prec_t goal, unsigned int err_bits);
-double  gsl_sf_hyperg_0F1(double c, double x, gsl_prec_t goal, unsigned int err_bits);
+int gsl_sf_hyperg_0F1_impl(double c, double x, gsl_sf_result * result);
+int gsl_sf_hyperg_0F1_e(double c, double x, gsl_sf_result * result);
 
 
 /* Confluent hypergeometric function  for integer parameters.
@@ -24,9 +23,8 @@ double  gsl_sf_hyperg_0F1(double c, double x, gsl_prec_t goal, unsigned int err_
  *
  * exceptions: 
  */
-int     gsl_sf_hyperg_1F1_int_impl(int m, int n, double x, double * result);
-int     gsl_sf_hyperg_1F1_int_e(int m, int n, double x, double * result);
-double  gsl_sf_hyperg_1F1_int(int m, int n, double x);
+int gsl_sf_hyperg_1F1_int_impl(int m, int n, double x, gsl_sf_result * result);
+int gsl_sf_hyperg_1F1_int_e(int m, int n, double x, gsl_sf_result * result);
 
 
 /* Confluent hypergeometric function.
@@ -34,9 +32,8 @@ double  gsl_sf_hyperg_1F1_int(int m, int n, double x);
  *
  * exceptions:
  */
-int     gsl_sf_hyperg_1F1_impl(double a, double b, double x, double * result);
-int     gsl_sf_hyperg_1F1_e(double a, double b, double x, double * result);
-double  gsl_sf_hyperg_1F1(double a, double b, double x);
+int gsl_sf_hyperg_1F1_impl(double a, double b, double x, gsl_sf_result * result);
+int gsl_sf_hyperg_1F1_e(double a, double b, double x, gsl_sf_result * result);
 
 
 /* Confluent hypergeometric function for integer parameters.
@@ -44,9 +41,8 @@ double  gsl_sf_hyperg_1F1(double a, double b, double x);
  *
  * exceptions:
  */
-int     gsl_sf_hyperg_U_int_impl(int m, int n, double x, double * result);
-int     gsl_sf_hyperg_U_int_e(int m, int n, double x, double * result);
-double  gsl_sf_hyperg_U_int(int m, int n, double x);
+int gsl_sf_hyperg_U_int_impl(int m, int n, double x, gsl_sf_result * result);
+int gsl_sf_hyperg_U_int_e(int m, int n, double x, gsl_sf_result * result);
 
 
 /* Confluent hypergeometric function.
@@ -54,9 +50,8 @@ double  gsl_sf_hyperg_U_int(int m, int n, double x);
  *
  * exceptions:
  */
-int     gsl_sf_hyperg_U_impl(double a, double b, double x, double * result);
-int     gsl_sf_hyperg_U_e(double a, double b, double x, double * result);
-double  gsl_sf_hyperg_U(double a, double b, double x);
+int gsl_sf_hyperg_U_impl(double a, double b, double x, gsl_sf_result * result);
+int gsl_sf_hyperg_U_e(double a, double b, double x, gsl_sf_result * result);
 
 
 /* Gauss hypergeometric function 2F1[a,b,c,x]
@@ -104,9 +99,8 @@ int gsl_sf_hyperg_2F1_conj_renorm_e(double aR, double aI, double c, double x, gs
  *
  * exceptions: GSL_EDOM
  */
-int     gsl_sf_hyperg_2F0_impl(double a, double b, double x, double * result);
-int     gsl_sf_hyperg_2F0_e(double a, double b, double x, double * result);
-double  gsl_sf_hyperg_2F0(double a, double b, double x);
+int     gsl_sf_hyperg_2F0_impl(double a, double b, double x, gsl_sf_result * result);
+int     gsl_sf_hyperg_2F0_e(double a, double b, double x, gsl_sf_result * result);
 
 
 #endif  /* !GSL_SF_HYPERG_H_ */

@@ -870,17 +870,19 @@ fd_whiz(const double term, const int iterm,
  */
 static
 int
-fd_nint(const int j, const double x, double * result)
+fd_nint(const int j, const double x, gsl_sf_result * result)
 {
   const int nsize = 100 + 1;
   double qcoeff[nsize];
 
   if(j >= -1) {
-    *result = 0.0;
+    result->val = 0.0;
+    result->err = 0.0;
     return GSL_ESANITY;
   }
   else if(j < -(nsize)) {
-    *result = 0.0;
+    result->val = 0.0;
+    result->err = 0.0;
     return GSL_EUNIMPL;
   }
   else {
@@ -913,7 +915,8 @@ fd_nint(const int j, const double x, double * result)
     }
 
     p = gsl_sf_pow_int(1.0+a, j);
-    *result = f*a*p;
+    result->val = f*a*p;
+    result->err = 3.0 * GSL_DBL_EPSILON * fabs(f*a*p);
     return GSL_SUCCESS;
   }
 }
@@ -923,14 +926,15 @@ fd_nint(const int j, const double x, double * result)
  */
 static
 int
-fd_neg(const double j, const double x, double * result)
+fd_neg(const double j, const double x, gsl_sf_result * result)
 {
   const int itmax = 100;
   const int qsize = 100 + 1;
   double qnum[qsize], qden[qsize];
 
   if(x < GSL_LOG_DBL_MIN) {
-    *result = 0.0;
+    result->val = 0.0;
+    result->err = 0.0;
     return GSL_SUCCESS;
   }
   else if(x < -1.0 && x < -fabs(j+1.0)) {
@@ -949,7 +953,8 @@ fd_neg(const double j, const double x, double * result)
       sum  += term;
       if(fabs(term/sum) < GSL_DBL_EPSILON) break;
     }
-    *result = sum;
+    result->val = sum;
+    result->err = GSL_DBL_EPSILON * fabs(sum);
     return GSL_SUCCESS;
   }
   else {
@@ -969,7 +974,8 @@ fd_neg(const double j, const double x, double * result)
       enx *= ex;
     }
 
-    *result = f;
+    result->val = f;
+    result->err = GSL_DBL_EPSILON * fabs(f);
 
     if(jterm == itmax)
       return GSL_EMAXITER;
@@ -984,28 +990,28 @@ fd_neg(const double j, const double x, double * result)
  */
 static
 int
-fd_asymp(const double j, const double x, double * result)
+fd_asymp(const double j, const double x, gsl_sf_result * result)
 {
   const int j_integer = ( fabs(j - floor(j+0.5)) < 100.0*GSL_DBL_EPSILON );
   const int itmax = 200;
-  double lg;
+  gsl_sf_result lg;
   int stat_lg = gsl_sf_lngamma_impl(j + 2.0, &lg);
   double seqn = 0.5;
   double xm2  = (1.0/x)/x;
   double xgam = 1.0;
   double add = DBL_MAX;
-  double fneg;
-  double exp_arg;
+  gsl_sf_result fneg;
+  gsl_sf_result exp_arg;
   int stat_fneg;
   int stat_ser;
   int stat_e;
   int n;
   for(n=1; n<=itmax; n++) {
     double add_previous = add;
-    double eta;
+    gsl_sf_result eta;
     gsl_sf_eta_int_impl(2*n, &eta);
     xgam = xgam * xm2 * (j + 1.0 - (2*n-2)) * (j + 1.0 - (2*n-1));
-    add  = eta * xgam;
+    add  = eta.val * xgam;
     if(!j_integer && fabs(add) > fabs(add_previous)) break;
     if(fabs(add/seqn) < GSL_DBL_EPSILON) break;
     seqn += add;
@@ -1013,8 +1019,9 @@ fd_asymp(const double j, const double x, double * result)
   stat_ser = ( fabs(add) > locEPS*fabs(seqn) ? GSL_ELOSS : GSL_SUCCESS );
 
   stat_fneg = fd_neg(j, -x, &fneg);
-  stat_e    = gsl_sf_exp_impl((j+1.0)*log(x) - lg, &exp_arg);
-  *result = cos(j*M_PI) * fneg + 2.0 * seqn * exp_arg;
+  stat_e    = gsl_sf_exp_impl((j+1.0)*log(x) - lg.val, &exp_arg);
+  result->val = cos(j*M_PI) * fneg.val + 2.0 * seqn * exp_arg.val;
+  result->err = fabs(2.0 * seqn) * exp_arg.err + GSL_DBL_EPSILON * fabs(result->val);
   return GSL_ERROR_SELECT_4(stat_e, stat_ser, stat_fneg, stat_lg);
 }
 
@@ -1057,15 +1064,15 @@ fd_series(const double j, const double x, double * result)
  */
 static
 int
-fd_series_int(const int j, const double x, double * result)
+fd_series_int(const int j, const double x, gsl_sf_result * result)
 {
   int n;
   double sum = 0.0;
   double del;
   double pow_factor = 1.0;
-  double eta_factor;
+  gsl_sf_result eta_factor;
   gsl_sf_eta_int_impl(j + 1, &eta_factor);
-  del  = pow_factor * eta_factor;
+  del  = pow_factor * eta_factor.val;
   sum += del;
 
   /* Sum terms where the argument
@@ -1074,9 +1081,9 @@ fd_series_int(const int j, const double x, double * result)
   for(n=1; n<=j+2; n++) {
     gsl_sf_eta_int_impl(j+1-n, &eta_factor);
     pow_factor *= x/n;
-    del  = pow_factor * eta_factor;
+    del  = pow_factor * eta_factor.val;
     sum += del;
-    if(fabs(del/sum) < 0.1*GSL_DBL_EPSILON) break;
+    if(fabs(del/sum) < GSL_DBL_EPSILON) break;
   }
 
   /* Now sum the terms where eta() is negative.
@@ -1091,27 +1098,29 @@ fd_series_int(const int j, const double x, double * result)
    */
   if(j < 32) {
     int m;
-    double jfact;
+    gsl_sf_result jfact;
     double sum2;
     double pre2;
 
     gsl_sf_fact_impl((unsigned int)j, &jfact);
-    pre2 = gsl_sf_pow_int(x, j) / jfact;
+    pre2 = gsl_sf_pow_int(x, j) / jfact.val;
 
     gsl_sf_eta_int_impl(-3, &eta_factor);
     pow_factor = x*x*x*x / ((j+4)*(j+3)*(j+2)*(j+1));
-    sum2 = eta_factor * pow_factor;
+    sum2 = eta_factor.val * pow_factor;
 
     for(m=3; m<24; m++) {
       gsl_sf_eta_int_impl(1-2*m, &eta_factor);
       pow_factor *= x*x / ((j+2*m)*(j+2*m-1));
-      sum2 += eta_factor * pow_factor;
+      sum2 += eta_factor.val * pow_factor;
     }
 
     sum += pre2 * sum2;
   }
 
-  *result = sum;
+  result->val = sum;
+  result->err = GSL_DBL_EPSILON * fabs(sum);
+
   return GSL_SUCCESS;
 }
 
@@ -1121,10 +1130,9 @@ fd_series_int(const int j, const double x, double * result)
  */
 static
 int
-fd_UMseries_int(const int j, const double x, double * result)
+fd_UMseries_int(const int j, const double x, gsl_sf_result * result)
 {
   const int nmax = 2000;
-  double lg;
   double pre;
   double lnpre;
   double sum_even = 1.0;
@@ -1136,14 +1144,15 @@ fd_UMseries_int(const int j, const double x, double * result)
 
   if(x < 500.0 && j < 80) {
     double p = gsl_sf_pow_int(x, j+1);
-    double g;
+    gsl_sf_result g;
     gsl_sf_fact_impl(j+1, &g); /* Gamma(j+2) */
     lnpre = 0.0;
-    pre   = p/g;
+    pre   = p/g.val;
   }
   else {
+    gsl_sf_result lg;
     gsl_sf_lngamma_impl(j + 2.0, &lg);
-    lnpre = (j+1.0)*log(x) - lg;
+    lnpre = (j+1.0)*log(x) - lg.val;
     pre = 1.0;
   }
 
@@ -1151,7 +1160,8 @@ fd_UMseries_int(const int j, const double x, double * result)
    */
   for(n=1; n<nmax; n+=2) {
     double del;
-    double U, M;
+    gsl_sf_result U;
+    gsl_sf_result M;
     int stat_h_local;
 
     stat_h_local = gsl_sf_hyperg_U_int_impl(1, j+2, n*x, &U);
@@ -1172,7 +1182,7 @@ fd_UMseries_int(const int j, const double x, double * result)
       break;
     }
 
-    del = ((j+1.0)*U - M);
+    del = ((j+1.0)*U.val - M.val);
     sum_odd += del;
     if(fabs(del/sum_odd) < GSL_DBL_EPSILON) break;
   }
@@ -1181,7 +1191,8 @@ fd_UMseries_int(const int j, const double x, double * result)
    */
   for(n=2; n<nmax; n+=2) {
     double del;
-    double U, M;
+    gsl_sf_result U;
+    gsl_sf_result M;
     int stat_h_local;
 
     stat_h_local = gsl_sf_hyperg_U_int_impl(1, j+2, n*x, &U);
@@ -1202,7 +1213,7 @@ fd_UMseries_int(const int j, const double x, double * result)
       break;
     }
 
-    del = ((j+1.0)*U - M);
+    del = ((j+1.0)*U.val - M.val);
     sum_even -= del;
     if(fabs(del/sum_even) < GSL_DBL_EPSILON) break;
   }
@@ -1217,53 +1228,62 @@ fd_UMseries_int(const int j, const double x, double * result)
 /*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
 
 /* [Goano (4)] */
-int gsl_sf_fermi_dirac_m1_impl(const double x, double * result)
+int gsl_sf_fermi_dirac_m1_impl(const double x, gsl_sf_result * result)
 {
   if(x < GSL_LOG_DBL_MIN) {
-    *result = 0.0;
+    result->val = 0.0;
+    result->err = 0.0;
     return GSL_EUNDRFLW;
   }
-  else if( x < 0.0) {
-    double ex = exp(x);
-    *result = ex/(1.0+ex);
+  else if(x < 0.0) {
+    double ex   = exp(x);
+    result->val = ex/(1.0+ex);
+    result->err = GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
   }
   else {
-    *result = 1.0/(1.0 + exp(-x));
+    double ex = exp(-x);
+    result->val = 1.0/(1.0 + ex);
+    result->err = ex * x * GSL_DBL_EPSILON;
     return GSL_SUCCESS;
   }
 }
 
 
 /* [Goano (3)] */
-int gsl_sf_fermi_dirac_0_impl(const double x, double * result)
+int gsl_sf_fermi_dirac_0_impl(const double x, gsl_sf_result * result)
 {
   if(x < GSL_LOG_DBL_MIN) {
-    *result = 0.0;
+    result->val = 0.0;
+    result->err = 0.0;
     return GSL_EUNDRFLW;
   }
   else if(x < -5.0) {
     double ex  = exp(x);
     double ser = 1.0 - ex*(0.5 - ex*(1.0/3.0 - ex*(1.0/4.0 - ex*(1.0/5.0 - ex/6.0))));
-    *result = ex * ser;
+    result->val = ex * ser;
+    result->err = 2.0 * GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
   }
   else if(x < 10.0) {
-    *result = log(1.0 + exp(x));
+    result->val = log(1.0 + exp(x));
+    result->err = fabs(x * GSL_DBL_EPSILON);
     return GSL_SUCCESS;
   }
   else {
     double ex = exp(-x);
-    *result = x + ex * (1.0 - 0.5*ex + ex*ex/3.0 - ex*ex*ex/4.0);
+    result->val = x + ex * (1.0 - 0.5*ex + ex*ex/3.0 - ex*ex*ex/4.0);
+    result->err = (x + ex) * GSL_DBL_EPSILON;
     return GSL_SUCCESS;
   }
 }
 
 
-int gsl_sf_fermi_dirac_1_impl(const double x, double * result)
+int gsl_sf_fermi_dirac_1_impl(const double x, gsl_sf_result * result)
 {
   if(x < GSL_LOG_DBL_MIN) {
-    *result = 0.0;
+    result->val = 0.0;
+    result->err = 0.0;
     return GSL_EUNDRFLW;
   }
   else if(x < -1.0) {
@@ -1279,50 +1299,55 @@ int gsl_sf_fermi_dirac_1_impl(const double x, double * result)
       sum  += term;
       if(fabs(term/sum) < GSL_DBL_EPSILON) break;
     }
-    *result = sum;
+    result->val = sum;
+    result->err = 2.0 * fabs(sum) * GSL_DBL_EPSILON;
     return GSL_SUCCESS;
   }
   else if(x < 1.0) {
-    *result = gsl_sf_cheb_eval(&fd_1_a_cs, x);
-    return GSL_SUCCESS;
+    return gsl_sf_cheb_eval_impl(&fd_1_a_cs, x, result);
   }
   else if(x < 4.0) {
     double t = 2.0/3.0*(x-1.0) - 1.0;
-    *result  = gsl_sf_cheb_eval(&fd_1_b_cs, t);
-    return GSL_SUCCESS;
+    return gsl_sf_cheb_eval_impl(&fd_1_b_cs, t, result);
   }
   else if(x < 10.0) {
     double t = 1.0/3.0*(x-4.0) - 1.0;
-    *result  = gsl_sf_cheb_eval(&fd_1_c_cs, t);
-    return GSL_SUCCESS;
+    return gsl_sf_cheb_eval_impl(&fd_1_c_cs, t, result);
   }
   else if(x < 30.0) {
     double t = 0.1*x - 2.0;
-    double c = gsl_sf_cheb_eval(&fd_1_d_cs, t);
-    *result  = c * x*x;
+    gsl_sf_result c;
+    gsl_sf_cheb_eval_impl(&fd_1_d_cs, t, &c);
+    result->val  = c.val * x*x;
+    result->err  = c.err * x*x + GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
   }
   else if(x < 1.0/GSL_SQRT_DBL_EPSILON) {
     double t = 60.0/x - 1.0;
-    double c = gsl_sf_cheb_eval(&fd_1_e_cs, t);
-    *result  = c * x*x;
+    gsl_sf_result c;
+    gsl_sf_cheb_eval_impl(&fd_1_e_cs, t, &c);
+    result->val  = c.val * x*x;
+    result->err  = c.err * x*x + GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
   }
   else if(x < GSL_SQRT_DBL_MAX) {
-    *result = 0.5 * x*x;
+    result->val = 0.5 * x*x;
+    result->err = 2.0 * GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
   }
   else {
-    *result = 0.0;
+    result->val = 0.0;
+    result->err = 0.0;
     return GSL_EOVRFLW;
   }
 }
 
 
-int gsl_sf_fermi_dirac_2_impl(const double x, double * result)
+int gsl_sf_fermi_dirac_2_impl(const double x, gsl_sf_result * result)
 {
   if(x < GSL_LOG_DBL_MIN) {
-    *result = 0.0;
+    result->val = 0.0;
+    result->err = 0.0;
     return GSL_EUNDRFLW;
   }
   else if(x < -1.0) {
@@ -1338,47 +1363,51 @@ int gsl_sf_fermi_dirac_2_impl(const double x, double * result)
       sum  += term;
       if(fabs(term/sum) < GSL_DBL_EPSILON) break;
     }
-    *result = sum;
+    result->val = sum;
+    result->err = 2.0 * GSL_DBL_EPSILON * fabs(sum);
     return GSL_SUCCESS;
   }
   else if(x < 1.0) {
-    *result = gsl_sf_cheb_eval(&fd_2_a_cs, x);
-    return GSL_SUCCESS;
+    return gsl_sf_cheb_eval_impl(&fd_2_a_cs, x, result);
   }
   else if(x < 4.0) {
     double t = 2.0/3.0*(x-1.0) - 1.0;
-    *result  = gsl_sf_cheb_eval(&fd_2_b_cs, t);
-    return GSL_SUCCESS;
+    return gsl_sf_cheb_eval_impl(&fd_2_b_cs, t, result);
   }
   else if(x < 10.0) {
     double t = 1.0/3.0*(x-4.0) - 1.0;
-    *result  = gsl_sf_cheb_eval(&fd_2_c_cs, t);
-    return GSL_SUCCESS;
+    return gsl_sf_cheb_eval_impl(&fd_2_c_cs, t, result);
   }
   else if(x < 30.0) {
     double t = 0.1*x - 2.0;
-    double c = gsl_sf_cheb_eval(&fd_2_d_cs, t);
-    *result  = c * x*x*x;
+    gsl_sf_result c;
+    gsl_sf_cheb_eval_impl(&fd_2_d_cs, t, &c);
+    result->val  = c.val * x*x*x;
+    result->err  = c.err * x*x*x + 3.0 * GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
   }
   else if(x < 1.0/GSL_ROOT3_DBL_EPSILON) {
     double t = 60.0/x - 1.0;
-    double c = gsl_sf_cheb_eval(&fd_2_e_cs, t);
-    *result  = c * x*x*x;
+    gsl_sf_result c;
+    gsl_sf_cheb_eval_impl(&fd_2_e_cs, t, &c);
+    result->val = c.val * x*x*x;
+    result->err = c.err * x*x*x + 3.0 * GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
   }
   else if(x < GSL_ROOT3_DBL_MAX) {
-    *result = 1.0/6.0 * x*x*x;
+    result->val = 1.0/6.0 * x*x*x;
+    result->err = 3.0 * GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
   }
   else {
-    *result = 0.0;
+    result->val = 0.0;
+    result->err = 0.0;
     return GSL_EOVRFLW;
   }
 }
 
 
-int gsl_sf_fermi_dirac_int_impl(const int j, const double x, double * result)
+int gsl_sf_fermi_dirac_int_impl(const int j, const double x, gsl_sf_result * result)
 {
   if(j < -1) {
     return fd_nint(j, x, result);
@@ -1405,11 +1434,12 @@ int gsl_sf_fermi_dirac_int_impl(const int j, const double x, double * result)
     return fd_series_int(j, x, result);
   }
   else {
-    double fasymp;
+    gsl_sf_result fasymp;
     int stat_asymp = fd_asymp(j, x, &fasymp);
 
     if(stat_asymp == GSL_SUCCESS) {
-      *result = fasymp;
+      result->val = fasymp.val;
+      result->err = fasymp.err;
       return stat_asymp;
     }
     else {
@@ -1419,10 +1449,11 @@ int gsl_sf_fermi_dirac_int_impl(const int j, const double x, double * result)
 }
 
 
-int gsl_sf_fermi_dirac_mhalf_impl(const double x, double * result)
+int gsl_sf_fermi_dirac_mhalf_impl(const double x, gsl_sf_result * result)
 {
   if(x < GSL_LOG_DBL_MIN) {
-    *result = 0.0;
+    result->val = 0.0;
+    result->err = 0.0;
     return GSL_EUNDRFLW;
   }
   else if(x < -1.0) {
@@ -1438,27 +1469,28 @@ int gsl_sf_fermi_dirac_mhalf_impl(const double x, double * result)
       sum  += term;
       if(fabs(term/sum) < GSL_DBL_EPSILON) break;
     }
-    *result = sum;
+    result->val = sum;
+    result->err = 2.0 * fabs(sum) * GSL_DBL_EPSILON;
     return GSL_SUCCESS;
   }
   else if(x < 1.0) {
-    *result = gsl_sf_cheb_eval(&fd_mhalf_a_cs, x);
-    return GSL_SUCCESS;
+    return gsl_sf_cheb_eval_impl(&fd_mhalf_a_cs, x, result);
   }
   else if(x < 4.0) {
     double t = 2.0/3.0*(x-1.0) - 1.0;
-    *result  = gsl_sf_cheb_eval(&fd_mhalf_b_cs, t);
-    return GSL_SUCCESS;
+    return gsl_sf_cheb_eval_impl(&fd_mhalf_b_cs, t, result);
   }
   else if(x < 10.0) {
     double t = 1.0/3.0*(x-4.0) - 1.0;
-    *result  = gsl_sf_cheb_eval(&fd_mhalf_c_cs, t);
-    return GSL_SUCCESS;
+    return gsl_sf_cheb_eval_impl(&fd_mhalf_c_cs, t, result);
   }
   else if(x < 30.0) {
+    double rtx = sqrt(x);
     double t = 0.1*x - 2.0;
-    double c = gsl_sf_cheb_eval(&fd_mhalf_d_cs, t);
-    *result  = c * sqrt(x);
+    gsl_sf_result c;
+    gsl_sf_cheb_eval_impl(&fd_mhalf_d_cs, t, &c);
+    result->val  = c.val * rtx;
+    result->err  = c.err * rtx + 0.5 * GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
   }
   else {
@@ -1467,10 +1499,11 @@ int gsl_sf_fermi_dirac_mhalf_impl(const double x, double * result)
 }
 
 
-int gsl_sf_fermi_dirac_half_impl(const double x, double * result)
+int gsl_sf_fermi_dirac_half_impl(const double x, gsl_sf_result * result)
 {
   if(x < GSL_LOG_DBL_MIN) {
-    *result = 0.0;
+    result->val = 0.0;
+    result->err = 0.0;
     return GSL_EUNDRFLW;
   }
   else if(x < -1.0) {
@@ -1486,27 +1519,28 @@ int gsl_sf_fermi_dirac_half_impl(const double x, double * result)
       sum  += term;
       if(fabs(term/sum) < GSL_DBL_EPSILON) break;
     }
-    *result = sum;
+    result->val = sum;
+    result->err = fabs(sum) * GSL_DBL_EPSILON;
     return GSL_SUCCESS;
   }
   else if(x < 1.0) {
-    *result = gsl_sf_cheb_eval(&fd_half_a_cs, x);
-    return GSL_SUCCESS;
+    return gsl_sf_cheb_eval_impl(&fd_half_a_cs, x, result);
   }
   else if(x < 4.0) {
     double t = 2.0/3.0*(x-1.0) - 1.0;
-    *result  = gsl_sf_cheb_eval(&fd_half_b_cs, t);
-    return GSL_SUCCESS;
+    return gsl_sf_cheb_eval_impl(&fd_half_b_cs, t, result);
   }
   else if(x < 10.0) {
     double t = 1.0/3.0*(x-4.0) - 1.0;
-    *result  = gsl_sf_cheb_eval(&fd_half_c_cs, t);
-    return GSL_SUCCESS;
+    return gsl_sf_cheb_eval_impl(&fd_half_c_cs, t, result);
   }
   else if(x < 30.0) {
+    double x32 = x*sqrt(x);
     double t = 0.1*x - 2.0;
-    double c = gsl_sf_cheb_eval(&fd_half_d_cs, t);
-    *result  = c * x*sqrt(x);
+    gsl_sf_result c;
+    gsl_sf_cheb_eval_impl(&fd_half_d_cs, t, &c);
+    result->val = c.val * x32;
+    result->err = c.err * x32 + 1.5 * GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
   }
   else {
@@ -1515,10 +1549,11 @@ int gsl_sf_fermi_dirac_half_impl(const double x, double * result)
 }
 
 
-int gsl_sf_fermi_dirac_3half_impl(const double x, double * result)
+int gsl_sf_fermi_dirac_3half_impl(const double x, gsl_sf_result * result)
 {
   if(x < GSL_LOG_DBL_MIN) {
-    *result = 0.0;
+    result->val = 0.0;
+    result->err = 0.0;
     return GSL_EUNDRFLW;
   }
   else if(x < -1.0) {
@@ -1534,27 +1569,28 @@ int gsl_sf_fermi_dirac_3half_impl(const double x, double * result)
       sum  += term;
       if(fabs(term/sum) < GSL_DBL_EPSILON) break;
     }
-    *result = sum;
+    result->val = sum;
+    result->err = fabs(sum) * GSL_DBL_EPSILON;
     return GSL_SUCCESS;
   }
   else if(x < 1.0) {
-    *result = gsl_sf_cheb_eval(&fd_3half_a_cs, x);
-    return GSL_SUCCESS;
+    return gsl_sf_cheb_eval_impl(&fd_3half_a_cs, x, result);
   }
   else if(x < 4.0) {
     double t = 2.0/3.0*(x-1.0) - 1.0;
-    *result  = gsl_sf_cheb_eval(&fd_3half_b_cs, t);
-    return GSL_SUCCESS;
+    return gsl_sf_cheb_eval_impl(&fd_3half_b_cs, t, result);
   }
   else if(x < 10.0) {
     double t = 1.0/3.0*(x-4.0) - 1.0;
-    *result  = gsl_sf_cheb_eval(&fd_3half_c_cs, t);
-    return GSL_SUCCESS;
+    return gsl_sf_cheb_eval_impl(&fd_3half_c_cs, t, result);
   }
   else if(x < 30.0) {
+    double x52 = x*x*sqrt(x);
     double t = 0.1*x - 2.0;
-    double c = gsl_sf_cheb_eval(&fd_3half_d_cs, t);
-    *result  = c * x*x*sqrt(x);
+    gsl_sf_result c;
+    gsl_sf_cheb_eval_impl(&fd_3half_d_cs, t, &c);
+    result->val = c.val * x52;
+    result->err = c.err * x52 + 2.5 * GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
   }
   else {
@@ -1563,17 +1599,19 @@ int gsl_sf_fermi_dirac_3half_impl(const double x, double * result)
 }
 
 /* [Goano p. 222] */
-int gsl_sf_fermi_dirac_inc_0_impl(const double x, const double b, double * result)
+int gsl_sf_fermi_dirac_inc_0_impl(const double x, const double b, gsl_sf_result * result)
 {
   if(b < 0.0) {
-    *result = 0.0;
+    result->val = 0.0;
+    result->err = 0.0;
     return GSL_EDOM;
   }
   else {
     double arg = b - x;
-    double f0;
+    gsl_sf_result f0;
     int status = gsl_sf_fermi_dirac_0_impl(arg, &f0);
-    *result = f0 - arg;
+    result->val = f0.val - arg;
+    result->err = f0.err + GSL_DBL_EPSILON * (fabs(x) + fabs(b));
     return status;
   }
 }
@@ -1582,7 +1620,7 @@ int gsl_sf_fermi_dirac_inc_0_impl(const double x, const double b, double * resul
 
 /*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
 
-int gsl_sf_fermi_dirac_m1_e(const double x, double * result)
+int gsl_sf_fermi_dirac_m1_e(const double x, gsl_sf_result * result)
 {
   int status = gsl_sf_fermi_dirac_m1_impl(x, result);
   if(status != GSL_SUCCESS){
@@ -1592,7 +1630,7 @@ int gsl_sf_fermi_dirac_m1_e(const double x, double * result)
 }
 
 
-int gsl_sf_fermi_dirac_0_e(const double x, double * result)
+int gsl_sf_fermi_dirac_0_e(const double x, gsl_sf_result * result)
 {
   int status = gsl_sf_fermi_dirac_0_impl(x, result);
   if(status != GSL_SUCCESS){
@@ -1602,7 +1640,7 @@ int gsl_sf_fermi_dirac_0_e(const double x, double * result)
 }
 
 
-int gsl_sf_fermi_dirac_1_e(const double x, double * result)
+int gsl_sf_fermi_dirac_1_e(const double x, gsl_sf_result * result)
 {
   int status = gsl_sf_fermi_dirac_1_impl(x, result);
   if(status != GSL_SUCCESS){
@@ -1611,7 +1649,7 @@ int gsl_sf_fermi_dirac_1_e(const double x, double * result)
   return status;
 }
 
-int gsl_sf_fermi_dirac_2_e(const double x, double * result)
+int gsl_sf_fermi_dirac_2_e(const double x, gsl_sf_result * result)
 {
   int status = gsl_sf_fermi_dirac_2_impl(x, result);
   if(status != GSL_SUCCESS){
@@ -1620,7 +1658,7 @@ int gsl_sf_fermi_dirac_2_e(const double x, double * result)
   return status;
 }
 
-int gsl_sf_fermi_dirac_int_e(const int j, const double x, double * result)
+int gsl_sf_fermi_dirac_int_e(const int j, const double x, gsl_sf_result * result)
 {
   int status = gsl_sf_fermi_dirac_int_impl(j, x, result);
   if(status != GSL_SUCCESS){
@@ -1630,7 +1668,7 @@ int gsl_sf_fermi_dirac_int_e(const int j, const double x, double * result)
 }
 
 
-int gsl_sf_fermi_dirac_mhalf_e(const double x, double * result)
+int gsl_sf_fermi_dirac_mhalf_e(const double x, gsl_sf_result * result)
 {
   int status = gsl_sf_fermi_dirac_mhalf_impl(x, result);
   if(status != GSL_SUCCESS){
@@ -1640,7 +1678,7 @@ int gsl_sf_fermi_dirac_mhalf_e(const double x, double * result)
 }
 
 
-int gsl_sf_fermi_dirac_half_e(const double x, double * result)
+int gsl_sf_fermi_dirac_half_e(const double x, gsl_sf_result * result)
 {
   int status = gsl_sf_fermi_dirac_half_impl(x, result);
   if(status != GSL_SUCCESS){
@@ -1650,7 +1688,7 @@ int gsl_sf_fermi_dirac_half_e(const double x, double * result)
 }
 
 
-int gsl_sf_fermi_dirac_3half_e(const double x, double * result)
+int gsl_sf_fermi_dirac_3half_e(const double x, gsl_sf_result * result)
 {
   int status = gsl_sf_fermi_dirac_3half_impl(x, result);
   if(status != GSL_SUCCESS){
@@ -1661,112 +1699,11 @@ int gsl_sf_fermi_dirac_3half_e(const double x, double * result)
 
 
 int 
-gsl_sf_fermi_dirac_inc_0_e(const double x, const double b, double * result)
+gsl_sf_fermi_dirac_inc_0_e(const double x, const double b, gsl_sf_result * result)
 {
   int status = gsl_sf_fermi_dirac_inc_0_impl(x, b, result);
   if(status != GSL_SUCCESS){
     GSL_ERROR("gsl_sf_fermi_dirac_inc_0_e", status);
   }
   return status;
-}
-
-
-/*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*-*-*/
-
-double gsl_sf_fermi_dirac_m1(const double x)
-{
-  double y;
-  int status = gsl_sf_fermi_dirac_m1_impl(x, &y);
-  if(status != GSL_SUCCESS){
-    GSL_WARNING("gsl_sf_fermi_dirac_m1", status);
-  }
-  return y;
-}
-
-
-double gsl_sf_fermi_dirac_0(const double x)
-{
-  double y;
-  int status = gsl_sf_fermi_dirac_0_impl(x, &y);
-  if(status != GSL_SUCCESS){
-    GSL_WARNING("gsl_sf_fermi_dirac_0", status);
-  }
-  return y;
-}
-
-
-double gsl_sf_fermi_dirac_1(const double x)
-{
-  double y;
-  int status = gsl_sf_fermi_dirac_1_impl(x, &y);
-  if(status != GSL_SUCCESS){
-    GSL_WARNING("gsl_sf_fermi_dirac_1", status);
-  }
-  return y;
-}
-
-
-double gsl_sf_fermi_dirac_2(const double x)
-{
-  double y;
-  int status = gsl_sf_fermi_dirac_2_impl(x, &y);
-  if(status != GSL_SUCCESS){
-    GSL_WARNING("gsl_sf_fermi_dirac_2", status);
-  }
-  return y;
-}
-
-
-double gsl_sf_fermi_dirac_int(const int j, const double x)
-{
-  double y;
-  int status = gsl_sf_fermi_dirac_int_impl(j, x, &y);
-  if(status != GSL_SUCCESS){
-    GSL_WARNING("gsl_sf_fermi_dirac_int", status);
-  }
-  return y;
-}
-
-
-double gsl_sf_fermi_dirac_mhalf(const double x)
-{
-  double y;
-  int status = gsl_sf_fermi_dirac_mhalf_impl(x, &y);
-  if(status != GSL_SUCCESS){
-    GSL_WARNING("gsl_sf_fermi_dirac_mhalf", status);
-  }
-  return y;
-}
-
-
-double gsl_sf_fermi_dirac_half(const double x)
-{
-  double y;
-  int status = gsl_sf_fermi_dirac_half_impl(x, &y);
-  if(status != GSL_SUCCESS){
-    GSL_WARNING("gsl_sf_fermi_dirac_half", status);
-  }
-  return y;
-}
-
-
-double gsl_sf_fermi_dirac_3half(const double x)
-{
-  double y;
-  int status = gsl_sf_fermi_dirac_3half_impl(x, &y);
-  if(status != GSL_SUCCESS){
-    GSL_WARNING("gsl_sf_fermi_dirac_3half", status);
-  }
-  return y;
-}
-
-
-double gsl_sf_fermi_dirac_inc_0(const double x, const double b)
-{
-  double y;
-  int status = gsl_sf_fermi_dirac_inc_0_impl(x, b, &y);
-  if(status != GSL_SUCCESS){
-    GSL_WARNING("gsl_sf_fermi_dirac_inc_0", status);
-  }
-  return y;
 }
