@@ -1,6 +1,6 @@
 ## Process this file with automake to produce Makefile.in
 
-SUBDIRS = err ieee-utils rng vector matrix randist fft roots specfunc statistics siman integration interpolation histogram monte blas doc
+SUBDIRS = err ieee-utils specfunc rng vector matrix randist fft roots statistics siman integration interpolation histogram monte blas doc
 
 include_HEADERS = gsl_config.h gsl_complex.h gsl_math.h templates_on.h templates_off.h
 
