@@ -26,7 +26,7 @@
 #include "beta_inc.c"
 
 double
-gsl_cdf_beta_P (double x, double a, double b)
+gsl_cdf_beta_P (const double x, const double a, const double b)
 {
   double P;
 
@@ -41,7 +41,7 @@ gsl_cdf_beta_P (double x, double a, double b)
 }
 
 double
-gsl_cdf_beta_Q (double x, double a, double b)
+gsl_cdf_beta_Q (const double x, const double a, const double b)
 {
   double P;
 

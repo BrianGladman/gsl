@@ -75,7 +75,7 @@ norm_arg (double x, double a)
  * Wrapper for the functions that do the work.
  */
 double
-gsl_cdf_gamma_P (double x, double a, double b)
+gsl_cdf_gamma_P (const double x, const double a, const double b)
 {
   double P;
   double y = x / b;
@@ -103,7 +103,7 @@ gsl_cdf_gamma_P (double x, double a, double b)
 }
 
 double
-gsl_cdf_gamma_Q (double x, double a, double b)
+gsl_cdf_gamma_Q (const double x, const double a, const double b)
 {
   double P;
   double y = x / b;

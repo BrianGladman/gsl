@@ -27,7 +27,7 @@
 #include <stdio.h>
 
 double
-gsl_cdf_gamma_Pinv (double P, double a, double b)
+gsl_cdf_gamma_Pinv (const double P, const double a, const double b)
 {
   double x;
 
@@ -105,7 +105,7 @@ end:
 }
 
 double
-gsl_cdf_gamma_Qinv (double Q, double a, double b)
+gsl_cdf_gamma_Qinv (const double Q, const double a, const double b)
 {
   double x;
 

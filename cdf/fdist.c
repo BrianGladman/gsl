@@ -29,7 +29,7 @@
  * Lower tail.
  */
 double
-gsl_cdf_fdist_P (double x, double nu1, double nu2)
+gsl_cdf_fdist_P (const double x, const double nu1, const double nu2)
 {
   double P;
   double r = nu2 / nu1;
@@ -54,7 +54,7 @@ gsl_cdf_fdist_P (double x, double nu1, double nu2)
  * Upper tail.
  */
 double
-gsl_cdf_fdist_Q (double x, double nu1, double nu2)
+gsl_cdf_fdist_Q (const double x, const double nu1, const double nu2)
 {
   double P;
   double r = nu2 / nu1;
