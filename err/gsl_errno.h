@@ -31,7 +31,8 @@ enum {
   GSL_ESING    = 21,  /* apparent singularity detected */
   GSL_EDIVERGE = 22,  /* integral or series is divergent */
   GSL_EUNSUP   = 23,  /* requested feature is not supported by the hardware */
-  GSL_EUNIMPL  = 24   /* requested feature not (yet) implemented */
+  GSL_EUNIMPL  = 24,  /* requested feature not (yet) implemented */
+  GSL_ECACHE   = 25   /* cache table limit exceeded */
 } ;
 
 void gsl_error (const char * reason, const char * file, int line,

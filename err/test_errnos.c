@@ -48,6 +48,7 @@ main (void)
   CHECK(GSL_EDIVERGE);
   CHECK(GSL_EUNSUP);
   CHECK(GSL_EUNIMPL);
+  CHECK(GSL_ECACHE);
 
   for (i = 0 ; i < n ; i++) 
     {

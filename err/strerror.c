@@ -60,6 +60,8 @@ gsl_strerror (const int gsl_errno)
       return "the required feature is not supported by this hardware platform";
     case GSL_EUNIMPL:
       return "the requested feature is not (yet) implemented";
+    case GSL_ECACHE:
+      return "cache table limit exceeded";
     default:
       return "unknown error code" ;
     }
