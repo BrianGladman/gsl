@@ -377,7 +377,7 @@ of the function and most of its gradient at each evaluation point, too.
 @cindex Minimization, conjugate gradient algorithm
 This is the Fletcher-Reeves conjugate gradient algorithm. The conjugate
 gradient algorithm proceeds as a succession of line minimizations. The
-sequence of search directions to build up an approximation to the
+sequence of search directions is used to build up an approximation to the
 curvature of the function in the neighborhood of the minimum.  An
 initial search direction @var{p} is chosen using the gradient and line
 minimization is carried out in that direction.  The accuracy of the line
