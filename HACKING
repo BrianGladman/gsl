@@ -109,8 +109,12 @@ The SUBDIRS and SUBLIBS variables have to be updated manually.
 
 ----------- Notes on making a release
 
-* Edit the version number in configure.in. Regenerate everything. make
-dist, unpack somewhere and then configure, make, make check.
+* Edit the version number in configure.in. 
+
+* Update the NEWS file and gsl.spec file.
+
+* Regenerate everything. make dist, unpack somewhere and then
+configure, make, make check.
 
 * Make a KNOWN-PROBLEMS file. Run scripts/mkknownproblems.sh.
 

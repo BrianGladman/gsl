@@ -1,7 +1,7 @@
 Summary: GNU Scientific Library (GSL)
 name: gsl
 Packager: rosalia@lanl.gov
-%define version 0.7+
+%define version 0.8
 %define release 0
 version: %{version}
 release: %{release}
@@ -9,7 +9,7 @@ release: %{release}
 #requires: 
 vendor: the GSL team
 Distribution: research software
-copyright: Copyright (C) 1997, 1998, 1999, 2000 the GSL team
+copyright: Copyright (C) 1997, 1998, 1999, 2000, 2001 the GSL team
 source: gsl-%{version}.tar.gz
 group: Libraries/Research
 %define mybuildroot /var/tmp/%{name}-build
@@ -41,24 +41,6 @@ cd %{name}-%{version}; make install prefix=%{mybuildroot}/usr
 %files
 %doc %{name}-%{version}/{NEWS,ChangeLog,KNOWN-PROBLEMS,MACHINES,README,AUTHORS,THANKS}
 %doc /usr/info/gsl-ref*
-#%doc /usr/info/gsl-ref.info
-#%doc /usr/info/gsl-ref.info-1
-#%doc /usr/info/gsl-ref.info-2
-#%doc /usr/info/gsl-ref.info-3
-#%doc /usr/info/gsl-ref.info-4
-#%doc /usr/info/gsl-ref.info-5
-#%doc /usr/info/gsl-ref.info-6
-#%doc /usr/info/gsl-ref.info-7
-#%doc /usr/info/gsl-ref.info-8
-#%doc /usr/info/gsl-ref.info-9
-#%doc /usr/info/gsl-ref.info-10
-#%doc /usr/info/gsl-ref.info-11
-#%doc /usr/info/gsl-ref.info-12
-#%doc /usr/info/gsl-ref.info-13
-#%doc /usr/info/gsl-ref.info-14
-#%doc /usr/info/gsl-ref.info-15
-#%doc /usr/info/gsl-ref.info-16
-#%doc /usr/info/gsl-ref.info-17
 /usr/bin/gsl-config
 /usr/bin/gsl-histogram
 /usr/bin/gsl-randist
