@@ -101,19 +101,6 @@ gsl_eigen_hermv_alloc (const size_t n)
       GSL_ERROR_NULL ("failed to allocate space for sines", GSL_ENOMEM);
     }
 
-  w->work = gsl_vector_complex_alloc (n);
-
-  if (w->work == 0)
-    {
-      free (w->gs);
-      free (w->gc);
-      free (w->tau);
-      free (w->sd);
-      free (w->d);
-      free (w);
-      GSL_ERROR_NULL ("failed to allocate workspace", GSL_ENOMEM);
-    }
-
   w->size = n;
 
   return w;
@@ -122,7 +109,6 @@ gsl_eigen_hermv_alloc (const size_t n)
 void
 gsl_eigen_hermv_free (gsl_eigen_hermv_workspace * w)
 {
-  gsl_vector_complex_free (w->work);
   free (w->gs);
   free (w->gc);
   free (w->tau);
@@ -166,16 +152,14 @@ gsl_eigen_hermv (gsl_matrix_complex * A, gsl_vector * eval,
 	  return GSL_SUCCESS;
 	}
 
-      /* use eval as the workspace for the decomposition, since we can
-         discard the tau result immediately if we are not computing
-         eigenvectors */
+      /* Transform the matrix into a symmetric tridiagonal form */
 
       {
 	gsl_vector d_vec = gsl_vector_view (d, N);
 	gsl_vector sd_vec = gsl_vector_view (sd, N - 1);
 	gsl_vector_complex tau_vec = gsl_vector_complex_view (w->tau, N-1);
 	gsl_linalg_hermtd_decomp (A, &tau_vec);
-        gsl_linalg_hermtd_unpack (A, &tau_vec, evec, &d_vec, &sd_vec, w->work);
+        gsl_linalg_hermtd_unpack (A, &tau_vec, evec, &d_vec, &sd_vec);
       }
 
       /* Make an initial pass through the tridiagonal decomposition

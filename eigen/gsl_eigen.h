@@ -79,7 +79,6 @@ typedef struct {
   double * tau;
   double * gc;
   double * gs;
-  gsl_vector_complex * work;
 } gsl_eigen_hermv_workspace;
 
 gsl_eigen_hermv_workspace * gsl_eigen_hermv_alloc (const size_t n);
