@@ -149,8 +149,8 @@ nmsimplex_calc_center (const nmsimplex_state_t * state, gsl_vector * mp)
   return GSL_SUCCESS;
 }
 
-double
-gsl_multimin_nmsimplex_size (nmsimplex_state_t * state)
+static double
+nmsimplex_size (nmsimplex_state_t * state)
 {
   /* calculates simplex size as average sum of length of vectors 
      from simplex center to corner points:     
@@ -254,7 +254,7 @@ nmsimplex_set (void *vstate, gsl_multimin_function * f,
 
   /* Initialize simplex size */
 
-  *size = gsl_multimin_nmsimplex_size (state);
+  *size = nmsimplex_size (state);
 
   return GSL_SUCCESS;
 }
@@ -397,7 +397,7 @@ nmsimplex_iterate (void *vstate, gsl_multimin_function * f,
 
   /* Update simplex size */
 
-  *size = gsl_multimin_nmsimplex_size (state);
+  *size = nmsimplex_size (state);
 
   return GSL_SUCCESS;
 }
