@@ -62,7 +62,7 @@ void taus_set(void * vstate, unsigned long int s)
   
   taus_state_t * state = (taus_state_t *) vstate;
     
-  if (s == 0) s = 1;
+  if (s == 0) s = 1; /* default seed is 1 */
 
   state->s1 = LCG(s);
   state->s2 = LCG(state->s1);

@@ -127,6 +127,8 @@ ranlux_set_impl (void * vstate, unsigned long int s, unsigned int luxury)
 
   long int seed = s ;
 
+  if (s == 0) s = 314159265 ; /* default seed is 314159265 */
+
   for (i = 0; i < 24; i++)
     {
       unsigned long int k = seed / 53668 ;

@@ -5,7 +5,7 @@
 #include <gsl_rng.h>
 #include <gsl_errno.h>
 
-unsigned long int gsl_rng_default_seed = 1 ;
+unsigned long int gsl_rng_default_seed = 0 ;
 const gsl_rng_type * gsl_rng_default ;
 
 static void 
@@ -25,6 +25,9 @@ gsl_rng_env_setup (void)
       
       check(&gsl_rng_default, gsl_rng_bad_rand, p) ;
       check(&gsl_rng_default, gsl_rng_bad_randu, p) ;
+      check(&gsl_rng_default, gsl_rng_vax, p) ;
+      check(&gsl_rng_default, gsl_rng_ranlux, p) ;
+      check(&gsl_rng_default, gsl_rng_ranlux389, p) ;
       check(&gsl_rng_default, gsl_rng_cmrg, p) ;
       check(&gsl_rng_default, gsl_rng_mrg, p) ;
       check(&gsl_rng_default, gsl_rng_minstd, p) ;
@@ -43,7 +46,7 @@ gsl_rng_env_setup (void)
     }
   else
     {
-      gsl_rng_default = gsl_rng_taus ;
+      gsl_rng_default = gsl_rng_cmrg ;
     }
 
   p = getenv ("GSL_RNG_SEED") ;

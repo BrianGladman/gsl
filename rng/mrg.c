@@ -20,6 +20,9 @@
    where A = 8121, B = 28411, M = 134456, and then use 6 iterations
    of the generator to "warm up" the internal state.
 
+   NOTE: According to the paper the seeds must lie in the range
+   [0, 2^31 - 2] with at least one non-zero value.
+
    The theoretical value of z_{10006} is 1711374253. The subscript
    10006 means (1) seed the generator with s=1, (2) do the 6 warm-up
    iterations that are part of the seeding process, (3) then do 10000
@@ -73,7 +76,7 @@ void mrg_set(void * vstate, unsigned long int s)
   
   mrg_state_t * state = (mrg_state_t *) vstate;
   
-  if (s == 0) s = 1;
+  if (s == 0) s = 1; /* default seed is 1 */
   
   state->x1 = LCG(s);
   state->x2 = LCG(state->x1);

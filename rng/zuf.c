@@ -68,32 +68,31 @@ void zuf_set(void * vstate, unsigned long int s)
 /*  method. Taken from Marsaglia, FSU report FSU-SCRI-87-50 */
 /*  variable seed should be 0 < seed <31328 */
 
+  if (s == 0) s = 1802 ; /* default seed is 1802 */
 
-    if (s != 0) {
-	ij = s;
-    }
-
-    i = ij / 177 % 177 + 2;
-    j = ij % 177 + 2;
-    k = kl / 169 % 178 + 1;
-    l = kl % 169;
-    for (ii = 0; ii < 607; ++ii) {
-	x = 0.0;
-	y = 0.5;
-	/* 24 bits?? */
-	for (jj = 1; jj <= 24; ++jj) {
-	    m = i * j % 179 * k % 179;
-	    i = j;
-	    j = k;
-	    k = m;
-	    l = (l * 53 + 1) % 169;
-	    if (l * m % 64 >= 32) {
-		x += y;
-	    }
+  ij = s;
+  
+  i = ij / 177 % 177 + 2;
+  j = ij % 177 + 2;
+  k = kl / 169 % 178 + 1;
+  l = kl % 169;
+  for (ii = 0; ii < 607; ++ii) {
+    x = 0.0;
+    y = 0.5;
+    /* 24 bits?? */
+    for (jj = 1; jj <= 24; ++jj) {
+      m = i * j % 179 * k % 179;
+      i = j;
+      j = k;
+      k = m;
+      l = (l * 53 + 1) % 169;
+      if (l * m % 64 >= 32) {
+	x += y;
+      }
 	    y *= 0.5;
-	}
-	state->u[ii] = (unsigned long int) (x * zuf_randmax);
     }
+    state->u[ii] = (unsigned long int) (x * zuf_randmax);
+  }
 } 
 
 static const gsl_rng_type zuf_type = { "zuf",  /* name */

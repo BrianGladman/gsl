@@ -39,6 +39,32 @@ gsl_rng_alloc (const gsl_rng_type * T)
 
 
 gsl_rng *
+gsl_rng_cpy (gsl_rng * dest, const gsl_rng *src)
+{
+  if (dest->size != src->size) 
+    {
+      dest->state = realloc(dest->state, src->size) ;
+
+      if (dest->state == 0) 
+	{
+	  GSL_ERROR_RETURN ("failed to reallocate space for rng state",
+			    GSL_ENOMEM, 0);
+	}
+    }
+
+  dest->name = src->name ;
+  dest->max = src->max ;
+  dest->size = src->size ;
+  dest->set = src->set ;
+  dest->get = src->get ;
+
+  memcpy(dest->state, src->state, src->size) ;
+
+  return dest;
+}
+
+
+gsl_rng *
 gsl_rng_clone (const gsl_rng * q)
 {
   gsl_rng * r = (gsl_rng *) malloc(sizeof(gsl_rng)) ;
@@ -106,7 +132,7 @@ void gsl_rng_print_state (const gsl_rng * r)
 
   for (i = 0 ; i < n ; i++) 
     {
-      printf("%.2x", *(p + i)) ; /* FIXME: assumed that a char is 8 bits */
+      printf("%.2x", *(p + i)) ; /* FIXME: we assumed that a char is 8 bits */
     }
   
 }

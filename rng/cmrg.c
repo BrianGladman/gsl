@@ -103,7 +103,7 @@ void cmrg_set(void * vstate, unsigned long int s)
   
   cmrg_state_t * state = (cmrg_state_t *) vstate;
   
-  if (s == 0) s = 1;
+  if (s == 0) s = 1; /* default seed is 1 */
   
 #define LCG(n) ((n)*8121+28411)%134456
   state->x10 = LCG(s);

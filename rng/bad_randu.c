@@ -12,7 +12,7 @@
 
    The theoretical value of x_{10001} is 1623524161.
 
-   The period of this generator is ?FIXME.
+   The period of this generator is 2^29.
 
    Note: Knuth describes this generator as "really horrible". 
 
@@ -34,7 +34,8 @@ typedef struct {
   unsigned long int x;
 } bad_randu_state_t ;
 
-unsigned long int bad_randu_get (void *vstate)
+unsigned long int 
+bad_randu_get (void *vstate)
 {
     bad_randu_state_t * state = (bad_randu_state_t *)vstate;
 
@@ -55,9 +56,12 @@ unsigned long int bad_randu_get (void *vstate)
     return state->x;
 }
 
-void bad_randu_set(void * vstate, unsigned long int s)
+void 
+bad_randu_set(void * vstate, unsigned long int s)
 {
   bad_randu_state_t * state = (bad_randu_state_t *) vstate;
+
+  if (s == 0) s = 1 ; /* default seed is 1 */
   
   state->x = s ;
 

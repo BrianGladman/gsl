@@ -19,6 +19,9 @@ typedef struct {
   unsigned long int (* get)(void * state) ;
 } gsl_rng_type ;
 
+/* These structs also need to appear in default.c so you can select
+   them via the environment variable GSL_RNG_TYPE */
+
 extern const gsl_rng_type * gsl_rng_bad_randu ;
 extern const gsl_rng_type * gsl_rng_bad_rand ;
 extern const gsl_rng_type * gsl_rng_vax ;
@@ -39,7 +42,9 @@ unsigned long int gsl_rng_get (const gsl_rng * r) ;
 double gsl_rng_get_uni (const gsl_rng * r) ;
 
 gsl_rng * gsl_rng_alloc (const gsl_rng_type * T) ;
+gsl_rng * gsl_rng_cpy (gsl_rng * dest, const gsl_rng *src) ;
 gsl_rng * gsl_rng_clone (const gsl_rng * r) ;
+
 void gsl_rng_free (gsl_rng * r) ;
 
 void gsl_rng_set (const gsl_rng * r, unsigned long int seed) ;

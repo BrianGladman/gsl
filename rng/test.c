@@ -6,6 +6,8 @@
 void rng_test (const gsl_rng_type * T, unsigned long int seed, unsigned int n, 
 	       unsigned long int result);
 void generic_rng_test (const gsl_rng_type * T);
+void rng_state_test (const gsl_rng_type * T);
+void rng_parallel_state_test (const gsl_rng_type * T);
 
 int
 main (void)
@@ -22,13 +24,34 @@ main (void)
   rng_test (gsl_rng_taus,1,10000,676146779);
   rng_test (gsl_rng_vax,1,10000,3051034865UL); 
 
+  /* FIXME: the ranlux tests below were made by running the fortran code and
+     getting the expected value from that. An analytic calculation
+     would be preferable. */
 
   rng_test (gsl_rng_ranlux,314159265,10000,12077992); 
   rng_test (gsl_rng_ranlux389,314159265,10000,165942); 
 
-  /* FIXME: the ranlux test was made by running the fortran code and
-     getting the expected value from that. An analytic calculation
-     would be preferable. */
+  /* Test save/restore functions */
+
+  rng_state_test (gsl_rng_cmrg);
+  rng_state_test (gsl_rng_mrg);
+  rng_state_test (gsl_rng_minstd);
+  rng_state_test (gsl_rng_rand);
+  rng_state_test (gsl_rng_taus);
+  rng_state_test (gsl_rng_uni);
+  rng_state_test (gsl_rng_uni32);
+  rng_state_test (gsl_rng_zuf);
+  rng_state_test (gsl_rng_ranlux);
+
+  rng_parallel_state_test (gsl_rng_cmrg);
+  rng_parallel_state_test (gsl_rng_mrg);
+  rng_parallel_state_test (gsl_rng_minstd);
+  rng_parallel_state_test (gsl_rng_rand);
+  rng_parallel_state_test (gsl_rng_taus);
+  rng_parallel_state_test (gsl_rng_uni);
+  rng_parallel_state_test (gsl_rng_uni32);
+  rng_parallel_state_test (gsl_rng_zuf);
+  rng_parallel_state_test (gsl_rng_ranlux);
 
   /* generic statistical tests */
 
@@ -50,7 +73,7 @@ generic_rng_test (const gsl_rng_type * T)
 {
   long int n = 1000000;
 
-  gsl_rng *r = gsl_rng_alloc (T);
+  gsl_rng * r = gsl_rng_alloc (T);
   const unsigned long int ran_max = gsl_rng_max (r);
   const char *name = gsl_rng_name (r);
 
@@ -106,7 +129,7 @@ generic_rng_test (const gsl_rng_type * T)
 	      name, sigma);
   }
 
-
+  gsl_rng_free (r) ;
 }
 
 
@@ -119,7 +142,7 @@ rng_test (const gsl_rng_type * T, unsigned long int seed, unsigned int n,
   unsigned long int k = 0;
   int status;
 
-  if (seed != 1) {
+  if (seed != 0) {
     gsl_rng_set(r,seed) ;
   }
 
@@ -133,4 +156,87 @@ rng_test (const gsl_rng_type * T, unsigned long int seed, unsigned int n,
 	   gsl_rng_name(r), n, k, result) ;
  
   gsl_rng_free(r) ;
+}
+
+
+void
+rng_state_test (const gsl_rng_type * T)
+{
+  unsigned long int test_a[1000], test_b[1000] ;
+
+  int i ;
+
+  gsl_rng * r = gsl_rng_alloc (T);
+  gsl_rng * r_save = gsl_rng_alloc (T) ;
+
+  for (i = 0; i < 1000; ++i)
+    {
+      gsl_rng_get (r) ;   /* throw away 1000 iterations */
+    }
+
+  gsl_rng_cpy(r_save, r) ;  /* save the intermediate state */
+
+  for (i = 0; i < 1000; ++i)
+    {
+      test_a[i] = gsl_rng_get (r) ;
+    }
+    
+  gsl_rng_cpy(r, r_save) ;  /* restore the intermediate state */
+  gsl_rng_free(r_save) ;
+
+  for (i = 0; i < 1000; ++i)
+    {
+      test_b[i] = gsl_rng_get (r) ;
+    }
+
+  { 
+    int status = 0 ;
+    for (i = 0; i < 1000; ++i)
+      {
+	status |= (test_b[i] != test_a[i]) ;
+      }
+    gsl_test (status, "%s, random number state consistency, 1000 iterations",
+	      gsl_rng_name(r)) ;
+  }
+  
+  gsl_rng_free(r) ;
+}
+
+
+void
+rng_parallel_state_test (const gsl_rng_type * T)
+{
+  unsigned long int test_a[1000], test_b[1000] ;
+
+  int i ;
+
+  gsl_rng * r1 = gsl_rng_alloc (T);
+  gsl_rng * r2 = gsl_rng_alloc (T) ;
+
+  for (i = 0; i < 1000; ++i)
+    {
+      gsl_rng_get (r1) ;   /* throw away 1000 iterations */
+    }
+
+  gsl_rng_cpy(r2, r1) ;  /* save the intermediate state */
+
+  for (i = 0; i < 1000; ++i)
+    {
+      test_a[i] = gsl_rng_get (r1) ; /* check that there is no hidden state */
+      test_b[i] = gsl_rng_get (r2) ;
+    }
+
+  { 
+    int status = 0 ;
+    for (i = 0; i < 1000; ++i)
+      {
+	status |= (test_b[i] != test_a[i]) ;
+      }
+    gsl_test (status, "%s, parallel random number state consistency, "
+	      "1000 iterations", gsl_rng_name(r1)) ;
+  }
+
+  gsl_rng_free (r1) ;
+  gsl_rng_free (r2) ;
+
 }
