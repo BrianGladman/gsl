@@ -51,7 +51,7 @@ int main (void)
     size_t iord[1000] ;
     size_t last;
     result = 0 ; abserr=0; neval=0  ;
-    gsl_integration_qage(f, 0.0, 1.0, 0.0, 1e-3, 1, 1000,
+    gsl_integration_qage(f, 0.0, 1.0, 0.0, 1e-10, 6, 1000,
 			 alist, blist, rlist, elist, iord, &last,
 			 &result, &abserr, &neval) ;
     printf("qage: result = %.18g, abserr = %.18g, neval = %d\n",
@@ -61,7 +61,7 @@ int main (void)
 } 
 
 double f (double x) {
-  return fabs(sin(1/x)) ;
+  return 1/(1e-3 + fabs(x-0.5)) ;
 }
 
 

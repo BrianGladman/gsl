@@ -16,6 +16,7 @@ gsl_integration_qage (double (*f)(double x),
 		      double * result, double * abserr, size_t * neval)
 {
   int status ;
+  size_t nqeval = 0;
   gsl_integration_rule_t * integration_rule = &gsl_integration_qk15 ;
 
   if (key < GSL_INTEG_GAUSS15)
@@ -51,8 +52,21 @@ gsl_integration_qage (double (*f)(double x),
 
   status = gsl_integration_qage_impl (f, a, b, epsabs, epsrel, limit,
 				      alist, blist, rlist, elist, iord, last,
-				      result, abserr, neval, 
+				      result, abserr, &nqeval, 
 				      integration_rule) ;
+
+  /* convert from number of quadrature rule evaluations to number of
+     function evaluations */
+
+  if (key == GSL_INTEG_GAUSS15)
+    {
+      *neval = 15 * nqeval ;
+    }
+  else 
+    {
+      *neval = (10 * key + 1) * nqeval ;
+    }
+
   return status ;
 }
 
@@ -289,7 +303,7 @@ gsl_integration_qage_impl (double (*f)(double x),
   }
   
   *abserr = errsum ;
-  *nqeval = i ;
+  *nqeval = 2 * (i-1) + 1 ; /* one initial call, and two for each iteration */
 
   printf("result = %.18g, abserr = %.18g, nqeval = %d\n", *result, *abserr, *nqeval);
 

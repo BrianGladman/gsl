@@ -94,9 +94,12 @@ gsl_integration_qage_impl (double (*f)(double x),
 
 
 /* The low-level integration rules in QUADPACK are identified by small
-   integers (1-6). We'll use symbolic constants to refer to them. */
+   integers (1-6). We'll use symbolic constants to refer to them. 
 
-enum { 
+   Don't change the values 1-6, we need those to compute the number of
+   function evaluations used by the rule */
+
+enum {   
   GSL_INTEG_GAUSS15 = 1,  /* 15 point Gauss-Kronrod rule */
   GSL_INTEG_GAUSS21 = 2,  /* 21 point Gauss-Kronrod rule */
   GSL_INTEG_GAUSS31 = 3,  /* 31 point Gauss-Kronrod rule */
@@ -105,7 +108,4 @@ enum {
   GSL_INTEG_GAUSS61 = 6   /* 61 point Gauss-Kronrod rule */
 } ;
 
-
 #endif /* GSL_INTEGRATION_H */
-
-
