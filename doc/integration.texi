@@ -435,7 +435,7 @@ W(x) = (x-a)^alpha (b-x)^beta log^mu (x-a) log^nu (b-x)
 @end ifinfo
 
 @noindent
-where @math{\alpha < -1}, @math{\beta < -1}, and @math{\mu = 0, 1},
+where @math{\alpha > -1}, @math{\beta > -1}, and @math{\mu = 0, 1},
 @math{\nu = 0, 1}.  The weight function can take four different forms
 depending on the values of @math{\mu} and @math{\nu},
 
