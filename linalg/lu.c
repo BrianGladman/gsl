@@ -64,7 +64,7 @@ gsl_linalg_LU_decomp (gsl_matrix * A, gsl_permutation * p, int *signum)
     }
   else if (p->size != A->size1)
     {
-      GSL_ERROR ("permuation length must match matrix size", GSL_EBADLEN);
+      GSL_ERROR ("permutation length must match matrix size", GSL_EBADLEN);
     }
   else
     {
@@ -131,7 +131,7 @@ gsl_linalg_LU_solve (const gsl_matrix * LU, const gsl_permutation * p, const gsl
     }
   else if (LU->size1 != p->size)
     {
-      GSL_ERROR ("permuation length must match matrix size", GSL_EBADLEN);
+      GSL_ERROR ("permutation length must match matrix size", GSL_EBADLEN);
     }
   else if (LU->size1 != b->size)
     {
@@ -165,7 +165,7 @@ gsl_linalg_LU_svx (const gsl_matrix * LU, const gsl_permutation * p, gsl_vector 
     }
   else if (LU->size1 != p->size)
     {
-      GSL_ERROR ("permuation length must match matrix size", GSL_EBADLEN);
+      GSL_ERROR ("permutation length must match matrix size", GSL_EBADLEN);
     }
   else if (LU->size1 != x->size)
     {
@@ -207,7 +207,7 @@ gsl_linalg_LU_refine (const gsl_matrix * A, const gsl_matrix * LU, const gsl_per
     }
   else if (LU->size1 != p->size)
     {
-      GSL_ERROR ("permuation length must match matrix size", GSL_EBADLEN);
+      GSL_ERROR ("permutation length must match matrix size", GSL_EBADLEN);
     }
   else if (LU->size1 != b->size)
     {
