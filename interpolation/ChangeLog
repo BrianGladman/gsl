@@ -1,3 +1,8 @@
+2004-11-28  Brian Gough  <bjg@network-theory.co.uk>
+
+	* integ_eval.h (integ_eval): improve numerical stability of
+	integration formula
+
 2004-03-15  Brian Gough  <bjg@network-theory.co.uk>
 
 	* cspline.c (cspline_init): handle the case N=1 specially

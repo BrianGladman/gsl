@@ -25,12 +25,12 @@ static inline double
 integ_eval (double ai, double bi, double ci, double di, double xi, double a,
             double b)
 {
-  const double t0 = b + a;
-  const double t1 = a * a + a * b + b * b;
-  const double t2 = a * a * a + a * a * b + b * b * a + b * b * b;
-  const double bterm = 0.5 * bi * (t0 - 2.0 * xi);
-  const double cterm = ci / 3.0 * (t1 - 3.0 * xi * (t0 - xi));
-  const double dterm =
-    di / 4.0 * (t2 - 2.0 * xi * (2.0 * t1 - xi * (3.0 * t0 - 2.0 * xi)));
+  const double r1 = a - xi;
+  const double r2 = b - xi;
+  const double r12 = r1 + r2;
+  const double bterm = 0.5 * bi * r12;
+  const double cterm = (1.0 / 3.0) * ci * (r1 * r1 + r2 * r2 + r1 * r2);
+  const double dterm = 0.25 * di * r12 * (r1 * r1 + r2 * r2);
+
   return (b - a) * (ai + bterm + cterm + dterm);
 }

@@ -322,3 +322,6 @@ distribution, bug reports
 * Tuomo Keskitalo <Tuomo.Keskitalo@HUT.Fi> many improvements to ode-initval
 
 * Britton Kerin <bkerin@asf.alaska.edu> documentation bug reports
+
+* Patricio Rojo <pato@astro.cornell.edu> patch for numerical
+instability in interpolation integrate function

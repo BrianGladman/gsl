@@ -1,5 +1,8 @@
 * What will be new in gsl-1.6:
 
+** Improved numerical stability of integration for akima and cspline
+interpolation.
+
 ** Improved error estimates in ode-initval solvers, and provide exact
 derivatives on output.  Added new semi-implicit ode-initval solver,
 gsl_odeiv_step_rk2simp.
