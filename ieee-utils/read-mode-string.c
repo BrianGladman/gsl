@@ -1,4 +1,5 @@
 #include <config.h>
+#include <stdlib.h>
 #include <string.h>
 #include <gsl_errno.h>
 #include <gsl_ieee_utils.h>
@@ -13,14 +14,24 @@ gsl_ieee_read_mode_string (const char * description,
 			   int * rounding, 
 			   int * exception_mask)
 {
-  char * start = strdup (description) ;
+  char * start ;
   char * end;
-
-  char * p = start;
+  char * p;
 
   int precision_count = 0 ;
   int rounding_count = 0 ;
   int exception_count = 0 ;
+
+  start = (char *) malloc(strlen(description) + 1) ;
+
+  if (start == 0) 
+    {
+      GSL_ERROR ("no memory to parse mode string", GSL_ENOMEM) ;
+    }
+
+  strcpy (start, description) ;
+
+  p = start ;
 
   *precision = 0 ;
   *rounding = 0 ;

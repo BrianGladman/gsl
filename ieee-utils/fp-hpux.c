@@ -10,20 +10,17 @@ gsl_ieee_set_mode (int precision, int rounding, int exception_mask)
 
   switch (precision)
     {
-      /* FIXME: it may be that it actually only supports DOUBLE, not
-         EXTENDED */
-
     case GSL_IEEE_SINGLE_PRECISION:
-      GSL_ERROR ("HPUX PA-RISC only supports extended precision rounding "
-		 "(single precision is not supported)",
+      GSL_ERROR ("HPUX PA-RISC only supports default precision rounding",
 		 GSL_EUNSUP) ;
       break ;
     case GSL_IEEE_DOUBLE_PRECISION:
-      GSL_ERROR ("HPUX PA-RISC only supports extended precision rounding "
-		 "(double precision is not supported)",
+      GSL_ERROR ("HPUX PA-RISC only supports default precision rounding",
 		 GSL_EUNSUP) ;
       break ;
     case GSL_IEEE_EXTENDED_PRECISION:
+      GSL_ERROR ("HPUX PA-RISC only supports default precision rounding",
+		 GSL_EUNSUP) ;
       break ;
     }
 
