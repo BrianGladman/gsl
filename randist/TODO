@@ -1,3 +1,7 @@
 1. The exponential power distribution method could be speeded up by
 using a rational function approximation for the rejection scaling
 parameter.
+
+2. Check for off by one error in the shuffle algorithm.
+
+

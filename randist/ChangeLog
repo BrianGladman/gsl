@@ -1,5 +1,7 @@
 Mon Aug  3 13:09:39 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
+	* test.c: added tests for shuffle and choose
+
 	* pascal.c: added the Pascal distribution
 
 	* hyperg.c: added the hypergeometric distribution

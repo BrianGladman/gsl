@@ -14,6 +14,8 @@ void test_pdf (double (*f) (void), double (*pdf)(double), const char *name);
 void test_discrete_pdf (double (*f) (void), double (*pdf)(unsigned int), 
 			const char *name);
 
+void test_shuffle (void);
+void test_choose (void);
 double test_beta (void);
 double test_beta_pdf (double x);
 double test_binomial (void);
@@ -102,6 +104,8 @@ main (void)
 #define FUNC(x) x, "gsl_ran_" #x
 #define FUNC2(x) x, x ## _pdf, "gsl_ran_" #x
 
+  test_shuffle() ;
+  test_choose() ;
 
   test_moments (FUNC (test_ugaussian), 0.0, 100.0, 0.5);
   test_moments (FUNC (test_ugaussian), -1.0, 1.0, 0.68);
@@ -153,6 +157,98 @@ main (void)
 
   return gsl_test_summary();
 }
+
+void
+test_shuffle (void)
+{
+  double count[10][10] ;
+  int x[10] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9} ;
+  int i, j, status = 0;
+
+  for (i = 0; i < 10; i++)
+    {
+      for (j = 0; j < 10; j++)
+	{
+	  count[i][j] = 0 ;
+	}
+    }
+
+  for (i = 0 ; i < N; i++)
+    {
+      for (j = 0; j < 10; j++)
+	x[j] = j ;
+
+      gsl_ran_shuffle (r_global, x, 10, sizeof(int)) ;
+
+      for (j = 0; j < 10; j++)
+	count[x[j]][j] ++ ;
+    }
+
+  for (i = 0; i < 10; i++)
+    {
+      for (j = 0; j < 10; j++)
+	{
+	  double expected = N / 10.0 ;
+	  double d = fabs(count[i][j] - expected);
+	  double sigma = d / sqrt(expected) ;
+	  if (sigma > 5 && d > 1)
+	    {
+	      status = 1 ;
+	      gsl_test (status, 
+			"gsl_ran_shuffle %d,%d (%g observed vs %g expected)", 
+			i, j, count[i][j]/N, 0.1) ;
+	    }
+	}
+    }
+  
+  gsl_test (status, "gsl_ran_shuffle on {0, 1, 2, 3, 4, 5, 6, 7, 8, 9}") ;
+
+}
+
+void
+test_choose (void)
+{
+  double count[10] ;
+  int x[10] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9} ;
+  int y[3] = {0, 1, 2} ;
+  int i, j, status = 0;
+
+  for (i = 0; i < 10; i++)
+    {
+      count[i] = 0 ;
+    }
+
+  for (i = 0 ; i < N; i++)
+    {
+      for (j = 0; j < 10; j++)
+	x[j] = j ;
+
+      gsl_ran_choose (r_global, y, 3, x, 10, sizeof(int)) ;
+
+      for (j = 0; j < 3; j++)
+	count[y[j]]++ ;
+    }
+
+  for (i = 0; i < 10; i++)
+    {
+      double expected = 3.0 * N / 10.0 ;
+      double d = fabs(count[i] - expected);
+      double sigma = d / sqrt(expected) ;
+      if (sigma > 5 && d > 1)
+	{
+	  status = 1 ;
+	  gsl_test (status, 
+		    "gsl_ran_choose %d (%g observed vs %g expected)", 
+		    i, count[i]/N, 0.1) ;
+	}
+    }
+  
+  gsl_test (status, "gsl_ran_choose on {0, 1, 2, 3, 4, 5, 6, 7, 8, 9}") ;
+
+}
+
+
+
 
 void
 test_moments (double (*f) (void), const char *name,

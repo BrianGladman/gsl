@@ -1,78 +1,79 @@
-
-/* Randomly permute (shuffle) N indices
-
-   Supply an integer array x[N], and on return, it will be filled with
-   indices 0...N-1 in random order.  The algorithm is from Knuth,
-   SemiNumerical Algorithms, v2, p139 */
-
 #include <stdlib.h>
-#include <stdio.h>	/* defines NULL */
-#include <math.h>	/* defines floor() */
+#include <math.h>
 #include <gsl_rng.h>
 #include "gsl_randist.h"
 
-int *
-gsl_ran_shuffle (const gsl_rng * r, int N, int *x)
+static inline 
+void swap (void * base, size_t size, size_t i, size_t j)
 {
-  int i, k, tmp;
+  register char * a = size * i + (char *) base ;
+  register char * b = size * j + (char *) base ;
+  register size_t s = size ;
 
-  /* First, do a bunch of memory allocation stuff */
-  if (N < 0)
-    return NULL;
-  if (x == NULL && N > 0)
-    {
-      x = (int *) calloc ((size_t) N, sizeof (int));
-      if (x == NULL)
-	return NULL;
-      for (i = 0; i < N; ++i)
-	x[i] = i;
-    }
-  if (x != NULL && N == 0)
-    {
-      free ((char *) x);
-      return NULL;
-    }
-  /* Now here's the algorithm, more or less transcribed
-   * from Knuth, who cites Moses and Oakford, and Durstenfeld */
-
-  for (i = N - 1; i >= 0; --i)
-    {
-      k = floor (i * gsl_rng_uniform (r));
-      tmp = x[k];
-      x[k] = x[i];
-      x[i] = tmp;
-    }
-  return x;
+  if (i == j)
+    return ;
+  
+  do						
+    {						
+      char tmp = *a;				
+      *a++ = *b;				
+      *b++ = tmp;				
+    } 
+  while (--s > 0);				
 }
-int *
-gsl_ran_choose (const gsl_rng * r, int K, int N, int *x)
-{
-  int n, k;
-  /* Choose K out of N items */
-  /* return an array x[] of the indices of the N items */
-  /* these items will be in sorted order -- you can use
-   * shuffle() to randomize them if you wish */
 
-  /* First, do a bunch of memory allocation stuff */
-  if (N < K || K < 0)
+static inline void 
+copy (void * dest, size_t i, void * src, size_t j, size_t size)
+{
+  register char * a = size * i + (char *) dest ;
+  register char * b = size * j + (char *) src ;
+  register size_t s = size ;
+  
+  do						
+    {						
+      *a++ = *b++;				
+    } 
+  while (--s > 0);				
+}
+
+/* Randomly permute (shuffle) N indices
+
+   Supply an array x[N] with nmemb members, each of size size and on
+   return it will be shuffled into a random order.  The algorithm is
+   from Knuth, SemiNumerical Algorithms, v2, p139, who cites Moses and
+   Oakford, and Durstenfeld */
+
+void
+gsl_ran_shuffle (const gsl_rng * r, void * base, size_t n, size_t size)
+{
+  size_t i ;
+
+  for (i = n - 1; i > 0; --i)
     {
-      if (x != NULL)
-	free ((char *) x);
-      return NULL;
+      size_t j = (i + 1) * gsl_rng_uniform (r);  /* FIXME: (i + 1) * ... ??? */
+
+      swap (base, size, i, j) ;
     }
-  if (x == NULL && K > 0)
+}
+
+void *
+gsl_ran_choose (const gsl_rng * r, void * dest, size_t k, void * src, 
+		 size_t n, size_t size)
+{
+  size_t i, j = 0;
+
+  /* Choose k out of n items, return an array x[] of the indices of
+     the n items these items will be in sorted order -- you can use
+     shuffle() to randomize them if you wish */
+
+  for (i = 0; i < n && j < k; ++i)
     {
-      x = (int *) calloc ((size_t) K, sizeof (int));
-      if (x == NULL)
-	return NULL;
-    }
-  /* Here is the guts of the algorithm: three lines!! */
-  for (n = 0, k = 0; n < N && k < K; ++n)
-    {
-      if ((N - n) * gsl_rng_uniform (r) < K - k)
+      if ((n - i) * gsl_rng_uniform (r) < k - j)
 	{
-	  x[k++] = n;
+	  copy (dest, j, src, i, size) ;
+	  j++ ;
 	}
     }
-  return x;
+
+  return dest;
 }

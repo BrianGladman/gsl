@@ -89,7 +89,7 @@ double gsl_ran_weibull_pdf (double x, double a);
 void gsl_ran_dir_2d (const gsl_rng * r, double * x, double * y);
 void gsl_ran_dir_3d (const gsl_rng * r, double * x, double * y, double * z);
 
-int *gsl_ran_shuffle (const gsl_rng * r, int N, int *x);
-int *gsl_ran_choose (const gsl_rng * r, int K, int N, int *x);
+void gsl_ran_shuffle (const gsl_rng * r, void * base, size_t nmembm, size_t size);
+void * gsl_ran_choose (const gsl_rng * r, void * dest, size_t k, void * src, size_t n, size_t size) ;
 
 #endif /* GSL_RANDIST_H */
