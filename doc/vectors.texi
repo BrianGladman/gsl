@@ -16,11 +16,13 @@ BLAS routines.
 * Vector allocation::           
 * Accessing vector elements::   
 * Reading and writing vectors::  
+* Copying vectors::             
 * Example programs for vectors::  
 * The matrix struct::           
 * Matrix allocation::           
 * Accessing matrix elements::   
 * Reading and writing matrices::  
+* Slicing rows and columns::    
 * Copying rows and columns::    
 * Example programs for matrices::  
 @end menu
@@ -317,6 +319,14 @@ numbers to read.  The function returns 0 for success and
 @code{GSL_EFAILED} if there was a problem reading from the file.
 @end deftypefun
 
+@node Copying vectors
+@section Copying vectors
+
+@deftypefun int gsl_vector_copy (gsl_vector_float * @var{dest}, const gsl_vector * @var{src})
+This function copies the elements of the vector @var{src} into the
+vector @var{dest}. The two vectors must be the same length.
+@end deftypefun
+
 @node Example programs for vectors
 @section Example programs for vectors
 
@@ -471,7 +481,6 @@ A null pointer is returned if the combined parameters
 or if insufficient memory is available to store the matrix.
 @end deftypefun
 
-
 @deftypefun {gsl_matrix *} gsl_matrix_alloc_from_matrix (gsl_matrix * @var{m}, size_t @var{k1}, size_t @var{k2}, size_t @var{n1}, size_t @var{n2})
 
 This function creates a matrix as a submatrix of the matrix @var{m},
@@ -577,8 +586,33 @@ numbers to read.  The function returns 0 for success and
 @code{GSL_EFAILED} if there was a problem reading from the file.
 @end deftypefun
 
+@node Slicing rows and columns
+@section Slicing rows and columns
+
+In general there are two ways to access an object, by reference or by
+copying. The functions described in this section create vectors which
+allow access to a row or column of a matrix by reference. Modifying
+elements of the vector is equivalent to modifying the matrix, since both
+the vector and the matrix point to the same memory block.
+
+@deftypefun {gsl_vector *} gsl_vector_alloc_row_from_matrix (gsl_matrix * @var{m}, size_t @var{i})
+This function allocates a new @code{gsl_vector} struct which points to
+the @var{i}-th row of the matrix @var{m}.
+@end deftypefun
+
+@deftypefun {gsl_vector *} gsl_vector_alloc_col_from_matrix (gsl_matrix * @var{m}, size_t @var{j})
+This function allocates a new @code{gsl_vector} struct which points to
+the @var{j}-th column of the matrix @var{m}.
+@end deftypefun
+
 @node Copying rows and columns
 @section Copying rows and columns
+
+The functions described in this section copy a row or column of a matrix
+into a vector. This allows the elements of the vector and the matrix to
+be modified independently. Note that if the matrix and the vector point
+to overlapping regions of memory then the results of the copying are
+undefined.
 
 @deftypefun int gsl_matrix_copy_row (gsl_vector * @var{v}, const gsl_matrix * @var{m}, size_t @var{i})
 This function copies the elements of the @var{i}-th row of the matrix

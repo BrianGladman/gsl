@@ -3,10 +3,11 @@
 @cindex BLAS
 
 @menu
-* Introduction::
-* Organization::
-* GSL BLAS Interface::
-* Raw BLAS Interface::
+* Introduction::                
+* Organization::                
+* GSL BLAS Interface::          
+* Raw BLAS Interface::          
+* BLAS References and Further Reading::  
 @end menu
 
 @node Introduction
@@ -111,3 +112,17 @@ is given in the file @code{gsl_blas.h}.
 
 The low-level @code{gsl_blas_raw} interface is specified in the
 file @code{gsl_blas_raw.h}. 
+
+
+@node BLAS References and Further Reading
+@section BLAS References and Further Reading
+
+Information on the BLAS standards, including both the legacy and draft
+interface standards, is available online from the BLAS Technical Forum
+web-site.
+
+@itemize @asis
+@cite{BLAS Technical Forum} 
+@url{http://www.netlib.org/cgi-bin/checkout/blast/blast.pl}
+@end itemize
+

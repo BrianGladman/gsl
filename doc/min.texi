@@ -150,11 +150,24 @@ returns a null pointer and the error handler is invoked with an error
 code of @code{GSL_ENOMEM}.
 @end deftypefun
 
+@deftypefun {gsl_min_fminimizer *} gsl_min_fminimizer_alloc_with_values (const gsl_min_fminimizer_type * @var{T}, gsl_function * @var{f}, double @var{minimum}, double @var{f_minimum}, gsl_interval @var{x}, double @var{f_lower}, double @var{f_upper})
+This function is equivalent to @code{gsl_min_fminimizer_alloc} but uses
+the values @var{f_minimum}, @var{f_lower} and @var{f_upper} instead of
+computing @code{f(minimum)}, @code{f(x.lower)} and @code{f(x.upper)}.
+@end deftypefun
+
 @deftypefun int gsl_min_fminimizer_set (gsl_min_fminimizer * @var{s}, gsl_function * @var{f}, double @var{minimum}, gsl_interval @var{x})
 This function reinitializes an existing minimizer @var{s} to use
 the function @var{f} and the initial search interval @var{x}, with a
 guess for the location of the minimum @var{minimum}.
 @end deftypefun
+
+@deftypefun int gsl_min_fminimizer_set_with_values (gsl_min_fminimizer * @var{s}, gsl_function * @var{f}, double @var{minimum}, double @var{f_minimum}, gsl_interval @var{x}, double @var{f_lower}, double @var{f_upper})
+This function is equivalent to @code{gsl_min_fminimizer_set} but uses
+the values @var{f_minimum}, @var{f_lower} and @var{f_upper} instead of
+computing @code{f(minimum)}, @code{f(x.lower)} and @code{f(x.upper)}.
+@end deftypefun
+
 
 @deftypefun void gsl_min_fminimizer_free (gsl_min_fminimizer * @var{s})
 This function frees all the memory associated with the minimizer
