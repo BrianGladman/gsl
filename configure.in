@@ -166,5 +166,4 @@ dnl extern double hypot(double, double);
 dnl
 
 dnl
-AC_OUTPUT(err/Makefile ieee-utils/Makefile fft/Makefile specfunc/Makefile statistics/Makefile roots/Makefile random/Makefile randist/Makefile siman/Makefile integration/Makefile doc/Makefile vector/Makefile matrix/Makefile histogram/Makefile rng/Makefile Makefile)
-
+AC_OUTPUT(err/Makefile ieee-utils/Makefile fft/Makefile specfunc/Makefile statistics/Makefile roots/Makefile rng/Makefile random/Makefile randist/Makefile siman/Makefile integration/Makefile doc/Makefile vector/Makefile matrix/Makefile histogram/Makefile monte/Makefile Makefile)

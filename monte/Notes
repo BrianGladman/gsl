@@ -1,0 +1,28 @@
+		-*- Text -*-
+$Id$
+
+Things still to do:
+
+validate input
+
+wrap all the static stuff in a structure and pass it as an argument.
+
+allow a choice of which random function to use
+
+VEGAS specific
+	save the best grid
+
+	figure out a metric to determine when the grids are fluctuating
+	too much between steps.
+
+	get rid of the mutltiple function names
+
+
+MISER specific
+	eliminate some of of the malloc calls.
+
+	don't use gsl_vector, use our own.
+
+	
+
+	
