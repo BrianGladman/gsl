@@ -18,6 +18,13 @@ agreement:
    otherwise some float values may enter the calculation and wipe out
    your full double precision accuracy
 
+-- If you are using an Intel chip remember that these work in extended
+   precision by default. Consequently some of the tests for round-off
+   produce different results that would be obtained if you were working
+   to double-precision accuracy. This leads to different branches
+   being taken in the code. You can use GSL_IEEE_MODE="double-precision"
+   at runtime to restrict all rounding to pure double-precision accuracy
+
 -- Make sure the machine parameters D1MACH(1)..D1MACH(4), EPMACH and UFLOW
    are set correctly. EPMACH and UFLOW need to be the same as the
    parameters DBL_EPSILON and DBL_MIN. Using f2c I had problems using
