@@ -9,7 +9,7 @@ Note: In this context we use the word @dfn{error} to mean something
 different from a bug. An error report from the library just means that
 the library was not able to compute what you asked. For example, if a
 root finding function cannot reach the level of precision you requested
-the library would return an error report. In the case of problems caused
+the library would return an error. In the case of problems caused
 by real bugs, @pxref{Debugging Numerical Programs}.
 
 @menu
@@ -157,13 +157,14 @@ In addition to reporting errors the library also provides a simple error
 handler. The error handler is called by library functions when they are
 about to report an error (for example, just before they return).
 
-The default behavior of the error handler is to call @code{abort()} when
-any error is reported by the library. If a library routine reports an
-error then the whole program will core-dump. This is a safe default for
-lazy programmers who do not check the return status of library routines
-(we don't encourage you to write programs this way). If you turn off the
-default error handler or provide your own error handler then it is your
-responsibility to check the return values of the GSL routines.
+The default behavior of the error handler is to print a short message
+and call @code{abort()} whenever an error is reported by the library. If
+a library routine reports an error then the whole program will
+core-dump. This is a safe default for lazy programmers who do not check
+the return status of library routines (we don't encourage you to write
+programs this way). If you turn off the default error handler or provide
+your own error handler then it is your responsibility to check the
+return values of the GSL routines.
 
 All GSL error handlers have the type @code{gsl_errhandler_t}, which is
 defined in @file{gsl_errno.h},
@@ -216,8 +217,8 @@ To turn off error handling use,
 old_handler = gsl_set_error_handler (&gsl_empty_error_handler);
 @end example
 @noindent
-The function @code{gsl_no_error_handler} is predefined by the library
-and is just an error handler which returns immediately without doing
+The function @code{gsl_empty_error_handler} is predefined by the
+library. It is an error handler which returns immediately without doing
 anything.
 @end deftypefun
 
