@@ -82,6 +82,12 @@ gsl_vector_uchar gsl_matrix_uchar_row (gsl_matrix_uchar * m, size_t i);
 gsl_vector_uchar gsl_matrix_uchar_column (gsl_matrix_uchar * m, size_t j);
 gsl_vector_uchar gsl_matrix_uchar_diagonal (gsl_matrix_uchar * m);
 
+unsigned char gsl_matrix_uchar_max (const gsl_matrix_uchar * m);
+unsigned char gsl_matrix_uchar_min (const gsl_matrix_uchar * m);
+void gsl_matrix_uchar_minmax (const gsl_matrix_uchar * m,
+                              unsigned char * min_out, size_t * imin, size_t * jmin,
+                              unsigned char * max_out, size_t * imax, size_t * jmax);
+
 /***********************************************************************/
 /* The functions below are obsolete                                    */
 /***********************************************************************/
@@ -94,6 +100,8 @@ int gsl_vector_uchar_view_row_from_matrix (gsl_vector_uchar * v, gsl_matrix_ucha
 int gsl_vector_uchar_view_col_from_matrix (gsl_vector_uchar * v, gsl_matrix_uchar * m, const size_t j);
 
 int gsl_matrix_uchar_view_from_vector (gsl_matrix_uchar * m, gsl_vector_uchar * base, const size_t offset, const size_t n1, const size_t n2, const size_t d2);
+
+
 
 extern int gsl_check_range ;
 

@@ -82,6 +82,12 @@ gsl_vector_ulong gsl_matrix_ulong_row (gsl_matrix_ulong * m, size_t i);
 gsl_vector_ulong gsl_matrix_ulong_column (gsl_matrix_ulong * m, size_t j);
 gsl_vector_ulong gsl_matrix_ulong_diagonal (gsl_matrix_ulong * m);
 
+unsigned long gsl_matrix_ulong_max (const gsl_matrix_ulong * m);
+unsigned long gsl_matrix_ulong_min (const gsl_matrix_ulong * m);
+void gsl_matrix_ulong_minmax (const gsl_matrix_ulong * m,
+                              unsigned long * min_out, size_t * imin, size_t * jmin,
+                              unsigned long * max_out, size_t * imax, size_t * jmax);
+
 /***********************************************************************/
 /* The functions below are obsolete                                    */
 /***********************************************************************/
@@ -94,6 +100,8 @@ int gsl_vector_ulong_view_row_from_matrix (gsl_vector_ulong * v, gsl_matrix_ulon
 int gsl_vector_ulong_view_col_from_matrix (gsl_vector_ulong * v, gsl_matrix_ulong * m, const size_t j);
 
 int gsl_matrix_ulong_view_from_vector (gsl_matrix_ulong * m, gsl_vector_ulong * base, const size_t offset, const size_t n1, const size_t n2, const size_t d2);
+
+
 
 extern int gsl_check_range ;
 

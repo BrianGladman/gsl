@@ -1,3 +1,7 @@
+Thu Apr 13 18:39:27 2000  Brian Gough  <bjg@network-theory.co.uk>
+
+	* minmax.c: added matrix max/min functions
+
 Sat Mar 25 20:29:41 2000  Brian Gough  <bjg@network-theory.co.uk>
 
 	* swap_source.c (FUNCTION): renamed swap_cols to swap_columns, and

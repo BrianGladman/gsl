@@ -82,6 +82,12 @@ gsl_vector_long_double gsl_matrix_long_double_row (gsl_matrix_long_double * m, s
 gsl_vector_long_double gsl_matrix_long_double_column (gsl_matrix_long_double * m, size_t j);
 gsl_vector_long_double gsl_matrix_long_double_diagonal (gsl_matrix_long_double * m);
 
+long double gsl_matrix_long_double_max (const gsl_matrix_long_double * m);
+long double gsl_matrix_long_double_min (const gsl_matrix_long_double * m);
+void gsl_matrix_long_double_minmax (const gsl_matrix_long_double * m,
+                              long double * min_out, size_t * imin, size_t * jmin,
+                              long double * max_out, size_t * imax, size_t * jmax);
+
 /***********************************************************************/
 /* The functions below are obsolete                                    */
 /***********************************************************************/
@@ -94,6 +100,8 @@ int gsl_vector_long_double_view_row_from_matrix (gsl_vector_long_double * v, gsl
 int gsl_vector_long_double_view_col_from_matrix (gsl_vector_long_double * v, gsl_matrix_long_double * m, const size_t j);
 
 int gsl_matrix_long_double_view_from_vector (gsl_matrix_long_double * m, gsl_vector_long_double * base, const size_t offset, const size_t n1, const size_t n2, const size_t d2);
+
+
 
 extern int gsl_check_range ;
 

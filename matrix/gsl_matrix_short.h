@@ -82,6 +82,12 @@ gsl_vector_short gsl_matrix_short_row (gsl_matrix_short * m, size_t i);
 gsl_vector_short gsl_matrix_short_column (gsl_matrix_short * m, size_t j);
 gsl_vector_short gsl_matrix_short_diagonal (gsl_matrix_short * m);
 
+short gsl_matrix_short_max (const gsl_matrix_short * m);
+short gsl_matrix_short_min (const gsl_matrix_short * m);
+void gsl_matrix_short_minmax (const gsl_matrix_short * m,
+                              short * min_out, size_t * imin, size_t * jmin,
+                              short * max_out, size_t * imax, size_t * jmax);
+
 /***********************************************************************/
 /* The functions below are obsolete                                    */
 /***********************************************************************/
@@ -94,6 +100,8 @@ int gsl_vector_short_view_row_from_matrix (gsl_vector_short * v, gsl_matrix_shor
 int gsl_vector_short_view_col_from_matrix (gsl_vector_short * v, gsl_matrix_short * m, const size_t j);
 
 int gsl_matrix_short_view_from_vector (gsl_matrix_short * m, gsl_vector_short * base, const size_t offset, const size_t n1, const size_t n2, const size_t d2);
+
+
 
 extern int gsl_check_range ;
 
