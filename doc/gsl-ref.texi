@@ -140,7 +140,7 @@ Mathematical Modeling and Analysis Group, Los Alamos National Laboratory
 @sp 1
 
 @author Gerard Jungman 
-Theoretical Particle Physics Group, Los Alamos National Laboratory
+Theoretical Fluid Dynamics Group, Los Alamos National Laboratory
 @comment @email{jungman@@lanl.gov}
 @sp 1
 
