@@ -121,7 +121,6 @@ table-of-contents by setting LDFLAGS before compilation,
 
    LDFLAGS="-Wl,-bbigtoc" ./configure
 
-
 Hints for Compaq/DEC Alpha
 ==========================
 
@@ -148,7 +147,6 @@ stack size by a suitable amount use,
 on the executable and then rerun it manually.  (5/01: The specfunc
 tests have been rewritten to use less stack space now).
 
-
 Hints for HP-UX
 ===============
 
@@ -160,19 +158,6 @@ configuration option:
       CFLAGS="-Ae"  ./configure
 
 To switch on optimization use CFLAGS="-Ae -O".
-
-
-Hints for Intel (Pentium)
-========================
-
-For the Pentium 4 with GCC-3.2 the flags,
-
-      CFLAGS="-O2 -march=pentium4 -mfpmath=sse -msse -msse2"
-
-increase performance (as reported by Sam Halliday <fommil@yahoo.ie>).
-
-Note that P3 machines can also use the above CFLAGS, if the "-msse2"
-is removed and "pentium4" is changed to "pentium3".
 
 Hints for IRIX (SGI)
 ====================
