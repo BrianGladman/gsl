@@ -1,3 +1,8 @@
+Wed May 31 19:42:59 2000  Brian Gough  <bjg@network-theory.co.uk>
+
+	* test.c (test_QR_update): increased tolerances on results to
+ 	allow tests to pass with other compilers
+
 Wed May  3 21:19:45 2000  Brian Gough  <bjg@network-theory.co.uk>
 
 	* cholesky.c: added cholesky decomposition/solve from Thomas

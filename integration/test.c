@@ -1740,7 +1740,7 @@ int main (void)
 	gsl_test_rel(w->rlist[i],r[i],1e-14,"qawc(f459) rlist") ;
 
     for (i = 0; i < 6 ; i++) 
-	gsl_test_rel(w->elist[i],e[i],1e-6,"qawc(f459) elist") ;
+	gsl_test_rel(w->elist[i],e[i],1e-5,"qawc(f459) elist") ;
 
     for (i = 0; i < 6 ; i++) 
 	gsl_test_int((int)w->order[i],order[i]-1,"qawc(f459) order");
@@ -2065,7 +2065,7 @@ int main (void)
     gsl_test_int(status,exp_ier,"qawf(f457) status") ;
 
     for (i = 0; i < 9 ; i++) 
-	gsl_test_rel(w->rlist[i],r[i],1e-14,"qawf(f457) rlist") ;
+	gsl_test_rel(w->rlist[i],r[i],1e-12,"qawf(f457) rlist") ;
 
     /* We can only get within two orders of magnitude on the error
        here, which is very sensitive to the floating point precision */

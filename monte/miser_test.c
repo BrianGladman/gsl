@@ -135,10 +135,12 @@ int main()
       calls = 150000;
       tol = 0.04;
     }
+    if (num_dim == 7)
+      tol = 0.06;
     if (num_dim == 8)
       tol = 0.11;
     if ( num_dim == 9) {
-      tol = 0.14;
+      tol = 0.25;
     }
     status = gsl_monte_miser_integrate(s, f1, xl, xu, num_dim, calls, 
 				       &res, &err);

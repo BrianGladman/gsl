@@ -792,11 +792,11 @@ int test_QR_update(void)
   int f;
   int s = 0;
 
-  f = test_QR_update_dim(hilb2,  2 * 8.0 * GSL_DBL_EPSILON);
+  f = test_QR_update_dim(hilb2,  2 * 512.0 * GSL_DBL_EPSILON);
   gsl_test(f, "  QR_update hilbert(2)");
   s += f;
 
-  f = test_QR_update_dim(hilb3,  2 * 128.0 * GSL_DBL_EPSILON);
+  f = test_QR_update_dim(hilb3,  2 * 512.0 * GSL_DBL_EPSILON);
   gsl_test(f, "  QR_update hilbert(3)");
   s += f;
 

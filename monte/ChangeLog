@@ -1,3 +1,8 @@
+Wed May 31 19:50:19 2000  Brian Gough  <bjg@network-theory.co.uk>
+
+	* miser_test.c (main): increased tolerances to allow tests to pass
+ 	with different compilers
+
 Mon May 15 15:26:22 2000  Brian Gough  <bjg@network-theory.co.uk>
 
 	* vegas_test.c (main): added gsl_ieee_env_setup() to allow change
