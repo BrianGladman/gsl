@@ -57,7 +57,12 @@ static int hyperg_1F1_series(const double a, const double b, const double x,
   max_abs_del *= GSL_MACH_EPS;
   *prec   = fabs(GSL_MACH_EPS * n + max_abs_del);
   *result = sum;
-  return GSL_SUCCESS;
+  if(*prec > locEPS) {
+    return GSL_ELOSS;
+  }
+  else {
+    return GSL_SUCCESS;
+  }
 }
 
 /* [Carlson, p.109] says the error in truncating this asymptotic series
@@ -108,71 +113,63 @@ int gsl_sf_hyperg_1F1_impl(const double a, const double b, const double x,
   b_neg_integer = ( b < 0.0  &&  fabs(b - rint(b)) < locEPS );
   bma_neg_integer = ( bma < 0.0  &&  fabs(bma - rint(bma)) < locEPS );
 
+  /* case: a==b,  exp(x) */
   if(fabs(b-a) < locEPS) {
-    return gsl_sf_exp_impl(x, result);  /* exp(x) */
+    return gsl_sf_exp_impl(x, result);
   }
 
-  /* If a is a negative integer, then the series truncates
-   * to a polynomial.
+  /* case: denominator zeroes before numerator */
+  if(b_neg_integer && !(a_neg_integer && a > b + 0.1)) {
+    return GSL_EDOM;
+  }
+
+  /* If a is a negative integer, then the
+   * series truncates to a polynomial.
    */
   if(a_neg_integer) {
-
-    if(b_neg_integer && !(a > b + 0.1)) {
-      /* denominator has zero before numerator ! */
-      return GSL_EDOM;
-    }
-    else {
-      double prec;
-      int stat = hyperg_1F1_series(a, b, x, result, &prec);
-      if(prec > locEPS)
-        return GSL_ELOSS;
-      else
-        return stat;
-    }
+    double prec;
+    return hyperg_1F1_series(a, b, x, result, &prec);
   }
-  
 
   /* If b-a is a negative integer, use the Kummer transformation
    *    1F1(a,b,x) = Exp(x) 1F1(b-a,b,x)
    * to reduce it to a polynomial times an exponential.
+   * Note that there can be no error condition here, since
+   * there can only be an error if 'b' is a negative integer, but
+   * in that case we would not have gotten this far unless 'a' was
+   * a negative integer as well, in which case the above block
+   * handled the situation.
    */
   if(bma_neg_integer) {
-
-    if(b_neg_integer && !(bma > b + 0.1)) {
-      /* denominator has zero before numerator ! */
-      return GSL_EDOM;
+    double Ex, Kummer_1F1;
+    int stat_E = gsl_sf_exp_impl(x, &Ex);
+    int stat_K = hyperg_1F1_series(bma, b, -x, &Kummer_1F1, &prec);
+    int stat;
+    if(stat_E != GSL_SUCCESS) {
+      *result = 0.0;
+      stat    = stat_E;
+    }
+    else if(stat_K == GSL_ELOSS || prec > locEPS) {
+      *result = Ex * Kummer_1F1;
+      stat    = GSL_ELOSS;
+    }
+    else if(stat_K != GSL_SUCCESS) {
+      *result = 0.0;
+      stat    = stat_K;
     }
     else {
-      double Ex, Kummer_1F1;
-      int stat_E = gsl_sf_exp_impl(x, &Ex);
-      int stat_K = hyperg_1F1_series(bma, b, -x, &Kummer_1F1, &prec);
-      int stat;
-      if(stat_E != GSL_SUCCESS) {
-        *result = 0.0;
-	stat    = stat_E;
-      }
-      else if(stat_K == GSL_ELOSS || prec > locEPS) {
-        *result = Ex * Kummer_1F1;
-	stat    = GSL_ELOSS;
-      }
-      else if(stat_K != GSL_SUCCESS) {
-        *result = 0.0;
-	stat    = stat_K;
-      }
-      else {
-        *result = Ex * Kummer_1F1;
-	stat = GSL_SUCCESS;
-      }
+      *result = Ex * Kummer_1F1;
+      stat = GSL_SUCCESS;
     }
   }
 
   
   /* Now we have dealt with any special negative integer cases,
    * including the error cases, so we are left with a well-behaved
-   * series evaluation.
+   * series evaluation, though the arguments may be large.
    */
    
-
+  
   
   
   

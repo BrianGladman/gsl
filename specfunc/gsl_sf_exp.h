@@ -12,6 +12,7 @@ int gsl_sf_exp_impl(double x, double * result);
 
 
 #ifdef HAVE_INLINE
+#include <gsl_math.h>
 #include <gsl_errno.h>
 extern inline
 int gsl_sf_exp_impl(double x, double * result)
