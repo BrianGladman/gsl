@@ -40,6 +40,18 @@ working.
 
 * Provide g-wrap wrappers for guile
 
+* Provide a run-time expression evaluator for interactive programs
+where the user can provide formulas as strings.  Keith Briggs
+recommended formulc2.22 which he had found useful in several projects.
+http://www.cs.brandeis.edu/~hhelf/formu/formulc.html. It is LGPL.
+Alternatively, the source code for GDB contains yacc grammars and
+evaluators for expressions in various languages, so that would be
+another way to go.  It would have the advantage of following the
+language standards.  If I was going to write something from scratch I
+would think about using that as a base, as the full set of operators
+are already included with the correct precedence rules. Being able to
+evaluate C and Fortran expressions could be useful.
+
 Before Each Release
 ===================
 
@@ -80,7 +92,10 @@ Wishlist or vague ideas
 
 * An example chapter on how to link GSL code with Python
 
-* Provide an interface to LAPACK, as for BLAS?
+* Provide an interface to LAPACK, as for BLAS?  Clarify the license
+for LAPACK first, their web page is vague on what the license terms
+are.  Some parts of LAPACK are included in octave so maybe the Octave
+maintainers will know more.
 
 * Public domain or free texts which could be distributed with GSL:
      
