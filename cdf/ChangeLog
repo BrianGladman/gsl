@@ -1,5 +1,9 @@
 2003-07-27  Brian Gough  <bjg@network-theory.co.uk>
 
+	* gumbel1.c (gsl_cdf_gumbel1_Q): use pow in place of exp since
+	compilers seem to handle overflow better in this case (perhaps
+	because it is not an intrinsic function).
+
 	* gumbel2.c (gsl_cdf_gumbel2_P): handle case of x = 0 explicitly
 	(gsl_cdf_gumbel2_Q): handle case of x = 0 explicitly
 
