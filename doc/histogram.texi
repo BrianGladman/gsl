@@ -327,14 +327,15 @@ smallest index is returned.
 @deftypefun double gsl_histogram_mean (const gsl_histogram * @var{h})
 This function returns the mean of the histogrammed variable, where the
 histogram is regarded as a probability distribution. Negative bin values
-are ignored for the purposes of this calculation.
+are ignored for the purposes of this calculation.  The accuracy of the
+result is limited by the bin width.
 @end deftypefun
 
 @deftypefun double gsl_histogram_sigma (const gsl_histogram * @var{h})
 This function returns the standard deviation of the histogrammed
 variable, where the histogram is regarded as a probability
 distribution. Negative bin values are ignored for the purposes of this
-calculation.
+calculation. The accuracy of the result is limited by the bin width.
 @end deftypefun
 
 @node Histogram Operations
