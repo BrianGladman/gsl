@@ -1,8 +1,8 @@
 This is GSL, the GNU Scientific Library.
 
-It is in the final stages of development, and is being placed on
-ftp://alpha.gnu.org/gnu/ in hopes that others might be interested in
-joining the project.
+It is in the final stages of development, and is being made available
+in hopes that others might be interested in joining the project and
+debugging the code.
 
 See the NEWS file for recent developments.
 
@@ -12,8 +12,11 @@ together with "make check" at the top level.
 
 GNU Libtool is used to build shared libraries.  Compilation of shared
 libraries can be turned off by specifying the `--disable-shared'
-option to `configure'.  This is recommended if you encounter problems
-building the library.
+option to `configure', e.g.
+  
+  ./configure --disable-shared
+
+This is recommended if you encounter problems building the library.
 
 If you run "make check" and get some failures, please see the
 KNOWN-PROBLEMS file.  This file lists failures we already know about.
