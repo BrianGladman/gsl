@@ -2,9 +2,9 @@ lib_LIBRARIES = libgslieeeutils.a
 
 include_HEADERS = gsl_ieee_utils.h
 
-libgslieeeutils_a_SOURCES = endian.c print-ieee.c standardize.c \
+libgslieeeutils_a_SOURCES = endian.c print.c standardize.c \
 	make_rep.c gsl_ieee_utils.h ieee_utils.h \
-	env.c fp.c read-mode-string.c
+	env.c fp.c read.c
 
 noinst_HEADERS = fp-hpux.c fp-linux.c fp-sunos4.c fp-solaris.c fp-unknown.c
 
