@@ -279,7 +279,7 @@ gsl_linalg_QR_unpack (const gsl_matrix * qr, const gsl_vector * tau, gsl_matrix 
 
       for (i = 0; i < M; i++)
 	{
-	  for (j = 0; j < i; j++)
+	  for (j = 0; j < i && j < N; j++)
 	    gsl_matrix_set (r, i, j, 0.0);
 
 	  for (j = i; j < N; j++)
