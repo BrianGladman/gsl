@@ -70,7 +70,7 @@ gsl_multifit_linear (const gsl_matrix * X,
       gsl_matrix * QSI = gsl_matrix_alloc (N, N);
       gsl_vector * S = gsl_vector_alloc (N);
       gsl_vector * t = gsl_vector_alloc (M);
-      gsl_vector * xt = gsl_vector_alloc (N);
+      gsl_vector * xt = gsl_vector_calloc (N);
 
       /* Copy X to workspace,  A =  X */
       
@@ -96,6 +96,8 @@ gsl_multifit_linear (const gsl_matrix * X,
           gsl_vector_scale (&column, alpha);
         }
       
+      gsl_vector_set_zero (c);
+
       gsl_blas_dgemv (CblasNoTrans, 1.0, QSI, xt, 0.0, c);
       
 
@@ -138,6 +140,12 @@ gsl_multifit_linear (const gsl_matrix * X,
           }
       }
 
+      gsl_matrix_free (A);
+      gsl_matrix_free (Q);
+      gsl_matrix_free (QSI);
+      gsl_vector_free (S);
+      gsl_vector_free (t);
+      gsl_vector_free (xt);
 
       return GSL_SUCCESS;
     }
@@ -187,7 +195,7 @@ gsl_multifit_wlinear (const gsl_matrix * X,
       gsl_matrix * QSI = gsl_matrix_alloc (N, N);
       gsl_vector * S = gsl_vector_alloc (N);
       gsl_vector * t = gsl_vector_alloc (M);
-      gsl_vector * xt = gsl_vector_alloc (N);
+      gsl_vector * xt = gsl_vector_calloc (N);
 
       /* Scale X,  A = sqrt(w) X */
       
@@ -196,14 +204,14 @@ gsl_multifit_wlinear (const gsl_matrix * X,
       for (i = 0; i < M; i++)
         {
           double wi = gsl_vector_get (w, i);
+
+          if (wi < 0) 
+            wi = 0;
           
-          if (wi < 0) wi = 0;
-          
-          for (j = 0; j < N; j++)
-            {
-              gsl_vector row = gsl_matrix_row (A, i);
-              gsl_vector_scale (&row, sqrt(wi));
-            }
+          {
+            gsl_vector row = gsl_matrix_row (A, i);
+            gsl_vector_scale (&row, sqrt(wi));
+          }
         }
       
       /* Decompose A into U S Q^T */
@@ -234,7 +242,12 @@ gsl_multifit_wlinear (const gsl_matrix * X,
           gsl_vector_scale (&column, alpha);
         }
       
+      gsl_vector_set_zero (c);
+
+      /* Solution */
+
       gsl_blas_dgemv (CblasNoTrans, 1.0, QSI, xt, 0.0, c);
+      
       
       /* Form covariance matrix cov = (Q S^-1) (Q S^-1)^T */
 
@@ -273,6 +286,13 @@ gsl_multifit_wlinear (const gsl_matrix * X,
       
         *chisq = r2;
       }
+
+      gsl_matrix_free (A);
+      gsl_matrix_free (Q);
+      gsl_matrix_free (QSI);
+      gsl_vector_free (S);
+      gsl_vector_free (t);
+      gsl_vector_free (xt);
 
       return GSL_SUCCESS;
     }
