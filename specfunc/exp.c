@@ -219,8 +219,10 @@ gsl_sf_exprel_n_impl(const int N, const double x, double * result)
     return gsl_sf_exprel_2_impl(x, result);
   }
   else {
-    if(x > 12.0*N) {
-      /* Ignore polynomial part; exprel_N(x) ~= e^x N!/x^N
+    if(x > N && (-x + N*(1.0 + log(x/N)) < GSL_LOG_MACH_EPS)) {
+      /* x is much larger than n.
+       * Ignore polynomial part, so
+       * exprel_N(x) ~= e^x N!/x^N
        */
       double lnf_N;
       double lnr;
@@ -234,13 +236,18 @@ gsl_sf_exprel_n_impl(const int N, const double x, double * result)
        * then use the asymptotic expansion
        * Gamma[n,x] ~ x^(n-1) e^(-x) (1 + (n-1)/x + (n-1)(n-2)/x^2 + ...)
        */
-      double lnf_N;
+      double ln_x = log(x);
+      double lnf_N, lg_N;
       double lnpre;
-      gsl_sf_lnfact_impl(N, &lnf_N);
-      lnpre = x + lnf_N - N*log(x);
+      gsl_sf_lnfact_impl(N, &lnf_N);    /* log(N!)       */
+      lg_N  = lnf_N - log(N);           /* log(Gamma(N)) */
+      lnpre = x + lnf_N - N*ln_x;
       if(lnpre < GSL_LOG_DBL_MAX - 5.0) {
-        double lg_N;
-        double bigGpre = exp(-x + (N-1)*log(x));
+        int stat_eG;
+	double pre = exp(lnpre);
+	double bigG_ratio;
+        double ln_bigG_ratio_pre = -x + (N-1)*ln_x - lg_N;
+	double ln_bigGsum;
 	double bigGsum = 1.0;
 	double term = 1.0;
 	int k;
@@ -248,9 +255,16 @@ gsl_sf_exprel_n_impl(const int N, const double x, double * result)
 	  term *= (N-k)/x;
 	  bigGsum += term;
 	}
-	gsl_sf_lngamma_impl(N, &lg_N);
-        *result = exp(lnpre) * (1.0 - bigGpre * exp(-lg_N) * bigGsum);
-	return GSL_SUCCESS;
+	ln_bigGsum = log(fabs(bigGsum));
+	stat_eG = gsl_sf_exp_impl(ln_bigG_ratio_pre + ln_bigGsum, &bigG_ratio);
+	if(stat_eG == GSL_SUCCESS) {
+          *result = pre * (1.0 - bigG_ratio);
+	  return GSL_SUCCESS;
+	}
+	else {
+	  *result = 0.0;
+	  return stat_eG;
+	}
       }
       else {
         *result = 0.0;

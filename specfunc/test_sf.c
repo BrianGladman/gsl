@@ -1180,6 +1180,24 @@ int check_exp(void)
   gsl_test(s, "  gsl_sf_exprel_n(50)");
   status += s;
 
+  s = 0;
+  s += ( frac_diff( gsl_sf_exprel_n(500, -1000.0), 0.3334815803127619256 ) > 1.0e-14 );
+  s += ( frac_diff( gsl_sf_exprel_n(500, -100.0),  0.8335646217536183909 ) > 1.0e-12 );
+  s += ( frac_diff( gsl_sf_exprel_n(500, -10.0),   0.9804297803131823066 ) > 1.0e-13 );
+  s += ( frac_diff( gsl_sf_exprel_n(500, -3.0),	   0.9940475488850672997 ) > 1.0e-14 );
+  s += ( frac_diff( gsl_sf_exprel_n(500, -1.0),    0.9980079602383488808 ) > 1.0e-14 );
+  s += ( frac_diff( gsl_sf_exprel_n(500, -1.0e-8), 1.0 -1.0e-8/501.0  ) > 1.0e-14 );
+  s += ( frac_diff( gsl_sf_exprel_n(500,  1.0e-8), 1.0 +1.0e-8/501.0  ) > 1.0e-14 );
+  s += ( frac_diff( gsl_sf_exprel_n(500,  1.0),    1.0019999920160634252 ) > 1.0e-14 );
+  s += ( frac_diff( gsl_sf_exprel_n(500,  3.0),	   1.0060240236632444934 ) > 1.0e-14 );
+  s += ( frac_diff( gsl_sf_exprel_n(500,  48.0),   1.1059355517981272174 ) > 1.0e-12 );
+  s += ( frac_diff( gsl_sf_exprel_n(500,  100.0),  1.2492221464878287204 ) > 1.0e-12 );
+  s += ( frac_diff( gsl_sf_exprel_n(500,  500.0),  28.363019877927630858 ) > 1.0e-12 );
+  s += ( frac_diff( gsl_sf_exprel_n(500,  1000.0), 2.4037563160335300322e+68 ) > 1.0e-12 );
+  s += ( frac_diff( gsl_sf_exprel_n(500,  1600.0), 7.899293535320607403e+226 ) > 1.0e-12 );
+  gsl_test(s, "  gsl_sf_exprel_n(500)");
+  status += s;
+
   return status;
 }
 
@@ -1698,6 +1716,18 @@ int check_hyperg(void)
   status += s;
 
   s = 0;
+  y = gsl_sf_hyperg_1F1_int(200, 50, -1.0);
+  s += ( frac_diff(y, 0.016087060191732290813 ) > 1.e-12 );
+  gsl_test(s, "  gsl_sf_hyperg_1F1_int(200, 50, -1.0)");
+  status += s;
+
+  s = 0;
+  y = gsl_sf_hyperg_1F1_int(200, 50, -300.0);
+  s += ( frac_diff(y, -4.294975979706421471e-121 ) > 1.e-12 );
+  gsl_test(s, "  gsl_sf_hyperg_1F1_int(200, 50, -300.0)");
+  status += s;
+
+  s = 0;
   y = gsl_sf_hyperg_1F1_int(200, 100, -1.0);
   s += ( frac_diff(y, 0.13397521083325179687 ) > 1.e-12 );
   gsl_test(s, "  gsl_sf_hyperg_1F1_int(200, 100, -1.0)");
@@ -1719,6 +1749,18 @@ int check_hyperg(void)
   y = gsl_sf_hyperg_1F1_int(200, 100, -500.0);
   s += ( frac_diff(y, -1.4478509059582015053e-195 ) > 1.e-12 );
   gsl_test(s, "  gsl_sf_hyperg_1F1_int(200, 100, -500.0)");
+  status += s;
+
+  s = 0;
+  y = gsl_sf_hyperg_1F1_int(100, 1, -100.0);
+  s += ( frac_diff(y, 6.305128893152291187e-25 ) > 1.e-12 );
+  gsl_test(s, "  gsl_sf_hyperg_1F1_int(100, 1, -100.0)");
+  status += s;
+
+  s = 0;
+  y = gsl_sf_hyperg_1F1_int(100, 10, -100.0);
+  s += ( frac_diff(y, -2.7819353611733941962e-37 ) > 1.e-12 );
+  gsl_test(s, "  gsl_sf_hyperg_1F1_int(100, 10, -100.0)");
   status += s;
 
   s = 0;
