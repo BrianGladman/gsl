@@ -2,12 +2,44 @@
 #include <stdlib.h>
 #include <gsl_rng.h>
 
-/*  From:
+/*  This is a combined multiple recursive generator. The sequence is,
+
+         z_n = (x_n - y_n) mod m1
+
+    where,
+         
+         x_n = (a_{11} x_{n-1} + a_{12} x_{n-2} + a_{13{ x_{n-3}) mod m1
+         y_n = (a_{21} y_{n-1} + a_{22{ y_{n-2} + a_{23} y_{n-3}) mod m2
+    
+         a_{11} = 0, a_{12} = 63308, a_{13} = -183326
+         a_{21} = 86098, a_{22} = 0, a_{23} = -539608
+         
+         m1 = 2^31 - 1 = 2147483647
+         m2 = 2^31 - 2000169 = 2145483479
+
+    We seed the generator with
+
+        x0 = (A * seed + B) mod M
+        x1 = (A * x0 + B) mod M
+        x2 = (A * x1 + B) mod M
+        y0 = (A * x2 + B) mod M
+        y1 = (A * y0 + B) mod M
+        y2 = (A * y1 + B) mod M
+
+    and then use 7 iterations of the generator to "warm up" the
+    internal state.
+
+    For checking the theoretical value of z_{10008} is 1477798470.
+    The subscript 10008 means (1) seed the generator, (2) do seven
+    warm-up iterations, (3) then do 10000 actual iterations.
+
+    The period of this generator is about 2^{205}.
+
+    From:
     P. L'Ecuyer, "Combined Multiple Recursive Random Number Generators,"
     to appear in Operations Research, 1996.
     (Preprint obtained as file combmrg.ps from L'Ecuyer's web page.
-    ftp://ftp.iro.umontreal.ca/pub/simulation/lecuyer/papers/combmrg.ps)
-*/
+    ftp://ftp.iro.umontreal.ca/pub/simulation/lecuyer/papers/combmrg.ps) */
 
 unsigned long int cmrg_get (void * vstate);
 void cmrg_set (void * state, unsigned int s);

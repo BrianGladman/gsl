@@ -18,6 +18,8 @@ main (void)
   rng_test (gsl_rng_bad_rand,1,10000,1910041713);
   rng_test (gsl_rng_bad_randu,1,10000,1623524161);
 
+  rng_test (gsl_rng_cmrg,1,10000,1477798470);
+
   /* generic statistical tests */
 
   generic_rng_test (gsl_rng_cmrg);

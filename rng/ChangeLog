@@ -1,5 +1,7 @@
 Thu Jun 18 12:17:16 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
+	* test.c: added a 10000 iteration check for cmrg
+
 	* got rid of init_state values. It's simpler to generate them
  	directly from the seed, the cost of creating an rng is not usually
  	a big deal.
