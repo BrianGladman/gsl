@@ -40,7 +40,6 @@ increase_nrmax (gsl_integration_workspace * workspace)
 
       workspace->nrmax++;
 
-      /* FIXME, shouldn't we adjust workspace->i here to match nrmax? */
     }
   return 0;
 }

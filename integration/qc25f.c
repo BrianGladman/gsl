@@ -100,7 +100,6 @@ qc25f (gsl_function * f, double a, double b,
 	    } 
 	}
 
-
       res12_cos = cheb12[12] * moment[12];
       res12_sin = 0 ;
 
@@ -141,7 +140,6 @@ qc25f (gsl_function * f, double a, double b,
 	  *abserr = fabs(c * est_cos) + fabs(s * est_sin);
 	}
       
-
       *resabs = result_abs * half_length;
       *resasc = GSL_DBL_MAX;
 

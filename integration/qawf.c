@@ -7,7 +7,6 @@
 #include "integration.h"
 
 #include "util.c"
-#include "qpsrt2.c"
 #include "qelg.c"
 
 int
@@ -225,7 +224,11 @@ return_error:
   if (error_type > 2)
     error_type--;
 
-  if (error_type == 1)
+  if (error_type == 0)
+    {
+      return GSL_SUCCESS;
+    }
+  else if (error_type == 1)
     {
       GSL_ERROR ("number of iterations was insufficient", GSL_EMAXITER);
     }
@@ -249,7 +252,10 @@ return_error:
       GSL_ERROR ("integral is divergent, or slowly convergent",
 		 GSL_EDIVERGE);
     }
-
-  return GSL_SUCCESS;
+  else
+    {
+      GSL_ERROR ("could not integrate function", GSL_EFAILED);
+    }
 
 }
+

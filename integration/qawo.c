@@ -43,6 +43,7 @@ gsl_integration_qawo (gsl_function * f,
   struct extrapolation_table table;
 
   double b = a + wf->L ;
+  double abs_omega = fabs (wf->omega) ;
 
   if (limit > workspace->limit)
     {
@@ -97,7 +98,7 @@ gsl_integration_qawo (gsl_function * f,
 
   initialise_table (&table);
 
-  if (0.5 * fabs(wf->omega) * fabs(b - a) <= 2)
+  if (0.5 * abs_omega * fabs(b - a) <= 2)
     {
       append_table (&table, result0);
       extall = 1;
@@ -130,17 +131,18 @@ gsl_integration_qawo (gsl_function * f,
 
       current_level = workspace->level[workspace->i] + 1;
 
+      if (current_level >= wf->n) 
+	{
+	  error_type = -1 ; /* exceeded limit of cache */
+	  break ;
+	}
+
       a1 = a_i;
       b1 = 0.5 * (a_i + b_i);
       a2 = b1;
       b2 = b_i;
 
       iteration++;
-
-      if (current_level >= wf->n) 
-	{
-	  GSL_ERROR ("exceeded limit of trigonometric cache", GSL_ECACHE);
-	}
 
       qc25f (f, a1, b1, wf, current_level, &area1, &error1, &resabs1, &resasc1);
       qc25f (f, a2, b2, wf, current_level, &area2, &error2, &resabs2, &resasc2);
@@ -267,7 +269,7 @@ gsl_integration_qawo (gsl_function * f,
 	  size_t i = workspace->i;
 	  double width = workspace->blist[i] - workspace->alist[i];
 	  
-	  if (0.25 * width * wf->omega > 2)
+	  if (0.25 * fabs(width) * abs_omega > 2)
 	    continue;
 	  
 	  extall = 1;
@@ -395,7 +397,11 @@ return_error:
   if (error_type > 2)
     error_type--;
 
-  if (error_type == 1)
+  if (error_type == 0)
+    {
+      return GSL_SUCCESS;
+    }
+  else if (error_type == 1)
     {
       GSL_ERROR ("number of iterations was insufficient", GSL_EMAXITER);
     }
@@ -411,15 +417,19 @@ return_error:
     }
   else if (error_type == 4)
     {
-      GSL_ERROR ("roundoff error detected in the extrapolation table",
-		 GSL_EROUND);
+      GSL_ERROR ("roundoff error detected in extrapolation table", GSL_EROUND);
     }
   else if (error_type == 5)
     {
-      GSL_ERROR ("integral is divergent, or slowly convergent",
-		 GSL_EDIVERGE);
+      GSL_ERROR ("integral is divergent, or slowly convergent", GSL_EDIVERGE);
     }
-
-  return GSL_SUCCESS;
+  else if (error_type == -1) 
+    {
+      GSL_ERROR ("exceeded limit of trigonometric cache", GSL_ECACHE);
+    }
+  else
+    {
+      GSL_ERROR ("could not integrate function", GSL_EFAILED);
+    }
 
 }

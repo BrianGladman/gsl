@@ -170,10 +170,10 @@ gsl_integration_qag_impl (const gsl_function * f,
     {
       GSL_ERROR ("maximum number of subdivisions reached", GSL_EMAXITER);
     }
-
-  /* FIXME: we get here if there was a NAN in the function evaluations */
-
-  GSL_ERROR ("shouldn't happen", GSL_ESANITY);
-
+  else
+    {
+      GSL_ERROR ("could not integrate function", GSL_EFAILED);
+    }
 }
+
 

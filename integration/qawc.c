@@ -24,8 +24,27 @@ gsl_integration_qawc (gsl_function * f,
   size_t iteration = 0;
   int roundoff_type1 = 0, roundoff_type2 = 0, error_type = 0;
   int err_reliable;
+  int sign = 1;
+  double lower, higher;
 
-  initialise (workspace, a, b);
+  if (limit > workspace->limit)
+    {
+      GSL_ERROR ("iteration limit exceeds available workspace", GSL_EINVAL) ;
+    }
+
+  if (b < a) 
+    {
+      lower = b ;
+      higher = a ;
+      sign = -1 ;
+    }
+  else
+    {
+      lower = a;
+      higher = b;
+    }
+
+  initialise (workspace, lower, higher);
 
   if (epsabs <= 0 && (epsrel < 50 * GSL_DBL_EPSILON || epsrel < 0.5e-28))
     {
@@ -34,7 +53,7 @@ gsl_integration_qawc (gsl_function * f,
 
       GSL_ERROR ("tolerance cannot be acheived with given epsabs and epsrel",
 		 GSL_EBADTOL);
-    };
+    }
 
   if (c == a || c == b) 
     {
@@ -46,26 +65,25 @@ gsl_integration_qawc (gsl_function * f,
 
   /* perform the first integration */
 
-  qc25c (f, a, b, c, &result0, &abserr0, &err_reliable);
+  qc25c (f, lower, higher, c, &result0, &abserr0, &err_reliable);
 
   set_initial_result (workspace, result0, abserr0);
 
-  /* Test on accuracy */
+  /* Test on accuracy, use 0.01 relative error as an extra safety
+     margin on the first iteration (ignored for subsequent iterations) */
 
   tolerance = GSL_MAX_DBL (epsabs, epsrel * fabs (result0));
 
-  /* FIXME: I don't know why they added the test abserr < 0.01 |result| */
-
-  if (abserr0 < tolerance && abserr0 < 0.01 * fabs(result0))
+  if (abserr0 < tolerance && abserr0 < 0.01 * fabs(result0)) 
     {
-      *result = result0;
+      *result = sign * result0;
       *abserr = abserr0;
 
       return GSL_SUCCESS;
     }
   else if (limit == 1)
     {
-      *result = result0;
+      *result = sign * result0;
       *abserr = abserr0;
 
       GSL_ERROR ("a maximum of one iteration was insufficient", GSL_EMAXITER);
@@ -154,7 +172,7 @@ gsl_integration_qawc (gsl_function * f,
     }
   while (iteration < limit && !error_type && errsum > tolerance);
 
-  *result = sum_results (workspace);
+  *result = sign * sum_results (workspace);
   *abserr = errsum;
 
   if (errsum <= tolerance)
@@ -175,9 +193,9 @@ gsl_integration_qawc (gsl_function * f,
     {
       GSL_ERROR ("maximum number of subdivisions reached", GSL_EMAXITER);
     }
-
-  /* FIXME: we get here if there was a NAN in the function evaluations */
-
-  GSL_ERROR ("shouldn't happen", GSL_ESANITY);
+  else
+    {
+      GSL_ERROR ("could not integrate function", GSL_EFAILED);
+    }
 
 }

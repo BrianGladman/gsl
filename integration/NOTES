@@ -57,6 +57,9 @@ is biased. I follow the proceedure of computing the raw partial sums
 and extrapolating them without any "feedback" from the extrapolation
 procedure into the sum.
 
+DQAWCE: The sign of the result should also be swapped if a > b in the
+case where the integration succeeds on the initial attempt.
+
 Testing
 =======
 

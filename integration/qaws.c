@@ -74,7 +74,8 @@ gsl_integration_qaws (gsl_function * f,
 
   tolerance = GSL_MAX_DBL (epsabs, epsrel * fabs (result0));
 
-  /* FIXME: I don't know why they added the test abserr < 0.01 |result| */
+  /* Test on accuracy, use 0.01 relative error as an extra safety
+     margin on the first iteration (ignored for subsequent iterations) */
 
   if (abserr0 < tolerance && abserr0 < 0.01 * fabs(result0))
     {
@@ -184,9 +185,9 @@ gsl_integration_qaws (gsl_function * f,
     {
       GSL_ERROR ("maximum number of subdivisions reached", GSL_EMAXITER);
     }
-
-  /* FIXME: we get here if there was a NAN in the function evaluations */
-
-  GSL_ERROR ("shouldn't happen", GSL_ESANITY);
+  else
+    {
+      GSL_ERROR ("could not integrate function", GSL_EFAILED);
+    }
 
 }

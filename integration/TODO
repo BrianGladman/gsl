@@ -1,17 +1,20 @@
 1. check that size / limit is not exceeded 
-   - PARTIALLY DONE the checking is missing for the qawo workspace stuff. 
-     NEED TO FIX 4 to return an appropriate errro
-
+   -DONE the checking is missing for the qawo workspace stuff. 
    -DONE we never check if limit < workspace->limit, which is obviously needed 
  
 2. check that routines work correctly for (b, a) and (a, b)
+   -DONE
 
 3. check the inner workings of the qawo workspace. I haven't verified
 it except by checking the overall result.
 
-4. what is this business with  
+4. DONE what is this business with  
 
   if (error_type > 2)
       error_type--;
+
+   WELL, THAT'S JUST THE WAY IT IS. We could make it more consistent but
+   then it would be more confusing doing comparisons with the original
+   code so we'll just leave it for now.
 
 5. Take a look at the FIXMEs
