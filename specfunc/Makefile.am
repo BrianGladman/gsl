@@ -30,6 +30,7 @@ include_HEADERS = \
 	gsl_sf_poly.h		\
 	gsl_sf_pow_int.h 	\
 	gsl_sf_psi.h		\
+        gsl_sf_result.h         \
 	gsl_sf_synchrotron.h	\
 	gsl_sf_transport.h	\
 	gsl_sf_trig.h		\

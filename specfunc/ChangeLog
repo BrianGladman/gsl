@@ -1,3 +1,7 @@
+Sun Feb 14 20:59:50 1999  Brian Gough  <bjg@netsci.freeserve.co.uk>
+
+	* Makefile.am (include_HEADERS): added gsl_sf_result.h
+
 1998-12-05  Mark Galassi  <rosalia@cygnus.com>
 
 	* Makefile.am: t-erf.c was commented out, which is a problem
