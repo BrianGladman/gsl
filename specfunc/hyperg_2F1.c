@@ -718,7 +718,7 @@ int gsl_sf_hyperg_2F1_renorm_impl(const double a, const double b, const double c
   }
 }
 
-int gsl_sf_hyperg_2F1_conj_renorm_impl(const double aR, const double aI, const int c,
+int gsl_sf_hyperg_2F1_conj_renorm_impl(const double aR, const double aI, const double c,
                                        const double x,
 			               double * result
 			               )

@@ -48,19 +48,19 @@ double  gsl_sf_hyperg_2F1_conj(double aR, double aI, double c, double x);
  *
  * exceptions:
  */
-int     gsl_sf_hyperg_2F1_impl(double a, double b, double c, double x, double * result);
-int     gsl_sf_hyperg_2F1_e(double a, double b, double c, double x, double * result);
-double  gsl_sf_hyperg_2F1(double a, double b, double c, double x);
+int     gsl_sf_hyperg_2F1_renorm_impl(double a, double b, double c, double x, double * result);
+int     gsl_sf_hyperg_2F1_renorm_e(double a, double b, double c, double x, double * result);
+double  gsl_sf_hyperg_2F1_renorm(double a, double b, double c, double x);
 
 
-/* Gauss hypergeometric function 2F1[aR + I aI, aR - I aI, c, x] / Gamma[c]
+/* Renormalized Gauss hypergeometric function 2F1[aR + I aI, aR - I aI, c, x] / Gamma[c]
  * |x| < 1
  *
  * exceptions:
  */
-int     gsl_sf_hyperg_2F1_conj_impl(double aR, double aI, double c, double x, double * result);
-int     gsl_sf_hyperg_2F1_conj_e(double aR, double aI, double c, double x, double * result);
-double  gsl_sf_hyperg_2F1_conj(double aR, double aI, double c, double x);
+int     gsl_sf_hyperg_2F1_conj_renorm_impl(double aR, double aI, double c, double x, double * result);
+int     gsl_sf_hyperg_2F1_conj_renorm_e(double aR, double aI, double c, double x, double * result);
+double  gsl_sf_hyperg_2F1_conj_renorm(double aR, double aI, double c, double x);
 
 
 /* Mysterious hypergeometric function

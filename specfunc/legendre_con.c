@@ -16,6 +16,8 @@
 
 /*-*-*-*-*-*-*-*-*-*-*-* Private Section *-*-*-*-*-*-*-*-*-*-*-*/
 
+#define RECURSE_BIG  (1.0e-5*DBL_MAX)
+
 
 /* Backward recursion for
  * y_n := 1/Gamma[1+mu+n] P^{mu+n}_{-1/2 + I tau}(x)
@@ -45,10 +47,16 @@ backward_recurse_pos_mu_xgt1(const double mu_min, const double tau, const double
     y_nm1 = -mu*(mu+1.0)/d * (y_np1 + 2.0*mu*x*c1*y_n/(mu+1.0));
     y_np1 = y_n;
     y_n   = y_nm1;
+    if(fabs(y_nm1) > RECURSE_BIG) {
+      *result_y_0 = 0.0;
+      *result_y_1 = 0.0;
+      return GSL_EOVRFLW;
+    }
   }
   
   *result_y_0 = y_n;
   *result_y_1 = y_np1;
+  return GSL_SUCCESS;
 }
 			 
 
@@ -81,32 +89,230 @@ backward_recurse_neg_mu_xgt1(const double mu, const double tau, const double x,
     y_nm1 = -2.0*mupn*x*c1/(mupn-1.0)*y_n - d/(mupn*(mupn-1.0))*y_np1;
     y_np1 = y_n;
     y_n   = y_nm1;
+    if(fabs(y_nm1) > RECURSE_BIG) {
+      *result_y_0 = 0.0;
+      *result_y_1 = 0.0;
+      return GSL_EOVRFLW;
+    }
   }
   
   *result_y_0 = y_n;
   *result_y_1 = y_np1;
+  return GSL_SUCCESS;
 }
 
 
+/* Backward recursion for
+ * y_n := 1/Gamma[1+mu+n] P^{mu+n}_{-1/2 + I tau}(x)
+ * |x| < 1
+ * mu_min > -1
+ * n = N, N-1, ..., 0
+ *
+ * Note that this is not stable for x < 0, because it is dominated
+ * by the Q part of the solution there. Use this for 0 < x < 1.
+ *
+ * checked OK: Wed Sep 16 19:14:27 MDT 1998 
+ */
+static
+int
+backward_recurse_pos_mu_xlt1(const double mu_min, const double tau, const double x,
+                             const int N,
+                             const double y_N, const double y_Np1,
+			     double * result_y_0, double * result_y_1)
+{
+  const double c1 = 1.0/sqrt(1.0-x*x);
+  const double t2 = tau*tau;
+  double y_np1 = y_Np1;
+  double y_n   = y_N;
+  double y_nm1;
+  int n;
+
+  for(n=N; n>=1; n--) {
+    const double mu = mu_min + n;
+    const double d  = (mu - 0.5)*(mu-0.5) + t2;
+    y_nm1 = mu*(mu+1.0)/d * (y_np1 + 2.0*mu*x*c1*y_n/(mu+1.0));
+    y_np1 = y_n;
+    y_n   = y_nm1;
+    if(fabs(y_nm1) > RECURSE_BIG) {
+      *result_y_0 = 0.0;
+      *result_y_1 = 0.0;
+      return GSL_EOVRFLW;
+    }
+  }
+  
+  *result_y_0 = y_n;
+  *result_y_1 = y_np1;
+  return GSL_SUCCESS;
+}
+
+
+/* Forward recursion for
+ * y_n := 1/Gamma[1+mu+n] P^{mu+n}_{-1/2 + I tau}(x)
+ * |x| < 1
+ * mu_min > -1
+ * n = N, N-1, ..., 0
+ *
+ * Note that this is not stable for x > 0. Use this for -1 < x < 0.
+ *
+ * checked OK: Wed Sep 16 19:40:29 MDT 1998 
+ */
+static
+int
+forward_recurse_pos_mu_xlt1(const double mu_min, const double tau, const double x,
+                            const int N,
+                            const double y_0, const double y_1,
+			    double * result_yN, double * result_yNp1)
+{
+  const double c1 = 1.0/sqrt(1.0-x*x);
+  const double t2 = tau*tau;
+  double y_nm1 = y_0;
+  double y_n   = y_1;
+  double y_np1;
+  int n;
+
+  for(n=1; n<=N; n++) {
+    const double mu = mu_min + n;
+    const double d  = (mu-0.5)*(mu-0.5) + t2;
+    y_np1 = (d/mu*y_nm1 - 2.0*mu*x*c1*y_n)/(mu+1.0);
+    y_nm1 = y_n;
+    y_n   = y_np1;
+    if(fabs(y_np1) > RECURSE_BIG) {
+      *result_yN   = 0.0;
+      *result_yNp1 = 0.0;
+      return GSL_EOVRFLW;
+    }
+  }
+
+  *result_yN   = y_nm1;
+  *result_yNp1 = y_n;
+  return GSL_SUCCESS;
+}
+
+
+/* Backward recursion for
+ * y_n := 1/Gamma[1-mu-n] P^{-mu-n}_{-1/2 + I tau}(x)
+ * |x| < 1
+ * mu_max < 0
+ * n = N, N-1, ..., 0
+ * mu != integer
+ *
+ * Note that this is not stable for x < 0, because it is dominated
+ * by the Q part of the solution there. Use this for 0 < x < 1.
+ *
+ * checked OK: Wed Sep 16 20:11:21 MDT 1998
+ */
+static
+int
+backward_recurse_neg_mu_xlt1(const double mu, const double tau, const double x,
+                             const int N,
+                             const double y_N, const double y_Np1,
+			     double * result_y_0, double * result_y_1)
+{ 
+  const double c1 = 1.0/sqrt(1.0-x*x);
+  const double t2 = tau*tau;
+  double y_np1 = y_Np1;
+  double y_n   = y_N;
+  double y_nm1;
+  int n;
+
+  for(n=N; n>=1; n--) {
+    const double mupn = mu + n;
+    const double d = (mupn+0.5)*(mupn+0.5) + t2;
+    y_nm1 = -2.0*mupn*x*c1/(mupn-1.0)*y_n + d/(mupn*(mupn-1.0))*y_np1;
+    y_np1 = y_n;
+    y_n   = y_nm1;
+    if(fabs(y_nm1) > RECURSE_BIG) {
+      *result_y_0 = 0.0;
+      *result_y_1 = 0.0;
+      return GSL_EOVRFLW;
+    }
+  }
+  
+  *result_y_0 = y_n;
+  *result_y_1 = y_np1;
+  return GSL_SUCCESS;
+}
+
+
+/* Forward recursion for
+ * y_n := 1/Gamma[1-mu-n] P^{-mu-n}_{-1/2 + I tau}(x)
+ * |x| < 1
+ * mu_min > -1
+ * n = N, N-1, ..., 0
+ *
+ * Note that this is not stable for x > 0. Use this for -1 < x < 0.
+ *
+ * checked OK: Wed Sep 16 20:32:55 MDT 1998
+ */
+static
+int
+forward_recurse_neg_mu_xlt1(const double mu, const double tau, const double x,
+                            const int N,
+                            const double y_0, const double y_1,
+			    double * result_yN, double * result_yNp1)
+{
+  const double c1 = 1.0/sqrt(1.0-x*x);
+  const double t2 = tau*tau;
+  double y_nm1 = y_0;
+  double y_n   = y_1;
+  double y_np1;
+  int n;
+
+  for(n=1; n<=N; n++) {
+    const double mupn = mu + n;
+    const double d = (mupn+0.5)*(mupn+0.5) + t2;
+    y_np1 = (y_nm1 + 2.0*mupn*x*c1/(mupn-1.0)*y_n) * mupn*(mupn-1.0)/d;
+    y_nm1 = y_n;
+    y_n   = y_np1;
+    if(fabs(y_np1) > RECURSE_BIG) {
+      *result_yN   = 0.0;
+      *result_yNp1 = 0.0;
+      return GSL_EOVRFLW;
+    }
+  }
+
+  *result_yN   = y_nm1;
+  *result_yNp1 = y_n;
+  return GSL_SUCCESS;
+}
+
+#if 0
 void test_recurse(void)
 {
   /*
-  CHECKED OK
   double mu_min = 0.0;
   double tau    = 5.0;
-  double x      = 3.0;
+  double x      = -0.5;
   int N = 1000;
-  double y_n   =   3.0675657594269025813e-148;
-  double y_np1 =  -2.1670387291373776638e-148;
+  double y_n   =  3.815801082323749413e+241;
+  double y_np1 =  6.602600486662392861e+241;
   double y_0, y_1;
-  backward_recurse_pos_mu_xgt1(mu_min, tau, x,
+  backward_recurse_pos_mu_xlt1(mu_min, tau, x,
                                N,
                                y_n, y_np1,
 			       &y_0, &y_1);
   printf("%24.18g   %24.18g    %24.18g  %24.18g\n", y_n, y_np1, y_0, y_1);
   exit(0);
   */
-  
+
+  /*
+  double mu_min = 0.0;
+  double tau    = 5.0;
+  double x      = -0.5;
+  int N = 1000;
+  double y_n;
+  double y_np1;
+  double y_0 = 6693.103933518211835;
+  double y_1 = 35192.90653374874763;
+  forward_recurse_pos_mu_xlt1(mu_min, tau, x,
+                               N,
+                               y_0, y_1,
+			       &y_n, &y_np1);
+  printf("%24.18g   %24.18g    %24.18g  %24.18g\n", y_0, y_1, y_n, y_np1);
+  exit(0);
+  */
+
+  /*
   double mu  = 1.0/3.0;
   double tau = 5.0;
   double x   = 3.0;
@@ -120,7 +326,43 @@ void test_recurse(void)
 			       &y_0, &y_1);
   printf("%24.18g   %24.18g    %24.18g  %24.18g\n", y_n, y_np1, y_0, y_1);
   exit(0);
+  */
+
+  /*
+  double mu  = 1.0/3.0;
+  double tau = 5.0;
+  double x   = 0.5;
+  int N = 20;
+  double y_n   = ;
+  double y_np1 = ;
+  double y_0, y_1;
+  backward_recurse_neg_mu_xlt1(mu, tau, x,
+                               N,
+                               y_n, y_np1,
+			       &y_0, &y_1);
+  printf("%24.18g   %24.18g    %24.18g  %24.18g\n", y_n, y_np1, y_0, y_1);
+  exit(0);
+  */
+  
+  /*
+  double mu_min = 1.0/3.0;
+  double tau    = 5.0;
+  double x      = -0.5;
+  int N = 1000;
+  double y_n;
+  double y_np1;
+  double y_0 =  2906.1619891014585047;
+  double y_1 = -206.00701262658096387;
+  forward_recurse_neg_mu_xlt1(mu_min, tau, x,
+                              N,
+                              y_0, y_1,
+			      &y_n, &y_np1);
+  printf("%24.18g   %24.18g   %24.18g  %24.18g\n", y_0, y_1, y_n, y_np1);
+  exit(0);
+  */
 }
+#endif /* 0 */
+
 
 /* Implementation of large negative mu asymptotic
  * [Dunster, Proc. Roy. Soc. Edinburgh 119A, 311 (1991), p. 326]
@@ -175,6 +417,8 @@ static double olver_U3(double beta2, double p)
 /* Large negative mu asymptotic
  * P^{-mu}_{-1/2 + I tau}, mu -> Inf
  * |x| < 1
+ *
+ * [Dunster, Proc. Roy. Soc. Edinburgh 119A, 311 (1991), p. 326]
  */
 static
 int
@@ -183,7 +427,7 @@ conicalP_xlt1_large_neg_mu(double mu, double tau, double x, double * result)
   double beta  = tau/mu;
   double beta2 = beta*beta;
   double S     = beta * acos((1.0-beta2)/(1.0+beta2));
-  double p     = x/sqrt(beta2*(1.0-x*x) + 1.);
+  double p     = x/sqrt(beta2*(1.0-x*x) + 1.0);
   double lg_mup1;
   int lg_stat = gsl_sf_lngamma_impl(mu+1.0, &lg_mup1);
   double ln_pre_1 =  0.5*mu*(S - log(1.0+beta2) + log((1.0-p)/(1.0+p))) - lg_mup1;
@@ -192,17 +436,17 @@ conicalP_xlt1_large_neg_mu(double mu, double tau, double x, double * result)
   double ln_pre = ln_pre_1 + ln_pre_2 + ln_pre_3;
   
   if(ln_pre > GSL_LOG_DBL_MAX) {
-    *result = 0.; /* FIXME: should be Inf */
+    *result = 0.0; /* FIXME: should be Inf */
     return GSL_EOVRFLW;
   }
   else if(ln_pre < GSL_LOG_DBL_MIN) {
-    *result = 0.;
+    *result = 0.0;
     return GSL_EUNDRFLW;
   }
   else {
     double sum = 1.0 - olver_U1(beta2, p)/mu + olver_U2(beta2, p)/(mu*mu);
     *result = exp(ln_pre) * sum;
-    return GSL_SUCCESS;
+    return lg_stat;
   }
 }
 
@@ -210,13 +454,12 @@ conicalP_xlt1_large_neg_mu(double mu, double tau, double x, double * result)
 
 /* Implementation of large tau asymptotic
  *
- * [Olver, p.465, 469]
- * A_n^{-mu}, B_n^{-mu}
+ * A_n^{-mu}, B_n^{-mu}  [Olver, p.465, 469]
  */
 
 static double olver_B0_xi(double mu, double xi)
 {
-  return (1.0 - 4.0*mu*mu)/(8.0*xi) * (1.0/tanh(xi) - 1./xi);
+  return (1.0 - 4.0*mu*mu)/(8.0*xi) * (1.0/tanh(xi) - 1.0/xi);
 }
 
 static double olver_A1_xi(double mu, double xi, double x)
@@ -236,6 +479,51 @@ static double olver_A1_th(double mu, double theta, double x)
   double B = olver_B0_th(mu, theta);
   double psi = (4.0*mu*mu - 1.0)/16.0 * (1.0/(x*x-1.0) + 1.0/(theta*theta));
   return -0.5*theta*theta*B*B + (mu+0.5)*B - psi + mu/6.0*(0.25 - mu*mu);
+}
+
+
+/* Large tau uniform asymptotics
+ * P^{-mu}_{-1/2 + I tau}
+ * 1 < x
+ * tau -> Inf 
+ * [Olver, p. 469]
+ */
+static
+int
+conicalP_xgt1_neg_mu_largetau_impl(const double mu, const double tau,
+                                   const double x, double * result)
+{
+  double xi = acosh(x);
+  double xi_pre;
+  double pre;
+  double sumA, sumB;
+  double arg;
+  double J_mup1, J_mu, J_mum1;
+
+  if(xi < GSL_ROOT4_MACH_EPS) {
+    xi_pre = 1.0 - xi*xi/6.0;
+  }
+  else {
+    xi_pre = xi/sinh(xi);
+  }
+
+  pre = sqrt(xi_pre) * pow(1.0/tau, mu);
+  if(pre == 0.0) {
+    *result = 0.0;
+    return GSL_EUNDRFLW;
+  }
+
+  arg = tau*xi;
+
+  gsl_sf_bessel_Jnu_impl(mu + 1.0,   arg, &J_mup1);
+  gsl_sf_bessel_Jnu_impl(mu,         arg, &J_mu);
+  J_mum1 = -J_mup1 + 2.0*mu/arg; /* careful of mu < 1 */
+
+  sumA = 1.0 - olver_A1_xi(-mu, xi, x)/(tau*tau);
+  sumB = olver_B0_xi(-mu, xi);
+
+  *result = pre * (J_mu * sumA - xi/tau * J_mum1 * sumB);
+  return GSL_SUCCESS; /* FIXME: hmmm, success??? */
 }
 
 
@@ -269,22 +557,22 @@ conicalP_xlt1_neg_mu_largetau_impl(const double mu, const double tau,
     *result = 0.0;
     return GSL_EUNDRFLW;
   }
-  
+
   arg = tau*theta;
-  
+
   gsl_sf_bessel_Inu_impl(mu + 1.0,   arg, &I_mup1);
   gsl_sf_bessel_Inu_impl(mu,         arg, &I_mu);
-  I_mum1 = I_mup1 + 2.0*mu/arg;
-  
-  sumA = 1.0 - olver_A1_th(mu, theta, x)/(tau*tau);
-  sumB = olver_B0_th(mu, theta)/tau;
-  
+  I_mum1 = I_mup1 + 2.0*mu/arg; /* careful of mu < 1 */
+
+  sumA = 1.0 - olver_A1_th(-mu, theta, x)/(tau*tau);
+  sumB = olver_B0_th(-mu, theta);
+
   *result = pre * (I_mu * sumA - theta/tau * I_mum1 * sumB);
   return GSL_SUCCESS; /* FIXME: hmmm, success??? */
 }
 
 
-/* P^{-mu}_{-1/2 + I tau}  first hypergeometric representation
+/* P^{mu}_{-1/2 + I tau}  first hypergeometric representation
  * -1 < x < 1
  * more effective for |x| small
  *
@@ -296,52 +584,78 @@ int
 conicalP_xlt1_hyperg_A(double mu, double tau, double x, double * result)
 {
   double x2 = x*x;
-  double pre  = M_SQRTPI * pow(0.5*sqrt(1-x2), mu);
+  double pre  = M_SQRTPI / pow(0.5*sqrt(1-x2), mu);
   double ln_g1, ln_g2, arg_g1, arg_g2;
   double pre1, pre2, F1, F2;
+  int status;
   
-  int stat_F1 = gsl_sf_hyperg_2F1_conj_impl(0.25 + 0.5*mu, 0.5*tau, 0.5, x2, &F1);
-  int stat_F2 = gsl_sf_hyperg_2F1_conj_impl(0.75 + 0.5*mu, 0.5*tau, 1.5, x2, &F2);
+  int stat_F1 = gsl_sf_hyperg_2F1_conj_impl(0.25 - 0.5*mu, 0.5*tau, 0.5, x2, &F1);
+  int stat_F2 = gsl_sf_hyperg_2F1_conj_impl(0.75 - 0.5*mu, 0.5*tau, 1.5, x2, &F2);
 
-  /* FIXME: error handling */
+  if(stat_F1 == GSL_SUCCESS && stat_F2 == GSL_SUCCESS) {
+    status = GSL_SUCCESS;
+  }
+  else if(stat_F1 == GSL_ELOSS || stat_F2 == GSL_ELOSS) {
+    status = GSL_ELOSS;
+  }
+  else {
+    status = GSL_EFAILED;
+  }
 
-  gsl_sf_lngamma_complex_impl(0.75 + 0.5*mu, -0.5*tau, &ln_g1, &arg_g1);
-  gsl_sf_lngamma_complex_impl(0.25 + 0.5*mu, -0.5*tau, &ln_g2, &arg_g2);
+  gsl_sf_lngamma_complex_impl(0.75 - 0.5*mu, -0.5*tau, &ln_g1, &arg_g1);
+  gsl_sf_lngamma_complex_impl(0.25 - 0.5*mu, -0.5*tau, &ln_g2, &arg_g2);
   
   pre1 =        exp(-2.0*ln_g1);
   pre2 = -2.0*x*exp(-2.0*ln_g2);
   
   *result = pre * (pre1 * F1 + pre2 * F2);
-  return GSL_SUCCESS;
+  return status;
 }
 
-/* P^{-mu}_{-1/2 + I tau}  second hypergeometric representation
- * -1 < x < 3
+
+/* P^{mu}_{-1/2 + I tau}
+ * defining hypergeometric representation
+ * [Abramowitz+Stegun, 8.1.2]
+ * 1 < x < 3
  * effective for x near 1
  *
- * [Zhurina+Karmazina,  (3.1)]   mu != a positive integer
  */
 static
 int
-conicalP_xnear1_hyperg_B(double mu, double tau, double x, double * result)
+conicalP_def_hyperg(double mu, double tau, double x, double * result)
 {
-  double ln_pre;
-  double ln_g0, ln_g1, ln_g2, arg_g1, arg_g2;
   double F;
-  
-  int stat_F = gsl_sf_hyperg_2F1_conj_renorm_impl(0.5 - mu, tau, 1.0-mu, 0.5*(1.0-x), &F);
-  
-  /* FIXME: error handling */
+  int stat_F = gsl_sf_hyperg_2F1_conj_renorm_impl(0.5, tau, 1.0-mu, 0.5*(1.0-x), &F);
+  *result = pow((x+1.0)/(x-1.0), 0.5*mu) * F;
+  return stat_F;
+}
 
-  /* ln_g0 = gsl_sf_lngamma(1.0 - mu); using renorm version above */
-  ln_g0 = 0.0;
-  gsl_sf_lngamma_complex_impl(0.5-mu, tau, &ln_g1, &arg_g1);
-  gsl_sf_lngamma_complex_impl(0.5+mu, tau, &ln_g2, &arg_g2);
 
-  ln_pre = mu*M_LN2 - 0.5*mu*log(fabs(x*x-1.0)) - ln_g0;
-  
+/* P^{mu}_{-1/2 + I tau}  second hypergeometric representation
+ * [Zhurina+Karmazina, (3.1)] 
+ * -1 < x < 3
+ * effective for x near 1
+ *
+ */
+static
+int
+conicalP_xnear1_hyperg_C(double mu, double tau, double x, double * result)
+{
+  double ln_pre, arg_pre;
+  double ln_g1, arg_g1;
+  double ln_g2, arg_g2;
+  double F;
+
+  int stat_F = gsl_sf_hyperg_2F1_conj_renorm_impl(0.5+mu, tau, 1.0+mu, 0.5*(1.0-x), &F);
+
+  gsl_sf_lngamma_complex_impl(0.5+mu, tau, &ln_g1, &arg_g1);
+  gsl_sf_lngamma_complex_impl(0.5-mu, tau, &ln_g2, &arg_g2);
+
+  ln_pre  = mu*M_LN2 - 0.5*mu*log(fabs(x*x-1.0)) + ln_g1 - ln_g2;
+  arg_pre = arg_g1 - arg_g2;
+
   *result = exp(ln_pre) * F;
-  return GSL_SUCCESS;
+  return stat_F;
 }
 
 
