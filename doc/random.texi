@@ -853,6 +853,8 @@ transputer -----------------------
 @end smallexample
 
 @node Random Number Distributions
+
+
 @section Random Number Distributions
 @cindex random number distributions
 
@@ -863,6 +865,8 @@ uniform distribution. This uses one call to the random number
 generator. More complicated distributions are created by the
 @dfn{acceptance-rejection} method which often requires multiple samples
 from the generator.
+
+
 
 @subsection Continuous distributions
 @page
