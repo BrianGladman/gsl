@@ -815,10 +815,17 @@ for (i = N - 1; i >= 0 ; i--) @{ ... @}
 use something like
 
 @example
-for (i = 0; i < N; i++) @{ j = N - i ; ... @}
+for (i = N; i > 0 && i--;) @{ ... @}
 @end example
 @noindent
 to avoid problems with wrap-around at @code{i=0}.
+
+If you really want to avoid confusion use a separate variable to invert
+the loop order,
+@example
+for (i = 0; i < N; i++) @{ j = N - i ; ... @}
+@end example
+
 
 @node Arrays vs Pointers
 @section Arrays vs Pointers
