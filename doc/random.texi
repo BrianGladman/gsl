@@ -844,6 +844,8 @@ generator. More complicated distributions are created by the
 @dfn{acceptance-rejection} method which often requires multiple samples
 from the generator.
 
+@subsection Continuous distributions
+
 @deftypefn Random double gsl_ran_gaussian (const gsl_rng * @var{r})
 @cindex Gaussian random numbers
 This function returns a gaussian random number, with mean zero and
@@ -928,7 +930,7 @@ This function returns a random number from the flat (uniform)
 distribution from @var{a} to @var{b}.
 @c
 @equation
-p(x) dx = 1/(b-a)
+p(x) dx = 1/(b-a) dx
 @end equation
 @noindent
 if @math{a \le x < b} and 0 otherwise.
@@ -958,8 +960,95 @@ p(x) dx = @{\Gamma(a+b) \over \Gamma(a) \Gamma(b)@} x^@{a-1@} (1-x)^@{b-1@} dx
 @end equation
 @end deftypefn
 
+@deftypefn Random double gsl_ran_logistic (const gsl_rng * @var{r})
+@cindex Logistic random numbers
+This function returns a random number from the logistic
+distribution.  The distribution function is
+@c
+@equation
+p(x) dx = @{ \exp(-x) \over (1 + \exp(-x))^2 @} dx
+@end equation
+for @math{x > 0}
+@end deftypefn
 
-@deftypefn Random unsigned int gsl_ran_poisson (const gsl_rng * @var{r}, double @var{mu})
+@deftypefn Random double gsl_ran_lognormal (const gsl_rng * @var{r})
+@cindex Lognormal random numbers
+This function returns a random number from the lognormal
+distribution.  The distribution function is
+@c
+@equation
+p(x) dx = @{1 \over x \sqrt(2 \pi) @} \exp(-\ln(x)^2/2) dx
+@end equation
+for @math{x > 0}
+@end deftypefn
+
+@deftypefn Random double gsl_ran_pareto (const gsl_rng * @var{r}, double @var{a})
+@cindex Lognormal random numbers
+This function returns a random number from the pareto
+distribution of order @var{a}.  The distribution function is
+@c
+@equation
+p(x) dx = a / x^@{a+1@} dx
+@end equation
+for @math{x \ge 1}
+@end deftypefn
+
+@deftypefn Random double gsl_ran_dir_2d (const gsl_rng * @var{r}, double *@var{x}, double *@var{y})
+@cindex 2D random direction vector
+@cindex direction vector, random 2D
+@cindex spherical random numbers, 2D
+This function returns a random direction vector @math{v} =
+(@var{x},@var{y}) in two dimenions. The vector is normalized
+such that @math{|v|^2 = x^2 + y^2 = 1}.
+@end deftypefn
+
+@deftypefn Random double gsl_ran_dir_3d (const gsl_rng * @var{r}, double *@var{x}, double *@var{y}, double * @var{z})
+@cindex 3D random direction vector
+@cindex direction vector, random 3D
+@cindex spherical random numbers, 3D
+This function returns a random direction vector @math{v} =
+(@var{x},@var{y},@var{z}) in three dimenions. The vector is
+normalized such that @math{|v|^2 = x^2 + y^2 + z^2 = 1}.
+@end deftypefn
+
+@deftypefn Random double gsl_ran_tdist (const gsl_rng * @var{r}, double @var{nu})
+@cindex t-distribution random numbers
+This function returns a random number from the t-distribution. The
+distribution is,
+@equation
+p(x) dx = @{\Gamma((\nu + 1)/2) \over (\sqrt@{pi \nu@} \Gamma(\nu/2))@}
+   (1 + (x^2)/\nu)^@{-(\nu + 1)/2@} dx
+@end equation
+@noindent
+@end deftypefn
+
+@deftypefn Random double gsl_ran_two_sided_exponential (const gsl_rng * @var{r}, double @var{mu})
+@cindex two-sided exponential random numbers
+@cindex Laplace distribution random numbers
+This function returns a random number from the two-sided exponential
+distribution with width @var{mu}, also known as the Laplace
+distribution. The distribution is,
+@equation
+p(x) dx = @{1 \over 2 \mu@}  \exp(-|x/\mu|) dx
+@end equation
+@noindent
+for @math{-\infty < x < \infty}.
+@end deftypefn
+
+@deftypefn Random double gsl_ran_weibull (const gsl_rng * @var{r}, double @var{a})
+@cindex Weibull distribution random numbers
+This function returns a random number from the Weibull
+distribution. The distribution is,
+@equation
+p(x) dx = a x^@{a-1@} \exp(-x^a) dx
+@end equation
+@noindent
+for @math{-\infty < x < \infty}.
+@end deftypefn
+
+@subsection Discrete distributions
+
+@deftypefn Random {unsigned int} gsl_ran_poisson (const gsl_rng * @var{r}, double @var{mu})
 @cindex Poisson random numbers
 This function returns a random integer from the poisson distribution
 with mean @var{mu}. The probability distribution for poisson random
@@ -972,7 +1061,7 @@ p(n) = @{\mu^n \over n!@} \exp(-\mu)
 for @math{n \ge 0}.
 @end deftypefn
 
-@deftypefn Random unsigned int gsl_ran_binomial (const gsl_rng * @var{r}, double @var{p}, unsigned int @var{t})
+@deftypefn Random {unsigned int} gsl_ran_binomial (const gsl_rng * @var{r}, double @var{p}, unsigned int @var{t})
 @cindex Poisson random numbers
 This function returns a random integer from the binomial distribution,
 the number of successes in @var{t} independent trials with probability
@@ -984,6 +1073,21 @@ p(n) = @{t! \over n! (t-n)! @} p^n (1-p)^@{t-n@}
 @noindent
 for @math{0 \le n \le t}.
 @end deftypefn
+
+@deftypefn Random {unsigned int} gsl_ran_geometric (const gsl_rng * @var{r}, double @var{p})
+@cindex Geometric random numbers
+This function returns a random integer from the geometric distribution,
+the number of independent trials with probability @var{p} until the
+first success. The probability distribution for geometric random numbers
+is,
+@c
+@equation
+p(n) =  p (1-p)^@{n-n1@}
+@end equation
+@noindent
+for @math{n \ge 1}.
+@end deftypefn
+
 
 
 @deftypefn Random void gsl_ran_poisson_array (const gsl_rng * @var{r}, double @var{mu}, int @var{N}, int *@var{p})
