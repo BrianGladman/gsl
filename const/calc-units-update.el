@@ -48,7 +48,7 @@
     ( fsc     "7.297352533e-3"         "Fine structure constant" )
     ( muB     "927.400899e-26 J/T"     "Bohr magneton" )
     ( muN     "5.05078317e-27 J/T"     "Nuclear magneton" )
-    ( mue     "928.476362e-26 J/T"    "Electron magnetic moment" )
+    ( mue     "928.476362e-26 J/T"     "Electron magnetic moment" )
     ( mup     "1.410606633e-26 J/T"    "Proton magnetic moment" )
     ( R0      "8.314472 J/mol/K"       "Molar gas constant" )
     ( V0      "22.710981e-3 m^3/mol"   "Standard volume of ideal gas" )
