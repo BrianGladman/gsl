@@ -19,6 +19,9 @@
 #define       	      	0.69314718055994530942	    /* ln(2) */
 #endif
 
+/* need to determine this stuff at configure time, just use placeholder
+   values for now */
+
 #define GSL_MACH_EPS		1.e-14
 #define GSL_SQRT_MACH_EPS	1.e-7
 
