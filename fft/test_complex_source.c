@@ -54,7 +54,8 @@ void FUNCTION(test_complex,func) (size_t stride, size_t n)
   size_t i ;
   int status ;
 
-  TYPE(gsl_fft_wavetable_complex) * cw ;
+  TYPE(gsl_fft_complex_wavetable) * cw ;
+  TYPE(gsl_fft_complex_workspace) * cwork ;
 
   BASE * complex_data = (BASE *) malloc (2 * n * stride * sizeof (BASE));
   BASE * complex_tmp = (BASE *) malloc (2 * n * stride * sizeof (BASE));
@@ -74,10 +75,17 @@ void FUNCTION(test_complex,func) (size_t stride, size_t n)
   /* Test allocation */
 
   {
-    cw = FUNCTION(gsl_fft_complex,alloc) (n);
-    gsl_test (cw == 0, NAME(gsl_fft_complex) 
+    cw = FUNCTION(gsl_fft_complex_wavetable,alloc) (n);
+    gsl_test (cw == 0, NAME(gsl_fft_complex_wavetable) 
 	      "_alloc, n = %d, stride = %d", n, stride);
   }
+
+  {
+    cwork = FUNCTION(gsl_fft_complex_workspace,alloc) (n);
+    gsl_test (cwork == 0, NAME(gsl_fft_complex_workspace) 
+	      "_alloc, n = %d", n);
+  }
+
 
   /* Test mixed radix fft with noise */
 
@@ -89,7 +97,7 @@ void FUNCTION(test_complex,func) (size_t stride, size_t n)
 	IMAG(complex_tmp,stride,i) = IMAG(complex_data,stride,i) ;
       }
     
-    FUNCTION(gsl_fft_complex,forward) (complex_data, stride, n, cw);
+    FUNCTION(gsl_fft_complex,forward) (complex_data, stride, n, cw, cwork);
 
     for (i = 0 ; i < n ; i++)
       {
@@ -116,7 +124,7 @@ void FUNCTION(test_complex,func) (size_t stride, size_t n)
   /* Test the inverse fft */
 
   {
-    status = FUNCTION(gsl_fft_complex,inverse) (complex_data, stride, n, cw);
+    status = FUNCTION(gsl_fft_complex,inverse) (complex_data, stride, n, cw, cwork);
     status = FUNCTION(compare_complex,results) ("orig", complex_tmp,
 						"fft inverse", complex_data,
 						stride, n, 1e6);
@@ -137,7 +145,7 @@ void FUNCTION(test_complex,func) (size_t stride, size_t n)
   /* Test the backward fft */
 
   {
-    status = FUNCTION(gsl_fft_complex,backward) (fft_complex_tmp, stride, n, cw);
+    status = FUNCTION(gsl_fft_complex,backward) (fft_complex_tmp, stride, n, cw, cwork);
 
     for (i = 0; i < n; i++)
       {
@@ -169,7 +177,7 @@ void FUNCTION(test_complex,func) (size_t stride, size_t n)
   {
     FUNCTION(fft_signal,complex_pulse) (1, n, stride, 1.0, 0.0, complex_data,
 					fft_complex_data);
-    FUNCTION(gsl_fft_complex,forward) (complex_data, stride, n, cw);
+    FUNCTION(gsl_fft_complex,forward) (complex_data, stride, n, cw, cwork);
     status = FUNCTION(compare_complex,results) ("analytic", fft_complex_data,
 						"fft of pulse", complex_data, 
 						stride, n, 1e6);
@@ -184,7 +192,7 @@ void FUNCTION(test_complex,func) (size_t stride, size_t n)
   {
     FUNCTION(fft_signal,complex_constant) (n, stride, 1.0, 0.0, complex_data,
 					   fft_complex_data);
-    FUNCTION(gsl_fft_complex,forward) (complex_data, stride, n, cw);
+    FUNCTION(gsl_fft_complex,forward) (complex_data, stride, n, cw, cwork);
     status = FUNCTION(compare_complex,results) ("analytic", fft_complex_data,
 						"fft of constant", 
 						complex_data,
@@ -201,7 +209,7 @@ void FUNCTION(test_complex,func) (size_t stride, size_t n)
       {
 	FUNCTION(fft_signal,complex_exp) ((int)i, n, stride, 1.0, 0.0, complex_data,
 					  fft_complex_data);
-	FUNCTION(gsl_fft_complex,forward) (complex_data, stride, n, cw);
+	FUNCTION(gsl_fft_complex,forward) (complex_data, stride, n, cw, cwork);
 	status |= FUNCTION(compare_complex,results) ("analytic", 
 						     fft_complex_data,
 						     "fft of exp", 
@@ -212,7 +220,8 @@ void FUNCTION(test_complex,func) (size_t stride, size_t n)
 	      "_forward with signal_exp, n = %d, stride = %d", n, stride);
   }
 
-  FUNCTION(gsl_fft_complex,free) (cw);
+  FUNCTION(gsl_fft_complex_wavetable,free) (cw);
+  FUNCTION(gsl_fft_complex_workspace,free) (cwork);
   
   free (complex_data);
   free (complex_tmp);

@@ -30,8 +30,9 @@ void FUNCTION(test_real,func) (size_t stride, size_t n)
   size_t i ;
   int status ;
 
-  TYPE(gsl_fft_wavetable_real) * rw ;
-  TYPE(gsl_fft_wavetable_halfcomplex) * hcw ;
+  TYPE(gsl_fft_real_wavetable) * rw ;
+  TYPE(gsl_fft_halfcomplex_wavetable) * hcw ;
+  TYPE(gsl_fft_real_workspace) * rwork ;
 
   BASE * real_data = (BASE *) malloc (n * stride * sizeof (BASE));
   BASE * complex_data = (BASE *) malloc (2 * n * stride * sizeof (BASE));
@@ -54,9 +55,13 @@ void FUNCTION(test_real,func) (size_t stride, size_t n)
   
   /* mixed radix real fft */
   
-  rw = FUNCTION(gsl_fft_real,alloc) (n);
-  gsl_test (rw == 0, NAME(gsl_fft_real) 
+  rw = FUNCTION(gsl_fft_real_wavetable,alloc) (n);
+  gsl_test (rw == 0, NAME(gsl_fft_real_wavetable) 
 	    "_alloc, n = %d, stride = %d", n, stride);
+
+  rwork = FUNCTION(gsl_fft_real_workspace,alloc) (n);
+  gsl_test (rwork == 0, NAME(gsl_fft_real_workspace) 
+	    "_alloc, n = %d", n);
     
   FUNCTION(fft_signal,real_noise) (n, stride, complex_data, fft_complex_data);
   memcpy (complex_tmp, complex_data, 2 * n * stride * sizeof (BASE));
@@ -66,7 +71,7 @@ void FUNCTION(test_real,func) (size_t stride, size_t n)
       real_data[i*stride] = REAL(complex_data,stride,i);
     }
   
-  FUNCTION(gsl_fft_real,transform) (real_data, stride, n, rw);
+  FUNCTION(gsl_fft_real,transform) (real_data, stride, n, rw, rwork);
   FUNCTION(gsl_fft_halfcomplex,unpack) (real_data, complex_data, stride, n);
   
   status = FUNCTION(compare_complex,results) ("dft", fft_complex_data,
@@ -77,11 +82,11 @@ void FUNCTION(test_real,func) (size_t stride, size_t n)
   
   /* compute the inverse fft */
 
-  hcw = FUNCTION(gsl_fft_halfcomplex,alloc) (n);
-  gsl_test (hcw == 0, NAME(gsl_fft_halfcomplex) 
+  hcw = FUNCTION(gsl_fft_halfcomplex_wavetable,alloc) (n);
+  gsl_test (hcw == 0, NAME(gsl_fft_halfcomplex_wavetable) 
 	    "_alloc, n = %d, stride = %d", n, stride);
-  
-  status = FUNCTION(gsl_fft_halfcomplex,transform) (real_data, stride, n, hcw);
+
+  status = FUNCTION(gsl_fft_halfcomplex,transform) (real_data, stride, n, hcw, rwork);
   
   for (i = 0; i < n; i++)
     {
@@ -97,8 +102,9 @@ void FUNCTION(test_real,func) (size_t stride, size_t n)
   gsl_test (status, NAME(gsl_fft_halfcomplex) 
 	    " with data from signal_noise, n = %d, stride = %d", n, stride);
 
-  FUNCTION(gsl_fft_real,free) (rw);
-  FUNCTION(gsl_fft_halfcomplex,free) (hcw);
+  FUNCTION(gsl_fft_real_workspace,free) (rwork);
+  FUNCTION(gsl_fft_real_wavetable,free) (rw);
+  FUNCTION(gsl_fft_halfcomplex_wavetable,free) (hcw);
 
   free(real_data) ;
   free(complex_data) ;

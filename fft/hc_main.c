@@ -30,18 +30,20 @@
 int
 FUNCTION(gsl_fft_halfcomplex,backward) (BASE data[], const size_t stride, 
 					const size_t n,
-					const TYPE(gsl_fft_wavetable_halfcomplex) * wavetable)
+					const TYPE(gsl_fft_halfcomplex_wavetable) * wavetable,
+                                        TYPE(gsl_fft_real_workspace) * work)
 {
-  int status = FUNCTION(gsl_fft_halfcomplex,transform) (data, stride, n, wavetable) ;
+  int status = FUNCTION(gsl_fft_halfcomplex,transform) (data, stride, n, wavetable, work) ;
   return status ;
 }
 
 int
 FUNCTION(gsl_fft_halfcomplex,inverse) (BASE data[], const size_t stride, 
 				       const size_t n,
-				       const TYPE(gsl_fft_wavetable_halfcomplex) * wavetable)
+				       const TYPE(gsl_fft_halfcomplex_wavetable) * wavetable,
+                                       TYPE(gsl_fft_real_workspace) * work)
 {
-  int status = FUNCTION(gsl_fft_halfcomplex,transform) (data, stride, n, wavetable);
+  int status = FUNCTION(gsl_fft_halfcomplex,transform) (data, stride, n, wavetable, work);
 
   if (status)
     {
@@ -63,9 +65,10 @@ FUNCTION(gsl_fft_halfcomplex,inverse) (BASE data[], const size_t stride,
 
 int
 FUNCTION(gsl_fft_halfcomplex,transform) (BASE data[], const size_t stride, const size_t n,
-					 const TYPE(gsl_fft_wavetable_halfcomplex) * wavetable)
+					 const TYPE(gsl_fft_halfcomplex_wavetable) * wavetable,
+                                         TYPE(gsl_fft_real_workspace) * work)
 {
-  BASE * scratch = wavetable->scratch;
+  BASE * const scratch = work->scratch;
 
   BASE * in;
   BASE * out;
@@ -95,7 +98,10 @@ FUNCTION(gsl_fft_halfcomplex,transform) (BASE data[], const size_t stride, const
       GSL_ERROR ("wavetable does not match length of data", GSL_EINVAL);
     }
 
-
+  if (n != work->n)
+    {
+      GSL_ERROR ("workspace does not match length of data", GSL_EINVAL);
+    }
 
   nf = wavetable->nf;
   product = 1;

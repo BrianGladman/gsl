@@ -29,7 +29,8 @@
 
 int
 FUNCTION(gsl_fft_real,transform) (BASE data[], const size_t stride, const size_t n,
-				  const TYPE(gsl_fft_wavetable_real) * wavetable)
+				  const TYPE(gsl_fft_real_wavetable) * wavetable,
+                                  TYPE(gsl_fft_real_workspace) * work)
 {
   const size_t nf = wavetable->nf;
 
@@ -39,7 +40,7 @@ FUNCTION(gsl_fft_real,transform) (BASE data[], const size_t stride, const size_t
   size_t tskip;
   size_t product_1;
 
-  BASE *scratch = wavetable->scratch;
+  BASE *const scratch = work->scratch;
   gsl_complex *twiddle1, *twiddle2, *twiddle3, *twiddle4;
 
   size_t state = 0;
@@ -61,6 +62,11 @@ FUNCTION(gsl_fft_real,transform) (BASE data[], const size_t stride, const size_t
   if (n != wavetable->n)
     {
       GSL_ERROR ("wavetable does not match length of data", GSL_EINVAL);
+    }
+
+  if (n != work->n)
+    {
+      GSL_ERROR ("workspace does not match length of data", GSL_EINVAL);
     }
 
   for (i = 0; i < nf; i++)

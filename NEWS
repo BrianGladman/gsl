@@ -1,5 +1,9 @@
 * What was new in gsl-0.9.1:
 
+** The fft function interface has been reorganized, with workspaces
+separate from wavetables to eliminate unnecessary recomputation of
+trigonometric factors.
+
 ** The gsl_interval type has been eliminated and replaced by two double
 arguments for simplicity.
 

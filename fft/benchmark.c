@@ -42,7 +42,7 @@ int
 main (int argc, char *argv[])
 {
   double *data, *fft_data;
-  gsl_fft_wavetable_complex * cw;
+  gsl_fft_complex_wavetable * cw;
   unsigned int i, logn;
   int result;
   int status;
@@ -62,9 +62,10 @@ main (int argc, char *argv[])
       exit (EXIT_FAILURE);
     }
 
-  cw = gsl_fft_wavetable_complex_alloc (n);
-  status = gsl_fft_complex_init (n, cw);
-  status = gsl_fft_complex_generate (n, cw);
+  cw = gsl_fft_complex_wavetable_alloc (n);
+  cwork = gsl_fft_complex_wavetable_workspace_alloc (n);
+  status = gsl_fft_complex_init (n, cw, cwork);
+  status = gsl_fft_complex_generate (n, cw, cwork);
 
   data = (double *) malloc (n * 2 * sizeof (double));
   fft_data = (double *) malloc (n * 2 * sizeof (double));
@@ -84,7 +85,7 @@ main (int argc, char *argv[])
   i = 0;
   do
     {
-      status = gsl_fft_complex_forward (fft_data, 1, n, cw);
+      status = gsl_fft_complex_forward (fft_data, 1, n, cw, cwork);
       i++;
       end = clock ();
     }

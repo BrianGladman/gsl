@@ -21,11 +21,12 @@ int
 FUNCTION(gsl_fft_complex,forward) (TYPE(gsl_complex_packed_array) data, 
 				   const size_t stride, 
 				   const size_t n,
-				   const TYPE(gsl_fft_wavetable_complex) * wavetable)
+				   const TYPE(gsl_fft_complex_wavetable) * wavetable,
+                                   TYPE(gsl_fft_complex_workspace) * work)
 {
   gsl_fft_direction sign = forward;
   int status = FUNCTION(gsl_fft_complex,transform) (data, stride, n, 
-						    wavetable, sign);
+						    wavetable, work, sign);
   return status;
 }
 
@@ -33,11 +34,12 @@ int
 FUNCTION(gsl_fft_complex,backward) (TYPE(gsl_complex_packed_array) data,
 				    const size_t stride, 
 				    const size_t n,
-				    const TYPE(gsl_fft_wavetable_complex) * wavetable)
+				    const TYPE(gsl_fft_complex_wavetable) * wavetable,
+                                    TYPE(gsl_fft_complex_workspace) * work)
 {
   gsl_fft_direction sign = backward;
   int status = FUNCTION(gsl_fft_complex,transform) (data, stride, n, 
-						    wavetable, sign);
+						    wavetable, work, sign);
   return status;
 }
 
@@ -45,11 +47,12 @@ int
 FUNCTION(gsl_fft_complex,inverse) (TYPE(gsl_complex_packed_array) data, 
 				   const size_t stride, 
 				   const size_t n,
-				   const TYPE(gsl_fft_wavetable_complex) * wavetable)
+				   const TYPE(gsl_fft_complex_wavetable) * wavetable,
+                                   TYPE(gsl_fft_complex_workspace) * work)
 {
   gsl_fft_direction sign = backward;
   int status = FUNCTION(gsl_fft_complex,transform) (data, stride, n, 
-						    wavetable, sign);
+						    wavetable, work, sign);
 
   if (status)
     {
@@ -74,7 +77,8 @@ int
 FUNCTION(gsl_fft_complex,transform) (TYPE(gsl_complex_packed_array) data, 
 				     const size_t stride, 
 				     const size_t n,
-				     const TYPE(gsl_fft_wavetable_complex) * wavetable,
+				     const TYPE(gsl_fft_complex_wavetable) * wavetable,
+				     TYPE(gsl_fft_complex_workspace) * work,
 				     const gsl_fft_direction sign)
 {
   const size_t nf = wavetable->nf;
@@ -88,7 +92,7 @@ FUNCTION(gsl_fft_complex,transform) (TYPE(gsl_complex_packed_array) data,
 
   size_t state = 0;
 
-  BASE * const scratch = wavetable->scratch;
+  BASE * const scratch = work->scratch;
 
   BASE * in = data;
   size_t istride = stride;
@@ -111,6 +115,10 @@ FUNCTION(gsl_fft_complex,transform) (TYPE(gsl_complex_packed_array) data,
       GSL_ERROR ("wavetable does not match length of data", GSL_EINVAL);
     }
 
+  if (n != work->n)
+    {
+      GSL_ERROR ("workspace does not match length of data", GSL_EINVAL);
+    }
 
   for (i = 0; i < nf; i++)
     {

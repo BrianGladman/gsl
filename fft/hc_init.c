@@ -17,8 +17,8 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-TYPE(gsl_fft_wavetable_halfcomplex) *
-FUNCTION(gsl_fft_halfcomplex,alloc) (size_t n)
+TYPE(gsl_fft_halfcomplex_wavetable) *
+FUNCTION(gsl_fft_halfcomplex_wavetable,alloc) (size_t n)
 {
   int status;
   size_t i;
@@ -26,30 +26,19 @@ FUNCTION(gsl_fft_halfcomplex,alloc) (size_t n)
   size_t t, product, product_1, q;
   double d_theta;
 
-  TYPE(gsl_fft_wavetable_halfcomplex) * wavetable ;
+  TYPE(gsl_fft_halfcomplex_wavetable) * wavetable ;
 
   if (n == 0)
     {
       GSL_ERROR_VAL ("length n must be positive integer", GSL_EDOM, 0);
     }
 
-  wavetable = (TYPE(gsl_fft_wavetable_halfcomplex) *) 
-    malloc(sizeof(TYPE(gsl_fft_wavetable_halfcomplex)));
+  wavetable = (TYPE(gsl_fft_halfcomplex_wavetable) *) 
+    malloc(sizeof(TYPE(gsl_fft_halfcomplex_wavetable)));
 
   if (wavetable == NULL)
     {
       GSL_ERROR_VAL ("failed to allocate struct", GSL_ENOMEM, 0);
-    }
-
-  wavetable->scratch = (BASE *) malloc (n * sizeof (BASE));
-
-  if (wavetable->scratch == NULL)
-    {
-      /* error in constructor, prevent memory leak */
-
-      free(wavetable) ; 
-
-      GSL_ERROR_VAL ("failed to allocate scratch space", GSL_ENOMEM, 0);
     }
 
   wavetable->trig = (gsl_complex *) malloc (n * sizeof (gsl_complex));
@@ -58,7 +47,6 @@ FUNCTION(gsl_fft_halfcomplex,alloc) (size_t n)
     {
       /* error in constructor, prevent memory leak */
 
-      free(wavetable->scratch) ; 
       free(wavetable) ; 
 
       GSL_ERROR_VAL ("failed to allocate trigonometric lookup table", 
@@ -74,7 +62,6 @@ FUNCTION(gsl_fft_halfcomplex,alloc) (size_t n)
       /* error in constructor, prevent memory leak */
 
       free(wavetable->trig) ; 
-      free(wavetable->scratch) ; 
       free(wavetable) ; 
 
       GSL_ERROR_VAL ("factorization failed", GSL_EFACTOR, 0);
@@ -118,7 +105,6 @@ FUNCTION(gsl_fft_halfcomplex,alloc) (size_t n)
       /* error in constructor, prevent memory leak */
 
       free(wavetable->trig) ; 
-      free(wavetable->scratch) ; 
       free(wavetable) ; 
 
       GSL_ERROR_VAL ("overflowed trigonometric lookup table", GSL_ESANITY, 0);
@@ -129,16 +115,14 @@ FUNCTION(gsl_fft_halfcomplex,alloc) (size_t n)
 
 
 void
-FUNCTION(gsl_fft_halfcomplex,free) (TYPE(gsl_fft_wavetable_halfcomplex) * wavetable)
+FUNCTION(gsl_fft_halfcomplex_wavetable,free) (TYPE(gsl_fft_halfcomplex_wavetable) * wavetable)
 {
 
-  /* release scratch space and trigonometric lookup tables */
-
-  free (wavetable->scratch);
-  wavetable->scratch = NULL;
+  /* release trigonometric lookup tables */
 
   free (wavetable->trig);
   wavetable->trig = NULL;
 
   free (wavetable);
 }
+

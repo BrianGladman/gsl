@@ -47,16 +47,29 @@ typedef struct
     size_t factor[64];
     gsl_complex *twiddle[64];
     gsl_complex *trig;
+  }
+gsl_fft_real_wavetable;
+
+typedef struct
+  {
+    size_t n;
     double *scratch;
   }
-gsl_fft_wavetable_real;
+gsl_fft_real_workspace;
+
+gsl_fft_real_wavetable * gsl_fft_real_wavetable_alloc (size_t n);
+
+void  gsl_fft_real_wavetable_free (gsl_fft_real_wavetable * wavetable);
+
+gsl_fft_real_workspace * gsl_fft_real_workspace_alloc (size_t n);
+
+void  gsl_fft_real_workspace_free (gsl_fft_real_workspace * workspace);
+
 
 int gsl_fft_real_transform (double data[], const size_t stride, const size_t n,
-		  const gsl_fft_wavetable_real * wavetable);
+                            const gsl_fft_real_wavetable * wavetable,
+                            gsl_fft_real_workspace * work);
 
-gsl_fft_wavetable_real * gsl_fft_real_alloc (size_t n);
-
-void  gsl_fft_real_free (gsl_fft_wavetable_real * wavetable);
 
 int gsl_fft_real_unpack (const double real_coefficient[],
 			 double complex_coefficient[],

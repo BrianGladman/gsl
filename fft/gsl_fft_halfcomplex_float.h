@@ -25,6 +25,7 @@
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_complex.h>
 #include <gsl/gsl_fft.h>
+#include <gsl/gsl_fft_real_float.h>
 
 #undef __BEGIN_DECLS
 #undef __END_DECLS
@@ -49,23 +50,26 @@ typedef struct
     size_t factor[64];
     gsl_complex *twiddle[64];
     gsl_complex *trig;
-    float *scratch;
   }
-gsl_fft_wavetable_halfcomplex_float;
+gsl_fft_halfcomplex_wavetable_float;
 
-int gsl_fft_halfcomplex_float_backward (float data[], const size_t stride, const size_t n,
-					const gsl_fft_wavetable_halfcomplex_float * wavetable);
 
-int gsl_fft_halfcomplex_float_inverse (float data[], const size_t stride, const size_t n,
-				       const gsl_fft_wavetable_halfcomplex_float * wavetable);
-
-int gsl_fft_halfcomplex_float_transform (float data[], const size_t stride, const size_t n,
-				   const gsl_fft_wavetable_halfcomplex_float * wavetable);
-
-gsl_fft_wavetable_halfcomplex_float * gsl_fft_halfcomplex_float_alloc (size_t n);
+gsl_fft_halfcomplex_wavetable_float * gsl_fft_halfcomplex_wavetable_float_alloc (size_t n);
 
 void
-gsl_fft_halfcomplex_float_free (gsl_fft_wavetable_halfcomplex_float * wavetable);
+gsl_fft_halfcomplex_wavetable_float_free (gsl_fft_halfcomplex_wavetable_float * wavetable);
+
+int gsl_fft_halfcomplex_float_backward (float data[], const size_t stride, const size_t n,
+					const gsl_fft_halfcomplex_wavetable_float * wavetable,
+                                        gsl_fft_real_workspace_float * work);
+
+int gsl_fft_halfcomplex_float_inverse (float data[], const size_t stride, const size_t n,
+				       const gsl_fft_halfcomplex_wavetable_float * wavetable,
+                                       gsl_fft_real_workspace_float * work);
+
+int gsl_fft_halfcomplex_float_transform (float data[], const size_t stride, const size_t n,
+                                         const gsl_fft_halfcomplex_wavetable_float * wavetable,
+                                         gsl_fft_real_workspace_float * work);
 
 int
 gsl_fft_halfcomplex_float_unpack (const float halfcomplex_coefficient[],

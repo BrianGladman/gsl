@@ -89,37 +89,51 @@ typedef struct
     size_t factor[64];
     gsl_complex *twiddle[64];
     gsl_complex *trig;
-    double *scratch;
   }
-gsl_fft_wavetable_complex;
+gsl_fft_complex_wavetable;
+
+typedef struct
+{
+  size_t n;
+  double *scratch;
+}
+gsl_fft_complex_workspace;
 
 
-gsl_fft_wavetable_complex *gsl_fft_complex_alloc (size_t n);
+gsl_fft_complex_wavetable *gsl_fft_complex_wavetable_alloc (size_t n);
 
-void gsl_fft_complex_free (gsl_fft_wavetable_complex * wavetable);
+void gsl_fft_complex_wavetable_free (gsl_fft_complex_wavetable * wavetable);
 
-int gsl_fft_complex_memcpy (gsl_fft_wavetable_complex * dest,
-                         gsl_fft_wavetable_complex * src);
+gsl_fft_complex_workspace *gsl_fft_complex_workspace_alloc (size_t n);
+
+void gsl_fft_complex_workspace_free (gsl_fft_complex_workspace * workspace);
+
+int gsl_fft_complex_memcpy (gsl_fft_complex_wavetable * dest,
+                            gsl_fft_complex_wavetable * src);
 
 
 int gsl_fft_complex_forward (gsl_complex_packed_array data,
                              const size_t stride,
                              const size_t n,
-                             const gsl_fft_wavetable_complex * wavetable);
+                             const gsl_fft_complex_wavetable * wavetable,
+                             gsl_fft_complex_workspace * work);
 
 int gsl_fft_complex_backward (gsl_complex_packed_array data,
                               const size_t stride,
                               const size_t n,
-                              const gsl_fft_wavetable_complex * wavetable);
+                              const gsl_fft_complex_wavetable * wavetable,
+                              gsl_fft_complex_workspace * work);
 
 int gsl_fft_complex_inverse (gsl_complex_packed_array data,
                              const size_t stride,
                              const size_t n,
-                             const gsl_fft_wavetable_complex * wavetable);
+                             const gsl_fft_complex_wavetable * wavetable,
+                             gsl_fft_complex_workspace * work);
 
 int gsl_fft_complex_transform (gsl_complex_packed_array data,
                                const size_t stride, const size_t n,
-                               const gsl_fft_wavetable_complex * wavetable,
+                               const gsl_fft_complex_wavetable * wavetable,
+                               gsl_fft_complex_workspace * work,
                                const gsl_fft_direction sign);
 
 __END_DECLS
