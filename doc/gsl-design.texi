@@ -641,7 +641,7 @@ SUBROUTINE  RESIZE (X, K, ND, K1)
 where X(K,D) represents a grid to be resized to X(K1,D) you can make
 this more readable by introducing a struct,
 
-@example
+@smallexample
 struct grid @{
     int nd;  /* number of dimensions */
     int k;   /* number of bins */
@@ -653,7 +653,7 @@ resize_grid (struct grid * g, int k_new)
 @{
 ...
 @}
-@end example
+@end smallexample
 
 
 @node Comments, Minimal structs, Object-orientation, Design
@@ -926,7 +926,7 @@ set of objects with unit stride (that are modified or not depending on
 the presence of @code{const}).  For vectors, where the stride is not
 required to be unity, the pointer form is preferred.
 
-@example
+@smallexample
 /* real value, set on output */
 int foo (double * x);                           
 
@@ -941,7 +941,7 @@ int bar (double x[], size_t n);
 
 /* real array, not modified */
 int baz (const double x[], size_t n);           
-@end example
+@end smallexample
 
 @node  Pointers, Constness, Arrays vs Pointers, Design
 @section Pointers

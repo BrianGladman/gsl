@@ -727,13 +727,13 @@ with @var{nu} degrees of freedom. The distribution function is,
 @tex
 \beforedisplay
 $$
-p(x) dx = {1 \over \Gamma(\nu/2) } (x/2)^{\nu/2 - 1} \exp(-x/2) dx
+p(x) dx = {1 \over 2 \Gamma(\nu/2) } (x/2)^{\nu/2 - 1} \exp(-x/2) dx
 $$
 \afterdisplay
 @end tex
 @ifinfo
 @example
-p(x) dx = @{1 \over \Gamma(\nu/2) @} (x/2)^@{\nu/2 - 1@} \exp(-x/2) dx
+p(x) dx = @{1 \over 2 \Gamma(\nu/2) @} (x/2)^@{\nu/2 - 1@} \exp(-x/2) dx
 @end example
 @end ifinfo
 

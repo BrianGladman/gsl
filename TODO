@@ -32,6 +32,8 @@ reproducible, and that all relevant information is supplied)
 
 * Complex Bessel Functions
 
+* Incomplete gamma functions 6.5.2 or 6.5.3 in Abramowitz & Stegun
+
 * Additional volunteers with access to a good library to get copies of
 papers for other developers.
 
