@@ -139,7 +139,7 @@ bench_rand_LDADD=         rand.o rand-gen.o
 ## I'm deliberately trying to avoid having the casual user
 ## build sources.  If you want to build THE_BUILT_SOURCESS
 ## then run the program './makesrc'
-THE_BUILT_SOURCES= taus.h taus-state.c taus-gen.c mrg.h mrg-state.c mrg-gen.c cmrg.h cmrg-state.c cmrg-gen.c uni.h uni-state.c uni-gen.c uni32.h uni32-state.c uni32-gen.c zuf.h zuf-state.c zuf-gen.c rand.h rand-state.c rand-gen.c gsl_ran_switch.h switch.c
+## THE_BUILT_SOURCES= taus.h taus-state.c taus-gen.c mrg.h mrg-state.c mrg-gen.c cmrg.h cmrg-state.c cmrg-gen.c uni.h uni-state.c uni-gen.c uni32.h uni32-state.c uni32-gen.c zuf.h zuf-state.c zuf-gen.c rand.h rand-state.c rand-gen.c gsl_ran_switch.h switch.c
 ## If you need to build these sources, use the 'makesrc' script
 taus.h taus-state.c taus-gen.c: makesrc
 	./makesrc taus
