@@ -104,7 +104,7 @@ Astrophysics and Radiation Measurements Group, Los Alamos National Laboratory @*
 @sp 1
 
 @author Brian Gough 
-Network Theory Limited, UK @*
+Network Theory Limited @*
 @email{bjg@@network-theory.co.uk}
 @sp 1
 
