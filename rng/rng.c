@@ -121,10 +121,13 @@ double
 gsl_rng_uniform_pos (const gsl_rng * r)
 {
   unsigned long int max = r->max;
-  unsigned long int k = (r->get) (r->state);
+  unsigned long int k;
 
-  while (k == 0) 
-    k = (r->get) (r->state);
+  do 
+    {
+      k = (r->get) (r->state);
+    }
+  while (k == 0) ;
 
   return k / ((double) max);
 }
