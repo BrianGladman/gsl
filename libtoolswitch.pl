@@ -19,7 +19,7 @@ if ($switch eq 'on') {
 	s/^\#AM_PROG_LIBTOOL/AM_PROG_LIBTOOL/ ;
 	print ;
     }
-} else {
+} elsif ($switch eq 'off') {
     print "switching libtool off...\n" ;
     while (<>) {
 	s/lib_LTLIBRARIES/lib_LIBRARIES/g ;
@@ -32,5 +32,14 @@ if ($switch eq 'on') {
 	s/^AM_PROG_LIBTOOL/\#AM_PROG_LIBTOOL/ ;
 	print ;
     }
-}    
+} else {
+    print <<EOF ;
+libtoolswitch.pl [on|off]
+
+Use this command in the top-level directory of gsl
+It modifies the following files to use libtool or non-libtool style macros:
+
+EOF
+    print join(", ",@files),"\n" ;
+}
 
