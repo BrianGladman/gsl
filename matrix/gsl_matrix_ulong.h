@@ -114,6 +114,13 @@ void gsl_matrix_ulong_minmax_index (const gsl_matrix_ulong * m, size_t * imin, s
 
 int gsl_matrix_ulong_isnull (const gsl_matrix_ulong * m);
 
+int gsl_matrix_ulong_add (gsl_matrix_ulong * a, const gsl_matrix_ulong * b);
+int gsl_matrix_ulong_sub (gsl_matrix_ulong * a, const gsl_matrix_ulong * b);
+int gsl_matrix_ulong_mul_elements (gsl_matrix_ulong * a, const gsl_matrix_ulong * b);
+int gsl_matrix_ulong_div_elements (gsl_matrix_ulong * a, const gsl_matrix_ulong * b);
+int gsl_matrix_ulong_scale (gsl_matrix_ulong * a, const double x);
+int gsl_matrix_ulong_add_constant (gsl_matrix_ulong * a, const double x);
+
 /***********************************************************************/
 /* The functions below are obsolete                                    */
 /***********************************************************************/

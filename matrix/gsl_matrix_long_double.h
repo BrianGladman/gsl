@@ -114,6 +114,13 @@ void gsl_matrix_long_double_minmax_index (const gsl_matrix_long_double * m, size
 
 int gsl_matrix_long_double_isnull (const gsl_matrix_long_double * m);
 
+int gsl_matrix_long_double_add (gsl_matrix_long_double * a, const gsl_matrix_long_double * b);
+int gsl_matrix_long_double_sub (gsl_matrix_long_double * a, const gsl_matrix_long_double * b);
+int gsl_matrix_long_double_mul_elements (gsl_matrix_long_double * a, const gsl_matrix_long_double * b);
+int gsl_matrix_long_double_div_elements (gsl_matrix_long_double * a, const gsl_matrix_long_double * b);
+int gsl_matrix_long_double_scale (gsl_matrix_long_double * a, const double x);
+int gsl_matrix_long_double_add_constant (gsl_matrix_long_double * a, const double x);
+
 /***********************************************************************/
 /* The functions below are obsolete                                    */
 /***********************************************************************/

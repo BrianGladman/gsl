@@ -1,3 +1,7 @@
+Thu May  4 20:58:59 2000  Brian Gough  <bjg@network-theory.co.uk>
+
+	* oper.c: added simple arithmetic operations (+,-,*,/,scale,+const)
+
 Wed Apr 26 15:04:22 2000  Brian Gough  <bjg@network-theory.co.uk>
 
 	* prop_source.c (FUNCTION): added function gsl_matrix_isnull

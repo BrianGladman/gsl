@@ -114,6 +114,13 @@ void gsl_matrix_ushort_minmax_index (const gsl_matrix_ushort * m, size_t * imin,
 
 int gsl_matrix_ushort_isnull (const gsl_matrix_ushort * m);
 
+int gsl_matrix_ushort_add (gsl_matrix_ushort * a, const gsl_matrix_ushort * b);
+int gsl_matrix_ushort_sub (gsl_matrix_ushort * a, const gsl_matrix_ushort * b);
+int gsl_matrix_ushort_mul_elements (gsl_matrix_ushort * a, const gsl_matrix_ushort * b);
+int gsl_matrix_ushort_div_elements (gsl_matrix_ushort * a, const gsl_matrix_ushort * b);
+int gsl_matrix_ushort_scale (gsl_matrix_ushort * a, const double x);
+int gsl_matrix_ushort_add_constant (gsl_matrix_ushort * a, const double x);
+
 /***********************************************************************/
 /* The functions below are obsolete                                    */
 /***********************************************************************/

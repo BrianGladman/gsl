@@ -114,6 +114,13 @@ void gsl_matrix_int_minmax_index (const gsl_matrix_int * m, size_t * imin, size_
 
 int gsl_matrix_int_isnull (const gsl_matrix_int * m);
 
+int gsl_matrix_int_add (gsl_matrix_int * a, const gsl_matrix_int * b);
+int gsl_matrix_int_sub (gsl_matrix_int * a, const gsl_matrix_int * b);
+int gsl_matrix_int_mul_elements (gsl_matrix_int * a, const gsl_matrix_int * b);
+int gsl_matrix_int_div_elements (gsl_matrix_int * a, const gsl_matrix_int * b);
+int gsl_matrix_int_scale (gsl_matrix_int * a, const double x);
+int gsl_matrix_int_add_constant (gsl_matrix_int * a, const double x);
+
 /***********************************************************************/
 /* The functions below are obsolete                                    */
 /***********************************************************************/

@@ -66,8 +66,6 @@ one for Debian, as Octave, Gnuplot etc are in that)
 
 * Check that there are no conflicts when linking with Lapack. CBLAS, ATLAS
 
-* Add GPL copyright notices for each file
-
 * Make a sorted datatype for the median and quantile functions so that
 the user can be prevented from passing unsorted data, which is not
 checked for.
