@@ -30,5 +30,33 @@ void gsl_ieee_printf_double (const double * x) ;
 void gsl_ieee_float_to_rep (const float * x, gsl_ieee_float_rep * r) ;
 void gsl_ieee_double_to_rep (const double * x, gsl_ieee_double_rep * r) ;
 
+enum {
+  GSL_IEEE_SINGLE_PRECISION = 1,
+  GSL_IEEE_DOUBLE_PRECISION = 2,
+  GSL_IEEE_EXTENDED_PRECISION = 3
+} ;
+
+enum {
+  GSL_IEEE_ROUND_TO_NEAREST = 1,
+  GSL_IEEE_ROUND_DOWN = 2,
+  GSL_IEEE_ROUND_UP = 3,
+  GSL_IEEE_ROUND_TO_ZERO = 4
+} ;
+
+enum {
+  GSL_IEEE_MASK_INVALID_OPERAND = 1,
+  GSL_IEEE_MASK_DENORMALIZED_OPERAND = 2,
+  GSL_IEEE_MASK_DIVISION_BY_ZERO = 3,
+  GSL_IEEE_MASK_OVERFLOW = 4,
+  GSL_IEEE_MASK_UNDERFLOW = 5,
+  GSL_IEEE_MASK_INEXACT = 6
+} ;
+
+int gsl_ieee_set_mode (const char * description) ;
+
+void gsl_ieee_set_precision (int precision_mode) ;
+void gsl_ieee_set_rounding_mode (int rounding_mode) ;
+void gsl_ieee_set_exception_mask (int exception_mask) ;
+
 #endif /* GSL_IEEE_UTILS_H */
 

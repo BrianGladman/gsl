@@ -19,8 +19,7 @@ gsl_integration_qagse (double (*f)(double x),
 				       result, abserr, last, &nqeval, 
 				       integration_rule) ;
 
-  /* convert from number of quadrature rule evaluations to number of
-     function evaluations */
+  /* convert from quadrature rule evaluations to function evaluations */
 
   *neval = 21 * nqeval ;
 

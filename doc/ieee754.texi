@@ -50,6 +50,31 @@ promoted float =  1.0101010101010101010101100000000000000000000000000000*2^-2
 To use these numbers in Calc, precede them by @code{2#} to indicate binary.
 In @code{bc}, work with the mantissa separately from the exponent.
 
+float vs double vs long double (how many digits are available for each)
+
+importance of using 1.234L in long double calculations
+
+int main (void)
+{
+  long double x = 1.0, y = 1.0 ;
+  
+  x = x + 0.2 ;
+  y = y + 0.2L ;
+
+  printf(" d %.20Lf\n",x) ;
+  printf("ld %.20Lf\n",y) ;
+
+  return 1;
+}
+
+ d 1.20000000000000001110
+ld 1.20000000000000000004
 
 
 
+control of rounding mode, precision, exception masks.
+
+    sqrt(2) = 1.414213562373095048801688724209698078569671...
+long double   1.4142135623730950488
+     double   1.414213562373095
+      float   1.4142135

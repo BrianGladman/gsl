@@ -52,7 +52,7 @@ gsl_integration_qagse_impl (double (*f) (double x),
       *nqeval = 0;
       GSL_ERROR ("tolerance cannot be acheived with given epsabs and epsrel",
 		 GSL_EBADTOL);
-    };
+    }
 
   /* Perform the first integration */
 
@@ -247,7 +247,7 @@ gsl_integration_qagse_impl (double (*f) (double x),
       if (disallow_extrapolation)
 	{
 	  continue;
-	};
+	}
 
       error_over_large_intervals += -last_maxerr_value;
 
@@ -354,24 +354,31 @@ gsl_integration_qagse_impl (double (*f) (double x),
 
   if (*abserr == DBL_MAX)
     goto compute_result;
+
   if (error_type == 0 && error_type2 == 0)
     goto test_divergence;
+
   if (error_type2)
     {
       *abserr += correc;
     }
+
   if (error_type == 0)
     error_type = 3;
+
   if (result != 0 && area != 0)
     goto check_error;
+
   if (*abserr > errsum)
     goto compute_result;
+
   if (area == 0)
     goto fixmefixme;
 
   goto test_divergence;
 
 check_error:
+
   if (*abserr / fabs (*result) > errsum / fabs (area))
     goto compute_result;
 
