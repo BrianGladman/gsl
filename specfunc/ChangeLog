@@ -1,7 +1,7 @@
 Tue Jan  8 14:31:04 2002  Brian Gough  <bjg@network-theory.co.uk>
 
-	* test_legendre.c (test_legendre): increased tolerance by one level
- 	on _array tests
+	* test_legendre.c (test_legendre): increased tolerance by one
+ 	level on _array tests
 
 	* hyperg_1F1.c (hyperg_1F1_small_a_bgt0): fix branch for a==1
 

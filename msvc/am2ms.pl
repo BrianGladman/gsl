@@ -6,7 +6,7 @@ $target = shift @ARGV;
 
 @confs = ("Release", "Debug");
 
-if ($target eq 'GSLLIB') {
+if ($target eq 'GSLLIBML') {
     $begin_project_lib = \&begin_project_static_lib;
     @options = ("Release", "/ML", "Debug", "/MLd");
 } elsif ($target eq 'GSLLIBMT') {

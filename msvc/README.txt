@@ -32,22 +32,30 @@ mail to Mark Galassi -- rosalia@lanl.gov
 Using GSL with Microsoft Visual C++ 6.0
 =======================================
 
+The following sections describe how to compile an application with
+GSL using Microsoft Visual C++.
+
 By default the GSL libraries and header files are installed in the
 following locations,
 
     C:\Program Files\GSL\include\gsl  - header files
     C:\Program Files\GSL\lib          - lib files
+    C:\Windows\System                 - DLL files
 
-The "Release" and "Debug" versions of the libraries are installed in
-the lib directory as follows,
+The "Release" versions of the libraries are installed in the lib
+directory as follows,
 
-    libgsl.lib,    libgslcblas.lib    - Release (single-threaded)
-    libgsld.lib,   libgslcblasd.lib   - Debug   (single-threaded)
-    libgslMT.lib,  libgslcblasMT.lib  - Release (multi-threaded)
-    libgslMTd.lib, libgslcblasMTd.lib - Debug   (multi-threaded)
+    libgsl.lib,    libgslcblas.lib    - Release (DLL)
+    libgslML.lib,  libgslcblasML.lib  - Release (single-threaded)
+    libgslMT.lib,  libgslcblasMT.lib  - Release (multi-threaded /MT)
+    libgslMD.lib,  libgslcblasMD.lib  - Release (multi-threaded /MD)
 
-The debug versions have 'd' at the end of the library name, and the
-multi-threaded versions have 'MT' in the library name.
+If you need Debug versions of the library you can build them by
+compiling the *.dsw project workspace files in the top-level src/
+directory.
+
+Compiling an Application
+========================
 
 To compile an application you will need to specify locations of the
 GSL include files and libraries.  The installation program will add
@@ -77,13 +85,14 @@ libraries for each project,
     Project Settings -- Link
         Category: Input
           Object/Library Modules: 
-             libgsl.lib libgslcblas.lib ... for the release configuration
-          or libgsld.lib libgslcblasd.lib ... for the debug configuration
+             libgsl.lib libgslcblas.lib ... for the release DLL configuration
           or libgslMT.lib libgslcblasMT.lib ... (as above, multi-threaded)
-          or libgslMTd.lib libgslcblasMTd.lib ... 
 
 Make sure that the Object/Library module settings are made for all the
 appropriate configurations (either 'Release' or 'Debug').
+
+If you are using the DLL you will need to set a preprocessor
+definition for GSL_IMPORTS to import the DLL functions correctly.
 
 If you want to use the inline functions from GSL, you should also add
 the proprocessor definitions HAVE_INLINE,inline=__inline.  The inline
@@ -108,12 +117,18 @@ Extensions' option turns on the strictest IEEE arithmetic behavior,
 which slows down the program significantly.  For most programs this is
 not required and can be turned off with /Op-.
 
-The single-threaded libraries are built with the /ML or /MLd option.
-This is compatible with the default link option /ML for
-single-threaded applications.  To use GSL in a multi-threaded
+Single-Threaded vs Multi-Threaded Libraries
+===========================================
+
+The single-threaded libraries are built with the /ML option.  This is
+compatible with the default link option /ML for single-threaded
+applications in Microsoft Visual C++.  To use GSL in a multi-threaded
 application you will need to use the multi-threaded versions of the
-library and compile your code with either /MT or /MTd (for debugging).
-See the Microsoft Visual C++ Manual for details on link options.
+library and compile your code with either /MT or /MD.  See the
+Microsoft Visual C++ Manual for details on link options.
+
+Acknowledgements
+================
 
 The initial scripts to generate the Visual Studio project files for
 GSL were provided by José Miguel Buenaposada (jmbuena@dia.fi.upm.es)

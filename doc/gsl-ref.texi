@@ -257,7 +257,7 @@ This manual documents the use of the GNU Scientific Library, a numerical
 library for C and C++ programmers.
 
 The GNU Scientific Library is @dfn{free software}.  The term "free
-software" is sometimes misunderstood--it has nothing to do with
+software" is sometimes misunderstood---it has nothing to do with
 price. It is about freedom.  It refers to your freedom to run, copy,
 distribute, study, change and improve the software.  With the GNU
 Scientific Library you have all these freedoms.

@@ -427,7 +427,7 @@ The handling of these conditions is under user control.  The functions
 below allow the user to test the precision of the current result in
 several standard ways.
 
-@deftypefun int gsl_root_test_interval (double @var{x_lower}, double @var{x_upper}, double @var{epsrel}, double @var{epsabs})
+@deftypefun int gsl_root_test_interval (double @var{x_lower}, double @var{x_upper}, double @var{epsabs}, double @var{epsrel})
 This function tests for the convergence of the interval [@var{x_lower},
 @var{x_upper}] with absolute error @var{epsabs} and relative error
 @var{epsrel}.  The test returns @code{GSL_SUCCESS} if the following

@@ -20,14 +20,14 @@ The Visual C++ options that need to be present are,
 With these settings you should be able to compile and link the program
 main.c in this directory.
 
-You can choose from four project configurations, 'Release',
-'Debug', 'ReleaseMT' and 'DebugMT'. 
+You can choose from four project configurations, 'ReleaseML',
+'ReleaseMT', 'ReleaseMD' and 'ReleaseDLL'.  If you want to use the
+Debug configurations you'll need to recompile the library with
+debugging switched on.
 
-The Release project configuration links with the optimised libraries
-libgsl.lib and libgslcblas.lib.  The Debug configuration links with
-libgsld.lib and libgslcblasd.lib.  The MT configurations link with the
-corresponding multi-threaded libraries libgslMT.lib and
-libgslcblasMT.lib, or libgslMTd.lib and libgslcblasMTd.lib.
+To run the program compiled with 'ReleaseDLL' option you will need to
+copy the dll files libgsl.dll and libgslcblas.dll into the same
+directory as the executable.
 
 The output from the program should be the same as using GSL on Unix,
 
@@ -39,4 +39,3 @@ The output from the program should be the same as using GSL on Unix,
     x: 1 2 3 4 5  y: 5.5 4.4 3.3 2.2 1.1  a x + y: 6.5 6.4 6.3 6.2 6.1
 
 If you see the same output, congratulations -- the library is working.
-

@@ -34,18 +34,27 @@ Source: "..\gsl\*.*"; DestDir: "{app}\include\gsl";
 ;; Comment these lines out if not shipping source
 Source: "..\*.dsp"; DestDir: "{app}\src"; Flags: recursesubdirs;
 Source: "..\*.dsw"; DestDir: "{app}\src"; Flags: recursesubdirs;
+Source: "..\*.bat"; DestDir: "{app}\src"; Flags: recursesubdirs;
 Source: "..\*.h"; DestDir: "{app}\src"; Flags: recursesubdirs;
 Source: "..\*.c"; DestDir: "{app}\src"; Flags: recursesubdirs;
 ;
-Source: "Release\libgsl.lib"; DestDir: "{app}\lib";
-Source: "Release\libgslcblas.lib"; DestDir: "{app}\lib"; 
-Source: "ReleaseMT\libgsl.lib"; DestDir: "{app}\lib"; DestName: "libgslMT.lib"
-Source: "ReleaseMT\libgslcblas.lib"; DestDir: "{app}\lib"; DestName: "libgslcblasMT.lib";
+Source: "..\GSLDLL\Release\libgsl.dll"; DestDir: "{sys}"; DestName: "libgsl.dll"
+Source: "..\GSLDLL\Release\libgslcblas.dll"; DestDir: "{sys}"; DestName: "libgslcblas.dll";
+Source: "..\GSLDLL\Release\libgsl.exp"; DestDir: "{app}\lib"; DestName: "libgsl.exp"
+Source: "..\GSLDLL\Release\libgslcblas.exp"; DestDir: "{app}\lib"; DestName: "libgslcblas.exp";
+Source: "..\GSLDLL\Release\libgsl.lib"; DestDir: "{app}\lib"; DestName: "libgsl.lib"
+Source: "..\GSLDLL\Release\libgslcblas.lib"; DestDir: "{app}\lib"; DestName: "libgslcblas.lib";
+Source: "..\GSLLIBML\Release\libgsl.lib"; DestDir: "{app}\lib"; DestName: "libgslML.lib"
+Source: "..\GSLLIBML\Release\libgslcblas.lib"; DestDir: "{app}\lib"; DestName: "libgslcblasML.lib";
+Source: "..\GSLLIBMT\Release\libgsl.lib"; DestDir: "{app}\lib"; DestName: "libgslMT.lib"
+Source: "..\GSLLIBMT\Release\libgslcblas.lib"; DestDir: "{app}\lib"; DestName: "libgslcblasMT.lib";
+Source: "..\GSLLIBMD\Release\libgsl.lib"; DestDir: "{app}\lib"; DestName: "libgslMD.lib"
+Source: "..\GSLLIBMD\Release\libgslcblas.lib"; DestDir: "{app}\lib"; DestName: "libgslcblasMD.lib";
 
-Source: "Debug\libgsl.lib"; DestDir: "{app}\lib";  DestName: "libgsld.lib"
-Source: "Debug\libgslcblas.lib"; DestDir: "{app}\lib"; DestName: "libgslcblasd.lib";
-Source: "DebugMT\libgsl.lib"; DestDir: "{app}\lib";  DestName: "libgslMTd.lib"
-Source: "DebugMT\libgslcblas.lib"; DestDir: "{app}\lib"; DestName: "libgslcblasMTd.lib";
+;;Source: "Debug\libgsl.lib"; DestDir: "{app}\lib";  DestName: "libgsld.lib"
+;;Source: "Debug\libgslcblas.lib"; DestDir: "{app}\lib"; DestName: "libgslcblasd.lib";
+;;Source: "DebugMT\libgsl.lib"; DestDir: "{app}\lib";  DestName: "libgslMTd.lib"
+;;Source: "DebugMT\libgslcblas.lib"; DestDir: "{app}\lib"; DestName: "libgslcblasMTd.lib";
 
 Source: "..\doc\html\*.chm"; DestDir: "{app}\doc"; 
 

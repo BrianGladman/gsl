@@ -120,3 +120,7 @@
 #else
 #define DISCARD_POINTER(p) /* ignoring discarded pointer */
 #endif
+
+#ifndef RANGE_CHECK_ON
+#define RANGE_CHECK_OFF  /* turn of range checking by default */
+#endif
