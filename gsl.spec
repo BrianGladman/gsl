@@ -39,25 +39,26 @@ cd %{name}-%{version}; make install prefix=%{mybuildroot}/usr
 %postun
 
 %files
-%doc NEWS ChangeLog KNOWN-PROBLEMS MACHINES README AUTHORS THANKS
-%doc /usr/info/gsl-ref.info
-%doc /usr/info/gsl-ref.info-1
-%doc /usr/info/gsl-ref.info-2
-%doc /usr/info/gsl-ref.info-3
-%doc /usr/info/gsl-ref.info-4
-%doc /usr/info/gsl-ref.info-5
-%doc /usr/info/gsl-ref.info-6
-%doc /usr/info/gsl-ref.info-7
-%doc /usr/info/gsl-ref.info-8
-%doc /usr/info/gsl-ref.info-9
-%doc /usr/info/gsl-ref.info-10
-%doc /usr/info/gsl-ref.info-11
-%doc /usr/info/gsl-ref.info-12
-%doc /usr/info/gsl-ref.info-13
-%doc /usr/info/gsl-ref.info-14
-%doc /usr/info/gsl-ref.info-15
-%doc /usr/info/gsl-ref.info-16
-%doc /usr/info/gsl-ref.info-17
+%doc %{name}-%{version}/{NEWS,ChangeLog,KNOWN-PROBLEMS,MACHINES,README,AUTHORS,THANKS}
+%doc /usr/info/gsl-ref*
+#%doc /usr/info/gsl-ref.info
+#%doc /usr/info/gsl-ref.info-1
+#%doc /usr/info/gsl-ref.info-2
+#%doc /usr/info/gsl-ref.info-3
+#%doc /usr/info/gsl-ref.info-4
+#%doc /usr/info/gsl-ref.info-5
+#%doc /usr/info/gsl-ref.info-6
+#%doc /usr/info/gsl-ref.info-7
+#%doc /usr/info/gsl-ref.info-8
+#%doc /usr/info/gsl-ref.info-9
+#%doc /usr/info/gsl-ref.info-10
+#%doc /usr/info/gsl-ref.info-11
+#%doc /usr/info/gsl-ref.info-12
+#%doc /usr/info/gsl-ref.info-13
+#%doc /usr/info/gsl-ref.info-14
+#%doc /usr/info/gsl-ref.info-15
+#%doc /usr/info/gsl-ref.info-16
+#%doc /usr/info/gsl-ref.info-17
 /usr/bin/gsl-config
 /usr/bin/gsl-histogram
 /usr/bin/gsl-randist
