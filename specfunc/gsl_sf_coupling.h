@@ -1,6 +1,6 @@
 /* specfunc/gsl_sf_coupling.h
  * 
- * Copyright (C) 1996, 1997, 1998, 1999, 2000 Gerard Jungman
+ * Copyright (C) 1996, 1997, 1998, 1999, 2000, 2001, 2002 Gerard Jungman
  * 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -57,12 +57,28 @@ double gsl_sf_coupling_3j(int two_ja, int two_jb, int two_jc,
  * exceptions: GSL_EDOM, GSL_EOVRFLW
  */
 int gsl_sf_coupling_6j_e(int two_ja, int two_jb, int two_jc,
-                            int two_jd, int two_je, int two_jf,
-			    gsl_sf_result * result
-			    );
+                         int two_jd, int two_je, int two_jf,
+                         gsl_sf_result * result
+                         );
 double gsl_sf_coupling_6j(int two_ja, int two_jb, int two_jc,
                           int two_jd, int two_je, int two_jf
                           );
+
+
+/* Racah W coefficients:
+ *
+ *   W(a b c d; e f) = (-1)^{a+b+c+d} / a b e \
+ *                                    \ d c f /
+ *
+ * exceptions: GSL_EDOM, GSL_EOVRFLW
+ */
+int gsl_sf_coupling_RacahW_e(int two_ja, int two_jb, int two_jc,
+                             int two_jd, int two_je, int two_jf,
+                             gsl_sf_result * result
+                             );
+double gsl_sf_coupling_RacahW(int two_ja, int two_jb, int two_jc,
+                              int two_jd, int two_je, int two_jf
+                              );
 
 
 /* 9j Symbols:  / ja jb jc \
@@ -72,14 +88,36 @@ double gsl_sf_coupling_6j(int two_ja, int two_jb, int two_jc,
  * exceptions: GSL_EDOM, GSL_EOVRFLW
  */
 int gsl_sf_coupling_9j_e(int two_ja, int two_jb, int two_jc,
-                            int two_jd, int two_je, int two_jf,
-			    int two_jg, int two_jh, int two_ji,
-			    gsl_sf_result * result
-			    );
+                         int two_jd, int two_je, int two_jf,
+                         int two_jg, int two_jh, int two_ji,
+                         gsl_sf_result * result
+                         );
 double gsl_sf_coupling_9j(int two_ja, int two_jb, int two_jc,
                           int two_jd, int two_je, int two_jf,
                           int two_jg, int two_jh, int two_ji
                           );
+
+
+/*
+ * INCORRECT version of 6j Symbols:
+ * This function actually calculates
+ *              / ja jb je \
+ *              \ jd jc jf /
+ * It represents the original implementation,
+ * which had the above permutation of the
+ * arguments. This was wrong and confusing,
+ * and I had to fix it. Sorry for the trouble.
+ * [GJ] Tue Nov 26 12:53:39 MST 2002
+ *
+ * exceptions: GSL_EDOM, GSL_EOVRFLW
+ */
+int gsl_sf_coupling_6j_INCORRECT_e(int two_ja, int two_jb, int two_jc,
+                                   int two_jd, int two_je, int two_jf,
+                                   gsl_sf_result * result
+                                   );
+double gsl_sf_coupling_INCORRECT_6j(int two_ja, int two_jb, int two_jc,
+                                    int two_jd, int two_je, int two_jf
+                                    );
 
 
 __END_DECLS

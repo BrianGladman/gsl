@@ -1,6 +1,6 @@
 /* specfunc/test_sf.c
  * 
- * Copyright (C) 1996, 1997, 1998, 1999, 2000, 2001 Gerard Jungman
+ * Copyright (C) 1996, 1997, 1998, 1999, 2000, 2001, 2002 Gerard Jungman
  * 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -296,7 +296,6 @@ int test_coupling(void)
   TEST_SF(s, gsl_sf_coupling_3j_e, (0, 1, 1, 0, 1, -1, &r), sqrt(1.0/2.0), TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_coupling_3j_e, (1, 1, 2, 1, -1, 0, &r), sqrt(1.0/6.0), TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_coupling_3j_e, (2, 4, 6, 0, 2, -2, &r), sqrt(8.0/105.0), TEST_TOL0, GSL_SUCCESS);
-
 
   TEST_SF(s, gsl_sf_coupling_6j_e, (2, 2, 4, 2, 2, 2, &r), 1.0/6.0, TEST_TOL0, GSL_SUCCESS);
 

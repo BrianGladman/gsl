@@ -1,6 +1,6 @@
 /* specfunc/coupling.c
  * 
- * Copyright (C) 1996, 1997, 1998, 1999, 2000 Gerard Jungman
+ * Copyright (C) 1996, 1997, 1998, 1999, 2000, 2001, 2002 Gerard Jungman
  * 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -89,13 +89,14 @@ int
 m_selection_fails(int two_ja, int two_jb, int two_jc,
                   int two_ma, int two_mb, int two_mc)
 {
-  return (   abs(two_ma) > two_ja 
-          || abs(two_mb) > two_jb
-	  || abs(two_mc) > two_jc
-	  || GSL_IS_ODD(two_ja + two_ma)
-	  || GSL_IS_ODD(two_jb + two_mb)
-	  || GSL_IS_ODD(two_jc + two_mc)
-          || (two_ma + two_mb + two_mc) != 0
+  return (
+         abs(two_ma) > two_ja 
+      || abs(two_mb) > two_jb
+      || abs(two_mc) > two_jc
+      || GSL_IS_ODD(two_ja + two_ma)
+      || GSL_IS_ODD(two_jb + two_mb)
+      || GSL_IS_ODD(two_jc + two_mc)
+      || (two_ma + two_mb + two_mc) != 0
 	  );
 }
 
@@ -104,8 +105,8 @@ m_selection_fails(int two_ja, int two_jb, int two_jc,
 
 int
 gsl_sf_coupling_3j_e(int two_ja, int two_jb, int two_jc,
-                        int two_ma, int two_mb, int two_mc,
-			gsl_sf_result * result)
+                     int two_ma, int two_mb, int two_mc,
+                     gsl_sf_result * result)
 {
   /* CHECK_POINTER(result) */
 
@@ -196,9 +197,9 @@ gsl_sf_coupling_3j_e(int two_ja, int two_jb, int two_jc,
 
 
 int
-gsl_sf_coupling_6j_e(int two_ja, int two_jb, int two_jc,
-                        int two_jd, int two_je, int two_jf,
-			gsl_sf_result * result)
+gsl_sf_coupling_6j_INCORRECT_e(int two_ja, int two_jb, int two_jc,
+                               int two_jd, int two_je, int two_jf,
+                               gsl_sf_result * result)
 {
   /* CHECK_POINTER(result) */
 
@@ -247,7 +248,7 @@ gsl_sf_coupling_6j_e(int two_ja, int two_jb, int two_jc,
 
     phase = GSL_IS_ODD((two_ja + two_jb + two_jc + two_jd + tkmin)/2)
             ? -1.0
-	    :  1.0;
+            :  1.0;
 
     for(tk=tkmin; tk<=tkmax; tk += 2) {
       double term;
@@ -255,7 +256,7 @@ gsl_sf_coupling_6j_e(int two_ja, int two_jb, int two_jc,
       gsl_sf_result den_1, den_2;
       gsl_sf_result d1_a, d1_b;
       status = 0;
-      
+
       status += gsl_sf_fact_e((two_ja + two_jb + two_jc + two_jd - tk)/2 + 1, &n1);
       status += gsl_sf_fact_e(tk/2, &d1_a);
       status += gsl_sf_fact_e((two_je + two_jf - two_ja - two_jd + tk)/2, &d1_b);
@@ -264,7 +265,7 @@ gsl_sf_coupling_6j_e(int two_ja, int two_jb, int two_jc,
       status += gsl_sf_fact_e((two_jc + two_jd - two_je - tk)/2, &d4);
       status += gsl_sf_fact_e((two_ja + two_jc - two_jf - tk)/2, &d5);
       status += gsl_sf_fact_e((two_jb + two_jd - two_jf - tk)/2, &d6);
-      
+
       if(status != GSL_SUCCESS) {
         OVERFLOW_ERROR(result);
       }
@@ -309,10 +310,31 @@ gsl_sf_coupling_6j_e(int two_ja, int two_jb, int two_jc,
 
 
 int
+gsl_sf_coupling_6j_e(int two_ja, int two_jb, int two_jc,
+                     int two_jd, int two_je, int two_jf,
+                     gsl_sf_result * result)
+{
+  return gsl_sf_coupling_6j_INCORRECT_e(two_ja, two_jb, two_je, two_jd, two_jc, two_jf, result);
+}
+
+
+int
+gsl_sf_coupling_RacahW_e(int two_ja, int two_jb, int two_jc,
+                         int two_jd, int two_je, int two_jf,
+                         gsl_sf_result * result)
+{
+  int status = gsl_sf_coupling_6j_INCORRECT_e(two_ja, two_jb, two_jc, two_jd, two_je, two_jf, result);
+  int phase_sum = (two_ja + two_jb + two_jc + two_jd)/2;
+  result->val *= ( GSL_IS_ODD(phase_sum) ? -1.0 : 1.0 );
+  return status;
+}
+
+
+int
 gsl_sf_coupling_9j_e(int two_ja, int two_jb, int two_jc,
-                        int two_jd, int two_je, int two_jf,
-			int two_jg, int two_jh, int two_ji,
-			gsl_sf_result * result)
+                     int two_jd, int two_je, int two_jf,
+                     int two_jg, int two_jh, int two_ji,
+                     gsl_sf_result * result)
 {
   /* CHECK_POINTER(result) */
 
@@ -392,12 +414,30 @@ double gsl_sf_coupling_3j(int two_ja, int two_jb, int two_jc,
 }
 
 
+double gsl_sf_coupling_6j_INCORRECT(int two_ja, int two_jb, int two_jc,
+                                    int two_jd, int two_je, int two_jf)
+{
+  EVAL_RESULT(gsl_sf_coupling_6j_INCORRECT_e(two_ja, two_jb, two_jc,
+                                             two_jd, two_je, two_jf,
+                                             &result));
+}
+
+
 double gsl_sf_coupling_6j(int two_ja, int two_jb, int two_jc,
                           int two_jd, int two_je, int two_jf)
 {
   EVAL_RESULT(gsl_sf_coupling_6j_e(two_ja, two_jb, two_jc,
                                    two_jd, two_je, two_jf,
                                    &result));
+}
+
+
+double gsl_sf_coupling_RacahW(int two_ja, int two_jb, int two_jc,
+                          int two_jd, int two_je, int two_jf)
+{
+  EVAL_RESULT(gsl_sf_coupling_RacahW_e(two_ja, two_jb, two_jc,
+                                      two_jd, two_je, two_jf,
+                                      &result));
 }
 
 
