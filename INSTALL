@@ -35,8 +35,9 @@ rather than a terminal, with the command,
 
 since it is several megabytes in size.
 
-If you run "make check" and get some failures, please see the MACHINES
-file. If you find failures that are not mentioned, please report them.
+If you run "make check" and get some failures, please see the notes on
+platform specific problems below.  If you find failures that are not
+mentioned, please report them.
 
 The library can be installed using the command,
 

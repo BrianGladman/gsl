@@ -68,5 +68,8 @@ All bug reports should include:
        A description of the bug behaviour
        A short program which reproducibly exercises the bug
 
+It is also useful if you can report whether the same problem occurs
+when the library is compiled without optimization.
+
 Thank you.
 
