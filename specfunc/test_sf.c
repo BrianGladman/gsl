@@ -235,7 +235,7 @@ gsl_sf_bessel_In_scaled( 100,  100.0)
   s += ( frac_diff(gsl_sf_bessel_I0(100.0), 1.0737517071310738235e+42  ) > 1.0e-15 );
   gsl_test(s, "  gsl_sf_bessel_I0");
   status += s;
-  
+
   s = 0;
   s += ( frac_diff(gsl_sf_bessel_I1(0.1),   0.05006252604709269211    ) > 1.0e-15 );
   s += ( frac_diff(gsl_sf_bessel_I1(2.0),   1.59063685463732906340    ) > 1.0e-15 );
