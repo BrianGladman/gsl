@@ -56,6 +56,12 @@ in the MKSA system only.
 The permittivity of free space, @math{\epsilon_0}.  This constant is
 defined in the MKSA system only.
 
+@item GSL_CONST_MKSA_PLANCKS_CONSTANT_H
+Planck's constant, @math{h}.
+
+@item GSL_CONST_MKSA_PLANCKS_CONSTANT_HBAR
+Planck's constant divided by @math{2\pi}, @math{\hbar}.
+
 @item GSL_CONST_NUM_AVOGADRO
 Avogadro's number, @math{N_a}.
 
