@@ -40,9 +40,6 @@ gsl_interval gsl_min_fminimizer_interval (const gsl_min_fminimizer * s);
 int
 gsl_min_test_interval (gsl_interval x, double epsabs, double epsrel);
 
-int
-gsl_min_test_delta (double x1, double x0, double epsabs, double epsrel);
-
 extern const gsl_min_fminimizer_type  * gsl_min_fminimizer_goldensection;
 extern const gsl_min_fminimizer_type  * gsl_min_fminimizer_brent;
 
