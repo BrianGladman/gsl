@@ -23,8 +23,8 @@ gsl_rng_env_setup (void)
 
       /* check GSL_RNG_TYPE against the names of all the generators */
 
-      check (&gsl_rng_default, gsl_rng_cmrg, p);
       check (&gsl_rng_default, gsl_rng_cmlib, p);
+      check (&gsl_rng_default, gsl_rng_cmrg, p);
       check (&gsl_rng_default, gsl_rng_minstd, p);
       check (&gsl_rng_default, gsl_rng_mrg, p);
       check (&gsl_rng_default, gsl_rng_mt19937, p);
@@ -34,8 +34,26 @@ gsl_rng_env_setup (void)
       check (&gsl_rng_default, gsl_rng_ran2, p);
       check (&gsl_rng_default, gsl_rng_ran3, p);
       check (&gsl_rng_default, gsl_rng_rand, p);
-      check (&gsl_rng_default, gsl_rng_randu, p);
       check (&gsl_rng_default, gsl_rng_rand48, p);
+      check (&gsl_rng_default, gsl_rng_random0_bsd, p);
+      check (&gsl_rng_default, gsl_rng_random0_glibc2, p);
+      check (&gsl_rng_default, gsl_rng_random0_libc5, p);
+      check (&gsl_rng_default, gsl_rng_random128_bsd, p);
+      check (&gsl_rng_default, gsl_rng_random128_glibc2, p);
+      check (&gsl_rng_default, gsl_rng_random128_libc5, p);
+      check (&gsl_rng_default, gsl_rng_random256_bsd, p);
+      check (&gsl_rng_default, gsl_rng_random256_glibc2, p);
+      check (&gsl_rng_default, gsl_rng_random256_libc5, p);
+      check (&gsl_rng_default, gsl_rng_random32_bsd, p);
+      check (&gsl_rng_default, gsl_rng_random32_glibc2, p);
+      check (&gsl_rng_default, gsl_rng_random32_libc5, p);
+      check (&gsl_rng_default, gsl_rng_random64_bsd, p);
+      check (&gsl_rng_default, gsl_rng_random64_glibc2, p);
+      check (&gsl_rng_default, gsl_rng_random64_libc5, p);
+      check (&gsl_rng_default, gsl_rng_random_bsd, p);
+      check (&gsl_rng_default, gsl_rng_random_glibc2, p);
+      check (&gsl_rng_default, gsl_rng_random_libc5, p);
+      check (&gsl_rng_default, gsl_rng_randu, p);
       check (&gsl_rng_default, gsl_rng_ranf, p);
       check (&gsl_rng_default, gsl_rng_ranlux, p);
       check (&gsl_rng_default, gsl_rng_ranlux389, p);
