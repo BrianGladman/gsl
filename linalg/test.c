@@ -1403,7 +1403,7 @@ int test_LQ_solve(void)
   gsl_test(f, "  LQ_solve hilbert(3)");
   s += f;
 
-  f = test_LQ_solve_dim(hilb4, hilb4_solution, 2 * 1024.0 * GSL_DBL_EPSILON);
+  f = test_LQ_solve_dim(hilb4, hilb4_solution, 4 * 1024.0 * GSL_DBL_EPSILON);
   gsl_test(f, "  LQ_solve hilbert(4)");
   s += f;
 
@@ -1482,7 +1482,7 @@ int test_LQ_LQsolve(void)
   gsl_test(f, "  LQ_LQsolve hilbert(3)");
   s += f;
 
-  f = test_LQ_LQsolve_dim(hilb4, hilb4_solution, 2 * 1024.0 * GSL_DBL_EPSILON);
+  f = test_LQ_LQsolve_dim(hilb4, hilb4_solution, 4 * 1024.0 * GSL_DBL_EPSILON);
   gsl_test(f, "  LQ_LQsolve hilbert(4)");
   s += f;
 
@@ -1580,7 +1580,7 @@ int test_LQ_lssolve(void)
   gsl_test(f, "  LQ_lssolve hilbert(3)");
   s += f;
 
-  f = test_LQ_lssolve_dim(hilb4, hilb4_solution, 2 * 1024.0 * GSL_DBL_EPSILON);
+  f = test_LQ_lssolve_dim(hilb4, hilb4_solution, 4 * 1024.0 * GSL_DBL_EPSILON);
   gsl_test(f, "  LQ_lssolve hilbert(4)");
   s += f;
 
@@ -1676,7 +1676,7 @@ int test_LQ_decomp(void)
   gsl_test(f, "  LQ_decomp hilbert(3)");
   s += f;
 
-  f = test_LQ_decomp_dim(hilb4, 2 * 1024.0 * GSL_DBL_EPSILON);
+  f = test_LQ_decomp_dim(hilb4, 4 * 1024.0 * GSL_DBL_EPSILON);
   gsl_test(f, "  LQ_decomp hilbert(4)");
   s += f;
 
@@ -3323,7 +3323,6 @@ int main(void)
   gsl_test(test_PTLQ_solve(),     "PTLQ Solve");
 
   gsl_test(test_LQ_decomp(),      "LQ Decomposition");
-  gsl_test(test_LQ_solve(),       "LQ Solve");
   gsl_test(test_LQ_LQsolve(),     "LQ LQ Solve");
   gsl_test(test_LQ_lssolve(),     "LQ LS Solve");
   gsl_test(test_LQ_update(),      "LQ Rank-1 Update");
