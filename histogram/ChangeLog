@@ -1,3 +1,7 @@
+Sat Aug 18 22:21:26 2001  Brian Gough  <bjg@network-theory.co.uk>
+
+	* gsl-histogram.c: moved to top-level directory
+
 Mon Jun 25 17:41:42 2001  Brian Gough  <bjg@network-theory.co.uk>
 
 	* init2d.c (gsl_histogram2d_set_ranges_uniform): added range

@@ -1,3 +1,7 @@
+Sat Aug 18 22:21:07 2001  Brian Gough  <bjg@network-theory.co.uk>
+
+	* gsl-randist.c: moved to top-level directory
+
 Wed Jul 18 12:57:55 2001  Brian Gough  <bjg@network-theory.co.uk>
 
 	* landau.c: added Landau distribution from Dave Morrison

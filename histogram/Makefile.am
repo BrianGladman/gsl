@@ -4,15 +4,13 @@ pkginclude_HEADERS = gsl_histogram.h gsl_histogram2d.h
 
 INCLUDES= -I$(top_builddir)
 
-bin_PROGRAMS = gsl-histogram
+
 check_PROGRAMS = test test2d test_resample test2d_resample test_trap test2d_trap
 check_SCRIPTS = test_gsl_histogram.sh
 
 TESTS = test test2d test_resample test2d_resample test_trap test2d_trap test_gsl_histogram.sh
 EXTRA_DIST = test_gsl_histogram.sh urand.c
 
-gsl_histogram_SOURCES = gsl-histogram.c
-gsl_histogram_LDADD = libgslhistogram.la ../block/libgslblock.la  ../err/libgslerr.la ../utils/libutils.la
 noinst_HEADERS = urand.c
 
 test_LDADD = libgslhistogram.la ../block/libgslblock.la ../ieee-utils/libgslieeeutils.la ../err/libgslerr.la ../test/libgsltest.la

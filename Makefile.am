@@ -19,6 +19,15 @@ noinst_HEADERS = templates_on.h templates_off.h
 m4datadir = $(datadir)/aclocal
 m4data_DATA = gsl.m4
 
+bin_PROGRAMS = gsl-randist gsl-histogram
+
+gsl_randist_SOURCES = gsl-randist.c
+gsl_randist_LDADD = libgsl.la cblas/libgslcblas.la
+
+gsl_histogram_SOURCES = gsl-histogram.c
+gsl_histogram_LDADD = libgsl.la cblas/libgslcblas.la
+
+
 #bin_PROGRAMS = main dummy
 #dummy_SOURCES = version.c
 #dummy_LDADD = $(SUBLIBS)
