@@ -20,7 +20,7 @@
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_rng.h>
 #include <gsl/gsl_randist.h>
-#include <gsl/gsl_sf.h>
+#include <gsl/gsl_sf_gamma.h>
 
 
 /* The Dirichlet probability distribution of order K-1 is 
