@@ -135,6 +135,7 @@ main (void)
 
 #define FUNC(x) x, "gsl_ran_" #x
 #define FUNC2(x) x, x ## _pdf, "gsl_ran_" #x
+  test_discrete_pdf (FUNC2(test_logarithmic));
 
   test_shuffle() ;
   test_choose() ;
@@ -202,7 +203,7 @@ main (void)
   test_discrete_pdf (FUNC2(test_hypergeometric4));
   test_discrete_pdf (FUNC2(test_hypergeometric5));
   test_discrete_pdf (FUNC2(test_hypergeometric6));
-  test_discrete_pdf (FUNC2(test_logarithmic));
+
   test_discrete_pdf (FUNC2(test_negative_binomial));
   test_discrete_pdf (FUNC2(test_pascal));
 
