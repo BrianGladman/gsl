@@ -1,3 +1,8 @@
+2004-07-10  Brian Gough  <bjg@network-theory.co.uk>
+
+	* error.c (gsl_error): flush stdout/stderr before aborting (needed
+	to get a useful error message on some platforms)
+
 2003-06-17  Brian Gough  <bjg@network-theory.co.uk>
 
 	* warn.c: removed, the functions are not used

@@ -1,4 +1,10 @@
-* What is new in gsl-1.5:
+* What will be new in gsl-1.6:
+
+** The standard output and standard error streams are now flushed by
+the default error handler before the program aborts, in order to
+ensure that error messages are properly displayed on some platforms.
+
+* What was new in gsl-1.5:
 
 ** Multifit routines now handle iterations where |f| is already
 minimised to zero, without division by zero.
