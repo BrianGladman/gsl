@@ -1,3 +1,9 @@
+Thu Oct 28 12:05:47 1999  Brian Gough  <bjg@network-theory.co.uk>
+
+	* levin_uerr.c (gsl_sum_levin_u_accel_minmax): changed loop
+ 	maximum from <=n to <n to avoid access of uninitialized memory,
+ 	need further correctness checks on algorithm though.
+
 Thu Oct  7 12:03:36 1999  Brian Gough  <bjg@network-theory.co.uk>
 
 	* levin_u.c levin_uerr.c: changed DBL_MAX to GSL_DBL_MAX since we

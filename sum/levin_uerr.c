@@ -88,7 +88,7 @@ gsl_sum_levin_u_accel_minmax (const double *array,
       least_trunc_result = result_n;
 
       variance = 0;
-      for (i = 0; i <= n; i++)
+      for (i = 0; i < n; i++)
 	{
 	  double dn = dsum[i] * GSL_MACH_EPS * array[i];
 	  variance += dn * dn;
