@@ -37,18 +37,26 @@ gradient_direction (const gsl_matrix * r, const gsl_vector * qtf,
   return GSL_SUCCESS;
 }
 
+
+
+
 int
 dogleg (const gsl_matrix * r, const gsl_matrix * qtf, 
         const gsl_vector * diag, double delta, gsl_vector *p)
 {
   newton_direction (r, qtf, p);
 
-  qnorm = enorm (diag, p);
+  qnorm = enorm (diag * p);
 
   if (qnorm <= delta)
     return GSL_SUCCESS;
 
+  gradient_direction (r, qtf, diag, p);
+
+  gnorm = enorm (p);
+
+
+
   
-  gradient_direction (r, qtf, diag, p
 
 }

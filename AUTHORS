@@ -1,11 +1,13 @@
 Mark Galassi (rosalia@cygnus.com) - overall design, simulated annealing
 Jim Davies (jimmyd@nis.lanl.gov) - statistics library
 James Theiler (jt@nis.lanl.gov) - random number generators
-Brian Gough (bjg@network-theory.co.uk) - 
+Brian Gough (bjg@network-theory.co.uk) -
   FFT package, error handling, vector and matrix functions,
   histograms, some parts of statistics, ieee-utils, integration, rng
-  directory and random number distributions
+  directory and random number distributions, 1d & multidimensional
+  root finding, minimization, polynomial solvers
 Reid Priedhorsky (rp@lanl.gov) - root finding
 Gerard Jungman (jungman@lanl.gov) special functions, interpolation, 
-  series acceleration
+  series acceleration, ODEs, BLAS, Linear Algebra, Eigensystems,
+  Hankel Transforms.
 Michael Booth (booth@debian.org) - Monte Carlo integration

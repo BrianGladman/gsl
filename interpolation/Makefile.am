@@ -25,4 +25,6 @@ libgslinterpolation_a_SOURCES = 	\
 	cspline.c			\
 	interp.c			\
 	linear.c			\
-	tridiag.c
+	tridiag.c                       \
+        integ_eval_macro.h
+

@@ -31,7 +31,7 @@ test_la_SOURCES = test_la.c
 
 libgsllinalg_a_SOURCES = 	\
 	multiply.c		\
-	tridiag.c		\
+	tridiag.c tridiag.h	\
 	lu.c hh.c qr.c qrpt.c svd.c
 
 noinst_HEADERS = norm.c permut.c givens.c

@@ -1,5 +1,18 @@
 * Will be new in gsl-0.4.2 (or 0.5; number is not yet decided):
 
+** There is now a KNOWN-PROBLEMS file which lists compilation problems
+and test failures which are known to the developers.
+
+** Many improvements have been made to the special functions directory.
+
+** The extrapolations from the Levin u-transform are now more reliable.
+
+** Linear algebra and Eigensystem routines are now available.
+
+** ODE solvers are now available.
+
+** Multidimensional root finding algorithms are available.
+
 ** Minimization now keeps track of function values.
 
 ** Matrices and vectors now use a BLAS compatible format, and have a

@@ -14,7 +14,7 @@ pkginclude_HEADERS = 		\
 	gsl_blas_raw_L3.h	\
 	gsl_blas_raw_cm.h
 
-noinst_HEADERS = \
+noinst_HEADERS = matrix_access.h \
 	source_asum_c.h		\
 	source_asum_r.h		\
 	source_axpy_c.h		\
@@ -56,12 +56,15 @@ noinst_HEADERS = \
 	source_symv.h		\
 	source_syr.h		\
 	source_syr2.h		\
+	source_tXsv_c.h		\
 	source_tXsv_r.h		\
 	source_tbmv_c.h		\
 	source_tbmv_r.h		\
+	source_tbsv_c.h		\
 	source_tbsv_r.h		\
 	source_tpmv_c.h		\
 	source_tpmv_r.h		\
+	source_tpsv_c.h         \
 	source_tpsv_r.h
 
 

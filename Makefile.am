@@ -8,4 +8,4 @@ bin_SCRIPTS = gsl-config
 
 pkginclude_HEADERS = gsl_complex.h gsl_math.h gsl_machine.h gsl_mode.h gsl_precision.h
 noinst_HEADERS = complex_internal.h templates_on.h templates_off.h
-EXTRA_DIST = autogen.sh gsl-config.in configure.in THANKS
+EXTRA_DIST = autogen.sh gsl-config.in configure.in THANKS KNOWN-PROBLEMS
