@@ -19,6 +19,8 @@ void gsl_vector_uchar_free (gsl_vector_uchar * v);
 
 unsigned char * gsl_vector_uchar_ptr(const gsl_vector_uchar * v, const size_t i);
 unsigned char   gsl_vector_uchar_get(const gsl_vector_uchar * v, const size_t i);
+void            gsl_vector_uchar_set(gsl_vector_uchar * v, const size_t i, unsigned char x);
+
 
 int gsl_vector_uchar_fread (FILE * stream, gsl_vector_uchar * v) ;
 int gsl_vector_uchar_fwrite (FILE * stream, const gsl_vector_uchar * v) ;
@@ -58,10 +60,23 @@ gsl_vector_uchar_get(const gsl_vector_uchar * v, const size_t i)
 #ifndef GSL_RANGE_CHECK_OFF
   if (i >= v->size)  /* size_t is unsigned, can't be negative */
     {
-      GSL_ERROR_RETURN("index out of range", GSL_EINVAL, 0) ;
+      GSL_ERROR_CONTINUE("index out of range", GSL_EINVAL) ;
     }
 #endif
   return v->data[i];
+} 
+
+extern inline 
+void
+gsl_vector_uchar_set(gsl_vector_uchar * v, const size_t i, unsigned char c)
+{
+#ifndef GSL_RANGE_CHECK_OFF
+  if (i >= v->size)  /* size_t is unsigned, can't be negative */
+    {
+      GSL_ERROR_RETURN_NOTHING("index out of range", GSL_EINVAL) ;
+    }
+#endif
+  v->data[i] = c;
 } 
 
 #endif /* HAVE_INLINE */

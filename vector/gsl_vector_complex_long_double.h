@@ -20,8 +20,8 @@ gsl_vector_complex_long_double * gsl_vector_complex_long_double_calloc (size_t n
 void gsl_vector_complex_long_double_free (gsl_vector_complex_long_double * v);
 
 gsl_complex_long_double * gsl_vector_complex_long_double_ptr(const gsl_vector_complex_long_double * v, size_t i);
-gsl_complex_long_double gsl_vector_complex_long_double_get(const gsl_vector_complex_long_double * v, size_t i);
-void gsl_vector_complex_long_double_set(gsl_vector_complex_long_double * v, size_t i, gsl_complex_long_double z);
+gsl_complex_long_double   gsl_vector_complex_long_double_get(const gsl_vector_complex_long_double * v, size_t i);
+void                      gsl_vector_complex_long_double_set(gsl_vector_complex_long_double * v, size_t i, gsl_complex_long_double z);
 
 int gsl_vector_complex_long_double_fread (FILE * stream, gsl_vector_complex_long_double * v) ;
 int gsl_vector_complex_long_double_fwrite (FILE * stream, const gsl_vector_complex_long_double * v) ;
@@ -45,7 +45,6 @@ extern int gsl_check_range ;
 #define GSL_COMPLEX_LONG_DOUBLE_AT(zv, i)  ((gsl_complex_long_double *)  &((zv)->data[2*(i)]))
 
 
-/* inline functions if you are using GCC or otherwise enlightened cc */
 
 #ifdef HAVE_INLINE
 extern inline 
@@ -59,8 +58,33 @@ gsl_vector_complex_long_double_ptr(const gsl_vector_complex_long_double * v, con
     }
 #endif
   return GSL_COMPLEX_LONG_DOUBLE_AT(v, i);
-} 
+}
 
+extern inline 
+gsl_complex_long_double
+gsl_vector_complex_long_double_get(const gsl_vector_complex_long_double * v, const size_t i)
+{
+#ifndef GSL_RANGE_CHECK_OFF
+  if (i >= v->size) /* size_t is unsigned, can't be negative */
+    {
+      GSL_ERROR_CONTINUE("index out of range", GSL_EINVAL);
+    }
+#endif
+  return *GSL_COMPLEX_LONG_DOUBLE_AT(v, i);
+}
+
+extern inline 
+void
+gsl_vector_complex_long_double_set(gsl_vector_complex_long_double * v, const size_t i, gsl_complex_long_double z)
+{
+#ifndef GSL_RANGE_CHECK_OFF
+  if (i >= v->size) /* size_t is unsigned, can't be negative */
+    {
+      GSL_ERROR_RETURN_NOTHING("index out of range", GSL_EINVAL);
+    }
+#endif
+  *GSL_COMPLEX_LONG_DOUBLE_AT(v, i) = z;
+}
 
 #endif /* HAVE_INLINE */
 
