@@ -22,8 +22,8 @@
 /*-*-*-*-*-*-*-*-*-*-*-* Private Section *-*-*-*-*-*-*-*-*-*-*-*/
 
 
-#define RECURSE_LARGE  (1.0e-5*DBL_MAX)
-#define RECURSE_SMALL  (1.0e+5*DBL_MIN)
+#define RECURSE_LARGE  (1.0e-5*GSL_DBL_MAX)
+#define RECURSE_SMALL  (1.0e+5*GSL_DBL_MIN)
 
 
 /* Continued fraction for f_{ell+1}/f_ell

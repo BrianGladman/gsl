@@ -78,7 +78,7 @@ int gsl_sf_bessel_i1_scaled_impl(const double x, gsl_sf_result * result)
   if(result == 0) {
     return GSL_EFAULT;
   }
-  else if(ax < 3.0*DBL_MIN) {
+  else if(ax < 3.0*GSL_DBL_MIN) {
     result->val = 0.0;
     result->err = 0.0;
     return GSL_EUNDRFLW;

@@ -54,8 +54,8 @@ static double locMAX4(double x, double y, double z, double w)
 int
 gsl_sf_ellint_RC_impl(double x, double y, gsl_mode_t mode, gsl_sf_result * result)
 {
-  const double lolim = 5.0 * DBL_MIN;
-  const double uplim = 0.2 * DBL_MAX;
+  const double lolim = 5.0 * GSL_DBL_MIN;
+  const double uplim = 0.2 * GSL_DBL_MAX;
   const gsl_prec_t goal = GSL_MODE_PREC(mode);
   const double errtol = ( goal == GSL_PREC_DOUBLE ? 0.001 : 0.03 );
   const double prec   = gsl_prec_eps[goal];
@@ -98,8 +98,8 @@ gsl_sf_ellint_RD_impl(double x, double y, double z, gsl_mode_t mode, gsl_sf_resu
   const gsl_prec_t goal = GSL_MODE_PREC(mode);
   const double errtol = ( goal == GSL_PREC_DOUBLE ? 0.001 : 0.03 );
   const double prec   = gsl_prec_eps[goal];
-  const double lolim = 2.0/pow(DBL_MAX, 2.0/3.0);
-  const double uplim = pow(0.1*errtol/DBL_MIN, 2.0/3.0);
+  const double lolim = 2.0/pow(GSL_DBL_MAX, 2.0/3.0);
+  const double uplim = pow(0.1*errtol/GSL_DBL_MIN, 2.0/3.0);
 
   if(GSL_MIN(x,y) < 0.0 || GSL_MIN(x+y,z) < lolim) {
     result->val = 0.0;
@@ -159,8 +159,8 @@ gsl_sf_ellint_RD_impl(double x, double y, double z, gsl_mode_t mode, gsl_sf_resu
 int
 gsl_sf_ellint_RF_impl(double x, double y, double z, gsl_mode_t mode, gsl_sf_result * result)
 {
-  const double lolim = 5.0 * DBL_MIN;
-  const double uplim = 0.2 * DBL_MAX;
+  const double lolim = 5.0 * GSL_DBL_MIN;
+  const double uplim = 0.2 * GSL_DBL_MAX;
   const gsl_prec_t goal = GSL_MODE_PREC(mode);
   const double errtol = ( goal == GSL_PREC_DOUBLE ? 0.001 : 0.03 );
   const double prec   = gsl_prec_eps[goal];
@@ -221,8 +221,8 @@ gsl_sf_ellint_RJ_impl(double x, double y, double z, double p, gsl_mode_t mode, g
   const gsl_prec_t goal = GSL_MODE_PREC(mode);
   const double errtol = ( goal == GSL_PREC_DOUBLE ? 0.001 : 0.03 );
   const double prec   = gsl_prec_eps[goal];
-  const double lolim =       pow(5.0 * DBL_MIN, 1.0/3.0);
-  const double uplim = 0.3 * pow(0.2 * DBL_MAX, 1.0/3.0);
+  const double lolim =       pow(5.0 * GSL_DBL_MIN, 1.0/3.0);
+  const double uplim = 0.3 * pow(0.2 * GSL_DBL_MAX, 1.0/3.0);
 
   if(x < 0.0 || y < 0.0 || y < 0.0) {
     result->val = 0.0;

@@ -287,8 +287,8 @@ coulomb_FG_series(const double lam, const double eta, const double x,
   int stat_conn = coulomb_connection(lam, eta, &cos_phi_lam, &sin_phi_lam);
 
   if(stat_conn == GSL_EUNDRFLW) {
-    F->val = FA.val;
-    F->err = FA.err;
+    F->val = 0.0;
+    F->err = 0.0;
     G->val = 0.0; /* FIXME: should be Inf */
     G->err = 0.0;
     return GSL_EOVRFLW;
@@ -1372,7 +1372,7 @@ gsl_sf_coulomb_wave_sphF_array_impl(double lam_min, int kmax,
   if(x < 0.0 || lam_min < -0.5) {
     return GSL_EDOM;
   }
-  else if(x < 10.0/DBL_MAX) {
+  else if(x < 10.0/GSL_DBL_MAX) {
     for(k=0; k<=kmax; k++) {
       fc_array[k] = 0.0;
     }

@@ -1009,7 +1009,7 @@ fd_asymp(const double j, const double x, gsl_sf_result * result)
   double seqn_err = 0.0;
   double xm2  = (1.0/x)/x;
   double xgam = 1.0;
-  double add = DBL_MAX;
+  double add = GSL_DBL_MAX;
   double cos_term;
   double ln_x;
   gsl_sf_result fneg;

@@ -171,7 +171,7 @@ int gsl_sf_bessel_Kn_scaled_array_impl(const int nmin, const int nmax, const dou
     int n;
 
     for(n=nmin+1; n<=nmax+1; n++) {
-      if(Knm1 < DBL_MAX) {
+      if(Knm1 < GSL_DBL_MAX) {
         result_array[n-1-nmin] = Knm1;
         Knp1 = Knm1 + n * two_over_x * Kn;
         Knm1 = Kn;

@@ -94,7 +94,7 @@ int gsl_sf_bessel_k1_scaled_impl(const double x, gsl_sf_result * result)
     result->err = 0.0;
     return GSL_EDOM;
   }
-  else if(1.0/GSL_DBL_MAX > 0.0 && 2.0*x*x < M_PI/GSL_DBL_MAX) {
+  else if(x < (M_SQRTPI+1.0)/(M_SQRT2*GSL_SQRT_DBL_MAX)) {
     result->val = 0.0;  /* FIXME: should be Inf */
     result->err = 0.0;
     return GSL_EOVRFLW;
@@ -120,7 +120,7 @@ int gsl_sf_bessel_k2_scaled_impl(const double x, gsl_sf_result * result)
     result->err = 0.0;
     return GSL_EDOM;
   }
-  else if(1.0/DBL_MAX > 0.0 && 2.0*x*x*x < 3.0*M_PI/DBL_MAX) {
+  else if(x < 2.0/GSL_ROOT3_DBL_MAX) {
     result->val = 0.0; /* FIXME: should be Inf */
     result->err = 0.0;
     return GSL_EOVRFLW;

@@ -55,7 +55,7 @@ int gsl_sf_bessel_j1_impl(const double x, gsl_sf_result * result)
     result->err = 0.0;
     return GSL_SUCCESS;
   }
-  else if(ax < 3.1 * DBL_MIN) {
+  else if(ax < 3.1*GSL_DBL_MIN) {
     result->val = 0.0;
     result->err = 0.0;
     return GSL_EUNDRFLW;

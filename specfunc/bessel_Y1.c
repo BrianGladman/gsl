@@ -55,7 +55,7 @@ static gsl_sf_cheb_series by1_cs = {
 int gsl_sf_bessel_Y1_impl(const double x, gsl_sf_result * result)
 {
   const double two_over_pi = 2.0/M_PI;
-  const double xmin = 1.571*DBL_MIN; /*exp ( amax1(alog(r1mach(1)), -alog(r1mach(2)))+.01) */
+  const double xmin = 1.571*GSL_DBL_MIN; /*exp ( amax1(alog(r1mach(1)), -alog(r1mach(2)))+.01) */
   const double x_small = 2.0 * GSL_SQRT_DBL_EPSILON;
   const double xmax    = 1.0/GSL_DBL_EPSILON;
 

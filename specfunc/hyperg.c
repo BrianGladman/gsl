@@ -11,7 +11,7 @@
 #include "gsl_sf_gamma.h"
 #include "hyperg.h"
 
-#define SUM_LARGE    (1.0e-5*DBL_MAX)
+#define SUM_LARGE  (1.0e-5*GSL_DBL_MAX)
 
 
 int
@@ -45,7 +45,7 @@ gsl_sf_hyperg_1F1_series_impl(const double a, const double b, const double x,
 
     u = x * (an/(bn*n));
     abs_u = fabs(u);
-    if(abs_u > 1.0 && max_abs_del > DBL_MAX/abs_u) {
+    if(abs_u > 1.0 && max_abs_del > GSL_DBL_MAX/abs_u) {
       result->val = sum_val;
       result->err = fabs(sum_val);
       return GSL_EOVRFLW;
@@ -234,7 +234,7 @@ gsl_sf_hyperg_2F0_series_impl(const double a, const double b, const double x,
     double u = an * (bn/n * x);
     double abs_u = fabs(u);
 
-    if(abs_u > 1.0 && (max_abs_del > DBL_MAX/abs_u)) {
+    if(abs_u > 1.0 && (max_abs_del > GSL_DBL_MAX/abs_u)) {
       result->val = sum;
       result->err = fabs(sum);
       return GSL_EOVRFLW;

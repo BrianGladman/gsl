@@ -1110,7 +1110,7 @@ hyperg_1F1_a_negint_poly(const int a, const double b, const double x, gsl_sf_res
     for(k=N-1; k>=0; k--) {
       double t = (a+k)/(b+k) * (x/(k+1));
       double r = t + 1.0/poly;
-      if(r > 0.9*DBL_MAX/poly) {
+      if(r > 0.9*GSL_DBL_MAX/poly) {
         result->val = 0.0; /* FIXME: should be Inf */
 	result->err = 0.0;
 	return GSL_EOVRFLW;
@@ -1448,7 +1448,7 @@ hyperg_1F1_ab_pos(const double a, const double b,
       double Map1;
       double ap;
       double start_pair = fabs(M0) + fabs(M1);
-      double minim_pair = DBL_MAX;
+      double minim_pair = GSL_DBL_MAX;
       double pair_ratio;
       double rat_0 = fabs(r_M0.err/r_M0.val);
       double rat_1 = fabs(r_M1.err/r_M1.val);
@@ -1483,7 +1483,7 @@ hyperg_1F1_ab_pos(const double a, const double b,
 
       double n;
       double start_pair = fabs(Mn) + fabs(Mnm1);
-      double minim_pair = DBL_MAX;
+      double minim_pair = GSL_DBL_MAX;
       double pair_ratio;
       double rat_0 = fabs(r_Mnm1.err/r_Mnm1.val);
       double rat_1 = fabs(r_Mn.err/r_Mn.val);
@@ -1521,7 +1521,7 @@ hyperg_1F1_ab_pos(const double a, const double b,
 
       double n;
       double start_pair = fabs(Manp1) + fabs(Man);
-      double minim_pair = DBL_MAX;
+      double minim_pair = GSL_DBL_MAX;
       double pair_ratio;
       double rat_0 = fabs(r_Manp1.err/r_Manp1.val);
       double rat_1 = fabs(r_Man.err/r_Man.val);
@@ -1795,7 +1795,7 @@ gsl_sf_hyperg_1F1_impl(const double a, const double b, const double x,
       int stat_hx = gsl_sf_exp_mult_err_impl(lnab, GSL_DBL_EPSILON * fabs(lnab),
         				     sa * sb * exm1.val, exm1.err,
         				     &hx);
-      result->val = (hx.val == DBL_MAX ? hx.val : 1.0 + hx.val);  /* FIXME: excessive paranoia ? what is DBL_MAX+1 ?*/
+      result->val = (hx.val == GSL_DBL_MAX ? hx.val : 1.0 + hx.val);  /* FIXME: excessive paranoia ? what is DBL_MAX+1 ?*/
       result->err = hx.err;
       return GSL_ERROR_SELECT_2(stat_hx, stat_e);
     }

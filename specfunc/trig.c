@@ -314,7 +314,7 @@ gsl_sf_hypot_impl(const double x, const double y, gsl_sf_result * result)
     const double rat = min/max;
     const double root_term = sqrt(1.0 + rat*rat);
 
-    if(max < DBL_MAX/root_term) {
+    if(max < GSL_DBL_MAX/root_term) {
       result->val = max * root_term;
       result->err = 2.0 * GSL_DBL_EPSILON * fabs(result->val);
       return GSL_SUCCESS;

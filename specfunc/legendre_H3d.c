@@ -530,7 +530,7 @@ gsl_sf_legendre_H3d_array_impl(const int lmax, const double lambda, const double
       double root_term_1 = sqrt(lambda*lambda + (ell+1.0)*(ell+1.0));
       Hlm1 = ((2.0*ell + 1.0)*coth_eta*Hl - root_term_1 * Hlp1)/root_term_0;
       result_array[ell-1] = Hlm1;
-      if(!(Hlm1 < DBL_MAX)) stat_recursion = GSL_EOVRFLW;
+      if(!(Hlm1 < GSL_DBL_MAX)) stat_recursion = GSL_EOVRFLW;
       Hlp1 = Hl;
       Hl   = Hlm1;
     }
