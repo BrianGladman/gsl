@@ -77,29 +77,6 @@ have 'FIXME' entries still in the code.  Only the bsimp error term is
 implemented.
 
 ----------------------------------------------------------------------
-BUG#6 -- gsl_isnan, isinf on Compaq Unix STATUS: open
-
-From: Slaven Peles <peles@cns.physics.gatech.edu>
-To: gsl-discuss@sources.redhat.com
-Subject: Make check fails on Alpha
-Date: Fri, 20 Sep 2002 08:47:54 -0400
-
-I compiled GSL 1.2 on Compaq Alpha with:
-    CC=cc ./configure
-    make CFLAGS="-std"
-Compiler I used identifies itself as:
-    Compaq C V6.3-025 on Compaq Tru64 UNIX V5.1 (Rev. 732)
-    Compiler Driver V6.3-026 (sys) cc Driver
-Make check fails for gsl_isnan, gsl_isinf and gsl_finite functions.
-
-make  check-TESTS
-FAIL: gsl_isinf(inf) (0 observed vs 1 expected)
-FAIL: gsl_isinf(-inf) (0 observed vs -1 expected)
-FAIL: gsl_isnan(nan) (0 observed vs 1 expected)
-FAIL: gsl_finite(inf) (1 observed vs 0 expected)
-FAIL: gsl_finite(nan) (1 observed vs 0 expected)
-
-----------------------------------------------------------------------
 
 BUG#7 -- gsl_sf_coupling_3j loses accuracy for large arguments STATUS: open
 
