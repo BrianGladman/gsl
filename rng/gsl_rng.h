@@ -19,10 +19,14 @@ typedef struct {
   unsigned long int (* get)(void * state) ;
 } gsl_rng_type ;
 
-const gsl_rng_type * gsl_rng_blah (void) ;
+const gsl_rng_type * gsl_rng_bad_rand (void) ;
 const gsl_rng_type * gsl_rng_cmrg (void) ;
 const gsl_rng_type * gsl_rng_mrg (void) ;
 const gsl_rng_type * gsl_rng_rand (void) ;
+const gsl_rng_type * gsl_rng_taus (void) ;
+const gsl_rng_type * gsl_rng_uni (void) ;
+const gsl_rng_type * gsl_rng_uni32 (void) ;
+const gsl_rng_type * gsl_rng_zuf (void) ;
 
 extern unsigned int gsl_rng_default_seed ;
 

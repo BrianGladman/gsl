@@ -75,8 +75,9 @@ include_HEADERS = gsl_rng.h
 
 INCLUDES = -I$(srcdir)/..  -I$(srcdir)/../err
 
-libgslrng_a_SOURCES = \
-	gsl_rng.h rng.c cmrg.c mrg.c rand.c taus.c default.c uni.c uni32.c zuf.c
+libgslrng_a_SOURCES = gsl_rng.h rng.c default.c \
+                      cmrg.c mrg.c rand.c taus.c uni.c uni32.c zuf.c \
+                      bad_rand.c
 
 test_SOURCES = test.c
 test_LDADD = libgslrng.a ../err/libgslerr.a ../err/libgsltest.a
@@ -93,8 +94,8 @@ CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
 libgslrng_a_LIBADD = 
-libgslrng_a_OBJECTS =  rng.o cmrg.o mrg.o rand.o taus.o default.o uni.o \
-uni32.o zuf.o
+libgslrng_a_OBJECTS =  rng.o default.o cmrg.o mrg.o rand.o taus.o uni.o \
+uni32.o zuf.o bad_rand.o
 AR = ar
 test_OBJECTS =  test.o
 test_DEPENDENCIES =  libgslrng.a ../err/libgslerr.a ../err/libgsltest.a
@@ -111,9 +112,9 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 TAR = tar
 GZIP = --best
-DEP_FILES =  .deps/cmrg.P .deps/default.P .deps/mrg.P .deps/rand.P \
-.deps/rng.P .deps/taus.P .deps/test.P .deps/uni.P .deps/uni32.P \
-.deps/zuf.P
+DEP_FILES =  .deps/bad_rand.P .deps/cmrg.P .deps/default.P .deps/mrg.P \
+.deps/rand.P .deps/rng.P .deps/taus.P .deps/test.P .deps/uni.P \
+.deps/uni32.P .deps/zuf.P
 SOURCES = $(libgslrng_a_SOURCES) $(test_SOURCES)
 OBJECTS = $(libgslrng_a_OBJECTS) $(test_OBJECTS)
 

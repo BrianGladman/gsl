@@ -87,16 +87,16 @@ void uni32_set (void * state, unsigned int s);
 void uni32_set_with_state (void * vstate, const void * vinit_state,
 			  unsigned int s);
 
-static const int MDIG=32;                /* Machine digits in int */
-static const int m1 = 2147483647;        /* 2^(MDIG-1) - 1 */
-static const int m2 = 65536;             /* 2^(MDIG/2) */
+static const unsigned int MDIG=32;                /* Machine digits in int */
+static const unsigned int m1 = 2147483647;        /* 2^(MDIG-1) - 1 */
+static const unsigned int m2 = 65536;             /* 2^(MDIG/2) */
 
 typedef struct {
     int i,j;
     unsigned long m[17];
 } uni32_state_t;
 
-inline unsigned long uni32_get (void * vstate)
+unsigned long uni32_get (void * vstate)
 {
     uni32_state_t * state = (uni32_state_t *) vstate;
     const int i = state->i ;
@@ -143,7 +143,7 @@ void uni32_set(void * state, unsigned int s)
 void uni32_set_with_state (void * vstate, const void * vinit_state, 
 			 unsigned int s)
 {
-  int i,seed,k0,k1,j0,j1;
+  unsigned int i, seed, k0, k1, j0, j1;
   
   uni32_state_t * state = (uni32_state_t *) vstate;
   

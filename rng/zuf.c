@@ -47,7 +47,7 @@ unsigned long int zuf_get (void *vstate)
     return t;
 }    
 
-const static zuf_state_t init_state = { 
+static const zuf_state_t init_state = { 
   0, { 13889833, 11668030, 6740098, 6378503, 4501108, 6341980,
        11660504, 7571991, 8813239, 14150200, 13995880, 3542668, 2310894,
        6932668, 7496842, 16346723, 15931154, 3336484, 985193, 1060801,
@@ -192,7 +192,7 @@ void zuf_set_with_state (void * vstate, const void * vinit_state,
 	    }
 	    y *= 0.5;
 	}
-	state->u[ii] = x * zuf_randmax;
+	state->u[ii] = (unsigned long int) (x * zuf_randmax);
     }
 } 
 
