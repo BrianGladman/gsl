@@ -9,8 +9,7 @@ This chapter describes functions for solving polynomials.
 @node  Quadratic equations
 @section Quadratic equations
 
-
-@deftypefun int gsl_poly_solve_quadratic (double a, double b, double c, double x[])
+@deftypefun int gsl_poly_solve_quadratic (double @var{a}, double @var{b}, double @var{c}, double *@var{x0}, double *@var{x1})
 This function solves the quadratic equation
 
 @tex
@@ -28,21 +27,18 @@ a x^2 + b x + c = 0
 
 @noindent
 
-
-
 @end deftypefun
 
-
-@deftypefun int gsl_poly_complex_solve_quadratic (double a, double b, double c, gsl_complex z[])
+@deftypefun int gsl_poly_complex_solve_quadratic (double @var{a}, double @var{b}, double @var{c}, gsl_complex *@var{z0}, gsl_complex *@var{z1})
 @end deftypefun
 
 
 @node Cubic equations
 @section Cubic equations
 
-@deftypefun int gsl_poly_solve_cubic (double a, double b, double c, double x[])
+@deftypefun int gsl_poly_solve_cubic (double @var{a}, double @var{b}, double @var{c}, double *@var{x0}, double *@var{x1}, double *@var{x2})
 @end deftypefun
 
-@deftypefun int gsl_poly_complex_solve_cubic (double a, double b, double c, gsl_complex z[])
+@deftypefun int gsl_poly_complex_solve_cubic (double @var{a}, double @var{b}, double @var{c}, gsl_complex *@var{z0}, gsl_complex *@var{x1}, gsl_complex *@var{z2})
 @end deftypefun
 
