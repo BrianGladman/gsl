@@ -1,3 +1,8 @@
+Mon Jul 12 11:37:55 1999  Brian Gough  <bjg@network-theory.co.uk>
+
+	* qawc_impl.c (gsl_integration_qawc_impl): removed, no longer
+ 	necessary since everything goes into qawc.c
+
 Fri Apr  2 20:57:09 1999  Brian Gough  <bjg@netsci.freeserve.co.uk>
 
 	* qelg.c (qelg): removed debugging code

@@ -16,10 +16,6 @@ static inline void
 retrieve (const gsl_integration_workspace * workspace, 
 	  double * a, double * b, double * r, double * e);
 
-static double
-sum_results (const gsl_integration_workspace * workspace);
-
-
 static inline
 void initialise (gsl_integration_workspace * workspace, double a, double b)
 {
@@ -117,23 +113,6 @@ void update (gsl_integration_workspace * workspace,
   qpsrt (workspace) ;
 }
 
-static double
-sum_results (const gsl_integration_workspace * workspace)
-{
-  const double * const rlist = workspace->rlist ;
-  const size_t n = workspace->size;
-
-  size_t k;
-  double result_sum = 0;
-
-  for (k = 0; k < n; k++)
-    {
-      result_sum += rlist[k];
-    }
-  
-  return result_sum;
-}
-
 static inline void
 retrieve (const gsl_integration_workspace * workspace, 
 	  double * a, double * b, double * r, double * e)
@@ -153,7 +132,6 @@ retrieve (const gsl_integration_workspace * workspace,
 static inline void
 reset_nrmax (gsl_integration_workspace * workspace);
 
-
 static inline void
 reset_nrmax (gsl_integration_workspace * workspace)
 {
@@ -161,51 +139,28 @@ reset_nrmax (gsl_integration_workspace * workspace)
   workspace->i = workspace->order[0] ;
 }
 
-static void
-sort_results (gsl_integration_workspace * workspace);
+static inline double
+sum_results (const gsl_integration_workspace * workspace);
 
-static void
-sort_results (gsl_integration_workspace * workspace)
+static inline double
+sum_results (const gsl_integration_workspace * workspace)
 {
-  size_t i;
-  
-  double * elist = workspace->elist ;
-  size_t * order = workspace->order ;
+  const double * const rlist = workspace->rlist ;
+  const size_t n = workspace->size;
 
-  size_t nint = workspace->size;
+  size_t k;
+  double result_sum = 0;
 
-  for (i = 0; i < nint; i++)
+  for (k = 0; k < n; k++)
     {
-      size_t i1 = order[i];
-      double e1 = elist[i1];
-      size_t i_max = i1;
-      size_t j;
-
-      for (j = i + 1; j < nint; j++)
-	{
-	  size_t i2 = order[j];
-	  double e2 = elist[i2];
-
-	  if (e2 >= e1)
-	    {
-	      i_max = i2;
-	      e1 = e2;
-	    }
-	}
-
-      if (i_max != i1)
-	{
-	  order[i] = order[i_max];
-	  order[i_max] = i1;
-	}
+      result_sum += rlist[k];
     }
-
-  workspace->i = order[0] ;
+  
+  return result_sum;
 }
 
 static inline int
 subinterval_too_small (double a1, double a2, double b2);
-
 
 static inline int
 subinterval_too_small (double a1, double a2, double b2)

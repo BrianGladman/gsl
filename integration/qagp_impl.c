@@ -10,6 +10,7 @@
 #include "util.c"
 #include "qelg.c"
 #include "qpsrt2.c"
+#include "ptsort.c"
 
 int
 gsl_integration_qagp_impl (const gsl_function * f,
