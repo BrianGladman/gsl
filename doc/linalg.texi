@@ -652,7 +652,9 @@ be one element shorter.
 This function unpacks the bidiagonal decomposition of @var{A} given by
 @code{gsl_linalg_bidiag_decomp}, (@var{A}, @var{tau_U}, @var{tau_V})
 into the separate orthogonal matrices @var{U}, @var{V} and the diagonal
-vector @var{diag} and superdiagonal @var{superdiag}.
+vector @var{diag} and superdiagonal @var{superdiag}.  Note that @var{U}
+is stored as a compact @math{M}-by-@math{N} orthogonal matrix satisfying
+@math{U^T U = I} for efficiency.
 @end deftypefun
 
 @deftypefun int gsl_linalg_bidiag_unpack2 (gsl_matrix * @var{A}, gsl_vector * @var{tau_U}, gsl_vector * @var{tau_V}, gsl_matrix * @var{V})
