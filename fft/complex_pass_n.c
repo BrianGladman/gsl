@@ -23,76 +23,94 @@ gsl_fft_complex_pass_n (complex from[],
 
   int e, e1, e2;
 
-  for (k = 0; k < q; k++)
+  for (i = 0; i < m; i++)
     {
-      for (k1 = 0; k1 < product_1; k1++)
-	{
-	  to[i] = from[i];
-	  for (e = 1; e < (factor - 1) / 2 + 1; e++)
-	    {
-	      const unsigned int j = i + e * m;
-	      const unsigned int jc = i + (factor - e) * m;
-	      to[j].real = from[j].real + from[jc].real;
-	      to[j].imag = from[j].imag + from[jc].imag;
-	      to[jc].real = from[j].real - from[jc].real;
-	      to[jc].imag = from[j].imag - from[jc].imag;
-	    }
+      to[i] = from[i];
+    }
 
-	 
-	  /* e = 0 */
-	  {
-	    double sum_real = to[i].real ;
-	    double sum_imag = to[i].imag ;
-	    for (e1 = 1; e1 < (factor - 1) / 2 + 1; e1++)
-	      {
-		sum_real += to[i + e1*m].real ;
-		sum_imag += to[i + e1*m].imag ;
-	      }
-	    from[i].real = sum_real ;
-	    from[i].imag = sum_imag ;
+  for (e = 1; e < (factor - 1) / 2 + 1; e++)
+    {
+      for (i = 0; i < m; i++)
+	{
+	  const unsigned int j = i + e * m;
+	  const unsigned int jc = i + (factor - e) * m;
+	  to[j].real = from[j].real + from[jc].real;
+	  to[j].imag = from[j].imag + from[jc].imag;
+	  to[jc].real = from[j].real - from[jc].real;
+	  to[jc].imag = from[j].imag - from[jc].imag;
+	}
+    }
+
+  /* e = 0 */
+
+  for (i=0 ; i<m; i++) 
+    {
+      from[i] = to[i] ;
+    }
+
+  for (e1 = 1; e1 < (factor - 1) / 2 + 1; e1++)
+    {
+      for (i = 0; i < m; i++)
+	{
+	  from[i].real += to[i + e1*m].real ;
+	  from[i].imag += to[i + e1*m].imag ;
+	}
+    }
+
+  for (e = 1; e < (factor-1)/2 + 1; e++)
+    {
+      unsigned int idx = e*q ;
+      const unsigned int idx_step = e * q ;
+      double w_real, w_imag ;
+
+      const unsigned int em = e * m ;
+      const unsigned int ecm = (factor - e) * m ;
+
+      for (i = 0; i < m; i++) 
+	{
+	  from[i + em] = to[i];
+	  from[i + ecm] = to[i];
+	}
+
+      for (e1 = 1; e1 < (factor - 1) / 2 + 1; e1++)
+	{
+	  if (idx == 0) {
+	    w_real = 1 ;
+	    w_imag = 0 ;
+	  } else {
+	    if (sign == forward) {
+	      w_real = twiddle[idx - 1].real ;
+	      w_imag = twiddle[idx - 1].imag ;
+	    } else {
+	      w_real = twiddle[idx - 1].real ;
+	      w_imag = -twiddle[idx - 1].imag ;
+	    }
 	  }
 
-	  for (e = 1; e < (factor-1)/2 + 1; e++)
+	  for (i = 0; i < m; i++) 
 	    {
-	      double sum_real = 0 ;
-	      double sum_imag = 0 ;
-	      double sumc_real = 0 ;
-	      double sumc_imag = 0 ;
-	      unsigned int idx = e*q ;
-	      const unsigned int idx_step = e * q ;
-	      for (e1 = 1; e1 < (factor - 1) / 2 + 1; e1++)
-		{
-		  complex xp = to[i + e1 * m];
-		  complex xm = to[i + (factor - e1) * m];
-		  double w_real, w_imag ;
+	      complex xp = to[i + e1 * m];
+	      complex xm = to[i + (factor - e1) *m];
+	
+	      const double ap = w_real * xp.real ;
+	      const double am = w_imag * xm.imag ; 
 
-		  if (idx == 0) {
-		    w_real = 1 ;
-		    w_imag = 0 ;
-		  } else {
-		    if (sign == forward) {
-		      w_real = twiddle[idx - 1].real ;
-		      w_imag = twiddle[idx - 1].imag ;
-		    } else {
-		      w_real = twiddle[idx - 1].real ;
-		      w_imag = -twiddle[idx - 1].imag ;
-		    }
-		  }
+	      double sum_real = ap - am;
+	      double sumc_real = ap + am;
 
-		  sum_real += w_real * xp.real - w_imag * xm.imag;
-		  sum_imag += w_real * xp.imag + w_imag * xm.real;
-		  sumc_real += w_real * xp.real + w_imag * xm.imag;
-		  sumc_imag += w_real * xp.imag - w_imag * xm.real;
-		  idx += idx_step ;
-		  idx %= factor * q ;
-		}
-	      from[i + e * m].real = to[i].real + sum_real;
-	      from[i + e * m].imag = to[i].imag + sum_imag;
-	      from[i + (factor-e) * m].real = to[i].real + sumc_real;
-	      from[i + (factor-e) * m].imag = to[i].imag + sumc_imag;
+	      const double bp = w_real * xp.imag ;
+	      const double bm = w_imag * xm.real ;
+
+	      double sum_imag = bp + bm;
+	      double sumc_imag = bp - bm;
+
+	      from[i + em].real += sum_real;
+	      from[i + em].imag += sum_imag;
+	      from[i + ecm].real +=  sumc_real;
+	      from[i + ecm].imag += sumc_imag;
 	    }
-
-	  i++;
+	  idx += idx_step ;
+	  idx %= factor * q ;
 	}
     }
 
@@ -102,21 +120,19 @@ gsl_fft_complex_pass_n (complex from[],
   /* k = 0 */
   for (k1 = 0; k1 < product_1; k1++)
     {
-      
-      to[j].real = from[i].real;
-      to[j].imag = from[i].imag;
-      
-      for (e1 = 1; e1 < factor; e1++)
-	{
-	  double x_real = from[i + e1 * m].real;
-	  double x_imag = from[i + e1 * m].imag;
-	  to[j + e1 * product_1].real = x_real;
-	  to[j + e1 * product_1].imag = x_imag;
-	}
-      i++;
-      j++;
+      to[k1] = from[k1];
     }
-  j += jump;
+
+  for (e1 = 1; e1 < factor; e1++)
+    {
+      for (k1 = 0; k1 < product_1; k1++)
+	{
+	  to[k1 + e1 * product_1] = from[k1 + e1 * m] ;
+	}
+    }
+
+  i = product_1 ;
+  j = product ;
 
   for (k = 1; k < q; k++)
     {
@@ -126,23 +142,31 @@ gsl_fft_complex_pass_n (complex from[],
 	  to[j].real = from[i].real;
 	  to[j].imag = from[i].imag;
 
+	  i++;
+	  j++;
+	}
+      j += jump;
+    }
+
+  i = product_1 ;
+  j = product ;
+
+  for (k = 1; k < q; k++)
+    {
+      for (k1 = 0; k1 < product_1; k1++)
+	{
 	  for (e1 = 1; e1 < factor; e1++)
 	    {
 	      double x_real = from[i + e1 * m].real;
 	      double x_imag = from[i + e1 * m].imag;
 
 	      double wtr, wti ;
-	      if (k == 0) {
-		w_real = 1 ;
-		w_imag = 0 ;
+	      if (sign == forward) {
+		w_real = twiddle[(e1-1)*q + k-1].real ;
+		w_imag = twiddle[(e1-1)*q + k-1].imag ;
 	      } else {
-		if (sign == forward) {
-		  w_real = twiddle[(e1-1)*q + k-1].real ;
-		  w_imag = twiddle[(e1-1)*q + k-1].imag ;
-		} else {
-		  w_real = twiddle[(e1-1)*q + k-1].real ;
-		  w_imag = -twiddle[(e1-1)*q + k-1].imag ; 
-		}
+		w_real = twiddle[(e1-1)*q + k-1].real ;
+		w_imag = -twiddle[(e1-1)*q + k-1].imag ; 
 	      }
 
 	      to[j + e1 * product_1].real = w_real * x_real - w_imag * x_imag;
