@@ -1,5 +1,8 @@
 * What is new in gsl-1.3+:
 
+** Added new functions gsl_rng_fwrite and gsl_rnd_fread for storing
+the state of random number generators in a file.
+
 ** Added cumulative distribution functions and their inverses for the
 continuous random distributions including: gaussian, lognormal, gamma,
 beta, cauchy, laplace, chisq, exponential, gumbel, weibull,

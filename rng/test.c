@@ -31,6 +31,7 @@ void rng_float_test (const gsl_rng_type * T);
 void generic_rng_test (const gsl_rng_type * T);
 void rng_state_test (const gsl_rng_type * T);
 void rng_parallel_state_test (const gsl_rng_type * T);
+void rng_read_write_test (const gsl_rng_type * T);
 int rng_max_test (gsl_rng * r, unsigned long int *kmax, unsigned long int ran_max) ;
 int rng_min_test (gsl_rng * r, unsigned long int *kmin, unsigned long int ran_min, unsigned long int ran_max) ;
 int rng_sum_test (gsl_rng * r, double *sigma);
@@ -184,6 +185,9 @@ main (void)
 
   for (r = rngs ; *r != 0; r++)
     rng_parallel_state_test (*r);
+
+  for (r = rngs ; *r != 0; r++)
+    rng_read_write_test (*r);
 
   /* generic statistical tests (these are just to make sure that we
      don't get any crazy results back from the generator, i.e. they
@@ -349,6 +353,55 @@ rng_parallel_state_test (const gsl_rng_type * T)
   gsl_rng_free (r1);
   gsl_rng_free (r2);
 
+}
+
+void
+rng_read_write_test (const gsl_rng_type * T)
+{
+  unsigned long int test_a[N], test_b[N];
+
+  int i;
+
+  gsl_rng *r = gsl_rng_alloc (T);
+
+  for (i = 0; i < N; ++i)
+    {
+      gsl_rng_get (r);	/* throw away N iterations */
+    }
+
+  { /* save the state to a binary file */
+    FILE *f = fopen("test.dat", "wb"); 
+    gsl_rng_fwrite(f, r);
+    fclose(f);
+  }
+
+  for (i = 0; i < N; ++i)
+    {
+      test_a[i] = gsl_rng_get (r);
+    }
+
+  { /* read the state from a binary file */
+    FILE *f = fopen("test.dat", "rb"); 
+    gsl_rng_fread(f, r);
+    fclose(f);
+  }
+
+  for (i = 0; i < N; ++i)
+    {
+      test_b[i] = gsl_rng_get (r);
+    }
+
+  {
+    int status = 0;
+    for (i = 0; i < N; ++i)
+      {
+	status |= (test_b[i] != test_a[i]);
+      }
+    gsl_test (status, "%s, random number generator read and write",
+	      gsl_rng_name (r));
+  }
+
+  gsl_rng_free (r);
 }
 
 void

@@ -135,6 +135,10 @@ void gsl_rng_set (const gsl_rng * r, unsigned long int seed);
 unsigned long int gsl_rng_max (const gsl_rng * r);
 unsigned long int gsl_rng_min (const gsl_rng * r);
 const char *gsl_rng_name (const gsl_rng * r);
+
+int gsl_rng_fread (FILE * stream, gsl_rng * r);
+int gsl_rng_fwrite (FILE * stream, const gsl_rng * r);
+
 size_t gsl_rng_size (const gsl_rng * r);
 void * gsl_rng_state (const gsl_rng * r);
 

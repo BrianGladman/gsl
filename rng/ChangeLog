@@ -1,3 +1,7 @@
+2003-07-23  Brian Gough  <bjg@network-theory.co.uk>
+
+	* file.c: added fwrite/fread functions
+
 2003-06-12  Brian Gough  <bjg@network-theory.co.uk>
 
 	* Makefile.am: removed benchmark programs from default build

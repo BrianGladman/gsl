@@ -22,7 +22,8 @@ These functions are declared in the header file @file{gsl_rng.h}.
 * Sampling from a random number generator::  
 * Auxiliary random number generator functions::  
 * Random number environment variables::  
-* Saving and restoring random number generator state::  
+* Copying random number generator state::   
+* Reading and writing random number generator state::   
 * Random number generator algorithms::  
 * Unix random number generators::  
 * Other random number generators::  
@@ -305,8 +306,8 @@ seed = 123
 first value = 2720986350
 @end example
 
-@node Saving and restoring random number generator state
-@section Saving and restoring random number generator state
+@node Copying random number generator state
+@section Copying random number generator state
 
 The above methods ignore the random number `state' which changes from
 call to call.  It is often useful to be able to save and restore the
@@ -324,10 +325,30 @@ This function returns a pointer to a newly created generator which is an
 exact copy of the generator @var{r}.
 @end deftypefn
 
-@deftypefn Random void gsl_rng_print_state (const gsl_rng * @var{r})
-This function prints a hex-dump of the state of the generator @var{r} to
-@code{stdout}.  At the moment its only use is for debugging.
-@end deftypefn
+@node Reading and writing random number generator state 
+@section Reading and writing random number generator state
+
+The library provides functions for reading and writing the random
+number state to a file as binary data or formatted text.
+
+@deftypefun int gsl_rng_fwrite (FILE * @var{stream}, const gsl_rng * @var{r})
+This function writes the random number state of the random number
+generator @var{r} to the stream @var{stream} in binary format.  The
+return value is 0 for success and @code{GSL_EFAILED} if there was a
+problem writing to the file.  Since the data is written in the native
+binary format it may not be portable between different architectures.
+@end deftypefun
+
+@deftypefun int gsl_rng_fread (FILE * @var{stream}, gsl_rng * @var{r})
+This function reads the random number state into the random number
+generator @var{r} from the open stream @var{stream} in binary format.
+The random number generator @var{r} must be preinitialized with the
+correct random number generator type since type information is not
+saved.  The return value is 0 for success and @code{GSL_EFAILED} if
+there was a problem reading from the file.  The data is assumed to
+have been written in the native binary format on the same
+architecture.
+@end deftypefun
 
 @node Random number generator algorithms
 @section Random number generator algorithms
