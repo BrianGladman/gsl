@@ -356,16 +356,16 @@ finding function accepts the following arguments:
 
 @deftypevr {Function Argument} double epsilon
 @vindex @r{root finding,} epsilon @r{(function argument)}
-The maximum permissible error in GSL root finder answers. For the root
-finding algorithm to converge, @code{epsilon} must be greater than the
-absolute value of the root position divided by @w{@code{DBL_EPSILON}},
-specified in the file @w{@file{float.h}} of the @sc{ansi} C Library,
-which is the smallest positive @math{x} such that the relation @math{1 +
-x \neq 1} holds true. With a 64-bit @code{double},
-@w{@code{DBL_EPSILON}} is around @math{10^@{-16@}}. Note that GSL does
-no error checking for this; if the root finder does not converge, make
-sure you are not asking for more precision than the computer is capable
-of giving you.
+The maximum permissible relative error in GSL root finder answers.
+@code{epsilon} must be greater than @w{@code{DBL_EPSILON}}, specified in
+the file @w{@file{float.h}} of the @sc{ansi} C Library, which is the
+smallest positive @math{x} such that the relation @math{1 + x \neq 1}
+holds true, times a buffer value (currently 10) to protect against
+roundoff error. With a 64-bit @code{double}, @w{@code{DBL_EPSILON}} is
+around @math{10^@{-16@}}. Note that this is @strong{relative} error, not
+absolute error: the absolute error is @code{epsilon} times the root location.
+For example, if you give @code{epsilon} a value of 0.003, and the root
+location is 5000, the root location given will be @math{5000 \pm 15}. 
 
 For the sake of efficient resource use, it is a good idea to not ask for
 more precision than you need, especially if your function is costly to
@@ -443,8 +443,11 @@ these conditions is true:
 
 @itemize @bullet
 @item 
-@w{@code{max_iterations}} is equal to 0.
-@xref{Search Stopping Parameters}.
+@w{@code{max_iterations}} is equal to 0. @xref{Search Stopping
+Parameters}.
+
+@item
+@code{epsilon} is too small. @xref{Search Stopping Parameters}.
 
 @item
 The lower bound of the search interval is not less than the upper bound.
@@ -457,11 +460,11 @@ The lower bound of the search interval is not less than the upper bound.
 @item
 @math{f(lower\_bound)} and @math{f(upper\_bound)} do not differ in sign,
 and the function that you are using requires that they do.
-@end itemize
 
 @item
 You provided an invalid combination of @code{f}, @code{df}, and
 @code{fdf}. @xref{Providing the Function to Search}.
+@end itemize
 
 @item GSL_EBADFUNC
 The function under search (or its derivative) did not return a valid
