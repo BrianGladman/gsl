@@ -1,3 +1,8 @@
+2004-06-14  Brian Gough  <bjg@network-theory.co.uk>
+
+	* covar.c (gsl_multifit_covar): change tolerance test to match
+	original code, and handle case where tolr = 0
+
 2003-03-21  Brian Gough  <bjg@network-theory.co.uk>
 
 	* lmset.c (set): removed reference to q, compute QR decomposition

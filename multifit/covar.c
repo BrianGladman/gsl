@@ -76,7 +76,7 @@ gsl_multifit_covar (const gsl_matrix * J, double epsrel, gsl_matrix * covar)
     {
       double rkk = gsl_matrix_get(r, k, k);
 
-      if (fabs(rkk) < tolr)
+      if (fabs(rkk) <= tolr)
         {
           break;
         }

@@ -1,5 +1,8 @@
 * What is new in gsl-1.5:
 
+** Fixed the singular value tolerance test in the multifit covariance
+calculation from < to <= to match the original MINPACK code.
+
 ** The macro HAVE_INLINE is now tested with #ifdef instead of #if as
 in versions prior to 1.4, to match the documentation, and the macro
 GSL_RANGE_CHECK_OFF now works correctly.  An alternative macro
