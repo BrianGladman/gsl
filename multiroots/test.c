@@ -24,7 +24,8 @@ main (void)
   fsolvers[0] = gsl_multiroot_fsolver_dnewton;
   fsolvers[1] = gsl_multiroot_fsolver_broyden;
   fsolvers[2] = gsl_multiroot_fsolver_hybrid;
-  fsolvers[3] = 0;
+  fsolvers[3] = gsl_multiroot_fsolver_hybrids;
+  fsolvers[4] = 0;
 
   fdfsolvers[0] = gsl_multiroot_fdfsolver_newton;
   fdfsolvers[1] = gsl_multiroot_fdfsolver_gnewton;

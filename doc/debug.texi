@@ -107,58 +107,62 @@ could also print out the values of other variables such as
 @cindex warning options
 @cindex gcc warning options
 
-Writing reliable numerical programs in C requires great
-care. Uninitialized variables, conversions to and from integers or from
-signed to unsigned integers can all cause hard-to-find problems.  For
-many non-numerical programs compiling with @code{gcc}'s warning option
-@code{-Wall} provides a good check against common errors. However, for
-numerical programs @code{-Wall} is not enough. If you are unconvinced
-take a look at this program which contains an error that can occur in
-numerical code,
+Writing reliable numerical programs in C requires great care. The
+following GCC warning options are recommended when compiling numerical
+programs:
 
-@example
-#include <math.h>
-#include <stdio.h>
+@comment Uninitialized variables, conversions to and from integers or from
+@comment signed to unsigned integers can all cause hard-to-find problems.  For
+@comment many non-numerical programs compiling with @code{gcc}'s warning option
+@comment @code{-Wall} provides a good check against common errors. However, for
+@comment numerical programs @code{-Wall} is not enough. 
 
-double f (int x) ;
+@comment If you are unconvinced take a look at this program which contains an
+@comment error that can occur in numerical code,
 
-int main ()
-@{
-  double a = 1.5 ;
-  double y = f(a) ;
-  printf("a = %g, sqrt(a) = %g\n", a, y) ;  
-  return 0 ;
-@}
+@comment @example
+@comment #include <math.h>
+@comment #include <stdio.h>
 
-double f(x) @{
-  return sqrt(x) ;
-@}
-@end example
+@comment double f (int x) ;
 
-@noindent
-This code compiles cleanly with @code{-Wall} but produces some strange
-output,
+@comment int main ()
+@comment @{
+@comment   double a = 1.5 ;
+@comment   double y = f(a) ;
+@comment   printf("a = %g, sqrt(a) = %g\n", a, y) ;  
+@comment   return 0 ;
+@comment @}
 
-@example
-bash$ gcc -Wall tmp.c -lm
-bash$ ./a.out 
-a = 1.5, sqrt(a) = 1
-@end example
+@comment double f(x) @{
+@comment   return sqrt(x) ;
+@comment @}
+@comment @end example
 
-@noindent
-Note that adding @code{-ansi} does not help here, since the program does
-not contain any invalid constructs. What is happening is that the
-prototype for the function @code{f(int x)} is not consistent with the
-function call @code{f(y)}, where @code{y} is a floating point
-number. This results in the argument being silently converted to an
-integer. This is valid C, but in a numerical program it also likely to
-be a programming error so we would like to be warned about it. (If we
-genuinely wanted to convert @code{y} to an integer then we could use an
-explicit cast, @code{(int)y}).  
+@comment @noindent
+@comment This code compiles cleanly with @code{-Wall} but produces some strange
+@comment output,
 
-Fortunately GCC provides many additional warnings which can alert you to
-problems such as this. You just have to remember to use them. Here is a
-set of recommended warning options for numerical programs.
+@comment @example
+@comment bash$ gcc -Wall tmp.c -lm
+@comment bash$ ./a.out 
+@comment a = 1.5, sqrt(a) = 1
+@comment @end example
+
+@comment @noindent
+@comment Note that adding @code{-ansi} does not help here, since the program does
+@comment not contain any invalid constructs. What is happening is that the
+@comment prototype for the function @code{f(int x)} is not consistent with the
+@comment function call @code{f(y)}, where @code{y} is a floating point
+@comment number. This results in the argument being silently converted to an
+@comment integer. This is valid C, but in a numerical program it also likely to
+@comment be a programming error so we would like to be warned about it. (If we
+@comment genuinely wanted to convert @code{y} to an integer then we could use an
+@comment explicit cast, @code{(int)y}).  
+
+@comment Fortunately GCC provides many additional warnings which can alert you to
+@comment problems such as this. You just have to remember to use them. Here is a
+@comment set of recommended warning options for numerical programs.
 
 @example
 gcc -ansi -pedantic -Werror -Wall -W -Wmissing-prototypes
@@ -169,11 +173,9 @@ gcc -ansi -pedantic -Werror -Wall -W -Wmissing-prototypes
 @end example
 
 @noindent
-It saves time if you to put these options in your @file{Makefile} (for
-example, under the target @code{make strict}) or define them as a shell
-variable or alias. For details of each option consult the manual
-@cite{Using and porting GCC}. The following table gives a brief
-explanation of what types of errors these warnings catch.
+For details of each option consult the manual @cite{Using and porting
+GCC}. The following table gives a brief explanation of what types of
+errors these warnings catch.
 
 @table @code
 @item -ansi -pedantic 
@@ -206,7 +208,7 @@ traditional and ANSI C. Whether the traditional or ANSI interpretation
 is used might be unpredictable on other compilers. 
 @item -Wconversion 
 The main use of this option is to warn about conversions from signed to
-unsigned integers. For example, @code{unsigned int x = -1}.. If you need
+unsigned integers. For example, @code{unsigned int x = -1}. If you need
 to perform such a conversion you can use an explicit cast.
 @item -Wshadow
 This warns whenever a local variable shadows another local variable. If
@@ -247,29 +249,36 @@ is to increase the size of the file, and you can use the @code{strip}
 command to remove them later if necessary.
 @end table
 
-For comparison, this is what happens when the test program above is
-compiled with these options.
+@comment For comparison, this is what happens when the test program above is
+@comment compiled with these options.
 
-@example
-bash$ gcc -ansi -pedantic -Werror -W -Wall -Wtraditional 
--Wconversion -Wshadow -Wpointer-arith -Wcast-qual -Wcast-align 
--Wwrite-strings -Waggregate-return -Wstrict-prototypes -fshort-enums 
--fno-common -Wmissing-prototypes -Wnested-externs -Dinline= 
--g -O4 tmp.c 
-cc1: warnings being treated as errors
-tmp.c:7: warning: function declaration isn't a prototype
-tmp.c: In function `main':
-tmp.c:9: warning: passing arg 1 of `f' as integer rather than floating 
-due to prototype
-tmp.c: In function `f':
-tmp.c:14: warning: type of `x' defaults to `int'
-tmp.c:15: warning: passing arg 1 of `sqrt' as floating rather than integer 
-due to prototype
-make: *** [tmp] Error 1
-@end example
+@comment @example
+@comment bash$ gcc -ansi -pedantic -Werror -W -Wall -Wtraditional 
+@comment -Wconversion -Wshadow -Wpointer-arith -Wcast-qual -Wcast-align 
+@comment -Wwrite-strings -Waggregate-return -Wstrict-prototypes -fshort-enums 
+@comment -fno-common -Wmissing-prototypes -Wnested-externs -Dinline= 
+@comment -g -O4 tmp.c 
+@comment cc1: warnings being treated as errors
+@comment tmp.c:7: warning: function declaration isn't a prototype
+@comment tmp.c: In function `main':
+@comment tmp.c:9: warning: passing arg 1 of `f' as integer rather than floating 
+@comment due to prototype
+@comment tmp.c: In function `f':
+@comment tmp.c:14: warning: type of `x' defaults to `int'
+@comment tmp.c:15: warning: passing arg 1 of `sqrt' as floating rather than integer 
+@comment due to prototype
+@comment make: *** [tmp] Error 1
+@comment @end example
 
-@noindent
-The error in the prototype is flagged, plus the fact that we should have
-defined main as @code{int main (void)} in ANSI C. Clearly there is some
-work to do before this program is ready to run.
+@comment @noindent
+@comment The error in the prototype is flagged, plus the fact that we should have
+@comment defined main as @code{int main (void)} in ANSI C. Clearly there is some
+@comment work to do before this program is ready to run.
+
+
+
+
+
+
+
 

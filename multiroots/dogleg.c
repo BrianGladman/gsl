@@ -80,10 +80,6 @@ compute_diag (const gsl_matrix * J, gsl_vector * diag)
       if (sum == 0)
 	sum = 1.0;
 
-#ifdef SCALE
-      sum = 1.0;		/* FIXME */
-#endif
-
       gsl_vector_set (diag, j, sqrt (sum));
     }
 }
@@ -103,10 +99,6 @@ update_diag (const gsl_matrix * J, gsl_vector * diag)
 	}
       if (sum == 0)
 	sum = 1.0;
-
-#ifdef FLAT
-      sum = 1.0;		/* FIXME */
-#endif
 
       cnorm = sqrt (sum);
       diagj = gsl_vector_get (diag, j);

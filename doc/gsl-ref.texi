@@ -157,8 +157,7 @@ As of @value{UPDATED}, the complete packages are the random number suite
 (@pxref{Random Number Generation}), the quadrature package
 (@pxref{Numerical Integration}), the FFT package (@pxref{Fast Fourier
 Transforms}), the simulated annealing package (@pxref{Simulated
-Annealing}) and the root finding package (@pxref{Solutions of Nonlinear
-Equations}).  Work is under way on a special function library.
+Annealing}) and the root finding package (@pxref{One dimensional Root-Finding}).  Work is under way on a special function library.
 @end ifinfo
 
 @menu
@@ -170,8 +169,8 @@ Equations}).  Work is under way on a special function library.
 * Statistics::                  
 * Fast Fourier Transforms::     
 * Roots of Polynomials::        
-* Solutions of Nonlinear Equations::  
-* Solutions of Multidimensional Nonlinear Equations::  
+* One dimensional Root-Finding::  
+* Multidimensional Root-Finding::  
 * Minimization::                
 * Special Functions::           
 * Discrete Hankel Transforms::  
@@ -237,21 +236,21 @@ allowing wrappers to be written for very high level languages.
 @include fft.texi
 
 @comment Section on polynomial root finding
-@node  Roots of Polynomials, Solutions of Nonlinear Equations, Fast Fourier Transforms, Top
+@node  Roots of Polynomials, One dimensional Root-Finding, Fast Fourier Transforms, Top
 @chapter Roots of Polynomials
 @include poly.texi
 
 @comment Section on root finding
-@node  Solutions of Nonlinear Equations, Solutions of Multidimensional Nonlinear Equations, Roots of Polynomials, Top
-@chapter Solutions of Nonlinear Equations
+@node  One dimensional Root-Finding, Multidimensional Root-Finding, Roots of Polynomials, Top
+@chapter One dimensional Root-Finding
 @include roots.texi
 
-@node  Solutions of Multidimensional Nonlinear Equations, Minimization, Solutions of Nonlinear Equations, Top
-@chapter Solutions of Multidimensional Nonlinear Equations
+@node  Multidimensional Root-Finding, Minimization, One dimensional Root-Finding, Top
+@chapter Multidimensional Root-Finding
 @include multiroots.texi
 
 @comment Section on minimization
-@node   Minimization, Special Functions, Solutions of Multidimensional Nonlinear Equations, Top
+@node   Minimization, Special Functions, Multidimensional Root-Finding, Top
 @chapter Minimization
 @include min.texi
 
