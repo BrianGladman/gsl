@@ -47,6 +47,11 @@ gsl_integration_qagp_impl (const gsl_function * f,
 
   size_t i;
 
+  /* Initialize results */
+
+  *result = 0;
+  *abserr = 0;
+
   /* Test on validity of parameters */
 
   if (limit > workspace->limit)
@@ -56,17 +61,11 @@ gsl_integration_qagp_impl (const gsl_function * f,
 
   if (npts > workspace->limit)
     {
-      *result = 0;
-      *abserr = 0;
-
       GSL_ERROR ("npts exceeds size of workspace", GSL_EINVAL);
     }
 
   if (epsabs <= 0 && (epsrel < 50 * GSL_DBL_EPSILON || epsrel < 0.5e-28))
     {
-      *result = 0;
-      *abserr = 0;
-
       GSL_ERROR ("tolerance cannot be acheived with given epsabs and epsrel",
 		 GSL_EBADTOL);
     }

@@ -5,7 +5,7 @@
 2. check that routines work correctly for (b, a) and (a, b)
    -DONE
 
-3. check the inner workings of the qawo workspace. I haven't verified
+3. DONE check the inner workings of the qawo workspace. I haven't verified
 it except by checking the overall result.
 
 4. DONE what is this business with  
@@ -17,4 +17,4 @@ it except by checking the overall result.
    then it would be more confusing doing comparisons with the original
    code so we'll just leave it for now.
 
-5. Take a look at the FIXMEs
+5. DONE Take a look at the FIXMEs

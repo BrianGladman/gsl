@@ -64,6 +64,14 @@ int main (void)
     gsl_test_rel(abserr,exp_abserr,1e-7,"qk15(f1) smooth abserr") ;
     gsl_test_rel(resabs,exp_resabs,1e-15,"qk15(f1) smooth resabs") ;    
     gsl_test_rel(resasc,exp_resasc,1e-15,"qk15(f1) smooth resasc") ;
+
+    gsl_integration_qk15 (&f, 1.0, 0.0, 
+				  &result, &abserr, &resabs, &resasc) ;
+
+    gsl_test_rel(result,-exp_result,1e-15,"qk15(f1) reverse result") ;
+    gsl_test_rel(abserr,exp_abserr,1e-7,"qk15(f1) reverse abserr") ;
+    gsl_test_rel(resabs,exp_resabs,1e-15,"qk15(f1) reverse resabs") ;    
+    gsl_test_rel(resasc,exp_resasc,1e-15,"qk15(f1) reverse resasc") ;
   }
 
   {
@@ -82,6 +90,13 @@ int main (void)
     gsl_test_rel(abserr,exp_abserr,1e-7,"qk21(f1) smooth abserr") ;
     gsl_test_rel(resabs,exp_resabs,1e-15,"qk21(f1) smooth resabs") ;    
     gsl_test_rel(resasc,exp_resasc,1e-15,"qk21(f1) smooth resasc") ;
+
+    gsl_integration_qk21 (&f, 1.0, 0.0, 
+				  &result, &abserr, &resabs, &resasc) ;
+    gsl_test_rel(result,-exp_result,1e-15,"qk21(f1) reverse result") ;
+    gsl_test_rel(abserr,exp_abserr,1e-7,"qk21(f1) reverse abserr") ;
+    gsl_test_rel(resabs,exp_resabs,1e-15,"qk21(f1) reverse resabs") ;    
+    gsl_test_rel(resasc,exp_resasc,1e-15,"qk21(f1) reverse resasc") ;
   }
 
   {
@@ -100,6 +115,13 @@ int main (void)
     gsl_test_rel(abserr,exp_abserr,1e-7,"qk31(f1) smooth abserr") ;
     gsl_test_rel(resabs,exp_resabs,1e-15,"qk31(f1) smooth resabs") ;    
     gsl_test_rel(resasc,exp_resasc,1e-15,"qk31(f1) smooth resasc") ;
+
+    gsl_integration_qk31 (&f, 1.0, 0.0, 
+				  &result, &abserr, &resabs, &resasc) ;
+    gsl_test_rel(result,-exp_result,1e-15,"qk31(f1) reverse result") ;
+    gsl_test_rel(abserr,exp_abserr,1e-7,"qk31(f1) reverse abserr") ;
+    gsl_test_rel(resabs,exp_resabs,1e-15,"qk31(f1) reverse resabs") ;    
+    gsl_test_rel(resasc,exp_resasc,1e-15,"qk31(f1) reverse resasc") ;
   }
 
   {
@@ -118,6 +140,13 @@ int main (void)
     gsl_test_rel(abserr,exp_abserr,1e-7,"qk41(f1) smooth abserr") ;
     gsl_test_rel(resabs,exp_resabs,1e-15,"qk41(f1) smooth resabs") ;    
     gsl_test_rel(resasc,exp_resasc,1e-15,"qk41(f1) smooth resasc") ;
+
+    gsl_integration_qk41 (&f, 1.0, 0.0, 
+				  &result, &abserr, &resabs, &resasc) ;
+    gsl_test_rel(result,-exp_result,1e-15,"qk41(f1) reverse result") ;
+    gsl_test_rel(abserr,exp_abserr,1e-7,"qk41(f1) reverse abserr") ;
+    gsl_test_rel(resabs,exp_resabs,1e-15,"qk41(f1) reverse resabs") ;    
+    gsl_test_rel(resasc,exp_resasc,1e-15,"qk41(f1) reverse resasc") ;
   }
 
   {
@@ -136,6 +165,13 @@ int main (void)
     gsl_test_rel(abserr,exp_abserr,1e-5,"qk51(f1) smooth abserr") ;
     gsl_test_rel(resabs,exp_resabs,1e-15,"qk51(f1) smooth resabs") ;    
     gsl_test_rel(resasc,exp_resasc,1e-15,"qk51(f1) smooth resasc") ;
+
+    gsl_integration_qk51 (&f, 1.0, 0.0, 
+				  &result, &abserr, &resabs, &resasc) ;
+    gsl_test_rel(result,-exp_result,1e-15,"qk51(f1) reverse result") ;
+    gsl_test_rel(abserr,exp_abserr,1e-5,"qk51(f1) reverse abserr") ;
+    gsl_test_rel(resabs,exp_resabs,1e-15,"qk51(f1) reverse resabs") ;    
+    gsl_test_rel(resasc,exp_resasc,1e-15,"qk51(f1) reverse resasc") ;
   }
 
   {
@@ -154,6 +190,13 @@ int main (void)
     gsl_test_rel(abserr,exp_abserr,1e-5,"qk61(f1) smooth abserr") ;
     gsl_test_rel(resabs,exp_resabs,1e-15,"qk61(f1) smooth resabs") ;    
     gsl_test_rel(resasc,exp_resasc,1e-15,"qk61(f1) smooth resasc") ;
+
+    gsl_integration_qk61 (&f, 1.0, 0.0, 
+				  &result, &abserr, &resabs, &resasc) ;
+    gsl_test_rel(result,-exp_result,1e-15,"qk61(f1) reverse result") ;
+    gsl_test_rel(abserr,exp_abserr,1e-5,"qk61(f1) reverse abserr") ;
+    gsl_test_rel(resabs,exp_resabs,1e-15,"qk61(f1) reverse resabs") ;    
+    gsl_test_rel(resasc,exp_resasc,1e-15,"qk61(f1) reverse resasc") ;
   }
 
   /* Now test the basic rules with a positive function that has a
@@ -176,6 +219,13 @@ int main (void)
     gsl_test_rel(abserr,exp_abserr,1e-7,"qk15(f1) singular abserr") ;
     gsl_test_rel(resabs,exp_resabs,1e-15,"qk15(f1) singular resabs") ;    
     gsl_test_rel(resasc,exp_resasc,1e-15,"qk15(f1) singular resasc") ;
+
+    gsl_integration_qk15 (&f, 1.0, 0.0, 
+				  &result, &abserr, &resabs, &resasc) ;
+    gsl_test_rel(result,-exp_result,1e-15,"qk15(f1) reverse result") ;
+    gsl_test_rel(abserr,exp_abserr,1e-7,"qk15(f1) reverse abserr") ;
+    gsl_test_rel(resabs,exp_resabs,1e-15,"qk15(f1) reverse resabs") ;    
+    gsl_test_rel(resasc,exp_resasc,1e-15,"qk15(f1) reverse resasc") ;
   }
 
   {
@@ -194,6 +244,13 @@ int main (void)
     gsl_test_rel(abserr,exp_abserr,1e-7,"qk21(f1) singular abserr") ;
     gsl_test_rel(resabs,exp_resabs,1e-15,"qk21(f1) singular resabs") ;    
     gsl_test_rel(resasc,exp_resasc,1e-15,"qk21(f1) singular resasc") ;
+
+    gsl_integration_qk21 (&f, 1.0, 0.0, 
+				  &result, &abserr, &resabs, &resasc) ;
+    gsl_test_rel(result,-exp_result,1e-15,"qk21(f1) reverse result") ;
+    gsl_test_rel(abserr,exp_abserr,1e-7,"qk21(f1) reverse abserr") ;
+    gsl_test_rel(resabs,exp_resabs,1e-15,"qk21(f1) reverse resabs") ;    
+    gsl_test_rel(resasc,exp_resasc,1e-15,"qk21(f1) reverse resasc") ;
   }
 
   {
@@ -212,6 +269,13 @@ int main (void)
     gsl_test_rel(abserr,exp_abserr,1e-7,"qk31(f1) singular abserr") ;
     gsl_test_rel(resabs,exp_resabs,1e-15,"qk31(f1) singular resabs") ;    
     gsl_test_rel(resasc,exp_resasc,1e-15,"qk31(f1) singular resasc") ;
+
+    gsl_integration_qk31 (&f, 1.0, 0.0, 
+				  &result, &abserr, &resabs, &resasc) ;
+    gsl_test_rel(result,-exp_result,1e-15,"qk31(f1) reverse result") ;
+    gsl_test_rel(abserr,exp_abserr,1e-7,"qk31(f1) reverse abserr") ;
+    gsl_test_rel(resabs,exp_resabs,1e-15,"qk31(f1) reverse resabs") ;    
+    gsl_test_rel(resasc,exp_resasc,1e-15,"qk31(f1) reverse resasc") ;
   }
 
   {
@@ -230,6 +294,13 @@ int main (void)
     gsl_test_rel(abserr,exp_abserr,1e-7,"qk41(f1) singular abserr") ;
     gsl_test_rel(resabs,exp_resabs,1e-15,"qk41(f1) singular resabs") ;    
     gsl_test_rel(resasc,exp_resasc,1e-15,"qk41(f1) singular resasc") ;
+
+    gsl_integration_qk41 (&f, 1.0, 0.0, 
+				  &result, &abserr, &resabs, &resasc) ;
+    gsl_test_rel(result,-exp_result,1e-15,"qk41(f1) reverse result") ;
+    gsl_test_rel(abserr,exp_abserr,1e-7,"qk41(f1) reverse abserr") ;
+    gsl_test_rel(resabs,exp_resabs,1e-15,"qk41(f1) reverse resabs") ;    
+    gsl_test_rel(resasc,exp_resasc,1e-15,"qk41(f1) reverse resasc") ;
   }
 
   {
@@ -248,6 +319,13 @@ int main (void)
     gsl_test_rel(abserr,exp_abserr,1e-7,"qk51(f1) singular abserr") ;
     gsl_test_rel(resabs,exp_resabs,1e-15,"qk51(f1) singular resabs") ;    
     gsl_test_rel(resasc,exp_resasc,1e-15,"qk51(f1) singular resasc") ;
+
+    gsl_integration_qk51 (&f, 1.0, 0.0, 
+				  &result, &abserr, &resabs, &resasc) ;
+    gsl_test_rel(result,-exp_result,1e-15,"qk51(f1) reverse result") ;
+    gsl_test_rel(abserr,exp_abserr,1e-7,"qk51(f1) reverse abserr") ;
+    gsl_test_rel(resabs,exp_resabs,1e-15,"qk51(f1) reverse resabs") ;    
+    gsl_test_rel(resasc,exp_resasc,1e-15,"qk51(f1) reverse resasc") ;
   }
 
   {
@@ -266,6 +344,13 @@ int main (void)
     gsl_test_rel(abserr,exp_abserr,1e-7,"qk61(f1) singular abserr") ;
     gsl_test_rel(resabs,exp_resabs,1e-15,"qk61(f1) singular resabs") ;    
     gsl_test_rel(resasc,exp_resasc,1e-15,"qk61(f1) singular resasc") ;
+
+    gsl_integration_qk61 (&f, 1.0, 0.0, 
+				  &result, &abserr, &resabs, &resasc) ;
+    gsl_test_rel(result,-exp_result,1e-15,"qk61(f1) reverse result") ;
+    gsl_test_rel(abserr,exp_abserr,1e-7,"qk61(f1) reverse abserr") ;
+    gsl_test_rel(resabs,exp_resabs,1e-15,"qk61(f1) reverse resabs") ;    
+    gsl_test_rel(resasc,exp_resasc,1e-15,"qk61(f1) reverse resasc") ;
   }
 
   /* Test the basic Gauss-Kronrod rules with a smooth oscillating
@@ -288,6 +373,13 @@ int main (void)
     gsl_test_rel(abserr,exp_abserr,1e-7,"qk15(f3) oscill abserr") ;
     gsl_test_rel(resabs,exp_resabs,1e-15,"qk15(f3) oscill resabs") ;
     gsl_test_rel(resasc,exp_resasc,1e-15,"qk15(f3) oscill resasc") ;
+
+    gsl_integration_qk15 (&f, 2.71, 0.3, 
+				  &result, &abserr, &resabs, &resasc) ;
+    gsl_test_rel(result,-exp_result,1e-15,"qk15(f3) reverse result") ;
+    gsl_test_rel(abserr,exp_abserr,1e-7,"qk15(f3) reverse abserr") ;
+    gsl_test_rel(resabs,exp_resabs,1e-15,"qk15(f3) reverse resabs") ;
+    gsl_test_rel(resasc,exp_resasc,1e-15,"qk15(f3) reverse resasc") ;
   }
 
   {
@@ -306,6 +398,13 @@ int main (void)
     gsl_test_rel(abserr,exp_abserr,1e-5,"qk21(f3) oscill abserr") ;
     gsl_test_rel(resabs,exp_resabs,1e-15,"qk21(f3) oscill resabs") ;
     gsl_test_rel(resasc,exp_resasc,1e-15,"qk21(f3) oscill resasc") ;
+
+    gsl_integration_qk21 (&f, 2.71, 0.3,
+				  &result, &abserr, &resabs, &resasc) ;
+    gsl_test_rel(result,-exp_result,1e-15,"qk21(f3) reverse result") ;
+    gsl_test_rel(abserr,exp_abserr,1e-5,"qk21(f3) reverse abserr") ;
+    gsl_test_rel(resabs,exp_resabs,1e-15,"qk21(f3) reverse resabs") ;
+    gsl_test_rel(resasc,exp_resasc,1e-15,"qk21(f3) reverse resasc") ;
   }
 
   {
@@ -324,6 +423,13 @@ int main (void)
     gsl_test_rel(abserr,exp_abserr,1e-7,"qk31(f3) oscill abserr") ;
     gsl_test_rel(resabs,exp_resabs,1e-15,"qk31(f3) oscill resabs") ;
     gsl_test_rel(resasc,exp_resasc,1e-15,"qk31(f3) oscill resasc") ;
+
+    gsl_integration_qk31 (&f, 2.71, 0.3, 
+				  &result, &abserr, &resabs, &resasc) ;
+    gsl_test_rel(result,-exp_result,1e-15,"qk31(f3) reverse result") ;
+    gsl_test_rel(abserr,exp_abserr,1e-7,"qk31(f3) reverse abserr") ;
+    gsl_test_rel(resabs,exp_resabs,1e-15,"qk31(f3) reverse resabs") ;
+    gsl_test_rel(resasc,exp_resasc,1e-15,"qk31(f3) reverse resasc") ;
   }
 
   {
@@ -342,6 +448,13 @@ int main (void)
     gsl_test_rel(abserr,exp_abserr,1e-7,"qk41(f3) oscill abserr") ;
     gsl_test_rel(resabs,exp_resabs,1e-15,"qk41(f3) oscill resabs") ;
     gsl_test_rel(resasc,exp_resasc,1e-15,"qk41(f3) oscill resasc") ;
+
+    gsl_integration_qk41 (&f, 2.71, 0.3,
+				  &result, &abserr, &resabs, &resasc) ;
+    gsl_test_rel(result,-exp_result,1e-15,"qk41(f3) reverse result") ;
+    gsl_test_rel(abserr,exp_abserr,1e-7,"qk41(f3) reverse abserr") ;
+    gsl_test_rel(resabs,exp_resabs,1e-15,"qk41(f3) reverse resabs") ;
+    gsl_test_rel(resasc,exp_resasc,1e-15,"qk41(f3) reverse resasc") ;
   }
 
   {
@@ -360,6 +473,13 @@ int main (void)
     gsl_test_rel(abserr,exp_abserr,1e-7,"qk51(f3) oscill abserr") ;
     gsl_test_rel(resabs,exp_resabs,1e-15,"qk51(f3) oscill resabs") ;
     gsl_test_rel(resasc,exp_resasc,1e-15,"qk51(f3) oscill resasc") ;
+
+    gsl_integration_qk51 (&f, 2.71, 0.3,
+				  &result, &abserr, &resabs, &resasc) ;
+    gsl_test_rel(result,-exp_result,1e-15,"qk51(f3) reverse result") ;
+    gsl_test_rel(abserr,exp_abserr,1e-7,"qk51(f3) reverse abserr") ;
+    gsl_test_rel(resabs,exp_resabs,1e-15,"qk51(f3) reverse resabs") ;
+    gsl_test_rel(resasc,exp_resasc,1e-15,"qk51(f3) reverse resasc") ;
   }
 
   {
@@ -378,6 +498,13 @@ int main (void)
     gsl_test_rel(abserr,exp_abserr,1e-7,"qk61(f3) oscill abserr") ;
     gsl_test_rel(resabs,exp_resabs,1e-15,"qk61(f3) oscill resabs") ;
     gsl_test_rel(resasc,exp_resasc,1e-15,"qk61(f3) oscill resasc") ;
+
+    gsl_integration_qk61 (&f, 2.71, 0.3,
+				  &result, &abserr, &resabs, &resasc) ;
+    gsl_test_rel(result,-exp_result,1e-15,"qk61(f3) reverse result") ;
+    gsl_test_rel(abserr,exp_abserr,1e-7,"qk61(f3) reverse abserr") ;
+    gsl_test_rel(resabs,exp_resabs,1e-15,"qk61(f3) reverse resabs") ;
+    gsl_test_rel(resasc,exp_resasc,1e-15,"qk61(f3) reverse resasc") ;
   }
 
   /* Test the non-adaptive gaussian integrator QNG */
@@ -399,6 +526,13 @@ int main (void)
     gsl_test_rel(abserr,exp_abserr,1e-7,"qng(f1) smooth abserr") ;
     gsl_test_int((int)neval,exp_neval,"qng(f1) smooth neval") ;  
     gsl_test_int(status,exp_ier,"qng(f1) smooth status") ;
+
+    status = gsl_integration_qng (&f, 1.0, 0.0, 1e-1, 0.0,
+				  &result, &abserr, &neval) ;
+    gsl_test_rel(result,-exp_result,1e-15,"qng(f1) reverse result") ;
+    gsl_test_rel(abserr,exp_abserr,1e-7,"qng(f1) reverse abserr") ;
+    gsl_test_int((int)neval,exp_neval,"qng(f1) reverse neval") ;  
+    gsl_test_int(status,exp_ier,"qng(f1) reverse status") ;
   }
 
   {
@@ -419,6 +553,13 @@ int main (void)
     gsl_test_rel(abserr,exp_abserr,1e-6,"qng(f1) smooth 43pt abserr") ;
     gsl_test_int((int)neval,exp_neval,"qng(f1) smooth 43pt neval") ;  
     gsl_test_int(status,exp_ier,"qng(f1) smooth 43pt status") ;
+
+    status = gsl_integration_qng (&f, 1.0, 0.0, 0.0, 1e-9,
+				  &result, &abserr, &neval) ;
+    gsl_test_rel(result,-exp_result,1e-15,"qng(f1) reverse 43pt result") ;
+    gsl_test_rel(abserr,exp_abserr,1e-6,"qng(f1) reverse 43pt abserr") ;
+    gsl_test_int((int)neval,exp_neval,"qng(f1) reverse 43pt neval") ;  
+    gsl_test_int(status,exp_ier,"qng(f1) reverse 43pt status") ;
   }
 
   {
@@ -438,6 +579,13 @@ int main (void)
     gsl_test_rel(abserr,exp_abserr,1e-7,"qng(f3) oscill abserr") ;
     gsl_test_int((int)neval,exp_neval,"qng(f3) oscill neval") ;
     gsl_test_int(status,exp_ier,"qng(f3) oscill status") ;
+
+    status = gsl_integration_qng (&f, 2.71, 0.3, 0.0, 1e-12,
+				  &result, &abserr, &neval) ;
+    gsl_test_rel(result,-exp_result,1e-15,"qnq(f3) reverse result") ;
+    gsl_test_rel(abserr,exp_abserr,1e-7,"qng(f3) reverse abserr") ;
+    gsl_test_int((int)neval,exp_neval,"qng(f3) reverse neval") ;
+    gsl_test_int(status,exp_ier,"qng(f3) reverse status") ;
   }
 
   {
@@ -458,6 +606,13 @@ int main (void)
     gsl_test_rel(abserr,exp_abserr,1e-7,"qng(f1) 87pt smooth abserr") ;
     gsl_test_int((int)neval,exp_neval,"qng(f1) 87pt smooth neval") ;  
     gsl_test_int(status,exp_ier,"qng(f1) 87pt smooth status") ;
+
+    status = gsl_integration_qng (&f, 1.0, 0.0, 0.0, 1e-13,
+				  &result, &abserr, &neval) ;
+    gsl_test_rel(result,-exp_result,1e-15,"qng(f1) 87pt reverse result") ;
+    gsl_test_rel(abserr,exp_abserr,1e-7,"qng(f1) 87pt reverse abserr") ;
+    gsl_test_int((int)neval,exp_neval,"qng(f1) 87pt reverse neval") ;  
+    gsl_test_int(status,exp_ier,"qng(f1) 87pt reverse status") ;
   }
 
   {
@@ -478,6 +633,13 @@ int main (void)
     gsl_test_rel(abserr,exp_abserr,1e-7,"qng(f1) sing beyond 87pt abserr");
     gsl_test_int((int)neval,exp_neval,"qng(f1) sing beyond 87pt neval") ;  
     gsl_test_int(status,exp_ier,"qng(f1) sing beyond 87pt status") ;
+
+    status = gsl_integration_qng (&f, 1.0, 0.0, 0.0, 1e-3,
+				  &result, &abserr, &neval) ;
+    gsl_test_rel(result,-exp_result,1e-15,"qng(f1) reverse beyond 87pt result");
+    gsl_test_rel(abserr,exp_abserr,1e-7,"qng(f1) rev beyond 87pt abserr");
+    gsl_test_int((int)neval,exp_neval,"qng(f1) rev beyond 87pt neval") ;  
+    gsl_test_int(status,exp_ier,"qng(f1) rev beyond 87pt status") ;
   }
 
   /* Test the adaptive integrator QAG */
@@ -533,6 +695,18 @@ int main (void)
 
     for (i = 0; i < 6 ; i++) 
 	gsl_test_int((int)w->order[i],order[i]-1,"qag(f1) smooth order") ;
+
+    p.neval = 0;
+
+    status = gsl_integration_qag (&fc, 1.0, 0.0, 0.0, 1e-10, w->limit,
+				  GSL_INTEG_GAUSS15, w,
+				  &result, &abserr) ;
+
+    gsl_test_rel(result,-exp_result,1e-15,"qag(f1) reverse result") ;
+    gsl_test_rel(abserr,exp_abserr,1e-6,"qag(f1) reverse abserr") ;
+    gsl_test_int((int)(p.neval),exp_neval,"qag(f1) reverse neval") ;  
+    gsl_test_int((int)(w->size),exp_last,"qag(f1) reverse last") ;  
+    gsl_test_int(status,exp_ier,"qag(f1) reverse status") ;
 
     gsl_integration_workspace_free (w) ;
 
@@ -597,6 +771,18 @@ int main (void)
     for (i = 0; i < 8 ; i++) 
 	gsl_test_int((int)w->order[i],order[i]-1,"qag(f1,21pt) smooth order");
 
+
+    p.neval = 0;
+    status = gsl_integration_qag (&fc, 1.0, 0.0, 1e-14, 0.0, w->limit,
+				  GSL_INTEG_GAUSS21, w,
+				  &result, &abserr) ;
+
+    gsl_test_rel(result,-exp_result,1e-15,"qag(f1,21pt) reverse result") ;
+    gsl_test_rel(abserr,exp_abserr,1e-6,"qag(f1,21pt) reverse abserr") ;
+    gsl_test_int((int)(p.neval),exp_neval,"qag(f1,21pt) reverse neval") ;  
+    gsl_test_int((int)(w->size),exp_last,"qag(f1,21pt) reverse last") ;  
+    gsl_test_int(status,exp_ier,"qag(f1,21pt) reverse status") ;
+
     gsl_integration_workspace_free (w) ;
 
   }
@@ -631,6 +817,17 @@ int main (void)
     gsl_test_int((int)(w->size),exp_last,"qag(f3,31pt) oscill last") ;  
     gsl_test_int(status,exp_ier,"qag(f3,31pt) oscill status") ;
 
+    p.neval = 0;
+    status = gsl_integration_qag (&fc, 2.71, 0.3, 1e-14, 0.0, w->limit, 
+				  GSL_INTEG_GAUSS31, w, 
+				  &result, &abserr) ;
+
+    gsl_test_rel(result,-exp_result,1e-15,"qag(f3,31pt) reverse result");
+    gsl_test_rel(abserr,exp_abserr,1e-6,"qag(f3,31pt) reverse abserr");
+    gsl_test_int((int)(p.neval),exp_neval,"qag(f3,31pt) reverse neval") ;  
+    gsl_test_int((int)(w->size),exp_last,"qag(f3,31pt) reverse last") ;  
+    gsl_test_int(status,exp_ier,"qag(f3,31pt) reverse status") ;
+
     gsl_integration_workspace_free (w) ;
 
   }
@@ -659,6 +856,15 @@ int main (void)
     gsl_test_int((int)(p.neval),exp_neval,"qag(f16,51pt) sing neval") ;  
     gsl_test_int((int)(w->size),exp_last,"qag(f16,51pt) sing last") ;  
     gsl_test_int(status,exp_ier,"qag(f16,51pt) sing status") ;
+
+    p.neval = 0;
+    status = gsl_integration_qag (&fc, 1.0, -1.0, 1e-14, 0.0, w->limit,
+				  GSL_INTEG_GAUSS51, w, 
+				  &result, &abserr) ;
+
+    gsl_test_int((int)(p.neval),exp_neval,"qag(f16,51pt) rev neval") ;  
+    gsl_test_int((int)(w->size),exp_last,"qag(f16,51pt) rev last") ;  
+    gsl_test_int(status,exp_ier,"qag(f16,51pt) rev status") ;
 
     gsl_integration_workspace_free (w) ;
 
@@ -725,6 +931,17 @@ int main (void)
     for (i = 0; i < 3 ; i++) 
 	gsl_test_int((int)w->order[i],order[i]-1,"qag(f16,61pt) limit order");
 
+    p.neval = 0;
+    status = gsl_integration_qag (&fc, 1.0, -1.0, 1e-14, 0.0, w->limit, 
+				  GSL_INTEG_GAUSS61, w, 
+				  &result, &abserr) ;
+
+    gsl_test_rel(result,-exp_result,1e-15,"qag(f16,61pt) reverse result") ;
+    gsl_test_rel(abserr,exp_abserr,1e-6,"qag(f16,61pt) reverse abserr") ;
+    gsl_test_int((int)(p.neval),exp_neval,"qag(f16,61pt) reverse neval") ;  
+    gsl_test_int((int)(w->size),exp_last,"qag(f16,61pt) reverse last") ;  
+    gsl_test_int(status,exp_ier,"qag(f16,61pt) reverse status") ;
+
     gsl_integration_workspace_free (w) ;
 
   }
@@ -785,6 +1002,17 @@ int main (void)
 
     for (i = 0; i < 5 ; i++) 
 	gsl_test_int((int)w->order[i],order[i]-1,"qags(f1) smooth order") ;
+
+    p.neval = 0;
+    status = gsl_integration_qags (&fc, 1.0, 0.0, 0.0, 1e-10, w->limit,
+				   w, 
+				   &result, &abserr) ;
+
+    gsl_test_rel(result,-exp_result,1e-15,"qags(f1) reverse result") ;
+    gsl_test_rel(abserr,exp_abserr,1e-6,"qags(f1) reverse abserr") ;
+    gsl_test_int((int)(p.neval),exp_neval,"qags(f1) reverse neval") ;  
+    gsl_test_int((int)(w->size),exp_last,"qags(f1) reverse last") ;  
+    gsl_test_int(status,exp_ier,"qags(f1) reverse status") ;
 
     gsl_integration_workspace_free (w) ;
 
@@ -872,6 +1100,17 @@ int main (void)
 
     for (i = 0; i < 9 ; i++) 
 	gsl_test_int((int)w->order[i],order[i]-1,"qags(f11) smooth order");
+
+    p.neval = 0;
+    status = gsl_integration_qags (&fc, 1000.0, 1.0, 1e-7, 0.0, w->limit,
+				   w, 
+				   &result, &abserr) ;
+    
+    gsl_test_rel(result,-exp_result,1e-15,"qags(f11) reverse result") ;
+    gsl_test_rel(abserr,exp_abserr,1e-3,"qags(f11) reverse abserr") ;
+    gsl_test_int((int)(p.neval),exp_neval,"qags(f11) reverse neval") ;  
+    gsl_test_int((int)(w->size),exp_last,"qags(f11) reverse last") ;  
+    gsl_test_int(status,exp_ier,"qags(f11) reverse status") ;
 
     gsl_integration_workspace_free (w) ;
 
@@ -1487,6 +1726,17 @@ int main (void)
     for (i = 0; i < 6 ; i++) 
 	gsl_test_int((int)w->order[i],order[i]-1,"qawc(f459) order");
 
+    p.neval = 0;
+    status = gsl_integration_qawc (&fc, 5.0, -1.0, 0.0, 0.0, 1.0e-3, w->limit,
+				   w, 
+				   &result, &abserr) ;
+    
+    gsl_test_rel(result,-exp_result,1e-14,"qawc(f459) rev result") ;
+    gsl_test_rel(abserr,exp_abserr,1e-6,"qawc(f459) rev abserr") ;
+    gsl_test_int((int)(p.neval),exp_neval,"qawc(f459) rev neval") ;  
+    gsl_test_int((int)(w->size),exp_last,"qawc(f459) rev last") ;  
+    gsl_test_int(status,exp_ier,"qawc(f459) rev status") ;
+
     gsl_integration_workspace_free (w) ;
 
   }
@@ -1583,8 +1833,8 @@ int main (void)
     exp_result = 9.896686656601706433E-01;
     exp_abserr = 5.888032513201251628E-08;
 
-    gsl_test_rel(result,exp_result,1e-14,"qaws(f458) AXXB result") ;
-    gsl_test_rel(abserr,exp_abserr,1e-6,"qaws(f458) AXXB abserr") ;
+    gsl_test_rel(result,exp_result,1e-14,"qaws(f458) AB result") ;
+    gsl_test_rel(abserr,exp_abserr,1e-6,"qaws(f458) AB abserr") ;
 
     /* Test with ln(x - a) */
 
@@ -1596,8 +1846,8 @@ int main (void)
     exp_result = -3.636679470586539620E-01;
     exp_abserr = 2.851348775257054093E-08;
 
-    gsl_test_rel(result,exp_result,1e-14,"qaws(f458) AXXB ln(x-a) result") ;
-    gsl_test_rel(abserr,exp_abserr,1e-6,"qaws(f458) AXXB ln(x-a) abserr") ;
+    gsl_test_rel(result,exp_result,1e-14,"qaws(f458) AB ln(x-a) result") ;
+    gsl_test_rel(abserr,exp_abserr,1e-6,"qaws(f458) AB ln(x-a) abserr") ;
 
     /* Test with ln(b - x) */
 
@@ -1609,8 +1859,8 @@ int main (void)
     exp_result = -1.911489253363409802E+00;
     exp_abserr = 9.854016753016499034E-09;
 
-    gsl_test_rel(result,exp_result,1e-14,"qaws(f458) AXXB ln(b-x) result") ;
-    gsl_test_rel(abserr,exp_abserr,1e-6,"qaws(f458) AXXB ln(b-x) abserr") ;
+    gsl_test_rel(result,exp_result,1e-14,"qaws(f458) AB ln(b-x) result") ;
+    gsl_test_rel(abserr,exp_abserr,1e-6,"qaws(f458) AB ln(b-x) abserr") ;
 
     /* Test with ln(x - a) ln(b - x) */
 
@@ -1622,8 +1872,8 @@ int main (void)
     exp_result = 3.159922862811048172E-01;
     exp_abserr = 2.336183482198144595E-08;
 
-    gsl_test_rel(result,exp_result,1e-14,"qaws(f458) AXXB ln(x-a)ln(b-x) result") ;
-    gsl_test_rel(abserr,exp_abserr,1e-6,"qaws(f458) AXXB ln(x-a)ln(b-x) abserr") ;
+    gsl_test_rel(result,exp_result,1e-14,"qaws(f458) AB ln(x-a)ln(b-x) result") ;
+    gsl_test_rel(abserr,exp_abserr,1e-6,"qaws(f458) AB ln(x-a)ln(b-x) abserr") ;
 
     gsl_integration_workspace_free (w) ;
 
@@ -1715,6 +1965,22 @@ int main (void)
     for (i = 0; i < 9 ; i++) 
 	gsl_test_int((int)w->order[i],order[i]-1,"qawo(f456) order");
 
+
+    /* In reverse, flip limit and sign of length */
+
+    gsl_integration_qawo_table_set_length (wo, -1.0);
+
+    p.neval = 0; 
+    status = gsl_integration_qawo (&fc, 1.0, 0.0, 1e-7, w->limit,
+				   w, wo, &result, &abserr) ;
+    
+    gsl_test_rel(result,-exp_result,1e-14,"qawo(f456) rev result") ;
+    gsl_test_rel(abserr,exp_abserr,1e-3,"qawo(f456) rev abserr") ;
+    gsl_test_int((int)(p.neval),exp_neval,"qawo(f456) rev neval") ;  
+    gsl_test_int((int)(w->size),exp_last,"qawo(f456) rev last") ;  
+    gsl_test_int(status,exp_ier,"qawo(f456) rev status") ;
+
+
     gsl_integration_qawo_table_free (wo) ;
     gsl_integration_workspace_free (w) ;
 
@@ -1793,7 +2059,6 @@ int main (void)
     gsl_integration_workspace_free (w) ;
 
   }
-
 
   return gsl_test_summary() ;
 } 

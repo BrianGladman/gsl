@@ -27,6 +27,11 @@ gsl_integration_qawc (gsl_function * f,
   int sign = 1;
   double lower, higher;
 
+  /* Initialize results */
+
+  *result = 0;
+  *abserr = 0;
+
   if (limit > workspace->limit)
     {
       GSL_ERROR ("iteration limit exceeds available workspace", GSL_EINVAL) ;
@@ -48,18 +53,12 @@ gsl_integration_qawc (gsl_function * f,
 
   if (epsabs <= 0 && (epsrel < 50 * GSL_DBL_EPSILON || epsrel < 0.5e-28))
     {
-      *result = 0;
-      *abserr = 0;
-
       GSL_ERROR ("tolerance cannot be acheived with given epsabs and epsrel",
 		 GSL_EBADTOL);
     }
 
   if (c == a || c == b) 
     {
-      *result = 0;
-      *abserr = 0;
-
       GSL_ERROR ("cannot integrate with singularity on endpoint", GSL_EINVAL);
     }      
 

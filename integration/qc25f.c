@@ -13,8 +13,6 @@ struct fn_fourier_params
 static double fn_sin (double t, void *params);
 static double fn_cos (double t, void *params);
 
-static void compute_moments (double par, double *moment);
-
 static void
 qc25f (gsl_function * f, double a, double b, 
        gsl_integration_qawo_table * wf, size_t level,

@@ -36,22 +36,23 @@ gsl_integration_qawf (gsl_function * f,
   double initial_eps, eps;
   int error_type = 0;
 
+  /* Initialize results */
+
+  initialise (workspace, a, a);
+
+  *result = 0;
+  *abserr = 0;
+
   if (limit > workspace->limit)
     {
       GSL_ERROR ("iteration limit exceeds available workspace", GSL_EINVAL) ;
     }
 
-  initialise (workspace, a, a);
-
   /* Test on accuracy */
 
   if (epsabs <= 0)
     {
-      *result = 0;
-      *abserr = 0;
-
-      GSL_ERROR ("absolute tolerance epsabs must be positive",
-		 GSL_EBADTOL);
+      GSL_ERROR ("absolute tolerance epsabs must be positive", GSL_EBADTOL) ;
     }
 
   if (omega == 0.0)

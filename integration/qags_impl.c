@@ -39,20 +39,22 @@ gsl_integration_qags_impl (const gsl_function * f,
 
   struct extrapolation_table table;
 
+  /* Initialize results */
+
+  initialise (workspace, a, b);
+
+  *result = 0;
+  *abserr = 0;
+
   if (limit > workspace->limit)
     {
       GSL_ERROR ("iteration limit exceeds available workspace", GSL_EINVAL) ;
     }
 
-  initialise (workspace, a, b);
-
   /* Test on accuracy */
 
   if (epsabs <= 0 && (epsrel < 50 * GSL_DBL_EPSILON || epsrel < 0.5e-28))
     {
-      *result = 0;
-      *abserr = 0;
-
       GSL_ERROR ("tolerance cannot be acheived with given epsabs and epsrel",
 		 GSL_EBADTOL);
     }
