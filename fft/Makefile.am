@@ -6,7 +6,7 @@ include_HEADERS = gsl_fft.h gsl_fft_complex.h gsl_fft_halfcomplex.h gsl_fft_real
 
 noinst_HEADERS = fft_complex.h fft_halfcomplex.h fft_real.h
 
-INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../err
+INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../vector -I$(srcdir)/../err
 
 TESTS = test_trap test_radix2 test
 
@@ -33,7 +33,7 @@ gsl_dft_complex.h \
  \
 gsl_fft.h \
  \
-complex.c \
+c.c \
 gsl_fft_complex.h \
 c_init.c \
 c_pass_2.c \
