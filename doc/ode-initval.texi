@@ -231,40 +231,42 @@ appropriate factor,
 @tex
 \beforedisplay
 $$
-h_{new} = h_{old} * S * (D/E)^{1/q}
+h_{new} = h_{old} * S * (E/D)^{-1/q}
 $$
 \afterdisplay
 @end tex
 @ifinfo
 @example
-h_new = h_old * S * (D/E)^(1/q)
+h_new = h_old * S * (E/D)^(-1/q)
 @end example
 @end ifinfo
 @noindent
 where @math{q} is the consistency order of method (e.g. @math{q=4} for
 4(5) embedded RK), and @math{S} is a safety factor of 0.9. The ratio
-@math{D/E} is taken to be the maximum of the ratios
-@math{D_i/E_i}. 
+@math{E/D} is taken to be the maximum of the ratios
+@math{E_i/D_i}. 
 
 If the observed error @math{E} is less than 50% of the desired error
-level @var{D} for the maximum ratio @math{D_i/E_i} then the algorithm
+level @var{D} for the maximum ratio @math{E_i/D_i} then the algorithm
 takes the opportunity to increase the step-size to bring the error in
 line with the desired level,
 
 @tex
 \beforedisplay
 $$
-h_{new} = h_{old} * S * (E/D)^{1/(q+1)}
+h_{new} = h_{old} * S * (E/D)^{-1/(q+1)}
 $$
 \afterdisplay
 @end tex
 @ifinfo
 @example
-h_new = h_old * S * (E/D)^(1/(q+1))
+h_new = h_old * S * (E/D)^(-1/(q+1))
 @end example
 @end ifinfo
 @noindent
-This encompasses all the standard error scaling methods.
+This encompasses all the standard error scaling methods. To avoid
+uncontrolled changes in the stepsize, the overall scaling factor is
+limited to the range @math{1/5} to 5.
 @end deftypefun
 
 @deftypefun {gsl_odeiv_control *} gsl_odeiv_control_y_new (double @var{eps_abs}, double @var{eps_rel})
