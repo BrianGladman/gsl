@@ -67,3 +67,15 @@ These routines compute the upper tail of the Gaussian probability
 function @math{Q(x) = (1/(2\pi)) \int_x^\infty dt \exp(-t^2/2)}.
 @comment Exceptional Return Values: none
 @end deftypefun
+
+The "hazard function" for the normal distrbution,
+also known as the inverse Mill's ratio, is defined as
+@math{h(x) = Z(x)/Q(x) = \sqrt{2/\pi} \exp(-x^2 / 2) / \erfc(x/\sqrt{2})}.
+It decreases rapidly as @math{x} approaches @math{-\infty} and asymptotes
+to @math{h(x) \sim x} as @math{x} approaches @math{+\infty}.
+
+@deftypefun double gsl_sf_hazard (double @var{x})
+@deftypefunx int gsl_sf_hazard_e (double @var{x}, gsl_sf_result * @var{result})
+These routines compute the hazard function for the normal distribution.
+@comment Exceptional Return Values: GSL_EUNDRFLW
+@end deftypefun
