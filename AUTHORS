@@ -11,3 +11,6 @@ Gerard Jungman (jungman@lanl.gov) special functions, interpolation,
   series acceleration, ODEs, BLAS, Linear Algebra, Eigensystems,
   Hankel Transforms.
 Michael Booth (booth@debian.org) - Monte Carlo integration
+Fabrice Rossi (rossi@ufrmd.dauphine.fr) - Multidimensional minimization
+
+

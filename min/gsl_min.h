@@ -58,4 +58,9 @@ gsl_min_test_interval (gsl_interval x, double epsabs, double epsrel);
 extern const gsl_min_fminimizer_type  * gsl_min_fminimizer_goldensection;
 extern const gsl_min_fminimizer_type  * gsl_min_fminimizer_brent;
 
+int 
+gsl_min_find_bracket(gsl_function *f,double *minimum,double * f_minimum,
+		     gsl_interval *x, double * f_lower,double * f_upper,
+		     int eval_max);
+
 #endif /* GSL_MIN_H */

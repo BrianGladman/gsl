@@ -91,39 +91,44 @@ by the Foundation.
 @subtitle @value{UPDATED}
 
 @author Mark Galassi 
-Cygnus Solutions and Los Alamos National Laboratory @*
-@email{rosalia@@lanl.gov}
+Cygnus Solutions and Los Alamos National Laboratory
+@comment @email{rosalia@@lanl.gov}
 @sp 1
 
 @author Jim Davies 
 Space Data Systems Group, Los Alamos National Laboratory and 
-Department of Computer Science, Georgia Institute of Technology @*
-@email{jimmyd@@nis.lanl.gov}
+Department of Computer Science, Georgia Institute of Technology
+@comment @email{jimmyd@@nis.lanl.gov}
 @sp 1
 
 @author James Theiler 
-Astrophysics and Radiation Measurements Group, Los Alamos National Laboratory @*
-@email{jt@@nis.lanl.gov}
+Astrophysics and Radiation Measurements Group, Los Alamos National Laboratory
+@comment @email{jt@@nis.lanl.gov}
 @sp 1
 
 @author Brian Gough 
-Network Theory Limited @*
-@email{bjg@@network-theory.co.uk}
+Network Theory Limited
+@comment @email{bjg@@network-theory.co.uk}
 @sp 1
 
 @author Reid Priedhorsky 
-Mathematical Modeling and Analysis Group, Los Alamos National Laboratory @*
-@email{rp@@lanl.gov}
+Mathematical Modeling and Analysis Group, Los Alamos National Laboratory
+@comment @email{rp@@lanl.gov}
 @sp 1
 
 @author Gerard Jungman 
-Theoretical Particle Physics Group, Los Alamos National Laboratory @*
-@email{jungman@@lanl.gov}
+Theoretical Particle Physics Group, Los Alamos National Laboratory
+@comment @email{jungman@@lanl.gov}
 @sp 1
 
 @author Michael Booth
-Department of Physics and Astronomy, The Johns Hopkins University @*
-@email{booth@@planck.pha.jhu.edu} or @email{booth@@debian.org}
+Department of Physics and Astronomy, The Johns Hopkins University
+@comment @email{booth@@planck.pha.jhu.edu} or @email{booth@@debian.org}
+@sp 1
+
+@author Fabrice Rossi
+University of Paris-Dauphine
+@comment @email{rossi@@ufrmd.dauphine.fr}
 @sp 1
 @page
 @vskip 0pt plus 1filll

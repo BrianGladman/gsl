@@ -16,6 +16,10 @@ test_f (const gsl_min_fminimizer_type * T,
 	double lower_bound, double middle, double upper_bound, 
         double correct_minimum);
 
+int
+test_bracket (const char * description,gsl_function *f,double lower_bound, 
+	      double upper_bound, int max);
+
 double func1 (double x);
 double func2 (double x);
 double func3 (double x);

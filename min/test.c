@@ -4,6 +4,7 @@
 #include <gsl_test.h>
 
 #include "test.h"
+#include "min.h"
 
 /* stopping parameters */
 
@@ -48,6 +49,10 @@ main (void)
       test_f_e (*T, "invalid range check [1, 1]", &F_cos, 1.0, 1.0, 1.0, M_PI);
       test_f_e (*T, "invalid range check [-1, 1]", &F_cos, -1.0, 0.0, 1.0, M_PI);
     }
+  test_bracket("cos(x) [1,2]",&F_cos,1,2,15);
+  test_bracket("sqrt(|x|) [-1,0]",&F_func2,-1,0,15);
+  test_bracket("sqrt(|x|) [-1,-0.6]",&F_func2,-1,-0.6,15);
+  test_bracket("sqrt(|x|) [-1,1]",&F_func2,-1,1,15);
 
   return gsl_test_summary ();
 }
@@ -156,6 +161,24 @@ my_error_handler (const char *reason, const char *file, int line, int err)
 {
   if (0)
     printf ("(caught [%s:%d: %s (%d)])\n", file, line, reason, err);
+}
+
+int
+test_bracket (const char * description,gsl_function *f,double lower_bound, 
+	      double upper_bound, int max)
+{
+  int status;
+  gsl_interval x;
+  double f_upper,f_lower,f_minimum;
+  double minimum;
+
+  x.lower=lower_bound;
+  x.upper=upper_bound;
+  SAFE_FUNC_CALL (f,x.lower,&f_lower);
+  SAFE_FUNC_CALL (f,x.upper,&f_upper);
+  status=gsl_min_find_bracket(f,&minimum,&f_minimum,&x,&f_lower,&f_upper,max);
+  gsl_test (status,"%s, interval: [%g,%g], values: (%g,%g), minimum at: %g, value: %g",
+	    description,x.lower,x.upper,f_lower,f_upper,minimum,f_minimum);
 }
 
 
