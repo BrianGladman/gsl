@@ -23,18 +23,24 @@ static int hyperg_1F1_series(const double a, const double b, const double x,
   double del = 1.0;
   double abs_del = 1.0;
   double max_abs_del = 1.0;
+  double err;
   
-  while(abs_del > GSL_MACH_EPS) {
+  while(abs_del/fabs(sum) > GSL_MACH_EPS) {
     double u, abs_u;
 
     if(bn == 0.0) {
+      *result = 0.0;
       return GSL_EDOM;
     }
     if(an == 0.0 || n > 200.0) {
       max_abs_del *= GSL_MACH_EPS;
-      *prec   = fabs(GSL_MACH_EPS * n + max_abs_del);
+      err     = fabs(GSL_MACH_EPS * n + max_abs_del);
+      *prec   = err/(err + fabs(sum));
       *result = sum;
-      return GSL_SUCCESS;
+      if(*prec > locEPS)
+        return GSL_ELOSS;
+      else
+        return GSL_SUCCESS;
     }
     
     u = x * (an/(bn*n));
@@ -47,7 +53,8 @@ static int hyperg_1F1_series(const double a, const double b, const double x,
     del *= u;
     sum += del;
 
-    max_abs_del = locMAX(fabs(del), max_abs_del);
+    abs_del = fabs(del);
+    max_abs_del = locMAX(abs_del, max_abs_del);
 
     an += 1.0;
     bn += 1.0;
@@ -55,26 +62,15 @@ static int hyperg_1F1_series(const double a, const double b, const double x,
   }
   
   max_abs_del *= GSL_MACH_EPS;
-  *prec   = fabs(GSL_MACH_EPS * n + max_abs_del);
+  err     = fabs(GSL_MACH_EPS * n + max_abs_del);
+  *prec   = err/(err + fabs(sum));
   *result = sum;
-  if(*prec > locEPS) {
+  if(*prec > locEPS)
     return GSL_ELOSS;
-  }
-  else {
+  else
     return GSL_SUCCESS;
-  }
 }
 
-/* [Carlson, p.109] says the error in truncating this asymptotic series
- * is less than the absolute value of the first neglected term
- */
-static int hyperg_2F0_series(const double a, const double b, const double x,
-                             double * result, double * prec
-			     )
-{
-  double an = a;
-  double bn = b;
-}
 
 static int hyperg_1F1_asymp(const double a, const double b, const double x,
                             double * result, double * prec
@@ -137,7 +133,7 @@ int gsl_sf_hyperg_1F1_impl(const double a, const double b, const double x,
    * Note that there can be no error condition here, since
    * there can only be an error if 'b' is a negative integer, but
    * in that case we would not have gotten this far unless 'a' was
-   * a negative integer as well, in which case the above block
+   * a negative integer as well, in which case the above code block
    * handled the situation.
    */
   if(bma_neg_integer) {
@@ -169,8 +165,51 @@ int gsl_sf_hyperg_1F1_impl(const double a, const double b, const double x,
    * series evaluation, though the arguments may be large.
    */
    
+  if(fabs(x) < 30.0) {
+    if((fabs(a) < 30.0*fabs(b))  ||  (fabs(a) < 30.0 && fabs(b) < 30.0)) {
+      double prec;
+      return hyperg_1F1_series(a, b, x, result, &prec); 
+    }
+  }
+
+
+}
+
+
+int
+gsl_sf_hyperg_1F1_e(double a, double b, double x, double * result)
+{
+  int status = gsl_sf_hyperg_1F1_impl(a, b, x, result);
+  if(status != GSL_SUCCESS) {
+    GSL_ERROR("gsl_sf_hyperg_1F1_e", status);
+  }
+  return status;
+}
+
+double
+gsl_sf_hyperg_1F1(double a, double b, double x)
+{
+  double y;
+  int status = gsl_sf_hyperg_1F1_impl(a, b, x, &y);
+  if(status != GSL_SUCCESS) {
+    GSL_WARNING("gsl_sf_hyperg_1F1", status);
+  }
+  return y;
+}
+
+
+int
+test_hypergstuff(void)
+{
+  double a = 100.0;
+  double b = -3.0000000001;
+  double x = 100.0;
+  double result;
+  double prec;
+  int stat = hyperg_1F1_series(a, b, x, &result, &prec);
   
-  
-  
-  
+  printf("%10.6g  %10.6g  %10.6g    %20.16g  %20.16g  %s",
+         a, b, x, result, prec, gsl_strerror(stat)
+	 );
+  printf("\n");
 }

@@ -183,7 +183,7 @@ static void do_it(double a, double b, double c, double x)
 {
   double y;
   double prec;
-  int stat = gsl_hyperg_2F1_impl(a, b, c, x, &y);
+  int stat = gsl_sf_hyperg_2F1_impl(a, b, c, x, &y);
   printf("%5.3g  %5.3g  %5.3g   %10.6g", a, b, c, x);
   printf("   ");
   printf("%24.18g  %8.4g  %s", y, prec, gsl_strerror(stat));
@@ -724,4 +724,26 @@ int gsl_sf_hyperg_2F1_conj_renorm_impl(const double aR, const double aI, const i
 			               )
 {
 /* FIXME: copy above, when it works right */
+}
+
+
+int
+gsl_sf_hyperg_2F1_e(double a, double b, double c, double x, double * result)
+{
+  int status = gsl_sf_hyperg_2F1_impl(a, b, c, x, result);
+  if(status != GSL_SUCCESS) {
+    GSL_ERROR("gsl_sf_hyperg_2F1_e", status);
+  }
+  return status;
+}
+
+double
+gsl_sf_hyperg_2F1(double a, double b, double c, double x)
+{
+  double y;
+  int status = gsl_sf_hyperg_2F1_impl(a, b, c, x, &y);
+  if(status != GSL_SUCCESS) {
+    GSL_WARNING("gsl_sf_hyperg_2F1", status);
+  }
+  return y;
 }

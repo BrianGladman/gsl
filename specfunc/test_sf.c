@@ -119,6 +119,30 @@ int check_bessel(void)
   return status;
 }
 
+
+int check_hyperg(void)
+{
+  int status = 0;
+  int s;
+
+  s = 0;
+  s += ( frac_diff(gsl_sf_hyperg_1F1(1, 1, 0.5),  1.6487212707001281468    ) > 1.e-14 );
+  s += ( frac_diff(gsl_sf_hyperg_1F1(8, 1, 0.5),  13.108875178030540372    ) > 1.e-14 );
+  s += ( frac_diff(gsl_sf_hyperg_1F1(8, 1, 8),    5.481422453671217135e+7  ) > 1.e-14 );
+  s += ( frac_diff(gsl_sf_hyperg_1F1(1, 8, 8),    4.918996932358889820     ) > 1.e-14 );
+  gsl_test(s, "gsl_sf_hyperg_1F1");
+  status += s;
+
+  s = 0;
+  s += ( frac_diff(gsl_sf_hyperg_2F1(1, 1, 1, 0.5),  2.0000000000000000000    ) > 1.e-14 );
+  s += ( frac_diff(gsl_sf_hyperg_2F1(8, 8, 1, 0.5),  1.2451584000000000000e+7 ) > 1.e-14 );
+  s += ( frac_diff(gsl_sf_hyperg_2F1(8, 8, 5, 0.5),  4205.714285714285714     ) > 1.e-14 );
+  gsl_test(s, "gsl_sf_hyperg_2F1");
+  status += s;
+
+  return status;
+}
+
 int check_zeta(void)
 {
   int status = 0;
@@ -134,6 +158,7 @@ int check_zeta(void)
   gsl_test(s, "gsl_sf_zeta_int");
   status += s;
   
+  s = 0;
   s += ( frac_diff(gsl_sf_zeta(-51),   9.68995788746359406565e+24) > 1.e-14 );
   s += ( frac_diff(gsl_sf_zeta(-5),   -0.003968253968253968253968) > 1.e-14 );
   s += ( frac_diff(gsl_sf_zeta(-0.5), -0.207886224977354566017307) > 1.e-14 );
@@ -143,6 +168,7 @@ int check_zeta(void)
   gsl_test(s, "gsl_sf_zeta");
   status += s;
   
+  s = 0;
   s += ( frac_diff(gsl_sf_hzeta(2,  1.0),  1.6449340668482264365   ) > 1.e-14 );
   s += ( frac_diff(gsl_sf_hzeta(5,  1.0),  1.0369277551433699263   ) > 1.e-14 );
   s += ( frac_diff(gsl_sf_hzeta(9,  0.1),  1.0000000004253980e+9   ) > 1.e-14 );
@@ -154,12 +180,16 @@ int check_zeta(void)
   return status;
 }
 
+
 int main(int argc, char * argv[])
 {
 
   gsl_test(check_airy(),       "Airy functions");
-  gsl_test(check_bessel(),     "Bessel functions"); 
-  gsl_test(check_zeta(),       "Zeta functions"); 
+  gsl_test(check_bessel(),     "Bessel functions");
+  
+  gsl_test(check_hyperg(),     "Hypergeometric Functions");
+  
+  gsl_test(check_zeta(),       "Zeta functions");
   
 
   exit(0);  
