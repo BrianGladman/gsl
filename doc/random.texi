@@ -660,9 +660,11 @@ specifies the initial value, @math{x_1}. The period of this generator is
 @deffn {Generator} gsl_rng_tds
 @sc{inmos} Transputer Development system.
 This is the INMOS Transputer Development System generator. The sequence is,
-
-   x_{n+1} = (a x_n) mod m
-
+@c
+@equation
+x_@{n+1@} = (a x_n) mod m
+@end equation
+@noindent
 with @math{a = 1664525} and @math{m = 2^@{32@}}. The seed specifies the initial
 value, @math{x_1}.
 @end deffn
