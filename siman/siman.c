@@ -112,8 +112,7 @@ gsl_siman_solve (const gsl_rng * r, void *x0_p, gsl_siman_Efunc_t Ef,
 	}
 	E = new_E;
 	++n_eless;
-      } else if (exp (-(E - new_E)/(params.k * T))
-		 * gsl_rng_uniform(r) < 0.5) {
+      } else if (gsl_rng_uniform(r) < exp (-(new_E - E)/(params.k * T)) ) {
 	/* yay! take a step */
 	if (copyfunc) {
 	  copyfunc(new_x, x);

@@ -1,3 +1,8 @@
+Sat Aug  3 20:32:38 2002  Brian Gough  <bjg@network-theory.co.uk>
+
+	* siman.c (gsl_siman_solve): fix acceptance criterion to match
+	documentation (Peter S. Christopher)
+
 Thu Jun 13 20:57:00 2002  Brian Gough  <bjg@network-theory.co.uk>
 
 	* siman.c (gsl_siman_solve): keep track of the best result

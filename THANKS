@@ -174,3 +174,5 @@ SVD d_n = 0, bug fix to mt19937 generator
 
 * Nicolas Bock <nbock@buffalo.edu> documentation bug report
 
+* Peter S. Christopher <peterc@midway.uchicago.edu> bug fix for
+simulated annealing
