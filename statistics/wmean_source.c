@@ -18,7 +18,7 @@
  */
 
 double
-FUNCTION (gsl_stats, wmean) (const BASE w[], size_t wstride, const BASE data[], const size_t stride, const size_t size)
+FUNCTION (gsl_stats, wmean) (const BASE w[], const size_t wstride, const BASE data[], const size_t stride, const size_t size)
 {
   /* Compute the weighted arithmetic mean M of a dataset using the
      recurrence relation
