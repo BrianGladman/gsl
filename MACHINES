@@ -20,9 +20,14 @@ IRIX
 ----
 
 The 32 bit IRIX compiler gives warnings about "long double" not being
-supported. These can be ignored or turned off with the option,
+supported. These can be ignored or turned off with,
 
-  cc -woff 728
+   CCFLAGS="-woff 728" ./configure
 
-It also gives warnings about certain libraries that are "not used for
-resolving any symbol". This is harmless and the warnings can be ignored.
+or 
+
+   make CCFLAGS="-woff 728"
+
+The compiler also gives warnings about certain libraries that are "not
+used for resolving any symbol". This is harmless and the warnings can
+be ignored.

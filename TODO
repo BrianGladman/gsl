@@ -1,14 +1,16 @@
 TODO  -- see also individual TODO files in each directory
 
+* Annotate the header files with GAMS classifications
+
 * Public domain or free texts which could be distributed with GSL:
      
 Abramowitz and Stegun, "Handbook of Mathematical Functions" appears to
-be the public domain.
+be public domain.
 
 Devroye's book on Random Variates (1st ed) is/was in the public domain
 and he said the troff source could be made available.
 
-ACM TOMS articles in the printed journal have the copyright notice
+ACM TOMS articles in the printed journal have the following copyright notice,
 
     "Permission to copy without fee all or part fo this material is
     granted provided that the copies are made not made or distributed for
@@ -19,10 +21,11 @@ ACM TOMS articles in the printed journal have the copyright notice
     permission."
 
 Wonder what this might mean with regard to being scanned and
-distributed (??).  The versions downloaded from their server forbid
-redistribution (natch).
+distributed (??), presumably it is considered "republication" and so
+requires permission.  The versions downloaded from their server
+explicitly forbid redistribution (natch).
 
-* Document the use of autogen.sh in the instructions
+* Document the use of autogen.sh in the HACKING file
 
 * Add covariance statistics functions
 
@@ -32,7 +35,7 @@ symmetric matrices.
 * Subtle bug(?) in BLAS. If uninitialized memory is passed with a
 multiplier of zero then it is accessed and multiplied by zero. This
 would be ok, except that the memory could contain NaN or Inf. Should
-check for zero case and explicitly handle it.
+check for zero multiplier and explicitly handle it.
 
 * Investigate complex support in GCC: Operations like sin(z) silently
 convert argument to double, losing the imaginary part. This is
@@ -56,6 +59,8 @@ in place vs use of workspace (e.g linalg_solve functions).
 * Change from gsl-ref.texi to gsl.texi since it is the main file?
 Also, put under dir section "Math" (which seems to be the appropriate
 one for Debian, as Octave, Gnuplot etc are in that)
+
+* Use GNU Free Documentation License for reference manual?
 
 * Remove error stream stuff?? It is hardly used.
 
@@ -92,10 +97,8 @@ do that.  Files with strict target are
 dimension and size2 is the number of columns in the matrix. This will
 probably find a lot of bugs in the matrix logic.
 
-* Debian Bug#52789: Write an ieee-utils/fp-m68klinux.c file to handle
-floating point on M68K linux. There is a file fp-sparclinux.c which
-shows how to define a gsl_ieee_set_mode function for a variant of
-Linux.
+* Fix up ieee-utils/fp-m68klinux.c for correct behavior and actually
+test it.
 
 * Make all internal functions static, and have all exported functions
 & variables prefixed with gsl_ or GSL_. Useful command for checking this: nm -A -g -P */*.a  | perl -a -n -e 'print if $F[1] !~ /gsl_/ && $F[2] ne "U"'
@@ -120,8 +123,6 @@ different error code.
 * Constant objects (like gsl_roots_fsolver_brent) ought to have
 constant pointers (const gsl_roots_fsolver_type * const
 gsl_roots_fsolver_brent)??
-
-* Use GNU Free Documentation License for reference manual?
 
 * More tests. We should (at least) have a test for every error
 condition. Write a perl script to check for error conditions that
