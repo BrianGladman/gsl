@@ -54,3 +54,10 @@ a segmentation fault when run).  This problem is fixed in recent
 versions of GCC.  GSL now includes an autoconf test which detects the
 problem.
 
+OpenBSD
+-------
+
+As of July 2001 the OpenBSD log1p() function on i386 causes failures
+in the gsl complex tests.  The configure script has been hardcoded to
+substitute gsl_log1p instead on OpenBSD.  The log1p() bug has been
+reported and so may be fixed in future versions of OpenBSD.
