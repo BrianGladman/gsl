@@ -1,3 +1,11 @@
+Sat Jul 29 14:29:54 2000  Brian Gough  <bjg@network-theory.co.uk>
+
+	* test.c (main): updated test value for MT19937 for new seeding
+ 	procedure
+
+	* mt.c: The seeding procedure has been updated to match the 10/99
+ 	release of MT19937.
+
 Wed Mar  8 16:04:34 2000  Brian Gough  <bjg@network-theory.co.uk>
 
 	* rng.c (gsl_rng_memcpy): generators must now be of the same type

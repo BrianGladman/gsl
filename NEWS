@@ -1,3 +1,7 @@
+** The seeding procedure of the MT19937 random number generator has
+been updated to match the 10/99 release of the original code. This
+fixes a weakness which occurred for seeds which were powers of 2.
+
 ** The blas library libgslblasnative has been renamed libgslblas to avoid
 confusion with system blas library
 

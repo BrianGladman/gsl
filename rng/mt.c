@@ -21,6 +21,9 @@
    implementation was changed from LGPL to GPL, following paragraph 3
    of the LGPL, version 2.
 
+   The seeding procedure has been updated to match the 10/99 release
+   of MT19937.
+
    The original code included the comment: "When you use this, send an
    email to: matumoto@math.keio.ac.jp with an appropriate reference to
    your work".
@@ -126,17 +129,23 @@ mt_set (void *vstate, unsigned long int s)
   if (s == 0)
     s = 4357;	/* the default seed is 4357 */
 
-  state->mt[0] = s & 0xffffffffUL;
+  /* This is the October 1999 version of the seeding procedure. It
+     was updated by the original developers to avoid the periodicity
+     in the simple congruence originally used.
 
-  /* We use the congruence s_{n+1} = (69069*s_n) mod 2^32 to
-     initialize the state. This works because ANSI-C unsigned long
-     integer arithmetic is automatically modulo 2^32 (or a higher
-     power of two), so we can safely ignore overflow. */
+     Note that an ANSI-C unsigned long integer arithmetic is
+     automatically modulo 2^32 (or a higher power of two), so we can
+     safely ignore overflow. */
 
-#define LCG(n) ((69069 * n) & 0xffffffffUL)
+#define LCG(x) ((69069 * x) + 1) &0xffffffffUL
 
-  for (i = 1; i < N; i++)
-    state->mt[i] = LCG (state->mt[i - 1]);
+  for (i = 0; i < N; i++)
+    {
+      state->mt[i] = s & 0xffff0000UL;
+      s = LCG(s);
+      state->mt[i] |= (s &0xffff0000UL) >> 16;
+      s = LCG(s);
+    }
 
   state->mti = i;
 }

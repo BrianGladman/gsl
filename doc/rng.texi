@@ -297,7 +297,7 @@ defaults, an @code{mt19937} generator with a seed of 0,
 bash$ ./a.out 
 generator type: mt19937
 seed = 0
-first value = 3510405877
+first value = 2867219139
 @end example
 
 @noindent

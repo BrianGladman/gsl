@@ -145,7 +145,7 @@ main (void)
      would be preferable. */
 
   rng_test (gsl_rng_r250, 1, 10000, 1100653588);
-  rng_test (gsl_rng_mt19937, 4357, 1000, 1309179303);
+  rng_test (gsl_rng_mt19937, 4357, 1000, 1030650439);
   rng_test (gsl_rng_tt800, 0, 10000, 2856609219UL);
 
   rng_test (gsl_rng_ran0, 0, 10000, 1115320064);
