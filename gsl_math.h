@@ -74,7 +74,26 @@
 
 /* Define MAX and MIN functions if they don't exist */
 
+/* plain old macros for general use */
 #define GSL_MAX(a,b) ((a) > (b) ? (a) : (b))
 #define GSL_MIN(a,b) ((a) < (b) ? (a) : (b))
+
+/* inline-friendly strongly typed versions */
+#ifdef HAVE_INLINE
+inline GSL_MAX_INT(int a, int b) { return GSL_MAX(a,b); }
+inline GSL_MIN_INT(int a, int b) { return GSL_MIN(a,b); }
+inline GSL_MAX_DBL(double a, double b) { return GSL_MAX(a,b); }
+inline GSL_MIN_DBL(double a, double b) { return GSL_MIN(a,b); }
+inline GSL_MAX_LDBL(long double a, long double b) { return GSL_MAX(a,b); }
+inline GSL_MIN_LDBL(long double a, long double b) { return GSL_MIN(a,b); }
+#else
+#define GSL_MAX_INT(a, b)   GSL_MAX(a,b)
+#define GSL_MIN_INT(a, b)   GSL_MIN(a,b)
+#define GSL_MAX_DBL(a, b)   GSL_MAX(a,b)
+#define GSL_MIN_DBL(a, b)   GSL_MIN(a,b)
+#define GSL_MAX_LDBL(a, b)  GSL_MAX(a,b)
+#define GSL_MIN_LDBL(a, b)  GSL_MIN(a,b)
+#endif /* HAVE_INLINE */
+
 
 #endif /* _GSL_MATH_H */
