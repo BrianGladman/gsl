@@ -34,23 +34,23 @@
 
 __BEGIN_DECLS 
 
-double gsl_cdf_ugaussian_P (double x);
-double gsl_cdf_ugaussian_Q (double x);
+double gsl_cdf_ugaussian_P (const double x);
+double gsl_cdf_ugaussian_Q (const double x);
 
-double gsl_cdf_ugaussian_Pinv (double P);
-double gsl_cdf_ugaussian_Qinv (double Q);
+double gsl_cdf_ugaussian_Pinv (const double P);
+double gsl_cdf_ugaussian_Qinv (const double Q);
 
-double gsl_cdf_gaussian_P (double x, double sigma);
-double gsl_cdf_gaussian_Q (double x, double sigma);
+double gsl_cdf_gaussian_P (const double x, const double sigma);
+double gsl_cdf_gaussian_Q (const double x, const double sigma);
 
-double gsl_cdf_gaussian_Pinv (double P, double sigma);
-double gsl_cdf_gaussian_Qinv (double Q, double sigma);
+double gsl_cdf_gaussian_Pinv (const double P, const double sigma);
+double gsl_cdf_gaussian_Qinv (const double Q, const double sigma);
 
-double gsl_cdf_gamma_P (double x, double a, double b);
-double gsl_cdf_gamma_Q (double x, double a, double b);
+double gsl_cdf_gamma_P (const double x, const double a, const double b);
+double gsl_cdf_gamma_Q (const double x, const double a, const double b);
 
-double gsl_cdf_gamma_Pinv (double P, double a, double b);
-double gsl_cdf_gamma_Qinv (double Q, double a, double b);
+double gsl_cdf_gamma_Pinv (const double P, const double a, const double b);
+double gsl_cdf_gamma_Qinv (const double Q, const double a, const double b);
 
 double gsl_cdf_cauchy_P (const double x, const double a);
 double gsl_cdf_cauchy_Q (const double x, const double a);
@@ -88,47 +88,47 @@ double gsl_cdf_tdist_Q (const double x, const double nu);
 double gsl_cdf_tdist_Pinv (const double P, const double nu);
 double gsl_cdf_tdist_Qinv (const double Q, const double nu);
 
-double gsl_cdf_fdist_P (double x, double nu1, double nu2);
-double gsl_cdf_fdist_Q (double x, double nu1, double nu2);
+double gsl_cdf_fdist_P (const double x, const double nu1, const double nu2);
+double gsl_cdf_fdist_Q (const double x, const double nu1, const double nu2);
 
-double gsl_cdf_beta_P (double x, double a, double b);
-double gsl_cdf_beta_Q (double x, double a, double b);
+double gsl_cdf_beta_P (const double x, const double a, const double b);
+double gsl_cdf_beta_Q (const double x, const double a, const double b);
 
-double gsl_cdf_flat_P (double x, double a, double b);
-double gsl_cdf_flat_Q (double x, double a, double b);
+double gsl_cdf_flat_P (const double x, const double a, const double b);
+double gsl_cdf_flat_Q (const double x, const double a, const double b);
 
-double gsl_cdf_flat_Pinv (double P, double a, double b);
-double gsl_cdf_flat_Qinv (double Q, double a, double b);
+double gsl_cdf_flat_Pinv (const double P, const double a, const double b);
+double gsl_cdf_flat_Qinv (const double Q, const double a, const double b);
 
-double gsl_cdf_lognormal_P (double x, double zeta, double sigma);
-double gsl_cdf_lognormal_Q (double x, double zeta, double sigma);
+double gsl_cdf_lognormal_P (const double x, const double zeta, const double sigma);
+double gsl_cdf_lognormal_Q (const double x, const double zeta, const double sigma);
 
-double gsl_cdf_lognormal_Pinv (double P, double zeta, double sigma);
-double gsl_cdf_lognormal_Qinv (double Q, double zeta, double sigma);
+double gsl_cdf_lognormal_Pinv (const double P, const double zeta, const double sigma);
+double gsl_cdf_lognormal_Qinv (const double Q, const double zeta, const double sigma);
 
-double gsl_cdf_gumbel1_P (double x, double a, double b);
-double gsl_cdf_gumbel1_Q (double x, double a, double b);
+double gsl_cdf_gumbel1_P (const double x, const double a, const double b);
+double gsl_cdf_gumbel1_Q (const double x, const double a, const double b);
 
-double gsl_cdf_gumbel1_Pinv (double P, double a, double b);
-double gsl_cdf_gumbel1_Qinv (double Q, double a, double b);
+double gsl_cdf_gumbel1_Pinv (const double P, const double a, const double b);
+double gsl_cdf_gumbel1_Qinv (const double Q, const double a, const double b);
 
-double gsl_cdf_gumbel2_P (double x, double a, double b);
-double gsl_cdf_gumbel2_Q (double x, double a, double b);
+double gsl_cdf_gumbel2_P (const double x, const double a, const double b);
+double gsl_cdf_gumbel2_Q (const double x, const double a, const double b);
 
-double gsl_cdf_gumbel2_Pinv (double P, double a, double b);
-double gsl_cdf_gumbel2_Qinv (double Q, double a, double b);
+double gsl_cdf_gumbel2_Pinv (const double P, const double a, const double b);
+double gsl_cdf_gumbel2_Qinv (const double Q, const double a, const double b);
 
-double gsl_cdf_weibull_P (double x, double a, double b);
-double gsl_cdf_weibull_Q (double x, double a, double b);
+double gsl_cdf_weibull_P (const double x, const double a, const double b);
+double gsl_cdf_weibull_Q (const double x, const double a, const double b);
 
-double gsl_cdf_weibull_Pinv (double P, double a, double b);
-double gsl_cdf_weibull_Qinv (double Q, double a, double b);
+double gsl_cdf_weibull_Pinv (const double P, const double a, const double b);
+double gsl_cdf_weibull_Qinv (const double Q, const double a, const double b);
 
-double gsl_cdf_pareto_P (double x, double a, double b);
-double gsl_cdf_pareto_Q (double x, double a, double b);
+double gsl_cdf_pareto_P (const double x, const double a, const double b);
+double gsl_cdf_pareto_Q (const double x, const double a, const double b);
 
-double gsl_cdf_pareto_Pinv (double P, double a, double b);
-double gsl_cdf_pareto_Qinv (double Q, double a, double b);
+double gsl_cdf_pareto_Pinv (const double P, const double a, const double b);
+double gsl_cdf_pareto_Qinv (const double Q, const double a, const double b);
 
 double gsl_cdf_logistic_P (const double x, const double a);
 double gsl_cdf_logistic_Q (const double x, const double a);

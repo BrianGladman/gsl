@@ -96,7 +96,7 @@ tail (double r)
 }
 
 double
-gsl_cdf_ugaussian_Pinv (double P)
+gsl_cdf_ugaussian_Pinv (const double P)
 {
   double r, x, pp;
 
@@ -143,7 +143,7 @@ gsl_cdf_ugaussian_Pinv (double P)
 }
 
 double
-gsl_cdf_ugaussian_Qinv (double Q)
+gsl_cdf_ugaussian_Qinv (const double Q)
 {
   double r, x, pp;
 
