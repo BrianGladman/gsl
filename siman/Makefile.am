@@ -16,6 +16,8 @@ siman_tsp_SOURCES = siman_tsp.c
 siman_tsp_LDADD = libgslsiman.a -L../random -lgslrandom -L../utils  -lutils
 siman_tsp_DEPENDENCIES = libgslsiman.a
 
+CLEANFILES = siman_test.out1 siman_test.out2
+
 libgslsiman_a_SOURCES = siman.c
 
 include_HEADERS = gsl_siman.h
