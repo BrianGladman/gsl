@@ -200,6 +200,10 @@ main (void)
   test_complex_float_trap ();
   test_complex_long_double_trap ();
 
+  test_complex_arith ();
+  test_complex_float_arith ();
+  test_complex_long_double_arith ();
+
   exit (gsl_test_summary ());
 }
 

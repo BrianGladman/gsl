@@ -210,6 +210,14 @@ int gsl_matrix_complex_long_double_transpose_memcpy (gsl_matrix_complex_long_dou
 
 int gsl_matrix_complex_long_double_isnull (const gsl_matrix_complex_long_double * m);
 
+int gsl_matrix_complex_long_double_add (gsl_matrix_complex_long_double * a, const gsl_matrix_complex_long_double * b);
+int gsl_matrix_complex_long_double_sub (gsl_matrix_complex_long_double * a, const gsl_matrix_complex_long_double * b);
+int gsl_matrix_complex_long_double_mul_elements (gsl_matrix_complex_long_double * a, const gsl_matrix_complex_long_double * b);
+int gsl_matrix_complex_long_double_div_elements (gsl_matrix_complex_long_double * a, const gsl_matrix_complex_long_double * b);
+int gsl_matrix_complex_long_double_scale (gsl_matrix_complex_long_double * a, const gsl_complex_long_double x);
+int gsl_matrix_complex_long_double_add_constant (gsl_matrix_complex_long_double * a, const gsl_complex_long_double x);
+int gsl_matrix_complex_long_double_add_diagonal (gsl_matrix_complex_long_double * a, const gsl_complex_long_double x);
+
 /***********************************************************************/
 /* The functions below are obsolete                                    */
 /***********************************************************************/
