@@ -1,3 +1,8 @@
+2002-11-24  Brian Gough  <bjg@network-theory.co.uk>
+
+	* Makefile.am: added libgslsys.a to link, to provide gsl_hypot for
+	complex division
+
 Mon Jun 17 22:31:33 2002  Brian Gough  <bjg@network-theory.co.uk>
 
 	* test_complex_source.c (FUNCTION): fixed non-constant initializer

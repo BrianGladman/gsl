@@ -1,5 +1,7 @@
 * What is new in gsl-1.3:
 
+** Fixed compilation problems with gcc -ansi and other ANSI compilers.
+
 ** Fixed uninitialized memory access in the Niederreiter quasi-random
 number generator.
 
