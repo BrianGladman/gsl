@@ -199,3 +199,5 @@ gsl_rng_taus2 seeding
 
 * Alexander Babansky <babansky@mail.ru> documentation bug report for Ei(x)
 
+* Tiago de Paula Peixoto <count0@fissionauthority.com> bug report for multifit
+memory allocation

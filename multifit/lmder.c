@@ -85,7 +85,7 @@ lmder_alloc (void *vstate, size_t n, size_t p)
 
   if (q == 0)
     {
-      GSL_ERROR_VAL ("failed to allocate space for q", GSL_ENOMEM, 0);
+      GSL_ERROR ("failed to allocate space for q", GSL_ENOMEM);
     }
 
   state->q = q;
@@ -96,7 +96,7 @@ lmder_alloc (void *vstate, size_t n, size_t p)
     {
       gsl_matrix_free (q);
 
-      GSL_ERROR_VAL ("failed to allocate space for r", GSL_ENOMEM, 0);
+      GSL_ERROR ("failed to allocate space for r", GSL_ENOMEM);
     }
 
   state->r = r;
@@ -108,7 +108,7 @@ lmder_alloc (void *vstate, size_t n, size_t p)
       gsl_matrix_free (q);
       gsl_matrix_free (r);
 
-      GSL_ERROR_VAL ("failed to allocate space for tau", GSL_ENOMEM, 0);
+      GSL_ERROR ("failed to allocate space for tau", GSL_ENOMEM);
     }
 
   state->tau = tau;
@@ -121,7 +121,7 @@ lmder_alloc (void *vstate, size_t n, size_t p)
       gsl_matrix_free (r);
       gsl_vector_free (tau);
 
-      GSL_ERROR_VAL ("failed to allocate space for diag", GSL_ENOMEM, 0);
+      GSL_ERROR ("failed to allocate space for diag", GSL_ENOMEM);
     }
 
   state->diag = diag;
@@ -135,7 +135,7 @@ lmder_alloc (void *vstate, size_t n, size_t p)
       gsl_vector_free (tau);
       gsl_vector_free (diag);
 
-      GSL_ERROR_VAL ("failed to allocate space for qtf", GSL_ENOMEM, 0);
+      GSL_ERROR ("failed to allocate space for qtf", GSL_ENOMEM);
     }
 
   state->qtf = qtf;
@@ -150,7 +150,7 @@ lmder_alloc (void *vstate, size_t n, size_t p)
       gsl_vector_free (diag);
       gsl_vector_free (qtf);
 
-      GSL_ERROR_VAL ("failed to allocate space for newton", GSL_ENOMEM, 0);
+      GSL_ERROR ("failed to allocate space for newton", GSL_ENOMEM);
     }
 
   state->newton = newton;
@@ -166,7 +166,7 @@ lmder_alloc (void *vstate, size_t n, size_t p)
       gsl_vector_free (qtf);
       gsl_vector_free (newton);
 
-      GSL_ERROR_VAL ("failed to allocate space for gradient", GSL_ENOMEM, 0);
+      GSL_ERROR ("failed to allocate space for gradient", GSL_ENOMEM);
     }
 
   state->gradient = gradient;
@@ -183,7 +183,7 @@ lmder_alloc (void *vstate, size_t n, size_t p)
       gsl_vector_free (newton);
       gsl_vector_free (gradient);
 
-      GSL_ERROR_VAL ("failed to allocate space for x_trial", GSL_ENOMEM, 0);
+      GSL_ERROR ("failed to allocate space for x_trial", GSL_ENOMEM);
     }
 
   state->x_trial = x_trial;
@@ -201,7 +201,7 @@ lmder_alloc (void *vstate, size_t n, size_t p)
       gsl_vector_free (gradient);
       gsl_vector_free (x_trial);
 
-      GSL_ERROR_VAL ("failed to allocate space for f_trial", GSL_ENOMEM, 0);
+      GSL_ERROR ("failed to allocate space for f_trial", GSL_ENOMEM);
     }
 
   state->f_trial = f_trial;
@@ -220,7 +220,7 @@ lmder_alloc (void *vstate, size_t n, size_t p)
       gsl_vector_free (x_trial);
       gsl_vector_free (f_trial);
 
-      GSL_ERROR_VAL ("failed to allocate space for df", GSL_ENOMEM, 0);
+      GSL_ERROR ("failed to allocate space for df", GSL_ENOMEM);
     }
 
   state->df = df;
@@ -240,7 +240,7 @@ lmder_alloc (void *vstate, size_t n, size_t p)
       gsl_vector_free (f_trial);
       gsl_vector_free (df);
 
-      GSL_ERROR_VAL ("failed to allocate space for sdiag", GSL_ENOMEM, 0);
+      GSL_ERROR ("failed to allocate space for sdiag", GSL_ENOMEM);
     }
 
   state->sdiag = sdiag;
@@ -262,7 +262,7 @@ lmder_alloc (void *vstate, size_t n, size_t p)
       gsl_vector_free (df);
       gsl_vector_free (sdiag);
 
-      GSL_ERROR_VAL ("failed to allocate space for rptdx", GSL_ENOMEM, 0);
+      GSL_ERROR ("failed to allocate space for rptdx", GSL_ENOMEM);
     }
 
   state->rptdx = rptdx;
@@ -284,7 +284,7 @@ lmder_alloc (void *vstate, size_t n, size_t p)
       gsl_vector_free (sdiag);
       gsl_vector_free (rptdx);
 
-      GSL_ERROR_VAL ("failed to allocate space for w", GSL_ENOMEM, 0);
+      GSL_ERROR ("failed to allocate space for w", GSL_ENOMEM);
     }
 
   state->w = w;
@@ -307,7 +307,7 @@ lmder_alloc (void *vstate, size_t n, size_t p)
       gsl_vector_free (rptdx);
       gsl_vector_free (w);
 
-      GSL_ERROR_VAL ("failed to allocate space for work1", GSL_ENOMEM, 0);
+      GSL_ERROR ("failed to allocate space for work1", GSL_ENOMEM);
     }
 
   state->work1 = work1;
@@ -331,7 +331,7 @@ lmder_alloc (void *vstate, size_t n, size_t p)
       gsl_vector_free (w);
       gsl_vector_free (work1);
 
-      GSL_ERROR_VAL ("failed to allocate space for perm", GSL_ENOMEM, 0);
+      GSL_ERROR ("failed to allocate space for perm", GSL_ENOMEM);
     }
 
   state->perm = perm;

@@ -74,7 +74,7 @@ broyden_alloc (void *vstate, size_t n)
 
   if (m == 0)
     {
-      GSL_ERROR_VAL ("failed to allocate space for lu", GSL_ENOMEM, 0);
+      GSL_ERROR ("failed to allocate space for lu", GSL_ENOMEM);
     }
 
   state->lu = m;
@@ -85,7 +85,7 @@ broyden_alloc (void *vstate, size_t n)
     {
       gsl_matrix_free (m);
 
-      GSL_ERROR_VAL ("failed to allocate space for permutation", GSL_ENOMEM, 0);
+      GSL_ERROR ("failed to allocate space for permutation", GSL_ENOMEM);
     }
 
   state->permutation = perm;
@@ -97,7 +97,7 @@ broyden_alloc (void *vstate, size_t n)
       gsl_permutation_free (perm);
       gsl_matrix_free (m);
 
-      GSL_ERROR_VAL ("failed to allocate space for d", GSL_ENOMEM, 0);
+      GSL_ERROR ("failed to allocate space for d", GSL_ENOMEM);
     }
 
   state->H = H;
@@ -110,7 +110,7 @@ broyden_alloc (void *vstate, size_t n)
       gsl_permutation_free (perm);
       gsl_matrix_free (m);
 
-      GSL_ERROR_VAL ("failed to allocate space for v", GSL_ENOMEM, 0);
+      GSL_ERROR ("failed to allocate space for v", GSL_ENOMEM);
     }
 
   state->v = v;
@@ -124,7 +124,7 @@ broyden_alloc (void *vstate, size_t n)
       gsl_permutation_free (perm);
       gsl_matrix_free (m);
 
-      GSL_ERROR_VAL ("failed to allocate space for w", GSL_ENOMEM, 0);
+      GSL_ERROR ("failed to allocate space for w", GSL_ENOMEM);
     }
 
   state->w = w;
@@ -139,7 +139,7 @@ broyden_alloc (void *vstate, size_t n)
       gsl_permutation_free (perm);
       gsl_matrix_free (m);
 
-      GSL_ERROR_VAL ("failed to allocate space for y", GSL_ENOMEM, 0);
+      GSL_ERROR ("failed to allocate space for y", GSL_ENOMEM);
     }
 
   state->y = y;
@@ -155,7 +155,7 @@ broyden_alloc (void *vstate, size_t n)
       gsl_permutation_free (perm);
       gsl_matrix_free (m);
 
-      GSL_ERROR_VAL ("failed to allocate space for fnew", GSL_ENOMEM, 0);
+      GSL_ERROR ("failed to allocate space for fnew", GSL_ENOMEM);
     }
 
   state->fnew = fnew;
@@ -172,7 +172,7 @@ broyden_alloc (void *vstate, size_t n)
       gsl_permutation_free (perm);
       gsl_matrix_free (m);
 
-      GSL_ERROR_VAL ("failed to allocate space for x_trial", GSL_ENOMEM, 0);
+      GSL_ERROR ("failed to allocate space for x_trial", GSL_ENOMEM);
     }
 
   state->x_trial = x_trial;
@@ -190,7 +190,7 @@ broyden_alloc (void *vstate, size_t n)
       gsl_permutation_free (perm);
       gsl_matrix_free (m);
 
-      GSL_ERROR_VAL ("failed to allocate space for p", GSL_ENOMEM, 0);
+      GSL_ERROR ("failed to allocate space for p", GSL_ENOMEM);
     }
 
   state->p = p;

@@ -1,3 +1,8 @@
+Tue Nov 12 22:18:14 2002  Brian Gough  <bjg@network-theory.co.uk>
+
+	* lmder.c (lmder_alloc): use GSL_ERROR instead of GSL_ERROR_VAL
+ 	for internal alloc functions which return int
+
 Thu Feb 28 20:15:33 2002  Brian Gough  <bjg@network-theory.co.uk>
 
 	* lmiterate.c (iterate): return immediately if evaluation raised
