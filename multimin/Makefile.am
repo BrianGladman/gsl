@@ -2,8 +2,6 @@ noinst_LTLIBRARIES = libgslmultimin.la
 
 pkginclude_HEADERS = gsl_multimin.h
 
-noinst_HEADERS = 
-
 INCLUDES= -I$(top_builddir)
 
 libgslmultimin_la_SOURCES = fdfminimizer.c steepest_descent.c conjugate_fr.c conjugate_pr.c convergence.c diff.c vector_bfgs.c
