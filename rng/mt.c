@@ -60,8 +60,8 @@ static const unsigned long LOWER_MASK = 0x7fffffffUL;
 
 typedef struct
   {
-    int mti;
     unsigned long mt[N];
+    int mti;
   }
 mt_state_t;
 
