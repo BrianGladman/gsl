@@ -174,9 +174,6 @@ gsl_interp_bsearch(const double x_array[], double x,
 }
 #endif
 
-size_t
-gsl_interp_accel_find(gsl_interp_accel * a, const double xa[], size_t len, double x);
-
 #if HAVE_INLINE
 extern inline size_t
 gsl_interp_accel_find(gsl_interp_accel * a, const double xa[], size_t len, double x)

@@ -1,7 +1,12 @@
+2003-07-24  Brian Gough  <bjg@network-theory.co.uk>
+
+	* gsl_interp.h: removed duplicate declaration of
+	gsl_interp_accel_find
+
 Sat Apr 27 20:57:22 2002  Brian Gough  <bjg@network-theory.co.uk>
 
 	* cspline.c (cspline_init_periodic): handle boundary effects
- 	correctly
+	correctly
 
 Sun Dec  2 22:48:23 2001  Brian Gough  <bjg@network-theory.co.uk>
 
