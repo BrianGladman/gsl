@@ -1,3 +1,8 @@
+2004-10-01  Brian Gough  <bjg@network-theory.co.uk>
+
+	* beta.c (gsl_cdf_beta_P, gsl_cdf_beta_P): return consistent
+	results for out of range values.
+
 2003-08-27  Brian Gough  <bjg@network-theory.co.uk>
 
 	* gauss.c: use parentheses around constant macros to avoid -(-X)

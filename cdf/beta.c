@@ -30,9 +30,14 @@ gsl_cdf_beta_P (const double x, const double a, const double b)
 {
   double P;
 
-  if (x <= 0.0 || x > 1.0)
+  if (x <= 0.0 )
     {
       return 0.0;
+    }
+
+  if ( x >= 1.0 )
+    {
+      return 1.0;
     }
 
   P = beta_inc_AXPY (1.0, 0.0, a, b, x);
@@ -45,9 +50,14 @@ gsl_cdf_beta_Q (const double x, const double a, const double b)
 {
   double P;
 
-  if (x < 0.0 || x >= 1.0)
+  if ( x >= 1.0)
     {
       return 0.0;
+    }
+
+  if ( x <= 0.0 )
+    {
+      return 1.0;
     }
 
   P = beta_inc_AXPY (-1.0, 1.0, a, b, x);

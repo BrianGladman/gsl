@@ -1,5 +1,9 @@
 * What will be new in gsl-1.6:
 
+** The functions gsl_cdf_beta_P and gsl_cdf_beta_Q now return
+consistent results of 0 or 1 for out of range values, x<0 and x>1,
+rather than 0 for left and right tails simultaneously.
+
 ** Added support for LQ and P^T LQ decompositions.  To find the QR
 decomposition of large systems (M>>N) use the LQ decomposition,
 solving the transpose of the original system.  This allows more
