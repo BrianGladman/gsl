@@ -104,7 +104,7 @@ hyperg_1F1_luke(const double a, const double c, const double xin,
 }
 
 
-/* Assumes b != a and b != 0
+/* Assumes b-a != neg integer and b != neg integer.
  */
 static
 int
@@ -174,6 +174,7 @@ hyperg_1F1_asymp_posx(const double a, const double b, const double x,
  * that a is small and that either x or b is large since,
  * if they were all small, the series would have been
  * evaluated directly.
+ * We have to handle a few cases for a=0,a=-1,... to be correct.
  */
 static
 int
@@ -189,7 +190,19 @@ hyperg_1F1_small_a(const double a, const double b, const double x, double * resu
   double abs_oma = fabs(oma);
   double abs_ap1mb = fabs(ap1mb);
 
-  if(fabs(x) < 8.0 || (b > 0.0 && abs_x < 0.7 * abs_b)) {
+  if(a == 0.0) {
+    *result = 1.0;
+    return GSL_SUCCESS;
+  }
+  else if(a == -1.0) {
+    *result = 1.0 + a/b * x;
+    return GSL_SUCCESS;
+  }
+  else if(a == -2.0) {
+    *result = 1.0 + a/b * x + 0.5*a*(a+1.0)/(b*(b+1.0)) *x*x;
+    return GSL_SUCCESS;
+  }
+  else if(fabs(x) < 8.0 || (b > 0.0 && abs_x < 0.7 * abs_b)) {
     /* Series is easy or is dominated and safe, though
      * it may be little slow to converge in the latter
      * case, being like Sum[(x/b)^n] in the worst case.
@@ -232,10 +245,10 @@ hyperg_1F1_small_a(const double a, const double b, const double x, double * resu
  */
 static
 int
-hyperg_1F1_Y_recurse_a(double a, double b, double x,
-                       int n, double Ynm1, double Yn,
-		       int N,
-		       double * YNm1, double * YN)
+hyperg_1F1_Y_recurse_posa(double a, double b, double x,
+                          int n, double Ynm1, double Yn,
+		          int N,
+		          double * YNm1, double * YN)
 {
   int k;
   double Ykm1 = Ynm1;
@@ -263,15 +276,14 @@ hyperg_1F1_Y_recurse_a(double a, double b, double x,
 }
 
 
-/* Manage the upward recursion on the parameter 'a',
- * evaluating 1F1(a+N,b,x) and 1F1(a+N+1,b,x) by recursing
+/* Evaluates 1F1(a+N,b,x) and 1F1(a+N+1,b,x) by recursing
  * up from 1F1(a,b,x) and 1F1(a+1,b,x).
  *
- * Assumes  0 <= a < 1.
+ * Assumes a is small and positive.
  */
 static
 int
-hyperg_1F1_recurse_a(double a, double b, double x, int N, double * FN, double * FNp1)
+hyperg_1F1_recurse_posa(double a, double b, double x, int N, double * FN, double * FNp1)
 {
   double prec;
   double F0, F1;
@@ -311,7 +323,7 @@ hyperg_1F1_recurse_a(double a, double b, double x, int N, double * FN, double * 
       double ln_FN, ln_FNp1;
       double YN, YNp1;
 
-      hyperg_1F1_Y_recurse_a(a, b, x, 1, Y0, Y1, N+1, &YN, &YNp1);
+      hyperg_1F1_Y_recurse_posa(a, b, x, 1, Y0, Y1, N+1, &YN, &YNp1);
 
       ln_FN   = -(lg_aN - lg_abN) + log(fabs(YN));
       ln_FNp1 = -(lg_aN - lg_abN) + log(fabs((1.0+a+N-b)/(a+N)*YNp1));
@@ -325,6 +337,99 @@ hyperg_1F1_recurse_a(double a, double b, double x, int N, double * FN, double * 
         double eN = exp(lg_aN - lg_abN);
         *FN   = YN / eN;
         *FNp1 = (1.0+a+N-b)/(a+N) / eN * YNp1;
+        return GSL_SUCCESS;
+      }
+    }
+  }
+}
+
+
+/* Recursion in the negative a direction.
+ *
+ * Y[n] := 1F1(a-n,b,x)/Gamma(1+a-n-b)
+ *
+ * Y[n+1] + (b-2a-x+2n) Y[n] + (a-n)(1+a-n-b) Y[n-1] = 0
+ */
+static
+int
+hyperg_1F1_Y_recurse_nega(const double a, const double b, const double x,
+                          int n, double Ynm1, double Yn,
+		          int N,
+		          double * YNm1, double * YN)
+{
+  int k;
+  double Ykm1 = Ynm1;
+  double Yk   = Yn;
+  double Ykp1;
+
+  for(k=n; k<N; k++) {
+    Ykp1 = -(b-2.0*a-x+2.0*k) * Yk - (a-k)*(1.0+a-k-b) * Ykm1;
+    Ykm1 = Yk;
+    Yk   = Ykp1;
+  }
+  
+  *YNm1 = Ykm1;
+  *YN   = Yk;
+  return GSL_SUCCESS;
+}
+
+
+/* Evaluates 1F1(a-N,b,x) and 1F1(a-N-1,b,x) by recursing
+ * down from 1F1(a,b,x) and 1F1(a-1,b,x).
+ *
+ */
+static
+int
+hyperg_1F1_recurse_nega(double a, double b, double x, int N, double * FN, double * FNp1)
+{
+  double prec;
+  double F0, F1;
+  int stat_0 = hyperg_1F1_small_a(a,	 b, x, &F0);
+  int stat_1 = hyperg_1F1_small_a(a-1.0, b, x, &F1);
+
+  if(stat_0 == GSL_EOVRFLW || stat_1 == GSL_EOVRFLW) {
+    *FN   = 0.0;
+    *FNp1 = 0.0;
+    return GSL_EOVRFLW;
+  }
+  else {
+    double lg_ab0;  /* log(Gamma(1+a-b)) */
+    double sg_ab0;
+    int stat_lg_ab0 = gsl_sf_lngamma_sgn_impl(1+a-b, &lg_ab0, &sg_ab0);
+
+    double ln_Y0 = -lg_ab0 + log(fabs(F0));
+    double ln_Y1 = -lg_ab0 + log(fabs((a-b)*F1));
+
+    if(ln_Y0 > GSL_LOG_DBL_MAX || ln_Y1 > GSL_LOG_DBL_MAX) {
+      *FN   = 0.0;
+      *FNp1 = 0.0;
+      return GSL_EOVRFLW;
+    }
+    else {
+      double lg_abN;      /* log(Gamma(1+a-N-b)) */
+      double sg_abN;
+      int stat_lg_abN = gsl_sf_lngamma_sgn_impl(1+a-N-b, &lg_abN, &sg_abN);
+
+      double e0 = sg_ab0 * exp(-lg_ab0);
+      double Y0 = e0 * F0;
+      double Y1 = (a-b) * e0 * F1;
+      double ln_FN, ln_FNp1;
+      double YN, YNp1;
+
+      hyperg_1F1_Y_recurse_nega(a, b, x, 1, Y0, Y1, N+1, &YN, &YNp1);
+
+      ln_FN   = lg_abN + log(fabs(YN));
+      ln_FNp1 = lg_abN + log(fabs(YNp1/(a-N-b)));
+      
+      if(ln_FN > GSL_LOG_DBL_MAX || ln_FNp1 > GSL_LOG_DBL_MAX) {
+        *FN   = 0.0;
+	*FNp1 = 0.0;
+	return GSL_EOVRFLW;
+      }
+      else {
+        double eN = sg_abN * exp(lg_abN);
+        *FN   = eN * YN;
+        *FNp1 = eN * YNp1 / (a-N-b);
         return GSL_SUCCESS;
       }
     }
@@ -375,7 +480,7 @@ return hyperg_1F1_luke(a, b, x, result, &prec);
   /* Trap the generic cases where some form
    * of series evaluation will work.
    */
-  if(fabs(x) < 8.0) {
+  if(fabs(x) < 10.0) {
 
     if( (fabs(a) < 20.0 && fabs(b) < 20.0) || (b >= fabs(a)) ) {
       /* Arguments small enough to evaluate series directly
@@ -402,7 +507,7 @@ return hyperg_1F1_luke(a, b, x, result, &prec);
 
   /* Large negative x asymptotic.
    */
-  if(x < -20.0 && locMAX(fabs(a),1.0)*locMAX(fabs(1.0+a-b),1.0) < 1.2*fabs(x)) {
+  if(x < -10.0 && locMAX(fabs(a),1.0)*locMAX(fabs(1.0+a-b),1.0) < 1.2*fabs(x)) {
     double prec;
     return hyperg_1F1_asymp_negx(a, b, x, result, &prec);
   }
@@ -410,9 +515,43 @@ return hyperg_1F1_luke(a, b, x, result, &prec);
 
   /* Large positive x asymptotic.
    */
-  if(x > 20.0 && locMAX(fabs(bma),1.0)*locMAX(fabs(1.0-a),1.0) < 1.2*fabs(x)) {
+  if(x > 10.0 && locMAX(fabs(bma),1.0)*locMAX(fabs(1.0-a),1.0) < 1.2*fabs(x)) {
     double prec;
     return hyperg_1F1_asymp_posx(a, b, x, result, &prec);
+  }
+
+
+  /* Large positive a obtained by recursion.
+   */
+  if(a > 20.0 && a < INT_MAX-2 && b > 0.0 && x > 0.0) {
+    double FN, FNp1;
+    int N     = floor(a);
+    double ap = a - N;
+    int stat_r;
+    if(ap == 0.0) {
+      ap += 1.0;
+      N  -= 1;
+    }
+    stat_r = hyperg_1F1_recurse_posa(ap, b, x, N, &FN, &FNp1);
+    *result = FN;
+    return stat_r;
+  }
+
+
+  /* Large negative a by recursion.
+   */
+  if(a < -20.0 && a > INT_MIN+1 && b > 0.0 && x > 0.0) {
+    double FN, FNp1;
+    int N     = -floor(a);
+    double ap = a + N;
+    int stat_r;
+    if(ap == 0.0) {
+      ap -= 1.0;
+      N  -= 1;
+    }
+    stat_r = hyperg_1F1_recurse_nega(ap, b, x, N, &FN, &FNp1);
+    *result = FN;
+    return stat_r;
   }
 
 
