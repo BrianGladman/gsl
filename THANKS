@@ -1,27 +1,41 @@
-Barak Pearlmutter <bap@cs.unm.edu>
-Frederick W. Wheeler <wheeler@cipr.rpi.edu>
-Bernd Petrovitsch <bernd@ict.tuwien.ac.at>
-Jacek Pliszka <Jacek.Pliszka@fuw.edu.pl> for bug report
+* Nelson H. F. Beebe <beebe@math.utah.edu> for references and testing
+the software on many different platforms.
 
-Nelson H. F. Beebe <beebe@math.utah.edu> for references and testing the
-software on many different platforms.
+* Tim Mooney <mooney@dogbert.cc.ndsu.nodak.edu> for IEEE support for
+Tru64, AIX, IRIX, fixes for odes, and testing
 
-Tim Mooney <mooney@dogbert.cc.ndsu.nodak.edu> for IEEE support for Tru64,
-AIX, IRIX, fixes for odes, and testing
+* Thomas Walter <walter@pctc.chemie.uni-erlangen.de> for heapsort
+routines and bug reports
 
-Michele Clark <clark@cs.unc.edu> for bug report
+* Barak Pearlmutter <bap@cs.unm.edu>
 
-Jeffrey Russell Horner <jhorner@cs.utk.edu> for information on CBLAS
-Rahul V. Herwadkar <RHERWADK@us.oracle.com> for testing
-Trond Bo <datb@dnmi.no> for bug report
-Jan Kasprzak <kas@informatics.muni.cz> for bug report
-David Kaelbling <drk@sgi.com> for testing
-Mark Levedahl <mlevedahl@fallschurch.esys.com> for bug report
-"Billinghurst, David (RTD)" <David.Billinghurst@riotinto.com.au> for testing
-Thomas Walter <walter@pctc.chemie.uni-erlangen.de> for bug reports
-Jean-Bernard ADDOR <jbaddor@sca.uqam.ca> for bug report
-Fabrice Rossi <rossi@ufrmd.dauphine.fr> bug reports and suggestions
+* Frederick W. Wheeler <wheeler@cipr.rpi.edu>
 
-Paul Walmsley <pwalmsley@iee.org> for bug report and patch for fixing matmult 
-Dave Morrison <dave@bnl.gov> for advice on build procedure
-Brett Viren <bviren@superk.physics.sunysb.edu> for debugging qpsrt.c.
+* Bernd Petrovitsch <bernd@ict.tuwien.ac.at>
+
+* Jacek Pliszka <Jacek.Pliszka@fuw.edu.pl> for bug report
+
+* Michele Clark <clark@cs.unc.edu> for bug report
+
+* Jeffrey Russell Horner <jhorner@cs.utk.edu> for information on CBLAS
+
+* Rahul V. Herwadkar <RHERWADK@us.oracle.com> for testing
+
+* Trond Bo <datb@dnmi.no> for bug report
+
+* Jan Kasprzak <kas@informatics.muni.cz> for bug report
+
+* David Kaelbling <drk@sgi.com> for testing
+
+* Mark Levedahl <mlevedahl@fallschurch.esys.com> for bug report
+
+* David Billinghurst <David.Billinghurst@riotinto.com.au> for testing
+
+* Jean-Bernard ADDOR <jbaddor@sca.uqam.ca> for bug report
+
+* Fabrice Rossi <rossi@ufrmd.dauphine.fr> bug reports and suggestions
+
+* Paul Walmsley <pwalmsley@iee.org> for bug report and patch for fixing matmult 
+* Dave Morrison <dave@bnl.gov> for advice on build procedure
+
+* Brett Viren <bviren@superk.physics.sunysb.edu> for debugging qpsrt.c.

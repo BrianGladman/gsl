@@ -4,8 +4,8 @@ pkginclude_HEADERS = gsl_sort.h gsl_sort_vector.h gsl_sort_vector_char.h gsl_sor
 
 INCLUDES= -I$(top_builddir) -I$(top_srcdir)
 
-libgslsort_a_SOURCES = sort.c sortvec.c
-noinst_HEADERS = sortvec_source.c sortind_source.c test_source.c
+libgslsort_a_SOURCES = sort.c sortind.c sortvec.c sortvecind.c
+noinst_HEADERS = sortvec_source.c sortvecind_source.c test_source.c
 
 TESTS = test
 

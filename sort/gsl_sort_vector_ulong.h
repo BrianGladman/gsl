@@ -7,6 +7,6 @@
 #include <gsl/gsl_vector_ulong.h>
 
 void gsl_sort_vector_ulong (gsl_vector_ulong * v);
-void gsl_sort_vector_ulong_index (gsl_permutation * p, const gsl_vector_ulong * v);
+int gsl_sort_vector_ulong_index (gsl_permutation * p, const gsl_vector_ulong * v);
 
 #endif /* GSL_SORT_VECTOR_ULONG_H */

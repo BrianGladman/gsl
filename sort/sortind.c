@@ -22,72 +22,60 @@
 #include <stdlib.h>
 #include <gsl_sort.h>
 
-static inline void swap (void *base, size_t size, size_t i, size_t j);
-static inline void downheap (void *data, const size_t size, const size_t N, size_t k, gsl_comparison_fn_t compare);
-
-/* Inline swap function for moving objects around */
-
-static inline
-void 
-swap (void *base, size_t size, size_t i, size_t j)
-{
-  register char *a = size * i + (char *) base;
-  register char *b = size * j + (char *) base;
-  register size_t s = size;
-
-  if (i == j)
-    return;
-
-  do
-    {
-      char tmp = *a;
-      *a++ = *b;
-      *b++ = tmp;
-    }
-  while (--s > 0);
-}
+static inline void downheap (size_t * p, const void *data, const size_t size, const size_t N, size_t k, gsl_comparison_fn_t compare);
 
 #define CMP(data,size,j,k) (compare((char *)(data) + (size) * (j), (char *)(data) + (size) * (k)))
 
 static inline void
-downheap (void *data, const size_t size, const size_t N, size_t k, gsl_comparison_fn_t compare)
+downheap (size_t * p, const void *data, const size_t size, const size_t N, size_t k, gsl_comparison_fn_t compare)
 {
+  const size_t pki = p[k];
+
   while (k <= N / 2)
     {
       size_t j = 2 * k;
 
-      if (j < N && CMP(data,size,j,j+1) < 0)
-        {
+      if (j < N && CMP (data, size, p[j], p[j + 1]) < 0)
+	{
 	  j++;
 	}
-      
-      if (CMP(data,size,k,j) < 0)
-        {
-          swap (data, size, j, k) ;
-        }
-      else
-        {
-          break ;
-        }
+
+      if (CMP (data, size, pki, p[j]) >= 0)
+	{
+	  break;
+	}
+
+      p[k] = p[j];
 
       k = j;
     }
+
+  p[k] = pki;
 }
 
-void
-gsl_sort (void *data, size_t count, size_t size, gsl_comparison_fn_t compare)
+int
+gsl_sort_index (gsl_permutation * permutation, const void *data, size_t count, size_t size, gsl_comparison_fn_t compare)
 {
   /* Sort the array in ascending order. This is a true inplace
      algorithm with N log N operations. Worst case (an already sorted
      array) is something like 20% slower */
 
+  size_t *p = permutation->data;
+
   size_t N;
   size_t k;
 
+  if (permutation->size != count)
+    {
+      GSL_ERROR ("permutation length and data count are not equal", GSL_EBADLEN);
+    }
+
   if (count == 0)
     {
-      return ; /* No data to sort */
+      return GSL_SUCCESS; /* No data to sort */
     }
+
+  gsl_permutation_init (permutation);	/* set permutation to identity */
 
   /* We have n_data elements, last element is at 'n_data-1', first at
      '0' Set N to the last element number. */
@@ -99,19 +87,22 @@ gsl_sort (void *data, size_t count, size_t size, gsl_comparison_fn_t compare)
   do
     {
       k--;
-      downheap (data, size, N, k, compare);
+      downheap (p, data, size, N, k, compare);
     }
   while (k > 0);
 
   while (N > 0)
     {
       /* first swap the elements */
-      swap (data, size, 0, N);
+      size_t tmp = p[0];
+      p[0] = p[N];
+      p[N] = tmp;
 
       /* then process the heap */
       N--;
 
-      downheap (data, size, N, 0, compare);
+      downheap (p, data, size, N, 0, compare);
     }
-}
 
+  return GSL_SUCCESS;
+}

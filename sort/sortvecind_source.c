@@ -47,7 +47,7 @@ FUNCTION(index,downheap) (size_t * p, const BASE *data, const size_t stride, con
   p[k] = pki;
 }
 
-void
+int
 FUNCTION (gsl_sort_vector,index) (gsl_permutation * permutation, const TYPE (gsl_vector) * v)
 {
   const BASE * data = v->data ;
@@ -59,9 +59,14 @@ FUNCTION (gsl_sort_vector,index) (gsl_permutation * permutation, const TYPE (gsl
   size_t N;
   size_t k;
 
+  if (permutation->size != n) 
+    {
+      GSL_ERROR ("permutation and vector lengths are not equal", GSL_EBADLEN); 
+    }
+
   if (n == 0)
     {
-      return ; /* No data to sort */
+      return GSL_SUCCESS ; /* No data to sort */
     }
 
   gsl_permutation_init (permutation) ;  /* set permutation to identity */
@@ -83,7 +88,7 @@ FUNCTION (gsl_sort_vector,index) (gsl_permutation * permutation, const TYPE (gsl
   while (N > 0)
     {
       /* first swap the elements */
-      BASE tmp = p[0] ;
+      size_t tmp = p[0] ;
       p[0] = p[N] ;
       p[N] = tmp ;
 
@@ -92,6 +97,8 @@ FUNCTION (gsl_sort_vector,index) (gsl_permutation * permutation, const TYPE (gsl
 
       FUNCTION(index,downheap) (p, data, stride, N, 0);
     }
+
+  return GSL_SUCCESS ;
 }
 
 

@@ -1,9 +1,9 @@
 #include <config.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <gsl/gsl_sort.h>
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_test.h>
+#include <gsl/gsl_sort.h>
 #include <gsl/gsl_sort_vector.h>
 
 int cmp_dbl (const void * a, const void * b) ;
@@ -13,6 +13,7 @@ void cpy (double * dest, double * src, size_t N);
 void randomize (double * data, size_t n);
 void reverse (double * data, size_t N);
 int check (double * data, double * orig, size_t N);
+int pcheck (gsl_permutation * p,  double * data, double * orig, size_t N);
 double urand (void);
 
 #define BASE_LONG_DOUBLE
@@ -86,10 +87,12 @@ main (void)
 {
   size_t i, s;
 
-  for (i = 0 ; i < 32 ; i++)
+  /* Test for lengths of 1 ... 31, then 32, 64, 128, 256, ... */
+
+  for (i = 1 ; i < 1024 ; i = (i<32) ? i+1 : 2*i)
     test_sort(i);
 
-  for (i = 1 ; i < 32 ; i++)
+  for (i = 1 ; i < 1024 ; i = (i<32) ? i+1 : 2*i)
     {
       for (s = 1; s < 4 ; s++) 
         {
@@ -117,36 +120,53 @@ test_sort(size_t N)
 
   double * orig = (double *) malloc(N * sizeof(double)) ;
   double * data = (double *) malloc(N * sizeof(double)) ;
+  gsl_permutation * p = gsl_permutation_alloc (N) ;
 
   initialize (orig, N);
 
   /* Already sorted */
   cpy (data, orig, N);
+
+  status = gsl_sort_index (p, data, N, sizeof(double), (gsl_comparison_fn_t) &cmp_dbl);
+  status |= pcheck (p, data, orig, N);
+  gsl_test (status, "indexing array, n = %u, ordered", N) ;  
+
   gsl_sort (data, N, sizeof(double), (gsl_comparison_fn_t) &cmp_dbl);
   status = check (data, orig, N);
 
-  gsl_test (status, "sorting array, ordered, n = %u", N) ;  
+  gsl_test (status, "sorting, array, n = %u, ordered", N) ;  
 
   /* Reverse the data */
 
   cpy (data, orig, N);
   reverse (data, N) ;
+
+  status = gsl_sort_index (p, data, N, sizeof(double), (gsl_comparison_fn_t) &cmp_dbl);
+  status |= pcheck (p, data, orig, N);
+  gsl_test (status, "indexing array, n = %u, reversed", N) ;  
+
   gsl_sort (data, N, sizeof(double), (gsl_comparison_fn_t) &cmp_dbl);
   status = check (data, orig, N);
 
-  gsl_test (status, "sorting array, reversed, n = %u", N) ;
+  gsl_test (status, "sorting, array, n = %u, reversed", N) ;
 
   /* Perform some shuffling */
 
   cpy (data, orig, N);
   randomize (data, N) ;
+
+  status = gsl_sort_index (p, data, N, sizeof(double), (gsl_comparison_fn_t) &cmp_dbl);
+  status |= pcheck (p, data, orig, N);
+  gsl_test (status, "indexing array, n = %u, randomized", N) ;  
+
   gsl_sort (data, N, sizeof(double), (gsl_comparison_fn_t) &cmp_dbl);
   status = check (data, orig, N);
 
-  gsl_test (status, "sorting array, randomized, n = %u", N) ;
+  gsl_test (status, "sorting, array, n = %u, randomized", N) ;
 
-  if (orig) free(orig) ;
-  if (data) free(data) ;
+  free(orig) ;
+  free(data) ;
+  gsl_permutation_free (p) ;
 }
 
 void
@@ -217,6 +237,23 @@ check (double * data, double * orig, size_t N)
 
   return GSL_SUCCESS;
 }
+
+int
+pcheck (gsl_permutation * p, double * data, double * orig, size_t N)
+{
+  size_t i;
+
+  for (i = 0; i < N; i++) 
+    {
+      if (data[p->data[i]] != orig[i]) 
+        {
+          return GSL_FAILURE;
+        }
+    }
+
+  return GSL_SUCCESS;
+}
+
 
 double urand (void) { 
   static unsigned long int x = 1;

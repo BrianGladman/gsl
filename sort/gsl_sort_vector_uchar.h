@@ -7,6 +7,6 @@
 #include <gsl/gsl_vector_uchar.h>
 
 void gsl_sort_vector_uchar (gsl_vector_uchar * v);
-void gsl_sort_vector_uchar_index (gsl_permutation * p, const gsl_vector_uchar * v);
+int gsl_sort_vector_uchar_index (gsl_permutation * p, const gsl_vector_uchar * v);
 
 #endif /* GSL_SORT_VECTOR_UCHAR_H */

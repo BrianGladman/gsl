@@ -7,6 +7,6 @@
 #include <gsl/gsl_vector_double.h>
 
 void gsl_sort_vector (gsl_vector * v);
-void gsl_sort_vector_index (gsl_permutation * p, const gsl_vector * v);
+int gsl_sort_vector_index (gsl_permutation * p, const gsl_vector * v);
 
 #endif /* GSL_SORT_VECTOR_DOUBLE_H */

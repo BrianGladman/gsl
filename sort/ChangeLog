@@ -1,3 +1,18 @@
+Sat Feb 26 14:47:36 2000  Brian Gough  <bjg@network-theory.co.uk>
+
+	* added support for indirect sorting of objects
+
+	* fixed bug in indirect sorting from use of BASE type instead of
+ 	size_t for index.
+
+	* reorganized directory
+
+Fri Feb 25 19:30:08 2000  Brian Gough  <bjg@network-theory.co.uk>
+
+	* sortind_source.c: changed return type of indirect sort to int,
+ 	to allow error return code in case where permutation and vector
+ 	sizes do not match
+
 Sat Feb 19 12:18:28 2000  Brian Gough  <bjg@network-theory.co.uk>
 
 	* sortind_source.c: added indirect sorting

@@ -22,39 +22,39 @@ TYPE(test_sort_vector)(size_t N, size_t stride)
   /* Already sorted */
   FUNCTION(gsl_vector,cpy) (data, orig);
 
-  FUNCTION(gsl_sort_vector,index) (p, data);
-  status = FUNCTION(my,pcheck) (p, data, orig);
-  gsl_test (status, "indexing " NAME(gsl_vector) ", ordered, n = %u, stride = %u", N, stride) ;  
+  status = FUNCTION(gsl_sort_vector,index) (p, data);
+  status |= FUNCTION(my,pcheck) (p, data, orig);
+  gsl_test (status, "indexing " NAME(gsl_vector) ", n = %u, stride = %u, ordered", N, stride) ;  
 
   TYPE(gsl_sort_vector) (data);
   status = FUNCTION(my,check) (data, orig);
-  gsl_test (status, "sorting " NAME(gsl_vector) ", ordered, n = %u, stride = %u", N, stride) ;  
+  gsl_test (status, "sorting, " NAME(gsl_vector) ", n = %u, stride = %u, ordered", N, stride) ;  
 
   /* Reverse the data */
 
   FUNCTION(gsl_vector,cpy) (data, orig);
   FUNCTION(gsl_vector,reverse) (data) ;
 
-  FUNCTION(gsl_sort_vector,index) (p, data);
-  status = FUNCTION(my,pcheck) (p, data, orig);
-  gsl_test (status, "indexing " NAME(gsl_vector) ", reversed, n = %u, stride = %u", N, stride) ;
+  status = FUNCTION(gsl_sort_vector,index) (p, data);
+  status |= FUNCTION(my,pcheck) (p, data, orig);
+  gsl_test (status, "indexing " NAME(gsl_vector) ", n = %u, stride = %u, reversed", N, stride) ;
 
   TYPE(gsl_sort_vector) (data);
   status = FUNCTION(my,check) (data, orig);
-  gsl_test (status, "sorting " NAME(gsl_vector) ", reversed, n = %u, stride = %u", N, stride) ;
+  gsl_test (status, "sorting, " NAME(gsl_vector) ", n = %u, stride = %u, reversed", N, stride) ;
 
   /* Perform some shuffling */
 
   FUNCTION(gsl_vector,cpy) (data, orig);
   FUNCTION(my,randomize) (data) ;
 
-  FUNCTION(gsl_sort_vector,index) (p, data);
-  status = FUNCTION(my,pcheck) (p, data, orig);
-  gsl_test (status, "indexing " NAME(gsl_vector) ", randomized, n = %u, stride = %u", N, stride) ;
+  status = FUNCTION(gsl_sort_vector,index) (p, data);
+  status |= FUNCTION(my,pcheck) (p, data, orig);
+  gsl_test (status, "indexing " NAME(gsl_vector) ", n = %u, stride = %u, randomized", N, stride) ;
 
   TYPE(gsl_sort_vector) (data);
   status = FUNCTION(my,check) (data, orig);
-  gsl_test (status, "sorting " NAME(gsl_vector) ", randomized, n = %u, stride = %u", N, stride) ;
+  gsl_test (status, "sorting, " NAME(gsl_vector) ", n = %u, stride = %u, randomized", N, stride) ;
 
   FUNCTION(gsl_vector,free) (orig);
   FUNCTION(gsl_vector,free) (data);
@@ -68,10 +68,17 @@ void
 FUNCTION(my,initialize) (TYPE(gsl_vector) * v)
 {
   size_t i;
+  ATOMIC k = 0, kk;
+
+  /* Must be sorted initially */
 
   for (i = 0; i < v->size; i++) 
     {
-      FUNCTION(gsl_vector,set)(v,i,(ATOMIC)i) ;
+      kk = k ;
+      k++ ; 
+      if (k < kk)  /* prevent overflow */
+        k = kk ;
+      FUNCTION(gsl_vector,set)(v,i,k) ;
     }
 }
 
