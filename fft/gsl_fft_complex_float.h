@@ -56,7 +56,7 @@ gsl_fft_complex_float_radix2_dif_transform (float data[],
 				  size_t n,
 				  gsl_fft_direction sign);
 
-int gsl_fft_complex_float_bitreverse_order (float data[][], 
+int gsl_fft_complex_float_bitreverse_order (float **data, 
 					    size_t stride,
 					    size_t n,
 					    size_t n_bits);

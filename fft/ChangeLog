@@ -1,3 +1,9 @@
+Mon Nov 23 15:47:13 1998  Brian Gough  <bjg@vvv.lanl.gov>
+
+	* gsl_fft_complex.h, gsl_fft_complex_float.h: removed data[][]
+ 	type arguments from prototypes since this seems to be non-ANSI.
+ 	Use **data instead.
+
 1998-11-09    <bjg@ancho.lanl.gov>
 
 	* compare_source.c: fix up int/unsigned format types to prevent
