@@ -23,7 +23,7 @@ main (void)
 
   /* specific tests of known results for 10000 iterations with seed = 1 */
 
-  rng_test (gsl_rng_bsdrand, 1, 10000, 1910041713);
+  rng_test (gsl_rng_rand, 1, 10000, 1910041713);
   rng_test (gsl_rng_randu, 1, 10000, 1623524161);
   rng_test (gsl_rng_cmrg, 1, 10000, 719452880);
   rng_test (gsl_rng_minstd, 1, 10000, 1043618065);
@@ -43,7 +43,7 @@ main (void)
      the ../random directory and getting the expected value from
      that. An analytic calculation would be preferable. */
 
-  rng_test (gsl_rng_rand, 1, 10000, 45776);
+  rng_test (gsl_rng_cmlib, 1, 10000, 45776);
   rng_test (gsl_rng_uni, 1, 10000, 9214);
   rng_test (gsl_rng_uni32, 1, 10000, 1155229825);
   rng_test (gsl_rng_zuf, 1, 10000, 3970);
@@ -71,7 +71,7 @@ main (void)
 
   /* Test constant relationship between int and double functions */
 
-  rng_float_test (gsl_rng_bsdrand);
+  rng_float_test (gsl_rng_cmlib);
   rng_float_test (gsl_rng_cmrg);
   rng_float_test (gsl_rng_minstd);
   rng_float_test (gsl_rng_mrg);
@@ -98,7 +98,7 @@ main (void)
 
   /* Test save/restore functions */
 
-  rng_state_test (gsl_rng_bsdrand);
+  rng_state_test (gsl_rng_cmlib);
   rng_state_test (gsl_rng_cmrg);
   rng_state_test (gsl_rng_minstd);
   rng_state_test (gsl_rng_mrg);
@@ -123,8 +123,8 @@ main (void)
   rng_state_test (gsl_rng_vax);
   rng_state_test (gsl_rng_zuf);
 
-  rng_parallel_state_test (gsl_rng_bsdrand);
   rng_parallel_state_test (gsl_rng_cmrg);
+  rng_parallel_state_test (gsl_rng_cmlib);
   rng_parallel_state_test (gsl_rng_minstd);
   rng_parallel_state_test (gsl_rng_mrg);
   rng_parallel_state_test (gsl_rng_mt19937);
@@ -152,8 +152,8 @@ main (void)
      don't get any crazy results back from the generator, i.e. they
      aren't a test of the algorithm, just the implementation) */
 
-  generic_rng_test (gsl_rng_bsdrand);
   generic_rng_test (gsl_rng_cmrg);
+  generic_rng_test (gsl_rng_cmlib);
   generic_rng_test (gsl_rng_minstd);
   generic_rng_test (gsl_rng_mrg);
   generic_rng_test (gsl_rng_mt19937);

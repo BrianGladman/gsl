@@ -31,8 +31,8 @@ gsl_rng_type;
 /* These structs also need to appear in default.c so you can select
    them via the environment variable GSL_RNG_TYPE */
 
-extern const gsl_rng_type *gsl_rng_bsdrand;
 extern const gsl_rng_type *gsl_rng_cmrg;
+extern const gsl_rng_type *gsl_rng_cmlib;
 extern const gsl_rng_type *gsl_rng_minstd;
 extern const gsl_rng_type *gsl_rng_mrg;
 extern const gsl_rng_type *gsl_rng_mt19937;

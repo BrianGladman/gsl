@@ -17,6 +17,10 @@
 
    The period of this generator is 2^31.
 
+   It is used as the RNUN subroutine in the IMSL Library and the RAND
+   function in MATLAB. The generator is sometimes known by the acronym
+   "GGL" (I'm not sure what that stands for).
+
    From: Park and Miller, "Random Number Generators: Good ones are
    hard to find" Communications of the ACM, October 1988, Volume 31,
    No 10, pages 1192-1201. */

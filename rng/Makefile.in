@@ -77,7 +77,7 @@ include_HEADERS = gsl_rng.h
 INCLUDES = -I$(srcdir)/..  -I$(srcdir)/../err
 
 libgslrng_a_SOURCES = gsl_rng.h rng.c default.c \
-bsdrand.c cmrg.c minstd.c mrg.c mt.c r250.c ran0.c \
+cmrg.c cmlib.c minstd.c mrg.c mt.c r250.c ran0.c \
 ran1.c ran2.c ran3.c rand.c rand48.c randu.c ranf.c ranlux.c ranmar.c \
 taus.c tds.c tt.c uni.c uni32.c vax.c zuf.c
 
@@ -96,7 +96,7 @@ CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
 libgslrng_a_LIBADD = 
-libgslrng_a_OBJECTS =  rng.o default.o bsdrand.o cmrg.o minstd.o mrg.o \
+libgslrng_a_OBJECTS =  rng.o default.o cmrg.o cmlib.o minstd.o mrg.o \
 mt.o r250.o ran0.o ran1.o ran2.o ran3.o rand.o rand48.o randu.o ranf.o \
 ranlux.o ranmar.o taus.o tds.o tt.o uni.o uni32.o vax.o zuf.o
 AR = ar
@@ -115,7 +115,7 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 TAR = tar
 GZIP = --best
-DEP_FILES =  .deps/bsdrand.P .deps/cmrg.P .deps/default.P .deps/minstd.P \
+DEP_FILES =  .deps/cmlib.P .deps/cmrg.P .deps/default.P .deps/minstd.P \
 .deps/mrg.P .deps/mt.P .deps/r250.P .deps/ran0.P .deps/ran1.P \
 .deps/ran2.P .deps/ran3.P .deps/rand.P .deps/rand48.P .deps/randu.P \
 .deps/ranf.P .deps/ranlux.P .deps/ranmar.P .deps/rng.P .deps/taus.P \

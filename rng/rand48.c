@@ -48,9 +48,13 @@ rand48_advance (void *vstate)
   state->x0 = (a & 0x0000FFFFUL) ;
  
   a >>= 16 ;
-  a += a0 * x1 + a1 * x0 ;
+
+  /* although the next line may overflow we only need the top 16 bits
+     in the following stage, so it does not matter */
+
+  a += a0 * x1 + a1 * x0 ; 
   state->x1 = (a & 0x0000FFFFUL) ;
-  
+
   a >>= 16 ;
   a += a0 * x2 + a1 * x1 + a2 * x0 ;
   state->x2 = (a & 0x0000FFFFUL) ;
@@ -63,7 +67,7 @@ rand48_get (void *vstate)
 
   rand48_advance (state) ;
 
-  return ((state->x2 &0xFFFF) << 16) + state->x1;
+  return (state->x2 << 16) + state->x1;
 }
 
 double

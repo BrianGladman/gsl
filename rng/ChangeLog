@@ -1,5 +1,7 @@
 Sun Jul  5 15:59:29 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
+	* rand.c: renamed rand.c to cmlib.c and bsdrand.c to rand.c.
+
 	* ranf.c: added CRAY RANF, 48 bit generator
 
 	* rand48.c: added the standard unix rand48()

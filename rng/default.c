@@ -23,8 +23,8 @@ gsl_rng_env_setup (void)
 
       /* check GSL_RNG_TYPE against the names of all the generators */
 
-      check (&gsl_rng_default, gsl_rng_bsdrand, p);
       check (&gsl_rng_default, gsl_rng_cmrg, p);
+      check (&gsl_rng_default, gsl_rng_cmlib, p);
       check (&gsl_rng_default, gsl_rng_minstd, p);
       check (&gsl_rng_default, gsl_rng_mrg, p);
       check (&gsl_rng_default, gsl_rng_mt19937, p);
