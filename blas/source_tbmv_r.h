@@ -5,14 +5,15 @@
 
   if(TransA == CblasNoTrans) {
     /* form  x := A*x */
+
     if(Uplo == CblasUpper) {
       size_t ix = 0;
       for(i=0; i<N; i++) {
         BASE_TYPE temp = 0.0;
-        size_t jx;
+        size_t jx = (i+1)*incX;
         for(j=i+1; j<GSL_MIN(N,i+K+1); j++) {
-	  jx = j * incX;
 	  temp += X[jx] * A[lda * i + j];
+	  jx += incX;
 	}
 	if(nounit) {
 	  X[ix] = temp + X[ix] * A[lda * i + i];
@@ -27,7 +28,8 @@
       size_t ix = 0;
       for(i=N-1; i>=0; i--) {
         BASE_TYPE temp = 0.0;
-        for(j=GSL_MAX(0,i-K); j<i; j++) {
+	const size_t j_min = ( K>i ? 0 : i-K );
+        for(j=j_min; j<i; j++) {
 	  temp += X[j * incX] * A[lda * i + j];
 	}
 	if(nounit) {
@@ -43,14 +45,15 @@
   else {
     /* form  x := A'*x */
     /* FIXME: bad access */
+
     if(Uplo == CblasUpper) {
       size_t ix = 0;
       for(i=0; i<N; i++) {
         BASE_TYPE temp = 0.0;
-        size_t jx;
+        size_t jx = (i+1)*incX;
         for(j=i+1; j<GSL_MIN(N,i+K+1); j++) {
-	  jx = j * incX;
 	  temp += X[jx] * A[lda * j + i];
+	  jx += incX;
 	}
 	if(nounit) {
 	  X[ix] = temp + X[ix] * A[lda * i + i];
@@ -65,7 +68,8 @@
       size_t ix = 0;
       for(i=N-1; i>=0; i--) {
         BASE_TYPE temp = 0.0;
-        for(j=GSL_MAX(0,i-K); j<i; j++) {
+	const size_t j_min = ( K>i ? 0 : i-K );
+        for(j=j_min; j<i; j++) {
 	  temp += X[j * incX] * A[lda * j + i];
 	}
 	if(nounit) {

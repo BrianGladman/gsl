@@ -512,7 +512,27 @@ int test_gemv(void)
   int status = 0;
   int s;
 
-/* FIXME */
+  float  tmp_f[32];
+  double tmp_d[32];
+
+  gsl_blas_raw_scopy(4, vector_4_f, 1, tmp_f, 1);
+  gsl_blas_raw_sgemv(CblasNoTrans, 4, 4, 2.0, matrix_gen_4_f, 4, vector_4_f, 1, 3.0, tmp_f, 1);
+  s = ( tmp_f[0] != -4.0 || tmp_f[1] != -5.0 || tmp_f[2] != -1.0 || tmp_f[3] != 7.0 );
+  gsl_test(s, "gsl_blas_raw_sgemv A");
+  status += s;
+
+  gsl_blas_raw_scopy(4, vector_4_f, 1, tmp_f, 1);
+  gsl_blas_raw_sgemv(CblasTrans, 4, 4, 2.0, matrix_gen_4_f, 4, vector_4_f, 1, 3.0, tmp_f, 1);
+  s = ( tmp_f[0] != -5.0 || tmp_f[1] != -15.0 || tmp_f[2] != 1.0 || tmp_f[3] != 3.0 );
+  gsl_test(s, "gsl_blas_raw_sgemv B");
+  status += s;
+
+
+  gsl_blas_raw_dcopy(4, vector_4_d, 1, tmp_d, 1);
+  gsl_blas_raw_dgemv(CblasNoTrans, 4, 4, 2.0, matrix_gen_4_d, 4, vector_4_d, 1, 3.0, tmp_d, 1);
+  s = ( tmp_d[0] != -4.0 || tmp_d[1] != -5.0 || tmp_d[2] != -1.0 || tmp_d[3] != 7.0 );
+  gsl_test(s, "gsl_blas_raw_dgemv A");
+  status += s;
 
   return status;
 }
@@ -600,6 +620,33 @@ int test_tbmv(void)
   int status = 0;
   int s;
 
+  float  tmp_f[32];
+  double tmp_d[32];
+
+  gsl_blas_raw_scopy(4, vector_4_f, 1, tmp_f, 1);
+  gsl_blas_raw_stbmv(CblasUpper, CblasNoTrans, CblasNonUnit, 4, 2, matrix_gen_4_f, 4, tmp_f, 1);
+  s = ( tmp_f[0] != -2.0 || tmp_f[1] != 0.0 || tmp_f[2] != 1.5 || tmp_f[3] != 0.0 );
+  gsl_test(s, "gsl_blas_raw_stbmv A");
+  status += s;
+
+  gsl_blas_raw_scopy(4, vector_4_f, 1, tmp_f, 1);
+  gsl_blas_raw_stbmv(CblasUpper, CblasNoTrans, CblasUnit, 4, 2, matrix_gen_4_f, 4, tmp_f, 1);
+  s = ( tmp_f[0] != -2.0 || tmp_f[1] != 2.0 || tmp_f[2] != 1.5 || tmp_f[3] != 3.0 );
+  gsl_test(s, "gsl_blas_raw_stbmv B");
+  status += s;
+
+  gsl_blas_raw_scopy(4, vector_4_f, 1, tmp_f, 1);
+  gsl_blas_raw_stbmv(CblasUpper, CblasTrans, CblasNonUnit, 4, 2, matrix_gen_4_f, 4, tmp_f, 1);
+  s = ( tmp_f[0] != -2.0 || tmp_f[1] != 0.0 || tmp_f[2] != -1.0 || tmp_f[3] != -1.0 );
+  gsl_test(s, "gsl_blas_raw_stbmv C");
+  status += s;
+
+  gsl_blas_raw_scopy(4, vector_4_f, 1, tmp_f, 1);
+  gsl_blas_raw_stbmv(CblasUpper, CblasTrans, CblasUnit, 4, 2, matrix_gen_4_f, 4, tmp_f, 1);
+  s = ( tmp_f[0] != -2.0 || tmp_f[1] != 1.0 || tmp_f[2] != -1.0 || tmp_f[3] != 2.0 );
+  gsl_test(s, "gsl_blas_raw_stbmv D");
+  status += s;
+
 /* FIXME */
 
   return status;
@@ -610,19 +657,63 @@ int test_tpmv(void)
   int status = 0;
   int s;
 
+  float  tmp_f[32];
+  double tmp_d[32];
+
+  gsl_blas_raw_scopy(4, vector_4_f, 1, tmp_f, 1);
+  gsl_blas_raw_stpmv(CblasUpper, CblasNoTrans, CblasNonUnit, 4, matrix_gen_4_f, tmp_f, 1);
+  s = ( tmp_f[0] != 1.0 || tmp_f[1] != 29.0/2.0 || tmp_f[2] != 6.0 || tmp_f[3] != -6.0 );
+  gsl_test(s, "gsl_blas_raw_stpmv A");
+  status += s;
+
+  gsl_blas_raw_scopy(4, vector_4_f, 1, tmp_f, 1);
+  gsl_blas_raw_stpmv(CblasUpper, CblasNoTrans, CblasUnit, 4, matrix_gen_4_f, tmp_f, 1);
+  s = ( tmp_f[0] != 1.0 || tmp_f[1] != 14.0 || tmp_f[2] != 6.0 || tmp_f[3] != 3.0 );
+  gsl_test(s, "gsl_blas_raw_stpmv B");
+  status += s;
+
+/*
+  gsl_blas_raw_scopy(4, vector_4_f, 1, tmp_f, 1);
+  gsl_blas_raw_stpmv(CblasUpper, CblasTrans, CblasNonUnit, 4, matrix_gen_4_f, tmp_f, 1);
+  s = ( tmp_f[0] != -2.0 || tmp_f[1] != -0.5 || tmp_f[2] != 1.0 || tmp_f[3] != -13.0 );
+  gsl_test(s, "gsl_blas_raw_stpmv C");
+  status += s;
+
+  gsl_blas_raw_scopy(4, vector_4_f, 1, tmp_f, 1);
+  gsl_blas_raw_stpmv(CblasUpper, CblasTrans, CblasUnit, 4, matrix_gen_4_f, tmp_f, 1);
+  s = ( tmp_f[0] != -2.0 || tmp_f[1] != -1.0 || tmp_f[2] != 1.0 || tmp_f[3] != -4.0 );
+  gsl_test(s, "gsl_blas_raw_stpmv D");
+  status += s;
+*/
+
 /* FIXME */
 
   return status;
 }
 
+
 /* FIXME: tests for trsv, tbsv, tpsv */
+
 
 int test_symv(void)
 {
   int status = 0;
   int s;
 
-/* FIXME */
+  float  tmp_f[32];
+  double tmp_d[32];
+
+  gsl_blas_raw_scopy(4, vector_4_f, 1, tmp_f, 1);
+  gsl_blas_raw_ssymv(CblasUpper, 4, 2.0, matrix_gen_4_f, 4, vector_4_f, 1, 3.0, tmp_f, 1);
+  s = ( tmp_f[0] != -4.0 || tmp_f[1] != -3.0 || tmp_f[2] != 1.0 || tmp_f[3] != 3.0 );
+  gsl_test(s, "gsl_blas_raw_ssymv A");
+  status += s;
+
+  gsl_blas_raw_scopy(4, vector_4_f, 1, tmp_f, 1);
+  gsl_blas_raw_ssymv(CblasLower, 4, 2.0, matrix_gen_4_f, 4, vector_4_f, 1, 3.0, tmp_f, 1);
+  s = ( tmp_f[0] != -5.0 || tmp_f[1] != -17.0 || tmp_f[2] != -1.0 || tmp_f[3] != 7.0 );
+  gsl_test(s, "gsl_blas_raw_ssymv B");
+  status += s;
 
   return status;
 }
@@ -632,7 +723,26 @@ int test_sbmv(void)
   int status = 0;
   int s;
 
-/* FIXME */
+  float  tmp_f[32];
+  double tmp_d[32];
+
+  gsl_blas_raw_scopy(4, vector_4_f, 1, tmp_f, 1);
+  gsl_blas_raw_ssbmv(CblasUpper, 4, 2, 2.0, matrix_gen_4_f, 4, vector_4_f, 1, 3.0, tmp_f, 1);
+  s = ( tmp_f[0] != -10.0 || tmp_f[1] != -3.0 || tmp_f[2] != 1.0 || tmp_f[3] != 7.0 );
+  gsl_test(s, "gsl_blas_raw_ssbmv A");
+  status += s;
+
+  gsl_blas_raw_scopy(4, vector_4_f, 1, tmp_f, 1);
+  gsl_blas_raw_ssbmv(CblasUpper, 4, 1, 2.0, matrix_gen_4_f, 4, vector_4_f, 1, 3.0, tmp_f, 1);
+  s = ( tmp_f[0] != -10.0 || tmp_f[1] != -9.0 || tmp_f[2] != -7.0 || tmp_f[3] != 9.0 );
+  gsl_test(s, "gsl_blas_raw_ssbmv B");
+  status += s;
+
+  gsl_blas_raw_scopy(4, vector_4_f, 1, tmp_f, 1);
+  gsl_blas_raw_ssbmv(CblasLower, 4, 2, 2.0, matrix_gen_4_f, 4, vector_4_f, 1, 3.0, tmp_f, 1);
+  s = ( tmp_f[0] != -11.0 || tmp_f[1] != -17.0 || tmp_f[2] != -1.0 || tmp_f[3] != 11.0 );
+  gsl_test(s, "gsl_blas_raw_ssbmv C");
+  status += s;
 
   return status;
 }
@@ -642,8 +752,21 @@ int test_spmv(void)
   int status = 0;
   int s;
 
-/* FIXME */
+  float  tmp_f[32];
+  double tmp_d[32];
 
+/*
+  gsl_blas_raw_scopy(4, vector_4_f, 1, tmp_f, 1);
+  gsl_blas_raw_sspmv(CblasUpper, 4, 2.0, matrix_gen_4_f, vector_4_f, 1, 3.0, tmp_f, 1);
+  s = ( tmp_f[0] != -4.0 || tmp_f[1] != 26.0 || tmp_f[2] != 14.0 || tmp_f[3] != -17.0 );
+  gsl_test(s, "gsl_blas_raw_sspmv A");
+  status += s;
+
+  gsl_blas_raw_scopy(4, vector_4_f, 1, tmp_f, 1);
+  gsl_blas_raw_sspmv(CblasLower, 4, 2.0, matrix_gen_4_f, vector_4_f, 1, 3.0, tmp_f, 1);
+  s = ( tmp_f[0] != 6.0 || tmp_f[1] != -11.0 || tmp_f[2] != -20.0 || tmp_f[3] != 11.0 );
+  gsl_test(s, "gsl_blas_raw_sspmv B");
+*/
   return status;
 }
 
@@ -797,6 +920,8 @@ int main()
   status += test_gemv();
   status += test_gbmv();
   status += test_trmv();
+  status += test_tbmv();
+  status += test_tpmv();
 
   status += test_symv();
   status += test_sbmv();
