@@ -23,7 +23,8 @@ enum {
   GSL_EOVRFLW  = 16,  /* overflow  */
   GSL_ELOSS    = 17,  /* loss of accuracy */
   GSL_EROUND   = 18,  /* failed because of roundoff error */
-  GSL_EBADLEN  = 19   /* matrix, vector lengths are not conformant */
+  GSL_EBADLEN  = 19,  /* matrix, vector lengths are not conformant */
+  GSL_ESING    = 20   /* apparent singularity detected */
 } ;
 
 /* just to make things slightly clearer */

@@ -1,3 +1,8 @@
+Sat May 30 16:11:34 1998  Brian Gough  <bjg@vvv.lanl.gov>
+
+	* gsl_errno.h: add GSL_ESING for errors caused by singularities
+	or other bad function behavior
+
 Fri May 29 14:41:19 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
 	* gsl_errno.h: added GSL_EBADLEN to signify bad lengths of

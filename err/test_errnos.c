@@ -40,6 +40,7 @@ main (void)
   CHECK(GSL_ELOSS);
   CHECK(GSL_EROUND);
   CHECK(GSL_EBADLEN);
+  CHECK(GSL_ESING);
 
   for (i = 0 ; i < n ; i++) 
     {
