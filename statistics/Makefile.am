@@ -1,17 +1,16 @@
 ## Process this file with automake to produce Makefile.in
 
-#AUTOMAKE_OPTIONS=no-dependencies
-
-#CFLAGS=-g -Wall
-
-noinst_PROGRAMS = jtest
 lib_LIBRARIES = libgslstatistics.a
 
-jtest_SOURCES = jtest.c
-jtest_LDADD = libgslstatistics.a
-jtest_DEPENDENCIES = libgslstatistics.a
+include_HEADERS = gsl_statistics.h
 
-libgslstatistics_a_SOURCES = mean.c variance.c test.c
+libgslstatistics_a_SOURCES = \
+mean.c variance.c \
+mean.h variance.h
 
-#include_HEADERS = mean.h test.h variance.h
-include_HEADERS = gsl_bstats.h
+TESTS = test
+
+test_SOURCES = test.c test.h
+test_LDADD = libgslstatistics.a
+test_DEPENDENCIES = libgslstatistics.a
+
