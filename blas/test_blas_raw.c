@@ -672,7 +672,7 @@ int test_tpmv(void)
   gsl_test(s, "gsl_blas_raw_stpmv B");
   status += s;
 
-/*
+
   gsl_blas_raw_scopy(4, vector_4_f, 1, tmp_f, 1);
   gsl_blas_raw_stpmv(CblasUpper, CblasTrans, CblasNonUnit, 4, matrix_gen_4_f, tmp_f, 1);
   s = ( tmp_f[0] != -2.0 || tmp_f[1] != -0.5 || tmp_f[2] != 1.0 || tmp_f[3] != -13.0 );
@@ -684,7 +684,7 @@ int test_tpmv(void)
   s = ( tmp_f[0] != -2.0 || tmp_f[1] != -1.0 || tmp_f[2] != 1.0 || tmp_f[3] != -4.0 );
   gsl_test(s, "gsl_blas_raw_stpmv D");
   status += s;
-*/
+
 
 /* FIXME */
 

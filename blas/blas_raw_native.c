@@ -658,21 +658,25 @@ void gsl_blas_raw_dtpmv (CBLAS_UPLO Uplo,
 }
 
 void gsl_blas_raw_ctpmv (CBLAS_UPLO Uplo,
-                               CBLAS_TRANSPOSE TransA, CBLAS_DIAG Diag,
-                               size_t N,
-                               const gsl_complex_packed_array_float Ap,
-                               gsl_complex_packed_array_float X, size_t incX)
+                         CBLAS_TRANSPOSE TransA, CBLAS_DIAG Diag,
+                         size_t N,
+                         const gsl_complex_packed_array_float Ap,
+                         gsl_complex_packed_array_float X, size_t incX)
 {
-/* FIXME: copy above when debugged */
+#define BASE_TYPE float
+#include "source_tpmv_c.h"
+#undef BASE_TYPE
 }
 
 void gsl_blas_raw_ztpmv (CBLAS_UPLO Uplo,
-                               CBLAS_TRANSPOSE TransA, CBLAS_DIAG Diag,
-                               size_t N,
-                               const gsl_complex_packed_array Ap,
-                               gsl_complex_packed_array X, size_t incX)
+                         CBLAS_TRANSPOSE TransA, CBLAS_DIAG Diag,
+                         size_t N,
+                         const gsl_complex_packed_array Ap,
+                         gsl_complex_packed_array X, size_t incX)
 {
-/* FIXME: copy above when debugged */
+#define BASE_TYPE double
+#include "source_tpmv_c.h"
+#undef BASE_TYPE
 }
 
 /* TRSV */

@@ -26,11 +26,13 @@
     }
     else {
       size_t ix = 0;
-      for(i=N-1; i>=0; i--) {
+      for(i=N-1; i+1>=1; i--) {
         BASE_TYPE temp = 0.0;
 	const size_t j_min = ( K>i ? 0 : i-K );
+	size_t jx = j_min * incX;
         for(j=j_min; j<i; j++) {
-	  temp += X[j * incX] * A[lda * i + j];
+	  temp += X[jx] * A[lda * i + j];
+	  jx += incX;
 	}
 	if(nounit) {
 	  X[ix] = temp + X[ix] * A[lda * i + i];
@@ -38,7 +40,7 @@
 	else {
 	  X[ix] += temp;
 	}
-	ix += incX;
+	ix -= incX;
       }
     }
   }
@@ -66,7 +68,7 @@
     }
     else {
       size_t ix = 0;
-      for(i=N-1; i>=0; i--) {
+      for(i=N-1; i+1>=1; i--) {
         BASE_TYPE temp = 0.0;
 	const size_t j_min = ( K>i ? 0 : i-K );
         for(j=j_min; j<i; j++) {
