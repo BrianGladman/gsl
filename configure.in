@@ -153,6 +153,7 @@ case "$host" in
         ;;
     m68k-*-linux*) 
 	AC_DEFINE(HAVE_M68KLINUX_IEEE_INTERFACE)
+	AC_DEFINE(HAVE_EXTENDED_PRECISION_REGISTERS)
 	AC_MSG_RESULT([m68klinux]) 
         ;;
     powerpc-*-linux*) 
@@ -161,7 +162,6 @@ case "$host" in
         ;;
     *86-*-linux*) 
 	AC_DEFINE(HAVE_X86LINUX_IEEE_INTERFACE)
-	AC_DEFINE(HAVE_EXTENDED_PRECISION_REGISTERS)
 	AC_MSG_RESULT([x86linux]) 
         ;;
     *-*-sunos4*) 
@@ -215,6 +215,34 @@ case "$host" in
         ;;
     *)
         AC_MSG_RESULT([unknown])
+        ;;
+esac
+
+AC_MSG_CHECKING(for cpu with extended floating point registers)
+case "$host" in
+    *sparc*-*-*)
+	AC_MSG_RESULT([sparc, no]) 
+        ;;     
+    *powerpc*-*-*)
+	AC_MSG_RESULT([powerpc, no]) 
+        ;;      
+    *hppa*-*-*)
+	AC_MSG_RESULT([hppa, no]) 
+        ;;      
+    *alpha*-*-*)
+	AC_MSG_RESULT([alpha, no]) 
+        ;;      
+    *68k*-*-*)
+	AC_MSG_RESULT([68k, yes]) 
+	AC_DEFINE(HAVE_EXTENDED_PRECISION_REGISTERS)
+        ;;      
+    *86*-*-*)
+	AC_MSG_RESULT([x86, yes]) 
+	AC_DEFINE(HAVE_EXTENDED_PRECISION_REGISTERS)
+        ;;      
+    *) 
+	AC_DEFINE(HAVE_EXTENDED_PRECISION_REGISTERS)
+	AC_MSG_RESULT([unknown, assuming yes]) 
         ;;
 esac
 

@@ -1,3 +1,8 @@
+Mon Jul  9 11:22:16 2001  Brian Gough  <bjg@network-theory.co.uk>
+
+	* configure.in: made check for extended precision registers
+ 	independent of test for os ieee interface type
+
 Sun Jul  1 22:44:00 2001  Brian Gough  <bjg@network-theory.co.uk>
 
 	* templates_on.h templates_off.h: modified to support views

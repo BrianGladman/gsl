@@ -11,6 +11,10 @@ requirements.
 * add Fresnel Integrals to specfunc.  See TOMS 723 + 2 subsequent
 errata.
 
+* make use of mode variables consistent in specfunc -- some seem to be
+unnecessary from performance point of view since the speed difference
+is negligible.
+
 * Complex polynomial solvers (Got Newton-Mueller from
 jotahtin@cc.hut.fi, still to add (BJG)).
 
