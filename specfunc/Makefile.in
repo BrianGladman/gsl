@@ -135,6 +135,7 @@ libgslspecfunc_a_SOURCES = 	\
 	bessel_K0.c		\
 	bessel_K1.c		\
 	bessel_Kn.c		\
+	bessel_Knu.c		\
 	bessel_Y0.c		\
 	bessel_Y1.c		\
 	bessel_Yn.c		\
@@ -196,14 +197,14 @@ libgslspecfunc_a_LIBADD =
 libgslspecfunc_a_OBJECTS =  airy.o airy_der.o bessel.o bessel_I0.o \
 bessel_I1.o bessel_In.o bessel_Inu.o bessel_J0.o bessel_J1.o \
 bessel_Jn.o bessel_Jnu.o bessel_K0.o bessel_K1.o bessel_Kn.o \
-bessel_Y0.o bessel_Y1.o bessel_Yn.o bessel_Ynu.o bessel_amp_phase.o \
-bessel_i.o bessel_j.o bessel_k.o bessel_olver.o bessel_temme.o \
-bessel_y.o chebyshev.o clausen.o coupling.o coulomb.o coulomb_bound.o \
-dawson.o debye.o dilog.o ellint.o elljac.o erfc.o exp.o expint.o \
-expint3.o fermi_dirac.o gegenbauer.o gamma.o hyperg_0F1.o hyperg_2F0.o \
-hyperg_1F1.o hyperg_2F1.o laguerre.o legendre_con.o legendre_poly.o \
-log.o poly.o pow_int.o psi.o shint.o sinint.o synchrotron.o transport.o \
-trig.o zeta.o
+bessel_Knu.o bessel_Y0.o bessel_Y1.o bessel_Yn.o bessel_Ynu.o \
+bessel_amp_phase.o bessel_i.o bessel_j.o bessel_k.o bessel_olver.o \
+bessel_temme.o bessel_y.o chebyshev.o clausen.o coupling.o coulomb.o \
+coulomb_bound.o dawson.o debye.o dilog.o ellint.o elljac.o erfc.o exp.o \
+expint.o expint3.o fermi_dirac.o gegenbauer.o gamma.o hyperg_0F1.o \
+hyperg_2F0.o hyperg_1F1.o hyperg_2F1.o laguerre.o legendre_con.o \
+legendre_poly.o log.o poly.o pow_int.o psi.o shint.o sinint.o \
+synchrotron.o transport.o trig.o zeta.o
 AR = ar
 test_sf_OBJECTS =  test_sf.o
 test_sf_LDFLAGS = 
@@ -223,9 +224,10 @@ DEP_FILES =  .deps/airy.P .deps/airy_der.P .deps/bessel.P \
 .deps/bessel_I0.P .deps/bessel_I1.P .deps/bessel_In.P \
 .deps/bessel_Inu.P .deps/bessel_J0.P .deps/bessel_J1.P \
 .deps/bessel_Jn.P .deps/bessel_Jnu.P .deps/bessel_K0.P \
-.deps/bessel_K1.P .deps/bessel_Kn.P .deps/bessel_Y0.P .deps/bessel_Y1.P \
-.deps/bessel_Yn.P .deps/bessel_Ynu.P .deps/bessel_amp_phase.P \
-.deps/bessel_i.P .deps/bessel_j.P .deps/bessel_k.P .deps/bessel_olver.P \
+.deps/bessel_K1.P .deps/bessel_Kn.P .deps/bessel_Knu.P \
+.deps/bessel_Y0.P .deps/bessel_Y1.P .deps/bessel_Yn.P \
+.deps/bessel_Ynu.P .deps/bessel_amp_phase.P .deps/bessel_i.P \
+.deps/bessel_j.P .deps/bessel_k.P .deps/bessel_olver.P \
 .deps/bessel_temme.P .deps/bessel_y.P .deps/chebyshev.P .deps/clausen.P \
 .deps/coulomb.P .deps/coulomb_bound.P .deps/coupling.P .deps/dawson.P \
 .deps/debye.P .deps/dilog.P .deps/ellint.P .deps/elljac.P .deps/erfc.P \

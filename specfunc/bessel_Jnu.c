@@ -166,7 +166,17 @@ bessel_JnuYnu_steed(const double nu_min, const double x, const int kmax,
     gsl_sf_bessel_Y_temme(mu, x, &Y_mu, &Y_mup1, &Yp_mu);
   }
   else {
-    bessel_Y_CF2(mu, x, &Y_mu, &Y_mup1, &Yp_mu);
+    double P_CF2, Q_CF2;
+    double gamma;
+    gsl_sf_bessel_JY_steed_CF2(mu, x, &P_CF2, &Q_CF2);
+    /*
+    gamma = (P_CF2-f)/Q_CF2;
+    rjmu = sqrt(w/((P_CF2-f)*gamma + Q_CF2));
+    rjmu = SIGN(rjmu, rjl);
+    rymu = rjmu*gamma;
+    rymup = rymu*(p+q/gamma);
+    ry1 = xmu*xi*rymu - rymup;
+    */
   }
 
   /* Do forward recurrence to obtain K and K' at nu_min.

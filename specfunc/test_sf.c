@@ -226,6 +226,39 @@ int check_bessel(void)
   status += s;
 
   s = 0;
+  s += ( frac_diff(gsl_sf_bessel_Ynu(0.0001,10.0),  0.05570979797521875261    ) > 1.e-12 );
+  s += ( frac_diff(gsl_sf_bessel_Ynu( 1.0, 0.001), -636.6221672311394281      ) > 1.e-14 );
+  s += ( frac_diff(gsl_sf_bessel_Ynu( 1.0,   1.0), -0.7812128213002887165     ) > 1.e-13 );
+  s += ( frac_diff(gsl_sf_bessel_Ynu(30.0,   1.0), -3.0481287832256432162e+39 ) > 1.e-13 );
+  s += ( frac_diff(gsl_sf_bessel_Ynu(30.0, 100.0),  0.006138839212010033452   ) > 1.e-10 );
+  s += ( frac_diff(gsl_sf_bessel_Ynu(10.0,   1.0), -1.2161801427868918929e+08 ) > 1.e-13 );
+  s += ( frac_diff(gsl_sf_bessel_Ynu(10.0, 100.0),  0.05833157423641492875    ) > 1.e-12 );
+  gsl_test(s, "  gsl_sf_bessel_Ynu");
+  status += s;
+
+  s = 0;
+  s += ( frac_diff(gsl_sf_bessel_Inu_scaled(0.0001,10.0), 0.12783333709581669672    ) > 1.e-12 );
+  s += ( frac_diff(gsl_sf_bessel_Inu_scaled( 1.0, 0.001), 0.0004995003123542213370  ) > 1.e-14 );
+  s += ( frac_diff(gsl_sf_bessel_Inu_scaled( 1.0,   1.0), 0.20791041534970844887    ) > 1.e-14 );
+  s += ( frac_diff(gsl_sf_bessel_Inu_scaled(30.0,   1.0), 1.3021094983785914437e-42 ) > 1.e-13 );
+  s += ( frac_diff(gsl_sf_bessel_Inu_scaled(30.0, 100.0), 0.0004486987756920986146  ) > 1.e-13 );
+  s += ( frac_diff(gsl_sf_bessel_Inu_scaled(10.0,   1.0), 1.0127529864692066036e-10 ) > 1.e-13 );
+  s += ( frac_diff(gsl_sf_bessel_Inu_scaled(10.0, 100.0), 0.024176682718258828365   ) > 1.e-13 );
+  gsl_test(s, "  gsl_sf_bessel_Inu_scaled");
+  status += s;
+
+  s = 0;
+  s += ( frac_diff(gsl_sf_bessel_Knu_scaled(0.0001,10.0), 0.3916319346235421817     ) > 1.e-12 );
+  s += ( frac_diff(gsl_sf_bessel_Knu_scaled( 1.0, 0.001), 1000.9967345590684524     ) > 1.e-14 );
+  s += ( frac_diff(gsl_sf_bessel_Knu_scaled( 1.0,   1.0), 1.6361534862632582465     ) > 1.e-14 );
+  s += ( frac_diff(gsl_sf_bessel_Knu_scaled(30.0,   1.0), 1.2792629867539753925e+40 ) > 1.e-13 );
+  s += ( frac_diff(gsl_sf_bessel_Knu_scaled(30.0, 100.0), 10.673443449954850040     ) > 1.e-13 );
+  s += ( frac_diff(gsl_sf_bessel_Knu_scaled(10.0,   1.0), 4.912296520990198599e+08  ) > 1.e-13 );
+  s += ( frac_diff(gsl_sf_bessel_Knu_scaled(10.0, 100.0), 0.20578687173955779807    ) > 1.e-13 );
+  gsl_test(s, "  gsl_sf_bessel_Knu_scaled");
+  status += s;
+
+  s = 0;
   gsl_sf_bessel_InuKnu_scaled_impl(2.0/3.0, 1.0, nmax, I, K, Ip, Kp);
   s += ( frac_diff(I[0],   0.29707048038646619444 )  > 1.e-14 );
   s += ( frac_diff(K[0],   1.34412257594402719580 )  > 1.e-14 );

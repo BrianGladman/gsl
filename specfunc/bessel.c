@@ -827,7 +827,7 @@ gsl_sf_bessel_J_recur(const double nu_min, const double x, const int kmax,
 /* Perform forward recurrence for Y_nu(x) and Y'_nu(x)
  *
  *        Y_{nu+1} =  nu/x Y_nu - Y'_nu
- *       Y'_{nu+1} = -nu/x Y_{nu+1} + Y_nu
+ *       Y'_{nu+1} = -(nu+1)/x Y_{nu+1} + Y_nu
  *
  * Y_array[0]    = Y_nu(x)          = Y_start
  *   ...
@@ -854,7 +854,7 @@ gsl_sf_bessel_Y_recur(const double nu_min, const double x, const int kmax,
     double nuox = nu*x_inv;
     double Y_nu_save = Y_nu;
     Y_nu  = -Yp_nu + nuox * Y_nu;
-    Yp_nu = Y_nu_save - nuox * Y_nu;
+    Yp_nu = Y_nu_save - (nuox+x_inv) * Y_nu;
     if(Y_array  != (double *)0)  Y_array[k] = Y_nu;
     if(Yp_array != (double *)0) Yp_array[k] = Yp_nu;
     nu += 1.0;
@@ -909,7 +909,7 @@ gsl_sf_bessel_I_recur(const double nu_min, const double x, const int kmax,
 /* Perform forward recurrence for K_nu(x) and K'_nu(x)
  *
  *        K_{nu+1} =  nu/x K_nu - K'_nu
- *       K'_{nu+1} = -nu/x K_{nu+1} - K_nu
+ *       K'_{nu+1} = -(nu+1)/x K_{nu+1} - K_nu
  *
  * K_array[0]    = K_nu(x)          = K_start
  *   ...
@@ -936,7 +936,7 @@ gsl_sf_bessel_K_recur(const double nu_min, const double x, const int kmax,
     double nuox = nu*x_inv;
     double K_nu_save = K_nu;
     K_nu  = -Kp_nu + nuox * K_nu;
-    Kp_nu = -K_nu_save - nuox * K_nu;
+    Kp_nu = -K_nu_save - (nuox+x_inv) * K_nu;
     if(K_array  != (double *)0)  K_array[k] = K_nu;
     if(Kp_array != (double *)0) Kp_array[k] = Kp_nu;
     nu += 1.0;
@@ -944,4 +944,123 @@ gsl_sf_bessel_K_recur(const double nu_min, const double x, const int kmax,
   *K_end  = K_nu;
   *Kp_end = Kp_nu;
   return GSL_SUCCESS;
+}
+
+
+/* Evaluate the Steed method continued fraction CF2 for
+ *
+ * (J' + i Y')/(J + i Y) := P + i Q
+ */
+int
+gsl_sf_bessel_JY_steed_CF2(const double nu, const double x,
+                           double * P, double * Q)
+{
+  const int max_iter = 10000;
+  const double SMALL = 1.0e-100;
+
+  int i = 1;
+
+  double x_inv = 1.0/x;
+  double a = 0.25 - nu*nu;
+  double p = -0.5*x_inv;
+  double q = 1.0;
+  double br = 2.0*x;
+  double bi = 2.0;
+  double fact = a*x_inv/(p*p + q*q);
+  double cr = br + q*fact;
+  double ci = bi + p*fact;
+  double den = br*br + bi*bi;
+  double dr = br/den;
+  double di = -bi/den;
+  double dlr = cr*dr - ci*di;
+  double dli = cr*di + ci*dr;
+  double temp = p*dlr - q*dli;
+  q = p*dli + q*dlr;
+  p = temp;
+  for (i=2; i<=max_iter; i++) {
+    a  += 2*(i-1);
+    bi += 2.0;
+    dr = a*dr + br;
+    di = a*di + bi;
+    if(fabs(dr)+fabs(di) < SMALL) dr = SMALL;
+    fact = a/(cr*cr+ci*ci);
+    cr = br + cr*fact;
+    ci = bi - ci*fact;
+    if(fabs(cr)+fabs(ci) < SMALL) cr = SMALL;
+    den = dr*dr + di*di;
+    dr /= den;
+    di /= -den;
+    dlr = cr*dr - ci*di;
+    dli = cr*di + ci*dr;
+    temp = p*dlr - q*dli;
+    q = p*dli + q*dlr;
+    p = temp;
+    if(fabs(dlr-1.0)+fabs(dli) < GSL_MACH_EPS) break;
+  }
+
+  *P = p;
+  *Q = q;
+
+  if(i == max_iter)
+    return GSL_EMAXITER;
+  else
+    return GSL_SUCCESS;
+}
+
+
+/* Evaluate continued fraction CF2, using Thompson-Barnett-Temme method,
+ * to obtain values of exp(x)*K_nu and exp(x)*K_{nu+1}.
+ *
+ * This is unstable for small x; x > 2 is a good cutoff.
+ * Also requires |nu| < 1/2.
+ */
+int
+gsl_sf_bessel_K_scaled_steed_temme_CF2(const double nu, const double x,
+                                       double * K_nu, double * K_nup1, double * Kp_nu)
+{
+  const int maxiter = 10000;
+
+  int i = 1;
+  double bi = 2.0*(1.0 + x);
+  double di = 1.0/bi;
+  double delhi = di;
+  double hi    = di;
+
+  double qi   = 0.0;
+  double qip1 = 1.0;
+
+  double ai = -(0.25 - nu*nu);
+  double a1 = ai;
+  double ci = -ai;
+  double Qi = -ai;
+
+  double s = 1.0 + Qi*delhi;
+
+  for(i=2; i<=maxiter; i++) {
+    double dels;
+    double tmp;
+    ai -= 2.0*(i-1);
+    ci  = -ai*ci/i;
+    tmp  = (qi - bi*qip1)/ai;
+    qi   = qip1;
+    qip1 = tmp;
+    Qi += ci*qip1;
+    bi += 2.0;
+    di  = 1.0/(bi + ai*di);
+    delhi = (bi*di - 1.0) * delhi;
+    hi += delhi;
+    dels = Qi*delhi;
+    s += dels;
+    if(fabs(dels/s) < GSL_MACH_EPS) break;
+  }
+  
+  hi *= -a1;
+  
+  *K_nu   = sqrt(M_PI/(2.0*x)) / s;
+  *K_nup1 = *K_nu * (nu + x + 0.5 - hi)/x;
+  *Kp_nu  = - *K_nup1 + nu/x * *K_nu;
+  if(i == maxiter)
+    return GSL_EMAXITER;
+  else
+    return GSL_SUCCESS;
 }

@@ -65,6 +65,7 @@ libgslspecfunc_a_SOURCES = 	\
 	bessel_K0.c		\
 	bessel_K1.c		\
 	bessel_Kn.c		\
+	bessel_Knu.c		\
 	bessel_Y0.c		\
 	bessel_Y1.c		\
 	bessel_Yn.c		\

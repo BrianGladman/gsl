@@ -63,4 +63,9 @@ gsl_sf_bessel_K_recur(double nu_min, double x, const int kmax,
 		      double * K_end, double * Kp_end,
                       double * K_array, double * Kp_array);
 
+int
+gsl_sf_bessel_JY_steed_CF2(double nu, double x,
+                           double * P, double * Q);
+
+
 #endif /* !_BESSEL_H_ */

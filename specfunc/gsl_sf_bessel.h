@@ -394,6 +394,7 @@ double  gsl_sf_bessel_Jnu(double nu, double x);
  *
  * exceptions:  
  */
+int     gsl_sf_bessel_Ynu_impl(double nu, double x, double * result);
 int     gsl_sf_bessel_Ynu_e(double nu, double x, double * result);
 double  gsl_sf_bessel_Ynu(double nu, double x);
 
@@ -433,12 +434,22 @@ int gsl_sf_bessel_InuKnu_scaled_impl(double numin, double x, int kmax,
 
 /* Scaled modified cylindrical Bessel functions
  *   Exp[-|x|] BesselI[nu, x]
+ *
+ * exceptions: GSL_EDOM
  */
+int     gsl_sf_bessel_Inu_scaled_impl(double nu, double x, double * result);
 int     gsl_sf_bessel_Inu_scaled_e(double nu, double x, double * result);
 double  gsl_sf_bessel_Inu_scaled(double nu, double x);
 
 
-
+/* Scaled modified cylindrical Bessel functions
+ *   Exp[+|x|] BesselK[nu, x]
+ *
+ * exceptions: GSL_EDOM
+ */
+int     gsl_sf_bessel_Knu_scaled_impl(double nu, double x, double * result);
+int     gsl_sf_bessel_Knu_scaled_e(double nu, double x, double * result);
+double  gsl_sf_bessel_Knu_scaled(double nu, double x);
 
 
 /* Regular cylindrical Bessel functions J_nu(x) calculated
