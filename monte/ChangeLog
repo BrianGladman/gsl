@@ -1,69 +1,67 @@
-Tue Jul 14 19:27:09 1998  booth  <booth@planck.pha.jhu.edu>
+Thu Jul 30 17:31:29 1998  booth  <booth@planck.pha.jhu.edu>
 
-	* miser.c, miser_test.c, gsl_miser.h:
-	gsl_monte_miser now uses the state structure to keep track of itself.
-	Added new tests to test_monte to check input validation.
+	* gsl_monte_miser.h, miser.c:
+	Turn off the annoying warning in miser unless the user requests it.
 
-	* gsl_miser.h, miser.c:
-	Added code to keep state information in a structure and allocate and initialize
-	that data.  Also added input validation code.  Next up, actually use it...
+Wed Jul 29 20:24:54 1998  bjg  <bjg@vvv.lanl.gov>
 
-Thu Jul  9 18:43:39 1998  booth  <booth@planck.pha.jhu.edu>
+	* Makefile.am, Makefile.in: some fixes to pass make distcheck
 
-	* ChangeLog: *** empty log message ***
+	* Makefile.am, Makefile.in:
+	experimenting with new top level makefile.am
 
-	* miser_test.c, plain_test.c:
-	fixed cut-n-paste-o that made tests take a LONG time.
+Tue Jul 28 17:05:20 1998  booth  <booth@planck.pha.jhu.edu>
 
-	* miser.c, plain_test.c:
-	miser.c - fix direction of comparison.  More verbose warning message
-	(which will soon go away).
-	plain_test.c: print the number of calls.
+	* plain.c, vegas.c, miser.c:
+	make all the _free functions check their argument.  Also, the init functions
+	now throw EFAULT if given a null pointer.
 
-Tue Jul  7 18:24:58 1998  booth  <booth@planck.pha.jhu.edu>
+	* gsl_monte_vegas.h, vegas.c:
+	vegas1, vegas2 and vegas3 all go away.  Get them by setting the "stage"
+	variabe appropriately.  Also, make _free check its argument.
 
-	* miser.c:
-	Allow different methods of estimating the variances.  Start to validate
-	the input and warn about exceptional cases.  This is actually interesting.
+	* vegas.c, gsl_monte_vegas.h: minor cleanup prior to be change.
 
-	* vegas.c:
-	Do a better job of making sure bins is a multiple of boxes in the
-	MODE_STRATIFIED case.
+	* vegas.c: minor changes, commiting by accident.
 
-Mon Jul  6 21:18:58 1998  booth  <booth@planck.pha.jhu.edu>
+Mon Jul 27 22:52:49 1998  bjg  <bjg@vvv.lanl.gov>
 
-	* miser.c: cut down on use malloc calls by reusing vectors.
+	* Makefile.in, Makefile.am:
+	fixed some of the include requirements for make dist
 
-	* miser.c, plain_test.c, Makefile.in:
-	Fix monte to work correctly with gsl_monte_plain.  Also make plain_test.c
-	print the right function name.
+Mon Jul 27 15:19:54 1998  booth  <booth@planck.pha.jhu.edu>
 
-Sat Jul  4 19:45:00 1998  Brian Gough  <bjg@vvv.lanl.gov>
+	* vegas_print.h, vegas_test.c, miser_test.c, vegas-print.c, vegas.c, Attic/gsl_vegas.h, Attic/gsl_vegas_print.h, gsl_monte_vegas.h, miser.c, Attic/gsl_miser.h, Makefile.am, Makefile.in, gsl_monte_miser.h:
+	Renamed public header files to follow convention correctly.
 
-	* ChangeLog, Makefile.in:
-	changelog file, required by gnu coding standards
+	* vegas.c, vegas_test.c, miser.c, miser_test.c, plain.c, plain_test.c, Attic/gsl_miser.h, Attic/gsl_vegas.h, gsl_monte_plain.h:
+	All the integration functions now end with _integrate (except for
+	vegas1, vegas2 and vegas3 which are going away RSN).
 
-Thu Jul  2 21:03:42 1998  booth  <booth@planck.pha.jhu.edu>
+Tue Jul 21 21:54:33 1998  booth  <booth@planck.pha.jhu.edu>
 
-	* vegas.c, gsl_monte_plain.h, gsl_vegas.h, miser.c, miser_test.c, plain.c, plain_test.c, Makefile.am, gsl_monte.h:
-	Add plain.c and gsl_monte_plain.h to do simple Monte-Carlo.
-	Collect common definitions in gsl_monte.h.  Make gsl_monte_miser use
-	gsl_monte_plain.  This is currently broken - I need to sort out factors
-	and powers.
+	* vegas.c, vegas-print.c, Attic/gsl_vegas_print.h, Attic/gsl_vegas.h:
+	trivial stuff: eliminate compiler warnings, eliminate some unneeded variables,
+	change some types to make consistent with plain and miser.
 
-Thu Jul  2 16:46:48 1998  Brian Gough  <bjg@vvv.lanl.gov>
+	* gsl_monte_plain.h, plain.c, plain_test.c:
+	Make "plain" conform to same style as miser and vegas.
 
-	* Makefile.am, Makefile.in: added gsl_vegas_print.h to Makefile.am
+Fri Jul 17 02:23:40 1998  jungman  <jungman@nnn.lanl.gov>
 
-Sun Jun 28 20:59:56 1998  Brian Gough  <bjg@vvv.lanl.gov>
+	* Makefile.in: we're gonna make it...
 
-	* miser.c, miser_test.c, vegas.c, vegas_test.c, Makefile.am, Makefile.in, gsl_miser.h, gsl_vegas.h:
-	converted everything from random to rng directory
+Thu Jul 16 16:23:45 1998  booth  <booth@planck.pha.jhu.edu>
 
-Thu Jun 25 19:27:36 1998  booth  <booth@planck.pha.jhu.edu>
+	* vegas-print.c, vegas.c, Attic/gsl_vegas_print.h:
+	Have now completely eliminated all static variables.
 
-	* vegas-print.c, vegas_test.c, miser.c, miser_test.c, vegas.c, Notes, gsl_miser.h, gsl_vegas.h, gsl_vegas_print.h, Makefile.am:
-	Add Monte-Carlo routines in the subdirectory monte. Currently provides
-	VEGAS and an implementation of the MISER algorithm described in Numerical
-	Recipes.
+	* vegas_test.c, vegas.c, Attic/gsl_vegas.h, Attic/gsl_vegas_print.h, vegas-print.c:
+	Continuing to remove all static variables from vegas.
+
+Wed Jul 15 19:10:24 1998  booth  <booth@planck.pha.jhu.edu>
+
+	* vegas.c, vegas_test.c, Attic/gsl_vegas.h:
+	Do the state-structure thing for vegas.  Not finished, so far the only
+	real content is the rng structure.
 
