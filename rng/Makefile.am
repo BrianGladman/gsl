@@ -12,10 +12,9 @@ test_SOURCES = test.c
 test_LDADD = libgslrng.la ../ieee-utils/libgslieeeutils.la ../err/libgslerr.la ../test/libgsltest.la ../utils/libutils.la
 
 TESTS = test
-check_PROGRAMS = test benchmark rng-dump
+check_PROGRAMS = test
 
-benchmark_SOURCES = benchmark.c 
-benchmark_LDADD = libgslrng.la ../err/libgslerr.la ../utils/libutils.la
-
-rng_dump_SOURCES = rng-dump.c 
-rng_dump_LDADD = libgslrng.la ../err/libgslerr.la ../utils/libutils.la
+# benchmark_SOURCES = benchmark.c 
+# benchmark_LDADD = libgslrng.la ../err/libgslerr.la ../utils/libutils.la
+# rng_dump_SOURCES = rng-dump.c 
+# rng_dump_LDADD = libgslrng.la ../err/libgslerr.la ../utils/libutils.la

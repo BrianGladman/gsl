@@ -1,3 +1,7 @@
+2003-06-12  Brian Gough  <bjg@network-theory.co.uk>
+
+	* Makefile.am: removed benchmark programs from default build
+
 2003-06-02  Brian Gough  <bjg@network-theory.co.uk>
 
 	* waterman14.c: increased RAND_MIN to 1
