@@ -36,7 +36,7 @@ differently.  There is a special formula given for it in Abramowitz &
 Stegun 15.3.10
 
 ----------------------------------------------------------------------
-BUG#2 -- STATUS: reproducible, not yet fixed
+BUG#2 -- STATUS: FIXED
 
 In QAWO the expressions center-half_length and center+half_length should
 be replaced by a and b to avoid cancellation errors which occur for 
