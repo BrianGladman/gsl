@@ -645,10 +645,10 @@ main (void)
   printf ("lambda = %.5f +/- %.5f\n", FIT(1), ERR(1));
   printf ("b      = %.5f +/- %.5f\n", FIT(2), ERR(2));
 
-  { 
+  @{ 
     double chi = gsl_blas_dnrm2(s->f);
     printf("chisq/dof = %g\n",  pow(chi, 2.0)/ (n - p));
-  }
+  @}
 
   printf ("status = %s\n", gsl_strerror (status));
 
