@@ -3,6 +3,9 @@
  */
 #include <gsl_math.h>
 #include <gsl_errno.h>
+#include "gsl_sf_bessel.h"
+#include "gsl_sf_elementary.h"
+#include "gsl_sf_exp.h"
 #include "gsl_sf_pow_int.h"
 #include "gsl_sf_legendre.h"
 
@@ -67,6 +70,84 @@ legendreQ_CF1_xgt1(int ell, double a, double b, double x, double * result)
   else
     return GSL_SUCCESS; 
 }
+
+
+/* Uniform asymptotic for Q_l(x).
+ * Assumes x > -1.0 and x != 1.0.
+ * Discards second order and higher terms.
+ */
+static
+int
+legendre_Ql_asymp_unif(const double ell, const double x, double * result)
+{
+  if(x < 1.0) {
+    double u   = ell + 0.5;
+    double th  = acos(x);
+    double Y0, Y1;
+    int stat_Y0, stat_Y1;
+    int stat_m;
+    double pre;
+    double B00;
+    double sum;
+
+    /* B00 = 1/8 (1 - th cot(th) / th^2
+     * pre = sqrt(th/sin(th))
+     */
+    if(th < GSL_ROOT4_MACH_EPS) {
+      B00 = (1.0 + th*th/15.0)/24.0;
+      pre = 1.0 + th*th/12.0;
+    }
+    else {
+      double sin_th = sqrt(1.0 - x*x);
+      double cot_th = x / sin_th;
+      B00 = 1.0/8.0 * (1.0 - th * cot_th) / (th*th);
+      pre = sqrt(th/sin_th);
+    }
+
+    stat_Y0 = gsl_sf_bessel_Y0_impl(u*th, &Y0);
+    stat_Y1 = gsl_sf_bessel_Y1_impl(u*th, &Y1);
+
+    sum = -0.5*M_PI * (Y0 + th/u * Y1 * B00);
+
+    stat_m = gsl_sf_multiply_impl(pre, sum, result);
+
+    return GSL_ERROR_SELECT_3(stat_m, stat_Y0, stat_Y1);
+  }
+  else {
+    double u   = ell + 0.5;
+    double xi  = acosh(x);
+    double K0_scaled, K1_scaled;
+    int stat_K0, stat_K1;
+    int stat_e;
+    double pre;
+    double B00;
+    double sum;
+
+    /* B00 = -1/8 (1 - xi coth(xi) / xi^2
+     * pre = sqrt(xi/sinh(xi))
+     */
+    if(xi < GSL_ROOT4_MACH_EPS) {
+      B00 = (1.0-xi*xi/15.0)/24.0;
+      pre = 1.0 - xi*xi/12.0;
+    }
+    else {
+      double sinh_xi = sqrt(x*x - 1.0);
+      double coth_xi = x / sinh_xi;
+      B00 = -1.0/8.0 * (1.0 - xi * coth_xi) / (xi*xi);
+      pre = sqrt(xi/sinh_xi);
+    }
+
+    stat_K0 = gsl_sf_bessel_K0_scaled_impl(u*xi, &K0_scaled);
+    stat_K1 = gsl_sf_bessel_K1_scaled_impl(u*xi, &K1_scaled);
+
+    sum = K0_scaled - xi/u * K1_scaled * B00;
+
+    stat_e = gsl_sf_exp_mult_impl(-u*xi, pre * sum, result);
+
+    return GSL_ERROR_SELECT_3(stat_e, stat_K0, stat_K1);
+  }
+}
+
 
 
 /*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
@@ -159,10 +240,8 @@ gsl_sf_legendre_Ql_impl(const int l, const double x, double * result)
   else {
     /* x > 1.0 */
 
-    if(l > 10000) {
-      /* uniform asymptotic */
-      /* FIXME */
-      return GSL_EUNIMPL;
+    if(l > 100000) {
+      return legendre_Ql_asymp_unif(l, x, result);
     }
     else {
       double rat;
