@@ -1,5 +1,14 @@
 * What is new in gsl-1.3+:
 
+** Corrected values of electrical constants in CGS units.  To take
+account of different electrical systems of units the values are now
+prefixed by GSL_CONST_MKSA (for the SI Metre, Kilogram, Second, Ampere
+system) or GSL_CONST_CGSM (for the Centimetre, Gram, Second, Magnetic
+system with the Gauss as the fundamental unit of magnetic field
+strength).  The previous GSL_CONST_MKS and GSL_CONST_CGS prefixes have
+been removed, as have the permeability and permittivity constants in
+the CGS system since this uses different defining equations.
+
 ** Improved gsl_sf_gamma_inc_P(a,x) to avoid a domain error for x<<a
 when a>10.
 

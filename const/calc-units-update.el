@@ -51,7 +51,19 @@
     ( mue     "928.476362e-26 J/T"     "Electron magnetic moment" )
     ( mup     "1.410606633e-26 J/T"    "Proton magnetic moment" )
     ( R0      "8.314472 J/mol/K"       "Molar gas constant" )
-    ( V0      "22.710981e-3 m^3/mol"   "Standard volume of ideal gas" )
-    ))
+    ( V0      "22.710981e-3 m^3/mol"   "Standard volume of ideal gas" ) ))
+
+
+(setq math-standard-units
+      (append math-standard-units
+              '(( abamp       "10 A"                   "*Abampere" ))))
+
+(setq math-standard-units-systems 
+      (append math-standard-units-systems
+              '((cgsm ((m '(* (var cm var-cm) 100))
+                       (A '(/ (var abamp var-abamp) 10))))
+                (mksa ((g '(* (var kg var-kg) (float 1 -3))))))))
+
+(setq math-units-table nil)
 
 (provide 'calc-units-update)

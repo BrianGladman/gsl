@@ -7,6 +7,7 @@
 
 (setq calc-display-working-message t) ;; display short working messages
 (setq calc-float-format '(sci 20))
+
 (calc-eval "")
 (load-library "calc/calc-units.el")
 (calc-extensions)
@@ -43,7 +44,6 @@
          ("Grav"          "GRAVITATIONAL_CONSTANT")
          ("h"             "PLANCKS_CONSTANT_H")
          ("hbar"          "PLANCKS_CONSTANT_HBAR")
-         ("mu0"           "VACUUM_PERMEABILITY")
 
          ("au"            "ASTRONOMICAL_UNIT")
          ("float(lyr)"    "LIGHT_YEAR")
@@ -154,14 +154,20 @@
 
          ("1.98892e30 kg"       "SOLAR_MASS")
          ("0.5291772083e-10 m"  "BOHR_RADIUS")
-         ("8.854187817e-12 F/m" "VACUUM_PERMITTIVITY")
 
          ("N"                     "NEWTON")
          ("1e-5 N"                "DYNE")
          ("J"                     "JOULE")
          ("1e-7 J"                "ERG")
+
+
          )
        )
+
+(setq gsl-electrical-constants 
+      '(("8.854187817e-12 F/m" "VACUUM_PERMITTIVITY")
+        ("mu0"           "VACUUM_PERMEABILITY")))
+
 
 ;;; work around bug in calc 2.02f
 (defun math-extract-units (expr)
@@ -176,7 +182,8 @@
          (y (math-to-standard-units x system))
          (z (math-simplify-units y))
          (q (calc-eval (math-remove-units z)))
-         (quantity (calc-eval (format "%s + 0.0" q)))
+         (qq (format "evalv(%s + 0.0)" q))
+         (quantity (calc-eval qq))
          (units (calc-eval (math-extract-units z)))
          )
     ;;(print x)
@@ -189,6 +196,9 @@
     )
   )
 
+(setq cgsm (nth 1 (assq 'cgsm math-standard-units-systems)))
+(setq mksa (nth 1 (assq 'mksa math-standard-units-systems)))
+
 (setq cgs (nth 1 (assq 'cgs math-standard-units-systems)))
 (setq mks (nth 1 (assq 'mks math-standard-units-systems)))
 
@@ -199,12 +209,12 @@
   (princ (format "\n#endif /* __%s__ */\n" prefix))
 )
 
-(defun run-cgs ()
-  (display "GSL_CONST_CGS" cgs gsl-constants)
+(defun run-cgsm ()
+  (display "GSL_CONST_CGSM" cgsm gsl-constants)
 )
 
-(defun run-mks ()
-  (display "GSL_CONST_MKS" mks gsl-constants)
+(defun run-mksa ()
+  (display "GSL_CONST_MKSA" mksa (append gsl-constants gsl-electrical-constants))
 )
 
 (defun run-num ()
