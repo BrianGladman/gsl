@@ -1,4 +1,3 @@
-
 double gsl_stats_ivariance (int *array, int size);
 double gsl_stats_dvariance (double *array, int size);
 
@@ -11,8 +10,8 @@ double gsl_stats_dest_variance (double *array, int size);
 double gsl_stats_iest_sd (int *array, int size);
 double gsl_stats_dest_sd (double *array, int size);
 
-double gsl_stats_iipvariance(int *array1, int *array2, int size1, int size2);
-double gsl_stats_ddpvariance(double *array1, double *array2, int size1, int size2);
+double gsl_stats_ipvariance (int *array1, int *array2, int size1, int size2);
+double gsl_stats_dpvariance (double *array1, double *array2, int size1, int size2);
 
 int gsl_stats_imax (int *array, int size);
 double gsl_stats_dmax (double *array, int size);

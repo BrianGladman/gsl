@@ -149,7 +149,7 @@ double gsl_stats_dest_sd (double *array, int size)
   return sd;
 }
 
-double gsl_stats_iipvariance(int *array1, int *array2, int size1, int size2)
+double gsl_stats_ipvariance(int *array1, int *array2, int size1, int size2)
 {
   /* Find the pooled variance of two integer arrays */
 
@@ -168,7 +168,7 @@ double gsl_stats_iipvariance(int *array1, int *array2, int size1, int size2)
 
 }
 
-double gsl_stats_ddpvariance(double *array1, double *array2, int size1, int size2)
+double gsl_stats_dpvariance(double *array1, double *array2, int size1, int size2)
 {
   /* Find the pooled variance of two double arrays */
 

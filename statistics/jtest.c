@@ -96,7 +96,7 @@ int main()
   
   mean1 = gsl_stats_imean(groupone, 20);
   if (mean1 == 17){
-    printf("success: gsl_stats_imean\n");
+    printf("success: gsl_stats_imean (%f)\n", mean1);
   }
   else {
     printf("ERROR: gsl_stats_imean (calculated %f)\n", mean1);
@@ -108,7 +108,7 @@ int main()
   
   mean1 = gsl_stats_dmean(groupa, 14);
   if (mean1 > .072 && mean1 < .073){
-    printf("success:gsl_stats_dmean\n");
+    printf("success: gsl_stats_dmean (%f)\n", mean1);
   }
   else {
     printf("ERROR:gsl_stats_dmean (calculated %f)\n", mean1);
@@ -121,7 +121,7 @@ int main()
   var1 = gsl_stats_ivariance(groupone, 20);
   
   if (var1 > 13.6 && var1 < 13.8){
-    printf("success: gsl_stats_ivariance\n");
+    printf("success: gsl_stats_ivariance (%f)\n", var1);
   }
   else{
     printf("ERROR: gsl_stats_ivariance (calculated %f)\n", var1);
@@ -147,7 +147,7 @@ int main()
   var1 = gsl_stats_iest_variance(groupone, 20);
   
   if (var1 > 14.42 && var1 < 14.425){
-    printf("success: gsl_stats_iest_variance\n");
+    printf("success: gsl_stats_iest_variance (%f)\n", var1);
   }
   else{
     printf("ERROR: gsl_stats_iest_variance (calculated %f)\n", var1);
@@ -172,7 +172,7 @@ int main()
   
   sd1 = gsl_stats_isd(groupone, 20);
   if (sd1 > 3.6 && sd1 < 3.78){
-    printf("success: gsl_stats_isd\n");
+    printf("success: gsl_stats_isd (%f)\n", sd1);
   }
   else{
     printf("ERROR: gsl_stats_isd (calculated %f)\n", sd1);
@@ -196,7 +196,7 @@ int main()
   
   sd1 = gsl_stats_iest_sd(groupone, 20);
   if (sd1 > 3.79 && sd1 < 3.8){
-    printf("success: gsl_stats_iest_sd\n");
+    printf("success: gsl_stats_iest_sd (%f)\n", sd1);
   }
   else{
     printf("ERROR: gsl_stats_iest_sd (calculated %f)\n", sd1);
@@ -208,7 +208,7 @@ int main()
   
   sd1 = gsl_stats_dest_sd(groupa, 14);
   if (sd1 > .034  && sd1 < .036){
-    printf("success: gsl_stats_dest_sd\n");
+    printf("success: gsl_stats_dest_sd (%f)\n", sd1);
   }
   else{
     printf("ERROR: gsl_stats_dest_sd (calculated %f)\n", sd1);
@@ -216,50 +216,49 @@ int main()
   
   sd1 = 0;
   
-  /* test gsl_stats_iipvariance */
+  /* test gsl_stats_ipvariance */
   
-  pv = gsl_stats_iipvariance(groupone, grouptwo, 20, 20);
+  pv = gsl_stats_ipvariance(groupone, grouptwo, 20, 20);
   if (pv > 18.84 && pv < 18.85 ){
-    printf("success: gsl_stats_iipvariance\n");
+    printf("success: gsl_stats_ipvariance, (%f)\n", pv);
   }
   else{
-    printf("ERROR: gsl_stats_iipvariance (calculated %f)\n", pv);
+    printf("ERROR: gsl_stats_ipvariance (calculated %f)\n", pv);
   }
   
   pv = 0;
   
-  /* test gsl_stats_ddpvariance */
+  /* test gsl_stats_dpvariance */
   
-  pv = gsl_stats_ddpvariance(groupa, groupb, 14, 14);
+  pv = gsl_stats_dpvariance(groupa, groupb, 14, 14);
   if (pv > 0.00122 && pv < 0.00124 ){
-    printf("success: gsl_stats_ddpvariance\n");
+    printf("success: gsl_stats_dpvariance, (%f)\n", pv);
   }
   else
-    printf("ERROR: gsl_stats_ddpvariance (calculated %f)\n", pv);
+    printf("ERROR: gsl_stats_dpvariance (calculated %f)\n", pv);
   
   pv = 0;
   
-  /* test gsl_stats_iittest */
+  /* test gsl_stats_ittest */
 
-  /* lkj */ t= 0.0;
-  t = gsl_stats_iittest(groupone, grouptwo, 20, 20);
+  t = gsl_stats_ittest(groupone, grouptwo, 20, 20);
   if (t > -1.47 && t < -1.45){
-    printf("success: gsl_stats_iittest\n");
+    printf("success: gsl_stats_ittest (%f)\n", t);
   }
   else{
-    printf("ERROR: gsl_stats_iittest (calculated %f)\n", t);
+    printf("ERROR: gsl_stats_ittest (calculated %f)\n", t);
   }
   
   t = 0;
   
-  /* test gsl_stats_ddttest */
+  /* test gsl_stats_dttest */
   
-  t = gsl_stats_ddttest(groupa, groupb, 14, 14);
+  t = gsl_stats_dttest(groupa, groupb, 14, 14);
   if (t > -5.68 && t < -5.66){
-    printf("success: gsl_stats_ddttest (%f)\n", t);
+    printf("success: gsl_stats_dttest (%f)\n", t);
   }
   else{
-    printf("ERROR: gsl_stats_ddttest (calculated %f)\n", t);
+    printf("ERROR: gsl_stats_dttest (calculated %f)\n", t);
   }
   
   t = 0;
