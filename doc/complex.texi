@@ -12,9 +12,9 @@ For multiple-valued functions the branch cuts have been chosen to follow
 the conventions of Abramowitz and Stegun in the @cite{Handbook of
 Mathematical Functions}. The functions return principal values which are
 the same as those in GNU Calc, which in turn are the same as those in
-@cite{Common Lisp, The Language (Second Edition)} (n.b. The first
-edition of @cite{Common Lisp, The Language} used different definitions
-from the second edition) and the HP-28/48 series of calculators.
+@cite{Common Lisp, The Language (Second Edition)} (n.b. The second
+edition uses different definitions from the first edition) and the
+HP-28/48 series of calculators.
 
 The complex types are defined in the header file @file{gsl_complex.h},
 while the corresponding complex functions and arithmetic operations are
@@ -49,7 +49,7 @@ given by the following struct,
 typedef struct
 @{
   double dat[2];
-@} gsl_complex ;
+@} gsl_complex;
 @end example
 @noindent
 The real and imaginary part are stored in contiguous elements of a two

@@ -196,18 +196,18 @@ programs:
 @comment #include <math.h>
 @comment #include <stdio.h>
 
-@comment double f (int x) ;
+@comment double f (int x);
 
 @comment int main ()
 @comment @{
-@comment   double a = 1.5 ;
-@comment   double y = f(a) ;
-@comment   printf("a = %g, sqrt(a) = %g\n", a, y) ;  
-@comment   return 0 ;
+@comment   double a = 1.5;
+@comment   double y = f(a);
+@comment   printf("a = %g, sqrt(a) = %g\n", a, y);  
+@comment   return 0;
 @comment @}
 
 @comment double f(x) @{
-@comment   return sqrt(x) ;
+@comment   return sqrt(x);
 @comment @}
 @comment @end example
 

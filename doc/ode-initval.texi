@@ -98,7 +98,7 @@ This function returns a pointer to the name of the stepping function.
 For example,
 
 @example
-printf("step method is '%s'\n", gsl_odeiv_step_name (s)) ;
+printf("step method is '%s'\n", gsl_odeiv_step_name (s));
 @end example
 
 @noindent
@@ -311,7 +311,7 @@ For example,
 
 @example
 printf("control method is '%s'\n", 
-       gsl_odeiv_control_name (c)) ;
+       gsl_odeiv_control_name (c));
 @end example
 
 @noindent
@@ -450,7 +450,7 @@ main (void)
 
   double t = 0.0, t1 = 100.0;
   double h = 1e-6;
-  double y[2] = @{ 1.0, 0.0 @} ;
+  double y[2] = @{ 1.0, 0.0 @};
 
   gsl_ieee_env_setup();
 
@@ -494,7 +494,7 @@ following main loop prints the solution at the fixed points @math{t = 0,
 1, 2, \dots, 100},
 
 @example
-  for (i = 1; i <= 100 ; i++)
+  for (i = 1; i <= 100; i++)
     @{
       double ti = i * t1 / 100.0;
 

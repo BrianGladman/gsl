@@ -785,9 +785,9 @@ The program below computes this integral to a relative accuracy bound of
 #include <gsl/gsl_integration.h>
 
 double f (double x, void * params) @{
-  double alpha = *(double *) params ;
+  double alpha = *(double *) params;
   double f = log(alpha*x) / sqrt(x);
-  return f ;
+  return f;
 @}
 
 int 

@@ -193,16 +193,16 @@ For example, the following code fragment shows how to create a histogram
 with logarithmic bins with ranges [1,10), [10,100) and [100,1000).
 
 @example
-gsl_histogram * h = gsl_histogram_calloc (3) ;
+gsl_histogram * h = gsl_histogram_calloc (3);
 
 /* bin[0] covers the range 1 <= x < 10 */
 /* bin[1] covers the range 10 <= x < 100 */
 /* bin[2] covers the range 100 <= x < 1000 */
 
-h->range[0] = 1.0 ;     
-h->range[1] = 10.0 ;    
-h->range[2] = 100.0 ;   
-h->range[3] = 1000.0 ;
+h->range[0] = 1.0;     
+h->range[1] = 10.0;    
+h->range[2] = 100.0;   
+h->range[3] = 1000.0;
 @end example
 
 @noindent
@@ -602,7 +602,7 @@ read it prints out the accumulated histogram using
 int
 main (int argc, char **argv)
 @{
-  double a, b ;
+  double a, b;
   size_t n;
 
   if (argc != 4)
@@ -619,8 +619,8 @@ main (int argc, char **argv)
 
   @{
     gsl_histogram * h 
-      = gsl_histogram_calloc_uniform (n, a, b) ;
-    int status ;
+      = gsl_histogram_calloc_uniform (n, a, b);
+    int status;
     double x;
             
     while (fscanf(stdin, "%lg", &x) == 1)
@@ -628,10 +628,10 @@ main (int argc, char **argv)
         gsl_histogram_increment(h, x);
       @}
 
-    gsl_histogram_fprintf (stdout, h, "%g", "%g") ;
+    gsl_histogram_fprintf (stdout, h, "%g", "%g");
   @}
   
-  exit (0) ;
+  exit (0);
 @}
 @end example
 
@@ -1144,28 +1144,28 @@ main ()
                                       0.0, 1.0,
                                       0.0, 1.0);
   
-  gsl_histogram2d_accumulate (h, 0.3, 0.3, 1) ;
-  gsl_histogram2d_accumulate (h, 0.8, 0.1, 5) ;
-  gsl_histogram2d_accumulate (h, 0.7, 0.9, 0.5) ;
+  gsl_histogram2d_accumulate (h, 0.3, 0.3, 1);
+  gsl_histogram2d_accumulate (h, 0.8, 0.1, 5);
+  gsl_histogram2d_accumulate (h, 0.7, 0.9, 0.5);
   
   @{
-    int i ;
+    int i;
     gsl_histogram2d_pdf * p 
-      = gsl_histogram2d_pdf_alloc (h) ;
+      = gsl_histogram2d_pdf_alloc (h);
     
-    for (i = 0 ; i < 1000 ; i++) @{
-      double x, y ;
+    for (i = 0; i < 1000; i++) @{
+      double x, y;
       double u = ((double) rand ()) / RAND_MAX;
       double v = ((double) rand ()) / RAND_MAX;
        
       int status 
        = gsl_histogram2d_pdf_sample (p, u, v, &x, &y);
       
-      printf("%g %g\n", x, y) ;
+      printf("%g %g\n", x, y);
     @}
   @}
   
- return 0 ;
+ return 0;
 @}
 @end example
 

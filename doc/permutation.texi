@@ -44,7 +44,7 @@ typedef struct
 @{
   size_t size;
   size_t * data;
-@} gsl_permutation ;
+@} gsl_permutation;
 @end example
 @comment
 @noindent
@@ -233,26 +233,26 @@ finds its inverse.
 int 
 main (void) 
 @{
-  const size_t N = 10 ;
-  gsl_rng * r = gsl_rng_alloc (gsl_rng_env_setup()) ;
+  const size_t N = 10;
+  gsl_rng * r = gsl_rng_alloc (gsl_rng_env_setup());
 
-  gsl_permutation * p = gsl_permutation_alloc (N) ;
-  gsl_permutation * p_inv = gsl_permutation_alloc (N) ;
+  gsl_permutation * p = gsl_permutation_alloc (N);
+  gsl_permutation * p_inv = gsl_permutation_alloc (N);
 
-  printf("initial permutation:") ;  
-  gsl_permutation_init (p) ;
-  gsl_permutation_fprintf (stdout, p, " %u") ;
-  printf("\n") ;
+  printf("initial permutation:");  
+  gsl_permutation_init (p);
+  gsl_permutation_fprintf (stdout, p, " %u");
+  printf("\n");
 
-  printf(" random permutation:") ;  
+  printf(" random permutation:");  
   gsl_ran_shuffle (r, p->data, p->size, sizeof(size_t));
-  gsl_permutation_fprintf (stdout, p, " %u") ;
-  printf("\n") ;
+  gsl_permutation_fprintf (stdout, p, " %u");
+  printf("\n");
 
-  printf("inverse permutation:") ;  
+  printf("inverse permutation:");  
   gsl_permutation_invert (p_inv, p);
-  gsl_permutation_fprintf (stdout, p_inv, " %u") ;
-  printf("\n") ;
+  gsl_permutation_fprintf (stdout, p_inv, " %u");
+  printf("\n");
 @}
 @end example
 @noindent
@@ -279,14 +279,14 @@ permutations, starting from the identity,
 int 
 main (void) 
 @{
-  gsl_permutation * p = gsl_permutation_alloc (3) ;
+  gsl_permutation * p = gsl_permutation_alloc (3);
 
-  gsl_permutation_init (p) ;
+  gsl_permutation_init (p);
 
   do 
    @{
-      gsl_permutation_fprintf (stdout, p, " %u") ;
-      printf("\n") ;
+      gsl_permutation_fprintf (stdout, p, " %u");
+      printf("\n");
    @}
   while (gsl_permutation_next(p) == GSL_SUCCESS);
 @}

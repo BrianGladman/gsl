@@ -64,7 +64,7 @@ typedef struct
 @{
   size_t size;
   double * data;
-@} gsl_block ;
+@} gsl_block;
 @end example
 @comment
 @noindent
@@ -168,7 +168,7 @@ The following program shows how to allocate a block,
 
 int main ()
 @{
-  gsl_block * b = gsl_block_alloc (100) ;
+  gsl_block * b = gsl_block_alloc (100);
   
   printf("length of block = %u\n", b->size);
   printf("block data address = %#x\n", b->data);
@@ -209,7 +209,7 @@ typedef struct
   double * data;
   gsl_block * block;
   int owner;
-@} gsl_vector ;
+@} gsl_vector;
 @end example
 @comment
 @noindent
@@ -747,7 +747,7 @@ using the functions @code{gsl_vector_alloc}, @code{gsl_vector_set} and
 int main ()
 @{
   int i;
-  gsl_vector * v = gsl_vector_alloc (3) ;
+  gsl_vector * v = gsl_vector_alloc (3);
   
   for (i = 0; i < 3; i++)
     @{
@@ -784,7 +784,7 @@ The next program shows how to write a vector to a file.
 int main ()
 @{
   int i; 
-  gsl_vector * v = gsl_vector_alloc (100) ;
+  gsl_vector * v = gsl_vector_alloc (100);
   
   for (i = 0; i < 100; i++)
     @{
@@ -792,7 +792,7 @@ int main ()
     @}
 
   @{  
-     FILE * f = fopen("test.dat", "w") ;
+     FILE * f = fopen("test.dat", "w");
      gsl_vector_fprintf (f, v, "%.5g");
      fclose (f);
   @}
@@ -833,7 +833,7 @@ typedef struct
   double * data;
   gsl_block * block;
   int owner;
-@} gsl_matrix ;
+@} gsl_matrix;
 @end example
 @comment
 @noindent
@@ -1517,7 +1517,7 @@ using the functions @code{gsl_matrix_alloc}, @code{gsl_matrix_set} and
 int main ()
 @{
   int i, j; 
-  gsl_matrix * m = gsl_matrix_alloc (10, 3) ;
+  gsl_matrix * m = gsl_matrix_alloc (10, 3);
   
   for (i = 0; i < 10; i++)
     for (j = 0; j < 3; j++)
@@ -1558,34 +1558,34 @@ The next program shows how to write a matrix to a file.
 int main ()
 @{
   int i, j, k = 0; 
-  gsl_matrix * m = gsl_matrix_alloc (100, 100) ;
-  gsl_matrix * a = gsl_matrix_alloc (100, 100) ;
+  gsl_matrix * m = gsl_matrix_alloc (100, 100);
+  gsl_matrix * a = gsl_matrix_alloc (100, 100);
   
   for (i = 0; i < 100; i++)
-    for (j = 0 ; j < 100; j++)
+    for (j = 0; j < 100; j++)
       gsl_matrix_set (m, i, j, 0.23 + i + j);
 
   @{  
-     FILE * f = fopen("test.dat", "w") ;
+     FILE * f = fopen("test.dat", "w");
      gsl_matrix_fwrite (f, m);
      fclose (f);
   @}
 
   @{  
-     FILE * f = fopen("test.dat", "r") ;
+     FILE * f = fopen("test.dat", "r");
      gsl_matrix_fread (f, a);
      fclose (f);
   @}
 
   for (i = 0; i < 100; i++)
-    for (j = 0 ; j < 100; j++)
+    for (j = 0; j < 100; j++)
       @{
         double mij = gsl_matrix_get(m, i, j);
         double aij = gsl_matrix_get(a, i, j);
-        if (mij != aij) k++ ;
+        if (mij != aij) k++;
       @}
 
-  printf("differences = %d (should be zero)\n", k) ;
+  printf("differences = %d (should be zero)\n", k);
 
 @}
 @end example

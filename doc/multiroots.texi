@@ -154,7 +154,7 @@ These functions return a pointer to the name of the solver.  For example,
 
 @example
 printf("s is a '%s' solver\n", 
-       gsl_multiroot_fdfsolver_name (s)) ;
+       gsl_multiroot_fdfsolver_name (s));
 @end example
 
 @noindent
@@ -212,13 +212,13 @@ with @math{A = 10^4}.  The following code defines a
 solver:
 
 @example
-struct powell_params @{ double A ; @} ;
+struct powell_params @{ double A; @};
 
 int
 powell (gsl_vector * x, void * p, gsl_vector * f) @{
    struct powell_params * params 
-     = *(struct powell_params *)p ;
-   double A = (params->A) ;
+     = *(struct powell_params *)p;
+   double A = (params->A);
    double x0 = gsl_vector_get(x,0);
    double x1 = gsl_vector_get(x,1);
    gsl_vector_set (f, 0, A * x0 * x1 - 1)
@@ -226,12 +226,12 @@ powell (gsl_vector * x, void * p, gsl_vector * f) @{
    return GSL_SUCCESS
 @}
 
-gsl_multiroot_function F ;
+gsl_multiroot_function F;
 struct powell_params params = @{ 10000.0 @};
 
-F.function = &powell ;
-F.n = 2 ;
-F.params = &params ;
+F.function = &powell;
+F.n = 2;
+F.params = &params;
 @end example
 
 @deftp {Data Type} gsl_multiroot_function_fdf
@@ -276,8 +276,8 @@ include analytic derivatives using the following code,
 int
 powell_df (gsl_vector * x, void * p, gsl_matrix * J) @{
    struct powell_params * params 
-     = *(struct powell_params *)p ;
-   double A = (params->A) ;
+     = *(struct powell_params *)p;
+   double A = (params->A);
    double x0 = gsl_vector_get(x,0);
    double x1 = gsl_vector_get(x,1);
    gsl_vector_set (df, 0, 0, A * x1)
@@ -291,8 +291,8 @@ int
 powell_fdf (gsl_vector * x, void * p, 
             gsl_matrix * f, gsl_matrix * J) @{
    struct powell_params * params 
-     = *(struct powell_params *)p ;
-   double A = (params->A) ;
+     = *(struct powell_params *)p;
+   double A = (params->A);
    double x0 = gsl_vector_get(x,0);
    double x1 = gsl_vector_get(x,1);
 
@@ -309,13 +309,13 @@ powell_fdf (gsl_vector * x, void * p,
    return GSL_SUCCESS
 @}
 
-gsl_multiroot_function_fdf FDF ;
+gsl_multiroot_function_fdf FDF;
 
-FDF.f = &powell_f ;
-FDF.df = &powell_df ;
-FDF.fdf = &powell_fdf ;
+FDF.f = &powell_f;
+FDF.df = &powell_df;
+FDF.fdf = &powell_fdf;
 FDF.n = 2;
-FDF.params = 0 ;
+FDF.params = 0;
 @end example
 @noindent
 Note that the function @code{powell_fdf} is able to reuse existing terms

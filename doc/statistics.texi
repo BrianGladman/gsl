@@ -651,7 +651,7 @@ Here is a basic example of how to use the statistical functions:
 
 int main()
 @{
-  double data[5] = @{17.2, 18.1, 16.5, 18.3, 12.6@} ;
+  double data[5] = @{17.2, 18.1, 16.5, 18.3, 12.6@};
   double mean, variance, largest, smallest;
 
   mean     = gsl_stats_mean(data, 1, 5);
@@ -662,10 +662,10 @@ int main()
   printf("The dataset is %g, %g, %g, %g, %g\n",
         data[0], data[1], data[2], data[3], data[4]);
 
-  printf("The sample mean is %g\n", mean) ;
+  printf("The sample mean is %g\n", mean);
   printf("The estimated variance is %g\n", variance);
-  printf("The largest value is %g\n", largest) ;
-  printf("The smallest value is %g\n", smallest) ;
+  printf("The largest value is %g\n", largest);
+  printf("The smallest value is %g\n", smallest);
 @}
 @end example
 
@@ -695,7 +695,7 @@ int main()
   printf("The original dataset is %g, %g, %g, %g, %g\n",
         data[0], data[1], data[2], data[3], data[4]);
 
-  gsl_sort (data, 1, 5) ;
+  gsl_sort (data, 1, 5);
 
   printf("The sorted dataset is %g, %g, %g, %g, %g\n",
         data[0], data[1], data[2], data[3], data[4]);
@@ -710,9 +710,9 @@ int main()
     = gsl_stats_quantile_from_sorted_data (data, 1, 5,
                                            0.25);
 
-  printf("The median is %g\n", median) ;
-  printf("The upper quartile is %g\n", upperq) ;
-  printf("The lower quartile is %g\n", lowerq) ;
+  printf("The median is %g\n", median);
+  printf("The upper quartile is %g\n", upperq);
+  printf("The lower quartile is %g\n", lowerq);
 @}
 @end example
 

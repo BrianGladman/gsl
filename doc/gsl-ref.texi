@@ -3,9 +3,10 @@
 @tex
 \gdef\paperbackbook{{\globaldefs = 1
   \parskip = 2pt plus 1pt
-  \setleading{12pt}%
+  \setleading{13.2pt}%
   %
-  \internalpagesizes{7.5in}{5.in}{\voffset}{.25in}{\bindingoffset}{16pt}%
+  %\internalpagesizes{189mm}{112mm}{20mm}{20mm}{0mm}{36pt}%
+  \internalpagesizes{189mm}{112mm}{20mm}{26mm}{0mm}{36pt}%
   %
   \lispnarrowing = 0.3in
   \tolerance = 700
@@ -22,8 +23,8 @@
 @end tex
 @c @cropmarks
 @c @afourpaper
-@comment @paperbackbook
-@comment @set publish
+@c @paperbackbook
+@c @set publish
 @raggedbottom
 @c %**start of header
 @setfilename gsl-ref.info
@@ -264,8 +265,8 @@ by the GSL Team.
 This file documents the @value{GSL}, a collection of numerical
 routines for scientific computing.
 
-As of @value{UPDATED} the library is in beta-test release only and is
-not recommended for general use.
+@comment As of @value{UPDATED} the library is in beta-test release only and is
+@comment not recommended for general use.
 
 More information about GSL can be found at the project homepage,
 @url{http://sources.redhat.com/gsl/}.
@@ -349,7 +350,7 @@ announced for general use.
 The library covers a wide range of topics in numerical computing.
 Routines are available for the following areas,
 
-@multitable @columnfractions 0.1 0.4 0.4 0.1
+@multitable @columnfractions 0.05 0.45 0.45 0.05
 @item @tab Complex Numbers            @tab Roots of Polynomials        
 @item @tab Special Functions          @tab Vectors and Matrices        
 @item @tab Permutations               @tab Sorting                    
@@ -419,8 +420,8 @@ website, @url{http://sources.redhat.com/gsl/}.  It compiles on most Unix
 platforms, and is also available for Microsoft Windows.
 
 Announcements of new releases, updates and other important events are
-made on the mailing list @code{gsl-announce@@sources.redhat.com}.  To
-subscribe to this list, send an email of the following form,
+made on the @code{gsl-announce} mailing list.  To subscribe to this
+low-volume list, send an email of the following form,
 
 @example
 To: gsl-announce-request@@sources.redhat.com 
@@ -698,8 +699,8 @@ dnl
 AC_CACHE_CHECK([for extern inline], ac_cv_c_extern_inline,
 [ac_cv_c_extern_inline=no
 AC_TRY_COMPILE([extern $ac_cv_c_inline double foo(double x);
-extern $ac_cv_c_inline double foo(double x) @{ return x + 1.0 ; @} ;
-double foo (double x) @{ return x + 1.0 ; @};], 
+extern $ac_cv_c_inline double foo(double x) @{ return x + 1.0; @};
+double foo (double x) @{ return x + 1.0; @};], 
 [  foo(1.0)  ],
 [ac_cv_c_extern_inline="yes"])
 ])

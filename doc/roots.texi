@@ -168,7 +168,7 @@ These functions free all the memory associated with the solver @var{s}.
 These functions return a pointer to the name of the solver.  For example,
 
 @example
-printf("s is a '%s' solver\n", gsl_root_fsolver_name (s)) ;
+printf("s is a '%s' solver\n", gsl_root_fsolver_name (s));
 @end example
 
 @noindent
@@ -219,23 +219,23 @@ defines a @code{gsl_function} @code{F} which you could pass to a root
 finder:
 
 @example
-struct my_f_params @{ double a ; double b ; double c ; @} ;
+struct my_f_params @{ double a; double b; double c; @};
 
 double
 my_f (double x, void * p) @{
-   struct my_f_params * params = (struct my_f_params *)p ;
-   double a = (params->a) ;
-   double b = (params->b) ;
-   double c = (params->c) ;
+   struct my_f_params * params = (struct my_f_params *)p;
+   double a = (params->a);
+   double b = (params->b);
+   double c = (params->c);
 
-   return  (a * x + b) * x + c ;
+   return  (a * x + b) * x + c;
 @}
 
-gsl_function F ;
+gsl_function F;
 struct my_f_params params = @{ 3.0, 2.0, 1.0 @};
 
-F.function = &my_f ;
-F.params = &params ;
+F.function = &my_f;
+F.params = &params;
 @end example
 
 The function @math{f(x)} can be evaluated using the following macro,
@@ -298,18 +298,18 @@ my_df (double x, void * params)
 void
 my_fdf (double x, void * params, double * f, double * df)
 @{
-   double t = exp (2 * x) ;
+   double t = exp (2 * x);
 
    *f = t;
    *df = 2 * t;   /* computing using existing values */
 @}
 
-gsl_function_fdf FDF ;
+gsl_function_fdf FDF;
 
-FDF.f = &my_f ;
-FDF.df = &my_df ;
-FDF.fdf = &my_fdf ;
-FDF.params = 0 ;
+FDF.f = &my_f;
+FDF.df = &my_df;
+FDF.fdf = &my_fdf;
+FDF.params = 0;
 @end example
 
 The function @math{f(x)} can be evaluated using the following macro,

@@ -72,10 +72,10 @@ main ()
   gsl_function F;
   double result, abserr;
 
-  F.function = &f ;
+  F.function = &f;
   F.params = 0;
 
-  printf("f(x) = x^(3/2)\n") ;
+  printf("f(x) = x^(3/2)\n");
 
   gsl_diff_central (&F, 2.0, &result, &abserr);
   printf("x = 2.0\n");

@@ -159,13 +159,12 @@ If the library is found then the tests will define the macros
 @code{HAVE_LIBGSL}, @code{HAVE_LIBGSLCBLAS}, @code{HAVE_LIBM} and add
 the options @code{-lgsl -lgslcblas -lm} to the variable @code{LIBS}.
 
-The tests above will find any version of GSL.  They are suitable for
-general use, where the versions of the functions are not important.  The
-library also provides an alternative macro to test for a specific
-version of GSL. The @file{gsl.m4} file contains the definitions needed
-to detect GSL in automatic Makefile generation.  To use this macro
-simply add the following line to your @file{configure.in} file instead
-of the tests above:
+The tests above will find any version of the library.  They are suitable
+for general use, where the versions of the functions are not important.
+An alternative macro is available in the file @file{gsl.m4} to test for
+a specific version of the library.  To use this macro simply add the
+following line to your @file{configure.in} file instead of the tests
+above:
 
 @example
 AM_PATH_GSL(GSL_VERSION,

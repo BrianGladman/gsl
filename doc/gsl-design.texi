@@ -829,7 +829,7 @@ write a descending loop you have to be careful because @code{size_t} is
 unsigned, so instead of
 
 @example
-for (i = N - 1; i >= 0 ; i--) @{ ... @}
+for (i = N - 1; i >= 0; i--) @{ ... @}
 @end example
 @noindent
 use something like
@@ -843,7 +843,7 @@ to avoid problems with wrap-around at @code{i=0}.
 If you really want to avoid confusion use a separate variable to invert
 the loop order,
 @example
-for (i = 0; i < N; i++) @{ j = N - i ; ... @}
+for (i = 0; i < N; i++) @{ j = N - i; ... @}
 @end example
 
 

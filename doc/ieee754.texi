@@ -360,7 +360,7 @@ int main (void)
              i, sum, sum - M_E);
 
       if (i > 30)
-         break ;
+         break;
     @}  
   while (sum != oldsum);
 

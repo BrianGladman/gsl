@@ -93,7 +93,7 @@ For example,
 
 @example
 printf("interp uses '%s' interpolation\n", 
-       gsl_interp_name (interp)) ;
+       gsl_interp_name (interp));
 @end example
 @noindent
 would print something like @code{interp uses 'cspline' interpolation}

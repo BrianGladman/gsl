@@ -126,7 +126,7 @@ These functions return a pointer to the name of the solver.  For example,
 
 @example
 printf("s is a '%s' solver\n", 
-       gsl_multifit_fdfsolver_name (s)) ;
+       gsl_multifit_fdfsolver_name (s));
 @end example
 
 @noindent

@@ -303,7 +303,7 @@ main ()
 
   printf("\n");
 
-  for (i = -30 ; i < 130 ; i++)
+  for (i = -30; i < 130; i++)
     @{
       double xf = x[0] + (i/100.0) * (x[n-1] - x[0]);
       double yf, yf_err;
@@ -404,7 +404,7 @@ main (int argc, char **argv)
   c = gsl_vector_alloc (3);
   cov = gsl_matrix_alloc (3, 3);
 
-  for (i = 0; i < n ; i++)
+  for (i = 0; i < n; i++)
     @{
       int count = fscanf(stdin, "%lg %lg %lg", &xi, &yi, &ei);
 
@@ -470,7 +470,7 @@ int main (void)
   T = gsl_rng_default;
   r = gsl_rng_alloc(T);
 
-  for (x = 0.1 ; x < 2; x+= 0.1)
+  for (x = 0.1; x < 2; x+= 0.1)
     @{
       double y0 = exp(x);
       double sigma = 0.1*y0;

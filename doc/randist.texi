@@ -1570,7 +1570,7 @@ int a[52];
 
 for (i = 0; i < 52; i++)
   @{
-    a[i] = i ;
+    a[i] = i;
   @}
 
 gsl_ran_shuffle (r, a, 52, sizeof (int));
@@ -1601,7 +1601,7 @@ double a[3], b[100];
 
 for (i = 0; i < 100; i++)
   @{
-    b[i] = (double) i ;
+    b[i] = (double) i;
   @}
 
 gsl_ran_choose (r, a, 3, b, 100, sizeof (double));
@@ -1634,7 +1634,7 @@ int
 main ()
 @{
   const gsl_rng_type * T;
-  gsl_rng * r ;
+  gsl_rng * r;
 
   int i, n = 10;
   double mu = 3.0;
@@ -1700,17 +1700,17 @@ The following program generates a random walk in two dimensions.
 
 main ()
 @{
-  gsl_rng * r = gsl_rng_alloc (gsl_rng_env_setup()) ;
-  int i ;
+  gsl_rng * r = gsl_rng_alloc (gsl_rng_env_setup());
+  int i;
   double x = 0, y = 0, dx, dy;
 
-  printf("%g %g\n", x, y) ;
+  printf("%g %g\n", x, y);
 
   for (i = 0; i < 10; i++)
     @{
-      gsl_ran_dir_2d (r, &dx, &dy) ;
-      x += dx ; y += dy; 
-      printf("%g %g\n", x, y) ;
+      gsl_ran_dir_2d (r, &dx, &dy);
+      x += dx; y += dy; 
+      printf("%g %g\n", x, y);
     @}
 @}
 @end example

@@ -191,7 +191,7 @@ This function returns a pointer to the name of the generator.
 For example,
 
 @example
-printf("r is a '%s' generator\n", gsl_rng_name (r)) ;
+printf("r is a '%s' generator\n", gsl_rng_name (r));
 @end example
 @noindent
 would print something like @code{r is a 'taus' generator}
@@ -284,21 +284,21 @@ generator using the environment variables @code{GSL_RNG_TYPE} and
 #include <stdio.h>
 #include <gsl/gsl_rng.h>
 
-gsl_rng * r ;  /* global generator */
+gsl_rng * r;  /* global generator */
 
 int 
 main ()
 @{
   const gsl_rng_type * T;
 
-  gsl_rng_env_setup() ;
+  gsl_rng_env_setup();
 
   T = gsl_rng_default;
   r = gsl_rng_alloc (T);
   
   printf("generator type: %s\n", gsl_rng_name (r));
   printf("seed = %u\n", gsl_rng_default_seed);
-  printf("first value = %u\n", gsl_rng_get (r)) ;
+  printf("first value = %u\n", gsl_rng_get (r));
 @}
 @end example
 
@@ -1152,7 +1152,7 @@ SX-3", @cite{International Journal of High Speed Computing} (1994).
 
 @comment
 @comment I made the original plot like this
-@comment ./benchmark > tmp ; cat tmp | perl -n -e '($n,$s) = split(" ",$_) ; printf("%17s ",$n); print "-" x ($s/1e5), "\n";'
+@comment ./benchmark > tmp; cat tmp | perl -n -e '($n,$s) = split(" ",$_); printf("%17s ",$n); print "-" x ($s/1e5), "\n";'
 @comment
 
 The following table shows the relative performance of a selection the

@@ -119,7 +119,7 @@ This function returns a pointer to the name of the minimizer.  For example,
 
 @example
 printf("s is a '%s' minimizer\n", 
-       gsl_multimin_fdf_minimizer_name (s)) ;
+       gsl_multimin_fdf_minimizer_name (s));
 @end example
 
 @noindent
