@@ -35,7 +35,7 @@ gsl_vector_set(gsl_vector v, size_t i)
 
 
 void
-gsl_vector_set_directly(gsl_vector v, size_t i, double x)
+gsl_vector_set(gsl_vector * v, size_t i, double x)
 {
 #ifdef GSL_RANGE_CHECK
   if (i < 0 || i >= v.n) 
@@ -47,7 +47,8 @@ gsl_vector_set_directly(gsl_vector v, size_t i, double x)
 }
 
 int
-gsl_vector_alloc (gsl_vector * v, size_t n)
+gsl_vector *
+gsl_vector_alloc ( v, size_t n)
 {
   if (n == 0)
     {

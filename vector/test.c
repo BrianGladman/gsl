@@ -6,12 +6,12 @@
 #define N 100000
 main () 
 {
-  gsl_vector v ;
+  gsl_vector * v ;
   int i,k;
   double *p ;
   double start, end, tot=0 ;
 
-  gsl_vector_alloc(&v, N) ;
+  v = gsl_vector_alloc(N) ;
 
   start = clock() / (double)CLOCKS_PER_SEC ;
  
