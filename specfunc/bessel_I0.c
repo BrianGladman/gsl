@@ -49,12 +49,13 @@ static double bi0_data[12] = {
    .00000000000000053339,
    .00000000000000000245
 };
-static struct gsl_sf_cheb_series bi0_cs = {
+static gsl_sf_cheb_series bi0_cs = {
   bi0_data,
   11,
   -1, 1,
   (double *)0,
-  (double *)0
+  (double *)0,
+  11
 };
 
 static double ai0_data[21] = {
@@ -80,12 +81,13 @@ static double ai0_data[21] = {
   -.00000000000000071,
    .00000000000000007
 };
-static struct gsl_sf_cheb_series ai0_cs = {
+static gsl_sf_cheb_series ai0_cs = {
   ai0_data,
   20,
   -1, 1,
   (double *)0,
-  (double *)0
+  (double *)0,
+  13
 };
 
 static double ai02_data[22] = {
@@ -112,12 +114,13 @@ static double ai02_data[22] = {
   -.00000000000000027,
    .00000000000000003
 };
-static struct gsl_sf_cheb_series ai02_cs = {
+static gsl_sf_cheb_series ai02_cs = {
   ai02_data,
   21,
   -1, 1,
   (double *)0,
-  (double *)0
+  (double *)0,
+  11
 };
 
 
@@ -128,28 +131,28 @@ int gsl_sf_bessel_I0_scaled_impl(const double x, double * result)
   double y = fabs(x);
 
   if(y < 2.0 * GSL_SQRT_MACH_EPS) {
-    *result = 1.;
+    *result = 1.0;
   }
   else if(y <= 3.0) {
     *result = exp(-y) * (2.75 + gsl_sf_cheb_eval(&bi0_cs, y*y/4.5-1.0));
   }
   else if(y <= 8.0) {
-    *result = (.375 + gsl_sf_cheb_eval(&ai0_cs, (48.0/y-11.0)/5.0)) / sqrt(y);
+    *result = (0.375 + gsl_sf_cheb_eval(&ai0_cs, (48.0/y-11.0)/5.0)) / sqrt(y);
   }
   else {
-    *result = (.375 + gsl_sf_cheb_eval(&ai02_cs, 16.0/y-1.0)) / sqrt(y);
+    *result = (0.375 + gsl_sf_cheb_eval(&ai02_cs, 16.0/y-1.0)) / sqrt(y);
   }
   return GSL_SUCCESS;
 }
 
 int gsl_sf_bessel_I0_impl(const double x, double * result)
 {
-  const double x_small = 2. * GSL_SQRT_MACH_EPS;
+  const double x_small = 2.0 * GSL_SQRT_MACH_EPS;
   const double xmax    = GSL_LOG_DBL_MAX - 1.;   /* alog (r1mach(2)) */
   double y = fabs(x);
 
   if(y < x_small) {
-    *result = 1.;
+    *result = 1.0;
     return GSL_SUCCESS;
   }
   else if(y <= 3.0) {

@@ -30,6 +30,9 @@ should be finished before a 1.0 level release.
 
 * Go over the tests and make sure nothing is left out.
 
+* Sanitize all the error-checking, error-estimation,
+  algorithm tuning, etc.
+
 * Fill out our scorecard, working from Lozier's
   "Software Needs in Special Functions" paper.
 

@@ -37,6 +37,14 @@ static double bm0_data[21] = {
   -0.00000000000000012,
    0.00000000000000004
 }; 
+const gsl_sf_cheb_series _bessel_amp_phase_bm0_cs = {
+  bm0_data,
+  20,
+  -1, 1,
+  (double *)0,
+  (double *)0,
+  10
+};
       
 static double bth0_data[24] = {
   -0.24639163774300119,
@@ -64,21 +72,13 @@ static double bth0_data[24] = {
   -0.000000000000000087,
    0.000000000000000036
 };
-
-const struct gsl_sf_cheb_series _bessel_amp_phase_bm0_cs = {
-  bm0_data,
-  20,
-  -1, 1,
-  (double *)0,
-  (double *)0
-};
-
-const struct gsl_sf_cheb_series _bessel_amp_phase_bth0_cs = {
+const gsl_sf_cheb_series _bessel_amp_phase_bth0_cs = {
   bth0_data,
   23,
   -1, 1,
   (double *)0,
-  (double *)0
+  (double *)0,
+  12
 };
 
 
@@ -105,7 +105,15 @@ static double bm1_data[21] = {
    0.00000000000000014,
   -0.00000000000000005,
 }; 
-  
+const gsl_sf_cheb_series _bessel_amp_phase_bm1_cs = {
+  bm1_data,
+  20,
+  -1, 1,
+  (double *)0,
+  (double *)0,
+  10
+};
+
 static double bth1_data[24] = {
    0.74060141026313850, 
   -0.004571755659637690,
@@ -132,22 +140,15 @@ static double bth1_data[24] = {
    0.000000000000000097,
   -0.000000000000000040,
 };
-
-const struct gsl_sf_cheb_series _bessel_amp_phase_bm1_cs = {
-  bm1_data,
-  20,
-  -1, 1,
-  (double *)0,
-  (double *)0
-};
-
-const struct gsl_sf_cheb_series _bessel_amp_phase_bth1_cs = {
+const gsl_sf_cheb_series _bessel_amp_phase_bth1_cs = {
   bth1_data,
   23,
   -1, 1,
   (double *)0,
-  (double *)0
+  (double *)0,
+  12
 };
+
 
 double gsl_sf_bessel_asymp_Mnu(const double nu, const double x)
 {

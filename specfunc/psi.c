@@ -51,12 +51,13 @@ static double r1py_data[] = {
    2.37983143439695892587093155740e-13,
    2.16636304108188318242594658208e-15
 };
-static struct gsl_sf_cheb_series r1py_cs = {
+static gsl_sf_cheb_series r1py_cs = {
   r1py_data,
   29,
   -1,1,
   (double *)0,
-  (double *)0
+  (double *)0,
+  18
 };
 
 
@@ -100,7 +101,16 @@ static double psics_data[23] = {
   -.000000000000000691,
    .000000000000000118,
   -.000000000000000020
-};    
+};
+static gsl_sf_cheb_series psi_cs = {
+  psics_data,
+  22,
+  -1, 1,
+  (double *)0,
+  (double *)0,
+  17
+};
+
 static double apsics_data[16] = {    
   -.0204749044678185,
   -.0101801271534859,
@@ -119,19 +129,13 @@ static double apsics_data[16] = {
    .0000000000000002,
   -.0000000000000000 
 };    
-static struct gsl_sf_cheb_series psi_cs = {
-  psics_data,
-  22,
-  -1, 1,
-  (double *)0,
-  (double *)0
-};
-static struct gsl_sf_cheb_series apsi_cs = {
+static gsl_sf_cheb_series apsi_cs = {
   apsics_data,
   15,
   -1, 1,
   (double *)0,
-  (double *)0
+  (double *)0,
+  9
 };
 
 #define PSI_TABLE_NMAX 100

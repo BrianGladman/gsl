@@ -29,12 +29,13 @@ static double g1_dat[14] = {
   -3.3726677300771949833341213457e-17,
   -3.6586334809210520744054437104e-20
 };
-static struct gsl_sf_cheb_series g1_cs = {
+static gsl_sf_cheb_series g1_cs = {
   g1_dat,
   13,
   -1, 1,
   (double *)0,
-  (double *)0
+  (double *)0,
+  7
 };
 
 /* nu = (x+1)/4, -1<x<1,  1/2 (1/Gamma[1-nu]+1/Gamma[1+nu]) */
@@ -56,12 +57,13 @@ static double g2_dat[15] =
  -2.4377878310107693650659740228e-18,
  -7.5225243218253901727164675011e-20
 };
-static struct gsl_sf_cheb_series g2_cs = {
+static gsl_sf_cheb_series g2_cs = {
   g2_dat,
   14,
   -1, 1,
   (double *)0,
-  (double *)0
+  (double *)0,
+  8
 };
 
 

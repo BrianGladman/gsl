@@ -571,12 +571,13 @@ static double gstar_a_data[30] = {
   3.4144405720185253938994854173e-15,
  -1.01151539430811870523226438193e-15
 };
-static struct gsl_sf_cheb_series gstar_a_cs = {
+static gsl_sf_cheb_series gstar_a_cs = {
   gstar_a_data,
   29,
   -1, 1,
   (double *)0,
-  (double *)0
+  (double *)0,
+  17
 };
 
 
@@ -615,12 +616,13 @@ static double gstar_b_data[] = {
   1.67793421320747610787923611651e-16,
  -6.0483153034414765129837716260e-17
 };
-static struct gsl_sf_cheb_series gstar_b_cs = {
+static gsl_sf_cheb_series gstar_b_cs = {
   gstar_b_data,
   29,
   -1, 1,
   (double *)0,
-  (double *)0
+  (double *)0,
+  18
 };
 
 

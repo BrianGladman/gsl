@@ -54,6 +54,15 @@ static double daw_data[21] = {
    -0.7345836823178450261333333333333e-29,
     0.8951937667516552533333333333333e-31
 };
+static gsl_sf_cheb_series daw_cs = {
+  daw_data,
+  15, /* 20, */
+  -1, 1,
+  (double *)0,
+  (double *)0,
+  9
+};
+
 static double daw2_data[45] = {
   -0.56886544105215527114160533733674e-01,
   -0.31811346996168131279322878048822e+00,
@@ -101,6 +110,15 @@ static double daw2_data[45] = {
   -0.18079295866694391771955199999999e-30,
    0.16090686015283030305450666666666e-31
 };
+static gsl_sf_cheb_series daw2_cs = {
+  daw2_data,
+  32, /* 44, */
+  -1, 1,
+  (double *)0,
+  (double *)0,
+  21
+};
+
 static double dawa_data[75] = {
    0.1690485637765703755422637438849e-01,
    0.8683252278406957990536107850768e-02,
@@ -178,27 +196,13 @@ static double dawa_data[75] = {
   -0.6120087296881677722911435593001e-31,
    0.1966024640193164686956230217896e-31
 };
-
-static struct gsl_sf_cheb_series daw_cs = {
-  daw_data,
-  20,
-  -1, 1,
-  (double *)0,
-  (double *)0
-};
-static struct gsl_sf_cheb_series daw2_cs = {
-  daw2_data,
-  44,
-  -1, 1,
-  (double *)0,
-  (double *)0
-};
-static struct gsl_sf_cheb_series dawa_cs = {
+static gsl_sf_cheb_series dawa_cs = {
   dawa_data,
-  74,
+  34, /* 74, */
   -1, 1,
   (double *)0,
-  (double *)0
+  (double *)0,
+  12
 };
 
 

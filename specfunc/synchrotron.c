@@ -25,12 +25,13 @@ static double synchrotron1_data[13] = {
    0.2086588e-13,
    0.15167e-15
 };
-static struct gsl_sf_cheb_series synchrotron1_cs = {
+static gsl_sf_cheb_series synchrotron1_cs = {
   synchrotron1_data,
   12,
   -1.0, 1.0,
   (double *)0,
-  (double *)0
+  (double *)0,
+  9
 };
 
 static double synchrotron2_data[12] = {
@@ -47,12 +48,13 @@ static double synchrotron2_data[12] = {
   0.77e-16,
   0.5e-18
 };
-static struct gsl_sf_cheb_series synchrotron2_cs = {
+static gsl_sf_cheb_series synchrotron2_cs = {
   synchrotron2_data,
   11,
   -1.0, 1.0,
   (double *)0,
-  (double *)0
+  (double *)0,
+  7
 };
 
 static double synchrotrona_data[23] = {
@@ -80,12 +82,13 @@ static double synchrotrona_data[23] = {
   0.41e-17,
   0.7e-18
 };
-static struct gsl_sf_cheb_series synchrotrona_cs = {
+static gsl_sf_cheb_series synchrotrona_cs = {
   synchrotrona_data,
   22,
   -1.0, 1.0,
   (double *)0,
-  (double *)0
+  (double *)0,
+  11
 };
 
 static double synchrotron21_data[13] = {
@@ -103,12 +106,13 @@ static double synchrotron21_data[13] = {
   0.21529e-13,
   0.156e-15
 };
-static struct gsl_sf_cheb_series synchrotron21_cs = {
+static gsl_sf_cheb_series synchrotron21_cs = {
   synchrotron21_data,
   12,
   -1.0, 1.0,
   (double *)0,
-  (double *)0
+  (double *)0,
+  9
 };
 
 static double synchrotron22_data[13] = {
@@ -126,12 +130,13 @@ static double synchrotron22_data[13] = {
    0.3232e-15,
    0.21e-17
 };
-static struct gsl_sf_cheb_series synchrotron22_cs = {
+static gsl_sf_cheb_series synchrotron22_cs = {
   synchrotron22_data,
   12,
   -1.0, 1.0,
   (double *)0,
-  (double *)0
+  (double *)0,
+  8
 };
 
 static double synchrotron2a_data[17] = {
@@ -153,12 +158,13 @@ static double synchrotron2a_data[17] = {
   0.307e-16,
   0.3e-17
 };
-static struct gsl_sf_cheb_series synchrotron2a_cs = {
+static gsl_sf_cheb_series synchrotron2a_cs = {
   synchrotron2a_data,
   16,
   -1.0, 1.0,
   (double *)0,
-  (double *)0
+  (double *)0,
+  8
 };
 
 

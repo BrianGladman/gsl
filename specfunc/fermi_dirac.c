@@ -41,12 +41,13 @@ static double fd_1_a_data[22] = {
   0.0,
  -3.e-19
 };
-static struct gsl_sf_cheb_series fd_1_a_cs = {
+static gsl_sf_cheb_series fd_1_a_cs = {
   fd_1_a_data,
   21,
   -1, 1,
   (double *)0,
-  (double *)0
+  (double *)0,
+  12
 };
 
 
@@ -76,12 +77,13 @@ static double fd_1_b_data[22] = {
   3.7e-17,
  -1.6e-17
 };
-static struct gsl_sf_cheb_series fd_1_b_cs = {
+static gsl_sf_cheb_series fd_1_b_cs = {
   fd_1_b_data,
   21,
   -1, 1,
   (double *)0,
-  (double *)0
+  (double *)0,
+  11
 };
 
 
@@ -112,12 +114,13 @@ static double fd_1_c_data[23] = {
   1.4e-16,
  -3.e-17
 };
-static struct gsl_sf_cheb_series fd_1_c_cs = {
+static gsl_sf_cheb_series fd_1_c_cs = {
   fd_1_c_data,
   22,
   -1, 1,
   (double *)0,
-  (double *)0
+  (double *)0,
+  13
 };
 
 
@@ -159,12 +162,13 @@ static double fd_1_d_data[30] = {
   2.33e-17,
  -5.9e-18
 };
-static struct gsl_sf_cheb_series fd_1_d_cs = {
+static gsl_sf_cheb_series fd_1_d_cs = {
   fd_1_d_data,
   29,
   -1, 1,
   (double *)0,
-  (double *)0
+  (double *)0,
+  14
 };
 
 
@@ -186,12 +190,13 @@ static double fd_1_e_data[10] = {
  -2.9e-18,
  -1.7e-18
 };
-static struct gsl_sf_cheb_series fd_1_e_cs = {
+static gsl_sf_cheb_series fd_1_e_cs = {
   fd_1_e_data,
   9,
   -1, 1,
   (double *)0,
-  (double *)0
+  (double *)0,
+  4
 };
 
 
@@ -220,12 +225,13 @@ static double fd_2_a_data[21] = {
   0.0,
   4.e-19
 };
-static struct gsl_sf_cheb_series fd_2_a_cs = {
+static gsl_sf_cheb_series fd_2_a_cs = {
   fd_2_a_data,
   20,
   -1, 1,
   (double *)0,
-  (double *)0
+  (double *)0,
+  12
 };
 
 
@@ -255,12 +261,13 @@ static double fd_2_b_data[22] = {
   1.2e-17,
   1.e-18
 };
-static struct gsl_sf_cheb_series fd_2_b_cs = {
+static gsl_sf_cheb_series fd_2_b_cs = {
   fd_2_b_data,
   21,
   -1, 1,
   (double *)0,
-  (double *)0
+  (double *)0,
+  12
 };
 
 
@@ -288,12 +295,13 @@ static double fd_2_c_data[20] = {
  -7.39e-15,
   4.3e-16
 };
-static struct gsl_sf_cheb_series fd_2_c_cs = {
+static gsl_sf_cheb_series fd_2_c_cs = {
   fd_2_c_data,
   19,
   -1, 1,
   (double *)0,
-  (double *)0
+  (double *)0,
+  12
 };
 
 
@@ -335,12 +343,13 @@ static double fd_2_d_data[30] = {
   3.394e-17,
  -8.81e-18
 };
-static struct gsl_sf_cheb_series fd_2_d_cs = {
+static gsl_sf_cheb_series fd_2_d_cs = {
   fd_2_d_data,
   29,
   -1, 1,
   (double *)0,
-  (double *)0
+  (double *)0,
+  14
 };
 
 
@@ -356,12 +365,13 @@ static double fd_2_e_data[4] = {
   0.00022846306484003205,
   5.2e-19
 };
-static struct gsl_sf_cheb_series fd_2_e_cs = {
+static gsl_sf_cheb_series fd_2_e_cs = {
   fd_2_e_data,
   3,
   -1, 1,
   (double *)0,
-  (double *)0
+  (double *)0,
+  3
 };
 
 
@@ -389,12 +399,13 @@ static double fd_mhalf_a_data[20] = {
   1.0084e-15,
  -1.561e-16
 };
-static struct gsl_sf_cheb_series fd_mhalf_a_cs = {
+static gsl_sf_cheb_series fd_mhalf_a_cs = {
   fd_mhalf_a_data,
   19,
   -1, 1,
   (double *)0,
-  (double *)0
+  (double *)0,
+  12
 };
 
 
@@ -422,12 +433,13 @@ static double fd_mhalf_b_data[20] = {
   3.00028e-14,
  -3.4970e-15
 };
-static struct gsl_sf_cheb_series fd_mhalf_b_cs = {
+static gsl_sf_cheb_series fd_mhalf_b_cs = {
   fd_mhalf_b_data,
   19,
   -1, 1,
   (double *)0,
-  (double *)0
+  (double *)0,
+  12
 };
 
 
@@ -460,12 +472,13 @@ static double fd_mhalf_c_data[25] = {
  -2.6e-17,
   5.e-18
 };
-static struct gsl_sf_cheb_series fd_mhalf_c_cs = {
+static gsl_sf_cheb_series fd_mhalf_c_cs = {
   fd_mhalf_c_data,
   24,
   -1, 1,
   (double *)0,
-  (double *)0
+  (double *)0,
+  13
 };
 
 
@@ -506,12 +519,13 @@ static double fd_mhalf_d_data[30] = {
   7.6e-18,
  -1.9e-18
 };
-static struct gsl_sf_cheb_series fd_mhalf_d_cs = {
+static gsl_sf_cheb_series fd_mhalf_d_cs = {
   fd_mhalf_d_data,
   29,
   -1, 1,
   (double *)0,
-  (double *)0
+  (double *)0,
+  15
 };
 
 
@@ -542,12 +556,13 @@ static double fd_half_a_data[23] = {
  -6.e-19,
   1.e-19
 };
-static struct gsl_sf_cheb_series fd_half_a_cs = {
+static gsl_sf_cheb_series fd_half_a_cs = {
   fd_half_a_data,
   22,
   -1, 1,
   (double *)0,
-  (double *)0
+  (double *)0,
+  11
 };
 
 
@@ -575,12 +590,13 @@ static double fd_half_b_data[20] = {
  -3.864e-15,
   1.202e-15
 };
-static struct gsl_sf_cheb_series fd_half_b_cs = {
+static gsl_sf_cheb_series fd_half_b_cs = {
   fd_half_b_data,
   19,
   -1, 1,
   (double *)0,
-  (double *)0
+  (double *)0,
+  12
 };
 
 
@@ -611,12 +627,13 @@ static double fd_half_c_data[23] = {
  -4.0e-17,
  -1.4e-17
 };
-static struct gsl_sf_cheb_series fd_half_c_cs = {
+static gsl_sf_cheb_series fd_half_c_cs = {
   fd_half_c_data,
   22,
   -1, 1,
   (double *)0,
-  (double *)0
+  (double *)0,
+  13
 };
 
 
@@ -657,12 +674,13 @@ static double fd_half_d_data[30] = {
   1.59e-17,
  -4.0e-18
 };
-static struct gsl_sf_cheb_series fd_half_d_cs = {
+static gsl_sf_cheb_series fd_half_d_cs = {
   fd_half_d_data,
   29,
   -1, 1,
   (double *)0,
-  (double *)0
+  (double *)0,
+  15
 };
 
 
@@ -691,12 +709,13 @@ static double fd_3half_a_data[20] = {
  -3.78e-17,
   5.1e-18
 };
-static struct gsl_sf_cheb_series fd_3half_a_cs = {
+static gsl_sf_cheb_series fd_3half_a_cs = {
   fd_3half_a_data,
   19,
   -1, 1,
   (double *)0,
-  (double *)0
+  (double *)0,
+  11
 };
 
 
@@ -726,12 +745,13 @@ static double fd_3half_b_data[22] = {
   4.5e-17,
  -5.e-18
 };
-static struct gsl_sf_cheb_series fd_3half_b_cs = {
+static gsl_sf_cheb_series fd_3half_b_cs = {
   fd_3half_b_data,
   21,
   -1, 1,
   (double *)0,
-  (double *)0
+  (double *)0,
+  12
 };
 
 
@@ -760,12 +780,13 @@ static double fd_3half_c_data[21] = {
   3.05e-15,
  -4.8e-16
 };
-static struct gsl_sf_cheb_series fd_3half_c_cs = {
+static gsl_sf_cheb_series fd_3half_c_cs = {
   fd_3half_c_data,
   20,
   -1, 1,
   (double *)0,
-  (double *)0
+  (double *)0,
+  12
 };
 
 
@@ -801,12 +822,13 @@ static double fd_3half_d_data[25] = {
  -1.81807e-14,
   4.6884e-15
 };
-static struct gsl_sf_cheb_series fd_3half_d_cs = {
+static gsl_sf_cheb_series fd_3half_d_cs = {
   fd_3half_d_data,
   24,
   -1, 1,
   (double *)0,
-  (double *)0
+  (double *)0,
+  16
 };
 
 

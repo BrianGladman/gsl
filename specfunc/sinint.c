@@ -42,12 +42,13 @@ static double f1_data[20] = {
     0.0000000000000001391,
    -0.0000000000000000282
 };
-static struct gsl_sf_cheb_series f1_cs = {
+static gsl_sf_cheb_series f1_cs = {
   f1_data,
   19,
   -1, 1,
   (double *)0,
-  (double *)0
+  (double *)0,
+  10
 };
 
 /*
@@ -89,12 +90,13 @@ static double f2_data[29] = {
    -0.0000000000000000900,
     0.0000000000000000432
 };
-static struct gsl_sf_cheb_series f2_cs = {
+static gsl_sf_cheb_series f2_cs = {
   f2_data,
   28,
   -1, 1,
   (double *)0,
-  (double *)0
+  (double *)0,
+  14
 };
 
 /*
@@ -128,12 +130,13 @@ static double g1_data[21] = {
    -0.0000000000000002615,
     0.0000000000000000548
 };
-static struct gsl_sf_cheb_series g1_cs = {
+static gsl_sf_cheb_series g1_cs = {
   g1_data,
   20,
   -1, 1,
   (double *)0,
-  (double *)0
+  (double *)0,
+  13
 };
 
 /*
@@ -180,12 +183,13 @@ static double g2_data[34] = {
     0.0000000000000000801,
    -0.0000000000000000501
 };
-static struct gsl_sf_cheb_series g2_cs = {
+static gsl_sf_cheb_series g2_cs = {
   g2_data,
   33,
   -1, 1,
   (double *)0,
-  (double *)0
+  (double *)0,
+  20
 };
 
 
@@ -245,12 +249,13 @@ static double si_data[12] = {
   -0.0000000000000000122
 };
 
-static struct gsl_sf_cheb_series si_cs = {
+static gsl_sf_cheb_series si_cs = {
   si_data,
   11,
   -1, 1,
   (double *)0,
-  (double *)0
+  (double *)0,
+  9
 };
 
 /*
@@ -275,12 +280,13 @@ static double ci_data[13] = {
    -0.00000000000000028912,
     0.00000000000000000194
 };
-static struct gsl_sf_cheb_series ci_cs = {
+static gsl_sf_cheb_series ci_cs = {
   ci_data,
   12,
   -1, 1,
   (double *)0,
-  (double *)0
+  (double *)0,
+  9
 };
 
 

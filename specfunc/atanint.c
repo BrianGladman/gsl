@@ -31,12 +31,13 @@ static double atanint_data[21] = {
  -0.511e-17,
   0.79e-18,
 };
-static struct gsl_sf_cheb_series atanint_cs = {
+static gsl_sf_cheb_series atanint_cs = {
   atanint_data,
   20,
   -1, 1,
   (double *)0,
-  (double *)0
+  (double *)0,
+  10
 };
 
 

@@ -44,12 +44,13 @@ static double lopx_data[30] = {
   -6.8766567654198801943924765289e-18,
    1.66708629835556875107467462252e-18
 };
-static struct gsl_sf_cheb_series lopx_cs = {
+static gsl_sf_cheb_series lopx_cs = {
   lopx_data,
   29,
   -1, 1,
   (double *)0,
-  (double *)0
+  (double *)0,
+  16
 };
 
 /* Chebyshev expansion for log(1 + t/2) - t/2, -1 < t < 1
@@ -86,12 +87,13 @@ static double lopxmx_data[30] = {
   -6.8766567654198801943924765289e-18,
    1.66708629835556875107467462252e-18
 };
-static struct gsl_sf_cheb_series lopxmx_cs = {
+static gsl_sf_cheb_series lopxmx_cs = {
   lopxmx_data,
   29,
   -1, 1,
   (double *)0,
-  (double *)0
+  (double *)0,
+  16
 };
 
 

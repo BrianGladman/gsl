@@ -136,12 +136,13 @@ static double erfc_xlt1_data[20] = {
   2.45935306460536488037576200030e-18,
  -9.2959956122052339600735932854e-19
 };
-static struct gsl_sf_cheb_series erfc_xlt1_cs = {
+static gsl_sf_cheb_series erfc_xlt1_cs = {
   erfc_xlt1_data,
   19,
   -1, 1,
   (double *) 0,
-  (double *) 0
+  (double *) 0,
+  12
 };
 
 /* Chebyshev fit for erfc(x) exp(x^2), 1 < x < 5, x = 2t + 3, -1 < t < 1
@@ -173,12 +174,13 @@ static double erfc_x15_data[25] = {
  -1.90685978789192181051961024995e-15,
   3.5082664803273784924511375734e-16
 };
-static struct gsl_sf_cheb_series erfc_x15_cs = {
+static gsl_sf_cheb_series erfc_x15_cs = {
   erfc_x15_data,
   24,
   -1, 1,
   (double *) 0,
-  (double *) 0
+  (double *) 0,
+  16
 };
 
 /* Chebyshev fit for erfc(x) x exp(x^2), 5 < x < 10, x = (5t + 15)/2, -1 < t < 1
@@ -205,12 +207,13 @@ static double erfc_x510_data[20] = {
  -6.0797061938416037439253545342e-16,
   9.1260060726479471731550747767e-17
 };
-static struct gsl_sf_cheb_series erfc_x510_cs = {
+static gsl_sf_cheb_series erfc_x510_cs = {
   erfc_x510_data,
   19,
   -1, 1,
   (double *) 0,
-  (double *) 0
+  (double *) 0,
+  12
 };
 
 

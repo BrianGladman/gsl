@@ -28,12 +28,13 @@ static double transport2_data[18] = {
    0.23e-16,
   -0.19e-17
 };
-static struct gsl_sf_cheb_series transport2_cs = {
+static gsl_sf_cheb_series transport2_cs = {
   transport2_data,
   17,
   -1, 1,
   (double *)0,
-  (double *)0
+  (double *)0,
+  9
 };
 
 static double transport3_data[18] = {
@@ -56,12 +57,13 @@ static double transport3_data[18] = {
    0.219e-16,
   -0.19e-17
 };
-static struct gsl_sf_cheb_series transport3_cs = {
+static gsl_sf_cheb_series transport3_cs = {
   transport3_data,
   17,
   -1, 1,
   (double *)0,
-  (double *)0
+  (double *)0,
+  9
 };
 
 
@@ -85,12 +87,13 @@ static double transport4_data[18] = {
   0.211e-16,
  -0.18e-17
 };
-static struct gsl_sf_cheb_series transport4_cs = {
+static gsl_sf_cheb_series transport4_cs = {
   transport4_data,
   17,
   -1, 1,
   (double *)0,
-  (double *)0
+  (double *)0,
+  9
 };
 
 
@@ -114,12 +117,13 @@ static double transport5_data[18] = {
    0.21e-16,
   -0.18e-17
 };
-static struct gsl_sf_cheb_series transport5_cs = {
+static gsl_sf_cheb_series transport5_cs = {
   transport5_data,
   17,
   -1, 1,
   (double *)0,
-  (double *)0
+  (double *)0,
+  9
 };
 
 

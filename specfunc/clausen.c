@@ -26,7 +26,7 @@ static double aclaus_data[15] = {
   0.68e-17,
   0.4e-18
 };
-static struct gsl_sf_cheb_series aclaus_cs = {
+static gsl_sf_cheb_series aclaus_cs = {
   aclaus_data,
   14,
   -1, 1,
@@ -38,8 +38,7 @@ static struct gsl_sf_cheb_series aclaus_cs = {
 /*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
 
 int gsl_sf_clausen_impl(double x, double *result)
-{ 
-  const double pi_squared = M_PI*M_PI;
+{
   const double x_cut = M_PI * GSL_SQRT_MACH_EPS;
 
   double sgn = 1.0;
@@ -72,7 +71,7 @@ int gsl_sf_clausen_impl(double x, double *result)
     *result = x * (1.0 - log(x));
   }
   else {
-    const double t = 2.0*(x*x / pi_squared - 0.5);
+    const double t = 2.0*(x*x / (M_PI*M_PI) - 0.5);
     const double c = gsl_sf_cheb_eval(&aclaus_cs, t);
     *result = x * (c - log(x));
   }

@@ -7,14 +7,14 @@
 #include <gsl_errno.h>
 #include "gsl_sf_chebyshev.h"
 
-int gsl_sf_cheb_calc_impl(struct gsl_sf_cheb_series *, double (*)(double));
+int gsl_sf_cheb_calc_impl(gsl_sf_cheb_series *, double (*)(double));
 
 
 /*-*-*-*-*-*-*-*-*-*-*-* Allocators *-*-*-*-*-*-*-*-*-*-*-*/
 
-struct gsl_sf_cheb_series * gsl_sf_cheb_new(double (*func)(double),
-    	    	    	    	    	    const double a, const double b,
-			      	    	    const int order)
+gsl_sf_cheb_series * gsl_sf_cheb_new(double (*func)(double),
+    	    	    	    	     const double a, const double b,
+			      	     const int order)
 {
   int status;
 
@@ -24,12 +24,13 @@ struct gsl_sf_cheb_series * gsl_sf_cheb_new(double (*func)(double),
   else if(a >= b) {
     GSL_ERROR_RETURN("gsl_sf_cheb_new: null interval, a>=b", GSL_EDOM, 0);
   }
-  else if(fabs(b-a) < 1.e+6 * GSL_MACH_EPS) {
+  else if(fabs(b-a) < 1.0e+6 * GSL_MACH_EPS) {
+    /* FIXME: arbitrary nonsense */
     GSL_ERROR_RETURN("gsl_sf_cheb_new: interval close to null", GSL_EFAILED, 0);
   }
   else {
-    struct gsl_sf_cheb_series * cs = (struct gsl_sf_cheb_series *)
-      malloc(sizeof(struct gsl_sf_cheb_series));
+    gsl_sf_cheb_series * cs = (gsl_sf_cheb_series *)
+      malloc(sizeof(gsl_sf_cheb_series));
   
     if(cs == 0) {
       GSL_ERROR_RETURN("gsl_sf_cheb_new: out of memory", GSL_ENOMEM, 0);
@@ -38,7 +39,8 @@ struct gsl_sf_cheb_series * gsl_sf_cheb_new(double (*func)(double),
     cs->cp = (double *)0;
     cs->ci = (double *)0;
 
-    cs->order = order;
+    cs->order    = order;
+    cs->order_sp = order;
     cs->a = a;
     cs->b = b;
     cs->c = malloc((order+1) * sizeof(double));
@@ -60,7 +62,7 @@ struct gsl_sf_cheb_series * gsl_sf_cheb_new(double (*func)(double),
 
 /*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
 
-int gsl_sf_cheb_calc_impl(struct gsl_sf_cheb_series * cs, double (*func)(double))
+int gsl_sf_cheb_calc_impl(gsl_sf_cheb_series * cs, double (*func)(double))
 {
   if(cs == 0) {
     return GSL_EFAULT;
@@ -69,7 +71,7 @@ int gsl_sf_cheb_calc_impl(struct gsl_sf_cheb_series * cs, double (*func)(double)
     int k, j;
     double bma = 0.5 * (cs->b - cs->a);
     double bpa = 0.5 * (cs->b + cs->a);
-    double fac = 2./(cs->order +1.);
+    double fac = 2.0/(cs->order +1.0);
     double * f = malloc((cs->order+1) * sizeof(double));
 
     if(f == 0) {
@@ -92,11 +94,11 @@ int gsl_sf_cheb_calc_impl(struct gsl_sf_cheb_series * cs, double (*func)(double)
   }
 }
 
-int gsl_sf_cheb_calc_deriv_impl(struct gsl_sf_cheb_series * cs)
+int gsl_sf_cheb_calc_deriv_impl(gsl_sf_cheb_series * cs)
 {
+  const int n = cs->order + 1;
+  const double con = 2.0 / (cs->b - cs->a);
   int j;
-  int n = cs->order + 1;
-  double con = 2. / (cs->b - cs->a);
   
   if(cs->cp != 0) free(cs->cp);
   cs->cp = (double *)malloc(n * sizeof(double));
@@ -112,10 +114,10 @@ int gsl_sf_cheb_calc_deriv_impl(struct gsl_sf_cheb_series * cs)
   return GSL_SUCCESS;
 }
 
-int gsl_sf_cheb_calc_integ_impl(struct gsl_sf_cheb_series * cs)
+int gsl_sf_cheb_calc_integ_impl(gsl_sf_cheb_series * cs)
 {
-  int n = cs->order + 1;
-  double con = 0.25 * (cs->b - cs->a);
+  const int n = cs->order + 1;
+  const double con = 0.25 * (cs->b - cs->a);
   
   if(cs->ci != 0) free(cs->ci);
   cs->ci = (double *)malloc(n * sizeof(double));
@@ -126,7 +128,7 @@ int gsl_sf_cheb_calc_integ_impl(struct gsl_sf_cheb_series * cs)
   }
   else if(n == 2) {
     cs->ci[1] = con * cs->c[0];
-    cs->ci[0] = 2. * cs->ci[1];
+    cs->ci[0] = 2.0 * cs->ci[1];
   }
   else {
     double sum = 0.0;
@@ -139,7 +141,7 @@ int gsl_sf_cheb_calc_integ_impl(struct gsl_sf_cheb_series * cs)
     }
     cs->ci[n-1] = con * cs->c[n-2]/(n-1);
     sum += fac * cs->ci[n-1];
-    cs->ci[0] = 2. * sum;
+    cs->ci[0] = 2.0 * sum;
   }
   return GSL_SUCCESS;
 }
@@ -147,7 +149,7 @@ int gsl_sf_cheb_calc_integ_impl(struct gsl_sf_cheb_series * cs)
 
 /*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
 
-int gsl_sf_cheb_calc_e(struct gsl_sf_cheb_series * cs, double (*func)(double))
+int gsl_sf_cheb_calc_e(gsl_sf_cheb_series * cs, double (*func)(double))
 {
   int status = gsl_sf_cheb_calc_impl(cs, func);
   if(status != GSL_SUCCESS) {
@@ -160,14 +162,14 @@ int gsl_sf_cheb_calc_e(struct gsl_sf_cheb_series * cs, double (*func)(double))
 /*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*-*-*/
 
 
-double gsl_sf_cheb_eval_n(const struct gsl_sf_cheb_series * cs, const int n, const double x)
+double gsl_sf_cheb_eval_n(const gsl_sf_cheb_series * cs, const int n, const double x)
 {
   int j;
   double d  = 0.;
   double dd = 0.;
 
   double y  = (2.*x - cs->a - cs->b) / (cs->b - cs->a);
-  double y2 = 2. * y;
+  double y2 = 2.0 * y;
 
   int eval_order = GSL_MIN(n, cs->order);
   eval_order     = GSL_MAX(eval_order, 0);
@@ -180,14 +182,14 @@ double gsl_sf_cheb_eval_n(const struct gsl_sf_cheb_series * cs, const int n, con
   return y*d - dd + 0.5 * cs->c[0];
 }
 
-double gsl_sf_cheb_eval(const struct gsl_sf_cheb_series * cs, const double x)
+double gsl_sf_cheb_eval(const gsl_sf_cheb_series * cs, const double x)
 {
   int j;
-  double d  = 0.;
-  double dd = 0.;
+  double d  = 0.0;
+  double dd = 0.0;
 
-  double y  = (2.*x - cs->a - cs->b) / (cs->b - cs->a);
-  double y2 = 2. * y;
+  double y  = (2.0*x - cs->a - cs->b) / (cs->b - cs->a);
+  double y2 = 2.0 * y;
 
   for(j = cs->order; j>=1; j--) {
     double temp = d;
@@ -197,11 +199,11 @@ double gsl_sf_cheb_eval(const struct gsl_sf_cheb_series * cs, const double x)
   return y*d - dd + 0.5 * cs->c[0];
 }
 
-double gsl_sf_cheb_eval_deriv(struct gsl_sf_cheb_series * cs, const double x)
+double gsl_sf_cheb_eval_deriv(gsl_sf_cheb_series * cs, const double x)
 {
   int j;
-  double d  = 0.;
-  double dd = 0.;
+  double d  = 0.0;
+  double dd = 0.0;
 
   double y  = (2.0*x - cs->a - cs->b) / (cs->b - cs->a);
   double y2 = 2.0 * y;
@@ -216,14 +218,14 @@ double gsl_sf_cheb_eval_deriv(struct gsl_sf_cheb_series * cs, const double x)
   return y*d - dd + 0.5 * cs->cp[0];
 }
 
-double gsl_sf_cheb_eval_integ(struct gsl_sf_cheb_series * cs, const double x)
+double gsl_sf_cheb_eval_integ(gsl_sf_cheb_series * cs, const double x)
 {
   int j;
-  double d  = 0.;
-  double dd = 0.;
+  double d  = 0.0;
+  double dd = 0.0;
 
-  double y  = (2.*x - cs->a - cs->b) / (cs->b - cs->a);
-  double y2 = 2. * y;
+  double y  = (2.0*x - cs->a - cs->b) / (cs->b - cs->a);
+  double y2 = 2.0 * y;
   
   if(cs->ci == (double *)0) gsl_sf_cheb_calc_integ_impl(cs);
 
@@ -235,7 +237,7 @@ double gsl_sf_cheb_eval_integ(struct gsl_sf_cheb_series * cs, const double x)
   return y*d - dd + 0.5 * cs->ci[0];
 }
 
-void gsl_sf_cheb_free(struct gsl_sf_cheb_series * cs)
+void gsl_sf_cheb_free(gsl_sf_cheb_series * cs)
 {
   if(cs != 0) {
     if(cs->c != 0) free(cs->c);

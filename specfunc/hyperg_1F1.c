@@ -1219,8 +1219,6 @@ printf("--:  %22.18g   %22.18g\n", term_M, (1.0-bp) * U);
 
 /* Handle case of generic positive a, b.
  * Assumes b-a is not a negative integer.
- * Also assumes a and b are not negative
- * integers, but that obviously follows...
  */
 static
 int
@@ -1258,10 +1256,8 @@ hyperg_1F1_ab_pos(const double a, const double b,
      */
     return hyperg_1F1_beps_bgt0(a-b, b, x, result);  /* a = b + eps */
   }
-  
-  
 
-  
+
   else if(b > a && b >= 2*a + x) {
     /* Use the Gautschi CF series, then
      * recurse backward to a near 0 for normalization.
@@ -1305,7 +1301,7 @@ hyperg_1F1_ab_pos(const double a, const double b,
      * the continued fraction. Then recurse forward
      * to near the a=b line for normalization. This will
      * work for either sign of x, although we do need
-     * to check for b > x, for when x is positive.
+     * to check for b > x, which is relevant when x is positive.
      */
     double Mn_true;
     int stat_Mt;

@@ -34,12 +34,13 @@ static double expint3_data[24] = {
   0.29e-17,
  -0.2e-18
 };
-static struct gsl_sf_cheb_series expint3_cs = {
+static gsl_sf_cheb_series expint3_cs = {
   expint3_data,
   23,
   -1.0, 1.0,
   (double *)0,
-  (double *)0
+  (double *)0,
+  15
 };
 
 static double expint3a_data[23] = {
@@ -67,12 +68,13 @@ static double expint3a_data[23] = {
   -0.5e-18,
    0.1e-18
 };
-static struct gsl_sf_cheb_series expint3a_cs = {
+static gsl_sf_cheb_series expint3a_cs = {
   expint3a_data,
   22,
   -1.0, 1.0,
   (double *)0,
-  (double *)0
+  (double *)0,
+  10
 };
 
 
