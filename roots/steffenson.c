@@ -67,7 +67,6 @@ steffenson_iterate (void * vstate, gsl_function_fdf * fdf, double * root)
   
   double x_new, f_new, df_new;
 
-  double x_2 = state->x_2 ;
   double x_1 = state->x_1 ;
   double x = state->x ;
 
