@@ -89,6 +89,7 @@ static void asymp_recurse_In_scaled(const int n, const double x, double * b_n, d
   *b_nm1 = b_j;
 }
 
+/* checked OK [GJ] Sun May  3 15:43:00 EDT 1998 */
 static inline int taylor_In_scaled_4(const int n, const double x, double * b_n, double * b_nm1)
 {
   double ex = exp(-x);
@@ -105,12 +106,12 @@ static inline int taylor_In_scaled_4(const int n, const double x, double * b_n, 
 
 /* convenience function for I_n and I_{n-1}
  * assumes n >= 2; x > 0
- * checked OK [GJ]
+ * checked OK [GJ] Sun May  3 16:19:10 EDT 1998 
  */
 static int bessel_In_scaled(const int n, const double x, double * b_n, double * b_nm1)
 {
   *b_n = 0.;
-  *b_nm1 = 0.;
+  if(b_nm1 != (double *)0) *b_nm1 = 0.;
 
   if(x*x < 10.*(n+1)*GSL_ROOT5_MACH_EPS) {
     return taylor_In_scaled_4(n, x, b_n, b_nm1);
@@ -132,30 +133,10 @@ static int bessel_In_scaled(const int n, const double x, double * b_n, double * 
   }
 }
 
-void testy(void)
-{
-  double x = 10.;
-  double I0_scaled;
-  double b_n, b_nm1;
-  int i, N;
-  
-  for(i=2; i<100; i++) {
-    double b_i, b_im1;
-    bessel_In_scaled(i, x, &b_i, &b_im1);
-    printf("%3d  %26.16g  %26.16g\n", i, x, b_i);
-    
-    /*
-    gsl_sf_bessel_I0_scaled_impl(x, &I0);
-    recurse_In(i, x, I0, &b_i, &b_im1);
-    */
-  }
-
-  exit(0);
-}
 
 /*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
 
-
+/* checked OK [GJ] Sun May  3 15:50:23 EDT 1998 */
 int gsl_sf_bessel_In_scaled_impl(int n, const double x, double * result)
 {
   n = abs(n);  /* I(-n, z) = I(n, z) */
@@ -179,6 +160,7 @@ int gsl_sf_bessel_In_scaled_impl(int n, const double x, double * result)
   }
 }
 
+/* checked OK [GJ] Sun May  3 16:04:13 EDT 1998 */
 int gsl_sf_bessel_In_scaled_array_impl(int n, const double x, double * result_array)
 {
   n = abs(n);  /* I(-n, z) = I(n, z) */
@@ -206,15 +188,14 @@ int gsl_sf_bessel_In_scaled_array_impl(int n, const double x, double * result_ar
       double b_jm1, b_j, b_jp1;
       bessel_In_scaled(n, ax, &b_n, &b_nm1);  /* starting values */
 
-      result_array[n]   = b_n;
-      result_array[n-1] = b_nm1;
+      result_array[n] = b_n;
       b_jp1 = b_n;
       b_j   = b_nm1;
-      for(j=n-2; j>=0; j--){
+      for(j=n-1; j>=0; j--){
         b_jm1 = b_jp1 + j * two_over_x * b_j;
         b_jp1 = b_j;
         b_j   = b_jm1;
-        result_array[j] = b_jm1;
+        result_array[j] = b_jp1;
       }
       
       /* deal with signs */
@@ -229,6 +210,7 @@ int gsl_sf_bessel_In_scaled_array_impl(int n, const double x, double * result_ar
   }
 }
 
+/* checked OK [GJ] Sun May  3 16:18:04 EDT 1998 */
 int gsl_sf_bessel_In_impl(int n, const double x, double * result)
 {
   int j;
@@ -241,12 +223,14 @@ int gsl_sf_bessel_In_impl(int n, const double x, double * result)
     return GSL_EOVRFLW;
   }
   else {
-    int status = bessel_In_scaled(n, x, result, (double *)0);
+    int status = bessel_In_scaled(n, ax, result, (double *)0);
+    if(x < 0. && GSL_IS_ODD(n)) *result = - *result;
     *result *= exp(ax);
     return status;
   }
 }
 
+/* checked OK [GJ] Sun May  3 16:08:25 EDT 1998 */
 int gsl_sf_bessel_In_array_impl(int n, const double x, double * result_array)
 {
   int j;
