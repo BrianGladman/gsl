@@ -129,10 +129,10 @@ should be finished before a 1.0 level release.
     OK: Sun Nov  8 16:41:37 MST 1998 [GJ]
 
   - coulomb.c
-    
+
   - coulomb_bound.c
     OK: Sun Nov  8 19:17:28 MST 1998 [GJ]
-    
+
   - coupling.c
     OK: Sun Nov  8 16:44:09 MST 1998 [GJ]
 
@@ -149,19 +149,19 @@ should be finished before a 1.0 level release.
 
   - ellint.c
     OK: Sun Nov  8 19:19:49 MST 1998 [GJ]
-    
+
   - elljac.c
     OK: Sun Nov  8 19:21:05 MST 1998 [GJ]
-    
+
   - erfc.c
     OK: Sun Nov  8 16:38:25 MST 1998 [GJ]
 
   - exp.c
     OK: Sun Nov  8 14:54:38 MST 1998 [GJ]
-    
+
   - expint.c
     OK: Sun Nov  8 15:03:24 MST 1998 [GJ]
-    
+
   - expint3.c
     OK: Sun Nov  8 14:58:06 MST 1998 [GJ]
 
@@ -172,12 +172,12 @@ should be finished before a 1.0 level release.
 
   - gamma_inc.c
     OK: Sun Nov  8 19:27:28 MST 1998 [GJ]
-    
+
   - gegenbauer.c
     OK: Sun Nov  8 19:26:31 MST 1998 [GJ]
-    
+
   - hyperg.c
-    
+
   - hyperg_0F1.c
     
   - hyperg_1F1.c
@@ -190,7 +190,7 @@ should be finished before a 1.0 level release.
     
   - laguerre.c
     OK: Sun Nov  8 19:29:02 MST 1998 [GJ]
-    
+
   - legendre_H3d.c
     OK: Sun Nov  8 14:38:53 MST 1998 [GJ]
 
@@ -198,7 +198,7 @@ should be finished before a 1.0 level release.
     OK: Wed Nov 11 14:31:07 MST 1998 [GJ]
 
   - legendre_con.c
-    
+
   - legendre_poly.c
     
   - log.c
@@ -206,13 +206,13 @@ should be finished before a 1.0 level release.
 
   - poch.c
     OK: Sun Nov  8 19:56:27 MST 1998 [GJ]
-    
+
   - poly.c
     OK: Sun Nov  8 14:49:45 MST 1998 [GJ]
 
   - pow_int.c
     OK: Sun Nov  8 12:53:22 MST 1998 [GJ]
-    
+
   - psi.c
     OK: Sun Nov  8 14:24:33 MST 1998 [GJ]
 
