@@ -186,7 +186,7 @@ static double olver_B0(double z, double abs_zeta)
 static double olver_B1(double z, double abs_zeta)
 {
   if(fabs(1.-z) < 10.*GSL_SQRT_MACH_EPS) {
-    /* FIXME */
+    return 0.5*CubeRoot2_ * (-1213./511875. - 3757./1347500.*(1-z));
   }
   else if(z < 1.) {
     return 0.; /* FIXME */
@@ -199,7 +199,8 @@ static double olver_B1(double z, double abs_zeta)
 static double olver_B2(double z, double abs_zeta)
 {
   if(fabs(1.-z) < 10.*GSL_SQRT_MACH_EPS) {
-    /* FIXME */
+    return 0.00055221307672129279005986982501
+           + 0.00089586516310476929281129228969 * (1. - z);
   }
   else if(z < 1.) {
     return 0.; /* FIXME */
@@ -208,6 +209,20 @@ static double olver_B2(double z, double abs_zeta)
     double x  = 2./z - 1.;
     double f2 = (1+x)*(1+x);
     return f2 * gsl_sf_cheb_eval(x,&B2_gt1_cs);
+  }
+}
+
+static double olver_B3(double z, double abs_zeta)
+{
+  if(fabs(1.-z) < 10.*GSL_SQRT_MACH_EPS) {
+    return -0.00047461779655995980754441833105
+           -0.44003318369401117358772369675 * (1. - z);
+  }
+  else if(z < 1.) {
+    return 0.; /* FIXME */
+  }
+  else {
+    /* FIXME */
   }
 }
 
@@ -239,28 +254,45 @@ static double olver_A1(double z, double abs_zeta)
 static double olver_A2(double z, double abs_zeta)
 {
   if(fabs(1.-z) < 10.*GSL_SQRT_MACH_EPS) {
+    return 151439./218295000. + 68401./147262500.*(1-z);
   }
   else if(z < 1.){
+    /* FIXME */
   }
   else {
     double x  = 2./z -1.;
     return (1+x) * gsl_sf_cheb_eval(x, &A2_gt1_cs);
   }
-  
 }
 
 static double olver_A3(double z, double abs_zeta)
 {
   if(fabs(1.-z) < 10.*GSL_SQRT_MACH_EPS) {
+    return -0.00035421197145774384077112575920
+           -0.000312322527890318832782774881353 * (1. - z);
   }
   else if(z < 1.){
+    /* FIXME */
   }
   else {
     double x = 2./z -1.;
     double f = (1+x)*(1+x)*(1+x);
     return f * gsl_sf_cheb_eval(x, &A3_gt1_cs);
   }
-  
+}
+
+static double olver_A4(double z, double abs_zeta)
+{
+  if(fabs(1.-z) < 10.*GSL_SQRT_MACH_EPS) {
+    return 0.00037819419920177291402661228437
+          +0.00040494390552363233477213857527 * (1.-z);
+  }
+  else if(z < 1.){
+    /* FIXME */
+  }
+  else {
+    /* FIXME */
+  }
 }
 
 static double olver_Asum(double nu, double z, double abs_zeta)
