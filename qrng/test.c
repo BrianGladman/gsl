@@ -80,7 +80,7 @@ int main()
 
   gsl_ieee_env_setup ();
 
-  /* status += test_sobol(); */
+  status += test_sobol();
   status += test_nied2();
 
   return status;
