@@ -1638,7 +1638,7 @@ int main (void)
 
     gsl_integration_workspace * w = gsl_integration_workspace_alloc (1000) ;
     gsl_integration_qawo_workspace * wo 
-      = gsl_integration_qawo_workspace_alloc (10 * M_PI, 1, 1, 1000) ;
+      = gsl_integration_qawo_workspace_alloc (10.0 * M_PI, 1.0, 1, 1000) ;
 
     /* All results are for GSL_IEEE_MODE=double-precision */
 
@@ -1690,7 +1690,7 @@ int main (void)
     gsl_function f = { &f456, &alpha } ;
     gsl_function fc = make_counter(&f, &p) ;
 
-    status = gsl_integration_qawo (&fc, 0.0, 1.0, 0, 1e-7, w->limit,
+    status = gsl_integration_qawo (&fc, 0.0, 1.0, 0.0, 1e-7, w->limit,
 				   w, wo, &result, &abserr) ;
     
     gsl_test_rel(result,exp_result,1e-14,"qawo(f456) smooth result") ;

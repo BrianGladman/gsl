@@ -255,8 +255,6 @@ gsl_integration_qawo (gsl_function * f,
 	  size_t i = workspace->i;
 	  double width = workspace->blist[i] - workspace->alist[i];
 	  
-	  /* FIXME: need to get omega in the next line */
-	  
 	  if (0.25 * width * wf->omega > 2)
 	    continue;
 	  
