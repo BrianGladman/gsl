@@ -209,9 +209,21 @@ void
 gsl_test_factor (double result, double expected, double factor,
                  const char *test_description,...)
 {
-  double u = result / expected; 
-
-  int status = (u > factor || u < 1.0 / factor) ;
+  int status;
+  
+  if (result == expected) 
+    {
+      status = 0;
+    }
+  else if (expected == 0.0) 
+    {
+      status = (result > expected || result < expected);
+    }
+  else
+    {
+      double u = result / expected; 
+      status = (u > factor || u < 1.0 / factor) ;
+    }
 
   tests++;
 
