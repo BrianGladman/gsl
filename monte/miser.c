@@ -359,3 +359,7 @@ int gsl_monte_miser_init(gsl_monte_miser_state* state)
   return GSL_SUCCESS;
 }
 
+void gsl_monte_miser_free (gsl_monte_miser_state* s)
+{
+  free (s);
+}

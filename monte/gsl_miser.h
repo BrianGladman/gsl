@@ -37,5 +37,7 @@ int gsl_monte_miser_validate(gsl_monte_miser_state* state,
 
 int gsl_monte_miser_init(gsl_monte_miser_state* state);
 
+void gsl_monte_miser_free(gsl_monte_miser_state* state);
+
 
 #endif /* GSL_MISER_H */

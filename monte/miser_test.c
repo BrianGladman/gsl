@@ -162,6 +162,8 @@ int main()
 		 num_dim, err); 
   }
 
+  gsl_monte_miser_free(s);
+
   return gsl_test_summary();
 }
 
