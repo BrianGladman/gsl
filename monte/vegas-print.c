@@ -8,17 +8,22 @@
 
 /* The following variables are needed for the print functions. */
 
-void vegas_open_log(gsl_monte_vegas_state* state)
+int vegas_open_log(gsl_monte_vegas_state* state)
 {
   state->ostream = fopen("vegas.out", "a+");
+  if (state->ostream == (FILE*) NULL)
+    /* FIXME: Maybe better error code? */
+    GSL_ERROR("failed to open stream on vegas.out", GSL_EFAILED);
+  return 0;
 }
 
-void vegas_close_log(gsl_monte_vegas_state* state)
+int vegas_close_log(gsl_monte_vegas_state* state)
 {
   if (state->ostream == (FILE*) NULL) 
     GSL_ERROR("attempted to close null file pointer", GSL_EFAULT);
 
-  fclose(state->ostream);
+  return fclose(state->ostream);
+  
 }
 
 void print_lim(gsl_monte_vegas_state* state, 
