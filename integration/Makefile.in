@@ -82,7 +82,7 @@ libgslintegration_a_SOURCES = integration.c \
 	qk61.c qk61.h \
 	qk.c \
 	qng.c qng.h \
-	qage.c \
+	qage.c qpsrt.c \
 	err.c err.h
 
 include_HEADERS = gsl_integration.h
@@ -103,7 +103,7 @@ LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
 libgslintegration_a_LIBADD = 
 libgslintegration_a_OBJECTS =  integration.o qk15.o qk21.o qk31.o qk41.o \
-qk51.o qk61.o qk.o qng.o qage.o err.o
+qk51.o qk61.o qk.o qng.o qage.o qpsrt.o err.o
 AR = ar
 test_OBJECTS =  test.o
 test_DEPENDENCIES =  libgslintegration.a ../err/libgslerr.a \
@@ -123,7 +123,7 @@ TAR = tar
 GZIP = --best
 DEP_FILES =  .deps/err.P .deps/integration.P .deps/qage.P .deps/qk.P \
 .deps/qk15.P .deps/qk21.P .deps/qk31.P .deps/qk41.P .deps/qk51.P \
-.deps/qk61.P .deps/qng.P .deps/test.P
+.deps/qk61.P .deps/qng.P .deps/qpsrt.P .deps/test.P
 SOURCES = $(libgslintegration_a_SOURCES) $(test_SOURCES)
 OBJECTS = $(libgslintegration_a_OBJECTS) $(test_OBJECTS)
 
