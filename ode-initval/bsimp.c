@@ -64,6 +64,7 @@ typedef struct
   double *dfdt;
   double *y_temp;
   double *delta_temp;
+  double *weight;
   gsl_matrix *dfdy;
 
   /* workspace for the basic stepper */
@@ -75,6 +76,18 @@ typedef struct
 }
 bsimp_state_t;
 
+/* Compute weighting factor */
+
+static void
+compute_weights (const double y[], double w[], size_t dim)
+{
+  size_t i;
+  for (i = 0; i < dim; i++)
+    {
+      double u = fabs(y[i]);
+      w[i] = (u > 0.0) ? u : 1.0;
+    }
+}
 
 /* Calculate a choice for the "order" of the method, using the
  * Deuflhard criteria.  
@@ -199,6 +212,7 @@ bsimp_step_local (void *vstate,
   double *const y_temp = state->y_temp;
   double *const delta_temp = state->delta_temp;
   double *const rhs_temp = state->rhs_temp;
+  double *const w = state->weight;
 
   gsl_vector_view y_temp_vec = gsl_vector_view_array (y_temp, dim);
   gsl_vector_view delta_temp_vec = gsl_vector_view_array (delta_temp, dim);
@@ -206,6 +220,15 @@ bsimp_step_local (void *vstate,
 
   const double h = h_total / n_step;
   double t = t0 + h;
+
+  double sum;
+
+  /* This is the factor sigma referred to in equation 3.4 of the
+     paper.  A relative change in y exceeding sigma indicates a
+     runaway behavior. According to the authors suitable values for
+     sigma are >>1.  I have chosen a value of 100*dim. BJG */
+
+  const double max_sum = 100.0 * dim;
 
   int signum;
   size_t i, j;
@@ -225,6 +248,10 @@ bsimp_step_local (void *vstate,
 
   gsl_linalg_LU_decomp (a_mat, p_vec, &signum);
 
+  /* Compute weighting factors */
+
+  compute_weights (y, w, dim);
+
   /* Initial step. */
 
   for (i = 0; i < dim; i++)
@@ -234,11 +261,19 @@ bsimp_step_local (void *vstate,
 
   gsl_linalg_LU_solve (a_mat, p_vec, &y_temp_vec.vector, &delta_temp_vec.vector);
 
+  sum = 0.0;
+
   for (i = 0; i < dim; i++)
     {
       const double di = delta_temp[i];
       delta[i] = di;
       y_temp[i] = y[i] + di;
+      sum += fabs(di) / w[i];
+    }
+
+  if (sum > max_sum) 
+    {
+      return GSL_EFAILED ;
     }
 
   /* Intermediate steps. */
@@ -254,11 +289,19 @@ bsimp_step_local (void *vstate,
 
       gsl_linalg_LU_solve (a_mat, p_vec, &rhs_temp_vec.vector, &delta_temp_vec.vector);
 
+      sum = 0.0;
+
       for (i = 0; i < dim; i++)
 	{
 	  delta[i] += 2.0 * delta_temp[i];
 	  y_temp[i] += delta[i];
+          sum += fabs(delta[i]) / w[i];
 	}
+
+      if (sum > max_sum) 
+        {
+          return GSL_EFAILED ;
+        }
 
       t += h;
 
@@ -275,9 +318,17 @@ bsimp_step_local (void *vstate,
 
   gsl_linalg_LU_solve (a_mat, p_vec, &rhs_temp_vec.vector, &delta_temp_vec.vector);
 
+  sum = 0.0;
+
   for (i = 0; i < dim; i++)
     {
       y_out[i] = y_temp[i] + delta_temp[i];
+      sum += fabs(delta_temp[i]) / w[i];
+    }
+
+  if (sum > max_sum) 
+    {
+      return GSL_EFAILED ;
     }
 
   return GSL_SUCCESS;
@@ -300,6 +351,7 @@ bsimp_alloc (size_t dim)
   state->dfdt = (double *) malloc (dim * sizeof (double));
   state->y_temp = (double *) malloc (dim * sizeof (double));
   state->delta_temp = (double *) malloc (dim * sizeof(double));
+  state->weight = (double *) malloc (dim * sizeof(double));
 
   state->dfdy = gsl_matrix_alloc (dim, dim);
 
@@ -345,7 +397,7 @@ bsimp_apply (void *vstate,
 
   const double t_local = t;
 
-  size_t k;
+  size_t i, k;
 
   if (h + t_local == t_local)
     {
@@ -353,7 +405,7 @@ bsimp_apply (void *vstate,
     }
 
   DBL_MEMCPY (y_extrap_save, y, dim);
-
+  
   /* Evaluate the derivative. */
   if (dydt_in != NULL)
     {
@@ -366,7 +418,6 @@ bsimp_apply (void *vstate,
 
   /* Evaluate the Jacobian for the system. */
   GSL_ODEIV_JA_EVAL (sys, t_local, y, dfdy->data, dfdt);
-
 
   /* Make a series of refined extrapolations,
    * up to the specified maximum order, which
@@ -387,6 +438,14 @@ bsimp_apply (void *vstate,
 
       if (status != GSL_SUCCESS)
         {
+          /* If the local step fails, set the error to infinity in
+             order to force a reduction in the step size */
+
+          for (i = 0; i < dim; i++)
+            {
+              yerr[i] = GSL_POSINF;
+            }
+
           break;
         }
 
@@ -435,6 +494,7 @@ bsimp_free (void * vstate)
 
   gsl_matrix_free (state->dfdy);
 
+  free (state->weight);
   free (state->delta_temp);
   free (state->y_temp);
   free (state->dfdt);

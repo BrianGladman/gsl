@@ -1,3 +1,12 @@
+Sat Sep 29 21:02:36 2001  Brian Gough  <bjg@network-theory.co.uk>
+
+	* bsimp.c: use the condition |D^-1 Delta| >> 1 to detect
+ 	singularities, as described in the paper and implemented in METAN1
+ 	by Deuflhard et al.
+
+	* evolve.c (gsl_odeiv_evolve_apply): reset the final_step flag
+ 	whenever the step size is decreased
+
 Sun Jul  1 22:42:02 2001  Brian Gough  <bjg@network-theory.co.uk>
 
 	* bsimp.c: modified to use new-style vector views

@@ -149,6 +149,10 @@ try_step:
       h0 = dt;
       final_step = 1;
     }
+  else
+    {
+      final_step = 0;
+    }
 
   if (step->type->can_use_dydt_in)
     {

@@ -1,4 +1,14 @@
-* What is new in gsl-0.9.3:
+* What is new in gsl-0.9.4:
+
+* The implicit Burlisch-Stoer ODE algorithm 'bsimp' now detects
+singularities and forces a reduction in step size, preventing runaway
+instabilities.
+
+* Fixed a bug in the ODE evolution function gsl_odeiv_evolve_apply
+which could cause an erroneous value to be returned if the step size
+is reduced on the last step.
+
+* What was new in gsl-0.9.3:
 
 * Routines for complex LU decomposition are now available, allowing
 the solution of systems of equations with complex coefficients.
