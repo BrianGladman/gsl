@@ -230,7 +230,7 @@ for (i = 0; i < p->size; i++)
 @end example
 @noindent
 This can be computed directly from the function
-@code{gsl_permutation_invert(rank,p)}.
+@code{gsl_permutation_inverse(rank,p)}.
 
 The following function will print the rank of each element of the vector
 @var{v},
@@ -245,7 +245,7 @@ print_rank (gsl_vector * v)
   gsl_permutation * rank = gsl_permutation_alloc(n);
 
   gsl_sort_vector_index (perm, v);
-  gsl_permutation_invert (rank, perm);
+  gsl_permutation_inverse (rank, perm);
 
   for (i = 0; i < n; i++)
    @{
