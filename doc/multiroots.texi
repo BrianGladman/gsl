@@ -301,10 +301,10 @@ powell_df (gsl_vector * x, void * p, gsl_matrix * J)
    double A = (params->A);
    double x0 = gsl_vector_get(x,0);
    double x1 = gsl_vector_get(x,1);
-   gsl_vector_set (J, 0, 0, A * x1)
-   gsl_vector_set (J, 0, 1, A * x0)
-   gsl_vector_set (J, 1, 0, -exp(-x0))
-   gsl_vector_set (J, 1, 1, -exp(-x1))
+   gsl_matrix_set (J, 0, 0, A * x1)
+   gsl_matrix_set (J, 0, 1, A * x0)
+   gsl_matrix_set (J, 1, 0, -exp(-x0))
+   gsl_matrix_set (J, 1, 1, -exp(-x1))
    return GSL_SUCCESS
 @}
 
@@ -323,10 +323,10 @@ powell_fdf (gsl_vector * x, void * p,
    gsl_vector_set (f, 0, A * x0 * x1 - 1)
    gsl_vector_set (f, 1, u0 + u1 - (1 + 1/A))
 
-   gsl_vector_set (J, 0, 0, A * x1)
-   gsl_vector_set (J, 0, 1, A * x0)
-   gsl_vector_set (J, 1, 0, -u0)
-   gsl_vector_set (J, 1, 1, -u1)
+   gsl_matrix_set (J, 0, 0, A * x1)
+   gsl_matrix_set (J, 0, 1, A * x0)
+   gsl_matrix_set (J, 1, 0, -u0)
+   gsl_matrix_set (J, 1, 1, -u1)
    return GSL_SUCCESS
 @}
 
