@@ -1,6 +1,7 @@
 #!/usr/bin/perl
 
 # This script is a mess.
+@confs = ('Release', 'Debug', 'ReleaseMT', 'DebugMT');
 
 open(LIBGSL, ">libgsl.dsp");
 print LIBGSL &begin_project_lib("libgsl");
@@ -129,8 +130,11 @@ close(TEST);
 
 open(TEST, ">MAKE_CHECK.bat");
 print TEST &begin_check();
-for $t (@tests) {
-    print TEST &add_check($t);
+for $dir (@confs) {
+    for $t (@tests) {
+        print TEST &add_check($dir,$t);
+    }
+    print TEST &missing_checks();
 }
 print TEST &end_check();
 close(TEST);
@@ -198,6 +202,8 @@ CFG=$proj - Win32 Debug
 !MESSAGE 
 !MESSAGE "$proj - Win32 Release" (based on "Win32 (x86) Static Library")
 !MESSAGE "$proj - Win32 Debug" (based on "Win32 (x86) Static Library")
+!MESSAGE "$proj - Win32 ReleaseMT" (based on "Win32 (x86) Static Library")
+!MESSAGE "$proj - Win32 DebugMT" (based on "Win32 (x86) Static Library")
 !MESSAGE 
 
 # Begin Project
@@ -220,7 +226,7 @@ RSC=rc.exe
 # PROP Intermediate_Dir "Release"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /Op- /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /YX /FD /c
-# ADD CPP /nologo /LD /Za /W3 /GX /O2 /Op- /I "..\\msvc" /I "." /I ".." /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /YX /FD /c
+# ADD CPP /nologo /ML /Za /W3 /GX /O2 /Op- /I "..\\msvc" /I "." /I ".." /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /YX /FD /c
 # ADD BASE RSC /l 0x809 /d "NDEBUG"
 # ADD RSC /l 0x809 /d "NDEBUG"
 BSC32=bscmake.exe
@@ -243,7 +249,53 @@ LIB32=link.exe -lib
 # PROP Intermediate_Dir "Debug"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /Z7 /Od /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /YX /FD /GZ  /c
-# ADD CPP /nologo /LDd /Za /W3 /Gm /GX /Z7 /Od  /I "..\\msvc" /I "." /I ".." /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /YX /FD /GZ  /c
+# ADD CPP /nologo /MLd /Za /W3 /Gm /GX /Z7 /Od  /I "..\\msvc" /I "." /I ".." /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /YX /FD /GZ  /c
+# ADD BASE RSC /l 0x809 /d "_DEBUG"
+# ADD RSC /l 0x809 /d "_DEBUG"
+BSC32=bscmake.exe
+# ADD BASE BSC32 /nologo
+# ADD BSC32 /nologo
+LIB32=link.exe -lib
+# ADD BASE LIB32 /nologo
+# ADD LIB32 /nologo
+
+!ELSEIF  "\$(CFG)" == "$proj - Win32 ReleaseMT"
+
+# PROP BASE Use_MFC 0
+# PROP BASE Use_Debug_Libraries 0
+# PROP BASE Output_Dir "ReleaseMT"
+# PROP BASE Intermediate_Dir "ReleaseMT"
+# PROP BASE Target_Dir ""
+# PROP Use_MFC 0
+# PROP Use_Debug_Libraries 0
+# PROP Output_Dir "ReleaseMT"
+# PROP Intermediate_Dir "ReleaseMT"
+# PROP Target_Dir ""
+# ADD BASE CPP /nologo /W3 /GX /O2 /Op- /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /YX /FD /c
+# ADD CPP /nologo /MT /Za /W3 /GX /O2 /Op- /I "..\\msvc" /I "." /I ".." /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /YX /FD /c
+# ADD BASE RSC /l 0x809 /d "NDEBUG"
+# ADD RSC /l 0x809 /d "NDEBUG"
+BSC32=bscmake.exe
+# ADD BASE BSC32 /nologo
+# ADD BSC32 /nologo
+LIB32=link.exe -lib
+# ADD BASE LIB32 /nologo
+# ADD LIB32 /nologo
+
+!ELSEIF  "\$(CFG)" == "$proj - Win32 DebugMT"
+
+# PROP BASE Use_MFC 0
+# PROP BASE Use_Debug_Libraries 1
+# PROP BASE Output_Dir "DebugMT"
+# PROP BASE Intermediate_Dir "DebugMT"
+# PROP BASE Target_Dir ""
+# PROP Use_MFC 0
+# PROP Use_Debug_Libraries 1
+# PROP Output_Dir "DebugMT"
+# PROP Intermediate_Dir "DebugMT"
+# PROP Target_Dir ""
+# ADD BASE CPP /nologo /W3 /Gm /GX /Z7 /Od /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /YX /FD /GZ  /c
+# ADD CPP /nologo /MTd /Za /W3 /Gm /GX /Z7 /Od  /I "..\\msvc" /I "." /I ".." /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /YX /FD /GZ  /c
 # ADD BASE RSC /l 0x809 /d "_DEBUG"
 # ADD RSC /l 0x809 /d "_DEBUG"
 BSC32=bscmake.exe
@@ -282,6 +334,8 @@ CFG=$proj - Win32 Debug
 !MESSAGE 
 !MESSAGE "$proj - Win32 Release" (based on "Win32 (x86) Console Application")
 !MESSAGE "$proj - Win32 Debug" (based on "Win32 (x86) Console Application")
+!MESSAGE "$proj - Win32 ReleaseMT" (based on "Win32 (x86) Console Application")
+!MESSAGE "$proj - Win32 DebugMT" (based on "Win32 (x86) Console Application")
 !MESSAGE 
 
 # Begin Project
@@ -307,14 +361,14 @@ RSC=rc.exe
 # ADD BASE CPP /nologo /W3 /GX /O2 /Op- /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /c
 # ADD CPP /nologo /ML /Za /W3 /GX /O2 /Op- /I "..\\msvc" /I "." /I ".." /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /FD /c
 # SUBTRACT CPP /YX
-# ADD BASE RSC /l 0xc0a /d "NDEBUG"
-# ADD RSC /l 0xc0a /d "NDEBUG"
+# ADD BASE RSC /l 0x809 /d "NDEBUG"
+# ADD RSC /l 0x809 /d "NDEBUG"
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib  kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /machine:I386
-# ADD LINK32 libgsl.lib libgslcblas.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /machine:I386 /out:"bin\\$proj.exe" /libpath:"Release"
+# ADD LINK32 libgsl.lib libgslcblas.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /machine:I386 /libpath:"Release"
 
 !ELSEIF  "\$(CFG)" == "$proj - Win32 Debug"
 
@@ -332,14 +386,64 @@ LINK32=link.exe
 # ADD BASE CPP /nologo /W3 /Gm /GX /Z7 /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /GZ  /c
 # ADD CPP /nologo /MLd /Za /W3 /Gm /GX /Z7 /Od /I "..\\msvc" /I "." /I ".." /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /FD /GZ  /c
 # SUBTRACT CPP /YX
-# ADD BASE RSC /l 0xc0a /d "_DEBUG"
-# ADD RSC /l 0xc0a /d "_DEBUG"
+# ADD BASE RSC /l 0x809 /d "_DEBUG"
+# ADD RSC /l 0x809 /d "_DEBUG"
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib  kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 libgsl.lib libgslcblas.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /out:"bin\\$proj.exe" /pdbtype:sept /libpath:"Debug"
+# ADD LINK32 libgsl.lib libgslcblas.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept /libpath:"Debug"
+
+!ELSEIF  "\$(CFG)" == "$proj - Win32 ReleaseMT"
+
+# PROP BASE Use_MFC 0
+# PROP BASE Use_Debug_Libraries 0
+# PROP BASE Output_Dir "ReleaseMT"
+# PROP BASE Intermediate_Dir "ReleaseMT"
+# PROP BASE Target_Dir ""
+# PROP Use_MFC 0
+# PROP Use_Debug_Libraries 0
+# PROP Output_Dir "ReleaseMT"
+# PROP Intermediate_Dir "ReleaseMT"
+# PROP Ignore_Export_Lib 0
+# PROP Target_Dir ""
+# ADD BASE CPP /nologo /W3 /GX /O2 /Op- /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /c
+# ADD CPP /nologo /MT /Za /W3 /GX /O2 /Op- /I "..\\msvc" /I "." /I ".." /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /FD /c
+# SUBTRACT CPP /YX
+# ADD BASE RSC /l 0x809 /d "NDEBUG"
+# ADD RSC /l 0x809 /d "NDEBUG"
+BSC32=bscmake.exe
+# ADD BASE BSC32 /nologo
+# ADD BSC32 /nologo
+LINK32=link.exe
+# ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib  kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /machine:I386
+# ADD LINK32 libgsl.lib libgslcblas.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /machine:I386 /libpath:"ReleaseMT"
+
+!ELSEIF  "\$(CFG)" == "$proj - Win32 DebugMT"
+
+# PROP BASE Use_MFC 0
+# PROP BASE Use_Debug_Libraries 1
+# PROP BASE Output_Dir "DebugMT"
+# PROP BASE Intermediate_Dir "DebugMT"
+# PROP BASE Target_Dir ""
+# PROP Use_MFC 0
+# PROP Use_Debug_Libraries 1
+# PROP Output_Dir "DebugMT"
+# PROP Intermediate_Dir "DebugMT"
+# PROP Ignore_Export_Lib 0
+# PROP Target_Dir ""
+# ADD BASE CPP /nologo /W3 /Gm /GX /Z7 /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /GZ  /c
+# ADD CPP /nologo /MTd /Za /W3 /Gm /GX /Z7 /Od /I "..\\msvc" /I "." /I ".." /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /FD /GZ  /c
+# SUBTRACT CPP /YX
+# ADD BASE RSC /l 0x809 /d "_DEBUG"
+# ADD RSC /l 0x809 /d "_DEBUG"
+BSC32=bscmake.exe
+# ADD BASE BSC32 /nologo
+# ADD BSC32 /nologo
+LINK32=link.exe
+# ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib  kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept
+# ADD LINK32 libgsl.lib libgslcblas.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept /libpath:"DebugMT"
 
 !ENDIF 
 EOF
@@ -362,6 +466,8 @@ sub begin_target {
 
 # Name "$proj - Win32 Release"
 # Name "$proj - Win32 Debug"
+# Name "$proj - Win32 ReleaseMT"
+# Name "$proj - Win32 DebugMT"
 EOF
 }
 
@@ -413,6 +519,14 @@ $prop
 !ELSEIF  \"\$(CFG)\" == \"$proj - Win32 Debug\"
 
 # PROP Intermediate_Dir \"Debug\\$name\"
+
+!ELSEIF  \"\$(CFG)\" == \"$proj - Win32 ReleaseMT\"
+
+# PROP Intermediate_Dir \"ReleaseMT\\$name\"
+
+!ELSEIF  \"\$(CFG)\" == \"$proj - Win32 DebugMT\"
+
+# PROP Intermediate_Dir \"DebugMT\\$name\"
 
 !ENDIF 
 
@@ -503,6 +617,8 @@ CFG=$name - Win32 Debug
 !MESSAGE 
 !MESSAGE "$name - Win32 Release" (based on "Win32 (x86) Generic Project")
 !MESSAGE "$name - Win32 Debug" (based on "Win32 (x86) Generic Project")
+!MESSAGE "$name - Win32 ReleaseMT" (based on "Win32 (x86) Generic Project")
+!MESSAGE "$name - Win32 DebugMT" (based on "Win32 (x86) Generic Project")
 !MESSAGE 
 
 # Begin Project
@@ -537,12 +653,40 @@ MTL=midl.exe
 # PROP Intermediate_Dir "Debug"
 # PROP Target_Dir ""
 
+!ELSEIF  "\$(CFG)" == "$name - Win32 ReleaseMT"
+
+# PROP BASE Use_MFC 0
+# PROP BASE Use_Debug_Libraries 0
+# PROP BASE Output_Dir "ReleaseMT"
+# PROP BASE Intermediate_Dir "ReleaseMT"
+# PROP BASE Target_Dir ""
+# PROP Use_MFC 0
+# PROP Use_Debug_Libraries 0
+# PROP Output_Dir "ReleaseMT"
+# PROP Intermediate_Dir "ReleaseMT"
+# PROP Target_Dir ""
+
+!ELSEIF  "\$(CFG)" == "$name - Win32 DebugMT"
+
+# PROP BASE Use_MFC 0
+# PROP BASE Use_Debug_Libraries 1
+# PROP BASE Output_Dir "DebugMT"
+# PROP BASE Intermediate_Dir "DebugMT"
+# PROP BASE Target_Dir ""
+# PROP Use_MFC 0
+# PROP Use_Debug_Libraries 1
+# PROP Output_Dir "DebugMT"
+# PROP Intermediate_Dir "DebugMT"
+# PROP Target_Dir ""
+
 !ENDIF 
 
 # Begin Target
 
 # Name "$name - Win32 Release"
 # Name "$name - Win32 Debug"
+# Name "$name - Win32 ReleaseMT"
+# Name "$name - Win32 DebugMT"
 # End Target
 # End Project
 EOF
@@ -568,18 +712,23 @@ EOF
 } 
 
 sub add_check {
-    my ($test) = @_;
+    my ($dir, $test) = @_;
     return <<"EOF";
-\@echo running $test...
-\@msvc\\bin\\$test.exe >> result.dat
-\@if not errorlevel 1 echo PASS: $test >> result.dat
-\@if errorlevel 1 echo FAIL: $test >> result.dat
+\@echo running $dir $test...
+\@msvc\\$dir\\$test.exe >> result.dat
+\@if not errorlevel 1 echo PASS: $dir\\$test >> result.dat
+\@if errorlevel 1 echo FAIL: $dir\\$test >> result.dat
+EOF
+}
+
+sub missing_checks {
+    return <<'EOF';
+@echo PASS: test_gsl_histogram.sh NOT IMPLEMENTED ON WINDOWS >> result.dat
 EOF
 }
 
 sub end_check {
     return <<'EOF'
-@echo PASS: test_gsl_histogram.sh NOT IMPLEMENTED ON WINDOWS >> result.dat
 @echo Number of failures:
 @FIND /V /C "PASS:" result.dat
 @echo Number of passes:
