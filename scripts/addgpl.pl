@@ -11,12 +11,12 @@ for $file (@ARGV) {
     close(FILE);
 
     next if grep(/copyright/i, @lines);  # skip any existing copyrights
-    next if !grep(/^[a-z]/, @lines) ;  # doesn't contain any code
+    next if !grep(/^\s*[a-z]/, @lines) ;  # doesn't contain any code
     
     print "$file $authors\n" ;
     $header = &notice($authors, $file) ;
-#    rename("$file", "$file.bak") if ! -e "$file.bak" ;
-    open(OUT,">$file.test");
+    rename("$file", "$file.bak") if ! -e "$file.bak" ;
+    open(OUT,">$file");
     print OUT $header, "\n" ;
     print OUT "\n" ;
     print OUT @lines ;
@@ -27,7 +27,7 @@ sub notice {
     my ($authors,$file) = @_ ;
     
     use Text::Wrap;
-    $Text::Wrap::columns=70;
+    $Text::Wrap::columns=78;
 
     my @header = @DATA;
 
