@@ -28,3 +28,9 @@ extern const double  matrix_gen_4_z[];
 
 extern const float   matrix_her_4_c[];
 extern const double  matrix_her_4_z[];
+
+extern const float   matrix_her_4_cpu[];
+extern const double  matrix_her_4_zpu[];
+extern const float   matrix_her_4_cpl[];
+extern const double  matrix_her_4_zpl[];
+

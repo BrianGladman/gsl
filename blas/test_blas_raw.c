@@ -1248,33 +1248,30 @@ int test_hpmv(void)
 
 
   gsl_blas_raw_ccopy(4, vector_4_c, 1, tmp_f, 1);
-  gsl_blas_raw_chpmv(CblasUpper, 4, c_2, matrix_her_4_c, vector_4_c, 1, c_3, tmp_f, 1);
+  gsl_blas_raw_chpmv(CblasUpper, 4, c_2, matrix_her_4_cpu, vector_4_c, 1, c_3, tmp_f, 1);
   s = ( tmp_f[0] != -20.0 || tmp_f[1] !=  9.0 || tmp_f[2] != -35.0 || tmp_f[3] != 51.0 ||
         tmp_f[4] != -25.0 || tmp_f[5] != 38.0 || tmp_f[6] !=  35.0 || tmp_f[7] != 38.0
        );
   gsl_test(s, "gsl_blas_raw_chpmv A");
   status += s;
 
-/*
-  gsl_blas_raw_scopy(4, vector_4_f, 1, tmp_f, 1);
-  gsl_blas_raw_sspmv(CblasLower, 4, 2.0, matrix_gen_4_f, vector_4_f, 1, 3.0, tmp_f, 1);
-  s = ( tmp_f[0] != 20.0 || tmp_f[1] != 7.0 || tmp_f[2] != 7.0 || tmp_f[3] != -25.0 );
-  gsl_test(s, "gsl_blas_raw_sspmv B");
-
-  gsl_blas_raw_scopy(4, vector_4_f, 1, tmp_f, 2);
-  gsl_blas_raw_sspmv(CblasLower, 4, 2.0, matrix_gen_4_f, vector_4_f, 1, 3.0, tmp_f, 2);
-  s = ( tmp_f[0] != 20.0 || tmp_f[2] != 7.0 || tmp_f[4] != 7.0 || tmp_f[6] != -25.0 );
-  gsl_test(s, "gsl_blas_raw_sspmv C");
-
-
-  gsl_blas_raw_dcopy(4, vector_4_d, 1, tmp_d, 1);
-  gsl_blas_raw_dspmv(CblasUpper, 4, 2.0, matrix_gen_4_d, vector_4_d, 1, 3.0, tmp_d, 1);
-  s = ( tmp_d[0] != -4.0 || tmp_d[1] != 26.0 || tmp_d[2] != 14.0 || tmp_d[3] != -17.0 );
-  gsl_test(s, "gsl_blas_raw_dspmv A");
+  gsl_blas_raw_ccopy(4, vector_4_c, 1, tmp_f, 1);
+  gsl_blas_raw_chpmv(CblasLower, 4, c_2, matrix_her_4_cpl, vector_4_c, 1, c_3, tmp_f, 1);
+  s = ( tmp_f[0] != -20.0 || tmp_f[1] !=  9.0 || tmp_f[2] != -35.0 || tmp_f[3] != 51.0 ||
+        tmp_f[4] != -25.0 || tmp_f[5] != 38.0 || tmp_f[6] !=  35.0 || tmp_f[7] != 38.0
+       );
+  gsl_test(s, "gsl_blas_raw_chpmv B");
   status += s;
-*/
 
-/* FIXME */
+
+  gsl_blas_raw_zcopy(4, vector_4_z, 1, tmp_d, 1);
+  gsl_blas_raw_zhpmv(CblasUpper, 4, z_2, matrix_her_4_zpu, vector_4_z, 1, z_3, tmp_d, 1);
+  s = ( tmp_d[0] != -20.0 || tmp_d[1] !=  9.0 || tmp_d[2] != -35.0 || tmp_d[3] != 51.0 ||
+        tmp_d[4] != -25.0 || tmp_d[5] != 38.0 || tmp_d[6] !=  35.0 || tmp_d[7] != 38.0
+       );
+  gsl_test(s, "gsl_blas_raw_zhpmv A");
+  status += s;
+
 
   return status;
 }

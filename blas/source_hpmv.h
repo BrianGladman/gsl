@@ -4,12 +4,12 @@
   const BASE_TYPE conj = -1.0;
   const BASE_TYPE aR = REAL0(alpha);
   const BASE_TYPE aI = IMAG0(alpha);
+  const BASE_TYPE bR = REAL0(beta);
+  const BASE_TYPE bI = IMAG0(beta);
 
   for(i=0; i<N; i++) {
     const BASE_TYPE yR = REAL(Y, incY, i);
     const BASE_TYPE yI = IMAG(Y, incY, i);
-    const BASE_TYPE bR = REAL0(beta);
-    const BASE_TYPE bI = IMAG0(beta);
     REAL(Y, incY, i) = yR * bR - yI * bI;
     IMAG(Y, incY, i) = yR * bI + yI * bR;
   }
@@ -53,8 +53,10 @@
 	tmp2I += apkR * IMAG(X, incX, i) + apkI * REAL(X, incX, i);
         i++;
       }
-      REAL(Y, incY, j) += tmp1R * REAL(Ap, 1, kk + j - 1) - tmp1I * IMAG(Ap, 1, kk + j - 1);
-      IMAG(Y, incY, j) += tmp1R * IMAG(Ap, 1, kk + j - 1) + tmp1I * REAL(Ap, 1, kk + j - 1);
+      REAL(Y, incY, j) += tmp1R * REAL(Ap, 1, kk + j) - tmp1I * IMAG(Ap, 1, kk + j);
+      IMAG(Y, incY, j) += tmp1R * IMAG(Ap, 1, kk + j) + tmp1I * REAL(Ap, 1, kk + j);
+      REAL(Y, incY, j) += aR*tmp2R - aI*tmp2I;
+      IMAG(Y, incY, j) += aI*tmp2R + aR*tmp2I;
       kk += j+1;
     }
   }
