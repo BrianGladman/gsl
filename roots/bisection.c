@@ -19,15 +19,14 @@
 /* roots headers */
 #include "roots.h"
 
-/* Note that when determining if we're finished, this function checks against
-   2 * epsilon, not epsilon. This is because if the interval is twice as wide
-   as we want, we can simply return the midpoint of the interval, and that
-   will be within the desired accuracy. */
+/* Note that this function checks against 2 * epsilon, not epsilon. This is
+   because if the interval is twice as wide as we want, we can return the
+   midpoint of the interval and that will be within the desired accuracy. */
 /* See the documentation for more information about this function. */
 int
 gsl_root_bisection(double * root, double (* f)(double), double * lower_bound,
-                   double * upper_bound, double epsilon,
-                   unsigned int max_iterations)
+                   double * upper_bound, double rel_epsilon,
+                   double abs_epsilon, unsigned int max_iterations)
 {
   /* First, let's make sure all the arguments are okay. */
   /* Are any pointers null? */
@@ -37,18 +36,20 @@ gsl_root_bisection(double * root, double (* f)(double), double * lower_bound,
   /* Did the user tell us to do no iterations? */
   if (max_iterations == 0)
     GSL_ERROR("requested 0 iterations", GSL_EINVAL);
-  /* Did the user ask for more accuracy than we can give or a negative
-     epsilon? */
-  if (epsilon < GSL_ROOT_EPSILON_BUFFER * DBL_EPSILON)
-    GSL_ERROR("requested accuracy unattainable", GSL_EINVAL);
+  /* Did the user try to pawn a negative tolerance off on us? */
+  if (rel_epsilon < 0.0 || abs_epsilon < 0.0)
+    GSL_ERROR("requested a negative tolerance", GSL_ETOL);
+  /* Is the relative error too small? */
+  if (rel_epsilon < DBL_EPSILON * GSL_ROOT_EPSILON_BUFFER)
+    GSL_ERROR("relative error too small", GSL_ETOL);
   /* Did the user give a lower bound that is greater than the upper bound? */
   if (*lower_bound >= *upper_bound)
     GSL_ERROR("lower bound not less than upper bound", GSL_EINVAL);
   /* Did the user give an interval which might not contain a root? */
   { 
     double fl, fu;
-    _GSL_ROOT_FPCALL(f, *lower_bound, fl);
-    _GSL_ROOT_FPCALL(f, *upper_bound, fu);
+    _BARF_FPCALL(f, *lower_bound, fl);
+    _BARF_FPCALL(f, *upper_bound, fu);
     if (fl * fu > 0.0)
       GSL_ERROR("interval not guaranteed to contain a root", GSL_EINVAL);
   }
@@ -57,20 +58,22 @@ gsl_root_bisection(double * root, double (* f)(double), double * lower_bound,
   {
     double fl, fu;
 
-    _GSL_ROOT_FPCALL(f, *lower_bound, fl);
+    _BARF_FPCALL(f, *lower_bound, fl);
     if (fl == 0.0) {
       *root = *lower_bound;
       return GSL_SUCCESS;
     }
 
-    _GSL_ROOT_FPCALL(f, *upper_bound, fu);
+    _BARF_FPCALL(f, *upper_bound, fu);
     if (fu == 0.0) {
       *root = *upper_bound;
       return GSL_SUCCESS;
     }
 
-    if (_GSL_ROOT_ERR(*lower_bound, *upper_bound) <= 2.0 * epsilon) {
-      *root = (*upper_bound + *lower_bound) / 2.0;
+    _BARF_TOLS(*lower_bound, *upper_bound, 2 * rel_epsilon, 2 * abs_epsilon);
+    if (_WITHIN_TOL(*lower_bound, *upper_bound, 2 * rel_epsilon,
+                    2 * abs_epsilon)) {
+      *root = (*lower_bound + *upper_bound) / 2.0;
       return GSL_SUCCESS;
     }
   }
@@ -81,13 +84,13 @@ gsl_root_bisection(double * root, double (* f)(double), double * lower_bound,
     unsigned int iterations;
   
     /* Evaluate the function under search at lower_bound and upper_bound. */
-    _GSL_ROOT_FPCALL(f, *lower_bound, fl);
-    _GSL_ROOT_FPCALL(f, *upper_bound, fu);
+    _BARF_FPCALL(f, *lower_bound, fl);
+    _BARF_FPCALL(f, *upper_bound, fu);
   
     for (iterations = 0; iterations < max_iterations; iterations++) {
       /* Chop the interval in half. */
       midpoint = (*upper_bound + *lower_bound) / 2.0;
-      _GSL_ROOT_FPCALL(f, midpoint, fm);
+      _BARF_FPCALL(f, midpoint, fm);
       
       /* If the midpoint is the root exactly, we're done. */
       if (fm == 0.0) {
@@ -110,8 +113,10 @@ gsl_root_bisection(double * root, double (* f)(double), double * lower_bound,
       }
       
       /* Now, let's check if we're finished. */
-      if (_GSL_ROOT_ERR(*lower_bound, *upper_bound) < 2.0 * epsilon) {
-        *root = (*upper_bound + *lower_bound) / 2.0;
+      _BARF_TOLS(*lower_bound, *upper_bound, 2 * rel_epsilon, 2 * abs_epsilon);
+      if (_WITHIN_TOL(*lower_bound, *upper_bound, 2 * rel_epsilon,
+                      2 * abs_epsilon)) {
+        *root = (*lower_bound + *upper_bound) / 2.0;
         return GSL_SUCCESS;
       }
     }

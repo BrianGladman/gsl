@@ -17,6 +17,7 @@
 #define GSL_ETIMEOUT  11  /* exceeded the allowed number of iterations or took
                              too much time doing something */
 #define GSL_EZERODIV  12  /* tried to divide by zero */
+#define GSL_ETOL      13  /* user specified an invalid tolerance */
 
 /* just to make things slightly clearer */
 enum {GSL_SUCCESS = 0, GSL_FAILURE = -1};

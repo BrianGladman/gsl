@@ -13,15 +13,22 @@ int main (void) {
   struct { 
     int number; 
     const char * name; 
-  } errors[MAX_ERRS] = {  CHECK(GSL_EDOM),
-			  CHECK(GSL_ERANGE),
-			  CHECK(GSL_EFAULT),
-			  CHECK(GSL_EINVAL),
-			  CHECK(GSL_EFAILED),
-			  CHECK(GSL_EFACTOR),
-			  CHECK(GSL_ESANITY),
-			  CHECK(GSL_ENOMEM),
-			  {-1, "end"} } ;
+  } errors[MAX_ERRS] = {
+    CHECK(GSL_EDOM),
+    CHECK(GSL_ERANGE),
+    CHECK(GSL_EFAULT),
+    CHECK(GSL_EINVAL),
+    CHECK(GSL_EFAILED),
+    CHECK(GSL_EFACTOR),
+    CHECK(GSL_ESANITY),
+    CHECK(GSL_ENOMEM),
+    CHECK(GSL_EBADFUNC),
+    CHECK(GSL_ERUNAWAY),
+    CHECK(GSL_ETIMEOUT),
+    CHECK(GSL_EZERODIV),
+    CHECK(GSL_ETOL),
+    {-1, "end"}
+  } ;
   
   int errs, i, j ;
   int failed = 0 ;

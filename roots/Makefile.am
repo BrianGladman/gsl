@@ -1,5 +1,5 @@
-# $Id$
 # -*-makefile-*-
+# $Id$
 
 noinst_LIBRARIES = libroots.a 
 
