@@ -36,8 +36,8 @@ test_dht_exact(void)
   int stat = 0;
   double f_in[3] = { 1.0, 2.0, 3.0 };
   double f_out[3];
-  gsl_dht_transform * t = gsl_dht_transform_new(3, 1.0, 1.0);
-  gsl_dht_transform_apply(t, f_in, f_out);
+  gsl_dht * t = gsl_dht_new(3, 1.0, 1.0);
+  gsl_dht_apply(t, f_in, f_out);
 
   /* Check values. */
   if(fabs( f_out[0]-( 0.375254649407520))/0.375254649407520 > 1.0e-14) stat++;
@@ -49,7 +49,7 @@ test_dht_exact(void)
    * We have to adjust the normalization
    * so we can use the same precalculated transform.
    */
-  gsl_dht_transform_apply(t, f_out, f_in);
+  gsl_dht_apply(t, f_out, f_in);
   f_in[0] *= 13.323691936314223*13.323691936314223;  /* jzero[1,4]^2 */
   f_in[1] *= 13.323691936314223*13.323691936314223;
   f_in[2] *= 13.323691936314223*13.323691936314223;
@@ -66,7 +66,7 @@ test_dht_exact(void)
   if(fabs( f_in[1]-2.0)/2.0 > 2.0e-05) stat++;
   if(fabs( f_in[2]-3.0)/3.0 > 2.0e-05) stat++;
 
-  gsl_dht_transform_free(t);
+  gsl_dht_free(t);
 
   return stat;
 }
@@ -83,14 +83,14 @@ test_dht_simple(void)
   int n;
   double f_in[128];
   double f_out[128];
-  gsl_dht_transform * t = gsl_dht_transform_new(128, 0.0, 100.0);
+  gsl_dht * t = gsl_dht_new(128, 0.0, 100.0);
 
   for(n=0; n<128; n++) {
-    const double x = gsl_dht_transform_x_sample(t, n);
+    const double x = gsl_dht_x_sample(t, n);
     f_in[n] = 1.0/(1.0+x*x);
   }
 
-  gsl_dht_transform_apply(t, f_in, f_out);
+  gsl_dht_apply(t, f_in, f_out);
 
   /* This is a difficult transform to calculate this way,
    * since it does not satisfy the boundary condition and
@@ -104,7 +104,7 @@ test_dht_simple(void)
   if(fabs(f_out[35]-0.352)/0.352 > 0.02) stat++;
   if(fabs(f_out[100]-0.0237)/0.0237 > 0.02) stat++;
 
-  gsl_dht_transform_free(t);
+  gsl_dht_free(t);
 
   return stat;
 }
@@ -120,14 +120,14 @@ test_dht_exp1(void)
   int n;
   double f_in[128];
   double f_out[128];
-  gsl_dht_transform * t = gsl_dht_transform_new(128, 1.0, 20.0);
+  gsl_dht * t = gsl_dht_new(128, 1.0, 20.0);
 
   for(n=0; n<128; n++) {
-    const double x = gsl_dht_transform_x_sample(t, n);
+    const double x = gsl_dht_x_sample(t, n);
     f_in[n] = exp(-x);
   }
 
-  gsl_dht_transform_apply(t, f_in, f_out);
+  gsl_dht_apply(t, f_in, f_out);
 
   /* Spot check.
    * Note that the systematic errors in the calculation
@@ -140,7 +140,7 @@ test_dht_exp1(void)
   if(fabs(f_out[35]-0.0289)/0.0289 > 0.02) stat++;
   if(fabs(f_out[100]-0.00221)/0.00211 > 0.02) stat++;
 
-  gsl_dht_transform_free(t);
+  gsl_dht_free(t);
 
   return stat;
 }
@@ -156,14 +156,14 @@ test_dht_poly1(void)
   int n;
   double f_in[128];
   double f_out[128];
-  gsl_dht_transform * t = gsl_dht_transform_new(128, 1.0, 1.0);
+  gsl_dht * t = gsl_dht_new(128, 1.0, 1.0);
 
   for(n=0; n<128; n++) {
-    const double x = gsl_dht_transform_x_sample(t, n);
+    const double x = gsl_dht_x_sample(t, n);
     f_in[n] = x * (1.0 - x*x);
   }
 
-  gsl_dht_transform_apply(t, f_in, f_out);
+  gsl_dht_apply(t, f_in, f_out);
 
   /* Spot check. This function satisfies the boundary condition,
    * so the accuracy should be ok.
@@ -174,7 +174,7 @@ test_dht_poly1(void)
   if(fabs(f_out[35]-(-4.04e-07))/4.04e-07       > 1.0e-03) stat++;
   if(fabs(f_out[100]-1.0e-08)/1.0e-08	        > 0.25)    stat++;
 
-  gsl_dht_transform_free(t);
+  gsl_dht_free(t);
 
   return stat;
 }

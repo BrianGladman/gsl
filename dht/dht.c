@@ -1,4 +1,4 @@
-/* dht/dht_transform.c
+/* dht/dht.c
  * 
  * Copyright (C) 1996, 1997, 1998, 1999, 2000 Gerard Jungman
  * 
@@ -28,38 +28,58 @@
 #include "gsl_dht.h"
 
 
-
-/* Handle internal allocation for a given length. */
-static int
-dht_transform_allocator(gsl_dht_transform * t, size_t size)
+gsl_dht *
+gsl_dht_alloc (size_t size)
 {
+  gsl_dht * t;
+
+  if(size == 0) {
+    GSL_ERROR_VAL("size == 0", GSL_EDOM, 0);
+  }
+
+  t = (gsl_dht *)malloc(sizeof(gsl_dht));
+
+  if(t == 0) {
+    GSL_ERROR_VAL("out of memory", GSL_ENOMEM, 0);
+  }
+
+  t->size = size;
+
+  t->xmax = -1.0; /* Make it clear that this needs to be calculated. */
+  t->nu   = -1.0; 
+
   t->j = (double *)malloc((size+2)*sizeof(double));
+
   if(t->j == 0) {
-    GSL_ERROR("could not allocate memory for j", GSL_ENOMEM);
+    free(t);
+    GSL_ERROR_VAL("could not allocate memory for j", GSL_ENOMEM, 0);
   }
 
   t->Jjj = (double *)malloc(size*(size+1)/2 * sizeof(double));
+
   if(t->Jjj == 0) {
     free(t->j);
-    GSL_ERROR("could not allocate memory for Jjj", GSL_ENOMEM);
+    free(t);
+    GSL_ERROR_VAL("could not allocate memory for Jjj", GSL_ENOMEM, 0);
   }
 
   t->J2 = (double *)malloc((size+1)*sizeof(double));
+
   if(t->J2 == 0) {
     free(t->Jjj);
     free(t->j);
-    GSL_ERROR("could not allocate memory for J2", GSL_ENOMEM);
+    free(t);
+    GSL_ERROR_VAL("could not allocate memory for J2", GSL_ENOMEM, 0);
   }
 
-  return GSL_SUCCESS;
+  return t;
 }
-
 
 /* Handle internal calculation of Bessel zeros. */
 static int
-dht_bessel_zeros(gsl_dht_transform * t)
+dht_bessel_zeros(gsl_dht * t)
 {
-  size_t s;
+  int s;
   gsl_sf_result z;
   int stat_z = 0;
   t->j[0] = 0.0;
@@ -75,49 +95,26 @@ dht_bessel_zeros(gsl_dht_transform * t)
   }
 }
 
-
-
-gsl_dht_transform *
-gsl_dht_transform_new(size_t size, double nu, double xmax)
+gsl_dht *
+gsl_dht_new (size_t size, double nu, double xmax)
 {
-  if(size == 0) {
-    GSL_ERROR_VAL("gsl_dht_transform_new: size == 0", GSL_EDOM, 0);
-  }
-  else if(nu < 0.0) {
-    GSL_ERROR_VAL("gsl_dht_transform_new: nu < 0.0", GSL_EDOM, 0);
-  }
-  else if(xmax <= 0.0) {
-    GSL_ERROR_VAL("gsl_dht_transform_new: xmax <= 0.0", GSL_EDOM, 0);
-  }
-  else {
-    gsl_dht_transform * t = (gsl_dht_transform *)malloc(sizeof(gsl_dht_transform));
-    if(t == 0) {
-      GSL_ERROR_VAL("gsl_dht_transform_new: out of memory", GSL_ENOMEM, 0);
-    }
-    else {
-      t->nu   = -1.0; /* Make it clear that this needs to be calculated. */
-      t->size = size;
-      if(dht_transform_allocator(t, size) != GSL_SUCCESS) {
-        free(t);
-	GSL_ERROR_VAL("gsl_dht_transform_new: alloc failed", GSL_ENOMEM, 0);
-      }
-      else {
-        if(gsl_dht_transform_recalc(t, nu, xmax) != GSL_SUCCESS) {
-	  free(t->J2);
-	  free(t->Jjj);
-	  free(t->j);
-          free(t);
-          GSL_ERROR_VAL("gsl_dht_transform_new: recalc failed", GSL_EFAILED, 0);
-        }
-      }
-      return t;
-    }
-  }
+  int status;
+
+  gsl_dht * dht = gsl_dht_alloc (size);
+
+  if (dht == 0)
+    return 0;
+
+  status = gsl_dht_init(dht, nu, xmax);
+  
+  if (status)
+    return 0;
+
+  return dht;
 }
 
-
 int
-gsl_dht_transform_recalc(gsl_dht_transform * t, double nu, double xmax)
+gsl_dht_init(gsl_dht * t, double nu, double xmax)
 {
   if(xmax <= 0.0) {
     GSL_ERROR ("xmax is not positive", GSL_EDOM);
@@ -169,31 +166,29 @@ gsl_dht_transform_recalc(gsl_dht_transform * t, double nu, double xmax)
 }
 
 
-double gsl_dht_transform_x_sample(const gsl_dht_transform * t, int n)
+double gsl_dht_x_sample(const gsl_dht * t, int n)
 {
   return t->j[n+1]/t->j[t->size+1] * t->xmax;
 }
 
 
-double gsl_dht_transform_k_sample(const gsl_dht_transform * t, int n)
+double gsl_dht_k_sample(const gsl_dht * t, int n)
 {
   return t->j[n+1] / t->xmax;
 }
 
 
-void gsl_dht_transform_free(gsl_dht_transform * t)
+void gsl_dht_free(gsl_dht * t)
 {
-  if(t != 0) {
-    free(t->J2);
-    free(t->Jjj);
-    free(t->j);
-    free(t);
-  }
+  free(t->J2);
+  free(t->Jjj);
+  free(t->j);
+  free(t);
 }
 
 
 int
-gsl_dht_transform_apply(const gsl_dht_transform * t, double * f_in, double * f_out)
+gsl_dht_apply(const gsl_dht * t, double * f_in, double * f_out)
 {
   const double jN = t->j[t->size + 1];
   const double r  = t->xmax / jN;
