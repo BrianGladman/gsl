@@ -243,3 +243,7 @@ with an error of @math{O(10^@{-7@})}, which corresponds to single
 precision accuracy (about 1 part in @math{10^7}). Continuing the
 iterations further does not decrease the error because all the
 subsequent results are rounded to the same value.
+
+David Goldberg: What Every Computer Scientist Should Know About
+Floating-Point Arithmetic. Vol. 23, No. 1 (March 1991) pages 5-48
+
