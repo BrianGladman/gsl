@@ -28,7 +28,9 @@
 #if defined(HAVE_IRIX_IEEE_INTERFACE)
 /* don't test denormals on IRIX */
 #else
+#ifdef HAVE_IEEE_DENORMALS
 #define TEST_DENORMAL 1
+#endif
 #endif
 
 int

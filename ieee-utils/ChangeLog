@@ -1,3 +1,8 @@
+Sat May 11 22:30:43 2002  Brian Gough  <bjg@network-theory.co.uk>
+
+	* test.c (TEST_DENORMAL): test denormals only when available, as
+ 	tested in configure script
+
 Mon Sep 10 14:23:52 2001  Brian Gough  <bjg@network-theory.co.uk>
 
 	* fp-netbsd.c fp-openbsd.c (gsl_ieee_set_mode): tried to correct
