@@ -846,20 +846,122 @@ from the generator.
 
 @deftypefn Random double gsl_ran_gaussian (const gsl_rng * @var{r})
 @cindex Gaussian random numbers
-@code{gsl_ran_gaussian} returns a gaussian random number, with mean zero
-and variance one. The probability distribution for gaussian random
-numbers is,
+This function returns a gaussian random number, with mean zero and
+variance one. The probability distribution for gaussian random numbers
+is,
 @c
 @equation
-p(x) dx = @{1 \over \sqrt@{2 \pi@}@} \exp (-x^2/2) dx
+p(x) dx = @{1 \over \sqrt@{2 \pi@}@} \exp (-x^2 / 2) dx
 @end equation
 @noindent
 for @math{x} in the range @math{-\infty} to @math{+\infty}.
 @end deftypefn
 
-@deftypefn Random int gsl_ran_poisson (const gsl_rng * @var{r}, double @var{mu})
+@deftypefn Random double gsl_ran_cauchy (const gsl_rng * @var{r}, double @var{mu})
+@cindex Cauchy random numbers
+This function returns a random number from the Cauchy distribution with
+width parameter @var{mu}. The probability distribution for Cauchy
+random numbers is,
+@c
+@equation
+p(x) dx = @{1 \over \pi (1 + (x/\mu)^2) @} dx
+@end equation
+@noindent
+for @math{x} in the range @math{-\infty} to @math{+\infty}.  The Cauchy
+distribution is sometimes also known as the Lorentz distribution or
+Breit-Wigner distribution.
+@end deftypefn
+
+@deftypefn Random double gsl_ran_exponential (const gsl_rng * @var{r}, double @var{mu})
+@cindex Exponential random numbers
+This function returns a random number from the exponential distribution
+with mean @var{mu}.
+@c
+@equation
+p(x) dx = @{1 \over \mu@} \exp(-x/\mu) dx
+@end equation
+@noindent
+for @math{x \ge 0}. 
+@end deftypefn
+
+@deftypefn Random double gsl_ran_chisq (const gsl_rng * @var{r}, double @var{nu})
+@cindex Chi-squared random numbers
+This function returns a random number from the chi-squared distribution
+with @var{nu} degrees of freedom.
+@c
+@equation
+p(x) dx = @{1 \over \Gamma(\nu/2) @} x^@{\nu/2 - 1@} \exp(-x) dx
+@end equation
+@noindent
+for @math{x \ge 0}. 
+@end deftypefn
+
+@deftypefn Random double gsl_ran_erlang (const gsl_rng * @var{r}, double @var{a}, double @var{n})
+@cindex Erlang random numbers
+This function returns a random number from the Erlang distribution.
+@c
+@equation
+p(x) dx = @{x^@{n-1@} \over (n-1)! a^n @} \exp (-x/a)  dx
+@end equation
+@noindent
+for @math{x \ge 0}. 
+@end deftypefn
+
+@deftypefn Random double gsl_ran_fdist (const gsl_rng * @var{r}, double @var{nu1}, double @var{nu2})
+@cindex F-distribution random numbers
+This function returns a random number from the F-distribution with degrees of freedom @var{nu1} and @var{nu2}.
+@c
+@equation
+p(x) dx = 
+   @{ \Gamma((\nu_1 + \nu_2)/2)
+        \over \Gamma(\nu_1/2) \Gamma(\nu_2/2) @} 
+   \nu_1^@{\nu_1/2@} \nu_2^@{\nu_2/2@} 
+   x^@{\nu_1/2 - 1@} (\nu_2 + \nu_1 x)^@{-\nu_1/2 -\nu_2/2@}
+@end equation
+@noindent
+for @math{x \ge 0}. 
+@end deftypefn
+
+@deftypefn Random double gsl_ran_flat (const gsl_rng * @var{r}, double @var{a}, double @var{b})
+@cindex flat distribution random numbers
+This function returns a random number from the flat (uniform)
+distribution from @var{a} to @var{b}.
+@c
+@equation
+p(x) dx = 1/(b-a)
+@end equation
+@noindent
+if @math{a \le x < b} and 0 otherwise.
+@end deftypefn
+
+
+@deftypefn Random double gsl_ran_gamma (const gsl_rng * @var{r}, double @var{a})
+@cindex Gamma distribution random numbers
+This function returns a random number from the gamma
+distribution.  The distribution function is
+@c
+@equation
+p(x) dx = @{1 \over \Gamma(a)@} x^@{a-1@} e^@{-x@} dx
+@end equation
+If @math{X} and @math{Y} are independent gamma-distributed random
+variables of order @math{a} and @math{b}, then @math{X+Y} has a gamma
+distribution of order @math{a+b}.
+@end deftypefn
+
+@deftypefn Random double gsl_ran_beta (const gsl_rng * @var{r}, double @var{a}, double @var{b})
+@cindex Beta distribution random numbers
+This function returns a random number from the beta
+distribution.  The distribution function is
+@c
+@equation
+p(x) dx = @{\Gamma(a+b) \over \Gamma(a) \Gamma(b)@} x^@{a-1@} (1-x)^@{b-1@} dx
+@end equation
+@end deftypefn
+
+
+@deftypefn Random unsigned int gsl_ran_poisson (const gsl_rng * @var{r}, double @var{mu})
 @cindex Poisson random numbers
-@code{gsl_ran_poisson} returns a poisson--distributed random integer,
+This function returns a random integer from the poisson distribution
 with mean @var{mu}. The probability distribution for poisson random
 numbers is,
 @c
@@ -870,35 +972,26 @@ p(n) = @{\mu^n \over n!@} \exp(-\mu)
 for @math{n \ge 0}.
 @end deftypefn
 
+@deftypefn Random unsigned int gsl_ran_binomial (const gsl_rng * @var{r}, double @var{p}, unsigned int @var{t})
+@cindex Poisson random numbers
+This function returns a random integer from the binomial distribution,
+the number of successes in @var{t} independent trials with probability
+@var{p}. The probability distribution for binomial random numbers is,
+@c
+@equation
+p(n) = @{t! \over n! (t-n)! @} p^n (1-p)^@{t-n@}
+@end equation
+@noindent
+for @math{0 \le n \le t}.
+@end deftypefn
+
+
 @deftypefn Random void gsl_ran_poisson_array (const gsl_rng * @var{r}, double @var{mu}, int @var{N}, int *@var{p})
 @code{gsl_ran_poisson_array} places an array of @var{N}
 poisson--distributed random numbers with mean @var{mu} into the array
 @var{p}.
 @end deftypefn
 
-@deftypefn Random double gsl_ran_exponential (const gsl_rng * @var{r}, double @var{mu})
-@cindex Exponential random numbers
-@code{gsl_ran_exponential} returns a exponential--distributed random
-number, with mean @var{mu}.  
-@c
-@equation
-p(x) dx = @{1 \over \mu@} \exp(-x/\mu) dx
-@end equation
-@noindent
-for @math{x \ge 0}.
-
-This is calculated with @math{-mu*log(x)}.
-@end deftypefn
-
-@deftypefn Random int gsl_ran_gamma (const gsl_rng * @var{r}, double @var{a})
-@cindex Gamma distribution random numbers
-@code{gsl_ran_gamma} returns a gamma-distributed random number.  The
-distribution function is
-@c
-@equation
-F(x) = @{ @{1@} \over @{ \Gamma(a)@} \int_0^x t^@{a-1@} e^@{-t@} dt @}
-@end equation
-@end deftypefn
 
 @deftypefn Random {int *} gsl_ran_shuffle (int N, int *x)
 @code{gsl_ran_shuffle} takes an array of N integers x[0..N-1] and 
