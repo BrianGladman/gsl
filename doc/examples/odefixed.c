@@ -13,10 +13,10 @@ main (void)
   double t = 0.0, t1 = 100.0;
   double h = 1e-2;
   double y[2] = { 1.0, 0.0 }, y_err[2];
-  double dfdy[4], dydt_in[2], dydt_out[2];
+  double dydt_in[2], dydt_out[2];
 
-  /* initialise dydt_in */
-  GSL_ODEIV_JA_EVAL(&sys, t, y, dfdy, dydt_in);
+  /* initialise dydt_in from system parameters */
+  GSL_ODEIV_FN_EVAL(&sys, t, y, dydt_in);
 
   while (t < t1)
     {

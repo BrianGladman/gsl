@@ -139,7 +139,7 @@ The following algorithms are available,
 @deffn {Step Type} gsl_odeiv_step_rk2
 @cindex RK2, Runge-Kutta Method
 @cindex Runge-Kutta methods, ordinary differential equations
-Embedded 2nd order Runge-Kutta with 3rd order error estimate.
+Embedded Runge-Kutta (2, 3) method.
 @end deffn
 
 @deffn {Step Type} gsl_odeiv_step_rk4
@@ -150,22 +150,20 @@ Embedded 2nd order Runge-Kutta with 3rd order error estimate.
 @deffn {Step Type} gsl_odeiv_step_rkf45
 @cindex Fehlberg method, differential equations
 @cindex RKF45, Runge-Kutta-Fehlberg method
-Embedded 4th order Runge-Kutta-Fehlberg method with 5th order error
-estimate.  This method is a good general-purpose integrator.
+Embedded Runge-Kutta-Fehlberg (4, 5) method.  This method is a good
+general-purpose integrator.
 @end deffn
 
 @deffn {Step Type} gsl_odeiv_step_rkck 
 @cindex Runge-Kutta Cash-Karp method
 @cindex Cash-Karp, Runge-Kutta method
-Embedded 4th order Runge-Kutta Cash-Karp method with 5th order error
-estimate.
+Embedded Runge-Kutta Cash-Karp (4, 5) method.
 @end deffn
 
 @deffn {Step Type} gsl_odeiv_step_rk8pd  
 @cindex Runge-Kutta Prince-Dormand method
 @cindex Prince-Dormand, Runge-Kutta method
-Embedded 8th order Runge-Kutta Prince-Dormand method with 9th order
-error estimate.
+Embedded Runge-Kutta Prince-Dormand (8,9) method.
 @end deffn
 
 @deffn {Step Type} gsl_odeiv_step_rk2imp  
@@ -489,10 +487,10 @@ fourth-order Runge-Kutta stepping function with a fixed stepsize of
 @verbatiminclude examples/odefixed.c
 @end example
 @noindent
-The derivatives and jacobian must be initialised for the starting point
-@math{t=0} before the first step is taken.  Subsequent steps use the
-output derivatives @var{dydt_out} as inputs to the next step by copying
-their values into @var{dydt_in}.
+The derivatives must be initialised for the starting point @math{t=0}
+before the first step is taken.  Subsequent steps use the output
+derivatives @var{dydt_out} as inputs to the next step by copying their
+values into @var{dydt_in}.
 
 @node ODE References and Further Reading
 @section References and Further Reading
