@@ -35,7 +35,7 @@ libgsl.a: err/libgslerr.a err/libgsltest.a sys/libgslsys.a ieee-utils/libgslieee
 	$(AR) q libgsl.a ieee-utils/endian.o ieee-utils/print.o ieee-utils/standardize.o ieee-utils/make_rep.o ieee-utils/env.o ieee-utils/fp.o ieee-utils/read.o
 	$(AR) q libgsl.a vector/init.o vector/file.o vector/vector.o
 	$(AR) q libgsl.a matrix/init.o matrix/matrix.o matrix/file.o matrix/rowcol.o
-	$(AR) q libgsl.a linalg/linalg_simple.o
+	$(AR) q libgsl.a linalg/eigen_sort.o linalg/linalg_simple.o linalg/multiply.o
 	$(AR) q libgsl.a blas/blas.o
 	$(AR) q libgsl.a blas/blas_raw_native.o blas/blas_raw_native_cm.o
 	$(AR) q libgsl.a blas/blas_raw_cblas.o blas/blas_raw_cblas_cm.o
