@@ -1,3 +1,7 @@
+Wed Jul 18 12:57:55 2001  Brian Gough  <bjg@network-theory.co.uk>
+
+	* landau.c: added Landau distribution from Dave Morrison
+
 Sat Jun 23 12:30:38 2001  Brian Gough  <bjg@network-theory.co.uk>
 
 	* gausstail.c (gsl_ran_gaussian_tail): allow negative values for

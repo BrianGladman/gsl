@@ -72,6 +72,7 @@ main (int argc, char *argv[])
 "  gumbel2\n"
 "  hypergeometric\n"
 "  laplace\n"
+"  landau\n"
 "  levy\n"
 "  levy-skew\n"
 "  logarithmic\n"
@@ -282,6 +283,11 @@ main (int argc, char *argv[])
       ARGS(1, "a = scale parameter");
       DBL_ARG(a) ;
       OUTPUT(gsl_ran_laplace (r, a));
+    }
+  else if (NAME("landau"))
+    {
+      ARGS(0, "no arguments required");
+      OUTPUT(gsl_ran_landau (r));
     }
   else if (NAME("levy"))
     {

@@ -85,6 +85,7 @@ void gsl_ran_bivariate_gaussian (const gsl_rng * r, double sigma_x, double sigma
 double gsl_ran_bivariate_gaussian_pdf (const double x, const double y, const double sigma_x, const double sigma_y, const double rho);
 
 double gsl_ran_landau (const gsl_rng * r);
+double gsl_ran_landau_pdf (const double x);
 
 unsigned int gsl_ran_geometric (const gsl_rng * r, const double p);
 double gsl_ran_geometric_pdf (const unsigned int k, const double p);

@@ -210,6 +210,13 @@ p(x)=exp(-(abs(x/a))**b)/2/a/gamma(1.0+1.0/b)
 plot a=1.0, b=2.5, p(x) title "$a=1, b=2.5$", \
 	a=1.0, b=0.5, p(x) title "$a=2, b=0.5$"
 
+set xrange [-5:10]
+set yrange [0:0.2]
+set ytics 0.1
+set output "rand-landau.tex"
+set title "Landau Distribution"
+plot 'landau.dat' notitle w lines
+
 set xrange [-5:5]
 set yrange [0:0.45]
 set ytics 0.1

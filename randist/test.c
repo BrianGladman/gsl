@@ -122,6 +122,8 @@ double test_hypergeometric5 (void);
 double test_hypergeometric5_pdf (unsigned int x);
 double test_hypergeometric6 (void);
 double test_hypergeometric6_pdf (unsigned int x);
+double test_landau (void);
+double test_landau_pdf (double x);
 double test_levy1 (void);
 double test_levy1_pdf (double x);
 double test_levy2 (void);
@@ -244,6 +246,7 @@ main (void)
 
   testPDF (FUNC2(gumbel1));
   testPDF (FUNC2(gumbel2));
+  testPDF (FUNC2(landau));
   testPDF (FUNC2(levy1));
   testPDF (FUNC2(levy2));
   testPDF (FUNC2(levy1a));
@@ -1190,6 +1193,18 @@ double
 test_gumbel2_pdf (double x)
 {
   return gsl_ran_gumbel2_pdf (x, 3.12, 4.56);
+}
+
+double
+test_landau (void)
+{
+  return gsl_ran_landau (r_global);
+}
+
+double
+test_landau_pdf (double x)
+{
+  return gsl_ran_landau_pdf (x);
 }
 
 double

@@ -1,4 +1,6 @@
 /* randist/landau.c
+ *
+ * Copyright (C) 2001 David Morrison
  * 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,9 +17,18 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-/* Adapted from the CERN library routines DENLAN and RANLAN, described
- * in http://consult.cern.ch/shortwrups/g110/top.html.  Original
- * author: K.S. K\"olbig.
+/* Adapted from the CERN library routines DENLAN, RANLAN, and DISLAN
+ * as described in http://consult.cern.ch/shortwrups/g110/top.html.
+ * Original author: K.S. K\"olbig.
+ *
+ * The distribution is given by the complex path integral,
+ *
+ *  p(x) = (1/(2 pi i)) \int_{c-i\inf}^{c+i\inf} ds exp(s log(s) + x s) 
+ *
+ * which can be converted into a real integral over [0,+\inf]
+ *
+ *  p(x) = (1/pi) \int_0^\inf dt \exp(-t log(t) - x t) sin(pi t)
+ *
  */
 
 #include <config.h>
@@ -26,10 +37,285 @@
 #include <gsl/gsl_randist.h>
 
 double
+gsl_ran_landau_pdf(const double x)
+{
+  static double P1[5] =
+    {
+      0.4259894875E0, -0.1249762550E0, 0.3984243700E-1,
+      -0.6298287635E-2, 0.1511162253E-2
+    };
+  static double P2[5] =
+    {
+      0.1788541609E0, 0.1173957403E0, 0.1488850518E-1,
+      -0.1394989411E-2, 0.1283617211E-3
+    };
+  static double P3[5] =
+    {
+      0.1788544503E0, 0.9359161662E-1, 0.6325387654E-2,
+      0.6611667319E-4, -0.2031049101E-5
+    };
+  static double P4[5] =
+    {
+      0.9874054407E0, 0.1186723273E3, 0.8492794360E3,
+      -0.7437792444E3, 0.4270262186E3
+    };
+  static double P5[5] =
+    {
+      0.1003675074E1, 0.1675702434E3, 0.4789711289E4,
+      0.2121786767E5, -0.2232494910E5
+    };
+  static double P6[5] =
+    {
+      0.1000827619E1, 0.6649143136E3, 0.6297292665E5,
+      0.4755546998E6, -0.5743609109E7
+    };
+
+  static double Q1[5] =
+    {
+      1.0, -0.3388260629E0, 0.9594393323E-1,
+      -0.1608042283E-1, 0.3778942063E-2
+    };
+  static double Q2[5] =
+    {
+      1.0, 0.7428795082E0, 0.3153932961E0,
+      0.6694219548E-1, 0.8790609714E-2
+    };
+  static double Q3[5] =
+    {
+      1.0, 0.6097809921E0, 0.2560616665E0,
+      0.4746722384E-1, 0.6957301675E-2
+    };
+  static double Q4[5] =
+    {
+      1.0, 0.1068615961E3, 0.3376496214E3,
+      0.2016712389E4, 0.1597063511E4
+    };
+  static double Q5[5] =
+    {
+      1.0, 0.1569424537E3, 0.3745310488E4,
+      0.9834698876E4, 0.6692428357E5
+    };
+  static double Q6[5] =
+    {
+      1.0, 0.6514101098E3, 0.5697473333E5,
+      0.1659174725E6, -0.2815759939E7
+    };
+
+  static double A1[3] =
+    {
+      0.4166666667E-1, -0.1996527778E-1, 0.2709538966E-1
+    };
+  static double A2[2] =
+    {
+      -0.1845568670E1, -0.4284640743E1
+    };
+
+  double U, V, DENLAN;
+
+  V = x;
+  if (V < -5.5)
+    {
+      U = exp(V + 1.0);
+      DENLAN = 0.3989422803 * (exp( -1 / U) / sqrt(U)) *
+	(1 + (A1[0] + (A1[1] + A1[2] * U) * U) * U);
+    }
+  else if (V < -1)
+    {
+      U = exp( -V - 1);
+      DENLAN = exp( -U) * sqrt(U) *
+	(P1[0] + (P1[1] + (P1[2] + (P1[3] + P1[4] * V) * V) * V) * V) /
+	(Q1[0] + (Q1[1] + (Q1[2] + (Q1[3] + Q1[4] * V) * V) * V) * V);
+    }
+  else if (V < 1)
+    {
+      DENLAN = (P2[0] + (P2[1] + (P2[2] + (P2[3] + P2[4] * V) * V) * V) * V) /
+	(Q2[0] + (Q2[1] + (Q2[2] + (Q2[3] + Q2[4] * V) * V) * V) * V);
+    }
+  else if (V < 5)
+    {
+      DENLAN = (P3[0] + (P3[1] + (P3[2] + (P3[3] + P3[4] * V) * V) * V) * V) /
+	(Q3[0] + (Q3[1] + (Q3[2] + (Q3[3] + Q3[4] * V) * V) * V) * V);
+    }
+  else if (V < 12)
+    {
+      U = 1 / V;
+      DENLAN = U * U *
+	(P4[0] + (P4[1] + (P4[2] + (P4[3] + P4[4] * U) * U) * U) * U) /
+	(Q4[0] + (Q4[1] + (Q4[2] + (Q4[3] + Q4[4] * U) * U) * U) * U);
+    }
+  else if (V < 50)
+    {
+      U = 1 / V;
+      DENLAN = U * U *
+	(P5[0] + (P5[1] + (P5[2] + (P5[3] + P5[4] * U) * U) * U) * U) /
+	(Q5[0] + (Q5[1] + (Q5[2] + (Q5[3] + Q5[4] * U) * U) * U) * U);
+    }
+  else if (V < 300)
+    {
+      U = 1 / V;
+      DENLAN = U * U *
+	(P6[0] + (P6[1] + (P6[2] + (P6[3] + P6[4] * U) * U) * U) * U) /
+	(Q6[0] + (Q6[1] + (Q6[2] + (Q6[3] + Q6[4] * U) * U) * U) * U);
+    }
+  else
+    {
+      U = 1 / (V - V * log(V) / (V + 1));
+      DENLAN = U * U * (1 + (A2[0] + A2[1] * U) * U);
+    }
+
+  return DENLAN;
+}
+
+/* This function is a translation from the original Fortran of the
+ * CERN library routine DISLAN, the integral from -inf to x of the
+ * Landau p.d.f.
+ */
+static
+double
+gsl_ran_landau_dislan(const double x)
+{
+  static double P1[5] =
+    {
+      0.2514091491E0, -0.6250580444E-1,
+      0.1458381230E-1, -0.2108817737E-2,
+      0.7411247290E-3
+    };
+
+  static double P2[4] =
+    {
+      0.2868328584E0, 0.3564363231E0,
+      0.1523518695E0, 0.2251304883E-1
+    };
+
+  static double P3[4] =
+    {
+      0.2868329066E0, 0.3003828436E0,
+      0.9950951941E-1, 0.8733827185E-2
+    };
+
+  static double P4[4] =
+    {
+      0.1000351630E1, 0.4503592498E1,
+      0.1085883880E2, 0.7536052269E1
+    };
+
+  static double P5[4] =
+    {
+      0.1000006517E1, 0.4909414111E2,
+      0.8505544753E2, 0.1532153455E3
+    };
+
+  static double P6[4] =
+    {
+      0.1000000983E1, 0.1329868456E3,
+      0.9162149244E3, -0.9605054274E3
+    };
+
+  static double Q1[5] =
+    {
+      1.0, -0.5571175625E-2,
+      0.6225310236E-1, -0.3137378427E-2,
+      0.1931496439E-2
+    };
+
+  static double Q2[4] =
+    {
+      1.0, 0.6191136137E0,
+      0.1720721448E0, 0.2278594771E-1
+    };
+
+  static double Q3[4] =
+    {
+      1.0, 0.4237190502E0,
+      0.1095631512E0, 0.8693851567E-2
+    };
+
+  static double Q4[4] =
+    {
+      1.0, 0.5539969678E1,
+      0.1933581111E2, 0.2721321508E2
+    };
+
+  static double Q5[4] =
+    {
+      1.0, 0.5009928881E2,
+      0.1399819104E3, 0.4200002909E3
+    };
+
+  static double Q6[4] =
+    {
+      1.0, 0.1339887843E3,
+      0.1055990413E4, 0.5532224619E3
+    };
+
+  static double A1[3] =
+    {
+      -0.4583333333E0, 0.6675347222E0, -0.1641741416E1
+    };
+
+  static double A2[3] =
+    {
+      1.0, -0.4227843351E0, -0.2043403138E1
+    };
+
+  double U, V, DISLAN;
+
+  V = x;
+  if (V < -5.5)
+    {
+      U = exp(V + 1);
+      DISLAN = 0.3989422803 * exp( -1 / U) * sqrt(U) *
+               (1 + (A1[0] + (A1[1] + A1[2] * U) * U) * U);
+    }
+  else if (V < -1)
+    {
+      U = exp( -V - 1);
+      DISLAN = (exp( -U) / sqrt(U)) *
+               (P1[0] + (P1[1] + (P1[2] + (P1[3] + P1[4] * V) * V) * V) * V) /
+               (Q1[0] + (Q1[1] + (Q1[2] + (Q1[3] + Q1[4] * V) * V) * V) * V);
+    }
+  else if (V < 1)
+    {
+      DISLAN = (P2[0] + (P2[1] + (P2[2] + P2[3] * V) * V) * V) /
+               (Q2[0] + (Q2[1] + (Q2[2] + Q2[3] * V) * V) * V);
+    }
+  else if (V < 4)
+    {
+      DISLAN = (P3[0] + (P3[1] + (P3[2] + P3[3] * V) * V) * V) /
+               (Q3[0] + (Q3[1] + (Q3[2] + Q3[3] * V) * V) * V);
+    }
+  else if (V < 12)
+    {
+      U = 1 / V;
+      DISLAN = (P4[0] + (P4[1] + (P4[2] + P4[3] * U) * U) * U) /
+               (Q4[0] + (Q4[1] + (Q4[2] + Q4[3] * U) * U) * U);
+    }
+  else if (V < 50)
+    {
+      U = 1 / V;
+      DISLAN = (P5[0] + (P5[1] + (P5[2] + P5[3] * U) * U) * U) /
+               (Q5[0] + (Q5[1] + (Q5[2] + Q5[3] * U) * U) * U);
+    }
+  else if (V < 300)
+    {
+      U = 1 / V;
+      DISLAN = (P6[0] + (P6[1] + (P6[2] + P6[3] * U) * U) * U) /
+               (Q6[0] + (Q6[1] + (Q6[2] + Q6[3] * U) * U) * U);
+    }
+  else
+    {
+      U = 1 / (V - V * log(V) / (V + 1));
+      DISLAN = 1 - (A2[0] + (A2[1] + A2[2] * U) * U) * U;
+    }
+
+  return DISLAN;
+}
+
+double
 gsl_ran_landau(const gsl_rng * r)
 {
-  static double F[982] = 
-    {  
+  static double F[982] =
+    {
       00.000000, 00.000000, 00.000000, 00.000000, 00.000000,
       -2.244733, -2.204365, -2.168163, -2.135219, -2.104898,
       -2.076740, -2.050397, -2.025605, -2.002150, -1.979866,
@@ -238,40 +524,41 @@ gsl_ran_landau(const gsl_rng * r)
 
   /* Account for difference between C and Fortran convention for lower
      bound. */
-  I = i - 1; 
+  I = i - 1;
 
-  if (I >= 70 && I <= 800) 
+  if (I >= 70 && I <= 800)
     {
-      RANLAN = F[I] + U * (F[I+1] - F[I]);
+      RANLAN = F[I] + U * (F[I + 1] - F[I]);
     }
-  else if (I >=  7 && I <= 980)
+  else if (I >= 7 && I <= 980)
     {
-      RANLAN= F[I] + U * (F[I+1] - F[I] - 
-			  0.25 * (1 - U) * (F[I+2] - F[I+1] - F[I] + F[I-1]));
+      RANLAN = F[I] + U * (F[I + 1] - F[I] -
+                           0.25 * (1 - U) * (F[I + 2] - F[I + 1] - F[I] + F[I - 1]));
     }
   else if (I < 7)
     {
       V = log(X);
       U = 1 / V;
       RANLAN = ((0.99858950 + (3.45213058E1 + 1.70854528E1 * U) * U) /
-		(1 + (3.41760202E1 + 4.01244582 * U) * U)) * 
-	(-log(-0.91893853 - V) - 1);
+                (1 + (3.41760202E1 + 4.01244582 * U) * U)) *
+               ( -log( -0.91893853 - V) - 1);
     }
   else
     {
       U = 1 - X;
       V = U * U;
       if (X <= 0.999)
-	{
-	  RANLAN=(1.00060006 + 2.63991156E2 * U + 4.37320068E3 * V) /
-	    ((1 + 2.57368075E2 * U + 3.41448018E3 * V) * U);
-	}
+        {
+          RANLAN = (1.00060006 + 2.63991156E2 * U + 4.37320068E3 * V) /
+                   ((1 + 2.57368075E2 * U + 3.41448018E3 * V) * U);
+        }
       else
-	{
-	  RANLAN=(1.00001538 + 6.07514119E3 * U + 7.34266409E5 * V) /
-	    ((1 + 6.06511919E3 * U + 6.94021044E5 * V) * U);
-	}
+        {
+          RANLAN = (1.00001538 + 6.07514119E3 * U + 7.34266409E5 * V) /
+                   ((1 + 6.06511919E3 * U + 6.94021044E5 * V) * U);
+        }
     }
 
   return RANLAN;
 }
+

@@ -25,7 +25,8 @@ noinst_DATA = siman-test.eps siman-energy.eps 12-cities.eps \
 	rand-tdist.tex rand-weibull.tex random-walk.tex randplots.gnp \
 	rand-exppow.tex rand-levy.tex rand-levyskew.tex \
         rand-gumbel.tex rand-bernoulli.tex \
-	rand-gaussian-tail.tex rand-gumbel1.tex rand-gumbel2.tex
+	rand-gaussian-tail.tex rand-gumbel1.tex rand-gumbel2.tex \
+        landau.dat rand-landau.tex
 
 
 EXTRA_DIST = $(man_MANS) $(noinst_DATA) gsl-design.texi \

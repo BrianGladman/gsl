@@ -25,6 +25,7 @@ The functions described in this section are declared in
 * The Cauchy Distribution::     
 * The Rayleigh Distribution::   
 * The Rayleigh Tail Distribution::  
+* The Landau Distribution::     
 * The Levy alpha-Stable Distributions::  
 * The Levy skew alpha-Stable Distribution::  
 * The Gamma Distribution::      
@@ -436,6 +437,44 @@ lower limit @var{a}, using the formula given above.
 @sp 1
 @tex
 \centerline{\input rand-rayleigh-tail.tex}
+@end tex
+
+@page
+@node The Landau Distribution
+@section The Landau Distribution
+@deftypefn Random double gsl_ran_landau (const gsl_rng * @var{r})
+@cindex Landau random numbers
+This function returns a random number from the Landau distribution.  The
+probability distribution for Landau random numbers is defined
+analytically by the complex integral,
+
+@tex
+\beforedisplay
+$$
+p(x) = 
+{1 \over {2 \pi i}} \int_{c-i\infty}^{c+i\infty} ds\, \exp(s \log(s) + x s) 
+$$
+\afterdisplay
+@end tex
+@ifinfo
+@example
+p(x) = (1/(2 \pi i)) \int_@{c-i\infty@}^@{c+i\infty@} ds exp(s log(s) + x s) 
+@end example
+@end ifinfo
+For numerical purposes it is more convenient to use the following
+equivalent form of the integral, @math{p(x) = (1/\pi) \int_0^\infty dt
+\exp(-t \log(t) - x t) \sin(\pi t)}.
+@end deftypefn
+
+@deftypefun double gsl_ran_landau_pdf (double @var{x})
+This function computes the probability density @math{p(x)} at @var{x}
+for the Landau distribution using an approximation to the formula given
+above.
+@end deftypefun
+
+@sp 1
+@tex
+\centerline{\input rand-landau.tex}
 @end tex
 
 @page
